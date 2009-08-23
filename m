@@ -1,16 +1,26 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Sun, 23 Aug 2009 11:16:57 +0100
-Message-ID: <20090823101656.GA11491@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: s3c24xx platform:
+	Fix	s3c2410_dma_started called at wrong time
+Date: Sun, 23 Aug 2009 11:28:41 +0100
+Message-ID: <20090823102841.GA737@opensource.wolfsonmicro.com>
+References: <1250761331.4412.70.camel@shinel>
+	<20090820101549.GA23141@rakim.wolfsonmicro.main>
+	<1250769588.3684.28.camel@sl>
+	<20090820121851.GB11699@sirena.org.uk>
+	<1250775480.1404.19.camel@sl>
+	<20090820145207.GA25143@rakim.wolfsonmicro.main>
+	<1250783107.1404.70.camel@sl> <20090820184714.GD5032@sirena.org.uk>
+	<1250848839.3928.6.camel@shinel>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E91702432C
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2DEDD2433E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Aug 2009 12:17:03 +0200 (CEST)
+	Sun, 23 Aug 2009 12:28:42 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1250848839.3928.6.camel@shinel>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,85 +30,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Shine Liu <shinel@foxmail.com>
+Cc: ben@simtec.co.uk, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit a0a499c5792b8656cd51e11d5e0db9fb21640f58:
-  Eduardo Valentin (1):
-        ASoC: OMAP: Use DMA operating mode of McBSP
+On Fri, Aug 21, 2009 at 06:00:39PM +0800, Shine Liu wrote:
 
-are available in the git repository at:
+> I've finished a draft patch in the callback manner. Waiting for any
+> suggestion. Thanks.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+This isn't quite what I was expecting - what I was expecting was more
+that the I2S driver would set up a function on startup which would be
+called by the ASoC DMA driver from its trigger function.  It does look
+like a reasonable approach, though.
 
-Ben Dooks (4):
-      ASoC: S3C24XX: Add audio core and tlv320aic23 for Simtec boards
-      ASoC: tlv320aic3x: Change to use device model
-      ASoC: tlv320aic3x: fixup board device changes
-      ASoC: S3C24XX: Support for Simtec Hermes boards
-
-Kuninori Morimoto (2):
-      ASoC: Add ak4642/ak4643 codec support
-      ASoC: Add FSI-AK4642 sound support for SuperH
-
-Marek Vasut (5):
-      power_supply: Make wm97xx-core pass platform_data to battery, ts
-      power_supply: Convert WM97xx battery to use platform_data
-      power_supply: Let wm97xx-battery use irq to detect charger state
-      [ARM] pxa: Convert all platforms to pass platform_data to wm97xx battery
-      ASoC: Pass correct platform data from pxa2xx-ac97
-
-Mark Brown (1):
-      ASoC: Add DAPM widget power decision debugfs files
-
-Roel Kluin (1):
-      ASoC: free socdev if init_card() fails in wm9705_soc_probe()
-
- arch/arm/mach-pxa/mioa701.c                    |   10 +-
- arch/arm/mach-pxa/palmld.c                     |   19 +-
- arch/arm/mach-pxa/palmt5.c                     |   19 +-
- arch/arm/mach-pxa/palmte2.c                    |   20 +-
- arch/arm/mach-pxa/palmtx.c                     |   19 +-
- arch/arm/mach-pxa/palmz72.c                    |   20 +-
- arch/arm/mach-pxa/treo680.c                    |    1 -
- arch/arm/plat-s3c/include/plat/audio-simtec.h  |   37 ++
- drivers/input/touchscreen/wm97xx-core.c        |    3 +
- drivers/power/wm97xx_battery.c                 |   56 ++-
- include/linux/wm97xx.h                         |   18 +
- include/linux/wm97xx_batt.h                    |   26 --
- include/sound/soc-dapm.h                       |    1 +
- include/sound/soc.h                            |    1 +
- sound/arm/pxa2xx-ac97.c                        |    4 +-
- sound/soc/codecs/Kconfig                       |    4 +
- sound/soc/codecs/Makefile                      |    2 +
- sound/soc/codecs/ak4642.c                      |  502 ++++++++++++++++++++++++
- sound/soc/codecs/ak4642.h                      |   20 +
- sound/soc/codecs/tlv320aic3x.c                 |  221 ++++++-----
- sound/soc/codecs/tlv320aic3x.h                 |    2 -
- sound/soc/codecs/wm9705.c                      |    2 +-
- sound/soc/davinci/davinci-evm.c                |   12 +-
- sound/soc/omap/n810.c                          |   12 +-
- sound/soc/pxa/pxa2xx-ac97.c                    |    4 +-
- sound/soc/s3c24xx/Kconfig                      |   19 +
- sound/soc/s3c24xx/Makefile                     |    7 +
- sound/soc/s3c24xx/s3c24xx_simtec.c             |  394 +++++++++++++++++++
- sound/soc/s3c24xx/s3c24xx_simtec.h             |   22 +
- sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |  153 +++++++
- sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |  137 +++++++
- sound/soc/s6000/s6105-ipcam.c                  |   12 +-
- sound/soc/sh/Kconfig                           |    8 +
- sound/soc/sh/Makefile                          |    2 +
- sound/soc/sh/fsi-ak4642.c                      |  107 +++++
- sound/soc/soc-core.c                           |    8 +
- sound/soc/soc-dapm.c                           |   86 ++++
- 37 files changed, 1784 insertions(+), 206 deletions(-)
- create mode 100644 arch/arm/plat-s3c/include/plat/audio-simtec.h
- delete mode 100644 include/linux/wm97xx_batt.h
- create mode 100644 sound/soc/codecs/ak4642.c
- create mode 100644 sound/soc/codecs/ak4642.h
- create mode 100644 sound/soc/s3c24xx/s3c24xx_simtec.c
- create mode 100644 sound/soc/s3c24xx/s3c24xx_simtec.h
- create mode 100644 sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
- create mode 100644 sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
- create mode 100644 sound/soc/sh/fsi-ak4642.c
+The way you've got things at the minute at least all the other S3C ASoC
+drivers will need to be updated to match the change in the DMA driver.
