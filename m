@@ -1,25 +1,23 @@
-From: Shine Liu <shinel@foxmail.com>
-Subject: Re: [PATCH] ASoC: s3c24xx platform: Fix
- s3c2410_dma_started called at wrong time
-Date: Sun, 23 Aug 2009 19:37:13 +0800
-Message-ID: <1251027433.732.42.camel@sl>
-References: <1250761331.4412.70.camel@shinel>
-	<20090820101549.GA23141@rakim.wolfsonmicro.main>
-	<1250769588.3684.28.camel@sl> <20090820121851.GB11699@sirena.org.uk>
-	<1250775480.1404.19.camel@sl>
-	<20090820145207.GA25143@rakim.wolfsonmicro.main>
-	<1250783107.1404.70.camel@sl> <20090820184714.GD5032@sirena.org.uk>
-	<1250848839.3928.6.camel@shinel>
-	<20090823102841.GA737@opensource.wolfsonmicro.com>
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: Re: [PATCH] ali5451: fix timeout handling in
+	snd_ali_{codecs, timer}_ready()
+Date: Sun, 23 Aug 2009 15:27:25 +0200
+Message-ID: <200908231527.25987.bzolnier@gmail.com>
+References: <200908192209.50994.bzolnier@gmail.com>
+	<s5hbpmbvvta.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpbg93.qq.com (smtpbg93.qq.com [119.147.10.252])
-	by alsa0.perex.cz (Postfix) with SMTP id 9B4CB24150
+Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
+	[209.85.218.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id 29D85243AD
 	for <alsa-devel@alsa-project.org>;
-	Sun, 23 Aug 2009 13:37:41 +0200 (CEST)
-In-Reply-To: <20090823102841.GA737@opensource.wolfsonmicro.com>
+	Sun, 23 Aug 2009 15:27:37 +0200 (CEST)
+Received: by bwz25 with SMTP id 25so1071998bwz.32
+	for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2009 06:27:36 -0700 (PDT)
+In-Reply-To: <s5hbpmbvvta.wl%tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,54 +27,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jack Byer <ojbyer@usa.net>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
+On Thursday 20 August 2009 08:33:21 Takashi Iwai wrote:
+> At Wed, 19 Aug 2009 22:09:50 +0200,
+> Bartlomiej Zolnierkiewicz wrote:
+> > 
+> > From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+> > Subject: [PATCH] ali5451: fix timeout handling in snd_ali_{codecs,timer}_ready()
+> > 
+> > Modify loops in such way that the register value is checked also after
+> > the timeout condition, just in case the heavy interrupt load etc. caused
+> > the thread to sleep for the time period exceeding the timeout value.
+> > 
+> > While at it remove an extra ALI_STIMER read from snd_ali_stimer_ready().
+> > 
+> > Reported-by: Jack Byer <ojbyer@usa.net>
+> > Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+> > ---
+> >  sound/pci/ali5451/ali5451.c |   11 ++++++++---
+> >  1 file changed, 8 insertions(+), 3 deletions(-)
+> > 
+> > Index: b/sound/pci/ali5451/ali5451.c
+> > ===================================================================
+> > --- a/sound/pci/ali5451/ali5451.c
+> > +++ b/sound/pci/ali5451/ali5451.c
+> > @@ -314,8 +314,11 @@ static int snd_ali_codec_ready(struct sn
+> >  		res = snd_ali_5451_peek(codec,port);
+> >  		if (!(res & 0x8000))
+> >  			return 0;
+> > +		if (!time_after_eq(end_time, jiffies))
+> > +			break;
+> >  		schedule_timeout_uninterruptible(1);
+> > -	} while (time_after_eq(end_time, jiffies));
+> > +	} while (1);
 > 
-> This isn't quite what I was expecting - what I was expecting was more
-> that the I2S driver would set up a function on startup which would be
-> called by the ASoC DMA driver from its trigger function.  It does look
-> like a reasonable approach, though.
-
-Yes, I understand what you exactly want. I was intend to register the
-callback function on I2S startup, but finally I found it is not possible
-because there are two callback functions for the DMA driver:
-s3c24xx_snd_txctrl() and s3c24xx_snd_rxctrl(), however, there's only one
-slot for the callback function. So I choose not to setup the callback
-functions dynamicly, when the task is playback, the callback funtion is
-s3c24xx_snd_txctrl() and when the task is record, the funtion is
-s3c24xx_snd_rxctrl().
-
-However, there's another way to archive what you expect: combine the
-s3c24xx_snd_txctrl() and s3c24xx_snd_rxctrl() into one function. That
-would be like:
-
-struct s3c24xx_snd_ctrl_data {
-	int event;	//start or stop
-	int direction;	//playback or record
-};
-
-static void s3c24xx_snd_ctrl(struct s3c24xx_snd_ctrl_data* data)
-{
-	if(data->direction == SNDRV_PCM_STREAM_PLAYBACK)
-		s3c24xx_snd_txctrl(data->event);
-	eles
-		s3c24xx_snd_rxctrl(data->event);
-}
-
-Then we can register this callback funtion on I2S startup.
-
+> Using for (;;) is more generic.  I see your patch keeps the changes
+> minimal, but I'm afraid that the result, do {} while(1), can be
+> misleading.
 > 
-> The way you've got things at the minute at least all the other S3C ASoC
-> drivers will need to be updated to match the change in the DMA driver.
-> 
+> Could you replace with for (;;) ?
 
-I have posted the DMA driver patch to linux-arm-kernel yesterday:
-http://lists.arm.linux.org.uk/lurker/message/20090822.153940.e15e3bd7.en.html
+Sure, though I don't see a much value added from this operation..
 
-Hope there is no problem to merge the patch.
+From: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+Subject: [PATCH v2] ali5451: fix timeout handling in snd_ali_{codecs,timer}_ready()
 
-If the dma patch is accepted, I will post a formal patch here for ASoC
-S3C24XX.
+Modify loops in such way that the register value is checked also after
+the timeout condition, just in case the heavy interrupt load etc. caused
+the thread to sleep for the time period exceeding the timeout value.
+
+While at it remove an extra ALI_STIMER read from snd_ali_stimer_ready().
+
+Reported-by: Jack Byer <ojbyer@usa.net>
+Signed-off-by: Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>
+---
+ sound/pci/ali5451/ali5451.c |   18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
+
+Index: b/sound/pci/ali5451/ali5451.c
+===================================================================
+--- a/sound/pci/ali5451/ali5451.c
++++ b/sound/pci/ali5451/ali5451.c
+@@ -310,12 +310,16 @@ static int snd_ali_codec_ready(struct sn
+ 	unsigned int res;
+ 	
+ 	end_time = jiffies + msecs_to_jiffies(250);
+-	do {
++
++	for (;;) {
+ 		res = snd_ali_5451_peek(codec,port);
+ 		if (!(res & 0x8000))
+ 			return 0;
++		if (!time_after_eq(end_time, jiffies))
++			break;
+ 		schedule_timeout_uninterruptible(1);
+-	} while (time_after_eq(end_time, jiffies));
++	}
++
+ 	snd_ali_5451_poke(codec, port, res & ~0x8000);
+ 	snd_printdd("ali_codec_ready: codec is not ready.\n ");
+ 	return -EIO;
+@@ -327,15 +331,17 @@ static int snd_ali_stimer_ready(struct s
+ 	unsigned long dwChk1,dwChk2;
+ 	
+ 	dwChk1 = snd_ali_5451_peek(codec, ALI_STIMER);
+-	dwChk2 = snd_ali_5451_peek(codec, ALI_STIMER);
+-
+ 	end_time = jiffies + msecs_to_jiffies(250);
+-	do {
++
++	for (;;) {
+ 		dwChk2 = snd_ali_5451_peek(codec, ALI_STIMER);
+ 		if (dwChk2 != dwChk1)
+ 			return 0;
++		if (!time_after_eq(end_time, jiffies))
++			break;
+ 		schedule_timeout_uninterruptible(1);
+-	} while (time_after_eq(end_time, jiffies));
++	}
++
+ 	snd_printk(KERN_ERR "ali_stimer_read: stimer is not ready.\n");
+ 	return -EIO;
+ }
