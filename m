@@ -1,51 +1,29 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [alsa-devel] [RFC][PATCH 1/3 v2] ARM: OMAP: DMA: Add support for DMA channel self linking on OMAP1510
-Date: Sun, 23 Aug 2009 20:38:05 +0200
-Message-ID: <200908232038.05593.jkrzyszt@tis.icnet.pl>
-References: <200908101050.02530.jkrzyszt@tis.icnet.pl> <200908231945.40187.jkrzyszt@tis.icnet.pl> <20090823180543.GA6167@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [RFC][PATCH 1/3 v2] ARM: OMAP: DMA: Add support
+	for DMA channel self linking on OMAP1510
+Date: Sun, 23 Aug 2009 19:49:43 +0100
+Message-ID: <20090823184943.GA6994@opensource.wolfsonmicro.com>
+References: <200908101050.02530.jkrzyszt@tis.icnet.pl> <200908231945.40187.jkrzyszt@tis.icnet.pl> <20090823180543.GA6167@opensource.wolfsonmicro.com> <200908232038.05593.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20090823180543.GA6167@opensource.wolfsonmicro.com>
 Content-Disposition: inline
+In-Reply-To: <200908232038.05593.jkrzyszt@tis.icnet.pl>
 Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 Cc: Tony Lindgren <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Jarkko Nikula <jhnikula@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sunday 23 August 2009 20:05:43 Mark Brown wrote:
-> If none of your patches have been applied
+On Sun, Aug 23, 2009 at 08:38:05PM +0200, Janusz Krzysztofik wrote:
+> Sunday 23 August 2009 20:05:43 Mark Brown wrote:
 
-Mark,
+> > then what are the other 
+> > patches that depend on this? Nobody reported any issues in testing with 
+> > the other OMAP patches.
 
-I did not say that. You have applied patches 2/3 [1] and 3/3 [2] from the 
-series.
+> Dependency on patch 1/3 is not compile time, but run time, and OMAP1510 
+> specific, that's probably why nobody has reported any issues.
 
-> then what are the other 
-> patches that depend on this? Nobody reported any issues in testing with 
-> the other OMAP patches.
-
-Dependency on patch 1/3 is not compile time, but run time, and OMAP1510 
-specific, that's probably why nobody has reported any issues.
-
-> I don't really mind which tree these go via but I rather suspect that
-> ALSA will be better given all the other changes and I also suspect that
-> you'll need to regenerate your changes against a current tree due to
-> those changes.
-
-arch/arm/plat-omap/dma.c has not been touched since 2009-05-28 in yours [3] 
-and since 2009-06-23 in Takashi's tree, so my patch, whether original or v2, 
-should still be up to date. That may change if it is to be pushed via OMAP 
-tree.
-
-Sorry for all that noise.
-
-Thanks,
-Janusz
-
-[1]http://git.kernel.org/?p=linux/kernel/git/broonie/sound-2.6.git;a=commit;h=64844a6ac8ddd586cb832fea7cf2e93e5e7e03f4
-[2]http://git.kernel.org/?p=linux/kernel/git/broonie/sound-2.6.git;a=commit;h=471e3dec3abe2d41e8c742046353fcb01bc2459e
-[3]http://git.kernel.org/?p=linux/kernel/git/broonie/sound-2.6.git;a=commit;h=44169075e6eaa87bab6a296209d8d0610879b394
-[4]http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commit;h=aecedb94b366d6fb5e2a17ca18a5dc78e593198e
+OK, given that and the fact that you're reporting that none of these
+files are afected by any of the other patches it sounds like it'd be
+better to keep it in the OMAP tree unless Tony says otherwse.
