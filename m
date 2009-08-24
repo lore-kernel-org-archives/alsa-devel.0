@@ -1,65 +1,139 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC][PATCH 1/3 v2] ARM: OMAP: DMA: Add support
- for DMA channel self linking on OMAP1510
-Date: Mon, 24 Aug 2009 08:49:20 +0300
-Message-ID: <20090824084920.c99c561a.jhnikula@gmail.com>
-References: <200908101050.02530.jkrzyszt@tis.icnet.pl>
-	<200908231945.40187.jkrzyszt@tis.icnet.pl>
-	<20090823180543.GA6167@opensource.wolfsonmicro.com>
-	<200908232038.05593.jkrzyszt@tis.icnet.pl>
-	<20090823184943.GA6994@opensource.wolfsonmicro.com>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Subject: Re: [PATCH 1/3] OMAP: McBSP: Use textual values in DMA operating
+ mode sysfs files
+Date: Mon, 24 Aug 2009 09:49:41 +0300
+Message-ID: <20090824064941.GA24398@esdhcp037198.research.nokia.com>
+References: <1251019467-11677-1-git-send-email-jhnikula@gmail.com>
+ <1251019467-11677-2-git-send-email-jhnikula@gmail.com>
+Reply-To: eduardo.valentin@nokia.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f220.google.com (mail-ew0-f220.google.com
-	[209.85.219.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03C4B24569
-	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Aug 2009 07:47:41 +0200 (CEST)
-Received: by ewy20 with SMTP id 20so2343766ewy.46
-	for <alsa-devel@alsa-project.org>; Sun, 23 Aug 2009 22:47:41 -0700 (PDT)
-In-Reply-To: <20090823184943.GA6994@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1251019467-11677-2-git-send-email-jhnikula@gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "tony@atomide.com" <tony@atomide.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 23 Aug 2009 19:49:43 +0100
-Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+Hello Jarkko,
 
-> On Sun, Aug 23, 2009 at 08:38:05PM +0200, Janusz Krzysztofik wrote:
-> > Sunday 23 August 2009 20:05:43 Mark Brown wrote:
+On Sun, Aug 23, 2009 at 11:24:25AM +0200, Jarkko Nikula wrote:
+> Use more descriptive than numerical value when showing and storing the
+> McBSP DMA operating mode. Show function is using similar syntax than e.g.
+> the led triggers so that all possible values for store function are
+> printed but with current value surrounded with square brackets.
+
+I liked the idea as I said before. But let's try to improve it a bit.
+
 > 
-> > > then what are the other 
-> > > patches that depend on this? Nobody reported any issues in testing with 
-> > > the other OMAP patches.
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Cc: Eduardo Valentin <eduardo.valentin@nokia.com>
+> ---
+>  arch/arm/plat-omap/mcbsp.c |   52 ++++++++++++++++++++++++-------------------
+>  1 files changed, 29 insertions(+), 23 deletions(-)
 > 
-> > Dependency on patch 1/3 is not compile time, but run time, and OMAP1510 
-> > specific, that's probably why nobody has reported any issues.
-> 
-> OK, given that and the fact that you're reporting that none of these
-> files are afected by any of the other patches it sounds like it'd be
-> better to keep it in the OMAP tree unless Tony says otherwse.
+> diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+> index b63a720..28e29b9 100644
+> --- a/arch/arm/plat-omap/mcbsp.c
+> +++ b/arch/arm/plat-omap/mcbsp.c
+> @@ -1161,25 +1161,31 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
+>  THRESHOLD_PROP_BUILDER(max_tx_thres);
+>  THRESHOLD_PROP_BUILDER(max_rx_thres);
+>  
+> +static const char *dma_op_modes[] = {
+> +	"element", "threshold", "frame",
+> +};
+> +
+>  static ssize_t dma_op_mode_show(struct device *dev,
+>  			struct device_attribute *attr, char *buf)
+>  {
+>  	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
+> -	int dma_op_mode;
+> +	int dma_op_mode, i = 0;
+> +	ssize_t len = 0;
+> +	const char * const *s;
+>  
+>  	spin_lock_irq(&mcbsp->lock);
+>  	dma_op_mode = mcbsp->dma_op_mode;
+>  	spin_unlock_irq(&mcbsp->lock);
+>  
+> -	return sprintf(buf, "current mode: %d\n"
+> -			"possible mode values are:\n"
+> -			"%d - %s\n"
+> -			"%d - %s\n"
+> -			"%d - %s\n",
+> -			dma_op_mode,
+> -			MCBSP_DMA_MODE_ELEMENT, "element mode",
+> -			MCBSP_DMA_MODE_THRESHOLD, "threshold mode",
+> -			MCBSP_DMA_MODE_FRAME, "frame mode");
+> +	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++) {
+> +		if (dma_op_mode == i)
+> +			len += sprintf(buf + len, "[%s] ", *s);
+> +		else
+> +			len += sprintf(buf + len, "%s ", *s);
+> +	}
+> +	len += sprintf(len+buf, "\n");
 
-Yep, Janusz's commits 64844a6ac8ddd586cb832fea7cf2e93e5e7e03f4 and
-471e3dec3abe2d41e8c742046353fcb01bc2459e do not cause problems on other
-OMAPs but will cause that ASoC on 1510 is broken until his DMA
-patch(es) are applied. I'm sure you Janusz will ping Tony until he'll
-apply them :-)
+Just a tiny thing, add spaces before and after + operator:
++	len += sprintf(len + buf, "\n");
 
-We should remember that arch/arm/plat-omap/mcbsp.c changes done via
-ALSA tree has been an exception and that's only for simpler procedure.
-McBSP is not so critical if sources goes out-of-sync but DMA is.
+> +
+> +	return len;
+>  }
+>  
+>  static ssize_t dma_op_mode_store(struct device *dev,
+> @@ -1187,26 +1193,26 @@ static ssize_t dma_op_mode_store(struct device *dev,
+>  				const char *buf, size_t size)
+>  {
+>  	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
+> -	unsigned long val;
+> -	int status;
+> +	const char * const *s;
+> +	char *p;
+> +	int len, i = 0;
+>  
+> -	status = strict_strtoul(buf, 0, &val);
+> -	if (status)
+> -		return status;
+> +	p = memchr(buf, '\n', size);
+> +	len = p ? p - buf : size;
 
+I guess here we have two better options, please use one of these:
+* strstrip
+* sysfs_streq
+
+>  
+> -	spin_lock_irq(&mcbsp->lock);
+> +	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++)
+> +		if (*s && len == strlen(*s) && !strncmp(buf, *s, len))
+
+how about using strnicmp ??
+
+> +			break;
+>  
+> +	if (i == ARRAY_SIZE(dma_op_modes))
+> +		return -EINVAL;
+> +
+> +	spin_lock_irq(&mcbsp->lock);
+>  	if (!mcbsp->free) {
+>  		size = -EBUSY;
+>  		goto unlock;
+>  	}
+> -
+> -	if (val > MCBSP_DMA_MODE_FRAME || val < MCBSP_DMA_MODE_ELEMENT) {
+> -		size = -EINVAL;
+> -		goto unlock;
+> -	}
+> -
+> -	mcbsp->dma_op_mode = val;
+> +	mcbsp->dma_op_mode = i;
+>  
+>  unlock:
+>  	spin_unlock_irq(&mcbsp->lock);
+> -- 
+> 1.6.3.3
 
 -- 
-Jarkko
+Eduardo Valentin
