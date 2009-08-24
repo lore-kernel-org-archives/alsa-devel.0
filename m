@@ -1,39 +1,152 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [alsa-devel] [PATCHv4 00/20] OMAP ASoC changes in DMA
-	utilization
-Date: Mon, 24 Aug 2009 17:00:21 +0300
-Message-ID: <20090824140020.GE5165@atomide.com>
-References: <1250509879-6703-1-git-send-email-eduardo.valentin@nokia.com> <20090817170549.f0adf2a4.jhnikula@gmail.com> <20090819074011.GA25559@esdhcp037198.research.nokia.com> <20090819074835.GB25559@esdhcp037198.research.nokia.com> <20090819082632.GA19168@sirena.org.uk>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 1/3] OMAP: McBSP: Use textual values in DMA
+ operating mode sysfs files
+Date: Mon, 24 Aug 2009 17:45:50 +0300
+Message-ID: <20090824174550.dc918361.jhnikula@gmail.com>
+References: <1251019467-11677-1-git-send-email-jhnikula@gmail.com>
+	<1251019467-11677-2-git-send-email-jhnikula@gmail.com>
+	<20090824064941.GA24398@esdhcp037198.research.nokia.com>
+	<20090824103503.2ce92c16.jhnikula@gmail.com>
+	<20090824073422.GA27298@esdhcp037198.research.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20090819082632.GA19168@sirena.org.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f220.google.com (mail-ew0-f220.google.com
+	[209.85.219.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5AD642413B
+	for <alsa-devel@alsa-project.org>;
+	Mon, 24 Aug 2009 16:44:12 +0200 (CEST)
+Received: by ewy20 with SMTP id 20so2750329ewy.46
+	for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2009 07:44:10 -0700 (PDT)
+In-Reply-To: <20090824073422.GA27298@esdhcp037198.research.nokia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: eduardo.valentin@nokia.com
+Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [090819 11:27]:
-> On Wed, Aug 19, 2009 at 10:48:35AM +0300, Eduardo Valentin wrote:
-> > On Wed, Aug 19, 2009 at 09:40:12AM +0200, Valentin Eduardo (Nokia-D/Helsinki) wrote:
-> 
-> > > About these changes. I have one doubt. What is the correct tree to base them?
-> > > There are changes under arch/arm/plat-omap/ and under sound/soc/omap/.
-> 
-> ...
-> 
-> > > Please do not apply this version. Let's define this first, then I send
-> > > the correct version.
-> 
-> > There is 1 Jarkko's patch which changes arch/arm/plat-omap/ which is already
-> > in Takashi's tree, IIRC.
-> 
-> I believe there's colisons with the OMAP1 stuff too.  Might be worth
-> applying these on a branch and then providing merges into both the ASoC
-> and OMAP trees?
+On Mon, 24 Aug 2009 10:34:22 +0300
+Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
 
-I'm fine with these all going in via the alsa tree. If there are conflicts,
-let's get those parts into the omap for-next branch first.
+> > Are there need for case insensitive check? The sysfs_streq is not.
+> 
+> Yes, sysfs_streq is not. There is no need for the insensitive, but
+> it can give user more options (ELEMENT or element)?
+> 
+> If using strcicmp, then strstrip would be required.
+> 
+> Just to reminder that strstrip does a wider job by cleaning any kind of
+> spaces. sysfs_streq deals only with 1 leading "\n".
+> 
+Sounds too fancy :-)
 
-Tony
+Here with sysfs_streq. Clean and simple.
+
+============================== CUT HERE ==============================
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH 1/3] OMAP: McBSP: Use textual values in DMA operating mode sysfs files
+
+Use more descriptive than numerical value when showing and storing the
+McBSP DMA operating mode. Show function is using similar syntax than e.g.
+the led triggers so that all possible values for store function are
+printed but with current value surrounded with square brackets.
+
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Eduardo Valentin <eduardo.valentin@nokia.com>
+---
+ arch/arm/plat-omap/mcbsp.c |   48 ++++++++++++++++++++++---------------------
+ 1 files changed, 25 insertions(+), 23 deletions(-)
+
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index b63a720..ee60ab6 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -1161,25 +1161,31 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
+ THRESHOLD_PROP_BUILDER(max_tx_thres);
+ THRESHOLD_PROP_BUILDER(max_rx_thres);
+ 
++static const char *dma_op_modes[] = {
++	"element", "threshold", "frame",
++};
++
+ static ssize_t dma_op_mode_show(struct device *dev,
+ 			struct device_attribute *attr, char *buf)
+ {
+ 	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
+-	int dma_op_mode;
++	int dma_op_mode, i = 0;
++	ssize_t len = 0;
++	const char * const *s;
+ 
+ 	spin_lock_irq(&mcbsp->lock);
+ 	dma_op_mode = mcbsp->dma_op_mode;
+ 	spin_unlock_irq(&mcbsp->lock);
+ 
+-	return sprintf(buf, "current mode: %d\n"
+-			"possible mode values are:\n"
+-			"%d - %s\n"
+-			"%d - %s\n"
+-			"%d - %s\n",
+-			dma_op_mode,
+-			MCBSP_DMA_MODE_ELEMENT, "element mode",
+-			MCBSP_DMA_MODE_THRESHOLD, "threshold mode",
+-			MCBSP_DMA_MODE_FRAME, "frame mode");
++	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++) {
++		if (dma_op_mode == i)
++			len += sprintf(buf + len, "[%s] ", *s);
++		else
++			len += sprintf(buf + len, "%s ", *s);
++	}
++	len += sprintf(buf + len, "\n");
++
++	return len;
+ }
+ 
+ static ssize_t dma_op_mode_store(struct device *dev,
+@@ -1187,26 +1193,22 @@ static ssize_t dma_op_mode_store(struct device *dev,
+ 				const char *buf, size_t size)
+ {
+ 	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
+-	unsigned long val;
+-	int status;
++	const char * const *s;
++	int i = 0;
+ 
+-	status = strict_strtoul(buf, 0, &val);
+-	if (status)
+-		return status;
++	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++)
++		if (sysfs_streq(buf, *s))
++			break;
+ 
+-	spin_lock_irq(&mcbsp->lock);
++	if (i == ARRAY_SIZE(dma_op_modes))
++		return -EINVAL;
+ 
++	spin_lock_irq(&mcbsp->lock);
+ 	if (!mcbsp->free) {
+ 		size = -EBUSY;
+ 		goto unlock;
+ 	}
+-
+-	if (val > MCBSP_DMA_MODE_FRAME || val < MCBSP_DMA_MODE_ELEMENT) {
+-		size = -EINVAL;
+-		goto unlock;
+-	}
+-
+-	mcbsp->dma_op_mode = val;
++	mcbsp->dma_op_mode = i;
+ 
+ unlock:
+ 	spin_unlock_irq(&mcbsp->lock);
+-- 
+1.6.3.3
