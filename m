@@ -1,25 +1,18 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 1/3] OMAP: McBSP: Use textual values in DMA
- operating mode sysfs files
-Date: Mon, 24 Aug 2009 17:45:50 +0300
-Message-ID: <20090824174550.dc918361.jhnikula@gmail.com>
-References: <1251019467-11677-1-git-send-email-jhnikula@gmail.com>
-	<1251019467-11677-2-git-send-email-jhnikula@gmail.com>
-	<20090824064941.GA24398@esdhcp037198.research.nokia.com>
-	<20090824103503.2ce92c16.jhnikula@gmail.com>
-	<20090824073422.GA27298@esdhcp037198.research.nokia.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/1] sound: usb-audio: support for
+ Digidesign Mbox 2
+Date: Mon, 24 Aug 2009 18:01:34 +0200
+Message-ID: <4A92B95E.9090905@ladisch.de>
+References: <4A8EBB35.2010604@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f220.google.com (mail-ew0-f220.google.com
-	[209.85.219.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5AD642413B
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 76A622439A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Aug 2009 16:44:12 +0200 (CEST)
-Received: by ewy20 with SMTP id 20so2750329ewy.46
-	for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2009 07:44:10 -0700 (PDT)
-In-Reply-To: <20090824073422.GA27298@esdhcp037198.research.nokia.com>
+	Mon, 24 Aug 2009 18:01:22 +0200 (CEST)
+In-Reply-To: <4A8EBB35.2010604@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,124 +22,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: eduardo.valentin@nokia.com
-Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Damien Zammit <damien.zammit@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Aug 2009 10:34:22 +0300
-Eduardo Valentin <eduardo.valentin@nokia.com> wrote:
+Damien Zammit wrote:
+> S/PDIF mode works by setting the required flag
+> in usbaudio.c. I think the device can't do both simultaneously,
+> since different altsettings are required to set it.
 
-> > Are there need for case insensitive check? The sysfs_streq is not.
-> 
-> Yes, sysfs_streq is not. There is no need for the insensitive, but
-> it can give user more options (ELEMENT or element)?
-> 
-> If using strcicmp, then strstrip would be required.
-> 
-> Just to reminder that strstrip does a wider job by cleaning any kind of
-> spaces. sysfs_streq deals only with 1 leading "\n".
-> 
-Sounds too fancy :-)
+Does the Windows driver allow it?
 
-Here with sysfs_streq. Clean and simple.
+>              Remaining issues:
+>                  1) Double check endianess of 24 bit capture.
 
-============================== CUT HERE ==============================
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH 1/3] OMAP: McBSP: Use textual values in DMA operating mode sysfs files
+This should be apparent even in low-amplitude noise.
+Do you have a hex dump of recorded data?
 
-Use more descriptive than numerical value when showing and storing the
-McBSP DMA operating mode. Show function is using similar syntax than e.g.
-the led triggers so that all possible values for store function are
-printed but with current value surrounded with square brackets.
+> @@ -2441,6 +2441,12 @@ static int parse_audio_format_i_type(struct snd_usb_audio *chip, struct audiofor
+>   				   fp->altsetting, sample_width, sample_bytes);
+>   			break;
+>   		}
+> +
+> +                /* Digidesign Mbox 2 workaround:
+> +                 * supports S24_3BE BIG ENDIAN  */
+> +                if (chip->usb_id == USB_ID(0x0dba, 0x3000))
+> +                        pcm_format = SNDRV_PCM_FORMAT_S24_3BE;
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: Eduardo Valentin <eduardo.valentin@nokia.com>
----
- arch/arm/plat-omap/mcbsp.c |   48 ++++++++++++++++++++++---------------------
- 1 files changed, 25 insertions(+), 23 deletions(-)
+Please put this into is_big_endian_format().
 
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index b63a720..ee60ab6 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -1161,25 +1161,31 @@ static DEVICE_ATTR(prop, 0644, prop##_show, prop##_store);
- THRESHOLD_PROP_BUILDER(max_tx_thres);
- THRESHOLD_PROP_BUILDER(max_rx_thres);
- 
-+static const char *dma_op_modes[] = {
-+	"element", "threshold", "frame",
-+};
-+
- static ssize_t dma_op_mode_show(struct device *dev,
- 			struct device_attribute *attr, char *buf)
- {
- 	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
--	int dma_op_mode;
-+	int dma_op_mode, i = 0;
-+	ssize_t len = 0;
-+	const char * const *s;
- 
- 	spin_lock_irq(&mcbsp->lock);
- 	dma_op_mode = mcbsp->dma_op_mode;
- 	spin_unlock_irq(&mcbsp->lock);
- 
--	return sprintf(buf, "current mode: %d\n"
--			"possible mode values are:\n"
--			"%d - %s\n"
--			"%d - %s\n"
--			"%d - %s\n",
--			dma_op_mode,
--			MCBSP_DMA_MODE_ELEMENT, "element mode",
--			MCBSP_DMA_MODE_THRESHOLD, "threshold mode",
--			MCBSP_DMA_MODE_FRAME, "frame mode");
-+	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++) {
-+		if (dma_op_mode == i)
-+			len += sprintf(buf + len, "[%s] ", *s);
-+		else
-+			len += sprintf(buf + len, "%s ", *s);
-+	}
-+	len += sprintf(buf + len, "\n");
-+
-+	return len;
- }
- 
- static ssize_t dma_op_mode_store(struct device *dev,
-@@ -1187,26 +1193,22 @@ static ssize_t dma_op_mode_store(struct device *dev,
- 				const char *buf, size_t size)
- {
- 	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
--	unsigned long val;
--	int status;
-+	const char * const *s;
-+	int i = 0;
- 
--	status = strict_strtoul(buf, 0, &val);
--	if (status)
--		return status;
-+	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++)
-+		if (sysfs_streq(buf, *s))
-+			break;
- 
--	spin_lock_irq(&mcbsp->lock);
-+	if (i == ARRAY_SIZE(dma_op_modes))
-+		return -EINVAL;
- 
-+	spin_lock_irq(&mcbsp->lock);
- 	if (!mcbsp->free) {
- 		size = -EBUSY;
- 		goto unlock;
- 	}
--
--	if (val > MCBSP_DMA_MODE_FRAME || val < MCBSP_DMA_MODE_ELEMENT) {
--		size = -EINVAL;
--		goto unlock;
--	}
--
--	mcbsp->dma_op_mode = val;
-+	mcbsp->dma_op_mode = i;
- 
- unlock:
- 	spin_unlock_irq(&mcbsp->lock);
--- 
-1.6.3.3
+> +                /* Digidesign Mbox 2: skip altsets incompatible with device_setup
+> +                 */
+
+But there isn't actually a device_setup parameter?
+
+> +mbox2_reboot:
+> +                snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
+> +                        0x85, 0xc0, 0x0001, 0x0000, &bootresponse, 0x0012, 1000);
+> +
+> +                if (bootresponse == MBOX2_BOOT_LOADING) {
+> +                        snd_printdd("device not ready, resending boot sequence...\n");
+> +                        goto mbox2_reboot;
+> +                }
+
+This could be made a loop.  And it could run infinitely long; maybe you
+should add a timeout.  (How long does it usually need?)
+
+> +                        err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
+> +                                &dev->descriptor, sizeof(dev->descriptor));
+> +                        config = dev->actconfig;
+> +                        if (err < 0) snd_printdd("error usb_get_descriptor: %d\n", err);
+> +                        err = usb_reset_configuration(dev);
+
+Does this device change its descriptors without a reset?
+
+> +                         * 80 bb 00 = 24bit mode - S24_3BE
+> +                         * 44 ac 00 = 16bit mode?
+
+0xbb80 = 48000
+0xac44 = 44100
+
+Do the descriptors change if you change the sample rate?  Or does using
+44.1 kHz result in another altsetting?
+
+> +                snd_printdd("unknown bootresponse, ignoring device: %d\n",bootresponse);
+> +                return -ENODEV;
+> +        }
+> +        snd_printdd("Invalid firmware size: %d\n",fwsize);
+> +        return -ENODEV;
+
+snd_printdd is for debugging output, but a failure due to a new firmware
+revision should be indicated in any case.
+
+> +#ifdef MBOX2_SPDIF_IO
+
+This should be done at runtime.  This would need logic to prevent using
+analog/digital at the same time(?), and it might be necessary to
+hardcode interfaces and if numbers in find_format().
+
+> +                 * We have to make sure that the USB core looks
+> +                 * again at interface 6
+
+Why?
+
+
+Best regards,
+Clemens
