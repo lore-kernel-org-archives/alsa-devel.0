@@ -1,47 +1,37 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 3/3 v3] ASoC: OMAP: Enhance OMAP1510 DMA progress
-	software counter
-Date: Mon, 24 Aug 2009 15:50:27 +0300
-Message-ID: <20090824125026.GI7069@atomide.com>
-References: <200908101050.08074.jkrzyszt@tis.icnet.pl> <200908110107.11485.jkrzyszt@tis.icnet.pl> <200908112144.30731.jkrzyszt@tis.icnet.pl> <20090817122605.0b240ea7.jhnikula@gmail.com> <20090817100313.GA5756@rakim.wolfsonmicro.main> <4A8AAFAD.9050705@tis.icnet.pl> <20090818134540.GB24620@sirena.org.uk> <20090818195701.6f260d33.jhnikula@gmail.com>
+From: Denis Kup <dener.kup@gmail.com>
+Subject: Re: Acer Aspire 7730G support
+Date: Mon, 24 Aug 2009 17:10:10 +0400
+Message-ID: <376f0d430908240610h55c7afb8kb77a4cf2289d53b8@mail.gmail.com>
+References: <376f0d430906240509w7b8e23d4m92e3fc99fabd528@mail.gmail.com>
+	<s5heit9ajvk.wl%tiwai@suse.de>
+	<376f0d430906240941k699e494cr325f1c091a609f19@mail.gmail.com>
+	<376f0d430906241052i1e37904bo9c90b98e0dca6077@mail.gmail.com>
+	<d54969c50906241339u7a4a41cbvbc66643e794436b9@mail.gmail.com>
+	<376f0d430906241436k20912428o3cd8ea5d83b300ce@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20090818195701.6f260d33.jhnikula@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.arm.linux.org.uk" <linux-arm-kernel@lists.arm.linux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9B3AB24643
+	for <alsa-devel@alsa-project.org>;
+	Mon, 24 Aug 2009 15:10:11 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so1441344fxm.32
+	for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2009 06:10:11 -0700 (PDT)
+In-Reply-To: <376f0d430906241436k20912428o3cd8ea5d83b300ce@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Jarkko Nikula <jhnikula@gmail.com> [090818 19:55]:
-> On Tue, 18 Aug 2009 14:45:41 +0100
-> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
-> 
-> > On Tue, Aug 18, 2009 at 03:42:05PM +0200, Janusz Krzysztofik wrote:
-> > 
-> > > And now, how is the patch 1/3 supposed to get into the mainline? Whom  
-> > > should I ping from time to time to get it integrated? If not then, as  
-> > > you know for sure, applying patch 2/3 whithout 1/3 will result in ASoC  
-> > > support for OMAP1510 broken.
-> > 
-> > Normally the OMAP tree, though that's possibly a bit tricky due to the
-> > ARM tree closing early.  If Tony's OK with merging via the ALSA tree we
-> > could also apply the ARM patch there?
-> 
-> I would say that it's better to keep in Tony's hand since otherwise
-> there can be risk for DMA code being out-of-sync as there are quite
-> frequent other PM, OMAP4, errata, etc. patches coming into it.
-> 
-> Of course it means that OMAP1510 audio is broken until the patch 1/3 is
-> merged but probably patch can be merged as a fix if merge window is
-> missed.
-
-Already replied in another part of the thread, but just for the archives:
-
-Since we don't have other dma or mcbsp patches going in right now,
-let's merge these all via the alsa list so audio keeps working.
-
-Regards,
-
-Tony
+Sorry, I was very busy last two months. We don't finish with this theme.
+What about my patch?
