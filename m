@@ -1,20 +1,27 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCH 0/3] Few patches to recent OMAP McBSP and
-	ASoC changes
-Date: Mon, 24 Aug 2009 16:17:45 +0300
-Message-ID: <20090824131745.GB32701@esdhcp037198.research.nokia.com>
-References: <1251019467-11677-1-git-send-email-jhnikula@gmail.com>
-Reply-To: eduardo.valentin@nokia.com
+From: Shine Liu <shinel@foxmail.com>
+Subject: Re: [PATCH] ASoC: s3c24xx platform: Fix
+ s3c2410_dma_started called at wrong time
+Date: Mon, 24 Aug 2009 21:31:28 +0800
+Message-ID: <1251120688.3676.65.camel@shinel>
+References: <20090820121851.GB11699@sirena.org.uk>
+	<1250775480.1404.19.camel@sl>
+	<20090820145207.GA25143@rakim.wolfsonmicro.main>
+	<1250783107.1404.70.camel@sl> <20090820184714.GD5032@sirena.org.uk>
+	<1250848839.3928.6.camel@shinel>
+	<20090823102841.GA737@opensource.wolfsonmicro.com>
+	<1251027433.732.42.camel@sl>
+	<20090824101733.GA3591@rakim.wolfsonmicro.main>
+	<1251114880.3676.41.camel@shinel> <20090824120530.GA9090@sirena.org.uk>
+Reply-To: shinel@foxmail.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28459243BD
+Received: from smtpbg68.qq.com (smtpbg68.qq.com [119.147.10.227])
+	by alsa0.perex.cz (Postfix) with SMTP id 4310B243E5
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Aug 2009 15:31:49 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1251019467-11677-1-git-send-email-jhnikula@gmail.com>
+	Mon, 24 Aug 2009 15:31:51 +0200 (CEST)
+In-Reply-To: <20090824120530.GA9090@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +31,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Jarkko Nikula <jhnikula@gmail.com>
-Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 23, 2009 at 11:24:24AM +0200, Jarkko Nikula wrote:
-> Hi
-> 
-> I would like to add these tree patches to recent set:
-> 
-> [PATCHv5 00/20] OMAP ASoC changes in DMA utilization
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2009-August/020619.html
-> 
-> These are actually independent patches but probably easier to handle as with
-> the set above since some of the patches are touching both ASoC and OMAP
-> subsystems. First patch is the most important since it changes the user space
-> API for McBSP DMA operating mode selection. It would be more difficult to
-> change it later if software starts to use current numeric value based
-> operating mode selection in sysfs files.
 
+> But why are you changing the core DMA code in the first place?  The ASoC
+> drivers have split front end and DMA code but this is not the normal
+> case for a DMA client.
 
-For the other two changes (patches 02 and 03) I'm giving my ack here.
-Tested them and after running several playback/capture tasks, looks like the
-streaming was ok.
+I think your idea of the callback is very elegant and I appreciate this
+way to solve the problem so I try to add new API for the core DMA to
+achive this goal.
 
-And for the channel swapping issue, I think the thing remains the same.
-If I increase the max threshold to something closer to its maximum (0x500)
-than, channels swap quite easily. Just:
-
-# aplay -c2 -fdat -I /dev/urandom /dev/zero
-
-But that wouldn't block your two patch Jarkko. I liked this merge.
-Code looks cleaner now.
-
-> 
-> 
-> -- 
-> Jarkko
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
--- 
-Eduardo Valentin
+Well, if there are two arguments for the callback function passed though
+struct struct s3c2410_dma_client, it's also reasonable. If there are
+more arguments to pass, maybe this is not the best solution. Use a
+internal struct to wrapper more arguments into one object and pass the
+pointer is just a candidate. 
