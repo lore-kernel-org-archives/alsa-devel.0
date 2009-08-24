@@ -1,18 +1,27 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/1] sound: usb-audio: support for
- Digidesign Mbox 2
-Date: Mon, 24 Aug 2009 18:01:34 +0200
-Message-ID: <4A92B95E.9090905@ladisch.de>
-References: <4A8EBB35.2010604@gmail.com>
+From: Denis Kup <dener.kup@gmail.com>
+Subject: Re: Acer Aspire 7730G support
+Date: Mon, 24 Aug 2009 21:23:17 +0400
+Message-ID: <376f0d430908241023s14aa12cbl5a6ecc12202b5f13@mail.gmail.com>
+References: <376f0d430906240509w7b8e23d4m92e3fc99fabd528@mail.gmail.com>
+	<s5heit9ajvk.wl%tiwai@suse.de>
+	<376f0d430906240941k699e494cr325f1c091a609f19@mail.gmail.com>
+	<376f0d430906241052i1e37904bo9c90b98e0dca6077@mail.gmail.com>
+	<d54969c50906241339u7a4a41cbvbc66643e794436b9@mail.gmail.com>
+	<376f0d430906241436k20912428o3cd8ea5d83b300ce@mail.gmail.com>
+	<376f0d430908240610h55c7afb8kb77a4cf2289d53b8@mail.gmail.com>
+	<s5h3a7hpcer.wl%tiwai@suse.de>
+	<376f0d430908240857k7c03a392x187fdbb9488757d3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 76A622439A
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66DF2243AD
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Aug 2009 18:01:22 +0200 (CEST)
-In-Reply-To: <4A8EBB35.2010604@gmail.com>
+	Mon, 24 Aug 2009 19:23:20 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id e21so545469fga.21
+	for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2009 10:23:18 -0700 (PDT)
+In-Reply-To: <376f0d430908240857k7c03a392x187fdbb9488757d3@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,89 +31,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Damien Zammit <damien.zammit@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, =?ISO-8859-1?Q?Emilio_L=F3pez?= <buhitoescolar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Damien Zammit wrote:
-> S/PDIF mode works by setting the required flag
-> in usbaudio.c. I think the device can't do both simultaneously,
-> since different altsettings are required to set it.
+2009/8/24 Takashi Iwai <tiwai@suse.de>
+>
+> At Mon, 24 Aug 2009 17:10:10 +0400,
+> Denis Kup wrote:
+> >
+> > Sorry, I was very busy last two months. We don't finish with this theme.
+> > What about my patch?
+>
+> Please check with the latest sound GIT tree (or alsa-driver snapshot)
+> whether it still work and repost the patch. =A0There have been lots of
+> changes in HD-audio driver code, so an old patch might not work any
+> more.
+>
+>
+> thanks,
+>
+> Takashi
 
-Does the Windows driver allow it?
+I tested patch with alsa-driver-1.0.20.40.g13311.579.gcf341. All works
+as it should.
 
->              Remaining issues:
->                  1) Double check endianess of 24 bit capture.
+It's diff between patched version( patch_realtek_new.c ) and unpatched:
 
-This should be apparent even in low-amplitude noise.
-Do you have a hex dump of recorded data?
-
-> @@ -2441,6 +2441,12 @@ static int parse_audio_format_i_type(struct snd_usb_audio *chip, struct audiofor
->   				   fp->altsetting, sample_width, sample_bytes);
->   			break;
->   		}
-> +
-> +                /* Digidesign Mbox 2 workaround:
-> +                 * supports S24_3BE BIG ENDIAN  */
-> +                if (chip->usb_id == USB_ID(0x0dba, 0x3000))
-> +                        pcm_format = SNDRV_PCM_FORMAT_S24_3BE;
-
-Please put this into is_big_endian_format().
-
-> +                /* Digidesign Mbox 2: skip altsets incompatible with device_setup
-> +                 */
-
-But there isn't actually a device_setup parameter?
-
-> +mbox2_reboot:
-> +                snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
-> +                        0x85, 0xc0, 0x0001, 0x0000, &bootresponse, 0x0012, 1000);
-> +
-> +                if (bootresponse == MBOX2_BOOT_LOADING) {
-> +                        snd_printdd("device not ready, resending boot sequence...\n");
-> +                        goto mbox2_reboot;
-> +                }
-
-This could be made a loop.  And it could run infinitely long; maybe you
-should add a timeout.  (How long does it usually need?)
-
-> +                        err = usb_get_descriptor(dev, USB_DT_DEVICE, 0,
-> +                                &dev->descriptor, sizeof(dev->descriptor));
-> +                        config = dev->actconfig;
-> +                        if (err < 0) snd_printdd("error usb_get_descriptor: %d\n", err);
-> +                        err = usb_reset_configuration(dev);
-
-Does this device change its descriptors without a reset?
-
-> +                         * 80 bb 00 = 24bit mode - S24_3BE
-> +                         * 44 ac 00 = 16bit mode?
-
-0xbb80 = 48000
-0xac44 = 44100
-
-Do the descriptors change if you change the sample rate?  Or does using
-44.1 kHz result in another altsetting?
-
-> +                snd_printdd("unknown bootresponse, ignoring device: %d\n",bootresponse);
-> +                return -ENODEV;
-> +        }
-> +        snd_printdd("Invalid firmware size: %d\n",fwsize);
-> +        return -ENODEV;
-
-snd_printdd is for debugging output, but a failure due to a new firmware
-revision should be indicated in any case.
-
-> +#ifdef MBOX2_SPDIF_IO
-
-This should be done at runtime.  This would need logic to prevent using
-analog/digital at the same time(?), and it might be necessary to
-hardcode interfaces and if numbers in find_format().
-
-> +                 * We have to make sure that the USB core looks
-> +                 * again at interface 6
-
-Why?
-
-
-Best regards,
-Clemens
+dener@linux-wpg9:~/Documents/1> diff ./patch_realtek_new.c ./patch_realtek_=
+old.c
+223d222
+<=A0=A0=A0=A0=A0=A0 ALC888_ACER_ASPIRE_7730G,
+8341,8366d8339
+< static struct hda_verb alc888_acer_aspire_7730G_verbs[] =3D {
+<=A0=A0=A0=A0=A0=A0 {0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
+<=A0=A0=A0=A0=A0=A0 {0x17, AC_VERB_SET_CONNECT_SEL, 0x02},
+<=A0=A0=A0=A0=A0=A0 {0x15, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT =
+| AC_USRSP_EN},
+<=A0=A0=A0=A0=A0=A0 { } /* end */
+< };
+<
+< static void alc888_acer_aspire_7730G_front_automute(struct hda_codec *cod=
+ec)
+< {
+<=A0=A0=A0=A0=A0=A0 unsigned int present;
+<
+<=A0=A0=A0=A0=A0=A0 present =3D snd_hda_codec_read(codec, 0x15, 0,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 AC_VERB_GET_PIN_SENSE, 0) &
+0x80000000;
+<=A0=A0=A0=A0=A0=A0 snd_hda_codec_amp_stereo(codec, 0x14, HDA_OUTPUT, 0,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 HDA_AMP_MUTE, present ? HDA_AMP_MUTE
+: 0);
+<=A0=A0=A0=A0=A0=A0 snd_hda_codec_amp_stereo(codec, 0x17, HDA_OUTPUT, 0,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 HDA_AMP_MUTE, present ? HDA_AMP_MUTE : 0);
+< }
+<
+< static void alc888_acer_aspire_7730G_unsol_event(struct hda_codec *codec,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 unsigned int res)
+< {
+<=A0=A0=A0=A0=A0=A0 if ((res >> 26) =3D=3D ALC880_HP_EVENT)
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 alc888_acer_aspire_7730G_front_=
+automute(codec);
+< }
+<
+8558d8530
+<=A0=A0=A0=A0=A0=A0 [ALC888_ACER_ASPIRE_7730G]=A0=A0=A0=A0=A0 =3D "acer-asp=
+ire-7730g",
+8605d8576
+<=A0=A0=A0=A0=A0=A0 SND_PCI_QUIRK(0x1025, 0x0142, "Acer Aspire 7730G",
+ALC888_ACER_ASPIRE_7730G),
+9094,9107d9064
+<=A0=A0=A0=A0=A0=A0 },
+<=A0=A0=A0=A0=A0=A0 [ALC888_ACER_ASPIRE_7730G] =3D {
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .mixers =3D { alc883_3ST_6ch_mi=
+xer, alc883_chmode_mixer },
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .init_verbs =3D { alc883_init_v=
+erbs,
+alc888_acer_aspire_7730G_verbs },
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .num_dacs =3D ARRAY_SIZE(alc883=
+_dac_nids),
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .dac_nids =3D alc883_dac_nids,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .dig_out_nid =3D ALC883_DIGOUT_=
+NID,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .dig_in_nid =3D ALC883_DIGIN_NI=
+D,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .num_channel_mode =3D ARRAY_SIZ=
+E(alc883_3ST_6ch_modes),
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .channel_mode =3D alc883_3ST_6c=
+h_modes,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .need_dac_fix =3D 1,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .input_mux =3D &alc883_capture_=
+source,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .unsol_event =3D alc888_acer_as=
+pire_7730G_unsol_event,
+<=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 .init_hook =3D alc888_acer_aspi=
+re_7730G_front_automute,
