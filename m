@@ -1,17 +1,19 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH] hda: move open coded tricks into
-	get_wcaps_channels()
-Date: Mon, 24 Aug 2009 09:50:46 +0800
-Message-ID: <20090824015046.GA10025@localhost>
+From: David Favor <david@davidfavor.com>
+Subject: Re: No Sound - X-Fi CA0110 IBG - Ubuntu 910 with
+ Kernel 2.6.31-6
+Date: Sun, 23 Aug 2009 22:42:21 -0500
+Message-ID: <4A920C1D.7070403@davidfavor.com>
+References: <4A9168F8.4070102@davidfavor.com>
+	<604760770908231609j6c7245d5vc56e1ba259b9e7d3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4397524398
+Received: from smtp105.sbc.mail.mud.yahoo.com (smtp105.sbc.mail.mud.yahoo.com
+	[68.142.198.204]) by alsa0.perex.cz (Postfix) with SMTP id E3FD2244A0
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Aug 2009 03:51:16 +0200 (CEST)
-Content-Disposition: inline
+	Mon, 24 Aug 2009 05:42:24 +0200 (CEST)
+In-Reply-To: <604760770908231609j6c7245d5vc56e1ba259b9e7d3@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +23,199 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA-Devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- sound/pci/hda/hda_local.h     |   10 ++++++++++
- sound/pci/hda/hda_proc.c      |    4 +---
- sound/pci/hda/patch_atihdmi.c |    3 +--
- 3 files changed, 12 insertions(+), 5 deletions(-)
+Daniel Chen wrote:
+> On Sun, Aug 23, 2009 at 12:06 PM, David Favor<david@davidfavor.com> wrote:
+>> 2.6.31-6-generic
+> ...
+>> Codec: Creative CA0110-IBG
+>> Address: 1
+>> Function Id: 0x1
+>> Vendor Id: 0x1102000a
+>> Subsystem Id: 0x11021007
+>> Revision Id: 0x100000
+> 
+> Please try the latest alsa-driver stable snapshot.
 
---- sound-2.6.orig/sound/pci/hda/hda_local.h	2009-08-24 09:48:57.000000000 +0800
-+++ sound-2.6/sound/pci/hda/hda_local.h	2009-08-24 09:49:44.000000000 +0800
-@@ -410,6 +410,16 @@ static inline u32 get_wcaps(struct hda_c
- /* get the widget type from widget capability bits */
- #define get_wcaps_type(wcaps) (((wcaps) & AC_WCAP_TYPE) >> AC_WCAP_TYPE_SHIFT)
- 
-+static inline unsigned int get_wcaps_channels(u32 wcaps)
-+{
-+	unsigned int chans;
-+
-+	chans = (wcaps & AC_WCAP_CHAN_CNT_EXT) >> 13;
-+	chans = ((chans << 1) | 1) + 1;
-+
-+	return chans;
-+}
-+
- u32 query_amp_caps(struct hda_codec *codec, hda_nid_t nid, int direction);
- int snd_hda_override_amp_caps(struct hda_codec *codec, hda_nid_t nid, int dir,
- 			      unsigned int caps);
---- sound-2.6.orig/sound/pci/hda/hda_proc.c	2009-08-24 09:48:57.000000000 +0800
-+++ sound-2.6/sound/pci/hda/hda_proc.c	2009-08-24 09:49:44.000000000 +0800
-@@ -515,9 +515,7 @@ static void print_codec_info(struct snd_
- 		snd_iprintf(buffer, "Node 0x%02x [%s] wcaps 0x%x:", nid,
- 			    get_wid_type_name(wid_type), wid_caps);
- 		if (wid_caps & AC_WCAP_STEREO) {
--			unsigned int chans;
--			chans = (wid_caps & AC_WCAP_CHAN_CNT_EXT) >> 13;
--			chans = ((chans << 1) | 1) + 1;
-+			unsigned int chans = get_wcaps_channels(wid_caps);
- 			if (chans == 2)
- 				snd_iprintf(buffer, " Stereo");
- 			else
---- sound-2.6.orig/sound/pci/hda/patch_atihdmi.c	2009-08-24 09:48:57.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_atihdmi.c	2009-08-24 09:49:44.000000000 +0800
-@@ -141,8 +141,7 @@ static int atihdmi_build_pcms(struct hda
- 	/* FIXME: we must check ELD and change the PCM parameters dynamically
- 	 */
- 	chans = get_wcaps(codec, CVT_NID);
--	chans = (chans & AC_WCAP_CHAN_CNT_EXT) >> 13;
--	chans = ((chans << 1) | 1) + 1;
-+	chans = get_wcaps_channels(chans);
- 	info->stream[SNDRV_PCM_STREAM_PLAYBACK].channels_max = chans;
- 
- 	return 0;
+Looks like something is flaky in how status bits are cleared/read
+from the hardware by the driver code.
+
+Definitely time to move on to a card with a working driver.
+
+If I continually reboot my system, say 30-50 times or unplug power
+from the wall I get the following, which I'm guessing is suppose to
+show up always...
+
+david@home1:~/shell$ ls -ld /proc/asound/card*/codec*
+-r--r--r-- 1 root root 0 2009-08-23 22:34 /proc/asound/card0/codec#1
+
+david@home1:~/shell$ cat /proc/asound/card0/codec#1
+Codec: Creative CA0110-IBG
+Address: 1
+Function Id: 0x1
+Vendor Id: 0x1102000a
+Subsystem Id: 0x11021007
+Revision Id: 0x100000
+No Modem Function Group found
+Default PCM:
+     rates [0x160]: 44100 48000 96000
+     bits [0xa]: 16 24
+     formats [0x1]: PCM
+Default Amp-In caps: ofs=0x67, nsteps=0x73, stepsize=0x01, mute=0
+Default Amp-Out caps: ofs=0x67, nsteps=0x67, stepsize=0x01, mute=0
+GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
+Node 0x02 [Audio Output] wcaps 0x5: Stereo Amp-Out
+   Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-Out vals:  [0x00 0x00]
+   Converter: stream=4, channel=0
+Node 0x03 [Audio Output] wcaps 0x5: Stereo Amp-Out
+   Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-Out vals:  [0x00 0x00]
+   Converter: stream=4, channel=0
+Node 0x04 [Audio Output] wcaps 0x5: Stereo Amp-Out
+   Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-Out vals:  [0x00 0x00]
+   Converter: stream=4, channel=0
+Node 0x05 [Audio Output] wcaps 0x5: Stereo Amp-Out
+   Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-Out vals:  [0x00 0x00]
+   Converter: stream=4, channel=0
+Node 0x06 [Audio Output] wcaps 0x5: Stereo Amp-Out
+   Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-Out vals:  [0x67 0x67]
+   Converter: stream=4, channel=0
+Node 0x07 [Audio Output] wcaps 0x205: Stereo Digital Amp-Out
+   Amp-Out caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-Out vals:  [0x00 0x00]
+   Converter: stream=0, channel=0
+   Digital: Enabled Non-Audio Pro
+   Digital category: 0x0
+Node 0x08 [Audio Input] wcaps 0x100103: Stereo Amp-In
+   Amp-In caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-In vals:  [0x00 0x00]
+   Converter: stream=0, channel=0
+   SDI-Select: 1
+   Connection: 1
+      0x10
+Node 0x09 [Audio Input] wcaps 0x10010b: Stereo Amp-In
+   Amp-In caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-In vals:  [0x01 0x01]
+   Converter: stream=0, channel=0
+   SDI-Select: 1
+   Connection: 1
+      0x11
+Node 0x0a [Audio Input] wcaps 0x100303: Stereo Digital Amp-In
+   Amp-In caps: ofs=0x67, nsteps=0x7f, stepsize=0x01, mute=0
+   Amp-In vals:  [0x00 0x00]
+   Converter: stream=0, channel=0
+   SDI-Select: 1
+   Digital: Enabled Non-Audio Pro GenLevel
+   Digital category: 0x7f
+   Connection: 1
+      0x13
+Node 0x0b [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x80 0x80]
+   Pincap 0x00000014: OUT Detect
+   Pin Default 0x01014010: [Jack] Line Out at Ext Rear
+     Conn = 1/8, Color = Green
+     DefAssociation = 0x1, Sequence = 0x0
+   Pin-ctls: 0xc0: OUT HP
+   Unsolicited: tag=00, enabled=0
+   Connection: 1
+      0x02
+Node 0x0c [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x80 0x00]
+   Pincap 0x00000014: OUT Detect
+   Pin Default 0x01016011: [Jack] Line Out at Ext Rear
+     Conn = 1/8, Color = Orange
+     DefAssociation = 0x1, Sequence = 0x1
+   Pin-ctls: 0xc0: OUT HP
+   Unsolicited: tag=00, enabled=0
+   Connection: 1
+      0x03
+Node 0x0d [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x80 0x80]
+   Pincap 0x00000014: OUT Detect
+   Pin Default 0x01011012: [Jack] Line Out at Ext Rear
+     Conn = 1/8, Color = Black
+     DefAssociation = 0x1, Sequence = 0x2
+   Pin-ctls: 0xc0: OUT HP
+   Unsolicited: tag=00, enabled=0
+   Connection: 1
+      0x04
+Node 0x0e [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x80 0x80]
+   Pincap 0x00000014: OUT Detect
+   Pin Default 0x01012014: [Jack] Line Out at Ext Rear
+     Conn = 1/8, Color = Grey
+     DefAssociation = 0x1, Sequence = 0x4
+   Pin-ctls: 0xc0: OUT HP
+   Unsolicited: tag=00, enabled=0
+   Connection: 1
+      0x05
+Node 0x0f [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x0000001c: OUT HP Detect
+   Pin Default 0x02214020: [Jack] HP Out at Ext Front
+     Conn = 1/8, Color = Green
+     DefAssociation = 0x2, Sequence = 0x0
+   Pin-ctls: 0xc0: OUT HP
+   Unsolicited: tag=00, enabled=0
+   Connection: 1
+      0x06
+Node 0x10 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x80 0x80]
+   Pincap 0x00000024: IN Detect
+   Pin Default 0x01813030: [Jack] Line In at Ext Rear
+     Conn = 1/8, Color = Blue
+     DefAssociation = 0x3, Sequence = 0x0
+   Pin-ctls: 0x24: IN
+   Unsolicited: tag=00, enabled=0
+Node 0x11 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x80 0x80]
+   Pincap 0x00000024: IN Detect
+   Pin Default 0x02a19040: [Jack] Mic at Ext Front
+     Conn = 1/8, Color = Pink
+     DefAssociation = 0x4, Sequence = 0x0
+   Pin-ctls: 0x24: IN
+   Unsolicited: tag=00, enabled=0
+Node 0x12 [Pin Complex] wcaps 0x40038d: Stereo Digital Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x00000010: OUT
+   Pin Default 0x01452150: [Jack] SPDIF Out at Ext Rear
+     Conn = Optical, Color = Grey
+     DefAssociation = 0x5, Sequence = 0x0
+     Misc = NO_PRESENCE
+   Pin-ctls: 0xc0: OUT HP
+   Unsolicited: tag=00, enabled=0
+   Connection: 1
+      0x07
+Node 0x13 [Pin Complex] wcaps 0x40028b: Stereo Digital Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00]
+   Pincap 0x00000020: IN
+   Pin Default 0x01c51160: [Jack] SPDIF In at Ext Rear
+     Conn = Optical, Color = Black
+     DefAssociation = 0x6, Sequence = 0x0
+     Misc = NO_PRESENCE
+   Pin-ctls: 0x24: IN
+   Unsolicited: tag=00, enabled=0
+Node 0x14 [Vendor Defined Widget] wcaps 0xf00080: Mono
+   Unsolicited: tag=00, enabled=0
+
+
+
+
+-- 
+Love feeling your best ever, all day, every day?
+Click http://RadicalHealth.com for the easy way.
