@@ -1,21 +1,25 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: multiple devices or one device w/ multiple
- subdevices?
-Date: Mon, 24 Aug 2009 21:07:44 +0100
-Message-ID: <1251144464.5773.214.camel@odin>
-References: <6160a5130908241026g574282cuc878346df2ff31ef@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC][PATCH 1/3 v2] ARM: OMAP: DMA: Add support
+ for DMA channel self linking on OMAP1510
+Date: Mon, 24 Aug 2009 23:06:13 +0100
+Message-ID: <20090824220612.GB4338@sirena.org.uk>
+References: <200908101050.02530.jkrzyszt@tis.icnet.pl>
+	<200908231945.40187.jkrzyszt@tis.icnet.pl>
+	<20090823180543.GA6167@opensource.wolfsonmicro.com>
+	<200908232038.05593.jkrzyszt@tis.icnet.pl>
+	<20090823184943.GA6994@opensource.wolfsonmicro.com>
+	<20090824084920.c99c561a.jhnikula@gmail.com>
+	<20090824124902.GH7069@atomide.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f220.google.com (mail-ew0-f220.google.com
-	[209.85.219.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E8FA244BA
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 69C4224388
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 Aug 2009 22:07:49 +0200 (CEST)
-Received: by ewy20 with SMTP id 20so3056867ewy.46
-	for <alsa-devel@alsa-project.org>; Mon, 24 Aug 2009 13:07:48 -0700 (PDT)
-In-Reply-To: <6160a5130908241026g574282cuc878346df2ff31ef@mail.gmail.com>
+	Tue, 25 Aug 2009 00:06:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090824124902.GH7069@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,46 +29,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre-Louis,
+On Mon, Aug 24, 2009 at 03:49:03PM +0300, Tony Lindgren wrote:
 
-On Mon, 2009-08-24 at 12:26 -0500, pl bossart wrote:
-> Hi,
-> I have a piece of custom hardware that provides 7 independent PCM
-> outputs. This is not intended for multichannel playback, the content
-> on each output can be completely different; playback will not be
-> synchronized and will start separately. The only restriction is that
-> all outputs rely on the same baserate and share the same bitclock,
-> i.e. all the outputs work at 48kHz.
-> 
-> >From the mailling list archives, subdevices seem to be relevant when
-> doing hw mixing or when lots of streams are handled. None of this
-> applies to my case. Also it looks like PulseAudio knows nothing about
-> subdevices in its detection loop, meaning the user would need to
-> manually add some load-module commands in the PulseAudio configuration
-> files. And last but not least, I didn't see very many lines of code
-> (and no documentation) that showed how subdevices are
-> registered/handled, etc.
-> 
-> My conclusion is that multiple devices would seem like a much better
-> option. But I wanted to check with the community that I am on the
-> right track. Thanks for your feedback!
-> - P
+> > We should remember that arch/arm/plat-omap/mcbsp.c changes done via
+> > ALSA tree has been an exception and that's only for simpler procedure.
+> > McBSP is not so critical if sources goes out-of-sync but DMA is.
 
-Fwiw, I worked on a similar piece of hardware a few years back (WM9713).
-It too had a shared 48kHz clock (AC97) and 3 independent outputs. I
-found creating a single card with 3 pcms worked very well in this case
-and kept the code simple. 
+> Sorry for the delay in replying. I'm OK for these to go in via the alsa
+> tree as there are not currently other patches pending in the mcbsp or
+> dma area for omap. So I think it's better merge all the audio related
+> patches together in this case.
 
-I could independently play different audio data to each pcm with
-different start/stop times.
-
-There is some example code in the ASoC WM9713 codec driver and in
-soc-core.c
-
-HTH 
-
-Liam 
+Applied, thanks.
