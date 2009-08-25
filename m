@@ -1,24 +1,18 @@
-From: "Pedro I. Sanchez" <psanchez@fosstel.com>
-Subject: Re: ASoC: at91sam9260-PCM1808/TAS5709-based board
-	driver
-Date: Tue, 25 Aug 2009 15:46:14 -0400
-Message-ID: <4A943F86.5000601@fosstel.com>
-References: <4A7DB844.3030303@fosstel.com>	<9e4733910908090635j29db4ebn64f92c2176f3cb85@mail.gmail.com>	<9e4733910908090637g4b9eaf19ud1b46de354664df2@mail.gmail.com>	<4A81BB75.3070405@fosstel.com>	<20090811224132.GB4691@sirena.org.uk>	<4A94200D.6080707@fosstel.com>
-	<20090825182934.GA4317@sirena.org.uk>
+From: Jiri Slaby <jirislaby@gmail.com>
+Subject: [PATCH 4/4] SOUND: wm8900,
+	use uninitialized_var(fll_div)
+Date: Tue, 25 Aug 2009 22:59:37 +0200
+Message-ID: <1251233977-5819-4-git-send-email-jirislaby@gmail.com>
+References: <1251233977-5819-1-git-send-email-jirislaby@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from a2s40.a2hosting.com (a2s40.a2hosting.com [74.126.24.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6105A243AA
+Received: from server1.wserver.cz (server1.wserver.cz [82.113.45.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FF5D24442
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Aug 2009 21:46:55 +0200 (CEST)
-Received: from [207.35.173.122] (helo=[192.168.215.229])
-	by a2s40.a2hosting.com with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.69) (envelope-from <psanchez@fosstel.com>)
-	id 1Mg1yh-0001Ad-3N
-	for alsa-devel@alsa-project.org; Tue, 25 Aug 2009 15:46:47 -0400
-In-Reply-To: <20090825182934.GA4317@sirena.org.uk>
+	Tue, 25 Aug 2009 22:59:39 +0200 (CEST)
+In-Reply-To: <1251233977-5819-1-git-send-email-jirislaby@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,85 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: Jiri Slaby <jirislaby@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Tue, Aug 25, 2009 at 01:31:57PM -0400, Pedro I. Sanchez wrote:
-> 
->> The TAS5709 is a playback-slave-only device The SSC is therefore put in 
->> master mode and I can see the SSC clock signals (SCLK and LRCLK) on the 
->> scope when playing a sound file. I can also see the activity on the data 
->> line. But unfortunately, there is no sound, just a speaker Hisss when I 
->> play a file. I doubled checked all the volume levels to ensure they are 
->> not mutted.
-> 
-> Is there any control in the CODEC?  If so you should check that it is
-> set up properly.
-> 
+To avoid a wrong compiler warning, use unitialized_var(fll_div) in
+wm8900_set_fll.
 
-There are registers to mute/unmute channels and master volume. For the 
-time being I am using my pcm_prepare function to write directly to those 
-registers to ensure that they are not muted when a sound file is played.
+If fll_div members are unitialized, we return before their use due to
+error.
 
-I haven't "mastered" the definitions of sound controls in ALSA yet, I'll 
-do that later.
+Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>
+---
+ sound/soc/codecs/wm8900.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
->> However, I noticed that the duty cycle of the SSC clocks is not 50% as I 
->> would expect it to be. There seem to be much more bits on one channel 
->> than in the other (my sample file is stereo, 16 bits, 44.1 MHz). The 
->> sample clock illustrations in the TAS5709 all have the same number of 
->> bits per channel, but it doesn't say explicitly that this is mandatory. 
->>  From my understanding of the I2S spec, this is not.
-> 
->> The TAS5709 is supposed to detect the clock and data rates 
->> automatically. Do you know if this non-50% duty cycle could be the 
->> reason for the lack of sound? Is there a way to force it to be 50%?
-> 
-> If the CODEC is trying to work out what the sample and clock rates are
-> automatically then it does seem reasonable that any oddities in the
-> clocks that it's given might confuse it somehow - for example, causing
-> it to expect more bit clocks than it's actually getting which would
-> cause it to fail to clock in enough data to do a conversion.
-> 
-> I'd expect that appropriate configuration of the clock dividers for the
-> SSC it's possible to make it generate more normal looking clocks, I
-> don't think anyone ever optimised the divider configuration when the
-> AT91SAM9G20-EK was running the SSC in master mode.
-
-Indeed, as I change the dividers the duty cycle changes. But I am out of 
-logic now on how to find the right values. It seems that a high degree 
-of black magic is required to find them. This is the code that I am 
-using in the machine driver to set them up:
-
-	/* set the MCK divider for BCLK */
-	ret = snd_soc_dai_set_clkdiv(cpu_dai, ATMEL_SSC_CMR_DIV, cmr_div);
-	if (ret < 0)
-		return ret;
-
-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-		/* set the BCLK divider for DACLRC */
-		ret = snd_soc_dai_set_clkdiv(cpu_dai,
-						ATMEL_SSC_TCMR_PERIOD, period);
-	} else {
-		/* set the BCLK divider for ADCLRC */
-		ret = snd_soc_dai_set_clkdiv(cpu_dai,
-						ATMEL_SSC_RCMR_PERIOD, period);
-	}
-	if (ret < 0)
-		return ret;
-
-
-The big quest for me now is to figure out what "cmr_div" and "period" 
-have to be. They must be different for each sample rate. Any pointers 
-would be appreciated.
-
-Thanks,
-
---
-Pedro
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
+index 5e9c855..255210a 100644
+--- a/sound/soc/codecs/wm8900.c
++++ b/sound/soc/codecs/wm8900.c
+@@ -747,7 +747,7 @@ static int wm8900_set_fll(struct snd_soc_codec *codec,
+ 	int fll_id, unsigned int freq_in, unsigned int freq_out)
+ {
+ 	struct wm8900_priv *wm8900 = codec->private_data;
+-	struct _fll_div fll_div;
++	struct _fll_div uninitialized_var(fll_div);
+ 	unsigned int reg;
+ 
+ 	if (wm8900->fll_in == freq_in && wm8900->fll_out == freq_out)
+-- 
+1.6.3.3
