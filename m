@@ -1,56 +1,53 @@
 From: Jiri Slaby <jirislaby@gmail.com>
-Subject: [PATCH 4/4] SOUND: wm8900,
-	use uninitialized_var(fll_div)
-Date: Tue, 25 Aug 2009 22:59:37 +0200
-Message-ID: <1251233977-5819-4-git-send-email-jirislaby@gmail.com>
+Subject: [PATCH 3/4] SOUND: via82xx, use uninitialized_var(chip)
+Date: Tue, 25 Aug 2009 22:59:36 +0200
+Message-ID: <1251233977-5819-3-git-send-email-jirislaby@gmail.com>
 References: <1251233977-5819-1-git-send-email-jirislaby@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server1.wserver.cz (server1.wserver.cz [82.113.45.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FF5D24442
-	for <alsa-devel@alsa-project.org>;
-	Tue, 25 Aug 2009 22:59:39 +0200 (CEST)
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756215AbZHYU7i@vger.kernel.org>
 In-Reply-To: <1251233977-5819-1-git-send-email-jirislaby@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: tiwai@suse.de
-Cc: Jiri Slaby <jirislaby@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jiri Slaby <jirislaby@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-To avoid a wrong compiler warning, use unitialized_var(fll_div) in
-wm8900_set_fll.
+To avoid wrong compiler warnings, use unitialized_var(chip) in
+snd_via82xx_probe's from via82xx and via82xx_modem drivers.
 
-If fll_div members are unitialized, we return before their use due to
-error.
+'chip' is unused when unset due to retval being nonzero.
 
 Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
 Cc: Takashi Iwai <tiwai@suse.de>
 Cc: Jaroslav Kysela <perex@perex.cz>
 ---
- sound/soc/codecs/wm8900.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/pci/via82xx.c       |    2 +-
+ sound/pci/via82xx_modem.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8900.c b/sound/soc/codecs/wm8900.c
-index 5e9c855..255210a 100644
---- a/sound/soc/codecs/wm8900.c
-+++ b/sound/soc/codecs/wm8900.c
-@@ -747,7 +747,7 @@ static int wm8900_set_fll(struct snd_soc_codec *codec,
- 	int fll_id, unsigned int freq_in, unsigned int freq_out)
+diff --git a/sound/pci/via82xx.c b/sound/pci/via82xx.c
+index acfa476..0ae6224 100644
+--- a/sound/pci/via82xx.c
++++ b/sound/pci/via82xx.c
+@@ -2435,7 +2435,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
+ 				       const struct pci_device_id *pci_id)
  {
- 	struct wm8900_priv *wm8900 = codec->private_data;
--	struct _fll_div fll_div;
-+	struct _fll_div uninitialized_var(fll_div);
- 	unsigned int reg;
- 
- 	if (wm8900->fll_in == freq_in && wm8900->fll_out == freq_out)
+ 	struct snd_card *card;
+-	struct via82xx *chip;
++	struct via82xx *uninitialized_var(chip);
+ 	int chip_type = 0, card_type;
+ 	unsigned int i;
+ 	int err;
+diff --git a/sound/pci/via82xx_modem.c b/sound/pci/via82xx_modem.c
+index 47eb615..f230f5e 100644
+--- a/sound/pci/via82xx_modem.c
++++ b/sound/pci/via82xx_modem.c
+@@ -1165,7 +1165,7 @@ static int __devinit snd_via82xx_probe(struct pci_dev *pci,
+ 				       const struct pci_device_id *pci_id)
+ {
+ 	struct snd_card *card;
+-	struct via82xx_modem *chip;
++	struct via82xx_modem *uninitialized_var(chip);
+ 	int chip_type = 0, card_type;
+ 	unsigned int i;
+ 	int err;
 -- 
 1.6.3.3
