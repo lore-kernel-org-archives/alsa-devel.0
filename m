@@ -1,22 +1,22 @@
-From: Damien Zammit <damien.zammit@gmail.com>
-Subject: Re: [PATCH 1/1] sound: usb-audio: support for
-	Digidesign Mbox 2
-Date: Thu, 27 Aug 2009 13:16:51 +1000
-Message-ID: <98ec50f0908262016p53c17e32nebde7b1bbab44bfa@mail.gmail.com>
-References: <4A8EBB35.2010604@gmail.com> <4A92B95E.9090905@ladisch.de>
-	<98ec50f0908261822m3d5bb75aw347c858efef7c8cc@mail.gmail.com>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: Audio capture not working with AIC23/McBSP1 on
+ OMAP3517
+Date: Thu, 27 Aug 2009 15:07:32 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB0309E9DB24@dbde02.ent.ti.com>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB0309E9D82D@dbde02.ent.ti.com>
+	<20090826130356.GB29299@sirena.org.uk>
+	<20090826164239.a574d4ab.jhnikula@gmail.com>
+	<20090826180141.37dca666.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f220.google.com (mail-ew0-f220.google.com
-	[209.85.219.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id ECCCB24483
+Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E59524631
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 Aug 2009 05:16:51 +0200 (CEST)
-Received: by ewy20 with SMTP id 20so841778ewy.46
-	for <alsa-devel@alsa-project.org>; Wed, 26 Aug 2009 20:16:51 -0700 (PDT)
-In-Reply-To: <98ec50f0908261822m3d5bb75aw347c858efef7c8cc@mail.gmail.com>
+	Thu, 27 Aug 2009 11:37:45 +0200 (CEST)
+In-Reply-To: <20090826180141.37dca666.jhnikula@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,83 +26,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Digidesign Mbox 2:
-(altsettings & magic codes)
-----------------------------
+Thanks Jarkko, the patch works for me.
 
-Analogue I/O: 	
-Altsettings:
-	2:3 (0x03), playback 	- no sr control in desc
-	4:3 (0x85), capture @ 44.1/48
-	5:3 (0x86), capture @ 44.1/48 ---- spdif ext clock?
+I will be submitting my ASoC omap*.c file soon after making all 
+the necessary changes.
 
-Analogue I/O with S/PDIF external clock:
-Altsettings:
-	? - spdif light flashes in windows
-	
-S/PDIF I/O:
-Altsettings:
-	2:2 (0x03), playback 	- no sr control in desc
-				- spdif light flashes in linux
-	4:2 (0x85), capture  	- no sr control in desc
-				- spdif light flashes in linux
-		
-IEC1937_AC3:
-	3:6 (0x04), playback @ 44.1/48
-
-Bit & Sample rate modes:
-(Hex commands)
-- All of these modes are definitely available on the Analogue altsettings
-- Digidesign website claims SPDIF is capable of 24 bit samples,
-  assume all modes are available on SPDIF altsettings.
-
-44/16
-
-22 01 00 01 03 00 03 00
-44 ac 00
-
-22 01 00 01 85 00 03 00
-44 ac 00
-
-22 01 00 01 86 00 03 00
-44 ac 00
+Regards,
+Anuj Aggarwal
 
 
-48/16
-
-22 01 00 01 03 00 03 00
-80 bb 00
-
-22 01 00 01 85 00 03 00
-80 bb 00
-
-22 01 00 01 86 00 03 00
-80 bb 00
-
-
-44/24
-
-a2 81 00 01 03 00 03 00
-44 ac 00
-
-a2 81 00 01 85 00 03 00
-44 ac 00
-
-a2 81 00 01 86 00 03 00
-44 ac 00
-
-
-48/24
-
-a2 81 00 01 03 00 03 00
-80 bb 00
-
-a2 81 00 01 85 00 03 00
-80 bb 00
-
-a2 81 00 01 86 00 03 00
-80 bb 00
+> -----Original Message-----
+> From: Jarkko Nikula [mailto:jhnikula@gmail.com]
+> Sent: Wednesday, August 26, 2009 8:32 PM
+> To: Aggarwal, Anuj
+> Cc: Mark Brown; alsa-devel@alsa-project.org; linux-omap@vger.kernel.org
+> Subject: Re: [alsa-devel] Audio capture not working with AIC23/McBSP1 on
+> OMAP3517
+> 
+> On Wed, 26 Aug 2009 16:42:39 +0300
+> Jarkko Nikula <jhnikula@gmail.com> wrote:
+> 
+> > Those recent patches should not any effect into this since they are
+> > mostly playing with the McBSP and DMA interfacing. What comes to my
+> > mind if muxing is correct and if codec is master, this might be related
+> > to those McBSP1 FSR and CLKR setup.
+> >
+> Anuj: I think the issue is here that by default McBSP1 receiver is
+> using the CLKR and FSR pins and if those are not connected, then the
+> capture doesn't work. Can you try a patch below and add following lines
+> into your machine driver?
+> 
+> snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_CLKR_SRC_CLKX, 0,
+> SND_SOC_CLOCK_IN);
+> snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_FSR_SRC_FSX, 0,
+> SND_SOC_CLOCK_IN);
+> 
+> Patch is compile tested only, generated against mainline 2.6.31-rc7 but
+> should
+> apply to ALSA tree as well.
+> 
+> 
+> --
+> Jarkko
+> 
+> ==================== CUT HERE ====================
+> From: Jarkko Nikula <jhnikula@gmail.com>
+> Subject: [PATCH] ASoC: OMAP: Add functionality to set CLKR and FSR sources
+> in McBSP DAI
+> 
+> The McBSP1 port in OMAP3 processors (I believe OMAP2 too but I don't have
+> specifications to check it) have additional CLKR and FSR pins for McBSP1
+> receiver. Reset default is that receiver is using bit clock and frame
+> sync signal from those pins but it is possible to configure to use
+> also CLKX and FSX pins as well. In fact, other McBSP ports are doing that
+> internally that transmitter and receiver share the CLKX and FSX.
+> 
+> Add functionaly that machine drivers can set the CLKR and FSR sources by
+> using the snd_soc_dai_set_sysclk.
+> 
+> Thanks to "Aggarwal, Anuj" <anuj.aggarwal@ti.com> for reporting the issue.
+> 
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> ---
+>  sound/soc/omap/omap-mcbsp.c |   41
+> +++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/omap/omap-mcbsp.h |    4 ++++
+>  2 files changed, 45 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index a5d46a7..2ea2136 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -462,6 +462,40 @@ static int omap_mcbsp_dai_set_clks_src(struct
+> omap_mcbsp_data *mcbsp_data,
+>  	return 0;
+>  }
+> 
+> +static int omap_mcbsp_dai_set_rcvr_src(struct omap_mcbsp_data
+> *mcbsp_data,
+> +				       int clk_id)
+> +{
+> +	int sel_bit, set = 0;
+> +	u16 reg = OMAP2_CONTROL_DEVCONF0;
+> +
+> +	if (cpu_class_is_omap1())
+> +		return -EINVAL; /* TODO: Can this be implemented for OMAP1? */
+> +	if (mcbsp_data->bus_id != 0)
+> +		return -EINVAL;
+> +
+> +	switch (clk_id) {
+> +	case OMAP_MCBSP_CLKR_SRC_CLKX:
+> +		set = 1;
+> +	case OMAP_MCBSP_CLKR_SRC_CLKR:
+> +		sel_bit = 3;
+> +		break;
+> +	case OMAP_MCBSP_FSR_SRC_FSX:
+> +		set = 1;
+> +	case OMAP_MCBSP_FSR_SRC_FSR:
+> +		sel_bit = 4;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (set)
+> +		omap_ctrl_writel(omap_ctrl_readl(reg) | (1 << sel_bit), reg);
+> +	else
+> +		omap_ctrl_writel(omap_ctrl_readl(reg) & ~(1 << sel_bit), reg);
+> +
+> +	return 0;
+> +}
+> +
+>  static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+>  					 int clk_id, unsigned int freq,
+>  					 int dir)
+> @@ -484,6 +518,13 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct
+> snd_soc_dai *cpu_dai,
+>  	case OMAP_MCBSP_SYSCLK_CLKR_EXT:
+>  		regs->pcr0	|= SCLKME;
+>  		break;
+> +
+> +	case OMAP_MCBSP_CLKR_SRC_CLKR:
+> +	case OMAP_MCBSP_CLKR_SRC_CLKX:
+> +	case OMAP_MCBSP_FSR_SRC_FSR:
+> +	case OMAP_MCBSP_FSR_SRC_FSX:
+> +		err = omap_mcbsp_dai_set_rcvr_src(mcbsp_data, clk_id);
+> +		break;
+>  	default:
+>  		err = -ENODEV;
+>  	}
+> diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
+> index c8147aa..647d2f9 100644
+> --- a/sound/soc/omap/omap-mcbsp.h
+> +++ b/sound/soc/omap/omap-mcbsp.h
+> @@ -32,6 +32,10 @@ enum omap_mcbsp_clksrg_clk {
+>  	OMAP_MCBSP_SYSCLK_CLK,		/* Internal ICLK */
+>  	OMAP_MCBSP_SYSCLK_CLKX_EXT,	/* External CLKX pin */
+>  	OMAP_MCBSP_SYSCLK_CLKR_EXT,	/* External CLKR pin */
+> +	OMAP_MCBSP_CLKR_SRC_CLKR,	/* CLKR from CLKR pin */
+> +	OMAP_MCBSP_CLKR_SRC_CLKX,	/* CLKR from CLKX pin */
+> +	OMAP_MCBSP_FSR_SRC_FSR,		/* FSR from FSR pin */
+> +	OMAP_MCBSP_FSR_SRC_FSX,		/* FSR from FSX pin */
+>  };
+> 
+>  /* McBSP dividers */
+> --
+> 1.6.3.3
+> 
