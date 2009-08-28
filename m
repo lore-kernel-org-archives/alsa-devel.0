@@ -1,18 +1,28 @@
-From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
-Subject: Re: [PATCH 1/2] Davinci: DM365: Add platform device
-	for McBSP
-Date: Fri, 28 Aug 2009 14:58:11 -0600
-Message-ID: <4A9844E3.8010502@ridgerun.com>
-References: <1251489320-23859-1-git-send-email-miguel.aguilar@ridgerun.com>
+From: "Pedro I. Sanchez" <psanchez@fosstel.com>
+Subject: Re: ASoC: at91sam9260-PCM1808/TAS5709-based board
+	driver
+Date: Fri, 28 Aug 2009 17:24:59 -0400
+Message-ID: <0cd9eb01b4e167a0d3a3d96334172c58@colcan.ca>
+References: <4A7DB844.3030303@fosstel.com>
+	<9e4733910908090635j29db4ebn64f92c2176f3cb85@mail.gmail.com>
+	<9e4733910908090637g4b9eaf19ud1b46de354664df2@mail.gmail.com>
+	<4A81BB75.3070405@fosstel.com>
+	<20090811224132.GB4691@sirena.org.uk>
+	<4A94200D.6080707@fosstel.com>
+	<20090825182934.GA4317@sirena.org.uk>
+	<4A943F86.5000601@fosstel.com>
+	<20090826114458.GA14905@sirena.org.uk>
+	<47184.207.35.173.122.1251400309.squirrel@mail.colcan.ca>
+	<20090828121514.GA13478@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16227244B4
+Received: from a2s40.a2hosting.com (a2s40.a2hosting.com [74.126.24.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB88B244CA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Aug 2009 22:58:17 +0200 (CEST)
-In-Reply-To: <1251489320-23859-1-git-send-email-miguel.aguilar@ridgerun.com>
+	Fri, 28 Aug 2009 23:25:00 +0200 (CEST)
+In-Reply-To: <20090828121514.GA13478@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,158 +32,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org
-Cc: todd.fischer@ridgerun.com, diego.dompe@ridgerun.com, clark.becker@ridgerun.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Well, it turns out that the TAS5709 documentation doesn't say the whole
+story. It seems that after all the chip can only guess the incoming bit
+rates in rare occasions and I can't really rely on this. What the chip
+really needs is a MCLK signal which is a multiple of the sound file's
+sample frequency. This is a third clock line to be provided to that chip in
+addition to the regular TF (frame) and TK (bit) clocks from the SSC
+interface.
 
-See the comment below:
+Now I know that I have to output this additional clock line via one of the
+gpio pins of the SoC and therefore I have to somehow "attach" one of the
+CPU internal timers to one of the SoC gpio pins (PC6, linux gpio102 pin to
+be more exact). I have the following (borrowed) code now:
 
-miguel.aguilar@ridgerun.com wrote:
-> From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
-> 
-> 1) Registers the platform device for McBSP on DM365.
-> 2) Add platform data to DM365 EVM board file.
-> 
-> Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
-> ---
->  arch/arm/mach-davinci/board-dm365-evm.c    |    4 ++
->  arch/arm/mach-davinci/dm365.c              |   42 +++++++++++++++++++++++++++-
->  arch/arm/mach-davinci/include/mach/asp.h   |    3 ++
->  arch/arm/mach-davinci/include/mach/dm365.h |    2 +
->  4 files changed, 50 insertions(+), 1 deletions(-)
-> 
-> diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
-> index f6adf79..fd2db78 100644
-> --- a/arch/arm/mach-davinci/board-dm365-evm.c
-> +++ b/arch/arm/mach-davinci/board-dm365-evm.c
-> @@ -177,6 +177,8 @@ static struct at24_platform_data eeprom_info = {
->  	.context	= (void *)0x7f00,
->  };
->  
-> +static struct snd_platform_data dm365_evm_snd_data;
-> +
->  static struct i2c_board_info i2c_info[] = {
->  	{
->  		I2C_BOARD_INFO("dm365evm_keys", 0x25),
-> @@ -476,6 +478,8 @@ static __init void dm365_evm_init(void)
->  
->  	/* maybe setup mmc1/etc ... _after_ mmc0 */
->  	evm_init_cpld();
-> +	
-> +	dm365_init_asp(&dm365_evm_snd_data);
->  }
->  
->  static __init void dm365_evm_irq_init(void)
-> diff --git a/arch/arm/mach-davinci/dm365.c b/arch/arm/mach-davinci/dm365.c
-> index e815174..cba09b0 100644
-> --- a/arch/arm/mach-davinci/dm365.c
-> +++ b/arch/arm/mach-davinci/dm365.c
-> @@ -32,6 +32,7 @@
->  #include <mach/time.h>
->  #include <mach/serial.h>
->  #include <mach/common.h>
-> +#include <mach/asp.h>
->  
->  #include "clock.h"
->  #include "mux.h"
-> @@ -456,7 +457,7 @@ static struct davinci_clk dm365_clks[] = {
->  	CLK(NULL, "usb", &usb_clk),
->  	CLK("davinci_emac.1", NULL, &emac_clk),
->  	CLK("voice_codec", NULL, &voicecodec_clk),
-> -	CLK("soc-audio.0", NULL, &asp0_clk),
-> +	CLK("davinci-asp.0", NULL, &asp0_clk),
->  	CLK(NULL, "rto", &rto_clk),
->  	CLK(NULL, "mjcp", &mjcp_clk),
->  	CLK(NULL, NULL, NULL),
-> @@ -806,6 +807,31 @@ static struct platform_device dm365_edma_device = {
->  	.resource		= edma_resources,
->  };
->  
-> +static struct resource dm365_asp_resources[] = {
-> +	{
-> +		.start	= DAVINCI_DM365_ASP0_BASE,
-> +		.end	= DAVINCI_DM365_ASP0_BASE + SZ_8K - 1,
-> +		.flags	= IORESOURCE_MEM,
-> +	},
-> +	{
-> +		.start	= DAVINCI_DMA_ASP0_TX,
-> +		.end	= DAVINCI_DMA_ASP0_TX,
-> +		.flags	= IORESOURCE_DMA,
-> +	},
-> +	{
-> +		.start	= DAVINCI_DMA_ASP0_RX,
-> +		.end	= DAVINCI_DMA_ASP0_RX,
-> +		.flags	= IORESOURCE_DMA,
-> +	},
-> +};
-> +
-> +static struct platform_device dm365_asp_device = {
-> +	.name		= "davinci-asp",
-> +	.id		= 0,
-> +	.num_resources	= ARRAY_SIZE(dm365_asp_resources),
-> +	.resource	= dm365_asp_resources,
-> +};
-> +
->  static struct map_desc dm365_io_desc[] = {
->  	{
->  		.virtual	= IO_VIRT,
-> @@ -907,6 +933,20 @@ static struct davinci_soc_info davinci_soc_info_dm365 = {
->  	.sram_len		= SZ_32K,
->  };
->  
-> +void __init dm365_init_asp(struct snd_platform_data *pdata)
-> +{
-> +	davinci_cfg_reg(DM365_MCBSP0_BDX);
-> +	davinci_cfg_reg(DM365_MCBSP0_X);
-> +	davinci_cfg_reg(DM365_MCBSP0_BFSX);
-> +	davinci_cfg_reg(DM365_MCBSP0_BDR);
-> +	davinci_cfg_reg(DM365_MCBSP0_R);
-> +	davinci_cfg_reg(DM365_MCBSP0_BFSR);
-> +	davinci_cfg_reg(DM365_EVT2_ASP_TX);
-> +	davinci_cfg_reg(DM365_EVT3_ASP_RX);
+	/* PCK0 provides MCLK */
+	at91_set_A_periph(AT91_PIN_PC6, 0);
 
-DM365_EVT2_ASP_TX and DM365_EVT3_ASP_RX are defined but not registered in 
-dm365_pins[], so I need to resend this patch.
+How is this linking the internal pck0 timer to pin PC6? or is it?
 
-> +	dm365_asp_device.dev.platform_data = pdata;
-> +	platform_device_register(&dm365_asp_device);
-> +}
-> +
->  void __init dm365_init(void)
->  {
->  	davinci_common_init(&davinci_soc_info_dm365);
-> diff --git a/arch/arm/mach-davinci/include/mach/asp.h b/arch/arm/mach-davinci/include/mach/asp.h
-> index 18e4ce3..fbcbed0 100644
-> --- a/arch/arm/mach-davinci/include/mach/asp.h
-> +++ b/arch/arm/mach-davinci/include/mach/asp.h
-> @@ -15,6 +15,9 @@
->  #define	DAVINCI_DM646X_MCASP0_REG_BASE		0x01D01000
->  #define DAVINCI_DM646X_MCASP1_REG_BASE		0x01D01800
->  
-> +/* Bases of dm365 register banks */
-> +#define DAVINCI_DM365_ASP0_BASE	0x01D02000
-> +
->  /* Bases of da850/da830 McASP0  register banks */
->  #define DAVINCI_DA8XX_MCASP0_REG_BASE	0x01D00000
->  
-> diff --git a/arch/arm/mach-davinci/include/mach/dm365.h b/arch/arm/mach-davinci/include/mach/dm365.h
-> index 09db434..2291c0d 100644
-> --- a/arch/arm/mach-davinci/include/mach/dm365.h
-> +++ b/arch/arm/mach-davinci/include/mach/dm365.h
-> @@ -16,6 +16,7 @@
->  #include <linux/platform_device.h>
->  #include <mach/hardware.h>
->  #include <mach/emac.h>
-> +#include <mach/asp.h>
->  
->  #define DM365_EMAC_BASE			(0x01D07000)
->  #define DM365_EMAC_CNTRL_OFFSET		(0x0000)
-> @@ -25,5 +26,6 @@
->  #define DM365_EMAC_CNTRL_RAM_SIZE	(0x2000)
->  
->  void __init dm365_init(void);
-> +void __init dm365_init_asp(struct snd_platform_data *pdata);
->  
->  #endif /* __ASM_ARCH_DM365_H */
+And then I have
+
+        /*
+         * Codec MCLK is supplied by PCK0 - set it up.
+         */
+        mclk = clk_get(NULL, "pck0");
+        if (IS_ERR(mclk)) {
+                pr_err("%s: Failed to get MCLK\n", __func__);
+                ret = PTR_ERR(mclk);
+                goto err;
+        }
+
+        pllb = clk_get(NULL, "pllb");
+        if (IS_ERR(pllb)) {
+                pr_err("%s: Failed to get PLLB\n", __func__);
+                ret = PTR_ERR(pllb);
+                goto err_pllb;
+        }
+        
+        ret = clk_set_parent(mclk, pllb);
+        if (ret != 0) {
+                pr_err("%s: Failed to set MCLK parent\n", __func__);
+                goto err_parent;
+        }
+
+        clk_set_rate(mclk, 11289600);
+        clk_put(pllb);
+        pr_info("%s: MCLK rate %luHz\n", __func__, clk_get_rate(mclk));
+
+... but it prints "MCLK rate 6000000Hz". Where does the 600000 come from, I
+don't know. And certainly there is no clock on the PC6 pin :-(
+
+
+Mark, or someone, any enlightenment on how to proceed would be very much
+appreciated.
+
+Thank you,
+
+-- 
+Pedro
