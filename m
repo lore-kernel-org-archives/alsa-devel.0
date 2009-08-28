@@ -1,28 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: at91sam9260-PCM1808/TAS5709-based
-	board	driver
-Date: Fri, 28 Aug 2009 13:15:15 +0100
-Message-ID: <20090828121514.GA13478@sirena.org.uk>
-References: <4A7DB844.3030303@fosstel.com>
-	<9e4733910908090635j29db4ebn64f92c2176f3cb85@mail.gmail.com>
-	<9e4733910908090637g4b9eaf19ud1b46de354664df2@mail.gmail.com>
-	<4A81BB75.3070405@fosstel.com>
-	<20090811224132.GB4691@sirena.org.uk>
-	<4A94200D.6080707@fosstel.com>
-	<20090825182934.GA4317@sirena.org.uk>
-	<4A943F86.5000601@fosstel.com>
-	<20090826114458.GA14905@sirena.org.uk>
-	<47184.207.35.173.122.1251400309.squirrel@mail.colcan.ca>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] ASoC: OMAP: Add functionality to set CLKR and
+	FSR sources in McBSP DAI
+Date: Fri, 28 Aug 2009 15:35:35 +0300
+Message-ID: <1251462935-28373-1-git-send-email-jhnikula@gmail.com>
+References: <20090828120519.GA15915@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id BDFDA24646
+Received: from mail-ew0-f214.google.com (mail-ew0-f214.google.com
+	[209.85.219.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E84C24133
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Aug 2009 14:15:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <47184.207.35.173.122.1251400309.squirrel@mail.colcan.ca>
+	Fri, 28 Aug 2009 14:35:38 +0200 (CEST)
+Received: by ewy10 with SMTP id 10so2350543ewy.13
+	for <alsa-devel@alsa-project.org>; Fri, 28 Aug 2009 05:35:37 -0700 (PDT)
+In-Reply-To: <20090828120519.GA15915@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,20 +25,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pedro I. Sanchez" <psanchez@fosstel.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-[Please note that the standard  thing on Linux mailing lists is to do a
-reply to all.]
+The McBSP1 port in OMAP3 processors (I believe OMAP2 too but I don't have
+specifications to check it) have additional CLKR and FSR pins for McBSP1
+receiver. Reset default is that receiver is using bit clock and frame
+sync signal from those pins but it is possible to configure to use
+also CLKX and FSX pins as well. In fact, other McBSP ports are doing that
+internally that transmitter and receiver share the CLKX and FSX.
 
-On Thu, Aug 27, 2009 at 03:11:49PM -0400, Pedro I. Sanchez wrote:
+Add functionaly that machine drivers can set the CLKR and FSR sources by
+using the snd_soc_dai_set_sysclk.
 
-> question. Why is it that if I play a 24-bit encoded play the hw_params()
-> function in my driver is called with SNDRV_PCM_FORMAT_S16_LE format? Does
-> ALSA makes an on-the-fly conversion?
+Thanks to "Aggarwal, Anuj" <anuj.aggarwal@ti.com> for reporting the issue.
 
-Yes, ALSA can do on the fly format translations if required to play
-things.  This normally happens because the input format is not supported
-by the drivers.  Telling the application to use the hardware device
-directly will bypass this conversion.
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+---
+ sound/soc/omap/omap-mcbsp.c |   41 +++++++++++++++++++++++++++++++++++++++++
+ sound/soc/omap/omap-mcbsp.h |    4 ++++
+ 2 files changed, 45 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 0e173e7..3341f49 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -512,6 +512,40 @@ static int omap_mcbsp_dai_set_clks_src(struct omap_mcbsp_data *mcbsp_data,
+ 	return 0;
+ }
+ 
++static int omap_mcbsp_dai_set_rcvr_src(struct omap_mcbsp_data *mcbsp_data,
++				       int clk_id)
++{
++	int sel_bit, set = 0;
++	u16 reg = OMAP2_CONTROL_DEVCONF0;
++
++	if (cpu_class_is_omap1())
++		return -EINVAL; /* TODO: Can this be implemented for OMAP1? */
++	if (mcbsp_data->bus_id != 0)
++		return -EINVAL;
++
++	switch (clk_id) {
++	case OMAP_MCBSP_CLKR_SRC_CLKX:
++		set = 1;
++	case OMAP_MCBSP_CLKR_SRC_CLKR:
++		sel_bit = 3;
++		break;
++	case OMAP_MCBSP_FSR_SRC_FSX:
++		set = 1;
++	case OMAP_MCBSP_FSR_SRC_FSR:
++		sel_bit = 4;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	if (set)
++		omap_ctrl_writel(omap_ctrl_readl(reg) | (1 << sel_bit), reg);
++	else
++		omap_ctrl_writel(omap_ctrl_readl(reg) & ~(1 << sel_bit), reg);
++
++	return 0;
++}
++
+ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 					 int clk_id, unsigned int freq,
+ 					 int dir)
+@@ -534,6 +568,13 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	case OMAP_MCBSP_SYSCLK_CLKR_EXT:
+ 		regs->pcr0	|= SCLKME;
+ 		break;
++
++	case OMAP_MCBSP_CLKR_SRC_CLKR:
++	case OMAP_MCBSP_CLKR_SRC_CLKX:
++	case OMAP_MCBSP_FSR_SRC_FSR:
++	case OMAP_MCBSP_FSR_SRC_FSX:
++		err = omap_mcbsp_dai_set_rcvr_src(mcbsp_data, clk_id);
++		break;
+ 	default:
+ 		err = -ENODEV;
+ 	}
+diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
+index c8147aa..647d2f9 100644
+--- a/sound/soc/omap/omap-mcbsp.h
++++ b/sound/soc/omap/omap-mcbsp.h
+@@ -32,6 +32,10 @@ enum omap_mcbsp_clksrg_clk {
+ 	OMAP_MCBSP_SYSCLK_CLK,		/* Internal ICLK */
+ 	OMAP_MCBSP_SYSCLK_CLKX_EXT,	/* External CLKX pin */
+ 	OMAP_MCBSP_SYSCLK_CLKR_EXT,	/* External CLKR pin */
++	OMAP_MCBSP_CLKR_SRC_CLKR,	/* CLKR from CLKR pin */
++	OMAP_MCBSP_CLKR_SRC_CLKX,	/* CLKR from CLKX pin */
++	OMAP_MCBSP_FSR_SRC_FSR,		/* FSR from FSR pin */
++	OMAP_MCBSP_FSR_SRC_FSX,		/* FSR from FSX pin */
+ };
+ 
+ /* McBSP dividers */
+-- 
+1.6.3.3
