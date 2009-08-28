@@ -1,95 +1,60 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.32
-Date: Fri, 28 Aug 2009 14:49:49 +0100
-Message-ID: <1251467389.5039.97.camel@finisterre.sirena.org.uk>
-References: <20090823101656.GA11491@sirena.org.uk>
-	<s5hvdkeiho6.wl%tiwai@suse.de>
-	<20090823173828.GA5516@opensource.wolfsonmicro.com>
-	<200908280229.40432.marek.vasut@gmail.com>
-	(sfid-20090828_013014_083084_BA18122F)
+From: jack craig <jackc@linuxlighthouse.com>
+Subject: Skype beta better audio, but crashing after launch...
+Date: Fri, 28 Aug 2009 09:51:17 -0700
+Message-ID: <4A980B05.2010405@linuxlighthouse.com>
+Reply-To: "Community assistance, encouragement,
+	and advice for using Fedora." <fedora-list@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7CE2824366
-	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Aug 2009 15:51:42 +0200 (CEST)
-In-Reply-To: <200908280229.40432.marek.vasut@gmail.com>
-	(sfid-20090828_013014_083084_BA18122F)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Return-path: <fedora-list-bounces@redhat.com>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/fedora-list>,
+	<mailto:fedora-list-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/archives/fedora-list>
+List-Post: <mailto:fedora-list@redhat.com>
+List-Help: <mailto:fedora-list-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/fedora-list>,
+	<mailto:fedora-list-request@redhat.com?subject=subscribe>
+Sender: fedora-list-bounces@redhat.com
+Errors-To: fedora-list-bounces@redhat.com
+To: "Community assistance, encouragement,
+	and advice for using Fedora." <fedora-list@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2009-08-28 at 02:29 +0200, Marek Vasut wrote:
-> Dne Po 24. srpna 2009 09:37:16 Takashi Iwai napsal(a):
+I thought i'd start a new thread given the progress the beta provides.
+now my test sound makes a noise and my test call lanuches and stops when 
+i tell it to, BUT!
 
-> > Merging your changes into topic/asoc, then merging into master or
-> > for-next.  So, it seems conflicting with the latest upstream.
-> 
-> Those patches were made against sound-2.6 from Mark ... I assume some 
-> additional stuff was pushed into the kernel after Mark updated his tree.
+it crashes with the below.
 
-Yes, there have been changes in mainline since the last time it was
-merged up onto the ASoC branch.
+pulseaudio[3400]: resampler.c: Using float32le as working format.
+pulseaudio[3400]: resampler.c: Choosing speex quality setting 3.
+pulseaudio[3400]: source-output.c: Created output 0 "Input" on 
+alsa_input.pci_8086_24c5_sound_card_0 with sample spec s16le 1ch 16000Hz 
+and channel map mono
+pulseaudio[3400]: protocol-native.c: Final latency 199.89 ms = 99.94 ms 
++ 99.95 ms
+  pulseaudio[3400]: source.c: Assertion 'pa_cvolume_compatible(volume, 
+&s->sample_spec)' failed at pulsecore/source.c:666, function 
+pa_source_set_volume(). Aborting.
 
-> > > Marek, I suggest that you submit the patch to use IRQs against the power
-> > > tree. 
+any suggestions on fixing this ?
 
-> Where would this one be ?
+tia, jackc...
 
-MAINTAINERS says:
+-- 
+    jack craig
+       jackc@LinuxLightHouse.com
+          831-684-1375 (Office)
+             831-596-6924 (cell)
+                IM: jackcraigaptos (AIM)
 
-POWER SUPPLY CLASS/SUBSYSTEM and DRIVERS
-P:      Anton Vorontsov
-M:      cbou@mail.ru
-P:      David Woodhouse
-M:      dwmw2@infradead.org
-T:      git git://git.infradead.org/battery-2.6.git
-S:      Maintained
-F:      include/linux/power_supply.h
-F:      drivers/power/power_supply*
+_________________________________
+This email has been ClamScanned !
+     www.LinuxLightHouse.com
 
-> > > I also suggest that you submit a version of the battery platform
-> > > data changes against the power tree which avoids making the platforms
-> > > instabuggy then when that's applied submit changes to Eric to use the
-> > > new platform data, making it clear that the machine changes will need to
-> > > wait for both power and ALSA trees to be merged during the merge window.
-> > > This is the approach that's been suggested previously - it makes life
-> > > much easier if changes go through the relevant trees.
-
-> If those changes go through one tree, it'll make them consistent and avoid 
-> breakage (because if some of those changes go through the power tree, some 
-> through Erics tree ... all of those trees would be broken for some time).
-
-As previously explained these issues would be pretty much dealt with if
-you were to ensure that changing the battery driver did not require
-immediate updates to the boards. This is the standard technique used to
-do this sort of change which affects many trees and generally works
-pretty well. As things stand the arch/arm bit shouldn't be split from
-the drivers/power change to the platform data.
-
-> I rebased those patches against your tree -- sound-2.6/master -- and attached 
-> is the patch that had problems with merging (fixed version). The other patches 
-> apply fine.
-
-Please also check that the resulting branch will merge down cleanly into
--next - that's what they'll end up getting merged into.
-
-Also, I've asked you several times to stop sending multiple patches in
-one e-mail. As I've said before the fact that you are submitting patches
-like this means that they require a special manual workflow to apply.
-Have you tried using git format-patch and git send-email to send
-patches? I have suggested this to you several times without any
-response. These programs will take care of the overwhelming majority of
-the technical issues with your submissions - there are example
-configurations available for use with gmail.
+-- 
+fedora-list mailing list
+fedora-list@redhat.com
+To unsubscribe: https://www.redhat.com/mailman/listinfo/fedora-list
+Guidelines: http://fedoraproject.org/wiki/Communicate/MailingListGuidelines
