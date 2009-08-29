@@ -1,28 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: at91sam9260-PCM1808/TAS5709-based
-	board	driver
-Date: Sat, 29 Aug 2009 10:18:44 +0100
-Message-ID: <20090829091844.GA7952@sirena.org.uk>
-References: <9e4733910908090637g4b9eaf19ud1b46de354664df2@mail.gmail.com>
-	<4A81BB75.3070405@fosstel.com>
-	<20090811224132.GB4691@sirena.org.uk>
-	<4A94200D.6080707@fosstel.com>
-	<20090825182934.GA4317@sirena.org.uk>
-	<4A943F86.5000601@fosstel.com>
-	<20090826114458.GA14905@sirena.org.uk>
-	<47184.207.35.173.122.1251400309.squirrel@mail.colcan.ca>
-	<20090828121514.GA13478@sirena.org.uk>
-	<0cd9eb01b4e167a0d3a3d96334172c58@colcan.ca>
+Subject: Re: [PATCH v2 1/2] Davinci: DM365: Add platform	device
+	for McBSP
+Date: Sat, 29 Aug 2009 10:22:45 +0100
+Message-ID: <20090829092245.GB7952@sirena.org.uk>
+References: <1251498318-9490-1-git-send-email-miguel.aguilar@ridgerun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E605624503
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E63B2451E
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Aug 2009 11:18:44 +0200 (CEST)
+	Sat, 29 Aug 2009 11:22:46 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <0cd9eb01b4e167a0d3a3d96334172c58@colcan.ca>
+In-Reply-To: <1251498318-9490-1-git-send-email-miguel.aguilar@ridgerun.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,54 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pedro I. Sanchez" <psanchez@fosstel.com>
-Cc: alsa-devel@alsa-project.org
+To: miguel.aguilar@ridgerun.com
+Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 28, 2009 at 05:24:59PM -0400, Pedro I. Sanchez wrote:
+On Fri, Aug 28, 2009 at 04:25:18PM -0600, miguel.aguilar@ridgerun.com wrote:
+> From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
 
-> Well, it turns out that the TAS5709 documentation doesn't say the whole
-> story. It seems that after all the chip can only guess the incoming bit
-> rates in rare occasions and I can't really rely on this. What the chip
-> really needs is a MCLK signal which is a multiple of the sound file's
-> sample frequency. This is a third clock line to be provided to that chip in
-> addition to the regular TF (frame) and TK (bit) clocks from the SSC
-> interface.
+> 1) Registers the platform device for McBSP on dm365.
+> 2) Add platform data to DM365 EVM board file.
 
-That's fairly standard for CODECs - some have FLLs or similar which
-allow them to generate their master clock from the BCLK or LRCLK but
-most need a MCLK too.
+> Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
 
-> Now I know that I have to output this additional clock line via one of the
-> gpio pins of the SoC and therefore I have to somehow "attach" one of the
-> CPU internal timers to one of the SoC gpio pins (PC6, linux gpio102 pin to
-> be more exact). I have the following (borrowed) code now:
-
-Be careful here.  Generally CODECs require some synchronisation between
-the master clock and the other audio clocks - normally the controller
-block in the CPU will have a clock it can provide with the intention
-that it be used as a master clock.
-
-> 	/* PCK0 provides MCLK */
-> 	at91_set_A_periph(AT91_PIN_PC6, 0);
-
-> How is this linking the internal pck0 timer to pin PC6? or is it?
-
-You'd be better off asking the Atmel people on linux-arm-kernel (or some
-other Atmel-specific list if there is one) about this - it's more of a
-general question about the CPU port than an audio-specific question.
-
->         ret = clk_set_parent(mclk, pllb);
->         if (ret != 0) {
->                 pr_err("%s: Failed to set MCLK parent\n", __func__);
->                 goto err_parent;
->         }
-
->         clk_set_rate(mclk, 11289600);
->         clk_put(pllb);
->         pr_info("%s: MCLK rate %luHz\n", __func__, clk_get_rate(mclk));
-
-> ... but it prints "MCLK rate 6000000Hz". Where does the 600000 come from, I
-> don't know. And certainly there is no clock on the PC6 pin :-(
-
-It'll be derived from the parent clock plus any dividers in the way.
+Please see my comments on one of your previous versions; there are some
+patches due to be merged in 2.6.32 which change the board registration
+quite a bit.  Take a look at Kevin's temp/asoc branch to see how the
+final merge will look.
