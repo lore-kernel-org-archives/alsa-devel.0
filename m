@@ -1,18 +1,22 @@
-From: Christos Nikolaou <sv1eia@gmail.com>
-Subject: ASoC DAI on Atmel AT32AP7000
-Date: Sat, 29 Aug 2009 21:41:59 +0300
-Message-ID: <608a0a800908291141q47aa9944v47cdcdc88b306002@mail.gmail.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: ASoC updates for 2.6.32
+Date: Sat, 29 Aug 2009 21:03:50 +0200
+Message-ID: <200908292103.50815.marek.vasut@gmail.com>
+References: <20090823101656.GA11491@sirena.org.uk>
+	<200908280229.40432.marek.vasut@gmail.com>
+	<1251467389.5039.97.camel@finisterre.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id E06B424716
+Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
+	[209.85.218.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id 483722472A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 Aug 2009 20:42:00 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so2133045fxm.32
-	for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2009 11:41:59 -0700 (PDT)
+	Sat, 29 Aug 2009 21:04:18 +0200 (CEST)
+Received: by bwz25 with SMTP id 25so2132585bwz.32
+	for <alsa-devel@alsa-project.org>; Sat, 29 Aug 2009 12:04:17 -0700 (PDT)
+In-Reply-To: <1251467389.5039.97.camel@finisterre.sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +26,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Up to 2.6.28 the ASoC framework was working on AT32AP7000 Atmel platform.
-Now I try to recompile it on 2.6.31-rc8 and I get
-
-Advance Linux Sound Architecture Driver Version 1.0.20.
-No device for DAI atmel-ssc0
-No device for DAI atmel-ssc1
-No device for DAI atmel-ssc2
-
-whereas the ssc devices are properly (as in 2.6.28) initialized
-ssc ssc.0: Atmel SSC device at 0xffe1c00 (irq 10)
-ssc ssc.1: Atmel SSC device at 0xffe2000 (irq 11)
-ssc ssc.2: Atmel SSC device at 0xffe2400 (irq 12)
-
-
-It looks that this message comes from snd_soc_register_dai in soc-core.c
-
-if (!dai->dev)
-         printk(KERN_WARNING "No device for DAI %s\n", dai->name);
-
-it seems for some reason it thinks there is no device in dai->dev
-
-Unless I'm mistaken, that is being called from
-sound/soc/atmel/atmel_ssc_dai.c after some modifications done by
-broonie on these files according to
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=history;f=sound/soc/atmel;hb=adda766193ea1cf3137484a9521972d080d0b7af
-.
-
-Is there anything that can be done to rectify this?
-
-Regards,
-Christos
+RG5lIFDDoSAyOC4gc3JwbmEgMjAwOSAxNTo0OTo0OSBNYXJrIEJyb3duIG5hcHNhbChhKToKPiBP
+biBGcmksIDIwMDktMDgtMjggYXQgMDI6MjkgKzAyMDAsIE1hcmVrIFZhc3V0IHdyb3RlOgo+ID4g
+RG5lIFBvIDI0LiBzcnBuYSAyMDA5IDA5OjM3OjE2IFRha2FzaGkgSXdhaSBuYXBzYWwoYSk6Cj4g
+PiA+IE1lcmdpbmcgeW91ciBjaGFuZ2VzIGludG8gdG9waWMvYXNvYywgdGhlbiBtZXJnaW5nIGlu
+dG8gbWFzdGVyIG9yCj4gPiA+IGZvci1uZXh0LiAgU28sIGl0IHNlZW1zIGNvbmZsaWN0aW5nIHdp
+dGggdGhlIGxhdGVzdCB1cHN0cmVhbS4KPiA+Cj4gPiBUaG9zZSBwYXRjaGVzIHdlcmUgbWFkZSBh
+Z2FpbnN0IHNvdW5kLTIuNiBmcm9tIE1hcmsgLi4uIEkgYXNzdW1lIHNvbWUKPiA+IGFkZGl0aW9u
+YWwgc3R1ZmYgd2FzIHB1c2hlZCBpbnRvIHRoZSBrZXJuZWwgYWZ0ZXIgTWFyayB1cGRhdGVkIGhp
+cyB0cmVlLgo+Cj4gWWVzLCB0aGVyZSBoYXZlIGJlZW4gY2hhbmdlcyBpbiBtYWlubGluZSBzaW5j
+ZSB0aGUgbGFzdCB0aW1lIGl0IHdhcwo+IG1lcmdlZCB1cCBvbnRvIHRoZSBBU29DIGJyYW5jaC4K
+ClllcywgdGhhdCBwYXJ0IG9mIHBhdGNoIHRoYXQgY29uZmxpY3RlZCBpbiBUYWthc2hpJ3MgdHJl
+ZSB3YXMgdGhlIHNhbWUgb25lIEkgCmhhZCB0byBmaXggZm9yIHlvdXIgdHJlZSBpaXJjLgo+Cj4g
+PiA+ID4gTWFyZWssIEkgc3VnZ2VzdCB0aGF0IHlvdSBzdWJtaXQgdGhlIHBhdGNoIHRvIHVzZSBJ
+UlFzIGFnYWluc3QgdGhlCj4gPiA+ID4gcG93ZXIgdHJlZS4KPiA+Cj4gPiBXaGVyZSB3b3VsZCB0
+aGlzIG9uZSBiZSA/Cj4KPiBNQUlOVEFJTkVSUyBzYXlzOgo+Cj4gUE9XRVIgU1VQUExZIENMQVNT
+L1NVQlNZU1RFTSBhbmQgRFJJVkVSUwo+IFA6ICAgICAgQW50b24gVm9yb250c292Cj4gTTogICAg
+ICBjYm91QG1haWwucnUKPiBQOiAgICAgIERhdmlkIFdvb2Rob3VzZQo+IE06ICAgICAgZHdtdzJA
+aW5mcmFkZWFkLm9yZwo+IFQ6ICAgICAgZ2l0IGdpdDovL2dpdC5pbmZyYWRlYWQub3JnL2JhdHRl
+cnktMi42LmdpdAo+IFM6ICAgICAgTWFpbnRhaW5lZAo+IEY6ICAgICAgaW5jbHVkZS9saW51eC9w
+b3dlcl9zdXBwbHkuaAo+IEY6ICAgICAgZHJpdmVycy9wb3dlci9wb3dlcl9zdXBwbHkqCgpJIHRo
+aW5rIHlvdSBub3RpY2VkIGl0J3Mgbm90IHZlcnkgdXAtdG8tZGF0ZSAoLjMxLXJjMSwgbGFzdCB1
+cGRhdGUgZnJvbSAKMzAvMDcvMjAwOSkuCj4KPiA+ID4gPiBJIGFsc28gc3VnZ2VzdCB0aGF0IHlv
+dSBzdWJtaXQgYSB2ZXJzaW9uIG9mIHRoZSBiYXR0ZXJ5IHBsYXRmb3JtCj4gPiA+ID4gZGF0YSBj
+aGFuZ2VzIGFnYWluc3QgdGhlIHBvd2VyIHRyZWUgd2hpY2ggYXZvaWRzIG1ha2luZyB0aGUgcGxh
+dGZvcm1zCj4gPiA+ID4gaW5zdGFidWdneSB0aGVuIHdoZW4gdGhhdCdzIGFwcGxpZWQgc3VibWl0
+IGNoYW5nZXMgdG8gRXJpYyB0byB1c2UgdGhlCj4gPiA+ID4gbmV3IHBsYXRmb3JtIGRhdGEsIG1h
+a2luZyBpdCBjbGVhciB0aGF0IHRoZSBtYWNoaW5lIGNoYW5nZXMgd2lsbCBuZWVkCj4gPiA+ID4g
+dG8gd2FpdCBmb3IgYm90aCBwb3dlciBhbmQgQUxTQSB0cmVlcyB0byBiZSBtZXJnZWQgZHVyaW5n
+IHRoZSBtZXJnZQo+ID4gPiA+IHdpbmRvdy4gVGhpcyBpcyB0aGUgYXBwcm9hY2ggdGhhdCdzIGJl
+ZW4gc3VnZ2VzdGVkIHByZXZpb3VzbHkgLSBpdAo+ID4gPiA+IG1ha2VzIGxpZmUgbXVjaCBlYXNp
+ZXIgaWYgY2hhbmdlcyBnbyB0aHJvdWdoIHRoZSByZWxldmFudCB0cmVlcy4KPiA+Cj4gPiBJZiB0
+aG9zZSBjaGFuZ2VzIGdvIHRocm91Z2ggb25lIHRyZWUsIGl0J2xsIG1ha2UgdGhlbSBjb25zaXN0
+ZW50IGFuZAo+ID4gYXZvaWQgYnJlYWthZ2UgKGJlY2F1c2UgaWYgc29tZSBvZiB0aG9zZSBjaGFu
+Z2VzIGdvIHRocm91Z2ggdGhlIHBvd2VyCj4gPiB0cmVlLCBzb21lIHRocm91Z2ggRXJpY3MgdHJl
+ZSAuLi4gYWxsIG9mIHRob3NlIHRyZWVzIHdvdWxkIGJlIGJyb2tlbiBmb3IKPiA+IHNvbWUgdGlt
+ZSkuCj4KPiBBcyBwcmV2aW91c2x5IGV4cGxhaW5lZCB0aGVzZSBpc3N1ZXMgd291bGQgYmUgcHJl
+dHR5IG11Y2ggZGVhbHQgd2l0aCBpZgo+IHlvdSB3ZXJlIHRvIGVuc3VyZSB0aGF0IGNoYW5naW5n
+IHRoZSBiYXR0ZXJ5IGRyaXZlciBkaWQgbm90IHJlcXVpcmUKPiBpbW1lZGlhdGUgdXBkYXRlcyB0
+byB0aGUgYm9hcmRzLiBUaGlzIGlzIHRoZSBzdGFuZGFyZCB0ZWNobmlxdWUgdXNlZCB0bwo+IGRv
+IHRoaXMgc29ydCBvZiBjaGFuZ2Ugd2hpY2ggYWZmZWN0cyBtYW55IHRyZWVzIGFuZCBnZW5lcmFs
+bHkgd29ya3MKPiBwcmV0dHkgd2VsbC4gQXMgdGhpbmdzIHN0YW5kIHRoZSBhcmNoL2FybSBiaXQg
+c2hvdWxkbid0IGJlIHNwbGl0IGZyb20KPiB0aGUgZHJpdmVycy9wb3dlciBjaGFuZ2UgdG8gdGhl
+IHBsYXRmb3JtIGRhdGEuCj4KPiA+IEkgcmViYXNlZCB0aG9zZSBwYXRjaGVzIGFnYWluc3QgeW91
+ciB0cmVlIC0tIHNvdW5kLTIuNi9tYXN0ZXIgLS0gYW5kCj4gPiBhdHRhY2hlZCBpcyB0aGUgcGF0
+Y2ggdGhhdCBoYWQgcHJvYmxlbXMgd2l0aCBtZXJnaW5nIChmaXhlZCB2ZXJzaW9uKS4gVGhlCj4g
+PiBvdGhlciBwYXRjaGVzIGFwcGx5IGZpbmUuCj4KPiBQbGVhc2UgYWxzbyBjaGVjayB0aGF0IHRo
+ZSByZXN1bHRpbmcgYnJhbmNoIHdpbGwgbWVyZ2UgZG93biBjbGVhbmx5IGludG8KPiAtbmV4dCAt
+IHRoYXQncyB3aGF0IHRoZXknbGwgZW5kIHVwIGdldHRpbmcgbWVyZ2VkIGludG8uCj4KPiBBbHNv
+LCBJJ3ZlIGFza2VkIHlvdSBzZXZlcmFsIHRpbWVzIHRvIHN0b3Agc2VuZGluZyBtdWx0aXBsZSBw
+YXRjaGVzIGluCj4gb25lIGUtbWFpbC4KSSBtYWlsZWQgb25seSBvbmUuCj4gQXMgSSd2ZSBzYWlk
+IGJlZm9yZSB0aGUgZmFjdCB0aGF0IHlvdSBhcmUgc3VibWl0dGluZyBwYXRjaGVzCj4gbGlrZSB0
+aGlzIG1lYW5zIHRoYXQgdGhleSByZXF1aXJlIGEgc3BlY2lhbCBtYW51YWwgd29ya2Zsb3cgdG8g
+YXBwbHkuCj4gSGF2ZSB5b3UgdHJpZWQgdXNpbmcgZ2l0IGZvcm1hdC1wYXRjaCBhbmQgZ2l0IHNl
+bmQtZW1haWwgdG8gc2VuZAo+IHBhdGNoZXM/IEkgaGF2ZSBzdWdnZXN0ZWQgdGhpcyB0byB5b3Ug
+c2V2ZXJhbCB0aW1lcyB3aXRob3V0IGFueQo+IHJlc3BvbnNlLiBUaGVzZSBwcm9ncmFtcyB3aWxs
+IHRha2UgY2FyZSBvZiB0aGUgb3ZlcndoZWxtaW5nIG1ham9yaXR5IG9mCj4gdGhlIHRlY2huaWNh
+bCBpc3N1ZXMgd2l0aCB5b3VyIHN1Ym1pc3Npb25zIC0gdGhlcmUgYXJlIGV4YW1wbGUKPiBjb25m
+aWd1cmF0aW9ucyBhdmFpbGFibGUgZm9yIHVzZSB3aXRoIGdtYWlsLgpZZWFoLCBJIG5lZWQgdG8g
+bG9vayBpbnRvIHRoYXQgLi4uIGl0J3Mgbm90IGxpa2UgSW0gaWdub3JpbmcgaXQuCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
