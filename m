@@ -1,20 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC DAI on Atmel AT32AP7000
-Date: Sun, 30 Aug 2009 11:19:31 +0100
-Message-ID: <20090830101931.GA11738@sirena.org.uk>
-References: <608a0a800908291141q47aa9944v47cdcdc88b306002@mail.gmail.com>
-	<20090830100227.GB4334@sirena.org.uk>
-	<608a0a800908300313q39a8367dka94e2058c2d80ac4@mail.gmail.com>
+From: ruchi sirauthiya <ruchisirauthiya@gmail.com>
+Subject: Re: Error enabling dmix with ALSA
+Date: Sun, 30 Aug 2009 17:43:23 +0530
+Message-ID: <3a2444df0908300513u524b0336w6b00d4c51e699036@mail.gmail.com>
+References: <3a2444df0908150606p7a1cb237qad6d31dedae3ec4a@mail.gmail.com>
+	<3a2444df0908160319q790d7460l171fa52be7c29aca@mail.gmail.com>
+	<s5h3a7oc827.wl%tiwai@suse.de>
+	<3a2444df0908200032r39c57844l4d74c5b49a08e531@mail.gmail.com>
+	<s5h8whezxu7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70DF724346
+Received: from mail-iw0-f187.google.com (mail-iw0-f187.google.com
+	[209.85.223.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B7CF243E4
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 Aug 2009 12:19:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <608a0a800908300313q39a8367dka94e2058c2d80ac4@mail.gmail.com>
+	Sun, 30 Aug 2009 14:13:44 +0200 (CEST)
+Received: by iwn17 with SMTP id 17so1421210iwn.16
+	for <alsa-devel@alsa-project.org>; Sun, 30 Aug 2009 05:13:43 -0700 (PDT)
+In-Reply-To: <s5h8whezxu7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +28,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Christos Nikolaou <sv1eia@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Aug 30, 2009 at 01:13:45PM +0300, Christos Nikolaou wrote:
-> On Sun, Aug 30, 2009 at 1:02 PM, Mark
-> Brown<broonie@opensource.wolfsonmicro.com> wrote:
+Hi,
 
-> > That's fine, these are just warning messages and have no actual effect
-> > on operation.
+> That's the reason.  dmix uses the ALSA timer device to sync the
 
-> So that means these are generated but the codec driver will eventually
-> work right?
+position.
 
-Yes, they haev absolutely no effect other than to print that message.
 
-> These statements are already there and the output shown is the drivers
-> being intilized properly, this output is on the same log as the No
-> device for DAI errors, I was displaying it here to show that although
-> the devices are initialized ASoC reports an error
+> Takashi
 
-Oh, so your system is actually running fine then?
 
-> So in a feature version, the Atmel platform to ASoC glue drivers like
-> playpaq_wm8510.c will initialize the required drivers (probably
-> filling the ssc pointer I guess) but as for the time being that
-> non-initialization does not create any problems right?
+Thanks a lot, I moved /dev/timer to /dev/snd/timer and aplay (and dmix
+plugin) worked!
 
-No, the DAI should take care of this for itself - it should be
-instantiated as a regular platform device without any intervention from
-the machine driver.
+Ruchi
+
+On Thu, Aug 20, 2009 at 2:06 PM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Thu, 20 Aug 2009 13:02:20 +0530,
+> ruchi sirauthiya wrote:
+> >
+> > Hi,
+> > No, I do not have /dev/snd/timer device entry.
+>
+> That's the reason.  dmix uses the ALSA timer device to sync the
+> position.
+>
+>
+> Takashi
+>
+> >
+> > A small correction... I am using TPS65950 codec and not TWL4030.
+> >
+> > Ruchi Sirauthiya
+> >
+> >
+> > On Wed, Aug 19, 2009 at 5:46 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > At Sun, 16 Aug 2009 15:49:11 +0530,
+> > > ruchi sirauthiya wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > I am trying to enable a software mixer (using ALSA and dmix) on an
+> OMAP3
+> > > > based embedded target board using the twl4030 codec.
+> > > >
+> > > > When I try to play audio using the command,
+> > > >
+> > > > # aplay -D playback rec.wav
+> > > >
+> > > > I am getting the following error:
+> > > >
+> > > > ALSA lib pcm_direct.c:1098:(snd_pcm_direct_initialize_poll_fd) unable
+> to
+> > > > open timer 'hw:CLASS=3,SCLASS=0,CARD=0,DEV=0,SUBDEV=0'
+> > >
+> > > Do you have /dev/snd/timer device?
+> > >
+> > >
+> > > Takashi
+> > >
+> > [2  <text/html; ISO-8859-1 (quoted-printable)>]
+> >
+>
