@@ -1,19 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ALSA 1.0.21 release
-Date: Mon, 31 Aug 2009 17:16:35 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0908311716060.21152@eeebox2.perex-int.cz>
-References: <alpine.LNX.2.00.0908311614150.21152@eeebox2.perex-int.cz>
-	<s5h4oro3v3x.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0908311650590.21152@eeebox2.perex-int.cz>
+From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Subject: Re: [PATCH v2 1/2] Davinci: DM365: Add platform	device
+ for McBSP
+Date: Mon, 31 Aug 2009 09:19:37 -0600
+Message-ID: <4A9BEA09.1040103@ridgerun.com>
+References: <1251498318-9490-1-git-send-email-miguel.aguilar@ridgerun.com>
+	<20090829092245.GB7952@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9F9C724739
+Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 377EC24739
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Aug 2009 17:16:36 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.0908311650590.21152@eeebox2.perex-int.cz>
+	Mon, 31 Aug 2009 17:19:46 +0200 (CEST)
+In-Reply-To: <20090829092245.GB7952@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Aug 2009, Jaroslav Kysela wrote:
+Mark,
 
-> On Mon, 31 Aug 2009, Takashi Iwai wrote:
->
->> At Mon, 31 Aug 2009 16:17:33 +0200 (CEST),
->> Jaroslav Kysela wrote:
->>>
->>> Hello all,
->>>
->>>  	all ALSA packages except alsa-oss and alsa-firmware (no changes
->>> from 1.0.20) are available for download at http://www.alsa-project.org .
->>
->> alsa-utils-1.0.21 seems missing.  Could you upload?
->
-> It will take several minutes. It seems that older ncurses does not have
-> set_escdelay() function. Thanks for the notification.
+Should I create the patch against Kevin's temp/asoc branch?
 
-The alsa-utils package is available now.
+Thanks,
 
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Miguel Aguilar
+Mark Brown wrote:
+> On Fri, Aug 28, 2009 at 04:25:18PM -0600, miguel.aguilar@ridgerun.com wrote:
+>> From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+> 
+>> 1) Registers the platform device for McBSP on dm365.
+>> 2) Add platform data to DM365 EVM board file.
+> 
+>> Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+> 
+> Please see my comments on one of your previous versions; there are some
+> patches due to be merged in 2.6.32 which change the board registration
+> quite a bit.  Take a look at Kevin's temp/asoc branch to see how the
+> final merge will look.
