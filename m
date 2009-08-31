@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: How to support multiple audio codecs on a
-	single	board
-Date: Mon, 31 Aug 2009 14:16:06 +0100
-Message-ID: <20090831131605.GA16998@sirena.org.uk>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB0309F5A565@dbde02.ent.ti.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: ALSA 1.0.21 release
+Date: Mon, 31 Aug 2009 16:17:33 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0908311614150.21152@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E4D9E24704
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1387124722
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Aug 2009 15:16:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB0309F5A565@dbde02.ent.ti.com>
+	Mon, 31 Aug 2009 16:17:34 +0200 (CEST)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	08A0B149C57 for <alsa-devel@alsa-project.org>;
+	Mon, 31 Aug 2009 16:17:34 +0200 (CEST)
+Received: from eeebox2.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	7B847844EE for <alsa-devel@alsa-project.org>;
+	Mon, 31 Aug 2009 16:17:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Aug 31, 2009 at 02:48:55PM +0530, Aggarwal, Anuj wrote:
+Hello all,
 
-> I have 3 instances of AIC23 on my board and all are connected to 
-> different I2C/McBSP and hence can be used independently. How should 
-> I use/modify the current AIC23 driver and write the asoc board-specific
-> file to enable all the AIC23 instances? Is there any similar 
-> implementation in the audio subsystem which I can look as a reference?
+ 	all ALSA packages except alsa-oss and alsa-firmware (no changes 
+from 1.0.20) are available for download at http://www.alsa-project.org .
 
-This is not currently supported; it needs a lot of work in the core to
-allow multiple CODEC drivers to coexist.  Things like and the
-presentation of controls to user space can't really cope at the minute.
-It's a bit easier in your case since you essentially have three sound
-cards (rather than one card with multiple CODECS) but there's still a
-bit of work needed around device registration.
+Changelog is available here:
 
-For now you'll need to write three machine drivers only one of which is
-permitted to be loaded at once; once the core has this support added
-you'll then be able to load all three at once and have the three appear
-as separate sound cards.  If you'd like to contribute the core support
-that'd be excellent :)
+http://www.alsa-project.org/main/index.php/Changes_v1.0.20_v1.0.21
+
+ 					Jaroslav Kysela
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
