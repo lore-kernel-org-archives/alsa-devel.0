@@ -1,29 +1,20 @@
 From: "Pedro I. Sanchez" <psanchez@colcan.ca>
-Subject: Re: ASoC: at91sam9260-PCM1808/TAS5709-based board
-	driver
-Date: Fri, 28 Aug 2009 17:52:01 -0400
-Message-ID: <7178af639c80438b11f87e6f9d490f14@colcan.ca>
-References: <4A7DB844.3030303@fosstel.com>
-	<9e4733910908090635j29db4ebn64f92c2176f3cb85@mail.gmail.com>
-	<9e4733910908090637g4b9eaf19ud1b46de354664df2@mail.gmail.com>
-	<4A81BB75.3070405@fosstel.com>
-	<20090811224132.GB4691@sirena.org.uk>
-	<4A94200D.6080707@fosstel.com>
-	<20090825182934.GA4317@sirena.org.uk>
-	<4A943F86.5000601@fosstel.com>
-	<20090826114458.GA14905@sirena.org.uk>
-	<47184.207.35.173.122.1251400309.squirrel@mail.colcan.ca>
-	<20090828121514.GA13478@sirena.org.uk>
-	<0cd9eb01b4e167a0d3a3d96334172c58@colcan.ca>
+Subject: Re:
+ =?utf-8?q?How_to_support_multiple_audio_codecs_on_a_?=
+ =?utf-8?q?single=09board?=
+Date: Mon, 31 Aug 2009 13:25:39 -0400
+Message-ID: <2562dcd3427ea040da0cb1365c7f5184@colcan.ca>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB0309F5A565@dbde02.ent.ti.com>
+	<20090831131605.GA16998@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from a2s40.a2hosting.com (a2s40.a2hosting.com [74.126.24.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id E0A4C244EA
+	by alsa0.perex.cz (Postfix) with ESMTP id EB5D8103813
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 Aug 2009 23:52:02 +0200 (CEST)
-In-Reply-To: <0cd9eb01b4e167a0d3a3d96334172c58@colcan.ca>
+	Mon, 31 Aug 2009 19:25:41 +0200 (CEST)
+In-Reply-To: <20090831131605.GA16998@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,78 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Pedro I. Sanchez" <psanchez@fosstel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 28 Aug 2009 17:24:59 -0400, "Pedro I. Sanchez"
-<psanchez@fosstel.com> wrote:
-> Well, it turns out that the TAS5709 documentation doesn't say the whole
-> story. It seems that after all the chip can only guess the incoming bit
-> rates in rare occasions and I can't really rely on this. What the chip
-> really needs is a MCLK signal which is a multiple of the sound file's
-> sample frequency. This is a third clock line to be provided to that chip
-in
-> addition to the regular TF (frame) and TK (bit) clocks from the SSC
-> interface.
+On Mon, 31 Aug 2009 14:16:06 +0100, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Aug 31, 2009 at 02:48:55PM +0530, Aggarwal, Anuj wrote:
 > 
-> Now I know that I have to output this additional clock line via one of
-the
-> gpio pins of the SoC and therefore I have to somehow "attach" one of the
-> CPU internal timers to one of the SoC gpio pins (PC6, linux gpio102 pin
-to
-> be more exact). I have the following (borrowed) code now:
+>> I have 3 instances of AIC23 on my board and all are connected to 
+>> different I2C/McBSP and hence can be used independently. How should 
+>> I use/modify the current AIC23 driver and write the asoc board-specific
+>> file to enable all the AIC23 instances? Is there any similar 
+>> implementation in the audio subsystem which I can look as a reference?
 > 
-> 	/* PCK0 provides MCLK */
-> 	at91_set_A_periph(AT91_PIN_PC6, 0);
+> This is not currently supported; it needs a lot of work in the core to
+> allow multiple CODEC drivers to coexist.  Things like and the
+> presentation of controls to user space can't really cope at the minute.
+> It's a bit easier in your case since you essentially have three sound
+> cards (rather than one card with multiple CODECS) but there's still a
+> bit of work needed around device registration.
 > 
-> How is this linking the internal pck0 timer to pin PC6? or is it?
-> 
-> And then I have
-> 
->         /*
->          * Codec MCLK is supplied by PCK0 - set it up.
->          */
->         mclk = clk_get(NULL, "pck0");
->         if (IS_ERR(mclk)) {
->                 pr_err("%s: Failed to get MCLK\n", __func__);
->                 ret = PTR_ERR(mclk);
->                 goto err;
->         }
-> 
->         pllb = clk_get(NULL, "pllb");
->         if (IS_ERR(pllb)) {
->                 pr_err("%s: Failed to get PLLB\n", __func__);
->                 ret = PTR_ERR(pllb);
->                 goto err_pllb;
->         }
->         
->         ret = clk_set_parent(mclk, pllb);
->         if (ret != 0) {
->                 pr_err("%s: Failed to set MCLK parent\n", __func__);
->                 goto err_parent;
->         }
-> 
->         clk_set_rate(mclk, 11289600);
->         clk_put(pllb);
->         pr_info("%s: MCLK rate %luHz\n", __func__, clk_get_rate(mclk));
-> 
-> ... but it prints "MCLK rate 6000000Hz". Where does the 600000 come from,
-I
-> don't know. And certainly there is no clock on the PC6 pin :-(
-> 
-> 
-> Mark, or someone, any enlightenment on how to proceed would be very much
-> appreciated.
-> 
-> Thank you,
+> For now you'll need to write three machine drivers only one of which is
+> permitted to be loaded at once; once the core has this support added
+> you'll then be able to load all three at once and have the three appear
+> as separate sound cards.  If you'd like to contribute the core support
+> that'd be excellent :)
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-BTW, I forgot to mention that this board is just a slight variation of the
-sam9260ek eval board and I would suspect that the internal wiring of the
-SoC is pretty much the same. So understanding how to use the programmable
-clocks on the latter should give me the solution for the former.
+What if the codecs are different? My board has a playback-only device
+(TAS5709) and a capture-only device (PCM1800). Would it be OK to implement
+a single machine driver with num_dai=2? Or would you suggest to implement
+two different sound cards?
 
-Thanks,
 
 -- 
 Pedro
