@@ -1,20 +1,18 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: Re: [alsa-announce] ALSA 1.0.21 release
-Date: Tue, 1 Sep 2009 12:32:44 -0400
-Message-ID: <604760770909010932n68edcc3avbe94fabe649d7c9d@mail.gmail.com>
-References: <4A9D4A56.8060603@davidfavor.com>
+From: David Favor <david@davidfavor.com>
+Subject: SB X-Fi driver still fails with Kernel 2.6.31-9 + ALSA
+	1.0.21
+Date: Tue, 01 Sep 2009 13:01:05 -0500
+Message-ID: <4A9D6161.1050304@davidfavor.com>
+References: <200908242143.20046.esken@kde.org> <s5hvdkc5t1q.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDF1C243F3
+Received: from smtp101.sbc.mail.mud.yahoo.com (smtp101.sbc.mail.mud.yahoo.com
+	[68.142.198.200]) by alsa0.perex.cz (Postfix) with SMTP id CED4524465
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Sep 2009 18:32:44 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so163784fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2009 09:32:44 -0700 (PDT)
-In-Reply-To: <4A9D4A56.8060603@davidfavor.com>
+	Tue,  1 Sep 2009 20:01:07 +0200 (CEST)
+In-Reply-To: <s5hvdkc5t1q.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Favor <david@davidfavor.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Christian Esken <esken@kde.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 1, 2009 at 12:22 PM, David Favor<david@davidfavor.com> wrote:
-> Specifically I'm using Ubuntu Karmic (Kernel is 2.6.31-9) and I'm
-> interested in testing all the X-Fi card driver fixes which are listed
-> in the ALSA 1.0.21 release notes.
+I'm using Ubuntu + Kernel 2.6.31-9 + ALSA 1.0.21 from today.
 
-Download, extract, and compile alsa-driver-1.0.21.tar.bz2. Installing
-it will remove the existing version. You'll need to use sudo
-/sbin/alsa force-reload afterward, or reboot.
+For the X-Fi CA0110 card I have the codec stanzas are missing.
+I've built ALSA with --debug=verbose so if anyone has any idea
+what I can do to debug this problem, let me know.
 
-Karmic already carries significant fixes from alsa-lib-1.0.21.tar.bz2,
-so you're okay on that front.
+Thanks.
+_______
 
--Dan
+david@home1:~/bin$ uname -a
+Linux home1 2.6.31-9-generic #29-Ubuntu SMP Sun Aug 30 17:39:23 UTC 2009 i686 GNU/Linux
+
+david@home1:/etc/pulse$ lspci | grep -i audio
+0d:00.0 Audio device: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG
+
+david@home1:/etc/pulse$ lsmod | grep -i ca0110
+snd_hda_codec_ca0110     7772  1
+snd_hda_codec          81884  2 snd_hda_codec_ca0110,snd_hda_intel
+snd                    65092  22 
+snd_hda_codec_ca0110,snd_hda_intel,snd_hda_codec,snd_hwdep,snd_pcm_oss,snd_mixer_oss, \
+     snd_pcm,snd_seq_dummy,snd_seq_oss,snd_seq_midi,snd_rawmidi,snd_seq_midi_event,\
+     snd_seq,snd_timer,snd_seq_device
+
+david@home1:/etc/pulse$ modinfo snd-hda-codec-ca0110
+filename:       /lib/modules/2.6.31-9-generic/updates/alsa/pci/hda/snd-hda-codec-ca0110.ko
+description:    Creative CA0110-IBG HD-audio codec
+license:        GPL
+alias:          snd-hda-codec-id:1102000d
+alias:          snd-hda-codec-id:1102000b
+alias:          snd-hda-codec-id:1102000a
+srcversion:     32AD360281DB96C479EA380
+depends:        snd-hda-codec,snd
+vermagic:       2.6.31-9-generic SMP mod_unload modversions 586
+
+david@home1:~/bin$ audio-codecs
+/proc/asound/card0/codec#1
+Codec: Creative CA0110-IBG
+Address: 1
+Function Id: 0x1
+Vendor Id: 0x1102000a
+Subsystem Id: 0x11021007
+Revision Id: 0x100000
+No Modem Function Group found
+Default PCM:
+N/A
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=255, o=255, i=255, unsolicited=1, wake=1
+
+-- 
+Love feeling your best ever, all day, every day?
+Click http://RadicalHealth.com for the easy way!
