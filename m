@@ -1,19 +1,23 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: [Pkg-alsa-devel] Bug#544495: mention help key
-Date: Tue, 1 Sep 2009 21:54:47 +0200
-Message-ID: <20090901195447.GA6957@aragorn.home.lxtec.de>
-References: <87eiqrxxie.fsf@jidanni.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: DaVinci: i2s,
+	reduce underruns	by combining into 1 element
+Date: Tue, 1 Sep 2009 21:28:55 +0100
+Message-ID: <20090901202855.GA26626@opensource.wolfsonmicro.com>
+References: <1251761505-11353-1-git-send-email-troy.kisky@boundarydevices.com>
+	<20090901105302.GD18651@sirena.org.uk>
+	<4A9D669F.6090906@boundarydevices.com>
+	<20090901190327.GA25706@opensource.wolfsonmicro.com>
+	<4A9D73BE.8000901@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout0.hostsharing.net (smtpout0.hostsharing.net
-	[83.223.95.250])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9E58103858
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 687871037EA
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Sep 2009 21:54:54 +0200 (CEST)
+	Tue,  1 Sep 2009 22:28:56 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <87eiqrxxie.fsf@jidanni.org>
+In-Reply-To: <4A9D73BE.8000901@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +27,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: 544495@bugs.debian.org, control@bugs.deian.org
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: avm@ti.com, davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-forwarded 544495 alsa-devel@alsa-project.org
-tags 544495 + wontfix
-thanks
+On Tue, Sep 01, 2009 at 12:19:26PM -0700, Troy Kisky wrote:
+> Mark Brown wrote:
 
+> > Of course, the other way of looking at it is that with the channel
+> > swapping you've got guaranteed breakage - it sounds less good if you say
+> > it that way :) How common are the channel swaps?
 
-* jidanni@jidanni.org [090901 09:30 +0800]
-> Package: alsa-utils
-> Version: 1.0.20-3
-> Severity: wishlist
-> File: /usr/bin/alsamixer
-> 
-> "(Press Escape to quit)" is visible at top.
-> But how about there also saying what the "help" key is too please.
-> 
-> Yes, one might guess "h" or "?" and indeed be lucky.
-> 
-> However one might have also guessed "q" was to quit, and then need a "z"
-> to counteract the ill effects of "q".
-> 
-> However both z and q are not mentioned on the help screen, nor is the
-> man page. So please mention more....
+> I was getting a lot when playing videos. It mainly just sounded bad until I got
+> a stereo audio file with different frequency sine waves to understand better
+> what was happening. Then, you could hear the channels swap frequently, more
+> than once per second. If using sram, it is not an issue unless another device
 
-This should be addressed to the alsa developers. Distribution
-specific hacks are not useful in that case.
+So, very often under heavy load then?   That'd be consistent with simlar
+problems on other devices.  Part of the trouble here is that things like
+video can make the channel swap more noticable - if stereo is used to
+track the movement of an object on screen the channel swap would stop
+the effect tying in with the visuals.
 
-Elimar
+> is using the same TC. But sram isn't on by default either. And probably shouldn't
+> be since the newer chips don't have an underrun problem.
 
--- 
-  You cannot propel yourself forward by
-  patting yourself on the back.
+Hrm, that suggests that if it's enabled at all the default should depend
+on the chip in use?
