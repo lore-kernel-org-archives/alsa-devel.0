@@ -1,22 +1,25 @@
-From: "Pedro I. Sanchez" <psanchez@colcan.ca>
-Subject: Re:
- =?utf-8?q?How_to_support_multiple_audio_codecs_on_a_?=
- =?utf-8?q?single=3Fboard?=
-Date: Mon, 31 Aug 2009 17:14:11 -0400
-Message-ID: <d3748656ff78eacb784dc8bff550ce74@colcan.ca>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB0309F5A565@dbde02.ent.ti.com>
-	<20090831131605.GA16998@sirena.org.uk>
-	<2562dcd3427ea040da0cb1365c7f5184@colcan.ca>
-	<20090831201040.GA4079@opensource.wolfsonmicro.com>
+From: Halim Sahin <halim.sahin@freenet.de>
+Subject: Re: a11y: howto reduce latency with alsa's dmix plugin?
+Date: Tue, 01 Sep 2009 12:32:27 +0200
+Message-ID: <87fxb7j6pw.fsf@freenet.de>
+References: <20090823095517.GA27741@halim> <s5hws4k2f1k.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from a2s40.a2hosting.com (a2s40.a2hosting.com [74.126.24.200])
-	by alsa0.perex.cz (Postfix) with ESMTP id F17B8103815
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id E319F2443C
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 Aug 2009 23:14:14 +0200 (CEST)
-In-Reply-To: <20090831201040.GA4079@opensource.wolfsonmicro.com>
+	Tue,  1 Sep 2009 12:32:51 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1MiQfR-0005fa-Qn
+	for alsa-devel@alsa-project.org; Tue, 01 Sep 2009 12:32:49 +0200
+Received: from pd9e0f360.dip.t-dialin.net ([217.224.243.96])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2009 12:32:49 +0200
+Received: from halim.sahin by pd9e0f360.dip.t-dialin.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 01 Sep 2009 12:32:49 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +29,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 Aug 2009 21:10:40 +0100, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Aug 31, 2009 at 01:25:39PM -0400, Pedro I. Sanchez wrote:
->> On Mon, 31 Aug 2009 14:16:06 +0100, Mark Brown
-> 
->> > For now you'll need to write three machine drivers only one of which
-is
->> > permitted to be loaded at once; once the core has this support added
->> > you'll then be able to load all three at once and have the three
-appear
->> > as separate sound cards.  If you'd like to contribute the core support
->> > that'd be excellent :)
-> 
->> What if the codecs are different? My board has a playback-only device
->> (TAS5709) and a capture-only device (PCM1800). Would it be OK to
->> implement
->> a single machine driver with num_dai=2? Or would you suggest to
-implement
->> two different sound cards?
-> 
-> It only depends on what's idiomatic for your system - if your system
-> makes most sense with them both as part of the same sound card then do
-> that, if it makes more sense with them split into two cards then that
-> would be better.  When ASoC supports this properly it should be happy
-> with either configuration.
+On Mo, Aug 31 2009, Takashi Iwai wrote:
 
-In my case a single sound card makes more sense so I will start working on
-this approach (once I get some sound out of the TAS5709 :-) )
+> At Sun, 23 Aug 2009 09:55:18 +0000 (UTC),
+> Halim Sahin wrote:
+>> 
+>> Hello,
+>> Is there a way to reduce latency on audiocard if the dmix plugin is in
+>> use?
+>> I am asking because there is a strange problem with asistive
+>> technologies which are outputing through alsa.
+>> E. G. speech-dispatcher takes almost a half sec to stop the
+>> speech-synthesizer.
+>> If the user navigates quickly through menus, there are simultane outputs
+>> at a time.
+>> (tested with an usb logitech headset, snd-intel8x0 based card,
+>> snd-hda-intel).
+>> The same problem can be reproduced by running mplayer with alsa output
+>> driver and pressing
+>> quickly left/right arrow.
+>> You should hear several samples at a time.
+>> 
+>> Using an sblive card which doesn't use dmix doesn't have such problems.
+>> 
+>> Using the dmix plugin should audio much faster to avoid this problem.
+>
+> It's a bit hard to guess.  This could be the difference of PCM drain
+> implementation between hw and dmix, but a half second is still too
+> long.
+>
+> Could you prepare a small test case to reproduce the buggy behavior?
 
-Thanks,
+Yes that's easy:
+The following should be tested with active dmix.
+1. login to a textconsole
+2. mplayer -ao alsa your_favourite_file
+3. Press space during playback.
+
+Result: it takes about an half sec to stop the playback.
+
+The second test would be:
+1. login to a console
+2. mplayer -ao alsa:device=hw=0,0 your_file
+3. press space during playback
+Result:
+The playback stops without delay
+
+Hope you can help.
+Thanks for your response
+Kind regards
+Halim
+
+>
+> thanks,
+>
+> Takashi
 
 -- 
-Pedro
+Halim Sahin
+E-Mail:				
+halim.sahin (at) t-online.de
