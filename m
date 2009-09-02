@@ -1,55 +1,69 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: No sound with C-Media CMI8788
-Date: Wed, 02 Sep 2009 16:03:15 +0300
-Message-ID: <4A9E6D13.1020006@pardus.org.tr>
-References: <4A9E2C4C.4010108@pardus.org.tr> <4A9E36F3.2030909@ladisch.de>
-	<4A9E63D0.207@ladisch.de>
+From: "Narnakaje, Snehaprabha" <nsnehaprabha-l0cyMroinI0@public.gmane.org>
+Subject: RE: [alsa-devel] [PATCH v2 1/2] Davinci: DM365: Add platform	device
+ for McBSP
+Date: Wed, 2 Sep 2009 10:10:46 -0500
+Message-ID: <7A436F7769CA33409C6B44B358BFFF0C0129C1B1BF@dlee02.ent.ti.com>
+References: <1251498318-9490-1-git-send-email-miguel.aguilar@ridgerun.com>
+	<20090829092245.GB7952@sirena.org.uk> <4A9BEA09.1040103@ridgerun.com>
+	<20090831201119.GB4079@opensource.wolfsonmicro.com>
+	<4A9C5227.4060102@ridgerun.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id B11AC10388F
-	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Sep 2009 14:59:21 +0200 (CEST)
-In-Reply-To: <4A9E63D0.207@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <4A9C5227.4060102-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>
+Content-Language: en-US
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.omap.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: Miguel Aguilar <miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, Kevin Hilman <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>
+Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org" <clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, "todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org" <todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote On 02-09-2009 15:23:
-> I wrote:
->   
->> In the file sound/pci/oxygen/oxygen_lib.c, after the line containing
->> "subdevice = oxygen_read_eeprom(chip, 2);" (about line number 262),
->> please add the line
->>
->>   printk(KERN_INFO "subdevice ID: %04x\n", subdevice);
->>     
->
-> I think the cause for your unknown subdevice ID is that your card does
-> not have an EEPROM chip.  (This is a feature, it saves you $0.25!)
-> In this case, adding the following lines at that place should make
-> the driver load correctly:
->
-> 	if (subdevice == 0xffff)
-> 		subdevice = 0x8788;
->   
+Miguel,
 
-Hi,
+We have audio working on temp/asoc branch (patches from Chaithrika).
 
-I'll prepare patched drivers and try to get feedback from the
-complaining users. Just a side note: Both user confirms that the cards
-was working when they were using the 20081203 snapshot. So it should
-have been broken between that one and May 09.
+I think you should create the patches against temp/asoc (similar to the lat=
+est patches from Troy).
 
-Thanks!
+If you create it against temp/asoc, you will be able to test audio on DM365=
+.
+
+Thanks
+Sneha
+
+> -----Original Message-----
+> From: Miguel Aguilar [mailto:miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org]
+> Sent: Monday, August 31, 2009 6:44 PM
+> To: Kevin Hilman
+> Cc: Mark Brown; davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org; alsa-
+> devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org; Diego Dompe;
+> clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org; Narnakaje, Snehaprabha
+> Subject: Re: [alsa-devel] [PATCH v2 1/2] Davinci: DM365: Add platform
+> device for McBSP
+>=20
+> Kevin,
+>=20
+> Does the patch for DM365 EVM audio codec support should be created based
+> on the
+> current temp/asoc branch?
+>=20
+> Thanks,
+>=20
+> Miguel Aguilar
+>=20
+> Mark Brown wrote:
+> > On Mon, Aug 31, 2009 at 09:19:37AM -0600, Miguel Aguilar wrote:
+> >
+> >> Should I create the patch against Kevin's temp/asoc branch?
+> >
+> > Probably, but Kevin's the one to ask here.
+>=20
+>=20
