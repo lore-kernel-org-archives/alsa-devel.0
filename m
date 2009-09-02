@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: No sound with C-Media CMI8788
-Date: Wed, 02 Sep 2009 11:12:19 +0200
-Message-ID: <4A9E36F3.2030909@ladisch.de>
-References: <4A9E2C4C.4010108@pardus.org.tr>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: <alsa-dev> RFC for OMAP4 audio driver
+Date: Wed, 2 Sep 2009 13:01:21 +0100
+Message-ID: <20090902120120.GB4012@sirena.org.uk>
+References: <baee637d0909011927m5df3bd58uf7cabfc474f50274@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id B5BFB24567
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 16CC1245B0
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Sep 2009 11:12:27 +0200 (CEST)
-In-Reply-To: <4A9E2C4C.4010108@pardus.org.tr>
+	Wed,  2 Sep 2009 14:01:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <baee637d0909011927m5df3bd58uf7cabfc474f50274@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,27 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+To: hari n <hnagalla@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T3phbiDDh2HEn2xheWFuIHdyb3RlOgo+IEkgaGF2ZSB0d28gYnVnIHJlcG9ydHMgYWJvdXQgdGhl
-ICRzdWJqZWN0LiBPbmUgb2YgdGhlIHVzZXJzIGhhZCB0ZXN0ZWQKPiBpdCB3aXRoIDEuMC4yMSBh
-bmQgc3RpbGwgY2FuIGdldCBubyBzb3VuZCB3aXRoIGl0Lgo+IAo+IENNSTg3ODggMDAwMDowNTow
-Ni4wOiBQQ0kgSU5UIEEgLT4gTGlua1tBUEMxXSAtPiBHU0kgMTYgKGxldmVsLCBsb3cpIC0+IElS
-USAxNgo+IENNSTg3ODggMDAwMDowNTowNi4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKPiBBVjIwMCAw
-MDAwOjA1OjA2LjA6IFBDSSBJTlQgQSAtPiBMaW5rW0FQQzFdIC0+IEdTSSAxNiAobGV2ZWwsIGxv
-dykgLT4gSVJRIDE2Cj4gQVYyMDAgMDAwMDowNTowNi4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKPiBD
-TUk4Nzg3SGlGaWVyIDAwMDA6MDU6MDYuMDogUENJIElOVCBBIC0+IExpbmtbQVBDMV0gLT4gR1NJ
-IDE2IChsZXZlbCwgbG93KSAtPiBJUlEgMTYKPiBDTUk4Nzg3SGlGaWVyIDAwMDA6MDU6MDYuMDog
-UENJIElOVCBBIGRpc2FibGVkCgpUaGlzIGxvb2tzIGFzIGlmIG5vbmUgb2YgdGhlIGRyaXZlcnMg
-bWFuYWdlcyB0byBkZXRlY3QgYSB2YWxpZCBQQ0kKc3VidmVuZG9yL2RldmljZSBJRC4KCkluIHRo
-ZSBmaWxlIHNvdW5kL3BjaS9veHlnZW4vb3h5Z2VuX2xpYi5jLCBhZnRlciB0aGUgbGluZSBjb250
-YWluaW5nCiJzdWJkZXZpY2UgPSBveHlnZW5fcmVhZF9lZXByb20oY2hpcCwgMik7IiAoYWJvdXQg
-bGluZSBudW1iZXIgMjYyKSwKcGxlYXNlIGFkZCB0aGUgbGluZQoKICBwcmludGsoS0VSTl9JTkZP
-ICJzdWJkZXZpY2UgSUQ6ICUwNHhcbiIsIHN1YmRldmljZSk7CgphbmQgcmVjb21waWxlIHRoZSBk
-cml2ZXIuICBUaGlzIHNob3VsZCBzaG93IHdoYXQgdGhlIGFjdHVhbCBzdWJkZXZpY2UgSUQKb2Yg
-eW91ciBjYXJkIGlzLgoKCkJlc3QgcmVnYXJkcywKQ2xlbWVucwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, Sep 01, 2009 at 09:27:30PM -0500, hari n wrote:
+
+> Proposal
+> --------
+> On OMAP4, audio codec functionality is spread between ABE of OMAP4
+> and the companion analog audio chip. The interface between the ABE
+> and Phoenix audio chip is proprietary McPDM interface. The proposal
+> is to combine both ABE and Phoenix into a codec driver. OMAP4 ABE
+
+Combining the two seems like it's asking for trouble further along the
+line.  While it's likely that a lot of board designs will use the
+reference design combination of devices there will inevitably be some
+systems that want to do something different for whatever reason.  If
+that affects the connections between the two parts of the system then
+there will be problems for a unified driver.
+
+Otherwise the rest of your design looks good.
+
+> sound/soc/codecs/abe-twl6030.c: This is the codec driver interface
+>    file for OMAP4 audio. It defines the codec DAIs for the HIFI,
+>    voice and Vibra subdevices. Handles the configuration of Phoenix
+>    companion chip using i2c control interface. Handles the
+>    initialization and configuration of ABE. All codec related widget
+>    controls are also handled in this file. Both, digital (ABE) and
+>    analog (twl6030) widgets will be contained in this same driver.
+
+Having the ABE as a CODEC does seem like a sensible approach - indeed,
+there are a number of audio hub CODECs on the market with a very similar
+feature set to the ABE.
+
+> Questions
+> ---------
+> How to handle routing of digital audio from ABE to external devices
+> like Bluetooth/FM connectivity devices which are usually connected
+> using McBSP interfaces?. In these scenarios, we need another DAI
+> between the ABE (platform codec) and an external codec.
+
+> ABE(platform Codec (Digital) -----> Phoenix audio codec
+>                                |
+>                                |
+>                    +--> BT/FM codec
+
+This is the sort of issue I'm talking about above which is helped by
+explicitly representing all the DAIs in the system.  With the DAIs
+visible it should just become a case of hooking up the links between the
+devices in the usual ASoC fashion.
