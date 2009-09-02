@@ -1,69 +1,193 @@
-From: "Narnakaje, Snehaprabha" <nsnehaprabha-l0cyMroinI0@public.gmane.org>
-Subject: RE: [alsa-devel] [PATCH v2 1/2] Davinci: DM365: Add platform	device
- for McBSP
-Date: Wed, 2 Sep 2009 10:10:46 -0500
-Message-ID: <7A436F7769CA33409C6B44B358BFFF0C0129C1B1BF@dlee02.ent.ti.com>
-References: <1251498318-9490-1-git-send-email-miguel.aguilar@ridgerun.com>
-	<20090829092245.GB7952@sirena.org.uk> <4A9BEA09.1040103@ridgerun.com>
-	<20090831201119.GB4079@opensource.wolfsonmicro.com>
-	<4A9C5227.4060102@ridgerun.com>
+From: miguel.aguilar@ridgerun.com
+Subject: [PATCH v3 1/2] Davinci: DM365: Add platform device for
+	McBSP
+Date: Wed,  2 Sep 2009 09:14:47 -0600
+Message-ID: <1251904487-7618-1-git-send-email-miguel.aguilar@ridgerun.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <4A9C5227.4060102-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.omap.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Miguel Aguilar <miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, Kevin Hilman <khilman-1D3HCaltpLuhEniVeURVKkEOCMrvLtNR@public.gmane.org>
-Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org" <clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, "todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org" <todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DADF24633
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 Sep 2009 17:14:53 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org
+Cc: Miguel Aguilar <miguel.aguilar@ridgerun.com>, todd.fischer@ridgerun.com, diego.dompe@ridgerun.com, clark.becker@ridgerun.com, nsnehaprabha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Miguel,
+From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
 
-We have audio working on temp/asoc branch (patches from Chaithrika).
+1) Registers the platform device for McBSP on dm365.
+2) Add platform data to DM365 EVM board file.
+3) Set i2c address for audio codec at DM365 EVM board file.
 
-I think you should create the patches against temp/asoc (similar to the lat=
-est patches from Troy).
+Note: This patch was created based on temp/asoc branch
 
-If you create it against temp/asoc, you will be able to test audio on DM365=
-.
+Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+---
+ arch/arm/mach-davinci/board-dm365-evm.c    |    7 ++++
+ arch/arm/mach-davinci/dm365.c              |   45 +++++++++++++++++++++++++++-
+ arch/arm/mach-davinci/include/mach/asp.h   |    3 ++
+ arch/arm/mach-davinci/include/mach/dm365.h |    2 +
+ 4 files changed, 56 insertions(+), 1 deletions(-)
 
-Thanks
-Sneha
-
-> -----Original Message-----
-> From: Miguel Aguilar [mailto:miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org]
-> Sent: Monday, August 31, 2009 6:44 PM
-> To: Kevin Hilman
-> Cc: Mark Brown; davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org; alsa-
-> devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org; Diego Dompe;
-> clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org; Narnakaje, Snehaprabha
-> Subject: Re: [alsa-devel] [PATCH v2 1/2] Davinci: DM365: Add platform
-> device for McBSP
->=20
-> Kevin,
->=20
-> Does the patch for DM365 EVM audio codec support should be created based
-> on the
-> current temp/asoc branch?
->=20
-> Thanks,
->=20
-> Miguel Aguilar
->=20
-> Mark Brown wrote:
-> > On Mon, Aug 31, 2009 at 09:19:37AM -0600, Miguel Aguilar wrote:
-> >
-> >> Should I create the patch against Kevin's temp/asoc branch?
-> >
-> > Probably, but Kevin's the one to ask here.
->=20
->=20
+diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
+index f6adf79..77f815c 100644
+--- a/arch/arm/mach-davinci/board-dm365-evm.c
++++ b/arch/arm/mach-davinci/board-dm365-evm.c
+@@ -177,6 +177,8 @@ static struct at24_platform_data eeprom_info = {
+ 	.context	= (void *)0x7f00,
+ };
+ 
++static struct snd_platform_data dm365_evm_snd_data;
++
+ static struct i2c_board_info i2c_info[] = {
+ 	{
+ 		I2C_BOARD_INFO("dm365evm_keys", 0x25),
+@@ -185,6 +187,9 @@ static struct i2c_board_info i2c_info[] = {
+ 		I2C_BOARD_INFO("24c256", 0x50),
+ 		.platform_data	= &eeprom_info,
+ 	},
++	{
++		I2C_BOARD_INFO("tlv320aic3x", 0x18),
++	},
+ };
+ 
+ static struct davinci_i2c_platform_data i2c_pdata = {
+@@ -476,6 +481,8 @@ static __init void dm365_evm_init(void)
+ 
+ 	/* maybe setup mmc1/etc ... _after_ mmc0 */
+ 	evm_init_cpld();
++
++	dm365_init_asp(&dm365_evm_snd_data);
+ }
+ 
+ static __init void dm365_evm_irq_init(void)
+diff --git a/arch/arm/mach-davinci/dm365.c b/arch/arm/mach-davinci/dm365.c
+index e815174..c8bff14 100644
+--- a/arch/arm/mach-davinci/dm365.c
++++ b/arch/arm/mach-davinci/dm365.c
+@@ -32,6 +32,7 @@
+ #include <mach/time.h>
+ #include <mach/serial.h>
+ #include <mach/common.h>
++#include <mach/asp.h>
+ 
+ #include "clock.h"
+ #include "mux.h"
+@@ -456,7 +457,7 @@ static struct davinci_clk dm365_clks[] = {
+ 	CLK(NULL, "usb", &usb_clk),
+ 	CLK("davinci_emac.1", NULL, &emac_clk),
+ 	CLK("voice_codec", NULL, &voicecodec_clk),
+-	CLK("soc-audio.0", NULL, &asp0_clk),
++	CLK("davinci-asp.0", NULL, &asp0_clk),
+ 	CLK(NULL, "rto", &rto_clk),
+ 	CLK(NULL, "mjcp", &mjcp_clk),
+ 	CLK(NULL, NULL, NULL),
+@@ -603,6 +604,9 @@ INT_CFG(DM365,  INT_IMX1_ENABLE,     24,    1,    1,     false)
+ INT_CFG(DM365,  INT_IMX1_DISABLE,    24,    1,    0,     false)
+ INT_CFG(DM365,  INT_NSF_ENABLE,      25,    1,    1,     false)
+ INT_CFG(DM365,  INT_NSF_DISABLE,     25,    1,    0,     false)
++
++EVT_CFG(DM365,	EVT2_ASP_TX,         0,     1,    0,     false)
++EVT_CFG(DM365,	EVT3_ASP_RX,         1,     1,    0,     false)
+ #endif
+ };
+ 
+@@ -806,6 +810,31 @@ static struct platform_device dm365_edma_device = {
+ 	.resource		= edma_resources,
+ };
+ 
++static struct resource dm365_asp_resources[] = {
++	{
++		.start	= DAVINCI_DM365_ASP0_BASE,
++		.end	= DAVINCI_DM365_ASP0_BASE + SZ_8K - 1,
++		.flags	= IORESOURCE_MEM,
++	},
++	{
++		.start	= DAVINCI_DMA_ASP0_TX,
++		.end	= DAVINCI_DMA_ASP0_TX,
++		.flags	= IORESOURCE_DMA,
++	},
++	{
++		.start	= DAVINCI_DMA_ASP0_RX,
++		.end	= DAVINCI_DMA_ASP0_RX,
++		.flags	= IORESOURCE_DMA,
++	},
++};
++
++static struct platform_device dm365_asp_device = {
++	.name		= "davinci-asp",
++	.id		= 0,
++	.num_resources	= ARRAY_SIZE(dm365_asp_resources),
++	.resource	= dm365_asp_resources,
++};
++
+ static struct map_desc dm365_io_desc[] = {
+ 	{
+ 		.virtual	= IO_VIRT,
+@@ -907,6 +936,20 @@ static struct davinci_soc_info davinci_soc_info_dm365 = {
+ 	.sram_len		= SZ_32K,
+ };
+ 
++void __init dm365_init_asp(struct snd_platform_data *pdata)
++{
++	davinci_cfg_reg(DM365_MCBSP0_BDX);
++	davinci_cfg_reg(DM365_MCBSP0_X);
++	davinci_cfg_reg(DM365_MCBSP0_BFSX);
++	davinci_cfg_reg(DM365_MCBSP0_BDR);
++	davinci_cfg_reg(DM365_MCBSP0_R);
++	davinci_cfg_reg(DM365_MCBSP0_BFSR);
++	davinci_cfg_reg(DM365_EVT2_ASP_TX);
++	davinci_cfg_reg(DM365_EVT3_ASP_RX);
++	dm365_asp_device.dev.platform_data = pdata;
++	platform_device_register(&dm365_asp_device);
++}
++
+ void __init dm365_init(void)
+ {
+ 	davinci_common_init(&davinci_soc_info_dm365);
+diff --git a/arch/arm/mach-davinci/include/mach/asp.h b/arch/arm/mach-davinci/include/mach/asp.h
+index 18e4ce3..fef12b9 100644
+--- a/arch/arm/mach-davinci/include/mach/asp.h
++++ b/arch/arm/mach-davinci/include/mach/asp.h
+@@ -11,6 +11,9 @@
+ #define DAVINCI_ASP0_BASE	0x01E02000
+ #define DAVINCI_ASP1_BASE	0x01E04000
+ 
++/* Bases of dm365 register banks */
++#define DAVINCI_DM365_ASP0_BASE	0x01D02000
++
+ /* Bases of dm646x register banks */
+ #define	DAVINCI_DM646X_MCASP0_REG_BASE		0x01D01000
+ #define DAVINCI_DM646X_MCASP1_REG_BASE		0x01D01800
+diff --git a/arch/arm/mach-davinci/include/mach/dm365.h b/arch/arm/mach-davinci/include/mach/dm365.h
+index 09db434..2291c0d 100644
+--- a/arch/arm/mach-davinci/include/mach/dm365.h
++++ b/arch/arm/mach-davinci/include/mach/dm365.h
+@@ -16,6 +16,7 @@
+ #include <linux/platform_device.h>
+ #include <mach/hardware.h>
+ #include <mach/emac.h>
++#include <mach/asp.h>
+ 
+ #define DM365_EMAC_BASE			(0x01D07000)
+ #define DM365_EMAC_CNTRL_OFFSET		(0x0000)
+@@ -25,5 +26,6 @@
+ #define DM365_EMAC_CNTRL_RAM_SIZE	(0x2000)
+ 
+ void __init dm365_init(void);
++void __init dm365_init_asp(struct snd_platform_data *pdata);
+ 
+ #endif /* __ASM_ARCH_DM365_H */
+-- 
+1.6.0.4
