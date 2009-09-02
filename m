@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: <alsa-dev> RFC for OMAP4 audio driver
-Date: Wed, 2 Sep 2009 13:01:21 +0100
-Message-ID: <20090902120120.GB4012@sirena.org.uk>
-References: <baee637d0909011927m5df3bd58uf7cabfc474f50274@mail.gmail.com>
+From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
+	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
+Subject: Alsa on HP Pavilion dv6-1225ee audio problems
+Date: Wed, 2 Sep 2009 15:03:17 +0300
+Message-ID: <200909021503.17373.munzirtaha@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16CC1245B0
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 15194103800
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Sep 2009 14:01:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <baee637d0909011927m5df3bd58uf7cabfc474f50274@mail.gmail.com>
+	Wed,  2 Sep 2009 14:03:21 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so737336fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 02 Sep 2009 05:03:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,53 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: hari n <hnagalla@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 01, 2009 at 09:27:30PM -0500, hari n wrote:
+Hi sirs,
+I bought this
+http://h10010.www1.hp.com/wwpc/me/en/ho/WF06b/321957-321957-3329744-64354-64354-3872814-3982366.html
+and found the audio is not working and thankfully gnubien on #alsa pointed me 
+to manually add
+snd-hda-intel: model=hp-hdx
+which really made the sound come out of the speakers though the laptop is not 
+hdx series. Now when I plug the headset the Speakers are still playing (no 
+auto sensoring?) and I had to mute them manually which could be a feature or a 
+bug depending on how you look at it.
 
-> Proposal
-> --------
-> On OMAP4, audio codec functionality is spread between ABE of OMAP4
-> and the companion analog audio chip. The interface between the ABE
-> and Phoenix audio chip is proprietary McPDM interface. The proposal
-> is to combine both ABE and Phoenix into a codec driver. OMAP4 ABE
+alsa-info.sh:
+http://www.alsa-project.org/db/?f=dcbcc7d98ffceb95cd7491aed02064fba337bfa7
 
-Combining the two seems like it's asking for trouble further along the
-line.  While it's likely that a lot of board designs will use the
-reference design combination of devices there will inevitably be some
-systems that want to do something different for whatever reason.  If
-that affects the connections between the two parts of the system then
-there will be problems for a unified driver.
+I hope this would help you properly support this nice laptop out of the box.
 
-Otherwise the rest of your design looks good.
-
-> sound/soc/codecs/abe-twl6030.c: This is the codec driver interface
->    file for OMAP4 audio. It defines the codec DAIs for the HIFI,
->    voice and Vibra subdevices. Handles the configuration of Phoenix
->    companion chip using i2c control interface. Handles the
->    initialization and configuration of ABE. All codec related widget
->    controls are also handled in this file. Both, digital (ABE) and
->    analog (twl6030) widgets will be contained in this same driver.
-
-Having the ABE as a CODEC does seem like a sensible approach - indeed,
-there are a number of audio hub CODECs on the market with a very similar
-feature set to the ABE.
-
-> Questions
-> ---------
-> How to handle routing of digital audio from ABE to external devices
-> like Bluetooth/FM connectivity devices which are usually connected
-> using McBSP interfaces?. In these scenarios, we need another DAI
-> between the ABE (platform codec) and an external codec.
-
-> ABE(platform Codec (Digital) -----> Phoenix audio codec
->                                |
->                                |
->                    +--> BT/FM codec
-
-This is the sort of issue I'm talking about above which is helped by
-explicitly representing all the DAIs in the system.  With the DAIs
-visible it should just become a case of hooking up the links between the
-devices in the usual ASoC fashion.
+-- 
+Munzir Taha
+Telecommunications and Electronics Engineer
+Master CIW Designer, ICDL, MOUS, Linux+, LPI, SCSA
+Riyadh, SA
