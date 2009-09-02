@@ -1,21 +1,18 @@
-From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
-Subject: Re: snd_dummy on Centos - Redhat
-Date: Wed, 2 Sep 2009 18:33:59 +0200
-Message-ID: <7c5010d60909020933n47381069uacadd656aa98e8e8@mail.gmail.com>
-References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
-	<4A9E9CB7.8040809@ladisch.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: No sound with C-Media CMI8788
+Date: Wed, 02 Sep 2009 18:37:19 +0200
+Message-ID: <4A9E9F3F.7090503@ladisch.de>
+References: <4A9E2C4C.4010108@pardus.org.tr> <4A9E36F3.2030909@ladisch.de>
+	<4A9E63D0.207@ladisch.de> <4A9E9BEC.4080205@pardus.org.tr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26C7A10389A
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id AD71F10389E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Sep 2009 18:34:08 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so950397fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 02 Sep 2009 09:34:07 -0700 (PDT)
-In-Reply-To: <4A9E9CB7.8040809@ladisch.de>
+	Wed,  2 Sep 2009 18:37:23 +0200 (CEST)
+In-Reply-To: <4A9E9BEC.4080205@pardus.org.tr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In centos is 1000HZ, in the kernels I compiled is 100HZ
-
-On Wed, Sep 2, 2009 at 6:26 PM, Clemens Ladisch<clemens@ladisch.de> wrote:
-> Giovanni Maruzzelli wrote:
->> ...
->> So, it's a specific problem of incompatibility between snd-dummy and
->> the kernel of Centos 5.2 and 5.3 (same kernels as in RHEL5).
->
-> What's the value of CONFIG_HZ in those and your kernels?
->
->
-> Best regards,
-> Clemens
->
+T3phbiDDh2HEn2xheWFuIHdyb3RlOgo+IENsZW1lbnMgTGFkaXNjaCB3cm90ZToKPiA+IAlpZiAo
+c3ViZGV2aWNlID09IDB4ZmZmZikKPiA+IAkJc3ViZGV2aWNlID0gMHg4Nzg4Owo+IAo+IE9rYXks
+IHRoYXQgd29ya2VkLgoKQXBwbGllZCwgc2hvdWxkIHNvb24gYXBwZWFyIGluIHRoZSBzdGFibGUg
+Mi42LjMwLngga2VybmVsLgoKPiBCdXQgSSBhc3N1bWUgdGhhdCB0aGlzIGlzIGEgZGV2aWNlIHNw
+ZWNpZmljIHNvbHV0aW9uIHJpZ2h0PwoKSWYgdGhlIENNSTg3ODggY2hpcCBkb2VzIG5vdCBmaW5k
+IGFuIEVFUFJPTSwgaXQgcmVwb3J0cyB0aGUgZGVmYXVsdCBJRC4KCj4gSWYgdGhlcmUgYXJlIG90
+aGVyIGNhcmRzIHdpdGhvdXQgYW4gRUVQUk9NIGNoaXAsIGZvcmNpbmcgdGhlbSB0bwo+IDB4ODc4
+OCBzaG91bGRuJ3QgbWFrZSBzZW5zZT8KClRoZSBXaW5kb3dzIGRyaXZlciB0cmVhdHMgc3VjaCBh
+IGNhcmQgYXMgdGhlIHJlZmVyZW5jZSBkZXNpZ24uICBPbmx5CnN1Y2ggY2FyZHMgY2FuIG9taXQg
+dGhlIEVFUFJPTSBhbmQgZXhwZWN0IHRvIGJlIHRyZWF0ZWQgY29ycmVjdGx5LgoKCkJlc3QgcmVn
+YXJkcywKQ2xlbWVucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
