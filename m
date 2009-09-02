@@ -1,18 +1,18 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: Re: <alsa-dev> RFC for OMAP4 audio driver
-Date: Wed, 2 Sep 2009 20:55:16 -0500
-Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E80FDEDAA@dlee04.ent.ti.com>
-References: <baee637d0909011927m5df3bd58uf7cabfc474f50274@mail.gmail.com>
-	<20090902120120.GB4012@sirena.org.uk>
+From: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
+Subject: Re: [PATCH v3 2/2] ASoC: Davinci: Add audio codec
+ support for DM365 EVM
+Date: Wed, 2 Sep 2009 15:16:49 -0500
+Message-ID: <7A436F7769CA33409C6B44B358BFFF0C0129C1B661__25220.9329898053$1251957695$gmane$org@dlee02.ent.ti.com>
+References: <1251904514-7661-1-git-send-email-miguel.aguilar@ridgerun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3415244B7
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3F4B81037FF
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Sep 2009 03:55:25 +0200 (CEST)
-In-Reply-To: <20090902120120.GB4012@sirena.org.uk>
+	Wed,  2 Sep 2009 22:16:56 +0200 (CEST)
+In-Reply-To: <1251904514-7661-1-git-send-email-miguel.aguilar@ridgerun.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,72 +23,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, hari n <hnagalla@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "miguel.aguilar@ridgerun.com" <miguel.aguilar@ridgerun.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, alsa-devel@alsa-projec
+Cc: "todd.fischer@ridgerun.com" <todd.fischer@ridgerun.com>, "diego.dompe@ridgerun.com" <diego.dompe@ridgerun.com>, "clark.becker@ridgerun.com" <clark.becker@ridgerun.com>
 List-Id: alsa-devel@alsa-project.org
 
-> > Proposal
-> > --------
-> > On OMAP4, audio codec functionality is spread between ABE 
-> of OMAP4 and 
-> > the companion analog audio chip. The interface between the ABE and 
-> > Phoenix audio chip is proprietary McPDM interface. The 
-> proposal is to 
-> > combine both ABE and Phoenix into a codec driver. OMAP4 ABE
-> 
-> Combining the two seems like it's asking for trouble further 
-> along the line.  While it's likely that a lot of board 
-> designs will use the reference design combination of devices 
-> there will inevitably be some systems that want to do 
-> something different for whatever reason.  If that affects the 
-> connections between the two parts of the system then there 
-> will be problems for a unified driver.
-> 
-> Otherwise the rest of your design looks good.
-> 
-> > sound/soc/codecs/abe-twl6030.c: This is the codec driver interface
-> >    file for OMAP4 audio. It defines the codec DAIs for the HIFI,
-> >    voice and Vibra subdevices. Handles the configuration of Phoenix
-> >    companion chip using i2c control interface. Handles the
-> >    initialization and configuration of ABE. All codec related widget
-> >    controls are also handled in this file. Both, digital (ABE) and
-> >    analog (twl6030) widgets will be contained in this same driver.
-> 
-> Having the ABE as a CODEC does seem like a sensible approach 
-> - indeed, there are a number of audio hub CODECs on the 
-> market with a very similar feature set to the ABE.
+Miguel,
 
-Mark,
+The patch looks good, verified it on DM365 EVM.
 
-I'm not familiar with the concept of an audio hub, but is it
-something like a codec that can have 'slave' codecs connected to
-it (like in cascade fashion)?
-Do we have any audio hub CODEC already in SoC to use as a
-reference?
+Just a minor comment below -
 
-> > Questions
-> > ---------
-> > How to handle routing of digital audio from ABE to external devices 
-> > like Bluetooth/FM connectivity devices which are usually connected 
-> > using McBSP interfaces?. In these scenarios, we need another DAI 
-> > between the ABE (platform codec) and an external codec.
+Thanks
+Sneha
+
+> -----Original Message-----
+> From: miguel.aguilar@ridgerun.com [mailto:miguel.aguilar@ridgerun.com]
+> Sent: Wednesday, September 02, 2009 11:15 AM
+> To: davinci-linux-open-source@linux.davincidsp.com; alsa-devel@alsa-
+> project.org
+> Cc: todd.fischer@ridgerun.com; diego.dompe@ridgerun.com;
+> clark.becker@ridgerun.com; Narnakaje, Snehaprabha; Miguel Aguilar
+> Subject: [PATCH v3 2/2] ASoC: Davinci: Add audio codec support for DM365
+> EVM
 > 
-> > ABE(platform Codec (Digital) -----> Phoenix audio codec
-> >                                |
-> >                                |
-> >                    +--> BT/FM codec
+> From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
 > 
-> This is the sort of issue I'm talking about above which is 
-> helped by explicitly representing all the DAIs in the system. 
->  With the DAIs visible it should just become a case of 
-> hooking up the links between the devices in the usual ASoC fashion.
+> This patch enables tlv320aic3101 support on DM365 EVM and
+> it was tested on DM365 EVM rev c.
+> 
+> Note: this patch was created based on temp/asoc branch.
+> 
+> Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+> ---
+>  sound/soc/davinci/Kconfig       |    8 ++++++++
+>  sound/soc/davinci/Makefile      |    1 +
+>  sound/soc/davinci/davinci-evm.c |   21 ++++++++++++++++++++-
+>  3 files changed, 29 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
+> index 4dfd4ad..0bf835b 100644
+> --- a/sound/soc/davinci/Kconfig
+> +++ b/sound/soc/davinci/Kconfig
+> @@ -22,6 +22,14 @@ config SND_DAVINCI_SOC_EVM
+>  	  Say Y if you want to add support for SoC audio on TI
+>  	  DaVinci DM6446 or DM355 EVM platforms.
+> 
+> +config  SND_DM365_SOC_EVM
+> +	tristate "SoC Audio support for DaVinci DM365 EVM"
+> +	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DM365_EVM
+> +	select SND_DAVINCI_SOC_I2S
+> +	select SND_SOC_TLV320AIC3X
+> +	help
+> +	  Say Y if you want to add support for SoC audio on TI
+> +
 
-If the ABE is considered as a separate CODEC, then it should have
-its own DAIs for the connection with the processor, even it the
-codec itself resides in the processor. What about the client CODECs?
-They will also have their DAIs which should be connected to the
-physical outputs of ABE (McPDM, McBSP, ...), and that confuses me.
-AFAIK, SoC allows to have multiple CODECs attached to the same
-processor, but not a CODEC connected to the output of another CODEC.
+Do you really need a separate Kconfig option for DM365? Can we re-use the SND_DAVINCI_SOC_EVM for DM6446, DM355 and DM365?
 
--Misa
+
+>  config  SND_DM6467_SOC_EVM
+>  	tristate "SoC Audio support for DaVinci DM6467 EVM"
+>  	depends on SND_DAVINCI_SOC && MACH_DAVINCI_DM6467_EVM
+> diff --git a/sound/soc/davinci/Makefile b/sound/soc/davinci/Makefile
+> index a6939d7..21a8e64 100644
+> --- a/sound/soc/davinci/Makefile
+> +++ b/sound/soc/davinci/Makefile
+> @@ -12,6 +12,7 @@ snd-soc-evm-objs := davinci-evm.o
+>  snd-soc-sffsdr-objs := davinci-sffsdr.o
+> 
+>  obj-$(CONFIG_SND_DAVINCI_SOC_EVM) += snd-soc-evm.o
+> +obj-$(CONFIG_SND_DM365_SOC_EVM) += snd-soc-evm.o
+>  obj-$(CONFIG_SND_DM6467_SOC_EVM) += snd-soc-evm.o
+>  obj-$(CONFIG_SND_DA830_SOC_EVM) += snd-soc-evm.o
+>  obj-$(CONFIG_SND_DA850_SOC_EVM) += snd-soc-evm.o
+> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-
+> evm.c
+> index 67414f6..d636d1a 100644
+> --- a/sound/soc/davinci/davinci-evm.c
+> +++ b/sound/soc/davinci/davinci-evm.c
+> @@ -45,7 +45,8 @@ static int evm_hw_params(struct snd_pcm_substream
+> *substream,
+>  	unsigned sysclk;
+> 
+>  	/* ASP1 on DM355 EVM is clocked by an external oscillator */
+> -	if (machine_is_davinci_dm355_evm() ||
+> machine_is_davinci_dm6467_evm())
+> +	if (machine_is_davinci_dm355_evm() ||
+> machine_is_davinci_dm6467_evm()
+> +	    || machine_is_davinci_dm365_evm())
+>  		sysclk = 27000000;
+> 
+>  	/* ASP0 in DM6446 EVM is clocked by U55, as configured by
+> @@ -184,6 +185,14 @@ static struct snd_soc_card snd_soc_card_evm = {
+>  	.num_links = 1,
+>  };
+> 
+> +/* davinci dm365 evm audio machine driver */
+> +static struct snd_soc_card dm365_snd_soc_card_evm = {
+> +	.name = "DaVinci DM365 EVM",
+> +	.platform = &davinci_soc_platform,
+> +	.dai_link = &evm_dai,
+> +	.num_links = 1,
+> +};
+> +
+>  /* davinci dm6467 evm audio machine driver */
+>  static struct snd_soc_card dm6467_snd_soc_card_evm = {
+>  	.name = "DaVinci DM6467 EVM",
+> @@ -216,6 +225,13 @@ static struct snd_soc_device evm_snd_devdata = {
+>  };
+> 
+>  /* evm audio subsystem */
+> +static struct snd_soc_device dm365_evm_snd_devdata = {
+> +	.card = &dm365_snd_soc_card_evm,
+> +	.codec_dev = &soc_codec_dev_aic3x,
+> +	.codec_data = &aic3x_setup,
+> +};
+> +
+> +/* evm audio subsystem */
+>  static struct snd_soc_device dm6467_evm_snd_devdata = {
+>  	.card = &dm6467_snd_soc_card_evm,
+>  	.codec_dev = &soc_codec_dev_aic3x,
+> @@ -249,6 +265,9 @@ static int __init evm_init(void)
+>  	} else if (machine_is_davinci_dm355_evm()) {
+>  		evm_snd_dev_data = &evm_snd_devdata;
+>  		index = 1;
+> +	} else if (machine_is_davinci_dm365_evm()) {
+> +		evm_snd_dev_data = &dm365_evm_snd_devdata;
+> +		index = 0;
+>  	} else if (machine_is_davinci_dm6467_evm()) {
+>  		evm_snd_dev_data = &dm6467_evm_snd_devdata;
+>  		index = 0;
+> --
+> 1.6.0.4
+> 
