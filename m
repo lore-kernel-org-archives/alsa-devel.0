@@ -1,19 +1,17 @@
-From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
-	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
-Subject: Alsa on HP Pavilion dv6-1225ee audio problems
-Date: Wed, 2 Sep 2009 15:03:17 +0300
-Message-ID: <200909021503.17373.munzirtaha@gmail.com>
+From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
+Subject: Re: Alsa on HP Pavilion dv6-1225ee audio problems
+Date: Wed, 02 Sep 2009 15:11:23 +0300
+Message-ID: <4A9E60EB.6090308@pardus.org.tr>
+References: <200909021503.17373.munzirtaha@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15194103800
+Received: from lider.pardus.org.tr (lider.uludag.org.tr [193.140.100.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id D720C10381A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Sep 2009 14:03:21 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so737336fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 02 Sep 2009 05:03:20 -0700 (PDT)
+	Wed,  2 Sep 2009 14:07:29 +0200 (CEST)
+In-Reply-To: <200909021503.17373.munzirtaha@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: =?UTF-8?B?Ik11bnppciBUYWhhICjZhdmG2LDYsSDYt9mHKSI=?= <munzirtaha@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi sirs,
-I bought this
-http://h10010.www1.hp.com/wwpc/me/en/ho/WF06b/321957-321957-3329744-64354-64354-3872814-3982366.html
-and found the audio is not working and thankfully gnubien on #alsa pointed me 
-to manually add
-snd-hda-intel: model=hp-hdx
-which really made the sound come out of the speakers though the laptop is not 
-hdx series. Now when I plug the headset the Speakers are still playing (no 
-auto sensoring?) and I had to mute them manually which could be a feature or a 
-bug depending on how you look at it.
-
-alsa-info.sh:
-http://www.alsa-project.org/db/?f=dcbcc7d98ffceb95cd7491aed02064fba337bfa7
-
-I hope this would help you properly support this nice laptop out of the box.
-
--- 
-Munzir Taha
-Telecommunications and Electronics Engineer
-Master CIW Designer, ICDL, MOUS, Linux+, LPI, SCSA
-Riyadh, SA
+TXVuemlyIFRhaGEgKNmF2YbYsNixINi32YcpIHdyb3RlIE9uIDAyLTA5LTIwMDkgMTU6MDM6Cj4g
+SGkgc2lycywKPiBJIGJvdWdodCB0aGlzCj4gaHR0cDovL2gxMDAxMC53d3cxLmhwLmNvbS93d3Bj
+L21lL2VuL2hvL1dGMDZiLzMyMTk1Ny0zMjE5NTctMzMyOTc0NC02NDM1NC02NDM1NC0zODcyODE0
+LTM5ODIzNjYuaHRtbAo+IGFuZCBmb3VuZCB0aGUgYXVkaW8gaXMgbm90IHdvcmtpbmcgYW5kIHRo
+YW5rZnVsbHkgZ251YmllbiBvbiAjYWxzYSBwb2ludGVkIG1lIAo+IHRvIG1hbnVhbGx5IGFkZAo+
+IHNuZC1oZGEtaW50ZWw6IG1vZGVsPWhwLWhkeAo+IHdoaWNoIHJlYWxseSBtYWRlIHRoZSBzb3Vu
+ZCBjb21lIG91dCBvZiB0aGUgc3BlYWtlcnMgdGhvdWdoIHRoZSBsYXB0b3AgaXMgbm90IAo+IGhk
+eCBzZXJpZXMuIE5vdyB3aGVuIEkgcGx1ZyB0aGUgaGVhZHNldCB0aGUgU3BlYWtlcnMgYXJlIHN0
+aWxsIHBsYXlpbmcgKG5vIAo+IGF1dG8gc2Vuc29yaW5nPykgYW5kIEkgaGFkIHRvIG11dGUgdGhl
+bSBtYW51YWxseSB3aGljaCBjb3VsZCBiZSBhIGZlYXR1cmUgb3IgYSAKPiBidWcgZGVwZW5kaW5n
+IG9uIGhvdyB5b3UgbG9vayBhdCBpdC4KPgo+IGFsc2EtaW5mby5zaDoKPiBodHRwOi8vd3d3LmFs
+c2EtcHJvamVjdC5vcmcvZGIvP2Y9ZGNiY2M3ZDk4ZmZjZWI5NWNkNzQ5MWFlZDAyMDY0ZmJhMzM3
+YmZhNwo+ICAgCgpZZXMgSSBoYXZlIG9uZSBhbmQgbWFkZSBpdCB3b3JrIHVzaW5nIGhwLWR2NSBt
+b2RlbC4gSSB3YXMgdHJ5aW5nIHRvCmRlYnVnIG1vcmUgYnV0IGRpZG4ndCBoYXZlIHRpbWUuIFRv
+ZGF5IEkgdHJpZWQgd2l0aCAxLjAuMjEgYnV0IHN0aWxsIG5vCnNvdW5kIHdpdGhvdXQgZ2l2aW5n
+IG1vZGVsLgoKVGhlIHN0cmFuZ2UgdGhpbmcgaXMgdGhhdCBldmVudGhvdWdoIGRpZmZlcmVudCBk
+djYgYm94ZXMgaGF2ZSBleGFjdGx5CnRoZSBzYW1lIGNhcmQvY29kZWMsIDIgdXNlcnMgc3RpbGwg
+Y2FuJ3QgZ2V0IHNvdW5kIHdpdGggbW9kZWw9aHAtZHY1IG9yCmFub3RoZXIgdGhpbmcgd2hpbGUg
+YW5vdGhlciBvbmUgaXMgYWJsZSB0byBoYXZlIHNvdW5kLgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
