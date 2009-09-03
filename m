@@ -1,29 +1,21 @@
-From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
-Subject: Re: snd_dummy on Centos - Redhat
-Date: Thu, 3 Sep 2009 22:31:27 +0200
-Message-ID: <7c5010d60909031331m729ec1d6ie70d8ebb4ea2e4ba@mail.gmail.com>
-References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
-	<s5h4orkqd22.wl%tiwai@suse.de>
-	<7c5010d60909030812k5f865622i5cddcd978788c338@mail.gmail.com>
-	<7c5010d60909030826k122fa855t153458431cd18909@mail.gmail.com>
-	<s5h1vmoqc71.wl%tiwai@suse.de>
-	<7c5010d60909030835n2d62756cr1e29de479b7a9d97@mail.gmail.com>
-	<s5hws4gox1l.wl%tiwai@suse.de>
-	<7c5010d60909031003l317d7325s9082a30c418a28f8@mail.gmail.com>
-	<s5hzl9bc3mo.wl%tiwai@suse.de>
-	<7c5010d60909031210o4a1be3f9v7531f03ed1926e9c@mail.gmail.com>
+From: David Brownell <david-b@pacbell.net>
+Subject: Re: [PATCH 2/3] ASoC: DaVinci: pcm,
+	rename variables in prep for ping/pong
+Date: Thu, 3 Sep 2009 14:36:01 -0700
+Message-ID: <200909031436.01913.david-b@pacbell.net>
+References: <1251761505-11353-1-git-send-email-troy.kisky@boundarydevices.com>
+	<200909031206.21020.david-b@pacbell.net>
+	<4AA017EA.8080006@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id C083C103811
+Received: from smtp104.sbc.mail.gq1.yahoo.com (smtp104.sbc.mail.gq1.yahoo.com
+	[67.195.15.63]) by alsa0.perex.cz (Postfix) with SMTP id C031B10383B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Sep 2009 22:31:27 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so247888fxm.32
-	for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2009 13:31:27 -0700 (PDT)
-In-Reply-To: <7c5010d60909031210o4a1be3f9v7531f03ed1926e9c@mail.gmail.com>
+	Thu,  3 Sep 2009 23:36:03 +0200 (CEST)
+In-Reply-To: <4AA017EA.8080006@boundarydevices.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,16 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 3, 2009 at 9:10 PM, Giovanni
-Maruzzelli<gmaruzz.lists@gmail.com> wrote:
-> Now I will try the last patches you sent me today and report here.
+On Thursday 03 September 2009, Troy Kisky wrote:
+> David Brownell wrote:
+> > On Monday 31 August 2009, Troy Kisky wrote:
+> >> -       int master_lch;         /* Master DMA channel */
+> >> -       int slave_lch;          /* linked parameter RAM reload slot */
+> >> +       int asp_master_lch;     /* Master DMA channel */
+> >> +       int asp_link_lch[2];    /* asp parameter link channel, ping/pong */
+> > 
+> > If you're going to rename things, may I suggest getting
+> > rid of "lch" ... use either "channel" or "link", since
+> > those are the two basic hardware roles in EDMA.
 >
+> I agree, but can that be a separate patch...
 
-Still no luck, I sent you the printk results...
-
-Thanks again to taking care of this issue,
-
--giovanni
+However you like; I'd just suggest that *one* rename-things
+patch is normally preferred.  If this one's already in the
+merge queue that might be awkward.
