@@ -1,28 +1,18 @@
-From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
-Subject: Re: snd_dummy on Centos - Redhat
-Date: Thu, 3 Sep 2009 17:12:10 +0200
-Message-ID: <7c5010d60909030812k5f865622i5cddcd978788c338@mail.gmail.com>
-References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
-	<4A9E9CB7.8040809@ladisch.de>
-	<7c5010d60909020933n47381069uacadd656aa98e8e8@mail.gmail.com>
-	<4A9FAD82.3050207@ladisch.de> <s5heiqoqfh4.wl%tiwai@suse.de>
-	<7c5010d60909030723l44055b5au84a487d78ef6252f@mail.gmail.com>
-	<s5hbplsqeye.wl%tiwai@suse.de>
-	<7c5010d60909030747n55b6f48r2322aabf47f17171@mail.gmail.com>
-	<7c5010d60909030803h1c354c79ob774683d764ea062@mail.gmail.com>
-	<s5h4orkqd22.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: About wm8994 codec driver
+Date: Thu, 3 Sep 2009 16:22:58 +0100
+Message-ID: <20090903152258.GE1406@rakim.wolfsonmicro.main>
+References: <4A9FAC82.5020001@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 542102415D
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DCAAB24345
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Sep 2009 17:12:11 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so1711246fxm.32
-	for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2009 08:12:11 -0700 (PDT)
-In-Reply-To: <s5h4orkqd22.wl%tiwai@suse.de>
+	Thu,  3 Sep 2009 17:22:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4A9FAC82.5020001@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,20 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 3, 2009 at 5:10 PM, Takashi Iwai<tiwai@suse.de> wrote:
->
-> Then it falls back to the system timer, so it must work still.
-> To be sure, set hrtimer =3D 0 instead 1 in dummy.c.
->
-> If this still doesn't work, I'd recommend you to add a debug printk
-> at each call of dummy_systimer_pointer(). =A0Print the returned result
-> together with jiffies value.
->
+On Thu, Sep 03, 2009 at 08:46:10PM +0900, Joonyoung Shim wrote:
 
-I'll do it and report
+> I have a target including the wolfson wm8994 codec chip, so i will 
+> implement the wm8994 codec driver. I wonder if you have a plan to
+> implement it. I don't want a duplicate work.
 
--gm
+A driver is currently under development, it will be released to the
+kernel later this year along with other collateral for the device.  I've
+contacted you off-list regarding availability for customers with samples
+such as yourselves.
