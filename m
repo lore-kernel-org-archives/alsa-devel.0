@@ -1,25 +1,23 @@
-From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
-Subject: Re: snd_dummy on Centos - Redhat
-Date: Thu, 3 Sep 2009 15:12:17 +0200
-Message-ID: <7c5010d60909030612o70fa8ffey21b358713ae284d2@mail.gmail.com>
-References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
-	<4A9E9CB7.8040809@ladisch.de>
-	<7c5010d60909020933n47381069uacadd656aa98e8e8@mail.gmail.com>
-	<4A9FAD82.3050207@ladisch.de>
-	<7c5010d60909030529w7f226cc1s18c80f1eb0deab3a@mail.gmail.com>
-	<4A9FBF37.6030106@ladisch.de>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: <alsa-dev> RFC for OMAP4 audio driver
+Date: Thu, 3 Sep 2009 08:56:30 -0500
+Message-ID: <6160a5130909030656j89cad98x1821f135d526621@mail.gmail.com>
+References: <baee637d0909011927m5df3bd58uf7cabfc474f50274@mail.gmail.com>
+	<20090902120120.GB4012@sirena.org.uk>
+	<67059DBF19D7214F9C66BB0EA91BA90E80FDEDAA@dlee04.ent.ti.com>
+	<20090903091011.GA10313@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
-	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id CAB0E10382F
+Received: from mail-px0-f181.google.com (mail-px0-f181.google.com
+	[209.85.216.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id A23A82454A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Sep 2009 15:12:23 +0200 (CEST)
-Received: by bwz25 with SMTP id 25so1523126bwz.32
-	for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2009 06:12:22 -0700 (PDT)
-In-Reply-To: <4A9FBF37.6030106@ladisch.de>
+	Thu,  3 Sep 2009 15:56:31 +0200 (CEST)
+Received: by pxi11 with SMTP id 11so1699567pxi.17
+	for <alsa-devel@alsa-project.org>; Thu, 03 Sep 2009 06:56:30 -0700 (PDT)
+In-Reply-To: <20090903091011.GA10313@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,35 +27,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, hari n <hnagalla@gmail.com>, "Lopez Cruz, Misael" <x0052729@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 3, 2009 at 3:05 PM, Clemens Ladisch<clemens@ladisch.de> wrote:
+>> They will also have their DAIs which should be connected to the
+>> physical outputs of ABE (McPDM, McBSP, ...), and that confuses me.
+>> AFAIK, SoC allows to have multiple CODECs attached to the same
+>> processor, but not a CODEC connected to the output of another CODEC.
 >
-> The interrupts of other drivers are based on the PCM stream clock, but
-> the snd-dummy driver has to emulate interrupts using the system timer,
-> so it is the only one affected by timer-related changes.
+> At the minute it's a bit tricky but it's definitely something that ought
+> to be supported - you may remember the refactoring that was done to
+> unify the CODEC and CPU DAI structures, this sort of use case was one of
+> the motivators for that. =A0Where there's problems the core isn't a fixed
+> thing, we can change it if required.
 
-ok, got it
-
->
-> The driver relies on the kernel's system timer. =A0It might be possible
-> to rewrite it to use high-resolution timers, if the CentOS kernels
-> supports it.
-
-I'll have a look into it
-
->
-> It would be easier to try to change the constraints of the sound card
-> that snd-dummy tries to emulate; set USE_PERIODS_MIN to four or so,
-> and increase period_bytes_min to some value that is at least as large
-> as the numer of bytes per timer tick (with 2 channels and 16 bits at
-> 48 kHz, there are 192000 bytes per second).
->
-
-I'll have a look into this and then I'll report here.
-
-Clemens, thanks for your help!
-
--giovanni
+Very interesting thread.
+My 2 cents: I find the notion of codec confusing.
+In most products from Wolfson and others, you have a digital/mixing
+part, and a second one for digital/analog conversions. OMAP4 and
+others have a digital part on the application processor, but the
+partition is still the same, only implemented on two chips instead of
+one. It shouldn't really matter software-wise where the digital part
+is done, as long as you can express the connection between these two
+parts. A logical split would avoid having a description of a codec
+connected to another codec, you would only have a digital part and an
+analog part. With a CPU/digital/analog split, you could address all
+topologies without developers incurring any risk of brain damage.
+-Pierre
