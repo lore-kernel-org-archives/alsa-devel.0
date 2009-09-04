@@ -1,20 +1,29 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: AK4671: add ak4671 codec driver
-Date: Fri, 4 Sep 2009 11:19:00 +0100
-Message-ID: <20090904101859.GA17522@rakim.wolfsonmicro.main>
-References: <4A9FB5C7.5060607@samsung.com>
-	<20090903140236.GB1406@rakim.wolfsonmicro.main>
-	<4AA06DB5.6060107@samsung.com>
+From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
+Subject: Re: snd_dummy on Centos - Redhat
+Date: Fri, 4 Sep 2009 12:23:59 +0200
+Message-ID: <7c5010d60909040323u2ef4788q6db6bc119b25c38b@mail.gmail.com>
+References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
+	<s5hfxb3k8v8.wl%tiwai@suse.de>
+	<7c5010d60909031503k36a30855h6115e4689d1dd0f4@mail.gmail.com>
+	<7c5010d60909031543v4291a332ge415f91f3412dda@mail.gmail.com>
+	<s5h7hwfb3h2.wl%tiwai@suse.de>
+	<7c5010d60909040057m29b68361nd34a4bb1254860e8@mail.gmail.com>
+	<7c5010d60909040214k2a673606j6b262ca235ba8a24@mail.gmail.com>
+	<s5h8wgv12y1.wl%tiwai@suse.de>
+	<7c5010d60909040233n42913563va2ed695bc383274f@mail.gmail.com>
+	<s5h3a73109p.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 67028243FA
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id E52DF1038ED
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Sep 2009 12:19:01 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4AA06DB5.6060107@samsung.com>
+	Fri,  4 Sep 2009 12:23:59 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so576837fxm.32
+	for <alsa-devel@alsa-project.org>; Fri, 04 Sep 2009 03:23:59 -0700 (PDT)
+In-Reply-To: <s5h3a73109p.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +33,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com
+To: alsa-devel@alsa-project.org
+Cc: Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 04, 2009 at 10:30:29AM +0900, Joonyoung Shim wrote:
-> On 9/3/2009 11:02 PM, Mark Brown wrote:
+On Fri, Sep 4, 2009 at 12:18 PM, Takashi Iwai<tiwai@suse.de> wrote:
+> Maybe better to add a substream id (e.g. substream->stream,
+> substream->number) to avoid confusion.
+>
 
-> >> +	case SND_SOC_BIAS_STANDBY:
-> >> +		if (ak4671->pll_on) {
+I will add it and rerun.
 
-> > I suspect this will run into trouble with bypass paths (which do appear
-> > to exist if I read the DAPM routes correctly).  If a bypass path is
-> > active then the CODEC will be brought up to full bias out of sync with
-> > any configuration of pll_on by the DAI format configuration.
-
-> A bypass path should operate regardless pll_on.
-
-Yes, I'd expect the bypass path itself to be fine.  What I'm concerned
-about is that because with newer ASoC versions the bypass path will
-cause the CODEC to change bias levels independantly of playback and
-record starting the PLL will be configured when the bypass path is
-enabled rather than when record/playback is started.  This may cause
-things to get out of sync.
+-giovanni
