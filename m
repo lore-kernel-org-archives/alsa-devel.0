@@ -1,43 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Fri, 4 Sep 2009 22:03:45 +0100
-Message-ID: <20090904210345.GB4927@sirena.org.uk>
+From: jidanni@jidanni.org
+Subject: Bug#545092: [Pkg-alsa-devel] Bug#545092: amixer -h doesn't show the whole set of commands
+Date: Sat, 05 Sep 2009 06:33:36 +0800
+Message-ID: <87d466mjb3.fsf@jidanni.org>
+References: <20090904222809.GA3210@aragorn.home.lxtec.de>
+Reply-To: jidanni@jidanni.org, 545092@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D310243A5
-	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Sep 2009 23:03:52 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.545092.B545092.125210362021076@bugs.debian.org>
+List-Post: <mailto:debian-bugs-dist@lists.debian.org>
+List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+To: riesebie@lxtec.de, alsa-devel@alsa-project.org
+Cc: 545092@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 5c0d38c9478e79ab7deb1b470dd181d2308a608e:
-  jassi brar (1):
-        ASoC: Debugged improper setting of PLL fields in WM8580 driver
+>> $ amixer -h
+>> doesn't show the "info" command. But it is listed on the man page.
+>> There maybe more missing too.
 
-are available in the git repository at:
+ER> Please send a patch to alsa-devel@alsa-project.org. They will apply
+ER> your patch.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
-
-Mark Brown (1):
-      ASoC: Fully specify DC servo bits to update in wm_hubs
-
-Robert Schwebel (1):
-      ASoC: fix pxa2xx-ac97.c breakage
-
- sound/arm/pxa2xx-ac97.c    |    2 +-
- sound/soc/codecs/wm_hubs.c |   12 ++----------
- 2 files changed, 3 insertions(+), 11 deletions(-)
+Sounds like work :-(
+I'll just alert them upstream by CCing this message. Hope it doesn't bounce.
