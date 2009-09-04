@@ -1,28 +1,20 @@
-From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
-Subject: Re: snd_dummy on Centos - Redhat
-Date: Fri, 4 Sep 2009 13:11:28 +0200
-Message-ID: <7c5010d60909040411y76818280p7b7ded46f2df9b64@mail.gmail.com>
-References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
-	<s5h7hwfb3h2.wl%tiwai@suse.de>
-	<7c5010d60909040057m29b68361nd34a4bb1254860e8@mail.gmail.com>
-	<7c5010d60909040214k2a673606j6b262ca235ba8a24@mail.gmail.com>
-	<s5h8wgv12y1.wl%tiwai@suse.de>
-	<7c5010d60909040233n42913563va2ed695bc383274f@mail.gmail.com>
-	<s5h3a73109p.wl%tiwai@suse.de> <s5hzl9bypj3.wl%tiwai@suse.de>
-	<7c5010d60909040338x69700bf5kef90819625679d1e@mail.gmail.com>
-	<s5hpra7ynut.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Is there a way to figure out if the clocks of
+	two	snd_pcm_t's deviate? (snd_pcm_info_get_sync?)
+Date: Fri, 4 Sep 2009 12:44:30 +0100
+Message-ID: <20090904114430.GA8269@sirena.org.uk>
+References: <20090903230351.GA7493@tango.0pointer.de>
+	<alpine.LNX.2.00.0909040831390.20533@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
-	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6120524408
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74F6B24453
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Sep 2009 13:11:34 +0200 (CEST)
-Received: by bwz25 with SMTP id 25so590131bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 04 Sep 2009 04:11:33 -0700 (PDT)
-In-Reply-To: <s5hpra7ynut.wl%tiwai@suse.de>
+	Fri,  4 Sep 2009 13:44:32 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.0909040831390.20533@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,18 +24,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 4, 2009 at 1:02 PM, Takashi Iwai<tiwai@suse.de> wrote:
-> Any patches are appreciated, of course.
->
-> It'd be helpful, though, if you can rebase your changes against my
-> latest version.
->
+On Fri, Sep 04, 2009 at 08:44:50AM +0200, Jaroslav Kysela wrote:
 
-Definitely, as soon as we're over this, I will see if my mods are
-still significant, and in case, I will update it to your last version.
+> I cannot recall from my mind, if any card has two clock sources - maybe 
+> only old Gravis UltraSound hardware with GF1 and CS4231 chips, but it's 
+> history. Also, professional hardware can run with word clock sync (wire 
+> connection carrying sample clock) or S/PDIF clock sync. But it's matter of 
+> user configuration.
 
--giovanni
+Several of the embedded CODECs can have multiple master clocks active
+simultaneously within just that device and even more embedded systems
+are able to run with multiple masters.
