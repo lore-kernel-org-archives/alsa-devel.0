@@ -1,9 +1,8 @@
 From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
 Subject: Re: snd_dummy on Centos - Redhat
-Date: Fri, 4 Sep 2009 12:38:46 +0200
-Message-ID: <7c5010d60909040338x69700bf5kef90819625679d1e@mail.gmail.com>
+Date: Fri, 4 Sep 2009 12:54:15 +0200
+Message-ID: <7c5010d60909040354g19f072d8ra24e3d1f3372a4de@mail.gmail.com>
 References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
-	<7c5010d60909031503k36a30855h6115e4689d1dd0f4@mail.gmail.com>
 	<7c5010d60909031543v4291a332ge415f91f3412dda@mail.gmail.com>
 	<s5h7hwfb3h2.wl%tiwai@suse.de>
 	<7c5010d60909040057m29b68361nd34a4bb1254860e8@mail.gmail.com>
@@ -11,18 +10,19 @@ References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
 	<s5h8wgv12y1.wl%tiwai@suse.de>
 	<7c5010d60909040233n42913563va2ed695bc383274f@mail.gmail.com>
 	<s5h3a73109p.wl%tiwai@suse.de> <s5hzl9bypj3.wl%tiwai@suse.de>
+	<7c5010d60909040338x69700bf5kef90819625679d1e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
-	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 13C3C24372
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 71DA924408
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Sep 2009 12:38:48 +0200 (CEST)
-Received: by bwz25 with SMTP id 25so572692bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 04 Sep 2009 03:38:46 -0700 (PDT)
-In-Reply-To: <s5hzl9bypj3.wl%tiwai@suse.de>
+	Fri,  4 Sep 2009 12:54:15 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so592987fxm.32
+	for <alsa-devel@alsa-project.org>; Fri, 04 Sep 2009 03:54:15 -0700 (PDT)
+In-Reply-To: <7c5010d60909040338x69700bf5kef90819625679d1e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,15 +36,870 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 4, 2009 at 12:26 PM, Takashi Iwai<tiwai@suse.de> wrote:
->
-> BTW, I added another patch to snd-dummy driver in sound-unstable tree.
-> Now it doesn't allocate the real buffers but fakes. =A0It would save
-> lots of memory when you run lots of substreams.
+On Fri, Sep 4, 2009 at 12:38 PM, Giovanni
+Maruzzelli<gmaruzz.lists@gmail.com> wrote:
+here's the run results (music, bad behavior):
 
-SUPER! By the way, I was also using the bh for spinlocks, so it do not
-uses irq heavily...
-But anyway, when we'll be out from this, I will try to see if I can
-contribute some of my hacks (if I can overcome the shame ;-) ).
-
--giovanni
+Sep  4 12:50:18 localhost kernel: *** START: dpcm=f5828bd4,
+buffer=4096, period=2048, rate=16000, strem=0, number=0
+Sep  4 12:50:18 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=48000(48), rest=2000000(2000)
+Sep  4 12:50:18 localhost kernel: xxx dpcm=f5828bd4, delta=2,
+pos=80000(80), rest=1968000(1968)
+Sep  4 12:50:19 localhost kernel: *** START: dpcm=f5828954,
+buffer=4096, period=2048, rate=16000, strem=1, number=0
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=123,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=48000(48), rest=2000000(2000)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=2,
+pos=80000(80), rest=1968000(1968)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=121,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=123,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2272000(2272), rest=1824000(1824)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=114,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2272000(2272), rest=1824000(1824)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=114,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828954, delta=6,
+pos=2256000(2256), rest=1840000(1840)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:19 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=115,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=1,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=6,
+pos=2272000(2272), rest=1824000(1824)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=114,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=6,
+pos=2272000(2272), rest=1824000(1824)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=114,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2272000(2272), rest=1824000(1824)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=114,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=1,
+pos=2064000(2064), rest=2032000(2032)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:20 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2288000(2288), rest=1808000(1808)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=1,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=113,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2272000(2272), rest=1824000(1824)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=114,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=6,
+pos=2272000(2272), rest=1824000(1824)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=1,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=114,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=6,
+pos=2272000(2272), rest=1824000(1824)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=114,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:21 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2288000(2288), rest=1808000(1808)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=113,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=9,
+pos=2192000(2192), rest=1904000(1904)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:22 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=9,
+pos=2192000(2192), rest=1904000(1904)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=1,
+pos=2320000(2320), rest=1776000(1776)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=111,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=1,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2288000(2288), rest=1808000(1808)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828954, delta=113,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:23 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=1,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=9,
+pos=2192000(2192), rest=1904000(1904)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=1,
+pos=2320000(2320), rest=1776000(1776)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828954, delta=111,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:24 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2288000(2288), rest=1808000(1808)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=113,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=9,
+pos=2192000(2192), rest=1904000(1904)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=1,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:25 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2160000(2160), rest=1936000(1936)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2288000(2288), rest=1808000(1808)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=1,
+pos=80000(80), rest=1968000(1968)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=113,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:26 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=1,
+pos=2192000(2192), rest=1904000(1904)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:27 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2288000(2288), rest=1808000(1808)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=113,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:28 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=9,
+pos=2192000(2192), rest=1904000(1904)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:29 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=9,
+pos=2192000(2192), rest=1904000(1904)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=7,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:30 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=128000(128), rest=1920000(1920)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828bd4, delta=120,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2176000(2176), rest=1920000(1920)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828954, delta=8,
+pos=2304000(2304), rest=1792000(1792)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828bd4, delta=4,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828bd4, delta=3,
+pos=112000(112), rest=1936000(1936)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828954, delta=112,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828bd4, delta=121,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828954, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: *** STOP dpcm=f5828954, strem=1, number=0
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f5828bd4, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:31 localhost kernel: *** STOP dpcm=f5828bd4, strem=0, number=0
+Sep  4 12:50:31 localhost kernel: *** START: dpcm=f7bb28d4,
+buffer=4096, period=2048, rate=16000, strem=0, number=0
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f7bb28d4, delta=2,
+pos=32000(32), rest=2016000(2016)
+Sep  4 12:50:31 localhost kernel: xxx dpcm=f7bb28d4, delta=2,
+pos=64000(64), rest=1984000(1984)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=124,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=2,
+pos=32000(32), rest=2016000(2016)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=3,
+pos=80000(80), rest=1968000(1968)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=123,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=2,
+pos=32000(32), rest=2016000(2016)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=3,
+pos=80000(80), rest=1968000(1968)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=123,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=2,
+pos=32000(32), rest=2016000(2016)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=3,
+pos=80000(80), rest=1968000(1968)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=123,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:32 localhost kernel: xxx dpcm=f7bb28d4, delta=1,
+pos=16000(16), rest=2032000(2032)
+Sep  4 12:50:33 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=2064000(2064), rest=2032000(2032)
+Sep  4 12:50:33 localhost kernel: xxx dpcm=f7bb28d4, delta=127,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:33 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:33 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:33 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:33 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:33 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:33 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:34 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=2048000(2048), rest=2048000(2048)
+Sep  4 12:50:34 localhost kernel: xxx dpcm=f7bb28d4, delta=128,
+pos=0(0), rest=2048000(2048)
+Sep  4 12:50:34 localhost kernel: *** STOP dpcm=f7bb28d4, strem=0, number=0
