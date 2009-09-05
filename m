@@ -1,19 +1,17 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: [PATCH] Bug#544607: /usr/share/alsa/init/default
- missing closing brace for format in 5 cases
-Date: Sat, 5 Sep 2009 02:01:03 +0200
-Message-ID: <20090905000103.GA3167@aragorn.home.lxtec.de>
-References: <20090901202614.5849.99958.reportbug@base.lan>
-	<20090902122915.GB4978@frodo.home.lxtec.de>
-	<alpine.LNX.2.00.0909021433260.12522@eeebox2.perex-int.cz>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: [PATCH 1/2] ASoC: DaVinci: pcm,
+	rename variables in prep for ping/pong
+Date: Fri,  4 Sep 2009 19:29:08 -0700
+Message-ID: <1252117749-7531-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0480502119148577355=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout0.hostsharing.net (smtpout0.hostsharing.net
-	[83.223.95.250]) by alsa0.perex.cz (Postfix) with ESMTP id D5F1B2436A
+Received: from mpls-qmqp-05.inet.qwest.net (mpls-qmqp-05.inet.qwest.net
+	[63.231.195.116])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3ED372439A
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Sep 2009 02:01:11 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.0909021433260.12522@eeebox2.perex-int.cz>
+	Sat,  5 Sep 2009 04:29:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,128 +21,194 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: 544607@bugs.debian.org, Philipp Jocham <philipp.jocham@gmx.net>, alsa-devel@alsa-project.org
+To: khilman@deeprootsystems.com, davinci-linux-open-source@linux.davincidsp.com
+Cc: alsa-devel@alsa-project.org, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
+Rename variable master_lch to asp_channel
+Rename variable slave_lch to asp_link[0]
+Rename local variables:
+	lch to link
+	count to asp_count
+	src to asp_src
+	dst to asp_dst
 
---===============0480502119148577355==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="i9LlY+UWpKt15+FH"
-Content-Disposition: inline
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+---
+This goes on top of Kevin temp/asoc branch plus
+[PATCH 1/3] ASoC: DaVinci: i2s, reduce underruns by combining into 1 element
 
+Changes since last version: removing lch references as suggested by
+David Brownell
 
---i9LlY+UWpKt15+FH
-Content-Type: multipart/mixed; boundary="sdtB3X0nJg68CQEu"
-Content-Disposition: inline
+ sound/soc/davinci/davinci-pcm.c |   64 +++++++++++++++++++-------------------
+ 1 files changed, 32 insertions(+), 32 deletions(-)
 
-
---sdtB3X0nJg68CQEu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-* Jaroslav Kysela [090902 14:34 +0200]
-> On Wed, 2 Sep 2009, Elimar Riesebieter wrote:
->=20
-> >forward 544607 alsa-devel@alsa-project.org
->=20
-> >>-ENV{has_pmaster_vol}=3D=3D"true",CTL{values)=3D"100%",GOTO=3D"headphon=
-e0_end"
-> >>+ENV{has_pmaster_vol}=3D=3D"true",CTL{values}=3D"100%",GOTO=3D"headphon=
-e0_end"
-
-It is not only line 52. We have 4 more c+p errors. See attached
-patch.
-
-Elimar
-
---=20
-  We all know Linux is great... it does infinite loops in 5 seconds.
-        -- Linus Torvalds
-
---sdtB3X0nJg68CQEu
-Content-Type: text/x-diff; charset=iso-8859-1
-Content-Disposition: attachment; filename="alsactl_brace.patch"
-
-# Fix wrong enclosed values with braces
-# -- Elimar Riesebieter <riesebie@lxtec.de>  Fri, 04 Sep 2009 22:15:12 +0200
-Index: alsa-utils-1.0.21/alsactl/init/default
-===================================================================
---- alsa-utils-1.0.21.orig/alsactl/init/default	2009-08-31 17:13:36.000000000 +0200
-+++ alsa-utils-1.0.21/alsactl/init/default	2009-09-04 22:19:32.000000000 +0200
-@@ -39,7 +39,7 @@
- CTL{name}="Front Playback Volume",PROGRAM!="__ctl_search",GOTO="front0_end"
- # if master volume control is present, turn front volume to max
- ENV{has_pmaster_vol}=="true",CTL{values}="0dB",RESULT=="0",GOTO="front0_end"
--ENV{has_pmaster_vol}=="true",CTL{values)="100%",GOTO="front0_end"
-+ENV{has_pmaster_vol}=="true",CTL{values}="100%",GOTO="front0_end"
- CTL{values}="$env{pvolume}",RESULT!="0",CTL{values}="$env{ppercent}"
- LABEL="front0_end"
- CTL{name}="Front Playback Switch",PROGRAM=="__ctl_search", \
-@@ -49,7 +49,7 @@
- CTL{name}="Headphone Playback Volume",PROGRAM!="__ctl_search",GOTO="headphone0_end"
- # if master volume control is present, turn headphone volume to max
- ENV{has_pmaster_vol}=="true",CTL{values}="0dB",RESULT=="0",GOTO="headphone0_end"
--ENV{has_pmaster_vol}=="true",CTL{values)="100%",GOTO="headphone0_end"
-+ENV{has_pmaster_vol}=="true",CTL{values}="100%",GOTO="headphone0_end"
- CTL{values}="$env{pvolume}",RESULT!="0",CTL{values}="$env{ppercent}"
- LABEL="headphone0_end"
- CTL{name}="Headphone Playback Switch",PROGRAM=="__ctl_search", \
-@@ -72,7 +72,7 @@
-  CTL{name}="PCM Volume",PROGRAM!="__ctl_search", GOTO="pcm0_end"
- # if master volume control is present, turn PCM volume to max
- ENV{has_pmaster_vol}=="true",CTL{values}="0dB",RESULT=="0",GOTO="pcm0_end"
--ENV{has_pmaster_vol}=="true",CTL{values)="100%",GOTO="pcm0_end"
-+ENV{has_pmaster_vol}=="true",CTL{values}="100%",GOTO="pcm0_end"
- # exception - some HDA codecs have shifted dB range
- CTL{dBmin}=="-34.50dB",CTL{dBmax}=="12.00dB",CTL{values}="0dB",GOTO="pcm0_end"
- CTL{dBmin}=="-30.00dB",CTL{dBmax}=="0dB",CTL{values}="0dB",GOTO="pcm0_end"
-@@ -86,7 +86,7 @@
-   CTL{name}="PCM Volume",PROGRAM!="__ctl_search",GOTO="pcm1_end"
- # if master volume control is present, turn PCM volume to max
- ENV{has_pmaster_vol}=="true",CTL{values}="0dB",RESULT=="0",GOTO="pcm1_end"
--ENV{has_pmaster_vol}=="true",CTL{values)="100%",GOTO="pcm1_end"
-+ENV{has_pmaster_vol}=="true",CTL{values}="100%",GOTO="pcm1_end"
- # exception - some HDA codecs have shifted dB range
- CTL{dBmin}=="-34.50dB",CTL{dBmax}=="12.00dB",CTL{values}="0dB",GOTO="pcm1_end"
- CTL{dBmin}=="-30.00dB",CTL{dBmax}=="0dB",CTL{values}="0dB",GOTO="pcm1_end"
-@@ -125,7 +125,7 @@
- CTL{name}="CD Playback Volume",PROGRAM!="__ctl_search", GOTO="cd0_end"
- # if master volume control is present, turn CD volume to max
- ENV{has_pmaster_vol}=="true",CTL{values}="0dB",RESULT=="0",GOTO="cd0_end"
--ENV{has_pmaster_vol}=="true",CTL{values)="100%",GOTO="cd0_end"
-+ENV{has_pmaster_vol}=="true",CTL{values}="100%",GOTO="cd0_end"
- # exception - some HDA codecs have shifted dB range
- CTL{dBmin}=="-34.50dB",CTL{dBmax}=="12.00dB",CTL{values}="0dB",GOTO="cd0_end"
- CTL{dBmin}=="-30.00dB",CTL{dBmax}=="0dB",CTL{values}="0dB",GOTO="cd0_end"
-
---sdtB3X0nJg68CQEu--
-
---i9LlY+UWpKt15+FH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkqhqj4ACgkQ3Ig8bsVPf7DdxwCeLugh/iFujRaLSrPMFWQ8pFkT
-6/sAnA33ZwtoOgOeoQlL3v1CVL4v/2ZZ
-=WM/+
------END PGP SIGNATURE-----
-
---i9LlY+UWpKt15+FH--
-
---===============0480502119148577355==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0480502119148577355==--
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index 2f7da49..a0a977e 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -51,8 +51,8 @@ static struct snd_pcm_hardware davinci_pcm_hardware = {
+ struct davinci_runtime_data {
+ 	spinlock_t lock;
+ 	int period;		/* current DMA period */
+-	int master_lch;		/* Master DMA channel */
+-	int slave_lch;		/* linked parameter RAM reload slot */
++	int asp_channel;	/* Master DMA channel */
++	int asp_link[2];	/* asp parameter link channel, ping/pong */
+ 	struct davinci_pcm_dma_params *params;	/* DMA params */
+ };
+ 
+@@ -60,7 +60,7 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ {
+ 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int lch = prtd->slave_lch;
++	int link = prtd->asp_link[0];
+ 	unsigned int period_size;
+ 	unsigned int dma_offset;
+ 	dma_addr_t dma_pos;
+@@ -75,7 +75,7 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 	dma_pos = runtime->dma_addr + dma_offset;
+ 
+ 	pr_debug("davinci_pcm: audio_set_dma_params_play channel = %d "
+-		"dma_ptr = %x period_size=%x\n", lch, dma_pos, period_size);
++		"dma_ptr = %x period_size=%x\n", link, dma_pos, period_size);
+ 
+ 	data_type = prtd->params->data_type;
+ 	count = period_size / data_type;
+@@ -93,23 +93,23 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 	}
+ 
+ 	acnt = prtd->params->acnt;
+-	edma_set_src(lch, src, INCR, W8BIT);
+-	edma_set_dest(lch, dst, INCR, W8BIT);
+-	edma_set_src_index(lch, src_bidx, 0);
+-	edma_set_dest_index(lch, dst_bidx, 0);
+-	edma_set_transfer_params(lch, acnt, count, 1, 0, ASYNC);
++	edma_set_src(link, src, INCR, W8BIT);
++	edma_set_dest(link, dst, INCR, W8BIT);
++	edma_set_src_index(link, src_bidx, 0);
++	edma_set_dest_index(link, dst_bidx, 0);
++	edma_set_transfer_params(link, acnt, count, 1, 0, ASYNC);
+ 
+ 	prtd->period++;
+ 	if (unlikely(prtd->period >= runtime->periods))
+ 		prtd->period = 0;
+ }
+ 
+-static void davinci_pcm_dma_irq(unsigned lch, u16 ch_status, void *data)
++static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
+ {
+ 	struct snd_pcm_substream *substream = data;
+ 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+ 
+-	pr_debug("davinci_pcm: lch=%d, status=0x%x\n", lch, ch_status);
++	pr_debug("davinci_pcm: link=%d, status=0x%x\n", link, ch_status);
+ 
+ 	if (unlikely(ch_status != DMA_COMPLETE))
+ 		return;
+@@ -142,15 +142,15 @@ static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
+ 				  EVENTQ_0);
+ 	if (ret < 0)
+ 		return ret;
+-	prtd->master_lch = ret;
++	prtd->asp_channel = ret;
+ 
+ 	/* Request parameter RAM reload slot */
+-	ret = edma_alloc_slot(EDMA_CTLR(prtd->master_lch), EDMA_SLOT_ANY);
++	ret = edma_alloc_slot(EDMA_CTLR(prtd->asp_channel), EDMA_SLOT_ANY);
+ 	if (ret < 0) {
+-		edma_free_channel(prtd->master_lch);
++		edma_free_channel(prtd->asp_channel);
+ 		return ret;
+ 	}
+-	prtd->slave_lch = ret;
++	prtd->asp_link[0] = ret;
+ 
+ 	/* Issue transfer completion IRQ when the channel completes a
+ 	 * transfer, then always reload from the same slot (by a kind
+@@ -161,10 +161,10 @@ static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
+ 	 * the buffer and its length (ccnt) ... use it as a template
+ 	 * so davinci_pcm_enqueue_dma() takes less time in IRQ.
+ 	 */
+-	edma_read_slot(prtd->slave_lch, &p_ram);
+-	p_ram.opt |= TCINTEN | EDMA_TCC(EDMA_CHAN_SLOT(prtd->master_lch));
+-	p_ram.link_bcntrld = EDMA_CHAN_SLOT(prtd->slave_lch) << 5;
+-	edma_write_slot(prtd->slave_lch, &p_ram);
++	edma_read_slot(prtd->asp_link[0], &p_ram);
++	p_ram.opt |= TCINTEN | EDMA_TCC(EDMA_CHAN_SLOT(prtd->asp_channel));
++	p_ram.link_bcntrld = EDMA_CHAN_SLOT(prtd->asp_link[0]) << 5;
++	edma_write_slot(prtd->asp_link[0], &p_ram);
+ 
+ 	return 0;
+ }
+@@ -180,12 +180,12 @@ static int davinci_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		edma_start(prtd->master_lch);
++		edma_start(prtd->asp_channel);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		edma_stop(prtd->master_lch);
++		edma_stop(prtd->asp_channel);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -206,8 +206,8 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
+ 	davinci_pcm_enqueue_dma(substream);
+ 
+ 	/* Copy self-linked parameter RAM entry into master channel */
+-	edma_read_slot(prtd->slave_lch, &temp);
+-	edma_write_slot(prtd->master_lch, &temp);
++	edma_read_slot(prtd->asp_link[0], &temp);
++	edma_write_slot(prtd->asp_channel, &temp);
+ 	davinci_pcm_enqueue_dma(substream);
+ 
+ 	return 0;
+@@ -219,20 +219,20 @@ davinci_pcm_pointer(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct davinci_runtime_data *prtd = runtime->private_data;
+ 	unsigned int offset;
+-	dma_addr_t count;
+-	dma_addr_t src, dst;
++	int asp_count;
++	dma_addr_t asp_src, asp_dst;
+ 
+ 	spin_lock(&prtd->lock);
+ 
+-	edma_get_position(prtd->master_lch, &src, &dst);
++	edma_get_position(prtd->asp_channel, &asp_src, &asp_dst);
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		count = src - runtime->dma_addr;
++		asp_count = asp_src - runtime->dma_addr;
+ 	else
+-		count = dst - runtime->dma_addr;
++		asp_count = asp_dst - runtime->dma_addr;
+ 
+ 	spin_unlock(&prtd->lock);
+ 
+-	offset = bytes_to_frames(runtime, count);
++	offset = bytes_to_frames(runtime, asp_count);
+ 	if (offset >= runtime->buffer_size)
+ 		offset = 0;
+ 
+@@ -274,10 +274,10 @@ static int davinci_pcm_close(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct davinci_runtime_data *prtd = runtime->private_data;
+ 
+-	edma_unlink(prtd->slave_lch);
++	edma_unlink(prtd->asp_link[0]);
+ 
+-	edma_free_slot(prtd->slave_lch);
+-	edma_free_channel(prtd->master_lch);
++	edma_free_slot(prtd->asp_link[0]);
++	edma_free_channel(prtd->asp_channel);
+ 
+ 	kfree(prtd);
+ 
+-- 
+1.5.6.3
