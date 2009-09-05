@@ -1,16 +1,18 @@
-From: Justin P. Mattock <invite+kjdmuk1kdj5_@facebookmail.com>
-Subject: Check out my photos on Facebook
-Date: Sat, 5 Sep 2009 13:28:56 -0700
-Message-ID: <a20edf04c3ffda4b9bfe432830faf23f@localhost.localdomain>
-Reply-To: "Justin P. Mattock" <justinmattock@gmail.com>
+From: Paulo Cavalcanti <promac@gmail.com>
+Subject: Kernel panic with alsa-driver 1.0.21 and RHEL 5
+Date: Sat, 5 Sep 2009 19:47:49 -0300
+Message-ID: <68720af30909051547ye9ebfe0n7f10e54dcfce5270@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx-out.facebook.com (outmail019.snc1.tfbnw.net [69.63.178.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02B601037F3
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D0CA1037F3
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Sep 2009 22:28:59 +0200 (CEST)
+	Sun,  6 Sep 2009 00:47:50 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so1375531fxm.32
+	for <alsa-devel@alsa-project.org>; Sat, 05 Sep 2009 15:47:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +25,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-I set up a Facebook profile where I can post my pictures, videos and events and I want to add you as a friend so you can see it. First, you need to join Facebook! Once you join, you can also create your own profile.
+I upgraded to alsa 1.0.21 on Fedora 10/11 with no problem at all.
 
-Thanks,
-Justin
+However, I always get a kernel panic when I install alsa-driver 1.0.21
+on RHEL 5 (either i386 or x86_63) and reboot:
 
-To sign up for Facebook, follow the link below:
-http://www.facebook.com/p.php?i=1358683573&k=Z31T6VT5R4TF6BD1Q142YPT2RT&r
+I have no idea on how to debug this situation. The memory dump
+references:
 
+snd_hda_codec ....
+snd_hda_intel ...
 
-alsa-devel@alsa-project.org was invited to join Facebook by Justin P. Mattock. If you do not wish to receive this type of email from Facebook in the future, please click on the link below to unsubscribe.
-http://www.facebook.com/o.php?k=15ec76&u=100000227845811&mid=10cc736G5af31e0ee6b3G0G8
-Facebook's offices are located at 1601 S. California Ave., Palo Alto, CA 94304.
+RHEL 5 runs just fine with alsa-driver 1.0.20, thought.
+
+Thanks.
+
+-- 
+Paulo Roma Cavalcanti
+LCG - UFRJ
