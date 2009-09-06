@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: jassi brar <jassisinghbrar@gmail.com>
 Subject: Re: [PATCH] Minor WM8580 enhancements.
-Date: Sun, 6 Sep 2009 02:22:33 +0100
-Message-ID: <20090906012232.GA4239@sirena.org.uk>
+Date: Sun, 6 Sep 2009 10:50:26 +0900
+Message-ID: <1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
 References: <1b68c6790909051709k600c8ecdv5bc457ae8e1242c1@mail.gmail.com>
+	<20090906012232.GA4239@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 16D68103802
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id AABF5103804
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Sep 2009 03:22:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1b68c6790909051709k600c8ecdv5bc457ae8e1242c1@mail.gmail.com>
+	Sun,  6 Sep 2009 03:50:27 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 5so455978qwf.56
+	for <alsa-devel@alsa-project.org>; Sat, 05 Sep 2009 18:50:26 -0700 (PDT)
+In-Reply-To: <20090906012232.GA4239@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,27 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 06, 2009 at 09:09:41AM +0900, jassi brar wrote:
-
-> +	case WM8580_MCLKRATIO:
-> +	case WM8580_BCLKRATIO:
-
-There should be no need for machine drivers to configure any of this,
-there's already enough information in the CODEC driver to figure out
-this configuration without their help.  Having the machine drivers do it
-manually simply forces each machine driver using the chip to repeat the
-same logic which is at best redundant and at worst makes machine drivers
-harder to write.
-
-As mentioned previously this driver could use a bit of modernisation in
-general, including with regard to clocking, which I had already been
-planning to do as part of working on the SMDK boards.  As a result of
-some work on another chip with a very similar clocking structure I have
-a rough draft of what needs doing for the clocks already.  This is part
-of why in my earlier mail I had recommended focusing on the CPU DAI
-drivers for now - the lack of them is the biggest obstacle to getting
-that work cleaned up and tested.
+T24gU3VuLCBTZXAgNiwgMjAwOSBhdCAxMDoyMiBBTSwgTWFyawpCcm93bjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gU3VuLCBTZXAgMDYsIDIwMDkgYXQg
+MDk6MDk6NDFBTSArMDkwMCwgamFzc2kgYnJhciB3cm90ZToKPgo+PiArIMKgIMKgIGNhc2UgV004
+NTgwX01DTEtSQVRJTzoKPj4gKyDCoCDCoCBjYXNlIFdNODU4MF9CQ0xLUkFUSU86Cj4KPiBUaGVy
+ZSBzaG91bGQgYmUgbm8gbmVlZCBmb3IgbWFjaGluZSBkcml2ZXJzIHRvIGNvbmZpZ3VyZSBhbnkg
+b2YgdGhpcywKPiB0aGVyZSdzIGFscmVhZHkgZW5vdWdoIGluZm9ybWF0aW9uIGluIHRoZSBDT0RF
+QyBkcml2ZXIgdG8gZmlndXJlIG91dAo+IHRoaXMgY29uZmlndXJhdGlvbiB3aXRob3V0IHRoZWly
+IGhlbHAuCk5vdCBhbGwgY29tYmluYXRpb25zIG9mIEJGUyBhbmQgUkZTIGFyZSBwb3NzaWJsZSBh
+dCBhbGwgTFJDTEsgdmFsdWVzCmZvciBDUFVfREFJLCBub3QgZm9yIFNhbXN1bmcgU29DcyB0aG9z
+ZSBJIGFtIGF3YXJlIG9mLgpTbywgaSB0aGluayB0aGUgbWFjaGluZSBkcml2ZXIsIGFzIGEgbGlu
+ayBiZXR3ZWVuIENvZGVjIGFuZCBDcHUgRGFpLCBoYXMgdGhlCmpvYiBvZiBmaWd1cmluZyBvdXQg
+dmFsdWVzIGZvciBCRlMgYW5kIFJGUyB0aGF0IGFyZSBjb21wYXRpYmxlIHRvCl9ib3RoXyB0aGUg
+Q1BVIGFuZCB0aGUgQ09ERUMuCklmIENPREVDIGRyaXZlciwgd2l0aCBkaXNyZWdhcmQgdG8gdGhl
+IENQVSwgY2hvb3NlcyB2YWx1ZXMgZm9yCkJDTEsvTUNMSy1SYXRpbyB0aGF0IGFyZSBpbmNvbXBh
+dGlibGUKd2l0aCBDUFUsIGkgZG9uJ3Qga25vdyBob3cgdGhhdCB3aWxsIHdvcmsgb3V0LgpQbGVh
+c2UgY29ycmVjdCwgaWYgaSBhbSBtaXNzaW5nIHNvbWV0aGluZy4KCj4gQXMgbWVudGlvbmVkIHBy
+ZXZpb3VzbHkgdGhpcyBkcml2ZXIgY291bGQgdXNlIGEgYml0IG9mIG1vZGVybmlzYXRpb24gaW4K
+PiBnZW5lcmFsLCBpbmNsdWRpbmcgd2l0aCByZWdhcmQgdG8gY2xvY2tpbmcsIHdoaWNoIEkgaGFk
+IGFscmVhZHkgYmVlbgo+IHBsYW5uaW5nIHRvIGRvIGFzIHBhcnQgb2Ygd29ya2luZyBvbiB0aGUg
+U01ESyBib2FyZHMuIMKgQXMgYSByZXN1bHQgb2YKPiBzb21lIHdvcmsgb24gYW5vdGhlciBjaGlw
+IHdpdGggYSB2ZXJ5IHNpbWlsYXIgY2xvY2tpbmcgc3RydWN0dXJlIEkgaGF2ZQo+IGEgcm91Z2gg
+ZHJhZnQgb2Ygd2hhdCBuZWVkcyBkb2luZyBmb3IgdGhlIGNsb2NrcyBhbHJlYWR5LiDCoFRoaXMg
+aXMgcGFydAo+IG9mIHdoeSBpbiBteSBlYXJsaWVyIG1haWwgSSBoYWQgcmVjb21tZW5kZWQgZm9j
+dXNpbmcgb24gdGhlIENQVSBEQUkKPiBkcml2ZXJzIGZvciBub3cgLSB0aGUgbGFjayBvZiB0aGVt
+IGlzIHRoZSBiaWdnZXN0IG9ic3RhY2xlIHRvIGdldHRpbmcKPiB0aGF0IHdvcmsgY2xlYW5lZCB1
+cCBhbmQgdGVzdGVkLgpJIGdldCB5b3VyIHJlY29tbWVuZGF0aW9uLCBidXQgaSBhbSBhbHJlYWR5
+IGluIHRoZSBtaWRkbGUgb2YKc3VibWl0dGluZyBJMlMgbWFjaGluZQpkcml2ZXIgZm9yIDY0MTAt
+V004NTgwIG1haW5saW5lIGFuZCB0aGF0IGlzIG9uZSBvZiB0aGUgdGFza3MgaSBhbSBhc3NpZ25l
+ZC4KT2Zjb3Vyc2UsIGFmdGVyIDY0MTAtd204NTgwIGRyaXZlciBpcyBhbGwgdXAgYW5kIGF2YWls
+YWJsZSB0byBvdXIKdXNlcnMsIGkgY2FuIHN3aXRjaCB0byBBQzk3LgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
