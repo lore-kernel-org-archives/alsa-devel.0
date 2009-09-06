@@ -1,22 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Minor WM8580 enhancements.
-Date: Sun, 6 Sep 2009 14:42:07 +0100
-Message-ID: <20090906134207.GA9009@sirena.org.uk>
-References: <1b68c6790909051709k600c8ecdv5bc457ae8e1242c1@mail.gmail.com>
-	<20090906012232.GA4239@sirena.org.uk>
-	<1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
-	<20090906111133.GA26748@opensource.wolfsonmicro.com>
-	<1b68c6790909060513v4f315f93uf4203408ba5baeab@mail.gmail.com>
+From: Mark Hills <mark@pogo.org.uk>
+Subject: Layla 3G does not recover from ACPI Suspend
+Date: Sun, 6 Sep 2009 15:16:57 +0100 (BST)
+Message-ID: <alpine.BSO.2.00.0909061445140.28864@zrgural.vwaro.pbz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 83E3F24486
+Received: from metheny.ijneb.com (mailout.ijneb.com [212.13.201.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 48D5D244B2
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Sep 2009 15:42:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1b68c6790909060513v4f315f93uf4203408ba5baeab@mail.gmail.com>
+	Sun,  6 Sep 2009 16:16:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,87 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 06, 2009 at 09:13:14PM +0900, jassi brar wrote:
-> On Sun, Sep 6, 2009 at 8:11 PM, Mark
-> Brown<broonie@opensource.wolfsonmicro.com> wrote:
+I have an Echo Layla 3G in my workstation. It works for audio, but does 
+not recover from ACPI suspend to RAM.
 
-> > which are already known. =A0The Samsung CPUs aren't particularly
-> > restrictive here as far as I remember, the fact that they implement
-> > standard I2S helps a lot. =A0If you have datasheet references for any
-> > restrictions you're concerned about please let me know.
+On recovery the system is fine, and the Layla exists in 
+/proc/asound/cards. But when the Layla is used it prints this message to 
+dmesg, multiple times:
 
-> Some SoC may recommend 'preferred' RFS for a given BFS selection.
+   wait_handshake(): Timeout waiting for DSP
 
-> For ex, @16bits/sample in either Master or Slave mode:-
->     SoC recommends     - BCLK=3D{32}         RFS=3D{256, 384}
->     Codec recommends  - BCLK=3D{32, 48}   RFS=3D{384}
+Here are the relevant dmesg lines after awakening:
 
-I'm not sure where these CODEC recommendations come from?
+   Echoaudio Echo3G 0000:03:03.0: restoring config space at offset 0xf (was 0x100, writing 0x104)
+   Echoaudio Echo3G 0000:03:03.0: restoring config space at offset 0x4 (was 0x0, writing 0xe7d00000)
+   Echoaudio Echo3G 0000:03:03.0: restoring config space at offset 0x3 (was 0x0, writing 0xc010)
+   Echoaudio Echo3G 0000:03:03.0: restoring config space at offset 0x1 (was 0x2800000, writing 0x2800112)
+   Echoaudio Echo3G 0000:03:03.0: PCI INT A -> GSI 19 (level, low) -> IRQ 19
 
-> How and what values wud the codec and cpu driver choose if not the
-> machine driver?
+I couldn't see anything loading the firmware. I thought unloading and 
+loading snd-echo3g after recovery would help. This shows the firmware 
+being loaded, but then no ALSA device is shown in /proc/asound/cards. On 
+loading snd-echo3g:
 
-It looks like by "RFS" you mean the MCLK/sample rate ratio?  As
-mentioned in my previous e-mail this is fixed by those two parameters.
+   Echoaudio Echo3G 0000:03:03.0: PCI INT A -> GSI 19 (level, low) -> IRQ 19
+   Echoaudio Echo3G 0000:03:03.0: firmware: requesting ea/echo3g_dsp.fw
+   Echoaudio Echo3G 0000:03:03.0: firmware: requesting ea/loader_dsp.fw
+   Echoaudio Echo3G 0000:03:03.0: PCI INT A disabled
+   Echoaudio Echo3G: probe of 0000:03:03.0 failed with error -5
 
-The BCLK required is fixed by the number of clocks required to transfer
-the samples.  Mostly this is a minimum but there are some CPUs that
-can't tolerate any extra cycles at all (generally due to being generic
-synchronous serial ports simulating an I2S mode) which means that
-selecting the minimum BCLK is generally what you want.
+Is the firmware not being loaded when it should be? Or is there some extra 
+initialisation not being done (eg. init_hw() in echo3g_dsp.c)?
 
-Anything else can be dealt with if something needs it but should only be
-visible to those systems - the overwhelming majority of systems that
-just need to transfer the data should never need to deal with this at
-all.
+All other devices in the system recover fine, but as far as I'm aware no 
+other PCI devices require firmware. It's a Dell x86 system, kernel 
+2.6.31-rc7.
 
-> > All I'm saying is do the CPU drivers first - like I say, the main
-> > obstacle to finishing off refreshing the CODEC driver has been having
-> > the CPU driver to work off. =A0I'd expect to have something quickly giv=
-en
-> > that. =A0There shouldn't be much overall delay to getting the boards fu=
-lly
-> > supported.
+Thanks for any help,
 
-> It seems basic features(play and capture) may simply work with
-> existing Samsung cpu drivers,
-> all we need to do is write the missing machine driver for 6410(as Ben not=
-ed).
-
-> Only after we have _some_ support for 6410 I2S in mainline, we shud go on=
- to
-> implement v40 features in the cpu driver (assuming we are to keep the
-> status quo with Samsung SoCs' I2S architecture).
-
-The lack of IISv4 support is the major issue with these machines - I'd
-be quite surprised to see the machine driver without the 6 channel
-interface, it's the major reason I've not already merged something.
-
-> And if the cpu driver isn't good enough, i can only test it if i have
-> the machine driver.
-
-I'm saying don't spend too much time on it - you'll certainly need
-something to test with but you should be able to get a long way with =
-
-a basic connection to the existing CODEC driver.  I wouldn't want to see
-you spend much effort on the machine driver only to have changes in the
-CODEC driver cause substantial reworking of the machine driver.
-
-How about starting off with an initial machine driver which runs IISv4
-in master mode using the existing CODEC driver?  That's not the ideal
-configuration but it will allow you to work on the CPU support without
-needing to do too much to the CODEC.  I will then try to get the updates
-for the CODEC which would allow the machine driver to be finished off
-done as quickly as possible.  Does that sound like a reasonable plan -
-it should allow us both to work on this without much duplication?
-
-If you do want to work on the CODEC driver then the clocking needs to be
-redone more in line with one of the modern CODEC drivers.  Unfortunately
-I can't point you at a specific one which is quite as flexible to use as
-an example but something more like WM8903 is more what we're looking
-for.  This will need to take account of digital routing for the device
-(which also needs to be implemented).
+-- 
+Mark
