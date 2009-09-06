@@ -1,23 +1,22 @@
-From: jassi brar <jassisinghbrar@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] Minor WM8580 enhancements.
-Date: Sun, 6 Sep 2009 21:13:14 +0900
-Message-ID: <1b68c6790909060513v4f315f93uf4203408ba5baeab@mail.gmail.com>
+Date: Sun, 6 Sep 2009 14:42:07 +0100
+Message-ID: <20090906134207.GA9009@sirena.org.uk>
 References: <1b68c6790909051709k600c8ecdv5bc457ae8e1242c1@mail.gmail.com>
 	<20090906012232.GA4239@sirena.org.uk>
 	<1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
 	<20090906111133.GA26748@opensource.wolfsonmicro.com>
+	<1b68c6790909060513v4f315f93uf4203408ba5baeab@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f204.google.com (mail-qy0-f204.google.com
-	[209.85.221.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72309243F2
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 83E3F24486
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Sep 2009 14:13:16 +0200 (CEST)
-Received: by qyk42 with SMTP id 42so1700896qyk.10
-	for <alsa-devel@alsa-project.org>; Sun, 06 Sep 2009 05:13:14 -0700 (PDT)
-In-Reply-To: <20090906111133.GA26748@opensource.wolfsonmicro.com>
+	Sun,  6 Sep 2009 15:42:15 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1b68c6790909060513v4f315f93uf4203408ba5baeab@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,49 +26,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: jassi brar <jassisinghbrar@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBTZXAgNiwgMjAwOSBhdCA4OjExIFBNLCBNYXJrCkJyb3duPGJyb29uaWVAb3BlbnNv
-dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBTdW4sIFNlcCAwNiwgMjAwOSBhdCAx
-MDo1MDoyNkFNICswOTAwLCBqYXNzaSBicmFyIHdyb3RlOgo+Cj4+IE5vdCBhbGwgY29tYmluYXRp
-b25zIG9mIEJGUyBhbmQgUkZTIGFyZSBwb3NzaWJsZSBhdCBhbGwgTFJDTEsgdmFsdWVzCj4+IGZv
-ciBDUFVfREFJLCBub3QgZm9yIFNhbXN1bmcgU29DcyB0aG9zZSBJIGFtIGF3YXJlIG9mLgo+Cj4g
-VGhlc2UgdGhpbmdzIGFyZSBhbGwgc3VmZmljaWVudGx5IGNvbnN0cmFpbmVkIGJ5IG90aGVyIGZh
-Y3RvcnMgLSBmb3IKPiBleGFtcGxlLCB0aGUgTUNMSyB0byBzYW1wbGUgcmF0ZSByYXRpbyBpcyBm
-aXhlZCBieSB0aG9zZSB0d28gcGFyYW1ldGVycwo+IHdoaWNoIGFyZSBhbHJlYWR5IGtub3duLiDC
-oFRoZSBTYW1zdW5nIENQVXMgYXJlbid0IHBhcnRpY3VsYXJseQo+IHJlc3RyaWN0aXZlIGhlcmUg
-YXMgZmFyIGFzIEkgcmVtZW1iZXIsIHRoZSBmYWN0IHRoYXQgdGhleSBpbXBsZW1lbnQKPiBzdGFu
-ZGFyZCBJMlMgaGVscHMgYSBsb3QuIMKgSWYgeW91IGhhdmUgZGF0YXNoZWV0IHJlZmVyZW5jZXMg
-Zm9yIGFueQo+IHJlc3RyaWN0aW9ucyB5b3UncmUgY29uY2VybmVkIGFib3V0IHBsZWFzZSBsZXQg
-bWUga25vdy4KU29tZSBTb0MgbWF5IHJlY29tbWVuZCAncHJlZmVycmVkJyBSRlMgZm9yIGEgZ2l2
-ZW4gQkZTIHNlbGVjdGlvbi4KCkZvciBleCwgQDE2Yml0cy9zYW1wbGUgaW4gZWl0aGVyIE1hc3Rl
-ciBvciBTbGF2ZSBtb2RlOi0KICAgIFNvQyByZWNvbW1lbmRzICAgICAtIEJDTEs9ezMyfSAgICAg
-ICAgIFJGUz17MjU2LCAzODR9CiAgICBDb2RlYyByZWNvbW1lbmRzICAtIEJDTEs9ezMyLCA0OH0g
-ICBSRlM9ezM4NH0KCkhvdyBhbmQgd2hhdCB2YWx1ZXMgd3VkIHRoZSBjb2RlYyBhbmQgY3B1IGRy
-aXZlciBjaG9vc2UgaWYgbm90IHRoZQptYWNoaW5lIGRyaXZlcj8KCkEgY29kZWMgZHJpdmVyIGlz
-IHN1cHBvc2VkIHRvIHdvcmsgd2l0aCBhbnkgU29DIGFuZAphbiBTb0MgY2FuICJyZWNvbW1lbmQi
-IGFueSBjb21iaW5hdGlvbiBvZiBSRlMtQkZTIHNlbGVjdGlvbi4KSWYgbm90IGZvciBtYWNoaW5l
-IGRyaXZlciwgaG93IHdpbGwgdGhpcyB0aGluZyB3b3JrIG91dD8KCgo+PiBJIGdldCB5b3VyIHJl
-Y29tbWVuZGF0aW9uLCBidXQgaSBhbSBhbHJlYWR5IGluIHRoZSBtaWRkbGUgb2YKPj4gc3VibWl0
-dGluZyBJMlMgbWFjaGluZQo+PiBkcml2ZXIgZm9yIDY0MTAtV004NTgwIG1haW5saW5lIGFuZCB0
-aGF0IGlzIG9uZSBvZiB0aGUgdGFza3MgaSBhbSBhc3NpZ25lZC4KPj4gT2Zjb3Vyc2UsIGFmdGVy
-IDY0MTAtd204NTgwIGRyaXZlciBpcyBhbGwgdXAgYW5kIGF2YWlsYWJsZSB0byBvdXIKPj4gdXNl
-cnMsIGkgY2FuIHN3aXRjaCB0byBBQzk3Lgo+Cj4gQWxsIEknbSBzYXlpbmcgaXMgZG8gdGhlIENQ
-VSBkcml2ZXJzIGZpcnN0IC0gbGlrZSBJIHNheSwgdGhlIG1haW4KPiBvYnN0YWNsZSB0byBmaW5p
-c2hpbmcgb2ZmIHJlZnJlc2hpbmcgdGhlIENPREVDIGRyaXZlciBoYXMgYmVlbiBoYXZpbmcKPiB0
-aGUgQ1BVIGRyaXZlciB0byB3b3JrIG9mZi4gwqBJJ2QgZXhwZWN0IHRvIGhhdmUgc29tZXRoaW5n
-IHF1aWNrbHkgZ2l2ZW4KPiB0aGF0LiDCoFRoZXJlIHNob3VsZG4ndCBiZSBtdWNoIG92ZXJhbGwg
-ZGVsYXkgdG8gZ2V0dGluZyB0aGUgYm9hcmRzIGZ1bGx5Cj4gc3VwcG9ydGVkLgpJdCBzZWVtcyBi
-YXNpYyBmZWF0dXJlcyhwbGF5IGFuZCBjYXB0dXJlKSBtYXkgc2ltcGx5IHdvcmsgd2l0aApleGlz
-dGluZyBTYW1zdW5nIGNwdSBkcml2ZXJzLAphbGwgd2UgbmVlZCB0byBkbyBpcyB3cml0ZSB0aGUg
-bWlzc2luZyBtYWNoaW5lIGRyaXZlciBmb3IgNjQxMChhcyBCZW4gbm90ZWQpLgpPbmx5IGFmdGVy
-IHdlIGhhdmUgX3NvbWVfIHN1cHBvcnQgZm9yIDY0MTAgSTJTIGluIG1haW5saW5lLCB3ZSBzaHVk
-IGdvIG9uIHRvCmltcGxlbWVudCB2NDAgZmVhdHVyZXMgaW4gdGhlIGNwdSBkcml2ZXIgKGFzc3Vt
-aW5nIHdlIGFyZSB0byBrZWVwIHRoZQpzdGF0dXMgcXVvIHdpdGggU2Ftc3VuZyBTb0NzJyBJMlMg
-YXJjaGl0ZWN0dXJlKS4KQW5kIGlmIHRoZSBjcHUgZHJpdmVyIGlzbid0IGdvb2QgZW5vdWdoLCBp
-IGNhbiBvbmx5IHRlc3QgaXQgaWYgaSBoYXZlCnRoZSBtYWNoaW5lIGRyaXZlci4KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Sun, Sep 06, 2009 at 09:13:14PM +0900, jassi brar wrote:
+> On Sun, Sep 6, 2009 at 8:11 PM, Mark
+> Brown<broonie@opensource.wolfsonmicro.com> wrote:
+
+> > which are already known. =A0The Samsung CPUs aren't particularly
+> > restrictive here as far as I remember, the fact that they implement
+> > standard I2S helps a lot. =A0If you have datasheet references for any
+> > restrictions you're concerned about please let me know.
+
+> Some SoC may recommend 'preferred' RFS for a given BFS selection.
+
+> For ex, @16bits/sample in either Master or Slave mode:-
+>     SoC recommends     - BCLK=3D{32}         RFS=3D{256, 384}
+>     Codec recommends  - BCLK=3D{32, 48}   RFS=3D{384}
+
+I'm not sure where these CODEC recommendations come from?
+
+> How and what values wud the codec and cpu driver choose if not the
+> machine driver?
+
+It looks like by "RFS" you mean the MCLK/sample rate ratio?  As
+mentioned in my previous e-mail this is fixed by those two parameters.
+
+The BCLK required is fixed by the number of clocks required to transfer
+the samples.  Mostly this is a minimum but there are some CPUs that
+can't tolerate any extra cycles at all (generally due to being generic
+synchronous serial ports simulating an I2S mode) which means that
+selecting the minimum BCLK is generally what you want.
+
+Anything else can be dealt with if something needs it but should only be
+visible to those systems - the overwhelming majority of systems that
+just need to transfer the data should never need to deal with this at
+all.
+
+> > All I'm saying is do the CPU drivers first - like I say, the main
+> > obstacle to finishing off refreshing the CODEC driver has been having
+> > the CPU driver to work off. =A0I'd expect to have something quickly giv=
+en
+> > that. =A0There shouldn't be much overall delay to getting the boards fu=
+lly
+> > supported.
+
+> It seems basic features(play and capture) may simply work with
+> existing Samsung cpu drivers,
+> all we need to do is write the missing machine driver for 6410(as Ben not=
+ed).
+
+> Only after we have _some_ support for 6410 I2S in mainline, we shud go on=
+ to
+> implement v40 features in the cpu driver (assuming we are to keep the
+> status quo with Samsung SoCs' I2S architecture).
+
+The lack of IISv4 support is the major issue with these machines - I'd
+be quite surprised to see the machine driver without the 6 channel
+interface, it's the major reason I've not already merged something.
+
+> And if the cpu driver isn't good enough, i can only test it if i have
+> the machine driver.
+
+I'm saying don't spend too much time on it - you'll certainly need
+something to test with but you should be able to get a long way with =
+
+a basic connection to the existing CODEC driver.  I wouldn't want to see
+you spend much effort on the machine driver only to have changes in the
+CODEC driver cause substantial reworking of the machine driver.
+
+How about starting off with an initial machine driver which runs IISv4
+in master mode using the existing CODEC driver?  That's not the ideal
+configuration but it will allow you to work on the CPU support without
+needing to do too much to the CODEC.  I will then try to get the updates
+for the CODEC which would allow the machine driver to be finished off
+done as quickly as possible.  Does that sound like a reasonable plan -
+it should allow us both to work on this without much duplication?
+
+If you do want to work on the CODEC driver then the clocking needs to be
+redone more in line with one of the modern CODEC drivers.  Unfortunately
+I can't point you at a specific one which is quite as flexible to use as
+an example but something more like WM8903 is more what we're looking
+for.  This will need to take account of digital routing for the device
+(which also needs to be implemented).
