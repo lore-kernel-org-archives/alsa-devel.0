@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: jassi brar <jassisinghbrar@gmail.com>
 Subject: Re: [PATCH] Minor WM8580 enhancements.
-Date: Sun, 6 Sep 2009 12:11:33 +0100
-Message-ID: <20090906111133.GA26748@opensource.wolfsonmicro.com>
+Date: Sun, 6 Sep 2009 21:13:14 +0900
+Message-ID: <1b68c6790909060513v4f315f93uf4203408ba5baeab@mail.gmail.com>
 References: <1b68c6790909051709k600c8ecdv5bc457ae8e1242c1@mail.gmail.com>
 	<20090906012232.GA4239@sirena.org.uk>
 	<1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
+	<20090906111133.GA26748@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00F8324371
+Received: from mail-qy0-f204.google.com (mail-qy0-f204.google.com
+	[209.85.221.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72309243F2
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Sep 2009 13:11:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
+	Sun,  6 Sep 2009 14:13:16 +0200 (CEST)
+Received: by qyk42 with SMTP id 42so1700896qyk.10
+	for <alsa-devel@alsa-project.org>; Sun, 06 Sep 2009 05:13:14 -0700 (PDT)
+In-Reply-To: <20090906111133.GA26748@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Sep 06, 2009 at 10:50:26AM +0900, jassi brar wrote:
-
-> Not all combinations of BFS and RFS are possible at all LRCLK values
-> for CPU_DAI, not for Samsung SoCs those I am aware of.
-
-These things are all sufficiently constrained by other factors - for
-example, the MCLK to sample rate ratio is fixed by those two parameters
-which are already known.  The Samsung CPUs aren't particularly
-restrictive here as far as I remember, the fact that they implement
-standard I2S helps a lot.  If you have datasheet references for any
-restrictions you're concerned about please let me know.
-
-> I get your recommendation, but i am already in the middle of
-> submitting I2S machine
-> driver for 6410-WM8580 mainline and that is one of the tasks i am assigned.
-> Ofcourse, after 6410-wm8580 driver is all up and available to our
-> users, i can switch to AC97.
-
-All I'm saying is do the CPU drivers first - like I say, the main
-obstacle to finishing off refreshing the CODEC driver has been having
-the CPU driver to work off.  I'd expect to have something quickly given
-that.  There shouldn't be much overall delay to getting the boards fully
-supported.
+T24gU3VuLCBTZXAgNiwgMjAwOSBhdCA4OjExIFBNLCBNYXJrCkJyb3duPGJyb29uaWVAb3BlbnNv
+dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBTdW4sIFNlcCAwNiwgMjAwOSBhdCAx
+MDo1MDoyNkFNICswOTAwLCBqYXNzaSBicmFyIHdyb3RlOgo+Cj4+IE5vdCBhbGwgY29tYmluYXRp
+b25zIG9mIEJGUyBhbmQgUkZTIGFyZSBwb3NzaWJsZSBhdCBhbGwgTFJDTEsgdmFsdWVzCj4+IGZv
+ciBDUFVfREFJLCBub3QgZm9yIFNhbXN1bmcgU29DcyB0aG9zZSBJIGFtIGF3YXJlIG9mLgo+Cj4g
+VGhlc2UgdGhpbmdzIGFyZSBhbGwgc3VmZmljaWVudGx5IGNvbnN0cmFpbmVkIGJ5IG90aGVyIGZh
+Y3RvcnMgLSBmb3IKPiBleGFtcGxlLCB0aGUgTUNMSyB0byBzYW1wbGUgcmF0ZSByYXRpbyBpcyBm
+aXhlZCBieSB0aG9zZSB0d28gcGFyYW1ldGVycwo+IHdoaWNoIGFyZSBhbHJlYWR5IGtub3duLiDC
+oFRoZSBTYW1zdW5nIENQVXMgYXJlbid0IHBhcnRpY3VsYXJseQo+IHJlc3RyaWN0aXZlIGhlcmUg
+YXMgZmFyIGFzIEkgcmVtZW1iZXIsIHRoZSBmYWN0IHRoYXQgdGhleSBpbXBsZW1lbnQKPiBzdGFu
+ZGFyZCBJMlMgaGVscHMgYSBsb3QuIMKgSWYgeW91IGhhdmUgZGF0YXNoZWV0IHJlZmVyZW5jZXMg
+Zm9yIGFueQo+IHJlc3RyaWN0aW9ucyB5b3UncmUgY29uY2VybmVkIGFib3V0IHBsZWFzZSBsZXQg
+bWUga25vdy4KU29tZSBTb0MgbWF5IHJlY29tbWVuZCAncHJlZmVycmVkJyBSRlMgZm9yIGEgZ2l2
+ZW4gQkZTIHNlbGVjdGlvbi4KCkZvciBleCwgQDE2Yml0cy9zYW1wbGUgaW4gZWl0aGVyIE1hc3Rl
+ciBvciBTbGF2ZSBtb2RlOi0KICAgIFNvQyByZWNvbW1lbmRzICAgICAtIEJDTEs9ezMyfSAgICAg
+ICAgIFJGUz17MjU2LCAzODR9CiAgICBDb2RlYyByZWNvbW1lbmRzICAtIEJDTEs9ezMyLCA0OH0g
+ICBSRlM9ezM4NH0KCkhvdyBhbmQgd2hhdCB2YWx1ZXMgd3VkIHRoZSBjb2RlYyBhbmQgY3B1IGRy
+aXZlciBjaG9vc2UgaWYgbm90IHRoZQptYWNoaW5lIGRyaXZlcj8KCkEgY29kZWMgZHJpdmVyIGlz
+IHN1cHBvc2VkIHRvIHdvcmsgd2l0aCBhbnkgU29DIGFuZAphbiBTb0MgY2FuICJyZWNvbW1lbmQi
+IGFueSBjb21iaW5hdGlvbiBvZiBSRlMtQkZTIHNlbGVjdGlvbi4KSWYgbm90IGZvciBtYWNoaW5l
+IGRyaXZlciwgaG93IHdpbGwgdGhpcyB0aGluZyB3b3JrIG91dD8KCgo+PiBJIGdldCB5b3VyIHJl
+Y29tbWVuZGF0aW9uLCBidXQgaSBhbSBhbHJlYWR5IGluIHRoZSBtaWRkbGUgb2YKPj4gc3VibWl0
+dGluZyBJMlMgbWFjaGluZQo+PiBkcml2ZXIgZm9yIDY0MTAtV004NTgwIG1haW5saW5lIGFuZCB0
+aGF0IGlzIG9uZSBvZiB0aGUgdGFza3MgaSBhbSBhc3NpZ25lZC4KPj4gT2Zjb3Vyc2UsIGFmdGVy
+IDY0MTAtd204NTgwIGRyaXZlciBpcyBhbGwgdXAgYW5kIGF2YWlsYWJsZSB0byBvdXIKPj4gdXNl
+cnMsIGkgY2FuIHN3aXRjaCB0byBBQzk3Lgo+Cj4gQWxsIEknbSBzYXlpbmcgaXMgZG8gdGhlIENQ
+VSBkcml2ZXJzIGZpcnN0IC0gbGlrZSBJIHNheSwgdGhlIG1haW4KPiBvYnN0YWNsZSB0byBmaW5p
+c2hpbmcgb2ZmIHJlZnJlc2hpbmcgdGhlIENPREVDIGRyaXZlciBoYXMgYmVlbiBoYXZpbmcKPiB0
+aGUgQ1BVIGRyaXZlciB0byB3b3JrIG9mZi4gwqBJJ2QgZXhwZWN0IHRvIGhhdmUgc29tZXRoaW5n
+IHF1aWNrbHkgZ2l2ZW4KPiB0aGF0LiDCoFRoZXJlIHNob3VsZG4ndCBiZSBtdWNoIG92ZXJhbGwg
+ZGVsYXkgdG8gZ2V0dGluZyB0aGUgYm9hcmRzIGZ1bGx5Cj4gc3VwcG9ydGVkLgpJdCBzZWVtcyBi
+YXNpYyBmZWF0dXJlcyhwbGF5IGFuZCBjYXB0dXJlKSBtYXkgc2ltcGx5IHdvcmsgd2l0aApleGlz
+dGluZyBTYW1zdW5nIGNwdSBkcml2ZXJzLAphbGwgd2UgbmVlZCB0byBkbyBpcyB3cml0ZSB0aGUg
+bWlzc2luZyBtYWNoaW5lIGRyaXZlciBmb3IgNjQxMChhcyBCZW4gbm90ZWQpLgpPbmx5IGFmdGVy
+IHdlIGhhdmUgX3NvbWVfIHN1cHBvcnQgZm9yIDY0MTAgSTJTIGluIG1haW5saW5lLCB3ZSBzaHVk
+IGdvIG9uIHRvCmltcGxlbWVudCB2NDAgZmVhdHVyZXMgaW4gdGhlIGNwdSBkcml2ZXIgKGFzc3Vt
+aW5nIHdlIGFyZSB0byBrZWVwIHRoZQpzdGF0dXMgcXVvIHdpdGggU2Ftc3VuZyBTb0NzJyBJMlMg
+YXJjaGl0ZWN0dXJlKS4KQW5kIGlmIHRoZSBjcHUgZHJpdmVyIGlzbid0IGdvb2QgZW5vdWdoLCBp
+IGNhbiBvbmx5IHRlc3QgaXQgaWYgaSBoYXZlCnRoZSBtYWNoaW5lIGRyaXZlci4KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
