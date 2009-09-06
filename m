@@ -1,18 +1,20 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: Bug-Report: IDT 92HD75B3X5 - Headphone jacks not
- working
-Date: Sun, 06 Sep 2009 10:16:04 +0300
-Message-ID: <4AA361B4.6000907@pardus.org.tr>
-References: <4AA12682.7010000@gmx.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Minor WM8580 enhancements.
+Date: Sun, 6 Sep 2009 12:11:33 +0100
+Message-ID: <20090906111133.GA26748@opensource.wolfsonmicro.com>
+References: <1b68c6790909051709k600c8ecdv5bc457ae8e1242c1@mail.gmail.com>
+	<20090906012232.GA4239@sirena.org.uk>
+	<1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 455AF1037F8
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00F8324371
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Sep 2009 09:16:03 +0200 (CEST)
-In-Reply-To: <4AA12682.7010000@gmx.net>
+	Sun,  6 Sep 2009 13:11:36 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ronald Schmitt <ba1320@gmx.net>
+To: jassi brar <jassisinghbrar@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ronald Schmitt wrote:
->
-> Problem:
->
-> Headphone-Jacks are not working. There is no sound output and the
-> built-in speakers don't shut down when plugging a headphone in.
->
-> Tried several model options with snd-hda-intel options, with
-> "model=hp-dv5" at least I get all speakers working, but still no
-> headphones.
-Give a try to model=dell-m4-1
+On Sun, Sep 06, 2009 at 10:50:26AM +0900, jassi brar wrote:
+
+> Not all combinations of BFS and RFS are possible at all LRCLK values
+> for CPU_DAI, not for Samsung SoCs those I am aware of.
+
+These things are all sufficiently constrained by other factors - for
+example, the MCLK to sample rate ratio is fixed by those two parameters
+which are already known.  The Samsung CPUs aren't particularly
+restrictive here as far as I remember, the fact that they implement
+standard I2S helps a lot.  If you have datasheet references for any
+restrictions you're concerned about please let me know.
+
+> I get your recommendation, but i am already in the middle of
+> submitting I2S machine
+> driver for 6410-WM8580 mainline and that is one of the tasks i am assigned.
+> Ofcourse, after 6410-wm8580 driver is all up and available to our
+> users, i can switch to AC97.
+
+All I'm saying is do the CPU drivers first - like I say, the main
+obstacle to finishing off refreshing the CODEC driver has been having
+the CPU driver to work off.  I'd expect to have something quickly given
+that.  There shouldn't be much overall delay to getting the boards fully
+supported.
