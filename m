@@ -1,19 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Patch for au88x0 driver. Fix audacious issue and
-	add auto reset in case of hardware ADB ctrl failure.
-Date: Mon, 7 Sep 2009 09:47:52 +0800
-Message-ID: <4f3252890909061847j7ec20f10x87362f155bc3bbc5@mail.gmail.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] Minor WM8580 enhancements.
+Date: Mon, 7 Sep 2009 11:35:08 +0900
+Message-ID: <1b68c6790909061935p4611208csf75f4802c669f28a@mail.gmail.com>
+References: <1b68c6790909051709k600c8ecdv5bc457ae8e1242c1@mail.gmail.com>
+	<20090906012232.GA4239@sirena.org.uk>
+	<1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
+	<20090906111133.GA26748@opensource.wolfsonmicro.com>
+	<1b68c6790909060513v4f315f93uf4203408ba5baeab@mail.gmail.com>
+	<20090906134207.GA9009@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f176.google.com (mail-px0-f176.google.com
-	[209.85.216.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 941CA24133
+Received: from mail-qy0-f204.google.com (mail-qy0-f204.google.com
+	[209.85.221.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 29B8824360
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Sep 2009 03:47:53 +0200 (CEST)
-Received: by pxi6 with SMTP id 6so1820887pxi.16
-	for <alsa-devel@alsa-project.org>; Sun, 06 Sep 2009 18:47:52 -0700 (PDT)
+	Mon,  7 Sep 2009 04:35:16 +0200 (CEST)
+Received: by qyk42 with SMTP id 42so1910179qyk.10
+	for <alsa-devel@alsa-project.org>; Sun, 06 Sep 2009 19:35:15 -0700 (PDT)
+In-Reply-To: <20090906134207.GA9009@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,70 +29,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 03 September 2009 21:10, Manuel Jander wrote:
-> does anybody still have a AU88x0 card ? I know they are quite ancient
-> now, but if anyone could give the attached patch a try ? Would be
-> nice.
-> I made the patch against linux-2.6.30.4
-> http://micro.homelinux.net/~mjander/au88x0.diff.gz <http://micro.homelinux.net/%7Emjander/au88x0.diff.gz>
->
-> Best Regards,
-> Manuel
-
-Which version of audaicous (1.5.x or 2.1) are you testing ?
-(alsa-gapless or alsa-ng plugin)
-
-au88x0 most likely cannot support 1 sample per period because of the
-FIFO as described in patent 6167465.
-
-if you look at the source code of alsa-ng and alsa-gapless plugin
-both of them use the own way to calculate the buffer size instead of
-using snd_pcm_hw_params_get_buffer_size()
-
-
-http://hg.atheme.org/audacious-plugins/file/2c0a9bba77d7/src/alsa-ng/alsa-core.c#l1
-
-CHECK_FAIL (snd_pcm_hw_params_set_access (pcm_handle, hwparams,
-SND_PCM_ACCESS_RW_INTERLEAVED), "snd_pcm_hw_params_set_access");
-CHECK_FAIL (snd_pcm_hw_params_set_format (pcm_handle, hwparams, afmt),
-"snd_pcm_hw_params_set_format");
-CHECK_FAIL (snd_pcm_hw_params_set_channels (pcm_handle, hwparams, nch),
-"snd_pcm_hw_params_set_channels");
-CHECK_FAIL (snd_pcm_hw_params_set_rate (pcm_handle, hwparams, rate, 0),
-"snd_pcm_hw_params_set_rate");
-CHECK_FAIL (snd_pcm_hw_params (pcm_handle, hwparams), "snd_pcm_hw_params");
-bitwidth = snd_pcm_format_physical_width(afmt);
-bps = (rate * bitwidth * nch) >> 3;
-buf_size = MAX(aud_cfg->output_buffer_size, 100);
-ringbuf_size = buf_size * bps / 1000;
-
-
-How do you get the "ADB Ctrl failure" error ?
-
-There are two main problem of the au88x0 driver
-1) alsa is unable to calculate the correct value for the three
-functions snd_pcm_hw_params_set_buffer_time_near() ,
-snd_pcm_hw_params_set_period_time_near() and snd_pcm_set_params()
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724
-
-Test case :
-
-alsa-lib/test/pcm_min.c ( change default to hw:0,0 )
-
-Real world case:
-
-gstreamer and winealsa.drv
-
-2) unable to recover when the number of available src is not enough
-(FATAL: ResManager: resource type 1 exhaust)
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2228
-
-test case :
-
-running application to use 15 src ( 7 stereo and one mono stream ) and
-open another stereo stream
+T24gU3VuLCBTZXAgNiwgMjAwOSBhdCAxMDo0MiBQTSwgTWFyawpCcm93bjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gU3VuLCBTZXAgMDYsIDIwMDkgYXQg
+MDk6MTM6MTRQTSArMDkwMCwgamFzc2kgYnJhciB3cm90ZToKPj4gT24gU3VuLCBTZXAgNiwgMjAw
+OSBhdCA4OjExIFBNLCBNYXJrCj4+IEJyb3duPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWlj
+cm8uY29tPiB3cm90ZToKPgo+PiA+IHdoaWNoIGFyZSBhbHJlYWR5IGtub3duLiDCoFRoZSBTYW1z
+dW5nIENQVXMgYXJlbid0IHBhcnRpY3VsYXJseQo+PiA+IHJlc3RyaWN0aXZlIGhlcmUgYXMgZmFy
+IGFzIEkgcmVtZW1iZXIsIHRoZSBmYWN0IHRoYXQgdGhleSBpbXBsZW1lbnQKPj4gPiBzdGFuZGFy
+ZCBJMlMgaGVscHMgYSBsb3QuIMKgSWYgeW91IGhhdmUgZGF0YXNoZWV0IHJlZmVyZW5jZXMgZm9y
+IGFueQo+PiA+IHJlc3RyaWN0aW9ucyB5b3UncmUgY29uY2VybmVkIGFib3V0IHBsZWFzZSBsZXQg
+bWUga25vdy4KPgo+PiBTb21lIFNvQyBtYXkgcmVjb21tZW5kICdwcmVmZXJyZWQnIFJGUyBmb3Ig
+YSBnaXZlbiBCRlMgc2VsZWN0aW9uLgo+Cj4+IEZvciBleCwgQDE2Yml0cy9zYW1wbGUgaW4gZWl0
+aGVyIE1hc3RlciBvciBTbGF2ZSBtb2RlOi0KPj4gwqAgwqAgU29DIHJlY29tbWVuZHMgwqAgwqAg
+LSBCQ0xLPXszMn0gwqAgwqAgwqAgwqAgUkZTPXsyNTYsIDM4NH0KPj4gwqAgwqAgQ29kZWMgcmVj
+b21tZW5kcyDCoC0gQkNMSz17MzIsIDQ4fSDCoCBSRlM9ezM4NH0KPgo+IEknbSBub3Qgc3VyZSB3
+aGVyZSB0aGVzZSBDT0RFQyByZWNvbW1lbmRhdGlvbnMgY29tZSBmcm9tPwoKV2VsbCwgbXkgZXhh
+bXBsZSB3YXMgaW5zcGlyZWQgZnJvbSBvbmUgcmVjb21tZW5kYXRpb24vY29uc3RyYWludCBpCmZv
+dW5kIGF0IFBhZ2UtMjMsIG9mIFdNODU4MEEgbWFudWFsIFJldi00LjcgTWFyY2gtMjAwOS4KSXQg
+aW5kaWNhdGVzIHRoYXQgd2UgY2FuJ3QgaGF2ZSBCQ0xLIGFzIDE2ZnMgaWYgUkZTKE1DTEsvTFJD
+TEspIGlzCmVpdGhlciAxMjhmcyBvciAxOTJmcy4KCkluIFdNODU4MC1NYXN0ZXIgbW9kZSBhbmQg
+OC1iaXRzL3NhbXBsZSBwbGF5YmFjaywgd2hlcmUgdGhlCmF0dGFjaGVkIFNvQyhTbGF2ZSkgdGFr
+ZXMgaW4gTUNMSyB0b28gYW5kIHN1cHBvcnRzIDE5MmZzIGJ1dCBub3QKMTI4ZnMgbWNsay9scmNs
+ayBhbmQgc3VwcG9ydCAxNmZzIGFuZCAxMjhmcyBhcyBiY2xrL2xyY2xrLgpXaG8gZGVjaWRlcyB3
+aGF0IE1DTEsgYW5kIEJDTEsgcmF0aW8gc2h1ZCBiZT8KCkluZGVwZW5kZW50bHksIFNvQyB3aWxs
+IGNvbWUgdG8gY2hvb3NlIDE2ZnMgQkNMSyBAMTkyZnNNQ0xLCndoaWxlIFdNODU4MCBzZXRzIDEy
+OGZzIEJDTEsgQDEyOGZzTUNMSy4KT2J2aW91c2x5IHRoZXNlICd1c3VhbCcgc2V0dGluZ3Mgd29u
+J3Qgd29yayB3aGVyZWFzIGl0IHdhcyBzdXBwb3NlZAp0byB3b3JrIChAMTI4ZnMtQkNMSywgMTky
+ZnMtTUNMSykuCgpCdHcsIHdpdGhvdXQgdGhlIHBhdGNoIHRoZXJlIGlzIG5vIHdheSB0byBzZXQg
+TUNMSyBhbmQgQkNMSyByYXRpb3MuCkhvdyBhbmQgd2hlcmUgYXJlIHRoZXkgdGFrZW4gY2FyZSBv
+Zj8KCj4+IEhvdyBhbmQgd2hhdCB2YWx1ZXMgd3VkIHRoZSBjb2RlYyBhbmQgY3B1IGRyaXZlciBj
+aG9vc2UgaWYgbm90IHRoZQo+PiBtYWNoaW5lIGRyaXZlcj8KPgo+IEl0IGxvb2tzIGxpa2UgYnkg
+IlJGUyIgeW91IG1lYW4gdGhlIE1DTEsvc2FtcGxlIHJhdGUgcmF0aW8/IMKgQXMKPiBtZW50aW9u
+ZWQgaW4gbXkgcHJldmlvdXMgZS1tYWlsIHRoaXMgaXMgZml4ZWQgYnkgdGhvc2UgdHdvIHBhcmFt
+ZXRlcnMuCgpGdXJ0aGVyIHRvIG15IGFib3ZlIHN0YXRlZCBzaXR1YXRpb24sIHRoZXJlIGlzIG5v
+IHdheSBvZiBrbm93aW5nIHRoZQpNQ0xLIHZhbHVlIGZvciB0aGUgV004NTgwIGRyaXZlciwgaWYg
+aXRzIE1DTEsgcGluIGlzIGRpcmVjdGx5IGlucHV0CjguNDY3Mk1IeiBjbG9jay4KVGhlcmUgSSB0
+aGluayB3ZSBuZWVkIHRvIHNldCB0aGUgTUNMSy1SYXRpbyBleHBsaWNpdGx5LgoKPiBUaGUgQkNM
+SyByZXF1aXJlZCBpcyBmaXhlZCBieSB0aGUgbnVtYmVyIG9mIGNsb2NrcyByZXF1aXJlZCB0byB0
+cmFuc2Zlcgo+IHRoZSBzYW1wbGVzLiDCoE1vc3RseSB0aGlzIGlzIGEgbWluaW11bSBidXQgdGhl
+cmUgYXJlIHNvbWUgQ1BVcyB0aGF0Cj4gY2FuJ3QgdG9sZXJhdGUgYW55IGV4dHJhIGN5Y2xlcyBh
+dCBhbGwgKGdlbmVyYWxseSBkdWUgdG8gYmVpbmcgZ2VuZXJpYwo+IHN5bmNocm9ub3VzIHNlcmlh
+bCBwb3J0cyBzaW11bGF0aW5nIGFuIEkyUyBtb2RlKSB3aGljaCBtZWFucyB0aGF0Cj4gc2VsZWN0
+aW5nIHRoZSBtaW5pbXVtIEJDTEsgaXMgZ2VuZXJhbGx5IHdoYXQgeW91IHdhbnQuCkdlbmVyYWxs
+eSwgYnV0IG5vdCBhbHdheXMuIEZvciBhYmVycmF0aW9ucywgbGV0IHRoZXJlIGJlIGEgd2F5IHRv
+IHNldAondW51c3VhbCcgYnV0IHN1cHBvcnRlZCBCQ0xLIFJhdGlvcy4KSnVzdCBhcyBXTTg1ODAg
+aGFzIGEgY29uc3RyYWludCBvbiBCQ0xLKDEyOGZzKSBhdCBNQ0xLPTEyOCwxOTJmcywgc29tZQpT
+b0MgbWF5IGhhdmUgYSBjb25zdHJhaW50IG9mIHVzaW5nIEJDTEs9NDhmcyBmb3IgTUNMSz0zODRm
+cwpAMTYtYml0cy9zYW1wbGUuCgo+PiA+IEFsbCBJJ20gc2F5aW5nIGlzIGRvIHRoZSBDUFUgZHJp
+dmVycyBmaXJzdCAtIGxpa2UgSSBzYXksIHRoZSBtYWluCj4+ID4gb2JzdGFjbGUgdG8gZmluaXNo
+aW5nIG9mZiByZWZyZXNoaW5nIHRoZSBDT0RFQyBkcml2ZXIgaGFzIGJlZW4gaGF2aW5nCj4+ID4g
+dGhlIENQVSBkcml2ZXIgdG8gd29yayBvZmYuIMKgSSdkIGV4cGVjdCB0byBoYXZlIHNvbWV0aGlu
+ZyBxdWlja2x5IGdpdmVuCj4+ID4gdGhhdC4gwqBUaGVyZSBzaG91bGRuJ3QgYmUgbXVjaCBvdmVy
+YWxsIGRlbGF5IHRvIGdldHRpbmcgdGhlIGJvYXJkcyBmdWxseQo+PiA+IHN1cHBvcnRlZC4KPgo+
+PiBJdCBzZWVtcyBiYXNpYyBmZWF0dXJlcyhwbGF5IGFuZCBjYXB0dXJlKSBtYXkgc2ltcGx5IHdv
+cmsgd2l0aAo+PiBleGlzdGluZyBTYW1zdW5nIGNwdSBkcml2ZXJzLAo+PiBhbGwgd2UgbmVlZCB0
+byBkbyBpcyB3cml0ZSB0aGUgbWlzc2luZyBtYWNoaW5lIGRyaXZlciBmb3IgNjQxMChhcyBCZW4g
+bm90ZWQpLgo+Cj4+IE9ubHkgYWZ0ZXIgd2UgaGF2ZSBfc29tZV8gc3VwcG9ydCBmb3IgNjQxMCBJ
+MlMgaW4gbWFpbmxpbmUsIHdlIHNodWQgZ28gb24gdG8KPj4gaW1wbGVtZW50IHY0MCBmZWF0dXJl
+cyBpbiB0aGUgY3B1IGRyaXZlciAoYXNzdW1pbmcgd2UgYXJlIHRvIGtlZXAgdGhlCj4+IHN0YXR1
+cyBxdW8gd2l0aCBTYW1zdW5nIFNvQ3MnIEkyUyBhcmNoaXRlY3R1cmUpLgo+Cj4gVGhlIGxhY2sg
+b2YgSUlTdjQgc3VwcG9ydCBpcyB0aGUgbWFqb3IgaXNzdWUgd2l0aCB0aGVzZSBtYWNoaW5lcyAt
+IEknZAo+IGJlIHF1aXRlIHN1cnByaXNlZCB0byBzZWUgdGhlIG1hY2hpbmUgZHJpdmVyIHdpdGhv
+dXQgdGhlIDYgY2hhbm5lbAo+IGludGVyZmFjZSwgaXQncyB0aGUgbWFqb3IgcmVhc29uIEkndmUg
+bm90IGFscmVhZHkgbWVyZ2VkIHNvbWV0aGluZy4KT2sgYnV0IHRoZSBmaXJzdCByZXF1aXJlbWVu
+dCBvZiBvdXIgdXNlcnMgaXMgaGF2aW5nIG1haW5saW5lIHN1cHBvcnQKZm9yIHNpbXBsZSBTdGVy
+ZW8gb3BlcmF0aW9ucyBpbiB0aGUgbWFpbmxpbmUuIDUuMSBzdXBwb3J0IGNvbWVzIG5leHQuCgo+
+IEhvdyBhYm91dCBzdGFydGluZyBvZmYgd2l0aCBhbiBpbml0aWFsIG1hY2hpbmUgZHJpdmVyIHdo
+aWNoIHJ1bnMgSUlTdjQKPiBpbiBtYXN0ZXIgbW9kZSB1c2luZyB0aGUgZXhpc3RpbmcgQ09ERUMg
+ZHJpdmVyPyDCoFRoYXQncyBub3QgdGhlIGlkZWFsCj4gY29uZmlndXJhdGlvbiBidXQgaXQgd2ls
+bCBhbGxvdyB5b3UgdG8gd29yayBvbiB0aGUgQ1BVIHN1cHBvcnQgd2l0aG91dAo+IG5lZWRpbmcg
+dG8gZG8gdG9vIG11Y2ggdG8gdGhlIENPREVDLgpZZXMsIHRoYXQgaXMgd2hhdCBpIGFtIGRvaW5n
+LihpIG1hZGUgY2hhbmdlcyB0byB3bTg1ODAgbm90IHJlY2VudGx5KS4KSSBoYXZlIENQVSwgQ09E
+RUMgYW5kIE1BQ0hJTkUgZHJpdmVyIGZvciA2NDEwIGluIG15IHRyZWUsIGkgYW0KYWRqdXN0aW5n
+IHRoZW0gdG8gZml0IGluIG1haW5saW5lIGNvZGUuCkkgaG9wZSB0byBlbmQgdXAgd2l0aCBzbWFs
+bCBwYXRjaGVzIGZvciBDUFUgYW5kIENPREVDKHRoaXMgcGF0Y2gpCmRyaXZlcnMgYW5kIHN1Ym1p
+dHRpbmcgYSBuZXcgTUFDSElORSBkcml2ZXIuCgo+IMKgSSB3aWxsIHRoZW4gdHJ5IHRvIGdldCB0
+aGUgdXBkYXRlcwo+IGZvciB0aGUgQ09ERUMgd2hpY2ggd291bGQgYWxsb3cgdGhlIG1hY2hpbmUg
+ZHJpdmVyIHRvIGJlIGZpbmlzaGVkIG9mZgo+IGRvbmUgYXMgcXVpY2tseSBhcyBwb3NzaWJsZS4g
+wqBEb2VzIHRoYXQgc291bmQgbGlrZSBhIHJlYXNvbmFibGUgcGxhbiAtCj4gaXQgc2hvdWxkIGFs
+bG93IHVzIGJvdGggdG8gd29yayBvbiB0aGlzIHdpdGhvdXQgbXVjaCBkdXBsaWNhdGlvbj8KRmlu
+ZS4KCgo+IElmIHlvdSBkbyB3YW50IHRvIHdvcmsgb24gdGhlIENPREVDIGRyaXZlcgpJIGRvIG5v
+dCBwbGFuIHRvIHdvcmsgb24gdGhlIENPREVDIGRyaXZlci4KSSBqdXN0IHRyaWVkIHRvIHB1c2gg
+dGhlIGNoYW5nZXMgSSBoYWQgbWFkZSB3aGlsZSBpbXBsZW1lbnRpbmcgYW5kCnRlc3RpbmcgMmNo
+YW5uZWwgU29DIGRyaXZlcnMgd2l0aCBNYXN0ZXIvU2xhdmUsIHN1c3BlbmQvcmVzdW1lIGFuZApG
+dWxsRHVwbGV4IGZlYXR1cmVzIGluIHRoZSBTYW1zdW5nIHRyZWUuCkkgaGF2ZSBubyBtb3JlIHBh
+dGNoZXMgZm9yIGFueSBDT0RFQyBkcml2ZXIuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
