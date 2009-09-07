@@ -1,28 +1,20 @@
-From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
-Subject: Re: snd_dummy on Centos - Redhat
-Date: Mon, 7 Sep 2009 21:05:08 +0200
-Message-ID: <7c5010d60909071205o74873cadh5eb3703224531940@mail.gmail.com>
-References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
-	<7c5010d60909040233n42913563va2ed695bc383274f@mail.gmail.com>
-	<s5h3a73109p.wl%tiwai@suse.de> <s5hzl9bypj3.wl%tiwai@suse.de>
-	<7c5010d60909040338x69700bf5kef90819625679d1e@mail.gmail.com>
-	<s5hpra7ynut.wl%tiwai@suse.de>
-	<7c5010d60909040411y76818280p7b7ded46f2df9b64@mail.gmail.com>
-	<7c5010d60909040910l2cd54890rc89222b17ca6d8eb@mail.gmail.com>
-	<7c5010d60909070400n48b5d494h1769285c958e9626@mail.gmail.com>
-	<s5heiqjxbc8.wl%tiwai@suse.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Problems with safe API and snd-cs46xx
+Date: Tue, 8 Sep 2009 00:47:00 +0200
+Message-ID: <20090907224659.GA5917@tango.0pointer.de>
+References: <a080dbc80909050524o7b00ceas46184b52fdac9cbc@mail.gmail.com>
+	<s5hljkrrl3s.wl%tiwai@suse.de> <1252330155.3283.5.camel@localhost>
+	<s5hbplmssrg.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
-	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA82D244B3
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id A2ECF2439C
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Sep 2009 21:05:10 +0200 (CEST)
-Received: by bwz25 with SMTP id 25so2196035bwz.32
-	for <alsa-devel@alsa-project.org>; Mon, 07 Sep 2009 12:05:08 -0700 (PDT)
-In-Reply-To: <s5heiqjxbc8.wl%tiwai@suse.de>
+	Tue,  8 Sep 2009 00:47:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hbplmssrg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,33 +25,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Cc: Tony Vroon <tony@linx.net>, alsa-devel@alsa-project.org, Sophie Hamilton <sophie-alsa@theblob.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 7, 2009 at 1:07 PM, Takashi Iwai<tiwai@suse.de> wrote:
-> BTW, I have merged topic/dummy-hrtimer branch into sound git tree now.
-> The standard alsa-driver-snapshot tarball below includes the patches,
-> too.
-> =A0 =A0ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-d=
-river-snapshot.tar.gz
->
+On Mon, 07.09.09 17:01, Takashi Iwai (tiwai@suse.de) wrote:
 
-Takashi,
+> Maybe a bit "safer" option would be to check the period min size and
+> raise to a sane value as a workaround.
+> 
+> Or, if the period size doesn't matter much but rather the buffer size
+> is more important, you can first limit the buffer size as max.  Then
+> call snd_pcm_hw_params().  Without this, the PCM core determines the
+> period size first, then the buffer size.
 
-I've tested your last tarball all day long :-).
+Hmm, I wonder what this means for PulseAudio. In the past we had
+various problems with the functions for setting the buffer metrics and
+the order in which we called them. 
 
-Turned out that the Skype client asks for a too much big buffer (or at
-least so it appears to me).
+For a short while we used to call
+snd_pcm_hw_params_set_buffer_size_near() first, then
+snd_pcm_hw_params_set_periods_near() and then snd_pcm_hw_params().
 
-Modifying the MAX_BUFFER_SIZE to 1024 and the MAX_PERIOD_SIZE to 512
-it runs smoothly and nice.
+This turned out to cause a couple of issues with some drivers (i think
+CS46xx is one of them, ice1712 another, I lack the hw in question, so
+i never tried to track this down further). Basically on those drivers
+both _set_buffer_size_near() and _set_periods_near() would fail with
+EINVAL for some reason and then causing snd_pcm_hw_params() to return
+ENOENT. Removing the two calls and calling snd_pcm_hw_params() would
+however work. Changing the order of the first two calls, i.e. doing
+first _set_periods_near() and then _set_buffer_size_near() would make
+both calls succeed and the snd_pcm_hw_params(), too.
 
-Would you mind to add those two as configurable parameters? That would
-allows for the direct usage of snd-dummy with the various kernels and
-Skype client without any source-code modifications, the ideal solution
-:-) .
+It would be good if the ALSA docs would actually mention in which
+order those functions need to be called, if the order matters, which
+it apparently does.
 
-By the way, the memory consumption and the load are waaaaaay lower!!!!
-Very very very nice!
+(Hmm, and while we are at it. Ssome other driver I don't posess,
+ens1371 has some issues with the buffer size: if you ask it for 65536
+bytes in the playback buffer it will only agree to 65532. If the next
+time you ask for 65532 right-away it will only agree to 65528, and so on...)
 
--giovanni
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
