@@ -1,21 +1,28 @@
-From: Sophie Hamilton <sophie-alsa@theblob.org>
-Subject: Re: Problems with safe API and snd-cs46xx
-Date: Mon, 7 Sep 2009 18:04:12 +0100
-Message-ID: <a080dbc80909071004h13a17f2bg3dd06ffd90cd72f4@mail.gmail.com>
-References: <a080dbc80909050524o7b00ceas46184b52fdac9cbc@mail.gmail.com>
-	<s5hljkrrl3s.wl%tiwai@suse.de>
-	<a080dbc80909070802u544c185erc1efb3f87a95a190@mail.gmail.com>
+From: Giovanni Maruzzelli <gmaruzz.lists@gmail.com>
+Subject: Re: snd_dummy on Centos - Redhat
+Date: Mon, 7 Sep 2009 21:05:08 +0200
+Message-ID: <7c5010d60909071205o74873cadh5eb3703224531940@mail.gmail.com>
+References: <7c5010d60909020912k1b9b64bdsab2363c4762e8c5c@mail.gmail.com>
+	<7c5010d60909040233n42913563va2ed695bc383274f@mail.gmail.com>
+	<s5h3a73109p.wl%tiwai@suse.de> <s5hzl9bypj3.wl%tiwai@suse.de>
+	<7c5010d60909040338x69700bf5kef90819625679d1e@mail.gmail.com>
+	<s5hpra7ynut.wl%tiwai@suse.de>
+	<7c5010d60909040411y76818280p7b7ded46f2df9b64@mail.gmail.com>
+	<7c5010d60909040910l2cd54890rc89222b17ca6d8eb@mail.gmail.com>
+	<7c5010d60909070400n48b5d494h1769285c958e9626@mail.gmail.com>
+	<s5heiqjxbc8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0015175cff16c1e1c40472ffd604
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD44F24458
+Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
+	[209.85.218.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA82D244B3
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Sep 2009 19:04:14 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so2171018fxm.32
-	for <alsa-devel@alsa-project.org>; Mon, 07 Sep 2009 10:04:13 -0700 (PDT)
-In-Reply-To: <a080dbc80909070802u544c185erc1efb3f87a95a190@mail.gmail.com>
+	Mon,  7 Sep 2009 21:05:10 +0200 (CEST)
+Received: by bwz25 with SMTP id 25so2196035bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 07 Sep 2009 12:05:08 -0700 (PDT)
+In-Reply-To: <s5heiqjxbc8.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,50 +33,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
---0015175cff16c1e1c40472ffd604
-Content-Type: text/plain; charset=ISO-8859-1
+On Mon, Sep 7, 2009 at 1:07 PM, Takashi Iwai<tiwai@suse.de> wrote:
+> BTW, I have merged topic/dummy-hrtimer branch into sound git tree now.
+> The standard alsa-driver-snapshot tarball below includes the patches,
+> too.
+> =A0 =A0ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-d=
+river-snapshot.tar.gz
+>
 
-On 9/7/09, Sophie Hamilton <sophie-alsa@theblob.org> wrote:
->  I decided to go investigating myself and discovered that the cs46xx
->  driver has a silly minimum period size declared of 1. Increasing this
->  to 256 fixes the problem, though I haven't yet tested to see if lower
->  values will work too. (I'll do this and regenerate the patch later.)
+Takashi,
 
-Turns out that a value of 64 is the optimum value. I've regenerated
-the patch, and attached it again. (And since I know now that this list
-doesn't strip attachments, I didn't upload the new one.)
+I've tested your last tarball all day long :-).
 
-This should be the final patch. How should I go about submitting this?
+Turned out that the Skype client asks for a too much big buffer (or at
+least so it appears to me).
 
- - Sophie.
+Modifying the MAX_BUFFER_SIZE to 1024 and the MAX_PERIOD_SIZE to 512
+it runs smoothly and nice.
 
---0015175cff16c1e1c40472ffd604
-Content-Type: application/octet-stream; name="cs46xx-fix.patch"
-Content-Disposition: attachment; filename="cs46xx-fix.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_fzbgpb30
+Would you mind to add those two as configurable parameters? That would
+allows for the direct usage of snd-dummy with the various kernels and
+Skype client without any source-code modifications, the ideal solution
+:-) .
 
-VGhpcyBwYXRjaCB3aWxsIGZpeCB0aGUgY3M0Nnh4IG1pbmltdW0gcGVyaW9kIHNpemUsIGFsbG93
-aW5nIHBsYXliYWNrCm9uIGNzNDZ4eC1iYXNlZCBjYXJkcy4KClNpZ25lZC1vZmYtYnk6IFNvcGhp
-ZSBIYW1pbHRvbiA8a2VybmVsQHRoZWJsb2Iub3JnPgoKLS0tIGEvc291bmQvcGNpL2NzNDZ4eC9j
-czQ2eHhfbGliLmgJMjAwOS0wOS0wNyAxNToyNDoyNi4wMDAwMDAwMDAgKzAxMDAKKysrIGIvc291
-bmQvcGNpL2NzNDZ4eC9jczQ2eHhfbGliLmgJMjAwOS0wOS0wNyAxNTo0MTozMS4wMDAwMDAwMDAg
-KzAxMDAKQEAgLTM1LDcgKzM1LDcgQEAKIAogCiAjaWZkZWYgQ09ORklHX1NORF9DUzQ2WFhfTkVX
-X0RTUAotI2RlZmluZSBDUzQ2WFhfTUlOX1BFUklPRF9TSVpFIDEKKyNkZWZpbmUgQ1M0NlhYX01J
-Tl9QRVJJT0RfU0laRSA2NAogI2RlZmluZSBDUzQ2WFhfTUFYX1BFUklPRF9TSVpFIDEwMjQqMTAy
-NAogI2Vsc2UKICNkZWZpbmUgQ1M0NlhYX01JTl9QRVJJT0RfU0laRSAyMDQ4Cg==
---0015175cff16c1e1c40472ffd604
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+By the way, the memory consumption and the load are waaaaaay lower!!!!
+Very very very nice!
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0015175cff16c1e1c40472ffd604--
+-giovanni
