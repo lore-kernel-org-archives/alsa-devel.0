@@ -1,25 +1,25 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] Minor WM8580 enhancements.
-Date: Mon, 7 Sep 2009 11:35:08 +0900
-Message-ID: <1b68c6790909061935p4611208csf75f4802c669f28a@mail.gmail.com>
-References: <1b68c6790909051709k600c8ecdv5bc457ae8e1242c1@mail.gmail.com>
-	<20090906012232.GA4239@sirena.org.uk>
-	<1b68c6790909051850y2386addhae71898ada96954@mail.gmail.com>
-	<20090906111133.GA26748@opensource.wolfsonmicro.com>
-	<1b68c6790909060513v4f315f93uf4203408ba5baeab@mail.gmail.com>
-	<20090906134207.GA9009@sirena.org.uk>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: [PATCH] ASoC: Factor out I2C 8 bit address 8 bit data
+	I/O
+Date: Mon, 07 Sep 2009 12:04:37 +0900
+Message-ID: <4AA47845.8070403@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f204.google.com (mail-qy0-f204.google.com
-	[209.85.221.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29B8824360
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0194224390
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Sep 2009 04:35:16 +0200 (CEST)
-Received: by qyk42 with SMTP id 42so1910179qyk.10
-	for <alsa-devel@alsa-project.org>; Sun, 06 Sep 2009 19:35:15 -0700 (PDT)
-In-Reply-To: <20090906134207.GA9009@sirena.org.uk>
+	Mon,  7 Sep 2009 05:06:41 +0200 (CEST)
+Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KPK0072DZ7PK1@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 07 Sep 2009 12:04:38 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KPK002IWZ7Q2L@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 07 Sep 2009 12:04:38 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,95 +29,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBTZXAgNiwgMjAwOSBhdCAxMDo0MiBQTSwgTWFyawpCcm93bjxicm9vbmllQG9wZW5z
-b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gU3VuLCBTZXAgMDYsIDIwMDkgYXQg
-MDk6MTM6MTRQTSArMDkwMCwgamFzc2kgYnJhciB3cm90ZToKPj4gT24gU3VuLCBTZXAgNiwgMjAw
-OSBhdCA4OjExIFBNLCBNYXJrCj4+IEJyb3duPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWlj
-cm8uY29tPiB3cm90ZToKPgo+PiA+IHdoaWNoIGFyZSBhbHJlYWR5IGtub3duLiDCoFRoZSBTYW1z
-dW5nIENQVXMgYXJlbid0IHBhcnRpY3VsYXJseQo+PiA+IHJlc3RyaWN0aXZlIGhlcmUgYXMgZmFy
-IGFzIEkgcmVtZW1iZXIsIHRoZSBmYWN0IHRoYXQgdGhleSBpbXBsZW1lbnQKPj4gPiBzdGFuZGFy
-ZCBJMlMgaGVscHMgYSBsb3QuIMKgSWYgeW91IGhhdmUgZGF0YXNoZWV0IHJlZmVyZW5jZXMgZm9y
-IGFueQo+PiA+IHJlc3RyaWN0aW9ucyB5b3UncmUgY29uY2VybmVkIGFib3V0IHBsZWFzZSBsZXQg
-bWUga25vdy4KPgo+PiBTb21lIFNvQyBtYXkgcmVjb21tZW5kICdwcmVmZXJyZWQnIFJGUyBmb3Ig
-YSBnaXZlbiBCRlMgc2VsZWN0aW9uLgo+Cj4+IEZvciBleCwgQDE2Yml0cy9zYW1wbGUgaW4gZWl0
-aGVyIE1hc3RlciBvciBTbGF2ZSBtb2RlOi0KPj4gwqAgwqAgU29DIHJlY29tbWVuZHMgwqAgwqAg
-LSBCQ0xLPXszMn0gwqAgwqAgwqAgwqAgUkZTPXsyNTYsIDM4NH0KPj4gwqAgwqAgQ29kZWMgcmVj
-b21tZW5kcyDCoC0gQkNMSz17MzIsIDQ4fSDCoCBSRlM9ezM4NH0KPgo+IEknbSBub3Qgc3VyZSB3
-aGVyZSB0aGVzZSBDT0RFQyByZWNvbW1lbmRhdGlvbnMgY29tZSBmcm9tPwoKV2VsbCwgbXkgZXhh
-bXBsZSB3YXMgaW5zcGlyZWQgZnJvbSBvbmUgcmVjb21tZW5kYXRpb24vY29uc3RyYWludCBpCmZv
-dW5kIGF0IFBhZ2UtMjMsIG9mIFdNODU4MEEgbWFudWFsIFJldi00LjcgTWFyY2gtMjAwOS4KSXQg
-aW5kaWNhdGVzIHRoYXQgd2UgY2FuJ3QgaGF2ZSBCQ0xLIGFzIDE2ZnMgaWYgUkZTKE1DTEsvTFJD
-TEspIGlzCmVpdGhlciAxMjhmcyBvciAxOTJmcy4KCkluIFdNODU4MC1NYXN0ZXIgbW9kZSBhbmQg
-OC1iaXRzL3NhbXBsZSBwbGF5YmFjaywgd2hlcmUgdGhlCmF0dGFjaGVkIFNvQyhTbGF2ZSkgdGFr
-ZXMgaW4gTUNMSyB0b28gYW5kIHN1cHBvcnRzIDE5MmZzIGJ1dCBub3QKMTI4ZnMgbWNsay9scmNs
-ayBhbmQgc3VwcG9ydCAxNmZzIGFuZCAxMjhmcyBhcyBiY2xrL2xyY2xrLgpXaG8gZGVjaWRlcyB3
-aGF0IE1DTEsgYW5kIEJDTEsgcmF0aW8gc2h1ZCBiZT8KCkluZGVwZW5kZW50bHksIFNvQyB3aWxs
-IGNvbWUgdG8gY2hvb3NlIDE2ZnMgQkNMSyBAMTkyZnNNQ0xLCndoaWxlIFdNODU4MCBzZXRzIDEy
-OGZzIEJDTEsgQDEyOGZzTUNMSy4KT2J2aW91c2x5IHRoZXNlICd1c3VhbCcgc2V0dGluZ3Mgd29u
-J3Qgd29yayB3aGVyZWFzIGl0IHdhcyBzdXBwb3NlZAp0byB3b3JrIChAMTI4ZnMtQkNMSywgMTky
-ZnMtTUNMSykuCgpCdHcsIHdpdGhvdXQgdGhlIHBhdGNoIHRoZXJlIGlzIG5vIHdheSB0byBzZXQg
-TUNMSyBhbmQgQkNMSyByYXRpb3MuCkhvdyBhbmQgd2hlcmUgYXJlIHRoZXkgdGFrZW4gY2FyZSBv
-Zj8KCj4+IEhvdyBhbmQgd2hhdCB2YWx1ZXMgd3VkIHRoZSBjb2RlYyBhbmQgY3B1IGRyaXZlciBj
-aG9vc2UgaWYgbm90IHRoZQo+PiBtYWNoaW5lIGRyaXZlcj8KPgo+IEl0IGxvb2tzIGxpa2UgYnkg
-IlJGUyIgeW91IG1lYW4gdGhlIE1DTEsvc2FtcGxlIHJhdGUgcmF0aW8/IMKgQXMKPiBtZW50aW9u
-ZWQgaW4gbXkgcHJldmlvdXMgZS1tYWlsIHRoaXMgaXMgZml4ZWQgYnkgdGhvc2UgdHdvIHBhcmFt
-ZXRlcnMuCgpGdXJ0aGVyIHRvIG15IGFib3ZlIHN0YXRlZCBzaXR1YXRpb24sIHRoZXJlIGlzIG5v
-IHdheSBvZiBrbm93aW5nIHRoZQpNQ0xLIHZhbHVlIGZvciB0aGUgV004NTgwIGRyaXZlciwgaWYg
-aXRzIE1DTEsgcGluIGlzIGRpcmVjdGx5IGlucHV0CjguNDY3Mk1IeiBjbG9jay4KVGhlcmUgSSB0
-aGluayB3ZSBuZWVkIHRvIHNldCB0aGUgTUNMSy1SYXRpbyBleHBsaWNpdGx5LgoKPiBUaGUgQkNM
-SyByZXF1aXJlZCBpcyBmaXhlZCBieSB0aGUgbnVtYmVyIG9mIGNsb2NrcyByZXF1aXJlZCB0byB0
-cmFuc2Zlcgo+IHRoZSBzYW1wbGVzLiDCoE1vc3RseSB0aGlzIGlzIGEgbWluaW11bSBidXQgdGhl
-cmUgYXJlIHNvbWUgQ1BVcyB0aGF0Cj4gY2FuJ3QgdG9sZXJhdGUgYW55IGV4dHJhIGN5Y2xlcyBh
-dCBhbGwgKGdlbmVyYWxseSBkdWUgdG8gYmVpbmcgZ2VuZXJpYwo+IHN5bmNocm9ub3VzIHNlcmlh
-bCBwb3J0cyBzaW11bGF0aW5nIGFuIEkyUyBtb2RlKSB3aGljaCBtZWFucyB0aGF0Cj4gc2VsZWN0
-aW5nIHRoZSBtaW5pbXVtIEJDTEsgaXMgZ2VuZXJhbGx5IHdoYXQgeW91IHdhbnQuCkdlbmVyYWxs
-eSwgYnV0IG5vdCBhbHdheXMuIEZvciBhYmVycmF0aW9ucywgbGV0IHRoZXJlIGJlIGEgd2F5IHRv
-IHNldAondW51c3VhbCcgYnV0IHN1cHBvcnRlZCBCQ0xLIFJhdGlvcy4KSnVzdCBhcyBXTTg1ODAg
-aGFzIGEgY29uc3RyYWludCBvbiBCQ0xLKDEyOGZzKSBhdCBNQ0xLPTEyOCwxOTJmcywgc29tZQpT
-b0MgbWF5IGhhdmUgYSBjb25zdHJhaW50IG9mIHVzaW5nIEJDTEs9NDhmcyBmb3IgTUNMSz0zODRm
-cwpAMTYtYml0cy9zYW1wbGUuCgo+PiA+IEFsbCBJJ20gc2F5aW5nIGlzIGRvIHRoZSBDUFUgZHJp
-dmVycyBmaXJzdCAtIGxpa2UgSSBzYXksIHRoZSBtYWluCj4+ID4gb2JzdGFjbGUgdG8gZmluaXNo
-aW5nIG9mZiByZWZyZXNoaW5nIHRoZSBDT0RFQyBkcml2ZXIgaGFzIGJlZW4gaGF2aW5nCj4+ID4g
-dGhlIENQVSBkcml2ZXIgdG8gd29yayBvZmYuIMKgSSdkIGV4cGVjdCB0byBoYXZlIHNvbWV0aGlu
-ZyBxdWlja2x5IGdpdmVuCj4+ID4gdGhhdC4gwqBUaGVyZSBzaG91bGRuJ3QgYmUgbXVjaCBvdmVy
-YWxsIGRlbGF5IHRvIGdldHRpbmcgdGhlIGJvYXJkcyBmdWxseQo+PiA+IHN1cHBvcnRlZC4KPgo+
-PiBJdCBzZWVtcyBiYXNpYyBmZWF0dXJlcyhwbGF5IGFuZCBjYXB0dXJlKSBtYXkgc2ltcGx5IHdv
-cmsgd2l0aAo+PiBleGlzdGluZyBTYW1zdW5nIGNwdSBkcml2ZXJzLAo+PiBhbGwgd2UgbmVlZCB0
-byBkbyBpcyB3cml0ZSB0aGUgbWlzc2luZyBtYWNoaW5lIGRyaXZlciBmb3IgNjQxMChhcyBCZW4g
-bm90ZWQpLgo+Cj4+IE9ubHkgYWZ0ZXIgd2UgaGF2ZSBfc29tZV8gc3VwcG9ydCBmb3IgNjQxMCBJ
-MlMgaW4gbWFpbmxpbmUsIHdlIHNodWQgZ28gb24gdG8KPj4gaW1wbGVtZW50IHY0MCBmZWF0dXJl
-cyBpbiB0aGUgY3B1IGRyaXZlciAoYXNzdW1pbmcgd2UgYXJlIHRvIGtlZXAgdGhlCj4+IHN0YXR1
-cyBxdW8gd2l0aCBTYW1zdW5nIFNvQ3MnIEkyUyBhcmNoaXRlY3R1cmUpLgo+Cj4gVGhlIGxhY2sg
-b2YgSUlTdjQgc3VwcG9ydCBpcyB0aGUgbWFqb3IgaXNzdWUgd2l0aCB0aGVzZSBtYWNoaW5lcyAt
-IEknZAo+IGJlIHF1aXRlIHN1cnByaXNlZCB0byBzZWUgdGhlIG1hY2hpbmUgZHJpdmVyIHdpdGhv
-dXQgdGhlIDYgY2hhbm5lbAo+IGludGVyZmFjZSwgaXQncyB0aGUgbWFqb3IgcmVhc29uIEkndmUg
-bm90IGFscmVhZHkgbWVyZ2VkIHNvbWV0aGluZy4KT2sgYnV0IHRoZSBmaXJzdCByZXF1aXJlbWVu
-dCBvZiBvdXIgdXNlcnMgaXMgaGF2aW5nIG1haW5saW5lIHN1cHBvcnQKZm9yIHNpbXBsZSBTdGVy
-ZW8gb3BlcmF0aW9ucyBpbiB0aGUgbWFpbmxpbmUuIDUuMSBzdXBwb3J0IGNvbWVzIG5leHQuCgo+
-IEhvdyBhYm91dCBzdGFydGluZyBvZmYgd2l0aCBhbiBpbml0aWFsIG1hY2hpbmUgZHJpdmVyIHdo
-aWNoIHJ1bnMgSUlTdjQKPiBpbiBtYXN0ZXIgbW9kZSB1c2luZyB0aGUgZXhpc3RpbmcgQ09ERUMg
-ZHJpdmVyPyDCoFRoYXQncyBub3QgdGhlIGlkZWFsCj4gY29uZmlndXJhdGlvbiBidXQgaXQgd2ls
-bCBhbGxvdyB5b3UgdG8gd29yayBvbiB0aGUgQ1BVIHN1cHBvcnQgd2l0aG91dAo+IG5lZWRpbmcg
-dG8gZG8gdG9vIG11Y2ggdG8gdGhlIENPREVDLgpZZXMsIHRoYXQgaXMgd2hhdCBpIGFtIGRvaW5n
-LihpIG1hZGUgY2hhbmdlcyB0byB3bTg1ODAgbm90IHJlY2VudGx5KS4KSSBoYXZlIENQVSwgQ09E
-RUMgYW5kIE1BQ0hJTkUgZHJpdmVyIGZvciA2NDEwIGluIG15IHRyZWUsIGkgYW0KYWRqdXN0aW5n
-IHRoZW0gdG8gZml0IGluIG1haW5saW5lIGNvZGUuCkkgaG9wZSB0byBlbmQgdXAgd2l0aCBzbWFs
-bCBwYXRjaGVzIGZvciBDUFUgYW5kIENPREVDKHRoaXMgcGF0Y2gpCmRyaXZlcnMgYW5kIHN1Ym1p
-dHRpbmcgYSBuZXcgTUFDSElORSBkcml2ZXIuCgo+IMKgSSB3aWxsIHRoZW4gdHJ5IHRvIGdldCB0
-aGUgdXBkYXRlcwo+IGZvciB0aGUgQ09ERUMgd2hpY2ggd291bGQgYWxsb3cgdGhlIG1hY2hpbmUg
-ZHJpdmVyIHRvIGJlIGZpbmlzaGVkIG9mZgo+IGRvbmUgYXMgcXVpY2tseSBhcyBwb3NzaWJsZS4g
-wqBEb2VzIHRoYXQgc291bmQgbGlrZSBhIHJlYXNvbmFibGUgcGxhbiAtCj4gaXQgc2hvdWxkIGFs
-bG93IHVzIGJvdGggdG8gd29yayBvbiB0aGlzIHdpdGhvdXQgbXVjaCBkdXBsaWNhdGlvbj8KRmlu
-ZS4KCgo+IElmIHlvdSBkbyB3YW50IHRvIHdvcmsgb24gdGhlIENPREVDIGRyaXZlcgpJIGRvIG5v
-dCBwbGFuIHRvIHdvcmsgb24gdGhlIENPREVDIGRyaXZlci4KSSBqdXN0IHRyaWVkIHRvIHB1c2gg
-dGhlIGNoYW5nZXMgSSBoYWQgbWFkZSB3aGlsZSBpbXBsZW1lbnRpbmcgYW5kCnRlc3RpbmcgMmNo
-YW5uZWwgU29DIGRyaXZlcnMgd2l0aCBNYXN0ZXIvU2xhdmUsIHN1c3BlbmQvcmVzdW1lIGFuZApG
-dWxsRHVwbGV4IGZlYXR1cmVzIGluIHRoZSBTYW1zdW5nIHRyZWUuCkkgaGF2ZSBubyBtb3JlIHBh
-dGNoZXMgZm9yIGFueSBDT0RFQyBkcml2ZXIuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+This patch is for the AK4671 codec driver using this format.
+
+Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
+---
+ sound/soc/soc-cache.c |   30 ++++++++++++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
+index c8ceddc..404231e 100644
+--- a/sound/soc/soc-cache.c
++++ b/sound/soc/soc-cache.c
+@@ -77,6 +77,35 @@ static int snd_soc_7_9_spi_write(void *control_data, const char *data,
+ #define snd_soc_7_9_spi_write NULL
+ #endif
+ 
++static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
++			     unsigned int value)
++{
++	u8 *cache = codec->reg_cache;
++	u8 data[2];
++
++	BUG_ON(codec->volatile_register);
++
++	data[0] = reg & 0xff;
++	data[1] = value & 0xff;
++
++	if (reg < codec->reg_cache_size)
++		cache[reg] = value;
++
++	if (codec->hw_write(codec->control_data, data, 2) == 2)
++		return 0;
++	else
++		return -EIO;
++}
++
++static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
++				     unsigned int reg)
++{
++	u8 *cache = codec->reg_cache;
++	if (reg >= codec->reg_cache_size)
++		return -1;
++	return cache[reg];
++}
++
+ static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
+ 			      unsigned int value)
+ {
+@@ -151,6 +180,7 @@ static struct {
+ 	unsigned int (*i2c_read)(struct snd_soc_codec *, unsigned int);
+ } io_types[] = {
+ 	{ 7, 9, snd_soc_7_9_write, snd_soc_7_9_spi_write, snd_soc_7_9_read },
++	{ 8, 8, snd_soc_8_8_write, NULL, snd_soc_8_8_read, NULL },
+ 	{ 8, 16, snd_soc_8_16_write, NULL, snd_soc_8_16_read,
+ 	  snd_soc_8_16_read_i2c },
+ };
+-- 
+1.6.0.4
