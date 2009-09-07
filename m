@@ -1,21 +1,31 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Problems with safe API and snd-cs46xx
-Date: Mon, 7 Sep 2009 22:18:21 +0800
-Message-ID: <4f3252890909070718g745b37f2v39ef0f57c44fd9bd@mail.gmail.com>
-References: <a080dbc80909050524o7b00ceas46184b52fdac9cbc@mail.gmail.com>
-	<s5hljkrrl3s.wl%tiwai@suse.de> <1252330155.3283.5.camel@localhost>
+From: Jochem Wichers Hoeth <wiho-alsa@wihome.net>
+Subject: Duplicate configuration nodes
+Date: Mon, 7 Sep 2009 16:43:58 +0200 (CEST)
+Message-ID: <alpine.LFD.2.00.0909071607400.15189@wihome.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f176.google.com (mail-px0-f176.google.com
-	[209.85.216.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 454162435B
+Received: from smtpq1.gn.mail.iss.as9143.net (smtpq1.gn.mail.iss.as9143.net
+	[212.54.34.164]) by alsa0.perex.cz (Postfix) with ESMTP id B6D362439F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Sep 2009 16:18:23 +0200 (CEST)
-Received: by pxi6 with SMTP id 6so2226600pxi.16
-	for <alsa-devel@alsa-project.org>; Mon, 07 Sep 2009 07:18:21 -0700 (PDT)
-In-Reply-To: <1252330155.3283.5.camel@localhost>
+	Mon,  7 Sep 2009 16:44:01 +0200 (CEST)
+Received: from [212.54.34.144] (helo=smtp13.gn.mail.iss.as9143.net)
+	by smtpq1.gn.mail.iss.as9143.net with esmtp (Exim 4.69)
+	(envelope-from <wiho-alsa@wihome.net>) id 1MkfRo-0007VM-N1
+	for alsa-devel@alsa-project.org; Mon, 07 Sep 2009 16:44:00 +0200
+Received: from 53519392.cable.casema.nl ([83.81.147.146] helo=mail.wihome.net)
+	by smtp13.gn.mail.iss.as9143.net with esmtp (Exim 4.69)
+	(envelope-from <wiho-alsa@wihome.net>) id 1MkfRn-0007G2-VG
+	for alsa-devel@alsa-project.org; Mon, 07 Sep 2009 16:44:00 +0200
+Received: from mail.wihome.net (localhost.localdomain [127.0.0.1])
+	by mail.wihome.net (Postfix) with ESMTP id D8268C022
+	for <alsa-devel@alsa-project.org>;
+	Mon,  7 Sep 2009 16:43:58 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.wihome.net (Postfix) with ESMTP id 3B271C022
+	for <alsa-devel@alsa-project.org>;
+	Mon,  7 Sep 2009 16:43:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,95 +38,49 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-audacious.i386                     1.5.1-9.fc10  which use the old plugin
-did not play any music  on my au8830 even with the patch and select hw:0,0
-in the output plugin perference
+Hi,
 
-CHECK (snd_pcm_hw_params_set_access, alsa_handle, params,
-<http://hg.atheme.org/audacious-plugins/file/c44c39dd30b5/src/alsa-gapless/alsa.c#l159>SND_PCM_ACCESS_RW_INTERLEAVED);
+Since I upgraded from alsa-lib 1.0.20 to 1.0.21 my configuration is not 
+parsed correctly anymore:
 
-CHECK (snd_pcm_hw_params_set_format, alsa_handle, params, format);
-CHECK (snd_pcm_hw_params_set_channels, alsa_handle, params, channels);
-CHECK (snd_pcm_hw_params_set_rate, alsa_handle, params, rate, 0);
-CHECK (snd_pcm_hw_params_set_buffer_time_min, alsa_handle, params, & time,
-0);
-CHECK (snd_pcm_hw_params, alsa_handle, params);
-CHECK (snd_pcm_prepare, alsa_handle);
+$ aplay test.wav 
+ALSA lib conf.c:4639:(snd_config_expand) Expand error (walk): File exists
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
 
-alsa_format = format;
-alsa_channels = channels;
-alsa_rate = rate;
+As a result of this error, ALSA seems to ignore the second half of 
+HDA-Intel.conf, including the iec958 definition.
 
-alsa_buffer_length = snd_pcm_frames_to_bytes (alsa_handle, (gint64)
-LARGE_BUFFER * rate / 1000);
+I traced the "File exists" error back to snd_config_add() returning 
+-EEXIST, while evaluating the "strings" node at line 36 of 
+cards/HDA-Intel.conf. I verified that at that point the src node indeed 
+has four children: two duplicates of each child node of the original 
+strings array.
 
-If you are using SND_CS46XX_NEW_DSP which support multiple stream, the
-driver has a constraint on the buffer size (don't expect that you can get
-exactly a one second or 0.1 second buffer for all alsa drivers )
+I'm not exactly sure what's happening here, but I do see that the 
+HDA-Intel.conf file (and all of its included files) are actually read 
+*twice* by aplay. With alsa-lib 1.0.20 aplay only reads these files once.
 
-#ifdef CONFIG_SND_CS46XX_NEW_DSP
+The problem seems to be related to commit 
+96da0c842d14b40ce8e37726b259229634b3aa21 ("Fix driver conf parsing in 
+snd_config_hook_load_for_all_cards()"), which subtly changes the logic 
+when the same driver is encountered for the second time. I have two cards 
+using the HDA-Intel config (one analog and one digital). For the first 
+card, the config is loaded without issues. But for the second card, 
+snd_config_search(root, fdriver, &n) succeeds but snd_config_get_string(n, 
+&driver) fails. In 1.0.20 this results in a "goto __err", skipping the 
+actual config load. But in 1.0.21 this results in the else-branch being 
+chosen (driver = fdriver) and next snd_config_hook_load being called.
 
-static unsigned int period_sizes[] = { 32, 64, 128, 256, 512, 1024, 2048 };
+I know too little of the entire config loading process to be sure what 
+exactly is going wrong here, but a assume that the second call to 
+snd_config_hook_load for the same configaration file somehow 
+eventually results in the duplicate node error in snd_config_add().
 
-static struct snd_pcm_hw_constraint_list hw_constraints_period_sizes = {
-    .count = ARRAY_SIZE(period_sizes),
-    .list = period_sizes,
-    .mask = 0
-};
+I've verified that reverting 96da0c842d14b40ce8e37726b259229634b3aa21 
+fixes the problem, or at least the symptoms. :-)
 
-#endif
+Please let me know if you need extra information, of if you'd like me to 
+do some more testing.
 
-The documentation did not mention that you can get a default value if you
-did not set the period time , buffer_time
-
-http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#g98ba19d2800b7d601277fd8c068505da
-
-snd_pcm_hw_params()
-
-The configuration is chosen fixing single parameters in this order: first
-access, first format, first subformat, min channels, min rate, min period
-time, max buffer size, min tick time
-
-After this call,
-snd_pcm_prepare()<http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#g692ad9e5902d0623b56a0decee0fa686>is
-called automatically and the stream is brought to
-SND_PCM_STATE_PREPARED<http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#ggfff41b69676ea4a7efa64dd5642505ddfa179425d00d012af07ef15e1c066ea6>state.
-The hardware parameters cannot be changed when the stream is running
-(active). The software parameters can be changed at any tim
-
-
-2009/9/7 Tony Vroon <tony@linx.net>
-
-> On Mon, 2009-09-07 at 14:32 +0200, Takashi Iwai wrote:
-> > Hm, I don't know of "safe API"...
->
-> It is described here:
-> http://0pointer.de/blog/projects/guide-to-sound-apis.html
->
-> Should this be incomplete or otherwise incorrect it would be useful to
-> have a rebuttal.
->
-> > A small test case, preferably a short C program just to reproduce
-> > the problem would be really needed in such a case.  It's very hard to
-> > guess what's going on and what is actually wrong in the driver only
-> > from your problem description, because of no obvious debug logs.
->
-> If it is anything like the Aureal Vortex bug, the minimum period size
-> doesn't make sense. Unlike the older the ALSA plugin, the new ALSA-NG
-> plugin in Audacious opens the audio device with defaults and does not
-> attempt to set period sizes.
-> The code is available here:
-> http://hg.atheme.org/audacious-plugins/file/c44c39dd30b5/src/alsa-ng
->
-> > thanks,
-> > Takashi
->
-> Regards,
-> Tony V.
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+Cheers,
+Jochem Wichers Hoeth
