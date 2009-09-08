@@ -1,21 +1,16 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [PATCH v2] ASoC: au1x: PSC-AC97 bugfixes
-Date: Tue, 8 Sep 2009 20:34:18 +0200
-Message-ID: <f861ec6f0909081134s6cea7fccm97ecfb1168f1e8b0@mail.gmail.com>
-References: <1252431917-870-1-git-send-email-manuel.lauss@gmail.com>
-	<20090908182827.GA19004@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC update for 2.6.32
+Date: Tue, 8 Sep 2009 19:39:44 +0100
+Message-ID: <20090908183944.GA19945@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 21F35103834
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 97E35103837
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Sep 2009 20:34:19 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so2954831fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 08 Sep 2009 11:34:18 -0700 (PDT)
-In-Reply-To: <20090908182827.GA19004@rakim.wolfsonmicro.main>
+	Tue,  8 Sep 2009 20:39:45 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 8, 2009 at 8:28 PM, Mark
-Brown<broonie@opensource.wolfsonmicro.com> wrote:
-> On Tue, Sep 08, 2009 at 07:45:17PM +0200, Manuel Lauss wrote:
->> This patch fixes the following bugs:
->
-> Applied, thanks. =A0It'd be nice if the patch had been split down into a
-> patch series - apart from anything else it looks like there's some
-> additional changes to do things like relax the CPU and update the
-> maintainer address in there.
+The following changes since commit 87831cb660954356d68cebdb1406f3be09e784e9:
+  Mark Brown (1):
+        ASoC: Fix WM835x Out4 capture enumeration
 
-Thanks.  Will do next time.
+are available in the git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
 
--- =
+Manuel Lauss (1):
+      ASoC: au1x: PSC-AC97 bugfixes
 
-        Manuel Lauss
+ sound/soc/au1x/psc-ac97.c |  129 +++++++++++++++++++++++++++++++++------------
+ sound/soc/au1x/psc.h      |    1 +
+ 2 files changed, 97 insertions(+), 33 deletions(-)
