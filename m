@@ -1,24 +1,22 @@
-From: Sophie Hamilton <sophie-alsa@theblob.org>
-Subject: Re: Problems with safe API and snd-cs46xx
-Date: Mon, 7 Sep 2009 20:06:37 +0100
-Message-ID: <a080dbc80909071206m3c07e024n9448b0fe0a2b995d@mail.gmail.com>
-References: <a080dbc80909050524o7b00ceas46184b52fdac9cbc@mail.gmail.com>
-	<s5hljkrrl3s.wl%tiwai@suse.de>
-	<a080dbc80909070802u544c185erc1efb3f87a95a190@mail.gmail.com>
-	<a080dbc80909071004h13a17f2bg3dd06ffd90cd72f4@mail.gmail.com>
-	<s5hhbver7h5.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Patch for au88x0 driver. Fix audacious issue and
+	add auto reset in case of hardware ADB ctrl failure.
+Date: Tue, 8 Sep 2009 11:41:16 +0800
+Message-ID: <4f3252890909072041x64bab9c3te4641d128244e993@mail.gmail.com>
+References: <4f3252890909061847j7ec20f10x87362f155bc3bbc5@mail.gmail.com>
+	<21ed1c370909070232v42f31fa9y303def4cc4002b19@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id ECC19244B6
+Received: from mail-pz0-f173.google.com (mail-pz0-f173.google.com
+	[209.85.222.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6EA3A24149
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Sep 2009 21:06:37 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so2232970fxm.32
-	for <alsa-devel@alsa-project.org>; Mon, 07 Sep 2009 12:06:37 -0700 (PDT)
-In-Reply-To: <s5hhbver7h5.wl%tiwai@suse.de>
+	Tue,  8 Sep 2009 05:41:18 +0200 (CEST)
+Received: by pzk3 with SMTP id 3so1389155pzk.28
+	for <alsa-devel@alsa-project.org>; Mon, 07 Sep 2009 20:41:16 -0700 (PDT)
+In-Reply-To: <21ed1c370909070232v42f31fa9y303def4cc4002b19@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,68 +26,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 9/7/09, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 7 Sep 2009 18:04:12 +0100,
-> Sophie Hamilton wrote:
->  >
->  > On 9/7/09, Sophie Hamilton <sophie-alsa@theblob.org> wrote:
->  > >  I decided to go investigating myself and discovered that the cs46xx
->  > >  driver has a silly minimum period size declared of 1. Increasing this
->  > >  to 256 fixes the problem, though I haven't yet tested to see if lower
->  > >  values will work too. (I'll do this and regenerate the patch later.)
->  >
->  > Turns out that a value of 64 is the optimum value.
+2009/9/7 Manuel Jander <manuel.jander@gmail.com>
+
+> Hi Raymond,
 >
-> How did you determine it ? :)
-
-Well, I have the actual hardware - at least, one of the chips it
-supports - which is how I got involved in this bug in the first place.
-(The Turtle Beach Santa Cruz uses a CS4630.) A value of 32 didn't work
-when the default period side from ALSA is used; the next highest power
-of two, 64, does.  As all the values I've seen in the kernel for the
-minimum period size are powers of two, I'm assuming that this is the
-lowest it can be. (I don't know much about ALSA, bear in mind; this is
-my first venture into ALSA programming *and* kernel patches.)
-
->  Well, I find also 64 is a sane value, but it's not always logical.
->  In most cases, 32 is used as the minimum value due to PCI h/w
->  limitation.  But 32 is very hard to achieve, so it doesn't matter
->  so much.
-
-Like I said, I have the hardware, and I can tell you that on my
-hardware, 32 doesn't work properly, while 64 does. :)
-
->  > This should be the final patch. How should I go about submitting this?
+> On Mon, Sep 7, 2009 at 3:47 AM, Raymond Yau<superquad.vortex2@gmail.com>
+> wrote:
+> > On Thursday 03 September 2009 21:10, Manuel Jander wrote:
+> >> does anybody still have a AU88x0 card ? I know they are quite ancient
+> >> now, but if anyone could give the attached patch a try ? Would be
+> >> nice.
+> >> I made the patch against linux-2.6.30.4
+> >> http://micro.homelinux.net/~mjander/au88x0.diff.gz<http://micro.homelinux.net/%7Emjander/au88x0.diff.gz><
+> http://micro.homelinux.net/%7Emjander/au88x0.diff.gz>
+> >>
+> >> Best Regards,
+> >> Manuel
+> >
+> > Which version of audaicous (1.5.x or 2.1) are you testing ?
+> > (alsa-gapless or alsa-ng plugin)
+> >
+> > au88x0 most likely cannot support 1 sample per period because of the
+> > FIFO as described in patent 6167465.
 >
-> Please give a proper patch summary, too.
->  Also, it'd be more helpful if you give an example what actually
->  your patch fixes (e.g. audacious, etc).
+> Well, that is clear to me now. Using a DMA transfer that is smaller
+> than one audio sample is not really a good idea.
+> I would be better off using PIO instead of DMA.
+>
+> > if you look at the source code of alsa-ng and alsa-gapless plugin
+> > both of them use the own way to calculate the buffer size instead of
+> > using snd_pcm_hw_params_get_buffer_size()
+> >
+> >
+> >
+> http://hg.atheme.org/audacious-plugins/file/2c0a9bba77d7/src/alsa-ng/alsa-core.c#l1
+> >
+> > CHECK_FAIL (snd_pcm_hw_params_set_access (pcm_handle, hwparams,
+> > SND_PCM_ACCESS_RW_INTERLEAVED), "snd_pcm_hw_params_set_access");
+> > CHECK_FAIL (snd_pcm_hw_params_set_format (pcm_handle, hwparams, afmt),
+> > "snd_pcm_hw_params_set_format");
+> > CHECK_FAIL (snd_pcm_hw_params_set_channels (pcm_handle, hwparams, nch),
+> > "snd_pcm_hw_params_set_channels");
+> > CHECK_FAIL (snd_pcm_hw_params_set_rate (pcm_handle, hwparams, rate, 0),
+> > "snd_pcm_hw_params_set_rate");
+> > CHECK_FAIL (snd_pcm_hw_params (pcm_handle, hwparams),
+> "snd_pcm_hw_params");
+> > bitwidth = snd_pcm_format_physical_width(afmt);
+> > bps = (rate * bitwidth * nch) >> 3;
+> > buf_size = MAX(aud_cfg->output_buffer_size, 100);
+> > ringbuf_size = buf_size * bps / 1000;
+>
+> I increased the minimum period bytes value to 256 in that patch.
+> Audacious version 2 (Debian SID)
+> works for me.
+>
 
-I'm not sure what you mean by a "proper patch summary". Is there
-anywhere I should read that specifies the format of a proper patch
-summary?
+well,  audacious.i386    1.5.1-9.fc10   cannot play any music (alsa plugin)
+on my au8830 with your patch, it only play music with (oss plugin)
 
-As for what it fixes, it fixes a problem in the case where neither a
-period size nor a buffer size is passed to ALSA, instead using the
-defaults provided. This is the recommended course of action according
-to a guide to safe ALSA usage by Lennart Poettering - see
-http://0pointer.de/blog/projects/guide-to-sound-apis.html . Among
-other things, the guide says that in order for an app to remain safe
-and playable on all backends that ALSA supports, it should "not touch
-buffering/period metrics unless you have specific latency needs".
+Use xmms instead of audacious since they have similar UI
 
-This guide is already being followed by various apps and audio
-interfaces - Audacious is one of them, and OpenAL (a popular audio
-interface used by many games including Second Life and Unreal
-Tournament) is another. As such, there are quite a few examples where
-the current buggy behaviour can be observed on a card that the cs46xx
-driver serves. (I don't know of a full list; as I said above, I'm new
-to ALSA programming.)
 
-Does this help?
+256 seem much bigger than the figures mentioned in the patent , may be it is
+the practical limit on your VIA ITX
 
- - Sophie.
+
+In one embodiment of the present invention, the FIFO buffer is 32 samples or
+words in depth, which would withstand a maximum bus latency of about 4
+microseconds. By way of example, if 48 DMA channels trigger simultaneously,
+with a trigger level set at half the buffer size (16 samples), each DMA
+channel can wait 16 samples (20 microseconds per sample), or approximately
+320 microseconds before running out of data.
+
+
+By way of example, CPU 210 may update-sub-buffer tables 380(0)-380(x)
+routinely every 10 milliseconds. The periodic checks may be initiated by
+audio processing peripheral 230 by way of interrupts, or may be scheduled
+independently by the driver
+
+
+
+
+> > How do you get the "ADB Ctrl failure" error ?
+>
+> I do not know how to reproduce that. Sometimes it happens, and its not
+> possible
+> to recover without a hardware reset (unload and load module). Somehow
+> it semes to
+> happen when my computer gets really hot (watching an MPEG-4 video, or
+> compiling the kernel...).
+> Its a old VIA ITX board, with a 1.3GHz processor (on demand cpufreq).
+>
+> The patch tries to reset the audio card if all PCM streams are
+> released once such a
+> condition was detected. This is the situation were the windows driver
+> used to crash the
+> whole machine.
+>
+
+
+it work quite well on my two motherbroad using intel chipset
+
+
+> > There are two main problem of the au88x0 driver
+> > 1) alsa is unable to calculate the correct value for the three
+> > functions snd_pcm_hw_params_set_buffer_time_near() ,
+> > snd_pcm_hw_params_set_period_time_near() and snd_pcm_set_params()
+> >
+> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1724
+> >
+> > Test case :
+> >
+> > alsa-lib/test/pcm_min.c ( change default to hw:0,0 )
+> >
+> > Real world case:
+> >
+> > gstreamer and winealsa.drv
+>
+> I will try that. I had no idea about that bugs.
+>
+
+A simple workaround is add another constraint
+
+snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 4096
+);
+
+however winealsa.drv will be using a larger period bytes than  wineoss.drv
+
+
+
+>
+> > 2) unable to recover when the number of available src is not enough
+> > (FATAL: ResManager: resource type 1 exhaust)
+> >
+> > https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2228
+> >
+> > test case :
+> >
+> > running application to use 15 src ( 7 stereo and one mono stream ) and
+> > open another stereo stream
+>
+> Hmm, the good ol' resource manager :) OK, I will try to find a
+> solution. I have not much
+> time these days, but maybe it rains again, and I get bored, who knows :D
+>
+> Best Regards,
+> Manuel
+>
+
+
+simple fix may be adding counts of the resource and check that all resources
+are enough before allocating them
