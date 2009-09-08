@@ -1,18 +1,18 @@
 From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: [PATCH] ASoC: au1x: PSC-AC97 bugfixes
-Date: Tue,  8 Sep 2009 19:27:14 +0200
-Message-ID: <1252430834-27869-1-git-send-email-manuel.lauss@gmail.com>
+Subject: [PATCH v2] ASoC: au1x: PSC-AC97 bugfixes
+Date: Tue,  8 Sep 2009 19:45:17 +0200
+Message-ID: <1252431917-870-1-git-send-email-manuel.lauss@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
 	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id 043E01037EE
+	by alsa0.perex.cz (Postfix) with ESMTP id 07D36103825
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Sep 2009 19:27:23 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so2901269fxm.32
-	for <alsa-devel@alsa-project.org>; Tue, 08 Sep 2009 10:27:23 -0700 (PDT)
+	Tue,  8 Sep 2009 19:45:28 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so2915431fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 08 Sep 2009 10:45:28 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -48,8 +48,11 @@ Run-tested on various Au1200 platforms with various codecs.
 
 Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
 ---
+The previous patch missed a git add for psc.h, sorry!
+
  sound/soc/au1x/psc-ac97.c |  129 +++++++++++++++++++++++++++++++++------------
- 1 files changed, 96 insertions(+), 33 deletions(-)
+ sound/soc/au1x/psc.h      |    1 +
+ 2 files changed, 97 insertions(+), 33 deletions(-)
 
 diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
 index 479d7bd..a521aa9 100644
@@ -317,5 +320,17 @@ index 479d7bd..a521aa9 100644
  MODULE_DESCRIPTION("Au12x0/Au1550 PSC AC97 ALSA ASoC audio driver");
 -MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
 +MODULE_AUTHOR("Manuel Lauss <manuel.lauss@gmail.com>");
+diff --git a/sound/soc/au1x/psc.h b/sound/soc/au1x/psc.h
+index 8fdb1a0..3f474e8 100644
+--- a/sound/soc/au1x/psc.h
++++ b/sound/soc/au1x/psc.h
+@@ -29,6 +29,7 @@ struct au1xpsc_audio_data {
+ 
+ 	unsigned long pm[2];
+ 	struct resource *ioarea;
++	struct mutex lock;
+ };
+ 
+ #define PCM_TX	0
 -- 
 1.6.4.2
