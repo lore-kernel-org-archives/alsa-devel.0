@@ -1,24 +1,26 @@
 From: Sophie Hamilton <sophie-alsa@theblob.org>
 Subject: Re: Problems with safe API and snd-cs46xx
-Date: Tue, 8 Sep 2009 08:46:36 +0100
-Message-ID: <a080dbc80909080046p73207442ld8f6577ebbf37ba9@mail.gmail.com>
+Date: Tue, 8 Sep 2009 09:19:33 +0100
+Message-ID: <a080dbc80909080119w43139a0ei1f01b2758b74546a@mail.gmail.com>
 References: <a080dbc80909050524o7b00ceas46184b52fdac9cbc@mail.gmail.com>
-	<s5hljkrrl3s.wl%tiwai@suse.de> <1252330155.3283.5.camel@localhost>
-	<s5hbplmssrg.wl%tiwai@suse.de>
-	<20090907224659.GA5917@tango.0pointer.de>
-	<s5htyzej6fj.wl%tiwai@suse.de>
+	<s5hljkrrl3s.wl%tiwai@suse.de>
+	<a080dbc80909070802u544c185erc1efb3f87a95a190@mail.gmail.com>
+	<a080dbc80909071004h13a17f2bg3dd06ffd90cd72f4@mail.gmail.com>
+	<s5hhbver7h5.wl%tiwai@suse.de>
+	<a080dbc80909071206m3c07e024n9448b0fe0a2b995d@mail.gmail.com>
+	<s5hskeyj5zm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
-	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71ADC244E1
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id B12D124507
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Sep 2009 09:46:38 +0200 (CEST)
-Received: by bwz25 with SMTP id 25so2439481bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 08 Sep 2009 00:46:37 -0700 (PDT)
-In-Reply-To: <s5htyzej6fj.wl%tiwai@suse.de>
+	Tue,  8 Sep 2009 10:19:33 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so2498232fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 08 Sep 2009 01:19:33 -0700 (PDT)
+In-Reply-To: <s5hskeyj5zm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,14 +31,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Tony Vroon <tony@linx.net>, alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 On 9/8/09, Takashi Iwai <tiwai@suse.de> wrote:
->  Sophie, what happens if you use the patch without your change?
+> At Mon, 7 Sep 2009 20:06:37 +0100,
+>
+> Sophie Hamilton wrote:
+>  >
+>  > On 9/7/09, Takashi Iwai <tiwai@suse.de> wrote:
+>  > > At Mon, 7 Sep 2009 18:04:12 +0100,
+>  > > Sophie Hamilton wrote:
+>  > >  > Turns out that a value of 64 is the optimum value.
+>  > >
+>  > > How did you determine it ? :)
+>  >
+>  > Well, I have the actual hardware - at least, one of the chips it
+>  > supports - which is how I got involved in this bug in the first place.
+>  > (The Turtle Beach Santa Cruz uses a CS4630.) A value of 32 didn't work
+>  > when the default period side from ALSA is used; the next highest power
+>  > of two, 64, does.  As all the values I've seen in the kernel for the
+>  > minimum period size are powers of two, I'm assuming that this is the
+>  > lowest it can be. (I don't know much about ALSA, bear in mind; this is
+>  > my first venture into ALSA programming *and* kernel patches.)
+>
+> I asked it just because your description alone wasn't convincing
+>  enough.  That is, "it just works good for me" is no good explanation.
+>  The test was done on a single machine with a single application.
+>  It's possible that it would work on a monster 8GHz machine with
+>  another soundcard with a cs46xx chip with another application.
 
-Same thing as before, it seems; it doesn't seem to make any
-difference. I tested all the use cases I tested beforehand and none
-were any different.
+I take your point. However, if this was changed to 32, you'd
+presumably also need to change the default period/buffer size used by
+ALSA, as otherwise it would seem to be too low; my system doesn't like
+it. I'd suggest defaulting to 64, and then if any program has a
+specific latency need, they can test for underruns with different
+period sizes and find the best one.
 
- - Sophie.
+>  However, as already mentioned, I find changing the value to 64 is
+>  somehow rational.  But, it's still a question whether this is the only
+>  fix...
+
+Sadly, I don't know the answer to this one. But if there's anything I
+can do to help, let me know.
+
+>  > >  > This should be the final patch. How should I go about submitting this?
+>  > >
+>  > > Please give a proper patch summary, too.
+>  > >  Also, it'd be more helpful if you give an example what actually
+>  > >  your patch fixes (e.g. audacious, etc).
+>  >
+>  > I'm not sure what you mean by a "proper patch summary". Is there
+>  > anywhere I should read that specifies the format of a proper patch
+>  > summary?
+>
+> A patch should have a single line summary to describe what it does.
+>  Take a look at $LINUX/Documentation/SubmittingPatches for details.
+
+Okay. What I might do, given the instructions in the file, is send
+another email that conforms to all of the things in that file -
+subject line, CCs, etc. (for example, it says I should have CCed my
+patch to linux-kernel@vger.kernel.org too, and Linus ; obviously
+that'd have been a bad idea with the way my email was formatted now,
+but would it be a good idea to do those things now?)
+
+>  > As for what it fixes, it fixes a problem in the case where neither a
+>  > period size nor a buffer size is passed to ALSA, instead using the
+>  > defaults provided.
+[snipped long explanation]
+>  >
+>  > Does this help?
+>
+> Yes, but a bit more concisely if possible, please.
+>  The text will be recorded as a GIT changelog forever.  This is the
+>  best place where people see to track down the changes over tree.
+
+Gotcha. How about:
+
+"Fix minimum period size for cs46xx cards. This fixes a problem in the
+case where neither a period size nor a buffer size is passed to ALSA;
+this is the case in Audacious, OpenAL, and others."
+
+Or is that *too* concise?
+
+Thanks for your comments,
+
+ - Sophie,
