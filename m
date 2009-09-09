@@ -1,16 +1,19 @@
-From: "Feng Ye" <fye@broadcom.com>
-Subject: How to support mutiple audio interface in alsa
-Date: Wed, 9 Sep 2009 11:50:34 -0700
-Message-ID: <9383297B60843144AC17878B479520F110AEC19499@SJEXCHCCR01.corp.ad.broadcom.com>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH] To avoid the divide by zero error during
+ the first	execution, initialize the data type.
+Date: Wed, 09 Sep 2009 13:47:06 -0700
+Message-ID: <4AA8144A.10105@boundarydevices.com>
+References: <1252527563-15074-1-git-send-email-avm@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from MMS3.broadcom.com (mms3.broadcom.com [216.31.210.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1621B244F7
+Received: from smtpauth00.csee.onr.siteprotect.com
+	(smtpauth00.csee.onr.siteprotect.com [64.26.60.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5098103870
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 20:50:51 +0200 (CEST)
-Content-Language: en-US
+	Wed,  9 Sep 2009 22:47:15 +0200 (CEST)
+In-Reply-To: <1252527563-15074-1-git-send-email-avm@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,17 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: avm@ti.com
+Cc: davinci-linux-open-source@linux.davincidsp.com, Arun Mani <a0270733@dal.design.ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello there,
+avm@ti.com wrote:
+> From: Arun Mani <a0270733@gtcx26221.gt.design.ti.com>
+> 
+> Signed-off-by: Arun Mani <a0270733@gtcx26221.gt.design.ti.com>
+> ---
+>  sound/soc/davinci/davinci-i2s.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+> index b1ea52f..61b1763 100644
+> --- a/sound/soc/davinci/davinci-i2s.c
+> +++ b/sound/soc/davinci/davinci-i2s.c
+> @@ -104,10 +104,12 @@ enum {
+>  
+>  static struct davinci_pcm_dma_params davinci_i2s_pcm_out = {
+>  	.name = "I2S PCM Stereo out",
+> +	.data_type = 2, //Initialize the data type for playback to avoid divide by zero
 
-This question is for ALSA, not ALSA SOC.
-I am doing an ALSA driver for our chip (soc chip with cpu inside), inside it has I2S and DAC. The I2S can be feed to DAC, or come out of the chip to an external CODEC chip.
-I wonder how should I model this in the driver, are they multiple ALSA cards, or devices, or subdevices?
-Since the I2S is shared, I think the most appropriate is 'subdevice', but I do not see how this is used in linux/sound, this is only used in pci, and seems to tied together with substream number.
-If the answer is 'device', is there some existing driver that are doing this?
+You should have ".acnt = 2" also for consistency.
+>  };
+>  
+>  static struct davinci_pcm_dma_params davinci_i2s_pcm_in = {
+>  	.name = "I2S PCM Stereo in",
+> +	.data_type = 2, //Initialize the data type for playback to avoid divide by zero
+>  };
+>  
+>  struct davinci_mcbsp_dev {
+
+And if the 1st stream is an 8-bit audio stream, will it initialize it incorrectly ???
+Of course, we have formats = SNDRV_PCM_FMTBIT_S16_LE, currently so it's not an issue yet...
+
+I don't see how data_type is not being set in davinci_i2s_hw_params
+before being used in davinci_pcm_prepare.
+
+Can prepare be called before hw_params ?
+
+There is a "return -EINVAL" in davinci_i2s_hw_params with a
+"printk(KERN_WARNING "davinci-i2s: unsupported PCM format\n")" before it.
+
+Do you see this message in your log ?
 
 
-Thanks,
-Feng
+Thanks
+Troy
