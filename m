@@ -1,24 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: DaVinci: pcm,
- rename variables in prep for ping/pong
-Date: Wed, 9 Sep 2009 14:28:33 +0100
-Message-ID: <20090909132832.GA1011@rakim.wolfsonmicro.main>
-References: <1251761505-11353-1-git-send-email-troy.kisky@boundarydevices.com>
-	<4AA0113D.9030605@boundarydevices.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59301DD74F519@dbde02.ent.ti.com>
-	<200909091533.58702.caglarakyuz@gmail.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59301DD74F59E@dbde02.ent.ti.com>
-	<7A436F7769CA33409C6B44B358BFFF0C0129DBCEBE@dlee02.ent.ti.com>
+From: Tony Vroon <tony@linx.net>
+Subject: Re: alsa-lib 1.0.21a release
+Date: Wed, 09 Sep 2009 14:58:58 +0100
+Message-ID: <1252504738.3282.4.camel@localhost>
+References: <alpine.LNX.2.00.0909091444530.12929@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4984653341171836711=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F393210384E
+Received: from gold.linx.net (gold.linx.net [195.66.232.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12C1B103862
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 15:28:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <7A436F7769CA33409C6B44B358BFFF0C0129DBCEBE@dlee02.ent.ti.com>
+	Wed,  9 Sep 2009 15:59:55 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.0909091444530.12929@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,15 +20,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Narnakaje, Snehaprabha" <nsnehaprabha@ti.com>
-Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Nori,
-	Sekhar" <nsekhar@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "caglarakyuz@gmail.com" <caglarakyuz@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 09, 2009 at 08:22:49AM -0500, Narnakaje, Snehaprabha wrote:
 
-> There was a patch from Arun Mani on Arago linux-davinci staging tree -
-> 
-> http://arago-project.org/git/projects/?p=linux-davinci.git;a=commitdiff;h=0025e7d8024e9b03bada7a1d65f1aa7b7dfec061
+--===============4984653341171836711==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-aFltteFu9Os4Fpd7q2H4"
 
-Sounds like something that should be submitted to mainline for 2.6.32.
+
+--=-aFltteFu9Os4Fpd7q2H4
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2009-09-09 at 14:51 +0200, Jaroslav Kysela wrote:
+> I made a quick release 1.0.21a of the alsa-lib package to fix=20
+> regression for the configuration parsing (makes some device names=20
+> unavailable).
+
+Could you stick to numeric versions if possible please. Arbitrary
+postfixes like "a" or "b" are hard to express in the versioning scheme
+we use on ebuilds.
+This could be unique to portage, but I wanted to speak up in case it
+affects others as well. 1.0.21.1 may fit your "newer then 1.0.21; but
+not quite 1.0.22" needs.
+
+Regards,
+Tony V.
+UNIX systems administrator
+London Internet Exchange
+(also a Gentoo developer that touches media-sound ebuilds)
+
+--=-aFltteFu9Os4Fpd7q2H4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iEUEABECAAYFAkqntKIACgkQp5vW4rUFj5rPjwCWM0dhTTARBTzboHg/0kERmhX3
+VACdGEpJYpZZNnXAY8dznivpZhQk6Eo=
+=qp8R
+-----END PGP SIGNATURE-----
+
+--=-aFltteFu9Os4Fpd7q2H4--
+
+
+--===============4984653341171836711==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4984653341171836711==--
