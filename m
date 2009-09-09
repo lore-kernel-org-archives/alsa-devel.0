@@ -1,19 +1,26 @@
-From: Nicolas Krieger <khenyh@gmail.com>
-Subject: Re: pts value using alsa for audio capture
-Date: Wed, 9 Sep 2009 16:21:39 +0200
-Message-ID: <3afeb4060909090721pad1fd01xb48df20563140f50@mail.gmail.com>
-References: <3afeb4060909090610k370622c8w7fcee6ba850bbf03@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Problems with safe API and snd-cs46xx
+Date: Wed, 9 Sep 2009 16:27:17 +0200
+Message-ID: <20090909142717.GE14530@tango.0pointer.de>
+References: <s5hbplmssrg.wl%tiwai@suse.de>
+	<20090907224659.GA5917@tango.0pointer.de>
+	<s5htyzej6fj.wl%tiwai@suse.de>
+	<a080dbc80909080046p73207442ld8f6577ebbf37ba9@mail.gmail.com>
+	<s5hws49rf58.wl%tiwai@suse.de> <s5hpra01is7.wl%tiwai@suse.de>
+	<a080dbc80909090529w3e958f27g38d8238836e415e2@mail.gmail.com>
+	<s5hk5081ekp.wl%tiwai@suse.de>
+	<20090909140735.GC14530@tango.0pointer.de>
+	<s5h63bs19yc.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA538103872
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id E542A24472
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 16:21:59 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 22so1981599fge.2
-	for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2009 07:21:59 -0700 (PDT)
-In-Reply-To: <3afeb4060909090610k370622c8w7fcee6ba850bbf03@mail.gmail.com>
+	Wed,  9 Sep 2009 16:27:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h63bs19yc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,26 +30,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sophie Hamilton <sophie-alsa@theblob.org>, alsa-devel@alsa-project.org, Tony Vroon <tony@linx.net>
 List-Id: alsa-devel@alsa-project.org
 
-2009/9/9 Nicolas Krieger <khenyh@gmail.com>
+On Wed, 09.09.09 16:14, Takashi Iwai (tiwai@suse.de) wrote:
 
-> Hi,
->
-> I have a question about how pts are computed using alsa while grabbing
-> audio.
-> I take an example to explain :
-> I do grab audio during 10 seconds, the first 2 seconds, there is no
-> problem, so the pts are like that (I take examples values) : 1 2 3 4 5 6
-> .... x <- x is the value of the last pts (2nd second).
-> Then, for any reason, no capture during 3 seconds. And then no problem
-> until the end.
->
-> Nicolas Krieger
->
+> > > > I can confirm now that Audacious does indeed play correctly where it
+> > > > didn't before. However, using mplayer with the "-ao openal" switch
+> > > > still doesn't play correctly - in fact, it sounds the same as before -
+> > > > so it looks like OpenAL is actually doing things slightly differently
+> > > > than I thought. :/
+> > > 
+> > > Yes, likely.  The app like openal is usually more sensible regarding
+> > > latency, so "safe API" described there wasn't appropriate at all.
+> > 
+> > Hmm, so are you suggesting I should change that little text about the
+> > safe API subset I wrote?
+> 
+> Maybe a bit more addition would be helpful.  The realtime apps do
+> care the latency.  So, obviously it's not the target of your
+> description.
 
+What I wrote is actually this:
 
-Excuse me, I made a mistake... I post to the wrong list.
+    "Do not touch buffering/period metrics unless you have specific
+    latency needs. Develop defensively, handling correctly the case
+    when the backend cannot fulfill your buffering metrics requests. Be
+    aware that the buffering metrics of the playback buffer only
+    indirectly influence the overall latency in many cases. i.e. setting
+    the buffer size to a fixed value might actually result in practical
+    latencies that are much higher."
 
-Nicolas Krieger
+i.e. it already says "... unless you have specific latency needs". The
+point of this is that RT apps should of course set the buffer size,
+however stuff like media players where the latency does not matter at
+all should not request artificially low latencies and thus decrease
+battery time needlessly.
+
+> 
+> > So, users should always set first the buffer size, followed by the
+> > period size, is that correct?
+> 
+> Yes, in general, this order gives more chance for a larger buffer
+> size.  But, if you specify both buffer and period sizes, there
+> shouldn't be much difference.  Specifying the buffer size is
+> especially good if you don't give any period size.
+> 
+> The situation is improved now with 1.0.21a since I changed the
+> determination order in alsa-lib.  You'll get the largest buffer size
+> as default with 1.0.21a (let's see whether this gives any regressions
+> ;)  But, if portability matters, setting thebuffer size would be
+> safer.
+
+This sounds good to me. Defaulting to large buffer sizes is certainly
+good for power consumption.
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
