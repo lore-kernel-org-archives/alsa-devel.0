@@ -1,23 +1,19 @@
-From: Ng Oon-Ee <ngoonee@gmail.com>
-Subject: Re: Alsa plugin unable to be loaded by Pulseaudio
-Date: Wed, 09 Sep 2009 22:16:02 +0800
-Message-ID: <1252505762.2154.1.camel@localhost.localdomain>
-References: <1252365377.11542.5.camel@localhost.localdomain>
-	<4f3252890909090110n68cbecefnab64f953d4788850@mail.gmail.com>
-	<1252502217.20038.3.camel@localhost.localdomain>
-	<20090909135939.GA14530@tango.0pointer.de>
+From: Nicolas Krieger <khenyh@gmail.com>
+Subject: Re: pts value using alsa for audio capture
+Date: Wed, 9 Sep 2009 16:21:39 +0200
+Message-ID: <3afeb4060909090721pad1fd01xb48df20563140f50@mail.gmail.com>
+References: <3afeb4060909090610k370622c8w7fcee6ba850bbf03@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f171.google.com (mail-px0-f171.google.com
-	[209.85.216.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id D50AD10384E
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA538103872
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 16:16:57 +0200 (CEST)
-Received: by pxi1 with SMTP id 1so950437pxi.23
-	for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2009 07:16:56 -0700 (PDT)
-In-Reply-To: <20090909135939.GA14530@tango.0pointer.de>
+	Wed,  9 Sep 2009 16:21:59 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 22so1981599fge.2
+	for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2009 07:21:59 -0700 (PDT)
+In-Reply-To: <3afeb4060909090610k370622c8w7fcee6ba850bbf03@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,36 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2009-09-09 at 15:59 +0200, Lennart Poettering wrote:
-> On Wed, 09.09.09 21:16, Ng Oon-Ee (ngoonee@gmail.com) wrote:
-> 
-> > The "test" device is defined as follows (should have put it in
-> > initially).
-> > 
-> > pcm.test {
-> >  type plug
-> >  slave { pcm "hw:0,0" }
-> > }
-> > 
-> > It works with aplay. My issue is that the pulseaudio server cannot load
-> > alsa plugins since 1.0.20 (as far as I can tell, ubuntuforums has a
-> > thread which suggested as such). When I queried the pulse ML, Lennart
-> > posted the below reply, which I've forwarded here to alsa-devel.
-> > 
-> > Basically, the issue as Lennart sees it is summarized by his last 3
-> > paragraphs (bottom of this mail). He specifies the difference between
-> > the way alsa is reacting to pulse and the way it 'should'.
-> 
-> After the discussion we had on alsa-devel about the ordering how buffer
-> size and period size are initialized i have now changed PA git to try
-> harder to initialize those values. Would be good if you could check if
-> that actually makes your problem go away.
-> 
-> Lennart
-> 
+2009/9/9 Nicolas Krieger <khenyh@gmail.com>
 
-Thanks Lennart. Gonna try it out now.
+> Hi,
+>
+> I have a question about how pts are computed using alsa while grabbing
+> audio.
+> I take an example to explain :
+> I do grab audio during 10 seconds, the first 2 seconds, there is no
+> problem, so the pts are like that (I take examples values) : 1 2 3 4 5 6
+> .... x <- x is the value of the last pts (2nd second).
+> Then, for any reason, no capture during 3 seconds. And then no problem
+> until the end.
+>
+> Nicolas Krieger
+>
+
+
+Excuse me, I made a mistake... I post to the wrong list.
+
+Nicolas Krieger
