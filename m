@@ -1,28 +1,26 @@
-From: "Harsha, Priya" <priya.harsha@intel.com>
-Subject: Re: control names
-Date: Wed, 9 Sep 2009 17:53:56 +0530
-Message-ID: <98769532B4BB14429434178695419EAE66201FCD@bgsmsx501.gar.corp.intel.com>
-References: <98769532B4BB14429434178695419EAE5F76A259@bgsmsx501.gar.corp.intel.com>
-	<20090801094626.GA7979@sirena.org.uk>
-	<98769532B4BB14429434178695419EAE5F76AC7D@bgsmsx501.gar.corp.intel.com>
-	<20090803101243.GA5959@sirena.org.uk>
-	<98769532B4BB14429434178695419EAE5F937C6A@bgsmsx501.gar.corp.intel.com>
-	<20090810163408.GA31393@rakim.wolfsonmicro.main>
-	<98769532B4BB14429434178695419EAE5F9793FA@bgsmsx501.gar.corp.intel.com>
-	<20090811104733.GA8221@rakim.wolfsonmicro.main>
-	<98769532B4BB14429434178695419EAE66201FB8@bgsmsx501.gar.corp.intel.com>
-	<alpine.LNX.2.00.0909091410480.12929@eeebox2.perex-int.cz>
-	<20090909121536.GC9548@sirena.org.uk>
+From: Sophie Hamilton <sophie-alsa@theblob.org>
+Subject: Re: Problems with safe API and snd-cs46xx
+Date: Wed, 9 Sep 2009 13:29:02 +0100
+Message-ID: <a080dbc80909090529w3e958f27g38d8238836e415e2@mail.gmail.com>
+References: <a080dbc80909050524o7b00ceas46184b52fdac9cbc@mail.gmail.com>
+	<s5hljkrrl3s.wl%tiwai@suse.de> <1252330155.3283.5.camel@localhost>
+	<s5hbplmssrg.wl%tiwai@suse.de>
+	<20090907224659.GA5917@tango.0pointer.de>
+	<s5htyzej6fj.wl%tiwai@suse.de>
+	<a080dbc80909080046p73207442ld8f6577ebbf37ba9@mail.gmail.com>
+	<s5hws49rf58.wl%tiwai@suse.de> <s5hpra01is7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-	by alsa0.perex.cz (Postfix) with ESMTP id 968412442C
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C2A02442E
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 14:26:23 +0200 (CEST)
-In-Reply-To: <20090909121536.GC9548@sirena.org.uk>
-Content-Language: en-US
+	Wed,  9 Sep 2009 14:29:03 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so3422922fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2009 05:29:03 -0700 (PDT)
+In-Reply-To: <s5hpra01is7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,108 +30,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Tony Vroon <tony@linx.net>, alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
+On 9/9/09, Takashi Iwai <tiwai@suse.de> wrote:
+> It turned out that the hw_params determination is done rather inside
+>  the alsa-lib beforehand.
+>
+>  Try the patch below.  This will give you larger buffer size with
+>  audacious.  (And it will work without the driver changes.)
+>
+>  For any apps that require the old behavior, I added the check of
+>  $LIBASOUND_COMPAT variable.
 
->-----Original Message-----
->From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
->Sent: Wednesday, September 09, 2009 5:46 PM
->To: Jaroslav Kysela
->Cc: Harsha, Priya; alsa-devel@alsa-project.org
->Subject: Re: [alsa-devel] control names
->
->On Wed, Sep 09, 2009 at 02:11:34PM +0200, Jaroslav Kysela wrote:
->> On Wed, 9 Sep 2009, Harsha, Priya wrote:
->
->> > I am using a control name as "PCM Capture Switch". But the alsa mixer
->> > does not display the mute option for me to mute/unmute the capture
->path.
->
->> > Same thing for playback works i.e, "PCM Playback Switch" displays a
->mute
->> > button in alsamixer for me to change....
->
->> Did you press F4 to switch to the capture view?
->
->Also note that alsamixer uses a different display for capture switches
->in the UI - you won't see the same format button you'll see
->
->   ------
->
->if the switch is off or
->
->   L    R
->   CAPTUR
->
->if it's on under the volume control.
-You are right... I see it as above. And how do I change the mute to unmute and vice versa using alsamixer?
+Since this patch is for alsa-lib and not for the kernel, this forced
+me to check what version I was currently using, which turned out to be
+1.0.20. (specifically, media-libs/alsa-lib-1.0.20-r1) 1.0.21 hadn't
+yet been keyworded on my architecture (x86) as stable.
 
-Another issue am facing is that in "Playback" tab I see all capture and playback controls listed and in "Capture" tab only the capture controls and in "ALL" tab, all the controls listed. Why does capture controls get displayed under "Playback" tab? Following is my control structure that I use
+So for my first test, I forced 1.0.21 to install anyway, then made
+sure the 2.6.30.5 kernel I was using was unpatched, then rebooted to
+test whether the upgrade to 1.0.21 (unpatched) would have made any
+difference anyway. It didn't; the sound was the same as it was before.
 
-struct snd_kcontrol_new snd_intelmad_controls[MAX_CTRL] __devinitdata = {
-{
-	.iface 		=	SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name 		=	"PCM Playback Volume",
-	.access 	=	SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info 		=	snd_intelmad_playback_volume_info,
-	.get 		=	snd_intelmad_volume_get,
-	.put		=	snd_intelmad_volume_set,
-	.private_value 	=	0,
-},
-{
-	.iface 		=	SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name 		=	"PCM Playback Switch",
-	.access 	=	SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info 		=	snd_intelmad_mute_info,
-	.get 		=	snd_intelmad_mute_get,
-	.put		=	snd_intelmad_mute_set,
-	.private_value	=	0,
-},
-{
-	.iface 		=	SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name 		=	"PCM Capture Volume",
-	.access 	=	SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info 		=	snd_intelmad_capture_volume_info,
-	.get 		=	snd_intelmad_volume_get,
-	.put		=	snd_intelmad_volume_set,
-	.private_value 	=	0,
-},
-{
-	.iface 		=	SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name 		=	"PCM Capture Switch",
-	.access 	=	SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info 		=	snd_intelmad_mute_info,
-	.get 		=	snd_intelmad_mute_get,
-	.put		=	snd_intelmad_mute_set,
-	.private_value 	=	0,
-},
-{
-	.iface 		=	SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name 		=	"PCM Playback Source",
-	.access 	=	SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info 		=	snd_intelmad_device_info,
-	.get 		=	snd_intelmad_device_get,
-	.put		=	snd_intelmad_device_set,
-	.private_value	=	0,
-},
-{
-	.iface 		=	SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name 		=	"PCM Capture Source",
-	.access 	=	SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info 		=	snd_intelmad_device_info,
-	.get 		=	snd_intelmad_device_get,
-	.put		=	snd_intelmad_device_set,
-	.private_value 	=	0,
-},
-{
-	.iface 		=	SNDRV_CTL_ELEM_IFACE_MIXER,
-	.name 		=	"Master Playback Switch",
-	.access 	=	SNDRV_CTL_ELEM_ACCESS_READWRITE,
-	.info 		=	snd_intelmad_mute_info,
-	.get 		=	snd_intelmad_mute_get,
-	.put		=	snd_intelmad_mute_set,
-	.private_value	=	0,
-},
-};
+Then, I copied the alsa-lib ebuild to a local Gentoo repository and
+modified it to apply your patch. (I don't know what tricks Gentoo
+might have up its sleeve for components as core as this, so I didn't
+feel comfortable taking the raw source. It shouldn't made a
+difference, but if you'd prefer me to try, I can see what I can do. I
+can't promise that any problems would be necessarily from this,
+though.) I compiled and installed the new patched 1.0.21, and
+rebooted.
+
+I can confirm now that Audacious does indeed play correctly where it
+didn't before. However, using mplayer with the "-ao openal" switch
+still doesn't play correctly - in fact, it sounds the same as before -
+so it looks like OpenAL is actually doing things slightly differently
+than I thought. :/
+
+As a final test, I removed the patch from alsa-lib and re-patched the
+kernel with my patch to change the minimum period size to 64 for
+cs46xx, so that I could check whether it would still work with the new
+alsa-lib 1.0.21 (rather than the 1.0.20 that I was using before). It
+does indeed work, in both Audacious and OpenAL.
+
+So... I'm not sure what's up with OpenAL in this case. Is there
+anything more I can do to help?
+
+ - Sophie.
