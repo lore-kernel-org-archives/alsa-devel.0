@@ -1,53 +1,38 @@
-From: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
-Subject: RE: [alsa-devel] [PATCH 2/3] ASoC: DaVinci: pcm, rename variables
- in prep for ping/pong
-Date: Wed, 9 Sep 2009 18:35:31 +0530
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB59301DD74F59E@dbde02.ent.ti.com>
-References: <1251761505-11353-1-git-send-email-troy.kisky@boundarydevices.com>
-	<4AA0113D.9030605@boundarydevices.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59301DD74F519@dbde02.ent.ti.com>
-	<200909091533.58702.caglarakyuz@gmail.com>
+From: Nicolas Krieger <khenyh@gmail.com>
+Subject: pts value using alsa for audio capture
+Date: Wed, 9 Sep 2009 15:10:32 +0200
+Message-ID: <3afeb4060909090610k370622c8w7fcee6ba850bbf03@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <200909091533.58702.caglarakyuz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.omap.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: "caglarakyuz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <caglarakyuz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id CFADE103840
+	for <alsa-devel@alsa-project.org>;
+	Wed,  9 Sep 2009 15:10:52 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 22so1962544fge.2
+	for <alsa-devel@alsa-project.org>; Wed, 09 Sep 2009 06:10:52 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 09, 2009 at 18:03:58, Caglar Akyuz wrote:
-> On Wednesday 09 September 2009 15:08:42 Nori, Sekhar wrote:
+Hi,
 
-[...]
+I have a question about how pts are computed using alsa while grabbing
+audio.
+I take an example to explain :
+I do grab audio during 10 seconds, the first 2 seconds, there is no problem,
+so the pts are like that (I take examples values) : 1 2 3 4 5 6 .... x <- x
+is the value of the last pts (2nd second).
+Then, for any reason, no capture during 3 seconds. And then no problem until
+the end.
 
-> >
-> > However, with or without your patch, I noticed a segmentation fault for=
- the
-> > first time the 'arecord | aplay' loop is created. There is no fault the
-> > second time around. I haven't spent time debugging this yet.
-> >
->
-> This is due to these lines in davinci_pcm_enqueue_dma:
->
->       data_type =3D prtd->params->data_type;
->       count =3D period_size / data_type;
->
-> First time running data_type is set to 0. This is a long time issue, I
-> remember modifying my kernels to check for zero before this division..
-
-Ah, thanks! Planning to submit a fix for this? We can work on the patch
-if you are busy otherwise.
-
-Regards,
-Sekhar
+Nicolas Krieger
