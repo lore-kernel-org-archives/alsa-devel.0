@@ -1,24 +1,16 @@
-From: Geoffrey Wossum <gwossum@pager.net>
-Subject: i.MX31L + AC97
-Date: Wed, 9 Sep 2009 11:10:49 -0500
-Message-ID: <200909091110.49628.gwossum@pager.net>
+From: "Feng Ye" <fye@broadcom.com>
+Subject: How to support mutiple audio interface in alsa
+Date: Wed, 9 Sep 2009 11:50:34 -0700
+Message-ID: <9383297B60843144AC17878B479520F110AEC19499@SJEXCHCCR01.corp.ad.broadcom.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from barracuda.pager.net (mail.pager.net [209.253.16.30])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43E6C244AF
-	for <Alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 18:10:53 +0200 (CEST)
-Received: from LRS-EX2K8.LongRangeSystems.local (localhost [127.0.0.1])
-	by barracuda.pager.net (Spam & Virus Firewall) with ESMTP id
-	80C6015D9C6
-	for <Alsa-devel@alsa-project.org>; Wed,  9 Sep 2009 11:10:46 -0500 (CDT)
-Received: from LRS-EX2K8.LongRangeSystems.local
-	(lrs-ex2k8.longrangesystems.local [192.168.7.254]) by
-	barracuda.pager.net with ESMTP id 4qFZBhlDa7irvqLl for
-	<Alsa-devel@alsa-project.org>; Wed, 09 Sep 2009 11:10:46 -0500 (CDT)
-Content-Disposition: inline
+Received: from MMS3.broadcom.com (mms3.broadcom.com [216.31.210.19])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1621B244F7
+	for <alsa-devel@alsa-project.org>;
+	Wed,  9 Sep 2009 20:50:51 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,21 +20,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Hello there,
 
-I'm currently looking at a board which uses a Freescale i.MX31L connected to a 
-Wolfson WM9715L over the AC97 bus.  The WM9715L will be used for both sound 
-and a touchscreen.
+This question is for ALSA, not ALSA SOC.
+I am doing an ALSA driver for our chip (soc chip with cpu inside), inside it has I2S and DAC. The I2S can be feed to DAC, or come out of the chip to an external CODEC chip.
+I wonder how should I model this in the driver, are they multiple ALSA cards, or devices, or subdevices?
+Since the I2S is shared, I think the most appropriate is 'subdevice', but I do not see how this is used in linux/sound, this is only used in pci, and seems to tied together with substream number.
+If the answer is 'device', is there some existing driver that are doing this?
 
-It doesn't look like there are any AC97 SoC drivers for the i.MX31.  Is this 
-correct?  If so, should I try to get the board changed to use a codec on the 
-I2S bus (the board is being layed out right now), or would creating the AC97 
-driver simple enough that we should continue on with this hardware and write 
-the driver when needed?
 
-TIA,
----
-Geoffrey
+Thanks,
+Feng
