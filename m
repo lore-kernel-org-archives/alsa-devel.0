@@ -1,20 +1,25 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Alsa plugin unable to be loaded by Pulseaudio
-Date: Wed, 9 Sep 2009 15:59:39 +0200
-Message-ID: <20090909135939.GA14530@tango.0pointer.de>
-References: <1252365377.11542.5.camel@localhost.localdomain>
-	<4f3252890909090110n68cbecefnab64f953d4788850@mail.gmail.com>
-	<1252502217.20038.3.camel@localhost.localdomain>
+Subject: Re: Problems with safe API and snd-cs46xx
+Date: Wed, 9 Sep 2009 16:07:35 +0200
+Message-ID: <20090909140735.GC14530@tango.0pointer.de>
+References: <s5hljkrrl3s.wl%tiwai@suse.de> <1252330155.3283.5.camel@localhost>
+	<s5hbplmssrg.wl%tiwai@suse.de>
+	<20090907224659.GA5917@tango.0pointer.de>
+	<s5htyzej6fj.wl%tiwai@suse.de>
+	<a080dbc80909080046p73207442ld8f6577ebbf37ba9@mail.gmail.com>
+	<s5hws49rf58.wl%tiwai@suse.de> <s5hpra01is7.wl%tiwai@suse.de>
+	<a080dbc80909090529w3e958f27g38d8238836e415e2@mail.gmail.com>
+	<s5hk5081ekp.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 586E210387A
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BA29103870
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 16:00:04 +0200 (CEST)
+	Wed,  9 Sep 2009 16:08:01 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1252502217.20038.3.camel@localhost.localdomain>
+In-Reply-To: <s5hk5081ekp.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,33 +29,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ng Oon-Ee <ngoonee@gmail.com>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Sophie Hamilton <sophie-alsa@theblob.org>, alsa-devel@alsa-project.org, Tony Vroon <tony@linx.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 09.09.09 21:16, Ng Oon-Ee (ngoonee@gmail.com) wrote:
+On Wed, 09.09.09 14:35, Takashi Iwai (tiwai@suse.de) wrote:
 
-> The "test" device is defined as follows (should have put it in
-> initially).
+> > I can confirm now that Audacious does indeed play correctly where it
+> > didn't before. However, using mplayer with the "-ao openal" switch
+> > still doesn't play correctly - in fact, it sounds the same as before -
+> > so it looks like OpenAL is actually doing things slightly differently
+> > than I thought. :/
 > 
-> pcm.test {
->  type plug
->  slave { pcm "hw:0,0" }
-> }
-> 
-> It works with aplay. My issue is that the pulseaudio server cannot load
-> alsa plugins since 1.0.20 (as far as I can tell, ubuntuforums has a
-> thread which suggested as such). When I queried the pulse ML, Lennart
-> posted the below reply, which I've forwarded here to alsa-devel.
-> 
-> Basically, the issue as Lennart sees it is summarized by his last 3
-> paragraphs (bottom of this mail). He specifies the difference between
-> the way alsa is reacting to pulse and the way it 'should'.
+> Yes, likely.  The app like openal is usually more sensible regarding
+> latency, so "safe API" described there wasn't appropriate at all.
 
-After the discussion we had on alsa-devel about the ordering how buffer
-size and period size are initialized i have now changed PA git to try
-harder to initialize those values. Would be good if you could check if
-that actually makes your problem go away.
+Hmm, so are you suggesting I should change that little text about the
+safe API subset I wrote?
+
+So, users should always set first the buffer size, followed by the
+period size, is that correct?  And if that fails, try the other way
+round, and if that fails set buffer size only? And if that fails set
+nothing?
 
 Lennart
 
