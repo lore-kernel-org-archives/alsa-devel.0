@@ -1,51 +1,53 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: alsa-lib 1.0.21a release
-Date: Wed, 9 Sep 2009 14:51:00 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0909091444530.12929@eeebox2.perex-int.cz>
+From: "Nori, Sekhar" <nsekhar-l0cyMroinI0@public.gmane.org>
+Subject: RE: [alsa-devel] [PATCH 2/3] ASoC: DaVinci: pcm, rename variables
+ in prep for ping/pong
+Date: Wed, 9 Sep 2009 18:35:31 +0530
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB59301DD74F59E@dbde02.ent.ti.com>
+References: <1251761505-11353-1-git-send-email-troy.kisky@boundarydevices.com>
+	<4AA0113D.9030605@boundarydevices.com>
+	<B85A65D85D7EB246BE421B3FB0FBB59301DD74F519@dbde02.ent.ti.com>
+	<200909091533.58702.caglarakyuz@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8905D2442A
-	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 14:51:00 +0200 (CEST)
-Received: from server.perex.cz (server.perex.cz [172.16.0.20])
-	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	8225A14996D for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 14:51:00 +0200 (CEST)
-Received: from eeebox2.perex-int.cz (localhost [127.0.0.1])
-	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
-	716BC8453F for <alsa-devel@alsa-project.org>;
-	Wed,  9 Sep 2009 14:51:00 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+In-Reply-To: <200909091533.58702.caglarakyuz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Language: en-US
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.omap.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: "caglarakyuz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <caglarakyuz-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wed, Sep 09, 2009 at 18:03:58, Caglar Akyuz wrote:
+> On Wednesday 09 September 2009 15:08:42 Nori, Sekhar wrote:
 
- 	I made a quick release 1.0.21a of the alsa-lib package to fix 
-regression for the configuration parsing (makes some device names 
-unavailable). These patches were included:
+[...]
 
-19abc37 PCM - Change the hw_params determination order
-d1b70af Change dmix.conf to accept user configuration from
-         defaults.dmix.<driver_id>.xxx
-eb9ae58 Revert "Fix driver conf parsing in
-         snd_config_hook_load_for_all_cards()"
-f0a32a6 mixer: Add Speaker and Beep names to the weight list
+> >
+> > However, with or without your patch, I noticed a segmentation fault for=
+ the
+> > first time the 'arecord | aplay' loop is created. There is no fault the
+> > second time around. I haven't spent time debugging this yet.
+> >
+>
+> This is due to these lines in davinci_pcm_enqueue_dma:
+>
+>       data_type =3D prtd->params->data_type;
+>       count =3D period_size / data_type;
+>
+> First time running data_type is set to 0. This is a long time issue, I
+> remember modifying my kernels to check for zero before this division..
 
- 						Jaroslav
+Ah, thanks! Planning to submit a fix for this? We can work on the patch
+if you are busy otherwise.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Regards,
+Sekhar
