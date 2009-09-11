@@ -1,18 +1,27 @@
-From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
-Subject: ice1724: dmesg filled with IRQ errors
-Date: Fri, 11 Sep 2009 12:47:13 +0200
-Message-ID: <fd3eb9bf0909110347u736ad276hfdeb8dcadb247f6a@mail.gmail.com>
+From: Orm Finnendahl <o.finnendahl@mh-freiburg.de>
+Subject: hda-intel missing mixer channels
+Date: Fri, 11 Sep 2009 21:02:48 +0200
+Message-ID: <20090911190248.GG19531@varese>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f178.google.com (mail-yx0-f178.google.com
-	[209.85.210.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4F5624638
+Received: from mail.mh-freiburg.de (mail.mh-freiburg.de [193.197.131.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D78724752
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Sep 2009 12:47:34 +0200 (CEST)
-Received: by yxe8 with SMTP id 8so1150896yxe.17
-	for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2009 03:47:33 -0700 (PDT)
+	Fri, 11 Sep 2009 21:02:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mail.mh-freiburg.de (Postfix) with ESMTP id 8AEBCF0F49
+	for <alsa-devel@alsa-project.org>;
+	Fri, 11 Sep 2009 21:02:48 +0200 (CEST)
+Received: from inm.mh-freiburg.de (unknown [192.168.242.2])
+	by mail.mh-freiburg.de (Postfix) with ESMTP id 71C6EF0941
+	for <alsa-devel@alsa-project.org>;
+	Fri, 11 Sep 2009 21:02:48 +0200 (CEST)
+Received: from orm by grisey with local (masqmail 0.2.21) id
+	1MmBOS-1Ox-00 for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2009
+	21:02:48 +0200
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +31,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSByYW4gd2luZWNmZywgYW5kIGl0IHByb2JlZCBhcm91bmQgc291bmQgc3R1ZmYgYSBiaXQsIGFu
-ZCB0aGVuIGRtZXNnCmdvdCBmaWxsZWQgd2l0aDoKClsgNjYyMy42NTQ4OTldIGljZTE3MjQ6IFRv
-byBsb25nIGlycSBsb29wLCBzdGF0dXMgPSAweDMwClsgNjYyMy42NTQ5MDFdIGljZTE3MjQ6IERp
-c2FibGluZyBNUFVfVFgKWyA2NjIzLjY1NDk4Ml0gaWNlMTcyNDogVG9vIGxvbmcgaXJxIGxvb3As
-IHN0YXR1cyA9IDB4MzAKWyA2NjIzLjY1NDk4M10gaWNlMTcyNDogRGlzYWJsaW5nIE1QVV9UWApb
-IDY2MjMuNjU1MDY0XSBpY2UxNzI0OiBUb28gbG9uZyBpcnEgbG9vcCwgc3RhdHVzID0gMHgzMApb
-IDY2MjMuNjU1MDY1XSBpY2UxNzI0OiBEaXNhYmxpbmcgTVBVX1RYClsgNjYyMy42NTUxNDZdIGlj
-ZTE3MjQ6IFRvbyBsb25nIGlycSBsb29wLCBzdGF0dXMgPSAweDMwClsgNjYyMy42NTUxNDddIGlj
-ZTE3MjQ6IERpc2FibGluZyBNUFVfVFgKWyA2NjIzLjY1NTIyOF0gaWNlMTcyNDogVG9vIGxvbmcg
-aXJxIGxvb3AsIHN0YXR1cyA9IDB4MzAKWyA2NjIzLjY1NTIyOV0gaWNlMTcyNDogRGlzYWJsaW5n
-IE1QVV9UWApbIDY2MjMuNjU1MzEwXSBpY2UxNzI0OiBUb28gbG9uZyBpcnEgbG9vcCwgc3RhdHVz
-ID0gMHgzMApbIDY2MjMuNjU1MzExXSBpY2UxNzI0OiBEaXNhYmxpbmcgTVBVX1RYClsgNjYyMy42
-NTUzOTFdIGljZTE3MjQ6IFRvbyBsb25nIGlycSBsb29wLCBzdGF0dXMgPSAweDMwClsgNjYyMy42
-NTUzOTNdIGljZTE3MjQ6IERpc2FibGluZyBNUFVfVFgKWyA2NjIzLjY1NTQ3M10gaWNlMTcyNDog
-VG9vIGxvbmcgaXJxIGxvb3AsIHN0YXR1cyA9IDB4MzAKWyA2NjIzLjY1NTQ3NV0gaWNlMTcyNDog
-RGlzYWJsaW5nIE1QVV9UWApbIDY2MjMuNjU1NTU1XSBpY2UxNzI0OiBUb28gbG9uZyBpcnEgbG9v
-cCwgc3RhdHVzID0gMHgzMApbIDY2MjMuNjU1NTU3XSBpY2UxNzI0OiBEaXNhYmxpbmcgTVBVX1RY
-ClsgNjYyMy42NTU2MzddIGljZTE3MjQ6IFRvbyBsb25nIGlycSBsb29wLCBzdGF0dXMgPSAweDMw
-ClsgNjYyMy42NTU2MzldIGljZTE3MjQ6IERpc2FibGluZyBNUFVfVFgKWyA2NjIzLjY1NTcxOV0g
-aWNlMTcyNDogVG9vIGxvbmcgaXJxIGxvb3AsIHN0YXR1cyA9IDB4MzAKWyA2NjIzLjY1NTcyMV0g
-aWNlMTcyNDogRGlzYWJsaW5nIE1QVV9UWApbIDY2MjMuNjU1ODAxXSBpY2UxNzI0OiBUb28gbG9u
-ZyBpcnEgbG9vcCwgc3RhdHVzID0gMHgzMApbIDY2MjMuNjU1ODAzXSBpY2UxNzI0OiBEaXNhYmxp
-bmcgTVBVX1RYClsgNjYyMy42NTU4ODNdIGljZTE3MjQ6IFRvbyBsb25nIGlycSBsb29wLCBzdGF0
-dXMgPSAweDMwClsgNjYyMy42NTU4ODVdIGljZTE3MjQ6IERpc2FibGluZyBNUFVfVFgKWyA2NjIz
-LjY1NTk2Nl0gaWNlMTcyNDogVG9vIGxvbmcgaXJxIGxvb3AsIHN0YXR1cyA9IDB4MzAKWyA2NjIz
-LjY1NTk2N10gaWNlMTcyNDogRGlzYWJsaW5nIE1QVV9UWAoKQW5kIHNvIG9uLiBJIGhhZCB0byBy
-ZXNldCwgc2luY2UgaXQgd2FzIGltcG9zc2libGUgdG8gc2h1dGRvd24gb3IKdW5sb2FkIGljZTE3
-MjQgbW9kdWxlLiBJcyB0aGlzIGEga25vd24gYnVnPyBDYW4gSSBoZWxwIGRlYnVnZ2luZyBpdD8K
-ClZlZHJhbiBNaWxldGnEhwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Hi,
+
+I sent this to alsa-user a week ago but didn't get any reply. Does
+anybody know, who is responsible for the missing faders? Did the
+driver change or is it some module loading mechanism in the distro
+which prevents the faders from showing up in alsamixer? This is so
+strange. Please help!
+
+--
+Orm
+--------------------------------------------------------------------
+Hi everybody,
+
+ after the last update of Ubuntu (intrepid to jaunty) on my Lenovo
+Ideapad my microphone input doesn't work anymore (neither internal nor
+external). I found out that alsamixer lacks quite a lot of faders in
+the newer kernel/module compared to the older one. Some of the faders
+now unavailable were crucial for Mic input to work on the older system
+so I'd very much like to get them back ;-)
+
+Some more infos: 
+
+Soundcard:    Intel 82801G (ICH7 Family)
+Chip:         Realtek ALC269
+Module:       snd_hda_intel (in both kernels)
+
+Older kernel: Ubuntu stock 2.6.27-14-generic
+Newer kernel: Ubuntu stock 2.6.28-13-rt
+
+Is there any way to make the missing controls available or did the
+driver change and I have to compile the older driver for the new
+kernel?
+
+Yours,
+Orm
