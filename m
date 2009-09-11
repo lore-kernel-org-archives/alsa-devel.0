@@ -1,78 +1,101 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 8/8] sound/soc: introduce missing kfree
-Date: Fri, 11 Sep 2009 18:23:04 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.0909111822480.10552@pc-004.diku.dk>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH v2] add channel order map interface in asoc core
+Date: Sat, 12 Sep 2009 01:16:29 +0800
+Message-ID: <1252689389-11661-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754659AbZIKQXH@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org, lin
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E22B24720
+	for <alsa-devel@alsa-project.org>;
+	Fri, 11 Sep 2009 19:16:45 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id e12so7162fga.2
+	for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2009 10:16:43 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia@diku.dk>
+The patch adds an interface to set the relationship between audio
+channel number and slot number. The interface should be really useful
+because audio channel n doesn't always use slot n in all platforms. And
+for some devices, the relationship even can change with sound mode
+switch in 2.1,3.1,4.1,5.1,6.1,7.1 etc.
 
-Error handling code following a kzalloc should free the allocated data.
-Error handling code following an ioremap should iounmap the allocated data.
-
-The semantic match that finds the first problem is as follows:
-(http://www.emn.fr/x-info/coccinelle/)
-
-// <smpl>
-@r exists@
-local idexpression x;
-statement S;
-expression E;
-identifier f,f1,l;
-position p1,p2;
-expression *ptr != NULL;
-@@
-
-x@p1 = \(kmalloc\|kzalloc\|kcalloc\)(...);
-...
-if (x == NULL) S
-<... when != x
-     when != if (...) { <+...x...+> }
-(
-x->f1 = E
-|
- (x->f1 == NULL || ...)
-|
- f(...,x->f1,...)
-)
-...>
-(
- return \(0\|<+...x...+>\|ptr\);
-|
- return@p2 ...;
-)
-
-@script:python@
-p1 << r.p1;
-p2 << r.p2;
-@@
-
-print "* file: %s kmalloc %s return %s" % (p1[0].file,p1[0].line,p2[0].line)
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
+Signed-off-by: Barry Song <21cnbao@gmail.com>
 ---
- sound/soc/fsl/mpc5200_dma.c         |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+ include/sound/soc-dai.h |    7 +++++++
+ sound/soc/soc-core.c    |   24 ++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index 9ff62e3..41ffd57 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -469,8 +469,11 @@ int mpc5200_audio_dma_create(struct of_device *op)
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 97ca9af..5c84566 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -114,6 +114,10 @@ int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt);
+ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width);
  
- 	/* Get the PSC ID */
- 	prop = of_get_property(op->node, "cell-index", &size);
--	if (!prop || size < sizeof *prop)
-+	if (!prop || size < sizeof *prop) {
-+		iounmap(regs);
-+		kfree(psc_dma);
- 		return -ENODEV;
-+	}
++int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
++	unsigned int tx_num, unsigned int *tx_slot,
++	unsigned int rx_num, unsigned int *rx_slot);
++
+ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
  
- 	spin_lock_init(&psc_dma->lock);
- 	mutex_init(&psc_dma->mutex);
+ /* Digital Audio Interface mute */
+@@ -148,6 +152,9 @@ struct snd_soc_dai_ops {
+ 	int (*set_tdm_slot)(struct snd_soc_dai *dai,
+ 		unsigned int tx_mask, unsigned int rx_mask,
+ 		int slots, int slot_width);
++	int (*set_channel_map)(struct snd_soc_dai *dai,
++		unsigned int tx_num, unsigned int *tx_slot,
++		unsigned int rx_num, unsigned int *rx_slot);
+ 	int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
+ 
+ 	/*
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 7ff04ad..ba1f8e5 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2251,6 +2251,30 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
+ EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
+ 
+ /**
++ * snd_soc_dai_set_channel_map - configure DAI audio channel map
++ * @dai: DAI
++ * @tx_num: how many TX channels
++ * @tx_slot: pointer to an array which imply the TX slot number channel
++ *           0~num-1 uses
++ * @rx_num: how many RX channels
++ * @rx_slot: pointer to an array which imply the RX slot number channel
++ *           0~num-1 uses
++ *
++ * configure the relationship between channel number and TDM slot number.
++ */
++int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
++	unsigned int tx_num, unsigned int *tx_slot,
++	unsigned int rx_num, unsigned int *rx_slot)
++{
++	if (dai->ops && dai->ops->set_tdm_slot)
++		return dai->ops->set_channel_map(dai, tx_num, tx_slot,
++			rx_num, rx_slot);
++	else
++		return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
++
++/**
+  * snd_soc_dai_set_tristate - configure DAI system or master clock.
+  * @dai: DAI
+  * @tristate: tristate enable
+-- 
+1.5.6.3
