@@ -1,16 +1,20 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH] add channel order setting interface in asoc
-	core
-Date: Fri, 11 Sep 2009 17:03:42 +0800
-Message-ID: <1252659822-12915-1-git-send-email-21cnbao@gmail.com>
+From: David Henningsson <launchpad.web@epost.diwic.se>
+Subject: snd_device_name_hint problems
+Date: Fri, 11 Sep 2009 11:45:47 +0200
+Message-ID: <4AAA1C4B.5000806@epost.diwic.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id A17FD1037F3
+Received: from ch-smtp02.sth.basefarm.net (ch-smtp02.sth.basefarm.net
+	[80.76.149.213]) by alsa0.perex.cz (Postfix) with ESMTP id CEBF7245EE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Sep 2009 11:02:51 +0200 (CEST)
+	Fri, 11 Sep 2009 11:46:17 +0200 (CEST)
+Received: from c83-254-134-5.bredband.comhem.se ([83.254.134.5]:55171
+	helo=[192.168.0.200])
+	by ch-smtp02.sth.basefarm.net with esmtp (Exim 4.68)
+	(envelope-from <launchpad.web@epost.diwic.se>) id 1Mm2hR-0001GV-9R
+	for alsa-devel@alsa-project.org; Fri, 11 Sep 2009 11:45:51 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,78 +24,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-As discussed, I am adding a patch to add an interface to set the
-relationship between audio channel No. and slot No.
-The interface should be really useful because nobody can ensure
-audio channel n always uses slot n in all platforms. And for some
-devices, the relationship even can change with sound mode switch
-in 2.1,3.1,4.1,5.1,6.1,7.1.
-After the patch is applied, I can change bfin stuff based on it.
-Thanks,
-Barry
+Hello,
 
-Signed-off-by: Barry Song <21cnbao@gmail.com>
----
- include/sound/soc-dai.h |    5 +++++
- sound/soc/soc-core.c    |   18 ++++++++++++++++++
- 2 files changed, 23 insertions(+), 0 deletions(-)
+First; I'm not completely sure how much of this is your issue, and how
+much is my distribution's fault (Ubuntu). If you believe my problems is
+due to bugs in the distribution, please say so.
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 97ca9af..7439425 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -114,6 +114,9 @@ int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt);
- int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
- 	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width);
- 
-+int snd_soc_dai_set_channel_order(struct snd_soc_dai *dai,
-+	unsigned int num, unsigned int *slot);
-+
- int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
- 
- /* Digital Audio Interface mute */
-@@ -148,6 +151,8 @@ struct snd_soc_dai_ops {
- 	int (*set_tdm_slot)(struct snd_soc_dai *dai,
- 		unsigned int tx_mask, unsigned int rx_mask,
- 		int slots, int slot_width);
-+	int (*set_channel_order)(struct snd_soc_dai *dai,
-+		unsigned int num, unsigned int *slot);
- 	int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
- 
- 	/*
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 7ff04ad..30d0143 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2251,6 +2251,24 @@ int snd_soc_dai_set_tdm_slot(struct snd_soc_dai *dai,
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_tdm_slot);
- 
- /**
-+ * snd_soc_dai_set_channel_order - configure DAI audio channel order
-+ * @dai: DAI
-+ * @num: how many channels
-+ * @slot: pointer to an array which imply the slot number channel 0~num-1 uses
-+ *
-+ * configure the relationship between channel number and TDM slot number.
-+ */
-+int snd_soc_dai_set_channel_order(struct snd_soc_dai *dai,
-+		unsigned int num, unsigned int *slot)
-+{
-+	if (dai->ops && dai->ops->set_tdm_slot)
-+		return dai->ops->set_channel_order(dai, num, slot);
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_order);
-+
-+/**
-  * snd_soc_dai_set_tristate - configure DAI system or master clock.
-  * @dai: DAI
-  * @tristate: tristate enable
--- 
-1.5.6.3
+I'm working with a small recording application and I want to enumerate
+possible recording sources/devices, just to put in a combobox. In my
+computer I have two soundcards, one on the motherboard and one PCI
+soundcard (ESI Juli@). I also have Pulseaudio installed, so the devices
+I want to show up are those three - and possibly alternatives under
+these, such as analog/digital inputs.
+
+According to Lennart's guide to sound API's, snd_device_name_hint is the
+way to go, as both snd_card_xxx and snd_config_xxx are deprecated.
+(Speak up if you don't agree.)
+
+So assuming I do about the same as "arecord -L" does, I get the
+following output (descriptions omitted) :
+
+front:CARD=Juli,DEV=0
+surround40:CARD=Juli,DEV=0
+surround41:CARD=Juli,DEV=0
+surround50:CARD=Juli,DEV=0
+surround51:CARD=Juli,DEV=0
+surround71:CARD=Juli,DEV=0
+iec958:CARD=Juli,DEV=0
+null
+front:CARD=CK804,DEV=0
+surround40:CARD=CK804,DEV=0
+surround41:CARD=CK804,DEV=0
+surround50:CARD=CK804,DEV=0
+surround51:CARD=CK804,DEV=0
+surround71:CARD=CK804,DEV=0
+
+I have two problems with this: first thing is that the "pulse" device is
+not listed. I think that could be solved either by setting
+"defaults.namehint.showall" to on, or by setting the name hint of the
+pulse device to be included in the "basic" devices. Would you recommend
+doing either one of those, and if so, which one?
+
+Second problem is that I don't have surround input on either of my
+soundcards, so most of the device options above do not make any sense.
+Even if I try, I have a hard time recording from them (arecord fails to
+record it with various errors, such as "Sample format non available").
+If I instead use "plughw:CARD=name", recording works.
+
+To sum it up, the output I would like to have, is at least these three:
+
+plughw:CARD=Juli
+plughw:CARD=CK804
+pulse
+
+How do I/we get there?
+
+// David
