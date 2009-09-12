@@ -1,26 +1,26 @@
 From: Orm Finnendahl <o.finnendahl@mh-freiburg.de>
 Subject: hda-intel missing mixer channels
-Date: Fri, 11 Sep 2009 21:02:48 +0200
-Message-ID: <20090911190248.GG19531@varese>
+Date: Sat, 12 Sep 2009 14:04:13 +0200
+Message-ID: <20090912120413.GA28342@varese>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.mh-freiburg.de (mail.mh-freiburg.de [193.197.131.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D78724752
+	by alsa0.perex.cz (Postfix) with ESMTP id 6AD781037F2
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Sep 2009 21:02:49 +0200 (CEST)
+	Sat, 12 Sep 2009 14:04:14 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by mail.mh-freiburg.de (Postfix) with ESMTP id 8AEBCF0F49
+	by mail.mh-freiburg.de (Postfix) with ESMTP id F126BF1131
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Sep 2009 21:02:48 +0200 (CEST)
+	Sat, 12 Sep 2009 14:04:13 +0200 (CEST)
 Received: from inm.mh-freiburg.de (unknown [192.168.242.2])
-	by mail.mh-freiburg.de (Postfix) with ESMTP id 71C6EF0941
+	by mail.mh-freiburg.de (Postfix) with ESMTP id D4BC4F094A
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Sep 2009 21:02:48 +0200 (CEST)
+	Sat, 12 Sep 2009 14:04:13 +0200 (CEST)
 Received: from orm by grisey with local (masqmail 0.2.21) id
-	1MmBOS-1Ox-00 for <alsa-devel@alsa-project.org>; Fri, 11 Sep 2009
-	21:02:48 +0200
+	1MmRKv-7PC-00 for <alsa-devel@alsa-project.org>; Sat, 12 Sep 2009
+	14:04:13 +0200
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -37,7 +37,7 @@ List-Id: alsa-devel@alsa-project.org
 Hi,
 
 I sent this to alsa-user a week ago but didn't get any reply. Does
-anybody know, who is responsible for the missing faders? Did the
+anybody know, what is responsible for the missing faders? Did the
 driver change or is it some module loading mechanism in the distro
 which prevents the faders from showing up in alsamixer? This is so
 strange. Please help!
