@@ -1,27 +1,19 @@
-From: Orm Finnendahl <o.finnendahl@mh-freiburg.de>
-Subject: hda-intel missing mixer channels
-Date: Sat, 12 Sep 2009 14:33:47 +0200
-Message-ID: <20090912123347.GB29674@varese>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 8/8,
+	retry] sound/soc: introduce missing kfree
+Date: Sat, 12 Sep 2009 13:42:29 +0100
+Message-ID: <20090912124229.GB4633@sirena.org.uk>
+References: <Pine.LNX.4.64.0909121424420.8557@pc-004.diku.dk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.mh-freiburg.de (mail.mh-freiburg.de [193.197.131.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id CBAD51037F9
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id DBD291037FC
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 14:33:47 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.mh-freiburg.de (Postfix) with ESMTP id AF604F1131
-	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 14:33:47 +0200 (CEST)
-Received: from inm.mh-freiburg.de (unknown [192.168.242.2])
-	by mail.mh-freiburg.de (Postfix) with ESMTP id 9EC90F094A
-	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 14:33:47 +0200 (CEST)
-Received: from orm by grisey with local (masqmail 0.2.21) id
-	1MmRnX-7pZ-00 for <alsa-devel@alsa-project.org>; Sat, 12 Sep 2009
-	14:33:47 +0200
+	Sat, 12 Sep 2009 14:42:31 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0909121424420.8557@pc-004.diku.dk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,41 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Julia Lawall <julia@diku.dk>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, Sep 12, 2009 at 02:25:35PM +0200, Julia Lawall wrote:
+> From: Julia Lawall <julia@diku.dk>
+> 
+> Error handling code following a kzalloc should free the allocated data.
+> Error handling code following an ioremap should iounmap the allocated data.
 
-I sent this to alsa-user a week ago but didn't get any reply. Does
-anybody know, what is responsible for the missing faders? Did the
-driver change or is it some module loading mechanism in the distro
-which prevents the faders from showing up in alsamixer? This is so
-strange. Please help!
-
---
-Orm
---------------------------------------------------------------------
-Hi everybody,
-
- after the last update of Ubuntu (intrepid to jaunty) on my Lenovo
-Ideapad my microphone input doesn't work anymore (neither internal nor
-external). I found out that alsamixer lacks quite a lot of faders in
-the newer kernel/module compared to the older one. Some of the faders
-now unavailable were crucial for Mic input to work on the older system
-so I'd very much like to get them back ;-)
-
-Some more infos: 
-
-Soundcard:    Intel 82801G (ICH7 Family)
-Chip:         Realtek ALC269
-Module:       snd_hda_intel (in both kernels)
-
-Older kernel: Ubuntu stock 2.6.27-14-generic
-Newer kernel: Ubuntu stock 2.6.28-13-rt
-
-Is there any way to make the missing controls available or did the
-driver change and I have to compile the older driver for the new
-kernel?
-
-Yours,
-Orm
+Applied after manually fixing paths (the patch had a bunch of prefixes
+in the directory name).  Thanks!
