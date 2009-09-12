@@ -1,18 +1,19 @@
-From: Ben <donneh@gmail.com>
-Subject: SPDIF issues
-Date: Sat, 12 Sep 2009 15:03:46 +0100
-Message-ID: <dbecb5df0909120703ydede4c8ta85418b6ea27f130@mail.gmail.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: How to test suspend ?
+Date: Sat, 12 Sep 2009 22:28:40 +0200
+Message-ID: <20090912222840.4acb153b@Jay>
+References: <20090911005856.3d910e79@Jay>
+	<20090911061943.GE9410@buzzloop.caiaq.de>
+	<20090911215722.292f90d0@Jay> <1252700876.11228.4.camel@razman>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
-	[209.85.220.207])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF57C103818
+Received: from smtp-out26.alice.it (smtp-out26.alice.it [85.33.2.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DCA8247D9
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 16:03:47 +0200 (CEST)
-Received: by fxm3 with SMTP id 3so1333847fxm.32
-	for <alsa-devel@alsa-project.org>; Sat, 12 Sep 2009 07:03:46 -0700 (PDT)
+	Sat, 12 Sep 2009 22:28:55 +0200 (CEST)
+In-Reply-To: <1252700876.11228.4.camel@razman>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,34 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Tobin Davis <tdavis@dsl-only.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-All,
+On Fri, 11 Sep 2009 13:27:56 -0700
+Tobin Davis <tdavis@dsl-only.net> wrote:
 
-I have been happily using a small setup for the purpose of MythTV. I
-recently decided to upgrade the graphics so I could enjoy VPDAU which has
-been integrated into the 0.22 branch of MythTV. There is just one snag, I
-don't have any sound.
+> On Fri, 2009-09-11 at 21:57 +0200, Giuliano Pochini wrote:
+> 
+> > On Fri, 11 Sep 2009 08:19:43 +0200
+> > Daniel Mack <daniel@caiaq.de> wrote:
+> > 
+> > > On Fri, Sep 11, 2009 at 12:58:56AM +0200, Giuliano Pochini wrote:
+> > > > I couldn't make s2ram work on my machine and /sys/pci/.../power/state
+> > > > virtual files were removed one year ago. How can I test suspend/resume ?
+> > > 
+> > > See Documentation/power/states.txt
+> > 
+> > $ cat /sys/power/state
+> > 
+> > ^^^^ nothing.
+> > 
+> 
+> Cat does nothing because it doesn't change the current state.  It should return:
+> 
+> standby mem disk
+> 
+> if the kernel is built to handle power management.
 
-I am using an Asus P5E-VM HDMI board, it has onboard sound & graphics. The
-HDMI interface outputs to my TV and it works fine.
+It is... and /sys/power/state is supposed to be "mem" only. But since it
+doesn't work, is there another way to test suspend/resume of the soundcard ?
 
-I then came across an nvidia 9500GT (gainwood) card which has a VGA/DVI/HDMI
-out and also takes in sound via SPDIF. I connected the cable to my spdif
-headers and I can't seem to get any sound. I'm running Ubuntu Karmic so I
-thought I would upgrade the Alsa drivers/lib/utils to the latest, this has
-not helped matters. I have checked Alsa mixer and nothing is muted.
 
-I have tried: speaker-test -Dplughw:0,1 - (I think this is correct). I'm
-sure it's something pretty trivial I could be doing wrong but someone
-mentioned this kind of setup can be quite problematic and suggested I posted
-the details to this list.
-
-Details here:
-http://www.alsa-project.org/db/?f=ffb9e4b76f37a87f21fec2a4db18295479608d24
-
-I'd appreciate your thoughts!
-
-Thanks,
-Ben
+--
+Giuliano.
