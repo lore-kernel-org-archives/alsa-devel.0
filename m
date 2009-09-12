@@ -1,27 +1,16 @@
-From: Orm Finnendahl <o.finnendahl@mh-freiburg.de>
-Subject: hda-intel missing mixer channels
-Date: Sat, 12 Sep 2009 14:04:13 +0200
-Message-ID: <20090912120413.GA28342@varese>
+From: Jaswinder Singh Rajput <jaswinder@kernel.org>
+Subject: [RFC][PATCH] ALSA: pcm_native.c initialize drec and
+ num_drecs before it get used
+Date: Sat, 12 Sep 2009 23:47:45 +0530
+Message-ID: <1252779465.3687.16.camel@ht.satnam>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.mh-freiburg.de (mail.mh-freiburg.de [193.197.131.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6AD781037F2
+Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0396224485
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 14:04:14 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.mh-freiburg.de (Postfix) with ESMTP id F126BF1131
-	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 14:04:13 +0200 (CEST)
-Received: from inm.mh-freiburg.de (unknown [192.168.242.2])
-	by mail.mh-freiburg.de (Postfix) with ESMTP id D4BC4F094A
-	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 14:04:13 +0200 (CEST)
-Received: from orm by grisey with local (masqmail 0.2.21) id
-	1MmRKv-7PC-00 for <alsa-devel@alsa-project.org>; Sat, 12 Sep 2009
-	14:04:13 +0200
-Content-Disposition: inline
+	Sat, 12 Sep 2009 20:17:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,41 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I sent this to alsa-user a week ago but didn't get any reply. Does
-anybody know, what is responsible for the missing faders? Did the
-driver change or is it some module loading mechanism in the distro
-which prevents the faders from showing up in alsamixer? This is so
-strange. Please help!
-
---
-Orm
---------------------------------------------------------------------
-Hi everybody,
-
- after the last update of Ubuntu (intrepid to jaunty) on my Lenovo
-Ideapad my microphone input doesn't work anymore (neither internal nor
-external). I found out that alsamixer lacks quite a lot of faders in
-the newer kernel/module compared to the older one. Some of the faders
-now unavailable were crucial for Mic input to work on the older system
-so I'd very much like to get them back ;-)
-
-Some more infos: 
-
-Soundcard:    Intel 82801G (ICH7 Family)
-Chip:         Realtek ALC269
-Module:       snd_hda_intel (in both kernels)
-
-Older kernel: Ubuntu stock 2.6.27-14-generic
-Newer kernel: Ubuntu stock 2.6.28-13-rt
-
-Is there any way to make the missing controls available or did the
-driver change and I have to compile the older driver for the new
-kernel?
-
-Yours,
-Orm
+W1RoaXMgaXMgdW50ZXN0ZWRdCgpkcmVjIGFuZCBudW1fZHJlY3MgaXMgdXNlZCB1bmluaXRpYWxp
+emVkIGZvciBub25ibG9jayhnb3RvIGxvY2spCgpUaGlzIGFsc28gZml4ZWQgZm9sbG93aW5nIGNv
+bXBpbGF0aW9uIHdhcm5pbmdzIDoKCiAgQ0MgW01dICBzb3VuZC9jb3JlL3BjbV9uYXRpdmUubwpz
+b3VuZC9jb3JlL3BjbV9uYXRpdmUuYzogSW4gZnVuY3Rpb24g4oCYc25kX3BjbV9kcmFpbuKAmToK
+c291bmQvY29yZS9wY21fbmF0aXZlLmM6MTQxMzogd2FybmluZzog4oCYZHJlY+KAmSBtYXkgYmUg
+dXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24Kc291bmQvY29yZS9wY21fbmF0aXZl
+LmM6MTQxMTogd2FybmluZzog4oCYbnVtX2RyZWNz4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6
+ZWQgaW4gdGhpcyBmdW5jdGlvbgoKU2lnbmVkLW9mZi1ieTogSmFzd2luZGVyIFNpbmdoIFJhanB1
+dCA8amFzd2luZGVycmFqcHV0QGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9jb3JlL3BjbV9uYXRpdmUu
+YyB8ICAgIDcgKysrKy0tLQogMSBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDMgZGVs
+ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvY29yZS9wY21fbmF0aXZlLmMgYi9zb3VuZC9j
+b3JlL3BjbV9uYXRpdmUuYwppbmRleCA1OWU1ZmJlLi44Mjg0ZGMxIDEwMDY0NAotLS0gYS9zb3Vu
+ZC9jb3JlL3BjbV9uYXRpdmUuYworKysgYi9zb3VuZC9jb3JlL3BjbV9uYXRpdmUuYwpAQCAtMTQz
+Myw2ICsxNDMzLDkgQEAgc3RhdGljIGludCBzbmRfcGNtX2RyYWluKHN0cnVjdCBzbmRfcGNtX3N1
+YnN0cmVhbSAqc3Vic3RyZWFtLAogCX0gZWxzZSBpZiAoc3Vic3RyZWFtLT5mX2ZsYWdzICYgT19O
+T05CTE9DSykKIAkJbm9uYmxvY2sgPSAxOwogCisJZHJlYyA9ICZkcmVjX3RtcDsKKwludW1fZHJl
+Y3MgPSAwOworCiAJaWYgKG5vbmJsb2NrKQogCQlnb3RvIGxvY2s7IC8qIG5vIG5lZWQgdG8gYWxs
+b2NhdGUgd2FpdHF1ZXVlcyAqLwogCkBAIC0xNDQ1LDExICsxNDQ4LDkgQEAgc3RhdGljIGludCBz
+bmRfcGNtX2RyYWluKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCQkJc25k
+X3Bvd2VyX3VubG9jayhjYXJkKTsKIAkJCXJldHVybiAtRU5PTUVNOwogCQl9Ci0JfSBlbHNlCi0J
+CWRyZWMgPSAmZHJlY190bXA7CisJfQogCiAJLyogY291bnQgb25seSBwbGF5YmFjayBzdHJlYW1z
+ICovCi0JbnVtX2RyZWNzID0gMDsKIAlzbmRfcGNtX2dyb3VwX2Zvcl9lYWNoX2VudHJ5KHMsIHN1
+YnN0cmVhbSkgewogCQlydW50aW1lID0gcy0+cnVudGltZTsKIAkJaWYgKHMtPnN0cmVhbSA9PSBT
+TkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKSB7Ci0tIAoxLjYuNC4yCgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
