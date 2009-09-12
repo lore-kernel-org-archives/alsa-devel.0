@@ -1,22 +1,18 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH v2] add channel order map interface in asoc
-	core
-Date: Sat, 12 Sep 2009 20:55:03 +0800
-Message-ID: <3c17e3570909120555l630c8232kb725ccf2b667260f@mail.gmail.com>
-References: <1252689389-11661-1-git-send-email-21cnbao@gmail.com>
-	<20090912124908.GA8998@sirena.org.uk>
+From: Ben <donneh@gmail.com>
+Subject: SPDIF issues
+Date: Sat, 12 Sep 2009 15:03:46 +0100
+Message-ID: <dbecb5df0909120703ydede4c8ta85418b6ea27f130@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f172.google.com (mail-yw0-f172.google.com
-	[209.85.211.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1CFA61037F9
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id DF57C103818
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 14:55:24 +0200 (CEST)
-Received: by ywh2 with SMTP id 2so2575117ywh.27
-	for <alsa-devel@alsa-project.org>; Sat, 12 Sep 2009 05:55:23 -0700 (PDT)
-In-Reply-To: <20090912124908.GA8998@sirena.org.uk>
+	Sat, 12 Sep 2009 16:03:47 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so1333847fxm.32
+	for <alsa-devel@alsa-project.org>; Sat, 12 Sep 2009 07:03:46 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,28 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBTZXAgMTIsIDIwMDkgYXQgODo0OSBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFNhdCwgU2VwIDEyLCAyMDA5IGF0
-IDAxOjE2OjI5QU0gKzA4MDAsIEJhcnJ5IFNvbmcgd3JvdGU6Cj4+IFRoZSBwYXRjaCBhZGRzIGFu
-IGludGVyZmFjZSB0byBzZXQgdGhlIHJlbGF0aW9uc2hpcCBiZXR3ZWVuIGF1ZGlvCj4+IGNoYW5u
-ZWwgbnVtYmVyIGFuZCBzbG90IG51bWJlci4gVGhlIGludGVyZmFjZSBzaG91bGQgYmUgcmVhbGx5
-IHVzZWZ1bAo+PiBiZWNhdXNlIGF1ZGlvIGNoYW5uZWwgbiBkb2Vzbid0IGFsd2F5cyB1c2Ugc2xv
-dCBuIGluIGFsbCBwbGF0Zm9ybXMuIEFuZAo+PiBmb3Igc29tZSBkZXZpY2VzLCB0aGUgcmVsYXRp
-b25zaGlwIGV2ZW4gY2FuIGNoYW5nZSB3aXRoIHNvdW5kIG1vZGUKPj4gc3dpdGNoIGluIDIuMSwz
-LjEsNC4xLDUuMSw2LjEsNy4xIGV0Yy4KPgo+PiBTaWduZWQtb2ZmLWJ5OiBCYXJyeSBTb25nIDwy
-MWNuYmFvQGdtYWlsLmNvbT4KPgo+IEFwcGxpZWQsIHRoYW5rcy4gwqBJJ2xsIHByb2JhYmx5IGFk
-ZCBhbm90aGVyIHBhdGNoIHNob3J0bHkgY2xhcmlmeWluZyB0aGUKPiBkb2N1bWVudGF0aW9uIGEg
-bGl0dGxlLgo+CkkgYW0ganVzdCBzZW5kaW5nIHYzIHBhdGNoIHRvIGZpeCBhIHR5cG8gZXhpc3Rp
-bmcgaW4gdjEvdjIgdmVyc2lvbgpwYXRjaCBiZWZvcmUgeW91IGFwcGx5IGl0OgorICAgICAgIGlm
-IChkYWktPm9wcyAmJiBkYWktPm9wcy0+c2V0X3RkbV9zbG90KQpzaG91bGQgYmU6CiBpZiAoZGFp
-LT5vcHMgJiYgZGFpLT5vcHMtPnNldF9jaGFubmVsX21hcCkKSSBhbSByZWFsbHkgc29ycnkgZm9y
-IHRoYXQuCisgICAgICAgICAgICAgICByZXR1cm4gZGFpLT5vcHMtPnNldF9jaGFubmVsX21hcChk
-YWksIHR4X251bSwgdHhfc2xvdCwKKyAgICAgICAgICAgICAgICAgICAgICAgcnhfbnVtLCByeF9z
-bG90KTsKKyAgICAgICBlbHNlCisgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsKCi1CYXJy
-eQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+All,
+
+I have been happily using a small setup for the purpose of MythTV. I
+recently decided to upgrade the graphics so I could enjoy VPDAU which has
+been integrated into the 0.22 branch of MythTV. There is just one snag, I
+don't have any sound.
+
+I am using an Asus P5E-VM HDMI board, it has onboard sound & graphics. The
+HDMI interface outputs to my TV and it works fine.
+
+I then came across an nvidia 9500GT (gainwood) card which has a VGA/DVI/HDMI
+out and also takes in sound via SPDIF. I connected the cable to my spdif
+headers and I can't seem to get any sound. I'm running Ubuntu Karmic so I
+thought I would upgrade the Alsa drivers/lib/utils to the latest, this has
+not helped matters. I have checked Alsa mixer and nothing is muted.
+
+I have tried: speaker-test -Dplughw:0,1 - (I think this is correct). I'm
+sure it's something pretty trivial I could be doing wrong but someone
+mentioned this kind of setup can be quite problematic and suggested I posted
+the details to this list.
+
+Details here:
+http://www.alsa-project.org/db/?f=ffb9e4b76f37a87f21fec2a4db18295479608d24
+
+I'd appreciate your thoughts!
+
+Thanks,
+Ben
