@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] add channel order map interface in asoc
- core
-Date: Sun, 13 Sep 2009 12:37:10 +0100
-Message-ID: <20090913113709.GA19601@sirena.org.uk>
-References: <1252689389-11661-1-git-send-email-21cnbao@gmail.com>
-	<20090912124908.GA8998@sirena.org.uk>
-	<3c17e3570909120555l630c8232kb725ccf2b667260f@mail.gmail.com>
+From: Bankim Bhavsar <bankim.bhavsar@gmail.com>
+Subject: Re: Questions regarding workaround for VMware
+Date: Sun, 13 Sep 2009 11:17:08 -0700
+Message-ID: <4eccebac0909131117s1dce8e5al264fb3ac0a0dc17c@mail.gmail.com>
+References: <4eccebac0908281129n1b2206bbo37ea80e64d4d1d4b@mail.gmail.com>
+	<s5hskfblnsw.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=005045014667d39d2f0473798fb3
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4856424561
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.246])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14E5C2446B
 	for <alsa-devel@alsa-project.org>;
-	Sun, 13 Sep 2009 13:37:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570909120555l630c8232kb725ccf2b667260f@mail.gmail.com>
+	Sun, 13 Sep 2009 20:17:32 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c5so274592anc.2
+	for <alsa-devel@alsa-project.org>; Sun, 13 Sep 2009 11:17:31 -0700 (PDT)
+In-Reply-To: <s5hskfblnsw.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,13 +23,169 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, akataria@vmware.com, bbhavsar@vmware.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 12, 2009 at 08:55:03PM +0800, Barry Song wrote:
+--005045014667d39d2f0473798fb3
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> I am just sending v3 patch to fix a typo existing in v1/v2 version
-> patch before you apply it:
+On Fri, Aug 28, 2009 at 12:51 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Fri, 28 Aug 2009 11:29:52 -0700,
+> Bankim Bhavsar wrote:
+>>
+>> Takashi I came across a workaround for VMware in ALSA kernel code
+>> In the comments you mention about inaccurate timer source.
+>> Could you elaborate on the problem?
+>
+> The problem is that the irq timing emulated on vmware isn't always
+> accurate. =A0The sound hardware is supposed to issue an irq at the
+> programmed buffer period. =A0On VMware, this irq generation seems to be
+> done based on the system timer (or alike), thus it's not generated
+> at the accurate timing that the hardware should give.
+>
+> The driver has no idea whether it's on VM, thus assumed that the
+> IRQ must come accurately more or less. =A0In the recent code, there are
+> some additions to correct the DMA position more to believe the accuracy
+> of the IRQ than the position calculated from the hardware register.
+> This caused a regression on VMware. =A0My patch fixed that, at least,
+> for VMware in the stance of previous versions.
 
-That's OK, I've fixed up the current version locally.
+Thanks for the explanation, Takashi. Sorry for the delayed response.
+
+I tested with the fix for VMware with 2.6.31rc9 kernel. Sound playback
+suffers from underruns and app terminates prematurely.
+I've attached the output of "aplay sample.wav -vvv".
+
+I compiled kernel with following config options turned on
+CONFIG_SND_DEBUG=3Dy
+CONFIG_SND_DEBUG_VERBOSE=3Dy
+CONFIG_SND_PCM_XRUN_DEBUG=3Dy
+
+and set /proc/asound/card0/pcm0p/xrun_debug to 1.
+
+I can't seem to find  ALSA xrun_debug log messages with dmesg. Am I
+looking in the wrong place?
+
+As far as the timing of sound IRQ goes, with our emulation of ENS1371
+delay in firing interrupt ranges from 50-500 usecs. Is that large
+enough to cause xruns with
+recent changes?
+
+Linux guests with kernel version 2.6.31+ running under VMware are
+affected currently.
+
+Let me know if you need more information.
+
+>> Is there something specific you would like us to fix in our virtual
+>> sound device or timer source?
+>
+> Well, the only question is how can we get the programmed sound IRQ
+> more accurately... =A0If hrtimer with the fine timer source is available,
+> this could be emulated well, I guess.
+
+I'll consult our timer experts in VMware and get back to you on this questi=
+on.
+
+-- Bankim.
+
+--005045014667d39d2f0473798fb3
+Content-Type: text/x-log; charset=US-ASCII; name="ALSAUnderrun.log"
+Content-Disposition: attachment; filename="ALSAUnderrun.log"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fzk3hqa70
+
+UGxheWluZyBXQVZFICdzYW1wbGUud2F2JyA6IFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlhbiwg
+UmF0ZSA0ODAwMCBIeiwgU3RlcmVvCkFMU0EgPC0+IFB1bHNlQXVkaW8gUENNIEkvTyBQbHVnaW4K
+SXRzIHNldHVwIGlzOgogIHN0cmVhbSAgICAgICA6IFBMQVlCQUNLCiAgYWNjZXNzICAgICAgIDog
+UldfSU5URVJMRUFWRUQKICBmb3JtYXQgICAgICAgOiBTMTZfTEUKICBzdWJmb3JtYXQgICAgOiBT
+VEQKICBjaGFubmVscyAgICAgOiAyCiAgcmF0ZSAgICAgICAgIDogNDgwMDAKICBleGFjdCByYXRl
+ICAgOiA0ODAwMCAoNDgwMDAvMSkKICBtc2JpdHMgICAgICAgOiAxNgogIGJ1ZmZlcl9zaXplICA6
+IDI0MDAwCiAgcGVyaW9kX3NpemUgIDogNjAwMAogIHBlcmlvZF90aW1lICA6IDEyNTAwMAogIHRz
+dGFtcF9tb2RlICA6IE5PTkUKICBwZXJpb2Rfc3RlcCAgOiAxCiAgYXZhaWxfbWluICAgIDogNjAw
+MAogIHBlcmlvZF9ldmVudCA6IDAKICBzdGFydF90aHJlc2hvbGQgIDogMjQwMDAKICBzdG9wX3Ro
+cmVzaG9sZCAgIDogMjQwMDAKICBzaWxlbmNlX3RocmVzaG9sZDogMAogIHNpbGVuY2Vfc2l6ZSA6
+IDAKICBib3VuZGFyeSAgICAgOiAxNTcyODY0MDAwCnVuZGVycnVuISEhIChhdCBsZWFzdCAxMC43
+MDggbXMgbG9uZykKU3RhdHVzOgogIHN0YXRlICAgICAgIDogWFJVTgogIHRyaWdnZXJfdGltZTog
+MTI1Mjg2NDA5NC41MjgwMTIwMDAKICB0c3RhbXAgICAgICA6IDAuMDAwMDAwCiAgZGVsYXkgICAg
+ICAgOiAwCiAgYXZhaWwgICAgICAgOiA1NDk5CiAgYXZhaWxfbWF4ICAgOiAyNDAwMAp1bmRlcnJ1
+biEhISAoYXQgbGVhc3QgMzQuMTY0IG1zIGxvbmcpClN0YXR1czoKICBzdGF0ZSAgICAgICA6IFhS
+VU4KICB0cmlnZ2VyX3RpbWU6IDEyNTI4NjQwOTQuNTUxNDg4MDAwCiAgdHN0YW1wICAgICAgOiAw
+LjAwMDAwMAogIGRlbGF5ICAgICAgIDogMAogIGF2YWlsICAgICAgIDogMzY5CiAgYXZhaWxfbWF4
+ICAgOiAyNDM2OQp1bmRlcnJ1biEhISAoYXQgbGVhc3QgMzEuNDIwIG1zIGxvbmcpClN0YXR1czoK
+ICBzdGF0ZSAgICAgICA6IFhSVU4KICB0cmlnZ2VyX3RpbWU6IDEyNTI4NjQwOTQuNTk4MDQzMDAw
+CiAgdHN0YW1wICAgICAgOiAwLjAwMDAwMAogIGRlbGF5ICAgICAgIDogMAogIGF2YWlsICAgICAg
+IDogNTQ5OQogIGF2YWlsX21heCAgIDogMjQwMDAKdW5kZXJydW4hISEgKGF0IGxlYXN0IDIwLjM5
+NCBtcyBsb25nKQpTdGF0dXM6CiAgc3RhdGUgICAgICAgOiBYUlVOCiAgdHJpZ2dlcl90aW1lOiAx
+MjUyODY0MDk0LjY0ODMxMTAwMAogIHRzdGFtcCAgICAgIDogMC4wMDAwMDAKICBkZWxheSAgICAg
+ICA6IDAKICBhdmFpbCAgICAgICA6IDU0OTkKICBhdmFpbF9tYXggICA6IDI0MDAwCnVuZGVycnVu
+ISEhIChhdCBsZWFzdCAyNi4wNDIgbXMgbG9uZykKU3RhdHVzOgogIHN0YXRlICAgICAgIDogWFJV
+TgogIHRyaWdnZXJfdGltZTogMTI1Mjg2NDA5NC42OTA2ODMwMDAKICB0c3RhbXAgICAgICA6IDAu
+MDAwMDAwCiAgZGVsYXkgICAgICAgOiAwCiAgYXZhaWwgICAgICAgOiAzNjkKICBhdmFpbF9tYXgg
+ICA6IDI0MDAwCnVuZGVycnVuISEhIChhdCBsZWFzdCAxOC4wNjEgbXMgbG9uZykKU3RhdHVzOgog
+IHN0YXRlICAgICAgIDogWFJVTgogIHRyaWdnZXJfdGltZTogMTI1Mjg2NDA5NC43MzAzNDkwMDAK
+ICB0c3RhbXAgICAgICA6IDAuMDAwMDAwCiAgZGVsYXkgICAgICAgOiAwCiAgYXZhaWwgICAgICAg
+OiAxMjM2OQogIGF2YWlsX21heCAgIDogMjQzNjkKdW5kZXJydW4hISEgKGF0IGxlYXN0IDM2OC43
+NTUgbXMgbG9uZykKU3RhdHVzOgogIHN0YXRlICAgICAgIDogWFJVTgogIHRyaWdnZXJfdGltZTog
+MTI1Mjg2NDA5NC43NjE2ODUwMDAKICB0c3RhbXAgICAgICA6IDAuMDAwMDAwCiAgZGVsYXkgICAg
+ICAgOiAwCiAgYXZhaWwgICAgICAgOiA1NDk5CiAgYXZhaWxfbWF4ICAgOiAyNjQ4OAp1bmRlcnJ1
+biEhISAoYXQgbGVhc3QgNi4wNTggbXMgbG9uZykKU3RhdHVzOgogIHN0YXRlICAgICAgIDogWFJV
+TgogIHRyaWdnZXJfdGltZTogMTI1Mjg2NDA5NS4xNTAxNTgwMDAKICB0c3RhbXAgICAgICA6IDAu
+MDAwMDAwCiAgZGVsYXkgICAgICAgOiAwCiAgYXZhaWwgICAgICAgOiA1NDk5CiAgYXZhaWxfbWF4
+ICAgOiAyNDAwMAp1bmRlcnJ1biEhISAoYXQgbGVhc3QgMzYwLjc5MCBtcyBsb25nKQpTdGF0dXM6
+CiAgc3RhdGUgICAgICAgOiBYUlVOCiAgdHJpZ2dlcl90aW1lOiAxMjUyODY0MDk1LjE2ODcxMzAw
+MAogIHRzdGFtcCAgICAgIDogMC4wMDAwMDAKICBkZWxheSAgICAgICA6IDAKICBhdmFpbCAgICAg
+ICA6IDE3ODUyCiAgYXZhaWxfbWF4ICAgOiAyOTA3Mgp1bmRlcnJ1biEhISAoYXQgbGVhc3QgMTgu
+Mzk0IG1zIGxvbmcpClN0YXR1czoKICBzdGF0ZSAgICAgICA6IFhSVU4KICB0cmlnZ2VyX3RpbWU6
+IDEyNTI4NjQwOTUuNTUwMzQ2MDAwCiAgdHN0YW1wICAgICAgOiAwLjAwMDAwMAogIGRlbGF5ICAg
+ICAgIDogMAogIGF2YWlsICAgICAgIDogNTQ5OQogIGF2YWlsX21heCAgIDogMjQwMDAKdW5kZXJy
+dW4hISEgKGF0IGxlYXN0IDk0MC4xNTIgbXMgbG9uZykKU3RhdHVzOgogIHN0YXRlICAgICAgIDog
+WFJVTgogIHRyaWdnZXJfdGltZTogMTI1Mjg2NDA5NS41ODIwMjQwMDAKICB0c3RhbXAgICAgICA6
+IDAuMDAwMDAwCiAgZGVsYXkgICAgICAgOiAwCiAgYXZhaWwgICAgICAgOiA1NDk5CiAgYXZhaWxf
+bWF4ICAgOiAzMTE1MAp1bmRlcnJ1biEhISAoYXQgbGVhc3QgMTkuNzcxIG1zIGxvbmcpClN0YXR1
+czoKICBzdGF0ZSAgICAgICA6IFhSVU4KICB0cmlnZ2VyX3RpbWU6IDEyNTI4NjQwOTYuNTM3MzUx
+MDAwCiAgdHN0YW1wICAgICAgOiAwLjAwMDAwMAogIGRlbGF5ICAgICAgIDogMAogIGF2YWlsICAg
+ICAgIDogMTg3NjAKICBhdmFpbF9tYXggICA6IDMwNzYwCnVuZGVycnVuISEhIChhdCBsZWFzdCAy
+OC45ODMgbXMgbG9uZykKU3RhdHVzOgogIHN0YXRlICAgICAgIDogWFJVTgogIHRyaWdnZXJfdGlt
+ZTogMTI1Mjg2NDA5Ni41NzAwNjgwMDAKICB0c3RhbXAgICAgICA6IDAuMDAwMDAwCiAgZGVsYXkg
+ICAgICAgOiAwCiAgYXZhaWwgICAgICAgOiA1NDk5CiAgYXZhaWxfbWF4ICAgOiAyNDAwMAp1bmRl
+cnJ1biEhISAoYXQgbGVhc3QgMTMuNTg4IG1zIGxvbmcpClN0YXR1czoKICBzdGF0ZSAgICAgICA6
+IFhSVU4KICB0cmlnZ2VyX3RpbWU6IDEyNTI4NjQwOTYuNjEyNTY4MDAwCiAgdHN0YW1wICAgICAg
+OiAwLjAwMDAwMAogIGRlbGF5ICAgICAgIDogMAogIGF2YWlsICAgICAgIDogMTc0OTkKICBhdmFp
+bF9tYXggICA6IDI0MDAwCnVuZGVycnVuISEhIChhdCBsZWFzdCAxOS44MjMgbXMgbG9uZykKU3Rh
+dHVzOgogIHN0YXRlICAgICAgIDogWFJVTgogIHRyaWdnZXJfdGltZTogMTI1Mjg2NDA5Ni42Mzky
+MTkwMDAKICB0c3RhbXAgICAgICA6IDAuMDAwMDAwCiAgZGVsYXkgICAgICAgOiAwCiAgYXZhaWwg
+ICAgICAgOiA1NDk5CiAgYXZhaWxfbWF4ICAgOiAyNDAwMAp1bmRlcnJ1biEhISAoYXQgbGVhc3Qg
+ODQ4LjgwNSBtcyBsb25nKQpTdGF0dXM6CiAgc3RhdGUgICAgICAgOiBYUlVOCiAgdHJpZ2dlcl90
+aW1lOiAxMjUyODY0MDk2LjY3MjIzNzAwMAogIHRzdGFtcCAgICAgIDogMC4wMDAwMDAKICBkZWxh
+eSAgICAgICA6IDAKICBhdmFpbCAgICAgICA6IDMwMTQKICBhdmFpbF9tYXggICA6IDM0OTQ1CnVu
+ZGVycnVuISEhIChhdCBsZWFzdCAzLjAxMCBtcyBsb25nKQpTdGF0dXM6CiAgc3RhdGUgICAgICAg
+OiBYUlVOCiAgdHJpZ2dlcl90aW1lOiAxMjUyODY0MDk3LjU0MTE2ODAwMAogIHRzdGFtcCAgICAg
+IDogMC4wMDAwMDAKICBkZWxheSAgICAgICA6IDAKICBhdmFpbCAgICAgICA6IDM2OQogIGF2YWls
+X21heCAgIDogMjQwMDAKdW5kZXJydW4hISEgKGF0IGxlYXN0IDE4LjY1MiBtcyBsb25nKQpTdGF0
+dXM6CiAgc3RhdGUgICAgICAgOiBYUlVOCiAgdHJpZ2dlcl90aW1lOiAxMjUyODY0MDk3LjU1Nzc0
+MzAwMAogIHRzdGFtcCAgICAgIDogMC4wMDAwMDAKICBkZWxheSAgICAgICA6IDAKICBhdmFpbCAg
+ICAgICA6IDE4MzY5CiAgYXZhaWxfbWF4ICAgOiAyNDM2OQp1bmRlcnJ1biEhISAoYXQgbGVhc3Qg
+NTQ4Ljg5MSBtcyBsb25nKQpTdGF0dXM6CiAgc3RhdGUgICAgICAgOiBYUlVOCiAgdHJpZ2dlcl90
+aW1lOiAxMjUyODY0MDk3LjU4OTczOTAwMAogIHRzdGFtcCAgICAgIDogMC4wMDAwMDAKICBkZWxh
+eSAgICAgICA6IDAKICBhdmFpbCAgICAgICA6IDE4MDk2CiAgYXZhaWxfbWF4ICAgOiAzMjU4NAp1
+bmRlcnJ1biEhISAoYXQgbGVhc3QgNDUuNTc4IG1zIGxvbmcpClN0YXR1czoKICBzdGF0ZSAgICAg
+ICA6IFhSVU4KICB0cmlnZ2VyX3RpbWU6IDEyNTI4NjQwOTguMTU5NzA5MDAwCiAgdHN0YW1wICAg
+ICAgOiAwLjAwMDAwMAogIGRlbGF5ICAgICAgIDogMAogIGF2YWlsICAgICAgIDogMTk3MDcKICBh
+dmFpbF9tYXggICA6IDM3NzA3CnVuZGVycnVuISEhIChhdCBsZWFzdCAzNy43MDQgbXMgbG9uZykK
+U3RhdHVzOgogIHN0YXRlICAgICAgIDogWFJVTgogIHRyaWdnZXJfdGltZTogMTI1Mjg2NDA5OC4y
+MjA2NTUwMDAKICB0c3RhbXAgICAgICA6IDAuMDAwMDAwCiAgZGVsYXkgICAgICAgOiAwCiAgYXZh
+aWwgICAgICAgOiAzNjkKICBhdmFpbF9tYXggICA6IDI0MzY5Cg==
+--005045014667d39d2f0473798fb3
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--005045014667d39d2f0473798fb3--
