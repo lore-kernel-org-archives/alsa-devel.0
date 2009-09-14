@@ -1,25 +1,27 @@
-From: Kevin Hilman <khilman@deeprootsystems.com>
-Subject: Re: [PATCH] RFC: ASoC: Davinci: Fix data_type divide
-	by zero
-Date: Mon, 14 Sep 2009 15:04:16 -0700
-Message-ID: <87ws41uqsf.fsf@deeprootsystems.com>
-References: <1252547830-16585-1-git-send-email-troy.kisky@boundarydevices.com>
-	<20090911103139.GA19204@sirena.org.uk>
-	<4AAAC0B6.2010904@boundarydevices.com>
-	<20090912121917.GA4633@sirena.org.uk>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Support for Infrasonic Quartet
+Date: Tue, 15 Sep 2009 00:39:54 +0200
+Message-ID: <4AAEC63A.9010603@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f198.google.com (mail-pz0-f198.google.com
-	[209.85.222.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id E285C24400
+Received: from smtp.pilsfree.net (mail.pilsfree.net [81.201.60.141])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E53424431
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Sep 2009 00:04:20 +0200 (CEST)
-Received: by pzk36 with SMTP id 36so3015124pzk.2
-	for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2009 15:04:19 -0700 (PDT)
-In-Reply-To: <20090912121917.GA4633@sirena.org.uk> (Mark Brown's message of
-	"Sat\, 12 Sep 2009 13\:19\:17 +0100")
+	Tue, 15 Sep 2009 00:40:01 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.pilsfree.net (Postfix) with ESMTP id ED8B317FC1BB
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 Sep 2009 00:40:33 +0200 (CEST)
+Received: from smtp.pilsfree.net ([127.0.0.1])
+	by localhost (server.pilsfree.net [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 03706-03 for <alsa-devel@alsa-project.org>;
+	Tue, 15 Sep 2009 00:40:27 +0200 (CEST)
+Received: from [192.168.105.171] (dustin.pilsfree.czf [10.109.3.135])
+	by smtp.pilsfree.net (Postfix) with ESMTP id 38C0917FC198
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 Sep 2009 00:40:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,37 +31,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, alsa-devel@alsa-project.org, Troy Kisky <troy.kisky@boundarydevices.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
+Hi Takashi,
 
-> On Fri, Sep 11, 2009 at 02:27:18PM -0700, Troy Kisky wrote:
->> Mark Brown wrote:
->
->> >> +	 * dma_params must be first because rtd->dai->cpu_dai->private_data
->> >> +	 * is cast to an array of struct davinci_pcm_dma_params ** in
->> >> +	 * davinci_pcm_open.
->> >> +	 */
->
->> > Is it not possible to deal with this by going through the types
->> > properly?  The comment sets off all sorts of alarm bells.
->
->> private_data will be either struct davinci_mcbsp_dev or
->> struct davinci_audio_dev
->
-> Hrm.  Might be nice to change that :/
->
->> Btw, I'm about to submit another rev of this against your for32
->> branch. But your branch currently give compile errors, so it
->> my compile test just doesn't generate new errors.
->
-> You'll need to merge it with Kevin's branch to build - or wait for -rc1
-> when everything should've made it into mainline.  Kevin's git has a
-> branch temp/asoc with the merge done in it.
+I am sending patches for Infrasonic Quartet. The card has three external
+clock modes therefore I had to modify ice1724.c to support multiple
+spdif_master types. While working on the driver, I did some minor fixes
+to ak4xxx-adda.c too.
 
-Also, I just pushed a new temp/asoc which is a simple merge of current
-davinci git master and Mark's for-2.6.32 branch.
+For proc files I added a conversion function from int to string
+representing its binary format (quartet.c:get_binary). If you know of an
+existing utility, please let me know and I will use it instead. The
+binary output helps a lot with debugging.
 
-Kevin
+The quartet patch does not comply with checkpatch.pl in 2.6.27 since the
+script throws a false positive for [] in #define.
+
+Thanks a lot for comments.
+
+Best regards,
+
+Pavel.
