@@ -1,16 +1,19 @@
-From: Jaswinder Singh Rajput <jaswinder@kernel.org>
-Subject: [RFC][PATCH] ALSA: pcm_native.c initialize drec and
- num_drecs before it get used
-Date: Sat, 12 Sep 2009 23:47:45 +0530
-Message-ID: <1252779465.3687.16.camel@ht.satnam>
+From: "Ted T. Logan" <tedtheologian@gmail.com>
+Subject: still have popping every few seconds, like metronome,
+ with xfi drivers
+Date: Mon, 14 Sep 2009 04:09:33 -0500
+Message-ID: <1252919373.3204.1.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hera.kernel.org (hera.kernel.org [140.211.167.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0396224485
+Received: from mail-yx0-f200.google.com (mail-yx0-f200.google.com
+	[209.85.210.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1515E244B8
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Sep 2009 20:17:43 +0200 (CEST)
+	Mon, 14 Sep 2009 11:09:36 +0200 (CEST)
+Received: by yxe38 with SMTP id 38so3731718yxe.6
+	for <alsa-devel@alsa-project.org>; Mon, 14 Sep 2009 02:09:36 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,33 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-W1RoaXMgaXMgdW50ZXN0ZWRdCgpkcmVjIGFuZCBudW1fZHJlY3MgaXMgdXNlZCB1bmluaXRpYWxp
-emVkIGZvciBub25ibG9jayhnb3RvIGxvY2spCgpUaGlzIGFsc28gZml4ZWQgZm9sbG93aW5nIGNv
-bXBpbGF0aW9uIHdhcm5pbmdzIDoKCiAgQ0MgW01dICBzb3VuZC9jb3JlL3BjbV9uYXRpdmUubwpz
-b3VuZC9jb3JlL3BjbV9uYXRpdmUuYzogSW4gZnVuY3Rpb24g4oCYc25kX3BjbV9kcmFpbuKAmToK
-c291bmQvY29yZS9wY21fbmF0aXZlLmM6MTQxMzogd2FybmluZzog4oCYZHJlY+KAmSBtYXkgYmUg
-dXNlZCB1bmluaXRpYWxpemVkIGluIHRoaXMgZnVuY3Rpb24Kc291bmQvY29yZS9wY21fbmF0aXZl
-LmM6MTQxMTogd2FybmluZzog4oCYbnVtX2RyZWNz4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6
-ZWQgaW4gdGhpcyBmdW5jdGlvbgoKU2lnbmVkLW9mZi1ieTogSmFzd2luZGVyIFNpbmdoIFJhanB1
-dCA8amFzd2luZGVycmFqcHV0QGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9jb3JlL3BjbV9uYXRpdmUu
-YyB8ICAgIDcgKysrKy0tLQogMSBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDMgZGVs
-ZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvY29yZS9wY21fbmF0aXZlLmMgYi9zb3VuZC9j
-b3JlL3BjbV9uYXRpdmUuYwppbmRleCA1OWU1ZmJlLi44Mjg0ZGMxIDEwMDY0NAotLS0gYS9zb3Vu
-ZC9jb3JlL3BjbV9uYXRpdmUuYworKysgYi9zb3VuZC9jb3JlL3BjbV9uYXRpdmUuYwpAQCAtMTQz
-Myw2ICsxNDMzLDkgQEAgc3RhdGljIGludCBzbmRfcGNtX2RyYWluKHN0cnVjdCBzbmRfcGNtX3N1
-YnN0cmVhbSAqc3Vic3RyZWFtLAogCX0gZWxzZSBpZiAoc3Vic3RyZWFtLT5mX2ZsYWdzICYgT19O
-T05CTE9DSykKIAkJbm9uYmxvY2sgPSAxOwogCisJZHJlYyA9ICZkcmVjX3RtcDsKKwludW1fZHJl
-Y3MgPSAwOworCiAJaWYgKG5vbmJsb2NrKQogCQlnb3RvIGxvY2s7IC8qIG5vIG5lZWQgdG8gYWxs
-b2NhdGUgd2FpdHF1ZXVlcyAqLwogCkBAIC0xNDQ1LDExICsxNDQ4LDkgQEAgc3RhdGljIGludCBz
-bmRfcGNtX2RyYWluKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCQkJc25k
-X3Bvd2VyX3VubG9jayhjYXJkKTsKIAkJCXJldHVybiAtRU5PTUVNOwogCQl9Ci0JfSBlbHNlCi0J
-CWRyZWMgPSAmZHJlY190bXA7CisJfQogCiAJLyogY291bnQgb25seSBwbGF5YmFjayBzdHJlYW1z
-ICovCi0JbnVtX2RyZWNzID0gMDsKIAlzbmRfcGNtX2dyb3VwX2Zvcl9lYWNoX2VudHJ5KHMsIHN1
-YnN0cmVhbSkgewogCQlydW50aW1lID0gcy0+cnVudGltZTsKIAkJaWYgKHMtPnN0cmVhbSA9PSBT
-TkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKSB7Ci0tIAoxLjYuNC4yCgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+I just tried latest snapshot with my SB0670/XFI, which works fine with
+the drivers:
+XFiDrv_Linux_Public_US_1.00.tar.gz
+
+and the same exact problems remain for all the snapshots I've tried...
+clicking like a metronome every 1 second or so on ALL playback.  Can
+anything be done about this?  It's completely unusable with these
+drivers.
+
+Thanks
