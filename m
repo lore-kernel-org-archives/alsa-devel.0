@@ -1,18 +1,19 @@
 From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: [PATCH 3/6] ak4113 support
-Date: Tue, 15 Sep 2009 13:54:28 +0200
-Message-ID: <4AAF8074.6000008@ivitera.com>
-References: <1252968303-29334-1-git-send-email-pavel.hofman@ivitera.com>	<1252968303-29334-2-git-send-email-pavel.hofman@ivitera.com>	<1252968303-29334-3-git-send-email-pavel.hofman@ivitera.com>
-	<s5hpr9sbgrt.wl%tiwai@suse.de>
+Subject: Re: [PATCH 4/6] Adding GPIO routines for mask
+	and	direction
+Date: Tue, 15 Sep 2009 13:55:38 +0200
+Message-ID: <4AAF80BA.7050805@ivitera.com>
+References: <1252968303-29334-1-git-send-email-pavel.hofman@ivitera.com>	<1252968303-29334-2-git-send-email-pavel.hofman@ivitera.com>	<1252968303-29334-3-git-send-email-pavel.hofman@ivitera.com>	<1252968303-29334-4-git-send-email-pavel.hofman@ivitera.com>
+	<s5hocpcbglf.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from server.insite.cz (upc-plzen.insite.cz [84.242.100.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93B2410385A
+	by alsa0.perex.cz (Postfix) with ESMTP id 760F910383E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Sep 2009 13:54:07 +0200 (CEST)
-In-Reply-To: <s5hpr9sbgrt.wl%tiwai@suse.de>
+	Tue, 15 Sep 2009 13:55:17 +0200 (CEST)
+In-Reply-To: <s5hocpcbglf.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +28,77 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> At Tue, 15 Sep 2009 00:45:00 +0200,
+> At Tue, 15 Sep 2009 00:45:01 +0200,
 > pavel.hofman@ivitera.com wrote:
->> +MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+>> diff --git a/pci/ice1712/ice1712.h b/pci/ice1712/ice1712.h
+>> index 9da2dae..2105055 100644
+>> --- a/pci/ice1712/ice1712.h
+>> +++ b/pci/ice1712/ice1712.h
+>> @@ -28,6 +28,7 @@
+>>  #include <sound/i2c.h>
+>>  #include <sound/ak4xxx-adda.h>
+>>  #include <sound/ak4114.h>
+>> +#include <sound/ak4113.h>
 > 
-> You are the author, no?
+> Here you don't need to include this header, at this stage.
+> 
+>> @@ -359,7 +360,9 @@ struct snd_ice1712 {
+>>  		unsigned int saved[2];		/* for ewx_i2c */
+>>  		/* operators */
+>>  		void (*set_mask)(struct snd_ice1712 *ice, unsigned int data);
+>> +		unsigned int (*get_mask)(struct snd_ice1712 *ice);
+>>  		void (*set_dir)(struct snd_ice1712 *ice, unsigned int data);
+>> +		unsigned int (*get_dir)(struct snd_ice1712 *ice);
+>>  		void (*set_data)(struct snd_ice1712 *ice, unsigned int data);
+>>  		unsigned int (*get_data)(struct snd_ice1712 *ice);
+>>  		/* misc operators - move to another place? */
+>> @@ -399,6 +402,11 @@ static inline void snd_ice1712_gpio_set_dir(struct snd_ice1712 *ice, unsigned in
+>>  	ice->gpio.set_dir(ice, bits);
+>>  }
+>>  
+>> +static inline unsigned int snd_ice1712_gpio_get_dir(struct snd_ice1712 *ice)
+>> +{
+>> +	return ice->gpio.get_dir(ice);
+>> +}
+>> +
+>>  static inline void snd_ice1712_gpio_set_mask(struct snd_ice1712 *ice, unsigned int bits)
+>>  {
+>>  	ice->gpio.set_mask(ice, bits);
+> 
+> No get_mask() accessor defined?
 
-Well, it was mostly copy/paste/modify from ak4114/7. OK, I will be the
-author :) I will send the patch in the evening.
+It has not been needed yet. I will define it though.
+
 > 
->> +EXPORT_SYMBOL(snd_ak4113_create);
 > 
-> Use EXPORT_SYMBOL_GPL() for new stuff, unless any reason given.
+>> diff --git a/pci/ice1712/ice1724.c b/pci/ice1712/ice1724.c
+>> index af6e001..673edd5 100644
+>> --- a/pci/ice1712/ice1724.c
+>> +++ b/pci/ice1712/ice1724.c
+>> @@ -196,6 +196,12 @@ static void snd_vt1724_set_gpio_dir(struct snd_ice1712 *ice, unsigned int data)
+>>  	inw(ICEREG1724(ice, GPIO_DIRECTION)); /* dummy read for pci-posting */
+>>  }
+>>  
+>> +/* get gpio direction 0 = read, 1 = write */
+>> +static unsigned int snd_vt1724_get_gpio_dir(struct snd_ice1712 *ice)
+>> +{
+>> +	return inl(ICEREG1724(ice, GPIO_DIRECTION));
+>> +}
+>> +
+>>  /* set the gpio mask (0 = writable) */
+>>  static void snd_vt1724_set_gpio_mask(struct snd_ice1712 *ice, unsigned int data)
+>>  {
+>> @@ -2435,6 +2441,7 @@ static int __devinit snd_vt1724_create(struct snd_card *card,
+>>  	mutex_init(&ice->i2c_mutex);
+>>  	ice->gpio.set_mask = snd_vt1724_set_gpio_mask;
+>>  	ice->gpio.set_dir = snd_vt1724_set_gpio_dir;
+>> +	ice->gpio.get_dir = snd_vt1724_get_gpio_dir;
+>>  	ice->gpio.set_data = snd_vt1724_set_gpio_data;
+>>  	ice->gpio.get_data = snd_vt1724_get_gpio_data;
+>>  	ice->card = card;
+> 
+> Include get_mask definitions rather in this patch.
+> No reason to split and put into another changes.
 > 
 > 
 > thanks,
