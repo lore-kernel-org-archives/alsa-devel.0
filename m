@@ -1,15 +1,19 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Support for Infrasonic Quartet
-Date: Tue, 15 Sep 2009 00:28:51 +0200
-Message-ID: <4AAEC3A3.40204@ivitera.com>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: [PATCH] alsa-lib: mixer/simple_none: fix softfloat
+	compilation
+Date: Tue, 15 Sep 2009 10:37:41 +0200
+Message-ID: <4AAF5255.3050004@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.pilsfree.net (mail.pilsfree.net [81.201.60.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81A4024421
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03CBE24498
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Sep 2009 00:28:59 +0200 (CEST)
+	Tue, 15 Sep 2009 10:37:47 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so2736525fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2009 01:37:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,26 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+mixer/simple_none.c uses HAVE_SOFT_FLOAT tests to work around sqrt() uses
+but the definition in config.h is never picked up, leading to link errors
+in libasound.so when built with --with-softfloat.
 
-I am sending patches for Infrasonic Quartet. The card has three external
-clock modes therefore I had to modify ice1724.c to support multiple
-spdif_master types. While working on the driver, I did some minor fixes
-to ak4xxx-adda.c too.
+Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
+---
+Tested on MIPS.  The pcm_ladspa plugin still calls 'sqrt()' and
+ should be excluded from the build if --with-softfloat is specified.
 
-For proc files I added a conversion function from int to string
-representing its binary format (quartet.c:get_binary). If you know of an
-existing utility, please let me know and I will use it instead. The
-binary output helps a lot with debugging.
+ src/mixer/mixer_simple.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-The quartet patch does not comply with checkpatch.pl in 2.6.27 since the
-script throws a false positive for [] in #define.
+diff --git a/src/mixer/mixer_simple.h b/src/mixer/mixer_simple.h
+index e88b007..bc9d20c 100644
+--- a/src/mixer/mixer_simple.h
++++ b/src/mixer/mixer_simple.h
+@@ -19,6 +19,7 @@
+  *
+  */
 
-Thanks a lot for comments.
++#include <config.h>
+ #include "mixer_abst.h"
 
-Best regards,
-
-Pavel.
+ /* make local functions really local */
+--
+1.6.5.rc1
