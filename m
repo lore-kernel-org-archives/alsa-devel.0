@@ -1,21 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 2/2] ASoC: Davinci: Add audio codec
- support for DM365 EVM
-Date: Tue, 15 Sep 2009 19:31:18 +0100
-Message-ID: <20090915183118.GB4343@sirena.org.uk>
-References: <1251927239-3734-1-git-send-email-miguel.aguilar@ridgerun.com>
-	<20090902220420.GC4495@sirena.org.uk>
-	<87skep2uzd.fsf@deeprootsystems.com>
+From: okias <d.okias@gmail.com>
+Subject: ALSA: hda - add speaker and fix headphone switch for
+	ALC883
+Date: Tue, 15 Sep 2009 21:13:00 +0200
+Message-ID: <c2673ca60909151213w266f0b41r5a45ddc6657288c2@mail.gmail.com>
+References: <c2673ca60909150616we5216adw18d73a8d176f09c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0015174c417424a8b00473a29263
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3336B103888
+Received: from mail-fx0-f207.google.com (mail-fx0-f207.google.com
+	[209.85.220.207])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B4A8103888
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Sep 2009 20:31:21 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <87skep2uzd.fsf@deeprootsystems.com>
+	Tue, 15 Sep 2009 21:13:01 +0200 (CEST)
+Received: by fxm3 with SMTP id 3so3187988fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 15 Sep 2009 12:13:00 -0700 (PDT)
+In-Reply-To: <c2673ca60909150616we5216adw18d73a8d176f09c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,13 +24,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@deeprootsystems.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com, miguel.aguilar@ridgerun.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 14, 2009 at 12:21:10PM -0700, Kevin Hilman wrote:
+--0015174c417424a8b00473a29263
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> I think I'll wait for the next merge window for this one.  It's a bit
-> late for the current merge window.
+ALSA: hda - add speaker and fix headphone switch for ALC883
 
-OK, I've applied it to my 2.6.33 branch.  Thanks!
+This patch changing "Headphone Playback Switch" from 0x1b to 0x14
+(documentation says "Port-D", 3,5 jack) and adding "Speaker Playback
+Switch" 0x1b (Port-E, LINE2).
+
+Signed-off-by: David Heidelberger <d.okias@gmail.com>
+
+---
+
+--- a/sound/pci/hda/patch_realtek.c =C2=A0 =C2=A0 2009-09-15 14:54:37.06731=
+0114 +0200
++++ b/sound/pci/hda/patch_realtek.c =C2=A0 =C2=A0 2009-09-15 14:54:43.44443=
+7970 +0200
+@@ -7979,6 +7979,8 @@
+=C2=A0static struct snd_kcontrol_new alc883_base_mixer[] =3D {
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, =
+0x0, HDA_OUTPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, =
+HDA_INPUT),
++ =C2=A0 =C2=A0 =C2=A0 HDA_CODEC_MUTE("Headphone Playback Switch", 0x14, 0x=
+0, HDA_OUTPUT),
++ =C2=A0 =C2=A0 =C2=A0 HDA_CODEC_MUTE("Speaker Playback Switch", 0x1b, 0x0,=
+ HDA_OUTPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_CODEC_VOLUME("Surround Playback Volume", 0x0=
+d, 0x0, HDA_OUTPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_BIND_MUTE("Surround Playback Switch", 0x0d, =
+2, HDA_INPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_CODEC_VOLUME_MONO("Center Playback Volume", =
+0x0e, 1, 0x0,
+HDA_OUTPUT),
+@@ -7987,7 +7989,6 @@
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_BIND_MUTE_MONO("LFE Playback Switch", 0x0e, =
+2, 2, HDA_INPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_CODEC_VOLUME("Side Playback Volume", 0x0f, 0=
+x0, HDA_OUTPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_BIND_MUTE("Side Playback Switch", 0x0f, 2, H=
+DA_INPUT),
+- =C2=A0 =C2=A0 =C2=A0 HDA_CODEC_MUTE("Headphone Playback Switch", 0x1b, 0x=
+0, HDA_OUTPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_CODEC_VOLUME("CD Playback Volume", 0x0b, 0x0=
+4, HDA_INPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_CODEC_MUTE("CD Playback Switch", 0x0b, 0x04,=
+ HDA_INPUT),
+=C2=A0 =C2=A0 =C2=A0 =C2=A0HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0=
+x02, HDA_INPUT),
+
+--0015174c417424a8b00473a29263
+Content-Type: application/octet-stream;
+	name="alc883_speaker-headphone_fix.patch"
+Content-Disposition: attachment;
+	filename="alc883_speaker-headphone_fix.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fzmo33bm0
+
+QUxTQTogaGRhIC0gYWRkIHNwZWFrZXIgYW5kIGZpeCBoZWFkcGhvbmUgc3dpdGNoIGZvciBBTEM4
+ODMgCgpUaGlzIHBhdGNoIGNoYW5naW5nICJIZWFkcGhvbmUgUGxheWJhY2sgU3dpdGNoIiBmcm9t
+IDB4MWIgdG8gMHgxNCAoZG9jdW1lbnRhdGlvbiBzYXlzICJQb3J0LUQiLCAzLDUgamFjaykgYW5k
+IGFkZGluZyAiU3BlYWtlciBQbGF5YmFjayBTd2l0Y2giIDB4MWIgKFBvcnQtRSwgTElORTIpLgoK
+U2lnbmVkLW9mZi1ieTogRGF2aWQgSGVpZGVsYmVyZ2VyIDxkLm9raWFzQGdtYWlsLmNvbT4KCi0t
+LQoKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMJMjAwOS0wOS0xNSAxNDo1NDoz
+Ny4wNjczMTAxMTQgKzAyMDAKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMJMjAw
+OS0wOS0xNSAxNDo1NDo0My40NDQ0Mzc5NzAgKzAyMDAKQEAgLTc5NzksNiArNzk3OSw4IEBACiBz
+dGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgYWxjODgzX2Jhc2VfbWl4ZXJbXSA9IHsKIAlI
+REFfQ09ERUNfVk9MVU1FKCJGcm9udCBQbGF5YmFjayBWb2x1bWUiLCAweDBjLCAweDAsIEhEQV9P
+VVRQVVQpLAogCUhEQV9CSU5EX01VVEUoIkZyb250IFBsYXliYWNrIFN3aXRjaCIsIDB4MGMsIDIs
+IEhEQV9JTlBVVCksCisJSERBX0NPREVDX01VVEUoIkhlYWRwaG9uZSBQbGF5YmFjayBTd2l0Y2gi
+LCAweDE0LCAweDAsIEhEQV9PVVRQVVQpLAorCUhEQV9DT0RFQ19NVVRFKCJTcGVha2VyIFBsYXli
+YWNrIFN3aXRjaCIsIDB4MWIsIDB4MCwgSERBX09VVFBVVCksCiAJSERBX0NPREVDX1ZPTFVNRSgi
+U3Vycm91bmQgUGxheWJhY2sgVm9sdW1lIiwgMHgwZCwgMHgwLCBIREFfT1VUUFVUKSwKIAlIREFf
+QklORF9NVVRFKCJTdXJyb3VuZCBQbGF5YmFjayBTd2l0Y2giLCAweDBkLCAyLCBIREFfSU5QVVQp
+LAogCUhEQV9DT0RFQ19WT0xVTUVfTU9OTygiQ2VudGVyIFBsYXliYWNrIFZvbHVtZSIsIDB4MGUs
+IDEsIDB4MCwgSERBX09VVFBVVCksCkBAIC03OTg3LDcgKzc5ODksNiBAQAogCUhEQV9CSU5EX01V
+VEVfTU9OTygiTEZFIFBsYXliYWNrIFN3aXRjaCIsIDB4MGUsIDIsIDIsIEhEQV9JTlBVVCksCiAJ
+SERBX0NPREVDX1ZPTFVNRSgiU2lkZSBQbGF5YmFjayBWb2x1bWUiLCAweDBmLCAweDAsIEhEQV9P
+VVRQVVQpLAogCUhEQV9CSU5EX01VVEUoIlNpZGUgUGxheWJhY2sgU3dpdGNoIiwgMHgwZiwgMiwg
+SERBX0lOUFVUKSwKLQlIREFfQ09ERUNfTVVURSgiSGVhZHBob25lIFBsYXliYWNrIFN3aXRjaCIs
+IDB4MWIsIDB4MCwgSERBX09VVFBVVCksCiAJSERBX0NPREVDX1ZPTFVNRSgiQ0QgUGxheWJhY2sg
+Vm9sdW1lIiwgMHgwYiwgMHgwNCwgSERBX0lOUFVUKSwKIAlIREFfQ09ERUNfTVVURSgiQ0QgUGxh
+eWJhY2sgU3dpdGNoIiwgMHgwYiwgMHgwNCwgSERBX0lOUFVUKSwKIAlIREFfQ09ERUNfVk9MVU1F
+KCJMaW5lIFBsYXliYWNrIFZvbHVtZSIsIDB4MGIsIDB4MDIsIEhEQV9JTlBVVCksCg==
+--0015174c417424a8b00473a29263
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0015174c417424a8b00473a29263--
