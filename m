@@ -1,45 +1,58 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: Re: alsamixer is not able to set pulseaudio
-	master	volume
-Date: Wed, 16 Sep 2009 12:20:20 +0300
-Message-ID: <4AB0ADD4.4090700@pardus.org.tr>
-References: <4AB0901A.6040200@pardus.org.tr> <h8q8sd$3dr$1@ger.gmane.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH 1/3] ASoC: TWL6030: Add twl6030 codec
+ driver
+Date: Wed, 16 Sep 2009 11:17:23 +0100
+Message-ID: <20090916101723.GA3589@rakim.wolfsonmicro.main>
+References: <67059DBF19D7214F9C66BB0EA91BA90E90432706@dlee04.ent.ti.com>
+ <20090914172135.GA2481@rakim.wolfsonmicro.main>
+ <67059DBF19D7214F9C66BB0EA91BA90E907FA65B@dlee04.ent.ti.com>
+ <20090915183009.GA4343@sirena.org.uk>
+ <67059DBF19D7214F9C66BB0EA91BA90E907FA8DC@dlee04.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B14F2441D
-	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Sep 2009 11:16:09 +0200 (CEST)
-In-Reply-To: <h8q8sd$3dr$1@ger.gmane.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: pulseaudio-discuss@mail.0pointer.de, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <67059DBF19D7214F9C66BB0EA91BA90E907FA8DC@dlee04.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Nagalla, Hari" <hnagalla@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Q29saW4gR3V0aHJpZSB3cm90ZSBPbiAxNi0wOS0yMDA5IDExOjUwOgo+ICdUd2FzIGJyaWxsaWcs
-IGFuZCBPemFuIMOHYcSfbGF5YW4gYXQgMTYvMDkvMDkgMDg6MTMgZGlkIGd5cmUgYW5kIGdpbWJs
-ZToKPiAgIAo+PiBJJ3ZlIGp1c3Qgbm90aWNlZCB0aGF0IHVzaW5nIGFsc2FtaXhlciB0byBzZXQg
-cHVsc2VhdWRpbydzIG1hc3RlciB2b2x1bWUKPj4gaXMgbm90IHdvcmtpbmcgYW55bW9yZS4gSSBz
-d2l0Y2hlZCBiYWNrIHRvIGFuIGVhcmxpZXIgYWxzYS11dGlscwo+PiBzbmFwc2hvdCAoMjAwOTA2
-MjQpIHN0aWxsIHRoZSBzYW1lLgo+Pgo+PiBJIGRpZG4ndCBkbyBhbnkgY2hhbmdlcyB0byBwdWxz
-ZWF1ZGlvIGZvciBhIGxvbmcgdGltZSwgaXQncyAwLjkuMTUgd2l0aAo+PiB0aGUgcHJvcG9zZWQg
-cGF0Y2hzZXQgb2YgTGVubmFydC4KPj4KPj4gYWxzYW1peGVyIGlzIGxhdW5jaGVkLCB0aGUgbWFz
-dGVyIGNoYW5uZWwgaXMgZGlzcGxheWVkIGJ1dCBwcmVzc2luZyBVcAo+PiBhbmQgRG93biBkb2Vz
-bid0IGNoYW5nZSBhbnl0aGluZyBvbiB0aGUgVUkuIFByZXNzaW5nIE0gY2hhbmdlcyAnT08nIHRv
-ICdNTScuCj4+ICAgICAKPgo+IEkndmUgc2VlbiB0aGlzIHRvbywgYnV0IHByZXNzaW5nIHRoZSBu
-dW1iZXJzIDAtOSB3b3JrIGZpbmUgdG8gYWRqdXN0IHRoZSAKPiB2b2x1bWUuIEl0J3MgYWxzbyBi
-ZSByZXBvcnRlZCBvbiBJUkMuCj4gICAKCkhtbSB5ZXMgMC05IHdvcmssIEknbGwgdHJ5IHRvIHJl
-dmVydCB0aGUgcGx1Z2luIGFsc28gdG8gc2VlIGlmIGl0CmVmZmVjdHMgb3Igbm90LgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue, Sep 15, 2009 at 05:39:09PM -0500, Lopez Cruz, Misael wrote:
+> Mark Brown wrote:
+
+> > I'd not expect full interoperability but I'd expect that at least the
+> > basic PDM support would interoperate happily.  It wouldn't surprise me
+> > if more than one manufacturer came up with the same extension
+> > for multi channel PDM.
+
+> If that's the case, then a more appropriate name should be chosen.
+> Or is it fine for you _MCPDM?
+
+I'd suggest just plain _PDM.
+
+> >> The codec is turned on/off through an external line (i.e. with a
+> >> gpio). Then, codec enable is board-dependent.
+
+> > Might it make more sense to specify a GPIO line instead, at least by
+> > default? 
+
+> Not sure, if the GPIO line is in TWL6030 (mfd) as well then probably
+> it's fine, which may be the case for now. But isn't it violating
+> CODEC independency anyway?
+
+I don't see an abstraction problem - gpiolib can handle this well
+enough.
+
+> If you mean to sustitute the codec_enable function by the GPIO
+> line, then it opens the possibility to make the CODEC to request and
+> operate a GPIO line belonging to a different chip, for example
+> to the application processor.
+
+If the CODEC GPIOs are supported via gpiolib that shouldn't be a
+problem.  If you specify the GPIO as an int then it'll also be possible
+to have invalid values so that cases with the CODEC hard wired to power
+up will also be handled.
+
+It just seems easier for boards to have the CODEC do the gpio request
+and so on so that it's a simple data value that needs to be set.
