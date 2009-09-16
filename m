@@ -1,18 +1,25 @@
-From: pavel.hofman@ivitera.com
-Subject: [PATCH 7/7] Infrasonic Quartet support
-Date: Wed, 16 Sep 2009 22:25:41 +0200
-Message-ID: <1253132741-15688-7-git-send-email-pavel.hofman@ivitera.com>
-References: <1253132741-15688-1-git-send-email-pavel.hofman@ivitera.com>
-	<1253132741-15688-2-git-send-email-pavel.hofman@ivitera.com>
-	<1253132741-15688-3-git-send-email-pavel.hofman@ivitera.com>
-	<1253132741-15688-4-git-send-email-pavel.hofman@ivitera.com>
-	<1253132741-15688-5-git-send-email-pavel.hofman@ivitera.com>
-	<1253132741-15688-6-git-send-email-pavel.hofman@ivitera.com>
+From: Alistair Boyle <alistair.js.boyle@gmail.com>
+Subject: Re: Fwd: Dell Studio 14, internal mic
+Date: Wed, 16 Sep 2009 17:18:11 -0400
+Message-ID: <8c6d84110909161418r6761a3c1i118a473978f8b5e3@mail.gmail.com>
+References: <8c6d84110908032326u1d94a581s95d47e5f3492ac47@mail.gmail.com>
+	<8c6d84110909121948i14f66b17n30e0bb379a4fb391@mail.gmail.com>
+	<s5hfxaplt02.wl%tiwai@suse.de>
+	<8c6d84110909140936n35def811r477e8c87806b0a23@mail.gmail.com>
+	<s5hy6ogbi54.wl%tiwai@suse.de>
+	<8c6d84110909151054k5db09f04l1f47033612effa7b@mail.gmail.com>
+	<s5hfxanzc3j.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=00032555a9cad7f78d0473b87061
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1253132741-15688-6-git-send-email-pavel.hofman@ivitera.com>
+Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
+	[209.85.218.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id 06980244AD
+	for <alsa-devel@alsa-project.org>;
+	Wed, 16 Sep 2009 23:18:32 +0200 (CEST)
+Received: by bwz25 with SMTP id 25so1252521bwz.32
+	for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2009 14:18:31 -0700 (PDT)
+In-Reply-To: <s5hfxanzc3j.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,1209 +29,682 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Pavel Hofman <pavel.hofman@ivitera.com>
+--00032555a9cad7f78d0473b87061
+Content-Type: text/plain; charset=UTF-8
 
-* three external clock types
-* all controls supported
+On Wed, Sep 16, 2009 at 1:34 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 15 Sep 2009 13:54:16 -0400, Alistair Boyle wrote:
+>> On Tue, Sep 15, 2009 at 6:45 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Mon, 14 Sep 2009 12:36:47 -0400, Alistair Boyle wrote:
+>> >> For the capture settings, "digital" should be the first setting since
+>> >> its the master capture control,
+>> >
+>> > You should keep this "Digital" control to 50%, corresponding to 0dB.
+...
+>> This seems to be a bit of a regression: the recording source labels
+...
+>
+> Are you sure that you are using the very latest one?
+> Double-check the latest alsa-driver-snapshot.tar.gz.
+>
 
-Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
+Oh, sorry. Yup, that's much better. Auto mic switching on plugin and
+the independent headphones are working properly now, including muting
+the speakers when a headphone is plugged in.
 
-diff --git a/pci/ice1712/Makefile b/pci/ice1712/Makefile
-index 536eae2..f7ce33f 100644
---- a/pci/ice1712/Makefile
-+++ b/pci/ice1712/Makefile
-@@ -5,7 +5,7 @@
- 
- snd-ice17xx-ak4xxx-objs := ak4xxx.o
- snd-ice1712-objs := ice1712.o delta.o hoontech.o ews.o
--snd-ice1724-objs := ice1724.o amp.o revo.o aureon.o vt1720_mobo.o pontis.o prodigy192.o prodigy_hifi.o juli.o phase.o wtm.o se.o maya44.o
-+snd-ice1724-objs := ice1724.o amp.o revo.o aureon.o vt1720_mobo.o pontis.o prodigy192.o prodigy_hifi.o juli.o phase.o wtm.o se.o maya44.o quartet.o
- 
- # Toplevel Module Dependency
- obj-$(CONFIG_SND_ICE1712) += snd-ice1712.o snd-ice17xx-ak4xxx.o
-diff --git a/pci/ice1712/ice1724.c b/pci/ice1712/ice1724.c
-index 3f11195..3896fb9 100644
---- a/pci/ice1712/ice1724.c
-+++ b/pci/ice1712/ice1724.c
-@@ -53,6 +53,7 @@
- #include "phase.h"
- #include "wtm.h"
- #include "se.h"
-+#include "quartet.h"
- 
- MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
- MODULE_DESCRIPTION("VIA ICEnsemble ICE1724/1720 (Envy24HT/PT)");
-@@ -70,6 +71,7 @@ MODULE_SUPPORTED_DEVICE("{"
- 	       PHASE_DEVICE_DESC
- 	       WTM_DEVICE_DESC
- 	       SE_DEVICE_DESC
-+	       QTET_DEVICE_DESC
- 		"{VIA,VT1720},"
- 		"{VIA,VT1724},"
- 		"{ICEnsemble,Generic ICE1724},"
-@@ -2184,6 +2186,7 @@ static struct snd_ice1712_card_info *card_tables[] __devinitdata = {
- 	snd_vt1724_phase_cards,
- 	snd_vt1724_wtm_cards,
- 	snd_vt1724_se_cards,
-+	snd_vt1724_qtet_cards,
- 	NULL,
- };
- 
-diff --git a/pci/ice1712/quartet.c b/pci/ice1712/quartet.c
-new file mode 100644
-index 0000000..1948632
---- /dev/null
-+++ b/pci/ice1712/quartet.c
-@@ -0,0 +1,1130 @@
-+/*
-+ *   ALSA driver for ICEnsemble VT1724 (Envy24HT)
-+ *
-+ *   Lowlevel functions for Infrasonic Quartet
-+ *
-+ *	Copyright (c) 2009 Pavel Hofman <pavel.hofman@ivitera.com>
-+ *
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+#include <asm/io.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <sound/core.h>
-+#include <sound/tlv.h>
-+#include <sound/info.h>
-+
-+#include "ice1712.h"
-+#include "envy24ht.h"
-+#include <sound/ak4113.h>
-+#include "quartet.h"
-+
-+struct qtet_spec {
-+	struct ak4113 *ak4113;
-+	unsigned int scr;	/* system control register */
-+	unsigned int mcr;	/* monitoring control register */
-+	unsigned int cpld;	/* cpld register */
-+};
-+
-+struct qtet_kcontrol_private {
-+	unsigned int bit;
-+	void (*set_register)(struct snd_ice1712 *ice, unsigned int val);
-+	unsigned int (*get_register)(struct snd_ice1712 *ice);
-+	unsigned char *texts[2];
-+};
-+
-+enum {
-+	IN12_SEL = 0,
-+	IN34_SEL,
-+	AIN34_SEL,
-+	COAX_OUT,
-+	IN12_MON12,
-+	IN12_MON34,
-+	IN34_MON12,
-+	IN34_MON34,
-+	OUT12_MON34,
-+	OUT34_MON12,
-+};
-+
-+static char *ext_clock_names[3] = {"IEC958 In", "Word Clock 1xFS",
-+	"Word Clock 256xFS"};
-+
-+/* chip address on I2C bus */
-+#define AK4113_ADDR		0x26	/* S/PDIF receiver */
-+
-+/* chip address on SPI bus */
-+#define AK4620_ADDR		0x02	/* ADC/DAC */
-+
-+
-+/*
-+ * GPIO pins
-+ */
-+
-+/* GPIO0 - O - DATA0, def. 0 */
-+#define GPIO_D0			(1<<0)
-+/* GPIO1 - I/O - DATA1, Jack Detect Input0 (0:present, 1:missing), def. 1 */
-+#define GPIO_D1_JACKDTC0	(1<<1)
-+/* GPIO2 - I/O - DATA2, Jack Detect Input1 (0:present, 1:missing), def. 1 */
-+#define GPIO_D2_JACKDTC1	(1<<2)
-+/* GPIO3 - I/O - DATA3, def. 1 */
-+#define GPIO_D3			(1<<3)
-+/* GPIO4 - I/O - DATA4, SPI CDTO, def. 1 */
-+#define GPIO_D4_SPI_CDTO	(1<<4)
-+/* GPIO5 - I/O - DATA5, SPI CCLK, def. 1 */
-+#define GPIO_D5_SPI_CCLK	(1<<5)
-+/* GPIO6 - I/O - DATA6, Cable Detect Input (0:detected, 1:not detected */
-+#define GPIO_D6_CD		(1<<6)
-+/* GPIO7 - I/O - DATA7, Device Detect Input (0:detected, 1:not detected */
-+#define GPIO_D7_DD		(1<<7)
-+/* GPIO8 - O - CPLD Chip Select, def. 1 */
-+#define GPIO_CPLD_CSN		(1<<8)
-+/* GPIO9 - O - CPLD register read/write (0:write, 1:read), def. 0 */
-+#define GPIO_CPLD_RW		(1<<9)
-+/* GPIO10 - O - SPI Chip Select for CODEC#0, def. 1 */
-+#define GPIO_SPI_CSN0		(1<<10)
-+/* GPIO11 - O - SPI Chip Select for CODEC#1, def. 1 */
-+#define GPIO_SPI_CSN1		(1<<11)
-+/* GPIO12 - O - Ex. Register Output Enable (0:enable, 1:disable), def. 1,
-+ * init 0 */
-+#define GPIO_EX_GPIOE		(1<<12)
-+/* GPIO13 - O - Ex. Register0 Chip Select for System Control Register,
-+ * def. 1 */
-+#define GPIO_SCR		(1<<13)
-+/* GPIO14 - O - Ex. Register1 Chip Select for Monitor Control Register,
-+ * def. 1 */
-+#define GPIO_MCR		(1<<14)
-+
-+#define GPIO_SPI_ALL		(GPIO_D4_SPI_CDTO | GPIO_D5_SPI_CCLK |\
-+		GPIO_SPI_CSN0 | GPIO_SPI_CSN1)
-+
-+#define GPIO_DATA_MASK		(GPIO_D0 | GPIO_D1_JACKDTC0 | \
-+		GPIO_D2_JACKDTC1 | GPIO_D3 | \
-+		GPIO_D4_SPI_CDTO | GPIO_D5_SPI_CCLK | \
-+		GPIO_D6_CD | GPIO_D7_DD)
-+
-+/* System Control Register GPIO_SCR data bits */
-+/* Mic/Line select relay (0:line, 1:mic) */
-+#define SCR_RELAY		GPIO_D0
-+/* Phantom power drive control (0:5V, 1:48V) */
-+#define SCR_PHP_V		GPIO_D1_JACKDTC0
-+/* H/W mute control (0:Normal, 1:Mute) */
-+#define SCR_MUTE		GPIO_D2_JACKDTC1
-+/* Phantom power control (0:Phantom on, 1:off) */
-+#define SCR_PHP			GPIO_D3
-+/* Analog input 1/2 Source Select */
-+#define SCR_AIN12_SEL0		GPIO_D4_SPI_CDTO
-+#define SCR_AIN12_SEL1		GPIO_D5_SPI_CCLK
-+/* Analog input 3/4 Source Select (0:line, 1:hi-z) */
-+#define SCR_AIN34_SEL		GPIO_D6_CD
-+/* Codec Power Down (0:power down, 1:normal) */
-+#define SCR_CODEC_PDN		GPIO_D7_DD
-+
-+#define SCR_AIN12_LINE		(0)
-+#define SCR_AIN12_MIC		(SCR_AIN12_SEL0)
-+#define SCR_AIN12_LOWCUT	(SCR_AIN12_SEL1 | SCR_AIN12_SEL0)
-+
-+/* Monitor Control Register GPIO_MCR data bits */
-+/* Input 1/2 to Monitor 1/2 (0:off, 1:on) */
-+#define MCR_IN12_MON12		GPIO_D0
-+/* Input 1/2 to Monitor 3/4 (0:off, 1:on) */
-+#define MCR_IN12_MON34		GPIO_D1_JACKDTC0
-+/* Input 3/4 to Monitor 1/2 (0:off, 1:on) */
-+#define MCR_IN34_MON12		GPIO_D2_JACKDTC1
-+/* Input 3/4 to Monitor 3/4 (0:off, 1:on) */
-+#define MCR_IN34_MON34		GPIO_D3
-+/* Output to Monitor 1/2 (0:off, 1:on) */
-+#define MCR_OUT34_MON12		GPIO_D4_SPI_CDTO
-+/* Output to Monitor 3/4 (0:off, 1:on) */
-+#define MCR_OUT12_MON34		GPIO_D5_SPI_CCLK
-+
-+/* CPLD Register DATA bits */
-+/* Clock Rate Select */
-+#define CPLD_CKS0		GPIO_D0
-+#define CPLD_CKS1		GPIO_D1_JACKDTC0
-+#define CPLD_CKS2		GPIO_D2_JACKDTC1
-+/* Sync Source Select (0:Internal, 1:External) */
-+#define CPLD_SYNC_SEL		GPIO_D3
-+/* Word Clock FS Select (0:FS, 1:256FS) */
-+#define CPLD_WORD_SEL		GPIO_D4_SPI_CDTO
-+/* Coaxial Output Source (IS-Link) (0:SPDIF, 1:I2S) */
-+#define CPLD_COAX_OUT		GPIO_D5_SPI_CCLK
-+/* Input 1/2 Source Select (0:Analog12, 1:An34) */
-+#define CPLD_IN12_SEL		GPIO_D6_CD
-+/* Input 3/4 Source Select (0:Analog34, 1:Digital In) */
-+#define CPLD_IN34_SEL		GPIO_D7_DD
-+
-+/* internal clock (CPLD_SYNC_SEL = 0) options */
-+#define CPLD_CKS_44100HZ	(0)
-+#define CPLD_CKS_48000HZ	(CPLD_CKS0)
-+#define CPLD_CKS_88200HZ	(CPLD_CKS1)
-+#define CPLD_CKS_96000HZ	(CPLD_CKS1 | CPLD_CKS0)
-+#define CPLD_CKS_176400HZ	(CPLD_CKS2)
-+#define CPLD_CKS_192000HZ	(CPLD_CKS2 | CPLD_CKS0)
-+
-+#define CPLD_CKS_MASK		(CPLD_CKS0 | CPLD_CKS1 | CPLD_CKS2)
-+
-+/* external clock (CPLD_SYNC_SEL = 1) options */
-+/* external clock - SPDIF */
-+#define CPLD_EXT_SPDIF	(0 | CPLD_SYNC_SEL)
-+/* external clock - WordClock 1xfs */
-+#define CPLD_EXT_WORDCLOCK_1FS	(CPLD_CKS1 | CPLD_SYNC_SEL)
-+/* external clock - WordClock 256xfs */
-+#define CPLD_EXT_WORDCLOCK_256FS	(CPLD_CKS1 | CPLD_WORD_SEL |\
-+		CPLD_SYNC_SEL)
-+
-+#define EXT_SPDIF_TYPE			0
-+#define EXT_WORDCLOCK_1FS_TYPE		1
-+#define EXT_WORDCLOCK_256FS_TYPE	2
-+
-+#define AK4620_DFS0		(1<<0)
-+#define AK4620_DFS1		(1<<1)
-+#define AK4620_CKS0		(1<<2)
-+#define AK4620_CKS1		(1<<3)
-+/* Clock and Format Control register */
-+#define AK4620_DFS_REG		0x02
-+
-+/* Deem and Volume Control register */
-+#define AK4620_DEEMVOL_REG	0x03
-+#define AK4620_SMUTE		(1<<7)
-+
-+/*
-+ * Conversion from int value to its binary form. Used for debugging.
-+ * The output buffer must be allocated prior to calling the function.
-+ */
-+static char *get_binary(char *buffer, int value)
-+{
-+	int i, j, pos;
-+	pos = 0;
-+	for (i = 0; i < 4; ++i) {
-+		for (j = 0; j < 8; ++j) {
-+			if (value & (1 << (31-(i*8 + j))))
-+				buffer[pos] = '1';
-+			else
-+				buffer[pos] = '0';
-+			pos++;
-+		}
-+		if (i < 3) {
-+			buffer[pos] = ' ';
-+			pos++;
-+		}
-+	}
-+	buffer[pos] = '\0';
-+	return buffer;
-+}
-+
-+/*
-+ * Initial setup of the conversion array GPIO <-> rate
-+ */
-+static unsigned int qtet_rates[] = {
-+	44100, 48000, 88200,
-+	96000, 176400, 192000,
-+};
-+
-+static unsigned int cks_vals[] = {
-+	CPLD_CKS_44100HZ, CPLD_CKS_48000HZ, CPLD_CKS_88200HZ,
-+	CPLD_CKS_96000HZ, CPLD_CKS_176400HZ, CPLD_CKS_192000HZ,
-+};
-+
-+static struct snd_pcm_hw_constraint_list qtet_rates_info = {
-+	.count = ARRAY_SIZE(qtet_rates),
-+	.list = qtet_rates,
-+	.mask = 0,
-+};
-+
-+static void qtet_ak4113_write(void *private_data, unsigned char reg,
-+		unsigned char val)
-+{
-+	snd_vt1724_write_i2c((struct snd_ice1712 *)private_data, AK4113_ADDR,
-+			reg, val);
-+}
-+
-+static unsigned char qtet_ak4113_read(void *private_data, unsigned char reg)
-+{
-+	return snd_vt1724_read_i2c((struct snd_ice1712 *)private_data,
-+			AK4113_ADDR, reg);
-+}
-+
-+
-+/*
-+ * AK4620 section
-+ */
-+
-+/*
-+ * Write data to addr register of ak4620
-+ */
-+static void qtet_akm_write(struct snd_akm4xxx *ak, int chip,
-+		unsigned char addr, unsigned char data)
-+{
-+	unsigned int tmp, orig_dir;
-+	int idx;
-+	unsigned int addrdata;
-+	struct snd_ice1712 *ice = ak->private_data[0];
-+
-+	if (snd_BUG_ON(chip < 0 || chip >= 4))
-+		return;
-+	/*printk(KERN_DEBUG "Writing to AK4620: chip=%d, addr=0x%x,
-+	  data=0x%x\n", chip, addr, data);*/
-+	orig_dir = ice->gpio.get_dir(ice);
-+	ice->gpio.set_dir(ice, orig_dir | GPIO_SPI_ALL);
-+	/* set mask - only SPI bits */
-+	ice->gpio.set_mask(ice, ~GPIO_SPI_ALL);
-+
-+	tmp = ice->gpio.get_data(ice);
-+	/* high all */
-+	tmp |= GPIO_SPI_ALL;
-+	ice->gpio.set_data(ice, tmp);
-+	udelay(100);
-+	/* drop chip select */
-+	if (chip)
-+		/* CODEC 1 */
-+		tmp &= ~GPIO_SPI_CSN1;
-+	else
-+		tmp &= ~GPIO_SPI_CSN0;
-+	ice->gpio.set_data(ice, tmp);
-+	udelay(100);
-+
-+	/* build I2C address + data byte */
-+	addrdata = (AK4620_ADDR << 6) | 0x20 | (addr & 0x1f);
-+	addrdata = (addrdata << 8) | data;
-+	for (idx = 15; idx >= 0; idx--) {
-+		/* drop clock */
-+		tmp &= ~GPIO_D5_SPI_CCLK;
-+		ice->gpio.set_data(ice, tmp);
-+		udelay(100);
-+		/* set data */
-+		if (addrdata & (1 << idx))
-+			tmp |= GPIO_D4_SPI_CDTO;
-+		else
-+			tmp &= ~GPIO_D4_SPI_CDTO;
-+		ice->gpio.set_data(ice, tmp);
-+		udelay(100);
-+		/* raise clock */
-+		tmp |= GPIO_D5_SPI_CCLK;
-+		ice->gpio.set_data(ice, tmp);
-+		udelay(100);
-+	}
-+	/* all back to 1 */
-+	tmp |= GPIO_SPI_ALL;
-+	ice->gpio.set_data(ice, tmp);
-+	udelay(100);
-+
-+	/* return all gpios to non-writable */
-+	ice->gpio.set_mask(ice, 0xffffff);
-+	/* restore GPIOs direction */
-+	ice->gpio.set_dir(ice, orig_dir);
-+}
-+
-+static void qtet_akm_set_regs(struct snd_akm4xxx *ak, unsigned char addr,
-+		unsigned char mask, unsigned char value)
-+{
-+	unsigned char tmp;
-+	int chip;
-+	for (chip = 0; chip < ak->num_chips; chip++) {
-+		tmp = snd_akm4xxx_get(ak, chip, addr);
-+		/* clear the bits */
-+		tmp &= ~mask;
-+		/* set the new bits */
-+		tmp |= value;
-+		snd_akm4xxx_write(ak, chip, addr, tmp);
-+	}
-+}
-+
-+/*
-+ * change the rate of AK4620
-+ */
-+static void qtet_akm_set_rate_val(struct snd_akm4xxx *ak, unsigned int rate)
-+{
-+	unsigned char ak4620_dfs;
-+
-+	if (rate == 0)  /* no hint - S/PDIF input is master or the new spdif
-+			   input rate undetected, simply return */
-+		return;
-+
-+	/* adjust DFS on codecs - see datasheet */
-+	if (rate > 108000)
-+		ak4620_dfs = AK4620_DFS1 | AK4620_CKS1;
-+	else if (rate > 54000)
-+		ak4620_dfs = AK4620_DFS0 | AK4620_CKS0;
-+	else
-+		ak4620_dfs = 0;
-+
-+	/* set new value */
-+	qtet_akm_set_regs(ak, AK4620_DFS_REG, AK4620_DFS0 | AK4620_DFS1 |
-+			AK4620_CKS0 | AK4620_CKS1, ak4620_dfs);
-+}
-+
-+#define AK_CONTROL(xname, xch)	{ .name = xname, .num_channels = xch }
-+
-+#define PCM_12_PLAYBACK_VOLUME	"PCM 1/2 Playback Volume"
-+#define PCM_34_PLAYBACK_VOLUME	"PCM 3/4 Playback Volume"
-+#define PCM_12_CAPTURE_VOLUME	"PCM 1/2 Capture Volume"
-+#define PCM_34_CAPTURE_VOLUME	"PCM 3/4 Capture Volume"
-+
-+static const struct snd_akm4xxx_dac_channel qtet_dac[] = {
-+	AK_CONTROL(PCM_12_PLAYBACK_VOLUME, 2),
-+	AK_CONTROL(PCM_34_PLAYBACK_VOLUME, 2),
-+};
-+
-+static const struct snd_akm4xxx_adc_channel qtet_adc[] = {
-+	AK_CONTROL(PCM_12_CAPTURE_VOLUME, 2),
-+	AK_CONTROL(PCM_34_CAPTURE_VOLUME, 2),
-+};
-+
-+static struct snd_akm4xxx akm_qtet_dac __devinitdata = {
-+	.type = SND_AK4620,
-+	.num_dacs = 4,	/* DAC1 - Output 12
-+	*/
-+	.num_adcs = 4,	/* ADC1 - Input 12
-+	*/
-+	.ops = {
-+		.write = qtet_akm_write,
-+		.set_rate_val = qtet_akm_set_rate_val,
-+	},
-+	.dac_info = qtet_dac,
-+	.adc_info = qtet_adc,
-+};
-+
-+/* Communication routines with the CPLD */
-+
-+
-+/* Writes data to external register reg, both reg and data are
-+ * GPIO representations */
-+static void reg_write(struct snd_ice1712 *ice, unsigned int reg,
-+		unsigned int data)
-+{
-+	unsigned int tmp;
-+
-+	mutex_lock(&ice->gpio_mutex);
-+	/* set direction of used GPIOs*/
-+	/* all outputs */
-+	tmp = 0x00ffff;
-+	ice->gpio.set_dir(ice, tmp);
-+	/* mask - writable bits */
-+	ice->gpio.set_mask(ice, ~(tmp));
-+	/* write the data */
-+	tmp = ice->gpio.get_data(ice);
-+	tmp &= ~GPIO_DATA_MASK;
-+	tmp |= data;
-+	ice->gpio.set_data(ice, tmp);
-+	udelay(100);
-+	/* drop output enable */
-+	tmp &=  ~GPIO_EX_GPIOE;
-+	ice->gpio.set_data(ice, tmp);
-+	udelay(100);
-+	/* drop the register gpio */
-+	tmp &= ~reg;
-+	ice->gpio.set_data(ice, tmp);
-+	udelay(100);
-+	/* raise the register GPIO */
-+	tmp |= reg;
-+	ice->gpio.set_data(ice, tmp);
-+	udelay(100);
-+
-+	/* raise all data gpios */
-+	tmp |= GPIO_DATA_MASK;
-+	ice->gpio.set_data(ice, tmp);
-+	/* mask - immutable bits */
-+	ice->gpio.set_mask(ice, 0xffffff);
-+	/* outputs only 8-15 */
-+	ice->gpio.set_dir(ice, 0x00ff00);
-+	mutex_unlock(&ice->gpio_mutex);
-+}
-+
-+static unsigned int get_scr(struct snd_ice1712 *ice)
-+{
-+	struct qtet_spec *spec = ice->spec;
-+	return spec->scr;
-+}
-+
-+static unsigned int get_mcr(struct snd_ice1712 *ice)
-+{
-+	struct qtet_spec *spec = ice->spec;
-+	return spec->mcr;
-+}
-+
-+static unsigned int get_cpld(struct snd_ice1712 *ice)
-+{
-+	struct qtet_spec *spec = ice->spec;
-+	return spec->cpld;
-+}
-+
-+static void set_scr(struct snd_ice1712 *ice, unsigned int val)
-+{
-+	struct qtet_spec *spec = ice->spec;
-+	reg_write(ice, GPIO_SCR, val);
-+	spec->scr = val;
-+}
-+
-+static void set_mcr(struct snd_ice1712 *ice, unsigned int val)
-+{
-+	struct qtet_spec *spec = ice->spec;
-+	reg_write(ice, GPIO_MCR, val);
-+	spec->mcr = val;
-+}
-+
-+static void set_cpld(struct snd_ice1712 *ice, unsigned int val)
-+{
-+	struct qtet_spec *spec = ice->spec;
-+	reg_write(ice, GPIO_CPLD_CSN, val);
-+	spec->cpld = val;
-+}
-+#ifdef CONFIG_PROC_FS
-+static void proc_regs_read(struct snd_info_entry *entry,
-+		struct snd_info_buffer *buffer)
-+{
-+	struct snd_ice1712 *ice = entry->private_data;
-+	char bin_buffer[36];
-+
-+	snd_iprintf(buffer, "SCR:	%s\n", get_binary(bin_buffer,
-+				get_scr(ice)));
-+	snd_iprintf(buffer, "MCR:	%s\n", get_binary(bin_buffer,
-+				get_mcr(ice)));
-+	snd_iprintf(buffer, "CPLD:	%s\n", get_binary(bin_buffer,
-+				get_cpld(ice)));
-+}
-+
-+static void proc_init(struct snd_ice1712 *ice)
-+{
-+	struct snd_info_entry *entry;
-+	if (!snd_card_proc_new(ice->card, "quartet", &entry))
-+		snd_info_set_text_ops(entry, ice, proc_regs_read);
-+}
-+#else /* !CONFIG_PROC_FS */
-+static void proc_init(struct snd_ice1712 *ice) {}
-+#endif
-+
-+static int qtet_mute_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
-+	unsigned int val;
-+	val = get_scr(ice) & SCR_MUTE;
-+	ucontrol->value.integer.value[0] = (val) ? 0 : 1;
-+	return 0;
-+}
-+
-+static int qtet_mute_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
-+	unsigned int old, new, smute;
-+	old = get_scr(ice) & SCR_MUTE;
-+	if (ucontrol->value.integer.value[0]) {
-+		/* unmute */
-+		new = 0;
-+		/* un-smuting DAC */
-+		smute = 0;
-+	} else {
-+		/* mute */
-+		new = SCR_MUTE;
-+		/* smuting DAC */
-+		smute = AK4620_SMUTE;
-+	}
-+	if (old != new) {
-+		struct snd_akm4xxx *ak = ice->akm;
-+		set_scr(ice, (get_scr(ice) & ~SCR_MUTE) | new);
-+		/* set smute */
-+		qtet_akm_set_regs(ak, AK4620_DEEMVOL_REG, AK4620_SMUTE, smute);
-+		return 1;
-+	}
-+	/* no change */
-+	return 0;
-+}
-+
-+static int qtet_ain12_enum_info(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_info *uinfo)
-+{
-+	static char *texts[3] = {"Line In 1/2", "Mic", "Mic + Low-cut"};
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = ARRAY_SIZE(texts);
-+
-+	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
-+		uinfo->value.enumerated.item =
-+			uinfo->value.enumerated.items - 1;
-+	strcpy(uinfo->value.enumerated.name,
-+			texts[uinfo->value.enumerated.item]);
-+
-+	return 0;
-+}
-+
-+static int qtet_ain12_sw_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
-+	unsigned int val, result;
-+	val = get_scr(ice) & (SCR_AIN12_SEL1 | SCR_AIN12_SEL0);
-+	switch (val) {
-+	case SCR_AIN12_LINE:
-+		result = 0;
-+		break;
-+	case SCR_AIN12_MIC:
-+		result = 1;
-+		break;
-+	case SCR_AIN12_LOWCUT:
-+		result = 2;
-+		break;
-+	default:
-+		/* BUG - no other combinations allowed */
-+		snd_BUG();
-+		result = 0;
-+	}
-+	ucontrol->value.integer.value[0] = result;
-+	return 0;
-+}
-+
-+static int qtet_ain12_sw_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
-+	unsigned int old, new, tmp, masked_old;
-+	old = new = get_scr(ice);
-+	masked_old = old & (SCR_AIN12_SEL1 | SCR_AIN12_SEL0);
-+	tmp = ucontrol->value.integer.value[0];
-+	if (tmp == 2)
-+		tmp = 3;	/* binary 10 is not supported */
-+	tmp <<= 4;	/* shifting to SCR_AIN12_SEL0 */
-+	if (tmp != masked_old) {
-+		/* change requested */
-+		switch (tmp) {
-+		case SCR_AIN12_LINE:
-+			new = old & ~(SCR_AIN12_SEL1 | SCR_AIN12_SEL0);
-+			set_scr(ice, new);
-+			/* turn off relay */
-+			new &= ~SCR_RELAY;
-+			set_scr(ice, new);
-+			break;
-+		case SCR_AIN12_MIC:
-+			/* turn on relay */
-+			new = old | SCR_RELAY;
-+			set_scr(ice, new);
-+			new = (new & ~SCR_AIN12_SEL1) | SCR_AIN12_SEL0;
-+			set_scr(ice, new);
-+			break;
-+		case SCR_AIN12_LOWCUT:
-+			/* turn on relay */
-+			new = old | SCR_RELAY;
-+			set_scr(ice, new);
-+			new |= SCR_AIN12_SEL1 | SCR_AIN12_SEL0;
-+			set_scr(ice, new);
-+			break;
-+		default:
-+			snd_BUG();
-+		}
-+		return 1;
-+	}
-+	/* no change */
-+	return 0;
-+}
-+
-+static int qtet_php_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
-+	unsigned int val;
-+	/* if phantom voltage =48V, phantom on */
-+	val = get_scr(ice) & SCR_PHP_V;
-+	ucontrol->value.integer.value[0] = val ? 1 : 0;
-+	return 0;
-+}
-+
-+static int qtet_php_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
-+	unsigned int old, new;
-+	old = new = get_scr(ice);
-+	if (ucontrol->value.integer.value[0] /* phantom on requested */
-+			&& (~old & SCR_PHP_V)) /* 0 = voltage 5V */ {
-+		/* is off, turn on */
-+		/* turn voltage on first, = 1 */
-+		new = old | SCR_PHP_V;
-+		set_scr(ice, new);
-+		/* turn phantom on, = 0 */
-+		new &= ~SCR_PHP;
-+		set_scr(ice, new);
-+	} else if (!ucontrol->value.integer.value[0] && (old & SCR_PHP_V)) {
-+		/* phantom off requested and 1 = voltage 48V */
-+		/* is on, turn off */
-+		/* turn voltage off first, = 0 */
-+		new = old & ~SCR_PHP_V;
-+		set_scr(ice, new);
-+		/* turn phantom off, = 1 */
-+		new |= SCR_PHP;
-+		set_scr(ice, new);
-+	}
-+	if (old != new)
-+		return 1;
-+	/* no change */
-+	return 0;
-+}
-+
-+#define PRIV_SW(xid, xbit, xreg)	[xid] = {.bit = xbit,\
-+	.set_register = set_##xreg,\
-+	.get_register = get_##xreg, }
-+
-+
-+#define PRIV_ENUM2(xid, xbit, xreg, xtext1, xtext2)	[xid] = {.bit = xbit,\
-+	.set_register = set_##xreg,\
-+	.get_register = get_##xreg,\
-+	.texts = {xtext1, xtext2} }
-+
-+static struct qtet_kcontrol_private qtet_privates[] = {
-+	PRIV_ENUM2(IN12_SEL, CPLD_IN12_SEL, cpld, "An In 1/2", "An In 3/4"),
-+	PRIV_ENUM2(IN34_SEL, CPLD_IN34_SEL, cpld, "An In 3/4", "IEC958 In"),
-+	PRIV_ENUM2(AIN34_SEL, SCR_AIN34_SEL, scr, "Line In 3/4", "Hi-Z"),
-+	PRIV_ENUM2(COAX_OUT, CPLD_COAX_OUT, cpld, "IEC958", "I2S"),
-+	PRIV_SW(IN12_MON12, MCR_IN12_MON12, mcr),
-+	PRIV_SW(IN12_MON34, MCR_IN12_MON34, mcr),
-+	PRIV_SW(IN34_MON12, MCR_IN34_MON12, mcr),
-+	PRIV_SW(IN34_MON34, MCR_IN34_MON34, mcr),
-+	PRIV_SW(OUT12_MON34, MCR_OUT12_MON34, mcr),
-+	PRIV_SW(OUT34_MON12, MCR_OUT34_MON12, mcr),
-+};
-+
-+static int qtet_enum_info(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_info *uinfo)
-+{
-+	struct qtet_kcontrol_private private =
-+		qtet_privates[kcontrol->private_value];
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->count = 1;
-+	uinfo->value.enumerated.items = ARRAY_SIZE(private.texts);
-+
-+	if (uinfo->value.enumerated.item >= uinfo->value.enumerated.items)
-+		uinfo->value.enumerated.item =
-+			uinfo->value.enumerated.items - 1;
-+	strcpy(uinfo->value.enumerated.name,
-+			private.texts[uinfo->value.enumerated.item]);
-+
-+	return 0;
-+}
-+
-+static int qtet_sw_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct qtet_kcontrol_private private =
-+		qtet_privates[kcontrol->private_value];
-+	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
-+	ucontrol->value.integer.value[0] =
-+		(private.get_register(ice) & private.bit) ? 1 : 0;
-+	return 0;
-+}
-+
-+static int qtet_sw_put(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct qtet_kcontrol_private private =
-+		qtet_privates[kcontrol->private_value];
-+	struct snd_ice1712 *ice = snd_kcontrol_chip(kcontrol);
-+	unsigned int old, new;
-+	old = private.get_register(ice);
-+	if (ucontrol->value.integer.value[0])
-+		new = old | private.bit;
-+	else
-+		new = old & ~private.bit;
-+	if (old != new) {
-+		private.set_register(ice, new);
-+		return 1;
-+	}
-+	/* no change */
-+	return 0;
-+}
-+
-+#define qtet_sw_info	snd_ctl_boolean_mono_info
-+
-+#define QTET_CONTROL(xname, xtype, xpriv)	\
-+	{.iface = SNDRV_CTL_ELEM_IFACE_MIXER,\
-+	.name = xname,\
-+	.info = qtet_##xtype##_info,\
-+	.get = qtet_sw_get,\
-+	.put = qtet_sw_put,\
-+	.private_value = xpriv }
-+
-+static struct snd_kcontrol_new qtet_controls[] __devinitdata = {
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Master Playback Switch",
-+		.info = qtet_sw_info,
-+		.get = qtet_mute_get,
-+		.put = qtet_mute_put,
-+		.private_value = 0
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Phantom Power",
-+		.info = qtet_sw_info,
-+		.get = qtet_php_get,
-+		.put = qtet_php_put,
-+		.private_value = 0
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Analog In 1/2 Capture Switch",
-+		.info = qtet_ain12_enum_info,
-+		.get = qtet_ain12_sw_get,
-+		.put = qtet_ain12_sw_put,
-+		.private_value = 0
-+	},
-+	QTET_CONTROL("Analog In 3/4 Capture Switch", enum, AIN34_SEL),
-+	QTET_CONTROL("PCM In 1/2 Capture Switch", enum, IN12_SEL),
-+	QTET_CONTROL("PCM In 3/4 Capture Switch", enum, IN34_SEL),
-+	QTET_CONTROL("Coax Output Source", enum, COAX_OUT),
-+	QTET_CONTROL("Analog In 1/2 to Monitor 1/2", sw, IN12_MON12),
-+	QTET_CONTROL("Analog In 1/2 to Monitor 3/4", sw, IN12_MON34),
-+	QTET_CONTROL("Analog In 3/4 to Monitor 1/2", sw, IN34_MON12),
-+	QTET_CONTROL("Analog In 3/4 to Monitor 3/4", sw, IN34_MON34),
-+	QTET_CONTROL("Output 1/2 to Monitor 3/4", sw, OUT12_MON34),
-+	QTET_CONTROL("Output 3/4 to Monitor 1/2", sw, OUT34_MON12),
-+};
-+
-+static char *slave_vols[] __devinitdata = {
-+	PCM_12_PLAYBACK_VOLUME,
-+	PCM_34_PLAYBACK_VOLUME,
-+	NULL
-+};
-+
-+static __devinitdata
-+DECLARE_TLV_DB_SCALE(qtet_master_db_scale, -6350, 50, 1);
-+
-+static struct snd_kcontrol __devinit *ctl_find(struct snd_card *card,
-+		const char *name)
-+{
-+	struct snd_ctl_elem_id sid;
-+	memset(&sid, 0, sizeof(sid));
-+	/* FIXME: strcpy is bad. */
-+	strcpy(sid.name, name);
-+	sid.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	return snd_ctl_find_id(card, &sid);
-+}
-+
-+static void __devinit add_slaves(struct snd_card *card,
-+		struct snd_kcontrol *master, char **list)
-+{
-+	for (; *list; list++) {
-+		struct snd_kcontrol *slave = ctl_find(card, *list);
-+		if (slave)
-+			snd_ctl_add_slave(master, slave);
-+	}
-+}
-+
-+static int __devinit qtet_add_controls(struct snd_ice1712 *ice)
-+{
-+	struct qtet_spec *spec = ice->spec;
-+	int err, i;
-+	struct snd_kcontrol *vmaster;
-+	err = snd_ice1712_akm4xxx_build_controls(ice);
-+	if (err < 0)
-+		return err;
-+	for (i = 0; i < ARRAY_SIZE(qtet_controls); i++) {
-+		err = snd_ctl_add(ice->card,
-+				snd_ctl_new1(&qtet_controls[i], ice));
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	/* Create virtual master control */
-+	vmaster = snd_ctl_make_virtual_master("Master Playback Volume",
-+			qtet_master_db_scale);
-+	if (!vmaster)
-+		return -ENOMEM;
-+	add_slaves(ice->card, vmaster, slave_vols);
-+	err = snd_ctl_add(ice->card, vmaster);
-+	if (err < 0)
-+		return err;
-+	/* only capture SPDIF over AK4113 */
-+	err = snd_ak4113_build(spec->ak4113,
-+			ice->pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream);
-+	if (err < 0)
-+		return err;
-+	return 0;
-+}
-+
-+static inline int qtet_is_spdif_master(struct snd_ice1712 *ice)
-+{
-+	/* CPLD_SYNC_SEL: 0 = internal, 1 = external (i.e. spdif master) */
-+	return (get_cpld(ice) & CPLD_SYNC_SEL) ? 1 : 0;
-+}
-+
-+static unsigned int qtet_get_rate(struct snd_ice1712 *ice)
-+{
-+	int i;
-+	unsigned char result;
-+
-+	result =  get_cpld(ice) & CPLD_CKS_MASK;
-+	for (i = 0; i < ARRAY_SIZE(cks_vals); i++)
-+		if (cks_vals[i] == result)
-+			return qtet_rates[i];
-+	return 0;
-+}
-+
-+static int get_cks_val(int rate)
-+{
-+	int i;
-+	for (i = 0; i < ARRAY_SIZE(qtet_rates); i++)
-+		if (qtet_rates[i] == rate)
-+			return cks_vals[i];
-+	return 0;
-+}
-+
-+/* setting new rate */
-+static void qtet_set_rate(struct snd_ice1712 *ice, unsigned int rate)
-+{
-+	unsigned int new;
-+	unsigned char val;
-+	/* switching ice1724 to external clock - supplied by ext. circuits */
-+	val = inb(ICEMT1724(ice, RATE));
-+	outb(val | VT1724_SPDIF_MASTER, ICEMT1724(ice, RATE));
-+
-+	new =  (get_cpld(ice) & ~CPLD_CKS_MASK) | get_cks_val(rate);
-+	/* switch to internal clock, drop CPLD_SYNC_SEL */
-+	new &= ~CPLD_SYNC_SEL;
-+	/* printk(KERN_DEBUG "QT - set_rate: old %x, new %x\n",
-+	   get_cpld(ice), new); */
-+	set_cpld(ice, new);
-+}
-+
-+static inline unsigned char qtet_set_mclk(struct snd_ice1712 *ice,
-+		unsigned int rate)
-+{
-+	/* no change in master clock */
-+	return 0;
-+}
-+
-+/* setting clock to external - SPDIF */
-+static int qtet_set_spdif_clock(struct snd_ice1712 *ice, int type)
-+{
-+	unsigned int old, new;
-+
-+	old = new = get_cpld(ice);
-+	new &= ~(CPLD_CKS_MASK | CPLD_WORD_SEL);
-+	switch (type) {
-+	case EXT_SPDIF_TYPE:
-+		new |= CPLD_EXT_SPDIF;
-+		break;
-+	case EXT_WORDCLOCK_1FS_TYPE:
-+		new |= CPLD_EXT_WORDCLOCK_1FS;
-+		break;
-+	case EXT_WORDCLOCK_256FS_TYPE:
-+		new |= CPLD_EXT_WORDCLOCK_256FS;
-+		break;
-+	default:
-+		snd_BUG();
-+	}
-+	if (old != new) {
-+		set_cpld(ice, new);
-+		/* changed */
-+		return 1;
-+	}
-+	return 0;
-+}
-+
-+static int qtet_get_spdif_master_type(struct snd_ice1712 *ice)
-+{
-+	unsigned int val;
-+	int result;
-+	val = get_cpld(ice);
-+	/* checking only rate/clock-related bits */
-+	val &= (CPLD_CKS_MASK | CPLD_WORD_SEL | CPLD_SYNC_SEL);
-+	if (!(val & CPLD_SYNC_SEL)) {
-+		/* switched to internal clock, is not any external type */
-+		result = -1;
-+	} else {
-+		switch (val) {
-+		case (CPLD_EXT_SPDIF):
-+			result = EXT_SPDIF_TYPE;
-+			break;
-+		case (CPLD_EXT_WORDCLOCK_1FS):
-+			result = EXT_WORDCLOCK_1FS_TYPE;
-+			break;
-+		case (CPLD_EXT_WORDCLOCK_256FS):
-+			result = EXT_WORDCLOCK_256FS_TYPE;
-+			break;
-+		default:
-+			/* undefined combination of external clock setup */
-+			snd_BUG();
-+			result = 0;
-+		}
-+	}
-+	return result;
-+}
-+
-+/* Called when ak4113 detects change in the input SPDIF stream */
-+static void qtet_ak4113_change(struct ak4113 *ak4113, unsigned char c0,
-+		unsigned char c1)
-+{
-+	struct snd_ice1712 *ice = ak4113->change_callback_private;
-+	int rate;
-+	if ((qtet_get_spdif_master_type(ice) == EXT_SPDIF_TYPE) &&
-+			c1) {
-+		/* only for SPDIF master mode, rate was changed */
-+		rate = snd_ak4113_external_rate(ak4113);
-+		/* printk(KERN_DEBUG "ak4113 - input rate changed to %d\n",
-+		   rate); */
-+		qtet_akm_set_rate_val(ice->akm, rate);
-+	}
-+}
-+
-+/*
-+ * If clock slaved to SPDIF-IN, setting runtime rate
-+ * to the detected external rate
-+ */
-+static void qtet_spdif_in_open(struct snd_ice1712 *ice,
-+		struct snd_pcm_substream *substream)
-+{
-+	struct qtet_spec *spec = ice->spec;
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int rate;
-+
-+	if (qtet_get_spdif_master_type(ice) != EXT_SPDIF_TYPE)
-+		/* not external SPDIF, no rate limitation */
-+		return;
-+	/* only external SPDIF can detect incoming sample rate */
-+	rate = snd_ak4113_external_rate(spec->ak4113);
-+	if (rate >= runtime->hw.rate_min && rate <= runtime->hw.rate_max) {
-+		runtime->hw.rate_min = rate;
-+		runtime->hw.rate_max = rate;
-+	}
-+}
-+
-+/*
-+ * initialize the chip
-+ */
-+static int __devinit qtet_init(struct snd_ice1712 *ice)
-+{
-+	static const unsigned char ak4113_init_vals[] = {
-+		/* AK4113_REG_PWRDN */	AK4113_RST | AK4113_PWN |
-+			AK4113_OCKS0 | AK4113_OCKS1,
-+		/* AK4113_REQ_FORMAT */	AK4113_DIF_I24I2S | AK4113_VTX |
-+			AK4113_DEM_OFF | AK4113_DEAU,
-+		/* AK4113_REG_IO0 */	AK4113_OPS2 | AK4113_TXE |
-+			AK4113_XTL_24_576M,
-+		/* AK4113_REG_IO1 */	AK4113_EFH_1024LRCLK | AK4113_IPS(0),
-+		/* AK4113_REG_INT0_MASK */	0,
-+		/* AK4113_REG_INT1_MASK */	0,
-+		/* AK4113_REG_DATDTS */		0,
-+	};
-+	int err;
-+	struct qtet_spec *spec;
-+	struct snd_akm4xxx *ak;
-+	unsigned char val;
-+
-+	/* switching ice1724 to external clock - supplied by ext. circuits */
-+	val = inb(ICEMT1724(ice, RATE));
-+	outb(val | VT1724_SPDIF_MASTER, ICEMT1724(ice, RATE));
-+
-+	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
-+	if (!spec)
-+		return -ENOMEM;
-+	/* qtet is clocked by Xilinx array */
-+	ice->hw_rates = &qtet_rates_info;
-+	ice->is_spdif_master = qtet_is_spdif_master;
-+	ice->get_rate = qtet_get_rate;
-+	ice->set_rate = qtet_set_rate;
-+	ice->set_mclk = qtet_set_mclk;
-+	ice->set_spdif_clock = qtet_set_spdif_clock;
-+	ice->get_spdif_master_type = qtet_get_spdif_master_type;
-+	ice->ext_clock_names = ext_clock_names;
-+	ice->ext_clock_count = ARRAY_SIZE(ext_clock_names);
-+	/* since Qtet can detect correct SPDIF-in rate, all streams can be
-+	 * limited to this specific rate */
-+	ice->spdif.ops.open = ice->pro_open = qtet_spdif_in_open;
-+	ice->spec = spec;
-+
-+	/* Mute Off */
-+	/* SCR Initialize*/
-+	/* keep codec power down first */
-+	set_scr(ice, SCR_PHP);
-+	udelay(1);
-+	/* codec power up */
-+	set_scr(ice, SCR_PHP | SCR_CODEC_PDN);
-+
-+	/* MCR Initialize */
-+	set_mcr(ice, 0);
-+
-+	/* CPLD Initialize */
-+	set_cpld(ice, 0);
-+
-+
-+	ice->num_total_dacs = 2;
-+	ice->num_total_adcs = 2;
-+
-+	ice->akm = kcalloc(2, sizeof(struct snd_akm4xxx), GFP_KERNEL);
-+	ak = ice->akm;
-+	if (!ak)
-+		return -ENOMEM;
-+	/* only one codec with two chips */
-+	ice->akm_codecs = 1;
-+	err = snd_ice1712_akm4xxx_init(ak, &akm_qtet_dac, NULL, ice);
-+	if (err < 0)
-+		return err;
-+	err = snd_ak4113_create(ice->card,
-+			qtet_ak4113_read,
-+			qtet_ak4113_write,
-+			ak4113_init_vals,
-+			ice, &spec->ak4113);
-+	if (err < 0)
-+		return err;
-+	/* callback for codecs rate setting */
-+	spec->ak4113->change_callback = qtet_ak4113_change;
-+	spec->ak4113->change_callback_private = ice;
-+	/* AK41143 in Quartet can detect external rate correctly
-+	 * (i.e. check_flags = 0) */
-+	spec->ak4113->check_flags = 0;
-+
-+	proc_init(ice);
-+
-+	qtet_set_rate(ice, 44100);
-+	return 0;
-+}
-+
-+static unsigned char qtet_eeprom[] __devinitdata = {
-+	[ICE_EEP2_SYSCONF]     = 0x28,	/* clock 256(24MHz), mpu401, 1xADC,
-+					   1xDACs, SPDIF in */
-+	[ICE_EEP2_ACLINK]      = 0x80,	/* I2S */
-+	[ICE_EEP2_I2S]         = 0x78,	/* 96k, 24bit, 192k */
-+	[ICE_EEP2_SPDIF]       = 0xc3,	/* out-en, out-int, in, out-ext */
-+	[ICE_EEP2_GPIO_DIR]    = 0x00,	/* 0-7 inputs, switched to output
-+					   only during output operations */
-+	[ICE_EEP2_GPIO_DIR1]   = 0xff,  /* 8-15 outputs */
-+	[ICE_EEP2_GPIO_DIR2]   = 0x00,
-+	[ICE_EEP2_GPIO_MASK]   = 0xff,	/* changed only for OUT operations */
-+	[ICE_EEP2_GPIO_MASK1]  = 0x00,
-+	[ICE_EEP2_GPIO_MASK2]  = 0xff,
-+
-+	[ICE_EEP2_GPIO_STATE]  = 0x00, /* inputs */
-+	[ICE_EEP2_GPIO_STATE1] = 0x7d, /* all 1, but GPIO_CPLD_RW
-+					  and GPIO15 always zero */
-+	[ICE_EEP2_GPIO_STATE2] = 0x00, /* inputs */
-+};
-+
-+/* entry point */
-+struct snd_ice1712_card_info snd_vt1724_qtet_cards[] __devinitdata = {
-+	{
-+		.subvendor = VT1724_SUBDEVICE_QTET,
-+		.name = "Infrasonic Quartet",
-+		.model = "quartet",
-+		.chip_init = qtet_init,
-+		.build_controls = qtet_add_controls,
-+		.eeprom_size = sizeof(qtet_eeprom),
-+		.eeprom_data = qtet_eeprom,
-+	},
-+	{ } /* terminator */
-+};
-diff --git a/pci/ice1712/quartet.h b/pci/ice1712/quartet.h
-new file mode 100644
-index 0000000..80809b7
---- /dev/null
-+++ b/pci/ice1712/quartet.h
-@@ -0,0 +1,10 @@
-+#ifndef __SOUND_QTET_H
-+#define __SOUND_QTET_H
-+
-+#define QTET_DEVICE_DESC		"{Infrasonic,Quartet},"
-+
-+#define VT1724_SUBDEVICE_QTET		0x30305349	/* Infrasonic Quartet */
-+
-+extern struct snd_ice1712_card_info  snd_vt1724_qtet_cards[];
-+
-+#endif	/* __SOUND_QTET_H */
--- 
-1.5.6.3
+Two issues remaining:
+
+1. The "pc beep" is still making a bad buzz/crackling noise when an
+xterm beep occurs. There's also a new "speaker" control but it doesn't
+affect this behavior (unrelated?).
+
+2. It should be the "capture" control that Skype or some other
+application should be twiddling to adjust recording volume
+automatically? Is it this control that should come first when they are
+enumerated, or is there some property that is missing from this
+control to tell the application which control to use? (ie: is there
+anything the alsa-driver does to help the application get this right?)
+
+Updated alsa-info.sh with new output attached.
+
+--00032555a9cad7f78d0473b87061
+Content-Type: text/plain; charset=US-ASCII; name="alsa-info-studio-14-debug-20090916.txt"
+Content-Disposition: attachment;
+	filename="alsa-info-studio-14-debug-20090916.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_fzokmhu60
+
+dXBsb2FkPXRydWUmc2NyaXB0PXRydWUmY2FyZGluZm89CiEhIyMjIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMKISFBTFNBIEluZm9ybWF0aW9uIFNjcmlwdCB2IDAuNC41NwohISMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgohIVNjcmlwdCByYW4gb246IFdlZCBTZXAgMTYgMjE6
+MDE6MTQgVVRDIDIwMDkKCgohIUxpbnV4IERpc3RyaWJ1dGlvbgohIS0tLS0tLS0tLS0tLS0tLS0t
+LQoKR2VudG9vIEJhc2UgU3lzdGVtIHJlbGVhc2UgMS4xMi4xMS4xCgoKISFETUkgSW5mb3JtYXRp
+b24KISEtLS0tLS0tLS0tLS0tLS0KCk1hbnVmYWN0dXJlcjogICAgICAKUHJvZHVjdCBOYW1lOiAg
+ICAgIAoKCiEhS2VybmVsIEluZm9ybWF0aW9uCiEhLS0tLS0tLS0tLS0tLS0tLS0tCgpLZXJuZWwg
+cmVsZWFzZTogICAgMi42LjMxLWdlbnRvbwpPcGVyYXRpbmcgU3lzdGVtOiAgR05VL0xpbnV4CkFy
+Y2hpdGVjdHVyZTogICAgICB4ODZfNjQKUHJvY2Vzc29yOiAgICAgICAgIEludGVsKFIpIENvcmUo
+VE0pMiBEdW8gQ1BVIFQ5NTUwIEAgMi42NkdIegpTTVAgRW5hYmxlZDogICAgICAgWWVzCgoKISFB
+TFNBIFZlcnNpb24KISEtLS0tLS0tLS0tLS0KCkRyaXZlciB2ZXJzaW9uOiAgICAgMS4wLjIxCkxp
+YnJhcnkgdmVyc2lvbjogICAgMS4wLjIxClV0aWxpdGllcyB2ZXJzaW9uOiAgMS4wLjIxCgoKISFM
+b2FkZWQgQUxTQSBtb2R1bGVzCiEhLS0tLS0tLS0tLS0tLS0tLS0tLQoKc25kX2hkYV9pbnRlbAoK
+CiEhU291bmQgU2VydmVycyBvbiB0aGlzIHN5c3RlbQohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0KCmFSdHM6CiAgICAgIEluc3RhbGxlZCAtIFllcyAoL3Vzci9rZGUvMy41L2Jpbi9hcnRz
+ZCkKICAgICAgUnVubmluZyAtIFllcwoKCiEhU291bmRjYXJkcyByZWNvZ25pc2VkIGJ5IEFMU0EK
+ISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKIDAgW05WaWRpYSAgICAgICAgIF06IEhE
+QS1JbnRlbCAtIEhEQSBOVmlkaWEKICAgICAgICAgICAgICAgICAgICAgIEhEQSBOVmlkaWEgYXQg
+MHhmMDk4MDAwMCBpcnEgMTcKCgohIVBDSSBTb3VuZGNhcmRzIGluc3RhbGxlZCBpbiB0aGUgc3lz
+dGVtCiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCjAwOjA4LjAgQXVk
+aW8gZGV2aWNlOiBuVmlkaWEgQ29ycG9yYXRpb24gRGV2aWNlIDBhYzAgKHJldiBiMSkKCgohIUFk
+dmFuY2VkIGluZm9ybWF0aW9uIC0gUENJIFZlbmRvci9EZXZpY2UvU3VzYnN5c3RlbSBJRCdzCiEh
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+CjAwOjA4LjAgMDQwMzogMTBkZTowYWMwIChyZXYgYjEpCglTdWJzeXN0ZW06IDEwMjg6MDJiYQoK
+CiEhTG9hZGVkIHNvdW5kIG1vZHVsZSBvcHRpb25zCiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KCiEhTW9kdWxlOiBzbmRfaGRhX2ludGVsCgliZGxfcG9zX2FkaiA6IDMyLC0xLC0xLC0xLC0x
+LC0xLC0xLC0xCgllbmFibGUgOiBZLFksWSxZLFksWSxZLFkKCWVuYWJsZV9tc2kgOiAwCglpZCA6
+IDxOVUxMPiw8TlVMTD4sPE5VTEw+LDxOVUxMPiw8TlVMTD4sPE5VTEw+LDxOVUxMPiw8TlVMTD4K
+CWluZGV4IDogLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEKCW1vZGVsIDogPE5VTEw+LDxOVUxMPiw8
+TlVMTD4sPE5VTEw+LDxOVUxMPiw8TlVMTD4sPE5VTEw+LDxOVUxMPgoJcGF0Y2ggOiA8TlVMTD4s
+PE5VTEw+LDxOVUxMPiw8TlVMTD4sPE5VTEw+LDxOVUxMPiw8TlVMTD4sPE5VTEw+Cglwb3NpdGlv
+bl9maXggOiAwLDAsMCwwLDAsMCwwLDAKCXBvd2VyX3NhdmUgOiAwCglwb3dlcl9zYXZlX2NvbnRy
+b2xsZXIgOiBZCglwcm9iZV9tYXNrIDogLTEsLTEsLTEsLTEsLTEsLTEsLTEsLTEKCXByb2JlX29u
+bHkgOiBOLE4sTixOLE4sTixOLE4KCXNpbmdsZV9jbWQgOiBOCgoKISFIREEtSW50ZWwgQ29kZWMg
+aW5mb3JtYXRpb24KISEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLS1zdGFydGNvbGxhcHNl
+LS0KCkNvZGVjOiBJRFQgOTJIRDgzQzFYNQpBZGRyZXNzOiAwCkZ1bmN0aW9uIElkOiAweDEKVmVu
+ZG9yIElkOiAweDExMWQ3NjA0ClN1YnN5c3RlbSBJZDogMHgxMDI4MDJiYQpSZXZpc2lvbiBJZDog
+MHgxMDAzMDIKTm8gTW9kZW0gRnVuY3Rpb24gR3JvdXAgZm91bmQKRGVmYXVsdCBQQ006CiAgICBy
+YXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4
+ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KRGVmYXVsdCBBbXAtSW4gY2Fwczog
+b2ZzPTB4MDAsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDI3LCBtdXRlPTAKRGVmYXVsdCBBbXAt
+T3V0IGNhcHM6IG9mcz0weDdmLCBuc3RlcHM9MHg3Ziwgc3RlcHNpemU9MHgwMiwgbXV0ZT0xCkdQ
+SU86IGlvPTMsIG89MCwgaT0wLCB1bnNvbGljaXRlZD0xLCB3YWtlPTEKICBJT1swXTogZW5hYmxl
+PTAsIGRpcj0wLCB3YWtlPTAsIHN0aWNreT0wLCBkYXRhPTAsIHVuc29sPTAKICBJT1sxXTogZW5h
+YmxlPTAsIGRpcj0wLCB3YWtlPTAsIHN0aWNreT0wLCBkYXRhPTAsIHVuc29sPTAKICBJT1syXTog
+ZW5hYmxlPTAsIGRpcj0wLCB3YWtlPTAsIHN0aWNreT0wLCBkYXRhPTAsIHVuc29sPTAKUG93ZXIt
+TWFwOiAweDAwCk5vZGUgMHgwYSBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNTgxOiBTdGVyZW8K
+ICBQaW5jYXAgMHgwMDAxMDAxYzogT1VUIEhQIEVBUEQgRGV0ZWN0CiAgRUFQRCAweDI6IEVBUEQK
+ICBQaW4gRGVmYXVsdCAweDAyMjE0MDNmOiBbSmFja10gSFAgT3V0IGF0IEV4dCBGcm9udAogICAg
+Q29ubiA9IDEvOCwgQ29sb3IgPSBHcmVlbgogICAgRGVmQXNzb2NpYXRpb24gPSAweDMsIFNlcXVl
+bmNlID0gMHhmCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFVuc29saWNpdGVkOiB0YWc9MDIsIGVu
+YWJsZWQ9MQogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiA0CiAg
+ICAgMHgxMyAweDE0KiAweDFjIDB4MjIKTm9kZSAweDBiIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
+MDA1ODE6IFN0ZXJlbwogIFBpbmNhcCAweDAwMDEwMDFjOiBPVVQgSFAgRUFQRCBEZXRlY3QKICBF
+QVBEIDB4MjogRUFQRAogIFBpbiBEZWZhdWx0IDB4MDIyMTEwMWY6IFtKYWNrXSBIUCBPdXQgYXQg
+RXh0IEZyb250CiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsYWNrCiAgICBEZWZBc3NvY2lhdGlv
+biA9IDB4MSwgU2VxdWVuY2UgPSAweGYKICBQaW4tY3RsczogMHg0MDogT1VUCiAgVW5zb2xpY2l0
+ZWQ6IHRhZz0wMSwgZW5hYmxlZD0xCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENv
+bm5lY3Rpb246IDQKICAgICAweDEzKiAweDE0IDB4MWMgMHgyMgpOb2RlIDB4MGMgW1BpbiBDb21w
+bGV4XSB3Y2FwcyAweDQwMDU4MzogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBOL0EKICBB
+bXAtSW4gdmFsczogIFsweDAxIDB4MDFdCiAgUGluY2FwIDB4MDAwMTE3MzQ6IElOIE9VVCBFQVBE
+IERldGVjdAogICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgwCiAgRUFQRCAweDI6IEVBUEQKICBQ
+aW4gRGVmYXVsdCAweDAyYTE5MDIwOiBbSmFja10gTWljIGF0IEV4dCBGcm9udAogICAgQ29ubiA9
+IDEvOCwgQ29sb3IgPSBQaW5rCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MiwgU2VxdWVuY2UgPSAw
+eDAKICBQaW4tY3RsczogMHgyNDogSU4gVlJFRl84MAogIFVuc29saWNpdGVkOiB0YWc9MDMsIGVu
+YWJsZWQ9MQogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiA0CiAg
+ICAgMHgxMyogMHgxNCAweDFjIDB4MjIKTm9kZSAweDBkIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0
+MDA1MDE6IFN0ZXJlbwogIFBpbmNhcCAweDAwMDEwMDUwOiBPVVQgRUFQRCBCYWxhbmNlZAogIEVB
+UEQgMHgyOiBFQVBECiAgUGluIERlZmF1bHQgMHg5MDE3MDExMDogW0ZpeGVkXSBTcGVha2VyIGF0
+IEludCBOL0EKICAgIENvbm4gPSBBbmFsb2csIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2Np
+YXRpb24gPSAweDEsIFNlcXVlbmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4t
+Y3RsczogMHg0MDogT1VUCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rp
+b246IDQKICAgICAweDEzIDB4MTQgMHgxYyAweDIyKgpOb2RlIDB4MGUgW1BpbiBDb21wbGV4XSB3
+Y2FwcyAweDQwMDU4MzogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBOL0EKICBBbXAtSW4g
+dmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMTAwMzQ6IElOIE9VVCBFQVBEIERldGVj
+dAogIEVBUEQgMHgyOiBFQVBECiAgUGluIERlZmF1bHQgMHg0MGYwMDBmMDogW04vQV0gT3RoZXIg
+YXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNz
+b2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgVW5zb2xp
+Y2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAog
+IENvbm5lY3Rpb246IDQKICAgICAweDEzKiAweDE0IDB4MWMgMHgyMgpOb2RlIDB4MGYgW1BpbiBD
+b21wbGV4XSB3Y2FwcyAweDQwMDU4MzogU3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBOL0EK
+ICBBbXAtSW4gdmFsczogIFsweDAwIDB4MDBdCiAgUGluY2FwIDB4MDAwMTE3MzQ6IElOIE9VVCBF
+QVBEIERldGVjdAogICAgVnJlZiBjYXBzOiBISVogNTAgR1JEIDgwCiAgRUFQRCAweDI6IEVBUEQK
+ICBQaW4gRGVmYXVsdCAweDQwZjAwMGYwOiBbTi9BXSBPdGhlciBhdCBFeHQgTi9BCiAgICBDb25u
+ID0gVW5rbm93biwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4ZiwgU2Vx
+dWVuY2UgPSAweDAKICBQaW4tY3RsczogMHgwMDogVlJFRl9ISVoKICBVbnNvbGljaXRlZDogdGFn
+PTAwLCBlbmFibGVkPTAKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlv
+bjogNAogICAgIDB4MTMgMHgxNCAweDFjIDB4MjIqCk5vZGUgMHgxMCBbUGluIENvbXBsZXhdIHdj
+YXBzIDB4NDAwNTAwOiBNb25vCiAgUGluY2FwIDB4MDAwMDAwMTA6IE9VVAogIFBpbiBEZWZhdWx0
+IDB4NDBmMDAwZjA6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3duLCBD
+b2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAog
+IFBpbi1jdGxzOiAweDAwOgogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0
+aW9uOiAxCiAgICAgMHgxYQpOb2RlIDB4MTEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDQ4Mzog
+U3RlcmVvIEFtcC1JbgogIEFtcC1JbiBjYXBzOiBOL0EKICBBbXAtSW4gdmFsczogIFsweDAxIDB4
+MDFdCiAgUGluY2FwIDB4MDAwMDAwMjQ6IElOIERldGVjdAogIFBpbiBEZWZhdWx0IDB4OTBhNjAx
+NjA6IFtGaXhlZF0gTWljIGF0IEludCBOL0EKICAgIENvbm4gPSBEaWdpdGFsLCBDb2xvciA9IFVu
+a25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHg2LCBTZXF1ZW5jZSA9IDB4MAogICAgTWlzYyA9
+IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4MjA6IElOCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwg
+ZW5hYmxlZD0wCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MTIgW1ZlbmRv
+ciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDA1MDM6IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4g
+Y2FwczogTi9BCiAgQW1wLUluIHZhbHM6ICBbMHgwMCAweDAwXQogIFBvd2VyOiBzZXR0aW5nPUQw
+LCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgyMApOb2RlIDB4MTMgW0F1ZGlvIE91
+dHB1dF0gd2NhcHMgMHhkMGMwNTogU3RlcmVvIEFtcC1PdXQgUi9MCiAgQW1wLU91dCBjYXBzOiBO
+L0EKICBBbXAtT3V0IHZhbHM6ICBbMHg1ZCAweDVkXQogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNo
+YW5uZWw9MAogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBEZWxheTogMTMgc2FtcGxl
+cwpOb2RlIDB4MTQgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHhkMGMwNTogU3RlcmVvIEFtcC1PdXQg
+Ui9MCiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6ICBbMHg2MSAweDYxXQogIENv
+bnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9
+RDAKICBEZWxheTogMTMgc2FtcGxlcwpOb2RlIDB4MTUgW0F1ZGlvIElucHV0XSB3Y2FwcyAweDFk
+MDU0MTogU3RlcmVvCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVj
+dDogMAogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBEZWxheTogMTMgc2FtcGxlcwog
+IENvbm5lY3Rpb246IDEKICAgICAweDE3CiAgUHJvY2Vzc2luZyBjYXBzOiBiZW5pZ249MCwgbmNv
+ZWZmPTAKTm9kZSAweDE2IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxZDA1NDE6IFN0ZXJlbwogIENv
+bnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFNESS1TZWxlY3Q6IDAKICBQb3dlcjogc2V0
+dGluZz1EMCwgYWN0dWFsPUQwCiAgRGVsYXk6IDEzIHNhbXBsZXMKICBDb25uZWN0aW9uOiAxCiAg
+ICAgMHgxOAogIFByb2Nlc3NpbmcgY2FwczogYmVuaWduPTAsIG5jb2VmZj0wCk5vZGUgMHgxNyBb
+QXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwZDBkOiBTdGVyZW8gQW1wLU91dCBSL0wKICBBbXAt
+T3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwZiwgc3RlcHNpemU9MHgwNSwgbXV0ZT0xCiAg
+QW1wLU91dCB2YWxzOiAgWzB4MDQgMHgwNF0KICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQw
+CiAgQ29ubmVjdGlvbjogNgogICAgIDB4MGMgMHgwZSAweDBmIDB4MWIgMHgxMSogMHgxMgpOb2Rl
+IDB4MTggW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMGQwZDogU3RlcmVvIEFtcC1PdXQgUi9M
+CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MGYsIHN0ZXBzaXplPTB4MDUsIG11
+dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDgwIDB4ODBdCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFj
+dHVhbD1EMAogIENvbm5lY3Rpb246IDYKICAgICAweDBjKiAweDBlIDB4MGYgMHgxYiAweDExIDB4
+MTIKTm9kZSAweDE5IFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDA1MDE6IFN0ZXJlbwogIFBv
+d2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiA0CiAgICAgMHgxMyogMHgx
+NCAweDFjIDB4MjIKTm9kZSAweDFhIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDA1MDA6IE1vbm8K
+ICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTkK
+Tm9kZSAweDFiIFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDA1MGI6IFN0ZXJlbyBBbXAtSW4KICBB
+bXAtSW4gY2Fwczogb2ZzPTB4MTcsIG5zdGVwcz0weDFmLCBzdGVwc2l6ZT0weDA1LCBtdXRlPTEK
+ICBBbXAtSW4gdmFsczogIFsweDk3IDB4OTddIFsweDk3IDB4OTddIFsweDk3IDB4OTddIFsweDk3
+IDB4OTddIFsweDk3IDB4OTddCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5l
+Y3Rpb246IDUKICAgICAweDBjIDB4MGUgMHgwZiAweDEzIDB4MTQKTm9kZSAweDFjIFtBdWRpbyBT
+ZWxlY3Rvcl0gd2NhcHMgMHgzMDA1MGQ6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBv
+ZnM9MHgxZiwgbnN0ZXBzPTB4MWYsIHN0ZXBzaXplPTB4MDUsIG11dGU9MQogIEFtcC1PdXQgdmFs
+czogIFsweDlmIDB4OWZdCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rp
+b246IDEKICAgICAweDFiCk5vZGUgMHgxZCBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQwNjFkOiBT
+dGVyZW8gRGlnaXRhbCBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4
+MDAsIHN0ZXBzaXplPTB4MDAsIG11dGU9MQogIEFtcC1PdXQgdmFsczogIFsweDAwIDB4MDBdCiAg
+Q29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRhbDoKICBEaWdpdGFsIGNhdGVn
+b3J5OiAweDAKICBQQ006CiAgICByYXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAw
+MCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDVdOiBQQ00g
+QUMzCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIERlbGF5OiA0IHNhbXBsZXMKTm9k
+ZSAweDFlIFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4NDA2MWQ6IFN0ZXJlbyBEaWdpdGFsIEFtcC1P
+dXQKICBBbXAtT3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwg
+bXV0ZT0xCiAgQW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KICBDb252ZXJ0ZXI6IHN0cmVhbT0w
+LCBjaGFubmVsPTAKICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAogIFBDTToKICAg
+IHJhdGVzIFsweDVlMF06IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBb
+MHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4NV06IFBDTSBBQzMKICBQb3dlcjogc2V0dGlu
+Zz1EMCwgYWN0dWFsPUQwCiAgRGVsYXk6IDQgc2FtcGxlcwpOb2RlIDB4MWYgW1BpbiBDb21wbGV4
+XSB3Y2FwcyAweDQwMDc4MTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAxNDogT1VU
+IERldGVjdAogIFBpbiBEZWZhdWx0IDB4NDBmMDAwZjA6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EK
+ICAgIENvbm4gPSBVbmtub3duLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0g
+MHhmLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDAwOgogIFVuc29saWNpdGVkOiB0YWc9
+MDAsIGVuYWJsZWQ9MAogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9u
+OiAxCiAgICAgMHgxZApOb2RlIDB4MjAgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDc4MTogU3Rl
+cmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAzNDogSU4gT1VUIERldGVjdAogIFBpbiBEZWZh
+dWx0IDB4NDBmMDAwZjA6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIENvbm4gPSBVbmtub3du
+LCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4
+MAogIFBpbi1jdGxzOiAweDAwOgogIFVuc29saWNpdGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIFBv
+d2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxZQpOb2Rl
+IDB4MjEgW0JlZXAgR2VuZXJhdG9yIFdpZGdldF0gd2NhcHMgMHg3MDAwMGM6IE1vbm8gQW1wLU91
+dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDMsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0weDE3LCBt
+dXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHgwMF0KTm9kZSAweDIyIFtBdWRpbyBPdXRwdXRdIHdj
+YXBzIDB4ZDBjMDU6IFN0ZXJlbyBBbXAtT3V0IFIvTAogIEFtcC1PdXQgY2FwczogTi9BCiAgQW1w
+LU91dCB2YWxzOiAgWzB4NjQgMHg2NF0KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAK
+ICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgRGVsYXk6IDEzIHNhbXBsZXMKQ29kZWM6
+IE52aWRpYSBNQ1A3QSBIRE1JCkFkZHJlc3M6IDMKRnVuY3Rpb24gSWQ6IDB4MQpWZW5kb3IgSWQ6
+IDB4MTBkZTAwMDcKU3Vic3lzdGVtIElkOiAweDEwMjgwMmJhClJldmlzaW9uIElkOiAweDEwMDEw
+MApObyBNb2RlbSBGdW5jdGlvbiBHcm91cCBmb3VuZApEZWZhdWx0IFBDTToKICAgIHJhdGVzIFsw
+eDBdOgogICAgYml0cyBbMHgwXToKICAgIGZvcm1hdHMgWzB4MF06CkRlZmF1bHQgQW1wLUluIGNh
+cHM6IE4vQQpEZWZhdWx0IEFtcC1PdXQgY2FwczogTi9BCkdQSU86IGlvPTAsIG89MCwgaT0wLCB1
+bnNvbGljaXRlZD0wLCB3YWtlPTAKTm9kZSAweDA0IFtBdWRpbyBPdXRwdXRdIHdjYXBzIDB4MjEx
+OiBTdGVyZW8gRGlnaXRhbAogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIERpZ2l0
+YWw6IEVuYWJsZWQKICBEaWdpdGFsIGNhdGVnb3J5OiAweDAKICBQQ006CiAgICByYXRlcyBbMHhj
+MF06IDQ4MDAwIDg4MjAwCiAgICBiaXRzIFsweGZdOiA4IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsw
+eDFdOiBQQ00KTm9kZSAweDA1IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAzODE6IFN0ZXJlbyBE
+aWdpdGFsCiAgUGluY2FwIDB4MDAwMDAwMTQ6IE9VVCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDE4
+NTYwMTEwOiBbSmFja10gRGlnaXRhbCBPdXQgYXQgSW50IEhETUkKICAgIENvbm4gPSBEaWdpdGFs
+LCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHgxLCBTZXF1ZW5jZSA9IDB4
+MAogICAgTWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFVuc29saWNp
+dGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIENvbm5lY3Rpb246IDEKICAgICAweDA0Ck5vZGUgMHgw
+NiBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDIxMTogU3RlcmVvIERpZ2l0YWwKICBDb252ZXJ0ZXI6
+IHN0cmVhbT0wLCBjaGFubmVsPTAKICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAog
+IFBDTToKICAgIHJhdGVzIFsweGMwXTogNDgwMDAgODgyMDAKICAgIGJpdHMgWzB4Zl06IDggMTYg
+MjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQpOb2RlIDB4MDcgW1BpbiBDb21wbGV4XSB3Y2Fw
+cyAweDQwMDM4MTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAxNDogT1VUIERldGVj
+dAogIFBpbiBEZWZhdWx0IDB4NTg1NjAxMjE6IFtOL0FdIERpZ2l0YWwgT3V0IGF0IEludCBIRE1J
+CiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9
+IDB4MiwgU2VxdWVuY2UgPSAweDEKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAw
+eDQwOiBPVVQKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBDb25uZWN0aW9uOiAx
+CiAgICAgMHgwNgpOb2RlIDB4MDggW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHgyMTE6IFN0ZXJlbyBE
+aWdpdGFsCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgRGlnaXRhbDoKICBEaWdp
+dGFsIGNhdGVnb3J5OiAweDAKICBQQ006CiAgICByYXRlcyBbMHhjMF06IDQ4MDAwIDg4MjAwCiAg
+ICBiaXRzIFsweGZdOiA4IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KTm9kZSAweDA5
+IFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAzODE6IFN0ZXJlbyBEaWdpdGFsCiAgUGluY2FwIDB4
+MDAwMDAwMTQ6IE9VVCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDU4NTYwMTIyOiBbTi9BXSBEaWdp
+dGFsIE91dCBhdCBJbnQgSERNSQogICAgQ29ubiA9IERpZ2l0YWwsIENvbG9yID0gVW5rbm93bgog
+ICAgRGVmQXNzb2NpYXRpb24gPSAweDIsIFNlcXVlbmNlID0gMHgyCiAgICBNaXNjID0gTk9fUFJF
+U0VOQ0UKICBQaW4tY3RsczogMHg0MDogT1VUCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwgZW5hYmxl
+ZD0wCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MDgKTm9kZSAweDBhIFtBdWRpbyBPdXRwdXRdIHdj
+YXBzIDB4MjExOiBTdGVyZW8gRGlnaXRhbAogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9
+MAogIERpZ2l0YWw6CiAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCiAgUENNOgogICAgcmF0ZXMgWzB4
+YzBdOiA0ODAwMCA4ODIwMAogICAgYml0cyBbMHhmXTogOCAxNiAyMCAyNAogICAgZm9ybWF0cyBb
+MHgxXTogUENNCk5vZGUgMHgwYiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMzgxOiBTdGVyZW8g
+RGlnaXRhbAogIFBpbmNhcCAweDAwMDAwMDE0OiBPVVQgRGV0ZWN0CiAgUGluIERlZmF1bHQgMHg1
+ODU2MDEyMzogW04vQV0gRGlnaXRhbCBPdXQgYXQgSW50IEhETUkKICAgIENvbm4gPSBEaWdpdGFs
+LCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHgyLCBTZXF1ZW5jZSA9IDB4
+MwogICAgTWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4NDA6IE9VVAogIFVuc29saWNp
+dGVkOiB0YWc9MDAsIGVuYWJsZWQ9MAogIENvbm5lY3Rpb246IDEKICAgICAweDBhCk5vZGUgMHgw
+YyBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDIxMTogU3RlcmVvIERpZ2l0YWwKICBDb252ZXJ0ZXI6
+IHN0cmVhbT0wLCBjaGFubmVsPTAKICBEaWdpdGFsOgogIERpZ2l0YWwgY2F0ZWdvcnk6IDB4MAog
+IFBDTToKICAgIHJhdGVzIFsweGMwXTogNDgwMDAgODgyMDAKICAgIGJpdHMgWzB4Zl06IDggMTYg
+MjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQpOb2RlIDB4MGQgW1BpbiBDb21wbGV4XSB3Y2Fw
+cyAweDQwMDM4MTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAxNDogT1VUIERldGVj
+dAogIFBpbiBEZWZhdWx0IDB4NTg1NjAxMjQ6IFtOL0FdIERpZ2l0YWwgT3V0IGF0IEludCBIRE1J
+CiAgICBDb25uID0gRGlnaXRhbCwgQ29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9
+IDB4MiwgU2VxdWVuY2UgPSAweDQKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAw
+eDQwOiBPVVQKICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBDb25uZWN0aW9uOiAx
+CiAgICAgMHgwYwotLWVuZGNvbGxhcHNlLS0KCgohIUFMU0EgRGV2aWNlIG5vZGVzCiEhLS0tLS0t
+LS0tLS0tLS0tLS0KCmNydy1ydy0tLS0gMSByb290IGF1ZGlvIDExNiwgIDAgU2VwIDE2IDEyOjQw
+IC9kZXYvc25kL2NvbnRyb2xDMApjcnctcnctLS0tIDEgcm9vdCBhdWRpbyAxMTYsICA0IFNlcCAx
+NiAxMjo0MCAvZGV2L3NuZC9od0MwRDAKY3J3LXJ3LS0tLSAxIHJvb3QgYXVkaW8gMTE2LCAgNyBT
+ZXAgMTYgMTI6NDAgL2Rldi9zbmQvaHdDMEQzCmNydy1ydy0tLS0gMSByb290IGF1ZGlvIDExNiwg
+MjQgU2VwIDE2IDE2OjQxIC9kZXYvc25kL3BjbUMwRDBjCmNydy1ydy0tLS0gMSByb290IGF1ZGlv
+IDExNiwgMTYgU2VwIDE2IDE2OjQxIC9kZXYvc25kL3BjbUMwRDBwCmNydy1ydy0tLS0gMSByb290
+IGF1ZGlvIDExNiwgMTkgU2VwIDE2IDEyOjQwIC9kZXYvc25kL3BjbUMwRDNwCmNydy1ydy0tLS0g
+MSByb290IGF1ZGlvIDExNiwgIDEgU2VwIDE2IDE2OjQwIC9kZXYvc25kL3NlcQpjcnctcnctLS0t
+IDEgcm9vdCBhdWRpbyAxMTYsIDMzIFNlcCAxNiAxMjo0MCAvZGV2L3NuZC90aW1lcgoKCiEhQXBs
+YXkvQXJlY29yZCBvdXRwdXQKISEtLS0tLS0tLS0tLS0KCkFQTEFZCgoqKioqIExpc3Qgb2YgUExB
+WUJBQ0sgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNhcmQgMDogTlZpZGlhIFtIREEgTlZpZGlhXSwg
+ZGV2aWNlIDA6IFNUQUM5Mnh4IEFuYWxvZyBbU1RBQzkyeHggQW5hbG9nXQogIFN1YmRldmljZXM6
+IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQgMDogTlZpZGlhIFtIREEgTlZp
+ZGlhXSwgZGV2aWNlIDM6IE5WSURJQSBIRE1JIFtOVklESUEgSERNSV0KICBTdWJkZXZpY2VzOiAx
+LzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAoKQVJFQ09SRAoKKioqKiBMaXN0IG9mIENB
+UFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNhcmQgMDogTlZpZGlhIFtIREEgTlZpZGlhXSwg
+ZGV2aWNlIDA6IFNUQUM5Mnh4IEFuYWxvZyBbU1RBQzkyeHggQW5hbG9nXQogIFN1YmRldmljZXM6
+IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCgohIUFtaXhlciBvdXRwdXQKISEtLS0t
+LS0tLS0tLS0tCgohIS0tLS0tLS1NaXhlciBjb250cm9scyBmb3IgY2FyZCAwIFtOVmlkaWFdCgpD
+YXJkIGh3OjAgJ05WaWRpYScvJ0hEQSBOVmlkaWEgYXQgMHhmMDk4MDAwMCBpcnEgMTcnCiAgTWl4
+ZXIgbmFtZQk6ICdOdmlkaWEgTUNQN0EgSERNSScKICBDb21wb25lbnRzCTogJ0hEQToxMTFkNzYw
+NCwxMDI4MDJiYSwwMDEwMDMwMiBIREE6MTBkZTAwMDcsMTAyODAyYmEsMDAxMDAxMDAnCiAgQ29u
+dHJvbHMgICAgICA6IDIxCiAgU2ltcGxlIGN0cmxzICA6IDEyClNpbXBsZSBtaXhlciBjb250cm9s
+ICdNYXN0ZXInLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHZvbHVtZS1qb2luZWQgcHN3aXRj
+aCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTGltaXRzOiBQbGF5
+YmFjayAwIC0gNjQKICBNb25vOiBQbGF5YmFjayAzNyBbNTglXSBbLTIwLjI1ZEJdIFtvbl0KU2lt
+cGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRwaG9uZScsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBw
+c3dpdGNoCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExp
+bWl0czogUGxheWJhY2sgMCAtIDY0CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayA1NyBb
+ODklXSBbLTUuMjVkQl0gW29uXQogIEZyb250IFJpZ2h0OiBQbGF5YmFjayA1NyBbODklXSBbLTUu
+MjVkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSGVhZHBob25lJywxCiAgQ2FwYWJpbGl0
+aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZy
+b250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gNjQKICBNb25vOgogIEZyb250IExlZnQ6
+IFBsYXliYWNrIDYxIFs5NSVdIFstMi4yNWRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNr
+IDYxIFs5NSVdIFstMi4yNWRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdQQ00nLDAKICBD
+YXBhYmlsaXRpZXM6IHB2b2x1bWUKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQgTGVmdCAtIEZy
+b250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gMjU1CiAgTW9ubzoKICBGcm9udCBMZWZ0
+OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAwZEJdCiAgRnJvbnQgUmlnaHQ6IFBsYXliYWNrIDI1
+NSBbMTAwJV0gWzAuMDBkQl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0Zyb250IE1pYycsMAogIENh
+cGFiaWxpdGllczogY3ZvbHVtZQogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9u
+dCBSaWdodAogIExpbWl0czogQ2FwdHVyZSAwIC0gMwogIEZyb250IExlZnQ6IENhcHR1cmUgMSBb
+MzMlXSBbMTAuMDBkQl0KICBGcm9udCBSaWdodDogQ2FwdHVyZSAxIFszMyVdIFsxMC4wMGRCXQpT
+aW1wbGUgbWl4ZXIgY29udHJvbCAnRnJvbnQgTWljIEphY2sgTW9kZScsMAogIENhcGFiaWxpdGll
+czogZW51bQogIEl0ZW1zOiAnTWljIEluJyAnTGluZSBJbicKICBJdGVtMDogJ01pYyBJbicKU2lt
+cGxlIG1peGVyIGNvbnRyb2wgJ01pYycsMAogIENhcGFiaWxpdGllczogY3ZvbHVtZQogIENhcHR1
+cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0czogQ2FwdHVyZSAw
+IC0gMwogIEZyb250IExlZnQ6IENhcHR1cmUgMSBbMzMlXSBbMTAuMDBkQl0KICBGcm9udCBSaWdo
+dDogQ2FwdHVyZSAxIFszMyVdIFsxMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4
+JywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJhY2sgY2hh
+bm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdD
+YXB0dXJlJywwCiAgQ2FwYWJpbGl0aWVzOiBjdm9sdW1lIGNzd2l0Y2gKICBDYXB0dXJlIGNoYW5u
+ZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDE1CiAg
+RnJvbnQgTGVmdDogQ2FwdHVyZSA0IFsyNyVdIFs2LjAwZEJdIFtvbl0KICBGcm9udCBSaWdodDog
+Q2FwdHVyZSA0IFsyNyVdIFs2LjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0RpZ2l0
+YWwnLDAKICBDYXBhYmlsaXRpZXM6IGN2b2x1bWUKICBDYXB0dXJlIGNoYW5uZWxzOiBGcm9udCBM
+ZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDEyMAogIEZyb250IExlZnQ6
+IENhcHR1cmUgNjAgWzUwJV0gWzAuMDBkQl0KICBGcm9udCBSaWdodDogQ2FwdHVyZSA2MCBbNTAl
+XSBbMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnUEMgQmVlcCcsMAogIENhcGFiaWxpdGll
+czogcHZvbHVtZSBwdm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxheWJh
+Y2sgY2hhbm5lbHM6IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSAzCiAgTW9ubzogUGxheWJh
+Y2sgMiBbNjclXSBbLTYuMDBkQl0gW29mZl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ1NwZWFrZXIn
+LDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNoYW5uZWxzOiBG
+cm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSA2NAogIE1vbm86
+CiAgRnJvbnQgTGVmdDogUGxheWJhY2sgNjQgWzEwMCVdIFswLjAwZEJdIFtvbl0KICBGcm9udCBS
+aWdodDogUGxheWJhY2sgNjQgWzEwMCVdIFswLjAwZEJdIFtvbl0KCgohIUFsc2FjdGwgb3V0cHV0
+CiEhLS0tLS0tLS0tLS0tLQoKLS1zdGFydGNvbGxhcHNlLS0Kc3RhdGUuTlZpZGlhIHsKCWNvbnRy
+b2wuMSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVH
+RVIKCQljb21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gNjQnCgkJY29tbWVudC5k
+Ym1pbiAtNDgwMAoJCWNvbW1lbnQuZGJtYXggMAoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBo
+b25lIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDU3CgkJdmFsdWUuMSA1NwoJfQoJY29udHJv
+bC4yIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVB
+TgoJCWNvbW1lbnQuY291bnQgMgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBsYXli
+YWNrIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUKCQl2YWx1ZS4xIHRydWUKCX0KCWNvbnRyb2wuMyB7
+CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQlj
+b21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gNjQnCgkJY29tbWVudC5kYm1pbiAt
+NDgwMAoJCWNvbW1lbnQuZGJtYXggMAoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBob25lIFBs
+YXliYWNrIFZvbHVtZScKCQlpbmRleCAxCgkJdmFsdWUuMCA2MQoJCXZhbHVlLjEgNjEKCX0KCWNv
+bnRyb2wuNCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJP
+T0xFQU4KCQljb21tZW50LmNvdW50IDIKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0hlYWRwaG9uZSBQ
+bGF5YmFjayBTd2l0Y2gnCgkJaW5kZXggMQoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJ
+fQoJY29udHJvbC41IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5
+cGUgRU5VTUVSQVRFRAoJCWNvbW1lbnQuY291bnQgMQoJCWNvbW1lbnQuaXRlbS4wICdNaWMgSW4n
+CgkJY29tbWVudC5pdGVtLjEgJ0xpbmUgSW4nCgkJaWZhY2UgTUlYRVIKCQluYW1lICdGcm9udCBN
+aWMgSmFjayBNb2RlJwoJCXZhbHVlICdNaWMgSW4nCgl9Cgljb250cm9sLjYgewoJCWNvbW1lbnQu
+YWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29tbWVudC5jb3Vu
+dCAxCgkJaWZhY2UgTUlYRVIKCQluYW1lICdQQyBCZWVwIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1
+ZSBmYWxzZQoJfQoJY29udHJvbC43IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQlj
+b21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQuY291bnQgMQoJCWNvbW1lbnQucmFuZ2UgJzAg
+LSAzJwoJCWNvbW1lbnQuZGJtaW4gLTE4MDAKCQljb21tZW50LmRibWF4IDAKCQlpZmFjZSBNSVhF
+UgoJCW5hbWUgJ1BDIEJlZXAgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlIDIKCX0KCWNvbnRyb2wu
+OCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIK
+CQljb21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gNjQnCgkJY29tbWVudC5kYm1p
+biAtNDgwMAoJCWNvbW1lbnQuZGJtYXggMAoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnU3BlYWtlciBQ
+bGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCA2NAoJCXZhbHVlLjEgNjQKCX0KCWNvbnRyb2wuOSB7
+CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlj
+b21tZW50LmNvdW50IDIKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1NwZWFrZXIgUGxheWJhY2sgU3dp
+dGNoJwoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJfQoJY29udHJvbC4xMCB7CgkJY29t
+bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50
+LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gMTUnCgkJY29tbWVudC5kYm1pbiAwCgkJY29t
+bWVudC5kYm1heCAyMjUwCgkJaWZhY2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFZvbHVtZScKCQl2
+YWx1ZS4wIDQKCQl2YWx1ZS4xIDQKCX0KCWNvbnRyb2wuMTEgewoJCWNvbW1lbnQuYWNjZXNzICdy
+ZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29tbWVudC5jb3VudCAyCgkJaWZh
+Y2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUKCQl2YWx1ZS4x
+IHRydWUKCX0KCWNvbnRyb2wuMTIgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNv
+bW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5jb3VudCAyCgkJY29tbWVudC5yYW5nZSAnMCAt
+IDMnCgkJY29tbWVudC5kYm1pbiAwCgkJY29tbWVudC5kYm1heCAzMDAwCgkJaWZhY2UgTUlYRVIK
+CQluYW1lICdNaWMgQ2FwdHVyZSBWb2x1bWUnCgkJdmFsdWUuMCAxCgkJdmFsdWUuMSAxCgl9Cglj
+b250cm9sLjEzIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUg
+SU5URUdFUgoJCWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzJwoJCWNvbW1l
+bnQuZGJtaW4gMAoJCWNvbW1lbnQuZGJtYXggMzAwMAoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnRnJv
+bnQgTWljIENhcHR1cmUgVm9sdW1lJwoJCXZhbHVlLjAgMQoJCXZhbHVlLjEgMQoJfQoJY29udHJv
+bC4xNCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVH
+RVIKCQljb21tZW50LmNvdW50IDEKCQljb21tZW50LnJhbmdlICcwIC0gNjQnCgkJY29tbWVudC5k
+Ym1pbiAtNDgwMAoJCWNvbW1lbnQuZGJtYXggMAoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnTWFzdGVy
+IFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZSAzNwoJfQoJY29udHJvbC4xNSB7CgkJY29tbWVudC5h
+Y2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQljb21tZW50LmNvdW50
+IDEKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ01hc3RlciBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUg
+dHJ1ZQoJfQoJY29udHJvbC4xNiB7CgkJY29tbWVudC5hY2Nlc3MgcmVhZAoJCWNvbW1lbnQudHlw
+ZSBJRUM5NTgKCQljb21tZW50LmNvdW50IDEKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQ
+bGF5YmFjayBDb24gTWFzaycKCQl2YWx1ZSAnMGZmZjAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcKCX0KCWNvbnRyb2wuMTcgewoJ
+CWNvbW1lbnQuYWNjZXNzIHJlYWQKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJY29tbWVudC5jb3Vu
+dCAxCgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgUHJvIE1hc2snCgkJdmFs
+dWUgJzBmMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAnCgl9Cgljb250cm9sLjE4IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3
+cml0ZScKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJY29tbWVudC5jb3VudCAxCgkJaWZhY2UgTUlY
+RVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgRGVmYXVsdCcKCQl2YWx1ZSAnMDQwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcK
+CX0KCWNvbnRyb2wuMTkgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQu
+dHlwZSBCT09MRUFOCgkJY29tbWVudC5jb3VudCAxCgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5
+NTggUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuMjAgewoJCWNvbW1l
+bnQuYWNjZXNzICdyZWFkIHdyaXRlIHVzZXInCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21t
+ZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gMjU1JwoJCWNvbW1lbnQudGx2ICcwMDAw
+MDAwMTAwMDAwMDA4ZmZmZmVjMTQwMDAwMDAxNCcKCQljb21tZW50LmRibWluIC01MTAwCgkJY29t
+bWVudC5kYm1heCAwCgkJaWZhY2UgTUlYRVIKCQluYW1lICdQQ00gUGxheWJhY2sgVm9sdW1lJwoJ
+CXZhbHVlLjAgMjU1CgkJdmFsdWUuMSAyNTUKCX0KCWNvbnRyb2wuMjEgewoJCWNvbW1lbnQuYWNj
+ZXNzICdyZWFkIHdyaXRlIHVzZXInCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQljb21tZW50LmNv
+dW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gMTIwJwoJCWNvbW1lbnQudGx2ICcwMDAwMDAwMTAw
+MDAwMDA4ZmZmZmY0NDgwMDAwMDAzMicKCQljb21tZW50LmRibWluIC0zMDAwCgkJY29tbWVudC5k
+Ym1heCAzMDAwCgkJaWZhY2UgTUlYRVIKCQluYW1lICdEaWdpdGFsIENhcHR1cmUgVm9sdW1lJwoJ
+CXZhbHVlLjAgNjAKCQl2YWx1ZS4xIDYwCgl9Cn0KLS1lbmRjb2xsYXBzZS0tCgoKISFBbGwgTG9h
+ZGVkIE1vZHVsZXMKISEtLS0tLS0tLS0tLS0tLS0tLS0KCk1vZHVsZQppcHRhYmxlX3Jhdwp4dF9j
+b21tZW50Cnh0X293bmVyCnh0X3JlY2VudAp4dF9pcHJhbmdlCnh0X3BvbGljeQp4dF9tdWx0aXBv
+cnQKaXB0X1JFRElSRUNUCmlwdF9ORVRNQVAKaXB0X0VDTgppcHRfZWNuCmlwdF9DTFVTVEVSSVAK
+aXB0X2FoCmlwdF9hZGRydHlwZQpuZl9uYXRfdGZ0cApuZl9uYXRfc25tcF9iYXNpYwpuZl9uYXRf
+c2lwCm5mX25hdF9pcmMKbmZfbmF0X2gzMjMKbmZfbmF0X2Z0cApuZl9jb25udHJhY2tfdGZ0cApu
+Zl9jb25udHJhY2tfc2lwCm5mX2Nvbm50cmFja19uZXRsaW5rCm5mX2Nvbm50cmFja19pcmMKbmZf
+Y29ubnRyYWNrX2gzMjMKbmZfY29ubnRyYWNrX2Z0cAp4dF90Y3Btc3MKeHRfcGt0dHlwZQp4dF9O
+RlFVRVVFCnh0X05GTE9HCnh0X01BUksKeHRfbWFyawp4dF9tYWMKeHRfbGltaXQKeHRfbGVuZ3Ro
+Cnh0X2hlbHBlcgp4dF9oYXNobGltaXQKeHRfZGNjcAp4dF9jb25udHJhY2sKeHRfQ09OTk1BUksK
+eHRfY29ubm1hcmsKeHRfQ0xBU1NJRlkKeHRfc3RhdGUKc25kX3NlcV9taWRpX2V2ZW50CnNuZF9z
+ZXEKc25kX3NlcV9kZXZpY2UKc25kX2hkYV9jb2RlY19udmhkbWkKc25kX2hkYV9jb2RlY19pZHQK
+bnZpZGlhCnNuZF9oZGFfaW50ZWwKc25kX2hkYV9jb2RlYwpzbmRfaHdkZXAKc25kX3BjbQpzbmRf
+dGltZXIKc25kCmF0aDlrCmRlbGxfbGFwdG9wCmRjZGJhcwpzbmRfcGFnZV9hbGxvYwpyODE2OQph
+dGgKbWlpCmkyY19uZm9yY2UyCgoKISFTeXNmcyBGaWxlcwohIS0tLS0tLS0tLS0tCgovc3lzL2Ns
+YXNzL3NvdW5kL2h3QzBEMC9pbml0X3Bpbl9jb25maWdzOgoweDBhIDB4MDIyMTEwMWYKMHgwYiAw
+eDAyMjExMDIwCjB4MGMgMHgwMmExMTAzMAoweDBkIDB4OTAxNzAxMTAKMHgwZSAweDQwZjAwMGYw
+CjB4MGYgMHg0MGYwMDBmMAoweDEwIDB4NDBmMDAwZjAKMHgxMSAweDkwYTYwMTYwCjB4MWYgMHg0
+MGYwMDBmMAoweDIwIDB4NDBmMDAwZjAKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQwL2RyaXZlcl9w
+aW5fY29uZmlnczoKMHgwYSAweDAyMjE0MDNmCjB4MGIgMHgwMjIxMTAxZgoweDBjIDB4MDJhMTkw
+MjAKMHgwZCAweDkwMTcwMTEwCjB4MGUgMHg0MGYwMDBmMAoweDBmIDB4NDBmMDAwZjAKMHgxMCAw
+eDQwZjAwMGYwCjB4MTEgMHg5MGE2MDE2MAoweDFmIDB4NDBmMDAwZjAKMHgyMCAweDQwZjAwMGYw
+Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMC91c2VyX3Bpbl9jb25maWdzOgoKL3N5cy9jbGFzcy9z
+b3VuZC9od0MwRDAvaW5pdF92ZXJiczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQzL2luaXRfcGlu
+X2NvbmZpZ3M6CjB4MDUgMHgxODU2MDExMAoweDA3IDB4NTg1NjAxMjEKMHgwOSAweDU4NTYwMTIy
+CjB4MGIgMHg1ODU2MDEyMwoweDBkIDB4NTg1NjAxMjQKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQz
+L2RyaXZlcl9waW5fY29uZmlnczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQzL3VzZXJfcGluX2Nv
+bmZpZ3M6Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMy9pbml0X3ZlcmJzOgoKCiEhQUxTQS9IREEg
+ZG1lc2cKISEtLS0tLS0tLS0tLS0tLS0tLS0KCnBoeTA6IEF0aGVyb3MgQVI5MjgwIE1BQy9CQiBS
+ZXY6MiBBUjUxMzMgUkYgUmV2OmQwOiBtZW09MHhmZmZmYzkwMDAxOTQwMDAwLCBpcnE9MjEKSERB
+IEludGVsIDAwMDA6MDA6MDguMDogcG93ZXIgc3RhdGUgY2hhbmdlZCBieSBBQ1BJIHRvIEQwCkFD
+UEk6IFBDSSBJbnRlcnJ1cHQgTGluayBbTEFaQV0gZW5hYmxlZCBhdCBJUlEgMTcKSERBIEludGVs
+IDAwMDA6MDA6MDguMDogUENJIElOVCBBIC0+IExpbmtbTEFaQV0gLT4gR1NJIDE3IChsZXZlbCwg
+bG93KSAtPiBJUlEgMTcKSERBIEludGVsIDAwMDA6MDA6MDguMDogc2V0dGluZyBsYXRlbmN5IHRp
+bWVyIHRvIDY0Cm52aWRpYTogbW9kdWxlIGxpY2Vuc2UgJ05WSURJQScgdGFpbnRzIGtlcm5lbC4K
+LS0KTlZSTTogbG9hZGluZyBOVklESUEgVU5JWCB4ODZfNjQgS2VybmVsIE1vZHVsZSAgMTg1LjE4
+LjMxICBUdWUgSnVsIDI4IDE3OjUyOjI3IFBEVCAyMDA5CmlucHV0OiBIREEgRGlnaXRhbCBQQ0Jl
+ZXAgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA4LjAvaW5wdXQvaW5wdXQ3CmlucHV0
+OiBIREEgTlZpZGlhIE1pYyBhdCBFeHQgRnJvbnQgSmFjayBhcyAvZGV2aWNlcy9wY2kwMDAwOjAw
+LzAwMDA6MDA6MDguMC9zb3VuZC9jYXJkMC9pbnB1dDgKaW5wdXQ6IEhEQSBOVmlkaWEgSFAgT3V0
+IGF0IEV4dCBGcm9udCBKYWNrIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowOC4wL3Nv
+dW5kL2NhcmQwL2lucHV0OQppbnB1dDogSERBIE5WaWRpYSBIUCBPdXQgYXQgRXh0IEZyb250IEph
+Y2sgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA4LjAvc291bmQvY2FyZDAvaW5wdXQx
+MApFWFQzIEZTIG9uIHNkYTQsIGludGVybmFsIGpvdXJuYWwKCgohIUFMU0EgRGV2aWNlIG5vZGVz
+CiEhLS0tLS0tLS0tLS0tLS0tLS0KCmNydy1ydy0tLS0gMSByb290IGF1ZGlvIDExNiwgIDAgU2Vw
+IDE2IDEyOjQwIC9kZXYvc25kL2NvbnRyb2xDMApjcnctcnctLS0tIDEgcm9vdCBhdWRpbyAxMTYs
+ICA0IFNlcCAxNiAxMjo0MCAvZGV2L3NuZC9od0MwRDAKY3J3LXJ3LS0tLSAxIHJvb3QgYXVkaW8g
+MTE2LCAgNyBTZXAgMTYgMTI6NDAgL2Rldi9zbmQvaHdDMEQzCmNydy1ydy0tLS0gMSByb290IGF1
+ZGlvIDExNiwgMjQgU2VwIDE2IDE2OjQxIC9kZXYvc25kL3BjbUMwRDBjCmNydy1ydy0tLS0gMSBy
+b290IGF1ZGlvIDExNiwgMTYgU2VwIDE2IDE2OjQxIC9kZXYvc25kL3BjbUMwRDBwCmNydy1ydy0t
+LS0gMSByb290IGF1ZGlvIDExNiwgMTkgU2VwIDE2IDEyOjQwIC9kZXYvc25kL3BjbUMwRDNwCmNy
+dy1ydy0tLS0gMSByb290IGF1ZGlvIDExNiwgIDEgU2VwIDE2IDE2OjQwIC9kZXYvc25kL3NlcQpj
+cnctcnctLS0tIDEgcm9vdCBhdWRpbyAxMTYsIDMzIFNlcCAxNiAxMjo0MCAvZGV2L3NuZC90aW1l
+cgoKCiEhQXBsYXkvQXJlY29yZCBvdXRwdXQKISEtLS0tLS0tLS0tLS0KCkFQTEFZCgoqKioqIExp
+c3Qgb2YgUExBWUJBQ0sgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNhcmQgMDogTlZpZGlhIFtIREEg
+TlZpZGlhXSwgZGV2aWNlIDA6IFNUQUM5Mnh4IEFuYWxvZyBbU1RBQzkyeHggQW5hbG9nXQogIFN1
+YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQgMDogTlZpZGlh
+IFtIREEgTlZpZGlhXSwgZGV2aWNlIDM6IE5WSURJQSBIRE1JIFtOVklESUEgSERNSV0KICBTdWJk
+ZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAoKQVJFQ09SRAoKKioqKiBM
+aXN0IG9mIENBUFRVUkUgSGFyZHdhcmUgRGV2aWNlcyAqKioqCmNhcmQgMDogTlZpZGlhIFtIREEg
+TlZpZGlhXSwgZGV2aWNlIDA6IFNUQUM5Mnh4IEFuYWxvZyBbU1RBQzkyeHggQW5hbG9nXQogIFN1
+YmRldmljZXM6IDEvMQogIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCgohIUFtaXhlciBvdXRw
+dXQKISEtLS0tLS0tLS0tLS0tCgohIS0tLS0tLS1NaXhlciBjb250cm9scyBmb3IgY2FyZCAwIFtO
+VmlkaWFdCgpDYXJkIGh3OjAgJ05WaWRpYScvJ0hEQSBOVmlkaWEgYXQgMHhmMDk4MDAwMCBpcnEg
+MTcnCiAgTWl4ZXIgbmFtZQk6ICdOdmlkaWEgTUNQN0EgSERNSScKICBDb21wb25lbnRzCTogJ0hE
+QToxMTFkNzYwNCwxMDI4MDJiYSwwMDEwMDMwMiBIREE6MTBkZTAwMDcsMTAyODAyYmEsMDAxMDAx
+MDAnCiAgQ29udHJvbHMgICAgICA6IDIxCiAgU2ltcGxlIGN0cmxzICA6IDEyClNpbXBsZSBtaXhl
+ciBjb250cm9sICdNYXN0ZXInLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHZvbHVtZS1qb2lu
+ZWQgcHN3aXRjaCBwc3dpdGNoLWpvaW5lZAogIFBsYXliYWNrIGNoYW5uZWxzOiBNb25vCiAgTGlt
+aXRzOiBQbGF5YmFjayAwIC0gNjQKICBNb25vOiBQbGF5YmFjayAzNyBbNTglXSBbLTIwLjI1ZEJd
+IFtvbl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0hlYWRwaG9uZScsMAogIENhcGFiaWxpdGllczog
+cHZvbHVtZSBwc3dpdGNoCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBS
+aWdodAogIExpbWl0czogUGxheWJhY2sgMCAtIDY0CiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5
+YmFjayA1NyBbODklXSBbLTUuMjVkQl0gW29uXQogIEZyb250IFJpZ2h0OiBQbGF5YmFjayA1NyBb
+ODklXSBbLTUuMjVkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSGVhZHBob25lJywxCiAg
+Q2FwYWJpbGl0aWVzOiBwdm9sdW1lIHBzd2l0Y2gKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQg
+TGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gNjQKICBNb25vOgogIEZy
+b250IExlZnQ6IFBsYXliYWNrIDYxIFs5NSVdIFstMi4yNWRCXSBbb25dCiAgRnJvbnQgUmlnaHQ6
+IFBsYXliYWNrIDYxIFs5NSVdIFstMi4yNWRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdQ
+Q00nLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUKICBQbGF5YmFjayBjaGFubmVsczogRnJvbnQg
+TGVmdCAtIEZyb250IFJpZ2h0CiAgTGltaXRzOiBQbGF5YmFjayAwIC0gMjU1CiAgTW9ubzoKICBG
+cm9udCBMZWZ0OiBQbGF5YmFjayAyNTUgWzEwMCVdIFswLjAwZEJdCiAgRnJvbnQgUmlnaHQ6IFBs
+YXliYWNrIDI1NSBbMTAwJV0gWzAuMDBkQl0KU2ltcGxlIG1peGVyIGNvbnRyb2wgJ0Zyb250IE1p
+YycsMAogIENhcGFiaWxpdGllczogY3ZvbHVtZQogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExl
+ZnQgLSBGcm9udCBSaWdodAogIExpbWl0czogQ2FwdHVyZSAwIC0gMwogIEZyb250IExlZnQ6IENh
+cHR1cmUgMSBbMzMlXSBbMTAuMDBkQl0KICBGcm9udCBSaWdodDogQ2FwdHVyZSAxIFszMyVdIFsx
+MC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnRnJvbnQgTWljIEphY2sgTW9kZScsMAogIENh
+cGFiaWxpdGllczogZW51bQogIEl0ZW1zOiAnTWljIEluJyAnTGluZSBJbicKICBJdGVtMDogJ01p
+YyBJbicKU2ltcGxlIG1peGVyIGNvbnRyb2wgJ01pYycsMAogIENhcGFiaWxpdGllczogY3ZvbHVt
+ZQogIENhcHR1cmUgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExpbWl0czog
+Q2FwdHVyZSAwIC0gMwogIEZyb250IExlZnQ6IENhcHR1cmUgMSBbMzMlXSBbMTAuMDBkQl0KICBG
+cm9udCBSaWdodDogQ2FwdHVyZSAxIFszMyVdIFsxMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJv
+bCAnSUVDOTU4JywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkCiAgUGxh
+eWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBj
+b250cm9sICdDYXB0dXJlJywwCiAgQ2FwYWJpbGl0aWVzOiBjdm9sdW1lIGNzd2l0Y2gKICBDYXB0
+dXJlIGNoYW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUg
+MCAtIDE1CiAgRnJvbnQgTGVmdDogQ2FwdHVyZSA0IFsyNyVdIFs2LjAwZEJdIFtvbl0KICBGcm9u
+dCBSaWdodDogQ2FwdHVyZSA0IFsyNyVdIFs2LjAwZEJdIFtvbl0KU2ltcGxlIG1peGVyIGNvbnRy
+b2wgJ0RpZ2l0YWwnLDAKICBDYXBhYmlsaXRpZXM6IGN2b2x1bWUKICBDYXB0dXJlIGNoYW5uZWxz
+OiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDEyMAogIEZy
+b250IExlZnQ6IENhcHR1cmUgNjAgWzUwJV0gWzAuMDBkQl0KICBGcm9udCBSaWdodDogQ2FwdHVy
+ZSA2MCBbNTAlXSBbMC4wMGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnUEMgQmVlcCcsMAogIENh
+cGFiaWxpdGllczogcHZvbHVtZSBwdm9sdW1lLWpvaW5lZCBwc3dpdGNoIHBzd2l0Y2gtam9pbmVk
+CiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBMaW1pdHM6IFBsYXliYWNrIDAgLSAzCiAgTW9u
+bzogUGxheWJhY2sgMiBbNjclXSBbLTYuMDBkQl0gW29mZl0KU2ltcGxlIG1peGVyIGNvbnRyb2wg
+J1NwZWFrZXInLDAKICBDYXBhYmlsaXRpZXM6IHB2b2x1bWUgcHN3aXRjaAogIFBsYXliYWNrIGNo
+YW5uZWxzOiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IFBsYXliYWNrIDAgLSA2
+NAogIE1vbm86CiAgRnJvbnQgTGVmdDogUGxheWJhY2sgNjQgWzEwMCVdIFswLjAwZEJdIFtvbl0K
+ICBGcm9udCBSaWdodDogUGxheWJhY2sgNjQgWzEwMCVdIFswLjAwZEJdIFtvbl0KCgohIUFsc2Fj
+dGwgb3V0cHV0CiEhLS0tLS0tLS0tLS0tLQoKLS1zdGFydGNvbGxhcHNlLS0Kc3RhdGUuTlZpZGlh
+IHsKCWNvbnRyb2wuMSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
+eXBlIElOVEVHRVIKCQljb21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gNjQnCgkJ
+Y29tbWVudC5kYm1pbiAtNDgwMAoJCWNvbW1lbnQuZGJtYXggMAoJCWlmYWNlIE1JWEVSCgkJbmFt
+ZSAnSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZS4wIDU3CgkJdmFsdWUuMSA1NwoJ
+fQoJY29udHJvbC4yIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5
+cGUgQk9PTEVBTgoJCWNvbW1lbnQuY291bnQgMgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVhZHBo
+b25lIFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUKCQl2YWx1ZS4xIHRydWUKCX0KCWNv
+bnRyb2wuMyB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElO
+VEVHRVIKCQljb21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gNjQnCgkJY29tbWVu
+dC5kYm1pbiAtNDgwMAoJCWNvbW1lbnQuZGJtYXggMAoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSGVh
+ZHBob25lIFBsYXliYWNrIFZvbHVtZScKCQlpbmRleCAxCgkJdmFsdWUuMCA2MQoJCXZhbHVlLjEg
+NjEKCX0KCWNvbnRyb2wuNCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVu
+dC50eXBlIEJPT0xFQU4KCQljb21tZW50LmNvdW50IDIKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0hl
+YWRwaG9uZSBQbGF5YmFjayBTd2l0Y2gnCgkJaW5kZXggMQoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVl
+LjEgdHJ1ZQoJfQoJY29udHJvbC41IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQlj
+b21tZW50LnR5cGUgRU5VTUVSQVRFRAoJCWNvbW1lbnQuY291bnQgMQoJCWNvbW1lbnQuaXRlbS4w
+ICdNaWMgSW4nCgkJY29tbWVudC5pdGVtLjEgJ0xpbmUgSW4nCgkJaWZhY2UgTUlYRVIKCQluYW1l
+ICdGcm9udCBNaWMgSmFjayBNb2RlJwoJCXZhbHVlICdNaWMgSW4nCgl9Cgljb250cm9sLjYgewoJ
+CWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29t
+bWVudC5jb3VudCAxCgkJaWZhY2UgTUlYRVIKCQluYW1lICdQQyBCZWVwIFBsYXliYWNrIFN3aXRj
+aCcKCQl2YWx1ZSBmYWxzZQoJfQoJY29udHJvbC43IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3
+cml0ZScKCQljb21tZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQuY291bnQgMQoJCWNvbW1lbnQu
+cmFuZ2UgJzAgLSAzJwoJCWNvbW1lbnQuZGJtaW4gLTE4MDAKCQljb21tZW50LmRibWF4IDAKCQlp
+ZmFjZSBNSVhFUgoJCW5hbWUgJ1BDIEJlZXAgUGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlIDIKCX0K
+CWNvbnRyb2wuOCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBl
+IElOVEVHRVIKCQljb21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gNjQnCgkJY29t
+bWVudC5kYm1pbiAtNDgwMAoJCWNvbW1lbnQuZGJtYXggMAoJCWlmYWNlIE1JWEVSCgkJbmFtZSAn
+U3BlYWtlciBQbGF5YmFjayBWb2x1bWUnCgkJdmFsdWUuMCA2NAoJCXZhbHVlLjEgNjQKCX0KCWNv
+bnRyb2wuOSB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJP
+T0xFQU4KCQljb21tZW50LmNvdW50IDIKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1NwZWFrZXIgUGxh
+eWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJfQoJY29udHJvbC4x
+MCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIElOVEVHRVIK
+CQljb21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gMTUnCgkJY29tbWVudC5kYm1p
+biAwCgkJY29tbWVudC5kYm1heCAyMjUwCgkJaWZhY2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFZv
+bHVtZScKCQl2YWx1ZS4wIDQKCQl2YWx1ZS4xIDQKCX0KCWNvbnRyb2wuMTEgewoJCWNvbW1lbnQu
+YWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29tbWVudC5jb3Vu
+dCAyCgkJaWZhY2UgTUlYRVIKCQluYW1lICdDYXB0dXJlIFN3aXRjaCcKCQl2YWx1ZS4wIHRydWUK
+CQl2YWx1ZS4xIHRydWUKCX0KCWNvbnRyb2wuMTIgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdy
+aXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29tbWVudC5jb3VudCAyCgkJY29tbWVudC5y
+YW5nZSAnMCAtIDMnCgkJY29tbWVudC5kYm1pbiAwCgkJY29tbWVudC5kYm1heCAzMDAwCgkJaWZh
+Y2UgTUlYRVIKCQluYW1lICdNaWMgQ2FwdHVyZSBWb2x1bWUnCgkJdmFsdWUuMCAxCgkJdmFsdWUu
+MSAxCgl9Cgljb250cm9sLjEzIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21t
+ZW50LnR5cGUgSU5URUdFUgoJCWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAz
+JwoJCWNvbW1lbnQuZGJtaW4gMAoJCWNvbW1lbnQuZGJtYXggMzAwMAoJCWlmYWNlIE1JWEVSCgkJ
+bmFtZSAnRnJvbnQgTWljIENhcHR1cmUgVm9sdW1lJwoJCXZhbHVlLjAgMQoJCXZhbHVlLjEgMQoJ
+fQoJY29udHJvbC4xNCB7CgkJY29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50
+eXBlIElOVEVHRVIKCQljb21tZW50LmNvdW50IDEKCQljb21tZW50LnJhbmdlICcwIC0gNjQnCgkJ
+Y29tbWVudC5kYm1pbiAtNDgwMAoJCWNvbW1lbnQuZGJtYXggMAoJCWlmYWNlIE1JWEVSCgkJbmFt
+ZSAnTWFzdGVyIFBsYXliYWNrIFZvbHVtZScKCQl2YWx1ZSAzNwoJfQoJY29udHJvbC4xNSB7CgkJ
+Y29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQljb21t
+ZW50LmNvdW50IDEKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ01hc3RlciBQbGF5YmFjayBTd2l0Y2gn
+CgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4xNiB7CgkJY29tbWVudC5hY2Nlc3MgcmVhZAoJCWNv
+bW1lbnQudHlwZSBJRUM5NTgKCQljb21tZW50LmNvdW50IDEKCQlpZmFjZSBNSVhFUgoJCW5hbWUg
+J0lFQzk1OCBQbGF5YmFjayBDb24gTWFzaycKCQl2YWx1ZSAnMGZmZjAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMCcKCX0KCWNvbnRy
+b2wuMTcgewoJCWNvbW1lbnQuYWNjZXNzIHJlYWQKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJY29t
+bWVudC5jb3VudCAxCgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgUHJvIE1h
+c2snCgkJdmFsdWUgJzBmMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgl9Cgljb250cm9sLjE4IHsKCQljb21tZW50LmFjY2Vz
+cyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJY29tbWVudC5jb3VudCAxCgkJ
+aWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgRGVmYXVsdCcKCQl2YWx1ZSAnMDQw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMCcKCX0KCWNvbnRyb2wuMTkgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJ
+CWNvbW1lbnQudHlwZSBCT09MRUFOCgkJY29tbWVudC5jb3VudCAxCgkJaWZhY2UgTUlYRVIKCQlu
+YW1lICdJRUM5NTggUGxheWJhY2sgU3dpdGNoJwoJCXZhbHVlIHRydWUKCX0KCWNvbnRyb2wuMjAg
+ewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlIHVzZXInCgkJY29tbWVudC50eXBlIElOVEVH
+RVIKCQljb21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gMjU1JwoJCWNvbW1lbnQu
+dGx2ICcwMDAwMDAwMTAwMDAwMDA4ZmZmZmVjMTQwMDAwMDAxNCcKCQljb21tZW50LmRibWluIC01
+MTAwCgkJY29tbWVudC5kYm1heCAwCgkJaWZhY2UgTUlYRVIKCQluYW1lICdQQ00gUGxheWJhY2sg
+Vm9sdW1lJwoJCXZhbHVlLjAgMjU1CgkJdmFsdWUuMSAyNTUKCX0KCWNvbnRyb2wuMjEgewoJCWNv
+bW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlIHVzZXInCgkJY29tbWVudC50eXBlIElOVEVHRVIKCQlj
+b21tZW50LmNvdW50IDIKCQljb21tZW50LnJhbmdlICcwIC0gMTIwJwoJCWNvbW1lbnQudGx2ICcw
+MDAwMDAwMTAwMDAwMDA4ZmZmZmY0NDgwMDAwMDAzMicKCQljb21tZW50LmRibWluIC0zMDAwCgkJ
+Y29tbWVudC5kYm1heCAzMDAwCgkJaWZhY2UgTUlYRVIKCQluYW1lICdEaWdpdGFsIENhcHR1cmUg
+Vm9sdW1lJwoJCXZhbHVlLjAgNjAKCQl2YWx1ZS4xIDYwCgl9Cn0KLS1lbmRjb2xsYXBzZS0tCgoK
+ISFBbGwgTG9hZGVkIE1vZHVsZXMKISEtLS0tLS0tLS0tLS0tLS0tLS0KCk1vZHVsZQppcHRhYmxl
+X3Jhdwp4dF9jb21tZW50Cnh0X293bmVyCnh0X3JlY2VudAp4dF9pcHJhbmdlCnh0X3BvbGljeQp4
+dF9tdWx0aXBvcnQKaXB0X1JFRElSRUNUCmlwdF9ORVRNQVAKaXB0X0VDTgppcHRfZWNuCmlwdF9D
+TFVTVEVSSVAKaXB0X2FoCmlwdF9hZGRydHlwZQpuZl9uYXRfdGZ0cApuZl9uYXRfc25tcF9iYXNp
+YwpuZl9uYXRfc2lwCm5mX25hdF9pcmMKbmZfbmF0X2gzMjMKbmZfbmF0X2Z0cApuZl9jb25udHJh
+Y2tfdGZ0cApuZl9jb25udHJhY2tfc2lwCm5mX2Nvbm50cmFja19uZXRsaW5rCm5mX2Nvbm50cmFj
+a19pcmMKbmZfY29ubnRyYWNrX2gzMjMKbmZfY29ubnRyYWNrX2Z0cAp4dF90Y3Btc3MKeHRfcGt0
+dHlwZQp4dF9ORlFVRVVFCnh0X05GTE9HCnh0X01BUksKeHRfbWFyawp4dF9tYWMKeHRfbGltaXQK
+eHRfbGVuZ3RoCnh0X2hlbHBlcgp4dF9oYXNobGltaXQKeHRfZGNjcAp4dF9jb25udHJhY2sKeHRf
+Q09OTk1BUksKeHRfY29ubm1hcmsKeHRfQ0xBU1NJRlkKeHRfc3RhdGUKc25kX3NlcV9taWRpX2V2
+ZW50CnNuZF9zZXEKc25kX3NlcV9kZXZpY2UKc25kX2hkYV9jb2RlY19udmhkbWkKc25kX2hkYV9j
+b2RlY19pZHQKbnZpZGlhCnNuZF9oZGFfaW50ZWwKc25kX2hkYV9jb2RlYwpzbmRfaHdkZXAKc25k
+X3BjbQpzbmRfdGltZXIKc25kCmF0aDlrCmRlbGxfbGFwdG9wCmRjZGJhcwpzbmRfcGFnZV9hbGxv
+YwpyODE2OQphdGgKbWlpCmkyY19uZm9yY2UyCgoKISFTeXNmcyBGaWxlcwohIS0tLS0tLS0tLS0t
+Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMC9pbml0X3Bpbl9jb25maWdzOgoweDBhIDB4MDIyMTEw
+MWYKMHgwYiAweDAyMjExMDIwCjB4MGMgMHgwMmExMTAzMAoweDBkIDB4OTAxNzAxMTAKMHgwZSAw
+eDQwZjAwMGYwCjB4MGYgMHg0MGYwMDBmMAoweDEwIDB4NDBmMDAwZjAKMHgxMSAweDkwYTYwMTYw
+CjB4MWYgMHg0MGYwMDBmMAoweDIwIDB4NDBmMDAwZjAKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQw
+L2RyaXZlcl9waW5fY29uZmlnczoKMHgwYSAweDAyMjE0MDNmCjB4MGIgMHgwMjIxMTAxZgoweDBj
+IDB4MDJhMTkwMjAKMHgwZCAweDkwMTcwMTEwCjB4MGUgMHg0MGYwMDBmMAoweDBmIDB4NDBmMDAw
+ZjAKMHgxMCAweDQwZjAwMGYwCjB4MTEgMHg5MGE2MDE2MAoweDFmIDB4NDBmMDAwZjAKMHgyMCAw
+eDQwZjAwMGYwCgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMC91c2VyX3Bpbl9jb25maWdzOgoKL3N5
+cy9jbGFzcy9zb3VuZC9od0MwRDAvaW5pdF92ZXJiczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQz
+L2luaXRfcGluX2NvbmZpZ3M6CjB4MDUgMHgxODU2MDExMAoweDA3IDB4NTg1NjAxMjEKMHgwOSAw
+eDU4NTYwMTIyCjB4MGIgMHg1ODU2MDEyMwoweDBkIDB4NTg1NjAxMjQKCi9zeXMvY2xhc3Mvc291
+bmQvaHdDMEQzL2RyaXZlcl9waW5fY29uZmlnczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQzL3Vz
+ZXJfcGluX2NvbmZpZ3M6Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMy9pbml0X3ZlcmJzOgoKCiEh
+QUxTQS9IREEgZG1lc2cKISEtLS0tLS0tLS0tLS0tLS0tLS0KCnBoeTA6IEF0aGVyb3MgQVI5Mjgw
+IE1BQy9CQiBSZXY6MiBBUjUxMzMgUkYgUmV2OmQwOiBtZW09MHhmZmZmYzkwMDAxOTQwMDAwLCBp
+cnE9MjEKSERBIEludGVsIDAwMDA6MDA6MDguMDogcG93ZXIgc3RhdGUgY2hhbmdlZCBieSBBQ1BJ
+IHRvIEQwCkFDUEk6IFBDSSBJbnRlcnJ1cHQgTGluayBbTEFaQV0gZW5hYmxlZCBhdCBJUlEgMTcK
+SERBIEludGVsIDAwMDA6MDA6MDguMDogUENJIElOVCBBIC0+IExpbmtbTEFaQV0gLT4gR1NJIDE3
+IChsZXZlbCwgbG93KSAtPiBJUlEgMTcKSERBIEludGVsIDAwMDA6MDA6MDguMDogc2V0dGluZyBs
+YXRlbmN5IHRpbWVyIHRvIDY0Cm52aWRpYTogbW9kdWxlIGxpY2Vuc2UgJ05WSURJQScgdGFpbnRz
+IGtlcm5lbC4KLS0KTlZSTTogbG9hZGluZyBOVklESUEgVU5JWCB4ODZfNjQgS2VybmVsIE1vZHVs
+ZSAgMTg1LjE4LjMxICBUdWUgSnVsIDI4IDE3OjUyOjI3IFBEVCAyMDA5CmlucHV0OiBIREEgRGln
+aXRhbCBQQ0JlZXAgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA4LjAvaW5wdXQvaW5w
+dXQ3CmlucHV0OiBIREEgTlZpZGlhIE1pYyBhdCBFeHQgRnJvbnQgSmFjayBhcyAvZGV2aWNlcy9w
+Y2kwMDAwOjAwLzAwMDA6MDA6MDguMC9zb3VuZC9jYXJkMC9pbnB1dDgKaW5wdXQ6IEhEQSBOVmlk
+aWEgSFAgT3V0IGF0IEV4dCBGcm9udCBKYWNrIGFzIC9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDow
+MDowOC4wL3NvdW5kL2NhcmQwL2lucHV0OQppbnB1dDogSERBIE5WaWRpYSBIUCBPdXQgYXQgRXh0
+IEZyb250IEphY2sgYXMgL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA4LjAvc291bmQvY2Fy
+ZDAvaW5wdXQxMApFWFQzIEZTIG9uIHNkYTQsIGludGVybmFsIGpvdXJuYWwKCgo=
+--00032555a9cad7f78d0473b87061
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--00032555a9cad7f78d0473b87061--
