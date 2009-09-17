@@ -1,18 +1,22 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH 4/5] ASoC: Blackfin I2S: add lost
-	platform_device parameter to resume function
-Date: Wed, 16 Sep 2009 20:25:11 -0400
-Message-ID: <1253147112-5801-4-git-send-email-vapier@gentoo.org>
-References: <1253147112-5801-1-git-send-email-vapier@gentoo.org>
+From: Bankim Bhavsar <bankim.bhavsar@gmail.com>
+Subject: Re: Questions regarding workaround for VMware
+Date: Wed, 16 Sep 2009 17:27:00 -0700
+Message-ID: <4eccebac0909161727r540b42c6l4cf9a0cb994c0c93@mail.gmail.com>
+References: <4eccebac0908281129n1b2206bbo37ea80e64d4d1d4b@mail.gmail.com>
+	<s5hskfblnsw.wl%tiwai@suse.de>
+	<4eccebac0909131117s1dce8e5al264fb3ac0a0dc17c@mail.gmail.com>
+	<s5hvdjkbhhr.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id D227E103904
+Received: from an-out-0708.google.com (an-out-0708.google.com [209.85.132.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9B2E103803
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 02:25:16 +0200 (CEST)
-In-Reply-To: <1253147112-5801-1-git-send-email-vapier@gentoo.org>
+	Thu, 17 Sep 2009 02:27:21 +0200 (CEST)
+Received: by an-out-0708.google.com with SMTP id c5so333anc.2
+	for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2009 17:27:20 -0700 (PDT)
+In-Reply-To: <s5hvdjkbhhr.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, akataria@vmware.com, bbhavsar@vmware.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Barry Song <barry.song@analog.com>
+>> > The problem is that the irq timing emulated on vmware isn't always
+>> > accurate. =A0The sound hardware is supposed to issue an irq at the
+>> > programmed buffer period. =A0On VMware, this irq generation seems to be
+>> > done based on the system timer (or alike), thus it's not generated
+>> > at the accurate timing that the hardware should give.
 
-Commit dc7d7b830ee1 trimmed the platform_device parameter from all of the
-suspend functions, but it also accidentally removed it from the resume
-function in the Blackfin I2S driver.  So restore it.
+For Linux guests virtual sound device generated 50 interrupts per sec.
+This was leading to hw_ptr_base re-calculation in
+snd_pcm_update_hw_ptr_interrupt() on every interrupt
+after this commit
+http://git.alsa-project.org/?p=3Dalsa-kernel.git;a=3Dcommitdiff;h=3Ded3da3d=
+9a0ef13c6fe1414ec73c9c1be12747b62
 
-Signed-off-by: Barry Song <barry.song@analog.com>
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- sound/soc/blackfin/bf5xx-i2s.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+We are fixing our sound card emulation for Linux guest OSes such that
+interrupts are generated
+at programmed buffer period. This helps improve playback quality with
+2.6.31rc9+ kernels.
 
-diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
-index 876abad..19539c6 100644
---- a/sound/soc/blackfin/bf5xx-i2s.c
-+++ b/sound/soc/blackfin/bf5xx-i2s.c
-@@ -227,7 +227,8 @@ static int bf5xx_i2s_probe(struct platform_device *pdev,
- 	return 0;
- }
- 
--static void bf5xx_i2s_remove(struct snd_soc_dai *dai)
-+static void bf5xx_i2s_remove(struct platform_device *pdev,
-+			struct snd_soc_dai *dai)
- {
- 	pr_debug("%s enter\n", __func__);
- 	peripheral_free_list(&sport_req[sport_num][0]);
--- 
-1.6.5.rc1
+Thanks for the pointers, Takashi!
+
+On a side-note there seems to be some change in PulseAudio bring
+shipped with Ubuntu 9.10 over 9.04 that affects sound playback
+quality.
+With PulseAudio in 9.10, programmed DMA buffer is 64k and num_periods
+is always 1 and thereby number of interrupts generated per sec is just
+2 for 16-bit, 44Khz, stereo.
+IMO the number interrupts is too low and this leads to under-runs.
+Whats the reason for choosing always 1 period and having large
+buffer/period size (power-savings?)?
+
+If I disable PulseAudio in 9.10,  programmed DMA buffer is 64k with 16
+periods each of size 4k and virtual sound device would generate 46-48
+interrupts per sec. With this setting sound playback quality is good.
+
+--Bankim.
