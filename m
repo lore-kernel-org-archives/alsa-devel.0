@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: jassi brar <jassisinghbrar@gmail.com>
 Subject: Re: [PATCH] S3C64XX I2S: Added machine driver for
 	WM8580
-Date: Thu, 17 Sep 2009 12:02:42 +0100
-Message-ID: <20090917110241.GC30736@rakim.wolfsonmicro.main>
+Date: Thu, 17 Sep 2009 20:35:56 +0900
+Message-ID: <1b68c6790909170435x2e4cd93an77fdb0bfef7feb18@mail.gmail.com>
 References: <1253163253-10372-1-git-send-email-jassisinghbrar@gmail.com>
+	<20090917110241.GC30736@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E50C224674
+Received: from mail-qy0-f203.google.com (mail-qy0-f203.google.com
+	[209.85.221.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C9A110382A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 13:02:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1253163253-10372-1-git-send-email-jassisinghbrar@gmail.com>
+	Thu, 17 Sep 2009 13:35:56 +0200 (CEST)
+Received: by qyk41 with SMTP id 41so4778588qyk.25
+	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 04:35:56 -0700 (PDT)
+In-Reply-To: <20090917110241.GC30736@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, Jassi <jassi.brar@samsung.com>, ben@trinity.fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2009 at 01:54:13PM +0900, jassi brar wrote:
-
-> +	/* Exceptions for this CPU-CODEC combination */
-> +	case 64000:
-> +		rfs = 384;
-> +		break;
-
-This needs to explain what the exceptions are for as well, otherwise
-anyone working with the code is going to have to work it out from
-scratch.
-
-> +/* SMDK64xx Playback widgets */
-> +static const struct snd_soc_dapm_widget wm8580_dapm_widgets_pbk[] = {
-> +	SND_SOC_DAPM_HP("Front-L/R", NULL),
-> +	SND_SOC_DAPM_HP("Center/Sub", NULL),
-> +	SND_SOC_DAPM_HP("Rear-L/R", NULL),
-> +};
-
-All my previous comments about these and the way they're being
-configured still apply.
+T24gVGh1LCBTZXAgMTcsIDIwMDkgYXQgODowMiBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFRodSwgU2VwIDE3LCAyMDA5IGF0
+IDAxOjU0OjEzUE0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4KPj4gKyDCoCDCoCAvKiBFeGNl
+cHRpb25zIGZvciB0aGlzIENQVS1DT0RFQyBjb21iaW5hdGlvbiAqLwo+PiArIMKgIMKgIGNhc2Ug
+NjQwMDA6Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmZzID0gMzg0Owo+PiArIMKgIMKgIMKgIMKg
+IMKgIMKgIGJyZWFrOwo+Cj4gVGhpcyBuZWVkcyB0byBleHBsYWluIHdoYXQgdGhlIGV4Y2VwdGlv
+bnMgYXJlIGZvciBhcyB3ZWxsLCBvdGhlcndpc2UKPiBhbnlvbmUgd29ya2luZyB3aXRoIHRoZSBj
+b2RlIGlzIGdvaW5nIHRvIGhhdmUgdG8gd29yayBpdCBvdXQgZnJvbQo+IHNjcmF0Y2guClRoaXMg
+bm90ZSBtZWFucyBzdGFuZHMgZm9yIHRoZSBmb3J0aGNvbWluZyBjYXNlcy4gVGhlIGV4cGxhbmF0
+aW9uIGlzIGFscmVhZHkKZ2l2ZW4gYWJvdmUgdGhlIHN3aXRjaC4KLyogQ3VycmVudGx5LCBXTTg1
+ODAgZHJpdmVyIGRvZXNuJ3Qgc3VwcG9ydCBQTEwtb3V0IHJhdGVzCiAqIG90aGVyIHRoYW4gdGhv
+c2UgbWVudGlvbmVkIGluIFRhYmxlLTUyIFBhZ2UtNTggb2YgV004NTgwQQogKiBtYW51YWwuIFNv
+bWUgb2YgdGhlc2UgdW5hdmFpbGFibGUgcmF0ZXMgaW5jbHVkZQogKiB7ODAwMHgyNTYsIDY0MDAw
+eDI1NiwgMTEwMjV4MjU2fUh6LgogKiBBcyBhIHdheW91dCwgd2UgcmF0aGVyIGNoYW5nZSByZnMg
+dG8gYSB2YWx1ZSB0aGF0IHJlc3VsdHMgaW4KICogKHBhcmFtc19yYXRlKHBhcmFtcykgKiByZnMp
+LCBhbmQgaXRzZWxmLCBhY2NlcHRhYmxlIHRvIHRoZSBib3RoCiAqIHRoZSBDT0RFQyBhbmQgdGhl
+IENQVS4KICovClRoZSByYXRlcyA2NDAwMCwgODAwMCBhbmQgMTEwMjUgYXJlIHRodXMgJ2V4Y2Vw
+dGlvbnMnLgoKSW5mYWN0LCB0aGVzZSB3ZXJlIHRoZSByZWFsIGNhc2VzIHRoYXQgSSBwb2ludGVk
+IGR1cmluZwpNQ0xLL0JDTEstUkFUSU8gZGlzY3Vzc2lvbnMuCkN1cnJlbnRseSwgb3RoZXIgY2Fz
+ZXMgd29yayBiZWNhdXNlIDI1NmZzIFJDTEsgaXMgc2VsZWN0ZWQgYnkgZGVmYXVsdAphbmQgdGhl
+c2UgdGhyZWUgZG9uJ3QKYmVjYXVzZSB0aGVyZSBpcyBubyB3YXkgdG8gaW5kaWNhdGUgaXQgdG8g
+dGhlIENPREVDIGRyaXZlci4KCj4+ICsvKiBTTURLNjR4eCBQbGF5YmFjayB3aWRnZXRzICovCj4+
+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgd204NTgwX2RhcG1fd2lk
+Z2V0c19wYmtbXSA9IHsKPj4gKyDCoCDCoCBTTkRfU09DX0RBUE1fSFAoIkZyb250LUwvUiIsIE5V
+TEwpLAo+PiArIMKgIMKgIFNORF9TT0NfREFQTV9IUCgiQ2VudGVyL1N1YiIsIE5VTEwpLAo+PiAr
+IMKgIMKgIFNORF9TT0NfREFQTV9IUCgiUmVhci1ML1IiLCBOVUxMKSwKPj4gK307Cj4KPiBBbGwg
+bXkgcHJldmlvdXMgY29tbWVudHMgYWJvdXQgdGhlc2UgYW5kIHRoZSB3YXkgdGhleSdyZSBiZWlu
+Zwo+IGNvbmZpZ3VyZWQgc3RpbGwgYXBwbHkuCk9uY2UgNmNoYW5uZWwgc3VwcG9ydCBpcyB1cCwg
+aSB3aWxsIHN1Ym1pdCBhIHBhdGNoIHRvIGltcGxlbWVudCBhdWRpbwpyb3V0aW5nIG9wdGlvbnMK
+dXNpbmcgc25kX3NvY19hZGRfY29udHJvbHMuIFdoZXJlYnkgdXNlciBjYW4gc2V0IGF1ZGlvIHJv
+dXRlIG9uIHRoZSBkZXZpY2UuCkZvciBub3csIGFzIHdlIGhhdmUgb25seSAyY2hhbm5lbHMgZW5h
+YmxlZCwgaSBkZWNpZGVkIHRvIGVuYWJsZSBvbmx5IEZyb250LUwvUgphbmQga2VlcCBvdGhlcnMg
+ZGlzYWJsZWQuIE9mIHRoZSBNaWMgYW5kIExpbmVJbiwgd2UgZW5hYmxlIExpbmVJbiBieQpkZWZh
+dWx0LiBIb3cgaXMgdGhhdD8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
