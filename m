@@ -1,14 +1,15 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH 3/5] ASoC: fix typos in Blackfin headers
-Date: Wed, 16 Sep 2009 20:25:10 -0400
-Message-ID: <1253147112-5801-3-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 4/5] ASoC: Blackfin I2S: add lost
+	platform_device parameter to resume function
+Date: Wed, 16 Sep 2009 20:25:11 -0400
+Message-ID: <1253147112-5801-4-git-send-email-vapier@gentoo.org>
 References: <1253147112-5801-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8DC80103903
+	by alsa0.perex.cz (Postfix) with ESMTP id D227E103904
 	for <alsa-devel@alsa-project.org>;
 	Thu, 17 Sep 2009 02:25:16 +0200 (CEST)
 In-Reply-To: <1253147112-5801-1-git-send-email-vapier@gentoo.org>
@@ -27,34 +28,29 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Barry Song <barry.song@analog.com>
 
+Commit dc7d7b830ee1 trimmed the platform_device parameter from all of the
+suspend functions, but it also accidentally removed it from the resume
+function in the Blackfin I2S driver.  So restore it.
+
 Signed-off-by: Barry Song <barry.song@analog.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- sound/soc/blackfin/bf5xx-ac97.h |    2 +-
- sound/soc/blackfin/bf5xx-i2s.h  |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/blackfin/bf5xx-i2s.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ac97.h b/sound/soc/blackfin/bf5xx-ac97.h
-index 3f2a911..a1f97dd 100644
---- a/sound/soc/blackfin/bf5xx-ac97.h
-+++ b/sound/soc/blackfin/bf5xx-ac97.h
-@@ -1,5 +1,5 @@
- /*
-- * linux/sound/arm/bf5xx-ac97.h
-+ * sound/soc/blackfin/bf5xx-ac97.h
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 as
-diff --git a/sound/soc/blackfin/bf5xx-i2s.h b/sound/soc/blackfin/bf5xx-i2s.h
-index 7107d1a..264ecdc 100644
---- a/sound/soc/blackfin/bf5xx-i2s.h
-+++ b/sound/soc/blackfin/bf5xx-i2s.h
-@@ -1,5 +1,5 @@
- /*
-- * linux/sound/arm/bf5xx-i2s.h
-+ * sound/soc/blackfin/bf5xx-i2s.h
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 as
+diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
+index 876abad..19539c6 100644
+--- a/sound/soc/blackfin/bf5xx-i2s.c
++++ b/sound/soc/blackfin/bf5xx-i2s.c
+@@ -227,7 +227,8 @@ static int bf5xx_i2s_probe(struct platform_device *pdev,
+ 	return 0;
+ }
+ 
+-static void bf5xx_i2s_remove(struct snd_soc_dai *dai)
++static void bf5xx_i2s_remove(struct platform_device *pdev,
++			struct snd_soc_dai *dai)
+ {
+ 	pr_debug("%s enter\n", __func__);
+ 	peripheral_free_list(&sport_req[sport_num][0]);
 -- 
 1.6.5.rc1
