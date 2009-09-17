@@ -1,20 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/5] ASoC: Blackfin I2S: fix resuming when
- device hasn't been used
-Date: Thu, 17 Sep 2009 10:52:02 +0100
-Message-ID: <20090917095202.GB30736@rakim.wolfsonmicro.main>
-References: <1253147112-5801-1-git-send-email-vapier@gentoo.org>
-	<1253147112-5801-5-git-send-email-vapier@gentoo.org>
+Subject: Re: [PATCH] S3C64XX I2S: Added machine driver for
+	WM8580
+Date: Thu, 17 Sep 2009 12:02:42 +0100
+Message-ID: <20090917110241.GC30736@rakim.wolfsonmicro.main>
+References: <1253163253-10372-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4F557103813
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E50C224674
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 11:52:03 +0200 (CEST)
+	Thu, 17 Sep 2009 13:02:43 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1253147112-5801-5-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1253163253-10372-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jassi <jassi.brar@samsung.com>, ben@trinity.fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 16, 2009 at 08:25:12PM -0400, Mike Frysinger wrote:
-> From: Cliff Cai <cliff.cai@analog.com>
+On Thu, Sep 17, 2009 at 01:54:13PM +0900, jassi brar wrote:
 
-> If the sound system hasn't been utilized yet and we suspend, then we
-> attempt to save/restore using state that doesn't exist.  So use a global
-> handle instead to reconfigure properly.
+> +	/* Exceptions for this CPU-CODEC combination */
+> +	case 64000:
+> +		rfs = 384;
+> +		break;
 
-I expect that this will break if more than one DAI is in use, which can
-happen if people are using multiple DACs to do 5.1 or hardware mixing.
-Would it not make sense to allocate the SPORT when the DAI is probed?
+This needs to explain what the exceptions are for as well, otherwise
+anyone working with the code is going to have to work it out from
+scratch.
 
-I've applied the other four patches - thanks.
+> +/* SMDK64xx Playback widgets */
+> +static const struct snd_soc_dapm_widget wm8580_dapm_widgets_pbk[] = {
+> +	SND_SOC_DAPM_HP("Front-L/R", NULL),
+> +	SND_SOC_DAPM_HP("Center/Sub", NULL),
+> +	SND_SOC_DAPM_HP("Rear-L/R", NULL),
+> +};
+
+All my previous comments about these and the way they're being
+configured still apply.
