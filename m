@@ -1,20 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: DaVinci: Fixes to McASP configuration
-Date: Thu, 17 Sep 2009 13:09:27 +0100
-Message-ID: <20090917120926.GA449@rakim.wolfsonmicro.main>
-References: <1253052809-24547-1-git-send-email-chaithrika@ti.com>
-	<20090916201819.GB20675@rakim.wolfsonmicro.main>
-	<002b01ca378e$7f462e70$7dd28b50$@com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] S3C64XX I2S: Added machine driver for
+	WM8580
+Date: Thu, 17 Sep 2009 21:26:28 +0900
+Message-ID: <1b68c6790909170526s4bf9e0e0m726dfe771ca71015@mail.gmail.com>
+References: <1253163253-10372-1-git-send-email-jassisinghbrar@gmail.com>
+	<20090917110241.GC30736@rakim.wolfsonmicro.main>
+	<1b68c6790909170435x2e4cd93an77fdb0bfef7feb18@mail.gmail.com>
+	<20090917120353.GF20676@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B5EEA1038BA
+Received: from mail-qy0-f193.google.com (mail-qy0-f193.google.com
+	[209.85.221.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D6801038B3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 14:09:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <002b01ca378e$7f462e70$7dd28b50$@com>
+	Thu, 17 Sep 2009 14:26:29 +0200 (CEST)
+Received: by qyk31 with SMTP id 31so794317qyk.9
+	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 05:26:28 -0700 (PDT)
+In-Reply-To: <20090917120353.GF20676@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,16 +28,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chaithrika U S <chaithrika@ti.com>
-Cc: khilman@deeprootsystems.com, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com, 'Troy Kisky' <troy.kisky@boundarydevices.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, ben@trinity.fluff.org, Jassi <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2009 at 05:30:49PM +0530, Chaithrika U S wrote:
-
-> May be my commit message is misleading. Currently, McASP is configured 
-> for DSP mode and I have tested for that mode.
-
-Ah, yes - I see that it's just got a hardcoded mode, I had misremembered
-the features that are supported since the original i2s driver supports
-more.  Thanks for clarifying.  Unless someone says anything I'll apply
-this later today or tomorrow.
+T24gVGh1LCBTZXAgMTcsIDIwMDkgYXQgOTowMyBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFRodSwgU2VwIDE3LCAyMDA5IGF0
+IDA4OjM1OjU2UE0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4KPj4gVGhpcyBub3RlIG1lYW5z
+IHN0YW5kcyBmb3IgdGhlIGZvcnRoY29taW5nIGNhc2VzLiBUaGUgZXhwbGFuYXRpb24gaXMgYWxy
+ZWFkeQo+PiBnaXZlbiBhYm92ZSB0aGUgc3dpdGNoLgo+Cj4+IC8qIEN1cnJlbnRseSwgV004NTgw
+IGRyaXZlciBkb2Vzbid0IHN1cHBvcnQgUExMLW91dCByYXRlcwo+PiDCoCogb3RoZXIgdGhhbiB0
+aG9zZSBtZW50aW9uZWQgaW4gVGFibGUtNTIgUGFnZS01OCBvZiBXTTg1ODBBCj4+IMKgKiBtYW51
+YWwuIFNvbWUgb2YgdGhlc2UgdW5hdmFpbGFibGUgcmF0ZXMgaW5jbHVkZQo+PiDCoCogezgwMDB4
+MjU2LCA2NDAwMHgyNTYsIDExMDI1eDI1Nn1Iei4KPgo+IFdoaWNoIHZlcnNpb24gb2YgdGhlIGRh
+dGFzaGVldCBhcmUgeW91IGxvb2tpbmcgYXQ/IMKgVGFibGUgNTIgaW4gdGhlCj4gY3VycmVudCB2
+ZXJzaW9uIDQuNyBpcyAoYXMgaXQgc2F5cykgYSBsaXN0IG9mIGV4YW1wbGUgY29uZmlndXJhdGlv
+bnMsCj4gbm90IGFuIGV4aGF1c3RpdmUgbGlzdCBvZiBzdXBwb3J0ZWQgY29uZmlndXJhdGlvbnMu
+IMKgQW55dGhpbmcgd2l0aGluIHRoZQo+IG9wZXJhdGluZyBjaGFyYWN0ZXJpc3RpY3Mgb2YgdGhl
+IFBMTCBpcyBzdXBwb3J0ZWQsIHNldF9wbGwoKSBzaG91bGQKPiBlbmZvcmNlIHRoaXMgd2hlcmUg
+cmVxdWlyZWQuClRoYXQgdmVyeSBtYW51YWwuIEFuZCBpIGRvbid0IHNheSB0aGUgV004NTgwIGRv
+ZXNuJ3Qgc3VwcG9ydCwgSSBzYWlkCnRoZSBXTTg1ODAgZHJpdmVyIGRvZXNuJ3Qgc3VwcG9ydDog
+d2hpY2ggY2FuIGJlIHZlcmlmaWVkIGxvb2tpbmcgYXQgdGhlCkNPREVDIGRyaXZlci4KVGhlb3Jl
+dGljYWxseSBhbGwgb3V0cHV0IGNsb2NrcyBhcmUgcG9zc2libGUgYnV0IHVzdWFsbHkgdGhlIFBM
+TCBjb2VmZmljaWVudHMKaGF2ZSBsaW1pdHMgb24gdGhlaXIgdmFsdWUgYW5kIHRodXMgZmluYWwg
+b3V0cHV0LiBXTTg1ODAgZHJpdmVyIHRvbyBzZWVtcwp0byBlbmZvcmNlIHRoYXQuClRob3VnaCwg
+eW91IHd1ZCBrbm93IGJldHRlciBvZiBXTTg1ODAuCgo+PiA+IEFsbCBteSBwcmV2aW91cyBjb21t
+ZW50cyBhYm91dCB0aGVzZSBhbmQgdGhlIHdheSB0aGV5J3JlIGJlaW5nCj4+ID4gY29uZmlndXJl
+ZCBzdGlsbCBhcHBseS4KPgo+PiBPbmNlIDZjaGFubmVsIHN1cHBvcnQgaXMgdXAsIGkgd2lsbCBz
+dWJtaXQgYSBwYXRjaCB0byBpbXBsZW1lbnQgYXVkaW8KPj4gcm91dGluZyBvcHRpb25zCj4+IHVz
+aW5nIHNuZF9zb2NfYWRkX2NvbnRyb2xzLiBXaGVyZWJ5IHVzZXIgY2FuIHNldCBhdWRpbyByb3V0
+ZSBvbiB0aGUgZGV2aWNlLgo+PiBGb3Igbm93LCBhcyB3ZSBoYXZlIG9ubHkgMmNoYW5uZWxzIGVu
+YWJsZWQsIGkgZGVjaWRlZCB0byBlbmFibGUgb25seSBGcm9udC1ML1IKPj4gYW5kIGtlZXAgb3Ro
+ZXJzIGRpc2FibGVkLiBPZiB0aGUgTWljIGFuZCBMaW5lSW4sIHdlIGVuYWJsZSBMaW5lSW4gYnkK
+Pj4gZGVmYXVsdC4gSG93IGlzIHRoYXQ/Cj4KPiBQbGVhc2UganVzdCByZW1vdmUgdGhpcyBmb3Ig
+bm93IG9yIGF0IG1vc3QgZW5hYmxlIGV2ZXJ5dGhpbmcgYnkgZGVmYXVsdCwKV2lsbCBlbmFibGUg
+YWxsIGFuZCBzdWJtaXQgYWdhaW4uClRoYW5rcy4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
