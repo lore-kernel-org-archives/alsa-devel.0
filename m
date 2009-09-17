@@ -1,22 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 5/5] ASoC:
-	Blackfin	I2S: fix resuming when device hasn't been used
-Date: Thu, 17 Sep 2009 15:08:36 +0100
-Message-ID: <20090917140836.GJ20676@sirena.org.uk>
-References: <1253147112-5801-1-git-send-email-vapier@gentoo.org>
-	<1253147112-5801-5-git-send-email-vapier@gentoo.org>
-	<20090917095202.GB30736@rakim.wolfsonmicro.main>
-	<8bd0f97a0909170702q41b6081ch32566976f339344e@mail.gmail.com>
+Subject: Re: [PATCH] S3C64XX I2S: Added machine driver for
+ WM8580
+Date: Thu, 17 Sep 2009 15:12:28 +0100
+Message-ID: <20090917141228.GA24563@rakim.wolfsonmicro.main>
+References: <1253163253-10372-1-git-send-email-jassisinghbrar@gmail.com>
+	<20090917110241.GC30736@rakim.wolfsonmicro.main>
+	<1b68c6790909170435x2e4cd93an77fdb0bfef7feb18@mail.gmail.com>
+	<20090917120353.GF20676@sirena.org.uk>
+	<1b68c6790909170526s4bf9e0e0m726dfe771ca71015@mail.gmail.com>
+	<20090917131102.GA16720@rakim.wolfsonmicro.main>
+	<1b68c6790909170636w6a5dc85cq8cae33daf64ca814@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD1231037F2
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4B4501037F2
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 16:08:40 +0200 (CEST)
+	Thu, 17 Sep 2009 16:12:34 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <8bd0f97a0909170702q41b6081ch32566976f339344e@mail.gmail.com>
+In-Reply-To: <1b68c6790909170636w6a5dc85cq8cae33daf64ca814@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,15 +29,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier.adi@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Cliff Cai <cliff.cai@analog.com>
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, ben@trinity.fluff.org, Jassi <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 17, 2009 at 10:02:26AM -0400, Mike Frysinger wrote:
+On Thu, Sep 17, 2009 at 10:36:10PM +0900, jassi brar wrote:
+> On Thu, Sep 17, 2009 at 10:11 PM, Mark Brown
 
-> unfortunately, the system is already completely broken when more than
-> one is used.  ive opened an item to get this fixed, but it's going to
-> require a few core pieces to be rewritten.  so i'd like to have this
-> merged since it improves the current situation.
+> > Your comment says that only the output frequencies in table 52 are
+> > supported. =A0Could you please provide more specific references to where
+> > this is done in the driver? =A0I think you're confusing the fact that t=
+he
+> > example table lists most of the common audio frequencies with what the
+> > driver supports here.
 
-OK, I suspected something like that was going on.  I'll apply the patch.
+> Let me be precise.
+> With this machine driver and the WM8580 CODEC driver from origin/for-2.6.=
+32
+> if we do any of the following:-
+>    snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 12000000, 8000*256);
+>    snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 12000000, 11025*256);
+>    snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 12000000, 64000*256);
+> we get the error: "wm8580: Unable to scale output frequency"
+
+Right, this is nothing to do with the list of example configurations and
+everything to do with the fact that those options are just not supported
+by the hardware.  For example, 256fs for 8kHz is only 2.048MHz and even
+the largest postscale divider of 24 can't get anywhere near that from
+90MHz which is the minimum Fvco for the PLL.
+
+> I apologize if my inappropriate selection of expression bothered you.
+> In future, please feel free to suggest modification of any comment in the
+> code. Regards.
+
+Part of the issue here is that my review is in part based on the
+comments.  If the code (including comments) seems obviously incorrect
+from reading then that's an issue in itself.
