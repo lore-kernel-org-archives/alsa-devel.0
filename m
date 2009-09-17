@@ -1,24 +1,29 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] S3C64XX I2S: Added machine driver for
-	WM8580
-Date: Thu, 17 Sep 2009 21:26:28 +0900
-Message-ID: <1b68c6790909170526s4bf9e0e0m726dfe771ca71015@mail.gmail.com>
-References: <1253163253-10372-1-git-send-email-jassisinghbrar@gmail.com>
-	<20090917110241.GC30736@rakim.wolfsonmicro.main>
-	<1b68c6790909170435x2e4cd93an77fdb0bfef7feb18@mail.gmail.com>
-	<20090917120353.GF20676@sirena.org.uk>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: Questions regarding workaround for VMware
+Date: Thu, 17 Sep 2009 14:06:04 +0100
+Message-ID: <h8tc7s$fg7$1@ger.gmane.org>
+References: <4eccebac0908281129n1b2206bbo37ea80e64d4d1d4b@mail.gmail.com>
+	<s5hskfblnsw.wl%tiwai@suse.de>	<4eccebac0909131117s1dce8e5al264fb3ac0a0dc17c@mail.gmail.com>
+	<s5hvdjkbhhr.wl%tiwai@suse.de>
+	<4eccebac0909161727r540b42c6l4cf9a0cb994c0c93@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f193.google.com (mail-qy0-f193.google.com
-	[209.85.221.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D6801038B3
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D404246A0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 14:26:29 +0200 (CEST)
-Received: by qyk31 with SMTP id 31so794317qyk.9
-	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 05:26:28 -0700 (PDT)
-In-Reply-To: <20090917120353.GF20676@sirena.org.uk>
+	Thu, 17 Sep 2009 15:06:33 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1MoGgt-0003tz-KT
+	for alsa-devel@alsa-project.org; Thu, 17 Sep 2009 15:06:27 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 15:06:27 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 15:06:27 +0200
+In-Reply-To: <4eccebac0909161727r540b42c6l4cf9a0cb994c0c93@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,41 +33,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, ben@trinity.fluff.org, Jassi <jassi.brar@samsung.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBTZXAgMTcsIDIwMDkgYXQgOTowMyBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFRodSwgU2VwIDE3LCAyMDA5IGF0
-IDA4OjM1OjU2UE0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4KPj4gVGhpcyBub3RlIG1lYW5z
-IHN0YW5kcyBmb3IgdGhlIGZvcnRoY29taW5nIGNhc2VzLiBUaGUgZXhwbGFuYXRpb24gaXMgYWxy
-ZWFkeQo+PiBnaXZlbiBhYm92ZSB0aGUgc3dpdGNoLgo+Cj4+IC8qIEN1cnJlbnRseSwgV004NTgw
-IGRyaXZlciBkb2Vzbid0IHN1cHBvcnQgUExMLW91dCByYXRlcwo+PiDCoCogb3RoZXIgdGhhbiB0
-aG9zZSBtZW50aW9uZWQgaW4gVGFibGUtNTIgUGFnZS01OCBvZiBXTTg1ODBBCj4+IMKgKiBtYW51
-YWwuIFNvbWUgb2YgdGhlc2UgdW5hdmFpbGFibGUgcmF0ZXMgaW5jbHVkZQo+PiDCoCogezgwMDB4
-MjU2LCA2NDAwMHgyNTYsIDExMDI1eDI1Nn1Iei4KPgo+IFdoaWNoIHZlcnNpb24gb2YgdGhlIGRh
-dGFzaGVldCBhcmUgeW91IGxvb2tpbmcgYXQ/IMKgVGFibGUgNTIgaW4gdGhlCj4gY3VycmVudCB2
-ZXJzaW9uIDQuNyBpcyAoYXMgaXQgc2F5cykgYSBsaXN0IG9mIGV4YW1wbGUgY29uZmlndXJhdGlv
-bnMsCj4gbm90IGFuIGV4aGF1c3RpdmUgbGlzdCBvZiBzdXBwb3J0ZWQgY29uZmlndXJhdGlvbnMu
-IMKgQW55dGhpbmcgd2l0aGluIHRoZQo+IG9wZXJhdGluZyBjaGFyYWN0ZXJpc3RpY3Mgb2YgdGhl
-IFBMTCBpcyBzdXBwb3J0ZWQsIHNldF9wbGwoKSBzaG91bGQKPiBlbmZvcmNlIHRoaXMgd2hlcmUg
-cmVxdWlyZWQuClRoYXQgdmVyeSBtYW51YWwuIEFuZCBpIGRvbid0IHNheSB0aGUgV004NTgwIGRv
-ZXNuJ3Qgc3VwcG9ydCwgSSBzYWlkCnRoZSBXTTg1ODAgZHJpdmVyIGRvZXNuJ3Qgc3VwcG9ydDog
-d2hpY2ggY2FuIGJlIHZlcmlmaWVkIGxvb2tpbmcgYXQgdGhlCkNPREVDIGRyaXZlci4KVGhlb3Jl
-dGljYWxseSBhbGwgb3V0cHV0IGNsb2NrcyBhcmUgcG9zc2libGUgYnV0IHVzdWFsbHkgdGhlIFBM
-TCBjb2VmZmljaWVudHMKaGF2ZSBsaW1pdHMgb24gdGhlaXIgdmFsdWUgYW5kIHRodXMgZmluYWwg
-b3V0cHV0LiBXTTg1ODAgZHJpdmVyIHRvbyBzZWVtcwp0byBlbmZvcmNlIHRoYXQuClRob3VnaCwg
-eW91IHd1ZCBrbm93IGJldHRlciBvZiBXTTg1ODAuCgo+PiA+IEFsbCBteSBwcmV2aW91cyBjb21t
-ZW50cyBhYm91dCB0aGVzZSBhbmQgdGhlIHdheSB0aGV5J3JlIGJlaW5nCj4+ID4gY29uZmlndXJl
-ZCBzdGlsbCBhcHBseS4KPgo+PiBPbmNlIDZjaGFubmVsIHN1cHBvcnQgaXMgdXAsIGkgd2lsbCBz
-dWJtaXQgYSBwYXRjaCB0byBpbXBsZW1lbnQgYXVkaW8KPj4gcm91dGluZyBvcHRpb25zCj4+IHVz
-aW5nIHNuZF9zb2NfYWRkX2NvbnRyb2xzLiBXaGVyZWJ5IHVzZXIgY2FuIHNldCBhdWRpbyByb3V0
-ZSBvbiB0aGUgZGV2aWNlLgo+PiBGb3Igbm93LCBhcyB3ZSBoYXZlIG9ubHkgMmNoYW5uZWxzIGVu
-YWJsZWQsIGkgZGVjaWRlZCB0byBlbmFibGUgb25seSBGcm9udC1ML1IKPj4gYW5kIGtlZXAgb3Ro
-ZXJzIGRpc2FibGVkLiBPZiB0aGUgTWljIGFuZCBMaW5lSW4sIHdlIGVuYWJsZSBMaW5lSW4gYnkK
-Pj4gZGVmYXVsdC4gSG93IGlzIHRoYXQ/Cj4KPiBQbGVhc2UganVzdCByZW1vdmUgdGhpcyBmb3Ig
-bm93IG9yIGF0IG1vc3QgZW5hYmxlIGV2ZXJ5dGhpbmcgYnkgZGVmYXVsdCwKV2lsbCBlbmFibGUg
-YWxsIGFuZCBzdWJtaXQgYWdhaW4uClRoYW5rcy4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+'Twas brillig, and Bankim Bhavsar at 17/09/09 01:27 did gyre and gimble:
+> On a side-note there seems to be some change in PulseAudio bring
+> shipped with Ubuntu 9.10 over 9.04 that affects sound playback
+> quality.
+> With PulseAudio in 9.10, programmed DMA buffer is 64k and num_periods
+> is always 1 and thereby number of interrupts generated per sec is just
+> 2 for 16-bit, 44Khz, stereo.
+> IMO the number interrupts is too low and this leads to under-runs.
+> Whats the reason for choosing always 1 period and having large
+> buffer/period size (power-savings?)?
+> 
+> If I disable PulseAudio in 9.10,  programmed DMA buffer is 64k with 16
+> periods each of size 4k and virtual sound device would generate 46-48
+> interrupts per sec. With this setting sound playback quality is good.
+
+I'm not sure about Ubuntu setup but the disabling of interupts and using 
+timers is indeed all about power savings. The wakeup time is dynamically 
+adjusted when an underrun occurs so as to avoid it in the future.
+
+Some Nokia/Intel folks (can't remember which) are experimenting with 
+very large latencies (e.g. up to about 10s) in order to get maximum 
+power savings.
+
+You can read more about it here:
+http://0pointer.de/blog/projects/pulse-glitch-free.html
+
+You can disable this timer based scheduling by passing the argument 
+tsched=0 to module-hal-detect or module-udev-detect (whichever is in 
+use: the latter obsoleting the former) in /etc/pulse/default.pa
+
+Col
+
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+   Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+   Mandriva Linux Contributor [http://www.mandriva.com/]
+   PulseAudio Hacker [http://www.pulseaudio.org/]
+   Trac Hacker [http://trac.edgewall.org/]
