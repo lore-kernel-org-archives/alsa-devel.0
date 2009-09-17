@@ -1,29 +1,23 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Questions regarding workaround for VMware
-Date: Thu, 17 Sep 2009 14:06:04 +0100
-Message-ID: <h8tc7s$fg7$1@ger.gmane.org>
-References: <4eccebac0908281129n1b2206bbo37ea80e64d4d1d4b@mail.gmail.com>
-	<s5hskfblnsw.wl%tiwai@suse.de>	<4eccebac0909131117s1dce8e5al264fb3ac0a0dc17c@mail.gmail.com>
-	<s5hvdjkbhhr.wl%tiwai@suse.de>
-	<4eccebac0909161727r540b42c6l4cf9a0cb994c0c93@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] S3C64XX I2S: Added machine driver for
+ WM8580
+Date: Thu, 17 Sep 2009 14:11:02 +0100
+Message-ID: <20090917131102.GA16720@rakim.wolfsonmicro.main>
+References: <1253163253-10372-1-git-send-email-jassisinghbrar@gmail.com>
+	<20090917110241.GC30736@rakim.wolfsonmicro.main>
+	<1b68c6790909170435x2e4cd93an77fdb0bfef7feb18@mail.gmail.com>
+	<20090917120353.GF20676@sirena.org.uk>
+	<1b68c6790909170526s4bf9e0e0m726dfe771ca71015@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7D404246A0
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33D32246A0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 15:06:33 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1MoGgt-0003tz-KT
-	for alsa-devel@alsa-project.org; Thu, 17 Sep 2009 15:06:27 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 15:06:27 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 15:06:27 +0200
-In-Reply-To: <4eccebac0909161727r540b42c6l4cf9a0cb994c0c93@mail.gmail.com>
+	Thu, 17 Sep 2009 15:11:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1b68c6790909170526s4bf9e0e0m726dfe771ca71015@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,50 +27,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, ben@trinity.fluff.org, Jassi <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Bankim Bhavsar at 17/09/09 01:27 did gyre and gimble:
-> On a side-note there seems to be some change in PulseAudio bring
-> shipped with Ubuntu 9.10 over 9.04 that affects sound playback
-> quality.
-> With PulseAudio in 9.10, programmed DMA buffer is 64k and num_periods
-> is always 1 and thereby number of interrupts generated per sec is just
-> 2 for 16-bit, 44Khz, stereo.
-> IMO the number interrupts is too low and this leads to under-runs.
-> Whats the reason for choosing always 1 period and having large
-> buffer/period size (power-savings?)?
-> 
-> If I disable PulseAudio in 9.10,  programmed DMA buffer is 64k with 16
-> periods each of size 4k and virtual sound device would generate 46-48
-> interrupts per sec. With this setting sound playback quality is good.
+On Thu, Sep 17, 2009 at 09:26:28PM +0900, jassi brar wrote:
 
-I'm not sure about Ubuntu setup but the disabling of interupts and using 
-timers is indeed all about power savings. The wakeup time is dynamically 
-adjusted when an underrun occurs so as to avoid it in the future.
+> > > +       /* Currently, WM8580 driver doesn't support PLL-out rates
+> > > +        * other than those mentioned in Table-52 Page-58 of WM8580A
 
-Some Nokia/Intel folks (can't remember which) are experimenting with 
-very large latencies (e.g. up to about 10s) in order to get maximum 
-power savings.
+> That very manual. And i don't say the WM8580 doesn't support, I said
+> the WM8580 driver doesn't support: which can be verified looking at the
+> CODEC driver.
 
-You can read more about it here:
-http://0pointer.de/blog/projects/pulse-glitch-free.html
+Your comment says that only the output frequencies in table 52 are
+supported.  Could you please provide more specific references to where
+this is done in the driver?  I think you're confusing the fact that the
+example table lists most of the common audio frequencies with what the
+driver supports here.
 
-You can disable this timer based scheduling by passing the argument 
-tsched=0 to module-hal-detect or module-udev-detect (whichever is in 
-use: the latter obsoleting the former) in /etc/pulse/default.pa
+> Theoretically all output clocks are possible but usually the PLL coefficients
+> have limits on their value and thus final output. WM8580 driver too seems
+> to enforce that.
+> Though, you wud know better of WM8580.
 
-Col
+So what you're actually saying is that 256fs doesn't give us the option
+of an an in-range Fvco for the FLL at those frequencies (which is the
+check I think you're talking about here)?  That's a limitation of the
+chip.
 
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-   Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-   Mandriva Linux Contributor [http://www.mandriva.com/]
-   PulseAudio Hacker [http://www.pulseaudio.org/]
-   Trac Hacker [http://trac.edgewall.org/]
+Certainly, the comment is not accurate - the contents of table 52 aren't
+relevant here, the driver is calculating what it can do dynamically so
+the restrictions are a combination of the limits on Fvco and the pre and
+post scaling dividers available.
