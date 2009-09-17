@@ -1,21 +1,16 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] S3C64XX I2S: Added machine driver for
-	WM8580
-Date: Thu, 17 Sep 2009 09:02:25 +0900
-Message-ID: <1b68c6790909161702q7513ab60t31a0ff66d61003b0@mail.gmail.com>
-References: <1253095362-571-1-git-send-email-jassi.brar@samsung.com>
-	<20090916200027.GH3589@rakim.wolfsonmicro.main>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [PATCH 1/5] ASoC: Blackfin AC97: add a few missing
+	multichannel define handling
+Date: Wed, 16 Sep 2009 20:25:08 -0400
+Message-ID: <1253147112-5801-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E4EE24578
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B7EE1038F0
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 02:02:26 +0200 (CEST)
-Received: by qw-out-1920.google.com with SMTP id 5so1598449qwf.56
-	for <alsa-devel@alsa-project.org>; Wed, 16 Sep 2009 17:02:25 -0700 (PDT)
-In-Reply-To: <20090916200027.GH3589@rakim.wolfsonmicro.main>
+	Thu, 17 Sep 2009 02:25:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,96 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, ben@trinity.fluff.org
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-c2VlbXMgbXkgb3JpZ2luYWwgZW1haWwgdG8gYWxzYS1kZXZlbCBnb3Qgc3R1Y2suCmxlbW1lIHJl
-c2VuZCB0aGUgcGF0Y2ggd2l0aCBzb21lIG9mIHVyIHN1Z2dlc3Rpb25zIGluY29ycG9yYXRlZCBh
-bmQKY29udGludWUgZnJvbSB0aGVyZS4KCk9uIFRodSwgU2VwIDE3LCAyMDA5IGF0IDU6MDAgQU0s
-IE1hcmsgQnJvd24KPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToK
-PiBPbiBXZWQsIFNlcCAxNiwgMjAwOSBhdCAwNzowMjo0MlBNICswOTAwLCBKYXNzaSB3cm90ZToK
-Pgo+PiBOZXcgbWFjaGluZSBkcml2ZXIgZm9yIFdNODU4MCBJMlMgaS9mIG9uIFNNREs2NFhYLgo+
-PiBCeSBkZWZhdWx0IFNvQy1TbGF2ZSBpcyBzZXQgYW5kIFdNODU4MCBpcyBjb25maWd1cmVkIHRv
-IHVzZSBpdCdzCj4+IFBMTEEgdG8gZ2VuZXJhdGUgY2xvY2tzIGZyb20gYSAxMk1IeiBjcnlzdGFs
-IGF0dGFjaGVkIHRvIFdNODU4MC4KPgo+IFRoaXMgbG9va3Mgc2FuZSBhcyBhIHN0YXJ0aW5nIHBv
-aW50IGFuZCBtb3N0IG9mIHRoZSBkcml2ZXIgbG9va3MgT0suCj4KPj4gSTJTIGNvbnRyb2xsZXIt
-MCBpcyBzZXQgYXMgZGVmYXVsdCwgc2V0IFMzQzY0WFhfSTJTX0NOVFJMUiB0byAyCj4+IGlub3Jk
-ZXIgdG8gdXNlIEkyU192NCBjb250cm9sbGVyIG9mIFMzQzY0MTAuCj4KPiBJJ20gbm90IGVudGly
-ZWx5IHN1cmUgd2hhdCdzIGdvaW5nIG9uIGluIHRoaXMgY29uZmlndXJhdGlvbiAtIHRoZQo+IHBy
-aW1hcnkgQUlGcyBvZiB0aGUgQ09ERUMgYXBwZWFyIHRvIGJlIGhhcmQgd2lyZWQgdG8gdGhlIElJ
-U3Y0IGludGVyZmFjZQo+IGluIHRoZSBzY2hlbWF0aWNzIEkgaGF2ZSwgSUlTIHBvcnQgMCBpcyBv
-bmx5IHdpcmVkIHRvIHRoZSBzZWNvbmRhcnkgQUlGCj4gb2YgdGhlIFdNODU4MCBzbyB3aWxsIG5l
-ZWQgc3VwcG9ydCBmb3IgdGhhdCBpbXBsZW1lbnRpbmcuIMKgVGhlIGVuZAo+IHJlc3VsdCBzaG91
-bGQgYmUgYW4gZXh0cmEgc2V0IG9mIERBSSBsaW5rcyBmb3IgdGhlIHNlY29uZGFyeSBBSUYuIMKg
-Q291bGQKPiB5b3UgY2xhcmlmeSwgcGxlYXNlPwo+Cj4+ICsvKiBTTURLNjRYWCBoYXMgYSAxMk1I
-WiBjcnlzdGFsIGF0dGFjaGVkIHRvIFdNODU4MCAqLwo+PiArI2RlZmluZSBTTURLNjRYWF9XTTg1
-ODBfRlJFUSAoMTIwMDAwMDApCj4KPiBObyBuZWVkIGZvciB0aGUgKCkgaGVyZS4KPgo+PiArIMKg
-IMKgIHN3aXRjaCAocGFyYW1zX3JhdGUocGFyYW1zKSkgewo+PiArIMKgIMKgIGNhc2UgODAwMDoK
-Pj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBwbGxfb3V0ID0gODE5MjAwMCAvIDQ7IGJyZWFrOwo+Cj4g
-VGhlc2UgYXJlIGFsbCBhIGJpdCBvZGQgLSB5b3UncmUgdGFraW5nIHR3byBtYWdpYyBudW1iZXJz
-IGFuZCBwZXJmb3JtaW5nCj4gYW4gb3BlcmF0aW9uIG9uIHRoZW0sIGdpdmluZyBhbm90aGVyIG1h
-Z2ljIG51bWJlci4gwqBGb3IgdGhlIG1vc3QgcGFydAo+IHRoZSByZXN1bHRpbmcgbWFnaWMgbnVt
-YmVyIGlzIGFsd2F5cyAyNTZmcyAoSSBzdXNwZWN0IHRoZSBjYXNlcyB3aGVyZQo+IHRoZXkgYXJl
-bid0IHNob3VsZCBiZSAyNTZmcykuIMKgUHJvYmFibHkgcmVwbGFjaW5nIGFsbCBvZiB0aGlzIHdp
-dGgKPgo+IMKgIMKgIMKgIMKgcGxsX291dCA9IHBhcmFtc19yYXRlKHBhcmFtcykgKiAyNTYKPgo+
-IHdvdWxkIHdvcmsuCj4KPj4gKyDCoCDCoCAvKiBXZSBibG9jayBDT0RDTEsgZnJvbSBNQ0xLIG9m
-IFdNODU4MCAqLwo+PiArIMKgIMKgIHJldCA9IHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY3B1X2Rh
-aSwgUzNDNjRYWF9DT0RDTEtTUkNfRVhULAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDAsIFNORF9TT0NfQ0xPQ0tfSU4pOwo+PiArIMKg
-IMKgIGlmIChyZXQgPCAwKQo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiByZXQ7Cj4KPiBU
-aGUgY29kZSBpcyBPSyAobW9kdWxvIHRoZSBpc3N1ZXMgd2l0aCB0aGUgcHJldmlvdXMgcGF0Y2gp
-IGJ1dCB0aGUKPiBjb21tZW50IGlzIGV4Y2VwdGlvbmFsbHkgZGlmZmljdWx0IHRvIHBhcnNlLgo+
-Cj4+ICsgwqAgwqAgLyogRXhwbGljaXRseSBzZXQgV004NTgwLUFEQy9EQUMgdG8gc291cmNlIGZy
-b20gTUNMSyAqLwo+PiArIMKgIMKgIHJldCA9IHNuZF9zb2NfZGFpX3NldF9jbGtkaXYoY29kZWNf
-ZGFpLCBXTTg1ODBfQURDX0NMS1NFTCwKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBXTTg1ODBfQ0xLU1JDX01DTEspOwo+Cj4gT2J2aW91
-c2x5IHRoaXMgd2lsbCBuZWVkIHVwZGF0aW5nIGZvciB0aGUgYWN0dWFsIHBhdGNoIGZvciB0aGUg
-V004NTgwCj4gZHJpdmVyLgo+Cj4+ICsgwqAgwqAgaWYgKHJldCA8IDApCj4+ICsgwqAgwqAgwqAg
-wqAgwqAgwqAgcmV0dXJuIHJldDsKPj4gKyDCoCDCoCByZXQgPSBzbmRfc29jX2RhaV9zZXRfY2xr
-ZGl2KGNvZGVjX2RhaSwgV004NTgwX0RBQ19DTEtTRUwsCj4KPiBNaXNzaW5nIGJsYW5rIGxpbmUg
-aGVyZS4KPgo+PiArIMKgIMKgIC8qIERvbid0IG91dHB1dCB0byB0aGUgZGlzY29ubmVjdGVkIHBp
-biAqLwo+PiArIMKgIMKgIHJldCA9IHNuZF9zb2NfZGFpX3NldF9jbGtkaXYoY29kZWNfZGFpLCBX
-TTg1ODBfQ0xLT1VUU1JDLAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIFdNODU4MF9DTEtTUkNfTk9ORSk7Cj4+ICsgwqAgwqAgaWYgKHJl
-dCA8IDApCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIHJldDsKPgo+IElmIHlvdSdyZSBn
-b2luZyB0byBkbyB0aGlzIGRvIGl0IG9uIGluaXQsIGl0J3Mgbm90aGluZyB0byBkbyB3aXRoCj4g
-c3RhcnRpbmcgdGhlIGF1ZGlvIHN0cmVhbS4KPgo+PiArIMKgIMKgIHN3aXRjaCAocGFyYW1zX2Zv
-cm1hdChwYXJhbXMpKSB7Cj4+ICsgwqAgwqAgY2FzZSBTTkRSVl9QQ01fRk9STUFUX1U4Ogo+PiAr
-IMKgIMKgIGNhc2UgU05EUlZfUENNX0ZPUk1BVF9TODoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBi
-ZnMgPSAxNjsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZnMgPSAyNTY7Cj4+ICsgwqAgwqAgwqAg
-wqAgwqAgwqAgYnJlYWs7Cj4+ICsgwqAgwqAgY2FzZSBTTkRSVl9QQ01fRk9STUFUX1UxNl9MRToK
-Pj4gKyDCoCDCoCBjYXNlIFNORFJWX1BDTV9GT1JNQVRfUzE2X0xFOgo+PiArIMKgIMKgIMKgIMKg
-IMKgIMKgIGJmcyA9IDMyOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHJmcyA9IDI1NjsKPj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPj4gKyDCoCDCoCBkZWZhdWx0Ogo+PiArIMKgIMKgIMKg
-IMKgIMKgIMKgIHJldHVybiAtRUlOVkFMOwo+PiArIMKgIMKgIH0KPgo+IFRoaXMgb3VnaHQgdG8g
-Z2V0IGZhY3RvcmVkIG91dCBpbnRvIHRoZSBDUFUgREFJIGRyaXZlciwgYXQgbGVhc3QgYXMgYQo+
-IGxpYnJhcnkgZnVuY3Rpb24gLSB0aGVyZSdzIG5vdGhpbmcgYm9hcmQgc3BlY2lmaWMgZ29pbmcg
-b24gaGVyZS4KPgo+PiArIMKgIMKgIC8qIExpbmVJbiBlbmFibGVkIGJ5IGRlZmF1bHQgKi8KPj4g
-KyDCoCDCoCBzbmRfc29jX2RhcG1fZGlzYWJsZV9waW4oY29kZWMsICJNaWNJbiIpOwo+PiArIMKg
-IMKgIHNuZF9zb2NfZGFwbV9lbmFibGVfcGluKGNvZGVjLCAiTGluZUluIik7Cj4KPiBQbGVhc2Ug
-YWRkIGEgY29tbWVudCBleHBsYWluaW5nIHRoYXQgaWYgdGhpcyBpcyBjaGFuZ2VkIGl0IG5lZWRz
-IHRvIGJlCj4gZG9uZSB3aXRoIGEgcmVzaXN0b3IgZml0IG1vZCAtIHRoaXMgYmVncyB0aGUgcXVl
-c3Rpb24gIkhvdyBkbyBJIGNoYW5nZQo+IGF3YXkgZnJvbSB0aGUgZGVmYXVsdD8iLCBlc3BlY2lh
-bGx5IGdpdmVuIHRoZSBtYW55IHN3aXRjaGVzIGZvciB0aGluZ3MKPiBsaWtlIHRoaXMgb24gdGhl
-IGJvYXJkLgo+Cj4gRm9yIGNvbXBsZXRlbmVzcyBpZiB5b3UncmUgZ29pbmcgdG8gaGFuZGxlIHRo
-ZSBtYXBwaW5nIHRvIHRoZSBleHRlcm5hbAo+IGphY2tzIHRoZXJlJ3MgYWxzbyB0aGUgcG9zc2li
-bGl0eSB0aGF0IHRoZSBzaWduYWxzIHdpbGwgYmUgc3dpdGNoZWQgb3V0Cj4gdG8gdGhlIFBNSUMg
-Y2FyZCBvciBXTTk3MTMuIMKgSXQncyBwcm9iYWJseSBiZXR0ZXIgdG8ganVzdCBub3QgYm90aGVy
-LAo+IGl0J3Mgbm90IHJlYWxseSBhZGRpbmcgYW55dGhpbmcgc2luY2UgdGhlcmUncyBubyBqYWNr
-IGRldGVjdCBvciBhbnl0aGluZwo+IG9uIHRoZSBib2FyZC4gwqBBbGwgdGhhdCdsbCBoYXBwZW4g
-aXMgdGhhdCBwZW9wbGUgYXJlIGZvcmNlZCB0byByZWJ1aWxkCj4gZm9yIERJUCBzd2l0Y2ggY2hh
-bmdlcy4KPgo+IFRoZSBvdGhlciBvcHRpb24gd291bGQgYmUgdG8gYWRkIGNvbnRyb2xzIG1pcnJv
-cmluZyB0aGUgRElQIHN3aXRjaAo+IHNldHRpbmdzLCBidXQgdGhhdCdkIG5vdCByZWFsbHkgY292
-ZXIgdGhlIHJlc2lzdG9yIGZpdCBzdHVmZi4KPgo+PiArIMKgIMKgIC8qIFN0ZXJlbyBlbmFibGVk
-IGJ5IGRlZmF1bHQgKi8KPj4gKyDCoCDCoCBzbmRfc29jX2RhcG1fZW5hYmxlX3Bpbihjb2RlYywg
-IkZyb250LUwvUiIpOwo+PiArIMKgIMKgIHNuZF9zb2NfZGFwbV9kaXNhYmxlX3Bpbihjb2RlYywg
-IkNlbnRlci9TdWIiKTsKPj4gKyDCoCDCoCBzbmRfc29jX2RhcG1fZGlzYWJsZV9waW4oY29kZWMs
-ICJSZWFyLUwvUiIpOwo+Cj4gU2ltaWxhciBpc3N1ZXMgaGVyZSAtIHB1dHRpbmcgYSBmaXhlZCBj
-b25maWd1cmF0aW9uIGZyb20gdGhpcyBpbiB0aGUKPiBkcml2ZXIgZG9lc24ndCBidXkgYW55dGhp
-bmcuCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Cliff Cai <cliff.cai@analog.com>
+
+Somewhere along the line, most of SND_BF5XX_MULTICHAN_SUPPORT handling was
+merged, but two places were missed (the probe/resume functions).  Restore
+handling of this option so it gets initialized properly.
+
+Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ sound/soc/blackfin/bf5xx-ac97.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/blackfin/bf5xx-ac97.c b/sound/soc/blackfin/bf5xx-ac97.c
+index 2758b90..e693229 100644
+--- a/sound/soc/blackfin/bf5xx-ac97.c
++++ b/sound/soc/blackfin/bf5xx-ac97.c
+@@ -277,7 +277,11 @@ static int bf5xx_ac97_resume(struct snd_soc_dai *dai)
+ 	if (!dai->active)
+ 		return 0;
+ 
++#if defined(CONFIG_SND_BF5XX_MULTICHAN_SUPPORT)
++	ret = sport_set_multichannel(sport, 16, 0x3FF, 1);
++#else
+ 	ret = sport_set_multichannel(sport, 16, 0x1F, 1);
++#endif
+ 	if (ret) {
+ 		pr_err("SPORT is busy!\n");
+ 		return -EBUSY;
+@@ -334,7 +338,11 @@ static int bf5xx_ac97_probe(struct platform_device *pdev,
+ 		goto sport_err;
+ 	}
+ 	/*SPORT works in TDM mode to simulate AC97 transfers*/
++#if defined(CONFIG_SND_BF5XX_MULTICHAN_SUPPORT)
++	ret = sport_set_multichannel(sport_handle, 16, 0x3FF, 1);
++#else
+ 	ret = sport_set_multichannel(sport_handle, 16, 0x1F, 1);
++#endif
+ 	if (ret) {
+ 		pr_err("SPORT is busy!\n");
+ 		ret = -EBUSY;
+-- 
+1.6.5.rc1
