@@ -1,15 +1,18 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: [PATCH] SMDK64XX I2S: Added machine driver for WM8580
-Date: Fri, 18 Sep 2009 09:01:13 +0900
-Message-ID: <1253232073-21717-1-git-send-email-jassisinghbrar@gmail.com>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: hda_intel: SPDIF not detected on Asus P7P55D PRO
+Date: Thu, 17 Sep 2009 21:38:04 -0600
+Message-ID: <4AB3009C.1090605@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F2812442A
+Received: from mail-yw0-f182.google.com (mail-yw0-f182.google.com
+	[209.85.211.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE75B24543
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Sep 2009 02:06:11 +0200 (CEST)
+	Fri, 18 Sep 2009 05:38:08 +0200 (CEST)
+Received: by ywh12 with SMTP id 12so857486ywh.23
+	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 20:38:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,348 +22,333 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: jassi brar <jassisinghbrar@gmail.com>, broonie@opensource.wolfsonmicro.com, Jassi <jassi.brar@samsung.com>, ben@trinity.fluff.org
+To: Alsa-Devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Harald Welte <HaraldWelte@viatech.com>
 List-Id: alsa-devel@alsa-project.org
 
-New machine driver for WM8580 I2S i/f on SMDK64XX.
-By default SoC-Slave is set and WM8580 is configured to use it's
-PLLA to generate clocks from a 12MHz crystal attached to WM8580.
+I just set up a new system running an Asus P7P55D PRO motherboard. It 
+looks like this uses the VIA VT1828S codec. The analog output seems to 
+work but the SPDIF output isn't recognized. Originally tried 2.6.30.5, 
+but Linus' current git doesn't seem any different. The device only gets 
+detected as HDA Generic, which, from my reading of the code, ignores 
+SPDIF outputs. I tried hacking patch_via.c to add the codec ID to match 
+existing types like VT1708S and VT1702, each of those got the SPDIF 
+output to show up, but no output showed up on the receiver, and also the 
+analog output then stopped being recognized (looks like some node IDs 
+don't match).
 
-Signed-off-by: Jassi <jassi.brar@samsung.com>
----
- sound/soc/s3c24xx/Kconfig           |    8 +
- sound/soc/s3c24xx/Makefile          |    2 +
- sound/soc/s3c24xx/smdk64xx_wm8580.c |  284 +++++++++++++++++++++++++++++++++++
- 3 files changed, 294 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/s3c24xx/smdk64xx_wm8580.c
+Is there some extra support that needs to be added for this codec, or 
+anything else I can try to get this working? The SPDIF does work in 
+Windows 7 with just the standard Microsoft HDA driver..
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index 923428f..769697e 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -56,6 +56,14 @@ config SND_S3C24XX_SOC_JIVE_WM8750
- 	help
- 	  Sat Y if you want to add support for SoC audio on the Jive.
- 
-+config SND_S3C64XX_SOC_WM8580
-+	tristate "SoC I2S Audio support for WM8580 on SMDK64XX"
-+	depends on SND_S3C24XX_SOC && (MACH_SMDK6400 || MACH_SMDK6410)
-+	select SND_SOC_WM8580
-+	select SND_S3C64XX_SOC_I2S
-+	help
-+	  Sat Y if you want to add support for SoC audio on the SMDK64XX.
-+
- config SND_S3C24XX_SOC_SMDK2443_WM9710
- 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
- 	depends on SND_S3C24XX_SOC && MACH_SMDK2443
-diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
-index 99f5a7d..7790406 100644
---- a/sound/soc/s3c24xx/Makefile
-+++ b/sound/soc/s3c24xx/Makefile
-@@ -23,6 +23,7 @@ snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
- snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
- snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
- snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
-+snd-soc-smdk64xx-wm8580-objs := smdk64xx_wm8580.o
- 
- obj-$(CONFIG_SND_S3C24XX_SOC_JIVE_WM8750) += snd-soc-jive-wm8750.o
- obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
-@@ -33,4 +34,5 @@ obj-$(CONFIG_SND_S3C24XX_SOC_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC) += snd-soc-s3c24xx-simtec.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
- obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
-+obj-$(CONFIG_SND_S3C64XX_SOC_WM8580) += snd-soc-smdk64xx-wm8580.o
- 
-diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-new file mode 100644
-index 0000000..186e1de
---- /dev/null
-+++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-@@ -0,0 +1,284 @@
-+/*
-+ *  smdk64xx_wm8580.c
-+ *
-+ *  Copyright (c) 2009 Samsung Electronics Co. Ltd
-+ *  Author: Jaswinder Singh <jassi.brar@samsung.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/clk.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include "../codecs/wm8580.h"
-+#include "s3c24xx-pcm.h"
-+#include "s3c64xx-i2s.h"
-+
-+#define S3C64XX_I2S_V4 2
-+
-+/* SMDK64XX has a 12MHZ crystal attached to WM8580 */
-+#define SMDK64XX_WM8580_FREQ 12000000
-+
-+static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	unsigned int pll_out;
-+	int bfs, rfs, ret;
-+
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_U8:
-+	case SNDRV_PCM_FORMAT_S8:
-+		bfs = 16;
-+		break;
-+	case SNDRV_PCM_FORMAT_U16_LE:
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		bfs = 32;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* Currently, WM8580 driver doesn't support PLL-out rates
-+	 * other than those mentioned in Table-52 Page-58 of WM8580A
-+	 * manual. Some of these unavailable rates include
-+	 * {8000x256, 64000x256, 11025x256}Hz.
-+	 * As a wayout, we rather change rfs to a value that results in
-+	 * (params_rate(params) * rfs), and itself, acceptable to the both
-+	 * the CODEC and the CPU.
-+	 */
-+	switch (params_rate(params)) {
-+	case 16000:
-+	case 22050:
-+	case 32000:
-+	case 44100:
-+	case 48000:
-+	case 88200:
-+	case 96000:
-+		rfs = 256;
-+		break;
-+	case 64000:
-+		rfs = 384;
-+		break;
-+	case 8000:
-+	case 11025:
-+		rfs = 512;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	pll_out = params_rate(params) * rfs;
-+
-+	/* Set the Codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
-+					 | SND_SOC_DAIFMT_NB_NF
-+					 | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set the AP DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
-+					 | SND_SOC_DAIFMT_NB_NF
-+					 | SND_SOC_DAIFMT_CBM_CFM);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_CDCLK,
-+					0, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* We use PCLK for basic ops in SoC-Slave mode */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_PCLK,
-+					0, SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Set WM8580 to drive MCLK from it's PLLA */
-+	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_MCLK,
-+					WM8580_CLKSRC_PLLA);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Explicitly set WM8580-DAC to source from MCLK */
-+	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_DAC_CLKSEL,
-+					WM8580_CLKSRC_MCLK);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Assuming the CODEC driver evaluates it's rfs too from this call */
-+	ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA,
-+					SMDK64XX_WM8580_FREQ, pll_out);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_I2SV2_DIV_BCLK, bfs);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_I2SV2_DIV_RCLK, rfs);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int smdk64xx_hw_free(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+
-+	/* disable the PLL */
-+	return snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0, 0);
-+}
-+
-+/*
-+ * SMDK64XX WM8580 DAI operations.
-+ */
-+static struct snd_soc_ops smdk64xx_ops = {
-+	.hw_params = smdk64xx_hw_params,
-+	.hw_free = smdk64xx_hw_free,
-+};
-+
-+/* SMDK64xx Playback widgets */
-+static const struct snd_soc_dapm_widget wm8580_dapm_widgets_pbk[] = {
-+	SND_SOC_DAPM_HP("Front-L/R", NULL),
-+	SND_SOC_DAPM_HP("Center/Sub", NULL),
-+	SND_SOC_DAPM_HP("Rear-L/R", NULL),
-+};
-+
-+/* SMDK64xx Capture widgets */
-+static const struct snd_soc_dapm_widget wm8580_dapm_widgets_cpt[] = {
-+	SND_SOC_DAPM_MIC("MicIn", NULL),
-+	SND_SOC_DAPM_LINE("LineIn", NULL),
-+};
-+
-+/* SMDK-PAIFTX connections */
-+static const struct snd_soc_dapm_route audio_map_tx[] = {
-+	/* MicIn feeds AINL */
-+	{"AINL", NULL, "MicIn"},
-+
-+	/* LineIn feeds AINL/R */
-+	{"AINL", NULL, "LineIn"},
-+	{"AINR", NULL, "LineIn"},
-+};
-+
-+/* SMDK-PAIFRX connections */
-+static const struct snd_soc_dapm_route audio_map_rx[] = {
-+	/* Front Left/Right are fed VOUT1L/R */
-+	{"Front-L/R", NULL, "VOUT1L"},
-+	{"Front-L/R", NULL, "VOUT1R"},
-+
-+	/* Center/Sub are fed VOUT2L/R */
-+	{"Center/Sub", NULL, "VOUT2L"},
-+	{"Center/Sub", NULL, "VOUT2R"},
-+
-+	/* Rear Left/Right are fed VOUT3L/R */
-+	{"Rear-L/R", NULL, "VOUT3L"},
-+	{"Rear-L/R", NULL, "VOUT3R"},
-+};
-+
-+static int smdk64xx_wm8580_init_paiftx(struct snd_soc_codec *codec)
-+{
-+	/* Add smdk64xx specific Capture widgets */
-+	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_cpt,
-+				  ARRAY_SIZE(wm8580_dapm_widgets_cpt));
-+
-+	/* Set up PAIFTX audio path */
-+	snd_soc_dapm_add_routes(codec, audio_map_tx, ARRAY_SIZE(audio_map_tx));
-+
-+	/* All enabled by default */
-+	snd_soc_dapm_enable_pin(codec, "MicIn");
-+	snd_soc_dapm_enable_pin(codec, "LineIn");
-+
-+	/* signal a DAPM event */
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static int smdk64xx_wm8580_init_paifrx(struct snd_soc_codec *codec)
-+{
-+	/* Add smdk64xx specific Playback widgets */
-+	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_pbk,
-+				  ARRAY_SIZE(wm8580_dapm_widgets_pbk));
-+
-+	/* Set up PAIFRX audio path */
-+	snd_soc_dapm_add_routes(codec, audio_map_rx, ARRAY_SIZE(audio_map_rx));
-+
-+	/* All enabled by default */
-+	snd_soc_dapm_enable_pin(codec, "Front-L/R");
-+	snd_soc_dapm_enable_pin(codec, "Center/Sub");
-+	snd_soc_dapm_enable_pin(codec, "Rear-L/R");
-+
-+	/* signal a DAPM event */
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link smdk64xx_dai[] = {
-+{ /* Primary Playback i/f */
-+	.name = "WM8580 PAIF RX",
-+	.stream_name = "Playback",
-+	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
-+	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFRX],
-+	.init = smdk64xx_wm8580_init_paifrx,
-+	.ops = &smdk64xx_ops,
-+},
-+{ /* Primary Capture i/f */
-+	.name = "WM8580 PAIF TX",
-+	.stream_name = "Capture",
-+	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
-+	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFTX],
-+	.init = smdk64xx_wm8580_init_paiftx,
-+	.ops = &smdk64xx_ops,
-+},
-+};
-+
-+static struct snd_soc_card smdk64xx = {
-+	.name = "smdk64xx",
-+	.platform = &s3c24xx_soc_platform,
-+	.dai_link = smdk64xx_dai,
-+	.num_links = ARRAY_SIZE(smdk64xx_dai),
-+};
-+
-+static struct snd_soc_device smdk64xx_snd_devdata = {
-+	.card = &smdk64xx,
-+	.codec_dev = &soc_codec_dev_wm8580,
-+};
-+
-+static struct platform_device *smdk64xx_snd_device;
-+
-+static int __init smdk64xx_audio_init(void)
-+{
-+	int ret;
-+
-+	smdk64xx_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!smdk64xx_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(smdk64xx_snd_device, &smdk64xx_snd_devdata);
-+	smdk64xx_snd_devdata.dev = &smdk64xx_snd_device->dev;
-+	ret = platform_device_add(smdk64xx_snd_device);
-+
-+	if (ret)
-+		platform_device_put(smdk64xx_snd_device);
-+
-+	return ret;
-+}
-+module_init(smdk64xx_audio_init);
-+
-+MODULE_AUTHOR("Jaswinder Singh, jassi.brar@samsung.com");
-+MODULE_DESCRIPTION("ALSA SoC SMDK64XX WM8580");
-+MODULE_LICENSE("GPL");
--- 
-1.6.2.5
+aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: HDA Generic [HDA Generic]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
+
+The codec data seems to have references to the SPDIF output, but no 
+device is actually getting created. The data is below. Any suggestions?
+
+cat /proc/asound/card0/codec#0
+Codec: VIA ID 4441
+Address: 0
+Function Id: 0x1
+Vendor Id: 0x11064441
+Subsystem Id: 0x104383cf
+Revision Id: 0x100100
+No Modem Function Group found
+Default PCM:
+     rates [0x0]:
+     bits [0x0]:
+     formats [0x0]:
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=1, o=0, i=0, unsolicited=1, wake=0
+   IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+Node 0x08 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
+   Amp-Out vals:  [0x2a 0x2a]
+   Converter: stream=5, channel=0
+   PCM:
+     rates [0x5e0]: 44100 48000 88200 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+Node 0x09 [Audio Output] wcaps 0x41d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
+   Amp-Out vals:  [0x26 0x26]
+   Converter: stream=0, channel=0
+   PCM:
+     rates [0x5e0]: 44100 48000 88200 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+Node 0x0a [Audio Output] wcaps 0x41d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
+   Amp-Out vals:  [0x26 0x26]
+   Converter: stream=0, channel=0
+   PCM:
+     rates [0x5e0]: 44100 48000 88200 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+Node 0x0b [Audio Output] wcaps 0x41d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
+   Amp-Out vals:  [0x26 0x26]
+   Converter: stream=0, channel=0
+   PCM:
+     rates [0x5e0]: 44100 48000 88200 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+Node 0x0c [Audio Output] wcaps 0x41d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
+   Amp-Out vals:  [0x2a 0x2a]
+   Converter: stream=0, channel=0
+   PCM:
+     rates [0x5e0]: 44100 48000 88200 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+Node 0x0d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x0e [Audio Output] wcaps 0x611: Stereo Digital
+   Converter: stream=0, channel=0
+   Digital:
+   Digital category: 0x0
+   PCM:
+     rates [0x5e0]: 44100 48000 88200 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+Node 0x0f [Audio Output] wcaps 0x611: Stereo Digital
+   Converter: stream=0, channel=0
+   Digital:
+   Digital category: 0x0
+   PCM:
+     rates [0x5e0]: 44100 48000 88200 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+Node 0x10 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+   Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+   Amp-In vals:  [0x14 0x14]
+   Converter: stream=0, channel=0
+   SDI-Select: 0
+   PCM:
+     rates [0x560]: 44100 48000 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x1e
+Node 0x11 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+   Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
+   Amp-In vals:  [0x8b 0x8b]
+   Converter: stream=0, channel=0
+   SDI-Select: 0
+   PCM:
+     rates [0x560]: 44100 48000 96000 192000
+     bits [0xe]: 16 20 24
+     formats [0x1]: PCM
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x1f
+Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x18 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x80 0x80]
+   Power: setting=D0, actual=D0
+   Connection: 2
+      0x08 0x21
+Node 0x19 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x80 0x80]
+   Power: setting=D0, actual=D0
+   Connection: 2
+      0x09 0x21
+Node 0x1a [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x80 0x80]
+   Power: setting=D0, actual=D0
+   Connection: 2
+      0x0b 0x21
+Node 0x1b [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x00 0x00] [0x80 0x80]
+   Power: setting=D0, actual=D0
+   Connection: 2
+      0x34 0x21
+Node 0x1c [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+   Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-In vals:  [0x80 0x80] [0x80 0x80]
+   Power: setting=D0, actual=D0
+   Connection: 2
+      0x35 0x21
+Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1e [Audio Selector] wcaps 0x300501: Stereo
+   Power: setting=D0, actual=D0
+   Connection: 6
+      0x2c* 0x2b 0x2a 0x29 0x28 0x21
+Node 0x1f [Audio Selector] wcaps 0x300501: Stereo
+   Power: setting=D0, actual=D0
+   Connection: 6
+      0x2c 0x2b* 0x2a 0x29 0x28 0x21
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x21 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
+   Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+   Amp-In vals:  [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97]
+   Power: setting=D0, actual=D0
+   Connection: 5
+      0x2c 0x2b 0x2a 0x29 0x28
+Node 0x22 [Beep Generator Widget] wcaps 0x70040c: Mono Amp-Out
+   Amp-Out caps: ofs=0x0a, nsteps=0x12, stepsize=0x05, mute=1
+   Amp-Out vals:  [0x00]
+   Power: setting=D0, actual=D0
+Node 0x23 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x24 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x0001001c: OUT HP EAPD Detect
+   EAPD 0x0:
+   Pin Default 0x01014010: [Jack] Line Out at Ext Rear
+     Conn = 1/8, Color = Green
+     DefAssociation = 0x1, Sequence = 0x0
+   Pin-ctls: 0xc0: OUT HP
+   Unsolicited: tag=00, enabled=0
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x18
+Node 0x25 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x0000001c: OUT HP Detect
+   Pin Default 0x01011012: [Jack] Line Out at Ext Rear
+     Conn = 1/8, Color = Black
+     DefAssociation = 0x1, Sequence = 0x2
+   Pin-ctls: 0x00:
+   Unsolicited: tag=00, enabled=0
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x19
+Node 0x26 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x00000014: OUT Detect
+   Pin Default 0x01016011: [Jack] Line Out at Ext Rear
+     Conn = 1/8, Color = Orange
+     DefAssociation = 0x1, Sequence = 0x1
+   Pin-ctls: 0x00:
+   Unsolicited: tag=00, enabled=0
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x0a
+Node 0x27 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x00000014: OUT Detect
+   Pin Default 0x01012014: [Jack] Line Out at Ext Rear
+     Conn = 1/8, Color = Grey
+     DefAssociation = 0x1, Sequence = 0x4
+   Pin-ctls: 0x00:
+   Unsolicited: tag=00, enabled=0
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x1a
+Node 0x28 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x0000233c: IN OUT HP Detect
+     Vref caps: HIZ 50 100
+   Pin Default 0x0221401f: [Jack] HP Out at Ext Front
+     Conn = 1/8, Color = Green
+     DefAssociation = 0x1, Sequence = 0xf
+   Pin-ctls: 0xc0: OUT HP VREF_HIZ
+   Unsolicited: tag=00, enabled=0
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x1b
+Node 0x29 [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x0000233c: IN OUT HP Detect
+     Vref caps: HIZ 50 100
+   Pin Default 0x02a19037: [Jack] Mic at Ext Front
+     Conn = 1/8, Color = Pink
+     DefAssociation = 0x3, Sequence = 0x7
+   Pin-ctls: 0x00: VREF_HIZ
+   Unsolicited: tag=00, enabled=0
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x1c
+Node 0x2a [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x00002334: IN OUT Detect
+     Vref caps: HIZ 50 100
+   Pin Default 0x0181303e: [Jack] Line In at Ext Rear
+     Conn = 1/8, Color = Blue
+     DefAssociation = 0x3, Sequence = 0xe
+   Pin-ctls: 0x00: VREF_HIZ
+   Unsolicited: tag=00, enabled=0
+   Power: setting=D0, actual=D0
+   Connection: 2
+      0x09* 0x0c
+Node 0x2b [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
+   Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+   Amp-Out vals:  [0x00 0x00]
+   Pincap 0x00002334: IN OUT Detect
+     Vref caps: HIZ 50 100
+   Pin Default 0x01a19036: [Jack] Mic at Ext Rear
+     Conn = 1/8, Color = Pink
+     DefAssociation = 0x3, Sequence = 0x6
+   Pin-ctls: 0x00: VREF_HIZ
+   Unsolicited: tag=00, enabled=0
+   Power: setting=D0, actual=D0
+   Connection: 2
+      0x0a* 0x0c
+Node 0x2c [Pin Complex] wcaps 0x400401: Stereo
+   Pincap 0x00000020: IN
+   Pin Default 0x90331138: [Fixed] CD at Int N/A
+     Conn = ATAPI, Color = Black
+     DefAssociation = 0x3, Sequence = 0x8
+     Misc = NO_PRESENCE
+   Pin-ctls: 0x20: IN
+   Power: setting=D0, actual=D0
+Node 0x2d [Pin Complex] wcaps 0x400701: Stereo Digital
+   Pincap 0x00000090: OUT HDMI
+   Pin Default 0x185600f0: [Jack] Digital Out at Int HDMI
+     Conn = Digital, Color = Unknown
+     DefAssociation = 0xf, Sequence = 0x0
+   Pin-ctls: 0x00:
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x0e
+Node 0x2e [Pin Complex] wcaps 0x400701: Stereo Digital
+   Pincap 0x00000010: OUT
+   Pin Default 0x074411f0: [Jack] SPDIF Out at Ext Rear Panel
+     Conn = RCA, Color = Black
+     DefAssociation = 0xf, Sequence = 0x0
+     Misc = NO_PRESENCE
+   Pin-ctls: 0x00:
+   Power: setting=D0, actual=D0
+   Connection: 1
+      0x0f
+Node 0x2f [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x30 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x31 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x32 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x33 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x34 [Audio Selector] wcaps 0x300501: Stereo
+   Power: setting=D0, actual=D0
+   Connection: 3
+      0x08* 0x0b 0x0c
+Node 0x35 [Audio Selector] wcaps 0x300501: Stereo
+   Power: setting=D0, actual=D0
+   Connection: 3
+      0x08* 0x0b 0x0c
