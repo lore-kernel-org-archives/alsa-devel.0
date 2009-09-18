@@ -1,29 +1,15 @@
-From: Alistair Boyle <alistair.js.boyle@gmail.com>
-Subject: Re: Fwd: Dell Studio 14, internal mic
-Date: Thu, 17 Sep 2009 15:51:55 -0400
-Message-ID: <8c6d84110909171251i2c087518y9e53c868c260d876@mail.gmail.com>
-References: <8c6d84110908032326u1d94a581s95d47e5f3492ac47@mail.gmail.com>
-	<s5hfxaplt02.wl%tiwai@suse.de>
-	<8c6d84110909140936n35def811r477e8c87806b0a23@mail.gmail.com>
-	<s5hy6ogbi54.wl%tiwai@suse.de>
-	<8c6d84110909151054k5db09f04l1f47033612effa7b@mail.gmail.com>
-	<s5hfxanzc3j.wl%tiwai@suse.de>
-	<8c6d84110909161418r6761a3c1i118a473978f8b5e3@mail.gmail.com>
-	<s5hbpl9fs79.wl%tiwai@suse.de>
-	<8c6d84110909171025x177a71bep4fac6f224e40358f@mail.gmail.com>
-	<s5hocp9h06y.wl%tiwai@suse.de>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: [PATCH] SMDK64XX I2S: Added machine driver for WM8580
+Date: Fri, 18 Sep 2009 09:01:13 +0900
+Message-ID: <1253232073-21717-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f214.google.com (mail-fx0-f214.google.com
-	[209.85.220.214])
-	by alsa0.perex.cz (Postfix) with ESMTP id C141F1038CB
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5F2812442A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Sep 2009 21:52:16 +0200 (CEST)
-Received: by fxm10 with SMTP id 10so300850fxm.32
-	for <alsa-devel@alsa-project.org>; Thu, 17 Sep 2009 12:52:15 -0700 (PDT)
-In-Reply-To: <s5hocp9h06y.wl%tiwai@suse.de>
+	Fri, 18 Sep 2009 02:06:11 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,39 +19,348 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: jassi brar <jassisinghbrar@gmail.com>, broonie@opensource.wolfsonmicro.com, Jassi <jassi.brar@samsung.com>, ben@trinity.fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAwOS85LzE3IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4gQXQgVGh1LCAxNyBTZXAg
-MjAwOSAxMzoyNToyMiAtMDQwMCwKPiBBbGlzdGFpciBCb3lsZSB3cm90ZToKPj4KPj4gT24gVGh1
-LCBTZXAgMTcsIDIwMDkgYXQgMTI6MzEgUE0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4g
-d3JvdGU6Cj4+ID4gQXQgV2VkLCAxNiBTZXAgMjAwOSAxNzoxODoxMSAtMDQwMCwKPj4gPiBBbGlz
-dGFpciBCb3lsZSB3cm90ZToKPj4gLi4uCj4+ID4+IDIuIEl0IHNob3VsZCBiZSB0aGUgImNhcHR1
-cmUiIGNvbnRyb2wgdGhhdCBTa3lwZSBvciBzb21lIG90aGVyCj4+ID4+IGFwcGxpY2F0aW9uIHNo
-b3VsZCBiZSB0d2lkZGxpbmcgdG8gYWRqdXN0IHJlY29yZGluZyB2b2x1bWUKPj4gPj4gYXV0b21h
-dGljYWxseT8gSXMgaXQgdGhpcyBjb250cm9sIHRoYXQgc2hvdWxkIGNvbWUgZmlyc3Qgd2hlbiB0
-aGV5IGFyZQo+PiA+PiBlbnVtZXJhdGVkLCBvciBpcyB0aGVyZSBzb21lIHByb3BlcnR5IHRoYXQg
-aXMgbWlzc2luZyBmcm9tIHRoaXMKPj4gPj4gY29udHJvbCB0byB0ZWxsIHRoZSBhcHBsaWNhdGlv
-biB3aGljaCBjb250cm9sIHRvIHVzZT8gKGllOiBpcyB0aGVyZQo+PiA+PiBhbnl0aGluZyB0aGUg
-YWxzYS1kcml2ZXIgZG9lcyB0byBoZWxwIHRoZSBhcHBsaWNhdGlvbiBnZXQgdGhpcyByaWdodD8p
-Cj4+ID4KPj4gPiBUaGUgIkNhcHR1cmUiIHZvbHVtZSBpcyBhdmFpbGFibGUuIMKgU2t5cGUgc2hv
-dWxkIGNob29zZSBpdCBhcyBkZWZhdWx0Lgo+PiA+IElzbid0IGl0IGp1c3QgdGhlIG9sZCBzYXZl
-ZCBzZXR1cCB0aGF0IHNjcmV3cyB1cD8KPj4KPj4gQ2xlYXJpbmcgfi8uU2t5cGUgYW5kIHJlc3Rh
-cnRpbmcgZ2V0cyB0aGUgc2FtZSBiZWhhdmlvci4gU2t5cGUgaXMKPj4gcGxheWluZyB0aGUgImZy
-b250IG1pYyIgY29udHJvbCBpbnN0ZWFkIG9mICJjYXB0dXJlIi4gSSBzZWUgYSBidW5jaCBvZgo+
-Cj4gSG0sIHRoZW4gaXQncyByYXRoZXIgYSBwcm9ibGVtIG9mIFNreXBlLgo+CgpPa2F5LiBUaGFu
-a3MgZm9yIGFsbCB5b3VyIGhlbHAgc28gZmFyIQoKPj4gPj4gMS4gVGhlICJwYyBiZWVwIiBpcyBz
-dGlsbCBtYWtpbmcgYSBiYWQgYnV6ei9jcmFja2xpbmcgbm9pc2Ugd2hlbiBhbgo+PiA+PiB4dGVy
-bSBiZWVwIG9jY3Vycy4gVGhlcmUncyBhbHNvIGEgbmV3ICJzcGVha2VyIiBjb250cm9sIGJ1dCBp
-dCBkb2Vzbid0Cj4+ID4+IGFmZmVjdCB0aGlzIGJlaGF2aW9yICh1bnJlbGF0ZWQ/KS4KCj4+ID4g
-SG0sIHRoaXMgaXMgYmFzaWNhbGx5IGluZGVwZW5kZW50IGZyb20gbXkgY2hhbmdlLCBhbmQgSSBn
-dWVzcyB0aGlzIGlzCj4+ID4gYSBjb2RlYyBoYXJkd2FyZSBpc3N1ZS4KClRoZSBsYXN0IGl0ZW0g
-d2FzIHRoZSAicGMgYmVlcCIgdGhpbmcuIEl0IGxvb2tzIGxpa2UgeW91J3JlIHRoZSBndXkgdG8K
-dGFsayB0byBhYm91dCB0aGF0IHRvbzogaXMgdGhlcmUgYW55IGRlYnVnZ2luZyBJIGNhbiBkbyBv
-biBteSBlbmQgdG8KaGVscCBzb3J0IHRoYXQgb3V0PyBJdCBsb29rcyBmcm9tIHRoZSBsb2cgbGlr
-ZSB0aGVyZSdzIHNvbWUgdHJpY2t5CmJ1c2luZXNzIHdpdGggZ2V0dGluZyB0aGUgYmVlcCBmcmVx
-dWVuY3kgcmlnaHQ/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+New machine driver for WM8580 I2S i/f on SMDK64XX.
+By default SoC-Slave is set and WM8580 is configured to use it's
+PLLA to generate clocks from a 12MHz crystal attached to WM8580.
+
+Signed-off-by: Jassi <jassi.brar@samsung.com>
+---
+ sound/soc/s3c24xx/Kconfig           |    8 +
+ sound/soc/s3c24xx/Makefile          |    2 +
+ sound/soc/s3c24xx/smdk64xx_wm8580.c |  284 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 294 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/s3c24xx/smdk64xx_wm8580.c
+
+diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
+index 923428f..769697e 100644
+--- a/sound/soc/s3c24xx/Kconfig
++++ b/sound/soc/s3c24xx/Kconfig
+@@ -56,6 +56,14 @@ config SND_S3C24XX_SOC_JIVE_WM8750
+ 	help
+ 	  Sat Y if you want to add support for SoC audio on the Jive.
+ 
++config SND_S3C64XX_SOC_WM8580
++	tristate "SoC I2S Audio support for WM8580 on SMDK64XX"
++	depends on SND_S3C24XX_SOC && (MACH_SMDK6400 || MACH_SMDK6410)
++	select SND_SOC_WM8580
++	select SND_S3C64XX_SOC_I2S
++	help
++	  Sat Y if you want to add support for SoC audio on the SMDK64XX.
++
+ config SND_S3C24XX_SOC_SMDK2443_WM9710
+ 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
+ 	depends on SND_S3C24XX_SOC && MACH_SMDK2443
+diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
+index 99f5a7d..7790406 100644
+--- a/sound/soc/s3c24xx/Makefile
++++ b/sound/soc/s3c24xx/Makefile
+@@ -23,6 +23,7 @@ snd-soc-s3c24xx-uda134x-objs := s3c24xx_uda134x.o
+ snd-soc-s3c24xx-simtec-objs := s3c24xx_simtec.o
+ snd-soc-s3c24xx-simtec-hermes-objs := s3c24xx_simtec_hermes.o
+ snd-soc-s3c24xx-simtec-tlv320aic23-objs := s3c24xx_simtec_tlv320aic23.o
++snd-soc-smdk64xx-wm8580-objs := smdk64xx_wm8580.o
+ 
+ obj-$(CONFIG_SND_S3C24XX_SOC_JIVE_WM8750) += snd-soc-jive-wm8750.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_NEO1973_WM8753) += snd-soc-neo1973-wm8753.o
+@@ -33,4 +34,5 @@ obj-$(CONFIG_SND_S3C24XX_SOC_S3C24XX_UDA134X) += snd-soc-s3c24xx-uda134x.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC) += snd-soc-s3c24xx-simtec.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_HERMES) += snd-soc-s3c24xx-simtec-hermes.o
+ obj-$(CONFIG_SND_S3C24XX_SOC_SIMTEC_TLV320AIC23) += snd-soc-s3c24xx-simtec-tlv320aic23.o
++obj-$(CONFIG_SND_S3C64XX_SOC_WM8580) += snd-soc-smdk64xx-wm8580.o
+ 
+diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+new file mode 100644
+index 0000000..186e1de
+--- /dev/null
++++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
+@@ -0,0 +1,284 @@
++/*
++ *  smdk64xx_wm8580.c
++ *
++ *  Copyright (c) 2009 Samsung Electronics Co. Ltd
++ *  Author: Jaswinder Singh <jassi.brar@samsung.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ */
++
++#include <linux/platform_device.h>
++#include <linux/clk.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++
++#include "../codecs/wm8580.h"
++#include "s3c24xx-pcm.h"
++#include "s3c64xx-i2s.h"
++
++#define S3C64XX_I2S_V4 2
++
++/* SMDK64XX has a 12MHZ crystal attached to WM8580 */
++#define SMDK64XX_WM8580_FREQ 12000000
++
++static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	unsigned int pll_out;
++	int bfs, rfs, ret;
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_U8:
++	case SNDRV_PCM_FORMAT_S8:
++		bfs = 16;
++		break;
++	case SNDRV_PCM_FORMAT_U16_LE:
++	case SNDRV_PCM_FORMAT_S16_LE:
++		bfs = 32;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/* Currently, WM8580 driver doesn't support PLL-out rates
++	 * other than those mentioned in Table-52 Page-58 of WM8580A
++	 * manual. Some of these unavailable rates include
++	 * {8000x256, 64000x256, 11025x256}Hz.
++	 * As a wayout, we rather change rfs to a value that results in
++	 * (params_rate(params) * rfs), and itself, acceptable to the both
++	 * the CODEC and the CPU.
++	 */
++	switch (params_rate(params)) {
++	case 16000:
++	case 22050:
++	case 32000:
++	case 44100:
++	case 48000:
++	case 88200:
++	case 96000:
++		rfs = 256;
++		break;
++	case 64000:
++		rfs = 384;
++		break;
++	case 8000:
++	case 11025:
++		rfs = 512;
++		break;
++	default:
++		return -EINVAL;
++	}
++	pll_out = params_rate(params) * rfs;
++
++	/* Set the Codec DAI configuration */
++	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
++					 | SND_SOC_DAIFMT_NB_NF
++					 | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	/* Set the AP DAI configuration */
++	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
++					 | SND_SOC_DAIFMT_NB_NF
++					 | SND_SOC_DAIFMT_CBM_CFM);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_CDCLK,
++					0, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++
++	/* We use PCLK for basic ops in SoC-Slave mode */
++	ret = snd_soc_dai_set_sysclk(cpu_dai, S3C64XX_CLKSRC_PCLK,
++					0, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		return ret;
++
++	/* Set WM8580 to drive MCLK from it's PLLA */
++	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_MCLK,
++					WM8580_CLKSRC_PLLA);
++	if (ret < 0)
++		return ret;
++
++	/* Explicitly set WM8580-DAC to source from MCLK */
++	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8580_DAC_CLKSEL,
++					WM8580_CLKSRC_MCLK);
++	if (ret < 0)
++		return ret;
++
++	/* Assuming the CODEC driver evaluates it's rfs too from this call */
++	ret = snd_soc_dai_set_pll(codec_dai, WM8580_PLLA,
++					SMDK64XX_WM8580_FREQ, pll_out);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_I2SV2_DIV_BCLK, bfs);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_clkdiv(cpu_dai, S3C_I2SV2_DIV_RCLK, rfs);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++static int smdk64xx_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++
++	/* disable the PLL */
++	return snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0, 0);
++}
++
++/*
++ * SMDK64XX WM8580 DAI operations.
++ */
++static struct snd_soc_ops smdk64xx_ops = {
++	.hw_params = smdk64xx_hw_params,
++	.hw_free = smdk64xx_hw_free,
++};
++
++/* SMDK64xx Playback widgets */
++static const struct snd_soc_dapm_widget wm8580_dapm_widgets_pbk[] = {
++	SND_SOC_DAPM_HP("Front-L/R", NULL),
++	SND_SOC_DAPM_HP("Center/Sub", NULL),
++	SND_SOC_DAPM_HP("Rear-L/R", NULL),
++};
++
++/* SMDK64xx Capture widgets */
++static const struct snd_soc_dapm_widget wm8580_dapm_widgets_cpt[] = {
++	SND_SOC_DAPM_MIC("MicIn", NULL),
++	SND_SOC_DAPM_LINE("LineIn", NULL),
++};
++
++/* SMDK-PAIFTX connections */
++static const struct snd_soc_dapm_route audio_map_tx[] = {
++	/* MicIn feeds AINL */
++	{"AINL", NULL, "MicIn"},
++
++	/* LineIn feeds AINL/R */
++	{"AINL", NULL, "LineIn"},
++	{"AINR", NULL, "LineIn"},
++};
++
++/* SMDK-PAIFRX connections */
++static const struct snd_soc_dapm_route audio_map_rx[] = {
++	/* Front Left/Right are fed VOUT1L/R */
++	{"Front-L/R", NULL, "VOUT1L"},
++	{"Front-L/R", NULL, "VOUT1R"},
++
++	/* Center/Sub are fed VOUT2L/R */
++	{"Center/Sub", NULL, "VOUT2L"},
++	{"Center/Sub", NULL, "VOUT2R"},
++
++	/* Rear Left/Right are fed VOUT3L/R */
++	{"Rear-L/R", NULL, "VOUT3L"},
++	{"Rear-L/R", NULL, "VOUT3R"},
++};
++
++static int smdk64xx_wm8580_init_paiftx(struct snd_soc_codec *codec)
++{
++	/* Add smdk64xx specific Capture widgets */
++	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_cpt,
++				  ARRAY_SIZE(wm8580_dapm_widgets_cpt));
++
++	/* Set up PAIFTX audio path */
++	snd_soc_dapm_add_routes(codec, audio_map_tx, ARRAY_SIZE(audio_map_tx));
++
++	/* All enabled by default */
++	snd_soc_dapm_enable_pin(codec, "MicIn");
++	snd_soc_dapm_enable_pin(codec, "LineIn");
++
++	/* signal a DAPM event */
++	snd_soc_dapm_sync(codec);
++
++	return 0;
++}
++
++static int smdk64xx_wm8580_init_paifrx(struct snd_soc_codec *codec)
++{
++	/* Add smdk64xx specific Playback widgets */
++	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_pbk,
++				  ARRAY_SIZE(wm8580_dapm_widgets_pbk));
++
++	/* Set up PAIFRX audio path */
++	snd_soc_dapm_add_routes(codec, audio_map_rx, ARRAY_SIZE(audio_map_rx));
++
++	/* All enabled by default */
++	snd_soc_dapm_enable_pin(codec, "Front-L/R");
++	snd_soc_dapm_enable_pin(codec, "Center/Sub");
++	snd_soc_dapm_enable_pin(codec, "Rear-L/R");
++
++	/* signal a DAPM event */
++	snd_soc_dapm_sync(codec);
++
++	return 0;
++}
++
++static struct snd_soc_dai_link smdk64xx_dai[] = {
++{ /* Primary Playback i/f */
++	.name = "WM8580 PAIF RX",
++	.stream_name = "Playback",
++	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
++	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFRX],
++	.init = smdk64xx_wm8580_init_paifrx,
++	.ops = &smdk64xx_ops,
++},
++{ /* Primary Capture i/f */
++	.name = "WM8580 PAIF TX",
++	.stream_name = "Capture",
++	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
++	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFTX],
++	.init = smdk64xx_wm8580_init_paiftx,
++	.ops = &smdk64xx_ops,
++},
++};
++
++static struct snd_soc_card smdk64xx = {
++	.name = "smdk64xx",
++	.platform = &s3c24xx_soc_platform,
++	.dai_link = smdk64xx_dai,
++	.num_links = ARRAY_SIZE(smdk64xx_dai),
++};
++
++static struct snd_soc_device smdk64xx_snd_devdata = {
++	.card = &smdk64xx,
++	.codec_dev = &soc_codec_dev_wm8580,
++};
++
++static struct platform_device *smdk64xx_snd_device;
++
++static int __init smdk64xx_audio_init(void)
++{
++	int ret;
++
++	smdk64xx_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!smdk64xx_snd_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(smdk64xx_snd_device, &smdk64xx_snd_devdata);
++	smdk64xx_snd_devdata.dev = &smdk64xx_snd_device->dev;
++	ret = platform_device_add(smdk64xx_snd_device);
++
++	if (ret)
++		platform_device_put(smdk64xx_snd_device);
++
++	return ret;
++}
++module_init(smdk64xx_audio_init);
++
++MODULE_AUTHOR("Jaswinder Singh, jassi.brar@samsung.com");
++MODULE_DESCRIPTION("ALSA SoC SMDK64XX WM8580");
++MODULE_LICENSE("GPL");
+-- 
+1.6.2.5
