@@ -1,24 +1,15 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] SMDK64XX I2S: Added machine driver for
-	WM8580
-Date: Sun, 20 Sep 2009 19:49:33 +0900
-Message-ID: <1b68c6790909200349i5ef0464cg9becc920446c1160@mail.gmail.com>
-References: <1253321166-10463-1-git-send-email-jassisinghbrar@gmail.com>
-	<20090919160855.GA4858@sirena.org.uk>
-	<1b68c6790909191849k6f89b636w3adfbd492c2b241d@mail.gmail.com>
-	<20090920073137.GB4560@sirena.org.uk>
+From: Mark Hills <mark@pogo.org.uk>
+Subject: Questions on locking, snd-usb-caiaq
+Date: Sun, 20 Sep 2009 13:07:05 +0100 (BST)
+Message-ID: <alpine.BSO.2.01.0909201207350.12606@zrgural.vwaro.pbz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f190.google.com (mail-qy0-f190.google.com
-	[209.85.221.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id A7FDB24883
+Received: from metheny.ijneb.com (mailout.ijneb.com [212.13.201.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9BCAB2414A
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Sep 2009 12:49:34 +0200 (CEST)
-Received: by qyk28 with SMTP id 28so1535373qyk.16
-	for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2009 03:49:33 -0700 (PDT)
-In-Reply-To: <20090920073137.GB4560@sirena.org.uk>
+	Sun, 20 Sep 2009 14:07:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,56 +19,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Jassi <jassi.brar@samsung.com>, ben@trinity.fluff.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TGV0IG1lIGNsYXJpZnksIGp1c3QgaW4gY2FzZSwKVGhlIHBhdGNoLTIvMTAKIGh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1hcm0ta2VybmVsLzIwMDktU2VwdGVtYmVy
-LzAwMDcxNC5odG1sCmVuYWJsZXMgdGhpcyBNQUNISU5FIGRyaXZlciB0byBydW4gMiBjaGFubmVs
-cyhvZiB0aGUgNiBwb3NzaWJsZSkgb2YKdGhlIEkyUy12NCB3aXRoCnRoZSBleHRhbnQgUzNDIENQ
-VSBkcml2ZXJzLCB3aGljaCBkbyB0aGUgam9iIGZpbmUuClRoZSBleHRhbnQgQ1BVIGRyaXZlcnMg
-YXJlIGluYWRlcXVhdGUgb25seSBpZiB3ZSB3YW50IDZjaGFubmVscyBhbmQKaC93IG1peGluZyBz
-dXBwb3J0LgoKT24gU3VuLCBTZXAgMjAsIDIwMDkgYXQgNDozMSBQTSwgTWFyayBCcm93bgo8YnJv
-b25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFN1biwgU2VwIDIw
-LCAyMDA5IGF0IDEwOjQ5OjUwQU0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4+IE9uIFN1biwg
-U2VwIDIwLCAyMDA5IGF0IDE6MDggQU0sIE1hcmsgQnJvd24KPgo+PiA+IEkndmUgYXBwbGllZCB0
-aGlzIHdpdGggYSBjb3VwbGUgb2YgYWRkaXRpb25hbCBmaXh1cHMgYmVsb3cuIMKgSSd2ZSBhZGRl
-ZAo+PiA+IGEgZGVwZW5kZW5jeSBvbiBCUk9LRU4gc2luY2UgdGhlIElJU3Y0IHN1cHBvcnQgaXMg
-bm90IHlldCBwcmVzZW50IHNvCj4+ID4gdGhlcmUncyBubyBjaGFuY2Ugb2YgaXQgd29ya2luZyB5
-ZXQuCj4KPj4gd2VsbCwgaSBzZW50IHBhdGNoZXMgZm9yIENQVSBzdXBwb3J0IGFsc28uIHRoZXkg
-YXJlIHNpbXBseSBwdXQgb24gaG9sZCB1bnRpbAo+PiBzb21ldGhpbmcgaXMgZGVjaWRlZC4gaWYg
-aSB3ZXJlIGdpdmVuIGEgc3VnZ2VzdGlvbiBhdGxlYXN0IGkgY3VkIHRyeSBkb2luZyB0aGF0Lgo+
-PiBhbnl3YXlzLCB0aGUgbWFjaGluZSBkcml2ZXIgd2lsbCBhbG1vc3QgcmVtYWluIHRoZSBzYW1l
-IGluIGZ1dHVyZSB3aGVuIHdlCj4+IHRoZSBDUFUgc3VwcG9ydCBpcyB0aGVyZS4KPgo+IEkgdGhp
-bmsgdGhlcmUgd2FzIGVub3VnaCBmZWVkYmFjayBvbiB0aGUgQ1BVIHBhdGNoZXM/IMKgSUlSQyB0
-aGUgbWFpbgo+IGlzc3VlcyB3ZXJlIHRoYXQgdGhlIGRyaXZlciB3aWxsIG5lZWQgc29tZSB3YXkg
-dG8gdGVsbCB0aGF0IGl0J3MgYW4KPiBJSVN2NCBibG9jayAod2hpY2ggaXQgd291bGQgYmUgYWJs
-ZSB0byBkbyB3aXRoIHRoZSBleGlzdGluZyBhcmNoL2FybSBidXQKPiBub3Qgd2l0aCB0aGUgcGF0
-Y2hlcyB5b3Ugc2VudCkKSXMgaXQgYSBiYWQgaWRlYSB0byB1c2Ugb25seSBwYXJ0LCBzaGFyZWQg
-d2l0aCBJMlMtdjMsIG9mIEkyUy12NApjb250cm9sbGVyIHdoZW4gdGhlIENQVQpkcml2ZXIgZG9l
-c24ndCB5ZXQgc3VwcG9ydCBvdGhlciBkaXN0aW5ndWlzaGluZyBmZWF0dXJlcz8KSWYgeWVzLCB0
-aGVuIEkgc2h1ZCBzdGFydCB3cml0aW5nIHRoZSA2Y2hhbm5lbCBhbmQgaC93IG1peGluZyBzdHVm
-Zgpmb3IgdGhlIENQVSBkcml2ZXIuCklmIG5vLCB0aGVuIG15IHBhdGNoZXMgY2FuIGJlIGFjY2Vw
-dGVkIGluIGN1cnJlbnQgb3IgbW9kaWZpZWQgZm9ybS4KV2hlbiA2Y2hhbm5lbCAgYW5kL29yIGgv
-dyBtaXhpbmcgaXMgaW1wbGVtZW50ZWQgaW4gdGhlIENQVSBkcml2ZXJzIHdlCmp1c3QgZW5hYmxl
-IHRob3NlIGZlYXR1cmVzIGluIHRoZSBjb250cm9sbGVyLgoKPiBhbmQgdGhhdCB0aGUgYXVkaW8t
-YnVzIGNsb2NrIGhhcyB0byBiZQo+IGlkbXBsZW1lbnRlZCBzbyB0aGF0IHRoZSBkcml2ZXIgY2Fu
-IHByb2JlIChvciB0aGUgZHJpdmVyIHdpbGwgbmVlZCB0byBiZQo+IGFibGUgdG8gY2Fycnkgb24g
-aWYgaXQgY2FuJ3QgZ2V0IHRoZSBjbG9jaykuCnNvbWVob3cgaSBtaXNzZWQgZW1haWxpbmcgdGhh
-dCBwYXRjaC4gd2lsbCByZXNlbmQgd2l0aCBvdGhlciBwYXJ0cy4KCj4+IEJ0dywgSSB1bmRlcnN0
-YW5kIGFzIHNvb24gYXMgaSBzZWUgYSBuZXdlciBmb3ItMi42Lnh4IGJyYW5jaCBpIHNodWQgc3Rh
-cnQKPj4gc3VibWl0dGluZyBhZ2FpbnN0IHRoYXQuIFJpZ2h0Pwo+Cj4gRm9yIG5ldyBmZWF0dXJl
-cywgeWVzLiDCoEJ1ZyBmaXhlcyBzaG91bGQgYmUgZG9uZSBhZ2FpbnN0IHRoZSB2ZXJzaW9uCj4g
-ZGVzdGluZWQgZm9yIExpbnVzJyBjdXJyZW50IHRyZWUgaWYgdGhlIGlzc3VlIGFwcGxpZXMgdGhl
-cmUuCmdvdCBpdC4gdGhhbmtzCgpBbm90aGVyIHF1ZXN0aW9uIC4uLgpUaGUgcGxhdGZvcm0gZGV2
-aWNlIHMzYzY0eHhfZGV2aWNlX2lpc3Y0IGlzIGRlZmluZWQgaW4KYXJjaC9hcm0vcGxhdC1zM2Mv
-ZGV2LWF1ZGlvLmMKd2hlcmVhcyBJMlNfdjQgaXMgYXZhaWxhYmxlIG9ubHkgZm9yIFMzQzY0MTAg
-YW5kIG5ld2VyIFNvQ3MuClNodWRuJ3Qgd2UgZGVmaW5lIGl0IHNvbWV3aGVyZSBsaWtlIGFyY2gv
-YXJtL3BsYXQtczNjNjR4eC9kZXYtYXVkaW8uYz8KSSBhc2sgYmVjYXVzZSBzb29uIEknbGwgYmUg
-c3VibWl0dGluZyB0aGUgUENNIGNvbnRyb2xsZXIgQ1BVIGRyaXZlciBmb3IgUzNDNjRYWAphbmQg
-aSB3aXNoIHRvIGRlZmluZSBpdCBmb3IgczNjNjR4eCBzcGVjaWZpYyBwbGF0Zm9ybSwgbm90IHRo
-ZSBnZW5lcmljIHMzYy4KUGxlYXNlIHN1Z2dlc3QuCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo=
+I fixed some race issues in snd-usb-caiaq, but have some questions on the 
+interface between the driver and ALSA.
+
+First fix is a lock in pointer(), which caused snd_pcm_update_hw_ptr_pos() 
+to report an out of range buffer position (even though it was sucessfully 
+corrected to zero).
+
+Second is a lock as part of trigger(). On testing, this appears to fix an 
+issue where white noise could sometimes be transferred by the driver.
+
+According to the documentation, trigger() and pointer() are called with 
+local interrupts disabled. This means they should really be non-irqsave 
+locks?
+
+(http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/ch05s08.html)
+
+Even for callbacks documented as atomic, if read_completed() and 
+write_completed() can be called at any time interrupts are enabled (eg. on 
+another CPU) it seems that additional locking my be required. Candidates 
+are:
+
+   snd_usb_caiaq_substream_open
+   snd_usb_caiaq_substream_close
+   snd_usb_caiaq_pcm_hw_free
+   snd_usb_caiaq_pcm_prepare
+
+Are there any guarantees on these functions which mean the lock is not 
+required?
+
+To lock in prepare() would (I think) require demoting a 
+spin_lock_irqsave() to a spin_lock() to send initialisation commands. If 
+so, what is the best design for this?
+
+Thanks,
+
+-- 
+Mark
+
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index 121af06..c659f81 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -62,10 +62,15 @@ static void
+  activate_substream(struct snd_usb_caiaqdev *dev,
+  	           struct snd_pcm_substream *sub)
+  {
++	unsigned long flags;
++	spin_lock_irqsave(&dev->spinlock, flags);
++
+  	if (sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
+  		dev->sub_playback[sub->number] = sub;
+  	else
+  		dev->sub_capture[sub->number] = sub;
++
++	spin_unlock_irqrestore(&dev->spinlock, flags);
+  }
+
+  static void
+@@ -269,16 +274,23 @@ snd_usb_caiaq_pcm_pointer(struct snd_pcm_substream *sub)
+  {
+  	int index = sub->number;
+  	struct snd_usb_caiaqdev *dev = snd_pcm_substream_chip(sub);
++	unsigned long flags;
++	snd_pcm_uframes_t ptr;
++
++	spin_lock_irqsave(&dev->spinlock, flags);
+
+  	if (dev->input_panic || dev->output_panic)
+-		return SNDRV_PCM_POS_XRUN;
++		ptr = SNDRV_PCM_POS_XRUN;
+
+  	if (sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		return bytes_to_frames(sub->runtime,
++		ptr = bytes_to_frames(sub->runtime,
+  					dev->audio_out_buf_pos[index]);
+  	else
+-		return bytes_to_frames(sub->runtime,
++		ptr = bytes_to_frames(sub->runtime,
+  					dev->audio_in_buf_pos[index]);
++
++	spin_unlock_irqrestore(&dev->spinlock, flags);
++	return ptr;
+  }
+
+  /* operators for both playback and capture */
