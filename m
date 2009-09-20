@@ -1,22 +1,24 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_device_name_hint problems
-Date: Sun, 20 Sep 2009 17:31:11 +0800
-Message-ID: <4f3252890909200231v2959d261ie24e01ea70a41ec9@mail.gmail.com>
-References: <4AAA1C4B.5000806@epost.diwic.se>
-	<4f3252890909112109g69b7fdadi1f8da1a9500a4365@mail.gmail.com>
-	<4AAB4C70.5040805@epost.diwic.se>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] SMDK64XX I2S: Added machine driver for
+	WM8580
+Date: Sun, 20 Sep 2009 19:49:33 +0900
+Message-ID: <1b68c6790909200349i5ef0464cg9becc920446c1160@mail.gmail.com>
+References: <1253321166-10463-1-git-send-email-jassisinghbrar@gmail.com>
+	<20090919160855.GA4858@sirena.org.uk>
+	<1b68c6790909191849k6f89b636w3adfbd492c2b241d@mail.gmail.com>
+	<20090920073137.GB4560@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f202.google.com (mail-px0-f202.google.com
-	[209.85.216.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id C0F9D24861
+Received: from mail-qy0-f190.google.com (mail-qy0-f190.google.com
+	[209.85.221.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id A7FDB24883
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Sep 2009 11:31:12 +0200 (CEST)
-Received: by pxi40 with SMTP id 40so1755676pxi.5
-	for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2009 02:31:11 -0700 (PDT)
-In-Reply-To: <4AAB4C70.5040805@epost.diwic.se>
+	Sun, 20 Sep 2009 12:49:34 +0200 (CEST)
+Received: by qyk28 with SMTP id 28so1535373qyk.16
+	for <alsa-devel@alsa-project.org>; Sun, 20 Sep 2009 03:49:33 -0700 (PDT)
+In-Reply-To: <20090920073137.GB4560@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,94 +28,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Jassi <jassi.brar@samsung.com>, ben@trinity.fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-The name hint does not define any device for recording
-
-if you run alsa-lib/test/namehint.c , you should notice that front device is
-used for "Front Speakers".
-
-Most likely you cannot use this "front" device for recording
-
-The "pulse" device is in the list since I am using Fedora 10
-
-
- ./namehint
-NAMEfront:CARD=au8830,DEV=0|DESCAureal Vortex au8830, adb
-Front speakers
-NAMEsurround40:CARD=au8830,DEV=0|DESCAureal Vortex au8830, adb
-4.0 Surround output to Front and Rear speakers
-NAMEiec958:CARD=au8830,DEV=0|DESCAureal Vortex au8830, spdif
-IEC958 (S/PDIF) Digital Audio Output|IOIDOutput
-NAMEnull|DESCDiscard all samples (playback) or generate zero samples
-(capture)
-NAMEpulse|DESCPulseAudio Sound Server
-NAMEdefault|DESCDefault
-NAMEfront:CARD=Intel,DEV=0|DESCHDA Intel, AD198x Analog
-Front speakers
-NAMEsurround40:CARD=Intel,DEV=0|DESCHDA Intel, AD198x Analog
-4.0 Surround output to Front and Rear speakers
-NAMEsurround41:CARD=Intel,DEV=0|DESCHDA Intel, AD198x Analog
-4.1 Surround output to Front, Rear and Subwoofer speakers
-NAMEsurround50:CARD=Intel,DEV=0|DESCHDA Intel, AD198x Analog
-5.0 Surround output to Front, Center and Rear speakers
-NAMEsurround51:CARD=Intel,DEV=0|DESCHDA Intel, AD198x Analog
-5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-NAMEsurround71:CARD=Intel,DEV=0|DESCHDA Intel, AD198x Analog
-7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-NAMEiec958:CARD=Intel,DEV=0|DESCHDA Intel, AD198x Digital
-IEC958 (S/PDIF) Digital Audio Output
-
-
-
-arecord --list-device
-**** List of CAPTURE Hardware Devices ****
-
-card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
-  Subdevices: 3/3
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
-card 1: Intel [HDA Intel], device 1: AD198x Digital [AD198x Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-
-2009/9/12 David Henningsson <launchpad.web@epost.diwic.se>
-
-> Raymond Yau skrev:
-> > It seem to me that name hint is not suitable for displaying recording
-> > devices
->
-> But what should I then use? snd_card_xxx will not show the pulse device,
-> snd_names_list is deprecated, and snd_config_xxx is not recommended either.
->
-> > You can get low latency by using hw device since PA use maximum buffer in
-> > order to save power comsumption for those notebook / netbook.
-> >
-> > If your application require high quality (bypass any SRC) , you may need
-> to
-> > capture using hardware rate and format instead of using plughw
->
-> I will not need low latency for this application, but avoiding SRC would
-> probably be a good thing. But I assume the plug handling does not do any
-> SRC if it can avoid it by adjusting the hardware?
->
-> > For HDA , it support multiple streamming. some  HDA codecs (e.g. alc88x
-> and
-> > ad198x) have 3 ADC ( which you can capture three stereo streams
-> concurrently
-> > from internal mic, external mic and line in )
-> >
-> > The main problem of the recording audio application is unable to select
-> the
-> > correct mixer control of the three capture sources
->
-> What I would like would my enumeration function to return in this case
-> would be four entries, one for each ADC and one for them all combined (6
-> channels, multi-channel recording).
->
-> // David
->
->
+TGV0IG1lIGNsYXJpZnksIGp1c3QgaW4gY2FzZSwKVGhlIHBhdGNoLTIvMTAKIGh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1hcm0ta2VybmVsLzIwMDktU2VwdGVtYmVy
+LzAwMDcxNC5odG1sCmVuYWJsZXMgdGhpcyBNQUNISU5FIGRyaXZlciB0byBydW4gMiBjaGFubmVs
+cyhvZiB0aGUgNiBwb3NzaWJsZSkgb2YKdGhlIEkyUy12NCB3aXRoCnRoZSBleHRhbnQgUzNDIENQ
+VSBkcml2ZXJzLCB3aGljaCBkbyB0aGUgam9iIGZpbmUuClRoZSBleHRhbnQgQ1BVIGRyaXZlcnMg
+YXJlIGluYWRlcXVhdGUgb25seSBpZiB3ZSB3YW50IDZjaGFubmVscyBhbmQKaC93IG1peGluZyBz
+dXBwb3J0LgoKT24gU3VuLCBTZXAgMjAsIDIwMDkgYXQgNDozMSBQTSwgTWFyayBCcm93bgo8YnJv
+b25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFN1biwgU2VwIDIw
+LCAyMDA5IGF0IDEwOjQ5OjUwQU0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4+IE9uIFN1biwg
+U2VwIDIwLCAyMDA5IGF0IDE6MDggQU0sIE1hcmsgQnJvd24KPgo+PiA+IEkndmUgYXBwbGllZCB0
+aGlzIHdpdGggYSBjb3VwbGUgb2YgYWRkaXRpb25hbCBmaXh1cHMgYmVsb3cuIMKgSSd2ZSBhZGRl
+ZAo+PiA+IGEgZGVwZW5kZW5jeSBvbiBCUk9LRU4gc2luY2UgdGhlIElJU3Y0IHN1cHBvcnQgaXMg
+bm90IHlldCBwcmVzZW50IHNvCj4+ID4gdGhlcmUncyBubyBjaGFuY2Ugb2YgaXQgd29ya2luZyB5
+ZXQuCj4KPj4gd2VsbCwgaSBzZW50IHBhdGNoZXMgZm9yIENQVSBzdXBwb3J0IGFsc28uIHRoZXkg
+YXJlIHNpbXBseSBwdXQgb24gaG9sZCB1bnRpbAo+PiBzb21ldGhpbmcgaXMgZGVjaWRlZC4gaWYg
+aSB3ZXJlIGdpdmVuIGEgc3VnZ2VzdGlvbiBhdGxlYXN0IGkgY3VkIHRyeSBkb2luZyB0aGF0Lgo+
+PiBhbnl3YXlzLCB0aGUgbWFjaGluZSBkcml2ZXIgd2lsbCBhbG1vc3QgcmVtYWluIHRoZSBzYW1l
+IGluIGZ1dHVyZSB3aGVuIHdlCj4+IHRoZSBDUFUgc3VwcG9ydCBpcyB0aGVyZS4KPgo+IEkgdGhp
+bmsgdGhlcmUgd2FzIGVub3VnaCBmZWVkYmFjayBvbiB0aGUgQ1BVIHBhdGNoZXM/IMKgSUlSQyB0
+aGUgbWFpbgo+IGlzc3VlcyB3ZXJlIHRoYXQgdGhlIGRyaXZlciB3aWxsIG5lZWQgc29tZSB3YXkg
+dG8gdGVsbCB0aGF0IGl0J3MgYW4KPiBJSVN2NCBibG9jayAod2hpY2ggaXQgd291bGQgYmUgYWJs
+ZSB0byBkbyB3aXRoIHRoZSBleGlzdGluZyBhcmNoL2FybSBidXQKPiBub3Qgd2l0aCB0aGUgcGF0
+Y2hlcyB5b3Ugc2VudCkKSXMgaXQgYSBiYWQgaWRlYSB0byB1c2Ugb25seSBwYXJ0LCBzaGFyZWQg
+d2l0aCBJMlMtdjMsIG9mIEkyUy12NApjb250cm9sbGVyIHdoZW4gdGhlIENQVQpkcml2ZXIgZG9l
+c24ndCB5ZXQgc3VwcG9ydCBvdGhlciBkaXN0aW5ndWlzaGluZyBmZWF0dXJlcz8KSWYgeWVzLCB0
+aGVuIEkgc2h1ZCBzdGFydCB3cml0aW5nIHRoZSA2Y2hhbm5lbCBhbmQgaC93IG1peGluZyBzdHVm
+Zgpmb3IgdGhlIENQVSBkcml2ZXIuCklmIG5vLCB0aGVuIG15IHBhdGNoZXMgY2FuIGJlIGFjY2Vw
+dGVkIGluIGN1cnJlbnQgb3IgbW9kaWZpZWQgZm9ybS4KV2hlbiA2Y2hhbm5lbCAgYW5kL29yIGgv
+dyBtaXhpbmcgaXMgaW1wbGVtZW50ZWQgaW4gdGhlIENQVSBkcml2ZXJzIHdlCmp1c3QgZW5hYmxl
+IHRob3NlIGZlYXR1cmVzIGluIHRoZSBjb250cm9sbGVyLgoKPiBhbmQgdGhhdCB0aGUgYXVkaW8t
+YnVzIGNsb2NrIGhhcyB0byBiZQo+IGlkbXBsZW1lbnRlZCBzbyB0aGF0IHRoZSBkcml2ZXIgY2Fu
+IHByb2JlIChvciB0aGUgZHJpdmVyIHdpbGwgbmVlZCB0byBiZQo+IGFibGUgdG8gY2Fycnkgb24g
+aWYgaXQgY2FuJ3QgZ2V0IHRoZSBjbG9jaykuCnNvbWVob3cgaSBtaXNzZWQgZW1haWxpbmcgdGhh
+dCBwYXRjaC4gd2lsbCByZXNlbmQgd2l0aCBvdGhlciBwYXJ0cy4KCj4+IEJ0dywgSSB1bmRlcnN0
+YW5kIGFzIHNvb24gYXMgaSBzZWUgYSBuZXdlciBmb3ItMi42Lnh4IGJyYW5jaCBpIHNodWQgc3Rh
+cnQKPj4gc3VibWl0dGluZyBhZ2FpbnN0IHRoYXQuIFJpZ2h0Pwo+Cj4gRm9yIG5ldyBmZWF0dXJl
+cywgeWVzLiDCoEJ1ZyBmaXhlcyBzaG91bGQgYmUgZG9uZSBhZ2FpbnN0IHRoZSB2ZXJzaW9uCj4g
+ZGVzdGluZWQgZm9yIExpbnVzJyBjdXJyZW50IHRyZWUgaWYgdGhlIGlzc3VlIGFwcGxpZXMgdGhl
+cmUuCmdvdCBpdC4gdGhhbmtzCgpBbm90aGVyIHF1ZXN0aW9uIC4uLgpUaGUgcGxhdGZvcm0gZGV2
+aWNlIHMzYzY0eHhfZGV2aWNlX2lpc3Y0IGlzIGRlZmluZWQgaW4KYXJjaC9hcm0vcGxhdC1zM2Mv
+ZGV2LWF1ZGlvLmMKd2hlcmVhcyBJMlNfdjQgaXMgYXZhaWxhYmxlIG9ubHkgZm9yIFMzQzY0MTAg
+YW5kIG5ld2VyIFNvQ3MuClNodWRuJ3Qgd2UgZGVmaW5lIGl0IHNvbWV3aGVyZSBsaWtlIGFyY2gv
+YXJtL3BsYXQtczNjNjR4eC9kZXYtYXVkaW8uYz8KSSBhc2sgYmVjYXVzZSBzb29uIEknbGwgYmUg
+c3VibWl0dGluZyB0aGUgUENNIGNvbnRyb2xsZXIgQ1BVIGRyaXZlciBmb3IgUzNDNjRYWAphbmQg
+aSB3aXNoIHRvIGRlZmluZSBpdCBmb3IgczNjNjR4eCBzcGVjaWZpYyBwbGF0Zm9ybSwgbm90IHRo
+ZSBnZW5lcmljIHMzYy4KUGxlYXNlIHN1Z2dlc3QuCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
