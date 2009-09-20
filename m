@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: jassi brar <jassisinghbrar@gmail.com>
 Subject: Re: [PATCH] SMDK64XX I2S: Added machine driver for
- WM8580
-Date: Sat, 19 Sep 2009 17:08:56 +0100
-Message-ID: <20090919160855.GA4858@sirena.org.uk>
+	WM8580
+Date: Sun, 20 Sep 2009 10:49:50 +0900
+Message-ID: <1b68c6790909191849k6f89b636w3adfbd492c2b241d@mail.gmail.com>
 References: <1253321166-10463-1-git-send-email-jassisinghbrar@gmail.com>
+	<20090919160855.GA4858@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 826E11037E3
+Received: from mail-qy0-f174.google.com (mail-qy0-f174.google.com
+	[209.85.221.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86ACB1037E3
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Sep 2009 18:09:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1253321166-10463-1-git-send-email-jassisinghbrar@gmail.com>
+	Sun, 20 Sep 2009 03:49:52 +0200 (CEST)
+Received: by qyk4 with SMTP id 4so1610978qyk.23
+	for <alsa-devel@alsa-project.org>; Sat, 19 Sep 2009 18:49:50 -0700 (PDT)
+In-Reply-To: <20090919160855.GA4858@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +26,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, ben@trinity.fluff.org, Jassi <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Sep 19, 2009 at 09:46:06AM +0900, jassi brar wrote:
-> New machine driver for WM8580 I2S i/f on SMDK64XX.
-> By default SoC-Slave is set and WM8580 is configured to use it's
-> PLLA to generate clocks from a 12MHz crystal attached to WM8580.
-
-> Signed-off-by: Jassi <jassi.brar@samsung.com>
-
-I've applied this with a couple of additional fixups below.  I've added
-a dependency on BROKEN since the IISv4 support is not yet present so
-there's no chance of it working yet.
-
-> +
-> +#define S3C64XX_I2S_V4 2
-
-This should be defined by the DAI driver, every user is going to need
-it.
-
-> +static int smdk64xx_hw_free(struct snd_pcm_substream *substream)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-> +
-> +	/* disable the PLL */
-> +	return snd_soc_dai_set_pll(codec_dai, WM8580_PLLA, 0, 0);
-> +}
-
-Doing this will break simultaneous playback and record - whichever of
-them stops first will stop the PLL, removing the clock from the other.
-I've removed the hw_free() function as a result.
-
-I also note that you're not submitting and testing against the latest
-ASoC code since the PLL API has been updated so that this won't build.
-I've fixed it up this time but please do try to ensure you're working
-with the latest code when submitting patches.
+T24gU3VuLCBTZXAgMjAsIDIwMDkgYXQgMTowOCBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFNhdCwgU2VwIDE5LCAyMDA5IGF0
+IDA5OjQ2OjA2QU0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4+IE5ldyBtYWNoaW5lIGRyaXZl
+ciBmb3IgV004NTgwIEkyUyBpL2Ygb24gU01ESzY0WFguCj4+IEJ5IGRlZmF1bHQgU29DLVNsYXZl
+IGlzIHNldCBhbmQgV004NTgwIGlzIGNvbmZpZ3VyZWQgdG8gdXNlIGl0J3MKPj4gUExMQSB0byBn
+ZW5lcmF0ZSBjbG9ja3MgZnJvbSBhIDEyTUh6IGNyeXN0YWwgYXR0YWNoZWQgdG8gV004NTgwLgo+
+Cj4+IFNpZ25lZC1vZmYtYnk6IEphc3NpIDxqYXNzaS5icmFyQHNhbXN1bmcuY29tPgo+Cj4gSSd2
+ZSBhcHBsaWVkIHRoaXMgd2l0aCBhIGNvdXBsZSBvZiBhZGRpdGlvbmFsIGZpeHVwcyBiZWxvdy4g
+wqBJJ3ZlIGFkZGVkCj4gYSBkZXBlbmRlbmN5IG9uIEJST0tFTiBzaW5jZSB0aGUgSUlTdjQgc3Vw
+cG9ydCBpcyBub3QgeWV0IHByZXNlbnQgc28KPiB0aGVyZSdzIG5vIGNoYW5jZSBvZiBpdCB3b3Jr
+aW5nIHlldC4Kd2VsbCwgaSBzZW50IHBhdGNoZXMgZm9yIENQVSBzdXBwb3J0IGFsc28uIHRoZXkg
+YXJlIHNpbXBseSBwdXQgb24gaG9sZCB1bnRpbApzb21ldGhpbmcgaXMgZGVjaWRlZC4gaWYgaSB3
+ZXJlIGdpdmVuIGEgc3VnZ2VzdGlvbiBhdGxlYXN0IGkgY3VkIHRyeSBkb2luZyB0aGF0Lgphbnl3
+YXlzLCB0aGUgbWFjaGluZSBkcml2ZXIgd2lsbCBhbG1vc3QgcmVtYWluIHRoZSBzYW1lIGluIGZ1
+dHVyZSB3aGVuIHdlCnRoZSBDUFUgc3VwcG9ydCBpcyB0aGVyZS4KCj4+ICtzdGF0aWMgaW50IHNt
+ZGs2NHh4X2h3X2ZyZWUoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCj4+ICt7
+Cj4+ICsgwqAgwqAgc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCA9IHN1YnN0cmVhbS0+
+cHJpdmF0ZV9kYXRhOwo+PiArIMKgIMKgIHN0cnVjdCBzbmRfc29jX2RhaSAqY29kZWNfZGFpID0g
+cnRkLT5kYWktPmNvZGVjX2RhaTsKPj4gKwo+PiArIMKgIMKgIC8qIGRpc2FibGUgdGhlIFBMTCAq
+Lwo+PiArIMKgIMKgIHJldHVybiBzbmRfc29jX2RhaV9zZXRfcGxsKGNvZGVjX2RhaSwgV004NTgw
+X1BMTEEsIDAsIDApOwo+PiArfQo+Cj4gRG9pbmcgdGhpcyB3aWxsIGJyZWFrIHNpbXVsdGFuZW91
+cyBwbGF5YmFjayBhbmQgcmVjb3JkIC0gd2hpY2hldmVyIG9mCj4gdGhlbSBzdG9wcyBmaXJzdCB3
+aWxsIHN0b3AgdGhlIFBMTCwgcmVtb3ZpbmcgdGhlIGNsb2NrIGZyb20gdGhlIG90aGVyLgo+IEkn
+dmUgcmVtb3ZlZCB0aGUgaHdfZnJlZSgpIGZ1bmN0aW9uIGFzIGEgcmVzdWx0Lgp0aGFuayB5b3Uu
+IEkgZGlkbid0IGNoZWNrIGZ1bGwtZHVwbGV4LgoKPiBJIGFsc28gbm90ZSB0aGF0IHlvdSdyZSBu
+b3Qgc3VibWl0dGluZyBhbmQgdGVzdGluZyBhZ2FpbnN0IHRoZSBsYXRlc3QKPiBBU29DIGNvZGUg
+c2luY2UgdGhlIFBMTCBBUEkgaGFzIGJlZW4gdXBkYXRlZCBzbyB0aGF0IHRoaXMgd29uJ3QgYnVp
+bGQuCj4gSSd2ZSBmaXhlZCBpdCB1cCB0aGlzIHRpbWUgYnV0IHBsZWFzZSBkbyB0cnkgdG8gZW5z
+dXJlIHlvdSdyZSB3b3JraW5nCj4gd2l0aCB0aGUgbGF0ZXN0IGNvZGUgd2hlbiBzdWJtaXR0aW5n
+IHBhdGNoZXMuCkkgZGlkIHNlZSBmb3ItMi42LjMzIHRyZWUgYnV0IHdhc24ndCBzdXJlIHdoZW4g
+aSBzaHVkIHN0YXJ0IHN1Ym1pdHRpbmcKYWdhaW5zdCB0aGF0LgpJdCB3YXMgb25seSAyLjYuMzIg
+d2hlbiBpIHN0YXJ0ZWQuIEFuZCBpIHRlc3RlZCBwbGF5YmFjay9jYXB0dXJlIEAgYWxsCnN1cHBv
+cnRlZCByYXRlcwppbiB0aGF0IHZlcnNpb24uCgpJIGFtIG5ldyB0byB0aGUgcHJvY2VzcywgcGxl
+YXNlIGJlYXIgdGhpcyB0aW1lLiBQbGVhc2UgcmVqZWN0IGEgcGF0Y2gKYW5kIHN1Z2dlc3QgaG93
+IHRvIGRvLCBpZiBpdCdzIHRvbyBtdWNoIHdvcmsgZm9yIHlvdS4KCkJ0dywgSSB1bmRlcnN0YW5k
+IGFzIHNvb24gYXMgaSBzZWUgYSBuZXdlciBmb3ItMi42Lnh4IGJyYW5jaCBpIHNodWQgc3RhcnQK
+c3VibWl0dGluZyBhZ2FpbnN0IHRoYXQuIFJpZ2h0PwpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
