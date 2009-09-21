@@ -1,18 +1,19 @@
-From: Roel Kluin <roel.kluin@gmail.com>
-Subject: [PATCH] sb16: request_region failure ignored in
-	snd_sb16_isa_probe1()
-Date: Mon, 21 Sep 2009 12:03:47 +0200
-Message-ID: <4AB74F83.4030606@gmail.com>
+From: Thierry Vignaud <tvignaud@mandriva.com>
+Subject: Re: alsa-lib 1.0.21a release
+Date: Mon, 21 Sep 2009 12:19:50 +0200
+Message-ID: <m2ljk8wqex.fsf@vador.mandriva.com>
+References: <alpine.LNX.2.00.0909091444530.12929@eeebox2.perex-int.cz>
+	<1252504738.3282.4.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E81B103812
+Received: from mx1.mandriva.com (mx1.moondrake.net [212.85.150.166])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B2E810381E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Sep 2009 11:56:23 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 13so608172eye.16
-	for <alsa-devel@alsa-project.org>; Mon, 21 Sep 2009 02:56:22 -0700 (PDT)
+	Mon, 21 Sep 2009 12:19:53 +0200 (CEST)
+In-Reply-To: <1252504738.3282.4.camel@localhost> (Tony Vroon's message of
+	"Wed, 09 Sep 2009 14:58:58 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>
+To: Tony Vroon <tony@linx.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-request_region() may fail. clean up if it does,
-also a release region later on was missing.
+Tony Vroon <tony@linx.net> writes:
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
----
-Found with sed: http://kernelnewbies.org/roelkluin
+> On Wed, 2009-09-09 at 14:51 +0200, Jaroslav Kysela wrote:
+> > I made a quick release 1.0.21a of the alsa-lib package to fix 
+> > regression for the configuration parsing (makes some device names 
+> > unavailable).
+>
+> Could you stick to numeric versions if possible please. Arbitrary
+> postfixes like "a" or "b" are hard to express in the versioning scheme
+> we use on ebuilds.
+> This could be unique to portage, but I wanted to speak up in case it
+> affects others as well. 1.0.21.1 may fit your "newer then 1.0.21; but
+> not quite 1.0.22" needs.
 
-build, sparse and checkpatch tested.
-
-diff --git a/sound/isa/sb/sb16.c b/sound/isa/sb/sb16.c
-index 519c363..f50ed6f 100644
---- a/sound/isa/sb/sb16.c
-+++ b/sound/isa/sb/sb16.c
-@@ -502,6 +502,11 @@ static int __devinit snd_sb16_isa_probe1(int dev, struct device *pdev)
- 	fm_port[dev] = port[dev];
- 	/* block the 0x388 port to avoid PnP conflicts */
- 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
-+	if (acard->fm_res == NULL) {
-+		snd_card_free(card);
-+		return -ENOMEM;
-+	}
-+
- #ifdef SNDRV_SBAWE_EMU8000
- 	/* non-PnP AWE port address is hardwired with base port address */
- 	awe_port[dev] = port[dev] + 0x400;
-@@ -509,6 +514,7 @@ static int __devinit snd_sb16_isa_probe1(int dev, struct device *pdev)
- 
- 	snd_card_set_dev(card, pdev);
- 	if ((err = snd_sb16_probe(card, dev)) < 0) {
-+		release_region(0x388, 4);
- 		snd_card_free(card);
- 		return err;
- 	}
+I've complained about this for years...
