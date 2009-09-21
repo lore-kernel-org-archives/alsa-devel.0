@@ -1,64 +1,47 @@
-From: "Fabien COMTE" <fabien.comte@ercogener.com>
-Subject: Application and hw mixing for VoIP (modified)
-Date: Mon, 21 Sep 2009 15:48:39 +0200
-Message-ID: <18869.4094111726$1253542904@news.gmane.org>
+From: Phil Vandry <vandry@TZoNE.ORG>
+Subject: [PATCH] wm8753: fix mapping when MONOMIX is set to
+	Stereo
+Date: Mon, 21 Sep 2009 11:36:08 -0400
+Message-ID: <20090921153608.GA14393@OZoNE.TZoNE.ORG>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
-Content-Language: fr
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from OZoNE.TZoNE.ORG (OZoNE.TZoNE.ORG [64.15.147.4])
+	by alsa0.perex.cz (Postfix) with ESMTP id 775AE245D1
+	for <alsa-devel@alsa-project.org>;
+	Mon, 21 Sep 2009 17:36:14 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I need some help please.
-I have an application that does VoIP and alsa interface.
+When MONOMIX is set to Stereo, Left PGA was not powered on but should be.
+Add a mapping from Capture Left Mux to Capture Left Mixer to fix the issue.
 
-I want to :
-- send through VoIP application a mixed sound from mic and an another
-application (aplay should be ok for testing).
+Signed-off-by: Phil Vandry <vandry@TZoNE.ORG>
+---
+ sound/soc/codecs/wm8753.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-mic ---------- soundcard 0 ------------->
-                                           mix  ---- alsa interface ----->
-voip application
-application 1 --- alsa interface  ------>
-(aplay)
-
-- use sound received from VoIP with HP output and an another application
-(arecord should be ok for testing).
-
-                                                   ----- alsa interface
-------> application 2 (arecord)
-voip application ----- alsa interface ---->  share
-                                                   ------ soundcard 0
---------> HP output
-
-
-And a little question :
-How to define an application interface in asoundrc ?
-	
-
-I tried a lot of asoundrc but they doesn't work.
-
-Could someone help me ?
-Thank you.
-
-Fabien
-
-
-
-
-------------------------------------------------------------------------------
-Come build with us! The BlackBerry&reg; Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay 
-ahead of the curve. Join us from November 9&#45;12, 2009. Register now&#33;
-http://p.sf.net/sfu/devconf
+diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
+index d80d414..5ad677c 100644
+--- a/sound/soc/codecs/wm8753.c
++++ b/sound/soc/codecs/wm8753.c
+@@ -595,6 +595,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 
+ 	/* Mono Capture mixer-mux */
+ 	{"Capture Right Mixer", "Stereo", "Capture Right Mux"},
++	{"Capture Left Mixer", "Stereo", "Capture Left Mux"},
+ 	{"Capture Left Mixer", "Analogue Mix Left", "Capture Left Mux"},
+ 	{"Capture Left Mixer", "Analogue Mix Left", "Capture Right Mux"},
+ 	{"Capture Right Mixer", "Analogue Mix Right", "Capture Left Mux"},
