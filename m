@@ -1,15 +1,15 @@
 From: Delusion's Master <delusion_master@hotmail.com>
-Subject: (no subject)
-Date: Tue, 22 Sep 2009 13:46:23 +0200
-Message-ID: <COL119-W49820EFC2FF88E587619428FDC0@phx.gbl>
+Subject: Error patching file pcm_native.c
+Date: Tue, 22 Sep 2009 14:39:36 +0200
+Message-ID: <COL119-W10102D20FE7215072170378FDC0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from col0-omc3-s16.col0.hotmail.com (col0-omc3-s16.col0.hotmail.com
-	[65.55.34.154]) by alsa0.perex.cz (Postfix) with ESMTP id EBA8E103813
+Received: from col0-omc3-s1.col0.hotmail.com (col0-omc3-s1.col0.hotmail.com
+	[65.55.34.139]) by alsa0.perex.cz (Postfix) with ESMTP id 819B11037EA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Sep 2009 13:46:24 +0200 (CEST)
+	Tue, 22 Sep 2009 14:39:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,8 +25,9 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I have a problem compiling the latest alsa driver snapshots. Specifically, =
-it's a problem when patching pcm_native.c:
+first of all I apologize in case you receive multiple copies of this message, but I forgot to specify a subject in the original mail.
+
+I have a problem compiling the latest alsa driver snapshots. Specifically, it's a problem when patching pcm_native.c:
 
 [..]
 copying file alsa-kernel/core/info.c
@@ -64,13 +65,14 @@ Hunk #25 succeeded at 3644 (offset -23 lines).
 make[2]: *** [pcm_native.c] Error 1
 
 
-It's some days I get this, but I waited to report this since I thought it c=
-ould be a temporary problem. My OS is Fedora 11 x86_64. Previous snapshots =
-didn't give me this problem, but I can't say which one broke the compilatio=
-n, since I usually try updated snapshots only at kernel updates.
+It's
+some days I get this, but I waited to report this since I thought it
+could be a temporary problem. My OS is Fedora 11 x86_64. Previous
+snapshots didn't give me this problem, but I can't say which one broke
+the compilation, since I usually try updated snapshots only at kernel
+updates.
 
-I searched for this error and the only relevant report I could find is this=
- one:
+I searched for this error and the only relevant report I could find is this one:
 
 http://mailman.alsa-project.org/pipermail/alsa-devel/2009-April/016420.html
 
@@ -78,8 +80,7 @@ a report from last April.
 
 What could the problem be?
 Thanks
- 		 	   		  =
-
+ 		 	   		   		 	   		  
 _________________________________________________________________
-Windows Live=99: Keep your life in sync. Check it out!
-http://windowslive.com/explore?ocid=3DTXT_TAGLM_WL_t1_allup_explore_012009
+Invite your mail contacts to join your friends list with Windows Live Spaces. It's easy!
+http://spaces.live.com/spacesapi.aspx?wx_action=create&wx_url=/friends.aspx&mkt=en-us
