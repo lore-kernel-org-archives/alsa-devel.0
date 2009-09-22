@@ -1,18 +1,15 @@
-From: George Kuriakose <georgekk@gmail.com>
-Subject: ctl_elems hooks with dmix plugin
-Date: Wed, 23 Sep 2009 00:55:54 +0530
-Message-ID: <e1a648b00909221225j3b3bcd1fi7c4ddc00e5e5526a@mail.gmail.com>
+From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Subject: [PATCH 0/4] Add Voice Codec support for DM365
+Date: Tue, 22 Sep 2009 13:28:46 -0600
+Message-ID: <4AB9256E.6050602@ridgerun.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f192.google.com (mail-pz0-f192.google.com
-	[209.85.222.192])
-	by alsa0.perex.cz (Postfix) with ESMTP id D411A1037FB
+Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5F8A1037F2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Sep 2009 21:25:55 +0200 (CEST)
-Received: by pzk30 with SMTP id 30so31627pzk.26
-	for <alsa-devel@alsa-project.org>; Tue, 22 Sep 2009 12:25:54 -0700 (PDT)
+	Tue, 22 Sep 2009 21:28:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,85 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, Narnakaje, Snehaprab
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-I was trying to use ctl_elems hooks with dmix plugin but figured that
-this combination doesn't work. Is there any workaround for this.
-I am trying the following.
-There are two softvol devices s0 and s1 going through dmix plugins.
-I wan't to mute s0 when any app opens s1 and unmute s0 when s1 is closed.
-I am using the below asoundrc file which results in "No card for this PCM" .
-Any workarounds or any minor change in libasound which will make this work?
-Thanks
-George
+Hi,
 
+The following series of patches adds the following support:
 
-asoundrc:
+1) CQ0093 Voice Codec driver.
+2) Voice Codec Interface.
+3) Voice Codec resources and Voice Codec Interface platform device.
+4) Voice Codec on the DM365 EVM.
 
-pcm.softvol0 {
-=A0=A0=A0 type=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 softvol
-=A0=A0=A0 slave {
-=A0=A0=A0=A0=A0=A0=A0 pcm=A0=A0=A0=A0=A0=A0=A0=A0 "dmix:1"
-=A0=A0=A0 }
-=A0=A0=A0 control {
-=A0=A0=A0=A0=A0=A0=A0 name=A0=A0=A0=A0=A0=A0=A0 "SoftControl0"
-=A0=A0=A0=A0=A0=A0=A0 card=A0=A0=A0=A0=A0=A0=A0 1
-=A0=A0=A0 }
-}
-pcm.softvol1 {
-=A0=A0=A0 type=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 softvol
-=A0=A0=A0 slave {
-=A0=A0=A0=A0=A0=A0=A0 pcm=A0=A0=A0=A0=A0=A0=A0=A0 "dmix:1"
-=A0=A0=A0 }
-=A0=A0=A0 control {
-=A0=A0=A0=A0=A0=A0=A0 name=A0=A0=A0=A0=A0=A0=A0 "SoftControl1"
-=A0=A0=A0=A0=A0=A0=A0 card=A0=A0=A0=A0=A0=A0=A0 1
-=A0=A0=A0 }
-}
+Notes:
 
-pcm.s0 {
-=A0=A0=A0 type plug
-=A0=A0=A0 slave.pcm "softvol0"
-}
+The patch series was created based on the current temp/asoc branch of the 
+DaVinci git.
 
-pcm.s1 {
-=A0=A0=A0 type plug
-=A0=A0=A0 slave.pcm "softvol1"
-}
+It assumes that the patch "[PATCH v4 2/2] ASoC: Davinci: Add audio codec support 
+for DM365 EVM" is applied.
 
-pcm.s1hook {
-=A0=A0=A0=A0=A0=A0=A0 type hooks=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 # P=
-CM with hooks
-=A0=A0=A0 slave.pcm "s1"
-=A0=A0=A0=A0=A0=A0=A0 hooks.0 {
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 type ctl_elems
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 hook_args [
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 {
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 name "SoftControl0"
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 preserve true
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 lock true
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 optional true
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 value [ 0 ]
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
-=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 {
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 name "SoftControl1"
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 preserve true
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 lock true
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 optional true
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0 value [ 100 ]
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ]
-=A0=A0=A0=A0=A0=A0=A0 }
-}
+This patch series was tested on a DM365 EVM rev C.
+
+Regards,
+
+-- 
+Miguel Angel Aguilar Ulloa
+Embedded Software Engineer
+RidgeRun Embedded Solutions
+miguel.aguilar@ridgerun.com
