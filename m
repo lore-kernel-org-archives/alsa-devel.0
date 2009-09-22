@@ -1,23 +1,15 @@
-From: Harald Welte <HaraldWelte@viatech.com>
-Subject: Re: hda_intel: SPDIF not detected on Asus P7P55D PRO
-Date: Tue, 22 Sep 2009 18:46:02 +0900
-Message-ID: <20090922094602.GT3910@prithivi.gnumonks.org>
-References: <4AB3009C.1090605@gmail.com> <s5hiqfg6aj5.wl%tiwai@suse.de>
-	<51f3faa70909180738y6c8d1ecevb7ce90b3de6699b0@mail.gmail.com>
-	<s5hzl8owh8k.wl%tiwai@suse.de>
-	<20090921135433.GH3910@prithivi.gnumonks.org>
-	<s5htyywwg0t.wl%tiwai@suse.de>
-	<51f3faa70909211709q344656edj98add3dffdc9abf3@mail.gmail.com>
+From: Delusion's Master <delusion_master@hotmail.com>
+Subject: (no subject)
+Date: Tue, 22 Sep 2009 13:46:23 +0200
+Message-ID: <COL119-W49820EFC2FF88E587619428FDC0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 99664103860
+Received: from col0-omc3-s16.col0.hotmail.com (col0-omc3-s16.col0.hotmail.com
+	[65.55.34.154]) by alsa0.perex.cz (Postfix) with ESMTP id EBA8E103813
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Sep 2009 11:50:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <51f3faa70909211709q344656edj98add3dffdc9abf3@mail.gmail.com>
+	Tue, 22 Sep 2009 13:46:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,30 +19,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: LydiaWang@viatech.com.cn
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-Devel <alsa-devel@alsa-project.org>, Robert Hancock <hancockrwd@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Lydia,
 
-Robert wrote:
+Hi,
 
-> If it's possible, I'd say it would be nice to have the big patch
-> posted now even if it's not in mergeable condition yet, just for
-> testing and for people to use temporarily..
+I have a problem compiling the latest alsa driver snapshots. Specifically, =
+it's a problem when patching pcm_native.c:
 
-Lydia, is it possible for VIA to post the existing big patch to alsa-devel?
+[..]
+copying file alsa-kernel/core/info.c
+patching file info.c
+copying file alsa-kernel/core/pcm.c
+patching file pcm.c
+Hunk #3 succeeded at 739 (offset 2 lines).
+Hunk #5 succeeded at 954 (offset 2 lines).
+Hunk #7 succeeded at 1045 (offset 2 lines).
+copying file alsa-kernel/core/pcm_native.c
+patching file pcm_native.c
+Hunk #4 succeeded at 1544 (offset -25 lines).
+Hunk #5 succeeded at 2827 (offset 12 lines).
+Hunk #6 succeeded at 2878 (offset 10 lines).
+Hunk #7 FAILED at 2906.
+Hunk #8 FAILED at 2922.
+Hunk #9 succeeded at 2915 (offset -23 lines).
+Hunk #10 succeeded at 3036 (offset 10 lines).
+Hunk #11 succeeded at 3027 (offset -23 lines).
+Hunk #12 succeeded at 3074 (offset 10 lines).
+Hunk #13 succeeded at 3098 (offset -23 lines).
+Hunk #14 succeeded at 3143 (offset 10 lines).
+Hunk #15 succeeded at 3124 (offset -23 lines).
+Hunk #16 succeeded at 3214 (offset 10 lines).
+Hunk #17 succeeded at 3208 (offset -23 lines).
+Hunk #18 succeeded at 3271 (offset 10 lines).
+Hunk #19 succeeded at 3304 (offset -23 lines).
+Hunk #20 succeeded at 3386 (offset 10 lines).
+Hunk #21 succeeded at 3411 (offset -23 lines).
+Hunk #22 succeeded at 3456 (offset 10 lines).
+Hunk #23 succeeded at 3450 (offset -23 lines).
+Hunk #24 succeeded at 3525 (offset 10 lines).
+Hunk #25 succeeded at 3644 (offset -23 lines).
+2 out of 25 hunks FAILED -- saving rejects to file pcm_native.c.rej
+make[2]: *** [pcm_native.c] Error 1
 
-I have the code and could post it, but since you wrote it, it should be
-your (teams) decision if you want to post it or not.
 
-Simply write in the mail that this patch is not for including into mainline
-linux, but simply for the reference of interested developers until your new
-patchset is completed.
+It's some days I get this, but I waited to report this since I thought it c=
+ould be a temporary problem. My OS is Fedora 11 x86_64. Previous snapshots =
+didn't give me this problem, but I can't say which one broke the compilatio=
+n, since I usually try updated snapshots only at kernel updates.
 
-Thanks!
+I searched for this error and the only relevant report I could find is this=
+ one:
 
--- 
-- Harald Welte <HaraldWelte@viatech.com>	    http://linux.via.com.tw/
-============================================================================
-VIA Free and Open Source Software Liaison
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-April/016420.html
+
+a report from last April.
+
+What could the problem be?
+Thanks
+ 		 	   		  =
+
+_________________________________________________________________
+Windows Live=99: Keep your life in sync. Check it out!
+http://windowslive.com/explore?ocid=3DTXT_TAGLM_WL_t1_allup_explore_012009
