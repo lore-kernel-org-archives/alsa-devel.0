@@ -1,18 +1,19 @@
-From: Delusion's Master <delusion_master@hotmail.com>
-Subject: Re: Error patching file pcm_native.c
-Date: Tue, 22 Sep 2009 22:48:02 +0200
-Message-ID: <COL119-W9CBB298E3CE80E5F14C2D8FDC0@phx.gbl>
-References: <COL119-W10102D20FE7215072170378FDC0@phx.gbl>
-	<s5hy6o7unx7.wl%tiwai@suse.de> <s5hab0nazdc.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: ALSA ASoC CQ0093 Voice Codec
+ Driver
+Date: Tue, 22 Sep 2009 14:22:45 -0700
+Message-ID: <20090922212244.GA4736@sirena.org.uk>
+References: <1253647738-32527-1-git-send-email-miguel.aguilar@ridgerun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from col0-omc3-s7.col0.hotmail.com (col0-omc3-s7.col0.hotmail.com
-	[65.55.34.145]) by alsa0.perex.cz (Postfix) with ESMTP id 70B11103896
+Received: from s-utl02-sjpop.stsn.net (s-utl02-sjpop.stsn.net [72.254.0.202])
+	by alsa0.perex.cz (Postfix) with SMTP id 98BD5244CA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Sep 2009 22:48:04 +0200 (CEST)
-In-Reply-To: <s5h63bawxe7.wl%tiwai@suse.de>
+	Tue, 22 Sep 2009 23:23:37 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1253647738-32527-1-git-send-email-miguel.aguilar@ridgerun.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,191 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: miguel.aguilar@ridgerun.com
+Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Sep 22, 2009 at 01:28:58PM -0600, miguel.aguilar@ridgerun.com wrote:
 
-> Date: Tue, 22 Sep 2009 22:13:36 +0200
-> From: tiwai@suse.de
-> To: delusion_master@hotmail.com
-> CC: alsa-devel@alsa-project.org
-> Subject: Re: [alsa-devel] Error patching file pcm_native.c
-> 
-> At Tue, 22 Sep 2009 20:30:36 +0200,
-> Delusion's Master wrote:
-> > 
-> > [1  <text/plain; Windows-1252 (quoted-printable)>]
-> > 
-> > > Date: Tue, 22 Sep 2009 17:42:25 +0200
-> > > From: tiwai@suse.de
-> > > To: delusion_master@hotmail.com
-> > > CC: alsa-devel@alsa-project.org
-> > > Subject: Re: [alsa-devel] Error patching file pcm_native.c
-> > > 
-> > > At Tue, 22 Sep 2009 17:23:07 +0200,
-> > > Delusion's Master wrote:
-> > > > 
-> > > > 
-> > > > > Date: Tue, 22 Sep 2009 15:21:51 +0200
-> > > > > From: tiwai@suse.de
-> > > > > To: delusion_master@hotmail.com
-> > > > > CC: alsa-devel@alsa-project.org
-> > > > > Subject: Re: [alsa-devel] Error patching file pcm_native.c
-> > > > > 
-> > > > > At Tue, 22 Sep 2009 15:19:43 +0200,
-> > > > > Delusion's Master wrote:
-> > > > > > 
-> > > > > > 
-> > > > > > > Date: Tue, 22 Sep 2009 15:08:52 +0200
-> > > > > > > From: tiwai@suse.de
-> > > > > > > To: delusion_master@hotmail.com
-> > > > > > > CC: alsa-devel@alsa-project.org
-> > > > > > > Subject: Re: [alsa-devel] Error patching file pcm_native.c
-> > > > > > > 
-> > > > > > > At Tue, 22 Sep 2009 14:39:36 +0200,
-> > > > > > > Delusion's Master wrote:
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > Hi,
-> > > > > > > > 
-> > > > > > > > first of all I apologize in case you receive multiple copies of this message, but I forgot to specify a subject in the original mail.
-> > > > > > > > 
-> > > > > > > > I have a problem compiling the latest alsa driver snapshots. Specifically, it's a problem when patching pcm_native.c:
-> > > > > > > > 
-> > > > > > > > [..]
-> > > > > > > > copying file alsa-kernel/core/info.c
-> > > > > > > > patching file info.c
-> > > > > > > > copying file alsa-kernel/core/pcm.c
-> > > > > > > > patching file pcm.c
-> > > > > > > > Hunk #3 succeeded at 739 (offset 2 lines).
-> > > > > > > > Hunk #5 succeeded at 954 (offset 2 lines).
-> > > > > > > > Hunk #7 succeeded at 1045 (offset 2 lines).
-> > > > > > > > copying file alsa-kernel/core/pcm_native.c
-> > > > > > > > patching file pcm_native.c
-> > > > > > > > Hunk #4 succeeded at 1544 (offset -25 lines).
-> > > > > > > > Hunk #5 succeeded at 2827 (offset 12 lines).
-> > > > > > > > Hunk #6 succeeded at 2878 (offset 10 lines).
-> > > > > > > > Hunk #7 FAILED at 2906.
-> > > > > > > > Hunk #8 FAILED at 2922.
-> > > > > > > > Hunk #9 succeeded at 2915 (offset -23 lines).
-> > > > > > > > Hunk #10 succeeded at 3036 (offset 10 lines).
-> > > > > > > > Hunk #11 succeeded at 3027 (offset -23 lines).
-> > > > > > > > Hunk #12 succeeded at 3074 (offset 10 lines).
-> > > > > > > > Hunk #13 succeeded at 3098 (offset -23 lines).
-> > > > > > > > Hunk #14 succeeded at 3143 (offset 10 lines).
-> > > > > > > > Hunk #15 succeeded at 3124 (offset -23 lines).
-> > > > > > > > Hunk #16 succeeded at 3214 (offset 10 lines).
-> > > > > > > > Hunk #17 succeeded at 3208 (offset -23 lines).
-> > > > > > > > Hunk #18 succeeded at 3271 (offset 10 lines).
-> > > > > > > > Hunk #19 succeeded at 3304 (offset -23 lines).
-> > > > > > > > Hunk #20 succeeded at 3386 (offset 10 lines).
-> > > > > > > > Hunk #21 succeeded at 3411 (offset -23 lines).
-> > > > > > > > Hunk #22 succeeded at 3456 (offset 10 lines).
-> > > > > > > > Hunk #23 succeeded at 3450 (offset -23 lines).
-> > > > > > > > Hunk #24 succeeded at 3525 (offset 10 lines).
-> > > > > > > > Hunk #25 succeeded at 3644 (offset -23 lines).
-> > > > > > > > 2 out of 25 hunks FAILED -- saving rejects to file pcm_native.c.rej
-> > > > > > > > make[2]: *** [pcm_native.c] Error 1
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > It's
-> > > > > > > > some days I get this, but I waited to report this since I thought it
-> > > > > > > > could be a temporary problem. My OS is Fedora 11 x86_64. Previous
-> > > > > > > > snapshots didn't give me this problem, but I can't say which one broke
-> > > > > > > > the compilation, since I usually try updated snapshots only at kernel
-> > > > > > > > updates.
-> > > > > > > > 
-> > > > > > > > I searched for this error and the only relevant report I could find is this one:
-> > > > > > > > 
-> > > > > > > > http://mailman.alsa-project.org/pipermail/alsa-devel/2009-April/016420.html
-> > > > > > > > 
-> > > > > > > > a report from last April.
-> > > > > > > > 
-> > > > > > > > What could the problem be?
-> > > > > > > 
-> > > > > > > I seem to have overlooked the patch rejection because some patch
-> > > > > > > program is stricter than mine.  Now I refreshed the relevant patch
-> > > > > > > file.   Could you try the latest snapshot below again?
-> > > > > > >   ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
-> > > > > > > 
-> > > > > > > 
-> > > > > > > Takashi
-> > > > > > 
-> > > > > > 
-> > > > > > Hi Takashi,
-> > > > > > 
-> > > > > > thanks for your very quick reply!
-> > > > > > I just tried and I still get the same error -- the same hunks fail (7 and 8).
-> > > > > 
-> > > > > Are you sure it's the VERY same error?
-> > > > > Give the exact error messages.
-> > > > > 
-> > > > > 
-> > > > > Takashi
-> > > > 
-> > > > 
-> > > > Here it is:
-> > > > 
-> > > > 
-> > > > [..]
-> > > > patching file pcm.c
-> > > > Hunk #2 succeeded at 925 (offset 15 lines).
-> > > > Hunk #4 succeeded at 953 (offset 15 lines).
-> > > > Hunk #5 succeeded at 993 (offset 1 line).
-> > > > copying file alsa-kernel/core/pcm_native.c
-> > > > patching file pcm_native.c
-> > > > Hunk #4 succeeded at 1543 (offset -33 lines).
-> > > > Hunk #6 succeeded at 2888 (offset 2 lines).
-> > > > Hunk #7 FAILED at 2916.
-> > > > Hunk #8 FAILED at 2932.
-> > > > Hunk #9 succeeded at 2921 (offset -35 lines).
-> > > > Hunk #10 succeeded at 3046 (offset 2 lines).
-> > > > Hunk #11 succeeded at 3033 (offset -35 lines).
-> > > > Hunk #12 succeeded at 3084 (offset 2 lines).
-> > > > Hunk #13 succeeded at 3104 (offset -35 lines).
-> > > > Hunk #14 succeeded at 3153 (offset 2 lines).
-> > > > Hunk #15 succeeded at 3130 (offset -35 lines).
-> > > > Hunk #16 succeeded at 3224 (offset 2 lines).
-> > > > Hunk #17 succeeded at 3214 (offset -35 lines).
-> > > > Hunk #18 succeeded at 3281 (offset 2 lines).
-> > > > Hunk #19 succeeded at 3322 (offset -35 lines).
-> > > > Hunk #20 succeeded at 3389 (offset 2 lines).
-> > > > Hunk #21 succeeded at 3417 (offset -35 lines).
-> > > > Hunk #22 succeeded at 3484 (offset 2 lines).
-> > > > Hunk #23 succeeded at 3489 (offset -35 lines).
-> > > > Hunk #24 succeeded at 3678 (offset 2 lines).
-> > > > 2 out of 24 hunks FAILED -- saving rejects to file pcm_native.c.rej
-> > > > make[2]: *** [pcm_native.c] Error 1
-> > > 
-> > > Check alsa-driver/HEAD file whether it contains the line
-> > >    aa7a6f525401fd6cbd845a6de7ff92654f723785 Refresh pcm_natvie.patch
-> > > 
-> > > If not, grab alsa-driver-snapshot.tar.gz tarball again.
-> > > 
-> > > 
-> > > Takashi
-> > 
-> > 
-> > Hi Takashi,
-> > 
-> > the alsa-driver-snapshot still shows no update.
-> 
-> Hm, strange.  There might have been an error in the update, then.
-> I updated the snapshot again with other fixes, so try later again.
-> 
-> > So I downloaded the unstable version and I could find the line you mentioned there. Just tried compiling again and, as you thought, the error changed:
-> 
-> The unstable version is currently broken.
-> 
-> 
-> Takashi
+Looks mostly good - the main issue here is the device registration
+stuff, everything else is fairly minor.
 
+> +	select SND_SOC_CQ0093VC if ARCH_DAVINCI_DM365
 
-Ok, the snapshot is updated now, and compiled fine!
-Thanks for your help,
-Lorenzo
- 		 	   		  
-_________________________________________________________________
-Invite your mail contacts to join your friends list with Windows Live Spaces. It's easy!
-http://spaces.live.com/spacesapi.aspx?wx_action=create&wx_url=/friends.aspx&mkt=en-us
+This probably should have no dependency (see below about device
+registration).
+
+> +#define AUDIO_NAME "cq0093"
+> +#define CQ93VC_VERSION "0.1"
+
+I'd just drop these.
+
+> +static int cq93vc_hw_params(struct snd_pcm_substream *substream,
+> +			   struct snd_pcm_hw_params *params,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	return 0;
+> +}
+
+Just omit this if it's empty.
+
+> +static const struct snd_kcontrol_new cq93vc_snd_controls[] = {
+> +	SOC_SINGLE("PGA Capture Volume", VC_REG05, 0, 0x03, 0),
+> +	SOC_SINGLE("Mono DAC Playback Volume", VC_REG09, 0, 0x3f, 0),
+
+Any chance of adding TLV information for these?  Not essential but it's
+nice for userspace applications.
+
+> +static int cq93vc_add_controls(struct snd_soc_codec *codec)
+> +{
+
+Please use snd_soc_add_controls instead.
+
+> +static int cq93vc_set_bias_level(struct snd_soc_codec *codec,
+> +				enum snd_soc_bias_level level)
+> +{
+> +	switch (level) {
+> +	case SND_SOC_BIAS_ON:
+> +		/* all power is driven by DAPM system */
+> +		cq93vc_write(codec, VC_REG12, POWER_ALL_ON);
+
+The code is OK but the driver isn't using DAPM.
+
+> +static int cq93vc_probe(struct platform_device *pdev)
+> +{
+
+You should make the driver a regular platform device - that way you
+won't need to do the trick with the global variable to get the resources
+and you won't need to register the DAIs on module_init.  See wm8350 for
+an example of doing this with a platform device.
