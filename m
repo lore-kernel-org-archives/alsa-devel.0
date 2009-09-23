@@ -1,20 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: DaVinci: Voice Codec Interface
-Date: Wed, 23 Sep 2009 08:49:18 -0700
-Message-ID: <20090923154916.GA4257@sirena.org.uk>
-References: <1253647760-32558-1-git-send-email-miguel.aguilar@ridgerun.com>
-	<20090922213604.GB4736@sirena.org.uk>
-	<4ABA3C52.6010509@ridgerun.com>
+From: Mike Frysinger <vapier@gentoo.org>
+Subject: [PATCH 1/2] ASoC: Blackfin I2S: use dai state rather
+	than local counter
+Date: Wed, 23 Sep 2009 11:51:04 -0400
+Message-ID: <1253721065-2785-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from s-utl01-sjpop.stsn.net (s-utl01-sjpop.stsn.net [72.254.0.201])
-	by alsa0.perex.cz (Postfix) with SMTP id 39DD1243FA
+Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6121C103886
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Sep 2009 17:50:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4ABA3C52.6010509@ridgerun.com>
+	Wed, 23 Sep 2009 17:51:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,80 +20,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Miguel Aguilar <miguel.aguilar@ridgerun.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 23, 2009 at 09:18:42AM -0600, Miguel Aguilar wrote:
-> Mark Brown wrote:
-> > On Tue, Sep 22, 2009 at 01:29:20PM -0600, miguel.aguilar@ridgerun.com wrote:
+From: Barry Song <barry.song@analog.com>
 
-> >> 2) Add an option to select internal or external codec in the DM365.
+Since the active field of the dai already tells us the stream activity,
+the local counter variable is redundant and can be replaced.
 
-> > Can you not do both simultaneously?  This should probably be a separate
+Signed-off-by: Barry Song <barry.song@analog.com>
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ sound/soc/blackfin/bf5xx-i2s.c |   15 +--------------
+ 1 files changed, 1 insertions(+), 14 deletions(-)
 
-> [MA] No external and internal codecs can not coexists since they share the same 
-> DMA channels for TX and RX, so the TI recommendation was choose one codec or the 
-> other one by the configuration menu.
-
-That'd stop you using both simultaneously but it shouldn't stop you
-having both compiled into the kernel simultaneously.  Would it be
-difficult to make the DMA driver do something like return -EBUSY if it
-was started opened twice?
-
-> Actually, This patch series have a separate patch for the driver, vcif, SoC 
-> specific code, and EVM specific code.
-
-You should move the Kconfig stuff for those into the relevant patches.
-
-> >> +	/* Restart the codec before setup */
-> >> +	davinci_vcif_stop(substream);
-> >> +	davinci_vcif_start(substream);
-
-> > This seems a bit odd - I'd expect to see the start at the end of the
-> > function if you need to do this, otherwise the interface will be running
-> > before you've configured it?
-
-> [MA] The voice codec interface should be restarted before set the hw params. If 
-> you don't do this you will get underrun and overrun errors due to lack of the 
-> restarting process. Thats why I do a stop and then a start. I tried to include 
-> the prepare function however it is called after the hw params function, and that 
-> doesn't make sense.
-
-What exactly is the start bit doing?  The need to restart doesn't seem
-so surprising, what seemed surprising was that you start the device
-running again before it's been reconfigured - I'd have expected to see a
-stop at the head of the function and then the start at the end after all
-the new parameters had been done.
-
-> > These look like the interface needs to be configured the same way in
-> > both directions?  If that is the case then set symmetric_rates in the
-> > DAI.
-
-> [MA]I think it should be symmetric, so the TX and RX should be configured in the 
-> same way.
-
-In that case you should set symmetric_rates in the DAI - this will mean
-that the core will tell applications about the need to keep symmetric
-rates, meaning that you don't get attempts to configure the one
-direction when the other is active.
-
-> > 
-> >> +	.driver		= {
-> >> +		.name	= "voice_codec",
-> >> +		.owner	= THIS_MODULE,
-> >> +	},
-> >> +};
-
-> > Might "vcif" or "davinci-vcif" be a better name?
-> [MA]To use that name I should change the name of the clock, however that clock 
-> is actually for the whole voice codec module, both voice codec and voice codec 
-> interface. The voice codec interface is just a logical separation of the voice 
-> codec module.
-
-The name of the device should have no influence on the name of the clock
-- the clock API should be able to 
-
-I suspect that you do need a little MFD here, it sounds like all the
-resources need to be allocated to a single device which can then dole
-them out to the CODEC and DAI drivers.
+diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
+index 876abad..66e7333 100644
+--- a/sound/soc/blackfin/bf5xx-i2s.c
++++ b/sound/soc/blackfin/bf5xx-i2s.c
+@@ -49,7 +49,6 @@ struct bf5xx_i2s_port {
+ 	u16 rcr1;
+ 	u16 tcr2;
+ 	u16 rcr2;
+-	int counter;
+ 	int configured;
+ };
+ 
+@@ -133,16 +132,6 @@ static int bf5xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	return ret;
+ }
+ 
+-static int bf5xx_i2s_startup(struct snd_pcm_substream *substream,
+-			     struct snd_soc_dai *dai)
+-{
+-	pr_debug("%s enter\n", __func__);
+-
+-	/*this counter is used for counting how many pcm streams are opened*/
+-	bf5xx_i2s.counter++;
+-	return 0;
+-}
+-
+ static int bf5xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+@@ -201,9 +190,8 @@ static void bf5xx_i2s_shutdown(struct snd_pcm_substream *substream,
+ 			       struct snd_soc_dai *dai)
+ {
+ 	pr_debug("%s enter\n", __func__);
+-	bf5xx_i2s.counter--;
+ 	/* No active stream, SPORT is allowed to be configured again. */
+-	if (!bf5xx_i2s.counter)
++	if (!dai->active)
+ 		bf5xx_i2s.configured = 0;
+ }
+ 
+@@ -288,7 +276,6 @@ static int bf5xx_i2s_resume(struct snd_soc_dai *dai)
+ 	SNDRV_PCM_FMTBIT_S32_LE)
+ 
+ static struct snd_soc_dai_ops bf5xx_i2s_dai_ops = {
+-	.startup	= bf5xx_i2s_startup,
+ 	.shutdown	= bf5xx_i2s_shutdown,
+ 	.hw_params	= bf5xx_i2s_hw_params,
+ 	.set_fmt	= bf5xx_i2s_set_dai_fmt,
+-- 
+1.6.5.rc1
