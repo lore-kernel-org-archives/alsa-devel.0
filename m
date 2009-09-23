@@ -1,18 +1,17 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH 2/2] ASoC: Blackfin: fix inverted handling of
-	SPORT0 on PORT F/G
-Date: Wed, 23 Sep 2009 11:51:05 -0400
-Message-ID: <1253721065-2785-2-git-send-email-vapier@gentoo.org>
-References: <1253721065-2785-1-git-send-email-vapier@gentoo.org>
+From: Tony Vroon <tony@linx.net>
+Subject: Re: snd-hda-intel and MSI
+Date: Wed, 23 Sep 2009 16:52:43 +0100
+Message-ID: <1253721163.3434.57.camel@localhost>
+References: <20090923143306.GC4488@aragorn.home.lxtec.de>
+	<s5hpr9hzmx0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4866757418308015337=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id D323810388B
+Received: from gold.linx.net (gold.linx.net [195.66.232.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D40B103897
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Sep 2009 17:51:08 +0200 (CEST)
-In-Reply-To: <1253721065-2785-1-git-send-email-vapier@gentoo.org>
+	Wed, 23 Sep 2009 17:53:53 +0200 (CEST)
+In-Reply-To: <s5hpr9hzmx0.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,61 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Cliff Cai <cliff.cai@analog.com>, Barry Song <barry.song@analog.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Cliff Cai <cliff.cai@analog.com>
 
-Signed-off-by: Cliff Cai <cliff.cai@analog.com>
-Signed-off-by: Barry Song <barry.song@analog.com>
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- sound/soc/blackfin/bf5xx-i2s.c |    8 ++++----
- sound/soc/blackfin/bf5xx-tdm.c |    8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+--===============4866757418308015337==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-ZjrByk0rbJk02ul8uCdn"
 
-diff --git a/sound/soc/blackfin/bf5xx-i2s.c b/sound/soc/blackfin/bf5xx-i2s.c
-index 66e7333..43feac5 100644
---- a/sound/soc/blackfin/bf5xx-i2s.c
-+++ b/sound/soc/blackfin/bf5xx-i2s.c
-@@ -76,12 +76,12 @@ static struct sport_param sport_params[2] = {
-  * TFS. When Port G is selected and EMAC then there is a conflict between
-  * the PHY interrupt line and TFS.  Current settings prevent the conflict
-  * by ignoring the TFS pin when Port G is selected. This allows both
-- * ssm2602 using Port G and EMAC concurrently.
-+ * codecs and EMAC using Port G concurrently.
-  */
--#ifdef CONFIG_BF527_SPORT0_PORTF
--#define LOCAL_SPORT0_TFS (P_SPORT0_TFS)
--#else
-+#ifdef CONFIG_BF527_SPORT0_PORTG
- #define LOCAL_SPORT0_TFS (0)
-+#else
-+#define LOCAL_SPORT0_TFS (P_SPORT0_TFS)
- #endif
- 
- static u16 sport_req[][7] = { {P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
-diff --git a/sound/soc/blackfin/bf5xx-tdm.c b/sound/soc/blackfin/bf5xx-tdm.c
-index 3096bad..ff546e9 100644
---- a/sound/soc/blackfin/bf5xx-tdm.c
-+++ b/sound/soc/blackfin/bf5xx-tdm.c
-@@ -78,12 +78,12 @@ static struct sport_param sport_params[2] = {
-  * TFS. When Port G is selected and EMAC then there is a conflict between
-  * the PHY interrupt line and TFS.  Current settings prevent the conflict
-  * by ignoring the TFS pin when Port G is selected. This allows both
-- * ssm2602 using Port G and EMAC concurrently.
-+ * codecs and EMAC using Port G concurrently.
-  */
--#ifdef CONFIG_BF527_SPORT0_PORTF
--#define LOCAL_SPORT0_TFS (P_SPORT0_TFS)
--#else
-+#ifdef CONFIG_BF527_SPORT0_PORTG
- #define LOCAL_SPORT0_TFS (0)
-+#else
-+#define LOCAL_SPORT0_TFS (P_SPORT0_TFS)
- #endif
- 
- static u16 sport_req[][7] = { {P_SPORT0_DTPRI, P_SPORT0_TSCLK, P_SPORT0_RFS,
--- 
-1.6.5.rc1
+
+--=-ZjrByk0rbJk02ul8uCdn
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2009-09-23 at 17:43 +0200, Takashi Iwai wrote:
+> MSI is broken on some platforms.  IIRC, almost all non-Intel platforms
+> didn't work until the recent ones.  So, it can't be enabled blindly as
+> default, unfortunately.
+
+Most of the "broken" platforms were AMD with integrated northbridges
+where the required HyperTransport MSI mappings weren't enabled.
+This is now handled correctly. I've seen graceful reverts where MSI
+wasn't possible. (I recently submitted a patch for sata_nv to enable
+MSI)
+
+Regards,
+Tony V.
+
+--=-ZjrByk0rbJk02ul8uCdn
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.11 (GNU/Linux)
+
+iEYEABECAAYFAkq6REsACgkQp5vW4rUFj5qS4ACeLvgxFvYaKFcPodPmpb9dbtrc
+6KAAn2F0nwPFnhI4yv4O7F/GSHlSQAij
+=9EDd
+-----END PGP SIGNATURE-----
+
+--=-ZjrByk0rbJk02ul8uCdn--
+
+
+--===============4866757418308015337==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4866757418308015337==--
