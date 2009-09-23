@@ -1,22 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] ASoC: DaVinci: Voice Codec Interface
-Date: Wed, 23 Sep 2009 17:39:14 +0100
-Message-ID: <20090923163914.GB31134@opensource.wolfsonmicro.com>
-References: <1253647760-32558-1-git-send-email-miguel.aguilar@ridgerun.com>
-	<20090922213604.GB4736@sirena.org.uk>
-	<4ABA3C52.6010509@ridgerun.com>
-	<20090923154916.GA4257@sirena.org.uk>
-	<4ABA4855.9080201@ridgerun.com>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: snd-hda-intel and MSI
+Date: Wed, 23 Sep 2009 19:06:35 +0200
+Message-ID: <20090923170635.GD4488@aragorn.home.lxtec.de>
+References: <20090923143306.GC4488@aragorn.home.lxtec.de>
+	<s5hpr9hzmx0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2537884264618915911=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BFF1C103831
+Received: from smtpout0.hostsharing.net (smtpout0.hostsharing.net
+	[83.223.95.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C299103891
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Sep 2009 18:39:15 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4ABA4855.9080201@ridgerun.com>
+	Wed, 23 Sep 2009 19:06:43 +0200 (CEST)
+In-Reply-To: <s5hpr9hzmx0.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,63 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Miguel Aguilar <miguel.aguilar@ridgerun.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, 547994@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 23, 2009 at 10:09:57AM -0600, Miguel Aguilar wrote:
-> Mark Brown wrote:
 
->> That'd stop you using both simultaneously but it shouldn't stop you
->> having both compiled into the kernel simultaneously.  Would it be
->> difficult to make the DMA driver do something like return -EBUSY if it
->> was started opened twice?
+--===============2537884264618915911==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="11Y7aswkeuHtSBEs"
+Content-Disposition: inline
 
-> [MA] But how I can tell the kernel to use one or the other one in 
-> runtime?, and Why do we need to have both compiled at the same time? if 
-> this is really needed What is the best way to that?
 
-The kernel would just expose both devices to user space so the choice
-would be down to the application layer.  This would give maximum
-flexibility to systems, allowing them to chop and change at runtime if
-they needed to for some reason (eg, using a lower quality but lower
-power voice output for telephony style applications but a higer quality
-higher power output for MP3 playback).  It'd also mean that for the EVM
-the user would be able to use a single kernel image to evaluate both
-outputs which makes life easier for things like distros.
+--11Y7aswkeuHtSBEs
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The implementation I suggested above with returning EBUSY if the DMA is
-already in use would probably work.
+* Takashi Iwai [090923 17:43 +0200]
+> At Wed, 23 Sep 2009 16:33:06 +0200,
+> Elimar Riesebieter wrote:
+> >=20
+> > Hi folks,
+> >=20
+> > are there any contradictions to enable-msi=3D1 by default?
+>=20
+> MSI is broken on some platforms.  IIRC, almost all non-Intel platforms
+> didn't work until the recent ones.  So, it can't be enabled blindly as
+> default, unfortunately.
+>=20
+> > There are
+> > users with chips like an
+> >=20
+> > 00:1b.0 Audio device: Intel Corporation 82801I (ICH9 Family) HD Audio C=
+ontroller (rev 03)
+> >         Subsystem: Hewlett-Packard Company Device 30f7
+> >         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- Par=
+Err- Stepping- SERR- FastB2B- DisINTx+
+> >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort=
+- <TAbort- <MAbort- >SERR- <PERR- INTx-
+> >         Latency: 0, Cache Line Size: 64 bytes
+> >         Interrupt: pin B routed to IRQ 33
+> >         Region 0: Memory at dc500000 (64-bit, non-prefetchable) [size=
+=3D16K]
+> >         Capabilities: <access denied>
+> >         Kernel driver in use: HDA Intel
+> >=20
+> > which only works with MSI. And it is somewhat hard to find the appropri=
+ate
+> > Documantation in HD-Audio.txt.
+>=20
+> A patch is always welcome.
 
->> The name of the device should have no influence on the name of the clock
->> - the clock API should be able to 
+Which QUIRK Table. What informations from the soundcard ist needed
+and how to get it?
 
-> The problem is that clock name is the same as the device, by using 
-> pdev->name, most of the drivers does it in this way.
+Elimar
 
-The DaVinci API doesn't need that - you should be able to use a fixed
-string (or even a null string) for the clock name and have the clock API
-figure things out based on the struct device.  Look at how the ASP is
-set up for an example.
 
->> I suspect that you do need a little MFD here, it sounds like all the
->> resources need to be allocated to a single device which can then dole
->> them out to the CODEC and DAI drivers.
+--=20
+  Planung:
+  Ersatz des Zufalls durch den Irrtum.
+                                -unknown-
 
-> [MA] I haven't use MFD, can you bring me more details.
+--11Y7aswkeuHtSBEs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-> Do you mean create just one device with the whole voice codec instead of 
-> use vcif and cq0093 separately?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-Sort of - see drivers/mfd for examples.  You have a device driver that
-is instantiated by the platform and has all the resources allocated to
-it.  It then manages allocating the resources to subdevices that do the
-actual work and ensuring that the subdevices don't step on each other.
+iEYEARECAAYFAkq6VZoACgkQ3Ig8bsVPf7AHDQCghhn6X0WGNS7NOa93Z5Z1oDse
+J8MAn11MoJ3V7xYC7y6Madxg84NSAJ8F
+=a2MR
+-----END PGP SIGNATURE-----
 
->
->>
->
->
-> Thanks,
->
-> Miguel Aguilar
+--11Y7aswkeuHtSBEs--
+
+--===============2537884264618915911==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============2537884264618915911==--
