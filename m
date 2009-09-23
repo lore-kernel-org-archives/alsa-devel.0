@@ -1,16 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Wed, 23 Sep 2009 10:48:47 -0700
-Message-ID: <20090923174845.GA31233@sirena.org.uk>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: [Pkg-alsa-devel] Bug#547994: snd-hda-intel and MSI
+Date: Wed, 23 Sep 2009 20:08:42 +0200
+Message-ID: <20090923180842.GE4488@aragorn.home.lxtec.de>
+References: <20090923143306.GC4488@aragorn.home.lxtec.de>
+	<s5hpr9hzmx0.wl%tiwai@suse.de>
+	<20090923170635.GD4488@aragorn.home.lxtec.de>
+	<604760770909231011t1b05c01dn79d94f8a021a1884@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1CEFC1038B6
+Received: from smtpout0.hostsharing.net (smtpout0.hostsharing.net
+	[83.223.95.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC420103874
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Sep 2009 19:49:38 +0200 (CEST)
+	Wed, 23 Sep 2009 20:08:49 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <604760770909231011t1b05c01dn79d94f8a021a1884@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,33 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Daniel Chen <seven.steps@gmail.com>, 547994@bugs.debian.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 877ae70763fa0b19ffbe25e7e119fc96f52fbbd3:
-  Phil Vandry (1):
-        ASoC: wm8753: fix mapping when MONOMIX is set to Stereo
+* Daniel Chen [090923 13:11 -0400]
+> On Wed, Sep 23, 2009 at 1:06 PM, Elimar Riesebieter <riesebie@lxtec.de> w=
+rote:
+> >> > There are
+> >> > users with chips like an
+> >> >
+> >> > 00:1b.0 Audio device: Intel Corporation 82801I (ICH9 Family) HD Audi=
+o Controller (rev 03)
+> >> > =A0 =A0 =A0 =A0 Subsystem: Hewlett-Packard Company Device 30f7
+> ...
+> > Which QUIRK Table. What informations from the soundcard ist needed
+> > and how to get it?
+> =
 
-are available in the git repository at:
+> Elimar,
+> =
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+> See http://git.kernel.org/?p=3Dlinux/kernel/git/tiwai/sound-2.6.git;a=3Db=
+lob;f=3Dsound/pci/hda/hda_intel.c;h=3D20a66f85f0a4247b317d8bbd9e68dafe107e8=
+92e;hb=3DHEAD#l2305
+> =
 
-Chaithrika U S (1):
-      ASoC: DaVinci: Correct McASP FIFO initialization
+> Use the SSID for an entry, e.g.,
+> =
 
-Cliff Cai (1):
-      ASoC: Blackfin: fix inverted handling of SPORT0 on PORT F/G
+> SND_PCI_QUIRK(0x103c, 0x30f7, "HP", 1),
 
-Troy Kisky (2):
-      ASoC: DaVinci: Fix divide by zero error during 1st execution
-      ASoC: Davinci: Fix race with cpu_dai->dma_data
+Does an easy QUIRK entry enables msi?
 
- sound/soc/blackfin/bf5xx-i2s.c    |    8 ++--
- sound/soc/blackfin/bf5xx-tdm.c    |    8 ++--
- sound/soc/davinci/davinci-i2s.c   |   37 ++++++-----------
- sound/soc/davinci/davinci-mcasp.c |   80 +++++++++++++------------------------
- sound/soc/davinci/davinci-mcasp.h |    7 +++-
- sound/soc/davinci/davinci-pcm.c   |   13 +++---
- sound/soc/davinci/davinci-pcm.h   |    1 -
- 7 files changed, 60 insertions(+), 94 deletions(-)
+Elimar
+
+
+-- =
+
+  We all know Linux is great... it does infinite loops in 5 seconds.
+        -- Linus Torvalds
