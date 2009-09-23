@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: DaVinci: Fix divide by
-	zero	error during 1st execution
-Date: Wed, 23 Sep 2009 18:10:39 +0100
-Message-ID: <20090923171039.GB3457@sirena.org.uk>
-References: <1252704543-25580-1-git-send-email-troy.kisky@boundarydevices.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: Re: snd-hda-intel and MSI
+Date: Wed, 23 Sep 2009 13:11:41 -0400
+Message-ID: <604760770909231011t1b05c01dn79d94f8a021a1884@mail.gmail.com>
+References: <20090923143306.GC4488@aragorn.home.lxtec.de>
+	<s5hpr9hzmx0.wl%tiwai@suse.de>
+	<20090923170635.GD4488@aragorn.home.lxtec.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3CD48103891
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 204441038B4
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Sep 2009 19:10:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1252704543-25580-1-git-send-email-troy.kisky@boundarydevices.com>
+	Wed, 23 Sep 2009 19:11:42 +0200 (CEST)
+Received: by fxm8 with SMTP id 8so767708fxm.45
+	for <alsa-devel@alsa-project.org>; Wed, 23 Sep 2009 10:11:41 -0700 (PDT)
+In-Reply-To: <20090923170635.GD4488@aragorn.home.lxtec.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, 547994@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 11, 2009 at 02:29:02PM -0700, Troy Kisky wrote:
-> When both playback and capture stream were open
-> davinci_i2s_hw_params was setting parameters for
-> the wrong stream. The fix for davinci_i2s_hw_params
-> is sufficient, but it looks like a race still happens
-> in davici_pcm_open. This patch also makes the race smaller
-> but the next patch provides a better fix.
-
-> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
-
-Applied both, thanks.  Sorry about the delay in applying these - not
-sure what I was waiting for there.
+T24gV2VkLCBTZXAgMjMsIDIwMDkgYXQgMTowNiBQTSwgRWxpbWFyIFJpZXNlYmlldGVyIDxyaWVz
+ZWJpZUBseHRlYy5kZT4gd3JvdGU6Cj4+ID4gVGhlcmUgYXJlCj4+ID4gdXNlcnMgd2l0aCBjaGlw
+cyBsaWtlIGFuCj4+ID4KPj4gPiAwMDoxYi4wIEF1ZGlvIGRldmljZTogSW50ZWwgQ29ycG9yYXRp
+b24gODI4MDFJIChJQ0g5IEZhbWlseSkgSEQgQXVkaW8gQ29udHJvbGxlciAocmV2IDAzKQo+PiA+
+IMKgIMKgIMKgIMKgIFN1YnN5c3RlbTogSGV3bGV0dC1QYWNrYXJkIENvbXBhbnkgRGV2aWNlIDMw
+ZjcKLi4uCj4gV2hpY2ggUVVJUksgVGFibGUuIFdoYXQgaW5mb3JtYXRpb25zIGZyb20gdGhlIHNv
+dW5kY2FyZCBpc3QgbmVlZGVkCj4gYW5kIGhvdyB0byBnZXQgaXQ/CgpFbGltYXIsCgpTZWUgaHR0
+cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtMi42Lmdp
+dDthPWJsb2I7Zj1zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jO2g9MjBhNjZmODVmMGE0MjQ3YjMx
+N2Q4YmJkOWU2OGRhZmUxMDdlODkyZTtoYj1IRUFEI2wyMzA1CgpVc2UgdGhlIFNTSUQgZm9yIGFu
+IGVudHJ5LCBlLmcuLAoKU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MzBmNywgIkhQIiwgMSksCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
