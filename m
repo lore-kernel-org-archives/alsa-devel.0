@@ -1,19 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: WM8731 using I2S on omap3 McBSP2 issues
-Date: Thu, 24 Sep 2009 19:52:46 +0100
-Message-ID: <20090924185246.GA25783@opensource.wolfsonmicro.com>
-References: <E1Mqrlf-0002YF-9O@amazonia.comcast.net>
-	<E1Mqsce-0002nt-OD@amazonia.comcast.net>
+From: Halim Sahin <halim.sahin@freenet.de>
+Subject: hda-intel: low volume with nvidia mcp7a hdmi
+Date: Thu, 24 Sep 2009 19:01:12 +0000 (UTC)
+Message-ID: <20090924190111.GA7812@halim>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9727924364
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id F15F42437C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Sep 2009 20:52:49 +0200 (CEST)
+	Thu, 24 Sep 2009 21:01:37 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1MqtZR-0004eX-Md
+	for alsa-devel@alsa-project.org; Thu, 24 Sep 2009 21:01:37 +0200
+Received: from pd9e3e78b.dip.t-dialin.net ([217.227.231.139])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 21:01:37 +0200
+Received: from halim.sahin by pd9e3e78b.dip.t-dialin.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 21:01:37 +0200
 Content-Disposition: inline
-In-Reply-To: <E1Mqsce-0002nt-OD@amazonia.comcast.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +29,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rick Bronson <rick@efn.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Sep 24, 2009 at 11:00:52AM -0700, Rick Bronson wrote:
-> Mark,
+Hello,
+The volume of the mentioned card is really too low.
+used kernel: 2.6.31-rc6 from opensuse factory.
+lspci reports:
+00:08.0 Audio device: nVidia Corporation MCP79 High Definition Audio
+(rev b1)
+        Subsystem: nVidia Corporation Device cb84
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Ste
+        Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
+<TAbort-
+        Latency: 0 (500ns min, 1250ns max)
+        Interrupt: pin A routed to IRQ 21
+        Region 0: Memory at fad78000 (32-bit, non-prefetchable)
+[size=16K]
+        Capabilities: [44] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3ho
+                Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+        Kernel driver in use: HDA Intel
 
-> > This suggests that the DMA isn't happening which usually means that the
-> > CPU isn't seeing all the clocks it's supposed to.  I'm not familiar
-> > enough with the OMAP internals to know if you've set the CPU up
-> > properly.
+Output from /proc/asound/cards:
+ 0 [NVidia         ]: HDA-Intel - HDA NVidia
+                      HDA NVidia at 0xfad78000 irq 21
 
->   I've poured over the relavent code for this and am pretty sure I
-> don't need to touch it.  The same code works on the beagleboard, at
-> least the DMA part.  But you never know...
-
-You shouldn't need to touch the DMA code itself, it's normally an issue
-with the clocks and/or the pinmux code not managing to get the signals
-required to clock the data transfer.
-
->   BTW, when I do a aplay, the trace looks the same except ACDDAT is
-> low.
-
-Yes, that's what I'd expect - this was just an attempt to confirm that
-the CODEC is happy.
+I didn't give any cmdline params to snd-ihda-intel.
+Any ideas how to get more power out of this card?
+regards
+halim
