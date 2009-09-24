@@ -1,19 +1,23 @@
-From: gus.alsa@bourg.net
-Subject: Patch for Zotac IONITX model detection
-Date: Thu, 24 Sep 2009 21:58:51 +0000
-Message-ID: <50361.1253829531@bourg.net>
-Reply-To: gus.alsa@bourg.net
+From: Rick Bronson <rick@efn.org>
+Subject: Re: WM8731 using I2S on omap3 McBSP2 issues
+Date: Thu, 24 Sep 2009 15:37:28 -0700
+Message-ID: <E1MqwwK-0004BR-Kz@amazonia.comcast.net>
+References: <E1Mqrlf-0002YF-9O@amazonia.comcast.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="=_da3d67c5d7526f23067d42194fdbf292"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from carrera.bourg.net (carrera.bourg.net [207.229.121.50])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03511243CA
+Received: from samwise.efn.org (efn.org [206.192.230.249])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F84D24427
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Sep 2009 23:58:53 +0200 (CEST)
-Received: from mail.bourg.net (carrera [207.229.121.50])
-	by carrera.bourg.net (Postfix) with ESMTP id B2B7996FC
-	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 21:58:51 +0000 (UTC)
+	Fri, 25 Sep 2009 00:37:32 +0200 (CEST)
+Received: from amazonia.comcast.net (c-98-232-231-2.hsd1.or.comcast.net
+	[98.232.231.2])
+	by samwise.efn.org (Postfix) with ESMTP id 487E8170043
+	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 15:37:31 -0700 (PDT)
+Received: from rick by amazonia.comcast.net with local (Exim 4.69)
+	(envelope-from <rick@efn.org>) id 1MqwwK-0004BR-Kz
+	for alsa-devel@alsa-project.org; Thu, 24 Sep 2009 15:37:28 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,61 +30,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---=_da3d67c5d7526f23067d42194fdbf292
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
 
-=20
+> You shouldn't need to touch the DMA code itself, it's normally an issue
+> with the clocks and/or the pinmux code not managing to get the signals
+> required to clock the data transfer.
 
-	Tested this on my Zotac IONITX motherboard (N330 model).  Dmesg
-output:
+  I noticed the dma code has been changed from what I have.
 
-	[   16.464533] ALSA hda_codec.c:3081: hda_codec: model '3stack-6ch'
-is selected for config 174b:437b (Zotac IONITX)
-	Patch:
+  Also noticed that the beagleboard is getting DMA interrupts when I
+"aplay":
 
-	--- alsa-kernel/pci/hda/patch_realtek.c.orig    2009-09-24
-14:50:45.000000000 -0700
-+++ alsa-kernel/pci/hda/patch_realtek.c 2009-09-24 14:38:07.000000000
--0700
-@@ -16724,6 +16724,7 @@ static struct snd_pci_quirk alc662_cfg_t
-                                        ALC662_3ST_6ch_DIG),
-        SND_PCI_QUIRK_MASK(0x1854, 0xf000, 0x2000, "ASUS H13-200x",
-                           ALC663_ASUS_H13),
-+       SND_PCI_QUIRK(0x174b, 0x437b, "Zotac IONITX",
-ALC662_3ST_6ch),
-        {}
- };
-	Thanks,
+cat /proc/interrupts | grep DMA
 
-	Gus
+ 12:       4646        INTC  DMA   
 
--------------------------
-Message sent via Atmail Open - http://atmail.org/
---=_da3d67c5d7526f23067d42194fdbf292
-Content-Transfer-Encoding: base64
-Content-Type: application/octet-stream;
- name="ionitx.audio.patch";
-Content-Disposition: attachment;
- filename="ionitx.audio.patch";
+  but I'm not.  As I mentioned, I'm at "2.6.29-rc3-omap1", anyone
+think there is a problem with pcm DMA's in that version?
 
-LS0tIGFsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jLm9yaWcJMjAwOS0wOS0yNCAx
-NDo1MDo0NS4wMDAwMDAwMDAgLTA3MDAKKysrIGFsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hfcmVh
-bHRlay5jCTIwMDktMDktMjQgMTQ6Mzg6MDcuMDAwMDAwMDAwIC0wNzAwCkBAIC0xNjcyNCw2ICsx
-NjcyNCw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBhbGM2NjJfY2ZnX3QKIAkJCQkJ
-QUxDNjYyXzNTVF82Y2hfRElHKSwKIAlTTkRfUENJX1FVSVJLX01BU0soMHgxODU0LCAweGYwMDAs
-IDB4MjAwMCwgIkFTVVMgSDEzLTIwMHgiLAogCQkJICAgQUxDNjYzX0FTVVNfSDEzKSwKKwlTTkRf
-UENJX1FVSVJLKDB4MTc0YiwgMHg0MzdiLCAiWm90YWMgSU9OSVRYIiwgQUxDNjYyXzNTVF82Y2gp
-LAogCXt9CiB9OwogCg==
---=_da3d67c5d7526f23067d42194fdbf292
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+  Thanks
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=_da3d67c5d7526f23067d42194fdbf292--
+  Rick
