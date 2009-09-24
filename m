@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] ASoC: DaVinci: Fix divide by
-	zero	error during 1st execution
-Date: Thu, 24 Sep 2009 07:36:22 -0700
-Message-ID: <20090924143621.GA5105@sirena.org.uk>
-References: <1252704543-25580-1-git-send-email-troy.kisky@boundarydevices.com>
-	<20090923171039.GB3457@sirena.org.uk>
-	<4ABACEEF.8080000@boundarydevices.com>
+Subject: Re: Problem with mplayer and OSS on at91sam9g20(kernel
+ 2.6.30)
+Date: Thu, 24 Sep 2009 07:57:56 -0700
+Message-ID: <20090924145755.GB5105@sirena.org.uk>
+References: <4ABB67CA.6000003@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from s-utl01-sjpop.stsn.net (s-utl01-sjpop.stsn.net [72.254.0.201])
-	by alsa0.perex.cz (Postfix) with SMTP id 07BC61038BD
+	by alsa0.perex.cz (Postfix) with SMTP id B6EA01038C7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Sep 2009 16:37:29 +0200 (CEST)
+	Thu, 24 Sep 2009 16:59:13 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4ABACEEF.8080000@boundarydevices.com>
+In-Reply-To: <4ABB67CA.6000003@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
+To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 23, 2009 at 06:44:15PM -0700, Troy Kisky wrote:
+On Thu, Sep 24, 2009 at 02:36:26PM +0200, Sedji Gaouaou wrote:
 
-> I think you were waiting for me to remove the need for the
-> comment:
+> -- 2 error messages to note -------------------------
+> mplayer:
+> "[AO OSS]setup: driver doesn't support SNDCTL_DSP_GETOSPACE :-("
 
-> +	/*
-> +	 * dma_params must be first because rtd->dai->cpu_dai->private_data
-> +	 * is cast to a pointer of an array of struct davinci_pcm_dma_params in
-> +	 * davinci_pcm_open.
-> +	 */
+This is just going to be a knock on effect of the hw_params failing, I
+expect...
 
-> Which is doable.
+> kernel:
+> "asoc: machine hw_params failed"
 
-> Do you still want this fixed?
+...for which I'd suggest drilling down into the function to see which
+operation fails.  Looking at the code I'd expect it's getting upset
+because it's being called with an invalid rate (OSS emulation calls
+hw_params with partially initialised parameters) but you're not seeing
+the log message that ought to be printed when that happens.  Some trace
+showing what causes it to return an error ought to point out the
+culprit.  The usual way to fix these is to ignore any errors in the
+function which isn't ideal but is needed with the way OSS emulation
+works.
 
-Yes, please - I merged the patch because the bug fix really ought to be
-in .32 but it'd still be good to get the code cleaned up even if that
-has to wait for .33.
+I won't have access to my sam9g20 board until next week to look at this
+myself.  
