@@ -1,22 +1,21 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: AIC23 playback volume control not working
-Date: Thu, 24 Sep 2009 19:25:41 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030A1C5973@dbde02.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] ASoC: DaVinci: Fix divide by
+	zero	error during 1st execution
+Date: Thu, 24 Sep 2009 07:36:22 -0700
+Message-ID: <20090924143621.GA5105@sirena.org.uk>
+References: <1252704543-25580-1-git-send-email-troy.kisky@boundarydevices.com>
+	<20090923171039.GB3457@sirena.org.uk>
+	<4ABACEEF.8080000@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id E6F631038BD
+Received: from s-utl01-sjpop.stsn.net (s-utl01-sjpop.stsn.net [72.254.0.201])
+	by alsa0.perex.cz (Postfix) with SMTP id 07BC61038BD
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Sep 2009 15:55:46 +0200 (CEST)
-Received: from dbdp20.itg.ti.com ([172.24.170.38])
-	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id n8ODti3I014756
-	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 08:55:45 -0500
-Received: from dbde71.ent.ti.com (localhost [127.0.0.1])
-	by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id n8ODtgfd001406
-	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 19:25:43 +0530 (IST)
-Content-Language: en-US
+	Thu, 24 Sep 2009 16:37:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4ABACEEF.8080000@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,42 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, Sep 23, 2009 at 06:44:15PM -0700, Troy Kisky wrote:
 
-I am trying to change the playback volume using amixer commands but
-am not able to see any effect. Register writes are happening correctly
-but no change in volume. Here is a short log:
+> I think you were waiting for me to remove the need for the
+> comment:
 
-root@omap3evm:~# amixer cset numid=1 0
-tlv320aic23_write: reg=0x2, value=0x0
-data[0]=0x4, data[1]=0x0
-tlv320aic23_write: reg=0x3, value=0x0
-data[0]=0x6, data[1]=0x0
-numid=1,iface=MIXER,name='Digital Playback Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=127,step=0
-  : values=0,0
-  | dBscale-min=-121.00dB,step=1.00dB,mute=0
-root@omap3evm:~#
-root@omap3evm:~#
-root@omap3evm:~#
-root@omap3evm:~#
-root@omap3evm:~#
-root@omap3evm:~# amixer cset numid=1 127
-tlv320aic23_write: reg=0x2, value=0x7f
-data[0]=0x4, data[1]=0x7f
-tlv320aic23_write: reg=0x3, value=0x7f
-data[0]=0x6, data[1]=0x7f
-numid=1,iface=MIXER,name='Digital Playback Volume'
-  ; type=INTEGER,access=rw---R--,values=2,min=0,max=127,step=0
-  : values=127,127
-  | dBscale-min=-121.00dB,step=1.00dB,mute=0
-root@omap3evm:~#
-root@omap3evm:~#
+> +	/*
+> +	 * dma_params must be first because rtd->dai->cpu_dai->private_data
+> +	 * is cast to a pointer of an array of struct davinci_pcm_dma_params in
+> +	 * davinci_pcm_open.
+> +	 */
 
-Any suggestions are appreciated.  
+> Which is doable.
 
-Regards,
-Anuj Aggarwal
+> Do you still want this fixed?
+
+Yes, please - I merged the patch because the bug fix really ought to be
+in .32 but it'd still be good to get the code cleaned up even if that
+has to wait for .33.
