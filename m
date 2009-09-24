@@ -1,22 +1,22 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: Capture not working in MMAP mode with '-v'
-Date: Thu, 24 Sep 2009 14:28:05 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030A1C585F@dbde02.ent.ti.com>
+From: Anuj Aggarwal <anuj.aggarwal@gmail.com>
+Subject: Re: Application supporting forward/rewind APIs
+Date: Thu, 24 Sep 2009 14:31:55 +0530
+Message-ID: <2ee9e08d0909240201l5cf5675m111b6da1434cff60@mail.gmail.com>
+References: <2ee9e08d0909240034t6fdab6aftc24e733621638f09@mail.gmail.com>
+	<s5hocp0vlm6.wl%tiwai@suse.de>
+	<4f3252890909240057l1a2b5b88m861dea551f69afce@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D49E1038B4
-	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Sep 2009 10:58:11 +0200 (CEST)
-Received: from dbdp20.itg.ti.com ([172.24.170.38])
-	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id n8O8w8bd006986
-	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 03:58:09 -0500
-Received: from dbde71.ent.ti.com (localhost [127.0.0.1])
-	by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id n8O8w7B5006533
-	for <alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 14:28:08 +0530 (IST)
-Content-Language: en-US
+Received: from mail-yx0-f175.google.com (mail-yx0-f175.google.com
+	[209.85.210.175])
+	by alsa0.perex.cz (Postfix) with ESMTP id DD79A103817
+	for <Alsa-devel@alsa-project.org>;
+	Thu, 24 Sep 2009 11:02:16 +0200 (CEST)
+Received: by yxe5 with SMTP id 5so1930172yxe.24
+	for <Alsa-devel@alsa-project.org>; Thu, 24 Sep 2009 02:02:15 -0700 (PDT)
+In-Reply-To: <4f3252890909240057l1a2b5b88m861dea551f69afce@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,49 +26,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Yeah, I am looking for some sample application to test forward/rewind
+functionality.
 
-When I try to capture audio in MMAP mode using the following command, it works properly:
+Regards,
+Anuj
 
-arecord -f cd -d 10 -M rec01.wav
+On Thu, Sep 24, 2009 at 1:27 PM, Raymond Yau
+<superquad.vortex2@gmail.com> wrote:
+> Do you mean that there is no test program to verify the implementation is
+> correct ?
+>
+> Some sound card 's hardware has FIFO buffer.
+>
+> For example , au88x0
+>
+> according to patent 6167465
+>
+> Additionally, a first-in-first-out (FIFO) buffer is established for the DMA
+> channel. Then a DMA request is generated in order to begin filling the FIFO
+> buffer with data from the first data segment 150(0) using the information
+> provided by CPU 210.
+>
+>
+> The FIFO buffer may be any suitable size capable of handling bus latencies
+> while small enough such that the memory requirement is not overly
+> burdensome. In one embodiment of the present invention, the FIFO buffer is
+> 32 samples or words in depth, which would withstand a maximum bus latency of
+> about 4 microseconds. By way of example, if 48 DMA channels trigger
+> simultaneously, with a trigger level set at half the buffer size (16
+> samples), each DMA channel can wait 16 samples (20 microseconds per sample),
+> or approximately 320 microseconds before running out of data.
+>
+>
+> It seem that alsa-lib should not allow application to rewind the application
+> pointer to hardware pointer since you cannot write the next sample because
+> of FIFO buffer even using mmap read/write
+>
+> or bug in *snd_pcm_rewindable() ?*
+>
+>
+> 2009/9/24 Takashi Iwai <tiwai@suse.de>
+>
+>> At Thu, 24 Sep 2009 13:04:24 +0530,
+>> Anuj Aggarwal wrote:
+>> >
+>> > Hi,
+>> >
+>> > I want to try the forward/rewind APIs supported by the ALSA library.
+>> > Can someone point to an ALSA application which exercises these APIs?
+>>
+>> Pulseaudio is using snd_pcm_rewind().
+>> About snd_pcm_forward(), I don't know of...
+>>
+>>
+>> Takashi
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-However, if I specify '-v' along with the above command, it fails to 
-capture anything and prints log and returns immediately:
 
-Recording WAVE 'rec03.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-Plug PCM: Hardware PCM card 0 'omap3evm' device 0 subdevice 0
-Its setup is:
-  stream       : CAPTURE
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 22052
-  period_size  : 5513
-  period_time  : 125011
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 5513
-  period_event : 0
-  start_threshold  : 1
-  stop_threshold   : 22052
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1445199872
-  appl_ptr     : 0
-  hw_ptr       : 0
-mmap_area[0] = 0x4030e000,0,32 (16)
-mmap_area[1] = 0x4030e000,16,32 (16)
 
-I have not observed this problem while playing audio, only while capture this issue crops up.
-
-Any pointers?
-
-Thanks & Regards,
+-- 
+Best Regards,
 Anuj Aggarwal
