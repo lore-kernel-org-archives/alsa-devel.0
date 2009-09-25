@@ -1,28 +1,18 @@
-From: Halim Sahin <halim.sahin@freenet.de>
-Subject: more infos: Re: hda-intel: low volume with nvidia
-	mcp7a hdmi
-Date: Fri, 25 Sep 2009 06:33:27 +0000 (UTC)
-Message-ID: <20090925063327.GA23001@halim>
-References: <20090924190111.GA7812@halim>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problem with mplayer and OSS on at91sam9g20(kernel
+ 2.6.30)
+Date: Fri, 25 Sep 2009 09:03:16 +0200
+Message-ID: <4ABC6B34.7080200@ladisch.de>
+References: <4ABB67CA.6000003@atmel.com> <20090924145755.GB5105@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 934731038C5
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 5CE5C1038C7
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Sep 2009 08:34:07 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1Mr4NW-0006Rl-Pe
-	for alsa-devel@alsa-project.org; Fri, 25 Sep 2009 08:34:02 +0200
-Received: from pd9e3da29.dip.t-dialin.net ([217.227.218.41])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2009 08:34:02 +0200
-Received: from halim.sahin by pd9e3da29.dip.t-dialin.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2009 08:34:02 +0200
-Content-Disposition: inline
-In-Reply-To: <20090924190111.GA7812@halim>
+	Fri, 25 Sep 2009 09:07:38 +0200 (CEST)
+In-Reply-To: <20090924145755.GB5105@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,24 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Sedji Gaouaou <sedji.gaouaou@atmel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-head -n 1 /proc/asound/card0/codec* gives:
+Mark Brown wrote:
+> I'd expect it's getting upset because it's being called with an
+> invalid rate (OSS emulation calls hw_params with partially initialised
+> parameters)
 
-==> /proc/asound/card0/codec#0 <==
-Codec: Realtek ALC662 rev1
+But even the uninitialized parameters conform to the constraints that
+were set by the driver, so they should never be invalid.
 
-==> /proc/asound/card0/codec#3 <==
-Codec: Nvidia MCP7A HDMI
+Sedji, try running mplayer with -v, this should give more log messages
+with the parameters that mplayer is trying to set.
 
-maybe this helps to understand the problem?
 
-Regards
-Halim
-
--- 
-Halim Sahin
-E-Mail:				
-halim.sahin (at) t-online.de
+Best regards,
+Clemens
