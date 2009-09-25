@@ -1,17 +1,28 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: WM8731 using I2S on omap3 McBSP2 issues
-Date: Fri, 25 Sep 2009 09:03:06 +0300
-Message-ID: <200909250903.06874.peter.ujfalusi@nokia.com>
-References: <E1Mqrlf-0002YF-9O@amazonia.comcast.net>
+From: Halim Sahin <halim.sahin@freenet.de>
+Subject: more infos: Re: hda-intel: low volume with nvidia
+	mcp7a hdmi
+Date: Fri, 25 Sep 2009 06:33:27 +0000 (UTC)
+Message-ID: <20090925063327.GA23001@halim>
+References: <20090924190111.GA7812@halim>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B8F910380F
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 934731038C5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Sep 2009 08:03:23 +0200 (CEST)
-In-Reply-To: <E1Mqrlf-0002YF-9O@amazonia.comcast.net>
+	Fri, 25 Sep 2009 08:34:07 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1Mr4NW-0006Rl-Pe
+	for alsa-devel@alsa-project.org; Fri, 25 Sep 2009 08:34:02 +0200
+Received: from pd9e3da29.dip.t-dialin.net ([217.227.218.41])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2009 08:34:02 +0200
+Received: from halim.sahin by pd9e3da29.dip.t-dialin.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2009 08:34:02 +0200
+Content-Disposition: inline
+In-Reply-To: <20090924190111.GA7812@halim>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,66 +32,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Rick Bronson <rick@efn.org>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
+head -n 1 /proc/asound/card0/codec* gives:
 
-On Thursday 24 September 2009 20:06:07 ext Rick Bronson wrote:
-> Hi,
-> =
+==> /proc/asound/card0/codec#0 <==
+Codec: Realtek ALC662 rev1
 
->   I'm working on getting a WM8731 (in SLAVE) working using I2S on
-> omap3 McBSP2 (in MASTER).
+==> /proc/asound/card0/codec#3 <==
+Codec: Nvidia MCP7A HDMI
 
- =
+maybe this helps to understand the problem?
 
-> static int omap3csb740_hw_params(struct snd_pcm_substream *substream,
-> ...
->  ret =3D snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
->   SND_SOC_DAIFMT_NB_NF |  SND_SOC_DAIFMT_CBS_CFS);
->  ret =3D snd_soc_dai_set_fmt(cpu_dai,  SND_SOC_DAIFMT_I2S |
->   SND_SOC_DAIFMT_NB_NF |  SND_SOC_DAIFMT_CBS_CFS);
->  ret =3D snd_soc_dai_set_sysclk(codec_dai, 0, 12288000,   SND_SOC_CLOCK_I=
-N);
->  ret =3D snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_EXT, 0,
->    SND_SOC_CLOCK_IN);
+Regards
+Halim
 
-I think the problem is here.
-The MCBSP_CLKS pin is connected to CLK256FS pin of TWL4030 (or TPA).
-Since you are not using the TWL codec, there will be no clock on the MCBSP_=
-CLKS =
-
-pin, thus no functional clock for McBSP, thus no bits are shifted in or out.
-You can try to use the internal functional clock:
-
-  ret =3D snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_FCLK, 0,
-    SND_SOC_CLOCK_IN);
-
-Than set the correct divider, which depends on the frequency you would like=
- to =
-
-play. The source for the CLKS_FCLK is (in case of McBSP2) PER_96M_FCLK, so =
-
-96MHz. Now you have to divide this to get the correct value, as I recall qu=
-ite a =
-
-long time ago there were some discussion about this here, and I have sent s=
-ome =
-
-'formula' to calculate it, but I can not find it now :(
-
->  ret =3D snd_soc_dai_set_clkdiv(cpu_dai, OMAP_MCBSP_CLKGDV, 256);
-> =
-
->   Any help is greatly appreciated.
-> =
-
->   Rick Bronson
-> =
-
-
--- =
-
-P=E9ter
+-- 
+Halim Sahin
+E-Mail:				
+halim.sahin (at) t-online.de
