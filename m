@@ -1,18 +1,19 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: [PATCH 2/4] snd-usb-caiaq: Missing lock around use of
-	buffer positions
-Date: Fri, 25 Sep 2009 16:22:16 +0100
-Message-ID: <1253892138-10827-2-git-send-email-mark@pogo.org.uk>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 1/4] snd-usb-caiaq: Do not disable local
+	interrupts
+Date: Fri, 25 Sep 2009 18:00:24 +0200
+Message-ID: <20090925160024.GT21654@buzzloop.caiaq.de>
 References: <alpine.BSO.2.01.0909220805420.25926@zrgural.vwaro.pbz>
 	<1253892138-10827-1-git-send-email-mark@pogo.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metheny.ijneb.com (mailout.ijneb.com [212.13.201.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15A4510390C
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 70D9D24422
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Sep 2009 17:22:19 +0200 (CEST)
+	Fri, 25 Sep 2009 18:00:28 +0200 (CEST)
+Content-Disposition: inline
 In-Reply-To: <1253892138-10827-1-git-send-email-mark@pogo.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,44 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Hills <mark@pogo.org.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix a race which causes snd_pcm_update_hw_ptr_pos() to report a bug.
----
- sound/usb/caiaq/audio.c |   12 +++++++++---
- 1 files changed, 9 insertions(+), 3 deletions(-)
+On Fri, Sep 25, 2009 at 04:22:15PM +0100, Mark Hills wrote:
+> The driver documentation states that local interrupts are already
+> disabled when trigger() is called, so only a spinlock is required.
 
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index ce193a5..9856c00 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -268,16 +268,22 @@ snd_usb_caiaq_pcm_pointer(struct snd_pcm_substream *sub)
- {
- 	int index = sub->number;
- 	struct snd_usb_caiaqdev *dev = snd_pcm_substream_chip(sub);
-+	snd_pcm_uframes_t ptr;
-+
-+	spin_lock(&dev->spinlock);
- 
- 	if (dev->input_panic || dev->output_panic)
--		return SNDRV_PCM_POS_XRUN;
-+		ptr = SNDRV_PCM_POS_XRUN;
- 
- 	if (sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		return bytes_to_frames(sub->runtime,
-+		ptr = bytes_to_frames(sub->runtime,
- 					dev->audio_out_buf_pos[index]);
- 	else
--		return bytes_to_frames(sub->runtime,
-+		ptr = bytes_to_frames(sub->runtime,
- 					dev->audio_in_buf_pos[index]);
-+
-+	spin_unlock(&dev->spinlock);
-+	return ptr;
- }
- 
- /* operators for both playback and capture */
--- 
-1.6.4.4
+Hmm. I assume you tested them well. But I remember to have had quite
+some trouble at this point on SMP machines and ended up with that
+irqsave code. However, if you're sure that fixes a bug or is not
+necessary, let's take the patches and I'll test them once I'm back home
+around mid Oct.
+
+Btw - your Signed-off-by: is missing on all of them :)
+
+Thanks,
+Daniel
+
+
+> ---
+>  sound/usb/caiaq/audio.c |    5 ++---
+>  1 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+> index 121af06..ce193a5 100644
+> --- a/sound/usb/caiaq/audio.c
+> +++ b/sound/usb/caiaq/audio.c
+> @@ -72,15 +72,14 @@ static void
+>  deactivate_substream(struct snd_usb_caiaqdev *dev,
+>  		     struct snd_pcm_substream *sub)
+>  {
+> -	unsigned long flags;
+> -	spin_lock_irqsave(&dev->spinlock, flags);
+> +	spin_lock(&dev->spinlock);
+>  
+>  	if (sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>  		dev->sub_playback[sub->number] = NULL;
+>  	else
+>  		dev->sub_capture[sub->number] = NULL;
+>  
+> -	spin_unlock_irqrestore(&dev->spinlock, flags);
+> +	spin_unlock(&dev->spinlock);
+>  }
+>  
+>  static int
+> -- 
+> 1.6.4.4
+> 
