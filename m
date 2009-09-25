@@ -1,17 +1,19 @@
 From: Graeme Gregory <dp@xora.org.uk>
-Subject: [PATCH] [ASOC] pxa-ssp increase max_channels to 8
-Date: Fri, 25 Sep 2009 13:27:09 +0100
-Message-ID: <1253881629-7906-1-git-send-email-dp@xora.org.uk>
+Subject: [PATCH] [PATCH] [ASOC] pxa-ssp increase max_channels
+	to 8
+Date: Fri, 25 Sep 2009 13:30:26 +0100
+Message-ID: <1253881826-7954-1-git-send-email-dp@xora.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF8421037F7
+Received: from mail-ew0-f225.google.com (mail-ew0-f225.google.com
+	[209.85.219.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id A36F01037F7
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Sep 2009 14:27:48 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 13so509505eye.16
-	for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2009 05:27:46 -0700 (PDT)
+	Fri, 25 Sep 2009 14:31:01 +0200 (CEST)
+Received: by ewy25 with SMTP id 25so2511862ewy.45
+	for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2009 05:30:59 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,6 +30,8 @@ List-Id: alsa-devel@alsa-project.org
 When running in TDM mode there can be more than 2 channels used. Datasheet has
 figures for upto 8 channels so increase max_channels on all SSP interfaces to
 this figure.
+
+Signed-off-by: Graeme Gregory <dp@xora.org.uk>
 ---
  sound/soc/pxa/pxa-ssp.c |   16 ++++++++--------
  1 files changed, 8 insertions(+), 8 deletions(-)
