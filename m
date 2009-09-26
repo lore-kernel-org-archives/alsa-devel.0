@@ -1,131 +1,84 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Application supporting forward/rewind APIs
-Date: Sat, 26 Sep 2009 11:59:43 +0800
-Message-ID: <4f3252890909252059t3d8cc2aaqffc880991d148e56@mail.gmail.com>
-References: <2ee9e08d0909240034t6fdab6aftc24e733621638f09@mail.gmail.com>
-	<s5hocp0vlm6.wl%tiwai@suse.de>
-	<4f3252890909240057l1a2b5b88m861dea551f69afce@mail.gmail.com>
-	<2ee9e08d0909240201l5cf5675m111b6da1434cff60@mail.gmail.com>
+From: "Shilimkar, Santosh" <santosh.shilimkar@ti.com>
+Subject: RE: [PATCHv2 0/7] TWL6030 audio codec initial support
+Date: Sat, 26 Sep 2009 10:42:39 +0530
+Message-ID: <EAF47CD23C76F840A9E7FCE10091EFAB02BADABC75@dbde02.ent.ti.com>
+References: <67059DBF19D7214F9C66BB0EA91BA90E90A391DE@dlee04.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f174.google.com (mail-px0-f174.google.com
-	[209.85.216.174])
-	by alsa0.perex.cz (Postfix) with ESMTP id 98BD5244D2
-	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Sep 2009 05:59:45 +0200 (CEST)
-Received: by pxi4 with SMTP id 4so4029851pxi.23
-	for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2009 20:59:43 -0700 (PDT)
-In-Reply-To: <2ee9e08d0909240201l5cf5675m111b6da1434cff60@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <67059DBF19D7214F9C66BB0EA91BA90E90A391DE@dlee04.ent.ti.com>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: "Lopez Cruz, Misael" <x0052729@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-It seem that the current implementation , it seem that the application can
-rewind the application pointer to hardware pointer , rewrite the next
-sample.for all drivers
+Misa,
+
+> -----Original Message-----
+> From: linux-omap-owner@vger.kernel.org [mailto:linux-omap-
+> owner@vger.kernel.org] On Behalf Of Lopez Cruz, Misael
+> Sent: Saturday, September 26, 2009 7:32 AM
+> To: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org
+> Cc: Mark Brown
+> Subject: [PATCHv2 0/7] TWL6030 audio codec initial support
+> 
+> Following patch series adds initial support for TWL6030 codec
+> driver.
+> 
+> TWL6030 codec depends on TWL6030_CORE, which is not accepted yet.
+> The main intention then is to get comments, I'll repost the patches
+> of this series when TWL6030_CORE support gets accepted and rework
+> patches as needed.
+Looking at your series, you have based your patches on Balaji's 6030 PMIC series as you mentioned " TWL6030 codec depends on TWL6030_CORE".
+
+While doing that series, we realized that there is a lot of code common between TWL5030 and TWL6030 apart from mainly interrupt handling and hence a common file approach is taken to avoid code duplication. The patch " [PATCHv2 3/7] ASoC: TWL6030: Add twl6030 codec driver" gives me an impression that there is opportunity to have a single file supporting both IC's. IC specific code can be handled using the runtime check depending on the revision.
+Can you explore this ? 
+You can find more information on above discussion at below thread.
+
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg15756.html
 
 
- static snd_pcm_sframes_t snd_pcm_hw_rewindable(snd_pcm_t *pcm)
-{
-    return snd_pcm_mmap_hw_avail(pcm);
-}
-
-However this is almost impossible for any sound cards since the hardware
-register just report the number of samples processed. this mean that the
-sound card is already processing the next sample.
-
-
-
-
-2009/9/24 Anuj Aggarwal <anuj.aggarwal@gmail.com>
-
-> Yeah, I am looking for some sample application to test forward/rewind
-> functionality.
->
-> Regards,
-> Anuj
->
-> On Thu, Sep 24, 2009 at 1:27 PM, Raymond Yau
-> <superquad.vortex2@gmail.com> wrote:
-> > Do you mean that there is no test program to verify the implementation is
-> > correct ?
-> >
-> > Some sound card 's hardware has FIFO buffer.
-> >
-> > For example , au88x0
-> >
-> > according to patent 6167465
-> >
-> > Additionally, a first-in-first-out (FIFO) buffer is established for the
-> DMA
-> > channel. Then a DMA request is generated in order to begin filling the
-> FIFO
-> > buffer with data from the first data segment 150(0) using the information
-> > provided by CPU 210.
-> >
-> >
-> > The FIFO buffer may be any suitable size capable of handling bus
-> latencies
-> > while small enough such that the memory requirement is not overly
-> > burdensome. In one embodiment of the present invention, the FIFO buffer
-> is
-> > 32 samples or words in depth, which would withstand a maximum bus latency
-> of
-> > about 4 microseconds. By way of example, if 48 DMA channels trigger
-> > simultaneously, with a trigger level set at half the buffer size (16
-> > samples), each DMA channel can wait 16 samples (20 microseconds per
-> sample),
-> > or approximately 320 microseconds before running out of data.
-> >
-> >
-> > It seem that alsa-lib should not allow application to rewind the
-> application
-> > pointer to hardware pointer since you cannot write the next sample
-> because
-> > of FIFO buffer even using mmap read/write
-> >
-> > or bug in *snd_pcm_rewindable() ?*
-> >
-> >
-> > 2009/9/24 Takashi Iwai <tiwai@suse.de>
-> >
-> >> At Thu, 24 Sep 2009 13:04:24 +0530,
-> >> Anuj Aggarwal wrote:
-> >> >
-> >> > Hi,
-> >> >
-> >> > I want to try the forward/rewind APIs supported by the ALSA library.
-> >> > Can someone point to an ALSA application which exercises these APIs?
-> >>
-> >> Pulseaudio is using snd_pcm_rewind().
-> >> About snd_pcm_forward(), I don't know of...
-> >>
-> >>
-> >> Takashi
-> >> _______________________________________________
-> >> Alsa-devel mailing list
-> >> Alsa-devel@alsa-project.org
-> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >>
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->
->
->
+>From 
+> Changes from v1:
+> - Renamed dai format for PDM as SND_SOC_DAIFMT_PDM
+> - CODEC driver registered as a platform driver
+> - AUDPWRON gpio line handled in the CODEC driver
+> - Handle scenario when no AUDPWRON gpio line is provided
+> - Corrected names of some widgets
+> - Avoid multiple calls to power functions in set_bias_level
+> 
+> Thanks,
+> -Misa
+> 
+> ---
+> 
+> Misael Lopez Cruz (7):
+>       OMAP4: PMIC: Add support for twl6030 codec
+>       ASoC: Add PDM DAI format definition
+>       ASoC: TWL6030: Add twl6030 codec driver
+>       ASoC: TWL6030: Manual power-up/down sequences
+>       ASoC: TWL6030: Add support for low-power mode
+>       ASoC: TWL6030: Enable audio interrupt
+>       ASoC: TWL6030: Power-up seq completion through audio interrupt
+> 
+>  drivers/mfd/twl-core.c     |   15 +
+>  include/linux/i2c/twl.h    |   11 +
+>  include/sound/soc-dai.h    |    1 +
+>  sound/soc/codecs/Kconfig   |    4 +
+>  sound/soc/codecs/Makefile  |    2 +
+>  sound/soc/codecs/twl6030.c | 1179
+> ++++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/twl6030.h |  137 +++++
+>  7 files changed, 1349 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/soc/codecs/twl6030.c
+>  create mode 100644 sound/soc/codecs/twl6030.h
 > --
-> Best Regards,
-> Anuj Aggarwal
->
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+Regards,
+Santosh
