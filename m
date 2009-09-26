@@ -1,138 +1,77 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: [PATCHv2 7/7] ASoC: TWL6030: Power-up seq completion through audio
- interrupt
-Date: Fri, 25 Sep 2009 21:03:45 -0500
-Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E90A391E5@dlee04.ent.ti.com>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: [Pkg-alsa-devel] Bug#527074:
+ /etc/init.d/alsa-utils: `/etc/init.d/alsa-utils stop` triggers amixer error
+Date: Sat, 26 Sep 2009 05:55:13 +0200
+Message-ID: <20090926035513.GA3396@aragorn.home.lxtec.de>
+References: <alpine.DEB.2.00.0905151647420.8826@errno>
+	<20090826184219.GA4544@snowball.coredump>
+	<20090826200822.GB3089@aragorn.home.lxtec.de>
+	<20090826203409.GA5604@snowball.coredump>
+	<20090827080612.GA10228@chico.puz>
+	<20090827153028.GA2191@snowball.coredump>
+	<20090918170255.GB3424@aragorn.home.lxtec.de>
+	<20090918200830.GA2320@snowball.coredump>
+	<20090918202332.GA5152@aragorn.home.lxtec.de>
+	<20090925185405.GA7479@snowball.coredump>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpout0.hostsharing.net (smtpout0.hostsharing.net
+	[83.223.95.250]) by alsa0.perex.cz (Postfix) with ESMTP id 74570244C7
+	for <alsa-devel@alsa-project.org>;
+	Sat, 26 Sep 2009 05:55:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20090925185405.GA7479@snowball.coredump>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Piotr Lewandowski <piotr.lewandowski@gmail.com>
+Cc: alsa-devel@alsa-project.org, 527074@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
-When the codec is powered-up through external AUDPWRON line it starts
-its power-up sequence. The completion of the sequence is signaled
-through the audio interrupt, and then codec is operational.
+* Piotr Lewandowski [090925 20:54 +0200]
+> Hi alsa-devel@!
+> 
+> One of the maintainers of alsa-utils package in Debian advised me to
+> ask for your help. I've encountered following problem:
+> 
+> #v+
+> $ amixer -c 0 -q set Mic 0% mute
+> amixer: Invalid command!
+> #v-
+> 
+> This command is invoked from /etc/init.d/alsa-utils script during
+> system shutdown. Do you have any ideas how to fix that?
+> 
+> Here is some basic info about my hardware:
+> 
+> #v+
+> $ lspci -v | sed -ne '/Audio/,/^$/p'
+> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
+> Definition Audio Controller (rev 01)
+>         Subsystem: Hewlett-Packard Company Device 30a2
+>         Flags: bus master, fast devsel, latency 0, IRQ 16
+>         Memory at f4580000 (64-bit, non-prefetchable) [size=16K]
+>         Capabilities: <access denied>
+>         Kernel driver in use: HDA Intel
+> 
+> $ cat /proc/asound/version
+> Advanced Linux Sound Architecture Driver Version 1.0.18a.
 
-CODEC driver starts a wait_for_completion just after AUDPWRON line
-transitions from low to high. It's signaled as complete when servicing
-READYINT interrupt.
+1. It would be an option to insert:
+   'echo option "snd-hda-intel enable_msi=1"' >> /etc/modprobe.d/local.conf
+2. It is a good idea to update to alsa-source 1.0.21-2 and build biuld
+   your driver up from there.
 
-Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
----
- sound/soc/codecs/twl6030.c |   46 ++++++++++++++++++++++++++++---------------
- 1 files changed, 30 insertions(+), 16 deletions(-)
+Elimar
 
-diff --git a/sound/soc/codecs/twl6030.c b/sound/soc/codecs/twl6030.c
-index 5cf2099..f8bd8ee 100644
---- a/sound/soc/codecs/twl6030.c
-+++ b/sound/soc/codecs/twl6030.c
-@@ -48,6 +48,7 @@ struct twl6030_data {
- 	int codec_powered;
- 	unsigned int sysclk;
- 	struct work_struct audint_work;
-+	struct completion ready_completion;
- };
- 
- /*
-@@ -58,7 +59,7 @@ static const u8 twl6030_reg[TWL6030_CACHEREGNUM] = {
- 	0x4B, /* TWL6030_ASICID (ro)	0x01	*/
- 	0x00, /* TWL6030_ASICREV (ro)	0x02	*/
- 	0x00, /* TWL6030_INTID		0x03	*/
--	0x41, /* TWL6030_INTMR		0x04	*/
-+	0x00, /* TWL6030_INTMR		0x04	*/
- 	0x00, /* TWL6030_NCPCTRL	0x05	*/
- 	0x00, /* TWL6030_LDOCTL		0x06	*/
- 	0x00, /* TWL6030_HPPLLCTL	0x07	*/
-@@ -186,6 +187,23 @@ static inline void twl6030_write_reg_cache(struct snd_soc_codec *codec,
- }
- 
- /*
-+ * read from twl6030 hardware register
-+ */
-+static int twl6030_read(struct snd_soc_codec *codec,
-+			unsigned int reg)
-+{
-+	u8 value;
-+
-+	if (reg > TWL6030_CACHEREGNUM)
-+		return -EIO;
-+
-+	twl_i2c_read_u8(TWL6030_MODULE_AUDIO, &value, reg);
-+	twl6030_write_reg_cache(codec, reg, value);
-+
-+	return value;
-+}
-+
-+/*
-  * write to the twl6030 register space
-  */
- static int twl6030_write(struct snd_soc_codec *codec,
-@@ -372,7 +390,8 @@ void twl6030_naudint_work(struct work_struct *work)
- 		dev_alert(codec->dev, "vib drivers over current detection\n");
- 		break;
- 	case TWL6030_READYINT:
--		dev_alert(codec->dev, "codec is ready\n");
-+		priv->codec_powered = 1;
-+		complete(&priv->ready_completion);
- 		break;
- 	default:
- 		dev_err(codec->dev, "unknown audio interrupt %d\n", intid);
-@@ -617,25 +636,21 @@ static int twl6030_set_bias_level(struct snd_soc_codec *codec,
- 			/* use AUDPWRON line */
- 			gpio_set_value(audpwron_gpio, 1);
- 
--			/* power-up sequence latency */
--			mdelay(16);
-+			/* wait for ready interrupt */
-+			wait_for_completion(&priv->ready_completion);
- 
- 			/* sync registers updated during power-up sequence */
--			twl6030_write_reg_cache(codec, TWL6030_REG_NCPCTL,
--						0x81);
--			twl6030_write_reg_cache(codec, TWL6030_REG_LDOCTL,
--						0x45);
--			twl6030_write_reg_cache(codec, TWL6030_REG_LPPLLCTL,
--						0x01);
-+			twl6030_read(codec, TWL6030_REG_NCPCTL);
-+			twl6030_read(codec, TWL6030_REG_LDOCTL);
-+			twl6030_read(codec, TWL6030_REG_LPPLLCTL);
- 		} else {
- 			/* use manual power-up sequence */
- 			twl6030_power_up(codec);
-+			priv->codec_powered = 1;
- 		}
- 
- 		/* initialize vdd/vss registers with reg_cache */
- 		twl6030_init_vdd_regs(codec);
--
--		priv->codec_powered = 1;
- 		break;
- 	case SND_SOC_BIAS_OFF:
- 		if (!priv->codec_powered)
-@@ -649,10 +664,8 @@ static int twl6030_set_bias_level(struct snd_soc_codec *codec,
- 			udelay(500);
- 
- 			/* sync registers updated during power-down sequence */
--			twl6030_write_reg_cache(codec, TWL6030_REG_NCPCTL,
--						0x00);
--			twl6030_write_reg_cache(codec, TWL6030_REG_LDOCTL,
--						0x00);
-+			twl6030_read(codec, TWL6030_REG_NCPCTL);
-+			twl6030_read(codec, TWL6030_REG_LDOCTL);
- 			twl6030_write_reg_cache(codec, TWL6030_REG_LPPLLCTL,
- 						0x00);
- 		} else {
-@@ -1061,6 +1074,7 @@ static int __devinit twl6030_codec_probe(struct platform_device *pdev)
- 
- 	/* audio interrupt */
- 	INIT_WORK(&priv->audint_work, twl6030_naudint_work);
-+	init_completion(&priv->ready_completion);
- 
- 	ret = request_irq(naudint_irq,
- 			twl6030_naudint_handler,
 -- 
-1.5.4.3
+  Never make anything simple and efficient when a way 
+  can be found to make it complex and wonderful ;-)
