@@ -1,28 +1,23 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Re: [Pkg-alsa-devel] Bug#527074:
- /etc/init.d/alsa-utils: `/etc/init.d/alsa-utils stop` triggers amixer error
-Date: Sat, 26 Sep 2009 05:55:13 +0200
-Message-ID: <20090926035513.GA3396@aragorn.home.lxtec.de>
-References: <alpine.DEB.2.00.0905151647420.8826@errno>
-	<20090826184219.GA4544@snowball.coredump>
-	<20090826200822.GB3089@aragorn.home.lxtec.de>
-	<20090826203409.GA5604@snowball.coredump>
-	<20090827080612.GA10228@chico.puz>
-	<20090827153028.GA2191@snowball.coredump>
-	<20090918170255.GB3424@aragorn.home.lxtec.de>
-	<20090918200830.GA2320@snowball.coredump>
-	<20090918202332.GA5152@aragorn.home.lxtec.de>
-	<20090925185405.GA7479@snowball.coredump>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Application supporting forward/rewind APIs
+Date: Sat, 26 Sep 2009 11:59:43 +0800
+Message-ID: <4f3252890909252059t3d8cc2aaqffc880991d148e56@mail.gmail.com>
+References: <2ee9e08d0909240034t6fdab6aftc24e733621638f09@mail.gmail.com>
+	<s5hocp0vlm6.wl%tiwai@suse.de>
+	<4f3252890909240057l1a2b5b88m861dea551f69afce@mail.gmail.com>
+	<2ee9e08d0909240201l5cf5675m111b6da1434cff60@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpout0.hostsharing.net (smtpout0.hostsharing.net
-	[83.223.95.250]) by alsa0.perex.cz (Postfix) with ESMTP id 74570244C7
+Received: from mail-px0-f174.google.com (mail-px0-f174.google.com
+	[209.85.216.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id 98BD5244D2
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Sep 2009 05:55:21 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20090925185405.GA7479@snowball.coredump>
+	Sat, 26 Sep 2009 05:59:45 +0200 (CEST)
+Received: by pxi4 with SMTP id 4so4029851pxi.23
+	for <alsa-devel@alsa-project.org>; Fri, 25 Sep 2009 20:59:43 -0700 (PDT)
+In-Reply-To: <2ee9e08d0909240201l5cf5675m111b6da1434cff60@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,46 +27,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Piotr Lewandowski <piotr.lewandowski@gmail.com>
-Cc: alsa-devel@alsa-project.org, 527074@bugs.debian.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Piotr Lewandowski [090925 20:54 +0200]
-> Hi alsa-devel@!
-> 
-> One of the maintainers of alsa-utils package in Debian advised me to
-> ask for your help. I've encountered following problem:
-> 
-> #v+
-> $ amixer -c 0 -q set Mic 0% mute
-> amixer: Invalid command!
-> #v-
-> 
-> This command is invoked from /etc/init.d/alsa-utils script during
-> system shutdown. Do you have any ideas how to fix that?
-> 
-> Here is some basic info about my hardware:
-> 
-> #v+
-> $ lspci -v | sed -ne '/Audio/,/^$/p'
-> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High
-> Definition Audio Controller (rev 01)
->         Subsystem: Hewlett-Packard Company Device 30a2
->         Flags: bus master, fast devsel, latency 0, IRQ 16
->         Memory at f4580000 (64-bit, non-prefetchable) [size=16K]
->         Capabilities: <access denied>
->         Kernel driver in use: HDA Intel
-> 
-> $ cat /proc/asound/version
-> Advanced Linux Sound Architecture Driver Version 1.0.18a.
+It seem that the current implementation , it seem that the application can
+rewind the application pointer to hardware pointer , rewrite the next
+sample.for all drivers
 
-1. It would be an option to insert:
-   'echo option "snd-hda-intel enable_msi=1"' >> /etc/modprobe.d/local.conf
-2. It is a good idea to update to alsa-source 1.0.21-2 and build biuld
-   your driver up from there.
 
-Elimar
+ static snd_pcm_sframes_t snd_pcm_hw_rewindable(snd_pcm_t *pcm)
+{
+    return snd_pcm_mmap_hw_avail(pcm);
+}
 
--- 
-  Never make anything simple and efficient when a way 
-  can be found to make it complex and wonderful ;-)
+However this is almost impossible for any sound cards since the hardware
+register just report the number of samples processed. this mean that the
+sound card is already processing the next sample.
+
+
+
+
+2009/9/24 Anuj Aggarwal <anuj.aggarwal@gmail.com>
+
+> Yeah, I am looking for some sample application to test forward/rewind
+> functionality.
+>
+> Regards,
+> Anuj
+>
+> On Thu, Sep 24, 2009 at 1:27 PM, Raymond Yau
+> <superquad.vortex2@gmail.com> wrote:
+> > Do you mean that there is no test program to verify the implementation is
+> > correct ?
+> >
+> > Some sound card 's hardware has FIFO buffer.
+> >
+> > For example , au88x0
+> >
+> > according to patent 6167465
+> >
+> > Additionally, a first-in-first-out (FIFO) buffer is established for the
+> DMA
+> > channel. Then a DMA request is generated in order to begin filling the
+> FIFO
+> > buffer with data from the first data segment 150(0) using the information
+> > provided by CPU 210.
+> >
+> >
+> > The FIFO buffer may be any suitable size capable of handling bus
+> latencies
+> > while small enough such that the memory requirement is not overly
+> > burdensome. In one embodiment of the present invention, the FIFO buffer
+> is
+> > 32 samples or words in depth, which would withstand a maximum bus latency
+> of
+> > about 4 microseconds. By way of example, if 48 DMA channels trigger
+> > simultaneously, with a trigger level set at half the buffer size (16
+> > samples), each DMA channel can wait 16 samples (20 microseconds per
+> sample),
+> > or approximately 320 microseconds before running out of data.
+> >
+> >
+> > It seem that alsa-lib should not allow application to rewind the
+> application
+> > pointer to hardware pointer since you cannot write the next sample
+> because
+> > of FIFO buffer even using mmap read/write
+> >
+> > or bug in *snd_pcm_rewindable() ?*
+> >
+> >
+> > 2009/9/24 Takashi Iwai <tiwai@suse.de>
+> >
+> >> At Thu, 24 Sep 2009 13:04:24 +0530,
+> >> Anuj Aggarwal wrote:
+> >> >
+> >> > Hi,
+> >> >
+> >> > I want to try the forward/rewind APIs supported by the ALSA library.
+> >> > Can someone point to an ALSA application which exercises these APIs?
+> >>
+> >> Pulseaudio is using snd_pcm_rewind().
+> >> About snd_pcm_forward(), I don't know of...
+> >>
+> >>
+> >> Takashi
+> >> _______________________________________________
+> >> Alsa-devel mailing list
+> >> Alsa-devel@alsa-project.org
+> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >>
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+>
+>
+>
+> --
+> Best Regards,
+> Anuj Aggarwal
+>
