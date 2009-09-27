@@ -1,20 +1,22 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: Re: [PATCH 1/4] snd-usb-caiaq: Do not disable local
-	interrupts
-Date: Sat, 26 Sep 2009 17:06:23 +0100 (BST)
-Message-ID: <alpine.BSO.2.01.0909261630400.8841@zrgural.vwaro.pbz>
-References: <alpine.BSO.2.01.0909220805420.25926@zrgural.vwaro.pbz>
-	<1253892138-10827-1-git-send-email-mark@pogo.org.uk>
-	<20090925160024.GT21654@buzzloop.caiaq.de>
+From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
+	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
+Subject: Re: Problems with Intel HDA driver
+Date: Sun, 27 Sep 2009 23:23:56 +0300
+Message-ID: <200909272323.56548.munzirtaha@gmail.com>
+References: <dfc471050909140433t28ea15ocf7883a62bb3a262@mail.gmail.com>
+	<s5hskepk6pi.wl%tiwai@suse.de> <s5hocpdk6di.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metheny.ijneb.com (mailout.ijneb.com [212.13.201.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id A1E571037FF
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id D44C3245D0
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Sep 2009 18:06:25 +0200 (CEST)
-In-Reply-To: <20090925160024.GT21654@buzzloop.caiaq.de>
+	Sun, 27 Sep 2009 22:24:03 +0200 (CEST)
+Received: by fxm8 with SMTP id 8so2312776fxm.45
+	for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2009 13:24:03 -0700 (PDT)
+In-Reply-To: <s5hocpdk6di.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,65 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 25 Sep 2009, Daniel Mack wrote:
-
-> On Fri, Sep 25, 2009 at 04:22:15PM +0100, Mark Hills wrote:
->> The driver documentation states that local interrupts are already
->> disabled when trigger() is called, so only a spinlock is required.
->
-> Hmm. I assume you tested them well. But I remember to have had quite 
-> some trouble at this point on SMP machines and ended up with that 
-> irqsave code. However, if you're sure that fixes a bug or is not 
-> necessary, let's take the patches and I'll test them once I'm back home 
-> around mid Oct.
-
-I did check both non and SMP machines, and it corresponds to the docs. I 
-also removed the patches to verify I could reproduce the original 
-problems.
-
-As I missed off the the Signed-off-by, I'll not rush to resubmit them; 
-let's wait until you have also tested them.
-
-> Btw - your Signed-off-by: is missing on all of them :)
->
-> Thanks,
-> Daniel
->
->
->> ---
->>  sound/usb/caiaq/audio.c |    5 ++---
->>  1 files changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
->> index 121af06..ce193a5 100644
->> --- a/sound/usb/caiaq/audio.c
->> +++ b/sound/usb/caiaq/audio.c
->> @@ -72,15 +72,14 @@ static void
->>  deactivate_substream(struct snd_usb_caiaqdev *dev,
->>  		     struct snd_pcm_substream *sub)
->>  {
->> -	unsigned long flags;
->> -	spin_lock_irqsave(&dev->spinlock, flags);
->> +	spin_lock(&dev->spinlock);
->>
->>  	if (sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
->>  		dev->sub_playback[sub->number] = NULL;
->>  	else
->>  		dev->sub_capture[sub->number] = NULL;
->>
->> -	spin_unlock_irqrestore(&dev->spinlock, flags);
->> +	spin_unlock(&dev->spinlock);
->>  }
->>
->>  static int
->> --
->> 1.6.4.4
->>
->
-
--- 
-Mark
+SGkgVGFrYXNoaSwKSSBqdXN0IHVwZGF0ZWQgbXkgZHJpdmVyIGFuZCBsaWJzIHRvIDEuMC4yMSB0
+byBzZWUgd2hldGhlciB0aGlzIGlzIGZpeGVkLiAKVW5mb3J0dW5hdGVseSwgd2hlbiBJIHBsdWcg
+bXkgaGVhZHBob25lcywgdGhlIGxhcHRvcCBzcGVha2VycyBhcmUgc3RpbGwgCnBsYXlpbmcuCgpo
+dHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9YzAwODIyMzFjNzBlZjY5ZGU5OTk1MDZm
+M2Q1OWRlYzBjMGNkYjYzMwoKT24gWWF1bSBhbC1JdGhuYWluIDI0IFJhbWFkYW4gMTQzMCA0OjIz
+OjA1IHBtIFRha2FzaGkgSXdhaSB3cm90ZToKPiBBdCBNb24sIDE0IFNlcCAyMDA5IDE1OjE1OjUz
+ICswMjAwLAo+IAo+IEkgd3JvdGU6Cj4gPiBBdCBNb24sIDE0IFNlcCAyMDA5IDE2OjE1OjAyICsw
+MzAwLAo+ID4KPiA+IE96YW4gw4dhxJ9sYXlhbiB3cm90ZToKPiA+ID4gVGFrYXNoaSBJd2FpIHdy
+b3RlIE9uIDE0LTA5LTIwMDkgMTU6MzY6Cj4gPiA+ID4gWWVhaCwgSSB0aGluayB3ZSBjYW4gYWRk
+IEVBUEQgaGFuZGxpbmcgYXMgZGVmYXVsdCBmb3IgSURUOTJIRDcxeHgKPiA+ID4gPiBjb2RlY3Mu
+ICBJJ3ZlIG5ldmVyIHNlZW4gbWFjaGluZXMgdGhhdCBjYW4ndCBsaXZlIHdpdGggR1BJTzAgYml0
+IHVwLgo+ID4gPgo+ID4gPiBlbmFibGVfbXNpIGRvZXNuJ3Qgc2VlbSB0byBhZmZlY3QgdGhlIGF1
+dG8tbXV0aW5nIHByb2JsZW0uIEkgcGxheWVkCj4gPiA+IHdpdGggZXZlcnkgc2luZ2xlIG5vZGUg
+aW4gaGRhLWFuYWx5emVyIGJ1dCBjYW4ndCBnZXQgYXV0by1tdXRlIHdvcmsuIEkKPiA+ID4gY2Fu
+IG1hbnVhbGx5IG11dGUgdGhlIEhQIG91dHB1dCBhbmQgdGhlIGludGVybmFsIHNwZWFrZXJzIGJ5
+Cj4gPiA+IGNoZWNraW5nL3VuY2hlY2tpbmcgT1VUIGNoZWNrYm94ZXMgb24gcmVsZXZhbnQgTklE
+cy4gVGhlcmUncyBhIDh4bgo+ID4gPiBtYXRyaXggZm9yIEdQSU8gc2V0dGluZ3MsIEkgcGxheWVk
+IHdpdGggdGhlbSBhcyB3ZWxsIHRvIHNldCB1bnNvbCBidXQKPiA+ID4gbm9wZS4KPiA+ID4KPiA+
+ID4gSSB3YW50IHRvIHJlbWVtYmVyIHRoYXQgZGVsbC1tNC0xIG1ha2VzIGF1dG9tdXRlIHdvcmsg
+YnV0IGJyZWFrcyB0aGUKPiA+ID4gbWl4ZXIgY2hhbm5lbHM6Cj4gPiA+Cj4gPiA+IGh0dHA6Ly93
+d3cuc3Bpbmljcy5uZXQvbGlzdHMvYWxzYS1kZXZlbC9tc2cyNjcxNC5odG1sCj4gPiA+Cj4gPiA+
+IEVyciwgSSBrbm93IHRoYXQgSSBkaWRuJ3QgYW5zd2VyIHRoZSBsYXN0IHF1ZXN0aW9uIGluIHRo
+ZSB0aHJlYWQgYXMgSSdtCj4gPiA+IGEgbGl0dGxlIGJpdCBsb3N0IGluIHRoZSBOSUQgcG9vbCBh
+bmQgZGlkbid0IGhhdmUgdGltZSB0byBpbnZlc3RpZ2F0ZQo+ID4gPiBmdXJ0aGVyLgo+ID4KPiA+
+IENvdWxkIHlvdSBjaGVjayB3aGV0aGVyIHRoaXMgc3RpbGwgdmFsaWQ/Cj4gPgo+ID4gQmFzaWNh
+bGx5IHRoZSBtb2RlbCBvcHRpb24gZG9lc24ndCBjaGFuZ2UgdGhlIGF1dG8tbXV0ZSBiZWhhdmlv
+ci4KPiA+IEl0IGp1c3QgY2hhbmdlcyB3aGljaCBwaW4gdG8gYmUgZGV0ZWN0ZWQgYW5kIHdoaWNo
+IHBpbiB0byBtdXRlLgo+ID4gU28sIGlmIG1vZGVsPWRlbGwtbTQtMSBtYWtlcyB0aGUgYXV0by1t
+dXRpbmcgd29ya2luZywgaXQgbWVhbnMKPiA+IHRoYXQgdGhlIEJJT1Mgc2V0dXAgaXMgYnJva2Vu
+Lgo+IAo+IEkgbG9va2VkIHRocm91Z2ggYWxzYS1pbmZvIG91dHB1dCBub3csIGFuZCBmb3VuZCB0
+aGUgY3VscHJpdC4KPiBOSUQgMHgwZiBpcyBzZXQgYXMgYSBsaW5lLW91dCwgYW5kIGN1cnJlbnRs
+eSB0aGUgZHJpdmVyIGRvZXNuJ3QKPiBkb24ndCBkbyBhdXRvLW11dGluZyBmb3IgbGluZS1vdXQg
+dW5sZXNzIGEgaGVhZHBob25lIGlzIHByZXNlbnQuCj4gQ2hhbmdpbmcgaXQgdG8gYSBoZWFkcGhv
+bmUgc2hvdWxkIGZpeC4gIE9yIHlvdSBjYW4gZ2l2ZSBocF9kZXRlY3Q9MQo+IGhpbnQgdmlhIHN5
+c2ZzIGFuZCByZWNvbmZpZ3VyZS4KPiAKPiAKPiBUYWthc2hpCgoKCi0tIApNdW56aXIgVGFoYQpU
+ZWxlY29tbXVuaWNhdGlvbnMgYW5kIEVsZWN0cm9uaWNzIEVuZ2luZWVyCk1hc3RlciBDSVcgRGVz
+aWduZXIsIElDREwsIE1PVVMsIExpbnV4KywgTFBJLCBTQ1NBClJpeWFkaCwgU0EKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
