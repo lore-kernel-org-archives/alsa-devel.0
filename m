@@ -1,20 +1,21 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: WM8731 using I2S on omap3 McBSP2 issues
-Date: Mon, 28 Sep 2009 08:50:32 +0300
-Message-ID: <20090928085032.74074fb4.jhnikula@gmail.com>
-References: <E1MrZge-0002DY-0A@amazonia.comcast.net>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH 0/1] alsa-lib: pcm_hw: Always use delay
+	ioctl in snd_pcm_delay()
+Date: Mon, 28 Sep 2009 14:37:54 +0800
+Message-ID: <4f3252890909272337x33df5f4es4debd933d1f8fb13@mail.gmail.com>
+References: <alpine.DEB.1.10.0909110058130.3417@ecabase.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f225.google.com (mail-ew0-f225.google.com
-	[209.85.219.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC51F2433E
+Received: from mail-pz0-f184.google.com (mail-pz0-f184.google.com
+	[209.85.222.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id C8AC524364
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Sep 2009 07:50:20 +0200 (CEST)
-Received: by ewy25 with SMTP id 25so4196498ewy.45
-	for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2009 22:50:19 -0700 (PDT)
-In-Reply-To: <E1MrZge-0002DY-0A@amazonia.comcast.net>
+	Mon, 28 Sep 2009 08:37:55 +0200 (CEST)
+Received: by pzk14 with SMTP id 14so1987711pzk.23
+	for <alsa-devel@alsa-project.org>; Sun, 27 Sep 2009 23:37:54 -0700 (PDT)
+In-Reply-To: <alpine.DEB.1.10.0909110058130.3417@ecabase.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Rick Bronson <rick@efn.org>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 26 Sep 2009 08:59:52 -0700
-Rick Bronson <rick@efn.org> wrote:
+It seem that the problem is snd_pcm_rewindable() return a wrong value
 
->   Yes, I had tried 8 before and just tried it now.  Same result.  It
-> really seems like there is a DMA issue.  Can you think of anything
-> else to try before I dive into the DMA code?
-> 
-Ok, that wasn't the reason.
+It is unlikely for the application to rewind the application pointer to
+hardware pointer (e.g. usb audio, cs46xx and au88x0 )
 
-Have you tried to reverse roles of codec and omap? I.e. by using
-the codec as a master and omap as a slave with SND_SOC_DAIFMT_CBM_CFM.
+http://thread.gmane.org/gmane.linux.alsa.devel/65759/focus=65773
 
-I don't think there is any HW reason as you have seen the bit-clock and
-frame sync signals toggling but I remember one case few years back
-where codec had slight too high capacitive load on the bit-clock line.
-That was then causing unstable frame sync as it was internally derived
-directly from the bit-clock pin without any buffer. Bit-clock signal
-looked just fine on oscilloscope but wasn't well enough for internal
-circuits of the cpu.
+2009/9/11 Kai Vehmanen <kvehmanen@eca.cx>
 
-So if assuming similar problem here, I could imagine that if the FSX is
-used similar way directly inside the omap and if signal is not well
-enough, the McBSP and DMA may not be running.
-
-This migh be a bit far reason to look for but at least easy to try by
-switching the roles as then the codec is driving the both bit-clock and
-fs.
-
-
--- 
-Jarkko
+> Hello all,
+>
+> this is a updated version of the alsa-lib patch I mentioned in
+> the earlier thread:
+>
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2009-August/020377.html
+>
+> That was meant to just describe the possible problem, but now I'm more
+> confident that this should be considered for merging. The related
+> alsa-kernel patch is 'ALSA: Add extra delay count in PCM', which added the
+> 'runtime->delay' property.
+>
+> Please review if this patch makes sense.
+>
+> Kai Vehmanen (1):
+>   pcm_hw: Always use delay ioctl in snd_pcm_delay()
+>
+>  src/pcm/pcm_hw.c |   22 ----------------------
+>  1 files changed, 0 insertions(+), 22 deletions(-)
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
