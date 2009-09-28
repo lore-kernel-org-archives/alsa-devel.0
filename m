@@ -1,49 +1,82 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Consider the codec->active also	when
-	changing bias level
-Date: Mon, 28 Sep 2009 12:17:36 +0100
-Message-ID: <20090928111735.GA32420@sirena.org.uk>
-References: <1254130688-6183-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: [PATCHv2 3/7] ASoC: TWL6030: Add twl6030 codec driver
+Date: Mon, 28 Sep 2009 14:15:39 +0100
+Message-ID: <20090928131539.GB31899@rakim.wolfsonmicro.main>
+References: <67059DBF19D7214F9C66BB0EA91BA90E90A391E1@dlee04.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96CED103835
-	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Sep 2009 13:17:36 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1254130688-6183-1-git-send-email-peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <67059DBF19D7214F9C66BB0EA91BA90E90A391E1@dlee04.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Lopez Cruz, Misael" <x0052729@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 28, 2009 at 12:38:08PM +0300, Peter Ujfalusi wrote:
+On Fri, Sep 25, 2009 at 09:03:01PM -0500, Lopez Cruz, Misael wrote:
+> Initial version of TWL6030 codec driver.
 
-> Fixes the following scenario: if during active playback/capture the DAPM
-> routes has been modified in a way, that there will be no complete route
-> (for example muting the output) DAPM would set the codec into
-> BIAS_STANDBY, which could disable the clocks from the codec (codec is
-> master), which breaks the playback with error since the clocks are
-> missing from the serial bus and no data is shifted out/in.
+> The TWL6030 codec uses a propietary PDM-based digital audio interface.
+> TWL6030 codec has two power modes: low-power and high-performance,
+> this initial version only supports high-performance mode.
 
-This is only helping because the clocks generation is controlled by the
-bias level configuration.  That's not really the way things are supposed
-to work - I'd rather see a different fix that explicitly represents
-whatever the requirement is for controlling the clocks.  Turning on the
-clocks based on the bais level will generally result in them being
-turned on too much which will waste power.
+This looks basically good.  A few pretty minor issues below.
 
-I suspect you want to use AIF widgets and make the PLL a supply for them
-and any other things that need the PLL, and we should make arrangements
-to ensure that the AIF widget is enabled whenever the interface is live
-and the CODEC is master.
+> +       select SND_SOC_TWL6030 if TWL6030_CORE && GPIOLIB
+
+I don't think the gpiolib dependency is needed here.  If gpiolib is not
+enabled then stubs are provided which cause all the functions to error
+out.  Since the driver doesn't require gpios to be specified at all this
+should be fine for the purposes of SND_SOC_ALL_CODECS - it's really only
+looking for a build test.
+
+> +       /* avoid read-only registers (ASICID, ASICREV, STATUS) */
+> +       for (i = 2; i < (TWL6030_VIOREGNUM - 1); i++) {
+> +               reg = twl6030_vio_reg[i];
+> +               twl6030_write(codec, reg, cache[reg]);
+> +       }
+
+It's not obvious how those registers are being avoided here...
+
+> +static int twl6030_set_bias_level(struct snd_soc_codec *codec,
+> +                               enum snd_soc_bias_level level)
+> +{
+> +       struct twl_codec_data *twl_codec = codec->control_data;
+> +       struct twl6030_data *priv = codec->private_data;
+> +       int audpwron_gpio = twl_codec->audpwron_gpio;
+> +
+> +       switch (level) {
+> +       case SND_SOC_BIAS_ON:
+> +       case SND_SOC_BIAS_PREPARE:
+> +       case SND_SOC_BIAS_STANDBY:
+> +               if (priv->codec_powered)
+> +                       return 0;
+
+This should still set codec->bias_level, as should the power off case.
+
+> +       /* the sample lenght handled by codec at A-D and D-A
+> +        * conversion is 16-bits, but the dai requires 32-bits
+> +        */
+> +       format = params_format(params);
+> +       if (format != SNDRV_PCM_FORMAT_S32_LE) {
+> +               dev_err(codec->dev, "unknown format %d\n", format);
+> +               return -EINVAL;
+> +       }
+
+I suspect that for PDM you're as well just ignoring the format here and
+leaving it up to the controller side of the link to worry about it.
+
+> +static int twl6030_set_dai_fmt(struct snd_soc_dai *codec_dai,
+> +                               unsigned int fmt)
+> +{
+> +       int format = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+> +
+> +       /* propietary pdm dai format */
+> +       if (format != SND_SOC_DAIFMT_PDM)
+> +               return -EINVAL;
+> +
+> +       return 0;
+> +}
+
+May as well just leave this out if it's the only supported format and
+the device doesn't have any actual configuration.
