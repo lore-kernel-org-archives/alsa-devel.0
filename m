@@ -1,17 +1,24 @@
-From: =?GB2312?B?wt64u7Pl?= <luofuchong@gmail.com>
-Subject: alsa duplex test application
-Date: Tue, 29 Sep 2009 16:44:35 +0800
-Message-ID: <a127e1f0909290144o467742d3hff072743bc26fdf6@mail.gmail.com>
+From: Anuj Aggarwal <anuj.aggarwal@gmail.com>
+Subject: Re: Application supporting forward/rewind APIs
+Date: Tue, 29 Sep 2009 14:43:58 +0530
+Message-ID: <2ee9e08d0909290213r3ca53b6cq5909bcf79752a26c@mail.gmail.com>
+References: <2ee9e08d0909240034t6fdab6aftc24e733621638f09@mail.gmail.com>
+	<s5hocp0vlm6.wl%tiwai@suse.de>
+	<4f3252890909240057l1a2b5b88m861dea551f69afce@mail.gmail.com>
+	<2ee9e08d0909240201l5cf5675m111b6da1434cff60@mail.gmail.com>
+	<4f3252890909252059t3d8cc2aaqffc880991d148e56@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=000e0cd25dd48c13940474b36cde
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f210.google.com (mail-gx0-f210.google.com
-	[209.85.217.210])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04FC010382D
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D563103817
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Sep 2009 10:44:37 +0200 (CEST)
-Received: by gxk2 with SMTP id 2so3340147gxk.4
-	for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2009 01:44:36 -0700 (PDT)
+	Tue, 29 Sep 2009 11:14:19 +0200 (CEST)
+Received: by yxe34 with SMTP id 34so5627926yxe.16
+	for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2009 02:14:18 -0700 (PDT)
+In-Reply-To: <4f3252890909252059t3d8cc2aaqffc880991d148e56@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,220 +28,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---000e0cd25dd48c13940474b36cde
-Content-Type: text/plain; charset=ISO-8859-1
+I found the solution, one can use mplayer to test forward/rewind
+feature of ALSA library.
 
-Hi all,
-    I want to write a sound card Duplex test Application(playing what we are
-recording) refer to alsa-utils, and i got Segmentation fault.
-    Accessoriesis my application for test,can anyone help me to find out
-what is the problem, or show me a application which can work.
-    Sorry for my poor english, and waiting for your reply.
+Regards,
+Anuj Aggarwal
 
---000e0cd25dd48c13940474b36cde
-Content-Type: application/octet-stream; name="atest.c"
-Content-Disposition: attachment; filename="atest.c"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g06eb4ke0
+On Sat, Sep 26, 2009 at 9:29 AM, Raymond Yau
+<superquad.vortex2@gmail.com> wrote:
+> It seem that the current implementation , it seem that the application can
+> rewind the application pointer to hardware pointer , rewrite the next
+> sample.for all drivers
+>
+>
+> =A0static snd_pcm_sframes_t snd_pcm_hw_rewindable(snd_pcm_t *pcm)
+> {
+> =A0 =A0return snd_pcm_mmap_hw_avail(pcm);
+> }
+>
+> However this is almost impossible for any sound cards since the hardware
+> register just report the number of samples processed. this mean that the
+> sound card is already processing the next sample.
+>
+>
+>
+>
+> 2009/9/24 Anuj Aggarwal <anuj.aggarwal@gmail.com>
+>
+>> Yeah, I am looking for some sample application to test forward/rewind
+>> functionality.
+>>
+>> Regards,
+>> Anuj
+>>
+>> On Thu, Sep 24, 2009 at 1:27 PM, Raymond Yau
+>> <superquad.vortex2@gmail.com> wrote:
+>> > Do you mean that there is no test program to verify the implementation=
+ is
+>> > correct ?
+>> >
+>> > Some sound card 's hardware has FIFO buffer.
+>> >
+>> > For example , au88x0
+>> >
+>> > according to patent 6167465
+>> >
+>> > Additionally, a first-in-first-out (FIFO) buffer is established for the
+>> DMA
+>> > channel. Then a DMA request is generated in order to begin filling the
+>> FIFO
+>> > buffer with data from the first data segment 150(0) using the informat=
+ion
+>> > provided by CPU 210.
+>> >
+>> >
+>> > The FIFO buffer may be any suitable size capable of handling bus
+>> latencies
+>> > while small enough such that the memory requirement is not overly
+>> > burdensome. In one embodiment of the present invention, the FIFO buffer
+>> is
+>> > 32 samples or words in depth, which would withstand a maximum bus late=
+ncy
+>> of
+>> > about 4 microseconds. By way of example, if 48 DMA channels trigger
+>> > simultaneously, with a trigger level set at half the buffer size (16
+>> > samples), each DMA channel can wait 16 samples (20 microseconds per
+>> sample),
+>> > or approximately 320 microseconds before running out of data.
+>> >
+>> >
+>> > It seem that alsa-lib should not allow application to rewind the
+>> application
+>> > pointer to hardware pointer since you cannot write the next sample
+>> because
+>> > of FIFO buffer even using mmap read/write
+>> >
+>> > or bug in *snd_pcm_rewindable() ?*
+>> >
+>> >
+>> > 2009/9/24 Takashi Iwai <tiwai@suse.de>
+>> >
+>> >> At Thu, 24 Sep 2009 13:04:24 +0530,
+>> >> Anuj Aggarwal wrote:
+>> >> >
+>> >> > Hi,
+>> >> >
+>> >> > I want to try the forward/rewind APIs supported by the ALSA library.
+>> >> > Can someone point to an ALSA application which exercises these APIs?
+>> >>
+>> >> Pulseaudio is using snd_pcm_rewind().
+>> >> About snd_pcm_forward(), I don't know of...
+>> >>
+>> >>
+>> >> Takashi
+>> >> _______________________________________________
+>> >> Alsa-devel mailing list
+>> >> Alsa-devel@alsa-project.org
+>> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>
+>> > _______________________________________________
+>> > Alsa-devel mailing list
+>> > Alsa-devel@alsa-project.org
+>> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >
+>>
+>>
+>>
+>> --
+>> Best Regards,
+>> Anuj Aggarwal
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
 
-I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxtYWxsb2MuaD4KI2luY2x1ZGUgPHVuaXN0ZC5o
-PgojaW5jbHVkZSA8c3RkbGliLmg+CiNpbmNsdWRlIDxzdHJpbmcuaD4KI2luY2x1ZGUgPGdldG9w
-dC5oPgojaW5jbHVkZSA8ZmNudGwuaD4KI2luY2x1ZGUgPGN0eXBlLmg+CiNpbmNsdWRlIDxlcnJu
-by5oPgojaW5jbHVkZSA8bGltaXRzLmg+CiNpbmNsdWRlIDx0aW1lLmg+CiNpbmNsdWRlIDxsb2Nh
-bGUuaD4KI2luY2x1ZGUgPGFsc2EvYXNvdW5kbGliLmg+CiNpbmNsdWRlIDxhc3NlcnQuaD4KI2lu
-Y2x1ZGUgPHN5cy9wb2xsLmg+CiNpbmNsdWRlIDxzeXMvdWlvLmg+CiNpbmNsdWRlIDxzeXMvdGlt
-ZS5oPgojaW5jbHVkZSA8c3lzL3NpZ25hbC5oPgojaW5jbHVkZSA8YXNtL2J5dGVvcmRlci5oPgoK
-c25kX3BjbV90ICpwbGF5YmFja19oYW5kbGUsICpjYXB0dXJlX2hhbmRsZTsKCnN0YXRpYyBzdHJ1
-Y3QgewogICAgICAgIHNuZF9wY21fZm9ybWF0X3QgZm9ybWF0OwogICAgICAgIHVuc2lnbmVkIGlu
-dCBjaGFubmVsczsKICAgICAgICB1bnNpZ25lZCBpbnQgcmF0ZTsKfSBod3BhcmFtczsKCnR5cGVk
-ZWYgbG9uZyBsb25nIG9mZjY0X3Q7CgpzdGF0aWMgaW50IGZkWzJdOwpzdGF0aWMgdV9jaGFyICpw
-bGF5X2J1ZiA9IE5VTEw7CnN0YXRpYyB1X2NoYXIgKmNhcF9idWYgPSBOVUxMOwpzdGF0aWMgY29u
-c3QgaW50IHRlc3Rfbm93YWl0ID0gMDsKc3RhdGljIGNvbnN0IGNoYXIgKnBjbV9uYW1lID0gImRl
-ZmF1bHQiOwoKc3RhdGljIHNpemVfdCBjaHVua19ieXRlczsKc3RhdGljIHNuZF9wY21fdWZyYW1l
-c190IGNodW5rX3NpemUgPSAwOwpzdGF0aWMgc2l6ZV90IGJpdHNfcGVyX3NhbXBsZSwgYml0c19w
-ZXJfZnJhbWU7CnN0YXRpYyB1bnNpZ25lZCBwZXJpb2RfdGltZSA9IDA7CnN0YXRpYyB1bnNpZ25l
-ZCBidWZmZXJfdGltZSA9IDA7CnN0YXRpYyBzbmRfcGNtX3VmcmFtZXNfdCBwZXJpb2RfZnJhbWVz
-ID0gMDsKc3RhdGljIHNuZF9wY21fdWZyYW1lc190IGJ1ZmZlcl9mcmFtZXMgPSAwOwoKc3RhdGlj
-IGludCBhdmFpbF9taW4gPSAtMTsKc3RhdGljIGludCBzdGFydF9kZWxheSA9IDA7CnN0YXRpYyBp
-bnQgc3RvcF9kZWxheSA9IDA7CgovKgogKiBTYWZlIHJlYWQgKGZvciBwaXBlcykKICovCnN0YXRp
-YyBzc2l6ZV90IHNhZmVfcmVhZChpbnQgZmQsIHZvaWQgKmJ1Ziwgc2l6ZV90IGNvdW50KQp7CiAg
-ICAgICAgc3NpemVfdCByZXN1bHQgPSAwLCByZXM7CgogICAgICAgIHdoaWxlIChjb3VudCA+IDAp
-IHsKICAgICAgICAgICAgICAgIGlmICgocmVzID0gcmVhZChmZCwgYnVmLCBjb3VudCkpID09IDAp
-CiAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICAgICAgaWYgKHJlcyA8
-IDApCiAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiByZXN1bHQgPiAwID8gcmVzdWx0IDog
-cmVzOwogICAgICAgICAgICAgICAgY291bnQgLT0gcmVzOwogICAgICAgICAgICAgICAgcmVzdWx0
-ICs9IHJlczsKICAgICAgICAgICAgICAgIGJ1ZiA9IChjaGFyICopYnVmICsgcmVzOwogICAgICAg
-IH0KICAgICAgICByZXR1cm4gcmVzdWx0Owp9CgpzdGF0aWMgdm9pZCBzZXRfcGFyYW1zKHNuZF9w
-Y21fdCAqaGFuZGxlKQp7CglzbmRfcGNtX2h3X3BhcmFtc190ICpwYXJhbXM7CglzbmRfcGNtX3N3
-X3BhcmFtc190ICpzd3BhcmFtczsKCXNuZF9wY21fdWZyYW1lc190IGJ1ZmZlcl9zaXplOwoJaW50
-IGVycjsKCXNpemVfdCBuOwoJdW5zaWduZWQgaW50IHJhdGU7CglzbmRfcGNtX3VmcmFtZXNfdCBz
-dGFydF90aHJlc2hvbGQsIHN0b3BfdGhyZXNob2xkOwoKCXNuZF9wY21faHdfcGFyYW1zX2FsbG9j
-YSgmcGFyYW1zKTsKCXNuZF9wY21fc3dfcGFyYW1zX2FsbG9jYSgmc3dwYXJhbXMpOwoKCWVyciA9
-IHNuZF9wY21faHdfcGFyYW1zX2FueShoYW5kbGUsIHBhcmFtcyk7CglpZiAoZXJyIDwgMCkgewoJ
-CWZwcmludGYoc3RkZXJyLCAiQnJva2VuIGNvbmZpZ3VyYXRpb24gZm9yIHRoaXMgUENNOiBubyBj
-b25maWd1cmF0aW9ucyBhdmFpbGFibGUiKTsKCQlleGl0KEVYSVRfRkFJTFVSRSk7Cgl9CgoJZXJy
-ID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2FjY2VzcyhoYW5kbGUsIHBhcmFtcywgU05EX1BDTV9B
-Q0NFU1NfUldfSU5URVJMRUFWRUQpOwoJaWYgKGVyciA8IDApIHsKCQlmcHJpbnRmKHN0ZGVyciwg
-IkFjY2VzcyB0eXBlIG5vdCBhdmFpbGFibGUiKTsKCQlleGl0KEVYSVRfRkFJTFVSRSk7Cgl9CgoJ
-ZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2Zvcm1hdChoYW5kbGUsIHBhcmFtcywgaHdwYXJh
-bXMuZm9ybWF0KTsKCWlmIChlcnIgPCAwKSB7CgkJZnByaW50ZihzdGRlcnIsICJTYW1wbGUgZm9y
-bWF0IG5vbiBhdmFpbGFibGUiKTsKCQlleGl0KEVYSVRfRkFJTFVSRSk7Cgl9CgoJZXJyID0gc25k
-X3BjbV9od19wYXJhbXNfc2V0X2NoYW5uZWxzKGhhbmRsZSwgcGFyYW1zLCBod3BhcmFtcy5jaGFu
-bmVscyk7CglpZiAoZXJyIDwgMCkgewoJCWZwcmludGYoc3RkZXJyLCAiQ2hhbm5lbHMgY291bnQg
-bm9uIGF2YWlsYWJsZSIpOwoJCWV4aXQoRVhJVF9GQUlMVVJFKTsKCX0KCiNpZiAwCgllcnIgPSBz
-bmRfcGNtX2h3X3BhcmFtc19zZXRfcGVyaW9kc19taW4oaGFuZGxlLCBwYXJhbXMsIDIpOwoJYXNz
-ZXJ0KGVyciA+PSAwKTsKI2VuZGlmCgoJZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X3JhdGVf
-bmVhcihoYW5kbGUsIHBhcmFtcywgJmh3cGFyYW1zLnJhdGUsIDApOwoJYXNzZXJ0KGVyciA+PSAw
-KTsKCglyYXRlID0gaHdwYXJhbXMucmF0ZTsKCglpZiAoYnVmZmVyX3RpbWUgPT0gMCAmJiBidWZm
-ZXJfZnJhbWVzID09IDApIHsKCQllcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19nZXRfYnVmZmVyX3Rp
-bWVfbWF4KHBhcmFtcywKCQkJCQkJCSAgICAmYnVmZmVyX3RpbWUsIDApOwoJCWFzc2VydChlcnIg
-Pj0gMCk7CgkJaWYgKGJ1ZmZlcl90aW1lID4gNTAwMDAwKQoJCQlidWZmZXJfdGltZSA9IDUwMDAw
-MDsKCX0KCglpZiAocGVyaW9kX3RpbWUgPT0gMCAmJiBwZXJpb2RfZnJhbWVzID09IDApIHsKCQlp
-ZiAoYnVmZmVyX3RpbWUgPiAwKQoJCQlwZXJpb2RfdGltZSA9IGJ1ZmZlcl90aW1lIC8gNDsKCQll
-bHNlCgkJCXBlcmlvZF9mcmFtZXMgPSBidWZmZXJfZnJhbWVzIC8gNDsKCX0KCglpZiAocGVyaW9k
-X3RpbWUgPiAwKQoJCWVyciA9IHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJpb2RfdGltZV9uZWFy
-KGhhbmRsZSwgcGFyYW1zLAoJCQkJCQkJICAgICAmcGVyaW9kX3RpbWUsIDApOwoJZWxzZQoJCWVy
-ciA9IHNuZF9wY21faHdfcGFyYW1zX3NldF9wZXJpb2Rfc2l6ZV9uZWFyKGhhbmRsZSwgcGFyYW1z
-LCAmcGVyaW9kX2ZyYW1lcywgMCk7Cglhc3NlcnQoZXJyID49IDApOwoKCWlmIChidWZmZXJfdGlt
-ZSA+IDApIHsKCQllcnIgPSBzbmRfcGNtX2h3X3BhcmFtc19zZXRfYnVmZmVyX3RpbWVfbmVhciho
-YW5kbGUsIHBhcmFtcywKCQkJCQkJCSAgICAgJmJ1ZmZlcl90aW1lLCAwKTsKCX0gZWxzZSB7CgkJ
-ZXJyID0gc25kX3BjbV9od19wYXJhbXNfc2V0X2J1ZmZlcl9zaXplX25lYXIoaGFuZGxlLCBwYXJh
-bXMsCgkJCQkJCQkgICAgICZidWZmZXJfZnJhbWVzKTsKCX0KCWFzc2VydChlcnIgPj0gMCk7CgoJ
-ZXJyID0gc25kX3BjbV9od19wYXJhbXMoaGFuZGxlLCBwYXJhbXMpOwoJaWYgKGVyciA8IDApIHsK
-CQlmcHJpbnRmKHN0ZGVyciwgIlVuYWJsZSB0byBpbnN0YWxsIGh3IHBhcmFtczoiKTsKCQlleGl0
-KEVYSVRfRkFJTFVSRSk7Cgl9CgoJc25kX3BjbV9od19wYXJhbXNfZ2V0X3BlcmlvZF9zaXplKHBh
-cmFtcywgJmNodW5rX3NpemUsIDApOwoJc25kX3BjbV9od19wYXJhbXNfZ2V0X2J1ZmZlcl9zaXpl
-KHBhcmFtcywgJmJ1ZmZlcl9zaXplKTsKCWlmIChjaHVua19zaXplID09IGJ1ZmZlcl9zaXplKSB7
-CgkJZnByaW50ZihzdGRlcnIsICJDYW4ndCB1c2UgcGVyaW9kIGVxdWFsIHRvIGJ1ZmZlciBzaXpl
-ICglbHUgPT0gJWx1KSIsCgkJICAgICAgY2h1bmtfc2l6ZSwgYnVmZmVyX3NpemUpOwoJCWV4aXQo
-RVhJVF9GQUlMVVJFKTsKCX0KCXNuZF9wY21fc3dfcGFyYW1zX2N1cnJlbnQoaGFuZGxlLCBzd3Bh
-cmFtcyk7CglpZiAoYXZhaWxfbWluIDwgMCkKCQluID0gY2h1bmtfc2l6ZTsKCWVsc2UKCQluID0g
-KGRvdWJsZSkgcmF0ZSAqIGF2YWlsX21pbiAvIDEwMDAwMDA7CgllcnIgPSBzbmRfcGNtX3N3X3Bh
-cmFtc19zZXRfYXZhaWxfbWluKGhhbmRsZSwgc3dwYXJhbXMsIG4pOwoKCS8qIHJvdW5kIHVwIHRv
-IGNsb3Nlc3QgdHJhbnNmZXIgYm91bmRhcnkgKi8KCW4gPSBidWZmZXJfc2l6ZTsKCWlmIChzdGFy
-dF9kZWxheSA8PSAwKSB7CgkJc3RhcnRfdGhyZXNob2xkID0gbiArIChkb3VibGUpIHJhdGUgKiBz
-dGFydF9kZWxheSAvIDEwMDAwMDA7Cgl9IGVsc2UKCQlzdGFydF90aHJlc2hvbGQgPSAoZG91Ymxl
-KSByYXRlICogc3RhcnRfZGVsYXkgLyAxMDAwMDAwOwoJaWYgKHN0YXJ0X3RocmVzaG9sZCA8IDEp
-CgkJc3RhcnRfdGhyZXNob2xkID0gMTsKCWlmIChzdGFydF90aHJlc2hvbGQgPiBuKQoJCXN0YXJ0
-X3RocmVzaG9sZCA9IG47CgllcnIgPSBzbmRfcGNtX3N3X3BhcmFtc19zZXRfc3RhcnRfdGhyZXNo
-b2xkKGhhbmRsZSwgc3dwYXJhbXMsIHN0YXJ0X3RocmVzaG9sZCk7Cglhc3NlcnQoZXJyID49IDAp
-OwoJaWYgKHN0b3BfZGVsYXkgPD0gMCkgCgkJc3RvcF90aHJlc2hvbGQgPSBidWZmZXJfc2l6ZSAr
-IChkb3VibGUpIHJhdGUgKiBzdG9wX2RlbGF5IC8gMTAwMDAwMDsKCWVsc2UKCQlzdG9wX3RocmVz
-aG9sZCA9IChkb3VibGUpIHJhdGUgKiBzdG9wX2RlbGF5IC8gMTAwMDAwMDsKCWVyciA9IHNuZF9w
-Y21fc3dfcGFyYW1zX3NldF9zdG9wX3RocmVzaG9sZChoYW5kbGUsIHN3cGFyYW1zLCBzdG9wX3Ro
-cmVzaG9sZCk7Cglhc3NlcnQoZXJyID49IDApOwoKCWlmIChzbmRfcGNtX3N3X3BhcmFtcyhoYW5k
-bGUsIHN3cGFyYW1zKSA8IDApIHsKCQlmcHJpbnRmKHN0ZGVyciwgInVuYWJsZSB0byBpbnN0YWxs
-IHN3IHBhcmFtczoiKTsKCQlleGl0KEVYSVRfRkFJTFVSRSk7Cgl9CgoJYml0c19wZXJfc2FtcGxl
-ID0gc25kX3BjbV9mb3JtYXRfcGh5c2ljYWxfd2lkdGgoaHdwYXJhbXMuZm9ybWF0KTsKCWJpdHNf
-cGVyX2ZyYW1lID0gYml0c19wZXJfc2FtcGxlICogaHdwYXJhbXMuY2hhbm5lbHM7CgljaHVua19i
-eXRlcyA9IGNodW5rX3NpemUgKiBiaXRzX3Blcl9mcmFtZSAvIDg7CgoJLy8gZnByaW50ZihzdGRl
-cnIsICJyZWFsIGNodW5rX3NpemUgPSAlaSwgZnJhZ3MgPSAlaSwgdG90YWwgPSAlaVxuIiwgY2h1
-bmtfc2l6ZSwgc2V0dXAuYnVmLmJsb2NrLmZyYWdzLCBzZXR1cC5idWYuYmxvY2suZnJhZ3MgKiBj
-aHVua19zaXplKTsKCglidWZmZXJfZnJhbWVzID0gYnVmZmVyX3NpemU7CS8qIGZvciBwb3NpdGlv
-biB0ZXN0ICovCn0KCi8qCiAqICB3cml0ZSBmdW5jdGlvbgogKi8KCnN0YXRpYyBzc2l6ZV90IHBj
-bV93cml0ZShzbmRfcGNtX3QgKiBoYW5kbGUsIHVfY2hhciAqZGF0YSwgc2l6ZV90IGNvdW50KQp7
-CiAgICAgICAgc3NpemVfdCByOwogICAgICAgIHNzaXplX3QgcmVzdWx0ID0gMDsKCiAgICAgICAg
-aWYgKGNvdW50IDwgY2h1bmtfc2l6ZSkgewogICAgICAgICAgICAgICAgc25kX3BjbV9mb3JtYXRf
-c2V0X3NpbGVuY2UoaHdwYXJhbXMuZm9ybWF0LCBkYXRhICsgY291bnQgKiBiaXRzX3Blcl9mcmFt
-ZSAvIDgsIChjaHVua19zaXplIC0gY291bnQpICogaHdwYXJhbXMuY2hhbm5lbHMpOwogICAgICAg
-ICAgICAgICAgY291bnQgPSBjaHVua19zaXplOwogICAgICAgIH0KICAgICAgICB3aGlsZSAoY291
-bnQgPiAwKSB7Ci8vICAgICAgICAgICAgICAgIGlmICh0ZXN0X3Bvc2l0aW9uKQovLyAgICAgICAg
-ICAgICAgICAgICAgICAgIGRvX3Rlc3RfcG9zaXRpb24oKTsKLy8gICAgICAgICAgICAgICAgciA9
-IHdyaXRlaV9mdW5jKGhhbmRsZSwgZGF0YSwgY291bnQpOwoJCXIgPSBzbmRfcGNtX3dyaXRlaSho
-YW5kbGUsIGRhdGEsIGNvdW50KTsKLy8gICAgICAgICAgICAgICAgaWYgKHRlc3RfcG9zaXRpb24p
-Ci8vICAgICAgICAgICAgICAgICAgICAgICAgZG9fdGVzdF9wb3NpdGlvbigpOwogICAgICAgICAg
-ICAgICAgaWYgKHIgPT0gLUVBR0FJTiB8fCAociA+PSAwICYmIChzaXplX3QpciA8IGNvdW50KSkg
-ewogICAgICAgICAgICAgICAgICAgICAgICBpZiAoIXRlc3Rfbm93YWl0KQogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIHNuZF9wY21fd2FpdChoYW5kbGUsIDEwMDApOwovLyAgICAgICAg
-ICAgICAgICB9IGVsc2UgaWYgKHIgPT0gLUVQSVBFKSB7Ci8vICAgICAgICAgICAgICAgICAgICAg
-ICAgeHJ1bigpOwovLyAgICAgICAgICAgICAgICB9IGVsc2UgaWYgKHIgPT0gLUVTVFJQSVBFKSB7
-Ci8vICAgICAgICAgICAgICAgICAgICAgICAgc3VzcGVuZCgpOwogICAgICAgICAgICAgICAgfSBl
-bHNlIGlmIChyIDwgMCkgewogICAgICAgICAgICAgICAgICAgICAgICBmcHJpbnRmKHN0ZGVyciwg
-IndyaXRlIGVycm9yOiAlcyIpLCBzbmRfc3RyZXJyb3Iocik7CiAgICAgICAgICAgICAgICAgICAg
-ICAgIGV4aXQoRVhJVF9GQUlMVVJFKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAg
-IGlmIChyID4gMCkgewovLyAgICAgICAgICAgICAgICAgICAgICAgIGlmICh2dW1ldGVyKQovLyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29tcHV0ZV9tYXhfcGVhayhkYXRhLCByICog
-aHdwYXJhbXMuY2hhbm5lbHMpOwogICAgICAgICAgICAgICAgICAgICAgICByZXN1bHQgKz0gcjsK
-ICAgICAgICAgICAgICAgICAgICAgICAgY291bnQgLT0gcjsKICAgICAgICAgICAgICAgICAgICAg
-ICAgZGF0YSArPSByICogYml0c19wZXJfZnJhbWUgLyA4OwogICAgICAgICAgICAgICAgfQogICAg
-ICAgIH0KICAgICAgICByZXR1cm4gcmVzdWx0Owp9CgovKgogKiAgcmVhZCBmdW5jdGlvbgogKi8K
-CgpzdGF0aWMgc3NpemVfdCBwY21fcmVhZChzbmRfcGNtX3QgKiBoYW5kbGUsIHVfY2hhciAqZGF0
-YSwgc2l6ZV90IHJjb3VudCkKewogICAgICAgIHNzaXplX3QgcjsKICAgICAgICBzaXplX3QgcmVz
-dWx0ID0gMDsKICAgICAgICBzaXplX3QgY291bnQgPSByY291bnQ7CgogICAgICAgIGlmIChjb3Vu
-dCAhPSBjaHVua19zaXplKSB7CiAgICAgICAgICAgICAgICBjb3VudCA9IGNodW5rX3NpemU7CiAg
-ICAgICAgfQoKICAgICAgICB3aGlsZSAoY291bnQgPiAwKSB7Ci8vICAgICAgICAgICAgICAgIGlm
-ICh0ZXN0X3Bvc2l0aW9uKQovLyAgICAgICAgICAgICAgICAgICAgICAgIGRvX3Rlc3RfcG9zaXRp
-b24oKTsKLy8gICAgICAgICAgICAgICAgciA9IHJlYWRpX2Z1bmMoaGFuZGxlLCBkYXRhLCBjb3Vu
-dCk7CgkJciA9IHNuZF9wY21fcmVhZGkoaGFuZGxlLCBkYXRhLCBjb3VudCk7Ci8vICAgICAgICAg
-ICAgICAgIGlmICh0ZXN0X3Bvc2l0aW9uKQovLyAgICAgICAgICAgICAgICAgICAgICAgIGRvX3Rl
-c3RfcG9zaXRpb24oKTsKICAgICAgICAgICAgICAgIGlmIChyID09IC1FQUdBSU4gfHwgKHIgPj0g
-MCAmJiAoc2l6ZV90KXIgPCBjb3VudCkpIHsKICAgICAgICAgICAgICAgICAgICAgICAgaWYgKCF0
-ZXN0X25vd2FpdCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzbmRfcGNtX3dhaXQo
-aGFuZGxlLCAxMDAwKTsKLy8gICAgICAgICAgICAgICAgfSBlbHNlIGlmIChyID09IC1FUElQRSkg
-ewovLyAgICAgICAgICAgICAgICAgICAgICAgIHhydW4oKTsKLy8gICAgICAgICAgICAgICAgfSBl
-bHNlIGlmIChyID09IC1FU1RSUElQRSkgewovLyAgICAgICAgICAgICAgICAgICAgICAgIHN1c3Bl
-bmQoKTsKICAgICAgICAgICAgICAgIH0gZWxzZSBpZiAociA8IDApIHsKICAgICAgICAgICAgICAg
-ICAgICAgICAgZnByaW50ZihzdGRlcnIsICJyZWFkIGVycm9yOiAlcyIpLCBzbmRfc3RyZXJyb3Io
-cik7CiAgICAgICAgICAgICAgICAgICAgICAgIGV4aXQoRVhJVF9GQUlMVVJFKTsKICAgICAgICAg
-ICAgICAgIH0KICAgICAgICAgICAgICAgIGlmIChyID4gMCkgewovLyAgICAgICAgICAgICAgICAg
-ICAgICAgIGlmICh2dW1ldGVyKQovLyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29t
-cHV0ZV9tYXhfcGVhayhkYXRhLCByICogaHdwYXJhbXMuY2hhbm5lbHMpOwogICAgICAgICAgICAg
-ICAgICAgICAgICByZXN1bHQgKz0gcjsKICAgICAgICAgICAgICAgICAgICAgICAgY291bnQgLT0g
-cjsKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSArPSByICogYml0c19wZXJfZnJhbWUgLyA4
-OwogICAgICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICByZXR1cm4gcmNvdW50Owp9Cgov
-KiBwbGF5aW5nIHJhdyBkYXRhICovCgpzdGF0aWMgdm9pZCBwbGF5YmFjayhjaGFyICpuYW1lKQp7
-CglzaXplX3QgYywgZjsKCiAgICAgICAgaWYgKChmZFswXSA9IG9wZW4obmFtZSwgT19SRE9OTFks
-IDApKSA9PSAtMSkgewogICAgICAgICAgICAgICAgcGVycm9yKG5hbWUpOwogICAgICAgICAgICAg
-ICAgZXhpdCAoMSk7CiAgICAgICAgfQoKCXdoaWxlICgxKSB7Ly/nm7TliLDor7vlrozpn7PpopHm
-lofku7bkuLrmraLjgIIKCQljID0gY2h1bmtfYnl0ZXM7CgoJCWlmKHNhZmVfcmVhZChmZFswXSwg
-cGxheV9idWYsIGMpICE9IGMpLy/or7vlj5bmlofku7YKCQkJYnJlYWs7CgoJCWYgPSBjICogOCAv
-IGJpdHNfcGVyX2ZyYW1lOwoJCWlmKHBjbV93cml0ZShwbGF5YmFja19oYW5kbGUsIHBsYXlfYnVm
-LCBmKSAhPSBmKQoJCQlicmVhazsKCX0KCXNuZF9wY21fZHJhaW4ocGxheWJhY2tfaGFuZGxlKTsK
-fQoKc3RhdGljIHZvaWQgY2FwdHVyZShjaGFyICpuYW1lKQp7CglzaXplX3QgYywgZjsKCgkvKiBv
-cGVuIGEgZmlsZSB0byB3cml0ZSAqLwoJaWYgKChmZFsxXSA9IG9wZW42NChuYW1lLCBPX1dST05M
-WSwgMDY0NCkpID09IC0xKSB7CgkJcGVycm9yKG5hbWUpOwoJCWV4aXQoRVhJVF9GQUlMVVJFKTsK
-CX0KCgkvKiBjYXB0dXJlICovCgl3aGlsZSAoMSkgewoJCWMgPWNodW5rX2J5dGVzOwoJCWYgPSBj
-ICogOCAvIGJpdHNfcGVyX2ZyYW1lOwoJCWlmKHBjbV9yZWFkKGNhcHR1cmVfaGFuZGxlLCBjYXBf
-YnVmLCBmKSAhPSBmKQoJCQlicmVhazsKCiAgICAgICAgICAgICAgICBpZiAod3JpdGUoZmRbMV0s
-IGNhcF9idWYsIGMpICE9IGMpIHsKICAgICAgICAgICAgICAgIAlwZXJyb3IobmFtZSk7CiAgICAg
-ICAgICAgICAgICAgICAgICAgIGV4aXQoRVhJVF9GQUlMVVJFKTsKICAgICAgICAgICAgICAgIH0K
-CX0KfQoKCm1haW4gKGludCBhcmdjLCBjaGFyICphcmd2W10pCnsKCWludCBpLCBlcnI7Cgl1bnNp
-Z25lZCBpbnQgcmF0ZTsKCXBpZF90IHBpZDsKCglzdGFydF9kZWxheSA9IDE7Cglod3BhcmFtcy5m
-b3JtYXQgPSBTTkRfUENNX0ZPUk1BVF9TMTZfTEU7Cglod3BhcmFtcy5yYXRlID0gNDQxMDA7Cglo
-d3BhcmFtcy5jaGFubmVscyA9IDI7CgogICAgICAgIGlmICgoZXJyID0gc25kX3BjbV9vcGVuICgm
-Y2FwdHVyZV9oYW5kbGUsIHBjbV9uYW1lLCBTTkRfUENNX1NUUkVBTV9DQVBUVVJFLCAwKSkgPCAw
-KSB7CiAgICAgICAgICAgICAgICBmcHJpbnRmIChzdGRlcnIsICJjYW5ub3Qgb3BlbiBhdWRpbyBj
-YXB0dXJlIGRldmljZSAlcyAoJXMpXG4iLAogICAgICAgICAgICAgICAgICAgICAgICAgcGNtX25h
-bWUsCiAgICAgICAgICAgICAgICAgICAgICAgICBzbmRfc3RyZXJyb3IoZXJyKSk7CiAgICAgICAg
-ICAgICAgICBleGl0ICgxKTsKICAgICAgICB9CgogICAgICAgIGlmICgoZXJyID0gc25kX3BjbV9v
-cGVuICgmcGxheWJhY2tfaGFuZGxlLCBwY21fbmFtZSwgU05EX1BDTV9TVFJFQU1fUExBWUJBQ0ss
-IDApKSA8IDApIHsKICAgICAgICAgICAgICAgIGZwcmludGYgKHN0ZGVyciwgImNhbm5vdCBvcGVu
-IGF1ZGlvIHBsYXliYWNrIGRldmljZSAlcyAoJXMpXG4iLAogICAgICAgICAgICAgICAgICAgICAg
-ICAgcGNtX25hbWUsCiAgICAgICAgICAgICAgICAgICAgICAgICBzbmRfc3RyZXJyb3IoZXJyKSk7
-CiAgICAgICAgICAgICAgICBleGl0ICgxKTsKICAgICAgICB9CgoJc2V0X3BhcmFtcyhjYXB0dXJl
-X2hhbmRsZSk7CglzZXRfcGFyYW1zKHBsYXliYWNrX2hhbmRsZSk7CgoJcGxheV9idWYgPSAodV9j
-aGFyICopbWFsbG9jKDQwOTYpOwoJaWYgKHBsYXlfYnVmID09IE5VTEwpIHsKCQlwZXJyb3IoIm5v
-dCBlbm91Z2ggbWVtb3J5XG4iKTsKCQlleGl0KDEpOwoJfQoKICAgICAgICBjYXBfYnVmID0gKHVf
-Y2hhciAqKW1hbGxvYyg0MDk2KTsKICAgICAgICBpZiAoY2FwX2J1ZiA9PSBOVUxMKSB7CiAgICAg
-ICAgICAgICAgICBwZXJyb3IoIm5vdCBlbm91Z2ggbWVtb3J5XG4iKTsKICAgICAgICAgICAgICAg
-IGV4aXQoMSk7CiAgICAgICAgfQoKLy8JcGlwZShmZCk7Ly/liJvlu7rnrqHpgZMKCQoJcGlkID0g
-Zm9yaygpOwoKCWlmKHBpZCA9PSAtMSl7CgkJcHJpbnRmKCJFcnJvcjogZm9ya1xuIik7CgkJZXhp
-dCgxKTsKCX1lbHNlIGlmKHBpZCA9PSAwKXsKCQljYXB0dXJlKGFyZ3ZbMV0pOwoJCXNuZF9wY21f
-Y2xvc2UoY2FwdHVyZV9oYW5kbGUpOwoJCWZyZWUoY2FwX2J1Zik7Cgl9ZWxzZXsKCQlwbGF5YmFj
-ayhhcmd2WzFdKTsKCQlzbmRfcGNtX2Nsb3NlKHBsYXliYWNrX2hhbmRsZSk7CgkJZnJlZShwbGF5
-X2J1Zik7Cgl9CgoJZXhpdCAoMCk7Cn0KCg==
---000e0cd25dd48c13940474b36cde
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---000e0cd25dd48c13940474b36cde--
+-- =
+
+Best Regards,
+Anuj Aggarwal
