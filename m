@@ -1,21 +1,20 @@
-From: Pascal Terjan <pterjan@mandriva.com>
-Subject: Re: [PATCH 1/3] [ALSA] Add quirk for Sony Vaio
-	VGN-SZ650N
-Date: Mon, 28 Sep 2009 13:06:12 +0200
-Message-ID: <1254135972.6095.18.camel@plop>
-References: <1254130993-8235-1-git-send-email-pterjan@mandriva.com>
-	<1254130993-8235-2-git-send-email-pterjan@mandriva.com>
-	<s5hzl8f2ya7.wl%tiwai@suse.de> <1254132225.6095.16.camel@plop>
-	<s5htyyn2wwg.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re:
+ =?iso-8859-1?q?=5BPATCH=5D_ASoC=3A_Consider_the_code?=
+ =?iso-8859-1?q?c-=3Eactive_also=09when_changing_bias_level?=
+Date: Tue, 29 Sep 2009 09:13:13 +0300
+Message-ID: <200909290913.14051.peter.ujfalusi@nokia.com>
+References: <1254130688-6183-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20090928111735.GA32420@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ryu.zarb.org (ryu.zarb.org [212.85.158.22])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26A4F10384C
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 694AC10387D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Sep 2009 13:06:16 +0200 (CEST)
-In-Reply-To: <s5htyyn2wwg.wl%tiwai@suse.de>
+	Tue, 29 Sep 2009 08:13:32 +0200 (CEST)
+In-Reply-To: <20090928111735.GA32420@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,83 +24,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Le lundi 28 septembre 2009 =E0 12:20 +0200, Takashi Iwai a =E9crit :
-> At Mon, 28 Sep 2009 12:03:45 +0200,
-> Pascal Terjan wrote:
-> > =
-
-> > Le lundi 28 septembre 2009 =E0 11:50 +0200, Takashi Iwai a =E9crit :
-> > > At Mon, 28 Sep 2009 11:43:11 +0200,
-> > > Pascal Terjan wrote:
-> > > > =
-
-> > > > From
-> > > > https://bugs.launchpad.net/ubuntu/+source/linux/+bug/195605/comment=
-s/25
-> > > > =
-
-> > > > Signed-off-by: Pascal Terjan <pterjan@mandriva.com>
-> > > =
-
-> > > Thanks for the patch.
-> > > I think we can merge all three using SND_PCI_QUIRK_MASK(), e.g.
-> > > SND_PCI_QUIRK_MASK(0x104d, 0xff00, 0x9000, "Sony VAIO", STAC_9872_VAI=
-O)
-> > > =
-
-> > > Or, a bit safer like
-> > > SND_PCI_QUIRK_MASK(0x104d, 0xfff0, 0x9000, "Sony VAIO", STAC_9872_VAI=
-O)
-> > > SND_PCI_QUIRK_MASK(0x104d, 0xfff0, 0x9010, "Sony VAIO", STAC_9872_VAI=
-O)
-> > > =
-
-> > > Could you check whether it's OK?
-> > =
-
-> > I think so, but I can't be sure of how Sony distributed the ids
-> > =
-
-> > SZ61 was reported to need model=3Dvaio to have headphones working but I
-> > could not find the ids anyway
-> > =
-
-> > Some commenter also reported FZ11S needed model=3Dvaio without giving a=
-ny
-> > info and without id
-> > =
-
-> > Given that other model seem to need it too I think that the mask would
-> > make sense
+On Monday 28 September 2009 14:17:36 ext Mark Brown wrote:
+> On Mon, Sep 28, 2009 at 12:38:08PM +0300, Peter Ujfalusi wrote:
+> > Fixes the following scenario: if during active playback/capture the DAPM
+> > routes has been modified in a way, that there will be no complete route
+> > (for example muting the output) DAPM would set the codec into
+> > BIAS_STANDBY, which could disable the clocks from the codec (codec is
+> > master), which breaks the playback with error since the clocks are
+> > missing from the serial bus and no data is shifted out/in.
 > =
 
-> Yep.
+> This is only helping because the clocks generation is controlled by the
+> bias level configuration.  That's not really the way things are supposed
+> to work - I'd rather see a different fix that explicitly represents
+> whatever the requirement is for controlling the clocks.  Turning on the
+> clocks based on the bais level will generally result in them being
+> turned on too much which will waste power.
 > =
 
-> > > Also, please make sure that this change is really needed for the
-> > > latest alsa-driver.  The recent version probes the BIOS setup, and
-> > > it should work as is unless BIOS is broken.  The quirk entries like
-> > > the above override the BIOS setup, thus should be used only when
-> > > really needed.
-> > =
+> I suspect you want to use AIF widgets and make the PLL a supply for them
+> and any other things that need the PLL, and we should make arrangements
+> to ensure that the AIF widget is enabled whenever the interface is live
+> and the CODEC is master.
 
-> > Unfortunately we only have this for a paying customer using 2.6.29 on
-> > stable version, and who is happy with adding model=3Dvaio. I found that
-> > other had reported on launchpad, but I don't have the hardware myself to
-> > test with kernel after July commits
-> =
+I see. So there is no mechanism in place which would keep the serial interf=
+ace =
 
-> Is the sound driver also based on 2.6.29 kernel, or built externally
-> from the later version of alsa-driver?  The HD-audio driver on 2.6.29
-> requires model=3Dvaio explicitly while the later version of alsa-driver
-> should work without model option as long as BIOS is correct.
+up when there is an ongoing playback/capture regardless of the DAPM routing?
 
-They are using 2.6.29 audio
+On the other hand it also make sense to set the codec bias level to ON stat=
+e, =
 
-> So, I'm a bit worried about adding the quirks blindly.
+when there is ongoing playback/capture. Or not, not sure about it.
 
-Yes better to not add them then, hopefuly they will work
+I have solved the problem for now without this patch, right now the kernel =
+
+version that I'm using is 2.6.31, so I don't have the AIF widget to play wi=
+th...
+
+Thanks,
+P=E9ter
