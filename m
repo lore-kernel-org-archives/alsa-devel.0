@@ -1,18 +1,22 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: ALC268 - Acer Aspire 5720 - mic source switch
-	disappered
-Date: Tue, 29 Sep 2009 03:13:18 +0200
-Message-ID: <1254186798.16290.4.camel@maxim-laptop>
+From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
+	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
+Subject: Re: My Codec: IDT 92HD75B3X5 issues
+Date: Tue, 29 Sep 2009 07:40:56 +0300
+Message-ID: <200909290740.57029.munzirtaha@gmail.com>
+References: <200909280658.46580.munzirtaha@gmail.com>
+	<s5hfxa74g1b.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-fmOTHwwpOE+Eowx8tUIp"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
-	[209.85.220.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBCCB24133
+Received: from mail-bw0-f205.google.com (mail-bw0-f205.google.com
+	[209.85.218.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id A53E624429
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Sep 2009 03:13:23 +0200 (CEST)
-Received: by fxm8 with SMTP id 8so3174193fxm.45
-	for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2009 18:13:23 -0700 (PDT)
+	Tue, 29 Sep 2009 06:41:01 +0200 (CEST)
+Received: by bwz1 with SMTP id 1so3726387bwz.46
+	for <alsa-devel@alsa-project.org>; Mon, 28 Sep 2009 21:41:01 -0700 (PDT)
+In-Reply-To: <s5hfxa74g1b.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,255 +26,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Yaum al-Ithnain 08 Shawwal 1430 11:41:52 am Takashi Iwai wrote:
+> At Mon, 28 Sep 2009 06:58:46 +0300,
+> 
+>  Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=   
+=?utf-8?q?_=D8=B7=D9=87?=) wrote:
+> > Hi sirs,
+> > These are the issues I have with my Laptop HP Pavilion dv6 1225ee
+> > regarding audio support.
+> >
+> > 1. No sense for headphone jack (jack_present?), when headphone is plugged
+> > (present_int_hp?)
+> >
+> > 2. There headphone mic jack is not working. The one next to the webcam is
+> > always recording even when I change the "Mic Jack" control from "Mic In"
+> > to "Line In"
+> 
+> Make sure that you use alsa-driver-snapshot tarball instead of 1.0.21
+> released version.  There are many fixes since 1.0.21 release.
 
---=-fmOTHwwpOE+Eowx8tUIp
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
 
-Hi,
+>  ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-sn
+> apshot.tar.gz
 
-I have installed 2.6.32-rc1 (well -rc2...)
+Thanks a lot Takashi, things are better now. However, when I tested the 
+internal mic it's very noisy. I played a bit with the capture and digital 
+controls but still compared with Windows, it's lame. 
 
-And I notice that 'Input source' is missing.
+> > 3. The mute/unmute LED doesn't change color to RED when its muted like in
+> > Windows.
+> 
+> This isn't supported yet as we have no hardware information.
+> Likely one of GPIO pins corresponds to the LED on/off.  You can try
+> hda-verb to change the GPIO data bit.
 
-/proc/asound/Intel/codec#0 attached.
+Ok, I will try it and report back.
 
-Best regards,
-Maxim Levitsky
+> > Touching that LED shows this in /var/log/messages:
+> >
+> > Sep 28 06:53:47 dv6 kernel: [ 9197.986789] atkbd.c: Unknown key released
+> > (translated set 2, code 0x94 on isa0060/serio0).
+> > Sep 28 06:53:47 dv6 kernel: [ 9197.986791] atkbd.c: Use 'setkeycodes e014
+> > <keycode>' to make it known.
+> > Sep 28 06:53:47 dv6 kernel: [ 9198.353568] atkbd.c: Unknown key pressed
+> > (translated set 2, code 0x94 on isa0060/serio0).
+> > Sep 28 06:53:47 dv6 kernel: [ 9198.353572] atkbd.c: Use 'setkeycodes e014
+> > <keycode>' to make it known.
+> > Sep 28 06:53:47 dv6 kernel: [ 9198.359205] atkbd.c: Unknown key released
+> > (translated set 2, code 0x94 on isa0060/serio0).
+> > Sep 28 06:53:47 dv6 kernel: [ 9198.359208] atkbd.c: Use 'setkeycodes e014
+> > <keycode>' to make it known.
+> 
+> It's not about the sound driver but the input layer, as you can find.
+> You can defien the scan code 0xe014 by yourself.
 
---=-fmOTHwwpOE+Eowx8tUIp
-Content-Disposition: attachment; filename="codec.txt"
-Content-Type: text/plain; name="codec.txt"; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+You are right. What's the best component to report this bug against? kernel?
 
-Codec: Realtek ALC268
-Address: 0
-Function Id: 0x1
-Vendor Id: 0x10ec0268
-Subsystem Id: 0x1025011e
-Revision Id: 0x100003
-No Modem Function Group found
-Default PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=4, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x02 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x39 0x39]
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x03 [Audio Output] wcaps 0x1d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x40, nsteps=0x40, stepsize=0x03, mute=0
-  Amp-Out vals:  [0x39 0x39]
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0x1e]: 16 20 24 32
-    formats [0x1]: PCM
-Node 0x07 [Audio Input] wcaps 0x100111: Stereo
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x24
-Node 0x08 [Audio Input] wcaps 0x100111: Stereo
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x160]: 44100 48000 96000
-    bits [0x6]: 16 20
-    formats [0x1]: PCM
-  Connection: 1
-     0x23
-Node 0x09 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0d [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x0e [Audio Mixer] wcaps 0x20010a: Mono Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00]
-  Connection: 1
-     0x02
-Node 0x0f [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80]
-  Connection: 2
-     0x02 0x1d
-Node 0x10 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80]
-  Connection: 3
-     0x03 0x1d 0x02
-Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-Node 0x13 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-Node 0x14 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001003c: IN OUT HP EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x0221101f: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP
-  Unsolicited: tag=04, enabled=1
-  Connection: 1
-     0x0f
-Node 0x15 [Pin Complex] wcaps 0x40018d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001003c: IN OUT HP EAPD Detect
-  EAPD 0x2: EAPD
-  Pin Default 0x99130110: [Fixed] Speaker at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x10
-Node 0x16 [Pin Complex] wcaps 0x40010c: Mono Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80]
-  Pincap 0x00000010: OUT
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x0e
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x02a19840: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x4, Sequence = 0x0
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x02
-Node 0x19 [Pin Complex] wcaps 0x40008b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00003724: IN Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x99a30941: [Fixed] Mic at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-    DefAssociation = 0x4, Sequence = 0x1
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
-  Amp-In caps: ofs=0x00, nsteps=0x02, stepsize=0x4f, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x00003734: IN OUT Detect
-    Vref caps: HIZ 50 GRD 80 100
-  Pin Default 0x0281304e: [Jack] Line In at Ext Front
-    Conn = 1/8, Color = Blue
-    DefAssociation = 0x4, Sequence = 0xe
-  Pin-ctls: 0x24: IN VREF_80
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x02
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-Node 0x1d [Pin Complex] wcaps 0x400000: Mono
-  Pincap 0x00000020: IN
-  Pin Default 0x4017952d: [N/A] Speaker at Ext N/A
-    Conn = Analog, Color = Pink
-    DefAssociation = 0x2, Sequence = 0xd
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-Node 0x1e [Pin Complex] wcaps 0x400380: Mono Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x02451130: [Jack] SPDIF Out at Ext Front
-    Conn = Optical, Color = Black
-    DefAssociation = 0x3, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x06
-Node 0x1f [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
-  Processing caps: benign=0, ncoeff=10
-  Processing Coefficient: 0x03
-  Coefficient Index: 0x01
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x1a 0x1a]
-  Connection: 7
-     0x18 0x19* 0x1a 0x1c 0x14 0x15 0x12
-Node 0x24 [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 7
-     0x18* 0x19 0x1a 0x1c 0x14 0x15 0x13
-
---=-fmOTHwwpOE+Eowx8tUIp
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-fmOTHwwpOE+Eowx8tUIp--
+-- 
+Munzir Taha
+Telecommunications and Electronics Engineer
+Master CIW Designer, ICDL, MOUS, Linux+, LPI, SCSA
+Riyadh, SA
