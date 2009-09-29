@@ -1,21 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Application supporting forward/rewind APIs
-Date: Tue, 29 Sep 2009 11:42:38 +0200
-Message-ID: <4AC1D68E.7040702@ladisch.de>
-References: <2ee9e08d0909240034t6fdab6aftc24e733621638f09@mail.gmail.com>
-	<s5hocp0vlm6.wl%tiwai@suse.de>	<4f3252890909240057l1a2b5b88m861dea551f69afce@mail.gmail.com>
-	<2ee9e08d0909240201l5cf5675m111b6da1434cff60@mail.gmail.com>
-	<4f3252890909252059t3d8cc2aaqffc880991d148e56@mail.gmail.com>
-	<2ee9e08d0909290213r3ca53b6cq5909bcf79752a26c@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Consider the codec->active	also?when
+	changing bias level
+Date: Tue, 29 Sep 2009 11:10:23 +0100
+Message-ID: <20090929101022.GE32420@sirena.org.uk>
+References: <1254130688-6183-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20090928111735.GA32420@sirena.org.uk>
+	<200909290913.14051.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id D3E80103845
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 291241038CD
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Sep 2009 11:42:42 +0200 (CEST)
-In-Reply-To: <2ee9e08d0909290213r3ca53b6cq5909bcf79752a26c@mail.gmail.com>
+	Tue, 29 Sep 2009 12:10:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200909290913.14051.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,20 +25,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anuj Aggarwal <anuj.aggarwal@gmail.com>
-Cc: Raymond Yau <superquad.vortex2@gmail.com>, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Anuj Aggarwal wrote:
-> I found the solution, one can use mplayer to test forward/rewind
-> feature of ALSA library.
+On Tue, Sep 29, 2009 at 09:13:13AM +0300, Peter Ujfalusi wrote:
 
-mplayer disables ALSA's underrun detection and uses snd_pcm_forward() to
-recover from an underrun, if it happens.
+> I see. So there is no mechanism in place which would keep the serial interface 
+> up when there is an ongoing playback/capture regardless of the DAPM routing?
 
-(To force an underrun, press Ctrl+S (then Ctrl+Q) to prevent mplayer
-from updating its status line.)
+Not in 2.6.31.  Going forward the AIF widgets are the way to deal with
+this.
 
+> On the other hand it also make sense to set the codec bias level to ON state, 
+> when there is ongoing playback/capture. Or not, not sure about it.
 
-HTH
-Clemens
+Not really - the digital parts of the system are not generally sensitive
+to the quality of their supplies in the way that the analogue parts are.
