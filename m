@@ -1,23 +1,15 @@
-From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
-	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
-Subject: Re: My Codec: IDT 92HD75B3X5 issues
-Date: Tue, 29 Sep 2009 22:50:34 +0300
-Message-ID: <200909292250.34870.munzirtaha@gmail.com>
-References: <200909280658.46580.munzirtaha@gmail.com>
-	<200909291624.29900.munzirtaha@gmail.com>
-	<s5hr5tp4y27.wl%tiwai@suse.de>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH 1/1] Echoaudio: fix broken Mia driver
+Date: Tue, 29 Sep 2009 22:21:28 +0200
+Message-ID: <20090929222128.06c0ba9a@Jay>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
-	[209.85.220.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 99DAB10380C
+Received: from smtp-out112.alice.it (smtp-out112.alice.it [85.37.17.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id B273110380C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Sep 2009 21:50:41 +0200 (CEST)
-Received: by fxm8 with SMTP id 8so3853666fxm.45
-	for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2009 12:50:40 -0700 (PDT)
-In-Reply-To: <s5hr5tp4y27.wl%tiwai@suse.de>
+	Tue, 29 Sep 2009 22:21:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,68 +19,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Yau al-Thulatha 09 Shawwal 1430 5:37:04 pm you wrote:
-> At Tue, 29 Sep 2009 16:24:29 +0300,
-> 
->  Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=   
-=?utf-8?q?_=D8=B7=D9=87?=) wrote:
-> > On Yau al-Thulatha 09 Shawwal 1430 9:24:19 am Takashi Iwai wrote:
-> > > At Tue, 29 Sep 2009 07:40:56 +0300,
-> > >
-> > >  Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
-> >
-> > =?utf-8?q?_=D8=B7=D9=87?=) wrote:
-> > > > On Yaum al-Ithnain 08 Shawwal 1430 11:41:52 am Takashi Iwai wrote:
-> > > > > At Mon, 28 Sep 2009 06:58:46 +0300,
-> > > > >
-> > > > >  Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
-> > > >
-> > > > =?utf-8?q?_=D8=B7=D9=87?=) wrote:
-> > > > > > Hi sirs,
-> > > > > > These are the issues I have with my Laptop HP Pavilion dv6 1225ee
-> > > > > > regarding audio support.
-> > > > > >
-> > > > > > 1. No sense for headphone jack (jack_present?), when headphone is
-> > > > > > plugged (present_int_hp?)
-> > > > > >
-> > > > > > 2. There headphone mic jack is not working. The one next to the
-> > > > > > webcam is always recording even when I change the "Mic Jack"
-> > > > > > control from "Mic In" to "Line In"
-> > > > >
-> > > > > Make sure that you use alsa-driver-snapshot tarball instead of
-> > > > > 1.0.21 released version.  There are many fixes since 1.0.21
-> > > > > release.
-> > > > >
-> > > > >
-> > > > >
-> > > > > ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-dr
-> > > > >iver -sn apshot.tar.gz
-> > > >
-> > > > Thanks a lot Takashi, things are better now. However, when I tested
-> > > > the internal mic it's very noisy. I played a bit with the capture and
-> > > > digital controls but still compared with Windows, it's lame.
-> > >
-> > > OK, could you give alsa-info.sh output at this state?
-> > > Please run with --no-upload option, and attach the generated file.
-> >
-> > Attached.
-> 
-> Try to run:
-> 
->    % amixer -c0 set Capture cap 12dB
->    % amixer -c0 set "Digital Mic" 10dB
->    % amixer -c0 set Digital 0dB
-> 
-> Any difference?
+This change:
+http://git.alsa-project.org/?p=alsa-kernel.git;a=blobdiff;f=sound/pci/echoaudio/echoaudio.c;h=4b70ea1e4c9fa3dc903dec8cf69235c97c2173ad;hp=8dbc5c4ba421a03dd128050dbd271616efdee3ae;hb=9f5d790d1b0af8e3705df12fd5d49a1df2a45c47;hpb=041b62374c7fedc11a8a1eeda2868612d3d1436c
+broke the Mia driver because it removed the line-out control interface from
+all vmixer cards. But the Mia has that (undocumented!!) control and after
+the change it is impossible to raise the volume. I tested the driver with
+my IndigoIOx that was supposed to have the same set of controls... sorry.
+I hope it's not too late to merge this patch in linux-2.6.32.
 
-No, still there is a clear shshshshshsh sound in the background
+----------
 
--- 
-Munzir Taha
-Telecommunications and Electronics Engineer
-Master CIW Designer, ICDL, MOUS, Linux+, LPI, SCSA
-Riyadh, SA
+Re-enable the line-out control for the Mia card.
+
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+
+diff -u alsa-driver-1.0.21/alsa-kernel/pci/echoaudio__orig/echoaudio.c alsa-driver-1.0.21/alsa-kernel/pci/echoaudio/echoaudio.c
+--- alsa-driver-1.0.21/alsa-kernel/pci/echoaudio__orig/echoaudio.c	2009-08-28 13:41:39.000000000 +0200
++++ alsa-driver-1.0.21/alsa-kernel/pci/echoaudio/echoaudio.c	2009-09-29 21:55:48.000000000 +0200
+@@ -950,7 +950,7 @@
+ 	Control interface
+ ******************************************************************************/
+ 
+-#ifndef ECHOCARD_HAS_VMIXER
++#if !defined(ECHOCARD_HAS_VMIXER) || defined(ECHOCARD_HAS_LINE_OUT_GAIN)
+ 
+ /******************* PCM output volume *******************/
+ static int snd_echo_output_gain_info(struct snd_kcontrol *kcontrol,
+@@ -1003,6 +1003,19 @@
+ 	return changed;
+ }
+ 
++#ifdef ECHOCARD_HAS_LINE_OUT_GAIN
++/* On the Mia this one controls the line-out volume */
++static struct snd_kcontrol_new snd_echo_line_output_gain __devinitdata = {
++	.name = "Line Playback Volume",
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE | 
++		  SNDRV_CTL_ELEM_ACCESS_TLV_READ,
++	.info = snd_echo_output_gain_info,
++	.get = snd_echo_output_gain_get,
++	.put = snd_echo_output_gain_put,
++	.tlv = {.p = db_scale_output_gain},
++};
++#else
+ static struct snd_kcontrol_new snd_echo_pcm_output_gain __devinitdata = {
+ 	.name = "PCM Playback Volume",
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+@@ -1012,9 +1025,10 @@
+ 	.put = snd_echo_output_gain_put,
+ 	.tlv = {.p = db_scale_output_gain},
+ };
+-
+ #endif
+ 
++#endif /* !ECHOCARD_HAS_VMIXER || ECHOCARD_HAS_LINE_OUT_GAIN */
++
+ 
+ 
+ #ifdef ECHOCARD_HAS_INPUT_GAIN
+@@ -2030,10 +2044,14 @@
+ 	snd_echo_vmixer.count = num_pipes_out(chip) * num_busses_out(chip);
+ 	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_vmixer, chip))) < 0)
+ 		goto ctl_error;
+-#else
+-	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_pcm_output_gain, chip))) < 0)
++#ifdef ECHOCARD_HAS_LINE_OUT_GAIN
++	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_line_output_gain, chip))) < 0)
+ 		goto ctl_error;
+ #endif
++#else /* ECHOCARD_HAS_VMIXER */
++	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_pcm_output_gain, chip))) < 0)
++		goto ctl_error;
++#endif /* ECHOCARD_HAS_VMIXER */
+ 
+ #ifdef ECHOCARD_HAS_INPUT_GAIN
+ 	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_line_input_gain, chip))) < 0)
+diff -u alsa-driver-1.0.21/alsa-kernel/pci/echoaudio__orig/mia.c alsa-driver-1.0.21/alsa-kernel/pci/echoaudio/mia.c
+--- alsa-driver-1.0.21/alsa-kernel/pci/echoaudio__orig/mia.c	2009-08-28 13:41:39.000000000 +0200
++++ alsa-driver-1.0.21/alsa-kernel/pci/echoaudio/mia.c	2009-09-29 21:55:48.000000000 +0200
+@@ -29,6 +29,7 @@
+ #define ECHOCARD_HAS_ADAT	FALSE
+ #define ECHOCARD_HAS_STEREO_BIG_ENDIAN32
+ #define ECHOCARD_HAS_MIDI
++#define ECHOCARD_HAS_LINE_OUT_GAIN
+ 
+ /* Pipe indexes */
+ #define PX_ANALOG_OUT	0	/* 8 */
+
+
+
+--
+Giuliano.
