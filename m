@@ -1,17 +1,17 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [PATCH 1/1] Echoaudio: fix broken Mia driver
-Date: Tue, 29 Sep 2009 23:39:17 +0200
-Message-ID: <20090929233917.099259b8@Jay>
-References: <20090929222128.06c0ba9a@Jay>
+From: Stefan Schmidt <stefan@datenfreihafen.org>
+Subject: [PATCH 1/3] cvscompile: Remove in favour of gitcompile.
+Date: Tue, 29 Sep 2009 23:48:19 +0200
+Message-ID: <1254260901-1161-2-git-send-email-stefan@datenfreihafen.org>
+References: <1254260901-1161-1-git-send-email-stefan@datenfreihafen.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out01.alice.it (smtp-out01.alice.it [85.33.2.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A3AC2415D
+Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8CB182434E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Sep 2009 23:39:37 +0200 (CEST)
-In-Reply-To: <20090929222128.06c0ba9a@Jay>
+	Tue, 29 Sep 2009 23:48:37 +0200 (CEST)
+In-Reply-To: <1254260901-1161-1-git-send-email-stefan@datenfreihafen.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,98 +21,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Stefan Schmidt <stefan@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 29 Sep 2009 22:21:28 +0200
-Giuliano Pochini <pochini@shiny.it> wrote:
+From: Stefan Schmidt <stefan@slimlogic.co.uk>
 
-Same patch with style changes to make checkpatch.pl happy.
+Alsa-lib is no longer hosted in cvs but in git and the only difference between
+both helper scripts is the name of the NO_MAKE env VAR check.
 
-----------
+Signed-off-by: Stefan Schmidt <stefan@slimlogic.co.uk>
+---
+ cvscompile |   19 -------------------
+ 1 files changed, 0 insertions(+), 19 deletions(-)
+ delete mode 100755 cvscompile
 
-Re-enable the line-out control for the Mia card.
-
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
-diff -u alsa-driver-1.0.21/alsa-kernel/pci/echoaudio__orig/echoaudio.c alsa-driver-1.0.21/alsa-kernel/pci/echoaudio/echoaudio.c
---- alsa-driver-1.0.21/alsa-kernel/pci/echoaudio__orig/echoaudio.c	2009-08-28 13:41:39.000000000 +0200
-+++ alsa-driver-1.0.21/alsa-kernel/pci/echoaudio/echoaudio.c	2009-09-29 23:00:56.000000000 +0200
-@@ -950,7 +950,7 @@
- 	Control interface
- ******************************************************************************/
- 
--#ifndef ECHOCARD_HAS_VMIXER
-+#if !defined(ECHOCARD_HAS_VMIXER) || defined(ECHOCARD_HAS_LINE_OUT_GAIN)
- 
- /******************* PCM output volume *******************/
- static int snd_echo_output_gain_info(struct snd_kcontrol *kcontrol,
-@@ -1003,6 +1003,19 @@
- 	return changed;
- }
- 
-+#ifdef ECHOCARD_HAS_LINE_OUT_GAIN
-+/* On the Mia this one controls the line-out volume */
-+static struct snd_kcontrol_new snd_echo_line_output_gain __devinitdata = {
-+	.name = "Line Playback Volume",
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+		  SNDRV_CTL_ELEM_ACCESS_TLV_READ,
-+	.info = snd_echo_output_gain_info,
-+	.get = snd_echo_output_gain_get,
-+	.put = snd_echo_output_gain_put,
-+	.tlv = {.p = db_scale_output_gain},
-+};
-+#else
- static struct snd_kcontrol_new snd_echo_pcm_output_gain __devinitdata = {
- 	.name = "PCM Playback Volume",
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-@@ -1012,9 +1025,10 @@
- 	.put = snd_echo_output_gain_put,
- 	.tlv = {.p = db_scale_output_gain},
- };
+diff --git a/cvscompile b/cvscompile
+deleted file mode 100755
+index af7700e..0000000
+--- a/cvscompile
++++ /dev/null
+@@ -1,19 +0,0 @@
+-#!/bin/bash
 -
- #endif
- 
-+#endif /* !ECHOCARD_HAS_VMIXER || ECHOCARD_HAS_LINE_OUT_GAIN */
-+
- 
- 
- #ifdef ECHOCARD_HAS_INPUT_GAIN
-@@ -2030,10 +2044,18 @@
- 	snd_echo_vmixer.count = num_pipes_out(chip) * num_busses_out(chip);
- 	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_vmixer, chip))) < 0)
- 		goto ctl_error;
--#else
--	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_pcm_output_gain, chip))) < 0)
-+#ifdef ECHOCARD_HAS_LINE_OUT_GAIN
-+	err = snd_ctl_add(chip->card,
-+			  snd_ctl_new1(&snd_echo_line_output_gain, chip));
-+	if (err < 0)
- 		goto ctl_error;
- #endif
-+#else /* ECHOCARD_HAS_VMIXER */
-+	err = snd_ctl_add(chip->card,
-+			  snd_ctl_new1(&snd_echo_pcm_output_gain, chip));
-+	if (err < 0)
-+		goto ctl_error;
-+#endif /* ECHOCARD_HAS_VMIXER */
- 
- #ifdef ECHOCARD_HAS_INPUT_GAIN
- 	if ((err = snd_ctl_add(chip->card, snd_ctl_new1(&snd_echo_line_input_gain, chip))) < 0)
-diff -u alsa-driver-1.0.21/alsa-kernel/pci/echoaudio__orig/mia.c alsa-driver-1.0.21/alsa-kernel/pci/echoaudio/mia.c
---- alsa-driver-1.0.21/alsa-kernel/pci/echoaudio__orig/mia.c	2009-08-28 13:41:39.000000000 +0200
-+++ alsa-driver-1.0.21/alsa-kernel/pci/echoaudio/mia.c	2009-09-29 22:19:31.000000000 +0200
-@@ -29,6 +29,7 @@
- #define ECHOCARD_HAS_ADAT	FALSE
- #define ECHOCARD_HAS_STEREO_BIG_ENDIAN32
- #define ECHOCARD_HAS_MIDI
-+#define ECHOCARD_HAS_LINE_OUT_GAIN
- 
- /* Pipe indexes */
- #define PX_ANALOG_OUT	0	/* 8 */
-
-
-
+-set -e
+-
+-touch ltconfig
+-libtoolize --force --copy --automake
+-aclocal $ACLOCAL_FLAGS
+-autoheader
+-automake --foreign --copy --add-missing
+-touch depcomp		# seems to be missing for old automake
+-autoconf
+-export CFLAGS='-O2 -Wall -W -pipe -g'
+-echo "CFLAGS=$CFLAGS"
+-echo "./configure $@"
+-./configure $@ || exit 1
+-unset CFLAGS
+-if [ -z "$CVSCOMPILE_NO_MAKE" ]; then
+-  make
+-fi
 -- 
-Giuliano.
+1.6.4.3
