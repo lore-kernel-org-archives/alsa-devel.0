@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 5/7] ASoC: TWL6030: Add support for
- low-power mode
-Date: Wed, 30 Sep 2009 11:12:06 +0100
-Message-ID: <20090930101206.GA15721@rakim.wolfsonmicro.main>
-References: <67059DBF19D7214F9C66BB0EA91BA90E90A391E3@dlee04.ent.ti.com>
-	<20090928132800.GD31899@rakim.wolfsonmicro.main>
-	<67059DBF19D7214F9C66BB0EA91BA90E90AE80EC@dlee04.ent.ti.com>
+Subject: Re: [PATCH 1/1] ASoC: Fix SND_SOC_DAPM_LINE handling
+Date: Wed, 30 Sep 2009 11:21:25 +0100
+Message-ID: <20090930102125.GA19852@rakim.wolfsonmicro.main>
+References: <1254292044-26634-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1254292044-26634-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3B059103879
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A8ED3103897
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Sep 2009 12:12:10 +0200 (CEST)
+	Wed, 30 Sep 2009 12:21:26 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <67059DBF19D7214F9C66BB0EA91BA90E90AE80EC@dlee04.ent.ti.com>
+In-Reply-To: <1254292044-26634-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Lopez Cruz, Misael" <x0052729@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 29, 2009 at 10:02:49PM -0500, Lopez Cruz, Misael wrote:
+On Wed, Sep 30, 2009 at 09:27:24AM +0300, Peter Ujfalusi wrote:
+> Since the SND_SOC_DAPM_LINE can be input or output, additional check is
+> needed in order to determine if the widget is connected as input or
+> output.
 
-> I think I got confused with what to do in set_sysclk and set_pll. In my
-> current approach:
-> 
-> - set_sysclk takes care of setting corresponding clk source: lppll
->   or hppll. But it also disables the pll not in use (i.e. if lppll is
->   set, then disable hppll)
-> - set_pll takes care of setting pll div for lppll (which is meant to
->   receive 32k clk) and configure hppll for any of the supported freq_in
->   (12, 19.2, 26, 38.4 MHz). Because only after this point I know the
->   value of sysclk, the constraints are set here. Is it fine?
->   For lppll the sysclk is set to requested freq_out (if div value is
->   in the valid range) and for hppll it's always 19.2 and it's the only
->   clk rate support by that pll.
+Applied, thanks.
 
-Hrm.  Is it actually worth having manual configuration of the PLL
-(beyond selection of the PLL to use), or could the driver figure out the
-required output frequency for lppll?  Either way is fine from an ASoC
-point of view, it's just that if the driver can figure the configuration
-out for itself that makes it a little easier to use.
-
-In any case...
-
-> In contrast, in wm8988 the sysclk and contraints are set directly in
-> set_sysclk.
-
-Note that they're actually passed to ALSA when the substreams are opened
-- all that wm8988 is doing in set_sysclk() is recording the constraints
-that it will use next time that happens.  Up until the point where you
-tell ALSA about the constraints you can do pretty much whatever you like
-so long as it makes sense, so what you say above is probably fine.  For
-the wm8988 there's no PLL so once the input clock is known there's
-nothing more to do for it.
+Incidentally, there's usually no need to send a cover letter with single
+patches - normally you can just cover everything in the commit message.
+If there's stuff that shouldn't be in the commit message add it after
+the '---' and tools like git am will drop it automatically.
