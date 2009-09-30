@@ -1,16 +1,18 @@
 From: Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 1/2] pcm_rate_linear: Annotate unused function
-	parameter to avoid compiler warnings.
-Date: Wed, 30 Sep 2009 12:36:13 +0200
-Message-ID: <1254306974-26016-1-git-send-email-stefan@datenfreihafen.org>
+Subject: [PATCH 2/2] alisp: Comment out an unused function to
+	avoid compiler warnings.
+Date: Wed, 30 Sep 2009 12:36:14 +0200
+Message-ID: <1254306974-26016-2-git-send-email-stefan@datenfreihafen.org>
+References: <1254306974-26016-1-git-send-email-stefan@datenfreihafen.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 376E0243DD
+	by alsa0.perex.cz (Postfix) with ESMTP id 88B5910389C
 	for <alsa-devel@alsa-project.org>;
 	Wed, 30 Sep 2009 12:36:30 +0200 (CEST)
+In-Reply-To: <1254306974-26016-1-git-send-email-stefan@datenfreihafen.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,43 +28,35 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Stefan Schmidt <stefan@slimlogic.co.uk>
 
+The function should be useful later so keep it in place and just comment it out
+until it is actually used.
+
 Signed-off-by: Stefan Schmidt <stefan@slimlogic.co.uk>
 ---
- src/pcm/pcm_rate_linear.c |    9 +++++----
- 1 files changed, 5 insertions(+), 4 deletions(-)
+ src/alisp/alisp.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-diff --git a/src/pcm/pcm_rate_linear.c b/src/pcm/pcm_rate_linear.c
-index 8b2d2d0..7481b38 100644
---- a/src/pcm/pcm_rate_linear.c
-+++ b/src/pcm/pcm_rate_linear.c
-@@ -405,15 +405,15 @@ static void linear_close(void *obj)
- 	free(obj);
+diff --git a/src/alisp/alisp.c b/src/alisp/alisp.c
+index 4ad1d09..f3580f9 100644
+--- a/src/alisp/alisp.c
++++ b/src/alisp/alisp.c
+@@ -233,6 +233,9 @@ static struct alisp_object * incref_tree(struct alisp_instance *instance, struct
+ 	return incref_object(instance, p);
  }
  
--static int get_supported_rates(void *rate, unsigned int *rate_min,
--			       unsigned int *rate_max)
-+static int get_supported_rates(ATTRIBUTE_UNUSED void *rate,
-+			       unsigned int *rate_min, unsigned int *rate_max)
++/* Function not used yet. Leave it commented out until we actually use it to
++ * avoid compiler complaints */
++#if 0
+ static struct alisp_object * incref_tree_explicit(struct alisp_instance *instance, struct alisp_object * p, struct alisp_object * e)
  {
- 	*rate_min = SND_PCM_PLUGIN_RATE_MIN;
- 	*rate_max = SND_PCM_PLUGIN_RATE_MAX;
- 	return 0;
+ 	if (p == NULL)
+@@ -250,6 +253,7 @@ static struct alisp_object * incref_tree_explicit(struct alisp_instance *instanc
+ 		return incref_object(instance, p);
+ 	return p;
  }
++#endif
  
--static void linear_dump(void *rate, snd_output_t *out)
-+static void linear_dump(ATTRIBUTE_UNUSED void *rate, snd_output_t *out)
+ static void free_objects(struct alisp_instance *instance)
  {
- 	snd_output_printf(out, "Converter: linear-interpolation\n");
- }
-@@ -432,7 +432,8 @@ static const snd_pcm_rate_ops_t linear_ops = {
- 	.dump = linear_dump,
- };
- 
--int SND_PCM_RATE_PLUGIN_ENTRY(linear) (unsigned int version, void **objp, snd_pcm_rate_ops_t *ops)
-+int SND_PCM_RATE_PLUGIN_ENTRY(linear) (ATTRIBUTE_UNUSED unsigned int version,
-+				       void **objp, snd_pcm_rate_ops_t *ops)
- {
- 	struct rate_linear *rate;
- 
 -- 
 1.6.4.3
