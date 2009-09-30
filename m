@@ -1,21 +1,23 @@
-From: Jean Delvare <khali@linux-fr.org>
-Subject: Re: [PATCH] sound: Don't assume i2c device probing
-	always succeeds
-Date: Wed, 30 Sep 2009 18:55:05 +0200
-Message-ID: <20090930185505.1261e183@hyperion.delvare>
-References: <20090930152542.3ef753ee@hyperion.delvare>
-	<s5hbpksy0yq.wl%tiwai@suse.de>
-	<20090930170006.76e145ca@hyperion.delvare>
-	<s5h4oqkxy3e.wl%tiwai@suse.de>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: ALC268 - Acer Aspire 5720 - mic source switch
+ disappered
+Date: Wed, 30 Sep 2009 19:33:28 +0200
+Message-ID: <1254332008.4556.0.camel@maxim-laptop>
+References: <1254186798.16290.4.camel@maxim-laptop>
+	<s5hk4zigsco.wl%tiwai@suse.de> <1254237796.20723.1.camel@maxim-laptop>
+	<s5hhbul4vb9.wl%tiwai@suse.de> <1254243023.20723.5.camel@maxim-laptop>
+	<1254243103.20723.6.camel@maxim-laptop> <s5hbpktotay.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from poutre.nerim.net (poutre.nerim.net [62.4.16.124])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BDE110380A
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2175E24469
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Sep 2009 18:55:08 +0200 (CEST)
-In-Reply-To: <s5h4oqkxy3e.wl%tiwai@suse.de>
+	Wed, 30 Sep 2009 19:33:34 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 22so2473469fge.2
+	for <alsa-devel@alsa-project.org>; Wed, 30 Sep 2009 10:33:33 -0700 (PDT)
+In-Reply-To: <s5hbpktotay.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,16 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, Johannes Berg <johannes@sipsolutions.net>, Tim Shepard <shep@alum.mit.edu>, alsa-devel@alsa-project.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 30 Sep 2009 17:15:49 +0200, Takashi Iwai wrote:
-> Yes, indeed I prefer NULL check because the user can know the error
-> at the right place.  I share your concern about the code addition,
-> though :)
+On Wed, 2009-09-30 at 08:11 +0200, Takashi Iwai wrote: 
+> At Tue, 29 Sep 2009 18:51:43 +0200,
+> Maxim Levitsky wrote:
+> > 
+> > On Tue, 2009-09-29 at 18:50 +0200, Maxim Levitsky wrote: 
+> > > On Tue, 2009-09-29 at 17:36 +0200, Takashi Iwai wrote: 
+> > > > At Tue, 29 Sep 2009 17:23:15 +0200,
+> > > > Maxim Levitsky wrote:
+> > > > > 
+> > > > > On Tue, 2009-09-29 at 08:47 +0200, Takashi Iwai wrote: 
+> > > > > > At Tue, 29 Sep 2009 03:13:18 +0200,
+> > > > > > Maxim Levitsky wrote:
+> > > > > > > 
+> > > > > > > Hi,
+> > > > > > > 
+> > > > > > > I have installed 2.6.32-rc1 (well -rc2...)
+> > > > > > > 
+> > > > > > > And I notice that 'Input source' is missing.
+> > > > > > 
+> > > > > > Now it's selected automatically per mic-jack plugging.
+> > > > > > 
+> > > > > > 
+> > > > > > Takashi
+> > > > > 
+> > > > > Nice, but driver doesn't record from internal mic now, despite the fact
+> > > > > that no external mic is plugged in.
+> > > > 
+> > > > That's a bug, obviously :)
+> > > > 
+> > > > Could you run alsa-info.sh (with --no-upload option) with and without
+> > > > the mic plugged, and attach the files?
+> > > > 
+> > > > 
+> > > > thanks,
+> > > > 
+> > > > Takashi
+> > > 
+> > > Sure, I already did, but it mostly contains the /proc/asound/Intel/...
+> > > codec#0 stuff...
+> > Here the attachment I forgot...
 > 
-> I already made a patch below, but it's totally untested.
-> It'd be helpful if someone can do review and build-test it.
+> Ah, this is no aspire-one-like model.
+> 
+> Looks like I mistakenly removed the input source mixer element.
+> The fixed patch is below.
 > 
 > 
 > thanks,
@@ -43,50 +83,21 @@ On Wed, 30 Sep 2009 17:15:49 +0200, Takashi Iwai wrote:
 > Takashi
 > 
 > ---
-> diff --git a/sound/aoa/codecs/tas.c b/sound/aoa/codecs/tas.c
-> index f0ebc97..0f810c8 100644
-> --- a/sound/aoa/codecs/tas.c
-> +++ b/sound/aoa/codecs/tas.c
-> @@ -897,6 +897,10 @@ static int tas_create(struct i2c_adapter *adapter,
->  	client = i2c_new_device(adapter, &info);
->  	if (!client)
->  		return -ENODEV;
-> +	if (!client->driver) {
-> +		i2c_unregister_device(client);
-> +		return -ENODEV;
-> +	}
->  
->  	/*
->  	 * Let i2c-core delete that device on driver removal.
-> diff --git a/sound/ppc/keywest.c b/sound/ppc/keywest.c
-> index 835fa19..473c5a6 100644
-> --- a/sound/ppc/keywest.c
-> +++ b/sound/ppc/keywest.c
-> @@ -59,6 +59,13 @@ static int keywest_attach_adapter(struct i2c_adapter *adapter)
->  	strlcpy(info.type, "keywest", I2C_NAME_SIZE);
->  	info.addr = keywest_ctx->addr;
->  	keywest_ctx->client = i2c_new_device(adapter, &info);
-> +	if (!keywest_ctx->client)
-> +		return -ENODEV;
-> +	if (!keywest_ctx->client->driver) {
-> +		i2c_unregister_device(keywest_ctx->client);
-> +		keywest_ctx->client = NULL;
-> +		return -ENODEV;
-> +	}
->  	
->  	/*
->  	 * Let i2c-core delete that device on driver removal.
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 1296058..bc057a8 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -12660,7 +12660,7 @@ static struct alc_config_preset alc268_presets[] = {
+>  		.init_hook = alc268_toshiba_automute,
+>  	},
+>  	[ALC268_ACER] = {
+> -		.mixers = { alc268_acer_mixer, alc268_capture_nosrc_mixer,
+> +		.mixers = { alc268_acer_mixer, alc268_capture_alt_mixer,
+>  			    alc268_beep_mixer },
+>  		.init_verbs = { alc268_base_init_verbs, alc268_eapd_verbs,
+>  				alc268_acer_verbs },
 
-This looks good to me. Please add the following comment before the
-client->driver check in both drivers:
+Thank you very much. Works fine now!
 
-	/*
-	 * We know the driver is already loaded, so the device should be
-	 * already bound. If not it means binding failed, and then there
-	 * is no point in keeping the device instantiated.
-	 */
-
-Otherwise it's a little difficult to understand why the check is there.
-
--- 
-Jean Delvare
+Best regards,
+Maxim Levitsky
