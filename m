@@ -1,19 +1,19 @@
-From: Jean Delvare <khali@linux-fr.org>
+From: Johannes Berg <johannes@sipsolutions.net>
 Subject: Re: [PATCH] sound: Don't assume i2c device probing
 	always succeeds
-Date: Wed, 30 Sep 2009 17:00:06 +0200
-Message-ID: <20090930170006.76e145ca@hyperion.delvare>
+Date: Wed, 30 Sep 2009 17:05:11 +0200
+Message-ID: <1254323111.3959.6.camel@johannes.local>
 References: <20090930152542.3ef753ee@hyperion.delvare>
 	<s5hbpksy0yq.wl%tiwai@suse.de>
+	<20090930170006.76e145ca@hyperion.delvare>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4071135802805611429=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from poutre.nerim.net (poutre.nerim.net [62.4.16.124])
-	by alsa0.perex.cz (Postfix) with ESMTP id A6F31103810
+Received: from sipsolutions.net (xc.sipsolutions.net [83.246.72.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF746243E5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Sep 2009 17:00:08 +0200 (CEST)
-In-Reply-To: <s5hbpksy0yq.wl%tiwai@suse.de>
+	Wed, 30 Sep 2009 17:05:22 +0200 (CEST)
+In-Reply-To: <20090930170006.76e145ca@hyperion.delvare>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,47 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linuxppc-dev@ozlabs.org, Johannes Berg <johannes@sipsolutions.net>, Tim Shepard <shep@alum.mit.edu>, alsa-devel@alsa-project.org
+To: Jean Delvare <khali@linux-fr.org>
+Cc: Takashi Iwai <tiwai@suse.de>, linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, Tim Shepard <shep@alum.mit.edu>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-Thanks for the swift reply.
+--===============4071135802805611429==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-9nANDWYa+cju1uLBmJ/R"
 
-On Wed, 30 Sep 2009 16:13:49 +0200, Takashi Iwai wrote:
-> At Wed, 30 Sep 2009 15:25:42 +0200,
-> Jean Delvare wrote:
-> > 
-> > If i2c device probing fails, then there is no driver to dereference
-> > after calling i2c_new_device(). Stop assuming that probing will always
-> > succeed, to avoid NULL pointer dereferences. We have an easier access
-> > to the driver anyway.
-> > 
-> > Reported-by: Tim Shepard <shep@alum.mit.edu>
-> > Signed-off-by: Jean Delvare <khali@linux-fr.org>
-> > Cc: Johannes Berg <johannes@sipsolutions.net>
-> > ---
-> > The code is similar to the one in therm_adt746x, for which Tim reported
-> > a real-world oops, so it should be fixed ASAP.
-> 
-> Jean, thanks for the patch.
-> 
-> I'm just wondering whether the additional NULL check of client->driver
-> would be enough?  If yes, sound/aoa/onyx.c has it, at least, and we
-> can add the similar checks to the rest, too.
 
-The NULL check of client->driver, if followed by a call to
-i2c_unregister_device(), would indeed be enough. But unlike the onyx
-driver which we know we sometimes load erroneously, the other drivers
-should never fail. I am reluctant to add code to handle error cases
-which are not supposed to happen, which is why I prefer my proposed
-fix: it does not add code.
+--=-9nANDWYa+cju1uLBmJ/R
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-That being said, I will be happy with any solution that fixes the
-problem, so if you prefer client->driver NULL checks, I can send a
-patch doing this.
+On Wed, 2009-09-30 at 17:00 +0200, Jean Delvare wrote:
 
-Thanks,
--- 
-Jean Delvare
+> The NULL check of client->driver, if followed by a call to
+> i2c_unregister_device(), would indeed be enough. But unlike the onyx
+> driver which we know we sometimes load erroneously, the other drivers
+> should never fail.
+
+All of these drivers can be loaded manually and then fail though, or am
+I misunderstanding something?
+
+johannes
+
+--=-9nANDWYa+cju1uLBmJ/R
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAABAgAGBQJKw3OjAAoJEODzc/N7+QmamFMQAIK1ekBv4Oe7SMJtvy2ak7aS
+DN/+VauZYbxThtspvdWxHLhgd/y2iF+tjfyGJ5FYRFyA+mnZyOUislCQ2YJEH4Sn
+B84b6QVdi/ImxdujtzLlv1Kg1nr8y9QlLcgLkbQ2F/VXFTjmSkqVzlUp1WoMtgQN
+Pg3PWzPH+brgTkLbTMiz0DGIxt6LnhJ3H7JP6FfNFL2KISyfQD8ci5Zd0K9I5JHb
+Jvp2STrgEH5lvI0wq+aiIwQfme+9WCybLPFRhDuNFg0yCk3OwlPI51er6mFcV9Ml
+s8TwAQD5Z/4x+i30uu3oXixsvIvul48Yw1Pbafd5AQYFLAGiYLOIygjSyy98pxmh
+/hKmaDmtgDMXtCTrRSLFBArSDJyUuuQZ5XcOPW/zzHjGBcslt5ITyaCIlgfBoFyd
+6i6dtGhryV/KC0Iyol55WXG6v3M8imkb8x0s6jVTG05HTq/+vXnZg7Pgkf40RGle
+OGppvKTzHAo1BSj3ux0kXH1V8D29f0tVOIOg4NnTy//gl1XAv29cDxVK8Zfhik/u
+XYspooLVktwRoHAnOA5Lj1h6bCG6p83MJjRXZehRRPowzi9i307Qd2TMuxvzm2LE
+ioU+jcR7FJLISAO68S3NMqXKqtry3VN+76WeKTo9Sz/GOf0UaoNnPRMP5h90RRfG
+6zj41PIWvLhj5vvD/LHQ
+=9htZ
+-----END PGP SIGNATURE-----
+
+--=-9nANDWYa+cju1uLBmJ/R--
+
+
+--===============4071135802805611429==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4071135802805611429==--
