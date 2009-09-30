@@ -1,77 +1,45 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: RE: [alsa-devel] [PATCHv2 5/7] ASoC: TWL6030: Add support for
-	low-power mode
-Date: Tue, 29 Sep 2009 22:02:49 -0500
-Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E90AE80EC@dlee04.ent.ti.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E90A391E3@dlee04.ent.ti.com>
- <20090928132800.GD31899@rakim.wolfsonmicro.main>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: alsa duplex test application
+Date: Wed, 30 Sep 2009 11:34:06 +0800
+Message-ID: <3c17e3570909292034q65e12081mc999529e718eeb96@mail.gmail.com>
+References: <a127e1f0909290144o467742d3hff072743bc26fdf6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20090928132800.GD31899@rakim.wolfsonmicro.main>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gx0-f210.google.com (mail-gx0-f210.google.com
+	[209.85.217.210])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20E6210380D
+	for <alsa-devel@alsa-project.org>;
+	Wed, 30 Sep 2009 05:34:27 +0200 (CEST)
+Received: by gxk2 with SMTP id 2so4014190gxk.4
+	for <alsa-devel@alsa-project.org>; Tue, 29 Sep 2009 20:34:26 -0700 (PDT)
+In-Reply-To: <a127e1f0909290144o467742d3hff072743bc26fdf6@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?572X5a+M5Yay?= <luofuchong@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-Mark Brown wrote:
-> On Fri, Sep 25, 2009 at 09:03:30PM -0500, Lopez Cruz, Misael wrote:
-> 
->> TWL6030 codec supports two power modes: low-power and high
->> performance.
-
->> In low-power mode, headset downlink must be the only path enabled
->> and components in that path (headset DAC and driver) should be in
->> that mode too. In this mode, codec can stream audio at 44.1 and
->> 48 kHz if sys clock from CLK32K is configured to 17.64 and 19.2
->> MHz using low-power PLL, respectively.
-
->> In high-performance mode, codec can only work at 19.2 MHz from
->> high-performance PLL. All paths supported in the codec can be used
->> but audio can be streamed only at 48 kHz.
-
-> The driver should also set constraints at runtime so that applications
-> know they shouldn't use an unsupported sample rate.  See wm8988 for an
-> example of doing this - it has some similar SYSCLK based restrictions.
-
-I think I got confused with what to do in set_sysclk and set_pll. In my
-current approach:
-
-- set_sysclk takes care of setting corresponding clk source: lppll
-  or hppll. But it also disables the pll not in use (i.e. if lppll is
-  set, then disable hppll)
-- set_pll takes care of setting pll div for lppll (which is meant to
-  receive 32k clk) and configure hppll for any of the supported freq_in
-  (12, 19.2, 26, 38.4 MHz). Because only after this point I know the
-  value of sysclk, the constraints are set here. Is it fine?
-  For lppll the sysclk is set to requested freq_out (if div value is
-  in the valid range) and for hppll it's always 19.2 and it's the only
-  clk rate support by that pll.
-
-In contrast, in wm8988 the sysclk and contraints are set directly in
-set_sysclk.
-
-I have been kind of insecure about all these clk configuration, so I'd
-be great if you could explain what's expected to go in set_sysclk as well
-as in set_pll.
-
-> It also strikes me that this is something that should be
-> exposed to user space since if there's a 19.2MHz MCLK it's something
-> that the system could reasonably want to activate and deactivate on
-> the fly.
-
-> For bonus points the driver could prevent switching to low power
-> mode if any paths are active which conflict with it.  Doing it
-> automatically would be ideal but since it sounds like a performance
-> degradation to use low power mode that's not really suitable.
-
-Any suggestion on how to detect the active paths? Using widgets with
-events?
-The only path active to switch to low-power should be headset.
-
-Thanks,
--Misa
+T24gVHVlLCBTZXAgMjksIDIwMDkgYXQgNDo0NCBQTSwg572X5a+M5YayIDxsdW9mdWNob25nQGdt
+YWlsLmNvbT4gd3JvdGU6Cj4gSGkgYWxsLAo+IMKgIMKgSSB3YW50IHRvIHdyaXRlIGEgc291bmQg
+Y2FyZCBEdXBsZXggdGVzdCBBcHBsaWNhdGlvbihwbGF5aW5nIHdoYXQgd2UgYXJlCj4gcmVjb3Jk
+aW5nKSByZWZlciB0byBhbHNhLXV0aWxzLCBhbmQgaSBnb3QgU2VnbWVudGF0aW9uIGZhdWx0LgoK
+SXMgaXQgcmVhbGx5IHVzZWZ1bD8gV2h5IG5vdCB1c2UgYXJlY29yZCAuLi4gfCBhcGxheSBkaXJl
+Y3RseT8KCj4gwqAgwqBBY2Nlc3Nvcmllc2lzIG15IGFwcGxpY2F0aW9uIGZvciB0ZXN0LGNhbiBh
+bnlvbmUgaGVscCBtZSB0byBmaW5kIG91dAo+IHdoYXQgaXMgdGhlIHByb2JsZW0sIG9yIHNob3cg
+bWUgYSBhcHBsaWNhdGlvbiB3aGljaCBjYW4gd29yay4KPiDCoCDCoFNvcnJ5IGZvciBteSBwb29y
+IGVuZ2xpc2gsIGFuZCB3YWl0aW5nIGZvciB5b3VyIHJlcGx5Lgo+Cj4gX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KPgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
