@@ -1,20 +1,20 @@
-From: Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: Re: [PATCH 0/3] Usage of AM_SILENT_RULES and small
- cleanup
-Date: Wed, 30 Sep 2009 12:36:40 +0200
-Message-ID: <20090930103640.GB8187@excalibur.local>
-References: <1254260901-1161-1-git-send-email-stefan@datenfreihafen.org>
-	<s5h8wfxosnz.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/1] ASoC: add support for
+	multiple	cards/codecs in debugfs
+Date: Wed, 30 Sep 2009 11:46:29 +0100
+Message-ID: <20090930104628.GA12101@sirena.org.uk>
+References: <1254306259-8098-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1254306259-8098-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E71B10389C
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B6ED103891
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Sep 2009 12:36:54 +0200 (CEST)
+	Wed, 30 Sep 2009 12:46:30 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5h8wfxosnz.wl%tiwai@suse.de>
+In-Reply-To: <1254306259-8098-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8uCgpPbiBXZWQsIDIwMDktMDktMzAgYXQgMDg6MjUsIFRha2FzaGkgSXdhaSB3cm90ZToK
-PiBBdCBUdWUsIDI5IFNlcCAyMDA5IDIzOjQ4OjE4ICswMjAwLAo+IFN0ZWZhbiBTY2htaWR0IHdy
-b3RlOgo+ID4gCj4gPiBXaGlsZSB3b3JraW5nIHdpdGggYWxzYS1saWIgdG8gZ2V0IHNjZW5hcmlv
-cyBpbiBzaGFwZSBhbmQgc3VibWl0dGVkIGxhdGVyIEkKPiA+IGFkZGVkIHN1cHBvcnQgZm9yIHRo
-ZSBuZXcgYXV0b21ha2UgZmVhdHVyZSBBTV9TSUxFTlRfUlVMRVMgYW5kIGRpZCBzb21lIHNtYWxs
-Cj4gPiBjbGVhbnVwcy4KPiA+IAo+ID4gW1BBVENIIDEvM10gY3ZzY29tcGlsZTogUmVtb3ZlIGlu
-IGZhdm91ciBvZiBnaXRjb21waWxlLgo+ID4gSSBzZWUgbm8gcmVhc29uIHRvIGtlZXAgdGhpcyBh
-cm91bmQgd2hlbiBDVlMgaXMgbm8gbG9uZ2VyIHVzZWQgYW5kIGdpdGNvbXBpbGUKPiA+IGRvZXMg
-cmVwbGFjZSBpdC4gU29tZXRoaW5nIEkgbWlzcyBoZXJlPwo+ID4gCj4gPiBbUEFUQ0ggMi8zXSBj
-b25maWd1cmUuaW46IEFkZCBtNCBjaGVjayBmb3IgbmV3IEFNX1NJTEVOVF9SVUxFUwo+ID4gVGhl
-IGtidWlsZCBsaWtlIG91dHB1dCBtYWtlcyBpdCBhIGxvdCBlYXNpZXIgdG8gZm9sbG93IHRoZSBj
-b21waWxlIGFuZCBsaW5raW5nCj4gPiBwcm9jZXNzLCBhdCBsZWFzdCBpbiBteSBvcGluaW9uLiBJ
-dCBpcyBhdmFpbGFibGUgd2l0aCBhdXRvbWFrZSAxLjExIGFuZCB3ZSB1c2UgYQo+ID4gbTQgbWFj
-cm8gaGVyZSB0byBvbmx5IHVzZSBpdCB3aGVuIGl0IGlzIGF2YWlsYWJsZS4KPiA+IAo+ID4gW1BB
-VENIIDMvM10gY29udHJvbDogUmVtb3ZlIHVudXNlZCB2YXJpYWJsZS4KPiA+IEZvdW5kIHdoaWxl
-IHJlYWxseSBzZWVpbmcgd2hhdCBpcyBnb2luZyBvbiB0aGFua3MgdG8gQU1fU0lMRU5UX1JVTEVT
-OiA7KQo+IAo+IFRoYW5rcywgYXBwbGllZCBhbGwgcGF0Y2hlcyBub3cuCgpHcmVhdCwgdGhhbmtz
-LiA6KQoKPiA+IFRoZXJlIGFyZSBhbHNvIHNvbWUgdW51c2VkIHBhcmFtdGVyIGFuZCBhIGZ1bmN0
-aW9uIGFyb3VuZC4gSSBkb24ndCBrbm93IGhvdyB5b3UKPiA+IGd1eXMgcHJlZmVyIHRvIGhhbmRs
-ZSB0aGlzIGluIHRoZSBBTFNBIHByb2plY3Qgc28gSSBkaWQgbm90IHByZXBhcmUgcGF0Y2hlcyBm
-b3IKPiA+IHRoaXMgeWV0LiBMZXQgbWUga25vdyBpZiB5b3Ugd2FudCBzb21lIGZvciBpdC4KPiA+
-IAo+ID4gcGNtX3JvdXRlLmM6IEluIGZ1bmN0aW9uIOKAmHNuZF9wY21fcm91dGVfY29udmVydDFf
-bWFueeKAmToKPiA+IHBjbV9yb3V0ZS5jOjM1MDogd2FybmluZzog4oCYc3Jj4oCZIG1heSBiZSB1
-c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgo+IAo+IEkgdGhpbmsgdGhpcyBpcyBm
-YWxzZS1wb3NpdGl2ZSwgc28gbGV0IGl0IGJlLgoKT0suCgo+ID4gcGNtX3JhdGVfbGluZWFyLmM6
-IEluIGZ1bmN0aW9uIOKAmGdldF9zdXBwb3J0ZWRfcmF0ZXPigJk6Cj4gPiBwY21fcmF0ZV9saW5l
-YXIuYzo0MDg6IHdhcm5pbmc6IHVudXNlZCBwYXJhbWV0ZXIg4oCYcmF0ZeKAmQo+ID4gcGNtX3Jh
-dGVfbGluZWFyLmM6IEluIGZ1bmN0aW9uIOKAmGxpbmVhcl9kdW1w4oCZOgo+ID4gcGNtX3JhdGVf
-bGluZWFyLmM6NDE2OiB3YXJuaW5nOiB1bnVzZWQgcGFyYW1ldGVyIOKAmHJhdGXigJkKPiA+IHBj
-bV9yYXRlX2xpbmVhci5jOiBJbiBmdW5jdGlvbiDigJhfc25kX3BjbV9yYXRlX2xpbmVhcl9vcGVu
-4oCZOgo+ID4gcGNtX3JhdGVfbGluZWFyLmM6NDM1OiB3YXJuaW5nOiB1bnVzZWQgcGFyYW1ldGVy
-IOKAmHZlcnNpb27igJkKPiAKPiBUaGVzZSBjYW4gYmUgc3VwcHJlc3NlZCBzaW1wbHkgYnkgYWRk
-aW5nIEFUVFJJQlVURV9VTlVTRUQuCj4gCj4gPiBhbGlzcC5jOjIzNzogd2FybmluZzog4oCYaW5j
-cmVmX3RyZWVfZXhwbGljaXTigJkgZGVmaW5lZCBidXQgbm90IHVzZWQKPiAKPiBUaGlzIGNhbiBi
-ZSBjb21tZW50ZWQgb3V0Lgo+IAo+IENhcmUgdG8gc2VuZCBmaXggcGF0Y2hlcz8KClNlZSB0aGUg
-bmV3IHBhdGNoc2V0IG9uIHRoZSBsaXN0LiBIb3BlIHRoYXQgaXMgd2hhdCB5b3UgaGFkIGluIG1p
-bmQuCgpyZWdhcmRzClN0ZWZhbiBTY2htaWR0Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Wed, Sep 30, 2009 at 01:24:19PM +0300, Peter Ujfalusi wrote:
+
+> With the original implementation only the debugfs files are only
+> created for the first codec, other codecs loaded later would fail to
+> create the debugfs files (since they are already exist).
+> Furthermore in this situation any of the codecs has been removed, would
+> cause the debugfs entries to disappear, regardless if the codec, which
+> created them are still loaded (the one which loaded first).
+
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+
+There's way more problems than this with multiple CODECs and multiple
+cards - DAPM can't really cope at all, and the split between CODECs and
+cards isn't as clear as would be desirable.  Looking into this is one of
+my big tasks for the rest of the year.  With this particular problem I
+suspect the fix will fall out of the other reorganisations required to
+make the rest of the system work.
+
+> +       codec->debugfs_codec_root = debugfs_create_dir(codec->name,
+> +                                                      debugfs_root);
+
+I don't think the CODEC name is what we want to use here, one of the
+common cases is going to be to have two or more mono DACs or speaker
+drivers in the system, normally of the same type and therefore with the
+same name set here.  A dev_name() is going to be required as well,
+munged in with the CODEC name for usability.
