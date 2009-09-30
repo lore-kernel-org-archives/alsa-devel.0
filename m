@@ -1,90 +1,77 @@
-From: manoj.iyer@canonical.com
-Subject: Re: [PATCH REALTEK] Added quirk to enable sound on Toshiba NB200
-Date: Tue, 29 Sep 2009 19:23:27 -0500 (CDT)
-Message-ID: <alpine.DEB.2.00.0909291812030.2426@little>
-References: <alpine.DEB.2.00.0909230036570.29432@little> <s5h3a6eb46r.wl%tiwai@suse.de> <alpine.DEB.2.00.0909281022500.2112@little> <s5hd45agqoi.wl%tiwai@suse.de>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: RE: [alsa-devel] [PATCHv2 5/7] ASoC: TWL6030: Add support for
+	low-power mode
+Date: Tue, 29 Sep 2009 22:02:49 -0500
+Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E90AE80EC@dlee04.ent.ti.com>
+References: <67059DBF19D7214F9C66BB0EA91BA90E90A391E3@dlee04.ent.ti.com>
+ <20090928132800.GD31899@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753771AbZI3AXa@vger.kernel.org>
-In-Reply-To: <s5hd45agqoi.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: manoj.iyer@canonical.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20090928132800.GD31899@rakim.wolfsonmicro.main>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Mark,
 
+Mark Brown wrote:
+> On Fri, Sep 25, 2009 at 09:03:30PM -0500, Lopez Cruz, Misael wrote:
+> 
+>> TWL6030 codec supports two power modes: low-power and high
+>> performance.
 
-> Thanks.  And what about my first question?
+>> In low-power mode, headset downlink must be the only path enabled
+>> and components in that path (headset DAC and driver) should be in
+>> that mode too. In this mode, codec can stream audio at 44.1 and
+>> 48 kHz if sys clock from CLK32K is configured to 17.64 and 19.2
+>> MHz using low-power PLL, respectively.
 
-No, without the change sound does not work, and I can confirm this on 
-NB200, NB205, and I hear that NB210 hass also the same hardware.
+>> In high-performance mode, codec can only work at 19.2 MHz from
+>> high-performance PLL. All paths supported in the codec can be used
+>> but audio can be streamed only at 48 kHz.
 
-> Doesn't the latest driver work without your change?
-> Try alsa-driver-snapshot tarball below if not tested yet.
->  ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
->
-> Or sound git tree master / for-next branches if you prefer kernel GIT:
->  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
->
+> The driver should also set constraints at runtime so that applications
+> know they shouldn't use an unsupported sample rate.  See wm8988 for an
+> example of doing this - it has some similar SYSCLK based restrictions.
 
-I was not able to build the sound tree, but I installed the mainline 
-kernel build (29th sept):
+I think I got confused with what to do in set_sysclk and set_pll. In my
+current approach:
 
-http://kernel.ubuntu.com/~kernel-ppa/mainline/v2.6.31.1/
+- set_sysclk takes care of setting corresponding clk source: lppll
+  or hppll. But it also disables the pll not in use (i.e. if lppll is
+  set, then disable hppll)
+- set_pll takes care of setting pll div for lppll (which is meant to
+  receive 32k clk) and configure hppll for any of the supported freq_in
+  (12, 19.2, 26, 38.4 MHz). Because only after this point I know the
+  value of sysclk, the constraints are set here. Is it fine?
+  For lppll the sysclk is set to requested freq_out (if div value is
+  in the valid range) and for hppll it's always 19.2 and it's the only
+  clk rate support by that pll.
 
-and sound does not work with that either.
+In contrast, in wm8988 the sysclk and contraints are set directly in
+set_sysclk.
 
->
-> Takashi
->
->>
->> --- manjo
->>
->> On Wed, 23 Sep 2009, Takashi Iwai wrote:
->>
->>> At Wed, 23 Sep 2009 00:39:45 -0500 (CDT),
->>> Manoj Iyer wrote:
->>>>
->>>>
->>>>> From c96629e96fecbe59de7124ec913019ed378d0029 Mon Sep 17 00:00:00 2001
->>>> From: Manoj Iyer <manoj.iyer@canonical.com>
->>>> Date: Tue, 22 Sep 2009 18:33:29 -0500
->>>> Subject: [PATCH] [PATCH REALTEK] Added quirk to enable sound on Toshiba NB200
->>>>
->>>> Patch was tested on Toshiba NB200 and is found to enable sound.
->>>
->>> So, it doesn't work without the model quirk?
->>> Could you give alsa-info.sh output (run with --no-upload option)?
->>>
->>>
->>> thanks,
->>>
->>> Takashi
->>>
->>>>
->>>> Signed-off-by: Manoj Iyer <manoj.iyer@canonical.com>
->>>> Cc: stable@kernel.org
->>>> ---
->>>>   sound/pci/hda/patch_realtek.c |    1 +
->>>>   1 files changed, 1 insertions(+), 0 deletions(-)
->>>>
->>>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->>>> index 30eeb30..713bf69 100644
->>>> --- a/sound/pci/hda/patch_realtek.c
->>>> +++ b/sound/pci/hda/patch_realtek.c
->>>> @@ -16876,6 +16876,7 @@ static struct snd_pci_quirk alc662_cfg_tbl[] = {
->>>>   	SND_PCI_QUIRK(0x105b, 0x0cd6, "Foxconn", ALC662_ECS),
->>>>   	SND_PCI_QUIRK(0x105b, 0x0d47, "Foxconn 45CMX/45GMX/45CMX-K",
->>>>   		      ALC662_3ST_6ch_DIG),
->>>> +	SND_PCI_QUIRK(0x1179, 0xff6e, "Toshiba NB200", ALC663_ASUS_MODE4),
->>>>   	SND_PCI_QUIRK(0x144d, 0xca00, "Samsung NC10", ALC272_SAMSUNG_NC10),
->>>>   	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte 945GCM-S2L",
->>>>   		      ALC662_3ST_6ch_DIG),
->>>> --
->>>> 1.6.3.3
->>>>
->>>>
->>>> --- manjo
->>>>
->>>
->
+I have been kind of insecure about all these clk configuration, so I'd
+be great if you could explain what's expected to go in set_sysclk as well
+as in set_pll.
+
+> It also strikes me that this is something that should be
+> exposed to user space since if there's a 19.2MHz MCLK it's something
+> that the system could reasonably want to activate and deactivate on
+> the fly.
+
+> For bonus points the driver could prevent switching to low power
+> mode if any paths are active which conflict with it.  Doing it
+> automatically would be ideal but since it sounds like a performance
+> degradation to use low power mode that's not really suitable.
+
+Any suggestion on how to detect the active paths? Using widgets with
+events?
+The only path active to switch to low-power should be headset.
+
+Thanks,
+-Misa
