@@ -1,81 +1,90 @@
-From: Steve Chen <schen-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: DaVinci: pcm, rename variables
-	in prep for ping/pong
-Date: Tue, 29 Sep 2009 18:24:54 -0500
-Message-ID: <1254266694.3160.103.camel@linux-1lbu>
-References: <1251761505-11353-1-git-send-email-troy.kisky@boundarydevices.com>
-	<1251761505-11353-2-git-send-email-troy.kisky@boundarydevices.com>
-	<20090902220152.GB4495@sirena.org.uk>
-	<4A9F0A8C.1040509@boundarydevices.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59301DD6102A3@dbde02.ent.ti.com>
-	<4AA0113D.9030605@boundarydevices.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59301DD74F519@dbde02.ent.ti.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59301DDAB3EB5@dbde02.ent.ti.com>
-	<4AC28588.9030802@boundarydevices.com>
-	<1254263125.3160.76.camel@linux-1lbu>
-	<4AC28AD0.7000600@boundarydevices.com>
+From: manoj.iyer@canonical.com
+Subject: Re: [PATCH REALTEK] Added quirk to enable sound on Toshiba NB200
+Date: Tue, 29 Sep 2009 19:23:27 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.0909291812030.2426@little>
+References: <alpine.DEB.2.00.0909230036570.29432@little> <s5h3a6eb46r.wl%tiwai@suse.de> <alpine.DEB.2.00.0909281022500.2112@little> <s5hd45agqoi.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <4AC28AD0.7000600-Q5RJGjKts06CY9SHAMCTRUEOCMrvLtNR@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.omap.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Troy Kisky <troy.kisky-Q5RJGjKts06CY9SHAMCTRUEOCMrvLtNR@public.gmane.org>
-Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: TEXT/PLAIN; format=flowed; charset=US-ASCII
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753771AbZI3AXa@vger.kernel.org>
+In-Reply-To: <s5hd45agqoi.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: manoj.iyer@canonical.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2009-09-29 at 15:31 -0700, Troy Kisky wrote:
-> Steve Chen wrote:
-> > On Tue, 2009-09-29 at 15:09 -0700, Troy Kisky wrote:
-> >>> Troy, do you have any theory yet on why your patch should permanently swap
-> >>> channels?
-> >>>
-> >> Memory in 16 bit samples
-> >> L1,R1,L2,R2
-> >>
-> >> Shifting out in 16 bit samples
-> >> L1,R1,L2,R2
-> >>
-> >>
-> >> Memory in 32 bit samples
-> >> R1L1,R2L2,R3L3
-> >>
-> >> Shifting out in 32 bit samples
-> >> R1L1,R2L2
-> >>
-> >> Codec sees 16 bit samples
-> >> R1,L1,R2,L2
-> >>
-> > 
-> > If that is the case, wouldn't we see the channel swap on DM644x as well?
-> >>From Sekhar's earlier e-mail, the channel swap appears specific to DM355
-> > EVM.
-> > 
-> > Steve
-> > 
-> > 
-> Yes, unless an underrun causes the 1st 16 bit sample to be delayed when transmitting
-> out 16 bit samples at a time. That is why the 16 bit shift leads to random swaps
-> and 32 bit shifts leads to always swapped. When an underrun happens with 32 bit shifts
-> the last sample (both left AND right) is merely shifted again. When an underrun happens
-> with 16 bit shifts only the immediately preceding left OR right channel sample is repeated
-> leading to a random swap.
-> 
 
-I see, so "random" channel swap only happens for 16 bit shift and only
-after an underrun.  So if underrun does not happen, we should not see
-any channel swap right?
 
-As for the 32 bit shift, if the channels are always swapped, can we not
-configure the DMA engine to automatically swap the upper and lower 16
-bits to get around the issue?  Am I missing something?
+> Thanks.  And what about my first question?
 
-Steve
+No, without the change sound does not work, and I can confirm this on 
+NB200, NB205, and I hear that NB210 hass also the same hardware.
+
+> Doesn't the latest driver work without your change?
+> Try alsa-driver-snapshot tarball below if not tested yet.
+>  ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
+>
+> Or sound git tree master / for-next branches if you prefer kernel GIT:
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+>
+
+I was not able to build the sound tree, but I installed the mainline 
+kernel build (29th sept):
+
+http://kernel.ubuntu.com/~kernel-ppa/mainline/v2.6.31.1/
+
+and sound does not work with that either.
+
+>
+> Takashi
+>
+>>
+>> --- manjo
+>>
+>> On Wed, 23 Sep 2009, Takashi Iwai wrote:
+>>
+>>> At Wed, 23 Sep 2009 00:39:45 -0500 (CDT),
+>>> Manoj Iyer wrote:
+>>>>
+>>>>
+>>>>> From c96629e96fecbe59de7124ec913019ed378d0029 Mon Sep 17 00:00:00 2001
+>>>> From: Manoj Iyer <manoj.iyer@canonical.com>
+>>>> Date: Tue, 22 Sep 2009 18:33:29 -0500
+>>>> Subject: [PATCH] [PATCH REALTEK] Added quirk to enable sound on Toshiba NB200
+>>>>
+>>>> Patch was tested on Toshiba NB200 and is found to enable sound.
+>>>
+>>> So, it doesn't work without the model quirk?
+>>> Could you give alsa-info.sh output (run with --no-upload option)?
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>>>
+>>>> Signed-off-by: Manoj Iyer <manoj.iyer@canonical.com>
+>>>> Cc: stable@kernel.org
+>>>> ---
+>>>>   sound/pci/hda/patch_realtek.c |    1 +
+>>>>   1 files changed, 1 insertions(+), 0 deletions(-)
+>>>>
+>>>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>>>> index 30eeb30..713bf69 100644
+>>>> --- a/sound/pci/hda/patch_realtek.c
+>>>> +++ b/sound/pci/hda/patch_realtek.c
+>>>> @@ -16876,6 +16876,7 @@ static struct snd_pci_quirk alc662_cfg_tbl[] = {
+>>>>   	SND_PCI_QUIRK(0x105b, 0x0cd6, "Foxconn", ALC662_ECS),
+>>>>   	SND_PCI_QUIRK(0x105b, 0x0d47, "Foxconn 45CMX/45GMX/45CMX-K",
+>>>>   		      ALC662_3ST_6ch_DIG),
+>>>> +	SND_PCI_QUIRK(0x1179, 0xff6e, "Toshiba NB200", ALC663_ASUS_MODE4),
+>>>>   	SND_PCI_QUIRK(0x144d, 0xca00, "Samsung NC10", ALC272_SAMSUNG_NC10),
+>>>>   	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte 945GCM-S2L",
+>>>>   		      ALC662_3ST_6ch_DIG),
+>>>> --
+>>>> 1.6.3.3
+>>>>
+>>>>
+>>>> --- manjo
+>>>>
+>>>
+>
