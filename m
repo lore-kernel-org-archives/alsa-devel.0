@@ -1,23 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ascenario: Add scenario support to	alsa-lib
-Date: Thu, 1 Oct 2009 15:18:09 +0100
-Message-ID: <20091001141809.GB29526@sirena.org.uk>
-References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
-	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
-	<20091001122835.GC14417@sirena.org.uk>
-	<1254401304.5847.187.camel@odin>
-	<20091001130216.GE14417@sirena.org.uk>
-	<1254405992.5847.241.camel@odin>
+From: humbert.olivier.1@free.fr
+Subject: Tascam
+Date: Thu, 1 Oct 2009 16:30:56 +0200 (CEST)
+Message-ID: <830450608.10085611254407456481.JavaMail.root@spooler10-g27.priv.proxad.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 12AA110398F
+Received: from wmproxy1-g27.free.fr (wmproxy1-g27.free.fr [212.27.42.91])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA9CA10397F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 16:18:10 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1254405992.5847.241.camel@odin>
+	Thu,  1 Oct 2009 16:30:57 +0200 (CEST)
+Received: from wmproxy1-g27.free.fr (localhost [127.0.0.1])
+	by wmproxy1-g27.free.fr (Postfix) with ESMTP id A70D834F5
+	for <alsa-devel@alsa-project.org>;
+	Thu,  1 Oct 2009 16:30:56 +0200 (CEST)
+Received: from spooler10-g27.priv.proxad.net (spooler10-g27.priv.proxad.net
+	[172.20.243.231])
+	by wmproxy1-g27.free.fr (Postfix) with ESMTP id 9FF963455
+	for <alsa-devel@alsa-project.org>;
+	Thu,  1 Oct 2009 16:30:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,18 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Ian Molton <ian@mnementh.co.uk>, Stefan Schmidt <stefan@slimlogic.co.uk>, alsa-devel@alsa-project.org, Stefan Schmidt <stefan@datenfreihafen.org>, Graeme Gregory <gg@slimlogic.co.uk>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 01, 2009 at 03:06:32PM +0100, Liam Girdwood wrote:
+Hi all
+in first thanks for your work, it permit us to make music with GNU Linux :)
 
-> I'm hoping this file format and remapping will be deprecated by the
-> audio graphing interface (as discussed at LPC). We can still keep the
-> same front end API to the apps though.
+I'm Olivier from France.
+I work on linuxMAO.org website.
+It's a french website for music assisted by computer.
+In this website, i make an article for make work the tascam us-224 on GNU Linux.
+Sometime I was angry because all is'nt recognize on my sound card. (Like 4 faders for 4 tracks).
+So I make a letter in what i said something like that :
 
-Hrm, I'll have to have a think about that.  I'd always thought of the
-two as being complimentary - the graph saying what the connections are
-and where all the controls are while the scenario says what settings to
-use and which controls are for applications.  I think I can see where
-you're coming from, though.  We should discuss this tonight in person.
+"Hey Tascam, it's cool for you ?
+For me it's cool, because i buy your product and it's a good one,
+and now, i play music with my friend and children and many people.
+But,
+all doesn't work with my OS, GNU/Linux
+it's damage because you don't see that many people on linux and other OS,
+have to go to your concurent (like M-audio or RME) because they're more open than you.
+blablabla blablabla ..."
+
+They don't answer. ... :/
+
+
+
+Another boy make another one few month ago.
+...
+They don't answer too. ... :/
+...
+
+
+
+Last week, a new boy email me that, he was very happy because my website page for the TASCAM us 224
+help him to make work on linux. (it was great, i'm happy)
+So i speak with him and said to him
+"hey, you can make an email to Tascam (in fact sennheiser in france, the official distributor for tascam products)
+and say to them "hello boys, can you give us the source code or specifications blablabla" "
+...
+
+and this one, he answered positively !
+The sennheiser man said to us that he speak with japanese guys who said "what they needs?".
+
+So, i'm not developper
+I search for the (one or many) people who made the tascam us 224 (and 122 and 448 i think) driver for ALSA system.
+because, we've got an open way to make it better. Or another one motived !
+
+The ball is here now.
+Thanks for read and for your work.
+
+Olivier
