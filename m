@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Use codec mutex in dapm_set_pga()
-Date: Thu, 1 Oct 2009 11:37:14 +0100
-Message-ID: <20091001103714.GB14417@sirena.org.uk>
-References: <1254377856-5588-1-git-send-email-ext-eero.nurkkala@nokia.com>
+Subject: Re: [PATCH 1/1 - try2] ASoC: add support for multiple
+ cards/codecs in debugfs
+Date: Thu, 1 Oct 2009 11:51:07 +0100
+Message-ID: <20091001105107.GB19998@rakim.wolfsonmicro.main>
+References: <1254382367-27948-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1254382367-27948-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 137DF103821
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 09BDF1038F2
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 12:37:15 +0200 (CEST)
+	Thu,  1 Oct 2009 12:51:09 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1254377856-5588-1-git-send-email-ext-eero.nurkkala@nokia.com>
+In-Reply-To: <1254382367-27948-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext-eero.nurkkala@nokia.com
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 01, 2009 at 09:17:36AM +0300, ext-eero.nurkkala@nokia.com wrote:
-> From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+On Thu, Oct 01, 2009 at 10:32:47AM +0300, Peter Ujfalusi wrote:
+> In order to support multiple codecs on the same system in the debugfs
+> the directory hierarchy need to be changed by adding directory per codec
+> under the asoc direcorty:
 
-> codec->mutex seems required if widget->* values
-> are altered. Moreover, snd_soc_dapm_put_volsw()
-> may alter widget->saved_value. dapm_set_pga()
-> uses widget->saved_value in a for loop which now
-> has a distant chance of getting out of control.
+> debugfs/asoc/{dev_name(socdev->dev)}-{codec->name}/codec_reg
 
-Hrm.  This doesn't look right.  dapm_set_pga() is only called from
-within the DAPM power updates so we should've taken the codec mutex much
-further up the stack otherwise all the DAPM list walking and updating
-will have issues.  Was this just from code inspection or are you running
-into actual issues?
+I'd rather use dev_name() for the CODEC itself if possible, that is more
+likely to be stable going forward and one of the immediate aims with the
+API refactoring is to remove socdev entirely at runtime.
+
+That can be done in a followup, though.
+
+> @@ -126,7 +126,7 @@ static int soc_pcm_apply_symmetry(struct snd_pcm_substream *substream)
+> 
+>  	if (codec_dai->symmetric_rates || cpu_dai->symmetric_rates ||
+>  	    machine->symmetric_rates) {
+> -		dev_dbg(card->dev, "Symmetry forces %dHz rate\n",
+> +		dev_dbg(card->dev, "Symmetry forces %dHz rate\n",
+>  			machine->rate);
+> 
+>  		ret = snd_pcm_hw_constraint_minmax(substream->runtime,
+
+but this doesn't seem to accomplish that goal?  I can't actually spot
+the difference either, I'm assuming it's just whitespace?  If so I'll
+apply as-is.
