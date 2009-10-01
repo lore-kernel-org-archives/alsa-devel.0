@@ -1,15 +1,21 @@
-From: Navink Singh <navink.singh@tcs.com>
-Subject: LEFT or RIGHT Channel in alsa mixer
-Date: Thu, 1 Oct 2009 22:56:54 +0530
-Message-ID: <OF807F8AEA.8F534B2B-ON65257642.005F90B8-65257642.005FC844@tcs.com>
-Mime-Version: 1.0
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: A few fix patches for ASoC
+Date: Thu, 1 Oct 2009 18:44:48 +0100
+Message-ID: <BF53A021-5579-46B7-9041-4C4D99504D76@opensource.wolfsonmicro.com>
+References: <s5hfxa3k327.wl%tiwai@suse.de>
+	<20091001152442.GD29526@sirena.org.uk>
+	<s5heipni11r.wl%tiwai@suse.de>
+	(sfid-20091001_163101_922709_696787D2)
+Mime-Version: 1.0 (iPhone Mail 7C144)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from inmumg02.tcs.com (Inmumg02.tcs.com [219.64.34.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C0F12454A
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 00BF924561
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 19:26:58 +0200 (CEST)
+	Thu,  1 Oct 2009 19:44:59 +0200 (CEST)
+In-Reply-To: <s5heipni11r.wl%tiwai@suse.de>
+	(sfid-20091001_163101_922709_696787D2)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,71 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Developers,
+On 1 Oct 2009, at 16:30, Takashi Iwai <tiwai@suse.de> wrote:
 
-              I need to configure my audio device such as to use only LEFT 
-or RIGHT Channel.
-I have carried out following steps to proceed with
+> At Thu, 1 Oct 2009 16:24:43 +0100,
+> Mark Brown wrote:
+>>
+>> On Thu, Oct 01, 2009 at 09:04:32AM +0200, Takashi Iwai wrote:
+>>
+>>> commit c877c25170e2655d519b29e91d6c91d5d1a72a6f
+>>> Author: Takashi Iwai <tiwai@suse.de>
+>>> Date:   Thu Oct 1 08:33:47 2009 +0200
+>>>
+>>>    ASoC: Fix dependency of CONFIG_SND_PXA2XX_SOC_IMOTE2
+>>
+>> Hrm.  This one applies to every board which doesn't use AC97 (some  
+>> will
+>> need SPI but it's the same deal for that).  It should probably also  
+>> be a
+>> dependency on the actual I2C controller driver rather than I2C in
+>> general since the driver isn't going to do anything if the I2C device
+>> isn't actually able to come up, though that'd prevent people doing
+>> strange stuff like having the I2C bus driver modular and the audio  
+>> built
+>> in.
+>
+> Well, the problem is that it unconditionally selects WM8940, and
+> wm8940.c can't be built without CONFIG_I2C (and doesn't make much
+> sense right now).  I'd happily remove that I2C Kconfig dependency if
+> you are going to fix wm8940 part.
 
-1) Opened PCM playback Device
-2) Configured its hardware and Software parameters
-3) Open mixer
-4) Attached Mixer to playback device
-5) Registered Mixer
-6) Loaded the mixer
-7) Get the first element of mixer
-
-A)
-    Now when i use following API, snd_mixer_selem_is_playback_mono(aElem); 
-i found mixer is using MONO channel.
-But i am configuring my PCM Device for 2 channels
-
-    I am using snd_mixer_selem_set_playback_switch() API to set right or 
-Left channel to MUTE {Does not work}
-
-    If i set all channels to Mute {Works fine}
-              snd_mixer_selem_set_playback_switch_all (aElem, 0)
-
-    Also i am able to set SND_MIXER_SCHN_MONO to mute {works fine}
-              snd_mixer_selem_set_playback_switch(aElem, 
-SND_MIXER_SCHN_MONO, 0)
-
-B)
-    There is also an API in my MIXER driver to set the right and left 
-balance, but i did not find
-any API in Application to do so {Is there any such API in Application}.
-
-
-Thanks in Advance,
-
-Navin Kumar Singh
-Tata Consultancy Services
-DLF Akruti Info Park,
-PN 28,
-Rajiv Gandhi Infotech Park   Hinjewadi, PHASE II
-Pune - 411057,Maharashtra
-India
-Ph:- +91 20 66752458
-Cell:- +919860227357
-Mailto: navink.singh@tcs.com
-Website: http://www.tcs.com
-____________________________________________
-Experience certainty.   IT Services
-                        Business Solutions
-                        Outsourcing
-____________________________________________
-=====-----=====-----=====
-Notice: The information contained in this e-mail
-message and/or attachments to it may contain 
-confidential or privileged information. If you are 
-not the intended recipient, any dissemination, use, 
-review, distribution, printing or copying of the 
-information contained in this e-mail message 
-and/or attachments to it are strictly prohibited. If 
-you have received this communication in error, 
-please notify us by reply e-mail or telephone and 
-immediately and permanently delete the message 
-and any attachments. Thank you
+Yes, I see the problem you're trying to fix. It's just that this way  
+it's going to bite pretty much every board one way or another. If it's  
+just the randconfig style builds then bodging it in the CODEC drivers  
+is probably more complete but OTOH it would be better to do it in a  
+way that also ensures that the machine drivers are usable when  
+enabled. I'll have a look and see how much trouble it would be to do  
+that.
