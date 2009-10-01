@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.33
-Date: Thu, 1 Oct 2009 16:20:52 +0100
-Message-ID: <20091001152052.GC16177@rakim.wolfsonmicro.main>
+Subject: Re: A few fix patches for ASoC
+Date: Thu, 1 Oct 2009 16:24:43 +0100
+Message-ID: <20091001152442.GD29526@sirena.org.uk>
+References: <s5hfxa3k327.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4D21A244AB
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 51CF0244B3
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 17:20:57 +0200 (CEST)
+	Thu,  1 Oct 2009 17:24:43 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <s5hfxa3k327.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,48 +26,25 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 140318aaa924ce9664ff59366993228cf1547f1d:
-  Takashi Iwai (1):
-        ASoC: Fix snd_soc_dai_set_pll() calls in neo1973_*.c
+On Thu, Oct 01, 2009 at 09:04:32AM +0200, Takashi Iwai wrote:
 
-are available in the git repository at:
+> commit c877c25170e2655d519b29e91d6c91d5d1a72a6f
+> Author: Takashi Iwai <tiwai@suse.de>
+> Date:   Thu Oct 1 08:33:47 2009 +0200
+> 
+>     ASoC: Fix dependency of CONFIG_SND_PXA2XX_SOC_IMOTE2
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
+Hrm.  This one applies to every board which doesn't use AC97 (some will
+need SPI but it's the same deal for that).  It should probably also be a
+dependency on the actual I2C controller driver rather than I2C in
+general since the driver isn't going to do anything if the I2C device
+isn't actually able to come up, though that'd prevent people doing
+strange stuff like having the I2C bus driver modular and the audio built
+in.
 
-Barry Song (1):
-      ASoC: fix kconfig order of Blackfin drivers
-
-Chaithrika U S (1):
-      ASoC: DaVinci: McASP FIFO related updates
-
-Lopez Cruz, Misael (1):
-      ASoC: Add PDM DAI format definition
-
-Mark Brown (6):
-      ASoC: Clean up WM8974 PLL configuration
-      Merge branch 'upstream/wm8974' into for-2.6.33
-      ASoC: Factor out analogue platform data from WM8993
-      Merge remote branch 'takashi/fix/asoc' into for-2.6.32
-      Merge remote branch 'takashi/topic/asoc' into for-2.6.33
-      Merge branch 'for-2.6.32' into for-2.6.33
-
-Peter Ujfalusi (1):
-      ASoC: add support for multiple cards/codecs in debugfs
-
-Takashi Iwai (1):
-      ASoC: Fix dependency of CONFIG_SND_PXA2XX_SOC_IMOTE2
-
- include/sound/soc-dai.h           |    1 +
- include/sound/soc.h               |    1 +
- sound/soc/blackfin/Kconfig        |   98 ++++++++++++++++++------------------
- sound/soc/codecs/wm8974.c         |   23 +++++----
- sound/soc/codecs/wm8993.c         |   36 +++----------
- sound/soc/codecs/wm_hubs.c        |   35 +++++++++++++
- sound/soc/codecs/wm_hubs.h        |    5 ++
- sound/soc/davinci/davinci-i2s.c   |    2 +
- sound/soc/davinci/davinci-mcasp.c |   17 +++----
- sound/soc/davinci/davinci-pcm.c   |   21 +++++++-
- sound/soc/davinci/davinci-pcm.h   |    1 +
- sound/soc/pxa/Kconfig             |    2 +-
- sound/soc/soc-core.c              |   26 +++++++---
- 13 files changed, 161 insertions(+), 107 deletions(-)
+I'll have a look at doing this properly later, though probably not
+targetted at 2.6.32 since it doesn't seem to be something people hit
+often.  An easier way of approaching it would be to put ifdefs into the
+all CODEC drivers for their bus access, even if they only support one
+bus type.  That'd keep build testing happy which I think is the main
+thing here.
