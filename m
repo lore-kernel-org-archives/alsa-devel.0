@@ -1,7 +1,7 @@
-From: Stefan Schmidt <stefan@datenfreihafen.org>
+From: pl bossart <bossart.nospam@gmail.com>
 Subject: Re: [PATCH] ascenario: Add scenario support to alsa-lib
-Date: Thu, 1 Oct 2009 15:38:13 +0200
-Message-ID: <20091001133813.GB5936@excalibur.local>
+Date: Thu, 1 Oct 2009 08:39:16 -0500
+Message-ID: <6160a5130910010639u11b764bfh92cfb6f6aef671c@mail.gmail.com>
 References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
 	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
 	<20091001122835.GC14417@sirena.org.uk>
@@ -11,11 +11,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5646210395A
+Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
+	[209.85.222.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3F69210395E
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 15:38:25 +0200 (CEST)
-Content-Disposition: inline
+	Thu,  1 Oct 2009 15:39:18 +0200 (CEST)
+Received: by pzk9 with SMTP id 9so133310pzk.16
+	for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2009 06:39:17 -0700 (PDT)
 In-Reply-To: <20091001132417.GA26663@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,43 +29,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Stefan Schmidt <stefan@slimlogic.co.uk>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Stefan Schmidt <stefan@slimlogic.co.uk>, alsa-devel@alsa-project.org, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
++/** QOS
++ *
++ * Defines Audio Quality of Service
++ */
++#define SND_QOS_HIFI                   0
++#define SND_QOS_VOICE                  1
++#define SND_QOS_SYSTEM                 2
 
-On Thu, 2009-10-01 at 14:24, Mark Brown wrote:
-> On Thu, Oct 01, 2009 at 03:19:48PM +0200, Stefan Schmidt wrote:
-> > On Thu, 2009-10-01 at 13:28, Mark Brown wrote:
-> 
-> > > > +/** Scenario ID's
-> > > > + *
-> > > > + * Standard Scenario ID's - Add new scenarios at the end.
-> > > > + */
-> 
-> > > Extra 's here.
-> 
-> > That way?
-> > /**
-> >  * Scenario ID's
-> >  *
-> >  * Standard Scenario ID's - Add new scenarios at the end.
-> >  */
-> 
-> There shouldn't be any 's in the above at all ("Scenarios IDs" instead),
-> those are just plain plurals - just a trivial grammar nit.
+My $0.02 comment is that I don't know what QOS entails. I have no
+issue with all the other defines, but this one isn't quite clear.
+What exactly is supposed to happen if I set the QOS to voice? A lower
+SNR for voice? A lower latency for voice with a lower group delay? A
+lower oversampling ratio? An optimized routing for voice? All of the
+above?
 
-Ah, non-native speaker problem. :) Fixed.
++#define SND_SCN_PHONECALL_HANDSET      "phonecall handset"
++#define SND_SCN_PHONECALL_HEADSET      "phonecall headset"
++#define SND_SCN_PHONECALL_BLUETOOTH    "phonecall bluetooth"
++#define SND_SCN_PHONECALL_IP           "phonecall ip"
 
-> > > I guess the idea is that in the future this will be removed and the
-> > > scenario API will use inotify or similar to pick up changes.
-> 
-> > Indeed. Certainly a Todo item for later enhancements. Do you guys prefer such
-> > todo items in the code or noted somewhere else?
-> 
-> I have no great preference either way.
-
-Hmm, will think about it.
-
-regards
-Stefan Schmidt
+Same here, this is ambiguous, you can have an IP call over bluetooth.
+Which scenario would you use then?
+I guess if you want the scenarios to be used by apps in a portable
+way, a clearer definition of each scenario is probably needed?
+Cheers,
+- Pierre
