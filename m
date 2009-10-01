@@ -1,22 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/1 - try2] ASoC: add support for
-	multiple	cards/codecs in debugfs
-Date: Thu, 1 Oct 2009 15:06:03 +0100
-Message-ID: <20091001140559.GA29526@sirena.org.uk>
-References: <1254382367-27948-1-git-send-email-peter.ujfalusi@nokia.com>
-	<200910011402.04406.peter.ujfalusi@nokia.com>
-	<20091001110919.GC19998@rakim.wolfsonmicro.main>
-	<200910011649.17727.peter.ujfalusi@nokia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ascenario: Add scenario support to	alsa-lib
+Date: Thu, 01 Oct 2009 15:06:32 +0100
+Message-ID: <1254405992.5847.241.camel@odin>
+References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
+	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
+	<20091001122835.GC14417@sirena.org.uk> <1254401304.5847.187.camel@odin>
+	<20091001130216.GE14417@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF4D810396B
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 706CC10397A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 16:06:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200910011649.17727.peter.ujfalusi@nokia.com>
+	Thu,  1 Oct 2009 16:06:37 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 13so45368eye.16
+	for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2009 07:06:37 -0700 (PDT)
+In-Reply-To: <20091001130216.GE14417@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,39 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Ian Molton <ian@mnementh.co.uk>, alsa-devel@alsa-project.org, Stefan Schmidt <stefan@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Graeme Gregory <gg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 01, 2009 at 04:49:17PM +0300, Peter Ujfalusi wrote:
+On Thu, 2009-10-01 at 14:02 +0100, Mark Brown wrote:
+> On Thu, Oct 01, 2009 at 01:48:24PM +0100, Liam Girdwood wrote:
+> 
+> > However, what we have atm is enough for most folks to get some working
+> > audio kcontrol scenarios configured for their devices.
+> 
+> Indeed, like I said I think most of what I suggested only makes sense
+> with a transparent remapping of control names for application usability
+> reasons if nothing else.  PCM specification is the only thing I can see
+> being useful right now but that's definitely something that could just
+> be bolted on the side of the existing stuff, it shouldn't impact it
+> directly.
+> 
+> What would be nice now would be to tweak the configuration file format
+> to support at least the control remapping, though (so it'd only support
+> a fixed list of target controls but it'd use the standard names, for
+> example).  That would mean that when someone does implement more
+> advanced functionality there's more chance that the configuration file
+> format would be static.  Configuration file format changes are a pain to
+> manage over upgrades, especially for distros, so if they can be headed
+> off in advance that'd be a win.
 
-> One of the codec to be blamed is the twl4030 codec, but since that does not use 
-> any _device/_driver method to load, there is no dev to be assigned to codec-
-> >dev...
-> I don't know if it would make sense to use platform_driver_register (and 
-> associates) with it in the future.
+I'm hoping this file format and remapping will be deprecated by the
+audio graphing interface (as discussed at LPC). We can still keep the
+same front end API to the apps though.
 
-Yes, it should be using a platform device and the MFD framework (as most
-of the other TWL4030 subdevices do already).
-
-> > your CODEC driver needs updating to current APIs
-
-> Hmm, there are quite a bit of inconsistency among the codec drivers, so I'm not 
-> sure what is the correct way of doing this.
-> I will use the wm8993 driver for further fine tuning, since that seams to be 
-> rather new in the tree.
-
-In general look at the drivers that have been touched most recently -
-wm8993 is a good one, as are wm8903 and wm8731, but the main thing is to
-look at one that's not registering the DAIs in the module init function
-but is using normal device model probing and registering the DAIs only
-after the underlying device has come up.
-
-> I'll send a patch later to fix this implementation:
-> if the codec->dev is valid, than it is going to use dev_name(codec->dev), if it 
-> is NULL, than it will use either the codec->name or provide the same string as 
-> the current implementation does ( {dev_name(socdev->dev)}-{codec->name} ), 
-> whichever is the preferred.
-
-I'd just leave it as codec->name - the soc-audio device name doesn't add
-anything.
+Liam
