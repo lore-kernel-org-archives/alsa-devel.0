@@ -1,18 +1,22 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Compilation procedure from git/tiwai/sound-2.6.git
-Date: Thu, 01 Oct 2009 22:06:56 +0200
-Message-ID: <4AC50BE0.9050206@ivitera.com>
-References: <1253132741-15688-1-git-send-email-pavel.hofman@ivitera.com>	<s5hpr9kwfqr.wl%tiwai@suse.de>	<4AB7C810.7060402@ivitera.com>
-	<s5h4oqwxfoq.wl%tiwai@suse.de>
+From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
+	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
+Subject: Re: My Codec: IDT 92HD75B3X5 issues
+Date: Fri, 2 Oct 2009 01:11:01 +0300
+Message-ID: <200910020111.01552.munzirtaha@gmail.com>
+References: <200909300818.31295.munzirtaha@gmail.com>
+	<s5h3a63mec7.wl%tiwai@suse.de> <s5hk4zfi39r.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.pilsfree.net (mail.pilsfree.net [81.201.60.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id CF06A245DB
+Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
+	[209.85.218.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1E5A24628
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 22:07:04 +0200 (CEST)
-In-Reply-To: <s5h4oqwxfoq.wl%tiwai@suse.de>
+	Fri,  2 Oct 2009 00:11:06 +0200 (CEST)
+Received: by bwz25 with SMTP id 25so1519891bwz.32
+	for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2009 15:11:05 -0700 (PDT)
+In-Reply-To: <s5hk4zfi39r.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +30,28 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 21 Sep 2009 20:38:08 +0200,
+On Yaum al-Khamees 11 Shawwal 1430 5:42:56 pm Takashi Iwai wrote:
+
+> I found the culprit.  It's actually a bug happening between the analog
+> and the digital mic switches.
+> Try the patch below.
 > 
-> Use sound-2.6.git tree on kernel.org together with alsa-driver-build.git
-> tree:
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/alsa-driver-build.git
 > 
-
-Hi Takashi,
-
-I am sorry if I overlooked something but the gitcompile in
-alsa-driver-build.git does not work with the sound-2.6.git:
-
-The command is:
-pavel@nahore:~/projects/alsa-git/alsa-driver-build$\
-ALSAKERNELDIR=/home/pavel/projects/alsa-git/sound-2.6/sound/\
-./gitcompile --with-cards="ice1724,usb-audio"
-
-(backslash stands for one line)
-
-gitcompile ends up with:
-
-Hacking autoconf.h...
-make[1]: Entering directory
-`/home/pavel/projects/alsa-git/alsa-driver-build/include'
-make -C sound prepare
-make[2]: Entering directory
-`/home/pavel/projects/alsa-git/alsa-driver-build/include/sound'
-make prepare2
-make[3]: Entering directory
-`/home/pavel/projects/alsa-git/alsa-driver-build/include/sound'
-cp ../../alsa-kernel/include/*.h .
-cp: cannot stat `../../alsa-kernel/include/*.h': No such file or directory
-make[3]: *** [*.h] Error 1
-make[3]: Leaving directory
-`/home/pavel/projects/alsa-git/alsa-driver-build/include/sound'
-make[2]: *** [prepare] Error 2
-make[2]: Leaving directory
-`/home/pavel/projects/alsa-git/alsa-driver-build/include/sound'
-make[1]: *** [prepare] Error 2
-make[1]: Leaving directory
-`/home/pavel/projects/alsa-git/alsa-driver-build/include'
-make: *** [dep] Error 1
+> Takashi
 
 
-Thanks a lot for a brief description of the compilation procedure.
+Dear Takashi,
+To complete this thread, what about missing options like
+1. Disabling "Headphone Jack Sense" to allow both speakers and headphones to 
+work together in case
 
-Best regards,
+2. jack retasking where I can plug my mic in the headphone jack and expect it 
+to work
 
+2. Capture boost
 
-Pavel Hofman.
+-- 
+Munzir Taha
+Telecommunications and Electronics Engineer
+Master CIW Designer, ICDL, MOUS, Linux+, LPI, SCSA
+Riyadh, SA
