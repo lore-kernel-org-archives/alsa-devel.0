@@ -1,19 +1,32 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ascenario: Add scenario support to	alsa-lib
-Date: Thu, 1 Oct 2009 13:28:35 +0100
-Message-ID: <20091001122835.GC14417@sirena.org.uk>
-References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
-	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
+From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
+Subject: adding hrtimer based delay to ioplug ALSA plugin on
+ ARM9 (AT91) platform ?
+Date: Thu, 01 Oct 2009 14:32:58 +0200
+Message-ID: <4AC4A17A.4040704@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 83DD0103934
+Received: from netfinity.tbmn.org (mail.tbmn.org [88.117.197.126])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60C8D103934
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 14:28:36 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
+	Thu,  1 Oct 2009 14:32:59 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by netfinity.tbmn.org (Postfix) with ESMTP id 196454BE06
+	for <alsa-devel@alsa-project.org>;
+	Thu,  1 Oct 2009 14:33:53 +0200 (CEST)
+Received: from netfinity.tbmn.org ([127.0.0.1])
+	by localhost (netfinity.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ANq-uWP1qiNi for <alsa-devel@alsa-project.org>;
+	Thu,  1 Oct 2009 14:33:52 +0200 (CEST)
+Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
+	[80.108.1.212])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: mne@tbmn.org)
+	by netfinity.tbmn.org (Postfix) with ESMTPSA id AC4E44BE02
+	for <alsa-devel@alsa-project.org>;
+	Thu,  1 Oct 2009 14:33:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,93 +36,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stefan Schmidt <stefan@datenfreihafen.org>
-Cc: Ian Molton <ian@mnementh.co.uk>, alsa-devel@alsa-project.org, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@slimlogic.co.uk>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 01, 2009 at 11:47:15AM +0200, Stefan Schmidt wrote:
+Hi,
 
-> It allows switching audio settings between scenarios or uses-cases like
-> listening to music and answering an incoming phone call. Made of control
-> aliasing for playback, capture master and switch as well as the option to
-> post- and prefix a sequence of control changes avoiding pops and other
-> unwanted noise. Some example programs will be available in alsa-utils.
+I'm currently developing an ALSA ioplug plugin which should transfer
+audio samples over UART to a DSP (I already wrote that in a previous post).
 
-Overall this looks good - it's certainly dealing with the issues we
-currently have with separating routing control and 'end user' controls.
+The DSP wants to receive 156 - 164 audio samples with a sampling rate of
+8 kHz and a format of S16_LE each 20 msec (which is more or less the
+number of audio samples multiplied by the period length of the sampling
+rate).
 
-> +/** Scenario ID's
-> + *
-> + * Standard Scenario ID's - Add new scenarios at the end.
-> + */
+My idea is to add a high precision delay to the transfer callback of the
+ALSA plugin.
 
-Extra 's here.
+Unfortunately, I found out that the hrtimer resolution on the system is
+as low as 10ms:
 
-> +/**
-> + * snd_scenario_reload - reload and reparse scenario configuration
-> + * @scn: scenario
-> + *
-> + * Reloads and reparses sound card scenario configuration.
-> + */
-> +int snd_scenario_reload(struct snd_scenario *scn);
+-------------------------------------------------------------------
+kernel: hrtimer resolution: 0 sec, 10000000 nsec, loops_per_jiffy: 448512
+-------------------------------------------------------------------
 
-I guess the idea is that in the future this will be removed and the
-scenario API will use inotify or similar to pick up changes.
 
-One thing I think I'm missing with the API documentation here is a
-separation between the API used for setting up scenarios and the API
-used by random client applications - it's there, but it could be
-underlined a bit more.  Probably putting the client application stuff at
-the top of the header file would help here since the functions that more
-people will use will be visible first.
+* Does this mean that if I use nanosleep for example each delay has to
+be an integral multiple of the hrtimer precision and for example a delay
+of 15ms would not be supported (since it is no integral multiple of 10ms) ?
 
-> +/* load scenario i */
-> +static int read_scenario_file(struct snd_scenario *scn)
-> +{
-> +	int fd, ret;
-> +	FILE *f;
-> +	char filename[MAX_FILE];
-> +	struct scenario_info *info = &scn->scenario[scn->current_scenario];
-> +
-> +	sprintf(filename, "%s/%s/%s", ALSA_SCN_DIR, scn->card_name,
-> +		info->file);
 
-snprintf().
+* It is possible to increase the precision (e.g. by changing the kernel
+configuration) ?
 
-> +		if (strncmp(tbuf, "MasterPlaybackVolume", 20) == 0) {
-> +			info->playback_volume_id = get_int(tbuf + 20);
-> +			if (info->playback_volume_id < 0) {
-> +				scn_error("%s: failed to get MasterPlaybackVolume\n",
-> +					__func__);
-> +				goto err;
-> +			}
-> +			continue;
-> +		}
 
-I don't see anywhere which supplies a default value for all these
-control IDs.  A memset() of the allocated block should deal with that
-I think since IIRC zero isn't a valid control ID.  It'd also be nice to
-be able to use control names instead but that's something that could be
-added later.
+* Do you know a better solution for the task, where the task is to send
+and receive audio samples to/from the DSP over UART and the timing is
+critical ?
 
-Thinking out loud here but I'm wondering if it might make sense to
-replace the fixed list of controls that is there currently with
-something string based which can remap the control names if required.
-This would allow for (probably in the future) having the scenario pass
-back a list of controls without the API having to cater for each
-explicitly, which would allow for other things like hardware EQ controls
-to be passed on to the scenario users if desired - this is useful when
-you get things like systems with multiple EQs.
 
-This would complicate the API, though, and so I think it would be better
-left as-is until we get to the point of having something like a plugin
-for rewriting the controls for applications so they don't need explicit
-knowledge of scenarios.  At that point it would only impact the scenario
-manager implementation which should deal with the complexity, at least
-externally.
-
-I'm also thinking that it could be good to add functions to identify
-which PCMs on a card to use in the scenario, perhaps differentiated by
-quality or something.  The CPU may have PCMs to multiple devices or with
-differing capabilities and may want to switch between them depending on
-scenario (and possibly stream).
+cheers,
+Stefan
