@@ -1,20 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/1] ASoC: add support for multiple
-	cards/codecs in debugfs
-Date: Thu, 1 Oct 2009 09:13:57 +0300
-Message-ID: <200910010913.57488.peter.ujfalusi@nokia.com>
-References: <1254306259-8098-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20090930123938.GC12101@sirena.org.uk>
-	<200910010841.07085.peter.ujfalusi@nokia.com>
+From: ext-eero.nurkkala@nokia.com
+Subject: [PATCH] ASoC: Use codec mutex in dapm_set_pga()
+Date: Thu,  1 Oct 2009 09:17:36 +0300
+Message-ID: <1254377856-5588-1-git-send-email-ext-eero.nurkkala@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 324671038D2
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id AADEB103889
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Oct 2009 08:14:19 +0200 (CEST)
-In-Reply-To: <200910010841.07085.peter.ujfalusi@nokia.com>
+	Thu,  1 Oct 2009 08:18:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: broonie@opensource.wolfsonmicro.com, Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 01 October 2009 08:41:07 Ujfalusi Peter (Nokia-D/Tampere) wrote:
-> Is it good if the patch creates a directory hierarchy like this:
-> debugfs/asoc/{dev_name()}/{codec->name}/...
-> =
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 
-> Or should I use some intermediate buffer to construct a single level tree:
-> debugfs/asoc/{dev_name()}-{codec->name}/...
-> =
+codec->mutex seems required if widget->* values
+are altered. Moreover, snd_soc_dapm_put_volsw()
+may alter widget->saved_value. dapm_set_pga()
+uses widget->saved_value in a for loop which now
+has a distant chance of getting out of control.
 
-> From the point of what is coming the former is much more future proof, if
->  we take into account that we can have more than one codec in one soc
->  device (or card).
+Signed-off-by: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+---
+ sound/soc/soc-dapm.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-After a bit of thinking, I think I will go with the later one:
-debugfs/asoc/{dev_name()}-{codec->name}/...
-
-It needs some intermediate buffer to construct the string for the directory=
-, but =
-
-I think that is the better way for now.
-
-> =
-
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index f79711b..d6fb6c4 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -349,6 +349,7 @@ static int dapm_set_pga(struct snd_soc_dapm_widget *widget, int power)
+ 		unsigned int mask = (1 << fls(max)) - 1;
+ 		unsigned int invert = mc->invert;
+ 
++		mutex_lock(&widget->codec->mutex);
+ 		if (power) {
+ 			int i;
+ 			/* power up has happended, increase volume to last level */
+@@ -373,6 +374,7 @@ static int dapm_set_pga(struct snd_soc_dapm_widget *widget, int power)
+ 			}
+ 			widget->muted = 1;
+ 		}
++		mutex_unlock(&widget->codec->mutex);
+ 	}
+ 	return 0;
+ }
+-- 
+1.6.0.4
