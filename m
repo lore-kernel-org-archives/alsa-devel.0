@@ -1,15 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH] ASoC: Improve the debugfs hierarchy
-Date: Fri,  2 Oct 2009 09:17:37 +0300
-Message-ID: <1254464257-884-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: ASoC updates for 2.6.32
+Date: Fri, 2 Oct 2009 09:22:34 +0300
+Message-ID: <200910020922.34302.peter.ujfalusi@nokia.com>
+References: <20091001150833.GB16177@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6578243A9
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FA89243B2
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 08:18:04 +0200 (CEST)
+	Fri,  2 Oct 2009 08:22:37 +0200 (CEST)
+In-Reply-To: <20091001150833.GB16177@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,46 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com
+Cc: Takashi Iwai <tiwai@suse.de>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Change the way the debugfs entries are created:
-If the codec->dev is valid, than use:
-debugfs/asoc/{codec->name}.{dev_name(codec->dev)}/
+On Thursday 01 October 2009 18:08:33 ext Mark Brown wrote:
+> The following changes since commit
+>  c877c25170e2655d519b29e91d6c91d5d1a72a6f: Takashi Iwai (1):
+>         ASoC: Fix dependency of CONFIG_SND_PXA2XX_SOC_IMOTE2
+> =
 
-if the codec->dev is NULL:
-debugfs/asoc/{codec->name}/
+> are available in the git repository at:
+> =
 
-as root for the debugfs entries.
+>   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
+>  for-2.6.32
+> =
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Barry Song (1):
+>       ASoC: fix kconfig order of Blackfin drivers
+> =
+
+> Mark Brown (1):
+>       Merge remote branch 'takashi/fix/asoc' into for-2.6.32
+
+Mark,
+
+I don't see the 'ASoC: Fix SND_SOC_DAPM_LINE handling' in this or in 2.6.33=
+ pull =
+
+request.
+At least you have replied that you have applied the patch...
+
 ---
-
-The patch applies on top of sound-2.6 topic/asoc
-commit 88439ac793934a47f47ad285656b63d09f5937c8
-	ASoC: add support for multiple cards/codecs in debugfs
-
- sound/soc/soc-core.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e4ab36d..1dec9d2 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1256,8 +1256,12 @@ static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
- {
- 	char codec_root[128];
-
--	snprintf(codec_root, sizeof(codec_root),
--		 "%s-%s", dev_name(codec->socdev->dev), codec->name);
-+	if (codec->dev)
-+		snprintf(codec_root, sizeof(codec_root),
-+			"%s.%s", codec->name, dev_name(codec->dev));
-+	else
-+		snprintf(codec_root, sizeof(codec_root),
-+			"%s", codec->name);
-
- 	codec->debugfs_codec_root = debugfs_create_dir(codec_root,
- 						       debugfs_root);
---
-1.6.5.rc2
+P=E9ter
