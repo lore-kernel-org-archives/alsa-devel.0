@@ -1,19 +1,26 @@
-From: Dan Chen <crimsunkg@yahoo.com>
-Subject: Re: Patches for alsactl init db
-Date: Thu, 1 Oct 2009 16:01:47 -0700 (PDT)
-Message-ID: <90618.15893.qm@web31810.mail.mud.yahoo.com>
-References: <937485.7802.qm@web31808.mail.mud.yahoo.com>
-	<s5heippotjp.wl%tiwai@suse.de>
-	<604760770909302132g40c5deb4qdbf96ec6e6ad40b7@mail.gmail.com>
-	<s5hr5tnk6rr.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Application supporting forward/rewind APIs
+Date: Fri, 2 Oct 2009 11:53:22 +0800
+Message-ID: <4f3252890910012053y2e1d10ap4f301c5db0f070eb@mail.gmail.com>
+References: <2ee9e08d0909240034t6fdab6aftc24e733621638f09@mail.gmail.com>
+	<s5hocp0vlm6.wl%tiwai@suse.de>
+	<4f3252890909240057l1a2b5b88m861dea551f69afce@mail.gmail.com>
+	<2ee9e08d0909240201l5cf5675m111b6da1434cff60@mail.gmail.com>
+	<4f3252890909252059t3d8cc2aaqffc880991d148e56@mail.gmail.com>
+	<2ee9e08d0909290213r3ca53b6cq5909bcf79752a26c@mail.gmail.com>
+	<4AC1D68E.7040702@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-1218006799-1254438107=:15893"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web31810.mail.mud.yahoo.com (web31810.mail.mud.yahoo.com
-	[68.142.207.73]) by alsa0.perex.cz (Postfix) with SMTP id 023311037F8
+Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
+	[209.85.222.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B8B91037FF
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 01:01:49 +0200 (CEST)
-In-Reply-To: <s5hr5tnk6rr.wl%tiwai@suse.de>
+	Fri,  2 Oct 2009 05:53:23 +0200 (CEST)
+Received: by pzk9 with SMTP id 9so746706pzk.16
+	for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2009 20:53:22 -0700 (PDT)
+In-Reply-To: <4AC1D68E.7040702@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +30,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0-1218006799-1254438107=:15893
-Content-Type: text/plain; charset=us-ascii
-
-I'm attaching another patch (against current sound-2.6 HEAD) for another
-VAIO model also confirmed to need the same quirk.
-
+Do you mean that the application can use snd_pcm_rewind() to rewind the
+application pointer to hardware pointer and rewrite the next sample ( behind
+the hardware pointer ) for usb audio driver ? ( real time mixing like
+pulseaudio )
 
 
-      
---0-1218006799-1254438107=:15893
-Content-Type: application/octet-stream; name="0002-ALSA-intel8x0-Mute-External-Amplifier-by-default-for.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="0002-ALSA-intel8x0-Mute-External-Amplifier-by-default-for.patch"
 
-RnJvbSBmYTM0OTk0NmRlZjU2Mjk3NzUyMWE5YjczMzdlODMxOWQwYjgyN2Y1
-IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVu
-IDxjcmltc3VuQHVidW50dS5jb20+CkRhdGU6IFRodSwgMSBPY3QgMjAwOSAx
-ODo1NjozMCAtMDQwMApTdWJqZWN0OiBBTFNBOiBpbnRlbDh4MCAtIE11dGUg
-RXh0ZXJuYWwgQW1wbGlmaWVyIGJ5IGRlZmF1bHQgZm9yIFNvbnkgVkFJTyBW
-R04tQjFWUAoKQnVnTGluazogaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQv
-YnVncy80MTA5MzMKClRoaXMgU29ueSBWQUlPIG1vZGVsIGFsc28gbmVlZHMg
-RXh0ZXJuYWwgQW1wbGlmaWVyIHVubXV0ZWQgZm9yIGF1ZGlibGUKcGxheWJh
-Y2ssIHNvIG1ha2Ugc3VyZSB3ZSBzZXQgdGhlIGludl9lYXBkIHF1aXJrLgoK
-U2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1YnVudHUu
-Y29tPgotLS0KIHNvdW5kL3BjaS9pbnRlbDh4MC5jIHwgICAgNiArKysrKysK
-IDEgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9u
-cygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9pbnRlbDh4MC5jIGIvc291
-bmQvcGNpL2ludGVsOHgwLmMKaW5kZXggODZlOWEyZC4uNzU0ODY3ZSAxMDA2
-NDQKLS0tIGEvc291bmQvcGNpL2ludGVsOHgwLmMKKysrIGIvc291bmQvcGNp
-L2ludGVsOHgwLmMKQEAgLTE5NjAsNiArMTk2MCwxMiBAQCBzdGF0aWMgc3Ry
-dWN0IGFjOTdfcXVpcmsgYWM5N19xdWlya3NbXSBfX2RldmluaXRkYXRhID0g
-ewogCQkubmFtZSA9ICJTb255IFZBSU8gVkdOLVQzNTBQIiwgLypBRDE5ODFC
-Ki8KIAkJLnR5cGUgPSBBQzk3X1RVTkVfSU5WX0VBUEQKIAl9LAorCXsKKwkJ
-LnN1YnZlbmRvciA9IDB4MTA0ZCwKKwkJLnN1YmRldmljZSA9IDB4ODFjNSwK
-KwkJLm5hbWUgPSAiU29ueSBWQUlPIFZHTi1CMVZQIiwgLypBRDE5ODFCKi8K
-KwkJLnR5cGUgPSBBQzk3X1RVTkVfSU5WX0VBUEQKKwl9LAogIAl7CiAJCS5z
-dWJ2ZW5kb3IgPSAweDEwNDMsCiAJCS5zdWJkZXZpY2UgPSAweDgwZjMsCi0t
-IAoxLjYuMy4zCgo=
+2009/9/29 Clemens Ladisch <clemens@ladisch.de>
 
---0-1218006799-1254438107=:15893
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0-1218006799-1254438107=:15893--
+> Anuj Aggarwal wrote:
+> > I found the solution, one can use mplayer to test forward/rewind
+> > feature of ALSA library.
+>
+> mplayer disables ALSA's underrun detection and uses snd_pcm_forward() to
+> recover from an underrun, if it happens.
+>
+> (To force an underrun, press Ctrl+S (then Ctrl+Q) to prevent mplayer
+> from updating its status line.)
+>
+>
+> HTH
+> Clemens
+>
