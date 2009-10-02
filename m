@@ -1,22 +1,16 @@
-From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
-	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
-Subject: Re: My Codec: IDT 92HD75B3X5 issues
-Date: Fri, 2 Oct 2009 19:07:23 +0300
-Message-ID: <200910021907.23635.munzirtaha@gmail.com>
-References: <200909300818.31295.munzirtaha@gmail.com>
-	<200910021424.11746.munzirtaha@gmail.com>
-	<s5hmy4aauj4.wl%tiwai@suse.de>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] sscape: remove MIDI instances counting with
+	limit ULONG_MAX
+Date: Fri, 2 Oct 2009 18:41:29 +0200
+Message-ID: <20091002184129.2a3ab307.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_7UixKqGcOXfIufL"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0190D24536
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id A2E7B2453C
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 18:07:28 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 22so471966fge.2
-	for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2009 09:07:28 -0700 (PDT)
-In-Reply-To: <s5hmy4aauj4.wl%tiwai@suse.de>
+	Fri,  2 Oct 2009 18:25:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,1041 +20,288 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_7UixKqGcOXfIufL
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
+There is no sense to limit open MIDI connections with limit
+as high as ULONG_MAX.
 
+Also, convert more messages to use the snd_printk.
 
-On Yaum al-Jumma 12 Shawwal 1430 2:45:51 pm Takashi Iwai wrote:
-> At Fri, 2 Oct 2009 14:24:11 +0300,
-> 
->  Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=   
-=?utf-8?q?_=D8=B7=D9=87?=) wrote:
+Correct few old and misleading comments as well.
 
-> It describes just about the possible functionalities of HD-audio.
-> Unfortunately, most codecs don't support the jack-type detections but
-> only checks the presence of jacks, so far.  The dream is sweet, the
-> reality is bitter.
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+This is the second version of this patch with improved issues pointed by Takashi.
 
-Umm! That info is misleading! Thanks for the clarification Takashi. I tested 
-this in Vista and it's also not working so that's fine.
-
-Now I noticed every time I reboot sound is muted. Is this a bug?
-
-Also, can you make a release so Ubuntu and other distro can update to fix bugs 
-such as:
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/427670
-
+diff --git a/sound/isa/sscape.c b/sound/isa/sscape.c
+index 1ce465c..c739374 100644
+--- a/sound/isa/sscape.c
++++ b/sound/isa/sscape.c
+@@ -147,12 +147,6 @@ struct soundscape {
+ 	struct snd_wss *chip;
+ 	struct snd_mpu401 *mpu;
+ 
+-	/*
+-	 * The MIDI device won't work until we've loaded
+-	 * its firmware via a hardware-dependent device IOCTL
+-	 */
+-	spinlock_t fwlock;
+-	unsigned long midi_usage;
+ 	unsigned char midi_vol;
+ };
+ 
+@@ -164,11 +158,6 @@ static inline struct soundscape *get_card_soundscape(struct snd_card *c)
+ 	return (struct soundscape *) (c->private_data);
+ }
+ 
+-static inline struct soundscape *get_mpu401_soundscape(struct snd_mpu401 * mpu)
+-{
+-	return (struct soundscape *) (mpu->private_data);
+-}
+-
+ /*
+  * Allocates some kernel memory that we can use for DMA.
+  * I think this means that the memory has to map to
+@@ -179,7 +168,9 @@ static struct snd_dma_buffer *get_dmabuf(struct snd_dma_buffer *buf, unsigned lo
+ 	if (buf) {
+ 		if (snd_dma_alloc_pages_fallback(SNDRV_DMA_TYPE_DEV, snd_dma_isa_data(),
+ 						 size, buf) < 0) {
+-			snd_printk(KERN_ERR "sscape: Failed to allocate %lu bytes for DMA\n", size);
++			snd_printk(KERN_ERR "sscape: Failed to allocate "
++					    "%lu bytes for DMA\n",
++					    size);
+ 			return NULL;
+ 		}
+ 	}
+@@ -482,7 +473,8 @@ static int upload_dma_data(struct soundscape *s,
+ 			 */
+ 			spin_unlock_irqrestore(&s->lock, flags);
+ 
+-			snd_printk(KERN_ERR "sscape: DMA upload has timed out\n");
++			snd_printk(KERN_ERR
++					"sscape: DMA upload has timed out\n");
+ 			ret = -EAGAIN;
+ 			goto _release_dma;
+ 		}
+@@ -504,10 +496,12 @@ static int upload_dma_data(struct soundscape *s,
+ 	 */
+ 	ret = 0;
+ 	if (!obp_startup_ack(s, 5000)) {
+-		snd_printk(KERN_ERR "sscape: No response from on-board processor after upload\n");
++		snd_printk(KERN_ERR "sscape: No response "
++				    "from on-board processor after upload\n");
+ 		ret = -EAGAIN;
+ 	} else if (!host_startup_ack(s, 5000)) {
+-		snd_printk(KERN_ERR "sscape: SoundScape failed to initialise\n");
++		snd_printk(KERN_ERR
++				"sscape: SoundScape failed to initialise\n");
+ 		ret = -EAGAIN;
+ 	}
+ 
+@@ -536,7 +530,7 @@ static int sscape_upload_bootblock(struct snd_card *card)
+ 
+ 	ret = request_firmware(&init_fw, "scope.cod", card->dev);
+ 	if (ret < 0) {
+-		snd_printk(KERN_ERR "Error loading scope.cod");
++		snd_printk(KERN_ERR "sscape: Error loading scope.cod");
+ 		return ret;
+ 	}
+ 	ret = upload_dma_data(sscape, init_fw->data, init_fw->size);
+@@ -554,7 +548,8 @@ static int sscape_upload_bootblock(struct snd_card *card)
+ 
+ 	data &= 0xf;
+ 	if (ret == 0 && data > 7) {
+-		snd_printk(KERN_ERR "timeout reading firmware version\n");
++		snd_printk(KERN_ERR
++				"sscape: timeout reading firmware version\n");
+ 		ret = -EAGAIN;
+ 	}
+ 
+@@ -575,12 +570,13 @@ static int sscape_upload_microcode(struct snd_card *card, int version)
+ 
+ 	err = request_firmware(&init_fw, name, card->dev);
+ 	if (err < 0) {
+-		snd_printk(KERN_ERR "Error loading sndscape.co%d", version);
++		snd_printk(KERN_ERR "sscape: Error loading sndscape.co%d",
++				version);
+ 		return err;
+ 	}
+ 	err = upload_dma_data(sscape, init_fw->data, init_fw->size);
+ 	if (err == 0)
+-		snd_printk(KERN_INFO "MIDI firmware loaded %d KBs\n",
++		snd_printk(KERN_INFO "sscape: MIDI firmware loaded %d KBs\n",
+ 				init_fw->size >> 10);
+ 
+ 	release_firmware(init_fw);
+@@ -750,7 +746,6 @@ static int __devinit detect_sscape(struct soundscape *s, long wss_io)
+ 		msleep(1);
+ 		spin_lock_irqsave(&s->lock, flags);
+ 	}
+-	snd_printd(KERN_INFO "init delay = %d ms\n", d);
+ 
+ 	if ((inb(wss_io) & 0x80) != 0)
+ 		goto _done;
+@@ -774,7 +769,6 @@ static int __devinit detect_sscape(struct soundscape *s, long wss_io)
+ 		msleep(1);
+ 		spin_lock_irqsave(&s->lock, flags);
+ 	}
+-	snd_printd(KERN_INFO "init delay = %d ms\n", d);
+ 
+ 	/*
+ 	 * SoundScape successfully detected!
+@@ -794,38 +788,13 @@ static int __devinit detect_sscape(struct soundscape *s, long wss_io)
+  */
+ static int mpu401_open(struct snd_mpu401 * mpu)
+ {
+-	int err;
+-
+ 	if (!verify_mpu401(mpu)) {
+-		snd_printk(KERN_ERR "sscape: MIDI disabled, please load firmware\n");
+-		err = -ENODEV;
+-	} else {
+-		register struct soundscape *sscape = get_mpu401_soundscape(mpu);
+-		unsigned long flags;
+-
+-		spin_lock_irqsave(&sscape->fwlock, flags);
+-
+-		if (sscape->midi_usage == ULONG_MAX) {
+-			err = -EBUSY;
+-		} else {
+-			++(sscape->midi_usage);
+-			err = 0;
+-		}
+-
+-		spin_unlock_irqrestore(&sscape->fwlock, flags);
++		snd_printk(KERN_ERR "sscape: MIDI disabled, "
++				    "please load firmware\n");
++		return -ENODEV;
+ 	}
+ 
+-	return err;
+-}
+-
+-static void mpu401_close(struct snd_mpu401 * mpu)
+-{
+-	register struct soundscape *sscape = get_mpu401_soundscape(mpu);
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&sscape->fwlock, flags);
+-	--(sscape->midi_usage);
+-	spin_unlock_irqrestore(&sscape->fwlock, flags);
++	return 0;
+ }
+ 
+ /*
+@@ -845,8 +814,6 @@ static int __devinit create_mpu401(struct snd_card *card, int devnum, unsigned l
+ 		struct snd_mpu401 *mpu = (struct snd_mpu401 *) rawmidi->private_data;
+ 		mpu->open_input = mpu401_open;
+ 		mpu->open_output = mpu401_open;
+-		mpu->close_input = mpu401_close;
+-		mpu->close_output = mpu401_close;
+ 		mpu->private_data = sscape;
+ 		sscape->mpu = mpu;
+ 
+@@ -993,13 +960,13 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
+ 	}
+ 
+ 	spin_lock_init(&sscape->lock);
+-	spin_lock_init(&sscape->fwlock);
+ 	sscape->io_res = io_res;
+ 	sscape->wss_res = wss_res;
+ 	sscape->io_base = port[dev];
+ 
+ 	if (!detect_sscape(sscape, wss_port[dev])) {
+-		printk(KERN_ERR "sscape: hardware not detected at 0x%x\n", sscape->io_base);
++		printk(KERN_ERR "sscape: hardware not detected at 0x%x\n",
++			sscape->io_base);
+ 		err = -ENODEV;
+ 		goto _release_dma;
+ 	}
+@@ -1036,7 +1003,7 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
+ 
+ 	mpu_irq_cfg = get_irq_config(sscape->type, mpu_irq[dev]);
+ 	if (mpu_irq_cfg == INVALID_IRQ) {
+-		printk(KERN_ERR "sscape: Invalid IRQ %d\n", mpu_irq[dev]);
++		snd_printk(KERN_ERR "sscape: Invalid IRQ %d\n", mpu_irq[dev]);
+ 		return -ENXIO;
+ 	}
+ 
+@@ -1073,8 +1040,9 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
+ 	err = create_ad1845(card, wss_port[dev], irq[dev],
+ 			    dma[dev], dma2[dev]);
+ 	if (err < 0) {
+-		printk(KERN_ERR "sscape: No AD1845 device at 0x%lx, IRQ %d\n",
+-		       wss_port[dev], irq[dev]);
++		snd_printk(KERN_ERR
++				"sscape: No AD1845 device at 0x%lx, IRQ %d\n",
++				wss_port[dev], irq[dev]);
+ 		goto _release_dma;
+ 	}
+ 	strcpy(card->driver, "SoundScape");
+@@ -1094,7 +1062,7 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
+ 			err = create_mpu401(card, MIDI_DEVNUM, port[dev],
+ 					    mpu_irq[dev]);
+ 			if (err < 0) {
+-				printk(KERN_ERR "sscape: Failed to create "
++				snd_printk(KERN_ERR "sscape: Failed to create "
+ 						"MPU-401 device at 0x%lx\n",
+ 						port[dev]);
+ 				goto _release_dma;
+@@ -1191,7 +1159,7 @@ static int __devinit snd_sscape_probe(struct device *pdev, unsigned int dev)
+ 		goto _release_card;
+ 
+ 	if ((ret = snd_card_register(card)) < 0) {
+-		printk(KERN_ERR "sscape: Failed to register sound card\n");
++		snd_printk(KERN_ERR "sscape: Failed to register sound card\n");
+ 		goto _release_card;
+ 	}
+ 	dev_set_drvdata(pdev, card);
+@@ -1250,18 +1218,7 @@ static int __devinit sscape_pnp_detect(struct pnp_card_link *pcard,
+ 	 * We have found a candidate ISA PnP card. Now we
+ 	 * have to check that it has the devices that we
+ 	 * expect it to have.
+-	 *
+-	 * We will NOT try and autoconfigure all of the resources
+-	 * needed and then activate the card as we are assuming that
+-	 * has already been done at boot-time using /proc/isapnp.
+-	 * We shall simply try to give each active card the resources
+-	 * that it wants. This is a sensible strategy for a modular
+-	 * system where unused modules are unloaded regularly.
+-	 *
+-	 * This strategy is utterly useless if we compile the driver
+-	 * into the kernel, of course.
+ 	 */
+-	// printk(KERN_INFO "sscape: %s\n", card->name);
+ 
+ 	/*
+ 	 * Check that we still have room for another sound card ...
+@@ -1272,7 +1229,7 @@ static int __devinit sscape_pnp_detect(struct pnp_card_link *pcard,
+ 
+ 	if (!pnp_is_active(dev)) {
+ 		if (pnp_activate_dev(dev) < 0) {
+-			printk(KERN_INFO "sscape: device is inactive\n");
++			snd_printk(KERN_INFO "sscape: device is inactive\n");
+ 			return -EBUSY;
+ 		}
+ 	}
+@@ -1317,7 +1274,7 @@ static int __devinit sscape_pnp_detect(struct pnp_card_link *pcard,
+ 		goto _release_card;
+ 
+ 	if ((ret = snd_card_register(card)) < 0) {
+-		printk(KERN_ERR "sscape: Failed to register sound card\n");
++		snd_printk(KERN_ERR "sscape: Failed to register sound card\n");
+ 		goto _release_card;
+ 	}
+ 
 -- 
-Munzir Taha
-Telecommunications and Electronics Engineer
-Master CIW Designer, ICDL, MOUS, Linux+, LPI, SCSA
-Riyadh, SA
+1.6.0.3
 
---Boundary-00=_7UixKqGcOXfIufL
-Content-Type: text/plain;
-  charset="UTF-8";
-  name="alsa-info.txt.5W1GkXYtew"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="alsa-info.txt.5W1GkXYtew"
 
-upload=true&script=true&cardinfo=
-!!################################
-!!ALSA Information Script v 0.4.58
-!!################################
 
-!!Script ran on: Fri Oct  2 15:41:41 UTC 2009
-
-
-!!Linux Distribution
-!!------------------
-
-Ubuntu karmic (development branch) \n \l DISTRIB_ID=Ubuntu DISTRIB_DESCRIPTION="Ubuntu karmic (development branch)"
-
-
-!!DMI Information
-!!---------------
-
-Manufacturer:      Hewlett-Packard
-Product Name:      HP Pavilion dv6 Notebook PC
-
-
-!!Kernel Information
-!!------------------
-
-Kernel release:    2.6.31-11-generic-pae
-Operating System:  GNU/Linux
-Architecture:      i686
-Processor:         unknown
-SMP Enabled:       Yes
-
-
-!!ALSA Version
-!!------------
-
-Driver version:     1.0.21
-Library version:    1.0.21a
-Utilities version:  1.0.20
-
-
-!!Loaded ALSA modules
-!!-------------------
-
-snd_hda_intel
-snd_hda_intel
-
-
-!!Sound Servers on this system
-!!----------------------------
-
-Pulseaudio:
-      Installed - Yes (/usr/bin/pulseaudio)
-      Running - Yes
-
-ESound Daemon:
-      Installed - Yes (/usr/bin/esd)
-      Running - No
-
-
-!!Soundcards recognised by ALSA
-!!-----------------------------
-
- 0 [Intel          ]: HDA-Intel - HDA Intel
-                      HDA Intel at 0xda100000 irq 33
- 1 [HDMI           ]: HDA-Intel - HDA ATI HDMI
-                      HDA ATI HDMI at 0xda010000 irq 34
-
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-
-00:1b.0 Audio device: Intel Corporation 82801I (ICH9 Family) HD Audio Controller (rev 03)
-01:00.1 Audio device: ATI Technologies Inc R700 Audio Device [Radeon HD 4000 Series]
-
-
-!!Advanced information - PCI Vendor/Device/Susbsystem ID's
-!!--------------------------------------------------------
-
-00:1b.0 0403: 8086:293e (rev 03)
-	Subsystem: 103c:3628
---
-01:00.1 0403: 1002:aa38
-	Subsystem: 103c:3628
-
-
-!!Modprobe options (Sound related)
-!!--------------------------------
-
-snd-atiixp-modem: index=-2
-snd-intel8x0m: index=-2
-snd-via82xx-modem: index=-2
-snd-usb-audio: index=-2
-snd-usb-us122l: index=-2
-snd-usb-usx2y: index=-2
-snd-usb-caiaq: index=-2
-snd-cmipci: mpu_port=0x330 fm_port=0x388
-snd-pcsp: index=-2
-
-
-!!Loaded sound module options
-!!--------------------------
-
-!!Module: snd_hda_intel
-	bdl_pos_adj : 1,32,-1,-1,-1,-1,-1,-1
-	enable : Y,Y,Y,Y,Y,Y,Y,Y
-	enable_msi : -1
-	id : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-	index : -1,-1,-1,-1,-1,-1,-1,-1
-	model : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-	patch : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-	position_fix : 0,0,0,0,0,0,0,0
-	power_save : 0
-	power_save_controller : Y
-	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1
-	probe_only : N,N,N,N,N,N,N,N
-	single_cmd : N
-
-!!Module: snd_hda_intel
-	bdl_pos_adj : 1,32,-1,-1,-1,-1,-1,-1
-	enable : Y,Y,Y,Y,Y,Y,Y,Y
-	enable_msi : -1
-	id : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-	index : -1,-1,-1,-1,-1,-1,-1,-1
-	model : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-	patch : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
-	position_fix : 0,0,0,0,0,0,0,0
-	power_save : 0
-	power_save_controller : Y
-	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1
-	probe_only : N,N,N,N,N,N,N,N
-	single_cmd : N
-
-
-!!HDA-Intel Codec information
-!!---------------------------
---startcollapse--
-
-Codec: IDT 92HD75B3X5
-Address: 0
-Function Id: 0x1
-Vendor Id: 0x111d7603
-Subsystem Id: 0x103c3628
-Revision Id: 0x100202
-No Modem Function Group found
-Default PCM:
-    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
-GPIO: io=8, o=0, i=0, unsolicited=1, wake=1
-  IO[0]: enable=1, dir=1, wake=0, sticky=0, data=1, unsol=0
-  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[4]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[5]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[6]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-  IO[7]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Power-Map: 0x00
-Analog Loopback: 0x00
-Node 0x0a [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0000001c: OUT HP Detect
-  Pin Default 0x40f100f0: [N/A] Other at Ext N/A
-    Conn = 1/8, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Unsolicited: tag=00, enabled=0
-  Connection: 3
-     0x10 0x11 0x17*
-Node 0x0b [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x00001724: IN Detect
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x02a11020: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x2, Sequence = 0x0
-  Pin-ctls: 0x22: IN VREF_GRD
-  Unsolicited: tag=02, enabled=1
-Node 0x0c [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x00001724: IN Detect
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x40f000f1: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x1
-  Pin-ctls: 0x00: VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x90170010: [Fixed] Speaker at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 3
-     0x10 0x11* 0x17
-Node 0x0e [Pin Complex] wcaps 0x400081: Stereo
-  Pincap 0x00001724: IN Detect
-    Vref caps: HIZ 50 GRD 80
-  Pin Default 0x40f100f2: [N/A] Other at Ext N/A
-    Conn = 1/8, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x2
-  Pin-ctls: 0x00: VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x02014040: [Jack] Line Out at Ext Front
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x4, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=01, enabled=1
-  Connection: 3
-     0x10* 0x11 0x17
-Node 0x10 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x80 0x80]
-  Converter: stream=0, channel=0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-Node 0x11 [Audio Output] wcaps 0xd0c05: Stereo Amp-Out R/L
-  Amp-Out caps: N/A
-  Amp-Out vals:  [0x80 0x80]
-  Converter: stream=0, channel=0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-Node 0x12 [Audio Input] wcaps 0x1d0541: Stereo
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Power: setting=D3, actual=D3
-  Delay: 13 samples
-  Connection: 1
-     0x1c
-  Processing caps: benign=0, ncoeff=0
-Node 0x13 [Audio Input] wcaps 0x1d0541: Stereo
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  Power: setting=D0, actual=D0
-  Delay: 13 samples
-  Connection: 1
-     0x1d
-  Processing caps: benign=0, ncoeff=0
-Node 0x14 [Pin Complex] wcaps 0x400100: Mono
-  Pincap 0x00000030: IN OUT
-  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x16
-Node 0x15 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x10 0x11 0x17*
-Node 0x16 [Audio Mixer] wcaps 0x200100: Mono
-  Connection: 1
-     0x15
-Node 0x17 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97] [0x97 0x97]
-  Connection: 5
-     0x10 0x11 0x14 0x1a 0x1b
-Node 0x18 [Pin Complex] wcaps 0x40000b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x01 0x01]
-  Pincap 0x00000020: IN
-  Pin Default 0x90a60350: [Fixed] Mic at Int N/A
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x5, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x20: IN
-Node 0x19 [Pin Complex] wcaps 0x40000b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-In vals:  [0x00 0x00]
-  Pincap 0x00000020: IN
-  Pin Default 0x40f000f4: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x4
-  Pin-ctls: 0x00:
-Node 0x1a [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 3
-     0x0b* 0x0c 0x0e
-Node 0x1b [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
-  Amp-Out vals:  [0x00 0x00]
-  Connection: 3
-     0x0b* 0x0c 0x0e
-Node 0x1c [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x0f 0x0f]
-  Connection: 4
-     0x1a 0x17 0x18* 0x19
-Node 0x1d [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
-  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Connection: 4
-     0x1b* 0x17 0x18 0x19
-Node 0x1e [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x024511a0: [Jack] SPDIF Out at Ext Front
-    Conn = Optical, Color = Black
-    DefAssociation = 0xa, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x24
-Node 0x1f [Pin Complex] wcaps 0x400701: Stereo Digital
-  Pincap 0x00010010: OUT EAPD
-  EAPD 0x0:
-  Pin Default 0x40f000f5: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x5
-  Pin-ctls: 0x00:
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x24* 0x25
-Node 0x20 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x40f000f0: [N/A] Other at Ext N/A
-    Conn = Unknown, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x0
-  Pin-ctls: 0x00:
-  Connection: 1
-     0x25
-Node 0x21 [Audio Output] wcaps 0x40211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
-    bits [0xe]: 16 20 24
-    formats [0x5]: PCM AC3
-  Delay: 4 samples
-Node 0x22 [Audio Output] wcaps 0x40211: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
-    bits [0xe]: 16 20 24
-    formats [0x5]: PCM AC3
-  Delay: 4 samples
-Node 0x23 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x24 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x21 0x1c* 0x1d
-Node 0x25 [Audio Selector] wcaps 0x300101: Stereo
-  Connection: 3
-     0x22* 0x1c 0x1d
-Node 0x26 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
-  Amp-Out vals:  [0x00]
-Node 0x27 [Volume Knob Widget] wcaps 0x600000: Mono
-  Volume-Knob: delta=1, steps=127, direct=0, val=127
-  Connection: 2
-     0x10 0x11
-Codec: ATI R6xx HDMI
-Address: 0
-Function Id: 0x1
-Vendor Id: 0x1002aa01
-Subsystem Id: 0x00aa0100
-Revision Id: 0x100100
-No Modem Function Group found
-Default PCM:
-    rates [0x70]: 32000 44100 48000
-    bits [0x2]: 16
-    formats [0x1]: PCM
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=0, o=0, i=0, unsolicited=0, wake=0
-Node 0x02 [Audio Output] wcaps 0x201: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital: Enabled GenLevel
-  Digital category: 0x2
-Node 0x03 [Pin Complex] wcaps 0x400381: Stereo Digital
-  Pincap 0x00000094: OUT Detect HDMI
-  Pin Default 0x18560010: [Jack] Digital Out at Int HDMI
-    Conn = Digital, Color = Unknown
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Connection: 1
-     0x02
---endcollapse--
-
-
-!!ALSA Device nodes
-!!-----------------
-
-crw-rw----+ 1 root audio 116,  0 Oct  2 18:14 /dev/snd/controlC0
-crw-rw----+ 1 root audio 116, 32 Oct  2 18:14 /dev/snd/controlC1
-crw-rw----+ 1 root audio 116,  4 Oct  2 18:14 /dev/snd/hwC0D0
-crw-rw----+ 1 root audio 116, 36 Oct  2 18:14 /dev/snd/hwC1D0
-crw-rw----+ 1 root audio 116, 24 Oct  2 18:15 /dev/snd/pcmC0D0c
-crw-rw----+ 1 root audio 116, 16 Oct  2 18:15 /dev/snd/pcmC0D0p
-crw-rw----+ 1 root audio 116, 17 Oct  2 18:15 /dev/snd/pcmC0D1p
-crw-rw----+ 1 root audio 116, 51 Oct  2 18:15 /dev/snd/pcmC1D3p
-crw-rw----+ 1 root audio 116,  1 Oct  2 18:14 /dev/snd/seq
-crw-rw----+ 1 root audio 116, 33 Oct  2 18:14 /dev/snd/timer
-
-/dev/snd/by-path:
-total 0
-drwxr-xr-x 2 root root  80 Oct  2 18:14 .
-drwxr-xr-x 3 root root 260 Oct  2 18:14 ..
-lrwxrwxrwx 1 root root  12 Oct  2 18:14 pci-0000:00:1b.0 -> ../controlC0
-lrwxrwxrwx 1 root root  12 Oct  2 18:14 pci-0000:01:00.1 -> ../controlC1
-
-
-!!ALSA configuration files
-!!------------------------
-
-!!asoundconf-generated config file
-
-# ALSA library configuration file managed by asoundconf(1).
-#
-# MANUAL CHANGES TO THIS FILE WILL BE OVERWRITTEN!
-#
-# Manual changes to the ALSA library configuration should be implemented
-# by editing the ~/.asoundrc file, not by editing this file.
-!defaults.pcm.card Intel
-defaults.ctl.card Intel
-defaults.pcm.device 0
-defaults.pcm.subdevice -1
-defaults.pcm.nonblock 1
-defaults.pcm.ipc_key 5678293
-defaults.pcm.ipc_gid audio
-defaults.pcm.ipc_perm 0660
-defaults.pcm.dmix.max_periods 0
-defaults.pcm.dmix.rate 48000
-defaults.pcm.dmix.format "unchanged"
-defaults.pcm.dmix.card defaults.pcm.card
-defaults.pcm.dmix.device defaults.pcm.device
-defaults.pcm.dsnoop.card defaults.pcm.card
-defaults.pcm.dsnoop.device defaults.pcm.device
-defaults.pcm.front.card defaults.pcm.card
-defaults.pcm.front.device defaults.pcm.device
-defaults.pcm.rear.card defaults.pcm.card
-defaults.pcm.rear.device defaults.pcm.device
-defaults.pcm.center_lfe.card defaults.pcm.card
-defaults.pcm.center_lfe.device defaults.pcm.device
-defaults.pcm.side.card defaults.pcm.card
-defaults.pcm.side.device defaults.pcm.device
-defaults.pcm.surround40.card defaults.pcm.card
-defaults.pcm.surround40.device defaults.pcm.device
-defaults.pcm.surround41.card defaults.pcm.card
-defaults.pcm.surround41.device defaults.pcm.device
-defaults.pcm.surround50.card defaults.pcm.card
-defaults.pcm.surround50.device defaults.pcm.device
-defaults.pcm.surround51.card defaults.pcm.card
-defaults.pcm.surround51.device defaults.pcm.device
-defaults.pcm.surround71.card defaults.pcm.card
-defaults.pcm.surround71.device defaults.pcm.device
-defaults.pcm.iec958.card defaults.pcm.card
-defaults.pcm.iec958.device defaults.pcm.device
-defaults.pcm.modem.card defaults.pcm.card
-defaults.pcm.modem.device defaults.pcm.device
-defaults.pcm.file_format "raw"
-defaults.pcm.file_truncate true
-defaults.rawmidi.card 0
-defaults.rawmidi.device 0
-defaults.rawmidi.subdevice -1
-defaults.hwdep.card 0
-defaults.hwdep.device 0
-defaults.timer.class 2
-defaults.timer.sclass 0
-defaults.timer.card 0
-defaults.timer.device 0
-defaults.timer.subdevice 0
-defaults.namehint.showall off
-defaults.namehint.basic on
-defaults.namehint.extended off
-
-
-!!Aplay/Arecord output
-!!------------
-
-APLAY
-
-**** List of PLAYBACK Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Intel [HDA Intel], device 1: STAC92xx Digital [STAC92xx Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: HDMI [HDA ATI HDMI], device 3: ATI HDMI [ATI HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-ARECORD
-
-**** List of CAPTURE Hardware Devices ****
-card 0: Intel [HDA Intel], device 0: STAC92xx Analog [STAC92xx Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-!!Amixer output
-!!-------------
-
-!!-------Mixer controls for card 0 [Intel]
-
-Card hw:0 'Intel'/'HDA Intel at 0xda100000 irq 33'
-  Mixer name	: 'IDT 92HD75B3X5'
-  Components	: 'HDA:111d7603,103c3628,00100202'
-  Controls      : 21
-  Simple ctrls  : 13
-Simple mixer control 'Master',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 64
-  Mono: Playback 0 [0%] [-48.00dB] [off]
-Simple mixer control 'Speaker',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 0 [0%] [-48.00dB] [off]
-  Front Right: Playback 0 [0%] [-48.00dB] [off]
-Simple mixer control 'PCM',0
-  Capabilities: pvolume
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 255
-  Mono:
-  Front Left: Playback 1 [0%] [-50.80dB]
-  Front Right: Playback 1 [0%] [-50.80dB]
-Simple mixer control 'Front',0
-  Capabilities: pvolume pswitch
-  Playback channels: Front Left - Front Right
-  Limits: Playback 0 - 64
-  Mono:
-  Front Left: Playback 0 [0%] [-48.00dB] [off]
-  Front Right: Playback 0 [0%] [-48.00dB] [off]
-Simple mixer control 'Mic Jack Mode',0
-  Capabilities: enum
-  Items: 'Mic In' 'Line In'
-  Item0: 'Line In'
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Default PCM',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-Simple mixer control 'IEC958 Playback Source',0
-  Capabilities: enum
-  Items: 'Digital Playback' 'Analog Mux 1' 'Analog Mux 2'
-  Item0: 'Analog Mux 1'
-Simple mixer control 'Capture',0
-  Capabilities: cvolume cswitch
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 15
-  Front Left: Capture 15 [100%] [22.50dB] [on]
-  Front Right: Capture 15 [100%] [22.50dB] [on]
-Simple mixer control 'Digital',0
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 120
-  Front Left: Capture 60 [50%] [0.00dB]
-  Front Right: Capture 60 [50%] [0.00dB]
-Simple mixer control 'Digital Mic',0
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 3
-  Front Left: Capture 1 [33%] [10.00dB]
-  Front Right: Capture 1 [33%] [10.00dB]
-Simple mixer control 'Mux',0
-  Capabilities: cvolume
-  Capture channels: Front Left - Front Right
-  Limits: Capture 0 - 3
-  Front Left: Capture 0 [0%] [0.00dB]
-  Front Right: Capture 0 [0%] [0.00dB]
-Simple mixer control 'PC Beep',0
-  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-  Playback channels: Mono
-  Limits: Playback 0 - 3
-  Mono: Playback 0 [0%] [-18.00dB] [on]
-
-!!-------Mixer controls for card 1 [HDMI]
-
-Card hw:1 'HDMI'/'HDA ATI HDMI at 0xda010000 irq 34'
-  Mixer name	: 'ATI R6xx HDMI'
-  Components	: 'HDA:1002aa01,00aa0100,00100100'
-  Controls      : 4
-  Simple ctrls  : 1
-Simple mixer control 'IEC958',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-
-
-!!Alsactl output
-!!-------------
-
---startcollapse--
-state.Intel {
-	control.1 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		comment.dbmin -4800
-		comment.dbmax 0
-		iface MIXER
-		name 'Front Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Front Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 'Mic In'
-		comment.item.1 'Line In'
-		iface MIXER
-		name 'Mic Jack Mode'
-		value 'Line In'
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'PC Beep Playback Switch'
-		value true
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 1
-		comment.range '0 - 3'
-		comment.dbmin -1800
-		comment.dbmax 0
-		iface MIXER
-		name 'PC Beep Playback Volume'
-		value 0
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 64'
-		comment.dbmin -4800
-		comment.dbmax 0
-		iface MIXER
-		name 'Speaker Playback Volume'
-		value.0 0
-		value.1 0
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Speaker Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 15'
-		comment.dbmin 0
-		comment.dbmax 2250
-		iface MIXER
-		name 'Capture Volume'
-		value.0 15
-		value.1 15
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 2
-		iface MIXER
-		name 'Capture Switch'
-		value.0 true
-		value.1 true
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Digital Mic Capture Volume'
-		value.0 1
-		value.1 1
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 3'
-		comment.dbmin 0
-		comment.dbmax 3000
-		iface MIXER
-		name 'Mux Capture Volume'
-		value.0 0
-		value.1 0
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.count 1
-		comment.item.0 'Digital Playback'
-		comment.item.1 'Analog Mux 1'
-		comment.item.2 'Analog Mux 2'
-		iface MIXER
-		name 'IEC958 Playback Source'
-		value 'Analog Mux 1'
-	}
-	control.13 {
-		comment.access read
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.14 {
-		comment.access read
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value true
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Default PCM Playback Switch'
-		value true
-	}
-	control.18 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.count 1
-		comment.range '0 - 64'
-		comment.dbmin -4800
-		comment.dbmax 0
-		iface MIXER
-		name 'Master Playback Volume'
-		value 0
-	}
-	control.19 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'Master Playback Switch'
-		value false
-	}
-	control.20 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 255'
-		comment.tlv '0000000100000008ffffec1400000014'
-		comment.dbmin -5100
-		comment.dbmax 0
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 1
-		value.1 1
-	}
-	control.21 {
-		comment.access 'read write user'
-		comment.type INTEGER
-		comment.count 2
-		comment.range '0 - 120'
-		comment.tlv '0000000100000008fffff44800000032'
-		comment.dbmin -3000
-		comment.dbmax 3000
-		iface MIXER
-		name 'Digital Capture Volume'
-		value.0 60
-		value.1 60
-	}
-}
-state.HDMI {
-	control.1 {
-		comment.access read
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Con Mask'
-		value '0fff000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.2 {
-		comment.access read
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Pro Mask'
-		value '0f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type IEC958
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Default'
-		value '0482000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'IEC958 Playback Switch'
-		value true
-	}
-}
---endcollapse--
-
-
-!!All Loaded Modules
-!!------------------
-
-Module
-binfmt_misc
-ppdev
-bridge
-stp
-bnep
-vboxnetadp
-vboxnetflt
-vboxdrv
-kvm
-snd_hda_codec_atihdmi
-arc4
-ecb
-snd_hda_codec_idt
-snd_hda_intel
-snd_hda_codec
-snd_seq_dummy
-snd_seq_oss
-snd_hwdep
-snd_pcm_oss
-snd_seq_midi
-snd_mixer_oss
-snd_rawmidi
-joydev
-iptable_filter
-ip_tables
-x_tables
-iwlagn
-iwlcore
-mac80211
-uvcvideo
-videodev
-v4l1_compat
-btusb
-snd_seq_midi_event
-video
-output
-snd_seq
-snd_pcm
-snd_seq_device
-hp_accel
-lis3lv02d
-input_polldev
-snd_timer
-cfg80211
-radeon
-snd
-ttm
-sdhci_pci
-soundcore
-sdhci
-snd_page_alloc
-led_class
-drm
-i2c_algo_bit
-psmouse
-serio_raw
-jmb38x_ms
-memstick
-intel_agp
-lp
-agpgart
-parport
-dm_raid45
-xor
-r8169
-mii
-usbhid
-ohci1394
-ieee1394
-
-
-!!Sysfs Files
-!!-----------
-
-/sys/class/sound/hwC0D0/init_pin_configs:
-0x0a 0x40f100f0
-0x0b 0x02a11020
-0x0c 0x40f000f1
-0x0d 0x90170110
-0x0e 0x40f100f2
-0x0f 0x02014040
-0x14 0x40f000f0
-0x18 0x90a60350
-0x19 0x40f000f4
-0x1e 0x024511a0
-0x1f 0x40f000f5
-0x20 0x40f000f0
-
-/sys/class/sound/hwC0D0/driver_pin_configs:
-0x0d 0x90170010
-
-/sys/class/sound/hwC0D0/user_pin_configs:
-
-/sys/class/sound/hwC0D0/init_verbs:
-
-/sys/class/sound/hwC1D0/init_pin_configs:
-0x03 0x18560010
-
-/sys/class/sound/hwC1D0/driver_pin_configs:
-
-/sys/class/sound/hwC1D0/user_pin_configs:
-
-/sys/class/sound/hwC1D0/init_verbs:
-
-
-!!ALSA/HDA dmesg
-!!------------------
-
-[    8.990978]   alloc kstat_irqs on node -1
-[    8.990983] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
-[    8.991388]   alloc irq_desc for 33 on node -1
-[    8.991390]   alloc kstat_irqs on node -1
-[    8.991398] HDA Intel 0000:00:1b.0: irq 33 for MSI/MSI-X
-[    8.991422] HDA Intel 0000:00:1b.0: setting latency timer to 64
-[    9.025793] cfg80211: World regulatory domain updated:
---
-[    9.025804] 	(5735000 KHz - 5835000 KHz @ 40000 KHz), (300 mBi, 2000 mBm)
-[    9.058606] input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input10
-[    9.065251] input: HDA Intel Mic at Ext Front Jack as /devices/pci0000:00/0000:00:1b.0/sound/card0/input11
-[    9.065294] input: HDA Intel Line Out at Ext Front Jack as /devices/pci0000:00/0000:00:1b.0/sound/card0/input12
-[    9.065776] HDA Intel 0000:01:00.1: PCI INT B -> GSI 17 (level, low) -> IRQ 17
-[    9.065823]   alloc irq_desc for 34 on node -1
-[    9.065825]   alloc kstat_irqs on node -1
-[    9.065834] HDA Intel 0000:01:00.1: irq 34 for MSI/MSI-X
-[    9.065860] HDA Intel 0000:01:00.1: setting latency timer to 64
-[    9.075377] phy0: Selected rate control algorithm 'iwl-agn-rs'
---
-[   49.948746]   groups: 1 0
-[   85.740455] hda-intel: IRQ timing workaround is activated for card #1. Suggest a bigger bdl_pos_adj.
-[  100.148072] __ratelimit: 24 callbacks suppressed
-
-
-
---Boundary-00=_7UixKqGcOXfIufL
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---Boundary-00=_7UixKqGcOXfIufL--
+---------------------------------------------------------------
+Zobacz jak pracuje sie na wysokosciach.
+Kliknij >>> http://link.interia.pl/f2384
