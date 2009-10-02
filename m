@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Soc: wm8940: Fix check on error code
-	form	snd_soc_codec_set_cache_io
-Date: Fri, 2 Oct 2009 16:12:00 +0100
-Message-ID: <20091002151200.GE11133@sirena.org.uk>
-References: <4AC617BD.4070706@cam.ac.uk>
+From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
+	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
+Subject: Re: OFFTOPIC atkbd.c: Use 'setkeycodes... (Was: Re: My
+	Codec: IDT 92HD75B3X5 issues)
+Date: Fri, 2 Oct 2009 18:37:02 +0300
+Message-ID: <200910021837.03060.munzirtaha@gmail.com>
+References: <598e9210910020512j67cfad99i7369bbd34228f3c0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A571244F7
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0377924505
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 17:12:01 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4AC617BD.4070706@cam.ac.uk>
+	Fri,  2 Oct 2009 17:37:08 +0200 (CEST)
+Received: by fxm8 with SMTP id 8so1238249fxm.45
+	for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2009 08:37:08 -0700 (PDT)
+In-Reply-To: <598e9210910020512j67cfad99i7369bbd34228f3c0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,52 +26,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jonathan Cameron <jic23@cam.ac.uk>
-Cc: alsa-devel@alsa-project.org
+To: Simos Xenitellis <simos.lists@googlemail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 02, 2009 at 04:09:49PM +0100, Jonathan Cameron wrote:
-> 
-> Soc: wm8940: Fix check on error code form snd_soc_codec_set_cache_io
+Hi Simons,
 
-Applied, thanks.
+As far as I know HAL is deprecated in favor of udev and DeviceKit so may be I 
+should file a bug against udev instead.
 
-Please don't duplicate the first line of the commit message into the
-message body like this, it means the commit message needs to be manually
-mangled after applying.
+Thanks for your care to elaborate
 
+On Yaum al-Jumma 12 Shawwal 1430 3:12:21 pm Simos Xenitellis wrote:
+
+> > You are right. What's the best component to report this bug against?
+> > kernel?
 > 
-> Fix for typo in commit 8d50e447d19fec64adebeef55f2b60d695435412
-> ASoC: Factor out I/O for Wolfson 8 bit data 16 bit register CODECs
+> Those keys are a 'HAL' thing. Until recently there has been a website
+> by the HAL developer
+> with detailed instructions. Search for 'HAL Quirk Site' on Google to
+> view the site in Google cache.
+> The website was not updated for some time
+> (http://www.mail-archive.com/pm-utils@lists.freedesktop.org/msg01594.html)
+> and being obsolete, it was probably taken down.
+> Your changes would need to make it eventually to the hal-info repository,
+> http://cgit.freedesktop.org/hal-info/
+> Use the Freedesktop Bugzilla, product 'hal' and component 'hal-info'
+> when reporting,
+> https://bugs.freedesktop.org/enter_bug.cgi?product=hal
 > 
-> Signed-off-by: Jonathan Cameron <jic23@cam.ac.uk>
+> Simos
 > 
-> ---
-> 
->  sound/soc/codecs/wm8940.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
-> index da97aae..1ef2454 100644
-> --- a/sound/soc/codecs/wm8940.c
-> +++ b/sound/soc/codecs/wm8940.c
-> @@ -790,7 +790,7 @@ static int wm8940_register(struct wm8940_priv *wm8940,
->  	codec->reg_cache = &wm8940->reg_cache;
->  
->  	ret = snd_soc_codec_set_cache_io(codec, 8, 16, control);
-> -	if (ret == 0) {
-> +	if (ret < 0) {
->  		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
->  		return ret;
->  	}
-> -- 
-> 1.6.3.3
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+
 
 -- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+Munzir Taha
+Telecommunications and Electronics Engineer
+Maintainer of Fedora Arabic Translation Project
+https://listman.redhat.com/mailman/listinfo/fedora-trans-ar
+Maintainer of the OpenBugs project page at
+http://foss.org.sa/OpenBugs.html
+Master CIW Designer, ICDL, MOUS, Linux+, LPI, SCSA
+Riyadh, SA
