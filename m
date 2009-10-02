@@ -1,22 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [RFC] Add scenario management
-Date: Fri, 02 Oct 2009 11:45:08 +0100
-Message-ID: <1254480308.5833.15.camel@odin>
-References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
-	<s5hws3egnwc.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0910021113500.31529@eeebox2.perex-int.cz>
+From: Achim Herrmann <Achim-Herrmann@t-online.de>
+Subject: big latency and buffering question
+Date: Fri, 2 Oct 2009 12:55:47 +0200
+Message-ID: <200910021255.48968.Achim-Herrmann@t-online.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f225.google.com (mail-ew0-f225.google.com
-	[209.85.219.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id BCF051039A1
+Received: from mailout07.t-online.de (mailout07.t-online.de [194.25.134.83])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB17F103972
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 12:45:10 +0200 (CEST)
-Received: by ewy25 with SMTP id 25so1027903ewy.45
-	for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2009 03:45:10 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.0910021113500.31529@eeebox2.perex-int.cz>
+	Fri,  2 Oct 2009 12:56:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,26 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Stefan Schmidt <stefan@datenfreihafen.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2009-10-02 at 11:58 +0200, Jaroslav Kysela wrote:
+Hi all,
 
-> 
-> I'm not very persuaded to merge such thing to alsa-lib (at least not to 
-> alsa-lib.so file - I may accept another library in the alsa-lib package). 
-> My comments:
-> 
-> 1) configuration syntax
-> 
->     - I know, simple text files are fine, but there are some structured
->       things - we have already configuration parsers in alsa-lib for
->       structured texts which can be migrated to XML some day
-> 
+I'm completely new to sound and ALSA development and I have to develop an 
+application which is capturing periodically a small amount of audio data (e.g. 
+64 frames), doing some processing and doing playback of the result.
 
-I know XML is great for parsing but the main audience for this is
-embedded users so we need to keep it simple (and small) with few
-external dependencies. Not all embedded devices will ship with XML.
+I started with ALSA example "pcm.c" to see if ALSA can meet these 
+requirements. During investigation i found out, that up to a choosen buffer 
+size of 140ms, generated sine sound is fine. Below 140ms, sound is stuttering, 
+independent of call method I'm using.
 
-Liam
+For buffer size of 140ms I found out, that target buffer size is 6174 frames (at 
+44.1kHz sample rate), period size is 3087 frames and loop inside 
+write_and_poll function is calculated every 70 ms and 3087 frames are written. 
+Think this is doublebuffering then, right?
+
+But if I now choose a buffersize of 139 ms or lower, target buffer size and 
+period size are always the same. So no double buffering anymore and sound is 
+stuttering.
+
+So, currently I'm far away from goal. I'd like to have a buffer size of e.g. 
+128 frames (2ms). Thus, period size should be 64 frames and loop should be 
+calculated every 1ms. (If necessary I would use Linux-RT)
+
+If I choose a buffersize of 2ms, sound is far away from being sine :-)
+
+- Can I use ALSA for a application described in first sentence above?
+
+- What do I have to change in pcm.c to be able to create a sine signal using a 
+buffersize of e.g. 128 frames and a period size of 64 frames?
+
+Any hints are appreciated
+Thanks in advance
+Achim
