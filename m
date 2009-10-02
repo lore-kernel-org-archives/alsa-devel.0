@@ -1,307 +1,402 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] sscape: remove MIDI instances counting with
-	limit ULONG_MAX
-Date: Fri, 2 Oct 2009 18:41:29 +0200
-Message-ID: <20091002184129.2a3ab307.krzysztof.h1@poczta.fm>
+From: manoj.iyer@canonical.com
+Subject: Re: [PATCH REALTEK] Added quirk to enable sound on Toshiba NB200
+Date: Fri, 2 Oct 2009 15:44:51 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.0910021544280.4531@little>
+References: <alpine.DEB.2.00.0909230036570.29432@little> <s5h3a6eb46r.wl%tiwai@suse.de> <alpine.DEB.2.00.0909281022500.2112@little> <s5hd45agqoi.wl%tiwai@suse.de> <alpine.DEB.2.00.0909291812030.2426@little> <s5hhbulov3f.wl%tiwai@suse.de>
+ <alpine.DEB.2.00.0910010208220.7813@little> <s5h1vlnjzaa.wl%tiwai@suse.de> <s5htyyivrpv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
-	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id A2E7B2453C
-	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 18:25:09 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@gmail.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932091AbZJBUpK@vger.kernel.org>
+In-Reply-To: <s5htyyivrpv.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: manoj.iyer@canonical.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Joey Stanford <joey@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-There is no sense to limit open MIDI connections with limit
-as high as ULONG_MAX.
+Sure, I will try this over the weekend and report the results back here.
 
-Also, convert more messages to use the snd_printk.
+On Thu, 1 Oct 2009, Takashi Iwai wrote:
 
-Correct few old and misleading comments as well.
-
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
-This is the second version of this patch with improved issues pointed by Takashi.
-
-diff --git a/sound/isa/sscape.c b/sound/isa/sscape.c
-index 1ce465c..c739374 100644
---- a/sound/isa/sscape.c
-+++ b/sound/isa/sscape.c
-@@ -147,12 +147,6 @@ struct soundscape {
- 	struct snd_wss *chip;
- 	struct snd_mpu401 *mpu;
- 
--	/*
--	 * The MIDI device won't work until we've loaded
--	 * its firmware via a hardware-dependent device IOCTL
--	 */
--	spinlock_t fwlock;
--	unsigned long midi_usage;
- 	unsigned char midi_vol;
- };
- 
-@@ -164,11 +158,6 @@ static inline struct soundscape *get_card_soundscape(struct snd_card *c)
- 	return (struct soundscape *) (c->private_data);
- }
- 
--static inline struct soundscape *get_mpu401_soundscape(struct snd_mpu401 * mpu)
--{
--	return (struct soundscape *) (mpu->private_data);
--}
--
- /*
-  * Allocates some kernel memory that we can use for DMA.
-  * I think this means that the memory has to map to
-@@ -179,7 +168,9 @@ static struct snd_dma_buffer *get_dmabuf(struct snd_dma_buffer *buf, unsigned lo
- 	if (buf) {
- 		if (snd_dma_alloc_pages_fallback(SNDRV_DMA_TYPE_DEV, snd_dma_isa_data(),
- 						 size, buf) < 0) {
--			snd_printk(KERN_ERR "sscape: Failed to allocate %lu bytes for DMA\n", size);
-+			snd_printk(KERN_ERR "sscape: Failed to allocate "
-+					    "%lu bytes for DMA\n",
-+					    size);
- 			return NULL;
- 		}
- 	}
-@@ -482,7 +473,8 @@ static int upload_dma_data(struct soundscape *s,
- 			 */
- 			spin_unlock_irqrestore(&s->lock, flags);
- 
--			snd_printk(KERN_ERR "sscape: DMA upload has timed out\n");
-+			snd_printk(KERN_ERR
-+					"sscape: DMA upload has timed out\n");
- 			ret = -EAGAIN;
- 			goto _release_dma;
- 		}
-@@ -504,10 +496,12 @@ static int upload_dma_data(struct soundscape *s,
- 	 */
- 	ret = 0;
- 	if (!obp_startup_ack(s, 5000)) {
--		snd_printk(KERN_ERR "sscape: No response from on-board processor after upload\n");
-+		snd_printk(KERN_ERR "sscape: No response "
-+				    "from on-board processor after upload\n");
- 		ret = -EAGAIN;
- 	} else if (!host_startup_ack(s, 5000)) {
--		snd_printk(KERN_ERR "sscape: SoundScape failed to initialise\n");
-+		snd_printk(KERN_ERR
-+				"sscape: SoundScape failed to initialise\n");
- 		ret = -EAGAIN;
- 	}
- 
-@@ -536,7 +530,7 @@ static int sscape_upload_bootblock(struct snd_card *card)
- 
- 	ret = request_firmware(&init_fw, "scope.cod", card->dev);
- 	if (ret < 0) {
--		snd_printk(KERN_ERR "Error loading scope.cod");
-+		snd_printk(KERN_ERR "sscape: Error loading scope.cod");
- 		return ret;
- 	}
- 	ret = upload_dma_data(sscape, init_fw->data, init_fw->size);
-@@ -554,7 +548,8 @@ static int sscape_upload_bootblock(struct snd_card *card)
- 
- 	data &= 0xf;
- 	if (ret == 0 && data > 7) {
--		snd_printk(KERN_ERR "timeout reading firmware version\n");
-+		snd_printk(KERN_ERR
-+				"sscape: timeout reading firmware version\n");
- 		ret = -EAGAIN;
- 	}
- 
-@@ -575,12 +570,13 @@ static int sscape_upload_microcode(struct snd_card *card, int version)
- 
- 	err = request_firmware(&init_fw, name, card->dev);
- 	if (err < 0) {
--		snd_printk(KERN_ERR "Error loading sndscape.co%d", version);
-+		snd_printk(KERN_ERR "sscape: Error loading sndscape.co%d",
-+				version);
- 		return err;
- 	}
- 	err = upload_dma_data(sscape, init_fw->data, init_fw->size);
- 	if (err == 0)
--		snd_printk(KERN_INFO "MIDI firmware loaded %d KBs\n",
-+		snd_printk(KERN_INFO "sscape: MIDI firmware loaded %d KBs\n",
- 				init_fw->size >> 10);
- 
- 	release_firmware(init_fw);
-@@ -750,7 +746,6 @@ static int __devinit detect_sscape(struct soundscape *s, long wss_io)
- 		msleep(1);
- 		spin_lock_irqsave(&s->lock, flags);
- 	}
--	snd_printd(KERN_INFO "init delay = %d ms\n", d);
- 
- 	if ((inb(wss_io) & 0x80) != 0)
- 		goto _done;
-@@ -774,7 +769,6 @@ static int __devinit detect_sscape(struct soundscape *s, long wss_io)
- 		msleep(1);
- 		spin_lock_irqsave(&s->lock, flags);
- 	}
--	snd_printd(KERN_INFO "init delay = %d ms\n", d);
- 
- 	/*
- 	 * SoundScape successfully detected!
-@@ -794,38 +788,13 @@ static int __devinit detect_sscape(struct soundscape *s, long wss_io)
-  */
- static int mpu401_open(struct snd_mpu401 * mpu)
- {
--	int err;
--
- 	if (!verify_mpu401(mpu)) {
--		snd_printk(KERN_ERR "sscape: MIDI disabled, please load firmware\n");
--		err = -ENODEV;
--	} else {
--		register struct soundscape *sscape = get_mpu401_soundscape(mpu);
--		unsigned long flags;
--
--		spin_lock_irqsave(&sscape->fwlock, flags);
--
--		if (sscape->midi_usage == ULONG_MAX) {
--			err = -EBUSY;
--		} else {
--			++(sscape->midi_usage);
--			err = 0;
--		}
--
--		spin_unlock_irqrestore(&sscape->fwlock, flags);
-+		snd_printk(KERN_ERR "sscape: MIDI disabled, "
-+				    "please load firmware\n");
-+		return -ENODEV;
- 	}
- 
--	return err;
--}
--
--static void mpu401_close(struct snd_mpu401 * mpu)
--{
--	register struct soundscape *sscape = get_mpu401_soundscape(mpu);
--	unsigned long flags;
--
--	spin_lock_irqsave(&sscape->fwlock, flags);
--	--(sscape->midi_usage);
--	spin_unlock_irqrestore(&sscape->fwlock, flags);
-+	return 0;
- }
- 
- /*
-@@ -845,8 +814,6 @@ static int __devinit create_mpu401(struct snd_card *card, int devnum, unsigned l
- 		struct snd_mpu401 *mpu = (struct snd_mpu401 *) rawmidi->private_data;
- 		mpu->open_input = mpu401_open;
- 		mpu->open_output = mpu401_open;
--		mpu->close_input = mpu401_close;
--		mpu->close_output = mpu401_close;
- 		mpu->private_data = sscape;
- 		sscape->mpu = mpu;
- 
-@@ -993,13 +960,13 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
- 	}
- 
- 	spin_lock_init(&sscape->lock);
--	spin_lock_init(&sscape->fwlock);
- 	sscape->io_res = io_res;
- 	sscape->wss_res = wss_res;
- 	sscape->io_base = port[dev];
- 
- 	if (!detect_sscape(sscape, wss_port[dev])) {
--		printk(KERN_ERR "sscape: hardware not detected at 0x%x\n", sscape->io_base);
-+		printk(KERN_ERR "sscape: hardware not detected at 0x%x\n",
-+			sscape->io_base);
- 		err = -ENODEV;
- 		goto _release_dma;
- 	}
-@@ -1036,7 +1003,7 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
- 
- 	mpu_irq_cfg = get_irq_config(sscape->type, mpu_irq[dev]);
- 	if (mpu_irq_cfg == INVALID_IRQ) {
--		printk(KERN_ERR "sscape: Invalid IRQ %d\n", mpu_irq[dev]);
-+		snd_printk(KERN_ERR "sscape: Invalid IRQ %d\n", mpu_irq[dev]);
- 		return -ENXIO;
- 	}
- 
-@@ -1073,8 +1040,9 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
- 	err = create_ad1845(card, wss_port[dev], irq[dev],
- 			    dma[dev], dma2[dev]);
- 	if (err < 0) {
--		printk(KERN_ERR "sscape: No AD1845 device at 0x%lx, IRQ %d\n",
--		       wss_port[dev], irq[dev]);
-+		snd_printk(KERN_ERR
-+				"sscape: No AD1845 device at 0x%lx, IRQ %d\n",
-+				wss_port[dev], irq[dev]);
- 		goto _release_dma;
- 	}
- 	strcpy(card->driver, "SoundScape");
-@@ -1094,7 +1062,7 @@ static int __devinit create_sscape(int dev, struct snd_card *card)
- 			err = create_mpu401(card, MIDI_DEVNUM, port[dev],
- 					    mpu_irq[dev]);
- 			if (err < 0) {
--				printk(KERN_ERR "sscape: Failed to create "
-+				snd_printk(KERN_ERR "sscape: Failed to create "
- 						"MPU-401 device at 0x%lx\n",
- 						port[dev]);
- 				goto _release_dma;
-@@ -1191,7 +1159,7 @@ static int __devinit snd_sscape_probe(struct device *pdev, unsigned int dev)
- 		goto _release_card;
- 
- 	if ((ret = snd_card_register(card)) < 0) {
--		printk(KERN_ERR "sscape: Failed to register sound card\n");
-+		snd_printk(KERN_ERR "sscape: Failed to register sound card\n");
- 		goto _release_card;
- 	}
- 	dev_set_drvdata(pdev, card);
-@@ -1250,18 +1218,7 @@ static int __devinit sscape_pnp_detect(struct pnp_card_link *pcard,
- 	 * We have found a candidate ISA PnP card. Now we
- 	 * have to check that it has the devices that we
- 	 * expect it to have.
--	 *
--	 * We will NOT try and autoconfigure all of the resources
--	 * needed and then activate the card as we are assuming that
--	 * has already been done at boot-time using /proc/isapnp.
--	 * We shall simply try to give each active card the resources
--	 * that it wants. This is a sensible strategy for a modular
--	 * system where unused modules are unloaded regularly.
--	 *
--	 * This strategy is utterly useless if we compile the driver
--	 * into the kernel, of course.
- 	 */
--	// printk(KERN_INFO "sscape: %s\n", card->name);
- 
- 	/*
- 	 * Check that we still have room for another sound card ...
-@@ -1272,7 +1229,7 @@ static int __devinit sscape_pnp_detect(struct pnp_card_link *pcard,
- 
- 	if (!pnp_is_active(dev)) {
- 		if (pnp_activate_dev(dev) < 0) {
--			printk(KERN_INFO "sscape: device is inactive\n");
-+			snd_printk(KERN_INFO "sscape: device is inactive\n");
- 			return -EBUSY;
- 		}
- 	}
-@@ -1317,7 +1274,7 @@ static int __devinit sscape_pnp_detect(struct pnp_card_link *pcard,
- 		goto _release_card;
- 
- 	if ((ret = snd_card_register(card)) < 0) {
--		printk(KERN_ERR "sscape: Failed to register sound card\n");
-+		snd_printk(KERN_ERR "sscape: Failed to register sound card\n");
- 		goto _release_card;
- 	}
- 
--- 
-1.6.0.3
-
-
-
----------------------------------------------------------------
-Zobacz jak pracuje sie na wysokosciach.
-Kliknij >>> http://link.interia.pl/f2384
+> At Thu, 01 Oct 2009 10:26:05 +0200,
+> I wrote:
+>>
+>> At Thu, 1 Oct 2009 02:11:35 -0500 (CDT),
+>> manoj.iyer@canonical.com wrote:
+>>>
+>>>> 2.6.31.x is way too old for testing the new stuff :)
+>>>> Any chance to test 2.6.32-rc1?
+>>>
+>>> http://kernel.ubuntu.com/~kernel-ppa/mainline/v2.6.32-rc1/
+>>>
+>>> I tried the 2.6.32-rc1 today, and sound does not work for me on the NB200.
+>>
+>> OK, thanks for checking.
+>> After looking at the code a bit more deeply, it turned out that the
+>> BIOS auto-parser doesn't work with this particular configuration (the
+>> speaker with mono pin 0x17).
+>>
+>> I'm going to fix it later, but I applied your patch as the quick fix
+>> for the time being.
+>
+> Could you try the patch below with model=auto?
+> This will make the auto-parser working, hopefully.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 87da5e8..7810d3d 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -17146,70 +17146,145 @@ static struct alc_config_preset alc662_presets[] = {
+>  * BIOS auto configuration
+>  */
+>
+> +/* convert from MIX nid to DAC */
+> +static inline hda_nid_t alc662_mix_to_dac(hda_nid_t nid)
+> +{
+> +	if (nid == 0x0f)
+> +		return 0x02;
+> +	else if (nid >= 0x0c && nid <= 0x0e)
+> +		return nid - 0x0c + 0x02;
+> +	else
+> +		return 0;
+> +}
+> +
+> +/* get MIX nid connected to the given pin targeted to DAC */
+> +static hda_nid_t alc662_dac_to_mix(struct hda_codec *codec, hda_nid_t pin,
+> +				   hda_nid_t dac)
+> +{
+> +	hda_nid_t mix[4];
+> +	int i, num;
+> +
+> +	num = snd_hda_get_connections(codec, pin, mix, ARRAY_SIZE(mix));
+> +	for (i = 0; i < num; i++) {
+> +		if (alc662_mix_to_dac(mix[i]) == dac)
+> +			return mix[i];
+> +	}
+> +	return 0;
+> +}
+> +
+> +/* look for an empty DAC slot */
+> +static hda_nid_t alc662_look_for_dac(struct hda_codec *codec, hda_nid_t pin)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +	hda_nid_t srcs[5];
+> +	int i, j, num;
+> +
+> +	num = snd_hda_get_connections(codec, pin, srcs, ARRAY_SIZE(srcs));
+> +	if (num < 0)
+> +		return 0;
+> +	for (i = 0; i < num; i++) {
+> +		hda_nid_t nid = alc662_mix_to_dac(srcs[i]);
+> +		if (!nid)
+> +			continue;
+> +		for (j = 0; j < spec->multiout.num_dacs; j++)
+> +			if (spec->multiout.dac_nids[j] == nid)
+> +				break;
+> +		if (j >= spec->multiout.num_dacs)
+> +			return nid;
+> +	}
+> +	return 0;
+> +}
+> +
+> +/* fill in the dac_nids table from the parsed pin configuration */
+> +static int alc662_auto_fill_dac_nids(struct hda_codec *codec,
+> +				     const struct auto_pin_cfg *cfg)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +	int i;
+> +	hda_nid_t dac;
+> +
+> +	spec->multiout.dac_nids = spec->private_dac_nids;
+> +	for (i = 0; i < cfg->line_outs; i++) {
+> +		dac = alc662_look_for_dac(codec, cfg->line_out_pins[i]);
+> +		if (!dac)
+> +			continue;
+> +		spec->multiout.dac_nids[spec->multiout.num_dacs++] = dac;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int alc662_add_vol_ctl(struct alc_spec *spec, const char *pfx,
+> +			      hda_nid_t nid, unsigned int chs)
+> +{
+> +	char name[32];
+> +	sprintf(name, "%s Playback Volume", pfx);
+> +	return add_control(spec, ALC_CTL_WIDGET_VOL, name,
+> +			   HDA_COMPOSE_AMP_VAL(nid, chs, 0, HDA_OUTPUT));
+> +}
+> +
+> +static int alc662_add_sw_ctl(struct alc_spec *spec, const char *pfx,
+> +			     hda_nid_t nid, unsigned int chs)
+> +{
+> +	char name[32];
+> +	sprintf(name, "%s Playback Switch", pfx);
+> +	return add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> +			   HDA_COMPOSE_AMP_VAL(nid, chs, 0, HDA_INPUT));
+> +}
+> +
+> +#define alc662_add_stereo_vol(spec, pfx, nid) \
+> +	alc662_add_vol_ctl(spec, pfx, nid, 3)
+> +#define alc662_add_stereo_sw(spec, pfx, nid) \
+> +	alc662_add_sw_ctl(spec, pfx, nid, 3)
+> +
+> /* add playback controls from the parsed DAC table */
+> -static int alc662_auto_create_multi_out_ctls(struct alc_spec *spec,
+> +static int alc662_auto_create_multi_out_ctls(struct hda_codec *codec,
+> 					     const struct auto_pin_cfg *cfg)
+> {
+> -	char name[32];
+> +	struct alc_spec *spec = codec->spec;
+> 	static const char *chname[4] = {
+> 		"Front", "Surround", NULL /*CLFE*/, "Side"
+> 	};
+> -	hda_nid_t nid;
+> +	hda_nid_t nid, mix;
+> 	int i, err;
+>
+> 	for (i = 0; i < cfg->line_outs; i++) {
+> -		if (!spec->multiout.dac_nids[i])
+> +		nid = spec->multiout.dac_nids[i];
+> +		if (!nid)
+> +			continue;
+> +		mix = alc662_dac_to_mix(codec, cfg->line_out_pins[i], nid);
+> +		if (!mix)
+> 			continue;
+> -		nid = alc880_idx_to_dac(i);
+> 		if (i == 2) {
+> 			/* Center/LFE */
+> -			err = add_control(spec, ALC_CTL_WIDGET_VOL,
+> -					  "Center Playback Volume",
+> -					  HDA_COMPOSE_AMP_VAL(nid, 1, 0,
+> -							      HDA_OUTPUT));
+> +			err = alc662_add_vol_ctl(spec, "Center", nid, 1);
+> 			if (err < 0)
+> 				return err;
+> -			err = add_control(spec, ALC_CTL_WIDGET_VOL,
+> -					  "LFE Playback Volume",
+> -					  HDA_COMPOSE_AMP_VAL(nid, 2, 0,
+> -							      HDA_OUTPUT));
+> +			err = alc662_add_vol_ctl(spec, "LFE", nid, 2);
+> 			if (err < 0)
+> 				return err;
+> -			err = add_control(spec, ALC_CTL_WIDGET_MUTE,
+> -					  "Center Playback Switch",
+> -					  HDA_COMPOSE_AMP_VAL(0x0e, 1, 0,
+> -							      HDA_INPUT));
+> +			err = alc662_add_sw_ctl(spec, "Center", mix, 1);
+> 			if (err < 0)
+> 				return err;
+> -			err = add_control(spec, ALC_CTL_WIDGET_MUTE,
+> -					  "LFE Playback Switch",
+> -					  HDA_COMPOSE_AMP_VAL(0x0e, 2, 0,
+> -							      HDA_INPUT));
+> +			err = alc662_add_sw_ctl(spec, "LFE", mix, 2);
+> 			if (err < 0)
+> 				return err;
+> 		} else {
+> 			const char *pfx;
+> 			if (cfg->line_outs == 1 &&
+> 			    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT) {
+> -				if (!cfg->hp_pins)
+> +				if (cfg->hp_outs)
+> 					pfx = "Speaker";
+> 				else
+> 					pfx = "PCM";
+> 			} else
+> 				pfx = chname[i];
+> -			sprintf(name, "%s Playback Volume", pfx);
+> -			err = add_control(spec, ALC_CTL_WIDGET_VOL, name,
+> -					  HDA_COMPOSE_AMP_VAL(nid, 3, 0,
+> -							      HDA_OUTPUT));
+> +			err = alc662_add_vol_ctl(spec, pfx, nid, 3);
+> 			if (err < 0)
+> 				return err;
+> 			if (cfg->line_outs == 1 &&
+> 			    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT)
+> 				pfx = "Speaker";
+> -			sprintf(name, "%s Playback Switch", pfx);
+> -			err = add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> -				HDA_COMPOSE_AMP_VAL(alc880_idx_to_mixer(i),
+> -						    3, 0, HDA_INPUT));
+> +			err = alc662_add_sw_ctl(spec, pfx, mix, 3);
+> 			if (err < 0)
+> 				return err;
+> 		}
+> @@ -17218,54 +17293,38 @@ static int alc662_auto_create_multi_out_ctls(struct alc_spec *spec,
+> }
+>
+> /* add playback controls for speaker and HP outputs */
+> -static int alc662_auto_create_extra_out(struct alc_spec *spec, hda_nid_t pin,
+> +/* return DAC nid if any new DAC is assigned */
+> +static int alc662_auto_create_extra_out(struct hda_codec *codec, hda_nid_t pin,
+> 					const char *pfx)
+> {
+> -	hda_nid_t nid;
+> +	struct alc_spec *spec = codec->spec;
+> +	hda_nid_t nid, mix;
+> 	int err;
+> -	char name[32];
+>
+> 	if (!pin)
+> 		return 0;
+> -
+> -	if (pin == 0x17) {
+> -		/* ALC663 has a mono output pin on 0x17 */
+> +	nid = alc662_look_for_dac(codec, pin);
+> +	if (!nid) {
+> +		char name[32];
+> +		/* the corresponding DAC is already occupied */
+> +		if (!(get_wcaps(codec, pin) & AC_WCAP_OUT_AMP))
+> +			return 0; /* no way */
+> +		/* create a switch only */
+> 		sprintf(name, "%s Playback Switch", pfx);
+> -		err = add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> -				  HDA_COMPOSE_AMP_VAL(pin, 2, 0, HDA_OUTPUT));
+> -		return err;
+> +		return add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> +				   HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT));
+> 	}
+>
+> -	if (alc880_is_fixed_pin(pin)) {
+> -		nid = alc880_idx_to_dac(alc880_fixed_pin_idx(pin));
+> -		/* printk(KERN_DEBUG "DAC nid=%x\n",nid); */
+> -		/* specify the DAC as the extra output */
+> -		if (!spec->multiout.hp_nid)
+> -			spec->multiout.hp_nid = nid;
+> -		else
+> -			spec->multiout.extra_out_nid[0] = nid;
+> -		/* control HP volume/switch on the output mixer amp */
+> -		nid = alc880_idx_to_dac(alc880_fixed_pin_idx(pin));
+> -		sprintf(name, "%s Playback Volume", pfx);
+> -		err = add_control(spec, ALC_CTL_WIDGET_VOL, name,
+> -				  HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_OUTPUT));
+> -		if (err < 0)
+> -			return err;
+> -		sprintf(name, "%s Playback Switch", pfx);
+> -		err = add_control(spec, ALC_CTL_BIND_MUTE, name,
+> -				  HDA_COMPOSE_AMP_VAL(nid, 3, 2, HDA_INPUT));
+> -		if (err < 0)
+> -			return err;
+> -	} else if (alc880_is_multi_pin(pin)) {
+> -		/* set manual connection */
+> -		/* we have only a switch on HP-out PIN */
+> -		sprintf(name, "%s Playback Switch", pfx);
+> -		err = add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> -				  HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT));
+> -		if (err < 0)
+> -			return err;
+> -	}
+> -	return 0;
+> +	mix = alc662_dac_to_mix(codec, pin, nid);
+> +	if (!mix)
+> +		return 0;
+> +	err = alc662_add_vol_ctl(spec, pfx, nid, 3);
+> +	if (err < 0)
+> +		return err;
+> +	err = alc662_add_sw_ctl(spec, pfx, mix, 3);
+> +	if (err < 0)
+> +		return err;
+> +	return nid;
+> }
+>
+> /* create playback/capture controls for input pins */
+> @@ -17274,30 +17333,35 @@ static int alc662_auto_create_extra_out(struct alc_spec *spec, hda_nid_t pin,
+>
+> static void alc662_auto_set_output_and_unmute(struct hda_codec *codec,
+> 					      hda_nid_t nid, int pin_type,
+> -					      int dac_idx)
+> +					      hda_nid_t dac)
+> {
+> +	int i, num;
+> +	hda_nid_t srcs[4];
+> +
+> 	alc_set_pin_output(codec, nid, pin_type);
+> 	/* need the manual connection? */
+> -	if (alc880_is_multi_pin(nid)) {
+> -		struct alc_spec *spec = codec->spec;
+> -		int idx = alc880_multi_pin_idx(nid);
+> -		snd_hda_codec_write(codec, alc880_idx_to_selector(idx), 0,
+> -				    AC_VERB_SET_CONNECT_SEL,
+> -				    alc880_dac_to_idx(spec->multiout.dac_nids[dac_idx]));
+> +	num = snd_hda_get_connections(codec, nid, srcs, ARRAY_SIZE(srcs));
+> +	if (num <= 1)
+> +		return;
+> +	for (i = 0; i < num; i++) {
+> +		if (alc662_mix_to_dac(srcs[i]) != dac)
+> +			continue;
+> +		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CONNECT_SEL, i);
+> +		return;
+> 	}
+> }
+>
+> static void alc662_auto_init_multi_out(struct hda_codec *codec)
+> {
+> 	struct alc_spec *spec = codec->spec;
+> +	int pin_type = get_pin_type(spec->autocfg.line_out_type);
+> 	int i;
+>
+> 	for (i = 0; i <= HDA_SIDE; i++) {
+> 		hda_nid_t nid = spec->autocfg.line_out_pins[i];
+> -		int pin_type = get_pin_type(spec->autocfg.line_out_type);
+> 		if (nid)
+> 			alc662_auto_set_output_and_unmute(codec, nid, pin_type,
+> -							  i);
+> +					spec->multiout.dac_nids[i]);
+> 	}
+> }
+>
+> @@ -17307,12 +17371,13 @@ static void alc662_auto_init_hp_out(struct hda_codec *codec)
+> 	hda_nid_t pin;
+>
+> 	pin = spec->autocfg.hp_pins[0];
+> -	if (pin) /* connect to front */
+> -		/* use dac 0 */
+> -		alc662_auto_set_output_and_unmute(codec, pin, PIN_HP, 0);
+> +	if (pin)
+> +		alc662_auto_set_output_and_unmute(codec, pin, PIN_HP,
+> +						  spec->multiout.hp_nid);
+> 	pin = spec->autocfg.speaker_pins[0];
+> 	if (pin)
+> -		alc662_auto_set_output_and_unmute(codec, pin, PIN_OUT, 0);
+> +		alc662_auto_set_output_and_unmute(codec, pin, PIN_OUT,
+> +					spec->multiout.extra_out_nid[0]);
+> }
+>
+> #define ALC662_PIN_CD_NID		ALC880_PIN_CD_NID
+> @@ -17350,21 +17415,25 @@ static int alc662_parse_auto_config(struct hda_codec *codec)
+> 	if (!spec->autocfg.line_outs)
+> 		return 0; /* can't find valid BIOS pin config */
+>
+> -	err = alc880_auto_fill_dac_nids(spec, &spec->autocfg);
+> +	err = alc662_auto_fill_dac_nids(codec, &spec->autocfg);
+> 	if (err < 0)
+> 		return err;
+> -	err = alc662_auto_create_multi_out_ctls(spec, &spec->autocfg);
+> +	err = alc662_auto_create_multi_out_ctls(codec, &spec->autocfg);
+> 	if (err < 0)
+> 		return err;
+> -	err = alc662_auto_create_extra_out(spec,
+> +	err = alc662_auto_create_extra_out(codec,
+> 					   spec->autocfg.speaker_pins[0],
+> 					   "Speaker");
+> 	if (err < 0)
+> 		return err;
+> -	err = alc662_auto_create_extra_out(spec, spec->autocfg.hp_pins[0],
+> +	if (err)
+> +		spec->multiout.extra_out_nid[0] = err;
+> +	err = alc662_auto_create_extra_out(codec, spec->autocfg.hp_pins[0],
+> 					   "Headphone");
+> 	if (err < 0)
+> 		return err;
+> +	if (err)
+> +		spec->multiout.hp_nid = err;
+> 	err = alc662_auto_create_input_ctls(codec, &spec->autocfg);
+> 	if (err < 0)
+> 		return err;
+>
