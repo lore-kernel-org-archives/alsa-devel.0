@@ -1,19 +1,19 @@
-From: Simos Xenitellis <simos.lists@googlemail.com>
-Subject: OFFTOPIC atkbd.c: Use 'setkeycodes... (Was: Re: My
-	Codec: IDT 92HD75B3X5 issues)
-Date: Fri, 2 Oct 2009 15:12:21 +0300
-Message-ID: <598e9210910020512j67cfad99i7369bbd34228f3c0@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: OFFTOPIC atkbd.c: Use 'setkeycodes... (Was: Re: My
+ Codec: IDT 92HD75B3X5 issues)
+Date: Fri, 2 Oct 2009 14:41:13 +0200
+Message-ID: <20091002124112.GA2553@tango.0pointer.de>
+References: <598e9210910020512j67cfad99i7369bbd34228f3c0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
-	[209.85.210.196])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E6EB24452
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id A648A2447F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 14:12:42 +0200 (CEST)
-Received: by yxe34 with SMTP id 34so1168661yxe.16
-	for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2009 05:12:41 -0700 (PDT)
+	Fri,  2 Oct 2009 14:41:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <598e9210910020512j67cfad99i7369bbd34228f3c0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,64 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TXVuemlyIFRhaGEgKNmF2YbYsNixINi32Ycp?= <munzirtaha@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBTZXAgMjksIDIwMDkgYXQgNzo0MCBBTSwgTXVuemlyIFRhaGEgKNmF2YbYsNixICDY
-t9mHKQo8bXVuemlydGFoYUBnbWFpbC5jb20+IHdyb3RlOgo+IE9uIFlhdW0gYWwtSXRobmFpbiAw
-OCBTaGF3d2FsIDE0MzAgMTE6NDE6NTIgYW0gVGFrYXNoaSBJd2FpIHdyb3RlOgo+PiBBdCBNb24s
-IDI4IFNlcCAyMDA5IDA2OjU4OjQ2ICswMzAwLAo+Pgo+PiDCoE11bnppciBUYWhhICg9P3V0Zi04
-P3E/PUQ5PTg1PUQ5PTg2PUQ4PUIwPUQ4PUIxPz0KPiA9P3V0Zi04P3E/Xz1EOD1CNz1EOT04Nz89
-KSB3cm90ZToKPj4gPiBIaSBzaXJzLAo+PiA+IFRoZXNlIGFyZSB0aGUgaXNzdWVzIEkgaGF2ZSB3
-aXRoIG15IExhcHRvcCBIUCBQYXZpbGlvbiBkdjYgMTIyNWVlCj4+ID4gcmVnYXJkaW5nIGF1ZGlv
-IHN1cHBvcnQuCj4+ID4KPj4gPiAxLiBObyBzZW5zZSBmb3IgaGVhZHBob25lIGphY2sgKGphY2tf
-cHJlc2VudD8pLCB3aGVuIGhlYWRwaG9uZSBpcyBwbHVnZ2VkCj4+ID4gKHByZXNlbnRfaW50X2hw
-PykKPj4gPgo+PiA+IDIuIFRoZXJlIGhlYWRwaG9uZSBtaWMgamFjayBpcyBub3Qgd29ya2luZy4g
-VGhlIG9uZSBuZXh0IHRvIHRoZSB3ZWJjYW0gaXMKPj4gPiBhbHdheXMgcmVjb3JkaW5nIGV2ZW4g
-d2hlbiBJIGNoYW5nZSB0aGUgIk1pYyBKYWNrIiBjb250cm9sIGZyb20gIk1pYyBJbiIKPj4gPiB0
-byAiTGluZSBJbiIKPj4KPj4gTWFrZSBzdXJlIHRoYXQgeW91IHVzZSBhbHNhLWRyaXZlci1zbmFw
-c2hvdCB0YXJiYWxsIGluc3RlYWQgb2YgMS4wLjIxCj4+IHJlbGVhc2VkIHZlcnNpb24uIMKgVGhl
-cmUgYXJlIG1hbnkgZml4ZXMgc2luY2UgMS4wLjIxIHJlbGVhc2UuCj4KPgo+PiDCoGZ0cDovL2Z0
-cC5rZXJuZWwub3JnL3B1Yi9saW51eC9rZXJuZWwvcGVvcGxlL3Rpd2FpL3NuYXBzaG90L2Fsc2Et
-ZHJpdmVyLXNuCj4+IGFwc2hvdC50YXIuZ3oKPgo+IFRoYW5rcyBhIGxvdCBUYWthc2hpLCB0aGlu
-Z3MgYXJlIGJldHRlciBub3cuIEhvd2V2ZXIsIHdoZW4gSSB0ZXN0ZWQgdGhlCj4gaW50ZXJuYWwg
-bWljIGl0J3MgdmVyeSBub2lzeS4gSSBwbGF5ZWQgYSBiaXQgd2l0aCB0aGUgY2FwdHVyZSBhbmQg
-ZGlnaXRhbAo+IGNvbnRyb2xzIGJ1dCBzdGlsbCBjb21wYXJlZCB3aXRoIFdpbmRvd3MsIGl0J3Mg
-bGFtZS4KPgo+PiA+IDMuIFRoZSBtdXRlL3VubXV0ZSBMRUQgZG9lc24ndCBjaGFuZ2UgY29sb3Ig
-dG8gUkVEIHdoZW4gaXRzIG11dGVkIGxpa2UgaW4KPj4gPiBXaW5kb3dzLgo+Pgo+PiBUaGlzIGlz
-bid0IHN1cHBvcnRlZCB5ZXQgYXMgd2UgaGF2ZSBubyBoYXJkd2FyZSBpbmZvcm1hdGlvbi4KPj4g
-TGlrZWx5IG9uZSBvZiBHUElPIHBpbnMgY29ycmVzcG9uZHMgdG8gdGhlIExFRCBvbi9vZmYuIMKg
-WW91IGNhbiB0cnkKPj4gaGRhLXZlcmIgdG8gY2hhbmdlIHRoZSBHUElPIGRhdGEgYml0Lgo+Cj4g
-T2ssIEkgd2lsbCB0cnkgaXQgYW5kIHJlcG9ydCBiYWNrLgo+Cj4+ID4gVG91Y2hpbmcgdGhhdCBM
-RUQgc2hvd3MgdGhpcyBpbiAvdmFyL2xvZy9tZXNzYWdlczoKPj4gPgo+PiA+IFNlcCAyOCAwNjo1
-Mzo0NyBkdjYga2VybmVsOiBbIDkxOTcuOTg2Nzg5XSBhdGtiZC5jOiBVbmtub3duIGtleSByZWxl
-YXNlZAo+PiA+ICh0cmFuc2xhdGVkIHNldCAyLCBjb2RlIDB4OTQgb24gaXNhMDA2MC9zZXJpbzAp
-Lgo+PiA+IFNlcCAyOCAwNjo1Mzo0NyBkdjYga2VybmVsOiBbIDkxOTcuOTg2NzkxXSBhdGtiZC5j
-OiBVc2UgJ3NldGtleWNvZGVzIGUwMTQKPj4gPiA8a2V5Y29kZT4nIHRvIG1ha2UgaXQga25vd24u
-Cj4+ID4gU2VwIDI4IDA2OjUzOjQ3IGR2NiBrZXJuZWw6IFsgOTE5OC4zNTM1NjhdIGF0a2JkLmM6
-IFVua25vd24ga2V5IHByZXNzZWQKPj4gPiAodHJhbnNsYXRlZCBzZXQgMiwgY29kZSAweDk0IG9u
-IGlzYTAwNjAvc2VyaW8wKS4KPj4gPiBTZXAgMjggMDY6NTM6NDcgZHY2IGtlcm5lbDogWyA5MTk4
-LjM1MzU3Ml0gYXRrYmQuYzogVXNlICdzZXRrZXljb2RlcyBlMDE0Cj4+ID4gPGtleWNvZGU+JyB0
-byBtYWtlIGl0IGtub3duLgo+PiA+IFNlcCAyOCAwNjo1Mzo0NyBkdjYga2VybmVsOiBbIDkxOTgu
-MzU5MjA1XSBhdGtiZC5jOiBVbmtub3duIGtleSByZWxlYXNlZAo+PiA+ICh0cmFuc2xhdGVkIHNl
-dCAyLCBjb2RlIDB4OTQgb24gaXNhMDA2MC9zZXJpbzApLgo+PiA+IFNlcCAyOCAwNjo1Mzo0NyBk
-djYga2VybmVsOiBbIDkxOTguMzU5MjA4XSBhdGtiZC5jOiBVc2UgJ3NldGtleWNvZGVzIGUwMTQK
-Pj4gPiA8a2V5Y29kZT4nIHRvIG1ha2UgaXQga25vd24uCj4+Cj4+IEl0J3Mgbm90IGFib3V0IHRo
-ZSBzb3VuZCBkcml2ZXIgYnV0IHRoZSBpbnB1dCBsYXllciwgYXMgeW91IGNhbiBmaW5kLgo+PiBZ
-b3UgY2FuIGRlZmllbiB0aGUgc2NhbiBjb2RlIDB4ZTAxNCBieSB5b3Vyc2VsZi4KPgo+IFlvdSBh
-cmUgcmlnaHQuIFdoYXQncyB0aGUgYmVzdCBjb21wb25lbnQgdG8gcmVwb3J0IHRoaXMgYnVnIGFn
-YWluc3Q/IGtlcm5lbD8KClRob3NlIGtleXMgYXJlIGEgJ0hBTCcgdGhpbmcuIFVudGlsIHJlY2Vu
-dGx5IHRoZXJlIGhhcyBiZWVuIGEgd2Vic2l0ZQpieSB0aGUgSEFMIGRldmVsb3Blcgp3aXRoIGRl
-dGFpbGVkIGluc3RydWN0aW9ucy4gU2VhcmNoIGZvciAnSEFMIFF1aXJrIFNpdGUnIG9uIEdvb2ds
-ZSB0bwp2aWV3IHRoZSBzaXRlIGluIEdvb2dsZSBjYWNoZS4KVGhlIHdlYnNpdGUgd2FzIG5vdCB1
-cGRhdGVkIGZvciBzb21lIHRpbWUKKGh0dHA6Ly93d3cubWFpbC1hcmNoaXZlLmNvbS9wbS11dGls
-c0BsaXN0cy5mcmVlZGVza3RvcC5vcmcvbXNnMDE1OTQuaHRtbCkKYW5kIGJlaW5nIG9ic29sZXRl
-LCBpdCB3YXMgcHJvYmFibHkgdGFrZW4gZG93bi4KWW91ciBjaGFuZ2VzIHdvdWxkIG5lZWQgdG8g
-bWFrZSBpdCBldmVudHVhbGx5IHRvIHRoZSBoYWwtaW5mbyByZXBvc2l0b3J5LApodHRwOi8vY2dp
-dC5mcmVlZGVza3RvcC5vcmcvaGFsLWluZm8vClVzZSB0aGUgRnJlZWRlc2t0b3AgQnVnemlsbGEs
-IHByb2R1Y3QgJ2hhbCcgYW5kIGNvbXBvbmVudCAnaGFsLWluZm8nCndoZW4gcmVwb3J0aW5nLApo
-dHRwczovL2J1Z3MuZnJlZWRlc2t0b3Aub3JnL2VudGVyX2J1Zy5jZ2k/cHJvZHVjdD1oYWwKClNp
-bW9zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Fri, 02.10.09 15:12, Simos Xenitellis (simos.lists@googlemail.com) wrote:
+
+> Those keys are a 'HAL' thing. Until recently there has been a website
+> by the HAL developer
+> with detailed instructions. Search for 'HAL Quirk Site' on Google to
+> view the site in Google cache.
+> The website was not updated for some time
+> (http://www.mail-archive.com/pm-utils@lists.freedesktop.org/msg01594.html)
+> and being obsolete, it was probably taken down.
+> Your changes would need to make it eventually to the hal-info repository,
+> http://cgit.freedesktop.org/hal-info/
+> Use the Freedesktop Bugzilla, product 'hal' and component 'hal-info'
+> when reporting,
+> https://bugs.freedesktop.org/enter_bug.cgi?product=hal
+
+That is actually no true anymore. HAL is dead and the keycode stuff
+has been moved to udev:
+
+http://git.kernel.org/?p=linux/hotplug/udev.git;a=tree;f=extras/keymap/keymaps
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
