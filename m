@@ -1,20 +1,23 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC] Add scenario management
-Date: Fri, 2 Oct 2009 13:03:20 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0910021255250.31529@eeebox2.perex-int.cz>
-References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
-	<s5hws3egnwc.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0910021113500.31529@eeebox2.perex-int.cz>
-	<1254480308.5833.15.camel@odin>
+From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
+	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
+Subject: Re: My Codec: IDT 92HD75B3X5 issues
+Date: Fri, 2 Oct 2009 14:24:11 +0300
+Message-ID: <200910021424.11746.munzirtaha@gmail.com>
+References: <200909300818.31295.munzirtaha@gmail.com>
+	<200910020915.23068.munzirtaha@gmail.com>
+	<s5hocoql2sy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 39AA810397B
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C811243D9
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 13:03:22 +0200 (CEST)
-In-Reply-To: <1254480308.5833.15.camel@odin>
+	Fri,  2 Oct 2009 13:24:16 +0200 (CEST)
+Received: by fxm8 with SMTP id 8so999643fxm.45
+	for <alsa-devel@alsa-project.org>; Fri, 02 Oct 2009 04:24:16 -0700 (PDT)
+In-Reply-To: <s5hocoql2sy.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,39 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Stefan Schmidt <stefan@datenfreihafen.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2 Oct 2009, Liam Girdwood wrote:
-
-> On Fri, 2009-10-02 at 11:58 +0200, Jaroslav Kysela wrote:
->
->>
->> I'm not very persuaded to merge such thing to alsa-lib (at least not to
->> alsa-lib.so file - I may accept another library in the alsa-lib package).
->> My comments:
->>
->> 1) configuration syntax
->>
->>     - I know, simple text files are fine, but there are some structured
->>       things - we have already configuration parsers in alsa-lib for
->>       structured texts which can be migrated to XML some day
->>
->
-> I know XML is great for parsing but the main audience for this is
-> embedded users so we need to keep it simple (and small) with few
-> external dependencies. Not all embedded devices will ship with XML.
-
-I don't mean to use a complex XML parsing library with DOM handling. I 
-wrote very simple XML parser in C on few hundred lines for another 
-project so it's no issue also for the embedded platform. I just wanted to 
-point - the structure of alsa-lib configuration files is very similar to 
-XML.
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+T24gWWF1bSBhbC1KdW1tYSAxMiBTaGF3d2FsIDE0MzAgOTozNzowMSBhbSBUYWthc2hpIEl3YWkg
+d3JvdGU6Cgo+ID4gPiA+IERlYXIgVGFrYXNoaSwKPiA+ID4gPiBUbyBjb21wbGV0ZSB0aGlzIHRo
+cmVhZCwgd2hhdCBhYm91dCBtaXNzaW5nIG9wdGlvbnMgbGlrZQo+ID4gPiA+IDEuIERpc2FibGlu
+ZyAiSGVhZHBob25lIEphY2sgU2Vuc2UiIHRvIGFsbG93IGJvdGggc3BlYWtlcnMgYW5kCj4gPiA+
+ID4gaGVhZHBob25lcyB0byB3b3JrIHRvZ2V0aGVyIGluIGNhc2UKPiA+ID4KPiA+ID4gWW91IGNh
+biBnaXZlICJocF9kZXRlY3QgPSAwIiB0byBoaW50cyB2aWEgc3lzZnMgYW5kIHJlY29uZmlndXJl
+Lgo+ID4KPiA+IEJ1dCB0aGlzIGlzIG5vdCB1c2VyIGZyaWVuZGx5LiBJIHVzZWQgdG8gc2VlIGl0
+IGFzIGFuIG9wdGlvbiBvbiBvdGhlcgo+ID4gY2FyZHMuCj4gCj4gSXQncyBpbnRlbnRpb25hbC4g
+IE90aGVyd2lzZSB1c2VyIHdvdWxkIGNob29zZSBpdCBhY2NpZGVudGFsbHkgYW5kIGNyeQo+IG91
+dCBpbiA5OSUgb2YgcHJvYmFiaWxpdHkgOikKCkxpbnVzIFRvcnZhbGRzIHNhaWQgaXQgYmV0dGVy
+IHRoYW4gbWUKClRoaXMgJ3VzZXJzIGFyZSBpZGlvdHMsIGFuZCBhcmUgY29uZnVzZWQgYnkgZnVu
+Y3Rpb25hbGl0eScgbWVudGFsaXR5IG9mIEdub21lIAppcyBhIGRpc2Vhc2UgLi4uClRoaXMgaXMg
+d2h5IHlvdSB3YW50IGdyYXBoaWNhbCB0b29scyAodGhhdCBhcmUgdGhlcmUgYnkgZGVmYXVsdCwg
+c28gdGhhdCAKeW91IGRvbid0IGhhdmUgdG8ga25vdyBlbm91Z2ggZXZlbiB0byBrbm93IHRvIGdl
+dCB0aGVtKSB0byBjb25maWd1cmUgc3R1ZmYgCmV2ZW4gZm9yICJleHBlcnRzIi4gQmVjYXVzZSBJ
+J20gYW4gZXhwZXJ0IFVuaXggdXNlciwgYnV0IHRoYXQgZG9lc24ndCBtZWFuIAp0aGF0IEknbSBl
+eHBlcnQgaW4gc29tZSBHbm9tZSBpbnRlcm5hbCBjb25maWd1cmF0aW9uIGlzc3Vlcy4KOykKU2Vy
+aW91c2x5LCBJIGRvbid0IGNhcmUgYSBsb3QgYWJvdXQgdGhpcyBvcHRpb24uCgo+ID4gPiA+IDIu
+IGphY2sgcmV0YXNraW5nIHdoZXJlIEkgY2FuIHBsdWcgbXkgbWljIGluIHRoZSBoZWFkcGhvbmUg
+amFjayBhbmQKPiA+ID4gPiBleHBlY3QgaXQgdG8gd29yawo+ID4gPgo+ID4gPiBJIHRob3VnaHQg
+aXQgd29ya3Mgbm93Pwo+ID4KPiA+IE5vLiBJZiBJIHBsdWcgdGhlIG1pYyBpbiB0aGUgbWljIGph
+Y2sgaXQgd29ya3MgYnV0IGlmIEkgcGx1ZyBpdCBpbiB0aGUKPiA+IGhlYWRwaG9uZSBqYWNrIGl0
+IGRvZXNuJ3QuCj4gCj4gRXJyciwgc28geW91IHdhbnQgdG8gcmVjb3JkIGZyb20gdGhlIGhlYWRw
+aG9uZSBqYWNrPwo+IFRoaXMgaXNuJ3Qgc3BlY2lmaWVkIGluIHlvdXIgQklPUyB0byBiZWhhdmUg
+c28sIHRodXMgbm8gZ28uICAoQ3VycmVudGx5Cj4gdGhlIGJlaGF2aW9yIG9mIHRoZSBkcml2ZXIg
+ZGVwZW5kcyBvbiB0aGUgQklPUyBpbmZvcm1hdGlvbi4pICBXcml0ZQo+IHlvdXIgb3duIG1vZGVs
+IHF1aXJrIHRvIG92ZXJyaWRlIGl0LgoKSSBkb24ndCBrbm93IHdoeSB0aGUgQklPUyBpcyBpbnZv
+bHZlZC4gQWNjb3JkaW5nIHRvIApodHRwOi8vd3d3LmludGVsLmNvbS9kZXNpZ24vY2hpcHNldHMv
+aGRhdWRpby5odG0KbGV0IG1lIHF1b3RlCgoiSW50ZWwgSEQgQXVkaW8gYWxzbyBwcm92aWRlcyBp
+bXByb3ZlbWVudHMgdGhhdCBzdXBwb3J0IGJldHRlciBqYWNrIHJldGFza2luZy4gClRoZSBjb21w
+dXRlciBjYW4gc2Vuc2Ugd2hlbiBhIGRldmljZSBpcyBwbHVnZ2VkIGludG8gYW4gYXVkaW8gamFj
+aywgZGV0ZXJtaW5lIAp3aGF0IGtpbmQgb2YgZGV2aWNlIGl0IGlzLCBhbmQgY2hhbmdlIHRoZSBw
+b3J0IGZ1bmN0aW9uIGlmIHRoZSBkZXZpY2UgaGFzIGJlZW4gCnBsdWdnZWQgaW50byB0aGUgd3Jv
+bmcgcG9ydC4gRm9yIGV4YW1wbGUsIGlmIGEgbWljcm9waG9uZSBpcyBwbHVnZ2VkIGludG8gYSAK
+c3BlYWtlciBqYWNrLCB0aGUgY29tcHV0ZXIgd2lsbCByZWNvZ25pemUgdGhlIGVycm9yIGFuZCBj
+YW4gY2hhbmdlIHRoZSBqYWNrIHRvIApmdW5jdGlvbiBhcyBhIG1pY3JvcGhvbmUgamFjay4gVGhp
+cyBpcyBhbiBpbXBvcnRhbnQgc3RlcCBpbiBnZXR0aW5nIGF1ZGlvIHRvIGEgCnBvaW50IHdoZXJl
+IGl0IOKAmGp1c3Qgd29ya3PigJgtdXNlcnMgd29u4oCYdCBuZWVkIHRvIHdvcnJ5IGFib3V0IGdl
+dHRpbmcgdGhlIHJpZ2h0IApkZXZpY2UgcGx1Z2dlZCBpbnRvIHRoZSByaWdodCBhdWRpbyBqYWNr
+LiIKCkkgYWxzbyBkb24ndCBjYXJlIGFib3V0IHRoaXMgZmVhdHVyZSBteXNlbGYgYnV0IEkgbG92
+ZSB0byBzZWUgTGludXggYXQgdGhlIHRvcCAKYW5kIGhhdmUgYWNjdXJhdGUgaW5mb3JtYXRpb24g
+YWJvdXQgdGhlIGN1cnJlbnQgc3RhdHVzLiBTbywgaXMgaXQgcmVhbGx5IGEgCkJJT1MgaXNzdWUg
+b3IgYSBkcml2ZXIgaXNzdWU/CgoKPiBCb3RoIG9mIHlvdXIgZGVtYW5kcyBhcmUgbm90IGZvciAi
+bm9ybWFsIiB1c2Vycy4gIFRoZSBkcml2ZXIgY291bGQKPiBzZXJ2ZSBmb3IgdGhhdCwgYnV0IGl0
+IG5lZWRzIHNvbWUgYWRqdXN0bWVudC4gIE9mIGNvdXJzZSwgSSdkIGhhcHBpbHkKPiBhcHBseSBh
+bnkgcGF0Y2ggaWYgeW91IGNhbiBwcm92aWRlLgoKVGhhbmtzIGEgbG90IFRha2FzaGksIHlvdSBh
+cmUgZG9pbmcgYW4gb3V0c3RhbmRpbmcgam9iLiBQbGVhc2UsIGtlZXAgaXQgdXAuCgoKLS0gCk11
+bnppciBUYWhhClRlbGVjb21tdW5pY2F0aW9ucyBhbmQgRWxlY3Ryb25pY3MgRW5naW5lZXIKTWFz
+dGVyIENJVyBEZXNpZ25lciwgSUNETCwgTU9VUywgTGludXgrLCBMUEksIFNDU0EKUml5YWRoLCBT
+QQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
