@@ -1,54 +1,78 @@
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?=
-	<u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH 06/34] don't use __devexit_p to wrap hal2_remove
-Date: Fri, 2 Oct 2009 11:20:25 +0200
-Message-ID: <20091002092025.GB4442@pengutronix.de>
-References: <20091001082607.GA2181@pengutronix.de> <1254385718-14254-6-git-send-email-u.kleine-koenig@pengutronix.de> <s5hy6nvik7o.wl%tiwai@suse.de> <20091001085355.GD2181@pengutronix.de> <s5hzl8agocf.wl%tiwai@suse.de>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: Compilation procedure from git/tiwai/sound-2.6.git
+Date: Fri, 02 Oct 2009 11:32:13 +0200
+Message-ID: <4AC5C89D.9030708@ivitera.com>
+References: <1253132741-15688-1-git-send-email-pavel.hofman@ivitera.com>	<s5hpr9kwfqr.wl%tiwai@suse.de>
+	<4AB7C810.7060402@ivitera.com>	<s5h4oqwxfoq.wl%tiwai@suse.de>
+	<4AC50BE0.9050206@ivitera.com> <s5htyyil4zl.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757389AbZJBJUb@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5hzl8agocf.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from server.insite.cz (upc-plzen.insite.cz [84.242.100.8])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7EDB210394C
+	for <alsa-devel@alsa-project.org>;
+	Fri,  2 Oct 2009 11:31:50 +0200 (CEST)
+In-Reply-To: <s5htyyil4zl.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>, Andrew Morton <akpm@linux-foundation.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Takashi Iwai wrote:
+> At Thu, 01 Oct 2009 22:06:56 +0200,
+> Pavel Hofman wrote:
+>> Takashi Iwai wrote:
+>>> At Mon, 21 Sep 2009 20:38:08 +0200,
+>>>
+>>> Use sound-2.6.git tree on kernel.org together with alsa-driver-build.git
+>>> tree:
+>>>   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
+>>>   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/alsa-driver-build.git
+>>>
+>> Hi Takashi,
+>>
+>> I am sorry if I overlooked something but the gitcompile in
+>> alsa-driver-build.git does not work with the sound-2.6.git:
+> 
+> First run utils/setup-alsa-kernel with the path to sound-2.6 git
+> tree.  See "Compilation from Linux kernel tree" section in INSTALL
+> file.
+> 
+> The file structure of alsa-kernel isn't identical with linux kernel.
+> 
 
-On Fri, Oct 02, 2009 at 11:02:56AM +0200, Takashi Iwai wrote:
-> At Thu, 1 Oct 2009 10:53:55 +0200,
-> Uwe Kleine-K=F6nig wrote:
-> >=20
-> > On Thu, Oct 01, 2009 at 10:36:59AM +0200, Takashi Iwai wrote:
-> > > At Thu,  1 Oct 2009 10:28:10 +0200,
-> > > Uwe Kleine-K=F6nig wrote:
-> > > >=20
-> > > > The function hal2_remove is defined using __exit, so don't use =
-__devexit_p
-> > > > but __exit_p to wrap it.
-> > >=20
-> > > I think it's the other way round.  We should replace __exit with =
-__devexit.
-> > > Ditto for sound/mips/sgio2audio.c.
-> > Actually both ways are possible.  I choosed the alternative that do=
-esn't
-> > add bloat to the kernel.  The cost is that the device isn't hotplug=
-able,
-> > but you can still unload the module to unbind the driver.
->=20
-> Hm, is it really safe to set remove=3DNULL although the driver needs
-> some work at unbinding?  It looks like that unbind is allowed no
-> matter whether remove is NULL or not.  So, it would jus keeps stray
-> resources, and it might conflict at the next bind.
-I just tried that and you're right.  IMHO that's a bug.  Greg?
 
-Best regards
-Uwe
+Hi Takashi,
 
---=20
-Pengutronix e.K.                              | Uwe Kleine-K=F6nig     =
-       |
-Industrial Linux Solutions                    | http://www.pengutronix.=
-de/  |
+Thanks a lot, it works fine now. Should I add this information to the
+alsa-project wiki?
+
+Please could you commit the following patch? I had to check the script
+code to find out the actual meaning.
+
+Thanks,
+
+Pavel.
+
+
+diff --git a/utils/setup-alsa-kernel b/utils/setup-alsa-kernel
+index 47ecfe4..75be3b3 100755
+--- a/utils/setup-alsa-kernel
++++ b/utils/setup-alsa-kernel
+@@ -22,7 +22,7 @@ if [ -z "$1" ]; then
+ fi
+
+ if [ ! -d acore ]; then
+-    echo "Run this script on alsa-driver directory"
++    echo "Run this script in alsa-driver directory"
+     exit 1
+ fi
