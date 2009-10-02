@@ -1,22 +1,15 @@
-From: "Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=
-	=?utf-8?q?_=D8=B7=D9=87?=)" <munzirtaha@gmail.com>
-Subject: Re: My Codec: IDT 92HD75B3X5 issues
-Date: Fri, 2 Oct 2009 09:15:22 +0300
-Message-ID: <200910020915.23068.munzirtaha@gmail.com>
-References: <200909300818.31295.munzirtaha@gmail.com>
-	<200910020111.01552.munzirtaha@gmail.com>
-	<s5h1vlmmk8u.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: Improve the debugfs hierarchy
+Date: Fri,  2 Oct 2009 09:17:37 +0300
+Message-ID: <1254464257-884-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0AA32243A3
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6578243A9
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 08:15:27 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e12so2313209fga.2
-	for <alsa-devel@alsa-project.org>; Thu, 01 Oct 2009 23:15:26 -0700 (PDT)
-In-Reply-To: <s5h1vlmmk8u.wl%tiwai@suse.de>
+	Fri,  2 Oct 2009 08:18:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,51 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Yaum al-Jumma 12 Shawwal 1430 8:34:57 am Takashi Iwai wrote:
-> At Fri, 2 Oct 2009 01:11:01 +0300,
-> 
->  Munzir Taha (=?utf-8?q?=D9=85=D9=86=D8=B0=D8=B1?=   
-=?utf-8?q?_=D8=B7=D9=87?=) wrote:
-> > On Yaum al-Khamees 11 Shawwal 1430 5:42:56 pm Takashi Iwai wrote:
-> > > I found the culprit.  It's actually a bug happening between the analog
-> > > and the digital mic switches.
-> > > Try the patch below.
-> > >
-> > >
-> > > Takashi
-> >
-> > Dear Takashi,
-> > To complete this thread, what about missing options like
-> > 1. Disabling "Headphone Jack Sense" to allow both speakers and headphones
-> > to work together in case
-> 
-> You can give "hp_detect = 0" to hints via sysfs and reconfigure.
+Change the way the debugfs entries are created:
+If the codec->dev is valid, than use:
+debugfs/asoc/{codec->name}.{dev_name(codec->dev)}/
 
-But this is not user friendly. I used to see it as an option on other cards.
- 
-> > 2. jack retasking where I can plug my mic in the headphone jack and
-> > expect it to work
+if the codec->dev is NULL:
+debugfs/asoc/{codec->name}/
 
+as root for the debugfs entries.
 
-> I thought it works now?
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
 
-No. If I plug the mic in the mic jack it works but if I plug it in the 
-headphone jack it doesn't.
- 
-> > 2. Capture boost
-> 
-> "Mux" volume corresponds to it (for analog mic).
-> The digital mic has another capture volume independently on this codec.
+The patch applies on top of sound-2.6 topic/asoc
+commit 88439ac793934a47f47ad285656b63d09f5937c8
+	ASoC: add support for multiple cards/codecs in debugfs
 
-I will test this when I am back.
+ sound/soc/soc-core.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e4ab36d..1dec9d2 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1256,8 +1256,12 @@ static void soc_init_codec_debugfs(struct snd_soc_codec *codec)
+ {
+ 	char codec_root[128];
 
--- 
-Munzir Taha
-Telecommunications and Electronics Engineer
-Master CIW Designer, ICDL, MOUS, Linux+, LPI, SCSA
-Riyadh, SA
+-	snprintf(codec_root, sizeof(codec_root),
+-		 "%s-%s", dev_name(codec->socdev->dev), codec->name);
++	if (codec->dev)
++		snprintf(codec_root, sizeof(codec_root),
++			"%s.%s", codec->name, dev_name(codec->dev));
++	else
++		snprintf(codec_root, sizeof(codec_root),
++			"%s", codec->name);
+
+ 	codec->debugfs_codec_root = debugfs_create_dir(codec_root,
+ 						       debugfs_root);
+--
+1.6.5.rc2
