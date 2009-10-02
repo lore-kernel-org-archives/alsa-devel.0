@@ -1,19 +1,17 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: OFFTOPIC atkbd.c: Use 'setkeycodes... (Was: Re: My
- Codec: IDT 92HD75B3X5 issues)
-Date: Fri, 2 Oct 2009 14:41:13 +0200
-Message-ID: <20091002124112.GA2553@tango.0pointer.de>
-References: <598e9210910020512j67cfad99i7369bbd34228f3c0@mail.gmail.com>
+From: Achim Herrmann <Achim-Herrmann@t-online.de>
+Subject: Re: big latency and buffering question
+Date: Fri, 2 Oct 2009 15:19:01 +0200
+Message-ID: <200910021519.01914.Achim-Herrmann@t-online.de>
+References: <200910021255.48968.Achim-Herrmann@t-online.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id A648A2447F
+Received: from mailout06.t-online.de (mailout06.t-online.de [194.25.134.19])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E730244B0
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Oct 2009 14:41:38 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <598e9210910020512j67cfad99i7369bbd34228f3c0@mail.gmail.com>
+	Fri,  2 Oct 2009 15:19:27 +0200 (CEST)
+In-Reply-To: <200910021255.48968.Achim-Herrmann@t-online.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +24,52 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 02.10.09 15:12, Simos Xenitellis (simos.lists@googlemail.com) wrote:
+Hi,
 
-> Those keys are a 'HAL' thing. Until recently there has been a website
-> by the HAL developer
-> with detailed instructions. Search for 'HAL Quirk Site' on Google to
-> view the site in Google cache.
-> The website was not updated for some time
-> (http://www.mail-archive.com/pm-utils@lists.freedesktop.org/msg01594.html)
-> and being obsolete, it was probably taken down.
-> Your changes would need to make it eventually to the hal-info repository,
-> http://cgit.freedesktop.org/hal-info/
-> Use the Freedesktop Bugzilla, product 'hal' and component 'hal-info'
-> when reporting,
-> https://bugs.freedesktop.org/enter_bug.cgi?product=hal
+think the problem in pcm.c is, that period_time is hardcoded to 100000 (us). 
+Thus snd_pcm_hw_params_set_period_time_near() returns a high value for period 
+time. If I change period_time to buffer_time>>2, a much smaller value for 
+buffer_time is returned and sine signal is fine.
 
-That is actually no true anymore. HAL is dead and the keycode stuff
-has been moved to udev:
+Regards
+Achim
 
-http://git.kernel.org/?p=linux/hotplug/udev.git;a=tree;f=extras/keymap/keymaps
 
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+> Hi all,
+>
+> I'm completely new to sound and ALSA development and I have to develop an
+> application which is capturing periodically a small amount of audio data
+> (e.g. 64 frames), doing some processing and doing playback of the result.
+>
+> I started with ALSA example "pcm.c" to see if ALSA can meet these
+> requirements. During investigation i found out, that up to a choosen buffer
+> size of 140ms, generated sine sound is fine. Below 140ms, sound is
+> stuttering, independent of call method I'm using.
+>
+> For buffer size of 140ms I found out, that target buffer size is 6174
+> frames (at 44.1kHz sample rate), period size is 3087 frames and loop inside
+> write_and_poll function is calculated every 70 ms and 3087 frames are
+> written. Think this is doublebuffering then, right?
+>
+> But if I now choose a buffersize of 139 ms or lower, target buffer size and
+> period size are always the same. So no double buffering anymore and sound
+> is stuttering.
+>
+> So, currently I'm far away from goal. I'd like to have a buffer size of
+> e.g. 128 frames (2ms). Thus, period size should be 64 frames and loop
+> should be calculated every 1ms. (If necessary I would use Linux-RT)
+>
+> If I choose a buffersize of 2ms, sound is far away from being sine :-)
+>
+> - Can I use ALSA for a application described in first sentence above?
+>
+> - What do I have to change in pcm.c to be able to create a sine signal
+> using a buffersize of e.g. 128 frames and a period size of 64 frames?
+>
+> Any hints are appreciated
+> Thanks in advance
+> Achim
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
