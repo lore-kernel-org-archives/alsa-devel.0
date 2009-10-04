@@ -1,20 +1,20 @@
 From: AL13N <alien999999999@users.sourceforge.net>
 Subject: hda-intel via codec on optical sound [PARTIAL SUCCESS]
-Date: Mon, 5 Oct 2009 00:52:56 +0200
-Message-ID: <200910050052.56266.alien999999999@users.sourceforge.net>
+Date: Mon, 5 Oct 2009 01:02:32 +0200
+Message-ID: <200910050102.32284.alien999999999@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from hive.selfip.org (152-178-112-217.dyn.adsl.belcenter.be
 	[217.112.178.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 39B971037FB
+	by alsa0.perex.cz (Postfix) with ESMTP id ABB07103807
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 00:54:01 +0200 (CEST)
+	Mon,  5 Oct 2009 01:03:36 +0200 (CEST)
 Received: from lappy.hive.selfip.org (lappy.hive.selfip.org [10.238.9.253])
-	by hive.selfip.org (Postfix) with ESMTP id 6A96E1C4062
+	by hive.selfip.org (Postfix) with ESMTP id 60AC41C4062
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 00:54:00 +0200 (CEST)
+	Mon,  5 Oct 2009 01:03:36 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,6 +28,8 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+forget about all of it, i'm a stupid doofus
+-------------------------------------------------------
 First of all, I HAVE optical sound output.
 
 secondly, the hda analyzer still reports the connector as not_present
