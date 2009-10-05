@@ -1,19 +1,19 @@
 From: Li Bo <liboat@gmail.com>
-Subject: [PATCH 28/31] HDA patch_via.c:
-	vt1708_control_templates[] -> via_control_templates[].
-Date: Mon, 5 Oct 2009 22:28:35 +0800
-Message-ID: <16685ee0910050728t694b1d1av45663aa8246527ff@mail.gmail.com>
+Subject: [PATCH 30/31] HDA patch_via.c: comments: update
+	copyright, code 	description, changeset
+Date: Mon, 5 Oct 2009 22:28:42 +0800
+Message-ID: <16685ee0910050728w73895bddyf076e9e603b9411c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
 	[209.85.220.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id C911B1038AA
+	by alsa0.perex.cz (Postfix) with ESMTP id 9CD58103935
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 16:28:35 +0200 (CEST)
+	Mon,  5 Oct 2009 16:28:42 +0200 (CEST)
 Received: by mail-fx0-f212.google.com with SMTP id 8so2792157fxm.45
-	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:28:35 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:28:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,29 +27,36 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, LoganLi@viatech.com.cn, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-[ALSA] HDA VIA: vt1708_control_templates[] -> via_control_templates[].
+[ALSA] HDA VIA: comments: update copyright, code description, changeset
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 
 Index: sound-2.6/sound/pci/hda/patch_via.c
 ===================================================================
---- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-05 15:14:04.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-05 15:14:10.000000000 +0800
-@@ -336,7 +336,7 @@
- 			.put = bind_pin_switch_put,			\
- 			.private_value = HDA_COMPOSE_AMP_VAL(0, 3, 0, 0) }
-
--static struct snd_kcontrol_new vt1708_control_templates[] = {
-+static struct snd_kcontrol_new via_control_templates[] = {
- 	HDA_CODEC_VOLUME(NULL, 0, 0, 0),
- 	HDA_CODEC_MUTE(NULL, 0, 0, 0),
- 	ANALOG_INPUT_MUTE,
-@@ -399,7 +399,7 @@
- 	knew = snd_array_new(&spec->kctls);
- 	if (!knew)
- 		return -ENOMEM;
--	*knew = vt1708_control_templates[type];
-+	*knew = via_control_templates[type];
- 	knew->name = kstrdup(name, GFP_KERNEL);
- 	if (!knew->name)
- 		return -ENOMEM;
+--- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-05 15:14:16.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-05 15:14:19.000000000 +0800
+@@ -1,10 +1,10 @@
+ /*
+  * Universal Interface for Intel High Definition Audio Codec
+  *
+- * HD audio interface patch for VIA VT1702/VT1708/VT1709 codec
++ * HD audio interface patch for VIA VT17xx/VT20xx codec
+  *
+- * Copyright (c) 2006-2008 Lydia Wang <lydiawang@viatech.com>
+- *			   Takashi Iwai <tiwai@suse.de>
++ *  (C) 2006-2009 VIA Technology, Inc.
++ *  (C) 2006-2008 Takashi Iwai <tiwai@suse.de>
+  *
+  *  This driver is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published by
+@@ -36,6 +36,11 @@
+ /* 2008-04-09  Lydia Wang  Add Independent HP feature                        */
+ /* 2008-05-28  Lydia Wang  Add second S/PDIF Out support for VT1702	     */
+ /* 2008-09-15  Logan Li    Add VT1708S Mic Boost workaround/backdoor	     */
++/* 2009-02-16  Logan Li	   Add support for VT1718S			     */
++/* 2009-03-13  Logan Li	   Add support for VT1716S			     */
++/* 2009-04-14  Lydai Wang  Add support for VT1828S and VT2020		     */
++/* 2009-07-08  Lydia Wang  Add support for VT2002P			     */
++/* 2009-07-21  Lydia Wang  Add support for VT1812			     */
+ /*                                                                           */
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
