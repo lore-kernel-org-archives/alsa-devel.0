@@ -1,19 +1,19 @@
 From: Li Bo <liboat@gmail.com>
-Subject: [PATCH 14/31] HDA patch_via.c: Add Jack detect feature
-	for VT1708.
-Date: Mon, 5 Oct 2009 22:27:20 +0800
-Message-ID: <16685ee0910050727q4288fc76hdde23b431232d073@mail.gmail.com>
+Subject: [PATCH 15/31] HDA patch_via.c: Modify
+	vt1708_set_pinconfig_connect function.
+Date: Mon, 5 Oct 2009 22:27:26 +0800
+Message-ID: <16685ee0910050727y2734efd5yf931cbb4a79d07cd@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
-	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0DC9103878
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7AA6710385F
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 16:27:21 +0200 (CEST)
-Received: by bwz25 with SMTP id 25so10052327bwz.32
-	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:27:21 -0700 (PDT)
+	Mon,  5 Oct 2009 16:27:26 +0200 (CEST)
+Received: by mail-fx0-f212.google.com with SMTP id 8so2792157fxm.45
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:27:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,142 +27,30 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, LoganLi@viatech.com.cn, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-[ALSA] HDA VIA: Add Jack detect feature for VT1708.
+[ALSA] HDA VIA: Modify vt1708_set_pinconfig_connect function.
+
+like seqassoc 0xff, seqassoc 0xf0 of vt1708 should override Port
+Connectivity field into 'AC_JACK_PORT_COMPLEX'
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 
 Index: sound-2.6/sound/pci/hda/patch_via.c
 ===================================================================
---- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-05 15:10:22.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-05 15:10:36.000000000 +0800
-@@ -257,6 +257,11 @@
- 	unsigned int smart51_enabled;
- 	enum VIA_HDA_CODEC codec_type;
+--- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-05 15:10:36.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-05 15:10:49.000000000 +0800
+@@ -1725,11 +1725,10 @@
+ 	def_conf = snd_hda_codec_get_pincfg(codec, nid);
+ 	seqassoc = (unsigned char) get_defcfg_association(def_conf);
+ 	seqassoc = (seqassoc << 4) | get_defcfg_sequence(def_conf);
+-	if (get_defcfg_connect(def_conf) == AC_JACK_PORT_NONE) {
+-		if (seqassoc == 0xff) {
+-			def_conf = def_conf & (~(AC_JACK_PORT_BOTH << 30));
+-			snd_hda_codec_set_pincfg(codec, nid, def_conf);
+-		}
++	if (get_defcfg_connect(def_conf) == AC_JACK_PORT_NONE
++	    && (seqassoc == 0xf0 || seqassoc == 0xff)) {
++		def_conf = def_conf & (~(AC_JACK_PORT_BOTH << 30));
++		snd_hda_codec_set_pincfg(codec, nid, def_conf);
+ 	}
 
-+	/* work to check hp jack state */
-+	struct hda_codec *codec;
-+	struct delayed_work hp_jack_work;
-+	int vt1708_jack_detectect;
-+
- #ifdef CONFIG_SND_HDA_POWER_SAVE
- 	struct hda_loopback_check loopback;
- #endif
-@@ -966,6 +971,8 @@
- 	{0x20, AC_VERB_SET_CONNECT_SEL, 0x1},
- 	/* PW9 Output enable */
- 	{0x25, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
-+	/* power down jack detect function */
-+	{0x1, 0xf81, 0x1},
- 	{ }
- };
-
-@@ -1340,6 +1347,10 @@
- 		return;
-
- 	via_free_kctls(codec);
-+	if (spec->codec_type == VT1708) {
-+		cancel_delayed_work(&spec->hp_jack_work);
-+		flush_scheduled_work();
-+	}
- 	kfree(codec->spec);
- }
-
-@@ -1724,6 +1735,52 @@
  	return;
- }
-
-+static int vt1708_jack_detectect_get(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct via_spec *spec = codec->spec;
-+
-+	if (spec->codec_type != VT1708)
-+		return 0;
-+	spec->vt1708_jack_detectect =
-+		!((snd_hda_codec_read(codec, 0x1, 0, 0xf84, 0) >> 8) & 0x1);
-+	ucontrol->value.integer.value[0] = spec->vt1708_jack_detectect;
-+	return 0;
-+}
-+
-+static int vt1708_jack_detectect_put(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+	struct via_spec *spec = codec->spec;
-+	int change;
-+
-+	if (spec->codec_type != VT1708)
-+		return 0;
-+	spec->vt1708_jack_detectect = ucontrol->value.integer.value[0];
-+	snd_hda_codec_write(codec, 0x1, 0, 0xf81, !spec->vt1708_jack_detectect);
-+	change = (0x1 & (snd_hda_codec_read(codec, 0x1, 0, 0xf84, 0) >> 8))
-+		== !spec->vt1708_jack_detectect;
-+	if (spec->vt1708_jack_detectect) {
-+		mute_aa_path(codec, 1);
-+		notify_aa_path_ctls(codec);
-+	}
-+	return change;
-+}
-+
-+static struct snd_kcontrol_new vt1708_jack_detectect[] = {
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Jack Detect",
-+		.count = 1,
-+		.info = snd_ctl_boolean_mono_info,
-+		.get = vt1708_jack_detectect_get,
-+		.put = vt1708_jack_detectect_put,
-+	},
-+	{} /* end */
-+};
-+
- static int vt1708_parse_auto_config(struct hda_codec *codec)
- {
- 	struct via_spec *spec = codec->spec;
-@@ -1751,6 +1808,10 @@
- 	err = vt1708_auto_create_analog_input_ctls(spec, &spec->autocfg);
- 	if (err < 0)
- 		return err;
-+	/* add jack detect on/off control */
-+	err = snd_hda_add_new_ctls(codec, vt1708_jack_detectect);
-+	if (err < 0)
-+		return err;
-
- 	spec->multiout.max_channels = spec->multiout.num_dacs * 2;
-
-@@ -1784,6 +1845,24 @@
- 	return 0;
- }
-
-+static void update_hp_jack_state(struct work_struct *work)
-+{
-+	struct via_spec *spec = container_of(work, struct via_spec,
-+					     hp_jack_work.work);
-+	static int present = 1;
-+
-+	if (spec->codec_type != VT1708)
-+		return;
-+	/* if jack state toggled */
-+	if (present
-+	    != (snd_hda_codec_read(spec->codec, spec->autocfg.hp_pins[0], 0,
-+				   AC_VERB_GET_PIN_SENSE, 0) >> 31)) {
-+		present ^= 1;
-+		via_hp_automute(spec->codec);
-+	}
-+	schedule_delayed_work(&spec->hp_jack_work, msecs_to_jiffies(100));
-+}
-+
- static int get_mux_nids(struct hda_codec *codec)
- {
- 	struct via_spec *spec = codec->spec;
-@@ -1860,7 +1939,9 @@
- #ifdef CONFIG_SND_HDA_POWER_SAVE
- 	spec->loopback.amplist = vt1708_loopbacks;
- #endif
--
-+	spec->codec = codec;
-+	INIT_DELAYED_WORK(&spec->hp_jack_work, update_hp_jack_state);
-+	schedule_delayed_work(&spec->hp_jack_work, msecs_to_jiffies(100));
- 	return 0;
- }
