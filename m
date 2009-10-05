@@ -1,19 +1,19 @@
 From: Li Bo <liboat@gmail.com>
-Subject: [PATCH 16/31] HDA patch_via.c: Remove
-	via_playback_pcm_prepare/cleanup
-Date: Mon, 5 Oct 2009 22:27:30 +0800
-Message-ID: <16685ee0910050727s5a6c744h88d0b88dc72b87ce@mail.gmail.com>
+Subject: [PATCH 17/31] HDA patch_via.c: Add second S/PDIF out
+	control for VT1708S and VT1702.
+Date: Mon, 5 Oct 2009 22:27:35 +0800
+Message-ID: <16685ee0910050727n4f3eb80ah113d214815de6342@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
 	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 56FEC103899
+	by alsa0.perex.cz (Postfix) with ESMTP id A2DA71038A3
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 16:27:31 +0200 (CEST)
+	Mon,  5 Oct 2009 16:27:35 +0200 (CEST)
 Received: by mail-bw0-f225.google.com with SMTP id 25so10052327bwz.32
-	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:27:31 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:27:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,94 +27,34 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, LoganLi@viatech.com.cn, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-[ALSA] HDA VIA: Remove via_playback_pcm_prepare/cleanup
-
-replaced with via_playback_multi_pcm_prepare/cleanup to support
-multi-stream operations
+[ALSA] HDA VIA: Add second S/PDIF out control for VT1708S and VT1702.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 
 Index: sound-2.6/sound/pci/hda/patch_via.c
 ===================================================================
---- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-05 15:10:49.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-05 15:10:59.000000000 +0800
-@@ -989,26 +989,6 @@
- 					     hinfo);
- }
-
--static int via_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
--				    struct hda_codec *codec,
--				    unsigned int stream_tag,
--				    unsigned int format,
--				    struct snd_pcm_substream *substream)
--{
--	struct via_spec *spec = codec->spec;
--	return snd_hda_multi_out_analog_prepare(codec, &spec->multiout,
--						stream_tag, format, substream);
--}
--
--static int via_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
--				    struct hda_codec *codec,
--				    struct snd_pcm_substream *substream)
--{
--	struct via_spec *spec = codec->spec;
--	return snd_hda_multi_out_analog_cleanup(codec, &spec->multiout);
--}
--
--
- static void playback_multi_pcm_prep_0(struct hda_codec *codec,
- 				      unsigned int stream_tag,
- 				      unsigned int format,
-@@ -1217,7 +1197,7 @@
+--- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-05 15:10:59.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-05 15:11:02.000000000 +0800
+@@ -1265,6 +1265,13 @@
+ 		if (err < 0)
+ 			return err;
+ 		spec->multiout.share_spdif = 1;
++		/* lydia add for second spdif out */
++		if (spec->slave_dig_outs[0]) {
++			err = snd_hda_create_spdif_out_ctls(codec,
++						    spec->slave_dig_outs[0]);
++			if (err < 0)
++				return err;
++		}
+ 	}
+ 	if (spec->dig_in_nid) {
+ 		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in_nid);
+@@ -3127,7 +3134,7 @@
  };
 
- static struct hda_pcm_stream vt1708_pcm_analog_s16_playback = {
+ static struct hda_pcm_stream vt1708S_pcm_digital_playback = {
 -	.substreams = 1,
 +	.substreams = 2,
  	.channels_min = 2,
- 	.channels_max = 8,
- 	.nid = 0x10, /* NID to query formats and rates */
-@@ -1228,8 +1208,8 @@
- 	.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	.ops = {
- 		.open = via_playback_pcm_open,
--		.prepare = via_playback_pcm_prepare,
--		.cleanup = via_playback_pcm_cleanup
-+		.prepare = via_playback_multi_pcm_prepare,
-+		.cleanup = via_playback_multi_pcm_cleanup
- 	},
- };
-
-@@ -2023,8 +2003,8 @@
- 	.nid = 0x10, /* NID to query formats and rates */
- 	.ops = {
- 		.open = via_playback_pcm_open,
--		.prepare = via_playback_pcm_prepare,
--		.cleanup = via_playback_pcm_cleanup
-+		.prepare = via_playback_multi_pcm_prepare,
-+		.cleanup = via_playback_multi_pcm_cleanup,
- 	},
- };
-
-@@ -2035,8 +2015,8 @@
- 	.nid = 0x10, /* NID to query formats and rates */
- 	.ops = {
- 		.open = via_playback_pcm_open,
--		.prepare = via_playback_pcm_prepare,
--		.cleanup = via_playback_pcm_cleanup
-+		.prepare = via_playback_multi_pcm_prepare,
-+		.cleanup = via_playback_multi_pcm_cleanup,
- 	},
- };
-
-@@ -3127,8 +3107,8 @@
- 	.nid = 0x10, /* NID to query formats and rates */
- 	.ops = {
- 		.open = via_playback_pcm_open,
--		.prepare = via_playback_pcm_prepare,
--		.cleanup = via_playback_pcm_cleanup,
-+		.prepare = via_playback_multi_pcm_prepare,
-+		.cleanup = via_playback_multi_pcm_cleanup,
- 		.close = via_pcm_open_close
- 	},
- };
+ 	.channels_max = 2,
+ 	/* NID is set in via_build_pcms */
