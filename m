@@ -1,21 +1,25 @@
-From: AL13N <alien999999999@users.sourceforge.net>
-Subject: hda-intel via codec on optical sound [PARTIAL SUCCESS]
-Date: Mon, 5 Oct 2009 01:02:32 +0200
-Message-ID: <200910050102.32284.alien999999999@users.sourceforge.net>
+From: Aleksander Adamowski <alsa@olo.org.pl>
+Subject: Re: snd-hda-intel: no data when recording from mic,
+	"IRQ timing workaround is activated for card #0. Suggest a bigger
+	bdl_pos_adj" logged in kern.log
+Date: Mon, 5 Oct 2009 02:28:37 +0200
+Message-ID: <1c690d740910041728m2560476bsb22aa410e45777e9@mail.gmail.com>
+References: <1c690d740909221546i756e6724h45533c59f0a50179@mail.gmail.com>
+	<s5hy6o69p3a.wl%tiwai@suse.de>
+	<1c690d740909240023u6cc093d6hcf2d5766d7e1a58c@mail.gmail.com>
+	<s5hr5twvlw6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hive.selfip.org (152-178-112-217.dyn.adsl.belcenter.be
-	[217.112.178.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id ABB07103807
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB73F103804
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 01:03:36 +0200 (CEST)
-Received: from lappy.hive.selfip.org (lappy.hive.selfip.org [10.238.9.253])
-	by hive.selfip.org (Postfix) with ESMTP id 60AC41C4062
-	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 01:03:36 +0200 (CEST)
-Content-Disposition: inline
+	Mon,  5 Oct 2009 02:28:59 +0200 (CEST)
+Received: by yxe34 with SMTP id 34so885113yxe.16
+	for <alsa-devel@alsa-project.org>; Sun, 04 Oct 2009 17:28:58 -0700 (PDT)
+In-Reply-To: <s5hr5twvlw6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,359 +29,173 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-forget about all of it, i'm a stupid doofus
--------------------------------------------------------
-First of all, I HAVE optical sound output.
+On Thu, Sep 24, 2009 at 9:31 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> First try just with model=auto and no other options.
 
-secondly, the hda analyzer still reports the connector as not_present
+OK, after a couple days running with the alsa-driver-20090923 snapshot
+(with model=auto and no other options), I can see that the problem is
+mostly gone.
 
-thirdly, i probably have found a bug:
+The only time I can see "hda_intel: azx_get_response timeout,
+switching to single_cmd mode", is during a single system shutdown -
+the last kernel log entries look like this:
 
-* it happens when playing passthrough DD and DTS, as well as when using a52
-* what happens is that the front right is playing on the LFE (muffled, but 
-that's probably normal)
-* so when speakertesting -t wav -c 6 to a52 which points to hw0,1 , my optical 
-surround set recognizes it as dolby sound, no problem.
-* the sound "front right" as well as the LFE comes from the subwoofer.
-* keep in mind this also happens in passthrough.
+Oct  3 15:54:29 localhost kernel: [19194.705513] ALSA hda_intel.c:699:
+azx_get_response timeout, switching to polling mode: last
+cmd=0x00cb2001
+Oct  3 15:54:30 localhost kernel: [19195.709511] ALSA hda_intel.c:723:
+hda_intel: azx_get_response timeout, switching to single_cmd mode:
+last cmd=0x00cb2001
+Oct  3 15:54:30 localhost kernel: [19195.709649] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.709714] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.709778] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.709849] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.709918] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.709988] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710057] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710127] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710196] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710266] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710335] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710404] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710474] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710543] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710612] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710681] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710751] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710820] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710890] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.710960] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711029] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711098] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711168] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711237] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711306] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711376] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711445] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711514] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711584] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711654] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711724] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711793] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711862] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.711932] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712001] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712070] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712140] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712209] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712278] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712348] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712417] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712487] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712557] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712626] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712696] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712765] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712834] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712904] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.712973] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713043] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713113] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713183] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713252] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713322] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713391] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713460] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713534] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713604] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713673] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713743] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713812] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713882] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.713951] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.714021] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.714091] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.714160] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.714229] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
+Oct  3 15:54:30 localhost kernel: [19195.714299] ALSA hda_intel.c:647:
+spurious response 0x0:0x0, last cmd=0xc36180
 
+Obviously, I were unable to extract any diagnostic information or test
+whether recording was possible at the moment, since the system was
+shutting down.
 
-What i've done, is i'm using alsa-driver-1.0.21 (after seeing some digital out 
-changes between 19 and 21.)
+During subsequent shutdowns, I didn't observe those log messages.
 
-It is weird that it still says not_connected in codec#0, but the "-D 
-iec958:CARD=SB" seems to work fine.
-
-can anyone help me find the bug? or tell me this is not a bug?
-
-Sincerely,
-
-AL13N
-
-
------------------------------------------------------------------
-I have posted this, but no reaction on alsa-user...
-(i'm not on the alsa-devel list)
-
-Maybe this is a bug somewhere, that is what i wish to know.
-
-
-I have a onboard hda_intel card.
-
-it has 2 codes and is split in 2 parts:
- * via
- * atihdmi
-
-I want to have sound in the optical output SPDIF/TOSLINK whatever you want to 
-call it.
-
-hdanalyzer shows 2 digital pins:
- 0x20 ext SPDIF ATAPI
- 0x21 ext SPDIF Optical
-
-but both are marked as 'not present'.
-
-the "2d card has only one pin and one audio out"
-
-on the motherboard there is an internal SPDIF connector, which may be the 
-ATAPI one.
-
-I believe that the SPDIF Optical is the correct one. Why is it not present? is 
-that something software related? or is the audio chip broken?
-
-that is what i really want to know at this point. is it broken or can it be 
-fixed?
-
-
-
-
-mail sent to alsa-user:
---------------------------------------------------------------------------------------------------
-i have only an optical link to surround set, (which has worked before) to test 
-out.
-
-the toslink looks red on the surround endpoint. the surround system always 
-says: "no data" (analog stereo or DD or DTS causes it to show a diff text)
-
-when i play something, (be it stereo, DD or DTS sample) at iec958 , 
-the /proc/asound/card0/pcm1p/sub0/status shows effectively that the sound IS 
-running there.
-
-I've set all soundlevels to 75% and unmuted everything.
-
-i've looked at the codec#0 file and that may give something: node 0x21 
-(digital with optical connector) shows as not present.
-
-it looks like there are on seperate models for the VIA codec.
-
-how would i go solve this?
-
-Sincerely,
-
-AL13N
-
-aplay -l
------------
-**** List of PLAYBACK Hardware Devices ****
-card 0: SB [HDA ATI SB], device 0: VT1708S Analog [VT1708S Analog]
-  Subdevices: 2/2
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-card 0: SB [HDA ATI SB], device 1: VT1708S Digital [VT1708S Digital]
-  Subdevices: 2/2
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-card 1: HDMI [HDA ATI HDMI], device 3: ATI HDMI [ATI HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-codec#0:
-------------
-Codec: VIA VT1708S
-Address: 0
-Vendor Id: 0x11060397
-Subsystem Id: 0x1043836c
-Revision Id: 0x100000
-No Modem Function Group found
-Default PCM:
-    rates [0x0]:
-    bits [0x0]:
-    formats [0x0]:
-Default Amp-In caps: N/A
-Default Amp-Out caps: N/A
-GPIO: io=1, o=0, i=0, unsolicited=1, wake=0
-  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
-Node 0x10 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1f 0x1f]
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power: setting=D0, actual=D0
-Node 0x11 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1f 0x1f]
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power: setting=D0, actual=D0
-Node 0x12 [Audio Output] wcaps 0x611: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power: setting=D0, actual=D0
-Node 0x13 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x00 0x00]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x17
-Node 0x14 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x0b, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x00 0x00]
-  Converter: stream=0, channel=0
-  SDI-Select: 0
-  PCM:
-    rates [0x560]: 44100 48000 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x1e
-Node 0x15 [Audio Output] wcaps 0x611: Stereo Digital
-  Converter: stream=0, channel=0
-  Digital:
-  Digital category: 0x0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power: setting=D0, actual=D0
-Node 0x16 [Audio Mixer] wcaps 0x20050b: Stereo Amp-In
-  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
-  Amp-In vals:  [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] [0x00 0x00] 
-[0x97 0x97] [0x97 0x97]
-  Power: setting=D0, actual=D0
-  Connection: 7
-     0x10 0x1f 0x1a 0x1b 0x1e 0x1d 0x25
-Node 0x17 [Audio Selector] wcaps 0x300501: Stereo
-  Power: setting=D0, actual=D0
-  Connection: 6
-     0x1f 0x1a* 0x1b 0x1e 0x1d 0x16
-Node 0x18 [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x11
-Node 0x19 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x01011012: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-    DefAssociation = 0x1, Sequence = 0x2
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x18
-Node 0x1a [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x00002334: IN OUT Detect
-    Vref caps: HIZ 50 100
-  Pin Default 0x01a19036: [Jack] Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x3, Sequence = 0x6
-  Pin-ctls: 0x21: IN VREF_50
-  Unsolicited: tag=00, enabled=0
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x26
-Node 0x1b [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x00002334: IN OUT Detect
-    Vref caps: HIZ 50 100
-  Pin Default 0x0181303e: [Jack] Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-    DefAssociation = 0x3, Sequence = 0xe
-  Pin-ctls: 0x20: IN VREF_HIZ
-  Unsolicited: tag=00, enabled=0
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x18
-Node 0x1c [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0001001c: OUT HP EAPD Detect
-  EAPD 0x0:
-  Pin Default 0x01014010: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x1, Sequence = 0x0
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x16
-Node 0x1d [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Pincap 0x0000233c: IN OUT HP Detect
-    Vref caps: HIZ 50 100
-  Pin Default 0x0221401f: [Jack] HP Out at Ext Front
-    Conn = 1/8, Color = Green
-    DefAssociation = 0x1, Sequence = 0xf
-  Pin-ctls: 0xc0: OUT HP VREF_HIZ
-  Unsolicited: tag=01, enabled=1
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x16* 0x25
-Node 0x1e [Pin Complex] wcaps 0x40058d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x80 0x80]
-  Pincap 0x0000233c: IN OUT HP Detect
-    Vref caps: HIZ 50 100
-  Pin Default 0x02a19038: [Jack] Mic at Ext Front
-    Conn = 1/8, Color = Pink
-    DefAssociation = 0x3, Sequence = 0x8
-  Pin-ctls: 0x21: IN VREF_50
-  Unsolicited: tag=00, enabled=0
-  Power: setting=D0, actual=D0
-  Connection: 2
-     0x16* 0x25
-Node 0x1f [Pin Complex] wcaps 0x400401: Stereo
-  Pincap 0x00000020: IN
-  Pin Default 0x503701f7: [N/A] CD at Int N/A
-    Conn = Analog, Color = Unknown
-    DefAssociation = 0xf, Sequence = 0x7
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x00:
-  Power: setting=D0, actual=D0
-Node 0x20 [Pin Complex] wcaps 0x400701: Stereo Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x074311f0: [Jack] SPDIF Out at Ext Rear Panel
-    Conn = ATAPI, Color = Black
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x12
-Node 0x21 [Pin Complex] wcaps 0x400701: Stereo Digital
-  Pincap 0x00000010: OUT
-  Pin Default 0x074521f0: [Jack] SPDIF Out at Ext Rear Panel
-    Conn = Optical, Color = Grey
-    DefAssociation = 0xf, Sequence = 0x0
-    Misc = NO_PRESENCE
-  Pin-ctls: 0x40: OUT
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x15
-Node 0x22 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x01016011: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-    DefAssociation = 0x1, Sequence = 0x1
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x26
-Node 0x23 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x00000014: OUT Detect
-  Pin Default 0x01012014: [Jack] Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-    DefAssociation = 0x1, Sequence = 0x4
-  Pin-ctls: 0x40: OUT
-  Unsolicited: tag=00, enabled=0
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x27
-Node 0x24 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1f 0x1f]
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power: setting=D0, actual=D0
-Node 0x25 [Audio Output] wcaps 0x41d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x2a, nsteps=0x2a, stepsize=0x05, mute=0
-  Amp-Out vals:  [0x1f 0x1f]
-  Converter: stream=0, channel=0
-  PCM:
-    rates [0x5e0]: 44100 48000 88200 96000 192000
-    bits [0xe]: 16 20 24
-    formats [0x1]: PCM
-  Power: setting=D0, actual=D0
-Node 0x26 [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x24
-Node 0x27 [Audio Selector] wcaps 0x30050d: Stereo Amp-Out
-  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-  Amp-Out vals:  [0x00 0x00]
-  Power: setting=D0, actual=D0
-  Connection: 1
-     0x25
-
-
+I'm curious what could cause them, though.
 
 -- 
-AL13N is my name and head-biting is my game.
+Best Regards,
+  Aleksander Adamowski
+  http://olo.org.pl
