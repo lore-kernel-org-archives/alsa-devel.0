@@ -1,18 +1,19 @@
 From: Li Bo <liboat@gmail.com>
-Subject: [PATCH 12/31] HDA patch_via.c: Add VIA_JACK_EVENT
-	process in via_unsol_event.
-Date: Mon, 5 Oct 2009 22:26:22 +0800
-Message-ID: <16685ee0910050726t5808289eve198bd4ef7c96d4f@mail.gmail.com>
+Subject: [PATCH 9/31] HDA patch_via.c: Rewrite
+	via_independent_hp_put
+Date: Mon, 5 Oct 2009 22:25:21 +0800
+Message-ID: <16685ee0910050725x5002c835tee182ff500a2f3fe@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.159])
-	by alsa0.perex.cz (Postfix) with ESMTP id D3566103803
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A694103875
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 16:26:22 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id 22so1164080fge.2
-	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:26:22 -0700 (PDT)
+	Mon,  5 Oct 2009 16:25:21 +0200 (CEST)
+Received: by mail-fx0-f212.google.com with SMTP id 8so2789765fxm.45
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:25:21 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,92 +27,152 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, LoganLi@viatech.com.cn, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-[ALSA] HDA VIA: Add VIA_JACK_EVENT process in via_unsol_event.
+[ALSA] HDA VIA: Rewrite via_independent_hp_put
+
+Use hp_independent_mode_index to store hp index, and simplify function
+via_independent_hp_put with it.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 
 Index: sound-2.6/sound/pci/hda/patch_via.c
 ===================================================================
---- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-05 15:10:05.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-05 15:10:13.000000000 +0800
-@@ -124,6 +124,7 @@
+--- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-05 15:09:33.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-05 15:09:46.000000000 +0800
+@@ -252,6 +252,7 @@
+ 	/* HP mode source */
+ 	const struct hda_input_mux *hp_mux;
+ 	unsigned int hp_independent_mode;
++	unsigned int hp_independent_mode_index;
 
- #define VIA_HP_EVENT		0x01
- #define VIA_GPIO_EVENT		0x02
-+#define VIA_JACK_EVENT		0x04
+ 	enum VIA_HDA_CODEC codec_type;
 
- enum {
- 	VIA_CTL_WIDGET_VOL,
-@@ -1408,10 +1409,12 @@
- 				  unsigned int res)
- {
- 	res >>= 26;
--	if (res == VIA_HP_EVENT)
-+	if (res & VIA_HP_EVENT)
- 		via_hp_automute(codec);
--	else if (res == VIA_GPIO_EVENT)
-+	if (res & VIA_GPIO_EVENT)
- 		via_gpio_control(codec);
-+	if (res & VIA_JACK_EVENT)
-+		set_jack_power_state(codec);
+@@ -589,6 +590,30 @@
+ 	return 0;
  }
 
- static int via_init(struct hda_codec *codec)
-@@ -1873,7 +1876,8 @@
- };
++static int update_side_mute_status(struct hda_codec *codec)
++{
++	/* mute side channel */
++	struct via_spec *spec = codec->spec;
++	unsigned int parm = spec->hp_independent_mode
++		? AMP_OUT_MUTE : AMP_OUT_UNMUTE;
++	hda_nid_t nids_sw3[CODEC_TYPES] = {
++		[VT1708] = 0x1b,
++		[VT1709_10CH] = 0x29,
++		[VT1709_6CH] = 0,
++		[VT1708B_8CH] = 0x27,
++		[VT1708B_4CH] = 0,
++		[VT1708S] = 0x27,
++		[VT1702] = 0,
++	};
++
++	if (!nids_sw3[spec->codec_type])
++		return 0;
++
++	snd_hda_codec_write(codec, nids_sw3[spec->codec_type], 0,
++			    AC_VERB_SET_AMP_GAIN_MUTE, parm);
++	return 0;
++}
++
+ static int via_independent_hp_put(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -596,47 +621,19 @@
+ 	struct via_spec *spec = codec->spec;
+ 	hda_nid_t nid = spec->autocfg.hp_pins[0];
+ 	unsigned int pinsel = ucontrol->value.enumerated.item[0];
+-	unsigned int con_nid = snd_hda_codec_read(codec, nid, 0,
+-					 AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
 
- static struct hda_verb vt1709_uniwill_init_verbs[] = {
--	{0x20, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_HP_EVENT},
-+	{0x20, AC_VERB_SET_UNSOLICITED_ENABLE,
-+	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
- 	{ }
- };
+-	if (con_nid == spec->multiout.hp_nid) {
+-		if (pinsel == 0) {
+-			if (!spec->hp_independent_mode) {
+-				if (spec->multiout.num_dacs > 1)
+-					spec->multiout.num_dacs -= 1;
+-				spec->hp_independent_mode = 1;
+-			}
+-		} else if (pinsel == 1) {
+-		       if (spec->hp_independent_mode) {
+-				if (spec->multiout.num_dacs > 1)
+-					spec->multiout.num_dacs += 1;
+-				spec->hp_independent_mode = 0;
+-		       }
+-		}
+-	} else {
+-		if (pinsel == 0) {
+-			if (spec->hp_independent_mode) {
+-				if (spec->multiout.num_dacs > 1)
+-					spec->multiout.num_dacs += 1;
+-				spec->hp_independent_mode = 0;
+-			}
+-		} else if (pinsel == 1) {
+-		       if (!spec->hp_independent_mode) {
+-				if (spec->multiout.num_dacs > 1)
+-					spec->multiout.num_dacs -= 1;
+-				spec->hp_independent_mode = 1;
+-		       }
+-		}
+-	}
+-	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CONNECT_SEL,
+-			    pinsel);
+-
+-	if (spec->multiout.hp_nid &&
+-	    spec->multiout.hp_nid != spec->multiout.dac_nids[HDA_FRONT])
+-			snd_hda_codec_setup_stream(codec,
+-						   spec->multiout.hp_nid,
+-						   0, 0, 0);
++	/* Get Independent Mode index of headphone pin widget */
++	spec->hp_independent_mode = spec->hp_independent_mode_index == pinsel
++		? 1 : 0;
++
++	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CONNECT_SEL, pinsel);
++
++	if (spec->multiout.hp_nid && spec->multiout.hp_nid
++	    != spec->multiout.dac_nids[HDA_FRONT])
++		snd_hda_codec_setup_stream(codec, spec->multiout.hp_nid,
++					   0, 0, 0);
 
-@@ -2509,7 +2513,15 @@
- };
++	update_side_mute_status(codec);
+ 	return 0;
+ }
 
- static struct hda_verb vt1708B_uniwill_init_verbs[] = {
--	{0x1D, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_HP_EVENT},
-+	{0x1d, AC_VERB_SET_UNSOLICITED_ENABLE,
-+	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
-+	{0x19, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x1a, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x1c, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x1e, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x22, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x23, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
- 	{ }
- };
+@@ -1444,6 +1441,7 @@
+ 		return 0;
 
-@@ -3004,7 +3016,15 @@
- };
+ 	spec->multiout.hp_nid = VT1708_HP_NID; /* AOW3 */
++	spec->hp_independent_mode_index = 1;
 
- static struct hda_verb vt1708S_uniwill_init_verbs[] = {
--	{0x1D, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_HP_EVENT},
-+	{0x1d, AC_VERB_SET_UNSOLICITED_ENABLE,
-+	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
-+	{0x19, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x1a, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x1c, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x1e, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x22, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x23, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
- 	{ }
- };
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
+@@ -1979,6 +1977,7 @@
+ 		spec->multiout.hp_nid = VT1709_HP_DAC_NID;
+ 	else if (spec->multiout.num_dacs == 3) /* 6 channels */
+ 		spec->multiout.hp_nid = 0;
++	spec->hp_independent_mode_index = 1;
 
-@@ -3443,8 +3463,12 @@
- };
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
+@@ -2538,6 +2537,7 @@
+ 		return 0;
 
- static struct hda_verb vt1702_uniwill_init_verbs[] = {
--	{0x01, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_GPIO_EVENT},
--	{0x17, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_HP_EVENT},
-+	{0x17, AC_VERB_SET_UNSOLICITED_ENABLE,
-+	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
-+	{0x14, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x16, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
-+	{0x18, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
- 	{ }
- };
+ 	spec->multiout.hp_nid = VT1708B_HP_NID; /* AOW3 */
++	spec->hp_independent_mode_index = 1;
+
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
+@@ -3008,6 +3008,7 @@
+ 		return 0;
+
+ 	spec->multiout.hp_nid = VT1708S_HP_NID; /* AOW3 */
++	spec->hp_independent_mode_index = 1;
+
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
+@@ -3367,6 +3368,7 @@
+ 	if (!pin)
+ 		return 0;
+ 	spec->multiout.hp_nid = 0x1D;
++	spec->hp_independent_mode_index = 0;
+
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
