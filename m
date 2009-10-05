@@ -1,19 +1,19 @@
 From: Li Bo <liboat@gmail.com>
-Subject: [PATCH 1/31] HDA patch_via.c: Remove
-	IS_VT17xx_VENDORID macro
-Date: Mon, 5 Oct 2009 21:28:00 +0800
-Message-ID: <16685ee0910050628r328962bbt1af7e429264868d3@mail.gmail.com>
+Subject: [PATCH 2/31] HDA patch_via.c: Change get_codec_type
+	argument to hda_codec type
+Date: Mon, 5 Oct 2009 22:24:40 +0800
+Message-ID: <16685ee0910050724s125cf4agd90cdcf98b92e2fe@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
-	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id E3ADC244C2
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 68E59243D1
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 15:28:01 +0200 (CEST)
-Received: by bwz25 with SMTP id 25so9937800bwz.32
-	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 06:28:00 -0700 (PDT)
+	Mon,  5 Oct 2009 16:24:43 +0200 (CEST)
+Received: by fxm8 with SMTP id 8so2789765fxm.45
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 07:24:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,26 +27,40 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, LoganLi@viatech.com.cn, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-[ALSA] HDA VIA: Remove IS_VT17xx_VENDORID macro
+[ALSA] HDA VIA: Change get_codec_type argument to hda_codec type
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 
 Index: sound-2.6/sound/pci/hda/patch_via.c
 ===================================================================
---- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-09-29 18:01:12.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_via.c	2009-09-29 18:01:16.000000000 +0800
-@@ -76,14 +76,6 @@
- #define VT1702_HP_NID		0x17
- #define VT1702_DIGOUT_NID	0x11
+--- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-10-04 23:01:14.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_via.c	2009-10-04 23:05:10.000000000 +0800
+@@ -88,8 +88,9 @@
+ 	CODEC_TYPES,
+ };
 
--#define IS_VT1708_VENDORID(x)		((x) >= 0x11061708 && (x) <= 0x1106170b)
--#define IS_VT1709_10CH_VENDORID(x)	((x) >= 0x1106e710 && (x) <= 0x1106e713)
--#define IS_VT1709_6CH_VENDORID(x)	((x) >= 0x1106e714 && (x) <= 0x1106e717)
--#define IS_VT1708B_8CH_VENDORID(x)	((x) >= 0x1106e720 && (x) <= 0x1106e723)
--#define IS_VT1708B_4CH_VENDORID(x)	((x) >= 0x1106e724 && (x) <= 0x1106e727)
--#define IS_VT1708S_VENDORID(x)		((x) >= 0x11060397 && (x) <= 0x11067397)
--#define IS_VT1702_VENDORID(x)		((x) >= 0x11060398 && (x) <= 0x11067398)
--
- enum VIA_HDA_CODEC {
- 	UNKNOWN = -1,
- 	VT1708,
+-static enum VIA_HDA_CODEC get_codec_type(u32 vendor_id)
++static enum VIA_HDA_CODEC get_codec_type(struct hda_codec *codec)
+ {
++	u32 vendor_id = codec->vendor_id;
+ 	u16 ven_id = vendor_id >> 16;
+ 	u16 dev_id = vendor_id & 0xffff;
+ 	enum VIA_HDA_CODEC codec_type;
+@@ -141,7 +142,7 @@
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	hda_nid_t nid = get_amp_nid(kcontrol);
+
+-	if (get_codec_type(codec->vendor_id) == VT1708S
++	if (get_codec_type(codec) == VT1708S
+ 	    && (nid == 0x1a || nid == 0x1e)) {
+ 		if (size < 4 * sizeof(unsigned int))
+ 			return -ENOMEM;
+@@ -163,7 +164,7 @@
+ 	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
+ 	hda_nid_t nid = get_amp_nid(kcontrol);
+
+-	if (get_codec_type(codec->vendor_id) == VT1708S
++	if (get_codec_type(codec) == VT1708S
+ 	    && (nid == 0x1a || nid == 0x1e)) {
+ 		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
+ 		uinfo->count = 2;
