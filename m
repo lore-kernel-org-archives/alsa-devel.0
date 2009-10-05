@@ -1,16 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Mon, 5 Oct 2009 10:35:52 +0100
-Message-ID: <20091005093552.GA14528@rakim.wolfsonmicro.main>
+From: Anna Keenan <anna.c.keenan@gmail.com>
+Subject: step-by-step usb-snd-audio instructions?
+Date: Mon, 5 Oct 2009 11:53:12 +0200
+Message-ID: <81fc051a0910050253q1ccab11ax43c75aaddacbc77d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 57BFD2437C
+Received: from mail-gx0-f210.google.com (mail-gx0-f210.google.com
+	[209.85.217.210])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8170D24395
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 11:35:54 +0200 (CEST)
-Content-Disposition: inline
+	Mon,  5 Oct 2009 11:53:13 +0200 (CEST)
+Received: by gxk2 with SMTP id 2so3596116gxk.4
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 02:53:12 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,24 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 834eb6c599a8efa1fe9b77d469562e0c78c876e1:
-  Mark Brown (1):
-        Merge remote branch 'takashi/fix/asoc' into for-2.6.32
+Hi there ALSA people,
 
-are available in the git repository at:
+I'm very new to Linux, running an eee pc 1000H withLinux Easypeasy 1.5 and
+the new skype beta. I love my USB headset - I'm frequently on international
+skype conference calls and on other operating systems I've found that
+nothing else gives me a clear sound.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+But I am apparently missing the usb-snd-audio driver, as it doesn't come
+packaged with Easypeasy, so my beloved headset won't function. Skype audio
+is generally also really crackly when i'm using the normal microphone and
+speakers, but i think that's a different problem.
 
-Jonathan Cameron (1):
-      ASoC: wm8940: Fix check on error code form snd_soc_codec_set_cache_io
+Does anyone out there have step-by-step instructions on how to add the
+snd-usb-audio driver? I've found no user-friendly 'how to' online, despite
+hours trawling (and posting on) forums...
 
-Peter Ujfalusi (1):
-      ASoC: Fix SND_SOC_DAPM_LINE handling
+I would *so* love some help or even a response telling where else I should
+be looking for help...
 
- sound/soc/codecs/wm8940.c |    2 +-
- sound/soc/soc-dapm.c      |    5 +++--
- 2 files changed, 4 insertions(+), 3 deletions(-)
+Anna K
+--
+Anna Keenan
+Youth Climate Advocate
++31 6 45043 155 (Netherlands)
++61 (0)4 1979 2263 (Global)
+Skype ID: anna.c.keenan
+
+"If you don't change course, you'll end up where you're heading."
+
+www.itsgettinghotinhere.org
+http://climatechangeperspectives.blogspot.com
