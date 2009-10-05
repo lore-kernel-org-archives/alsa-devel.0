@@ -1,17 +1,19 @@
 From: Li Bo <liboat@gmail.com>
-Subject: [PATCH 0/31] HDA patch_via.c update
-Date: Mon, 5 Oct 2009 21:15:06 +0800
-Message-ID: <16685ee0910050615t2f68c4efp71aeb5a9509dd12a@mail.gmail.com>
+Subject: [PATCH 1/31] HDA patch_via.c: Remove
+	IS_VT17xx_VENDORID macro
+Date: Mon, 5 Oct 2009 21:28:00 +0800
+Message-ID: <16685ee0910050628r328962bbt1af7e429264868d3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
-	by alsa0.perex.cz (Postfix) with ESMTP id D1A49244B4
+Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
+	[209.85.218.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3ADC244C2
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Oct 2009 15:15:07 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e12so584706fga.2
-	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 06:15:06 -0700 (PDT)
+	Mon,  5 Oct 2009 15:28:01 +0200 (CEST)
+Received: by bwz25 with SMTP id 25so9937800bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 06:28:00 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,14 +27,26 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, LoganLi@viatech.com.cn, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+[ALSA] HDA VIA: Remove IS_VT17xx_VENDORID macro
 
-Following are a series of patches for patch_via.c, started from git clone of
-git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6 recently.
+Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 
-Please have a review and give comments, thank you!
+Index: sound-2.6/sound/pci/hda/patch_via.c
+===================================================================
+--- sound-2.6.orig/sound/pci/hda/patch_via.c	2009-09-29 18:01:12.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_via.c	2009-09-29 18:01:16.000000000 +0800
+@@ -76,14 +76,6 @@
+ #define VT1702_HP_NID		0x17
+ #define VT1702_DIGOUT_NID	0x11
 
-Outlook Access Web cannot send plain-text mail, so my gmail is used
-instead.
-You can also contact with me with LoganLi@viatech.com.cn, or
-mail to HaraldWelte@viatech.com and lydiawang@viatech.com.cn.
+-#define IS_VT1708_VENDORID(x)		((x) >= 0x11061708 && (x) <= 0x1106170b)
+-#define IS_VT1709_10CH_VENDORID(x)	((x) >= 0x1106e710 && (x) <= 0x1106e713)
+-#define IS_VT1709_6CH_VENDORID(x)	((x) >= 0x1106e714 && (x) <= 0x1106e717)
+-#define IS_VT1708B_8CH_VENDORID(x)	((x) >= 0x1106e720 && (x) <= 0x1106e723)
+-#define IS_VT1708B_4CH_VENDORID(x)	((x) >= 0x1106e724 && (x) <= 0x1106e727)
+-#define IS_VT1708S_VENDORID(x)		((x) >= 0x11060397 && (x) <= 0x11067397)
+-#define IS_VT1702_VENDORID(x)		((x) >= 0x11060398 && (x) <= 0x11067398)
+-
+ enum VIA_HDA_CODEC {
+ 	UNKNOWN = -1,
+ 	VT1708,
