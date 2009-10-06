@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH] ascenario: Add scenario support to alsa-lib
-Date: Tue, 06 Oct 2009 11:13:36 +0200
-Message-ID: <s5hws387um7.wl%tiwai@suse.de>
+Date: Tue, 06 Oct 2009 11:28:18 +0200
+Message-ID: <s5hvdis7txp.wl%tiwai@suse.de>
 References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
 	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
 	<20091001122835.GC14417@sirena.org.uk>
@@ -18,9 +18,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17CB31038DF
+	by alsa0.perex.cz (Postfix) with ESMTP id 30CED1038EE
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Oct 2009 11:13:39 +0200 (CEST)
+	Tue,  6 Oct 2009 11:28:19 +0200 (CEST)
 In-Reply-To: <alpine.LNX.2.00.0910061048410.31529@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,6 +34,8 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Jaroslav Kysela <perex@perex.cz>
 Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
+
+[Forgot to follow up the first part]
 
 At Tue, 6 Oct 2009 11:00:18 +0200 (CEST),
 Jaroslav Kysela wrote:
@@ -95,44 +97,25 @@ Jaroslav Kysela wrote:
 > > ("What type do I have to pass for SND_SCENARIO_XXX on earth???").
 > 
 > It might be solved with inline functions in header files to cover all 
-> types. My opinion is to not use so much function in alsa-lib for each 
+> types.
+
+Yes, but then why not providing functions for all types from the
+beginning?  There shouldn't be so many different types.
+
+A void pointer is nice for closures or an API like X protocol, but I
+find no big merit in a small API set like scenario.
+
+Well, it's just an implementation detail, though.
+
+> My opinion is to not use so much function in alsa-lib for each 
 > trivial interfaces.
-> 
-> > I personally have no particular preference regarding the configuration
-> > syntax between these two, but...
-> >
-> >> Also, I would like to consider moving the parser from alsactl
-> >> initialization code (see alsactl_init.c in alsa-utils package) to alsa-lib
-> >> and use this parser also for these files. It gives much flexibility,
-> >> although udev-like syntax is not ideal, I know.
-> >
-> > Not ideal, it's awful :)  So please don't spread it over...
-> 
-> It's not so awful. The base syntax is very clear in form key->value 
-> binding. What's awful on this?
-> 
-> CTL{reset}="mixer"
-> CTL{name}="Master Playback Volume", CTL{value}="-21dB"
-> CTL{name}="Master Playback Switch", CTL{value}="on"
-> CTL{name}="Headphone Playback Switch", CTL{value}="on,on"
-> CTL{name}="Front Playback Volume", CTL{value}="-29dB,-29dB"
-> CTL{name}="Front Playback Switch", CTL{value}="on,on"
-> CTL{name}="PCM Playback Volume", CTL{value}="0dB,0dB"
- 
-This is all fine, but as you wrote below:
 
-> Solving complex tasks requires complex description.
+We do have it per design, no?
 
-This is the reality.
-The alsactl's default config shows its limit.
-
-> I'm open to 
-> discuss things to make this udev-like syntax more nice. The most 
-> irritating thing in this syntax are build-in commands for me, but having 
-> another special key for these actions are not a big win, because 
-> configuration writers must learn them.
-
-The crazy goto is also painful.  It reminds me the day of MS BASIC.
+The question is rather how often a "trivial" interface would be added
+in future.  If the expected extension is limited, we don't have to
+worry  about this too much.  Just adding a few new functions would be
+much easier to maintain.
 
 
 thanks,
