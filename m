@@ -1,22 +1,18 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: [PATCH 18/31] HDA patch_via.c: Add 48K sample rate
-	limit for S/PDIF streams.
-Date: Mon, 5 Oct 2009 18:07:27 -0600
-Message-ID: <51f3faa70910051707m611b5bc9x4ab1376256822b5b@mail.gmail.com>
-References: <16685ee0910050727k409b03fdj1b03afd9c9521db2@mail.gmail.com>
-	<s5h4oqd6ff0.wl%tiwai@suse.de>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: dev_* output functions and ASoC codecs
+Date: Mon, 5 Oct 2009 20:18:03 -0400
+Message-ID: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f199.google.com (mail-iw0-f199.google.com
-	[209.85.223.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 774C41037EE
+Received: from mail-yw0-f192.google.com (mail-yw0-f192.google.com
+	[209.85.211.192])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B43E1037EE
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Oct 2009 02:07:28 +0200 (CEST)
-Received: by iwn37 with SMTP id 37so1878995iwn.16
-	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 17:07:27 -0700 (PDT)
-In-Reply-To: <s5h4oqd6ff0.wl%tiwai@suse.de>
+	Tue,  6 Oct 2009 02:18:23 +0200 (CEST)
+Received: by ywh30 with SMTP id 30so3489458ywh.23
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 17:18:23 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,18 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Li Bo <liboat@gmail.com>, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, LoganLi@viatech.com.cn, lydiawang@viatech.com.cn
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Cai, Cliff" <Cliff.Cai@analog.com>, Barry Song <21cnbao@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 5, 2009 at 9:14 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 5 Oct 2009 22:27:43 +0800,
-> Li Bo wrote:
->>
->> [ALSA] HDA VIA: Add 48K sample rate limit for S/PDIF streams.
->>
->> Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
->
-> Any reason?
+am i doing something wrong or are the dev_* output functions kind of
+useless with ASoC codecs ?  it seems like the error output is prefixed
+by the generic "soc-audio" but no info related to the exact codec is
+included.
 
-Indeed, if this is required it's a pretty bad limitation..
+as an example, the typical behavior is for the machine driver to call
+platform_device_alloc("soc-audio", -1).  this struct device is then
+passed down to the relevant subsystem driver register/probe
+(i2c/spi/etc...) to the codec driver.  these functions typically then
+set the snd_soc_codec's dev member to the allocated platform device.
+which means the snd_soc_codec's name member isnt included in decoding.
+ so now any dev_* output in the codec driver looks like:
+soc-audio soc-audio: some message
+
+if there are multiple codecs, things obviously fall apart quickly.
+the question is how to address this.  werent there snd_* output funcs
+before ?  or are those now deprecated/dead ?  or perhaps we should
+encourage people to stop doing platform_device_alloc("soc-audio") and
+start doing platform_device_alloc(snd_soc_card.name) ?
+
+also, there seems to be a semi-common bug in the codec/machine drivers
+where they dont actually initialize the dev member.  perhaps it's time
+to upgrade the snd_soc_register_codec() check from a KERN_WARNING to a
+BUG_ON() ?  clearly the current warning isnt getting its message
+through ...
+-mike
