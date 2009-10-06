@@ -1,28 +1,27 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ascenario: Add scenario support to alsa-lib
-Date: Tue, 6 Oct 2009 13:05:42 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.0910061302330.31529@eeebox2.perex-int.cz>
-References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
-	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
-	<20091001122835.GC14417@sirena.org.uk>
-	<20091001131948.GA5936@excalibur.local>
-	<20091001150849.GE5936@excalibur.local>
-	<20091005082747.GA3983@excalibur.local>
-	<alpine.LNX.2.00.0910051111220.31529@eeebox2.perex-int.cz>
-	<20091005093502.GC3983@excalibur.local>
-	<alpine.LNX.2.00.0910060949070.31529@eeebox2.perex-int.cz>
-	<s5hzl847w3q.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0910061048410.31529@eeebox2.perex-int.cz>
-	<s5hvdis7txp.wl%tiwai@suse.de>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 2/2] ASoC: Blackfin
+	AD1836/AD1938 machine drivers: require SPI master
+Date: Tue, 6 Oct 2009 07:32:30 -0400
+Message-ID: <8bd0f97a0910060432o67e9d00bu84c0139701709e63@mail.gmail.com>
+References: <1254808311-3594-1-git-send-email-vapier@gentoo.org>
+	<1254808311-3594-2-git-send-email-vapier@gentoo.org>
+	<20091006093325.GA10118@rakim.wolfsonmicro.main>
+	<8bd0f97a0910060241k1155d38cmafe623501106d598@mail.gmail.com>
+	<20091006095018.GB27168@sirena.org.uk>
+	<8bd0f97a0910060300m7fa80daas63afd272ba85fb16@mail.gmail.com>
+	<20091006103952.GC10118@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82FD724392
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10AC2243C2
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Oct 2009 13:05:42 +0200 (CEST)
-In-Reply-To: <s5hvdis7txp.wl%tiwai@suse.de>
+	Tue,  6 Oct 2009 13:32:51 +0200 (CEST)
+Received: by yxe34 with SMTP id 34so2115161yxe.16
+	for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2009 04:32:50 -0700 (PDT)
+In-Reply-To: <20091006103952.GC10118@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,88 +31,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 6 Oct 2009, Takashi Iwai wrote:
-
-> [Forgot to follow up the first part]
->
-> At Tue, 6 Oct 2009 11:00:18 +0200 (CEST),
-> Jaroslav Kysela wrote:
->>
->> On Tue, 6 Oct 2009, Takashi Iwai wrote:
->>
->>> At Tue, 6 Oct 2009 10:23:56 +0200 (CEST),
->>> Jaroslav Kysela wrote:
->>>>
->>>> Hi,
->>>>
->>>>  	Some ideas, proposal for further discussion...
->>>>
->>>> On Mon, 5 Oct 2009, Stefan Schmidt wrote:
->>>>
->>>>> Hello.
->>>>>
->>>>> On Mon, 2009-10-05 at 11:14, Jaroslav Kysela wrote:
->>>>>> On Mon, 5 Oct 2009, Stefan Schmidt wrote:
->>>>>>
->>>>>>> On Thu, 2009-10-01 at 17:08, Stefan Schmidt wrote:
->>>>>>>>
->>>>>>>> For an updated patch with all your comments inlcuded see below.
->>>>>>>
->>>>>>> Here is another update on this patch. Fixed a problem I introduced in the last
->>>>>>> iteration and changed the config tokens from MasterPlaybackVolume to Master
->>>>>>> Playback Volume, etc. That's based on a siggestion from Mark which we had
->>>>>>> offlist. Let me quote it here to explain the good reasoning behind it.
->>>>>>
->>>>>> Question: What's the IDs (integers) returned with
->>>>>> snd_scenario_get_master_playback_volume() etc. functions?
->>>>>
->>>>> That is part of the code Liam wrote, but let me answer it (and maybe
->>>>> Liam chime in if it is wrong or needs more explanation).
->>>>>
->>>>> It's just the numid of an alsa control which should be used as master
->>>>> playback, etc in this scenario. It aliases the function we can use with
->>>>> ascenario to the real ones in alsa which can bedifferent for different
->>>>> scenarios.
->>>>
->>>> It's not very clear. The exported functions should be documented at least
->>>> with doxygen.
->>>>
->>>> Also, I would move all _get_ functions to one with this interface:
->>>>
->>>> #define SND_SCENARIO_KEY_KCTL_MASTER_PLAYBACK_VOLUME	1
->>>> .....
->>>>
->>>> int snd_scenario_get(scenario, int key, void *result);
->>>>
->>>> It will allow us to extend this interface without adding many functions in
->>>> future, something like:
->>>>
->>>> #define SND_SCENARIO_KEY_PCM_PLAYBACK			11
->>>> .....
->>>
->>> I find it's good to have a generic interface, too, but a void pointer
->>> is discouraging.  It's too ambiguous and inconvenient when you use it
->>> ("What type do I have to pass for SND_SCENARIO_XXX on earth???").
->>
->> It might be solved with inline functions in header files to cover all
->> types.
->
-> Yes, but then why not providing functions for all types from the
-> beginning?  There shouldn't be so many different types.
-
-Merging functions with same types might be a good compromise between one 
-function and separate functions for each values.
-
-So at least, the API basics is now clear. I'll prepare a branch in 
-alsa-lib GIT tree to have a start point for first accepted implementation.
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+T24gVHVlLCBPY3QgNiwgMjAwOSBhdCAwNjozOSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBUdWUs
+IE9jdCAwNiwgMjAwOSBhdCAwNjowMDoyM0FNIC0wNDAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToK
+Pj4gT24gVHVlLCBPY3QgNiwgMjAwOSBhdCAwNTo1MCwgTWFyayBCcm93biB3cm90ZToKPj4gPiBU
+aGVzZSBhcmUgYm9hcmQtc3BlY2lmaWMgZHJpdmVycyB0byBob29rIHRoaW5ncyB1cCBvbiBhIGdp
+dmVuIHN5c3RlbQo+PiA+IChwcmVzdW1hYmx5IHZhcmlvdXMgZXZhbCBib2FyZHMpLCB0aGV5J3Jl
+IHRoZSBub24tZ2VuZXJpYyBwYXJ0IG9mIHRoZQo+PiA+IHN5c3RlbSB0aGF0IHNheXMgaG93IHRo
+ZSBnZW5lcmljIERBSSBhbmQgQ09ERUMgZHJpdmVycyBoYXZlIGJlZW4gaG9va2VkCj4+ID4gdXAu
+Cj4+Cj4+IGV4Y2VwdCB0aGUgQmxhY2tmaW4gbWFjaGluZSBkcml2ZXJzIGFyZSB3cml0dGVuIGlu
+IHN1Y2ggYSB3YXkgdGhhdAo+PiB0aGV5IGFyZW50IHNwZWNpZmljIHRvIGEgYm9hcmQuIMKgdGhl
+eSdsbCB3b3JrIG9uIGFueSBzeXN0ZW0gd2l0aCBhCj4+IFNQT1JUIGFuZCBhIFNQSS9JMkMgYnVz
+Lgo+Cj4gVGhhdCdzIG5vdCAxMDAlIGNsZWFyIC0gc29tZSBvZiB0aGUgZHJpdmVycyBzYXkgdGhl
+eSdyZSBzcGVjaWZpYyB0bwo+IHBhcnRpY3VsYXIgZGVzaWducyAoZWl0aGVyIGluIHRoZSBoZWxw
+IHRleHQgb3IgYnkgaGF2aW5nIGJvYXJkLXNwZWNpZmljCj4gR1BJTyBzZXR1cCkuIMKgSXQncyBj
+ZXJ0YWlubHkgdGhlIGludGVudGlvbiBvZiB0aGUgQVBJIHRoYXQgdGhlIGJvYXJkCj4gaG9va3Vw
+cyBiZSBmaXhlZCBhdCBydW4gdGltZSByYXRoZXIgdGhhbiBhdCBjb21waWxlIHRpbWUsIGFuZCB0
+aGF0Cj4gdGhpbmdzIGxpa2UgdXNpbmcgbXVsdGlwbGUgQ1BVIERBSXMgc2hvdWxkIGJlIHBvc3Np
+YmxlLgo+Cj4gVGhlIG90aGVyIG9wdGlvbiBoZXJlIGlzIHRvIG1ha2UgdGhlIENPREVDIGRyaXZl
+cnMgYnVpbGQgd2l0aG91dCB0aGVpcgo+IGNvbnRyb2wgYnVzZXMsIHdoaWNoIGtlZXBzIHRoZSBw
+ZW9wbGUgZG9pbmcgcmFuZG9tIGNvbmZpZ3VyYXRpb25zIGhhcHB5LgoKeWVzLCB0aGVyZSBhcmUg
+bWFueSBkZXNjcmlwdGlvbnMgd2hpY2ggYXJlIHdheSBtb3JlIHNwZWNpZmljIHRoYW4gdGhleQpz
+aG91bGQgYmUuICB0aGUgaXNzdWUgc3RlbXMgZnJvbSBwZW9wbGUgZGV2ZWxvcGluZyB3aXRoIGEg
+bmFycm93IGZvY3VzCnJhdGhlciB0aGFuIGtlZXBpbmcgdGhlIGJpZyBwaWN0dXJlIGluIHRoZWly
+IGhlYWQuICB0aGV5IHRlc3Qgb25lCnNwZWNpZmljIGNvbmZpZ3VyYXRpb24gYW5kIHRoZW4ganVz
+dCBiYW5nIG91dCB0aGUgbmFtZS9pbmZvIHdpdGggdGhhdC4KICAgaXZlIGJlZW4gdHJ5aW5nIHRv
+IHN0ZW0gdGhlIGZsb3cgYW5kIGNsZWFuIHVwIGV4aXN0aW5nIGNvZGUsIGJ1dCBpdApkb2VzbnQg
+YWx3YXlzIHdvcmsgb3V0LgoKQUQxODM2IGlzIGFuIGV4YW1wbGUgb2YgdGhpcyAtLSB0aGUgS2Nv
+bmZpZyB0ZXh0IHNheXMgIkJGNXh4IiwgYnV0CnRoYXQncyB1c2VsZXNzIGJlY2F1c2UgdGhhdCBj
+b3ZlcnMgYWxsIEJsYWNrZmluIHBhcnRzLiAgIlNUQU1QL0VaS0lUIgppcyBhIGxpZSAtLSB0aGVy
+ZSBpcyBubyBkZXBlbmRlbmN5IG9uIHRoZXNlIGJhc2UgYm9hcmQgZGVzaWducy4gIHRoZQptYWNo
+aW5lIGRyaXZlciBvbmx5IG5lZWRzIGEgU1BPUlQgKFRETSkgZm9yIHRyYW5zcG9ydCBhbmQgdGhl
+IGNvZGVjCm5lZWRzIFNQSSBmb3IgY29uZmlndXJhdGlvbi4gIGV2ZXJ5IEJsYWNrZmluIHBhcnQg
+aGFzIGF0IGxlYXN0IG9uZQpTUE9SVC4gIGJ1dCB0aGUgY29yZSBTUE9SVCBoYW5kbGluZyBpcyB0
+aGUgY3J1eCBvZiB0aGUgbWF0dGVyIC0tIGFzIGkKbWVudGlvbmVkIGluIGFub3RoZXIgdGhyZWFk
+LCBvdXIgaW1wbGVtZW50YXRpb24gaXMgc2V2ZXJlbHkgbGltaXRlZCBpbgp0ZXJtcyBvZiBtdWx0
+aXBsZSBpbnN0YW5jZXMgYW5kIGlzIGluIG5lZWQgb2YgcmVzdHJ1Y3R1cmluZy4KCnRoZSBHUElP
+IGhhbmRsaW5nIGlzIG1hZGUgImdlbmVyaWMiIGJ5IHB1dHRpbmcgaXQgaW50byB0aGUgS2NvbmZp
+Zy4Kc28gdGhlIG1hY2hpbmUtc3BlY2lmaWMgYXNwZWN0IGlzIG5vdyBpbiB0aGUgLmNvbmZpZyBm
+aWxlIGluc3RlYWQgb2YKdGhlIG1hY2hpbmUgZHJpdmVyLiAgcmVhbGx5IHRoaXMgbmVlZHMgdG8g
+Z2V0IHB1c2hlZCBvdXQgaW50byB0aGUKYm9hcmQgcmVzb3VyY2VzIChhbm90aGVyIGJhZCBoYWJp
+dCB0aGF0IHdlJ3ZlIGJlZW4gcmVpZ25pbmcgaW4gLS0KZW5jb2RpbmcgZmxleGlibGUgcmVzb3Vy
+Y2VzIGluIEtjb25maWcpLgoKYmFjayB0byB0aGUgb3JpZ2luYWwgaXNzdWUuICB0aGUgQUQxODM2
+L0FEMTkzOCBoYXZlIHRoZWlyIHJlZ2lzdGVycwpwcm9ncmFtZWQgdmlhIFNQSSwgYnV0IHRoZXkg
+ZG9udCBjYXJlIHdoYXQgU1BJIGJ1cyB0aGV5J3JlIGNvbm5lY3RlZAp0by4gIHRoYXQgaXMgc3Bl
+Y2lmaWVkIGluIHRoZSBib2FyZCByZXNvdXJjZXMuICBiZWNhdXNlIG9mIHRoZSB3YXkgdGhlCktj
+b25maWcgb3B0aW9ucyBhcmUgaGFuZGxlZCAobWFjaGluZSBkcml2ZXJzIHNlbGVjdCBjb2RlY3Mp
+LCB0aGUKU1BJX01BU1RFUiBkZXBlbmRlbmN5IGNhbm5vdCBiZSBhZGRlZCB0byB0aGUgY29kZWMg
+S2NvbmZpZ3MgaW4KY29kZWNzL0tjb25maWcuICBzbyBldmVuIHRob3VnaCB0aGUgU1BJIGRlcGVu
+ZGVuY3kgaXMgb25seSBpbiB0aGUKY29kZWMgYW5kIG5vdCB0aGUgbWFjaGluZSBkcml2ZXIsIHRo
+ZSBtYWNoaW5lIGRyaXZlciBuZWVkcyB0byBkZWNsYXJlCnRoZSBTUElfTUFTVEVSIGRlcGVuZGVu
+Y3kgdG8gcHJldmVudCBpbmNvcnJlY3QgY29uZmlnIHNlbGVjdGlvbnMgYW5kCmxpbmsgZmFpbHVy
+ZXMuCi1taWtlCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
