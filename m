@@ -1,16 +1,15 @@
-From: Mike Frysinger <vapier.adi-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH 2/2] ASoC: Blackfin AD1836/AD1938
-	machine drivers: require SPI master
-Date: Tue, 6 Oct 2009 05:41:40 -0400
-Message-ID: <8bd0f97a0910060241k1155d38cmafe623501106d598@mail.gmail.com>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC:
+	AD1980/AD73311: make sure to	set dev member
+Date: Tue, 6 Oct 2009 10:42:33 +0100
+Message-ID: <20091006094232.GA27168@sirena.org.uk>
 References: <1254808311-3594-1-git-send-email-vapier@gentoo.org>
-	<1254808311-3594-2-git-send-email-vapier@gentoo.org>
-	<20091006093325.GA10118@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
-In-Reply-To: <20091006093325.GA10118-HF5t3jzXg/6ND3a5+9QAFujbO/Zr0HzV@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1254808311-3594-1-git-send-email-vapier-aBrp7R+bbdUdnm+yROfE0A@public.gmane.org>
 List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
 	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
 List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
@@ -20,26 +19,19 @@ List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-deve
 	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
 Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
 Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+To: Mike Frysinger <vapier-aBrp7R+bbdUdnm+yROfE0A@public.gmane.org>
 Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBPY3QgNiwgMjAwOSBhdCAwNTozMywgTWFyayBCcm93biB3cm90ZToKPiBPbiBUdWUs
-IE9jdCAwNiwgMjAwOSBhdCAwMTo1MTo1MUFNIC0wNDAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToK
-Pj4gU2luY2UgdGhlc2UgZHJpdmVycyByZWx5IG9uIGEgU1BJIG1hc3RlciBhbmQgZmFpbCBpZiB0
-aGUgU1BJIGZ1bmN0aW9ucwo+PiBhcmVuJ3QgcHJlc2VudCwgbWFrZSBzdXJlIHRoZSBLY29uZmln
-IHJlZmxlY3RzIHRoaXMgZGVwZW5kZW5jeS4KPgo+IENvdWxkIHlvdSBwbGVhc2UgcmVkbyB0aGlz
-IGFzIGEgZGVwZW5kZW5jeSBvbiB0aGUgcmVsZXZhbnQgU1BJCj4gY29udHJvbGxlciBkcml2ZXI/
-IMKgVGhlIGF1ZGlvIGRyaXZlciBpc24ndCBnb2luZyB0byB3b3JrIHdpdGhvdXQgdGhhdAo+IGFu
-eXdheSBzbyBpdCBzZWVtcyBtb3JlIHNlbnNpYmxlLgoKdGhlcmUgaXMgbm8gZGVwZW5kZW5jeSBv
-biBhIHNwZWNpZmljIHNwaSBidXMgbWFzdGVyIGltcGxlbWVudGF0aW9uLgpqdXN0IGxpa2UgdGhl
-IGkyYyBmcmFtZXdvcmssIHN1Y2ggYSBkZXBlbmRlbmN5IHdvdWxkIGJlIGFnYWluc3QgdGhlCndo
-b2xlIHB1cnBvc2Ugb2YgaGF2aW5nIGEgZ2VuZXJpYyBmcmFtZXdvcmsgaW4gdGhlIGZpcnN0IHBs
-YWNlLgpmb3J0dW5hdGVseSwgdGhpcyBpcyBvbmUgcGllY2Ugb2YgdGhlIEJsYWNrZmluIEFTb0Mg
-ZHJpdmVycyBkb25lCmNvcnJlY3RseS4gIGluIG90aGVyIHdvcmRzLCB0aGV5IHNob3VsZCB3b3Jr
-IGp1c3QgZmluZSBpZiBob29rZWQgdXAgdG8KYSBHUElPIFNQSSBidXMgb3IgYSBTUE9SVCBTUEkg
-YnVzIG9yIGEgQmxhY2tmaW4gb24tY2hpcCBTUEkgYnVzIG9yCi4uLi4uLgotbWlrZQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpVY2xpbnV4LWRpc3QtZGV2
-ZWwgbWFpbGluZyBsaXN0ClVjbGludXgtZGlzdC1kZXZlbEBibGFja2Zpbi51Y2xpbnV4Lm9yZwpo
-dHRwczovL2JsYWNrZmluLnVjbGludXgub3JnL21haWxtYW4vbGlzdGluZm8vdWNsaW51eC1kaXN0
-LWRldmVs
+On Tue, Oct 06, 2009 at 01:51:50AM -0400, Mike Frysinger wrote:
+> The codec driver should initialize snd_soc_codec's dev member to the
+> appropriate device when setting up the device, but these codecs weren't.
+
+> Signed-off-by: Mike Frysinger <vapier-aBrp7R+bbdUdnm+yROfE0A@public.gmane.org>
+
+No, this is the wrong approach - codec->dev should never be being set to
+the socdev device, it should be being set to the device model device for
+the CODEC (as should the dev members for the DAIs).  For ad73311 this
+means it needs to be converted to use proper device model instantiation,
+see wm8731 for an example of doing this.  ad1980 should be handled by
+generic AC97 code in the core.
