@@ -1,22 +1,19 @@
 From: Harald Welte <laforge@gnumonks.org>
-Subject: Re: [PATCH 14/31] HDA patch_via.c: Add Jack detect
- feature for VT1708.
-Date: Tue, 6 Oct 2009 14:17:40 +0200
-Message-ID: <20091006121740.GI17195@prithivi.gnumonks.org>
-References: <16685ee0910050727q4288fc76hdde23b431232d073@mail.gmail.com>
-	<s5h7hv96fis.wl%tiwai@suse.de>
-	<16685ee0910052206ge80ec18yb0546282c4a9945f@mail.gmail.com>
-	<s5hhbudrrgb.wl%tiwai@suse.de>
+Subject: Re: [PATCH 18/31] HDA patch_via.c: Add 48K sample rate
+ limit for S/PDIF streams.
+Date: Tue, 6 Oct 2009 14:21:44 +0200
+Message-ID: <20091006122144.GJ17195@prithivi.gnumonks.org>
+References: <002DCEC0FD024441A08A6AEFF6FFC6BB@DemianM1330>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 080612443F
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F6E324440
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Oct 2009 14:25:02 +0200 (CEST)
+	Tue,  6 Oct 2009 14:25:03 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hhbudrrgb.wl%tiwai@suse.de>
+In-Reply-To: <002DCEC0FD024441A08A6AEFF6FFC6BB@DemianM1330>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,47 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Li Bo <liboat@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, lydiawang@viatech.com.cn, LoganLi@viatech.com.cn
+To: Demian Martin <demianm_1@yahoo.com>
+Cc: liboat@gmail.com, tiwai@suse.de, alsa-devel@alsa-project.org, lydiawang@viatech.com.cn, LoganLi@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 Hi all,
 
-On Tue, Oct 06, 2009 at 08:01:40AM +0200, Takashi Iwai wrote:
+I agree with the previous posts in this thread.
 
-> > As you describe, we implement it with self-reschedule workqueue, acting
-> > like a timer.
-> > Is there some advice to implement timer-like task, I tested  with timer and
-> > it will crash the driver.
-> 
-> Right, you can't call it in a softirq.
-> 
-> A few problems, however:
-> - present variable should be in struct via_spec, instead of a static
->   variable in update_hp_jack_state().
+The use of > 48kHz sample rate is common use today, so if the hardware supports
+it, the driver should not disable it.
 
-I agree
-> - This mechanism is unconditionally invoked on VT1708 although, in
->   theory, you can have a hardware that doesn't need HP jack detection
+Since there are some users that successfully use SPDIF with > 48kHz, it cannot
+be a general hardware problem.  If there's a general hardware problem, then
+it would never work for anyone.
 
-Yes, Logan/Li/Lydia: If we generate this kind of workaround with a timer,
-it should only be used on those particular chips that absolutely need it.
+If there are some codec chips/variants/versions, or even certain boards that
+have bad SPDIf signal performance, then we should black-list those bad
+chips/versions/boards, rather than disable the feature for everyone.
 
-> - Waking up each 100ms for the *whole* time is really bad regarding
->   the power-saving; can't it be optimized?
+Also, as far as I understand, the worst thing that can happen when a "too high"
+sample rate is used:  It will not work for some users on some hardware.  That,
+I think, is acceptable (if no workaround / black-list can be created).
 
-I would personally actually suggest to simply not support headphone plug events
-in case you are using such a [buggy?] chipset that does not support them.
+This would be different if there are other effects:  If the high sample rate
+would cause some hardware-lock-up or similar, then it definitely needs to be
+disabled.
 
-I mean, what do you gain from that event? It's not something super-important.
-
-waking up unconditionally every 100ms is really a too high burden on the
-battery life.
-
-Another option might be to make it a module load time parameter, so people
-can choose if they actually want to pay the high power/batyery price for this
-small feature.
-
+Regards,
 -- 
 - Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
 ============================================================================
