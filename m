@@ -1,24 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 2/2] ASoC: Blackfin
- AD1836/AD1938 machine drivers: require SPI master
-Date: Tue, 6 Oct 2009 11:39:52 +0100
-Message-ID: <20091006103952.GC10118@rakim.wolfsonmicro.main>
-References: <1254808311-3594-1-git-send-email-vapier@gentoo.org>
-	<1254808311-3594-2-git-send-email-vapier@gentoo.org>
-	<20091006093325.GA10118@rakim.wolfsonmicro.main>
-	<8bd0f97a0910060241k1155d38cmafe623501106d598@mail.gmail.com>
-	<20091006095018.GB27168@sirena.org.uk>
-	<8bd0f97a0910060300m7fa80daas63afd272ba85fb16@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ascenario: Add scenario support to alsa-lib
+Date: Tue, 6 Oct 2009 13:05:42 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0910061302330.31529@eeebox2.perex-int.cz>
+References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
+	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
+	<20091001122835.GC14417@sirena.org.uk>
+	<20091001131948.GA5936@excalibur.local>
+	<20091001150849.GE5936@excalibur.local>
+	<20091005082747.GA3983@excalibur.local>
+	<alpine.LNX.2.00.0910051111220.31529@eeebox2.perex-int.cz>
+	<20091005093502.GC3983@excalibur.local>
+	<alpine.LNX.2.00.0910060949070.31529@eeebox2.perex-int.cz>
+	<s5hzl847w3q.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0910061048410.31529@eeebox2.perex-int.cz>
+	<s5hvdis7txp.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A1CFA2433E
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82FD724392
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Oct 2009 12:39:53 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <8bd0f97a0910060300m7fa80daas63afd272ba85fb16@mail.gmail.com>
+	Tue,  6 Oct 2009 13:05:42 +0200 (CEST)
+In-Reply-To: <s5hvdis7txp.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,27 +32,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier.adi@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 06, 2009 at 06:00:23AM -0400, Mike Frysinger wrote:
-> On Tue, Oct 6, 2009 at 05:50, Mark Brown wrote:
+On Tue, 6 Oct 2009, Takashi Iwai wrote:
 
-> > These are board-specific drivers to hook things up on a given system
-> > (presumably various eval boards), they're the non-generic part of the
-> > system that says how the generic DAI and CODEC drivers have been hooked
-> > up.
+> [Forgot to follow up the first part]
+>
+> At Tue, 6 Oct 2009 11:00:18 +0200 (CEST),
+> Jaroslav Kysela wrote:
+>>
+>> On Tue, 6 Oct 2009, Takashi Iwai wrote:
+>>
+>>> At Tue, 6 Oct 2009 10:23:56 +0200 (CEST),
+>>> Jaroslav Kysela wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>>  	Some ideas, proposal for further discussion...
+>>>>
+>>>> On Mon, 5 Oct 2009, Stefan Schmidt wrote:
+>>>>
+>>>>> Hello.
+>>>>>
+>>>>> On Mon, 2009-10-05 at 11:14, Jaroslav Kysela wrote:
+>>>>>> On Mon, 5 Oct 2009, Stefan Schmidt wrote:
+>>>>>>
+>>>>>>> On Thu, 2009-10-01 at 17:08, Stefan Schmidt wrote:
+>>>>>>>>
+>>>>>>>> For an updated patch with all your comments inlcuded see below.
+>>>>>>>
+>>>>>>> Here is another update on this patch. Fixed a problem I introduced in the last
+>>>>>>> iteration and changed the config tokens from MasterPlaybackVolume to Master
+>>>>>>> Playback Volume, etc. That's based on a siggestion from Mark which we had
+>>>>>>> offlist. Let me quote it here to explain the good reasoning behind it.
+>>>>>>
+>>>>>> Question: What's the IDs (integers) returned with
+>>>>>> snd_scenario_get_master_playback_volume() etc. functions?
+>>>>>
+>>>>> That is part of the code Liam wrote, but let me answer it (and maybe
+>>>>> Liam chime in if it is wrong or needs more explanation).
+>>>>>
+>>>>> It's just the numid of an alsa control which should be used as master
+>>>>> playback, etc in this scenario. It aliases the function we can use with
+>>>>> ascenario to the real ones in alsa which can bedifferent for different
+>>>>> scenarios.
+>>>>
+>>>> It's not very clear. The exported functions should be documented at least
+>>>> with doxygen.
+>>>>
+>>>> Also, I would move all _get_ functions to one with this interface:
+>>>>
+>>>> #define SND_SCENARIO_KEY_KCTL_MASTER_PLAYBACK_VOLUME	1
+>>>> .....
+>>>>
+>>>> int snd_scenario_get(scenario, int key, void *result);
+>>>>
+>>>> It will allow us to extend this interface without adding many functions in
+>>>> future, something like:
+>>>>
+>>>> #define SND_SCENARIO_KEY_PCM_PLAYBACK			11
+>>>> .....
+>>>
+>>> I find it's good to have a generic interface, too, but a void pointer
+>>> is discouraging.  It's too ambiguous and inconvenient when you use it
+>>> ("What type do I have to pass for SND_SCENARIO_XXX on earth???").
+>>
+>> It might be solved with inline functions in header files to cover all
+>> types.
+>
+> Yes, but then why not providing functions for all types from the
+> beginning?  There shouldn't be so many different types.
 
-> except the Blackfin machine drivers are written in such a way that
-> they arent specific to a board.  they'll work on any system with a
-> SPORT and a SPI/I2C bus.
+Merging functions with same types might be a good compromise between one 
+function and separate functions for each values.
 
-That's not 100% clear - some of the drivers say they're specific to
-particular designs (either in the help text or by having board-specific
-GPIO setup).  It's certainly the intention of the API that the board
-hookups be fixed at run time rather than at compile time, and that
-things like using multiple CPU DAIs should be possible.
+So at least, the API basics is now clear. I'll prepare a branch in 
+alsa-lib GIT tree to have a start point for first accepted implementation.
 
-The other option here is to make the CODEC drivers build without their
-control buses, which keeps the people doing random configurations happy.
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
