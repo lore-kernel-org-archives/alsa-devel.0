@@ -1,15 +1,24 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: ice1724 - Changing Level Meters from MIXER to PCM?
-Date: Tue, 06 Oct 2009 10:21:20 +0200
-Message-ID: <4ACAFE00.9050308@ivitera.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ascenario: Add scenario support to alsa-lib
+Date: Tue, 6 Oct 2009 10:23:56 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0910060949070.31529@eeebox2.perex-int.cz>
+References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
+	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
+	<20091001122835.GC14417@sirena.org.uk>
+	<20091001131948.GA5936@excalibur.local>
+	<20091001150849.GE5936@excalibur.local>
+	<20091005082747.GA3983@excalibur.local>
+	<alpine.LNX.2.00.0910051111220.31529@eeebox2.perex-int.cz>
+	<20091005093502.GC3983@excalibur.local>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz (upc-plzen.insite.cz [84.242.100.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 102A0103874
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7EE9D1038D7
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Oct 2009 10:20:55 +0200 (CEST)
+	Tue,  6 Oct 2009 10:23:57 +0200 (CEST)
+In-Reply-To: <20091005093502.GC3983@excalibur.local>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,56 +28,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Stefan Schmidt <stefan@datenfreihafen.org>
+Cc: Graeme Gregory <gg@slimlogic.co.uk>, ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Molton <ian@mnementh.co.uk>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-Following your discussion on moving low-level controls from MIXER to PCM
-types, I would like to suggest the following two patches:
+ 	Some ideas, proposal for further discussion...
 
-diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index 3896fb9..28ca8a4 100644
---- a/sound/pci/ice1712/ice1724.c
-+++ b/sound/pci/ice1712/ice1724.c
-@@ -2160,7 +2160,7 @@ static int snd_vt1724_pro_peak_get(struct
-snd_kcontrol *kcontrol,
- }
+On Mon, 5 Oct 2009, Stefan Schmidt wrote:
 
- static struct snd_kcontrol_new snd_vt1724_mixer_pro_peak __devinitdata = {
--       .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+       .iface = SNDRV_CTL_ELEM_IFACE_PCM,
-        .name = "Multi Track Peak",
-        .access = SNDRV_CTL_ELEM_ACCESS_READ |
-SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-        .info = snd_vt1724_pro_peak_info,
+> Hello.
+>
+> On Mon, 2009-10-05 at 11:14, Jaroslav Kysela wrote:
+>> On Mon, 5 Oct 2009, Stefan Schmidt wrote:
+>>
+>>> On Thu, 2009-10-01 at 17:08, Stefan Schmidt wrote:
+>>>>
+>>>> For an updated patch with all your comments inlcuded see below.
+>>>
+>>> Here is another update on this patch. Fixed a problem I introduced in the last
+>>> iteration and changed the config tokens from MasterPlaybackVolume to Master
+>>> Playback Volume, etc. That's based on a siggestion from Mark which we had
+>>> offlist. Let me quote it here to explain the good reasoning behind it.
+>>
+>> Question: What's the IDs (integers) returned with
+>> snd_scenario_get_master_playback_volume() etc. functions?
+>
+> That is part of the code Liam wrote, but let me answer it (and maybe 
+> Liam chime in if it is wrong or needs more explanation).
+>
+> It's just the numid of an alsa control which should be used as master 
+> playback, etc in this scenario. It aliases the function we can use with 
+> ascenario to the real ones in alsa which can bedifferent for different 
+> scenarios.
 
+It's not very clear. The exported functions should be documented at least 
+with doxygen.
 
-diff --git a/envy24control/levelmeters.c b/envy24control/levelmeters.c
-index 3bf1a94..9bdaace 100644
---- a/envy24control/levelmeters.c
-+++ b/envy24control/levelmeters.c
-@@ -262,7 +262,7 @@ void level_meters_reset_peaks(GtkButton *button,
-gpointer da
- void level_meters_init(void)
- {
-        snd_ctl_elem_value_malloc(&peaks);
--       snd_ctl_elem_value_set_interface(peaks, SND_CTL_ELEM_IFACE_MIXER);
-+       snd_ctl_elem_value_set_interface(peaks, SND_CTL_ELEM_IFACE_PCM);
-        snd_ctl_elem_value_set_name(peaks, "Multi Track Peak");
- }
+Also, I would move all _get_ functions to one with this interface:
 
+#define SND_SCENARIO_KEY_KCTL_MASTER_PLAYBACK_VOLUME	1
+.....
 
+int snd_scenario_get(scenario, int key, void *result);
 
+It will allow us to extend this interface without adding many functions in 
+future, something like:
 
-The point is these controls are read-only, display incorrectly in
-alsamixer, and are very confusing for majority of users who do not read
-envy24 datasheet and the source code.
+#define SND_SCENARIO_KEY_PCM_PLAYBACK			11
+.....
 
-Thanks for considering this IMO useful change.
+Also, using numid's is not much ideal if something changes in the driver. 
+I would prefer to use standard ctl IDs (string, index, interface - 
+result should be snd_ctl_elem_id_t).
 
-Regards,
+>> Please, include also some test configuration files to review the
+>> configurationsyntax.
+>
+> Attached. default.conf is the main configuration file located at
+> /etc/alsa/scenario/default.conf
 
+Again, I would make configuration syntax compatible with other alsa-lib 
+configuration files. The changes in the configuration files will be small 
+and it will allow us to rewrite the code using parsers in alsa-lib.
 
-Pavel.
+Something like:
+
+default.conf:
+
+scenario."playback speaker" {
+   file playback_spk
+   qos HIFI
+   "Master Playback Volume" 8
+# should be rather something like:
+   kcontrol.'Master Playback Volume' "'Master Playback Volume':33"
+# or a short form might be implemented (:33 is ctl_id index, ctl_id.name
+# would be copied from the variable key name):
+   kcontrol.'Master Playback Volume' ":33"
+   ...
+}
+
+scenario."playback headphones" {
+   ...
+}
+
+About "playback_hs_*" files. It seems that the purpose of files is quite 
+similar. I don't understand the reason to have 2 different descriptions.
+
+Also, I would like to consider moving the parser from alsactl 
+initialization code (see alsactl_init.c in alsa-utils package) to alsa-lib 
+and use this parser also for these files. It gives much flexibility, 
+although udev-like syntax is not ideal, I know. But we have full 
+documentation in alsactl_init.xml, at least.
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
