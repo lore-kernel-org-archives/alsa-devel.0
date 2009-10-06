@@ -1,18 +1,18 @@
 From: Harish Kumar <harishkumarb7@gmail.com>
 Subject: alsa-utils cross compilation error
-Date: Tue, 6 Oct 2009 19:49:09 +0530
-Message-ID: <7df11cd50910060719t66c353b0jc865f04e09f49c12@mail.gmail.com>
+Date: Tue, 6 Oct 2009 19:50:04 +0530
+Message-ID: <7df11cd50910060720p635790fdo7e020b804fdd8e0d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f194.google.com (mail-px0-f194.google.com
-	[209.85.216.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 627C5103821
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2A411038DF
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Oct 2009 16:19:10 +0200 (CEST)
-Received: by pxi32 with SMTP id 32so3746944pxi.16
-	for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2009 07:19:09 -0700 (PDT)
+	Tue,  6 Oct 2009 16:20:05 +0200 (CEST)
+Received: by yxe34 with SMTP id 34so2239700yxe.16
+	for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2009 07:20:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
