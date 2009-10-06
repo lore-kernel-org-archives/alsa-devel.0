@@ -1,22 +1,21 @@
 From: Li Bo <liboat@gmail.com>
-Subject: Re: [PATCH 8/31] HDA patch_via.c: Change VT1708S &
-	VT1702 hp mode controls
-Date: Tue, 6 Oct 2009 12:44:28 +0800
-Message-ID: <16685ee0910052144r444996bdqee29f374207cd7@mail.gmail.com>
-References: <16685ee0910050725u67cdf3b5g8dcd20275bcf773f@mail.gmail.com>
-	<s5hab056fwc.wl%tiwai@suse.de>
+Subject: Re: [PATCH 0/31] HDA patch_via.c update
+Date: Tue, 6 Oct 2009 12:56:08 +0800
+Message-ID: <16685ee0910052156l60fe81fo2f3639644a38ce08@mail.gmail.com>
+References: <16685ee0910050615t2f68c4efp71aeb5a9509dd12a@mail.gmail.com>
+	<51f3faa70910051842lb8aeef3yaef180085b33f444@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
 	[209.85.220.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id B308210384E
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C6B2103850
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Oct 2009 06:44:29 +0200 (CEST)
-Received: by fxm8 with SMTP id 8so3304530fxm.45
-	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 21:44:28 -0700 (PDT)
-In-Reply-To: <s5hab056fwc.wl%tiwai@suse.de>
+	Tue,  6 Oct 2009 06:56:08 +0200 (CEST)
+Received: by fxm8 with SMTP id 8so3307672fxm.45
+	for <alsa-devel@alsa-project.org>; Mon, 05 Oct 2009 21:56:08 -0700 (PDT)
+In-Reply-To: <51f3faa70910051842lb8aeef3yaef180085b33f444@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,45 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: LoganLi@viatech.com.cn, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
+To: Robert Hancock <hancockrwd@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, LoganLi@viatech.com.cn, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi
-  When independent hp switches from
-          on -> off: hp volume/switch is deactivated
-          off -> hp volume switch  is activated
-  These 2 actions are one-shot setup, so we put "need reboot" to remind user
-  that hp volume/switch update will only take effect after reboot.
+Hi, Robert
+  Thank you for reply. We will test VT18128S S/PDIF function later.
+  About 48 kHz sample rate limit, it is set for HW's stable work. Other
+  sample rate can also work, if you need them just ignore this patch.
 
-On Mon, Oct 5, 2009 at 11:04 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Mon, 5 Oct 2009 22:25:15 +0800,
-> Li Bo wrote:
+On Tue, Oct 6, 2009 at 9:42 AM, Robert Hancock <hancockrwd@gmail.com> wrote:
+> On Mon, Oct 5, 2009 at 7:15 AM, Li Bo <liboat@gmail.com> wrote:
+>> Hi!
 >>
->> [ALSA] HDA VIA: Change VT1708S & VT1702 hp mode controls
+>> Following are a series of patches for patch_via.c, started from git clone of
+>> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6 recently.
 >>
->> For VT1708S and VT1702, deactivate "Headphone Playback Volume" and
->> "Headphone Playback Mute" control if "Independent HP" mode is OFF.
->> and rename VT1702 "Independent HP" text.
+>> Please have a review and give comments, thank you!
 >>
->> Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
->> @@ -3342,11 +3359,13 @@
->>
->> =A0static int vt1702_auto_create_hp_ctls(struct via_spec *spec, hda_nid_=
-t pin)
->> =A0{
->> - =A0 =A0 int err;
->> -
->> + =A0 =A0 int err, i;
->> + =A0 =A0 struct hda_input_mux *imux;
->> + =A0 =A0 static const char *texts[] =3D { "ON (need reboot)",
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0"OFF (need reboot)",
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0NULL};
+>> Outlook Access Web cannot send plain-text mail, so my gmail is used
+>> instead.
+>> You can also contact with me with LoganLi@viatech.com.cn, or
+>> mail to HaraldWelte@viatech.com and lydiawang@viatech.com.cn.
 >
-> These texts look very strange...
+> OK, I just tried this patchset on my Asus P7P55D PRO (VIA VT1828S).
+> Good news is that the analog 5.1 output and microphone input appear to
+> work fine. However I am getting no output on SPDIF optical output at
+> all, the jack doesn't even light up which suggests that the codec
+> isn't powering on the SPDIF port, or something like that.
 >
+> I've seen a few of these messages in dmesg while poking around with
+> things, they may or may not be related:
 >
-> Takashi
+> ALSA sound/pci/hda/hda_intel.c:683: No response from codec, disabling
+> MSI: last cmd=0x01ef0100
+> ALSA sound/pci/hda/hda_intel.c:698: azx_get_response timeout,
+> switching to polling mode: last cmd=0x01ef0100
+>
+> ALSA sound/pci/hda/hda_intel.c:683: No response from codec, disabling
+> MSI: last cmd=0x024f0900
+> ALSA sound/pci/hda/hda_intel.c:698: azx_get_response timeout,
+> switching to polling mode: last cmd=0x024f0900
+>
+> ALSA sound/pci/hda/hda_intel.c:683: No response from codec, disabling
+> MSI: last cmd=0x021f0200
+> ALSA sound/pci/hda/hda_intel.c:698: azx_get_response timeout,
+> switching to polling mode: last cmd=0x021f0200
+>
+> I also tested in Windows and SPDIF output works (obviously) with rates
+> up to 192KHz, so I'm not sure why this patch set limits it to 48KHz
+> only..
 >
