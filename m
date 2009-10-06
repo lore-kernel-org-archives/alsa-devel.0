@@ -1,8 +1,8 @@
 From: pavel.hofman@ivitera.com
-Subject: [PATCH 1/1] Changing the Multi Track Peak control from
-	MIXER to PCM type
-Date: Tue,  6 Oct 2009 16:00:16 +0200
-Message-ID: <1254837616-18530-1-git-send-email-pavel.hofman@ivitera.com>
+Subject: [PATCH 1/1] ICE1712/24 - Change the Multi Track Peak
+	control (level meters) from MIXER to PCM type
+Date: Tue,  6 Oct 2009 16:04:11 +0200
+Message-ID: <1254837851-18573-1-git-send-email-pavel.hofman@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,36 +17,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
+Cc: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org, pavel <pavel@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-From: Pavel Hofman <pavel.hofman@ivitera.com>
+From: pavel <pavel@insite.cz>
 
-* The "Multi Track Peak" control is now of PCM type, to avoid
-  confusing users in other alsa mixers.
+* PLEASE NOTE - this change requires the corresponding update of
+  envy24control for ice1712 - kind of an ABI change.
+* The "Multi Track Peak" control is read-only level meters indicator.
+* The control is VERY confusing to most users since it is currently displayed
+  in regular mixers. E.g. alsamixer ignores its read-only status
+  and allows changing the levels with keys which makes no sense.
 
 Signed-off-by: Pavel Hofman <pavel.hofman@ivitera.com>
 
-diff --git a/envy24control/levelmeters.c b/envy24control/levelmeters.c
-index 3bf1a94..fa44979 100644
---- a/envy24control/levelmeters.c
-+++ b/envy24control/levelmeters.c
-@@ -261,9 +261,15 @@ void level_meters_reset_peaks(GtkButton *button, gpointer data)
- 
- void level_meters_init(void)
- {
-+	int err;
-+
- 	snd_ctl_elem_value_malloc(&peaks);
--	snd_ctl_elem_value_set_interface(peaks, SND_CTL_ELEM_IFACE_MIXER);
-+	snd_ctl_elem_value_set_interface(peaks, SND_CTL_ELEM_IFACE_PCM);
- 	snd_ctl_elem_value_set_name(peaks, "Multi Track Peak");
-+	if ((err = snd_ctl_elem_read(ctl, peaks)) < 0)
-+		/* older ALSA driver, using MIXER type */
-+		snd_ctl_elem_value_set_interface(peaks,
-+			SND_CTL_ELEM_IFACE_MIXER);
+diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
+index 56d8d67..c7cff6f 100644
+--- a/sound/pci/ice1712/ice1712.c
++++ b/sound/pci/ice1712/ice1712.c
+@@ -2269,7 +2269,7 @@ static int snd_ice1712_pro_peak_get(struct snd_kcontrol *kcontrol,
  }
  
- void level_meters_postinit(void)
+ static struct snd_kcontrol_new snd_ice1712_mixer_pro_peak __devinitdata = {
+-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+ 	.name = "Multi Track Peak",
+ 	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+ 	.info = snd_ice1712_pro_peak_info,
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index 3896fb9..28ca8a4 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -2160,7 +2160,7 @@ static int snd_vt1724_pro_peak_get(struct snd_kcontrol *kcontrol,
+ }
+ 
+ static struct snd_kcontrol_new snd_vt1724_mixer_pro_peak __devinitdata = {
+-	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+ 	.name = "Multi Track Peak",
+ 	.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
+ 	.info = snd_vt1724_pro_peak_info,
 -- 
 1.5.4.3
