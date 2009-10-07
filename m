@@ -1,8 +1,9 @@
-From: Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: Re: [PATCH] ascenario: Add scenario support to alsa-lib
-Date: Wed, 7 Oct 2009 15:48:09 +0200
-Message-ID: <20091007134809.GA14456@excalibur.local>
-References: <20091005082747.GA3983@excalibur.local>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ascenario: Add scenario support to	alsa-lib
+Date: Wed, 7 Oct 2009 14:53:20 +0100
+Message-ID: <20091007135320.GI19135@sirena.org.uk>
+References: <20091001150849.GE5936@excalibur.local>
+	<20091005082747.GA3983@excalibur.local>
 	<alpine.LNX.2.00.0910051111220.31529@eeebox2.perex-int.cz>
 	<20091005093502.GC3983@excalibur.local>
 	<alpine.LNX.2.00.0910060949070.31529@eeebox2.perex-int.cz>
@@ -11,17 +12,16 @@ References: <20091005082747.GA3983@excalibur.local>
 	<s5hvdis7txp.wl%tiwai@suse.de>
 	<alpine.LNX.2.00.0910061302330.31529@eeebox2.perex-int.cz>
 	<alpine.LNX.2.00.0910061510320.31529@eeebox2.perex-int.cz>
-	<s5hfx9w3a98.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8648E10386F
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3675C103899
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 15:48:17 +0200 (CEST)
+	Wed,  7 Oct 2009 15:53:22 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hfx9w3a98.wl%tiwai@suse.de>
+In-Reply-To: <alpine.LNX.2.00.0910061510320.31529@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,51 +31,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+On Tue, Oct 06, 2009 at 03:33:39PM +0200, Jaroslav Kysela wrote:
 
-On Tue, 2009-10-06 at 15:46, Takashi Iwai wrote:
-> At Tue, 6 Oct 2009 15:33:39 +0200 (CEST),
-> Jaroslav Kysela wrote:
-> > 
-> > On Tue, 6 Oct 2009, Jaroslav Kysela wrote:
-> > 
-> > My other proposals:
-> > 
-> > - remove all SND_SCN_ defines - they are quite use-case specific
-> >    - the names should be just documented somewhere
-> 
-> Keeping the basic and common strings makes sense, I think.
-> After all, the apps need to use the correct strings.
+> - represent QoS with string (name) rather than integer -
+>    QoS is also quite use-case specific
 
-What would you put under basic and common strings? Remove all that are gsm, bt
-or ip realted for now?
-
-> > - represent QoS with string (name) rather than integer -
-> >    QoS is also quite use-case specific
-
-Hmm, what would that buy us?
-
-> > - SND_SCN_INT_QOS may be SND_SCN_INT_QOS_POWER ?
-
-Makes sense, done.
-
-> > - what about to remove QOS and add universal parameter interface?
-> >    something like:
-> > 
-> > int snd_scenario_set_parameter(snd_scenario_t *scn, char *type, char *value);
-> 
-> This sounds not bad, but let's argue first what parameters could be
-> added in future.
-
-Any concrete examples here? I'm not against a more generic interface, but I have
-problems to see good use cases for it.
-
-I implemented the snd_scenario_get_control_id() function you favoured over the
-explicit functions. Also two more small patches posted in a new thread.
-
-regards
-Stefan Schmidt
+I believe the idea is that QoS should be relatively generic - the long
+term idea is that the application should be able to give some idea of
+the sort of output it is trying to provide to the stack to enable the
+stack to make decisions about configuration.
