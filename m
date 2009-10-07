@@ -1,27 +1,20 @@
-From: Li Bo <liboat@gmail.com>
-Subject: Re: [PATCH 8/31] HDA patch_via.c: Change VT1708S &
-	VT1702 hp mode controls
-Date: Wed, 7 Oct 2009 14:01:51 +0800
-Message-ID: <16685ee0910062301w1f372f88r24d17e78491bfbbb@mail.gmail.com>
-References: <16685ee0910050725u67cdf3b5g8dcd20275bcf773f@mail.gmail.com>
-	<s5hab056fwc.wl%tiwai@suse.de>
-	<16685ee0910052144r444996bdqee29f374207cd7@mail.gmail.com>
-	<s5hk4z9rs3o.wl%tiwai@suse.de>
-	<16685ee0910060855i1e6dc4c5mf2ec443e71745b7@mail.gmail.com>
-	<16685ee0910061042u68bb6822p12a37f942ec5bafa@mail.gmail.com>
-	<s5hpr90o0we.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
+ GIT repository for Linux 2.6 branch, master now at v2.6.31-rc8-407-gfc9e4a3
+Date: Wed, 07 Oct 2009 08:31:14 +0200
+Message-ID: <4ACC35B2.5030508@ladisch.de>
+References: <20091006063609.B06E110381F@alsa0.perex.cz>
+	<s5hab05role.wl%tiwai@suse.de> <4ACAF4AC.3000608@ladisch.de>
+	<Pine.LNX.4.64.0910061955510.18975@artax.karlin.mff.cuni.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
-	[209.85.218.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA9D31037F8
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id B800E24452
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 08:01:51 +0200 (CEST)
-Received: by bwz25 with SMTP id 25so14164585bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2009 23:01:51 -0700 (PDT)
-In-Reply-To: <s5hpr90o0we.wl%tiwai@suse.de>
+	Wed,  7 Oct 2009 08:31:19 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.64.0910061955510.18975@artax.karlin.mff.cuni.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,60 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: LoganLi@viatech.com.cn, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
+To: jmal8295 <jmal8295@artax.karlin.mff.cuni.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 7, 2009 at 2:03 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Wed, 7 Oct 2009 01:42:50 +0800,
-> Li Bo wrote:
->>
->> On Tue, Oct 6, 2009 at 11:55 PM, Li Bo <liboat@gmail.com> wrote:
->> > On Tue, Oct 6, 2009 at 1:47 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> >> At Tue, 6 Oct 2009 12:44:28 +0800,
->> >> Li Bo wrote:
->> >>>
->> >>> Hi, Takashi
->> >>> =A0 When independent hp switches from
->> >>> =A0 =A0 =A0 =A0 =A0 on -> off: hp volume/switch is deactivated
->> >>> =A0 =A0 =A0 =A0 =A0 off -> hp volume switch =A0is activated
->> >>> =A0 These 2 actions are one-shot setup, so we put "need reboot" to r=
-emind user
->> >>> =A0 that hp volume/switch update will only take effect after reboot.
->> >>
->> >> First off, you don't have to "reboot" at all :)
->> >>
->> >
->> > I also want to kick that "reboot" off:)
->> >
->> >> And, the activation/deactivation can be done on the fly, so it's no
->> >> more "one-shot" action (if implemented properly).
->> >>
->> >>
->> >> Takashi
->> >>
->> >
->> > You mean just act/deact on via_independent_hp_put? I'll try and update=
- this,
->> > thank you!
->> >
->> Sorry I don't know how to activate/deactivate on the fly. I toggle acces=
-s'
->> SNDRV_CTL_ELEM_ACCESS_INACTIVE bit in via_independent_hp_put, but
->> in alsamixer it cannot reflect the change unless restart it. Please
->> give some help.
->
-> You simply need to notify the control elements you changed via
-> snd_ctl_notify().
-> Then the mixer app will update the status as well.
->
->
-> Takashi
->
+jmal8295 wrote:
+> On Tue, 6 Oct 2009, Clemens Ladisch wrote:
+> > Takashi Iwai wrote:
+> > > noreply-git@alsa-project.org wrote:
+> > > > commit fc9e4a3811567f8d1d4c263a89e27b52c90d6098
 
-I add snd_ctl_notify after access update, but test with results that:
-  - alsamixer (v1.0.21) will gray/de-grayed the control only after
-restart the application
-  - gnome-volume-control will just ignore the access bit and display
-the control as usual.
-Maybe we have to backward to snd_ctl_remove implementation.
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=fc9e4a3811567f8d1d4c263a89e27b52c90d6098
+
+> > > > Author:     Clemens Ladisch <clemens@ladisch.de>
+> > > > AuthorDate: Tue Oct 6 08:21:04 2009 +0200
+> > > > 
+> > > >     sound: via82xx: move DXS volume controls to PCM interface
+> > > >     
+> > > >     The "VIA DXS" controls are actually volume controls that apply to the
+> > > >     four PCM substreams, so we better indicate this connection by moving the
+> > > >     controls to the PCM interface.
+> 
+> By "moving" you mean removing them or will there appear somewhere else?
+
+Changing the interface from MIXER to PCM means that the controls will
+not appear in most mixer applications.
+
+> > Honza, are you still using this driver?
+> 
+> Yes I do (there is a different driver for this codec?).
+
+No, it's just rather old.
+I hoped you'd be using newer hardware by now.  ;-)
+
+> And I _will_ be regarding it as regression if I lose possibility to
+> change volume of the four streams independently.
+> On the other hand, I do change the volume only manually (not
+> automatically by program), so if only thing which changes is the way how
+> to modify that volume I would not see problem in that.
+
+With the new controls, the only way to change them would be on the
+command line:
+  amixer cset iface=PCM,name="PCM Playback Volume",subdevice=x yy
+
+BTW: How do you determine which of the four controls is associated with
+a specific application?
+
+
+In any case, the main purpose of the patch was to rename the controls to
+prevent "alsactl restore" from restoring the old wrong volume setting,
+so it would suffice to just change the controls' name in some way, such
+as from "VIA DXS" to "DXS".
+
+
+Best regards,
+Clemens
