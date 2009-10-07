@@ -1,22 +1,28 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
- GIT repository for Linux 2.6 branch, master now at v2.6.31-rc8-407-gfc9e4a3
-Date: Wed, 07 Oct 2009 09:59:13 +0200
-Message-ID: <4ACC4A51.1010606@ladisch.de>
-References: <20091006063609.B06E110381F@alsa0.perex.cz>
-	<s5hab05role.wl%tiwai@suse.de> <4ACAF4AC.3000608@ladisch.de>
-	<Pine.LNX.4.64.0910061955510.18975@artax.karlin.mff.cuni.cz>
-	<4ACC35B2.5030508@ladisch.de>
-	<Pine.LNX.4.64.0910070840250.20794@artax.karlin.mff.cuni.cz>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ascenario: Add scenario support to alsa-lib
+Date: Wed, 7 Oct 2009 10:10:06 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0910070948210.31529@eeebox2.perex-int.cz>
+References: <1254390436-5283-1-git-send-email-stefan@datenfreihafen.org>
+	<1254390436-5283-2-git-send-email-stefan@datenfreihafen.org>
+	<20091001122835.GC14417@sirena.org.uk>
+	<20091001131948.GA5936@excalibur.local>
+	<20091001150849.GE5936@excalibur.local>
+	<20091005082747.GA3983@excalibur.local>
+	<alpine.LNX.2.00.0910051111220.31529@eeebox2.perex-int.cz>
+	<20091005093502.GC3983@excalibur.local>
+	<alpine.LNX.2.00.0910060949070.31529@eeebox2.perex-int.cz>
+	<s5hzl847w3q.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0910061048410.31529@eeebox2.perex-int.cz>
+	<s5hws387um7.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 930E01037F8
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB697103875
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 09:59:20 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.64.0910070840250.20794@artax.karlin.mff.cuni.cz>
+	Wed,  7 Oct 2009 10:10:06 +0200 (CEST)
+In-Reply-To: <s5hws387um7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,42 +32,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jmal8295 <jmal8295@artax.karlin.mff.cuni.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-jmal8295 wrote:
-> > With the new controls, the only way to change them would be on the
-> > command line:
-> >   amixer cset iface=PCM,name="PCM Playback Volume",subdevice=x yy
-> 
-> Hmmm ... that is almost as cumbersome as it could be. Is it at least
-> planed to add it to some other mixer, like alsamixer? Another view
-> perhaps?
+On Tue, 6 Oct 2009, Takashi Iwai wrote:
 
-That would be useful (also for the same controls of the Emu10k1 and
-DS-1 drivers).
+>> binding. What's awful on this?
+>>
+>> CTL{reset}="mixer"
+>> CTL{name}="Master Playback Volume", CTL{value}="-21dB"
+>> CTL{name}="Master Playback Switch", CTL{value}="on"
+>> CTL{name}="Headphone Playback Switch", CTL{value}="on,on"
+>> CTL{name}="Front Playback Volume", CTL{value}="-29dB,-29dB"
+>> CTL{name}="Front Playback Switch", CTL{value}="on,on"
+>> CTL{name}="PCM Playback Volume", CTL{value}="0dB,0dB"
+>
+> This is all fine, but as you wrote below:
+>
+>> Solving complex tasks requires complex description.
+>
+> This is the reality.
+> The alsactl's default config shows its limit.
+>
+>> I'm open to
+>> discuss things to make this udev-like syntax more nice. The most
+>> irritating thing in this syntax are build-in commands for me, but having
+>> another special key for these actions are not a big win, because
+>> configuration writers must learn them.
+>
+> The crazy goto is also painful.  It reminds me the day of MS BASIC.
 
-> > BTW: How do you determine which of the four controls is associated with
-> > a specific application?
-> 
-> Trial and error :-).
+I'm going to change the CTL build-in command to something more readable 
+like:
 
-A mixer application/view that knows about these controls could show the
-program name, but that would require that ALSA gives out information
-about the process that has opened a substream.
+Old syntax:
 
-> > In any case, the main purpose of the patch was to rename the controls to
-> > prevent "alsactl restore" from restoring the old wrong volume setting,
-> > so it would suffice to just change the controls' name in some way, such
-> > as from "VIA DXS" to "DXS".
-> 
-> I would propose to use this oportunity to rename them to something more
-> descriptive, but I have no idea what that could be (considering limited
-> space in mixer programs).
+CTL{reset}="mixer"
+CTL{name}="Playback Volume",PROGRAM=="__ctl_search", \
+   CTL{values}="$env{pvolume}",RESULT!="0",CTL{values}="$env{ppercent}"
 
-"PCM Stream"?
+New syntax:
 
+CTL{reset}="mixer"
+CTL{name}="Playback Volume",CTL{do_search}=="1", \
+   CTL{values}="$env{pvolume}",RESULT!="0",CTL{values}="$env{ppercent}"
 
-Best regards,
-Clemens
+But regarding goto, I'm really stuck. We can add some block control:
+
+BEGIN="" .. END="" (looks like a goto anyway)
+
+Or skip some lines:
+
+SKIPLINES="3"
+
+But these solutions do not bring much readability. Another possibility 
+(compromise) is to use a goto command to skip all lines to next label to 
+reduce usage of named labels (which is not a big fun at least in 
+init/default file):
+
+GOTO=""
+....
+LABEL=""
+
+It works without any code change in current parser.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
