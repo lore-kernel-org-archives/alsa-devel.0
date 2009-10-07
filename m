@@ -1,27 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ascenario: Add scenario support to	alsa-lib
-Date: Wed, 7 Oct 2009 14:53:20 +0100
-Message-ID: <20091007135320.GI19135@sirena.org.uk>
-References: <20091001150849.GE5936@excalibur.local>
-	<20091005082747.GA3983@excalibur.local>
-	<alpine.LNX.2.00.0910051111220.31529@eeebox2.perex-int.cz>
-	<20091005093502.GC3983@excalibur.local>
-	<alpine.LNX.2.00.0910060949070.31529@eeebox2.perex-int.cz>
-	<s5hzl847w3q.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0910061048410.31529@eeebox2.perex-int.cz>
-	<s5hvdis7txp.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0910061302330.31529@eeebox2.perex-int.cz>
-	<alpine.LNX.2.00.0910061510320.31529@eeebox2.perex-int.cz>
+From: Stefan Schmidt <stefan@datenfreihafen.org>
+Subject: ascenario: Small updates for new API.
+Date: Wed,  7 Oct 2009 15:55:55 +0200
+Message-ID: <1254923758-14598-1-git-send-email-stefan@datenfreihafen.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3675C103899
+Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6C731038A0
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 15:53:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.0910061510320.31529@eeebox2.perex-int.cz>
+	Wed,  7 Oct 2009 15:56:04 +0200 (CEST)
+Received: from p5b03679e.dip.t-dialin.net ([91.3.103.158] helo=excalibur)
+	by sirius.lasnet.de with esmtpsa
+	(Cipher TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63 #1)
+	id 1MvWzp-0002WG-3o by authid <stefan@sostec.de> with cram_md5
+	for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2009 15:56:03 +0200
+Received: from stefan by excalibur with local (Exim 4.69)
+	(envelope-from <stefan@excalibur.local>) id 1MvWzp-0003o9-T7
+	for alsa-devel@alsa-project.org; Wed, 07 Oct 2009 15:56:01 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,16 +27,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>, Stefan Schmidt <stefan@datenfreihafen.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 06, 2009 at 03:33:39PM +0200, Jaroslav Kysela wrote:
+Hello.
 
-> - represent QoS with string (name) rather than integer -
->    QoS is also quite use-case specific
+[PATCH 1/3] ascenario: Rename SND_SCN_INT_QOS to SND_SCN_INT_QOS_POWER
+As proposed by Jaroslav. Emphasis the power consumption relationship.
 
-I believe the idea is that QoS should be relatively generic - the long
-term idea is that the application should be able to give some idea of
-the sort of output it is trying to provide to the stack to enable the
-stack to make decisions about configuration.
+[PATCH 2/3] ascenario: Fix snd_scenario_get_control_id() declaration to match implementation
+Just different names in declaration and implementation. I favoured
+_control_id().
+
+[PATCH 3/3] ascenario: Implement snd_scenario_get_control_id()
+Replace the four explicit functions with a generic one. I was not able to find
+another way to get the id from the given numid then getting the full list and
+iterate through it. If there is something easier let me know. :)
+
+regards
+Stefan Schmidt
