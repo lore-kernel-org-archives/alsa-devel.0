@@ -1,18 +1,16 @@
-From: Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 2/3] ascenario: Fix
-	snd_scenario_get_control_id() declaration to match implementation
-Date: Wed,  7 Oct 2009 15:55:57 +0200
-Message-ID: <1254923758-14598-3-git-send-email-stefan@datenfreihafen.org>
-References: <1254923758-14598-1-git-send-email-stefan@datenfreihafen.org>
+From: gus.alsa@bourg.net
+Subject: Re: Patch for Zotac IONITX model detection
+Date: Wed, 7 Oct 2009 15:02:11 +0000
+Message-ID: <40636.1254927731@bourg.net>
+Reply-To: gus.alsa@bourg.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id D51DD1038A0
+Received: from carrera.bourg.net (carrera.bourg.net [207.229.121.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2A3F24334
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 15:56:06 +0200 (CEST)
-In-Reply-To: <1254923758-14598-1-git-send-email-stefan@datenfreihafen.org>
+	Wed,  7 Oct 2009 17:02:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stefan Schmidt <stefan@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>, gus.alsa@bourg.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Stefan Schmidt <stefan@slimlogic.co.uk>
 
-Signed-off-by: Stefan Schmidt <stefan@slimlogic.co.uk>
----
- include/ascenario.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Aha, sorry - I misunderstood what was being asked to test.  Two channel audio is working correctly with the development snapshot.
 
-diff --git a/include/ascenario.h b/include/ascenario.h
-index 3055cfa..6119f49 100644
---- a/include/ascenario.h
-+++ b/include/ascenario.h
-@@ -166,8 +166,8 @@ const char *snd_scenario_get_scn(snd_scenario_t *scn);
-  *
-  * Get the control id for the current scenario.
-  */
--int snd_scenario_get_kcontrol(snd_scenario_t *scn,
--                              int kctl_type, snd_ctl_elem_id_t *id);
-+int snd_scenario_get_control_id(snd_scenario_t *scn,
-+                                int kctl_type, snd_ctl_elem_id_t *id);
- 
- /**
-  * \brief set integer value
--- 
-1.6.4.3
+Thanks,
+Gus
+
+
+On Wed  7/10/09 10:16 AM , Takashi Iwai <tiwai@suse.de> wrote:
+
+> At Wed, 7 Oct 2009 03:12:49 +0000,
+> wrote:
+> > 
+> > Hello Takashi Iwai,
+> > 
+> > I tested your latest snapshot and it did not detect the 6 channel
+> audio.
+> This is so per design.  The default auto-parser doesn't enable
+> 6-channel since otherwise you get problems with the automatic HP /
+> mic
+> jack detection.
+> Does it work except for 6-channel things?
+> thanks,
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> 
+Message sent via Atmail Open - http://atmail.org/
