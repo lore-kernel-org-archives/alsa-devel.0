@@ -1,18 +1,27 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: ice1724 SPDIF buffer size?
-Date: Wed, 07 Oct 2009 00:01:33 -0600
-Message-ID: <4ACC2EBD.2010108@gmail.com>
+From: Li Bo <liboat@gmail.com>
+Subject: Re: [PATCH 8/31] HDA patch_via.c: Change VT1708S &
+	VT1702 hp mode controls
+Date: Wed, 7 Oct 2009 14:01:51 +0800
+Message-ID: <16685ee0910062301w1f372f88r24d17e78491bfbbb@mail.gmail.com>
+References: <16685ee0910050725u67cdf3b5g8dcd20275bcf773f@mail.gmail.com>
+	<s5hab056fwc.wl%tiwai@suse.de>
+	<16685ee0910052144r444996bdqee29f374207cd7@mail.gmail.com>
+	<s5hk4z9rs3o.wl%tiwai@suse.de>
+	<16685ee0910060855i1e6dc4c5mf2ec443e71745b7@mail.gmail.com>
+	<16685ee0910061042u68bb6822p12a37f942ec5bafa@mail.gmail.com>
+	<s5hpr90o0we.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f178.google.com (mail-yx0-f178.google.com
-	[209.85.210.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 983F724438
+Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
+	[209.85.218.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA9D31037F8
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 08:01:37 +0200 (CEST)
-Received: by yxe8 with SMTP id 8so5273266yxe.17
-	for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2009 23:01:35 -0700 (PDT)
+	Wed,  7 Oct 2009 08:01:51 +0200 (CEST)
+Received: by bwz25 with SMTP id 25so14164585bwz.32
+	for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2009 23:01:51 -0700 (PDT)
+In-Reply-To: <s5hpr90o0we.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +31,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-Devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LoganLi@viatech.com.cn, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-I noticed that in the ice1724 driver, we set a default and maximum 
-preallocated buffer size of 256K for the "professional" stream, but only 
-64K for the SPDIF and independent stereo pair streams, even though the 
-hardware supports 256K for all streams. Is there any reason why we can't 
-use 256K for all of them?
+On Wed, Oct 7, 2009 at 2:03 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 7 Oct 2009 01:42:50 +0800,
+> Li Bo wrote:
+>>
+>> On Tue, Oct 6, 2009 at 11:55 PM, Li Bo <liboat@gmail.com> wrote:
+>> > On Tue, Oct 6, 2009 at 1:47 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> At Tue, 6 Oct 2009 12:44:28 +0800,
+>> >> Li Bo wrote:
+>> >>>
+>> >>> Hi, Takashi
+>> >>> =A0 When independent hp switches from
+>> >>> =A0 =A0 =A0 =A0 =A0 on -> off: hp volume/switch is deactivated
+>> >>> =A0 =A0 =A0 =A0 =A0 off -> hp volume switch =A0is activated
+>> >>> =A0 These 2 actions are one-shot setup, so we put "need reboot" to r=
+emind user
+>> >>> =A0 that hp volume/switch update will only take effect after reboot.
+>> >>
+>> >> First off, you don't have to "reboot" at all :)
+>> >>
+>> >
+>> > I also want to kick that "reboot" off:)
+>> >
+>> >> And, the activation/deactivation can be done on the fly, so it's no
+>> >> more "one-shot" action (if implemented properly).
+>> >>
+>> >>
+>> >> Takashi
+>> >>
+>> >
+>> > You mean just act/deact on via_independent_hp_put? I'll try and update=
+ this,
+>> > thank you!
+>> >
+>> Sorry I don't know how to activate/deactivate on the fly. I toggle acces=
+s'
+>> SNDRV_CTL_ELEM_ACCESS_INACTIVE bit in via_independent_hp_put, but
+>> in alsamixer it cannot reflect the change unless restart it. Please
+>> give some help.
+>
+> You simply need to notify the control elements you changed via
+> snd_ctl_notify().
+> Then the mixer app will update the status as well.
+>
+>
+> Takashi
+>
 
-I made this change here and it seems to work fine (for SPDIF at least, 
-haven't tested stereo). From a power and CPU usage perspective, it makes 
-sense to allow as big a buffer as possible for when latency isn't critical..
+I add snd_ctl_notify after access update, but test with results that:
+  - alsamixer (v1.0.21) will gray/de-grayed the control only after
+restart the application
+  - gnome-volume-control will just ignore the access bit and display
+the control as usual.
+Maybe we have to backward to snd_ctl_remove implementation.
