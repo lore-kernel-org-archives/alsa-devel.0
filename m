@@ -1,225 +1,411 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] opl3: circular locking in the
- snd_opl3_note_on() and snd_opl3_note_off()
-Date: Wed, 7 Oct 2009 22:51:34 +0200
-Message-ID: <20091007225134.003bc0e7.krzysztof.h1@poczta.fm>
+From: manoj.iyer@canonical.com
+Subject: Re: [PATCH REALTEK] Added quirk to enable sound on Toshiba NB200
+Date: Wed, 7 Oct 2009 15:34:59 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.0910071531530.6317@little>
+References: <alpine.DEB.2.00.0909230036570.29432@little> <s5h3a6eb46r.wl%tiwai@suse.de> <alpine.DEB.2.00.0909281022500.2112@little> <s5hd45agqoi.wl%tiwai@suse.de> <alpine.DEB.2.00.0909291812030.2426@little> <s5hhbulov3f.wl%tiwai@suse.de>
+ <alpine.DEB.2.00.0910010208220.7813@little> <s5h1vlnjzaa.wl%tiwai@suse.de> <s5htyyivrpv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
-	[217.74.64.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7059E103881
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 22:35:32 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1758101AbZJGUfr@vger.kernel.org>
+In-Reply-To: <s5htyyivrpv.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: manoj.iyer@canonical.com, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Joey Stanford <joey@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Fix following circular locking in the opl3 driver.
+Takashi San,
 
-=======================================================
-[ INFO: possible circular locking dependency detected ]
-2.6.32-rc3 #87
--------------------------------------------------------
-swapper/0 is trying to acquire lock:
- (&opl3->voice_lock){..-...}, at: [<cca748fe>] snd_opl3_note_off+0x1e/0xe0 [snd_opl3_synth]
+Like I reported earlier, the patch you mailed me (See patch below) breaks 
+sound on Toshiba NB200/205 again, even with my quirk. Any chance that we 
+can work on getting this fixed? If you point me in the right direction I 
+can dig into this some, also, mainline 
+http://kernel.ubuntu.com/~kernel-ppa/mainline/v2.6.32-rc1/ does not work. 
+iirc, you mentioned that this patch made it into mainline as well.
 
-but task is already holding lock:
- (&opl3->sys_timer_lock){..-...}, at: [<cca75169>] snd_opl3_timer_func+0x19/0xc0 [snd_opl3_synth]
+Thanks
 
-which lock already depends on the new lock.
+On Thu, 1 Oct 2009, Takashi Iwai wrote:
 
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&opl3->sys_timer_lock){..-...}:
-       [<c02461d5>] validate_chain+0xa25/0x1040
-       [<c0246aca>] __lock_acquire+0x2da/0xab0
-       [<c024731a>] lock_acquire+0x7a/0xa0
-       [<c044c300>] _spin_lock_irqsave+0x40/0x60
-       [<cca75046>] snd_opl3_note_on+0x686/0x790 [snd_opl3_synth]
-       [<cca68912>] snd_midi_process_event+0x322/0x590 [snd_seq_midi_emul]
-       [<cca74245>] snd_opl3_synth_event_input+0x15/0x20 [snd_opl3_synth]
-       [<cca4dcc0>] snd_seq_deliver_single_event+0x100/0x200 [snd_seq]
-       [<cca4de07>] snd_seq_deliver_event+0x47/0x1f0 [snd_seq]
-       [<cca4e50b>] snd_seq_dispatch_event+0x3b/0x140 [snd_seq]
-       [<cca5008c>] snd_seq_check_queue+0x10c/0x120 [snd_seq]
-       [<cca5037b>] snd_seq_enqueue_event+0x6b/0xe0 [snd_seq]
-       [<cca4e0fd>] snd_seq_client_enqueue_event+0xdd/0x100 [snd_seq]
-       [<cca4eb7a>] snd_seq_write+0xea/0x190 [snd_seq]
-       [<c02827b6>] vfs_write+0x96/0x160
-       [<c0282c9d>] sys_write+0x3d/0x70
-       [<c0202c45>] syscall_call+0x7/0xb
-
--> #0 (&opl3->voice_lock){..-...}:
-       [<c02467e6>] validate_chain+0x1036/0x1040
-       [<c0246aca>] __lock_acquire+0x2da/0xab0
-       [<c024731a>] lock_acquire+0x7a/0xa0
-       [<c044c300>] _spin_lock_irqsave+0x40/0x60
-       [<cca748fe>] snd_opl3_note_off+0x1e/0xe0 [snd_opl3_synth]
-       [<cca751f0>] snd_opl3_timer_func+0xa0/0xc0 [snd_opl3_synth]
-       [<c022ac46>] run_timer_softirq+0x166/0x1e0
-       [<c02269e8>] __do_softirq+0x78/0x110
-       [<c0226ac6>] do_softirq+0x46/0x50
-       [<c0226e26>] irq_exit+0x36/0x40
-       [<c0204bd2>] do_IRQ+0x42/0xb0
-       [<c020328e>] common_interrupt+0x2e/0x40
-       [<c021092f>] apm_cpu_idle+0x10f/0x290
-       [<c0201b11>] cpu_idle+0x21/0x40
-       [<c04443cd>] rest_init+0x4d/0x60
-       [<c055c835>] start_kernel+0x235/0x280
-       [<c055c066>] i386_start_kernel+0x66/0x70
-
-other info that might help us debug this:
-
-2 locks held by swapper/0:
- #0:  (&opl3->tlist){+.-...}, at: [<c022abd0>] run_timer_softirq+0xf0/0x1e0
- #1:  (&opl3->sys_timer_lock){..-...}, at: [<cca75169>] snd_opl3_timer_func+0x19/0xc0 [snd_opl3_synth]
-
-stack backtrace:
-Pid: 0, comm: swapper Not tainted 2.6.32-rc3 #87
-Call Trace:
- [<c0245188>] print_circular_bug+0xc8/0xd0
- [<c02467e6>] validate_chain+0x1036/0x1040
- [<c0247f14>] ? check_usage_forwards+0x54/0xd0
- [<c0246aca>] __lock_acquire+0x2da/0xab0
- [<c024731a>] lock_acquire+0x7a/0xa0
- [<cca748fe>] ? snd_opl3_note_off+0x1e/0xe0 [snd_opl3_synth]
- [<c044c300>] _spin_lock_irqsave+0x40/0x60
- [<cca748fe>] ? snd_opl3_note_off+0x1e/0xe0 [snd_opl3_synth]
- [<cca748fe>] snd_opl3_note_off+0x1e/0xe0 [snd_opl3_synth]
- [<c044c307>] ? _spin_lock_irqsave+0x47/0x60
- [<cca751f0>] snd_opl3_timer_func+0xa0/0xc0 [snd_opl3_synth]
- [<c022ac46>] run_timer_softirq+0x166/0x1e0
- [<c022abd0>] ? run_timer_softirq+0xf0/0x1e0
- [<cca75150>] ? snd_opl3_timer_func+0x0/0xc0 [snd_opl3_synth]
- [<c02269e8>] __do_softirq+0x78/0x110
- [<c044c0fd>] ? _spin_unlock+0x1d/0x20
- [<c025915f>] ? handle_level_irq+0xaf/0xe0
- [<c0226ac6>] do_softirq+0x46/0x50
- [<c0226e26>] irq_exit+0x36/0x40
- [<c0204bd2>] do_IRQ+0x42/0xb0
- [<c024463c>] ? trace_hardirqs_on_caller+0x12c/0x180
- [<c020328e>] common_interrupt+0x2e/0x40
- [<c0208d88>] ? default_idle+0x38/0x50
- [<c021092f>] apm_cpu_idle+0x10f/0x290
- [<c0201b11>] cpu_idle+0x21/0x40
- [<c04443cd>] rest_init+0x4d/0x60
- [<c055c835>] start_kernel+0x235/0x280
- [<c055c210>] ? unknown_bootoption+0x0/0x210
- [<c055c066>] i386_start_kernel+0x66/0x70
-
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-
----
-I am not sure if this is the only possible way to fix my the problem.
-My idea is to change locking in the snd_opl3_timer_func() so the opl3 voices' part
-is locked with voice_lock and the timer's part is locked with sys_timer_lock.
-
-diff --git a/sound/drivers/opl3/opl3_midi.c b/sound/drivers/opl3/opl3_midi.c
-index 6e7d09a..1e76f7b 100644
---- a/sound/drivers/opl3/opl3_midi.c
-+++ b/sound/drivers/opl3/opl3_midi.c
-@@ -29,6 +29,8 @@ extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
- 
- extern int use_internal_drums;
- 
-+static void snd_opl3_note_off_unsafe(void *p, int note, int vel,
-+				     struct snd_midi_channel *chan);
- /*
-  * The next table looks magical, but it certainly is not. Its values have
-  * been calculated as table[i]=8*log(i/64)/log(2) with an obvious exception
-@@ -242,16 +244,20 @@ void snd_opl3_timer_func(unsigned long data)
- 	int again = 0;
- 	int i;
- 
--	spin_lock_irqsave(&opl3->sys_timer_lock, flags);
-+	spin_lock_irqsave(&opl3->voice_lock, flags);
- 	for (i = 0; i < opl3->max_voices; i++) {
- 		struct snd_opl3_voice *vp = &opl3->voices[i];
- 		if (vp->state > 0 && vp->note_off_check) {
- 			if (vp->note_off == jiffies)
--				snd_opl3_note_off(opl3, vp->note, 0, vp->chan);
-+				snd_opl3_note_off_unsafe(opl3, vp->note, 0,
-+							 vp->chan);
- 			else
- 				again++;
- 		}
- 	}
-+	spin_unlock_irqrestore(&opl3->voice_lock, flags);
-+
-+	spin_lock_irqsave(&opl3->sys_timer_lock, flags);
- 	if (again) {
- 		opl3->tlist.expires = jiffies + 1;	/* invoke again */
- 		add_timer(&opl3->tlist);
-@@ -658,28 +664,22 @@ static void snd_opl3_kill_voice(struct snd_opl3 *opl3, int voice)
- /*
-  * Release a note in response to a midi note off.
-  */
--void snd_opl3_note_off(void *p, int note, int vel, struct snd_midi_channel *chan)
-+static void snd_opl3_note_off_unsafe(void *p, int note, int vel,
-+				     struct snd_midi_channel *chan)
- {
--  	struct snd_opl3 *opl3;
--
- 	int voice;
- 	struct snd_opl3_voice *vp;
- 
--	unsigned long flags;
--
--	opl3 = p;
-+  	struct snd_opl3 *opl3 = p;
- 
- #ifdef DEBUG_MIDI
- 	snd_printk(KERN_DEBUG "Note off, ch %i, inst %i, note %i\n",
- 		   chan->number, chan->midi_program, note);
- #endif
- 
--	spin_lock_irqsave(&opl3->voice_lock, flags);
--
- 	if (opl3->synth_mode == SNDRV_OPL3_MODE_SEQ) {
- 		if (chan->drum_channel && use_internal_drums) {
- 			snd_opl3_drum_switch(opl3, note, vel, 0, chan);
--			spin_unlock_irqrestore(&opl3->voice_lock, flags);
- 			return;
- 		}
- 		/* this loop will hopefully kill all extra voices, because
-@@ -697,6 +697,16 @@ void snd_opl3_note_off(void *p, int note, int vel, struct snd_midi_channel *chan
- 			snd_opl3_kill_voice(opl3, voice);
- 		}
- 	}
-+}
-+
-+void snd_opl3_note_off(void *p, int note, int vel,
-+		       struct snd_midi_channel *chan)
-+{
-+  	struct snd_opl3 *opl3 = p;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&opl3->voice_lock, flags);
-+	snd_opl3_note_off_unsafe(p, note, vel, chan);
- 	spin_unlock_irqrestore(&opl3->voice_lock, flags);
- }
- 
-@@ -867,3 +877,4 @@ void snd_opl3_sysex(void *p, unsigned char *buf, int len,
- 	snd_printk(KERN_DEBUG "SYSEX\n");
- #endif
- }
-+
-
-
-----------------------------------------------------------------------
-Nie wiesz ktory bank wybrac?
-Sprawdz ranking >>> http://link.interia.pl/f23b5
+> At Thu, 01 Oct 2009 10:26:05 +0200,
+> I wrote:
+>>
+>> At Thu, 1 Oct 2009 02:11:35 -0500 (CDT),
+>> manoj.iyer@canonical.com wrote:
+>>>
+>>>> 2.6.31.x is way too old for testing the new stuff :)
+>>>> Any chance to test 2.6.32-rc1?
+>>>
+>>> http://kernel.ubuntu.com/~kernel-ppa/mainline/v2.6.32-rc1/
+>>>
+>>> I tried the 2.6.32-rc1 today, and sound does not work for me on the NB200.
+>>
+>> OK, thanks for checking.
+>> After looking at the code a bit more deeply, it turned out that the
+>> BIOS auto-parser doesn't work with this particular configuration (the
+>> speaker with mono pin 0x17).
+>>
+>> I'm going to fix it later, but I applied your patch as the quick fix
+>> for the time being.
+>
+> Could you try the patch below with model=auto?
+> This will make the auto-parser working, hopefully.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 87da5e8..7810d3d 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -17146,70 +17146,145 @@ static struct alc_config_preset alc662_presets[] = {
+>  * BIOS auto configuration
+>  */
+>
+> +/* convert from MIX nid to DAC */
+> +static inline hda_nid_t alc662_mix_to_dac(hda_nid_t nid)
+> +{
+> +	if (nid == 0x0f)
+> +		return 0x02;
+> +	else if (nid >= 0x0c && nid <= 0x0e)
+> +		return nid - 0x0c + 0x02;
+> +	else
+> +		return 0;
+> +}
+> +
+> +/* get MIX nid connected to the given pin targeted to DAC */
+> +static hda_nid_t alc662_dac_to_mix(struct hda_codec *codec, hda_nid_t pin,
+> +				   hda_nid_t dac)
+> +{
+> +	hda_nid_t mix[4];
+> +	int i, num;
+> +
+> +	num = snd_hda_get_connections(codec, pin, mix, ARRAY_SIZE(mix));
+> +	for (i = 0; i < num; i++) {
+> +		if (alc662_mix_to_dac(mix[i]) == dac)
+> +			return mix[i];
+> +	}
+> +	return 0;
+> +}
+> +
+> +/* look for an empty DAC slot */
+> +static hda_nid_t alc662_look_for_dac(struct hda_codec *codec, hda_nid_t pin)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +	hda_nid_t srcs[5];
+> +	int i, j, num;
+> +
+> +	num = snd_hda_get_connections(codec, pin, srcs, ARRAY_SIZE(srcs));
+> +	if (num < 0)
+> +		return 0;
+> +	for (i = 0; i < num; i++) {
+> +		hda_nid_t nid = alc662_mix_to_dac(srcs[i]);
+> +		if (!nid)
+> +			continue;
+> +		for (j = 0; j < spec->multiout.num_dacs; j++)
+> +			if (spec->multiout.dac_nids[j] == nid)
+> +				break;
+> +		if (j >= spec->multiout.num_dacs)
+> +			return nid;
+> +	}
+> +	return 0;
+> +}
+> +
+> +/* fill in the dac_nids table from the parsed pin configuration */
+> +static int alc662_auto_fill_dac_nids(struct hda_codec *codec,
+> +				     const struct auto_pin_cfg *cfg)
+> +{
+> +	struct alc_spec *spec = codec->spec;
+> +	int i;
+> +	hda_nid_t dac;
+> +
+> +	spec->multiout.dac_nids = spec->private_dac_nids;
+> +	for (i = 0; i < cfg->line_outs; i++) {
+> +		dac = alc662_look_for_dac(codec, cfg->line_out_pins[i]);
+> +		if (!dac)
+> +			continue;
+> +		spec->multiout.dac_nids[spec->multiout.num_dacs++] = dac;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int alc662_add_vol_ctl(struct alc_spec *spec, const char *pfx,
+> +			      hda_nid_t nid, unsigned int chs)
+> +{
+> +	char name[32];
+> +	sprintf(name, "%s Playback Volume", pfx);
+> +	return add_control(spec, ALC_CTL_WIDGET_VOL, name,
+> +			   HDA_COMPOSE_AMP_VAL(nid, chs, 0, HDA_OUTPUT));
+> +}
+> +
+> +static int alc662_add_sw_ctl(struct alc_spec *spec, const char *pfx,
+> +			     hda_nid_t nid, unsigned int chs)
+> +{
+> +	char name[32];
+> +	sprintf(name, "%s Playback Switch", pfx);
+> +	return add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> +			   HDA_COMPOSE_AMP_VAL(nid, chs, 0, HDA_INPUT));
+> +}
+> +
+> +#define alc662_add_stereo_vol(spec, pfx, nid) \
+> +	alc662_add_vol_ctl(spec, pfx, nid, 3)
+> +#define alc662_add_stereo_sw(spec, pfx, nid) \
+> +	alc662_add_sw_ctl(spec, pfx, nid, 3)
+> +
+> /* add playback controls from the parsed DAC table */
+> -static int alc662_auto_create_multi_out_ctls(struct alc_spec *spec,
+> +static int alc662_auto_create_multi_out_ctls(struct hda_codec *codec,
+> 					     const struct auto_pin_cfg *cfg)
+> {
+> -	char name[32];
+> +	struct alc_spec *spec = codec->spec;
+> 	static const char *chname[4] = {
+> 		"Front", "Surround", NULL /*CLFE*/, "Side"
+> 	};
+> -	hda_nid_t nid;
+> +	hda_nid_t nid, mix;
+> 	int i, err;
+>
+> 	for (i = 0; i < cfg->line_outs; i++) {
+> -		if (!spec->multiout.dac_nids[i])
+> +		nid = spec->multiout.dac_nids[i];
+> +		if (!nid)
+> +			continue;
+> +		mix = alc662_dac_to_mix(codec, cfg->line_out_pins[i], nid);
+> +		if (!mix)
+> 			continue;
+> -		nid = alc880_idx_to_dac(i);
+> 		if (i == 2) {
+> 			/* Center/LFE */
+> -			err = add_control(spec, ALC_CTL_WIDGET_VOL,
+> -					  "Center Playback Volume",
+> -					  HDA_COMPOSE_AMP_VAL(nid, 1, 0,
+> -							      HDA_OUTPUT));
+> +			err = alc662_add_vol_ctl(spec, "Center", nid, 1);
+> 			if (err < 0)
+> 				return err;
+> -			err = add_control(spec, ALC_CTL_WIDGET_VOL,
+> -					  "LFE Playback Volume",
+> -					  HDA_COMPOSE_AMP_VAL(nid, 2, 0,
+> -							      HDA_OUTPUT));
+> +			err = alc662_add_vol_ctl(spec, "LFE", nid, 2);
+> 			if (err < 0)
+> 				return err;
+> -			err = add_control(spec, ALC_CTL_WIDGET_MUTE,
+> -					  "Center Playback Switch",
+> -					  HDA_COMPOSE_AMP_VAL(0x0e, 1, 0,
+> -							      HDA_INPUT));
+> +			err = alc662_add_sw_ctl(spec, "Center", mix, 1);
+> 			if (err < 0)
+> 				return err;
+> -			err = add_control(spec, ALC_CTL_WIDGET_MUTE,
+> -					  "LFE Playback Switch",
+> -					  HDA_COMPOSE_AMP_VAL(0x0e, 2, 0,
+> -							      HDA_INPUT));
+> +			err = alc662_add_sw_ctl(spec, "LFE", mix, 2);
+> 			if (err < 0)
+> 				return err;
+> 		} else {
+> 			const char *pfx;
+> 			if (cfg->line_outs == 1 &&
+> 			    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT) {
+> -				if (!cfg->hp_pins)
+> +				if (cfg->hp_outs)
+> 					pfx = "Speaker";
+> 				else
+> 					pfx = "PCM";
+> 			} else
+> 				pfx = chname[i];
+> -			sprintf(name, "%s Playback Volume", pfx);
+> -			err = add_control(spec, ALC_CTL_WIDGET_VOL, name,
+> -					  HDA_COMPOSE_AMP_VAL(nid, 3, 0,
+> -							      HDA_OUTPUT));
+> +			err = alc662_add_vol_ctl(spec, pfx, nid, 3);
+> 			if (err < 0)
+> 				return err;
+> 			if (cfg->line_outs == 1 &&
+> 			    cfg->line_out_type == AUTO_PIN_SPEAKER_OUT)
+> 				pfx = "Speaker";
+> -			sprintf(name, "%s Playback Switch", pfx);
+> -			err = add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> -				HDA_COMPOSE_AMP_VAL(alc880_idx_to_mixer(i),
+> -						    3, 0, HDA_INPUT));
+> +			err = alc662_add_sw_ctl(spec, pfx, mix, 3);
+> 			if (err < 0)
+> 				return err;
+> 		}
+> @@ -17218,54 +17293,38 @@ static int alc662_auto_create_multi_out_ctls(struct alc_spec *spec,
+> }
+>
+> /* add playback controls for speaker and HP outputs */
+> -static int alc662_auto_create_extra_out(struct alc_spec *spec, hda_nid_t pin,
+> +/* return DAC nid if any new DAC is assigned */
+> +static int alc662_auto_create_extra_out(struct hda_codec *codec, hda_nid_t pin,
+> 					const char *pfx)
+> {
+> -	hda_nid_t nid;
+> +	struct alc_spec *spec = codec->spec;
+> +	hda_nid_t nid, mix;
+> 	int err;
+> -	char name[32];
+>
+> 	if (!pin)
+> 		return 0;
+> -
+> -	if (pin == 0x17) {
+> -		/* ALC663 has a mono output pin on 0x17 */
+> +	nid = alc662_look_for_dac(codec, pin);
+> +	if (!nid) {
+> +		char name[32];
+> +		/* the corresponding DAC is already occupied */
+> +		if (!(get_wcaps(codec, pin) & AC_WCAP_OUT_AMP))
+> +			return 0; /* no way */
+> +		/* create a switch only */
+> 		sprintf(name, "%s Playback Switch", pfx);
+> -		err = add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> -				  HDA_COMPOSE_AMP_VAL(pin, 2, 0, HDA_OUTPUT));
+> -		return err;
+> +		return add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> +				   HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT));
+> 	}
+>
+> -	if (alc880_is_fixed_pin(pin)) {
+> -		nid = alc880_idx_to_dac(alc880_fixed_pin_idx(pin));
+> -		/* printk(KERN_DEBUG "DAC nid=%x\n",nid); */
+> -		/* specify the DAC as the extra output */
+> -		if (!spec->multiout.hp_nid)
+> -			spec->multiout.hp_nid = nid;
+> -		else
+> -			spec->multiout.extra_out_nid[0] = nid;
+> -		/* control HP volume/switch on the output mixer amp */
+> -		nid = alc880_idx_to_dac(alc880_fixed_pin_idx(pin));
+> -		sprintf(name, "%s Playback Volume", pfx);
+> -		err = add_control(spec, ALC_CTL_WIDGET_VOL, name,
+> -				  HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_OUTPUT));
+> -		if (err < 0)
+> -			return err;
+> -		sprintf(name, "%s Playback Switch", pfx);
+> -		err = add_control(spec, ALC_CTL_BIND_MUTE, name,
+> -				  HDA_COMPOSE_AMP_VAL(nid, 3, 2, HDA_INPUT));
+> -		if (err < 0)
+> -			return err;
+> -	} else if (alc880_is_multi_pin(pin)) {
+> -		/* set manual connection */
+> -		/* we have only a switch on HP-out PIN */
+> -		sprintf(name, "%s Playback Switch", pfx);
+> -		err = add_control(spec, ALC_CTL_WIDGET_MUTE, name,
+> -				  HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT));
+> -		if (err < 0)
+> -			return err;
+> -	}
+> -	return 0;
+> +	mix = alc662_dac_to_mix(codec, pin, nid);
+> +	if (!mix)
+> +		return 0;
+> +	err = alc662_add_vol_ctl(spec, pfx, nid, 3);
+> +	if (err < 0)
+> +		return err;
+> +	err = alc662_add_sw_ctl(spec, pfx, mix, 3);
+> +	if (err < 0)
+> +		return err;
+> +	return nid;
+> }
+>
+> /* create playback/capture controls for input pins */
+> @@ -17274,30 +17333,35 @@ static int alc662_auto_create_extra_out(struct alc_spec *spec, hda_nid_t pin,
+>
+> static void alc662_auto_set_output_and_unmute(struct hda_codec *codec,
+> 					      hda_nid_t nid, int pin_type,
+> -					      int dac_idx)
+> +					      hda_nid_t dac)
+> {
+> +	int i, num;
+> +	hda_nid_t srcs[4];
+> +
+> 	alc_set_pin_output(codec, nid, pin_type);
+> 	/* need the manual connection? */
+> -	if (alc880_is_multi_pin(nid)) {
+> -		struct alc_spec *spec = codec->spec;
+> -		int idx = alc880_multi_pin_idx(nid);
+> -		snd_hda_codec_write(codec, alc880_idx_to_selector(idx), 0,
+> -				    AC_VERB_SET_CONNECT_SEL,
+> -				    alc880_dac_to_idx(spec->multiout.dac_nids[dac_idx]));
+> +	num = snd_hda_get_connections(codec, nid, srcs, ARRAY_SIZE(srcs));
+> +	if (num <= 1)
+> +		return;
+> +	for (i = 0; i < num; i++) {
+> +		if (alc662_mix_to_dac(srcs[i]) != dac)
+> +			continue;
+> +		snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CONNECT_SEL, i);
+> +		return;
+> 	}
+> }
+>
+> static void alc662_auto_init_multi_out(struct hda_codec *codec)
+> {
+> 	struct alc_spec *spec = codec->spec;
+> +	int pin_type = get_pin_type(spec->autocfg.line_out_type);
+> 	int i;
+>
+> 	for (i = 0; i <= HDA_SIDE; i++) {
+> 		hda_nid_t nid = spec->autocfg.line_out_pins[i];
+> -		int pin_type = get_pin_type(spec->autocfg.line_out_type);
+> 		if (nid)
+> 			alc662_auto_set_output_and_unmute(codec, nid, pin_type,
+> -							  i);
+> +					spec->multiout.dac_nids[i]);
+> 	}
+> }
+>
+> @@ -17307,12 +17371,13 @@ static void alc662_auto_init_hp_out(struct hda_codec *codec)
+> 	hda_nid_t pin;
+>
+> 	pin = spec->autocfg.hp_pins[0];
+> -	if (pin) /* connect to front */
+> -		/* use dac 0 */
+> -		alc662_auto_set_output_and_unmute(codec, pin, PIN_HP, 0);
+> +	if (pin)
+> +		alc662_auto_set_output_and_unmute(codec, pin, PIN_HP,
+> +						  spec->multiout.hp_nid);
+> 	pin = spec->autocfg.speaker_pins[0];
+> 	if (pin)
+> -		alc662_auto_set_output_and_unmute(codec, pin, PIN_OUT, 0);
+> +		alc662_auto_set_output_and_unmute(codec, pin, PIN_OUT,
+> +					spec->multiout.extra_out_nid[0]);
+> }
+>
+> #define ALC662_PIN_CD_NID		ALC880_PIN_CD_NID
+> @@ -17350,21 +17415,25 @@ static int alc662_parse_auto_config(struct hda_codec *codec)
+> 	if (!spec->autocfg.line_outs)
+> 		return 0; /* can't find valid BIOS pin config */
+>
+> -	err = alc880_auto_fill_dac_nids(spec, &spec->autocfg);
+> +	err = alc662_auto_fill_dac_nids(codec, &spec->autocfg);
+> 	if (err < 0)
+> 		return err;
+> -	err = alc662_auto_create_multi_out_ctls(spec, &spec->autocfg);
+> +	err = alc662_auto_create_multi_out_ctls(codec, &spec->autocfg);
+> 	if (err < 0)
+> 		return err;
+> -	err = alc662_auto_create_extra_out(spec,
+> +	err = alc662_auto_create_extra_out(codec,
+> 					   spec->autocfg.speaker_pins[0],
+> 					   "Speaker");
+> 	if (err < 0)
+> 		return err;
+> -	err = alc662_auto_create_extra_out(spec, spec->autocfg.hp_pins[0],
+> +	if (err)
+> +		spec->multiout.extra_out_nid[0] = err;
+> +	err = alc662_auto_create_extra_out(codec, spec->autocfg.hp_pins[0],
+> 					   "Headphone");
+> 	if (err < 0)
+> 		return err;
+> +	if (err)
+> +		spec->multiout.hp_nid = err;
+> 	err = alc662_auto_create_input_ctls(codec, &spec->autocfg);
+> 	if (err < 0)
+> 		return err;
+>
