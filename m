@@ -1,60 +1,70 @@
-From: "Shilimkar, Santosh" <santosh.shilimkar@ti.com>
-Subject: RE: [alsa-devel] [PATCHv3 1/7] OMAP4: PMIC: Add support for twl6030
- codec
-Date: Wed, 7 Oct 2009 11:56:38 +0530
-Message-ID: <EAF47CD23C76F840A9E7FCE10091EFAB02BB056090@dbde02.ent.ti.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E90C2F648@dlee04.ent.ti.com>
- <200910061146.05080.peter.ujfalusi@nokia.com>
- <20091006163546.GA11062@rakim.wolfsonmicro.main>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Application supporting forward/rewind APIs
+Date: Wed, 7 Oct 2009 14:58:23 +0800
+Message-ID: <4f3252890910062358p6ea8a600ya01a5d6812ca5d26@mail.gmail.com>
+References: <2ee9e08d0909240034t6fdab6aftc24e733621638f09@mail.gmail.com>
+	<s5hocp0vlm6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20091006163546.GA11062@rakim.wolfsonmicro.main>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "sameo@linux.intel.com" <sameo@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <x0052729@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Krishnamoorthy, Balaji T" <balajitk@ti.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-px0-f174.google.com (mail-px0-f174.google.com
+	[209.85.216.174])
+	by alsa0.perex.cz (Postfix) with ESMTP id E181924386
+	for <alsa-devel@alsa-project.org>;
+	Wed,  7 Oct 2009 08:58:24 +0200 (CEST)
+Received: by pxi4 with SMTP id 4so4679213pxi.23
+	for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2009 23:58:24 -0700 (PDT)
+In-Reply-To: <s5hocp0vlm6.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(Looping Samuel)
-> -----Original Message-----
-> From: linux-omap-owner@vger.kernel.org [mailto:linux-omap-
-> owner@vger.kernel.org] On Behalf Of Mark Brown
-> Sent: Tuesday, October 06, 2009 10:06 PM
-> To: Peter Ujfalusi
-> Cc: alsa-devel@alsa-project.org; Lopez Cruz, Misael; linux-
-> omap@vger.kernel.org; Krishnamoorthy, Balaji T
-> Subject: Re: [alsa-devel] [PATCHv3 1/7] OMAP4: PMIC: Add support for
-> twl6030 codec
-> 
-> On Tue, Oct 06, 2009 at 11:46:05AM +0300, Peter Ujfalusi wrote:
-> 
-> > How does the twl4030 series would fit with this modification?
-> > I have also added the twl4030 codec as a child for the twl MFD, but I
-> have not
-> > finished the cleanup of the codec fully.
-> 
-> The TWL6030 specific bits all look good but this change ought to go via
-> the MFD tree (probably as part of the big patch series adding twl6030
-> support that doesn't look to have been applied yet).  Are people happy
-> that the interface to the twl6030 won't change as a result of the
-> twl4030 audio support?  If so then I'll apply the ASoC side now, the
-> Kconfig dependencies will stop it being built too soon.
-Since there is some sort of dependency on ASOC series with TWL_6030 core series by Balaji, its better that these gets merged in correct order to avoid reworks. 
-
-Below order should make the merge without many conflicts.
-1. [PATCH v3 0/4] TWL patch series
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg17059.html
-
-2. [PATCH v3 0/4] TWL6030 patch series
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg17130.html
-
-3. [PATCHv3 0/7] TWL6030 audio codec initial support + Rework the Kconfig dependency. 
-http://www.spinics.net/lists/alsa-devel/msg28134.html
-
-Samuel can take a call on this.
+It seem that the difference between the application pointer and the hardware
+pointer is just the theoretical value which none of the sound card can
+achieve
 
 
-Regards,
-Santosh
+static snd_pcm_sframes_t snd_pcm_hw_rewindable(snd_pcm_t *pcm)
+{
+    return snd_pcm_mmap_hw_avail(pcm);
+}
+
+To allow the application rewind the application pointer to hardware pointer
+and rewrite the next sample immediately at any time
+
+The audio controller have to fetch the audio data as the same rate as the
+sampling rate.
+
+The practical value may be the difference between the application pointer
+and the nearest period boundary
+
+
+2009/9/24 Takashi Iwai <tiwai@suse.de>
+
+> At Thu, 24 Sep 2009 13:04:24 +0530,
+> Anuj Aggarwal wrote:
+> >
+> > Hi,
+> >
+> > I want to try the forward/rewind APIs supported by the ALSA library.
+> > Can someone point to an ALSA application which exercises these APIs?
+>
+> Pulseaudio is using snd_pcm_rewind().
+> About snd_pcm_forward(), I don't know of...
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
