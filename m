@@ -1,20 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCHv3 1/7] OMAP4: PMIC: Add support for twl6030
-	codec
-Date: Wed, 7 Oct 2009 10:41:12 +0300
-Message-ID: <200910071041.12595.peter.ujfalusi@nokia.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E90C2F648@dlee04.ent.ti.com>
-	<200910061146.05080.peter.ujfalusi@nokia.com>
-	<19F8576C6E063C45BE387C64729E73940436CF92F8@dbde02.ent.ti.com>
+From: =?iso-8859-2?Q?Milan=20K=F8=E1pek?= <Hellbard@seznam.cz>
+Subject: PCM device volume
+Date: Wed, 07 Oct 2009 09:48:54 +0200 (CEST)
+Message-ID: <5316.7786-14302-1023345306-1254901734@seznam.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 97889244A6
+Received: from mxh.seznam.cz (mxh.seznam.cz [77.75.76.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 673FA244AA
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 09:41:20 +0200 (CEST)
-In-Reply-To: <19F8576C6E063C45BE387C64729E73940436CF92F8@dbde02.ent.ti.com>
+	Wed,  7 Oct 2009 09:48:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,130 +19,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Krishnamoorthy, Balaji T" <balajitk@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Lopez Cruz, Misael" <x0052729@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 07 October 2009 08:20:35 ext Krishnamoorthy, Balaji T wrote:
-> > >  #define twl_has_mmc()   false
-> > >  #endif
-> > >
-> > > +#if defined(CONFIG_SND_SOC_TWL6030) ||
-> =
+Hi, 
+ I am new with alsa. I am developing application that will have audio output on linux systems via alsa. I found many hints when I was trying to play some audio. I used 
 
-> defined(CONFIG_SND_SOC_TWL6030_MODULE) ||
-> defined(CONFIG_SND_SOC_TWL4030) ||
-> defined(CONFIG_SND_SOC_TWL4030_MODULE)
-> =
+snd_pcm_open(&pcm_handle, pcm_name, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
+snd_pcm_hw_params_any(pcm_handle, hwparams);
 
-> > > +#define twl_has_codec()	true
-> > > +#else
-> > > +#define twl_has_codec()	false
-> > > +#endif
-> > > +
-> > >  #if defined(CONFIG_TWL4030_USB) || defined(CONFIG_TWL4030_USB_MODULE)
-> > >  #define twl_has_usb()	true
-> > >  #else
-> > > @@ -190,6 +196,7 @@
-> > >  #define BCI_SUB_CHIP_ID		SUB_CHIP_ID1
-> > >  #define GPIO_SUB_CHIP_ID	0 /* NOT SUPPORTED IN TWL6030 */
-> > >  #define KEYPAD_SUB_CHIP_ID	0 /* ADDED FOR COMPILATION ONLY */
-> > > +#define CODEC_SUB_CHIP_ID	SUB_CHIP_ID3
-> >
-> > TWL4030 codec is under ID2 address group.
-> =
+to open and set my PCM device for writting audio. 
 
-> To pick the sub chip id from structure twl_mapping twl6030_map or
->  twl4030_map at Runtime.
+But I have got lost when I tried to change my audio volume. I suppose that I need to get some mixer
 
-Yes, it can be done.
+int 	snd_mixer_open (snd_mixer_t **mixer, int mode)
 
-> =
+but I could not find how to code that the new mixer will control the PCM device. Pleas is there any tutorial how to do it? Or can somebody show me any code snippet? I have tried to find any similar topic, but without success.
 
-> > >  /* subchip/slave 0 0x48 - POWER */
-> > >  #define TWL6030_BASEADD_RTC		0x0000
-> > > @@ -632,6 +639,14 @@ add_children(struct twl_platform_data *pdata,
-> > > unsigned long features) if (IS_ERR(child))
-> > >  			return PTR_ERR(child);
-> > >  	}
-> > > +
-> > > +	if (twl_has_codec()) {
-> > > +		child =3D add_child(CODEC_SUB_CHIP_ID, "twl6030_codec",
-> > > +			pdata->codec, sizeof(*pdata->codec), false,
-> > > +			0, 0);
-> > > +		if (IS_ERR(child))
-> > > +			return PTR_ERR(child);
-> > > +	}
-> =
+Thanks for any advice
 
-> after [PATCH v3 0/4] TWL6030 patch series
-> Will now become something like
-> +	if (twl_has_codec() && twl_class_is_6030()) {
-> +		sub_chip_id =3D twl_map[TWL_MODULE_AUDIO_VOICE].sid;
-> +		child =3D add_child(sub_chip_id, "twl6030_codec",
-> +			pdata->codec, sizeof(*pdata->codec), false,
-> +			0, 0);
-> +		if (IS_ERR(child))
-> +			return PTR_ERR(child);
-> +	}
-> And similarly for 4030 code
-> +	if (twl_has_codec() && twl_class_is_4030()) {
-> +		sub_chip_id =3D twl_map[TWL_MODULE_AUDIO_VOICE].sid;
-> +		child =3D add_child(sub_chip_id, "twl4030_codec",
-> +			pdata->codec, sizeof(*pdata->codec), false,
-> +			0, 0);
-> +		if (IS_ERR(child))
-> +			return PTR_ERR(child);
-> +	}
-
-Sounds good.
-
-> =
-
-> > We are going to have the twl4030 as child as well.
-> >
-> > >  #endif
-> > >
-> > >  	if (twl_has_usb() && pdata->usb) {
-> > > diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
-> > > index b687a8b..e76ca9b 100644
-> > > --- a/include/linux/i2c/twl.h
-> > > +++ b/include/linux/i2c/twl.h
-> > > @@ -472,6 +472,12 @@ struct twl_usb_data {
-> > >  	enum twl_usb_mode	usb_mode;
-> > >  };
-> > >
-> > > +struct twl_codec_data {
-> =
-
-> 4030 and 6030 codec common fields can be added here
-> =
-
-> > > +	/* twl6030 */
-> > > +	int audpwron_gpio;	/* audio power-on gpio */
-> > > +	int naudint_irq;	/* audio interrupt */
-> =
-
-> Here twl4030 specific fields can be added
-
-We can also use different twl_codec_data for 6030 and 4030.
-There are not that many common things to handle, or is there?
-
-> =
-
-> > > +};
-> =
-
-> CONFIG_TWL6030_CORE and CONFIG_TWL4030_CORE is merged to CONFIG_TWL_CORE
-> As two different build config was not encouraged.  Now switch
-> twl_class_is_6030() will be used to decide at runtime time to support for
->  6030 related drivers, Similarly twl_class_is_4030() for 4030 drivers
-
-I will hold back the patches for the twl4030 codec and twl core for now and=
- wait =
-
-till things settled a bit. =
-
-
-Thanks,
-P=E9ter
+Milan
