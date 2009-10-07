@@ -1,81 +1,60 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
- GIT repository for Linux 2.6 branch, master now at v2.6.31-rc8-407-gfc9e4a3
-Date: Wed, 07 Oct 2009 08:31:14 +0200
-Message-ID: <4ACC35B2.5030508@ladisch.de>
-References: <20091006063609.B06E110381F@alsa0.perex.cz>
-	<s5hab05role.wl%tiwai@suse.de> <4ACAF4AC.3000608@ladisch.de>
-	<Pine.LNX.4.64.0910061955510.18975@artax.karlin.mff.cuni.cz>
+From: "Shilimkar, Santosh" <santosh.shilimkar@ti.com>
+Subject: RE: [alsa-devel] [PATCHv3 1/7] OMAP4: PMIC: Add support for twl6030
+ codec
+Date: Wed, 7 Oct 2009 11:56:38 +0530
+Message-ID: <EAF47CD23C76F840A9E7FCE10091EFAB02BB056090@dbde02.ent.ti.com>
+References: <67059DBF19D7214F9C66BB0EA91BA90E90C2F648@dlee04.ent.ti.com>
+ <200910061146.05080.peter.ujfalusi@nokia.com>
+ <20091006163546.GA11062@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id B800E24452
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 08:31:19 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.64.0910061955510.18975@artax.karlin.mff.cuni.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: jmal8295 <jmal8295@artax.karlin.mff.cuni.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20091006163546.GA11062@rakim.wolfsonmicro.main>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "sameo@linux.intel.com" <sameo@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lopez Cruz, Misael" <x0052729@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Krishnamoorthy, Balaji T" <balajitk@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-jmal8295 wrote:
-> On Tue, 6 Oct 2009, Clemens Ladisch wrote:
-> > Takashi Iwai wrote:
-> > > noreply-git@alsa-project.org wrote:
-> > > > commit fc9e4a3811567f8d1d4c263a89e27b52c90d6098
-
-http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=fc9e4a3811567f8d1d4c263a89e27b52c90d6098
-
-> > > > Author:     Clemens Ladisch <clemens@ladisch.de>
-> > > > AuthorDate: Tue Oct 6 08:21:04 2009 +0200
-> > > > 
-> > > >     sound: via82xx: move DXS volume controls to PCM interface
-> > > >     
-> > > >     The "VIA DXS" controls are actually volume controls that apply to the
-> > > >     four PCM substreams, so we better indicate this connection by moving the
-> > > >     controls to the PCM interface.
+(Looping Samuel)
+> -----Original Message-----
+> From: linux-omap-owner@vger.kernel.org [mailto:linux-omap-
+> owner@vger.kernel.org] On Behalf Of Mark Brown
+> Sent: Tuesday, October 06, 2009 10:06 PM
+> To: Peter Ujfalusi
+> Cc: alsa-devel@alsa-project.org; Lopez Cruz, Misael; linux-
+> omap@vger.kernel.org; Krishnamoorthy, Balaji T
+> Subject: Re: [alsa-devel] [PATCHv3 1/7] OMAP4: PMIC: Add support for
+> twl6030 codec
 > 
-> By "moving" you mean removing them or will there appear somewhere else?
-
-Changing the interface from MIXER to PCM means that the controls will
-not appear in most mixer applications.
-
-> > Honza, are you still using this driver?
+> On Tue, Oct 06, 2009 at 11:46:05AM +0300, Peter Ujfalusi wrote:
 > 
-> Yes I do (there is a different driver for this codec?).
+> > How does the twl4030 series would fit with this modification?
+> > I have also added the twl4030 codec as a child for the twl MFD, but I
+> have not
+> > finished the cleanup of the codec fully.
+> 
+> The TWL6030 specific bits all look good but this change ought to go via
+> the MFD tree (probably as part of the big patch series adding twl6030
+> support that doesn't look to have been applied yet).  Are people happy
+> that the interface to the twl6030 won't change as a result of the
+> twl4030 audio support?  If so then I'll apply the ASoC side now, the
+> Kconfig dependencies will stop it being built too soon.
+Since there is some sort of dependency on ASOC series with TWL_6030 core series by Balaji, its better that these gets merged in correct order to avoid reworks. 
 
-No, it's just rather old.
-I hoped you'd be using newer hardware by now.  ;-)
+Below order should make the merge without many conflicts.
+1. [PATCH v3 0/4] TWL patch series
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg17059.html
 
-> And I _will_ be regarding it as regression if I lose possibility to
-> change volume of the four streams independently.
-> On the other hand, I do change the volume only manually (not
-> automatically by program), so if only thing which changes is the way how
-> to modify that volume I would not see problem in that.
+2. [PATCH v3 0/4] TWL6030 patch series
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg17130.html
 
-With the new controls, the only way to change them would be on the
-command line:
-  amixer cset iface=PCM,name="PCM Playback Volume",subdevice=x yy
+3. [PATCHv3 0/7] TWL6030 audio codec initial support + Rework the Kconfig dependency. 
+http://www.spinics.net/lists/alsa-devel/msg28134.html
 
-BTW: How do you determine which of the four controls is associated with
-a specific application?
+Samuel can take a call on this.
 
 
-In any case, the main purpose of the patch was to rename the controls to
-prevent "alsactl restore" from restoring the old wrong volume setting,
-so it would suffice to just change the controls' name in some way, such
-as from "VIA DXS" to "DXS".
-
-
-Best regards,
-Clemens
+Regards,
+Santosh
