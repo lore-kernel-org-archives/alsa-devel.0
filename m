@@ -1,15 +1,22 @@
-From: =?iso-8859-2?Q?Milan=20K=F8=E1pek?= <Hellbard@seznam.cz>
-Subject: PCM device volume
-Date: Wed, 07 Oct 2009 09:48:54 +0200 (CEST)
-Message-ID: <5316.7786-14302-1023345306-1254901734@seznam.cz>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
+ GIT repository for Linux 2.6 branch, master now at v2.6.31-rc8-407-gfc9e4a3
+Date: Wed, 07 Oct 2009 09:59:13 +0200
+Message-ID: <4ACC4A51.1010606@ladisch.de>
+References: <20091006063609.B06E110381F@alsa0.perex.cz>
+	<s5hab05role.wl%tiwai@suse.de> <4ACAF4AC.3000608@ladisch.de>
+	<Pine.LNX.4.64.0910061955510.18975@artax.karlin.mff.cuni.cz>
+	<4ACC35B2.5030508@ladisch.de>
+	<Pine.LNX.4.64.0910070840250.20794@artax.karlin.mff.cuni.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxh.seznam.cz (mxh.seznam.cz [77.75.76.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 673FA244AA
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 930E01037F8
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Oct 2009 09:48:55 +0200 (CEST)
+	Wed,  7 Oct 2009 09:59:20 +0200 (CEST)
+In-Reply-To: <Pine.LNX.4.64.0910070840250.20794@artax.karlin.mff.cuni.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,23 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: jmal8295 <jmal8295@artax.karlin.mff.cuni.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
- I am new with alsa. I am developing application that will have audio output on linux systems via alsa. I found many hints when I was trying to play some audio. I used 
+jmal8295 wrote:
+> > With the new controls, the only way to change them would be on the
+> > command line:
+> >   amixer cset iface=PCM,name="PCM Playback Volume",subdevice=x yy
+> 
+> Hmmm ... that is almost as cumbersome as it could be. Is it at least
+> planed to add it to some other mixer, like alsamixer? Another view
+> perhaps?
 
-snd_pcm_open(&pcm_handle, pcm_name, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
-snd_pcm_hw_params_any(pcm_handle, hwparams);
+That would be useful (also for the same controls of the Emu10k1 and
+DS-1 drivers).
 
-to open and set my PCM device for writting audio. 
+> > BTW: How do you determine which of the four controls is associated with
+> > a specific application?
+> 
+> Trial and error :-).
 
-But I have got lost when I tried to change my audio volume. I suppose that I need to get some mixer
+A mixer application/view that knows about these controls could show the
+program name, but that would require that ALSA gives out information
+about the process that has opened a substream.
 
-int 	snd_mixer_open (snd_mixer_t **mixer, int mode)
+> > In any case, the main purpose of the patch was to rename the controls to
+> > prevent "alsactl restore" from restoring the old wrong volume setting,
+> > so it would suffice to just change the controls' name in some way, such
+> > as from "VIA DXS" to "DXS".
+> 
+> I would propose to use this oportunity to rename them to something more
+> descriptive, but I have no idea what that could be (considering limited
+> space in mixer programs).
 
-but I could not find how to code that the new mixer will control the PCM device. Pleas is there any tutorial how to do it? Or can somebody show me any code snippet? I have tried to find any similar topic, but without success.
+"PCM Stream"?
 
-Thanks for any advice
 
-Milan
+Best regards,
+Clemens
