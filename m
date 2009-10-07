@@ -1,143 +1,147 @@
-From: "Krishnamoorthy, Balaji T" <balajitk@ti.com>
-Subject: RE: [alsa-devel] [PATCHv3 1/7] OMAP4: PMIC: Add support for twl6030
- codec
-Date: Wed, 7 Oct 2009 10:50:35 +0530
-Message-ID: <19F8576C6E063C45BE387C64729E73940436CF92F8@dbde02.ent.ti.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E90C2F648@dlee04.ent.ti.com>
- <200910061146.05080.peter.ujfalusi@nokia.com>
+From: Li Bo <liboat@gmail.com>
+Subject: Re: [PATCH 14/31] HDA patch_via.c: Add Jack detect
+	feature for VT1708.
+Date: Wed, 7 Oct 2009 13:56:35 +0800
+Message-ID: <16685ee0910062256l6747526erfd71ed2c6927974d@mail.gmail.com>
+References: <16685ee0910050727q4288fc76hdde23b431232d073@mail.gmail.com>
+	<s5h7hv96fis.wl%tiwai@suse.de>
+	<16685ee0910052206ge80ec18yb0546282c4a9945f@mail.gmail.com>
+	<s5hhbudrrgb.wl%tiwai@suse.de>
+	<20091006121740.GI17195@prithivi.gnumonks.org>
+	<s5hws383dfv.wl%tiwai@suse.de>
+	<16685ee0910060827t1ab399dek67447a1f635a72c9@mail.gmail.com>
+	<s5hzl841qoy.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <200910061146.05080.peter.ujfalusi@nokia.com>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "Lopez Cruz, Misael" <x0052729@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5150E24433
+	for <alsa-devel@alsa-project.org>;
+	Wed,  7 Oct 2009 07:56:36 +0200 (CEST)
+Received: by fxm8 with SMTP id 8so4226679fxm.45
+	for <alsa-devel@alsa-project.org>; Tue, 06 Oct 2009 22:56:36 -0700 (PDT)
+In-Reply-To: <s5hzl841qoy.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, LoganLi@viatech.com.cn, Harald Welte <laforge@gnumonks.org>, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-> >  #define twl_has_mmc()   false
-> >  #endif
-> >
-> > +#if defined(CONFIG_SND_SOC_TWL6030) ||
-defined(CONFIG_SND_SOC_TWL6030_MODULE) ||
-defined(CONFIG_SND_SOC_TWL4030) ||
-defined(CONFIG_SND_SOC_TWL4030_MODULE)
+On Tue, Oct 6, 2009 at 11:34 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 6 Oct 2009 23:27:35 +0800,
+> Li Bo wrote:
+>>
+>> On Tue, Oct 6, 2009 at 8:38 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Tue, 6 Oct 2009 14:17:40 +0200,
+>> > Harald Welte wrote:
+>> >>
+>> >> Hi all,
+>> >>
+>> >> On Tue, Oct 06, 2009 at 08:01:40AM +0200, Takashi Iwai wrote:
+>> >>
+>> >> > > As you describe, we implement it with self-reschedule workqueue, =
+acting
+>> >> > > like a timer.
+>> >> > > Is there some advice to implement timer-like task, I tested =A0wi=
+th timer and
+>> >> > > it will crash the driver.
+>> >> >
+>> >> > Right, you can't call it in a softirq.
+>> >> >
+>> >> > A few problems, however:
+>> >> > - present variable should be in struct via_spec, instead of a static
+>> >> > =A0 variable in update_hp_jack_state().
+>> >>
+>> >> I agree
+>> >> > - This mechanism is unconditionally invoked on VT1708 although, in
+>> >> > =A0 theory, you can have a hardware that doesn't need HP jack detec=
+tion
+>> >>
+>> >> Yes, Logan/Li/Lydia: If we generate this kind of workaround with a ti=
+mer,
+>> >> it should only be used on those particular chips that absolutely need=
+ it.
+>> >
+>> > As far as I see, the code is only for VT1708, so it's already specific
+>> > to the codec chip. =A0But, even with this chip, you might have a pin
+>> > configuration that doesn't need the HP jack detection.
+>> >
+>>
+>> Yes, it's only for VT1708, and HP exists on most cases, and so HP jack d=
+etection
+>> are needed.
+>> And present will put into via_spec.
+>
+> If it's restricted only during the opened (better running) PCM stream,
+> it's not too bad. =A0But, it'd be even better to check the availability
+> of HP jack.
+>
+Sorry about analog loopback is not considered, I think analog loopback
+mute/unmute
+callback should also be added, is that OK?
 
-> > +#define twl_has_codec()	true
-> > +#else
-> > +#define twl_has_codec()	false
-> > +#endif
-> > +
-> >  #if defined(CONFIG_TWL4030_USB) || defined(CONFIG_TWL4030_USB_MODU=
-LE)
-> >  #define twl_has_usb()	true
-> >  #else
-> > @@ -190,6 +196,7 @@
-> >  #define BCI_SUB_CHIP_ID		SUB_CHIP_ID1
-> >  #define GPIO_SUB_CHIP_ID	0 /* NOT SUPPORTED IN TWL6030 */
-> >  #define KEYPAD_SUB_CHIP_ID	0 /* ADDED FOR COMPILATION ONLY */
-> > +#define CODEC_SUB_CHIP_ID	SUB_CHIP_ID3
->=20
-> TWL4030 codec is under ID2 address group.
-To pick the sub chip id from structure twl_mapping twl6030_map or twl40=
-30_map at=20
-Runtime. =20
->=20
-> >
-> >  /* subchip/slave 0 0x48 - POWER */
-> >  #define TWL6030_BASEADD_RTC		0x0000
-> > @@ -632,6 +639,14 @@ add_children(struct twl_platform_data *pdata, =
-unsigned
-> >  long features) if (IS_ERR(child))
-> >  			return PTR_ERR(child);
-> >  	}
-> > +
-> > +	if (twl_has_codec()) {
-> > +		child =3D add_child(CODEC_SUB_CHIP_ID, "twl6030_codec",
-> > +			pdata->codec, sizeof(*pdata->codec), false,
-> > +			0, 0);
-> > +		if (IS_ERR(child))
-> > +			return PTR_ERR(child);
-> > +	}
-after [PATCH v3 0/4] TWL6030 patch series
-Will now become something like
-+	if (twl_has_codec() && twl_class_is_6030()) {
-+		sub_chip_id =3D twl_map[TWL_MODULE_AUDIO_VOICE].sid;=09
-+		child =3D add_child(sub_chip_id, "twl6030_codec",
-+			pdata->codec, sizeof(*pdata->codec), false,
-+			0, 0);
-+		if (IS_ERR(child))
-+			return PTR_ERR(child);
-+	}
-And similarly for 4030 code
-+	if (twl_has_codec() && twl_class_is_4030()) {
-+		sub_chip_id =3D twl_map[TWL_MODULE_AUDIO_VOICE].sid;=09
-+		child =3D add_child(sub_chip_id, "twl4030_codec",
-+			pdata->codec, sizeof(*pdata->codec), false,
-+			0, 0);
-+		if (IS_ERR(child))
-+			return PTR_ERR(child);
-+	}
-
->=20
-> We are going to have the twl4030 as child as well.
->=20
-> >  #endif
-> >
-> >  	if (twl_has_usb() && pdata->usb) {
-> > diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
-> > index b687a8b..e76ca9b 100644
-> > --- a/include/linux/i2c/twl.h
-> > +++ b/include/linux/i2c/twl.h
-> > @@ -472,6 +472,12 @@ struct twl_usb_data {
-> >  	enum twl_usb_mode	usb_mode;
-> >  };
-> >
-> > +struct twl_codec_data {
-4030 and 6030 codec common fields can be added here
-> > +	/* twl6030 */
-> > +	int audpwron_gpio;	/* audio power-on gpio */
-> > +	int naudint_irq;	/* audio interrupt */
-Here twl4030 specific fields can be added
-> > +};
->=20
-CONFIG_TWL6030_CORE and CONFIG_TWL4030_CORE is merged to CONFIG_TWL_COR=
-E
-As two different build config was not encouraged.  Now switch=20
-twl_class_is_6030() will be used to decide at runtime time to support f=
-or 6030=20
-related drivers, Similarly twl_class_is_4030() for 4030 drivers
-
-> These are not applicable for the twl4030 codec, should we have differ=
-ent
-> twl_codec_data for twl6030 and twl4030 series?
-> Should I merge here the things which will be used for the twl4030 cod=
-ec?
-> At the moment, I only have audio_mclk in my codec_data, but most prob=
-ably the
-> HS
-> ramp related things will be also merged here in the future.
->=20
-> > +
-> >  struct twl_platform_data {
-> >  	unsigned				irq_base, irq_end;
-> >  	struct twl_bci_platform_data	*bci;
-> > @@ -479,6 +485,7 @@ struct twl_platform_data {
-> >  	struct twl_madc_platform_data	*madc;
-> >  	struct twl_keypad_data		*keypad;
-> >  	struct twl_usb_data			*usb;
-> > +	struct twl_codec_data		*codec;
-> >
-> >  	/* LDO regulators common to TWL4030/TWL6030 */
-> >  	struct regulator_init_data		*vdac;
-> >
->=20
-> --
-> P=E9ter
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>> >> > - Waking up each 100ms for the *whole* time is really bad regarding
+>> >> > =A0 the power-saving; can't it be optimized?
+>> >>
+>> >> I would personally actually suggest to simply not support headphone p=
+lug events
+>> >> in case you are using such a [buggy?] chipset that does not support t=
+hem.
+>> >>
+>> >> I mean, what do you gain from that event? It's not something super-im=
+portant.
+>> >>
+>> >> waking up unconditionally every 100ms is really a too high burden on =
+the
+>> >> battery life.
+>> >>
+>> >> Another option might be to make it a module load time parameter, so p=
+eople
+>> >> can choose if they actually want to pay the high power/batyery price =
+for this
+>> >> small feature.
+>> >
+>> > Yes.
+>> >
+>> > Basically, if we can drop the analog-loopback feature, the HP jack
+>> > probing can be simplified very much. =A0The probing is needed only when
+>> > the PCM is opened/prepared and running. =A0It can be implemented in a
+>> > similar way for the volume-update procedure at PCM trigger.
+>> > And, during PCM running, (relatively) high-frequent polling isn't so
+>> > critical.
+>> >
+>> >
+>> > thanks,
+>> >
+>> > Takashi
+>> >
+>>
+>> I know that jack detect on VT1708 that do not support unsolicited
+>> response is weird, but
+>> =A0it's for customer request (and so are some other patches:), we just
+>> have to do something.
+>>
+>> I think it's good in open/close callback, I'll update.
+>>
+>> About self-reschedule workqueue, maybe there are some other choices,
+>> or should we keep
+>> using it?
+>
+> A delayed workqueue is OK. =A0But, it should check some flag before
+> rescheduling itself. =A0Also, don't forget about suspend/resume.
+>
+>
+> thanks,
+>
+> Takashi
+>
+Thank you, I will rewrite like this.
