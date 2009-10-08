@@ -1,15 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/8] ASoC: TPA6130A2 amplifier driver
-Date: Thu, 8 Oct 2009 13:52:13 +0100
-Message-ID: <20091008125213.GA29176__28737.2551778846$1255006852$gmane$org@rakim.wolfsonmicro.main>
+Subject: Re: [PATCH 2/8] ASoC: OMAP: RX-51 Machine driver and
+ AIC34b_dummy driver
+Date: Thu, 8 Oct 2009 14:11:16 +0100
+Message-ID: <20091008131116.GB29176__5916.80804868719$1255007985$gmane$org@rakim.wolfsonmicro.main>
 References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
-	<1255003137-1034-2-git-send-email-eduardo.valentin@nokia.com>
+	<1255003137-1034-3-git-send-email-eduardo.valentin@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <1255003137-1034-2-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1255003137-1034-3-git-send-email-eduardo.valentin@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,56 +24,72 @@ To: alsa-devel@alsa-project.org
 Cc: ext Tony Lindgren <tony@atomide.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 08, 2009 at 02:58:50PM +0300, Eduardo Valentin wrote:
+On Thu, Oct 08, 2009 at 02:58:51PM +0300, Eduardo Valentin wrote:
+> From: Eduardo Valentin <eduardo.valentin@nokia.com>
 
-> +struct tpa6130a2_platform_data {
-> +	int (*set_power)(int state);
-> +};
+> Introduce RX-51 Machine driver for ASoC and AIC34b_dummy (block B) i2c driver.
 
-Why is this a callback and not just a GPIO number?  That'd seem simpler
-for users.
+What is an "AIC34b_dummy (block B)"?  You probably want to split it out
+into a separate patch.
 
-> +int tpa6130a2_add_controls(struct snd_soc_codec *codec)
+> + * TODO:
+> + * - Get rid of this driver, at least when ASoC v2 is merged and when
+> + *   we can support multiple codec instances in tlv320aic3x.c driver.
+> + *   This driver is hacked only for Nokia RX51 HW.
+
+Could you please explain what the issue here is?  A description of the
+hardware would go a long way here.
+
+> +EXPORT_SYMBOL(aic34b_set_mic_bias);
+
+EXPORT_SYMBOL_GPL().
+
+> +static void rx51_set_eci_switches(int mode)
 > +{
-> +	snd_soc_dapm_new_controls(codec, tpa6130a2_dapm_widgets,
-> +				ARRAY_SIZE(tpa6130a2_dapm_widgets));
-> +
-> +	return snd_soc_add_controls(codec, tpa6130a2_controls,
-> +				ARRAY_SIZE(tpa6130a2_controls));
-> +
-> +}
-> +EXPORT_SYMBOL(tpa6130a2_add_controls);
-
-All the ASoC APIs are EXPORT_SYMBOL_GPL().
-
-> +	pdata = (struct tpa6130a2_platform_data *)client->dev.platform_data;
-> +	/* Set default register values */
-> +	data->regs[TPA6130A2_REG_CONTROL] = TPA6130A2_SWS |
-> +					    TPA6130A2_HP_EN_R |
-> +					    TPA6130A2_HP_EN_L;
-
-This looks like you could implement stereo paths with individual power
-control?
-
-> +	data->regs[TPA6130A2_REG_VOL_MUTE] = TPA6130A2_VOLUME(20);
-
-The standard thing is to use hardware defaults and leave decisions like
-this up to user space.
-
-> +	data->set_power = pdata->set_power;
-> +	if (!pdata->set_power) {
-> +		data->power_state = 1;
-> +		tpa6130a2_initialize();
+> +	switch (mode) {
+> +	case 0: /* Bias off */
+> +	case 1: /* Bias according to rx51_dapm_jack_bias */
+> +	case 4: /* Bias on */
+> +		/* Codec connected to mic/bias line */
+> +		gpio_set_value(RX51_ECI_SWITCH_1_GPIO, 0);
+> +		gpio_set_value(RX51_ECI_SWITCH_2_GPIO, 1);
+> +		break;
+> +	case 2:
+> +		/* ECI INT#2 detect connected to mic/bias line */
+> +		gpio_set_value(RX51_ECI_SWITCH_1_GPIO, 0);
+> +		gpio_set_value(RX51_ECI_SWITCH_2_GPIO, 0);
+> +		break;
+> +	case 3:
+> +		/* ECI RX/TX connected to mic/bias line */
+> +		gpio_set_value(RX51_ECI_SWITCH_1_GPIO, 1);
+> +		gpio_set_value(RX51_ECI_SWITCH_2_GPIO, 0);
+> +		break;
 > +	}
-> +	tpa6130a2_power(1);
-> +
-> +	/* Read version */
-> +	err = tpa6130a2_i2c_read(TPA6130A2_REG_VERSION) &
-> +				 TPA6130A2_VERSION_MASK;
-> +	if ((err != 1) && (err != 2)) {
-> +		dev_err(dev, "Unexpected headphone amplifier chip version "
-> +		       "of 0x%02x, was expecting 0x01 or 0x02\n", err);
-> +		err = -ENODEV;
 
-This seems a bit excessive - is it really likely that the register map
-would be changed incompatibly in a future version?
+Some defines for the mode (instead of magic numbers) would be nice).
+
+> +void rx51_jack_report(int status)
+> +{
+> +	snd_jack_report(rx51_jack, status);
+> +}
+> +EXPORT_SYMBOL(rx51_jack_report);
+
+Why is this being exported?
+
+> +enum {
+> +       RX51_EXT_API_AIC34B,
+> +};
+> +#define SOC_RX51_EXT_SINGLE_TLV(xname, ext_api, max, tlv_array) \
+> +{ \
+> +	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
+> +	.name = xname, \
+> +	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
+> +		  SNDRV_CTL_ELEM_ACCESS_READWRITE, \
+> +	.tlv.p = (tlv_array), \
+> +	.info = rx51_ext_info_volsw, \
+> +	.get = rx51_ext_get_volsw, \
+> +	.put = rx51_ext_put_volsw, \
+> +	.private_value = (ext_api) << 26 | (max) << 16, \
+> +}
+
+This looks like it ought to be pushed down into some other driver?
