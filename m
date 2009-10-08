@@ -1,22 +1,25 @@
 From: Li Bo <liboat@gmail.com>
-Subject: Re: [PATCH 18/31] HDA patch_via.c: Add 48K sample rate
-	limit for S/PDIF streams.
-Date: Thu, 8 Oct 2009 13:31:22 +0800
-Message-ID: <16685ee0910072231v7982f1dbmf72da505aface54e@mail.gmail.com>
-References: <002DCEC0FD024441A08A6AEFF6FFC6BB@DemianM1330>
-	<20091006122144.GJ17195@prithivi.gnumonks.org>
+Subject: Re: [PATCH 17/31] HDA patch_via.c: Add second S/PDIF
+	out control for VT1708S and VT1702.
+Date: Thu, 8 Oct 2009 13:32:15 +0800
+Message-ID: <16685ee0910072232s76b7482ehe84003f4fbb97c94@mail.gmail.com>
+References: <16685ee0910050727n4f3eb80ah113d214815de6342@mail.gmail.com>
+	<s5h63at6fff.wl%tiwai@suse.de>
+	<16685ee0910052201n74138c01g69c08e5fe7f59f04@mail.gmail.com>
+	<s5hfx9xrrci.wl%tiwai@suse.de>
+	<16685ee0910060843q57923499q5fa80d642362fb6e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
-	[209.85.220.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0B57310392C
+Received: from mail-bw0-f225.google.com (mail-bw0-f225.google.com
+	[209.85.218.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id 36C62103937
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Oct 2009 07:31:23 +0200 (CEST)
-Received: by fxm8 with SMTP id 8so5183722fxm.45
-	for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2009 22:31:22 -0700 (PDT)
-In-Reply-To: <20091006122144.GJ17195@prithivi.gnumonks.org>
+	Thu,  8 Oct 2009 07:32:17 +0200 (CEST)
+Received: by bwz25 with SMTP id 25so1461381bwz.32
+	for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2009 22:32:16 -0700 (PDT)
+In-Reply-To: <16685ee0910060843q57923499q5fa80d642362fb6e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +29,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Harald Welte <laforge@gnumonks.org>
-Cc: tiwai@suse.de, Demian Martin <demianm_1@yahoo.com>, alsa-devel@alsa-project.org, lydiawang@viatech.com.cn, LoganLi@viatech.com.cn
+To: Takashi Iwai <tiwai@suse.de>
+Cc: LoganLi@viatech.com.cn, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 6, 2009 at 8:21 PM, Harald Welte <laforge@gnumonks.org> wrote:
-> Hi all,
->
-> I agree with the previous posts in this thread.
->
-> The use of > 48kHz sample rate is common use today, so if the hardware su=
-pports
-> it, the driver should not disable it.
->
-> Since there are some users that successfully use SPDIF with > 48kHz, it c=
-annot
-> be a general hardware problem. =A0If there's a general hardware problem, =
-then
-> it would never work for anyone.
->
-> If there are some codec chips/variants/versions, or even certain boards t=
-hat
-> have bad SPDIf signal performance, then we should black-list those bad
-> chips/versions/boards, rather than disable the feature for everyone.
->
-> Also, as far as I understand, the worst thing that can happen when a "too=
- high"
-> sample rate is used: =A0It will not work for some users on some hardware.=
- =A0That,
-> I think, is acceptable (if no workaround / black-list can be created).
->
-> This would be different if there are other effects: =A0If the high sample=
- rate
-> would cause some hardware-lock-up or similar, then it definitely needs to=
- be
-> disabled.
->
-> Regards,
-> --
-> - Harald Welte <laforge@gnumonks.org> =A0 =A0 =A0 =A0 =A0 http://laforge.=
-gnumonks.org/
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> "Privacy in residential applications is a desirable marketing option."
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0(ETSI EN 300 175-7 Ch. A6)
->
+[ALSA] HDA VIA: Add second S/PDIF out control for VT1708S and VT1702.
 
-Hi, All
-  According to the discussion, this patch is canceled, thank you for sugges=
-tion.
+Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
+
+---
+ sound/pci/hda/patch_via.c |   37 +++++++++++++++++++++++++++----------
+ 1 file changed, 27 insertions(+), 10 deletions(-)
+
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -107,7 +107,7 @@
+
+ 	/* playback */
+ 	struct hda_multi_out multiout;
+-	hda_nid_t slave_dig_outs[2];
++	hda_nid_t second_dig_out;
+
+ 	/* capture */
+ 	unsigned int num_adc_nids;
+@@ -1177,8 +1177,23 @@
+ 					struct snd_pcm_substream *substream)
+ {
+ 	struct via_spec *spec = codec->spec;
+-	return snd_hda_multi_out_dig_prepare(codec, &spec->multiout,
+-					     stream_tag, format, substream);
++	hda_nid_t nid = substream->number == 0
++		? spec->multiout.dig_out_nid : spec->second_dig_out;
++	mutex_lock(&codec->spdif_mutex);
++	/* copy from hda_codec.c: setup_dig_out_stream */
++	/* turn off SPDIF once; otherwise the IEC958 bits won't be updated */
++	if (codec->spdif_status_reset && (codec->spdif_ctls & AC_DIG1_ENABLE))
++		snd_hda_codec_write_cache(
++			codec, nid, 0, AC_VERB_SET_DIGI_CONVERT_1,
++			codec->spdif_ctls & ~AC_DIG1_ENABLE & 0xff);
++	snd_hda_codec_setup_stream(codec, nid, stream_tag, 0, format);
++	/* turn on again (if needed) */
++	if (codec->spdif_status_reset && (codec->spdif_ctls & AC_DIG1_ENABLE))
++		snd_hda_codec_write_cache(
++			codec, nid, 0, AC_VERB_SET_DIGI_CONVERT_1,
++			codec->spdif_ctls & 0xff);
++	mutex_unlock(&codec->spdif_mutex);
++	return 0;
+ }
+
+ static int via_dig_playback_pcm_cleanup(struct hda_pcm_stream *hinfo,
+@@ -1296,6 +1311,13 @@
+ 		if (err < 0)
+ 			return err;
+ 		spec->multiout.share_spdif = 1;
++		/* add second spdif out */
++		if (spec->second_dig_out) {
++			err = snd_hda_create_spdif_out_ctls(
++				codec, spec->second_dig_out);
++			if (err < 0)
++				return err;
++		}
+ 	}
+ 	if (spec->dig_in_nid) {
+ 		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in_nid);
+@@ -1470,11 +1492,6 @@
+ 	} else /* enable SPDIF-input pin */
+ 		snd_hda_codec_write(codec, spec->autocfg.dig_in_pin, 0,
+ 				    AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN);
+-
+-	/* assign slave outs */
+-	if (spec->slave_dig_outs[0])
+-		codec->slave_dig_outs = spec->slave_dig_outs;
+-
+  	return 0;
+ }
+
+@@ -3162,7 +3179,7 @@
+ };
+
+ static struct hda_pcm_stream vt1708S_pcm_digital_playback = {
+-	.substreams = 1,
++	.substreams = 2,
+ 	.channels_min = 2,
+ 	.channels_max = 2,
+ 	/* NID is set in via_build_pcms */
+@@ -3398,7 +3415,7 @@
+ 		if (!spec->multiout.dig_out_nid)
+ 			spec->multiout.dig_out_nid = nid;
+ 		else {
+-			spec->slave_dig_outs[0] = nid;
++			spec->second_dig_out = nid;
+ 			break; /* at most two dig outs */
+ 		}
+ 	}
