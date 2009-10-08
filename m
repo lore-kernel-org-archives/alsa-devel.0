@@ -1,21 +1,20 @@
 From: Li Bo <liboat@gmail.com>
-Subject: Re: [PATCH 5/31] HDA patch_via.c: Add
-	VIA_CTL_WIDGET_ANALOG_MUTE control type
-Date: Thu, 8 Oct 2009 13:42:14 +0800
-Message-ID: <16685ee0910072242h35532e0eg4c3e9db52df1f0da@mail.gmail.com>
-References: <16685ee0910050724g3fefacbfs2abcfab11d177566@mail.gmail.com>
+Subject: Re: [PATCH 6/31] HDA patch_via.c: Add low current mode
+	for power saving.
+Date: Thu, 8 Oct 2009 13:42:46 +0800
+Message-ID: <16685ee0910072242j40f0f288mc68e8e88fa706728@mail.gmail.com>
+References: <16685ee0910050725q167007f3h66b403b484692f76@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
-	[209.85.220.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CF7E1038F9
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35672103904
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Oct 2009 07:42:14 +0200 (CEST)
-Received: by fxm8 with SMTP id 8so5187179fxm.45
-	for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2009 22:42:14 -0700 (PDT)
-In-Reply-To: <16685ee0910050724g3fefacbfs2abcfab11d177566@mail.gmail.com>
+	Thu,  8 Oct 2009 07:42:47 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id 22so2081232fge.2
+	for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2009 22:42:46 -0700 (PDT)
+In-Reply-To: <16685ee0910050725q167007f3h66b403b484692f76@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,293 +28,122 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, LoganLi@viatech.com.cn, HaraldWelte@viatech.com, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-[ALSA] HDA VIA: Add VIA_CTL_WIDGET_ANALOG_MUTE control type
+[ALSA] HDA VIA: Add low current mode for power saving.
 
-Enter low power state if AA-Path volume is muted.
+For VT1708B, VT1708S and VT1702, enter low current mode if no analog
+stream is opened and all aa path mute.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 
 ---
- sound/pci/hda/patch_via.c |  240 +++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 239 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_via.c |   41 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 35 insertions(+), 6 deletions(-)
 
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -128,6 +128,7 @@
- enum {
- 	VIA_CTL_WIDGET_VOL,
- 	VIA_CTL_WIDGET_MUTE,
-+	VIA_CTL_WIDGET_ANALOG_MUTE,
- };
-
- enum {
-@@ -177,9 +178,34 @@
+@@ -783,6 +783,10 @@
+ 				 struct snd_pcm_substream *substream)
+ {
+ 	struct via_spec *spec = codec->spec;
++	int idle = substream->pstr->substream_opened == 1
++		&& substream->ref_count == 0;
++
++	analog_low_current_mode(codec, idle);
+ 	return snd_hda_multi_out_analog_open(codec, &spec->multiout, substream,
+ 					     hinfo);
+ }
+@@ -1089,6 +1093,11 @@
+ 		if (err < 0)
+ 			return err;
+ 	}
++
++	/* init power states */
++	set_jack_power_state(codec);
++	analog_low_current_mode(codec, 1);
++
+ 	via_free_kctls(codec); /* no longer needed */
  	return 0;
  }
-
-+static void analog_low_current_mode(struct hda_codec *codec, int stream_idle);
-+static void set_jack_power_state(struct hda_codec *codec);
-+
-+static int analog_input_switch_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	int change = snd_hda_mixer_amp_switch_put(kcontrol, ucontrol);
-+	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
-+
-+	set_jack_power_state(codec);
-+	analog_low_current_mode(snd_kcontrol_chip(kcontrol), -1);
-+	return change;
-+}
-+
-+/* modify .put = snd_hda_mixer_amp_switch_put */
-+#define ANALOG_INPUT_MUTE						\
-+	{		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,		\
-+			.name = NULL,					\
-+			.index = 0,					\
-+			.info = snd_hda_mixer_amp_switch_info,		\
-+			.get = snd_hda_mixer_amp_switch_get,		\
-+			.put = analog_input_switch_put,			\
-+			.private_value = HDA_COMPOSE_AMP_VAL(0, 3, 0, 0) }
-+
- static struct snd_kcontrol_new vt1708_control_templates[] = {
- 	HDA_CODEC_VOLUME(NULL, 0, 0, 0),
- 	HDA_CODEC_MUTE(NULL, 0, 0, 0),
-+	ANALOG_INPUT_MUTE,
+@@ -2312,6 +2321,17 @@
+ 	{ }
  };
 
-
-@@ -303,7 +329,7 @@
- 	if (err < 0)
- 		return err;
- 	sprintf(name, "%s Playback Switch", ctlname);
--	err = via_add_control(spec, VIA_CTL_WIDGET_MUTE, name,
-+	err = via_add_control(spec, VIA_CTL_WIDGET_ANALOG_MUTE, name,
- 			      HDA_COMPOSE_AMP_VAL(mix_nid, 3, idx, HDA_INPUT));
- 	if (err < 0)
- 		return err;
-@@ -362,6 +388,131 @@
-
- 	}
- }
-+
-+static void set_pin_power_state(struct hda_codec *codec, hda_nid_t nid,
-+				unsigned int *affected_parm)
++static int via_pcm_open_close(struct hda_pcm_stream *hinfo,
++			      struct hda_codec *codec,
++			      struct snd_pcm_substream *substream)
 +{
-+	unsigned parm;
-+	unsigned def_conf = snd_hda_codec_get_pincfg(codec, nid);
-+	unsigned no_presence = (def_conf & AC_DEFCFG_MISC)
-+		>> AC_DEFCFG_MISC_SHIFT
-+		& AC_DEFCFG_MISC_NO_PRESENCE; /* do not support pin sense */
-+	unsigned present = snd_hda_codec_read(codec, nid, 0,
-+					      AC_VERB_GET_PIN_SENSE, 0) >> 31;
++	int idle = substream->pstr->substream_opened == 1
++		&& substream->ref_count == 0;
 +
-+	if ((no_presence || present) && get_defcfg_connect(def_conf)
-+	    != AC_JACK_PORT_NONE) {
-+		*affected_parm = AC_PWRST_D0; /* if it's connected */
-+		parm = AC_PWRST_D0;
-+	} else
-+		parm = AC_PWRST_D3;
-+
-+	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_POWER_STATE, parm);
++	analog_low_current_mode(codec, idle);
++	return 0;
 +}
 +
-+static void set_jack_power_state(struct hda_codec *codec)
-+{
-+	struct via_spec *spec = codec->spec;
-+	int imux_is_smixer;
-+	unsigned int parm;
-+
-+	if (spec->codec_type == VT1702) {
-+		imux_is_smixer = snd_hda_codec_read(
-+			codec, 0x13, 0, AC_VERB_GET_CONNECT_SEL, 0x00) == 3;
-+		/* inputs */
-+		/* PW 1/2/5 (14h/15h/18h) */
-+		parm = AC_PWRST_D3;
-+		set_pin_power_state(codec, 0x14, &parm);
-+		set_pin_power_state(codec, 0x15, &parm);
-+		set_pin_power_state(codec, 0x18, &parm);
-+		if (imux_is_smixer)
-+			parm = AC_PWRST_D0; /* SW0 = stereo mixer (idx 3) */
-+		/* SW0 (13h), AIW 0/1/2 (12h/1fh/20h) */
-+		snd_hda_codec_write(codec, 0x13, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+		snd_hda_codec_write(codec, 0x12, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+		snd_hda_codec_write(codec, 0x1f, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+		snd_hda_codec_write(codec, 0x20, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+
-+		/* outputs */
-+		/* PW 3/4 (16h/17h) */
-+		parm = AC_PWRST_D3;
-+		set_pin_power_state(codec, 0x16, &parm);
-+		set_pin_power_state(codec, 0x17, &parm);
-+		/* MW0 (1ah), AOW 0/1 (10h/1dh) */
-+		snd_hda_codec_write(codec, 0x1a, 0, AC_VERB_SET_POWER_STATE,
-+				    imux_is_smixer ? AC_PWRST_D0 : parm);
-+		snd_hda_codec_write(codec, 0x10, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+		snd_hda_codec_write(codec, 0x1d, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+	} else if (spec->codec_type == VT1708B_8CH
-+		   || spec->codec_type == VT1708B_4CH
-+		   || spec->codec_type == VT1708S) {
-+		/* SW0 (17h) = stereo mixer */
-+		int is_8ch = spec->codec_type != VT1708B_4CH;
-+		imux_is_smixer = snd_hda_codec_read(
-+			codec, 0x17, 0, AC_VERB_GET_CONNECT_SEL, 0x00)
-+			== ((spec->codec_type == VT1708S)  ? 5 : 0);
-+		/* inputs */
-+		/* PW 1/2/5 (1ah/1bh/1eh) */
-+		parm = AC_PWRST_D3;
-+		set_pin_power_state(codec, 0x1a, &parm);
-+		set_pin_power_state(codec, 0x1b, &parm);
-+		set_pin_power_state(codec, 0x1e, &parm);
-+		if (imux_is_smixer)
-+			parm = AC_PWRST_D0;
-+		/* SW0 (17h), AIW 0/1 (13h/14h) */
-+		snd_hda_codec_write(codec, 0x17, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+		snd_hda_codec_write(codec, 0x13, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+		snd_hda_codec_write(codec, 0x14, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+
-+		/* outputs */
-+		/* PW0 (19h), SW1 (18h), AOW1 (11h) */
-+		parm = AC_PWRST_D3;
-+		set_pin_power_state(codec, 0x19, &parm);
-+		snd_hda_codec_write(codec, 0x18, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+		snd_hda_codec_write(codec, 0x11, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+
-+		/* PW6 (22h), SW2 (26h), AOW2 (24h) */
-+		if (is_8ch) {
-+			parm = AC_PWRST_D3;
-+			set_pin_power_state(codec, 0x22, &parm);
-+			snd_hda_codec_write(codec, 0x26, 0,
-+					    AC_VERB_SET_POWER_STATE, parm);
-+			snd_hda_codec_write(codec, 0x24, 0,
-+					    AC_VERB_SET_POWER_STATE, parm);
-+		}
-+
-+		/* PW 3/4/7 (1ch/1dh/23h) */
-+		parm = AC_PWRST_D3;
-+		/* force to D0 for internal Speaker */
-+		set_pin_power_state(codec, 0x1c, &parm);
-+		set_pin_power_state(codec, 0x1d, &parm);
-+		if (is_8ch)
-+			set_pin_power_state(codec, 0x23, &parm);
-+		/* MW0 (16h), Sw3 (27h), AOW 0/3 (10h/25h) */
-+		snd_hda_codec_write(codec, 0x16, 0, AC_VERB_SET_POWER_STATE,
-+				    imux_is_smixer ? AC_PWRST_D0 : parm);
-+		snd_hda_codec_write(codec, 0x10, 0, AC_VERB_SET_POWER_STATE,
-+				    parm);
-+		if (is_8ch) {
-+			snd_hda_codec_write(codec, 0x25, 0,
-+					    AC_VERB_SET_POWER_STATE, parm);
-+			snd_hda_codec_write(codec, 0x27, 0,
-+					    AC_VERB_SET_POWER_STATE, parm);
-+		}
-+	}
-+}
-+
- /*
-  * input MUX handling
-  */
-@@ -504,6 +655,93 @@
+ static struct hda_pcm_stream vt1708B_8ch_pcm_analog_playback = {
+ 	.substreams = 2,
+ 	.channels_min = 2,
+@@ -2320,7 +2340,8 @@
+ 	.ops = {
+ 		.open = via_playback_pcm_open,
+ 		.prepare = via_playback_multi_pcm_prepare,
+-		.cleanup = via_playback_multi_pcm_cleanup
++		.cleanup = via_playback_multi_pcm_cleanup,
++		.close = via_pcm_open_close
  	},
- 	{ } /* end */
  };
-+
-+/* check AA path's mute statue */
-+static int is_aa_path_mute(struct hda_codec *codec)
-+{
-+	int mute = 1;
-+	hda_nid_t  nid_mixer;
-+	int start_idx;
-+	int end_idx;
-+	int i;
-+	struct via_spec *spec = codec->spec;
-+	/* get nid of MW0 and start & end index */
-+	switch (spec->codec_type) {
-+	case VT1708B_8CH:
-+	case VT1708B_4CH:
-+	case VT1708S:
-+		nid_mixer = 0x16;
-+		start_idx = 2;
-+		end_idx = 4;
-+		break;
-+	case VT1702:
-+		nid_mixer = 0x1a;
-+		start_idx = 1;
-+		end_idx = 3;
-+		break;
-+	default:
-+		return 0;
-+	}
-+	/* check AA path's mute status */
-+	for (i = start_idx; i <= end_idx; i++) {
-+		unsigned int con_list = snd_hda_codec_read(
-+			codec, nid_mixer, 0, AC_VERB_GET_CONNECT_LIST, i/4*4);
-+		int shift = 8 * (i % 4);
-+		hda_nid_t nid_pin = (con_list & (0xff << shift)) >> shift;
-+		unsigned int defconf = snd_hda_codec_get_pincfg(codec, nid_pin);
-+		if (get_defcfg_connect(defconf) == AC_JACK_PORT_COMPLEX) {
-+			/* check mute status while the pin is connected */
-+			int mute_l = snd_hda_codec_amp_read(codec, nid_mixer, 0,
-+							    HDA_INPUT, i) >> 7;
-+			int mute_r = snd_hda_codec_amp_read(codec, nid_mixer, 1,
-+							    HDA_INPUT, i) >> 7;
-+			if (!mute_l || !mute_r) {
-+				mute = 0;
-+				break;
-+			}
-+		}
-+	}
-+	return mute;
-+}
-+
-+/* enter/exit analog low-current mode */
-+static void analog_low_current_mode(struct hda_codec *codec, int stream_idle)
-+{
-+	struct via_spec *spec = codec->spec;
-+	static int saved_stream_idle = 1; /* saved stream idle status */
-+	int enable = is_aa_path_mute(codec);
-+	unsigned int verb = 0;
-+	unsigned int parm = 0;
-+
-+	if (stream_idle == -1)	/* stream status did not change */
-+		enable = enable && saved_stream_idle;
-+	else {
-+		enable = enable && stream_idle;
-+		saved_stream_idle = stream_idle;
-+	}
-+
-+	/* decide low current mode's verb & parameter */
-+	switch (spec->codec_type) {
-+	case VT1708B_8CH:
-+	case VT1708B_4CH:
-+		verb = 0xf70;
-+		parm = enable ? 0x02 : 0x00; /* 0x02: 2/3x, 0x00: 1x */
-+		break;
-+	case VT1708S:
-+		verb = 0xf73;
-+		parm = enable ? 0x51 : 0xe1; /* 0x51: 4/28x, 0xe1: 1x */
-+		break;
-+	case VT1702:
-+		verb = 0xf73;
-+		parm = enable ? 0x01 : 0x1d; /* 0x01: 4/40x, 0x1d: 1x */
-+		break;
-+	default:
-+		return;		/* other codecs are not supported */
-+	}
-+	/* send verb */
-+	snd_hda_codec_write(codec, codec->afg, 0, verb, parm);
-+}
-+
- /*
-  * generic initialization of ADC, input mixers and output mixers
-  */
+
+@@ -2342,8 +2363,10 @@
+ 	.channels_max = 2,
+ 	.nid = 0x13, /* NID to query formats and rates */
+ 	.ops = {
++		.open = via_pcm_open_close,
+ 		.prepare = via_capture_pcm_prepare,
+-		.cleanup = via_capture_pcm_cleanup
++		.cleanup = via_capture_pcm_cleanup,
++		.close = via_pcm_open_close
+ 	},
+ };
+
+@@ -2800,7 +2823,8 @@
+ 	.ops = {
+ 		.open = via_playback_pcm_open,
+ 		.prepare = via_playback_pcm_prepare,
+-		.cleanup = via_playback_pcm_cleanup
++		.cleanup = via_playback_pcm_cleanup,
++		.close = via_pcm_open_close
+ 	},
+ };
+
+@@ -2810,8 +2834,10 @@
+ 	.channels_max = 2,
+ 	.nid = 0x13, /* NID to query formats and rates */
+ 	.ops = {
++		.open = via_pcm_open_close,
+ 		.prepare = via_capture_pcm_prepare,
+-		.cleanup = via_capture_pcm_cleanup
++		.cleanup = via_capture_pcm_cleanup,
++		.close = via_pcm_open_close
+ 	},
+ };
+
+@@ -3236,7 +3262,8 @@
+ 	.ops = {
+ 		.open = via_playback_pcm_open,
+ 		.prepare = via_playback_multi_pcm_prepare,
+-		.cleanup = via_playback_multi_pcm_cleanup
++		.cleanup = via_playback_multi_pcm_cleanup,
++		.close = via_pcm_open_close
+ 	},
+ };
+
+@@ -3246,8 +3273,10 @@
+ 	.channels_max = 2,
+ 	.nid = 0x12, /* NID to query formats and rates */
+ 	.ops = {
++		.open = via_pcm_open_close,
+ 		.prepare = via_capture_pcm_prepare,
+-		.cleanup = via_capture_pcm_cleanup
++		.cleanup = via_capture_pcm_cleanup,
++		.close = via_pcm_open_close
+ 	},
+ };
