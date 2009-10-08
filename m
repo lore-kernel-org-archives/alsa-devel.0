@@ -1,16 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 7/8] ASoC: tlv320aic3x: add initial usage
  of regulator framework to control avdd_dac
-Date: Thu, 8 Oct 2009 14:38:43 +0100
-Message-ID: <20091008133843.GG29176__43725.9303209887$1255009867$gmane$org@rakim.wolfsonmicro.main>
+Date: Thu, 8 Oct 2009 14:40:46 +0100
+Message-ID: <20091008134046.GH29176__35831.6868347631$1255009878$gmane$org@rakim.wolfsonmicro.main>
 References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
 	<1255003137-1034-8-git-send-email-eduardo.valentin@nokia.com>
+	<1255004227.30157.159.camel@eenurkka-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <1255003137-1034-8-git-send-email-eduardo.valentin@nokia.com>
+In-Reply-To: <1255004227.30157.159.camel@eenurkka-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,51 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: ext Tony Lindgren <tony@atomide.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Cc: ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 08, 2009 at 02:58:56PM +0300, Eduardo Valentin wrote:
+On Thu, Oct 08, 2009 at 03:17:07PM +0300, Eero Nurkkala wrote:
 
-> This patch adds initial usage of regulator framework to control avdd_dac
-> inside tlv320aic3x ASoC codec driver.
+> Will this ever be revisited =) ? If so, I think there's going to be a
+> jungle in finding the right spots - you need to remember the bypass
+> paths also (bias is not on necessarily).
 
-If you're going to do this you should add support for all the supplies
-of the device, not just one of them.  The extra effort required is low
-and it avoids compatibility problems when someone wants to set up other
-supplies, causing existing boards to need to specify them.
+The bias is always on when any path through the chip is on, this was
+fixed in either .31 or .30.
 
-> +	aic3x->regulator = regulator_get(&i2c->dev, "avdd_dac");
-> +	if (IS_ERR(aic3x->regulator)) {
-> +		dev_warn(&i2c->dev, "No regulator to supply avdd_dac."
-> +					" Assuming always on.\n");
+>                                          Also, this is regulator thing
+> is highly platform dependent, not aic3x related really at all, so is
+> this the correct place... Just a thought, dont take it too seriously ;) 
 
-You shouldn't split error messages over multiple lines like this, it
-breaks grepping to try to find where the message came from. 
-
-I'd also rather see failure to get the regulator treated as a hard
-error.  When the regulator API compiled out it is stubbed so that for
-simple get/enable/disable/put usage it will return success but do
-nothing.  If the regulator API is compiled in and we're not able to
-acquire regulators there's a good chance that things will break (eg, due
-to supplies being turned off because they appear to be unused) so
-flagging the error immediately is less likely to result in runtime
-fragility.
-
-> +	/*
-> +	 * REVISIT: Need to add proper code to put into sleep mode
-> +	 * avdd_dac regulator. For now, just leave it on.
-> +	 */
-> +	if (aic3x->regulator) {
-> +		int err;
-> +
-> +		err = regulator_enable(aic3x->regulator);
-> +		if (err < 0)
-> +			return err;
-> +	}
-
-The best way to handle this is to push the enable/disable into the bias
-level configuration so that the regulators are enabled when the chip
-goes off->standby and disabled during standby->off.  This will have the
-same effect for the moment but will mean that we'll be able to add core
-support for fully powering down the audio subsystem at runtime in the
-future.
+I'm not sure what you mean by this?
