@@ -1,19 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
- GIT repository for Linux 2.6 branch, master now at v2.6.31-rc8-407-gfc9e4a3
-Date: Thu, 08 Oct 2009 13:19:07 +0200
-Message-ID: <4ACDCAAB.2060609@ladisch.de>
-References: <20091006063609.B06E110381F@alsa0.perex.cz>	<s5hab05role.wl%tiwai@suse.de>	<4ACAF4AC.3000608@ladisch.de>
-	<s5h4oqdrlys.wl%tiwai@suse.de>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Subject: [PATCH 0/8] RX-51 audio drivers
+Date: Thu,  8 Oct 2009 14:58:49 +0300
+Message-ID: <1255003137-1034-1-git-send-email-eduardo.valentin__28647.0466563062$1255003332$gmane$org@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 02A69103934
-	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Oct 2009 13:19:11 +0200 (CEST)
-In-Reply-To: <s5h4oqdrlys.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,45 +15,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Honza Maly <jmal8295@artax.karlin.mff.cuni.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, Eduardo Valentin <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-jmal8295 wrote:
-> And I _will_ be regarding it as regression if I lose possibility to
-> change volume of the four streams independently.
+Hello everyone,
 
-Okay, as long as there is no application to handle PCM-interface
-controls, the DXS controls should not be hidden this way.
+Here is a patch series with most of audio support for RX51.
 
-Anyway, the volume level regression can be solved by any renaming, so
-let's do just that.  Takashi, please pick the patch below instead.
+Basically it includes asoc machine driver for rx51, tpa6130a2 amplifier
+driver (asoc version), board file configuration and setup and the
+sidetone feature of mcbsp.
 
-==========
+On top of that, there are few patches to use regulator framework
+to control vmmc2.
 
-sound: via82xx: rename DXS volume controls
+This series is based on linux-omap. So basically after applying it,
+you can boot the device and have sound support.
 
-Only some insiders know what the "VIA DXS" controls actually control, so
-change them to a more descriptive name.
+Even though this patches were tested using linux-omap, the series
+is applicable on top of sound-2.6 tree as well.
 
-Commit b452e08e73c0e3dbb0be82130217be4b7084299e in 2.6.30 broke the
-restoring of these volumes by "alsactl restore" that most distributions
-use; the renaming in this patch cures that regression by preventing
-alsactl from applying the old, wrong volume levels to the new controls.
-http://bugzilla.kernel.org/show_bug.cgi?id=14151
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=532613
+Please review. And as usual, comments are welcome.
 
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
-Cc: <stable@kernel.org>
+BR,
 
---- a/sound/pci/via82xx.c
-+++ b/sound/pci/via82xx.c
-@@ -1705,7 +1705,7 @@
- };
- 
- static struct snd_kcontrol_new snd_via8233_dxs_volume_control __devinitdata = {
--	.name = "VIA DXS Playback Volume",
-+	.name = "PCM Stream Playback Volume",
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
- 		   SNDRV_CTL_ELEM_ACCESS_TLV_READ),
+---
+Eduardo Valentin
+
+
+Eduardo Valentin (6):
+  ASoC: OMAP: RX-51 Machine driver and AIC34b_dummy driver
+  OMAP: RX51: Add audio board file
+  board-rx51-peripherals: split vaux3 and vmmc2 supplies
+  RX-51: Audio: Add usage of regulator framework to control VMMC2
+  ASoC: tlv320aic3x: add initial usage of regulator framework to
+    control avdd_dac
+  ASoC: tpa6130a2: Control vdd using regulator framework
+
+Eero Nurkkala (1):
+  McBSP: OMAP3: Add Sidetone feature
+
+Peter Ujfalusi (1):
+  ASoC: TPA6130A2 amplifier driver
+
+ arch/arm/mach-omap2/Makefile                 |    1 +
+ arch/arm/mach-omap2/board-rx51-audio.c       |  132 +++++
+ arch/arm/mach-omap2/board-rx51-peripherals.c |   22 +-
+ arch/arm/mach-omap2/mcbsp.c                  |    2 +
+ arch/arm/plat-omap/include/mach/mcbsp.h      |   43 ++
+ arch/arm/plat-omap/mcbsp.c                   |  379 ++++++++++++-
+ include/sound/tpa6130a2-plat.h               |   30 +
+ sound/soc/codecs/Kconfig                     |    4 +
+ sound/soc/codecs/Makefile                    |    2 +
+ sound/soc/codecs/tlv320aic3x.c               |   26 +
+ sound/soc/codecs/tpa6130a2.c                 |  396 +++++++++++++
+ sound/soc/codecs/tpa6130a2.h                 |   62 ++
+ sound/soc/omap/Kconfig                       |   10 +
+ sound/soc/omap/Makefile                      |    2 +
+ sound/soc/omap/aic34b_dummy.c                |  271 +++++++++
+ sound/soc/omap/aic34b_dummy.h                |   32 +
+ sound/soc/omap/rx51.c                        |  793 ++++++++++++++++++++++++++
+ sound/soc/omap/rx51.h                        |   29 +
+ 18 files changed, 2225 insertions(+), 11 deletions(-)
+ create mode 100644 arch/arm/mach-omap2/board-rx51-audio.c
+ create mode 100644 include/sound/tpa6130a2-plat.h
+ create mode 100644 sound/soc/codecs/tpa6130a2.c
+ create mode 100644 sound/soc/codecs/tpa6130a2.h
+ create mode 100644 sound/soc/omap/aic34b_dummy.c
+ create mode 100644 sound/soc/omap/aic34b_dummy.h
+ create mode 100644 sound/soc/omap/rx51.c
+ create mode 100644 sound/soc/omap/rx51.h
+
