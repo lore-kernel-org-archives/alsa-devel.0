@@ -1,18 +1,18 @@
 From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCH 7/8] ASoC: tlv320aic3x: add initial usage
- of regulator framework to control avdd_dac
-Date: Thu, 8 Oct 2009 16:17:07 +0300
-Message-ID: <20091008131707.GA9558@esdhcp037198.research.nokia.com>
+Subject: Re: [PATCH 2/8] ASoC: OMAP: RX-51 Machine driver and
+ AIC34b_dummy driver
+Date: Thu, 8 Oct 2009 16:18:19 +0300
+Message-ID: <20091008131819.GB9558__22307.5136113495$1255008574$gmane$org@esdhcp037198.research.nokia.com>
 References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
-	<1255003137-1034-8-git-send-email-eduardo.valentin@nokia.com>
-	<1255004227.30157.159.camel@eenurkka-desktop>
+	<1255003137-1034-3-git-send-email-eduardo.valentin@nokia.com>
+	<1255005086.30157.165.camel@eenurkka-desktop>
 Reply-To: eduardo.valentin@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Content-Disposition: inline
-In-Reply-To: <1255004227.30157.159.camel@eenurkka-desktop>
+In-Reply-To: <1255005086.30157.165.camel@eenurkka-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,109 +26,167 @@ To: alsa-devel@alsa-project.org
 Cc: ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 08, 2009 at 02:17:07PM +0200, Nurkkala Eero.An (EXT-Offcode/Oulu) wrote:
+On Thu, Oct 08, 2009 at 02:31:26PM +0200, Nurkkala Eero.An (EXT-Offcode/Oulu) wrote:
 > On Thu, 2009-10-08 at 13:58 +0200, Valentin Eduardo (Nokia-D/Helsinki)
 > wrote:
 > > From: Eduardo Valentin <eduardo.valentin@nokia.com>
-> > 
-> > This patch adds initial usage of regulator framework to control avdd_dac
-> > inside tlv320aic3x ASoC codec driver.
-> > 
-> > The  refcount to avdd_dac is increased / decreased
-> > only during probe and remove. Here it is still needed to implement
-> > proper enable/disable regulator depending on chip usage. Now if driver
-> > can get regulator for avdd_dac, then it will just let it on on probe
-> > and then leave it off on remove.
-> > 
+> >
+> > Introduce RX-51 Machine driver for ASoC and AIC34b_dummy (block B) i2c driver.
+> >
+> > Also move the request_gpio of speaker_enabled
+> > from board-rx51-peripherals.c to this machine driver.
+> >
+> > These drivers were originally written by Jarkko Nikula.
+> >
 > > Signed-off-by: Eduardo Valentin <eduardo.valentin@nokia.com>
 > > ---
-> >  sound/soc/codecs/tlv320aic3x.c |   26 ++++++++++++++++++++++++++
-> >  1 files changed, 26 insertions(+), 0 deletions(-)
-> > 
-> > diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-> > index 3395cf9..82e0a64 100644
-> > --- a/sound/soc/codecs/tlv320aic3x.c
-> > +++ b/sound/soc/codecs/tlv320aic3x.c
-> > @@ -38,6 +38,7 @@
-> >  #include <linux/delay.h>
-> >  #include <linux/pm.h>
-> >  #include <linux/i2c.h>
-> > +#include <linux/regulator/consumer.h>
-> >  #include <linux/platform_device.h>
-> >  #include <sound/core.h>
-> >  #include <sound/pcm.h>
-> > @@ -56,6 +57,7 @@ struct aic3x_priv {
-> >  	struct snd_soc_codec codec;
-> >  	unsigned int sysclk;
-> >  	int master;
-> > +	struct regulator *regulator;
-> >  };
-> >  
-> >  /*
-> > @@ -1286,6 +1288,11 @@ static int aic3x_unregister(struct aic3x_priv *aic3x)
-> >  	snd_soc_unregister_dai(&aic3x_dai);
-> >  	snd_soc_unregister_codec(&aic3x->codec);
-> >  
-> > +	if (aic3x->regulator) {
-> > +		regulator_disable(aic3x->regulator);
-> > +		regulator_put(aic3x->regulator);
-> > +	}
+> >  arch/arm/mach-omap2/board-rx51-peripherals.c |    2 -
+> >  sound/soc/omap/Kconfig                       |   10 +
+> >  sound/soc/omap/Makefile                      |    2 +
+> >  sound/soc/omap/aic34b_dummy.c                |  271 +++++++++
+> >  sound/soc/omap/aic34b_dummy.h                |   32 +
+> >  sound/soc/omap/rx51.c                        |  793 ++++++++++++++++++++++++++
+> >  sound/soc/omap/rx51.h                        |   29 +
+> >  7 files changed, 1137 insertions(+), 2 deletions(-)
+> >  create mode 100644 sound/soc/omap/aic34b_dummy.c
+> >  create mode 100644 sound/soc/omap/aic34b_dummy.h
+> >  create mode 100644 sound/soc/omap/rx51.c
+> >  create mode 100644 sound/soc/omap/rx51.h
+> >
+
+<snip>
+
+> > +static struct platform_device *rx51_snd_device;
 > > +
-> >  	kfree(aic3x);
-> >  	aic3x_codec = NULL;
-> >  
-> > @@ -1320,6 +1327,25 @@ static int aic3x_i2c_probe(struct i2c_client *i2c,
-> >  	codec->control_data = i2c;
-> >  	codec->hw_write = (hw_write_t) i2c_master_send;
-> >  
-> > +	aic3x->regulator = regulator_get(&i2c->dev, "avdd_dac");
-> > +	if (IS_ERR(aic3x->regulator)) {
-> > +		dev_warn(&i2c->dev, "No regulator to supply avdd_dac."
-> > +					" Assuming always on.\n");
-> > +		aic3x->regulator = NULL;
-> > +	}
+> > +#define REMAP_OFFSET           2
+> > +#define DEDICATED_OFFSET       3
+> > +#define VMMC2_DEV_GRP          0x2B
+> > +#define VMMC2_285V             0x0a
 > > +
-> > +	/*
-> > +	 * REVISIT: Need to add proper code to put into sleep mode
-> > +	 * avdd_dac regulator. For now, just leave it on.
-> > +	 */
 > 
-> Will this ever be revisited =) ? If so, I think there's going to be a
-> jungle in finding the right spots - you need to remember the bypass
-> paths also (bias is not on necessarily). Also, this is regulator thing
-> is highly platform dependent, not aic3x related really at all, so is
-> this the correct place... Just a thought, dont take it too seriously ;) 
+> These defines appear unused?
 
 
-Heheh.. no I don't take it too seriously, don't worry :-)
-
-Actually I've discussed about it with Peter. Initially I wrote it
-inside rx51 machine driver. But then, we agreed it is actually a
-thing which must be controlled by the driver. The same way it is done
-for TPA for instance.
-
-Of course,  the presence of that regulator must not be a blocker for
-the driver. As you can see, if the regulator can not be queried, the driver
-will assume that it is always on.
-
-I must agree with you, but would rephrase as: the presence of this regulator
-is board specific, but controlling when it must be enabled/disabled is a role
-for the driver, in this case, tlv320aic3x.
-
-What do you think ?
+yeah, will rip then off.
 
 > 
-> > +	if (aic3x->regulator) {
-> > +		int err;
+> > +static int __init rx51_soc_init(void)
+> > +{
+> > +       int err;
+> > +       struct device *dev;
 > > +
-> > +		err = regulator_enable(aic3x->regulator);
-> > +		if (err < 0)
-> > +			return err;
-> > +	}
+> > +       if (!machine_is_nokia_rx51())
+> > +               return -ENODEV;
 > > +
-> >  	i2c_set_clientdata(i2c, aic3x);
-> >  
-> >  	return aic3x_register(codec);
+> > +       if (gpio_request(RX51_CODEC_RESET_GPIO, NULL) < 0)
+> > +               BUG();
+> > +       if (gpio_request(RX51_TVOUT_SEL_GPIO, "tvout_sel") < 0)
+> > +               BUG();
+> > +       if (gpio_request(RX51_ECI_SWITCH_1_GPIO, "ECI switch 1") < 0)
+> > +               BUG();
+> > +       if (gpio_request(RX51_ECI_SWITCH_2_GPIO, "ECI switch 2") < 0)
+> > +               BUG();
+> > +       gpio_direction_output(RX51_CODEC_RESET_GPIO, 0);
+> > +       gpio_direction_output(RX51_TVOUT_SEL_GPIO, 0);
+> > +       gpio_direction_output(RX51_ECI_SWITCH_1_GPIO, 0);
+> > +       gpio_direction_output(RX51_ECI_SWITCH_2_GPIO, 1);
+> > +
+> > +       gpio_set_value(RX51_CODEC_RESET_GPIO, 0);
+> > +       udelay(1);
+> > +       gpio_set_value(RX51_CODEC_RESET_GPIO, 1);
+> > +       msleep(1);
+> > +
+> > +       if (gpio_request(RX51_SPEAKER_AMP_TWL_GPIO, NULL) < 0)
+> > +               BUG();
+> > +       gpio_direction_output(RX51_SPEAKER_AMP_TWL_GPIO, 0);
+> > +
+> > +       err = snd_soc_register_dai(&btcodec_dai);
+> > +       if (err)
+> > +               return err;
+> > +
+> > +       rx51_snd_device = platform_device_alloc("soc-audio", -1);
+> > +       if (!rx51_snd_device) {
+> > +               err = -ENOMEM;
+> > +               goto err0;
+> > +       }
+> > +
+> > +       platform_set_drvdata(rx51_snd_device, &rx51_snd_devdata);
+> > +       rx51_snd_devdata.dev = &rx51_snd_device->dev;
+> > +       err = platform_device_add(rx51_snd_device);
+> > +       if (err)
+> > +               goto err1;
+> > +
+> > +       dev = &rx51_snd_device->dev;
+> > +
+> > +       *(unsigned int *)rx51_dai[0].cpu_dai->private_data = 1;
+> > +       *(unsigned int *)rx51_dai[1].cpu_dai->private_data = 2;
+> > +
+> > +       err = device_create_file(dev, &dev_attr_eci_mode);
+> > +       if (err)
+> > +               goto err2;
+> > +
+> > +       return err;
+> > +err2:
+> > +       platform_device_del(rx51_snd_device);
+> > +err1:
+> > +       platform_device_put(rx51_snd_device);
+> > +err0:
+> > +       snd_soc_unregister_dai(&btcodec_dai);
+> > +
+> > +       return err;
+> > +
+> > +}
+> > +
+> > +static void __exit rx51_soc_exit(void)
+> > +{
+> > +       platform_device_unregister(rx51_snd_device);
+> > +       snd_soc_unregister_dai(&btcodec_dai);
+> > +}
+> > +
+> > +module_init(rx51_soc_init);
+> > +module_exit(rx51_soc_exit);
+> > +
+> > +MODULE_AUTHOR("Nokia Corporation");
+> > +MODULE_DESCRIPTION("ALSA SoC Nokia RX51");
+> > +MODULE_LICENSE("GPL");
+> > diff --git a/sound/soc/omap/rx51.h b/sound/soc/omap/rx51.h
+> > new file mode 100644
+> > index 0000000..ee55260
+> > --- /dev/null
+> > +++ b/sound/soc/omap/rx51.h
+> > @@ -0,0 +1,29 @@
+> > +#ifndef _RX51_H_
+> > +#define _RX51_H_
+> > +
+> > +/*
+> > + *  rx51.h - SoC audio for Nokia RX51
+> > + *
+> > + *  Copyright (C) 2008 - 2009 Nokia Corporation
+> > + *
+> > + *  Contact: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> > + *           Eduardo Valentin <eduardo.valentin@nokia.com>
+> > + *
+> > + *  This program is free software; you can redistribute it and/or modify
+> > + *  it under the terms of the GNU General Public License as published by
+> > + *  the Free Software Foundation; version 2 of the License.
+> > + *
+> > + *  This program is distributed in the hope that it will be useful,
+> > + *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> > + *  GNU General Public License for more details.
+> > + *
+> > + *  You should have received a copy of the GNU General Public License
+> > + *  along with this program; if not, write to the Free Software
+> > + *  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> > + */
+> > +
+> > +int rx51_set_eci_mode(int mode);
+> > +void rx51_jack_report(int status);
+> > +
+> > +#endif /* _RX51_H_ */
+> > --
+> > 1.6.4.183.g04423
+> >
 
 -- 
 Eduardo Valentin
