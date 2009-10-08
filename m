@@ -1,21 +1,19 @@
-From: "Lopez Cruz, Misael" <x0052729@ti.com>
-Subject: Re: [PATCHv3 1/7] OMAP4: PMIC: Add support for twl6030
- codec
-Date: Wed, 7 Oct 2009 20:30:29 -0500
-Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E90CBD922@dlee04.ent.ti.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E90C2F648@dlee04.ent.ti.com>
-	<200910061146.05080.peter.ujfalusi@nokia.com>
-	<19F8576C6E063C45BE387C64729E73940436CF92F8@dbde02.ent.ti.com>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: [PATCH] ice1724: increase SPDIF and independent stereo
+	buffer sizes
+Date: Wed, 07 Oct 2009 20:19:21 -0600
+Message-ID: <4ACD4C29.8020007@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id A40891038A0
+Received: from mail-qy0-f187.google.com (mail-qy0-f187.google.com
+	[209.85.221.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 666B71038C8
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Oct 2009 03:30:34 +0200 (CEST)
-In-Reply-To: <19F8576C6E063C45BE387C64729E73940436CF92F8@dbde02.ent.ti.com>
-Content-Language: en-US
+	Thu,  8 Oct 2009 04:19:25 +0200 (CEST)
+Received: by qyk17 with SMTP id 17so5524110qyk.2
+	for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2009 19:19:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Krishnamoorthy, Balaji T" <balajitk@ti.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Alsa-Devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Krishnamoorthy, Balaji T wrote:
+Increase the default and maximum PCM buffer prellocation size for ice1724's
+SPDIF and independent stereo pair outputs to 256K, which is the hardware's
+maximum supported size. This allows a reduction in interrupt rate and
+potentially power usage when an application is not latency-critical.
 
-> CONFIG_TWL6030_CORE and CONFIG_TWL4030_CORE is merged to
-> CONFIG_TWL_CORE As two different build config was not encouraged. 
-> Now switch twl_class_is_6030() will be used to decide at runtime time
-> to support for 6030 related drivers, Similarly twl_class_is_4030()
-> for 4030 drivers 
+Signed-off-by: Robert Hancock <hancockrwd@gmail.com>
 
-In patch "[PATCH v3 01/04] OMAP4: PMIC: Add support for twl6030 irq
-framework" [1], TWL4030_CORE is redefined as TWL_CORE as you mentioned.
-Then I guess that audio drivers should depend on TWL_CORE as well, if so
-then we have to update all its dependencies:
-
-1. TWL4030 codec driver: SND_SOC_TWL4030
-2. All machine drivers using twl4030 codec driver: overo, omap2evm,
-   omap3evm, sdp3430, omap3_pandora, omap3_beagle and zoom2
-
-And I should do the same for twl6030 codec driver.
-
-Regards,
--Misa
-
-[1] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg17066.html
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index af6e001..3ae4407 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -1294,7 +1294,7 @@ static int __devinit snd_vt1724_pcm_spdif(struct snd_ice1712 *ice, int device)
+ 
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 					      snd_dma_pci_data(ice->pci),
+-					      64*1024, 64*1024);
++					      256*1024, 256*1024);
+ 
+ 	ice->pcm = pcm;
+ 
+@@ -1408,7 +1408,7 @@ static int __devinit snd_vt1724_pcm_indep(struct snd_ice1712 *ice, int device)
+ 
+ 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+ 					      snd_dma_pci_data(ice->pci),
+-					      64*1024, 64*1024);
++					      256*1024, 256*1024);
+ 
+ 	ice->pcm_ds = pcm;
