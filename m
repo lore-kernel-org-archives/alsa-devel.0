@@ -1,30 +1,21 @@
-From: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 2/2] ASoC: Blackfin
-	AD1836/AD1938 machine drivers: require SPI master
-Date: Wed, 7 Oct 2009 20:27:56 -0400
-Message-ID: <8bd0f97a0910071727x72fe950x804f295ba25d514c@mail.gmail.com>
-References: <20091006093325.GA10118@rakim.wolfsonmicro.main>
-	<20091006095018.GB27168@sirena.org.uk>
-	<8bd0f97a0910060300m7fa80daas63afd272ba85fb16@mail.gmail.com>
-	<20091006103952.GC10118@rakim.wolfsonmicro.main>
-	<8bd0f97a0910060432o67e9d00bu84c0139701709e63@mail.gmail.com>
-	<20091006115216.GA12993@rakim.wolfsonmicro.main>
-	<8bd0f97a0910061409x254b5574wdb0125db0548678@mail.gmail.com>
-	<20091006220725.GA32267@opensource.wolfsonmicro.com>
-	<8bd0f97a0910070132x2c6a1a38w373cf929d4645ef6@mail.gmail.com>
-	<20091007101927.GC3169@rakim.wolfsonmicro.main>
+From: "Lopez Cruz, Misael" <x0052729@ti.com>
+Subject: Re: [PATCHv3 1/7] OMAP4: PMIC: Add support for twl6030
+ codec
+Date: Wed, 7 Oct 2009 20:30:29 -0500
+Message-ID: <67059DBF19D7214F9C66BB0EA91BA90E90CBD922@dlee04.ent.ti.com>
+References: <67059DBF19D7214F9C66BB0EA91BA90E90C2F648@dlee04.ent.ti.com>
+	<200910061146.05080.peter.ujfalusi@nokia.com>
+	<19F8576C6E063C45BE387C64729E73940436CF92F8@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f210.google.com (mail-gx0-f210.google.com
-	[209.85.217.210])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E77D24362
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id A40891038A0
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Oct 2009 02:28:17 +0200 (CEST)
-Received: by gxk2 with SMTP id 2so279016gxk.4
-	for <alsa-devel@alsa-project.org>; Wed, 07 Oct 2009 17:28:16 -0700 (PDT)
-In-Reply-To: <20091007101927.GC3169@rakim.wolfsonmicro.main>
+	Thu,  8 Oct 2009 03:30:34 +0200 (CEST)
+In-Reply-To: <19F8576C6E063C45BE387C64729E73940436CF92F8@dbde02.ent.ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,46 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: "Krishnamoorthy, Balaji T" <balajitk@ti.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBPY3QgNywgMjAwOSBhdCAwNjoxOSwgTWFyayBCcm93biB3cm90ZToKPiBPbiBXZWQs
-IE9jdCAwNywgMjAwOSBhdCAwNDozMjowNkFNIC0wNDAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToK
-Pj4gaG1tLCB0aGF0J3MgY2VydGFpbmx5IHRydWUuIMKgaWYgd2UgbG9vayBhdCBpdCBhcyAic2Ny
-ZXdlZCBlaXRoZXIgd2F5IiwKPj4gdGhlbiBnb2luZyB0byBhIGdlbmVyaWMgYnVzIGluZGlyZWN0
-aW9uIHNvdW5kcyBsaWtlIGl0J2Qgb25seSBhZGQKPj4gcnVudGltZSBvdmVyaGVhZCBmb3Igbm8g
-cmVhbCBnYWluID8KPgo+IEkgd2FzIG1vc3RseSB0aGlua2luZyBpZmRlZnMgaGVyZSAtIHdlJ2xs
-IGFsd2F5cyBuZWVkIHNvbWUgYnVzLXNwZWNpZmljCj4gc3R1ZmYgaW4gdGhlIGRyaXZlcnMgdG8g
-cmVnaXN0ZXIgdGhlbS4gwqBJdCdzIG5vdCBwcmV0dHkgYnV0IGl0IG1lZXRzIHRoZQo+IG5lZWRz
-IG9mIHBlb3BsZSBkb2luZyByYW5kY29uZmlnIGJ1aWxkcy4KPgo+IFdlIGFscmVhZHkgaGF2ZSBh
-cyBtdWNoIGJ1cyBpbmRpcmVjdGlvbiBhcyBBU29DIG5lZWRzLCBhbmQgdGhlcmUgaXMKPiBhY3R1
-YWxseSBhbHJlYWR5IHNvbWUgYnVzIGFjY2VzcyBjb2RlIHNoYXJpbmcgdGhlcmUgYXMgb2YgMi42
-LjMyIChpbgo+IHNvYy1jYWNoZS5jKSBidXQgaXQncyBvcHRpb25hbCBhbmQgYWx3YXlzIHdpbGwg
-YmUgc2luY2Ugd2UgbmVlZCB0byBjYXRlcgo+IGZvciBkZXZpY2VzIHRoYXQgYXJlIHBhcnRzIG9m
-IE1GRHMgd2hpY2ggaGF2ZSBkZXZpY2Ugc3BlY2lmaWMgcmVnaXN0ZXIKPiBhY2Nlc2VzLgo+Cj4+
-IGluIHRoZSBmYWNlIG9mIHRoaXMgcHJvcG9zZWQgZWZmb3J0IGJlaW5nIGEgd2F5cyBvZmYsIGRv
-ZXNudCBpdCBtYWtlCj4+IHNlbnNlIHRvIHN0aWxsIG1lcmdlIHRoZSBvcmlnaW5hbCBwcm9wb3Nl
-ZCBwYXRjaCA/Cj4KPiBUaGUgaWZkZWZlcnkgaXNuJ3QgdGVjaG5pY2FsbHkgaGFyZCB0byBkbyBh
-bmQgZ2l2ZW4geW91ciB1c2UgY2FzZSB3aGVyZQo+IHlvdSBkb24ndCBrbm93IHdoaWNoIGNvbnRy
-b2xsZXIgaXMgaW4gdXNlIGl0IGxvb2tzIGxpa2UgdGhlIG9ubHkgd2F5IHRvCj4gZ28gZm9yIHRo
-aXMuCgppIGRvbnQgdGhpbmsgdGhlIHNvYy1jYWNoZSBjb3VsZCBiZSB1c2VkIGN1cnJlbnRseSBi
-eSB0aGUgYWQxODM2IGFzIGl0CmRvZXNudCB1c2UgYSA3Lzkgc3BsaXQgd2l0aCB0aGUgYWRkcmVz
-cy9kYXRhLiAgaXQgdXNlcyBsaWtlIDYvMTAgKDQKYWRkciBiaXRzLCBvbmUgYml0IGZvciByZWFk
-L3dyaXRlLCBvbmUgYml0IGlzIGFsd2F5cyAwLCBhbmQgMTAgZGF0YQpiaXRzKS4gIGd1ZXNzaW5n
-IHRoZSB3cml0ZSBiaXQgY2FuIGJlIGNvbnNpZGVyZWQgcGFydCBvZiB0aGUgYWRkciBhcwp0aGUg
-cmVhZCBhbHdheXMgY29tZXMgZnJvbSB0aGUgY2FjaGUsIGJ1dCB0aGF0IHN0aWxsIGdpdmVzIHVz
-IDUvMTAKc3BsaXQuICBtYXliZSBhIG5ldyA2LzEwIHNldCBvZiBmdW5jcyBzaG91bGQgYmUgYWRk
-ZWQgLi4uCgpzbmRfc29jXzdfOV93cml0ZSgpIGxvb2tzIGxpa2UgaXQgZG9lcyBhIGxpdHRsZSBt
-b3JlIGJpdCB3b3JrIHRoYW4gaXQKbmVlZHMgdG8gPyAgaWYgZGF0YSBpcyBkZWNsYXJlZCBhcyBh
-IHUxNiwgdGhlbiB5b3UgaGF2ZToKdTE2IGRhdGEgPSAocmVnIDw8IDkpIHwgKHZhbHVlICYgMHgw
-MWZmKTsKdGhpcyBpcyB3aGF0IHRoZSBhZDE4MzYgZHJpdmVyIGRvZXMgbm93IGZvciBpdHMgZGF0
-YSBzcGxpdC4KCmluIHRoZSBtZWFuIHRpbWUsIHJhdGhlciB0aGFuIGFkZGluZyAjaWZkZWYgdG8g
-dGhlIGNvZGVjIGRyaXZlciwgd2UKY291bGQgY3JlYXRlIGEgbG9jYWwgaGVhZGVyIGxpa2UgImJ1
-cy1zdHVicy5oIiB0aGF0IHN0dWJzIGFsbCB0aGUKcmVsZXZhbnQgZnVuY3Rpb25zIHRvIGFuIGVy
-cm9yIHZhbHVlLiAgdGhlbiBhbGwgY29kZWMgZHJpdmVycyB0aGF0CmRvbnQgdXNlIHNvYy1jYWNo
-ZSBjYW4gdXNlIHRoYXQgaW5zdGVhZCBhbmQgdGhlIG9ubHkgY2hhbmdlIG5lZWRlZCBpcwp0byBh
-ZGQ6CiNpbmNsdWRlICJidXMtc3R1YnMuaCIKLW1pa2UKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Krishnamoorthy, Balaji T wrote:
+
+> CONFIG_TWL6030_CORE and CONFIG_TWL4030_CORE is merged to
+> CONFIG_TWL_CORE As two different build config was not encouraged. 
+> Now switch twl_class_is_6030() will be used to decide at runtime time
+> to support for 6030 related drivers, Similarly twl_class_is_4030()
+> for 4030 drivers 
+
+In patch "[PATCH v3 01/04] OMAP4: PMIC: Add support for twl6030 irq
+framework" [1], TWL4030_CORE is redefined as TWL_CORE as you mentioned.
+Then I guess that audio drivers should depend on TWL_CORE as well, if so
+then we have to update all its dependencies:
+
+1. TWL4030 codec driver: SND_SOC_TWL4030
+2. All machine drivers using twl4030 codec driver: overo, omap2evm,
+   omap3evm, sdp3430, omap3_pandora, omap3_beagle and zoom2
+
+And I should do the same for twl6030 codec driver.
+
+Regards,
+-Misa
+
+[1] http://www.mail-archive.com/linux-omap@vger.kernel.org/msg17066.html
