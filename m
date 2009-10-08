@@ -1,28 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 2/2] ASoC: Blackfin
- AD1836/AD1938 machine drivers: require SPI master
-Date: Thu, 8 Oct 2009 11:01:36 +0100
-Message-ID: <20091008100135.GA9053@rakim.wolfsonmicro.main>
-References: <20091006095018.GB27168@sirena.org.uk>
-	<8bd0f97a0910060300m7fa80daas63afd272ba85fb16@mail.gmail.com>
-	<20091006103952.GC10118@rakim.wolfsonmicro.main>
-	<8bd0f97a0910060432o67e9d00bu84c0139701709e63@mail.gmail.com>
-	<20091006115216.GA12993@rakim.wolfsonmicro.main>
-	<8bd0f97a0910061409x254b5574wdb0125db0548678@mail.gmail.com>
-	<20091006220725.GA32267@opensource.wolfsonmicro.com>
-	<8bd0f97a0910070132x2c6a1a38w373cf929d4645ef6@mail.gmail.com>
-	<20091007101927.GC3169@rakim.wolfsonmicro.main>
-	<8bd0f97a0910071727x72fe950x804f295ba25d514c@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
+ GIT repository for Linux 2.6 branch, master now at v2.6.31-rc8-407-gfc9e4a3
+Date: Thu, 08 Oct 2009 13:19:07 +0200
+Message-ID: <4ACDCAAB.2060609@ladisch.de>
+References: <20091006063609.B06E110381F@alsa0.perex.cz>	<s5hab05role.wl%tiwai@suse.de>	<4ACAF4AC.3000608@ladisch.de>
+	<s5h4oqdrlys.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED82510392D
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 02A69103934
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Oct 2009 12:01:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <8bd0f97a0910071727x72fe950x804f295ba25d514c@mail.gmail.com>
+	Thu,  8 Oct 2009 13:19:11 +0200 (CEST)
+In-Reply-To: <s5h4oqdrlys.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,37 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier.adi@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Honza Maly <jmal8295@artax.karlin.mff.cuni.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 07, 2009 at 08:27:56PM -0400, Mike Frysinger wrote:
+jmal8295 wrote:
+> And I _will_ be regarding it as regression if I lose possibility to
+> change volume of the four streams independently.
 
-> i dont think the soc-cache could be used currently by the ad1836 as it
-> doesnt use a 7/9 split with the address/data.  it uses like 6/10 (4
-> addr bits, one bit for read/write, one bit is always 0, and 10 data
-> bits).  guessing the write bit can be considered part of the addr as
-> the read always comes from the cache, but that still gives us 5/10
-> split.  maybe a new 6/10 set of funcs should be added ...
+Okay, as long as there is no application to handle PCM-interface
+controls, the DXS controls should not be hidden this way.
 
-That's the idea - add new functions for any new register formats.
+Anyway, the volume level regression can be solved by any renaming, so
+let's do just that.  Takashi, please pick the patch below instead.
 
-> snd_soc_7_9_write() looks like it does a little more bit work than it
-> needs to ?  if data is declared as a u16, then you have:
-> u16 data = (reg << 9) | (value & 0x01ff);
-> this is what the ad1836 driver does now for its data split.
+==========
 
-Probably.  I'd need to check but I believe that's there to handle
-endianness variations in the host, though a cpu_to_ in what you have
-above ought to be able to take care of that.  The code was cut'n'pasted
-from what was in the drivers already.
+sound: via82xx: rename DXS volume controls
 
-> in the mean time, rather than adding #ifdef to the codec driver, we
-> could create a local header like "bus-stubs.h" that stubs all the
-> relevant functions to an error value.  then all codec drivers that
-> dont use soc-cache can use that instead and the only change needed is
-> to add:
-> #include "bus-stubs.h"
+Only some insiders know what the "VIA DXS" controls actually control, so
+change them to a more descriptive name.
 
-I'm not sure I feel up to doing that locally in ASoC rather than in the
-relevant subsystems.
+Commit b452e08e73c0e3dbb0be82130217be4b7084299e in 2.6.30 broke the
+restoring of these volumes by "alsactl restore" that most distributions
+use; the renaming in this patch cures that regression by preventing
+alsactl from applying the old, wrong volume levels to the new controls.
+http://bugzilla.kernel.org/show_bug.cgi?id=14151
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=532613
+
+Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
+Cc: <stable@kernel.org>
+
+--- a/sound/pci/via82xx.c
++++ b/sound/pci/via82xx.c
+@@ -1705,7 +1705,7 @@
+ };
+ 
+ static struct snd_kcontrol_new snd_via8233_dxs_volume_control __devinitdata = {
+-	.name = "VIA DXS Playback Volume",
++	.name = "PCM Stream Playback Volume",
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
+ 		   SNDRV_CTL_ELEM_ACCESS_TLV_READ),
