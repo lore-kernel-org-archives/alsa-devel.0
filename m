@@ -1,23 +1,20 @@
-From: <ext-Eero.Nurkkala@nokia.com>
-Subject: Re: [PATCH - try2] ASoC: TPA6130A2 amplifier driver
-Date: Fri, 9 Oct 2009 20:46:01 +0200
-Message-ID: <1FFEF31EBAA4F64B80D33027D42977600E85F0CC9B@NOK-EUMSG-02.mgdnok.nokia.com>
-References: <1255092941-17586-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1255093831.30157.207.camel@eenurkka-desktop>
-	<200910091636.16126.peter.ujfalusi@nokia.com>
-	<20091009171941.GA20083@sirena.org.uk>
-	<1FFEF31EBAA4F64B80D33027D42977600E85F0CC9A@NOK-EUMSG-02.mgdnok.nokia.com>,
-	<20091009183346.GC20083@sirena.org.uk>
+From: David Henningsson <launchpad.web@epost.diwic.se>
+Subject: PATCH: ESI Juli@ fails to set sample rate
+Date: Fri, 09 Oct 2009 21:29:55 +0200
+Message-ID: <4ACF8F33.7020800@epost.diwic.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------020402080806010206000208"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7056103B2C
+Received: from ch-smtp01.sth.basefarm.net (ch-smtp01.sth.basefarm.net
+	[80.76.149.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 56869103A78
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 20:46:11 +0200 (CEST)
-In-Reply-To: <20091009183346.GC20083@sirena.org.uk>
-Content-Language: en-US
+	Fri,  9 Oct 2009 21:30:36 +0200 (CEST)
+Received: from c83-254-137-104.bredband.comhem.se ([83.254.137.104]:59063
+	helo=[192.168.0.157])
+	by ch-smtp01.sth.basefarm.net with esmtp (Exim 4.68)
+	(envelope-from <launchpad.web@epost.diwic.se>) id 1MwLA4-0005kB-55
+	for alsa-devel@alsa-project.org; Fri, 09 Oct 2009 21:29:58 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,37 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: eduardo.valentin@nokia.com, alsa-devel@alsa-project.org, peter.ujfalusi@nokia.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------020402080806010206000208
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-ext Mark Brown wrote:
-> On Fri, Oct 09, 2009 at 08:24:49PM +0200, ext-Eero.Nurkkala@nokia.com wrote:
->
->> I guess there's (or may be) an exception though. I think I've seen some
->> strangeness with the close_delayed_work() -> and simultaneous mixer tweaking:
-> 
-> As I said when you posted previously that's a problem anyway and
-> close_delayed_work() needs to be fixed.  You had a half-posted patch,
-> did you manage to test it properly (even in normal operation)?  I'd been
-> expecting a proper posting of it to appear at some point.
+This one-line patch fixes bug 
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/441446
+and is likely to fix bug https://bugzilla.redhat.com/show_bug.cgi?id=525595
+as well.
 
-Yes I did test it immediatelly. No apparent problems with that. However, now I use
-kernel 2.6.28 - and I'm about to update it next week. I wish to take the
-time with that patch, rather than taking the blame =) Lockdep doesn't seem
-to find dependencies with the mutex - until the code faces it. (I wish
-not to make other codecs unusable, locked up)..
+The problem for me is that if two streams are started immediately after 
+one another (such as a playback and a recording stream, e g pulseaudio 
+does that on startup), the call to hw_params fail with EBUSY. This patch 
+makes the call succeed, and playback and recording works.
 
->> So there can and does run two dapm_power_widgets() when stars
->> point to the right direction. That's when delayed work is at
->> damp_power_widgets, and then preempted to
->> the userspace thread.  May that isn't related to this TPA though, but
->> I think I'll silently review the code so that the "stars are forced to
->> point to the right direction".
->
-> This is completely unrelated to driver code, the core's data is much
-> more of a problem than the register cache which will generally fix
-> itself the next time DAPM does anything.
+I do not have any other ice1724 soundcard than the ESI Juli@ so I don't 
+know if/how this patch will affect them.
 
-Yeah, agreed.
+// David
+
+--------------020402080806010206000208
+Content-Type: text/x-patch;
+ name="ice1724-hwparams-fail.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ice1724-hwparams-fail.patch"
+
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index cc84a83..56d1bd8 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -643,7 +643,7 @@ static int snd_vt1724_set_pro_rate(struct snd_ice1712 *ice, unsigned int rate,
+ 	    (inb(ICEMT1724(ice, DMA_PAUSE)) & DMA_PAUSES)) {
+ 		/* running? we cannot change the rate now... */
+ 		spin_unlock_irqrestore(&ice->reg_lock, flags);
+-		return -EBUSY;
++		return ((rate == ice->cur_rate) && !force) ? 0 : -EBUSY;
+ 	}
+ 	if (!force && is_pro_rate_locked(ice)) {
+ 		spin_unlock_irqrestore(&ice->reg_lock, flags);
+
+--------------020402080806010206000208
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------020402080806010206000208--
