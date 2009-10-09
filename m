@@ -1,16 +1,16 @@
 From: <LoganLi@viatech.com.cn>
-Subject: [PATCH 11/30] ALSA: HDA VIA: When changing input
-	source, update power state.
-Date: Fri, 9 Oct 2009 18:40:28 +0800
-Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123C38@exchbj03.viatech.com.bj>
+Subject: [PATCH 12/30] ALSA: HDA VIA: Add VIA_JACK_EVENT
+	process in via_unsol_event.
+Date: Fri, 9 Oct 2009 18:40:31 +0800
+Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123C39@exchbj03.viatech.com.bj>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id D3C1B103AFD
+	by alsa0.perex.cz (Postfix) with ESMTP id B80A0103AA2
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 12:40:22 +0200 (CEST)
+	Fri,  9 Oct 2009 12:40:25 +0200 (CEST)
 Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,31 +26,118 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: HDA VIA: When changing input source, update power state.
+Subject: ALSA: HDA VIA: Add VIA_JACK_EVENT process in via_unsol_event.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 Signed-off-by: Logan Li <loganli@viatech.com.cn>
 
 ---
- pci/hda/patch_via.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ pci/hda/patch_via.c |   38 +++++++++++++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 7 deletions(-)
 
 --- a/pci/hda/patch_via.c
 +++ b/pci/hda/patch_via.c
-@@ -549,6 +549,14 @@
+@@ -124,6 +124,7 @@
  
- 	if (!spec->mux_nids[adc_idx])
- 		return -EINVAL;
-+	/* switch to D0 beofre change index */
-+	if (snd_hda_codec_read(codec, spec->mux_nids[adc_idx], 0,
-+			       AC_VERB_GET_POWER_STATE, 0x00) !=
-AC_PWRST_D0)
-+		snd_hda_codec_write(codec, spec->mux_nids[adc_idx], 0,
-+				    AC_VERB_SET_POWER_STATE,
-AC_PWRST_D0);
-+	/* update jack power state */
-+	set_jack_power_state(codec);
-+
- 	return snd_hda_input_mux_put(codec, spec->input_mux, ucontrol,
- 				     spec->mux_nids[adc_idx],
- 				     &spec->cur_mux[adc_idx]);
+ #define VIA_HP_EVENT		0x01
+ #define VIA_GPIO_EVENT		0x02
++#define VIA_JACK_EVENT		0x04
+ 
+ enum {
+ 	VIA_CTL_WIDGET_VOL,
+@@ -1413,10 +1414,12 @@
+ 				  unsigned int res)
+ {
+ 	res >>= 26;
+-	if (res == VIA_HP_EVENT)
++	if (res & VIA_HP_EVENT)
+ 		via_hp_automute(codec);
+-	else if (res == VIA_GPIO_EVENT)
++	if (res & VIA_GPIO_EVENT)
+ 		via_gpio_control(codec);
++	if (res & VIA_JACK_EVENT)
++		set_jack_power_state(codec);
+ }
+ 
+ static int via_init(struct hda_codec *codec)
+@@ -1877,7 +1880,8 @@
+ };
+ 
+ static struct hda_verb vt1709_uniwill_init_verbs[] = {
+-	{0x20, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_HP_EVENT},
++	{0x20, AC_VERB_SET_UNSOLICITED_ENABLE,
++	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
+ 	{ }
+ };
+ 
+@@ -2513,7 +2517,15 @@
+ };
+ 
+ static struct hda_verb vt1708B_uniwill_init_verbs[] = {
+-	{0x1D, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_HP_EVENT},
++	{0x1d, AC_VERB_SET_UNSOLICITED_ENABLE,
++	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
++	{0x19, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x1a, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x1c, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x1e, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x22, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x23, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
+ 	{ }
+ };
+ 
+@@ -3008,7 +3020,15 @@
+ };
+ 
+ static struct hda_verb vt1708S_uniwill_init_verbs[] = {
+-	{0x1D, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_HP_EVENT},
++	{0x1d, AC_VERB_SET_UNSOLICITED_ENABLE,
++	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
++	{0x19, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x1a, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x1c, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x1e, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x22, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x23, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
+ 	{ }
+ };
+ 
+@@ -3447,8 +3467,12 @@
+ };
+ 
+ static struct hda_verb vt1702_uniwill_init_verbs[] = {
+-	{0x01, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_GPIO_EVENT},
+-	{0x17, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_HP_EVENT},
++	{0x17, AC_VERB_SET_UNSOLICITED_ENABLE,
++	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
++	{0x14, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x16, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
++	{0x18, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN |
+VIA_JACK_EVENT},
+ 	{ }
+ };
