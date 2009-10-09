@@ -1,16 +1,16 @@
 From: <LoganLi@viatech.com.cn>
-Subject: [PATCH 21/30] ALSA: HDA VIA: Move backdoor verbs to
-	vt17xx_volume_init_verb
-Date: Fri, 9 Oct 2009 18:41:01 +0800
-Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123C42@exchbj03.viatech.com.bj>
+Subject: [PATCH 23/30] ALSA: HDA VIA: Add VT1828S and VT2020
+	support.
+Date: Fri, 9 Oct 2009 18:41:09 +0800
+Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123C44@exchbj03.viatech.com.bj>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDF77103ABF
+	by alsa0.perex.cz (Postfix) with ESMTP id EB3F9103B09
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 12:40:56 +0200 (CEST)
+	Fri,  9 Oct 2009 12:41:03 +0200 (CEST)
 Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,63 +26,74 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: HDA VIA: Move backdoor verbs to vt17xx_volume_init_verb
-
-As init verbs, vt17xx_volume_init_verb is a better place to hold them.
+Subject: ALSA: HDA VIA: Add VT1828S and VT2020 support.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 Signed-off-by: Logan Li <loganli@viatech.com.cn>
 
 ---
- pci/hda/patch_via.c |   20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
+ pci/hda/patch_via.c |   26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
 
 --- a/pci/hda/patch_via.c
 +++ b/pci/hda/patch_via.c
-@@ -3084,6 +3084,8 @@
- 	{0x21, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
- 	/* Enable Mic Boost Volume backdoor */
- 	{0x1, 0xf98, 0x1},
-+	/* don't bybass mixer */
-+	{0x1, 0xf88, 0xc0},
- 	{ }
+@@ -179,6 +179,8 @@
+ 	else if ((dev_id & 0xfff) == 0x428
+ 		 && (dev_id >> 12) < 8)
+ 		codec_type = VT1718S;
++	else if (dev_id == 0x0441 || dev_id == 0x4441)
++		codec_type = VT1718S;
+ 	else
+ 		codec_type = UNKNOWN;
+ 	return codec_type;
+@@ -4340,21 +4342,31 @@
+ 	spec->init_verbs[spec->num_iverbs++] =
+vt1718S_volume_init_verbs;
+ 	spec->init_verbs[spec->num_iverbs++] =
+vt1718S_uniwill_init_verbs;
+ 
+-	spec->stream_name_analog = "VT1718S Analog";
++	if (codec->vendor_id == 0x11060441)
++		spec->stream_name_analog = "VT2020 Analog";
++	else if (codec->vendor_id == 0x11064441)
++		spec->stream_name_analog = "VT1828S Analog";
++	else
++		spec->stream_name_analog = "VT1718S Analog";
+ 	spec->stream_analog_playback = &vt1718S_pcm_analog_playback;
+ 	spec->stream_analog_capture = &vt1718S_pcm_analog_capture;
+ 
+-	spec->stream_name_digital = "VT1718S Digital";
++	if (codec->vendor_id == 0x11060441)
++		spec->stream_name_digital = "VT2020 Digital";
++	else if (codec->vendor_id == 0x11064441)
++		spec->stream_name_digital = "VT1828S Digital";
++	else
++		spec->stream_name_digital = "VT1718S Digital";
+ 	spec->stream_digital_playback = &vt1718S_pcm_digital_playback;
+-	if (codec->vendor_id == 0x11060428)
++	if (codec->vendor_id == 0x11060428 || codec->vendor_id ==
+0x11060441)
+ 		spec->stream_digital_capture =
+&vt1718S_pcm_digital_capture;
+ 
+ 	if (!spec->adc_nids && spec->input_mux) {
+ 		spec->adc_nids = vt1718S_adc_nids;
+ 		spec->num_adc_nids = ARRAY_SIZE(vt1718S_adc_nids);
+ 		get_mux_nids(codec);
+-		override_mic_boost(codec, 0x1a, 0, 3, 40);
+-		override_mic_boost(codec, 0x1e, 0, 3, 40);
++		override_mic_boost(codec, 0x2b, 0, 3, 40);
++		override_mic_boost(codec, 0x29, 0, 3, 40);
+ 		spec->mixers[spec->num_mixers] = vt1718S_capture_mixer;
+ 		spec->num_mixers++;
+ 	}
+@@ -4446,6 +4458,10 @@
+ 	  .patch = patch_vt1718S},
+ 	{ .id = 0x11064428, .name = "VT1718S",
+ 	  .patch = patch_vt1718S},
++	{ .id = 0x11060441, .name = "VT2020",
++	  .patch = patch_vt1718S},
++	{ .id = 0x11064441, .name = "VT1828S",
++	  .patch = patch_vt1718S},
+ 	{} /* terminator */
  };
- 
-@@ -3543,6 +3545,10 @@
- 	/* PW6 PW7 Output enable */
- 	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
- 	{0x1C, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
-+	/* mixer enable */
-+	{0x1, 0xF88, 0x3},
-+	/* GPIO 0~2 */
-+	{0x1, 0xF82, 0x3F},
- 	{ }
- };
- 
-@@ -3784,8 +3790,6 @@
- {
- 	struct via_spec *spec;
- 	int err;
--	unsigned int response;
--	unsigned char control;
- 
- 	/* create a codec specific record */
- 	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
-@@ -3830,18 +3834,6 @@
- 	spec->loopback.amplist = vt1702_loopbacks;
- #endif
- 
--	/* Open backdoor */
--	response = snd_hda_codec_read(codec, codec->afg, 0, 0xF8C, 0);
--	control = (unsigned char)(response & 0xff);
--	control |= 0x3;
--	snd_hda_codec_write(codec,  codec->afg, 0, 0xF88, control);
--
--	/* Enable GPIO 0&1 for volume&mute control */
--	/* Enable GPIO 2 for DMIC-DATA */
--	response = snd_hda_codec_read(codec, codec->afg, 0, 0xF84, 0);
--	control = (unsigned char)((response >> 16) & 0x3f);
--	snd_hda_codec_write(codec,  codec->afg, 0, 0xF82, control);
--
- 	return 0;
- }
