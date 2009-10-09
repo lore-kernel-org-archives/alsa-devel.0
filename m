@@ -1,17 +1,16 @@
-From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Subject: Re: [PATCH - try2] ASoC: TPA6130A2 amplifier driver
-Date: Fri, 09 Oct 2009 16:10:31 +0300
-Message-ID: <1255093831.30157.207.camel@eenurkka-desktop>
+Date: Fri, 9 Oct 2009 16:14:34 +0300
+Message-ID: <200910091614.34658.peter.ujfalusi@nokia.com>
 References: <1255092941-17586-1-git-send-email-peter.ujfalusi@nokia.com>
-Reply-To: ext-eero.nurkkala@nokia.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 76D2A103A10
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3E2B0103A37
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 15:12:54 +0200 (CEST)
+	Fri,  9 Oct 2009 15:14:59 +0200 (CEST)
 In-Reply-To: <1255092941-17586-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,75 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
+To: alsa-devel@alsa-project.org
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2009-10-09 at 14:55 +0200, Ujfalusi Peter (Nokia-D/Tampere)
-wrote:
-> +static int tpa6130a2_i2c_write(int reg, u8 value)
-> +{
-> +       struct tpa6130a2_data *data;
-> +       int val = 0;
-> +
-> +       BUG_ON(tpa6130a2_client == NULL);
-> +       data = i2c_get_clientdata(tpa6130a2_client);
-> +
-> +       if (data->power_state) {
-> +               val = i2c_smbus_write_byte_data(tpa6130a2_client, reg, value);
-> +               if (val < 0)
-> +                       dev_err(&tpa6130a2_client->dev, "Write failed\n");
-> +       }
-> +
-> +       /* Either powered on or off, we save the context */
-> +       data->regs[reg] = value;
-> +
-> +       return val;
-> +}
-> +
+On Friday 09 October 2009 15:55:41 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+> Driver for Texas Instruments TPA6130A2 stereo headphone
+> amplifier.
 
-<snip>
+The patch applies on top of sound-2.6 topic/asoc:
 
-> +static void tpa6130a2_channel_enable(u8 channel, int enable)
-> +{
-> +       struct  tpa6130a2_data *data;
-> +       u8      val;
-> +
-> +       BUG_ON(tpa6130a2_client == NULL);
-> +       data = i2c_get_clientdata(tpa6130a2_client);
-> +
-mutex_lock()
-> +       if (enable) {
-> +               /* Enable channel */
-> +               /* Enable amplifier */
-> +               val = tpa6130a2_read(TPA6130A2_REG_CONTROL);
-> +               val |= channel;
-> +               tpa6130a2_i2c_write(TPA6130A2_REG_CONTROL, val);
-During the tpa6130a2_i2c_write, you read the data->power_state, that
-may change it's state meanwhile (preempted). Thus, I suggest you using
-the mutex to cover all i2c writes. (and all tpa read <-> write cycles,
-so that things are consistent?) 
+commit 0cce1cfa5c3cc262d9261b59dd7fa6d878775ac9
+Merge: 9a6fda9 6f775ba
+Author: Takashi Iwai <tiwai@suse.de>
+Date:   Thu Oct 8 11:50:07 2009 +0200
 
-A call to tpa6130a2_power() -> preemted over somewhere here, you may
-have i2c accesses to a chip that's not powered up?
+    Merge branch 'fix/asoc'
 
-> +
-> +               /* Unmute channel */
-> +               val = tpa6130a2_read(TPA6130A2_REG_VOL_MUTE);
-> +               val &= ~channel;
-> +               tpa6130a2_i2c_write(TPA6130A2_REG_VOL_MUTE, val);
-> +       } else {
-> +               /* Disable channel */
-> +               /* Mute channel */
-> +               val = tpa6130a2_read(TPA6130A2_REG_VOL_MUTE);
-> +               val |= channel;
-> +               tpa6130a2_i2c_write(TPA6130A2_REG_VOL_MUTE, val);
-> +
-> +               /* Disable amplifier */
-> +               val = tpa6130a2_read(TPA6130A2_REG_CONTROL);
-> +               val &= ~channel;
-> +               tpa6130a2_i2c_write(TPA6130A2_REG_CONTROL, val);
-> +       }
-mutex_unlock() ?
-> +}
-> +
+
+-- =
+
+P=E9ter
