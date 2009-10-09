@@ -1,18 +1,19 @@
-From: Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH] ascenario: Add dump and configure utils for
-	ascneario.
-Date: Fri,  9 Oct 2009 17:53:32 +0200
-Message-ID: <1255103612-11134-5-git-send-email-stefan@datenfreihafen.org>
-References: <1255103612-11134-1-git-send-email-stefan@datenfreihafen.org>
+From: =?UTF-8?B?R3VpbGxlbSBTb2zDoA==?= <garanda@flumotion.com>
+Subject: Re: Issue with creative Xfi PCIe ca0110-IBG
+Date: Fri, 09 Oct 2009 18:05:28 +0200
+Message-ID: <4ACF5F48.6030403@flumotion.com>
+References: <4ACF0008.5010808@flumotion.com>
+	<s5hab00x5yi.wl%tiwai@suse.de>	<4ACF4564.6060104@flumotion.com>
+	<s5hocogvdkx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id D7B83103B4F
+Received: from mail.fluendo.com (se01.bcn.fluendo.net [195.10.10.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 59DE2103962
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 17:53:48 +0200 (CEST)
-In-Reply-To: <1255103612-11134-1-git-send-email-stefan@datenfreihafen.org>
+	Fri,  9 Oct 2009 18:05:45 +0200 (CEST)
+In-Reply-To: <s5hocogvdkx.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,209 +23,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Stefan Schmidt <stefan@slimlogic.co.uk>, Liam Girdwood <lrg@slimlogic.co.uk>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Stefan Schmidt <stefan@slimlogic.co.uk>
-
-ascndump is used to dump the kcontrols in a syntax that can be used with ascnctl
-later. To list and set scenarios you can use ascnctl. This patch depends on the
-ascenario infrstructure to be merged in alsa-lib.
-
-CC: Ian Molton <ian@mnementh.co.uk>
-CC: Graeme Gregory <gg@slimlogic.co.uk>
-Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
-Signed-off-by: Stefan Schmidt <stefan@slimlogic.co.uk>
----
- Makefile.am           |    2 +-
- ascenario/Makefile.am |   14 ++++++++
- ascenario/alsa-scn.c  |   89 +++++++++++++++++++++++++++++++++++++++++++++++++
- ascenario/dump.c      |   34 +++++++++++++++++++
- configure.in          |    1 +
- 5 files changed, 139 insertions(+), 1 deletions(-)
- create mode 100644 ascenario/Makefile.am
- create mode 100644 ascenario/alsa-scn.c
- create mode 100644 ascenario/dump.c
-
-diff --git a/Makefile.am b/Makefile.am
-index 5296977..34c542f 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -1,6 +1,6 @@
- INCLUDES=-I$(top_srcdir)/include
- 
--SUBDIRS = include alsactl utils m4 po
-+SUBDIRS = include alsactl ascenario utils m4 po
- if ALSAMIXER
- SUBDIRS += alsamixer
- endif
-diff --git a/ascenario/Makefile.am b/ascenario/Makefile.am
-new file mode 100644
-index 0000000..88f5a67
---- /dev/null
-+++ b/ascenario/Makefile.am
-@@ -0,0 +1,14 @@
-+noinst_PROGRAMS = \
-+        ascnctl \
-+        ascndump
-+
-+ascndump_SOURCES = dump.c
-+
-+ascnctl_SOURCES = alsa-scn.c
-+
-+INCLUDES = \
-+         -Wall -I$(top_srcdir)/include
-+
-+ascndump_LDADD = -lasound
-+
-+ascnctl_LDADD = -lasound
-diff --git a/ascenario/alsa-scn.c b/ascenario/alsa-scn.c
-new file mode 100644
-index 0000000..1610936
---- /dev/null
-+++ b/ascenario/alsa-scn.c
-@@ -0,0 +1,89 @@
-+/*
-+ *  This library is free software; you can redistribute it and/or
-+ *  modify it under the terms of the GNU Lesser General Public
-+ *  License as published by the Free Software Foundation; either
-+ *  version 2 of the License, or (at your option) any later version.
-+ *
-+ *  This library is distributed in the hope that it will be useful,
-+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  Lesser General Public License for more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License
-+ *  along with this program; if not, write to the Free Software
-+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-+ *
-+ *  Copyright (C) 2008-2009 SlimLogic Ltd
-+ *  Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-+ *           Stefan Schmidt <stefan@slimlogic.co.uk>
-+ */
-+
-+#include <stdio.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <alsa/asoundlib.h>
-+#include <alsa/ascenario.h>
-+
-+#define OP_LIST 1
-+#define OP_SET  2
-+
-+void print_usage(char *name) {
-+	printf("Usage: %s <cmd> [<scenario>]\n"
-+	       " list  - list available scenarios\n"
-+	       " set <name> - apply scenario <name>\n\n", name);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct snd_scenario *scn;
-+	int num, i, op = 0, err, ret = 0;
-+	const char **list;
-+
-+	if(argc > 2) {
-+		if(!strcmp(argv[1], "set"))
-+			op = OP_SET;
-+	} else if(argc > 1) {
-+		if(!strcmp(argv[1], "list"))
-+			op = OP_LIST;
-+	}
-+
-+	if(!op) {
-+		print_usage(argv[0]);
-+		exit(1);
-+	}
-+
-+	/* open library */
-+	scn = snd_scenario_open("default");
-+	if (scn == NULL) {
-+		printf("%s: failed to init\n", argv[0]);
-+		return 0;
-+	}
-+
-+	switch (op) {
-+	case OP_LIST:
-+		/* get list of scenarios */
-+		num = snd_scenario_list(scn, &list);
-+		if (num) {
-+			for(i = 0 ; i < num ; i++)
-+				printf("%s\n", list[i]);
-+		} else {
-+			printf("%s: no scenarios\n", argv[0]);
-+			ret = 2;
-+		}
-+	break;
-+	case OP_SET:
-+		err = snd_scenario_set_scn(scn, argv[2]);
-+                if (err < 0) {
-+                        printf("failed to set scenario: %s\n", argv[2]);
-+			ret = 3;
-+		}
-+	break;
-+	default:
-+		print_usage(argv[0]);
-+	break;
-+	}
-+
-+	snd_scenario_close(scn);
-+	return ret;
-+}
-diff --git a/ascenario/dump.c b/ascenario/dump.c
-new file mode 100644
-index 0000000..420db5a
---- /dev/null
-+++ b/ascenario/dump.c
-@@ -0,0 +1,34 @@
-+/*
-+ *  This library is free software; you can redistribute it and/or
-+ *  modify it under the terms of the GNU Lesser General Public
-+ *  License as published by the Free Software Foundation; either
-+ *  version 2 of the License, or (at your option) any later version.
-+ *
-+ *  This library is distributed in the hope that it will be useful,
-+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  Lesser General Public License for more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License
-+ *  along with this program; if not, write to the Free Software
-+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-+ *
-+ *  Copyright (C) 2008-2009 SlimLogic Ltd
-+ *  Authors: Liam Girdwood <lrg@slimlogic.co.uk>
-+ *           Stefan Schmidt <stefan@slimlogic.co.uk>
-+ */
-+
-+#include <stdio.h>
-+#include <alsa/asoundlib.h>
-+#include <alsa/ascenario.h>
-+
-+int main(int argc, char *argv[])
-+{
-+	if (argc != 2) {
-+		printf("usage: %s card (hw: prefix needed"
-+			" e.g. hw:CARD=0 or hw:Intel)\n", argv[0]);
-+		return 0;
-+	}
-+
-+	return snd_scenario_dump(NULL, argv[1]);
-+}
-diff --git a/configure.in b/configure.in
-index 931d034..8fcf1d3 100644
---- a/configure.in
-+++ b/configure.in
-@@ -270,6 +270,7 @@ AC_OUTPUT(Makefile alsactl/Makefile alsactl/init/Makefile \
- 	  m4/Makefile po/Makefile.in \
- 	  alsaconf/alsaconf alsaconf/Makefile \
- 	  alsaconf/po/Makefile \
-+	  ascenario/Makefile \
- 	  aplay/Makefile include/Makefile iecset/Makefile utils/Makefile \
- 	  utils/alsa-utils.spec seq/Makefile seq/aconnect/Makefile \
- 	  seq/aplaymidi/Makefile seq/aseqdump/Makefile seq/aseqnet/Makefile \
--- 
-1.6.4.3
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IEZyaSwgMDkgT2N0IDIwMDkgMTY6MTU6MDAgKzAyMDAs
+Cj4gR3VpbGxlbSBTb2zDoCB3cm90ZToKPiAgIAo+PiBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+ICAg
+ICAKPj4+IEF0IEZyaSwgMDkgT2N0IDIwMDkgMTE6MTk6MDQgKzAyMDAsCj4+PiBHdWlsbGVtIFNv
+bMOgIHdyb3RlOgo+Pj4gICAKPj4+ICAgICAgIAo+Pj4+IEhpLAo+Pj4+Cj4+Pj4gSSBoYXZlIGEg
+Q3JlYXRpdmUgWEZpIFBDSWUgd2l0aCBjYTAxMTAtSUJHIGNoaXAuIEl0J3MgcHJpbWFyeSB1c2Ug
+aXMgCj4+Pj4gYXVkaW8gaW5wdXQgZm9yIHN0cmVhbWluZyBvbiBhIGJyYW5kIG5ldyBEZWxsIHNl
+cnZlciB3aXRoIFJIRUwuIEkgaGF2ZSAKPj4+PiBiZWVuIHRlc3RpbmcgbGF0ZXN0IGtlcm5lbCAy
+LjYuMzEgdGhyb3VnaCBpdCdzIHJlbGVhc2VzIGNhbmRpZGF0ZXMgYW5kIAo+Pj4+IHRoZSBjYXJk
+IHN0b3BlZCB3b3JraW5nIG9uIDIuNi4zMS1yYzYsIHNvIG5vdyBJJ20gc3R1Y2sgYXQgMi42LjMx
+LXJjNS4gCj4+Pj4gV2l0aCByYzUgSSBtYWRlIGEgMiB3ZWVrcyB0ZXN0IGFuZCBpdCB3ZW50IGZs
+YXdsZXNzbHkuCj4+Pj4KPj4+PiBUaGVyZSdzIGFub3RoZXIgZ3V5IHdobyByZWZlcmVuY2VkIHRo
+aXMgaXNzdWUgb24gCj4+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1h
+aWwvYWxzYS1kZXZlbC8yMDA5LVNlcHRlbWJlci8wMjA4NzYuaHRtbCAKPj4+PiBhbmQgVGFrYXNo
+aSBJd2FpIHNhaWQgdGhhdCB0aGVyZSBpcyBhIGNvbW11bmljYXRpb24gZXJyb3IgYmV0d2VlbiB0
+aGUgCj4+Pj4gY29kZWMgYW5kIHRoZSBjb250cm9sbGVyLgo+Pj4+Cj4+Pj4gQW55IHdvcmthcm91
+bmQ/IElzIHRoZXJlIGEgYnVnIGNyZWF0ZWQgcmVsYXRlZCB0byB0aGlzIGlzc3VlPwo+Pj4+Cj4+
+Pj4gSSB0cmllZCB0byAiZXh0cmFjdCIgdGhlIGFsc2EtZHJpdmVyIG9uIDIuNi4zMS1yYzUgYW5k
+IGluc3RhbGwgaXQgMi42LjMxIAo+Pj4+IGZpbmFsIHdpdGhvdXQgc3VjY2Vzcy4gQWxzbyB0cmll
+ZCB0byBnZXQgb2xkIHNuYXBzaG90cyBmcm9tIGFsc2EtZHJpdmVyIAo+Pj4+IGFuZCBhbHNhLWtt
+aXJyb3IgYnV0IEkgY2Fubm90IGNvbXBpbGUgdGhlbS4gQW55IHBsYWNlIHdoZXJlIGdldCBzb21l
+IAo+Pj4+IGluZm8gYWJvdXQgaG93IHRvIGNyZWF0ZQo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+
+Pj4gVGhlbiBzb21lIGNvZGVzIGFkZGVkIGFmdGVyIHJjNSByZWdyZXNzZWQ/Cj4+PiBUaGUgY2Fu
+ZGlkYXRlcyBhcmUgbm90IHNvIG1hbnkgYnV0IGEgZmV3Ogo+Pj4KPj4+IGRlYWRmZjE2NjU0OTFh
+ZmNlMTI0YThmZjgzZjAwZjc4NDE2MWY2NjAKPj4+ICAgICBBTFNBOiBoZGE6IHRyYWNrIENJUkIv
+Q09SQiBjb21tYW5kL3Jlc3BvbnNlIHN0YXRlcyBmb3IgZWFjaCBjb2RlYwo+Pj4KPj4+IGE2Nzhj
+ZGVlMjVhMzg3YzhmYzNiMjc1NDk3NDY5NTQxMmJhZjFkODUKPj4+ICAgICBBTFNBOiBoZGE6IHRh
+a2UgY21kX211dGV4IGluIHByb2JlX2NvZGVjKCkKPj4+Cj4+PiBjZGIxZmJmMjMxODFjMTMzZmIy
+NGYxMmFkMTRjY2VhN2RjMzk5NTk5Cj4+PiAgICAgQUxTQTogaGRhOiB0YWtlIHJlZ19sb2NrIGlu
+IGF6eF9pbml0X2NtZF9pby9henhfZnJlZV9jbWRfaW8KPj4+Cj4+PiBjMzI2NDlmZWI0NTczYjMx
+ZjBhMmJmZGYzNWNiZTEzNTEyNTZjNzY0Cj4+PiAgICAgQUxTQTogaGRhOiByZWFkIENPUkJXUCBp
+bnNpZGUgcmVnX2xvY2sKPj4+Cj4+PiBmZWIyNzM0MDRmMTVkODYwOThjYjBlODFlNDYzMzBkNWMx
+ZTIyYjFiCj4+PiAgICAgQUxTQTogaGRhOiByZW1lbWJlciBsYXN0IGNvbW1hbmQgZm9yIGVhY2gg
+Y29kZWMKPj4+Cj4+PiBUaGUgc3VzcGljaW91cyBjaGFuZ2VzIGFyZSB0aGUgZmlyc3Qgb25lIGFu
+ZCB0aGUgdGhpcmQgb25lLgo+Pj4gQnV0LCBhbnl3YXksIGl0J2QgYmUgaGVscGZ1bCBpZiB5b3Ug
+Y2FuIGJpc2VjdCB0aGVzZS4KPj4+Cj4+PiBJZiB5b3UgY2FuIHVzZSBnaXQsIGdpdC1iaXNlY3Qg
+d291bGQgYmUgdGhlIGJlc3QgdG8gdHJ5Lgo+Pj4gRG8gYmlzZWN0IG9ubHkgZm9yIGNoYW5nZXMg
+aW4gc291bmQvcGNpL2hkYSBkaXJlY3RvcnkgYmV0d2Vlbgo+Pj4gMi42LjMxLXJjNSBhbmQgcmM2
+Lgo+Pj4KPj4+Cj4+PiB0aGFua3MsCj4+Pgo+Pj4gVGFrYXNoaQo+Pj4KPj4+ICAgCj4+PiAgICAg
+ICAKPj4gT2sgSSByZWFkIGhvdyB0byBkbyBiaXNlY3Qgd2l0aCBnaXQgYW5kIHNvIG9uLiBBbHNv
+IHRha2UgbGF0ZXN0IGFsc2EgCj4+IGZyb20gZ2l0Lgo+Pgo+PiBOb3cgdGhlIHF1ZXN0aW9uIGlz
+IGRvIEkgaGF2ZSB0byBkbyBiaXNlY3QgZnJvbSBhbHNhLWtlcm5lbD8gKHRoYXQncyAKPj4gd2hh
+dCBJJ20gdHJ5aW5nIG5vdykgYnV0IHRoYXQgaW1wbGllcyByZWNvbXBpbGUga2VybmVsIGluIGV2
+ZXJ5IHN0ZXAsIAo+PiBpc24ndCBpdD8KPj4gICAgIAo+Cj4gSWYgeW91IGNhbiBidWlsZCB0aGUg
+a2VybmVsIGJ5IHlvdXJzZWxmLCBhbmQgeW91IGFscmVhZHkgZmluZCB0aGF0Cj4gMi42LjMxLXJj
+NSB3b3JrcyBhcyBpcywgSSByZWNvbW1lbmQgeW91IHRvIGJpc2VjdCB0aGUga2VybmVsIHRyZWUu
+Cj4KPiBBcyBtZW50aW9uZWQsIHRoZSBjb21taXRzIHRvIGJpc2VjdCBhcmUgb25seSBmb3Igc291
+bmQvcGNpL2hkYQo+IGRpcmVjdG9yeSwgYW5kIHRoZXJlIGFyZW4ndCBzbyBtYW55LiAgWW91IGNh
+biBqdXN0IHJlYnVpbGQgdGhlIG1vZHVsZQo+IHdpdGggIm1ha2UgTT1zb3VuZC9wY2kvaGRhIiBk
+dXJpbmcgYmlzZWN0aW5nLgo+Cj4KPiBUYWthc2hpCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gICAKT2sgVGhpbmsgSSBGaW5hbGx5IGdldCBp
+dCA6LSkKCnRob3NlIGFyZSB0aGUgbGF0ZXN0IHN0ZXBzIEkgZGlkLCBBRkFJSyBpdCB3YXMgdGhl
+IGZpcnN0IGNvbW1pdCBhZnRlciAKMi42LjMxLXJjNSBhcyB5b3Ugc2FpZCAiVGhlIHN1c3BpY2lv
+dXMgY2hhbmdlcyBhcmUgdGhlIGZpcnN0IG9uZSBhbmQgdGhlIAp0aGlyZCBvbmUuIgoKZGVhZGZm
+MTY2NTQ5MWFmY2UxMjRhOGZmODNmMDBmNzg0MTYxZjY2MCBpcyBmaXJzdCBiYWQgY29tbWl0Cgph
+biB0aGVyZSBhcmUgbm8gbW9yZSBhZnRlciB0aGF0CgoKTE9HIFdJVEggTEFURVNUIFNURVBTOgoK
+LSBIQVZFIFRPIFJFQk9PVCBDQU5OT1QgR0VUIENBUkQgV09SS0lORyBBR0FJTi0tCgotIFRFU1Qg
+LSBET0VTTidUIFdPUksgLQoKIyBnaXQgYmlzZWN0IGJhZApCaXNlY3Rpbmc6IDAgcmV2aXNpb25z
+IGxlZnQgdG8gdGVzdCBhZnRlciB0aGlzCltjZTU3N2U4Y2Y1ZGRiNDIxNjU1M2M5ZDU2M2E5ODM1
+ZDZkZTcwZmZhXSBBTFNBOiBoZGEgLSBGaXggcXVpcmsgZm9yIApUb3NoaWJhIFNhdGVsbGl0ZSBB
+MTM1LVM0NTI3CgojIC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBzdG9wCiMgcm1tb2Qgc25kX3BhZ2Vf
+YWxsb2MKIyBtYWtlIE09c291bmQvcGNpL2hkYQojIG1ha2UgbW9kdWxlc19pbnN0YWxsIE09c291
+bmQvcGNpL2hkYQojIG1vZHByb2JlIHNuZC1oZGEtY29kZWMtY2EwMTEwCgotIEhBVkUgVE8gUkVC
+T09UIENBTk5PVCBHRVQgQ0FSRCBXT1JLSU5HIEFHQUlOLS0KCi0gSEVSRSBTVEFSVFMgVE8gV09S
+SyBBR0FJTiAtCgojIGdpdCBiaXNlY3QgZ29vZApkZWFkZmYxNjY1NDkxYWZjZTEyNGE4ZmY4M2Yw
+MGY3ODQxNjFmNjYwIGlzIGZpcnN0IGJhZCBjb21taXQKY29tbWl0IGRlYWRmZjE2NjU0OTFhZmNl
+MTI0YThmZjgzZjAwZjc4NDE2MWY2NjAKQXV0aG9yOiBXdSBGZW5nZ3VhbmcgPGZlbmdndWFuZy53
+dUBpbnRlbC5jb20+CkRhdGU6ICAgU2F0IEF1ZyAxIDE4OjQ1OjE2IDIwMDkgKzA4MDAKCiAgICBB
+TFNBOiBoZGE6IHRyYWNrIENJUkIvQ09SQiBjb21tYW5kL3Jlc3BvbnNlIHN0YXRlcyBmb3IgZWFj
+aCBjb2RlYwogICAKICAgIFJlY2VudGx5IHdlIGhpdCBhIGJ1ZyBpbiBvdXIgZGV2IGJvYXJkLCB3
+aG9zZSBIRE1JIGNvZGVjIzMgbWF5IGVtaXQKICAgIHJlZHVuZGFudC9zcHVyaW91cyByZXNwb25z
+ZXMsIHdoaWNoIHdlcmUgdGhlbiB0YWtlbiBhcyByZXNwb25zZXMgdG8KICAgIGNvbW1hbmQgZm9y
+IGFub3RoZXIgb25ib2FyZCBSZWFsdGVrIGNvZGVjIzIsIGFuZCBtZXNzIHVwIGJvdGggY29kZWNz
+LgogICAKICAgIEV4dGVuZCB0aGUgYXp4X3JiLmNtZHMgYW5kIGF6eF9yYi5yZXMgdG8gYXJyYXkg
+YW5kIHRyYWNrIGVhY2ggY29kZWMncwogICAgY29tbWFuZHMvcmVzcG9uc2VzIHNlcGFyYXRlbHku
+IFRoaXMgaGVscHMga2VlcCBnb29kIGNvZGVjIHNhZmUgZnJvbQogICAgYnJva2VuIG9uZXMuCiAg
+IAogICAgU2lnbmVkLW9mZi1ieTogV3UgRmVuZ2d1YW5nIDxmZW5nZ3Vhbmcud3VAaW50ZWwuY29t
+PgogICAgU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgoKOjA0MDAw
+MCAwNDAwMDAgMzQ0ZTI5ZTQ4NzI3N2FiOTM1NGFiNGI0NGUxMjdmMGFlOTA2Y2Y4YyAKNDExYTQ3
+NWQ2MzA3YWY2MDIxZjA4ODJkMWRmZWU2YmRiMThiNjZiNiBNICAgIHNvdW5kCgoKCnJlZ2FyZHMs
+CgpHdWlsbGVtIFNvbMOgCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
