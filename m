@@ -1,19 +1,21 @@
-From: <LoganLi@viatech.com.cn>
-Subject: =?utf-8?b?562U5aSNOiBbUEFUQ0ggMS8zMV0gSERBIHBhdGNo?=
-	=?utf-8?q?=5Fvia=2Ec=3A_Remove_IS=5FVT17xx=5FVENDORID_macro?=
-Date: Fri, 9 Oct 2009 09:20:07 +0800
-Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123B80@exchbj03.viatech.com.bj>
-References: <s5heipes3xh.wl%tiwai@suse.de>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Subject: Re: [PATCH 7/8] ASoC: tlv320aic3x: add initial usage
+ of regulator framework to control avdd_dac
+Date: Fri, 09 Oct 2009 07:28:03 +0300
+Message-ID: <1255062483.30157.171.camel__7848.52258298105$1255063008$gmane$org@eenurkka-desktop>
+References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
+	<1255003137-1034-8-git-send-email-eduardo.valentin@nokia.com>
+	<1255004227.30157.159.camel@eenurkka-desktop>
+	,<20091008134046.GH29176@rakim.wolfsonmicro.main>
+	<1FFEF31EBAA4F64B80D33027D42977600E85F0CC91@NOK-EUMSG-02.mgdnok.nokia.com>
+	(sfid-20091008_164425_486507_1ADB55B0)
+	<1C729A43-F9F2-4FF6-A07E-5450E595982B@opensource.wolfsonmicro.com>
+Reply-To: ext-eero.nurkkala@nokia.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id B939A103968
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 03:20:09 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <s5heipes3xh.wl%tiwai@suse.de>
+In-Reply-To: <1C729A43-F9F2-4FF6-A07E-5450E595982B@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,88 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
+To: alsa-devel@alsa-project.org
+Cc: "<tony@atomide.com>" <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "<linux-omap@vger.kernel.org>" <linux-omap@vger.kernel.org>, "<alsa-devel@vger.kernel.org>" <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhhbmsgeW91IGZvciB5b3VyIHBhdGllbmNlLiBJJ2xsIHVwZGF0ZSB0b2RheS4gDQoNCg0K5p2O
-5rOiIExvZ2FuIExpIA0KTUNFLVJELVNvZnR3YXJlLUF1ZGlvL1ZpZGVvIA0KVklBIFRlY2hub2xv
-Z2llcywgSW5jLiAoQmVpamluZykgDQoNCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu2
-5Lq6OiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXSANCuWPkemAgeaXtumXtDog
-MjAwOeW5tDEw5pyIOOaXpSAxNjowOQ0K5pS25Lu25Lq6OiBMaSBCbw0K5oqE6YCBOiBhbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmc7IEhhcmFsZCBXZWx0ZTsgTHlkaWEgV2FuZzsgTG9nYW4gTGkN
-CuS4u+mimDogUmU6IFtQQVRDSCAxLzMxXSBIREEgcGF0Y2hfdmlhLmM6IFJlbW92ZSBJU19WVDE3
-eHhfVkVORE9SSUQgbWFjcm8NCg0KQXQgVGh1LCA4IE9jdCAyMDA5IDE1OjU2OjUxICswODAwLA0K
-TGkgQm8gd3JvdGU6DQo+IA0KPiBPbiBUaHUsIE9jdCA4LCAyMDA5IGF0IDM6MzYgUE0sIFRha2Fz
-aGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6DQo+ID4gQXQgVGh1LCA4IE9jdCAyMDA5IDE1
-OjI4OjE3ICswODAwLA0KPiA+IExpIEJvIHdyb3RlOg0KPiA+Pg0KPiA+PiBPbiBUaHUsIE9jdCA4
-LCAyMDA5IGF0IDI6MjcgUE0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6DQo+
-ID4+ID4gQXQgVGh1LCA4IE9jdCAyMDA5IDE0OjIyOjA3ICswODAwLCBMaSBCbyB3cm90ZToNCj4g
-Pj4gPj4NCj4gPj4gPj4gT24gVGh1LCBPY3QgOCwgMjAwOSBhdCAyOjE2IFBNLCBUYWthc2hpIEl3
-YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOg0KPiA+PiA+PiA+IEF0IFRodSwgOCBPY3QgMjAwOSAx
-NDoxMTo0MiArMDgwMCwgTGkgQm8gd3JvdGU6DQo+ID4+ID4+ID4+DQo+ID4+ID4+ID4+IE9uIFRo
-dSwgT2N0IDgsIDIwMDkgYXQgMjowMyBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3
-cm90ZToNCj4gPj4gPj4gPj4gPiBBdCBUaHUsIDggT2N0IDIwMDkgMTM6Mjc6NDkgKzA4MDAsIExp
-IEJvIHdyb3RlOg0KPiA+PiA+PiA+PiA+Pg0KPiA+PiA+PiA+PiA+PiBbQUxTQV0gSERBIFZJQTog
-UmVtb3ZlIHVudXNlZCBJU19WVDE3eHhfVkVORE9SSUQgbWFjcm8NCj4gPj4gPj4gPj4gPj4NCj4g
-Pj4gPj4gPj4gPj4gSVNfVlQxNypfVkVORE9SSUQgbWFjcm9zIGFyZSB1c2VkIG5vd2hlcmUsIHNv
-IGNsZWFuIHRoZW0gdXAuDQo+ID4+ID4+ID4+ID4+DQo+ID4+ID4+ID4+ID4+IFNpZ25lZC1vZmYt
-Ynk6IEx5ZGlhIFdhbmcgPGx5ZGlhd2FuZ0B2aWF0ZWNoLmNvbS5jbj4NCj4gPj4gPj4gPj4gPg0K
-PiA+PiA+PiA+PiA+IExpLCBjb3VsZCB5b3UgYWRkIHlvdXIgc2lnbi1vZmYsIHRvbywgd2hlbiB5
-b3UgaGFuZGxlIHRoZSBwYXRjaGVzPw0KPiA+PiA+PiA+PiA+IE90aGVyd2lzZSBJIGNhbid0IG1l
-cmdlIHRoZW0uDQo+ID4+ID4+ID4+ID4NCj4gPj4gPj4gPj4gPg0KPiA+PiA+PiA+PiA+IHRoYW5r
-cywNCj4gPj4gPj4gPj4gPg0KPiA+PiA+PiA+PiA+IFRha2FzaGkNCj4gPj4gPj4gPj4gPg0KPiA+
-PiA+PiA+Pg0KPiA+PiA+PiA+PiBJcyB0aGF0IE9LIHNpZ25lZC1vZmYgd2l0aCBMb2dhbkxpQHZp
-YXRlY2guY29tLmNuIHdpdGggdGhpcyANCj4gPj4gPj4gPj4gZ21haWwgbGlib2F0QGdhbWlsLmNv
-bT8gTG9nYW5MaUB2aWF0ZWNoLmNvbS5jbiBpcyBteSBjb21wYW55J3MgZW1haWwuDQo+ID4+ID4+
-ID4+IElmIG5vdCwgSSdsbCB3aWxsIHJlc2VuZCB0aGVtIHRvbW9ycm93IHdoZW4gSSBnbyBiYWNr
-IHRvIGNvbXBhbnkuDQo+ID4+ID4+ID4NCj4gPj4gPj4gPiBJIGRvbid0IGNhcmUgd2hpY2ggYWRk
-cmVzcyB5b3UgdXNlIChhbmQgSSBkb24ndCBrbm93IHdoZXRoZXIgDQo+ID4+ID4+ID4gaXQgbWF0
-dGVycyB5b3VyIGVtcGxveWVyKS4gwqBJdCdzIGZ1bGx5IHlvdXIgY2hvaWNlLg0KPiA+PiA+PiA+
-DQo+ID4+ID4+ID4gQnV0LCBpZiB0aGUgc2lnbmVkIGFkZHJlc3MgaXMgZGlmZmVyZW50IGZyb20g
-dGhlIG1haWwgc2VuZGVyLCANCj4gPj4gPj4gPiBhZGQgYSBsaW5lICJGcm9tOiBZT1VSIE5BTUUg
-PHlvdXJAbWFpbD4iIGF0IHRoZSBiZWdpbm5pbmcgb2YgDQo+ID4+ID4+ID4gdGhlIHBhdGNoIGV4
-cGxpY2l0bHkuDQo+ID4+ID4+ID4NCj4gPj4gPj4gPg0KPiA+PiA+PiA+IHRoYW5rcywNCj4gPj4g
-Pj4gPg0KPiA+PiA+PiA+IFRha2FzaGkNCj4gPj4gPj4gPg0KPiA+PiA+PiBJIGp1c3QgcmFuZG9t
-bHkgdXNlIG15IGdtYWlsLiBJIHdpbGwgcmVzZW5kIHRoZW0gdG9tb3Jyb3csIHRoYW5rIA0KPiA+
-PiA+PiB5b3UgZm9yIHRlYWNoaW5nIG1lOikNCj4gPj4gPg0KPiA+PiA+IFdlbGwsIEkgd2FzIHVu
-Y2xlYXIgaW4gdGhlIHRleHQgYWJvdmUuDQo+ID4+ID4NCj4gPj4gPiBZb3UgY2FuIHNlbmQgcGF0
-Y2hlcyB3aXRoIHRoZSBzaWduLW9mZiBvZiB5b3VyIGNvbXBhbnkgYWNjb3VudCANCj4gPj4gPiBl
-dmVuIGZyb20geW91ciBnbWFpbCBhY2NvdW50LiDCoEp1c3QgYWRkICJGcm9tOiIgbGluZSB3aXRo
-IHlvdXIgDQo+ID4+ID4gY29tcGFueSBhY2NvdW50IGluIHRoZSBwYXRjaCB0ZXh0IHNvIHRoYXQg
-SSBjYW4gcGljayB1cCB0aGUgcmlnaHQgYWRkcmVzcy4NCj4gPj4gPg0KPiA+PiA+DQo+ID4+ID4g
-VGFrYXNoaQ0KPiA+PiA+DQo+ID4+IGxpa2UgdGhpcz8NCj4gPj4gW0FMU0FdIEhEQSBWSUE6IFJl
-bW92ZSB1bnVzZWQgSVNfVlQxN3h4X1ZFTkRPUklEIG1hY3JvDQo+ID4+DQo+ID4+IElTX1ZUMTcq
-X1ZFTkRPUklEIG1hY3JvcyBhcmUgdXNlZCBub3doZXJlLCBzbyBjbGVhbiB0aGVtIHVwLg0KPiA+
-Pg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBMeWRpYSBXYW5nIDxseWRpYXdhbmdAdmlhdGVjaC5jb20u
-Y24+DQo+ID4+IFNpZ25lZC1vZmYtYnk6IExvZ2FuIExpIDxsb2dhbmxpQHZpYXRlY2guY29tLmNu
-Pg0KPiA+PiBGcm9tOiBMaSBCbyA8bGlib2F0QGdtYWlsLmNvbT4NCj4gPg0KPiA+IE5vLCBhZGQg
-eW91ciBzaWduLW9mZiBhZGRyZXNzLCBpLmUuICJMb2dhbiBMaSANCj4gPiA8bG9nYW5saUB2aWF0
-ZWNoLmNvbS5jbj4iIHRvIEZyb206IGxpbmUsIGFuZCBwdXQgaXQgYXQgdGhlIGJlZ2lubmluZyAN
-Cj4gPiBvZiB0aGUgcGF0Y2guDQo+ID4NCj4gPiBCdXQsIG5vdyBhbm90aGVyIHF1ZXN0aW9uIGlz
-IHdobyBpcyB0aGUgb3JpZ2luYWwgYXV0aG9yIG9mIHRoZSBwYXRjaC4NCj4gPiBJcyBpdCBMeWRp
-YT8gwqBUaGVuIHRoZSAiRnJvbToiIGxpbmUgc2hvdWxkIGJlIG9mIEx5ZGlhLiDCoEluIHRoYXQg
-DQo+ID4gd2F5LCB3ZSBjYW4gY2xhcmlmeSB3aG8gaXMgdGhlIG9yaWdpbmFsIGF1dGhvci4NCj4g
-Pg0KPiA+IElmIHlvdSBjaGFuZ2VkIHNvbWV0aGluZyBmcm9tIHRoZSBvcmlnaW5hbCBwYXRjaCwg
-YmV0dGVyIHRvIG1lbnRpb24gDQo+ID4gaW4gdGhlIGNoYW5nZWxvZyB0ZXh0LCB0b28uDQo+ID4N
-Cj4gPiBBbmQsIGF0IGJlc3QsIGFkZCAiU3ViamVjdDoiIHRvIGVhY2ggc3ViamVjdCBsaW5lLCBz
-byB0aGF0IGdpdC1hbSANCj4gPiBjYW4gcGljayB1cCBwcm9wZXJseS4gwqBTbywgdGhlIHBhdGNo
-IGhlYWQgd291bGQgbG9vayBsaWtlOg0KPiA+DQo+ID4gwqBGcm9tOiBMeWRpYSBXYW5nIDxseWRp
-YXdhbmdAdmlhdGVjaC5jb20uY24+DQo+ID4gwqBTdWJqZWN0OiBBTFNBOiBIREEgVklBOiBGaXgg
-YmxhaCBibGFoDQo+ID4NCj4gPiDCoGJsYWggYmxhaA0KPiA+IMKgLi4uDQo+ID4NCj4gPiDCoENo
-YW5nZWQgZm9vIGJhciBieSBMb2dhbiBMaS4NCj4gPiDCoGJsYWggYmxhaA0KPiA+IMKgLi4uDQo+
-ID4NCj4gPiDCoFNpZ25lZC1vZmYtYnk6IEx5ZGlhIFdhbmcgPGx5ZGlhd2FuZ0B2aWF0ZWNoLmNv
-bS5jbj4NCj4gPiDCoFNpZ25lZC1vZmYtYnk6IExvZ2FuIExpIDxsb2dhbmxpQHZpYXRlY2guY29t
-LmNuPg0KPiA+DQo+ID4NCj4gPiB0aGFua3MsDQo+ID4NCj4gPiBUYWthc2hpDQo+ID4NCj4gWWVz
-LCBMeWRpYSBpcyB0aGUgb3JpZ2luYWwgYXV0aG9yLg0KPiBsaWtlIHRoaXM/DQo+IA0KPiBGcm9t
-OiBMeWRpYSBXYW5nIDxseWRpYXdhbmdAdmlhdGVjaC5jb20uY24+DQo+IFN1YmplY3Q6IEFMU0E6
-IEhEQSBWSUE6IFJlbW92ZSB1bnVzZWQgSVNfVlQxN3h4X1ZFTkRPUklEIG1hY3JvDQo+IA0KPiBJ
-U19WVDE3Kl9WRU5ET1JJRCBtYWNyb3MgYXJlIHVzZWQgbm93aGVyZSwgc28gY2xlYW4gdGhlbSB1
-cC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEx5ZGlhIFdhbmcgPGx5ZGlhd2FuZ0B2aWF0ZWNoLmNv
-bS5jbj4NCj4gU2lnbmVkLW9mZi1ieTogTGkgQm8gPGxpYm9hdEBnbWFpbC5jb20uY24+DQoNClll
-cC4gIFlvdSBjYW4gdXNlIHlvdXIgY29tcGFueSBhZGRyZXNzIGZvciB5b3VyIG93biBzaWduLW9m
-ZiBoZXJlLCB0b28sIGlmIHlvdSBwcmVmZXIsIGV2ZW4gaWYgeW91IHNlbmQgZnJvbSBhbm90aGVy
-IGFkZHJlc3MuDQoNCg0KdGhhbmtzLA0KDQpUYWthc2hpDQpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, 2009-10-08 at 18:01 +0200, ext Mark Brown wrote:
+> On 8 Oct 2009, at 16:44, <ext-Eero.Nurkkala@nokia.com> wrote:
+> 
+> > Mark Brown wrote:
+> >>
+> >>>                                         Also, this is regulator  
+> >>> thing
+> >>> is highly platform dependent, not aic3x related really at all, so is
+> >>> this the correct place... Just a thought, dont take it too  
+> >>> seriously ;)
+> >>
+> >> I'm not sure what you mean by this?
+> >
+> > You may power the aic3x from a fixed source, or from multiple  
+> > sources, with
+> > and without any regulator in between. It's up to the HW and HW design.
+> 
+> The regulator API can cope with all this pretty transparently - if  
+> multiple supplies come from the same regulator the API will hide that  
+> from the consumer. There is a fixed voltage regulator driver which can  
+> be used to represent supplies with no soft control.
+> 
+> > Moreover, you don't _power off_ (turn the regulator off) the analog  
+> > voltages
+> > of aic3x; things won't work. So it's not like a switch everybody may  
+> > use. Or
+> > nothing prevent you from experiencing that...
+> 
+> I'd expect the usage would be that after the audio subsystem has been  
+> idle for some configurable period of time the core would bring the  
+> audio subsystem down to bias off, at which point supplies could also  
+> be switched off.
+
+Right. That would also sound like the RST line also needs also be
+asserted, and then rewriting all register contents upon wakeup? And also
+redirecting all i2c traffic to the cache instead of any real i2c writes
+(meanwhile the device is shut down)? Like in tpa6130?
+
+- Eero
+
