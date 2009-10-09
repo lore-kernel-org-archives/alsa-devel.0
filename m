@@ -1,16 +1,16 @@
 From: <LoganLi@viatech.com.cn>
-Subject: [PATCH 18/30] ALSA: HDA VIA: Modify
-	vt1708_auto_create_multi_out_ctls.
-Date: Fri, 9 Oct 2009 18:40:53 +0800
-Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123C3F@exchbj03.viatech.com.bj>
+Subject: [PATCH 29/30] ALSA: HDA VIA: Comments: update
+	copyright, changeset, etc.
+Date: Fri, 9 Oct 2009 18:41:27 +0800
+Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123C4A@exchbj03.viatech.com.bj>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4AB4103AA2
+	by alsa0.perex.cz (Postfix) with ESMTP id BAEB4103B26
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 12:40:47 +0200 (CEST)
+	Fri,  9 Oct 2009 12:41:21 +0200 (CEST)
 Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,61 +26,50 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: HDA VIA: Modify vt1708_auto_create_multi_out_ctls.
-
-Rewrite nid_vol/mute assignment for clearity, and check line connection
-before adding control for it.
+Subject: ALSA: HDA VIA: comments: update copyright, changeset, etc.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 Signed-off-by: Logan Li <loganli@viatech.com.cn>
 
 ---
- pci/hda/patch_via.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ pci/hda/patch_via.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 --- a/pci/hda/patch_via.c
 +++ b/pci/hda/patch_via.c
-@@ -1570,7 +1570,7 @@
- {
- 	char name[32];
- 	static const char *chname[4] = { "Front", "Surround", "C/LFE",
-"Side" };
--	hda_nid_t nid, nid_vol = 0;
-+	hda_nid_t nid, nid_vol, nid_vols[] = {0x17, 0x19, 0x1a, 0x1b};
- 	int i, err;
- 
- 	for (i = 0; i <= AUTO_SEQ_SIDE; i++) {
-@@ -1579,8 +1579,7 @@
- 		if (!nid)
- 			continue;
- 		
--		if (i != AUTO_SEQ_FRONT)
--			nid_vol = 0x18 + i;
-+		nid_vol = nid_vols[i];
- 
- 		if (i == AUTO_SEQ_CENLFE) {
- 			/* Center/LFE */
-@@ -1612,13 +1611,13 @@
- 			/* add control to mixer index 0 */
- 			err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
- 					      "Master Front Playback
-Volume",
--					      HDA_COMPOSE_AMP_VAL(0x17,
-3, 0,
-+
-HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0,
- 
-HDA_INPUT));
- 			if (err < 0)
- 				return err;
- 			err = via_add_control(spec, VIA_CTL_WIDGET_MUTE,
- 					      "Master Front Playback
-Switch",
--					      HDA_COMPOSE_AMP_VAL(0x17,
-3, 0,
-+
-HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0,
- 
-HDA_INPUT));
- 			if (err < 0)
- 				return err;
+@@ -1,10 +1,10 @@
+ /*
+  * Universal Interface for Intel High Definition Audio Codec
+  *
+- * HD audio interface patch for VIA VT1702/VT1708/VT1709 codec
++ * HD audio interface patch for VIA VT17xx/VT18xx/VT20xx codec
+  *
+- * Copyright (c) 2006-2008 Lydia Wang <lydiawang@viatech.com>
+- *			   Takashi Iwai <tiwai@suse.de>
++ *  (C) 2006-2009 VIA Technology, Inc.
++ *  (C) 2006-2008 Takashi Iwai <tiwai@suse.de>
+  *
+  *  This driver is free software; you can redistribute it and/or modify
+  *  it under the terms of the GNU General Public License as published
+by
+@@ -36,6 +36,11 @@
+ /* 2008-04-09  Lydia Wang  Add Independent HP feature
+*/
+ /* 2008-05-28  Lydia Wang  Add second S/PDIF Out support for VT1702
+*/
+ /* 2008-09-15  Logan Li    Add VT1708S Mic Boost workaround/backdoor
+*/
++/* 2009-02-16  Logan Li	   Add support for VT1718S
+*/
++/* 2009-03-13  Logan Li	   Add support for VT1716S
+*/
++/* 2009-04-14  Lydai Wang  Add support for VT1828S and VT2020
+*/
++/* 2009-07-08  Lydia Wang  Add support for VT2002P
+*/
++/* 2009-07-21  Lydia Wang  Add support for VT1812
+*/
+ /*
+*/
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * */
