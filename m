@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/8] board-rx51-peripherals: split vaux3
- and vmmc2 supplies
-Date: Fri, 9 Oct 2009 12:03:47 +0100
-Message-ID: <20091009110346.GC5082@sirena.org.uk>
-References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
-	<1255003137-1034-6-git-send-email-eduardo.valentin@nokia.com>
-	<20091008132109.GD29176@rakim.wolfsonmicro.main>
-	<20091009064529.GD6616@esdhcp037198.research.nokia.com>
+From: <LoganLi@viatech.com.cn>
+Subject: [PATCH 15/30] ALSA: HDA VIA: Modify
+	vt1708_set_pinconfig_connect function.
+Date: Fri, 9 Oct 2009 18:40:36 +0800
+Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123C3B@exchbj03.viatech.com.bj>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90C01103B8D
+Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
+	by alsa0.perex.cz (Postfix) with ESMTP id 789E9103B0D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 13:03:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20091009064529.GD6616@esdhcp037198.research.nokia.com>
+	Fri,  9 Oct 2009 12:40:30 +0200 (CEST)
+Content-class: urn:content-classes:message
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,36 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eduardo Valentin <eduardo.valentin@nokia.com>
-Cc: alsa-devel@alsa-project.org, ext Tony Lindgren <tony@atomide.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 09, 2009 at 09:45:29AM +0300, Eduardo Valentin wrote:
-> On Thu, Oct 08, 2009 at 03:21:10PM +0200, Mark Brown wrote:
-> > On Thu, Oct 08, 2009 at 02:58:54PM +0300, Eduardo Valentin wrote:
+From: Lydia Wang <lydiawang@viatech.com.cn>
+Subject: ALSA: HDA VIA: Modify vt1708_set_pinconfig_connect function.
 
-> > I may have missed it but I don't see rx51_vmmc2_supply added back
-> > anywhere in the patch?
+like seqassoc 0xff, seqassoc 0xf0 of vt1708 should override Port
+Connectivity field into 'AC_JACK_PORT_COMPLEX'
 
-> yes. That's because this patch is just to split then. As you can see
-> in current code, this structure, rx51_vmmc2_supply, is actually used
-> by rx51_vaux3_mmc and rx51_vmmc2. So the idea is to have separated
-> supplies for each one. This patch just splits then. Patch 0006 of this
-> series adds usage of rx51_vmmc2_supply.
+Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
+Signed-off-by: Logan Li <loganli@viatech.com.cn>
 
-Might be an idea to change the description to something like "add a
-separate structure for...", it wasn't 100% clear what was going on
-(probably because the diff doesn't include sufficient context to make it
-clear).
+---
+ pci/hda/patch_via.c |    9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-> > ...using dev_name rather than dev should avoid the need to do this at
-> > runtime.
-
-> I see your point. As mentioned above, this patch is just a split.
-> I just added rx51_vaux3_supply to be owned by rx51_vaux3_mmc. And
-> let the code behavior as it was before.
-
-> Maybe your proposal must be sent into a separated patch/patch series (?).
-
-Yes, it's definately a separate patch - might be good to put it into the
-series before this one.
+--- a/pci/hda/patch_via.c
++++ b/pci/hda/patch_via.c
+@@ -1768,11 +1768,10 @@
+ 	def_conf = snd_hda_codec_get_pincfg(codec, nid);
+ 	seqassoc = (unsigned char) get_defcfg_association(def_conf);
+ 	seqassoc = (seqassoc << 4) | get_defcfg_sequence(def_conf);
+-	if (get_defcfg_connect(def_conf) == AC_JACK_PORT_NONE) {
+-		if (seqassoc == 0xff) {
+-			def_conf = def_conf & (~(AC_JACK_PORT_BOTH <<
+30));
+-			snd_hda_codec_set_pincfg(codec, nid, def_conf);
+-		}
++	if (get_defcfg_connect(def_conf) == AC_JACK_PORT_NONE
++	    && (seqassoc == 0xf0 || seqassoc == 0xff)) {
++		def_conf = def_conf & (~(AC_JACK_PORT_BOTH << 30));
++		snd_hda_codec_set_pincfg(codec, nid, def_conf);
+ 	}
+ 
+ 	return;
