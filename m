@@ -1,20 +1,19 @@
-From: <ext-Eero.Nurkkala@nokia.com>
-Subject: Re: [PATCH - try2] ASoC: TPA6130A2 amplifier driver
-Date: Fri, 9 Oct 2009 16:54:42 +0200
-Message-ID: <1FFEF31EBAA4F64B80D33027D42977600E85F0CC99@NOK-EUMSG-02.mgdnok.nokia.com>
-References: <1255092941-17586-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1255093831.30157.207.camel@eenurkka-desktop>,
-	<200910091636.16126.peter.ujfalusi@nokia.com>
+From: =?UTF-8?B?R3VpbGxlbSBTb2zDoA==?= <garanda@flumotion.com>
+Subject: Re: Issue with creative Xfi PCIe ca0110-IBG
+Date: Fri, 09 Oct 2009 17:17:56 +0200
+Message-ID: <4ACF5424.30406@flumotion.com>
+References: <4ACF0008.5010808@flumotion.com>
+	<s5hab00x5yi.wl%tiwai@suse.de>	<4ACF4564.6060104@flumotion.com>
+	<s5hocogvdkx.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AA4F103AE6
+Received: from mail.fluendo.com (se01.bcn.fluendo.net [195.10.10.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E9ED24362
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 16:57:36 +0200 (CEST)
-In-Reply-To: <200910091636.16126.peter.ujfalusi@nokia.com>
-Content-Language: en-US
+	Fri,  9 Oct 2009 17:18:17 +0200 (CEST)
+In-Reply-To: <s5hocogvdkx.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +23,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: peter.ujfalusi@nokia.com
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
->> During the tpa6130a2_i2c_write, you read the data->power_state, that
->> may change it's state meanwhile (preempted). Thus, I suggest you using
->> the mutex to cover all i2c writes. (and all tpa read <-> write cycles,
->> so that things are consistent?)
->>
->> A call to tpa6130a2_power() -> preemted over somewhere here, you may
->> have i2c accesses to a chip that's not powered up?
->
-> Well it is very unlikely that something like this could ever happen since=
- the
-> tpa6130a2_channel_enable and the tpa6130a2_power is called when DAPM is
-> enabling/disabling the path. I think in a middle of enable or disable the=
-re
-> should not be any opposite operation running in DAPM...
-> =
-
-> But better to be safe: I can add the mutex_lock, unlock pair.
-> =
-
-> I'll wait for more comments and address this one as well.
-> =
-
-> --
-> P=E9ter
-
-Right, sorry I read the patch too fast =3D) So I guess it's ok like it was.=
- However,
-I'll put sleep(n)'s in the problematic places and verify it's 100% ok one o=
-f =
-
-these weeks.
-
-- Eero
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IEZyaSwgMDkgT2N0IDIwMDkgMTY6MTU6MDAgKzAyMDAs
+Cj4gR3VpbGxlbSBTb2zDoCB3cm90ZToKPiAgIAo+PiBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+ICAg
+ICAKPj4+IEF0IEZyaSwgMDkgT2N0IDIwMDkgMTE6MTk6MDQgKzAyMDAsCj4+PiBHdWlsbGVtIFNv
+bMOgIHdyb3RlOgo+Pj4gICAKPj4+ICAgICAgIAo+Pj4+IEhpLAo+Pj4+Cj4+Pj4gSSBoYXZlIGEg
+Q3JlYXRpdmUgWEZpIFBDSWUgd2l0aCBjYTAxMTAtSUJHIGNoaXAuIEl0J3MgcHJpbWFyeSB1c2Ug
+aXMgCj4+Pj4gYXVkaW8gaW5wdXQgZm9yIHN0cmVhbWluZyBvbiBhIGJyYW5kIG5ldyBEZWxsIHNl
+cnZlciB3aXRoIFJIRUwuIEkgaGF2ZSAKPj4+PiBiZWVuIHRlc3RpbmcgbGF0ZXN0IGtlcm5lbCAy
+LjYuMzEgdGhyb3VnaCBpdCdzIHJlbGVhc2VzIGNhbmRpZGF0ZXMgYW5kIAo+Pj4+IHRoZSBjYXJk
+IHN0b3BlZCB3b3JraW5nIG9uIDIuNi4zMS1yYzYsIHNvIG5vdyBJJ20gc3R1Y2sgYXQgMi42LjMx
+LXJjNS4gCj4+Pj4gV2l0aCByYzUgSSBtYWRlIGEgMiB3ZWVrcyB0ZXN0IGFuZCBpdCB3ZW50IGZs
+YXdsZXNzbHkuCj4+Pj4KPj4+PiBUaGVyZSdzIGFub3RoZXIgZ3V5IHdobyByZWZlcmVuY2VkIHRo
+aXMgaXNzdWUgb24gCj4+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1h
+aWwvYWxzYS1kZXZlbC8yMDA5LVNlcHRlbWJlci8wMjA4NzYuaHRtbCAKPj4+PiBhbmQgVGFrYXNo
+aSBJd2FpIHNhaWQgdGhhdCB0aGVyZSBpcyBhIGNvbW11bmljYXRpb24gZXJyb3IgYmV0d2VlbiB0
+aGUgCj4+Pj4gY29kZWMgYW5kIHRoZSBjb250cm9sbGVyLgo+Pj4+Cj4+Pj4gQW55IHdvcmthcm91
+bmQ/IElzIHRoZXJlIGEgYnVnIGNyZWF0ZWQgcmVsYXRlZCB0byB0aGlzIGlzc3VlPwo+Pj4+Cj4+
+Pj4gSSB0cmllZCB0byAiZXh0cmFjdCIgdGhlIGFsc2EtZHJpdmVyIG9uIDIuNi4zMS1yYzUgYW5k
+IGluc3RhbGwgaXQgMi42LjMxIAo+Pj4+IGZpbmFsIHdpdGhvdXQgc3VjY2Vzcy4gQWxzbyB0cmll
+ZCB0byBnZXQgb2xkIHNuYXBzaG90cyBmcm9tIGFsc2EtZHJpdmVyIAo+Pj4+IGFuZCBhbHNhLWtt
+aXJyb3IgYnV0IEkgY2Fubm90IGNvbXBpbGUgdGhlbS4gQW55IHBsYWNlIHdoZXJlIGdldCBzb21l
+IAo+Pj4+IGluZm8gYWJvdXQgaG93IHRvIGNyZWF0ZQo+Pj4+ICAgICAKPj4+PiAgICAgICAgIAo+
+Pj4gVGhlbiBzb21lIGNvZGVzIGFkZGVkIGFmdGVyIHJjNSByZWdyZXNzZWQ/Cj4+PiBUaGUgY2Fu
+ZGlkYXRlcyBhcmUgbm90IHNvIG1hbnkgYnV0IGEgZmV3Ogo+Pj4KPj4+IGRlYWRmZjE2NjU0OTFh
+ZmNlMTI0YThmZjgzZjAwZjc4NDE2MWY2NjAKPj4+ICAgICBBTFNBOiBoZGE6IHRyYWNrIENJUkIv
+Q09SQiBjb21tYW5kL3Jlc3BvbnNlIHN0YXRlcyBmb3IgZWFjaCBjb2RlYwo+Pj4KPj4+IGE2Nzhj
+ZGVlMjVhMzg3YzhmYzNiMjc1NDk3NDY5NTQxMmJhZjFkODUKPj4+ICAgICBBTFNBOiBoZGE6IHRh
+a2UgY21kX211dGV4IGluIHByb2JlX2NvZGVjKCkKPj4+Cj4+PiBjZGIxZmJmMjMxODFjMTMzZmIy
+NGYxMmFkMTRjY2VhN2RjMzk5NTk5Cj4+PiAgICAgQUxTQTogaGRhOiB0YWtlIHJlZ19sb2NrIGlu
+IGF6eF9pbml0X2NtZF9pby9henhfZnJlZV9jbWRfaW8KPj4+Cj4+PiBjMzI2NDlmZWI0NTczYjMx
+ZjBhMmJmZGYzNWNiZTEzNTEyNTZjNzY0Cj4+PiAgICAgQUxTQTogaGRhOiByZWFkIENPUkJXUCBp
+bnNpZGUgcmVnX2xvY2sKPj4+Cj4+PiBmZWIyNzM0MDRmMTVkODYwOThjYjBlODFlNDYzMzBkNWMx
+ZTIyYjFiCj4+PiAgICAgQUxTQTogaGRhOiByZW1lbWJlciBsYXN0IGNvbW1hbmQgZm9yIGVhY2gg
+Y29kZWMKPj4+Cj4+PiBUaGUgc3VzcGljaW91cyBjaGFuZ2VzIGFyZSB0aGUgZmlyc3Qgb25lIGFu
+ZCB0aGUgdGhpcmQgb25lLgo+Pj4gQnV0LCBhbnl3YXksIGl0J2QgYmUgaGVscGZ1bCBpZiB5b3Ug
+Y2FuIGJpc2VjdCB0aGVzZS4KPj4+Cj4+PiBJZiB5b3UgY2FuIHVzZSBnaXQsIGdpdC1iaXNlY3Qg
+d291bGQgYmUgdGhlIGJlc3QgdG8gdHJ5Lgo+Pj4gRG8gYmlzZWN0IG9ubHkgZm9yIGNoYW5nZXMg
+aW4gc291bmQvcGNpL2hkYSBkaXJlY3RvcnkgYmV0d2Vlbgo+Pj4gMi42LjMxLXJjNSBhbmQgcmM2
+Lgo+Pj4KPj4+Cj4+PiB0aGFua3MsCj4+Pgo+Pj4gVGFrYXNoaQo+Pj4KPj4+ICAgCj4+PiAgICAg
+ICAKPj4gT2sgSSByZWFkIGhvdyB0byBkbyBiaXNlY3Qgd2l0aCBnaXQgYW5kIHNvIG9uLiBBbHNv
+IHRha2UgbGF0ZXN0IGFsc2EgCj4+IGZyb20gZ2l0Lgo+Pgo+PiBOb3cgdGhlIHF1ZXN0aW9uIGlz
+IGRvIEkgaGF2ZSB0byBkbyBiaXNlY3QgZnJvbSBhbHNhLWtlcm5lbD8gKHRoYXQncyAKPj4gd2hh
+dCBJJ20gdHJ5aW5nIG5vdykgYnV0IHRoYXQgaW1wbGllcyByZWNvbXBpbGUga2VybmVsIGluIGV2
+ZXJ5IHN0ZXAsIAo+PiBpc24ndCBpdD8KPj4gICAgIAo+Cj4gSWYgeW91IGNhbiBidWlsZCB0aGUg
+a2VybmVsIGJ5IHlvdXJzZWxmLCBhbmQgeW91IGFscmVhZHkgZmluZCB0aGF0Cj4gMi42LjMxLXJj
+NSB3b3JrcyBhcyBpcywgSSByZWNvbW1lbmQgeW91IHRvIGJpc2VjdCB0aGUga2VybmVsIHRyZWUu
+Cj4KPiBBcyBtZW50aW9uZWQsIHRoZSBjb21taXRzIHRvIGJpc2VjdCBhcmUgb25seSBmb3Igc291
+bmQvcGNpL2hkYQo+IGRpcmVjdG9yeSwgYW5kIHRoZXJlIGFyZW4ndCBzbyBtYW55LiAgWW91IGNh
+biBqdXN0IHJlYnVpbGQgdGhlIG1vZHVsZQo+IHdpdGggIm1ha2UgTT1zb3VuZC9wY2kvaGRhIiBk
+dXJpbmcgYmlzZWN0aW5nLgo+Cj4KPiBUYWthc2hpCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4gICAKVGhhbmtzIGZvciBhbGwsCgpUaGlzIGlz
+IGEgbG9nIGFib3V0IGhvdyBpcyBpdCBnb2luZy4gSSB0aGluayBJJ20gZG9pbmcgdGhpbmdzIHJp
+Z2h0LgoKSSBoYXZlIHRvIHJlYm9vdCBldmVyeSB0aW1lIGJlY2F1c2UgSSBjYW5ub3QgZ2V0IHRo
+ZSBzb3VuZGNhcmQgd29yayBhZ2Fpbi4KCkkgc3RhcnRlZCBmcm9tIDIuNi4zMS1yYzYsIGNvbXBp
+bGVkIGFuZCBpbnN0YWxsZWQgaXQgYW5kIHRoZW4gcmVib290IHRvIApteSAyLjYuMzEtcmM2IGZy
+b20gZ2l0LgoKCiMgZ2l0IGJpc2VjdCBzdGFydCAtLSBzb3VuZC9wY2kvaGRhLwojIGdpdCBiaXNl
+Y3QgZ29vZCB2Mi42LjMxLXJjNQojIGdpdCBiaXNlY3QgYmFkCkJpc2VjdGluZzogNiByZXZpc2lv
+bnMgbGVmdCB0byB0ZXN0IGFmdGVyIHRoaXMKW2ZlYjI3MzQwNGYxNWQ4NjA5OGNiMGU4MWU0NjMz
+MGQ1YzFlMjJiMWJdIEFMU0E6IGhkYTogcmVtZW1iZXIgbGFzdCAKY29tbWFuZCBmb3IgZWFjaCBj
+b2RlYwotLSBIQVZFIFRPIFJFQk9PVCAtLQojIG1ha2UgTT1zb3VuZC9wY2kvaGRhCiMgbWFrZSBt
+b2R1bGVzX2luc3RhbGwgTT1zb3VuZC9wY2kvaGRhCgojIC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBz
+dG9wCiMgcm1tb2Qgc25kX2hkYV9jb2RlY19jYTAxMTAKIyBybW1vZCBzbmRfaGRhX2NvZGVjCiMg
+L2V0Yy9pbml0LmQvYWxzYXNvdW5kIHN0YXJ0CgotIEhBVkUgVE8gUkVCT09UIENBTk5PVCBHRVQg
+Q0FSRCBXT1JLSU5HIEFHQUlOLS0KCiMgZ2l0IGJpc2VjdCBsb2cKZ2l0IGJpc2VjdCBzdGFydCAn
+c291bmQvcGNpL2hkYS8nCiMgZ29vZDogW2VkNjgwYzRhZDQ3OGQwZmVlOTc0MGY3ZDAyOTA4N2Yx
+ODEzNDY1NjRdIExpbnV4IDIuNi4zMS1yYzUKZ2l0IGJpc2VjdCBnb29kIGVkNjgwYzRhZDQ3OGQw
+ZmVlOTc0MGY3ZDAyOTA4N2YxODEzNDY1NjQKIyBiYWQ6IFs2NGYxNjA3ZmZiYmM3NzI2ODU3MzNl
+YTYzZTZmN2Y0MTgzZGYxYjE2XSBMaW51eCAyLjYuMzEtcmM2CmdpdCBiaXNlY3QgYmFkIDY0ZjE2
+MDdmZmJiYzc3MjY4NTczM2VhNjNlNmY3ZjQxODNkZjFiMTYKCiMgZ2l0IGJpc2VjdCBiYWQKQmlz
+ZWN0aW5nOiAyIHJldmlzaW9ucyBsZWZ0IHRvIHRlc3QgYWZ0ZXIgdGhpcwpbYTY3OGNkZWUyNWEz
+ODdjOGZjM2IyNzU0OTc0Njk1NDEyYmFmMWQ4NV0gQUxTQTogaGRhOiB0YWtlIGNtZF9tdXRleCBp
+biAKcHJvYmVfY29kZWMoKQoKIyAvZXRjL2luaXQuZC9hbHNhc291bmQgc3RvcAojIG1ha2UgbW9k
+dWxlc19pbnN0YWxsIE09c291bmQvcGNpL2hkYQojIC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBzdGFy
+dAojIC9ldGMvaW5pdC5kL2Fsc2Fzb3VuZCBzdG9wCiMgbW9kcHJvYmUgc25kLWhkYS1jb2RlYy1j
+YTAxMTAKIyAvZXRjL2luaXQuZC9hbHNhc291bmQgc3RhcnQKCi0gSEFWRSBUTyBSRUJPT1QgQ0FO
+Tk9UIEdFVCBDQVJEIFdPUktJTkcgQUdBSU4tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
