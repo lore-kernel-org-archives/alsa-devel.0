@@ -1,21 +1,16 @@
 From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Subject: Re: [PATCH 7/8] ASoC: tlv320aic3x: add initial usage
- of regulator framework to control avdd_dac
-Date: Fri, 09 Oct 2009 07:28:03 +0300
-Message-ID: <1255062483.30157.171.camel__7848.52258298105$1255063008$gmane$org@eenurkka-desktop>
+Subject: Re: [PATCH 3/8] McBSP: OMAP3: Add Sidetone feature
+Date: Fri, 09 Oct 2009 08:09:27 +0300
+Message-ID: <1255064967.30157.178.camel@eenurkka-desktop>
 References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
-	<1255003137-1034-8-git-send-email-eduardo.valentin@nokia.com>
-	<1255004227.30157.159.camel@eenurkka-desktop>
-	,<20091008134046.GH29176@rakim.wolfsonmicro.main>
-	<1FFEF31EBAA4F64B80D33027D42977600E85F0CC91@NOK-EUMSG-02.mgdnok.nokia.com>
-	(sfid-20091008_164425_486507_1ADB55B0)
-	<1C729A43-F9F2-4FF6-A07E-5450E595982B@opensource.wolfsonmicro.com>
+	<1255003137-1034-4-git-send-email-eduardo.valentin@nokia.com>
+	<20091008131702.GC29176@rakim.wolfsonmicro.main>
 Reply-To: ext-eero.nurkkala@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1C729A43-F9F2-4FF6-A07E-5450E595982B@opensource.wolfsonmicro.com>
+In-Reply-To: <20091008131702.GC29176@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,46 +21,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "<tony@atomide.com>" <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "<linux-omap@vger.kernel.org>" <linux-omap@vger.kernel.org>, "<alsa-devel@vger.kernel.org>" <alsa-devel@vger.kernel.org>
+Cc: ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2009-10-08 at 18:01 +0200, ext Mark Brown wrote:
-> On 8 Oct 2009, at 16:44, <ext-Eero.Nurkkala@nokia.com> wrote:
+On Thu, 2009-10-08 at 15:17 +0200, ext Mark Brown wrote:
+> On Thu, Oct 08, 2009 at 02:58:52PM +0300, Eduardo Valentin wrote:
 > 
-> > Mark Brown wrote:
-> >>
-> >>>                                         Also, this is regulator  
-> >>> thing
-> >>> is highly platform dependent, not aic3x related really at all, so is
-> >>> this the correct place... Just a thought, dont take it too  
-> >>> seriously ;)
-> >>
-> >> I'm not sure what you mean by this?
-> >
-> > You may power the aic3x from a fixed source, or from multiple  
-> > sources, with
-> > and without any regulator in between. It's up to the HW and HW design.
+> > +static const struct attribute *sidetone_attrs[] = {
+> > +	&dev_attr_st_enable.attr,
+> > +	&dev_attr_st_taps.attr,
+> > +	&dev_attr_st_ch0gain.attr,
+> > +	&dev_attr_st_ch1gain.attr,
+> > +	NULL,
+> > +};
 > 
-> The regulator API can cope with all this pretty transparently - if  
-> multiple supplies come from the same regulator the API will hide that  
-> from the consumer. There is a fixed voltage regulator driver which can  
-> be used to represent supplies with no soft control.
-> 
-> > Moreover, you don't _power off_ (turn the regulator off) the analog  
-> > voltages
-> > of aic3x; things won't work. So it's not like a switch everybody may  
-> > use. Or
-> > nothing prevent you from experiencing that...
-> 
-> I'd expect the usage would be that after the audio subsystem has been  
-> idle for some configurable period of time the core would bring the  
-> audio subsystem down to bias off, at which point supplies could also  
-> be switched off.
+> This stuff, particularly the enable, probably wants to be pushed out via
+> an ALSA API rather than via random sysfs stuff.  It'd be better to
+> publish a control API here and then use that from within ALSA.
 
-Right. That would also sound like the RST line also needs also be
-asserted, and then rewriting all register contents upon wakeup? And also
-redirecting all i2c traffic to the cache instead of any real i2c writes
-(meanwhile the device is shut down)? Like in tpa6130?
+Hmm. What would be the way to transfer 128 x s16 words; is there an ALSA
+control for something like that already ? IIRC correctly, the max
+bytesize per control is (or used to be) something like 256 bytes or so.
+So that gets right at it. (that's the sidetone 128 tap FIR in question)
 
 - Eero
+
 
