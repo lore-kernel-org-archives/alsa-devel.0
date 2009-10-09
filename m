@@ -1,23 +1,18 @@
 From: Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: ascenario: Last batch of fixes.
-Date: Fri,  9 Oct 2009 17:53:28 +0200
-Message-ID: <1255103612-11134-1-git-send-email-stefan@datenfreihafen.org>
+Subject: [PATCH] ascenario: Add dump and configure utils for
+	ascneario.
+Date: Fri,  9 Oct 2009 17:53:32 +0200
+Message-ID: <1255103612-11134-5-git-send-email-stefan@datenfreihafen.org>
+References: <1255103612-11134-1-git-send-email-stefan@datenfreihafen.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from sirius.lasnet.de (sirius.lasnet.de [78.47.116.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34F38103B3E
+	by alsa0.perex.cz (Postfix) with ESMTP id D7B83103B4F
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 17:53:44 +0200 (CEST)
-Received: from p5b035445.dip.t-dialin.net ([91.3.84.69] helo=excalibur)
-	by sirius.lasnet.de with esmtpsa
-	(Cipher TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63 #1)
-	id 1MwHmh-0006dx-PF by authid <stefan@sostec.de> with cram_md5
-	for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2009 17:53:38 +0200
-Received: from stefan by excalibur with local (Exim 4.69)
-	(envelope-from <stefan@excalibur.local>) id 1MwHmg-0002uV-E5
-	for alsa-devel@alsa-project.org; Fri, 09 Oct 2009 17:53:34 +0200
+	Fri,  9 Oct 2009 17:53:48 +0200 (CEST)
+In-Reply-To: <1255103612-11134-1-git-send-email-stefan@datenfreihafen.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,29 +23,208 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Stefan Schmidt <stefan@slimlogic.co.uk>, Liam Girdwood <lrg@slimlogic.co.uk>, Ian Molton <ian@mnementh.co.uk>, Graeme Gregory <gg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+From: Stefan Schmidt <stefan@slimlogic.co.uk>
 
-This is the last set of fixes I have in my queue.
+ascndump is used to dump the kcontrols in a syntax that can be used with ascnctl
+later. To list and set scenarios you can use ascnctl. This patch depends on the
+ascenario infrstructure to be merged in alsa-lib.
 
-[PATCH 1/3] ascenario: Add check for set scenario in snd_scenario_get_control_id()
-Debugged some hours that I should test it after _set() and not only after
-_list(). Better let the user know that no scenario is set instead of silently
-using a non existing scenario and fail.
+CC: Ian Molton <ian@mnementh.co.uk>
+CC: Graeme Gregory <gg@slimlogic.co.uk>
+Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Signed-off-by: Stefan Schmidt <stefan@slimlogic.co.uk>
+---
+ Makefile.am           |    2 +-
+ ascenario/Makefile.am |   14 ++++++++
+ ascenario/alsa-scn.c  |   89 +++++++++++++++++++++++++++++++++++++++++++++++++
+ ascenario/dump.c      |   34 +++++++++++++++++++
+ configure.in          |    1 +
+ 5 files changed, 139 insertions(+), 1 deletions(-)
+ create mode 100644 ascenario/Makefile.am
+ create mode 100644 ascenario/alsa-scn.c
+ create mode 100644 ascenario/dump.c
 
-[PATCH 2/3] ascenario: Convert last sprintf() to snprintf()
-Some more sprintf() replaced with the more secure snprintf().
-
-[PATCH 3/3] ascenario: Make sequences unique for every scenario.
-That one actually got me some grey hairs. I'm pretty sure I tested it earlier
-and it worked as it should, but I can find now traces of this. Fixed for good
-now.
-
-[PATCH] ascenario: Add dump and configure utils for ascneario.
-Reference patch against alsa-utils for some small utilities using the new
-scenario API. Only change from the last time is that _dump() now has two
-parameters even if the new one is still unused.
-
-regards
-Stefan Schmidt
+diff --git a/Makefile.am b/Makefile.am
+index 5296977..34c542f 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,6 +1,6 @@
+ INCLUDES=-I$(top_srcdir)/include
+ 
+-SUBDIRS = include alsactl utils m4 po
++SUBDIRS = include alsactl ascenario utils m4 po
+ if ALSAMIXER
+ SUBDIRS += alsamixer
+ endif
+diff --git a/ascenario/Makefile.am b/ascenario/Makefile.am
+new file mode 100644
+index 0000000..88f5a67
+--- /dev/null
++++ b/ascenario/Makefile.am
+@@ -0,0 +1,14 @@
++noinst_PROGRAMS = \
++        ascnctl \
++        ascndump
++
++ascndump_SOURCES = dump.c
++
++ascnctl_SOURCES = alsa-scn.c
++
++INCLUDES = \
++         -Wall -I$(top_srcdir)/include
++
++ascndump_LDADD = -lasound
++
++ascnctl_LDADD = -lasound
+diff --git a/ascenario/alsa-scn.c b/ascenario/alsa-scn.c
+new file mode 100644
+index 0000000..1610936
+--- /dev/null
++++ b/ascenario/alsa-scn.c
+@@ -0,0 +1,89 @@
++/*
++ *  This library is free software; you can redistribute it and/or
++ *  modify it under the terms of the GNU Lesser General Public
++ *  License as published by the Free Software Foundation; either
++ *  version 2 of the License, or (at your option) any later version.
++ *
++ *  This library is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  Lesser General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ *  Copyright (C) 2008-2009 SlimLogic Ltd
++ *  Authors: Liam Girdwood <lrg@slimlogic.co.uk>
++ *           Stefan Schmidt <stefan@slimlogic.co.uk>
++ */
++
++#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <alsa/asoundlib.h>
++#include <alsa/ascenario.h>
++
++#define OP_LIST 1
++#define OP_SET  2
++
++void print_usage(char *name) {
++	printf("Usage: %s <cmd> [<scenario>]\n"
++	       " list  - list available scenarios\n"
++	       " set <name> - apply scenario <name>\n\n", name);
++}
++
++int main(int argc, char *argv[])
++{
++	struct snd_scenario *scn;
++	int num, i, op = 0, err, ret = 0;
++	const char **list;
++
++	if(argc > 2) {
++		if(!strcmp(argv[1], "set"))
++			op = OP_SET;
++	} else if(argc > 1) {
++		if(!strcmp(argv[1], "list"))
++			op = OP_LIST;
++	}
++
++	if(!op) {
++		print_usage(argv[0]);
++		exit(1);
++	}
++
++	/* open library */
++	scn = snd_scenario_open("default");
++	if (scn == NULL) {
++		printf("%s: failed to init\n", argv[0]);
++		return 0;
++	}
++
++	switch (op) {
++	case OP_LIST:
++		/* get list of scenarios */
++		num = snd_scenario_list(scn, &list);
++		if (num) {
++			for(i = 0 ; i < num ; i++)
++				printf("%s\n", list[i]);
++		} else {
++			printf("%s: no scenarios\n", argv[0]);
++			ret = 2;
++		}
++	break;
++	case OP_SET:
++		err = snd_scenario_set_scn(scn, argv[2]);
++                if (err < 0) {
++                        printf("failed to set scenario: %s\n", argv[2]);
++			ret = 3;
++		}
++	break;
++	default:
++		print_usage(argv[0]);
++	break;
++	}
++
++	snd_scenario_close(scn);
++	return ret;
++}
+diff --git a/ascenario/dump.c b/ascenario/dump.c
+new file mode 100644
+index 0000000..420db5a
+--- /dev/null
++++ b/ascenario/dump.c
+@@ -0,0 +1,34 @@
++/*
++ *  This library is free software; you can redistribute it and/or
++ *  modify it under the terms of the GNU Lesser General Public
++ *  License as published by the Free Software Foundation; either
++ *  version 2 of the License, or (at your option) any later version.
++ *
++ *  This library is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  Lesser General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
++ *
++ *  Copyright (C) 2008-2009 SlimLogic Ltd
++ *  Authors: Liam Girdwood <lrg@slimlogic.co.uk>
++ *           Stefan Schmidt <stefan@slimlogic.co.uk>
++ */
++
++#include <stdio.h>
++#include <alsa/asoundlib.h>
++#include <alsa/ascenario.h>
++
++int main(int argc, char *argv[])
++{
++	if (argc != 2) {
++		printf("usage: %s card (hw: prefix needed"
++			" e.g. hw:CARD=0 or hw:Intel)\n", argv[0]);
++		return 0;
++	}
++
++	return snd_scenario_dump(NULL, argv[1]);
++}
+diff --git a/configure.in b/configure.in
+index 931d034..8fcf1d3 100644
+--- a/configure.in
++++ b/configure.in
+@@ -270,6 +270,7 @@ AC_OUTPUT(Makefile alsactl/Makefile alsactl/init/Makefile \
+ 	  m4/Makefile po/Makefile.in \
+ 	  alsaconf/alsaconf alsaconf/Makefile \
+ 	  alsaconf/po/Makefile \
++	  ascenario/Makefile \
+ 	  aplay/Makefile include/Makefile iecset/Makefile utils/Makefile \
+ 	  utils/alsa-utils.spec seq/Makefile seq/aconnect/Makefile \
+ 	  seq/aplaymidi/Makefile seq/aseqdump/Makefile seq/aseqnet/Makefile \
+-- 
+1.6.4.3
