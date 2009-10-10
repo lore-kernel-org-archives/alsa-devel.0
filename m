@@ -1,16 +1,30 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.33
-Date: Fri, 9 Oct 2009 20:38:06 +0100
-Message-ID: <20091009193806.GA5402@sirena.org.uk>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 2/2] ASoC: Blackfin
+	AD1836/AD1938 machine drivers: require SPI master
+Date: Sat, 10 Oct 2009 11:47:10 +0800
+Message-ID: <3c17e3570910092047n39db1ac9vfe76b9304897a794@mail.gmail.com>
+References: <20091006095018.GB27168@sirena.org.uk>
+	<20091006103952.GC10118@rakim.wolfsonmicro.main>
+	<8bd0f97a0910060432o67e9d00bu84c0139701709e63@mail.gmail.com>
+	<20091006115216.GA12993@rakim.wolfsonmicro.main>
+	<8bd0f97a0910061409x254b5574wdb0125db0548678@mail.gmail.com>
+	<20091006220725.GA32267@opensource.wolfsonmicro.com>
+	<8bd0f97a0910070132x2c6a1a38w373cf929d4645ef6@mail.gmail.com>
+	<20091007101927.GC3169@rakim.wolfsonmicro.main>
+	<8bd0f97a0910071727x72fe950x804f295ba25d514c@mail.gmail.com>
+	<20091008100135.GA9053@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01C61103B09
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6459F24376
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Oct 2009 21:38:08 +0200 (CEST)
-Content-Disposition: inline
+	Sat, 10 Oct 2009 05:47:31 +0200 (CEST)
+Received: by yxe34 with SMTP id 34so5455441yxe.16
+	for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2009 20:47:30 -0700 (PDT)
+In-Reply-To: <20091008100135.GA9053@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,40 +34,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 907bc6c7fc7071b00083fc11e510e47dd93df45d:
-  Mark Brown (1):
-        Merge branch 'for-2.6.32' into for-2.6.33
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
-
-Mark Brown (5):
-      ASoC: Remove absent SYNC and TDM DAI format options from i.MX SSI
-      ASoC: WM8350 capture PGA mutes are inverted
-      Merge branch 'upstream/wm8350' into for-2.6.32
-      Merge branch 'for-2.6.32' into for-2.6.33
-      ASoC: Minor fixups to tpa6130a2 driver
-
-Nicolas Ferre (1):
-      ASoC: at91sam9g20ek_2mmc board uses same audio connexion as at91sam9g20ek
-
-Peter Ujfalusi (1):
-      ASoC: TPA6130A2 amplifier driver
-
- include/sound/tpa6130a2-plat.h   |   30 +++
- sound/soc/atmel/sam9g20_wm8731.c |    2 +-
- sound/soc/codecs/Kconfig         |    4 +
- sound/soc/codecs/Makefile        |    2 +
- sound/soc/codecs/tpa6130a2.c     |  463 ++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/tpa6130a2.h     |   62 +++++
- sound/soc/codecs/wm8350.c        |    4 +-
- sound/soc/imx/mxc-ssi.c          |    8 -
- 8 files changed, 564 insertions(+), 11 deletions(-)
- create mode 100644 include/sound/tpa6130a2-plat.h
- create mode 100644 sound/soc/codecs/tpa6130a2.c
- create mode 100644 sound/soc/codecs/tpa6130a2.h
+T24gVGh1LCBPY3QgOCwgMjAwOSBhdCA2OjAxIFBNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gV2VkLCBPY3QgMDcsIDIwMDkgYXQg
+MDg6Mjc6NTZQTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6Cj4KPj4gaSBkb250IHRoaW5r
+IHRoZSBzb2MtY2FjaGUgY291bGQgYmUgdXNlZCBjdXJyZW50bHkgYnkgdGhlIGFkMTgzNiBhcyBp
+dAo+PiBkb2VzbnQgdXNlIGEgNy85IHNwbGl0IHdpdGggdGhlIGFkZHJlc3MvZGF0YS4gwqBpdCB1
+c2VzIGxpa2UgNi8xMCAoNAo+PiBhZGRyIGJpdHMsIG9uZSBiaXQgZm9yIHJlYWQvd3JpdGUsIG9u
+ZSBiaXQgaXMgYWx3YXlzIDAsIGFuZCAxMCBkYXRhCj4+IGJpdHMpLiDCoGd1ZXNzaW5nIHRoZSB3
+cml0ZSBiaXQgY2FuIGJlIGNvbnNpZGVyZWQgcGFydCBvZiB0aGUgYWRkciBhcwo+PiB0aGUgcmVh
+ZCBhbHdheXMgY29tZXMgZnJvbSB0aGUgY2FjaGUsIGJ1dCB0aGF0IHN0aWxsIGdpdmVzIHVzIDUv
+MTAKPj4gc3BsaXQuIMKgbWF5YmUgYSBuZXcgNi8xMCBzZXQgb2YgZnVuY3Mgc2hvdWxkIGJlIGFk
+ZGVkIC4uLgo+Cj4gVGhhdCdzIHRoZSBpZGVhIC0gYWRkIG5ldyBmdW5jdGlvbnMgZm9yIGFueSBu
+ZXcgcmVnaXN0ZXIgZm9ybWF0cy4Kd2UgZG8gdGhvc2UgYmFzZWQgb24gdGhlIGlkZWEgdGhhdCBp
+dCBpcyBhIHdhc3RlIGFsbCBjb2RlY3MgbmVlZCB0bwp1c2UgYWxtb3N0IHNhbWUgd2F5cyB0byBo
+YW5kbGUgcmVnaXN0ZXIgYWNjZXNzLiBJZiB3ZSB1c2Ugc29jLWNhY2hlIHRvCmhhbmRsZSByZWdp
+c3RlciBhY2Nlc3MgaXNzdWVzIGFuZCBydW4gYXMgYWJzdHJhY3QgbGF5ZXIgZm9yIGFsbApjb2Rl
+Y3MsIHdoeSBub3QgcmVuYW1lIGl0IHRvIHNvYy1yZWcgb3Igc29jLWJ1cz8gSXQgc2VlbXMgY2Fj
+aGUgaXMKb25seSBhIGxpdHRsZSBwYXJ0IG9mIHRoZSByZXNwb25zaWJpbGl0eSBvZiAgdGhpcyBt
+b2R1bGUuCkl0J3MgYmV0dGVyIHRoYXQgZnVuY3Rpb25zIGxpa2UgeHhfN185X3JlYWQgeHhfN185
+X3dyaXRlIHh4XzhfOF9yZWFkCnh4XzhfOF93cml0ZSBzaG91bGQgbm90IGJlY29tZSBBUEkgYmVj
+YXVzZSB3ZSBuZXZlciBrbm93IHdoYXQgd2lsbCBiZQp0aGUgZm9ybWF0IGZvciBjb2RlY3MuIFdl
+IHNob3VsZCBoYXZlIGEgeHhfbl9tX3JlYWQveHhfbl9tX3dyaXRlIG9yCmp1c3QgYSB4eF9yZWFk
+L3h4X3dyaXRlLCB3aXRoIG4gYW5kIG0gYXMgcGFyYW1ldGVycz8KQSBjb2RlYyB1c2luZyBzbmRf
+c29jXzdfOV9zcGlfd3JpdGUvc25kX3NvY184XzE2X3JlYWRfaTJjIHNob3VsZApzZWxlY3QgU1BJ
+IGFuZCBJMkMgaW4gZmFjdC4gT3RoZXJ3aXNlLCB3aHkgZG9lcyBpdCB1c2UgdGhlc2UgZnVuY3Rp
+b25zCmFzIGNvZGVjLT5od19yZWFkKCkvY29kZWMtPmh3X3dyaXRlKCkgIGJ1dCBub3QgZW5hYmxl
+IFNQSSBhbmQgSTJDPyBJdApzZWVtcyB0aGF0IGRlZmluaW5nIHNuZF9zb2NfN185X3NwaV93cml0
+ZSBhbmQgc28gb24gYXMgTlVMTCB3aGVuIFNQSQppcyBub3Qgc2VsZWN0ZWQgaXMgcmVhbGx5IHVz
+ZWxlc3MsIGp1c3QgbGV0IHVzIHBhc3MgdGhlIGNvbXBpbGluZyB0bwpnZXQgYSBtb2R1bGUgd2hp
+Y2ggY2FuJ3Qgd29yayBhdCBhbGwhCgo+Cj4+IHNuZF9zb2NfN185X3dyaXRlKCkgbG9va3MgbGlr
+ZSBpdCBkb2VzIGEgbGl0dGxlIG1vcmUgYml0IHdvcmsgdGhhbiBpdAo+PiBuZWVkcyB0byA/IMKg
+aWYgZGF0YSBpcyBkZWNsYXJlZCBhcyBhIHUxNiwgdGhlbiB5b3UgaGF2ZToKPj4gdTE2IGRhdGEg
+PSAocmVnIDw8IDkpIHwgKHZhbHVlICYgMHgwMWZmKTsKPj4gdGhpcyBpcyB3aGF0IHRoZSBhZDE4
+MzYgZHJpdmVyIGRvZXMgbm93IGZvciBpdHMgZGF0YSBzcGxpdC4KPgo+IFByb2JhYmx5LiDCoEkn
+ZCBuZWVkIHRvIGNoZWNrIGJ1dCBJIGJlbGlldmUgdGhhdCdzIHRoZXJlIHRvIGhhbmRsZQo+IGVu
+ZGlhbm5lc3MgdmFyaWF0aW9ucyBpbiB0aGUgaG9zdCwgdGhvdWdoIGEgY3B1X3RvXyBpbiB3aGF0
+IHlvdSBoYXZlCj4gYWJvdmUgb3VnaHQgdG8gYmUgYWJsZSB0byB0YWtlIGNhcmUgb2YgdGhhdC4g
+wqBUaGUgY29kZSB3YXMgY3V0J24ncGFzdGVkCj4gZnJvbSB3aGF0IHdhcyBpbiB0aGUgZHJpdmVy
+cyBhbHJlYWR5Lgo+Cj4+IGluIHRoZSBtZWFuIHRpbWUsIHJhdGhlciB0aGFuIGFkZGluZyAjaWZk
+ZWYgdG8gdGhlIGNvZGVjIGRyaXZlciwgd2UKPj4gY291bGQgY3JlYXRlIGEgbG9jYWwgaGVhZGVy
+IGxpa2UgImJ1cy1zdHVicy5oIiB0aGF0IHN0dWJzIGFsbCB0aGUKPj4gcmVsZXZhbnQgZnVuY3Rp
+b25zIHRvIGFuIGVycm9yIHZhbHVlLiDCoHRoZW4gYWxsIGNvZGVjIGRyaXZlcnMgdGhhdAo+PiBk
+b250IHVzZSBzb2MtY2FjaGUgY2FuIHVzZSB0aGF0IGluc3RlYWQgYW5kIHRoZSBvbmx5IGNoYW5n
+ZSBuZWVkZWQgaXMKPj4gdG8gYWRkOgo+PiAjaW5jbHVkZSAiYnVzLXN0dWJzLmgiCj4KPiBJJ20g
+bm90IHN1cmUgSSBmZWVsIHVwIHRvIGRvaW5nIHRoYXQgbG9jYWxseSBpbiBBU29DIHJhdGhlciB0
+aGFuIGluIHRoZQo+IHJlbGV2YW50IHN1YnN5c3RlbXMuCj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
