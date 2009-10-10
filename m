@@ -1,19 +1,14 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: VIA HDA patch problem (was [PATCH 17/31] HDA
-	patch_via.c: Add second S/PDIF out control for VT1708S and VT1702.)
-Date: Fri, 9 Oct 2009 23:48:01 -0600
-Message-ID: <51f3faa70910092248g78dcad83s556cc106047de159@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] wss: convert CS4231 mixer to dB scale
+Date: Sat, 10 Oct 2009 10:25:39 +0200
+Message-ID: <20091010102539.0da980bd.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3352556512144989096=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
-	[209.85.223.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7A27224433
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 3A9B5243A0
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Oct 2009 07:48:02 +0200 (CEST)
-Received: by iwn36 with SMTP id 36so4823873iwn.24
-	for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2009 22:48:01 -0700 (PDT)
+	Sat, 10 Oct 2009 10:09:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,36 +18,143 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Li Bo <liboat@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, LoganLi@viatech.com.cn, lydiawang@viatech.com.cn
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-It looks like there's some problem somewhere in the patch set posted
-on Oct. 7th that wasn't in the original patch set from the 5th: I
-can't open the mixer for the HDA device:
+--===============3352556512144989096==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-alsamixer -c 1
-cannot load mixer controls: Operation not permitted
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
->From strace:
+Convert CS4231 mixer to dB scale after AD1848 mixer.
 
-open("/dev/snd/controlC1", O_RDWR)      = 3
-ioctl(3, USBDEVFS_CONTROL, 0x7fff338e57fc) = 0
-fcntl(3, F_GETFL)                       = 0x8002 (flags O_RDWR|O_LARGEFILE)
-fcntl(3, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
-ioctl(3, USBDEVFS_RELEASEINTERFACE, 0x7fff338e5990) = 0
-ioctl(3, USBDEVFS_RELEASEINTERFACE, 0x7fff338e5990) = 0
-ioctl(3, USBDEVFS_CONNECTINFO, 0x7fff338e5670) = 0
-ioctl(3, USBDEVFS_IOCTL, 0x7fff338e4ea0) = -1 EPERM (Operation not permitted)
+Also, add missing microphone boost control for the AD1848
+and correct wrong bits for loopback volume on the AD1848.
 
-Presumably something is creating a control that isn't readable, or
-writable or something, and this is causing the mixer to fail to load?
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
 
-Also, with regard to the SPDIF problem I'm seeing on my Asus P7P55D
-(VT1828S), I was able to dig up a little bit more info: by using
-hda_analyzer to set the ENABLE flag on the Digital Converter, I was
-able to get the optical SPDIF port to light up and my receiver
-indicates PCM input. Unfortunately there's still no actual audio
-coming through on the receiver, just silence. However, obviously that
-ENABLE flag is going to have to get set somehow to have any hope of
-SPDIF working, and currently it seems like it's not..
+I wonder if it is a good idea to reorder the snd_wss_controls table
+so the first part is identical to the snd_ad1848_controls. The 
+snd_ad1848_controls can be removed completely and the first
+part of the snd_wss_controls can be used for the AD1848 chips.
+
+
+ sound/isa/wss/wss_lib.c |   43 ++++++++++++++++++++++++++-----------------
+ 1 files changed, 26 insertions(+), 17 deletions(-)
+
+diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
+index 5d2ba1b..754a208 100644
+--- a/sound/isa/wss/wss_lib.c
++++ b/sound/isa/wss/wss_lib.c
+@@ -2198,6 +2198,7 @@ EXPORT_SYMBOL(snd_wss_put_double);
+ static const DECLARE_TLV_DB_SCALE(db_scale_6bit, -9450, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(db_scale_5bit_12db_max, -3450, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(db_scale_rec_gain, 0, 150, 0);
++static const DECLARE_TLV_DB_SCALE(db_scale_4bit, -4500, 300, 0);
+ 
+ static struct snd_kcontrol_new snd_ad1848_controls[] = {
+ WSS_DOUBLE("PCM Playback Switch", 0, CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT,
+@@ -2224,38 +2225,45 @@ WSS_DOUBLE_TLV("Capture Volume", 0, CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT,
+ 	.get = snd_wss_get_mux,
+ 	.put = snd_wss_put_mux,
+ },
++WSS_DOUBLE("Mic Boost", 0,
++		CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT, 5, 5, 1, 0),
+ WSS_SINGLE("Loopback Capture Switch", 0, CS4231_LOOPBACK, 0, 1, 0),
+-WSS_SINGLE_TLV("Loopback Capture Volume", 0, CS4231_LOOPBACK, 1, 63, 0,
++WSS_SINGLE_TLV("Loopback Capture Volume", 0, CS4231_LOOPBACK, 2, 63, 1,
+ 	       db_scale_6bit),
+ };
+ 
+ static struct snd_kcontrol_new snd_wss_controls[] = {
+ WSS_DOUBLE("PCM Playback Switch", 0,
+ 		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 7, 7, 1, 1),
+-WSS_DOUBLE("PCM Playback Volume", 0,
+-		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 0, 0, 63, 1),
++WSS_DOUBLE_TLV("PCM Playback Volume", 0,
++		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 0, 0, 63, 1,
++		db_scale_6bit),
+ WSS_DOUBLE("Line Playback Switch", 0,
+ 		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 7, 7, 1, 1),
+-WSS_DOUBLE("Line Playback Volume", 0,
+-		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 0, 0, 31, 1),
++WSS_DOUBLE_TLV("Line Playback Volume", 0,
++		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 0, 0, 31, 1,
++		db_scale_5bit_12db_max),
+ WSS_DOUBLE("Aux Playback Switch", 0,
+ 		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 7, 7, 1, 1),
+-WSS_DOUBLE("Aux Playback Volume", 0,
+-		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 0, 0, 31, 1),
++WSS_DOUBLE_TLV("Aux Playback Volume", 0,
++		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 0, 0, 31, 1,
++		db_scale_5bit_12db_max),
+ WSS_DOUBLE("Aux Playback Switch", 1,
+ 		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 7, 7, 1, 1),
+-WSS_DOUBLE("Aux Playback Volume", 1,
+-		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 0, 0, 31, 1),
++WSS_DOUBLE_TLV("Aux Playback Volume", 1,
++		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 0, 0, 31, 1,
++		db_scale_5bit_12db_max),
+ WSS_SINGLE("Mono Playback Switch", 0,
+ 		CS4231_MONO_CTRL, 7, 1, 1),
+-WSS_SINGLE("Mono Playback Volume", 0,
+-		CS4231_MONO_CTRL, 0, 15, 1),
++WSS_SINGLE_TLV("Mono Playback Volume", 0,
++		CS4231_MONO_CTRL, 0, 15, 1,
++		db_scale_4bit),
+ WSS_SINGLE("Mono Output Playback Switch", 0,
+ 		CS4231_MONO_CTRL, 6, 1, 1),
+ WSS_SINGLE("Mono Output Playback Bypass", 0,
+ 		CS4231_MONO_CTRL, 5, 1, 0),
+-WSS_DOUBLE("Capture Volume", 0,
+-		CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT, 0, 0, 15, 0),
++WSS_DOUBLE_TLV("Capture Volume", 0, CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT,
++		0, 0, 15, 0, db_scale_rec_gain),
+ {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "Capture Source",
+@@ -2267,15 +2275,16 @@ WSS_DOUBLE("Mic Boost", 0,
+ 		CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT, 5, 5, 1, 0),
+ WSS_SINGLE("Loopback Capture Switch", 0,
+ 		CS4231_LOOPBACK, 0, 1, 0),
+-WSS_SINGLE("Loopback Capture Volume", 0,
+-		CS4231_LOOPBACK, 2, 63, 1)
++WSS_SINGLE_TLV("Loopback Capture Volume", 0, CS4231_LOOPBACK, 2, 63, 1,
++		db_scale_6bit),
+ };
+ 
+ static struct snd_kcontrol_new snd_opti93x_controls[] = {
+ WSS_DOUBLE("Master Playback Switch", 0,
+ 		OPTi93X_OUT_LEFT, OPTi93X_OUT_RIGHT, 7, 7, 1, 1),
+-WSS_DOUBLE("Master Playback Volume", 0,
+-		OPTi93X_OUT_LEFT, OPTi93X_OUT_RIGHT, 1, 1, 31, 1),
++WSS_DOUBLE_TLV("Master Playback Volume", 0,
++		OPTi93X_OUT_LEFT, OPTi93X_OUT_RIGHT, 1, 1, 31, 1,
++		db_scale_6bit),
+ WSS_DOUBLE("PCM Playback Switch", 0,
+ 		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 7, 7, 1, 1),
+ WSS_DOUBLE("PCM Playback Volume", 0,
+-- 
+1.6.0.3
+
+
+----------------------------------------------------------------------
+Szukasz pracy? Chcesz lepiej zarabiaæ?
+Sprawd¼ oferty na http://link.interia.pl/f23ba
+
+
+--===============3352556512144989096==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3352556512144989096==--
