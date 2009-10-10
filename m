@@ -1,16 +1,16 @@
 From: Logan Li <loganli@viatech.com.cn>
-Subject: [PATCH 7/30] ALSA: HDA VIA: Remove unused argument of
-	via_new_analog_input
-Date: Sat, 10 Oct 2009 19:07:39 +0800
-Message-ID: <4AD06AFB.1030102@viatech.com.cn>
+Subject: [PATCH 9/30] ALSA: HDA VIA: Rewrite
+	via_independent_hp_put
+Date: Sat, 10 Oct 2009 19:07:47 +0800
+Message-ID: <4AD06B03.8000109@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB6E6244F3
+	by alsa0.perex.cz (Postfix) with ESMTP id 32B3210383B
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Oct 2009 13:07:35 +0200 (CEST)
+	Sat, 10 Oct 2009 13:07:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,75 +25,161 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: HDA VIA: Remove unused argument of via_new_analog_input
+Subject: ALSA: HDA VIA: Rewrite via_independent_hp_put
+
+Use hp_independent_mode_index to store hp index, and simplify function
+via_independent_hp_put with it.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 Signed-off-by: Logan Li <loganli@viatech.com.cn>
 
 ---
- sound/pci/hda/patch_via.c |   19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ sound/pci/hda/patch_via.c |   87 ++++++++++++++++++++++++----------------------
+ 1 file changed, 47 insertions(+), 40 deletions(-)
 
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -317,8 +317,8 @@
+@@ -252,6 +252,7 @@
+ 	/* HP mode source */
+ 	const struct hda_input_mux *hp_mux;
+ 	unsigned int hp_independent_mode;
++	unsigned int hp_independent_mode_index;
+ 
+ 	enum VIA_HDA_CODEC codec_type;
+ 
+@@ -584,6 +585,36 @@
+ 	}
  }
  
- /* create input playback/capture controls for the given pin */
--static int via_new_analog_input(struct via_spec *spec, hda_nid_t pin,
--				const char *ctlname, int idx, int mix_nid)
-+static int via_new_analog_input(struct via_spec *spec, const char *ctlname,
-+				int idx, int mix_nid)
++static int update_side_mute_status(struct hda_codec *codec)
++{
++	/* mute side channel */
++	struct via_spec *spec = codec->spec;
++	unsigned int parm = spec->hp_independent_mode
++		? AMP_OUT_MUTE : AMP_OUT_UNMUTE;
++	hda_nid_t sw3;
++
++	switch (spec->codec_type) {
++	case VT1708:
++		sw3 = 0x1b;
++		break;
++	case VT1709_10CH:
++		sw3 = 0x29;
++		break;
++	case VT1708B_8CH:
++	case VT1708S:
++		sw3 = 0x27;
++		break;
++	default:
++		sw3 = 0;
++		break;
++	}
++
++	if (sw3)
++		snd_hda_codec_write(codec, sw3, 0, AC_VERB_SET_AMP_GAIN_MUTE,
++				    parm);
++	return 0;
++}
++
+ static int via_independent_hp_put(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
  {
- 	char name[32];
- 	int err;
-@@ -1480,8 +1480,7 @@
- 			idx = 1;
- 			break;
- 		}
--		err = via_new_analog_input(spec, cfg->input_pins[i], labels[i],
--					   idx, 0x17);
-+		err = via_new_analog_input(spec, labels[i], idx, 0x17);
- 		if (err < 0)
- 			return err;
- 		imux->items[imux->num_items].label = labels[i];
-@@ -2014,8 +2013,7 @@
- 			idx = 1;
- 			break;
- 		}
--		err = via_new_analog_input(spec, cfg->input_pins[i], labels[i],
--					   idx, 0x18);
-+		err = via_new_analog_input(spec, labels[i], idx, 0x18);
- 		if (err < 0)
- 			return err;
- 		imux->items[imux->num_items].label = labels[i];
-@@ -2576,8 +2574,7 @@
- 			idx = 1;
- 			break;
- 		}
--		err = via_new_analog_input(spec, cfg->input_pins[i], labels[i],
--					   idx, 0x16);
-+		err = via_new_analog_input(spec, labels[i], idx, 0x16);
- 		if (err < 0)
- 			return err;
- 		imux->items[imux->num_items].label = labels[i];
-@@ -3048,8 +3045,7 @@
- 			idx = 1;
- 			break;
- 		}
--		err = via_new_analog_input(spec, cfg->input_pins[i], labels[i],
--					   idx, 0x16);
-+		err = via_new_analog_input(spec, labels[i], idx, 0x16);
- 		if (err < 0)
- 			return err;
- 		imux->items[imux->num_items].label = labels[i];
-@@ -3402,8 +3398,7 @@
- 			idx = 3;
- 			break;
- 		}
--		err = via_new_analog_input(spec, cfg->input_pins[i],
--					   labels[i], idx, 0x1A);
-+		err = via_new_analog_input(spec, labels[i], idx, 0x1A);
- 		if (err < 0)
- 			return err;
- 		imux->items[imux->num_items].label = labels[i];
+@@ -591,47 +622,18 @@
+ 	struct via_spec *spec = codec->spec;
+ 	hda_nid_t nid = spec->autocfg.hp_pins[0];
+ 	unsigned int pinsel = ucontrol->value.enumerated.item[0];
+-	unsigned int con_nid = snd_hda_codec_read(codec, nid, 0,
+-					 AC_VERB_GET_CONNECT_LIST, 0) & 0xff;
+-
+-	if (con_nid == spec->multiout.hp_nid) {
+-		if (pinsel == 0) {
+-			if (!spec->hp_independent_mode) {
+-				if (spec->multiout.num_dacs > 1)
+-					spec->multiout.num_dacs -= 1;
+-				spec->hp_independent_mode = 1;
+-			}
+-		} else if (pinsel == 1) {
+-		       if (spec->hp_independent_mode) {
+-				if (spec->multiout.num_dacs > 1)
+-					spec->multiout.num_dacs += 1;
+-				spec->hp_independent_mode = 0;
+-		       }
+-		}
+-	} else {
+-		if (pinsel == 0) {
+-			if (spec->hp_independent_mode) {
+-				if (spec->multiout.num_dacs > 1)
+-					spec->multiout.num_dacs += 1;
+-				spec->hp_independent_mode = 0;
+-			}
+-		} else if (pinsel == 1) {
+-		       if (!spec->hp_independent_mode) {
+-				if (spec->multiout.num_dacs > 1)
+-					spec->multiout.num_dacs -= 1;
+-				spec->hp_independent_mode = 1;
+-		       }
+-		}
+-	}
+-	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CONNECT_SEL,
+-			    pinsel);
+-
+-	if (spec->multiout.hp_nid &&
+-	    spec->multiout.hp_nid != spec->multiout.dac_nids[HDA_FRONT])
+-			snd_hda_codec_setup_stream(codec,
+-						   spec->multiout.hp_nid,
+-						   0, 0, 0);
++	/* Get Independent Mode index of headphone pin widget */
++	spec->hp_independent_mode = spec->hp_independent_mode_index == pinsel
++		? 1 : 0;
++
++	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CONNECT_SEL, pinsel);
++
++	if (spec->multiout.hp_nid && spec->multiout.hp_nid
++	    != spec->multiout.dac_nids[HDA_FRONT])
++		snd_hda_codec_setup_stream(codec, spec->multiout.hp_nid,
++					   0, 0, 0);
+ 
++	update_side_mute_status(codec);
+ 	/* update HP volume/swtich active state */
+ 	if (spec->codec_type == VT1708S
+ 	    || spec->codec_type == VT1702) {
+@@ -1447,6 +1449,7 @@
+ 		return 0;
+ 
+ 	spec->multiout.hp_nid = VT1708_HP_NID; /* AOW3 */
++	spec->hp_independent_mode_index = 1;
+ 
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
+@@ -1982,6 +1985,7 @@
+ 		spec->multiout.hp_nid = VT1709_HP_DAC_NID;
+ 	else if (spec->multiout.num_dacs == 3) /* 6 channels */
+ 		spec->multiout.hp_nid = 0;
++	spec->hp_independent_mode_index = 1;
+ 
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
+@@ -2541,6 +2545,7 @@
+ 		return 0;
+ 
+ 	spec->multiout.hp_nid = VT1708B_HP_NID; /* AOW3 */
++	spec->hp_independent_mode_index = 1;
+ 
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
+@@ -3011,6 +3016,7 @@
+ 		return 0;
+ 
+ 	spec->multiout.hp_nid = VT1708S_HP_NID; /* AOW3 */
++	spec->hp_independent_mode_index = 1;
+ 
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
+@@ -3368,6 +3374,7 @@
+ 	if (!pin)
+ 		return 0;
+ 	spec->multiout.hp_nid = 0x1D;
++	spec->hp_independent_mode_index = 0;
+ 
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+ 			      "Headphone Playback Volume",
