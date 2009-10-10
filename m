@@ -1,15 +1,15 @@
 From: Logan Li <loganli@viatech.com.cn>
-Subject: [PATCH 20/30] ALSA: HDA VIA: Replace MIC_BOOST_VOLUME.
-Date: Sat, 10 Oct 2009 19:08:31 +0800
-Message-ID: <4AD06B2F.1020401@viatech.com.cn>
+Subject: [PATCH 24/30] ALSA: HDA VIA: Add VT1716S support.
+Date: Sat, 10 Oct 2009 19:08:41 +0800
+Message-ID: <4AD06B39.2020802@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id EBBD0103BE4
+	by alsa0.perex.cz (Postfix) with ESMTP id EDC47103BB0
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Oct 2009 13:08:23 +0200 (CEST)
+	Sat, 10 Oct 2009 13:08:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,122 +24,771 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: HDA VIA: Replace MIC_BOOST_VOLUME.
-
-With snd_hda_override_amp_caps.
+Subject: ALSA: HDA VIA: Add VT1716S support.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 Signed-off-by: Logan Li <loganli@viatech.com.cn>
 
 ---
- sound/pci/hda/patch_via.c |   72 +++++++++-------------------------------------
- 1 file changed, 15 insertions(+), 57 deletions(-)
+ sound/pci/hda/patch_via.c |  648 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 644 insertions(+), 4 deletions(-)
 
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -197,46 +197,6 @@
- 	AUTO_SEQ_SIDE
+@@ -87,12 +87,13 @@
+ 	VT1708BCE,
+ 	VT1702,
+ 	VT1718S,
++	VT1716S,
+ 	CODEC_TYPES,
  };
  
--/* Some VT1708S based boards gets the micboost setting wrong, so we have
-- * to apply some brute-force and re-write the TLV's by software. */
--static int mic_boost_tlv(struct snd_kcontrol *kcontrol, int op_flag,
--			 unsigned int size, unsigned int __user *_tlv)
--{
--	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	hda_nid_t nid = get_amp_nid(kcontrol);
--
--	if (get_codec_type(codec) == VT1708S
--	    && (nid == 0x1a || nid == 0x1e)) {
--		if (size < 4 * sizeof(unsigned int))
--			return -ENOMEM;
--		if (put_user(1, _tlv))	/* SNDRV_CTL_TLVT_DB_SCALE */
--			return -EFAULT;
--		if (put_user(2 * sizeof(unsigned int), _tlv + 1))
--			return -EFAULT;
--		if (put_user(0, _tlv + 2)) /* offset = 0 */
--			return -EFAULT;
--		if (put_user(1000, _tlv + 3)) /* step size = 10 dB */
--			return -EFAULT;
--	}
--	return 0;
--}
--
--static int mic_boost_volume_info(struct snd_kcontrol *kcontrol,
--				 struct snd_ctl_elem_info *uinfo)
--{
--	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	hda_nid_t nid = get_amp_nid(kcontrol);
--
--	if (get_codec_type(codec) == VT1708S
--	    && (nid == 0x1a || nid == 0x1e)) {
--		uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
--		uinfo->count = 2;
--		uinfo->value.integer.min = 0;
--		uinfo->value.integer.max = 3;
--	}
--	return 0;
--}
--
- static void analog_low_current_mode(struct hda_codec *codec, int stream_idle);
- static void set_jack_power_state(struct hda_codec *codec);
- static int is_aa_path_mute(struct hda_codec *codec);
-@@ -3080,29 +3040,15 @@
+ struct via_spec {
+ 	/* codec parameterization */
+-	struct snd_kcontrol_new *mixers[4];
++	struct snd_kcontrol_new *mixers[6];
+ 	unsigned int num_mixers;
  
- /* Patch for VT1708S */
- 
--/* VT1708S software backdoor based override for buggy hardware micboost
-- * setting */
--#define MIC_BOOST_VOLUME(xname, nid) {				\
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,		\
--	.name = xname,					\
--	.index = 0,					\
--	.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |	\
--	SNDRV_CTL_ELEM_ACCESS_TLV_READ |		\
--	SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK,		\
--	.info = mic_boost_volume_info,			\
--	.get = snd_hda_mixer_amp_volume_get,		\
--	.put = snd_hda_mixer_amp_volume_put,		\
--	.tlv = { .c = mic_boost_tlv },			\
--	.private_value = HDA_COMPOSE_AMP_VAL(nid, 3, 0, HDA_INPUT) }
+ 	struct hda_verb *init_verbs[5];
+@@ -135,7 +136,7 @@
+ 	unsigned int hp_independent_mode;
+ 	unsigned int hp_independent_mode_index;
+ 	unsigned int smart51_enabled;
 -
- /* capture mixer elements */
- static struct snd_kcontrol_new vt1708S_capture_mixer[] = {
- 	HDA_CODEC_VOLUME("Capture Volume", 0x13, 0x0, HDA_INPUT),
- 	HDA_CODEC_MUTE("Capture Switch", 0x13, 0x0, HDA_INPUT),
- 	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x14, 0x0, HDA_INPUT),
- 	HDA_CODEC_MUTE_IDX("Capture Switch", 1, 0x14, 0x0, HDA_INPUT),
--	MIC_BOOST_VOLUME("Mic Boost Capture Volume", 0x1A),
--	MIC_BOOST_VOLUME("Front Mic Boost Capture Volume", 0x1E),
++	unsigned int dmic_enabled;
+ 	enum VIA_HDA_CODEC codec_type;
+ 
+ 	/* work to check hp jack state */
+@@ -179,6 +180,8 @@
+ 	else if ((dev_id & 0xfff) == 0x428
+ 		 && (dev_id >> 12) < 8)
+ 		codec_type = VT1718S;
++	else if (dev_id == 0x0433 || dev_id == 0xa721)
++		codec_type = VT1716S;
+ 	else if (dev_id == 0x0441 || dev_id == 0x4441)
+ 		codec_type = VT1718S;
+ 	else
+@@ -189,6 +192,7 @@
+ #define VIA_HP_EVENT		0x01
+ #define VIA_GPIO_EVENT		0x02
+ #define VIA_JACK_EVENT		0x04
++#define VIA_MONO_EVENT		0x08
+ 
+ enum {
+ 	VIA_CTL_WIDGET_VOL,
+@@ -295,6 +299,11 @@
+ 	0x10, 0x11
+ };
+ 
++static hda_nid_t vt1716S_adc_nids[2] = {
++	/* ADC1-2 */
++	0x13, 0x14
++};
++
+ /* add dynamic controls */
+ static int via_add_control(struct via_spec *spec, int type, const char *name,
+ 			   unsigned long val)
+@@ -584,6 +593,106 @@
+ 			snd_hda_codec_write(codec, 0xc, 0,
+ 					    AC_VERB_SET_POWER_STATE, parm);
+ 		}
++	} else if (spec->codec_type == VT1716S) {
++		unsigned int mono_out, present;
++		/* SW0 (17h) = stereo mixer */
++		imux_is_smixer = snd_hda_codec_read(
++			codec, 0x17, 0, AC_VERB_GET_CONNECT_SEL, 0x00) ==  5;
++		/* inputs */
++		/* PW 1/2/5 (1ah/1bh/1eh) */
++		parm = AC_PWRST_D3;
++		set_pin_power_state(codec, 0x1a, &parm);
++		set_pin_power_state(codec, 0x1b, &parm);
++		set_pin_power_state(codec, 0x1e, &parm);
++		if (imux_is_smixer)
++			parm = AC_PWRST_D0;
++		/* SW0 (17h), AIW0(13h) */
++		snd_hda_codec_write(codec, 0x17, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++		snd_hda_codec_write(codec, 0x13, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++
++		parm = AC_PWRST_D3;
++		set_pin_power_state(codec, 0x1e, &parm);
++		/* PW11 (22h) */
++		if (spec->dmic_enabled)
++			set_pin_power_state(codec, 0x22, &parm);
++		else
++			snd_hda_codec_write(
++				codec, 0x22, 0,
++				AC_VERB_SET_POWER_STATE, AC_PWRST_D3);
++
++		/* SW2(26h), AIW1(14h) */
++		snd_hda_codec_write(codec, 0x26, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++		snd_hda_codec_write(codec, 0x14, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++
++		/* outputs */
++		/* PW0 (19h), SW1 (18h), AOW1 (11h) */
++		parm = AC_PWRST_D3;
++		set_pin_power_state(codec, 0x19, &parm);
++		/* Smart 5.1 PW2(1bh) */
++		if (spec->smart51_enabled)
++			set_pin_power_state(codec, 0x1b, &parm);
++		snd_hda_codec_write(codec, 0x18, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++		snd_hda_codec_write(codec, 0x11, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++
++		/* PW7 (23h), SW3 (27h), AOW3 (25h) */
++		parm = AC_PWRST_D3;
++		set_pin_power_state(codec, 0x23, &parm);
++		/* Smart 5.1 PW1(1ah) */
++		if (spec->smart51_enabled)
++			set_pin_power_state(codec, 0x1a, &parm);
++		snd_hda_codec_write(codec, 0x27, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++
++		/* Smart 5.1 PW5(1eh) */
++		if (spec->smart51_enabled)
++			set_pin_power_state(codec, 0x1e, &parm);
++		snd_hda_codec_write(codec, 0x25, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++
++		/* Mono out */
++		/* SW4(28h)->MW1(29h)-> PW12 (2ah)*/
++		present = snd_hda_codec_read(
++			codec, 0x1c, 0, AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
++		if (present)
++			mono_out = 0;
++		else {
++			present = snd_hda_codec_read(
++				codec, 0x1d, 0, AC_VERB_GET_PIN_SENSE, 0)
++				& 0x80000000;
++			if (!spec->hp_independent_mode && present)
++				mono_out = 0;
++			else
++				mono_out = 1;
++		}
++		parm = mono_out ? AC_PWRST_D0 : AC_PWRST_D3;
++		snd_hda_codec_write(codec, 0x28, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++		snd_hda_codec_write(codec, 0x29, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++		snd_hda_codec_write(codec, 0x2a, 0, AC_VERB_SET_POWER_STATE,
++				    parm);
++
++		/* PW 3/4 (1ch/1dh) */
++		parm = AC_PWRST_D3;
++		set_pin_power_state(codec, 0x1c, &parm);
++		set_pin_power_state(codec, 0x1d, &parm);
++		/* HP Independent Mode, power on AOW3 */
++		if (spec->hp_independent_mode)
++			snd_hda_codec_write(codec, 0x25, 0,
++					    AC_VERB_SET_POWER_STATE, parm);
++
++		/* force to D0 for internal Speaker */
++		/* MW0 (16h), AOW0 (10h) */
++		snd_hda_codec_write(codec, 0x16, 0, AC_VERB_SET_POWER_STATE,
++				    imux_is_smixer ? AC_PWRST_D0 : parm);
++		snd_hda_codec_write(codec, 0x10, 0, AC_VERB_SET_POWER_STATE,
++				    mono_out ? AC_PWRST_D0 : parm);
+ 	}
+ }
+ 
+@@ -738,7 +847,8 @@
+ 	/* update HP volume/swtich active state */
+ 	if (spec->codec_type == VT1708S
+ 	    || spec->codec_type == VT1702
+-	    || spec->codec_type == VT1718S) {
++	    || spec->codec_type == VT1718S
++	    || spec->codec_type == VT1716S) {
+ 		activate_ctl(codec, "Headphone Playback Volume",
+ 			     spec->hp_independent_mode);
+ 		activate_ctl(codec, "Headphone Playback Switch",
+@@ -797,6 +907,7 @@
+ 	case VT1708B_8CH:
+ 	case VT1708B_4CH:
+ 	case VT1708S:
++	case VT1716S:
+ 		nid_mixer = 0x16;
+ 		start_idx = 2;
+ 		end_idx = 4;
+@@ -898,7 +1009,8 @@
+ 					HDA_AMP_UNMUTE);
+ 		}
+ 		if (i == AUTO_PIN_FRONT_MIC) {
+-			if (spec->codec_type == VT1708S) {
++			if (spec->codec_type == VT1708S
++			    || spec->codec_type == VT1716S) {
+ 				/* input = index 1 (AOW3) */
+ 				snd_hda_codec_write(
+ 					codec, nid, 0,
+@@ -961,6 +1073,7 @@
+ 	case VT1708B_8CH:
+ 	case VT1708B_4CH:
+ 	case VT1708S:
++	case VT1716S:
+ 		nid_mixer = 0x16;
+ 		start_idx = 2;
+ 		end_idx = 4;
+@@ -1025,6 +1138,7 @@
+ 		break;
+ 	case VT1708S:
+ 	case VT1718S:
++	case VT1716S:
+ 		verb = 0xf73;
+ 		parm = enable ? 0x51 : 0xe1; /* 0x51: 4/28x, 0xe1: 1x */
+ 		break;
+@@ -1475,6 +1589,36 @@
+ 	}
+ }
+ 
++/* mute mono out if HP or Line out is plugged */
++static void via_mono_automute(struct hda_codec *codec)
++{
++	unsigned int hp_present, lineout_present;
++	struct via_spec *spec = codec->spec;
++
++	if (spec->codec_type != VT1716S)
++		return;
++
++	lineout_present = snd_hda_codec_read(
++		codec, spec->autocfg.line_out_pins[0], 0,
++		AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
++
++	/* Mute Mono Out if Line Out is plugged */
++	if (lineout_present) {
++		snd_hda_codec_amp_stereo(
++			codec, 0x2A, HDA_OUTPUT, 0, HDA_AMP_MUTE, HDA_AMP_MUTE);
++		return;
++	}
++
++	hp_present = snd_hda_codec_read(
++		codec, spec->autocfg.hp_pins[0], 0,
++		AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
++
++	if (!spec->hp_independent_mode)
++		snd_hda_codec_amp_stereo(
++			codec, 0x2A, HDA_OUTPUT, 0, HDA_AMP_MUTE,
++			hp_present ? HDA_AMP_MUTE : 0);
++}
++
+ static void via_gpio_control(struct hda_codec *codec)
+ {
+ 	unsigned int gpio_data;
+@@ -1534,6 +1678,8 @@
+ 		via_gpio_control(codec);
+ 	if (res & VIA_JACK_EVENT)
+ 		set_jack_power_state(codec);
++	if (res & VIA_MONO_EVENT)
++		via_mono_automute(codec);
+ }
+ 
+ static int via_init(struct hda_codec *codec)
+@@ -4382,6 +4528,496 @@
+ 
+ 	return 0;
+ }
++
++/* Patch for VT1716S */
++
++static int vt1716s_dmic_info(struct snd_kcontrol *kcontrol,
++			    struct snd_ctl_elem_info *uinfo)
++{
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = 1;
++	return 0;
++}
++
++static int vt1716s_dmic_get(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	int index = 0;
++
++	index = snd_hda_codec_read(codec, 0x26, 0,
++					       AC_VERB_GET_CONNECT_SEL, 0);
++	if (index != -1)
++		*ucontrol->value.integer.value = index;
++
++	return 0;
++}
++
++static int vt1716s_dmic_put(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct via_spec *spec = codec->spec;
++	int index = *ucontrol->value.integer.value;
++
++	snd_hda_codec_write(codec, 0x26, 0,
++					       AC_VERB_SET_CONNECT_SEL, index);
++	spec->dmic_enabled = index;
++	set_jack_power_state(codec);
++
++	return 1;
++}
++
++/* capture mixer elements */
++static struct snd_kcontrol_new vt1716S_capture_mixer[] = {
++	HDA_CODEC_VOLUME("Capture Volume", 0x13, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Capture Switch", 0x13, 0x0, HDA_INPUT),
++	HDA_CODEC_VOLUME_IDX("Capture Volume", 1, 0x14, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE_IDX("Capture Switch", 1, 0x14, 0x0, HDA_INPUT),
 +	HDA_CODEC_VOLUME("Mic Boost Capture Volume", 0x1A, 0x0, HDA_INPUT),
 +	HDA_CODEC_VOLUME("Front Mic Boost Capture Volume", 0x1E, 0x0,
 +			 HDA_INPUT),
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 		/* The multiple "Capture Source" controls confuse alsamixer
-@@ -3474,6 +3420,16 @@
- };
- #endif
- 
-+static void override_mic_boost(struct hda_codec *codec, hda_nid_t pin,
-+			       int offset, int num_steps, int step_size)
-+{
-+	snd_hda_override_amp_caps(codec, pin, HDA_INPUT,
-+				  (offset << AC_AMPCAP_OFFSET_SHIFT) |
-+				  (num_steps << AC_AMPCAP_NUM_STEPS_SHIFT) |
-+				  (step_size << AC_AMPCAP_STEP_SIZE_SHIFT) |
-+				  (0 << AC_AMPCAP_MUTE_SHIFT));
++	{
++		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++		.name = "Input Source",
++		.count = 1,
++		.info = via_mux_enum_info,
++		.get = via_mux_enum_get,
++		.put = via_mux_enum_put,
++	},
++	{ } /* end */
++};
++
++static struct snd_kcontrol_new vt1716s_dmic_mixer[] = {
++	HDA_CODEC_VOLUME("Digital Mic Capture Volume", 0x22, 0x0, HDA_INPUT),
++	{
++	 .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	 .name = "Digital Mic Capture Switch",
++	 .count = 1,
++	 .info = vt1716s_dmic_info,
++	 .get = vt1716s_dmic_get,
++	 .put = vt1716s_dmic_put,
++	 },
++	{}			/* end */
++};
++
++
++/* mono-out mixer elements */
++static struct snd_kcontrol_new vt1716S_mono_out_mixer[] = {
++	HDA_CODEC_MUTE("Mono Playback Switch", 0x2a, 0x0, HDA_OUTPUT),
++	{ } /* end */
++};
++
++static struct hda_verb vt1716S_volume_init_verbs[] = {
++	/*
++	 * Unmute ADC0-1 and set the default input to mic-in
++	 */
++	{0x13, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++
++
++	/* Mute input amps (CD, Line In, Mic 1 & Mic 2) of the analog-loopback
++	 * mixer widget
++	 */
++	/* Amp Indices: CD = 1, Mic1 = 2, Line = 3, Mic2 = 4 */
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(1)},
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
++	{0x16, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
++
++	/* MUX Indices: Stereo Mixer = 5 */
++	{0x17, AC_VERB_SET_CONNECT_SEL, 0x5},
++
++	/* Setup default input of PW4 to MW0 */
++	{0x1d, AC_VERB_SET_CONNECT_SEL, 0x0},
++
++	/* Setup default input of SW1 as MW0 */
++	{0x18, AC_VERB_SET_CONNECT_SEL, 0x1},
++
++	/* Setup default input of SW4 as AOW0 */
++	{0x28, AC_VERB_SET_CONNECT_SEL, 0x1},
++
++	/* PW9 PW10 Output enable */
++	{0x20, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
++	{0x21, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
++
++	/* Unmute SW1, PW12 */
++	{0x29, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x2a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	/* PW12 Output enable */
++	{0x2a, AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40},
++	/* Enable Boost Volume backdoor */
++	{0x1, 0xf8a, 0x80},
++	/* don't bybass mixer */
++	{0x1, 0xf88, 0xc0},
++	/* Enable mono output */
++	{0x1, 0xf90, 0x08},
++	{ }
++};
++
++
++static struct hda_verb vt1716S_uniwill_init_verbs[] = {
++	{0x1d, AC_VERB_SET_UNSOLICITED_ENABLE,
++	 AC_USRSP_EN | VIA_HP_EVENT | VIA_JACK_EVENT},
++	{0x19, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
++	{0x1a, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
++	{0x1b, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
++	{0x1c, AC_VERB_SET_UNSOLICITED_ENABLE,
++	 AC_USRSP_EN | VIA_MONO_EVENT | VIA_JACK_EVENT},
++	{0x1e, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
++	{0x23, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | VIA_JACK_EVENT},
++	{ }
++};
++
++static struct hda_pcm_stream vt1716S_pcm_analog_playback = {
++	.substreams = 2,
++	.channels_min = 2,
++	.channels_max = 6,
++	.nid = 0x10, /* NID to query formats and rates */
++	.ops = {
++		.open = via_playback_pcm_open,
++		.prepare = via_playback_multi_pcm_prepare,
++		.cleanup = via_playback_multi_pcm_cleanup,
++		.close = via_pcm_open_close,
++	},
++};
++
++static struct hda_pcm_stream vt1716S_pcm_analog_capture = {
++	.substreams = 2,
++	.channels_min = 2,
++	.channels_max = 2,
++	.nid = 0x13, /* NID to query formats and rates */
++	.ops = {
++		.open = via_pcm_open_close,
++		.prepare = via_capture_pcm_prepare,
++		.cleanup = via_capture_pcm_cleanup,
++		.close = via_pcm_open_close,
++	},
++};
++
++static struct hda_pcm_stream vt1716S_pcm_digital_playback = {
++	.substreams = 2,
++	.channels_min = 2,
++	.channels_max = 2,
++	.rates = SNDRV_PCM_RATE_48000,
++	/* NID is set in via_build_pcms */
++	.ops = {
++		.open = via_dig_playback_pcm_open,
++		.close = via_dig_playback_pcm_close,
++		.prepare = via_dig_playback_pcm_prepare,
++		.cleanup = via_dig_playback_pcm_cleanup
++	},
++};
++
++/* fill in the dac_nids table from the parsed pin configuration */
++static int vt1716S_auto_fill_dac_nids(struct via_spec *spec,
++				      const struct auto_pin_cfg *cfg)
++{	int i;
++	hda_nid_t nid;
++
++	spec->multiout.num_dacs = cfg->line_outs;
++
++	spec->multiout.dac_nids = spec->private_dac_nids;
++
++	for (i = 0; i < 3; i++) {
++		nid = cfg->line_out_pins[i];
++		if (nid) {
++			/* config dac list */
++			switch (i) {
++			case AUTO_SEQ_FRONT:
++				spec->multiout.dac_nids[i] = 0x10;
++				break;
++			case AUTO_SEQ_CENLFE:
++				spec->multiout.dac_nids[i] = 0x25;
++				break;
++			case AUTO_SEQ_SURROUND:
++				spec->multiout.dac_nids[i] = 0x11;
++				break;
++			}
++		}
++	}
++
++	return 0;
 +}
 +
- static int patch_vt1708S(struct hda_codec *codec)
- {
- 	struct via_spec *spec;
-@@ -3510,6 +3466,8 @@
- 		spec->adc_nids = vt1708S_adc_nids;
- 		spec->num_adc_nids = ARRAY_SIZE(vt1708S_adc_nids);
- 		get_mux_nids(codec);
++/* add playback controls from the parsed DAC table */
++static int vt1716S_auto_create_multi_out_ctls(struct via_spec *spec,
++					      const struct auto_pin_cfg *cfg)
++{
++	char name[32];
++	static const char *chname[3] = { "Front", "Surround", "C/LFE" };
++	hda_nid_t nid_vols[] = {0x10, 0x11, 0x25};
++	hda_nid_t nid_mutes[] = {0x1C, 0x18, 0x27};
++	hda_nid_t nid, nid_vol, nid_mute;
++	int i, err;
++
++	for (i = 0; i <= AUTO_SEQ_CENLFE; i++) {
++		nid = cfg->line_out_pins[i];
++
++		if (!nid)
++			continue;
++
++		nid_vol = nid_vols[i];
++		nid_mute = nid_mutes[i];
++
++		if (i == AUTO_SEQ_CENLFE) {
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_VOL,
++				"Center Playback Volume",
++				HDA_COMPOSE_AMP_VAL(nid_vol, 1, 0, HDA_OUTPUT));
++			if (err < 0)
++				return err;
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_VOL,
++				"LFE Playback Volume",
++				HDA_COMPOSE_AMP_VAL(nid_vol, 2, 0, HDA_OUTPUT));
++			if (err < 0)
++				return err;
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_MUTE,
++				"Center Playback Switch",
++				HDA_COMPOSE_AMP_VAL(nid_mute, 1, 0,
++						    HDA_OUTPUT));
++			if (err < 0)
++				return err;
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_MUTE,
++				"LFE Playback Switch",
++				HDA_COMPOSE_AMP_VAL(nid_mute, 2, 0,
++						    HDA_OUTPUT));
++			if (err < 0)
++				return err;
++		} else if (i == AUTO_SEQ_FRONT) {
++
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_VOL,
++				"Master Front Playback Volume",
++				HDA_COMPOSE_AMP_VAL(0x16, 3, 0, HDA_INPUT));
++			if (err < 0)
++				return err;
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_MUTE,
++				"Master Front Playback Switch",
++				HDA_COMPOSE_AMP_VAL(0x16, 3, 0, HDA_INPUT));
++			if (err < 0)
++				return err;
++
++			sprintf(name, "%s Playback Volume", chname[i]);
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_VOL, name,
++				HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0, HDA_OUTPUT));
++			if (err < 0)
++				return err;
++			sprintf(name, "%s Playback Switch", chname[i]);
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_MUTE, name,
++				HDA_COMPOSE_AMP_VAL(nid_mute, 3, 0,
++						    HDA_OUTPUT));
++			if (err < 0)
++				return err;
++		} else {
++			sprintf(name, "%s Playback Volume", chname[i]);
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_VOL, name,
++				HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0, HDA_OUTPUT));
++			if (err < 0)
++				return err;
++			sprintf(name, "%s Playback Switch", chname[i]);
++			err = via_add_control(
++				spec, VIA_CTL_WIDGET_MUTE, name,
++				HDA_COMPOSE_AMP_VAL(nid_mute, 3, 0,
++						    HDA_OUTPUT));
++			if (err < 0)
++				return err;
++		}
++	}
++	return 0;
++}
++
++static int vt1716S_auto_create_hp_ctls(struct via_spec *spec, hda_nid_t pin)
++{
++	int err;
++
++	if (!pin)
++		return 0;
++
++	spec->multiout.hp_nid = 0x25; /* AOW3 */
++	spec->hp_independent_mode_index = 1;
++
++	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
++			      "Headphone Playback Volume",
++			      HDA_COMPOSE_AMP_VAL(0x25, 3, 0, HDA_OUTPUT));
++	if (err < 0)
++		return err;
++
++	err = via_add_control(spec, VIA_CTL_WIDGET_MUTE,
++			      "Headphone Playback Switch",
++			      HDA_COMPOSE_AMP_VAL(pin, 3, 0, HDA_OUTPUT));
++	if (err < 0)
++		return err;
++
++	create_hp_imux(spec);
++	return 0;
++}
++
++/* create playback/capture controls for input pins */
++static int vt1716S_auto_create_analog_input_ctls(struct via_spec *spec,
++						const struct auto_pin_cfg *cfg)
++{
++	static char *labels[] = {
++		"Mic", "Front Mic", "Line", "Front Line", "CD", "Aux", NULL
++	};
++	struct hda_input_mux *imux = &spec->private_imux[0];
++	int i, err, idx = 0;
++
++	/* for internal loopback recording select */
++	imux->items[imux->num_items].label = "Stereo Mixer";
++	imux->items[imux->num_items].index = 5;
++	imux->num_items++;
++
++	for (i = 0; i < AUTO_PIN_LAST; i++) {
++		if (!cfg->input_pins[i])
++			continue;
++
++		switch (cfg->input_pins[i]) {
++		case 0x1a: /* Mic */
++			idx = 2;
++			break;
++
++		case 0x1b: /* Line In */
++			idx = 3;
++			break;
++
++		case 0x1e: /* Front Mic */
++			idx = 4;
++			break;
++
++		case 0x1f: /* CD */
++			idx = 1;
++			break;
++		}
++		err = via_new_analog_input(spec, labels[i], idx, 0x16);
++		if (err < 0)
++			return err;
++		imux->items[imux->num_items].label = labels[i];
++		imux->items[imux->num_items].index = idx-1;
++		imux->num_items++;
++	}
++	return 0;
++}
++
++static int vt1716S_parse_auto_config(struct hda_codec *codec)
++{
++	struct via_spec *spec = codec->spec;
++	int err;
++
++	err = snd_hda_parse_pin_def_config(codec, &spec->autocfg, NULL);
++	if (err < 0)
++		return err;
++	err = vt1716S_auto_fill_dac_nids(spec, &spec->autocfg);
++	if (err < 0)
++		return err;
++	if (!spec->autocfg.line_outs && !spec->autocfg.hp_pins[0])
++		return 0; /* can't find valid BIOS pin config */
++
++	err = vt1716S_auto_create_multi_out_ctls(spec, &spec->autocfg);
++	if (err < 0)
++		return err;
++	err = vt1716S_auto_create_hp_ctls(spec, spec->autocfg.hp_pins[0]);
++	if (err < 0)
++		return err;
++	err = vt1716S_auto_create_analog_input_ctls(spec, &spec->autocfg);
++	if (err < 0)
++		return err;
++
++	spec->multiout.max_channels = spec->multiout.num_dacs * 2;
++
++	fill_dig_outs(codec);
++
++	if (spec->kctls.list)
++		spec->mixers[spec->num_mixers++] = spec->kctls.list;
++
++	spec->input_mux = &spec->private_imux[0];
++
++	if (spec->hp_mux)
++		spec->mixers[spec->num_mixers++] = via_hp_mixer;
++
++	spec->mixers[spec->num_mixers++] = via_smart51_mixer;
++
++	return 1;
++}
++
++#ifdef CONFIG_SND_HDA_POWER_SAVE
++static struct hda_amp_list vt1716S_loopbacks[] = {
++	{ 0x16, HDA_INPUT, 1 },
++	{ 0x16, HDA_INPUT, 2 },
++	{ 0x16, HDA_INPUT, 3 },
++	{ 0x16, HDA_INPUT, 4 },
++	{ } /* end */
++};
++#endif
++
++static int patch_vt1716S(struct hda_codec *codec)
++{
++	struct via_spec *spec;
++	int err;
++
++	/* create a codec specific record */
++	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
++	if (spec == NULL)
++		return -ENOMEM;
++
++	codec->spec = spec;
++
++	/* automatic parse from the BIOS config */
++	err = vt1716S_parse_auto_config(codec);
++	if (err < 0) {
++		via_free(codec);
++		return err;
++	} else if (!err) {
++		printk(KERN_INFO "hda_codec: Cannot set up configuration "
++		       "from BIOS.  Using genenic mode...\n");
++	}
++
++	spec->init_verbs[spec->num_iverbs++]  = vt1716S_volume_init_verbs;
++	spec->init_verbs[spec->num_iverbs++] = vt1716S_uniwill_init_verbs;
++
++	spec->stream_name_analog = "VT1716S Analog";
++	spec->stream_analog_playback = &vt1716S_pcm_analog_playback;
++	spec->stream_analog_capture = &vt1716S_pcm_analog_capture;
++
++	spec->stream_name_digital = "VT1716S Digital";
++	spec->stream_digital_playback = &vt1716S_pcm_digital_playback;
++
++	if (!spec->adc_nids && spec->input_mux) {
++		spec->adc_nids = vt1716S_adc_nids;
++		spec->num_adc_nids = ARRAY_SIZE(vt1716S_adc_nids);
++		get_mux_nids(codec);
 +		override_mic_boost(codec, 0x1a, 0, 3, 40);
 +		override_mic_boost(codec, 0x1e, 0, 3, 40);
- 		spec->mixers[spec->num_mixers] = vt1708S_capture_mixer;
- 		spec->num_mixers++;
- 	}
++		spec->mixers[spec->num_mixers] = vt1716S_capture_mixer;
++		spec->num_mixers++;
++	}
++
++	spec->mixers[spec->num_mixers] = vt1716s_dmic_mixer;
++	spec->num_mixers++;
++
++	spec->mixers[spec->num_mixers++] = vt1716S_mono_out_mixer;
++
++	codec->patch_ops = via_patch_ops;
++
++	codec->patch_ops.init = via_auto_init;
++	codec->patch_ops.unsol_event = via_unsol_event,
++
++#ifdef CONFIG_SND_HDA_POWER_SAVE
++	spec->loopback.amplist = vt1716S_loopbacks;
++#endif
++
++	return 0;
++}
+ /*
+  * patch entries
+  */
+@@ -4462,6 +5098,10 @@
+ 	  .patch = patch_vt1718S},
+ 	{ .id = 0x11064441, .name = "VT1828S",
+ 	  .patch = patch_vt1718S},
++	{ .id = 0x11060433, .name = "VT1716S",
++	  .patch = patch_vt1716S},
++	{ .id = 0x1106a721, .name = "VT1716S",
++	  .patch = patch_vt1716S},
+ 	{} /* terminator */
+ };
