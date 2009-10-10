@@ -1,18 +1,19 @@
 From: Robert Hancock <hancockrwd@gmail.com>
-Subject: [PATCH] ice1724: Fix surround on Chaintech AV-710
-Date: Fri, 09 Oct 2009 22:08:58 -0600
-Message-ID: <4AD008DA.2060109@gmail.com>
+Subject: VIA HDA patch problem (was [PATCH 17/31] HDA
+	patch_via.c: Add second S/PDIF out control for VT1708S and VT1702.)
+Date: Fri, 9 Oct 2009 23:48:01 -0600
+Message-ID: <51f3faa70910092248g78dcad83s556cc106047de159@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f195.google.com (mail-yw0-f195.google.com
-	[209.85.211.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id E01392439A
+Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
+	[209.85.223.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A27224433
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Oct 2009 06:09:10 +0200 (CEST)
-Received: by ywh33 with SMTP id 33so1654120ywh.23
-	for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2009 21:09:09 -0700 (PDT)
+	Sat, 10 Oct 2009 07:48:02 +0200 (CEST)
+Received: by iwn36 with SMTP id 36so4823873iwn.24
+	for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2009 22:48:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-Devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Li Bo <liboat@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, LoganLi@viatech.com.cn, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-Fix the num_total_dacs setting for Chaintech AV710. The existing comment
-that only PSDOUT0 is connected is correct, but since the card is using
-packed AC97 mode to send 6 channels to the codec, num_total_dacs should be
-set to 6 and not 2. This allows 6-channel surround to work. Also clarify
-a comment regarding the additional WM8728 codec on this card (it's connected
-to the SPDIF output and always receives the same data).
+It looks like there's some problem somewhere in the patch set posted
+on Oct. 7th that wasn't in the original patch set from the 5th: I
+can't open the mixer for the HDA device:
 
-Signed-off-by: Robert Hancock <hancockrwd@gmail.com>
+alsamixer -c 1
+cannot load mixer controls: Operation not permitted
 
-diff --git a/sound/pci/ice1712/amp.c b/sound/pci/ice1712/amp.c
-index 3756430..bfcf989 100644
---- a/sound/pci/ice1712/amp.c
-+++ b/sound/pci/ice1712/amp.c
-@@ -52,11 +52,13 @@ static int __devinit snd_vt1724_amp_init(struct snd_ice1712 *ice)
- 
- 	/* only use basic functionality for now */
- 
--	ice->num_total_dacs = 2;	/* only PSDOUT0 is connected */
-+	/* VT1616 6ch codec connected to PSDOUT0 using packed mode */
-+	ice->num_total_dacs = 6;
- 	ice->num_total_adcs = 2;
- 
--	/* Chaintech AV-710 has another codecs, which need initialization */
--	/* initialize WM8728 codec */
-+	/* Chaintech AV-710 has another WM8728 codec connected to PSDOUT4
-+	   (shared with the SPDIF output). Mixer control for this codec
-+	   is not yet supported. */
- 	if (ice->eeprom.subvendor == VT1724_SUBDEVICE_AV710) {
- 		for (i = 0; i < ARRAY_SIZE(wm_inits); i += 2)
- 			wm_put(ice, wm_inits[i], wm_inits[i+1]);
+>From strace:
+
+open("/dev/snd/controlC1", O_RDWR)      = 3
+ioctl(3, USBDEVFS_CONTROL, 0x7fff338e57fc) = 0
+fcntl(3, F_GETFL)                       = 0x8002 (flags O_RDWR|O_LARGEFILE)
+fcntl(3, F_SETFL, O_RDWR|O_NONBLOCK|O_LARGEFILE) = 0
+ioctl(3, USBDEVFS_RELEASEINTERFACE, 0x7fff338e5990) = 0
+ioctl(3, USBDEVFS_RELEASEINTERFACE, 0x7fff338e5990) = 0
+ioctl(3, USBDEVFS_CONNECTINFO, 0x7fff338e5670) = 0
+ioctl(3, USBDEVFS_IOCTL, 0x7fff338e4ea0) = -1 EPERM (Operation not permitted)
+
+Presumably something is creating a control that isn't readable, or
+writable or something, and this is causing the mixer to fail to load?
+
+Also, with regard to the SPDIF problem I'm seeing on my Asus P7P55D
+(VT1828S), I was able to dig up a little bit more info: by using
+hda_analyzer to set the ENABLE flag on the Digital Converter, I was
+able to get the optical SPDIF port to light up and my receiver
+indicates PCM input. Unfortunately there's still no actual audio
+coming through on the receiver, just silence. However, obviously that
+ENABLE flag is going to have to get set somehow to have any hope of
+SPDIF working, and currently it seems like it's not..
