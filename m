@@ -1,16 +1,16 @@
 From: Logan Li <loganli@viatech.com.cn>
-Subject: [PATCH 6/30] ALSA: HDA VIA: Add low current mode for
-	power saving.
-Date: Sat, 10 Oct 2009 19:07:37 +0800
-Message-ID: <4AD06AF9.5000807@viatech.com.cn>
+Subject: [PATCH 8/30] ALSA: HDA VIA: Change VT1708S & VT1702 hp
+	mode controls
+Date: Sat, 10 Oct 2009 19:07:43 +0800
+Message-ID: <4AD06AFF.7090703@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id D17C6244DC
+	by alsa0.perex.cz (Postfix) with ESMTP id 41858103837
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Oct 2009 13:07:33 +0200 (CEST)
+	Sat, 10 Oct 2009 13:07:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,123 +25,86 @@ Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
 From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: HDA VIA: Add low current mode for power saving.
+Subject: ALSA: HDA VIA: Change VT1708S & VT1702 hp mode controls
 
-For VT1708B, VT1708S and VT1702, enter low current mode if no analog
-stream is opened and all aa path mute.
+For VT1708S and VT1702, deactivate "Headphone Playback Volume" and
+"Headphone Playback Mute" control if "Independent HP" mode is OFF.
+and rename VT1702 "Independent HP" text.
 
 Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
 Signed-off-by: Logan Li <loganli@viatech.com.cn>
 
 ---
- sound/pci/hda/patch_via.c |   41 +++++++++++++++++++++++++++++++++++------
- 1 file changed, 35 insertions(+), 6 deletions(-)
+ sound/pci/hda/patch_via.c |   38 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 34 insertions(+), 4 deletions(-)
 
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -783,6 +783,10 @@
- 				 struct snd_pcm_substream *substream)
- {
- 	struct via_spec *spec = codec->spec;
-+	int idle = substream->pstr->substream_opened == 1
-+		&& substream->ref_count == 0;
-+
-+	analog_low_current_mode(codec, idle);
- 	return snd_hda_multi_out_analog_open(codec, &spec->multiout, substream,
- 					     hinfo);
- }
-@@ -1089,6 +1093,11 @@
- 		if (err < 0)
- 			return err;
- 	}
-+
-+	/* init power states */
-+	set_jack_power_state(codec);
-+	analog_low_current_mode(codec, 1);
-+
- 	via_free_kctls(codec); /* no longer needed */
+@@ -572,6 +572,18 @@
  	return 0;
  }
-@@ -2312,6 +2321,17 @@
- 	{ }
- };
  
-+static int via_pcm_open_close(struct hda_pcm_stream *hinfo,
-+			      struct hda_codec *codec,
-+			      struct snd_pcm_substream *substream)
++static void activate_ctl(struct hda_codec *codec, const char *name, int active)
 +{
-+	int idle = substream->pstr->substream_opened == 1
-+		&& substream->ref_count == 0;
-+
-+	analog_low_current_mode(codec, idle);
-+	return 0;
++	struct snd_kcontrol *ctl = snd_hda_find_mixer_ctl(codec, name);
++	if (ctl) {
++		ctl->vd[0].access &= ~SNDRV_CTL_ELEM_ACCESS_INACTIVE;
++		ctl->vd[0].access |= active
++			? 0 : SNDRV_CTL_ELEM_ACCESS_INACTIVE;
++		snd_ctl_notify(codec->bus->card,
++			       SNDRV_CTL_EVENT_MASK_VALUE, &ctl->id);
++	}
 +}
 +
- static struct hda_pcm_stream vt1708B_8ch_pcm_analog_playback = {
- 	.substreams = 2,
- 	.channels_min = 2,
-@@ -2320,7 +2340,8 @@
- 	.ops = {
- 		.open = via_playback_pcm_open,
- 		.prepare = via_playback_multi_pcm_prepare,
--		.cleanup = via_playback_multi_pcm_cleanup
-+		.cleanup = via_playback_multi_pcm_cleanup,
-+		.close = via_pcm_open_close
- 	},
- };
+ static int via_independent_hp_put(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -620,6 +632,14 @@
+ 						   spec->multiout.hp_nid,
+ 						   0, 0, 0);
  
-@@ -2342,8 +2363,10 @@
- 	.channels_max = 2,
- 	.nid = 0x13, /* NID to query formats and rates */
- 	.ops = {
-+		.open = via_pcm_open_close,
- 		.prepare = via_capture_pcm_prepare,
--		.cleanup = via_capture_pcm_cleanup
-+		.cleanup = via_capture_pcm_cleanup,
-+		.close = via_pcm_open_close
- 	},
- };
++	/* update HP volume/swtich active state */
++	if (spec->codec_type == VT1708S
++	    || spec->codec_type == VT1702) {
++		activate_ctl(codec, "Headphone Playback Volume",
++			     spec->hp_independent_mode);
++		activate_ctl(codec, "Headphone Playback Switch",
++			     spec->hp_independent_mode);
++	}
+ 	return 0;
+ }
  
-@@ -2800,7 +2823,8 @@
- 	.ops = {
- 		.open = via_playback_pcm_open,
- 		.prepare = via_playback_pcm_prepare,
--		.cleanup = via_playback_pcm_cleanup
-+		.cleanup = via_playback_pcm_cleanup,
-+		.close = via_pcm_open_close
- 	},
- };
+@@ -3342,11 +3362,11 @@
  
-@@ -2810,8 +2834,10 @@
- 	.channels_max = 2,
- 	.nid = 0x13, /* NID to query formats and rates */
- 	.ops = {
-+		.open = via_pcm_open_close,
- 		.prepare = via_capture_pcm_prepare,
--		.cleanup = via_capture_pcm_cleanup
-+		.cleanup = via_capture_pcm_cleanup,
-+		.close = via_pcm_open_close
- 	},
- };
+ static int vt1702_auto_create_hp_ctls(struct via_spec *spec, hda_nid_t pin)
+ {
+-	int err;
+-
++	int err, i;
++	struct hda_input_mux *imux;
++	static const char *texts[] = { "ON", "OFF", NULL};
+ 	if (!pin)
+ 		return 0;
+-
+ 	spec->multiout.hp_nid = 0x1D;
  
-@@ -3236,7 +3262,8 @@
- 	.ops = {
- 		.open = via_playback_pcm_open,
- 		.prepare = via_playback_multi_pcm_prepare,
--		.cleanup = via_playback_multi_pcm_cleanup
-+		.cleanup = via_playback_multi_pcm_cleanup,
-+		.close = via_pcm_open_close
- 	},
- };
+ 	err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
+@@ -3361,8 +3381,18 @@
+ 	if (err < 0)
+ 		return err;
  
-@@ -3246,8 +3273,10 @@
- 	.channels_max = 2,
- 	.nid = 0x12, /* NID to query formats and rates */
- 	.ops = {
-+		.open = via_pcm_open_close,
- 		.prepare = via_capture_pcm_prepare,
--		.cleanup = via_capture_pcm_cleanup
-+		.cleanup = via_capture_pcm_cleanup,
-+		.close = via_pcm_open_close
- 	},
- };
+-	create_hp_imux(spec);
++	imux = &spec->private_imux[1];
+ 
++	/* for hp mode select */
++	i = 0;
++	while (texts[i] != NULL)	{
++		imux->items[imux->num_items].label =  texts[i];
++		imux->items[imux->num_items].index = i;
++		imux->num_items++;
++		i++;
++	}
++
++	spec->hp_mux = &spec->private_imux[1];
+ 	return 0;
+ }
