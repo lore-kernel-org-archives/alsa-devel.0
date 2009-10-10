@@ -1,134 +1,105 @@
-From: Logan Li <loganli@viatech.com.cn>
-Subject: [PATCH 19/30] ALSA: HDA VIA: Modify
-	vt1709_auto_create_multi_out_ctls.
-Date: Sat, 10 Oct 2009 19:08:29 +0800
-Message-ID: <4AD06B2D.8060407@viatech.com.cn>
+From: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC:
+	Blackfin	AD1836/AD1938 machine drivers: require SPI master
+Date: Sat, 10 Oct 2009 12:11:17 +0100
+Message-ID: <20091010111116.GA17855@sirena.org.uk>
+References: <20091006103952.GC10118@rakim.wolfsonmicro.main>
+	<8bd0f97a0910060432o67e9d00bu84c0139701709e63@mail.gmail.com>
+	<20091006115216.GA12993@rakim.wolfsonmicro.main>
+	<8bd0f97a0910061409x254b5574wdb0125db0548678@mail.gmail.com>
+	<20091006220725.GA32267@opensource.wolfsonmicro.com>
+	<8bd0f97a0910070132x2c6a1a38w373cf929d4645ef6@mail.gmail.com>
+	<20091007101927.GC3169@rakim.wolfsonmicro.main>
+	<8bd0f97a0910071727x72fe950x804f295ba25d514c@mail.gmail.com>
+	<20091008100135.GA9053@rakim.wolfsonmicro.main>
+	<3c17e3570910092047n39db1ac9vfe76b9304897a794@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id 057A6103BA0
-	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Oct 2009 13:08:21 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
+Return-path: <uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <3c17e3570910092047n39db1ac9vfe76b9304897a794-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Unsubscribe: <https://blackfin.uclinux.org/mailman/options/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://blackfin.uclinux.org/pipermail/uclinux-dist-devel>
+List-Post: <mailto:uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel>,
+	<mailto:uclinux-dist-devel-request-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+Errors-To: uclinux-dist-devel-bounces-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org
+To: Barry Song <21cnbao-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: uclinux-dist-devel-ZG0+EudsQA8dtHy/vicBwGD2FQJk+8+b@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Lydia Wang <lydiawang@viatech.com.cn>
-Subject: ALSA: HDA VIA: Modify vt1709_auto_create_multi_out_ctls.
+On Sat, Oct 10, 2009 at 11:47:10AM +0800, Barry Song wrote:
+> On Thu, Oct 8, 2009 at 6:01 PM, Mark Brown
 
-Rewrite nid_vol/mute assignment for clearity, and check line connection
-before adding control for it.
+> > That's the idea - add new functions for any new register formats.
 
-Signed-off-by: Lydia Wang <lydiawang@viatech.com.cn>
-Signed-off-by: Logan Li <loganli@viatech.com.cn>
+> we do those based on the idea that it is a waste all codecs need to
+> use almost same ways to handle register access. If we use soc-cache to
 
----
- sound/pci/hda/patch_via.c |   26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+Not just that, the goal is to make it easier to make changes to the way
+register accesses are managed by avoiding the need to go through each
+and every single driver and update it.  The most obvious thing is
+adding support for powering off the CODEC rather than just bringing it
+down to standby.
 
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -2177,7 +2177,7 @@
- {
- 	char name[32];
- 	static const char *chname[4] = { "Front", "Surround", "C/LFE", "Side" };
--	hda_nid_t nid = 0;
-+	hda_nid_t nid, nid_vol, nid_vols[] = {0x18, 0x1a, 0x1b, 0x29};
- 	int i, err;
- 
- 	for (i = 0; i <= AUTO_SEQ_SIDE; i++) {
-@@ -2186,43 +2186,45 @@
- 		if (!nid)	
- 			continue;
- 
-+		nid_vol = nid_vols[i];
-+
- 		if (i == AUTO_SEQ_CENLFE) {
- 			/* Center/LFE */
- 			err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
- 					      "Center Playback Volume",
--					      HDA_COMPOSE_AMP_VAL(0x1b, 1, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 1, 0,
- 								  HDA_OUTPUT));
- 			if (err < 0)
- 				return err;
- 			err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
- 					      "LFE Playback Volume",
--					      HDA_COMPOSE_AMP_VAL(0x1b, 2, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 2, 0,
- 								  HDA_OUTPUT));
- 			if (err < 0)
- 				return err;
- 			err = via_add_control(spec, VIA_CTL_WIDGET_MUTE,
- 					      "Center Playback Switch",
--					      HDA_COMPOSE_AMP_VAL(0x1b, 1, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 1, 0,
- 								  HDA_OUTPUT));
- 			if (err < 0)
- 				return err;
- 			err = via_add_control(spec, VIA_CTL_WIDGET_MUTE,
- 					      "LFE Playback Switch",
--					      HDA_COMPOSE_AMP_VAL(0x1b, 2, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 2, 0,
- 								  HDA_OUTPUT));
- 			if (err < 0)
- 				return err;
- 		} else if (i == AUTO_SEQ_FRONT){
--			/* add control to mixer index 0 */
-+			/* ADD control to mixer index 0 */
- 			err = via_add_control(spec, VIA_CTL_WIDGET_VOL,
- 					      "Master Front Playback Volume",
--					      HDA_COMPOSE_AMP_VAL(0x18, 3, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0,
- 								  HDA_INPUT));
- 			if (err < 0)
- 				return err;
- 			err = via_add_control(spec, VIA_CTL_WIDGET_MUTE,
- 					      "Master Front Playback Switch",
--					      HDA_COMPOSE_AMP_VAL(0x18, 3, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0,
- 								  HDA_INPUT));
- 			if (err < 0)
- 				return err;
-@@ -2243,26 +2245,26 @@
- 		} else if (i == AUTO_SEQ_SURROUND) {
- 			sprintf(name, "%s Playback Volume", chname[i]);
- 			err = via_add_control(spec, VIA_CTL_WIDGET_VOL, name,
--					      HDA_COMPOSE_AMP_VAL(0x1a, 3, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0,
- 								  HDA_OUTPUT));
- 			if (err < 0)
- 				return err;
- 			sprintf(name, "%s Playback Switch", chname[i]);
- 			err = via_add_control(spec, VIA_CTL_WIDGET_MUTE, name,
--					      HDA_COMPOSE_AMP_VAL(0x1a, 3, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0,
- 								  HDA_OUTPUT));
- 			if (err < 0)
- 				return err;
- 		} else if (i == AUTO_SEQ_SIDE) {
- 			sprintf(name, "%s Playback Volume", chname[i]);
- 			err = via_add_control(spec, VIA_CTL_WIDGET_VOL, name,
--					      HDA_COMPOSE_AMP_VAL(0x29, 3, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0,
- 								  HDA_OUTPUT));
- 			if (err < 0)
- 				return err;
- 			sprintf(name, "%s Playback Switch", chname[i]);
- 			err = via_add_control(spec, VIA_CTL_WIDGET_MUTE, name,
--					      HDA_COMPOSE_AMP_VAL(0x29, 3, 0,
-+					      HDA_COMPOSE_AMP_VAL(nid_vol, 3, 0,
- 								  HDA_OUTPUT));
- 			if (err < 0)
- 				return err;
+> handle register access issues and run as abstract layer for all
+> codecs, why not rename it to soc-reg or soc-bus? It seems cache is
+> only a little part of the responsibility of  this module.
+
+soc-reg (or probably register) would do equally well, like I say longer
+term the goal is to support doing interesting things with the cache.  I
+don't know that it's worth renaming at this point.
+
+> It's better that functions like xx_7_9_read xx_7_9_write xx_8_8_read
+> xx_8_8_write should not become API because we never know what will be
+> the format for codecs. We should have a xx_n_m_read/xx_n_m_write or
+> just a xx_read/xx_write, with n and m as parameters?
+
+They're not APIs, they're only visible within the file.  Drivers using
+the cache only see the one function they use to initialise the cache
+with everything else in there hidden from them.  They're not specified
+as part of the interface for the read and write functions because they'd
+be a lot of noise for callers - they don't generally change at runtime
+and are something that should really be abstracted away from the generic
+code anyway.
+
+> A codec using snd_soc_7_9_spi_write/snd_soc_8_16_read_i2c should
+> select SPI and I2C in fact. Otherwise, why does it use these functions
+
+The CODECs can't do this since they are selected themselves and Kconfig
+ignores all dependencies from things that are selected.  In any case, a
+given board is only going to need one or the other of the control
+interfaces so the CODEC driver needs to leave this up to the machine
+drivers anyway.  
+
+The register cache code is the wrong level to be making decisions about
+things like this, the CODEC drivers and the register cache code are
+themselves not usable without a machine driver - this is utility code
+which should just do whatever it is asked by its users rather than
+forcing decisons on them.
+
+> as codec->hw_read()/codec->hw_write()  but not enable SPI and I2C? It
+> seems that defining snd_soc_7_9_spi_write and so on as NULL when SPI
+> is not selected is really useless, just let us pass the compiling to
+> get a module which can't work at all!
+
+It's no use from the point of view of getting a working driver, yes, but
+then to get something useful you really need the machine driver to
+ensure that the correct controller driver is being built - simple
+support for the bus is not enough, we also need the controller.  As
+discussed earlier in this thread for some of the Blackfin machines it's
+not even possible to do that since we can't tell which controller driver
+needs to be used since the machine driver can be used with many boards.
+
+Another thing to bear in mind here is that there are people who do
+things like build the kernel with random .configs and we want to avoid
+breaking their builds due to poor luck in the configuration they
+generate while still getting the build coverage that results.  We also
+need to be able to support compilation with either I2C or SPI but not
+both in order to avoid forcing boards to include support for a bus that
+may not be used anywhere on the board at all.  That means that both
+buses need to be individually optional at the CODEC level.
