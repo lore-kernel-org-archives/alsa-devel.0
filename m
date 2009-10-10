@@ -1,30 +1,18 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 2/2] ASoC: Blackfin
-	AD1836/AD1938 machine drivers: require SPI master
-Date: Sat, 10 Oct 2009 11:47:10 +0800
-Message-ID: <3c17e3570910092047n39db1ac9vfe76b9304897a794@mail.gmail.com>
-References: <20091006095018.GB27168@sirena.org.uk>
-	<20091006103952.GC10118@rakim.wolfsonmicro.main>
-	<8bd0f97a0910060432o67e9d00bu84c0139701709e63@mail.gmail.com>
-	<20091006115216.GA12993@rakim.wolfsonmicro.main>
-	<8bd0f97a0910061409x254b5574wdb0125db0548678@mail.gmail.com>
-	<20091006220725.GA32267@opensource.wolfsonmicro.com>
-	<8bd0f97a0910070132x2c6a1a38w373cf929d4645ef6@mail.gmail.com>
-	<20091007101927.GC3169@rakim.wolfsonmicro.main>
-	<8bd0f97a0910071727x72fe950x804f295ba25d514c@mail.gmail.com>
-	<20091008100135.GA9053@rakim.wolfsonmicro.main>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: [PATCH] ice1724: Fix surround on Chaintech AV-710
+Date: Fri, 09 Oct 2009 22:08:58 -0600
+Message-ID: <4AD008DA.2060109@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
-	[209.85.210.196])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6459F24376
+Received: from mail-yw0-f195.google.com (mail-yw0-f195.google.com
+	[209.85.211.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id E01392439A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Oct 2009 05:47:31 +0200 (CEST)
-Received: by yxe34 with SMTP id 34so5455441yxe.16
-	for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2009 20:47:30 -0700 (PDT)
-In-Reply-To: <20091008100135.GA9053@rakim.wolfsonmicro.main>
+	Sat, 10 Oct 2009 06:09:10 +0200 (CEST)
+Received: by ywh33 with SMTP id 33so1654120ywh.23
+	for <alsa-devel@alsa-project.org>; Fri, 09 Oct 2009 21:09:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,58 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
+To: Alsa-Devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBPY3QgOCwgMjAwOSBhdCA2OjAxIFBNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
-b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gV2VkLCBPY3QgMDcsIDIwMDkgYXQg
-MDg6Mjc6NTZQTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6Cj4KPj4gaSBkb250IHRoaW5r
-IHRoZSBzb2MtY2FjaGUgY291bGQgYmUgdXNlZCBjdXJyZW50bHkgYnkgdGhlIGFkMTgzNiBhcyBp
-dAo+PiBkb2VzbnQgdXNlIGEgNy85IHNwbGl0IHdpdGggdGhlIGFkZHJlc3MvZGF0YS4gwqBpdCB1
-c2VzIGxpa2UgNi8xMCAoNAo+PiBhZGRyIGJpdHMsIG9uZSBiaXQgZm9yIHJlYWQvd3JpdGUsIG9u
-ZSBiaXQgaXMgYWx3YXlzIDAsIGFuZCAxMCBkYXRhCj4+IGJpdHMpLiDCoGd1ZXNzaW5nIHRoZSB3
-cml0ZSBiaXQgY2FuIGJlIGNvbnNpZGVyZWQgcGFydCBvZiB0aGUgYWRkciBhcwo+PiB0aGUgcmVh
-ZCBhbHdheXMgY29tZXMgZnJvbSB0aGUgY2FjaGUsIGJ1dCB0aGF0IHN0aWxsIGdpdmVzIHVzIDUv
-MTAKPj4gc3BsaXQuIMKgbWF5YmUgYSBuZXcgNi8xMCBzZXQgb2YgZnVuY3Mgc2hvdWxkIGJlIGFk
-ZGVkIC4uLgo+Cj4gVGhhdCdzIHRoZSBpZGVhIC0gYWRkIG5ldyBmdW5jdGlvbnMgZm9yIGFueSBu
-ZXcgcmVnaXN0ZXIgZm9ybWF0cy4Kd2UgZG8gdGhvc2UgYmFzZWQgb24gdGhlIGlkZWEgdGhhdCBp
-dCBpcyBhIHdhc3RlIGFsbCBjb2RlY3MgbmVlZCB0bwp1c2UgYWxtb3N0IHNhbWUgd2F5cyB0byBo
-YW5kbGUgcmVnaXN0ZXIgYWNjZXNzLiBJZiB3ZSB1c2Ugc29jLWNhY2hlIHRvCmhhbmRsZSByZWdp
-c3RlciBhY2Nlc3MgaXNzdWVzIGFuZCBydW4gYXMgYWJzdHJhY3QgbGF5ZXIgZm9yIGFsbApjb2Rl
-Y3MsIHdoeSBub3QgcmVuYW1lIGl0IHRvIHNvYy1yZWcgb3Igc29jLWJ1cz8gSXQgc2VlbXMgY2Fj
-aGUgaXMKb25seSBhIGxpdHRsZSBwYXJ0IG9mIHRoZSByZXNwb25zaWJpbGl0eSBvZiAgdGhpcyBt
-b2R1bGUuCkl0J3MgYmV0dGVyIHRoYXQgZnVuY3Rpb25zIGxpa2UgeHhfN185X3JlYWQgeHhfN185
-X3dyaXRlIHh4XzhfOF9yZWFkCnh4XzhfOF93cml0ZSBzaG91bGQgbm90IGJlY29tZSBBUEkgYmVj
-YXVzZSB3ZSBuZXZlciBrbm93IHdoYXQgd2lsbCBiZQp0aGUgZm9ybWF0IGZvciBjb2RlY3MuIFdl
-IHNob3VsZCBoYXZlIGEgeHhfbl9tX3JlYWQveHhfbl9tX3dyaXRlIG9yCmp1c3QgYSB4eF9yZWFk
-L3h4X3dyaXRlLCB3aXRoIG4gYW5kIG0gYXMgcGFyYW1ldGVycz8KQSBjb2RlYyB1c2luZyBzbmRf
-c29jXzdfOV9zcGlfd3JpdGUvc25kX3NvY184XzE2X3JlYWRfaTJjIHNob3VsZApzZWxlY3QgU1BJ
-IGFuZCBJMkMgaW4gZmFjdC4gT3RoZXJ3aXNlLCB3aHkgZG9lcyBpdCB1c2UgdGhlc2UgZnVuY3Rp
-b25zCmFzIGNvZGVjLT5od19yZWFkKCkvY29kZWMtPmh3X3dyaXRlKCkgIGJ1dCBub3QgZW5hYmxl
-IFNQSSBhbmQgSTJDPyBJdApzZWVtcyB0aGF0IGRlZmluaW5nIHNuZF9zb2NfN185X3NwaV93cml0
-ZSBhbmQgc28gb24gYXMgTlVMTCB3aGVuIFNQSQppcyBub3Qgc2VsZWN0ZWQgaXMgcmVhbGx5IHVz
-ZWxlc3MsIGp1c3QgbGV0IHVzIHBhc3MgdGhlIGNvbXBpbGluZyB0bwpnZXQgYSBtb2R1bGUgd2hp
-Y2ggY2FuJ3Qgd29yayBhdCBhbGwhCgo+Cj4+IHNuZF9zb2NfN185X3dyaXRlKCkgbG9va3MgbGlr
-ZSBpdCBkb2VzIGEgbGl0dGxlIG1vcmUgYml0IHdvcmsgdGhhbiBpdAo+PiBuZWVkcyB0byA/IMKg
-aWYgZGF0YSBpcyBkZWNsYXJlZCBhcyBhIHUxNiwgdGhlbiB5b3UgaGF2ZToKPj4gdTE2IGRhdGEg
-PSAocmVnIDw8IDkpIHwgKHZhbHVlICYgMHgwMWZmKTsKPj4gdGhpcyBpcyB3aGF0IHRoZSBhZDE4
-MzYgZHJpdmVyIGRvZXMgbm93IGZvciBpdHMgZGF0YSBzcGxpdC4KPgo+IFByb2JhYmx5LiDCoEkn
-ZCBuZWVkIHRvIGNoZWNrIGJ1dCBJIGJlbGlldmUgdGhhdCdzIHRoZXJlIHRvIGhhbmRsZQo+IGVu
-ZGlhbm5lc3MgdmFyaWF0aW9ucyBpbiB0aGUgaG9zdCwgdGhvdWdoIGEgY3B1X3RvXyBpbiB3aGF0
-IHlvdSBoYXZlCj4gYWJvdmUgb3VnaHQgdG8gYmUgYWJsZSB0byB0YWtlIGNhcmUgb2YgdGhhdC4g
-wqBUaGUgY29kZSB3YXMgY3V0J24ncGFzdGVkCj4gZnJvbSB3aGF0IHdhcyBpbiB0aGUgZHJpdmVy
-cyBhbHJlYWR5Lgo+Cj4+IGluIHRoZSBtZWFuIHRpbWUsIHJhdGhlciB0aGFuIGFkZGluZyAjaWZk
-ZWYgdG8gdGhlIGNvZGVjIGRyaXZlciwgd2UKPj4gY291bGQgY3JlYXRlIGEgbG9jYWwgaGVhZGVy
-IGxpa2UgImJ1cy1zdHVicy5oIiB0aGF0IHN0dWJzIGFsbCB0aGUKPj4gcmVsZXZhbnQgZnVuY3Rp
-b25zIHRvIGFuIGVycm9yIHZhbHVlLiDCoHRoZW4gYWxsIGNvZGVjIGRyaXZlcnMgdGhhdAo+PiBk
-b250IHVzZSBzb2MtY2FjaGUgY2FuIHVzZSB0aGF0IGluc3RlYWQgYW5kIHRoZSBvbmx5IGNoYW5n
-ZSBuZWVkZWQgaXMKPj4gdG8gYWRkOgo+PiAjaW5jbHVkZSAiYnVzLXN0dWJzLmgiCj4KPiBJJ20g
-bm90IHN1cmUgSSBmZWVsIHVwIHRvIGRvaW5nIHRoYXQgbG9jYWxseSBpbiBBU29DIHJhdGhlciB0
-aGFuIGluIHRoZQo+IHJlbGV2YW50IHN1YnN5c3RlbXMuCj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Fix the num_total_dacs setting for Chaintech AV710. The existing comment
+that only PSDOUT0 is connected is correct, but since the card is using
+packed AC97 mode to send 6 channels to the codec, num_total_dacs should be
+set to 6 and not 2. This allows 6-channel surround to work. Also clarify
+a comment regarding the additional WM8728 codec on this card (it's connected
+to the SPDIF output and always receives the same data).
+
+Signed-off-by: Robert Hancock <hancockrwd@gmail.com>
+
+diff --git a/sound/pci/ice1712/amp.c b/sound/pci/ice1712/amp.c
+index 3756430..bfcf989 100644
+--- a/sound/pci/ice1712/amp.c
++++ b/sound/pci/ice1712/amp.c
+@@ -52,11 +52,13 @@ static int __devinit snd_vt1724_amp_init(struct snd_ice1712 *ice)
+ 
+ 	/* only use basic functionality for now */
+ 
+-	ice->num_total_dacs = 2;	/* only PSDOUT0 is connected */
++	/* VT1616 6ch codec connected to PSDOUT0 using packed mode */
++	ice->num_total_dacs = 6;
+ 	ice->num_total_adcs = 2;
+ 
+-	/* Chaintech AV-710 has another codecs, which need initialization */
+-	/* initialize WM8728 codec */
++	/* Chaintech AV-710 has another WM8728 codec connected to PSDOUT4
++	   (shared with the SPDIF output). Mixer control for this codec
++	   is not yet supported. */
+ 	if (ice->eeprom.subvendor == VT1724_SUBDEVICE_AV710) {
+ 		for (i = 0; i < ARRAY_SIZE(wm_inits); i += 2)
+ 			wm_put(ice, wm_inits[i], wm_inits[i+1]);
