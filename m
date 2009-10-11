@@ -1,20 +1,22 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: [PATCH 0/30] ALSA: HDA VIA: patch series
-Date: Sat, 10 Oct 2009 10:06:42 -0600
-Message-ID: <51f3faa70910100906k3d781a6ds94e793b8e03da3dd@mail.gmail.com>
-References: <4AD06ADD.4000308@viatech.com.cn>
+From: David Henningsson <launchpad.web@epost.diwic.se>
+Subject: [PATCH 1/1] ALSA: ice1724 - Make call to set hw params
+ succeed on ESI Juli@
+Date: Sun, 11 Oct 2009 11:37:22 +0200
+Message-ID: <4AD1A752.3010703@epost.diwic.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
-	[209.85.223.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id 26599244A0
+Received: from ch-smtp03.sth.basefarm.net (ch-smtp03.sth.basefarm.net
+	[80.76.149.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D10B1037EE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Oct 2009 18:06:43 +0200 (CEST)
-Received: by iwn36 with SMTP id 36so4944205iwn.24
-	for <alsa-devel@alsa-project.org>; Sat, 10 Oct 2009 09:06:42 -0700 (PDT)
-In-Reply-To: <4AD06ADD.4000308@viatech.com.cn>
+	Sun, 11 Oct 2009 11:37:39 +0200 (CEST)
+Received: from c83-254-137-104.bredband.comhem.se ([83.254.137.104]:54521
+	helo=[192.168.0.157])
+	by ch-smtp03.sth.basefarm.net with esmtp (Exim 4.68)
+	(envelope-from <launchpad.web@epost.diwic.se>) id 1Mwurj-00042W-BM
+	for alsa-devel@alsa-project.org; Sun, 11 Oct 2009 11:37:25 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Logan Li <loganli@viatech.com.cn>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 10, 2009 at 5:07 AM, Logan Li <loganli@viatech.com.cn> wrote:
-> Following patch series mainly includes:
-> =A0- support VT1718S, VT2002P, VT1812S, VT1716S, ...
-> =A0- support smart 5.1
-> =A0- add jack detection for VT1708
-> =A0- power saving functions
+From: David Henningsson <launchpad.web@epost.diwic.se>
 
-OK, this patch set fixes the problem with being unable to open the
-mixer, and it looks like the SPDIF digital converter entries are being
-enabled automatically so I get a signal indication on my receiver.
-Still not getting any actual SPDIF audio through the receiver though,
-unfortunately. Also it appears that the 48000 fixed sample rate limit
-for SPDIF outputs is still there for the newly added codec types, I'd
-say it should be removed for them as well..
+If two streams are started immediately after one another (such as a playback and a recording stream),
+the call to set hw params fails with EBUSY. This patch makes the call succeed, so playback and
+recording will work properly.
+
+Signed-off-by: David Henningsson <launchpad.web@epost.diwic.se>
+---
+
+  sound/pci/ice1712/ice1724.c |    2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+
+* This is likely a regression since 2009-06-05, commit 92d71005e2f305d6dca126d8b8497e885b842dba.
+
+* Tested on ESI Juli@.
+
+* Affected bugs: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/441446
+   Probably this one as well: https://bugzilla.redhat.com/show_bug.cgi?id=525595
+
+---
+diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
+index cc84a83..56d1bd8 100644
+--- a/sound/pci/ice1712/ice1724.c
++++ b/sound/pci/ice1712/ice1724.c
+@@ -643,7 +643,7 @@ static int snd_vt1724_set_pro_rate(struct snd_ice1712 *ice, unsigned int rate,
+             (inb(ICEMT1724(ice, DMA_PAUSE)) & DMA_PAUSES)) {
+                 /* running? we cannot change the rate now... */
+                 spin_unlock_irqrestore(&ice->reg_lock, flags);
+-               return -EBUSY;
++               return ((rate == ice->cur_rate) && !force) ? 0 : -EBUSY;
+         }
+         if (!force && is_pro_rate_locked(ice)) {
+                 spin_unlock_irqrestore(&ice->reg_lock, flags);
