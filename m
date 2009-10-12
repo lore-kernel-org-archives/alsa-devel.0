@@ -1,19 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/1] ASoC: Serialize access to
-	dapm_power_widgets()
-Date: Mon, 12 Oct 2009 10:00:21 +0100
-Message-ID: <20091012090021.GA3308@rakim.wolfsonmicro.main>
-References: <1255326119-12281-1-git-send-email-ext-eero.nurkkala@nokia.com>
+Subject: Re: [PATCH 3/8] McBSP: OMAP3: Add Sidetone feature
+Date: Mon, 12 Oct 2009 10:12:34 +0100
+Message-ID: <20091012091234.GB3308@rakim.wolfsonmicro.main>
+References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
+	<1255003137-1034-4-git-send-email-eduardo.valentin@nokia.com>
+	<20091008131702.GC29176@rakim.wolfsonmicro.main>
+	<1255064967.30157.178.camel@eenurkka-desktop>
+	<20091009104458.GB5082@sirena.org.uk>
+	<1255328261.30157.227.camel@eenurkka-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 23B43103836
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4006A24599
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 11:00:23 +0200 (CEST)
+	Mon, 12 Oct 2009 11:12:35 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1255326119-12281-1-git-send-email-ext-eero.nurkkala@nokia.com>
+In-Reply-To: <1255328261.30157.227.camel@eenurkka-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +27,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext-eero.nurkkala@nokia.com
-Cc: alsa-devel@alsa-project.org
+To: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 12, 2009 at 08:41:58AM +0300, ext-eero.nurkkala@nokia.com wrote:
-> From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-> 
-> It was detected that in some rare instances the
-> dapm powering cycles got out of order. That lead to
-> investigation of the use of all the mutexes used
-> in the ASoC core.
-> 
-> The patch is tested with 2.6.28 (with lockdep also)
-> , but applies to v2.6.32-rc3. Please review.
+On Mon, Oct 12, 2009 at 09:17:41AM +0300, Eero Nurkkala wrote:
 
-Please don't send 0/1 mails like this - if there's anything to say about
-the patch please include it in the patch itself.  If it shouldn't make
-it into the commit message include it after the ---.  0/n mails are only
-useful when introducing a longer series of patches.
+> Indeed. If I'm not totally wrong, the sidetone engineering is such,
+> that the sinetones should be of constant volume (this may depend on
+> the usecase). So, let's say we have the TPA6130 codec's volume used
+> along with a sidetone:
+
+> 1. A change in TPA6130 volume should lead to a change in
+>    the sidetone's gain (if it's enabled). The change of gain
+>    is directly related to the change in the TPA's volume.
+
+Could you go into more detail about why there should be a relationship
+between the two gains?
