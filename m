@@ -1,21 +1,21 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: [PATCH 0/30] ALSA: HDA VIA: patch series
-Date: Sun, 11 Oct 2009 13:51:28 -0600
-Message-ID: <4AD23740.9060800@gmail.com>
-References: <4AD06ADD.4000308@viatech.com.cn>	<s5h8wfhewf1.wl%tiwai@suse.de>	<51f3faa70910110956t3b537401p51a4053102f94a2c@mail.gmail.com>
-	<s5hvdil4tor.wl%tiwai@suse.de>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: dev_* output functions and ASoC codecs
+Date: Mon, 12 Oct 2009 10:26:09 +0800
+Message-ID: <3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
+References: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
+	<20091006102033.GC27168@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f195.google.com (mail-yw0-f195.google.com
-	[209.85.211.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7FB451037E3
+Received: from mail-yx0-f183.google.com (mail-yx0-f183.google.com
+	[209.85.210.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20672244F8
 	for <alsa-devel@alsa-project.org>;
-	Sun, 11 Oct 2009 21:51:32 +0200 (CEST)
-Received: by ywh33 with SMTP id 33so2579636ywh.23
-	for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2009 12:51:31 -0700 (PDT)
-In-Reply-To: <s5hvdil4tor.wl%tiwai@suse.de>
+	Mon, 12 Oct 2009 04:26:31 +0200 (CEST)
+Received: by yxe13 with SMTP id 13so1190366yxe.23
+	for <alsa-devel@alsa-project.org>; Sun, 11 Oct 2009 19:26:30 -0700 (PDT)
+In-Reply-To: <20091006102033.GC27168@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,61 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, LydiaWang@viatech.com.cn, Logan Li <loganli@viatech.com.cn>, HaraldWelte@viatech.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "Cai, Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/11/2009 01:27 PM, Takashi Iwai wrote:
-> At Sun, 11 Oct 2009 10:56:48 -0600,
-> Robert Hancock wrote:
->>
->> On Sun, Oct 11, 2009 at 10:18 AM, Takashi Iwai<tiwai@suse.de>  wrote:
->>> At Sat, 10 Oct 2009 19:07:09 +0800,
->>> Logan Li wrote:
->>>>
->>>> Following patch series mainly includes:
->>>>   - support VT1718S, VT2002P, VT1812S, VT1716S, ...
->>>>   - support smart 5.1
->>>>   - add jack detection for VT1708
->>>>   - power saving functions
->>>
->>> Thanks for the patches.  They are all well formatted now.
->>>
->>> I applied your patches except for 17,
->>>         ALSA: HDA VIA: Add 2nd S/PDIF out for VT1708S and VT1702
->>> as Robert reported a regression.
->>>
->>> This is likely because of the behavior change by this patch.  Now
->>> the second SPDIF has to be specified manually with the explicit
->>> substream number.  This itself is fine, but I see the problem with
->>> pulseaudio, for example.  There is no good way to specify this substream
->>> automatically for PA with some symbols like "spdif" or "hdmi".
->>>
->>> This is basically a problem of the current ALSA core and HD-audio core
->>> implementation.  So, we should solve all together.
->>
->> Actually, the latest posted version didn't have the mixer problem I
->> had before (I haven't looked in detail at what was different). But I
->> agree using a different substream for a different output isn't ideal
->> since there's no way for software to detect that this is the case. Can
->> it be a separate PCM like hw:0,2 or something?
->
-> It would work like hw:0,1,1.  But, this is exactly what I mentioned in
-> the above.  The secondary SPDIF isn't specified as an intuitively
-> selectable PCM device.
-
-Well, if it was its own subdevice like hw:0,2 it would have some hope of 
-being detected by HAL, PulseAudio, etc. If it's just a substream then I 
-don't think that software can actually tell it's a separate output and 
-not just a HW mixing-type stream, etc.
-
->
->> Hopefully VIA will also look into the SPDIF no-output problem I have
->> with VT1828S..
->
-> What is the problem, specifically?
-
-With the latest patch I do get the optical output lighting up and the 
-receiver detects a PCM signal, but it seems to be just silence coming 
-through. (In previous iterations the SPDIF digital converter wasn't 
-being enabled automatically so it didn't get even that far.)
+V2UgdXNlIG1hbnkgZ2xvYmFsIHZhcmlhYmxlcyBpbiBhc29jIG5vdywgZXhjZXB0IGRlZmluaW5n
+IHR3by9tdWx0aQpncm91cHMgb2YgZ2xvYmFsIHZhcmlhYmxlcyB0byBmdWxmaWxsIHR3by9tdWx0
+aSBjb2RlY3Mgd29yayBhdCB0aGUKc2FtZSB0aW1lIGluIG9uZSBzeXN0ZW0sIGlzIHRoZXJlIGFu
+eSBvdGhlciB3YXk/CgpPbiBUdWUsIE9jdCA2LCAyMDA5IGF0IDY6MjAgUE0sIE1hcmsgQnJvd24K
+PGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBNb24sIE9j
+dCAwNSwgMjAwOSBhdCAwODoxODowM1BNIC0wNDAwLCBNaWtlIEZyeXNpbmdlciB3cm90ZToKPj4g
+YW0gaSBkb2luZyBzb21ldGhpbmcgd3Jvbmcgb3IgYXJlIHRoZSBkZXZfKiBvdXRwdXQgZnVuY3Rp
+b25zIGtpbmQgb2YKPj4gdXNlbGVzcyB3aXRoIEFTb0MgY29kZWNzID8gwqBpdCBzZWVtcyBsaWtl
+IHRoZSBlcnJvciBvdXRwdXQgaXMgcHJlZml4ZWQKPj4gYnkgdGhlIGdlbmVyaWMgInNvYy1hdWRp
+byIgYnV0IG5vIGluZm8gcmVsYXRlZCB0byB0aGUgZXhhY3QgY29kZWMgaXMKPj4gaW5jbHVkZWQu
+Cj4KPiBZb3UncmUgbWlzc2luZyBzb21ldGhpbmcgaGVyZS4KPgo+PiBhcyBhbiBleGFtcGxlLCB0
+aGUgdHlwaWNhbCBiZWhhdmlvciBpcyBmb3IgdGhlIG1hY2hpbmUgZHJpdmVyIHRvIGNhbGwKPj4g
+cGxhdGZvcm1fZGV2aWNlX2FsbG9jKCJzb2MtYXVkaW8iLCAtMSkuIMKgdGhpcyBzdHJ1Y3QgZGV2
+aWNlIGlzIHRoZW4KPgo+IFRoaXMgaXMgdGhlIGRldmljZSBmb3IgdGhlIEFTb0MgY2FyZCwgbm90
+IGZvciB0aGUgQ09ERUMuIMKgVGhlIEFTb0MgY2FyZAo+IGlzIGJ1aWx0IHVwIGZyb20gc2V2ZXJh
+bCBkaWZmZXJlbnQgZGV2aWNlcywgdGhlIG1haW4gb25lcyBiZWluZyB0aGUKPiBkZXZpY2VzIGZv
+ciB0aGUgQ1BVIGFuZCBmb3IgdGhlIENPREVDLgo+Cj4+IHBhc3NlZCBkb3duIHRvIHRoZSByZWxl
+dmFudCBzdWJzeXN0ZW0gZHJpdmVyIHJlZ2lzdGVyL3Byb2JlCj4+IChpMmMvc3BpL2V0Yy4uLikg
+dG8gdGhlIGNvZGVjIGRyaXZlci4gwqB0aGVzZSBmdW5jdGlvbnMgdHlwaWNhbGx5IHRoZW4KPj4g
+c2V0IHRoZSBzbmRfc29jX2NvZGVjJ3MgZGV2IG1lbWJlciB0byB0aGUgYWxsb2NhdGVkIHBsYXRm
+b3JtIGRldmljZS4KPgo+IE5vLCBub3RoaW5nIHNob3VsZCBldmVyIGJlIHNldHRpbmcgY29kZWMt
+PmRldiB0byB0aGUgc29jLWF1ZGlvIGRldmljZS4KPiBJZiBhbnl0aGluZyBpcyB0aGF0J3MgYSBi
+dWcgYW5kIHNob3VsZCBiZSBmaXhlZC4gwqBUaGF0IHNob3VsZCBiZSBzZXQgdG8KPiB3aGF0ZXZl
+ciB0aGUgZGV2aWNlIG1vZGVsIHN0cnVjdCBkZXZpY2UgaXMgZm9yIHRoZSBDT0RFQywgbm9ybWFs
+bHkgYW4KPiBJMkMgb3IgU1BJIGRldmljZS4KPgo+PiBpZiB0aGVyZSBhcmUgbXVsdGlwbGUgY29k
+ZWNzLCB0aGluZ3Mgb2J2aW91c2x5IGZhbGwgYXBhcnQgcXVpY2tseS4KPj4gdGhlIHF1ZXN0aW9u
+IGlzIGhvdyB0byBhZGRyZXNzIHRoaXMuIMKgd2VyZW50IHRoZXJlIHNuZF8qIG91dHB1dCBmdW5j
+cwo+PiBiZWZvcmUgPyDCoG9yIGFyZSB0aG9zZSBub3cgZGVwcmVjYXRlZC9kZWFkID8gwqBvciBw
+ZXJoYXBzIHdlIHNob3VsZAo+Cj4gVGhvc2UgaGF2ZSBuZXZlciByZWFsbHkgYmVlbiB1c2VkIHdp
+dGhpbiBBU29DLgo+Cj4+IGVuY291cmFnZSBwZW9wbGUgdG8gc3RvcCBkb2luZyBwbGF0Zm9ybV9k
+ZXZpY2VfYWxsb2MoInNvYy1hdWRpbyIpIGFuZAo+PiBzdGFydCBkb2luZyBwbGF0Zm9ybV9kZXZp
+Y2VfYWxsb2Moc25kX3NvY19jYXJkLm5hbWUpID8KPgo+IEF0IHNvbWUgcG9pbnQsIHByb2JhYmx5
+IGJlZm9yZSB0aGUgZW5kIG9mIHRoZSB5ZWFyLCBpdCBzaG91bGQgYmUKPiBwb3NzaWJsZSB0byBo
+YXZlIGFueSBkZXZpY2UgcmVnaXN0ZXJlZCBhcyB0aGUgY2FyZC4gwqBIb3dldmVyLCB0aGlzIGlz
+IGEKPiBzZXBhcmF0ZSBpc3N1ZSB0byB0aGUgZGV2aWNlIHVzZWQgZm9yIHRoZSBDT0RFQyBpdHNl
+bGYuCj4KPj4gYWxzbywgdGhlcmUgc2VlbXMgdG8gYmUgYSBzZW1pLWNvbW1vbiBidWcgaW4gdGhl
+IGNvZGVjL21hY2hpbmUgZHJpdmVycwo+PiB3aGVyZSB0aGV5IGRvbnQgYWN0dWFsbHkgaW5pdGlh
+bGl6ZSB0aGUgZGV2IG1lbWJlci4gwqBwZXJoYXBzIGl0J3MgdGltZQo+PiB0byB1cGdyYWRlIHRo
+ZSBzbmRfc29jX3JlZ2lzdGVyX2NvZGVjKCkgY2hlY2sgZnJvbSBhIEtFUk5fV0FSTklORyB0byBh
+Cj4+IEJVR19PTigpID8gwqBjbGVhcmx5IHRoZSBjdXJyZW50IHdhcm5pbmcgaXNudCBnZXR0aW5n
+IGl0cyBtZXNzYWdlCj4+IHRocm91Z2ggLi4uCj4KPiBUaGF0IHdvdWxkIG1ha2UgYWxsIHRoZSBl
+eGlzdGluZyBkcml2ZXJzIGluc3RhYnVnZ3kgd2hpY2ggaXNuJ3QgYQo+IGhlbHBmdWwgd2F5IG9m
+IGRlYWxpbmcgd2l0aCB0aGluZ3MuIMKgQXQgc29tZSBwb2ludCB3aGVyZSB0aGlzIGJlY29tZXMg
+YQo+IGJsb2NrZXIgdG8gZG9pbmcgZnVydGhlciBjb3JlIHdvcmsgc29tZW9uZSB3aWxsIGhhdmUg
+dG8gZ28gdGhyb3VnaCBhbmQKPiBjb252ZXJ0IGFsbCB0aGUgcmVtYWluaW5nIENPREVDIGRyaXZl
+cnMgb3ZlciB0byB1c2UgdGhlIGRldmljZSBtb2RlbC4KPiBUaGUgbWFpbiBwcm9ibGVtIGhlcmUg
+aXMgdGhhdCBtb3N0IG9mIHRoZSBhZmZlY3RlZCBDT0RFQyBkcml2ZXJzIGFyZQo+IGVzc2VudGlh
+bGx5IHVubWFpbnRhaW5lZC4KPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
