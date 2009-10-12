@@ -1,24 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: dev_* output functions and ASoC codecs
-Date: Mon, 12 Oct 2009 15:20:18 +0100
-Message-ID: <20091012142018.GA18283@rakim.wolfsonmicro.main>
-References: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
-	<20091006102033.GC27168@sirena.org.uk>
-	<3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
-	<20091012093601.GA22233@sirena.org.uk>
-	<3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
-	<20091012104849.GA7994@rakim.wolfsonmicro.main>
-	<3c17e3570910120620g7e65f87ekeb854c373375b7a3@mail.gmail.com>
+From: Tobias Hansen <Tobias.Hansen@physik.uni-hamburg.de>
+Subject: [PATCH] snd-usb-us122l: corrent error number for not
+ probing US-144 on ehci-hcd
+Date: Mon, 12 Oct 2009 16:24:15 +0200
+Message-ID: <4AD33C0F.7080003@physik.uni-hamburg.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EB5DA2434D
+Received: from mail.physnet.uni-hamburg.de (MAIL.PHYSnet.uni-hamburg.de
+	[134.100.106.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id E44992434E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 16:20:19 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570910120620g7e65f87ekeb854c373375b7a3@mail.gmail.com>
+	Mon, 12 Oct 2009 16:24:14 +0200 (CEST)
+References: 4AB8E498.1070108@physik.uni-hamburg.de
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,18 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, "Cai,
-	Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 12, 2009 at 09:20:18PM +0800, Barry Song wrote:
+snd-usb-us122l: corrent error number for not probing US-144 on ehci-hcd
+This is the correct error number for telling the USB system that this 
+driver is not for the device.
 
-> Thanks a lot. Fortunately, You parsed my meaning well. I just want to
-> say it seems not too economic to have arrays with almost same members
-> while CPU interfaces and codecs are same for all dai_links. dai[0] and
-> dai[1] in array are just same.  It seems that will make more sense if
+Signed-off-by: Tobias Hansen <Tobias.Hansen@physik.uni-hamburg.de>
+---
 
-The current plan is to allow a dev_name plus DAI index instead of the
-pointer to be used to establish the link, though I can't guarantee that
-particular approach until it's implemented.
+--- us122l.c.orig    2009-10-12 08:46:01.000000000 +0200
++++ us122l.c    2009-10-12 14:51:05.255040655 +0200
+@@ -601,7 +601,7 @@ static int snd_us122l_probe(struct usb_i
+     if (device->descriptor.idProduct == USB_ID_US144
+         && device->speed == USB_SPEED_HIGH) {
+         snd_printk(KERN_ERR "disable ehci-hcd to run US-144 \n");
+-        return -ENOENT;
++        return -ENODEV;
+     }
+ 
+     snd_printdd(KERN_DEBUG"%p:%i\n",
