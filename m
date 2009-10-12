@@ -1,22 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: dev_* output functions and ASoC codecs
-Date: Mon, 12 Oct 2009 11:48:49 +0100
-Message-ID: <20091012104849.GA7994@rakim.wolfsonmicro.main>
-References: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
-	<20091006102033.GC27168@sirena.org.uk>
-	<3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
-	<20091012093601.GA22233@sirena.org.uk>
-	<3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH - try2] ASoC: TPA6130A2: Make tpa6130a2_power
+	as static
+Date: Mon, 12 Oct 2009 14:48:59 +0300
+Message-ID: <1255348139-13609-2-git-send-email-peter.ujfalusi@nokia.com>
+References: <1255348139-13609-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 697CF10387E
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C589103814
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 12:48:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
+	Mon, 12 Oct 2009 13:49:11 +0200 (CEST)
+In-Reply-To: <1255348139-13609-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,43 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: "Cai, Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 12, 2009 at 06:34:56PM +0800, Barry Song wrote:
-> On Mon, Oct 12, 2009 at 5:36 PM, Mark Brown
+The power for the amplifier should be handled internally
+by the tpa6130a2 driver.
 
-> In codec:
-> "static struct snd_soc_codec *wm8903_codec" is a global variable to
-> describe a codec.  The global variable limit the codec driver can only
-> support one to work.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/tpa6130a2.c |    2 +-
+ sound/soc/codecs/tpa6130a2.h |    1 -
+ 2 files changed, 1 insertions(+), 2 deletions(-)
 
-Right, currently the WM8903 driver only allows one instance - this will
-be addressed in the future but for now the core doesn't really support
-this.  Addressing this is the main reason why the drivers need to be
-converted away from the old style of probing to using the device model
-and supplying struct deviecs - without doing that it's not possible to
-support more than one instance of the same CODEC.
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 0a6e7b4..6b650c1 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -106,7 +106,7 @@ static void tpa6130a2_initialize(void)
+ 		tpa6130a2_i2c_write(i, data->regs[i]);
+ }
 
-> In CPU dai:
-> in case there are two same I2S interfaces connecting two same wm8903,
-> then an array with two elements for CPU dai is needed.
+-void tpa6130a2_power(int power)
++static void tpa6130a2_power(int power)
+ {
+ 	struct	tpa6130a2_data *data;
+ 	u8	val;
+diff --git a/sound/soc/codecs/tpa6130a2.h b/sound/soc/codecs/tpa6130a2.h
+index 6a794f1..57e867f 100644
+--- a/sound/soc/codecs/tpa6130a2.h
++++ b/sound/soc/codecs/tpa6130a2.h
+@@ -57,6 +57,5 @@
+ #define TPA6130A2_VERSION_MASK		(0x0f)
 
-I'm sorry, I can't quite parse what you're saying here.  If you have two
-CPU DAIs then you need an array to hold them but that seems self evident
-so is presumably not what you mean?
+ extern int tpa6130a2_add_controls(struct snd_soc_codec *codec);
+-extern void tpa6130a2_power(int power);
 
-> In machin driver:
-> snd_soc_dai_link connect the multi same CPU dai and codec dai together.
-> 
-> If we don't use num_links =2, we need to call
-> platform_device_alloc("soc-audio",...)/platform_device_add() twice
-> with duplicated struct snd_soc_device.
-
-Again, I'm not 100% clear what you're saying here.  If you have a CODEC
-with two DAIs which you need to connect to two CPU drivers then you will
-need two dai_links.  If you have two unrelated sound subsystems in your
-system then you should end up with two separate sound devices at the
-ALSA level.  I understand that this currently works OK, though it's not
-really supported.
+ #endif /* __TPA6130A2_H__ */
+--
+1.6.5.rc2
