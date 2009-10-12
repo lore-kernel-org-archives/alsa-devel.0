@@ -1,16 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH - try2] ASoC: TPA6130A2: Make tpa6130a2_power
-	as static
-Date: Mon, 12 Oct 2009 11:43:55 +0300
-Message-ID: <1255337035-24442-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/1] ASoC: Serialize access to
+	dapm_power_widgets()
+Date: Mon, 12 Oct 2009 10:00:21 +0100
+Message-ID: <20091012090021.GA3308@rakim.wolfsonmicro.main>
+References: <1255326119-12281-1-git-send-email-ext-eero.nurkkala@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 967F624599
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 23B43103836
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 10:44:50 +0200 (CEST)
+	Mon, 12 Oct 2009 11:00:23 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1255326119-12281-1-git-send-email-ext-eero.nurkkala@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,42 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com
+To: ext-eero.nurkkala@nokia.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The power for the amplifier should be handled internally
-by the tpa6130a2 driver.
+On Mon, Oct 12, 2009 at 08:41:58AM +0300, ext-eero.nurkkala@nokia.com wrote:
+> From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+> 
+> It was detected that in some rare instances the
+> dapm powering cycles got out of order. That lead to
+> investigation of the use of all the mutexes used
+> in the ASoC core.
+> 
+> The patch is tested with 2.6.28 (with lockdep also)
+> , but applies to v2.6.32-rc3. Please review.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/tpa6130a2.c |    2 +-
- sound/soc/codecs/tpa6130a2.h |    1 -
- 2 files changed, 1 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-index 0a6e7b4..6b650c1 100644
---- a/sound/soc/codecs/tpa6130a2.c
-+++ b/sound/soc/codecs/tpa6130a2.c
-@@ -106,7 +106,7 @@ static void tpa6130a2_initialize(void)
- 		tpa6130a2_i2c_write(i, data->regs[i]);
- }
-
--void tpa6130a2_power(int power)
-+static void tpa6130a2_power(int power)
- {
- 	struct	tpa6130a2_data *data;
- 	u8	val;
-diff --git a/sound/soc/codecs/tpa6130a2.h b/sound/soc/codecs/tpa6130a2.h
-index 6a794f1..57e867f 100644
---- a/sound/soc/codecs/tpa6130a2.h
-+++ b/sound/soc/codecs/tpa6130a2.h
-@@ -57,6 +57,5 @@
- #define TPA6130A2_VERSION_MASK		(0x0f)
-
- extern int tpa6130a2_add_controls(struct snd_soc_codec *codec);
--extern void tpa6130a2_power(int power);
-
- #endif /* __TPA6130A2_H__ */
---
-1.6.5.rc2
+Please don't send 0/1 mails like this - if there's anything to say about
+the patch please include it in the patch itself.  If it shouldn't make
+it into the commit message include it after the ---.  0/n mails are only
+useful when introducing a longer series of patches.
