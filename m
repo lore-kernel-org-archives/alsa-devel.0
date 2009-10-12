@@ -1,49 +1,40 @@
-From: Lubomir Rintel <lkundrak@v3.sk>
-Subject: Re: [PATCH] [snd-usb-audio] Add match for JMTek USB sound	card
-Date: Mon, 12 Oct 2009 10:03:53 +0200
-Message-ID: <1255334633.3286.4376.camel@localhost.localdomain>
-References: <1255173329-20485-1-git-send-email-lkundrak@v3.sk>
-	 <4AD2D0C2.40307@ladisch.de>  <s5hzl7xdqrn.wl%tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: TPA6130A2: Make tpa6130a2_power as
+	static
+Date: Mon, 12 Oct 2009 11:42:13 +0300
+Message-ID: <200910121142.13313.peter.ujfalusi@nokia.com>
+References: <1255333290-24291-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <s5hzl7xdqrn.wl%tiwai@suse.de>
-Sender: linux-sound-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4EA4724599
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Oct 2009 10:42:24 +0200 (CEST)
+In-Reply-To: <1255333290-24291-1-git-send-email-peter.ujfalusi@nokia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2009-10-12 at 09:18 +0200, Takashi Iwai wrote:
-> At Mon, 12 Oct 2009 08:46:26 +0200,
-> Clemens Ladisch wrote:
-> > 
-> > Lubomir Rintel wrote:
-> > > Entry for JMTek LLC., SSS USB Headphone Set in the quirk table.
-> > 
-> > Please add an explaination why this entry is needed.  At first glance,
-> > this entry seems to describe a class-compliant device that should not
-> > need a quirk.
-> 
-> Ah right.  It'd really helpful if Lubomir can give more details...
+On Monday 12 October 2009 10:41:30 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+> The power for the amplifier should be handled internally
+> by the tpa6130a2 driver.
 
-A 2.6.31.1-based kernel on my Fedora 12 workstation at hone seemed to
-require that, only the input driver attached to the device when plugged
-in, the snd-usb-audio didn't seem to load and did not care about the
-device when loaded manually. I did not have an idea why, since "alias:
-usb:v*p*d*dc*dsc*dp*ic01isc01ip*" really seemed to match my device.
-Nevertheless, after finding out that adding an entry to the quirk table
-solves my problem I concluded that my understanding (or lack of thereof)
-was wrong and that alias is really not meant to match my device.
+Please ignore this patch, I'll resend and remove the tpa6130a2_power from t=
+he =
 
-Now I plugged the adapter into my work lappy with 2.6.30.8-based Fedora
-11 and the audio interfaces on my adapter got instantly recognized and
-claimed by snd-usb-audio (and the input interface by the input
-subsystem), without modifying anything.
+header as well.
 
-Any clues what could have gone wrong then?
+-- =
 
--- 
-Flash is the Web2.0 version of blink and animated gifs.
-                                     -- Stephen Smoogen
-
+P=E9ter
