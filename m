@@ -1,85 +1,49 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCH 5/8] board-rx51-peripherals: split vaux3
- and vmmc2 supplies
-Date: Mon, 12 Oct 2009 11:08:58 +0300
-Message-ID: <20091012080858.GB13234@esdhcp037198.research.nokia.com>
-References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
-	<1255003137-1034-6-git-send-email-eduardo.valentin@nokia.com>
-	<20091008132109.GD29176@rakim.wolfsonmicro.main>
-	<20091009064529.GD6616@esdhcp037198.research.nokia.com>
-	<20091009110346.GC5082@sirena.org.uk>
-Reply-To: eduardo.valentin@nokia.com
+From: Lubomir Rintel <lkundrak@v3.sk>
+Subject: Re: [PATCH] [snd-usb-audio] Add match for JMTek USB sound	card
+Date: Mon, 12 Oct 2009 10:03:53 +0200
+Message-ID: <1255334633.3286.4376.camel@localhost.localdomain>
+References: <1255173329-20485-1-git-send-email-lkundrak@v3.sk>
+	 <4AD2D0C2.40307@ladisch.de>  <s5hzl7xdqrn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 08F90103859
-	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 10:09:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20091009110346.GC5082@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <s5hzl7xdqrn.wl%tiwai@suse.de>
+Sender: linux-sound-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-On Fri, Oct 09, 2009 at 01:03:47PM +0200, Mark Brown wrote:
-> On Fri, Oct 09, 2009 at 09:45:29AM +0300, Eduardo Valentin wrote:
-> > On Thu, Oct 08, 2009 at 03:21:10PM +0200, Mark Brown wrote:
-> > > On Thu, Oct 08, 2009 at 02:58:54PM +0300, Eduardo Valentin wrote:
+On Mon, 2009-10-12 at 09:18 +0200, Takashi Iwai wrote:
+> At Mon, 12 Oct 2009 08:46:26 +0200,
+> Clemens Ladisch wrote:
+> > 
+> > Lubomir Rintel wrote:
+> > > Entry for JMTek LLC., SSS USB Headphone Set in the quirk table.
+> > 
+> > Please add an explaination why this entry is needed.  At first glance,
+> > this entry seems to describe a class-compliant device that should not
+> > need a quirk.
 > 
-> > > I may have missed it but I don't see rx51_vmmc2_supply added back
-> > > anywhere in the patch?
-> 
-> > yes. That's because this patch is just to split then. As you can see
-> > in current code, this structure, rx51_vmmc2_supply, is actually used
-> > by rx51_vaux3_mmc and rx51_vmmc2. So the idea is to have separated
-> > supplies for each one. This patch just splits then. Patch 0006 of this
-> > series adds usage of rx51_vmmc2_supply.
-> 
-> Might be an idea to change the description to something like "add a
-> separate structure for...", it wasn't 100% clear what was going on
-> (probably because the diff doesn't include sufficient context to make it
-> clear).
-> 
-> > > ...using dev_name rather than dev should avoid the need to do this at
-> > > runtime.
+> Ah right.  It'd really helpful if Lubomir can give more details...
 
-I'm afraid using dev_name is not that easy. The mmc driver generates device
-name at runtime. That's why this board file setups .dev at runtime as well.
+A 2.6.31.1-based kernel on my Fedora 12 workstation at hone seemed to
+require that, only the input driver attached to the device when plugged
+in, the snd-usb-audio didn't seem to load and did not care about the
+device when loaded manually. I did not have an idea why, since "alias:
+usb:v*p*d*dc*dsc*dp*ic01isc01ip*" really seemed to match my device.
+Nevertheless, after finding out that adding an entry to the quirk table
+solves my problem I concluded that my understanding (or lack of thereof)
+was wrong and that alias is really not meant to match my device.
 
-rx51_twlgpio_setup -> twl4030_mmc_init -> omap2_init_mmc
+Now I plugged the adapter into my work lappy with 2.6.30.8-based Fedora
+11 and the audio interfaces on my adapter got instantly recognized and
+claimed by snd-usb-audio (and the input interface by the input
+subsystem), without modifying anything.
 
-
-So, changing this supply to something static using .dev_name it is not
-possible with current code. That would need refactoring the whole mmc and
-hsmmc setup. And the device naming procedure is dependent on cpu as well.
-Check arch/arm/mach-omap2/device.c:omap2_init_mmc.
-
-
-
-> 
-> > I see your point. As mentioned above, this patch is just a split.
-> > I just added rx51_vaux3_supply to be owned by rx51_vaux3_mmc. And
-> > let the code behavior as it was before.
-> 
-> > Maybe your proposal must be sent into a separated patch/patch series (?).
-> 
-> Yes, it's definately a separate patch - might be good to put it into the
-> series before this one.
-
-
+Any clues what could have gone wrong then?
 
 -- 
-Eduardo Valentin
+Flash is the Web2.0 version of blink and animated gifs.
+                                     -- Stephen Smoogen
+
