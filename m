@@ -1,25 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/8] McBSP: OMAP3: Add Sidetone feature
-Date: Mon, 12 Oct 2009 10:32:35 +0100
-Message-ID: <20091012093235.GE3308@rakim.wolfsonmicro.main>
-References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
-	<1255003137-1034-4-git-send-email-eduardo.valentin@nokia.com>
-	<20091008131702.GC29176@rakim.wolfsonmicro.main>
-	<1255064967.30157.178.camel@eenurkka-desktop>
-	<20091009104458.GB5082@sirena.org.uk>
-	<1255328261.30157.227.camel@eenurkka-desktop>
-	<20091012091234.GB3308@rakim.wolfsonmicro.main>
-	<1255339705.30157.241.camel@eenurkka-desktop>
+Subject: Re: dev_* output functions and ASoC codecs
+Date: Mon, 12 Oct 2009 10:36:02 +0100
+Message-ID: <20091012093601.GA22233@sirena.org.uk>
+References: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
+	<20091006102033.GC27168@sirena.org.uk>
+	<3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AE05F103846
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id E2C33103854
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 11:32:36 +0200 (CEST)
+	Mon, 12 Oct 2009 11:36:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1255339705.30157.241.camel@eenurkka-desktop>
+In-Reply-To: <3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,18 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: "Cai, Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 12, 2009 at 12:28:25PM +0300, Eero Nurkkala wrote:
+On Mon, Oct 12, 2009 at 10:26:09AM +0800, Barry Song wrote:
 
-> As mentioned, in some (or most) cases the absolute sinetone level (dB)
-> is expected constant. Even a volume change should not effect the
-> sidetone level. Thus, if there's a change in volume, the sidetone gains
-> should be readjusted. If that can happen automatically, that would
-> be just nice =)
+Please don't top post and please start new threads for new topics.
 
-That's what you said, but could you please go into a bit more detail
-about why you beleive that this should be the case?  Is there some
-hardware limitation here?
+> We use many global variables in asoc now, except defining two/multi
+> groups of global variables to fulfill two/multi codecs work at the
+> same time in one system, is there any other way?
+
+Could you be more specific about which variables you are talking about
+here?  In general you should just use the struct device driver data or
+a private data field in one of the ASoC structures for any per-device
+data, in much the same way as you would do for any other system.
