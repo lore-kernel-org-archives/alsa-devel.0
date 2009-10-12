@@ -1,23 +1,22 @@
-From: Barry Song <21cnbao@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: dev_* output functions and ASoC codecs
-Date: Mon, 12 Oct 2009 18:34:56 +0800
-Message-ID: <3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
+Date: Mon, 12 Oct 2009 11:48:49 +0100
+Message-ID: <20091012104849.GA7994@rakim.wolfsonmicro.main>
 References: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
 	<20091006102033.GC27168@sirena.org.uk>
 	<3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
 	<20091012093601.GA22233@sirena.org.uk>
+	<3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f195.google.com (mail-yw0-f195.google.com
-	[209.85.211.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id E222F103870
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 697CF10387E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 12:35:16 +0200 (CEST)
-Received: by ywh33 with SMTP id 33so2972644ywh.23
-	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2009 03:35:16 -0700 (PDT)
-In-Reply-To: <20091012093601.GA22233@sirena.org.uk>
+	Mon, 12 Oct 2009 12:48:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,37 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Barry Song <21cnbao@gmail.com>
 Cc: "Cai, Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBPY3QgMTIsIDIwMDkgYXQgNTozNiBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIE1vbiwgT2N0IDEyLCAyMDA5IGF0
-IDEwOjI2OjA5QU0gKzA4MDAsIEJhcnJ5IFNvbmcgd3JvdGU6Cj4KPiBQbGVhc2UgZG9uJ3QgdG9w
-IHBvc3QgYW5kIHBsZWFzZSBzdGFydCBuZXcgdGhyZWFkcyBmb3IgbmV3IHRvcGljcy4KPgo+PiBX
-ZSB1c2UgbWFueSBnbG9iYWwgdmFyaWFibGVzIGluIGFzb2Mgbm93LCBleGNlcHQgZGVmaW5pbmcg
-dHdvL211bHRpCj4+IGdyb3VwcyBvZiBnbG9iYWwgdmFyaWFibGVzIHRvIGZ1bGZpbGwgdHdvL211
-bHRpIGNvZGVjcyB3b3JrIGF0IHRoZQo+PiBzYW1lIHRpbWUgaW4gb25lIHN5c3RlbSwgaXMgdGhl
-cmUgYW55IG90aGVyIHdheT8KPgo+IENvdWxkIHlvdSBiZSBtb3JlIHNwZWNpZmljIGFib3V0IHdo
-aWNoIHZhcmlhYmxlcyB5b3UgYXJlIHRhbGtpbmcgYWJvdXQKPiBoZXJlPyDCoEluIGdlbmVyYWwg
-eW91IHNob3VsZCBqdXN0IHVzZSB0aGUgc3RydWN0IGRldmljZSBkcml2ZXIgZGF0YSBvcgo+IGEg
-cHJpdmF0ZSBkYXRhIGZpZWxkIGluIG9uZSBvZiB0aGUgQVNvQyBzdHJ1Y3R1cmVzIGZvciBhbnkg
-cGVyLWRldmljZQo+IGRhdGEsIGluIG11Y2ggdGhlIHNhbWUgd2F5IGFzIHlvdSB3b3VsZCBkbyBm
-b3IgYW55IG90aGVyIHN5c3RlbS4KPgpMZXQgbWUgdGFrZSB3bTg5MDMgYXMgYW4gZXhhbXBsZS4K
-SW4gY29kZWM6CiJzdGF0aWMgc3RydWN0IHNuZF9zb2NfY29kZWMgKndtODkwM19jb2RlYyIgaXMg
-YSBnbG9iYWwgdmFyaWFibGUgdG8KZGVzY3JpYmUgYSBjb2RlYy4gIFRoZSBnbG9iYWwgdmFyaWFi
-bGUgbGltaXQgdGhlIGNvZGVjIGRyaXZlciBjYW4gb25seQpzdXBwb3J0IG9uZSB0byB3b3JrLgpJ
-ZiB3ZSB1c2UgbnVtX2xpbmtzID0gMiwgaXQgc2VlbXMgY29kZWNfZGFpIGZvciB3bTg5MDMgc2hv
-dWxkIGJlIGR1cGxpY2F0ZWQgdG9vLgoKSW4gQ1BVIGRhaToKaW4gY2FzZSB0aGVyZSBhcmUgdHdv
-IHNhbWUgSTJTIGludGVyZmFjZXMgY29ubmVjdGluZyB0d28gc2FtZSB3bTg5MDMsCnRoZW4gYW4g
-YXJyYXkgd2l0aCB0d28gZWxlbWVudHMgZm9yIENQVSBkYWkgaXMgbmVlZGVkLgpGb3IgdGhlIHR3
-byBzdHJ1Y3Qgc25kX3NvY19kYWksIGFsbCBmaWVsZHMobGlrZSBwcm9iZSwgcmVtb3ZlKSBhcmUK
-c2FtZSBleGNlcHQgcHJpdmF0ZV9kYXRhLgoKSW4gbWFjaGluIGRyaXZlcjoKc25kX3NvY19kYWlf
-bGluayBjb25uZWN0IHRoZSBtdWx0aSBzYW1lIENQVSBkYWkgYW5kIGNvZGVjIGRhaSB0b2dldGhl
-ci4KCklmIHdlIGRvbid0IHVzZSBudW1fbGlua3MgPTIsIHdlIG5lZWQgdG8gY2FsbApwbGF0Zm9y
-bV9kZXZpY2VfYWxsb2MoInNvYy1hdWRpbyIsLi4uKS9wbGF0Zm9ybV9kZXZpY2VfYWRkKCkgdHdp
-Y2UKd2l0aCBkdXBsaWNhdGVkIHN0cnVjdCBzbmRfc29jX2RldmljZS4KCkRvbid0IGtub3cgd2hl
-dGhlciBJIGxvc3Qgc29tZXRoaW5nLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+On Mon, Oct 12, 2009 at 06:34:56PM +0800, Barry Song wrote:
+> On Mon, Oct 12, 2009 at 5:36 PM, Mark Brown
+
+> In codec:
+> "static struct snd_soc_codec *wm8903_codec" is a global variable to
+> describe a codec.  The global variable limit the codec driver can only
+> support one to work.
+
+Right, currently the WM8903 driver only allows one instance - this will
+be addressed in the future but for now the core doesn't really support
+this.  Addressing this is the main reason why the drivers need to be
+converted away from the old style of probing to using the device model
+and supplying struct deviecs - without doing that it's not possible to
+support more than one instance of the same CODEC.
+
+> In CPU dai:
+> in case there are two same I2S interfaces connecting two same wm8903,
+> then an array with two elements for CPU dai is needed.
+
+I'm sorry, I can't quite parse what you're saying here.  If you have two
+CPU DAIs then you need an array to hold them but that seems self evident
+so is presumably not what you mean?
+
+> In machin driver:
+> snd_soc_dai_link connect the multi same CPU dai and codec dai together.
+> 
+> If we don't use num_links =2, we need to call
+> platform_device_alloc("soc-audio",...)/platform_device_add() twice
+> with duplicated struct snd_soc_device.
+
+Again, I'm not 100% clear what you're saying here.  If you have a CODEC
+with two DAIs which you need to connect to two CPU drivers then you will
+need two dai_links.  If you have two unrelated sound subsystems in your
+system then you should end up with two separate sound devices at the
+ALSA level.  I understand that this currently works OK, though it's not
+really supported.
