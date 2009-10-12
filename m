@@ -1,19 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH - try2] ASoC: TPA6130A2: Make
-	tpa6130a2_power as static
-Date: Mon, 12 Oct 2009 13:41:10 +0100
-Message-ID: <20091012124110.GA15690@rakim.wolfsonmicro.main>
-References: <1255337035-24442-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: dev_* output functions and ASoC codecs
+Date: Mon, 12 Oct 2009 21:20:18 +0800
+Message-ID: <3c17e3570910120620g7e65f87ekeb854c373375b7a3@mail.gmail.com>
+References: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
+	<20091006102033.GC27168@sirena.org.uk>
+	<3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
+	<20091012093601.GA22233@sirena.org.uk>
+	<3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
+	<20091012104849.GA7994@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 72CB7103865
+Received: from mail-yx0-f183.google.com (mail-yx0-f183.google.com
+	[209.85.210.183])
+	by alsa0.perex.cz (Postfix) with ESMTP id 23C0310386B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 14:41:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1255337035-24442-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon, 12 Oct 2009 15:20:39 +0200 (CEST)
+Received: by yxe13 with SMTP id 13so1507829yxe.23
+	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2009 06:20:38 -0700 (PDT)
+In-Reply-To: <20091012104849.GA7994@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +29,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, eduardo.valentin@nokia.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, "Cai,
+	Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 12, 2009 at 11:43:55AM +0300, Peter Ujfalusi wrote:
-> The power for the amplifier should be handled internally
-> by the tpa6130a2 driver.
-
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
-Applied, thanks.
+T24gTW9uLCBPY3QgMTIsIDIwMDkgYXQgNjo0OCBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIE1vbiwgT2N0IDEyLCAyMDA5IGF0
+IDA2OjM0OjU2UE0gKzA4MDAsIEJhcnJ5IFNvbmcgd3JvdGU6Cj4+IE9uIE1vbiwgT2N0IDEyLCAy
+MDA5IGF0IDU6MzYgUE0sIE1hcmsgQnJvd24KPgo+PiBJbiBjb2RlYzoKPj4gInN0YXRpYyBzdHJ1
+Y3Qgc25kX3NvY19jb2RlYyAqd204OTAzX2NvZGVjIiBpcyBhIGdsb2JhbCB2YXJpYWJsZSB0bwo+
+PiBkZXNjcmliZSBhIGNvZGVjLiDCoFRoZSBnbG9iYWwgdmFyaWFibGUgbGltaXQgdGhlIGNvZGVj
+IGRyaXZlciBjYW4gb25seQo+PiBzdXBwb3J0IG9uZSB0byB3b3JrLgo+Cj4gUmlnaHQsIGN1cnJl
+bnRseSB0aGUgV004OTAzIGRyaXZlciBvbmx5IGFsbG93cyBvbmUgaW5zdGFuY2UgLSB0aGlzIHdp
+bGwKPiBiZSBhZGRyZXNzZWQgaW4gdGhlIGZ1dHVyZSBidXQgZm9yIG5vdyB0aGUgY29yZSBkb2Vz
+bid0IHJlYWxseSBzdXBwb3J0Cj4gdGhpcy4gwqBBZGRyZXNzaW5nIHRoaXMgaXMgdGhlIG1haW4g
+cmVhc29uIHdoeSB0aGUgZHJpdmVycyBuZWVkIHRvIGJlCj4gY29udmVydGVkIGF3YXkgZnJvbSB0
+aGUgb2xkIHN0eWxlIG9mIHByb2JpbmcgdG8gdXNpbmcgdGhlIGRldmljZSBtb2RlbAo+IGFuZCBz
+dXBwbHlpbmcgc3RydWN0IGRldmllY3MgLSB3aXRob3V0IGRvaW5nIHRoYXQgaXQncyBub3QgcG9z
+c2libGUgdG8KPiBzdXBwb3J0IG1vcmUgdGhhbiBvbmUgaW5zdGFuY2Ugb2YgdGhlIHNhbWUgQ09E
+RUMuCj4KPj4gSW4gQ1BVIGRhaToKPj4gaW4gY2FzZSB0aGVyZSBhcmUgdHdvIHNhbWUgSTJTIGlu
+dGVyZmFjZXMgY29ubmVjdGluZyB0d28gc2FtZSB3bTg5MDMsCj4+IHRoZW4gYW4gYXJyYXkgd2l0
+aCB0d28gZWxlbWVudHMgZm9yIENQVSBkYWkgaXMgbmVlZGVkLgo+Cj4gSSdtIHNvcnJ5LCBJIGNh
+bid0IHF1aXRlIHBhcnNlIHdoYXQgeW91J3JlIHNheWluZyBoZXJlLiDCoElmIHlvdSBoYXZlIHR3
+bwo+IENQVSBEQUlzIHRoZW4geW91IG5lZWQgYW4gYXJyYXkgdG8gaG9sZCB0aGVtIGJ1dCB0aGF0
+IHNlZW1zIHNlbGYgZXZpZGVudAo+IHNvIGlzIHByZXN1bWFibHkgbm90IHdoYXQgeW91IG1lYW4/
+Cj4KPj4gSW4gbWFjaGluIGRyaXZlcjoKPj4gc25kX3NvY19kYWlfbGluayBjb25uZWN0IHRoZSBt
+dWx0aSBzYW1lIENQVSBkYWkgYW5kIGNvZGVjIGRhaSB0b2dldGhlci4KPj4KPj4gSWYgd2UgZG9u
+J3QgdXNlIG51bV9saW5rcyA9Miwgd2UgbmVlZCB0byBjYWxsCj4+IHBsYXRmb3JtX2RldmljZV9h
+bGxvYygic29jLWF1ZGlvIiwuLi4pL3BsYXRmb3JtX2RldmljZV9hZGQoKSB0d2ljZQo+PiB3aXRo
+IGR1cGxpY2F0ZWQgc3RydWN0IHNuZF9zb2NfZGV2aWNlLgo+Cj4gQWdhaW4sIEknbSBub3QgMTAw
+JSBjbGVhciB3aGF0IHlvdSdyZSBzYXlpbmcgaGVyZS4gwqBJZiB5b3UgaGF2ZSBhIENPREVDCj4g
+d2l0aCB0d28gREFJcyB3aGljaCB5b3UgbmVlZCB0byBjb25uZWN0IHRvIHR3byBDUFUgZHJpdmVy
+cyB0aGVuIHlvdSB3aWxsCj4gbmVlZCB0d28gZGFpX2xpbmtzLiDCoElmIHlvdSBoYXZlIHR3byB1
+bnJlbGF0ZWQgc291bmQgc3Vic3lzdGVtcyBpbiB5b3VyCj4gc3lzdGVtIHRoZW4geW91IHNob3Vs
+ZCBlbmQgdXAgd2l0aCB0d28gc2VwYXJhdGUgc291bmQgZGV2aWNlcyBhdCB0aGUKPiBBTFNBIGxl
+dmVsLiDCoEkgdW5kZXJzdGFuZCB0aGF0IHRoaXMgY3VycmVudGx5IHdvcmtzIE9LLCB0aG91Z2gg
+aXQncyBub3QKPiByZWFsbHkgc3VwcG9ydGVkLgo+ClRoYW5rcyBhIGxvdC4gRm9ydHVuYXRlbHks
+IFlvdSBwYXJzZWQgbXkgbWVhbmluZyB3ZWxsLiBJIGp1c3Qgd2FudCB0bwpzYXkgaXQgc2VlbXMg
+bm90IHRvbyBlY29ub21pYyB0byBoYXZlIGFycmF5cyB3aXRoIGFsbW9zdCBzYW1lIG1lbWJlcnMK
+d2hpbGUgQ1BVIGludGVyZmFjZXMgYW5kIGNvZGVjcyBhcmUgc2FtZSBmb3IgYWxsIGRhaV9saW5r
+cy4gZGFpWzBdIGFuZApkYWlbMV0gaW4gYXJyYXkgYXJlIGp1c3Qgc2FtZS4gIEl0IHNlZW1zIHRo
+YXQgd2lsbCBtYWtlIG1vcmUgc2Vuc2UgaWYKd2UgY2FuIGR5bmFtaWNhbGx5IHByb2JlIG11bHRp
+IHNhbWUgZGV2aWNlcyB3aXRoIG9uZSBEQUkgaW5mb3JtYXRpb24KYnV0IG5vdCBzZXZlcmFsIHJl
+cGVhdGVkIERBSXMganVzdCBhcyBvdGhlciBidXMvZGV2aWNlL2RyaXZlcgpmcmFtZXdvcmsgcHJv
+YmVzIG11bHRpLWluc3RhbmNlcyBieSBtYXRjaGluZy4gSW4gY2FzZSB3ZSBjYW4gcHJvdmlkZSBh
+CndheSB0byBtYXRjaCBhbmQgYmluZCBjcHUgREFJIGFuZCBjb2RlYyBEQUkgZHluYW1pY2FsbHks
+IGZvciBleGFtcGxlCnBsYWNpbmcgY3B1IGFuZCBjb2RlYyBkYWkgbmFtZSB3aXQgYW4gaW5kZXgg
+aW4gZGFpX2xpbmsgYnV0IG5vdApyZWZlcnJpbmcgQyB2YXJpYWJsZXMgZGlyZWN0bHksIHRoZW4g
+b25lIERBSSB3aWxsIHN1cHBvcnQgbXVsdGkKaW5zdGFuY2VzIHdoaWxlIG1hdGNoaW5nIGhhcHBl
+bnMuIEFuZCBpdCB3aWxsIGFsc28gZWxpbWluYXRlIHRoZQpjb21waWxpbmcgZGVwZW5kZW5jeSB0
+aGF0IHRoZSBjdXJyZW50IG1hY2ggZHJpdmVyIGlzIGFjY2Vzc2luZwpjcHUvY29kZWMgdmFyaWFi
+bGVzIGRpcmVjdGx5LgoKT2YgY291cnNlIEkgdGhpbmsgdGhlIGN1cnJlbnQgd2F5IGlzIGNsZWFy
+IHRvby4gQnV0IHBlb3BsZSBtYXliZSBmZWVsCnN0cmFuZ2UgaWYgdGhleSBzZWUgY29tcGxldGVs
+eSBzYW1lIGVsZW1lbnRzIGluIERBSSBhcnJheXMgOi0pCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
