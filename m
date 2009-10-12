@@ -1,20 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: dev_* output functions and ASoC codecs
-Date: Mon, 12 Oct 2009 10:36:02 +0100
-Message-ID: <20091012093601.GA22233@sirena.org.uk>
-References: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
-	<20091006102033.GC27168@sirena.org.uk>
-	<3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Subject: Re: [PATCH 3/8] McBSP: OMAP3: Add Sidetone feature
+Date: Mon, 12 Oct 2009 13:28:48 +0300
+Message-ID: <1255343328.30157.261.camel@eenurkka-desktop>
+References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
+	<1255003137-1034-4-git-send-email-eduardo.valentin@nokia.com>
+	<20091008131702.GC29176@rakim.wolfsonmicro.main>
+	<1255064967.30157.178.camel@eenurkka-desktop>
+	<20091009104458.GB5082@sirena.org.uk>
+	<1255328261.30157.227.camel@eenurkka-desktop>
+	<20091012091234.GB3308@rakim.wolfsonmicro.main>
+	<1255339705.30157.241.camel@eenurkka-desktop>
+	<20091012093235.GE3308@rakim.wolfsonmicro.main>
+Reply-To: ext-eero.nurkkala@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2C33103854
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id AE8F5103814
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Oct 2009 11:36:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
+	Mon, 12 Oct 2009 12:30:14 +0200 (CEST)
+In-Reply-To: <20091012093235.GE3308@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +30,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: "Cai, Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 12, 2009 at 10:26:09AM +0800, Barry Song wrote:
+On Mon, 2009-10-12 at 11:32 +0200, ext Mark Brown wrote:
+> On Mon, Oct 12, 2009 at 12:28:25PM +0300, Eero Nurkkala wrote:
+> 
+> > As mentioned, in some (or most) cases the absolute sinetone level (dB)
+> > is expected constant. Even a volume change should not effect the
+> > sidetone level. Thus, if there's a change in volume, the sidetone gains
+> > should be readjusted. If that can happen automatically, that would
+> > be just nice =)
+> 
+> That's what you said, but could you please go into a bit more detail
+> about why you beleive that this should be the case?  Is there some
+> hardware limitation here?
 
-Please don't top post and please start new threads for new topics.
+No HW limits here... it's all about the hmm, "friendliness" of
+sidetones.
 
-> We use many global variables in asoc now, except defining two/multi
-> groups of global variables to fulfill two/multi codecs work at the
-> same time in one system, is there any other way?
+"The more intense the side-tone, the less intensely the speaker talks."
+(June 12, 1948) [REF]
 
-Could you be more specific about which variables you are talking about
-here?  In general you should just use the struct device driver data or
-a private data field in one of the ASoC structures for any per-device
-data, in much the same way as you would do for any other system.
+So changing the headset volume should not make the speaker talk
+more/less intensely? Of course it all depends... this is just one
+aspect to this.
+
+
+[REF]
+
+LOUDNESS OF SPEAKING: THE EFFECT OF THE INTENSITY
+OF SIDE-TONE UPON THE INTENSITY OF THE SPEAKER
+Kenyon College 
+Acoustic Laboratory
+Gambier, Ohio 
+School of Aviation Medicine and Research
+N.A.S., Pensacola, Florida
