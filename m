@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Codec driver for Texas
-	Instruments	tlv320dac33 codec
-Date: Tue, 13 Oct 2009 10:26:22 +0100
-Message-ID: <20091013092622.GA1230@sirena.org.uk>
-References: <1255348139-13609-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20091012151800.GB18283@rakim.wolfsonmicro.main>
-	<200910131013.00050.peter.ujfalusi@nokia.com>
+From: <LoganLi@viatech.com.cn>
+Subject: Re: [PATCH 0/30] ALSA: HDA VIA: patch series
+Date: Tue, 13 Oct 2009 17:40:48 +0800
+Message-ID: <5B2BE0DB92BC8F4694F815C2F34E0D5F123E67@exchbj03.viatech.com.bj>
+References: <51f3faa70910121940lfdfc318vcbaf9168727b50ca@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3EFCB103802
+Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6259C10388F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Oct 2009 11:26:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200910131013.00050.peter.ujfalusi@nokia.com>
+	Tue, 13 Oct 2009 11:40:35 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <51f3faa70910121940lfdfc318vcbaf9168727b50ca@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,73 +22,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: hancockrwd@gmail.com, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 13, 2009 at 10:12:59AM +0300, Peter Ujfalusi wrote:
-> On Monday 12 October 2009 18:18:00 ext Mark Brown wrote:
+> -----Original Message-----
+> From: Robert Hancock [mailto:hancockrwd@gmail.com] =
 
-> > > +	if (dac33->power_state) {
-> > > +		val = i2c_smbus_read_byte_data(codec->control_data, value[0]);
-> > > +		if (val < 0) {
+> Sent: Tuesday, October 13, 2009 10:41 AM
+> To: Takashi Iwai
+> Cc: Logan Li; alsa-devel@alsa-project.org; Lydia Wang; Harald Welte
+> Subject: Re: [PATCH 0/30] ALSA: HDA VIA: patch series
+> =
 
-> > This is happening a lot - it should probably be factored into the shared
-> > register cache code, there's a lot of devices which could use something
-> > like this especially as regulator support is added to more and more
-> > drivers.
+> On Sun, Oct 11, 2009 at 11:29 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> > At Sun, 11 Oct 2009 13:51:28 -0600,
+> > Robert Hancock wrote:
+> >>
+> >> On 10/11/2009 01:27 PM, Takashi Iwai wrote:
+> >> > At Sun, 11 Oct 2009 10:56:48 -0600,
+> >> > Robert Hancock wrote:
+> >> >>
+> >> >> On Sun, Oct 11, 2009 at 10:18 AM, Takashi =
 
-> Actually this does not happen that much, since the reg_cache is used for most of 
-> the read operation, but the write through I2C might be happening more.
+> Iwai<tiwai@suse.de> =A0wrote:
+> >> >>> At Sat, 10 Oct 2009 19:07:09 +0800,
+> >> >>> Logan Li wrote:
+> >> >>>>
+> >> >>>> Following patch series mainly includes:
+> >> >>>> =A0 - support VT1718S, VT2002P, VT1812S, VT1716S, ...
+> >> >>>> =A0 - support smart 5.1
+> >> >>>> =A0 - add jack detection for VT1708
+> >> >>>> =A0 - power saving functions
+> >> >>>
+> >> >>> Thanks for the patches. =A0They are all well formatted now.
+> >> >>>
+> >> >>> I applied your patches except for 17,
+> >> >>> =A0 =A0 =A0 =A0 ALSA: HDA VIA: Add 2nd S/PDIF out for VT1708S =
 
-I mean the pattern of suppressing I2C writes while the chip is powered
-down rather than the 
+> and VT1702
+> >> >>> as Robert reported a regression.
+> >> >>>
+> >> >>> This is likely because of the behavior change by this =
 
-> I'm not sure how to make sure that we can access to the chip, and at the same 
-> time do not use extensive mutex lock/unlock for the I2C accesses.
-> Ideas?
+> patch. =A0Now
+> >> >>> the second SPDIF has to be specified manually with the explicit
+> >> >>> substream number. =A0This itself is fine, but I see the =
 
-Perhaps just call the mutex something more descriptive like chip_power
-or something might be enough make it clear what it's protecting?
+> problem with
+> >> >>> pulseaudio, for example. =A0There is no good way to =
 
-> > Hrm.  I'm finding the set_power/soft_power thing a little abstruse here,
-> > partly due to the very close naming and partly due to the asymmetry in
-> > the calls - I can see what they do but it's not entirely obvious.
+> specify this substream
+> >> >>> automatically for PA with some symbols like "spdif" or "hdmi".
+> >> >>>
+> >> >>> This is basically a problem of the current ALSA core =
 
-> Hmm, yes you are right, it is kind of a mess...
-> I can think of the following:
-> dac33_set_power -> dac33_hard_reset
-> dac33_soft_power -> dac33_soft_reset
+> and HD-audio core
+> >> >>> implementation. =A0So, we should solve all together.
+> >> >>
+> >> >> Actually, the latest posted version didn't have the =
 
-> In dac33_set_bias_level only toggle the dac33_soft_reset.
-> In dac33_soc_suspend/dac33_soc_resume I can use the dac33_hard_reset with 
-> register restore.
+> mixer problem I
+> >> >> had before (I haven't looked in detail at what was =
 
-> Does it makes it a bit cleaner?
+> different). But I
+> >> >> agree using a different substream for a different =
 
-I think so - it'd probably also help if the cache restore were merged
-into one of the functions too.  I'd be inclined to keep _power too.
+> output isn't ideal
+> >> >> since there's no way for software to detect that this =
 
-> > > +	pwr_ctrl &= ~(OSCPDNB | DACRPDNB | DACLPDNB);
-> > > +	dac33_write(codec, DAC33_PWR_CTRL, pwr_ctrl);
+> is the case. Can
+> >> >> it be a separate PCM like hw:0,2 or something?
+> >> >
+> >> > It would work like hw:0,1,1. =A0But, this is exactly what =
 
-> > This looks like a case for DAPM?
-> 
+> I mentioned in
+> >> > the above. =A0The secondary SPDIF isn't specified as an intuitively
+> >> > selectable PCM device.
+> >>
+> >> Well, if it was its own subdevice like hw:0,2 it would =
 
-> Well, yes. I have tried that. The problem is that tlv320dac33 is really picky on 
-> the sequence of the register writes. what I mean by 'picky' is that if the 
+> have some hope of
+> >> being detected by HAL, PulseAudio, etc. If it's just a =
 
-OK, fair enough.
+> substream then I
+> >> don't think that software can actually tell it's a =
 
-> > Is there any great reason for setting all of this stuff rather than
-> > using the hardware defaults?
+> separate output and
+> >> not just a HW mixing-type stream, etc.
+> >
+> > Right, that's the missing information.
+> >
+> >> >> Hopefully VIA will also look into the SPDIF no-output =
 
-> Yes and no. I can wipe out the unneeded things, but most of the settings here is 
-> needed to get the dac33 working. If we use the HW defaults, than dac33 would not 
-> work.
-> The DAC_CTRL_B register for example controls the digital routing to the DACs.
-> I will try to find a way to use user controls for most of the settings in a 
-> future, if it is OK.
+> problem I have
+> >> >> with VT1828S..
+> >> >
+> >> > What is the problem, specifically?
+> >>
+> >> With the latest patch I do get the optical output lighting =
 
-OK.  I'd expect that at some point people will want to control things
-like the digital routing.
+> up and the
+> >> receiver detects a PCM signal, but it seems to be just =
+
+> silence coming
+> >> through. (In previous iterations the SPDIF digital converter wasn't
+> >> being enabled automatically so it didn't get even that far.)
+> >
+> > You can fiddle with hda-verb to issue digital-converter verbs.
+> > Possibly you need to flip the digital-enable bit to send =
+
+> the values...
+> =
+
+> Well, I think I tried all combinations of the flags on the digital
+> converter in hda_analyzer without any luck. I'm assuming it's
+> something else (presumably codec-specific) that hda_analyzer doesn't
+> know about..
+> =
+
+
+Hi, Robert
+  We cannot duplicate bug of SPDIF Out cannot work on VT1828S board.
+  You said it's fine in Windows, right?
+  About the 48k limit, I'll send a patch to remove it later, thank you for =
+review!
+
+Hi, Takashi
+  So need I modify 2nd S/PDIF as separate PCM?
