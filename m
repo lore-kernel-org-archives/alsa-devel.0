@@ -1,23 +1,20 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: [PATCH 0/30] ALSA: HDA VIA: patch series
-Date: Mon, 12 Oct 2009 20:40:57 -0600
-Message-ID: <51f3faa70910121940lfdfc318vcbaf9168727b50ca@mail.gmail.com>
-References: <4AD06ADD.4000308@viatech.com.cn> <s5h8wfhewf1.wl%tiwai@suse.de>
-	<51f3faa70910110956t3b537401p51a4053102f94a2c@mail.gmail.com>
-	<s5hvdil4tor.wl%tiwai@suse.de> <4AD23740.9060800@gmail.com>
-	<s5hmy3xfadt.wl%tiwai@suse.de>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: Long-standing SDL ALSA bug
+Date: Tue, 13 Oct 2009 07:36:31 +0400
+Message-ID: <4AD3F5BF.4070006@gmail.com>
+References: <3adffa60910121114p54e74010r541c6cee86db6721@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
-	[209.85.223.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7440C103866
+Received: from mail-ew0-f221.google.com (mail-ew0-f221.google.com
+	[209.85.219.221])
+	by alsa0.perex.cz (Postfix) with ESMTP id B4CC91037FF
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Oct 2009 04:40:58 +0200 (CEST)
-Received: by iwn36 with SMTP id 36so5883404iwn.24
-	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2009 19:40:57 -0700 (PDT)
-In-Reply-To: <s5hmy3xfadt.wl%tiwai@suse.de>
+	Tue, 13 Oct 2009 05:36:34 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so78055ewy.32
+	for <alsa-devel@alsa-project.org>; Mon, 12 Oct 2009 20:36:34 -0700 (PDT)
+In-Reply-To: <3adffa60910121114p54e74010r541c6cee86db6721@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,79 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, LydiaWang@viatech.com.cn, Logan Li <loganli@viatech.com.cn>, HaraldWelte@viatech.com
+To: Sam Lantinga <slouken@libsdl.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Oct 11, 2009 at 11:29 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Sun, 11 Oct 2009 13:51:28 -0600,
-> Robert Hancock wrote:
->>
->> On 10/11/2009 01:27 PM, Takashi Iwai wrote:
->> > At Sun, 11 Oct 2009 10:56:48 -0600,
->> > Robert Hancock wrote:
->> >>
->> >> On Sun, Oct 11, 2009 at 10:18 AM, Takashi Iwai<tiwai@suse.de> =A0wrot=
-e:
->> >>> At Sat, 10 Oct 2009 19:07:09 +0800,
->> >>> Logan Li wrote:
->> >>>>
->> >>>> Following patch series mainly includes:
->> >>>> =A0 - support VT1718S, VT2002P, VT1812S, VT1716S, ...
->> >>>> =A0 - support smart 5.1
->> >>>> =A0 - add jack detection for VT1708
->> >>>> =A0 - power saving functions
->> >>>
->> >>> Thanks for the patches. =A0They are all well formatted now.
->> >>>
->> >>> I applied your patches except for 17,
->> >>> =A0 =A0 =A0 =A0 ALSA: HDA VIA: Add 2nd S/PDIF out for VT1708S and VT=
-1702
->> >>> as Robert reported a regression.
->> >>>
->> >>> This is likely because of the behavior change by this patch. =A0Now
->> >>> the second SPDIF has to be specified manually with the explicit
->> >>> substream number. =A0This itself is fine, but I see the problem with
->> >>> pulseaudio, for example. =A0There is no good way to specify this sub=
-stream
->> >>> automatically for PA with some symbols like "spdif" or "hdmi".
->> >>>
->> >>> This is basically a problem of the current ALSA core and HD-audio co=
-re
->> >>> implementation. =A0So, we should solve all together.
->> >>
->> >> Actually, the latest posted version didn't have the mixer problem I
->> >> had before (I haven't looked in detail at what was different). But I
->> >> agree using a different substream for a different output isn't ideal
->> >> since there's no way for software to detect that this is the case. Can
->> >> it be a separate PCM like hw:0,2 or something?
->> >
->> > It would work like hw:0,1,1. =A0But, this is exactly what I mentioned =
-in
->> > the above. =A0The secondary SPDIF isn't specified as an intuitively
->> > selectable PCM device.
->>
->> Well, if it was its own subdevice like hw:0,2 it would have some hope of
->> being detected by HAL, PulseAudio, etc. If it's just a substream then I
->> don't think that software can actually tell it's a separate output and
->> not just a HW mixing-type stream, etc.
+12.10.2009 22:14, Sam Lantinga ?????:
+> Hey guys, we're in the process of getting ready to release SDL 1.2.14,
+> and we're trying to fix a long standing issue with crackling and pops
+> in ALSA with some configurations:
+> http://bugzilla.libsdl.org/show_bug.cgi?id=650
 >
-> Right, that's the missing information.
+> What's really puzzling is that we're not able to reproduce it ourselves at all.
 >
->> >> Hopefully VIA will also look into the SPDIF no-output problem I have
->> >> with VT1828S..
->> >
->> > What is the problem, specifically?
->>
->> With the latest patch I do get the optical output lighting up and the
->> receiver detects a PCM signal, but it seems to be just silence coming
->> through. (In previous iterations the SPDIF digital converter wasn't
->> being enabled automatically so it didn't get even that far.)
+> I'm attaching the latest versions of the SDL audio files, and I'd
+> really appreciate it if you take a look and sanity check our code.
+> You can get the full pre-release here:
+> http://www.libsdl.org/tmp/SDL-1.2.zip
 >
-> You can fiddle with hda-verb to issue digital-converter verbs.
-> Possibly you need to flip the digital-enable bit to send the values...
-
-Well, I think I tried all combinations of the flags on the digital
-converter in hda_analyzer without any luck. I'm assuming it's
-something else (presumably codec-specific) that hda_analyzer doesn't
-know about..
+> Thanks!
+>    
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>    
+I may be wrong but I have a feeling that the problem is in the 
+pulseaudio actually not in alsa.
+There's a thing called alsa-plugins-pulseaudio which creates virtual 
+alsa device. This device sends all sound output to pulseaudio.
+Many modern distributions like to use this device as default. And 
+pulseaudio still has some crackling issues, yes.
