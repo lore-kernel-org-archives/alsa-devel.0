@@ -1,26 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: dev_* output functions and ASoC codecs
-Date: Tue, 13 Oct 2009 11:14:45 +0100
-Message-ID: <20091013101445.GA29177@rakim.wolfsonmicro.main>
-References: <8bd0f97a0910051718w5d97df8dr443917def9da9ac@mail.gmail.com>
-	<20091006102033.GC27168@sirena.org.uk>
-	<3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
-	<20091012093601.GA22233@sirena.org.uk>
-	<3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
-	<20091012104849.GA7994@rakim.wolfsonmicro.main>
-	<3c17e3570910120620g7e65f87ekeb854c373375b7a3@mail.gmail.com>
-	<20091012142018.GA18283@rakim.wolfsonmicro.main>
-	<3c17e3570910130309r3ffed293g9cc8f9bd0c845d4@mail.gmail.com>
+From: =?UTF-8?B?R3VpbGxlbSBTb2zDoA==?= <garanda@flumotion.com>
+Subject: Re: Issue with creative Xfi PCIe ca0110-IBG
+Date: Tue, 13 Oct 2009 12:26:29 +0200
+Message-ID: <4AD455D5.70400@flumotion.com>
+References: <4ACF0008.5010808@flumotion.com>
+	<s5hab00x5yi.wl%tiwai@suse.de>	<4ACF4564.6060104@flumotion.com>
+	<s5hocogvdkx.wl%tiwai@suse.de>	<4ACF5F48.6030403@flumotion.com>
+	<s5h63aov93b.wl%tiwai@suse.de>	<4AD43EF0.70907@flumotion.com>
+	<s5hk4yz1wrn.wl%tiwai@suse.de>	<4AD44F72.3030605@flumotion.com>
+	<s5heip71ubm.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7EDD81038C1
+Received: from mail.fluendo.com (se01.bcn.fluendo.net [195.10.10.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 745C01038B4
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Oct 2009 12:14:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570910130309r3ffed293g9cc8f9bd0c845d4@mail.gmail.com>
+	Tue, 13 Oct 2009 12:26:29 +0200 (CEST)
+In-Reply-To: <s5heip71ubm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,24 +26,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, "Cai,
-	Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 13, 2009 at 06:09:07PM +0800, Barry Song wrote:
-
-> Another issue is that there is only one global soc_ac97_ops in the
-> whole system. In case there are two different ac97 ports, how to
-> handle?
-
-> Even though the two ac97 ports are same, how could CPU DAI related
-> private data can be given to snd_ac97 to let it use that data to
-> execute different operations? It seems snd_ac97 is only attached to
-> codec.
-
-I've no current plan to work on multiple AC97 controllers support within
-ASoC except in so far as it falls out of other work - I've never
-encountered an embedded system with multiple AC97 controllers so it's a
-somewhat academic issue.  Patches welcome, though I'd expect it'd be
-sensible to wait until multi-card support is present.
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFR1ZSwgMTMgT2N0IDIwMDkgMTE6NTk6MTQgKzAyMDAs
+Cj4gR3VpbGxlbSBTb2zDoCB3cm90ZToKPiAgIAo+PiBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+ICAg
+ICAKPj4+IEF0IFR1ZSwgMTMgT2N0IDIwMDkgMTA6NDg6NDggKzAyMDAsCj4+PiBHdWlsbGVtIFNv
+bMOgIHdyb3RlOgo+Pj4gICAKPj4+ICAgICAgIAo+Pj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4+
+PiAgICAgCj4+Pj4gICAgICAgICAKPj4+Pj4gQXQgRnJpLCAwOSBPY3QgMjAwOSAxODowNToyOCAr
+MDIwMCwKPj4+Pj4gR3VpbGxlbSBTb2zDoCB3cm90ZToKPj4+Pj4gICAKPj4+Pj4gICAgICAgCj4+
+Pj4+ICAgICAgICAgICAKPj4+Pj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4+Pj4+ICAgICAKPj4+
+Pj4+ICAgICAgICAgCj4+Pj4+PiAgICAgICAgICAgICAKPj4+Pj4+PiBBdCBGcmksIDA5IE9jdCAy
+MDA5IDE2OjE1OjAwICswMjAwLAo+Pj4+Pj4+IEd1aWxsZW0gU29sw6Agd3JvdGU6Cj4+Pj4+Pj4g
+ICAKPj4+Pj4+PiAgICAgICAgICAgICAgIAo+Pj4+Pj4gT2sgVGhpbmsgSSBGaW5hbGx5IGdldCBp
+dCA6LSkKPj4+Pj4+Cj4+Pj4+PiB0aG9zZSBhcmUgdGhlIGxhdGVzdCBzdGVwcyBJIGRpZCwgQUZB
+SUsgaXQgd2FzIHRoZSBmaXJzdCBjb21taXQgYWZ0ZXIgCj4+Pj4+PiAyLjYuMzEtcmM1IGFzIHlv
+dSBzYWlkICJUaGUgc3VzcGljaW91cyBjaGFuZ2VzIGFyZSB0aGUgZmlyc3Qgb25lIGFuZCB0aGUg
+Cj4+Pj4+PiB0aGlyZCBvbmUuIgo+Pj4+Pj4KPj4+Pj4+IGRlYWRmZjE2NjU0OTFhZmNlMTI0YThm
+ZjgzZjAwZjc4NDE2MWY2NjAgaXMgZmlyc3QgYmFkIGNvbW1pdAo+Pj4+Pj4gICAgIAo+Pj4+Pj4g
+ICAgICAgICAKPj4+Pj4+ICAgICAgICAgICAgIAo+Pj4+PiBUaGFua3MhICBUaGF0J3Mgd2hhdCBJ
+IGV4cGVjdGVkIChhbmQgd29ycmllZCkuLi4KPj4+Pj4KPj4+Pj4gV2hhdCBoYXBwZW5zIGlmIHlv
+dSBhcHBseSB0aGUgcGF0Y2ggYmVsb3cgdG8gdGhlIGxhdGVzdCBhbHNhIGRyaXZlcgo+Pj4+PiAo
+b3IgMi42LjMxLXJjNik/Cj4+Pj4+Cj4+Pj4+Cj4+Pj4+IFRha2FzaGkKPj4+Pj4KPj4+Pj4gLS0t
+Cj4+Pj4+IGRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jIGIvc291bmQvcGNp
+L2hkYS9oZGFfaW50ZWwuYwo+Pj4+PiBpbmRleCBkMGVmZmEzLi44MTY2M2E3IDEwMDY0NAo+Pj4+
+PiAtLS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCj4+Pj4+ICsrKyBiL3NvdW5kL3BjaS9o
+ZGEvaGRhX2ludGVsLmMKPj4+Pj4gQEAgLTU2Niw2ICs1NjYsNyBAQCBzdGF0aWMgdm9pZCBhenhf
+ZnJlZV9jbWRfaW8oc3RydWN0IGF6eCAqY2hpcCkKPj4+Pj4gIAo+Pj4+PiAgc3RhdGljIHVuc2ln
+bmVkIGludCBhenhfY29tbWFuZF9hZGRyKHUzMiBjbWQpCj4+Pj4+ICB7Cj4+Pj4+ICsjaWYgMCAv
+KiBYWFggKi8KPj4+Pj4gIAl1bnNpZ25lZCBpbnQgYWRkciA9IGNtZCA+PiAyODsKPj4+Pj4gIAo+
+Pj4+PiAgCWlmIChhZGRyID49IEFaWF9NQVhfQ09ERUNTKSB7Cj4+Pj4+IEBAIC01NzQsNiArNTc1
+LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBhenhfY29tbWFuZF9hZGRyKHUzMiBjbWQpCj4+Pj4+
+ICAJfQo+Pj4+PiAgCj4+Pj4+ICAJcmV0dXJuIGFkZHI7Cj4+Pj4+ICsjZWxzZQo+Pj4+PiArCXJl
+dHVybiAwOwo+Pj4+PiArI2VuZGlmCj4+Pj4+ICB9Cj4+Pj4+ICAKPj4+Pj4gIHN0YXRpYyB1bnNp
+Z25lZCBpbnQgYXp4X3Jlc3BvbnNlX2FkZHIodTMyIHJlcykKPj4+Pj4gQEAgLTgxOCw2ICs4MjIs
+NyBAQCBzdGF0aWMgdW5zaWduZWQgaW50IGF6eF9nZXRfcmVzcG9uc2Uoc3RydWN0IGhkYV9idXMg
+KmJ1cywKPj4+Pj4gIAkJCQkgICAgIHVuc2lnbmVkIGludCBhZGRyKQo+Pj4+PiAgewo+Pj4+PiAg
+CXN0cnVjdCBhenggKmNoaXAgPSBidXMtPnByaXZhdGVfZGF0YTsKPj4+Pj4gKwlhZGRyID0gMDsg
+LyogWFhYICovCj4+Pj4+ICAJaWYgKGNoaXAtPnNpbmdsZV9jbWQpCj4+Pj4+ICAJCXJldHVybiBh
+enhfc2luZ2xlX2dldF9yZXNwb25zZShidXMsIGFkZHIpOwo+Pj4+PiAgCWVsc2UKPj4+Pj4KPj4+
+Pj4gICAKPj4+Pj4gICAgICAgCj4+Pj4+ICAgICAgICAgICAKPj4+PiBJIHRyaWVkIHRoZSBwYXRj
+aCB5b3UgaGF2ZSBhdHRhY2hlZCwgaXQgcGF0Y2hlZCB3ZWxsIChJIGNoZWNrZWQgaXQpIGJ1dCAK
+Pj4+PiBzZWVtcyB0byBub3Qgd29yawo+Pj4+Cj4+Pj4gQWZ0ZXIgbWFrZSBJIHRyaWVkIHRvIG1v
+ZHByb2JlIHNuZC1oZGEtaW50ZWwtY2EwMTEwIGFuZCBJIHNhdyBpbiBkbWVzZzoKPj4+Pgo+Pj4+
+IGhkYS1pbnRlbDogSW52YWxpZCBwb3NpdGlvbiBidWZmZXIsIHVzaW5nIExQSUIgcmVhZCBtZXRo
+b2QgaW5zdGVhZC4KPj4+PiBhbHNhY3RsWzgyOTJdOiBzZWdmYXVsdCBhdCAwIGlwIChudWxsKSBz
+cCBiZmE4M2YxYyBlcnJvciAxNCBpbiAKPj4+PiBsZC0yLjUuc29bNTRjMDAwKzFhMDAwXQo+Pj4+
+IEhEQSBJbnRlbCAwMDAwOjA1OjAwLjA6IFBDSSBJTlQgQSBkaXNhYmxlZAo+Pj4+Cj4+Pj4gYW5k
+IGFmdGVyIHJlYm9vdDoKPj4+Pgo+Pj4+IEhEQSBJbnRlbCAwMDAwOjA1OjAwLjA6IFBDSSBJTlQg
+QSAtPiBHU0kgMzggKGxldmVsLCBsb3cpIC0+IElSUSAzOAo+Pj4+IGhkYS1pbnRlbDogc3B1cmlv
+dXMgcmVzcG9uc2UgMHgxMTAyMDAwYToweDEsIGxhc3QgY21kPTB4MDAwMDAwCj4+Pj4gaGRhLWlu
+dGVsOiBhenhfZ2V0X3Jlc3BvbnNlIHRpbWVvdXQsIHN3aXRjaGluZyB0byBwb2xsaW5nIG1vZGU6
+IGxhc3QgCj4+Pj4gY21kPTB4MTAwZjAwMDAKPj4+PiBoZGEtaW50ZWw6IENvZGVjICMxIHByb2Jl
+IGVycm9yOyBkaXNhYmxpbmcgaXQuLi4KPj4+PiBoZGEtaW50ZWw6IHNwdXJpb3VzIHJlc3BvbnNl
+IDB4MTEwMjAwMGE6MHgxLCBsYXN0IGNtZD0weDAwMDAwMAo+Pj4+IGhkYV9pbnRlbDogYXp4X2dl
+dF9yZXNwb25zZSB0aW1lb3V0LCBzd2l0Y2hpbmcgdG8gc2luZ2xlX2NtZCBtb2RlOiBsYXN0IAo+
+Pj4+IGNtZD0weDEwMGYwMDAwCj4+Pj4gaGRhLWludGVsOiBubyBjb2RlY3MgaW5pdGlhbGl6ZWQK
+Pj4+PiBIREEgSW50ZWwgMDAwMDowNTowMC4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKPj4+Pgo+Pj4+
+IEl0IHNlZW1zIHNvbWV0aGluZyB3ZW50IHdyb25nCj4+Pj4gICAgIAo+Pj4+ICAgICAgICAgCj4+
+PiBJdCdzIG5vdCBhIHJpZ2h0IGZpeCBidXQgYSBiYW5kLWFpZC4gIFdpdGggdGhhdCBwYXRjaCwg
+bG9hZCB3aXRoCj4+PiBwcm9iZV9tYXNrPTB4MDEgb3B0aW9uLgo+Pj4KPj4+Cj4+PiBUYWthc2hp
+Cj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4g
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+
+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwKPj4+ICAgCj4+PiAgICAgICAKPj4gdWhtbS4uLiBkb24ndCBrbm93IGlmIEknbSBkb2lu
+ZyBzb21ldGhpbmcgd3JvbmcgYnV0Cj4+Cj4+IG1vZHByb2JlIHNuZC1oZGEtY29kZWMtY2EwMTEw
+IHByb2JlX21hc2s9MHgwMQo+Pgo+PiBzYXlzOgo+Pgo+PiBGQVRBTDogRXJyb3IgaW5zZXJ0aW5n
+IHNuZF9oZGFfY29kZWNfY2EwMTEwIAo+PiAoL2xpYi9tb2R1bGVzLzIuNi4zMS1yYzYvZXh0cmEv
+c25kLWhkYS1jb2RlYy1jYTAxMTAua28pOiBVbmtub3duIHN5bWJvbCAKPj4gaW4gbW9kdWxlLCBv
+ciB1bmtub3duIHBhcmFtZXRlciAoc2VlIGRtZXNnKQo+Pgo+PiBpbiBkbWVzZwo+PiBzbmRfaGRh
+X2NvZGVjX2NhMDExMDogVW5rbm93biBwYXJhbWV0ZXIgYHByb2JlX21hc2snCj4+Cj4+IHByb2Jl
+X21hc2sgb3B0aW9uIGlzbid0IG9ubHkgZm9yIHNuZC1oZGEtaW50ZWw/Cj4+ICAgICAKPgo+IFll
+cy4gIExvYWQgaXQgbGlrZQo+Cj4gCW1vZHByb2JlIHNuZC1oZGEtaW50ZWwgcHJvYmVfbWFzaz0w
+eDAxCj4KPiBUaGUgY29kZWMgbW9kdWxlcyB3aWxsIGJlIGxvYWRlZCBhdXRvbWF0aWNhbGx5IGJ5
+IHRoYXQuCj4KPgo+IFRha2FzaGkKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwKPiAgIApJIGRpZCBpdCB0b28gd2l0aG91dCBzdWNjZXNzLCBoZGEt
+aW50ZWwgc2VlbXMgbm90IHRvIGxvYWQgYXV0b21hdGljYWxseSAKc25kLWhkYS1jb2RlYy1jYTAx
+MTAKCihkbWVzZykKSERBIEludGVsIDAwMDA6MDU6MDAuMDogUENJIElOVCBBIC0+IEdTSSAzOCAo
+bGV2ZWwsIGxvdykgLT4gSVJRIDM4CmhkYS1pbnRlbDogbm8gY29kZWNzIGluaXRpYWxpemVkCkhE
+QSBJbnRlbCAwMDAwOjA1OjAwLjA6IFBDSSBJTlQgQSBkaXNhYmxlZAoKdGhhbmtzLAoKR3VpbGxl
+bSBTb2zDoApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
