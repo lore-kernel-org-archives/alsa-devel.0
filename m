@@ -1,19 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: Codec driver for Texas Instruments
-	tlv320dac33 codec
-Date: Tue, 13 Oct 2009 10:12:59 +0300
-Message-ID: <200910131013.00050.peter.ujfalusi@nokia.com>
-References: <1255348139-13609-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20091012151800.GB18283@rakim.wolfsonmicro.main>
+From: =?UTF-8?B?R3VpbGxlbSBTb2zDoA==?= <garanda@flumotion.com>
+Subject: Re: Issue with creative Xfi PCIe ca0110-IBG
+Date: Tue, 13 Oct 2009 10:48:48 +0200
+Message-ID: <4AD43EF0.70907@flumotion.com>
+References: <4ACF0008.5010808@flumotion.com>	<s5hab00x5yi.wl%tiwai@suse.de>	<4ACF4564.6060104@flumotion.com>	<s5hocogvdkx.wl%tiwai@suse.de>	<4ACF5F48.6030403@flumotion.com>
+	<s5h63aov93b.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDC4C10388F
+Received: from mail.fluendo.com (se01.bcn.fluendo.net [195.10.10.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4476D103875
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Oct 2009 09:14:15 +0200 (CEST)
-In-Reply-To: <20091012151800.GB18283@rakim.wolfsonmicro.main>
+	Tue, 13 Oct 2009 10:48:50 +0200 (CEST)
+In-Reply-To: <s5h63aov93b.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,349 +22,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 12 October 2009 18:18:00 ext Mark Brown wrote:
-> On Mon, Oct 12, 2009 at 02:48:58PM +0300, Peter Ujfalusi wrote:
-> > +static struct i2c_client *tlv320dac33_client;
-> >
-> > +static struct workqueue_struct *dac33_wq;
-> =
-
-> I'm surprised to see these done as static variables - is there any great
-> reason for doing that?
-
-Hmm, I'm surprised as well, will be fixed.
-
-> =
-
-> > +static int dac33_read(struct snd_soc_codec *codec, unsigned int reg,
-> > +		      u8 *value)
-> > +{
-> > +	struct tlv320dac33_priv *dac33 =3D codec->private_data;
-> > +	int val;
-> > +
-> > +	*value =3D reg & 0xff;
-> > +
-> > +	/* If powered off, return the cached value */
-> > +	mutex_lock(&dac33->mutex);
-> > +	if (dac33->power_state) {
-> > +		val =3D i2c_smbus_read_byte_data(codec->control_data, value[0]);
-> > +		if (val < 0) {
-> =
-
-> This is happening a lot - it should probably be factored into the shared
-> register cache code, there's a lot of devices which could use something
-> like this especially as regulator support is added to more and more
-> drivers.
-
-Actually this does not happen that much, since the reg_cache is used for mo=
-st of =
-
-the read operation, but the write through I2C might be happening more.
-
-> =
-
-> > +			dev_err(codec->dev, "Read failed\n");
-> =
-
-> It'd be useful to print val here.
-
-Sure.
-
-> =
-
-> > +	 * data is
-> > +	 *   D23..D16 dac33 register offset
-> > +	 *   D15..D8  register data MSB
-> > +	 *   D7...D0  register data LSB
-> > +	 */
-> > +	data[0] =3D reg & 0xff;
-> > +	data[1] =3D (value >> 8) & 0xff;
-> > +	data[2] =3D value & 0xff;
-> =
-
-> This looks just like a 16 bit register write - would it make sense to
-> just treat the CODEC as having 16 bit registers and deal with the
-> autoincrement fun by latching the top bit of each 16 bit register in the
-> cache?  That seems to be equivalent to what the current code is doing
-> but it's a little more direct.
-
-Most of the registers are 8 bit, there are few exception to this, where 2 =
-
-registers holds the MSB and LSB of the value, that's justify the existence =
-of =
-
-this function. I could have used two writes for the registers, but in this =
-way =
-
-the code looks cleaner.
-
-> =
-
-> > +static void dac33_set_power(struct snd_soc_codec *codec, int power)
-> > +{
-> > +	struct tlv320dac33_priv *dac33 =3D codec->private_data;
-> > +
-> > +	if (power) {
-> > +		if (dac33->power_gpio >=3D 0) {
-> > +			mutex_lock(&dac33->mutex);
-> > +			gpio_set_value(dac33->power_gpio, 1);
-> > +			dac33->power_state =3D 1;
-> > +			mutex_unlock(&dac33->mutex);
-> > +		}
-> > +		dac33_soft_power(codec, 1);
-> =
-
-> What exactly is the mutex protecting here?  I'd expect it to cover the
-> soft power function too.
-
-It suppose to protect the dac33->power_state, which is checked when accessi=
-ng to =
-
-the chip (via I2C). Probably there would be no problems, if I don't use the =
-
-mutex for protecting the dac33->power_state...
-Basically nothing will brake, but the I2C access would fail and the driver =
-would =
-
-print an error to the log.
-I'm not sure how to make sure that we can access to the chip, and at the sa=
-me =
-
-time do not use extensive mutex lock/unlock for the I2C accesses.
-Ideas?
-
-> =
-
-> > +static int dac33_set_nsample(struct snd_kcontrol *kcontrol,
-> > +			 struct snd_ctl_elem_value *ucontrol)
-> > +{
-> > +	struct snd_soc_codec *codec =3D snd_kcontrol_chip(kcontrol);
-> > +	struct tlv320dac33_priv *dac33 =3D codec->private_data;
-> > +	int ret =3D -EINVAL;
-> > +
-> > +	if (dac33->nsample =3D=3D ucontrol->value.integer.value[0])
-> > +		return 0;
-> > +	if (ucontrol->value.integer.value[0] < dac33->nsample_min)
-> > +		dac33->nsample =3D dac33->nsample_min;
-> > +	else if (ucontrol->value.integer.value[0] > dac33->nsample_max)
-> > +		dac33->nsample =3D dac33->nsample_max;
-> =
-
-> I'd expect these cases to just return the error and not update the
-> driver state?
-
-Will do that.
-
-> =
-
-> > +static int dac33_set_nsample_switch(struct snd_kcontrol *kcontrol,
-> > +			 struct snd_ctl_elem_value *ucontrol)
-> > +{
-> > +	struct snd_soc_codec *codec =3D snd_kcontrol_chip(kcontrol);
-> > +	struct tlv320dac33_priv *dac33 =3D codec->private_data;
-> > +	int ret =3D -EINVAL;
-> > +
-> > +	if (dac33->nsample_switch =3D=3D ucontrol->value.integer.value[0])
-> > +		return 0;
-> > +	if (ucontrol->value.integer.value[0] < 0)
-> > +		dac33->nsample_switch =3D 0;
-> > +	else if (ucontrol->value.integer.value[0] > 1)
-> > +		dac33->nsample_switch =3D 1;
-> > +	else {
-> > +		dac33->nsample_switch =3D ucontrol->value.integer.value[0];
-> > +		ret =3D 0;
-> > +	}
-> =
-
-> Similarly here.
-
-I'll fix this as well. =
-
-
-> =
-
-> > +static int dac33_set_bias_level(struct snd_soc_codec *codec,
-> > +				enum snd_soc_bias_level level)
-> > +{
-> > +	switch (level) {
-> > +	case SND_SOC_BIAS_ON:
-> > +		dac33_soft_power(codec, 1);
-> > +		break;
-> > +	case SND_SOC_BIAS_PREPARE:
-> > +		break;
-> > +	case SND_SOC_BIAS_STANDBY:
-> > +		dac33_soft_power(codec, 0);
-> > +		break;
-> > +	case SND_SOC_BIAS_OFF:
-> > +		dac33_set_power(codec, 0);
-> > +		break;
-> > +	}
-> =
-
-> Hrm.  I'm finding the set_power/soft_power thing a little abstruse here,
-> partly due to the very close naming and partly due to the asymmetry in
-> the calls - I can see what they do but it's not entirely obvious.
-
-Hmm, yes you are right, it is kind of a mess...
-I can think of the following:
-dac33_set_power -> dac33_hard_reset
-dac33_soft_power -> dac33_soft_reset
-
-In dac33_set_bias_level only toggle the dac33_soft_reset.
-In dac33_soc_suspend/dac33_soc_resume I can use the dac33_hard_reset with =
-
-register restore.
-
-Does it makes it a bit cleaner?
-
-> I'd also expect to see one of these functions doing a register cache rest=
-ore
-> which none of these do.
-
-After dac33_set_power(1) there is a place for restoring the registers, yes.
-At the moment the only place where this is happening is in dac33_soc_resume,
-there I can add the register restore.
-
-> =
-
-> I think some refactoring would clarify things here but I don't have a
-> sufficiently clear understanding of how all the pieces fit together to
-> offer any concrete suggestions.
-> =
-
-> > +static int dac33_startup(struct snd_pcm_substream *substream,
-> > +			   struct snd_soc_dai *dai)
-> > +{
-> > +	struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
-> > +	struct snd_soc_device *socdev =3D rtd->socdev;
-> > +	struct snd_soc_codec *codec =3D socdev->card->codec;
-> > +	struct tlv320dac33_priv *dac33 =3D codec->private_data;
-> > +	int err;
-> > +
-> > +	/* Save the nsample mode to be used until the stream terminates */
-> > +	dac33->nsmaple_cmode =3D dac33->nsample_switch;
-> =
-
-> If you're doing this I'd suggest making the control unwritable while
-> playback is active in order to avoid confusion.
-
-Yes, than I don't need the nsample_cmode.
-
-> =
-
-> > +	/* We only need the interrupt in nSample mode */
-> > +	if (dac33->nsmaple_cmode) {
-> > +		err =3D request_irq(dac33->irq, dac33_interrupt_handler,
-> > +				  IRQF_TRIGGER_RISING | IRQF_DISABLED,
-> > +				  codec->name, codec);
-> > +		if (err < 0) {
-> > +			dev_err(codec->dev, "Could not request IRQ\n");
-> > +			return err;
-> > +		}
-> > +	}
-> =
-
-> It'd be better to request the IRQ at startup and refuse to offer nsample
-> mode if you don't have it rather than requesting at the start of each
-> stream - that's more the expected usage from an IRQ point of view and it
-> would improve usability since users wouldn't be able to set the mode if
-> it can't be used.
-
-Good point.
-
-> =
-
-> > +	pwr_ctrl =3D dac33_read_reg_cache(codec, DAC33_PWR_CTRL);
-> > +	pwr_ctrl &=3D ~(OSCPDNB | DACRPDNB | DACLPDNB);
-> > +	dac33_write(codec, DAC33_PWR_CTRL, pwr_ctrl);
-> =
-
-> This looks like a case for DAPM?
-
-Well, yes. I have tried that. The problem is that tlv320dac33 is really pic=
-ky on =
-
-the sequence of the register writes. what I mean by 'picky' is that if the =
-
-register accesses are not in certain order, than dac33 would be not operati=
-onal.
-This particular shutdown is in place, because otherwise dac33 would be dead=
- in =
-
-certain cases...
-There might be a possibility to find another sequence, which is working, bu=
-t =
-
-this is really time consuming process.
-I'd also like to move these to DAPM domain, but for now, I'd like to leave =
-this =
-
-as it is and fix it later, if it is possible at all.
-
-> =
-
-> > +       switch (cmd) {
-> > +       case SNDRV_PCM_TRIGGER_START:
-> > +       case SNDRV_PCM_TRIGGER_RESUME:
-> > +       case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-> > +               if (dac33->nsmaple_cmode) {
-> > +                       dac33->state =3D DAC33_PREFILL;
-> > +                       queue_work(dac33_wq, &dac33->work);
-> > +               }
-> =
-
-> I don't see anything that cancels this work or synchronises with it on
-> shutdown?
-
-Good point, also the dac33->state is not really protected, which can cause =
-some =
-
-interesting behavior, I think.
-I'll look at this as well..
-
-> =
-
-> > +static void dac33_init_chip(struct snd_soc_codec *codec)
-> > +{
-> > +	/* 44-46: DAC Control Registers */
-> > +	/* A : DAC sample rate Fsref/1.5 */
-> > +	dac33_write(codec, DAC33_DAC_CTRL_A, DACRATE(1));
-> > +	/* B : DAC src=3Dnormal, not muted */
-> > +	dac33_write(codec, DAC33_DAC_CTRL_B, DACSRCR_RIGHT | DACSRCL_LEFT);
-> > +	/* C : (defaults) */
-> > +	dac33_write(codec, DAC33_DAC_CTRL_C, 0x00);
-> =
-
-> Is there any great reason for setting all of this stuff rather than
-> using the hardware defaults?
-
-Yes and no. I can wipe out the unneeded things, but most of the settings he=
-re is =
-
-needed to get the dac33 working. If we use the HW defaults, than dac33 woul=
-d not =
-
-work.
-The DAC_CTRL_B register for example controls the digital routing to the DAC=
-s.
-I will try to find a way to use user controls for most of the settings in a =
-
-future, if it is OK.
-
-> =
-
-> > +/* Bit definitions */
-> =
-
-> Pretty much all the bit definitions need to be namespaced - a lot of
-> them are very generic and likely to generate clashes.
-
-I'll go through all of them.
-
-
-Thanks,
-P=E9ter
+VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IEZyaSwgMDkgT2N0IDIwMDkgMTg6MDU6MjggKzAyMDAs
+Cj4gR3VpbGxlbSBTb2zDoCB3cm90ZToKPiAgIAo+PiBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+ICAg
+ICAKPj4+IEF0IEZyaSwgMDkgT2N0IDIwMDkgMTY6MTU6MDAgKzAyMDAsCj4+PiBHdWlsbGVtIFNv
+bMOgIHdyb3RlOgo+Pj4gICAKPj4+ICAgICAgIAo+Pj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4+
+PiAgICAgCj4+Pj4gICAgICAgICAKPj4+Pj4gQXQgRnJpLCAwOSBPY3QgMjAwOSAxMToxOTowNCAr
+MDIwMCwKPj4+Pj4gR3VpbGxlbSBTb2zDoCB3cm90ZToKPj4+Pj4gICAKPj4+Pj4gICAgICAgCj4+
+Pj4+ICAgICAgICAgICAKPj4+Pj4+IEhpLAo+Pj4+Pj4KPj4+Pj4+IEkgaGF2ZSBhIENyZWF0aXZl
+IFhGaSBQQ0llIHdpdGggY2EwMTEwLUlCRyBjaGlwLiBJdCdzIHByaW1hcnkgdXNlIGlzIAo+Pj4+
+Pj4gYXVkaW8gaW5wdXQgZm9yIHN0cmVhbWluZyBvbiBhIGJyYW5kIG5ldyBEZWxsIHNlcnZlciB3
+aXRoIFJIRUwuIEkgaGF2ZSAKPj4+Pj4+IGJlZW4gdGVzdGluZyBsYXRlc3Qga2VybmVsIDIuNi4z
+MSB0aHJvdWdoIGl0J3MgcmVsZWFzZXMgY2FuZGlkYXRlcyBhbmQgCj4+Pj4+PiB0aGUgY2FyZCBz
+dG9wZWQgd29ya2luZyBvbiAyLjYuMzEtcmM2LCBzbyBub3cgSSdtIHN0dWNrIGF0IDIuNi4zMS1y
+YzUuIAo+Pj4+Pj4gV2l0aCByYzUgSSBtYWRlIGEgMiB3ZWVrcyB0ZXN0IGFuZCBpdCB3ZW50IGZs
+YXdsZXNzbHkuCj4+Pj4+Pgo+Pj4+Pj4gVGhlcmUncyBhbm90aGVyIGd1eSB3aG8gcmVmZXJlbmNl
+ZCB0aGlzIGlzc3VlIG9uIAo+Pj4+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9w
+aXBlcm1haWwvYWxzYS1kZXZlbC8yMDA5LVNlcHRlbWJlci8wMjA4NzYuaHRtbCAKPj4+Pj4+IGFu
+ZCBUYWthc2hpIEl3YWkgc2FpZCB0aGF0IHRoZXJlIGlzIGEgY29tbXVuaWNhdGlvbiBlcnJvciBi
+ZXR3ZWVuIHRoZSAKPj4+Pj4+IGNvZGVjIGFuZCB0aGUgY29udHJvbGxlci4KPj4+Pj4+Cj4+Pj4+
+PiBBbnkgd29ya2Fyb3VuZD8gSXMgdGhlcmUgYSBidWcgY3JlYXRlZCByZWxhdGVkIHRvIHRoaXMg
+aXNzdWU/Cj4+Pj4+Pgo+Pj4+Pj4gSSB0cmllZCB0byAiZXh0cmFjdCIgdGhlIGFsc2EtZHJpdmVy
+IG9uIDIuNi4zMS1yYzUgYW5kIGluc3RhbGwgaXQgMi42LjMxIAo+Pj4+Pj4gZmluYWwgd2l0aG91
+dCBzdWNjZXNzLiBBbHNvIHRyaWVkIHRvIGdldCBvbGQgc25hcHNob3RzIGZyb20gYWxzYS1kcml2
+ZXIgCj4+Pj4+PiBhbmQgYWxzYS1rbWlycm9yIGJ1dCBJIGNhbm5vdCBjb21waWxlIHRoZW0uIEFu
+eSBwbGFjZSB3aGVyZSBnZXQgc29tZSAKPj4+Pj4+IGluZm8gYWJvdXQgaG93IHRvIGNyZWF0ZQo+
+Pj4+Pj4gICAgIAo+Pj4+Pj4gICAgICAgICAKPj4+Pj4+ICAgICAgICAgICAgIAo+Pj4+PiBUaGVu
+IHNvbWUgY29kZXMgYWRkZWQgYWZ0ZXIgcmM1IHJlZ3Jlc3NlZD8KPj4+Pj4gVGhlIGNhbmRpZGF0
+ZXMgYXJlIG5vdCBzbyBtYW55IGJ1dCBhIGZldzoKPj4+Pj4KPj4+Pj4gZGVhZGZmMTY2NTQ5MWFm
+Y2UxMjRhOGZmODNmMDBmNzg0MTYxZjY2MAo+Pj4+PiAgICAgQUxTQTogaGRhOiB0cmFjayBDSVJC
+L0NPUkIgY29tbWFuZC9yZXNwb25zZSBzdGF0ZXMgZm9yIGVhY2ggY29kZWMKPj4+Pj4KPj4+Pj4g
+YTY3OGNkZWUyNWEzODdjOGZjM2IyNzU0OTc0Njk1NDEyYmFmMWQ4NQo+Pj4+PiAgICAgQUxTQTog
+aGRhOiB0YWtlIGNtZF9tdXRleCBpbiBwcm9iZV9jb2RlYygpCj4+Pj4+Cj4+Pj4+IGNkYjFmYmYy
+MzE4MWMxMzNmYjI0ZjEyYWQxNGNjZWE3ZGMzOTk1OTkKPj4+Pj4gICAgIEFMU0E6IGhkYTogdGFr
+ZSByZWdfbG9jayBpbiBhenhfaW5pdF9jbWRfaW8vYXp4X2ZyZWVfY21kX2lvCj4+Pj4+Cj4+Pj4+
+IGMzMjY0OWZlYjQ1NzNiMzFmMGEyYmZkZjM1Y2JlMTM1MTI1NmM3NjQKPj4+Pj4gICAgIEFMU0E6
+IGhkYTogcmVhZCBDT1JCV1AgaW5zaWRlIHJlZ19sb2NrCj4+Pj4+Cj4+Pj4+IGZlYjI3MzQwNGYx
+NWQ4NjA5OGNiMGU4MWU0NjMzMGQ1YzFlMjJiMWIKPj4+Pj4gICAgIEFMU0E6IGhkYTogcmVtZW1i
+ZXIgbGFzdCBjb21tYW5kIGZvciBlYWNoIGNvZGVjCj4+Pj4+Cj4+Pj4+IFRoZSBzdXNwaWNpb3Vz
+IGNoYW5nZXMgYXJlIHRoZSBmaXJzdCBvbmUgYW5kIHRoZSB0aGlyZCBvbmUuCj4+Pj4+IEJ1dCwg
+YW55d2F5LCBpdCdkIGJlIGhlbHBmdWwgaWYgeW91IGNhbiBiaXNlY3QgdGhlc2UuCj4+Pj4+Cj4+
+Pj4+IElmIHlvdSBjYW4gdXNlIGdpdCwgZ2l0LWJpc2VjdCB3b3VsZCBiZSB0aGUgYmVzdCB0byB0
+cnkuCj4+Pj4+IERvIGJpc2VjdCBvbmx5IGZvciBjaGFuZ2VzIGluIHNvdW5kL3BjaS9oZGEgZGly
+ZWN0b3J5IGJldHdlZW4KPj4+Pj4gMi42LjMxLXJjNSBhbmQgcmM2Lgo+Pj4+Pgo+Pj4+Pgo+Pj4+
+PiB0aGFua3MsCj4+Pj4+Cj4+Pj4+IFRha2FzaGkKPj4+Pj4KPj4+Pj4gICAKPj4+Pj4gICAgICAg
+Cj4+Pj4+ICAgICAgICAgICAKPj4+PiBPayBJIHJlYWQgaG93IHRvIGRvIGJpc2VjdCB3aXRoIGdp
+dCBhbmQgc28gb24uIEFsc28gdGFrZSBsYXRlc3QgYWxzYSAKPj4+PiBmcm9tIGdpdC4KPj4+Pgo+
+Pj4+IE5vdyB0aGUgcXVlc3Rpb24gaXMgZG8gSSBoYXZlIHRvIGRvIGJpc2VjdCBmcm9tIGFsc2Et
+a2VybmVsPyAodGhhdCdzIAo+Pj4+IHdoYXQgSSdtIHRyeWluZyBub3cpIGJ1dCB0aGF0IGltcGxp
+ZXMgcmVjb21waWxlIGtlcm5lbCBpbiBldmVyeSBzdGVwLCAKPj4+PiBpc24ndCBpdD8KPj4+PiAg
+ICAgCj4+Pj4gICAgICAgICAKPj4+IElmIHlvdSBjYW4gYnVpbGQgdGhlIGtlcm5lbCBieSB5b3Vy
+c2VsZiwgYW5kIHlvdSBhbHJlYWR5IGZpbmQgdGhhdAo+Pj4gMi42LjMxLXJjNSB3b3JrcyBhcyBp
+cywgSSByZWNvbW1lbmQgeW91IHRvIGJpc2VjdCB0aGUga2VybmVsIHRyZWUuCj4+Pgo+Pj4gQXMg
+bWVudGlvbmVkLCB0aGUgY29tbWl0cyB0byBiaXNlY3QgYXJlIG9ubHkgZm9yIHNvdW5kL3BjaS9o
+ZGEKPj4+IGRpcmVjdG9yeSwgYW5kIHRoZXJlIGFyZW4ndCBzbyBtYW55LiAgWW91IGNhbiBqdXN0
+IHJlYnVpbGQgdGhlIG1vZHVsZQo+Pj4gd2l0aCAibWFrZSBNPXNvdW5kL3BjaS9oZGEiIGR1cmlu
+ZyBiaXNlY3RpbmcuCj4+Pgo+Pj4KPj4+IFRha2FzaGkKPj4+IF9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+
+Pj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Pj4gICAKPj4+ICAgICAgIAo+
+PiBPayBUaGluayBJIEZpbmFsbHkgZ2V0IGl0IDotKQo+Pgo+PiB0aG9zZSBhcmUgdGhlIGxhdGVz
+dCBzdGVwcyBJIGRpZCwgQUZBSUsgaXQgd2FzIHRoZSBmaXJzdCBjb21taXQgYWZ0ZXIgCj4+IDIu
+Ni4zMS1yYzUgYXMgeW91IHNhaWQgIlRoZSBzdXNwaWNpb3VzIGNoYW5nZXMgYXJlIHRoZSBmaXJz
+dCBvbmUgYW5kIHRoZSAKPj4gdGhpcmQgb25lLiIKPj4KPj4gZGVhZGZmMTY2NTQ5MWFmY2UxMjRh
+OGZmODNmMDBmNzg0MTYxZjY2MCBpcyBmaXJzdCBiYWQgY29tbWl0Cj4+ICAgICAKPgo+IFRoYW5r
+cyEgIFRoYXQncyB3aGF0IEkgZXhwZWN0ZWQgKGFuZCB3b3JyaWVkKS4uLgo+Cj4gV2hhdCBoYXBw
+ZW5zIGlmIHlvdSBhcHBseSB0aGUgcGF0Y2ggYmVsb3cgdG8gdGhlIGxhdGVzdCBhbHNhIGRyaXZl
+cgo+IChvciAyLjYuMzEtcmM2KT8KPgo+Cj4gVGFrYXNoaQo+Cj4gLS0tCj4gZGlmZiAtLWdpdCBh
+L3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgYi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCj4g
+aW5kZXggZDBlZmZhMy4uODE2NjNhNyAxMDA2NDQKPiAtLS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9p
+bnRlbC5jCj4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwo+IEBAIC01NjYsNiArNTY2
+LDcgQEAgc3RhdGljIHZvaWQgYXp4X2ZyZWVfY21kX2lvKHN0cnVjdCBhenggKmNoaXApCj4gIAo+
+ICBzdGF0aWMgdW5zaWduZWQgaW50IGF6eF9jb21tYW5kX2FkZHIodTMyIGNtZCkKPiAgewo+ICsj
+aWYgMCAvKiBYWFggKi8KPiAgCXVuc2lnbmVkIGludCBhZGRyID0gY21kID4+IDI4Owo+ICAKPiAg
+CWlmIChhZGRyID49IEFaWF9NQVhfQ09ERUNTKSB7Cj4gQEAgLTU3NCw2ICs1NzUsOSBAQCBzdGF0
+aWMgdW5zaWduZWQgaW50IGF6eF9jb21tYW5kX2FkZHIodTMyIGNtZCkKPiAgCX0KPiAgCj4gIAly
+ZXR1cm4gYWRkcjsKPiArI2Vsc2UKPiArCXJldHVybiAwOwo+ICsjZW5kaWYKPiAgfQo+ICAKPiAg
+c3RhdGljIHVuc2lnbmVkIGludCBhenhfcmVzcG9uc2VfYWRkcih1MzIgcmVzKQo+IEBAIC04MTgs
+NiArODIyLDcgQEAgc3RhdGljIHVuc2lnbmVkIGludCBhenhfZ2V0X3Jlc3BvbnNlKHN0cnVjdCBo
+ZGFfYnVzICpidXMsCj4gIAkJCQkgICAgIHVuc2lnbmVkIGludCBhZGRyKQo+ICB7Cj4gIAlzdHJ1
+Y3QgYXp4ICpjaGlwID0gYnVzLT5wcml2YXRlX2RhdGE7Cj4gKwlhZGRyID0gMDsgLyogWFhYICov
+Cj4gIAlpZiAoY2hpcC0+c2luZ2xlX2NtZCkKPiAgCQlyZXR1cm4gYXp4X3NpbmdsZV9nZXRfcmVz
+cG9uc2UoYnVzLCBhZGRyKTsKPiAgCWVsc2UKPgo+ICAgCkkgdHJpZWQgdGhlIHBhdGNoIHlvdSBo
+YXZlIGF0dGFjaGVkLCBpdCBwYXRjaGVkIHdlbGwgKEkgY2hlY2tlZCBpdCkgYnV0IApzZWVtcyB0
+byBub3Qgd29yawoKQWZ0ZXIgbWFrZSBJIHRyaWVkIHRvIG1vZHByb2JlIHNuZC1oZGEtaW50ZWwt
+Y2EwMTEwIGFuZCBJIHNhdyBpbiBkbWVzZzoKCmhkYS1pbnRlbDogSW52YWxpZCBwb3NpdGlvbiBi
+dWZmZXIsIHVzaW5nIExQSUIgcmVhZCBtZXRob2QgaW5zdGVhZC4KYWxzYWN0bFs4MjkyXTogc2Vn
+ZmF1bHQgYXQgMCBpcCAobnVsbCkgc3AgYmZhODNmMWMgZXJyb3IgMTQgaW4gCmxkLTIuNS5zb1s1
+NGMwMDArMWEwMDBdCkhEQSBJbnRlbCAwMDAwOjA1OjAwLjA6IFBDSSBJTlQgQSBkaXNhYmxlZAoK
+YW5kIGFmdGVyIHJlYm9vdDoKCkhEQSBJbnRlbCAwMDAwOjA1OjAwLjA6IFBDSSBJTlQgQSAtPiBH
+U0kgMzggKGxldmVsLCBsb3cpIC0+IElSUSAzOApoZGEtaW50ZWw6IHNwdXJpb3VzIHJlc3BvbnNl
+IDB4MTEwMjAwMGE6MHgxLCBsYXN0IGNtZD0weDAwMDAwMApoZGEtaW50ZWw6IGF6eF9nZXRfcmVz
+cG9uc2UgdGltZW91dCwgc3dpdGNoaW5nIHRvIHBvbGxpbmcgbW9kZTogbGFzdCAKY21kPTB4MTAw
+ZjAwMDAKaGRhLWludGVsOiBDb2RlYyAjMSBwcm9iZSBlcnJvcjsgZGlzYWJsaW5nIGl0Li4uCmhk
+YS1pbnRlbDogc3B1cmlvdXMgcmVzcG9uc2UgMHgxMTAyMDAwYToweDEsIGxhc3QgY21kPTB4MDAw
+MDAwCmhkYV9pbnRlbDogYXp4X2dldF9yZXNwb25zZSB0aW1lb3V0LCBzd2l0Y2hpbmcgdG8gc2lu
+Z2xlX2NtZCBtb2RlOiBsYXN0IApjbWQ9MHgxMDBmMDAwMApoZGEtaW50ZWw6IG5vIGNvZGVjcyBp
+bml0aWFsaXplZApIREEgSW50ZWwgMDAwMDowNTowMC4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKCkl0
+IHNlZW1zIHNvbWV0aGluZyB3ZW50IHdyb25nCgpyZWdhcmRzLAoKR3VpbGxlbSBTb2zDoApfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
