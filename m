@@ -1,15 +1,19 @@
-From: "Till Crueger" <Till.Crueger@gmx.net>
-Subject: Which transfer mode to use
-Date: Wed, 14 Oct 2009 13:14:05 +0200
-Message-ID: <op.u1setrz8soui26@mail.gmx.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH - try2] ASoC: Codec driver for Texas
+ Instruments tlv320dac33 codec
+Date: Wed, 14 Oct 2009 12:14:10 +0100
+Message-ID: <20091014111409.GE20639@rakim.wolfsonmicro.main>
+References: <1255435391-18160-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 02989103825
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B1E910381A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Oct 2009 13:10:46 +0200 (CEST)
+	Wed, 14 Oct 2009 13:14:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1255435391-18160-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,68 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, Oct 13, 2009 at 03:03:11PM +0300, Peter Ujfalusi wrote:
 
-First of all, I am fairly new to this list, as well as sound development.  
-So if this list is the wrong place for this question, it would be nice if  
-you could point me in the right direction.
+> b) The nSample mode implementation uses one interrupt line from DAC33 to
 
-I am trying to use ALSA in my OCaml [1] programms. As far as I could see  
-there are no well documented bindings to ALSA for this language, so I am  
-stuck with writing my own bindings. I have gotten to the point where I can  
-open a pcm device with a minimal configuration space on my desktop as well  
-as on my laptop. However I am not sure which transfer mode to use, since  
-it is hard to see for me, what the advantages and disadvantages would be.  
-Here is what I have found out so far.
+Just a thought, but could a timer based approach work here?
 
-1. Asynchronous callback:
-This method seems to be the best explained by all the tutorials I could  
-find, so I am guessing this is the best choice for audio applications.  
-However for my purpose this seems hard to do, since the thread which  
-contains the callback must never enter the OCaml side of the wrapper. This  
-constraint is due to the OCaml garbage collector, which AFAIK would be  
-messed up severely. So to use this method I would have to write an extra  
-buffer in the C side, to which I write the data from OCaml. Depending on  
-the way this buffer is set up -- I was thinking of using a linked list to  
-contain all the single packets -- I would have to keep track what part of  
-the usage of this buffer to be able to synchronise anything to the sound.  
-Not the best choice I as far as I can see.
+> +	case SND_SOC_BIAS_PREPARE:
+> +		break;
+> +	case SND_SOC_BIAS_STANDBY:
+> +		dac33_soft_power(codec, 0);
+> +		break;
+> +	case SND_SOC_BIAS_OFF:
+> +		break;
+> +	}
 
-2. read/write:
-So far this seems the best choice. This way I could probably rewrite the  
-asynchronous callback method on the OCaml side. For this however I would  
-have to figure out after each polling, how much data can be written. I had  
-a look at the API documentation and it seems ALSA provides function to get  
-this information. However when I had a look at the example sine-wave  
-generator [2], those functions were only used by the mmap method. So the  
-question would be if this information could still be provided when using  
-the read/write method.
+It'd be nice to do the full power down in BIAS_OFF for future use.
 
-3. mmap:
-During the research I did for this project I found some posts on the  
-portaudio list, that said this method could not be used with all  
-soundcards. Also I would have to figure out if the memory layout of the  
-data passed from the OCaml side is at all compatible to this method. If it  
-is incompatible the use of mmap does not seem to make sense at all.
+> +static irqreturn_t dac33_interrupt_handler(int irq, void *dev)
+> +{
+> +	struct snd_soc_codec *codec = dev;
+> +	struct tlv320dac33_priv *dac33 = codec->private_data;
+> +
+> +	if (dac33->state == DAC33_PLAYBACK)
+> +		queue_work(dac33->dac33_wq, &dac33->work);
+> +
+> +	return IRQ_HANDLED;
+> +}
 
-So far this are the points I have gathered to help me make a choice. As  
-you can see I already have a clear preference, but at this point I am  
-still not quite sure. I also found some links that hinted at other issues  
-that would have to be taken into consideration. For example I found some  
-concerns about differences in lattency between these three methods.
+Should that return IRQ_HANDLED if it's not expecting an interrupt?  I'd
+also expect to see something that either acknowledges the interrupt to
+deassert it or keeps it masked until the work has had a chance to do
+something.
 
-So what is your opinion on this. Do you think reintroducing the async.  
-callback on the OCaml side would be a good idea, or would you rather use  
-the second buffer that is accesible from the OCaml side. As I said, I  
-haven't done any real sound development, so I am really new to this.
+> +	pdata = (struct tlv320dac33_platform_data *)client->dev.platform_data;
 
-Thanks for your help,
-   Till
+Unneeded cast.
 
-[1] OCaml is a functional language developed by Inria.  
-http://caml.inria.fr/
-[2]  
-http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_8c-example.html
+> +	dac33->dac33_wq = create_rt_workqueue("tlv320dac33");
+> +	if (dac33->dac33_wq == NULL) {
+> +		ret = -ENOMEM;
+> +		goto error_wq;
+> +	}
+
+Might be nice to skip the workqueue stuff if we don't have an IRQ.
+Conditional registration of the nSample controls based on having the IRQ
+may also be nice.
+
+> +	ret = snd_soc_register_codec(codec);
+> +	if (ret != 0) {
+> +		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
+> +		goto error_codec;
+> +	}
+
+> +	ret = snd_soc_register_dai(&dac33_dai);
+> +	if (ret != 0) {
+> +		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
+> +		snd_soc_unregister_codec(codec);
+> +		goto error_codec;
+> +	}
+
+I'd do these last so that we don't have ASoC level init trying to use
+the device only to have it yanked from underneath it by a failure in the
+following code.
