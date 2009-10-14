@@ -1,21 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re:
- =?iso-8859-1?q?=5BPATCHv2_5/7=5D_ASoC=3A_TWL6030=3A_?=
- =?iso-8859-1?q?Add_support=09for_low-power_mode?=
-Date: Wed, 14 Oct 2009 11:41:54 +0300
-Message-ID: <200910141141.54456.peter.ujfalusi@nokia.com>
-References: <67059DBF19D7214F9C66BB0EA91BA90E90A391E3@dlee04.ent.ti.com>
-	<20090928132800.GD31899@rakim.wolfsonmicro.main>
-	<67059DBF19D7214F9C66BB0EA91BA90E90D5EE30@dlee04.ent.ti.com>
+From: Sreekanth W <w.sreekanth@gmail.com>
+Subject: Mic/Line-in record is not working with wm9713 AC97
+Date: Wed, 14 Oct 2009 15:39:23 +0530
+Message-ID: <8aea34270910140309o2a4ad31cpe33904244d3b103d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9E131038CD
+Received: from mail-yw0-f195.google.com (mail-yw0-f195.google.com
+	[209.85.211.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F8111038E7
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Oct 2009 10:42:04 +0200 (CEST)
-In-Reply-To: <67059DBF19D7214F9C66BB0EA91BA90E90D5EE30@dlee04.ent.ti.com>
+	Wed, 14 Oct 2009 12:09:24 +0200 (CEST)
+Received: by ywh33 with SMTP id 33so4836831ywh.23
+	for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2009 03:09:23 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,71 +23,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "ext Lopez Cruz,
-	Misael" <x0052729@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 13 October 2009 23:15:45 ext Lopez Cruz, Misael wrote:
-> Mark,
-> =
+Hi,
 
-> Mark Brown wrote:
-> > On Fri, Sep 25, 2009 at 09:03:30PM -0500, Lopez Cruz, Misael wrote:
-> >> In high-performance mode, codec can only work at 19.2 MHz from
-> >> high-performance PLL. All paths supported in the codec can be used
-> >> but audio can be streamed only at 48 kHz.
-> >
-> > The driver should also set constraints at runtime so that applications
-> > know they shouldn't use an unsupported sample rate.  See wm8988 for an
-> > example of doing this - it has some similar SYSCLK based restrictions.
-> =
+I am trying to record a wav file using mic/line-in with wm9713 driver.
+The Wav file is created, only header is created but almost there is no
+data. This is seen using CoolEdit/Vim editor.
+If I try to play the recorded file, there is no sound.
+But, playing works for other existing files, able to using aplay.
 
-> In OMAP4, we can have the processor connected to Audio Backend and
-> then to Phoenix (OMAP4->ABE->McPDM->TWL6030), but it's also possible
-> to bypass the Audio Backend (OMAP4->McPDM->TWL6030).
-> =
+I am issuing the following command to record
+# ./arecord =96t wav =96c 1 =96r 8000 =96d 10 =96f S16_LE test.wav
 
-> The McPDM link requires data to be sent at twice the desired rate.
-> In the first scenario (Audio Backend enabled), OMAP4 sends the data
-> at 48kHz to ABE and it upsamples it to 96kHz and then send to TWL6030
-> through McPDM. In the second scenario (Audio Backend bypassed),
-> OMAP4 has to send the audio data at 96kHz, since no upsampling
-> blocks are available now.
+The below is the dump of /sys/devices/platform/soc-audio/dapm_widget,
+while "arecord" is running (using mic):
 
-Sounds interesting. Does McPDM requires that the audio is actually upsample=
-d, or =
+# cat /sys/devices/platform/soc-audio/dapm_widget
+Mic Bias: Off
+Mic B Pre Amp: Off
+Mic A Pre Amp: On
+Mic B PGA: Off
+Mic A PGA: Off
+Mono In: Off
+Right Line In: Off
+Left Line In: Off
+Mono Out: Off
+Out 4: Off
+Out 3: Off
+Right Speaker: Off
+Left Speaker: Off
+Right Headphone: Off
+Left Headphone: Off
+Right Voice ADC: Off
+Left Voice ADC: Off
+Right HiFi ADC: On
+Left HiFi ADC: On
+Right ADC: On
+Left ADC: On
+Aux DAC: Off
+Voice DAC: Off
+Capture Mixer: Off
+Line Mixer: Off
+HP Mixer: Off
+AC97 Mixer: Off
+Right DAC: Off
+Left DAC: Off
+Speaker Mixer: Off
+Mono Mixer: Off
+Right HP Mixer: Off
+Left HP Mixer: Off
+PM State: On
 
-it requires that the for example 48KHz audio data is sent with 96KHz where =
-for =
+I'm using DMA for data transfer, and getting the callback function
+after DMA completed.
+Also I'm printing the number of Bytes transfered.
 
-example the actual audio data is only in the first half?
+Any idea why record is  not working? Anything wrong with these settings?
 
-> =
-
-> From TWL6030 CODEC driver pespective, the DAI link supported rate
-> should be 48kHz or 96kHz? If the final goal is to explicitly represent
-> all links in the system (ABE, Phoenix, McBSP, etc), then ABE link
-> should expose somehow that it delives upsampled data. If that assumption
-> is true, then TWL6030 DAI should support 96kHz.
-> =
-
-> A second concern is that runtime constraints will prevent rates
-> supported by the system, when the constraints are only valid for the
-> link. For example, if the TWL6030 CODEC adds a contraint for 96kHz,
-> then it prevents the whole system to play 48kHz, which is supported
-> when ABE is enabled since ABE upsamples it.
-> =
-
-> -Misa
-> =
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> =
-
-
--- =
-
-P=E9ter
+Regards,
+Sreekanth
