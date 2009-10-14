@@ -1,21 +1,19 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: [PATCH 0/30] ALSA: HDA VIA: patch series
-Date: Tue, 13 Oct 2009 21:52:02 -0600
-Message-ID: <51f3faa70910132052j286e0fa8vb5aeabe34e8bb4f@mail.gmail.com>
-References: <51f3faa70910121940lfdfc318vcbaf9168727b50ca@mail.gmail.com>
-	<5B2BE0DB92BC8F4694F815C2F34E0D5F123E67@exchbj03.viatech.com.bj>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Subject: Re: [PATCH - try2] ASoC: Codec driver for Texas
+ Instruments tlv320dac33 codec
+Date: Wed, 14 Oct 2009 07:50:39 +0300
+Message-ID: <1255495839.30157.294.camel@eenurkka-desktop>
+References: <1255435391-18160-1-git-send-email-peter.ujfalusi@nokia.com>
+Reply-To: ext-eero.nurkkala@nokia.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
-	[209.85.223.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id A67421038CB
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC3D61038E0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Oct 2009 05:52:03 +0200 (CEST)
-Received: by iwn36 with SMTP id 36so6528604iwn.24
-	for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2009 20:52:02 -0700 (PDT)
-In-Reply-To: <5B2BE0DB92BC8F4694F815C2F34E0D5F123E67@exchbj03.viatech.com.bj>
+	Wed, 14 Oct 2009 06:52:00 +0200 (CEST)
+In-Reply-To: <1255435391-18160-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,48 +23,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: LoganLi@viatech.com.cn
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
+To: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 13, 2009 at 3:40 AM,  <LoganLi@viatech.com.cn> wrote:
->> >> > What is the problem, specifically?
->> >>
->> >> With the latest patch I do get the optical output lighting
->> up and the
->> >> receiver detects a PCM signal, but it seems to be just
->> silence coming
->> >> through. (In previous iterations the SPDIF digital converter wasn't
->> >> being enabled automatically so it didn't get even that far.)
->> >
->> > You can fiddle with hda-verb to issue digital-converter verbs.
->> > Possibly you need to flip the digital-enable bit to send
->> the values...
->>
->> Well, I think I tried all combinations of the flags on the digital
->> converter in hda_analyzer without any luck. I'm assuming it's
->> something else (presumably codec-specific) that hda_analyzer doesn't
->> know about..
->>
->
-> Hi, Robert
-> =A0We cannot duplicate bug of SPDIF Out cannot work on VT1828S board.
-> =A0You said it's fine in Windows, right?
+On Tue, 2009-10-13 at 14:03 +0200, Ujfalusi Peter (Nokia-D/Tampere)
+wrote:
 
-Ahh, I see the problem. I think it's related to what we were talking
-about with the second SPDIF output: If I play back on subdevice 1 I
-don't get any output. But if I force playing on substream 1 instead of
-the default 0 (i.e. hw:0,1,1) then I get audio. I'm assuming that
-substream 0 is the codec's HDMI output (which actually doesn't exist
-on this motherboard).
+Having two almost identical functions probably "rang the bells" with you
+also.
 
-It appears whether or not the "iec958" alias that PulseAudio uses when
-selecting "Output Digital Stereo" profile actually ends up using
-substream 1 instead of 0 is based on luck. as it sometimes works and
-sometimes doesn't. Having different substreams go different places is
-pretty non-intuitive and it seems software doesn't expect this
-behavior. I think that the SPDIF and HDMI outputs really should be
-separate subdevices (i.e. hw:0,1 and hw:0,2 or something) instead,
-unless something makes this impossible. If the aliases for iec958 and
-hdmi were set up to point to the correct subdevice then everything
-would work as it should..
+How about:
+
+static int dac33_write_locked(struct snd_soc_codec *codec, unsigned int
+reg, unsigned int value)
+{
+	int ret;
+
+	mutex_lock();
+	ret = dac33_write(codec, reg, value);
+	mutex_unlock();
+
+	return ret;
+}
+
+(one way around it)
+
+> +static int dac33_write_locked(struct snd_soc_codec *codec, unsigned int reg,
+> +                      unsigned int value)
+> +{
+> +       struct tlv320dac33_priv *dac33 = codec->private_data;
+> +       u8 data[2];
+> +       int ret = 0;
+> +
+> +       /*
+> +        * data is
+> +        *   D15..D8 dac33 register offset
+> +        *   D7...D0 register data
+> +        */
+> +       data[0] = reg & 0xff;
+> +       data[1] = value & 0xff;
+> +
+> +       dac33_write_reg_cache(codec, data[0], data[1]);
+> +       mutex_lock(&dac33->mutex);
+> +       if (dac33->chip_power) {
+> +               ret = codec->hw_write(codec->control_data, data, 2);
+> +               if (ret != 2)
+> +                       dev_err(codec->dev, "Write failed (%d)\n", ret);
+> +               else
+> +                       ret = 0;
+> +       }
+> +       mutex_unlock(&dac33->mutex);
+> +
+> +       return ret;
+> +}
+> +
+> +static int dac33_write(struct snd_soc_codec *codec, unsigned int reg,
+> +                      unsigned int value)
+> +{
+> +       struct tlv320dac33_priv *dac33 = codec->private_data;
+> +       u8 data[2];
+> +       int ret = 0;
+> +
+> +       /*
+> +        * data is
+> +        *   D15..D8 dac33 register offset
+> +        *   D7...D0 register data
+> +        */
+> +       data[0] = reg & 0xff;
+> +       data[1] = value & 0xff;
+> +
+> +       dac33_write_reg_cache(codec, data[0], data[1]);
+> +       if (dac33->chip_power) {
+> +               ret = codec->hw_write(codec->control_data, data, 2);
+> +               if (ret != 2)
+> +                       dev_err(codec->dev, "Write failed (%d)\n", ret);
+> +               else
+> +                       ret = 0;
+> +       }
+> +
+> +       return ret;
+> +}
