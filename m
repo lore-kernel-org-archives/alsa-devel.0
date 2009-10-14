@@ -1,21 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH - try2] ASoC: Codec driver for Texas
- Instruments tlv320dac33 codec
-Date: Wed, 14 Oct 2009 14:24:02 +0100
-Message-ID: <20091014132402.GF20639@rakim.wolfsonmicro.main>
-References: <1255435391-18160-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20091014111409.GE20639@rakim.wolfsonmicro.main>
-	<200910141556.50396.peter.ujfalusi@nokia.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Which transfer mode to use
+Date: Wed, 14 Oct 2009 16:44:44 +0200
+Message-ID: <4AD5E3DC.5070701@ladisch.de>
+References: <op.u1setrz8soui26@mail.gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 458442439F
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 90FED243FF
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Oct 2009 15:24:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200910141556.50396.peter.ujfalusi@nokia.com>
+	Wed, 14 Oct 2009 16:44:46 +0200 (CEST)
+In-Reply-To: <op.u1setrz8soui26@mail.gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,43 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Till Crueger <Till.Crueger@gmx.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 14, 2009 at 03:56:50PM +0300, Peter Ujfalusi wrote:
+Till Crueger wrote:
+> 1. Asynchronous callback:
+> This method seems to be the best explained by all the tutorials I could
+> find, so I am guessing this is the best choice for audio applications.
 
-> > It'd be nice to do the full power down in BIAS_OFF for future use.
+It's the worst choice; it isn't available on many devices, and the
+asynchronous callback cannot do much because it might have interrupted
+some non-reentrant function.
 
-> The full power off is taken when the dac33_soc_suspend is called (the hard_power 
-> is restored in the dac33_soc_resume function).
-> I can move it here, than add dac33_hard_power(codec, 1) to _PREPARE, if the 
-> previous state was _OFF.
+> 2. read/write:
+> So far this seems the best choice.
 
-_STANDBY but yes.
+Use it.
 
-> Than I can remove the dac33_soc_suspend and dac33_soc_resume?
+> For this however I would have to figure out after each polling, how
+> much data can be written.
 
-No, the core won't take you down to BIAS_OFF automatically except during
-shutdown (or suspend to disk but ARM doesn't do that).  Which is fun but
-it's entertaining to change since it touches all the drivers.  It's
-where we should go, though - I've been trying to do this when I write
-new drivers.
+snd_pcm_avail()
 
-> > I'd also expect to see something that either acknowledges the interrupt to
-> > deassert it or
+> I found some concerns about differences in lattency between these
+> three methods.
 
-> The interrupt is self cleaning on dac33 side (in the mode, which we are using 
-> it, there is a mode, where additional write is needed to clear the interrupt 
-> status).
+Those concerned have not measured; the latency is _exactly_ the same.
 
-That should be OK, someone can always add level triggering in future if
-they want to.
 
-> Than on trigger STOP, I set the state to FLUSH and schedule the work, if an 
-> interrupt comes, it is ignored, since the work has been scheduled.
-
-Actually, you should just be able to queue the work since the state
-check will be done again in the workqueue and duplicate insertions don't
-hurt.  That'd also avoid the need to mask IRQs while fiddling with the
-state (which you're not doing at the minute but probably need to).
+HTH
+Clemens
