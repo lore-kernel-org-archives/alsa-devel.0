@@ -1,16 +1,18 @@
-From: Logan Li <loganli@viatech.com.cn>
-Subject: [PATCH 1/1] ALSA: HDA VIA: Remove 48k sample rate
-	limit for S/PDIF
-Date: Wed, 14 Oct 2009 10:10:38 +0800
-Message-ID: <4AD5331E.4020704@viatech.com.cn>
+From: David Huggins-Daines <dhuggins@cs.cmu.edu>
+Subject: Channel conversion in plughw not working for my
+ driver... confused about snd_pcm_plug_hw_params()
+Date: Tue, 13 Oct 2009 23:44:26 -0400
+Message-ID: <4AD5491A.4050702@cs.cmu.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37DC11038B0
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3140B1038B0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Oct 2009 04:10:28 +0200 (CEST)
+	Wed, 14 Oct 2009 05:44:30 +0200 (CEST)
+Received: by qw-out-1920.google.com with SMTP id 14so3462765qwa.56
+	for <alsa-devel@alsa-project.org>; Tue, 13 Oct 2009 20:44:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,53 +23,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-From: Logan Li <loganli@viatech.com.cn>
-Subject: ALSA: HDA VIA: Remove 48k sample rate limit for S/PDIF
+Hi,
 
-48 kHz limit is for slightly better stability, and sample rates other
-than 48k (like 96k/192k) are for better sound quality.
-We choose better quality, so remove the 48k limit.
+I'm trying to make mono output work on the audio driver for the Cirrus
+EDB9302 evaluation board.  For some reason, plughw is refusing to do any
+channel conversion.  When I try to play a mono file, I simply get:
 
-Signed-off-by: Logan Li <loganli@viatech.com.cn>
+aplay: set_params:1022: Unable to install hw params:
 
----
- sound/pci/hda/patch_via.c |    4 ----
- 1 file changed, 4 deletions(-)
+The driver's struct snd_pcm_hardware contains:
 
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -4626,7 +4626,6 @@
- 	.substreams = 2,
- 	.channels_min = 2,
- 	.channels_max = 2,
--	.rates = SNDRV_PCM_RATE_48000,
- 	/* NID is set in via_build_pcms */
- 	.ops = {
- 		.open = via_dig_playback_pcm_open,
-@@ -5124,7 +5123,6 @@
- 	.substreams = 2,
- 	.channels_min = 2,
- 	.channels_max = 2,
--	.rates = SNDRV_PCM_RATE_48000,
- 	/* NID is set in via_build_pcms */
- 	.ops = {
- 		.open = via_dig_playback_pcm_open,
-@@ -5561,7 +5559,6 @@
- 	.substreams = 1,
- 	.channels_min = 2,
- 	.channels_max = 2,
--	.rates = SNDRV_PCM_RATE_48000,
- 	/* NID is set in via_build_pcms */
- 	.ops = {
- 		.open = via_dig_playback_pcm_open,
-@@ -5914,7 +5911,6 @@
- 	.substreams = 1,
- 	.channels_min = 2,
- 	.channels_max = 2,
--	.rates = SNDRV_PCM_RATE_48000,
- 	/* NID is set in via_build_pcms */
- 	.ops = {
- 		.open = via_dig_playback_pcm_open,
+    .channels_min	= 2,
+    .channels_max	= 2,
+
+which I believe is the correct way to tell userspace "this driver can
+only do stereo output" - at least, this is how intel8x0.c does it, and
+that driver really ought to work by now!
+
+I've traced this to the exact point of failure, and what I see is that
+in snd_pcm_plug_hw_params(), despite figuring out exactly what the set
+of hardware parameters will work for the slave device, it goes and calls
+ _snd_pcm_hw_params() with the actual parameters requested by the
+client, which obviously fails, and leads to the error shown above.
+
+I added some calls to snd_pcm_hw_params_dump() which give this output.
+The first is sparams, which is the refined set of parameters which I
+assume are supposed to be set in the slave device.  The second is
+params, which is the set of parameters requested by the client (aplay in
+this case).
+
+sparams are:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  U8
+SUBFORMAT:  STD
+SAMPLE_BITS: 8
+FRAME_BITS: 16
+CHANNELS: 2
+RATE: 11025
+PERIOD_TIME: (124988 124989)
+PERIOD_SIZE: 1378
+PERIOD_BYTES: 2756
+PERIODS: (4 5)
+BUFFER_TIME: (500045 500046)
+BUFFER_SIZE: 5513
+BUFFER_BYTES: 11026
+TICK_TIME: 0
+params are:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  U8
+SUBFORMAT:  STD
+SAMPLE_BITS: 8
+FRAME_BITS: 8
+CHANNELS: 1
+RATE: 11025
+PERIOD_TIME: (124988 124989)
+PERIOD_SIZE: 1378
+PERIOD_BYTES: 1378
+PERIODS: (4 5)
+BUFFER_TIME: (500045 500046)
+BUFFER_SIZE: 5513
+BUFFER_BYTES: 5513
+TICK_TIME: 0
+inserting plugins whatever that means
+in snd_pcm_plug_change_channels!
+
+So, yeah, that's great, it figured it all out, and realized that it had
+to do channel conversion, which presumably is done in
+snd_pcm_plug_change_channels().  But now, we see that it goes ahead and
+tries to set these parameters in the slave device:
+
+calling _snd_pcm_hw_params with params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  U8
+SUBFORMAT:  STD
+SAMPLE_BITS: 8
+FRAME_BITS: 8
+CHANNELS: 1
+RATE: 11025
+PERIOD_TIME: (124988 124989)
+PERIOD_SIZE: 1378
+PERIOD_BYTES: 1378
+PERIODS: (4 5)
+BUFFER_TIME: (500045 500046)
+BUFFER_SIZE: 5513
+BUFFER_BYTES: 5513
+TICK_TIME: 0
+
+But that's wrong!  The slave device can't do single-channel input!
+
+So what gives?  This can't possibly be broken, or nobody's Intel
+on-board audio would ever work at all... so what is my driver doing wrong?
