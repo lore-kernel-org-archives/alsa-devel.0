@@ -1,27 +1,16 @@
-From: Luke Yelavich <themuso@ubuntu.com>
-Subject: Re: SPDIF with X-Fi
-Date: Wed, 14 Oct 2009 11:34:21 +1100
-Message-ID: <20091014003421.GA3743@strigy.yelavich.home>
-References: <4AD51A4C.3070005@amfes.com>
+From: Logan Li <loganli@viatech.com.cn>
+Subject: [PATCH 1/1] ALSA: HDA VIA: Remove 48k sample rate
+	limit for S/PDIF
+Date: Wed, 14 Oct 2009 10:10:38 +0800
+Message-ID: <4AD5331E.4020704@viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F1571038BD
+Received: from exchtp08.via.com.tw (exchtp08.via.com.tw [61.66.243.7])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37DC11038B0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Oct 2009 02:34:28 +0200 (CEST)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1Mxrox-0002yc-Bw
-	for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2009 01:34:27 +0100
-Received: from ppp121-44-120-20.lns20.syd6.internode.on.net ([121.44.120.20]
-	helo=localhost) by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_128_CBC_SHA1:16) (Exim 4.69)
-	(envelope-from <themuso@ubuntu.com>) id 1Mxrow-00044U-JD
-	for alsa-devel@alsa-project.org; Wed, 14 Oct 2009 01:34:27 +0100
-Content-Disposition: inline
-In-Reply-To: <4AD51A4C.3070005@amfes.com>
+	Wed, 14 Oct 2009 04:10:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,19 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, HaraldWelte@viatech.com, LydiaWang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 14, 2009 at 11:24:44AM EST, Daniel L. Miller wrote:
-> Perhaps I'm going about this the wrong way (if so, please tell me), but...
-> 
-> My X-Fi card is now working with the new driver.  I am connected to my 
-> amplifier via a fiber optic cable.  Sending standard two-channel audio 
-> to the "front" alsa plug gets directed to the spdif output and sounds 
-> great.  But I want to have my full surround active - particularly for 
-> movies already encoded with dts and/or ac-3.
-> 
-> Do I need to specially configure ALSA is any fashion to make this work?  Do I need to use the iecset tool?
+From: Logan Li <loganli@viatech.com.cn>
+Subject: ALSA: HDA VIA: Remove 48k sample rate limit for S/PDIF
 
-You need to configure the application playing audio to use AC3 passthrough, which will simply send AC3 directly from your app via optical to your amplifier.
+48 kHz limit is for slightly better stability, and sample rates other
+than 48k (like 96k/192k) are for better sound quality.
+We choose better quality, so remove the 48k limit.
 
-Luke
+Signed-off-by: Logan Li <loganli@viatech.com.cn>
+
+---
+ sound/pci/hda/patch_via.c |    4 ----
+ 1 file changed, 4 deletions(-)
+
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -4626,7 +4626,6 @@
+ 	.substreams = 2,
+ 	.channels_min = 2,
+ 	.channels_max = 2,
+-	.rates = SNDRV_PCM_RATE_48000,
+ 	/* NID is set in via_build_pcms */
+ 	.ops = {
+ 		.open = via_dig_playback_pcm_open,
+@@ -5124,7 +5123,6 @@
+ 	.substreams = 2,
+ 	.channels_min = 2,
+ 	.channels_max = 2,
+-	.rates = SNDRV_PCM_RATE_48000,
+ 	/* NID is set in via_build_pcms */
+ 	.ops = {
+ 		.open = via_dig_playback_pcm_open,
+@@ -5561,7 +5559,6 @@
+ 	.substreams = 1,
+ 	.channels_min = 2,
+ 	.channels_max = 2,
+-	.rates = SNDRV_PCM_RATE_48000,
+ 	/* NID is set in via_build_pcms */
+ 	.ops = {
+ 		.open = via_dig_playback_pcm_open,
+@@ -5914,7 +5911,6 @@
+ 	.substreams = 1,
+ 	.channels_min = 2,
+ 	.channels_max = 2,
+-	.rates = SNDRV_PCM_RATE_48000,
+ 	/* NID is set in via_build_pcms */
+ 	.ops = {
+ 		.open = via_dig_playback_pcm_open,
