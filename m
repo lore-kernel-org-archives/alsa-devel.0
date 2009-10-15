@@ -1,20 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH - try2] ASoC: Codec driver for Texas
-	Instruments tlv320dac33 codec
-Date: Thu, 15 Oct 2009 09:18:50 +0300
-Message-ID: <200910150918.50869.peter.ujfalusi@nokia.com>
-References: <1255435391-18160-1-git-send-email-peter.ujfalusi@nokia.com>
-	<200910141556.50396.peter.ujfalusi@nokia.com>
-	<20091014132402.GF20639@rakim.wolfsonmicro.main>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: [PATCH 00/11] Intel IbexPeak HDMI codec support
+Date: Thu, 15 Oct 2009 15:03:48 +0800
+Message-ID: <20091015070348.390451250@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id B49CA103823
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19A6D103827
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Oct 2009 08:18:58 +0200 (CEST)
-In-Reply-To: <20091014132402.GF20639@rakim.wolfsonmicro.main>
+	Thu, 15 Oct 2009 09:10:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +19,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 14 October 2009 16:24:02 ext Mark Brown wrote:
-> > The interrupt is self cleaning on dac33 side (in the mode, which we are
-> > using it, there is a mode, where additional write is needed to clear the
-> > interrupt status).
-> =
+Hi Takashi,
 
-> That should be OK, someone can always add level triggering in future if
-> they want to.
-> =
+This series adds support for the Intel IbexPeak HDMI codec, which can
+connect up to 3 monitors and support 2 independant A/V pipes. The patches
+are tested OK on IbexPeak and G45. DisplayPort is also working with another
+in-house KMS patch. However we have not tested dual monitor configurations
+(which should be rare for now).
 
-> > Than on trigger STOP, I set the state to FLUSH and schedule the work, if
-> > an interrupt comes, it is ignored, since the work has been scheduled.
-> =
-
-> Actually, you should just be able to queue the work since the state
-> check will be done again in the workqueue and duplicate insertions don't
-> hurt.  That'd also avoid the need to mask IRQs while fiddling with the
-> state (which you're not doing at the minute but probably need to).
-
-Yes... I have some plans for revisiting the nSample mode (or burst mode) =
-
-handling, but first I want to make sure, that the current implementation is =
-
-correct from ASoC point of view.
-Since the code is in it's third iteration, I think it is getting better day=
--by-
-day ;)
-
--- =
-
-P=E9ter
+Thanks,
+Fengguang
