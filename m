@@ -1,25 +1,23 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 5/8] board-rx51-peripherals: split
-	vaux3	and vmmc2 supplies
-Date: Wed, 14 Oct 2009 10:15:48 -0700
-Message-ID: <20091014171548.GI12700@atomide.com>
-References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
-	<1255003137-1034-6-git-send-email-eduardo.valentin@nokia.com>
-	<20091008132109.GD29176@rakim.wolfsonmicro.main>
-	<20091009064529.GD6616@esdhcp037198.research.nokia.com>
-	<20091009110346.GC5082@sirena.org.uk>
-	<20091012080858.GB13234@esdhcp037198.research.nokia.com>
-	<20091012091820.GC3308@rakim.wolfsonmicro.main>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: Re: [PATCH 0/30] ALSA: HDA VIA: patch series
+Date: Wed, 14 Oct 2009 21:24:51 -0600
+Message-ID: <51f3faa70910142024n39881e8dod2fefcd7d180b142@mail.gmail.com>
+References: <51f3faa70910121940lfdfc318vcbaf9168727b50ca@mail.gmail.com>
+	<5B2BE0DB92BC8F4694F815C2F34E0D5F123E67@exchbj03.viatech.com.bj>
+	<51f3faa70910132052j286e0fa8vb5aeabe34e8bb4f@mail.gmail.com>
+	<s5hocoavv1i.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-02-ewr.mailhop.org (mho-02-ewr.mailhop.org [204.13.248.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9FD50103903
+Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
+	[209.85.223.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id D986F103813
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Oct 2009 19:15:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20091012091820.GC3308@rakim.wolfsonmicro.main>
+	Thu, 15 Oct 2009 05:24:52 +0200 (CEST)
+Received: by iwn36 with SMTP id 36so290600iwn.24
+	for <alsa-devel@alsa-project.org>; Wed, 14 Oct 2009 20:24:51 -0700 (PDT)
+In-Reply-To: <s5hocoavv1i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,50 +27,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eduardo Valentin <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, LydiaWang@viatech.com.cn, LoganLi@viatech.com.cn, HaraldWelte@viatech.com
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [091012 02:18]:
-> On Mon, Oct 12, 2009 at 11:08:58AM +0300, Eduardo Valentin wrote:
-> 
-> > I'm afraid using dev_name is not that easy. The mmc driver generates device
-> > name at runtime. That's why this board file setups .dev at runtime as well.
-> 
-> > rx51_twlgpio_setup -> twl4030_mmc_init -> omap2_init_mmc
-> 
-> > So, changing this supply to something static using .dev_name it is not
-> > possible with current code. That would need refactoring the whole mmc and
-> > hsmmc setup. And the device naming procedure is dependent on cpu as well.
-> > Check arch/arm/mach-omap2/device.c:omap2_init_mmc.
-> 
-> Oh, dear - that sounds broken for hardware that's fixed on the board.
-> That said, the code there looks like it's supposed to come out with the
-> same answer each time it's run?  How does this work with the clock API?
+On Wed, Oct 14, 2009 at 9:45 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 13 Oct 2009 21:52:02 -0600,
+> Robert Hancock wrote:
+>>
+>> On Tue, Oct 13, 2009 at 3:40 AM, =A0<LoganLi@viatech.com.cn> wrote:
+>> >> >> > What is the problem, specifically?
+>> >> >>
+>> >> >> With the latest patch I do get the optical output lighting
+>> >> up and the
+>> >> >> receiver detects a PCM signal, but it seems to be just
+>> >> silence coming
+>> >> >> through. (In previous iterations the SPDIF digital converter wasn't
+>> >> >> being enabled automatically so it didn't get even that far.)
+>> >> >
+>> >> > You can fiddle with hda-verb to issue digital-converter verbs.
+>> >> > Possibly you need to flip the digital-enable bit to send
+>> >> the values...
+>> >>
+>> >> Well, I think I tried all combinations of the flags on the digital
+>> >> converter in hda_analyzer without any luck. I'm assuming it's
+>> >> something else (presumably codec-specific) that hda_analyzer doesn't
+>> >> know about..
+>> >>
+>> >
+>> > Hi, Robert
+>> > =A0We cannot duplicate bug of SPDIF Out cannot work on VT1828S board.
+>> > =A0You said it's fine in Windows, right?
+>>
+>> Ahh, I see the problem. I think it's related to what we were talking
+>> about with the second SPDIF output: If I play back on subdevice 1 I
+>> don't get any output. But if I force playing on substream 1 instead of
+>> the default 0 (i.e. hw:0,1,1) then I get audio. I'm assuming that
+>> substream 0 is the codec's HDMI output (which actually doesn't exist
+>> on this motherboard).
+>>
+>> It appears whether or not the "iec958" alias that PulseAudio uses when
+>> selecting "Output Digital Stereo" profile actually ends up using
+>> substream 1 instead of 0 is based on luck. as it sometimes works and
+>> sometimes doesn't. Having different substreams go different places is
+>> pretty non-intuitive and it seems software doesn't expect this
+>> behavior. I think that the SPDIF and HDMI outputs really should be
+>> separate subdevices (i.e. hw:0,1 and hw:0,2 or something) instead,
+>> unless something makes this impossible. If the aliases for iec958 and
+>> hdmi were set up to point to the correct subdevice then everything
+>> would work as it should..
+>
+> Yes, it's possible to assign two different devices if the pin-config
+> of each digital output is set up properly for SPDIF and HDMI.
+> It won't be too difficult to fix, but I have little time now.
 
-The clocks are matched using clkdev. Basically the driver just requests
-functional clock (fck) and interface clock (ick):
-
-$ grep mmci arch/arm/*omap*/clock*.c
-arch/arm/mach-omap1/clock.c:	CLK("mmci-omap.0", "fck",	&mmc1_ck,	CK_16XX | CK_1510 | CK_310),
-arch/arm/mach-omap1/clock.c:	CLK("mmci-omap.0", "ick",	&armper_ck.clk,	CK_16XX | CK_1510 | CK_310),
-arch/arm/mach-omap1/clock.c:	CLK("mmci-omap.1", "fck",	&mmc2_ck,	CK_16XX),
-arch/arm/mach-omap1/clock.c:	CLK("mmci-omap.1", "ick",	&armper_ck.clk,	CK_16XX),
-arch/arm/mach-omap2/clock24xx.c:	CLK("mmci-omap.0", "ick",	&mmc_ick,	CK_242X),
-arch/arm/mach-omap2/clock24xx.c:	CLK("mmci-omap.0", "fck",	&mmc_fck,	CK_242X),
-arch/arm/mach-omap2/clock24xx.c:	CLK("mmci-omap-hs.0", "ick",	&mmchs1_ick,	CK_243X),
-arch/arm/mach-omap2/clock24xx.c:	CLK("mmci-omap-hs.0", "fck",	&mmchs1_fck,	CK_243X),
-arch/arm/mach-omap2/clock24xx.c:	CLK("mmci-omap-hs.1", "ick",	&mmchs2_ick,	CK_243X),
-arch/arm/mach-omap2/clock24xx.c:	CLK("mmci-omap-hs.1", "fck",	&mmchs2_fck,	CK_243X),
-arch/arm/mach-omap2/clock24xx.c:	CLK("mmci-omap-hs.0", "mmchsdb_fck",	&mmchsdb1_fck,	CK_243X),
-arch/arm/mach-omap2/clock24xx.c:	CLK("mmci-omap-hs.1", "mmchsdb_fck", 	&mmchsdb2_fck,	CK_243X),
-arch/arm/mach-omap2/clock34xx.c:	CLK("mmci-omap-hs.2",	"fck",	&mmchs3_fck,	CK_3430ES2),
-arch/arm/mach-omap2/clock34xx.c:	CLK("mmci-omap-hs.1",	"fck",	&mmchs2_fck,	CK_343X),
-arch/arm/mach-omap2/clock34xx.c:	CLK("mmci-omap-hs.0",	"fck",	&mmchs1_fck,	CK_343X),
-arch/arm/mach-omap2/clock34xx.c:	CLK("mmci-omap-hs.2",	"ick",	&mmchs3_ick,	CK_3430ES2),
-arch/arm/mach-omap2/clock34xx.c:	CLK("mmci-omap-hs.1",	"ick",	&mmchs2_ick,	CK_343X),
-arch/arm/mach-omap2/clock34xx.c:	CLK("mmci-omap-hs.0",	"ick",	&mmchs1_ick,	CK_343X),
-
-Regards,
-
-Tony
+Actually, I just checked the version of patch_via.c that's in the
+sound git tree and it doesn't seem to have this problem with SPDIF
+output. (I believe the version I was using had one of the second-SPDIF
+patches that was dropped.) There are still 2 substreams it appears,
+but both seem to output to SPDIF..
