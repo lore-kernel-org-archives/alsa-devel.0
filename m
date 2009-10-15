@@ -1,29 +1,23 @@
-From: =?UTF-8?B?R3VpbGxlbSBTb2zDoA==?= <garanda@flumotion.com>
-Subject: Re: Issue with creative Xfi PCIe ca0110-IBG
-Date: Thu, 15 Oct 2009 11:52:53 +0200
-Message-ID: <4AD6F0F5.5020708@flumotion.com>
-References: <4ACF0008.5010808@flumotion.com>
-	<s5hab00x5yi.wl%tiwai@suse.de>	<4ACF4564.6060104@flumotion.com>
-	<s5hocogvdkx.wl%tiwai@suse.de>	<4ACF5F48.6030403@flumotion.com>
-	<s5h63aov93b.wl%tiwai@suse.de>	<4AD43EF0.70907@flumotion.com>
-	<s5hk4yz1wrn.wl%tiwai@suse.de>	<4AD44F72.3030605@flumotion.com>
-	<s5heip71ubm.wl%tiwai@suse.de>	<4AD455D5.70400@flumotion.com>
-	<s5h8wff1stv.wl%tiwai@suse.de>	<4AD46445.5020705@flumotion.com>
-	<s5hzl7vzg1h.wl%tiwai@suse.de>	<4AD46E44.5050000@flumotion.com>
-	<s5hws2zzd4b.wl%tiwai@suse.de>	<4AD48ADF.1070501@flumotion.com>
-	<s5h8wffz87n.wl%tiwai@suse.de>	<4AD4964F.2060602@flumotion.com>
-	<s5h1vl7z5eg.wl%tiwai@suse.de>	<4AD4B1EB.3080401@flumotion.com>
-	<s5hmy3uvuwr.wl%tiwai@suse.de>	<4AD5F643.3050908@flumotion.com>
-	<s5hiqeivtxy.wl%tiwai@suse.de>
+From: Sebastian Konopka <sebastian.konopka@ph.tum.de>
+Subject: HD-Audio Codec ALC888: Realtek Defined Registers and
+	Digital Microphone
+Date: Thu, 15 Oct 2009 11:57:14 +0200
+Message-ID: <871vl5vv2d.fsf@sebasti-laptop.kaktus>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.fluendo.com (se01.bcn.fluendo.net [195.10.10.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 440B010380D
+Received: from mailrelay2.lrz-muenchen.de (mailrelay2.lrz-muenchen.de
+	[129.187.254.102])
+	by alsa0.perex.cz (Postfix) with ESMTP id E753C10380C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Oct 2009 11:52:33 +0200 (CEST)
-In-Reply-To: <s5hiqeivtxy.wl%tiwai@suse.de>
+	Thu, 15 Oct 2009 11:57:35 +0200 (CEST)
+Received: from mailout.ph.tum.de ([10.156.6.55] [10.156.6.55]) by
+	mailrelay2.lrz-muenchen.de with ESMTP for
+	alsa-devel@alsa-project.org; Thu, 15 Oct 2009 11:57:34 +0200
+Received: from sebasti-laptop.kaktus ([91.46.191.47] [91.46.191.47]) by
+	mailout.ph.tum.de with ESMTPSA for alsa-devel@alsa-project.org;
+	Thu, 15 Oct 2009 11:57:33 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,103 +27,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFdlZCwgMTQgT2N0IDIwMDkgMTg6MDM6MTUgKzAyMDAs
-Cj4gR3VpbGxlbSBTb2zDoCB3cm90ZToKPiAgIAo+PiBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+ICAg
-ICAKPj4+IEF0IFR1ZSwgMTMgT2N0IDIwMDkgMTg6NTk6MjMgKzAyMDAsCj4+PiBHdWlsbGVtIFNv
-bMOgIHdyb3RlOgo+Pj4gICAKPj4+ICAgICAgIAo+Pj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4+
-PiAgICAgCj4+Pj4gICAgICAgICAKPj4+Pj4gQXQgVHVlLCAxMyBPY3QgMjAwOSAxNzowMTozNSAr
-MDIwMCwKPj4+Pj4gR3VpbGxlbSBTb2zDoCB3cm90ZToKPj4+Pj4gICAKPj4+Pj4gICAgICAgCj4+
-Pj4+ICAgICAgICAgICAKPj4+Pj4+IFRha2FzaGkgSXdhaSB3cm90ZToKPj4+Pj4+ICAgICAKPj4+
-Pj4+ICAgICAgICAgCj4+Pj4+PiAgICAgICAgICAgICAKPj4+Pj4+PiBBdCBUdWUsIDEzIE9jdCAy
-MDA5IDE2OjEyOjQ3ICswMjAwLAo+Pj4+Pj4+IEd1aWxsZW0gU29sw6Agd3JvdGU6Cj4+Pj4+Pj4g
-ICAKPj4+Pj4+PiAgICAgICAKPj4+Pj4+PiAgICAgICAgICAgCj4+Pj4+Pj4gICAgICAgICAgICAg
-ICAKPj4+Pj4+Pj4gVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+Pj4+PiAgICAgCj4+Pj4+Pj4+ICAg
-ICAgICAgCj4+Pj4+Pj4+ICAgICAgICAgICAgIAo+Pj4+Pj4+PiAgICAgICAgICAgICAgICAgCj4+
-Pj4+Pj4+PiBBdCBUdWUsIDEzIE9jdCAyMDA5IDE0OjEwOjQ0ICswMjAwLAo+Pj4+Pj4+Pj4gR3Vp
-bGxlbSBTb2zDoCB3cm90ZToKPj4+Pj4+Pj4+ICAgCj4+Pj4+Pj4+PiAgICAgIAo+Pj4+Pj4+Pj4g
-ICAgICAgICAgICAgICAgICAgCj4+Pj4+Pj4+Pj4gVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+Pj4+
-Pj4+ICAgICAKPj4+Pj4+Pj4+PiAgICAgICAgICAgICAgICAKPj4+Pj4+Pj4+PiAgICAgICAgICAg
-ICAgICAgCj4+Pj4+Pj4+Pj4gICAgICAgICAgICAgICAgICAgICAKPj4+Pj4+Pj4+Pj4gSXQgc2hv
-d3MgdGhlIGFkZHJlc3MgMS4gIFNvLCBteSBwYXRjaCBkb2Vzbid0IHdvcmssIGFzIGl0IGFzc3Vt
-ZXMKPj4+Pj4+Pj4+Pj4gYWRkcmVzcyAwLiAgUmVwbGFjZSBpdCB3aXRoIDEsIGFuZCBwYXNzIHBy
-b2JlX21hc2s9MHgwMi4KPj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Pj4gVGFrYXNo
-aQo+Pj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4+PiAgICAgICAgICAgCj4+Pj4+Pj4+Pj4+ICAgICAgICAg
-ICAgICAgICAgIAo+Pj4+Pj4+Pj4+PiAgICAgICAgICAgICAgICAgICAgICAgCj4+Pj4+Pj4+Pj4g
-WWVhaCBncmVhdCwgaXQncyB3b3JraW5nIGFnYWluIQo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4gSSBk
-aWQgbW9kcHJvYmUgc25kLWhkYS1pbnRlbCBwcm9iZV9tYXNrPTB4MDMgaW5zdGVhZCBvZiBtYXNr
-PTB4MDIgdG8gCj4+Pj4+Pj4+Pj4gbWFrZSBpdCB3b3JrCj4+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+PiBh
-bmQgdGhlIHBhdGNoIGxldCB0aGlzIHdheSAoIEkgY2hhbmdlZCBib3RoIHJldHVybiAxIGFuZCBh
-ZGRyPTEpCj4+Pj4+Pj4+Pj4gICAgIAo+Pj4+Pj4+Pj4+ICAgICAgICAgCj4+Pj4+Pj4+Pj4gICAg
-ICAgICAgICAgCj4+Pj4+Pj4+Pj4gICAgICAgICAgICAgICAgIAo+Pj4+Pj4+Pj4+ICAgICAgICAg
-ICAgICAgICAgICAgCj4+Pj4+Pj4+PiBOb3cgdGhlIHF1ZXN0aW9uIGlzIHdoZXRoZXIgcHJvYmVf
-bWFzaz0weDAzIChvciAweDAyKSB3b3JrcyB3aXRob3V0Cj4+Pj4+Pj4+PiB0aGlzIHBhdGNoLiAg
-SG93IGlzIGl0Pwo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Cj4+Pj4+Pj4+PiB0aGFua3MsCj4+Pj4+Pj4+
-Pgo+Pj4+Pj4+Pj4gICAKPj4+Pj4+Pj4+ICAgICAgIAo+Pj4+Pj4+Pj4gICAgICAgICAgIAo+Pj4+
-Pj4+Pj4gICAgICAgICAgICAgICAKPj4+Pj4+Pj4+ICAgICAgICAgICAgICAgICAgIAo+Pj4+Pj4+
-PiBIaSwKPj4+Pj4+Pj4KPj4+Pj4+Pj4gYWZ0ZXIgZmV3IHRlc3RzIEkgY2FuIGNvbmNsdWRlIHRo
-YXQgaXQgY291bGQgd29yayB3aXRoIGFuZCB3aXRob3V0IHRoZSAKPj4+Pj4+Pj4gcGF0Y2guIFRo
-ZSBzYW1lIGhhcHBlbnMgd2l0aCBtb2Rwcm9iZSBzbmQtaGRhLWludGVsIHByb2JlX21hc2s9MHgw
-MyBvciAKPj4+Pj4+Pj4gMHgwMiBib3RoIGNhbiB3b3JrLgo+Pj4+Pj4+PiAgICAgCj4+Pj4+Pj4+
-ICAgICAgICAgCj4+Pj4+Pj4+ICAgICAgICAgICAgIAo+Pj4+Pj4+PiAgICAgICAgICAgICAgICAg
-Cj4+Pj4+Pj4gT0ssIGdvb2QgdG8gaGVhci4KPj4+Pj4+Pgo+Pj4+Pj4+ICAgCj4+Pj4+Pj4gICAg
-ICAgCj4+Pj4+Pj4gICAgICAgICAgIAo+Pj4+Pj4+ICAgICAgICAgICAgICAgCj4+Pj4+Pj4+IFNv
-IGl0IHNlZW1zIHRvIGJlIGZpY2tsZSBiZWNhdXNlIG5vdCBhbGwgdGhlIHRpbWVzIHlvdSBtb2Rw
-cm9iZSB0aGUgCj4+Pj4+Pj4+IGludGVsIG1vZHVsZSBpdCB3b3JrZWQuCj4+Pj4+Pj4+ICAgICAK
-Pj4+Pj4+Pj4gICAgICAgICAgICAgCj4+Pj4+Pj4+ICAgICAgICAgICAgICAgICAKPj4+Pj4+PiBE
-byB5b3UgbWVhbiBpdCdzIHN0aWxsIHVuc3RhYmxlIGV2ZW4gd2l0aCBwcm9iZV9tYXNrIG9wdGlv
-biwgb3IgaXQgaXMKPj4+Pj4+PiB3aGVuIHdpdGhvdXQ/Cj4+Pj4+Pj4KPj4+Pj4+PiBJZiBwcm9i
-ZV9tYXNrIGZpeGVzIGl0cyBmaWNrbGVuZXNzIChvciBmbGlydGF0aW9uIDopLCB0aGUgcGF0Y2gg
-YmVsb3cKPj4+Pj4+PiBzaG91bGQgaGVscC4gIEl0IHdpbGwgc2V0IHRoZSBkZWZhdWx0IHByb2Jl
-X21hc2sgZm9yIHlvdXIgZGV2aWNlLgo+Pj4+Pj4+IEdpdmUgaXQgYSB0cnkuCj4+Pj4+Pj4KPj4+
-Pj4+Pgo+Pj4+Pj4+IFRha2FzaGkKPj4+Pj4+PiAgICAgICAgICAgCj4+Pj4+Pj4gICAgICAgICAg
-ICAgICAKPj4+Pj4+IEhpLAo+Pj4+Pj4KPj4+Pj4+IEJ5IGZpY2tsZSBJIG1lYW4gdGhhdCB3aGVu
-IG1vZHByb2JpbmcgaGRhLWludGVsIG1vZHVsZSBzb21ldGltZXMgaXQgCj4+Pj4+PiB3b3JrcyBm
-aW5lIGFuZCBvdGhlcnMgY2Fubm90IGdldCBhdWRpbyBhbHRob3VnaCB0aGUgc3lzdGVtIHNlZW1z
-IHRvIAo+Pj4+Pj4gYWx3YXlzIHJlY29nbml6ZSB0aGUgY2FyZCwgYW5kIHllcywgSSdtIGFsd2F5
-cyB1c2luZyBwcm9iZV9tYXNrPTB4MDIgb3B0aW9uLgo+Pj4+Pj4KPj4+Pj4+IEFjdHVhbGx5LCBh
-Ym91dCBvbmUgb2YgZml2ZSB0aW1lcyBJIGNhbiBzdWNjZXNzZnVsbHkgbG9hZCB0aGUgbW9kdWxl
-LiBBcyAKPj4+Pj4+IEkgc2FpZCB0aGUgZmlyc3QgcGF0Y2ggZG9lc24ndCBhZmZlY3QsIGl0IGhh
-cyBiZWVuIG9ubHkgdGhlIGNhc3VhbHR5IAo+Pj4+Pj4gdGhhdCBtYWRlIG1lIGJlbGlldmUgaXQg
-ZGlkIHNvbWV0aGluZy4KPj4+Pj4+ICAgIAo+Pj4+Pj4gICAgICAgICAKPj4+Pj4+ICAgICAgICAg
-ICAgIAo+Pj4+PiBIbSwgdGhlbiBpdCdzIHN0aWxsIHB1enpsaW5nIHdoYXQgY2F1c2VzIHRoZSBw
-cm9ibGVtIGluIHRoZSByZWNlbnQKPj4+Pj4ga2VybmVsLiAgT3IgaXMgaXQgY29pbmNpZGVuY2U/
-Cj4+Pj4+Cj4+Pj4+ICAgICAgIAo+Pj4+PiAgICAgICAgICAgCj4+Pj4gVWZmLCByZWFsbHkgZG9u
-J3Qga25vdyB3aGF0IHRvIHNheSwgd2hlbiBJIHRob3VnaHQgSSBzYXcgc29tZSBsaWdodC4uLiAK
-Pj4+PiBJJ3ZlIGJlZW4gdGVzdGluZyB3aXRoIDIuNi4zMS1yYzYgYW5kIDIuNi4zMSAoZmluYWwp
-IHdpdGggYW5kIHdpdGhvdXQgCj4+Pj4gcGF0Y2hlcyBhbmQgbWF5YmUgaXMgb25seSB0aGUgcHJv
-YmVfbWFzayBvcHRpb24gd2hhdCBtYWtlIGl0IHdvcmsgc29tZXRpbWVzLgo+Pj4+Cj4+Pj4gUGVy
-aGFwcyBJIGRpZCBiaXNlY3QgYmFkIGFuZCB3YXNuJ3QgCj4+Pj4gZGVhZGZmMTY2NTQ5MWFmY2Ux
-MjRhOGZmODNmMDBmNzg0MTYxZjY2MCBmaXJzdCBiYWQgY29tbWl0Pwo+Pj4+ICAgICAKPj4+PiAg
-ICAgICAgIAo+Pj4gUG9zc2libGUuICBCdXQsIGJlZm9yZSBiaXNlY3RpbmcsIHdlIHNob3VsZCBi
-ZSByZWFsbHkgc3VyZSB3aGljaAo+Pj4gcmVsZWFzZSB3YXMgcmVhbGx5IE9LLiAgRGlkIDIuNi4z
-MCB3b3JrIHdpdGhvdXQgYW55IHByb2JsZW1zPwo+Pj4KPj4+ICAgCj4+PiAgICAgICAKPj4gSGks
-Cj4+Cj4+IEFGQUlLIGluIDIuNi4zMCBjYTAxMTAgd2FzIG5vdCBpbXBsZW1lbnRlZC4gSSBzZWUg
-aXQgc3RhcnQgd29ya2luZyBpbiAKPj4gMi42LjMxLXJjMyBhbmQgZGlkIGEgdHdvIHdlZWtzIHJ1
-bm5pbmcgdGVzdCB3aXRoIDIuNi4zMS1yYzUuCj4+Cj4+IFNvIEkgYmlzZWN0ZWQgZnJvbSAyLjYu
-MzEtcmM2IHRvIDIuNi4zMS1yYzUKPj4gICAgIAo+Cj4gT0suICBJdCdzIHBvc3NpYmxlIHRoYXQg
-YSByZWdyZXNzaW9uIG9jY3VycyBhdCByYzYgYmVjYXVzZSBvZiB0aGUKPiBjb3JlIEhELWF1ZGlv
-IGNoYW5nZXMuICBCdXQsIEkgc3RpbGwgd29uZGVyIHdoeSB0aGUgcGF0Y2ggZG9lc24ndAo+IGNo
-YW5nZSBhbnl0aGluZy4KPgo+IEF0IGxlYXN0LCBpdCdkIGJlIG5pY2UgaWYgeW91IGNhbiByZWNv
-bmZpcm0gdGhhdCByYzUgaXMgcmVhbGx5IHdvcmtpbmcKPiBzdGFibHkuICBZb3UgY2FuIGp1c3Qg
-Y29weSBzb3VuZC9wY2kvaGRhLyogb3ZlciBhbnkgbmV3ZXIga2VybmVscy4KPgo+Cj4gICAKClll
-cywgcmM1IHdvcmtzIG9rLiBJJ3ZlIGFsc28gY29waWVkIGl0J3MgaGRhLyogdG8gMi42LjMxIGZp
-bmFsIGFuZCBhbHNvIAp3b3JrcyB3ZWxsIHRvby4KCkkgZGlkIHRoZSBzYW1lIHdpdGggMi42LjMy
-LnJjMiBidXQgSSBjYW5ub3QgbG9hZCB0aGUgc25kLWhkYS1pbnRlbCAKbW9kdWxlIGJlY2F1c2Ug
-aXQncwpjb21wbGFpbmluZyBhYm91dCB3aGF0IHNlZW1zIHNvbWUgaW5jb21wYXRpYmlsaXRpZXMu
-CgpzbmRfaGRhX2NvZGVjOiBkaXNhZ3JlZXMgYWJvdXQgdmVyc2lvbiBvZiBzeW1ib2wgc25kX2lw
-cmludGYKc25kX2hkYV9jb2RlYzogVW5rbm93biBzeW1ib2wgc25kX2lwcmludGYKc25kX2hkYV9p
-bnRlbDogVW5rbm93biBzeW1ib2wgc25kX2hkYV9idXNfbmV3CnNuZF9oZGFfaW50ZWw6IFVua25v
-d24gc3ltYm9sIHNuZF9oZGFfYnVpbGRfcGNtcwpzbmRfaGRhX2ludGVsOiBVbmtub3duIHN5bWJv
-bCBzbmRfaGRhX2NvZGVjX25ldwpzbmRfaGRhX2ludGVsOiBVbmtub3duIHN5bWJvbCBzbmRfaGRh
-X3F1ZXVlX3Vuc29sX2V2ZW50CnNuZF9oZGFfaW50ZWw6IFVua25vd24gc3ltYm9sIHNuZF9oZGFf
-Y2FsY19zdHJlYW1fZm9ybWF0CnNuZF9oZGFfaW50ZWw6IFVua25vd24gc3ltYm9sIHNuZF9oZGFf
-c3VzcGVuZApzbmRfaGRhX2ludGVsOiBVbmtub3duIHN5bWJvbCBzbmRfaGRhX3Jlc3VtZQpzbmRf
-aGRhX2ludGVsOiBVbmtub3duIHN5bWJvbCBzbmRfaGRhX2J1aWxkX2NvbnRyb2xzCgpyZWdhcmRz
-LAoKR3VpbGxlbSBTb2zDoApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+Hello everybody on alsa-devel,
+
+I'm adding a new model to the patch_realtek.c file that supports all
+features my alc888-codec together with the laptop hardware
+offers. Everything works fine and can be used through alsa, except two
+things, because I did not find any usable information on them:
+
+1. My laptop has an built-in digital microphone, that is connected to
+   this codec according to the information I can get when using
+   windows. The ALC888 datasheet shows that there are pins for digital
+   microphone support. Thus I assume that they are used for the
+   microphone. Those pins are share their functionality with GPIO pins:
+   GPIO0/DMIC-CLK and GPIO1/DMIC-DATA.
+   Unfortunally the datasheet does not provide further information on
+   how to switch between GPIO and DMIC mode of those pins. Furthermore
+   there is no information where the digital data can be found and how
+   to transfer them over the HDA-Bus to the application.
+
+   Does anybody have additional information on how to use digital
+   microphones on realtek codecs?
+
+2. Perhaps enabling the digital microphone is related to the so-called
+   "Realtek Defined Registers" that can be found on NID=0x20 as
+   processing coefficients. Furthermore the alc888 supports additional
+   features like equalizer or echo-cancellation, etc. that can be
+   controlled by these registers, as I suppose.
+
+   Does anybody have information how what these registers and their
+   contents mean? The datasheet does not provide any information.
+
+I hope you can help me.
+
+Sebsatian Konopka
