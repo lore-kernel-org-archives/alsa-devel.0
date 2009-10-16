@@ -1,16 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.33
-Date: Thu, 15 Oct 2009 15:40:39 +0100
-Message-ID: <20091015144039.GB24756@rakim.wolfsonmicro.main>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH] Fix codec_dai->ops NULL pointer bug for AC97
+	codec dai in soc-core
+Date: Fri, 16 Oct 2009 10:09:20 +0800
+Message-ID: <1255658960-20693-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42EFC24539
+Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADD8D24158
 	for <alsa-devel@alsa-project.org>;
-	Thu, 15 Oct 2009 16:40:40 +0200 (CEST)
-Content-Disposition: inline
+	Fri, 16 Oct 2009 04:09:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,72 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit ebab1b1d07266ab8ca9f65065e68b02f05504c4e:
-  Mark Brown (1):
-        ASoC: Minor fixups to tpa6130a2 driver
+AC97 codec DAIs don't register themselves eg.stac9766, wm9712, wm9713, wm9705.c, ad1980,
+then it loses to the chance to be given a null_dai_ops in snd_soc_register_dai if they
+have no ops. When functions like soc_pcm_open, soc_pcm_hw_params etc. access the ops field
+in these DAIs, panic will happen.
 
-are available in the git repository at:
+Signed-off-by: Barry Song <21cnbao@gmail.com>
+---
+ sound/soc/soc-core.c |   12 +++++++++---
+ 1 files changed, 9 insertions(+), 3 deletions(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
-
-Ben Dooks (1):
-      ASoC: S3C: Remove <plat/audio.h>
-
-Eero Nurkkala (1):
-      ASoC: Serialize access to dapm_power_widgets()
-
-Igor Grinberg (1):
-      ASoC: finally enable support for eXeda and CM-X300
-
-Mark Brown (2):
-      ASoC: Remove snd_soc_suspend_device()
-      Merge branch 'for-2.6.32' into for-2.6.33
-
-Peter Ujfalusi (2):
-      ASoC: TPA6130A2: Make tpa6130a2_power as static
-      ASoC: Codec driver for Texas Instruments tlv320dac33 codec
-
- arch/arm/plat-s3c/include/plat/audio.h |   45 --
- include/sound/soc.h                    |    5 -
- include/sound/tlv320dac33-plat.h       |   20 +
- sound/soc/codecs/Kconfig               |    4 +
- sound/soc/codecs/Makefile              |    2 +
- sound/soc/codecs/cs4270.c              |   20 -
- sound/soc/codecs/tlv320dac33.c         | 1237 ++++++++++++++++++++++++++++++++
- sound/soc/codecs/tlv320dac33.h         |  267 +++++++
- sound/soc/codecs/tpa6130a2.c           |    2 +-
- sound/soc/codecs/tpa6130a2.h           |    1 -
- sound/soc/codecs/wm8350.c              |   17 -
- sound/soc/codecs/wm8400.c              |   17 -
- sound/soc/codecs/wm8523.c              |   17 -
- sound/soc/codecs/wm8580.c              |   17 -
- sound/soc/codecs/wm8711.c              |   17 -
- sound/soc/codecs/wm8731.c              |   34 -
- sound/soc/codecs/wm8753.c              |   35 -
- sound/soc/codecs/wm8776.c              |   34 -
- sound/soc/codecs/wm8900.c              |   17 -
- sound/soc/codecs/wm8903.c              |   17 -
- sound/soc/codecs/wm8940.c              |   17 -
- sound/soc/codecs/wm8960.c              |   17 -
- sound/soc/codecs/wm8961.c              |   17 -
- sound/soc/codecs/wm8988.c              |   34 -
- sound/soc/codecs/wm9081.c              |   17 -
- sound/soc/pxa/Kconfig                  |    3 +-
- sound/soc/s3c24xx/neo1973_wm8753.c     |    1 -
- sound/soc/s3c24xx/s3c-i2s-v2.c         |    1 -
- sound/soc/s3c24xx/s3c2412-i2s.c        |    1 -
- sound/soc/s3c24xx/s3c2443-ac97.c       |    1 -
- sound/soc/s3c24xx/s3c24xx-i2s.c        |    2 +-
- sound/soc/s3c24xx/s3c24xx-pcm.c        |    1 -
- sound/soc/s3c24xx/s3c64xx-i2s.c        |    1 -
- sound/soc/soc-core.c                   |   39 -
- sound/soc/soc-dapm.c                   |    2 +-
- 35 files changed, 1535 insertions(+), 444 deletions(-)
- delete mode 100644 arch/arm/plat-s3c/include/plat/audio.h
- create mode 100644 include/sound/tlv320dac33-plat.h
- create mode 100644 sound/soc/codecs/tlv320dac33.c
- create mode 100644 sound/soc/codecs/tlv320dac33.h
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index fa0da3c..6643d64 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -795,6 +795,9 @@ static int soc_resume(struct device *dev)
+ #define soc_resume	NULL
+ #endif
+ 
++static struct snd_soc_dai_ops null_dai_ops = {
++};
++
+ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ {
+ 	struct platform_device *pdev = container_of(card->dev,
+@@ -838,6 +841,12 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 			ac97 = 1;
+ 	}
+ 
++	for (i = 0; i < card->num_links; i++) {
++		if (card->dai_link[i].codec_dai->ac97_control &&
++				(!card->dai_link[i].codec_dai->ops))
++			card->dai_link[i].codec_dai->ops = &null_dai_ops;
++	}
++
+ 	/* If we have AC97 in the system then don't wait for the
+ 	 * codec.  This will need revisiting if we have to handle
+ 	 * systems with mixed AC97 and non-AC97 parts.  Only check for
+@@ -2332,9 +2341,6 @@ static int snd_soc_unregister_card(struct snd_soc_card *card)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_dai_ops null_dai_ops = {
+-};
+-
+ /**
+  * snd_soc_register_dai - Register a DAI with the ASoC core
+  *
+-- 
+1.5.6.3
