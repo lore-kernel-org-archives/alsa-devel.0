@@ -1,16 +1,21 @@
 From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH v2] Fix possible codec_dai->ops NULL pointer
-	problems
-Date: Fri, 16 Oct 2009 18:13:38 +0800
-Message-ID: <1255688018-1301-1-git-send-email-21cnbao@gmail.com>
+Subject: Re: [PATCH v2] Fix possible codec_dai->ops NULL
+	pointer problems
+Date: Fri, 16 Oct 2009 18:35:27 +0800
+Message-ID: <3c17e3570910160335k6733b782p842b349ddd1411e4@mail.gmail.com>
+References: <1255688018-1301-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7755224572
+Received: from mail-px0-f194.google.com (mail-px0-f194.google.com
+	[209.85.216.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A83E103833
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Oct 2009 12:13:39 +0200 (CEST)
+	Fri, 16 Oct 2009 12:35:48 +0200 (CEST)
+Received: by pxi32 with SMTP id 32so1456556pxi.16
+	for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2009 03:35:47 -0700 (PDT)
+In-Reply-To: <1255688018-1301-1-git-send-email-21cnbao@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,53 +29,41 @@ To: broonie@opensource.wolfsonmicro.com
 Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, Barry Song <barry.song@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Barry Song <barry.song@gmail.com>
-
-Some codec DAIs like stac9766, wm9712, wm9713, ad1980 don't register themselves
-then it loses to the chance to be given a null_dai_ops in snd_soc_register_dai
-if they have no ops. When functions like soc_pcm_open, soc_pcm_hw_params etc.
-access the ops field in these DAIs, panic will happen.
-
-Signed-off-by: Barry Song <21cnbao@gmail.com>
----
- sound/soc/soc-core.c |   11 ++++++++---
- 1 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index fa0da3c..2d190df 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -795,6 +795,9 @@ static int soc_resume(struct device *dev)
- #define soc_resume	NULL
- #endif
- 
-+static struct snd_soc_dai_ops null_dai_ops = {
-+};
-+
- static void snd_soc_instantiate_card(struct snd_soc_card *card)
- {
- 	struct platform_device *pdev = container_of(card->dev,
-@@ -838,6 +841,11 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
- 			ac97 = 1;
- 	}
- 
-+	for (i = 0; i < card->num_links; i++) {
-+		if (!card->dai_link[i].codec_dai->ops)
-+			card->dai_link[i].codec_dai->ops = &null_dai_ops;
-+	}
-+
- 	/* If we have AC97 in the system then don't wait for the
- 	 * codec.  This will need revisiting if we have to handle
- 	 * systems with mixed AC97 and non-AC97 parts.  Only check for
-@@ -2332,9 +2340,6 @@ static int snd_soc_unregister_card(struct snd_soc_card *card)
- 	return 0;
- }
- 
--static struct snd_soc_dai_ops null_dai_ops = {
--};
--
- /**
-  * snd_soc_register_dai - Register a DAI with the ASoC core
-  *
--- 
-1.5.6.3
+T24gRnJpLCBPY3QgMTYsIDIwMDkgYXQgNjoxMyBQTSwgQmFycnkgU29uZyA8MjFjbmJhb0BnbWFp
+bC5jb20+IHdyb3RlOgo+IEZyb206IEJhcnJ5IFNvbmcgPGJhcnJ5LnNvbmdAZ21haWwuY29tPgpT
+b3JyeSBmb3IgdGhlIG1pcy1vcGVyYXRpb24gd2hpbGUgZ2l0IGNvbW1pdCwgdGhpcyBtYWlsYm94
+IGlzIG5vdCBtaW5lLgo+Cj4gU29tZSBjb2RlYyBEQUlzIGxpa2Ugc3RhYzk3NjYsIHdtOTcxMiwg
+d205NzEzLCBhZDE5ODAgZG9uJ3QgcmVnaXN0ZXIgdGhlbXNlbHZlcwo+IHRoZW4gaXQgbG9zZXMg
+dG8gdGhlIGNoYW5jZSB0byBiZSBnaXZlbiBhIG51bGxfZGFpX29wcyBpbiBzbmRfc29jX3JlZ2lz
+dGVyX2RhaQo+IGlmIHRoZXkgaGF2ZSBubyBvcHMuIFdoZW4gZnVuY3Rpb25zIGxpa2Ugc29jX3Bj
+bV9vcGVuLCBzb2NfcGNtX2h3X3BhcmFtcyBldGMuCj4gYWNjZXNzIHRoZSBvcHMgZmllbGQgaW4g
+dGhlc2UgREFJcywgcGFuaWMgd2lsbCBoYXBwZW4uCj4KPiBTaWduZWQtb2ZmLWJ5OiBCYXJyeSBT
+b25nIDwyMWNuYmFvQGdtYWlsLmNvbT4KPiAtLS0KPiDCoHNvdW5kL3NvYy9zb2MtY29yZS5jIHwg
+wqAgMTEgKysrKysrKystLS0KPiDCoDEgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAz
+IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtY29yZS5jIGIvc291
+bmQvc29jL3NvYy1jb3JlLmMKPiBpbmRleCBmYTBkYTNjLi4yZDE5MGRmIDEwMDY0NAo+IC0tLSBh
+L3NvdW5kL3NvYy9zb2MtY29yZS5jCj4gKysrIGIvc291bmQvc29jL3NvYy1jb3JlLmMKPiBAQCAt
+Nzk1LDYgKzc5NSw5IEBAIHN0YXRpYyBpbnQgc29jX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYp
+Cj4gwqAjZGVmaW5lIHNvY19yZXN1bWUgwqAgwqAgTlVMTAo+IMKgI2VuZGlmCj4KPiArc3RhdGlj
+IHN0cnVjdCBzbmRfc29jX2RhaV9vcHMgbnVsbF9kYWlfb3BzID0gewo+ICt9Owo+ICsKPiDCoHN0
+YXRpYyB2b2lkIHNuZF9zb2NfaW5zdGFudGlhdGVfY2FyZChzdHJ1Y3Qgc25kX3NvY19jYXJkICpj
+YXJkKQo+IMKgewo+IMKgIMKgIMKgIMKgc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiA9IGNv
+bnRhaW5lcl9vZihjYXJkLT5kZXYsCj4gQEAgLTgzOCw2ICs4NDEsMTEgQEAgc3RhdGljIHZvaWQg
+c25kX3NvY19pbnN0YW50aWF0ZV9jYXJkKHN0cnVjdCBzbmRfc29jX2NhcmQgKmNhcmQpCj4gwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBhYzk3ID0gMTsKPiDCoCDCoCDCoCDCoH0K
+Pgo+ICsgwqAgwqAgwqAgZm9yIChpID0gMDsgaSA8IGNhcmQtPm51bV9saW5rczsgaSsrKSB7Cj4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoIWNhcmQtPmRhaV9saW5rW2ldLmNvZGVjX2RhaS0+
+b3BzKQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FyZC0+ZGFpX2xpbmtb
+aV0uY29kZWNfZGFpLT5vcHMgPSAmbnVsbF9kYWlfb3BzOwo+ICsgwqAgwqAgwqAgfQo+ICsKPiDC
+oCDCoCDCoCDCoC8qIElmIHdlIGhhdmUgQUM5NyBpbiB0aGUgc3lzdGVtIHRoZW4gZG9uJ3Qgd2Fp
+dCBmb3IgdGhlCj4gwqAgwqAgwqAgwqAgKiBjb2RlYy4gwqBUaGlzIHdpbGwgbmVlZCByZXZpc2l0
+aW5nIGlmIHdlIGhhdmUgdG8gaGFuZGxlCj4gwqAgwqAgwqAgwqAgKiBzeXN0ZW1zIHdpdGggbWl4
+ZWQgQUM5NyBhbmQgbm9uLUFDOTcgcGFydHMuIMKgT25seSBjaGVjayBmb3IKPiBAQCAtMjMzMiw5
+ICsyMzQwLDYgQEAgc3RhdGljIGludCBzbmRfc29jX3VucmVnaXN0ZXJfY2FyZChzdHJ1Y3Qgc25k
+X3NvY19jYXJkICpjYXJkKQo+IMKgIMKgIMKgIMKgcmV0dXJuIDA7Cj4gwqB9Cj4KPiAtc3RhdGlj
+IHN0cnVjdCBzbmRfc29jX2RhaV9vcHMgbnVsbF9kYWlfb3BzID0gewo+IC19Owo+IC0KPiDCoC8q
+Kgo+IMKgKiBzbmRfc29jX3JlZ2lzdGVyX2RhaSAtIFJlZ2lzdGVyIGEgREFJIHdpdGggdGhlIEFT
+b0MgY29yZQo+IMKgKgo+IC0tCj4gMS41LjYuMwo+Cj4KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
