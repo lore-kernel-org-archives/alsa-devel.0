@@ -1,19 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: How can i contribute a new AsoC codec driver
-	for	the CS42L51 ?
-Date: Fri, 16 Oct 2009 10:28:24 +0100
-Message-ID: <20091016092823.GJ884@sirena.org.uk>
-References: <20091016033042.B0870243DC@alsa0.perex.cz>
+Subject: Re: [PATCH] Fix codec_dai->ops NULL pointer bug
+	for	AC97 codec dai in soc-core
+Date: Fri, 16 Oct 2009 10:32:44 +0100
+Message-ID: <20091016093244.GK884@sirena.org.uk>
+References: <1255658960-20693-1-git-send-email-21cnbao@gmail.com>
+	<20091016090840.GI884@sirena.org.uk>
+	<3c17e3570910160214q18e99bd0y932b800a0c4f9fca@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4331A2452A
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C7042452E
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Oct 2009 11:28:25 +0200 (CEST)
+	Fri, 16 Oct 2009 11:32:45 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20091016033042.B0870243DC@alsa0.perex.cz>
+In-Reply-To: <3c17e3570910160214q18e99bd0y932b800a0c4f9fca@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eduardo Tagle <ejtagle@tutopia.com>
-Cc: alsa-devel@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 16, 2009 at 03:30:38AM +0000, Eduardo Tagle wrote:
+On Fri, Oct 16, 2009 at 05:14:31PM +0800, Barry Song wrote:
+> On Fri, Oct 16, 2009 at 5:08 PM, Mark Brown
 
-> Just forgive me... I am new to this world of mailing-lists, so let me explain...
-> I have written an ASoC codec driver for the Cirrus Logic CS42L51 audio Codec. It 
-> was just based on the publicly available datasheet from Cirrus Website. I really 
-> would like to know how to submit it to be included in the official ASoC source tree.
->  I have tested it as much as possible, and seems to work reliably.
+> > This is the wrong fix - null DAI ops are supposed to be supported for
+> > all devices since not all DAIs will be configurable.
 
-> What are the steps required to follow to submit this new ASoC driver ?
+> But the problem is ac97 DAIs will have no path to get the null ops.
+> Then many functions will panic. It's very easy to repeat the problem
+> in your site, only by deleting ops field in any AC97 codec DAI.
 
-Just post the driver to this mailing list with a CC to me and I'll
-review it and apply if it's OK.  There's some documantation about the
-format to use when submitting the driver in the kernel source under
-Documentation/SubmittingPatches.
+Sure, I see the problem.  The issue is that this could affect any CODEC,
+not just AC97 ones, so an AC97-specific fix isn't what's needed.  Given
+the idiom of the rest of the code the best thing would be to make all
+the remaining callers check for ops before dereferencing it.
