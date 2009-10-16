@@ -1,23 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Fix codec_dai->ops NULL pointer bug
-	for	AC97 codec dai in soc-core
-Date: Fri, 16 Oct 2009 10:48:43 +0100
-Message-ID: <20091016094843.GL884@sirena.org.uk>
-References: <1255658960-20693-1-git-send-email-21cnbao@gmail.com>
-	<20091016090840.GI884@sirena.org.uk>
-	<3c17e3570910160214q18e99bd0y932b800a0c4f9fca@mail.gmail.com>
-	<20091016093244.GK884@sirena.org.uk>
-	<3c17e3570910160235n28f396b1m665e9e4540a75123@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH v2] Fix possible codec_dai->ops NULL pointer
+	problems
+Date: Fri, 16 Oct 2009 18:13:38 +0800
+Message-ID: <1255688018-1301-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB5182453F
+Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7755224572
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Oct 2009 11:48:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570910160235n28f396b1m665e9e4540a75123@mail.gmail.com>
+	Fri, 16 Oct 2009 12:13:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,17 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, Barry Song <barry.song@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 16, 2009 at 05:35:12PM +0800, Barry Song wrote:
+From: Barry Song <barry.song@gmail.com>
 
-> At the beginning, I wanted to do like this. But I saw all other codec
-> DAIs register themselves, then got a null ops. Just ac97 is forgot.
-> Then I patched AC97 codec DAIs.
-> Then you prefer to patch all ops access?
+Some codec DAIs like stac9766, wm9712, wm9713, ad1980 don't register themselves
+then it loses to the chance to be given a null_dai_ops in snd_soc_register_dai
+if they have no ops. When functions like soc_pcm_open, soc_pcm_hw_params etc.
+access the ops field in these DAIs, panic will happen.
 
-Hrm, so they do.  In that case could you revise your patch to not check
-for AC97 but just check for null DAI ops instead since this isn't an
-AC97 specific issue?
+Signed-off-by: Barry Song <21cnbao@gmail.com>
+---
+ sound/soc/soc-core.c |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index fa0da3c..2d190df 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -795,6 +795,9 @@ static int soc_resume(struct device *dev)
+ #define soc_resume	NULL
+ #endif
+ 
++static struct snd_soc_dai_ops null_dai_ops = {
++};
++
+ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ {
+ 	struct platform_device *pdev = container_of(card->dev,
+@@ -838,6 +841,11 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 			ac97 = 1;
+ 	}
+ 
++	for (i = 0; i < card->num_links; i++) {
++		if (!card->dai_link[i].codec_dai->ops)
++			card->dai_link[i].codec_dai->ops = &null_dai_ops;
++	}
++
+ 	/* If we have AC97 in the system then don't wait for the
+ 	 * codec.  This will need revisiting if we have to handle
+ 	 * systems with mixed AC97 and non-AC97 parts.  Only check for
+@@ -2332,9 +2340,6 @@ static int snd_soc_unregister_card(struct snd_soc_card *card)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_dai_ops null_dai_ops = {
+-};
+-
+ /**
+  * snd_soc_register_dai - Register a DAI with the ASoC core
+  *
+-- 
+1.5.6.3
