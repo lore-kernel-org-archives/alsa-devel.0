@@ -1,21 +1,27 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH v2] Fix possible codec_dai->ops NULL
-	pointer problems
-Date: Fri, 16 Oct 2009 18:35:27 +0800
-Message-ID: <3c17e3570910160335k6733b782p842b349ddd1411e4@mail.gmail.com>
-References: <1255688018-1301-1-git-send-email-21cnbao@gmail.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 5/8] board-rx51-peripherals: split
+	vaux3	and vmmc2 supplies
+Date: Fri, 16 Oct 2009 09:14:41 -0700
+Message-ID: <20091016161441.GG12576@atomide.com>
+References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
+	<1255003137-1034-6-git-send-email-eduardo.valentin@nokia.com>
+	<20091008132109.GD29176@rakim.wolfsonmicro.main>
+	<20091009064529.GD6616@esdhcp037198.research.nokia.com>
+	<20091009110346.GC5082@sirena.org.uk>
+	<20091012080858.GB13234@esdhcp037198.research.nokia.com>
+	<20091012091820.GC3308@rakim.wolfsonmicro.main>
+	<20091014171548.GI12700@atomide.com>
+	<20091015090124.GA29371@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f194.google.com (mail-px0-f194.google.com
-	[209.85.216.194])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5A83E103833
+Received: from mho-01-ewr.mailhop.org (mho-01-ewr.mailhop.org [204.13.248.71])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0475E245FF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Oct 2009 12:35:48 +0200 (CEST)
-Received: by pxi32 with SMTP id 32so1456556pxi.16
-	for <alsa-devel@alsa-project.org>; Fri, 16 Oct 2009 03:35:47 -0700 (PDT)
-In-Reply-To: <1255688018-1301-1-git-send-email-21cnbao@gmail.com>
+	Fri, 16 Oct 2009 18:14:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20091015090124.GA29371@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +31,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, Barry Song <barry.song@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Eduardo Valentin <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBPY3QgMTYsIDIwMDkgYXQgNjoxMyBQTSwgQmFycnkgU29uZyA8MjFjbmJhb0BnbWFp
-bC5jb20+IHdyb3RlOgo+IEZyb206IEJhcnJ5IFNvbmcgPGJhcnJ5LnNvbmdAZ21haWwuY29tPgpT
-b3JyeSBmb3IgdGhlIG1pcy1vcGVyYXRpb24gd2hpbGUgZ2l0IGNvbW1pdCwgdGhpcyBtYWlsYm94
-IGlzIG5vdCBtaW5lLgo+Cj4gU29tZSBjb2RlYyBEQUlzIGxpa2Ugc3RhYzk3NjYsIHdtOTcxMiwg
-d205NzEzLCBhZDE5ODAgZG9uJ3QgcmVnaXN0ZXIgdGhlbXNlbHZlcwo+IHRoZW4gaXQgbG9zZXMg
-dG8gdGhlIGNoYW5jZSB0byBiZSBnaXZlbiBhIG51bGxfZGFpX29wcyBpbiBzbmRfc29jX3JlZ2lz
-dGVyX2RhaQo+IGlmIHRoZXkgaGF2ZSBubyBvcHMuIFdoZW4gZnVuY3Rpb25zIGxpa2Ugc29jX3Bj
-bV9vcGVuLCBzb2NfcGNtX2h3X3BhcmFtcyBldGMuCj4gYWNjZXNzIHRoZSBvcHMgZmllbGQgaW4g
-dGhlc2UgREFJcywgcGFuaWMgd2lsbCBoYXBwZW4uCj4KPiBTaWduZWQtb2ZmLWJ5OiBCYXJyeSBT
-b25nIDwyMWNuYmFvQGdtYWlsLmNvbT4KPiAtLS0KPiDCoHNvdW5kL3NvYy9zb2MtY29yZS5jIHwg
-wqAgMTEgKysrKysrKystLS0KPiDCoDEgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAz
-IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtY29yZS5jIGIvc291
-bmQvc29jL3NvYy1jb3JlLmMKPiBpbmRleCBmYTBkYTNjLi4yZDE5MGRmIDEwMDY0NAo+IC0tLSBh
-L3NvdW5kL3NvYy9zb2MtY29yZS5jCj4gKysrIGIvc291bmQvc29jL3NvYy1jb3JlLmMKPiBAQCAt
-Nzk1LDYgKzc5NSw5IEBAIHN0YXRpYyBpbnQgc29jX3Jlc3VtZShzdHJ1Y3QgZGV2aWNlICpkZXYp
-Cj4gwqAjZGVmaW5lIHNvY19yZXN1bWUgwqAgwqAgTlVMTAo+IMKgI2VuZGlmCj4KPiArc3RhdGlj
-IHN0cnVjdCBzbmRfc29jX2RhaV9vcHMgbnVsbF9kYWlfb3BzID0gewo+ICt9Owo+ICsKPiDCoHN0
-YXRpYyB2b2lkIHNuZF9zb2NfaW5zdGFudGlhdGVfY2FyZChzdHJ1Y3Qgc25kX3NvY19jYXJkICpj
-YXJkKQo+IMKgewo+IMKgIMKgIMKgIMKgc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldiA9IGNv
-bnRhaW5lcl9vZihjYXJkLT5kZXYsCj4gQEAgLTgzOCw2ICs4NDEsMTEgQEAgc3RhdGljIHZvaWQg
-c25kX3NvY19pbnN0YW50aWF0ZV9jYXJkKHN0cnVjdCBzbmRfc29jX2NhcmQgKmNhcmQpCj4gwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBhYzk3ID0gMTsKPiDCoCDCoCDCoCDCoH0K
-Pgo+ICsgwqAgwqAgwqAgZm9yIChpID0gMDsgaSA8IGNhcmQtPm51bV9saW5rczsgaSsrKSB7Cj4g
-KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoIWNhcmQtPmRhaV9saW5rW2ldLmNvZGVjX2RhaS0+
-b3BzKQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FyZC0+ZGFpX2xpbmtb
-aV0uY29kZWNfZGFpLT5vcHMgPSAmbnVsbF9kYWlfb3BzOwo+ICsgwqAgwqAgwqAgfQo+ICsKPiDC
-oCDCoCDCoCDCoC8qIElmIHdlIGhhdmUgQUM5NyBpbiB0aGUgc3lzdGVtIHRoZW4gZG9uJ3Qgd2Fp
-dCBmb3IgdGhlCj4gwqAgwqAgwqAgwqAgKiBjb2RlYy4gwqBUaGlzIHdpbGwgbmVlZCByZXZpc2l0
-aW5nIGlmIHdlIGhhdmUgdG8gaGFuZGxlCj4gwqAgwqAgwqAgwqAgKiBzeXN0ZW1zIHdpdGggbWl4
-ZWQgQUM5NyBhbmQgbm9uLUFDOTcgcGFydHMuIMKgT25seSBjaGVjayBmb3IKPiBAQCAtMjMzMiw5
-ICsyMzQwLDYgQEAgc3RhdGljIGludCBzbmRfc29jX3VucmVnaXN0ZXJfY2FyZChzdHJ1Y3Qgc25k
-X3NvY19jYXJkICpjYXJkKQo+IMKgIMKgIMKgIMKgcmV0dXJuIDA7Cj4gwqB9Cj4KPiAtc3RhdGlj
-IHN0cnVjdCBzbmRfc29jX2RhaV9vcHMgbnVsbF9kYWlfb3BzID0gewo+IC19Owo+IC0KPiDCoC8q
-Kgo+IMKgKiBzbmRfc29jX3JlZ2lzdGVyX2RhaSAtIFJlZ2lzdGVyIGEgREFJIHdpdGggdGhlIEFT
-b0MgY29yZQo+IMKgKgo+IC0tCj4gMS41LjYuMwo+Cj4KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+* Mark Brown <broonie@opensource.wolfsonmicro.com> [091015 02:01]:
+> On Wed, Oct 14, 2009 at 10:15:48AM -0700, Tony Lindgren wrote:
+> > * Mark Brown <broonie@opensource.wolfsonmicro.com> [091012 02:18]:
+> > > On Mon, Oct 12, 2009 at 11:08:58AM +0300, Eduardo Valentin wrote:
+> 
+> > > > I'm afraid using dev_name is not that easy. The mmc driver generates device
+> > > > name at runtime. That's why this board file setups .dev at runtime as well.
+> 
+> ...
+> 
+> > > > So, changing this supply to something static using .dev_name it is not
+> > > > possible with current code. That would need refactoring the whole mmc and
+> > > > hsmmc setup. And the device naming procedure is dependent on cpu as well.
+> > > > Check arch/arm/mach-omap2/device.c:omap2_init_mmc.
+> 
+> > > same answer each time it's run?  How does this work with the clock API?
+> 
+> > The clocks are matched using clkdev. Basically the driver just requests
+> > functional clock (fck) and interface clock (ick):
+> 
+> > $ grep mmci arch/arm/*omap*/clock*.c
+> > arch/arm/mach-omap1/clock.c:	CLK("mmci-omap.0", "fck",	&mmc1_ck,	CK_16XX | CK_1510 | CK_310),
+> > arch/arm/mach-omap1/clock.c:	CLK("mmci-omap.0", "ick",	&armper_ck.clk,	CK_16XX | CK_1510 | CK_310),
+> 
+> So this is using the standard dev_name based clkdev matching which
+> Eduardo said was impossible for the regulators.  Is it just that this
+> will actually work fine for the regulators or is there some other magic
+> in the OMAP code that joins things up?
+
+Well the mmc regulators are just passed from board-*.c files to
+mmc-twl4030.c which does all the low-level init needed. No other
+special magic going on.
+
+Eduardro, care to check the dev_name issue one more time?
+
+Regards,
+
+Tony
