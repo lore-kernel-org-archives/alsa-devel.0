@@ -1,23 +1,14 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 1/4] snd-usb-caiaq: Do not disable local
-	interrupts
-Date: Sat, 17 Oct 2009 18:12:14 +0200
-Message-ID: <20091017161214.GX28832@buzzloop.caiaq.de>
-References: <alpine.BSO.2.01.0909220805420.25926@zrgural.vwaro.pbz>
-	<1253892138-10827-1-git-send-email-mark@pogo.org.uk>
-	<20090925160024.GT21654@buzzloop.caiaq.de>
-	<alpine.BSO.2.01.0909261630400.8841@zrgural.vwaro.pbz>
-	<s5hiqf34gf4.wl%tiwai@suse.de>
+From: Stas Sergeev <stsp@aknet.ru>
+Subject: [patch] snd-pcsp: fix nforce_wa
+Date: Sat, 17 Oct 2009 20:27:35 +0400
+Message-ID: <4AD9F077.5050200@aknet.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------030601090000050103060905"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51A0E1037EE
+Received: from imp02.mtu.ru (imp02.mtu.ru [62.5.255.19])
+	by alsa0.perex.cz (Postfix) with ESMTP id 78C851037EE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Oct 2009 18:12:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hiqf34gf4.wl%tiwai@suse.de>
+	Sat, 17 Oct 2009 18:22:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,39 +19,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Hills <mark@pogo.org.uk>
+Cc: ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 28, 2009 at 10:33:35AM +0200, Takashi Iwai wrote:
-> At Sat, 26 Sep 2009 17:06:23 +0100 (BST),
-> Mark Hills wrote:
-> > 
-> > On Fri, 25 Sep 2009, Daniel Mack wrote:
-> > 
-> > > On Fri, Sep 25, 2009 at 04:22:15PM +0100, Mark Hills wrote:
-> > >> The driver documentation states that local interrupts are already
-> > >> disabled when trigger() is called, so only a spinlock is required.
-> > >
-> > > Hmm. I assume you tested them well. But I remember to have had quite 
-> > > some trouble at this point on SMP machines and ended up with that 
-> > > irqsave code. However, if you're sure that fixes a bug or is not 
-> > > necessary, let's take the patches and I'll test them once I'm back home 
-> > > around mid Oct.
-> > 
-> > I did check both non and SMP machines, and it corresponds to the docs. I 
-> > also removed the patches to verify I could reproduce the original 
-> > problems.
-> 
-> The irqsave is needed for deactivate_substream() because it's called
-> also in your hw_free callback, which is non-atomic.
-> In the real case, it's hard to hit this codepath, though.
+This is a multi-part message in MIME format.
+--------------030601090000050103060905
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Well, the nature of race conditions is that they are hard to hit, right? ;)
+Hi.
 
-However, I tested the patches now, and couldn't reproduce anything like
-the things I remember I had.
+In this commit:
+http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=eea0579fc85e64e9f05361d5aacf496fe7a151aa
+the nforce workaround (nforce_wa
+option) was broken, because the
+introduced "pointer_update" variable
+was forgotten to use.
+Also, the "ns" became u64 in some
+places and "long" in others, which
+is not the same, AFAIK. I revert that
+to u64-everywhere.
+Also, the log says:
+---
+With the callback mode HRTIMER_CB_IRQSAFE_UNLOCK, the start of the
+stream with zero delay doesn't work.
+---
+but the attached patch, that reverts
+to the "zero-delay start", works for
+me... So, while I like the cleanups
+made, I wonder what was the reason
+behind that changes? How can I reproduce
+the breakage of the zero-delay start?
+Oh, and it would be nice to CC me the
+changes in that driver, if possible. :)
 
-So from my side, they can go in then. Sorry for the long delay on this.
+--------------030601090000050103060905
+Content-Type: text/plain;
+ name="pcsp_nfwa.diff"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="pcsp_nfwa.diff"
 
-Thanks,
-Daniel
+ZGlmZiAtLWdpdCBhL3NvdW5kL2RyaXZlcnMvcGNzcC9wY3NwX2xpYi5jIGIvc291bmQvZHJp
+dmVycy9wY3NwL3Bjc3BfbGliLmMKaW5kZXggODRjYzI2NS4uYzJkMDY5OSAxMDA2NDQKLS0t
+IGEvc291bmQvZHJpdmVycy9wY3NwL3Bjc3BfbGliLmMKKysrIGIvc291bmQvZHJpdmVycy9w
+Y3NwL3Bjc3BfbGliLmMKQEAgLTM5LDEzICszOSwxMiBAQCBzdGF0aWMgREVDTEFSRV9UQVNL
+TEVUKHBjc3BfcGNtX3Rhc2tsZXQsIHBjc3BfY2FsbF9wY21fZWxhcHNlZCwgMCk7CiAvKiB3
+cml0ZSB0aGUgcG9ydCBhbmQgcmV0dXJucyB0aGUgbmV4dCBleHBpcmUgdGltZSBpbiBuczsK
+ICAqIGNhbGxlZCBhdCB0aGUgdHJpZ2dlci1zdGFydCBhbmQgaW4gaHJ0aW1lciBjYWxsYmFj
+awogICovCi1zdGF0aWMgdW5zaWduZWQgbG9uZyBwY3NwX3RpbWVyX3VwZGF0ZShzdHJ1Y3Qg
+aHJ0aW1lciAqaGFuZGxlKQorc3RhdGljIHU2NCBwY3NwX3RpbWVyX3VwZGF0ZShzdHJ1Y3Qg
+c25kX3Bjc3AgKmNoaXApCiB7CiAJdW5zaWduZWQgY2hhciB0aW1lcl9jbnQsIHZhbDsKIAl1
+NjQgbnM7CiAJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW07CiAJc3RydWN0
+IHNuZF9wY21fcnVudGltZSAqcnVudGltZTsKLQlzdHJ1Y3Qgc25kX3Bjc3AgKmNoaXAgPSBj
+b250YWluZXJfb2YoaGFuZGxlLCBzdHJ1Y3Qgc25kX3Bjc3AsIHRpbWVyKTsKIAl1bnNpZ25l
+ZCBsb25nIGZsYWdzOwogCiAJaWYgKGNoaXAtPnRoYWxmKSB7CkBAIC04OCwyNCArODcsMTcg
+QEAgc3RhdGljIHVuc2lnbmVkIGxvbmcgcGNzcF90aW1lcl91cGRhdGUoc3RydWN0IGhydGlt
+ZXIgKmhhbmRsZSkKIAlyZXR1cm4gbnM7CiB9CiAKLWVudW0gaHJ0aW1lcl9yZXN0YXJ0IHBj
+c3BfZG9fdGltZXIoc3RydWN0IGhydGltZXIgKmhhbmRsZSkKK3N0YXRpYyB2b2lkIHBjc3Bf
+cG9pbnRlcl91cGRhdGUoc3RydWN0IHNuZF9wY3NwICpjaGlwKQogewotCXN0cnVjdCBzbmRf
+cGNzcCAqY2hpcCA9IGNvbnRhaW5lcl9vZihoYW5kbGUsIHN0cnVjdCBzbmRfcGNzcCwgdGlt
+ZXIpOwogCXN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtOwotCWludCBwZXJp
+b2RzX2VsYXBzZWQsIHBvaW50ZXJfdXBkYXRlOwogCXNpemVfdCBwZXJpb2RfYnl0ZXMsIGJ1
+ZmZlcl9ieXRlczsKLQl1bnNpZ25lZCBsb25nIG5zOworCWludCBwZXJpb2RzX2VsYXBzZWQ7
+CiAJdW5zaWduZWQgbG9uZyBmbGFnczsKIAotCXBvaW50ZXJfdXBkYXRlID0gIWNoaXAtPnRo
+YWxmOwotCW5zID0gcGNzcF90aW1lcl91cGRhdGUoaGFuZGxlKTsKLQlpZiAoIW5zKQotCQly
+ZXR1cm4gSFJUSU1FUl9OT1JFU1RBUlQ7Ci0KIAkvKiB1cGRhdGUgdGhlIHBsYXliYWNrIHBv
+c2l0aW9uICovCiAJc3Vic3RyZWFtID0gY2hpcC0+cGxheWJhY2tfc3Vic3RyZWFtOwogCWlm
+ICghc3Vic3RyZWFtKQotCQlyZXR1cm4gSFJUSU1FUl9OT1JFU1RBUlQ7CisJCXJldHVybjsK
+IAogCXBlcmlvZF9ieXRlcyA9IHNuZF9wY21fbGliX3BlcmlvZF9ieXRlcyhzdWJzdHJlYW0p
+OwogCWJ1ZmZlcl9ieXRlcyA9IHNuZF9wY21fbGliX2J1ZmZlcl9ieXRlcyhzdWJzdHJlYW0p
+OwpAQCAtMTM0LDYgKzEyNiwyMyBAQCBlbnVtIGhydGltZXJfcmVzdGFydCBwY3NwX2RvX3Rp
+bWVyKHN0cnVjdCBocnRpbWVyICpoYW5kbGUpCiAKIAlpZiAocGVyaW9kc19lbGFwc2VkKQog
+CQl0YXNrbGV0X3NjaGVkdWxlKCZwY3NwX3BjbV90YXNrbGV0KTsKK30KKworZW51bSBocnRp
+bWVyX3Jlc3RhcnQgcGNzcF9kb190aW1lcihzdHJ1Y3QgaHJ0aW1lciAqaGFuZGxlKQorewor
+CXN0cnVjdCBzbmRfcGNzcCAqY2hpcCA9IGNvbnRhaW5lcl9vZihoYW5kbGUsIHN0cnVjdCBz
+bmRfcGNzcCwgdGltZXIpOworCWludCBwb2ludGVyX3VwZGF0ZTsKKwl1NjQgbnM7CisKKwlw
+b2ludGVyX3VwZGF0ZSA9ICFjaGlwLT50aGFsZjsKKwlucyA9IHBjc3BfdGltZXJfdXBkYXRl
+KGNoaXApOworCWlmICghbnMpIHsKKwkJcHJpbnRrKEtFUk5fV0FSTklORyAiUENTUDogdW5l
+eHBlY3RlZCBzdG9wXG4iKTsKKwkJcmV0dXJuIEhSVElNRVJfTk9SRVNUQVJUOworCX0KKwor
+CWlmIChwb2ludGVyX3VwZGF0ZSkKKwkgICAgcGNzcF9wb2ludGVyX3VwZGF0ZShjaGlwKTsK
+IAogCWhydGltZXJfZm9yd2FyZChoYW5kbGUsIGhydGltZXJfZ2V0X2V4cGlyZXMoaGFuZGxl
+KSwgbnNfdG9fa3RpbWUobnMpKTsKIApAQCAtMTQyLDggKzE1MSw2IEBAIGVudW0gaHJ0aW1l
+cl9yZXN0YXJ0IHBjc3BfZG9fdGltZXIoc3RydWN0IGhydGltZXIgKmhhbmRsZSkKIAogc3Rh
+dGljIGludCBwY3NwX3N0YXJ0X3BsYXlpbmcoc3RydWN0IHNuZF9wY3NwICpjaGlwKQogewot
+CXVuc2lnbmVkIGxvbmcgbnM7Ci0KICNpZiBQQ1NQX0RFQlVHCiAJcHJpbnRrKEtFUk5fSU5G
+TyAiUENTUDogc3RhcnRfcGxheWluZyBjYWxsZWRcbiIpOwogI2VuZGlmCkBAIC0xNTksMTEg
+KzE2Niw3IEBAIHN0YXRpYyBpbnQgcGNzcF9zdGFydF9wbGF5aW5nKHN0cnVjdCBzbmRfcGNz
+cCAqY2hpcCkKIAlhdG9taWNfc2V0KCZjaGlwLT50aW1lcl9hY3RpdmUsIDEpOwogCWNoaXAt
+PnRoYWxmID0gMDsKIAotCW5zID0gcGNzcF90aW1lcl91cGRhdGUoJnBjc3BfY2hpcC50aW1l
+cik7Ci0JaWYgKCFucykKLQkJcmV0dXJuIC1FSU87Ci0KLQlocnRpbWVyX3N0YXJ0KCZwY3Nw
+X2NoaXAudGltZXIsIGt0aW1lX3NldCgwLCBucyksIEhSVElNRVJfTU9ERV9SRUwpOworCWhy
+dGltZXJfc3RhcnQoJnBjc3BfY2hpcC50aW1lciwga3RpbWVfc2V0KDAsIDApLCBIUlRJTUVS
+X01PREVfUkVMKTsKIAlyZXR1cm4gMDsKIH0KIApAQCAtMjMyLDIxICsyMzUsMjIgQEAgc3Rh
+dGljIGludCBzbmRfcGNzcF9wbGF5YmFja19od19mcmVlKHN0cnVjdCBzbmRfcGNtX3N1YnN0
+cmVhbSAqc3Vic3RyZWFtKQogc3RhdGljIGludCBzbmRfcGNzcF9wbGF5YmFja19wcmVwYXJl
+KHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQogewogCXN0cnVjdCBzbmRf
+cGNzcCAqY2hpcCA9IHNuZF9wY21fc3Vic3RyZWFtX2NoaXAoc3Vic3RyZWFtKTsKKwlwY3Nw
+X3N5bmNfc3RvcChjaGlwKTsKKwljaGlwLT5wbGF5YmFja19wdHIgPSAwOworCWNoaXAtPnBl
+cmlvZF9wdHIgPSAwOworCWNoaXAtPmZtdF9zaXplID0KKwkJc25kX3BjbV9mb3JtYXRfcGh5
+c2ljYWxfd2lkdGgoc3Vic3RyZWFtLT5ydW50aW1lLT5mb3JtYXQpID4+IDM7CisJY2hpcC0+
+aXNfc2lnbmVkID0gc25kX3BjbV9mb3JtYXRfc2lnbmVkKHN1YnN0cmVhbS0+cnVudGltZS0+
+Zm9ybWF0KTsKICNpZiBQQ1NQX0RFQlVHCiAJcHJpbnRrKEtFUk5fSU5GTyAiUENTUDogcHJl
+cGFyZSBjYWxsZWQsICIKLQkJCSJzaXplPSV6aSBwc2l6ZT0lemkgZj0lemkgZjE9JWlcbiIs
+CisJCQkic2l6ZT0lemkgcHNpemU9JXppIGY9JXppIGYxPSVpIGZzaXplPSVpXG4iLAogCQkJ
+c25kX3BjbV9saWJfYnVmZmVyX2J5dGVzKHN1YnN0cmVhbSksCiAJCQlzbmRfcGNtX2xpYl9w
+ZXJpb2RfYnl0ZXMoc3Vic3RyZWFtKSwKIAkJCXNuZF9wY21fbGliX2J1ZmZlcl9ieXRlcyhz
+dWJzdHJlYW0pIC8KIAkJCXNuZF9wY21fbGliX3BlcmlvZF9ieXRlcyhzdWJzdHJlYW0pLAot
+CQkJc3Vic3RyZWFtLT5ydW50aW1lLT5wZXJpb2RzKTsKKwkJCXN1YnN0cmVhbS0+cnVudGlt
+ZS0+cGVyaW9kcywKKwkJCWNoaXAtPmZtdF9zaXplKTsKICNlbmRpZgotCXBjc3Bfc3luY19z
+dG9wKGNoaXApOwotCWNoaXAtPnBsYXliYWNrX3B0ciA9IDA7Ci0JY2hpcC0+cGVyaW9kX3B0
+ciA9IDA7Ci0JY2hpcC0+Zm10X3NpemUgPQotCQlzbmRfcGNtX2Zvcm1hdF9waHlzaWNhbF93
+aWR0aChzdWJzdHJlYW0tPnJ1bnRpbWUtPmZvcm1hdCkgPj4gMzsKLQljaGlwLT5pc19zaWdu
+ZWQgPSBzbmRfcGNtX2Zvcm1hdF9zaWduZWQoc3Vic3RyZWFtLT5ydW50aW1lLT5mb3JtYXQp
+OwogCXJldHVybiAwOwogfQogCmRpZmYgLS1naXQgYS9zb3VuZC9kcml2ZXJzL3Bjc3AvcGNz
+cF9taXhlci5jIGIvc291bmQvZHJpdmVycy9wY3NwL3Bjc3BfbWl4ZXIuYwppbmRleCAxOTli
+MDMzLi45MDNiYzg0IDEwMDY0NAotLS0gYS9zb3VuZC9kcml2ZXJzL3Bjc3AvcGNzcF9taXhl
+ci5jCisrKyBiL3NvdW5kL2RyaXZlcnMvcGNzcC9wY3NwX21peGVyLmMKQEAgLTcyLDcgKzcy
+LDcgQEAgc3RhdGljIGludCBwY3NwX3RyZWJsZV9wdXQoc3RydWN0IHNuZF9rY29udHJvbCAq
+a2NvbnRyb2wsCiAJaWYgKHRyZWJsZSAhPSBjaGlwLT50cmVibGUpIHsKIAkJY2hpcC0+dHJl
+YmxlID0gdHJlYmxlOwogI2lmIFBDU1BfREVCVUcKLQkJcHJpbnRrKEtFUk5fSU5GTyAiUENT
+UDogcmF0ZSBzZXQgdG8gJWlcbiIsIFBDU1BfUkFURSgpKTsKKwkJcHJpbnRrKEtFUk5fSU5G
+TyAiUENTUDogcmF0ZSBzZXQgdG8gJWxpXG4iLCBQQ1NQX1JBVEUoKSk7CiAjZW5kaWYKIAkJ
+Y2hhbmdlZCA9IDE7CiAJfQo=
+--------------030601090000050103060905
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------030601090000050103060905--
