@@ -1,28 +1,23 @@
-From: Aleksander Adamowski <alsa@olo.org.pl>
-Subject: Re: snd-hda-intel: no data when recording from mic,
-	"IRQ timing workaround is activated for card #0. Suggest a bigger
-	bdl_pos_adj" logged in kern.log
-Date: Sat, 17 Oct 2009 14:57:39 +0200
-Message-ID: <1c690d740910170557i30d238a0jc07763585f6d7970@mail.gmail.com>
-References: <1c690d740909221546i756e6724h45533c59f0a50179@mail.gmail.com>
-	<s5hy6o69p3a.wl%tiwai@suse.de>
-	<1c690d740909240023u6cc093d6hcf2d5766d7e1a58c@mail.gmail.com>
-	<s5hr5twvlw6.wl%tiwai@suse.de>
-	<1c690d740910041728m2560476bsb22aa410e45777e9@mail.gmail.com>
-	<s5hab069zoi.wl%tiwai@suse.de>
-	<1c690d740910140004l1383a08h6ae5c6fe86b0e731@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 1/4] snd-usb-caiaq: Do not disable local
+	interrupts
+Date: Sat, 17 Oct 2009 18:12:14 +0200
+Message-ID: <20091017161214.GX28832@buzzloop.caiaq.de>
+References: <alpine.BSO.2.01.0909220805420.25926@zrgural.vwaro.pbz>
+	<1253892138-10827-1-git-send-email-mark@pogo.org.uk>
+	<20090925160024.GT21654@buzzloop.caiaq.de>
+	<alpine.BSO.2.01.0909261630400.8841@zrgural.vwaro.pbz>
+	<s5hiqf34gf4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
-	[209.85.211.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61916243D1
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 51A0E1037EE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Oct 2009 14:58:00 +0200 (CEST)
-Received: by ywh28 with SMTP id 28so2457158ywh.16
-	for <alsa-devel@alsa-project.org>; Sat, 17 Oct 2009 05:57:59 -0700 (PDT)
-In-Reply-To: <1c690d740910140004l1383a08h6ae5c6fe86b0e731@mail.gmail.com>
+	Sat, 17 Oct 2009 18:12:18 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hiqf34gf4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,60 +28,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, Mark Hills <mark@pogo.org.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Q29uY2VybmluZyB0aGF0IHByb2JsZW0sIGFmdGVyIGEgcmVib290IHRoZSBwcm9ibGVtIGhhcyBy
-ZW9jY3VyZWQgdHdvCmRheXMgbGF0ZXI6CgpPY3QgMTcgMTQ6MTY6MDkgaG9zdG5hbWUga2VybmVs
-OiBbMTkyMDg3LjI0OTE2NV0gQUxTQQpoZGFfaW50ZWwuYzoxMTg3OiBUb28gYmlnIGFkanVzdG1l
-bnQgMzIKT2N0IDE3IDE0OjIyOjA4IGhvc3RuYW1lIGtlcm5lbDogWzE5MjQ0Ny4wNzIwMThdIEFM
-U0EKaGRhX2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1c3RtZW50IDMyCk9jdCAxNyAxNDoyMjoz
-OCBob3N0bmFtZSBrZXJuZWw6IFsxOTI0NzcuMDYyOTY3XSBBTFNBCmhkYV9pbnRlbC5jOjExODc6
-IFRvbyBiaWcgYWRqdXN0bWVudCAzMgpPY3QgMTcgMTQ6MjM6MDYgaG9zdG5hbWUga2VybmVsOiBb
-MTkyNTA0LjkxODQ0MF0gQUxTQQpoZGFfaW50ZWwuYzoxMTg3OiBUb28gYmlnIGFkanVzdG1lbnQg
-MzIKT2N0IDE3IDE0OjIzOjM3IGhvc3RuYW1lIGtlcm5lbDogWzE5MjUzNS41OTQxOTZdIEFMU0EK
-aGRhX2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1c3RtZW50IDMyCgpVcGxvYWRlZCBuZXcgYWxz
-YS1pbmZvLnNoIGRhdGEgZnJvbSB0aGUgbWFjaGluZToKaHR0cDovL3d3dy5hbHNhLXByb2plY3Qu
-b3JnL2RiLz9mPWU3ZTY5NjI1NGRmNmY2MWZhNWU0NzU1ZTlkMWQwNjQwM2RhY2YxNDQKClVwZ3Jh
-ZGluZyBmcm9tIGFsc2EtZHJpdmVyLTIwMDkxMDA1IHRvIGFsc2EtZHJpdmVyLTIwMDkxMDE3IGFu
-ZCB3aWxsCmxldCB5b3Uga25vdyBob3cgaXQgd29ya2VkLgoKT24gV2VkLCBPY3QgMTQsIDIwMDkg
-YXQgOTowNCBBTSwgQWxla3NhbmRlciBBZGFtb3dza2kgPGFsc2FAb2xvLm9yZy5wbD4gd3JvdGU6
-Cgo+IEFmdGVyIHJ1bm5pbmcgZm9yIGFsbW9zdCB0ZW4gZGF5cyB3aXRoIGFsc2EtZHJpdmVyLTIw
-MDkxMDA1LCBJIGRpZG4ndAo+IG9ic2VydmUgdGhhdCBwcm9ibGVtLgo+Cj4gSG93ZXZlciwgYSBu
-ZXcgb25lICh3ZWxsLCBvbmUgd2l0aCBzbGlnaHRseSBkaWZmZXJlbnQgc3ltcHRvbXMpIGhhcyBz
-dXJmYWNlZC4KPgo+IFRoZSBkaWZmZXJlbmNlIGlzIG9ubHkgaW4gdGhlIGxvZyBmaWxlcy4KPiBE
-dXJpbmcgYSBTa3lwZSBjb252ZXJzYXRpb24sIHRoZSBvdGhlciBzaWRlIGhhcyBzdG9wcGVkIGhl
-YXJpbmcgdXM7Cj4gYWZ0ZXIgdHJ5aW5nIHRvIHJlY29yZCBzb21lIHNvdW5kIHdpdGggYXJlY29y
-ZCwgSSBnb3QgYW4gZW1wdHkgc3RyZWFtCj4gKGEgNDQgYnl0ZSBXQVYgZmlsZSB3aXRoIG9ubHkg
-YSBoZWFkZXIpIC0ganVzdCBsaWtlIHByZXZpb3VzbHkuCj4KPiBIb3dldmVyLCB0aGlzIHRpbWUg
-dGhlcmUgd2VyZSBubyBtZXNzYWdlcyBpbiB0aGUga2VybmVsIGxvZ3MKPiB3aGF0c29ldmVyIC0g
-bm8gImF6eF9nZXRfcmVzcG9uc2UgdGltZW91dCIsIG5vICJTdWdnZXN0IGEgYmlnZ2VyCj4gYmRs
-X3Bvc19hZGoiLgo+IEFyZWNvcmQgYWxzbyBkaWRuJ3QgZmxvb2QgdGhlIGNvbnNvbGUgd2l0aCBv
-dmVycnVuIGVycm9ycyAtIGl0IHdhcwo+IGNvbXBsZXRlbHkgc2lsZW50IGFwYXJ0IGZyb20gdGhl
-IGZhY3QgdGhhdCBpdCBkaWQgbm90IHJlY29yZCBhbnl0aGluZy4KPgo+IFRoZSBvbmx5IGhkYS1y
-ZWxhdGVkIGVudHJpZXMgSSBzYXcgaW4gdGhlIGtlcm5lbCBsb2cgd2VyZSBhIGNvdXBsZQo+IGhv
-dXJzIGVhcmxpZXIgYXQgMjA6NDQgLSB3aGlsZSB0aGUgZmFpbHVyZSBoYXMgb2NjdXJlZCBiZXR3
-ZWVuIDIzOjAwCj4gYW5kIDAwOjAwLgo+Cj4gQXQgMjA6NDQgdGhlIGZvbGxvd2luZyBoYXMgYmVl
-biBsb2dnZWQ6Cj4KPiBPY3QgMTMgMjA6NDQ6MjUgaG9zdG5hbWUga2VybmVsOiBbMTE3ODI4LjA2
-NTA2OV0gQUxTQQo+IGhkYV9pbnRlbC5jOjExODc6IFRvbyBiaWcgYWRqdXN0bWVudCAzMgo+IE9j
-dCAxMyAyMDo0NDoyNSBob3N0bmFtZSBrZXJuZWw6IFsxMTc4MjguMDczNTYyXSBBTFNBCj4gaGRh
-X2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1c3RtZW50IDMyCj4gT2N0IDEzIDIwOjQ0OjI1IGhv
-c3RuYW1lIGtlcm5lbDogWzExNzgyOC4wODMzNjddIEFMU0EKPiBoZGFfaW50ZWwuYzoxMTg3OiBU
-b28gYmlnIGFkanVzdG1lbnQgMzIKPiBPY3QgMTMgMjA6NDQ6MjUgaG9zdG5hbWUga2VybmVsOiBb
-MTE3ODI4LjU3ODk1OF0gQUxTQQo+IGhkYV9pbnRlbC5jOjExODc6IFRvbyBiaWcgYWRqdXN0bWVu
-dCAzMgo+IE9jdCAxMyAyMDo0NDoyNSBob3N0bmFtZSBrZXJuZWw6IFsxMTc4MjguNTg0ODcyXSBB
-TFNBCj4gaGRhX2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1c3RtZW50IDMyCj4gT2N0IDEzIDIw
-OjQ0OjI1IGhvc3RuYW1lIGtlcm5lbDogWzExNzgyOC41OTI5MDldIEFMU0EKPiBoZGFfaW50ZWwu
-YzoxMTg3OiBUb28gYmlnIGFkanVzdG1lbnQgMzIKPiBPY3QgMTMgMjA6NDQ6MjUgaG9zdG5hbWUg
-a2VybmVsOiBbMTE3ODI4LjY1MTUxM10gQUxTQQo+IGhkYV9pbnRlbC5jOjExODc6IFRvbyBiaWcg
-YWRqdXN0bWVudCAzMgo+IE9jdCAxMyAyMDo0NDoyNSBob3N0bmFtZSBrZXJuZWw6IFsxMTc4Mjgu
-NjU3MDA5XSBBTFNBCj4gaGRhX2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1c3RtZW50IDMyCj4g
-T2N0IDEzIDIwOjQ0OjI1IGhvc3RuYW1lIGtlcm5lbDogWzExNzgyOC42NjU3OTRdIEFMU0EKPiBo
-ZGFfaW50ZWwuYzoxMTg3OiBUb28gYmlnIGFkanVzdG1lbnQgMzIKPgo+IFRoZSBtYWNoaW5lIGlz
-IGN1cnJlbnRseSBzdGlsbCBpbiB0aGUgZmFpbGVkIHN0YXRlIC0gSSBjYW5ub3QgcmVjb3JkCj4g
-YW55dGhpbmcgdW50aWwgSSByZWJvb3QuCj4KPgo+IC0tCj4gQmVzdCBSZWdhcmRzLAo+IMKgQWxl
-a3NhbmRlciBBZGFtb3dza2kKPiDCoGh0dHA6Ly9vbG8ub3JnLnBsCj4KCgoKLS0gCkJlc3QgUmVn
-YXJkcywKICBBbGVrc2FuZGVyIEFkYW1vd3NraQogIGh0dHA6Ly9vbG8ub3JnLnBsCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Sep 28, 2009 at 10:33:35AM +0200, Takashi Iwai wrote:
+> At Sat, 26 Sep 2009 17:06:23 +0100 (BST),
+> Mark Hills wrote:
+> > 
+> > On Fri, 25 Sep 2009, Daniel Mack wrote:
+> > 
+> > > On Fri, Sep 25, 2009 at 04:22:15PM +0100, Mark Hills wrote:
+> > >> The driver documentation states that local interrupts are already
+> > >> disabled when trigger() is called, so only a spinlock is required.
+> > >
+> > > Hmm. I assume you tested them well. But I remember to have had quite 
+> > > some trouble at this point on SMP machines and ended up with that 
+> > > irqsave code. However, if you're sure that fixes a bug or is not 
+> > > necessary, let's take the patches and I'll test them once I'm back home 
+> > > around mid Oct.
+> > 
+> > I did check both non and SMP machines, and it corresponds to the docs. I 
+> > also removed the patches to verify I could reproduce the original 
+> > problems.
+> 
+> The irqsave is needed for deactivate_substream() because it's called
+> also in your hw_free callback, which is non-atomic.
+> In the real case, it's hard to hit this codepath, though.
+
+Well, the nature of race conditions is that they are hard to hit, right? ;)
+
+However, I tested the patches now, and couldn't reproduce anything like
+the things I remember I had.
+
+So from my side, they can go in then. Sorry for the long delay on this.
+
+Thanks,
+Daniel
