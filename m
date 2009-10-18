@@ -1,20 +1,22 @@
-From: Robert Hancock <hancockrwd@gmail.com>
+From: "=?utf-8?q?R=C3=A9mi?= Denis-Courmont" <rem@videolan.org>
 Subject: Re: How to close ALSA device nodes?
-Date: Sun, 18 Oct 2009 11:13:15 -0600
-Message-ID: <51f3faa70910181013r3a0e4f44n8673d9bad3ba2d43@mail.gmail.com>
-References: <200910181906.25790.rem@videolan.org>
+Date: Sun, 18 Oct 2009 20:38:34 +0300
+Message-ID: <200910182038.34252.rem@videolan.org>
+Reply-To: remi@remlab.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f199.google.com (mail-iw0-f199.google.com
-	[209.85.223.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E94D245D0
+Received: from yop.chewa.net (yop.chewa.net [91.121.105.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id C3C05245D9
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Oct 2009 19:13:16 +0200 (CEST)
-Received: by iwn37 with SMTP id 37so1808739iwn.16
-	for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2009 10:13:15 -0700 (PDT)
-In-Reply-To: <200910181906.25790.rem@videolan.org>
+	Sun, 18 Oct 2009 19:38:35 +0200 (CEST)
+Received: from basile.remlab.net (cs27062183.pp.htv.fi [89.27.62.183])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: remi)
+	by yop.chewa.net (Postfix) with ESMTPSA id 710B7694
+	for <alsa-devel@alsa-project.org>;
+	Sun, 18 Oct 2009 19:38:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +26,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: remi@remlab.net
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2009/10/18 R=E9mi Denis-Courmont <rem@videolan.org>:
-> =A0 =A0 =A0 =A0Hello,
->
-> I'm getting a bug report against VLC media player whereby ALSA sound outp=
-ut
-> stops working when the screensaver is inhibited. It turns out that VLC is
-> leaking any file descriptor open through ALSA-lib into child processes. T=
-he
-> exact same issue was already raised by mplayer... 6 years ago:
-> http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06249.html
->
-> In other cases (V4L, OSS, DVB, DVD, sockets, even regular files...), VLC =
-would
-> open the device nodes with O_CLOEXEC flag (if supported by kernel and lib=
-c)
-> and fallback to setting FD_CLOEXEC via fcntl(). Then the descriptor is
-> automatically, and in the earlier case, thread-safely, closed whenever VL=
-C -
-> forks and- execs. With ALSA-lib, I cannot figure any way to achieve that.=
-..
->
-> From the earlier thread, I reckon that ALSA developers consider that this=
- is
-> an upper-layer issue. Maybe so, but then how is the upper-layer supposed =
-to
-> find which file descriptors ALSA-lib has opened - if any? Conversely, if =
-ALSA-
-> lib won't tell while file descriptors it is using, what could possibly be=
- the
-> use case for not closing those on exec?
-
-I agree that it's a difficult problem for an app that wants to fork
-and exec another process.. I'd think really should be some way for an
-app to control the CLOEXEC flag for the file descriptors that alsa-lib
-has open..
-
-I guess the alternative would be to shutdown all open PCMs, etc. in
-ALSA in the child process after forking and before the exec, so that
-they don't end up still open for the new process..
+TGUgZGltYW5jaGUgMTggb2N0b2JyZSAyMDA5IDIwOjEzOjE1IFJvYmVydCBIYW5jb2NrLCB2b3Vz
+IGF2ZXogw6ljcml0IDoKPiA+IEZyb20gdGhlIGVhcmxpZXIgdGhyZWFkLCBJIHJlY2tvbiB0aGF0
+IEFMU0EgZGV2ZWxvcGVycyBjb25zaWRlciB0aGF0IHRoaXMKPiA+IGlzIGFuIHVwcGVyLWxheWVy
+IGlzc3VlLiBNYXliZSBzbywgYnV0IHRoZW4gaG93IGlzIHRoZSB1cHBlci1sYXllcgo+ID4gc3Vw
+cG9zZWQgdG8gZmluZCB3aGljaCBmaWxlIGRlc2NyaXB0b3JzIEFMU0EtbGliIGhhcyBvcGVuZWQg
+LSBpZiBhbnk/Cj4gPiBDb252ZXJzZWx5LCBpZiBBTFNBLSBsaWIgd29uJ3QgdGVsbCB3aGlsZSBm
+aWxlIGRlc2NyaXB0b3JzIGl0IGlzIHVzaW5nLAo+ID4gd2hhdCBjb3VsZCBwb3NzaWJseSBiZSB0
+aGUgdXNlIGNhc2UgZm9yIG5vdCBjbG9zaW5nIHRob3NlIG9uIGV4ZWM/Cj4gCj4gSSBhZ3JlZSB0
+aGF0IGl0J3MgYSBkaWZmaWN1bHQgcHJvYmxlbSBmb3IgYW4gYXBwIHRoYXQgd2FudHMgdG8gZm9y
+awo+IGFuZCBleGVjIGFub3RoZXIgcHJvY2Vzcy4uIEknZCB0aGluayByZWFsbHkgc2hvdWxkIGJl
+IHNvbWUgd2F5IGZvciBhbgo+IGFwcCB0byBjb250cm9sIHRoZSBDTE9FWEVDIGZsYWcgZm9yIHRo
+ZSBmaWxlIGRlc2NyaXB0b3JzIHRoYXQgYWxzYS1saWIKPiBoYXMgb3Blbi4uCgpSaWdodC4gVGhl
+IGtlcm5lbCByZWNlbnRseSBpbnRyb2R1Y2VkIHRoZSBPX0NMT0VYRUMgb3BlbiBmbGFnLCB0byBz
+dXBwb3J0IAp0aHJlYWQtc2FmZSBjbG9zZS1vbi1leGVjLiAgVGhlIG9ubHkgd2F5IHRvIGxldmVy
+YWdlIHRoaXMgaXMgZm9yIEFMU0EtbGliIHRvIApzZXQgY2xvc2Utb24tZXhlYyBpdHNlbGYgd2hl
+biBpdCBvcGVucyBhIGZpbGUgKHdoZXRoZXIgYnkgZGVmYXVsdCBvciB3aGVuIHRoZSAKYXBwbGlj
+YXRpb24gcmVxdWVzdHMgaXQpLgoKVGhhdCBzYWlkLCBJIHN0aWxsIGZhaWwgdG8gc2VlIGFueSBw
+b3RlbnRpYWwgdXNlIGNhc2UgdG8gbm90IHNldCB0aGUgZmxhZy4gClNpbmNlIEFMU0EtbGliIHdv
+bid0IGxldCB0aGUgYXBwbGljYXRpb24ga25vdyBhYm91dCB0aGUgZmlsZSBoYW5kbGVzLCBhbnkg
+CmFwcGxpY2F0aW9uIGNhbm5vdCBhIHVzZSB0aGVtIGFjcm9zcyBleGVjKCkgaW4gdGhlIGZpcnN0
+IHBsYWNlLiBGb3IgdGhlIApyZWZlcmVuY2UsIGdsaWJjIGlzIG5vdyBzZXR0aW5nIGNsb3NlLW9u
+LWV4ZWMgaW4gc2ltaWxhciBjYXNlcywgZS5nLiBzeXNsb2coKS4KCj4gSSBndWVzcyB0aGUgYWx0
+ZXJuYXRpdmUgd291bGQgYmUgdG8gc2h1dGRvd24gYWxsIG9wZW4gUENNcywgZXRjLiBpbgo+IEFM
+U0EgaW4gdGhlIGNoaWxkIHByb2Nlc3MgYWZ0ZXIgZm9ya2luZyBhbmQgYmVmb3JlIHRoZSBleGVj
+LCBzbyB0aGF0Cj4gdGhleSBkb24ndCBlbmQgdXAgc3RpbGwgb3BlbiBmb3IgdGhlIG5ldyBwcm9j
+ZXNzLi4KCkkgc3VzcGVjdCBzdWNoIGFuIGFwcHJvYWNoIHdvdWxkIGJlIHBhaW5mdWwgYm90aCBm
+b3IgQUxTQSBhbmQgZm9yIHRoZSAKYXBwbGljYXRpb25zLiBGcm9tIEFMU0EsIHRoaXMgd291bGQg
+bmVlZCBzYWZldHkgd2l0aCByZWdhcmRzIHRvIGZvcmsgaW4gCmFub3RoZXIgdGhyZWFkLiBUaGF0
+IHByb2JhYmx5IHJlcXVpcmVzIHB0aHJlYWRfYXRmb3JrKCkgKmdsdXJwKiBpZiBBTFNBIGlzIHRv
+IAprZWVwIGl0cyBTTVAgJiB0aHJlYWQtc2FmZXR5IHByb21pc2UgKm91Y2gqLiBGcm9tIHRoZSBh
+cHBsaWNhdGlvbiwgdGhpcyAKcmVxdWlyZSBjYWxsaW5nIGFuIEFMU0EgZnVuY3Rpb24gYmV0d2Vl
+biBmb3JrIGFuZCBleGVjLiBUaGF0IHdvdWxkIGZvcmJpZCAKdXNpbmcgc3lzdGVtKCksIHBvcGVu
+KCkgb3IgLWZhc3Rlci0gcG9zaXhfc3Bhd24qKCkuIFRoYXQgYWxzbyBtZWFucyBsaW5raW5nIHRv
+IApBTFNBIGluIGV2ZXJ5IHBsYWNlIHRoYXQgZXhlY3V0ZXMuIENvbnNpZGVyaW5nIHRoYXQgVkxD
+IGlzIGhlYXZpbHkgcGx1Z2luLQpiYXNlZCwgdGhpcyB3b3VsZCBiZSBzbyBpbXByYWN0aWNhbCB0
+aGF0IEknZCBldmVuIHJhdGhlciBzY2FuIHRocm91Z2ggCi9wcm9jL3NlbGYvZmQuLi4KCi0tIApS
+w6ltaSBEZW5pcy1Db3VybW9udApodHRwOi8vZ2l0LnJlbWxhYi5uZXQvY2dpLWJpbi9naXR3ZWIu
+Y2dpP3A9dmxjLWNvdXJtaXNjaC5naXQ7YT1zdW1tYXJ5Cl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
