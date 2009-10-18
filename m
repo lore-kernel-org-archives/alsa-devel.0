@@ -1,78 +1,46 @@
-From: "Christian Steffen" <c-steffen@web.de>
-Subject: Re: Problems with newest alsa driver on 2.6.30 kernel
-	-	unknown symbols
-Date: Sun, 18 Oct 2009 17:47:23 +0200
-Message-ID: <000b01ca500a$48ff0cd0$dafd2670$@de>
-References: <000601ca5001$8f554540$adffcfc0$@de>
+From: "=?utf-8?q?R=C3=A9mi?= Denis-Courmont" <remi@remlab.net>
+Subject: How to close ALSA device nodes?
+Date: Sun, 18 Oct 2009 19:02:07 +0300
+Message-ID: <200910181902.07506.remi@remlab.net>
+Reply-To: Mailing list for VLC media player developers <vlc-devel@videolan.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate03.web.de (fmmailgate03.web.de [217.72.192.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D868245BE
-	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Oct 2009 17:47:23 +0200 (CEST)
-Received: from smtp05.web.de (fmsmtp05.dlan.cinetic.de [172.20.4.166])
-	by fmmailgate03.web.de (Postfix) with ESMTP id 21DB4127390F5
-	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Oct 2009 17:47:23 +0200 (CEST)
-Received: from [78.49.14.78] (helo=Crusoe)
-	by smtp05.web.de with asmtp (WEB.DE 4.110 #314) id 1MzXyc-0005F6-00
-	for alsa-devel@alsa-project.org; Sun, 18 Oct 2009 17:47:22 +0200
-In-Reply-To: <000601ca5001$8f554540$adffcfc0$@de>
-Content-Language: de
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <vlc-devel-bounces@videolan.org>
+List-Unsubscribe: <http://mailman.videolan.org/options/vlc-devel>,
+	<mailto:vlc-devel-request@videolan.org?subject=unsubscribe>
+List-Archive: <http://mailman.videolan.org/pipermail/vlc-devel>
+List-Post: <mailto:vlc-devel@videolan.org>
+List-Help: <mailto:vlc-devel-request@videolan.org?subject=help>
+List-Subscribe: <http://mailman.videolan.org/listinfo/vlc-devel>,
+	<mailto:vlc-devel-request@videolan.org?subject=subscribe>
+Sender: vlc-devel-bounces@videolan.org
+Errors-To: vlc-devel-bounces@videolan.org
 To: alsa-devel@alsa-project.org
+Cc: vlc-devel@videolan.org
 List-Id: alsa-devel@alsa-project.org
 
-Tried it with the older version 1.0.20, which still gives me one error:
-
-[  190.555043] snd_hda_codec: Unknown symbol snd_hwdep_new
-
-Is there anything to change in the kernel config or whatever?
-
------Urspr=FCngliche Nachricht-----
-Von: alsa-devel-bounces@alsa-project.org
-[mailto:alsa-devel-bounces@alsa-project.org] Im Auftrag von Christian
-Steffen
-Gesendet: Sonntag, 18. Oktober 2009 16:45
-An: alsa-devel@alsa-project.org
-Betreff: [alsa-devel] Problems with newest alsa driver on 2.6.30 kernel -
-unknown symbols
-
-Hi there,
-
-while an older version of alsa drivers is working fine with my kernel
-2.6.30, the newly compiled modules can't be inserted properly.
-I compiled snd-had-intel modules for my kernel 2.6.30 and tried to
-insert/start them.
-
-dmesg returns me:
-
-[  106.209451] snd_hda_codec: Unknown symbol __snd_printk
-[  106.210340] snd_hda_codec: Unknown symbol snd_hwdep_new
-[  106.212211] snd_hda_codec: disagrees about version of symbol
-snd_pcm_hw_constraint_step
-[  106.212217] snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_step
-
-
-Any idea?
-
-Thanks,
-Christian
-
-
-
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CUhlbGxvLAoKSSdtIGdldHRpbmcgYSBidWcgcmVwb3J0IGFnYWluc3QgVkxDIG1lZGlhIHBsYXll
+ciB3aGVyZWJ5IEFMU0Egc291bmQgb3V0cHV0IApzdG9wcyB3b3JraW5nIHdoZW4gdGhlIHNjcmVl
+bnNhdmVyIGlzIGluaGliaXRlZC4gSXQgdHVybnMgb3V0IHRoYXQgVkxDIGlzIApsZWFraW5nIGFu
+eSBmaWxlIGRlc2NyaXB0b3Igb3BlbiB0aHJvdWdoIEFMU0EtbGliIGludG8gY2hpbGQgcHJvY2Vz
+c2VzLiBUaGUgCmV4YWN0IHNhbWUgaXNzdWUgd2FzIGFscmVhZHkgcmFpc2VkIGJ5IG1wbGF5ZXIu
+Li4gNiB5ZWFycyBhZ286Cmh0dHA6Ly93d3cubWFpbC1hcmNoaXZlLmNvbS9hbHNhLWRldmVsQGxp
+c3RzLnNvdXJjZWZvcmdlLm5ldC9tc2cwNjI0OS5odG1sCgpJbiBvdGhlciBjYXNlcyAoVjRMLCBP
+U1MsIERWQiwgRFZELCBzb2NrZXRzLCBldmVuIHJlZ3VsYXIgZmlsZXMuLi4pLCBWTEMgd291bGQg
+Cm9wZW4gdGhlIGRldmljZSBub2RlcyB3aXRoIE9fQ0xPRVhFQyBmbGFnIChpZiBzdXBwb3J0ZWQg
+Ynkga2VybmVsIGFuZCBsaWJjKSAKYW5kIGZhbGxiYWNrIHRvIHNldHRpbmcgRkRfQ0xPRVhFQyB2
+aWEgZmNudGwoKS4gVGhlbiB0aGUgZGVzY3JpcHRvciBpcyAKYXV0b21hdGljYWxseSwgYW5kIGlu
+IHRoZSBlYXJsaWVyIGNhc2UsIHRocmVhZC1zYWZlbHksIGNsb3NlZCB3aGVuZXZlciBWTEMgLQpm
+b3JrcyBhbmQtIGV4ZWNzLiBXaXRoIEFMU0EtbGliLCBJIGNhbm5vdCBmaWd1cmUgYW55IHdheSB0
+byBhY2hpZXZlIHRoYXQuLi4KCkZyb20gdGhlIGVhcmxpZXIgdGhyZWFkLCBJIHJlY2tvbiB0aGF0
+IEFMU0EgZGV2ZWxvcGVycyBjb25zaWRlciB0aGF0IHRoaXMgaXMgCmFuIHVwcGVyLWxheWVyIGlz
+c3VlLiBNYXliZSBzbywgYnV0IHRoZW4gaG93IGlzIHRoZSB1cHBlci1sYXllciBzdXBwb3NlZCB0
+byAKZmluZCB3aGljaCBmaWxlIGRlc2NyaXB0b3JzIEFMU0EtbGliIGhhcyBvcGVuZWQgLSBpZiBh
+bnk/IENvbnZlcnNlbHksIGlmIEFMU0EtCmxpYiB3b24ndCB0ZWxsIHdoaWxlIGZpbGUgZGVzY3Jp
+cHRvcnMgaXQgaXMgdXNpbmcsIHdoYXQgY291bGQgcG9zc2libHkgYmUgdGhlIAp1c2UgY2FzZSBm
+b3Igbm90IGNsb3NpbmcgdGhvc2Ugb24gZXhlYz8KCkJlc3QgcmVnYXJkcywKCi0tIApSw6ltaSBE
+ZW5pcy1Db3VybW9udApodHRwOi8vd3d3LnJlbWxhYi5uZXQvCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCnZsYy1kZXZlbCBtYWlsaW5nIGxpc3QKVG8gdW5z
+dWJzY3JpYmUgb3IgbW9kaWZ5IHlvdXIgc3Vic2NyaXB0aW9uIG9wdGlvbnM6Cmh0dHA6Ly9tYWls
+bWFuLnZpZGVvbGFuLm9yZy9saXN0aW5mby92bGMtZGV2ZWwK
