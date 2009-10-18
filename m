@@ -1,23 +1,32 @@
-From: "=?utf-8?q?R=C3=A9mi?= Denis-Courmont" <remi@remlab.net>
+From: "=?utf-8?q?R=C3=A9mi?= Denis-Courmont" <rem@videolan.org>
 Subject: How to close ALSA device nodes?
-Date: Sun, 18 Oct 2009 19:02:07 +0300
-Message-ID: <200910181902.07506.remi@remlab.net>
-Reply-To: Mailing list for VLC media player developers <vlc-devel@videolan.org>
+Date: Sun, 18 Oct 2009 19:06:25 +0300
+Message-ID: <200910181906.25790.rem@videolan.org>
+Reply-To: remi@remlab.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <vlc-devel-bounces@videolan.org>
-List-Unsubscribe: <http://mailman.videolan.org/options/vlc-devel>,
-	<mailto:vlc-devel-request@videolan.org?subject=unsubscribe>
-List-Archive: <http://mailman.videolan.org/pipermail/vlc-devel>
-List-Post: <mailto:vlc-devel@videolan.org>
-List-Help: <mailto:vlc-devel-request@videolan.org?subject=help>
-List-Subscribe: <http://mailman.videolan.org/listinfo/vlc-devel>,
-	<mailto:vlc-devel-request@videolan.org?subject=subscribe>
-Sender: vlc-devel-bounces@videolan.org
-Errors-To: vlc-devel-bounces@videolan.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from yop.chewa.net (yop.chewa.net [91.121.105.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id D0D0C10380A
+	for <alsa-devel@alsa-project.org>;
+	Sun, 18 Oct 2009 18:06:26 +0200 (CEST)
+Received: from basile.remlab.net (cs27062183.pp.htv.fi [89.27.62.183])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested) (Authenticated sender: remi)
+	by yop.chewa.net (Postfix) with ESMTPSA id 986F9694
+	for <alsa-devel@alsa-project.org>;
+	Sun, 18 Oct 2009 18:06:26 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: vlc-devel@videolan.org
 List-Id: alsa-devel@alsa-project.org
 
 CUhlbGxvLAoKSSdtIGdldHRpbmcgYSBidWcgcmVwb3J0IGFnYWluc3QgVkxDIG1lZGlhIHBsYXll
@@ -41,6 +50,6 @@ bnk/IENvbnZlcnNlbHksIGlmIEFMU0EtCmxpYiB3b24ndCB0ZWxsIHdoaWxlIGZpbGUgZGVzY3Jp
 cHRvcnMgaXQgaXMgdXNpbmcsIHdoYXQgY291bGQgcG9zc2libHkgYmUgdGhlIAp1c2UgY2FzZSBm
 b3Igbm90IGNsb3NpbmcgdGhvc2Ugb24gZXhlYz8KCkJlc3QgcmVnYXJkcywKCi0tIApSw6ltaSBE
 ZW5pcy1Db3VybW9udApodHRwOi8vd3d3LnJlbWxhYi5uZXQvCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCnZsYy1kZXZlbCBtYWlsaW5nIGxpc3QKVG8gdW5z
-dWJzY3JpYmUgb3IgbW9kaWZ5IHlvdXIgc3Vic2NyaXB0aW9uIG9wdGlvbnM6Cmh0dHA6Ly9tYWls
-bWFuLnZpZGVvbGFuLm9yZy9saXN0aW5mby92bGMtZGV2ZWwK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
