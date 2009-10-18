@@ -1,65 +1,69 @@
-From: Lubomir Rintel <lkundrak@v3.sk>
-Subject: Re: [PATCH] [snd-usb-audio] Add match for JMTek USB sound	card
-Date: Sun, 18 Oct 2009 18:37:28 +0200
-Message-ID: <1255883848.2313.4.camel@localhost.localdomain>
-References: <1255173329-20485-1-git-send-email-lkundrak@v3.sk>
-	 <4AD2D0C2.40307@ladisch.de> <s5hzl7xdqrn.wl%tiwai@suse.de>
-	 <1255334633.3286.4376.camel@localhost.localdomain>
-	 <s5hocoddofb.wl%tiwai@suse.de>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: Re: How to close ALSA device nodes?
+Date: Sun, 18 Oct 2009 11:13:15 -0600
+Message-ID: <51f3faa70910181013r3a0e4f44n8673d9bad3ba2d43@mail.gmail.com>
+References: <200910181906.25790.rem@videolan.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <s5hocoddofb.wl%tiwai@suse.de>
-Sender: linux-sound-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-iw0-f199.google.com (mail-iw0-f199.google.com
+	[209.85.223.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E94D245D0
+	for <alsa-devel@alsa-project.org>;
+	Sun, 18 Oct 2009 19:13:16 +0200 (CEST)
+Received: by iwn37 with SMTP id 37so1808739iwn.16
+	for <alsa-devel@alsa-project.org>; Sun, 18 Oct 2009 10:13:15 -0700 (PDT)
+In-Reply-To: <200910181906.25790.rem@videolan.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: remi@remlab.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2009-10-12 at 10:08 +0200, Takashi Iwai wrote:
-> At Mon, 12 Oct 2009 10:03:53 +0200,
-> Lubomir Rintel wrote:
-> > 
-> > On Mon, 2009-10-12 at 09:18 +0200, Takashi Iwai wrote:
-> > > At Mon, 12 Oct 2009 08:46:26 +0200,
-> > > Clemens Ladisch wrote:
-> > > > 
-> > > > Lubomir Rintel wrote:
-> > > > > Entry for JMTek LLC., SSS USB Headphone Set in the quirk table.
-> > > > 
-> > > > Please add an explaination why this entry is needed.  At first glance,
-> > > > this entry seems to describe a class-compliant device that should not
-> > > > need a quirk.
-> > > 
-> > > Ah right.  It'd really helpful if Lubomir can give more details...
-> > 
-> > A 2.6.31.1-based kernel on my Fedora 12 workstation at hone seemed to
-> > require that, only the input driver attached to the device when plugged
-> > in, the snd-usb-audio didn't seem to load and did not care about the
-> > device when loaded manually. I did not have an idea why, since "alias:
-> > usb:v*p*d*dc*dsc*dp*ic01isc01ip*" really seemed to match my device.
-> > Nevertheless, after finding out that adding an entry to the quirk table
-> > solves my problem I concluded that my understanding (or lack of thereof)
-> > was wrong and that alias is really not meant to match my device.
-> > 
-> > Now I plugged the adapter into my work lappy with 2.6.30.8-based Fedora
-> > 11 and the audio interfaces on my adapter got instantly recognized and
-> > claimed by snd-usb-audio (and the input interface by the input
-> > subsystem), without modifying anything.
-> > 
-> > Any clues what could have gone wrong then?
-> 
-> Hm, I don't see any affecting changes between 2.6.30 and 31.
-> Just as a test, could you copy sound/usb/*.[ch] from 2.6.30 tree to
-> 2.6.31 or 32-rc and check whether the same problem appears?
+2009/10/18 R=E9mi Denis-Courmont <rem@videolan.org>:
+> =A0 =A0 =A0 =A0Hello,
+>
+> I'm getting a bug report against VLC media player whereby ALSA sound outp=
+ut
+> stops working when the screensaver is inhibited. It turns out that VLC is
+> leaking any file descriptor open through ALSA-lib into child processes. T=
+he
+> exact same issue was already raised by mplayer... 6 years ago:
+> http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06249.html
+>
+> In other cases (V4L, OSS, DVB, DVD, sockets, even regular files...), VLC =
+would
+> open the device nodes with O_CLOEXEC flag (if supported by kernel and lib=
+c)
+> and fallback to setting FD_CLOEXEC via fcntl(). Then the descriptor is
+> automatically, and in the earlier case, thread-safely, closed whenever VL=
+C -
+> forks and- execs. With ALSA-lib, I cannot figure any way to achieve that.=
+..
+>
+> From the earlier thread, I reckon that ALSA developers consider that this=
+ is
+> an upper-layer issue. Maybe so, but then how is the upper-layer supposed =
+to
+> find which file descriptors ALSA-lib has opened - if any? Conversely, if =
+ALSA-
+> lib won't tell while file descriptors it is using, what could possibly be=
+ the
+> use case for not closing those on exec?
 
-I did not try that, but updated to a newer snapshot and it works as it
-used to again, so I don't thing there's much point in finding out what
-went wrong now. I'm very sorry for the noise.
+I agree that it's a difficult problem for an app that wants to fork
+and exec another process.. I'd think really should be some way for an
+app to control the CLOEXEC flag for the file descriptors that alsa-lib
+has open..
 
-Regards,
-Lubo
-
--- 
-"Excuse all the blood" -- Dead
-
+I guess the alternative would be to shutdown all open PCMs, etc. in
+ALSA in the child process after forking and before the exec, so that
+they don't end up still open for the new process..
