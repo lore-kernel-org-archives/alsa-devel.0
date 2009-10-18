@@ -1,24 +1,18 @@
-From: "Christian Steffen" <c-steffen@web.de>
-Subject: Problems with newest alsa driver on 2.6.30 kernel -
-	unknown symbols
-Date: Sun, 18 Oct 2009 16:44:55 +0200
-Message-ID: <000601ca5001$8f554540$adffcfc0$@de>
+From: Adolf Winterer <adolf.j.winterer@inn-salzach.de>
+Subject: Re: Problems with newest alsa driver on 2.6.30 kernel
+	- unknown symbols
+Date: Sun, 18 Oct 2009 17:41:44 +0200
+Message-ID: <200910181741.44329.adolf.j.winterer@inn-salzach.de>
+References: <000601ca5001$8f554540$adffcfc0$@de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate03.web.de (fmmailgate03.web.de [217.72.192.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6531624551
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id D1A33243F0
 	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Oct 2009 16:47:32 +0200 (CEST)
-Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
-	by fmmailgate03.web.de (Postfix) with ESMTP id 01A67127335C7
-	for <alsa-devel@alsa-project.org>;
-	Sun, 18 Oct 2009 16:44:56 +0200 (CEST)
-Received: from [78.49.14.78] (helo=Crusoe)
-	by smtp08.web.de with asmtp (WEB.DE 4.110 #314) id 1MzX0B-0003kD-00
-	for alsa-devel@alsa-project.org; Sun, 18 Oct 2009 16:44:55 +0200
-Content-Language: de
+	Sun, 18 Oct 2009 17:41:39 +0200 (CEST)
+In-Reply-To: <000601ca5001$8f554540$adffcfc0$@de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,23 +25,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+Am Sonntag 18 Oktober 2009 16:44:55 schrieb Christian Steffen:
+> Hi there,
+> 
+> while an older version of alsa drivers is working fine with my kernel
+> 2.6.30, the newly compiled modules can't be inserted properly.
+> I compiled snd-had-intel modules for my kernel 2.6.30 and tried to
+> insert/start them.
+> 
+> dmesg returns me:
+> 
+> [  106.209451] snd_hda_codec: Unknown symbol __snd_printk
+> [  106.210340] snd_hda_codec: Unknown symbol snd_hwdep_new
+> [  106.212211] snd_hda_codec: disagrees about version of symbol
+> snd_pcm_hw_constraint_step
+> [  106.212217] snd_hda_codec: Unknown symbol
+>  snd_pcm_hw_constraint_step
 
-while an older version of alsa drivers is working fine with my kernel
-2.6.30, the newly compiled modules can't be inserted properly.
-I compiled snd-had-intel modules for my kernel 2.6.30 and tried to
-insert/start them.
+This is exactly what I'm seeing when I try to compile alsa from the 
+1.0.21 sources and try to insert the newly generated modules.
+ 
+> Any idea?
 
-dmesg returns me:
+I have no solution, sorry.
 
-[  106.209451] snd_hda_codec: Unknown symbol __snd_printk
-[  106.210340] snd_hda_codec: Unknown symbol snd_hwdep_new
-[  106.212211] snd_hda_codec: disagrees about version of symbol
-snd_pcm_hw_constraint_step
-[  106.212217] snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_step
+Adolf
 
-
-Any idea?
-
-Thanks,
-Christian
+> Thanks,
+> Christian
