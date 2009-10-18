@@ -1,29 +1,24 @@
-From: Aleksander Adamowski <alsa@olo.org.pl>
-Subject: Re: snd-hda-intel: no data when recording from mic,
-	"IRQ timing workaround is activated for card #0. Suggest a bigger
-	bdl_pos_adj" logged in kern.log
-Date: Sat, 17 Oct 2009 19:09:59 +0200
-Message-ID: <1c690d740910171009v3f62233ape39def2c2a9c105@mail.gmail.com>
-References: <1c690d740909221546i756e6724h45533c59f0a50179@mail.gmail.com>
-	<s5hy6o69p3a.wl%tiwai@suse.de>
-	<1c690d740909240023u6cc093d6hcf2d5766d7e1a58c@mail.gmail.com>
-	<s5hr5twvlw6.wl%tiwai@suse.de>
-	<1c690d740910041728m2560476bsb22aa410e45777e9@mail.gmail.com>
-	<s5hab069zoi.wl%tiwai@suse.de>
-	<1c690d740910140004l1383a08h6ae5c6fe86b0e731@mail.gmail.com>
-	<1c690d740910170557i30d238a0jc07763585f6d7970@mail.gmail.com>
+From: "Christian Steffen" <c-steffen@web.de>
+Subject: Problems with newest alsa driver on 2.6.30 kernel -
+	unknown symbols
+Date: Sun, 18 Oct 2009 16:44:55 +0200
+Message-ID: <000601ca5001$8f554540$adffcfc0$@de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
-	[209.85.210.196])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47D74103803
+Received: from fmmailgate03.web.de (fmmailgate03.web.de [217.72.192.234])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6531624551
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Oct 2009 19:10:20 +0200 (CEST)
-Received: by yxe34 with SMTP id 34so2573601yxe.16
-	for <alsa-devel@alsa-project.org>; Sat, 17 Oct 2009 10:10:19 -0700 (PDT)
-In-Reply-To: <1c690d740910170557i30d238a0jc07763585f6d7970@mail.gmail.com>
+	Sun, 18 Oct 2009 16:47:32 +0200 (CEST)
+Received: from smtp08.web.de (fmsmtp08.dlan.cinetic.de [172.20.5.216])
+	by fmmailgate03.web.de (Postfix) with ESMTP id 01A67127335C7
+	for <alsa-devel@alsa-project.org>;
+	Sun, 18 Oct 2009 16:44:56 +0200 (CEST)
+Received: from [78.49.14.78] (helo=Crusoe)
+	by smtp08.web.de with asmtp (WEB.DE 4.110 #314) id 1MzX0B-0003kD-00
+	for alsa-devel@alsa-project.org; Sun, 18 Oct 2009 16:44:55 +0200
+Content-Language: de
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,87 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-QlRXLCBUYWthc2hpLCBpZiB0aGF0IHdvdWxkIGJlIG9mIGFueSBoZWxwLCBJIGNvdWxkIGFkZCBz
-b21lICNpZmRlZidzCnRvIHRoZSBkcml2ZXIncyBjb2RlIHRoYXQgd291bGQgbG9nIGFkZGl0aW9u
-YWwgaW5mb3JtYXRpb24sIGlmIHlvdQpjb3VsZCB0ZWxsIG1lIHdoYXQgdG8gbG9nLiBJdCBzZWVt
-cyB0aGF0IHRoZSBjdXJyZW50IGxvZyBtZXNzYWdlcwphcmVuJ3QgZGV0YWlsZWQgZW5vdWdoIHRv
-IGRpYWdub3NlIHRoZSBwcm9ibGVtLgoKRm9yIHN0YXJ0ZXJzLCBJJ3ZlIGFkZGVkIHRoaXM6Cgpk
-aWZmIC1ydU4gYWxzYS1kcml2ZXItMjAwOTEwMTcub3JpZy9hbHNhLWtlcm5lbC9wY2kvaGRhL2hk
-YV9pbnRlbC5jCmFsc2EtZHJpdmVyLTIwMDkxMDE3L2Fsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2lu
-dGVsLmMKLS0tIGFsc2EtZHJpdmVyLTIwMDkxMDE3Lm9yaWcvYWxzYS1rZXJuZWwvcGNpL2hkYS9o
-ZGFfaW50ZWwuYwoyMDA5LTEwLTE1IDAwOjA1OjAzLjAwMDAwMDAwMCArMDIwMAorKysgYWxzYS1k
-cml2ZXItMjAwOTEwMTcvYWxzYS1rZXJuZWwvcGNpL2hkYS9oZGFfaW50ZWwuYwoyMDA5LTEwLTE3
-IDE5OjA3OjE5LjI4MzMyODc0MCArMDIwMApAQCAtMTE4Miw4ICsxMTgyLDggQEAKICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBwb3NfYWxpZ247CiAgICAgICAgICAgICAgICBwb3NfYWRq
-ID0gZnJhbWVzX3RvX2J5dGVzKHJ1bnRpbWUsIHBvc19hZGopOwogICAgICAgICAgICAgICAgaWYg
-KHBvc19hZGogPj0gcGVyaW9kX2J5dGVzKSB7Ci0gICAgICAgICAgICAgICAgICAgICAgIHNuZF9w
-cmludGsoS0VSTl9XQVJOSU5HIFNGWCAiVG9vIGJpZyBhZGp1c3RtZW50ICVkXG4iLAotICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJkbF9wb3NfYWRqW2NoaXAtPmRldl9pbmRleF0p
-OworICAgICAgICAgICAgICAgICAgICAgICBzbmRfcHJpbnRrKEtFUk5fV0FSTklORyBTRlggIlRv
-byBiaWcKYWRqdXN0bWVudCAlZCwgcG9zX2FkajogJWQsIHBlcmlvZF9ieXRlczogJWRcbiIsCisg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYmRsX3Bvc19hZGpbY2hpcC0+ZGV2X2lu
-ZGV4XSwKcG9zX2FkaiwgcGVyaW9kX2J5dGVzKTsKICAgICAgICAgICAgICAgICAgICAgICAgcG9z
-X2FkaiA9IDA7CiAgICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgICAgICAg
-ICBvZnMgPSBzZXR1cF9iZGxlKHN1YnN0cmVhbSwgYXp4X2RldiwKCgpPbiBTYXQsIE9jdCAxNywg
-MjAwOSBhdCAyOjU3IFBNLCBBbGVrc2FuZGVyIEFkYW1vd3NraSA8YWxzYUBvbG8ub3JnLnBsPiB3
-cm90ZToKPiBDb25jZXJuaW5nIHRoYXQgcHJvYmxlbSwgYWZ0ZXIgYSByZWJvb3QgdGhlIHByb2Js
-ZW0gaGFzIHJlb2NjdXJlZCB0d28KPiBkYXlzIGxhdGVyOgo+Cj4gT2N0IDE3IDE0OjE2OjA5IGhv
-c3RuYW1lIGtlcm5lbDogWzE5MjA4Ny4yNDkxNjVdIEFMU0EKPiBoZGFfaW50ZWwuYzoxMTg3OiBU
-b28gYmlnIGFkanVzdG1lbnQgMzIKPiBPY3QgMTcgMTQ6MjI6MDggaG9zdG5hbWUga2VybmVsOiBb
-MTkyNDQ3LjA3MjAxOF0gQUxTQQo+IGhkYV9pbnRlbC5jOjExODc6IFRvbyBiaWcgYWRqdXN0bWVu
-dCAzMgo+IE9jdCAxNyAxNDoyMjozOCBob3N0bmFtZSBrZXJuZWw6IFsxOTI0NzcuMDYyOTY3XSBB
-TFNBCj4gaGRhX2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1c3RtZW50IDMyCj4gT2N0IDE3IDE0
-OjIzOjA2IGhvc3RuYW1lIGtlcm5lbDogWzE5MjUwNC45MTg0NDBdIEFMU0EKPiBoZGFfaW50ZWwu
-YzoxMTg3OiBUb28gYmlnIGFkanVzdG1lbnQgMzIKPiBPY3QgMTcgMTQ6MjM6MzcgaG9zdG5hbWUg
-a2VybmVsOiBbMTkyNTM1LjU5NDE5Nl0gQUxTQQo+IGhkYV9pbnRlbC5jOjExODc6IFRvbyBiaWcg
-YWRqdXN0bWVudCAzMgo+Cj4gVXBsb2FkZWQgbmV3IGFsc2EtaW5mby5zaCBkYXRhIGZyb20gdGhl
-IG1hY2hpbmU6Cj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPWU3ZTY5NjI1NGRm
-NmY2MWZhNWU0NzU1ZTlkMWQwNjQwM2RhY2YxNDQKPgo+IFVwZ3JhZGluZyBmcm9tIGFsc2EtZHJp
-dmVyLTIwMDkxMDA1IHRvIGFsc2EtZHJpdmVyLTIwMDkxMDE3IGFuZCB3aWxsCj4gbGV0IHlvdSBr
-bm93IGhvdyBpdCB3b3JrZWQuCj4KPiBPbiBXZWQsIE9jdCAxNCwgMjAwOSBhdCA5OjA0IEFNLCBB
-bGVrc2FuZGVyIEFkYW1vd3NraSA8YWxzYUBvbG8ub3JnLnBsPiB3cm90ZToKPgo+PiBBZnRlciBy
-dW5uaW5nIGZvciBhbG1vc3QgdGVuIGRheXMgd2l0aCBhbHNhLWRyaXZlci0yMDA5MTAwNSwgSSBk
-aWRuJ3QKPj4gb2JzZXJ2ZSB0aGF0IHByb2JsZW0uCj4+Cj4+IEhvd2V2ZXIsIGEgbmV3IG9uZSAo
-d2VsbCwgb25lIHdpdGggc2xpZ2h0bHkgZGlmZmVyZW50IHN5bXB0b21zKSBoYXMgc3VyZmFjZWQu
-Cj4+Cj4+IFRoZSBkaWZmZXJlbmNlIGlzIG9ubHkgaW4gdGhlIGxvZyBmaWxlcy4KPj4gRHVyaW5n
-IGEgU2t5cGUgY29udmVyc2F0aW9uLCB0aGUgb3RoZXIgc2lkZSBoYXMgc3RvcHBlZCBoZWFyaW5n
-IHVzOwo+PiBhZnRlciB0cnlpbmcgdG8gcmVjb3JkIHNvbWUgc291bmQgd2l0aCBhcmVjb3JkLCBJ
-IGdvdCBhbiBlbXB0eSBzdHJlYW0KPj4gKGEgNDQgYnl0ZSBXQVYgZmlsZSB3aXRoIG9ubHkgYSBo
-ZWFkZXIpIC0ganVzdCBsaWtlIHByZXZpb3VzbHkuCj4+Cj4+IEhvd2V2ZXIsIHRoaXMgdGltZSB0
-aGVyZSB3ZXJlIG5vIG1lc3NhZ2VzIGluIHRoZSBrZXJuZWwgbG9ncwo+PiB3aGF0c29ldmVyIC0g
-bm8gImF6eF9nZXRfcmVzcG9uc2UgdGltZW91dCIsIG5vICJTdWdnZXN0IGEgYmlnZ2VyCj4+IGJk
-bF9wb3NfYWRqIi4KPj4gQXJlY29yZCBhbHNvIGRpZG4ndCBmbG9vZCB0aGUgY29uc29sZSB3aXRo
-IG92ZXJydW4gZXJyb3JzIC0gaXQgd2FzCj4+IGNvbXBsZXRlbHkgc2lsZW50IGFwYXJ0IGZyb20g
-dGhlIGZhY3QgdGhhdCBpdCBkaWQgbm90IHJlY29yZCBhbnl0aGluZy4KPj4KPj4gVGhlIG9ubHkg
-aGRhLXJlbGF0ZWQgZW50cmllcyBJIHNhdyBpbiB0aGUga2VybmVsIGxvZyB3ZXJlIGEgY291cGxl
-Cj4+IGhvdXJzIGVhcmxpZXIgYXQgMjA6NDQgLSB3aGlsZSB0aGUgZmFpbHVyZSBoYXMgb2NjdXJl
-ZCBiZXR3ZWVuIDIzOjAwCj4+IGFuZCAwMDowMC4KPj4KPj4gQXQgMjA6NDQgdGhlIGZvbGxvd2lu
-ZyBoYXMgYmVlbiBsb2dnZWQ6Cj4+Cj4+IE9jdCAxMyAyMDo0NDoyNSBob3N0bmFtZSBrZXJuZWw6
-IFsxMTc4MjguMDY1MDY5XSBBTFNBCj4+IGhkYV9pbnRlbC5jOjExODc6IFRvbyBiaWcgYWRqdXN0
-bWVudCAzMgo+PiBPY3QgMTMgMjA6NDQ6MjUgaG9zdG5hbWUga2VybmVsOiBbMTE3ODI4LjA3MzU2
-Ml0gQUxTQQo+PiBoZGFfaW50ZWwuYzoxMTg3OiBUb28gYmlnIGFkanVzdG1lbnQgMzIKPj4gT2N0
-IDEzIDIwOjQ0OjI1IGhvc3RuYW1lIGtlcm5lbDogWzExNzgyOC4wODMzNjddIEFMU0EKPj4gaGRh
-X2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1c3RtZW50IDMyCj4+IE9jdCAxMyAyMDo0NDoyNSBo
-b3N0bmFtZSBrZXJuZWw6IFsxMTc4MjguNTc4OTU4XSBBTFNBCj4+IGhkYV9pbnRlbC5jOjExODc6
-IFRvbyBiaWcgYWRqdXN0bWVudCAzMgo+PiBPY3QgMTMgMjA6NDQ6MjUgaG9zdG5hbWUga2VybmVs
-OiBbMTE3ODI4LjU4NDg3Ml0gQUxTQQo+PiBoZGFfaW50ZWwuYzoxMTg3OiBUb28gYmlnIGFkanVz
-dG1lbnQgMzIKPj4gT2N0IDEzIDIwOjQ0OjI1IGhvc3RuYW1lIGtlcm5lbDogWzExNzgyOC41OTI5
-MDldIEFMU0EKPj4gaGRhX2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1c3RtZW50IDMyCj4+IE9j
-dCAxMyAyMDo0NDoyNSBob3N0bmFtZSBrZXJuZWw6IFsxMTc4MjguNjUxNTEzXSBBTFNBCj4+IGhk
-YV9pbnRlbC5jOjExODc6IFRvbyBiaWcgYWRqdXN0bWVudCAzMgo+PiBPY3QgMTMgMjA6NDQ6MjUg
-aG9zdG5hbWUga2VybmVsOiBbMTE3ODI4LjY1NzAwOV0gQUxTQQo+PiBoZGFfaW50ZWwuYzoxMTg3
-OiBUb28gYmlnIGFkanVzdG1lbnQgMzIKPj4gT2N0IDEzIDIwOjQ0OjI1IGhvc3RuYW1lIGtlcm5l
-bDogWzExNzgyOC42NjU3OTRdIEFMU0EKPj4gaGRhX2ludGVsLmM6MTE4NzogVG9vIGJpZyBhZGp1
-c3RtZW50IDMyCj4+Cj4+IFRoZSBtYWNoaW5lIGlzIGN1cnJlbnRseSBzdGlsbCBpbiB0aGUgZmFp
-bGVkIHN0YXRlIC0gSSBjYW5ub3QgcmVjb3JkCj4+IGFueXRoaW5nIHVudGlsIEkgcmVib290Lgo+
-Pgo+Pgo+PiAtLQo+PiBCZXN0IFJlZ2FyZHMsCj4+IMKgQWxla3NhbmRlciBBZGFtb3dza2kKPj4g
-wqBodHRwOi8vb2xvLm9yZy5wbAo+Pgo+Cj4KPgo+IC0tCj4gQmVzdCBSZWdhcmRzLAo+IMKgQWxl
-a3NhbmRlciBBZGFtb3dza2kKPiDCoGh0dHA6Ly9vbG8ub3JnLnBsCj4KCgoKLS0gCkJlc3QgUmVn
-YXJkcywKICBBbGVrc2FuZGVyIEFkYW1vd3NraQogIGh0dHA6Ly9vbG8ub3JnLnBsCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi there,
+
+while an older version of alsa drivers is working fine with my kernel
+2.6.30, the newly compiled modules can't be inserted properly.
+I compiled snd-had-intel modules for my kernel 2.6.30 and tried to
+insert/start them.
+
+dmesg returns me:
+
+[  106.209451] snd_hda_codec: Unknown symbol __snd_printk
+[  106.210340] snd_hda_codec: Unknown symbol snd_hwdep_new
+[  106.212211] snd_hda_codec: disagrees about version of symbol
+snd_pcm_hw_constraint_step
+[  106.212217] snd_hda_codec: Unknown symbol snd_pcm_hw_constraint_step
+
+
+Any idea?
+
+Thanks,
+Christian
