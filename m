@@ -1,17 +1,20 @@
-From: Dominik Zalewski <dominikz@genijusz.org>
-Subject: patchmix application for EMU1616m
-Date: Mon, 19 Oct 2009 09:31:47 +0200
-Message-ID: <8282c2500910190031x3c65a3d4je5d77fb1c66b1dab@mail.gmail.com>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Subject: Re: [PATCH 6/8] RX-51: Audio: Add usage of regulator
+ framework to control VMMC2
+Date: Mon, 19 Oct 2009 12:13:00 +0300
+Message-ID: <20091019091300.GA17452__38656.4993452795$1255943922$gmane$org@esdhcp037198.research.nokia.com>
+References: <1255003137-1034-1-git-send-email-eduardo.valentin@nokia.com>
+	<1255003137-1034-7-git-send-email-eduardo.valentin@nokia.com>
+	<20091008132619.GE29176@rakim.wolfsonmicro.main>
+	<20091012090455.GC13234@esdhcp037198.research.nokia.com>
+	<20091012092104.GD3308@rakim.wolfsonmicro.main>
+Reply-To: eduardo.valentin@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 66CBA24434
-	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Oct 2009 09:32:08 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 3so877142eyh.16
-	for <alsa-devel@alsa-project.org>; Mon, 19 Oct 2009 00:32:07 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20091012092104.GD3308@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, Linux-OMAP <linux-omap@vger.kernel.org>, ALSA-Devel <alsa-devel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Is there anybody working on patchmix application for alsa?
-I'm wondering what would be the guidelines.
-- Should it be a clone of a patchmix for Windows: a separate program?
-- Or maybe there is already some infrastructure in Alsa that should be
-extended with that functionality?
-- Alsamixer already has some of that functionality, should be
-replicated in new patchmix application?
-- Are there any restrictions for the GUI libraries that may be used?
-- Does it have to be written in C/C++, or is Java also applicable?
+Hi,
+
+On Mon, Oct 12, 2009 at 11:21:04AM +0200, Mark Brown wrote:
+> On Mon, Oct 12, 2009 at 12:04:55PM +0300, Eduardo Valentin wrote:
+> 
+> > Right. Should we add 4 instances of drvdd and 2 of iovdd? So, naming those would be like:
+> 
+> No, if there's multiple pins for the supply then there's no need to
+> represent those individually - they're required to be wired together in
+> hardware.
+
+Might be a stupid question probably because of my lack of knowledge of regulator framework,
+but if the driver code must be written in such a way that it requires all regulators
+for its supplies, then what happens with those which are grounded? How do you provide the
+regulator_init_data in this case (where the supply is actually grounded) ?
+
+BR,
 
 -- 
-Dominik Zalewski
+Eduardo Valentin
