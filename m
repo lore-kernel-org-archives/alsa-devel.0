@@ -1,20 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 4/4] ASoC: TWL4030: Driver registration via
-	twl4030_codec MFD
-Date: Tue, 20 Oct 2009 15:01:28 +0300
-Message-ID: <200910201501.28160.peter.ujfalusi@nokia.com>
-References: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
-	<200910201430.49223.peter.ujfalusi@nokia.com>
-	<20091020115106.GB2909@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC update for 2.6.32
+Date: Tue, 20 Oct 2009 13:00:56 +0100
+Message-ID: <20091020120056.GA31441@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6011246DE
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3E2C8246DB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Oct 2009 14:01:38 +0200 (CEST)
-In-Reply-To: <20091020115106.GB2909@rakim.wolfsonmicro.main>
+	Tue, 20 Oct 2009 14:00:57 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +20,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "sameo@linux.intel.com" <sameo@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 20 October 2009 14:51:06 ext Mark Brown wrote:
-> Sure, though I suspect patch 3 could just be split in two happily with
-> an include.  I don't really mind either way.  If you are going to keep
-> them as one patch it'd be good to call out the move in the changelog.
+The following changes since commit 8e8b2d676f3f7c1246b108793fb5690e6c6fcd26:
+  Eero Nurkkala (1):
+        ASoC: Serialize access to dapm_power_widgets()
 
-I'll split the soc codec patch to two, one is changing the header the other=
- is =
+are available in the git repository at:
 
-for the change in the codec driver.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
 
-> That's a good enough reason to leave things as they are, though really
-> if you're building SND_SOC_ALL_CODECs in a production system you're
-> being a bit strange.
+Barry Song (1):
+      ASoC: Fix possible codec_dai->ops NULL pointer problems
 
-Fair enough.
-
-> >
-> >  +MODULE_ALIAS("platform:twl4030_codec_audio");
-> =
-
-> Yes.  The aliasing makes no reference to the parents of the device, it
-> only cares about the device name - for the purposes of module loading
-> and driver matching it's identical to any other platform device.
-
-Good to know, I'll change this as well.
-
-Thanks,
-P=E9ter
+ sound/soc/soc-core.c |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
