@@ -1,27 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: dev_* output functions and ASoC codecs
-Date: Tue, 20 Oct 2009 10:52:41 +0100
-Message-ID: <20091020095241.GA28432@opensource.wolfsonmicro.com>
-References: <20091006102033.GC27168@sirena.org.uk>
-	<3c17e3570910111926u186586cdq2646d5aaade3121a@mail.gmail.com>
-	<20091012093601.GA22233@sirena.org.uk>
-	<3c17e3570910120334u6646b031vb5300645da8b6ce4@mail.gmail.com>
-	<20091012104849.GA7994@rakim.wolfsonmicro.main>
-	<3c17e3570910120620g7e65f87ekeb854c373375b7a3@mail.gmail.com>
-	<20091012142018.GA18283@rakim.wolfsonmicro.main>
-	<3c17e3570910130309r3ffed293g9cc8f9bd0c845d4@mail.gmail.com>
-	<20091013101445.GA29177@rakim.wolfsonmicro.main>
-	<3c17e3570910192227n286b26d9pe58008a4cb4935f@mail.gmail.com>
+Subject: Re: [PATCH 1/4] MFD: twl4030: add twl4030_codec MFD as
+	a new child	to the core
+Date: Tue, 20 Oct 2009 11:03:34 +0100
+Message-ID: <20091020100334.GA28592@opensource.wolfsonmicro.com>
+References: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1255956140-4829-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2BA372466C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4A52524674
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Oct 2009 11:52:45 +0200 (CEST)
+	Tue, 20 Oct 2009 12:03:35 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <3c17e3570910192227n286b26d9pe58008a4cb4935f@mail.gmail.com>
+In-Reply-To: <1255956140-4829-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,25 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, "Cai,
-	Cliff" <Cliff.Cai@analog.com>, alsa-devel@alsa-project.org, Mike Frysinger <vapier.adi@gmail.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, sameo@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 20, 2009 at 01:27:14PM +0800, Barry Song wrote:
-> On Tue, Oct 13, 2009 at 6:14 PM, Mark Brown
+On Mon, Oct 19, 2009 at 03:42:17PM +0300, Peter Ujfalusi wrote:
+> New MFD child to twl4030 MFD device.
+> This MFD device will be used by the drivers, which needs resources
+> from the twl4030 codec like audio and vibra.
 
-> > I've no current plan to work on multiple AC97 controllers support within
-> > ASoC except in so far as it falls out of other work - I've never
-> > encountered an embedded system with multiple AC97 controllers so it's a
-> > somewhat academic issue. =A0Patches welcome, though I'd expect it'd be
-> > sensible to wait until multi-card support is present.
+> The platform specific configuration data is passed along to the
+> child drivers (audio, vibra).
 
-> Currently,  this patch should can help people to set platform_data to
-> snd_ac97, and different operation can be fulfilled based on different
-> ac97_pdata even with only one ac97 ops instance.
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-It's possible that this would work, though it would need explicit
-support in any driver that were to implement it and I'd not guarantee
-that all the special cases for AC97 would cope properly.  Hopefully it'd
-be relatively straightforward to fix up any issues, though.
+> +config TWL4030_CODEC
+> +	bool "Support codec part of the TWL4030 family chips"
+
+This seems like something that users shouldn't really have to worry
+about selecting explicitly - might it be better to have it selected by
+the drivers that use it instead?  It feels like it's an implementation
+detail of the driver.
