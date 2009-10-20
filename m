@@ -1,16 +1,22 @@
-From: Kai Vehmanen <kvehmanen@eca.cx>
-Subject: problems in getting rid of set_xfer_align
-Date: Mon, 19 Oct 2009 23:39:30 +0300 (EEST)
-Message-ID: <alpine.DEB.1.10.0910192155520.7934@ecabase.localdomain>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [Intel-gfx] Problems with HDMI audio on Intel
+	DG45FC	motherboard
+Date: Tue, 20 Oct 2009 09:26:00 +0800
+Message-ID: <20091020012600.GA6548@localhost>
+References: <20091011214513.GB12771@hardeman.nu>
+	<20091014015455.GI13364@zhen-devel.sh.intel.com>
+	<20091014020044.GA10032@localhost>
+	<20091014174053.GA31149@hardeman.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gw03.mail.saunalahti.fi (gw03.mail.saunalahti.fi
-	[195.197.172.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E68BA24593
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B6832444E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Oct 2009 22:42:37 +0200 (CEST)
+	Tue, 20 Oct 2009 03:27:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20091014174053.GA31149@hardeman.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,43 +26,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Pierre Lorenzon <devel@pollock-nageoire.net>
+To: david@hardeman.nu, alsa-user@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, shane-alsa@csy.ca
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
-
-here's one problem that I stumbled on with the deprecated 
-snd_pcm_sw_params_set_xfer_align() function. I'm not sure if anything 
-needs to be done to this, but at least FYI for other app developers that 
-might hit the same issue.
-
-In short, ecasound-2.7.0 was just released, and as one of the last 
-commits, I dropped the call to snd_pcm_sw_params_set_xfer_align() as it 
-has been deprecated since early 2008 in ALSA. Previously Ecasound had 
-always set the xfer_align to 1.
-
-Anyways, right after the release I got an error report (from Pierre, 
-cc'ed) about bad glitches in audio with the new release, and the problem 
-now appears to be deprecation of set_xfer_align. To summarize:
-
-  - app relies on xfer_align=1, and has previously set it explicitly
-  - in kernels before 2.6.25, the xfer_align is initialized to
-    period_size in pcm_native.c and to 1 in pcm_oss.c; but in 2.6.25
-    the field was removed altogether:
-    http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=d948035a928400ae127c873fbf771389bee18949
-  - similar change was done to alsa-lib 1.0.16:
-    http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=cf15e49d8460d9b56005d8c49faa064de3649cef
-
-Now the problematic combination is:
-  - new application (not anymore calling set_xfer_align())
-  - old alsa-lib and kernel (still initializing xfer_size)
-  - application used with an ALSA PCM that is strict
-    about what period-sizes can be used (e.g. in the specific
-    case we found out, ALSA PCM wouldn't accept a power-of-two
-    period size)
-
-This is common enough that some workaround is needed in apps, an in 
-Ecasound's case case, I'll add some ifdef-magic to 2.7.1 so that 
-xfer_align is still set if compiled against an older alsa-lib. That should 
-cover majority of the cases...
+RGF2aWQsCgpTb3JyeSBmb3IgdGhlIGxvbmcgZGVsYXkhCgpPbiBUaHUsIE9jdCAxNSwgMjAwOSBh
+dCAwMTo0MDo1M0FNICswODAwLCBEYXZpZCBIw6RyZGVtYW4gd3JvdGU6Cj4gT24gV2VkLCBPY3Qg
+MTQsIDIwMDkgYXQgMTA6MDA6NDRBTSArMDgwMCwgV3UgRmVuZ2d1YW5nIHdyb3RlOgo+ID5PbiBX
+ZWQsIE9jdCAxNCwgMjAwOSBhdCAwOTo1NDo1NUFNICswODAwLCBaaGVueXUgV2FuZyB3cm90ZToK
+PiA+PiBPbiAyMDA5LjEwLjExIDIzOjQ1OjEzICswMjAwLCBEYXZpZCBIw6RyZGVtYW4gd3JvdGU6
+Cj4gPj4+IAo+ID4+PiBhKQo+ID4+PiAKPiA+Pj4gQ2hhbm5lbCBtYXBwaW5nIHNlZW1zIGZ1bmt5
+LiBJIGhhdmUgYSA1LjEgc3BlYWtlciBzZXR1cCAodGhvdWdoIHRoZSAKPiA+Pj4gcmVjZWl2ZXIg
+c3VwcG9ydHMgNy4xKSBhbmQgdXNpbmcgInNwZWFrZXItdGVzdCAtYyA2IiBvciAic3BlYWtlci10
+ZXN0IAo+ID4+PiAtYzgiIHdpdGggdGhlIGhkbWkgb3V0cHV0IHdpbGwgZ2VuZXJhdGUgb3V0cHV0
+IHRvIHRoZSBkaWZmZXJlbnQgc3BlYWtlcnMgCj4gPj4+IGJ1dCBub3QgdGhlIGludGVuZGVkIG9u
+ZXMuIFNwZWFrZXJzIGFyZSBjb25uZWN0ZWQgY29ycmVjdGx5IHRob3VnaCAKPiA+Pj4gKHNpbmNl
+IHRoZSBjaGFubmVscyBhcmUgY29ycmVjdCBpZiBJIHVzZSBwYXNzdGhyb3VnaCB0byBzZW5kIGEg
+cmF3IEFDMyAKPiA+Pj4gc3RyZWFtIHRocm91Z2ggZWl0aGVyIHRoZSBTL1BESUYgb3IgSERNSSBj
+b25uZWN0b3IpLiBUaGlzIG9ubHkgb2NjdXJzIAo+ID4+PiB3aGVuIHVzaW5nIEhETUkuCj4gPgo+
+ID5UaGlzIGlzIGtub3duIHByb2JsZW0uIFRoZSBHNDUgSERNSSBjb2RlYyBkb2VzIG5vdCBzdXBw
+b3J0IGNoYW5uZWwKPiA+bWFwcGluZywgc28gdGhlIG1hcHBpbmcgbXVzdCBiZSBoYW5kbGVkIGlu
+IHVzZXIgc3BhY2UuIEZ1dHVyZSBJbnRlbAo+ID5IRE1JIGNvZGVjcyBtYXkgYWRkIHN1cHBvcnQg
+Zm9yIHRoaXMgZmVhdHVyZS4KPiAKPiBUd28gcXVlc3Rpb25zIChhbmQgc29ycnkgaWYgdGhlIHF1
+ZXN0aW9ucyBzaG93IG15IGxhY2sgb2YgdW5kZXJzdGFuZGluZyAKPiBvZiBob3cgdGhpcyBpcyBz
+dXBwb3NlZCB0byB3b3JrKToKPiAKPiBpKSBDYW4ndCB0aGUgZHJpdmVyIGF0IGxlYXN0IHByb3Zp
+ZGUgcmVhc29uYWJsZSBkZWZhdWx0cz8gSWYgcGxheWluZyBhIAo+IHNpeCBjaGFubmVsIGF1ZGlv
+LCBpdCBzZWVtcyByZWFzb25hYmxlIHRoYXQgdGhlIHVzZXIgd291bGQgbGlrZSB0aGUgCj4gdHJh
+Y2tzIHRvIHBsYXkgdG8gdGhlIHNwZWFrZXJzIGNvbmZvcm1pbmcgdG8gYSA1LjEgc2V0dXA/CgpU
+aGUgcHJvYmxlbSBpcywgQUxTQSBhbmQgSERNSSBlYWNoIGhhcyB0aGVpciBkZWZhdWx0IGNoYW5u
+ZWwgbWFwcGluZywKd2hpY2ggdW5mb3J0dW5hdGVseSBkaXNhZ3JlZS4gQWxsIHRoZSBkcml2ZXIg
+Y291bGQgZG8gaXMgdG8gdGVsbApoYXJkd2FyZSBhYm91dCB0aGUgcmVxdWlyZWQgcmVtYXBwaW5n
+IGluZm8uIEFuZCBHNDUgc2VlbSB0byBqdXN0Cmlnbm9yZSB0aGlzIGluZm8uIAoKPiBpaSkgSXMg
+dGhlcmUgYW55IGRvY3VtZW50YXRpb24gc29tZXdoZXJlIG9uIGhvdyB0aGlzIG1hcHBpbmcgaXMg
+c3VwcG9zZWQgCj4gdG8gYmUgcGVyZm9ybWVkIGluIHVzZXIgc3BhY2U/CgpJIHRoaW5rIFNoYW5l
+IGhhcyBwcm92aWRlZCBhIGdvb2QgZXhhbXBsZSBmb3IgeW91IGluIGFub3RoZXIgZW1haWwgOikK
+SGVyZSBhcmUgbW9yZSBkZXNjcmlwdGlvbnMgZm9yIHRoZSByb3V0ZSBwbHVnaW46CgogICAgICAg
+IFBsdWdpbjogUm91dGUgJiBWb2x1bWUKICAgICAgICBUaGlzIHBsdWdpbiBjb252ZXJ0cyBjaGFu
+bmVscyBhbmQgYXBwbGllcyB2b2x1bWUgZHVyaW5nIHRoZSBjb252ZXJzaW9uLiBUaGUgZm9ybWF0
+IGFuZCByYXRlIG11c3QgbWF0Y2ggZm9yIGJvdGggb2YgdGhlbS4KCiAgICAgICAgcGNtLm5hbWUg
+ewogICAgICAgICAgICAgICAgdHlwZSByb3V0ZSAgICAgICAgICAgICAgIyBSb3V0ZSAmIFZvbHVt
+ZSBjb252ZXJzaW9uIFBDTQogICAgICAgICAgICAgICAgc2xhdmUgU1RSICAgICAgICAgICAgICAg
+IyBTbGF2ZSBuYW1lCiAgICAgICAgICAgICAgICAjIG9yCiAgICAgICAgICAgICAgICBzbGF2ZSB7
+ICAgICAgICAgICAgICAgICAjIFNsYXZlIGRlZmluaXRpb24KICAgICAgICAgICAgICAgICAgICAg
+ICAgcGNtIFNUUiAgICAgICAgICMgU2xhdmUgUENNIG5hbWUKICAgICAgICAgICAgICAgICAgICAg
+ICAgIyBvcgogICAgICAgICAgICAgICAgICAgICAgICBwY20geyB9ICAgICAgICAgIyBTbGF2ZSBQ
+Q00gZGVmaW5pdGlvbgogICAgICAgICAgICAgICAgICAgICAgICBbZm9ybWF0IFNUUl0gICAgIyBT
+bGF2ZSBmb3JtYXQKICAgICAgICAgICAgICAgICAgICAgICAgW2NoYW5uZWxzIElOVF0gICMgU2xh
+dmUgY2hhbm5lbHMKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHR0YWJsZSB7ICAg
+ICAgICAgICAgICAgICMgVHJhbnNmZXIgdGFibGUgKGJpLWRpbWVuc2lvbmFsIGNvbXBvdW5kIG9m
+IGNjaGFubmVscyAqIHNjaGFubmVscyBudW1iZXJzKQogICAgICAgICAgICAgICAgICAgICAgICBD
+Q0hBTk5FTCB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU0NIQU5ORUwgUkVBTCAg
+ICMgcm91dGUgdmFsdWUgKDAuMCAtIDEuMCkKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAg
+ICAgICAgICAgICAgfQogICAgICAgIH0KCj4gPj4+IGIpCj4gPj4+IAo+ID4+PiBFYWNoIHRpbWUg
+YSBuZXcgYXVkaW8gc3RhcnRzIHBsYXlpbmcsIHRoZXJlIHNlZW1zIHRvIGJlIGEgNTAvNTAgY2hh
+bmNlIAo+ID4+PiBvZiBjb21wbGV0ZSBzaWxlbmNlLCBtZWFuaW5nIHRoYXQgZm9yIGVhY2ggdHJh
+Y2sgY2hhbmdlIHdoaWxlIGxpc3RlbmluZyAKPiA+Pj4gdG8gbXVzaWMgKGZvciBleGFtcGxlKSwg
+dGhlIGVudGlyZSB0cmFjayB3aWxsIGVpdGhlciBwbGF5IG9yIHN0YXkgCj4gPj4+IHNpbGVudC4K
+PiA+Pj4gCj4gPj4+IFRoaXMgb25seSBoYXBwZW5zIHdoZW4gdXNpbmcgSERNSSwgbm90IFMvUERJ
+Ri4gVGhlIHByb2JsZW0gb2NjdXJzIHdpdGggCj4gPj4+IGJvdGggTXl0aFRWJ3MgbXVzaWMgcGxh
+eWVyIGFuZCB3aGVuIHdhdGNoaW5nIGEgbW92aWUgd2l0aCBYaW5lLgo+ID4KPiA+Q29tcGxldGUg
+c2lsZW5jZSBmb3IgaG93IG11Y2ggdGltZT8KPiAKPiBGb3IgdGhlIGVudGlyZSBkdXJhdGlvbiBv
+ZiB0aGUgcGFydGljdWxhciBtb3ZpZS9hdWRpbyB0cmFjay92aWRlbyAKPiBjbGlwL3doYXRldmVy
+Lgo+IAo+IFNvIGZvciBpbnN0YW5jZSwgaWYgSSdtIHBsYXlpbmcgYSBsaXN0IG9mIHRyYWNrcyB1
+c2luZyBNeXRoVFYsIGVhY2ggCj4gcGFydGljdWxhciB0cmFjayB3aWxsIGVpdGhlciBwbGF5IGNv
+bXBsZXRlbHkgKm9yKiB0aGVyZSB3aWxsIGJlIGNvbXBsZXRlIAo+IHNpbGVuY2UgZm9yIHRoZSBk
+dXJhdGlvbiBvZiB0aGUgdHJhY2suCj4gCj4gU2FtZSBnb2VzIGZvciBzaG93aW5nIGEgbW92aWUg
+b3IgYSB2aWRlbyBjbGlwIHdpdGggbXBsYXllciBvciAKPiB4aW5lLi4uZWl0aGVyIHRoZSBhdWRp
+byB3aWxsIHdvcmsgZm9yIHRoZSBlbnRpcmUgZHVyYXRpb24gb2YgdGhlIAo+IG1vdmllL2NsaXAg
+b3IgdGhlcmUgd2lsbCBiZSBjb21wbGV0ZSBzaWxlbmNlIGZvciB0aGUgZHVyYXRpb24gb2YgdGhl
+IAo+IGNsaXAuCj4gCj4gVGhpcyBjYW4gYmUgImZpeGVkIiBieSBqdXN0IHN0b3BwaW5nIG1wbGF5
+ZXIveGluZS93aGF0ZXZlciBhbmQgc3RhcnRpbmcgCj4gdGhlIHByb2dyYW0gYWdhaW4gd2l0aCB0
+aGUgc2FtZSBtZWRpYSB1bnRpbCBpdCB3b3JrcywgYnV0IGl0J3MgcHJldHR5IAo+IGFubm95aW5n
+Lgo+IAo+IE15IHVuZWR1Y2F0ZWQgZ3Vlc3MgaXMgdGhhdCB0aGVyZSdzIHNvbWUga2luZCBvZiBj
+b250ZW50IG5lZ290aWF0aW9uIAo+IGdvaW5nIG9uIGF0IHRoZSBiZWdpbm5pbmcgb2YgZWFjaCBu
+ZXcgbWVkaWEgcGxheWJhY2suIE9uIHRoZSBmcm9udCBvZiAKPiB0aGUgcmVjZWl2ZXIgdGhlcmUg
+aXMgYSBMQ0QgZGlzcGxheSB3aGljaCBzaG93cyBpbmZvIG9uIHRoZSBjdXJyZW50IAo+IGF1ZGlv
+IHNldHVwIChudW1iZXIgb2Ygc3BlYWtlcnMsIHR5cGUgb2YgYXVkaW8sIGV0YyksIGFuZCBpdCBm
+bGlja2VycyAKPiBicmllZmx5IGF0IHRoZSBzdGFydCBvZiBlYWNoIG5ldyB0cmFjay92aWRlby9l
+dGMgYmVmb3JlIGl0IHNob3dzIHRoZSAKPiBjb3JyZWN0IHNpdHVhdGlvbiBmb3IgdGhlIGN1cnJl
+bnQgbWVkaWEuLi5wZXJoYXBzIHRoZXJlIGlzIHNvbWUgcHJvYmxlbSAKPiB3aXRoIHRoaXMgbmVn
+b3RpYXRpb24uCgpJIGFjdHVhbGx5IGhhdmUgYSBERzQ1RkMgYm94IGFuZCBoYXZlIG5vdCBydW4g
+aW50byB0aGlzIHByb2JsZW0gZm9yCmFsbCB0aGUgSERNSSBtb25pdG9ycyBJIGhhdmUuIFdoYXQn
+cyB5b3VyIG1vbml0b3IgbW9kZWw/CgpEaWQgdGhlIGtlcm5lbCBlbWl0IHNvbWUgZXJyb3IgbWVz
+c2FnZXM/IFdoYXQgaWYgeW91IGNoYW5nZSBkaXNwbGF5Cm1vZGVzIHdpdGggeHJhbmRyPwoKPiBJ
+IGdvdCBzb21lIGZlZWRiYWNrIGZyb20gYW5vdGhlciB1c2VyIG9uIGFsc2EtdXNlciAoQ0M6ZWQp
+Ogo+IGh0dHA6Ly9hcnRpY2xlLmdtYW5lLm9yZy9nbWFuZS5saW51eC5hbHNhLnVzZXIvMzMzOTMK
+PiAKPiBBbmQgaGUgaGFkIHNpbWlsYXIgYnV0IG5vdCBpZGVudGljYWwgcHJvYmxlbXMgKDIgc2Vj
+b25kIHNpbGVuY2UgYXQgdGhlIAo+IGJlZ2lubmluZyBvZiB0cmFja3MsIGJ1dCBub3Qgc2lsZW5j
+ZSBmb3IgdGhlIGVudGlyZSBkdXJhdGlvbiBvZiBhIAoKSXQncyA8PSAwLjUgc2Vjb25kIHNpbGVu
+Y2UgZnJvbSBteSBleHBlcmllbmNlLgoKU2hhbmUgd3JvdGU6CjogVGhpcyBpcyBvZGQgSSd2ZSBu
+ZXZlciBoYWQgdGhpcyBoYXBwZW4uIEkgZG8gZ2V0IGEgaGFsZgo6IHNlY29uZCBvZiB0cmFjayBz
+a2lwIGJldHdlZW4gdHJhY2tzIHNvIHRyYWNrIHRyYW5zaXRpb25zCjogc291bmQgcHJldHR5IHRl
+cnJpYmxlIGJ1dCBjb21wbGV0ZSBzaWxlbmNlLCBwZXJoYXBzIGEKOiBkZXZlbG9wZXIgd2lsbCBr
+bm93IHdoYXQgdGhpcyBpcyBhYm91dC4gSSB3b25kZXIgaWYgdGhlCjogc2tpcCBiZXR3ZWVuIHRy
+YWNrcyBhbmQgdGhlIHNpbGVuY2UgcHJvYmxlbXMgYXJlIHJlbGF0ZWQuCjogSUUsIGlzIHRoZSBo
+YXJkd2FyZSByZXNldCBvbiBkZXZpY2Ugb3BlbiBkb2luZyBtb3JlIGhhcm0KOiB0aGFuIGdvb2Q/
+CgpIRE1JIGNvZGVjL3Npbmsgc2VlbSB0byB0YWtlIHNvbWUgdGltZSB0byByZXNwb25zZSB0byB0
+aGUgb3V0cHV0CmVuYWJsZSBhbmQgbmV3IGluZm9mcmFtZSwgc28gdGhlcmUgYXJlIHNvbWUgZGVs
+YXkuIEkndmUgbW92ZWQgdGhlIEhETUkKb3V0cHV0IGVuYWJsZSBjb21tYW5kIHRvIG1vZHVsZSBs
+b2FkIHRpbWUsIHRoaXMgaGVscHMuIFRoZSBpbmZvZnJhbWUKaXMgaW4gdGhlb3J5IGNyZWF0ZWQg
+aW4gcnVuIHRpbWUgYmFzZWQgb24gdGhlIGZvcm1hdCBvZiBfZWFjaF8gbmV3CmF1ZGlvIHN0cmVh
+bSwgc28gaW5mb2ZyYW1lIHRyYW5zbWlzc2lvbiBoYXMgdG8gYmUgc3RhcnRlZC9zdG9wcGVkCmZv
+ciBlYWNoIHRyYWNrLi4KCj4gdHJhY2spLCBzbyBwZXJoYXBzIGRpZmZlcmVudCByZWNlaXZlcnMg
+cmVhY3QgaW4gZGlmZmVyZW50IHdheXMgdG8gCj4gc29tZXRoaW5nIHVuZXhwZWN0ZWQgaW4gdGhl
+IEhETUkgc3RyZWFtPwoKRGVmaW5pdGVseS4gSERNSSBtb25pdG9ycyBhcmUgc21hcnQgZGV2aWNl
+cyBhbmQgY2FuIGJlaGF2ZSBzbGlnaHRseQpkaWZmZXJlbnQuIEkndmUgYWxzbyBleHBlcmllbmNl
+ZCBzb21lIHdlaXJkIEhETUkgbW9uaXRvciBiZWhhdmlvcnMuCgpUaGFua3MsCkZlbmdndWFuZwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
