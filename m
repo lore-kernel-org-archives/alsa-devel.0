@@ -1,216 +1,106 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 2/4] OMAP: Platform support for
-	twl4030_codec MFD
-Date: Tue, 20 Oct 2009 12:01:39 -0700
-Message-ID: <20091020190138.GK12576@atomide.com>
-References: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1255956140-4829-2-git-send-email-peter.ujfalusi@nokia.com>
-	<1255956140-4829-3-git-send-email-peter.ujfalusi@nokia.com>
+From: David =?iso-8859-1?Q?H=E4rdeman?= <david@hardeman.nu>
+Subject: Re: [Intel-gfx] Problems with HDMI audio on Intel
+	DG45FC	motherboard
+Date: Wed, 21 Oct 2009 00:37:58 +0200
+Message-ID: <20091020223758.GA31022@hardeman.nu>
+References: <20091011214513.GB12771@hardeman.nu>
+	<20091014015455.GI13364@zhen-devel.sh.intel.com>
+	<20091014020044.GA10032@localhost>
+	<20091014174053.GA31149@hardeman.nu>
+	<20091020012600.GA6548@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-01-ewr.mailhop.org (mho-01-ewr.mailhop.org [204.13.248.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4601D103817
-	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Oct 2009 21:01:46 +0200 (CEST)
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-user-bounces@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1255956140-4829-3-git-send-email-peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, sameo@linux.intel.com
+In-Reply-To: <20091020012600.GA6548@localhost>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: alsa-user-bounces@lists.sourceforge.net
+To: Wu Fengguang <fengguang.wu@intel.com>
+Cc: alsa-user@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Peter Ujfalusi <peter.ujfalusi@nokia.com> [091019 05:42]:
-> Add needed platform data for the twl4030_codec MFD on boards,
-> where the audio part of the twl4030 codec is used.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+On Tue, Oct 20, 2009 at 09:26:00AM +0800, Wu Fengguang wrote:
 
-This looks safe to merge with the twl/audio patches to keep
-them together. So not adding to my queue.
+>Sorry for the long delay!
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+No problem.
+
+>On Thu, Oct 15, 2009 at 01:40:53AM +0800, David H=E4rdeman wrote:
+>> ii) Is there any documentation somewhere on how this mapping is supposed =
+
+>> to be performed in user space?
+>
+>I think Shane has provided a good example for you in another email :)
+>Here are more descriptions for the route plugin:
+
+So perhaps I should still file a bug with the ALSA bugtracker asking for =
+
+the default ALSA userspace to include a channel mapping along Shane's =
+
+recommendation?
+
+>> >Complete silence for how much time?
+>> =
+
+>> For the entire duration of the particular movie/audio track/video =
+
+>> clip/whatever.
+>> =
+
+>
+>I actually have a DG45FC box and have not run into this problem for
+>all the HDMI monitors I have. What's your monitor model?
+
+A Samsung LE-55A956 LCD TV. But I think the problem is not with the =
+
+monitor (TV) but rather with the receiver that is between the DG45FC and =
+
+the TV. The receiver is a Marantz SR8002 with HDMI support.
+
+>Did the kernel emit some error messages?
+
+Nope
+
+>What if you change display
+>modes with xrandr?
+
+Haven't tried that yet...currently running on 1920x1080@60 which should =
+
+(I guess) be one of the most common modes with modern LCD TV's.
+
+>HDMI codec/sink seem to take some time to response to the output
+>enable and new infoframe, so there are some delay. I've moved the HDMI
+>output enable command to module load time, this helps. The infoframe
+>is in theory created in run time based on the format of _each_ new
+>audio stream, so infoframe transmission has to be started/stopped
+>for each track..
+
+So my current theory is along the line of HDMI audio infoframe or video =
+
+infoframe problems. Do you have any pointers where in the driver(s) =
+
+the infoframes (both audio and video) are generated so that I can add =
+
+some debugging statements to dump the frames and compare the working =
+
+and non-working scenarios?
+
+Regards,
+David
 
 
+---------------------------------------------------------------------------=
+---
+Come build with us! The BlackBerry(R) Developer Conference in SF, CA
+is the only developer event you need to attend this year. Jumpstart your
+developing skills, take BlackBerry mobile applications to market and stay =
 
-> ---
->  arch/arm/mach-omap2/board-3430sdp.c      |    9 +++++++++
->  arch/arm/mach-omap2/board-omap3beagle.c  |    9 +++++++++
->  arch/arm/mach-omap2/board-omap3evm.c     |    9 +++++++++
->  arch/arm/mach-omap2/board-omap3pandora.c |    9 +++++++++
->  arch/arm/mach-omap2/board-overo.c        |    9 +++++++++
->  arch/arm/mach-omap2/board-zoom2.c        |    9 +++++++++
->  6 files changed, 54 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
-> index efaf053..4f91f7a 100644
-> --- a/arch/arm/mach-omap2/board-3430sdp.c
-> +++ b/arch/arm/mach-omap2/board-3430sdp.c
-> @@ -410,6 +410,14 @@ static struct regulator_init_data sdp3430_vpll2 = {
->  	.consumer_supplies	= &sdp3430_vdvi_supply,
->  };
->  
-> +static struct twl4030_codec_audio_data sdp3430_audio = {
-> +	.audio_mclk = 26000000,
-> +};
-> +
-> +static struct twl4030_codec_data sdp3430_codec = {
-> +	.audio = &sdp3430_audio,
-> +};
-> +
->  static struct twl4030_platform_data sdp3430_twldata = {
->  	.irq_base	= TWL4030_IRQ_BASE,
->  	.irq_end	= TWL4030_IRQ_END,
-> @@ -420,6 +428,7 @@ static struct twl4030_platform_data sdp3430_twldata = {
->  	.madc		= &sdp3430_madc_data,
->  	.keypad		= &sdp3430_kp_data,
->  	.usb		= &sdp3430_usb_data,
-> +	.codec		= &sdp3430_codec,
->  
->  	.vaux1		= &sdp3430_vaux1,
->  	.vaux2		= &sdp3430_vaux2,
-> diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-> index 70df6b4..2161d85 100644
-> --- a/arch/arm/mach-omap2/board-omap3beagle.c
-> +++ b/arch/arm/mach-omap2/board-omap3beagle.c
-> @@ -254,6 +254,14 @@ static struct twl4030_usb_data beagle_usb_data = {
->  	.usb_mode	= T2_USB_MODE_ULPI,
->  };
->  
-> +static struct twl4030_codec_audio_data beagle_audio_data = {
-> +	.audio_mclk = 26000000,
-> +};
-> +
-> +static struct twl4030_codec_data beagle_codec_data = {
-> +	.audio = &beagle_audio_data,
-> +};
-> +
->  static struct twl4030_platform_data beagle_twldata = {
->  	.irq_base	= TWL4030_IRQ_BASE,
->  	.irq_end	= TWL4030_IRQ_END,
-> @@ -261,6 +269,7 @@ static struct twl4030_platform_data beagle_twldata = {
->  	/* platform_data for children goes here */
->  	.usb		= &beagle_usb_data,
->  	.gpio		= &beagle_gpio_data,
-> +	.codec		= &beagle_codec_data,
->  	.vmmc1		= &beagle_vmmc1,
->  	.vsim		= &beagle_vsim,
->  	.vdac		= &beagle_vdac,
-> diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
-> index e4ec0c5..d9a6103 100644
-> --- a/arch/arm/mach-omap2/board-omap3evm.c
-> +++ b/arch/arm/mach-omap2/board-omap3evm.c
-> @@ -194,6 +194,14 @@ static struct twl4030_madc_platform_data omap3evm_madc_data = {
->  	.irq_line	= 1,
->  };
->  
-> +static struct twl4030_codec_audio_data omap3evm_audio_data = {
-> +	.audio_mclk = 26000000,
-> +};
-> +
-> +static struct twl4030_codec_data omap3evm_codec_data = {
-> +	.audio = &omap3evm_audio_data,
-> +};
-> +
->  static struct twl4030_platform_data omap3evm_twldata = {
->  	.irq_base	= TWL4030_IRQ_BASE,
->  	.irq_end	= TWL4030_IRQ_END,
-> @@ -203,6 +211,7 @@ static struct twl4030_platform_data omap3evm_twldata = {
->  	.madc		= &omap3evm_madc_data,
->  	.usb		= &omap3evm_usb_data,
->  	.gpio		= &omap3evm_gpio_data,
-> +	.codec		= &omap3evm_codec_data,
->  };
->  
->  static struct i2c_board_info __initdata omap3evm_i2c_boardinfo[] = {
-> diff --git a/arch/arm/mach-omap2/board-omap3pandora.c b/arch/arm/mach-omap2/board-omap3pandora.c
-> index 7f6bf87..5036b56 100644
-> --- a/arch/arm/mach-omap2/board-omap3pandora.c
-> +++ b/arch/arm/mach-omap2/board-omap3pandora.c
-> @@ -281,11 +281,20 @@ static struct twl4030_usb_data omap3pandora_usb_data = {
->  	.usb_mode	= T2_USB_MODE_ULPI,
->  };
->  
-> +static struct twl4030_codec_audio_data omap3pandora_audio_data = {
-> +	.audio_mclk = 26000000,
-> +};
-> +
-> +static struct twl4030_codec_data omap3pandora_codec_data = {
-> +	.audio = &omap3pandora_audio_data,
-> +};
-> +
->  static struct twl4030_platform_data omap3pandora_twldata = {
->  	.irq_base	= TWL4030_IRQ_BASE,
->  	.irq_end	= TWL4030_IRQ_END,
->  	.gpio		= &omap3pandora_gpio_data,
->  	.usb		= &omap3pandora_usb_data,
-> +	.codec		= &omap3pandora_codec_data,
->  	.vmmc1		= &pandora_vmmc1,
->  	.vmmc2		= &pandora_vmmc2,
->  	.keypad		= &pandora_kp_data,
-> diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
-> index 9917d2f..dc55008 100644
-> --- a/arch/arm/mach-omap2/board-overo.c
-> +++ b/arch/arm/mach-omap2/board-overo.c
-> @@ -329,6 +329,14 @@ static struct regulator_init_data overo_vmmc1 = {
->  	.consumer_supplies	= &overo_vmmc1_supply,
->  };
->  
-> +static struct twl4030_codec_audio_data overo_audio_data = {
-> +	.audio_mclk = 26000000,
-> +};
-> +
-> +static struct twl4030_codec_data overo_codec_data = {
-> +	.audio = &overo_audio_data,
-> +};
-> +
->  /* mmc2 (WLAN) and Bluetooth don't use twl4030 regulators */
->  
->  static struct twl4030_platform_data overo_twldata = {
-> @@ -336,6 +344,7 @@ static struct twl4030_platform_data overo_twldata = {
->  	.irq_end	= TWL4030_IRQ_END,
->  	.gpio		= &overo_gpio_data,
->  	.usb		= &overo_usb_data,
-> +	.codec		= &overo_codec_data,
->  	.vmmc1		= &overo_vmmc1,
->  };
->  
-> diff --git a/arch/arm/mach-omap2/board-zoom2.c b/arch/arm/mach-omap2/board-zoom2.c
-> index b7b3220..f1b4e7c 100644
-> --- a/arch/arm/mach-omap2/board-zoom2.c
-> +++ b/arch/arm/mach-omap2/board-zoom2.c
-> @@ -229,6 +229,14 @@ static struct twl4030_madc_platform_data zoom2_madc_data = {
->  	.irq_line	= 1,
->  };
->  
-> +static struct twl4030_codec_audio_data zoom2_audio_data = {
-> +	.audio_mclk = 26000000,
-> +};
-> +
-> +static struct twl4030_codec_data zoom2_codec_data = {
-> +	.audio = &zoom2_audio_data,
-> +};
-> +
->  static struct twl4030_platform_data zoom2_twldata = {
->  	.irq_base	= TWL4030_IRQ_BASE,
->  	.irq_end	= TWL4030_IRQ_END,
-> @@ -239,6 +247,7 @@ static struct twl4030_platform_data zoom2_twldata = {
->  	.usb		= &zoom2_usb_data,
->  	.gpio		= &zoom2_gpio_data,
->  	.keypad		= &zoom2_kp_twl4030_data,
-> +	.codec		= &zoom2_codec_data,
->  	.vmmc1          = &zoom2_vmmc1,
->  	.vmmc2          = &zoom2_vmmc2,
->  	.vsim           = &zoom2_vsim,
-> -- 
-> 1.6.5.1
-> 
+ahead of the curve. Join us from November 9 - 12, 2009. Register now!
+http://p.sf.net/sfu/devconference
