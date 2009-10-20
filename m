@@ -1,19 +1,20 @@
-From: brunal2496 gmail <brunal2496@gmail.com>
-Subject: Exemple of source code for capture without using
-	callback
-Date: Tue, 20 Oct 2009 16:49:28 +0200
-Message-ID: <26289049-EACA-4DC6-A396-E2AF4EB6F2E9@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v936)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: ASoC updates for 2.6.33
+Date: Tue, 20 Oct 2009 23:13:19 +0800
+Message-ID: <3c17e3570910200813v6ed8620je1e16fff306a00a5@mail.gmail.com>
+References: <20091015144039.GB24756@rakim.wolfsonmicro.main>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f225.google.com (mail-ew0-f225.google.com
-	[209.85.219.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 69E26246EE
+Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
+	[209.85.211.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81E2E246FD
 	for <alsa-devel@alsa-project.org>;
-	Tue, 20 Oct 2009 16:49:31 +0200 (CEST)
-Received: by ewy25 with SMTP id 25so5634509ewy.45
-	for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2009 07:49:31 -0700 (PDT)
+	Tue, 20 Oct 2009 17:13:21 +0200 (CEST)
+Received: by ywh28 with SMTP id 28so4897919ywh.16
+	for <alsa-devel@alsa-project.org>; Tue, 20 Oct 2009 08:13:19 -0700 (PDT)
+In-Reply-To: <20091015144039.GB24756@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +24,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-
-it's my first time on this list and my knowledge about using poll()  
-mutex and thread creation is a bit far away from now, so please, if  
-this list is the wrong place for such a question, could you point me  
-in the right direction?
-
-Does anyone can point me a place to find a good exemple of source code  
-for capturing sound with alsa without using callbacks?
-
-I'm trying to interface a voice recognition software with the alsa  
-drivers.
-
-I have to get audio from alsa convert it and then send to the  
-recognition engine.
-I've read everywhere that using callback is a bad method to use the  
-alsa drivers.
-
-As the recognition software is a server, it needs to be synchronized  
-with my application. And so my main() cannot loop on a endless loop  
-with the snd_pcm_readi() function inside.
-
-My first idea was to create a new thread and to let this thread  
-running with a endless loop that do the snd_pcm_readi() and send the  
-buffer to the recognition software.
-But I 've read the existence of smd_pcm_poll_descriptors() function.  
-For now I not shure was it is for and how to use it properly.
-
-What do you think?
-
-I'm sorry if my question is a real newbie question, but exemple online  
-are only for playback not capture.
-
-Many thanks for all your answers.
-
-Bruno.
+T24gVGh1cnNkYXksIE9jdG9iZXIgMTUsIDIwMDksIE1hcmsgQnJvd24KPGJyb29uaWVAb3BlbnNv
+dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2lu
+Y2UgY29tbWl0IGViYWIxYjFkMDcyNjZhYjhjYTlmNjUwNjVlNjhiMDJmMDU1MDRjNGU6Cj4gIMKg
+TWFyayBCcm93biAoMSk6Cj4gIMKgIMKgIMKgIMKgQVNvQzogTWlub3IgZml4dXBzIHRvIHRwYTYx
+MzBhMiBkcml2ZXIKPgo+IGFyZSBhdmFpbGFibGUgaW4gdGhlIGdpdCByZXBvc2l0b3J5IGF0Ogo+
+Cj4gIMKgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Jyb29u
+aWUvc291bmQtMi42LmdpdCBmb3ItMi42LjMzCj4KPiBCZW4gRG9va3MgKDEpOgo+ICDCoCDCoCDC
+oEFTb0M6IFMzQzogUmVtb3ZlIDxwbGF0L2F1ZGlvLmg+Cj4KPiBFZXJvIE51cmtrYWxhICgxKToK
+PiAgwqAgwqAgwqBBU29DOiBTZXJpYWxpemUgYWNjZXNzIHRvIGRhcG1fcG93ZXJfd2lkZ2V0cygp
+Cj4KPiBJZ29yIEdyaW5iZXJnICgxKToKPiAgwqAgwqAgwqBBU29DOiBmaW5hbGx5IGVuYWJsZSBz
+dXBwb3J0IGZvciBlWGVkYSBhbmQgQ00tWDMwMAo+Cj4gTWFyayBCcm93biAoMik6Cj4gIMKgIMKg
+IMKgQVNvQzogUmVtb3ZlIHNuZF9zb2Nfc3VzcGVuZF9kZXZpY2UoKQo+ICDCoCDCoCDCoE1lcmdl
+IGJyYW5jaCAnZm9yLTIuNi4zMicgaW50byBmb3ItMi42LjMzCj4KPiBQZXRlciBVamZhbHVzaSAo
+Mik6Cj4gIMKgIMKgIMKgQVNvQzogVFBBNjEzMEEyOiBNYWtlIHRwYTYxMzBhMl9wb3dlciBhcyBz
+dGF0aWMKPiAgwqAgwqAgwqBBU29DOiBDb2RlYyBkcml2ZXIgZm9yIFRleGFzIEluc3RydW1lbnRz
+IHRsdjMyMGRhYzMzIGNvZGVjCj4KPiDCoGFyY2gvYXJtL3BsYXQtczNjL2luY2x1ZGUvcGxhdC9h
+dWRpby5oIHwgwqAgNDUgLS0KPiDCoGluY2x1ZGUvc291bmQvc29jLmggwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqB8IMKgIMKgNSAtCj4gwqBpbmNsdWRlL3NvdW5kL3RsdjMyMGRhYzMzLXBs
+YXQuaCDCoCDCoCDCoCB8IMKgIDIwICsKPiDCoHNvdW5kL3NvYy9jb2RlY3MvS2NvbmZpZyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCB8IMKgIMKgNCArCj4gwqBzb3VuZC9zb2MvY29kZWNzL01ha2VmaWxl
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCDCoDIgKwo+IMKgc291bmQvc29jL2NvZGVjcy9jczQy
+NzAuYyDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgMjAgLQo+IMKgc291bmQvc29jL2NvZGVjcy90
+bHYzMjBkYWMzMy5jIMKgIMKgIMKgIMKgIHwgMTIzNyArKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKwo+IMKgc291bmQvc29jL2NvZGVjcy90bHYzMjBkYWMzMy5oIMKgIMKgIMKgIMKgIHwg
+wqAyNjcgKysrKysrKwo+IMKgc291bmQvc29jL2NvZGVjcy90cGE2MTMwYTIuYyDCoCDCoCDCoCDC
+oCDCoCB8IMKgIMKgMiArLQo+IMKgc291bmQvc29jL2NvZGVjcy90cGE2MTMwYTIuaCDCoCDCoCDC
+oCDCoCDCoCB8IMKgIMKgMSAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODM1MC5jIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODQwMC5jIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODUyMy5jIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODU4MC5j
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODcx
+MS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dt
+ODczMS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAzNCAtCj4gwqBzb3VuZC9zb2MvY29kZWNz
+L3dtODc1My5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAzNSAtCj4gwqBzb3VuZC9zb2MvY29k
+ZWNzL3dtODc3Ni5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAzNCAtCj4gwqBzb3VuZC9zb2Mv
+Y29kZWNzL3dtODkwMC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9z
+b2MvY29kZWNzL3dtODkwMy5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3Vu
+ZC9zb2MvY29kZWNzL3dtODk0MC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBz
+b3VuZC9zb2MvY29kZWNzL3dtODk2MC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4g
+wqBzb3VuZC9zb2MvY29kZWNzL3dtODk2MS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAt
+Cj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODk4OC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAz
+NCAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtOTA4MS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDC
+oCAxNyAtCj4gwqBzb3VuZC9zb2MvcHhhL0tjb25maWcgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqB8IMKgIMKgMyArLQo+IMKgc291bmQvc29jL3MzYzI0eHgvbmVvMTk3M193bTg3NTMuYyDCoCDC
+oCB8IMKgIMKgMSAtCj4gwqBzb3VuZC9zb2MvczNjMjR4eC9zM2MtaTJzLXYyLmMgwqAgwqAgwqAg
+wqAgfCDCoCDCoDEgLQo+IMKgc291bmQvc29jL3MzYzI0eHgvczNjMjQxMi1pMnMuYyDCoCDCoCDC
+oCDCoHwgwqAgwqAxIC0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzI0NDMtYWM5Ny5jIMKgIMKg
+IMKgIHwgwqAgwqAxIC0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzI0eHgtaTJzLmMgwqAgwqAg
+wqAgwqB8IMKgIMKgMiArLQo+IMKgc291bmQvc29jL3MzYzI0eHgvczNjMjR4eC1wY20uYyDCoCDC
+oCDCoCDCoHwgwqAgwqAxIC0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzY0eHgtaTJzLmMgwqAg
+wqAgwqAgwqB8IMKgIMKgMSAtCj4gwqBzb3VuZC9zb2Mvc29jLWNvcmUuYyDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCB8IMKgIDM5IC0KPiDCoHNvdW5kL3NvYy9zb2MtZGFwbS5jIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHwgwqAgwqAyICstCj4gwqAzNSBmaWxlcyBjaGFuZ2VkLCAxNTM1
+IGluc2VydGlvbnMoKyksIDQ0NCBkZWxldGlvbnMoLSkKPiDCoGRlbGV0ZSBtb2RlIDEwMDY0NCBh
+cmNoL2FybS9wbGF0LXMzYy9pbmNsdWRlL3BsYXQvYXVkaW8uaAo+IMKgY3JlYXRlIG1vZGUgMTAw
+NjQ0IGluY2x1ZGUvc291bmQvdGx2MzIwZGFjMzMtcGxhdC5oCj4gwqBjcmVhdGUgbW9kZSAxMDA2
+NDQgc291bmQvc29jL2NvZGVjcy90bHYzMjBkYWMzMy5jCj4gwqBjcmVhdGUgbW9kZSAxMDA2NDQg
+c291bmQvc29jL2NvZGVjcy90bHYzMjBkYWMzMy5oCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
