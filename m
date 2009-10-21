@@ -1,53 +1,36 @@
 From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [PATCH] ASoC: Amstrad Delta minor cleanups
-Date: Wed, 21 Oct 2009 04:40:55 +0200
-Message-ID: <200910210440.56628.jkrzyszt@tis.icnet.pl>
+Subject: Calling omap_pcm_prepare() results in BUG() on OMAP1
+Date: Wed, 21 Oct 2009 05:11:06 +0200
+Message-ID: <200910210511.08263.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id DAE78103805
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Oct 2009 04:41:43 +0200 (CEST)
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi,
+After DMA burst mode has been introduced in sound/soc/omap/omap-pcm.c, 
+omap_pcm_prepare() unconditionally calls:
 
-Here is a patch that corrects small omissions I have found in my code.
+	omap_set_dma_src_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
+	omap_set_dma_dest_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+AFAICS, current implementation of those two functions found in 
+arch/arm/plat-ompa/dma.c doesn't support OMAP_DMA_DATA_BURST_16 on OMAP1 at 
+all, so they both end with BUG() on that machine. That seems to result in 
+ASoC being completely unusable, at least on my OMAP5910 based Amstrad Delta.
 
----
---- linux-2.6.32-rc5/sound/soc/omap/ams-delta.c.orig	2009-10-16 02:41:50.000000000 +0200
-+++ linux-2.6.32-rc5/sound/soc/omap/ams-delta.c	2009-10-21 03:33:17.000000000 +0200
-@@ -40,7 +40,7 @@
- 
- 
- /* Board specific DAPM widgets */
-- const struct snd_soc_dapm_widget ams_delta_dapm_widgets[] = {
-+static const struct snd_soc_dapm_widget ams_delta_dapm_widgets[] = {
- 	/* Handset */
- 	SND_SOC_DAPM_MIC("Mouthpiece", NULL),
- 	SND_SOC_DAPM_HP("Earpiece", NULL),
-@@ -81,7 +81,7 @@ static const char *ams_delta_audio_mode[
- 						(1 << AMS_DELTA_SPEAKER))
- #define AMS_DELTA_SPEAKERPHONE	(AMS_DELTA_HANDSFREE | (1 << AMS_DELTA_AGC))
- 
--unsigned short ams_delta_audio_mode_pins[] = {
-+static const unsigned short ams_delta_audio_mode_pins[] = {
- 	AMS_DELTA_MIXED,
- 	AMS_DELTA_HANDSET,
- 	AMS_DELTA_HANDSFREE,
+Is calling BUG() for OMAP1 from those functions intentional?
+
+If not intentional, can those be corrected by simply putting break; before 
+defalut:?
+
+If intentional, can those function calls be conditionally omited, at least for 
+OMAP1510, in sound/soc/omap/omap-pcm.c?
+
+Thanks,
+Janusz
