@@ -1,54 +1,57 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [alsa-devel] Calling omap_pcm_prepare() results in BUG() on
- OMAP1
-Date: Wed, 21 Oct 2009 10:16:37 +0300
-Message-ID: <20091021101637.e8167edb.jhnikula@gmail.com>
-References: <200910210511.08263.jkrzyszt@tis.icnet.pl>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 0/4] twl4030 codec as MFD device
+Date: Wed, 21 Oct 2009 11:56:33 +0300
+Message-ID: <200910211156.33505.peter.ujfalusi@nokia.com>
+References: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <200910210511.08263.jkrzyszt@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8DB7103837
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Oct 2009 10:56:47 +0200 (CEST)
+In-Reply-To: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "sameo@linux.intel.com" <sameo@linux.intel.com>
+Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hello Samuel,
 
-On Wed, 21 Oct 2009 05:11:06 +0200
-Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+On Monday 19 October 2009 15:42:16 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+> Hello,
+> =
 
-> Hi,
-> After DMA burst mode has been introduced in sound/soc/omap/omap-pcm.c, 
-> omap_pcm_prepare() unconditionally calls:
-> 
-> 	omap_set_dma_src_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
-> 	omap_set_dma_dest_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
-> 
-> AFAICS, current implementation of those two functions found in 
-> arch/arm/plat-ompa/dma.c doesn't support OMAP_DMA_DATA_BURST_16 on OMAP1 at 
-> all, so they both end with BUG() on that machine. That seems to result in 
-> ASoC being completely unusable, at least on my OMAP5910 based Amstrad Delta.
-> 
-Thanks for reporting the issue. Nobody didn't realize when those calls
-were added that indeed they will end up to BUG() in
-arch/arm/plat-omap/dma.c on OMAP1.
+> The following series adds new MFD device on top of the twl4030 MFD device
+>  for the codec part of the chip, and also converts the soc audio driver to
+>  use the correct probing (device model).
+> =
 
-> Is calling BUG() for OMAP1 from those functions intentional?
-> 
-> If not intentional, can those be corrected by simply putting break; before 
-> defalut:?
-> 
-I'd let it on as it is as it will point out immediately invalid
-argument for OMAP1 and those functions do not have return value.
+> Reason for the twl4030_codec MFD: the vibra control is actually in the
+>  codec part of the twl4030. If both the vibra and the audio functionality
+>  is needed from the twl4030 at the same time, than they need to control t=
+he
+>  codec power and APLL at the same time without breaking the other driver.
+> Also these two has to be able to work without the need for the other
+>  driver.
 
-> If intentional, can those function calls be conditionally omited, at least for 
-> OMAP1510, in sound/soc/omap/omap-pcm.c?
-> 
-Yep, just put cpu_class_is_omap1() test in sound/soc/omap/omap-pcm.c
-since we should not try to set unsupported burst size for OMAP1.
+Have you had time to look at the series?
+I have made all the modification suggested by Mark Brown, and I'm holding b=
+ack =
 
+the second series (to have the comments from you for the initial series), s=
+o I =
 
--- 
-Jarkko
+can address those in the same round.
+
+Thank you,
+P=E9ter
