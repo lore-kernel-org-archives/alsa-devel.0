@@ -1,19 +1,18 @@
-From: "AJ Slye" <jkittsmiller2@cfl.rr.com>
-Subject: work in progress: USB driver for Behringer BCD 2000
-Date: Thu, 22 Oct 2009 00:53:10 -0400
-Message-ID: <DA037F941C804CAE931B5EE408BCCFE6@jameslaptop>
+From: Colin Kincaid Williams <discord@uw.edu>
+Subject: snd-hda-intel , changing the model option
+Date: Wed, 21 Oct 2009 02:10:25 -0700
+Message-ID: <a5bf07fe0910210210l4d55bf83se973ba7755e18723@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cdptpa-omtalb.mail.rr.com (cdptpa-omtalb.mail.rr.com
-	[75.180.132.121])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8856824388
+Received: from mail-qy0-f185.google.com (mail-qy0-f185.google.com
+	[209.85.221.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id D182B103827
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Oct 2009 06:52:58 +0200 (CEST)
-Received: from jameslaptop ([70.121.45.223]) by cdptpa-omta02.mail.rr.com
-	with SMTP id <20091022045256094.SGKT12118@cdptpa-omta02.mail.rr.com>
-	for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2009 04:52:56 +0000
+	Wed, 21 Oct 2009 11:10:26 +0200 (CEST)
+Received: by qyk15 with SMTP id 15so4878305qyk.23
+	for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2009 02:10:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,5 +25,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I would Like to test this, and help where I can..
-If midi works that would be great, but if we can get audio as well, wonderfull....
+Hello,
+
+I'm trying to get my sound working and was wondering: Is there is a way to
+change the model option without restarting my computer? I tried editing the
+/etc/modprobe.d/alsa-base.conf file, and then restarting alsa with
+/etc/init.d/alsa-utils restart 0 , however I do not think the change is
+taking place. I used the alsa-info.sh script to determine if the change took
+place however it appears that the card has the same model name as when the
+machine booted.
+
+Best,
+
+Colin Williams
