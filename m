@@ -1,21 +1,20 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] ASoC: OMAP: Don't try to set unsupported
- OMAP_DMA_DATA_BURST_16 on OMAP1
-Date: Wed, 21 Oct 2009 22:16:07 +0300
-Message-ID: <20091021221607.c46f60e3.jhnikula@gmail.com>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [PATCH v2] ASoC: OMAP: Don't try to set unsupported
+	OMAP_DMA_DATA_BURST_16 on OMAP1
+Date: Wed, 21 Oct 2009 23:10:03 +0200
+Message-ID: <200910212310.05087.jkrzyszt@tis.icnet.pl>
 References: <200910212035.42245.jkrzyszt@tis.icnet.pl>
+	<20091021221607.c46f60e3.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f214.google.com (mail-fx0-f214.google.com
-	[209.85.220.214])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B3F4243B3
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8576824453
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Oct 2009 21:15:23 +0200 (CEST)
-Received: by fxm10 with SMTP id 10so17819660fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2009 12:15:22 -0700 (PDT)
-In-Reply-To: <200910212035.42245.jkrzyszt@tis.icnet.pl>
+	Wed, 21 Oct 2009 23:10:33 +0200 (CEST)
+In-Reply-To: <20091021221607.c46f60e3.jhnikula@gmail.com>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, e3-hacking@earth.li
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 Oct 2009 20:35:40 +0200
-Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
-
->  
-> +	if (cpu_class_is_omap1())
-> +		return 0;
-> +
->  	omap_set_dma_src_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
->  	omap_set_dma_dest_burst_mode(prtd->dma_ch, OMAP_DMA_DATA_BURST_16);
->  
-I would have implemented this by "if (!cpu_class_is_omap1())
-{..._burst_mode}" for making sure that no new OMAP1 error is introduced
-in the future if there is need to add some common stuff after those
-burst_mode calls and probably compiler can better optimize away those
-burst_mode calls for OMAP1 builds.
-
--- 
-Jarkko
+V2VkbmVzZGF5IDIxIE9jdG9iZXIgMjAwOSAyMToxNjowNyBKYXJra28gTmlrdWxhIG5hcGlzYcWC
+KGEpOgo+Cj4gSSB3b3VsZCBoYXZlIGltcGxlbWVudGVkIHRoaXMgYnkgImlmICghY3B1X2NsYXNz
+X2lzX29tYXAxKCkpCj4gey4uLl9idXJzdF9tb2RlfSIgZm9yIG1ha2luZyBzdXJlIHRoYXQgbm8g
+bmV3IE9NQVAxIGVycm9yIGlzIGludHJvZHVjZWQKPiBpbiB0aGUgZnV0dXJlIGlmIHRoZXJlIGlz
+IG5lZWQgdG8gYWRkIHNvbWUgY29tbW9uIHN0dWZmIGFmdGVyIHRob3NlCj4gYnVyc3RfbW9kZSBj
+YWxscyBhbmQgcHJvYmFibHkgY29tcGlsZXIgY2FuIGJldHRlciBvcHRpbWl6ZSBhd2F5IHRob3Nl
+Cj4gYnVyc3RfbW9kZSBjYWxscyBmb3IgT01BUDEgYnVpbGRzLgoKWWVzLCB5b3UncmUgcmlnaHQu
+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKQWZ0ZXIgRE1BIGJ1cnN0IG1vZGUgaGFzIGJl
+ZW4gaW50cm9kdWNlZCBpbiBzb3VuZC9zb2Mvb21hcC9vbWFwLXBjbS5jLCAKb21hcF9wY21fcHJl
+cGFyZSgpIHVuY29uZGl0aW9uYWxseSBjYWxsczoKCiAgICAgICAgb21hcF9zZXRfZG1hX3NyY19i
+dXJzdF9tb2RlKHBydGQtPmRtYV9jaCwgT01BUF9ETUFfREFUQV9CVVJTVF8xNik7CiAgICAgICAg
+b21hcF9zZXRfZG1hX2Rlc3RfYnVyc3RfbW9kZShwcnRkLT5kbWFfY2gsIE9NQVBfRE1BX0RBVEFf
+QlVSU1RfMTYpOwoKQ3VycmVudCBpbXBsZW1lbnRhdGlvbiBvZiB0aG9zZSB0d28gZnVuY3Rpb25z
+IGZvdW5kIGluIAphcmNoL2FybS9wbGF0LW9tcGEvZG1hLmMgZG9lc24ndCBzdXBwb3J0IE9NQVBf
+RE1BX0RBVEFfQlVSU1RfMTYgb24gT01BUDEgYXQgCmFsbCwgc28gdGhleSBib3RoIGVuZCB3aXRo
+IEJVRygpIG9uIHRoYXQgbWFjaGluZS4gVGhhdCByZXN1bHRzIGluIApBU29DIGJlaW5nIGNvbXBs
+ZXRlbHkgdW51c2FibGUsIGF0IGxlYXN0IG9uIG15IE9NQVA1OTEwIGJhc2VkIEFtc3RyYWQgRGVs
+dGEuCgpUaGUgcGF0Y2ggY29ycmVjdHMgdGhlIHByb2JsZW0gYnkgbm90IGNhbGxpbmcgdGhvc2Ug
+dHdvIGZ1bmN0aW9ucyB3aGVuIHJ1biBvbiAKT01BUDEgY2xhc3MgYmFzZWQgbWFjaGluZXMuCgpD
+cmVhdGVkIGFnYWluc3QgbGludXgtMi42LjMyLXJjNS4KVGVzdGVkIG9uIEFtc3RyYWQgRGVsdGEu
+CgpTaWduZWQtb2ZmLWJ5OiBKYW51c3ogS3J6eXN6dG9maWsgPGprcnp5c3p0QHRpcy5pY25ldC5w
+bD4KCi0tLQotLS0gbGludXgtMi42LjMyLXJjNS9zb3VuZC9zb2Mvb21hcC9vbWFwLXBjbS5jLm9y
+aWcJMjAwOS0xMC0yMSAyMTo1MTozOC4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4zMi1y
+YzUvc291bmQvc29jL29tYXAvb21hcC1wY20uYwkyMDA5LTEwLTIxIDIxOjUyOjU5LjAwMDAwMDAw
+MCArMDIwMApAQCAtMTk1LDggKzE5NSwxMiBAQCBzdGF0aWMgaW50IG9tYXBfcGNtX3ByZXBhcmUo
+c3RydWN0IHNuZF9wCiAJZWxzZQogCQlvbWFwX2VuYWJsZV9kbWFfaXJxKHBydGQtPmRtYV9jaCwg
+T01BUF9ETUFfRlJBTUVfSVJRKTsKIAotCW9tYXBfc2V0X2RtYV9zcmNfYnVyc3RfbW9kZShwcnRk
+LT5kbWFfY2gsIE9NQVBfRE1BX0RBVEFfQlVSU1RfMTYpOwotCW9tYXBfc2V0X2RtYV9kZXN0X2J1
+cnN0X21vZGUocHJ0ZC0+ZG1hX2NoLCBPTUFQX0RNQV9EQVRBX0JVUlNUXzE2KTsKKwlpZiAoIShj
+cHVfY2xhc3NfaXNfb21hcDEoKSkpIHsKKwkJb21hcF9zZXRfZG1hX3NyY19idXJzdF9tb2RlKHBy
+dGQtPmRtYV9jaCwKKwkJCQkJCU9NQVBfRE1BX0RBVEFfQlVSU1RfMTYpOworCQlvbWFwX3NldF9k
+bWFfZGVzdF9idXJzdF9tb2RlKHBydGQtPmRtYV9jaCwKKwkJCQkJCU9NQVBfRE1BX0RBVEFfQlVS
+U1RfMTYpOworCX0KIAogCXJldHVybiAwOwogfQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
