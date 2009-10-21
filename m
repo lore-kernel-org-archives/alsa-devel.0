@@ -1,21 +1,55 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Re: [alsa-devel] Calling omap_pcm_prepare() results in
- BUG() on OMAP1
-Date: Wed, 21 Oct 2009 19:09:54 +0100
-Message-ID: <20091021180954.GC23079@rakim.wolfsonmicro.main>
-References: <200910211636.51258.jkrzyszt@tis.icnet.pl>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [PATCH] ASoC: OMAP: Don't try to set unsupported
+	OMAP_DMA_DATA_BURST_16 on OMAP1
+Date: Wed, 21 Oct 2009 20:35:40 +0200
+Message-ID: <200910212035.42245.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id D85E62438D
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Oct 2009 20:36:07 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <200910211636.51258.jkrzyszt@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: Jarkko Nikula <jhnikula@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, e3-hacking@earth.li
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 21, 2009 at 04:36:49PM +0200, Janusz Krzysztofik wrote:
-> I'm resending, this time CCing Mark as I should.
-
-This is fine by me but I'd like a proper changelog and if possible an
-ack from Jarkko please.
+V2VkbmVzZGF5IDIxIE9jdG9iZXIgMjAwOSAyMDowOTo1NCBNYXJrIEJyb3duIG5hcGlzYcWCKGEp
+Ogo+IFRoaXMgaXMgZmluZSBieSBtZSBidXQgSSdkIGxpa2UgYSBwcm9wZXIgY2hhbmdlbG9nIAoK
+WWVzLCBzaXIuCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkFmdGVyIERNQSBidXJzdCBtb2RlIGhh
+cyBiZWVuIGludHJvZHVjZWQgaW4gc291bmQvc29jL29tYXAvb21hcC1wY20uYywgCm9tYXBfcGNt
+X3ByZXBhcmUoKSB1bmNvbmRpdGlvbmFsbHkgY2FsbHM6CgogICAgICAgIG9tYXBfc2V0X2RtYV9z
+cmNfYnVyc3RfbW9kZShwcnRkLT5kbWFfY2gsIE9NQVBfRE1BX0RBVEFfQlVSU1RfMTYpOwogICAg
+ICAgIG9tYXBfc2V0X2RtYV9kZXN0X2J1cnN0X21vZGUocHJ0ZC0+ZG1hX2NoLCBPTUFQX0RNQV9E
+QVRBX0JVUlNUXzE2KTsKCkN1cnJlbnQgaW1wbGVtZW50YXRpb24gb2YgdGhvc2UgdHdvIGZ1bmN0
+aW9ucyBmb3VuZCBpbiAKYXJjaC9hcm0vcGxhdC1vbXBhL2RtYS5jIGRvZXNuJ3Qgc3VwcG9ydCBP
+TUFQX0RNQV9EQVRBX0JVUlNUXzE2IG9uIE9NQVAxIGF0IAphbGwsIHNvIHRoZXkgYm90aCBlbmQg
+d2l0aCBCVUcoKSBvbiB0aGF0IG1hY2hpbmUuIFRoYXQgcmVzdWx0cyBpbiAKQVNvQyBiZWluZyBj
+b21wbGV0ZWx5IHVudXNhYmxlLCBhdCBsZWFzdCBvbiBteSBPTUFQNTkxMCBiYXNlZCBBbXN0cmFk
+IERlbHRhLgoKVGhlIHBhdGNoIGNvcnJlY3RzIHRoZSBwcm9ibGVtIGJ5IG5vdCBjYWxsaW5nIHRo
+b3NlIHR3byBmdW5jdGlvbnMgd2hlbiBydW4gb24gCk9NQVAxIGNsYXNzIGJhc2VkIG1hY2hpbmVz
+LgoKQ3JlYXRlZCBhZ2FpbnN0IGxpbnV4LTIuNi4zMi1yYzUuClRlc3RlZCBvbiBBbXN0cmFkIERl
+bHRhLgoKU2lnbmVkLW9mZi1ieTogSmFudXN6IEtyenlzenRvZmlrIDxqa3J6eXN6dEB0aXMuaWNu
+ZXQucGw+CgotLS0KLS0tIGxpbnV4LTIuNi4zMi1yYzUvc291bmQvc29jL29tYXAvb21hcC1wY20u
+Yy5vcmlnCTIwMDktMTAtMTYgCjAyOjQxOjUwLjAwMDAwMDAwMCArMDIwMAorKysgbGludXgtMi42
+LjMyLXJjNS9zb3VuZC9zb2Mvb21hcC9vbWFwLXBjbS5jCTIwMDktMTAtMjEgMTI6MzM6NDUuMDAw
+MDAwMDAwIAorMDIwMApAQCAtMTk1LDYgKzE5NSw5IEBAIHN0YXRpYyBpbnQgb21hcF9wY21fcHJl
+cGFyZShzdHJ1Y3Qgc25kX3AKIAllbHNlCiAJCW9tYXBfZW5hYmxlX2RtYV9pcnEocHJ0ZC0+ZG1h
+X2NoLCBPTUFQX0RNQV9GUkFNRV9JUlEpOwogCisJaWYgKGNwdV9jbGFzc19pc19vbWFwMSgpKQor
+CQlyZXR1cm4gMDsKKwogCW9tYXBfc2V0X2RtYV9zcmNfYnVyc3RfbW9kZShwcnRkLT5kbWFfY2gs
+IE9NQVBfRE1BX0RBVEFfQlVSU1RfMTYpOwogCW9tYXBfc2V0X2RtYV9kZXN0X2J1cnN0X21vZGUo
+cHJ0ZC0+ZG1hX2NoLCBPTUFQX0RNQV9EQVRBX0JVUlNUXzE2KTsKIApfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
