@@ -1,106 +1,93 @@
-From: David =?iso-8859-1?Q?H=E4rdeman?= <david@hardeman.nu>
+From: Wu Fengguang <fengguang.wu@intel.com>
 Subject: Re: [Intel-gfx] Problems with HDMI audio on Intel
 	DG45FC	motherboard
-Date: Wed, 21 Oct 2009 00:37:58 +0200
-Message-ID: <20091020223758.GA31022@hardeman.nu>
+Date: Wed, 21 Oct 2009 09:38:12 +0800
+Message-ID: <20091021013812.GB7279@localhost>
 References: <20091011214513.GB12771@hardeman.nu>
 	<20091014015455.GI13364@zhen-devel.sh.intel.com>
 	<20091014020044.GA10032@localhost>
 	<20091014174053.GA31149@hardeman.nu>
 	<20091020012600.GA6548@localhost>
+	<20091020223758.GA31022@hardeman.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 15A14103805
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Oct 2009 03:38:18 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20091020012600.GA6548@localhost>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: alsa-user@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+In-Reply-To: <20091020223758.GA31022@hardeman.nu>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-user@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, shane-alsa@csy.ca, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 20, 2009 at 09:26:00AM +0800, Wu Fengguang wrote:
-
->Sorry for the long delay!
-
-No problem.
-
->On Thu, Oct 15, 2009 at 01:40:53AM +0800, David H=E4rdeman wrote:
->> ii) Is there any documentation somewhere on how this mapping is supposed =
-
->> to be performed in user space?
->
->I think Shane has provided a good example for you in another email :)
->Here are more descriptions for the route plugin:
-
-So perhaps I should still file a bug with the ALSA bugtracker asking for =
-
-the default ALSA userspace to include a channel mapping along Shane's =
-
-recommendation?
-
->> >Complete silence for how much time?
->> =
-
->> For the entire duration of the particular movie/audio track/video =
-
->> clip/whatever.
->> =
-
->
->I actually have a DG45FC box and have not run into this problem for
->all the HDMI monitors I have. What's your monitor model?
-
-A Samsung LE-55A956 LCD TV. But I think the problem is not with the =
-
-monitor (TV) but rather with the receiver that is between the DG45FC and =
-
-the TV. The receiver is a Marantz SR8002 with HDMI support.
-
->Did the kernel emit some error messages?
-
-Nope
-
->What if you change display
->modes with xrandr?
-
-Haven't tried that yet...currently running on 1920x1080@60 which should =
-
-(I guess) be one of the most common modes with modern LCD TV's.
-
->HDMI codec/sink seem to take some time to response to the output
->enable and new infoframe, so there are some delay. I've moved the HDMI
->output enable command to module load time, this helps. The infoframe
->is in theory created in run time based on the format of _each_ new
->audio stream, so infoframe transmission has to be started/stopped
->for each track..
-
-So my current theory is along the line of HDMI audio infoframe or video =
-
-infoframe problems. Do you have any pointers where in the driver(s) =
-
-the infoframes (both audio and video) are generated so that I can add =
-
-some debugging statements to dump the frames and compare the working =
-
-and non-working scenarios?
-
-Regards,
-David
-
-
----------------------------------------------------------------------------=
----
-Come build with us! The BlackBerry(R) Developer Conference in SF, CA
-is the only developer event you need to attend this year. Jumpstart your
-developing skills, take BlackBerry mobile applications to market and stay =
-
-ahead of the curve. Join us from November 9 - 12, 2009. Register now!
-http://p.sf.net/sfu/devconference
+T24gV2VkLCBPY3QgMjEsIDIwMDkgYXQgMDY6Mzc6NThBTSArMDgwMCwgRGF2aWQgSMOkcmRlbWFu
+IHdyb3RlOgo+IE9uIFR1ZSwgT2N0IDIwLCAyMDA5IGF0IDA5OjI2OjAwQU0gKzA4MDAsIFd1IEZl
+bmdndWFuZyB3cm90ZToKPiA+T24gVGh1LCBPY3QgMTUsIDIwMDkgYXQgMDE6NDA6NTNBTSArMDgw
+MCwgRGF2aWQgSMOkcmRlbWFuIHdyb3RlOgo+ID4+IGlpKSBJcyB0aGVyZSBhbnkgZG9jdW1lbnRh
+dGlvbiBzb21ld2hlcmUgb24gaG93IHRoaXMgbWFwcGluZyBpcyBzdXBwb3NlZCAKPiA+PiB0byBi
+ZSBwZXJmb3JtZWQgaW4gdXNlciBzcGFjZT8KPiA+Cj4gPkkgdGhpbmsgU2hhbmUgaGFzIHByb3Zp
+ZGVkIGEgZ29vZCBleGFtcGxlIGZvciB5b3UgaW4gYW5vdGhlciBlbWFpbCA6KQo+ID5IZXJlIGFy
+ZSBtb3JlIGRlc2NyaXB0aW9ucyBmb3IgdGhlIHJvdXRlIHBsdWdpbjoKPiAKPiBTbyBwZXJoYXBz
+IEkgc2hvdWxkIHN0aWxsIGZpbGUgYSBidWcgd2l0aCB0aGUgQUxTQSBidWd0cmFja2VyIGFza2lu
+ZyBmb3IgCj4gdGhlIGRlZmF1bHQgQUxTQSB1c2Vyc3BhY2UgdG8gaW5jbHVkZSBhIGNoYW5uZWwg
+bWFwcGluZyBhbG9uZyBTaGFuZSdzIAo+IHJlY29tbWVuZGF0aW9uPwoKVGhhdCB3b3VsZCBiZSBn
+b29kLiBJJ20gbm90IHN1cmUgaWYgUHVsc2VBdWRpbyBuZWVkIGEgc2VwYXJhdGUgZml4LgooTGVu
+bmFydCBDQ2VkKS4KCj4gPj4gPkNvbXBsZXRlIHNpbGVuY2UgZm9yIGhvdyBtdWNoIHRpbWU/Cj4g
+Pj4gCj4gPj4gRm9yIHRoZSBlbnRpcmUgZHVyYXRpb24gb2YgdGhlIHBhcnRpY3VsYXIgbW92aWUv
+YXVkaW8gdHJhY2svdmlkZW8gCj4gPj4gY2xpcC93aGF0ZXZlci4KPiA+PiAKPiA+Cj4gPkkgYWN0
+dWFsbHkgaGF2ZSBhIERHNDVGQyBib3ggYW5kIGhhdmUgbm90IHJ1biBpbnRvIHRoaXMgcHJvYmxl
+bSBmb3IKPiA+YWxsIHRoZSBIRE1JIG1vbml0b3JzIEkgaGF2ZS4gV2hhdCdzIHlvdXIgbW9uaXRv
+ciBtb2RlbD8KPiAKPiBBIFNhbXN1bmcgTEUtNTVBOTU2IExDRCBUVi4gQnV0IEkgdGhpbmsgdGhl
+IHByb2JsZW0gaXMgbm90IHdpdGggdGhlIAo+IG1vbml0b3IgKFRWKSBidXQgcmF0aGVyIHdpdGgg
+dGhlIHJlY2VpdmVyIHRoYXQgaXMgYmV0d2VlbiB0aGUgREc0NUZDIGFuZCAKPiB0aGUgVFYuIFRo
+ZSByZWNlaXZlciBpcyBhIE1hcmFudHogU1I4MDAyIHdpdGggSERNSSBzdXBwb3J0LgoKR290IGl0
+LiBJZiB5b3UgaGF2ZSBhIEhETUkgY2FwYWJsZSBUViBvciBtb25pdG9yLCBpdCB3b3VsZCBiZSBw
+b3NzaWJsZSB0byBnZXQKcmlkIG9mIHRoZSBNYXJhbnR6IGFuZCBjaGVjayBpZiB0aGUgcHJvYmxl
+bSBzdGlja3MgOikKCj4gPkRpZCB0aGUga2VybmVsIGVtaXQgc29tZSBlcnJvciBtZXNzYWdlcz8K
+PiAKPiBOb3BlCgpPSy4gWW91IGNhbiBnZXQgbW9yZSBkZWJ1ZyBpbmZvIGlmIHR1cm5pbmcgb24K
+CkNPTkZJR19TTkRfVkVSQk9TRV9QUk9DRlM9eQpDT05GSUdfU05EX1ZFUkJPU0VfUFJJTlRLPXkK
+Q09ORklHX1NORF9ERUJVRz15CkNPTkZJR19TTkRfREVCVUdfVkVSQk9TRT15CkNPTkZJR19TTkRf
+UENNX1hSVU5fREVCVUc9eQoKPiA+V2hhdCBpZiB5b3UgY2hhbmdlIGRpc3BsYXkKPiA+bW9kZXMg
+d2l0aCB4cmFuZHI/Cj4gCj4gSGF2ZW4ndCB0cmllZCB0aGF0IHlldC4uLmN1cnJlbnRseSBydW5u
+aW5nIG9uIDE5MjB4MTA4MEA2MCB3aGljaCBzaG91bGQgCj4gKEkgZ3Vlc3MpIGJlIG9uZSBvZiB0
+aGUgbW9zdCBjb21tb24gbW9kZXMgd2l0aCBtb2Rlcm4gTENEIFRWJ3MuCgpUaGUgaW5mb2ZyYW1l
+IHdvdWxkIGJlIGRpZmZlcmVudCBmb3IgMi1jaGFubmVsIHB1cmUgbXVzaWMgYW5kIDUuMSBjaGFu
+bmVsCm1vdmllLiBUaGUgdmlkZW8gdGltaW5nIG1pZ2h0IGFsc28gYWZmZWN0IGF1ZGlvIHN0cmVh
+bSwgYmVjYXVzZSB0aGUgSERNSQphdWRpbyBkYXRhIGlzIHRyYW5zZmVyZWQgaW4gdGhlIGdhcHMg
+b2YgdmlkZW8gZGF0YS4KIAo+ID5IRE1JIGNvZGVjL3Npbmsgc2VlbSB0byB0YWtlIHNvbWUgdGlt
+ZSB0byByZXNwb25zZSB0byB0aGUgb3V0cHV0Cj4gPmVuYWJsZSBhbmQgbmV3IGluZm9mcmFtZSwg
+c28gdGhlcmUgYXJlIHNvbWUgZGVsYXkuIEkndmUgbW92ZWQgdGhlIEhETUkKPiA+b3V0cHV0IGVu
+YWJsZSBjb21tYW5kIHRvIG1vZHVsZSBsb2FkIHRpbWUsIHRoaXMgaGVscHMuIFRoZSBpbmZvZnJh
+bWUKPiA+aXMgaW4gdGhlb3J5IGNyZWF0ZWQgaW4gcnVuIHRpbWUgYmFzZWQgb24gdGhlIGZvcm1h
+dCBvZiBfZWFjaF8gbmV3Cj4gPmF1ZGlvIHN0cmVhbSwgc28gaW5mb2ZyYW1lIHRyYW5zbWlzc2lv
+biBoYXMgdG8gYmUgc3RhcnRlZC9zdG9wcGVkCj4gPmZvciBlYWNoIHRyYWNrLi4KPiAKPiBTbyBt
+eSBjdXJyZW50IHRoZW9yeSBpcyBhbG9uZyB0aGUgbGluZSBvZiBIRE1JIGF1ZGlvIGluZm9mcmFt
+ZSBvciB2aWRlbyAKPiBpbmZvZnJhbWUgcHJvYmxlbXMuIERvIHlvdSBoYXZlIGFueSBwb2ludGVy
+cyB3aGVyZSBpbiB0aGUgZHJpdmVyKHMpIAo+IHRoZSBpbmZvZnJhbWVzIChib3RoIGF1ZGlvIGFu
+ZCB2aWRlbykgYXJlIGdlbmVyYXRlZCBzbyB0aGF0IEkgY2FuIGFkZCAKPiBzb21lIGRlYnVnZ2lu
+ZyBzdGF0ZW1lbnRzIHRvIGR1bXAgdGhlIGZyYW1lcyBhbmQgY29tcGFyZSB0aGUgd29ya2luZyAK
+PiBhbmQgbm9uLXdvcmtpbmcgc2NlbmFyaW9zPwoKSSBndWVzcyB0aGUgaW5mb2ZyYW1lIGl0c2Vs
+ZiBzaG91bGQgYmUgaWRlbnRpY2FsIGZvciB0aGUgc2FtZSBjbGlwLgpIYXZlIHlvdSB0cmllZCB1
+cGdyYWRpbmcgdG8gYSByZWNlbnQgWG9yZy9pbnRlbCBnZnggZHJpdmVyPwoKQW55d2F5LCB0aGUg
+a2VybmVsIGRyaXZlciBjb2RlIGlzIGxpbnV4L3NvdW5kL3BjaS9oZGEvcGF0Y2hfaW50ZWxoZG1p
+LmMKVGhlIHJlbGV2YW50IGZ1bmN0aW9uIGlzIGhkbWlfc2V0dXBfYXVkaW9faW5mb2ZyYW1lKCku
+IEluc2lkZSB3aGljaCB0aGUKaGRtaV9zZXR1cF9jaGFubmVsX21hcHBpbmcoKSBpcyBub3QgZnVu
+Y3Rpb25pbmcgZm9yIEc0NSwKaGRtaV9zZXR1cF9jaGFubmVsX2FsbG9jYXRpb24oKSBpcyBuby1v
+cCBmb3IgMi1jaGFubmVsIG11c2ljLgpoZG1pX2RlYnVnX2RpcF9zaXplKCkgYW5kIGhkbWlfY2xl
+YXJfZGlwX2J1ZmZlcnMoKSBjYW4gYWxzbyBiZSBjb21tZW50ZWQgb3V0LgpBbmQgZmVlbCBmcmVl
+IHRvIGFzayBtb3JlIHF1ZXN0aW9ucyA6KQoKVGhhbmtzLApGZW5nZ3VhbmcKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
