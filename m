@@ -1,66 +1,103 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: [PATCH v2] ASoC: OMAP: Don't try to set unsupported
-	OMAP_DMA_DATA_BURST_16 on OMAP1
-Date: Wed, 21 Oct 2009 23:10:03 +0200
-Message-ID: <200910212310.05087.jkrzyszt@tis.icnet.pl>
-References: <200910212035.42245.jkrzyszt@tis.icnet.pl>
-	<20091021221607.c46f60e3.jhnikula@gmail.com>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 1/4] MFD: twl4030: add twl4030_codec MFD as a new child
+ to the core
+Date: Thu, 22 Oct 2009 01:13:11 +0200
+Message-ID: <20091021231311.GF17796@sortiz.org>
+References: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
+ <1255956140-4829-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8576824453
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Oct 2009 23:10:33 +0200 (CEST)
-In-Reply-To: <20091021221607.c46f60e3.jhnikula@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+In-Reply-To: <1255956140-4829-2-git-send-email-peter.ujfalusi@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-V2VkbmVzZGF5IDIxIE9jdG9iZXIgMjAwOSAyMToxNjowNyBKYXJra28gTmlrdWxhIG5hcGlzYcWC
-KGEpOgo+Cj4gSSB3b3VsZCBoYXZlIGltcGxlbWVudGVkIHRoaXMgYnkgImlmICghY3B1X2NsYXNz
-X2lzX29tYXAxKCkpCj4gey4uLl9idXJzdF9tb2RlfSIgZm9yIG1ha2luZyBzdXJlIHRoYXQgbm8g
-bmV3IE9NQVAxIGVycm9yIGlzIGludHJvZHVjZWQKPiBpbiB0aGUgZnV0dXJlIGlmIHRoZXJlIGlz
-IG5lZWQgdG8gYWRkIHNvbWUgY29tbW9uIHN0dWZmIGFmdGVyIHRob3NlCj4gYnVyc3RfbW9kZSBj
-YWxscyBhbmQgcHJvYmFibHkgY29tcGlsZXIgY2FuIGJldHRlciBvcHRpbWl6ZSBhd2F5IHRob3Nl
-Cj4gYnVyc3RfbW9kZSBjYWxscyBmb3IgT01BUDEgYnVpbGRzLgoKWWVzLCB5b3UncmUgcmlnaHQu
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKQWZ0ZXIgRE1BIGJ1cnN0IG1vZGUgaGFzIGJl
-ZW4gaW50cm9kdWNlZCBpbiBzb3VuZC9zb2Mvb21hcC9vbWFwLXBjbS5jLCAKb21hcF9wY21fcHJl
-cGFyZSgpIHVuY29uZGl0aW9uYWxseSBjYWxsczoKCiAgICAgICAgb21hcF9zZXRfZG1hX3NyY19i
-dXJzdF9tb2RlKHBydGQtPmRtYV9jaCwgT01BUF9ETUFfREFUQV9CVVJTVF8xNik7CiAgICAgICAg
-b21hcF9zZXRfZG1hX2Rlc3RfYnVyc3RfbW9kZShwcnRkLT5kbWFfY2gsIE9NQVBfRE1BX0RBVEFf
-QlVSU1RfMTYpOwoKQ3VycmVudCBpbXBsZW1lbnRhdGlvbiBvZiB0aG9zZSB0d28gZnVuY3Rpb25z
-IGZvdW5kIGluIAphcmNoL2FybS9wbGF0LW9tcGEvZG1hLmMgZG9lc24ndCBzdXBwb3J0IE9NQVBf
-RE1BX0RBVEFfQlVSU1RfMTYgb24gT01BUDEgYXQgCmFsbCwgc28gdGhleSBib3RoIGVuZCB3aXRo
-IEJVRygpIG9uIHRoYXQgbWFjaGluZS4gVGhhdCByZXN1bHRzIGluIApBU29DIGJlaW5nIGNvbXBs
-ZXRlbHkgdW51c2FibGUsIGF0IGxlYXN0IG9uIG15IE9NQVA1OTEwIGJhc2VkIEFtc3RyYWQgRGVs
-dGEuCgpUaGUgcGF0Y2ggY29ycmVjdHMgdGhlIHByb2JsZW0gYnkgbm90IGNhbGxpbmcgdGhvc2Ug
-dHdvIGZ1bmN0aW9ucyB3aGVuIHJ1biBvbiAKT01BUDEgY2xhc3MgYmFzZWQgbWFjaGluZXMuCgpD
-cmVhdGVkIGFnYWluc3QgbGludXgtMi42LjMyLXJjNS4KVGVzdGVkIG9uIEFtc3RyYWQgRGVsdGEu
-CgpTaWduZWQtb2ZmLWJ5OiBKYW51c3ogS3J6eXN6dG9maWsgPGprcnp5c3p0QHRpcy5pY25ldC5w
-bD4KCi0tLQotLS0gbGludXgtMi42LjMyLXJjNS9zb3VuZC9zb2Mvb21hcC9vbWFwLXBjbS5jLm9y
-aWcJMjAwOS0xMC0yMSAyMTo1MTozOC4wMDAwMDAwMDAgKzAyMDAKKysrIGxpbnV4LTIuNi4zMi1y
-YzUvc291bmQvc29jL29tYXAvb21hcC1wY20uYwkyMDA5LTEwLTIxIDIxOjUyOjU5LjAwMDAwMDAw
-MCArMDIwMApAQCAtMTk1LDggKzE5NSwxMiBAQCBzdGF0aWMgaW50IG9tYXBfcGNtX3ByZXBhcmUo
-c3RydWN0IHNuZF9wCiAJZWxzZQogCQlvbWFwX2VuYWJsZV9kbWFfaXJxKHBydGQtPmRtYV9jaCwg
-T01BUF9ETUFfRlJBTUVfSVJRKTsKIAotCW9tYXBfc2V0X2RtYV9zcmNfYnVyc3RfbW9kZShwcnRk
-LT5kbWFfY2gsIE9NQVBfRE1BX0RBVEFfQlVSU1RfMTYpOwotCW9tYXBfc2V0X2RtYV9kZXN0X2J1
-cnN0X21vZGUocHJ0ZC0+ZG1hX2NoLCBPTUFQX0RNQV9EQVRBX0JVUlNUXzE2KTsKKwlpZiAoIShj
-cHVfY2xhc3NfaXNfb21hcDEoKSkpIHsKKwkJb21hcF9zZXRfZG1hX3NyY19idXJzdF9tb2RlKHBy
-dGQtPmRtYV9jaCwKKwkJCQkJCU9NQVBfRE1BX0RBVEFfQlVSU1RfMTYpOworCQlvbWFwX3NldF9k
-bWFfZGVzdF9idXJzdF9tb2RlKHBydGQtPmRtYV9jaCwKKwkJCQkJCU9NQVBfRE1BX0RBVEFfQlVS
-U1RfMTYpOworCX0KIAogCXJldHVybiAwOwogfQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Peter,
+
+On Mon, Oct 19, 2009 at 03:42:17PM +0300, Peter Ujfalusi wrote:
+> New MFD child to twl4030 MFD device.
+> This MFD device will be used by the drivers, which needs resources
+> from the twl4030 codec like audio and vibra.
+> 
+> The platform specific configuration data is passed along to the
+> child drivers (audio, vibra).
+Some comments on your code:
+
+> +config TWL4030_CODEC
+> +	bool "Support codec part of the TWL4030 family chips"
+> +	depends on TWL4030_CORE
+> +	help
+> +	  Say yes here if you want to use the codec resources on the
+> +	  TWL4030 family chips. The codec in TWL4030 provides the audio
+> +	  functionality and also has the vibrator controls.
+> +
+> +	  This driver provides MFD device to be used for drivers, which needs
+> +	  access to the codec part, the board-specific data is passed from this
+> +	  driver to the childs as platform data with the board specific
+> +	  configuration.
+> +
+As Mark noticed already, you dont really want users to explicitely select this
+obscure mfd driver to get their audio and vibre driver selectable. It should
+be the other way around, and I think you already agreed with that.
+
+
+> +static struct device *
+> +twl4030_codec_new_child(const char *name, void *pdata, unsigned pdata_len)
+> +{
+> +	struct platform_device	*pdev;
+> +	int			status = 0;
+> +
+> +	pdev = platform_device_alloc(name, -1);
+> +	if (!pdev) {
+> +		dev_dbg(&twl4030_codec_dev->dev, "can't alloc dev (%s)\n",
+> +									name);
+> +		return ERR_PTR(-ENOMEM);
+> +	}
+> +	pdev->dev.parent = &twl4030_codec_dev->dev;
+> +
+> +	if (pdata) {
+> +		status = platform_device_add_data(pdev, pdata, pdata_len);
+> +		if (status < 0) {
+> +			dev_dbg(&pdev->dev, "can't add platform_data\n");
+> +			goto err;
+> +		}
+> +	}
+> +	status = platform_device_add(pdev);
+> +	if (status < 0) {
+> +		dev_dbg(&pdev->dev, "Adding platform device failed\n");
+> +		goto err;
+> +	}
+> +
+> +	return &pdev->dev;
+> +err:
+> +	platform_device_put(pdev);
+> +	dev_err(&twl4030_codec_dev->dev, "can't add %s dev\n", name);
+> +	return ERR_PTR(status);
+> +}
+This could really use the mfd-core API, and avoid duplicating code.
+You just would have to define a couple cells, and call mfd_add_devices on
+them.
+
+
+> +static int __devexit twl4030_codec_remove(struct platform_device *pdev)
+> +{
+> +	struct twl4030_codec *codec = platform_get_drvdata(pdev);
+> +
+> +	platform_set_drvdata(pdev, NULL);
+> +	kfree(codec);
+> +	twl4030_codec_dev = NULL;
+> +
+> +	return 0;
+> +}
+I think you're missing a platform_device_unregister() here (or an
+mfd_remove_devices() if you're going to switch to the mfd-core API)
+
+Cheers,
+Samuel.
+
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
