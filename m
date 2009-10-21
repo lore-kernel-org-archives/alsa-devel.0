@@ -1,35 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tlv320dac33: typo fix in the header
-Date: Wed, 21 Oct 2009 19:09:02 +0100
-Message-ID: <20091021180902.GB23079@rakim.wolfsonmicro.main>
-References: <1256108315-26343-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] Re: [alsa-devel] Calling omap_pcm_prepare() results in
+ BUG() on OMAP1
+Date: Wed, 21 Oct 2009 19:09:54 +0100
+Message-ID: <20091021180954.GC23079@rakim.wolfsonmicro.main>
+References: <200910211636.51258.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5D0C924359
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Oct 2009 20:09:06 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1256108315-26343-1-git-send-email-peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <200910211636.51258.jkrzyszt@tis.icnet.pl>
+Sender: linux-omap-owner@vger.kernel.org
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: Jarkko Nikula <jhnikula@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 21, 2009 at 09:58:35AM +0300, Peter Ujfalusi wrote:
-> Fix the definition of DAC33_LTM field, the LTM bits in
-> FIFO_IRQ_MODE_B register are starting at bit 6.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+On Wed, Oct 21, 2009 at 04:36:49PM +0200, Janusz Krzysztofik wrote:
+> I'm resending, this time CCing Mark as I should.
 
-Applied, thanks.
+This is fine by me but I'd like a proper changelog and if possible an
+ack from Jarkko please.
