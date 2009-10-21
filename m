@@ -1,14 +1,18 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: [patch] snd-pcsp fixes
-Date: Wed, 21 Oct 2009 21:43:03 +0400
-Message-ID: <4ADF4827.8060608@aknet.ru>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Amstrad Delta minor cleanups
+Date: Wed, 21 Oct 2009 19:08:53 +0100
+Message-ID: <20091021180853.GA23079@rakim.wolfsonmicro.main>
+References: <200910210440.56628.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------070108060403060706040607"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imp02.mtu.ru (imp02.mtu.ru [62.5.255.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D4B824155
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 68A132415E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Oct 2009 19:37:58 +0200 (CEST)
+	Wed, 21 Oct 2009 20:08:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <200910210440.56628.jkrzyszt@tis.icnet.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,142 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------070108060403060706040607
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wed, Oct 21, 2009 at 04:40:55AM +0200, Janusz Krzysztofik wrote:
+> Hi Mark,
+> 
+> Here is a patch that corrects small omissions I have found in my code.
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 
-Hi.
-
-The attached patch fixes the
-problems introduced in this commit:
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=eea0579fc85e64e9f05361d5aacf496fe7a151aa
-
-- Fix nForce workaround by honouring
-the pointer_update var
-- Revert "ns" to u64, as per the hrtimer
-API
-- Revert to the zero-delay timer startup,
-since I can't reproduce any problem
-with it (please, give me the hint!)
-
-Signed-off-by: Stas Sergeev <stsp@aknet.ru>
-
-
-Takashi, could you please apply or
-tell me where the problem is/was?
-Or, alternatively, we can revert the
-commit entirely, and then re-do the
-cleanups.
-
---------------070108060403060706040607
-Content-Type: text/plain;
- name="pcsp_nfwa1.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="pcsp_nfwa1.diff"
-
-ZGlmZiAtLWdpdCBhL3NvdW5kL2RyaXZlcnMvcGNzcC9wY3NwX2xpYi5jIGIvc291bmQvZHJp
-dmVycy9wY3NwL3Bjc3BfbGliLmMKaW5kZXggODRjYzI2NS4uNTg3ZWEwYyAxMDA2NDQKLS0t
-IGEvc291bmQvZHJpdmVycy9wY3NwL3Bjc3BfbGliLmMKKysrIGIvc291bmQvZHJpdmVycy9w
-Y3NwL3Bjc3BfbGliLmMKQEAgLTM5LDI1ICszOSwyMCBAQCBzdGF0aWMgREVDTEFSRV9UQVNL
-TEVUKHBjc3BfcGNtX3Rhc2tsZXQsIHBjc3BfY2FsbF9wY21fZWxhcHNlZCwgMCk7CiAvKiB3
-cml0ZSB0aGUgcG9ydCBhbmQgcmV0dXJucyB0aGUgbmV4dCBleHBpcmUgdGltZSBpbiBuczsK
-ICAqIGNhbGxlZCBhdCB0aGUgdHJpZ2dlci1zdGFydCBhbmQgaW4gaHJ0aW1lciBjYWxsYmFj
-awogICovCi1zdGF0aWMgdW5zaWduZWQgbG9uZyBwY3NwX3RpbWVyX3VwZGF0ZShzdHJ1Y3Qg
-aHJ0aW1lciAqaGFuZGxlKQorc3RhdGljIHU2NCBwY3NwX3RpbWVyX3VwZGF0ZShzdHJ1Y3Qg
-c25kX3Bjc3AgKmNoaXApCiB7CiAJdW5zaWduZWQgY2hhciB0aW1lcl9jbnQsIHZhbDsKIAl1
-NjQgbnM7CiAJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW07CiAJc3RydWN0
-IHNuZF9wY21fcnVudGltZSAqcnVudGltZTsKLQlzdHJ1Y3Qgc25kX3Bjc3AgKmNoaXAgPSBj
-b250YWluZXJfb2YoaGFuZGxlLCBzdHJ1Y3Qgc25kX3Bjc3AsIHRpbWVyKTsKIAl1bnNpZ25l
-ZCBsb25nIGZsYWdzOwogCiAJaWYgKGNoaXAtPnRoYWxmKSB7CiAJCW91dGIoY2hpcC0+dmFs
-NjEsIDB4NjEpOwogCQljaGlwLT50aGFsZiA9IDA7Ci0JCWlmICghYXRvbWljX3JlYWQoJmNo
-aXAtPnRpbWVyX2FjdGl2ZSkpCi0JCQlyZXR1cm4gMDsKIAkJcmV0dXJuIGNoaXAtPm5zX3Jl
-bTsKIAl9CiAKLQlpZiAoIWF0b21pY19yZWFkKCZjaGlwLT50aW1lcl9hY3RpdmUpKQotCQly
-ZXR1cm4gMDsKIAlzdWJzdHJlYW0gPSBjaGlwLT5wbGF5YmFja19zdWJzdHJlYW07CiAJaWYg
-KCFzdWJzdHJlYW0pCiAJCXJldHVybiAwOwpAQCAtODgsMjQgKzgzLDE3IEBAIHN0YXRpYyB1
-bnNpZ25lZCBsb25nIHBjc3BfdGltZXJfdXBkYXRlKHN0cnVjdCBocnRpbWVyICpoYW5kbGUp
-CiAJcmV0dXJuIG5zOwogfQogCi1lbnVtIGhydGltZXJfcmVzdGFydCBwY3NwX2RvX3RpbWVy
-KHN0cnVjdCBocnRpbWVyICpoYW5kbGUpCitzdGF0aWMgdm9pZCBwY3NwX3BvaW50ZXJfdXBk
-YXRlKHN0cnVjdCBzbmRfcGNzcCAqY2hpcCkKIHsKLQlzdHJ1Y3Qgc25kX3Bjc3AgKmNoaXAg
-PSBjb250YWluZXJfb2YoaGFuZGxlLCBzdHJ1Y3Qgc25kX3Bjc3AsIHRpbWVyKTsKIAlzdHJ1
-Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbTsKLQlpbnQgcGVyaW9kc19lbGFwc2Vk
-LCBwb2ludGVyX3VwZGF0ZTsKIAlzaXplX3QgcGVyaW9kX2J5dGVzLCBidWZmZXJfYnl0ZXM7
-Ci0JdW5zaWduZWQgbG9uZyBuczsKKwlpbnQgcGVyaW9kc19lbGFwc2VkOwogCXVuc2lnbmVk
-IGxvbmcgZmxhZ3M7CiAKLQlwb2ludGVyX3VwZGF0ZSA9ICFjaGlwLT50aGFsZjsKLQlucyA9
-IHBjc3BfdGltZXJfdXBkYXRlKGhhbmRsZSk7Ci0JaWYgKCFucykKLQkJcmV0dXJuIEhSVElN
-RVJfTk9SRVNUQVJUOwotCiAJLyogdXBkYXRlIHRoZSBwbGF5YmFjayBwb3NpdGlvbiAqLwog
-CXN1YnN0cmVhbSA9IGNoaXAtPnBsYXliYWNrX3N1YnN0cmVhbTsKIAlpZiAoIXN1YnN0cmVh
-bSkKLQkJcmV0dXJuIEhSVElNRVJfTk9SRVNUQVJUOworCQlyZXR1cm47CiAKIAlwZXJpb2Rf
-Ynl0ZXMgPSBzbmRfcGNtX2xpYl9wZXJpb2RfYnl0ZXMoc3Vic3RyZWFtKTsKIAlidWZmZXJf
-Ynl0ZXMgPSBzbmRfcGNtX2xpYl9idWZmZXJfYnl0ZXMoc3Vic3RyZWFtKTsKQEAgLTEzNCw2
-ICsxMjIsMjYgQEAgZW51bSBocnRpbWVyX3Jlc3RhcnQgcGNzcF9kb190aW1lcihzdHJ1Y3Qg
-aHJ0aW1lciAqaGFuZGxlKQogCiAJaWYgKHBlcmlvZHNfZWxhcHNlZCkKIAkJdGFza2xldF9z
-Y2hlZHVsZSgmcGNzcF9wY21fdGFza2xldCk7Cit9CisKK2VudW0gaHJ0aW1lcl9yZXN0YXJ0
-IHBjc3BfZG9fdGltZXIoc3RydWN0IGhydGltZXIgKmhhbmRsZSkKK3sKKwlzdHJ1Y3Qgc25k
-X3Bjc3AgKmNoaXAgPSBjb250YWluZXJfb2YoaGFuZGxlLCBzdHJ1Y3Qgc25kX3Bjc3AsIHRp
-bWVyKTsKKwlpbnQgcG9pbnRlcl91cGRhdGU7CisJdTY0IG5zOworCisJaWYgKCFhdG9taWNf
-cmVhZCgmY2hpcC0+dGltZXJfYWN0aXZlKSB8fCAhY2hpcC0+cGxheWJhY2tfc3Vic3RyZWFt
-KQorCQlyZXR1cm4gSFJUSU1FUl9OT1JFU1RBUlQ7CisKKwlwb2ludGVyX3VwZGF0ZSA9ICFj
-aGlwLT50aGFsZjsKKwlucyA9IHBjc3BfdGltZXJfdXBkYXRlKGNoaXApOworCWlmICghbnMp
-IHsKKwkJcHJpbnRrKEtFUk5fV0FSTklORyAiUENTUDogdW5leHBlY3RlZCBzdG9wXG4iKTsK
-KwkJcmV0dXJuIEhSVElNRVJfTk9SRVNUQVJUOworCX0KKworCWlmIChwb2ludGVyX3VwZGF0
-ZSkKKwkgICAgcGNzcF9wb2ludGVyX3VwZGF0ZShjaGlwKTsKIAogCWhydGltZXJfZm9yd2Fy
-ZChoYW5kbGUsIGhydGltZXJfZ2V0X2V4cGlyZXMoaGFuZGxlKSwgbnNfdG9fa3RpbWUobnMp
-KTsKIApAQCAtMTQyLDggKzE1MCw2IEBAIGVudW0gaHJ0aW1lcl9yZXN0YXJ0IHBjc3BfZG9f
-dGltZXIoc3RydWN0IGhydGltZXIgKmhhbmRsZSkKIAogc3RhdGljIGludCBwY3NwX3N0YXJ0
-X3BsYXlpbmcoc3RydWN0IHNuZF9wY3NwICpjaGlwKQogewotCXVuc2lnbmVkIGxvbmcgbnM7
-Ci0KICNpZiBQQ1NQX0RFQlVHCiAJcHJpbnRrKEtFUk5fSU5GTyAiUENTUDogc3RhcnRfcGxh
-eWluZyBjYWxsZWRcbiIpOwogI2VuZGlmCkBAIC0xNTksMTEgKzE2NSw3IEBAIHN0YXRpYyBp
-bnQgcGNzcF9zdGFydF9wbGF5aW5nKHN0cnVjdCBzbmRfcGNzcCAqY2hpcCkKIAlhdG9taWNf
-c2V0KCZjaGlwLT50aW1lcl9hY3RpdmUsIDEpOwogCWNoaXAtPnRoYWxmID0gMDsKIAotCW5z
-ID0gcGNzcF90aW1lcl91cGRhdGUoJnBjc3BfY2hpcC50aW1lcik7Ci0JaWYgKCFucykKLQkJ
-cmV0dXJuIC1FSU87Ci0KLQlocnRpbWVyX3N0YXJ0KCZwY3NwX2NoaXAudGltZXIsIGt0aW1l
-X3NldCgwLCBucyksIEhSVElNRVJfTU9ERV9SRUwpOworCWhydGltZXJfc3RhcnQoJnBjc3Bf
-Y2hpcC50aW1lciwga3RpbWVfc2V0KDAsIDApLCBIUlRJTUVSX01PREVfUkVMKTsKIAlyZXR1
-cm4gMDsKIH0KIApAQCAtMjMyLDIxICsyMzQsMjIgQEAgc3RhdGljIGludCBzbmRfcGNzcF9w
-bGF5YmFja19od19mcmVlKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQog
-c3RhdGljIGludCBzbmRfcGNzcF9wbGF5YmFja19wcmVwYXJlKHN0cnVjdCBzbmRfcGNtX3N1
-YnN0cmVhbSAqc3Vic3RyZWFtKQogewogCXN0cnVjdCBzbmRfcGNzcCAqY2hpcCA9IHNuZF9w
-Y21fc3Vic3RyZWFtX2NoaXAoc3Vic3RyZWFtKTsKKwlwY3NwX3N5bmNfc3RvcChjaGlwKTsK
-KwljaGlwLT5wbGF5YmFja19wdHIgPSAwOworCWNoaXAtPnBlcmlvZF9wdHIgPSAwOworCWNo
-aXAtPmZtdF9zaXplID0KKwkJc25kX3BjbV9mb3JtYXRfcGh5c2ljYWxfd2lkdGgoc3Vic3Ry
-ZWFtLT5ydW50aW1lLT5mb3JtYXQpID4+IDM7CisJY2hpcC0+aXNfc2lnbmVkID0gc25kX3Bj
-bV9mb3JtYXRfc2lnbmVkKHN1YnN0cmVhbS0+cnVudGltZS0+Zm9ybWF0KTsKICNpZiBQQ1NQ
-X0RFQlVHCiAJcHJpbnRrKEtFUk5fSU5GTyAiUENTUDogcHJlcGFyZSBjYWxsZWQsICIKLQkJ
-CSJzaXplPSV6aSBwc2l6ZT0lemkgZj0lemkgZjE9JWlcbiIsCisJCQkic2l6ZT0lemkgcHNp
-emU9JXppIGY9JXppIGYxPSVpIGZzaXplPSVpXG4iLAogCQkJc25kX3BjbV9saWJfYnVmZmVy
-X2J5dGVzKHN1YnN0cmVhbSksCiAJCQlzbmRfcGNtX2xpYl9wZXJpb2RfYnl0ZXMoc3Vic3Ry
-ZWFtKSwKIAkJCXNuZF9wY21fbGliX2J1ZmZlcl9ieXRlcyhzdWJzdHJlYW0pIC8KIAkJCXNu
-ZF9wY21fbGliX3BlcmlvZF9ieXRlcyhzdWJzdHJlYW0pLAotCQkJc3Vic3RyZWFtLT5ydW50
-aW1lLT5wZXJpb2RzKTsKKwkJCXN1YnN0cmVhbS0+cnVudGltZS0+cGVyaW9kcywKKwkJCWNo
-aXAtPmZtdF9zaXplKTsKICNlbmRpZgotCXBjc3Bfc3luY19zdG9wKGNoaXApOwotCWNoaXAt
-PnBsYXliYWNrX3B0ciA9IDA7Ci0JY2hpcC0+cGVyaW9kX3B0ciA9IDA7Ci0JY2hpcC0+Zm10
-X3NpemUgPQotCQlzbmRfcGNtX2Zvcm1hdF9waHlzaWNhbF93aWR0aChzdWJzdHJlYW0tPnJ1
-bnRpbWUtPmZvcm1hdCkgPj4gMzsKLQljaGlwLT5pc19zaWduZWQgPSBzbmRfcGNtX2Zvcm1h
-dF9zaWduZWQoc3Vic3RyZWFtLT5ydW50aW1lLT5mb3JtYXQpOwogCXJldHVybiAwOwogfQog
-CmRpZmYgLS1naXQgYS9zb3VuZC9kcml2ZXJzL3Bjc3AvcGNzcF9taXhlci5jIGIvc291bmQv
-ZHJpdmVycy9wY3NwL3Bjc3BfbWl4ZXIuYwppbmRleCAxOTliMDMzLi45MDNiYzg0IDEwMDY0
-NAotLS0gYS9zb3VuZC9kcml2ZXJzL3Bjc3AvcGNzcF9taXhlci5jCisrKyBiL3NvdW5kL2Ry
-aXZlcnMvcGNzcC9wY3NwX21peGVyLmMKQEAgLTcyLDcgKzcyLDcgQEAgc3RhdGljIGludCBw
-Y3NwX3RyZWJsZV9wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCiAJaWYgKHRy
-ZWJsZSAhPSBjaGlwLT50cmVibGUpIHsKIAkJY2hpcC0+dHJlYmxlID0gdHJlYmxlOwogI2lm
-IFBDU1BfREVCVUcKLQkJcHJpbnRrKEtFUk5fSU5GTyAiUENTUDogcmF0ZSBzZXQgdG8gJWlc
-biIsIFBDU1BfUkFURSgpKTsKKwkJcHJpbnRrKEtFUk5fSU5GTyAiUENTUDogcmF0ZSBzZXQg
-dG8gJWxpXG4iLCBQQ1NQX1JBVEUoKSk7CiAjZW5kaWYKIAkJY2hhbmdlZCA9IDE7CiAJfQo=
---------------070108060403060706040607
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------070108060403060706040607--
+Applied, thanks.
