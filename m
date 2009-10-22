@@ -1,19 +1,24 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Exemple of source code for capture without using
- callback
-Date: Thu, 22 Oct 2009 17:06:03 +0200
-Message-ID: <4AE074DB.4030600@ladisch.de>
-References: <26289049-EACA-4DC6-A396-E2AF4EB6F2E9@gmail.com>
-	<ad2655cb0910220740k5ef0f931j7f0ec48cb5d01cec@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: PC Beep or PC Speaker or just Beep? and HDA Beep
+	code...
+Date: Thu, 22 Oct 2009 17:50:10 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.0910221740280.5519@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 41DAC24405
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id F0C8A2444F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Oct 2009 17:06:08 +0200 (CEST)
-In-Reply-To: <ad2655cb0910220740k5ef0f931j7f0ec48cb5d01cec@mail.gmail.com>
+	Thu, 22 Oct 2009 17:50:11 +0200 (CEST)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	D9994149BB7 for <alsa-devel@alsa-project.org>;
+	Thu, 22 Oct 2009 17:50:11 +0200 (CEST)
+Received: from eeebox2.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	C68A184630 for <alsa-devel@alsa-project.org>;
+	Thu, 22 Oct 2009 17:50:11 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +28,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: alsa-devel@alsa-project.org, brunal2496 gmail <brunal2496@gmail.com>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> 2009/10/20 brunal2496 gmail <brunal2496@gmail.com>:
-> > I've read everywhere that using callback is a bad method to use the
-> > alsa drivers.
-> 
-> This is wrong. callback is the best method.
+Hi,
 
-But _not_ the snd_async_add_pcm_handler function, which is evil.
-(This is the only ALSA PCM function that mentions "callback" in its
-documentation, so these are often confused.)
+ 	I'm changing the behaviour of Beep / PC Beep controls for HDA 
+drivers (comments?):
 
-The 'good' callback method means that the audio driver informs the
-application when its wants to have new audio data, not the other way.
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=d605dbeed1b102136513e09e95217e8dc19c800d
 
+ 	I would like to introduce uniform naming for these controls 
+to not confuse users.
 
-Best regards,
-Clemens
+HDA driver: Beep, PC Beep
+AC97: PC Speaker, Beep, PC Beep
+etc..
+
+ 	I think that the original purpose of PC Speaker is a beep 
+generator. Also, many SoC platforms use AC97 codecs, so removing 
+abbreviation PC might make sense. It would be probably best to change all 
+control names in drivers to 'Beep'. Comments?
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
