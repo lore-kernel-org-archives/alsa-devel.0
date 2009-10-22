@@ -1,653 +1,87 @@
-From: Rafael Ignacio Zurita <rizurita@yahoo.com>
-Subject: [PATCH] sh: add SuperH DAC audio driver for ALSA V3
-Date: Thu, 22 Oct 2009 17:25:06 -0300
-Message-ID: <20091022202506.GA24298@rafazurita.homelinux.net>
-Reply-To: Rafael Ignacio Zurita <rizurita@yahoo.com>
+From: Daniel Yek <dyek@real.com>
+Subject: Re: How to close ALSA device nodes?
+Date: Thu, 22 Oct 2009 15:55:33 -0700
+Message-ID: <4AE0E2E5.2040604@real.com>
+References: <200910182038.34252.rem@videolan.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-sh-owner@vger.kernel.org
-To: linux-sh@vger.kernel.org
-Cc: Paul Mundt <lethal@linux-sh.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from kal-el.real.com (kal-el.real.com [207.188.23.4])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1820424444
+	for <alsa-devel@alsa-project.org>;
+	Fri, 23 Oct 2009 00:55:35 +0200 (CEST)
+In-Reply-To: <200910182038.34252.rem@videolan.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?UsOpbWkgRGVuaXMtQ291cm1vbnQ=?= <rem@videolan.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a port of the sound/oss/sh_dac_audio.c driver.
-The driver uses an on-chip 8-bit D/A converter, which has a speaker connected
-to one of its channels, found in several ancient HP machines.
-For interrupts it uses a high-resolution timer (hrtimer).
-Tested on SH7709 based hp6xx (HP Jornada 680/690 and HP Palmtop 620lx/660lx).
- 
-Also, since OSS Emulation works, the old OSS sound/oss/sh_dac_audio.c driver
-would be obsolete soon, and it could be removed.
- 
-Changes since V2:
- - renamed include/sound/dac_audio.h to include/sound/sh_dac_audio.h
-
-Changes since V1:
- - moved the platform device code into board code.
- - dropped dac_audio_sync(), since that code is not needed (it was inherited of
-   the old oss driver).
- - rewrote the code with style problems.
- 
-Signed-off-by: Rafael Ignacio Zurita <rizurita@yahoo.com>
----
- arch/sh/boards/mach-hp6xx/setup.c        |   55 ++++
- arch/sh/include/mach-common/mach/hp6xx.h |    4 +
- include/sound/sh_dac_audio.h             |   21 ++
- sound/sh/Kconfig                         |    8 +
- sound/sh/Makefile                        |    1 +
- sound/sh/snd_sh_dac_audio.c              |  453 ++++++++++++++++++++++++++++++
- 6 files changed, 542 insertions(+), 0 deletions(-)
-
-diff --git a/arch/sh/boards/mach-hp6xx/setup.c b/arch/sh/boards/mach-hp6xx/setup.c
-index 8f305b3..e6dd5e9 100644
---- a/arch/sh/boards/mach-hp6xx/setup.c
-+++ b/arch/sh/boards/mach-hp6xx/setup.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/platform_device.h>
- #include <linux/irq.h>
-+#include <sound/sh_dac_audio.h>
- #include <asm/hd64461.h>
- #include <asm/io.h>
- #include <mach/hp6xx.h>
-@@ -51,9 +52,63 @@ static struct platform_device jornadakbd_device = {
- 	.id		= -1,
- };
- 
-+static void dac_audio_start(struct dac_audio_pdata *pdata)
-+{
-+	u16 v;
-+	u8 v8;
-+
-+	/* HP Jornada 680/690 speaker on */
-+	v = inw(HD64461_GPADR);
-+	v &= ~HD64461_GPADR_SPEAKER;
-+	outw(v, HD64461_GPADR);
-+
-+	/* HP Palmtop 620lx/660lx speaker on */
-+	v8 = inb(PKDR);
-+	v8 &= ~PKDR_SPEAKER;
-+	outb(v8, PKDR);
-+
-+	sh_dac_enable(pdata->channel);
-+}
-+
-+static void dac_audio_stop(struct dac_audio_pdata *pdata)
-+{
-+	u16 v;
-+	u8 v8;
-+
-+	/* HP Jornada 680/690 speaker off */
-+	v = inw(HD64461_GPADR);
-+	v |= HD64461_GPADR_SPEAKER;
-+	outw(v, HD64461_GPADR);
-+
-+	/* HP Palmtop 620lx/660lx speaker off */
-+	v8 = inb(PKDR);
-+	v8 |= PKDR_SPEAKER;
-+	outb(v8, PKDR);
-+
-+	sh_dac_output(0, pdata->channel);
-+	sh_dac_disable(pdata->channel);
-+}
-+
-+static struct dac_audio_pdata dac_audio_platform_data = {
-+	.buffer_size		= 64000,
-+	.channel		= 1,
-+	.start			= dac_audio_start,
-+	.stop			= dac_audio_stop,
-+};
-+
-+static struct platform_device dac_audio_device = {
-+	.name		= "dac_audio",
-+	.id		= -1,
-+	.dev		= {
-+		.platform_data	= &dac_audio_platform_data,
-+	}
-+
-+};
-+
- static struct platform_device *hp6xx_devices[] __initdata = {
- 	&cf_ide_device,
- 	&jornadakbd_device,
-+	&dac_audio_device,
- };
- 
- static void __init hp6xx_init_irq(void)
-diff --git a/arch/sh/include/mach-common/mach/hp6xx.h b/arch/sh/include/mach-common/mach/hp6xx.h
-index 0d4165a..bcc301a 100644
---- a/arch/sh/include/mach-common/mach/hp6xx.h
-+++ b/arch/sh/include/mach-common/mach/hp6xx.h
-@@ -29,6 +29,9 @@
- 
- #define PKDR_LED_GREEN		0x10
- 
-+/* HP Palmtop 620lx/660lx speaker on/off */
-+#define PKDR_SPEAKER		0x20
-+
- #define SCPDR_TS_SCAN_ENABLE	0x20
- #define SCPDR_TS_SCAN_Y		0x02
- #define SCPDR_TS_SCAN_X		0x01
-@@ -42,6 +45,7 @@
- #define ADC_CHANNEL_BACKUP	4
- #define ADC_CHANNEL_CHARGE	5
- 
-+/* HP Jornada 680/690 speaker on/off */
- #define HD64461_GPADR_SPEAKER	0x01
- #define HD64461_GPADR_PCMCIA0	(0x02|0x08)
- 
-diff --git a/include/sound/sh_dac_audio.h b/include/sound/sh_dac_audio.h
-new file mode 100644
-index 0000000..f5deaf1
---- /dev/null
-+++ b/include/sound/sh_dac_audio.h
-@@ -0,0 +1,21 @@
-+/*
-+ * SH_DAC specific configuration, for the dac_audio platform_device
-+ *
-+ * Copyright (C) 2009 Rafael Ignacio Zurita <rizurita@yahoo.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published
-+ * by the Free Software Foundation.
-+ */
-+
-+#ifndef __INCLUDE_SH_DAC_AUDIO_H
-+#define __INCLUDE_SH_DAC_AUDIO_H
-+
-+struct dac_audio_pdata {
-+	int buffer_size;
-+	int channel;
-+	void (*start)(struct dac_audio_pdata *pd);
-+	void (*stop)(struct dac_audio_pdata *pd);
-+};
-+
-+#endif /* __INCLUDE_SH_DAC_AUDIO_H */
-diff --git a/sound/sh/Kconfig b/sound/sh/Kconfig
-index aed0f90..61139f3 100644
---- a/sound/sh/Kconfig
-+++ b/sound/sh/Kconfig
-@@ -19,5 +19,13 @@ config SND_AICA
- 	help
- 	  ALSA Sound driver for the SEGA Dreamcast console.
- 
-+config SND_SH_DAC_AUDIO
-+	tristate "SuperH DAC audio support"
-+	depends on SND
-+	depends on CPU_SH3 && HIGH_RES_TIMERS
-+	select SND_PCM
-+	help
-+	  Say Y here to include support for the on-chip DAC.
-+
- endif	# SND_SUPERH
- 
-diff --git a/sound/sh/Makefile b/sound/sh/Makefile
-index 8fdcb6e..c4b81c4 100644
---- a/sound/sh/Makefile
-+++ b/sound/sh/Makefile
-@@ -6,3 +6,4 @@ snd-aica-objs := aica.o
- 
- # Toplevel Module Dependency
- obj-$(CONFIG_SND_AICA) += snd-aica.o
-+obj-$(CONFIG_SND_SH_DAC_AUDIO) += snd_sh_dac_audio.o
-diff --git a/sound/sh/snd_sh_dac_audio.c b/sound/sh/snd_sh_dac_audio.c
-new file mode 100644
-index 0000000..ec3ca66
---- /dev/null
-+++ b/sound/sh/snd_sh_dac_audio.c
-@@ -0,0 +1,453 @@
-+/*
-+ * snd_sh_dac_audio.c - SuperH DAC audio driver for ALSA
-+ *
-+ * Copyright (c) 2009 by Rafael Ignacio Zurita <rizurita@yahoo.com>
-+ *
-+ *
-+ * Based on sh_dac_audio.c (Copyright (C) 2004, 2005 by Andriy Skulysh)
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ */
-+
-+#include <linux/hrtimer.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/initval.h>
-+#include <sound/pcm.h>
-+#include <sound/sh_dac_audio.h>
-+#include <asm/clock.h>
-+#include <asm/hd64461.h>
-+#include <mach/hp6xx.h>
-+#include <cpu/dac.h>
-+
-+MODULE_AUTHOR("Rafael Ignacio Zurita <rizurita@yahoo.com>");
-+MODULE_DESCRIPTION("SuperH DAC audio driver");
-+MODULE_LICENSE("GPL");
-+MODULE_SUPPORTED_DEVICE("{{SuperH DAC audio support}}");
-+
-+/* Module Parameters */
-+static int index = SNDRV_DEFAULT_IDX1;
-+static char *id = SNDRV_DEFAULT_STR1;
-+module_param(index, int, 0444);
-+MODULE_PARM_DESC(index, "Index value for SuperH DAC audio.");
-+module_param(id, charp, 0444);
-+MODULE_PARM_DESC(id, "ID string for SuperH DAC audio.");
-+
-+/* main struct */
-+struct snd_sh_dac {
-+	struct snd_card *card;
-+	struct snd_pcm_substream *substream;
-+	struct hrtimer hrtimer;
-+	ktime_t wakeups_per_second;
-+
-+	int rate;
-+	int empty;
-+	char *data_buffer, *buffer_begin, *buffer_end;
-+	int processed; /* bytes proccesed, to compare with period_size */
-+	int buffer_size;
-+	struct dac_audio_pdata *pdata;
-+};
-+
-+
-+static void dac_audio_start_timer(struct snd_sh_dac *chip)
-+{
-+	hrtimer_start(&chip->hrtimer, chip->wakeups_per_second,
-+		      HRTIMER_MODE_REL);
-+}
-+
-+static void dac_audio_stop_timer(struct snd_sh_dac *chip)
-+{
-+	hrtimer_cancel(&chip->hrtimer);
-+}
-+
-+static void dac_audio_reset(struct snd_sh_dac *chip)
-+{
-+	dac_audio_stop_timer(chip);
-+	chip->buffer_begin = chip->buffer_end = chip->data_buffer;
-+	chip->processed = 0;
-+	chip->empty = 1;
-+}
-+
-+static void dac_audio_set_rate(struct snd_sh_dac *chip)
-+{
-+	chip->wakeups_per_second = ktime_set(0, 1000000000 / chip->rate);
-+}
-+
-+
-+/* PCM INTERFACE */
-+
-+static struct snd_pcm_hardware snd_sh_dac_pcm_hw = {
-+	.info			= (SNDRV_PCM_INFO_MMAP |
-+					SNDRV_PCM_INFO_MMAP_VALID |
-+					SNDRV_PCM_INFO_INTERLEAVED |
-+					SNDRV_PCM_INFO_HALF_DUPLEX),
-+	.formats		= SNDRV_PCM_FMTBIT_U8,
-+	.rates			= SNDRV_PCM_RATE_8000,
-+	.rate_min		= 8000,
-+	.rate_max		= 8000,
-+	.channels_min		= 1,
-+	.channels_max		= 1,
-+	.buffer_bytes_max	= (48*1024),
-+	.period_bytes_min	= 1,
-+	.period_bytes_max	= (48*1024),
-+	.periods_min		= 1,
-+	.periods_max		= 1024,
-+};
-+
-+static int snd_sh_dac_pcm_open(struct snd_pcm_substream *substream)
-+{
-+	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+
-+	runtime->hw = snd_sh_dac_pcm_hw;
-+
-+	chip->substream = substream;
-+	chip->buffer_begin = chip->buffer_end = chip->data_buffer;
-+	chip->processed = 0;
-+	chip->empty = 1;
-+
-+	chip->pdata->start(chip->pdata);
-+
-+	return 0;
-+}
-+
-+static int snd_sh_dac_pcm_close(struct snd_pcm_substream *substream)
-+{
-+	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
-+
-+	chip->substream = NULL;
-+
-+	dac_audio_stop_timer(chip);
-+	chip->pdata->stop(chip->pdata);
-+
-+	return 0;
-+}
-+
-+static int snd_sh_dac_pcm_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *hw_params)
-+{
-+	return snd_pcm_lib_malloc_pages(substream,
-+			params_buffer_bytes(hw_params));
-+}
-+
-+static int snd_sh_dac_pcm_hw_free(struct snd_pcm_substream *substream)
-+{
-+	return snd_pcm_lib_free_pages(substream);
-+}
-+
-+static int snd_sh_dac_pcm_prepare(struct snd_pcm_substream *substream)
-+{
-+	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_runtime *runtime = chip->substream->runtime;
-+
-+	chip->buffer_size = runtime->buffer_size;
-+	memset(chip->data_buffer, 0, chip->pdata->buffer_size);
-+
-+	return 0;
-+}
-+
-+static int snd_sh_dac_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
-+{
-+	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		dac_audio_start_timer(chip);
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		chip->buffer_begin = chip->buffer_end = chip->data_buffer;
-+		chip->processed = 0;
-+		chip->empty = 1;
-+		dac_audio_stop_timer(chip);
-+		break;
-+	default:
-+		 return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int snd_sh_dac_pcm_copy(struct snd_pcm_substream *substream, int channel,
-+	snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
-+{
-+	/* channel is not used (interleaved data) */
-+	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	ssize_t b_count = frames_to_bytes(runtime , count);
-+	ssize_t b_pos = frames_to_bytes(runtime , pos);
-+
-+	if (count < 0)
-+		return -EINVAL;
-+
-+	if (!count)
-+		return 0;
-+
-+	memcpy_toio(chip->data_buffer + b_pos, src, b_count);
-+	chip->buffer_end = chip->data_buffer + b_pos + b_count;
-+
-+	if (chip->empty) {
-+		chip->empty = 0;
-+		dac_audio_start_timer(chip);
-+	}
-+
-+	return 0;
-+}
-+
-+static int snd_sh_dac_pcm_silence(struct snd_pcm_substream *substream,
-+				  int channel, snd_pcm_uframes_t pos,
-+				  snd_pcm_uframes_t count)
-+{
-+	/* channel is not used (interleaved data) */
-+	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	ssize_t b_count = frames_to_bytes(runtime , count);
-+	ssize_t b_pos = frames_to_bytes(runtime , pos);
-+
-+	if (count < 0)
-+		return -EINVAL;
-+
-+	if (!count)
-+		return 0;
-+
-+	memset_io(chip->data_buffer + b_pos, 0, b_count);
-+	chip->buffer_end = chip->data_buffer + b_pos + b_count;
-+
-+	if (chip->empty) {
-+		chip->empty = 0;
-+		dac_audio_start_timer(chip);
-+	}
-+
-+	return 0;
-+}
-+
-+static
-+snd_pcm_uframes_t snd_sh_dac_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
-+	int pointer = chip->buffer_begin - chip->data_buffer;
-+
-+	return pointer;
-+}
-+
-+/* pcm ops */
-+static struct snd_pcm_ops snd_sh_dac_pcm_ops = {
-+	.open		= snd_sh_dac_pcm_open,
-+	.close		= snd_sh_dac_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= snd_sh_dac_pcm_hw_params,
-+	.hw_free	= snd_sh_dac_pcm_hw_free,
-+	.prepare	= snd_sh_dac_pcm_prepare,
-+	.trigger	= snd_sh_dac_pcm_trigger,
-+	.pointer	= snd_sh_dac_pcm_pointer,
-+	.copy		= snd_sh_dac_pcm_copy,
-+	.silence	= snd_sh_dac_pcm_silence,
-+	.mmap		= snd_pcm_lib_mmap_iomem,
-+};
-+
-+static int __devinit snd_sh_dac_pcm(struct snd_sh_dac *chip, int device)
-+{
-+	int err;
-+	struct snd_pcm *pcm;
-+
-+	/* device should be always 0 for us */
-+	err = snd_pcm_new(chip->card, "SH_DAC PCM", device, 1, 0, &pcm);
-+	if (err < 0)
-+		return err;
-+
-+	pcm->private_data = chip;
-+	strcpy(pcm->name, "SH_DAC PCM");
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_sh_dac_pcm_ops);
-+
-+	/* buffer size=48K */
-+	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_CONTINUOUS,
-+					  snd_dma_continuous_data(GFP_KERNEL),
-+							48 * 1024,
-+							48 * 1024);
-+
-+	return 0;
-+}
-+/* END OF PCM INTERFACE */
-+
-+
-+/* driver .remove  --  destructor */
-+static int snd_sh_dac_remove(struct platform_device *devptr)
-+{
-+	snd_card_free(platform_get_drvdata(devptr));
-+	platform_set_drvdata(devptr, NULL);
-+
-+	return 0;
-+}
-+
-+/* free -- it has been defined by create */
-+static int snd_sh_dac_free(struct snd_sh_dac *chip)
-+{
-+	/* release the data */
-+	kfree(chip->data_buffer);
-+	kfree(chip);
-+
-+	return 0;
-+}
-+
-+static int snd_sh_dac_dev_free(struct snd_device *device)
-+{
-+	struct snd_sh_dac *chip = device->device_data;
-+
-+	return snd_sh_dac_free(chip);
-+}
-+
-+static enum hrtimer_restart sh_dac_audio_timer(struct hrtimer *handle)
-+{
-+	struct snd_sh_dac *chip = container_of(handle, struct snd_sh_dac,
-+					       hrtimer);
-+	struct snd_pcm_runtime *runtime = chip->substream->runtime;
-+	ssize_t b_ps = frames_to_bytes(runtime, runtime->period_size);
-+
-+	if (!chip->empty) {
-+		sh_dac_output(*chip->buffer_begin, chip->pdata->channel);
-+		chip->buffer_begin++;
-+
-+		chip->processed++;
-+		if (chip->processed >= b_ps) {
-+			chip->processed -= b_ps;
-+			snd_pcm_period_elapsed(chip->substream);
-+		}
-+
-+		if (chip->buffer_begin == (chip->data_buffer +
-+					   chip->buffer_size - 1))
-+			chip->buffer_begin = chip->data_buffer;
-+
-+		if (chip->buffer_begin == chip->buffer_end)
-+			chip->empty = 1;
-+
-+	}
-+
-+	if (!chip->empty)
-+		hrtimer_start(&chip->hrtimer, chip->wakeups_per_second,
-+			      HRTIMER_MODE_REL);
-+
-+	return HRTIMER_NORESTART;
-+}
-+
-+/* create  --  chip-specific constructor for the cards components */
-+static int __devinit snd_sh_dac_create(struct snd_card *card,
-+				       struct platform_device *devptr,
-+				       struct snd_sh_dac **rchip)
-+{
-+	struct snd_sh_dac *chip;
-+	int err;
-+
-+	static struct snd_device_ops ops = {
-+		   .dev_free = snd_sh_dac_dev_free,
-+	};
-+
-+	*rchip = NULL;
-+
-+	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
-+	if (chip == NULL)
-+		return -ENOMEM;
-+
-+	chip->card = card;
-+
-+	hrtimer_init(&chip->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	chip->hrtimer.function = sh_dac_audio_timer;
-+
-+	dac_audio_reset(chip);
-+	chip->rate = 8000;
-+	dac_audio_set_rate(chip);
-+
-+	chip->pdata = devptr->dev.platform_data;
-+
-+	chip->data_buffer = kmalloc(chip->pdata->buffer_size, GFP_KERNEL);
-+	if (chip->data_buffer == NULL) {
-+		kfree(chip);
-+		return -ENOMEM;
-+	}
-+
-+	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
-+	if (err < 0) {
-+		snd_sh_dac_free(chip);
-+		return err;
-+	}
-+
-+	*rchip = chip;
-+
-+	return 0;
-+}
-+
-+/* driver .probe  --  constructor */
-+static int __devinit snd_sh_dac_probe(struct platform_device *devptr)
-+{
-+	struct snd_sh_dac *chip;
-+	struct snd_card *card;
-+	int err;
-+
-+	err = snd_card_create(index, id, THIS_MODULE, 0, &card);
-+	if (err < 0) {
-+			snd_printk(KERN_ERR "cannot allocate the card\n");
-+			return err;
-+	}
-+
-+	err = snd_sh_dac_create(card, devptr, &chip);
-+	if (err < 0)
-+		goto probe_error;
-+
-+	err = snd_sh_dac_pcm(chip, 0);
-+	if (err < 0)
-+		goto probe_error;
-+
-+	strcpy(card->driver, "snd_sh_dac");
-+	strcpy(card->shortname, "SuperH DAC audio driver");
-+	printk(KERN_INFO "%s %s", card->longname, card->shortname);
-+
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto probe_error;
-+
-+	snd_printk("ALSA driver for SuperH DAC audio");
-+
-+	platform_set_drvdata(devptr, card);
-+	return 0;
-+
-+probe_error:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+/*
-+ * "driver" definition
-+ */
-+static struct platform_driver driver = {
-+	.probe	= snd_sh_dac_probe,
-+	.remove = snd_sh_dac_remove,
-+	.driver = {
-+		.name = "dac_audio",
-+	},
-+};
-+
-+static int __init sh_dac_init(void)
-+{
-+	return platform_driver_register(&driver);
-+}
-+
-+static void __exit sh_dac_exit(void)
-+{
-+	platform_driver_unregister(&driver);
-+}
-+
-+module_init(sh_dac_init);
-+module_exit(sh_dac_exit);
+Q291bGQgaXQgYmUgdGhhdCB0aGUgYW5zd2VyIGlzIHRvIHVzZSB0aGUgc3Vycm9nYXRlIHBhcmVu
+dCBtb2RlbD8KQm9vazogUHRocmVhZHMgUHJvZ3JhbW1pbmc6Cmh0dHA6Ly9ib29rcy5nb29nbGUu
+Y29tL2Jvb2tzP2lkPTJrWkR4OEg2SDE4QyZwZz1QQTE5MCZscGc9UEExOTAmZHE9TXVsdGl0aHJl
+YWRpbmcrc3Vycm9nYXRlK3BhcmVudCttb2RlbCZzb3VyY2U9Ymwmb3RzPW5tRW5tdVBRbWUmc2ln
+PS1NdkFRRVpVSm5nT2RNTEotSEdoQXFDdjFBVSZobD1lbiZlaT1fZURnU3FXWUxZYWNzZ09CX2VI
+T0RBJnNhPVgmb2k9Ym9va19yZXN1bHQmY3Q9cmVzdWx0JnJlc251bT0xJnZlZD0wQ0F3UTZBRXdB
+QSN2PW9uZXBhZ2UmcT0mZj1mYWxzZQo8aHR0cDovL2Jvb2tzLmdvb2dsZS5jb20vYm9va3M/aWQ9
+MmtaRHg4SDZIMThDJnBnPVBBMTkwJmxwZz1QQTE5MCZkcT1NdWx0aXRocmVhZGluZytzdXJyb2dh
+dGUrcGFyZW50K21vZGVsJnNvdXJjZT1ibCZvdHM9bm1Fbm11UFFtZSZzaWc9LU12QVFFWlVKbmdP
+ZE1MSi1IR2hBcUN2MUFVJmhsPWVuJmVpPV9lRGdTcVdZTFlhY3NnT0JfZUhPREEmc2E9WCZvaT1i
+b29rX3Jlc3VsdCZjdD1yZXN1bHQmcmVzbnVtPTEmdmVkPTBDQXdRNkFFd0FBI3Y9b25lcGFnZSZx
+PSZmPWZhbHNlPgoKVGhhdCBpcywgdGhlIG11bHRpLXRocmVhZGVkIGFwcC4gY3JlYXRlcyBhIGR1
+bW15IGNoaWxkIHByb2Nlc3MgZHVyaW5nCml0cyBpbml0aWFsaXphdGlvbiBwcm9jZXNzIGFuZCB1
+c2UgdGhlIGNoaWxkIHNvbGVseSBhcyBhIHN1cnJvZ2F0ZQpwYXJlbnQgdG8gZm9yayBvbiBiZWhh
+bGYgb2YgdGhlIGFwcC4gVGhhdCB3YXksIHRoZSBtdWx0aS10aHJlYWRlZCBhcHAuCmRvZXNuJ3Qg
+aGF2ZSB0byBmb3JrIGFuZCBwb3NzaWJseSBsZWFraW5nICJzdGF0ZXMiIGluIHRoZSBjaGlsZAoo
+ZXNwZWNpYWxseSwgaWYgaXQgaXMgbm90IGZvbGxvd2VkIGJ5IGFuIGV4ZWMoKSwgSSB0aGluay4p
+CgpJJ20gaW50ZXJlc3RlZCBpbiBoZWFyaW5nIGZyb20gdGhlIG1vcmUgZXhwZXJpZW5jZWQgZGV2
+cy4gcmVnYXJkaW5nIHRoaXMKdGVjaG5pcXVlIHRvby4KClJlZ2FyZHMsCgotLSAKRGFuaWVsIFll
+ay4KCgoKUsOpbWkgRGVuaXMtQ291cm1vbnQgd3JvdGU6Cj4gTGUgZGltYW5jaGUgMTggb2N0b2Jy
+ZSAyMDA5IDIwOjEzOjE1IFJvYmVydCBIYW5jb2NrLCB2b3VzIGF2ZXogw6ljcml0IDoKPj4+IEZy
+b20gdGhlIGVhcmxpZXIgdGhyZWFkLCBJIHJlY2tvbiB0aGF0IEFMU0EgZGV2ZWxvcGVycyBjb25z
+aWRlciB0aGF0Cj4+PiB0aGlzCj4+PiBpcyBhbiB1cHBlci1sYXllciBpc3N1ZS4gTWF5YmUgc28s
+IGJ1dCB0aGVuIGhvdyBpcyB0aGUgdXBwZXItbGF5ZXIKPj4+IHN1cHBvc2VkIHRvIGZpbmQgd2hp
+Y2ggZmlsZSBkZXNjcmlwdG9ycyBBTFNBLWxpYiBoYXMgb3BlbmVkIC0gaWYgYW55Pwo+Pj4gQ29u
+dmVyc2VseSwgaWYgQUxTQS0gbGliIHdvbid0IHRlbGwgd2hpbGUgZmlsZSBkZXNjcmlwdG9ycyBp
+dCBpcyB1c2luZywKPj4+IHdoYXQgY291bGQgcG9zc2libHkgYmUgdGhlIHVzZSBjYXNlIGZvciBu
+b3QgY2xvc2luZyB0aG9zZSBvbiBleGVjPwo+PiBJIGFncmVlIHRoYXQgaXQncyBhIGRpZmZpY3Vs
+dCBwcm9ibGVtIGZvciBhbiBhcHAgdGhhdCB3YW50cyB0byBmb3JrCj4+IGFuZCBleGVjIGFub3Ro
+ZXIgcHJvY2Vzcy4uIEknZCB0aGluayByZWFsbHkgc2hvdWxkIGJlIHNvbWUgd2F5IGZvciBhbgo+
+PiBhcHAgdG8gY29udHJvbCB0aGUgQ0xPRVhFQyBmbGFnIGZvciB0aGUgZmlsZSBkZXNjcmlwdG9y
+cyB0aGF0IGFsc2EtbGliCj4+IGhhcyBvcGVuLi4KPgo+IFJpZ2h0LiBUaGUga2VybmVsIHJlY2Vu
+dGx5IGludHJvZHVjZWQgdGhlIE9fQ0xPRVhFQyBvcGVuIGZsYWcsIHRvIHN1cHBvcnQKPiB0aHJl
+YWQtc2FmZSBjbG9zZS1vbi1leGVjLiBUaGUgb25seSB3YXkgdG8gbGV2ZXJhZ2UgdGhpcyBpcyBm
+b3IKPiBBTFNBLWxpYiB0bwo+IHNldCBjbG9zZS1vbi1leGVjIGl0c2VsZiB3aGVuIGl0IG9wZW5z
+IGEgZmlsZSAod2hldGhlciBieSBkZWZhdWx0IG9yCj4gd2hlbiB0aGUKPiBhcHBsaWNhdGlvbiBy
+ZXF1ZXN0cyBpdCkuCj4KPiBUaGF0IHNhaWQsIEkgc3RpbGwgZmFpbCB0byBzZWUgYW55IHBvdGVu
+dGlhbCB1c2UgY2FzZSB0byBub3Qgc2V0IHRoZQo+IGZsYWcuCj4gU2luY2UgQUxTQS1saWIgd29u
+J3QgbGV0IHRoZSBhcHBsaWNhdGlvbiBrbm93IGFib3V0IHRoZSBmaWxlIGhhbmRsZXMsIGFueQo+
+IGFwcGxpY2F0aW9uIGNhbm5vdCBhIHVzZSB0aGVtIGFjcm9zcyBleGVjKCkgaW4gdGhlIGZpcnN0
+IHBsYWNlLiBGb3IgdGhlCj4gcmVmZXJlbmNlLCBnbGliYyBpcyBub3cgc2V0dGluZyBjbG9zZS1v
+bi1leGVjIGluIHNpbWlsYXIgY2FzZXMsIGUuZy4KPiBzeXNsb2coKS4KPgo+PiBJIGd1ZXNzIHRo
+ZSBhbHRlcm5hdGl2ZSB3b3VsZCBiZSB0byBzaHV0ZG93biBhbGwgb3BlbiBQQ01zLCBldGMuIGlu
+Cj4+IEFMU0EgaW4gdGhlIGNoaWxkIHByb2Nlc3MgYWZ0ZXIgZm9ya2luZyBhbmQgYmVmb3JlIHRo
+ZSBleGVjLCBzbyB0aGF0Cj4+IHRoZXkgZG9uJ3QgZW5kIHVwIHN0aWxsIG9wZW4gZm9yIHRoZSBu
+ZXcgcHJvY2Vzcy4uCj4gICAKPiBJIHN1c3BlY3Qgc3VjaCBhbiBhcHByb2FjaCB3b3VsZCBiZSBw
+YWluZnVsIGJvdGggZm9yIEFMU0EgYW5kIGZvciB0aGUKPiBhcHBsaWNhdGlvbnMuIEZyb20gQUxT
+QSwgdGhpcyB3b3VsZCBuZWVkIHNhZmV0eSB3aXRoIHJlZ2FyZHMgdG8gZm9yayBpbgo+IGFub3Ro
+ZXIgdGhyZWFkLiBUaGF0IHByb2JhYmx5IHJlcXVpcmVzIHB0aHJlYWRfYXRmb3JrKCkgKmdsdXJw
+KiBpZgo+IEFMU0EgaXMgdG8KPiBrZWVwIGl0cyBTTVAgJiB0aHJlYWQtc2FmZXR5IHByb21pc2Ug
+Km91Y2gqLiBGcm9tIHRoZSBhcHBsaWNhdGlvbiwgdGhpcwo+IHJlcXVpcmUgY2FsbGluZyBhbiBB
+TFNBIGZ1bmN0aW9uIGJldHdlZW4gZm9yayBhbmQgZXhlYy4gVGhhdCB3b3VsZCBmb3JiaWQKPiB1
+c2luZyBzeXN0ZW0oKSwgcG9wZW4oKSBvciAtZmFzdGVyLSBwb3NpeF9zcGF3biooKS4gVGhhdCBh
+bHNvIG1lYW5zCj4gbGlua2luZyB0bwo+IEFMU0EgaW4gZXZlcnkgcGxhY2UgdGhhdCBleGVjdXRl
+cy4gQ29uc2lkZXJpbmcgdGhhdCBWTEMgaXMgaGVhdmlseSBwbHVnaW4tCj4gYmFzZWQsIHRoaXMg
+d291bGQgYmUgc28gaW1wcmFjdGljYWwgdGhhdCBJJ2QgZXZlbiByYXRoZXIgc2NhbiB0aHJvdWdo
+Cj4gL3Byb2Mvc2VsZi9mZC4uLgo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
