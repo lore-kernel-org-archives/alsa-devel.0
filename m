@@ -1,22 +1,20 @@
-From: =?UTF-8?q?R=C3=A9mi=20Denis-Courmont?= <rem@videolan.org>
-Subject: [PATCH alsa-lib 3/3] Define _GNU_SOURCE so that
-	<fcntl.h> gives O_CLOEXEC
-Date: Thu, 22 Oct 2009 18:01:28 +0300
-Message-ID: <1256223688-3501-3-git-send-email-rem@videolan.org>
-References: <1256223688-3501-1-git-send-email-rem@videolan.org>
+From: Szabolcs Erki <szabolcs@szabolcserki.com>
+Subject: Re: Developing and cross-compiling an ASoC driver
+Date: Thu, 22 Oct 2009 17:05:02 +0200
+Message-ID: <836444322.20091022170502@szabolcserki.com>
+References: <1608652916.20091022160818@szabolcserki.com>
+	<20091022142148.GE3776@sirena.org.uk>
+	<786228398.20091022164034@szabolcserki.com>
+	<20091022145258.GA14571@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yop.chewa.net (yop.chewa.net [91.121.105.214])
-	by alsa0.perex.cz (Postfix) with ESMTP id B650E24407
+Received: from relay02.digicable.hu (relay02.digicable.hu [92.249.128.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B94824403
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Oct 2009 17:01:32 +0200 (CEST)
-Received: from basile.remlab.net (localhost.localdomain [127.0.0.1])
-	by yop.chewa.net (Postfix) with SMTP id 6C6777A5
-	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Oct 2009 17:01:31 +0200 (CEST)
-In-Reply-To: <1256223688-3501-1-git-send-email-rem@videolan.org>
+	Thu, 22 Oct 2009 17:05:07 +0200 (CEST)
+In-Reply-To: <20091022145258.GA14571@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,18 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogUsOpbWkgRGVuaXMtQ291cm1vbnQgPHJlbWlAcmVtbGFiLm5ldD4KClRoaXMgZW5hYmxl
-cyB0aHJlYWQtc2FmZSBjbG9zZS1vbi1leGVjIGZpbGUgZGVzY3JpcHRvciBmbGFnIHNldHRpbmcg
-aWYKdGhlIHVuZGVybHlpbmcga2VybmVsIHN1cHBvcnRzIGl0LgoKU2lnbmVkLW9mZi1ieTogUsOp
-bWkgRGVuaXMtQ291cm1vbnQgPHJlbWlAcmVtbGFiLm5ldD4KLS0tCiBjb25maWd1cmUuaW4gfCAg
-ICAyICsrCiAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9jb25maWd1cmUuaW4gYi9jb25maWd1cmUuaW4KaW5kZXggYTQ1NWRlMS4u
-Y2M4OTUwZiAxMDA2NDQKLS0tIGEvY29uZmlndXJlLmluCisrKyBiL2NvbmZpZ3VyZS5pbgpAQCAt
-MzgsNiArMzgsOCBAQCB0aGVuCiAgIEFDX01TR19SRVNVTFQoJENDKQogZmkKIAkgICAgCitDRkxB
-R1M9IiRDRkxBR1MgLURfR05VX1NPVVJDRSIKKwogCiBBQ19QUk9HX0NDCiBBQ19QUk9HX0NQUAot
-LSAKMS42LjUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+> Please don't top post, it breaks the flow of discussion and removes
+> context from your reply.
+Ok.
+
+>> Ok, so ASoC is totally platform-independent, there is no patch to be
+>> applied against ASoC in order to make it feasible for the target. Is
+
+> ASoC itself is platform independant.  It does require drivers for the
+> CPU, CODEC and board that it is to be used with.  You mentioned that you
+> are using an Atmel processor which does have CPU side support in current
+> Linux versions though the ADC you mentioned doesn't.
+
+>> it correct? In this case I have to compile it in the kernel, using the
+>> gcc-arm-elf cross compiler. How to do that? Hard copy the files and
+>> hacking makefiles together?
+>> Because the descriptions I found applied to installing ASoC on a desktop environment, like
+>> Ubuntu.
+
+> ASoC is part of the standard Linux kernel, just build the kernel as you
+Good to know. I'm going to look deeper into the kernel config.
+
+> would normally.  As I said in my previous mail people working with the
+> same embedded Linux distribution as you are would be the best people to
+> ask about this, it is not at all ASoC or ALSA specific.
+
+Ok, I will ask them. But I still hope that someone in the ALSA list faced
+the same problem.
+
+Szabolcs
