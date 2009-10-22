@@ -1,20 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/4] MFD: twl4030: add twl4030_codec MFD as
-	a new child to the core
-Date: Thu, 22 Oct 2009 14:02:08 +0300
-Message-ID: <200910221402.08837.peter.ujfalusi@nokia.com>
-References: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20091022075748.GA8105@sortiz.org>
-	<20091022105517.GB18862@rakim.wolfsonmicro.main>
+From: Szabolcs Erki <szabolcs@szabolcserki.com>
+Subject: Developing and cross-compiling an ASoC driver
+Date: Thu, 22 Oct 2009 16:08:18 +0200
+Message-ID: <1608652916.20091022160818@szabolcserki.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id B815924347
+Received: from relay01.digicable.hu (relay01.digicable.hu [92.249.128.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 44A7C1037F1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Oct 2009 13:02:27 +0200 (CEST)
-In-Reply-To: <20091022105517.GB18862@rakim.wolfsonmicro.main>
+	Thu, 22 Oct 2009 16:08:23 +0200 (CEST)
+Received: from [94.21.107.64] (helo=szabolcs-PC)
+	by relay01.digicable.hu with esmtpa
+	id 1N0yKz-0001uE-Ox for <alsa-devel@alsa-project.org>;
+	Thu, 22 Oct 2009 16:08:21 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Samuel Ortiz <sameo@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 22 October 2009 13:55:17 ext Mark Brown wrote:
-> On Thu, Oct 22, 2009 at 09:57:49AM +0200, Samuel Ortiz wrote:
-> > It seems to me that this patchset is mostly an asoc one, even though all
-> > of those patches depend on the MFD one. So I'd perfectly fine if they'd
-> > all go through Mark's tree, and then I'd have to make sure I'm sending =
-my
-> > 2.6.33 merge window pull request _after_ Mark's code is in Linus tree.
-> > Once it's there, I can work on merging conflicts with the few
-> > twl4030-core pending patches from my tree. Mark, what do you think ?
-> =
+Hello,
 
-> Seems reasonable.  I'll apply them on a separate branch and merge them
-> into my 2.6.33 branch so that you can merge them into your tree too and
-> avoid any cross-tree issues without needing to think about how things
-> get merged with Linus (though since Takashi generally merges early it'll
-> probably happen naturally anyway).  Note that if you do pull this branch
-> you won't be able to rebase your tree, you'd have to merge up Linus'
-> tree instead (but that'd be handy anyway :) ).
+I recently designed a custom board based on an AT91SAM9 microcontroller
+connected with an ADC via I2S.
+In the project we need a data acquisition application, which can store
+audio stream to wav files. On my opinion arecord fulfills our requirements. The "only" thing we have to do
+is writing an ASoC driver especially for the ADC (ADS1274), and cross
+compile it to the Linux4SAM embedded Linux environment.
 
-I just sent the second series, I'll hope the I have not missed anything. =
+I didn't find any suitable description how to do a cross-platform driver development process.
+Could you please give me some introduction how to:
 
-I was scratching my head on which tree it should be going, but it is really=
- nice =
+- cross compile alsa-driver (AFAIK ASoC is part of it, and ALSA is
+part of the linux kernel), and alsa-utils (for getting arecord)
+- cross compile the newly developed alsa driver
+- integrate ASoC and the custom driver to the patched kernel
+(Linux4SAM) and cross compile them to one image.
 
-to see that it can be done like this.
-Thank you Samuel, Mark and Tony!
+Thank you for your help in advance!
 
--- =
-
-P=E9ter
+Br,
+Szabolcs Erki
