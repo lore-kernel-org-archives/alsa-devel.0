@@ -1,20 +1,19 @@
-From: Szabolcs Erki <szabolcs@szabolcserki.com>
-Subject: Re: Developing and cross-compiling an ASoC driver
-Date: Thu, 22 Oct 2009 17:05:02 +0200
-Message-ID: <836444322.20091022170502@szabolcserki.com>
-References: <1608652916.20091022160818@szabolcserki.com>
-	<20091022142148.GE3776@sirena.org.uk>
-	<786228398.20091022164034@szabolcserki.com>
-	<20091022145258.GA14571@rakim.wolfsonmicro.main>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Exemple of source code for capture without using
+ callback
+Date: Thu, 22 Oct 2009 17:06:03 +0200
+Message-ID: <4AE074DB.4030600@ladisch.de>
+References: <26289049-EACA-4DC6-A396-E2AF4EB6F2E9@gmail.com>
+	<ad2655cb0910220740k5ef0f931j7f0ec48cb5d01cec@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay02.digicable.hu (relay02.digicable.hu [92.249.128.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B94824403
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 41DAC24405
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Oct 2009 17:05:07 +0200 (CEST)
-In-Reply-To: <20091022145258.GA14571@rakim.wolfsonmicro.main>
+	Thu, 22 Oct 2009 17:06:08 +0200 (CEST)
+In-Reply-To: <ad2655cb0910220740k5ef0f931j7f0ec48cb5d01cec@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <james.dutton@gmail.com>
+Cc: alsa-devel@alsa-project.org, brunal2496 gmail <brunal2496@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+James Courtier-Dutton wrote:
+> 2009/10/20 brunal2496 gmail <brunal2496@gmail.com>:
+> > I've read everywhere that using callback is a bad method to use the
+> > alsa drivers.
+> 
+> This is wrong. callback is the best method.
 
-> Please don't top post, it breaks the flow of discussion and removes
-> context from your reply.
-Ok.
+But _not_ the snd_async_add_pcm_handler function, which is evil.
+(This is the only ALSA PCM function that mentions "callback" in its
+documentation, so these are often confused.)
 
->> Ok, so ASoC is totally platform-independent, there is no patch to be
->> applied against ASoC in order to make it feasible for the target. Is
+The 'good' callback method means that the audio driver informs the
+application when its wants to have new audio data, not the other way.
 
-> ASoC itself is platform independant.  It does require drivers for the
-> CPU, CODEC and board that it is to be used with.  You mentioned that you
-> are using an Atmel processor which does have CPU side support in current
-> Linux versions though the ADC you mentioned doesn't.
 
->> it correct? In this case I have to compile it in the kernel, using the
->> gcc-arm-elf cross compiler. How to do that? Hard copy the files and
->> hacking makefiles together?
->> Because the descriptions I found applied to installing ASoC on a desktop environment, like
->> Ubuntu.
-
-> ASoC is part of the standard Linux kernel, just build the kernel as you
-Good to know. I'm going to look deeper into the kernel config.
-
-> would normally.  As I said in my previous mail people working with the
-> same embedded Linux distribution as you are would be the best people to
-> ask about this, it is not at all ASoC or ALSA specific.
-
-Ok, I will ask them. But I still hope that someone in the ALSA list faced
-the same problem.
-
-Szabolcs
+Best regards,
+Clemens
