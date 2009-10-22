@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Developing and cross-compiling an ASoC driver
-Date: Thu, 22 Oct 2009 15:21:48 +0100
-Message-ID: <20091022142148.GE3776@sirena.org.uk>
-References: <1608652916.20091022160818@szabolcserki.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: patchmix application for EMU1616m
+Date: Thu, 22 Oct 2009 15:35:36 +0100
+Message-ID: <ad2655cb0910220735t573537b4j562e6ad46ab46f1c@mail.gmail.com>
+References: <8282c2500910190031x3c65a3d4je5d77fb1c66b1dab@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 552101037FB
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8987C103806
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Oct 2009 16:21:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1608652916.20091022160818@szabolcserki.com>
+	Thu, 22 Oct 2009 16:35:36 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id d23so2582480fga.2
+	for <alsa-devel@alsa-project.org>; Thu, 22 Oct 2009 07:35:36 -0700 (PDT)
+In-Reply-To: <8282c2500910190031x3c65a3d4je5d77fb1c66b1dab@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +23,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Szabolcs Erki <szabolcs@szabolcserki.com>
+To: Dominik Zalewski <dominikz@genijusz.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 22, 2009 at 04:08:18PM +0200, Szabolcs Erki wrote:
+2009/10/19 Dominik Zalewski <dominikz@genijusz.org>:
+> Is there anybody working on patchmix application for alsa?
+> I'm wondering what would be the guidelines.
+> - Should it be a clone of a patchmix for Windows: a separate program?
+> - Or maybe there is already some infrastructure in Alsa that should be
+> extended with that functionality?
+> - Alsamixer already has some of that functionality, should be
+> replicated in new patchmix application?
+> - Are there any restrictions for the GUI libraries that may be used?
+> - Does it have to be written in C/C++, or is Java also applicable?
+>
 
-> I didn't find any suitable description how to do a cross-platform driver development process.
-> Could you please give me some introduction how to:
+It can be written in any language you like.
+It will need to be able to interface with the alsa-lib.
+Note that each sample rate requires different DSP code.
+For example.
+48khz uses one DSP channel, but can do more streams.
+96khz uses two DSP channels, so can only have fewer streams.
+192khz uses four DSP channels, so can only have fewer streams still.
 
-> - cross compile alsa-driver (AFAIK ASoC is part of it, and ALSA is
-> part of the linux kernel), and alsa-utils (for getting arecord)
-> - cross compile the newly developed alsa driver
-> - integrate ASoC and the custom driver to the patched kernel
-> (Linux4SAM) and cross compile them to one image.
-
-There is nothing particularly special about building when you're
-developing a new driver - the kernel is built in exactly the same way.
-There's certainly nothing ASoC specific here.  You'll probably get more
-useful advice by asking people who normally use the same distribution
-that you do how they develop.
-
-Many people build a system as they normally would with the distribution
-they usually use (eg, OpenEmbedded) and then use the toolchain that has 
-to compile a kernel by hand from a regular git checkout, copying the
-resulting kernel into whatever images they normally use.
+So, for example, in the patchmix app, it will have to know about these
+low level details, so that if the user changes the rate in the app,
+patchmix clears the DSP and then reloads it with the correct DSP code
+for that rate.
+It is my view that all these different DSP codes for each of the
+different sample rates should not be stored in the kernel, but instead
+in the patchmix app. This is how it is done in windows.
+There is currently fixed DSP code, ie. does not have patches, for
+48khz in the ALSA kernel module.
