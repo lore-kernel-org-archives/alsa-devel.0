@@ -1,56 +1,116 @@
-From: Samuel Ortiz <sameo@linux.intel.com>
-Subject: Re: [PATCH 1/4] MFD: twl4030: add twl4030_codec MFD as a new child
- to the core
-Date: Thu, 22 Oct 2009 09:57:49 +0200
-Message-ID: <20091022075748.GA8105@sortiz.org>
-References: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
- <1255956140-4829-2-git-send-email-peter.ujfalusi@nokia.com>
- <20091021231311.GF17796@sortiz.org>
- <200910220904.32676.peter.ujfalusi@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/4 v2] MFD/OMAP/ASoC: MFD device for twl4030
+	codec submodule
+Date: Thu, 22 Oct 2009 13:26:44 +0300
+Message-ID: <1256207208-25010-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752997AbZJVILO@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <200910220904.32676.peter.ujfalusi@nokia.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC0A624133
+	for <alsa-devel@alsa-project.org>;
+	Thu, 22 Oct 2009 12:26:56 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, sameo@linux.intel.com
+Cc: tony@atomide.com, broonie@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 22, 2009 at 09:04:32AM +0300, Peter Ujfalusi wrote:
-> I'll check, if the MFD patch applies to mfd-2.6:for-next also, but to=
- have the=20
-> soc codec changes the MFD patch should go to the sound-2.6 tree as we=
-ll to make=20
-> sure it is not braking things.
->=20
-> All-in-all, how these things can be handled?
-The OMAP patch has been acked by Tony. Then we I'm fine with the mfd on=
-e and
-Mark is also ok with the remaining asoc one, all 3 patches have to go t=
-hrough
-one single tree.
+Hello,
 
-It seems to me that this patchset is mostly an asoc one, even though al=
-l of
-those patches depend on the MFD one. So I'd perfectly fine if they'd al=
-l go
-through Mark's tree, and then I'd have to make sure I'm sending my 2.6.=
-33
-merge window pull request _after_ Mark's code is in Linus tree. Once it=
-'s
-there, I can work on merging conflicts with the few twl4030-core pendin=
-g
-patches from my tree. Mark, what do you think ?
+Changes from the first series:
+- twl4030-codec MFD driver is using the mfd-core API (and selects MFD_CORE)
+- Added Acked-by: Tony Lindgren <tony@atomide.com> to the patch for the OMAP
+  board files
+- User selectable Kconfig is removed for the TWL4030_CODEC
+- soc codec driver patch separated:
+ - Change the header file, and use the include/linux/mfd/twl4030-codec.h for
+   register definitions
+ - The actual change in the soc codec driver
+- Module alias corrected in soc codec driver
+- The bias is brought up when the driver comes up, rather than in soc probe.
+- The soc codec driver is selecting the TWL4030_CODEC driver
 
-Cheers,
-Samuel.
+The series applies on top of sound-2.6:topic/asoc branch
 
-=20
-> Thanks,=20
-> P=E9ter
+Commit message from the first series:
 
---=20
-Intel Open Source Technology Centre
-http://oss.intel.com/
+The following series adds new MFD device on top of the twl4030 MFD device for
+the codec part of the chip, and also converts the soc audio driver to use the
+correct probing (device model).
+
+Reason for the twl4030_codec MFD: the vibra control is actually in the codec
+part of the twl4030. If both the vibra and the audio functionality is needed
+from the twl4030 at the same time, than they need to control the codec power
+and APLL at the same time without breaking the other driver.
+Also these two has to be able to work without the need for the other driver.
+
+The proposed solution:
+Register twl4030_codec as a child for the twl4030 mfd.
+twl4030_codec is also and mfd and at the moment it has two child:
+twl4030_codec_audio: for audio codec
+twl4030_codec_vibra: for vibra driver
+
+The twl4030_codec mfd registers the devices for audio and vibra (if the
+platform data is not NULL for them), and has - at the moment - functions to
+enable/disable resources, each of these resources has ref-counts, so the
+twl4030_codec knows, when the resource is need to be turned on or off.
+
+The interface is quite simple:
+int twl4030_codec_enable_resource(enum twl4030_codec_res id);
+int twl4030_codec_disable_resource(enum twl4030_codec_res id);
+
+These functions are returning the content of the given register after the
+modification (or negative value, if error -  the error handling need to be
+revisited in a near future), so that the caller can update it's local cache if
+it need to do (the audio driver needs it).
+
+There are two resource defined:
+TWL4030_CODEC_RES_POWER: Controlling the power of the codec
+TWL4030_CODEC_RES_APLL: For APLL
+
+The vibra driver is not part of this series.
+
+I have also included a patch, which changes the board files for those, which
+in my knowledge uses the twl4030 codec as audio device. I might missed some
+boards...
+
+To-Do list:
+- add the actual vibra driver ;)
+- coexistence related fixes for the audio and vibra driver
+- move all audio related configuration from soc machine drivers to the board
+  files (if any)
+
+---
+Peter Ujfalusi (4):
+  MFD: twl4030: add twl4030_codec MFD as a new child to the core
+  OMAP: Platform support for twl4030_codec MFD
+  ASoC: TWL4030: use the twl4030-codec.h for register descriptions
+  ASoC: TWL4030: Driver registration via twl4030_codec MFD
+
+ arch/arm/mach-omap2/board-3430sdp.c      |    9 +
+ arch/arm/mach-omap2/board-omap3beagle.c  |    9 +
+ arch/arm/mach-omap2/board-omap3evm.c     |    9 +
+ arch/arm/mach-omap2/board-omap3pandora.c |    9 +
+ arch/arm/mach-omap2/board-overo.c        |    9 +
+ arch/arm/mach-omap2/board-zoom2.c        |    9 +
+ drivers/mfd/Kconfig                      |    6 +
+ drivers/mfd/Makefile                     |    1 +
+ drivers/mfd/twl4030-codec.c              |  241 ++++++++++++++++++++++++++
+ drivers/mfd/twl4030-core.c               |   14 ++
+ include/linux/i2c/twl4030.h              |   18 ++
+ include/linux/mfd/twl4030-codec.h        |  271 ++++++++++++++++++++++++++++++
+ sound/soc/codecs/Kconfig                 |    1 +
+ sound/soc/codecs/twl4030.c               |  203 ++++++++++++++---------
+ sound/soc/codecs/twl4030.h               |  242 +--------------------------
+ 15 files changed, 738 insertions(+), 313 deletions(-)
+ create mode 100644 drivers/mfd/twl4030-codec.c
+ create mode 100644 include/linux/mfd/twl4030-codec.h
