@@ -1,45 +1,56 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH v2] ASoC: OMAP: Don't try to set
- unsupported OMAP_DMA_DATA_BURST_16 on OMAP1
-Date: Thu, 22 Oct 2009 09:16:35 +0300
-Message-ID: <20091022091635.29f710c0.jhnikula@gmail.com>
-References: <200910212035.42245.jkrzyszt@tis.icnet.pl>
-	<20091021221607.c46f60e3.jhnikula@gmail.com>
-	<200910212310.05087.jkrzyszt@tis.icnet.pl>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 1/4] MFD: twl4030: add twl4030_codec MFD as a new child
+ to the core
+Date: Thu, 22 Oct 2009 09:57:49 +0200
+Message-ID: <20091022075748.GA8105@sortiz.org>
+References: <1255956140-4829-1-git-send-email-peter.ujfalusi@nokia.com>
+ <1255956140-4829-2-git-send-email-peter.ujfalusi@nokia.com>
+ <20091021231311.GF17796@sortiz.org>
+ <200910220904.32676.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f214.google.com (mail-fx0-f214.google.com
-	[209.85.220.214])
-	by alsa0.perex.cz (Postfix) with ESMTP id 378B824382
-	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Oct 2009 08:15:52 +0200 (CEST)
-Received: by fxm10 with SMTP id 10so19463609fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 21 Oct 2009 23:15:51 -0700 (PDT)
-In-Reply-To: <200910212310.05087.jkrzyszt@tis.icnet.pl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752997AbZJVILO@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <200910220904.32676.peter.ujfalusi@nokia.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 Oct 2009 23:10:03 +0200
-Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+On Thu, Oct 22, 2009 at 09:04:32AM +0300, Peter Ujfalusi wrote:
+> I'll check, if the MFD patch applies to mfd-2.6:for-next also, but to=
+ have the=20
+> soc codec changes the MFD patch should go to the sound-2.6 tree as we=
+ll to make=20
+> sure it is not braking things.
+>=20
+> All-in-all, how these things can be handled?
+The OMAP patch has been acked by Tony. Then we I'm fine with the mfd on=
+e and
+Mark is also ok with the remaining asoc one, all 3 patches have to go t=
+hrough
+one single tree.
 
-> The patch corrects the problem by not calling those two functions when run on 
-> OMAP1 class based machines.
-> 
-> Created against linux-2.6.32-rc5.
-> Tested on Amstrad Delta.
-> 
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-> 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+It seems to me that this patchset is mostly an asoc one, even though al=
+l of
+those patches depend on the MFD one. So I'd perfectly fine if they'd al=
+l go
+through Mark's tree, and then I'd have to make sure I'm sending my 2.6.=
+33
+merge window pull request _after_ Mark's code is in Linus tree. Once it=
+'s
+there, I can work on merging conflicts with the few twl4030-core pendin=
+g
+patches from my tree. Mark, what do you think ?
+
+Cheers,
+Samuel.
+
+=20
+> Thanks,=20
+> P=E9ter
+
+--=20
+Intel Open Source Technology Centre
+http://oss.intel.com/
