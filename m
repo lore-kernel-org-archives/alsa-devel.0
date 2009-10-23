@@ -1,17 +1,17 @@
-From: Daniel Yek <dyek@real.com>
-Subject: Re: How to close ALSA device nodes? / ALSA's fds
-Date: Fri, 23 Oct 2009 11:51:45 -0700
-Message-ID: <4AE1FB41.2020408@real.com>
-References: <200910182038.34252.rem@videolan.org>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: [PATCH] ASoC: Amstrad Delta: add info about the line
+	discipline requirement to Kconfig help text
+Date: Sat, 24 Oct 2009 00:06:48 +0200
+Message-ID: <200910240006.50229.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kal-el.real.com (kal-el.real.com [207.188.23.4])
-	by alsa0.perex.cz (Postfix) with ESMTP id 19F9A1037F8
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 715B4243BC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Oct 2009 20:51:47 +0200 (CEST)
-In-Reply-To: <200910182038.34252.rem@videolan.org>
+	Sat, 24 Oct 2009 00:08:11 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?UsOpbWkgRGVuaXMtQ291cm1vbnQ=?= <rem@videolan.org>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: e3-hacking@earth.li, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-W0JyYW5jaCB0aGUgdGhyZWFkIGZvciBhIHNlcGFyYXRlIHN1Z2dlc3Rpb24uLi5dCgpSw6ltaSBE
-ZW5pcy1Db3VybW9udCB3cm90ZToKPiBMZSBkaW1hbmNoZSAxOCBvY3RvYnJlIDIwMDkgMjA6MTM6
-MTUgUm9iZXJ0IEhhbmNvY2ssIHZvdXMgYXZleiDDqWNyaXQgOgo+Pj4gRnJvbSB0aGUgZWFybGll
-ciB0aHJlYWQsIEkgcmVja29uIHRoYXQgQUxTQSBkZXZlbG9wZXJzIGNvbnNpZGVyIHRoYXQKPj4+
-IHRoaXMKPj4+IGlzIGFuIHVwcGVyLWxheWVyIGlzc3VlLiBNYXliZSBzbywgYnV0IHRoZW4gaG93
-IGlzIHRoZSB1cHBlci1sYXllcgo+Pj4gc3VwcG9zZWQgdG8gZmluZCB3aGljaCBmaWxlIGRlc2Ny
-aXB0b3JzIEFMU0EtbGliIGhhcyBvcGVuZWQgLSBpZiBhbnk/Cj4+PiBDb252ZXJzZWx5LCBpZiBB
-TFNBLSBsaWIgd29uJ3QgdGVsbCB3aGlsZSBmaWxlIGRlc2NyaXB0b3JzIGl0IGlzIHVzaW5nLAo+
-Pj4gd2hhdCBjb3VsZCBwb3NzaWJseSBiZSB0aGUgdXNlIGNhc2UgZm9yIG5vdCBjbG9zaW5nIHRo
-b3NlIG9uIGV4ZWM/Cj4+IEkgYWdyZWUgdGhhdCBpdCdzIGEgZGlmZmljdWx0IHByb2JsZW0gZm9y
-IGFuIGFwcCB0aGF0IHdhbnRzIHRvIGZvcmsKPj4gYW5kIGV4ZWMgYW5vdGhlciBwcm9jZXNzLi4g
-SSdkIHRoaW5rIHJlYWxseSBzaG91bGQgYmUgc29tZSB3YXkgZm9yIGFuCj4+IGFwcCB0byBjb250
-cm9sIHRoZSBDTE9FWEVDIGZsYWcgZm9yIHRoZSBmaWxlIGRlc2NyaXB0b3JzIHRoYXQgYWxzYS1s
-aWIKPj4gaGFzIG9wZW4uLgo+IDxzbmlwPgo+Cj4gVGhhdCBzYWlkLCBJIHN0aWxsIGZhaWwgdG8g
-c2VlIGFueSBwb3RlbnRpYWwgdXNlIGNhc2UgdG8gbm90IHNldCB0aGUKPiBmbGFnLgo+IFNpbmNl
-IEFMU0EtbGliIHdvbid0IGxldCB0aGUgYXBwbGljYXRpb24ga25vdyBhYm91dCB0aGUgZmlsZSBo
-YW5kbGVzLCBhbnkKPiBhcHBsaWNhdGlvbiBjYW5ub3QgYSB1c2UgdGhlbSBhY3Jvc3MgZXhlYygp
-IGluIHRoZSBmaXJzdCBwbGFjZS4KCklzIHNuZF9wY21fcG9sbF9kZXNjcmlwdG9ycygpIGFkZXF1
-YXRlIGZvciB0aGlzIHBhcnRpY3VsYXIgaXNzdWU/CgpSZWdhcmRzLAoKLS0gCkRhbmllbCBZZWsu
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+I thought it could be usefull to add some information on how to get the device
+fully supported by loading a line discipline on the modem line.
+
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+
+---
+As you could probably notice, I am not a native English, so please feel free
+to correct my poor language if desired.
+
+--- linux-2.6.32-rc5/sound/soc/omap/Kconfig.orig	2009-10-16 02:41:50.000000000 +0200
++++ linux-2.6.32-rc5/sound/soc/omap/Kconfig	2009-10-24 00:01:26.000000000 +0200
+@@ -21,7 +21,18 @@ config SND_OMAP_SOC_AMS_DELTA
+ 	select SND_OMAP_SOC_MCBSP
+ 	select SND_SOC_CX20442
+ 	help
+-	  Say Y if you want to add support for SoC audio on Amstrad Delta.
++	  Say Y  if you want to add support  for SoC audio device  connected to
++	  a handset and a speakerphone found on Amstrad E3 (Delta) videophone.
++	  
++	  Note that in order to get those devices fully supported,  you have to
++	  build  the kernel  with  standard  serial port  driver  included  and
++	  configured for at least 4 ports.  Then, from userspace, you must load
++	  a line discipline #19 on the modem (ttyS3) serial line.  The simplest
++	  way to achieve this is to install util-linux-ng  and use the included
++	  ldattach  utility.  This  can be  started  automatically  from  udev,
++	  a simple rule like this one should do the trick (it does for me):
++	  	ACTION=="add", KERNEL=="controlC0", \
++				RUN+="/usr/sbin/ldattach 19 /dev/ttyS3"
+ 
+ config SND_OMAP_SOC_OSK5912
+ 	tristate "SoC Audio support for omap osk5912"
