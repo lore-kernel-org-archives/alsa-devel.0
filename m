@@ -1,17 +1,20 @@
-From: Daniel Yek <dyek@real.com>
-Subject: Re: How to close ALSA device nodes?
-Date: Thu, 22 Oct 2009 15:55:33 -0700
-Message-ID: <4AE0E2E5.2040604@real.com>
-References: <200910182038.34252.rem@videolan.org>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 4/4 v2] ASoC: TWL4030: Driver registration
+	via twl4030_codec MFD
+Date: Fri, 23 Oct 2009 08:27:55 +0300
+Message-ID: <200910230827.55141.peter.ujfalusi@nokia.com>
+References: <1256207208-25010-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1256207208-25010-5-git-send-email-peter.ujfalusi@nokia.com>
+	<20091022165643.GA28051@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kal-el.real.com (kal-el.real.com [207.188.23.4])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1820424444
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 340302439C
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Oct 2009 00:55:35 +0200 (CEST)
-In-Reply-To: <200910182038.34252.rem@videolan.org>
+	Fri, 23 Oct 2009 07:28:03 +0200 (CEST)
+In-Reply-To: <20091022165643.GA28051@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,67 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?UsOpbWkgRGVuaXMtQ291cm1vbnQ=?= <rem@videolan.org>
-Cc: alsa-devel@alsa-project.org
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Q291bGQgaXQgYmUgdGhhdCB0aGUgYW5zd2VyIGlzIHRvIHVzZSB0aGUgc3Vycm9nYXRlIHBhcmVu
-dCBtb2RlbD8KQm9vazogUHRocmVhZHMgUHJvZ3JhbW1pbmc6Cmh0dHA6Ly9ib29rcy5nb29nbGUu
-Y29tL2Jvb2tzP2lkPTJrWkR4OEg2SDE4QyZwZz1QQTE5MCZscGc9UEExOTAmZHE9TXVsdGl0aHJl
-YWRpbmcrc3Vycm9nYXRlK3BhcmVudCttb2RlbCZzb3VyY2U9Ymwmb3RzPW5tRW5tdVBRbWUmc2ln
-PS1NdkFRRVpVSm5nT2RNTEotSEdoQXFDdjFBVSZobD1lbiZlaT1fZURnU3FXWUxZYWNzZ09CX2VI
-T0RBJnNhPVgmb2k9Ym9va19yZXN1bHQmY3Q9cmVzdWx0JnJlc251bT0xJnZlZD0wQ0F3UTZBRXdB
-QSN2PW9uZXBhZ2UmcT0mZj1mYWxzZQo8aHR0cDovL2Jvb2tzLmdvb2dsZS5jb20vYm9va3M/aWQ9
-MmtaRHg4SDZIMThDJnBnPVBBMTkwJmxwZz1QQTE5MCZkcT1NdWx0aXRocmVhZGluZytzdXJyb2dh
-dGUrcGFyZW50K21vZGVsJnNvdXJjZT1ibCZvdHM9bm1Fbm11UFFtZSZzaWc9LU12QVFFWlVKbmdP
-ZE1MSi1IR2hBcUN2MUFVJmhsPWVuJmVpPV9lRGdTcVdZTFlhY3NnT0JfZUhPREEmc2E9WCZvaT1i
-b29rX3Jlc3VsdCZjdD1yZXN1bHQmcmVzbnVtPTEmdmVkPTBDQXdRNkFFd0FBI3Y9b25lcGFnZSZx
-PSZmPWZhbHNlPgoKVGhhdCBpcywgdGhlIG11bHRpLXRocmVhZGVkIGFwcC4gY3JlYXRlcyBhIGR1
-bW15IGNoaWxkIHByb2Nlc3MgZHVyaW5nCml0cyBpbml0aWFsaXphdGlvbiBwcm9jZXNzIGFuZCB1
-c2UgdGhlIGNoaWxkIHNvbGVseSBhcyBhIHN1cnJvZ2F0ZQpwYXJlbnQgdG8gZm9yayBvbiBiZWhh
-bGYgb2YgdGhlIGFwcC4gVGhhdCB3YXksIHRoZSBtdWx0aS10aHJlYWRlZCBhcHAuCmRvZXNuJ3Qg
-aGF2ZSB0byBmb3JrIGFuZCBwb3NzaWJseSBsZWFraW5nICJzdGF0ZXMiIGluIHRoZSBjaGlsZAoo
-ZXNwZWNpYWxseSwgaWYgaXQgaXMgbm90IGZvbGxvd2VkIGJ5IGFuIGV4ZWMoKSwgSSB0aGluay4p
-CgpJJ20gaW50ZXJlc3RlZCBpbiBoZWFyaW5nIGZyb20gdGhlIG1vcmUgZXhwZXJpZW5jZWQgZGV2
-cy4gcmVnYXJkaW5nIHRoaXMKdGVjaG5pcXVlIHRvby4KClJlZ2FyZHMsCgotLSAKRGFuaWVsIFll
-ay4KCgoKUsOpbWkgRGVuaXMtQ291cm1vbnQgd3JvdGU6Cj4gTGUgZGltYW5jaGUgMTggb2N0b2Jy
-ZSAyMDA5IDIwOjEzOjE1IFJvYmVydCBIYW5jb2NrLCB2b3VzIGF2ZXogw6ljcml0IDoKPj4+IEZy
-b20gdGhlIGVhcmxpZXIgdGhyZWFkLCBJIHJlY2tvbiB0aGF0IEFMU0EgZGV2ZWxvcGVycyBjb25z
-aWRlciB0aGF0Cj4+PiB0aGlzCj4+PiBpcyBhbiB1cHBlci1sYXllciBpc3N1ZS4gTWF5YmUgc28s
-IGJ1dCB0aGVuIGhvdyBpcyB0aGUgdXBwZXItbGF5ZXIKPj4+IHN1cHBvc2VkIHRvIGZpbmQgd2hp
-Y2ggZmlsZSBkZXNjcmlwdG9ycyBBTFNBLWxpYiBoYXMgb3BlbmVkIC0gaWYgYW55Pwo+Pj4gQ29u
-dmVyc2VseSwgaWYgQUxTQS0gbGliIHdvbid0IHRlbGwgd2hpbGUgZmlsZSBkZXNjcmlwdG9ycyBp
-dCBpcyB1c2luZywKPj4+IHdoYXQgY291bGQgcG9zc2libHkgYmUgdGhlIHVzZSBjYXNlIGZvciBu
-b3QgY2xvc2luZyB0aG9zZSBvbiBleGVjPwo+PiBJIGFncmVlIHRoYXQgaXQncyBhIGRpZmZpY3Vs
-dCBwcm9ibGVtIGZvciBhbiBhcHAgdGhhdCB3YW50cyB0byBmb3JrCj4+IGFuZCBleGVjIGFub3Ro
-ZXIgcHJvY2Vzcy4uIEknZCB0aGluayByZWFsbHkgc2hvdWxkIGJlIHNvbWUgd2F5IGZvciBhbgo+
-PiBhcHAgdG8gY29udHJvbCB0aGUgQ0xPRVhFQyBmbGFnIGZvciB0aGUgZmlsZSBkZXNjcmlwdG9y
-cyB0aGF0IGFsc2EtbGliCj4+IGhhcyBvcGVuLi4KPgo+IFJpZ2h0LiBUaGUga2VybmVsIHJlY2Vu
-dGx5IGludHJvZHVjZWQgdGhlIE9fQ0xPRVhFQyBvcGVuIGZsYWcsIHRvIHN1cHBvcnQKPiB0aHJl
-YWQtc2FmZSBjbG9zZS1vbi1leGVjLiBUaGUgb25seSB3YXkgdG8gbGV2ZXJhZ2UgdGhpcyBpcyBm
-b3IKPiBBTFNBLWxpYiB0bwo+IHNldCBjbG9zZS1vbi1leGVjIGl0c2VsZiB3aGVuIGl0IG9wZW5z
-IGEgZmlsZSAod2hldGhlciBieSBkZWZhdWx0IG9yCj4gd2hlbiB0aGUKPiBhcHBsaWNhdGlvbiBy
-ZXF1ZXN0cyBpdCkuCj4KPiBUaGF0IHNhaWQsIEkgc3RpbGwgZmFpbCB0byBzZWUgYW55IHBvdGVu
-dGlhbCB1c2UgY2FzZSB0byBub3Qgc2V0IHRoZQo+IGZsYWcuCj4gU2luY2UgQUxTQS1saWIgd29u
-J3QgbGV0IHRoZSBhcHBsaWNhdGlvbiBrbm93IGFib3V0IHRoZSBmaWxlIGhhbmRsZXMsIGFueQo+
-IGFwcGxpY2F0aW9uIGNhbm5vdCBhIHVzZSB0aGVtIGFjcm9zcyBleGVjKCkgaW4gdGhlIGZpcnN0
-IHBsYWNlLiBGb3IgdGhlCj4gcmVmZXJlbmNlLCBnbGliYyBpcyBub3cgc2V0dGluZyBjbG9zZS1v
-bi1leGVjIGluIHNpbWlsYXIgY2FzZXMsIGUuZy4KPiBzeXNsb2coKS4KPgo+PiBJIGd1ZXNzIHRo
-ZSBhbHRlcm5hdGl2ZSB3b3VsZCBiZSB0byBzaHV0ZG93biBhbGwgb3BlbiBQQ01zLCBldGMuIGlu
-Cj4+IEFMU0EgaW4gdGhlIGNoaWxkIHByb2Nlc3MgYWZ0ZXIgZm9ya2luZyBhbmQgYmVmb3JlIHRo
-ZSBleGVjLCBzbyB0aGF0Cj4+IHRoZXkgZG9uJ3QgZW5kIHVwIHN0aWxsIG9wZW4gZm9yIHRoZSBu
-ZXcgcHJvY2Vzcy4uCj4gICAKPiBJIHN1c3BlY3Qgc3VjaCBhbiBhcHByb2FjaCB3b3VsZCBiZSBw
-YWluZnVsIGJvdGggZm9yIEFMU0EgYW5kIGZvciB0aGUKPiBhcHBsaWNhdGlvbnMuIEZyb20gQUxT
-QSwgdGhpcyB3b3VsZCBuZWVkIHNhZmV0eSB3aXRoIHJlZ2FyZHMgdG8gZm9yayBpbgo+IGFub3Ro
-ZXIgdGhyZWFkLiBUaGF0IHByb2JhYmx5IHJlcXVpcmVzIHB0aHJlYWRfYXRmb3JrKCkgKmdsdXJw
-KiBpZgo+IEFMU0EgaXMgdG8KPiBrZWVwIGl0cyBTTVAgJiB0aHJlYWQtc2FmZXR5IHByb21pc2Ug
-Km91Y2gqLiBGcm9tIHRoZSBhcHBsaWNhdGlvbiwgdGhpcwo+IHJlcXVpcmUgY2FsbGluZyBhbiBB
-TFNBIGZ1bmN0aW9uIGJldHdlZW4gZm9yayBhbmQgZXhlYy4gVGhhdCB3b3VsZCBmb3JiaWQKPiB1
-c2luZyBzeXN0ZW0oKSwgcG9wZW4oKSBvciAtZmFzdGVyLSBwb3NpeF9zcGF3biooKS4gVGhhdCBh
-bHNvIG1lYW5zCj4gbGlua2luZyB0bwo+IEFMU0EgaW4gZXZlcnkgcGxhY2UgdGhhdCBleGVjdXRl
-cy4gQ29uc2lkZXJpbmcgdGhhdCBWTEMgaXMgaGVhdmlseSBwbHVnaW4tCj4gYmFzZWQsIHRoaXMg
-d291bGQgYmUgc28gaW1wcmFjdGljYWwgdGhhdCBJJ2QgZXZlbiByYXRoZXIgc2NhbiB0aHJvdWdo
-Cj4gL3Byb2Mvc2VsZi9mZC4uLgo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On Thursday 22 October 2009 19:56:44 ext Mark Brown wrote:
+> On Thu, Oct 22, 2009 at 01:26:48PM +0300, Peter Ujfalusi wrote:
+> > Change the way how the twl4030 soc codec driver is
+> > loaded/probed.
+> > Use the device probing via tlw4030_codec MFD device.
+> =
+
+> I'm OK with the series but:
+> > @@ -147,6 +147,7 @@ config SND_SOC_TLV320DAC33
+> >  	tristate
+> >
+> >  config SND_SOC_TWL4030
+> > +	select TWL4030_CODEC
+> >  	tristate
+> =
+
+> due to Kconfig ignoring dependencies all the individual machine drivers
+> are going to need to select this, and SND_SOC_ALL_CODECS will need to
+> select it if the MFD core is enabled.  I should be able to fix this up
+> myself so no need to repost for that alone.
+
+Hmm, what do you mean by that?
+I have checked it, and selecting the machine driver will enables the MFD_CO=
+RE =
+
+and TWL4030_CODEC in .config, also disabling the machine driver will also =
+
+disable the MFD_CORE and the TWL4030_CODEC.
+
+Can you go into details?
+
+-- =
+
+P=E9ter
