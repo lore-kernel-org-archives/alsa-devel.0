@@ -1,20 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 4/4 v2] ASoC: TWL4030: Driver registration
-	via twl4030_codec MFD
-Date: Fri, 23 Oct 2009 08:27:55 +0300
-Message-ID: <200910230827.55141.peter.ujfalusi@nokia.com>
-References: <1256207208-25010-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1256207208-25010-5-git-send-email-peter.ujfalusi@nokia.com>
-	<20091022165643.GA28051@rakim.wolfsonmicro.main>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problems with snd_pcm_writei() function
+Date: Fri, 23 Oct 2009 09:39:51 +0200
+Message-ID: <4AE15DC7.7060108@ladisch.de>
+References: <e0ab60670910221034u498448c5ja4eae8c2f4fd0f66@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 340302439C
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id E3B3D24155
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Oct 2009 07:28:03 +0200 (CEST)
-In-Reply-To: <20091022165643.GA28051@rakim.wolfsonmicro.main>
+	Fri, 23 Oct 2009 09:39:55 +0200 (CEST)
+In-Reply-To: <e0ab60670910221034u498448c5ja4eae8c2f4fd0f66@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,41 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Douglas Lopes Pereira <douglaslopespereira@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 22 October 2009 19:56:44 ext Mark Brown wrote:
-> On Thu, Oct 22, 2009 at 01:26:48PM +0300, Peter Ujfalusi wrote:
-> > Change the way how the twl4030 soc codec driver is
-> > loaded/probed.
-> > Use the device probing via tlw4030_codec MFD device.
-> =
+Douglas Lopes Pereira wrote:
+> I'm splitting my audio data into 160 bytes buffers but when buffer
+> with different size is passed to that function I hear a noise (like
+> 'Krrr') on my audio device.
 
-> I'm OK with the series but:
-> > @@ -147,6 +147,7 @@ config SND_SOC_TLV320DAC33
-> >  	tristate
-> >
-> >  config SND_SOC_TWL4030
-> > +	select TWL4030_CODEC
-> >  	tristate
-> =
+Do you actually pass the correct number of frames?
 
-> due to Kconfig ignoring dependencies all the individual machine drivers
-> are going to need to select this, and SND_SOC_ALL_CODECS will need to
-> select it if the MFD core is enabled.  I should be able to fix this up
-> myself so no need to repost for that alone.
+How do you manage the timing of the snd_pcm_writei() calls?
 
-Hmm, what do you mean by that?
-I have checked it, and selecting the machine driver will enables the MFD_CO=
-RE =
 
-and TWL4030_CODEC in .config, also disabling the machine driver will also =
-
-disable the MFD_CORE and the TWL4030_CODEC.
-
-Can you go into details?
-
--- =
-
-P=E9ter
+Best regards,
+Clemens
