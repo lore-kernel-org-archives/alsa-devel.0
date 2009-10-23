@@ -1,20 +1,18 @@
-From: "Neil Jones" <neil.jones@imgtec.com>
-Subject: Re: What is the meaning of the mask values in the
-	pcmhw constraints struct ?
-Date: Fri, 23 Oct 2009 14:39:58 +0100
-Message-ID: <0D107966AF6D79418315B7C5549F4B5101150B9F@lemail1.le.imgtec.org>
-References: <0D107966AF6D79418315B7C5549F4B5101150A39@lemail1.le.imgtec.org>
-	<20091020165037.GA15813@sirena.org.uk>
+From: Roel Kluin <roel.kluin@gmail.com>
+Subject: [PATCH] ALSA: Cleanup redundant tests on unsigned
+Date: Fri, 23 Oct 2009 16:03:08 +0200
+Message-ID: <4AE1B79C.9040409@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from filter3.imgtec.com (multi.imgtec.com [194.200.65.239])
-	by alsa0.perex.cz (Postfix) with ESMTP id D4C8E1037F8
+Received: from mail-ew0-f221.google.com (mail-ew0-f221.google.com
+	[209.85.219.221])
+	by alsa0.perex.cz (Postfix) with ESMTP id D81B51037F8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Oct 2009 15:40:00 +0200 (CEST)
-Content-class: urn:content-classes:message
-In-Reply-To: <20091020165037.GA15813@sirena.org.uk>
+	Fri, 23 Oct 2009 15:52:52 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so16207253ewy.32
+	for <alsa-devel@alsa-project.org>; Fri, 23 Oct 2009 06:52:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +22,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
+The variables are unsigned so the test `>= 0' is always true,
+the `< 0' test always fails. In these cases the other part of
+the test catches wrapped values.
 
->> I get the error "aplay: set_params:1022: Unable to install hw
-params:"
->> I have traced the problem to a failing ioctl call
->> (snd_pcm_playback_ioctl) the error occurs in snd_pcm_hw_refine when
->> refining the mask for the SNDRV_PCM_HW_PARAM_ACCESS mask, all the bit
->> fields in my runtime->hw_constraints are zero for this field, but the
+In dac_audio_write() there does not occur a test for wrapped
+values, but the test appears redundant.
 
->You should set these up with snd_soc_set_runtime_hwparams() with the
->flags in the info field.
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+I think the test in dac_audio_write() can go, or should it change?
 
->> requested params have the value 7, Im not sure what this means, the
->> SNDRV_PCM_ACCESS_xxx defines in asound.h only go upto 4 ?
+ sound/oss/sh_dac_audio.c       |    3 ---
+ sound/pci/ca0106/ca0106_proc.c |    4 ++--
+ sound/pci/ctxfi/ctatc.c        |    2 +-
+ sound/pci/emu10k1/emu10k1x.c   |    3 +--
+ sound/pci/emu10k1/emuproc.c    |    4 ++--
+ sound/pci/emu10k1/io.c         |    2 +-
+ sound/soc/codecs/tlv320aic23.c |    2 +-
+ 7 files changed, 8 insertions(+), 12 deletions(-)
 
->It's a bitmask at this point, treat those values as shifts.
-
-Cheers, I wasn't setting the 'SNDRV_PCM_INFO_MMAP' in my
-snd_pcm_hardware description, because I didn't have MMAP support, I have
-now added MMAP support to my driver to resolve this issue, although I
-thought ALSA/aplay supported drivers without MMAP support ?
-
-
-
+diff --git a/sound/oss/sh_dac_audio.c b/sound/oss/sh_dac_audio.c
+index b2ed875..4153752 100644
+--- a/sound/oss/sh_dac_audio.c
++++ b/sound/oss/sh_dac_audio.c
+@@ -164,9 +164,6 @@ static ssize_t dac_audio_write(struct file *file, const char *buf, size_t count,
+ 	int free;
+ 	int nbytes;
+ 
+-	if (count < 0)
+-		return -EINVAL;
 -
-This message is subject to Imagination Technologies' e-mail terms: http://www.imgtec.com/e-mail.htm
-
-Imagination Technologies Ltd is a limited company registered in England No:  1306335 
-Registered Office: Imagination House, Home Park Estate, Kings Langley, Hertfordshire, WD4 8LZ.  
-
-Email to and from the company may be monitored for compliance and other administrative purposes.  
--
+ 	if (!count) {
+ 		dac_audio_sync();
+ 		return 0;
+diff --git a/sound/pci/ca0106/ca0106_proc.c b/sound/pci/ca0106/ca0106_proc.c
+index c62b7d1..15523e6 100644
+--- a/sound/pci/ca0106/ca0106_proc.c
++++ b/sound/pci/ca0106/ca0106_proc.c
+@@ -304,7 +304,7 @@ static void snd_ca0106_proc_reg_write32(struct snd_info_entry *entry,
+         while (!snd_info_get_line(buffer, line, sizeof(line))) {
+                 if (sscanf(line, "%x %x", &reg, &val) != 2)
+                         continue;
+-                if ((reg < 0x40) && (reg >=0) && (val <= 0xffffffff) ) {
++		if (reg < 0x40 && val <= 0xffffffff) {
+ 			spin_lock_irqsave(&emu->emu_lock, flags);
+ 			outl(val, emu->port + (reg & 0xfffffffc));
+ 			spin_unlock_irqrestore(&emu->emu_lock, flags);
+@@ -405,7 +405,7 @@ static void snd_ca0106_proc_reg_write(struct snd_info_entry *entry,
+         while (!snd_info_get_line(buffer, line, sizeof(line))) {
+                 if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
+                         continue;
+-                if ((reg < 0x80) && (reg >=0) && (val <= 0xffffffff) && (channel_id >=0) && (channel_id <= 3) )
++		if (reg < 0x80 && val <= 0xffffffff && channel_id <= 3)
+                         snd_ca0106_ptr_write(emu, reg, channel_id, val);
+         }
+ }
+diff --git a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
+index 7545464..cb65bd0 100644
+--- a/sound/pci/ctxfi/ctatc.c
++++ b/sound/pci/ctxfi/ctatc.c
+@@ -240,7 +240,7 @@ static int select_rom(unsigned int pitch)
+ 	} else if (pitch == 0x02000000) {
+ 		/* pitch == 2 */
+ 		return 3;
+-	} else if (pitch >= 0x0 && pitch <= 0x08000000) {
++	} else if (pitch <= 0x08000000) {
+ 		/* 0 <= pitch <= 8 */
+ 		return 0;
+ 	} else {
+diff --git a/sound/pci/emu10k1/emu10k1x.c b/sound/pci/emu10k1/emu10k1x.c
+index 36e08bd..6b8ae7b 100644
+--- a/sound/pci/emu10k1/emu10k1x.c
++++ b/sound/pci/emu10k1/emu10k1x.c
+@@ -1040,8 +1040,7 @@ static void snd_emu10k1x_proc_reg_write(struct snd_info_entry *entry,
+ 		if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
+ 			continue;
+ 
+-		if ((reg < 0x49) && (reg >= 0) && (val <= 0xffffffff) 
+-		    && (channel_id >= 0) && (channel_id <= 2) )
++		if (reg < 0x49 && val <= 0xffffffff && channel_id <= 2)
+ 			snd_emu10k1x_ptr_write(emu, reg, channel_id, val);
+ 	}
+ }
+diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
+index 216f974..baa7cd5 100644
+--- a/sound/pci/emu10k1/emuproc.c
++++ b/sound/pci/emu10k1/emuproc.c
+@@ -451,7 +451,7 @@ static void snd_emu_proc_io_reg_write(struct snd_info_entry *entry,
+ 	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+ 		if (sscanf(line, "%x %x", &reg, &val) != 2)
+ 			continue;
+-		if ((reg < 0x40) && (reg >= 0) && (val <= 0xffffffff) ) {
++		if (reg < 0x40 && val <= 0xffffffff) {
+ 			spin_lock_irqsave(&emu->emu_lock, flags);
+ 			outl(val, emu->port + (reg & 0xfffffffc));
+ 			spin_unlock_irqrestore(&emu->emu_lock, flags);
+@@ -527,7 +527,7 @@ static void snd_emu_proc_ptr_reg_write(struct snd_info_entry *entry,
+ 	while (!snd_info_get_line(buffer, line, sizeof(line))) {
+ 		if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
+ 			continue;
+-		if ((reg < 0xa0) && (reg >= 0) && (val <= 0xffffffff) && (channel_id >= 0) && (channel_id <= 3) )
++		if (reg < 0xa0 && val <= 0xffffffff && channel_id <= 3)
+ 			snd_ptr_write(emu, iobase, reg, channel_id, val);
+ 	}
+ }
+diff --git a/sound/pci/emu10k1/io.c b/sound/pci/emu10k1/io.c
+index c1a5aa1..5ef7080 100644
+--- a/sound/pci/emu10k1/io.c
++++ b/sound/pci/emu10k1/io.c
+@@ -256,7 +256,7 @@ int snd_emu1010_fpga_write(struct snd_emu10k1 * emu, u32 reg, u32 value)
+ 	if (reg > 0x3f)
+ 		return 1;
+ 	reg += 0x40; /* 0x40 upwards are registers. */
+-	if (value < 0 || value > 0x3f) /* 0 to 0x3f are values */
++	if (value > 0x3f) /* 0 to 0x3f are values */
+ 		return 1;
+ 	spin_lock_irqsave(&emu->emu_lock, flags);
+ 	outl(reg, emu->port + A_IOCFG);
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index 0b8dcb5..35606ae 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -85,7 +85,7 @@ static int tlv320aic23_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	 * of data into val
+ 	 */
+ 
+-	if ((reg < 0 || reg > 9) && (reg != 15)) {
++	if (reg > 9 && reg != 15) {
+ 		printk(KERN_WARNING "%s Invalid register R%u\n", __func__, reg);
+ 		return -1;
+ 	}
