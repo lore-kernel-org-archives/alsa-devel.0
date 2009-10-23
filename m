@@ -1,22 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4 v2] ASoC: TWL4030: Driver
-	registration	via twl4030_codec MFD
-Date: Fri, 23 Oct 2009 13:59:31 +0100
-Message-ID: <20091023125930.GA8198@sirena.org.uk>
-References: <1256207208-25010-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1256207208-25010-5-git-send-email-peter.ujfalusi@nokia.com>
-	<20091022165643.GA28051@rakim.wolfsonmicro.main>
-	<200910230827.55141.peter.ujfalusi@nokia.com>
+From: "Neil Jones" <neil.jones@imgtec.com>
+Subject: Re: What is the meaning of the mask values in the
+	pcmhw constraints struct ?
+Date: Fri, 23 Oct 2009 14:39:58 +0100
+Message-ID: <0D107966AF6D79418315B7C5549F4B5101150B9F@lemail1.le.imgtec.org>
+References: <0D107966AF6D79418315B7C5549F4B5101150A39@lemail1.le.imgtec.org>
+	<20091020165037.GA15813@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E49A24348
+Received: from filter3.imgtec.com (multi.imgtec.com [194.200.65.239])
+	by alsa0.perex.cz (Postfix) with ESMTP id D4C8E1037F8
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Oct 2009 14:59:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <200910230827.55141.peter.ujfalusi@nokia.com>
+	Fri, 23 Oct 2009 15:40:00 +0200 (CEST)
+Content-class: urn:content-classes:message
+In-Reply-To: <20091020165037.GA15813@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,21 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 23, 2009 at 08:27:55AM +0300, Peter Ujfalusi wrote:
 
-> Hmm, what do you mean by that?
-> I have checked it, and selecting the machine driver will enables the MFD_CORE 
-> and TWL4030_CODEC in .config, also disabling the machine driver will also 
-> disable the MFD_CORE and the TWL4030_CODEC.
+>> I get the error "aplay: set_params:1022: Unable to install hw
+params:"
+>> I have traced the problem to a failing ioctl call
+>> (snd_pcm_playback_ioctl) the error occurs in snd_pcm_hw_refine when
+>> refining the mask for the SNDRV_PCM_HW_PARAM_ACCESS mask, all the bit
+>> fields in my runtime->hw_constraints are zero for this field, but the
 
-> Can you go into details?
+>You should set these up with snd_soc_set_runtime_hwparams() with the
+>flags in the info field.
 
-Kconfig has never guaranteed to pay any attention to dependencies of
-things that were enabled as a result of a select statement - they would
-be silently ignored.  I've done some tests and it does seem that this is
-doing what would be expected at the minute but looking at the Kconfig
-changelogs I can't see anything that makes this an intentional change.
+>> requested params have the value 7, Im not sure what this means, the
+>> SNDRV_PCM_ACCESS_xxx defines in asound.h only go upto 4 ?
+
+>It's a bitmask at this point, treat those values as shifts.
+
+Cheers, I wasn't setting the 'SNDRV_PCM_INFO_MMAP' in my
+snd_pcm_hardware description, because I didn't have MMAP support, I have
+now added MMAP support to my driver to resolve this issue, although I
+thought ALSA/aplay supported drivers without MMAP support ?
+
+
+
+-
+This message is subject to Imagination Technologies' e-mail terms: http://www.imgtec.com/e-mail.htm
+
+Imagination Technologies Ltd is a limited company registered in England No:  1306335 
+Registered Office: Imagination House, Home Park Estate, Kings Langley, Hertfordshire, WD4 8LZ.  
+
+Email to and from the company may be monitored for compliance and other administrative purposes.  
+-
