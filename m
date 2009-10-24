@@ -1,18 +1,21 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: [PATCH 1/3] snd-usb-caiaq: Missing lock around use of
-	buffer positions
-Date: Sat, 24 Oct 2009 12:59:35 +0100
-Message-ID: <1256385577-4175-1-git-send-email-mark@pogo.org.uk>
-References: <alpine.NEB.2.01.0910241233570.26979@jrf.vwaro.pbz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: What is the meaning of the mask values in
+	the	pcmhw constraints struct ?
+Date: Sat, 24 Oct 2009 15:23:57 +0100
+Message-ID: <20091024142356.GA23415@sirena.org.uk>
+References: <0D107966AF6D79418315B7C5549F4B5101150A39@lemail1.le.imgtec.org>
+	<20091020165037.GA15813@sirena.org.uk>
+	<0D107966AF6D79418315B7C5549F4B5101150B9F@lemail1.le.imgtec.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mailout.ijneb.com [212.13.201.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id EE3A42453F
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73B972456B
 	for <alsa-devel@alsa-project.org>;
-	Sat, 24 Oct 2009 13:59:38 +0200 (CEST)
-In-Reply-To: <alpine.NEB.2.01.0910241233570.26979@jrf.vwaro.pbz>
+	Sat, 24 Oct 2009 16:23:58 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <0D107966AF6D79418315B7C5549F4B5101150B9F@lemail1.le.imgtec.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +25,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Neil Jones <neil.jones@imgtec.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix a race which causes snd_pcm_update_hw_ptr_pos() to report a bug.
+On Fri, Oct 23, 2009 at 02:39:58PM +0100, Neil Jones wrote:
 
-Signed-off-by: Mark Hills <mark@pogo.org.uk>
-Acked-by: Daniel Mack <daniel@caiaq.de>
----
- sound/usb/caiaq/audio.c |   12 +++++++++---
- 1 files changed, 9 insertions(+), 3 deletions(-)
+> Cheers, I wasn't setting the 'SNDRV_PCM_INFO_MMAP' in my
+> snd_pcm_hardware description, because I didn't have MMAP support, I have
+> now added MMAP support to my driver to resolve this issue, although I
+> thought ALSA/aplay supported drivers without MMAP support ?
 
-diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-index 121af06..e76017c 100644
---- a/sound/usb/caiaq/audio.c
-+++ b/sound/usb/caiaq/audio.c
-@@ -269,16 +269,22 @@ snd_usb_caiaq_pcm_pointer(struct snd_pcm_substream *sub)
- {
- 	int index = sub->number;
- 	struct snd_usb_caiaqdev *dev = snd_pcm_substream_chip(sub);
-+	snd_pcm_uframes_t ptr;
-+
-+	spin_lock(&dev->spinlock);
- 
- 	if (dev->input_panic || dev->output_panic)
--		return SNDRV_PCM_POS_XRUN;
-+		ptr = SNDRV_PCM_POS_XRUN;
- 
- 	if (sub->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		return bytes_to_frames(sub->runtime,
-+		ptr = bytes_to_frames(sub->runtime,
- 					dev->audio_out_buf_pos[index]);
- 	else
--		return bytes_to_frames(sub->runtime,
-+		ptr = bytes_to_frames(sub->runtime,
- 					dev->audio_in_buf_pos[index]);
-+
-+	spin_unlock(&dev->spinlock);
-+	return ptr;
- }
- 
- /* operators for both playback and capture */
--- 
-1.6.4.4
+It should be supportable, yes, although to be honest I've never actually
+looked at hardware that can't deal with mmap() so I don't know off hte
+top of my head what the required setup is.
