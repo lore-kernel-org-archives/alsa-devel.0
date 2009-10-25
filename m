@@ -1,17 +1,15 @@
-From: John Lindgren <john.lindgren@tds.net>
-Subject: Problems in snd_device_name_hint
-Date: Sat, 24 Oct 2009 18:14:50 -0400
-Message-ID: <1256422490.1758.8.camel@dark-knight>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH 1/2] es18xx: remove snd_card pointer from
+ snd_es18xx structure
+Date: Sun, 25 Oct 2009 11:05:19 +0100
+Message-ID: <20091025110519.eaa04512.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-SEsuOuXCp5V9LB2n7wvV"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f220.google.com (mail-gx0-f220.google.com
-	[209.85.217.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2C22510380A
-	for <alsa-devel@alsa-project.org>;
-	Sun, 25 Oct 2009 00:14:53 +0200 (CEST)
-Received: by gxk20 with SMTP id 20so13093859gxk.12
-	for <alsa-devel@alsa-project.org>; Sat, 24 Oct 2009 15:14:53 -0700 (PDT)
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 8D7582443F
+	for <alsa-devel@alsa-project.org>; Sun, 25 Oct 2009 10:47:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,114 +19,231 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
---=-SEsuOuXCp5V9LB2n7wvV
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+The snd_card pointer is redundant and code can be easily
+changed to work without it.
 
-Hello,
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+Both patches are just small code improvement for the driver.
 
-I haven't frequented the alsa-devel list in the past, but Debian's
-maintainer apparently prefers that I go directly to the ALSA developers.
-While developing a new ALSA output plugin for Audacious audio player, I
-have run into several problems in snd_device_name_hint.  I've already
-described the problems in the Debian bug tracker and made up some
-patches, which I would like someone to review.  Here are the links:
+ sound/isa/es18xx.c |   75 ++++++++++++++++++++++++++++++---------------------
+ 1 files changed, 44 insertions(+), 31 deletions(-)
 
-        http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=549531
-        http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=552240
-
-I'm also attaching the patches here.
-
-Peace,
-John Lindgren
-
---=-SEsuOuXCp5V9LB2n7wvV
-Content-Disposition: attachment; filename="dlmisc.c.diff"
-Content-Type: text/x-patch; name="dlmisc.c.diff"; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
---- dlmisc.0.c	2009-09-09 08:34:54.000000000 -0400
-+++ dlmisc.c	2009-10-24 11:18:51.000000000 -0400
-@@ -54,9 +54,13 @@
- #else
- #ifdef HAVE_LIBDL
- 	if (name == NULL) {
--		Dl_info dlinfo;
--		if (dladdr(snd_dlopen, &dlinfo) > 0)
--			name = dlinfo.dli_fname;
-+		static const char * self = NULL;
-+		if (self == NULL) {
-+			Dl_info dlinfo;
-+			if (dladdr(snd_dlopen, &dlinfo) > 0)
-+				self = dlinfo.dli_fname;
-+		}
-+		name = self;
- 	}
- #endif
- #endif
-
---=-SEsuOuXCp5V9LB2n7wvV
-Content-Disposition: attachment; filename="conf.c.diff"
-Content-Type: text/x-patch; name="conf.c.diff"; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
---- conf.0.c	2009-09-09 08:34:54.000000000 -0400
-+++ conf.c	2009-10-22 23:51:09.000000000 -0400
-@@ -1132,7 +1132,6 @@
- 				free(id);
- 				continue;
- 			}
--			snd_config_delete(n);
+diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
+index 8cfbff7..160752b 100644
+--- a/sound/isa/es18xx.c
++++ b/sound/isa/es18xx.c
+@@ -121,7 +121,6 @@ struct snd_es18xx {
+ 	unsigned int dma1_shift;
+ 	unsigned int dma2_shift;
+ 
+-	struct snd_card *card;
+ 	struct snd_pcm *pcm;
+ 	struct snd_pcm_substream *playback_a_substream;
+ 	struct snd_pcm_substream *capture_a_substream;
+@@ -755,7 +754,9 @@ static int snd_es18xx_playback_trigger(struct snd_pcm_substream *substream,
+ 
+ static irqreturn_t snd_es18xx_interrupt(int irq, void *dev_id)
+ {
+-	struct snd_es18xx *chip = dev_id;
++	struct snd_card *card = dev_id;
++	struct snd_audiodrive *acard = card->private_data;
++	struct snd_es18xx *chip = acard->chip;
+ 	unsigned char status;
+ 
+ 	if (chip->caps & ES18XX_CONTROL) {
+@@ -805,12 +806,16 @@ static irqreturn_t snd_es18xx_interrupt(int irq, void *dev_id)
+ 		int split = 0;
+ 		if (chip->caps & ES18XX_HWV) {
+ 			split = snd_es18xx_mixer_read(chip, 0x64) & 0x80;
+-			snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, &chip->hw_switch->id);
+-			snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, &chip->hw_volume->id);
++			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
++					&chip->hw_switch->id);
++			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
++					&chip->hw_volume->id);
  		}
- 		if (mode == MERGE) {
- 			SNDERR("%s does not exists", id);
-@@ -1156,7 +1155,6 @@
- 				skip = 1;
- 				n = NULL;
- 			} else if (mode == OVERRIDE) {
--				snd_config_delete(n);
- 				n = NULL;
- 			}
- 		} else {
-
---=-SEsuOuXCp5V9LB2n7wvV
-Content-Disposition: attachment; filename="namehint.c.diff"
-Content-Type: text/x-patch; name="namehint.c.diff"; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
---- namehint.0.c	2009-09-09 08:34:54.000000000 -0400
-+++ namehint.c	2009-10-03 17:39:23.000000000 -0400
-@@ -328,7 +328,6 @@
- 	if (snd_config_search(cfg1, "slave", &cfg) >= 0 &&
- 	    snd_config_search(cfg, base, &cfg1) >= 0)
- 	    	goto __hint;
--	snd_config_delete(res);
- 	res = NULL;
- 	if (strchr(buf, ':') != NULL)
- 		goto __ok;
-@@ -379,8 +378,6 @@
- 	      	err = hint_list_add(list, buf, buf1);
+ 		if (!split) {
+-			snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, &chip->master_switch->id);
+-			snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE, &chip->master_volume->id);
++			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
++					&chip->master_switch->id);
++			snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_VALUE,
++					&chip->master_volume->id);
+ 		}
+ 		/* ack interrupt */
+ 		snd_es18xx_mixer_write(chip, 0x66, 0x00);
+@@ -1691,8 +1696,11 @@ static struct snd_pcm_ops snd_es18xx_capture_ops = {
+ 	.pointer =	snd_es18xx_capture_pointer,
+ };
+ 
+-static int __devinit snd_es18xx_pcm(struct snd_es18xx *chip, int device, struct snd_pcm ** rpcm)
++static int __devinit snd_es18xx_pcm(struct snd_card *card, int device,
++				    struct snd_pcm **rpcm)
+ {
++	struct snd_audiodrive *acard = card->private_data;
++	struct snd_es18xx *chip = acard->chip;
+         struct snd_pcm *pcm;
+ 	char str[16];
+ 	int err;
+@@ -1701,9 +1709,9 @@ static int __devinit snd_es18xx_pcm(struct snd_es18xx *chip, int device, struct
+ 		*rpcm = NULL;
+ 	sprintf(str, "ES%x", chip->version);
+ 	if (chip->caps & ES18XX_PCM2)
+-		err = snd_pcm_new(chip->card, str, device, 2, 1, &pcm);
++		err = snd_pcm_new(card, str, device, 2, 1, &pcm);
+ 	else
+-		err = snd_pcm_new(chip->card, str, device, 1, 1, &pcm);
++		err = snd_pcm_new(card, str, device, 1, 1, &pcm);
+         if (err < 0)
+                 return err;
+ 
+@@ -1737,7 +1745,7 @@ static int snd_es18xx_suspend(struct snd_card *card, pm_message_t state)
+ 	struct snd_audiodrive *acard = card->private_data;
+ 	struct snd_es18xx *chip = acard->chip;
+ 
+-	snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
++	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ 
+ 	snd_pcm_suspend_all(chip->pcm);
+ 
+@@ -1758,18 +1766,21 @@ static int snd_es18xx_resume(struct snd_card *card)
+ 	/* restore PM register, we won't wake till (not 0x07) i/o activity though */
+ 	snd_es18xx_write(chip, ES18XX_PM, chip->pm_reg ^= ES18XX_PM_FM);
+ 
+-	snd_power_change_state(chip->card, SNDRV_CTL_POWER_D0);
++	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
+ 	return 0;
+ }
+ #endif /* CONFIG_PM */
+ 
+-static int snd_es18xx_free(struct snd_es18xx *chip)
++static int snd_es18xx_free(struct snd_card *card)
+ {
++	struct snd_audiodrive *acard = card->private_data;
++	struct snd_es18xx *chip = acard->chip;
++
+ 	release_and_free_resource(chip->res_port);
+ 	release_and_free_resource(chip->res_ctrl_port);
+ 	release_and_free_resource(chip->res_mpu_port);
+ 	if (chip->irq >= 0)
+-		free_irq(chip->irq, (void *) chip);
++		free_irq(chip->irq, (void *) card);
+ 	if (chip->dma1 >= 0) {
+ 		disable_dma(chip->dma1);
+ 		free_dma(chip->dma1);
+@@ -1784,8 +1795,7 @@ static int snd_es18xx_free(struct snd_es18xx *chip)
+ 
+ static int snd_es18xx_dev_free(struct snd_device *device)
+ {
+-	struct snd_es18xx *chip = device->device_data;
+-	return snd_es18xx_free(chip);
++	return snd_es18xx_free(device->card);
+ }
+ 
+ static int __devinit snd_es18xx_new_device(struct snd_card *card,
+@@ -1808,7 +1818,6 @@ static int __devinit snd_es18xx_new_device(struct snd_card *card,
+ 	spin_lock_init(&chip->reg_lock);
+  	spin_lock_init(&chip->mixer_lock);
+  	spin_lock_init(&chip->ctrl_lock);
+-        chip->card = card;
+         chip->port = port;
+         chip->mpu_port = mpu_port;
+         chip->fm_port = fm_port;
+@@ -1818,53 +1827,55 @@ static int __devinit snd_es18xx_new_device(struct snd_card *card,
+         chip->audio2_vol = 0x00;
+ 	chip->active = 0;
+ 
+-	if ((chip->res_port = request_region(port, 16, "ES18xx")) == NULL) {
+-		snd_es18xx_free(chip);
++	chip->res_port = request_region(port, 16, "ES18xx");
++	if (chip->res_port == NULL) {
++		snd_es18xx_free(card);
+ 		snd_printk(KERN_ERR PFX "unable to grap ports 0x%lx-0x%lx\n", port, port + 16 - 1);
+ 		return -EBUSY;
  	}
-       __skip_add:
--      	if (res)
--	      	snd_config_delete(res);
- 	if (buf1)
- 		free(buf1);
-       	free(buf);
+ 
+-	if (request_irq(irq, snd_es18xx_interrupt, IRQF_DISABLED, "ES18xx", (void *) chip)) {
+-		snd_es18xx_free(chip);
++	if (request_irq(irq, snd_es18xx_interrupt, IRQF_DISABLED, "ES18xx",
++			(void *) card)) {
++		snd_es18xx_free(card);
+ 		snd_printk(KERN_ERR PFX "unable to grap IRQ %d\n", irq);
+ 		return -EBUSY;
+ 	}
+ 	chip->irq = irq;
+ 
+ 	if (request_dma(dma1, "ES18xx DMA 1")) {
+-		snd_es18xx_free(chip);
++		snd_es18xx_free(card);
+ 		snd_printk(KERN_ERR PFX "unable to grap DMA1 %d\n", dma1);
+ 		return -EBUSY;
+ 	}
+ 	chip->dma1 = dma1;
+ 
+ 	if (dma2 != dma1 && request_dma(dma2, "ES18xx DMA 2")) {
+-		snd_es18xx_free(chip);
++		snd_es18xx_free(card);
+ 		snd_printk(KERN_ERR PFX "unable to grap DMA2 %d\n", dma2);
+ 		return -EBUSY;
+ 	}
+ 	chip->dma2 = dma2;
+ 
+         if (snd_es18xx_probe(chip) < 0) {
+-                snd_es18xx_free(chip);
++		snd_es18xx_free(card);
+                 return -ENODEV;
+         }
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+-		snd_es18xx_free(chip);
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, NULL, &ops);
++	if (err < 0) {
++		snd_es18xx_free(card);
+ 		return err;
+ 	}
+         *rchip = chip;
+         return 0;
+ }
+ 
+-static int __devinit snd_es18xx_mixer(struct snd_es18xx *chip)
++static int __devinit snd_es18xx_mixer(struct snd_card *card)
+ {
+-	struct snd_card *card;
++	struct snd_audiodrive *acard = card->private_data;
++	struct snd_es18xx *chip = acard->chip;
+ 	int err;
+ 	unsigned int idx;
+ 
+-	card = chip->card;
+-
+ 	strcpy(card->mixername, chip->pcm->name);
+ 
+ 	for (idx = 0; idx < ARRAY_SIZE(snd_es18xx_base_controls); idx++) {
+@@ -2161,10 +2172,12 @@ static int __devinit snd_audiodrive_probe(struct snd_card *card, int dev)
+ 			chip->port,
+ 			irq[dev], dma1[dev]);
+ 
+-	if ((err = snd_es18xx_pcm(chip, 0, NULL)) < 0)
++	err = snd_es18xx_pcm(card, 0, NULL);
++	if (err < 0)
+ 		return err;
+ 
+-	if ((err = snd_es18xx_mixer(chip)) < 0)
++	err = snd_es18xx_mixer(card);
++	if (err < 0)
+ 		return err;
+ 
+ 	if (fm_port[dev] > 0 && fm_port[dev] != SNDRV_AUTO_PORT) {
+-- 
+1.6.0.3
 
---=-SEsuOuXCp5V9LB2n7wvV
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+----------------------------------------------------------------------
+Sprawdz jak dziala nowy Windows
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---=-SEsuOuXCp5V9LB2n7wvV--
+Sprawdz na >>> http://link.interia.pl/f23ea <<<
