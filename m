@@ -1,18 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] OMAP: McBSP: Do not use extensive spin
-	locks for dma_op_mode
-Date: Tue, 27 Oct 2009 13:17:52 +0200
-Message-ID: <200910271317.52638.peter.ujfalusi@nokia.com>
+ locks for dma_op_mode
+Date: Tue, 27 Oct 2009 12:00:09 +0000
+Message-ID: <20091027120009.GA19323@rakim.wolfsonmicro.main>
 References: <1256641215-26131-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1256641643.30157.339.camel@eenurkka-desktop>
+	<200910271317.52638.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id A2C5B2449F
-	for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2009 12:18:40 +0100 (CET)
-In-Reply-To: <1256641643.30157.339.camel@eenurkka-desktop>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03C78244E1
+	for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2009 13:00:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <200910271317.52638.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
-Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 27 October 2009 13:07:23 Nurkkala Eero.An (EXT-Offcode/Oulu) wro=
-te:
-> On Tue, 2009-10-27 at 12:00 +0100, Ujfalusi Peter (Nokia-D/Tampere)
-> =
+On Tue, Oct 27, 2009 at 01:17:52PM +0200, Peter Ujfalusi wrote:
+> On Tuesday 27 October 2009 13:07:23 Nurkkala Eero.An (EXT-Offcode/Oulu) wrote:
 
-> wrote:
-> > The use of the spin lock, which supposed to protect the the
-> > dma_op_mode causing "INFO: inconsistent lock state" on
-> > playback start.
-> > Remove the spin locks around the dma_op_mode, when it's
-> > purpuse is to protect the dma_op_mode.
-> >
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> > ---
-> =
+> > You may wish to double read the message above, as it's quite
+> > confusing =)
 
-> You may wish to double read the message above, as it's quite
-> confusing =3D)
+> Yes it is ;)
+> I have left one spinlock around the dma_op_mode, when it also protects the 
+> mcbsp->active, so that is why that last sentence.
 
-Yes it is ;)
-I have left one spinlock around the dma_op_mode, when it also protects the =
-
-mcbsp->active, so that is why that last sentence.
-
-
--- =
-
-P=E9ter
+I have to confess that I'm still not entirely clear what the lock is
+supposed to be doing or why it's OK to drop it.  I gather that it's just
+that dmap_on_mode() doesn't need a lock at all?
