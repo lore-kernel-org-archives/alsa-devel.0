@@ -1,21 +1,23 @@
-From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Subject: Re: [PATCH] OMAP: McBSP: Do not use extensive spin
- locks for dma_op_mode
-Date: Wed, 28 Oct 2009 08:53:34 +0200
-Message-ID: <1256712814.30157.388.camel@eenurkka-desktop>
-References: <1256641215-26131-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1256641643.30157.339.camel@eenurkka-desktop>
-	<20091027160000.f276e706.jhnikula@gmail.com>
-	<200910280752.23859.peter.ujfalusi@nokia.com>
-Reply-To: ext-eero.nurkkala@nokia.com
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: A question about the soc jack status
+Date: Wed, 28 Oct 2009 16:16:49 +0900
+Message-ID: <4AE7EFE1.9000407@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A61A1037E3
-	for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2009 07:55:22 +0100 (CET)
-In-Reply-To: <200910280752.23859.peter.ujfalusi@nokia.com>
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32AC11037E3
+	for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2009 08:16:52 +0100 (CET)
+Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KS70093IQW124@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 28 Oct 2009 16:16:49 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KS70060ZQW1Q6@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 28 Oct 2009 16:16:49 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,59 +27,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: knhoon.baik@samsung.com, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2009-10-28 at 06:52 +0100, Ujfalusi Peter (Nokia-D/Tampere)
-wrote:
-> On Tuesday 27 October 2009 16:00:00 ext Jarkko Nikula wrote:
-> > On Tue, 27 Oct 2009 13:07:23 +0200
-> > 
-> > Eero Nurkkala <ext-eero.nurkkala@nokia.com> wrote:
-> > > Otherwise, that spinlocking is highly unnecessary and things are
-> > > far better without than with it. The only case it could be useful
-> > > is in SMPs, but OMAPs are not such quite yet - and when they
-> > > are, things will need to be re-though anyway.
-> > 
-> > Following commit is suggesting that mcbsp code *must* be SMP safe
-> > already now:
-> > 
-> > commit a5b92cc348299c20be215b9f4b50853ecfbf3864
-> > Author: Syed Rafiuddin <rafiuddin.syed@ti.com>
-> > Date:   Tue Jul 28 18:57:10 2009 +0530
-> > 
-> >     ARM: OMAP4: Add McBSP support
-> 
-> Yeah, but I think this locking issue has nothing to do with SMP safe or not.
-> On playback start in omap_mcbsp_request the mcbsp->free is cleared.
-> Further modification to the dma_op_mode in dma_op_mode_store is not allowed if 
-> the mcbsp port is in use, thus the dma_op_mode is protected against change while 
-> the port is in use (ensuring that the mode is same in omap34xx_mcbsp_request and 
-> omap_mcbsp_get_dma_op_mode functions). This alone makes the use of spinlock 
-> around the dma_op_mode unnecessary.
-> 
+Hi, all.
 
-Yeah, maybe I took the SMP safeness into play without looking any code,
-my bad =) I was remembering a different version of this McBSP thing, now
-that I looked into it, it looked different.
+I have a question about soc jack. I know the soc jack reports the jack 
+status when the jack status is change only. For example when the jack 
+is inserted or released, the soc jack reports the jack status to user 
+via input subsystem.
 
-Right, I reviewed the code, and it was first looking really bad at
-sound/soc/omap/omap-mcbsp.c, where it calls omap_mcbsp_get_dma_op_mode()
-from different places. However, it's not an issue because in:
-arch/arm/plat-omap/mcbsp.c : dma_op_mode_store(),
-the dma_op_mode is written only if the mcbsp is unoccupied. So it is SMP
-safe.
+But i want to know the jack status always regardless of the event to 
+insert or release a jack. For example we can check the jack status 
+always if the jack status is reported via sysfs file.
 
-..and a single read is always atomic, so this is buggy code:
-
-301         spin_lock_irq(&mcbsp->lock);
-302         dma_op_mode = mcbsp->dma_op_mode;
-303         spin_unlock_irq(&mcbsp->lock);
-304 
-305         return dma_op_mode;
-
-The spinlocks are unnecessary. In the above example, you get the same
-with just "return mcbsp->dma_op_mode;"
-
--> Peter's patch is a good cleanup.
+So, is there how to know the jack status always the currently?
