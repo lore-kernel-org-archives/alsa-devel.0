@@ -1,19 +1,19 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: What can change after suspend ?
-Date: Tue, 27 Oct 2009 17:41:27 -0600
-Message-ID: <51f3faa70910271641t7676a1b7n2ac63a9c450d962f@mail.gmail.com>
-References: <20091028001750.62f12ef1@Jay>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] OMAP: McBSP: Do not use extensive spin
+	locks for dma_op_mode
+Date: Wed, 28 Oct 2009 07:52:23 +0200
+Message-ID: <200910280752.23859.peter.ujfalusi@nokia.com>
+References: <1256641215-26131-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1256641643.30157.339.camel@eenurkka-desktop>
+	<20091027160000.f276e706.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
-	[209.85.223.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id 324DB24484
-	for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2009 00:41:28 +0100 (CET)
-Received: by iwn36 with SMTP id 36so200439iwn.24
-	for <alsa-devel@alsa-project.org>; Tue, 27 Oct 2009 16:41:27 -0700 (PDT)
-In-Reply-To: <20091028001750.62f12ef1@Jay>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2B2921037FB
+	for <alsa-devel@alsa-project.org>; Wed, 28 Oct 2009 06:52:39 +0100 (CET)
+In-Reply-To: <20091027160000.f276e706.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Oct 27, 2009 at 5:17 PM, Giuliano Pochini <pochini@shiny.it> wrote:
-> I'm adding suspend/resume support to echoaudio drivers. I was
-> reading /Documentation/power/pci.txt:
->
-> "
-> =A0 =A0 =A0 =A0pci_set_power_state(PCI_D0);
-> =A0 =A0 =A0 =A0pci_restore_state();
-> =A0 =A0 =A0 =A0/* device's irq possibly is changed, driver should take ca=
-re */
-> "
->
-> The card does not support D[0-3] states. The driver suspends the card by
-> turning the DSP off, without changing the PCI state. Can IRQ, memory mapp=
-ed
-> regions, whatever, change on resume ?
-> Are pci_save_state() and pci_enable_wake() useful/required in this case ?
+On Tuesday 27 October 2009 16:00:00 ext Jarkko Nikula wrote:
+> On Tue, 27 Oct 2009 13:07:23 +0200
+> =
 
-I don't think an audio card would have need for pci_enable_wake, but
-pci_save_state and pci_restore_state are mandatory, otherwise PCI
-configuration space won't get restored after resume.
+> Eero Nurkkala <ext-eero.nurkkala@nokia.com> wrote:
+> > Otherwise, that spinlocking is highly unnecessary and things are
+> > far better without than with it. The only case it could be useful
+> > is in SMPs, but OMAPs are not such quite yet - and when they
+> > are, things will need to be re-though anyway.
+> =
+
+> Following commit is suggesting that mcbsp code *must* be SMP safe
+> already now:
+> =
+
+> commit a5b92cc348299c20be215b9f4b50853ecfbf3864
+> Author: Syed Rafiuddin <rafiuddin.syed@ti.com>
+> Date:   Tue Jul 28 18:57:10 2009 +0530
+> =
+
+>     ARM: OMAP4: Add McBSP support
+
+Yeah, but I think this locking issue has nothing to do with SMP safe or not.
+On playback start in omap_mcbsp_request the mcbsp->free is cleared.
+Further modification to the dma_op_mode in dma_op_mode_store is not allowed=
+ if =
+
+the mcbsp port is in use, thus the dma_op_mode is protected against change =
+while =
+
+the port is in use (ensuring that the mode is same in omap34xx_mcbsp_reques=
+t and =
+
+omap_mcbsp_get_dma_op_mode functions). This alone makes the use of spinlock =
+
+around the dma_op_mode unnecessary.
+
+-- =
+
+P=E9ter
