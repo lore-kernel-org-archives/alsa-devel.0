@@ -1,18 +1,14 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: OMAP3EVM: Use the twl4030_setup_data
-	for headset pop-removal
-Date: Thu, 29 Oct 2009 11:13:31 +0200
-Message-ID: <200910291113.31932.peter.ujfalusi@nokia.com>
-References: <1253689831-2996-1-git-send-email-anuj.aggarwal@ti.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030A5B3835@dbde02.ent.ti.com>
+Subject: [PATCH 0/2] ASoC: TWL4030: Vibra and APLL fixes
+Date: Thu, 29 Oct 2009 11:58:08 +0200
+Message-ID: <1256810290-20478-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 379652462E
-	for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2009 10:14:21 +0100 (CET)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A5B3835@dbde02.ent.ti.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id C617E24657
+	for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2009 10:58:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +18,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, ext-jari.vanhala@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 29 October 2009 10:00:41 ext Aggarwal, Anuj wrote:
-> I rebased my both audio and l-o trees but could not find this patch
-> there. Is there a problem in this which I have to fix and re-submit?
+Hello,
 
-Yes, I have seen the patch, and it look good.
-You can have my:
+Audio driven vibrator output fix:
+To have correct audio routed to the vibra output, we also need to configure
+the VIBRA_SET register, which in theory has nothing to do with the vibra, when
+it is driven with audio.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+and fix for the APLL powering sequence:
+The APLL in the past was enabled at set_dai_sysclk function, but it has been
+fixed, which introduced some really strange signals on the outputs.
 
-if it helps ;)
+This series applies on top of Mark's tree, for-2.6.33 branch at:
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
 
--- =
+Since the underlying twl4030 patches are not yet in the topic/asoc of
+Takashi's tree.
 
-P=E9ter
+---
+Jari Vanhala (1):
+  ASoC: TWL4030: Vibra motor stop fix when it is driven with audio
+
+Peter Ujfalusi (1):
+  ASoC: TWL4030: Change APLL powering sequence
+
+ sound/soc/codecs/twl4030.c |   38 ++++++++++++++++++++++++++++++++++----
+ 1 files changed, 34 insertions(+), 4 deletions(-)
