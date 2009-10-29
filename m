@@ -1,66 +1,63 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] OMAP: McBSP: Do not use extensive spin
-	locks for dma_op_mode
-Date: Thu, 29 Oct 2009 08:35:51 +0200
-Message-ID: <200910290835.51475.peter.ujfalusi@nokia.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] OMAP: McBSP: Do not use extensive spin
+ locks for dma_op_mode
+Date: Thu, 29 Oct 2009 09:13:42 +0200
+Message-ID: <20091029091342.2a9a3fd6.jhnikula@gmail.com>
 References: <1256641215-26131-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1256641643.30157.339.camel@eenurkka-desktop>
+	<20091027160000.f276e706.jhnikula@gmail.com>
 	<200910280752.23859.peter.ujfalusi@nokia.com>
 	<1256712814.30157.388.camel@eenurkka-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15726245B5
-	for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2009 07:36:10 +0100 (CET)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
 In-Reply-To: <1256712814.30157.388.camel@eenurkka-desktop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: ext-eero.nurkkala@nokia.com
+Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "tony@atomide.com" <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 28 October 2009 08:53:34 Nurkkala Eero.An (EXT-Offcode/Oulu) w=
-rote:
-> Yeah, maybe I took the SMP safeness into play without looking any code,
-> my bad =3D) I was remembering a different version of this McBSP thing, now
-> that I looked into it, it looked different.
-> =
+On Wed, 28 Oct 2009 08:53:34 +0200
+Eero Nurkkala <ext-eero.nurkkala@nokia.com> wrote:
 
+> On Wed, 2009-10-28 at 06:52 +0100, Ujfalusi Peter (Nokia-D/Tampere)
+> > Yeah, but I think this locking issue has nothing to do with SMP safe or not.
+> > On playback start in omap_mcbsp_request the mcbsp->free is cleared.
+> > Further modification to the dma_op_mode in dma_op_mode_store is not allowed if 
+> > the mcbsp port is in use, thus the dma_op_mode is protected against change while 
+> > the port is in use (ensuring that the mode is same in omap34xx_mcbsp_request and 
+> > omap_mcbsp_get_dma_op_mode functions). This alone makes the use of spinlock 
+> > around the dma_op_mode unnecessary.
+> > 
+> 
+...
 > Right, I reviewed the code, and it was first looking really bad at
 > sound/soc/omap/omap-mcbsp.c, where it calls omap_mcbsp_get_dma_op_mode()
 > from different places. However, it's not an issue because in:
 > arch/arm/plat-omap/mcbsp.c : dma_op_mode_store(),
 > the dma_op_mode is written only if the mcbsp is unoccupied. So it is SMP
 > safe.
-> =
-
-> ..and a single read is always atomic, so this is buggy code:
-> =
-
-> 301         spin_lock_irq(&mcbsp->lock);
-> 302         dma_op_mode =3D mcbsp->dma_op_mode;
-> 303         spin_unlock_irq(&mcbsp->lock);
-> 304
-> 305         return dma_op_mode;
-> =
-
+> 
+... 
 > The spinlocks are unnecessary. In the above example, you get the same
 > with just "return mcbsp->dma_op_mode;"
-> =
-
+> 
 > -> Peter's patch is a good cleanup.
+> 
+Yeah, agree, only now I looked the patch itself :-)
 
-Jarkko: are we going to take this?
+Sorry that I didn't express it clearly that my comment was a side note
+for general awareness that SMP's are becoming reality for ARMs as well
+than nak for Peter's patch.
+
+According to defconfigs the OMAP4 will be the first commercial ARM SMP
+having mainline support (I count realview as development device):
+
+grep 'CONFIG_SMP=y' -r arch/arm/configs/ 
+arch/arm/configs/realview-smp_defconfig:CONFIG_SMP=y
+arch/arm/configs/omap_4430sdp_defconfig:CONFIG_SMP=y
 
 
--- =
-
-P=E9ter
+-- 
+Jarkko
