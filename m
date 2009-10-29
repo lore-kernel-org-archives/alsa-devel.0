@@ -1,40 +1,25 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: CS4270: export de-emphasis
- filter as ALSA control
-Date: Thu, 29 Oct 2009 10:15:13 +0000
-Message-ID: <20091029101512.GA3902@rakim.wolfsonmicro.main>
-References: <1256779472-30754-1-git-send-email-daniel@caiaq.de>
+Subject: Re: [alsa-devel] [PATCH] ASoC: OMAP3EVM: Use the
+	twl4030_setup_data for headset pop-removal
+Date: Thu, 29 Oct 2009 10:27:08 +0000
+Message-ID: <20091029102707.GA15559@sirena.org.uk>
+References: <1253689831-2996-1-git-send-email-anuj.aggarwal@ti.com> <5A47E75E594F054BAF48C5E4FC4B92AB030A5B3835@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7A8B024664
-	for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2009 11:15:14 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1256779472-30754-1-git-send-email-daniel@caiaq.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A5B3835@dbde02.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Oct 29, 2009 at 02:24:32AM +0100, Daniel Mack wrote:
-> The CS4270 codec features an de-emphasis filter for compensation of
-> audio material filtered by an 50/15 uS algorithm. Not sure whether we
-> should always enable it for 44100Hz sampling frequency, but it should at
-> least be configurable by the user.
+On Thu, Oct 29, 2009 at 01:30:41PM +0530, Aggarwal, Anuj wrote:
 
-It shouldn't be automatically enabled - historically some sources put
-some preemphasis on the recording in order to compensate for poor
-playback technologies but it's vanishingly rare to encounter any such
-sources these days.
+> I rebased my both audio and l-o trees but could not find this patch
+> there. Is there a problem in this which I have to fix and re-submit?
 
-I'll apply this.
+You should always CC the relevant maintainers on patches, otherwise
+there is no guarantee that people will see your messages among the
+others on the mailing list.  In this case I appear to have found a copy
+of the patch so there should be no need to resend it.
