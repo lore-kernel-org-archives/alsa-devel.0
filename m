@@ -1,17 +1,19 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: VIA VT1828S hda_intel errors
-Date: Thu, 29 Oct 2009 19:05:15 -0600
-Message-ID: <4AEA3BCB.5040202@gmail.com>
+From: Simos Xenitellis <simos.lists@googlemail.com>
+Subject: Re: Sound distortion with Realtek ALC889A
+Date: Fri, 30 Oct 2009 03:47:23 +0200
+Message-ID: <598e9210910291847q7014e9f8s1489d90cea9e09df@mail.gmail.com>
+References: <9c09d22d0910290521t19e718c5vb38bba3b558e8710@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
-	[209.85.211.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id C4179243D2
-	for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2009 02:05:18 +0100 (CET)
-Received: by ywh28 with SMTP id 28so2294006ywh.16
-	for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2009 18:05:17 -0700 (PDT)
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 407A52442A
+	for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2009 02:47:44 +0100 (CET)
+Received: by yxe34 with SMTP id 34so2328656yxe.16
+	for <alsa-devel@alsa-project.org>; Thu, 29 Oct 2009 18:47:43 -0700 (PDT)
+In-Reply-To: <9c09d22d0910290521t19e718c5vb38bba3b558e8710@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,36 +23,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-Devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, LydiaWang@viatech.com.cn, Logan Li <loganli@viatech.com.cn>, Harald Welte <HaraldWelte@viatech.com>
+To: Damien Brossard <brossard.damien@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I've been using the VT1828S codec support from ALSA git for the last few 
-weeks. It seems to work fine, but there are some problems showing up in 
-dmesg:
+On Thu, Oct 29, 2009 at 2:21 PM, Damien Brossard
+<brossard.damien@gmail.com> wrote:
+>
+> Hi.
+>
+> I recently bought a Gigabyte GA-MA78GM-S2H motherboard. This board uses the
+> (in)famous (from what i've read for now) alc889a chip. While playing 5.1
+> content, I can hear noise or distortion coming from the center channel. I
+> can not test my configuration with another OS, so I can't fully dismiss a HW
+> problem. However, i made several tests with 5.1 and 2.0 speakers which
+> points me to soundcard problem.
+>
+> I've made some tests with speaker-test (speaker-test -D surround51 -c 6) :
+> 1) Each time a sound is played either on front left channel or rear left
+> channel, a noise can be heared on the center channel (and subwoofer, this is
+> confirmed pluging a stereo headphone on the center/lfe jack). No noise when
+> a sound is played on right channels (front or rear).
+> 2) In alsamixer, if I set the volume to 0 for the front or rear left
+> channels, i can hear the noise on center/lfe when a sound is "played" on
+> this channels
+> 3) In alsamixer, if I mute the front or rear left channels, i can hear no
+> more noise on center/lfe
+>
+> Complementary tests have been made with alsaplayer and using a simple mp3
+> file. In this configuration (stereo output), center and rear channels play
+> the same sound as front channel.
+> 1) If all channels are unmuted, I hear no noise.
+> 2) If either the front channel or the rear channel are muted, I can hear the
+> noise on center channel.
+>
+> I tried this with alsa-driver 1.0.20 and 1.0.21 with the same result, I
+> recently went back to 1.0.20 due to kernel upgrade.
+>
+> Things that seem strange to me (maybe not so strange to alsa dev :)) :
+> 1) alsamixer shows volumes in percentage, however when I set a channel
+> volume to 50% and the master volume to 50%, I hope to find a resulting
+> volume of 25%, not 0.
+> 2) lspci reports my soundcard subsystem id as 1458:a022, but in
+> /proc/asound/card0/codec#0 the subsystem id is 1458:a002
+>
+> Googling around made me find few references (in alsa-devel list) to a
+> similar problem :
+>
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-July/008942.html
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2008-August/009754.html
+>
+> The distortion / noise described here is exactly what i can hear with my
+> system. Apparently the user solved the issue buying another soundcard. I'd
+> like to be sure it is the only way to go.
+>
+> Attached is the file produced by alsa-info.sh
 
-Oct 25 20:46:14 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:683: No 
-response from codec, disabling MSI: last cmd=0x02af0900
-Oct 25 20:46:15 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:698: 
-azx_get_response timeout, switching to polling mode: last cmd=0x02af0900
+A user had the same issue (Gigabyte P35-DS4), with alsa-info
+http://www.alsa-project.org/db/?f=eb49c36810be2543bcb913d80390f6cba13ec766
+and he just reported back that setting the model line to
 
-It seems like the cmd isn't always the same, previously it was 
-0x024f0c00. Is there something bad about this command that could be 
-causing the response timeout? Also, disabling MSI for one occurrence of 
-this seems a bit paranoid..
+options snd-hda-intel model=6stack-dig
 
-Also saw one of these:
+he was able to fix the problem.
 
-Oct 26 21:13:20 newcastle kernel: hda-intel: IRQ timing workaround is 
-activated for card #0. Suggest a bigger bdl_pos_adj.
+He tried this on Ubuntu 9.10 (Alsa 1.0.20).
+Assuming that it has not been fixed yet, what change would I make to
+the Alsa source code so that newer versions would be able to
+autodetect the chipset?
+I would appreciate such an answer, as I tend to get a few feedback
+reports on audio cards.
 
-and PulseAudio also complained:
-
-Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: ALSA woke us 
-up to write new data to the device, but there was actually nothing to write!
-Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: Most likely 
-this is a bug in the ALSA driver 'snd_hda_intel'. Please report this 
-issue to the ALSA developers.
-Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: We were woken 
-up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 
-or another value < min_avail.
+Simos
