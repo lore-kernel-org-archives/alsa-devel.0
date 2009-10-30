@@ -1,21 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] Add support for CLKOUT to wm8731 codec
- driver
-Date: Fri, 30 Oct 2009 17:00:03 +0000
-Message-ID: <20091030170003.GA28420@rakim.wolfsonmicro.main>
-References: <1256829202-2508-1-git-send-email-bgat@billgatliff.com>
-	<1256829202-2508-2-git-send-email-bgat@billgatliff.com>
-	<20091029160534.GE15559@sirena.org.uk>
-	<4AEB194C.700@billgatliff.com>
+Subject: Re: [RFC 0/2] ASoC: remove io_mutex
+Date: Fri, 30 Oct 2009 17:51:16 +0000
+Message-ID: <20091030175116.GA27771@sirena.org.uk>
+References: <1256902443-15492-1-git-send-email-ext-eero.nurkkala@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9A8F824366
-	for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2009 18:00:04 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id EDD872434B
+	for <alsa-devel@alsa-project.org>; Fri, 30 Oct 2009 18:51:17 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4AEB194C.700@billgatliff.com>
+In-Reply-To: <1256902443-15492-1-git-send-email-ext-eero.nurkkala@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bill Gatliff <bgat@billgatliff.com>
+To: ext-eero.nurkkala@nokia.com
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 30, 2009 at 11:50:20AM -0500, Bill Gatliff wrote:
-> Mark Brown wrote:
+On Fri, Oct 30, 2009 at 01:34:01PM +0200, ext-eero.nurkkala@nokia.com wrote:
+> From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+> 
+> This RFC set addresses the existence of io_mutex.
+> A safer method is introduced - but it changes the
+> semantics quite a bit, as now all drivers calling
 
-> > It'd be better define a new clock for the CLKOUT pin rather than munging
-> > it in with the master clock.  MCLK is always an input on the WM8731, the
-> > CLKOUT output is a separate pin and so including it in MCLK is likely to
-> > make things confusing and could well introduce errors.
+As discussed previously this is probably sensible; it's certainly more
+sensible than the current code if nothing else.  I've applied them, if
+there's problems we can fix them as they're noticed but this is a better
+place to start from.  Thanks!
 
-> Could you explain more about what you meant by this?  I'm trying to
-> rework these patches now, and I don't understand how to implement what
-> you are suggesting.
-
-Define two clock IDs and then use a switch statement in the function to
-determine which to act on, allowing the master clock to be controlled
-separately to the output clock.
+Please do always remember to CC maintainers on patches - it helps avoid
+your patches getting lost.
