@@ -1,13 +1,17 @@
-From: Stas Sergeev <stsp@aknet.ru>
-Subject: [patch] snd-pcsp: add nopcm mode
-Date: Sat, 31 Oct 2009 23:30:50 +0300
-Message-ID: <4AEC9E7A.8050204@aknet.ru>
+From: Shawn Starr <shawn.starr@rogers.com>
+Subject: Re: [USB] alsa-lib 1.2.21[a] broke USB audio buffering
+	- regression
+Date: Sat, 31 Oct 2009 17:20:24 -0400
+Message-ID: <200910311720.24733.shawn.starr@rogers.com>
+References: <200910291849.54205.shawn.starr@rogers.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------050900060108010503060707"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imp02.mtu.ru (imp02.mtu.ru [62.5.255.19])
-	by alsa0.perex.cz (Postfix) with ESMTP id E88521037FE
-	for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2009 21:30:45 +0100 (CET)
+Received: from smtp131.rog.mail.re2.yahoo.com (smtp131.rog.mail.re2.yahoo.com
+	[206.190.53.36]) by alsa0.perex.cz (Postfix) with SMTP id 9B8EC24367
+	for <alsa-devel@alsa-project.org>; Sat, 31 Oct 2009 22:20:27 +0100 (CET)
+In-Reply-To: <200910291849.54205.shawn.starr@rogers.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,130 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA devel <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050900060108010503060707
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On October 29, 2009 06:49:53 pm Shawn Starr wrote:
+> Hello ALSA developers,
+> 
+> I seem have noticed a problem with USB audio buffering. Prior to using
+>  *buntu, which uses ALSA 1.2.20 I had no problems with using my USB webcam
+>  for audio. When I switched to Debian, which uses ALSA 1.2.21a I noticed
+>  USB audio became choppy.
+> 
+> The device in question is a QuickCam Pro 9000 webcam.
+> 
+> I can confirm this to be the case since taking the 1.2.20 source and
+> rebuilding it on Debian causes the audio choppiness problem to stop.
+> 
+> Thanks,
+> Shawn.
+> 
 
-Hello.
+The ID in question is: 
 
-Currently, if the high-res timers
-are unavailable, snd-pcsp does not
-initialize. People who choose it over
-pcspkr, loose their console beeps
-in that case and get annoyed.
-With this patch, the console beeps
-remain regardless of the high-res
-timers. Additionally, the "nopcm"
-modparam is added to forcibly
-disable the PCM capabilities of
-the driver.
+Bus 002 Device 003: ID 046d:0990 Logitech, Inc. QuickCam Pro 9000
 
-Signed-off-by: Stas Sergeev <stsp@aknet.ru>
+I am looking at .20 and .21[a] code to see what the regression is, 
 
---------------050900060108010503060707
-Content-Type: text/plain;
- name="pcsp_nopcm.diff"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="pcsp_nopcm.diff"
-
-ZGlmZiAtLWdpdCBhL3NvdW5kL2RyaXZlcnMvcGNzcC9wY3NwLmMgYi9zb3VuZC9kcml2ZXJz
-L3Bjc3AvcGNzcC5jCmluZGV4IGI2MGNlZjIuLmUwODYwYjUgMTAwNjQ0Ci0tLSBhL3NvdW5k
-L2RyaXZlcnMvcGNzcC9wY3NwLmMKKysrIGIvc291bmQvZHJpdmVycy9wY3NwL3Bjc3AuYwpA
-QCAtMjYsNiArMjYsNyBAQCBNT0RVTEVfQUxJQVMoInBsYXRmb3JtOnBjc3BrciIpOwogc3Rh
-dGljIGludCBpbmRleCA9IFNORFJWX0RFRkFVTFRfSURYMTsJLyogSW5kZXggMC1NQVggKi8K
-IHN0YXRpYyBjaGFyICppZCA9IFNORFJWX0RFRkFVTFRfU1RSMTsJLyogSUQgZm9yIHRoaXMg
-Y2FyZCAqLwogc3RhdGljIGludCBlbmFibGUgPSBTTkRSVl9ERUZBVUxUX0VOQUJMRTE7CS8q
-IEVuYWJsZSB0aGlzIGNhcmQgKi8KK3N0YXRpYyBpbnQgbm9wY20gPSAwOwkvKiBEaXNhYmxl
-IFBDTSBjYXBhYmlsaXR5IG9mIHRoZSBkcml2ZXIgKi8KIAogbW9kdWxlX3BhcmFtKGluZGV4
-LCBpbnQsIDA0NDQpOwogTU9EVUxFX1BBUk1fREVTQyhpbmRleCwgIkluZGV4IHZhbHVlIGZv
-ciBwY3NwIHNvdW5kY2FyZC4iKTsKQEAgLTMzLDYgKzM0LDggQEAgbW9kdWxlX3BhcmFtKGlk
-LCBjaGFycCwgMDQ0NCk7CiBNT0RVTEVfUEFSTV9ERVNDKGlkLCAiSUQgc3RyaW5nIGZvciBw
-Y3NwIHNvdW5kY2FyZC4iKTsKIG1vZHVsZV9wYXJhbShlbmFibGUsIGJvb2wsIDA0NDQpOwog
-TU9EVUxFX1BBUk1fREVTQyhlbmFibGUsICJFbmFibGUgUEMtU3BlYWtlciBzb3VuZC4iKTsK
-K21vZHVsZV9wYXJhbShub3BjbSwgYm9vbCwgMDQ0NCk7CitNT0RVTEVfUEFSTV9ERVNDKG5v
-cGNtLCAiRGlzYWJsZSBQQy1TcGVha2VyIFBDTSBzb3VuZC4gT25seSBiZWVwcyByZW1haW4u
-Iik7CiAKIHN0cnVjdCBzbmRfcGNzcCBwY3NwX2NoaXA7CiAKQEAgLTQzLDEzICs0NiwxNiBA
-QCBzdGF0aWMgaW50IF9fZGV2aW5pdCBzbmRfcGNzcF9jcmVhdGUoc3RydWN0IHNuZF9jYXJk
-ICpjYXJkKQogCWludCBlcnI7CiAJaW50IGRpdiwgbWluX2Rpdiwgb3JkZXI7CiAKLQlocnRp
-bWVyX2dldF9yZXMoQ0xPQ0tfTU9OT1RPTklDLCAmdHApOwotCWlmICh0cC50dl9zZWMgfHwg
-dHAudHZfbnNlYyA+IFBDU1BfTUFYX1BFUklPRF9OUykgewotCQlwcmludGsoS0VSTl9FUlIg
-IlBDU1A6IFRpbWVyIHJlc29sdXRpb24gaXMgbm90IHN1ZmZpY2llbnQgIgotCQkgICAgICAg
-IiglbGluUylcbiIsIHRwLnR2X25zZWMpOwotCQlwcmludGsoS0VSTl9FUlIgIlBDU1A6IE1h
-a2Ugc3VyZSB5b3UgaGF2ZSBIUEVUIGFuZCBBQ1BJICIKLQkJICAgICAgICJlbmFibGVkLlxu
-Iik7Ci0JCXJldHVybiAtRUlPOworCWlmICghbm9wY20pIHsKKwkJaHJ0aW1lcl9nZXRfcmVz
-KENMT0NLX01PTk9UT05JQywgJnRwKTsKKwkJaWYgKHRwLnR2X3NlYyB8fCB0cC50dl9uc2Vj
-ID4gUENTUF9NQVhfUEVSSU9EX05TKSB7CisJCQlwcmludGsoS0VSTl9FUlIgIlBDU1A6IFRp
-bWVyIHJlc29sdXRpb24gaXMgbm90IHN1ZmZpY2llbnQgIgorCQkJCSIoJWxpblMpXG4iLCB0
-cC50dl9uc2VjKTsKKwkJCXByaW50ayhLRVJOX0VSUiAiUENTUDogTWFrZSBzdXJlIHlvdSBo
-YXZlIEhQRVQgYW5kIEFDUEkgIgorCQkJCSJlbmFibGVkLlxuIik7CisJCQlwcmludGsoS0VS
-Tl9FUlIgIlBDU1A6IFR1cm5lZCBpbnRvIG5vcGNtIG1vZGUuXG4iKTsKKwkJCW5vcGNtID0g
-MTsKKwkJfQogCX0KIAogCWlmIChsb29wc19wZXJfamlmZnkgPj0gUENTUF9NSU5fTFBKICYm
-IHRwLnR2X25zZWMgPD0gUENTUF9NSU5fUEVSSU9EX05TKQpAQCAtMTA3LDEyICsxMTMsMTQg
-QEAgc3RhdGljIGludCBfX2RldmluaXQgc25kX2NhcmRfcGNzcF9wcm9iZShpbnQgZGV2bnVt
-LCBzdHJ1Y3QgZGV2aWNlICpkZXYpCiAJCXNuZF9jYXJkX2ZyZWUoY2FyZCk7CiAJCXJldHVy
-biBlcnI7CiAJfQotCWVyciA9IHNuZF9wY3NwX25ld19wY20oJnBjc3BfY2hpcCk7Ci0JaWYg
-KGVyciA8IDApIHsKLQkJc25kX2NhcmRfZnJlZShjYXJkKTsKLQkJcmV0dXJuIGVycjsKKwlp
-ZiAoIW5vcGNtKSB7CisJCWVyciA9IHNuZF9wY3NwX25ld19wY20oJnBjc3BfY2hpcCk7CisJ
-CWlmIChlcnIgPCAwKSB7CisJCQlzbmRfY2FyZF9mcmVlKGNhcmQpOworCQkJcmV0dXJuIGVy
-cjsKKwkJfQogCX0KLQllcnIgPSBzbmRfcGNzcF9uZXdfbWl4ZXIoJnBjc3BfY2hpcCk7CisJ
-ZXJyID0gc25kX3Bjc3BfbmV3X21peGVyKCZwY3NwX2NoaXAsIG5vcGNtKTsKIAlpZiAoZXJy
-IDwgMCkgewogCQlzbmRfY2FyZF9mcmVlKGNhcmQpOwogCQlyZXR1cm4gZXJyOwpkaWZmIC0t
-Z2l0IGEvc291bmQvZHJpdmVycy9wY3NwL3Bjc3AuaCBiL3NvdW5kL2RyaXZlcnMvcGNzcC9w
-Y3NwLmgKaW5kZXggMTc0ZGQyZi4uMWUxMjMwNyAxMDA2NDQKLS0tIGEvc291bmQvZHJpdmVy
-cy9wY3NwL3Bjc3AuaAorKysgYi9zb3VuZC9kcml2ZXJzL3Bjc3AvcGNzcC5oCkBAIC04Myw2
-ICs4Myw2IEBAIGV4dGVybiBlbnVtIGhydGltZXJfcmVzdGFydCBwY3NwX2RvX3RpbWVyKHN0
-cnVjdCBocnRpbWVyICpoYW5kbGUpOwogZXh0ZXJuIHZvaWQgcGNzcF9zeW5jX3N0b3Aoc3Ry
-dWN0IHNuZF9wY3NwICpjaGlwKTsKIAogZXh0ZXJuIGludCBzbmRfcGNzcF9uZXdfcGNtKHN0
-cnVjdCBzbmRfcGNzcCAqY2hpcCk7Ci1leHRlcm4gaW50IHNuZF9wY3NwX25ld19taXhlcihz
-dHJ1Y3Qgc25kX3Bjc3AgKmNoaXApOworZXh0ZXJuIGludCBzbmRfcGNzcF9uZXdfbWl4ZXIo
-c3RydWN0IHNuZF9wY3NwICpjaGlwLCBpbnQgbm9wY20pOwogCiAjZW5kaWYKZGlmZiAtLWdp
-dCBhL3NvdW5kL2RyaXZlcnMvcGNzcC9wY3NwX21peGVyLmMgYi9zb3VuZC9kcml2ZXJzL3Bj
-c3AvcGNzcF9taXhlci5jCmluZGV4IDkwM2JjODQuLjAyZTA1NTUgMTAwNjQ0Ci0tLSBhL3Nv
-dW5kL2RyaXZlcnMvcGNzcC9wY3NwX21peGVyLmMKKysrIGIvc291bmQvZHJpdmVycy9wY3Nw
-L3Bjc3BfbWl4ZXIuYwpAQCAtMTE5LDI0ICsxMTksNDMgQEAgc3RhdGljIGludCBwY3NwX3Bj
-c3Brcl9wdXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCiAJLnB1dCA9CQlwY3Nw
-XyMjY3RsX3R5cGUjI19wdXQsIFwKIH0KIAotc3RhdGljIHN0cnVjdCBzbmRfa2NvbnRyb2xf
-bmV3IF9fZGV2aW5pdGRhdGEgc25kX3Bjc3BfY29udHJvbHNbXSA9IHsKK3N0YXRpYyBzdHJ1
-Y3Qgc25kX2tjb250cm9sX25ldyBfX2RldmluaXRkYXRhIHNuZF9wY3NwX2NvbnRyb2xzX3Bj
-bVtdID0gewogCVBDU1BfTUlYRVJfQ09OVFJPTChlbmFibGUsICJNYXN0ZXIgUGxheWJhY2sg
-U3dpdGNoIiksCiAJUENTUF9NSVhFUl9DT05UUk9MKHRyZWJsZSwgIkJhc2VGUlEgUGxheWJh
-Y2sgVm9sdW1lIiksCit9OworCitzdGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9uZXcgX19k
-ZXZpbml0ZGF0YSBzbmRfcGNzcF9jb250cm9sc19zcGtyW10gPSB7CiAJUENTUF9NSVhFUl9D
-T05UUk9MKHBjc3BrciwgIlBDIFNwZWFrZXIgUGxheWJhY2sgU3dpdGNoIiksCiB9OwogCi1p
-bnQgX19kZXZpbml0IHNuZF9wY3NwX25ld19taXhlcihzdHJ1Y3Qgc25kX3Bjc3AgKmNoaXAp
-CitzdGF0aWMgaW50IF9fZGV2aW5pdCBzbmRfcGNzcF9jdGxzX2FkZChzdHJ1Y3Qgc25kX3Bj
-c3AgKmNoaXAsCisJc3RydWN0IHNuZF9rY29udHJvbF9uZXcgKmN0bHMsIGludCBudW0pCiB7
-Ci0Jc3RydWN0IHNuZF9jYXJkICpjYXJkID0gY2hpcC0+Y2FyZDsKIAlpbnQgaSwgZXJyOwor
-CXN0cnVjdCBzbmRfY2FyZCAqY2FyZCA9IGNoaXAtPmNhcmQ7CisJZm9yIChpID0gMDsgaSA8
-IG51bTsgaSsrKSB7CisJCWVyciA9IHNuZF9jdGxfYWRkKGNhcmQsIHNuZF9jdGxfbmV3MShj
-dGxzICsgaSwgY2hpcCkpOworCQlpZiAoZXJyIDwgMCkKKwkJCXJldHVybiBlcnI7CisJfQor
-CXJldHVybiAwOworfQorCitpbnQgX19kZXZpbml0IHNuZF9wY3NwX25ld19taXhlcihzdHJ1
-Y3Qgc25kX3Bjc3AgKmNoaXAsIGludCBub3BjbSkKK3sKKwlpbnQgZXJyOworCXN0cnVjdCBz
-bmRfY2FyZCAqY2FyZCA9IGNoaXAtPmNhcmQ7CiAKLQlmb3IgKGkgPSAwOyBpIDwgQVJSQVlf
-U0laRShzbmRfcGNzcF9jb250cm9scyk7IGkrKykgewotCQllcnIgPSBzbmRfY3RsX2FkZChj
-YXJkLAotCQkJCSBzbmRfY3RsX25ldzEoc25kX3Bjc3BfY29udHJvbHMgKyBpLAotCQkJCQkg
-ICAgICBjaGlwKSk7CisJaWYgKCFub3BjbSkgeworCQllcnIgPSBzbmRfcGNzcF9jdGxzX2Fk
-ZChjaGlwLCBzbmRfcGNzcF9jb250cm9sc19wY20sCisJCQlBUlJBWV9TSVpFKHNuZF9wY3Nw
-X2NvbnRyb2xzX3BjbSkpOwogCQlpZiAoZXJyIDwgMCkKIAkJCXJldHVybiBlcnI7CiAJfQor
-CWVyciA9IHNuZF9wY3NwX2N0bHNfYWRkKGNoaXAsIHNuZF9wY3NwX2NvbnRyb2xzX3Nwa3Is
-CisJCUFSUkFZX1NJWkUoc25kX3Bjc3BfY29udHJvbHNfc3BrcikpOworCWlmIChlcnIgPCAw
-KQorCQlyZXR1cm4gZXJyOwogCiAJc3RyY3B5KGNhcmQtPm1peGVybmFtZSwgIlBDLVNwZWFr
-ZXIiKTsKIAo=
---------------050900060108010503060707
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------050900060108010503060707--
+Thanks, 
+Shawn.
