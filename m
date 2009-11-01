@@ -1,17 +1,15 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Re: [PATCH] cs4236: detect cs4236+ chip in one pass
-Date: Sun, 1 Nov 2009 14:42:56 +0100
-Message-ID: <20091101144256.d827d9e4.krzysztof.h1@poczta.fm>
-References: <20091101124738.0eb33f92.krzysztof.h1@poczta.fm>
-	<20091101114737.GJ22046@sci.fi>
+From: "Kp, Jeeja" <jeeja.kp@intel.com>
+Subject: Re: question on snd_jack_report
+Date: Sun, 1 Nov 2009 19:54:00 +0530
+Message-ID: <DC9628ADC672424FAECF61709E90EDDE6A24807E@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
-	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 2F64924356
-	for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2009 14:24:25 +0100 (CET)
-In-Reply-To: <20091101114737.GJ22046@sci.fi>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8303824348
+	for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2009 15:24:06 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,37 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>, wim@djo.tudelft.nl, Rene Herman <rene.herman@gmail.com>
+To: Mark Brown  <IMCEAMAILTO-broonie+40opensource+2Ewolfsonmicro+2Ecom@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 1 Nov 2009 13:47:37 +0200
-Ville Syrj=E4l=E4 <syrjala@sci.fi> wrote:
 
-> On Sun, Nov 01, 2009 at 12:47:38PM +0100, Krzysztof Helt wrote:
-> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
-> > =
+When I call snd_jack_report with the status of the jack, am monitoring the /dev/input/eventX (using event.c) for Userspace events when Headset is inserted and I don't see any events even when snd_jack_report() is called. Is there any specific configuration that is required (xorg.config)?
 
+-----Original Message-----
+From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com] 
+Sent: Wednesday, October 21, 2009 6:49 PM
+To: Harsha, Priya
+Cc: alsa-devel@alsa-project.org
+Subject: Re: [alsa-devel] question on snd_jack_report
 
-> > +		if (cport < 0x100 || cport =3D=3D SNDRV_AUTO_PORT) {
-> > +			snd_printk(KERN_ERR "please, specify control port "
-> > +				   "for CS4236+ chips\n");
-> =
+On Wed, Oct 21, 2009 at 06:22:47PM +0530, Harsha, Priya wrote:
 
-> Missing a call to snd_device_free() here.
-> =
+Please fix your MUA to wrap at 80 columns, I have once more reflowed
+your text to fit.
 
-> > +			return -ENODEV;
-> > +		}
-> =
+> When I call snd_jack_report with the status of the jack, from the user
+> user space which parameter should I check in the
+> sys/class/input/input2 to know if the jack is present or not?
 
-
-Right. I'll prepare next patch.
-
-Regards,
-Krzysztof
-
----------------------------------------------------------------------------=
----
-Strrraszny konkurs z Scooby-Doo!
-Wez udzial >> http://link.interia.pl/f2412
+Assuming you're looking to check the presence of a device in the jack
+(rather than the presence of the jack itself) then there's nothing in
+sysfs, you read this information from the device node.  See evtest.c
+(google should show up lots of copies) for sample code doing this.
