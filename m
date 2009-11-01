@@ -1,14 +1,14 @@
 From: "Kp, Jeeja" <jeeja.kp@intel.com>
-Subject: Re: question on snd_jack_report
-Date: Sun, 1 Nov 2009 19:54:00 +0530
-Message-ID: <DC9628ADC672424FAECF61709E90EDDE6A24807E@bgsmsx501.gar.corp.intel.com>
+Subject: FW:  question on snd_jack_report
+Date: Sun, 1 Nov 2009 19:55:12 +0530
+Message-ID: <DC9628ADC672424FAECF61709E90EDDE6A248081@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8303824348
-	for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2009 15:24:06 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 25C242436F
+	for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2009 15:25:18 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -19,9 +19,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown  <IMCEAMAILTO-broonie+40opensource+2Ewolfsonmicro+2Ecom@intel.com>
+To: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
 
 
 When I call snd_jack_report with the status of the jack, am monitoring the /dev/input/eventX (using event.c) for Userspace events when Headset is inserted and I don't see any events even when snd_jack_report() is called. Is there any specific configuration that is required (xorg.config)?
