@@ -1,21 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/5] MFD: twl4030-codec: APLL_INFREQ
- handling in the MFD driver
-Date: Mon, 2 Nov 2009 17:30:35 +0000
-Message-ID: <20091102173035.GC8546@rakim.wolfsonmicro.main>
-References: <1257165295-9352-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1257165295-9352-2-git-send-email-peter.ujfalusi@nokia.com>
-	<1257165295-9352-3-git-send-email-peter.ujfalusi@nokia.com>
-	<1257165295-9352-4-git-send-email-peter.ujfalusi@nokia.com>
+From: "Kp, Jeeja" <jeeja.kp@intel.com>
+Subject: question on snd_jack_report
+Date: Mon, 2 Nov 2009 23:08:09 +0530
+Message-ID: <DC9628ADC672424FAECF61709E90EDDE6A2486FB@bgsmsx501.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 107FF24394
-	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 18:30:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1257165295-9352-4-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id B616F2413B
+	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 18:39:34 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,35 +19,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, sameo@linux.intel.com, linux-kernel@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 02, 2009 at 02:34:53PM +0200, Peter Ujfalusi wrote:
-> Move the APLL_CTL register configuration to the twl4030-codec
-> MFD driver.
-> Provide also a function for childs to query the audio_mclk
-> frequency.
 
-This all looks good to me, some nitpicks below.
 
-> +unsigned int twl4030_codec_get_mclk(void)
-> +{
-> +	struct twl4030_codec *codec = platform_get_drvdata(twl4030_codec_dev);
-> +
-> +	return codec->audio_mclk;
-> +}
-> +EXPORT_SYMBOL_GPL(twl4030_codec_get_mclk);
+>What is event.c?  If this is some part of the X.Org server then you'd be
+>better asking the X folks about how to configure and use the X server,
+>it rewraps the data it's getting from the kernel.
 
-As I said in my followup to patch 5 this feels like it should have a
-parameter to specify the twl4030 though in practical systems it won't
-matter.
 
-> +	if (!(pdata->audio_mclk == 19200000 ||
-> +	      pdata->audio_mclk == 26000000 ||
-> +	      pdata->audio_mclk == 38400000)) {
-> +		dev_err(&pdev->dev, "Invalid audio_mclk\n");
-> +		return -EINVAL;
-> +	}
-
-Might flow more naturally with a switch statement?
+Sorry,it's evtest.c( this program polls /dev/input/eventX and prints
+the events). Basically when a Headphone is inserted into the jack, driver
+send snd_jack_report() with the status of present to ALSA. When the
+respective /dev/input/event5 is read from userspace, it must print the
+events. I don't see any events when snd_jack_report() is called.
