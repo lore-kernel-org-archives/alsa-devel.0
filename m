@@ -1,19 +1,14 @@
-From: Robert Hancock <hancockrwd@gmail.com>
-Subject: Re: VIA VT1828S hda_intel errors
-Date: Sun, 1 Nov 2009 14:03:18 -0600
-Message-ID: <51f3faa70911011203x306dba43s4ce984f20f773144@mail.gmail.com>
-References: <4AEA3BCB.5040202@gmail.com> <s5hws2dxdts.wl%tiwai@suse.de>
+From: Dan Chen <crimsunkg@yahoo.com>
+Subject: [PATCH] hda: Use quirk mask for Dell Inspiron
+	Mini9/Vostro A90
+Date: Sun, 1 Nov 2009 16:00:48 -0800 (PST)
+Message-ID: <287656.16150.qm@web112611.mail.gq1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="0-1217861429-1257120048=:16150"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
-	[209.85.211.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72C7824435
-	for <alsa-devel@alsa-project.org>; Sun,  1 Nov 2009 21:03:20 +0100 (CET)
-Received: by ywh28 with SMTP id 28so4053569ywh.16
-	for <alsa-devel@alsa-project.org>; Sun, 01 Nov 2009 12:03:19 -0800 (PST)
-In-Reply-To: <s5hws2dxdts.wl%tiwai@suse.de>
+Received: from web112611.mail.gq1.yahoo.com (web112611.mail.gq1.yahoo.com
+	[98.137.27.191]) by alsa0.perex.cz (Postfix) with SMTP id DC1AF24564
+	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 01:00:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,66 +19,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-Devel <alsa-devel@alsa-project.org>, LydiaWang@viatech.com.cn, Logan Li <loganli@viatech.com.cn>, Harald Welte <HaraldWelte@viatech.com>
+Cc: crimsun@ubuntu.com, ALSA devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 30, 2009 at 6:31 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 29 Oct 2009 19:05:15 -0600,
-> Robert Hancock wrote:
->>
->> I've been using the VT1828S codec support from ALSA git for the last few
->> weeks. It seems to work fine, but there are some problems showing up in
->> dmesg:
->>
->> Oct 25 20:46:14 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:683: No
->> response from codec, disabling MSI: last cmd=3D0x02af0900
->> Oct 25 20:46:15 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:698:
->> azx_get_response timeout, switching to polling mode: last cmd=3D0x02af09=
-00
->
-> Note that this isn't always a severe problem. =A0If polling mode works
-> (you don't see the similar errors after this), it means the IRQ isn't
-> properly generated at verb handling.
->
->> It seems like the cmd isn't always the same, previously it was
->> 0x024f0c00. Is there something bad about this command that could be
->> causing the response timeout?
->
-> Hm, both aren't really same, pointing to different widgets. =A0So,
-> it looks like a generic problem in the codec communication on your
-> board.
+--0-1217861429-1257120048=:16150
+Content-Type: text/plain; charset=us-ascii
 
-Something VIA guys should look into?
+Hi,
 
->
->> Also, disabling MSI for one occurrence of
->> this seems a bit paranoid..
->
-> MSI was unstable for long time, so disabling it was a sane option :)
-> Now it gets better, so it should be a second option.
-> I changed the code now.
->
->> Also saw one of these:
->>
->> Oct 26 21:13:20 newcastle kernel: hda-intel: IRQ timing workaround is
->> activated for card #0. Suggest a bigger bdl_pos_adj.
->>
->> and PulseAudio also complained:
->>
->> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: ALSA woke us
->> up to write new data to the device, but there was actually nothing to wr=
-ite!
->> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: Most likely
->> this is a bug in the ALSA driver 'snd_hda_intel'. Please report this
->> issue to the ALSA developers.
->> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: We were woken
->> up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0
->> or another value < min_avail.
->
-> Well, this is the case where the hardware reports bad position data.
-> This is usually a hardware bug, and hard to fix properly. =A0We have some
-> mechanism to correct or take back to the last position. =A0This should
-> usually work, but apparently not in your case...
+Attached please find a patch against current sound-2.6 HEAD that uses a quirk
+mask for Dell Inspiron Mini9/Vostro A90.
 
-Well, it looks like PulseAudio complained before the IRQ timing
-workaround was activated (about 20 hours earlier)..
+Thanks,
+Dan
+
+
+
+      
+--0-1217861429-1257120048=:16150
+Content-Type: application/octet-stream; name="0001-ALSA-hda-Use-quirk-mask-for-Dell-Inspiron-Mini9-Vost.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="0001-ALSA-hda-Use-quirk-mask-for-Dell-Inspiron-Mini9-Vost.patch"
+
+RnJvbSBiY2QyNzQ4NGJhZDhjNzYyZjEwNWZmZGIwOTI2NTA2MzJjODM4NGRl
+IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVu
+IDxjcmltc3VuQHVidW50dS5jb20+CkRhdGU6IFN1biwgMSBOb3YgMjAwOSAx
+ODozMjoyOSAtMDUwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6IGhkYTogVXNl
+IHF1aXJrIG1hc2sgZm9yIERlbGwgSW5zcGlyb24gTWluaTkvVm9zdHJvIEE5
+MCB1c2luZyBBTEMyNjgKCkJ1Z0xpbms6IGh0dHBzOi8vYnVncy5sYXVuY2hw
+YWQubmV0L2J1Z3MvMzY4NjI5CgpXZSBzaG91bGQgdXNlIGEgcXVpcmsgbWFz
+ayBmb3IgdGhlc2UgRGVsbCBJbnNwaXJvbiBNaW5pOXMgYW5kIFZvc3RybwpB
+OTBzLCBhcyB0aGUgbW9kZWw9ZGVsbCBxdWlyayBhcHBlYXJzIHRvIGVuYWJs
+ZSBhdWRpbyBvbiB0aGVtLgoKU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hl
+biA8Y3JpbXN1bkB1YnVudHUuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0
+Y2hfcmVhbHRlay5jIHwgICAgMyArKy0KIDEgZmlsZXMgY2hhbmdlZCwgMiBp
+bnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Nv
+dW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9w
+YXRjaF9yZWFsdGVrLmMKaW5kZXggZTAxYjRiMS4uODExNzc2NCAxMDA2NDQK
+LS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291
+bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTEyNTk0LDcgKzEyNTk0
+LDggQEAgc3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2OF9jZmdf
+dGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDEwMjUsIDB4MDE1YiwgIkFj
+ZXIgQXNwaXJlIE9uZSIsCiAJCQkJCQlBTEMyNjhfQUNFUl9BU1BJUkVfT05F
+KSwKIAlTTkRfUENJX1FVSVJLKDB4MTAyOCwgMHgwMjUzLCAiRGVsbCBPRU0i
+LCBBTEMyNjhfREVMTCksCi0JU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDJi
+MCwgIkRlbGwgSW5zcGlyb24gTWluaTkiLCBBTEMyNjhfREVMTCksCisJU05E
+X1BDSV9RVUlSS19NQVNLKDB4MTAyOCwgMHhmZmYwLCAweDAyYjAsCisJCQki
+RGVsbCBJbnNwaXJvbiBNaW5pOS9Wb3N0cm8gQTkwIiwgQUxDMjY4X0RFTEwp
+LAogCS8qIGFsbW9zdCBjb21wYXRpYmxlIHdpdGggdG9zaGliYSBidXQgd2l0
+aCBvcHRpb25hbCBkaWdpdGFsIG91dHM7CiAJICogYXV0by1wcm9iaW5nIHNl
+ZW1zIHdvcmtpbmcgZmluZQogCSAqLwotLSAKMS42LjMuMwoK
+
+--0-1217861429-1257120048=:16150
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0-1217861429-1257120048=:16150--
