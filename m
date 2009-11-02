@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: question on snd_jack_report
-Date: Mon, 2 Nov 2009 18:01:21 +0000
-Message-ID: <20091102180121.GA9501@rakim.wolfsonmicro.main>
-References: <DC9628ADC672424FAECF61709E90EDDE6A2486FB@bgsmsx501.gar.corp.intel.com>
+From: John Lindgren <john.lindgren@tds.net>
+Subject: Re: [PATCH] alsa-lib: snd_device_name_hint misbehaving
+Date: Mon, 02 Nov 2009 13:12:21 -0500
+Message-ID: <1257185541.1937.17.camel@dark-knight>
+References: <1257128586.16837.29.camel@dark-knight>
+	<alpine.LNX.2.00.0911020718220.5500@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 33FC42434F
-	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 19:01:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <DC9628ADC672424FAECF61709E90EDDE6A2486FB@bgsmsx501.gar.corp.intel.com>
+Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
+	[209.85.211.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FFE9243B2
+	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 19:12:24 +0100 (CET)
+Received: by ywh28 with SMTP id 28so4777336ywh.16
+	for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2009 10:12:24 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.0911020718220.5500@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Kp, Jeeja" <jeeja.kp@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 02, 2009 at 11:08:09PM +0530, Kp, Jeeja wrote:
+On Mon, 2009-11-02 at 07:21 +0100, Jaroslav Kysela wrote:
+> On Sun, 1 Nov 2009, John Lindgren wrote:
+> 
+> > * Remove erroneous snd_config_delete calls that cause later calls to
+> > snd_pcm_open to fail.
+> 
+> It does not look good. Have you checked with valgrind if there are no 
+> memory leaks?
 
-> Sorry,it's evtest.c( this program polls /dev/input/eventX and prints
-> the events). Basically when a Headphone is inserted into the jack, driver
-> send snd_jack_report() with the status of present to ALSA. When the
-> respective /dev/input/event5 is read from userspace, it must print the
-> events. I don't see any events when snd_jack_report() is called.
+You're making the same mistake that the original author of the code
+made.  snd_config_delete is not a call to free memory; it is a call to
+remove sections of the loaded configuration.  The configuration nodes
+that were being passed to snd_config_delete were returned by
+snd_config_search, which returns direct pointers to the actual nodes in
+the configuration.  It does no memory duplication.
 
-Is there actually a state transition occurring?  You will only see an
-event generated when the status of the jack changes so if the headphone
-is repeatedly reported as present but never reported as absent then
-you'll never see anything in user space.
+> Please, split your changes to single patches. Thanks.
+
+I will do so when I have the time to learn Git a little better.  (I
+normally use Mercurial).
+
+John Lindgren
