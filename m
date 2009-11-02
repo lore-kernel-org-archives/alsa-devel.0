@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound/soc/codecs: Add support for
-	the	wm8727 DAC.
-Date: Mon, 2 Nov 2009 12:09:42 +0000
-Message-ID: <20091102120942.GI29351@sirena.org.uk>
-References: <91f916b90911020354s7f22d0a8pba2ac82525663d8e@mail.gmail.com>
+From: Lars Zobbe <fedesensfar@gmail.com>
+Subject: snd-hdsp driver error?
+Date: Mon, 2 Nov 2009 13:33:19 +0100
+Message-ID: <933ed0910911020433j59c4907q94ee073e5f09e328@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 590D6103805
-	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 13:09:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <91f916b90911020354s7f22d0a8pba2ac82525663d8e@mail.gmail.com>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id E42A6103873
+	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 13:33:20 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 3so981306eyh.16
+	for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2009 04:33:19 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,92 +20,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Neil Jones <neiljay@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 02, 2009 at 11:54:15AM +0000, Neil Jones wrote:
+Hi.
 
-Thanks for this - there's a few relatively minor issues below.
+Talking to one of the pulseaudio developers (*Colin Guthrie*) about a
+problem with pulseaudio loading modules and my sound card (RME HDSP 9632), I
+was adviced to inform you about the problem.
 
-Please remember to CC maintainers on patches, this helps avoid them
-getting missed on busy mailing lists.  
+I'm on ubuntu 9.10, 64bit, kernel 2.6.31 with an amd64 x2 3800+ processor.
 
->  sound/soc/codecs/Makefile |    5 +-
->  sound/soc/codecs/wm8727.c |  120
-> +++++++++++++++++++++++++++++++++++++++++++++
 
-Your MUA has word wrapped your post - this is going to upset patch.
-There are some hints on MUA configuration in Documentation/email-clients.txt
-which might help.  If all else fails an attachment (without a copy of
-the patch in the body of the mail) usually works.
+Symptoms are:
+Can only make pulseaudio load modules with the deprecated load-module
+module-detect command, module-udev-detect doesn't detect anything (no sound
+- only null sink output in padevchooser).
+I get terrible stuttering.
+I can remove pulseaudio and make things work, more or less. However, that
+leaves me without software mixing and apps fighting for the rights to make
+sound. And more inconveniences (fx. no volume-control).
+I can play sound from audacity without stuttering by choosing the cardname
+directly in output HDSP, not ALSA, not pulseaudio.
 
-> @@ -217,6 +221,6 @@ config SND_SOC_WM9712
->  config SND_SOC_WM9713
->      tristate
-> 
-> -# Amp
->  config SND_SOC_MAX9877
->      tristate
-> +
 
-This is an unrelated change which shouldn't be here (and will actually
-generate a conflict with current code since there was another amplifier
-driver added).
+When trying to run alsa-info.sh I get a lot of "not found" errors. So you'll
+get some manual info (they might have moved som files around in ubuntu
+9.10).
 
-> @@ -44,7 +45,6 @@ snd-soc-wm9705-objs := wm9705.o
->  snd-soc-wm9712-objs := wm9712.o
->  snd-soc-wm9713-objs := wm9713.o
->  snd-soc-wm-hubs-objs := wm_hubs.o
-> -
->  # Amp
->  snd-soc-max9877-objs := max9877.o
+This is part of my syslog during a boot. (I did the formatting to bold).
 
-Ditto, but no conflict this time.
+Nov  2 10:57:32 lars-desktop pulseaudio[1524]: module.c: module-detect is
+deprecated: Please use module-udev-detect instead of module-detect!
+Nov  2 10:57:37 lars-desktop pulseaudio[1524]: ratelimit.c: 27 events
+suppressed
+Nov  2 10:57:39 lars-desktop pulseaudio[1612]: module.c: module-detect is
+deprecated: Please use module-udev-detect instead of module-detect!
+Nov  2 10:57:44 lars-desktop pulseaudio[1612]: ratelimit.c: 23 events
+suppressed
+Nov  2 10:57:44 lars-desktop pulseaudio[1612]: alsa-sink.c: ALSA woke us up
+to write new data to the device, but there was actually nothing to write!
+Nov  2 10:57:44 lars-desktop pulseaudio[1612]: alsa-sink.c: *Most likely
+this is a bug in the ALSA driver 'snd_hdsp'. Please report this issue to the
+ALSA developers.*
+Nov  2 10:57:44 lars-desktop pulseaudio[1612]: alsa-sink.c: We were woken up
+with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or
+another value < min_avail.
+Nov  2 10:57:49 lars-desktop pulseaudio[1612]: ratelimit.c: 99 events
+suppressed
 
-> @@ -94,6 +95,6 @@ obj-$(CONFIG_SND_SOC_WM9705)    += snd-soc-wm9705.o
->  obj-$(CONFIG_SND_SOC_WM9712)    += snd-soc-wm9712.o
->  obj-$(CONFIG_SND_SOC_WM9713)    += snd-soc-wm9713.o
->  obj-$(CONFIG_SND_SOC_WM_HUBS)    += snd-soc-wm-hubs.o
-> -
->  # Amp
->  obj-$(CONFIG_SND_SOC_MAX9877)    += snd-soc-max9877.o
-> +
+Later if I try to play audio I get terrible skipping or stuttering and my
+syslog (in less than a minute) writes:
+Nov  2 11:55:16 lars-desktop pulseaudio[1612]: ratelimit.c: 16 events
+suppressed
+Nov  2 11:55:21 lars-desktop pulseaudio[1612]: ratelimit.c: 34 events
+suppressed
+Nov  2 11:55:26 lars-desktop pulseaudio[1612]: ratelimit.c: 70 events
+suppressed
+Nov  2 11:55:31 lars-desktop pulseaudio[1612]: ratelimit.c: 29 events
+suppressed
+Nov  2 11:55:36 lars-desktop pulseaudio[1612]: ratelimit.c: 43 events
+suppressed
+Nov  2 11:55:41 lars-desktop pulseaudio[1612]: ratelimit.c: 161 events
+suppressed
+Nov  2 11:55:46 lars-desktop pulseaudio[1612]: ratelimit.c: 28 events
+suppressed
+Nov  2 11:55:51 lars-desktop pulseaudio[1612]: ratelimit.c: 18 events
+suppressed
+Nov  2 11:55:56 lars-desktop pulseaudio[1612]: ratelimit.c: 16 events
+suppressed
 
-Ditto.
+Here's the relevant part (concerning my sound card) of lspci -vvv
 
-> +static int wm8727_soc_probe(struct platform_device *pdev)
-> +{
-> +    struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-> +    struct snd_soc_codec *codec;
-> +    int ret = 0;
-> +
-> +    codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
-> +    if (codec == NULL)
-> +        return -ENOMEM;
+02:09.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall DSP
+(rev 9a)
+    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+Stepping- SERR- FastB2B- DisINTx-
+    Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR- INTx-
+    Latency: 255
+    Interrupt: pin A routed to IRQ 19
+    Region 0: Memory at fdff0000 (32-bit, non-prefetchable) [size=64K]
+    Kernel driver in use: RME Hammerfall DSP
+    Kernel modules: snd-hdsp
 
-You might want to run your patch through scripts/checkpatch.pl - I think
-there's some indentation issues (I'm not 100% sure that this isn't your
-MUA mangling things, though).
+And:
+lars@lars-desktop:~$ aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: DSP [Hammerfall DSP], device 0: RME Hammerfall HDSP 9632 [RME
+Hammerfall HDSP 9632]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
 
-> +static int __init wm8727_init(void)
-> +{
-> +    return snd_soc_register_dai(&wm8727_dai);
-> +}
-> +module_init(wm8727_init);
-> +
-> +static void __exit wm8727_exit(void)
-> +{
-> +    snd_soc_unregister_dai(&wm8727_dai);
-> +}
-> +module_exit(wm8727_exit);
 
-This should be converted to register a platform driver for the device
-and do the DAI registration.  Some older drivers don't do this but it
-will be required going forward for newer framework features so it's
-mandatory for new drivers.
+lars@lars-desktop:~$ cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.21.
+Compiled on Oct 15 2009 for kernel 2.6.31-14-generic (SMP).
 
-See wm8350 for an example of registering off a platform driver probe,
-it's just a case of calling the register/unregister functions from the
-platform driver probe/remove functions and assigning dai->dev to be the
-struct device for the platform driver before you register the DAI.
+lars@lars-desktop:~$ cat /proc/asound/cards
+ 0 [DSP            ]: H-DSP - Hammerfall DSP
+                      RME Hammerfall HDSP 9632 at 0xfdff0000, irq 19
+
+
+lars@lars-desktop:~$ cat /proc/asound/modules
+ 0 snd_hdsp
+
+I don't have .asound.conf files.
+
+lars@lars-desktop:~$ hdsploader
+hdsploader - firmware loader for RME Hammerfall DSP cards
+Looking for HDSP + Multiface or Digiface cards :
+Card 0 : RME Hammerfall HDSP 9632 at 0xfdff0000, irq 19
+
+And of course. My computer makes no sound if I don't load the hdspmixer at
+startup. I guess that's just normal for this card though.
+
+Please let me know, if you need more info. I really hope you can help out
+here. And that this might help you to.
+
+Thanks for the great work you do. Greetings.
+Lars Zobbe.
