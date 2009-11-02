@@ -1,22 +1,18 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [PATCH] ASoC: au1x: convert to platform drivers.
-Date: Mon, 2 Nov 2009 12:59:20 +0100
-Message-ID: <f861ec6f0911020359w1745d1c4h137ce098df1959f1@mail.gmail.com>
-References: <1257016508-13195-1-git-send-email-manuel.lauss@gmail.com>
-	<20091102113247.GE29351@sirena.org.uk>
-	<f861ec6f0911020339x3816f6c0oe8ec935800f9f56a@mail.gmail.com>
-	<20091102115354.GG29351@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] sound/soc/codecs: Add support for
+	the	wm8727 DAC.
+Date: Mon, 2 Nov 2009 12:09:42 +0000
+Message-ID: <20091102120942.GI29351@sirena.org.uk>
+References: <91f916b90911020354s7f22d0a8pba2ac82525663d8e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BE8810382C
-	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 12:59:23 +0100 (CET)
-Received: by bwz9 with SMTP id 9so19926478bwz.32
-	for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2009 03:59:21 -0800 (PST)
-In-Reply-To: <20091102115354.GG29351@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 590D6103805
+	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 13:09:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <91f916b90911020354s7f22d0a8pba2ac82525663d8e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,28 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
+To: Neil Jones <neiljay@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 2, 2009 at 12:53 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Nov 02, 2009 at 12:39:11PM +0100, Manuel Lauss wrote:
->
->> Great, thanks. =A0I'll add you to all other asoc related patches in the =
-future.
->> Off-topic: I'm not really up-to-date on ASoC; how is multi-device support
->> coming along? =A0I received a new system which has 2 independet audio
->> systems, one with AC97 WM9715 + touchscreen, the other I2S. =A0Some day
->> I'd like to support the touch interface and I2S at the same time ;-)
->
-> If they're two completely unrelated audio subsystems then it might
-> actually work at the minute if you register two ASoC devices with
-> different device numbers, I've had reports that people are succesfully
-> doing this.
+On Mon, Nov 02, 2009 at 11:54:15AM +0000, Neil Jones wrote:
 
-They're independent of each other, attached to 2 of the 4 PSCs.  I'll try
-the most obvious path first.
+Thanks for this - there's a few relatively minor issues below.
 
-Thanks!
-     Manuel Lauss
+Please remember to CC maintainers on patches, this helps avoid them
+getting missed on busy mailing lists.  
+
+>  sound/soc/codecs/Makefile |    5 +-
+>  sound/soc/codecs/wm8727.c |  120
+> +++++++++++++++++++++++++++++++++++++++++++++
+
+Your MUA has word wrapped your post - this is going to upset patch.
+There are some hints on MUA configuration in Documentation/email-clients.txt
+which might help.  If all else fails an attachment (without a copy of
+the patch in the body of the mail) usually works.
+
+> @@ -217,6 +221,6 @@ config SND_SOC_WM9712
+>  config SND_SOC_WM9713
+>      tristate
+> 
+> -# Amp
+>  config SND_SOC_MAX9877
+>      tristate
+> +
+
+This is an unrelated change which shouldn't be here (and will actually
+generate a conflict with current code since there was another amplifier
+driver added).
+
+> @@ -44,7 +45,6 @@ snd-soc-wm9705-objs := wm9705.o
+>  snd-soc-wm9712-objs := wm9712.o
+>  snd-soc-wm9713-objs := wm9713.o
+>  snd-soc-wm-hubs-objs := wm_hubs.o
+> -
+>  # Amp
+>  snd-soc-max9877-objs := max9877.o
+
+Ditto, but no conflict this time.
+
+> @@ -94,6 +95,6 @@ obj-$(CONFIG_SND_SOC_WM9705)    += snd-soc-wm9705.o
+>  obj-$(CONFIG_SND_SOC_WM9712)    += snd-soc-wm9712.o
+>  obj-$(CONFIG_SND_SOC_WM9713)    += snd-soc-wm9713.o
+>  obj-$(CONFIG_SND_SOC_WM_HUBS)    += snd-soc-wm-hubs.o
+> -
+>  # Amp
+>  obj-$(CONFIG_SND_SOC_MAX9877)    += snd-soc-max9877.o
+> +
+
+Ditto.
+
+> +static int wm8727_soc_probe(struct platform_device *pdev)
+> +{
+> +    struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+> +    struct snd_soc_codec *codec;
+> +    int ret = 0;
+> +
+> +    codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+> +    if (codec == NULL)
+> +        return -ENOMEM;
+
+You might want to run your patch through scripts/checkpatch.pl - I think
+there's some indentation issues (I'm not 100% sure that this isn't your
+MUA mangling things, though).
+
+> +static int __init wm8727_init(void)
+> +{
+> +    return snd_soc_register_dai(&wm8727_dai);
+> +}
+> +module_init(wm8727_init);
+> +
+> +static void __exit wm8727_exit(void)
+> +{
+> +    snd_soc_unregister_dai(&wm8727_dai);
+> +}
+> +module_exit(wm8727_exit);
+
+This should be converted to register a platform driver for the device
+and do the DAI registration.  Some older drivers don't do this but it
+will be required going forward for newer framework features so it's
+mandatory for new drivers.
+
+See wm8350 for an example of registering off a platform driver probe,
+it's just a case of calling the register/unregister functions from the
+platform driver probe/remove functions and assigning dai->dev to be the
+struct device for the platform driver before you register the DAI.
