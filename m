@@ -1,22 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] alsa-lib: snd_device_name_hint misbehaving
-Date: Tue, 3 Nov 2009 16:48:13 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0911031645400.5500@eeebox2.perex-int.cz>
-References: <1257128586.16837.29.camel@dark-knight>
-	<s5hy6mpvzus.wl%tiwai@suse.de>
-	<1257172994.2856.2.camel@dark-knight>
-	<s5hljipvuvd.wl%tiwai@suse.de>
-	<1257184700.1937.8.camel@dark-knight>
-	<s5hocnk9j9t.wl%tiwai@suse.de> <s5hhbtc9gr4.wl%tiwai@suse.de>
-	<1257262091.12479.19.camel@dark-knight>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH] cs4236: detect chip in one pass
+Date: Tue, 3 Nov 2009 20:30:25 +0100
+Message-ID: <20091103203025.e7c93616.krzysztof.h1@poczta.fm>
+References: <20091101165038.e3f5b0e9.krzysztof.h1@poczta.fm>
+	<s5hiqdtxm6t.wl%tiwai@suse.de>
+	<20091102221306.f95800ed.krzysztof.h1@poczta.fm>
+	<s5hzl749m88.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 56FB81038FA
-	for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2009 16:48:14 +0100 (CET)
-In-Reply-To: <1257262091.12479.19.camel@dark-knight>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37CA2103811
+	for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2009 20:12:17 +0100 (CET)
+In-Reply-To: <s5hzl749m88.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,27 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Lindgren <john.lindgren@tds.net>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>, wim@djo.tudelft.nl, Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Nov 2009, John Lindgren wrote:
+On Tue, 03 Nov 2009 07:05:43 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> On Tue, 2009-11-03 at 09:03 +0100, Takashi Iwai wrote:
->> Since no problem is found with valgrind, I applied the patch to git tree
->> now.
->
-> Thanks.  I compiled the git version and the problem is fixed. Here are
-> the other changes, split into four separate patches:
+> At Mon, 2 Nov 2009 22:13:06 +0100,
+> Krzysztof Helt wrote:
+> > 
+> > These lines now inside if (CS4236B) clause. If one removes this condition, 
+> > the CS4236B cannot be fully initialized and the CS4236 controls do not work 
+> > (some of them require control port access).
+> 
+> Hm?  I mean to have code like
+> 
+> 	if (!(chip->hardware & WSS_HW_CS4236B_MASK)) {
+> 		snd_printd("chip is not CS4236+, hardware=0x%x\n",
+> 			   chip->hardware);
+> 	 	*rchip = chip;
+> 	 	return 0;
+> 	}
+> 
 
-I applied your changes. But please ... send one patch in one e-mail in 
-future to reduce our work with patch importing. Also, it makes sense to 
-have one-line subject for patch and Signed-off-by: line in patches.
+I see. It is only for formatting purpose. I'll change.
 
- 				Thanks,
- 					Jaroslav
+Regards,
+Krzysztof
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+-----------------------------------------------------------------------------
+Dzwonki na telefon!
+Pobierz >> http://link.interia.pl/f2411
