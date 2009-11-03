@@ -1,17 +1,21 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: Re: [PATCH] cs4236: detect chip in one pass
-Date: Mon, 2 Nov 2009 22:13:06 +0100
-Message-ID: <20091102221306.f95800ed.krzysztof.h1@poczta.fm>
-References: <20091101165038.e3f5b0e9.krzysztof.h1@poczta.fm>
-	<s5hiqdtxm6t.wl%tiwai@suse.de>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: Re: VIA VT1828S hda_intel errors
+Date: Mon, 2 Nov 2009 22:55:05 -0600
+Message-ID: <51f3faa70911022055s81f633du71fd10d2ef109e58@mail.gmail.com>
+References: <4AEA3BCB.5040202@gmail.com> <s5hws2dxdts.wl%tiwai@suse.de>
+	<51f3faa70911011203x306dba43s4ce984f20f773144@mail.gmail.com>
+	<s5hfx8xxluu.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
-	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id C9EC8243B3
-	for <alsa-devel@alsa-project.org>; Mon,  2 Nov 2009 21:55:54 +0100 (CET)
-In-Reply-To: <s5hiqdtxm6t.wl%tiwai@suse.de>
+Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
+	[209.85.223.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id 916CA1037EE
+	for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2009 05:55:06 +0100 (CET)
+Received: by iwn36 with SMTP id 36so3850577iwn.24
+	for <alsa-devel@alsa-project.org>; Mon, 02 Nov 2009 20:55:05 -0800 (PST)
+In-Reply-To: <s5hfx8xxluu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,61 +26,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@alsa-project.org>, wim@djo.tudelft.nl, Rene Herman <rene.herman@gmail.com>
+Cc: Alsa-Devel <alsa-devel@alsa-project.org>, LydiaWang@viatech.com.cn, Logan Li <loganli@viatech.com.cn>, Harald Welte <HaraldWelte@viatech.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 02 Nov 2009 11:20:26 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+On Mon, Nov 2, 2009 at 4:27 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Sun, 1 Nov 2009 14:03:18 -0600,
+> Robert Hancock wrote:
+>>
+>> On Fri, Oct 30, 2009 at 6:31 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Thu, 29 Oct 2009 19:05:15 -0600,
+>> > Robert Hancock wrote:
+>> >>
+>> >> I've been using the VT1828S codec support from ALSA git for the last =
+few
+>> >> weeks. It seems to work fine, but there are some problems showing up =
+in
+>> >> dmesg:
+>> >>
+>> >> Oct 25 20:46:14 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:683:=
+ No
+>> >> response from codec, disabling MSI: last cmd=3D0x02af0900
+>> >> Oct 25 20:46:15 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:698:
+>> >> azx_get_response timeout, switching to polling mode: last cmd=3D0x02a=
+f0900
+>> >
+>> > Note that this isn't always a severe problem. =A0If polling mode works
+>> > (you don't see the similar errors after this), it means the IRQ isn't
+>> > properly generated at verb handling.
+>> >
+>> >> It seems like the cmd isn't always the same, previously it was
+>> >> 0x024f0c00. Is there something bad about this command that could be
+>> >> causing the response timeout?
+>> >
+>> > Hm, both aren't really same, pointing to different widgets. =A0So,
+>> > it looks like a generic problem in the codec communication on your
+>> > board.
+>>
+>> Something VIA guys should look into?
+>
+> Hopefully. =A0This is a bit hard problem to track, though...
+>
+>> >> Also, disabling MSI for one occurrence of
+>> >> this seems a bit paranoid..
+>> >
+>> > MSI was unstable for long time, so disabling it was a sane option :)
+>> > Now it gets better, so it should be a second option.
+>> > I changed the code now.
+>> >
+>> >> Also saw one of these:
+>> >>
+>> >> Oct 26 21:13:20 newcastle kernel: hda-intel: IRQ timing workaround is
+>> >> activated for card #0. Suggest a bigger bdl_pos_adj.
+>> >>
+>> >> and PulseAudio also complained:
+>> >>
+>> >> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: ALSA woke us
+>> >> up to write new data to the device, but there was actually nothing to=
+ write!
+>> >> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: Most likely
+>> >> this is a bug in the ALSA driver 'snd_hda_intel'. Please report this
+>> >> issue to the ALSA developers.
+>> >> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: We were wok=
+en
+>> >> up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0
+>> >> or another value < min_avail.
+>> >
+>> > Well, this is the case where the hardware reports bad position data.
+>> > This is usually a hardware bug, and hard to fix properly. =A0We have s=
+ome
+>> > mechanism to correct or take back to the last position. =A0This should
+>> > usually work, but apparently not in your case...
+>>
+>> Well, it looks like PulseAudio complained before the IRQ timing
+>> workaround was activated (about 20 hours earlier)..
+>
+> Then try to pass bdl_pos_adj=3D0 option to snd-hda-intel module.
+> The PA complaining still present?
 
-> At Sun, 1 Nov 2009 16:50:38 +0100,
-> Krzysztof Helt wrote:
-> > 
-> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
-> > 
-> > The cs4236 was two step detection with call to the snd_wss_free()
-> > between two steps. The snd_wss_free() did not free a sound device
-> > created in the snd_wss_create(). This caused an OOPS during module
-> > removal as the same sound device was released twice. The same OOPS
-> > happened if the cs4236 module loading failed.
-> > 
-> > Fix this by adapting the snd_cs4236_create() to correctly work with
-> > chips less capable then cs4236. The snd_cs4236_create() behaves the
-> > same as the snd_wss_create() if the chip is less capable than the cs4236.
-> > 
-> > Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
-> > ---
-> > This is the second version of the patch with added snd_device_free() call
-> > in error path.
-> 
-> Thanks.  The change looks good, but...
-> 
-> > @@ -281,83 +285,89 @@ int snd_cs4236_create(struct snd_card *card,
-> ...
-> >  	err = snd_wss_create(card, port, cport,
-> >  			     irq, dma1, dma2, hardware, hwshare, &chip);
-> >  	if (err < 0)
-> >  		return err;
-> >  
-> > -	if (!(chip->hardware & WSS_HW_CS4236B_MASK)) {
-> > -		snd_printk(KERN_ERR "CS4236+: MODE3 and extended registers "
-> > -			   "not available, hardware=0x%x\n", chip->hardware);
-> > -		snd_device_free(card, chip);
-> > -		return -ENODEV;
-> 
-> I'd just return 0 here instead of error (with *rchip = chip, of course).
-> Then the code flow gets simpler and the patch becomes smaller.
-> 
+With bdl_pos_adj=3D0, so far no complaints from PulseAudio after some
+hours of audio playing.. I'll keep monitoring it.
 
-These lines now inside if (CS4236B) clause. If one removes this condition, 
-the CS4236B cannot be fully initialized and the CS4236 controls do not work 
-(some of them require control port access).
-
-If a driver does not want to use full capabilities of the CS4236B due to lack of 
-the control port, it should force compatible codec type which does not require
-the control port (e.g. CS4232).
-
-Regards,
-Krzysztof
-
-Tanie rozmowy telefoniczne!
-Sprawdz >> http://link.interia.pl/f2410
+Actually there's been no codec response timeout errors either since
+making that change, though I don't know if it's just by luck.. doesn't
+seem like it should be related.
