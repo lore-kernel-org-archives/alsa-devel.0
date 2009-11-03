@@ -1,24 +1,22 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [RFC PATCH 2/3] MIPS: Alchemy: DB1200 AC97+I2S
-	audio support.
-Date: Tue, 3 Nov 2009 16:34:37 +0100
-Message-ID: <f861ec6f0911030734x3da489d2n1ccb53ed9ee0c21@mail.gmail.com>
-References: <1257193305-29996-1-git-send-email-manuel.lauss@gmail.com>
-	<1257193305-29996-2-git-send-email-manuel.lauss@gmail.com>
-	<20091103153040.GC1742@linux-mips.org>
-	<f861ec6f0911030730k53b2b921kddc8c67266846af2@mail.gmail.com>
-	<20091103153518.GA5999@linux-mips.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] alsa-lib: snd_device_name_hint misbehaving
+Date: Tue, 3 Nov 2009 16:48:13 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0911031645400.5500@eeebox2.perex-int.cz>
+References: <1257128586.16837.29.camel@dark-knight>
+	<s5hy6mpvzus.wl%tiwai@suse.de>
+	<1257172994.2856.2.camel@dark-knight>
+	<s5hljipvuvd.wl%tiwai@suse.de>
+	<1257184700.1937.8.camel@dark-knight>
+	<s5hocnk9j9t.wl%tiwai@suse.de> <s5hhbtc9gr4.wl%tiwai@suse.de>
+	<1257262091.12479.19.camel@dark-knight>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77A79103906
-	for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2009 16:34:39 +0100 (CET)
-Received: by bwz9 with SMTP id 9so24212027bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2009 07:34:38 -0800 (PST)
-In-Reply-To: <20091103153518.GA5999@linux-mips.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 56FB81038FA
+	for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2009 16:48:14 +0100 (CET)
+In-Reply-To: <1257262091.12479.19.camel@dark-knight>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,36 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Manuel Lauss <manuel.lauss@gmail.com>
+To: John Lindgren <john.lindgren@tds.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 3, 2009 at 4:35 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
-> On Tue, Nov 03, 2009 at 04:30:26PM +0100, Manuel Lauss wrote:
->
->>
->> On Tue, Nov 3, 2009 at 4:30 PM, Ralf Baechle <ralf@linux-mips.org> wrote:
->> > On Mon, Nov 02, 2009 at 09:21:44PM +0100, Manuel Lauss wrote:
->> >
->> >> Machine driver for DB1200 AC97 and I2S audio systems, intended as a
->> >> proper reference asoc machine for Alchemy-based systems.
->> >> AC97/I2S can be selected at boot time by setting switch S6.7
->> >>
->> >> Cc: alsa-devel@alsa-project.org
->> >> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
->> >> Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
->> >> ---
->> >> Depends on patch "ASoC: au1x: convert to platform drivers" in
->> >> Mark Brown's asoc tree to actually work.
->> >
->> > Queued for 2.6.33. =A0I've not seen the dependency but I hope there is=
- no
->> > harm in getting things merged out of order?
->>
->> You just won't get any sound if the other patch isnt applied first,
->> no build failures of oopses.
->
-> With Mark's approval I'd not mind merging the other patch through the MIPS
-> tree as well then.
+On Tue, 3 Nov 2009, John Lindgren wrote:
 
-AFAIK Takashi already pulled it into the alsa tree for .33
+> On Tue, 2009-11-03 at 09:03 +0100, Takashi Iwai wrote:
+>> Since no problem is found with valgrind, I applied the patch to git tree
+>> now.
+>
+> Thanks.  I compiled the git version and the problem is fixed. Here are
+> the other changes, split into four separate patches:
+
+I applied your changes. But please ... send one patch in one e-mail in 
+future to reduce our work with patch importing. Also, it makes sense to 
+have one-line subject for patch and Signed-off-by: line in patches.
+
+ 				Thanks,
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
