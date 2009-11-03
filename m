@@ -1,18 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: PC Beep or PC Speaker or just Beep? and HDA Beep
- code...
-Date: Tue, 3 Nov 2009 12:01:57 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0911031147520.5500@eeebox2.perex-int.cz>
-References: <alpine.LNX.2.00.0910221740280.5519@eeebox2.perex-int.cz>
-	<s5h1vklythl.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC PATCH 2/3] MIPS: Alchemy: DB1200
+	AC97+I2S	audio support.
+Date: Tue, 3 Nov 2009 11:13:32 +0000
+Message-ID: <20091103111331.GA29431@sirena.org.uk>
+References: <1257193305-29996-1-git-send-email-manuel.lauss@gmail.com>
+	<1257193305-29996-2-git-send-email-manuel.lauss@gmail.com>
+	<20091103104337.GA26068@opensource.wolfsonmicro.com>
+	<f861ec6f0911030300l130e58cl8d4915af5eec9238@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB45724431
-	for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2009 12:01:57 +0100 (CET)
-In-Reply-To: <s5h1vklythl.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D62524445
+	for <alsa-devel@alsa-project.org>; Tue,  3 Nov 2009 12:13:34 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <f861ec6f0911030300l130e58cl8d4915af5eec9238@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,69 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: Linux-MIPS <linux-mips@linux-mips.org>, alsa-devel@alsa-project.org, Manuel Lauss <manuel.lauss@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 30 Oct 2009, Takashi Iwai wrote:
+On Tue, Nov 03, 2009 at 12:00:19PM +0100, Manuel Lauss wrote:
+> On Tue, Nov 3, 2009 at 11:43 AM, Mark Brown
 
-> At Thu, 22 Oct 2009 17:50:10 +0200 (CEST),
-> Jaroslav Kysela wrote:
->>
->> Hi,
->>
->>  	I'm changing the behaviour of Beep / PC Beep controls for HDA
->> drivers (comments?):
->>
->> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=d605dbeed1b102136513e09e95217e8dc19c800d
->
-> Well, IMHO, the fundamental problem is that there is no logic to
-> select the beep device in the input layer.  A few line of code to
-> drivers/char/keyboard.c would do that.
+> > This looks good for me. ?The patch touches both ASoC and MIPS trees -
+> > I'm happy with it being merged though either.
 
-Yes, it would be good to have possibility to configure which input device 
-will receive beep events.
+> Thanks for having a look!  I'd rather have it go through the MIPS tree,
+> otherwise there's a higher chance of merge conflicts.
 
-> Regarding your change: I'm afraid that too frequent attach/detach
-> calls aren't good.
+That's fine for me:
 
-What's too frequent? The attach/detach is called only when Beep mute 
-control is toggled. I don't think that user will toggle this control as 
-more as once in a normal system setup. The default value is "muted" 
-(no registration) anyway.
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-I would really like to have the HDA Beep registration to input layer 
-configurable at runtime. The control layer seems good for this job.
-I can eventually add one more control with name like "Beep Register 
-Switch", but the "Beep Playback Switch" does this job well.
-
->  Also, note that there are hardwares that still
-> beep even when the beep volume is set to zero.  So, you may get a
-> situation that you can't disable beep tone.
-
-??? If you don't set HDA codec frequency registers, then the HDA 
-digital beep cannot be generated.
-
->>  	I would like to introduce uniform naming for these controls
->> to not confuse users.
->>
->> HDA driver: Beep, PC Beep
->> AC97: PC Speaker, Beep, PC Beep
->> etc..
->>
->>  	I think that the original purpose of PC Speaker is a beep
->> generator. Also, many SoC platforms use AC97 codecs, so removing
->> abbreviation PC might make sense. It would be probably best to change all
->> control names in drivers to 'Beep'. Comments?
->
-> Yes, I agree to rename all to Beep.  The word "PC Speaker" has been
-> always confusing.
-
-I'll do this change.
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+and if there's any merge issues we can sort them out later.
