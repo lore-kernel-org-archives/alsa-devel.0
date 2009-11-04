@@ -1,19 +1,21 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH] ALSA: hda_intel: disable corb rirb when
- single_cmd active
-Date: Wed, 04 Nov 2009 12:45:20 -0700
-Message-ID: <4AF1D9D0.9080007@boundarydevices.com>
-References: <1257276157-7164-1-git-send-email-troy.kisky@boundarydevices.com>
-	<s5hd43yzov7.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC - Add support for upto 16 channels on
+	OMAP MCBSP
+Date: Wed, 04 Nov 2009 19:46:49 +0000
+Message-ID: <1257364009.2887.665.camel@odin>
+References: <1257357235.2887.499.camel@odin>
+	<20091104185534.GA22055@xora.vm.bytemark.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth00.csee.onr.siteprotect.com
-	(smtpauth00.csee.onr.siteprotect.com [64.26.60.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 644B524452
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 20:45:27 +0100 (CET)
-In-Reply-To: <s5hd43yzov7.wl%tiwai@suse.de>
+Received: from mail-ew0-f221.google.com (mail-ew0-f221.google.com
+	[209.85.219.221])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B58F24454
+	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 20:46:51 +0100 (CET)
+Received: by ewy21 with SMTP id 21so12858182ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 04 Nov 2009 11:46:50 -0800 (PST)
+In-Reply-To: <20091104185534.GA22055@xora.vm.bytemark.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +25,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Graeme Gregory <gg@slimlogic.co.uk>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue,  3 Nov 2009 12:22:37 -0700,
-> Troy Kisky wrote:
->> Poulsbo(US15W) cannot have any corb registers initialized
->> when using single_cmd mode.
->> When send_cmd timeout occur, note error.
+On Wed, 2009-11-04 at 18:55 +0000, Graeme Gregory wrote:
+> On Wed, Nov 04, 2009 at 05:53:55PM +0000, Liam Girdwood wrote:
+> > From: Graeme Gregory <gg@slimlogic.co.uk>
+> > 
+> > This patch increases the number of supported audio channels from 4
+> > to 16 and was sponsored by Shotspotter inc.
+> > 
+> > Signed-off-by: Graeme Gregory <gg@slimlogic.co.uk>
+> > Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> > +	/* Default div to 1 if it wasn't set by machine driver, otherwise
+> > +	 * use set div as the maximum clock value
+> > +	 */
+> > +	div = mcbsp_data->clk_div ? mcbsp_data->clk_div : 1;
+> > +
+> > +	/* calc best frame size for rate and clock divider */
+> > +	do {
+> > +		frame_size = (mcbsp_data->in_freq / div) / params_rate(params);
+> > +		pr_debug("freq %d, rate %d, frame size %d, div %d\n",
+> > +				mcbsp_data->in_freq, params_rate(params), frame_size, div);
+> > +
+> > +		if (frame_size > 256)
+> > +			div++;
+> > +	} while (frame_size > 256);
+> > +
+> > +	/* Check we can fit the requested number of channels into our
+> > +	 * calculated frame size
+> > +	 */
+> > +	if ((channels * wlen) > frame_size) {
+> > +		printk(KERN_ERR
+> > +			"OMAP-MCBSP: cannot fit channels in frame size\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	/* Set the actual clkdiv to use for this samplerate */
+> > +	regs->srgr1 &= ~CLKGDV(0xFF);
+> > +	regs->srgr1 |= CLKGDV(div - 1);
+> > +
 > 
-> Could you be more specific?  What errors do you get?
+> This chunk changes the semantics of other devices which I have never tested.
 > 
-> And, how it goes to single_cmd mode?  The single_cmd mode is very last
-> resort, and reaching there means already a serious problem.
+> I also dont know how much damage it does if it does to slave mode. In fact
+> I think it might break it in cases which are actually allowable as it uses
+> the omap as its clock constraint and not the clock source.
 > 
-> 
-> thanks,
-> 
-> Takashi
-> 
-No error messages, but the response read is always 0.
-For testing, I passed single_cmd=1 as a modules option.
 
-HDAudio_03.pdf says, "If implemented, these registers must not be used
-at the same time as the CORB and RIRB command/response mechanisms, as the operations
-will conflict."
+Btw, this has been reworked to avoid all I2S paths since you last worked
+on it.
 
-Plus, if the RIRB irq is enabled, the interrupt routine will print out a
-spurious interrupt message.
+So it looks like we need a conditional around this block for when the
+codec is mastering BCLK/FRM and MCBSP is slave (as you stated above).
+This will then use the original SRGR2 values for SND_SOC_DAIFMT_DSP_A/B
+in codec master mode.
 
-That said, my hardware is switching to single_cmd eventually, even if not
-passed as a module option. But at least now, when that happens my audio
-isn't dead.
+V2 will follow.
 
-Troy
+Liam
