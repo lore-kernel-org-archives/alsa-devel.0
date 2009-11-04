@@ -1,15 +1,18 @@
-From: Daniel Drake <dsd@laptop.org>
-Subject: [PATCH] ALSA: hda - Add OLPC XO-1.5 PCI ID
-Date: Wed,  4 Nov 2009 10:11:07 +0000 (GMT)
-Message-ID: <20091104101107.8A4E59D4044@zog.reactivated.net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/4 v2] ASoC/MFD/OMAP: TWL4030: APLL_CTL
+	handling change
+Date: Wed, 4 Nov 2009 10:20:41 +0000
+Message-ID: <20091104102040.GA25922@rakim.wolfsonmicro.main>
+References: <1257321500-27049-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mtaout03-winn.ispmail.ntl.com (mtaout03-winn.ispmail.ntl.com
-	[81.103.221.49])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90FB3103840
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 11:11:10 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64FA5103840
+	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 11:20:42 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1257321500-27049-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,29 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, devel@lists.laptop.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, sameo@linux.intel.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The XO-1.5 laptop now has a unique subvendor/subproduct ID, which can
-be used to automatically select the correct CXT5066 configuration.
+On Wed, Nov 04, 2009 at 09:58:16AM +0200, Peter Ujfalusi wrote:
 
-Signed-off-by: Daniel Drake <dsd@laptop.org>
----
- sound/pci/hda/patch_conexant.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> The following series changes the way how the APLL_CTL register is handled by
+> the twl4030 codec related drivers.
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 3fbbc8c..6479e65 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -2325,6 +2325,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
- 		      CXT5066_LAPTOP),
- 	SND_PCI_QUIRK(0x1028, 0x02f5, "Dell",
- 		      CXT5066_DELL_LAPTOP),
-+	SND_PCI_QUIRK(0x152d, 0x0833, "OLPC XO-1.5", CXT5066_OLPC_XO_1_5),
- 	{}
- };
- 
--- 
-1.6.2.5
+I'm OK with this but I'll wait for acks from Tony and Samuel before
+applying.
