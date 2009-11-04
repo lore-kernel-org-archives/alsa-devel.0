@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/4 v2] ASoC/MFD/OMAP: TWL4030: APLL_CTL
-	handling change
-Date: Wed, 4 Nov 2009 10:20:41 +0000
-Message-ID: <20091104102040.GA25922@rakim.wolfsonmicro.main>
-References: <1257321500-27049-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: MSM DSP
+Date: Wed, 4 Nov 2009 10:49:44 +0000
+Message-ID: <20091104104943.GA25044@sirena.org.uk>
+References: <1257264142.19223.17.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 64FA5103840
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 11:20:42 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3EAE810386F
+	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 11:49:45 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1257321500-27049-1-git-send-email-peter.ujfalusi@nokia.com>
+In-Reply-To: <1257264142.19223.17.camel@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +21,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, sameo@linux.intel.com, linux-kernel@vger.kernel.org
+To: GNUtoo <GNUtoo@no-log.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 04, 2009 at 09:58:16AM +0200, Peter Ujfalusi wrote:
+Please fix your MUA to word wrap at 80 columns, not doing this makes
+your posts much harder to read and reply to.  It'd also be helpful to
+place blank lines between paragraphs to improve legibility.
 
-> The following series changes the way how the APLL_CTL register is handled by
-> the twl4030 codec related drivers.
+On Tue, Nov 03, 2009 at 05:02:22PM +0100, GNUtoo wrote:
 
-I'm OK with this but I'll wait for acks from Tony and Samuel before
-applying.
+> codeaurora(
+> https://www.codeaurora.org/gitweb/quic/le/?p=kernel/msm.git ) had alsa
+> in its kenrel I first tried to compile that kernel...but due to
+> numerous bugs(It didn't compile and needed too much fixing) in it
+> android-msm-2.6.29 branch I decided to import alsa in the linuxtogo
+> kernel,and I pushed the sources at a temporary htc-alsa branch at
+> git://gitorious.org/replicant/gnulinuxkernel.git (it's called gnulinux
+> in order to differentiate from an android kernel,I didn't find a good
+> name for it)
+
+Please submit any code you have to the mailing list, it's much easier to
+review things via the standard workflows and getting the drivers into
+mainline would be good.
+
+The problems you're reporting suggest that the driver either isn't
+communicating the requirements it has for data buffers to the
+applications correctly or it isn't correctly notifying applications when
+buffers have drained.  mplayer is much more sensitive to both of these
+issues.
