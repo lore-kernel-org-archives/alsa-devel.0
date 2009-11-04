@@ -1,20 +1,19 @@
-From: =?UTF-8?q?R=C3=A9mi=20Denis-Courmont?= <remi@remlab.net>
-Subject: [PATCH 3/3] Define _GNU_SOURCE so that <fcntl.h> gives
-	O_CLOEXEC
-Date: Wed,  4 Nov 2009 20:38:53 +0200
-Message-ID: <1257359933-3791-3-git-send-email-remi@remlab.net>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [PATCH 1/3] Open device nodes with close-on-exec
+ flag
+Date: Wed, 4 Nov 2009 20:03:11 +0100
+Message-ID: <20091104190311.GC17556@tango.0pointer.de>
 References: <200911042038.09618.rem@videolan.org>
+	<1257359933-3791-1-git-send-email-remi@remlab.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yop.chewa.net (yop.chewa.net [91.121.105.214])
-	by alsa0.perex.cz (Postfix) with ESMTP id 70170103871
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 19:38:57 +0100 (CET)
-Received: from basile.remlab.net (localhost.localdomain [127.0.0.1])
-	by yop.chewa.net (Postfix) with SMTP id 27B14346
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 19:38:56 +0100 (CET)
-In-Reply-To: <200911042038.09618.rem@videolan.org>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id C536910383A
+	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 20:03:39 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1257359933-3791-1-git-send-email-remi@remlab.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,13 +26,43 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogUsOpbWkgRGVuaXMtQ291cm1vbnQgPHJlbWlAcmVtbGFiLm5ldD4KLS0t
-CiBjb25maWd1cmUuaW4gfCAgICAyICsrCiAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygr
-KSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9jb25maWd1cmUuaW4gYi9jb25maWd1cmUu
-aW4KaW5kZXggYTQ1NWRlMS4uY2M4OTUwZiAxMDA2NDQKLS0tIGEvY29uZmlndXJlLmluCisrKyBi
-L2NvbmZpZ3VyZS5pbgpAQCAtMzgsNiArMzgsOCBAQCB0aGVuCiAgIEFDX01TR19SRVNVTFQoJEND
-KQogZmkKIAkgICAgCitDRkxBR1M9IiRDRkxBR1MgLURfR05VX1NPVVJDRSIKKwogCiBBQ19QUk9H
-X0NDCiBBQ19QUk9HX0NQUAotLSAKMS42LjUuMgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, 04.11.09 20:38, R=E9mi Denis-Courmont (remi@remlab.net) wrote:
+
+>  static inline int snd_open_device(const char *filename, int fmode)
+>  {
+> -	int fd =3D open(filename, fmode);
+> +	int fd;
+> +
+> +#ifdef O_CLOEXEC
+> +	fd =3D open(filename, fmode|O_CLOEXEC);
+>  	if (fd >=3D 0)
+>  		return fd;
+> +	if (errno =3D=3D EINVAL)
+> +#endif
+> +	{
+> +		fd =3D open(filename, fmode);
+> +		if (fd >=3D 0) {
+> +			fcntl(fd, F_SETFD, FD_CLOEXEC);
+> +			return fd;
+> +		}
+
+That's actually not how things works. O_CLOEXEC is silently ignored by
+old kernels. (The calls with SOCK_CLOEXEC fail with EINVAL while the
+calls with O_CLOEXEC silently succeed) You need to set
+FD_CLOEXEC unconditionally to cover all cases:
+
+fd =3D open(fn, fmode
+#ifdef O_CLOEXEC
+          |O_CLOEXEC
+#endif
+);
+fcntl(fd, F_SETFD, FD_CLOEXEC);
+
+
+Lennart
+
+-- =
+
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
