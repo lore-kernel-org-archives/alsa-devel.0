@@ -1,19 +1,19 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: [PATCH 1/3] Open device nodes with close-on-exec
- flag
-Date: Wed, 4 Nov 2009 20:03:11 +0100
-Message-ID: <20091104190311.GC17556@tango.0pointer.de>
-References: <200911042038.09618.rem@videolan.org>
-	<1257359933-3791-1-git-send-email-remi@remlab.net>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH] ALSA: hda_intel: disable corb rirb when
+ single_cmd active
+Date: Wed, 04 Nov 2009 12:45:20 -0700
+Message-ID: <4AF1D9D0.9080007@boundarydevices.com>
+References: <1257276157-7164-1-git-send-email-troy.kisky@boundarydevices.com>
+	<s5hd43yzov7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id C536910383A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 20:03:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1257359933-3791-1-git-send-email-remi@remlab.net>
+Received: from smtpauth00.csee.onr.siteprotect.com
+	(smtpauth00.csee.onr.siteprotect.com [64.26.60.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 644B524452
+	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 20:45:27 +0100 (CET)
+In-Reply-To: <s5hd43yzov7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 04.11.09 20:38, R=E9mi Denis-Courmont (remi@remlab.net) wrote:
+Takashi Iwai wrote:
+> At Tue,  3 Nov 2009 12:22:37 -0700,
+> Troy Kisky wrote:
+>> Poulsbo(US15W) cannot have any corb registers initialized
+>> when using single_cmd mode.
+>> When send_cmd timeout occur, note error.
+> 
+> Could you be more specific?  What errors do you get?
+> 
+> And, how it goes to single_cmd mode?  The single_cmd mode is very last
+> resort, and reaching there means already a serious problem.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+No error messages, but the response read is always 0.
+For testing, I passed single_cmd=1 as a modules option.
 
->  static inline int snd_open_device(const char *filename, int fmode)
->  {
-> -	int fd =3D open(filename, fmode);
-> +	int fd;
-> +
-> +#ifdef O_CLOEXEC
-> +	fd =3D open(filename, fmode|O_CLOEXEC);
->  	if (fd >=3D 0)
->  		return fd;
-> +	if (errno =3D=3D EINVAL)
-> +#endif
-> +	{
-> +		fd =3D open(filename, fmode);
-> +		if (fd >=3D 0) {
-> +			fcntl(fd, F_SETFD, FD_CLOEXEC);
-> +			return fd;
-> +		}
+HDAudio_03.pdf says, "If implemented, these registers must not be used
+at the same time as the CORB and RIRB command/response mechanisms, as the operations
+will conflict."
 
-That's actually not how things works. O_CLOEXEC is silently ignored by
-old kernels. (The calls with SOCK_CLOEXEC fail with EINVAL while the
-calls with O_CLOEXEC silently succeed) You need to set
-FD_CLOEXEC unconditionally to cover all cases:
+Plus, if the RIRB irq is enabled, the interrupt routine will print out a
+spurious interrupt message.
 
-fd =3D open(fn, fmode
-#ifdef O_CLOEXEC
-          |O_CLOEXEC
-#endif
-);
-fcntl(fd, F_SETFD, FD_CLOEXEC);
+That said, my hardware is switching to single_cmd eventually, even if not
+passed as a module option. But at least now, when that happens my audio
+isn't dead.
 
-
-Lennart
-
--- =
-
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Troy
