@@ -1,41 +1,40 @@
-From: John Murphy <mr.proxxxy@gmail.com>
-Subject: question re: creating a dummy midi device to be
-	readable/writable by alsa/jack
-Date: Tue, 3 Nov 2009 21:58:56 -0500
-Message-ID: <9d5dae960911031858i83c4aeen742092127ee9b731@mail.gmail.com>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH] sh: add SuperH DAC audio driver for ALSA V4
+Date: Wed, 4 Nov 2009 12:13:09 +0900
+Message-ID: <20091104031309.GD12841@linux-sh.org>
+References: <20091103201627.GA31131@rafazurita.homelinux.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f221.google.com (mail-ew0-f221.google.com
-	[209.85.219.221])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3FC2B2442A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 03:58:58 +0100 (CET)
-Received: by ewy21 with SMTP id 21so10702558ewy.32
-	for <alsa-devel@alsa-project.org>; Tue, 03 Nov 2009 18:58:57 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20091103201627.GA31131@rafazurita.homelinux.net>
+Sender: linux-sh-owner@vger.kernel.org
+To: Rafael Ignacio Zurita <rizurita@yahoo.com>
+Cc: Takashi Iwai <tiwai@suse.de>, linux-sh@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hi!
-I'm currently working on a project to develop a driver for a midi controller
-that is currently unsupported by Linux.
-As this is going to be my first project with alsa/midi, I am trying to start
-by creating a dummy midi device that can be loaded (where? kernel?
-userspace?), be seen by jack as if it was a normal midi device and then work
-on my reverse-engineering, debugging, etc. from there.
-However, looking through the documentation, I'm not exactly sure on how to
-start building this dummy device.
-Can anyone help point me in the right direction?
-Thanks, and sorry for the newbie question!
--- 
-john
-http://ghfdrvtsyup.net/proxxxy
+On Tue, Nov 03, 2009 at 05:16:27PM -0300, Rafael Ignacio Zurita wrote:
+> This is a port of the sound/oss/sh_dac_audio.c driver.
+> The driver uses an on-chip 8-bit D/A converter, which has a speaker connected
+> to one of its channels, found in several ancient HP machines.
+> For interrupts it uses a high-resolution timer (hrtimer).
+> Tested on SH7709 based hp6xx (HP Jornada 680/690 and HP Palmtop 620lx/660lx).
+>  
+> Also, since OSS Emulation works, the old OSS sound/oss/sh_dac_audio.c driver
+> would be obsolete soon, and it could be removed.
+>  
+> Changes since V3:
+>  - renamed sound/sh/snd_sh_dac_audio.c to sound/sh/sh_dac_audio.c
+>  
+> Changes since V2:
+>  - renamed include/sound/dac_audio.h to include/sound/sh_dac_audio.h
+> 
+> Changes since V1:
+>  - moved the platform device code into board code.
+>  - dropped dac_audio_sync(), since that code is not needed (it was inherited of
+>    the old oss driver).
+>  - rewrote the code with style problems.
+> 
+> Signed-off-by: Rafael Ignacio Zurita <rizurita@yahoo.com>
+
+Acked-by: Paul Mundt <lethal@linux-sh.org>
