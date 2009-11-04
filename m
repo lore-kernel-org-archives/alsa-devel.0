@@ -1,17 +1,22 @@
-From: GNUtoo <GNUtoo@no-log.org>
-Subject: Re: MSM DSP
-Date: Wed, 04 Nov 2009 22:29:22 +0100
-Message-ID: <1257370162.6812.76.camel@localhost>
-References: <1257264142.19223.17.camel@localhost>
-	<20091104104943.GA25044@sirena.org.uk>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: Re: VIA VT1828S hda_intel errors
+Date: Wed, 4 Nov 2009 17:52:47 -0600
+Message-ID: <51f3faa70911041552s5be9a0ebx7f28977040c4c7a0@mail.gmail.com>
+References: <4AEA3BCB.5040202@gmail.com> <s5hws2dxdts.wl%tiwai@suse.de>
+	<51f3faa70911011203x306dba43s4ce984f20f773144@mail.gmail.com>
+	<s5hfx8xxluu.wl%tiwai@suse.de>
+	<51f3faa70911022055s81f633du71fd10d2ef109e58@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out26.alice.it (smtp-out26.alice.it [85.33.2.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id 280032448A
-	for <alsa-devel@alsa-project.org>; Wed,  4 Nov 2009 21:29:47 +0100 (CET)
-In-Reply-To: <20091104104943.GA25044@sirena.org.uk>
+Received: from mail-iw0-f198.google.com (mail-iw0-f198.google.com
+	[209.85.223.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2AA131037F9
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 00:52:48 +0100 (CET)
+Received: by iwn36 with SMTP id 36so5339206iwn.24
+	for <alsa-devel@alsa-project.org>; Wed, 04 Nov 2009 15:52:47 -0800 (PST)
+In-Reply-To: <51f3faa70911022055s81f633du71fd10d2ef109e58@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,45 +26,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-Devel <alsa-devel@alsa-project.org>, LydiaWang@viatech.com.cn, Logan Li <loganli@viatech.com.cn>, Harald Welte <HaraldWelte@viatech.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2009-11-04 at 10:49 +0000, Mark Brown wrote:
-> Please fix your MUA to word wrap at 80 columns, not doing this makes
-> your posts much harder to read and reply to.  It'd also be helpful to
-> place blank lines between paragraphs to improve legibility.
-So sorry,I was told that evolution does it by default.
-There must have been a wrong manipulation by me or a bug...
-I'm so sorry.
+On Mon, Nov 2, 2009 at 10:55 PM, Robert Hancock <hancockrwd@gmail.com> wrot=
+e:
+> On Mon, Nov 2, 2009 at 4:27 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>> At Sun, 1 Nov 2009 14:03:18 -0600,
+>> Robert Hancock wrote:
+>>>
+>>> On Fri, Oct 30, 2009 at 6:31 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>>> > At Thu, 29 Oct 2009 19:05:15 -0600,
+>>> > Robert Hancock wrote:
+>>> >>
+>>> >> I've been using the VT1828S codec support from ALSA git for the last=
+ few
+>>> >> weeks. It seems to work fine, but there are some problems showing up=
+ in
+>>> >> dmesg:
+>>> >>
+>>> >> Oct 25 20:46:14 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:683=
+: No
+>>> >> response from codec, disabling MSI: last cmd=3D0x02af0900
+>>> >> Oct 25 20:46:15 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:698:
+>>> >> azx_get_response timeout, switching to polling mode: last cmd=3D0x02=
+af0900
+>>> >
+>>> > Note that this isn't always a severe problem. =A0If polling mode works
+>>> > (you don't see the similar errors after this), it means the IRQ isn't
+>>> > properly generated at verb handling.
+>>> >
+>>> >> It seems like the cmd isn't always the same, previously it was
+>>> >> 0x024f0c00. Is there something bad about this command that could be
+>>> >> causing the response timeout?
+>>> >
+>>> > Hm, both aren't really same, pointing to different widgets. =A0So,
+>>> > it looks like a generic problem in the codec communication on your
+>>> > board.
+>>>
+>>> Something VIA guys should look into?
+>>
+>> Hopefully. =A0This is a bit hard problem to track, though...
+>>
+>>> >> Also, disabling MSI for one occurrence of
+>>> >> this seems a bit paranoid..
+>>> >
+>>> > MSI was unstable for long time, so disabling it was a sane option :)
+>>> > Now it gets better, so it should be a second option.
+>>> > I changed the code now.
+>>> >
+>>> >> Also saw one of these:
+>>> >>
+>>> >> Oct 26 21:13:20 newcastle kernel: hda-intel: IRQ timing workaround is
+>>> >> activated for card #0. Suggest a bigger bdl_pos_adj.
+>>> >>
+>>> >> and PulseAudio also complained:
+>>> >>
+>>> >> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: ALSA woke =
+us
+>>> >> up to write new data to the device, but there was actually nothing t=
+o write!
+>>> >> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: Most likely
+>>> >> this is a bug in the ALSA driver 'snd_hda_intel'. Please report this
+>>> >> issue to the ALSA developers.
+>>> >> Oct 26 00:27:50 newcastle pulseaudio[16530]: alsa-sink.c: We were wo=
+ken
+>>> >> up with POLLOUT set -- however a subsequent snd_pcm_avail() returned=
+ 0
+>>> >> or another value < min_avail.
+>>> >
+>>> > Well, this is the case where the hardware reports bad position data.
+>>> > This is usually a hardware bug, and hard to fix properly. =A0We have =
+some
+>>> > mechanism to correct or take back to the last position. =A0This should
+>>> > usually work, but apparently not in your case...
+>>>
+>>> Well, it looks like PulseAudio complained before the IRQ timing
+>>> workaround was activated (about 20 hours earlier)..
+>>
+>> Then try to pass bdl_pos_adj=3D0 option to snd-hda-intel module.
+>> The PA complaining still present?
+>
+> With bdl_pos_adj=3D0, so far no complaints from PulseAudio after some
+> hours of audio playing.. I'll keep monitoring it.
 
-> 
-> On Tue, Nov 03, 2009 at 05:02:22PM +0100, GNUtoo wrote:
-> 
-> > codeaurora(
-> > https://www.codeaurora.org/gitweb/quic/le/?p=kernel/msm.git ) had alsa
-> > in its kenrel I first tried to compile that kernel...but due to
-> > numerous bugs(It didn't compile and needed too much fixing) in it
-> > android-msm-2.6.29 branch I decided to import alsa in the linuxtogo
-> > kernel,and I pushed the sources at a temporary htc-alsa branch at
-> > git://gitorious.org/replicant/gnulinuxkernel.git (it's called gnulinux
-> > in order to differentiate from an android kernel,I didn't find a good
-> > name for it)
-> 
-> Please submit any code you have to the mailing list, it's much easier to
-> review things via the standard workflows and getting the drivers into
-> mainline would be good.
-I'll make git send a mail.
-But note that the code of the alsa driver depends on a custom android
-sound system that is in :
-arch/arm/mach-msm/qdsp5/
-so it's platform specific.
+Nope, saw one again:
 
-> The problems you're reporting suggest that the driver either isn't
-> communicating the requirements it has for data buffers to the
-> applications correctly or it isn't correctly notifying applications when
-> buffers have drained.  mplayer is much more sensitive to both of these
-> issues.
-Thanks a lot
+Nov  2 23:53:18 newcastle pulseaudio[6306]: alsa-sink.c: ALSA woke us
+up to write new data to the device, but there was actually nothing to
+write!
+Nov  2 23:53:18 newcastle pulseaudio[6306]: alsa-sink.c: Most likely
+this is a bug in the ALSA driver 'snd_hda_intel'. Please report this
+issue to the ALSA developers.
+Nov  2 23:53:18 newcastle pulseaudio[6306]: alsa-sink.c: We were woken
+up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0
+or another value < min_avail.
 
-Denis.
+>
+> Actually there's been no codec response timeout errors either since
+> making that change, though I don't know if it's just by luck.. doesn't
+> seem like it should be related.
+
+Saw some more of these as well. Interestingly enough an ACPI GPE storm
+was reported very close in time to it (same second in the log):
+
+Nov  2 23:49:13 newcastle kernel: ACPI: EC: GPE storm detected,
+transactions will use polling mode
+Nov  2 23:49:13 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:683:
+No response from codec, disabling MSI: last cmd=3D0x024f0c00
+Nov  2 23:49:14 newcastle kernel: ALSA sound/pci/hda/hda_intel.c:698:
+azx_get_response timeout, switching to polling mode: last
+cmd=3D0x024f0c00
