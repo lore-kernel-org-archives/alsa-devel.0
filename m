@@ -1,18 +1,20 @@
-From: Shawn Starr <shawn.starr@rogers.com>
-Subject: Re: Conexant CX20561 - Microphone problems
-Date: Thu, 5 Nov 2009 04:26:49 -0500
-Message-ID: <200911050426.49802.shawn.starr@rogers.com>
-References: <200910291859.41076.shawn.starr@rogers.com>
-	<200911050348.38131.shawn.starr@rogers.com>
-	<200911050409.23998.shawn.starr@rogers.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC - Add support for upto 16 channels on
+ OMAP MCBSP
+Date: Thu, 05 Nov 2009 10:05:20 +0000
+Message-ID: <1257415520.3603.161.camel@odin>
+References: <1257357235.2887.499.camel@odin>
+	<200911051026.39538.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp101.rog.mail.re2.yahoo.com (smtp101.rog.mail.re2.yahoo.com
-	[206.190.36.79]) by alsa0.perex.cz (Postfix) with SMTP id 4C289103919
-	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 10:26:50 +0100 (CET)
-In-Reply-To: <200911050409.23998.shawn.starr@rogers.com>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.159])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A37410391F
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 11:05:23 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 19so1245973fgg.2
+	for <alsa-devel@alsa-project.org>; Thu, 05 Nov 2009 02:05:23 -0800 (PST)
+In-Reply-To: <200911051026.39538.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,127 +24,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Graeme Gregory <gg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On November 5, 2009 04:09:23 am Shawn Starr wrote:
-> On November 5, 2009 03:48:37 am Shawn Starr wrote:
-> > On November 5, 2009 02:47:19 am Takashi Iwai wrote:
-> > > At Tue, 3 Nov 2009 14:30:15 -0500,
-> > >
-> > > Shawn Starr wrote:
-> > > > On November 3, 2009 05:55:07 am Takashi Iwai wrote:
-> > > > > At Mon, 2 Nov 2009 11:36:21 -0500,
-> > > > >
-> > > > > Shawn Starr wrote:
-> > > > > > On November 2, 2009 08:05:37 am Takashi Iwai wrote:
-> > > > > > > At Thu, 29 Oct 2009 18:59:40 -0400,
-> > > > > > >
-> > > > > > > Shawn Starr wrote:
-> > > > > > > > Hello ALSA developers,
-> > > > > > > >
-> > > > > > > > I am having problems with the microphone on the following
-> > > > > > > > hardware this is on a Lenovo W500 laptop.
-> > > > > > > >
-> > > > > > > > Card: HDA Intel
-> > > > > > > > Chip: Conexant CX20561 (Hermosa)
-> > > > > > > >
-> > > > > > > > Here is the problems im noticing:
-> > > > > > > >
-> > > > > > > > 1) If I use ALSA 'default' with the microphone I get noise
-> > > > > > > > interference on output [high/low/high/low].
-> > > > > > > >
-> > > > > > > > If I switch this to use the "ALSA Capture on HDA Intel
-> > > > > > > > [CONEXANT Analog] I get interference except it is the
-> > > > > > > > standard 60Hz electrical noise [steady noise]
-> > > > > > > >
-> > > > > > > > 2) Using the internal/external microphones gives an
-> > > > > > > > inconsistent volume. It also does not seem to work with the
-> > > > > > > > microphone cutting out so much. I need to adjust Digital +
-> > > > > > > > another microphone but it still drops capturing.
-> > > > > > > >
-> > > > > > > > Alsamixer shows:  Digital/Docking Microphone/External
-> > > > > > > > Microphone/Internal Microphone
-> > > > > > > >
-> > > > > > > > Here is the module options I give to the sound driver:
-> > > > > > > >
-> > > > > > > > options snd-intel-hda enable_msi=1 power_save=10
-> > > > > > > > power_save_controller=true model=laptop index=0
-> > > > > > > >
-> > > > > > > > Assuming power saving/controller causes the microphone to cut
-> > > > > > > > out or not.
-> > > > > > > >
-> > > > > > > > 3) I'm now aware that this card has no pinouts for PCM
-> > > > > > > > capture https://bugzilla.redhat.com/show_bug.cgi?id=502293
-> > > > > > >
-> > > > > > > Could you give alsa-info.sh output?  Run with --no-upload
-> > > > > > > option, and attach the generated file.
-> > > > > >
-> > > > > > Here's the attached output,
-> > > > >
-> > > > > Judging from the pin config, in your case, "Docking" seems
-> > > > > controlling the external-mic volume.  The "External Mic Volume"
-> > > > > should be zero.
-> > > >
-> > > > There is still problems with the volume sensitivity,  but I will
-> > > > adjust to set ext mic to zero. Do we need a quirk for the Lenovo W500
-> > > > then?
-> > >
-> > > Looks so.  Though, the SSID is identical with X200.
-> > > I'm wondering whether X200 works fine as is or not...
-> > >
-> > > > Or that's a bug wrt to volume sensitivity and static interferences?
-> > >
-> > > The mic boost volumes are missing in these quirks.
-> > > You can adjust manually via hda-verb, e.g.
-> > >
-> > > 	hda-verb /dev/snd/hwC0D0 0x1d SET_AMP 0x7003
-> > >
-> > > for the built-in mic, and
-> > >
-> > > 	hda-verb /dev/snd/hwC0D0 0x18 SET_AMP 0x7003
-> > >
-> > > for the mic jack.  Change the value between 0x7000 and 0x7004.
-> > >
-> > >
-> > > Takashi
-> >
-> > Will try to adjust those. I tried the X200, but it didn't make any
-> >  difference.
-> 
-> I set the mic boost volume quirk, that did adjust the loudness, so it
->  doesn't seem to be cutting out anymore. So it looks like that problem is
->  fixed with the quirk.
-> 
-> Would you like me to provide you a sound recording indicating the
->  interference I hear when using the microphone?
-> 
-The interference is coming from: ALSA Capture on default (seems to be the 
-digital device), yet HDA Intel [CONEXANT Analog] has no such interference.
+On Thu, 2009-11-05 at 10:26 +0200, Peter Ujfalusi wrote:
+> On Wednesday 04 November 2009 19:53:55 ext Liam Girdwood wrote:
+> > From: Graeme Gregory <gg@slimlogic.co.uk>
+> > 
+> > This patch increases the number of supported audio channels from 4
+> > to 16 and was sponsored by Shotspotter inc.
+> > 
+> > Signed-off-by: Graeme Gregory <gg@slimlogic.co.uk>
+> > Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> > ---
+> >  sound/soc/omap/omap-mcbsp.c |   71
+> >  +++++++++++++++++++++++++++++------------- 1 files changed, 49
+> >  insertions(+), 22 deletions(-)
+> > 
 
-I suppose I could make an .asoundrc and force default to use the Analog device 
-vs the digital one.
+snip
+
+> 
+> I would have done this a bit differently:
+> 
+> ...
+> 	/* Check if the number of channels are valid */
+> 	if (channels < 1 || channels > 16) {
+> 		/* Unsupported number of channels */
+> 		/* Probably would be good to have some error message about it? */
+> 		return -EINVAL;
+> 	}
+> 
+
+Not really required as soc-core takes care of this for us :)
 
 
-> Thanks,
-> Shawn.
+> 	format = mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+> 	wpf = channels = params_channels(params);
 > 
-> > Thanks,
-> > Shawn.
-> >
-> > >_______________________________________________
-> > > Alsa-devel mailing list
-> > > Alsa-devel@alsa-project.org
-> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 	if (channels == 2 && format == SND_SOC_DAIFMT_I2S) {
+> 		/* Use dual-phase frames */
+> 		regs->rcr2      |= RPHASE;
+> 		regs->xcr2      |= XPHASE;
+> 		/* Set 1 word per (McBSP) frame for phase1 and phase2 */
+> 		wpf--;
+> 		regs->rcr2      |= RFRLEN2(wpf - 1);
+> 		regs->xcr2      |= XFRLEN2(wpf - 1);
+> 	}
+> 	/* Set word per (McBSP) frame for phase1 */
+> 	regs->rcr1      |= RFRLEN1(wpf - 1);
+> 	regs->xcr1      |= XFRLEN1(wpf - 1);
 > 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+
+I prefer this too.
+
+Liam
