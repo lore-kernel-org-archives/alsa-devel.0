@@ -1,14 +1,26 @@
-From: Dan Chen <crimsunkg@yahoo.com>
-Subject: [PATCH] ALSA: intel8x0: Mute External Amplifier by
-	default for another Sony model
-Date: Wed, 4 Nov 2009 18:10:26 -0800 (PST)
-Message-ID: <461767.29010.qm@web112609.mail.gq1.yahoo.com>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: [PATCH 1/7] S3C AUDIO: Rename s3c24xx_pcm prefix
+	to	s3c_dma
+Date: Thu, 05 Nov 2009 12:14:41 +0900
+Message-ID: <4AF24321.7070303@samsung.com>
+References: <1257384866-18188-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-1797899396-1257387026=:29010"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web112609.mail.gq1.yahoo.com (web112609.mail.gq1.yahoo.com
-	[98.137.27.189]) by alsa0.perex.cz (Postfix) with SMTP id E48E1103850
-	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 03:10:27 +0100 (CET)
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id A543D103858
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 04:15:24 +0100 (CET)
+Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KSM00KIZ90HH7@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 05 Nov 2009 12:14:41 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KSM009MJ90HFM@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 05 Nov 2009 12:14:41 +0900 (KST)
+In-reply-to: <1257384866-18188-1-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,62 +30,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: crimsun@ubuntu.com, alsa-devel@alsa-project.org
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
---0-1797899396-1257387026=:29010
-Content-Type: text/plain; charset=us-ascii
+On 11/5/2009 10:34 AM, Jassi Brar wrote:
+> The s3c24xx_pcm prefix for the soc_platform is inappropriate when
+> some Samsung SoCs have PCM controllers which will eventually have
+> drivers and hence namespace ambiguities.
+> 
+> To resolve naming ambiguities in future the following have been
+> renamed in order
+> 1) s3c24xx_pcm_dma_params -> s3c_audio_dma_params
+> 2) s3c24xx_pcm_preallocate_dma_buffer -> s3c_preallocate_dma_buffer
+> 3) s3c24xx_pcm_dmamask -> s3c_dmamask
+> 4) s3c24xx_pcm_XXX -> s3c_dma_XXX
+> 
 
-Hi,
+I think that it should have a consistent prefix: s3c_audio_dma_ or
+other prefix.
 
-Attached is a patch against current sound-2.6 HEAD adding the SSID of
-another Sony model that requires the inv_eapd quirk.
-
-Thanks,
-Dan
-
-
-
-      
---0-1797899396-1257387026=:29010
-Content-Type: application/octet-stream; name="0001-ALSA-intel8x0-Mute-External-Amplifier-by-default-for.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="0001-ALSA-intel8x0-Mute-External-Amplifier-by-default-for.patch"
-
-RnJvbSA3YTc1YjFkNjA2ZWNkMjNkZmNiMTY2NmIyODMzZjc3ZmM5OWJlNzI0
-IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVu
-IDxjcmltc3VuQHVidW50dS5jb20+CkRhdGU6IFdlZCwgNCBOb3YgMjAwOSAy
-MTowMzo0NiAtMDUwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6IGludGVsOHgw
-OiBNdXRlIEV4dGVybmFsIEFtcGxpZmllciBieSBkZWZhdWx0IGZvciBhbm90
-aGVyIFNvbnkgbW9kZWwKCkJ1Z0xpbms6IGh0dHBzOi8vYnVncy5sYXVuY2hw
-YWQubmV0L2J1Z3MvNDc0OTcyCgpUaGlzIFNvbnkgbW9kZWwgbmVlZHMgRXh0
-ZXJuYWwgQW1wbGlmaWVyIG11dGVkIGZvciBhdWRpYmxlIHBsYXliYWNrLCBz
-bwptYWtlIHN1cmUgd2Ugc2V0IHRoZSBpbnZfZWFwZCBxdWlyay4KClNpZ25l
-ZC1vZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5AdWJ1bnR1LmNvbT4K
-LS0tCiBzb3VuZC9wY2kvaW50ZWw4eDAuYyB8ICAgIDYgKysrKysrCiAxIGZp
-bGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaW50ZWw4eDAuYyBiL3NvdW5kL3Bj
-aS9pbnRlbDh4MC5jCmluZGV4IDc1NDg2N2UuLmFhYzIwZmIgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL3BjaS9pbnRlbDh4MC5jCisrKyBiL3NvdW5kL3BjaS9pbnRl
-bDh4MC5jCkBAIC0xOTUwLDYgKzE5NTAsMTIgQEAgc3RhdGljIHN0cnVjdCBh
-Yzk3X3F1aXJrIGFjOTdfcXVpcmtzW10gX19kZXZpbml0ZGF0YSA9IHsKIAl9
-LAogCXsKIAkJLnN1YnZlbmRvciA9IDB4MTA0ZCwKKwkJLnN1YmRldmljZSA9
-IDB4ODE0NCwKKwkJLm5hbWUgPSAiU29ueSIsCisJCS50eXBlID0gQUM5N19U
-VU5FX0lOVl9FQVBECisJfSwKKwl7CisJCS5zdWJ2ZW5kb3IgPSAweDEwNGQs
-CiAJCS5zdWJkZXZpY2UgPSAweDgxOTcsCiAJCS5uYW1lID0gIlNvbnkgUzFY
-UCIsCiAJCS50eXBlID0gQUM5N19UVU5FX0lOVl9FQVBECi0tIAoxLjYuMy4z
-Cgo=
-
---0-1797899396-1257387026=:29010
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0-1797899396-1257387026=:29010--
+BTW, should we keep up s3c prefix? If we will change the prefix now, it
+is a chance alterable from s3c prefix to other prefix because there is a
+variety of samsung SoCs unused s3c prefix.
