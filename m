@@ -1,17 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC - Add support for upto 16 channels on
-	OMAP MCBSP
-Date: Thu, 5 Nov 2009 10:26:39 +0200
-Message-ID: <200911051026.39538.peter.ujfalusi@nokia.com>
-References: <1257357235.2887.499.camel@odin>
+From: Shawn Starr <shawn.starr@rogers.com>
+Subject: Re: Conexant CX20561 - Microphone problems
+Date: Thu, 5 Nov 2009 03:48:37 -0500
+Message-ID: <200911050348.38131.shawn.starr@rogers.com>
+References: <200910291859.41076.shawn.starr@rogers.com>
+	<200911031430.15869.shawn.starr@rogers.com>
+	<s5hy6mlbego.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B1AC1038B9
-	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 09:26:55 +0100 (CET)
-In-Reply-To: <1257357235.2887.499.camel@odin>
+Received: from smtp109.rog.mail.re2.yahoo.com (smtp109.rog.mail.re2.yahoo.com
+	[68.142.225.207])
+	by alsa0.perex.cz (Postfix) with SMTP id B11971038FC
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 09:48:39 +0100 (CET)
+In-Reply-To: <s5hy6mlbego.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,158 +24,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Graeme Gregory <gg@slimlogic.co.uk>, ext Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 04 November 2009 19:53:55 ext Liam Girdwood wrote:
-> From: Graeme Gregory <gg@slimlogic.co.uk>
-> =
+On November 5, 2009 02:47:19 am Takashi Iwai wrote:
+> At Tue, 3 Nov 2009 14:30:15 -0500,
+> 
+> Shawn Starr wrote:
+> > On November 3, 2009 05:55:07 am Takashi Iwai wrote:
+> > > At Mon, 2 Nov 2009 11:36:21 -0500,
+> > >
+> > > Shawn Starr wrote:
+> > > > On November 2, 2009 08:05:37 am Takashi Iwai wrote:
+> > > > > At Thu, 29 Oct 2009 18:59:40 -0400,
+> > > > >
+> > > > > Shawn Starr wrote:
+> > > > > > Hello ALSA developers,
+> > > > > >
+> > > > > > I am having problems with the microphone on the following
+> > > > > > hardware this is on a Lenovo W500 laptop.
+> > > > > >
+> > > > > > Card: HDA Intel
+> > > > > > Chip: Conexant CX20561 (Hermosa)
+> > > > > >
+> > > > > > Here is the problems im noticing:
+> > > > > >
+> > > > > > 1) If I use ALSA 'default' with the microphone I get noise
+> > > > > > interference on output [high/low/high/low].
+> > > > > >
+> > > > > > If I switch this to use the "ALSA Capture on HDA Intel [CONEXANT
+> > > > > > Analog] I get interference except it is the standard 60Hz
+> > > > > > electrical noise [steady noise]
+> > > > > >
+> > > > > > 2) Using the internal/external microphones gives an inconsistent
+> > > > > > volume. It also does not seem to work with the microphone cutting
+> > > > > > out so much. I need to adjust Digital + another microphone but it
+> > > > > > still drops capturing.
+> > > > > >
+> > > > > > Alsamixer shows:  Digital/Docking Microphone/External
+> > > > > > Microphone/Internal Microphone
+> > > > > >
+> > > > > > Here is the module options I give to the sound driver:
+> > > > > >
+> > > > > > options snd-intel-hda enable_msi=1 power_save=10
+> > > > > > power_save_controller=true model=laptop index=0
+> > > > > >
+> > > > > > Assuming power saving/controller causes the microphone to cut out
+> > > > > > or not.
+> > > > > >
+> > > > > > 3) I'm now aware that this card has no pinouts for PCM capture
+> > > > > > https://bugzilla.redhat.com/show_bug.cgi?id=502293
+> > > > >
+> > > > > Could you give alsa-info.sh output?  Run with --no-upload option,
+> > > > > and attach the generated file.
+> > > >
+> > > > Here's the attached output,
+> > >
+> > > Judging from the pin config, in your case, "Docking" seems controlling
+> > > the external-mic volume.  The "External Mic Volume" should be zero.
+> >
+> > There is still problems with the volume sensitivity,  but I will adjust
+> > to set ext mic to zero. Do we need a quirk for the Lenovo W500 then?
+> 
+> Looks so.  Though, the SSID is identical with X200.
+> I'm wondering whether X200 works fine as is or not...
+> 
+> > Or that's a bug wrt to volume sensitivity and static interferences?
+> 
+> The mic boost volumes are missing in these quirks.
+> You can adjust manually via hda-verb, e.g.
+> 
+> 	hda-verb /dev/snd/hwC0D0 0x1d SET_AMP 0x7003
+> 
+> for the built-in mic, and
+> 
+> 	hda-verb /dev/snd/hwC0D0 0x18 SET_AMP 0x7003
+> 
+> for the mic jack.  Change the value between 0x7000 and 0x7004.
+> 
+> 
+> Takashi
+Will try to adjust those. I tried the X200, but it didn't make any difference.
 
-> This patch increases the number of supported audio channels from 4
-> to 16 and was sponsored by Shotspotter inc.
-> =
+Thanks, 
+Shawn.
 
-> Signed-off-by: Graeme Gregory <gg@slimlogic.co.uk>
-> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
-> ---
->  sound/soc/omap/omap-mcbsp.c |   71
->  +++++++++++++++++++++++++++++------------- 1 files changed, 49
->  insertions(+), 22 deletions(-)
-> =
-
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index 3341f49..290ef2f 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-> @@ -49,6 +49,8 @@ struct omap_mcbsp_data {
->  	 */
->  	int				active;
->  	int				configured;
-> +	unsigned int			in_freq;
-> +	int				clk_div;
->  };
-> =
-
->  #define to_mcbsp(priv)	container_of((priv), struct omap_mcbsp_data,
->  bus_id) @@ -257,7 +259,7 @@ static int omap_mcbsp_dai_hw_params(struct
->  snd_pcm_substream *substream, int dma, bus_id =3D mcbsp_data->bus_id, id=
- =3D
->  cpu_dai->id;
->  	int wlen, channels, wpf, sync_mode =3D OMAP_DMA_SYNC_ELEMENT;
->  	unsigned long port;
-> -	unsigned int format;
-> +	unsigned int format, frame_size, div;
-> =
-
->  	if (cpu_class_is_omap1()) {
->  		dma =3D omap1_dma_reqs[bus_id][substream->stream];
-> @@ -294,27 +296,23 @@ static int omap_mcbsp_dai_hw_params(struct
->  snd_pcm_substream *substream,
-> =
-
->  	format =3D mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
->  	wpf =3D channels =3D params_channels(params);
-> -	switch (channels) {
-> -	case 2:
-> -		if (format =3D=3D SND_SOC_DAIFMT_I2S) {
-> -			/* Use dual-phase frames */
-> -			regs->rcr2	|=3D RPHASE;
-> -			regs->xcr2	|=3D XPHASE;
-> -			/* Set 1 word per (McBSP) frame for phase1 and phase2 */
-> -			wpf--;
-> -			regs->rcr2	|=3D RFRLEN2(wpf - 1);
-> -			regs->xcr2	|=3D XFRLEN2(wpf - 1);
-> -		}
-> -	case 1:
-> -	case 4:
-> +	if (channels =3D=3D 2 && format =3D=3D SND_SOC_DAIFMT_I2S) {
-> +		/* Use dual-phase frames */
-> +		regs->rcr2	|=3D RPHASE;
-> +		regs->xcr2	|=3D XPHASE;
-> +		/* Set 1 word per (McBSP) frame for phase1 and phase2 */
-> +		wpf--;
-> +		regs->rcr2	|=3D RFRLEN2(wpf - 1);
-> +		regs->xcr2	|=3D XFRLEN2(wpf - 1);
->  		/* Set word per (McBSP) frame for phase1 */
->  		regs->rcr1	|=3D RFRLEN1(wpf - 1);
->  		regs->xcr1	|=3D XFRLEN1(wpf - 1);
-> -		break;
-> -	default:
-> +	} else if (channels > 0 && channels < 17) {
-> +		regs->rcr1	|=3D RFRLEN1(wpf - 1);
-> +		regs->xcr1	|=3D XFRLEN1(wpf - 1);
-> +	} else
->  		/* Unsupported number of channels */
->  		return -EINVAL;
-> -	}
-
-I would have done this a bit differently:
-
-...
-	/* Check if the number of channels are valid */
-	if (channels < 1 || channels > 16) {
-		/* Unsupported number of channels */
-		/* Probably would be good to have some error message about it? */
-		return -EINVAL;
-	}
-
-	format =3D mcbsp_data->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
-	wpf =3D channels =3D params_channels(params);
-
-	if (channels =3D=3D 2 && format =3D=3D SND_SOC_DAIFMT_I2S) {
-		/* Use dual-phase frames */
-		regs->rcr2      |=3D RPHASE;
-		regs->xcr2      |=3D XPHASE;
-		/* Set 1 word per (McBSP) frame for phase1 and phase2 */
-		wpf--;
-		regs->rcr2      |=3D RFRLEN2(wpf - 1);
-		regs->xcr2      |=3D XFRLEN2(wpf - 1);
-	}
-	/* Set word per (McBSP) frame for phase1 */
-	regs->rcr1      |=3D RFRLEN1(wpf - 1);
-	regs->xcr1      |=3D XFRLEN1(wpf - 1);
-
-> =
-
->  	switch (params_format(params)) {
->  	case SNDRV_PCM_FORMAT_S16_LE:
-> @@ -330,6 +328,34 @@ static int omap_mcbsp_dai_hw_params(struct
->  snd_pcm_substream *substream, return -EINVAL;
->  	}
-> =
-
-> +	/* Default div to 1 if it wasn't set by machine driver, otherwise
-> +	 * use set div as the maximum clock value
-> +	 */
-> +	div =3D mcbsp_data->clk_div ? mcbsp_data->clk_div : 1;
-> +
-> +	/* calc best frame size for rate and clock divider */
-> +	do {
-> +		frame_size =3D (mcbsp_data->in_freq / div) / params_rate(params);
-
-I think this as it is now will not work when McBSP is a slave.
-mcbsp_data->in_freq is going to be 0, since the sample rate generator is no=
-t in =
-
-use.
-
-
-> +		pr_debug("freq %d, rate %d, frame size %d, div %d\n",
-> +				mcbsp_data->in_freq, params_rate(params), frame_size, div);
-> +
-> +		if (frame_size > 256)
-> +			div++;
-> +	} while (frame_size > 256);
-> +
-> +	/* Check we can fit the requested number of channels into our
-> +	 * calculated frame size
-> +	 */
-> +	if ((channels * wlen) > frame_size) {
-> +		printk(KERN_ERR
-> +			"OMAP-MCBSP: cannot fit channels in frame size\n");
-> +		return -EINVAL;
-> +	}
-
--- =
-
-P=E9ter
+>_______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
