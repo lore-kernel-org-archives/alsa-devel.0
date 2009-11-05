@@ -1,14 +1,13 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 3/7] S3C64XX PCM: Define PCM Controller base
-	registers
-Date: Thu,  5 Nov 2009 10:34:45 +0900
-Message-ID: <1257384885-18248-1-git-send-email-jassi.brar@samsung.com>
+Subject: Patches for Samsung SoC PCM Controller driver
+Date: Thu,  5 Nov 2009 10:34:18 +0900
+Message-ID: <1257384858-18158-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7270103851
+	by alsa0.perex.cz (Postfix) with ESMTP id E8B4C103858
 	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 02:38:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,23 +22,16 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- arch/arm/mach-s3c6400/include/mach/map.h |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Hello,
 
-diff --git a/arch/arm/mach-s3c6400/include/mach/map.h b/arch/arm/mach-s3c6400/include/mach/map.h
-index fc8b223..866be31 100644
---- a/arch/arm/mach-s3c6400/include/mach/map.h
-+++ b/arch/arm/mach-s3c6400/include/mach/map.h
-@@ -48,6 +48,8 @@
- #define S3C64XX_PA_IIS1		(0x7F003000)
- #define S3C64XX_PA_TIMER	(0x7F006000)
- #define S3C64XX_PA_IIC0		(0x7F004000)
-+#define S3C64XX_PA_PCM0		(0x7F009000)
-+#define S3C64XX_PA_PCM1		(0x7F00A000)
- #define S3C64XX_PA_IISV4	(0x7F00D000)
- #define S3C64XX_PA_IIC1		(0x7F00F000)
- 
--- 
-1.6.2.5
+Samsung SoCs S3C2450, S3C64XX and later versions have got PCM controllers
+which drive what the ALSA stack terms DSP_A/DSP_B formats.
+
+Since the S3C ALSA platform driver was named s3c24xx-pcm, which cause
+direct namespace clash with the new PCM controller drivers, it has been
+renamed along with some of its local symbols.
+
+First two of the following series of patches does that and later ones
+make ground for and add the PCM controller driver.
+
+regards.
