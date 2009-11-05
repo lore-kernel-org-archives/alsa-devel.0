@@ -1,13 +1,14 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: Patches for Samsung SoC PCM Controller driver
-Date: Thu,  5 Nov 2009 10:34:18 +0900
-Message-ID: <1257384858-18158-1-git-send-email-jassi.brar@samsung.com>
+Subject: [PATCH 4/7] S3C64XX PCM: Added PCLK clock source for
+	the PCM controllers
+Date: Thu,  5 Nov 2009 10:34:53 +0900
+Message-ID: <1257384893-18278-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id E8B4C103858
+	by alsa0.perex.cz (Postfix) with ESMTP id F23DC103870
 	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 02:38:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,16 +23,33 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ arch/arm/plat-s3c64xx/clock.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
-Samsung SoCs S3C2450, S3C64XX and later versions have got PCM controllers
-which drive what the ALSA stack terms DSP_A/DSP_B formats.
-
-Since the S3C ALSA platform driver was named s3c24xx-pcm, which cause
-direct namespace clash with the new PCM controller drivers, it has been
-renamed along with some of its local symbols.
-
-First two of the following series of patches does that and later ones
-make ground for and add the PCM controller driver.
-
-regards.
+diff --git a/arch/arm/plat-s3c64xx/clock.c b/arch/arm/plat-s3c64xx/clock.c
+index 7a36e89..3ab564e 100644
+--- a/arch/arm/plat-s3c64xx/clock.c
++++ b/arch/arm/plat-s3c64xx/clock.c
+@@ -129,6 +129,18 @@ static struct clk init_clocks_disable[] = {
+ 		.enable		= s3c64xx_pclk_ctrl,
+ 		.ctrlbit	= S3C_CLKCON_PCLK_IIS1,
+ 	}, {
++		.name		= "pcm",
++		.id		= 0,
++		.parent		= &clk_p,
++		.enable		= s3c64xx_pclk_ctrl,
++		.ctrlbit	= S3C_CLKCON_PCLK_PCM0,
++	}, {
++		.name		= "pcm",
++		.id		= 1,
++		.parent		= &clk_p,
++		.enable		= s3c64xx_pclk_ctrl,
++		.ctrlbit	= S3C_CLKCON_PCLK_PCM1,
++	}, {
+ 		.name		= "spi",
+ 		.id		= 0,
+ 		.parent		= &clk_p,
+-- 
+1.6.2.5
