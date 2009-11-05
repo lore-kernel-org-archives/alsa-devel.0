@@ -1,23 +1,20 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: Re: [PATCH] ALSA: hda: Use 3stack quirk for some
-	broken Dell models
-Date: Thu, 5 Nov 2009 12:56:43 -0500
-Message-ID: <604760770911050956p36db309et9373f92c59505b25@mail.gmail.com>
-References: <730569.68030.qm@web112605.mail.gq1.yahoo.com>
-	<s5h639pcuqt.wl%tiwai@suse.de>
-	<604760770911050845i16421726h8fd3d230544332b8@mail.gmail.com>
-	<s5h7hu4lwyl.wl%tiwai@suse.de>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [PATCH v2] ASoC: OMAP: Don't try to set
+	unsupported OMAP_DMA_DATA_BURST_16 on OMAP1
+Date: Thu, 5 Nov 2009 19:03:43 +0100
+Message-ID: <200911051903.46185.jkrzyszt@tis.icnet.pl>
+References: <200910212035.42245.jkrzyszt@tis.icnet.pl>
+	<200910212310.05087.jkrzyszt@tis.icnet.pl>
+	<20091022105040.GA18862@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f184.google.com (mail-pz0-f184.google.com
-	[209.85.222.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FC1010395F
-	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 18:56:45 +0100 (CET)
-Received: by pzk14 with SMTP id 14so142865pzk.23
-	for <alsa-devel@alsa-project.org>; Thu, 05 Nov 2009 09:56:43 -0800 (PST)
-In-Reply-To: <s5h7hu4lwyl.wl%tiwai@suse.de>
+Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FE18103965
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 19:04:10 +0100 (CET)
+In-Reply-To: <20091022105040.GA18862@rakim.wolfsonmicro.main>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,14 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: crimsun@ubuntu.com, alsa-devel@alsa-project.org, Dan Chen <crimsunkg@yahoo.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 5, 2009 at 12:09 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> Any chance to get alsa-info.sh output?
-> The codec proc file isn't enough, e.g. missing PCI IDs.
-
-Unfortunately there's no alsa-info.sh output, but the important bits
-are as follows: SSIDs 0x102801dd and 0x102801ed are affected by the
-volume-knob change.
+VGh1cnNkYXkgMjIgT2N0b2JlciAyMDA5IDEyOjUwOjQwIE1hcmsgQnJvd24gbmFwaXNhxYIoYSk6
+Cj4gT24gV2VkLCBPY3QgMjEsIDIwMDkgYXQgMTE6MTA6MDNQTSArMDIwMCwgSmFudXN6IEtyenlz
+enRvZmlrIHdyb3RlOgo+ID4gV2VkbmVzZGF5IDIxIE9jdG9iZXIgMjAwOSAyMToxNjowNyBKYXJr
+a28gTmlrdWxhIG5hcGlzYcWCKGEpOgo+ID4gPiBJIHdvdWxkIGhhdmUgaW1wbGVtZW50ZWQgdGhp
+cyBieSAiaWYgKCFjcHVfY2xhc3NfaXNfb21hcDEoKSkKPiA+ID4gey4uLl9idXJzdF9tb2RlfSIg
+Zm9yIG1ha2luZyBzdXJlIHRoYXQgbm8gbmV3IE9NQVAxIGVycm9yIGlzIGludHJvZHVjZWQKPiA+
+ID4gaW4gdGhlIGZ1dHVyZSBpZiB0aGVyZSBpcyBuZWVkIHRvIGFkZCBzb21lIGNvbW1vbiBzdHVm
+ZiBhZnRlciB0aG9zZQo+ID4gPiBidXJzdF9tb2RlIGNhbGxzIGFuZCBwcm9iYWJseSBjb21waWxl
+ciBjYW4gYmV0dGVyIG9wdGltaXplIGF3YXkgdGhvc2UKPiA+ID4gYnVyc3RfbW9kZSBjYWxscyBm
+b3IgT01BUDEgYnVpbGRzLgo+ID4KPiA+IFllcywgeW91J3JlIHJpZ2h0Lgo+ID4KPiA+IC0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4KPiBBcHBsaWVkLCB0aGFua3MuICBGb3IgZWFzZSBvZiB1
+c2Ugd2l0aCB0b29scyBsaWtlIGdpdCBhbSBpdCdzIG5pY2VyIGlmCj4geW91IGNhbiBpbmNsdWRl
+IHRleHQgbGlrZSB0aGUgYWJvdmUgd2hpY2ggc2hvdWxkbid0IGJlIGluIHRoZSBhY3R1YWwKPiBj
+b21taXQgbG9nIGFmdGVyIHRoZSAtLS0gKHdoZXJlIHRoZSBkaWZmc3RhdCBlbmRzIHVwKS4KCk1h
+cmssIEphcmtrbywKClNob3VsZG4ndCB0aGlzIG9uZSBnbyBpbnRvIDIuNi4zMiBhcyBhIGZpeD8g
+SXQgY29ycmVjdHMgdGhlIHByb2JsZW0gb2YgQVNvQyAKbm90IHdvcmtpbmcgb24gT01BUDEgYXQg
+YWxsLiBJIGNhbid0IHNlZSBpdCBpbiAtcmM2LgoKVGhhbmtzLApKYW51c3oKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
