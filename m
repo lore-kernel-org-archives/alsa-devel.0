@@ -1,21 +1,28 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd-hdsp driver error?
-Date: Thu, 5 Nov 2009 12:29:27 +0800
-Message-ID: <4f3252890911042029m18db97d0qc324b37d1c1dd330@mail.gmail.com>
-References: <933ed0910911020433j59c4907q94ee073e5f09e328@mail.gmail.com>
-	<4f3252890911022248w5d2a2d73s74bb0412e8f4e0c7@mail.gmail.com>
-	<933ed0910911031105m608009cbg2ccd1c543887befa@mail.gmail.com>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: [PATCH 1/7] S3C AUDIO: Rename s3c24xx_pcm prefix
+	to	s3c_dma
+Date: Thu, 05 Nov 2009 14:03:08 +0900
+Message-ID: <4AF25C8C.3020001@samsung.com>
+References: <1257384866-18188-1-git-send-email-jassi.brar@samsung.com>
+	<4AF24321.7070303@samsung.com>
+	<1b68c6790911042016s6993f314x6e2a1c169ba5d437@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f177.google.com (mail-px0-f177.google.com
-	[209.85.216.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80CFA10385C
-	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 05:29:29 +0100 (CET)
-Received: by pxi7 with SMTP id 7so1010569pxi.17
-	for <alsa-devel@alsa-project.org>; Wed, 04 Nov 2009 20:29:27 -0800 (PST)
-In-Reply-To: <933ed0910911031105m608009cbg2ccd1c543887befa@mail.gmail.com>
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7C2F3103870
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 06:03:12 +0100 (CET)
+Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KSM00LOXE18B6@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 05 Nov 2009 14:03:09 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KSM00JE4E188X@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 05 Nov 2009 14:03:08 +0900 (KST)
+In-reply-to: <1b68c6790911042016s6993f314x6e2a1c169ba5d437@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,225 +32,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Please provide the full pulseaudio log and output of alsa-info.sh
+On 11/5/2009 1:16 PM, jassi brar wrote:
+> On Thu, Nov 5, 2009 at 12:14 PM, Joonyoung Shim <jy0922.shim@samsung.com> wrote:
+>> On 11/5/2009 10:34 AM, Jassi Brar wrote:
+>>> The s3c24xx_pcm prefix for the soc_platform is inappropriate when
+>>> some Samsung SoCs have PCM controllers which will eventually have
+>>> drivers and hence namespace ambiguities.
+>>>
+>>> To resolve naming ambiguities in future the following have been
+>>> renamed in order
+>>> 1) s3c24xx_pcm_dma_params -> s3c_audio_dma_params
+>>> 2) s3c24xx_pcm_preallocate_dma_buffer -> s3c_preallocate_dma_buffer
+>>> 3) s3c24xx_pcm_dmamask -> s3c_dmamask
+>>> 4) s3c24xx_pcm_XXX -> s3c_dma_XXX
+>>>
+>> I think that it should have a consistent prefix: s3c_audio_dma_ or
+>> other prefix.
+> Ideally, Yes.
+> but if we try so, we have the following
+>  1) s3c24xx_pcm_dma_params -> s3c_dma_dma_params
+>  2) s3c24xx_pcm_preallocate_dma_buffer -> s3c_dma_preallocate_dma_buffer
+>  3) s3c24xx_pcm_dmamask -> s3c_dma_dmamask
+> 
+> none of which seem very nice.
+> 
 
-http://www.pulseaudio.org/wiki/Troubleshooting
+You can modify the names for the consistent prefix. If you
+use s3c_dma_ prefix, for example, s3c24xx_pcm_dma_params can be to 
+s3c_dma_params.
 
-pulseaudio -k; pulseaudio -vvv
+>> BTW, should we keep up s3c prefix? If we will change the prefix now, it
+>> is a chance alterable from s3c prefix to other prefix because there is a
+>> variety of samsung SoCs unused s3c prefix.
+> These patches is not about changing naming conventions. Only changes, necessary
+> to have a clean and consistent namespace after integrating PCM driver, have
+> been made.
 
-and
+Agree, but you already are changing the prefix from s3c24xx to s3c.
 
-aplay -v -Dfront:0 32bit.wav
-
-aplay -v -M -Dfront:0 32bit.wav
-
-aplay -v -Dplughw:0 any.wav
-
-aplay -v -M -Dplughw:0 any.wav
-
-
-2009/11/4 Lars Zobbe <fedesensfar@gmail.com>
-
-> Hi Raymond.
->
-> I so sorry Raymond. But I'm not sure what to do with this info. Is there
-> something more I have to tell you? Is there anything I can do to make
-> pulseaudio able to detect via udev? Can I copy-paste that bit of code you
-> sent me somewhere?
-> Please tell me if there's more you need to know.
-> Greetings.
-> Lars.
->
->
->
->
-> On Tue, Nov 3, 2009 at 7:48 AM, Raymond Yau <superquad.vortex2@gmail.com>wrote:
->
->> I guess route plugin used by RME96*.conf does not support mmap when there
->> is
->> channel conversion since minimum channels supported by hdsp is 14
->>
->>
->> static struct snd_pcm_hardware snd_hdsp_playback_subinfo =
->> {
->>    .info = (SNDRV_PCM_INFO_MMAP |
->>                 SNDRV_PCM_INFO_MMAP_VALID |
->>                 SNDRV_PCM_INFO_NONINTERLEAVED |
->>                 SNDRV_PCM_INFO_SYNC_START |
->>                 SNDRV_PCM_INFO_DOUBLE),
->> #ifdef SNDRV_BIG_ENDIAN
->>    .formats = SNDRV_PCM_FMTBIT_S32_BE,
->> #else
->>    .formats = SNDRV_PCM_FMTBIT_S32_LE,
->> #endif
->>    .rates = (SNDRV_PCM_RATE_32000 |
->>                 SNDRV_PCM_RATE_44100 |
->>                 SNDRV_PCM_RATE_48000 |
->>                 SNDRV_PCM_RATE_64000 |
->>                 SNDRV_PCM_RATE_88200 |
->>                 SNDRV_PCM_RATE_96000),
->>    .rate_min = 32000,
->>    .rate_max = 96000,
->>    .channels_min = 14,
->>    .channels_max = HDSP_MAX_CHANNELS,
->>    .buffer_bytes_max = HDSP_CHANNEL_BUFFER_BYTES * HDSP_MAX_CHANNELS,
->>    .period_bytes_min = (64 * 4) * 10,
->>    .period_bytes_max = (8192 * 4) * HDSP_MAX_CHANNELS,
->>    .periods_min = 2,
->>    .periods_max = 2,
->>    .fifo_size = 0
->> };
->>
->> 2009/11/2 Lars Zobbe <fedesensfar@gmail.com>
->>
->> > Hi.
->> >
->> > Talking to one of the pulseaudio developers (*Colin Guthrie*) about a
->> > problem with pulseaudio loading modules and my sound card (RME HDSP
->> 9632),
->> > I
->> > was adviced to inform you about the problem.
->> >
->> > I'm on ubuntu 9.10, 64bit, kernel 2.6.31 with an amd64 x2 3800+
->> processor.
->> >
->> >
->> > Symptoms are:
->> > Can only make pulseaudio load modules with the deprecated load-module
->> > module-detect command, module-udev-detect doesn't detect anything (no
->> sound
->> > - only null sink output in padevchooser).
->> > I get terrible stuttering.
->> > I can remove pulseaudio and make things work, more or less. However,
->> that
->> > leaves me without software mixing and apps fighting for the rights to
->> make
->> > sound. And more inconveniences (fx. no volume-control).
->> > I can play sound from audacity without stuttering by choosing the
->> cardname
->> > directly in output HDSP, not ALSA, not pulseaudio.
->> >
->> >
->> > When trying to run alsa-info.sh I get a lot of "not found" errors. So
->> > you'll
->> > get some manual info (they might have moved som files around in ubuntu
->> > 9.10).
->> >
->> > This is part of my syslog during a boot. (I did the formatting to bold).
->> >
->> > Nov  2 10:57:32 lars-desktop pulseaudio[1524]: module.c: module-detect
->> is
->> > deprecated: Please use module-udev-detect instead of module-detect!
->> > Nov  2 10:57:37 lars-desktop pulseaudio[1524]: ratelimit.c: 27 events
->> > suppressed
->> > Nov  2 10:57:39 lars-desktop pulseaudio[1612]: module.c: module-detect
->> is
->> > deprecated: Please use module-udev-detect instead of module-detect!
->> > Nov  2 10:57:44 lars-desktop pulseaudio[1612]: ratelimit.c: 23 events
->> > suppressed
->> > Nov  2 10:57:44 lars-desktop pulseaudio[1612]: alsa-sink.c: ALSA woke us
->> up
->> > to write new data to the device, but there was actually nothing to
->> write!
->> > Nov  2 10:57:44 lars-desktop pulseaudio[1612]: alsa-sink.c: *Most likely
->> > this is a bug in the ALSA driver 'snd_hdsp'. Please report this issue to
->> > the
->> > ALSA developers.*
->> > Nov  2 10:57:44 lars-desktop pulseaudio[1612]: alsa-sink.c: We were
->> woken
->> > up
->> > with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or
->> > another value < min_avail.
->> > Nov  2 10:57:49 lars-desktop pulseaudio[1612]: ratelimit.c: 99 events
->> > suppressed
->> >
->> > Later if I try to play audio I get terrible skipping or stuttering and
->> my
->> > syslog (in less than a minute) writes:
->> > Nov  2 11:55:16 lars-desktop pulseaudio[1612]: ratelimit.c: 16 events
->> > suppressed
->> > Nov  2 11:55:21 lars-desktop pulseaudio[1612]: ratelimit.c: 34 events
->> > suppressed
->> > Nov  2 11:55:26 lars-desktop pulseaudio[1612]: ratelimit.c: 70 events
->> > suppressed
->> > Nov  2 11:55:31 lars-desktop pulseaudio[1612]: ratelimit.c: 29 events
->> > suppressed
->> > Nov  2 11:55:36 lars-desktop pulseaudio[1612]: ratelimit.c: 43 events
->> > suppressed
->> > Nov  2 11:55:41 lars-desktop pulseaudio[1612]: ratelimit.c: 161 events
->> > suppressed
->> > Nov  2 11:55:46 lars-desktop pulseaudio[1612]: ratelimit.c: 28 events
->> > suppressed
->> > Nov  2 11:55:51 lars-desktop pulseaudio[1612]: ratelimit.c: 18 events
->> > suppressed
->> > Nov  2 11:55:56 lars-desktop pulseaudio[1612]: ratelimit.c: 16 events
->> > suppressed
->> >
->> > Here's the relevant part (concerning my sound card) of lspci -vvv
->> >
->> > 02:09.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall
->> DSP
->> > (rev 9a)
->> >    Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
->> > Stepping- SERR- FastB2B- DisINTx-
->> >    Status: Cap- 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
->> > <TAbort- <MAbort- >SERR- <PERR- INTx-
->> >    Latency: 255
->> >    Interrupt: pin A routed to IRQ 19
->> >    Region 0: Memory at fdff0000 (32-bit, non-prefetchable) [size=64K]
->> >    Kernel driver in use: RME Hammerfall DSP
->> >    Kernel modules: snd-hdsp
->> >
->> > And:
->> > lars@lars-desktop:~$ aplay -l
->> > **** List of PLAYBACK Hardware Devices ****
->> > card 0: DSP [Hammerfall DSP], device 0: RME Hammerfall HDSP 9632 [RME
->> > Hammerfall HDSP 9632]
->> >  Subdevices: 1/1
->> >  Subdevice #0: subdevice #0
->> >
->> >
->> > lars@lars-desktop:~$ cat /proc/asound/version
->> > Advanced Linux Sound Architecture Driver Version 1.0.21.
->> > Compiled on Oct 15 2009 for kernel 2.6.31-14-generic (SMP).
->> >
->> > lars@lars-desktop:~$ cat /proc/asound/cards
->> >  0 [DSP            ]: H-DSP - Hammerfall DSP
->> >                      RME Hammerfall HDSP 9632 at 0xfdff0000, irq 19
->> >
->> >
->> > lars@lars-desktop:~$ cat /proc/asound/modules
->> >  0 snd_hdsp
->> >
->> > I don't have .asound.conf files.
->> >
->> > lars@lars-desktop:~$ hdsploader
->> > hdsploader - firmware loader for RME Hammerfall DSP cards
->> > Looking for HDSP + Multiface or Digiface cards :
->> > Card 0 : RME Hammerfall HDSP 9632 at 0xfdff0000, irq 19
->> >
->> > And of course. My computer makes no sound if I don't load the hdspmixer
->> at
->> > startup. I guess that's just normal for this card though.
->> >
->> > Please let me know, if you need more info. I really hope you can help
->> out
->> > here. And that this might help you to.
->> >
->> > Thanks for the great work you do. Greetings.
->> > Lars Zobbe.
->> > _______________________________________________
->> > Alsa-devel mailing list
->> > Alsa-devel@alsa-project.org
->> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> >
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->
->
+> About changing the s3c prefix is a valid discussion, though.
+> 
