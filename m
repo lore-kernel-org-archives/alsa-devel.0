@@ -1,24 +1,27 @@
-From: Alex Austin <circuitsoft.alex@gmail.com>
-Subject: Re: Trying to get unsupported CODEC to work
-Date: Thu, 5 Nov 2009 03:15:52 -0600
-Message-ID: <53baa24a0911050115h4ef8cecfjff733dd06c801a7f@mail.gmail.com>
-References: <53baa24a0812111428j143c23berb8ba0819b6b55eac@mail.gmail.com>
-	<s5hd4fxdgf7.wl%tiwai@suse.de>
-	<53baa24a0812120054u6c605987seba0d3066b2d5fa7@mail.gmail.com>
-	<s5h1vwdd9xl.wl%tiwai@suse.de>
-	<53baa24a0812120129q609e567bjf2286060d7f25da7@mail.gmail.com>
-	<s5hy6ylbux6.wl%tiwai@suse.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [Intel-gfx] Problems with HDMI audio on Intel
+	DG45FC	motherboard
+Date: Thu, 5 Nov 2009 17:22:09 +0800
+Message-ID: <20091105092209.GA23782@localhost>
+References: <20091020224353.GA23186@csy.ca>
+	<2da93e57183a480510f5b67c24ba11d0.squirrel@www.hardeman.nu>
+	<20091028044621.GA18453@localhost>
+	<0323437dc2fc33a33ec9285505a36434.squirrel@www.hardeman.nu>
+	<20091029094602.GA3589@localhost>
+	<20091029222932.GA1109@hardeman.nu>
+	<20091102091108.GB13363@localhost>
+	<20091105004655.GA25580@hardeman.nu>
+	<20091105074731.GB3016@localhost>
+	<b3e8c2bfd1e1ff82a1e68a4e03950238.squirrel@www.hardeman.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1AD6F1038FC
-	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 10:15:53 +0100 (CET)
-Received: by pwj16 with SMTP id 16so1869744pwj.32
-	for <alsa-devel@alsa-project.org>; Thu, 05 Nov 2009 01:15:53 -0800 (PST)
-In-Reply-To: <s5hy6ylbux6.wl%tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B67A103910
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 10:22:13 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <b3e8c2bfd1e1ff82a1e68a4e03950238.squirrel@www.hardeman.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,59 +31,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: David =?utf-8?B?SMOkcmRlbWFu?= <david@hardeman.nu>
+Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I know this thread is ancient, but the question has come to my forefront
-again, so I'll see if I can ask it better now.
-
-On Fri, Dec 12, 2008 at 3:23 AM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> Alex Austin wrote:
-> >
-> > Shoot. The DAE-3 is a controller for a 5-CH Amplifier card driving
-> > speakers directly, but I still need the subwoofer output from the ALC888.
-> I
-> > may be able to get by without the ALC using high-level inputs on the sub
-> amp.
-> > Even without it, what do I need to do to enable the DAE-3? I'm
-> comfortable in
-> > C, but I don't know ALSA much, if at all, yet.
->
-> The codec parser isn't present for DAE-3, and the generic parser
-> obviously doesn't work for it.  So, you need to create a new codec
-> parser such as other patch_*.c.
->
-> Takashi
->
->
-Since the output of codecgraph looks pretty simple, what codec
-parser would you recommend starting with as a base?
-
-
-On Fri, Dec 12, 2008 at 1:02 AM, Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Thu, 11 Dec 2008 16:28:28 -0600,
-> Alex Austin wrote:
-> >
-> > Hello,
-> > I have an MSI Media Live DIVA motherboard. It has an AMD SB600 HD
-> > Audio controller, and two CODECs on the HDA bus.
-> >
-> > First is an ALC888
-> > Second is an Intersil DAE-3.
->
-> The analog outputs on both codecs are really used at the same time?
-> Then it doesn't work right now.  Simply "not implemented".  And no
-> concrete plan to fix it yet.  This might require a fundamental
-> re-design.
->
->
-> Takashi
->
-
-Is this still the case? Structurally, why can't this be supported now?
-
-Thanks much,
-- Alex Austin
+T24gVGh1LCBOb3YgMDUsIDIwMDkgYXQgMDU6MDY6MjJQTSArMDgwMCwgRGF2aWQgSMOkcmRlbWFu
+IHdyb3RlOgo+IE9uIFRodSwgTm92ZW1iZXIgNSwgMjAwOSAwODo0NywgV3UgRmVuZ2d1YW5nIHdy
+b3RlOgo+ID4gT24gVGh1LCBOb3YgMDUsIDIwMDkgYXQgMDg6NDY6NTVBTSArMDgwMCwgRGF2aWQg
+d3JvdGU6Cj4gPj4gQ3VycmVudGx5IGRvaW5nIHNvbWUgdGVzdGluZyB3aXRoIHN0aWNreSBzdHJl
+YW0gaWQgYW5kIGZvcm1hdC4KPiA+Pgo+ID4+IENvdWxkIHlvdSB0ZXN0IHRoZSBhdHRhY2hlZCBw
+YXRjaCAoYXBwbGllcyB0byBhbHNhIGdpdCByZXBvLCB3aXRob3V0Cj4gPj4geW91ciBwYXRjaHNl
+dCkgYW5kIHNlZSBpZiB5b3UgZ2V0IHRoZSBpbml0aWFsIDAuNXMgc2lsZW5jZSB3aXRoIHlvdXIK
+PiA+PiByZWNlaXZlcj8KPiA+Cj4gPiBZZXMgaXQgd29ya2VkIQo+IAo+IFdvcmtlZCBhcyBpbiB5
+b3UgZ2V0IG5vIDAuNXMgb2YgaW5pdGlhbCBzaWxlbmNlPyBPciB3b3JrZWQgYXMgaW4geW91IGF0
+Cj4gbGVhc3QgZ290IHNvbWUgYXVkaW8gYW5kIHRoZSBjb21wdXRlciBkaWRuJ3QgY3Jhc2g/IDop
+CgpubyAwLjVzIDopCgo+ID4gSG93ZXZlciBzb21ldGhpbmcgaXMgYnJva2VuIHdoZW4KPiA+Cj4g
+PiBDT05GSUdfU05EX0hEQV9QT1dFUl9TQVZFPXkKPiA+IENPTkZJR19TTkRfSERBX1BPV0VSX1NB
+VkVfREVGQVVMVD0xCgpJbiB0aGUgYWJvdmUgY29uZmlnLCB5b3UgbmVlZCB0byByZXN0YXJ0IHBs
+YXliYWNrIHdpdGhpbiAxcyB0byBhdm9pZApsb3NpbmcgdGhlIGZpcnN0IDAuNXMgc2FtcGxlcy4g
+KE90aGVyd2lzZSBwb3dlciBzYXZlIHdpbGwga2ljayBpbi4pCgo+IEkgd2FzIGtpbmQgb2YgZXhw
+ZWN0aW5nIG15IHBhdGNoIHRvIGJyZWFrIGJvdGggcG93ZXIgc2F2ZSBhbmQKPiBzdXNwZW5kL3Jl
+c3VtZSBnaXZlbiB0aGF0IGl0IGV4cGVjdHMgdGhlIHN0cmVhbSBmb3JtYXQgYW5kIGlkIHRvIHN1
+cnZpdmUKPiBmcm9tIHBjbV9jbG9zZSB0byBwY21fcHJlcGFyZSAod2hpY2ggdGhleSBwcm9iYWJs
+eSB3b24ndCBpZiBwb3dlciBzYXZpbmcKCkRvbid0IHdvcnJ5LCBJIGZpeGVkIHRoYXQgaW4gbXkg
+aW1wbGVtZW50YXRpb24gOikKCj4gYW5kL29yIHJlc3VtZS9zdXNwZW5kIGtpY2tzIGluKS4gUG93
+ZXIgc2F2ZSBhbHNvIHNlZW1zIHRvIG1lc3MgdXAgc29tZQo+IG90aGVyIHBhcnRzIG9mIHRoZSBk
+cml2ZXIgZXZlbiB3aXRob3V0IG15IHBhdGNoIChoYXZlbid0IHJlYWxseSBsb29rZWQKPiBpbnRv
+IHRoYXQgeWV0Li4ucG93ZXIgc2F2ZSBtaWdodCBiZSB0cmlja3kgd2l0aCBIRE1JIGZyb20gd2hh
+dCBJJ3ZlIHNlZW4KPiBzbyBmYXIpLgoKWWVzLCBIRE1JIHBvd2VyIHNhdmUgaXMgaW5oZXJlbnRs
+eSBub3QgcG9zc2libGUgZ2l2ZW4gdGhhdCB0aGUgc2luawpkZXZpY2VzIGhhdmUgdGhlIG1vcmUg
+dGhhbiAxcyBkZWxheXMuLgoKPiBUaGUgcGF0Y2ggd2FzIGp1c3QgYSB0ZXN0IGNhc2UgdG8gc2Vl
+IGlmIGl0IHdhcyBlbm91Z2ggdG8gZml4IHRoZSAwLjVzCj4gc2lsZW5jZSBvbiByZWNlaXZlcnMg
+d2hpY2ggYXJlIGxlc3MgcGlja3kgdGhhbiBtaW5lIChpdCBzdGlsbCBkb2Vzbid0IGZpeAo+IHRo
+ZSAwLjVzIHNpbGVuY2Ugb24gbXkgcmVjZWl2ZXIgYnV0IGl0IGZpeGVzIHRoZQo+IHNpbGVuY2Ut
+Zm9yLXRoZS1kdXJhdGlvbi1vZi1hLXRyYWNrIHByb2JsZW0pLgo+IAo+IE5leHQgdXAsIG1vcmUg
+dGVzdGluZyB3aXRoIFZDRkcgd2hlbiBJIGhhdmUgbW9yZSB0aW1lLiBJIGhhdmUgYWN0dWFsbHkK
+PiB0cmllZCBzZXR0aW5nIHRoYXQgYml0IGJ1dCBpdCBkaWRuJ3QgY2hhbmdlIGFueXRoaW5nLiBD
+b21tZW50cyBpbgo+IHNldHVwX2RpZ19vdXRfc3RyZWFtIGZyb20gaGRhX2NvZGVjLmMgc2VlbXMg
+dG8gc3VnZ2VzdCB0aGF0IGl0J3MgYSBiaXQKPiBtb3JlIGNvbXBsZXggdGhhbiBqdXN0IHNldHRp
+bmcgdGhlIHJpZ2h0IGJpdC4KCk5vIHdvcnJ5LCBJIGd1ZXNzIHRoYXQncyByZWFsdGVrIHNwZWNp
+ZmljIHByb2JsZW0gKHNwZGlmX3N0YXR1c19yZXNldAppcyBvbmx5IHNldCBieSBpdCkuCgo+ID4g
+QXR0YWNoZWQgaXMgbXkgdXBkYXRlZCBwYXRjaHNldCwgd2hpY2ggaW5jbHVkZXMgdGhlIHN0aWNr
+eQo+ID4gc3RyZWFtL2luZm9mcmFtZSBmZWF0dXJlcy4KPiAKPiBUaGFua3MsIEknbGwgdGFrZSBh
+IGxvb2sgYXQgaXQgYXMgc29vbiBhcyBwb3NzaWJsZS4KClRoYW5rcywKRmVuZ2d1YW5nCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
