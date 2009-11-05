@@ -1,27 +1,18 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [Intel-gfx] Problems with HDMI audio on Intel
-	DG45FC	motherboard
-Date: Thu, 5 Nov 2009 17:22:09 +0800
-Message-ID: <20091105092209.GA23782@localhost>
-References: <20091020224353.GA23186@csy.ca>
-	<2da93e57183a480510f5b67c24ba11d0.squirrel@www.hardeman.nu>
-	<20091028044621.GA18453@localhost>
-	<0323437dc2fc33a33ec9285505a36434.squirrel@www.hardeman.nu>
-	<20091029094602.GA3589@localhost>
-	<20091029222932.GA1109@hardeman.nu>
-	<20091102091108.GB13363@localhost>
-	<20091105004655.GA25580@hardeman.nu>
-	<20091105074731.GB3016@localhost>
-	<b3e8c2bfd1e1ff82a1e68a4e03950238.squirrel@www.hardeman.nu>
+From: Shawn Starr <shawn.starr@rogers.com>
+Subject: Re: Conexant CX20561 - Microphone problems
+Date: Thu, 5 Nov 2009 04:26:49 -0500
+Message-ID: <200911050426.49802.shawn.starr@rogers.com>
+References: <200910291859.41076.shawn.starr@rogers.com>
+	<200911050348.38131.shawn.starr@rogers.com>
+	<200911050409.23998.shawn.starr@rogers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B67A103910
-	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 10:22:13 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <b3e8c2bfd1e1ff82a1e68a4e03950238.squirrel@www.hardeman.nu>
+Received: from smtp101.rog.mail.re2.yahoo.com (smtp101.rog.mail.re2.yahoo.com
+	[206.190.36.79]) by alsa0.perex.cz (Postfix) with SMTP id 4C289103919
+	for <alsa-devel@alsa-project.org>; Thu,  5 Nov 2009 10:26:50 +0100 (CET)
+In-Reply-To: <200911050409.23998.shawn.starr@rogers.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,49 +22,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David =?utf-8?B?SMOkcmRlbWFu?= <david@hardeman.nu>
-Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBOb3YgMDUsIDIwMDkgYXQgMDU6MDY6MjJQTSArMDgwMCwgRGF2aWQgSMOkcmRlbWFu
-IHdyb3RlOgo+IE9uIFRodSwgTm92ZW1iZXIgNSwgMjAwOSAwODo0NywgV3UgRmVuZ2d1YW5nIHdy
-b3RlOgo+ID4gT24gVGh1LCBOb3YgMDUsIDIwMDkgYXQgMDg6NDY6NTVBTSArMDgwMCwgRGF2aWQg
-d3JvdGU6Cj4gPj4gQ3VycmVudGx5IGRvaW5nIHNvbWUgdGVzdGluZyB3aXRoIHN0aWNreSBzdHJl
-YW0gaWQgYW5kIGZvcm1hdC4KPiA+Pgo+ID4+IENvdWxkIHlvdSB0ZXN0IHRoZSBhdHRhY2hlZCBw
-YXRjaCAoYXBwbGllcyB0byBhbHNhIGdpdCByZXBvLCB3aXRob3V0Cj4gPj4geW91ciBwYXRjaHNl
-dCkgYW5kIHNlZSBpZiB5b3UgZ2V0IHRoZSBpbml0aWFsIDAuNXMgc2lsZW5jZSB3aXRoIHlvdXIK
-PiA+PiByZWNlaXZlcj8KPiA+Cj4gPiBZZXMgaXQgd29ya2VkIQo+IAo+IFdvcmtlZCBhcyBpbiB5
-b3UgZ2V0IG5vIDAuNXMgb2YgaW5pdGlhbCBzaWxlbmNlPyBPciB3b3JrZWQgYXMgaW4geW91IGF0
-Cj4gbGVhc3QgZ290IHNvbWUgYXVkaW8gYW5kIHRoZSBjb21wdXRlciBkaWRuJ3QgY3Jhc2g/IDop
-CgpubyAwLjVzIDopCgo+ID4gSG93ZXZlciBzb21ldGhpbmcgaXMgYnJva2VuIHdoZW4KPiA+Cj4g
-PiBDT05GSUdfU05EX0hEQV9QT1dFUl9TQVZFPXkKPiA+IENPTkZJR19TTkRfSERBX1BPV0VSX1NB
-VkVfREVGQVVMVD0xCgpJbiB0aGUgYWJvdmUgY29uZmlnLCB5b3UgbmVlZCB0byByZXN0YXJ0IHBs
-YXliYWNrIHdpdGhpbiAxcyB0byBhdm9pZApsb3NpbmcgdGhlIGZpcnN0IDAuNXMgc2FtcGxlcy4g
-KE90aGVyd2lzZSBwb3dlciBzYXZlIHdpbGwga2ljayBpbi4pCgo+IEkgd2FzIGtpbmQgb2YgZXhw
-ZWN0aW5nIG15IHBhdGNoIHRvIGJyZWFrIGJvdGggcG93ZXIgc2F2ZSBhbmQKPiBzdXNwZW5kL3Jl
-c3VtZSBnaXZlbiB0aGF0IGl0IGV4cGVjdHMgdGhlIHN0cmVhbSBmb3JtYXQgYW5kIGlkIHRvIHN1
-cnZpdmUKPiBmcm9tIHBjbV9jbG9zZSB0byBwY21fcHJlcGFyZSAod2hpY2ggdGhleSBwcm9iYWJs
-eSB3b24ndCBpZiBwb3dlciBzYXZpbmcKCkRvbid0IHdvcnJ5LCBJIGZpeGVkIHRoYXQgaW4gbXkg
-aW1wbGVtZW50YXRpb24gOikKCj4gYW5kL29yIHJlc3VtZS9zdXNwZW5kIGtpY2tzIGluKS4gUG93
-ZXIgc2F2ZSBhbHNvIHNlZW1zIHRvIG1lc3MgdXAgc29tZQo+IG90aGVyIHBhcnRzIG9mIHRoZSBk
-cml2ZXIgZXZlbiB3aXRob3V0IG15IHBhdGNoIChoYXZlbid0IHJlYWxseSBsb29rZWQKPiBpbnRv
-IHRoYXQgeWV0Li4ucG93ZXIgc2F2ZSBtaWdodCBiZSB0cmlja3kgd2l0aCBIRE1JIGZyb20gd2hh
-dCBJJ3ZlIHNlZW4KPiBzbyBmYXIpLgoKWWVzLCBIRE1JIHBvd2VyIHNhdmUgaXMgaW5oZXJlbnRs
-eSBub3QgcG9zc2libGUgZ2l2ZW4gdGhhdCB0aGUgc2luawpkZXZpY2VzIGhhdmUgdGhlIG1vcmUg
-dGhhbiAxcyBkZWxheXMuLgoKPiBUaGUgcGF0Y2ggd2FzIGp1c3QgYSB0ZXN0IGNhc2UgdG8gc2Vl
-IGlmIGl0IHdhcyBlbm91Z2ggdG8gZml4IHRoZSAwLjVzCj4gc2lsZW5jZSBvbiByZWNlaXZlcnMg
-d2hpY2ggYXJlIGxlc3MgcGlja3kgdGhhbiBtaW5lIChpdCBzdGlsbCBkb2Vzbid0IGZpeAo+IHRo
-ZSAwLjVzIHNpbGVuY2Ugb24gbXkgcmVjZWl2ZXIgYnV0IGl0IGZpeGVzIHRoZQo+IHNpbGVuY2Ut
-Zm9yLXRoZS1kdXJhdGlvbi1vZi1hLXRyYWNrIHByb2JsZW0pLgo+IAo+IE5leHQgdXAsIG1vcmUg
-dGVzdGluZyB3aXRoIFZDRkcgd2hlbiBJIGhhdmUgbW9yZSB0aW1lLiBJIGhhdmUgYWN0dWFsbHkK
-PiB0cmllZCBzZXR0aW5nIHRoYXQgYml0IGJ1dCBpdCBkaWRuJ3QgY2hhbmdlIGFueXRoaW5nLiBD
-b21tZW50cyBpbgo+IHNldHVwX2RpZ19vdXRfc3RyZWFtIGZyb20gaGRhX2NvZGVjLmMgc2VlbXMg
-dG8gc3VnZ2VzdCB0aGF0IGl0J3MgYSBiaXQKPiBtb3JlIGNvbXBsZXggdGhhbiBqdXN0IHNldHRp
-bmcgdGhlIHJpZ2h0IGJpdC4KCk5vIHdvcnJ5LCBJIGd1ZXNzIHRoYXQncyByZWFsdGVrIHNwZWNp
-ZmljIHByb2JsZW0gKHNwZGlmX3N0YXR1c19yZXNldAppcyBvbmx5IHNldCBieSBpdCkuCgo+ID4g
-QXR0YWNoZWQgaXMgbXkgdXBkYXRlZCBwYXRjaHNldCwgd2hpY2ggaW5jbHVkZXMgdGhlIHN0aWNr
-eQo+ID4gc3RyZWFtL2luZm9mcmFtZSBmZWF0dXJlcy4KPiAKPiBUaGFua3MsIEknbGwgdGFrZSBh
-IGxvb2sgYXQgaXQgYXMgc29vbiBhcyBwb3NzaWJsZS4KClRoYW5rcywKRmVuZ2d1YW5nCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On November 5, 2009 04:09:23 am Shawn Starr wrote:
+> On November 5, 2009 03:48:37 am Shawn Starr wrote:
+> > On November 5, 2009 02:47:19 am Takashi Iwai wrote:
+> > > At Tue, 3 Nov 2009 14:30:15 -0500,
+> > >
+> > > Shawn Starr wrote:
+> > > > On November 3, 2009 05:55:07 am Takashi Iwai wrote:
+> > > > > At Mon, 2 Nov 2009 11:36:21 -0500,
+> > > > >
+> > > > > Shawn Starr wrote:
+> > > > > > On November 2, 2009 08:05:37 am Takashi Iwai wrote:
+> > > > > > > At Thu, 29 Oct 2009 18:59:40 -0400,
+> > > > > > >
+> > > > > > > Shawn Starr wrote:
+> > > > > > > > Hello ALSA developers,
+> > > > > > > >
+> > > > > > > > I am having problems with the microphone on the following
+> > > > > > > > hardware this is on a Lenovo W500 laptop.
+> > > > > > > >
+> > > > > > > > Card: HDA Intel
+> > > > > > > > Chip: Conexant CX20561 (Hermosa)
+> > > > > > > >
+> > > > > > > > Here is the problems im noticing:
+> > > > > > > >
+> > > > > > > > 1) If I use ALSA 'default' with the microphone I get noise
+> > > > > > > > interference on output [high/low/high/low].
+> > > > > > > >
+> > > > > > > > If I switch this to use the "ALSA Capture on HDA Intel
+> > > > > > > > [CONEXANT Analog] I get interference except it is the
+> > > > > > > > standard 60Hz electrical noise [steady noise]
+> > > > > > > >
+> > > > > > > > 2) Using the internal/external microphones gives an
+> > > > > > > > inconsistent volume. It also does not seem to work with the
+> > > > > > > > microphone cutting out so much. I need to adjust Digital +
+> > > > > > > > another microphone but it still drops capturing.
+> > > > > > > >
+> > > > > > > > Alsamixer shows:  Digital/Docking Microphone/External
+> > > > > > > > Microphone/Internal Microphone
+> > > > > > > >
+> > > > > > > > Here is the module options I give to the sound driver:
+> > > > > > > >
+> > > > > > > > options snd-intel-hda enable_msi=1 power_save=10
+> > > > > > > > power_save_controller=true model=laptop index=0
+> > > > > > > >
+> > > > > > > > Assuming power saving/controller causes the microphone to cut
+> > > > > > > > out or not.
+> > > > > > > >
+> > > > > > > > 3) I'm now aware that this card has no pinouts for PCM
+> > > > > > > > capture https://bugzilla.redhat.com/show_bug.cgi?id=502293
+> > > > > > >
+> > > > > > > Could you give alsa-info.sh output?  Run with --no-upload
+> > > > > > > option, and attach the generated file.
+> > > > > >
+> > > > > > Here's the attached output,
+> > > > >
+> > > > > Judging from the pin config, in your case, "Docking" seems
+> > > > > controlling the external-mic volume.  The "External Mic Volume"
+> > > > > should be zero.
+> > > >
+> > > > There is still problems with the volume sensitivity,  but I will
+> > > > adjust to set ext mic to zero. Do we need a quirk for the Lenovo W500
+> > > > then?
+> > >
+> > > Looks so.  Though, the SSID is identical with X200.
+> > > I'm wondering whether X200 works fine as is or not...
+> > >
+> > > > Or that's a bug wrt to volume sensitivity and static interferences?
+> > >
+> > > The mic boost volumes are missing in these quirks.
+> > > You can adjust manually via hda-verb, e.g.
+> > >
+> > > 	hda-verb /dev/snd/hwC0D0 0x1d SET_AMP 0x7003
+> > >
+> > > for the built-in mic, and
+> > >
+> > > 	hda-verb /dev/snd/hwC0D0 0x18 SET_AMP 0x7003
+> > >
+> > > for the mic jack.  Change the value between 0x7000 and 0x7004.
+> > >
+> > >
+> > > Takashi
+> >
+> > Will try to adjust those. I tried the X200, but it didn't make any
+> >  difference.
+> 
+> I set the mic boost volume quirk, that did adjust the loudness, so it
+>  doesn't seem to be cutting out anymore. So it looks like that problem is
+>  fixed with the quirk.
+> 
+> Would you like me to provide you a sound recording indicating the
+>  interference I hear when using the microphone?
+> 
+The interference is coming from: ALSA Capture on default (seems to be the 
+digital device), yet HDA Intel [CONEXANT Analog] has no such interference.
+
+I suppose I could make an .asoundrc and force default to use the Analog device 
+vs the digital one.
+
+
+> Thanks,
+> Shawn.
+> 
+> > Thanks,
+> > Shawn.
+> >
+> > >_______________________________________________
+> > > Alsa-devel mailing list
+> > > Alsa-devel@alsa-project.org
+> > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
