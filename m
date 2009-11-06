@@ -1,14 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Fri, 6 Nov 2009 13:26:55 +0000
-Message-ID: <20091106132654.GC10371@rakim.wolfsonmicro.main>
+Subject: ASoC updates for 2.6.33
+Date: Fri, 6 Nov 2009 15:59:05 +0000
+Message-ID: <20091106155905.GA29207@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03AEF24684
-	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2009 14:26:57 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AE940243BF
+	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2009 16:59:07 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,7 +20,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 The following changes since commit b3f5a272a33ef06a37cd44703c46ec916b8a1c93:
@@ -30,20 +30,10 @@ The following changes since commit b3f5a272a33ef06a37cd44703c46ec916b8a1c93:
 are available in the git repository at:
 
   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
-.6.32
+.6.33
 
-This looks enormous since it contains a merge up of 2.6.32-rc6 in order
-to get build fixes needed for my one platform that usefully runs
-unmodified mainline.  The two new commits are:
-
-Jassi Brar (1):
-      ASoC: S3C64XX I2S: Enable audio-bus clock
-
-Janusz Krzysztofik (1):
-      ASoC: OMAP: Don't try to set unsupported OMAP_DMA_DATA_BURST_16 on OM=
-AP1
-
-all the rest are from mainline:
+Again this is mostly the merge up of rc6 so looks a lot bigger than it
+is.
 
 Aaro Koskinen (2):
       panic: Fix panic message visibility by calling bust_spinlocks(0) befo=
@@ -1487,11 +1477,14 @@ Marcin Slusarz (2):
 Marin Mitov (1):
       x86, pci: Correct spelling in a comment
 
-Mark Brown (4):
+Mark Brown (7):
       hwmon: (s3c-hwmon) Disable build for S3C64xx
       ARM: S3C64XX: Set rate of crystal mux
       mfd: Always initialise WM831x IRQ mutex
-      Merge commit 'v2.6.32-rc6' into for-2.6.32
+      ASoC: Staticise wm8727 driver structure
+      ASoC: Move sysfs and debugfs functions to head of soc-core.c
+      ASoC: Factor out snd_soc_init_card()
+      Merge branch 'for-2.6.32' into for-2.6.33
 
 Mark Hills (3):
       ALSA: snd-usb-caiaq: Missing lock around use of buffer positions
@@ -3976,6 +3969,7 @@ ye janboe (1):
  include/scsi/scsi.h                                |    3 +
  include/scsi/scsi_cmnd.h                           |    4 -
  include/scsi/scsi_host.h                           |   15 +-
+ include/sound/soc.h                                |    1 -
  init/Kconfig                                       |   20 +-
  init/main.c                                        |    1 -
  kernel/cgroup.c                                    |    8 +-
@@ -4110,9 +4104,56 @@ ye janboe (1):
  sound/pcmcia/pdaudiocf/pdaudiocf.c                 |   21 +-
  sound/pcmcia/vx/vxpocket.c                         |   21 +-
  sound/ppc/Kconfig                                  |    2 +-
- sound/soc/omap/omap-pcm.c                          |    8 +-
+ sound/soc/codecs/ac97.c                            |    3 -
+ sound/soc/codecs/ad1836.c                          |    6 -
+ sound/soc/codecs/ad1938.c                          |    6 -
+ sound/soc/codecs/ad1980.c                          |    5 -
+ sound/soc/codecs/ad73311.c                         |    8 -
+ sound/soc/codecs/ak4104.c                          |    8 -
+ sound/soc/codecs/ak4535.c                          |    8 -
+ sound/soc/codecs/ak4642.c                          |    9 -
+ sound/soc/codecs/ak4671.c                          |    9 -
+ sound/soc/codecs/cs4270.c                          |    7 -
+ sound/soc/codecs/cx20442.c                         |    6 -
+ sound/soc/codecs/pcm3008.c                         |    9 -
+ sound/soc/codecs/ssm2602.c                         |    8 -
+ sound/soc/codecs/stac9766.c                        |    3 -
+ sound/soc/codecs/tlv320aic23.c                     |    8 -
+ sound/soc/codecs/tlv320aic26.c                     |   11 -
+ sound/soc/codecs/tlv320aic3x.c                     |   10 -
+ sound/soc/codecs/tlv320dac33.c                     |   10 +-
+ sound/soc/codecs/twl4030.c                         |   12 -
+ sound/soc/codecs/uda134x.c                         |    9 -
+ sound/soc/codecs/uda1380.c                         |    8 -
+ sound/soc/codecs/wm8350.c                          |   11 -
+ sound/soc/codecs/wm8400.c                          |    6 -
+ sound/soc/codecs/wm8510.c                          |    9 +-
+ sound/soc/codecs/wm8523.c                          |    8 -
+ sound/soc/codecs/wm8580.c                          |    8 -
+ sound/soc/codecs/wm8711.c                          |    8 -
+ sound/soc/codecs/wm8727.c                          |   10 +-
+ sound/soc/codecs/wm8728.c                          |    8 -
+ sound/soc/codecs/wm8731.c                          |    8 -
+ sound/soc/codecs/wm8750.c                          |    8 -
+ sound/soc/codecs/wm8753.c                          |    9 -
+ sound/soc/codecs/wm8776.c                          |    9 -
+ sound/soc/codecs/wm8900.c                          |    6 -
+ sound/soc/codecs/wm8903.c                          |    9 -
+ sound/soc/codecs/wm8940.c                          |    6 -
+ sound/soc/codecs/wm8960.c                          |    8 -
+ sound/soc/codecs/wm8961.c                          |    9 -
+ sound/soc/codecs/wm8971.c                          |    9 +-
+ sound/soc/codecs/wm8974.c                          |    8 -
+ sound/soc/codecs/wm8988.c                          |    9 -
+ sound/soc/codecs/wm8990.c                          |    9 +-
+ sound/soc/codecs/wm8993.c                          |    9 -
+ sound/soc/codecs/wm9081.c                          |    9 -
+ sound/soc/codecs/wm9705.c                          |    8 -
+ sound/soc/codecs/wm9712.c                          |    8 -
+ sound/soc/codecs/wm9713.c                          |    7 +-
  sound/soc/s3c24xx/s3c24xx-pcm.c                    |   17 +-
  sound/soc/s3c24xx/s3c64xx-i2s.c                    |    2 +
+ sound/soc/soc-core.c                               |  475 ++--
  sound/usb/caiaq/audio.c                            |   16 +-
  sound/usb/caiaq/device.c                           |    2 +-
  tools/perf/Documentation/perf-timechart.txt        |    3 +
@@ -4131,7 +4172,7 @@ ye janboe (1):
  tools/perf/util/symbol.h                           |   10 +
  tools/perf/util/trace-event-parse.c                |   17 +-
  virt/kvm/kvm_main.c                                |   21 +-
- 1777 files changed, 90018 insertions(+), 25793 deletions(-)
+ 1825 files changed, 90249 insertions(+), 26409 deletions(-)
  rename Documentation/ABI/testing/{sysfs-class-usb_host =3D> sysfs-class-uw=
 b_rc-wusbhc} (88%)
  delete mode 100644 Documentation/ABI/testing/sysfs-devices-cache_disable
