@@ -1,26 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC - Add support for upto 16 channels on
- OMAP MCBSP
-Date: Fri, 6 Nov 2009 15:00:14 +0000
-Message-ID: <20091106150013.GA27699@rakim.wolfsonmicro.main>
-References: <1257357235.2887.499.camel@odin>
-	<20091104185534.GA22055@xora.vm.bytemark.co.uk>
-	<1257364009.2887.665.camel@odin>
-	<20091105095143.995beeea.jhnikula@gmail.com>
-	<1257432930.3603.902.camel@odin>
-	<20091105212822.2fab9974.jhnikula@gmail.com>
-	<1257451710.3576.292.camel@odin>
-	<20091106132024.GA4938@sirena.org.uk>
-	<1257517520.3624.564.camel@odin>
+Subject: Re: ASoC updates for 2.6.32
+Date: Fri, 6 Nov 2009 15:06:54 +0000
+Message-ID: <20091106150654.GB27699@rakim.wolfsonmicro.main>
+References: <20091106132654.GC10371@rakim.wolfsonmicro.main>
+	<s5h639n92uv.wl%tiwai@suse.de>
+	<20091106142330.GB4938@sirena.org.uk>
+	<s5hzl6zu3c5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AD00424737
-	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2009 16:00:15 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5FC132474F
+	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2009 16:06:55 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1257517520.3624.564.camel@odin>
+In-Reply-To: <s5hzl6zu3c5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,32 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Graeme Gregory <gg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 06, 2009 at 02:25:20PM +0000, Liam Girdwood wrote:
+On Fri, Nov 06, 2009 at 03:37:14PM +0100, Takashi Iwai wrote:
 
-> static inline int snd_soc_get_framesize(int clock, struct snd_pcm_hw_params *params);
+> It's fine to keep the fix branch forwarding after the merge.  Feel
+> free to do that in your side.
 
-That's roughly what I'm thinking of too - it doesn't even need to take
-the clock in since the frame size is unrelated to the clock in (and the
-calculation is also useful for devices which have FLLs they can use to
-vary the system clock to meet their bit clock requirements).  We'd also
-want a versions that takes the TDM parameters in for use when
-configuring that.
+OK, I'll do that.  You're not concerned about this giving you the effect
+of back merging into your for-linus branches, or do you throw those away
+and regenerate them anyway?
 
-I'll pull the relevant code out of some of my drivers sometime over the
-next few days.
+> My only point is that the backward merge from the upstream isn't
+> regarded as a good thing.
 
-Most of the devices I've seen that couldn't use this stuff at all
-actually need to maintain some sample rate ratio for their master clock
-and don't need to worry about BCLK since the fs restriction usually
-takes care of it.
+...
 
-> static inline int snd_soc_get_divider(int clock, struct snd_pcm_hw_params *params);
+> Well, I myself don't mind much, but Linus would do.
+> That's why I'm asking.
 
-This one I'm less sure about, partly due to naming but also because it
-tends to be where you end up with restrictions that'd need handling in
-drivers - I'm not sure that you'd save anything that wasn't already
-saved with the above two functions.
+I wasn't aware of this.  I know he had issues with merging up of random
+not particularly tested commits (I don't like that either, especially in
+the merge window) but he had said he was OK with merging up tagged
+releases.
+
+Like I say, it's mostly just for my mental model of what's going on -
+the fact that there are these topic branches and they're kept around is
+what's telling me to do things this way.
