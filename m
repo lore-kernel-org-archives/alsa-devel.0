@@ -1,21 +1,18 @@
-From: Victor Stinner <victor.stinner@haypocalc.com>
-Subject: (SCH Poulsbo) HD Audio Controller
-Date: Fri, 06 Nov 2009 18:25:03 +0100
-Message-ID: <4AF45BEF.8050503@haypocalc.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 7/7] S3C PCM: Added the CPU driver for
+	PCM	controllers
+Date: Fri, 6 Nov 2009 17:50:59 +0000
+Message-ID: <20091106175058.GH4938@sirena.org.uk>
+References: <1257384917-18368-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F05E244F5
-	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2009 18:50:08 +0100 (CET)
-Received: from smtp6-g21.free.fr (localhost [127.0.0.1])
-	by smtp6-g21.free.fr (Postfix) with ESMTP id DCD62E080C2
-	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2009 18:50:06 +0100 (CET)
-Received: from [192.168.0.11] (mol67-2-88-164-127-124.fbx.proxad.net
-	[88.164.127.124])
-	by smtp6-g21.free.fr (Postfix) with ESMTP id EDC9FE08017
-	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2009 18:50:03 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9CAC244F6
+	for <alsa-devel@alsa-project.org>; Fri,  6 Nov 2009 18:51:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1257384917-18368-1-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,46 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, Nov 05, 2009 at 10:35:17AM +0900, Jassi Brar wrote:
+> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-I bought a new Eee PC 1101HA. It uses the "Intel System Controller Hub 
-(SCH) US15W" chipset which includes the "ALC269" (Intel "HD" audio 
-chipset). The pci identifier of the audio sound card is 8086:811b. On 
-Fedora, the snd-hda-intel kernel (from ALSA 1.0.20) module is loaded, 
-but i don't hear anything.
+This looks basically good.  A few comments but they're pretty much
+nitpicks:
 
-On IRC (#alsa on Freenode), gnubien gave me the trick to make it 
-working: write the following configuration in /etc/modprobe.d/alsa.conf 
-file:
+> +	clk = (clkctl & S3C_PCM_CLKCTL_SERCLKSEL_PCLK) ?
+> +					pcm->pclk : pcm->cclk;
 
-    options snd-hda-intel model=eeepc-p901
+This would be clearer as an if statement - the ternery operator isn't
+massively legible at the best of times, especially when statements end
+up spanning multiple lines.
 
-Without the model trick, my playback controls are:
+> +	case SND_SOC_DAIFMT_CBS_CFS:
+> +		/* Nothing to do, Master by default */
+> +		break;
+> +	default:
+> +		spin_unlock_irq(&pcm->lock);
+> +		dev_err(pcm->dev, "Unsupported master/slave format!\n");
+> +		return -EINVAL;
+> +	}
 
-- Master
-- Headphone
-- PCM
-- Front
-- Front Mic
-- Front Mic Boost
-- Beep
+A goto to handle the lock unwinding might be appropriate.
 
-With model=eeepc-p901, playback controls are:
+> +	case S3C_PCM_CLKSRC_MUX:
+> +		clkctl &= ~S3C_PCM_CLKCTL_SERCLKSEL_PCLK;
+> +
+> +		if (clk_get_rate(pcm->cclk) != freq)
+> +			clk_set_rate(pcm->cclk, freq);
+> +
 
-- LineOut
-- Mic Boost
-- Beep
-- iSpeaker
+May as well just clk_set_rate() unconditionally, it'll do no harm to do
+a null change.
 
-Thanks to model=eeepc-p901, the sound works correctly.
+> +struct clk *s3c_pcm_get_clock(struct snd_soc_dai *cpu_dai)
+> +{
+> +	struct s3c_pcm_info *pcm = to_info(cpu_dai);
+> +	void __iomem *regs = pcm->regs;
+> +	u32 clkctl = readl(regs + S3C_PCM_CLKCTL);
+> +
+> +	if (clkctl & S3C_PCM_CLKCTL_SERCLKSEL_PCLK)
+> +		return pcm->pclk;
+> +	else
+> +		return pcm->cclk;
+> +}
+> +EXPORT_SYMBOL_GPL(s3c_pcm_get_clock);
 
-Here is the output of alsa-info.sh script:
+How will this be used?
 
-http://www.alsa-project.org/db/?f=3ae0754e841558e9b88a51ceebd5e7a491639750
+> +	/* Check for valid device index */
+> +	if (pdev->id >= ARRAY_SIZE(s3c_pcm)) {
+> +		dev_err(&pdev->dev, "id %d out of range\n", pdev->id);
+> +		return -EINVAL;
+> +	}
 
-PS: Please "CC" me to your anwsers.
-
-Victor Stinner
+id could be less than zero too.
