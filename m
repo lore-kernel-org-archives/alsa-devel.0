@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
- tracking nonsense
-Date: Sat, 7 Nov 2009 20:12:33 +0000
-Message-ID: <20091107201233.GC31789@sirena.org.uk>
-References: <20091107081631.18908.82921.stgit@angua>
-	<20091107083358.18908.10635.stgit@angua>
-	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
-	<fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: [PATCH] ASoC: OMAP3 Pandora: update for TWL4030 codec
+	changes
+Date: Sat,  7 Nov 2009 23:16:12 +0200
+Message-ID: <1257628572-6049-1-git-send-email-notasas@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CE1A103891
-	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 21:12:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C5EA246E0
+	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 22:16:16 +0100 (CET)
+Received: by bwz9 with SMTP id 9so7859026bwz.32
+	for <alsa-devel@alsa-project.org>; Sat, 07 Nov 2009 13:16:15 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,48 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 07, 2009 at 11:51:16AM -0700, Grant Likely wrote:
-> On Sat, Nov 7, 2009 at 5:51 AM, Jon Smirl <jonsmirl@gmail.com> wrote:
+A while ago TWL4030 had it's playback stream name changed, but
+pandora needs it for it's playback path. Update to correct stream
+name so that playback works again.
 
-> current period.  My understanding of ALSA is that the application is
-> supposed to make sure there is enough silence in the buffer to handle
-> the lag between notification that the last period with valid data has
-> been played out and the stop trigger.
+Also mark VIBRA output as not connected.
 
-This is certainly the most robust approach for applications.  For a
-large proportion of hardware it won't matter too much since they're able
-to shut down the audio very quickly but that can't be entirely relied
-upon, especially at higher rates on slower machines.
+Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+---
+ sound/soc/omap/omap3pandora.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-> occur.  That says to me that the real problem is an unbounded latency
-> caused by another part of the kernel (the tty console in this case).
-
-That's certainly not going to help anything here - if a delay is
-introduced in telling the hardware to shut down the DMA then that
-increases the chance for the DMA controller to start pushing valid audio
-data from the buffer to the audio interface.
-
-> > A much cleaner solution would be for ALSA to provide a field that
-> > indicates the last valid address in the ring buffer system. Then in
-> > the driver's buffer complete callback I could get that value and
-> > reprogram the DMA engine not to run off the end of valid data. As each
-> > buffer completes I would reread the value and update the DMA stop
-> > address. You also need the last valid address field when DMA is first
-> > started.
-
-> ... assuming that audio needs to stop exactly at the end of valid
-> data.  But if the last few periods are silence, then this assumption
-> isn't true.
-
-Indeed, it makes the whole thing much more reliable.
-
-Providing a final valid data point to the driver would possibly even
-make things worse since if it were used then you'd have the equivalent
-race where the application has initialised some data but not yet managed
-to update the driver to tell it it's being handed over; if the driver
-just carries on running through the data there's a reasonable chance
-nobody will notice that case.
+diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
+index ad219aa..0cd06f5 100644
+--- a/sound/soc/omap/omap3pandora.c
++++ b/sound/soc/omap/omap3pandora.c
+@@ -134,7 +134,7 @@ static int omap3pandora_hp_event(struct snd_soc_dapm_widget *w,
+  *  |P| <--- TWL4030 <--------- Line In and MICs
+  */
+ static const struct snd_soc_dapm_widget omap3pandora_out_dapm_widgets[] = {
+-	SND_SOC_DAPM_DAC("PCM DAC", "Playback", SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("PCM DAC", "HiFi Playback", SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_PGA_E("Headphone Amplifier", SND_SOC_NOPM,
+ 			   0, 0, NULL, 0, omap3pandora_hp_event,
+ 			   SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
+@@ -181,6 +181,7 @@ static int omap3pandora_out_init(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_nc_pin(codec, "CARKITR");
+ 	snd_soc_dapm_nc_pin(codec, "HFL");
+ 	snd_soc_dapm_nc_pin(codec, "HFR");
++	snd_soc_dapm_nc_pin(codec, "VIBRA");
+ 
+ 	ret = snd_soc_dapm_new_controls(codec, omap3pandora_out_dapm_widgets,
+ 				ARRAY_SIZE(omap3pandora_out_dapm_widgets));
+-- 
+1.5.6.3
