@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] S3C64XX I2S: Enable audio-bus clock
-Date: Sat, 7 Nov 2009 12:31:06 +0000
-Message-ID: <20091107123106.GD3228@sirena.org.uk>
-References: <1257498024-29163-1-git-send-email-jassi.brar@samsung.com>
-	<20091106131330.GB10371@rakim.wolfsonmicro.main>
-	<1b68c6790911060648w8a3bca6te94ae2fcd221f1ae@mail.gmail.com>
-	<20091106150934.GC27699@rakim.wolfsonmicro.main>
-	<1b68c6790911061903s30e92a64uaab9f518479b7a6b@mail.gmail.com>
+Subject: Re: [PATCH 4/6] ASoC/mpc5200: add to_psc_dma_stream()
+ helper
+Date: Sat, 7 Nov 2009 12:33:20 +0000
+Message-ID: <20091107123320.GE3228@sirena.org.uk>
+References: <20091107081631.18908.82921.stgit@angua>
+	<20091107083423.18908.21177.stgit@angua>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88FA5103817
-	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 13:31:07 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D3BFB103817
+	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 13:33:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1b68c6790911061903s30e92a64uaab9f518479b7a6b@mail.gmail.com>
+In-Reply-To: <20091107083423.18908.21177.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 07, 2009 at 12:03:34PM +0900, jassi brar wrote:
+On Sat, Nov 07, 2009 at 01:34:31AM -0700, Grant Likely wrote:
 
-> By the design of the driver, clk_enable for 'audio-bus' too ought to be in
->  driver (just like 'iis'). If some user is enabling it somewhere else, he=
-/she is
-> not in line with the design.
+> +/* Utility for retrieving psc_dma_stream structure from a substream */
+> +inline struct psc_dma_stream *
+> +to_psc_dma_stream(struct snd_pcm_substream *substream, struct psc_dma *psc_dma)
+> +{
+> +	if (substream->pstr->stream == SNDRV_PCM_STREAM_CAPTURE)
+> +		return &psc_dma->capture;
+> +	return &psc_dma->playback;
+> +}
 
-I suspect that these users were just never enabling the clock at all
-rather than enabling it somewhere else.
-
-> > Any news on IISv4 port support? =A0It'd be good to get the SMDKs to the
-> > point where they can actually play audio. =A0I had been expecting some
-> > followups from your previous patches.
-
-> I will resend some patches which were given reviews. I just got busy.
-> Due to different official priorities, the 6channel support implementation=
- got
-> delayed. It is definitely on my todo list.
-
-OK, thanks.  Even two channel support for the port would be good since
-it'd make it much easier for me to do the enhancements to the wm8580
-driver that we were talking about.
+Traditionally this'd be an if () else but it makes no difference either
+way to the generated code.
