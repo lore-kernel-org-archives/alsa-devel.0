@@ -1,73 +1,83 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 1/7] S3C AUDIO: Rename s3c24xx_pcm prefix
-	to s3c_dma
-Date: Sat, 7 Nov 2009 12:46:07 +0900
-Message-ID: <1b68c6790911061946w6cf04e4cv30f790470c20cba4@mail.gmail.com>
-References: <1257384866-18188-1-git-send-email-jassi.brar@samsung.com>
-	<4AF24321.7070303@samsung.com>
-	<1b68c6790911042016s6993f314x6e2a1c169ba5d437@mail.gmail.com>
-	<4AF25C8C.3020001@samsung.com> <20091106162322.GD4938@sirena.org.uk>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: [PATCH 0/6] Fixups to MPC5200 ASoC drivers
+Date: Sat, 07 Nov 2009 01:33:40 -0700
+Message-ID: <20091107081631.18908.82921.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53]) by alsa0.perex.cz (Postfix) with ESMTP id 4EC5824601
-	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 04:46:08 +0100 (CET)
-Received: by pwj11 with SMTP id 11so217156pwj.32
-	for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2009 19:46:07 -0800 (PST)
-In-Reply-To: <20091106162322.GD4938@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Jassi Brar <jassi.brar@samsung.com>, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>, ben-linux@fluff.org
+Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
+Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
+To: linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Cc: lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-> On Thu, Nov 05, 2009 at 02:03:08PM +0900, Joonyoung Shim wrote:
->> On 11/5/2009 1:16 PM, jassi brar wrote:
-On Sat, Nov 7, 2009 at 1:23 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
->> > These patches is not about changing naming conventions. Only changes, necessary
->> > to have a clean and consistent namespace after integrating PCM driver, have
->> > been made.
->
->> Agree, but you already are changing the prefix from s3c24xx to s3c.
->
-> I also agree with this - if we're renaming this driver anyway then
-> changing the prefix for it while we're at it seems reasonable, it means
-> one less change in the future.
-renaming is a box of worms which i dont wanna be the first to open.
-I would wait for a complete discussion on the naming conventions to happen
-and have a decision made before I do renaming.
-Though, I can resend the patch with samsung_ prefix too, if everyone
-is willing to
-hold their peace forever.
+Hi everyone,
 
->> > but if we try so, we have the following
->> >  1) s3c24xx_pcm_dma_params -> s3c_dma_dma_params
->> >  2) s3c24xx_pcm_preallocate_dma_buffer -> s3c_dma_preallocate_dma_buffer
->> >  3) s3c24xx_pcm_dmamask -> s3c_dma_dmamask
->
->> > none of which seem very nice.
->
->> You can modify the names for the consistent prefix. If you
->> use s3c_dma_ prefix, for example, s3c24xx_pcm_dma_params can be to
->> s3c_dma_params.
->
-> I tend to agree with this.  The actual rename needs to happen to free up
-> the PCM name for the driver for the PCM hardware.
+Jon, as we talked about earlier today, I've spent some time working
+on the MPC5200 AC97 driver to try and get rid of some of the nagging
+bugs.  The two big changes that I ended up making were to remove the
+tracking of appl_ptr (and all the race conditions that went with it),
+and to fix the handling of AC97 slot enables/disables so that a
+stream can be stopped and started again without going through the
+hw_params() step.
 
-So taking into account the aforementioned point as well, you suggest
-1) s3c24xx_pcm_dma_params -> samsung_dma_params
-2) s3c24xx_pcm_preallocate_dma_buffer -> samsung_preallocate_dma_buffer
-3) s3c24xx_pcm_dmamask -> samsung_dmamask
-4) s3c24xx_pcm_XXX -> samsung_dma_XXX
+I know that you had the appl_ptr tracking in to try and solve the
+problem of audible noise at the end of playback.  After discussing
+the data flow model on #alsa-soc this morning, I learned that
+the driver is really supposed to be free-running, and the ALSA layer
+is supposed to be able to keep up.  It is also responsible to ensure
+that buffer is filled with silence at the end of playback to eliminate
+noise before the trigger can properly turn everything off.  Only a
+couple of other drivers use appl_ptr, so I'm pretty sure this driver
+shouldn't be doing it either.
 
-Please clarify your net suggestion.
+Instead, from a recommendation this morning, I added a 'fudge' factor
+to the value reported by the .pointer() callback of 1/4 the period
+size.  At first I thought this helped, but after more testing I find
+that the driver seems to work correctly with aplay both with and
+without the fudge factor applied.
+
+However, I was able to reproduce the noise problem when using aplay
+if I have DEBUG #defined at the top of the mpc5200_dma.c file with
+debug console logs being spit out the serial port.  In that situation,
+the STOP trigger calls printk(), and a stale sample can be heard at
+the end of playback.  However, I believe this is a bug with the serial
+console driver (in that it disables IRQs for a long time) causing
+unbounded latencies, so the trigger doesn't get processed fast enough.
+It doesn't help that aplay doesn't flush the buffers with silence
+before triggering STOP.  Other programs (like gstreamer) do seem to
+flush out stale data before stopping the stream.  I'm sure someone
+will correct me if I'm making some bad assumptions here.
+
+So, please test.  Let me know if these work or not.  I've don't know
+if the last patch (Add fudge factor...) is needed or not.
+
+Cheers,
+g.
+
+---
+
+Grant Likely (6):
+      ASoC/mpc5200: Add fudge factor to value reported by .pointer()
+      ASoC/mpc5200: fix enable/disable of AC97 slots
+      ASoC/mpc5200: add to_psc_dma_stream() helper
+      ASoC/mpc5200: Improve printk debug output for trigger
+      ASoC/mpc5200: get rid of the appl_ptr tracking nonsense
+      ASoC/mpc5200: Track DMA position by period number instead of bytes
+
+
+ sound/soc/fsl/mpc5200_dma.c      |   98 ++++++++++----------------------------
+ sound/soc/fsl/mpc5200_dma.h      |   24 ++++++---
+ sound/soc/fsl/mpc5200_psc_ac97.c |   39 ++++++++-------
+ 3 files changed, 63 insertions(+), 98 deletions(-)
+
+-- 
+Signature
