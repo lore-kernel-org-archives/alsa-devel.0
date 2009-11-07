@@ -1,18 +1,19 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: HDA timeouts
-Date: Sat, 07 Nov 2009 21:08:42 +0200
-Message-ID: <1257620922.5075.3.camel@maxim-laptop>
-References: <1257620814.5075.2.camel@maxim-laptop>
+From: "=?utf-8?q?R=C3=A9mi?= Denis-Courmont" <remi@remlab.net>
+Subject: Re: [PATCH 1/3] Open device nodes with close-on-exec
+	flag
+Date: Sat, 7 Nov 2009 21:28:35 +0200
+Message-ID: <200911072128.36583.remi@remlab.net>
+References: <200911052116.53251.remi@remlab.net>
+	<1257448662-5124-1-git-send-email-remi@remlab.net>
+	<s5hfx8s7yry.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5BDFC246A3
-	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 20:08:48 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 19so860476fgg.2
-	for <alsa-devel@alsa-project.org>; Sat, 07 Nov 2009 11:08:48 -0800 (PST)
-In-Reply-To: <1257620814.5075.2.camel@maxim-laptop>
+Received: from yop.chewa.net (yop.chewa.net [91.121.105.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id 598D9246B6
+	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 20:28:39 +0100 (CET)
+In-Reply-To: <s5hfx8s7yry.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2009-11-07 at 21:06 +0200, Maxim Levitsky wrote: 
-> Hi,
-> 
-> Sometimes (1 in 5 boots) I see the following:
-> azx_get_response timeout, switching to polling mode: last cmd=0x014f0900
-> 
-> I initially blamed MSI that I enabled explicitly.
-> If it is enabled, there is another timeout just before this line.
-> Now I explicitly disable msi, and still see this.
-> 
-> It seems that codec hangs or so.
-> 
-> my codec#0 attached.
-> 
-> Best regards,
-> Maxim Levitsky
-
-I also filled a bugreport:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4796
-
-Best regards,
-Maxim Levitsky
+CUhlbGxvLAoKTGUgdmVuZHJlZGkgNiBub3ZlbWJyZSAyMDA5IDEyOjA2OjQxIFRha2FzaGkgSXdh
+aSwgdm91cyBhdmV6IMOpY3JpdCA6Cj4gQ0xPRVhFQyBzdHVmZiBzaG91bGQgYmUgYXBwbGllZCB0
+byB0aGUgY2FzZSB3aXRoIHJlc21nciBhcyB3ZWxsLgo+IENhcmUgdG8gcmV3cml0ZSB0aGUgcGF0
+Y2g/CgpTdXJlLiBUaGVyZSB5b3UgZ28uLi4gKHBhdGNoZXMgMiBhbmQgMyB1bmNoYW5nZWQpCgot
+LSAKUsOpbWkgRGVuaXMtQ291cm1vbnQKaHR0cDovL3d3dy5yZW1sYWIubmV0LwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
