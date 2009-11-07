@@ -1,19 +1,22 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH] ALSA: hda_intel: disable corb rirb when
- single_cmd active
-Date: Fri, 06 Nov 2009 18:01:27 -0700
-Message-ID: <4AF4C6E7.8010807@boundarydevices.com>
-References: <1257276157-7164-1-git-send-email-troy.kisky@boundarydevices.com>	<s5hd43yzov7.wl%tiwai@suse.de>	<4AF1D9D0.9080007@boundarydevices.com>	<s5h7hu5cv01.wl%tiwai@suse.de>	<4AF32A8B.4050404@boundarydevices.com>	<s5h3a4s86j7.wl%tiwai@suse.de>
-	<s5hiqdo80xq.wl%tiwai@suse.de>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] S3C64XX I2S: Enable audio-bus clock
+Date: Sat, 7 Nov 2009 12:03:34 +0900
+Message-ID: <1b68c6790911061903s30e92a64uaab9f518479b7a6b@mail.gmail.com>
+References: <1257498024-29163-1-git-send-email-jassi.brar@samsung.com>
+	<20091106131330.GB10371@rakim.wolfsonmicro.main>
+	<1b68c6790911060648w8a3bca6te94ae2fcd221f1ae@mail.gmail.com>
+	<20091106150934.GC27699@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth01.csee.onr.siteprotect.com
-	(smtpauth01.csee.onr.siteprotect.com [64.26.60.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7BDB82459E
-	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 02:01:42 +0100 (CET)
-In-Reply-To: <s5hiqdo80xq.wl%tiwai@suse.de>
+Received: from mail-px0-f185.google.com (mail-px0-f185.google.com
+	[209.85.216.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 516DC1037F5
+	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 04:03:35 +0100 (CET)
+Received: by pxi15 with SMTP id 15so1108686pxi.23
+	for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2009 19:03:34 -0800 (PST)
+In-Reply-To: <20091106150934.GC27699@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,120 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: pshou@realtek.com.tw, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 06 Nov 2009 08:19:08 +0100,
-> I wrote:
->> At Thu, 05 Nov 2009 12:42:03 -0700,
->> Troy Kisky wrote:
->>> Takashi Iwai wrote:
->>>> At Wed, 04 Nov 2009 12:45:20 -0700,
->>>> Troy Kisky wrote:
->>>>> Takashi Iwai wrote:
->>>>>> At Tue,  3 Nov 2009 12:22:37 -0700,
->>>>>> Troy Kisky wrote:
->>>>>>> Poulsbo(US15W) cannot have any corb registers initialized
->>>>>>> when using single_cmd mode.
->>>>>>> When send_cmd timeout occur, note error.
->>>>>> Could you be more specific?  What errors do you get?
->>>>>>
->>>>>> And, how it goes to single_cmd mode?  The single_cmd mode is very last
->>>>>> resort, and reaching there means already a serious problem.
->>>>>>
->>>>>>
->>>>>> thanks,
->>>>>>
->>>>>> Takashi
->>>>>>
->>>>> No error messages, but the response read is always 0.
->>>> This is odd.  Something is already wrong, then.
->>>>
->>>>> For testing, I passed single_cmd=1 as a modules option.
->>>>>
->>>>> HDAudio_03.pdf says, "If implemented, these registers must not be used
->>>>> at the same time as the CORB and RIRB command/response mechanisms, as the operations
->>>>> will conflict."
->>>> I know this, but actually this never be a problem in the real
->>>> hardware.  So, it's left there.
->>> My hardware is real.
->> Yeah, the first hit it seems.
->>
->>>>> Plus, if the RIRB irq is enabled, the interrupt routine will print out a
->>>>> spurious interrupt message.
->>> I meant "spurious response"
->> So your patch alone isn't enough?
->>
->>>>> That said, my hardware is switching to single_cmd eventually, even if not
->>>>> passed as a module option. But at least now, when that happens my audio
->>>>> isn't dead.
->>>> It's not dead but living-dead :)
->>>> The single_cmd mode is really only for debugging.  It's never for any
->>>> running system.
->>>>
->>>>
->>>> thanks,
->>>>
->>>> Takashi
->>>
->>>
->>> I'm all in favor of totally yanking out all the single_cmd related code,
->>> but if you're leaving it in, you should apply this patch.
->> Well, it's no right fix in a strict manner.
->> The right fix would be to remove the reinitialization or the first
->> call of azx_init_cmd_io() (and disable the unsolicited events, too).
-> 
-> ... like the patch below (untested!)
-> 
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 55c7da3..cce837a 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -722,9 +722,10 @@ static unsigned int azx_rirb_get_response(struct hda_bus *bus,
->  		   chip->last_cmd[addr]);
->  	chip->single_cmd = 1;
->  	bus->response_reset = 0;
-> -	/* re-initialize CORB/RIRB */
-> +	/* release CORB/RIRB */
->  	azx_free_cmd_io(chip);
-> -	azx_init_cmd_io(chip);
-> +	/* disable unsolicited responses */
-> +	azx_writel(chip, GCTL, azx_readl(chip, GCTL) & ~ICH6_GCTL_UNSOL);
->  	return -1;
->  }
->  
-> @@ -865,7 +866,9 @@ static int azx_reset(struct azx *chip)
->  	}
->  
->  	/* Accept unsolicited responses */
-> -	azx_writel(chip, GCTL, azx_readl(chip, GCTL) | ICH6_GCTL_UNSOL);
-> +	if (!chip->single_cmd)
-> +		azx_writel(chip, GCTL, azx_readl(chip, GCTL) |
-> +			   ICH6_GCTL_UNSOL);
->  
->  	/* detect codecs */
->  	if (!chip->codec_mask) {
-> @@ -980,7 +983,8 @@ static void azx_init_chip(struct azx *chip)
->  	azx_int_enable(chip);
->  
->  	/* initialize the codec command I/O */
-> -	azx_init_cmd_io(chip);
-> +	if (!chip->single_cmd)
-> +		azx_init_cmd_io(chip);
->  
->  	/* program the position buffer */
->  	azx_writel(chip, DPLBASE, (u32)chip->posbuf.addr);
-> _______________________________________________
-
-
-This patch works fine for me when passing single_cmd=1.
-
-Thanks for spending your time on something you'd rather not.
-
-Troy
+T24gU2F0LCBOb3YgNywgMjAwOSBhdCAxMjowOSBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIEZyaSwgTm92IDA2LCAyMDA5IGF0
+IDExOjQ4OjMwUE0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4+IE9uIEZyaSwgTm92IDYsIDIw
+MDkgYXQgMTA6MTMgUE0sIE1hcmsgQnJvd24KPgo+PiA+IEknbGwgYXBwbHkgdGhpcyBidXQgSSBi
+ZWxlaXZlIHRoZSBkcml2ZXIgb3VnaHQgdG8gYmUgc21hcnRlciB3aXRoIHRoZQo+PiA+IGNsb2Nr
+cyAtIEFGQUlDVCBmcm9tIHRoZSBkb2N1bWVudGF0aW9uIHRoZSBhdWRpbyBidXMgY2xvY2sgaXMg
+bm90Cj4+ID4gZ3VhcmFudGVlZCB0byBiZSBuZWVkZWQuCj4KPj4gdGhpcyBwYXRjaCBvbmx5IGFk
+ZHMgdGhlIG1pc3NpbmcgY29kZSwgaXRzIG5vIG1vZGlmaWNhdGlvbi4KPgo+IEknbSBub3Qgc3Vy
+ZSB3aGF0IHlvdSBtZWFuIGJ5IHRoYXQ/ClNvcnJ5LCBpZiBpdHMgaGFyZCB0byB1bmRlcnN0YW5k
+IHdoYXQgaSB3cml0ZS4gSSB3aWxsIHdyaXRlIGRldGFpbGVkCmV4cGxhbmF0aW9uLgoKU2VlbXMg
+dGhlIGNsa19lbmFibGUgZm9yIGNjbGsgd2VudCAnbWlzc2luZycgZHVyaW5nIHNlZ3JlZ2F0aW9u
+IG9mIG9uZSBkcml2ZXIKaW50byBzZXBhcmF0ZSBTb0Mgc3BlY2lmaWMoczNjMjQxMiwgczNjNjR4
+eCkgYW5kIHZlcnNpb24Kc3BlY2lmaWMoczNjLWkycy12MikgcGFydHMuLgpQQ0xLKGlpcykgYW5k
+IENMS0FVRElPKGF1ZGlvLWJ1cykgYXJlIGVxdWFsbHkgcG90ZW50aWFsIGNhbmRpZGF0ZXMgb2YK
+STJTIHNvdXJjZSBjbG9jay4gSWYgdGhlIGRyaXZlciBnZXRzIGFuZCBlbmFibGVzICdpaXMnIHRo
+ZXJlIGlzIG5vIHJlYXNvbiB3aHkgaXQKc2hvdWxkIG9ubHkgZ2V0IGFuZCBub3QgZW5hYmxlICdh
+dWRpby1idXMnLgoKQnkgdGhlIGRlc2lnbiBvZiB0aGUgZHJpdmVyLCBjbGtfZW5hYmxlIGZvciAn
+YXVkaW8tYnVzJyB0b28gb3VnaHQgdG8gYmUgaW4KIGRyaXZlciAoanVzdCBsaWtlICdpaXMnKS4g
+SWYgc29tZSB1c2VyIGlzIGVuYWJsaW5nIGl0IHNvbWV3aGVyZSBlbHNlLCBoZS9zaGUgaXMKbm90
+IGluIGxpbmUgd2l0aCB0aGUgZGVzaWduLgoKPiBQcmVzdW1hYmx5IGFueSBzeXN0ZW0gdGhhdCdz
+Cj4gbWFuYWdpbmcgdG8gdXNlIHRoZSBkcml2ZXIgYXMtaXMgaXMgZG9pbmcgc28gYnkgY2xvY2tp
+bmcgdGhlIGJsb2NrIGZyb20KPiBzb21ldGhpbmcgb3RoZXIgdGhhbiB0aGUgYXVkaW8gY2xvY2sg
+c28gZnJvbSB0aGVpciBwb2ludCBvZiB2aWV3IGl0Cj4gaXNuJ3QgbmVlZGVkLgpXaHkgb3Zlcmxv
+b2sgdGhlIHJpZ2h0IGJ1dCBtaXNzaW5nIHBhcnQ/IGp1c3QgYmVjYXVzZSB1c2VycyBoYXZlIGEg
+d29yayBhcm91bmQ/Cgo+PiBzM2M2NHh4LWkycyBkcml2ZXIgc3VyZSBuZWVkcyB0byBiZSB1cGdy
+YWRlZCwgd2hpY2ggaSBwbGFuIHRvIGRvIHNvb24gaWYKPj4gbm9ib2R5IGVsc2UgZG9lcy4KPgo+
+IEFueSBuZXdzIG9uIElJU3Y0IHBvcnQgc3VwcG9ydD8gwqBJdCdkIGJlIGdvb2QgdG8gZ2V0IHRo
+ZSBTTURLcyB0byB0aGUKPiBwb2ludCB3aGVyZSB0aGV5IGNhbiBhY3R1YWxseSBwbGF5IGF1ZGlv
+LiDCoEkgaGFkIGJlZW4gZXhwZWN0aW5nIHNvbWUKPiBmb2xsb3d1cHMgZnJvbSB5b3VyIHByZXZp
+b3VzIHBhdGNoZXMuCkkgd2lsbCByZXNlbmQgc29tZSBwYXRjaGVzIHdoaWNoIHdlcmUgZ2l2ZW4g
+cmV2aWV3cy4gSSBqdXN0IGdvdCBidXN5LgpEdWUgdG8gZGlmZmVyZW50IG9mZmljaWFsIHByaW9y
+aXRpZXMsIHRoZSA2Y2hhbm5lbCBzdXBwb3J0IGltcGxlbWVudGF0aW9uIGdvdApkZWxheWVkLiBJ
+dCBpcyBkZWZpbml0ZWx5IG9uIG15IHRvZG8gbGlzdC4KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
