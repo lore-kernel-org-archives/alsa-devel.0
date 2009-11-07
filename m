@@ -1,21 +1,22 @@
 From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 5/7] S3C AUDIO: Add header to pass platform
-	data to device drivers.
-Date: Sat, 7 Nov 2009 12:31:43 +0900
-Message-ID: <1b68c6790911061931h59ef299ftb7422421225fd4d0@mail.gmail.com>
-References: <1257384900-18308-1-git-send-email-jassi.brar@samsung.com>
-	<20091106165214.GF4938@sirena.org.uk>
+Subject: Re: [PATCH 1/7] S3C AUDIO: Rename s3c24xx_pcm prefix
+	to s3c_dma
+Date: Sat, 7 Nov 2009 12:46:07 +0900
+Message-ID: <1b68c6790911061946w6cf04e4cv30f790470c20cba4@mail.gmail.com>
+References: <1257384866-18188-1-git-send-email-jassi.brar@samsung.com>
+	<4AF24321.7070303@samsung.com>
+	<1b68c6790911042016s6993f314x6e2a1c169ba5d437@mail.gmail.com>
+	<4AF25C8C.3020001@samsung.com> <20091106162322.GD4938@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f185.google.com (mail-px0-f185.google.com
-	[209.85.216.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F97D245F0
-	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 04:31:44 +0100 (CET)
-Received: by pxi15 with SMTP id 15so1117791pxi.23
-	for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2009 19:31:43 -0800 (PST)
-In-Reply-To: <20091106165214.GF4938@sirena.org.uk>
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53]) by alsa0.perex.cz (Postfix) with ESMTP id 4EC5824601
+	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 04:46:08 +0100 (CET)
+Received: by pwj11 with SMTP id 11so217156pwj.32
+	for <alsa-devel@alsa-project.org>; Fri, 06 Nov 2009 19:46:07 -0800 (PST)
+In-Reply-To: <20091106162322.GD4938@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +27,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
+Cc: Jassi Brar <jassi.brar@samsung.com>, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBOb3YgNywgMjAwOSBhdCAxOjUyIEFNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
-b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gVGh1LCBOb3YgMDUsIDIwMDkgYXQg
-MTA6MzU6MDBBTSArMDkwMCwgSmFzc2kgQnJhciB3cm90ZToKPgo+PiArLyoqCj4+ICsgKiBzdHJ1
-Y3QgczNjX2F1ZGlvX3BkYXRhIC0gY29tbW9uIHBsYXRmb3JtIGRhdGEgZm9yIGF1ZGlvIGRldmlj
-ZSBkcml2ZXJzCj4+ICsgKiBAcGRhdGE6IFBvaW50ZXIgdG8gcHJvdG9jb2woSTJTLCBQQ00gb3Ig
-QUM5Nykgc3BlY2lmaWMgcGxhdGZvcm0gZGF0YQo+PiArICogQGNmZ19ncGlvOiBDYWxsYmFjayBm
-dW5jdGlvbiB0byBzZXR1cCBtdXgnZWQgcGlucyBpbiBJMlMvUENNL0FDOTcgbW9kZQo+PiArICov
-Cj4+ICtzdHJ1Y3QgczNjX2F1ZGlvX3BkYXRhIHsKPj4gKyDCoCDCoCB2b2lkICpwZGF0YTsKPj4g
-Kwo+PiArIMKgIMKgIGludCAoKmNmZ19ncGlvKShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICopOwo+
-PiArfTsKPgo+IEkgZG9uJ3Qgc2VlIG11Y2ggYmVuZWZpdCBpbiB0aGlzIHN0cnVjdHVyZSB3aXRo
-IHRoZSBwZGF0YSBlbWJlZGRlZCBpbiBpdAo+IC0geW91IGp1c3QgZW5kIHVwIHdpdGggYW4gYWRk
-aXRpb25hbCBsYXllciBvZiBpbmRpcmVjdGlvbiBpbiB5b3VyCj4gcGxhdGZvcm0gZGF0YSBpZiB5
-b3UgbmVlZCB0byBhZGQgZGV2aWNlIHNwZWNpZmljIHN0dWZmIHdoaWNoIGlzIGFubm95aW5nCj4g
-dG8gc3BlY2lmeSBpbiBtYWNoaW5lIGRyaXZlcnMuCldlbGwsIHNpbmNlIHRoZSBhYnN0cmFjdGlv
-bihkZXYtYXVkaW8pIGlzIHN1cHBvc2VkIHRvIGJlIGNvbW1vbiBmb3IKSTJTLCBQQ00gYW5kIEFD
-OTcgcHJvdG9jb2wsIHdlIG5lZWQgdG8gaGF2ZSBhbm90aGVyIGxheWVyIHdoaWNoCmNvbW11bmlj
-YXRlIHByb3RvY29sIHNwZWNpZmljIHBsYXRmb3JtIGRhdGEuClRoaXMgcGRhdGEgaXMgbWVhbnQg
-dG8gc2VydmUgdGhhdCBwdXJwb3NlIGluIGZ1dHVyZS4KCj4gSSdkIGp1c3QgZW1iZWQgdGhlIEdQ
-SU8gY29uZmlndXJhdGlvbiBjYWxsYmFjayBpbiBhIGRyaXZlci1zcGVjaWZpYwo+IHBsYXRmb3Jt
-IGRhdGEuCklmIG5vdCBmb3IgcGRhdGEsIHRoZSBjZmdfZ3BpbyB3dWRuJ3QgYmUgZW5vdWdoIGZv
-ciBmdXR1cmUgU29DcyB3aGljaApub3Qgb25seSBjb25maWd1cmUgdGhlIE1VWCdlZCBwaW5zIGJ1
-dCBhbHNvIHNldCB0aGUgZHJpdmUgc3RyZW5ndGguIFNvbWUKbWlnaHQgYWxzbyBuZWVkIGNvbmZp
-Z3VyaW5nIHRoZSBTb0Mgd2hpY2ggbWF5IG5vdCBmYWxsIGludG8gZWl0aGVyIENsb2NrCm9yIFBv
-d2VyIGRvbWFpbi4KU28sIGlmIEkgYW0gdG8gcmVtb3ZlIHBkYXRhLCBtYXliZSBjZmdfZ3BpbyBj
-YW4gYmUgcmVuYW1lZCBjb25maWdfY29udHJvbGxlcj8KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> On Thu, Nov 05, 2009 at 02:03:08PM +0900, Joonyoung Shim wrote:
+>> On 11/5/2009 1:16 PM, jassi brar wrote:
+On Sat, Nov 7, 2009 at 1:23 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+>> > These patches is not about changing naming conventions. Only changes, necessary
+>> > to have a clean and consistent namespace after integrating PCM driver, have
+>> > been made.
+>
+>> Agree, but you already are changing the prefix from s3c24xx to s3c.
+>
+> I also agree with this - if we're renaming this driver anyway then
+> changing the prefix for it while we're at it seems reasonable, it means
+> one less change in the future.
+renaming is a box of worms which i dont wanna be the first to open.
+I would wait for a complete discussion on the naming conventions to happen
+and have a decision made before I do renaming.
+Though, I can resend the patch with samsung_ prefix too, if everyone
+is willing to
+hold their peace forever.
+
+>> > but if we try so, we have the following
+>> >  1) s3c24xx_pcm_dma_params -> s3c_dma_dma_params
+>> >  2) s3c24xx_pcm_preallocate_dma_buffer -> s3c_dma_preallocate_dma_buffer
+>> >  3) s3c24xx_pcm_dmamask -> s3c_dma_dmamask
+>
+>> > none of which seem very nice.
+>
+>> You can modify the names for the consistent prefix. If you
+>> use s3c_dma_ prefix, for example, s3c24xx_pcm_dma_params can be to
+>> s3c_dma_params.
+>
+> I tend to agree with this.  The actual rename needs to happen to free up
+> the PCM name for the driver for the PCM hardware.
+
+So taking into account the aforementioned point as well, you suggest
+1) s3c24xx_pcm_dma_params -> samsung_dma_params
+2) s3c24xx_pcm_preallocate_dma_buffer -> samsung_preallocate_dma_buffer
+3) s3c24xx_pcm_dmamask -> samsung_dmamask
+4) s3c24xx_pcm_XXX -> samsung_dma_XXX
+
+Please clarify your net suggestion.
