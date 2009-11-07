@@ -1,17 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH V3] ASoC: omap-mcbsp - add support for upto
-	16 channels.
-Date: Tue, 10 Nov 2009 08:25:27 +0200
-Message-ID: <200911100825.27587.peter.ujfalusi@nokia.com>
-References: <1257793335.3583.277.camel@odin>
+From: =?UTF-8?q?Andr=C3=A9=20Goddard=20Rosa?= <andre.goddard@gmail.com>
+Subject: [PATCH v4 00/12] introduce skip_spaces(),
+	reducing code size plus some clean-ups
+Date: Sat,  7 Nov 2009 13:16:08 -0200
+Message-ID: <cover.1257602781.git.andre.goddard__37573.9320334562$1257836958$gmane$org@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 72BB71037F9
-	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 07:25:35 +0100 (CET)
-In-Reply-To: <1257793335.3583.277.camel@odin>
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53]) by alsa0.perex.cz (Postfix) with ESMTP id DB7BD244CA
+	for <alsa-devel@alsa-project.org>; Sun,  8 Nov 2009 16:18:43 +0100 (CET)
+Received: by pwj11 with SMTP id 11so1898644pwj.32
+	for <alsa-devel@alsa-project.org>; Sun, 08 Nov 2009 07:18:42 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,28 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Graeme Gregory <gg@slimlogic.co.uk>
+To: Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, linux390@de.ibm.com, Michael Holzheu <holzheu@linux.vnet.ibm.com>, Andrew Morton <akpm@linux-f>
+Cc: =?UTF-8?q?Andr=C3=A9=20Goddard=20Rosa?= <andre.goddard@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 09 November 2009 21:02:15 ext Liam Girdwood wrote:
-> This time we use wlen * channels when CODEC masters BCLK and FRAME,
-> otherwise same as V2.
-> 
-> From: Graeme Gregory <gg@slimlogic.co.uk>
-> 
-> This patch increases the number of supported audio channels from 4
-> to 16 and has been sponsored by Shotspotter Inc. It also fixes a
-> FSYNC rate calculation bug when McBSP is FSYNC master.
-> 
-> Signed-off-by: Graeme Gregory <gg@slimlogic.co.uk>
-> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
-Looks good, and works when OMAP McBSP is slave.
-Thank you!
-
-I'm not sure, if both acked and tested can be added...
-Mark, please pick the relevant:
-
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Tested-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+VGhpcyBwYXRjaCByZWR1Y2VzIGxpYi5hIGNvZGUgc2l6ZSBieSAxNzMgYnl0ZXMgb24gbXkgQ29y
+ZSAyIHdpdGggZ2NjIDQuNC4xCmV2ZW4gY29uc2lkZXJpbmcgdGhhdCBpdCBleHBvcnRzIGEgbmV3
+bHkgZGVmaW5lZCBmdW5jdGlvbiBza2lwX3NwYWNlcygpCnRvIGRyaXZlcnM6CiAgIHRleHQgICAg
+ZGF0YSAgICAgYnNzICAgICBkZWMgICAgIGhleCBmaWxlbmFtZSAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIAogIDY0ODY3ICAgICA4NDAgICAgIDU5MiAgIDY2Mjk5ICAgMTAyZmIgKFRPVEFMUy1s
+aWIuYS1iZWZvcmUpCiAgNjQ5NTQgICAgIDU4NCAgICAgNTg4ICAgNjYxMjYgICAxMDI0ZSAoVE9U
+QUxTLWxpYi5hLWFmdGVyKQphbmQgaW1wbGVtZW50cyBzb21lIGNvZGUgdGlkeSB1cC4KCkJlc2lk
+ZXMgcmVkdWNpbmcgbGliLmEgc2l6ZSwgaXQgY29udmVydHMgbWFueSBpbi10cmVlIGRyaXZlcnMg
+dG8gdXNlIHRoZQpuZXdseSBkZWZpbmVkIGZ1bmN0aW9uLCB3aGljaCBtYWtlcyBhbm90aGVyIHNt
+YWxsIHJlZHVjdGlvbiBvbiBrZXJuZWwgc2l6ZQpvdmVyYWxsIHdoZW4gdGhvc2UgZHJpdmVycyBh
+cmUgdXNlZC4KCnAucy46IEluZ28sIEkgaG9wZSB0byBoYXZlIGZpbmFsbHkgZml4ZWQgbXkgZW52
+aXJvbm1lbnQgYnkgdXNpbmcgc2VuZC1lbWFpbCBub3cuClBsZWFzZSBsZXQgbWUga25vdyBpZiB5
+b3UgaGF2ZSBhbnkgcHJvYmxlbSB3aXRoIHRoZXNlIGFuZCB0aGFuayB5b3UgZm9yIHRoZQpnb29k
+IGFkdmljZS4gZ2V0X21haW50YWluZXIucGwgZ2F2ZSBsb3RzIG9mIHBlb3BsZSBhcyBvdXRwdXQs
+IEkgaG9wZSB0aGF0J3Mgb2suCgpDaGFuZ2Vsb2c6CiAgIHY0OiBjb252ZXJ0IGRyaXZlcnMgb3Zl
+ciBuZXdseSBkZWZpbmVkIHNraXBfc3BhY2VzKCkgZnVuY3Rpb24gCiAgIHYzOiBpbXByb3ZlZCBj
+b21tZW50cyBvbiBwYXRjaCA1LzcgYW5kIGZhY3Rvcml6ZSBhIHN3aXRjaCBzdGF0ZW1lbnQgb24g
+Ni83CmFzIHBlciBzdWdnZXN0aW9ucyBmcm9tIEluZ28gYW5kIEZyZWRlcmljICh0aGFua3MhKQog
+ICB2MjogYWRkcmVzc2VkIGZlZWRiYWNrIGZyb20gRnJlZGVyaWMgV2Vpc2JlY2tlciByZXZpZXcg
+KHRoYW5rcyEhKQphbmQgc3BsaXQgaW50byBzZXBhcmF0ZSBwYXRjaGVzCiAgIHYxOiBvcmlnaW5h
+bCBzdWJtaXNzaW9uCgpBbmRyw6kgR29kZGFyZCBSb3NhICgxMik6CiAgdnNwcmludGY6IGZhY3Rv
+cml6ZSAiKG51bGwpIiBzdHJpbmcKICB2c3ByaW50ZjogcHJlLWNhbGN1bGF0ZSBmaW5hbCBzdHJp
+bmcgbGVuZ3RoIGZvciBsYXRlciB1c2UKICB2c3ByaW50ZjogZ2l2ZSBpdCBzb21lIGNhcmUgdG8g
+cGxlYXNlIGNoZWNrcGF0Y2gucGwKICB2c3ByaW50ZjogdXNlIFRPTE9XRVIgd2hlbmV2ZXIgcG9z
+c2libGUKICB2c3ByaW50ZjogcmVkdWNlIGNvZGUgc2l6ZSBieSBhdm9pZGluZyBleHRyYSBjaGVj
+awogIHZzcHJpbnRmOiBtb3ZlIGxvY2FsIHZhcnMgdG8gYmxvY2sgbG9jYWwgdmFycyBhbmQgcmVt
+b3ZlIHVubmVlZGVkCiAgICBvbmVzCiAgdnNwcmludGY6IGZhY3RvciBvdXQgc2tpcF9zcGFjZSBj
+b2RlIGluIGEgc2VwYXJhdGUgZnVuY3Rpb24KICB2c3ByaW50ZjogcmV1c2UgYWxtb3N0IGlkZW50
+aWNhbCBzaW1wbGVfc3RydG91bFgoKSBmdW5jdGlvbnMKICBjdHlwZTogY29uc3RpZnkgcmVhZC1v
+bmx5IF9jdHlwZSBzdHJpbmcKICBzdHJpbmc6IGZhY3Rvcml6ZSBza2lwX3NwYWNlcyBhbmQgZXhw
+b3J0IGl0IHRvIGJlIGdlbmVyYWxseSBhdmFpbGFibGUKICBzdHJpbmc6IG9uIHN0cnN0cmlwKCks
+IGZpcnN0IHJlbW92ZSBsZWFkaW5nIHNwYWNlcyBiZWZvcmUgcnVubmluZwogICAgb3ZlciBzdHIK
+ICB0cmVlLXdpZGU6IGNvbnZlcnQgb3BlbiBjYWxscyB0byByZW1vdmUgc3BhY2VzIHRvIHNraXBf
+c3BhY2VzKCkgbGliCiAgICBmdW5jdGlvbgoKIGFyY2gvczM5MC9rZXJuZWwvZGVidWcuYyAgICAg
+ICAgICAgICAgfCAgICAzICstCiBhcmNoL3VtL2RyaXZlcnMvbWNvbnNvbGVfa2Vybi5jICAgICAg
+IHwgICAxNiArLQogYXJjaC94ODYva2VybmVsL2NwdS9tdHJyL2lmLmMgICAgICAgICB8ICAgMTEg
+Ky0KIGRyaXZlcnMvbWQvZG0tdGFibGUuYyAgICAgICAgICAgICAgICAgfCAgICA2ICstCiBkcml2
+ZXJzL21kL21kLmMgICAgICAgICAgICAgICAgICAgICAgIHwgICAgNCArLQogZHJpdmVycy9wYXJp
+c2MvcGRjX3N0YWJsZS5jICAgICAgICAgICB8ICAgIDkgKy0KIGRyaXZlcnMvcGxhdGZvcm0veDg2
+L3RoaW5rcGFkX2FjcGkuYyAgfCAgICA3ICstCiBkcml2ZXJzL3BucC9pbnRlcmZhY2UuYyAgICAg
+ICAgICAgICAgIHwgICAzNiArLS0tCiBkcml2ZXJzL3MzOTAvYmxvY2svZGFzZF9wcm9jLmMgICAg
+ICAgIHwgICAgNSArLQogZHJpdmVycy92aWRlby9iYWNrbGlnaHQvbGNkLmMgICAgICAgICB8ICAg
+IDQgKy0KIGRyaXZlcnMvdmlkZW8vZGlzcGxheS9kaXNwbGF5LXN5c2ZzLmMgfCAgICAyICstCiBm
+cy9jYWNoZWZpbGVzL2RhZW1vbi5jICAgICAgICAgICAgICAgIHwgICAgOCArLQogZnMvZXh0NC9z
+dXBlci5jICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDcgKy0KIGluY2x1ZGUvbGludXgvY3R5
+cGUuaCAgICAgICAgICAgICAgICAgfCAgICAyICstCiBpbmNsdWRlL2xpbnV4L3N0cmluZy5oICAg
+ICAgICAgICAgICAgIHwgICAgMSArCiBrZXJuZWwvcGFyYW1zLmMgICAgICAgICAgICAgICAgICAg
+ICAgIHwgICAgOCArLQogbGliL2FyZ3Zfc3BsaXQuYyAgICAgICAgICAgICAgICAgICAgICB8ICAg
+MTMgKy0KIGxpYi9jdHlwZS5jICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDUwICsrKy0t
+LQogbGliL2R5bmFtaWNfZGVidWcuYyAgICAgICAgICAgICAgICAgICB8ICAgIDQgKy0KIGxpYi9z
+dHJpbmcuYyAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDE5ICsrLQogbGliL3ZzcHJpbnRm
+LmMgICAgICAgICAgICAgICAgICAgICAgICB8ICAzNDIgKysrKysrKysrKysrKysrKy0tLS0tLS0t
+LS0tLS0tLS0tCiBuZXQvaXJkYS9pcm5ldC9pcm5ldC5oICAgICAgICAgICAgICAgIHwgICAgMSAr
+CiBuZXQvaXJkYS9pcm5ldC9pcm5ldF9wcHAuYyAgICAgICAgICAgIHwgICAgOCArLQogbmV0L25l
+dGZpbHRlci94dF9yZWNlbnQuYyAgICAgICAgICAgICB8ICAgIDMgKy0KIHNvdW5kL3BjaS9oZGEv
+aGRhX2h3ZGVwLmMgICAgICAgICAgICAgfCAgICA3ICstCiAyNSBmaWxlcyBjaGFuZ2VkLCAyNjQg
+aW5zZXJ0aW9ucygrKSwgMzEyIGRlbGV0aW9ucygtKQoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
