@@ -1,21 +1,20 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/6] ASoC/mpc5200: Track DMA position by
- period number instead	of bytes
-Date: Sat, 07 Nov 2009 10:35:53 +0000
-Message-ID: <1257590153.3960.3.camel@odin>
-References: <20091107081631.18908.82921.stgit@angua>
-	<20091107083345.18908.96473.stgit@angua>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/7] S3C AUDIO: Add header to pass platform
+ data to device drivers.
+Date: Sat, 7 Nov 2009 12:12:53 +0000
+Message-ID: <20091107121252.GA3228@sirena.org.uk>
+References: <1257384900-18308-1-git-send-email-jassi.brar@samsung.com>
+	<20091106165214.GF4938@sirena.org.uk>
+	<1b68c6790911061931h59ef299ftb7422421225fd4d0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f221.google.com (mail-ew0-f221.google.com
-	[209.85.219.221])
-	by alsa0.perex.cz (Postfix) with ESMTP id 743FD1037E3
-	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 11:36:00 +0100 (CET)
-Received: by ewy21 with SMTP id 21so5666951ewy.32
-	for <alsa-devel@alsa-project.org>; Sat, 07 Nov 2009 02:35:59 -0800 (PST)
-In-Reply-To: <20091107083345.18908.96473.stgit@angua>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09AE81037F2
+	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 13:12:58 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6790911061931h59ef299ftb7422421225fd4d0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,80 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linuxppc-dev@lists.ozlabs.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2009-11-07 at 01:33 -0700, Grant Likely wrote:
-> All DMA blocks are lined up to period boundaries, but the DMA
-> handling code tracks bytes instead.  This patch reworks the code
-> to track the period index into the DMA buffer instead of the
-> physical address pointer.  Doing so makes the code simpler and
-> easier to understand.
-> 
-> Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+On Sat, Nov 07, 2009 at 12:31:43PM +0900, jassi brar wrote:
 
-Very minor coding style thing below otherwise all get my Ack.
+> Well, since the abstraction(dev-audio) is supposed to be common for
+> I2S, PCM and AC97 protocol, we need to have another layer which
+> communicate protocol specific platform data.
+> This pdata is meant to serve that purpose in future.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+There's no real abstraction here - it's just a place to put the devices
+and whatnot for the various audio related devices.  I would be very
+surprised to ever see any need for generic audio platform data, the
+devices don't have that much in common.
 
- 
+> > I'd just embed the GPIO configuration callback in a driver-specific
+> > platform data.
+> If not for pdata, the cfg_gpio wudn't be enough for future SoCs which
+> not only configure the MUX'ed pins but also set the drive strength. Some
+> might also need configuring the SoC which may not fall into either Clock
+> or Power domain.
+> So, if I am to remove pdata, maybe cfg_gpio can be renamed config_controller?
 
-> ---
-> 
->  sound/soc/fsl/mpc5200_dma.c |   28 +++++++++-------------------
->  sound/soc/fsl/mpc5200_dma.h |    8 ++------
->  2 files changed, 11 insertions(+), 25 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-> index 6096d22..986d3c8 100644
-> --- a/sound/soc/fsl/mpc5200_dma.c
-> +++ b/sound/soc/fsl/mpc5200_dma.c
-> @@ -58,13 +58,11 @@ static void psc_dma_bcom_enqueue_next_buffer(struct psc_dma_stream *s)
->  	/* Prepare and enqueue the next buffer descriptor */
->  	bd = bcom_prepare_next_buffer(s->bcom_task);
->  	bd->status = s->period_bytes;
-> -	bd->data[0] = s->period_next_pt;
-> +	bd->data[0] = s->runtime->dma_addr + (s->period_next * s->period_bytes);
->  	bcom_submit_next_buffer(s->bcom_task, NULL);
->  
->  	/* Update for next period */
-> -	s->period_next_pt += s->period_bytes;
-> -	if (s->period_next_pt >= s->period_end)
-> -		s->period_next_pt = s->period_start;
-> +	s->period_next = (s->period_next + 1) % s->runtime->periods;
->  }
->  
->  static void psc_dma_bcom_enqueue_tx(struct psc_dma_stream *s)
-> @@ -79,7 +77,7 @@ static void psc_dma_bcom_enqueue_tx(struct psc_dma_stream *s)
->  			if (bcom_queue_full(s->bcom_task))
->  				return;
->  
-> -			s->appl_ptr += s->period_size;
-> +			s->appl_ptr += s->runtime->period_size;
->  
->  			psc_dma_bcom_enqueue_next_buffer(s);
->  		}
-> @@ -91,7 +89,7 @@ static void psc_dma_bcom_enqueue_tx(struct psc_dma_stream *s)
->  		if (bcom_queue_full(s->bcom_task))
->  			return;
->  
-> -		s->appl_ptr += s->period_size;
-> +		s->appl_ptr += s->runtime->period_size;
->  
->  		psc_dma_bcom_enqueue_next_buffer(s);
->  	}
-> @@ -108,9 +106,7 @@ static irqreturn_t psc_dma_bcom_irq_tx(int irq, void *_psc_dma_stream)
->  	while (bcom_buffer_done(s->bcom_task)) {
->  		bcom_retrieve_buffer(s->bcom_task, NULL, NULL);
->  
-> -		s->period_current_pt += s->period_bytes;
-> -		if (s->period_current_pt >= s->period_end)
-> -			s->period_current_pt = s->period_start;
-> +		s->period_current = (s->period_current+1) % s->runtime->periods;
-
-I prefer a space around operators.
-
-s->period_current = (s->period_current + 1) % s->runtime->periods;
-
-Liam
+I'd be happier if it stayed as GPIO - that'd still cover things like
+drive strength.  This is because the platform device code has recently
+gained the ability to provide platform specific annotations on the
+device itself which would allow this to be done in a way that is
+transparent to the edge drivers and avoids code duplication in all the
+device drivers.  This is (IIRC) used by the OMAP power domain management
+and I'd expect that the Samsung SoCs will end up going down a similar
+way in future.  I'd rather try to reduce the amount of device specific
+handling for things like that which appears.
