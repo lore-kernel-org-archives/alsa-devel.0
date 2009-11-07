@@ -1,20 +1,19 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 0/6] Fixups to MPC5200 ASoC drivers
-Date: Sat, 7 Nov 2009 09:52:27 -0700
-Message-ID: <fa686aa40911070852h5d09acafq4c55d838b7fb461e@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 6/6] ASoC/mpc5200: Add fudge factor to
+ value reported by	.pointer()
+Date: Sat, 7 Nov 2009 18:11:54 +0000
+Message-ID: <20091107181153.GA31789@sirena.org.uk>
 References: <20091107081631.18908.82921.stgit@angua>
-	<20091107125713.GF3228@sirena.org.uk>
+	<20091107083448.18908.80366.stgit@angua>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
-	[209.85.211.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id EBBDD103823
-	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 17:52:49 +0100 (CET)
-Received: by ywh28 with SMTP id 28so1704369ywh.16
-	for <alsa-devel@alsa-project.org>; Sat, 07 Nov 2009 08:52:49 -0800 (PST)
-In-Reply-To: <20091107125713.GF3228@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D5C42466D
+	for <alsa-devel@alsa-project.org>; Sat,  7 Nov 2009 19:12:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20091107083448.18908.80366.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Grant Likely <grant.likely@secretlab.ca>
 Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 7, 2009 at 5:57 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Sat, Nov 07, 2009 at 01:33:40AM -0700, Grant Likely wrote:
->> So, please test. =A0Let me know if these work or not. =A0I've don't know
->> if the last patch (Add fudge factor...) is needed or not.
->
-> I've applied patches 1-5 since they seem fairly clear code cleanups and
-> fixes. =A0If they've introduced any problems we can fix them incrementall=
-y.
-> I'll wait to see what the outcome of testing is for patch 6.
+On Sat, Nov 07, 2009 at 01:34:55AM -0700, Grant Likely wrote:
+> ALSA playback seems to be more reliable if the .pointer() hook reports
+> a value slightly into the period, rather than right on the period
+> boundary.  This patch adds a fudge factor of 1/4 the period size
+> to better estimate the actual position of the DMA engine in the
+> audio buffer.
 
-Cool, thanks!
-
-> As I mentioned on IRC testing with PulseAudio would be good for this -
-> it makes more demands on the quality of the DMA implementation than most
-> applications.
-
-I had trouble getting pulseaudio to work on my headless system.
-Couldn't get clients to connect.  I'll hack on it again next week.
-
-g.
-
-
-
--- =
-
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+It occurs to me that in terms of dealing with what's going on here this
+probably is achieving exactly the same effect as Jon's code in that it
+tells ALSA that things are a bit ahead of where the buffer started.
