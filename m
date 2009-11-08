@@ -1,44 +1,62 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [PATCH v4 10/12] string: factorize skip_spaces
- and export it to be generally available
-Date: Sun, 8 Nov 2009 16:50:00 +0000
-Message-ID: <20091108165000.374714cb@lxorguk.ukuu.org.uk>
-References: <cover.1257602781.git.andre.goddard@gmail.com>
-	<c7d3b02b5e28eaa54a5360d57dfd177c44320187.1257602781.git.andre.goddard@gmail.com>
-Reply-To: Linux filesystem caching discussion list <linux-cachefs@redhat.com>
+From: Jonathan Leonard <jonathan.adams.leonard@gmail.com>
+Subject: RME HDSPe AIO
+Date: Sun, 8 Nov 2009 11:38:08 -0800
+Message-ID: <1401522d0911081138i2ebf7aa8h4467a135c93a526@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-14
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-cachefs-bounces@redhat.com>
-In-Reply-To: <c7d3b02b5e28eaa54a5360d57dfd177c44320187.1257602781.git.andre.goddard@gmail.com>
-List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
-	<mailto:linux-cachefs-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://www.redhat.com/archives/linux-cachefs>
-List-Post: <mailto:linux-cachefs@redhat.com>
-List-Help: <mailto:linux-cachefs-request@redhat.com?subject=help>
-List-Subscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
-	<mailto:linux-cachefs-request@redhat.com?subject=subscribe>
-Sender: linux-cachefs-bounces@redhat.com
-Errors-To: linux-cachefs-bounces@redhat.com
-To: =?ISO-8859-14?B?QW5kcuk=?= Goddard Rosa <andre.goddard@gmail.com>
-Cc: Andreas Dilger <adilger@sun.com>, Mike Snitzer <snitzer@redhat.com>, Takashi Iwai <tiwai@suse.de>, Kysela <perex@perex.cz>, Jan, Stefan Weinhuber <wein@de.ibm.com>, Eric Sandeen <sandeen@redhat.com>, "James E .
-	J . Bottomley" <jejb@parisc-linux.org>, linux-cachefs@redhat.com, WANG Cong <wangcong@zeuux.org>, Len Brown <len.brown@intel.com>, Trond Myklebust <Trond.Myklebust@netapp.com>, Rusty Russell <rusty@rustcorp.com.au>, netfilter@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Engelhardt <jengelh@medozas.de>, Bjorn Helgaas <bjorn.helgaas@hp.com>, =?ISO-8859-14?B?QW5k?=, "Martin K .
-	Petersen" <martin.petersen@oracle.com>, linux-kernel@vger.kernel.org, Stoyan Gaydarov <stoyboyker@gmail.com>, Kyle McMartin <kyle@mcmartin.ca>, netfilter-devel@vger.kernel.org, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
+	[209.85.220.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12E83103811
+	for <alsa-devel@alsa-project.org>; Sun,  8 Nov 2009 20:38:11 +0100 (CET)
+Received: by fxm1 with SMTP id 1so2708781fxm.32
+	for <alsa-devel@alsa-project.org>; Sun, 08 Nov 2009 11:38:09 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat,  7 Nov 2009 13:16:18 -0200
-Andr=E9 Goddard Rosa <andre.goddard@gmail.com> wrote:
+Hello, I am writing in regards to the RME HDSPe AIO card and its support in
+ALSA.  The card itself in 64studio is recognized incorrectly as HDSP MADI
+rev d4.
 
-> On the following sentence:
->     while (*s && isspace(*s))
->         s++;
+Running lspci -nn shows this line for the device:
 
-Looks fine but for one thing: it's actually shorter inline than moved
-into /lib so at the very least it should be a header inline not a
-function call.
+02:00.0 Multimedia audio controller [0401]: Xilinx Corporation RME
+Hammerfall DSP MADI [10ee:3fc6] (rev d4)
 
-Second minor comment. Although it never made it into the final ANSI C,
-the proposed name (and the one used in a lot of other non Linux code for
-this) is stpblk().
+ALSA in 64studio 3.0 beta 3 loads snd-hdspm incorrectly when it should be
+loading snd-hdsp.
 
-Alan
+I have reviewed pcitables and pci.ids on this distro, and also the public
+pci reference and the above device id is currently assigned to:
+
+Multimedia audio controller: Xilinx Corporation RME Hammerfall DSP MADI (rev
+d4)
+
+The AIO is purported to be very similar to the 9632 and should be using the
+snd-hdsp module.
+
+I would like to use this card in ALSA, and have begun reviewing the guide
+for making ALSA drivers, but am not sure how exactly to fix the matter since
+the manufacturer has not incremented the id, or they have not assigned the
+same id as a 9632.  This device is recognized and functioning perfectly on
+the XP partition.
+
+Besides my individual circumstance I wonder if ALSA should not be
+accomodating this great card somehow.
+
+Let me know if I can help by contacting RME developers for info or
+otherwise.
+
+Thank you,
+
+jonathan adams leonard
