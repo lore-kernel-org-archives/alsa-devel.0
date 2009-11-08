@@ -1,12 +1,23 @@
-From: Pedro Lopez-Cabanillas <pedro.lopez.cabanillas@gmail.com>
-Subject: [PATCH - alsa-lib 1/1] Defined symbols exposing the
-	hrtimer to applications.
-Date: Sun,  8 Nov 2009 00:01:06 +0100
-Message-ID: <1257634866-24071-1-git-send-email-pedro.lopez.cabanillas@gmail.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 6/7] S3C64XX PCM: Defined PCM controller
+	platform devices
+Date: Sun, 8 Nov 2009 09:40:17 +0900
+Message-ID: <1b68c6790911071640w56737014i29766e28bda009c3@mail.gmail.com>
+References: <1257384907-18338-1-git-send-email-jassi.brar@samsung.com>
+	<20091106165406.GG4938@sirena.org.uk>
+	<1b68c6790911061921o39e2609fwa7112f21ff916216@mail.gmail.com>
+	<20091107121427.GB3228@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-px0-f187.google.com (mail-px0-f187.google.com
+	[209.85.216.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id E4440103885
+	for <alsa-devel@alsa-project.org>; Sun,  8 Nov 2009 01:40:18 +0100 (CET)
+Received: by pxi17 with SMTP id 17so370714pxi.16
+	for <alsa-devel@alsa-project.org>; Sat, 07 Nov 2009 16:40:17 -0800 (PST)
+In-Reply-To: <20091107121427.GB3228@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,40 +27,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Pedro Lopez-Cabanillas <pedro.lopez.cabanillas@gmail.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Pedro Lopez-Cabanillas <pedro.lopez.cabanillas@gmail.com>
----
- include/sound/asound.h |    1 +
- include/timer.h        |    2 ++
- 2 files changed, 3 insertions(+), 0 deletions(-)
+On Sat, Nov 7, 2009 at 9:14 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Sat, Nov 07, 2009 at 12:21:43PM +0900, jassi brar wrote:
+>> On Sat, Nov 7, 2009 at 1:54 AM, Mark Brown
+>
+>> > Might be good to call the devices "samsung-pcm" rather than "s3c-pcm" or
+>> > whatever the decision is on a common prefix to cope with the s5p CPUs.
+>
+>> Well, pcm_<version> wud be even better.
+>> with 'samsung-pcm' we run out of a good option if the newer SoCs come with
+>> different version of the PCM Controller.
+>
+> That'd be fine as well, though I don't see a problem with omitting the
+> version just now and then adding a second file with a version appended
+> if a second version does crop up.
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 62d1e57..fa88938 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -593,6 +593,7 @@ enum sndrv_timer_slave_class {
- #define SNDRV_TIMER_GLOBAL_SYSTEM	0
- #define SNDRV_TIMER_GLOBAL_RTC		1
- #define SNDRV_TIMER_GLOBAL_HPET		2
-+#define SNDRV_TIMER_GLOBAL_HRTIMER	3
- 
- /* info flags */
- #define SNDRV_TIMER_FLG_SLAVE		(1<<0)	/* cannot be controlled */
-diff --git a/include/timer.h b/include/timer.h
-index 4d06e31..2803f53 100644
---- a/include/timer.h
-+++ b/include/timer.h
-@@ -115,6 +115,8 @@ typedef struct _snd_timer_tread {
- #define SND_TIMER_GLOBAL_RTC 	1
- /** global timer - HPET */
- #define SND_TIMER_GLOBAL_HPET	2
-+/** global timer - HRTIMER */
-+#define SND_TIMER_GLOBAL_HRTIMER 3
- 
- /** timer open mode flag - non-blocking behaviour */
- #define SND_TIMER_OPEN_NONBLOCK		(1<<0)
--- 
-1.6.4.2
+
+
+Thanks for the feedback. I will wait for Ben's review of the patches
+before making
+final changes and re-submitting.
