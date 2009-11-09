@@ -1,127 +1,85 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: Re: [PATCH v4 12/12] tree-wide: convert open calls
- to remove spaces to skip_spaces() lib function
-Date: Sun, 8 Nov 2009 21:23:07 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.0911082103000.8143@ask.diku.dk>
-References: <cover.1257602781.git.andre.goddard@gmail.com>
-	<7d5883637aa976b54e944998f635d47a41618a75.1257602781.git.andre.goddard@gmail.com>
-	<20091108184722.GA1647@mit.edu>
-Reply-To: Linux filesystem caching discussion list <linux-cachefs@redhat.com>
+From: Dan Chen <crimsunkg@yahoo.com>
+Subject: [PATCH] ALSA: hda: Use model=auto quirk for Sony VAIO
+	VGN-FW170J using ALC262
+Date: Sun, 8 Nov 2009 16:11:18 -0800 (PST)
+Message-ID: <483819.30924.qm@web112613.mail.gq1.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-cachefs-bounces@redhat.com>
-In-Reply-To: <20091108184722.GA1647@mit.edu>
-List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
-	<mailto:linux-cachefs-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://www.redhat.com/archives/linux-cachefs>
-List-Post: <mailto:linux-cachefs@redhat.com>
-List-Help: <mailto:linux-cachefs-request@redhat.com?subject=help>
-List-Subscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
-	<mailto:linux-cachefs-request@redhat.com?subject=subscribe>
-Sender: linux-cachefs-bounces@redhat.com
-Errors-To: linux-cachefs-bounces@redhat.com
-To: Theodore Tso <tytso@mit.edu>
-Cc: Pavel Roskin <proski@gnu.org>, Stefan Haberland <stefan.haberland@de.ibm.com>, Jan Kara <jack@suse.cz>, linux-cachefs@redhat.com, Mike Snitzer <snitzer@redhat.com>, Neil Brown <neilb@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, Jens Axboe <jens.axboe@oracle.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, "James E . J . Bottomley" <jejb@parisc-linux.org>, ibm-acpi-devel@lists.sourceforge.net, dm-devel@redhat.com, "H . Peter Anvin" <hpa@zytor.com>, Daire Byrne <Daire.Byrne@framestore.com>, Alasdair G Kergon <agk@redhat.com>, Greg Banks <gnb@melbourne.sgi.com>, Stefan Weinhuber <wein@de.ibm.com>, Eric Sandeen <sandeen@redhat.com>, Adam Belay <abelay@mit.edu>, Helge Deller <deller@gmx.de>, x86@kernel.org, James Morris <jmorris@namei.org>, Takashi Iwai <tiwai@suse.de>, =?iso-8859-1?Q?Andr=E9?= Goddard Rosa <andre.goddard@gmail.com>, Alan Cox <alan@lxorguk.ukuu.or>
+Content-Type: multipart/mixed; boundary="0-1808343879-1257725478=:30924"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from web112613.mail.gq1.yahoo.com (web112613.mail.gq1.yahoo.com
+	[98.137.27.193]) by alsa0.perex.cz (Postfix) with SMTP id 77D2D10382A
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 01:11:20 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: crimsun@ubuntu.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > Also, while at it, if we see (*str && isspace(*str)), we can be sure to
-> > remove the first condition (*str) as the second one (isspace(*str)) also
-> > evaluates to 0 whenever *str == 0, making it redundant. In other words,
-> > "a char equals zero is never a space".
+--0-1808343879-1257725478=:30924
+Content-Type: text/plain; charset=us-ascii
 
-I tried the following semantic patch (http://coccinelle.lip6.fr), and got 
-the results below.
+Hi,
 
-@@
-expression str;
-@@
+Attached please find a patch against sound-2.6 HEAD using ALC262_AUTO
+for the Sony VAIO VGN-FW170J. Without using model=auto, the internal mic
+does not function.
 
-( // ignore skip_spaces cases
- while (*str &&  isspace(*str)) { \(str++;\|++str;\) }
-|
-- *str && 
-  isspace(*str)
-)
+Thanks,
+Dan
 
-I haven't checked the results in any way, however.
 
-julia
 
-diff -u -p a/drivers/leds/led-class.c b/drivers/leds/led-class.c
---- a/drivers/leds/led-class.c
-+++ b/drivers/leds/led-class.c
-@@ -50,7 +50,7 @@ static ssize_t led_brightness_store(stru
- 	unsigned long state = simple_strtoul(buf, &after, 10);
- 	size_t count = after - buf;
- 
--	if (*after && isspace(*after))
-+	if (isspace(*after))
- 		count++;
- 
- 	if (count == size) {
-diff -u -p a/drivers/leds/ledtrig-timer.c b/drivers/leds/ledtrig-timer.c
---- a/drivers/leds/ledtrig-timer.c
-+++ b/drivers/leds/ledtrig-timer.c
-@@ -83,7 +83,7 @@ static ssize_t led_delay_on_store(struct
- 	unsigned long state = simple_strtoul(buf, &after, 10);
- 	size_t count = after - buf;
- 
--	if (*after && isspace(*after))
-+	if (isspace(*after))
- 		count++;
- 
- 	if (count == size) {
-@@ -127,7 +127,7 @@ static ssize_t led_delay_off_store(struc
- 	unsigned long state = simple_strtoul(buf, &after, 10);
- 	size_t count = after - buf;
- 
--	if (*after && isspace(*after))
-+	if (isspace(*after))
- 		count++;
- 
- 	if (count == size) {
-diff -u -p a/drivers/video/backlight/lcd.c b/drivers/video/backlight/lcd.c
---- a/drivers/video/backlight/lcd.c
-+++ b/drivers/video/backlight/lcd.c
-@@ -101,7 +101,7 @@ static ssize_t lcd_store_power(struct de
- 	int power = simple_strtoul(buf, &endp, 0);
- 	size_t size = endp - buf;
- 
--	if (*endp && isspace(*endp))
-+	if (isspace(*endp))
- 		size++;
- 	if (size != count)
- 		return -EINVAL;
-@@ -140,7 +140,7 @@ static ssize_t lcd_store_contrast(struct
- 	int contrast = simple_strtoul(buf, &endp, 0);
- 	size_t size = endp - buf;
- 
--	if (*endp && isspace(*endp))
-+	if (isspace(*endp))
- 		size++;
- 	if (size != count)
- 		return -EINVAL;
-diff -u -p a/drivers/video/display/display-sysfs.c b/drivers/video/display/display-sysfs.c
---- a/drivers/video/display/display-sysfs.c
-+++ b/drivers/video/display/display-sysfs.c
-@@ -67,7 +67,7 @@ static ssize_t display_store_contrast(st
- 	contrast = simple_strtoul(buf, &endp, 0);
- 	size = endp - buf;
- 
--	if (*endp && isspace(*endp))
-+	if (isspace(*endp))
- 		size++;
- 
- 	if (size != count)
-diff -u -p a/drivers/video/output.c b/drivers/video/output.c
---- a/drivers/video/output.c
-+++ b/drivers/video/output.c
-@@ -50,7 +50,7 @@ static ssize_t video_output_store_state(
- 	int request_state = simple_strtoul(buf,&endp,0);
- 	size_t size = endp - buf;
- 
--	if (*endp && isspace(*endp))
-+	if (isspace(*endp))
- 		size++;
- 	if (size != count)
- 		return -EINVAL;
+      
+--0-1808343879-1257725478=:30924
+Content-Type: application/octet-stream; name="0001-ALSA-hda-Use-model-auto-quirk-for-Sony-VAIO-VGN-FW17.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="0001-ALSA-hda-Use-model-auto-quirk-for-Sony-VAIO-VGN-FW17.patch"
+
+RnJvbSBiMzVlMjNkZTQ5Mjc2MTkxZjhiODZmMGEwOTgyMDA3NTY1NzBmMGNi
+IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVu
+IDxjcmltc3VuQHVidW50dS5jb20+CkRhdGU6IFN1biwgOCBOb3YgMjAwOSAx
+OTowMzo1NSAtMDUwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6IGhkYTogVXNl
+IG1vZGVsPWF1dG8gcXVpcmsgZm9yIFNvbnkgVkFJTyBWR04tRlcxNzBKIHVz
+aW5nIEFMQzI2MgoKQnVnTGluazogaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5u
+ZXQvYnVncy80NzgzMDkKClRoZSBpbnRlcm5hbCBtaWNyb3Bob25lIG9uIHRo
+aXMgVkFJTyBtb2RlbCBkb2VzIG5vdCB3b3JrIHVubGVzcyB0aGUKImF1dG8i
+IHF1aXJrIGlzIHVzZWQuCgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgVCBDaGVu
+IDxjcmltc3VuQHVidW50dS5jb20+Ci0tLQogc291bmQvcGNpL2hkYS9wYXRj
+aF9yZWFsdGVrLmMgfCAgICAxICsKIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNl
+cnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5k
+L3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRj
+aF9yZWFsdGVrLmMKaW5kZXggM2JlZTZhMi4uYzRmMGFjYiAxMDA2NDQKLS0t
+IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQv
+cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTExNDU3LDYgKzExNDU3LDcg
+QEAgc3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzI2Ml9jZmdfdGJs
+W10gPSB7CiAJU05EX1BDSV9RVUlSSygweDEwNGQsIDB4ODIwZiwgIlNvbnkg
+QVNTQU1EIiwgQUxDMjYyX1NPTllfQVNTQU1EKSwKIAlTTkRfUENJX1FVSVJL
+KDB4MTA0ZCwgMHg5MDE2LCAiU29ueSBWQUlPIiwgQUxDMjYyX0FVVE8pLCAv
+KiBkaWctb25seSAqLwogCVNORF9QQ0lfUVVJUksoMHgxMDRkLCAweDkwMjUs
+ICJTb255IFZBSU8gWjIxTU4iLCBBTEMyNjJfVE9TSElCQV9TMDYpLAorCVNO
+RF9QQ0lfUVVJUksoMHgxMDRkLCAweDkwMzUsICJTb255IFZBSU8gVkdOLUZX
+MTcwSiIsIEFMQzI2Ml9BVVRPKSwKIAlTTkRfUENJX1FVSVJLX01BU0soMHgx
+MDRkLCAweGZmMDAsIDB4OTAwMCwgIlNvbnkgVkFJTyIsCiAJCQkgICBBTEMy
+NjJfU09OWV9BU1NBTUQpLAogCVNORF9QQ0lfUVVJUksoMHgxMTc5LCAweDAw
+MDEsICJUb3NoaWJhIGR5bmFib29rIFNTIFJYMSIsCi0tIAoxLjYuMy4zCgo=
+
+
+--0-1808343879-1257725478=:30924
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0-1808343879-1257725478=:30924--
