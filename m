@@ -1,17 +1,20 @@
-From: Florian Faber <faber@faberman.de>
-Subject: Re: RME HDSPe AIO
-Date: Mon, 09 Nov 2009 10:55:39 +0100
-Message-ID: <4AF7E71B.2030808@faberman.de>
-References: <mailman.2708.1257713283.2074.alsa-devel@alsa-project.org>
-	<000301ca60ba$afccd260$0f667720$@net>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Capture not working in MMAP mode with '-v'
+Date: Mon, 9 Nov 2009 10:26:22 +0000
+Message-ID: <20091109102621.GA1245@sirena.org.uk>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB030A705212@dbde02.ent.ti.com>
+	<1257753496.30157.455.camel@eenurkka-desktop>
+	<5A47E75E594F054BAF48C5E4FC4B92AB030A705220@dbde02.ent.ti.com>
+	<1257754351.30157.464.camel@eenurkka-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6D49103819
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 10:55:54 +0100 (CET)
-In-Reply-To: <000301ca60ba$afccd260$0f667720$@net>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0D4E103819
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 11:26:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1257754351.30157.464.camel@eenurkka-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,21 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Demian Martin <demianm@attglobal.net>
-Cc: alsa-devel@alsa-project.org
+To: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Cc: "ext Aggarwal, Anuj" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Demian,
+On Mon, Nov 09, 2009 at 10:12:31AM +0200, Eero Nurkkala wrote:
 
-> The Trinnov room correction system which is a pro market product uses
-> Hammerfall cards and Alsa to do some very ambitious pro audio functions for
-> example. 
+> As far as I know, nobody fixed it. Yeah, aplay = arecord, and it occurs
+> only with arecord to be more specific, and is present on all platforms
+> out there:
 
-It is nice if everything works out for you. But there are other people
-who need different things.
-
-
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key DA43FEF4          x-hkp://wwwkeys.eu.pgp.net
+Has anyone reported whatever the problem is?
