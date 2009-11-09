@@ -1,14 +1,18 @@
-From: Daniel Drake <dsd@laptop.org>
-Subject: [PATCH] ALSA: hda - Tweak OLPC XO-1.5 microphone bias
-Date: Mon,  9 Nov 2009 15:17:24 +0000 (GMT)
-Message-ID: <20091109151724.73DFC9D404F@zog.reactivated.net>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: [PATCH] ASoC/mpc5200: remove duplicate identical IRQ
+	handler
+Date: Mon, 09 Nov 2009 09:40:09 -0700
+Message-ID: <20091109163936.29231.482.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mtaout03-winn.ispmail.ntl.com (mtaout03-winn.ispmail.ntl.com
-	[81.103.221.49]) by alsa0.perex.cz (Postfix) with ESMTP id 105562468A
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 16:17:27 +0100 (CET)
+Received: from mail-pz0-f184.google.com (mail-pz0-f184.google.com
+	[209.85.222.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id E423C246F3
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 17:40:12 +0100 (CET)
+Received: by pzk14 with SMTP id 14so2218720pzk.23
+	for <alsa-devel@alsa-project.org>; Mon, 09 Nov 2009 08:40:11 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,82 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, devel@lists.laptop.org
+To: linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Cc: lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Our contacts at Conexant suggested that we reduce the external
-microphone bias to 50% in order to center the input signal with
-the DC input range of the codec. This is because the microphone
-port is DC coupled for potential use with sensors.
+The TX and RX irq handlers are identical.  Merge them
 
-Signed-off-by: Daniel Drake <dsd@laptop.org>
-
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
- sound/pci/hda/patch_conexant.c |   15 ++++++++++++---
- 1 files changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 5d3a25d..ace8898 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -110,6 +110,7 @@ struct conexant_spec {
+Hi Mark.  Here's one more cleanup patch.
+
+ sound/soc/fsl/mpc5200_dma.c |   33 +++------------------------------
+ 1 files changed, 3 insertions(+), 30 deletions(-)
+
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index ee5a606..440b749 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
+@@ -66,32 +66,7 @@ static void psc_dma_bcom_enqueue_next_buffer(struct psc_dma_stream *s)
+ }
  
- 	unsigned int dell_automute;
- 	unsigned int port_d_mode;
-+	unsigned char ext_mic_bias;
- };
- 
- static int conexant_playback_pcm_open(struct hda_pcm_stream *hinfo,
-@@ -1917,6 +1918,11 @@ static hda_nid_t cxt5066_adc_nids[3] = { 0x14, 0x15, 0x16 };
- static hda_nid_t cxt5066_capsrc_nids[1] = { 0x17 };
- #define CXT5066_SPDIF_OUT	0x21
- 
-+/* OLPC's microphone port is DC coupled for use with external sensors,
-+ * therefore we use a 50% mic bias in order to center the input signal with
-+ * the DC input range of the codec. */
-+#define CXT5066_OLPC_EXT_MIC_BIAS PIN_VREF50
-+
- static struct hda_channel_mode cxt5066_modes[1] = {
- 	{ 2, NULL },
- };
-@@ -1970,9 +1976,10 @@ static int cxt5066_hp_master_sw_put(struct snd_kcontrol *kcontrol,
- /* toggle input of built-in and mic jack appropriately */
- static void cxt5066_automic(struct hda_codec *codec)
+ /* Bestcomm DMA irq handler */
+-static irqreturn_t psc_dma_bcom_irq_tx(int irq, void *_psc_dma_stream)
+-{
+-	struct psc_dma_stream *s = _psc_dma_stream;
+-
+-	spin_lock(&s->psc_dma->lock);
+-	/* For each finished period, dequeue the completed period buffer
+-	 * and enqueue a new one in it's place. */
+-	while (bcom_buffer_done(s->bcom_task)) {
+-		bcom_retrieve_buffer(s->bcom_task, NULL, NULL);
+-
+-		s->period_current = (s->period_current+1) % s->runtime->periods;
+-		s->period_count++;
+-
+-		psc_dma_bcom_enqueue_next_buffer(s);
+-	}
+-	spin_unlock(&s->psc_dma->lock);
+-
+-	/* If the stream is active, then also inform the PCM middle layer
+-	 * of the period finished event. */
+-	if (s->active)
+-		snd_pcm_period_elapsed(s->stream);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static irqreturn_t psc_dma_bcom_irq_rx(int irq, void *_psc_dma_stream)
++static irqreturn_t psc_dma_bcom_irq(int irq, void *_psc_dma_stream)
  {
--	static struct hda_verb ext_mic_present[] = {
-+	struct conexant_spec *spec = codec->spec;
-+	struct hda_verb ext_mic_present[] = {
- 		/* enable external mic, port B */
--		{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
-+		{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, spec->ext_mic_bias},
+ 	struct psc_dma_stream *s = _psc_dma_stream;
  
- 		/* switch to external mic input */
- 		{0x17, AC_VERB_SET_CONNECT_SEL, 0},
-@@ -2225,7 +2232,7 @@ static struct hda_verb cxt5066_init_verbs_olpc[] = {
- 	{0x19, AC_VERB_SET_CONNECT_SEL, 0x00}, /* DAC1 */
+@@ -486,11 +461,9 @@ int mpc5200_audio_dma_create(struct of_device *op)
  
- 	/* Port B: external microphone */
--	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
-+	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, CXT5066_OLPC_EXT_MIC_BIAS},
- 
- 	/* Port C: internal microphone */
- 	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
-@@ -2343,6 +2350,7 @@ static int patch_cxt5066(struct hda_codec *codec)
- 	spec->input_mux = &cxt5066_capture_source;
- 
- 	spec->port_d_mode = PIN_HP;
-+	spec->ext_mic_bias = PIN_VREF80;
- 
- 	spec->num_init_verbs = 1;
- 	spec->init_verbs[0] = cxt5066_init_verbs;
-@@ -2374,6 +2382,7 @@ static int patch_cxt5066(struct hda_codec *codec)
- 		spec->mixers[spec->num_mixers++] = cxt5066_mixer_master_olpc;
- 		spec->mixers[spec->num_mixers++] = cxt5066_mixers;
- 		spec->port_d_mode = 0;
-+		spec->ext_mic_bias = CXT5066_OLPC_EXT_MIC_BIAS;
- 
- 		/* no S/PDIF out */
- 		spec->multiout.dig_out_nid = 0;
--- 
-1.6.2.5
+ 	rc = request_irq(psc_dma->irq, &psc_dma_status_irq, IRQF_SHARED,
+ 			 "psc-dma-status", psc_dma);
+-	rc |= request_irq(psc_dma->capture.irq,
+-			  &psc_dma_bcom_irq_rx, IRQF_SHARED,
++	rc |= request_irq(psc_dma->capture.irq, &psc_dma_bcom_irq, IRQF_SHARED,
+ 			  "psc-dma-capture", &psc_dma->capture);
+-	rc |= request_irq(psc_dma->playback.irq,
+-			  &psc_dma_bcom_irq_tx, IRQF_SHARED,
++	rc |= request_irq(psc_dma->playback.irq, &psc_dma_bcom_irq, IRQF_SHARED,
+ 			  "psc-dma-playback", &psc_dma->playback);
+ 	if (rc) {
+ 		ret = -ENODEV;
