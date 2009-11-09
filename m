@@ -1,32 +1,18 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: Re: [PATCH 1/7] S3C AUDIO: Rename s3c24xx_pcm prefix
-	to	s3c_dma
-Date: Mon, 09 Nov 2009 15:19:40 +0900
-Message-ID: <4AF7B47C.40508@samsung.com>
-References: <1257384866-18188-1-git-send-email-jassi.brar@samsung.com>
-	<4AF24321.7070303@samsung.com>
-	<1b68c6790911042016s6993f314x6e2a1c169ba5d437@mail.gmail.com>
-	<4AF25C8C.3020001@samsung.com> <20091106162322.GD4938@sirena.org.uk>
-	<1b68c6790911061946w6cf04e4cv30f790470c20cba4@mail.gmail.com>
-	<4AF7A528.3080602@samsung.com>
-	<1b68c6790911082131v21a5f0d4q542ba3496b60456b@mail.gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] ASoC: Pandora: Pass SRG input clock frequency
+	to the OMAP McBSP DAI
+Date: Mon,  9 Nov 2009 08:44:32 +0200
+Message-ID: <1257749072-3796-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id EC4D0245F2
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 07:19:47 +0100 (CET)
-Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KST00LKEW8SH3@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 09 Nov 2009 15:19:41 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KST00JPJW8SV5@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 09 Nov 2009 15:19:40 +0900 (KST)
-In-reply-to: <1b68c6790911082131v21a5f0d4q542ba3496b60456b@mail.gmail.com>
+Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
+	[209.85.220.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id C711510380B
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 07:43:45 +0100 (CET)
+Received: by fxm1 with SMTP id 1so3145345fxm.32
+	for <alsa-devel@alsa-project.org>; Sun, 08 Nov 2009 22:43:45 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,67 +22,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTEvOS8yMDA5IDI6MzEgUE0sIGphc3NpIGJyYXIgd3JvdGU6Cj4gT24gTW9uLCBOb3YgOSwg
-MjAwOSBhdCAyOjE0IFBNLCBKb29ueW91bmcgU2hpbSA8ankwOTIyLnNoaW1Ac2Ftc3VuZy5jb20+
-IHdyb3RlOgo+PiBPbiAxMS83LzIwMDkgMTI6NDYgUE0sIGphc3NpIGJyYXIgd3JvdGU6Cj4+Pj4g
-T24gVGh1LCBOb3YgMDUsIDIwMDkgYXQgMDI6MDM6MDhQTSArMDkwMCwgSm9vbnlvdW5nIFNoaW0g
-d3JvdGU6Cj4+Pj4+IE9uIDExLzUvMjAwOSAxOjE2IFBNLCBqYXNzaSBicmFyIHdyb3RlOgo+Pj4g
-T24gU2F0LCBOb3YgNywgMjAwOSBhdCAxOjIzIEFNLCBNYXJrIEJyb3duCj4+PiA8YnJvb25pZUBv
-cGVuc291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+Pj4+Pj4gVGhlc2UgcGF0Y2hlcyBp
-cyBub3QgYWJvdXQgY2hhbmdpbmcgbmFtaW5nIGNvbnZlbnRpb25zLiBPbmx5IGNoYW5nZXMsIG5l
-Y2Vzc2FyeQo+Pj4+Pj4gdG8gaGF2ZSBhIGNsZWFuIGFuZCBjb25zaXN0ZW50IG5hbWVzcGFjZSBh
-ZnRlciBpbnRlZ3JhdGluZyBQQ00gZHJpdmVyLCBoYXZlCj4+Pj4+PiBiZWVuIG1hZGUuCj4+Pj4+
-IEFncmVlLCBidXQgeW91IGFscmVhZHkgYXJlIGNoYW5naW5nIHRoZSBwcmVmaXggZnJvbSBzM2My
-NHh4IHRvIHMzYy4KPj4+PiBJIGFsc28gYWdyZWUgd2l0aCB0aGlzIC0gaWYgd2UncmUgcmVuYW1p
-bmcgdGhpcyBkcml2ZXIgYW55d2F5IHRoZW4KPj4+PiBjaGFuZ2luZyB0aGUgcHJlZml4IGZvciBp
-dCB3aGlsZSB3ZSdyZSBhdCBpdCBzZWVtcyByZWFzb25hYmxlLCBpdCBtZWFucwo+Pj4+IG9uZSBs
-ZXNzIGNoYW5nZSBpbiB0aGUgZnV0dXJlLgo+Pj4gcmVuYW1pbmcgaXMgYSBib3ggb2Ygd29ybXMg
-d2hpY2ggaSBkb250IHdhbm5hIGJlIHRoZSBmaXJzdCB0byBvcGVuLgo+Pj4gSSB3b3VsZCB3YWl0
-IGZvciBhIGNvbXBsZXRlIGRpc2N1c3Npb24gb24gdGhlIG5hbWluZyBjb252ZW50aW9ucyB0byBo
-YXBwZW4KPj4+IGFuZCBoYXZlIGEgZGVjaXNpb24gbWFkZSBiZWZvcmUgSSBkbyByZW5hbWluZy4K
-Pj4+IFRob3VnaCwgSSBjYW4gcmVzZW5kIHRoZSBwYXRjaCB3aXRoIHNhbXN1bmdfIHByZWZpeCB0
-b28sIGlmIGV2ZXJ5b25lCj4+PiBpcyB3aWxsaW5nIHRvCj4+PiBob2xkIHRoZWlyIHBlYWNlIGZv
-cmV2ZXIuCj4+Pgo+Pj4+Pj4gYnV0IGlmIHdlIHRyeSBzbywgd2UgaGF2ZSB0aGUgZm9sbG93aW5n
-Cj4+Pj4+PiDtmLsxKSBzM2MyNHh4X3BjbV9kbWFfcGFyYW1zIC0+IHMzY19kbWFfZG1hX3BhcmFt
-cwo+Pj4+Pj4g7Zi7MikgczNjMjR4eF9wY21fcHJlYWxsb2NhdGVfZG1hX2J1ZmZlciAtPiBzM2Nf
-ZG1hX3ByZWFsbG9jYXRlX2RtYV9idWZmZXIKPj4+Pj4+IO2YuzMpIHMzYzI0eHhfcGNtX2RtYW1h
-c2sgLT4gczNjX2RtYV9kbWFtYXNrCj4+Pj4+PiBub25lIG9mIHdoaWNoIHNlZW0gdmVyeSBuaWNl
-Lgo+Pj4+PiBZb3UgY2FuIG1vZGlmeSB0aGUgbmFtZXMgZm9yIHRoZSBjb25zaXN0ZW50IHByZWZp
-eC4gSWYgeW91Cj4+Pj4+IHVzZSBzM2NfZG1hXyBwcmVmaXgsIGZvciBleGFtcGxlLCBzM2MyNHh4
-X3BjbV9kbWFfcGFyYW1zIGNhbiBiZSB0bwo+Pj4+PiBzM2NfZG1hX3BhcmFtcy4KPj4+PiBJIHRl
-bmQgdG8gYWdyZWUgd2l0aCB0aGlzLiDtmLtUaGUgYWN0dWFsIHJlbmFtZSBuZWVkcyB0byBoYXBw
-ZW4gdG8gZnJlZSB1cAo+Pj4+IHRoZSBQQ00gbmFtZSBmb3IgdGhlIGRyaXZlciBmb3IgdGhlIFBD
-TSBoYXJkd2FyZS4KPj4+IFNvIHRha2luZyBpbnRvIGFjY291bnQgdGhlIGFmb3JlbWVudGlvbmVk
-IHBvaW50IGFzIHdlbGwsIHlvdSBzdWdnZXN0Cj4+PiAxKSBzM2MyNHh4X3BjbV9kbWFfcGFyYW1z
-IC0+IHNhbXN1bmdfZG1hX3BhcmFtcwo+Pj4gMikgczNjMjR4eF9wY21fcHJlYWxsb2NhdGVfZG1h
-X2J1ZmZlciAtPiBzYW1zdW5nX3ByZWFsbG9jYXRlX2RtYV9idWZmZXIKPj4+IDMpIHMzYzI0eHhf
-cGNtX2RtYW1hc2sgLT4gc2Ftc3VuZ19kbWFtYXNrCj4+PiA0KSBzM2MyNHh4X3BjbV9YWFggLT4g
-c2Ftc3VuZ19kbWFfWFhYCj4+Pgo+PiBIbW0sIGkgd2FzIG1pc3NpbmcgYWJvdXQgdGhlIERNQSBv
-biB0aGUgcHJpb3IgbWFpbC4gV2Ugc2hvdWxkIGNvbnNpZGVyCj4+IHRoZSBETUEgd2l0aCB0aGlz
-LiBUaGUgRE1BIGNoaXAoUEwzMzApIG9mIHM1cCBDUFVzIGRpZmZlcnMgd2l0aCBzM2MKPj4gQ1BV
-cy4gV2UgZmlyc3Qgc2hvdWxkIGRlc2lkZWQgd2hldGhlciB1c2UgdGhlIGV4aXN0aW5nIERNQSBp
-bnRlcmZhY2Ugb2YKPj4gczNjLiBJZiB3ZSB1c2UgaXQsIHRoaXMgcHJlZml4IGlzIGJldHRlciBz
-YW1zdW5nIHRoYW4gczNjLgo+Pgo+PiBUaGUgb3RoZXIgb3B0aW9uIGlzIHVzaW5nIHRoZSBETUEg
-c3Vic3lzdGVtIGFib3V0IHM1cCBETUEuIFRoaXMgbmVlZAo+PiBhbHNvIGltcGxlbWVudGluZyBB
-U29DIHBsYXRmb3JtIGRyaXZlciBvZiBzNXAgZm9yIERNQSwgc28gaXQgaXMgYmV0dGVyCj4+IHR3
-byBlYWNoIGRpZmZlcmVudCBwcmVmaXggdGhhbiBzYW1zdW5nLiBJIGhhdmUgcG9zdGVkIHRoZSBz
-NXAgRE1BIGRyaXZlcgo+PiB1c2luZyB0aGUgRE1BIHN1YnN5c3RlbS4KPj4gaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LWFybS1rZXJuZWwvMjAwOS1TZXB0ZW1iZXIv
-MDAwODEwLmh0bWwKPiBJdCBkb2Vzbid0IG1ha2UgbXVjaCBzZW5zZSB0byBiYXNlIG5ldyBkcml2
-ZXJzIG92ZXIgYSBETUEgZHJpdmVyIHdoaWNoIGhhc24ndAo+IGJlZW4gYWNjZXB0ZWQobm8gQUNL
-IG5vIE5BSyB0byB5b3VyIGNvZGUpLiBTbywgY3VycmVudGx5IEkgYXNzdW1lCj4gUEwzMzAgRE1B
-IGFwaSBzYW1lIGFzIHRoYXQgb2YgUEwwODAuCj4gCgpJJ20gbm90IHN1cmUgd2hpY2ggaXMgYmV0
-dGVyLCBidXQgaSB0aGluayBhYm92ZSBvcHRpb24gYWxsIGlzIHBvc3NpYmxlLgpJIGp1c3QgY29u
-Y2VybnMgaWYgdXNlIHRoZSBleGlzdGluZyBzM2MgRE1BIGludGVyZmFjZSwgYXJlIG5vdCB0aGVy
-ZSBzb21lCmltcGxlbWVudGF0aW9uIHByb2JsZW1zIG9yIHRoZSBuYW1pbmcgcHJvYmxlbXM/CgpJ
-IGRvbid0IGtub3cgd2h5IEJlbiBkb2Vzbid0IHVzZSB0aGUgRE1BIHN1YnN5c3RlbSBhdCBzM2M2
-NHh4CkNQVShQTDA4MCkuIEkganVzdCB0aGluayBiZWNhdXNlIHRoZSBQTDA4MCBjaGlwIG9mIHMz
-YzY0eHggaGFzIHNvbWUKY3VzdG9taXplZCBwYXJ0cyBvciBmb3IgdGhlIERNQSBpbnRlcmZhY2Ug
-Y29tcGF0aWJpbGl0eSBvZiBzM2MyNHh4LgoKQmVuLCB3aGF0IGRvIHlvdSB0aGluayBhYm91dCB0
-aGlzIGlzc3VlPwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Upcoming change to omap-mcbsp.c require that machine drivers using OMAP
+as a DAI master to pass sample rate generator input clock frequency to
+the omap-mcbsp.c DAI driver.
+
+Pandora is using 256*Fs output from the TWL4030 codec as an input clock to
+the McBSP sample rate generator.
+
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+Tested-by: Grazvydas Ignotas <notasas@gmail.com>
+---
+ sound/soc/omap/omap3pandora.c |   24 ++++++++++--------------
+ 1 files changed, 10 insertions(+), 14 deletions(-)
+
+diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
+index ad219aa..cace5f1 100644
+--- a/sound/soc/omap/omap3pandora.c
++++ b/sound/soc/omap/omap3pandora.c
+@@ -40,9 +40,12 @@
+ 
+ #define PREFIX "ASoC omap3pandora: "
+ 
+-static int omap3pandora_cmn_hw_params(struct snd_soc_dai *codec_dai,
+-	struct snd_soc_dai *cpu_dai, unsigned int fmt)
++static int omap3pandora_cmn_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params, unsigned int fmt)
+ {
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -68,8 +71,9 @@ static int omap3pandora_cmn_hw_params(struct snd_soc_dai *codec_dai,
+ 	}
+ 
+ 	/* Set McBSP clock to external */
+-	ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_EXT, 0,
+-					    SND_SOC_CLOCK_IN);
++	ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_EXT,
++				     256 * params_rate(params),
++				     SND_SOC_CLOCK_IN);
+ 	if (ret < 0) {
+ 		pr_err(PREFIX "can't set cpu system clock\n");
+ 		return ret;
+@@ -87,11 +91,7 @@ static int omap3pandora_cmn_hw_params(struct snd_soc_dai *codec_dai,
+ static int omap3pandora_out_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-
+-	return omap3pandora_cmn_hw_params(codec_dai, cpu_dai,
++	return omap3pandora_cmn_hw_params(substream, params,
+ 					  SND_SOC_DAIFMT_I2S |
+ 					  SND_SOC_DAIFMT_IB_NF |
+ 					  SND_SOC_DAIFMT_CBS_CFS);
+@@ -100,11 +100,7 @@ static int omap3pandora_out_hw_params(struct snd_pcm_substream *substream,
+ static int omap3pandora_in_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-
+-	return omap3pandora_cmn_hw_params(codec_dai, cpu_dai,
++	return omap3pandora_cmn_hw_params(substream, params,
+ 					  SND_SOC_DAIFMT_I2S |
+ 					  SND_SOC_DAIFMT_NB_NF |
+ 					  SND_SOC_DAIFMT_CBS_CFS);
+-- 
+1.6.5
