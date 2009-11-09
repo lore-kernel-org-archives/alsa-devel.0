@@ -1,21 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Capture not working in MMAP mode with '-v'
-Date: Mon, 9 Nov 2009 11:54:07 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0911091144270.12612@eeebox2.perex-int.cz>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB030A705212@dbde02.ent.ti.com>
-	<1257753496.30157.455.camel@eenurkka-desktop>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030A705220@dbde02.ent.ti.com>
-	<1257754351.30157.464.camel@eenurkka-desktop>
-	<20091109102621.GA1245@sirena.org.uk>
-	<1257762766.11847.5.camel@eenurkka-desktop>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2 v2] ASoC: sh: fsi: Add runtime
+	PM	support
+Date: Mon, 9 Nov 2009 10:58:58 +0000
+Message-ID: <20091109105858.GB1245@sirena.org.uk>
+References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 45F99103840
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 11:54:08 +0100 (CET)
-In-Reply-To: <1257762766.11847.5.camel@eenurkka-desktop>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34604103845
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 11:59:01 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,69 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
-Cc: "ext Aggarwal, Anuj" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, Magnus Damm <damm@igel.co.jp>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 9 Nov 2009, Eero Nurkkala wrote:
+On Mon, Nov 09, 2009 at 11:54:47AM +0900, Kuninori Morimoto wrote:
+> This patch add support runtime PM.
+> Driver callbacks for Runtime PM are empty because
+> the device registers are always re-initialized after
+> pm_runtime_get_sync(). The Runtime PM functions replaces the
+> clock framework module stop bit handling in this driver.
 
-> So the patch:
->
-> --- a/alsa-utils-1.0.21/aplay/aplay.c
-> +++ b/alsa-utils-1.0.21/aplay/aplay-fix.c
-> @@ -1104,7 +1104,8 @@ static void set_params(void)
-> 	if (mmap_flag && verbose) {
-> 		const snd_pcm_channel_area_t *areas;
-> 		snd_pcm_uframes_t offset;
-> -		int i;
-> +		int i, chunk_prev = chunk_size;
-> +		snd_pcm_avail_update(handle);
-> 		err = snd_pcm_mmap_begin(handle, &areas, &offset, &chunk_size);
-> 		if (err < 0) {
-> 			error("snd_pcm_mmap_begin problem: %s", snd_strerror(err));
-> @@ -1112,6 +1113,11 @@ static void set_params(void)
-> 		}
-> 		for (i = 0; i < hwparams.channels; i++)
-> 			fprintf(stderr, "mmap_area[%i] = %p,%u,%u (%u)\n", i, areas[i].addr, areas[i].first, areas[i].step, snd_pcm_format_physical_width(hwparams.format));
-> +
-> +		/* Chunk size better be non-zero */
-> +		if (!chunk_size)
-> +                	chunk_size = chunk_prev;
-> +
-> 		/* not required, but for sure */
-> 		snd_pcm_mmap_commit(handle, offset, 0);
-> 	}
+> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
 
-This patch removes wrong chunk_size initialization (commited to alsa-utils 
-git repo now):
+Hrm.  I'll have to see how this plays with ASoC core pm_runtime support
+when that appears.  It should be OK as-is, I think.
 
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index c7c82a1..f0fa969 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -1103,9 +1103,9 @@ static void set_params(void)
-  	/* show mmap buffer arragment */
-  	if (mmap_flag && verbose) {
-  		const snd_pcm_channel_area_t *areas;
--		snd_pcm_uframes_t offset;
-+		snd_pcm_uframes_t offset, size = chunk_size;
-  		int i;
--		err = snd_pcm_mmap_begin(handle, &areas, &offset, &chunk_size);
-+		err = snd_pcm_mmap_begin(handle, &areas, &offset, &size);
-  		if (err < 0) {
-  			error("snd_pcm_mmap_begin problem: %s", snd_strerror(err));
-  			exit(EXIT_FAILURE);
+> +	pm_suspend_ignore_children(&pdev->dev, true);
+> +	pm_runtime_enable(&pdev->dev);
+> +	pm_runtime_resume(&pdev->dev);
 
-It's not necessary to call snd_pcm_avail_update() and mangle chunk_size. 
-The debug code wants to print the structure of mmaped areas only which are 
-available all time.
+Why pm_suspend_ignore_all_children()?  I'd not expect the device to have
+any children and if it did it doesn't seem like an entirely safe
+assumption.
 
-Thanks for reporting (although only your last patch makes clear where the 
-problem is for me).
+> +static int fsi_runtime_nop(struct device *dev)
+> +{
+> +	/* Runtime PM callback shared between ->runtime_suspend()
+> +	 * and ->runtime_resume(). Simply returns success.
+> +	 *
+> +	 * This driver re-initializes all registers after
+> +	 * pm_runtime_get_sync() anyway so there is no need
+> +	 * to save and restore registers here.
+> +	 */
+> +	return 0;
+> +}
 
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+This sets off alarm bells but it's perfectly reasonable, especially with
+platforms able to put things into a low power state with no explicit
+driver code now they can do power domain style things like SH.  I've
+CCed in the PM folks since this seems like a perfectly reasonable use
+case which ought to be handled more nicely.
