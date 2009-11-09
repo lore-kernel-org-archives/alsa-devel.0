@@ -1,30 +1,25 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
+From: jassi brar <jassisinghbrar@gmail.com>
 Subject: Re: [PATCH 1/7] S3C AUDIO: Rename s3c24xx_pcm prefix
-	to	s3c_dma
-Date: Mon, 09 Nov 2009 14:14:16 +0900
-Message-ID: <4AF7A528.3080602@samsung.com>
+	to s3c_dma
+Date: Mon, 9 Nov 2009 14:31:10 +0900
+Message-ID: <1b68c6790911082131v21a5f0d4q542ba3496b60456b@mail.gmail.com>
 References: <1257384866-18188-1-git-send-email-jassi.brar@samsung.com>
 	<4AF24321.7070303@samsung.com>
 	<1b68c6790911042016s6993f314x6e2a1c169ba5d437@mail.gmail.com>
 	<4AF25C8C.3020001@samsung.com> <20091106162322.GD4938@sirena.org.uk>
 	<1b68c6790911061946w6cf04e4cv30f790470c20cba4@mail.gmail.com>
+	<4AF7A528.3080602@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E0B310382D
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 06:14:41 +0100 (CET)
-Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KST00IBOT7RVE@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 09 Nov 2009 14:14:16 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KST006DCT7SP5@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 09 Nov 2009 14:14:16 +0900 (KST)
-In-reply-to: <1b68c6790911061946w6cf04e4cv30f790470c20cba4@mail.gmail.com>
+Received: from mail-pz0-f184.google.com (mail-pz0-f184.google.com
+	[209.85.222.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B78724639
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 06:31:11 +0100 (CET)
+Received: by pzk14 with SMTP id 14so1898752pzk.23
+	for <alsa-devel@alsa-project.org>; Sun, 08 Nov 2009 21:31:10 -0800 (PST)
+In-Reply-To: <4AF7A528.3080602@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,54 +29,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
+To: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 11/7/2009 12:46 PM, jassi brar wrote:
->> On Thu, Nov 05, 2009 at 02:03:08PM +0900, Joonyoung Shim wrote:
->>> On 11/5/2009 1:16 PM, jassi brar wrote:
-> On Sat, Nov 7, 2009 at 1:23 AM, Mark Brown
-> <broonie@opensource.wolfsonmicro.com> wrote:
->>>> These patches is not about changing naming conventions. Only changes, necessary
->>>> to have a clean and consistent namespace after integrating PCM driver, have
->>>> been made.
->>> Agree, but you already are changing the prefix from s3c24xx to s3c.
->> I also agree with this - if we're renaming this driver anyway then
->> changing the prefix for it while we're at it seems reasonable, it means
->> one less change in the future.
-> renaming is a box of worms which i dont wanna be the first to open.
-> I would wait for a complete discussion on the naming conventions to happen
-> and have a decision made before I do renaming.
-> Though, I can resend the patch with samsung_ prefix too, if everyone
-> is willing to
-> hold their peace forever.
-> 
->>>> but if we try so, we have the following
->>>>  1) s3c24xx_pcm_dma_params -> s3c_dma_dma_params
->>>>  2) s3c24xx_pcm_preallocate_dma_buffer -> s3c_dma_preallocate_dma_buffer
->>>>  3) s3c24xx_pcm_dmamask -> s3c_dma_dmamask
->>>> none of which seem very nice.
->>> You can modify the names for the consistent prefix. If you
->>> use s3c_dma_ prefix, for example, s3c24xx_pcm_dma_params can be to
->>> s3c_dma_params.
->> I tend to agree with this.  The actual rename needs to happen to free up
->> the PCM name for the driver for the PCM hardware.
-> 
-> So taking into account the aforementioned point as well, you suggest
-> 1) s3c24xx_pcm_dma_params -> samsung_dma_params
-> 2) s3c24xx_pcm_preallocate_dma_buffer -> samsung_preallocate_dma_buffer
-> 3) s3c24xx_pcm_dmamask -> samsung_dmamask
-> 4) s3c24xx_pcm_XXX -> samsung_dma_XXX
-> 
-
-Hmm, i was missing about the DMA on the prior mail. We should consider
-the DMA with this. The DMA chip(PL330) of s5p CPUs differs with s3c
-CPUs. We first should desided whether use the existing DMA interface of
-s3c. If we use it, this prefix is better samsung than s3c.
-
-The other option is using the DMA subsystem about s5p DMA. This need
-also implementing ASoC platform driver of s5p for DMA, so it is better
-two each different prefix than samsung. I have posted the s5p DMA driver
-using the DMA subsystem.
-http://lists.infradead.org/pipermail/linux-arm-kernel/2009-September/000810.html
+T24gTW9uLCBOb3YgOSwgMjAwOSBhdCAyOjE0IFBNLCBKb29ueW91bmcgU2hpbSA8ankwOTIyLnNo
+aW1Ac2Ftc3VuZy5jb20+IHdyb3RlOgo+IE9uIDExLzcvMjAwOSAxMjo0NiBQTSwgamFzc2kgYnJh
+ciB3cm90ZToKPj4+IE9uIFRodSwgTm92IDA1LCAyMDA5IGF0IDAyOjAzOjA4UE0gKzA5MDAsIEpv
+b255b3VuZyBTaGltIHdyb3RlOgo+Pj4+IE9uIDExLzUvMjAwOSAxOjE2IFBNLCBqYXNzaSBicmFy
+IHdyb3RlOgo+PiBPbiBTYXQsIE5vdiA3LCAyMDA5IGF0IDE6MjMgQU0sIE1hcmsgQnJvd24KPj4g
+PGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPj4+Pj4gVGhlc2Ug
+cGF0Y2hlcyBpcyBub3QgYWJvdXQgY2hhbmdpbmcgbmFtaW5nIGNvbnZlbnRpb25zLiBPbmx5IGNo
+YW5nZXMsIG5lY2Vzc2FyeQo+Pj4+PiB0byBoYXZlIGEgY2xlYW4gYW5kIGNvbnNpc3RlbnQgbmFt
+ZXNwYWNlIGFmdGVyIGludGVncmF0aW5nIFBDTSBkcml2ZXIsIGhhdmUKPj4+Pj4gYmVlbiBtYWRl
+Lgo+Pj4+IEFncmVlLCBidXQgeW91IGFscmVhZHkgYXJlIGNoYW5naW5nIHRoZSBwcmVmaXggZnJv
+bSBzM2MyNHh4IHRvIHMzYy4KPj4+IEkgYWxzbyBhZ3JlZSB3aXRoIHRoaXMgLSBpZiB3ZSdyZSBy
+ZW5hbWluZyB0aGlzIGRyaXZlciBhbnl3YXkgdGhlbgo+Pj4gY2hhbmdpbmcgdGhlIHByZWZpeCBm
+b3IgaXQgd2hpbGUgd2UncmUgYXQgaXQgc2VlbXMgcmVhc29uYWJsZSwgaXQgbWVhbnMKPj4+IG9u
+ZSBsZXNzIGNoYW5nZSBpbiB0aGUgZnV0dXJlLgo+PiByZW5hbWluZyBpcyBhIGJveCBvZiB3b3Jt
+cyB3aGljaCBpIGRvbnQgd2FubmEgYmUgdGhlIGZpcnN0IHRvIG9wZW4uCj4+IEkgd291bGQgd2Fp
+dCBmb3IgYSBjb21wbGV0ZSBkaXNjdXNzaW9uIG9uIHRoZSBuYW1pbmcgY29udmVudGlvbnMgdG8g
+aGFwcGVuCj4+IGFuZCBoYXZlIGEgZGVjaXNpb24gbWFkZSBiZWZvcmUgSSBkbyByZW5hbWluZy4K
+Pj4gVGhvdWdoLCBJIGNhbiByZXNlbmQgdGhlIHBhdGNoIHdpdGggc2Ftc3VuZ18gcHJlZml4IHRv
+bywgaWYgZXZlcnlvbmUKPj4gaXMgd2lsbGluZyB0bwo+PiBob2xkIHRoZWlyIHBlYWNlIGZvcmV2
+ZXIuCj4+Cj4+Pj4+IGJ1dCBpZiB3ZSB0cnkgc28sIHdlIGhhdmUgdGhlIGZvbGxvd2luZwo+Pj4+
+PiDCoDEpIHMzYzI0eHhfcGNtX2RtYV9wYXJhbXMgLT4gczNjX2RtYV9kbWFfcGFyYW1zCj4+Pj4+
+IMKgMikgczNjMjR4eF9wY21fcHJlYWxsb2NhdGVfZG1hX2J1ZmZlciAtPiBzM2NfZG1hX3ByZWFs
+bG9jYXRlX2RtYV9idWZmZXIKPj4+Pj4gwqAzKSBzM2MyNHh4X3BjbV9kbWFtYXNrIC0+IHMzY19k
+bWFfZG1hbWFzawo+Pj4+PiBub25lIG9mIHdoaWNoIHNlZW0gdmVyeSBuaWNlLgo+Pj4+IFlvdSBj
+YW4gbW9kaWZ5IHRoZSBuYW1lcyBmb3IgdGhlIGNvbnNpc3RlbnQgcHJlZml4LiBJZiB5b3UKPj4+
+PiB1c2UgczNjX2RtYV8gcHJlZml4LCBmb3IgZXhhbXBsZSwgczNjMjR4eF9wY21fZG1hX3BhcmFt
+cyBjYW4gYmUgdG8KPj4+PiBzM2NfZG1hX3BhcmFtcy4KPj4+IEkgdGVuZCB0byBhZ3JlZSB3aXRo
+IHRoaXMuIMKgVGhlIGFjdHVhbCByZW5hbWUgbmVlZHMgdG8gaGFwcGVuIHRvIGZyZWUgdXAKPj4+
+IHRoZSBQQ00gbmFtZSBmb3IgdGhlIGRyaXZlciBmb3IgdGhlIFBDTSBoYXJkd2FyZS4KPj4KPj4g
+U28gdGFraW5nIGludG8gYWNjb3VudCB0aGUgYWZvcmVtZW50aW9uZWQgcG9pbnQgYXMgd2VsbCwg
+eW91IHN1Z2dlc3QKPj4gMSkgczNjMjR4eF9wY21fZG1hX3BhcmFtcyAtPiBzYW1zdW5nX2RtYV9w
+YXJhbXMKPj4gMikgczNjMjR4eF9wY21fcHJlYWxsb2NhdGVfZG1hX2J1ZmZlciAtPiBzYW1zdW5n
+X3ByZWFsbG9jYXRlX2RtYV9idWZmZXIKPj4gMykgczNjMjR4eF9wY21fZG1hbWFzayAtPiBzYW1z
+dW5nX2RtYW1hc2sKPj4gNCkgczNjMjR4eF9wY21fWFhYIC0+IHNhbXN1bmdfZG1hX1hYWAo+Pgo+
+Cj4gSG1tLCBpIHdhcyBtaXNzaW5nIGFib3V0IHRoZSBETUEgb24gdGhlIHByaW9yIG1haWwuIFdl
+IHNob3VsZCBjb25zaWRlcgo+IHRoZSBETUEgd2l0aCB0aGlzLiBUaGUgRE1BIGNoaXAoUEwzMzAp
+IG9mIHM1cCBDUFVzIGRpZmZlcnMgd2l0aCBzM2MKPiBDUFVzLiBXZSBmaXJzdCBzaG91bGQgZGVz
+aWRlZCB3aGV0aGVyIHVzZSB0aGUgZXhpc3RpbmcgRE1BIGludGVyZmFjZSBvZgo+IHMzYy4gSWYg
+d2UgdXNlIGl0LCB0aGlzIHByZWZpeCBpcyBiZXR0ZXIgc2Ftc3VuZyB0aGFuIHMzYy4KPgo+IFRo
+ZSBvdGhlciBvcHRpb24gaXMgdXNpbmcgdGhlIERNQSBzdWJzeXN0ZW0gYWJvdXQgczVwIERNQS4g
+VGhpcyBuZWVkCj4gYWxzbyBpbXBsZW1lbnRpbmcgQVNvQyBwbGF0Zm9ybSBkcml2ZXIgb2YgczVw
+IGZvciBETUEsIHNvIGl0IGlzIGJldHRlcgo+IHR3byBlYWNoIGRpZmZlcmVudCBwcmVmaXggdGhh
+biBzYW1zdW5nLiBJIGhhdmUgcG9zdGVkIHRoZSBzNXAgRE1BIGRyaXZlcgo+IHVzaW5nIHRoZSBE
+TUEgc3Vic3lzdGVtLgo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51
+eC1hcm0ta2VybmVsLzIwMDktU2VwdGVtYmVyLzAwMDgxMC5odG1sCkl0IGRvZXNuJ3QgbWFrZSBt
+dWNoIHNlbnNlIHRvIGJhc2UgbmV3IGRyaXZlcnMgb3ZlciBhIERNQSBkcml2ZXIgd2hpY2ggaGFz
+bid0CmJlZW4gYWNjZXB0ZWQobm8gQUNLIG5vIE5BSyB0byB5b3VyIGNvZGUpLiBTbywgY3VycmVu
+dGx5IEkgYXNzdW1lClBMMzMwIERNQSBhcGkgc2FtZSBhcyB0aGF0IG9mIFBMMDgwLgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
+bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
+cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
