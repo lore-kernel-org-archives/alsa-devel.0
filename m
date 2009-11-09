@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2 v2] ASoC: sh: fsi: Add runtime
-	PM	support
-Date: Mon, 9 Nov 2009 13:31:36 +0000
-Message-ID: <20091109133136.GC1245@sirena.org.uk>
-References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
-	<20091109105858.GB1245@sirena.org.uk>
+From: Daniel Drake <dsd@laptop.org>
+Subject: Crackly sound with dmix rate 48000
+Date: Mon, 09 Nov 2009 13:34:34 +0000
+Message-ID: <1257773674.2180.27.camel@polyethylene>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 172AB103842
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 14:31:39 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091109105858.GB1245@sirena.org.uk>
+Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
+	[209.85.220.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C421103863
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 14:34:37 +0100 (CET)
+Received: by fxm1 with SMTP id 1so3541868fxm.32
+	for <alsa-devel@alsa-project.org>; Mon, 09 Nov 2009 05:34:37 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,58 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, alsa-devel@alsa-project.org, linux-pm@lists.linux-foundation.org, Magnus Damm <damm@opensource.se>, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 09, 2009 at 10:58:58AM +0000, Mark Brown wrote:
+Hi,
 
-Adding in an address for Magnus which hopefully won't bounce and also
-the linux-pm list which get_maintainers didn't find.
+In our musical activities, the OLPC/Sugar platform uses csound which in
+turn uses ALSA for playing sounds.
 
-> On Mon, Nov 09, 2009 at 11:54:47AM +0900, Kuninori Morimoto wrote:
-> > This patch add support runtime PM.
-> > Driver callbacks for Runtime PM are empty because
-> > the device registers are always re-initialized after
-> > pm_runtime_get_sync(). The Runtime PM functions replaces the
-> > clock framework module stop bit handling in this driver.
-> 
-> > Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-> 
-> Hrm.  I'll have to see how this plays with ASoC core pm_runtime support
-> when that appears.  It should be OK as-is, I think.
-> 
-> > +	pm_suspend_ignore_children(&pdev->dev, true);
-> > +	pm_runtime_enable(&pdev->dev);
-> > +	pm_runtime_resume(&pdev->dev);
-> 
-> Why pm_suspend_ignore_all_children()?  I'd not expect the device to have
-> any children and if it did it doesn't seem like an entirely safe
-> assumption.
-> 
-> > +static int fsi_runtime_nop(struct device *dev)
-> > +{
-> > +	/* Runtime PM callback shared between ->runtime_suspend()
-> > +	 * and ->runtime_resume(). Simply returns success.
-> > +	 *
-> > +	 * This driver re-initializes all registers after
-> > +	 * pm_runtime_get_sync() anyway so there is no need
-> > +	 * to save and restore registers here.
-> > +	 */
-> > +	return 0;
-> > +}
-> 
-> This sets off alarm bells but it's perfectly reasonable, especially with
-> platforms able to put things into a low power state with no explicit
-> driver code now they can do power domain style things like SH.  I've
-> CCed in the PM folks since this seems like a perfectly reasonable use
-> case which ought to be handled more nicely.
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
-> 
+On our latest XO hardware model, where we now use HDA instead of cs5536,
+we are experiencing some crackly sounds from our csound-based
+applications. Other apps are fine.
 
--- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+We discovered that changing the dmix rate from 48000 to 44100 solves the
+cracklyness.
+
+What does this indicate?
+
+Might csound be producing sounds at rate 44100, which dmix previously
+had to convert to 48000, which was too taxing to the system?
+
+Any suggestions for how to diagnose this further? (or would changing the
+rate be seen as a reasonable thing to do in this situation?)
+
+Thanks,
+Daniel
