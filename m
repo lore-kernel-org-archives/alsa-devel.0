@@ -1,18 +1,26 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2 v2] ASoC: sh: fsi: Add runtime
-	PM	support
-Date: Mon, 9 Nov 2009 10:58:58 +0000
-Message-ID: <20091109105858.GB1245@sirena.org.uk>
-References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
+Subject: Re: [PATCH 1/7] S3C AUDIO: Rename s3c24xx_pcm prefix
+ to s3c_dma
+Date: Mon, 9 Nov 2009 12:05:18 +0000
+Message-ID: <20091109120517.GA22520@rakim.wolfsonmicro.main>
+References: <1257384866-18188-1-git-send-email-jassi.brar@samsung.com>
+	<4AF24321.7070303@samsung.com>
+	<1b68c6790911042016s6993f314x6e2a1c169ba5d437@mail.gmail.com>
+	<4AF25C8C.3020001@samsung.com>
+	<20091106162322.GD4938@sirena.org.uk>
+	<1b68c6790911061946w6cf04e4cv30f790470c20cba4@mail.gmail.com>
+	<4AF7A528.3080602@samsung.com>
+	<1b68c6790911082131v21a5f0d4q542ba3496b60456b@mail.gmail.com>
+	<4AF7B47C.40508@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34604103845
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 11:59:01 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C31E4103828
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 13:05:19 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
+In-Reply-To: <4AF7B47C.40508@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,44 +30,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, Magnus Damm <damm@igel.co.jp>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: alsa-devel@alsa-project.org, jassi brar <jassisinghbrar@gmail.com>, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 09, 2009 at 11:54:47AM +0900, Kuninori Morimoto wrote:
-> This patch add support runtime PM.
-> Driver callbacks for Runtime PM are empty because
-> the device registers are always re-initialized after
-> pm_runtime_get_sync(). The Runtime PM functions replaces the
-> clock framework module stop bit handling in this driver.
+On Mon, Nov 09, 2009 at 03:19:40PM +0900, Joonyoung Shim wrote:
 
-> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+> I don't know why Ben doesn't use the DMA subsystem at s3c64xx
+> CPU(PL080). I just think because the PL080 chip of s3c64xx has some
+> customized parts or for the DMA interface compatibility of s3c24xx.
 
-Hrm.  I'll have to see how this plays with ASoC core pm_runtime support
-when that appears.  It should be OK as-is, I think.
+I suspect it's the latter; using the DMA API would mean updating all the
+existing DMA drivers.
 
-> +	pm_suspend_ignore_children(&pdev->dev, true);
-> +	pm_runtime_enable(&pdev->dev);
-> +	pm_runtime_resume(&pdev->dev);
-
-Why pm_suspend_ignore_all_children()?  I'd not expect the device to have
-any children and if it did it doesn't seem like an entirely safe
-assumption.
-
-> +static int fsi_runtime_nop(struct device *dev)
-> +{
-> +	/* Runtime PM callback shared between ->runtime_suspend()
-> +	 * and ->runtime_resume(). Simply returns success.
-> +	 *
-> +	 * This driver re-initializes all registers after
-> +	 * pm_runtime_get_sync() anyway so there is no need
-> +	 * to save and restore registers here.
-> +	 */
-> +	return 0;
-> +}
-
-This sets off alarm bells but it's perfectly reasonable, especially with
-platforms able to put things into a low power state with no explicit
-driver code now they can do power domain style things like SH.  I've
-CCed in the PM folks since this seems like a perfectly reasonable use
-case which ought to be handled more nicely.
+For audio use we'd probably also want to extend the DMA API to support
+circular operation which I don't think it did last time I looked at it,
+but that was when it was very shiny and new.  Ideally we'd be able to
+have an ASoC DMA engine API client which would work over multiple
+platforms which would be very nice.
