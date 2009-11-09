@@ -1,19 +1,19 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH 0/4 v2] ASoC/MFD/OMAP: TWL4030: APLL_CTL
-	handling change
-Date: Mon, 9 Nov 2009 14:02:58 -0800
-Message-ID: <20091109220258.GI23952@atomide.com>
-References: <1257321500-27049-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20091104102040.GA25922@rakim.wolfsonmicro.main>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH 1/2] ASoC: sh: fsi: Add runtime PM support
+Date: Tue, 10 Nov 2009 08:14:09 +0900
+Message-ID: <20091109231408.GA1059@linux-sh.org>
+References: <uiqdkjvj2.wl%morimoto.kuninori@renesas.com>
+	<uk4y0jvjc.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mho-02-ewr.mailhop.org (mho-02-ewr.mailhop.org [204.13.248.72])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58F99244C4
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 23:03:00 +0100 (CET)
+Received: from master.linux-sh.org (124x34x33x190.ap124.ftth.ucom.ne.jp
+	[124.34.33.190]) by alsa0.perex.cz (Postfix) with ESMTP id 3E0DF24529
+	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 00:14:41 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20091104102040.GA25922@rakim.wolfsonmicro.main>
+In-Reply-To: <uiqdkjvj2.wl%morimoto.kuninori@renesas.com>
+	<uk4y0jvjc.wl%morimoto.kuninori@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, sameo@linux.intel.com, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <magnus.damm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [091104 02:20]:
-> On Wed, Nov 04, 2009 at 09:58:16AM +0200, Peter Ujfalusi wrote:
+On Mon, Nov 09, 2009 at 11:12:39AM +0900, Kuninori Morimoto wrote:
+> This patch add support runtime PM.
+> Driver callbacks for Runtime PM are empty because
+> the device registers are always re-initialized after
+> pm_runtime_get_sync(). The Runtime PM functions replaces the
+> clock framework module stop bit handling in this driver.
 > 
-> > The following series changes the way how the APLL_CTL register is handled by
-> > the twl4030 codec related drivers.
+> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+> Signed-off-by: Magnus Damm <damm@opensource.se>
+
+On Mon, Nov 09, 2009 at 11:12:49AM +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+> ---
+>  arch/sh/boards/mach-se/7724/setup.c |    3 +++
+>  1 files changed, 3 insertions(+), 0 deletions(-)
 > 
-> I'm OK with this but I'll wait for acks from Tony and Samuel before
-> applying.
-
-Looks good to me, replied with my ack in the board-*.c files patch
-in this series.
-
-Regards,
-
-Tony
+These look fine, I'll queue them up.
