@@ -1,18 +1,18 @@
-From: "Wang, Jane" <jwang@ti.com>
-Subject: Re: [PATCH]ASoc:ZOOM2:Add support for DSP rendering.
-Date: Mon, 9 Nov 2009 11:22:47 -0600
-Message-ID: <13B9B4C6EF24D648824FF11BE8967162039B8D1913@dlee02.ent.ti.com>
-References: <1257459691-12411-1-git-send-email-jwang@ti.com>
-	<20091106140306.GD10371@rakim.wolfsonmicro.main>
+From: James Pearson <james-p@moving-picture.com>
+Subject: hda-intel: no codecs initialized with Teradici sound
+ card and ALSA 1.0.17
+Date: Mon, 09 Nov 2009 17:22:54 +0000
+Message-ID: <4AF84FEE.6000206@moving-picture.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 202C72413B
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 18:22:49 +0100 (CET)
-In-Reply-To: <20091106140306.GD10371@rakim.wolfsonmicro.main>
-Content-Language: en-US
+Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id 582E6103863
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 18:22:56 +0100 (CET)
+Received: from cassini.mpc.local ([172.16.15.37] helo=moving-picture.com)
+	by moving-picture.com with esmtp (Exim 4.43) id 1N7Xx8-0008Vn-PU
+	for alsa-devel@alsa-project.org; Mon, 09 Nov 2009 17:22:54 +0000
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,46 +22,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peter.ujfalusi@nokia.com" <peter.ujfalusi@nokia.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I'm using CentOS 5.3 (which uses ALSA 1.0.17) and a Teradici KVM over IP 
+extender - which has an hda_intel type sound chipset
+
+However, when the snd_hda_intel module is loaded, dmesg reports:
+
+PCI: Enabling device 0000:04:00.1 (0000 -> 0002)
+ACPI: PCI Interrupt 0000:04:00.1[A] -> GSI 16 (level, low) -> IRQ 177
+PCI: Setting latency timer of device 0000:04:00.1 to 64
+hda-intel: no codecs initialized
+ACPI: PCI interrupt for device 0000:04:00.1 disabled
+
+... and /proc/asound/cards reports:
+
+--- no soundcards ---
+
+I've tried loading the snd-hda-intel module with various 'model=' 
+options (including basic and auto), but it makes no difference
+
+However, we also have CentOS 4.7 on machines with same Teradici card 
+using ALSA 1.0.15 (that replaces the ALSA version that ships with CentOS 
+4) patched to support the Teradici card - using a patch based on the one 
+that went into ALSA 1.0.17 to support the Teradici card. In this case 
+the audio works - dmesg reports:
+
+ACPI: PCI Interrupt 0000:82:00.1[A] -> GSI 47 (level, high) -> IRQ 233
+PCI: Setting latency timer of device 0000:82:00.1 to 64
+hda_codec: Unknown model for ALC883, trying auto-probe from BIOS...
+
+And in this case, /proc/asound/cards reports:
+
+  0 [Teradici       ]: HDA-Intel - HDA Teradici
+                       HDA Teradici at 0xd0100000 irq 233
+
+and playback works fine.
+
+Any idea why ALSA 1.0.17 doesn't work with the Teradici card?
+
+I don't really want to replace the the ALSA kernel code with a more up 
+to date version if at all possible ... is there a way of 'forcing' the 
+1.0.17 code 'to work' ?
+
+lspci -vv for this card reports
+
+04:00.1 Audio device: Teradici Corp. Unknown device 1200
+         Subsystem: Unknown device e49c:040b
+         Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- 
+ParErr- Stepping- SERR- FastB2B-
+         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- 
+<TAbort- <MAbort- >SERR- <PERR-
+         Interrupt: pin A routed to IRQ 177
+         Region 0: Memory at fbbf8000 (64-bit, non-prefetchable) 
+[disabled] [size=16K]
+         Capabilities: [40] Power Management version 3
+                 Flags: PMEClk- DSI- D1- D2+ AuxCurrent=375mA 
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                 Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+         Capabilities: [50] Message Signalled Interrupts: 64bit+ 
+Queue=0/0 Enable-
+                 Address: 0000000000000000  Data: 0000
+         Capabilities: [70] Express Endpoint IRQ 0
+                 Device: Supported: MaxPayload 128 bytes, PhantFunc 0, 
+ExtTag-
+                 Device: Latency L0s <2us, L1 <8us
+                 Device: AtnBtn- AtnInd- PwrInd-
+                 Device: Errors: Correctable- Non-Fatal- Fatal- Unsupported-
+                 Device: RlxdOrd+ ExtTag- PhantFunc- AuxPwr- NoSnoop-
+                 Device: MaxPayload 128 bytes, MaxReadReq 512 bytes
+                 Link: Supported Speed 2.5Gb/s, Width x1, ASPM L0s L1, 
+Port 0
+                 Link: Latency L0s <64ns, L1 <16us
+                 Link: ASPM Disabled RCB 64 bytes CommClk- ExtSynch-
+                 Link: Speed 2.5Gb/s, Width x1
+
+aplay -l (using ALSA 1.0.15 on CentOS 4) reports
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: Teradici [HDA Teradici], device 0: ALC883 Analog [ALC883 Analog]
+   Subdevices: 1/1
+   Subdevice #0: subdevice #0
 
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Friday, November 06, 2009 8:03 AM
-> To: Wang, Jane
-> Cc: alsa-devel@alsa-project.org; peter.ujfalusi@nokia.com
-> Subject: Re: [alsa-devel][PATCH]ASoc:ZOOM2:Add support for DSP rendering.
-> 
-> On Thu, Nov 05, 2009 at 04:21:31PM -0600, Jane Wang wrote:
-> 
-> > New mixer controls added to send dapm stream events to power up/down
-> TWL4030
-> > DAPM widgets along playback and capture paths. In case of DSP rendering,
-> > use the corresponding mixer control to power up widgets before stream
-> starts
-> > and power down the widges after stream stops.
-> 
-> What does the hardware look like and what is the problem you're trying
-> to solve here?  Sending stream events into the core is a definite
-> layering violation and is likely to fail with some use case transitions
-> but without knowing what the patch is trying to achieve it's hard to
-> offer much advice.
+Thanks
 
-The scenario is data is going between DSP<->McBSP<->TWL4030. DSP configures and controls McBSP ports. Since DSP does not have control over TWl4030 codec, the role of ALSA here is providing mixer controls for user space application to configure codec to prepare for DSP rendering.
-
-TWL4030 driver does not provide explicit controls over DAC/ADC, mic bias, APLL, headset pop-noise attenuation etc, and we need these to make playback/capture happen. I can think of two ways to handle this, one is add controls in codec to explicitly control these widgets, or using DAPM stream events as a single control to power up/down the path. And I feel the second solution is cleaner...
-
-> 
-> > +static const char *path_control[] = {"Off", "On"};
-> 
-> > +static const struct soc_enum zoom2_enum[] = {
-> > +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(path_control), path_control),
-> > +};
-> 
-> Why is this an enumerated control and not a switch?
-
-
-I can change this and resubmit the patch.
+James Pearson
