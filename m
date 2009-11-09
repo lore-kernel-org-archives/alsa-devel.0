@@ -1,8 +1,8 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Subject: Re: [PATCH V2] ASoC - Add support for upto 16 channels
 	on OMAP MCBSP
-Date: Mon, 9 Nov 2009 09:29:01 +0200
-Message-ID: <200911090929.02019.peter.ujfalusi@nokia.com>
+Date: Mon, 9 Nov 2009 08:57:22 +0200
+Message-ID: <200911090857.22203.peter.ujfalusi@nokia.com>
 References: <1257454808.3576.397.camel@odin>
 	<6ed0b2680911071211g311e6399va88ff7daff7b8ed1@mail.gmail.com>
 	<1257712022.15162.2.camel@vega>
@@ -10,9 +10,9 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DFF610384C
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 08:29:25 +0100 (CET)
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C7DD10384C
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 08:37:20 +0100 (CET)
 In-Reply-To: <1257712022.15162.2.camel@vega>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,11 +27,6 @@ To: alsa-devel@alsa-project.org
 Cc: Graeme Gregory <gg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>, ext Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Resending this, since it seams that something eaten up the previous mail, m=
-ight =
-
-be duplicate over time.
-
 On Sunday 08 November 2009 22:27:01 ext Liam Girdwood wrote:
 > =
 
@@ -41,6 +36,7 @@ Well, I have tried it on a system, where the McBSP is slave (codec provides=
  the =
 
 bit and FS clock) with the following result:
+
 
 aplay -Dplughw:0 /usr/share/sounds/alsa/Front_Center.wav -q
 omap_mcbsp_dai_hw_params: not enough bandwidth for desired rate and channels
