@@ -1,18 +1,18 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH] ASoC/mpc5200: remove duplicate identical IRQ
-	handler
-Date: Mon, 09 Nov 2009 09:40:09 -0700
-Message-ID: <20091109163936.29231.482.stgit@angua>
+From: "Wang, Jane" <jwang@ti.com>
+Subject: Re: [PATCH]ASoc:ZOOM2:Add support for DSP rendering.
+Date: Mon, 9 Nov 2009 11:22:47 -0600
+Message-ID: <13B9B4C6EF24D648824FF11BE8967162039B8D1913@dlee02.ent.ti.com>
+References: <1257459691-12411-1-git-send-email-jwang@ti.com>
+	<20091106140306.GD10371@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f184.google.com (mail-pz0-f184.google.com
-	[209.85.222.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id E423C246F3
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 17:40:12 +0100 (CET)
-Received: by pzk14 with SMTP id 14so2218720pzk.23
-	for <alsa-devel@alsa-project.org>; Mon, 09 Nov 2009 08:40:11 -0800 (PST)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 202C72413B
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 18:22:49 +0100 (CET)
+In-Reply-To: <20091106140306.GD10371@rakim.wolfsonmicro.main>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,69 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linuxppc-dev@lists.ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
-Cc: lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peter.ujfalusi@nokia.com" <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-The TX and RX irq handlers are identical.  Merge them
 
-Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
----
 
-Hi Mark.  Here's one more cleanup patch.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Friday, November 06, 2009 8:03 AM
+> To: Wang, Jane
+> Cc: alsa-devel@alsa-project.org; peter.ujfalusi@nokia.com
+> Subject: Re: [alsa-devel][PATCH]ASoc:ZOOM2:Add support for DSP rendering.
+> 
+> On Thu, Nov 05, 2009 at 04:21:31PM -0600, Jane Wang wrote:
+> 
+> > New mixer controls added to send dapm stream events to power up/down
+> TWL4030
+> > DAPM widgets along playback and capture paths. In case of DSP rendering,
+> > use the corresponding mixer control to power up widgets before stream
+> starts
+> > and power down the widges after stream stops.
+> 
+> What does the hardware look like and what is the problem you're trying
+> to solve here?  Sending stream events into the core is a definite
+> layering violation and is likely to fail with some use case transitions
+> but without knowing what the patch is trying to achieve it's hard to
+> offer much advice.
 
- sound/soc/fsl/mpc5200_dma.c |   33 +++------------------------------
- 1 files changed, 3 insertions(+), 30 deletions(-)
+The scenario is data is going between DSP<->McBSP<->TWL4030. DSP configures and controls McBSP ports. Since DSP does not have control over TWl4030 codec, the role of ALSA here is providing mixer controls for user space application to configure codec to prepare for DSP rendering.
 
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index ee5a606..440b749 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -66,32 +66,7 @@ static void psc_dma_bcom_enqueue_next_buffer(struct psc_dma_stream *s)
- }
- 
- /* Bestcomm DMA irq handler */
--static irqreturn_t psc_dma_bcom_irq_tx(int irq, void *_psc_dma_stream)
--{
--	struct psc_dma_stream *s = _psc_dma_stream;
--
--	spin_lock(&s->psc_dma->lock);
--	/* For each finished period, dequeue the completed period buffer
--	 * and enqueue a new one in it's place. */
--	while (bcom_buffer_done(s->bcom_task)) {
--		bcom_retrieve_buffer(s->bcom_task, NULL, NULL);
--
--		s->period_current = (s->period_current+1) % s->runtime->periods;
--		s->period_count++;
--
--		psc_dma_bcom_enqueue_next_buffer(s);
--	}
--	spin_unlock(&s->psc_dma->lock);
--
--	/* If the stream is active, then also inform the PCM middle layer
--	 * of the period finished event. */
--	if (s->active)
--		snd_pcm_period_elapsed(s->stream);
--
--	return IRQ_HANDLED;
--}
--
--static irqreturn_t psc_dma_bcom_irq_rx(int irq, void *_psc_dma_stream)
-+static irqreturn_t psc_dma_bcom_irq(int irq, void *_psc_dma_stream)
- {
- 	struct psc_dma_stream *s = _psc_dma_stream;
- 
-@@ -486,11 +461,9 @@ int mpc5200_audio_dma_create(struct of_device *op)
- 
- 	rc = request_irq(psc_dma->irq, &psc_dma_status_irq, IRQF_SHARED,
- 			 "psc-dma-status", psc_dma);
--	rc |= request_irq(psc_dma->capture.irq,
--			  &psc_dma_bcom_irq_rx, IRQF_SHARED,
-+	rc |= request_irq(psc_dma->capture.irq, &psc_dma_bcom_irq, IRQF_SHARED,
- 			  "psc-dma-capture", &psc_dma->capture);
--	rc |= request_irq(psc_dma->playback.irq,
--			  &psc_dma_bcom_irq_tx, IRQF_SHARED,
-+	rc |= request_irq(psc_dma->playback.irq, &psc_dma_bcom_irq, IRQF_SHARED,
- 			  "psc-dma-playback", &psc_dma->playback);
- 	if (rc) {
- 		ret = -ENODEV;
+TWL4030 driver does not provide explicit controls over DAC/ADC, mic bias, APLL, headset pop-noise attenuation etc, and we need these to make playback/capture happen. I can think of two ways to handle this, one is add controls in codec to explicitly control these widgets, or using DAPM stream events as a single control to power up/down the path. And I feel the second solution is cleaner...
+
+> 
+> > +static const char *path_control[] = {"Off", "On"};
+> 
+> > +static const struct soc_enum zoom2_enum[] = {
+> > +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(path_control), path_control),
+> > +};
+> 
+> Why is this an enumerated control and not a switch?
+
+
+I can change this and resubmit the patch.
