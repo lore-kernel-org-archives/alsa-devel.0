@@ -1,23 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH V2] ASoC - Add support for upto 16 channels
- on OMAP MCBSP
-Date: Mon, 9 Nov 2009 09:47:32 +0200
-Message-ID: <20091109094732.a5fcb6ef.jhnikula@gmail.com>
-References: <1257454808.3576.397.camel@odin>
-	<6ed0b2680911071211g311e6399va88ff7daff7b8ed1@mail.gmail.com>
-	<1257712022.15162.2.camel@vega>
-	<200911090929.02019.peter.ujfalusi@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 2/4 v2] OMAP: Configure audio_mclk for
+	twl4030-codec MFD
+Date: Mon, 9 Nov 2009 09:46:46 +0200
+Message-ID: <200911090946.46576.peter.ujfalusi@nokia.com>
+References: <1257321500-27049-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1257321500-27049-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1257321500-27049-3-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id BDD691038BA
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 08:46:39 +0100 (CET)
-Received: by bwz9 with SMTP id 9so11997839bwz.32
-	for <alsa-devel@alsa-project.org>; Sun, 08 Nov 2009 23:46:39 -0800 (PST)
-In-Reply-To: <200911090929.02019.peter.ujfalusi@nokia.com>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AAD31038DA
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 08:47:05 +0100 (CET)
+In-Reply-To: <1257321500-27049-3-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,32 +23,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: Graeme Gregory <gg@slimlogic.co.uk>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>, ext Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org, "tony@atomide.com" <tony@atomide.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "sameo@linux.intel.com" <sameo@linux.intel.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 9 Nov 2009 09:29:01 +0200
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+Hello Tony,
 
-> So this patch definitely breaks McBSP slave mode.
-> In case when McBSP is slave, the SRG is not in use, and there is no point of 
-> passing some bogus information in order to pass the test in 
-> omap_mcbsp_dai_hw_params introduced by this patch.
-> 
-> I think if I set the mcbsp_data->in_freq to be:
-> params_rate(params) * sample_bits * channels, and configure the mcbsp_data-
-> >clk_div to be 1, might work in this case.
-> 
-> But after this patch the beagle board and boards which has the McBSP as slave 
-> will stop working.
-> 
-> I'm afraid, I can not give my Ack for this :(
-> 
-Big thanks Peter! Me either. How on earth I didn't notice or test this
-simple thing that framesize calculatation leads to zero for all other
-boards than Pandora... and working Beagle audio is *must* have
-feature for me...
+On Wednesday 04 November 2009 09:58:18 Ujfalusi Peter (Nokia-D/Tampere) wro=
+te:
+> audio_mclk value is going to be handled by the
+> twl4030-codec MFD driver, configure the correct
+> value for boards, which is using the twl4030 audio.
+> =
 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+>  arch/arm/mach-omap2/board-3430sdp.c      |    1 +
+>  arch/arm/mach-omap2/board-omap3beagle.c  |    1 +
+>  arch/arm/mach-omap2/board-omap3evm.c     |    1 +
+>  arch/arm/mach-omap2/board-omap3pandora.c |    1 +
+>  arch/arm/mach-omap2/board-overo.c        |    1 +
+>  arch/arm/mach-omap2/board-zoom2.c        |    1 +
+>  6 files changed, 6 insertions(+), 0 deletions(-)
+> =
 
--- 
-Jarkko
+> diff --git a/arch/arm/mach-omap2/board-3430sdp.c
+>  b/arch/arm/mach-omap2/board-3430sdp.c index 4f91f7a..9afd957 100644
+> --- a/arch/arm/mach-omap2/board-3430sdp.c
+> +++ b/arch/arm/mach-omap2/board-3430sdp.c
+> @@ -415,6 +415,7 @@ static struct twl4030_codec_audio_data sdp3430_audio =
+=3D
+>  { };
+> =
+
+>  static struct twl4030_codec_data sdp3430_codec =3D {
+> +	.audio_mclk =3D 26000000,
+>  	.audio =3D &sdp3430_audio,
+>  };
+> =
+
+> diff --git a/arch/arm/mach-omap2/board-omap3beagle.c
+>  b/arch/arm/mach-omap2/board-omap3beagle.c index 2161d85..8f0c106 100644
+> --- a/arch/arm/mach-omap2/board-omap3beagle.c
+> +++ b/arch/arm/mach-omap2/board-omap3beagle.c
+> @@ -259,6 +259,7 @@ static struct twl4030_codec_audio_data
+>  beagle_audio_data =3D { };
+> =
+
+>  static struct twl4030_codec_data beagle_codec_data =3D {
+> +	.audio_mclk =3D 26000000,
+>  	.audio =3D &beagle_audio_data,
+>  };
+> =
+
+> diff --git a/arch/arm/mach-omap2/board-omap3evm.c
+>  b/arch/arm/mach-omap2/board-omap3evm.c index d9a6103..5bb30cb 100644
+> --- a/arch/arm/mach-omap2/board-omap3evm.c
+> +++ b/arch/arm/mach-omap2/board-omap3evm.c
+> @@ -199,6 +199,7 @@ static struct twl4030_codec_audio_data
+>  omap3evm_audio_data =3D { };
+> =
+
+>  static struct twl4030_codec_data omap3evm_codec_data =3D {
+> +	.audio_mclk =3D 26000000,
+>  	.audio =3D &omap3evm_audio_data,
+>  };
+> =
+
+> diff --git a/arch/arm/mach-omap2/board-omap3pandora.c
+>  b/arch/arm/mach-omap2/board-omap3pandora.c index 5036b56..77790ee 100644
+> --- a/arch/arm/mach-omap2/board-omap3pandora.c
+> +++ b/arch/arm/mach-omap2/board-omap3pandora.c
+> @@ -286,6 +286,7 @@ static struct twl4030_codec_audio_data
+>  omap3pandora_audio_data =3D { };
+> =
+
+>  static struct twl4030_codec_data omap3pandora_codec_data =3D {
+> +	.audio_mclk =3D 26000000,
+>  	.audio =3D &omap3pandora_audio_data,
+>  };
+> =
+
+> diff --git a/arch/arm/mach-omap2/board-overo.c
+>  b/arch/arm/mach-omap2/board-overo.c index dc55008..e1fb504 100644
+> --- a/arch/arm/mach-omap2/board-overo.c
+> +++ b/arch/arm/mach-omap2/board-overo.c
+> @@ -334,6 +334,7 @@ static struct twl4030_codec_audio_data overo_audio_da=
+ta
+>  =3D { };
+> =
+
+>  static struct twl4030_codec_data overo_codec_data =3D {
+> +	.audio_mclk =3D 26000000,
+>  	.audio =3D &overo_audio_data,
+>  };
+> =
+
+> diff --git a/arch/arm/mach-omap2/board-zoom2.c
+>  b/arch/arm/mach-omap2/board-zoom2.c index f1b4e7c..de3a38d 100644
+> --- a/arch/arm/mach-omap2/board-zoom2.c
+> +++ b/arch/arm/mach-omap2/board-zoom2.c
+> @@ -234,6 +234,7 @@ static struct twl4030_codec_audio_data zoom2_audio_da=
+ta
+>  =3D { };
+> =
+
+>  static struct twl4030_codec_data zoom2_codec_data =3D {
+> +	.audio_mclk =3D 26000000,
+>  	.audio =3D &zoom2_audio_data,
+>  };
+> =
+
+> --
+> 1.6.5.2
+
+Can you take a look at this patch?
+The rest of the series has already got Ack from Samuel and Mark, and only y=
+our =
+
+verdict for the OMAP part is missing.
+
+Thank you, =
+
+P=E9ter
