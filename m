@@ -1,18 +1,23 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: [PATCH] ASoC: Pandora: Pass SRG input clock frequency
-	to the OMAP McBSP DAI
-Date: Mon,  9 Nov 2009 08:44:32 +0200
-Message-ID: <1257749072-3796-1-git-send-email-jhnikula@gmail.com>
+Subject: Re: [PATCH V2] ASoC - Add support for upto 16 channels
+ on OMAP MCBSP
+Date: Mon, 9 Nov 2009 08:57:22 +0200
+Message-ID: <20091109085722.49d40bd8.jhnikula@gmail.com>
+References: <1257454808.3576.397.camel@odin>
+	<20091106202400.a0ded9c3.jhnikula@gmail.com>
+	<6ed0b2680911071211g311e6399va88ff7daff7b8ed1@mail.gmail.com>
+	<1257712022.15162.2.camel@vega>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
-	[209.85.220.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id C711510380B
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 07:43:45 +0100 (CET)
-Received: by fxm1 with SMTP id 1so3145345fxm.32
-	for <alsa-devel@alsa-project.org>; Sun, 08 Nov 2009 22:43:45 -0800 (PST)
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB22D10383D
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 07:56:30 +0100 (CET)
+Received: by bwz9 with SMTP id 9so11895178bwz.32
+	for <alsa-devel@alsa-project.org>; Sun, 08 Nov 2009 22:56:29 -0800 (PST)
+In-Reply-To: <1257712022.15162.2.camel@vega>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,79 +27,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark@alsa-project.org, Graeme Gregory <gg@slimlogic.co.uk>, Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Upcoming change to omap-mcbsp.c require that machine drivers using OMAP
-as a DAI master to pass sample rate generator input clock frequency to
-the omap-mcbsp.c DAI driver.
+On Sun, 08 Nov 2009 20:27:01 +0000
+Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 
-Pandora is using 256*Fs output from the TWL4030 codec as an input clock to
-the McBSP sample rate generator.
+> > Seems to be working fine, tried playing several different sample rates
+> > and also recording path. FYI pandora has TWL4030 256FS clock connected
+> > to OMAP's CLKS pin.
+> > 
+> > Tested-by: Grazvydas Ignotas <notasas@gmail.com>
+> 
+> Jarkko, Peter,
+> 
+> Any chance we could have your Ack before applying.
+> 
+Definitely. I just sent a patch which must be applied before yours to
+the Pandora. It is otherwise the same than I sent before but now with
+commit log and 8*32 replaced with 256.
 
-Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-Tested-by: Grazvydas Ignotas <notasas@gmail.com>
----
- sound/soc/omap/omap3pandora.c |   24 ++++++++++--------------
- 1 files changed, 10 insertions(+), 14 deletions(-)
+Mark: The omap3pandora.c must be patches before Liam's patch.
 
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index ad219aa..cace5f1 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -40,9 +40,12 @@
- 
- #define PREFIX "ASoC omap3pandora: "
- 
--static int omap3pandora_cmn_hw_params(struct snd_soc_dai *codec_dai,
--	struct snd_soc_dai *cpu_dai, unsigned int fmt)
-+static int omap3pandora_cmn_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params, unsigned int fmt)
- {
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	int ret;
- 
- 	/* Set codec DAI configuration */
-@@ -68,8 +71,9 @@ static int omap3pandora_cmn_hw_params(struct snd_soc_dai *codec_dai,
- 	}
- 
- 	/* Set McBSP clock to external */
--	ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_EXT, 0,
--					    SND_SOC_CLOCK_IN);
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_SYSCLK_CLKS_EXT,
-+				     256 * params_rate(params),
-+				     SND_SOC_CLOCK_IN);
- 	if (ret < 0) {
- 		pr_err(PREFIX "can't set cpu system clock\n");
- 		return ret;
-@@ -87,11 +91,7 @@ static int omap3pandora_cmn_hw_params(struct snd_soc_dai *codec_dai,
- static int omap3pandora_out_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--
--	return omap3pandora_cmn_hw_params(codec_dai, cpu_dai,
-+	return omap3pandora_cmn_hw_params(substream, params,
- 					  SND_SOC_DAIFMT_I2S |
- 					  SND_SOC_DAIFMT_IB_NF |
- 					  SND_SOC_DAIFMT_CBS_CFS);
-@@ -100,11 +100,7 @@ static int omap3pandora_out_hw_params(struct snd_pcm_substream *substream,
- static int omap3pandora_in_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--
--	return omap3pandora_cmn_hw_params(codec_dai, cpu_dai,
-+	return omap3pandora_cmn_hw_params(substream, params,
- 					  SND_SOC_DAIFMT_I2S |
- 					  SND_SOC_DAIFMT_NB_NF |
- 					  SND_SOC_DAIFMT_CBS_CFS);
--- 
-1.6.5
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-November/022921.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-November/022797.html
+
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
