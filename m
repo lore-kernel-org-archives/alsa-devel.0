@@ -1,18 +1,19 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Subject: Re: [PATCH V2] ASoC - Add support for upto 16 channels
 	on OMAP MCBSP
-Date: Mon, 9 Nov 2009 09:24:58 +0200
-Message-ID: <200911090924.59029.peter.ujfalusi@nokia.com>
-References: <1257454808.3576.397.camel@odin> <1257712022.15162.2.camel@vega>
-	<20091109085722.49d40bd8.jhnikula@gmail.com>
+Date: Mon, 9 Nov 2009 09:29:01 +0200
+Message-ID: <200911090929.02019.peter.ujfalusi@nokia.com>
+References: <1257454808.3576.397.camel@odin>
+	<6ed0b2680911071211g311e6399va88ff7daff7b8ed1@mail.gmail.com>
+	<1257712022.15162.2.camel@vega>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E8F110382D
-	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 08:25:09 +0100 (CET)
-In-Reply-To: <20091109085722.49d40bd8.jhnikula@gmail.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 5DFF610384C
+	for <alsa-devel@alsa-project.org>; Mon,  9 Nov 2009 08:29:25 +0100 (CET)
+In-Reply-To: <1257712022.15162.2.camel@vega>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,65 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Jarkko Nikula <jhnikula@gmail.com>
-Cc: Graeme Gregory <gg@slimlogic.co.uk>, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Graeme Gregory <gg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>, ext Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 09 November 2009 08:57:22 ext Jarkko Nikula wrote:
-> On Sun, 08 Nov 2009 20:27:01 +0000
+Resending this, since it seams that something eaten up the previous mail, m=
+ight =
+
+be duplicate over time.
+
+On Sunday 08 November 2009 22:27:01 ext Liam Girdwood wrote:
 > =
 
-> Liam Girdwood <lrg@slimlogic.co.uk> wrote:
-> > > Seems to be working fine, tried playing several different sample rates
-> > > and also recording path. FYI pandora has TWL4030 256FS clock connected
-> > > to OMAP's CLKS pin.
-> > >
-> > > Tested-by: Grazvydas Ignotas <notasas@gmail.com>
-> >
-> > Jarkko, Peter,
-> >
-> > Any chance we could have your Ack before applying.
-> =
+> Any chance we could have your Ack before applying.
 
-> Definitely. I just sent a patch which must be applied before yours to
-> the Pandora. It is otherwise the same than I sent before but now with
-> commit log and 8*32 replaced with 256.
-> =
+Well, I have tried it on a system, where the McBSP is slave (codec provides=
+ the =
 
-> Mark: The omap3pandora.c must be patches before Liam's patch.
-> =
+bit and FS clock) with the following result:
 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2009-November/022921=
-.h
-> tml
->  http://mailman.alsa-project.org/pipermail/alsa-devel/2009-November/02279=
-7.
-> html
-> =
+aplay -Dplughw:0 /usr/share/sounds/alsa/Front_Center.wav -q
+omap_mcbsp_dai_hw_params: not enough bandwidth for desired rate and channels
+asoc: interface omap-mcbsp-dai-0 hw params failed
+aplay: set_params:1022: Unable to install hw params:
 
-> Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+So this patch definitely breaks McBSP slave mode.
+In case when McBSP is slave, the SRG is not in use, and there is no point o=
+f =
 
-I would reconsider this ack, since the patch breaks the McBSP slave operati=
-on..
-There is no meaning for the infrequency nor for the divider in slave mode, =
-but =
+passing some bogus information in order to pass the test in =
 
-we can invent something like OMAP_MCBSP_FAKECLK_MASTER to be 'handled' in =
+omap_mcbsp_dai_hw_params introduced by this patch.
 
-omap_mcbsp_dai_set_dai_sysclk, when the OMAP_MCBSP_FAKECLK_MASTER is being =
+I think if I set the mcbsp_data->in_freq to be:
+params_rate(params) * sample_bits * channels, and configure the mcbsp_data-
+>clk_div to be 1, might work in this case.
 
-configured, we just take the frequency, which ahs to be calculated in the =
+But after this patch the beagle board and boards which has the McBSP as sla=
+ve =
 
-machine drivers beforehand (sample rate * bits * channels?), than we need t=
-o =
+will stop working.
 
-update all the machine drivers, where McBSP is slave to pass this informati=
-on in =
-
-order to pass the test in omap_mcbsp_dai_hw_params.
+I'm afraid, I can not give my Ack for this :(
 
 > =
 
+> Thanks
+> =
+
+> Liam
 
 -- =
 
