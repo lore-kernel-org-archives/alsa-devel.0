@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC/mpc5200: remove duplicate identical
-	IRQ handler
-Date: Tue, 10 Nov 2009 13:03:43 +0000
-Message-ID: <20091110130343.GD16200@rakim.wolfsonmicro.main>
-References: <20091109163936.29231.482.stgit@angua>
+From: James Pearson <james-p@moving-picture.com>
+Subject: Re: hda-intel: no codecs initialized with
+ Teradici	sound card and ALSA 1.0.17
+Date: Tue, 10 Nov 2009 16:46:02 +0000
+Message-ID: <4AF998CA.7080709@moving-picture.com>
+References: <4AF84FEE.6000206@moving-picture.com>	<s5hd43qg6rv.wl%tiwai@suse.de>	<4AF94159.6010601@moving-picture.com>
+	<s5hws1yek64.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A5358103892
-	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 14:03:44 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091109163936.29231.482.stgit@angua>
+Received: from moving-picture.com (mpc-26.sohonet.co.uk [193.203.82.251])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD0C1244E4
+	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 17:46:03 +0100 (CET)
+In-Reply-To: <s5hws1yek64.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,11 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 09, 2009 at 09:40:09AM -0700, Grant Likely wrote:
-> The TX and RX irq handlers are identical.  Merge them
+Takashi Iwai wrote:
 
-Applied, thanks.
+> Well, if exactly the same machine works, then it's hardly.
+> 
+>>I'm going to see if a more recent version of ALSA works ...
+> 
+> Yes please.  1.0.17 is way too old to debug.
+
+Strangely, using a generic 1.0.17 alsa-driver - and the card works fine ...
+
+So I guess it something strange in what RedHat do to their version of 
+the ALSA drivers ...
+
+James Pearson
