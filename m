@@ -1,19 +1,17 @@
-From: Paul Mundt <lethal@linux-sh.org>
-Subject: Re: [PATCH 1/2] ASoC: sh: fsi: Add runtime PM support
-Date: Tue, 10 Nov 2009 08:39:50 +0900
-Message-ID: <20091109233950.GB1059@linux-sh.org>
-References: <uiqdkjvj2.wl%morimoto.kuninori@renesas.com>
-	<uk4y0jvjc.wl%morimoto.kuninori@renesas.com>
-	<20091109231408.GA1059@linux-sh.org>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH V3] ASoC: omap-mcbsp - add support for upto
+	16 channels.
+Date: Tue, 10 Nov 2009 08:25:27 +0200
+Message-ID: <200911100825.27587.peter.ujfalusi@nokia.com>
+References: <1257793335.3583.277.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from master.linux-sh.org (124x34x33x190.ap124.ftth.ucom.ne.jp
-	[124.34.33.190]) by alsa0.perex.cz (Postfix) with ESMTP id 541462454A
-	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 00:40:20 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091109231408.GA1059@linux-sh.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72BB71037F9
+	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 07:25:35 +0100 (CET)
+In-Reply-To: <1257793335.3583.277.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <magnus.damm@gmail.com>
+To: ext Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Graeme Gregory <gg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 10, 2009 at 08:14:08AM +0900, Paul Mundt wrote:
-> On Mon, Nov 09, 2009 at 11:12:39AM +0900, Kuninori Morimoto wrote:
-> > This patch add support runtime PM.
-> > Driver callbacks for Runtime PM are empty because
-> > the device registers are always re-initialized after
-> > pm_runtime_get_sync(). The Runtime PM functions replaces the
-> > clock framework module stop bit handling in this driver.
-> > 
-> > Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-> > Signed-off-by: Magnus Damm <damm@opensource.se>
+On Monday 09 November 2009 21:02:15 ext Liam Girdwood wrote:
+> This time we use wlen * channels when CODEC masters BCLK and FRAME,
+> otherwise same as V2.
 > 
-> On Mon, Nov 09, 2009 at 11:12:49AM +0900, Kuninori Morimoto wrote:
-> > Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-> > ---
-> >  arch/sh/boards/mach-se/7724/setup.c |    3 +++
-> >  1 files changed, 3 insertions(+), 0 deletions(-)
-> > 
-> These look fine, I'll queue them up.
+> From: Graeme Gregory <gg@slimlogic.co.uk>
+> 
+> This patch increases the number of supported audio channels from 4
+> to 16 and has been sponsored by Shotspotter Inc. It also fixes a
+> FSYNC rate calculation bug when McBSP is FSYNC master.
+> 
+> Signed-off-by: Graeme Gregory <gg@slimlogic.co.uk>
+> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Upon a closer look, it seems this is built on top of earlier changes in
-the ASoC tree, so they should probably go through there so we don't end
-up with the merge conflict later.
+Looks good, and works when OMAP McBSP is slave.
+Thank you!
 
-The board setup bits are harmless and shouldn't conflict with anything in
-my tree, so there's no problem with taken both of these through the ASoC
-tree.
+I'm not sure, if both acked and tested can be added...
+Mark, please pick the relevant:
 
-Acked-by: Paul Mundt <lethal@linux-sh.org>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Tested-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
