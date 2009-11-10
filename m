@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V3] ASoC: omap-mcbsp - add support for upto
- 16 channels.
-Date: Tue, 10 Nov 2009 12:05:08 +0000
-Message-ID: <20091110120508.GA16200@rakim.wolfsonmicro.main>
-References: <1257793335.3583.277.camel@odin>
+Subject: Re: [PATCH 1/4 v2] MFD: TWL4030: Add audio_mclk to the
+ codec platform data
+Date: Tue, 10 Nov 2009 12:08:31 +0000
+Message-ID: <20091110120831.GB16200@rakim.wolfsonmicro.main>
+References: <1257321500-27049-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1257321500-27049-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 243AC24363
-	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 13:05:11 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 133D524368
+	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 13:08:33 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1257793335.3583.277.camel@odin>
+In-Reply-To: <1257321500-27049-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Graeme Gregory <gg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, sameo@linux.intel.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 09, 2009 at 07:02:15PM +0000, Liam Girdwood wrote:
-> This time we use wlen * channels when CODEC masters BCLK and FRAME,
-> otherwise same as V2.
+On Wed, Nov 04, 2009 at 09:58:17AM +0200, Peter Ujfalusi wrote:
+> Add audio_mclk to the platform data struct for the
+> twl4030-codec MFD driver.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
 
-Applied, thanks.
-
-> From: Graeme Gregory <gg@slimlogic.co.uk>
-
-git am doesn't appear to notice From lines that aren't the very first
-line of the body.
+Applied all, thanks.
