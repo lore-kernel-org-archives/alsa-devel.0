@@ -1,22 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] add support to reorder CPU and Codec
-	DAI	suspend/resume
-Date: Wed, 11 Nov 2009 14:42:52 +0000
-Message-ID: <20091111144252.GB20417@opensource.wolfsonmicro.com>
-References: <1257923457-31470-1-git-send-email-21cnbao@gmail.com>
-	<20091111112431.GA18005@opensource.wolfsonmicro.com>
-	<3c17e3570911110448v7f7da90bs8ecad60c4afda5bc@mail.gmail.com>
-	<20091111142050.GB32595@sirena.org.uk>
-	<3c17e3570911110634k60ecc02fwf52c168e9f5ad7a2@mail.gmail.com>
+From: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
+Subject: HDA Intel IDT 92HD71B7X - HP Pavilion DV7-1299EF -
+	Only the left speaker is working
+Date: Wed, 11 Nov 2009 16:22:47 +0100
+Message-ID: <d3328e7b0911110722l27597a8bl523052b035e9ec9d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6523B10385D
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 15:42:53 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570911110634k60ecc02fwf52c168e9f5ad7a2@mail.gmail.com>
+Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
+	[209.85.220.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58914244C6
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 16:23:08 +0100 (CET)
+Received: by fxm1 with SMTP id 1so2812434fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 07:23:07 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,16 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 11, 2009 at 10:34:00PM +0800, Barry Song wrote:
-
-> The only difference should be whether clock/sync is fired from codec
-> before or after TDM interfaces are resumed to be ready for the
-> different resume order of CPU and Codec DAI, as I guess. That's
-> difficult to explain why.
-
-It'd really like to understand what's going wrong with the controller
-here - it should just sync up off the frame sync signal.
+T24gV2VkLCBKdWwgMjksIDIwMDkgYXQgODo1NSBBTSwgVGFrYXNoaSBJd2FpPHRpd2FpIGF0IHN1
+c2UuZGU+IHdyb3RlOgo+IEF0IFR1ZSwgMjggSnVsIDIwMDkgMjA6MDc6MjkgKzAyMDAsCj4gV2Fl
+bCBOYXNyZWRkaW5lIChhLmsuYSBlTXh5enB0bGspIHdyb3RlOgo+Pgo+PiBPbiBNb24sIEp1bCAy
+NywgMjAwOSBhdCAzOjE1IFBNLCBUYWthc2hpIEl3YWkgPHRpd2FpIGF0IHN1c2UuZGU+IHdyb3Rl
+Ogo+Pgo+PiDCoCDCoCBBdCBTYXQsIDI1IEp1bCAyMDA5IDIxOjQ0OjQ2ICswMjAwLAo+PiDCoCDC
+oCBXYWVsIE5hc3JlZGRpbmUgKGEuay5hIGVNeHl6cHRsaykgd3JvdGU6Cj4+IMKgIMKgID4KPj4g
+wqAgwqAgPiBJIHN0aWxsIGdvdCBubyBzb2x1dGlvbiBmb3IgdGhpcyBwcm9ibGVtLAo+Pgo+PiDC
+oCDCoCBXaGljaCBwcm9ibGVtPwo+PiDCoCDCoCBJdCdkIGJlIGhlbHBmdWwgaWYgeW91IGdpdmUg
+YSBwcm9ibGVtIHN1bW1hcnkgYW5kIHdoYXQgeW91J3ZlIGRvbmUKPj4gwqAgwqAgdW50aWwgbm93
+IChhbmQgZG9uJ3QgZG8gdG9wLXBvc3RpbmcpLi4uCj4+Cj4+IMKgIMKgIHRoYW5rcywKPj4KPj4g
+wqAgwqAgVGFrYXNoaQo+Pgo+PiBIaSBUYWthc2hpLAo+Pgo+PiBJJ20gc29ycnkgSSBkaWRuJ3Qg
+bm90aWNlIHRoYXQgdGhlIHByb2JsZW0gd2Fzbid0IHF1b3RlZCBpbiBteSBsYXN0IG1lc3NhZ2Us
+Cj4+IGFueXdheSB0aGUgd2hvbGUgdG9waWMgaXMgaW5jbHVkZWQgaW4gdGhlIGZvcndhcmRlZCBt
+ZXNzYWdlIGJlbG93LCBJIHRyaWVkCj4+IHVzaW5nIGhkYS12ZXJiIGFuZCBoZGEtYW5hbHl6ZXIs
+IGxpa2UgeW91IHN1Z2dlc3RlZCBpbiBvbmUgb2YgeW91ciBlbWFpbHMsIGJ1dAo+PiBzaW5jZSBJ
+IGRvbid0IGV2ZW4ga25vdyB3aGF0IEknbSBsb29raW5nIGZvciBub3Igd2hhdCB0byB0cnksIEkg
+ZGlkIG5vdCBnb3QKPj4gdG9vIGZhciEKPj4KPj4gV2hhdCBlbHNlIGRvIHlvdSBzdWdnZXN0PyBB
+cmUgeW91IGF3YXJlIG9mIGFueW9uZSBoYXZpbmcgYSBzaW1pbGFyIGlzc3VlIEkgY2FuCj4+IHF1
+ZXJ5IHRvIGhlbHAgbWUgZmlndXJlIGl0IG91dCA/Cj4KPiBGaXJzdCBvZmYsIHRyeSB0aGUgdmVy
+eSBsYXRlc3QgYWxzYS1kcml2ZXIgc25hcHNob3QuCj4gwqBmdHA6Ly9mdHAua2VybmVsLm9yZy9w
+dWIvbGludXgva2VybmVsL3Blb3BsZS90aXdhaS9zbmFwc2hvdC9hbHNhLWRyaXZlci1zbmFwc2hv
+dC50YXIuZ3oKPgo+IFRoZSBwcm9ibGVtIGlzIHRoYXQgQklPUyBzZXRzIG9ubHkgb25lIHN0ZXJl
+byBzcGVha2VyIGluIHRoZSBwaW4KPiBjb25maWd1cmF0aW9uLCBzbyB0aGUgZHJpdmVyIGNhbm5v
+dCBrbm93IHdoYXQgdG8gZG8gd2l0aCBhbm90aGVyCj4gc3BlYWtlci4gwqBJbiBzaG9ydCwgaXQn
+cyBhIEJJT1MgYnVnLgo+Cj4gVG8gb3ZlcmNvbWUgdGhhdCwgeW91IG5lZWQgdG8gZmlndXJlIG91
+dCB3aGljaCBwaW4gY29ycmVzcG9uZHMgdG8gdGhlCj4gc3BlYWtlci4gwqBUaGUgcmVzdCBhdmFp
+bGFibGUgKGFuYWxvZykgb3V0cHV0IHBpbnMgYXJlIDB4MGYgYW5kIDB4MTQuCj4gU2V0IHRoZXNl
+IGFzIG91dHB1dCBwaW5zLCBhbmQgY29ubmVjdCB0byBEQUMuIMKgRm9yIGV4YW1wbGUsCj4KPiDC
+oCDCoCDCoCDCoCMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MGYgU0VUX1BJTl9XSUQgMHg0
+MAo+IMKgIMKgIMKgIMKgIyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgwZiBTRVRfQ09OTiAw
+Cj4KPiB3aGljaCBlbmFibGVzIHRoZSBvdXRwdXQgb2YgdGhlIHBpbiAweDBmLCB0aGVuIGNvbm5l
+Y3RzIHRvIHRoZSBmaXJzdAo+IERBQyAoPSAweDEwKS4gwqBTaW1pbGFybHksCj4KPiDCoCDCoCDC
+oCDCoCMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MTQgU0VUX1BJTl9XSUQgMHg0MAo+IMKg
+IMKgIMKgIMKgIyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgxNSBTRVRfQ09OTiAwCj4KPiB3
+aGljaCBlbmFibGVzIHRoZSBvdXRwdXQgb2YgdGhlIHBpbiAweDE0LCB0aGVuIGNoYW5nZXMgdGhl
+IGNvbm5lY3Rpb24KPiBvZiBpdHMgbXV4ICgweDE1KSB0byB0aGUgZmlyc3QgREFDICgweDEwKS4K
+Pgo+IElmIHRoZXNlIGRvbid0IGhlbHAsIGl0J3MgcG9zc2libGUgdGhhdCBzb21lIEdQSU8gYml0
+cyBwbGF5IGFueSByb2xlLgo+IFBsYXkgd2l0aCBHUElPIGJpdHMsIHdoaWNoIGNhbiBiZSBhbHNv
+IGNoYW5nZWQgdmlhIGhkYS12ZXJiLgo+Cj4KPiBUYWthc2hpCj4KCkhleSBUYWthc2hpLAoKSSB0
+cmllZCB3aGF0IHlvdSBoYXZlIHN1Z2dlc3RlZCBhYm92ZSwgYW5kIEkgYWxzbyB0cmllZCB0byB1
+cGdyYWRlIHRoZQpCSU9TIChpdCdzIEYuMkMgbm93KSBidXQgSSBzdGlsbCBoYXZlIHRoZSBzYW1l
+IHByb2JsZW0gd2l0aCBteSBzb3VuZCwKaGVyZSdzIGFuIHVwZGF0ZWQgYWxzYS1pbmZvIG91dHB1
+dAoKaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTJjZGZjNWFhNjdiYzBiYWY5OGQz
+OGMxMzgwNjczOWFmYjZmNTE2M2YKCkkgYWxzbyB0cmllZCB0byBwbGF5IGEgYml0IHdpdGggR1BJ
+TyBiaXRzIGJ1dCBJIGRvbid0IGtub3cgbXVjaCBhYm91dAp0aGF0IHRvcGljIGVpdGhlciwgSSB0
+cmllZAoKaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MDEgU0VUX0dQSU9fTUFTSyAweDBmCmhk
+YS12ZXJiIC9kZXYvc25kL2h3QzBEMCAweDAxIFNFVF9HUElPX0RBVEEgMHgwZgoKYW5kCgpoZGEt
+dmVyYiAvZGV2L3NuZC9od0MwRDAgMHgwMSBTRVRfR1BJT19ESVIgMHgwZgpoZGEtdmVyYiAvZGV2
+L3NuZC9od0MwRDAgMHgwMSBTRVRfR1BJT19EQVRBIDB4MGYKCkJ1dCB0aGF0IGRpZCBub3QgYWZm
+ZWN0IGFueXRoaW5nLCB0aGUgb3V0cHV0IGlzIG9ubHkgZnJvbSBvbmUgc3BlYWtlcgoobGVmdCBv
+bmUpLCB3aGF0IGRvIHlvdSBzdWdnZXN0PwoKVGhhbmtzCgotLQpXYWVsIE5hc3JlZGRpbmUKCldl
+ZW0gQ2hpZWYtRGV2ZWxvcG1lbnQgT2ZmaWNlciAtIGh0dHA6Ly93d3cud2VlbS5jb20KCkJsb2cg
+wqAgwqA6IGh0dHA6Ly93YWVsLm5hc3JlZGRpbmUuY29tCkUtbWFpbCDCoDogd2FlbC5uYXNyZWRk
+aW5lQHdlZW0uY29tCmdUYWxrIMKgIDogd2FlbC5uYXNyZWRkaW5lQGdtYWlsLmNvbQpUZWwgwqAg
+wqAgOiArMzMuNi4zMi45NC43MC4xMwpTa3lwZSDCoCA6IGVNeHl6cHRsawpUd2l0dGVyIDogQGVN
+eHl6cHRsawoKUEdQOiAxMDI0RC9DOEREMThBMiAwNkY2IDE2MjIgNEJDOCA0Q0VCIEQ3MjQgwqBE
+RTEyIDU1NjUgMzk0NSBDOEREIDE4QTIKCi46IEFuIGluZmluaXRlIG51bWJlciBvZiBtb25rZXlz
+IHR5cGluZyBpbnRvIEdOVSBlbWFjcywKwqAgd291bGQgbmV2ZXIgbWFrZSBhIGdvb2QgcHJvZ3Jh
+bS4gKEwuIFRvcnZhbGRzIDE5OTUpIDouCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
