@@ -1,19 +1,19 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH] ALSA: hda_intel: disable corb rirb when
- single_cmd active
-Date: Tue, 10 Nov 2009 14:15:27 -0700
-Message-ID: <4AF9D7EF.6000800@boundarydevices.com>
-References: <1257276157-7164-1-git-send-email-troy.kisky@boundarydevices.com>	<s5hd43yzov7.wl%tiwai@suse.de>	<4AF1D9D0.9080007@boundarydevices.com>	<s5h7hu5cv01.wl%tiwai@suse.de>	<4AF32A8B.4050404@boundarydevices.com>	<s5h3a4s86j7.wl%tiwai@suse.de>	<s5hiqdo80xq.wl%tiwai@suse.de>	<4AF4C6E7.8010807@boundarydevices.com>	<s5hfx8qybfx.wl%tiwai@suse.de>	<4AF86F3F.9020709@boundarydevices.com>
-	<s5hhbt2g7gp.wl%tiwai@suse.de>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: ASoC updates for 2.6.33
+Date: Wed, 11 Nov 2009 08:08:59 +0800
+Message-ID: <3c17e3570911101608t71bc5f8buca47cc0bd43aa503@mail.gmail.com>
+References: <20091015144039.GB24756@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth00.csee.onr.siteprotect.com
-	(smtpauth00.csee.onr.siteprotect.com [64.26.60.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B96E103888
-	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 22:15:34 +0100 (CET)
-In-Reply-To: <s5hhbt2g7gp.wl%tiwai@suse.de>
+Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
+	[209.85.211.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 56FF71037FE
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 01:09:02 +0100 (CET)
+Received: by ywh28 with SMTP id 28so538197ywh.16
+	for <alsa-devel@alsa-project.org>; Tue, 10 Nov 2009 16:09:00 -0800 (PST)
+In-Reply-To: <20091015144039.GB24756@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,62 +23,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: pshou@realtek.com.tw, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 09 Nov 2009 12:36:31 -0700,
-> Troy Kisky wrote:
->> Takashi Iwai wrote:
->>> Thanks for a quick test!  I'll merge it soon.
->>>
->>>> Thanks for spending your time on something you'd rather not.
->>> Well, I'm willing to fix any bugs, of course ;)  So I really
->>> appreciated your report and patch.
->>>
->>> But, more important bug still remains -- why single_cmd mode is
->>> activated.  Let's track it down.
->>>
->> I have a little more information on that. The RIRB engine is fine
->> but the CORB engine is stopping at seemingly random times. Usually
->> CORB has about 7 commands queued when it switches to single_cmd mode.
->> After the engine dies, even a rmmod/insmod sequence won't revive it.
->> It seems to require a power down/up. I have noticed a couple of things
->> that I thought might be related, but testing didn't show much difference.
->>
->> 1. The Poulsbo manual says that CORB READ Pointer Reset must be cleared
->> back to 0 and read back as 0 to verify that the clear completed correctly.
-> 
-> At which timing?
-
-The manual was talking about the CORB read pointer reset sequence. It says
-to set the bit, verify set, clear the bit, verify clear. Whereas the
-normal hda spec says to just set it and forget it, which is what the code does.
-
-> 
->> 2. azx_corb_send_cmd doesn't compare CORBWP with CORBRP to see if adding
->> an entry will result in an empty queue.
-> 
-> It's because azx_corb_send_cmd is asynchronous.  It doesn't wait.
-> That's the purpose of CORB being a ring buffer...
-
-Still, the circular buffer is a fixed size (256 entries in this case).
-The code does not detect if you try to stuff 257 entries into the queue.
-Actually, 255 entries is the max you should stuff. The next entry being
-stuffed will make the read pointer equal the write pointer and the queue
-will be empty. I'm not saying this is likely to ever happen. But if it did
-happen, you would end up in single_cmd mode.
-
-> 
->> Do you have a suggestion on a more thorough reset? I hate having to reboot
->> all the time.
-> 
-> Try to set codec->bus->sync_write = 1 somewhere in the initialization.
-> This will make the driver to wait and synchronize for each verb
-> response.
-
-OK. I'll give a try.
-
-Thanks
-Troy
+T24gVGh1cnNkYXksIE9jdG9iZXIgMTUsIDIwMDksIE1hcmsgQnJvd24KPGJyb29uaWVAb3BlbnNv
+dXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBUaGUgZm9sbG93aW5nIGNoYW5nZXMgc2lu
+Y2UgY29tbWl0IGViYWIxYjFkMDcyNjZhYjhjYTlmNjUwNjVlNjhiMDJmMDU1MDRjNGU6Cj4gIMKg
+TWFyayBCcm93biAoMSk6Cj4gIMKgIMKgIMKgIMKgQVNvQzogTWlub3IgZml4dXBzIHRvIHRwYTYx
+MzBhMiBkcml2ZXIKPgo+IGFyZSBhdmFpbGFibGUgaW4gdGhlIGdpdCByZXBvc2l0b3J5IGF0Ogo+
+Cj4gIMKgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Jyb29u
+aWUvc291bmQtMi42LmdpdCBmb3ItMi42LjMzCj4KPiBCZW4gRG9va3MgKDEpOgo+ICDCoCDCoCDC
+oEFTb0M6IFMzQzogUmVtb3ZlIDxwbGF0L2F1ZGlvLmg+Cj4KPiBFZXJvIE51cmtrYWxhICgxKToK
+PiAgwqAgwqAgwqBBU29DOiBTZXJpYWxpemUgYWNjZXNzIHRvIGRhcG1fcG93ZXJfd2lkZ2V0cygp
+Cj4KPiBJZ29yIEdyaW5iZXJnICgxKToKPiAgwqAgwqAgwqBBU29DOiBmaW5hbGx5IGVuYWJsZSBz
+dXBwb3J0IGZvciBlWGVkYSBhbmQgQ00tWDMwMAo+Cj4gTWFyayBCcm93biAoMik6Cj4gIMKgIMKg
+IMKgQVNvQzogUmVtb3ZlIHNuZF9zb2Nfc3VzcGVuZF9kZXZpY2UoKQo+ICDCoCDCoCDCoE1lcmdl
+IGJyYW5jaCAnZm9yLTIuNi4zMicgaW50byBmb3ItMi42LjMzCj4KPiBQZXRlciBVamZhbHVzaSAo
+Mik6Cj4gIMKgIMKgIMKgQVNvQzogVFBBNjEzMEEyOiBNYWtlIHRwYTYxMzBhMl9wb3dlciBhcyBz
+dGF0aWMKPiAgwqAgwqAgwqBBU29DOiBDb2RlYyBkcml2ZXIgZm9yIFRleGFzIEluc3RydW1lbnRz
+IHRsdjMyMGRhYzMzIGNvZGVjCj4KPiDCoGFyY2gvYXJtL3BsYXQtczNjL2luY2x1ZGUvcGxhdC9h
+dWRpby5oIHwgwqAgNDUgLS0KPiDCoGluY2x1ZGUvc291bmQvc29jLmggwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqB8IMKgIMKgNSAtCj4gwqBpbmNsdWRlL3NvdW5kL3RsdjMyMGRhYzMzLXBs
+YXQuaCDCoCDCoCDCoCB8IMKgIDIwICsKPiDCoHNvdW5kL3NvYy9jb2RlY3MvS2NvbmZpZyDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCB8IMKgIMKgNCArCj4gwqBzb3VuZC9zb2MvY29kZWNzL01ha2VmaWxl
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCDCoDIgKwo+IMKgc291bmQvc29jL2NvZGVjcy9jczQy
+NzAuYyDCoCDCoCDCoCDCoCDCoCDCoCDCoHwgwqAgMjAgLQo+IMKgc291bmQvc29jL2NvZGVjcy90
+bHYzMjBkYWMzMy5jIMKgIMKgIMKgIMKgIHwgMTIzNyArKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKwo+IMKgc291bmQvc29jL2NvZGVjcy90bHYzMjBkYWMzMy5oIMKgIMKgIMKgIMKgIHwg
+wqAyNjcgKysrKysrKwo+IMKgc291bmQvc29jL2NvZGVjcy90cGE2MTMwYTIuYyDCoCDCoCDCoCDC
+oCDCoCB8IMKgIMKgMiArLQo+IMKgc291bmQvc29jL2NvZGVjcy90cGE2MTMwYTIuaCDCoCDCoCDC
+oCDCoCDCoCB8IMKgIMKgMSAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODM1MC5jIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODQwMC5jIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODUyMy5jIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODU4MC5j
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODcx
+MS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dt
+ODczMS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAzNCAtCj4gwqBzb3VuZC9zb2MvY29kZWNz
+L3dtODc1My5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAzNSAtCj4gwqBzb3VuZC9zb2MvY29k
+ZWNzL3dtODc3Ni5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAzNCAtCj4gwqBzb3VuZC9zb2Mv
+Y29kZWNzL3dtODkwMC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3VuZC9z
+b2MvY29kZWNzL3dtODkwMy5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBzb3Vu
+ZC9zb2MvY29kZWNzL3dtODk0MC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4gwqBz
+b3VuZC9zb2MvY29kZWNzL3dtODk2MC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAtCj4g
+wqBzb3VuZC9zb2MvY29kZWNzL3dtODk2MS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAxNyAt
+Cj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtODk4OC5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDCoCAz
+NCAtCj4gwqBzb3VuZC9zb2MvY29kZWNzL3dtOTA4MS5jIMKgIMKgIMKgIMKgIMKgIMKgIMKgfCDC
+oCAxNyAtCj4gwqBzb3VuZC9zb2MvcHhhL0tjb25maWcgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqB8IMKgIMKgMyArLQo+IMKgc291bmQvc29jL3MzYzI0eHgvbmVvMTk3M193bTg3NTMuYyDCoCDC
+oCB8IMKgIMKgMSAtCj4gwqBzb3VuZC9zb2MvczNjMjR4eC9zM2MtaTJzLXYyLmMgwqAgwqAgwqAg
+wqAgfCDCoCDCoDEgLQo+IMKgc291bmQvc29jL3MzYzI0eHgvczNjMjQxMi1pMnMuYyDCoCDCoCDC
+oCDCoHwgwqAgwqAxIC0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzI0NDMtYWM5Ny5jIMKgIMKg
+IMKgIHwgwqAgwqAxIC0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzI0eHgtaTJzLmMgwqAgwqAg
+wqAgwqB8IMKgIMKgMiArLQo+IMKgc291bmQvc29jL3MzYzI0eHgvczNjMjR4eC1wY20uYyDCoCDC
+oCDCoCDCoHwgwqAgwqAxIC0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzY0eHgtaTJzLmMgwqAg
+wqAgwqAgwqB8IMKgIMKgMSAtCj4gwqBzb3VuZC9zb2Mvc29jLWNvcmUuYyDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCB8IMKgIDM5IC0KPiDCoHNvdW5kL3NvYy9zb2MtZGFwbS5jIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHwgwqAgwqAyICstCj4gwqAzNSBmaWxlcyBjaGFuZ2VkLCAxNTM1
+IGluc2VydGlvbnMoKyksIDQ0NCBkZWxldGlvbnMoLSkKPiDCoGRlbGV0ZSBtb2RlIDEwMDY0NCBh
+cmNoL2FybS9wbGF0LXMzYy9pbmNsdWRlL3BsYXQvYXVkaW8uaAo+IMKgY3JlYXRlIG1vZGUgMTAw
+NjQ0IGluY2x1ZGUvc291bmQvdGx2MzIwZGFjMzMtcGxhdC5oCj4gwqBjcmVhdGUgbW9kZSAxMDA2
+NDQgc291bmQvc29jL2NvZGVjcy90bHYzMjBkYWMzMy5jCj4gwqBjcmVhdGUgbW9kZSAxMDA2NDQg
+c291bmQvc29jL2NvZGVjcy90bHYzMjBkYWMzMy5oCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
