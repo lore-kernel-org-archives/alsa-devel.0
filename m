@@ -1,16 +1,26 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Use model=mb5 for MacBookPro 5,2
-Date: Wed, 11 Nov 2009 14:49:07 -0500
-Message-ID: <604760770911111149y6d8ae733w996f6d062dbab907@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=000e0cd32eb843c74204781db8bc
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
+	tracking nonsense
+Date: Wed, 11 Nov 2009 20:03:22 +0000
+Message-ID: <6FB97780-074F-41B7-AF78-5F4817E7DE3A@opensource.wolfsonmicro.com>
+References: <20091107081631.18908.82921.stgit@angua>
+	<20091107083358.18908.10635.stgit@angua>
+	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
+	<fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
+	<20091107201233.GC31789@sirena.org.uk>
+	<9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
+	<20091111183753.GA31815@rakim.wolfsonmicro.main>
+	<fa686aa40911111124i12b72196xdba7000b13b3bdc@mail.gmail.com>
+	(sfid-20091111_192512_321401_1F7ED21B)
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f184.google.com (mail-pz0-f184.google.com
-	[209.85.222.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7E09103982
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 20:49:08 +0100 (CET)
-Received: by pzk14 with SMTP id 14so983215pzk.23
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 11:49:07 -0800 (PST)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 14B73103950
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 21:03:19 +0100 (CET)
+In-Reply-To: <fa686aa40911111124i12b72196xdba7000b13b3bdc@mail.gmail.com>
+	(sfid-20091111_192512_321401_1F7ED21B)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,65 +30,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: John Bonesio <bones@secretlab.ca>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
---000e0cd32eb843c74204781db8bc
-Content-Type: text/plain; charset=UTF-8
+On 11 Nov 2009, at 19:24, Grant Likely <grant.likely@secretlab.ca>  
+wrote:
 
-Hi,
+> On Wed, Nov 11, 2009 at 11:37 AM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+>> On Wed, Nov 11, 2009 at 11:38:06AM -0500, Jon Smirl wrote:
+>>>> Providing a final valid data point to the driver would possibly  
+>>>> even
+>>>> make things worse since if it were used then you'd have the  
+>>>> equivalent
+>>>> race where the application has initialized some data but not yet  
+>>>> managed
+>>>> to update the driver to tell it it's being handed over; if the  
+>>>> driver
+>>
+>>> That's an under run condition.
+>>
+>> Yes, of course - the issue is that this approach encourages them,  
+>> making
+>> the system less robust if things are on the edge.  The mpc5200  
+>> seems to
+>> be not just on the edge but comfortably beyond it for some reason.
+>
+> I can't reproduce the issue at all as long at the dev_dbg() statement
+> in the trigger stop path is disabled.  With it enabled, I hear the
+> problem every time.  The 5200 may not be a speedy beast, but it is
+> plenty fast enough to shut down the audio stream before stale data
+> starts getting played out.
 
-Attached please find a patch against current sound-2.6 HEAD adding
-the codec SSID for MacBookPro 5,2 to enable playback and capture
-(with the same caveat as for MacBookPro 5,1 that jacksense remains
-at odds).
-
-Thanks,
-Dan
-
---000e0cd32eb843c74204781db8bc
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-ALSA-hda-Use-model-mb5-for-MacBookPro-5-2.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Use-model-mb5-for-MacBookPro-5-2.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g1wi6qa50
-
-RnJvbSBjZjIwNTY1MTcyYTVlN2M0Y2I5NDBiYjVhZjA0OGFlYzM0NDExY2JlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFdlZCwgMTEgTm92IDIwMDkgMTQ6MzI6MTAgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGE6IFVzZSBtb2RlbD1tYjUgZm9yIE1hY0Jvb2tQcm8gNSwyCgpCdWdMaW5rOiBodHRwczov
-L2J1Z3MubGF1bmNocGFkLm5ldC9idWdzLzQ2MjA5OAoKVW50aWwgd2UgY2FuIGxvb2sgY2xvc2Vy
-IGF0IHRoZSB2ZXJicywgbGV0J3MgdXNlIEFMQzg4NV9NQjUgZm9yCmNvZGVjIFNTSUQgMHgxMDZi
-NDYwMCB0byBlbmFibGUgcGxheWJhY2sgYW5kIGNhcHR1cmUgZm9yIE1hY0Jvb2tQcm8KNSwycy4K
-ClNpZ25lZC1vZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5AdWJ1bnR1LmNvbT4KLS0tCiBz
-b3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyB8ICAgIDUgKysrLS0KIDEgZmlsZXMgY2hhbmdl
-ZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3Bj
-aS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5k
-ZXggMDA0MWFlMi4uNDlkZTEwNyAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFs
-dGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTg5MTIsMTAgKzg5
-MTIsMTEgQEAgc3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzg4Ml9zc2lkX2NmZ190Ymxb
-XSA9IHsKIAlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHgzODAwLCAiTWFjYm9va1BybyA0LDEiLCBB
-TEM4ODVfTUJQMyksCiAJU05EX1BDSV9RVUlSSygweDEwNmIsIDB4M2UwMCwgImlNYWMgMjQgQWx1
-bWludW0iLCBBTEM4ODVfSU1BQzI0KSwKIAlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHgzZjAwLCAi
-TWFjYm9vayA1LDEiLCBBTEM4ODVfTUI1KSwKLQkvKiBGSVhNRTogSFAgamFjayBzZW5zZSBzZWVt
-cyBub3Qgd29ya2luZyBmb3IgTUJQIDUsMSwgc28gYXBwYXJlbnRseQotCSAqIG5vIHBlcmZlY3Qg
-c29sdXRpb24geWV0CisJLyogRklYTUU6IEhQIGphY2sgc2Vuc2Ugc2VlbXMgbm90IHdvcmtpbmcg
-Zm9yIE1CUCA1LDEgb3IgNSwyLAorCSAqIHNvIGFwcGFyZW50bHkgbm8gcGVyZmVjdCBzb2x1dGlv
-biB5ZXQKIAkgKi8KIAlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHg0MDAwLCAiTWFjYm9va1BybyA1
-LDEiLCBBTEM4ODVfTUI1KSwKKwlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHg0NjAwLCAiTWFjYm9v
-a1BybyA1LDIiLCBBTEM4ODVfTUI1KSwKIAl7fSAvKiB0ZXJtaW5hdG9yICovCiB9OwogCi0tIAox
-LjYuMy4zCgo=
---000e0cd32eb843c74204781db8bc
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---000e0cd32eb843c74204781db8bc--
+Yes, that does sound entirely consistent with the problem being a  
+latency issue if you're sending the dev_dbg() output to the serial  
+port. I'd be surprised if it were anything else to be honest.
