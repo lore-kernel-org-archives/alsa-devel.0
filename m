@@ -1,25 +1,26 @@
-From: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
-Subject: Re: HDA Intel IDT 92HD71B7X - HP Pavilion DV7-1299EF -
-	Only the left speaker is working
-Date: Wed, 11 Nov 2009 20:15:32 +0100
-Message-ID: <d3328e7b0911111115t3e2201c7r35302f6f7c66b88f@mail.gmail.com>
-References: <d3328e7b0911110722l27597a8bl523052b035e9ec9d@mail.gmail.com>
-	<s5h8wedge1k.wl%tiwai@suse.de>
-	<d3328e7b0911110940x24676812pec25ffc176f21d43@mail.gmail.com>
-	<s5h7htxgdlj.wl%tiwai@suse.de>
-	<d3328e7b0911110958y5bbbf22fpbe4c74dfd6715608@mail.gmail.com>
-	<s5hd43o6fp6.wl%tiwai@suse.de>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
+	tracking nonsense
+Date: Wed, 11 Nov 2009 12:24:45 -0700
+Message-ID: <fa686aa40911111124i12b72196xdba7000b13b3bdc@mail.gmail.com>
+References: <20091107081631.18908.82921.stgit@angua>
+	<20091107083358.18908.10635.stgit@angua>
+	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
+	<fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
+	<20091107201233.GC31789@sirena.org.uk>
+	<9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
+	<20091111183753.GA31815@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
-	[209.85.220.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id A38B7103982
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 20:15:52 +0100 (CET)
-Received: by fxm1 with SMTP id 1so3345842fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 11:15:52 -0800 (PST)
-In-Reply-To: <s5hd43o6fp6.wl%tiwai@suse.de>
+Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
+	[209.85.211.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6C3524597
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 20:25:06 +0100 (CET)
+Received: by ywh28 with SMTP id 28so1279289ywh.16
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 11:25:06 -0800 (PST)
+In-Reply-To: <20091111183753.GA31815@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,104 +30,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBOb3YgMTEsIDIwMDkgYXQgMjA6MDksIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5k
-ZT4gd3JvdGU6Cj4gQXQgV2VkLCAxMSBOb3YgMjAwOSAxODo1ODoyOSArMDEwMCwKPiBXYWVsIE5h
-c3JlZGRpbmUgKGEuay5hIGVNeHl6cHRsaykgd3JvdGU6Cj4+Cj4+IE9uIFdlZCwgTm92IDExLCAy
-MDA5IGF0IDE4OjQ1LCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOgo+PiA+IEF0
-IFdlZCwgMTEgTm92IDIwMDkgMTg6NDA6NDggKzAxMDAsCj4+ID4gV2FlbCBOYXNyZWRkaW5lIChh
-LmsuYSBlTXh5enB0bGspIHdyb3RlOgo+PiA+Pgo+PiA+PiBPbiBXZWQsIE5vdiAxMSwgMjAwOSBh
-dCAxODozNSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPj4gPj4gPiBBdCBX
-ZWQsIDExIE5vdiAyMDA5IDE2OjIyOjQ3ICswMTAwLAo+PiA+PiA+IFdhZWwgTmFzcmVkZGluZSAo
-YS5rLmEgZU14eXpwdGxrKSB3cm90ZToKPj4gPj4gPj4KPj4gPj4gPj4gT24gV2VkLCBKdWwgMjks
-IDIwMDkgYXQgODo1NSBBTSwgVGFrYXNoaSBJd2FpPHRpd2FpIGF0IHN1c2UuZGU+IHdyb3RlOgo+
-PiA+PiA+PiA+IEF0IFR1ZSwgMjggSnVsIDIwMDkgMjA6MDc6MjkgKzAyMDAsCj4+ID4+ID4+ID4g
-V2FlbCBOYXNyZWRkaW5lIChhLmsuYSBlTXh5enB0bGspIHdyb3RlOgo+PiA+PiA+PiA+Pgo+PiA+
-PiA+PiA+PiBPbiBNb24sIEp1bCAyNywgMjAwOSBhdCAzOjE1IFBNLCBUYWthc2hpIEl3YWkgPHRp
-d2FpIGF0IHN1c2UuZGU+IHdyb3RlOgo+PiA+PiA+PiA+Pgo+PiA+PiA+PiA+PiDCoCDCoCBBdCBT
-YXQsIDI1IEp1bCAyMDA5IDIxOjQ0OjQ2ICswMjAwLAo+PiA+PiA+PiA+PiDCoCDCoCBXYWVsIE5h
-c3JlZGRpbmUgKGEuay5hIGVNeHl6cHRsaykgd3JvdGU6Cj4+ID4+ID4+ID4+IMKgIMKgID4KPj4g
-Pj4gPj4gPj4gwqAgwqAgPiBJIHN0aWxsIGdvdCBubyBzb2x1dGlvbiBmb3IgdGhpcyBwcm9ibGVt
-LAo+PiA+PiA+PiA+Pgo+PiA+PiA+PiA+PiDCoCDCoCBXaGljaCBwcm9ibGVtPwo+PiA+PiA+PiA+
-PiDCoCDCoCBJdCdkIGJlIGhlbHBmdWwgaWYgeW91IGdpdmUgYSBwcm9ibGVtIHN1bW1hcnkgYW5k
-IHdoYXQgeW91J3ZlIGRvbmUKPj4gPj4gPj4gPj4gwqAgwqAgdW50aWwgbm93IChhbmQgZG9uJ3Qg
-ZG8gdG9wLXBvc3RpbmcpLi4uCj4+ID4+ID4+ID4+Cj4+ID4+ID4+ID4+IMKgIMKgIHRoYW5rcywK
-Pj4gPj4gPj4gPj4KPj4gPj4gPj4gPj4gwqAgwqAgVGFrYXNoaQo+PiA+PiA+PiA+Pgo+PiA+PiA+
-PiA+PiBIaSBUYWthc2hpLAo+PiA+PiA+PiA+Pgo+PiA+PiA+PiA+PiBJJ20gc29ycnkgSSBkaWRu
-J3Qgbm90aWNlIHRoYXQgdGhlIHByb2JsZW0gd2Fzbid0IHF1b3RlZCBpbiBteSBsYXN0IG1lc3Nh
-Z2UsCj4+ID4+ID4+ID4+IGFueXdheSB0aGUgd2hvbGUgdG9waWMgaXMgaW5jbHVkZWQgaW4gdGhl
-IGZvcndhcmRlZCBtZXNzYWdlIGJlbG93LCBJIHRyaWVkCj4+ID4+ID4+ID4+IHVzaW5nIGhkYS12
-ZXJiIGFuZCBoZGEtYW5hbHl6ZXIsIGxpa2UgeW91IHN1Z2dlc3RlZCBpbiBvbmUgb2YgeW91ciBl
-bWFpbHMsIGJ1dAo+PiA+PiA+PiA+PiBzaW5jZSBJIGRvbid0IGV2ZW4ga25vdyB3aGF0IEknbSBs
-b29raW5nIGZvciBub3Igd2hhdCB0byB0cnksIEkgZGlkIG5vdCBnb3QKPj4gPj4gPj4gPj4gdG9v
-IGZhciEKPj4gPj4gPj4gPj4KPj4gPj4gPj4gPj4gV2hhdCBlbHNlIGRvIHlvdSBzdWdnZXN0PyBB
-cmUgeW91IGF3YXJlIG9mIGFueW9uZSBoYXZpbmcgYSBzaW1pbGFyIGlzc3VlIEkgY2FuCj4+ID4+
-ID4+ID4+IHF1ZXJ5IHRvIGhlbHAgbWUgZmlndXJlIGl0IG91dCA/Cj4+ID4+ID4+ID4KPj4gPj4g
-Pj4gPiBGaXJzdCBvZmYsIHRyeSB0aGUgdmVyeSBsYXRlc3QgYWxzYS1kcml2ZXIgc25hcHNob3Qu
-Cj4+ID4+ID4+ID4gwqBmdHA6Ly9mdHAua2VybmVsLm9yZy9wdWIvbGludXgva2VybmVsL3Blb3Bs
-ZS90aXdhaS9zbmFwc2hvdC9hbHNhLWRyaXZlci1zbmFwc2hvdC50YXIuZ3oKPj4gPj4gPj4gPgo+
-PiA+PiA+PiA+IFRoZSBwcm9ibGVtIGlzIHRoYXQgQklPUyBzZXRzIG9ubHkgb25lIHN0ZXJlbyBz
-cGVha2VyIGluIHRoZSBwaW4KPj4gPj4gPj4gPiBjb25maWd1cmF0aW9uLCBzbyB0aGUgZHJpdmVy
-IGNhbm5vdCBrbm93IHdoYXQgdG8gZG8gd2l0aCBhbm90aGVyCj4+ID4+ID4+ID4gc3BlYWtlci4g
-wqBJbiBzaG9ydCwgaXQncyBhIEJJT1MgYnVnLgo+PiA+PiA+PiA+Cj4+ID4+ID4+ID4gVG8gb3Zl
-cmNvbWUgdGhhdCwgeW91IG5lZWQgdG8gZmlndXJlIG91dCB3aGljaCBwaW4gY29ycmVzcG9uZHMg
-dG8gdGhlCj4+ID4+ID4+ID4gc3BlYWtlci4gwqBUaGUgcmVzdCBhdmFpbGFibGUgKGFuYWxvZykg
-b3V0cHV0IHBpbnMgYXJlIDB4MGYgYW5kIDB4MTQuCj4+ID4+ID4+ID4gU2V0IHRoZXNlIGFzIG91
-dHB1dCBwaW5zLCBhbmQgY29ubmVjdCB0byBEQUMuIMKgRm9yIGV4YW1wbGUsCj4+ID4+ID4+ID4K
-Pj4gPj4gPj4gPiDCoCDCoCDCoCDCoCMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MGYgU0VU
-X1BJTl9XSUQgMHg0MAo+PiA+PiA+PiA+IMKgIMKgIMKgIMKgIyBoZGEtdmVyYiAvZGV2L3NuZC9o
-d0MwRDAgMHgwZiBTRVRfQ09OTiAwCj4+ID4+ID4+ID4KPj4gPj4gPj4gPiB3aGljaCBlbmFibGVz
-IHRoZSBvdXRwdXQgb2YgdGhlIHBpbiAweDBmLCB0aGVuIGNvbm5lY3RzIHRvIHRoZSBmaXJzdAo+
-PiA+PiA+PiA+IERBQyAoPSAweDEwKS4gwqBTaW1pbGFybHksCj4+ID4+ID4+ID4KPj4gPj4gPj4g
-PiDCoCDCoCDCoCDCoCMgaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MTQgU0VUX1BJTl9XSUQg
-MHg0MAo+PiA+PiA+PiA+IMKgIMKgIMKgIMKgIyBoZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgx
-NSBTRVRfQ09OTiAwCj4+ID4+ID4+ID4KPj4gPj4gPj4gPiB3aGljaCBlbmFibGVzIHRoZSBvdXRw
-dXQgb2YgdGhlIHBpbiAweDE0LCB0aGVuIGNoYW5nZXMgdGhlIGNvbm5lY3Rpb24KPj4gPj4gPj4g
-PiBvZiBpdHMgbXV4ICgweDE1KSB0byB0aGUgZmlyc3QgREFDICgweDEwKS4KPj4gPj4gPj4gPgo+
-PiA+PiA+PiA+IElmIHRoZXNlIGRvbid0IGhlbHAsIGl0J3MgcG9zc2libGUgdGhhdCBzb21lIEdQ
-SU8gYml0cyBwbGF5IGFueSByb2xlLgo+PiA+PiA+PiA+IFBsYXkgd2l0aCBHUElPIGJpdHMsIHdo
-aWNoIGNhbiBiZSBhbHNvIGNoYW5nZWQgdmlhIGhkYS12ZXJiLgo+PiA+PiA+PiA+Cj4+ID4+ID4+
-ID4KPj4gPj4gPj4gPiBUYWthc2hpCj4+ID4+ID4+ID4KPj4gPj4gPj4KPj4gPj4gPj4gSGV5IFRh
-a2FzaGksCj4+ID4+ID4+Cj4+ID4+ID4+IEkgdHJpZWQgd2hhdCB5b3UgaGF2ZSBzdWdnZXN0ZWQg
-YWJvdmUsIGFuZCBJIGFsc28gdHJpZWQgdG8gdXBncmFkZSB0aGUKPj4gPj4gPj4gQklPUyAoaXQn
-cyBGLjJDIG5vdykgYnV0IEkgc3RpbGwgaGF2ZSB0aGUgc2FtZSBwcm9ibGVtIHdpdGggbXkgc291
-bmQsCj4+ID4+ID4+IGhlcmUncyBhbiB1cGRhdGVkIGFsc2EtaW5mbyBvdXRwdXQKPj4gPj4gPj4K
-Pj4gPj4gPj4gaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTJjZGZjNWFhNjdiYzBi
-YWY5OGQzOGMxMzgwNjczOWFmYjZmNTE2M2YKPj4gPj4gPgo+PiA+PiA+IFRoaXMgaXMgb2J2aW91
-c2x5IGZyb20gdGhlIHZlcnkgb2xkIGFsc2EtZHJpdmVyIHZlcnNpb24uCj4+ID4+ID4gRG91Ymxl
-LWNoZWNrIHdoZXRoZXIgdGhlIGluc3RhbGxhdGlvbiB3YXMgY29ycmVjdC4KPj4gPj4gPgo+PiA+
-PiA+IEFsc28sIHBsZWFzZSBhdHRhY2ggYWxzYS1pbmZvLnNoIG91dHB1dCAocnVuIHdpdGggLS1u
-by11cGxvYWQgb3B0aW9uKQo+PiA+PiA+IGluc3RlYWQgb2YgdXBsb2FkaW5nIHRvIGEgc2VydmVy
-Lgo+PiA+PiA+Cj4+ID4+ID4gQW55d2F5LCB0cnkgdGhlIHZlcnkgbGF0ZXN0IHNuYXBzaG90IChh
-cyBvZiB0b2RheSkuIMKgQSBmZXcgbmV3IGZpeGVzCj4+ID4+ID4gZm9yIEhEIGxhcHRvcHMgYXJl
-IHRoZXJlLiDCoEFuZCByZW1vdmUgYWxsIG1vZHVsZSBvcHRpb25zIGZvcgo+PiA+PiA+IHNuZC1o
-ZGEtaW50ZWwgb25jZS4KPj4gPj4gPgo+PiA+PiA+Cj4+ID4+ID4gSFRILAo+PiA+PiA+Cj4+ID4+
-ID4gVGFrYXNoaQo+PiA+PiA+Cj4+ID4+Cj4+ID4+IEhleSBUYWthc2hpLAo+PiA+Pgo+PiA+PiBI
-ZXJlJ3Mgb25lIGZyb20gdGhlIGNvZGUgaW4ga2VybmVsIDIuNi4zMS42IGFuZCBvbmx5IHdpdGgg
-ZW5hYmxlX21zaT0xCj4+ID4KPj4gPiAyLjYuMzEueCBpcyBhbHNvIHRvbyBvbGQgdG8gZGVidWcg
-OikKPj4gPgo+PiA+PiBJIHdpbGwgZ2V0IGEgc25hcHNob3Qgb2YgdGhlIGFsc2EgZHJpdmVyIGFu
-ZCBjb21waWxlIGluc3RhbGwgaXQgYW5kIEkKPj4gPj4gd2lsbCByZXBseSB0byB0aGlzIHRvcGlj
-IHdpdGggdGhlIG9uZSB0YWtlbiBmcm9tIHRoZSBzbmFwc2hvdC4uCj4+ID4KPj4gPiBZZXMsIHBs
-ZWFzZS4gwqBUaGF0J2xsIGJlIGhlbHBmdWwuCj4+ID4KPj4gPiBXaXRoIHRoZSBsYXRlc3QgdmVy
-c2lvbiwgeW91IGRvbid0IG5lZWQgYW55IG9wdGlvbiAoaG9wZWZ1bGx5KS4KPj4gPiBUcnkgd2l0
-aG91dCBvcHRpb25zIGF0IGZpcnN0Lgo+PiA+Cj4+ID4KPj4gPiBUYWthc2hpCj4+ID4KPj4KPj4g
-U2FkbHkgSSBnZXQgdGhlIHNhbWUgcmVzdWx0LCBvbmx5IHRoZSBsZWZ0IHNwZWFrZXIgaXMgd29y
-a2luZywKPgo+IFRvIGJlIHN1cmUsIGRpZCB5b3UgdHJ5IHRoZSBkcml2ZXIgZnJvbSBiZWxvdz8K
-PiDCoCDCoGZ0cDovL2Z0cC5rZXJuZWwub3JnL3B1Yi9saW51eC9rZXJuZWwvcGVvcGxlL3Rpd2Fp
-L3NuYXBzaG90L2Fsc2EtZHJpdmVyLXNuYXBzaG90LnRhci5nego+Cj4KPiBUYWthc2hpCj4KCk5v
-cGUgSSB0cmllZCB0aGlzIG9uZQoKaHR0cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL3NuYXBzaG90
-Lz9wYWNrYWdlPWFsc2EtZHJpdmVyCgpJIHdpbGwgdHJ5IHRoaXMgb25lIHJpZ2h0IG5vdwoKCi0t
-IApXYWVsIE5hc3JlZGRpbmUKCldlZW0gQ2hpZWYtRGV2ZWxvcG1lbnQgT2ZmaWNlciAtIGh0dHA6
-Ly93d3cud2VlbS5jb20KCkJsb2cgICAgOiBodHRwOi8vd2FlbC5uYXNyZWRkaW5lLmNvbQpFLW1h
-aWwgIDogd2FlbC5uYXNyZWRkaW5lQHdlZW0uY29tCmdUYWxrICAgOiB3YWVsLm5hc3JlZGRpbmVA
-Z21haWwuY29tClRlbCAgICAgOiArMzMuNi4zMi45NC43MC4xMwpTa3lwZSAgIDogZU14eXpwdGxr
-ClR3aXR0ZXIgOiBAZU14eXpwdGxrCgpQR1A6IDEwMjREL0M4REQxOEEyIDA2RjYgMTYyMiA0QkM4
-IDRDRUIgRDcyNCAgREUxMiA1NTY1IDM5NDUgQzhERCAxOEEyCgouOiBBbiBpbmZpbml0ZSBudW1i
-ZXIgb2YgbW9ua2V5cyB0eXBpbmcgaW50byBHTlUgZW1hY3MsCiAgIHdvdWxkIG5ldmVyIG1ha2Ug
-YSBnb29kIHByb2dyYW0uIChMLiBUb3J2YWxkcyAxOTk1KSA6LgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, Nov 11, 2009 at 11:37 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Wed, Nov 11, 2009 at 11:38:06AM -0500, Jon Smirl wrote:
+>> > Providing a final valid data point to the driver would possibly even
+>> > make things worse since if it were used then you'd have the equivalent
+>> > race where the application has initialized some data but not yet manag=
+ed
+>> > to update the driver to tell it it's being handed over; if the driver
+>
+>> That's an under run condition.
+>
+> Yes, of course - the issue is that this approach encourages them, making
+> the system less robust if things are on the edge. =A0The mpc5200 seems to
+> be not just on the edge but comfortably beyond it for some reason.
+
+I can't reproduce the issue at all as long at the dev_dbg() statement
+in the trigger stop path is disabled.  With it enabled, I hear the
+problem every time.  The 5200 may not be a speedy beast, but it is
+plenty fast enough to shut down the audio stream before stale data
+starts getting played out.
+
+g.
+
+-- =
+
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
