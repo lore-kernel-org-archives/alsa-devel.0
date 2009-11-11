@@ -1,15 +1,15 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH] soc-core: move setting ac97 platform data
-	earlier than ac97 read/write
-Date: Wed, 11 Nov 2009 17:41:15 +0800
-Message-ID: <1257932475-5378-1-git-send-email-21cnbao@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.33
+Date: Wed, 11 Nov 2009 10:05:24 +0000
+Message-ID: <20091111100524.GA6432@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id B61F3243CF
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 10:41:09 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B84B8243FC
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 11:05:25 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,56 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-While probing, AC97 codec drivers generically execute the following sequence:
-snd_soc_new_ac97_codec -> snd_soc_new_pcms -> reset ac-link/read AC97 ID to
-detect ->...  -> snd_soc_init_card
+The following changes since commit 4cae37fa98f4d50778161ec033122444e3c10a01:
+  Takashi Iwai (1):
+        ASoC: Remove dead code and labels
 
-commit 474828a40f6ddab6e2a3475a19c5c84aa3ec7d60 adds platform_data to
-snd_ac97 instance. But ac97 platform data hasn't given to snd_ac97 until
-snd_soc_init_card. Then while ac97_read access platform_data of snd_ac97
-for detecting, NULL pointer oops will fire. That means old platform_data
-patch doesn't work in real-life cases.
+are available in the git repository at:
 
-This patch moves the operation of setting ac97 platform_data earlier
-than ac97 reading/writing operations. Then it makes platform_data of
-AC97 become practically useful.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
 
-Signed-off-by: Barry Song <21cnbao@gmail.com>
-cc: Marek Vasut <marek.vasut@gmail.com>
----
- sound/soc/soc-core.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
+Graeme Gregory (1):
+      ASoC: omap-mcbsp - add support for upto 16 channels.
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2d190df..a900778 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1427,6 +1427,9 @@ int snd_soc_new_pcms(struct snd_soc_device *socdev, int idx, const char *xid)
- 			mutex_unlock(&codec->mutex);
- 			return ret;
- 		}
-+		if (card->dai_link[i].codec_dai->ac97_control)
-+			snd_ac97_dev_add_pdata(codec->ac97,
-+					card->dai_link[i].cpu_dai->ac97_pdata);
- 	}
- 
- 	mutex_unlock(&codec->mutex);
-@@ -1458,11 +1461,8 @@ int snd_soc_init_card(struct snd_soc_device *socdev)
- 				continue;
- 			}
- 		}
--		if (card->dai_link[i].codec_dai->ac97_control) {
-+		if (card->dai_link[i].codec_dai->ac97_control)
- 			ac97 = 1;
--			snd_ac97_dev_add_pdata(codec->ac97,
--				card->dai_link[i].cpu_dai->ac97_pdata);
--		}
- 	}
- 	snprintf(codec->card->shortname, sizeof(codec->card->shortname),
- 		 "%s",  card->name);
--- 
-1.5.6.3
+Grant Likely (6):
+      ASoC/mpc5200: Track DMA position by period number instead of bytes
+      ASoC/mpc5200: get rid of the appl_ptr tracking nonsense
+      ASoC/mpc5200: Improve printk debug output for trigger
+      ASoC/mpc5200: add to_psc_dma_stream() helper
+      ASoC/mpc5200: fix enable/disable of AC97 slots
+      ASoC: mpc5200: remove duplicate identical IRQ handler
+
+Jarkko Nikula (1):
+      ASoC: Pandora: Pass SRG input clock frequency to the OMAP McBSP DAI
+
+Mark Brown (1):
+      Merge branch 'twl4030-mfd' into for-2.6.33
+
+Peter Ujfalusi (4):
+      MFD: TWL4030: Add audio_mclk to the codec platform data
+      OMAP: Configure audio_mclk for twl4030-codec MFD
+      MFD: twl4030-codec: APLL_INFREQ handling in the MFD driver
+      ASoC: TWL4030: Do not modify the APLL_CTL register
+
+ arch/arm/mach-omap2/board-3430sdp.c      |    1 +
+ arch/arm/mach-omap2/board-omap3beagle.c  |    1 +
+ arch/arm/mach-omap2/board-omap3evm.c     |    1 +
+ arch/arm/mach-omap2/board-omap3pandora.c |    1 +
+ arch/arm/mach-omap2/board-overo.c        |    1 +
+ arch/arm/mach-omap2/board-zoom2.c        |    1 +
+ drivers/mfd/twl4030-codec.c              |   35 +++++++++
+ include/linux/i2c/twl4030.h              |    1 +
+ include/linux/mfd/twl4030-codec.h        |    1 +
+ sound/soc/codecs/twl4030.c               |   76 ++++++++-----------
+ sound/soc/fsl/mpc5200_dma.c              |  123 ++++++------------------------
+ sound/soc/fsl/mpc5200_dma.h              |   24 ++++--
+ sound/soc/fsl/mpc5200_psc_ac97.c         |   39 +++++-----
+ sound/soc/omap/omap-mcbsp.c              |   63 +++++++++------
+ sound/soc/omap/omap3pandora.c            |   24 +++----
+ 15 files changed, 183 insertions(+), 209 deletions(-)
