@@ -1,18 +1,23 @@
-From: Mads Kiilerich <mads@kiilerich.com>
-Subject: Re: handling of underrunning snd_pcm_writei
-Date: Wed, 11 Nov 2009 19:12:24 +0100
-Message-ID: <4AFAFE88.5020508@kiilerich.com>
-References: <4AFAEB44.60104@kiilerich.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
+ tracking nonsense
+Date: Wed, 11 Nov 2009 18:37:53 +0000
+Message-ID: <20091111183753.GA31815@rakim.wolfsonmicro.main>
+References: <20091107081631.18908.82921.stgit@angua>
+	<20091107083358.18908.10635.stgit@angua>
+	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
+	<fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
+	<20091107201233.GC31789@sirena.org.uk>
+	<9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FAF72454C
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 19:12:28 +0100 (CET)
-Received: by ey-out-1920.google.com with SMTP id 3so320731eyh.16
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 10:12:27 -0800 (PST)
-In-Reply-To: <4AFAEB44.60104@kiilerich.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CE26424567
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 19:37:54 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +27,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 11/11/2009 05:50 PM, Mads Kiilerich wrote:
+On Wed, Nov 11, 2009 at 11:38:06AM -0500, Jon Smirl wrote:
 
-> http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#gf13067c0ebde29118ca05af76e5b17a9
-> says about snd_pcm_writei:
->
->> Returns: a positive number of frames actually written otherwise a
->> negative error code
->> ...
->> Return values:
->> ...
->> -EPIPE an underrun occurred
->> ...
->> The count of bytes can be less only if a signal or underrun occurred.
-...
-> It surprises me that snd_pcm_writei shows non-blocking behaviour in case
-> of underruns and don't use all the offered data. I would guess that it
-> either blocked and enjoyed the data it finally got, or that it gave an
-> error and didn't take any data at all. But if this is how it is, then
-> ... that is how it is ;-)
+> There are two solutions:
+> 1) tell me where the end of the valid data is. That allows me to
+> program the hardware to not enqueue the invalid data.
+> 2) For batched hardware, pad an extra period with silence after the
+> end of the stream. (that what zeroing the buffer before handing it
+> back to ALSA
 
-Ok, experiments indicates that the documented blocking behaviour only 
-applies in SND_PCM_STATE_RUNNING. snd_pcm_writei apparently behaves 
-non-blocking in SND_PCM_STATE_PREPARED. I can see how that kind of makes 
-sense - I just didn't expect that. Is that correctly understood?
+You've also got the option of lying about where the hardware is in some
+form in order to give you more headroom.
 
-/Mads
+I'm not sure what you mean by "batched hardware" here.
+
+> I believe this race is present in all ALSA drivers.  It's just a lot
+> harder to hit on different hardware. For example to hit it on Intel
+> HDA which is non-batched hardware, the song would need to end right at
+> the end of a period. Then the interrupt latency would need to be bad
+> enough that some invalid data got played. But x86 CPUs are very fast
+> so it is rare for the interrupt latency to be bad enough that the
+> stream doesn't get stopped in time.
+
+The potential is there for this to happen on any hardware, yes.   On the
+other hand, it's not been a pressing issue elswhere - including on
+things like older ARM systems which aren't exactly noted for their
+snappy performance.  It really does sound like there's something special
+going on with these systems that's at least somewhat unique to them.
+
+> > Providing a final valid data point to the driver would possibly even
+> > make things worse since if it were used then you'd have the equivalent
+> > race where the application has initialized some data but not yet managed
+> > to update the driver to tell it it's being handed over; if the driver
+
+> That's an under run condition.
+
+Yes, of course - the issue is that this approach encourages them, making
+the system less robust if things are on the edge.  The mpc5200 seems to
+be not just on the edge but comfortably beyond it for some reason.
