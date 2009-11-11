@@ -1,8 +1,8 @@
 From: Jon Smirl <jonsmirl@gmail.com>
 Subject: Re: [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
 	tracking nonsense
-Date: Wed, 11 Nov 2009 16:26:31 -0500
-Message-ID: <9e4733910911111326w7b1e465an9343e1f9a1815e43@mail.gmail.com>
+Date: Wed, 11 Nov 2009 16:34:29 -0500
+Message-ID: <9e4733910911111334o24f3114as6baaef82d7b17a05@mail.gmail.com>
 References: <20091107081631.18908.82921.stgit@angua>
 	<20091107083358.18908.10635.stgit@angua>
 	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
@@ -10,16 +10,17 @@ References: <20091107081631.18908.82921.stgit@angua>
 	<20091107201233.GC31789@sirena.org.uk>
 	<9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
 	<20091111183753.GA31815@rakim.wolfsonmicro.main>
+	<fa686aa40911111124i12b72196xdba7000b13b3bdc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id B0DF210389D
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 22:26:33 +0100 (CET)
-Received: by qw-out-1920.google.com with SMTP id 14so267303qwa.56
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 13:26:32 -0800 (PST)
-In-Reply-To: <20091111183753.GA31815@rakim.wolfsonmicro.main>
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAD50103982
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 22:34:29 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 14so268515qwa.56
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 13:34:29 -0800 (PST)
+In-Reply-To: <fa686aa40911111124i12b72196xdba7000b13b3bdc@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,61 +30,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 11, 2009 at 1:37 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Nov 11, 2009 at 11:38:06AM -0500, Jon Smirl wrote:
+On Wed, Nov 11, 2009 at 2:24 PM, Grant Likely <grant.likely@secretlab.ca> w=
+rote:
+> On Wed, Nov 11, 2009 at 11:37 AM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+>> On Wed, Nov 11, 2009 at 11:38:06AM -0500, Jon Smirl wrote:
+>>> > Providing a final valid data point to the driver would possibly even
+>>> > make things worse since if it were used then you'd have the equivalent
+>>> > race where the application has initialized some data but not yet mana=
+ged
+>>> > to update the driver to tell it it's being handed over; if the driver
+>>
+>>> That's an under run condition.
+>>
+>> Yes, of course - the issue is that this approach encourages them, making
+>> the system less robust if things are on the edge. =A0The mpc5200 seems to
+>> be not just on the edge but comfortably beyond it for some reason.
 >
->> There are two solutions:
->> 1) tell me where the end of the valid data is. That allows me to
->> program the hardware to not enqueue the invalid data.
->> 2) For batched hardware, pad an extra period with silence after the
->> end of the stream. (that what zeroing the buffer before handing it
->> back to ALSA
->
-> You've also got the option of lying about where the hardware is in some
-> form in order to give you more headroom.
->
-> I'm not sure what you mean by "batched hardware" here.
+> I can't reproduce the issue at all as long at the dev_dbg() statement
+> in the trigger stop path is disabled. =A0With it enabled, I hear the
+> problem every time. =A0The 5200 may not be a speedy beast, but it is
+> plenty fast enough to shut down the audio stream before stale data
+> starts getting played out.
 
-SNDRV_PCM_INFO_BATCH
+"fast enough" - you just said it is a race.
+I've been saying it is a race too.
 
-Hardware that can't give you the DMA position except at the end of DMA
-transfers.
+There are two options:
+1) Eliminate the race by developing a system to deterministically flag
+the end of valid data.
+2) Fudge everything around making it almost impossible to lose the
+race, but the race is still there.
 
+The dev_dbg() aggravates the race until it is obviously visible every
+time. A deterministic solution would not be impacted by the dev_dbg().
 
->
->> I believe this race is present in all ALSA drivers. =A0It's just a lot
->> harder to hit on different hardware. For example to hit it on Intel
->> HDA which is non-batched hardware, the song would need to end right at
->> the end of a period. Then the interrupt latency would need to be bad
->> enough that some invalid data got played. But x86 CPUs are very fast
->> so it is rare for the interrupt latency to be bad enough that the
->> stream doesn't get stopped in time.
->
-> The potential is there for this to happen on any hardware, yes. =A0 On the
-> other hand, it's not been a pressing issue elswhere - including on
-> things like older ARM systems which aren't exactly noted for their
-> snappy performance. =A0It really does sound like there's something special
-> going on with these systems that's at least somewhat unique to them.
->
->> > Providing a final valid data point to the driver would possibly even
->> > make things worse since if it were used then you'd have the equivalent
->> > race where the application has initialized some data but not yet manag=
-ed
->> > to update the driver to tell it it's being handed over; if the driver
->
->> That's an under run condition.
->
-> Yes, of course - the issue is that this approach encourages them, making
-> the system less robust if things are on the edge. =A0The mpc5200 seems to
-> be not just on the edge but comfortably beyond it for some reason.
->
-
-
+Implementing a deterministic solution requires support from ALSA core.
 
 -- =
 
