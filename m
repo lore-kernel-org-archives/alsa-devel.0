@@ -1,17 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: What is a name for the PC speaker input/output
- volume control?
-Date: Wed, 11 Nov 2009 15:18:35 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0911111516560.4806@eeebox2.perex-int.cz>
-References: <20091111151258.61598339.krzysztof.h1@poczta.fm>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] add support to reorder CPU and Codec
+	DAI	suspend/resume
+Date: Wed, 11 Nov 2009 14:20:51 +0000
+Message-ID: <20091111142050.GB32595@sirena.org.uk>
+References: <1257923457-31470-1-git-send-email-21cnbao@gmail.com>
+	<20091111112431.GA18005@opensource.wolfsonmicro.com>
+	<3c17e3570911110448v7f7da90bs8ecad60c4afda5bc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id C978010381D
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 15:18:36 +0100 (CET)
-In-Reply-To: <20091111151258.61598339.krzysztof.h1@poczta.fm>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EB7910381D
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 15:20:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <3c17e3570911110448v7f7da90bs8ecad60c4afda5bc@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 11 Nov 2009, Krzysztof Helt wrote:
+On Wed, Nov 11, 2009 at 08:48:19PM +0800, Barry Song wrote:
 
-> Hi Takashi,
->
-> I have run into the issue that OSS emulation layer provides less controls
-> than the alsa mixer. One specific problem is the OSS Speaker control
-> is not properly mapped on all drivers (among others the wss/cs4236 family)
-> due to the fact that the speaker input/output is called "Mono" in this driver.
->
-> I have found that there are at least three names are used by drivers:
-> "PC Speaker"
-> "Speaker"
-> "Mono"
-> for the same input/output pair (At least on the ISA cards there is only single
-> purpose mono channel - to route the PC speaker).
->
-> Which name should be used? I will convert all ISA drivers to the selected
-> name (and fix the OSS mixer to map this name to the "Speaker" control).
+> Here I have a problem about blackfin TDM. After a deep sleep(all
+> suspend to memory and most parts power-down), If codec resumes at
+> first, clock ans sync are provided by it at onece. Then while CPU TDM
+> interface resumes, it will fail to go back to right status for work.
 
-I proposed and changed all "Speaker" and "PC Speaker" names to "Beep" in 
-recent ALSA code. The OSS emulation layer is updated as well.
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+What trouble does this give the TDM stuff?  It sounds very fragile if
+things get confused like this (presumably as a result of having the
+clocks running).
