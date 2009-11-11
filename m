@@ -1,124 +1,64 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
-	tracking nonsense
-Date: Wed, 11 Nov 2009 11:38:06 -0500
-Message-ID: <9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
-References: <20091107081631.18908.82921.stgit@angua>
-	<20091107083358.18908.10635.stgit@angua>
-	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
-	<fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
-	<20091107201233.GC31789@sirena.org.uk>
+From: Halim Sahin <halim.sahin@freenet.de>
+Subject: Re: alsa-info: problem hda-intel based card
+Date: Wed, 11 Nov 2009 17:48:17 +0100
+Message-ID: <20091111164817.GA30694@gentoo.local>
+References: <20091030132214.GA18477@gentoo.local>
+	<s5hy6mju38e.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20091107201233.GC31789@sirena.org.uk>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppd-linuxppc64-dev=m.gmane.org@lists.ozlabs.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id B48972452C
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 17:48:53 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1N8GNH-00082F-OT
+	for alsa-devel@alsa-project.org; Wed, 11 Nov 2009 17:48:51 +0100
+Received: from pd9e3f2c8.dip.t-dialin.net ([217.227.242.200])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 17:48:51 +0100
+Received: from halim.sahin by pd9e3f2c8.dip.t-dialin.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 17:48:51 +0100
+Content-Disposition: inline
+In-Reply-To: <s5hy6mju38e.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 7, 2009 at 3:12 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Sat, Nov 07, 2009 at 11:51:16AM -0700, Grant Likely wrote:
->> On Sat, Nov 7, 2009 at 5:51 AM, Jon Smirl <jonsmirl@gmail.com> wrote:
->
->> current period. =A0My understanding of ALSA is that the application is
->> supposed to make sure there is enough silence in the buffer to handle
->> the lag between notification that the last period with valid data has
->> been played out and the stop trigger.
->
-> This is certainly the most robust approach for applications. =A0For a
-> large proportion of hardware it won't matter too much since they're able
-> to shut down the audio very quickly but that can't be entirely relied
-> upon, especially at higher rates on slower machines.
+Hello,
+On Fr, Nov 06, 2009 at 03:39:29 +0100, Takashi Iwai wrote:
+> > 2. hdmi output isn't active in the alsa default output.
+> > I can specify hw0,3 which works but it disables dmix.
+> > So the problem is how to enable hdmi audio out this way that
+> > aplay -Ddefault
+> > can use all available outputs simultaniously (analog, sp/dif, and hdmi).
+> 
+> It's not supported because the analog and HDMI comes from different
+> codecs.
 
-I can comment but no access to test equipment...
+are analog and sp/dif stuff coming from the  same codecs?
+I am asking because analog and sp/dif are active in the default setup.
+When using aplay I am getting signal on analog and sp/dif connectors.
+So why not analog and HDMI?
+Is there really no way to configure this with a custom ~/.asoundrc?
 
-Playing invalid data always happens in the current ALSA model. The
-only question is does enough of it play to be audible.
+Thanks
+Halim
 
-on the mpc5200 batched driver...
-At the end of song ALSA only pads out the last period with silence.
-When this buffer is fully enqueued the DMA hardware generates an interrupt.
-The DMA hardware also begins enqueuing the next period.
+> thanks,
+> 
+> Takashi
 
-Now we start a race. Can ALSA come back from that interrupt and stop
-the playing of the enqueued data before it makes it out of the FIFO?
-An mpc5200 is slow enough that the CPU never makes it back in time.
-This isn't a latency problem, it never makes it back in time. Latency
-issues just make it play more invalid data.
-
-There are two solutions:
-1) tell me where the end of the valid data is. That allows me to
-program the hardware to not enqueue the invalid data.
-2) For batched hardware, pad an extra period with silence after the
-end of the stream. (that what zeroing the buffer before handing it
-back to ALSA
-
-I believe this race is present in all ALSA drivers.  It's just a lot
-harder to hit on different hardware. For example to hit it on Intel
-HDA which is non-batched hardware, the song would need to end right at
-the end of a period. Then the interrupt latency would need to be bad
-enough that some invalid data got played. But x86 CPUs are very fast
-so it is rare for the interrupt latency to be bad enough that the
-stream doesn't get stopped in time.
-
->
->> occur. =A0That says to me that the real problem is an unbounded latency
->> caused by another part of the kernel (the tty console in this case).
->
-> That's certainly not going to help anything here - if a delay is
-> introduced in telling the hardware to shut down the DMA then that
-> increases the chance for the DMA controller to start pushing valid audio
-> data from the buffer to the audio interface.
->
->> > A much cleaner solution would be for ALSA to provide a field that
->> > indicates the last valid address in the ring buffer system. Then in
->> > the driver's buffer complete callback I could get that value and
->> > reprogram the DMA engine not to run off the end of valid data. As each
->> > buffer completes I would reread the value and update the DMA stop
->> > address. You also need the last valid address field when DMA is first
->> > started.
->
->> ... assuming that audio needs to stop exactly at the end of valid
->> data. =A0But if the last few periods are silence, then this assumption
->> isn't true.
->
-> Indeed, it makes the whole thing much more reliable.
->
-> Providing a final valid data point to the driver would possibly even
-> make things worse since if it were used then you'd have the equivalent
-> race where the application has initialized some data but not yet managed
-> to update the driver to tell it it's being handed over; if the driver
-> just carries on running through the data there's a reasonable chance
-> nobody will notice that case.
-
-That's an under run condition.
-
-ALSA would need to track how many periods the driver has queue. If
-ALSA has received enough interrupts to know that the driver is playing
-the last period, it would not be safe to just tack the data onto the
-end. You would also need to call into the driver with a 'append' call.
-That's because it isn't possible for ALSA to deterministically know if
-the last period has finished playing or not. In the 'append' call
-implementation the driver would determine if the DMA hardware was
-still running and restart it if needed.
-
-
->
-
-
-
--- =
-
-Jon Smirl
-jonsmirl@gmail.com
+-- 
+Halim Sahin
+E-Mail:				
+halim.sahin (at) t-online.de
