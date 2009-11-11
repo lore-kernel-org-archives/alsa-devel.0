@@ -1,23 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
- tracking nonsense
-Date: Wed, 11 Nov 2009 18:37:53 +0000
-Message-ID: <20091111183753.GA31815@rakim.wolfsonmicro.main>
-References: <20091107081631.18908.82921.stgit@angua>
-	<20091107083358.18908.10635.stgit@angua>
-	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
-	<fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
-	<20091107201233.GC31789@sirena.org.uk>
-	<9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH] ALSA: hda_intel: disable corb rirb when
+ single_cmd active
+Date: Wed, 11 Nov 2009 12:05:39 -0700
+Message-ID: <4AFB0B03.1010303@boundarydevices.com>
+References: <1257276157-7164-1-git-send-email-troy.kisky@boundarydevices.com>	<s5hd43yzov7.wl%tiwai@suse.de>	<4AF1D9D0.9080007@boundarydevices.com>	<s5h7hu5cv01.wl%tiwai@suse.de>	<4AF32A8B.4050404@boundarydevices.com>	<s5h3a4s86j7.wl%tiwai@suse.de>	<s5hiqdo80xq.wl%tiwai@suse.de>	<4AF4C6E7.8010807@boundarydevices.com>	<s5hfx8qybfx.wl%tiwai@suse.de>	<4AF86F3F.9020709@boundarydevices.com>	<s5hhbt2g7gp.wl%tiwai@suse.de>	<4AF9D7EF.6000800@boundarydevices.com>
+	<s5hzl6t608p.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CE26424567
-	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 19:37:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
+Received: from smtpauth00.csee.onr.siteprotect.com
+	(smtpauth00.csee.onr.siteprotect.com [64.26.60.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1CEE924591
+	for <alsa-devel@alsa-project.org>; Wed, 11 Nov 2009 20:05:54 +0100 (CET)
+In-Reply-To: <s5hzl6t608p.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,45 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: pshou@realtek.com.tw, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 11, 2009 at 11:38:06AM -0500, Jon Smirl wrote:
+Takashi Iwai wrote:
+> Yes, in theory.  But this doesn't happen actually because you usually
+> read the response often.  The read sequence synchronizes.
+> 
+> 
+Can resume type processing send a lot of verbs without waiting for a response?
 
-> There are two solutions:
-> 1) tell me where the end of the valid data is. That allows me to
-> program the hardware to not enqueue the invalid data.
-> 2) For batched hardware, pad an extra period with silence after the
-> end of the stream. (that what zeroing the buffer before handing it
-> back to ALSA
+Speaking of synchronizing, if 2 different processes simultaneously send
+different command verbs to the same codec, won't they both read the response
+of the last verb sent? Or is there locking somewhere to prevent this?
 
-You've also got the option of lying about where the hardware is in some
-form in order to give you more headroom.
 
-I'm not sure what you mean by "batched hardware" here.
-
-> I believe this race is present in all ALSA drivers.  It's just a lot
-> harder to hit on different hardware. For example to hit it on Intel
-> HDA which is non-batched hardware, the song would need to end right at
-> the end of a period. Then the interrupt latency would need to be bad
-> enough that some invalid data got played. But x86 CPUs are very fast
-> so it is rare for the interrupt latency to be bad enough that the
-> stream doesn't get stopped in time.
-
-The potential is there for this to happen on any hardware, yes.   On the
-other hand, it's not been a pressing issue elswhere - including on
-things like older ARM systems which aren't exactly noted for their
-snappy performance.  It really does sound like there's something special
-going on with these systems that's at least somewhat unique to them.
-
-> > Providing a final valid data point to the driver would possibly even
-> > make things worse since if it were used then you'd have the equivalent
-> > race where the application has initialized some data but not yet managed
-> > to update the driver to tell it it's being handed over; if the driver
-
-> That's an under run condition.
-
-Yes, of course - the issue is that this approach encourages them, making
-the system less robust if things are on the edge.  The mpc5200 seems to
-be not just on the edge but comfortably beyond it for some reason.
+Troy
