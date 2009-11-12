@@ -1,29 +1,27 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: PC Beep or PC Speaker or just Beep? and HDA Beep
- code...
-Date: Thu, 12 Nov 2009 12:44:17 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0911121236440.4806@eeebox2.perex-int.cz>
-References: <alpine.LNX.2.00.0910221740280.5519@eeebox2.perex-int.cz>
-	<s5h1vklythl.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0911031147520.5500@eeebox2.perex-int.cz>
-	<s5hiqdrlu8n.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0911031235130.5500@eeebox2.perex-int.cz>
-	<s5heioflt08.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0911031510170.5500@eeebox2.perex-int.cz>
-	<alpine.LNX.2.00.0911121056030.4806@eeebox2.perex-int.cz>
-	<s5hmy2sc8l8.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0911121203190.4806@eeebox2.perex-int.cz>
-	<s5hiqdgc7pg.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0911121219080.4806@eeebox2.perex-int.cz>
-	<s5heio4c71x.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
+ tracking nonsense
+Date: Thu, 12 Nov 2009 12:10:34 +0000
+Message-ID: <20091112121034.GA16661@rakim.wolfsonmicro.main>
+References: <20091107083358.18908.10635.stgit@angua>
+	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
+	<fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
+	<20091107201233.GC31789@sirena.org.uk>
+	<9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
+	<20091111183753.GA31815@rakim.wolfsonmicro.main>
+	<fa686aa40911111124i12b72196xdba7000b13b3bdc@mail.gmail.com>
+	<9e4733910911111334o24f3114as6baaef82d7b17a05@mail.gmail.com>
+	<fa686aa40911111357q22f57728va1b4bc8b5bc0425f@mail.gmail.com>
+	<9e4733910911111513w5423333cp6cf08ceec9a94ac3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A613910396A
-	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 12:44:17 +0100 (CET)
-In-Reply-To: <s5heio4c71x.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DBA931037E3
+	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 13:10:36 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <9e4733910911111513w5423333cp6cf08ceec9a94ac3@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,59 +31,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Nov 2009, Takashi Iwai wrote:
+On Wed, Nov 11, 2009 at 06:13:25PM -0500, Jon Smirl wrote:
 
-> At Thu, 12 Nov 2009 12:24:27 +0100 (CET),
-> Jaroslav Kysela wrote:
->>
->> On Thu, 12 Nov 2009, Takashi Iwai wrote:
->>
->>> At Thu, 12 Nov 2009 12:06:57 +0100 (CET),
->>> Jaroslav Kysela wrote:
->>>>
->>>> On Thu, 12 Nov 2009, Takashi Iwai wrote:
->>>>
->>>>> IOW, I'm fine with an additional implementation for the dynamic beep
->>>>> on/off.  But, the mixer interface doesn't look like the best interface
->>>>> to me.
->>>>
->>>> I would prefer something which is comfortable for user. The module
->>>> parameter or sysfs file is not a good way to explain users how they can
->>>> change the beep behaviour.
->>>
->>> A module parameter would be easy enough for most users who really care
->>> things like beep :)
->>
->> Nope. You expect that all users knows how to change module parameters. I'm
->> sorry, but I'm lazy to explain in bugzilla many times, how to change the
->> kernel module parameter (it's enough to explain model= for HDA). But 'turn
->> off "Beep" in alsamixer or any ALSA-aware mixer app' is quite shorther and
->> intuitive.
->
-> But because of this "easy-to-use", the switch can be soo easily
-> changed unintentionally.  So, we are speaking roughly the same thing
-> of both good and bad sides.
->
-> And here I'm more concerned about the bad side than the good side.
+> I don't think it is that much more work for ALSA to provide an
+> accessible field indicating the end of valid data. It's already
+> tracking appl_ptr. Appl_ptr just needs to be translated into a
+> physical DMA buffer address and we've been making mistakes doing that
+> translation.
 
-Ok, take another look:
+I'm sure if you provide reasonable patches they'll get applied; it
+doesn't seem likely that anyone else will work on this.
 
-If you have an USB input device (mouse for example), how you can force the 
-user to not plug in / plug out the device to USB port? With my latest 
-change postponing the input device unregistration, the code is quite 
-robust and even keyboard repeat should not make much hassle, because the 
-input device will not be quickly unregistered in this case.
+> On Wed, Nov 11, 2009 at 4:57 PM, Grant Likely <grant.likely@secretlab.ca> wrote
 
-I'm sorry, but we cannot take responsibility about this. If our code does 
-not crash and works as expected, everything is ok.
+> > But it still wouldn't help a bit when the same latency occurs in the
+> > middle of playback.
 
- 						Jaroslav
+> The deterministic solution of tracking the end of valid data ensures
+> that under run will be silent instead of playing invalid data.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+In the middle of playback a sudden silence period is very noticable -
+applications that expect data loss generally have some means to try to
+cover it up since sudden silence is so noticable to the human ear.  Mid
+playback there's a bit more chance that random data from earlier in the
+playback will be acceptable, and if the application has actually updated
+the data but not got round to telling the driver about that yet then
+even better.
+
+I think you're getting too focused on the fact that there is a race
+condition here since the consequences of race conditions are usually so
+severe.  There's always going to be some hardware for which there's a
+degree of racyness (free running hardware has its own set of issues
+here) so the system design takes this into account.
