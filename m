@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Add jack_status_check callback
-	function
-Date: Thu, 12 Nov 2009 15:38:40 +0000
-Message-ID: <20091112153840.GB24874@rakim.wolfsonmicro.main>
-References: <4AFBC3CC.9070906@samsung.com>
+From: Roel Kluin <roel.kluin@gmail.com>
+Subject: [PATCH]  OSS: fix error return in dma_ioctl()
+Date: Thu, 12 Nov 2009 17:43:11 +0100
+Message-ID: <4AFC3B1F.1050901@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 02B481037F2
-	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 16:38:42 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4AFBC3CC.9070906@samsung.com>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6761D103800
+	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 17:31:09 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 3so630296eyh.16
+	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 08:31:08 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +20,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 12, 2009 at 05:14:04PM +0900, Joonyoung Shim wrote:
-> The jack_status_check callback function is the interface to check the
-> status of the jack. Some target provides the method to distinguish what
-> is the jack inserted - headphone jack, microphone jack, tvout jack, etc,
-> so we can implement it using the jack_status_check function.
+The returned error should stay negative
 
-Applied, thanks.  
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+ sound/oss/audio.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Obviously with some jack detection methods you'd just be using multiple
-GPIOs but that's not going to work for everything.  If someone needs
-platform data of some kind passing into the jack that could be added
-later.
+diff --git a/sound/oss/audio.c b/sound/oss/audio.c
+index b69c05b..7df48a2 100644
+--- a/sound/oss/audio.c
++++ b/sound/oss/audio.c
+@@ -838,7 +838,7 @@ static int dma_ioctl(int dev, unsigned int cmd, void __user *arg)
+ 					if ((err = audio_devs[dev]->d->prepare_for_input(dev,
+ 						     dmap_in->fragment_size, dmap_in->nbufs)) < 0) {
+ 						spin_unlock_irqrestore(&dmap_in->lock,flags);
+-						return -err;
++						return err;
+ 					}
+ 					dmap_in->dma_mode = DMODE_INPUT;
+ 					audio_devs[dev]->enable_bits |= PCM_ENABLE_INPUT;
