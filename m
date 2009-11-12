@@ -1,23 +1,24 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: PC Beep or PC Speaker or just Beep? and HDA Beep
- code...
-Date: Thu, 12 Nov 2009 11:42:24 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0911121056030.4806@eeebox2.perex-int.cz>
-References: <alpine.LNX.2.00.0910221740280.5519@eeebox2.perex-int.cz>
-	<s5h1vklythl.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0911031147520.5500@eeebox2.perex-int.cz>
-	<s5hiqdrlu8n.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0911031235130.5500@eeebox2.perex-int.cz>
-	<s5heioflt08.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.0911031510170.5500@eeebox2.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] add support to reorder CPU and Codec
+	DAI	suspend/resume
+Date: Thu, 12 Nov 2009 10:46:41 +0000
+Message-ID: <20091112104640.GA11656@sirena.org.uk>
+References: <1257923457-31470-1-git-send-email-21cnbao@gmail.com>
+	<20091111112431.GA18005@opensource.wolfsonmicro.com>
+	<3c17e3570911110448v7f7da90bs8ecad60c4afda5bc@mail.gmail.com>
+	<20091111142050.GB32595@sirena.org.uk>
+	<3c17e3570911110634k60ecc02fwf52c168e9f5ad7a2@mail.gmail.com>
+	<20091111144252.GB20417@opensource.wolfsonmicro.com>
+	<3c17e3570911112147y40c3ebd9q85f99decfdefff78@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E93A103856
-	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 11:42:25 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.0911031510170.5500@eeebox2.perex-int.cz>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B12A510392F
+	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 11:46:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <3c17e3570911112147y40c3ebd9q85f99decfdefff78@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,45 +28,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Nov 2009, Jaroslav Kysela wrote:
+On Thu, Nov 12, 2009 at 01:47:36PM +0800, Barry Song wrote:
+> On Wed, Nov 11, 2009 at 10:42 PM, Mark Brown
 
->>> I don't see a problem. If you find the behaviour too risky, we can limit
->>> the register/unregister calls in time. Like one register call in one
->>> second.
->> 
->> Oh no, that'd be very strange behavior as an mixer element.
->
-> I recoded patch to delay the detach only to get consistent and abuse prone 
-> behaviour:
->
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=ba9c08c61338f298df34445715287beeca94b024
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=0633c8e977b7708ea122392d87cc15ca448fc5d5
->
-> The HDA beep output is muted immediately, of course.
+> > It'd really like to understand what's going wrong with the controller
+> > here - it should just sync up off the frame sync signal.
 
-Any chance to get my HDA beep updates merged to linux-next tree?
+> Don't know what happens exactly in hardware controllers . But I
+> "fixed" this porblem by isolating interfaces's sync/clock pins from
+> Codec(config them to GPIOs), then the whole system gets normal. Since
+> you have a plan for pm-link, I will use this way to keep the fix in
+> blackfin locally.
 
-[ALSA] hda_intel: Digital PC Beep - change behaviour for input layer
-[ALSA] hda_intel: Digital PC Beep - delay input device unregistration
-[ALSA] hda: beep - add missing cancel_delayed_work
-
-Reasons for merge:
-
-- it's tested
-- it's compatible with all kernels (including ones without
-   the future input layer modifications)
-- the code is more structured which can help us to rebind
-   "on request" input registration to another logic later
-- Beep mute switch now disables the tone generator on the off request -
-   it might be considered as bug in the previous beep code
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Thinking about this further I think you need the GPIO fix anyway.  There
+will be some CODECs (I'm mostly thinking of fixed function ones with no
+software control) that won't stop generating clocks unless power is
+removed.
