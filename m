@@ -1,24 +1,13 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] add support to reorder CPU and Codec
-	DAI	suspend/resume
-Date: Thu, 12 Nov 2009 10:46:41 +0000
-Message-ID: <20091112104640.GA11656@sirena.org.uk>
-References: <1257923457-31470-1-git-send-email-21cnbao@gmail.com>
-	<20091111112431.GA18005@opensource.wolfsonmicro.com>
-	<3c17e3570911110448v7f7da90bs8ecad60c4afda5bc@mail.gmail.com>
-	<20091111142050.GB32595@sirena.org.uk>
-	<3c17e3570911110634k60ecc02fwf52c168e9f5ad7a2@mail.gmail.com>
-	<20091111144252.GB20417@opensource.wolfsonmicro.com>
-	<3c17e3570911112147y40c3ebd9q85f99decfdefff78@mail.gmail.com>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Subject: Re: [PATCH 4/4] Add ASoC support for DEVKIT8000
+Date: Thu, 12 Nov 2009 16:24:21 +0530
+Message-ID: <ce9ab5790911120254l13a51b45n59270331be1264a7__17213.342517107$1258023301$gmane$org@mail.gmail.com>
+References: <8e4f2cbd8c0fccce7759ee7545699e1d@djdvant.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B12A510392F
-	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 11:46:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570911112147y40c3ebd9q85f99decfdefff78@mail.gmail.com>
+In-Reply-To: <8e4f2cbd8c0fccce7759ee7545699e1d@djdvant.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,23 +17,240 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 12, 2009 at 01:47:36PM +0800, Barry Song wrote:
-> On Wed, Nov 11, 2009 at 10:42 PM, Mark Brown
+On Thu, Nov 12, 2009 at 3:54 PM, Kim Botherway <kbotherway@djdvant.com> wro=
+te:
+> This patch add support for DEVKIT8000, it is a copy of Beagleboard sound
+> driver
+>
+> diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+> index 653a362..8cdcfe9 100644
+> --- a/sound/soc/omap/Kconfig
+> +++ b/sound/soc/omap/Kconfig
+> @@ -91,6 +91,14 @@ config SND_OMAP_SOC_OMAP3_BEAGLE
+> =A0 =A0 =A0 =A0help
+> =A0 =A0 =A0 =A0 =A0Say Y if you want to add support for SoC audio on the =
+Beagleboard.
+>
+> +config SND_OMAP_SOC_OMAP3_DEVKIT8000
+> + =A0 =A0 =A0 =A0tristate "SoC Audio support for OMAP3 DEVKIT8000"
+> + =A0 =A0 =A0 =A0depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_DE=
+VKIT8000
+> + =A0 =A0 =A0 =A0select SND_OMAP_SOC_MCBSP
+> + =A0 =A0 =A0 =A0select SND_SOC_TWL4030
+> + =A0 =A0 =A0 =A0help
+> + =A0 =A0 =A0 =A0 =A0Say Y if you want to add support for SoC audio on the
+> DEVKIT8000.
 
-> > It'd really like to understand what's going wrong with the controller
-> > here - it should just sync up off the frame sync signal.
+Patch is corrupted due to line-wrapping.
 
-> Don't know what happens exactly in hardware controllers . But I
-> "fixed" this porblem by isolating interfaces's sync/clock pins from
-> Codec(config them to GPIOs), then the whole system gets normal. Since
-> you have a plan for pm-link, I will use this way to keep the fix in
-> blackfin locally.
+> +
+> =A0config SND_OMAP_SOC_ZOOM2
+> =A0 =A0 =A0 =A0tristate "SoC Audio support for Zoom2"
+> =A0 =A0 =A0 =A0depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP_ZOOM2
+>
+> diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+> index 02d6947..7239737 100644
+> --- a/sound/soc/omap/Makefile
+> +++ b/sound/soc/omap/Makefile
+> @@ -15,6 +15,7 @@ snd-soc-omap3evm-objs :=3D omap3evm.o
+> =A0snd-soc-sdp3430-objs :=3D sdp3430.o
+> =A0snd-soc-omap3pandora-objs :=3D omap3pandora.o
+> =A0snd-soc-omap3beagle-objs :=3D omap3beagle.o
+> +snd-soc-omap3devkit8000-objs :=3D omap3devkit8000.o
+> =A0snd-soc-zoom2-objs :=3D zoom2.o
+>
+> =A0obj-$(CONFIG_SND_OMAP_SOC_N810) +=3D snd-soc-n810.o
+> @@ -26,4 +27,5 @@ obj-$(CONFIG_MACH_OMAP3EVM) +=3D snd-soc-omap3evm.o
+> =A0obj-$(CONFIG_SND_OMAP_SOC_SDP3430) +=3D snd-soc-sdp3430.o
+> =A0obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) +=3D snd-soc-omap3pandora.o
+> =A0obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) +=3D snd-soc-omap3beagle.o
+> +obj-$(CONFIG_SND_OMAP_SOC_OMAP3_DEVKIT8000) +=3D snd-soc-omap3devkit8000=
+.o
+> =A0obj-$(CONFIG_SND_OMAP_SOC_ZOOM2) +=3D snd-soc-zoom2.o
+>
+> diff --git a/sound/soc/omap/omap3devkit8000.c
+> b/sound/soc/omap/omap3devkit8000.c
+> new file mode 100644
+> index 0000000..6a975d4
+> --- /dev/null
+> +++ b/sound/soc/omap/omap3devkit8000.c
+> @@ -0,0 +1,154 @@
+> +/*
+> + * omap3devkit8000.c =A0-- =A0SoC audio for OMAP3 Beagle
+> + *
+> + * Author: Steve Sakoman <steve@sakoman.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * version 2 as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. =A0See the GNU
+> + * General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write to the Free Software
+> + * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+> + * 02110-1301 USA
+> + *
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/platform_device.h>
+> +#include <sound/core.h>
+> +#include <sound/pcm.h>
+> +#include <sound/soc.h>
+> +#include <sound/soc-dapm.h>
+> +
+> +#include <asm/mach-types.h>
+> +#include <plat/hardware.h>
+> +#include <plat/gpio.h>
+> +#include <plat/mcbsp.h>
+> +
+> +#include "omap-mcbsp.h"
+> +#include "omap-pcm.h"
+> +#include "../codecs/twl4030.h"
+> +
+> +static int omap3devkit8000_hw_params(struct snd_pcm_substream *substream,
+> + =A0 =A0 =A0 struct snd_pcm_hw_params *params)
+> +{
+> + =A0 =A0 =A0 struct snd_soc_pcm_runtime *rtd =3D substream->private_data;
+> + =A0 =A0 =A0 struct snd_soc_dai *codec_dai =3D rtd->dai->codec_dai;
+> + =A0 =A0 =A0 struct snd_soc_dai *cpu_dai =3D rtd->dai->cpu_dai;
+> + =A0 =A0 =A0 unsigned int fmt;
+> + =A0 =A0 =A0 int ret;
+> +
+> + =A0 =A0 =A0 switch (params_channels(params)) {
+> + =A0 =A0 =A0 case 2: /* Stereo I2S mode */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 fmt =3D =A0 SND_SOC_DAIFMT_I2S |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SOC_DAIFMT_NB_NF |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SOC_DAIFMT_CBM_CFM;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 case 4: /* Four channel TDM mode */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 fmt =3D =A0 SND_SOC_DAIFMT_DSP_A |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SOC_DAIFMT_IB_NF |
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SND_SOC_DAIFMT_CBM_CFM;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 default:
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 /* Set codec DAI configuration */
+> + =A0 =A0 =A0 ret =3D snd_soc_dai_set_fmt(codec_dai, fmt);
+> + =A0 =A0 =A0 if (ret < 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "can't set codec DAI config=
+uration\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 /* Set cpu DAI configuration */
+> + =A0 =A0 =A0 ret =3D snd_soc_dai_set_fmt(cpu_dai, fmt);
+> + =A0 =A0 =A0 if (ret < 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "can't set cpu DAI configur=
+ation\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 /* Set the codec system clock for DAC and ADC */
+> + =A0 =A0 =A0 ret =3D snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+SND_SOC_CLOCK_IN);
+> + =A0 =A0 =A0 if (ret < 0) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "can't set codec system clo=
+ck\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 return 0;
+> +}
+> +
+> +static struct snd_soc_ops omap3devkit8000_ops =3D {
+> + =A0 =A0 =A0 .hw_params =3D omap3devkit8000_hw_params,
+> +};
+> +
+> +/* Digital audio interface glue - connects codec <--> CPU */
+> +static struct snd_soc_dai_link omap3devkit8000_dai =3D {
+> + =A0 =A0 =A0 .name =3D "TWL4030",
+> + =A0 =A0 =A0 .stream_name =3D "TWL4030",
+> + =A0 =A0 =A0 .cpu_dai =3D &omap_mcbsp_dai[0],
+> + =A0 =A0 =A0 .codec_dai =3D &twl4030_dai[TWL4030_DAI_HIFI],
+> + =A0 =A0 =A0 .ops =3D &omap3devkit8000_ops,
+> +};
+> +
+> +/* Audio machine driver */
+> +static struct snd_soc_card snd_soc_omap3devkit8000 =3D {
+> + =A0 =A0 =A0 .name =3D "omap3devkit8000",
+> + =A0 =A0 =A0 .platform =3D &omap_soc_platform,
+> + =A0 =A0 =A0 .dai_link =3D &omap3devkit8000_dai,
+> + =A0 =A0 =A0 .num_links =3D 1,
+> +};
+> +
+> +/* Audio subsystem */
+> +static struct snd_soc_device omap3devkit8000_snd_devdata =3D {
+> + =A0 =A0 =A0 .card =3D &snd_soc_omap3devkit8000,
+> + =A0 =A0 =A0 .codec_dev =3D &soc_codec_dev_twl4030,
+> +};
+> +
+> +static struct platform_device *omap3devkit8000_snd_device;
+> +
+> +static int __init omap3devkit8000_soc_init(void)
+> +{
+> + =A0 =A0 =A0 int ret;
+> + =A0 =A0 =A0 pr_info("OMAP3 omap3devkit8000 SoC init\n");
+> +
+> + =A0 =A0 =A0 omap3devkit8000_snd_device =3D platform_device_alloc("soc-a=
+udio", -1);
+> + =A0 =A0 =A0 if (!omap3devkit8000_snd_device) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "Platform device allocation=
+ failed\n");
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENOMEM;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 platform_set_drvdata(omap3devkit8000_snd_device,
+> &omap3devkit8000_snd_devdata);
 
-Thinking about this further I think you need the GPIO fix anyway.  There
-will be some CODECs (I'm mostly thinking of fixed function ones with no
-software control) that won't stop generating clocks unless power is
-removed.
+ditto
+
+> + =A0 =A0 =A0 omap3devkit8000_snd_devdata.dev =3D &omap3devkit8000_snd_de=
+vice->dev;
+> + =A0 =A0 =A0 *(unsigned int *)omap3devkit8000_dai.cpu_dai->private_data =
+=3D 1; /* McBSP2
+> */
+
+ditto
+
+> +
+> + =A0 =A0 =A0 ret =3D platform_device_add(omap3devkit8000_snd_device);
+> + =A0 =A0 =A0 if (ret)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 goto err1;
+> +
+> + =A0 =A0 =A0 return 0;
+> +
+> +err1:
+> + =A0 =A0 =A0 printk(KERN_ERR "Unable to add platform device\n");
+> + =A0 =A0 =A0 platform_device_put(omap3devkit8000_snd_device);
+> +
+> + =A0 =A0 =A0 return ret;
+> +}
+> +
+> +static void __exit omap3devkit8000_soc_exit(void)
+> +{
+> + =A0 =A0 =A0 platform_device_unregister(omap3devkit8000_snd_device);
+> +}
+> +
+> +module_init(omap3devkit8000_soc_init);
+> +module_exit(omap3devkit8000_soc_exit);
+> +
+> +MODULE_AUTHOR("Steve Sakoman <steve@sakoman.com>");
+> +MODULE_DESCRIPTION("ALSA SoC OMAP3 DEVKIT8000");
+> +MODULE_LICENSE("GPL");
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
