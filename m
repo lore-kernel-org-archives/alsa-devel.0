@@ -1,27 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/6] ASoC/mpc5200: get rid of the appl_ptr
- tracking nonsense
-Date: Thu, 12 Nov 2009 12:10:34 +0000
-Message-ID: <20091112121034.GA16661@rakim.wolfsonmicro.main>
-References: <20091107083358.18908.10635.stgit@angua>
-	<9e4733910911070451y28073dbeke6ced6246f5a5c24@mail.gmail.com>
-	<fa686aa40911071051y3cf63e55ibe7fbc65c30bd15e@mail.gmail.com>
-	<20091107201233.GC31789@sirena.org.uk>
-	<9e4733910911110838w6010cf3atcfcd30c85f0764a1@mail.gmail.com>
-	<20091111183753.GA31815@rakim.wolfsonmicro.main>
-	<fa686aa40911111124i12b72196xdba7000b13b3bdc@mail.gmail.com>
-	<9e4733910911111334o24f3114as6baaef82d7b17a05@mail.gmail.com>
-	<fa686aa40911111357q22f57728va1b4bc8b5bc0425f@mail.gmail.com>
-	<9e4733910911111513w5423333cp6cf08ceec9a94ac3@mail.gmail.com>
+From: Mads Kiilerich <mads@kiilerich.com>
+Subject: Re: handling of underrunning snd_pcm_writei
+Date: Thu, 12 Nov 2009 13:10:33 +0100
+Message-ID: <4AFBFB39.8050500@kiilerich.com>
+References: <4AFAEB44.60104@kiilerich.com> <s5hiqdgdxns.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DBA931037E3
-	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 13:10:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <9e4733910911111513w5423333cp6cf08ceec9a94ac3@mail.gmail.com>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C85C10395F
+	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 13:10:38 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 3so567098eyh.16
+	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 04:10:37 -0800 (PST)
+In-Reply-To: <s5hiqdgdxns.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,39 +22,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: Grant Likely <grant.likely@secretlab.ca>, John Bonesio <bones@secretlab.ca>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 11, 2009 at 06:13:25PM -0500, Jon Smirl wrote:
+On 11/12/2009 08:12 AM, Takashi Iwai wrote:
+> Yes, snd_pcm_recover() is *recommended*.  You can write the recovery
+> routine by yourself.  The function isn't referred here just because
+> it's relatively new.  Better to be documented, indeed.
 
-> I don't think it is that much more work for ALSA to provide an
-> accessible field indicating the end of valid data. It's already
-> tracking appl_ptr. Appl_ptr just needs to be translated into a
-> physical DMA buffer address and we've been making mistakes doing that
-> translation.
+Thanks a lot for you answer, Takashi. That was very helpful.
 
-I'm sure if you provide reasonable patches they'll get applied; it
-doesn't seem likely that anyone else will work on this.
+But when I hack pcm_min.c to log the state at the beginning of the loop 
+and then enforces an underrun by pausing the program then it sometimes 
+locks up:
 
-> On Wed, Nov 11, 2009 at 4:57 PM, Grant Likely <grant.likely@secretlab.ca> wrote
+$ ./pcm_min
+state 2 SND_PCM_STATE_PREPARED
+state 2 SND_PCM_STATE_PREPARED
+Short write (expected 16384, wrote 7616)
+state 3 SND_PCM_STATE_RUNNING
+state 3 SND_PCM_STATE_RUNNING
+state 3 SND_PCM_STATE_RUNNING
+state 3 SND_PCM_STATE_RUNNING
+[ctrl-s ... waiting for silence ... ctrl q]
+ALSA lib pcm.c:7234:(snd_pcm_recover) underrun occured
+state 2 SND_PCM_STATE_PREPARED
+state 2 SND_PCM_STATE_PREPARED
+state 3 SND_PCM_STATE_RUNNING
+[hanging in snd_pcm_writei]
 
-> > But it still wouldn't help a bit when the same latency occurs in the
-> > middle of playback.
+It seems like pcm_min.cs use of snd_pcm_recover isn't enough to recover 
+fully? The playback never gets started again, so the async writes in 
+PREPARED succeeds, but the first blocking write hangs waiting forever? 
+What is missing?
 
-> The deterministic solution of tracking the end of valid data ensures
-> that under run will be silent instead of playing invalid data.
+It also surprises me that the last PREPARED write isn't a short write. 
+Why is that?
 
-In the middle of playback a sudden silence period is very noticable -
-applications that expect data loss generally have some means to try to
-cover it up since sudden silence is so noticable to the human ear.  Mid
-playback there's a bit more chance that random data from earlier in the
-playback will be acceptable, and if the application has actually updated
-the data but not got round to telling the driver about that yet then
-even better.
-
-I think you're getting too focused on the fact that there is a race
-condition here since the consequences of race conditions are usually so
-severe.  There's always going to be some hardware for which there's a
-degree of racyness (free running hardware has its own set of issues
-here) so the system design takes this into account.
+Regards,
+Mads
