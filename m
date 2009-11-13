@@ -1,20 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Barry Song <21cnbao@gmail.com>
 Subject: Re: [PATCH] soc-core: let suspend/resume not called if
- the card is not instantiated
-Date: Fri, 13 Nov 2009 15:02:24 +0000
-Message-ID: <20091113150224.GA23607@rakim.wolfsonmicro.main>
+	the card is not instantiated
+Date: Fri, 13 Nov 2009 23:29:39 +0800
+Message-ID: <3c17e3570911130729xab6a443t5b257c2699dfa169@mail.gmail.com>
 References: <1258087878-18679-1-git-send-email-21cnbao@gmail.com>
 	<20091113133824.GD21516@rakim.wolfsonmicro.main>
 	<3c17e3570911130656v662dccej7d6c67e7eaa65b65@mail.gmail.com>
+	<20091113150224.GA23607@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 82B1624362
-	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2009 16:02:25 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <3c17e3570911130656v662dccej7d6c67e7eaa65b65@mail.gmail.com>
+Received: from mail-gx0-f210.google.com (mail-gx0-f210.google.com
+	[209.85.217.210])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A6B024394
+	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2009 16:38:18 +0100 (CET)
+Received: by gxk2 with SMTP id 2so3107765gxk.4
+	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2009 07:38:17 -0800 (PST)
+In-Reply-To: <20091113150224.GA23607@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +27,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 13, 2009 at 10:56:13PM +0800, Barry Song wrote:
-
-> This patch is to solve a completely different problem with the last
-> one I sent. Its meaning is very simple actually.  While
-
-No, I get that it's fixing a different problem but it's in a similar
-areas and similar issues apply.  Like I say, tweaking the ordering of
-suspend and resume will actually fix the TDM problem anyway.
-
-> card->instantiated is not 1, it means the card(cpu dai/codec dai and
-> related stuff) and the whole links are not built successfully at all.
-> So devices are not even initialized at all. And the audio system
-> doesn't start to work. Since so, suspend/resume should be not needed
-> for the whole system.
-
-That's not the case unfortunately - some or all of the devices may have
-initialised themselves prior to registering with the SoC core and will
-be expecting the SoC core to give them a callback so that they can
-suspend and resume.  At the minute there's basically an assumption that
-the card is going to come up completely and all we're doing here is
-avoiding race conditions during startup (which is realistic for
-production systems, partially constructed cards aren't likely there
-without broken hardware).
-
-With pm_link we'll be able to move some or all of this ordering stuff
-out of the ASoC core and into the device model which will allow things
-to happen either way without two code paths.
+T24gRnJpLCBOb3YgMTMsIDIwMDkgYXQgMTE6MDIgUE0sIE1hcmsgQnJvd24KPGJyb29uaWVAb3Bl
+bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBGcmksIE5vdiAxMywgMjAwOSBh
+dCAxMDo1NjoxM1BNICswODAwLCBCYXJyeSBTb25nIHdyb3RlOgo+Cj4+IFRoaXMgcGF0Y2ggaXMg
+dG8gc29sdmUgYSBjb21wbGV0ZWx5IGRpZmZlcmVudCBwcm9ibGVtIHdpdGggdGhlIGxhc3QKPj4g
+b25lIEkgc2VudC4gSXRzIG1lYW5pbmcgaXMgdmVyeSBzaW1wbGUgYWN0dWFsbHkuIMKgV2hpbGUK
+Pgo+IE5vLCBJIGdldCB0aGF0IGl0J3MgZml4aW5nIGEgZGlmZmVyZW50IHByb2JsZW0gYnV0IGl0
+J3MgaW4gYSBzaW1pbGFyCj4gYXJlYXMgYW5kIHNpbWlsYXIgaXNzdWVzIGFwcGx5LiDCoExpa2Ug
+SSBzYXksIHR3ZWFraW5nIHRoZSBvcmRlcmluZyBvZgo+IHN1c3BlbmQgYW5kIHJlc3VtZSB3aWxs
+IGFjdHVhbGx5IGZpeCB0aGUgVERNIHByb2JsZW0gYW55d2F5Lgo+Cj4+IGNhcmQtPmluc3RhbnRp
+YXRlZCBpcyBub3QgMSwgaXQgbWVhbnMgdGhlIGNhcmQoY3B1IGRhaS9jb2RlYyBkYWkgYW5kCj4+
+IHJlbGF0ZWQgc3R1ZmYpIGFuZCB0aGUgd2hvbGUgbGlua3MgYXJlIG5vdCBidWlsdCBzdWNjZXNz
+ZnVsbHkgYXQgYWxsLgo+PiBTbyBkZXZpY2VzIGFyZSBub3QgZXZlbiBpbml0aWFsaXplZCBhdCBh
+bGwuIEFuZCB0aGUgYXVkaW8gc3lzdGVtCj4+IGRvZXNuJ3Qgc3RhcnQgdG8gd29yay4gU2luY2Ug
+c28sIHN1c3BlbmQvcmVzdW1lIHNob3VsZCBiZSBub3QgbmVlZGVkCj4+IGZvciB0aGUgd2hvbGUg
+c3lzdGVtLgo+Cj4gVGhhdCdzIG5vdCB0aGUgY2FzZSB1bmZvcnR1bmF0ZWx5IC0gc29tZSBvciBh
+bGwgb2YgdGhlIGRldmljZXMgbWF5IGhhdmUKPiBpbml0aWFsaXNlZCB0aGVtc2VsdmVzIHByaW9y
+IHRvIHJlZ2lzdGVyaW5nIHdpdGggdGhlIFNvQyBjb3JlIGFuZCB3aWxsCj4gYmUgZXhwZWN0aW5n
+IHRoZSBTb0MgY29yZSB0byBnaXZlIHRoZW0gYSBjYWxsYmFjayBzbyB0aGF0IHRoZXkgY2FuCj4g
+c3VzcGVuZCBhbmQgcmVzdW1lLiDCoEF0IHRoZSBtaW51dGUgdGhlcmUncyBiYXNpY2FsbHkgYW4g
+YXNzdW1wdGlvbiB0aGF0Cj4gdGhlIGNhcmQgaXMgZ29pbmcgdG8gY29tZSB1cCBjb21wbGV0ZWx5
+IGFuZCBhbGwgd2UncmUgZG9pbmcgaGVyZSBpcwo+IGF2b2lkaW5nIHJhY2UgY29uZGl0aW9ucyBk
+dXJpbmcgc3RhcnR1cCAod2hpY2ggaXMgcmVhbGlzdGljIGZvcgo+IHByb2R1Y3Rpb24gc3lzdGVt
+cywgcGFydGlhbGx5IGNvbnN0cnVjdGVkIGNhcmRzIGFyZW4ndCBsaWtlbHkgdGhlcmUKPiB3aXRo
+b3V0IGJyb2tlbiBoYXJkd2FyZSkuClRoZSBsb2dpYyBzZWVtcyBkaWZmZXJlbnQ6IGluIHNuZF9z
+b2NfaW5zdGFudGlhdGVfY2FyZCgpLCBvbmx5IHdoaWxlCmFsbCBjcHUgREFJcyBhbmQgY29kZWMg
+REFJcyBhcmUgZm91bmQgYW5kIHJlZ2lzdGVyZWQgaW4gdGhlIHN5c3RlbQpleGNlcHQgYWM5Nywg
+dGhlaXIgcHJvYmVzIHdpbGwgYmUgY2FsbGVkLiBUaGVuIGNhcmQtPmluc3RhbnRpYXRlZApiZWNv
+bWVzIDEuCkEgY2FzZSBjdXJyZW50IGNvZGVzIHdpbGwgY2F1c2UgY3Jhc2ggaXM6CkZvciBhIENQ
+VSBEQUkgZHJpdmVyIGJhc2VkIG9uIHBsYXRmb3JtIGRyaXZlciwgaWYgYXJjaCBoYXNuJ3QgZGVm
+aW5lZAp0aGUgcGxhdGZvcm0gZGV2aWNlIGZvciBjcHUgZGFpLCB0aGVuIGNwdSBkYWkgaXMgbm90
+IHJlZ2lzdGVyZWQgYW5kCmluaXRpYWxpemVkIGluIHRoZSBwcm9iZSgpIG9mIGl0cyBwbGF0Zm9y
+bSBkcml2ZXIuIEV2ZW4gdGhvdWdoIGl0cwppbnN0YW5jZSBpcyBpbiBjYXJkLT5kYWlfbGluaywg
+aXQgZG9lc24ndCByZWFsbHkgZW50ZXIgdGhlIHN5c3RlbS4gQnV0CndoaWxlIHN1c3BlbmQvcmVz
+dW1lLCBpdHMgZW50cmllcyB3aWxsIGJlIGNhbGxlZCB0b28gc2luY2UgdGhlIGNhbGwKZG9lc24n
+dCBjaGVjayB0aGUgZXhpc3RlbmNlOgpzdGF0aWMgaW50IHNvY19zdXNwZW5kKHN0cnVjdCBkZXZp
+Y2UgKmRldikKewoJLi4uCglmb3IgKGkgPSAwOyBpIDwgY2FyZC0+bnVtX2xpbmtzOyBpKyspIHsK
+CQlzdHJ1Y3Qgc25kX3NvY19kYWkgICpjcHVfZGFpID0gY2FyZC0+ZGFpX2xpbmtbaV0uY3B1X2Rh
+aTsgIC8qIG5vdApyZWdpc3RlcmVkIGJ1dCBpbiB0aGUgbGluayEhISAqLwoJCWlmIChjcHVfZGFp
+LT5zdXNwZW5kICYmICFjcHVfZGFpLT5hYzk3X2NvbnRyb2wpCgkJCWNwdV9kYWktPnN1c3BlbmQo
+Y3B1X2RhaSk7ICAgICAvKiBub3QgaW5pdGlhbGl6ZWQgYnV0IGJlIHN1c3BlbmRlZD8/PyAqLwoJ
+CWlmIChwbGF0Zm9ybS0+c3VzcGVuZCkKCQkJcGxhdGZvcm0tPnN1c3BlbmQoY3B1X2RhaSk7Cgl9
+CiAgICAgICAuLi4KfQpJdCBjYW4gZWFzaWx5IG1ha2Ugc3lzdGVtIGNyYXNoLiBTYW1lIGNhc2Ug
+Zm9yIGEgbm90LXJlZ2lzdGVyZWQgY29kZXMgdG9vLgpJIHRoaW5rIHN1c3BlbmQvcmVzdW1lIG9m
+IGEgREFJIGNhbiBvbmx5IGJlIGNhbGxlZCB3aGlsZSBpdCByZWFsbHkKZXhpc3RzIGFuZCBjYW4g
+YmUgZm91bmQgaW4gdGhlIGRhaV9saXN0LCBhdCBsZWFzdC4KU28gSSBhZGQgYSBvdmVyYWxsIGNv
+bmRpdGlvbiBmb3Igc29jX3N1c3BlbmQvcmVzdW1lIGp1c3QgbGlrZQoJaWYgKCFjYXJkLT5pbnN0
+YW50aWF0ZWQpCgkJcmV0dXJuIDAKaGFzIGJlIGRvbmUgaW4gc29jX3JlbW92ZSgpLCAgc29jX3Bv
+d2Vyb2ZmKCkuCgo+Cj4gV2l0aCBwbV9saW5rIHdlJ2xsIGJlIGFibGUgdG8gbW92ZSBzb21lIG9y
+IGFsbCBvZiB0aGlzIG9yZGVyaW5nIHN0dWZmCj4gb3V0IG9mIHRoZSBBU29DIGNvcmUgYW5kIGlu
+dG8gdGhlIGRldmljZSBtb2RlbCB3aGljaCB3aWxsIGFsbG93IHRoaW5ncwo+IHRvIGhhcHBlbiBl
+aXRoZXIgd2F5IHdpdGhvdXQgdHdvIGNvZGUgcGF0aHMuCj4KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
