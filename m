@@ -1,90 +1,85 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH] ice1712: Use bitrev8
-Date: Fri, 13 Nov 2009 16:02:56 +0900
-Message-ID: <1258095776-13259-1-git-send-email-akinobu.mita@gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure fix
+Date: Sat, 14 Nov 2009 10:20:24 +0200
+Message-ID: <20091114102024.b5c302bb.jhnikula@gmail.com>
+References: <1258133987-20488-1-git-send-email-jwang@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
-	[209.85.210.196])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C211245BB
-	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2009 08:03:38 +0100 (CET)
-Received: by yxe34 with SMTP id 34so2712657yxe.16
-	for <alsa-devel@alsa-project.org>; Thu, 12 Nov 2009 23:03:37 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Akinobu Mita <akinobu.mita@gmail.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1258133987-20488-1-git-send-email-jwang@ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jane Wang <jwang@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, peter.ujfalusi@nokia.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
----
- sound/i2c/cs8427.c |   15 ++-------------
- sound/pci/Kconfig  |    1 +
- 2 files changed, 3 insertions(+), 13 deletions(-)
+Hi
 
-diff --git a/sound/i2c/cs8427.c b/sound/i2c/cs8427.c
-index 020a5d5..04ae870 100644
---- a/sound/i2c/cs8427.c
-+++ b/sound/i2c/cs8427.c
-@@ -23,6 +23,7 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/init.h>
-+#include <linux/bitrev.h>
- #include <asm/unaligned.h>
- #include <sound/core.h>
- #include <sound/control.h>
-@@ -55,18 +56,6 @@ struct cs8427 {
- 	struct cs8427_stream capture;
- };
- 
--static unsigned char swapbits(unsigned char val)
--{
--	int bit;
--	unsigned char res = 0;
--	for (bit = 0; bit < 8; bit++) {
--		res <<= 1;
--		res |= val & 1;
--		val >>= 1;
--	}
--	return res;
--}
--
- int snd_cs8427_reg_write(struct snd_i2c_device *device, unsigned char reg,
- 			 unsigned char val)
- {
-@@ -149,7 +138,7 @@ static int snd_cs8427_send_corudata(struct snd_i2c_device *device,
- 	}
- 	data[0] = CS8427_REG_AUTOINC | CS8427_REG_CORU_DATABUF;
- 	for (idx = 0; idx < count; idx++)
--		data[idx + 1] = swapbits(ndata[idx]);
-+		data[idx + 1] = bitrev8(ndata[idx]);
- 	if (snd_i2c_sendbytes(device, data, count + 1) != count + 1)
- 		return -EIO;
- 	return 1;
-diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 75c602b..351654c 100644
---- a/sound/pci/Kconfig
-+++ b/sound/pci/Kconfig
-@@ -570,6 +570,7 @@ config SND_ICE1712
- 	tristate "ICEnsemble ICE1712 (Envy24)"
- 	select SND_MPU401_UART
- 	select SND_AC97_CODEC
-+	select BITREVERSE
- 	help
- 	  Say Y here to include support for soundcards based on the
- 	  ICE1712 (Envy24) chip.
+On Fri, 13 Nov 2009 11:39:47 -0600
+Jane Wang <jwang@ti.com> wrote:
+
+> McBSP fucntional clock is not disabled when suspend is triggerd which
+> prevents PER domain entering target low-power state. To fix the problem:
+> 
+> 1. Disable/enable McBSP functional clock for suspend/resume.
+> 
+> 2. In addition, reconfigure McBSP, this is needed when systerm comes out of OFF state.
+> 
+...
+> --- a/arch/arm/plat-omap/include/mach/mcbsp.h
+> +++ b/arch/arm/plat-omap/include/mach/mcbsp.h
+> @@ -440,6 +440,8 @@ static inline int omap_mcbsp_get_dma_op_mode(unsigned int id) { return 0; }
+>  #endif
+>  int omap_mcbsp_request(unsigned int id);
+>  void omap_mcbsp_free(unsigned int id);
+> +void omap_mcbsp_disable_fclk(unsigned int id);
+> +void omap_mcbsp_enable_fclk(unsigned int id);
+...
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -229,18 +229,28 @@ static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+>  
+>  	switch (cmd) {
+>  	case SNDRV_PCM_TRIGGER_START:
+> -	case SNDRV_PCM_TRIGGER_RESUME:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>  		mcbsp_data->active++;
+>  		omap_mcbsp_start(mcbsp_data->bus_id, play, !play);
+>  		break;
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +		mcbsp_data->active++;
+> +		omap_mcbsp_enable_fclk(mcbsp_data->bus_id);
+> +		omap_mcbsp_config(mcbsp_data->bus_id,
+> +					&mcbsp_data->regs);
+> +		omap_mcbsp_start(mcbsp_data->bus_id, play, !play);
+> +		break;
+>  
+For me this looks more like a simple workaround for the audio case than
+comprehensive implementation to McBSP OFF mode context save/restore. My
+thoughts:
+
+1. McBSP clock management partially moved out of low-level driver
+2. McBSP client must do the context restore
+
+I do know that arch/arm/plat-omap/mcbsp.c enables the clocks in
+omap_mcbsp_request, I don't know do some API or feature there really
+require clocks (or McBSP itself) to be active just after the request
+time but I would look that path instead (even it is more complicated).
+
+If no API or feature would require active McBSP block before the
+omap_mcbsp_start call, then the clock management could be done inside
+the omap_mcbsp_start/-stop functions.
+
+Also context save/restore operations belongs more to PM callbacks
+of .../plat-omap/mcbsp.c. Or probably that can be done also dynamically
+inside the omap_mcbsp_start/-stop for keeping the whole McBSP shutdown
+whenever it is idle.
+
+I think it's worth to look McBSP register cache concept [1] from Janusz
+Krzysztofik would it help all of this context save/restore operations.
+
+
 -- 
-1.6.5.1
+Jarkko
+
+1. http://www.spinics.net/lists/linux-omap/msg16720.html
