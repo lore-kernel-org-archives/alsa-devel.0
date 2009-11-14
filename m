@@ -1,20 +1,20 @@
-From: jassi brar <jassisinghbrar@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Revised Patches for Samsung SoC PCM Controller
 	driver
-Date: Sat, 14 Nov 2009 21:21:37 +0900
-Message-ID: <1b68c6790911140421l1950a02fy8faeff898d2a7f00@mail.gmail.com>
+Date: Sat, 14 Nov 2009 12:35:50 +0000
+Message-ID: <CDC939BA-3F2C-46AE-AFC6-3CB38801D42E@opensource.wolfsonmicro.com>
 References: <1257914690-4357-1-git-send-email-jassi.brar@samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	<1b68c6790911140421l1950a02fy8faeff898d2a7f00@mail.gmail.com>
+	(sfid-20091114_122144_500187_FE3997C9)
+Mime-Version: 1.0 (iPhone Mail 7D11)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 643C72435A
-	for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2009 13:21:39 +0100 (CET)
-Received: by pxi9 with SMTP id 9so1673913pxi.16
-	for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2009 04:21:38 -0800 (PST)
-In-Reply-To: <1257914690-4357-1-git-send-email-jassi.brar@samsung.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D7AD424379
+	for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2009 13:35:42 +0100 (CET)
+In-Reply-To: <1b68c6790911140421l1950a02fy8faeff898d2a7f00@mail.gmail.com>
+	(sfid-20091114_122144_500187_FE3997C9)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "ben-linux@fluff.org" <ben-linux@fluff.org>, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-QXQgdGhlIHJpc2sgb2YgYmVpbmcgdGFrZW4gYXMgaW1wYXRpZW50LCBpIHdvdWxkIGxpa2UgdG8g
-YnJpbmcgdXAgdGhpcwpwYXRjaCBzZXJpZXMKdG8gdGhlIG5vdGljZSBvZiBldmVyeW9uZS4gVGhh
-bmtzLgoKT24gV2VkLCBOb3YgMTEsIDIwMDkgYXQgMTo0NCBQTSwgSmFzc2kgQnJhciA8amFzc2ku
-YnJhckBzYW1zdW5nLmNvbT4gd3JvdGU6Cj4gSGVsbG8sCj4KPiDCoChJIGhhdmUgbWFkZSBhIGZl
-dyBtb2RpZmljYXRpb25zIHN1Z2dlc3RlZCBmb3IgcHJldmlvdXMgc2V0IG9mIHBhdGNoZXMpCj4K
-PiBTYW1zdW5nIFNvQ3MgUzNDMjQ1MCwgUzNDNjRYWCBhbmQgbGF0ZXIgdmVyc2lvbnMgaGF2ZSBn
-b3QgUENNIGNvbnRyb2xsZXJzCj4gd2hpY2ggZHJpdmUgd2hhdCB0aGUgQUxTQSBzdGFjayB0ZXJt
-cyBEU1BfQS9EU1BfQiBmb3JtYXRzLgo+Cj4gU2luY2UgdGhlIFMzQyBBTFNBIHBsYXRmb3JtIGRy
-aXZlciB3YXMgbmFtZWQgczNjMjR4eC1wY20sIHdoaWNoIGNhdXNlCj4gZGlyZWN0IG5hbWVzcGFj
-ZSBjbGFzaCB3aXRoIHRoZSBuZXcgUENNIGNvbnRyb2xsZXIgZHJpdmVycywgaXQgaGFzIGJlZW4K
-PiByZW5hbWVkIGFsb25nIHdpdGggc29tZSBvZiBpdHMgbG9jYWwgc3ltYm9scy4KPgo+IEZpcnN0
-IHR3byBvZiB0aGUgZm9sbG93aW5nIHNlcmllcyBvZiBwYXRjaGVzIGRvZXMgdGhhdCBhbmQgbGF0
-ZXIgb25lcwo+IG1ha2UgZ3JvdW5kIGZvciBhbmQgYWRkIHRoZSBQQ00gY29udHJvbGxlciBkcml2
-ZXIuCj4KPiByZWdhcmRzLgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+On 14 Nov 2009, at 12:21, jassi brar <jassisinghbrar@gmail.com> wrote:
+
+> At the risk of being taken as impatient, i would like to bring up this
+> patch series
+> to the notice of everyone. Thanks.
+
+Please don't top post. In general if you're nagging people it's best  
+to leave at least a week or two unless you have reason to expect a  
+faster response or things are particulalrly urgent (critical bug fixes  
+for example).
+
+As I have already said this is fine from an ASoC point of view but  
+since it also has arch/arm parts it also needs Ben to review it. Since  
+Ben does most this work in his spare time you're probably best making  
+sure there's been at least one weekend free for him.
+
+> On Wed, Nov 11, 2009 at 1:44 PM, Jassi Brar <jassi.brar@samsung.com>  
+> wrote:
+>> Hello,
+>>
+>>  (I have made a few modifications suggested for previous set of  
+>> patches)
+>>
+>> Samsung SoCs S3C2450, S3C64XX and later versions have got PCM  
+>> controllers
+>> which drive what the ALSA stack terms DSP_A/DSP_B formats.
+>>
+>> Since the S3C ALSA platform driver was named s3c24xx-pcm, which cause
+>> direct namespace clash with the new PCM controller drivers, it has  
+>> been
+>> renamed along with some of its local symbols.
+>>
+>> First two of the following series of patches does that and later ones
+>> make ground for and add the PCM controller driver.
+>>
+>> regards.
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
