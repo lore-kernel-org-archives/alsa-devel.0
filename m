@@ -1,59 +1,70 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure fix
-Date: Fri, 13 Nov 2009 18:10:33 +0000
-Message-ID: <CCAAF334-EA45-4C37-9EAB-CD3494B7EC34@opensource.wolfsonmicro.com>
-References: <1258133987-20488-1-git-send-email-jwang@ti.com> (sfid-20091113_173850_761073_9598FCAB) <171D41FE-0C40-4921-97FF-B8DE2D360C9A@opensource.wolfsonmicro.com> <13B9B4C6EF24D648824FF11BE8967162039B9BAA0F@dlee02.ent.ti.com> (sfid-20091113_175312_309321_139F5501)
-Mime-Version: 1.0 (iPhone Mail 7D11)
-Content-Type: text/plain;
-	charset=us-ascii;
-	format=flowed;
-	delsp=yes
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <13B9B4C6EF24D648824FF11BE8967162039B9BAA0F@dlee02.ent.ti.com> (sfid-20091113_175312_309321_139F5501)
-Sender: linux-omap-owner@vger.kernel.org
-To: "Wang, Jane" <jwang@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "peter.ujfalusi@nokia.com" <peter.ujfalusi@nokia.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [PATCH] soc-core: let suspend/resume not called if
+	the card is not instantiated
+Date: Sat, 14 Nov 2009 08:46:05 +0800
+Message-ID: <3c17e3570911131646h62cf59c2q765a5aca6f626ad4@mail.gmail.com>
+References: <1258087878-18679-1-git-send-email-21cnbao@gmail.com>
+	<20091113133824.GD21516@rakim.wolfsonmicro.main>
+	<3c17e3570911130656v662dccej7d6c67e7eaa65b65@mail.gmail.com>
+	<20091113150224.GA23607@rakim.wolfsonmicro.main>
+	<3c17e3570911130729xab6a443t5b257c2699dfa169@mail.gmail.com>
+	<20091113170459.GB23607@rakim.wolfsonmicro.main>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1E14C1037EE
+	for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2009 01:46:26 +0100 (CET)
+Received: by yxe34 with SMTP id 34so3443841yxe.16
+	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2009 16:46:25 -0800 (PST)
+In-Reply-To: <20091113170459.GB23607@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 13 Nov 2009, at 17:52, "Wang, Jane" <jwang@ti.com> wrote:
-
->
->
->> -----Original Message-----
->> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel- 
->> bounces@alsa-
->> project.org] On Behalf Of Mark Brown
->> Sent: Friday, November 13, 2009 11:49 AM
->> To: Wang, Jane
->> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org;
->> peter.ujfalusi@nokia.com; Wang, Jane
->> Subject: Re: [alsa-devel] [PATCH 1/2] OMAP3: MCBSP: Suspend/resume  
->> failure
->> fix
->>
->> On 13 Nov 2009, at 17:39, Jane Wang <jwang@ti.com> wrote:
->>
->>> McBSP fucntional clock is not disabled when suspend is triggerd  
->>> which
->>> prevents PER domain entering target low-power state. To fix the
->>> problem:
->>>
->>> 1. Disable/enable McBSP functional clock for suspend/resume.
->>>
->>> 2. In addition, reconfigure McBSP, this is needed when systerm comes
->>> out of OFF state.
->>>
->>
->> There is no need to resend your patches this iften - please allow at
->> least a week or so for review. You only need to repost if addressing
->> comments or it looks like the patch got missed.
->>
->
-> Sorry for sending this again. Something is not set correctly with my
-> git send-email. The email did not reach the mailing lists, it only  
-> reached
-> people in cc.
-
-No, your posts are making it through to the lists just fine. Note that  
-alsa-devel is moderated for non-subscribers
+T24gU2F0LCBOb3YgMTQsIDIwMDkgYXQgMTowNCBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIEZyaSwgTm92IDEzLCAyMDA5IGF0
+IDExOjI5OjM5UE0gKzA4MDAsIEJhcnJ5IFNvbmcgd3JvdGU6Cj4KPj4gVGhlIGxvZ2ljIHNlZW1z
+IGRpZmZlcmVudDogaW4gc25kX3NvY19pbnN0YW50aWF0ZV9jYXJkKCksIG9ubHkgd2hpbGUKPj4g
+YWxsIGNwdSBEQUlzIGFuZCBjb2RlYyBEQUlzIGFyZSBmb3VuZCBhbmQgcmVnaXN0ZXJlZCBpbiB0
+aGUgc3lzdGVtCj4+IGV4Y2VwdCBhYzk3LCB0aGVpciBwcm9iZXMgd2lsbCBiZSBjYWxsZWQuIFRo
+ZW4gY2FyZC0+aW5zdGFudGlhdGVkCj4+IGJlY29tZXMgMS4KPj4gQSBjYXNlIGN1cnJlbnQgY29k
+ZXMgd2lsbCBjYXVzZSBjcmFzaCBpczoKPj4gRm9yIGEgQ1BVIERBSSBkcml2ZXIgYmFzZWQgb24g
+cGxhdGZvcm0gZHJpdmVyLCBpZiBhcmNoIGhhc24ndCBkZWZpbmVkCj4+IHRoZSBwbGF0Zm9ybSBk
+ZXZpY2UgZm9yIGNwdSBkYWksIHRoZW4gY3B1IGRhaSBpcyBub3QgcmVnaXN0ZXJlZCBhbmQKPj4g
+aW5pdGlhbGl6ZWQgaW4gdGhlIHByb2JlKCkgb2YgaXRzIHBsYXRmb3JtIGRyaXZlci4gRXZlbiB0
+aG91Z2ggaXRzCj4+IGluc3RhbmNlIGlzIGluIGNhcmQtPmRhaV9saW5rLCBpdCBkb2Vzbid0IHJl
+YWxseSBlbnRlciB0aGUgc3lzdGVtLiBCdXQKPj4gd2hpbGUgc3VzcGVuZC9yZXN1bWUsIGl0cyBl
+bnRyaWVzIHdpbGwgYmUgY2FsbGVkIHRvbyBzaW5jZSB0aGUgY2FsbAo+PiBkb2Vzbid0IGNoZWNr
+IHRoZSBleGlzdGVuY2U6Cj4KPiBZZXMsIHRoYXQgY2FuIGdvIHdyb25nIC0gYnV0IGFzIEkgc2F5
+IHRoZSBjb252ZXJzZSB0aGluZyBjYW4gYWxzbyBnbwo+IHdyb25nIHdoZXJlIHNvbWUgYnV0IG5v
+dCBhbGwgb2YgdGhlIGNhcmQgaGFzIG1hbmFnZWQgdG8gcmVnaXN0ZXIgYW5kIHRoZQo+IGJpdHMg
+dGhhdCBoYXZlIG1hbmFnZWQgdG8gcmVnaXN0ZXIgZXhwZWN0IHRvIGJlIHN1c3BlbmRlZCBieSB0
+aGUgY29yZS4KPgo+PiBJIHRoaW5rIHN1c3BlbmQvcmVzdW1lIG9mIGEgREFJIGNhbiBvbmx5IGJl
+IGNhbGxlZCB3aGlsZSBpdCByZWFsbHkKPj4gZXhpc3RzIGFuZCBjYW4gYmUgZm91bmQgaW4gdGhl
+IGRhaV9saXN0LCBhdCBsZWFzdC4KPgo+IENoZWNraW5nIHRvIHNlZSBpZiB0aGUgZGV2aWNlIGlz
+IGluIHRoZSBEQUkgcmVsZXZhbnQgbGlzdCB3b3VsZCB3b3JrCj4gYnV0Li4uCj4KPj4gU28gSSBh
+ZGQgYSBvdmVyYWxsIGNvbmRpdGlvbiBmb3Igc29jX3N1c3BlbmQvcmVzdW1lIGp1c3QgbGlrZQo+
+PiDCoCDCoCDCoCBpZiAoIWNhcmQtPmluc3RhbnRpYXRlZCkKPj4gwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgcmV0dXJuIDAKPj4gaGFzIGJlIGRvbmUgaW4gc29jX3JlbW92ZSgpLCDCoHNvY19wb3dlcm9m
+ZigpLgo+Cj4gLi4udGhpcyBpcyB0b28gYnJvYWQuClRoZW4gZG8geW91IHRoaW5rIGl0IGlzIHdv
+cmthYmxlIHRvIGZpbmQgdGhlIGRhaSBpbiBkYWlfbGlzdCBiZWZvcmUKY2FsbGluZyBpdHMgc3Vz
+cGVuZC9yZXN1bWU/IE15IG9yaWdpbmFsIHBsYW4gd2FzIGNoZWNraW5nIHRoZQpleGlzdGVuY2Ug
+b2YgREFJIGluIGRhaV9saXN0LCBpZiBEQUkgZG9lc24ndCBleGlzdCwgZG9uJ3QgY2FsbCBpdHMg
+UE0KZW50cmllcy4gIFRoZW4gSSBmb3VuZCBjYXJkLT5pbnN0YW50aWF0ZWQsIEkgbW92ZWQgdG8g
+Y2hlY2sgaXQuCklmIHlvdSBoYXZlIGJldHRlciBwbGFuIGZvciBmaXhpbmcgdGhpcyBwcm9ibGVt
+LCBJIGNhbiB3YWl0IGFuZCBrZWVwCnRoaXMgZml4IGxvY2FsbHkuCgo+Cl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
