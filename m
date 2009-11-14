@@ -1,70 +1,361 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [PATCH] soc-core: let suspend/resume not called if
-	the card is not instantiated
-Date: Sat, 14 Nov 2009 08:46:05 +0800
-Message-ID: <3c17e3570911131646h62cf59c2q765a5aca6f626ad4@mail.gmail.com>
-References: <1258087878-18679-1-git-send-email-21cnbao@gmail.com>
-	<20091113133824.GD21516@rakim.wolfsonmicro.main>
-	<3c17e3570911130656v662dccej7d6c67e7eaa65b65@mail.gmail.com>
-	<20091113150224.GA23607@rakim.wolfsonmicro.main>
-	<3c17e3570911130729xab6a443t5b257c2699dfa169@mail.gmail.com>
-	<20091113170459.GB23607@rakim.wolfsonmicro.main>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [RFC][PATCH] ARM: OMAP: McBSP: Use register cache
+Date: Sat, 14 Nov 2009 03:06:39 +0100
+Message-ID: <200911140306.44784.jkrzyszt@tis.icnet.pl>
+References: <200908121239.26346.jkrzyszt@tis.icnet.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
-	[209.85.210.196])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E14C1037EE
-	for <alsa-devel@alsa-project.org>; Sat, 14 Nov 2009 01:46:26 +0100 (CET)
-Received: by yxe34 with SMTP id 34so3443841yxe.16
-	for <alsa-devel@alsa-project.org>; Fri, 13 Nov 2009 16:46:25 -0800 (PST)
-In-Reply-To: <20091113170459.GB23607@rakim.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <200908121239.26346.jkrzyszt@tis.icnet.pl>
+Content-Disposition: inline
+Sender: linux-omap-owner@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>, Jarkko Nikula <jhnikula@gmail.com>, Samuel Ortiz <samuel@sortiz.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBOb3YgMTQsIDIwMDkgYXQgMTowNCBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIEZyaSwgTm92IDEzLCAyMDA5IGF0
-IDExOjI5OjM5UE0gKzA4MDAsIEJhcnJ5IFNvbmcgd3JvdGU6Cj4KPj4gVGhlIGxvZ2ljIHNlZW1z
-IGRpZmZlcmVudDogaW4gc25kX3NvY19pbnN0YW50aWF0ZV9jYXJkKCksIG9ubHkgd2hpbGUKPj4g
-YWxsIGNwdSBEQUlzIGFuZCBjb2RlYyBEQUlzIGFyZSBmb3VuZCBhbmQgcmVnaXN0ZXJlZCBpbiB0
-aGUgc3lzdGVtCj4+IGV4Y2VwdCBhYzk3LCB0aGVpciBwcm9iZXMgd2lsbCBiZSBjYWxsZWQuIFRo
-ZW4gY2FyZC0+aW5zdGFudGlhdGVkCj4+IGJlY29tZXMgMS4KPj4gQSBjYXNlIGN1cnJlbnQgY29k
-ZXMgd2lsbCBjYXVzZSBjcmFzaCBpczoKPj4gRm9yIGEgQ1BVIERBSSBkcml2ZXIgYmFzZWQgb24g
-cGxhdGZvcm0gZHJpdmVyLCBpZiBhcmNoIGhhc24ndCBkZWZpbmVkCj4+IHRoZSBwbGF0Zm9ybSBk
-ZXZpY2UgZm9yIGNwdSBkYWksIHRoZW4gY3B1IGRhaSBpcyBub3QgcmVnaXN0ZXJlZCBhbmQKPj4g
-aW5pdGlhbGl6ZWQgaW4gdGhlIHByb2JlKCkgb2YgaXRzIHBsYXRmb3JtIGRyaXZlci4gRXZlbiB0
-aG91Z2ggaXRzCj4+IGluc3RhbmNlIGlzIGluIGNhcmQtPmRhaV9saW5rLCBpdCBkb2Vzbid0IHJl
-YWxseSBlbnRlciB0aGUgc3lzdGVtLiBCdXQKPj4gd2hpbGUgc3VzcGVuZC9yZXN1bWUsIGl0cyBl
-bnRyaWVzIHdpbGwgYmUgY2FsbGVkIHRvbyBzaW5jZSB0aGUgY2FsbAo+PiBkb2Vzbid0IGNoZWNr
-IHRoZSBleGlzdGVuY2U6Cj4KPiBZZXMsIHRoYXQgY2FuIGdvIHdyb25nIC0gYnV0IGFzIEkgc2F5
-IHRoZSBjb252ZXJzZSB0aGluZyBjYW4gYWxzbyBnbwo+IHdyb25nIHdoZXJlIHNvbWUgYnV0IG5v
-dCBhbGwgb2YgdGhlIGNhcmQgaGFzIG1hbmFnZWQgdG8gcmVnaXN0ZXIgYW5kIHRoZQo+IGJpdHMg
-dGhhdCBoYXZlIG1hbmFnZWQgdG8gcmVnaXN0ZXIgZXhwZWN0IHRvIGJlIHN1c3BlbmRlZCBieSB0
-aGUgY29yZS4KPgo+PiBJIHRoaW5rIHN1c3BlbmQvcmVzdW1lIG9mIGEgREFJIGNhbiBvbmx5IGJl
-IGNhbGxlZCB3aGlsZSBpdCByZWFsbHkKPj4gZXhpc3RzIGFuZCBjYW4gYmUgZm91bmQgaW4gdGhl
-IGRhaV9saXN0LCBhdCBsZWFzdC4KPgo+IENoZWNraW5nIHRvIHNlZSBpZiB0aGUgZGV2aWNlIGlz
-IGluIHRoZSBEQUkgcmVsZXZhbnQgbGlzdCB3b3VsZCB3b3JrCj4gYnV0Li4uCj4KPj4gU28gSSBh
-ZGQgYSBvdmVyYWxsIGNvbmRpdGlvbiBmb3Igc29jX3N1c3BlbmQvcmVzdW1lIGp1c3QgbGlrZQo+
-PiDCoCDCoCDCoCBpZiAoIWNhcmQtPmluc3RhbnRpYXRlZCkKPj4gwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgcmV0dXJuIDAKPj4gaGFzIGJlIGRvbmUgaW4gc29jX3JlbW92ZSgpLCDCoHNvY19wb3dlcm9m
-ZigpLgo+Cj4gLi4udGhpcyBpcyB0b28gYnJvYWQuClRoZW4gZG8geW91IHRoaW5rIGl0IGlzIHdv
-cmthYmxlIHRvIGZpbmQgdGhlIGRhaSBpbiBkYWlfbGlzdCBiZWZvcmUKY2FsbGluZyBpdHMgc3Vz
-cGVuZC9yZXN1bWU/IE15IG9yaWdpbmFsIHBsYW4gd2FzIGNoZWNraW5nIHRoZQpleGlzdGVuY2Ug
-b2YgREFJIGluIGRhaV9saXN0LCBpZiBEQUkgZG9lc24ndCBleGlzdCwgZG9uJ3QgY2FsbCBpdHMg
-UE0KZW50cmllcy4gIFRoZW4gSSBmb3VuZCBjYXJkLT5pbnN0YW50aWF0ZWQsIEkgbW92ZWQgdG8g
-Y2hlY2sgaXQuCklmIHlvdSBoYXZlIGJldHRlciBwbGFuIGZvciBmaXhpbmcgdGhpcyBwcm9ibGVt
-LCBJIGNhbiB3YWl0IGFuZCBrZWVwCnRoaXMgZml4IGxvY2FsbHkuCgo+Cl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi,
+
+This patch got outdated and does not apply any more, but the idea still hangs 
+in my queue. I am not sure why the patch has never been acknowledged nor 
+rejected. Maybe it just got missed?
+
+Could you please take a position on this idea?
+
+Thanks,
+Janusz
+
+http://www.spinics.net/lists/linux-omap/msg16720.html
+
+Wednesday 12 August 2009 12:39:25 Janusz Krzysztofik wrote:
+> Change the way McBSP registers are updated: use cached values instead of
+> relying upon those read back from the device.
+>
+> With this patch, I have finally managed to get rid of all random
+> playback/recording hangups on my OMAP1510 based Amstrad Delta (buggy?)
+> hardware. Before that, I could suspect that values read back from McBSP
+> registers before updating them happened to be errornous.
+>
+> I think there is one important point that makes this patch worth of
+> applying, apart from my hardware quality. With the current code, if it ever
+> happens to any machine, no matter if OMAP1510 or newer, to read incorrect
+> value from a McBSP register, this wrong value will get written back without
+> any checking. That can lead to hardware damage if, for example, an input
+> pin is turned into output as a result.
+>
+> Created against linux-2.6.31-rc5
+>
+> Tested on Amstrad Delta
+>
+> Signed-off-by: Janusz Krzysztofik
+>
+> ---
+> ---
+> linux-2.6.31-rc5/arch/arm/plat-omap/include/mach/mcbsp.h.orig	2009-08-11
+> 23:43:25.000000000 +0200 +++
+> linux-2.6.31-rc5/arch/arm/plat-omap/include/mach/mcbsp.h	2009-08-11
+> 23:45:46.000000000 +0200 @@ -377,6 +377,8 @@ struct omap_mcbsp {
+>  	struct omap_mcbsp_platform_data *pdata;
+>  	struct clk *iclk;
+>  	struct clk *fclk;
+> +
+> +	struct omap_mcbsp_reg_cfg reg_cache;
+>  };
+>  extern struct omap_mcbsp **mcbsp_ptr;
+>  extern int omap_mcbsp_count;
+> --- linux-2.6.31-rc5/arch/arm/plat-omap/mcbsp.c.orig	2009-08-11
+> 23:43:25.000000000 +0200 +++
+> linux-2.6.31-rc5/arch/arm/plat-omap/mcbsp.c	2009-08-11 23:45:35.000000000
+> +0200 @@ -91,6 +91,7 @@ static void omap_mcbsp_dump_reg(u8 id)
+>  static irqreturn_t omap_mcbsp_tx_irq_handler(int irq, void *dev_id)
+>  {
+>  	struct omap_mcbsp *mcbsp_tx = dev_id;
+> +	struct omap_mcbsp_reg_cfg *reg_cache = &mcbsp_tx->reg_cache;
+>  	u16 irqst_spcr2;
+>
+>  	irqst_spcr2 = OMAP_MCBSP_READ(mcbsp_tx->io_base, SPCR2);
+> @@ -101,7 +102,7 @@ static irqreturn_t omap_mcbsp_tx_irq_han
+>  			irqst_spcr2);
+>  		/* Writing zero to XSYNC_ERR clears the IRQ */
+>  		OMAP_MCBSP_WRITE(mcbsp_tx->io_base, SPCR2,
+> -			irqst_spcr2 & ~(XSYNC_ERR));
+> +			reg_cache->spcr2 &= ~(XSYNC_ERR));
+>  	} else {
+>  		complete(&mcbsp_tx->tx_irq_completion);
+>  	}
+> @@ -112,6 +113,7 @@ static irqreturn_t omap_mcbsp_tx_irq_han
+>  static irqreturn_t omap_mcbsp_rx_irq_handler(int irq, void *dev_id)
+>  {
+>  	struct omap_mcbsp *mcbsp_rx = dev_id;
+> +	struct omap_mcbsp_reg_cfg *reg_cache = &mcbsp_rx->reg_cache;
+>  	u16 irqst_spcr1;
+>
+>  	irqst_spcr1 = OMAP_MCBSP_READ(mcbsp_rx->io_base, SPCR1);
+> @@ -122,7 +124,7 @@ static irqreturn_t omap_mcbsp_rx_irq_han
+>  			irqst_spcr1);
+>  		/* Writing zero to RSYNC_ERR clears the IRQ */
+>  		OMAP_MCBSP_WRITE(mcbsp_rx->io_base, SPCR1,
+> -			irqst_spcr1 & ~(RSYNC_ERR));
+> +			reg_cache->spcr1 &= ~(RSYNC_ERR));
+>  	} else {
+>  		complete(&mcbsp_rx->tx_irq_completion);
+>  	}
+> @@ -167,6 +169,7 @@ static void omap_mcbsp_rx_dma_callback(i
+>  void omap_mcbsp_config(unsigned int id, const struct omap_mcbsp_reg_cfg
+> *config) {
+>  	struct omap_mcbsp *mcbsp;
+> +	struct omap_mcbsp_reg_cfg *reg_cache;
+>  	void __iomem *io_base;
+>
+>  	if (!omap_mcbsp_check_valid_id(id)) {
+> @@ -174,26 +177,27 @@ void omap_mcbsp_config(unsigned int id,
+>  		return;
+>  	}
+>  	mcbsp = id_to_mcbsp_ptr(id);
+> +	reg_cache = &mcbsp->reg_cache;
+>
+>  	io_base = mcbsp->io_base;
+>  	dev_dbg(mcbsp->dev, "Configuring McBSP%d  phys_base: 0x%08lx\n",
+>  			mcbsp->id, mcbsp->phys_base);
+>
+>  	/* We write the given config */
+> -	OMAP_MCBSP_WRITE(io_base, SPCR2, config->spcr2);
+> -	OMAP_MCBSP_WRITE(io_base, SPCR1, config->spcr1);
+> -	OMAP_MCBSP_WRITE(io_base, RCR2, config->rcr2);
+> -	OMAP_MCBSP_WRITE(io_base, RCR1, config->rcr1);
+> -	OMAP_MCBSP_WRITE(io_base, XCR2, config->xcr2);
+> -	OMAP_MCBSP_WRITE(io_base, XCR1, config->xcr1);
+> -	OMAP_MCBSP_WRITE(io_base, SRGR2, config->srgr2);
+> -	OMAP_MCBSP_WRITE(io_base, SRGR1, config->srgr1);
+> -	OMAP_MCBSP_WRITE(io_base, MCR2, config->mcr2);
+> -	OMAP_MCBSP_WRITE(io_base, MCR1, config->mcr1);
+> -	OMAP_MCBSP_WRITE(io_base, PCR0, config->pcr0);
+> +	OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 = config->spcr2);
+> +	OMAP_MCBSP_WRITE(io_base, SPCR1, reg_cache->spcr1 = config->spcr1);
+> +	OMAP_MCBSP_WRITE(io_base, RCR2, reg_cache->rcr2 = config->rcr2);
+> +	OMAP_MCBSP_WRITE(io_base, RCR1, reg_cache->rcr1 = config->rcr1);
+> +	OMAP_MCBSP_WRITE(io_base, XCR2, reg_cache->xcr2 = config->xcr2);
+> +	OMAP_MCBSP_WRITE(io_base, XCR1, reg_cache->xcr1 = config->xcr1);
+> +	OMAP_MCBSP_WRITE(io_base, SRGR2, reg_cache->srgr2 = config->srgr2);
+> +	OMAP_MCBSP_WRITE(io_base, SRGR1, reg_cache->srgr1 = config->srgr1);
+> +	OMAP_MCBSP_WRITE(io_base, MCR2, reg_cache->mcr2 = config->mcr2);
+> +	OMAP_MCBSP_WRITE(io_base, MCR1, reg_cache->mcr1 = config->mcr1);
+> +	OMAP_MCBSP_WRITE(io_base, PCR0, reg_cache->pcr0 = config->pcr0);
+>  	if (cpu_is_omap2430() || cpu_is_omap34xx()) {
+> -		OMAP_MCBSP_WRITE(io_base, XCCR, config->xccr);
+> -		OMAP_MCBSP_WRITE(io_base, RCCR, config->rccr);
+> +		OMAP_MCBSP_WRITE(io_base, XCCR, reg_cache->xccr = config->xccr);
+> +		OMAP_MCBSP_WRITE(io_base, RCCR, reg_cache->rccr = config->rccr);
+>  	}
+>  }
+>  EXPORT_SYMBOL(omap_mcbsp_config);
+> @@ -232,6 +236,7 @@ EXPORT_SYMBOL(omap_mcbsp_set_io_type);
+>  int omap_mcbsp_request(unsigned int id)
+>  {
+>  	struct omap_mcbsp *mcbsp;
+> +	struct omap_mcbsp_reg_cfg *reg_cache;
+>  	int err;
+>
+>  	if (!omap_mcbsp_check_valid_id(id)) {
+> @@ -239,6 +244,7 @@ int omap_mcbsp_request(unsigned int id)
+>  		return -ENODEV;
+>  	}
+>  	mcbsp = id_to_mcbsp_ptr(id);
+> +	reg_cache = &mcbsp->reg_cache;
+>
+>  	spin_lock(&mcbsp->lock);
+>  	if (!mcbsp->free) {
+> @@ -261,8 +267,8 @@ int omap_mcbsp_request(unsigned int id)
+>  	 * Make sure that transmitter, receiver and sample-rate generator are
+>  	 * not running before activating IRQs.
+>  	 */
+> -	OMAP_MCBSP_WRITE(mcbsp->io_base, SPCR1, 0);
+> -	OMAP_MCBSP_WRITE(mcbsp->io_base, SPCR2, 0);
+> +	OMAP_MCBSP_WRITE(mcbsp->io_base, SPCR1, reg_cache->spcr1 = 0);
+> +	OMAP_MCBSP_WRITE(mcbsp->io_base, SPCR2, reg_cache->spcr2 = 0);
+>
+>  	if (mcbsp->io_type == OMAP_MCBSP_IRQ_IO) {
+>  		/* We need to get IRQs here */
+> @@ -335,42 +341,38 @@ EXPORT_SYMBOL(omap_mcbsp_free);
+>  void omap_mcbsp_start(unsigned int id, int tx, int rx)
+>  {
+>  	struct omap_mcbsp *mcbsp;
+> +	struct omap_mcbsp_reg_cfg *reg_cache;
+>  	void __iomem *io_base;
+>  	int idle;
+> -	u16 w;
+>
+>  	if (!omap_mcbsp_check_valid_id(id)) {
+>  		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
+>  		return;
+>  	}
+>  	mcbsp = id_to_mcbsp_ptr(id);
+> +	reg_cache = &mcbsp->reg_cache;
+>  	io_base = mcbsp->io_base;
+>
+> -	mcbsp->rx_word_length = (OMAP_MCBSP_READ(io_base, RCR1) >> 5) & 0x7;
+> -	mcbsp->tx_word_length = (OMAP_MCBSP_READ(io_base, XCR1) >> 5) & 0x7;
+> +	mcbsp->rx_word_length = (reg_cache->rcr1 >> 5) & 0x7;
+> +	mcbsp->tx_word_length = (reg_cache->xcr1 >> 5) & 0x7;
+>
+> -	idle = !((OMAP_MCBSP_READ(io_base, SPCR2) |
+> -		OMAP_MCBSP_READ(io_base, SPCR1)) & 1);
+> +	idle = !((reg_cache->spcr2 | reg_cache->spcr1) & 1);
+>
+>  	if (idle) {
+>  		/* Start the sample generator */
+> -		w = OMAP_MCBSP_READ(io_base, SPCR2);
+> -		OMAP_MCBSP_WRITE(io_base, SPCR2, w | (1 << 6));
+> +		OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 |= (1 << 6));
+>  	}
+>
+>  	/* Enable transmitter and receiver */
+> -	w = OMAP_MCBSP_READ(io_base, SPCR2);
+> -	OMAP_MCBSP_WRITE(io_base, SPCR2, w | (tx & 1));
+> +	OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 |= (tx & 1));
+>
+> -	w = OMAP_MCBSP_READ(io_base, SPCR1);
+> -	OMAP_MCBSP_WRITE(io_base, SPCR1, w | (rx & 1));
+> +	OMAP_MCBSP_WRITE(io_base, SPCR1, reg_cache->spcr1 |= (rx & 1));
+>
+>  	udelay(100);
+>
+>  	if (idle) {
+>  		/* Start frame sync */
+> -		w = OMAP_MCBSP_READ(io_base, SPCR2);
+> -		OMAP_MCBSP_WRITE(io_base, SPCR2, w | (1 << 7));
+> +		OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 |= (1 << 7));
+>  	}
+>
+>  	/* Dump McBSP Regs */
+> @@ -381,9 +383,9 @@ EXPORT_SYMBOL(omap_mcbsp_start);
+>  void omap_mcbsp_stop(unsigned int id, int tx, int rx)
+>  {
+>  	struct omap_mcbsp *mcbsp;
+> +	struct omap_mcbsp_reg_cfg *reg_cache;
+>  	void __iomem *io_base;
+>  	int idle;
+> -	u16 w;
+>
+>  	if (!omap_mcbsp_check_valid_id(id)) {
+>  		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
+> @@ -391,23 +393,20 @@ void omap_mcbsp_stop(unsigned int id, in
+>  	}
+>
+>  	mcbsp = id_to_mcbsp_ptr(id);
+> +	reg_cache = &mcbsp->reg_cache;
+>  	io_base = mcbsp->io_base;
+>
+>  	/* Reset transmitter */
+> -	w = OMAP_MCBSP_READ(io_base, SPCR2);
+> -	OMAP_MCBSP_WRITE(io_base, SPCR2, w & ~(tx & 1));
+> +	OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 &= ~(tx & 1));
+>
+>  	/* Reset receiver */
+> -	w = OMAP_MCBSP_READ(io_base, SPCR1);
+> -	OMAP_MCBSP_WRITE(io_base, SPCR1, w & ~(rx & 1));
+> +	OMAP_MCBSP_WRITE(io_base, SPCR1, reg_cache->spcr1 &= ~(rx & 1));
+>
+> -	idle = !((OMAP_MCBSP_READ(io_base, SPCR2) |
+> -		OMAP_MCBSP_READ(io_base, SPCR1)) & 1);
+> +	idle = !((reg_cache->spcr2 | reg_cache->spcr1) & 1);
+>
+>  	if (idle) {
+>  		/* Reset the sample rate generator */
+> -		w = OMAP_MCBSP_READ(io_base, SPCR2);
+> -		OMAP_MCBSP_WRITE(io_base, SPCR2, w & ~(1 << 6));
+> +		OMAP_MCBSP_WRITE(io_base, SPCR2, reg_cache->spcr2 &= ~(1 << 6));
+>  	}
+>  }
+>  EXPORT_SYMBOL(omap_mcbsp_stop);
+> @@ -557,6 +556,7 @@ EXPORT_SYMBOL(omap_mcbsp_recv_word);
+>  int omap_mcbsp_spi_master_xmit_word_poll(unsigned int id, u32 word)
+>  {
+>  	struct omap_mcbsp *mcbsp;
+> +	struct omap_mcbsp_reg_cfg *reg_cache;
+>  	void __iomem *io_base;
+>  	omap_mcbsp_word_length tx_word_length;
+>  	omap_mcbsp_word_length rx_word_length;
+> @@ -567,6 +567,7 @@ int omap_mcbsp_spi_master_xmit_word_poll
+>  		return -ENODEV;
+>  	}
+>  	mcbsp = id_to_mcbsp_ptr(id);
+> +	reg_cache = &mcbsp->reg_cache;
+>  	io_base = mcbsp->io_base;
+>  	tx_word_length = mcbsp->tx_word_length;
+>  	rx_word_length = mcbsp->rx_word_length;
+> @@ -580,9 +581,11 @@ int omap_mcbsp_spi_master_xmit_word_poll
+>  		spcr2 = OMAP_MCBSP_READ(io_base, SPCR2);
+>  		if (attempts++ > 1000) {
+>  			/* We must reset the transmitter */
+> -			OMAP_MCBSP_WRITE(io_base, SPCR2, spcr2 & (~XRST));
+> +			OMAP_MCBSP_WRITE(io_base, SPCR2,
+> +					reg_cache->spcr2 &= (~XRST));
+>  			udelay(10);
+> -			OMAP_MCBSP_WRITE(io_base, SPCR2, spcr2 | XRST);
+> +			OMAP_MCBSP_WRITE(io_base, SPCR2,
+> +					reg_cache->spcr2 |= XRST);
+>  			udelay(10);
+>  			dev_err(mcbsp->dev, "McBSP%d transmitter not "
+>  				"ready\n", mcbsp->id);
+> @@ -601,9 +604,11 @@ int omap_mcbsp_spi_master_xmit_word_poll
+>  		spcr1 = OMAP_MCBSP_READ(io_base, SPCR1);
+>  		if (attempts++ > 1000) {
+>  			/* We must reset the receiver */
+> -			OMAP_MCBSP_WRITE(io_base, SPCR1, spcr1 & (~RRST));
+> +			OMAP_MCBSP_WRITE(io_base, SPCR1,
+> +					reg_cache->spcr1 &= (~RRST));
+>  			udelay(10);
+> -			OMAP_MCBSP_WRITE(io_base, SPCR1, spcr1 | RRST);
+> +			OMAP_MCBSP_WRITE(io_base, SPCR1,
+> +					reg_cache->spcr1 |= RRST);
+>  			udelay(10);
+>  			dev_err(mcbsp->dev, "McBSP%d receiver not "
+>  				"ready\n", mcbsp->id);
+> @@ -623,6 +628,7 @@ EXPORT_SYMBOL(omap_mcbsp_spi_master_xmit
+>  int omap_mcbsp_spi_master_recv_word_poll(unsigned int id, u32 *word)
+>  {
+>  	struct omap_mcbsp *mcbsp;
+> +	struct omap_mcbsp_reg_cfg *reg_cache;
+>  	u32 clock_word = 0;
+>  	void __iomem *io_base;
+>  	omap_mcbsp_word_length tx_word_length;
+> @@ -635,6 +641,7 @@ int omap_mcbsp_spi_master_recv_word_poll
+>  	}
+>
+>  	mcbsp = id_to_mcbsp_ptr(id);
+> +	reg_cache = &mcbsp->reg_cache;
+>  	io_base = mcbsp->io_base;
+>
+>  	tx_word_length = mcbsp->tx_word_length;
+> @@ -649,9 +656,11 @@ int omap_mcbsp_spi_master_recv_word_poll
+>  		spcr2 = OMAP_MCBSP_READ(io_base, SPCR2);
+>  		if (attempts++ > 1000) {
+>  			/* We must reset the transmitter */
+> -			OMAP_MCBSP_WRITE(io_base, SPCR2, spcr2 & (~XRST));
+> +			OMAP_MCBSP_WRITE(io_base, SPCR2,
+> +					reg_cache->spcr2 &= (~XRST));
+>  			udelay(10);
+> -			OMAP_MCBSP_WRITE(io_base, SPCR2, spcr2 | XRST);
+> +			OMAP_MCBSP_WRITE(io_base, SPCR2,
+> +					reg_cache->spcr2 |= XRST);
+>  			udelay(10);
+>  			dev_err(mcbsp->dev, "McBSP%d transmitter not "
+>  				"ready\n", mcbsp->id);
+> @@ -670,9 +679,11 @@ int omap_mcbsp_spi_master_recv_word_poll
+>  		spcr1 = OMAP_MCBSP_READ(io_base, SPCR1);
+>  		if (attempts++ > 1000) {
+>  			/* We must reset the receiver */
+> -			OMAP_MCBSP_WRITE(io_base, SPCR1, spcr1 & (~RRST));
+> +			OMAP_MCBSP_WRITE(io_base, SPCR1,
+> +					reg_cache->spcr1 &= (~RRST));
+>  			udelay(10);
+> -			OMAP_MCBSP_WRITE(io_base, SPCR1, spcr1 | RRST);
+> +			OMAP_MCBSP_WRITE(io_base, SPCR1,
+> +					reg_cache->spcr1 |= RRST);
+>  			udelay(10);
+>  			dev_err(mcbsp->dev, "McBSP%d receiver not "
+>  				"ready\n", mcbsp->id);
+
+
