@@ -1,19 +1,14 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: Re: possible regression in creative x-fi expresscard
-Date: Sun, 15 Nov 2009 08:37:05 -0500
-Message-ID: <604760770911150537h76707388p629d04d355dd7906@mail.gmail.com>
-References: <21729889.1258289807110.JavaMail.root@mswamui-bichon.atl.sa.earthlink.net>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] cs423x: update control names
+Date: Sun, 15 Nov 2009 15:05:13 +0100
+Message-ID: <20091115150513.fa11f65b.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
-	[209.85.222.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91D42243BA
-	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 14:37:06 +0100 (CET)
-Received: by pzk9 with SMTP id 9so2929221pzk.16
-	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 05:37:05 -0800 (PST)
-In-Reply-To: <21729889.1258289807110.JavaMail.root@mswamui-bichon.atl.sa.earthlink.net>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 5F3DA243EA
+	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 15:04:50 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +18,198 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Susan Cragin <susancragin@earthlink.net>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Nov 15, 2009 at 7:56 AM, Susan Cragin <susancragin@earthlink.net> wrote:
-> Recently my Creative X-fi expresscard has stopped working properly. It may be an alsa problem but it may also be some sort of bus problem, and I thought I'd let you decide.
-...
-> I have the current Ubuntu version of the drivers, and have not tinkered with them at all. I re-installed the whole system recently. I updated to Lucid hoping to get better updates but that did not help.
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-For reference, Lucid currently has 2.6.32-rc7.
+Update control names to be more closer to their meaning.
+Change the "Mono" name to the "Beep" as this line is usually
+used to forward the PC beeper signal to sound card's output.
+Update names for both cs423x and wss.
 
--Dan
+Clean up cs4235 controls according to the cs4235 doc.
+
+Also, delete one misnamed cs4231 register define.
+
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+I don't know what is requirement for the "Master Playabck Volume" control.
+Does it need to control inputs looped to output? E.g. The cs4236 has
+a DAC control which can attenuate all playback sources (PCM/FM/Wavetable/ADC loop)
+but it does not control analog inputs (mic/line in/cd) which are mixed through
+analog mixer just after the DAC output and the DAC control.
+
+It matters for the OSS layer, which does map the "Master Playback Volume"
+as a "Volume" control, but the "Master DAC Volume" is recognized by the OSS layer.
+
+Regards,
+Krzysztof
+
+ include/sound/cs4231-regs.h   |    1 -
+ sound/isa/cs423x/cs4236_lib.c |   53 +++++++++++++++++-----------------------
+ sound/isa/wss/wss_lib.c       |    8 +++---
+ 3 files changed, 27 insertions(+), 35 deletions(-)
+
+diff --git a/include/sound/cs4231-regs.h b/include/sound/cs4231-regs.h
+index 9264753..66d28c2 100644
+--- a/include/sound/cs4231-regs.h
++++ b/include/sound/cs4231-regs.h
+@@ -70,7 +70,6 @@
+ #define AD1845_PWR_DOWN		0x1b	/* power down control */
+ #define CS4235_LEFT_MASTER	0x1b	/* left master output control */
+ #define CS4231_REC_FORMAT	0x1c	/* clock and data format - record - bits 7-0 MCE */
+-#define CS4231_PLY_VAR_FREQ	0x1d	/* playback variable frequency */
+ #define AD1845_CLOCK		0x1d	/* crystal clock select and total power down */
+ #define CS4235_RIGHT_MASTER	0x1d	/* right master output control */
+ #define CS4231_REC_UPR_CNT	0x1e	/* record upper count */
+diff --git a/sound/isa/cs423x/cs4236_lib.c b/sound/isa/cs423x/cs4236_lib.c
+index 1b1ad1c..9ca473a 100644
+--- a/sound/isa/cs423x/cs4236_lib.c
++++ b/sound/isa/cs423x/cs4236_lib.c
+@@ -734,11 +734,11 @@ static int snd_cs4235_put_output_accu(struct snd_kcontrol *kcontrol, struct snd_
+ 
+ static struct snd_kcontrol_new snd_cs4236_controls[] = {
+ 
+-CS4236_DOUBLE("Master Digital Playback Switch", 0,
++CS4236_DOUBLE("Master DAC Playback Switch", 0,
+ 		CS4236_LEFT_MASTER, CS4236_RIGHT_MASTER, 7, 7, 1, 1),
+-CS4236_DOUBLE("Master Digital Capture Switch", 0,
++CS4236_DOUBLE("Master DAC Capture Switch", 0,
+ 		CS4236_DAC_MUTE, CS4236_DAC_MUTE, 7, 6, 1, 1),
+-CS4236_MASTER_DIGITAL("Master Digital Volume", 0),
++CS4236_MASTER_DIGITAL("Master DAC Volume", 0),
+ 
+ CS4236_DOUBLE("Capture Boost Volume", 0,
+ 		CS4236_LEFT_MIX_CTRL, CS4236_RIGHT_MIX_CTRL, 5, 5, 3, 1),
+@@ -798,10 +798,10 @@ WSS_DOUBLE("CD Capture Switch", 0,
+ 
+ CS4236_DOUBLE1("Mono Output Playback Switch", 0,
+ 		CS4231_MONO_CTRL, CS4236_RIGHT_MIX_CTRL, 6, 7, 1, 1),
+-CS4236_DOUBLE1("Mono Playback Switch", 0,
++CS4236_DOUBLE1("Beep Playback Switch", 0,
+ 		CS4231_MONO_CTRL, CS4236_LEFT_MIX_CTRL, 7, 7, 1, 1),
+-WSS_SINGLE("Mono Playback Volume", 0, CS4231_MONO_CTRL, 0, 15, 1),
+-WSS_SINGLE("Mono Playback Bypass", 0, CS4231_MONO_CTRL, 5, 1, 0),
++WSS_SINGLE("Beep Playback Volume", 0, CS4231_MONO_CTRL, 0, 15, 1),
++WSS_SINGLE("Beep Bypass Playback Switch", 0, CS4231_MONO_CTRL, 5, 1, 0),
+ 
+ WSS_DOUBLE("Capture Volume", 0,
+ 		CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT, 0, 0, 15, 0),
+@@ -815,31 +815,27 @@ CS4236_DOUBLE1("Digital Loopback Playback Volume", 0,
+ 
+ static struct snd_kcontrol_new snd_cs4235_controls[] = {
+ 
+-WSS_DOUBLE("Master Switch", 0,
++WSS_DOUBLE("Master Playback Switch", 0,
+ 		CS4235_LEFT_MASTER, CS4235_RIGHT_MASTER, 7, 7, 1, 1),
+-WSS_DOUBLE("Master Volume", 0,
++WSS_DOUBLE("Master Playback Volume", 0,
+ 		CS4235_LEFT_MASTER, CS4235_RIGHT_MASTER, 0, 0, 31, 1),
+ 
+ CS4235_OUTPUT_ACCU("Playback Volume", 0),
+ 
+-CS4236_DOUBLE("Master Digital Playback Switch", 0,
+-		CS4236_LEFT_MASTER, CS4236_RIGHT_MASTER, 7, 7, 1, 1),
+-CS4236_DOUBLE("Master Digital Capture Switch", 0,
+-		CS4236_DAC_MUTE, CS4236_DAC_MUTE, 7, 6, 1, 1),
+-CS4236_MASTER_DIGITAL("Master Digital Volume", 0),
+-
+-WSS_DOUBLE("Master Digital Playback Switch", 1,
++WSS_DOUBLE("Synth Playback Switch", 1,
+ 		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 7, 7, 1, 1),
+-WSS_DOUBLE("Master Digital Capture Switch", 1,
++WSS_DOUBLE("Synth Capture Switch", 1,
+ 		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 6, 6, 1, 1),
+-WSS_DOUBLE("Master Digital Volume", 1,
++WSS_DOUBLE("Synth Volume", 1,
+ 		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 0, 0, 31, 1),
+ 
+ CS4236_DOUBLE("Capture Volume", 0,
+ 		CS4236_LEFT_MIX_CTRL, CS4236_RIGHT_MIX_CTRL, 5, 5, 3, 1),
+ 
+-WSS_DOUBLE("PCM Switch", 0,
++WSS_DOUBLE("PCM Playback Switch", 0,
+ 		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 7, 7, 1, 1),
++WSS_DOUBLE("PCM Capture Switch", 0,
++		CS4236_DAC_MUTE, CS4236_DAC_MUTE, 7, 6, 1, 1),
+ WSS_DOUBLE("PCM Volume", 0,
+ 		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 0, 0, 63, 1),
+ 
+@@ -855,28 +851,25 @@ CS4236_DOUBLE("Mic Capture Switch", 0,
+ CS4236_DOUBLE("Mic Playback Switch", 0,
+ 		CS4236_LEFT_MIC, CS4236_RIGHT_MIC, 6, 6, 1, 1),
+ CS4236_SINGLE("Mic Volume", 0, CS4236_LEFT_MIC, 0, 31, 1),
+-CS4236_SINGLE("Mic Playback Boost", 0, CS4236_LEFT_MIC, 5, 1, 0),
++CS4236_SINGLE("Mic Boost (+20db)", 0, CS4236_LEFT_MIC, 5, 1, 0),
+ 
+-WSS_DOUBLE("Aux Playback Switch", 0,
++WSS_DOUBLE("Line Playback Switch", 0,
+ 		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 7, 7, 1, 1),
+-WSS_DOUBLE("Aux Capture Switch", 0,
++WSS_DOUBLE("Line Capture Switch", 0,
+ 		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 6, 6, 1, 1),
+-WSS_DOUBLE("Aux Volume", 0,
++WSS_DOUBLE("Line Volume", 0,
+ 		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 0, 0, 31, 1),
+ 
+-WSS_DOUBLE("Aux Playback Switch", 1,
++WSS_DOUBLE("CD Playback Switch", 1,
+ 		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 7, 7, 1, 1),
+-WSS_DOUBLE("Aux Capture Switch", 1,
++WSS_DOUBLE("CD Capture Switch", 1,
+ 		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 6, 6, 1, 1),
+-WSS_DOUBLE("Aux Volume", 1,
++WSS_DOUBLE("CD Volume", 1,
+ 		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 0, 0, 31, 1),
+ 
+-CS4236_DOUBLE1("Master Mono Switch", 0,
+-		CS4231_MONO_CTRL, CS4236_RIGHT_MIX_CTRL, 6, 7, 1, 1),
+-
+-CS4236_DOUBLE1("Mono Switch", 0,
++CS4236_DOUBLE1("Beep Playback Switch", 0,
+ 		CS4231_MONO_CTRL, CS4236_LEFT_MIX_CTRL, 7, 7, 1, 1),
+-WSS_SINGLE("Mono Volume", 0, CS4231_MONO_CTRL, 0, 15, 1),
++WSS_SINGLE("Beep Playback Volume", 0, CS4231_MONO_CTRL, 0, 15, 1),
+ 
+ WSS_DOUBLE("Analog Loopback Switch", 0,
+ 		CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT, 7, 7, 1, 0),
+diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
+index 705db09..d09366e 100644
+--- a/sound/isa/wss/wss_lib.c
++++ b/sound/isa/wss/wss_lib.c
+@@ -2224,7 +2224,7 @@ WSS_DOUBLE_TLV("Capture Volume", 0, CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT,
+ 	.get = snd_wss_get_mux,
+ 	.put = snd_wss_put_mux,
+ },
+-WSS_DOUBLE("Mic Boost", 0,
++WSS_DOUBLE("Mic Boost (+20db)", 0,
+ 		CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT, 5, 5, 1, 0),
+ WSS_SINGLE("Loopback Capture Switch", 0,
+ 		CS4231_LOOPBACK, 0, 1, 0),
+@@ -2235,14 +2235,14 @@ WSS_DOUBLE("Line Playback Switch", 0,
+ WSS_DOUBLE_TLV("Line Playback Volume", 0,
+ 		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 0, 0, 31, 1,
+ 		db_scale_5bit_12db_max),
+-WSS_SINGLE("Mono Playback Switch", 0,
++WSS_SINGLE("Beep Playback Switch", 0,
+ 		CS4231_MONO_CTRL, 7, 1, 1),
+-WSS_SINGLE_TLV("Mono Playback Volume", 0,
++WSS_SINGLE_TLV("Beep Playback Volume", 0,
+ 		CS4231_MONO_CTRL, 0, 15, 1,
+ 		db_scale_4bit),
+ WSS_SINGLE("Mono Output Playback Switch", 0,
+ 		CS4231_MONO_CTRL, 6, 1, 1),
+-WSS_SINGLE("Mono Output Playback Bypass", 0,
++WSS_SINGLE("Beep Bypass Playback Switch", 0,
+ 		CS4231_MONO_CTRL, 5, 1, 0),
+ };
+ 
+-- 
+1.6.4
+
+
+----------------------------------------------------------------------
+Audi kilka tysiecy zlotych taniej? Przebieraj wsrod tysiecy ogloszen!
+Kliknij >>> http://link.interia.pl/f2424
