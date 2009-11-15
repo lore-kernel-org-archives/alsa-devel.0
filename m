@@ -1,12 +1,13 @@
-From: alexey.kv@gmail.com
-Subject: [PATCH - juli.c 1/1] ALSA: juli - Patch for
-	suspend/resume for ESI Juli@
-Date: Sat, 14 Nov 2009 15:18:54 +0200
-Message-ID: <1258204734-23288-1-git-send-email-alexey.kv@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: [PATCH 01/11] intelhdmi - fix audio infoframe fill size
+Date: Sun, 15 Nov 2009 19:32:20 +0800
+Message-ID: <20091115114439.442038402@intel.com>
+References: <20091115113219.606666087@intel.com>
+Content-Type: multipart/mixed; boundary="===============5383249349183590683=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03D1624153
+	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 12:46:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,71 +17,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, alexey.kv@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Shane W <shane-alsa@csy.ca>, =?UTF-8?q?David=20H=C3=A4rdeman?= <david@hardeman.nu>
 List-Id: alsa-devel@alsa-project.org
 
-From: Aleksey Kunitskiy <alexey.kv@gmail.com>
+--===============5383249349183590683==
+Content-Disposition: inline; filename=hdmi-fix-sizeof-ai.patch
 
-Add proper suspend/resume code for Juli@ cards. Based on ice1724
-suspend/resume work of Igor Chernyshev.
-Fixes bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4413
-Tested on linux-2.6.31.6
-
-Signed-off-by: Aleksey Kunitskiy <alexey.kv@gmail.com>
+Reported-by: David Härdeman <david@hardeman.nu>
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- pci/ice1712/juli.c |   32 ++++++++++++++++++++++++++++++++
- 1 files changed, 32 insertions(+), 0 deletions(-)
+ sound/pci/hda/patch_intelhdmi.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/pci/ice1712/juli.c b/pci/ice1712/juli.c
-index 4bed963..0c9413d 100644
---- a/pci/ice1712/juli.c
-+++ b/pci/ice1712/juli.c
-@@ -483,6 +483,31 @@ static int __devinit juli_add_controls(struct snd_ice1712 *ice)
+--- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:14:30.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:14:39.000000000 +0800
+@@ -509,12 +509,12 @@ static void hdmi_fill_audio_infoframe(st
+ 	hdmi_debug_dip_size(codec, pin_nid);
+ 	hdmi_clear_dip_buffers(codec, pin_nid); /* be paranoid */
+ 
+-	for (i = 0; i < sizeof(ai); i++)
++	for (i = 0; i < sizeof(*ai); i++)
+ 		sum += params[i];
+ 	ai->checksum = - sum;
+ 
+ 	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
+-	for (i = 0; i < sizeof(ai); i++)
++	for (i = 0; i < sizeof(*ai); i++)
+ 		hdmi_write_dip_byte(codec, pin_nid, params[i]);
  }
  
- /*
-+ * suspend/resume
-+ * */
-+
-+#ifdef CONFIG_PM
-+static int juli_resume(struct snd_ice1712 *ice)
-+{
-+	struct snd_akm4xxx *ak = ice->akm;
-+	struct juli_spec *spec = ice->spec;
-+	/* akm4358 un-reset, un-mute */
-+	snd_akm4xxx_reset(ak, 0);
-+	/* reinit ak4114 */
-+	snd_ak4114_reinit(spec->ak4114);
-+	return 0;
-+}
-+
-+static int juli_suspend(struct snd_ice1712 *ice)
-+{
-+	struct snd_akm4xxx *ak = ice->akm;
-+	/* akm4358 reset and soft-mute */
-+	snd_akm4xxx_reset(ak, 1);
-+	return 0;
-+}
-+#endif
-+
-+/*
-  * initialize the chip
-  */
- 
-@@ -626,6 +651,13 @@ static int __devinit juli_init(struct snd_ice1712 *ice)
- 	ice->set_spdif_clock = juli_set_spdif_clock;
- 
- 	ice->spdif.ops.open = juli_spdif_in_open;
-+
-+#ifdef CONFIG_PM
-+	ice->pm_resume = juli_resume;
-+	ice->pm_suspend = juli_suspend;
-+	ice->pm_suspend_enabled = 1;
-+#endif
-+
- 	return 0;
- }
- 
--- 
-1.6.4.4
+
+
+
+--===============5383249349183590683==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============5383249349183590683==--
