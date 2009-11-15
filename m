@@ -1,29 +1,17 @@
-From: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
-Subject: Re: HDA Intel IDT 92HD71B7X - HP Pavilion DV7-1299EF -
-	Only the left speaker is working
-Date: Sun, 15 Nov 2009 17:26:00 +0100
-Message-ID: <d3328e7b0911150826l6b6fffd6kdad8fb1692445b20@mail.gmail.com>
-References: <d3328e7b0911110722l27597a8bl523052b035e9ec9d@mail.gmail.com>
-	<s5h7htxgdlj.wl%tiwai@suse.de>
-	<d3328e7b0911110958y5bbbf22fpbe4c74dfd6715608@mail.gmail.com>
-	<s5hd43o6fp6.wl%tiwai@suse.de>
-	<d3328e7b0911111115t3e2201c7r35302f6f7c66b88f@mail.gmail.com>
-	<d3328e7b0911120146o317cd32fnc3282a2809aa908f@mail.gmail.com>
-	<s5htyx0cak5.wl%tiwai@suse.de>
-	<d3328e7b0911140446j6edf0646x5ca7c825ae780a0a@mail.gmail.com>
-	<s5htywxmf7d.wl%tiwai@suse.de>
-	<d3328e7b0911140625u745f08cdsd0f673c1482bf364@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH] cs423x: update control names
+Date: Sun, 15 Nov 2009 18:34:16 +0100
+Message-ID: <20091115183416.27c6bdd4.krzysztof.h1@poczta.fm>
+References: <20091115150513.fa11f65b.krzysztof.h1@poczta.fm>
+	<s5h7htrkcb5.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED18024480
-	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 17:26:21 +0100 (CET)
-Received: by bwz9 with SMTP id 9so13747660bwz.32
-	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 08:26:20 -0800 (PST)
-In-Reply-To: <d3328e7b0911140625u745f08cdsd0f673c1482bf364@mail.gmail.com>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id D4BA3244C2
+	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 18:33:11 +0100 (CET)
+In-Reply-To: <s5h7htrkcb5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,213 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, julien.cynober@free.fr
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 14, 2009 at 15:25, Wael Nasreddine (a.k.a eMxyzptlk) <
-mla@nasreddine.com> wrote:
+On Sun, 15 Nov 2009 17:00:46 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> On Sat, Nov 14, 2009 at 14:03, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > At Sat, 14 Nov 2009 13:46:37 +0100,
-> > Wael Nasreddine (a.k.a eMxyzptlk) wrote:
-> > >
-> > > [1  <multipart/alternative (7bit)>]
-> > > [1.1  <text/plain; UTF-8 (7bit)>]
-> > > On Thu, Nov 12, 2009 at 11:16, Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > > At Thu, 12 Nov 2009 10:46:24 +0100,
-> > > > Wael Nasreddine (a.k.a eMxyzptlk) wrote:
-> > > > >
-> > > > > Takashi,
-> > > > >
-> > > > > I tried the snapshot from
-> > > > >
-> > > >
-> ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
-> > > > > last night with and without options still no go, the options I've
-> > > > > tried:
-> > > > >
-> > > > > - options snd-hda-intel enable_msi=
-> > > > > - options snd-hda-intel enable_msi=1 single_cmd=0
-> > > > > power_save_controller=0 power_save=0 model=hp-dv5
-> > > >
-> > > > power_save should be irrelevant.  And model=hp-dv5 and enable_msi=1
-> > > > are already turned on as default in the recent version.
-> > > >
-> > > > The next would be model=auto to avoid hp-dv5 quirk.
-> > > >
-> > > > Also, it's helpful if you give a summary of your problems again.
-> > > >
-> > > >
-> > > > Takashi
-> > > >
-> > >
-> > > Takashi,
-> > >
-> > > I just tried 'options snd-hda-intel enable_msi=1 model=auto' Didn't
-> > > have much effect, the same problem (sound only from left speaker),
-> > > always the same result with 'speaker-test -c6 -twav' I can only hear
-> > > 'Front Left'
-> >
-> > OK.  But the headphone works, right?
-> >
-> Yes Headphones works, even mics works
->
-> >
-> > > Summary:
-> > > =======
-> > >
-> > > I have an HP DV7-1299EF, BIOS (Version F.2C, F.2A and F.23) , Due to a
-> BIOS
-> > > BUG, the
-> > > BIOS report only one speaker as an output so the driver does not know
-> > > how to use pins in order to have a stereo output ( at least that's
-> > > what you told me last month when you analysed the alsa-info output)...
-> And
-> > > so one speaker, the left speaker is the only speaker currently working
-> under
-> > > Linux.
-> > >
-> > >
-> > > First I suspected a hardware problem so 2 days ago I restored Windows,
-> > > tried the sound it works, and I updated my BIOS (it was version F.2A
-> > > before) but sadly it has the same BUG, I also tried reverting back to
-> F.2A
-> > > and further back to F.23 same result...
-> > >
-> > > Attached to this mail, my alsa-info.txt
-> >
-> > The codec registers look OK through a quick look.
-> >
-> > You can try GPIO pin up/down for each pin.  Also each pin has two
-> > directions, so you'll have 8 x 2 x 2 trials.
-> > For example, to test GPIO 3, pass 0x08 (= 1 << 3), try the commands
-> > below and check aplay at each.  (the lines '//' are just my comments)
-> >
-> >        // dir = 0, data = 1
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_MASK 0x08
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x00
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x08
-> >
-> >        // dir = 0, data = 0
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_MASK 0x08
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x00
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x00
-> >
-> >        // dir = 1, data = 0
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_MASK 0x08
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x08
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x00
-> >
-> >        // dir = 1, data = 1
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_MASK 0x08
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DIR 0x08
-> >        hda-verb /dev/snd/hwC0D0 0x01 SET_GPIO_DATA 0x08
-> >
-> > Repeat these for each GPIO pin, from 0 to 7.
-> >
-> > One another possibility is to use the output pin NID 0x0f.
-> > For testing this, build with the reconfig feature (usually enabled),
-> > then change the pin 0x0f default config, such as
-> >
-> >        echo 0x0f 0x90171111 > /sys/class/sound/hwC0D0/user_pin_configs
-> >
-> > then quit all sound apps and reconfigure
-> >
-> >        echo 1 > /sys/class/sound/hwC0D0/reconfig
-> >
-> > Restore the mixer setup once via alsactl
-> >
-> >        alsactl restore
-> >
-> > Then check the mixer volumes again, try aplay.  With this setup,
-> > try GPIO procedures above, too.
-> >
-> >
-> > thanks,
-> >
-> > Takashi
->
-> For the tests I've created a little script (attached for review if I
-> done something wrong), Here's the results
->
-> 0x01:
-> -------> dir = 0, data = 1  =====> Front Left
-> -------> dir = 0, data = 0  =====> Front Left
-> -------> dir = 1, data = 1  =====> Front Left
-> -------> dir = 1, data = 0  =====> No Sound
->
-> 0x02:
-> -------> dir = 0, data = 1  =====> No Sound
-> -------> dir = 0, data = 0  =====> No Sound
-> -------> dir = 1, data = 1  =====> No Sound
-> -------> dir = 1, data = 0  =====> No Sound
->
-> 0x04:
-> -------> dir = 0, data = 1  =====> No Sound
-> -------> dir = 0, data = 0  =====> No Sound
-> -------> dir = 1, data = 1  =====> No Sound
-> -------> dir = 1, data = 0  =====> No Sound
->
-> 0x16:
-> -------> dir = 0, data = 1  =====> No Sound
-> -------> dir = 0, data = 0  =====> No Sound
-> -------> dir = 1, data = 1  =====> No Sound
-> -------> dir = 1, data = 0  =====> No Sound
->
-> 0x32:
-> -------> dir = 0, data = 1  =====> No Sound
-> -------> dir = 0, data = 0  =====> No Sound
-> -------> dir = 1, data = 1  =====> LFE
-> -------> dir = 1, data = 0  =====> No Sound
->
-> 0x64:
-> -------> dir = 0, data = 1  =====> No Sound
-> -------> dir = 0, data = 0  =====> No Sound
-> -------> dir = 1, data = 1  =====> LFE
-> -------> dir = 1, data = 0  =====> No Sound
->
-> 0x128:
-> -------> dir = 0, data = 1  =====> No Sound
-> -------> dir = 0, data = 0  =====> No Sound
-> -------> dir = 1, data = 1  =====> LFE
-> -------> dir = 1, data = 0  =====> No Sound
->
->
-> I've got the same results with the NID 0x0f
->
->
-Hey Takashi,
+> At Sun, 15 Nov 2009 15:05:13 +0100,
+> Krzysztof Helt wrote:
+> > 
+> > From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> > 
+> > Update control names to be more closer to their meaning.
+> > Change the "Mono" name to the "Beep" as this line is usually
+> > used to forward the PC beeper signal to sound card's output.
+> > Update names for both cs423x and wss.
+> > 
+> > Clean up cs4235 controls according to the cs4235 doc.
+> 
+> Does this include the renaming of Aux controls you made?
+> Or, is it another issue?
+> 
 
-I forgot the
+Yes. The names "AuxN" are used for the cs4235 but not for the cs4236. 
+The cs4236 have been using recommended line sources names (CD and Line in)
+instead. I changed these names to be the same for the cs4235.
 
-0x08:
--------> dir = 0, data = 1  =====> No Sound
--------> dir = 0, data = 0  =====> No Sound
--------> dir = 1, data = 1  =====> No Sound
--------> dir = 1, data = 0  =====> No Sound
+> > Also, delete one misnamed cs4231 register define.
+> > 
+> > Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+> > ---
+> 
+> > It matters for the OSS layer, which does map the "Master Playback Volume"
+> > as a "Volume" control, but the "Master DAC Volume" is recognized by the OSS layer.
+> 
+> Adding more volume names to map OSS is no problem unless it conflicts
+> with other drivers.  IMO, "Master DAC" doesn't look intuitive than
+> "Master Digital".
+> 
 
+I can revert that. The "Master DAC" is drawn in the docs as a mixer after 
+the DAC (on the DAC analog output). For me the DAC is more intutitive
+but I can revert that.
 
-Looking at the results above, how can I get both the Front Left and LFE to
-output sound? and hopefully we get the right speaker later to work
+> BTW, what would "Bypass" switch do exactly?  This is also an
+> unintuitive mixer element...
+> 
 
-Thanks
+The beep bypass switch connects directly the beep input (aka mono input) 
+with the mono output (if it is used at all). The beep signal is not affected
+by the "beep playback switch" and "beep playback volume" controls then
+(it bypass the analog mixer). It is a routing switch.
 
+Regards,
+Krzysztof
 
--- 
-Wael Nasreddine
-
-Weem Chief-Development Officer - http://www.weem.com
-
-Blog    : http://wael.nasreddine.com
-E-mail  : wael.nasreddine@weem.com
-gTalk   : wael.nasreddine@gmail.com
-Tel     : +33.6.32.94.70.13
-Skype   : eMxyzptlk
-Twitter : @eMxyzptlk
-
-PGP: 1024D/C8DD18A2 06F6 1622 4BC8 4CEB D724  DE12 5565 3945 C8DD 18A2
-
-.: An infinite number of monkeys typing into GNU emacs,
-  would never make a good program. (L. Torvalds 1995) :.
+-----------------------------------------------------------------------
+Yoskine i Anna Maria Jopek zapraszaja do konkursu
+Wygraj 3 luksusowe weekendy w SPA lub 10 zestawow kosmetykow od Yoskine
+Sprawdz >> http://link.interia.pl/f2438
