@@ -1,16 +1,17 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 02/11] intelhdmi - fix channel mapping slot mask
-Date: Sun, 15 Nov 2009 19:32:21 +0800
-Message-ID: <20091115114439.548649432@intel.com>
+Subject: [PATCH 06/11] intelhdmi - separate out infoframe
+	checksum routine
+Date: Sun, 15 Nov 2009 19:32:25 +0800
+Message-ID: <20091115114440.084062308@intel.com>
 References: <20091115113219.606666087@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0330624155
-	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 12:46:13 +0100 (CET)
-Content-Disposition: inline; filename=hdmi-channel-mapping-fix.patch
+	by alsa0.perex.cz (Postfix) with ESMTP id E92322415A
+	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 12:46:14 +0100 (CET)
+Content-Disposition: inline; filename=hdmi-checksum.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,19 +25,54 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Shane W <shane-alsa@csy.ca>, =?UTF-8?q?David=20H=C3=A4rdeman?= <david@hardeman.nu>
 List-Id: alsa-devel@alsa-project.org
 
+And make it right when called for more than one times.
+
 Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- sound/pci/hda/patch_intelhdmi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/pci/hda/patch_intelhdmi.c |   23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
---- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:14:39.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:14:46.000000000 +0800
-@@ -433,7 +433,7 @@ static void hdmi_debug_channel_mapping(s
- 		slot = snd_hda_codec_read(codec, nid, 0,
- 						AC_VERB_GET_HDMI_CHAN_SLOT, i);
- 		printk(KERN_DEBUG "HDMI: ASP channel %d => slot %d\n",
--						slot >> 4, slot & 0x7);
-+						slot >> 4, slot & 0xf);
- 	}
+--- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-02 16:11:22.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-02 16:27:42.000000000 +0800
+@@ -508,24 +508,35 @@ static void hdmi_clear_dip_buffers(struc
  #endif
  }
+ 
++static void hdmi_checksum_audio_infoframe(struct hdmi_audio_infoframe *ai)
++{
++	u8 *bytes = (u8 *)ai;
++	u8 sum = 0;
++	int i;
++
++	ai->checksum = 0;
++
++	for (i = 0; i < sizeof(*ai); i++)
++		sum += bytes[i];
++
++	ai->checksum = - sum;
++}
++
+ static void hdmi_fill_audio_infoframe(struct hda_codec *codec,
+ 				      hda_nid_t pin_nid,
+ 				      struct hdmi_audio_infoframe *ai)
+ {
+-	u8 *params = (u8 *)ai;
+-	u8 sum = 0;
++	u8 *bytes = (u8 *)ai;
+ 	int i;
+ 
+ 	hdmi_debug_dip_size(codec, pin_nid);
+ 	hdmi_clear_dip_buffers(codec, pin_nid); /* be paranoid */
+ 
+-	for (i = 0; i < sizeof(*ai); i++)
+-		sum += params[i];
+-	ai->checksum = - sum;
++	hdmi_checksum_audio_infoframe(ai);
+ 
+ 	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
+ 	for (i = 0; i < sizeof(*ai); i++)
+-		hdmi_write_dip_byte(codec, pin_nid, params[i]);
++		hdmi_write_dip_byte(codec, pin_nid, bytes[i]);
+ }
+ 
+ /*
