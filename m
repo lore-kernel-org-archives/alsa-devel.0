@@ -1,17 +1,13 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 06/11] intelhdmi - separate out infoframe
-	checksum routine
-Date: Sun, 15 Nov 2009 19:32:25 +0800
-Message-ID: <20091115114440.084062308@intel.com>
+Subject: [PATCH 07/11] intelhdmi - sticky infoframe
+Date: Sun, 15 Nov 2009 19:32:26 +0800
+Message-ID: <20091115114440.214195260@intel.com>
 References: <20091115113219.606666087@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4272755697412814473=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id E92322415A
-	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 12:46:14 +0100 (CET)
-Content-Disposition: inline; filename=hdmi-checksum.patch
+	by alsa0.perex.cz (Postfix) with ESMTP id 9736D24154
+	for <alsa-devel@alsa-project.org>; Sun, 15 Nov 2009 12:46:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,54 +21,94 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Shane W <shane-alsa@csy.ca>, =?UTF-8?q?David=20H=C3=A4rdeman?= <david@hardeman.nu>
 List-Id: alsa-devel@alsa-project.org
 
-And make it right when called for more than one times.
+--===============4272755697412814473==
+Content-Disposition: inline; filename=hdmi-sticky-infoframe.patch
 
+Remember the active infoframe, so as to avoid stop/restart infoframe
+transmission when switching between audio clips of the same format.
+
+Proposed by Shang and David.
+
+CC: Shane W <shane-alsa@csy.ca>
+CC: David Härdeman <david@hardeman.nu>
 Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- sound/pci/hda/patch_intelhdmi.c |   23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
+ sound/pci/hda/patch_intelhdmi.c |   38 ++++++++++++++++++++----------
+ 1 file changed, 26 insertions(+), 12 deletions(-)
 
---- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-02 16:11:22.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-02 16:27:42.000000000 +0800
-@@ -508,24 +508,35 @@ static void hdmi_clear_dip_buffers(struc
- #endif
+--- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-05 13:52:12.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-05 13:56:58.000000000 +0800
+@@ -646,6 +646,27 @@ static void hdmi_setup_channel_mapping(s
+ 	hdmi_debug_channel_mapping(codec, nid);
  }
  
-+static void hdmi_checksum_audio_infoframe(struct hdmi_audio_infoframe *ai)
++static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
++				    struct hdmi_audio_infoframe *ai)
 +{
 +	u8 *bytes = (u8 *)ai;
-+	u8 sum = 0;
++	u8 val;
 +	int i;
 +
-+	ai->checksum = 0;
++	if (snd_hda_codec_read(codec, pin_nid, 0, AC_VERB_GET_HDMI_DIP_XMIT, 0)
++							    != AC_DIPXMIT_BEST)
++		return false;
 +
-+	for (i = 0; i < sizeof(*ai); i++)
-+		sum += bytes[i];
++	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
++	for (i = 0; i < sizeof(*ai); i++) {
++		val = snd_hda_codec_read(codec, pin_nid, 0,
++					 AC_VERB_GET_HDMI_DIP_DATA, 0);
++		if (val != bytes[i])
++			return false;
++	}
 +
-+	ai->checksum = - sum;
++	return true;
 +}
-+
- static void hdmi_fill_audio_infoframe(struct hda_codec *codec,
- 				      hda_nid_t pin_nid,
- 				      struct hdmi_audio_infoframe *ai)
- {
--	u8 *params = (u8 *)ai;
--	u8 sum = 0;
-+	u8 *bytes = (u8 *)ai;
- 	int i;
  
- 	hdmi_debug_dip_size(codec, pin_nid);
- 	hdmi_clear_dip_buffers(codec, pin_nid); /* be paranoid */
+ static void hdmi_setup_audio_infoframe(struct hda_codec *codec, hda_nid_t nid,
+ 					struct snd_pcm_substream *substream)
+@@ -670,8 +691,11 @@ static void hdmi_setup_audio_infoframe(s
+ 			continue;
  
--	for (i = 0; i < sizeof(*ai); i++)
--		sum += params[i];
--	ai->checksum = - sum;
-+	hdmi_checksum_audio_infoframe(ai);
- 
- 	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
- 	for (i = 0; i < sizeof(*ai); i++)
--		hdmi_write_dip_byte(codec, pin_nid, params[i]);
-+		hdmi_write_dip_byte(codec, pin_nid, bytes[i]);
+ 		pin_nid = spec->pin[i];
+-		hdmi_fill_audio_infoframe(codec, pin_nid, &ai);
+-		hdmi_start_infoframe_trans(codec, pin_nid);
++		if (!hdmi_infoframe_uptodate(codec, pin_nid, &ai)) {
++			hdmi_stop_infoframe_trans(codec, pin_nid);
++			hdmi_fill_audio_infoframe(codec, pin_nid, &ai);
++			hdmi_start_infoframe_trans(codec, pin_nid);
++		}
+ 	}
  }
  
- /*
+@@ -767,16 +791,6 @@ static int intel_hdmi_playback_pcm_clean
+ 					   struct hda_codec *codec,
+ 					   struct snd_pcm_substream *substream)
+ {
+-	struct intel_hdmi_spec *spec = codec->spec;
+-	int i;
+-
+-	for (i = 0; i < spec->num_pins; i++) {
+-		if (spec->pin_cvt[i] != hinfo->nid)
+-			continue;
+-
+-		hdmi_stop_infoframe_trans(codec, spec->pin[i]);
+-	}
+-
+ 	snd_hda_codec_cleanup_stream(codec, hinfo->nid);
+ 	return 0;
+ }
+
+
+
+--===============4272755697412814473==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============4272755697412814473==--
