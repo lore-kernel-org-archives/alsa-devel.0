@@ -1,21 +1,21 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 5/7] S3C AUDIO: Add header to pass platform
-	data to device drivers
-Date: Mon, 16 Nov 2009 20:46:51 +0900
-Message-ID: <1b68c6790911160346l4d9cf1en3e0ba42b4dacb7d5@mail.gmail.com>
-References: <1257914722-4507-1-git-send-email-jassi.brar@samsung.com>
-	<20091116104941.GW23772@trinity.fluff.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [alsa-cvslog] alsa-kmirror: ALSA kernel mirror
+ repository branch, master now at v1.0.21-334-g6739046
+Date: Mon, 16 Nov 2009 13:22:56 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0911161320410.4806@eeebox2.perex-int.cz>
+References: <20091112095403.1CAAE103807@alsa0.perex.cz>
+	<s5hr5s4c9in.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0911121154310.4806@eeebox2.perex-int.cz>
+	<alpine.LNX.2.00.0911161020500.4806@eeebox2.perex-int.cz>
+	<s5htywuk90y.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f183.google.com (mail-px0-f183.google.com
-	[209.85.216.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD44F1038C9
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 12:46:51 +0100 (CET)
-Received: by mail-px0-f183.google.com with SMTP id 13so1280190pxi.24
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 03:46:51 -0800 (PST)
-In-Reply-To: <20091116104941.GW23772@trinity.fluff.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 491E02453C
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 13:22:57 +0100 (CET)
+In-Reply-To: <s5htywuk90y.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-linux@fluff.org>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBOb3YgMTYsIDIwMDkgYXQgNzo0OSBQTSwgQmVuIERvb2tzIDxiZW4tbGludXhAZmx1
-ZmYub3JnPiB3cm90ZToKPiBPbiBXZWQsIE5vdiAxMSwgMjAwOSBhdCAwMTo0NToyMlBNICswOTAw
-LCBKYXNzaSBCcmFyIHdyb3RlOgo+Cj4gUGxlYXNlIHB1dCBzb21ldGhpbmcgaGVyZSEgRXZlbiBp
-ZiBpdCBqdXN0IGEgc2xpZ2h0bHkgZXhwYW5kZWQgdmVyc2lvbgo+IG9mIHRoZSBwYXRjaCB0aXRs
-ZS4Kd2lsbCBkby4gdGhhbmtzCgo+PiBTaWduZWQtb2ZmLWJ5OiBKYXNzaSBCcmFyIDxqYXNzaS5i
-cmFyQHNhbXN1bmcuY29tPgo+Cj4gVGhpcyBjb3VsZCBiZSBtZXJnZWQgdG8gdGhlIGFsc2EgdHJl
-ZSwgd2UgY2FuIG1vdmUgaXQgb25jZSB0aGUgb3RoZXIKPiBjaGFuZ2VzIGFyZSBtYWRlLgo+Cj4+
-IC0tLQo+PiDCoGFyY2gvYXJtL3BsYXQtczNjL2luY2x1ZGUvcGxhdC9hdWRpby5oIHwgwqAgMTcg
-KysrKysrKysrKysrKysrKysKPj4gwqAxIGZpbGVzIGNoYW5nZWQsIDE3IGluc2VydGlvbnMoKyks
-IDAgZGVsZXRpb25zKC0pCj4+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IGFyY2gvYXJtL3BsYXQtczNj
-L2luY2x1ZGUvcGxhdC9hdWRpby5oCj4+Cj4+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9wbGF0LXMz
-Yy9pbmNsdWRlL3BsYXQvYXVkaW8uaCBiL2FyY2gvYXJtL3BsYXQtczNjL2luY2x1ZGUvcGxhdC9h
-dWRpby5oCj4+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4+IGluZGV4IDAwMDAwMDAuLmYyMmQyM2IK
-Pj4gLS0tIC9kZXYvbnVsbAo+PiArKysgYi9hcmNoL2FybS9wbGF0LXMzYy9pbmNsdWRlL3BsYXQv
-YXVkaW8uaAo+PiBAQCAtMCwwICsxLDE3IEBACj4+ICsvKiBhcmNoL2FybS9wbGF0LXMzYy9pbmNs
-dWRlL3BsYXQvYXVkaW8uaAo+PiArICoKPj4gKyAqIENvcHlyaWdodCAoYykgMjAwOSBTYW1zdW5n
-IEVsZWN0cm9uaWNzIENvLiBMdGQKPj4gKyAqIEF1dGhvcjogSmFzd2luZGVyIFNpbmdoIDxqYXNz
-aS5icmFyQHNhbXN1bmcuY29tPgo+PiArICoKPj4gKyAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNv
-ZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5Cj4+ICsgKiBpdCB1
-bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIHZlcnNpb24g
-MiBhcwo+PiArICogcHVibGlzaGVkIGJ5IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24uCj4+
-ICsgKi8KPj4gKwo+PiArLyoqCj4+ICsgKiBzdHJ1Y3QgczNjX2F1ZGlvX3BkYXRhIC0gY29tbW9u
-IHBsYXRmb3JtIGRhdGEgZm9yIGF1ZGlvIGRldmljZSBkcml2ZXJzCj4+ICsgKiBAY2ZnX2dwaW86
-IENhbGxiYWNrIGZ1bmN0aW9uIHRvIHNldHVwIG11eCdlZCBwaW5zIGluIEkyUy9QQ00vQUM5NyBt
-b2RlCj4+ICsgKi8KPj4gK3N0cnVjdCBzM2NfYXVkaW9fcGRhdGEgewo+PiArIMKgIMKgIGludCAo
-KmNmZ19ncGlvKShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICopOwo+PiArfTsKPj4gLS0KPj4gMS42
-LjIuNQo+Pgo+Cj4gLS0KPiAtLQo+IEJlbgo+Cj4gUTogwqAgwqAgwqBXaGF0J3MgYSBsaWdodC15
-ZWFyPwo+IEE6IMKgIMKgIMKgT25lLXRoaXJkIGxlc3MgY2Fsb3JpZXMgdGhhbiBhIHJlZ3VsYXIg
-eWVhci4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Cj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, 16 Nov 2009, Takashi Iwai wrote:
+
+> At Mon, 16 Nov 2009 10:23:42 +0100 (CET),
+> Jaroslav Kysela wrote:
+>>
+>> On Thu, 12 Nov 2009, Jaroslav Kysela wrote:
+>>
+>>>> Also, both commits give many warnings via checkpatch.pl...
+>>>> So I postpone the merge so far.
+>>>
+>>> I'll fix that, if we agree how to go...
+>>
+>> I recoded both patches:
+>>
+>> ALSA: hda - proc - add support for dynamic controls to mixer<->NID mapping
+>>
+>> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=fb8b61ef469a509b83681795fd593a3c02703a1f
+>>
+>> ALSA: hda - proc - introduce Control: lines to show mixer<->NID assignment
+>>
+>> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=aedbf6527693078aff7c525506c9f06c1237b5f5
+>
+> Yeah, this looks a lot better!
+> Applied both now in addition to a minor clean up by defining 1<<31
+> as a const together with some understandable comments.
+
+Thanks. Please, apply also:
+
+ALSA: hda - move snd_hda_pcm_type_name from hda_codec.h to hda_local.h
+
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=b1fb471ab578d5b82b7d83dfdd4aa2c849b7b84c
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
