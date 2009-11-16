@@ -1,12 +1,16 @@
-From: cjg@cruxppc.org
-Subject: [PATCH - Full support for Toshiba NB200 1/1] Support
-	for Toshiba NB200
-Date: Sun, 15 Nov 2009 22:10:38 +0100
-Message-ID: <4b006e65.100db80a.17b7.ffffd2f3@mx.google.com>
+From: Dan Carpenter <error27@gmail.com>
+Subject: [patch] make some bitfields unsigned
+Date: Mon, 16 Nov 2009 11:07:17 +0200 (SAST)
+Message-ID: <alpine.DEB.2.00.0911141211450.3704@bicker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BDFF10380A
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 10:07:26 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 3so1877005eyh.16
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 01:07:26 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,156 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Giuseppe Coviello <cjg@cruxppc.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Giuseppe Coviello <cjg@cruxppc.org>
+This is a clean up and doesn't change the behavior.
 
+Bit fields should always be unsigned.  Otherwise pm_suspend_enabled will 
+be -1 when you want it to be 1.  The other bad thing is that the sparse 
+checker will complain 36 times if they aren't unsigned.
 
-Signed-off-by: Giuseppe Coviello <cjg@cruxppc.org>
----
- sound/pci/hda/patch_realtek.c |   86 ++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 85 insertions(+), 1 deletions(-)
+The other bitfields in that struct are unsigned already.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c0a98e7..69484b8 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -191,6 +191,7 @@ enum {
- 	ALC272_DELL,
- 	ALC272_DELL_ZM1,
- 	ALC272_SAMSUNG_NC10,
-+	ALC272_TOSHIBA_NB200,
- 	ALC662_AUTO,
- 	ALC662_MODEL_LAST,
- };
-@@ -16355,6 +16356,40 @@ static struct hda_verb alc272_dell_init_verbs[] = {
- 	{}
- };
- 
-+static struct snd_kcontrol_new alc272_toshiba_mixer[] = {
-+	HDA_CODEC_VOLUME("Front Mic Boost", 0x19, 0, HDA_INPUT),
-+
-+	HDA_CODEC_VOLUME("i-Mic Playback Volume", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_MUTE("i-Mic Playback Switch", 0x0b, 0x1, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
-+	HDA_CODEC_MUTE("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
-+	{ } /* end */
-+};
-+
-+static struct hda_verb alc272_toshiba_init_verbs[] = {
-+	/* Front Pin: output 0 (0x0c) */
-+	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT}, /* 0x14 */
-+	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE}, /* 0x14 */
-+	/* Front Mic pin: input vref at 80% */
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80}, /* 0x19 */
-+	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},    /* 0x19 */
-+	{0x17, AC_VERB_SET_EAPD_BTLENABLE, 2}, /* 0x14 */
-+	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN}, /* originally 0x12 */
-+	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
-+	{0x13, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+	{0x16, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_IN},
-+	{0x21, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
-+	{0x21, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x21, AC_VERB_SET_CONNECT_SEL, 0x01},  /* Headphone */
-+	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(0)},
-+	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(9)},
-+	{0x18, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | ALC880_MIC_EVENT},
-+	{0x21, AC_VERB_SET_UNSOLICITED_ENABLE, AC_USRSP_EN | ALC880_HP_EVENT},
-+	{}
-+};
-+
-+
- static struct snd_kcontrol_new alc662_auto_capture_mixer[] = {
- 	HDA_CODEC_VOLUME("Capture Volume", 0x09, 0x0, HDA_INPUT),
- 	HDA_CODEC_MUTE("Capture Switch", 0x09, 0x0, HDA_INPUT),
-@@ -16579,6 +16614,40 @@ static void alc663_m51va_inithook(struct hda_codec *codec)
- 	alc_mic_automute(codec);
- }
- 
-+static void alc272_toshiba_speaker_automute(struct hda_codec *codec)
-+{
-+	unsigned int present;
-+	unsigned char bits;
-+
-+	present = snd_hda_codec_read(codec, 0x21, 0,
-+			AC_VERB_GET_PIN_SENSE, 0)
-+			& AC_PINSENSE_PRESENCE;
-+	bits = present ? HDA_AMP_MUTE : 0;
-+	snd_hda_codec_amp_stereo(codec, 0x17, HDA_OUTPUT, 0,
-+			AMP_OUT_MUTE, bits);
-+	snd_hda_codec_amp_stereo(codec, 0x17, HDA_OUTPUT, 1,
-+			AMP_OUT_MUTE, bits);
-+}
-+
-+static void alc272_toshiba_unsol_event(struct hda_codec *codec,
-+		unsigned int res)
-+{
-+	switch (res >> 26) {
-+	case ALC880_HP_EVENT:
-+		alc272_toshiba_speaker_automute(codec);
-+		break;
-+	case ALC880_MIC_EVENT:
-+		alc_mic_automute(codec);
-+		break;
-+	}
-+}
-+
-+static void alc272_toshiba_inithook(struct hda_codec *codec)
-+{
-+	alc272_toshiba_speaker_automute(codec);
-+	alc_mic_automute(codec);
-+}
-+
- /* ***************** Mode1 ******************************/
- #define alc663_mode1_unsol_event	alc663_m51va_unsol_event
- #define alc663_mode1_setup		alc663_m51va_setup
-@@ -16830,6 +16899,7 @@ static const char *alc662_models[ALC662_MODEL_LAST] = {
- 	[ALC663_ASUS_MODE6] = "asus-mode6",
- 	[ALC272_DELL]		= "dell",
- 	[ALC272_DELL_ZM1]	= "dell-zm1",
-+	[ALC272_TOSHIBA_NB200]  = "toshiba-nb200",
- 	[ALC272_SAMSUNG_NC10]	= "samsung-nc10",
- 	[ALC662_AUTO]		= "auto",
- };
-@@ -16838,6 +16908,7 @@ static struct snd_pci_quirk alc662_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1019, 0x9087, "ECS", ALC662_ECS),
- 	SND_PCI_QUIRK(0x1028, 0x02d6, "DELL", ALC272_DELL),
- 	SND_PCI_QUIRK(0x1028, 0x02f4, "DELL ZM1", ALC272_DELL_ZM1),
-+	SND_PCI_QUIRK(0x1179, 0xff6e, "Toshiba NB200", ALC272_TOSHIBA_NB200),
- 	SND_PCI_QUIRK(0x1043, 0x1000, "ASUS N50Vm", ALC663_ASUS_MODE1),
- 	SND_PCI_QUIRK(0x1043, 0x1092, "ASUS NB", ALC663_ASUS_MODE3),
- 	SND_PCI_QUIRK(0x1043, 0x11c3, "ASUS M70V", ALC663_ASUS_MODE3),
-@@ -16888,7 +16959,6 @@ static struct snd_pci_quirk alc662_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x105b, 0x0cd6, "Foxconn", ALC662_ECS),
- 	SND_PCI_QUIRK(0x105b, 0x0d47, "Foxconn 45CMX/45GMX/45CMX-K",
- 		      ALC662_3ST_6ch_DIG),
--	SND_PCI_QUIRK(0x1179, 0xff6e, "Toshiba NB200", ALC663_ASUS_MODE4),
- 	SND_PCI_QUIRK(0x144d, 0xca00, "Samsung NC10", ALC272_SAMSUNG_NC10),
- 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte 945GCM-S2L",
- 		      ALC662_3ST_6ch_DIG),
-@@ -17175,6 +17245,20 @@ static struct alc_config_preset alc662_presets[] = {
- 		.setup = alc663_mode4_setup,
- 		.init_hook = alc663_mode4_inithook,
- 	},
-+	[ALC272_TOSHIBA_NB200] = {
-+		.mixers = { alc663_m51va_mixer, alc272_toshiba_mixer },
-+		.init_verbs = { alc662_init_verbs, alc272_toshiba_init_verbs },
-+		.num_dacs = ARRAY_SIZE(alc662_dac_nids),
-+		.dac_nids = alc662_dac_nids,
-+		.num_channel_mode = ARRAY_SIZE(alc662_3ST_2ch_modes),
-+		.adc_nids = alc662_adc_nids,
-+		.num_adc_nids = ARRAY_SIZE(alc662_adc_nids),
-+		.capsrc_nids = alc662_capsrc_nids,
-+		.channel_mode = alc662_3ST_2ch_modes,
-+		.input_mux = &alc663_capture_source,
-+		.unsol_event = alc272_toshiba_unsol_event,
-+		.init_hook = alc272_toshiba_inithook,
-+	},
- };
- 
- 
--- 
-1.6.4.2
+regards,
+dan carpenter
+
+Signed-off-by: Dan Carpenter <error27@gmail.com>
+
+--- orig/sound/pci/ice1712/ice1712.h	2009-11-14 12:09:26.000000000 +0200
++++ devel/sound/pci/ice1712/ice1712.h	2009-11-14 12:10:01.000000000 +0200
+@@ -382,8 +382,8 @@
+ #ifdef CONFIG_PM
+ 	int (*pm_suspend)(struct snd_ice1712 *);
+ 	int (*pm_resume)(struct snd_ice1712 *);
+-	int pm_suspend_enabled:1;
+-	int pm_saved_is_spdif_master:1;
++	unsigned int pm_suspend_enabled:1;
++	unsigned int pm_saved_is_spdif_master:1;
+ 	unsigned int pm_saved_spdif_ctrl;
+ 	unsigned char pm_saved_spdif_cfg;
+ 	unsigned int pm_saved_route;
