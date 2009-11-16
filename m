@@ -1,18 +1,17 @@
-From: Javier Kohen <jkohen@users.sourceforge.net>
-Subject: Quirk to disable master volume control in PCM2702
-Date: Tue, 17 Nov 2009 00:17:10 +0100
-Message-ID: <861213340911161517tfb33467i9a4b270c0a548c69@mail.gmail.com>
-References: <861213340911161513n53c8b303i67ac2f07db87cddc@mail.gmail.com>
+From: Christian Hergert <christian.hergert@gmail.com>
+Subject: PATCH: ALSA - hda - Add support for Dell E6400 docking
+	station
+Date: Mon, 16 Nov 2009 15:20:32 -0800
+Message-ID: <6d4a25b10911161520i50a677d6m78d057d900676469@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016368e2a7d801efb047885351f
+Content-Type: multipart/mixed; boundary=00504502cc018ade170478854135
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
-	[209.85.211.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4D3BA1037FE
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 00:17:11 +0100 (CET)
-Received: by ywh28 with SMTP id 28so5360958ywh.16
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 15:17:10 -0800 (PST)
-In-Reply-To: <861213340911161513n53c8b303i67ac2f07db87cddc@mail.gmail.com>
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72E0010381F
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 00:20:33 +0100 (CET)
+Received: by pwj11 with SMTP id 11so8052078pwj.32
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 15:20:32 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,71 +24,59 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0016368e2a7d801efb047885351f
+--00504502cc018ade170478854135
 Content-Type: text/plain; charset=ISO-8859-1
 
-[Alan Stern on BCC]
+Hi,
 
-Hi ALSA developers,
+I made a patch to fix bug 4657[1] on the tracker.  I'm fairly certain that
+it isn't the correct approach but would like some feedback on what that
+would be.
 
-I've written the attached patch to disable the master volume control
-in this chipset. The datasheet [1] documents two independent channel
-volume controls, one master mute control and one master volume
-control. However, at least on my device (a Fubar USB DAC), the master
-volume control always returns USB stalls when queried for any of its
-parameters (min/max/res/cur). All other controls work as expected,
-both at the protocol and at the application levels.
+The power-mappings in patch_sigmatel.c seem to allow you to flip multiple
+bits.  In the case of the Dell docking station, you need to enable some bits
+while disabling others.  Therefore, instead of using the power mappings I
+just hacked in a quick check to work for the hardware I have on hand.  If
+there is a proper way to fix this that I have missed, I'll be more than
+happy to fix the patch appropriately.
 
-Read on for the gory details. Otherwise please take the patch at face
-value. I'm ready to make changes if necessary to make it more fitting
-to the rest of the code. It would be very appreciated if this can go
-into 2.6.32, or in a stable patch shortly after.
+[1] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4657
 
-Normally I wouldn't give this problem a second thought, since in the
-worst case a non-functional control appears in the mixer. Only that
-Alan Stern submitted a patch to the USB subsystem during the
-development of kernel 2.6.31 that enables the sending of the
-Clear-TT-Buffer request to USB hubs on stalls from devices. For some
-reason upon receiving the Clear-TT-Buffer the audio goes mute, even
-though the kernel keeps sending the audio stream to the device. There
-is an ongoing thread on the linux-usb ML where Alan argues that
-sending the request is the correct behavior and it shouldn't have the
-effect I'm seeing. Since I lack any knowledge of the USB protocol, I
-take his word. However, it seems that either the USB specs are wrong,
-or my USB hub or the card are buggy.
+Regards,
+--
+Christian Hergert
 
-In the meantime I'm trying to get another hub to compare.
-Unfortunately I have to rely on the hub, because the PCM2702 and my
-motherboard don't interact well. After a while the sound is degraded,
-first into a hiss, then into pure noise. Other users have complained
-on different forums; one of the wrote to alsa-user a month ago. I
-haven't been able to make any progress to track this issue with usbmon
-and ALSA verbose debug messages, to nobody's surprise, since I'm a
-complete layman in that area. Any help with this would be appreciated
-as well.
-
-[1] http://focus.ti.com/docs/prod/folders/print/pcm2702.html
-
---0016368e2a7d801efb047885351f
-Content-Type: application/octet-stream; name="pcm2702-quirks.diff"
-Content-Disposition: attachment; filename="pcm2702-quirks.diff"
+--00504502cc018ade170478854135
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ALSA-hda-Add-support-for-Dell-E6400-docking-station.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Add-support-for-Dell-E6400-docking-station.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g23u0xsr0
+X-Attachment-Id: f_g23uycoo0
 
-ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi91c2JtaXhlci5jIGIvc291bmQvdXNiL3VzYm1peGVyLmMK
-aW5kZXggOWVmY2ZkMC4uNDA2MzE1ZSAxMDA2NDQKLS0tIGEvc291bmQvdXNiL3VzYm1peGVyLmMK
-KysrIGIvc291bmQvdXNiL3VzYm1peGVyLmMKQEAgLTEwNzEsNiArMTA3MSwxNiBAQCBzdGF0aWMg
-aW50IHBhcnNlX2F1ZGlvX2ZlYXR1cmVfdW5pdChzdHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0YXRlLCBp
-bnQgdW5pdGlkLCB1bnNpZwogCWNoYW5uZWxzID0gKGZ0clswXSAtIDcpIC8gY3NpemUgLSAxOwog
-CiAJbWFzdGVyX2JpdHMgPSBzbmRfdXNiX2NvbWJpbmVfYnl0ZXMoZnRyICsgNiwgY3NpemUpOwor
-CS8qIG1hc3RlciBjb25maWd1cmF0aW9uIHF1aXJrcyAqLworCXN3aXRjaCAoc3RhdGUtPmNoaXAt
-PnVzYl9pZCkgeworCWNhc2UgVVNCX0lEKDB4MDhiYiwgMHgyNzAyKToKKwkJc25kX3ByaW50ayhL
-RVJOX0lORk8KKwkJCSAgICJtYXN0ZXIgdm9sdW1lIHF1aXJrIGZvciBQQ00yNzAyIGNoaXBcbiIp
-OworCQkvKiBkaXNhYmxlIG5vbi1mdW5jdGlvbmFsIHZvbHVtZSBjb250cm9sICovCisJCW1hc3Rl
-cl9iaXRzICY9IH4oMSA8PCAoVVNCX0ZFQVRVUkVfVk9MVU1FIC0gMSkpOworCQlicmVhazsKKwor
-CX0KIAlpZiAoY2hhbm5lbHMgPiAwKQogCQlmaXJzdF9jaF9iaXRzID0gc25kX3VzYl9jb21iaW5l
-X2J5dGVzKGZ0ciArIDYgKyBjc2l6ZSwgY3NpemUpOwogCWVsc2UK
---0016368e2a7d801efb047885351f
+RnJvbSA1NjUwYjFlNzIyMTgyYzFkZGQ3ZGNhZWY2ODg1MDMzYTBlZjEwYjljIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDaHJpc3RpYW4gSGVyZ2VydCA8Y2hyaXNAZHJvbmVsYWJzLmNv
+bT4KRGF0ZTogTW9uLCAxNiBOb3YgMjAwOSAxNDoyNzoyMiAtMDgwMApTdWJqZWN0OiBbUEFUQ0hd
+IEFMU0E6IGhkYSAtIEFkZCBzdXBwb3J0IGZvciBEZWxsIEU2NDAwIGRvY2tpbmcgc3RhdGlvbgoK
+QnVnTGluazogaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvYWxzYS1kcml2ZXIvK2J1Zy8zODM3
+NTYKQnVnTGluazogaHR0cHM6Ly9idWd0cmFjay5hbHNhLXByb2plY3Qub3JnL2Fsc2EtYnVnL3Zp
+ZXcucGhwP2lkPTQ2NTcKCk11dGUgdGhlIGludGVybmFsIHNwZWFrZXJzIHdoZW4gdGhlIG91dHB1
+dCBqYWNrIG9uIHRoZQpkb2NraW5nIHN0YXRpb24gaXMgZW5hYmxlZC4KLS0tCiBzb3VuZC9wY2kv
+aGRhL3BhdGNoX3NpZ21hdGVsLmMgfCAgIDExICsrKysrKysrKysrCiAxIGZpbGVzIGNoYW5nZWQs
+IDExIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNp
+L2hkYS9wYXRjaF9zaWdtYXRlbC5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCmlu
+ZGV4IDBmNmMzM2QuLmVkNWQ5YjEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfc2ln
+bWF0ZWwuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMKQEAgLTQ1NjcsNiAr
+NDU2NywxNyBAQCBzdGF0aWMgdm9pZCBzdGFjX3RvZ2dsZV9wb3dlcl9tYXAoc3RydWN0IGhkYV9j
+b2RlYyAqY29kZWMsIGhkYV9uaWRfdCBuaWQsCiAJZWxzZQogCQl2YWwgfD0gaWR4OwogCisJaWYg
+KGNvZGVjLT52ZW5kb3JfaWQgPT0gMHgxMTFkNzZiMiAmJgorCQkJc3BlYy0+Ym9hcmRfY29uZmln
+ID09IFNUQUNfREVMTF9NNF8xICYmCisJCQlpZHggPT0gNCkgeworCQkvKiB0aGUgaW50ZXJuYWwg
+c3BlYWtlcnMgbmVlZCB0byBiZSBtdXRlZCB3aGVuIHRoZQorCQkgKiBkb2NraW5nIHN0YXRpb24g
+b3V0cHV0IGlzIGVuYWJsZWQuICovCisJCWlmIChlbmFibGUpCisJCQl2YWwgfD0gMjsKKwkJZWxz
+ZQorCQkJdmFsICY9IH4yOworCX0KKwogCS8qIHBvd2VyIGRvd24gdW51c2VkIG91dHB1dCBwb3J0
+cyAqLwogCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIGNvZGVjLT5hZmcsIDAsIDB4N2VjLCB2
+YWwpOwogfQotLSAKMS42LjMuMwoK
+--00504502cc018ade170478854135
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -100,4 +87,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---0016368e2a7d801efb047885351f--
+--00504502cc018ade170478854135--
