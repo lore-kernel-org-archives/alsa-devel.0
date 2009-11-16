@@ -1,24 +1,40 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: OMAP: enable Overo driver for CM-T35
-Date: Mon, 16 Nov 2009 16:05:12 +0000
-Message-ID: <20091116160512.GA29365@rakim.wolfsonmicro.main>
-References: <1258379603-29089-1-git-send-email-mike@compulab.co.il>
- <1258380019.3570.113.camel@odin>
- <4B015F6D.1000001@compulab.co.il>
+Subject: Re: [patch] move dereference after null check
+Date: Mon, 16 Nov 2009 16:11:24 +0000
+Message-ID: <20091116161124.GB29365@rakim.wolfsonmicro.main>
+References: <alpine.DEB.2.00.0911151555010.12810@bicker>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5AC3B245B3
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 17:11:25 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4B015F6D.1000001@compulab.co.il>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mike Rapoport <mike@compulab.co.il>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, linux-omap@vger.kernel.org, steve@sakoman.com, alsa-devel@alsa-project.org
+In-Reply-To: <alpine.DEB.2.00.0911151555010.12810@bicker>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <error27@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 16, 2009 at 04:19:25PM +0200, Mike Rapoport wrote:
+On Mon, Nov 16, 2009 at 11:06:33AM +0200, Dan Carpenter wrote:
+> The 'jack' variable was dereference before the NULL check so this patch 
+> moves the dereference later.
+> 
+> regards,
+> dan carpenter
+> 
+> Signed-off-by: Dan Carpenter <error27@gmail.com>
 
-> I'm ok if it'll say "Not Overo!" :)
-> Anyway, here's the update:
-
-Applied, thanks (with manual hacking to remove the reply chain from the
-commit log).
+This does not apply to the current ASoC code, it appears that someone
+else has already provided an equivalent change.  When doing work like
+this it's normally best to work against -next to help avoid duplication
+such as this.
