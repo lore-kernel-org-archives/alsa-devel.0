@@ -1,67 +1,48 @@
-From: Wu Zhangjin <wuzhangjin@gmail.com>
-Subject: [PATCH] MIPS: Fixups of ALSA memory maps
-Date: Tue, 17 Nov 2009 00:48:14 +0800
-Message-ID: <9cbcd06037c18288a6493459b8f3a6e1562eca77.1258389992.git.wuzhangjin@gmail.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753565AbZKPQsX@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Ralf Baechle <ralf@linux-mips.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Wu Zhangjin <wuzhangjin@gmail.com>, Wu Zhangjin <wuzj@lemote.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] soc-core: let suspend/resume not called if
+ the card is not instantiated
+Date: Mon, 16 Nov 2009 17:04:50 +0000
+Message-ID: <20091116170450.GC29365@rakim.wolfsonmicro.main>
+References: <1258087878-18679-1-git-send-email-21cnbao@gmail.com>
+	<20091113133824.GD21516@rakim.wolfsonmicro.main>
+	<3c17e3570911130656v662dccej7d6c67e7eaa65b65@mail.gmail.com>
+	<20091113150224.GA23607@rakim.wolfsonmicro.main>
+	<3c17e3570911130729xab6a443t5b257c2699dfa169@mail.gmail.com>
+	<20091113170459.GB23607@rakim.wolfsonmicro.main>
+	<3c17e3570911131646h62cf59c2q765a5aca6f626ad4@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 90ACB1038EA
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 18:04:51 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <3c17e3570911131646h62cf59c2q765a5aca6f626ad4@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, All
+On Sat, Nov 14, 2009 at 08:46:05AM +0800, Barry Song wrote:
 
-Seems this is MIPS specific, but it's not that easy to move this patch
-into the arch/mips part, So, any better solution?
+> Then do you think it is workable to find the dai in dai_list before
+> calling its suspend/resume? My original plan was checking the
+> existence of DAI in dai_list, if DAI doesn't exist, don't call its PM
 
-Thanks & Regards,
-       Wu Zhangjin
+I think so, yes.
 
-------------------------
+> entries.  Then I found card->instantiated, I moved to check it.
+> If you have better plan for fixing this problem, I can wait and keep
+> this fix locally.
 
-The user application mmap audio dma regions must be dma-coherent. This
-patch fix it.
-
-Without this patch, artsd will fail on boot, and mplayer will exit with
-"Segmentation fault". (this happens on YeeLoong netbook, fuloong2f
-mini pc with snd_cs5535 audio card)
-
-This is originally from the to-mips branch of
-http://dev.lemote.com/code/linux_loongson, and contributed by Yanhua
-from Lemote Inc.
-
-Reported-by: qiaochong <qiaochong@gmail.com>
-Signed-off-by: Wu Zhangjin <wuzj@lemote.com>
----
- sound/core/pcm_native.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
-
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index ab73edf..2779b9a 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3087,7 +3087,11 @@ static int snd_pcm_mmap_data_fault(struct vm_area_struct *area,
- 			return VM_FAULT_SIGBUS;
- 	} else {
- 		vaddr = runtime->dma_area + offset;
-+#if defined(__mips__) && defined(CONFIG_DMA_NONCOHERENT)
-+		page = virt_to_page(CAC_ADDR(vaddr));
-+#else
- 		page = virt_to_page(vaddr);
-+#endif
- 	}
- 	get_page(page);
- 	vmf->page = page;
-@@ -3202,6 +3206,11 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
- 
-+#if defined(__mips__) && defined(CONFIG_DMA_NONCOHERENT)
-+	/* all mmap using uncached mode */
-+	area->vm_page_prot = pgprot_noncached(area->vm_page_prot);
-+	area->vm_flags |= (VM_RESERVED | VM_IO);
-+#endif
- 	offset = area->vm_pgoff << PAGE_SHIFT;
- 	switch (offset) {
- 	case SNDRV_PCM_MMAP_OFFSET_STATUS:
--- 
-1.6.2.1
+I don't have any immediate plan to work on this, like I say it's only
+really an issue in development.
