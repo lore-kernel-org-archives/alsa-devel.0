@@ -1,18 +1,18 @@
 From: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [PATCH 4/7] S3C64XX PCM: Added PCLK clock source
-	for the PCM	controllers
-Date: Mon, 16 Nov 2009 10:48:15 +0000
-Message-ID: <20091116104814.GV23772@trinity.fluff.org>
-References: <1257914715-4477-1-git-send-email-jassi.brar@samsung.com>
+Subject: Re: [PATCH 5/7] S3C AUDIO: Add header to pass platform
+	data to	device drivers
+Date: Mon, 16 Nov 2009 10:49:41 +0000
+Message-ID: <20091116104941.GW23772@trinity.fluff.org>
+References: <1257914722-4507-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9FB341038A1
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 11:48:15 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id ED8F8244E4
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 11:49:41 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1257914715-4477-1-git-send-email-jassi.brar@samsung.com>
+In-Reply-To: <1257914722-4507-1-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +26,44 @@ To: Jassi Brar <jassi.brar@samsung.com>
 Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 11, 2009 at 01:45:15PM +0900, Jassi Brar wrote:
+On Wed, Nov 11, 2009 at 01:45:22PM +0900, Jassi Brar wrote:
+
+Please put something here! Even if it just a slightly expanded version
+of the patch title.
+
 > Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-again, this should have gone to the linux-arm-kernel list.
-
-will merge to my tree.
+This could be merged to the alsa tree, we can move it once the other
+changes are made.
 
 > ---
->  arch/arm/plat-s3c64xx/clock.c |   12 ++++++++++++
->  1 files changed, 12 insertions(+), 0 deletions(-)
+>  arch/arm/plat-s3c/include/plat/audio.h |   17 +++++++++++++++++
+>  1 files changed, 17 insertions(+), 0 deletions(-)
+>  create mode 100644 arch/arm/plat-s3c/include/plat/audio.h
 > 
-> diff --git a/arch/arm/plat-s3c64xx/clock.c b/arch/arm/plat-s3c64xx/clock.c
-> index 7a36e89..3ab564e 100644
-> --- a/arch/arm/plat-s3c64xx/clock.c
-> +++ b/arch/arm/plat-s3c64xx/clock.c
-> @@ -129,6 +129,18 @@ static struct clk init_clocks_disable[] = {
->  		.enable		= s3c64xx_pclk_ctrl,
->  		.ctrlbit	= S3C_CLKCON_PCLK_IIS1,
->  	}, {
-> +		.name		= "pcm",
-> +		.id		= 0,
-> +		.parent		= &clk_p,
-> +		.enable		= s3c64xx_pclk_ctrl,
-> +		.ctrlbit	= S3C_CLKCON_PCLK_PCM0,
-> +	}, {
-> +		.name		= "pcm",
-> +		.id		= 1,
-> +		.parent		= &clk_p,
-> +		.enable		= s3c64xx_pclk_ctrl,
-> +		.ctrlbit	= S3C_CLKCON_PCLK_PCM1,
-> +	}, {
->  		.name		= "spi",
->  		.id		= 0,
->  		.parent		= &clk_p,
+> diff --git a/arch/arm/plat-s3c/include/plat/audio.h b/arch/arm/plat-s3c/include/plat/audio.h
+> new file mode 100644
+> index 0000000..f22d23b
+> --- /dev/null
+> +++ b/arch/arm/plat-s3c/include/plat/audio.h
+> @@ -0,0 +1,17 @@
+> +/* arch/arm/plat-s3c/include/plat/audio.h
+> + *
+> + * Copyright (c) 2009 Samsung Electronics Co. Ltd
+> + * Author: Jaswinder Singh <jassi.brar@samsung.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +/**
+> + * struct s3c_audio_pdata - common platform data for audio device drivers
+> + * @cfg_gpio: Callback function to setup mux'ed pins in I2S/PCM/AC97 mode
+> + */
+> +struct s3c_audio_pdata {
+> +	int (*cfg_gpio)(struct platform_device *);
+> +};
 > -- 
 > 1.6.2.5
 > 
