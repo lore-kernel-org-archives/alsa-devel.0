@@ -1,12 +1,17 @@
-From: alexey.kv@gmail.com
-Subject: [PATCH - juli.c 1/1] ALSA: juli - Patch for
-	suspend/resume for ESI Juli@
-Date: Sat, 14 Nov 2009 14:20:14 +0200
-Message-ID: <1258201214-17107-1-git-send-email-alexey.kv@gmail.com>
+From: Dan Carpenter <error27@gmail.com>
+Subject: [patch] move dereference after null check
+Date: Mon, 16 Nov 2009 11:06:33 +0200 (SAST)
+Message-ID: <alpine.DEB.2.00.0911151555010.12810@bicker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id ECDEC103842
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 10:06:40 +0100 (CET)
+Received: by bwz9 with SMTP id 9so15372894bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 01:06:40 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,68 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, alexey.kv@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-From: Aleksey Kunitskiy <alexey.kv@gmail.com>
+The 'jack' variable was dereference before the NULL check so this patch 
+moves the dereference later.
 
-Add proper suspend/resume code for Juli@ cards. Based on ice1724
-suspend/resume work of Igor Chernyshev.
-Fixes bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4413
-Tested on linux-2.6.31.6
+regards,
+dan carpenter
 
-Signed-off-by: Aleksey Kunitskiy <alexey.kv@gmail.com>
----
- pci/ice1712/juli.c |   29 +++++++++++++++++++++++++++++
- 1 files changed, 29 insertions(+), 0 deletions(-)
+Signed-off-by: Dan Carpenter <error27@gmail.com>
 
-diff --git a/pci/ice1712/juli.c b/pci/ice1712/juli.c
-index 4bed963..2cf34c2 100644
---- a/pci/ice1712/juli.c
-+++ b/pci/ice1712/juli.c
-@@ -483,6 +483,28 @@ static int __devinit juli_add_controls(struct snd_ice1712 *ice)
- }
- 
- /*
-+ * suspend/resume
-+ * */
-+
-+#ifdef CONFIG_PM
-+static int __devinit juli_resume(struct snd_ice1712 *ice)
-+{
-+	struct snd_akm4xxx *ak = ice->akm;
-+	/* akm4358 un-reset, un-mute */
-+	snd_akm4xxx_reset(ak, 0);
-+	return 0;
-+}
-+
-+static int __devinit juli_suspend(struct snd_ice1712 *ice)
-+{
-+	struct snd_akm4xxx *ak = ice->akm;
-+	/* akm4358 reset and soft-mute */
-+	snd_akm4xxx_reset(ak, 1);
-+	return 0;
-+}
-+#endif
-+
-+/*
-  * initialize the chip
+--- orig/sound/soc/soc-jack.c	2009-11-14 11:04:04.000000000 +0200
++++ devel/sound/soc/soc-jack.c	2009-11-14 11:05:01.000000000 +0200
+@@ -58,7 +58,7 @@
   */
+ void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask)
+ {
+-	struct snd_soc_codec *codec = jack->card->codec;
++	struct snd_soc_codec *codec;
+ 	struct snd_soc_jack_pin *pin;
+ 	int enable;
+ 	int oldstatus;
+@@ -67,6 +67,7 @@
+ 		WARN_ON_ONCE(!jack);
+ 		return;
+ 	}
++	codec = jack->card->codec;
  
-@@ -626,6 +648,13 @@ static int __devinit juli_init(struct snd_ice1712 *ice)
- 	ice->set_spdif_clock = juli_set_spdif_clock;
- 
- 	ice->spdif.ops.open = juli_spdif_in_open;
-+
-+#ifdef CONFIG_PM
-+	ice->pm_resume = &juli_resume;
-+	ice->pm_suspend = &juli_suspend;
-+	ice->pm_suspend_enabled = 1;
-+#endif
-+
- 	return 0;
- }
- 
--- 
-1.6.4.4
+ 	mutex_lock(&codec->mutex);
