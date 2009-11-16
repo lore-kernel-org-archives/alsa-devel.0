@@ -1,24 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] soc-core: let suspend/resume not called if
- the card is not instantiated
-Date: Mon, 16 Nov 2009 17:04:50 +0000
-Message-ID: <20091116170450.GC29365@rakim.wolfsonmicro.main>
-References: <1258087878-18679-1-git-send-email-21cnbao@gmail.com>
-	<20091113133824.GD21516@rakim.wolfsonmicro.main>
-	<3c17e3570911130656v662dccej7d6c67e7eaa65b65@mail.gmail.com>
-	<20091113150224.GA23607@rakim.wolfsonmicro.main>
-	<3c17e3570911130729xab6a443t5b257c2699dfa169@mail.gmail.com>
-	<20091113170459.GB23607@rakim.wolfsonmicro.main>
-	<3c17e3570911131646h62cf59c2q765a5aca6f626ad4@mail.gmail.com>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] MIPS: Fixups of ALSA memory maps
+Date: Mon, 16 Nov 2009 18:06:41 +0100
+Message-ID: <20091116170641.GD14948@linux-mips.org>
+References: <9cbcd06037c18288a6493459b8f3a6e1562eca77.1258389992.git.wuzhangjin@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 90ACB1038EA
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 18:04:51 +0100 (CET)
+Received: from eddie.linux-mips.org (eddie.linux-mips.org [78.24.191.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0FB6F1038EB
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 18:06:42 +0100 (CET)
+Received: from localhost.localdomain ([127.0.0.1]:33615 "EHLO h5.dl5rb.org.uk"
+	rhost-flags-OK-OK-OK-FAIL) by ftp.linux-mips.org with ESMTP
+	id S1493432AbZKPRGi (ORCPT <rfc822;alsa-devel@alsa-project.org>);
+	Mon, 16 Nov 2009 18:06:38 +0100
 Content-Disposition: inline
-In-Reply-To: <3c17e3570911131646h62cf59c2q765a5aca6f626ad4@mail.gmail.com>
+In-Reply-To: <9cbcd06037c18288a6493459b8f3a6e1562eca77.1258389992.git.wuzhangjin@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,21 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Barry Song <21cnbao@gmail.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org
+To: Wu Zhangjin <wuzhangjin@gmail.com>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Wu Zhangjin <wuzj@lemote.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 14, 2009 at 08:46:05AM +0800, Barry Song wrote:
+On Tue, Nov 17, 2009 at 12:48:14AM +0800, Wu Zhangjin wrote:
 
-> Then do you think it is workable to find the dai in dai_list before
-> calling its suspend/resume? My original plan was checking the
-> existence of DAI in dai_list, if DAI doesn't exist, don't call its PM
+> Seems this is MIPS specific, but it's not that easy to move this patch
+> into the arch/mips part, So, any better solution?
+> 
+> Thanks & Regards,
+>        Wu Zhangjin
+> 
+> ------------------------
+> 
+> The user application mmap audio dma regions must be dma-coherent. This
+> patch fix it.
+> 
+> Without this patch, artsd will fail on boot, and mplayer will exit with
+> "Segmentation fault". (this happens on YeeLoong netbook, fuloong2f
+> mini pc with snd_cs5535 audio card)
+> 
+> This is originally from the to-mips branch of
+> http://dev.lemote.com/code/linux_loongson, and contributed by Yanhua
+> from Lemote Inc.
+> 
+> Reported-by: qiaochong <qiaochong@gmail.com>
+> Signed-off-by: Wu Zhangjin <wuzj@lemote.com>
 
-I think so, yes.
+This issue is an old ghost still around, see:
 
-> entries.  Then I found card->instantiated, I moved to check it.
-> If you have better plan for fixing this problem, I can wait and keep
-> this fix locally.
+   http://www.linux-mips.org/cgi-bin/mesg.cgi?a=linux-mips&i=20060124.132832.37533152.nemoto%40toshiba-tops.co.jp
 
-I don't have any immediate plan to work on this, like I say it's only
-really an issue in development.
+which is a superset of your proposed patch and which itself is refering to
+an even older posting from 2003:
+
+   http://www.linux-mips.org/cgi-bin/mesg.cgi?a=linux-mips&i=20030523215935.71373.qmail%40web11901.mail.yahoo.com
+
+The #ifdef'ed solution doesn't cut it for sure.  Let's see what better we
+can find ...
+
+  Ralf
