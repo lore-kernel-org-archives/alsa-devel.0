@@ -1,17 +1,29 @@
-From: Arno Schuring <aelschuring@hotmail.com>
-Subject: Re: RFC: ice1712 virtual devices
-Date: Mon, 16 Nov 2009 20:32:28 +0100
-Message-ID: <4B01A8CC.6050303@hotmail.com>
-References: <4AE9D57E.5090105@hotmail.com>	<200910300923.37295.gineera@aspect135.co.uk>	<s5h3a4pqp1c.wl%tiwai@suse.de>
-	<200911082113.17684.gineera@aspect135.co.uk>
+From: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
+Subject: Re: HDA Intel IDT 92HD71B7X - HP Pavilion DV7-1299EF -
+	Only the left speaker is working
+Date: Mon, 16 Nov 2009 20:59:22 +0100
+Message-ID: <d3328e7b0911161159v7dc7c82es11180d9be1199e4f@mail.gmail.com>
+References: <d3328e7b0911110722l27597a8bl523052b035e9ec9d@mail.gmail.com>
+	<d3328e7b0911140625u745f08cdsd0f673c1482bf364@mail.gmail.com>
+	<d3328e7b0911150826l6b6fffd6kdad8fb1692445b20@mail.gmail.com>
+	<s5hmy2migde.wl%tiwai@suse.de>
+	<d3328e7b0911160907g600fda62jc7022e980d98419f@mail.gmail.com>
+	<s5haaymie6c.wl%tiwai@suse.de>
+	<d3328e7b0911160922n681600a4hfe93b80daaa9265e@mail.gmail.com>
+	<s5h7htqid6w.wl%tiwai@suse.de>
+	<d3328e7b0911161034p3022bb3bjd1e4fc83f6e50415@mail.gmail.com>
+	<s5hws1qi7xb.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-4.concepts.nl (smtp-4.concepts.nl [213.197.30.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 286C7245DE
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 20:32:39 +0100 (CET)
-In-Reply-To: <200911082113.17684.gineera@aspect135.co.uk>
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E73B245EA
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 20:59:43 +0100 (CET)
+Received: by bwz9 with SMTP id 9so16754622bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 11:59:42 -0800 (PST)
+In-Reply-To: <s5hws1qi7xb.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,73 +33,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alan Horstmann <gineera@aspect135.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, julien.cynober@free.fr
 List-Id: alsa-devel@alsa-project.org
 
-Hello again,
+On Mon, Nov 16, 2009 at 20:30, Takashi Iwai <tiwai@suse.de> wrote:
 
-Alan Horstmann wrote:
-> On Sunday 08 November 2009 10:38, you wrote:
->> At Fri, 30 Oct 2009 09:23:37 +0000,
->>
->> Alan Horstmann wrote:
->>> On Thursday 29 October 2009 17:48, Arno Schuring wrote:
->>>> This is basically a resend of
->>>> http://thread.gmane.org/gmane.linux.alsa.devel/59481/focus=59672 ,
->>>> which fixed the front: device of ice1712 cards to accept two-channel
->>>> input. Currently, the front: device is exposed through the route
->>>> plugin, which requires all clients to mmap all 10 channels, even though
->>>> the front device is supposed to be a stereo device.
-[...]
-> 
-> Arno's original post was just to the list, so I added your cc.  His response 
-> was also only to the list, but has a patch at the bottom to do just playback 
-> asym with channels convertion, (which looks reasonable to me), so might be 
-> worth looking back at.
-> 
-> BTW, for example in the case of ice1712, is there a way for different sound 
-> cards which use the same driver to have different default config files?  The 
-> DMX6fire in particular would benefit from specific definitions for the 
-> particular mapping of its 6 analogue inputs.
+> At Mon, 16 Nov 2009 19:34:45 +0100,
+> Wael Nasreddine (a.k.a eMxyzptlk) wrote:
+> >
+> > [1  <text/plain; UTF-8 (quoted-printable)>]
+> > On Mon, Nov 16, 2009 at 18:36, Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > At Mon, 16 Nov 2009 18:22:56 +0100,
+> > > Wael Nasreddine (a.k.a eMxyzptlk) wrote:
+> > > >
+> > > > On Mon, Nov 16, 2009 at 18:15, Takashi Iwai <tiwai@suse.de> wrote:
+> > > > >
+> > > > > At Mon, 16 Nov 2009 18:07:40 +0100,
+> > > > > Wael Nasreddine (a.k.a eMxyzptlk) wrote:
+> > > > > >
+> > > > > > Thank you that actually worked, I have now both Front Left and
+> LFE working,
+> > > > > > but it's very hard to tell coz the LFE is louder than both front
+> speakers I
+> > > > > > even put my ear directly on the speaker and it still can't be
+> 100% sure, but
+> > > > > > I think that for now what is working is 'Front Left + LFE', I
+> can't hear
+> > > > > > anything from the right speaker.. but it's already an improvement
+> to what I
+> > > > > > had.
+> > > > >
+> > > > > Hm, if it's *so* loud, we should have a mixer control for this, I
+> > > > > guess.
+> > > > >
+> > > > It's not *so* loud, but yea I appreciate a mixer for it yes! at least
+> > > > I can tell which speaker is working and also I can listen to Music
+> > > > without bothering someone else because with LFE the base is loud..
+> > >
+> > > OK, how about the patch below?
+> > >
+> > > > > > Do you have any suggestion on how to enable the right speaker?
+> > > > >
+> > > > > No, already out of idea...  I wonder whether any other people
+> > > > > suffering from the same problem?
+> > > > >
+> > > > Julien has the same PC, same OS, same Kernel, same BIOS Version, but
+> > > > the weird thing is that he is not suffering from this problem, which
+> > > > obviously led me to beleive a hardware defect, but it's working on
+> > > > Windows!
+> > >
+> > > This is really weird...
+> > >
+> > >
+> > > Takashi
+> > >
+> >
+> > Because the patch is not attached, I can't quite copy it correctly
+> > from Gmail,
+>
+> You have a pull-down menu at the top-right corner of each mail in
+> gmail.  There you can choose "Show original".  This will show the raw
+> texts so that you can save it from the browser.
+>
+> Possibly this menu item appears only in English language mode, though.
+>
+> I have this and that's what I used earlier but it failed on many hunks, now
+it only failed on one, the last hunk, so I applied the last one by hand
 
-I apologize for the long delay. I'll reattach my latest proposed patch
-(copy-paste, hope it still applies).
+>
+> > so I did it by hand (attached), I applied it but I don't
+> > see the mixer anywhere in alsamixer. I double checked the patch
+> > though...
+>
+> I revised the patch.  Attached below.
+> Try it instead.  You'll have "Bass Speaker" mixer switch, maybe at the
+> most right side.
+>
+>
+> Takashi
+>
 
-About my second question, is it even worth my time to try to implement
-multiple separate devices using the dshare plugin? I mean, even if I
-succeed in making front: and spdif: working together, does such a patch
-have even the slightest of getting accepted?
+Thank you, this patch works indeed, I can enable/disable the LFE as I like
+now, Thank you so much !!
 
+Why do you think the drivers needed special GPIO settings while another PC,
+same PC didn't need anything, BIOS BUG or maybe hardware defect?
 
-Thanks,
-Arno
+-- 
+Wael Nasreddine
 
+Weem Chief-Development Officer - http://www.weem.com
 
---
-diff --git a/src/conf/cards/ICE1712.conf b/src/conf/cards/ICE1712.conf
-index 01e50d2..1cd3773 100644
---- a/src/conf/cards/ICE1712.conf
-+++ b/src/conf/cards/ICE1712.conf
-@@ -32,12 +32,16 @@ ICE1712.pcm.front.0 {
-        @args.CARD {
-                type string
-        }
--       type route
--       ttable.0.0 1
--       ttable.1.1 1
--       slave.pcm {
--               type hw
--               card $CARD
-+       type asym
-+       playback.pcm {
-+               type route
-+               ttable.0.0 1
-+               ttable.1.1 1
-+               slave.pcm {
-+                       type hw
-+                       card $CARD
-+               }
-+               slave.channels 10
-        }
- }
+Blog    : http://wael.nasreddine.com
+E-mail  : wael.nasreddine@weem.com
+gTalk   : wael.nasreddine@gmail.com
+Tel     : +33.6.32.94.70.13
+Skype   : eMxyzptlk
+Twitter : @eMxyzptlk
+
+PGP: 1024D/C8DD18A2 06F6 1622 4BC8 4CEB D724  DE12 5565 3945 C8DD 18A2
+
+.: An infinite number of monkeys typing into GNU emacs,
+  would never make a good program. (L. Torvalds 1995) :.
