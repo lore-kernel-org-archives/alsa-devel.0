@@ -1,52 +1,61 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Null suspend/resume functions
-Date: Mon, 16 Nov 2009 15:30:00 +0000
-Message-ID: <20091116153000.GB29479@sirena.org.uk>
-References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
-	<20091109105858.GB1245@sirena.org.uk>
-	<20091109133136.GC1245@sirena.org.uk>
+From: Roel Kluin <roel.kluin@gmail.com>
+Subject: [PATCH] OSS: keep index within bounds of midi_devs[]
+Date: Mon, 16 Nov 2009 17:05:02 +0100
+Message-ID: <4B01782E.80802@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 087E22458C
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 16:30:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091109133136.GC1245@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: Magnus Damm <damm@opensource.se>, alsa-devel@alsa-project.org, linux-pm@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752901AbZKPPwg@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 09, 2009 at 01:31:36PM +0000, Mark Brown wrote:
-> On Mon, Nov 09, 2009 at 10:58:58AM +0000, Mark Brown wrote:
-> > On Mon, Nov 09, 2009 at 11:54:47AM +0900, Kuninori Morimoto wrote:
+When the {orig,midi}_dev equals num_midis, that's one too
+large already.
 
-Any chance someone from the PM side could comment on the issue below?
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+In MIDIbuf_open() sound/oss/midibuf.c:166
 
-> > > +static int fsi_runtime_nop(struct device *dev)
-> > > +{
-> > > +	/* Runtime PM callback shared between ->runtime_suspend()
-> > > +	 * and ->runtime_resume(). Simply returns success.
-> > > +	 *
-> > > +	 * This driver re-initializes all registers after
-> > > +	 * pm_runtime_get_sync() anyway so there is no need
-> > > +	 * to save and restore registers here.
-> > > +	 */
-> > > +	return 0;
-> > > +}
-> > 
-> > This sets off alarm bells but it's perfectly reasonable, especially with
-> > platforms able to put things into a low power state with no explicit
-> > driver code now they can do power domain style things like SH.  I've
-> > CCed in the PM folks since this seems like a perfectly reasonable use
-> > case which ought to be handled more nicely.
+        if (num_midis > MAX_MIDI_DEV)
+        {
+                printk(KERN_ERR "midi: Too many midi interfaces\n");
+                num_midis = MAX_MIDI_DEV;
+        }
+
+num_midis is at most MAX_MIDI_DEV.
+
+`git grep -n MAX_MIDI_DEV' and note that when the index equals
+num_midis this causes reads/writes outside array bounds for
+midi_devs, midi2synth, dev_conf and others (below check in patch).
+
+ sound/oss/midi_synth.c |    2 +-
+ sound/oss/mpu401.c     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/oss/midi_synth.c b/sound/oss/midi_synth.c
+index 9e45098..3bc7104 100644
+--- a/sound/oss/midi_synth.c
++++ b/sound/oss/midi_synth.c
+@@ -426,7 +426,7 @@ midi_synth_open(int dev, int mode)
+ 	int             err;
+ 	struct midi_input_info *inc;
+ 
+-	if (orig_dev < 0 || orig_dev > num_midis || midi_devs[orig_dev] == NULL)
++	if (orig_dev < 0 || orig_dev >= num_midis || midi_devs[orig_dev] == NULL)
+ 		return -ENXIO;
+ 
+ 	midi2synth[orig_dev] = dev;
+diff --git a/sound/oss/mpu401.c b/sound/oss/mpu401.c
+index 734b8f9..0af9d24 100644
+--- a/sound/oss/mpu401.c
++++ b/sound/oss/mpu401.c
+@@ -770,7 +770,7 @@ static int mpu_synth_ioctl(int dev, unsigned int cmd, void __user *arg)
+ 
+ 	midi_dev = synth_devs[dev]->midi_dev;
+ 
+-	if (midi_dev < 0 || midi_dev > num_midis || midi_devs[midi_dev] == NULL)
++	if (midi_dev < 0 || midi_dev >= num_midis || midi_devs[midi_dev] == NULL)
+ 		return -ENXIO;
+ 
+ 	devc = &dev_conf[midi_dev];
