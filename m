@@ -1,18 +1,19 @@
 From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: [PATCH 2/4] ASoC: DaVinci: i2s,
-	reduce underruns by combining into 1 element
-Date: Mon, 16 Nov 2009 16:52:32 -0700
-Message-ID: <1258415554-31069-2-git-send-email-troy.kisky@boundarydevices.com>
+Subject: [PATCH 3/4] ASoC: DaVinci: pcm,
+	rename variables in prep for ping/pong
+Date: Mon, 16 Nov 2009 16:52:33 -0700
+Message-ID: <1258415554-31069-3-git-send-email-troy.kisky@boundarydevices.com>
 References: <1258415554-31069-1-git-send-email-troy.kisky@boundarydevices.com>
+	<1258415554-31069-2-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mpls-qmqp-02.inet.qwest.net (mpls-qmqp-02.inet.qwest.net
-	[63.231.195.113])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51ACF2464A
+Received: from mpls-qmqp-01.inet.qwest.net (mpls-qmqp-01.inet.qwest.net
+	[63.231.195.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55E762464C
 	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 00:52:48 +0100 (CET)
-In-Reply-To: <1258415554-31069-1-git-send-email-troy.kisky@boundarydevices.com>
+In-Reply-To: <1258415554-31069-2-git-send-email-troy.kisky@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,147 +27,184 @@ To: alsa-devel@alsa-project.org
 Cc: davinci-linux-open-source@linux.davincidsp.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-Allow the left and right 16 bit samples to be shifted out as 1
-32 bit sample.
+Rename variable master_lch to asp_channel
+Rename variable slave_lch to asp_link[0]
+Rename local variables:
+	lch to link
+	count to asp_count
+	src to asp_src
+	dst to asp_dst
 
 Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
 ---
- arch/arm/mach-davinci/include/mach/asp.h |    6 ++
- sound/soc/davinci/davinci-i2s.c          |   74 ++++++++++++++++++++++--------
- 2 files changed, 61 insertions(+), 19 deletions(-)
+ sound/soc/davinci/davinci-pcm.c |   64 +++++++++++++++++++-------------------
+ 1 files changed, 32 insertions(+), 32 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/include/mach/asp.h b/arch/arm/mach-davinci/include/mach/asp.h
-index 18e4ce3..019c647 100644
---- a/arch/arm/mach-davinci/include/mach/asp.h
-+++ b/arch/arm/mach-davinci/include/mach/asp.h
-@@ -51,6 +51,12 @@ struct snd_platform_data {
- 	u32 rx_dma_offset;
- 	enum dma_event_q eventq_no;	/* event queue number */
- 	unsigned int codec_fmt;
-+	/*
-+	 * Allowing this is more efficient and eliminates left and right swaps
-+	 * caused by underruns, but will swap the left and right channels
-+	 * when compared to previous behavior.
-+	 */
-+	unsigned enable_channel_combine:1;
- 
- 	/* McASP specific fields */
- 	int tdm_slots;
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index 9e69a4e..771cabe 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -97,6 +97,23 @@ enum {
- 	DAVINCI_MCBSP_WORD_32,
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index c2c2e85..7757010 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -51,8 +51,8 @@ static struct snd_pcm_hardware davinci_pcm_hardware = {
+ struct davinci_runtime_data {
+ 	spinlock_t lock;
+ 	int period;		/* current DMA period */
+-	int master_lch;		/* Master DMA channel */
+-	int slave_lch;		/* linked parameter RAM reload slot */
++	int asp_channel;	/* Master DMA channel */
++	int asp_link[2];	/* asp parameter link channel, ping/pong */
+ 	struct davinci_pcm_dma_params *params;	/* DMA params */
  };
  
-+static const unsigned char data_type[SNDRV_PCM_FORMAT_S32_LE + 1] = {
-+	[SNDRV_PCM_FORMAT_S8]		= 1,
-+	[SNDRV_PCM_FORMAT_S16_LE]	= 2,
-+	[SNDRV_PCM_FORMAT_S32_LE]	= 4,
-+};
-+
-+static const unsigned char asp_word_length[SNDRV_PCM_FORMAT_S32_LE + 1] = {
-+	[SNDRV_PCM_FORMAT_S8]		= DAVINCI_MCBSP_WORD_8,
-+	[SNDRV_PCM_FORMAT_S16_LE]	= DAVINCI_MCBSP_WORD_16,
-+	[SNDRV_PCM_FORMAT_S32_LE]	= DAVINCI_MCBSP_WORD_32,
-+};
-+
-+static const unsigned char double_fmt[SNDRV_PCM_FORMAT_S32_LE + 1] = {
-+	[SNDRV_PCM_FORMAT_S8]		= SNDRV_PCM_FORMAT_S16_LE,
-+	[SNDRV_PCM_FORMAT_S16_LE]	= SNDRV_PCM_FORMAT_S32_LE,
-+};
-+
- struct davinci_mcbsp_dev {
- 	struct davinci_pcm_dma_params	dma_params[2];
- 	void __iomem			*base;
-@@ -105,6 +122,27 @@ struct davinci_mcbsp_dev {
- 	int				mode;
- 	u32				pcr;
- 	struct clk			*clk;
-+	/*
-+	 * Combining both channels into 1 element will at least double the
-+	 * amount of time between servicing the dma channel, increase
-+	 * effiency, and reduce the chance of overrun/underrun. But,
-+	 * it will result in the left & right channels being swapped.
-+	 *
-+	 * If relabeling the left and right channels is not possible,
-+	 * you may want to let the codec know to swap them back.
-+	 *
-+	 * It may allow x10 the amount of time to service dma requests,
-+	 * if the codec is master and is using an unnecessarily fast bit clock
-+	 * (ie. tlvaic23b), independent of the sample rate. So, having an
-+	 * entire frame at once means it can be serviced at the sample rate
-+	 * instead of the bit clock rate.
-+	 *
-+	 * In the now unlikely case that an underrun still
-+	 * occurs, both the left and right samples will be repeated
-+	 * so that no pops are heard, and the left and right channels
-+	 * won't end up being swapped because of the underrun.
-+	 */
-+	unsigned enable_channel_combine:1;
- };
+@@ -60,7 +60,7 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ {
+ 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	int lch = prtd->slave_lch;
++	int link = prtd->asp_link[0];
+ 	unsigned int period_size;
+ 	unsigned int dma_offset;
+ 	dma_addr_t dma_pos;
+@@ -75,7 +75,7 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 	dma_pos = runtime->dma_addr + dma_offset;
  
- static inline void davinci_mcbsp_write_reg(struct davinci_mcbsp_dev *dev,
-@@ -344,6 +382,8 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
- 	int mcbsp_word_length;
- 	unsigned int rcr, xcr, srgr;
- 	u32 spcr;
-+	snd_pcm_format_t fmt;
-+	unsigned element_cnt = 1;
+ 	pr_debug("davinci_pcm: audio_set_dma_params_play channel = %d "
+-		"dma_ptr = %x period_size=%x\n", lch, dma_pos, period_size);
++		"dma_ptr = %x period_size=%x\n", link, dma_pos, period_size);
  
- 	/* general line settings */
- 	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
-@@ -373,27 +413,22 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
- 		xcr |= DAVINCI_MCBSP_XCR_XDATDLY(1);
+ 	data_type = prtd->params->data_type;
+ 	count = period_size / data_type;
+@@ -93,23 +93,23 @@ static void davinci_pcm_enqueue_dma(struct snd_pcm_substream *substream)
  	}
- 	/* Determine xfer data type */
--	switch (params_format(params)) {
--	case SNDRV_PCM_FORMAT_S8:
--		dma_params->data_type = 1;
--		mcbsp_word_length = DAVINCI_MCBSP_WORD_8;
--		break;
--	case SNDRV_PCM_FORMAT_S16_LE:
--		dma_params->data_type = 2;
--		mcbsp_word_length = DAVINCI_MCBSP_WORD_16;
--		break;
--	case SNDRV_PCM_FORMAT_S32_LE:
--		dma_params->data_type = 4;
--		mcbsp_word_length = DAVINCI_MCBSP_WORD_32;
--		break;
--	default:
-+	fmt = params_format(params);
-+	if ((fmt > SNDRV_PCM_FORMAT_S32_LE) || !data_type[fmt]) {
- 		printk(KERN_WARNING "davinci-i2s: unsupported PCM format\n");
- 		return -EINVAL;
- 	}
--
--	dma_params->acnt  = dma_params->data_type;
--	rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(1);
--	xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(1);
-+	if (params_channels(params) == 2) {
-+		element_cnt = 2;
-+		if (double_fmt[fmt] && dev->enable_channel_combine) {
-+			element_cnt = 1;
-+			fmt = double_fmt[fmt];
-+		}
-+	}
-+	dma_params->acnt = dma_params->data_type = data_type[fmt];
-+	mcbsp_word_length = asp_word_length[fmt];
-+	rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(element_cnt - 1);
-+	xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(element_cnt - 1);
  
- 	rcr |= DAVINCI_MCBSP_RCR_RWDLEN1(mcbsp_word_length) |
- 		DAVINCI_MCBSP_RCR_RWDLEN2(mcbsp_word_length);
-@@ -508,7 +543,8 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 		ret = -ENOMEM;
- 		goto err_release_region;
+ 	acnt = prtd->params->acnt;
+-	edma_set_src(lch, src, INCR, W8BIT);
+-	edma_set_dest(lch, dst, INCR, W8BIT);
+-	edma_set_src_index(lch, src_bidx, 0);
+-	edma_set_dest_index(lch, dst_bidx, 0);
+-	edma_set_transfer_params(lch, acnt, count, 1, 0, ASYNC);
++	edma_set_src(link, src, INCR, W8BIT);
++	edma_set_dest(link, dst, INCR, W8BIT);
++	edma_set_src_index(link, src_bidx, 0);
++	edma_set_dest_index(link, dst_bidx, 0);
++	edma_set_transfer_params(link, acnt, count, 1, 0, ASYNC);
+ 
+ 	prtd->period++;
+ 	if (unlikely(prtd->period >= runtime->periods))
+ 		prtd->period = 0;
+ }
+ 
+-static void davinci_pcm_dma_irq(unsigned lch, u16 ch_status, void *data)
++static void davinci_pcm_dma_irq(unsigned link, u16 ch_status, void *data)
+ {
+ 	struct snd_pcm_substream *substream = data;
+ 	struct davinci_runtime_data *prtd = substream->runtime->private_data;
+ 
+-	pr_debug("davinci_pcm: lch=%d, status=0x%x\n", lch, ch_status);
++	pr_debug("davinci_pcm: link=%d, status=0x%x\n", link, ch_status);
+ 
+ 	if (unlikely(ch_status != DMA_COMPLETE))
+ 		return;
+@@ -135,15 +135,15 @@ static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
+ 				  EVENTQ_0);
+ 	if (ret < 0)
+ 		return ret;
+-	prtd->master_lch = ret;
++	prtd->asp_channel = ret;
+ 
+ 	/* Request parameter RAM reload slot */
+-	ret = edma_alloc_slot(EDMA_CTLR(prtd->master_lch), EDMA_SLOT_ANY);
++	ret = edma_alloc_slot(EDMA_CTLR(prtd->asp_channel), EDMA_SLOT_ANY);
+ 	if (ret < 0) {
+-		edma_free_channel(prtd->master_lch);
++		edma_free_channel(prtd->asp_channel);
+ 		return ret;
  	}
--
-+	if (pdata)
-+		dev->enable_channel_combine = pdata->enable_channel_combine;
- 	dev->clk = clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(dev->clk)) {
- 		ret = -ENODEV;
+-	prtd->slave_lch = ret;
++	prtd->asp_link[0] = ret;
+ 
+ 	/* Issue transfer completion IRQ when the channel completes a
+ 	 * transfer, then always reload from the same slot (by a kind
+@@ -154,10 +154,10 @@ static int davinci_pcm_dma_request(struct snd_pcm_substream *substream)
+ 	 * the buffer and its length (ccnt) ... use it as a template
+ 	 * so davinci_pcm_enqueue_dma() takes less time in IRQ.
+ 	 */
+-	edma_read_slot(prtd->slave_lch, &p_ram);
+-	p_ram.opt |= TCINTEN | EDMA_TCC(EDMA_CHAN_SLOT(prtd->master_lch));
+-	p_ram.link_bcntrld = EDMA_CHAN_SLOT(prtd->slave_lch) << 5;
+-	edma_write_slot(prtd->slave_lch, &p_ram);
++	edma_read_slot(prtd->asp_link[0], &p_ram);
++	p_ram.opt |= TCINTEN | EDMA_TCC(EDMA_CHAN_SLOT(prtd->asp_channel));
++	p_ram.link_bcntrld = EDMA_CHAN_SLOT(prtd->asp_link[0]) << 5;
++	edma_write_slot(prtd->asp_link[0], &p_ram);
+ 
+ 	return 0;
+ }
+@@ -173,12 +173,12 @@ static int davinci_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		edma_start(prtd->master_lch);
++		edma_start(prtd->asp_channel);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+-		edma_stop(prtd->master_lch);
++		edma_stop(prtd->asp_channel);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -199,8 +199,8 @@ static int davinci_pcm_prepare(struct snd_pcm_substream *substream)
+ 	davinci_pcm_enqueue_dma(substream);
+ 
+ 	/* Copy self-linked parameter RAM entry into master channel */
+-	edma_read_slot(prtd->slave_lch, &temp);
+-	edma_write_slot(prtd->master_lch, &temp);
++	edma_read_slot(prtd->asp_link[0], &temp);
++	edma_write_slot(prtd->asp_channel, &temp);
+ 	davinci_pcm_enqueue_dma(substream);
+ 
+ 	return 0;
+@@ -212,20 +212,20 @@ davinci_pcm_pointer(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct davinci_runtime_data *prtd = runtime->private_data;
+ 	unsigned int offset;
+-	dma_addr_t count;
+-	dma_addr_t src, dst;
++	int asp_count;
++	dma_addr_t asp_src, asp_dst;
+ 
+ 	spin_lock(&prtd->lock);
+ 
+-	edma_get_position(prtd->master_lch, &src, &dst);
++	edma_get_position(prtd->asp_channel, &asp_src, &asp_dst);
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		count = src - runtime->dma_addr;
++		asp_count = asp_src - runtime->dma_addr;
+ 	else
+-		count = dst - runtime->dma_addr;
++		asp_count = asp_dst - runtime->dma_addr;
+ 
+ 	spin_unlock(&prtd->lock);
+ 
+-	offset = bytes_to_frames(runtime, count);
++	offset = bytes_to_frames(runtime, asp_count);
+ 	if (offset >= runtime->buffer_size)
+ 		offset = 0;
+ 
+@@ -274,10 +274,10 @@ static int davinci_pcm_close(struct snd_pcm_substream *substream)
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct davinci_runtime_data *prtd = runtime->private_data;
+ 
+-	edma_unlink(prtd->slave_lch);
++	edma_unlink(prtd->asp_link[0]);
+ 
+-	edma_free_slot(prtd->slave_lch);
+-	edma_free_channel(prtd->master_lch);
++	edma_free_slot(prtd->asp_link[0]);
++	edma_free_channel(prtd->asp_channel);
+ 
+ 	kfree(prtd);
+ 
 -- 
 1.5.6.3
