@@ -1,18 +1,18 @@
 From: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [PATCH 3/7] S3C64XX PCM: Define PCM Controller
-	base registers
-Date: Mon, 16 Nov 2009 10:47:46 +0000
-Message-ID: <20091116104746.GU23772@trinity.fluff.org>
-References: <1257914709-4447-1-git-send-email-jassi.brar@samsung.com>
+Subject: Re: [PATCH 4/7] S3C64XX PCM: Added PCLK clock source
+	for the PCM	controllers
+Date: Mon, 16 Nov 2009 10:48:15 +0000
+Message-ID: <20091116104814.GV23772@trinity.fluff.org>
+References: <1257914715-4477-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
-	by alsa0.perex.cz (Postfix) with ESMTP id 944C11038A6
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 11:47:54 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FB341038A1
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 11:48:15 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1257914709-4447-1-git-send-email-jassi.brar@samsung.com>
+In-Reply-To: <1257914715-4477-1-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +26,40 @@ To: Jassi Brar <jassi.brar@samsung.com>
 Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 11, 2009 at 01:45:09PM +0900, Jassi Brar wrote:
+On Wed, Nov 11, 2009 at 01:45:15PM +0900, Jassi Brar wrote:
 > Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-Should have gone to the linux-arm-kernel list.
+again, this should have gone to the linux-arm-kernel list.
 
-Will merge this to my tree.
+will merge to my tree.
 
 > ---
->  arch/arm/mach-s3c6400/include/mach/map.h |    2 ++
->  1 files changed, 2 insertions(+), 0 deletions(-)
+>  arch/arm/plat-s3c64xx/clock.c |   12 ++++++++++++
+>  1 files changed, 12 insertions(+), 0 deletions(-)
 > 
-> diff --git a/arch/arm/mach-s3c6400/include/mach/map.h b/arch/arm/mach-s3c6400/include/mach/map.h
-> index fc8b223..866be31 100644
-> --- a/arch/arm/mach-s3c6400/include/mach/map.h
-> +++ b/arch/arm/mach-s3c6400/include/mach/map.h
-> @@ -48,6 +48,8 @@
->  #define S3C64XX_PA_IIS1		(0x7F003000)
->  #define S3C64XX_PA_TIMER	(0x7F006000)
->  #define S3C64XX_PA_IIC0		(0x7F004000)
-> +#define S3C64XX_PA_PCM0		(0x7F009000)
-> +#define S3C64XX_PA_PCM1		(0x7F00A000)
->  #define S3C64XX_PA_IISV4	(0x7F00D000)
->  #define S3C64XX_PA_IIC1		(0x7F00F000)
->  
+> diff --git a/arch/arm/plat-s3c64xx/clock.c b/arch/arm/plat-s3c64xx/clock.c
+> index 7a36e89..3ab564e 100644
+> --- a/arch/arm/plat-s3c64xx/clock.c
+> +++ b/arch/arm/plat-s3c64xx/clock.c
+> @@ -129,6 +129,18 @@ static struct clk init_clocks_disable[] = {
+>  		.enable		= s3c64xx_pclk_ctrl,
+>  		.ctrlbit	= S3C_CLKCON_PCLK_IIS1,
+>  	}, {
+> +		.name		= "pcm",
+> +		.id		= 0,
+> +		.parent		= &clk_p,
+> +		.enable		= s3c64xx_pclk_ctrl,
+> +		.ctrlbit	= S3C_CLKCON_PCLK_PCM0,
+> +	}, {
+> +		.name		= "pcm",
+> +		.id		= 1,
+> +		.parent		= &clk_p,
+> +		.enable		= s3c64xx_pclk_ctrl,
+> +		.ctrlbit	= S3C_CLKCON_PCLK_PCM1,
+> +	}, {
+>  		.name		= "spi",
+>  		.id		= 0,
+>  		.parent		= &clk_p,
 > -- 
 > 1.6.2.5
 > 
