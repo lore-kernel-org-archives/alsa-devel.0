@@ -1,21 +1,16 @@
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 0/2] fix softfloat handling
-Date: Mon, 16 Nov 2009 11:14:53 +0100
-Message-ID: <1258366495-10815-1-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH 1/2] configure.in: fix --without-softfloat
+Date: Mon, 16 Nov 2009 11:14:54 +0100
+Message-ID: <1258366495-10815-2-git-send-email-mkl@pengutronix.de>
+References: <1258366495-10815-1-git-send-email-mkl@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B2F68244D1
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 11:15:00 +0100 (CET)
-Received: from octopus.hi.pengutronix.de ([2001:6f8:1178:2:215:17ff:fe12:23b0])
-	by metis.ext.pengutronix.de with esmtp (Exim 4.63)
-	(envelope-from <mkl@pengutronix.de>) id 1N9ybs-0006xL-EL
-	for alsa-devel@alsa-project.org; Mon, 16 Nov 2009 11:15:00 +0100
-Received: from mkl by octopus.hi.pengutronix.de with local (Exim 4.69)
-	(envelope-from <mkl@pengutronix.de>) id 1N9ybs-0003RY-DP
-	for alsa-devel@alsa-project.org; Mon, 16 Nov 2009 11:15:00 +0100
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id B2C8E103897
+	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 11:15:07 +0100 (CET)
+In-Reply-To: <1258366495-10815-1-git-send-email-mkl@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,11 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Using --without-softfloat or --with-softfloat=no results in using
+softfloat. This patch fixes the problem.
 
-this series of two patches fixes the softfloat handling within the alsa-lib.
-Please review and consider to apply.
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ configure.in |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-cheers, Marc
+diff --git a/configure.in b/configure.in
+index cc8950f..040a3e7 100644
+--- a/configure.in
++++ b/configure.in
+@@ -206,9 +206,12 @@ AC_MSG_CHECKING(for softfloat)
+ AC_ARG_WITH(softfloat,
+   AS_HELP_STRING([--with-softfloat],
+     [do you have floating point unit on this machine? (optional)]),
+-  [  AC_DEFINE(HAVE_SOFT_FLOAT, "1", [Avoid calculation in float])
+-     softfloat=yes ],)
++  [case "$withval" in
++  	y|yes) softfloat=yes ;;
++	*) softfloat=no ;;
++   esac],)
+ if test "$softfloat" = "yes" ; then
++  AC_DEFINE(HAVE_SOFT_FLOAT, "1", [Avoid calculation in float])
+   AC_MSG_RESULT(yes)
+ else
+   AC_MSG_RESULT(no)
+-- 
+1.6.5.2
