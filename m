@@ -1,139 +1,47 @@
-From: "Wael Nasreddine (a.k.a eMxyzptlk)" <mla@nasreddine.com>
-Subject: Re: HDA Intel IDT 92HD71B7X - HP Pavilion DV7-1299EF -
-	Only the left speaker is working
-Date: Mon, 16 Nov 2009 20:59:22 +0100
-Message-ID: <d3328e7b0911161159v7dc7c82es11180d9be1199e4f@mail.gmail.com>
-References: <d3328e7b0911110722l27597a8bl523052b035e9ec9d@mail.gmail.com>
-	<d3328e7b0911140625u745f08cdsd0f673c1482bf364@mail.gmail.com>
-	<d3328e7b0911150826l6b6fffd6kdad8fb1692445b20@mail.gmail.com>
-	<s5hmy2migde.wl%tiwai@suse.de>
-	<d3328e7b0911160907g600fda62jc7022e980d98419f@mail.gmail.com>
-	<s5haaymie6c.wl%tiwai@suse.de>
-	<d3328e7b0911160922n681600a4hfe93b80daaa9265e@mail.gmail.com>
-	<s5h7htqid6w.wl%tiwai@suse.de>
-	<d3328e7b0911161034p3022bb3bjd1e4fc83f6e50415@mail.gmail.com>
-	<s5hws1qi7xb.wl%tiwai@suse.de>
+From: Mike Rapoport <mike.rapoport@gmail.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: OMAP: enable Overo driver for CM-T35
+Date: Mon, 16 Nov 2009 23:33:20 +0200
+Message-ID: <f870da180911161333x567fd846hd1c2cbd893fe363f@mail.gmail.com>
+References: <1258379603-29089-1-git-send-email-mike@compulab.co.il>
+	 <1258380019.3570.113.camel@odin> <4B015F6D.1000001@compulab.co.il>
+	 <20091116160512.GA29365@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E73B245EA
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 20:59:43 +0100 (CET)
-Received: by bwz9 with SMTP id 9so16754622bwz.32
-	for <alsa-devel@alsa-project.org>; Mon, 16 Nov 2009 11:59:42 -0800 (PST)
-In-Reply-To: <s5hws1qi7xb.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, julien.cynober@free.fr
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20091116160512.GA29365@rakim.wolfsonmicro.main>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Mike Rapoport <mike@compulab.co.il>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-omap@vger.kernel.org, steve@sakoman.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 16, 2009 at 20:30, Takashi Iwai <tiwai@suse.de> wrote:
+On Mon, Nov 16, 2009 at 6:05 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Mon, Nov 16, 2009 at 04:19:25PM +0200, Mike Rapoport wrote:
+>
+>> I'm ok if it'll say "Not Overo!" :)
+>> Anyway, here's the update:
+>
+> Applied, thanks (with manual hacking to remove the reply chain from t=
+he
+> commit log).
 
-> At Mon, 16 Nov 2009 19:34:45 +0100,
-> Wael Nasreddine (a.k.a eMxyzptlk) wrote:
-> >
-> > [1  <text/plain; UTF-8 (quoted-printable)>]
-> > On Mon, Nov 16, 2009 at 18:36, Takashi Iwai <tiwai@suse.de> wrote:
-> > >
-> > > At Mon, 16 Nov 2009 18:22:56 +0100,
-> > > Wael Nasreddine (a.k.a eMxyzptlk) wrote:
-> > > >
-> > > > On Mon, Nov 16, 2009 at 18:15, Takashi Iwai <tiwai@suse.de> wrote:
-> > > > >
-> > > > > At Mon, 16 Nov 2009 18:07:40 +0100,
-> > > > > Wael Nasreddine (a.k.a eMxyzptlk) wrote:
-> > > > > >
-> > > > > > Thank you that actually worked, I have now both Front Left and
-> LFE working,
-> > > > > > but it's very hard to tell coz the LFE is louder than both front
-> speakers I
-> > > > > > even put my ear directly on the speaker and it still can't be
-> 100% sure, but
-> > > > > > I think that for now what is working is 'Front Left + LFE', I
-> can't hear
-> > > > > > anything from the right speaker.. but it's already an improvement
-> to what I
-> > > > > > had.
-> > > > >
-> > > > > Hm, if it's *so* loud, we should have a mixer control for this, I
-> > > > > guess.
-> > > > >
-> > > > It's not *so* loud, but yea I appreciate a mixer for it yes! at least
-> > > > I can tell which speaker is working and also I can listen to Music
-> > > > without bothering someone else because with LFE the base is loud..
-> > >
-> > > OK, how about the patch below?
-> > >
-> > > > > > Do you have any suggestion on how to enable the right speaker?
-> > > > >
-> > > > > No, already out of idea...  I wonder whether any other people
-> > > > > suffering from the same problem?
-> > > > >
-> > > > Julien has the same PC, same OS, same Kernel, same BIOS Version, but
-> > > > the weird thing is that he is not suffering from this problem, which
-> > > > obviously led me to beleive a hardware defect, but it's working on
-> > > > Windows!
-> > >
-> > > This is really weird...
-> > >
-> > >
-> > > Takashi
-> > >
-> >
-> > Because the patch is not attached, I can't quite copy it correctly
-> > from Gmail,
->
-> You have a pull-down menu at the top-right corner of each mail in
-> gmail.  There you can choose "Show original".  This will show the raw
-> texts so that you can save it from the browser.
->
-> Possibly this menu item appears only in English language mode, though.
->
-> I have this and that's what I used earlier but it failed on many hunks, now
-it only failed on one, the last hunk, so I applied the last one by hand
+Sorry, was too much in a hurry...
 
->
-> > so I did it by hand (attached), I applied it but I don't
-> > see the mixer anywhere in alsamixer. I double checked the patch
-> > though...
->
-> I revised the patch.  Attached below.
-> Try it instead.  You'll have "Bass Speaker" mixer switch, maybe at the
-> most right side.
->
->
-> Takashi
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap"=
+ in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
 >
 
-Thank you, this patch works indeed, I can enable/disable the LFE as I like
-now, Thank you so much !!
 
-Why do you think the drivers needed special GPIO settings while another PC,
-same PC didn't need anything, BIOS BUG or maybe hardware defect?
 
--- 
-Wael Nasreddine
-
-Weem Chief-Development Officer - http://www.weem.com
-
-Blog    : http://wael.nasreddine.com
-E-mail  : wael.nasreddine@weem.com
-gTalk   : wael.nasreddine@gmail.com
-Tel     : +33.6.32.94.70.13
-Skype   : eMxyzptlk
-Twitter : @eMxyzptlk
-
-PGP: 1024D/C8DD18A2 06F6 1622 4BC8 4CEB D724  DE12 5565 3945 C8DD 18A2
-
-.: An infinite number of monkeys typing into GNU emacs,
-  would never make a good program. (L. Torvalds 1995) :.
+--=20
+	Sincerely Yours,
+		Mike.
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
