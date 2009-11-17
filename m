@@ -1,21 +1,21 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCHv2 6/7] S3C64XX PCM: Defined PCM controller
-	platform devices
-Date: Tue, 17 Nov 2009 21:54:36 +0900
-Message-ID: <1b68c6790911170454uad277c2q37bf179a58010b07@mail.gmail.com>
-References: <1258444436-24394-1-git-send-email-jassi.brar@samsung.com>
-	<20091117113913.GA823@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Null suspend/resume functions
+Date: Tue, 17 Nov 2009 12:59:01 +0000
+Message-ID: <20091117125901.GF823@rakim.wolfsonmicro.main>
+References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
+	<20091109105858.GB1245@sirena.org.uk>
+	<20091109133136.GC1245@sirena.org.uk>
+	<20091116153000.GB29479@sirena.org.uk>
+	<aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 735D41038E3
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 13:54:37 +0100 (CET)
-Received: by pwj11 with SMTP id 11so8856758pwj.32
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 04:54:36 -0800 (PST)
-In-Reply-To: <20091117113913.GA823@rakim.wolfsonmicro.main>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A6A5D1038E7
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 13:59:02 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
+To: Magnus Damm <magnus.damm@gmail.com>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, Magnus Damm <damm@opensource.se>, linux-pm@lists.linux-foundation.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBOb3YgMTcsIDIwMDkgYXQgODozOSBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgTm92IDE3LCAyMDA5IGF0
-IDA0OjUzOjU2UE0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4KPj4gKyDCoCDCoCBkZWZhdWx0
-Ogo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ayhLRVJOX0RFQlVHICJJbnZhbGlkIFBDTSBD
-b250cm9sbGVyIG51bWJlciEiKTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gLUVJTlZB
-TDsKPj4gKyDCoCDCoCB9Cj4KPiBBcyBJIHNhaWQgbGFzdCB0aW1lIHRoaXMgcmVhbGx5IHNob3Vs
-ZCBiZSBhbiBlcnJvciBhdCBsZWFzdC4KQWN0dWFsbHkgdGhlIGNhc2UgY3Vkbid0IGJlIHJlYWNo
-ZWQgZXZlci4gVGhlIGRyaXZlciBjaGVjayBmb3IgdmFsaWQgaW5kZXgKYmVmb3JlIGNvbnRpbnVp
-bmcgd2l0aCB0aGUgcHJvYmUuCgpBbHNvLCBQQ00gY29udHJvbGxlciBkcml2ZXIgcmVmdXNlIHRv
-IGhhbmRsZSB0aGUgZGV2aWNlIGlmIHRoZQpjYWxsYmFjayhjZmdfZ3BpbykKZmFpbCBmb3Igc29t
-ZSByZWFzb24uCgpCdHcsIHNvcnJ5LCBJIGN1ZG4ndCBmaW5kIHRoaXMgY29tbWVudCBpbiB5b3Ug
-cGFzdCByZXBsaWVzLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On Tue, Nov 17, 2009 at 09:46:35PM +0900, Magnus Damm wrote:
+
+> On SuperH we have Runtime PM enabled on a few platforms together with
+> a few updated drivers. The latest driver to become more power aware is
+> this FSI driver.
+
+I understand exactly what the runtime PM stuff and the driver are doing
+here, the issue is the mandatory suspend and resume functions.
+
+> At this point the SuperH specific platform bus code requires the
+> callbacks ->runtime_suspend() and ->runtime_resume() to be present. It
+> may be a good idea to allow them to be NULL in the future or maybe
+> having some shared functions, but before starting to break out stuff
+> I'd like to see how other Runtime PM implementations deal with this.
+> So unless people object I prefer to keep it as-is for now.
+
+What is the reason for requiring that the driver provide stub functions?
+For me the issue is that if it's mandatory for the driver to provide the
+functions then having stub functions in there makes the driver look like
+it is abusing the API by not implementing mandatory functionality.
+
+Given that the arch is now dealing with clocking and power for the
+device using the runtime PM system it seems fairly clear that there are
+going to be drivers like this one that can at least skip the suspend
+part and may not need to do anything at resume time either.
