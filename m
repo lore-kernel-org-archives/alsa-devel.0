@@ -1,53 +1,46 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: [PATCH] ASoC: tlv320aic23 fix rate selection
-Date: Tue, 17 Nov 2009 13:51:01 -0700
-Message-ID: <1258491061-11633-1-git-send-email-troy.kisky@boundarydevices.com>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: Null suspend/resume functions
+Date: Tue, 17 Nov 2009 23:14:04 +0100
+Message-ID: <200911172314.04396.rjw@sisk.pl>
+References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com> <aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com> <20091117125901.GF823@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mpls-qmqp-05.inet.qwest.net (mpls-qmqp-05.inet.qwest.net
-	[63.231.195.116])
-	by alsa0.perex.cz (Postfix) with ESMTP id D88BF24562
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 21:51:14 +0100 (CET)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: anuj.aggarwal@ti.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756007AbZKQWMd@vger.kernel.org>
+In-Reply-To: <20091117125901.GF823@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, linux-pm@lists.linux-foundation.org, Magnus Damm <damm@opensource.se>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Fix the ordering of sr_valid_mask array.
-The lower bit of the index represents USB
-not bosr.
+On Tuesday 17 November 2009, Mark Brown wrote:
+> On Tue, Nov 17, 2009 at 09:46:35PM +0900, Magnus Damm wrote:
+> 
+> > On SuperH we have Runtime PM enabled on a few platforms together with
+> > a few updated drivers. The latest driver to become more power aware is
+> > this FSI driver.
+> 
+> I understand exactly what the runtime PM stuff and the driver are doing
+> here, the issue is the mandatory suspend and resume functions.
+> 
+> > At this point the SuperH specific platform bus code requires the
+> > callbacks ->runtime_suspend() and ->runtime_resume() to be present. It
+> > may be a good idea to allow them to be NULL in the future or maybe
+> > having some shared functions, but before starting to break out stuff
+> > I'd like to see how other Runtime PM implementations deal with this.
+> > So unless people object I prefer to keep it as-is for now.
+> 
+> What is the reason for requiring that the driver provide stub functions?
+> For me the issue is that if it's mandatory for the driver to provide the
+> functions then having stub functions in there makes the driver look like
+> it is abusing the API by not implementing mandatory functionality.
 
-Reported-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
-Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
----
- sound/soc/codecs/tlv320aic23.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+In fact, it's not mandatory for bus types, not for drivers.  IMO bus types
+really have to know how to suspend a device and how to resume it,
+otherwise the core framework won't be useful anyway.  What the bus type does
+about drivers not implementing ->runtime_suspend() or ->runtime_resume(), it's
+up to the bus type.  That's even documented IIRC.
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 0b8dcb5..6b24d8b 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -265,8 +265,8 @@ static const int bosr_usb_divisor_table[] = {
- #define UPPER_GROUP ((1<<8) | (1<<9) | (1<<10) | (1<<11)        | (1<<15))
- static const unsigned short sr_valid_mask[] = {
- 	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 0*/
--	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
- 	LOWER_GROUP,			/* Usb, bosr - 0*/
-+	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
- 	UPPER_GROUP,			/* Usb, bosr - 1*/
- };
- /*
--- 
-1.5.6.3
+Thanks,
+Rafael
