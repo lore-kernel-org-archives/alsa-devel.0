@@ -1,21 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Null suspend/resume functions
-Date: Tue, 17 Nov 2009 12:59:01 +0000
-Message-ID: <20091117125901.GF823@rakim.wolfsonmicro.main>
-References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
-	<20091109105858.GB1245@sirena.org.uk>
-	<20091109133136.GC1245@sirena.org.uk>
-	<20091116153000.GB29479@sirena.org.uk>
-	<aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: Artifacts present in AIC23 capture for 48 KHz
+	sampling rate
+Date: Tue, 17 Nov 2009 18:45:52 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A6A5D1038E7
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 13:59:02 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1836B1037F1
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 14:16:00 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,32 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Magnus Damm <magnus.damm@gmail.com>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, Magnus Damm <damm@opensource.se>, linux-pm@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Cc: "troy.kisky@boundarydevices.com" <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 17, 2009 at 09:46:35PM +0900, Magnus Damm wrote:
-
-> On SuperH we have Runtime PM enabled on a few platforms together with
-> a few updated drivers. The latest driver to become more power aware is
-> this FSI driver.
-
-I understand exactly what the runtime PM stuff and the driver are doing
-here, the issue is the mandatory suspend and resume functions.
-
-> At this point the SuperH specific platform bus code requires the
-> callbacks ->runtime_suspend() and ->runtime_resume() to be present. It
-> may be a good idea to allow them to be NULL in the future or maybe
-> having some shared functions, but before starting to break out stuff
-> I'd like to see how other Runtime PM implementations deal with this.
-> So unless people object I prefer to keep it as-is for now.
-
-What is the reason for requiring that the driver provide stub functions?
-For me the issue is that if it's mandatory for the driver to provide the
-functions then having stub functions in there makes the driver look like
-it is abusing the API by not implementing mandatory functionality.
-
-Given that the arch is now dealing with clocking and power for the
-device using the runtime PM system it seems fairly clear that there are
-going to be drivers like this one that can at least skip the suspend
-part and may not need to do anything at resume time either.
+> -----Original Message-----
+> From: Aggarwal, Anuj
+> Sent: Friday, November 06, 2009 6:28 PM
+> To: alsa-devel@alsa-project.org; 'linux-omap@vger.kernel.org'
+> Subject: Artifacts present in AIC23 capture for 48 KHz sampling rate
+> 
+> Hi,
+> 
+> I am observing artifacts (sharp spikes at fixed intervals) while
+> capturing audio on AM3517 EVM and AIC23 codec. They are present only
+> in one of the channels when I am capturing at 48 KHz. All other
+> sampling rates are working fine with the above said combination.
+> 
+> I have also attached the screenshot taken with the help of Audacity
+> utility. Here, I tried recording silence but artifacts were observed
+> on one channel.
+> 
+> Has anyone also observed the similar behavior with AIC23 codec? Any
+> hints on what could be the root cause?
+[Aggarwal, Anuj] On further debugging, I found that the function
+find_rate() in sound/soc/codecs/tlv320aic23.c is not returning 
+the correct value for capture in 48KHz sample rate. In USB mode
+(MCLK=12MHz), for 48KHz, it returns 0x7D (CLKOUT=0, CLKIN=1, 
+SR[3:0]=0xF, BOSR=1, Normal=1) whereas as per the AIC23B spec, 
+it should have been 0x5D (CLKOUT=0, CLKIN=1, SR[3:0]=0x7, 
+BOSR=1, Normal=1). When I forcefully write the above said value
+to the Sample Rate Control register, things work fine for me
+for 48KHz capture.
+Is my understanding correct for this problem? Can someone help
+me understand how the function calculates the appropriate value?
+> 
+> Regards,
+> Anuj Aggarwal
