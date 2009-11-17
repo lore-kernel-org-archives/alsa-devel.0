@@ -1,21 +1,17 @@
-From: Christian Hergert <christian.hergert@gmail.com>
-Subject: Re: PATCH: ALSA - hda - Add support for Dell E6400
-	docking station
-Date: Tue, 17 Nov 2009 12:17:59 -0800
-Message-ID: <6d4a25b10911171217u26fa066l65cb70f90f5f6eee@mail.gmail.com>
-References: <6d4a25b10911161520i50a677d6m78d057d900676469@mail.gmail.com>
-	<s5hd43h4hlv.wl%tiwai@suse.de>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: [PATCH] ASoC: tlv320aic23 fix rate selection
+Date: Tue, 17 Nov 2009 13:51:01 -0700
+Message-ID: <1258491061-11633-1-git-send-email-troy.kisky@boundarydevices.com>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
-	[209.85.222.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A15E103801
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 21:18:00 +0100 (CET)
-Received: by pzk9 with SMTP id 9so239581pzk.16
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 12:17:59 -0800 (PST)
-In-Reply-To: <s5hd43h4hlv.wl%tiwai@suse.de>
+Received: from mpls-qmqp-05.inet.qwest.net (mpls-qmqp-05.inet.qwest.net
+	[63.231.195.116])
+	by alsa0.perex.cz (Postfix) with ESMTP id D88BF24562
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 21:51:14 +0100 (CET)
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,90 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: anuj.aggarwal@ti.com, broonie@sirena.org.uk, Troy Kisky <troy.kisky@boundarydevices.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 17, 2009 at 1:37 AM, Takashi Iwai <tiwai@suse.de> wrote:
->
-> At Mon, 16 Nov 2009 15:20:32 -0800,
-> Christian Hergert wrote:
-> >
-> > Hi,
-> >
-> > I made a patch to fix bug 4657[1] on the tracker. =A0I'm fairly certain=
- that
-> > it isn't the correct approach but would like some feedback on what that
-> > would be.
-> >
-> > The power-mappings in patch_sigmatel.c seem to allow you to flip multip=
-le
-> > bits. =A0In the case of the Dell docking station, you need to enable so=
-me bits
-> > while disabling others. =A0Therefore, instead of using the power mappin=
-gs I
-> > just hacked in a quick check to work for the hardware I have on hand. =
-=A0If
-> > there is a proper way to fix this that I have missed, I'll be more than
-> > happy to fix the patch appropriately.
-> >
-> > [1] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D4657
->
-> The jack detection of the docking station is already there, but it seems
-> just a missing call to toggle the power-map.
->
-> How about the patch below?
->
->
-> thanks,
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmate=
-l.c
-> index 7f76a97..bd9a2dd 100644
-> --- a/sound/pci/hda/patch_sigmatel.c
-> +++ b/sound/pci/hda/patch_sigmatel.c
-> @@ -4396,10 +4396,12 @@ static void stac92xx_set_pinctl(struct hda_codec =
-*codec, hda_nid_t nid,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pin_ctl &=3D ~(AC_PINCTL_IN_EN | AC_PINCTL=
-_OUT_EN);
->
-> =A0 =A0 =A0 =A0pin_ctl |=3D flag;
-> - =A0 =A0 =A0 if (old_ctl !=3D pin_ctl)
-> + =A0 =A0 =A0 if (old_ctl !=3D pin_ctl) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_write_cache(codec, nid, 0,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0AC_VERB_SET_PIN_WIDGET_CONTROL,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0pin_ctl);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 stac_toggle_power_map(codec, nid, 1);
-> + =A0 =A0 =A0 }
-> =A0}
->
-> =A0static void stac92xx_reset_pinctl(struct hda_codec *codec, hda_nid_t n=
-id,
-> @@ -4407,10 +4409,12 @@ static void stac92xx_reset_pinctl(struct hda_code=
-c *codec, hda_nid_t nid,
-> =A0{
-> =A0 =A0 =A0 =A0unsigned int pin_ctl =3D snd_hda_codec_read(codec, nid,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A00, AC_VERB_GET_PIN_WIDGET_=
-CONTROL, 0x00);
-> - =A0 =A0 =A0 if (pin_ctl & flag)
-> + =A0 =A0 =A0 if (pin_ctl & flag) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_write_cache(codec, nid, 0,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0AC_VERB_SET_PIN_WIDGET_CONTROL,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0pin_ctl & ~flag);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 stac_toggle_power_map(codec, nid, 0);
-> + =A0 =A0 =A0 }
-> =A0}
->
-> =A0static int get_pin_presence(struct hda_codec *codec, hda_nid_t nid)
+Fix the ordering of sr_valid_mask array.
+The lower bit of the index represents USB
+not bosr.
 
-I tried this on top of 2.6.31.4 and, unfortunately, it did not solve
-the problem.  I'll investigate a bit to figure out why.
+Reported-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
+Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+---
+ sound/soc/codecs/tlv320aic23.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
--- Christian
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index 0b8dcb5..6b24d8b 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -265,8 +265,8 @@ static const int bosr_usb_divisor_table[] = {
+ #define UPPER_GROUP ((1<<8) | (1<<9) | (1<<10) | (1<<11)        | (1<<15))
+ static const unsigned short sr_valid_mask[] = {
+ 	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 0*/
+-	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
+ 	LOWER_GROUP,			/* Usb, bosr - 0*/
++	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
+ 	UPPER_GROUP,			/* Usb, bosr - 1*/
+ };
+ /*
+-- 
+1.5.6.3
