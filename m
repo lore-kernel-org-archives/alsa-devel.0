@@ -1,19 +1,18 @@
-From: =?ISO-8859-1?Q?S=E9bastien?= Lavoie <sebastien@cslavoie.com>
-Subject: alsa-driver-1.0.21.30.g5ed31.345.g7c525 Not compiling
-Date: Tue, 17 Nov 2009 00:39:36 -0500
-Message-ID: <1258436376.3424.11.camel@seb-laptop>
+From: Mattia Dongili <malattia@linux.it>
+Subject: Re: patch_realtek: support Vaio Type G
+Date: Tue, 17 Nov 2009 20:15:37 +0900
+Message-ID: <20091117111536.GB7504@kamineko.org>
+References: <20091116140227.GA4386@kamineko.org> <s5hbpj2jzus.wl%tiwai@suse.de>
+	<20091116224756.GA7504@kamineko.org> <s5h8we5velv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6341961537398289023=="
+Content-Type: multipart/mixed; boundary="WIyZ46R2i8wDzkSu"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cslavoie.com (unknown [68.233.8.48])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C5812438C
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 06:39:42 +0100 (CET)
-Received: from modemcable185.168-23-96.mc.videotron.ca ([96.23.168.185]
-	helo=[192.168.1.107])
-	by serapion.server0571.info with esmtpsa (SSLv3:AES256-SHA:256)
-	(Exim 4.69) (envelope-from <sebastien@cslavoie.com>)
-	id 1NAGmy-0007tf-HB
-	for alsa-devel@alsa-project.org; Mon, 16 Nov 2009 21:39:40 -0800
+Received: from smtp.kamineko.org (static-220-247-10-204.b-man.svips.gol.ne.jp
+	[220.247.10.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id 18448103855
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 12:15:45 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h8we5velv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,327 +22,960 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6341961537398289023==
-Content-Type: multipart/signed; micalg="sha1"; protocol="application/x-pkcs7-signature"; boundary="=-EPGlOSblMuhe1URhDsov"
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Nov 17, 2009 at 07:40:12AM +0100, Takashi Iwai wrote:
+> At Tue, 17 Nov 2009 07:47:56 +0900,
+> Mattia Dongili wrote:
+> > 
+> > On Mon, Nov 16, 2009 at 03:42:03PM +0100, Takashi Iwai wrote:
+> > > At Mon, 16 Nov 2009 23:02:27 +0900,
+> > > Mattia Dongili wrote:
+> > > > 
+> > > > Hi Takashi,
+> > > > 
+> > > > my laptop (Vaio Type G) used to work (although the valume was pretty
+> > > > low) with model=hippo until 2.6.29 then from 2.6.30 it stopped being
+> > > > supported throwing this message:
+> > > > hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x01570900
+> > > 
+> > > Still doesn't work 2.6.32-rc7 without your patch?
+> > 
+> > No, now tested on .32-rc7 and model=hippo still doesn't work.
+> 
+> What about model=auto?
+
+err hmmm... well it works! I thought that model=auto was the same as no
+parameter at all so haven't tried it. Sorry about the noise.
+
+> > I have to
+> > admit thought that I see
+> > 
+> > [  286.236022] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+> > [  286.236114] HDA Intel 0000:00:1b.0: setting latency timer to 64
+> > [  287.392510] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x015b8000
+> > 
+> > even with my patch. But at least I get sound.
+> 
+> The message above is usually pretty harmless, and unlikely relevant
+> with your problem.
+> 
+> Could you give alsa-info.sh outputs on both vanilla 2.6.32-rc7 kernel,
+> with model=auto, and with your patch?
+
+in case you still want it, it's attached
+
+Thanks again
+-- 
+mattia
+:wq!
+
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="alsa-info.txt.6TYz0LnQHM"
+
+upload=true&script=true&cardinfo=
+!!################################
+!!ALSA Information Script v 0.4.58
+!!################################
+
+!!Script ran on: Tue Nov 17 11:14:51 UTC 2009
 
 
---=-EPGlOSblMuhe1URhDsov
-Content-Type: multipart/mixed; boundary="=-XJ1+VK7xFs/SOnBAKia4"
+!!Linux Distribution
+!!------------------
+
+Debian GNU/Linux squeeze/sid \n \l
 
 
---=-XJ1+VK7xFs/SOnBAKia4
-Content-Type: multipart/alternative; boundary="=-Tuj0DX2tXTilNWQdDnmS"
+!!DMI Information
+!!---------------
+
+Manufacturer:      Sony Corporation
+Product Name:      VGN-G3AANS
 
 
---=-Tuj0DX2tXTilNWQdDnmS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+!!Kernel Information
+!!------------------
 
-I can't manage to compile alsa-driver from the repository (nor 1.0.19)
-See logs attached
-
-S=C3=A9bastien Lavoie
-sebastien@cslavoie.com
-514.928.5214
-Entrepreneur en d=C3=A9veloppement Web et h=C3=A9bergement
-=C2=A9 Cr=C3=A9ations S=C3=A9bastien Lavoie=20
+Kernel release:    2.6.32-rc7
+Operating System:  GNU/Linux
+Architecture:      x86_64
+Processor:         unknown
+SMP Enabled:       Yes
 
 
+!!ALSA Version
+!!------------
 
---=-Tuj0DX2tXTilNWQdDnmS
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-
-
---=-Tuj0DX2tXTilNWQdDnmS--
-
---=-XJ1+VK7xFs/SOnBAKia4
-Content-Type: application/x-lzma-compressed-tar; name="logs.tar.lzma"
-Content-Disposition: attachment; filename="logs.tar.lzma"
-Content-Transfer-Encoding: base64
-
-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
+Driver version:     1.0.21
+Library version:    1.0.21a
+Utilities version:  1.0.21
 
 
---=-XJ1+VK7xFs/SOnBAKia4--
+!!Loaded ALSA modules
+!!-------------------
 
---=-EPGlOSblMuhe1URhDsov
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIISDDCCBfww
-ggPkoAMCAQICAwCSBzANBgkqhkiG9w0BAQUFADBUMRQwEgYDVQQKEwtDQWNlcnQgSW5jLjEeMBwG
-A1UECxMVaHR0cDovL3d3dy5DQWNlcnQub3JnMRwwGgYDVQQDExNDQWNlcnQgQ2xhc3MgMyBSb290
-MB4XDTA5MTEwNDIxMDI0MFoXDTExMTEwNDIxMDI0MFowgcoxGTAXBgNVBAMTEFNlYmFzdGllbiBM
-YXZvaWUxJTAjBgkqhkiG9w0BCQEWFnNlYmFzdGllbkBjc2xhdm9pZS5jb20xKDAmBgkqhkiG9w0B
-CQEWGWxhdm9pc2ViQGlyby51bW9udHJlYWwuY2ExIzAhBgkqhkiG9w0BCQEWFHNlYi5sYXZvaWVA
-Z21haWwuY29tMTcwNQYJKoZIhvcNAQkBFihmYWU0YzY4N2RkZjRmZGJjYTY1NTVjNGFhYzcwYjYx
-ZGVmNmQ3Yzk4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwNvStR6jA1sdxmPoD3og
-GOJ9/svt4AEWxmPnh+JhLhXSVU5TK3u1DP/yl55IN+uvVts20amh9RdgNDNJYrp4sI19QGiKZnfT
-51TJ9OETimjsYws8pWaToXzIxiMXSeoin+TJ1WsQj+R0nC1P99Yr6cl1i+Cj+Mh+WEbO1OT3KaQu
-pOp90oc6QKQNcNT9peXHO+IhApfRU+U8H84GZY/Gt7m0nuhHPimry737i/CV9QWspElqxihikRlJ
-AaERYbpmJ997VrJ4VhCJYDrf4Jf/sTRAgG4TYPXivrGBXCFdSC9Gk4MUm4VHCmB43pgFot4I5OtQ
-Mm0fvuVZIXZ00qlihQIDAQABo4IBXjCCAVowDAYDVR0TAQH/BAIwADBWBglghkgBhvhCAQ0ESRZH
-VG8gZ2V0IHlvdXIgb3duIGNlcnRpZmljYXRlIGZvciBGUkVFIGhlYWQgb3ZlciB0byBodHRwOi8v
-d3d3LkNBY2VydC5vcmcwQAYDVR0lBDkwNwYIKwYBBQUHAwQGCCsGAQUFBwMCBgorBgEEAYI3CgME
-BgorBgEEAYI3CgMDBglghkgBhvhCBAEwMgYIKwYBBQUHAQEEJjAkMCIGCCsGAQUFBzABhhZodHRw
-Oi8vb2NzcC5jYWNlcnQub3JnMHwGA1UdEQR1MHOBFnNlYmFzdGllbkBjc2xhdm9pZS5jb22BGWxh
-dm9pc2ViQGlyby51bW9udHJlYWwuY2GBFHNlYi5sYXZvaWVAZ21haWwuY29tgShmYWU0YzY4N2Rk
-ZjRmZGJjYTY1NTVjNGFhYzcwYjYxZGVmNmQ3Yzk4MA0GCSqGSIb3DQEBBQUAA4ICAQA4HvU7s86g
-hOOig9tVkVypHUBPeZr9KT9M8rws4REpsYDqqOpFm04HUVu+Y2pH5z94y7tIbG7buMzoCdcWorqP
-qUUK1jsIWXj01uJ+g2uKhuCs58M2SLpC0OEjjA2JT90MTsUaT+AJONFAwSipmaOkvWSfQWoePv2q
-jTOb5UCeT42GG2S44bkzmI+m1b5UCUWqdwkcvhx559Z23ETetwa1t2IuvxjRQFlxaggf4ii19p+G
-c3aBS1ug9bFLtMpHr+XTlJ/ivAbzFGA1v83A18heupqyEE3DxKh7QhzgpErQGmouJzSTsgkDItrV
-Mv+T6HZhRrRf9SJ0ZMf4LaQ/IW3HtzcT3fcMAty7hOZu0Oj5DHdczzVVUGf7UsdxfEJwyP+eEeJS
-QzUfG08gXl7cwtzinAaipzqSK0o/saBx86AVJ+osnup3BAXk0AFuQO2933si4kQEFgFfhwRPWPgF
-wGoI4s35UVcPpx6PJAD1gg0V1JfZcWWoM+c4YKILZDpggPz837kQkxb3dIM8Jl3wLra1dUn6l4jS
-pc4b3kMILkNK8OWZ6aCAQufOJ9uacQao3sfcoDG0P8+KCUtgDDm4g3lRvCAx81bGVjDAXY8ZPx6K
-lOESMXsqQzE3Q9rFCeNIl6c3btKoywv93OYclu6UFiC9TUJPZf5YZdqTm43dmN8hdzCCBfwwggPk
-oAMCAQICAwCSBzANBgkqhkiG9w0BAQUFADBUMRQwEgYDVQQKEwtDQWNlcnQgSW5jLjEeMBwGA1UE
-CxMVaHR0cDovL3d3dy5DQWNlcnQub3JnMRwwGgYDVQQDExNDQWNlcnQgQ2xhc3MgMyBSb290MB4X
-DTA5MTEwNDIxMDI0MFoXDTExMTEwNDIxMDI0MFowgcoxGTAXBgNVBAMTEFNlYmFzdGllbiBMYXZv
-aWUxJTAjBgkqhkiG9w0BCQEWFnNlYmFzdGllbkBjc2xhdm9pZS5jb20xKDAmBgkqhkiG9w0BCQEW
-GWxhdm9pc2ViQGlyby51bW9udHJlYWwuY2ExIzAhBgkqhkiG9w0BCQEWFHNlYi5sYXZvaWVAZ21h
-aWwuY29tMTcwNQYJKoZIhvcNAQkBFihmYWU0YzY4N2RkZjRmZGJjYTY1NTVjNGFhYzcwYjYxZGVm
-NmQ3Yzk4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwNvStR6jA1sdxmPoD3ogGOJ9
-/svt4AEWxmPnh+JhLhXSVU5TK3u1DP/yl55IN+uvVts20amh9RdgNDNJYrp4sI19QGiKZnfT51TJ
-9OETimjsYws8pWaToXzIxiMXSeoin+TJ1WsQj+R0nC1P99Yr6cl1i+Cj+Mh+WEbO1OT3KaQupOp9
-0oc6QKQNcNT9peXHO+IhApfRU+U8H84GZY/Gt7m0nuhHPimry737i/CV9QWspElqxihikRlJAaER
-YbpmJ997VrJ4VhCJYDrf4Jf/sTRAgG4TYPXivrGBXCFdSC9Gk4MUm4VHCmB43pgFot4I5OtQMm0f
-vuVZIXZ00qlihQIDAQABo4IBXjCCAVowDAYDVR0TAQH/BAIwADBWBglghkgBhvhCAQ0ESRZHVG8g
-Z2V0IHlvdXIgb3duIGNlcnRpZmljYXRlIGZvciBGUkVFIGhlYWQgb3ZlciB0byBodHRwOi8vd3d3
-LkNBY2VydC5vcmcwQAYDVR0lBDkwNwYIKwYBBQUHAwQGCCsGAQUFBwMCBgorBgEEAYI3CgMEBgor
-BgEEAYI3CgMDBglghkgBhvhCBAEwMgYIKwYBBQUHAQEEJjAkMCIGCCsGAQUFBzABhhZodHRwOi8v
-b2NzcC5jYWNlcnQub3JnMHwGA1UdEQR1MHOBFnNlYmFzdGllbkBjc2xhdm9pZS5jb22BGWxhdm9p
-c2ViQGlyby51bW9udHJlYWwuY2GBFHNlYi5sYXZvaWVAZ21haWwuY29tgShmYWU0YzY4N2RkZjRm
-ZGJjYTY1NTVjNGFhYzcwYjYxZGVmNmQ3Yzk4MA0GCSqGSIb3DQEBBQUAA4ICAQA4HvU7s86ghOOi
-g9tVkVypHUBPeZr9KT9M8rws4REpsYDqqOpFm04HUVu+Y2pH5z94y7tIbG7buMzoCdcWorqPqUUK
-1jsIWXj01uJ+g2uKhuCs58M2SLpC0OEjjA2JT90MTsUaT+AJONFAwSipmaOkvWSfQWoePv2qjTOb
-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
-YW9HX7OG76bK6nVhqypsNXBZZQAAAAAAAA==
+snd_hda_intel
 
 
---=-EPGlOSblMuhe1URhDsov--
+!!Sound Servers on this system
+!!----------------------------
+
+No sound servers found.
 
 
---===============6341961537398289023==
+!!Soundcards recognised by ALSA
+!!-----------------------------
+
+ 0 [Intel          ]: HDA-Intel - HDA Intel
+                      HDA Intel at 0xd6a20000 irq 21
+
+
+!!PCI Soundcards installed in the system
+!!--------------------------------------
+
+00:1b.0 Audio device: Intel Corporation 82801I (ICH9 Family) HD Audio Controller (rev 03)
+
+
+!!Advanced information - PCI Vendor/Device/Susbsystem ID's
+!!--------------------------------------------------------
+
+00:1b.0 0403: 8086:293e (rev 03)
+	Subsystem: 104d:9047
+
+
+!!Modprobe options (Sound related)
+!!--------------------------------
+
+snd-atiixp-modem: index=-2
+snd-intel8x0m: index=-2
+snd-via82xx-modem: index=-2
+snd-pcsp: index=-2
+snd_hda_intel: model=auto
+
+
+!!Loaded sound module options
+!!--------------------------
+
+!!Module: snd_hda_intel
+	bdl_pos_adj : 1,-1,-1,-1,-1,-1,-1,-1
+	enable : Y,Y,Y,Y,Y,Y,Y,Y
+	enable_msi : 0
+	id : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+	index : -1,-1,-1,-1,-1,-1,-1,-1
+	model : auto,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+	patch : <NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>,<NULL>
+	position_fix : 0,0,0,0,0,0,0,0
+	power_save : 0
+	power_save_controller : Y
+	probe_mask : -1,-1,-1,-1,-1,-1,-1,-1
+	probe_only : N,N,N,N,N,N,N,N
+	single_cmd : N
+
+
+!!HDA-Intel Codec information
+!!---------------------------
+--startcollapse--
+
+Codec: Realtek ALC262
+Address: 0
+Function Id: 0x1
+Vendor Id: 0x10ec0262
+Subsystem Id: 0x104d3900
+Revision Id: 0x100302
+No Modem Function Group found
+Default PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: N/A
+GPIO: io=4, o=0, i=0, unsolicited=1, wake=0
+  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+Node 0x02 [Audio Output] wcaps 0x411: Stereo
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power: setting=D0, actual=D0
+Node 0x03 [Audio Output] wcaps 0x411: Stereo
+  Converter: stream=0, channel=0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power: setting=D0, actual=D0
+Node 0x04 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x05 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x06 [Audio Output] wcaps 0x611: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+  Power: setting=D0, actual=D0
+Node 0x07 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x10 0x10]
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x24
+Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x00 0x00]
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x23
+Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x08, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x00 0x00]
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x22
+Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x1f
+Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x17, nsteps=0x1f, stepsize=0x05, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x81 0x81] [0x81 0x81] [0x81 0x81]
+  Connection: 8
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15
+Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1e, nsteps=0x1e, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x1d 0x1d]
+  Connection: 2
+     0x02 0x0b
+Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00 0x00] [0x00 0x00]
+  Amp-Out caps: ofs=0x1e, nsteps=0x1e, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 2
+     0x03 0x0b
+Node 0x0e [Audio Mixer] wcaps 0x20010e: Mono Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x00] [0x00]
+  Amp-Out caps: ofs=0x1e, nsteps=0x1e, stepsize=0x05, mute=0
+  Amp-Out vals:  [0x1e]
+  Connection: 2
+     0x02 0x0b
+Node 0x0f [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x10 [Audio Output] wcaps 0x611: Stereo Digital
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x560]: 44100 48000 96000 192000
+    bits [0x1e]: 16 20 24 32
+    formats [0x1]: PCM
+  Power: setting=D0, actual=D0
+Node 0x11 [Pin Complex] wcaps 0x400780: Mono Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x10
+Node 0x12 [Pin Complex] wcaps 0x400401: Stereo
+  Pincap 0x00000020: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Power: setting=D0, actual=D0
+Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x14 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0000003e: IN OUT HP Detect Trigger
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x0c* 0x0d
+Node 0x15 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00 0x00]
+  Pincap 0x0000003e: IN OUT HP Detect Trigger
+  Pin Default 0x0221101f: [Jack] HP Out at Ext Front
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x1, Sequence = 0xf
+  Pin-ctls: 0xc0: OUT HP
+  Unsolicited: tag=04, enabled=1
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x0c* 0x0d
+Node 0x16 [Pin Complex] wcaps 0x40050c: Mono Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x00]
+  Pincap 0x00000010: OUT
+  Pin Default 0x90170110: [Fixed] Speaker at Int N/A
+    Conn = Analog, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x0e
+Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x18 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0000173e: IN OUT HP Detect Trigger
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x02a15020: [Jack] Mic at Ext Front
+    Conn = 1/8, Color = Red
+    DefAssociation = 0x2, Sequence = 0x0
+  Pin-ctls: 0x24: IN VREF_80
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x0c* 0x0d
+Node 0x19 [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0000173e: IN OUT HP Detect Trigger
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x0c* 0x0d
+Node 0x1a [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0000173e: IN OUT HP Detect Trigger
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x0c* 0x0d
+Node 0x1b [Pin Complex] wcaps 0x40058f: Stereo Amp-In Amp-Out
+  Amp-In caps: ofs=0x00, nsteps=0x03, stepsize=0x27, mute=0
+  Amp-In vals:  [0x00 0x00]
+  Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-Out vals:  [0x80 0x80]
+  Pincap 0x0000173e: IN OUT HP Detect Trigger
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Connection: 2
+     0x0c* 0x0d
+Node 0x1c [Pin Complex] wcaps 0x400401: Stereo
+  Pincap 0x00000020: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+  Power: setting=D0, actual=D0
+Node 0x1d [Pin Complex] wcaps 0x400400: Mono
+  Pincap 0x00000020: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+  Power: setting=D0, actual=D0
+Node 0x1e [Pin Complex] wcaps 0x400780: Mono Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x06
+Node 0x1f [Pin Complex] wcaps 0x400680: Mono Digital
+  Pincap 0x00000020: IN
+  Pin Default 0x411111f0: [N/A] Speaker at Ext Rear
+    Conn = 1/8, Color = Black
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+  Processing caps: benign=0, ncoeff=17
+  Processing Coefficient: 0x6020
+  Coefficient Index: 0x09
+Node 0x21 [Volume Knob Widget] wcaps 0x600080: Mono
+  Volume-Knob: delta=0, steps=32, direct=0, val=0
+  Unsolicited: tag=00, enabled=0
+  Connection: 0
+Node 0x22 [Audio Selector] wcaps 0x300101: Stereo
+  Connection: 10
+     0x18* 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b 0x12
+Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 9
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
+Node 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+  Connection: 9
+     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x0b
+Codec: Conexant ID 2c06
+Address: 1
+Function Id: 0x2
+Vendor Id: 0x14f12c06
+Subsystem Id: 0x104d1700
+Revision Id: 0x100000
+Modem Function Group: 0x2
+--endcollapse--
+
+
+!!ALSA Device nodes
+!!-----------------
+
+crw-rw----+ 1 root audio 116,  0 Nov 17 20:05 /dev/snd/controlC0
+crw-rw----+ 1 root audio 116,  4 Nov 17 20:05 /dev/snd/hwC0D0
+crw-rw----+ 1 root audio 116,  5 Nov 17 20:05 /dev/snd/hwC0D1
+crw-rw----+ 1 root audio 116, 24 Nov 17 20:05 /dev/snd/pcmC0D0c
+crw-rw----+ 1 root audio 116, 16 Nov 17 20:05 /dev/snd/pcmC0D0p
+crw-rw----+ 1 root audio 116, 33 Nov 17 20:05 /dev/snd/timer
+
+/dev/snd/by-path:
+total 0
+drwxr-xr-x 2 root root  60 Nov 17 20:05 .
+drwxr-xr-x 3 root root 180 Nov 17 20:05 ..
+lrwxrwxrwx 1 root root  12 Nov 17 20:05 pci-0000:00:1b.0 -> ../controlC0
+
+
+!!Aplay/Arecord output
+!!------------
+
+APLAY
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC262 Analog [ALC262 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+ARECORD
+
+**** List of CAPTURE Hardware Devices ****
+card 0: Intel [HDA Intel], device 0: ALC262 Analog [ALC262 Analog]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+!!Amixer output
+!!-------------
+
+!!-------Mixer controls for card 0 [Intel]
+
+Card hw:0 'Intel'/'HDA Intel at 0xd6a20000 irq 21'
+  Mixer name	: 'Realtek ALC262'
+  Components	: 'HDA:10ec0262,104d3900,00100302 HDA:14f12c06,104d1700,00100000'
+  Controls      : 18
+  Simple ctrls  : 10
+Simple mixer control 'Master',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 30
+  Mono: Playback 30 [100%] [0.00dB] [on]
+Simple mixer control 'Headphone',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 30
+  Mono:
+  Front Left: Playback 29 [97%] [-1.50dB] [on]
+  Front Right: Playback 29 [97%] [-1.50dB] [on]
+Simple mixer control 'Speaker',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 30
+  Mono: Playback 30 [100%] [0.00dB] [on]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 255
+  Mono:
+  Front Left: Playback 255 [100%] [0.00dB]
+  Front Right: Playback 255 [100%] [0.00dB]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 0 [0%] [-34.50dB] [off]
+  Front Right: Playback 0 [0%] [-34.50dB] [off]
+Simple mixer control 'Mic Boost',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 3
+  Front Left: 0 [0%]
+  Front Right: 0 [0%]
+Simple mixer control 'Beep',0
+  Capabilities: pvolume pswitch
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono:
+  Front Left: Playback 1 [3%] [-33.00dB] [off]
+  Front Right: Playback 1 [3%] [-33.00dB] [off]
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 16 [52%] [12.00dB] [on]
+  Front Right: Capture 16 [52%] [12.00dB] [on]
+Simple mixer control 'Capture',1
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 0 [0%] [-12.00dB] [on]
+  Front Right: Capture 0 [0%] [-12.00dB] [on]
+Simple mixer control 'Capture',2
+  Capabilities: cvolume cswitch
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 31
+  Front Left: Capture 0 [0%] [-12.00dB] [on]
+  Front Right: Capture 0 [0%] [-12.00dB] [on]
+
+
+!!Alsactl output
+!!-------------
+
+--startcollapse--
+state.Intel {
+	control.1 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Speaker Playback Switch'
+		value true
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Headphone Playback Switch'
+		value.0 true
+		value.1 true
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 30'
+		comment.dbmin -4500
+		comment.dbmax 0
+		iface MIXER
+		name 'Speaker Playback Volume'
+		value 30
+	}
+	control.4 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 30'
+		comment.dbmin -4500
+		comment.dbmax 0
+		iface MIXER
+		name 'Headphone Playback Volume'
+		value.0 29
+		value.1 29
+	}
+	control.5 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -3450
+		comment.dbmax 1200
+		iface MIXER
+		name 'Mic Playback Volume'
+		value.0 0
+		value.1 0
+	}
+	control.6 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Mic Playback Switch'
+		value.0 false
+		value.1 false
+	}
+	control.7 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 3'
+		comment.dbmin 0
+		comment.dbmax 3000
+		iface MIXER
+		name 'Mic Boost'
+		value.0 0
+		value.1 0
+	}
+	control.8 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Capture Switch'
+		value.0 true
+		value.1 true
+	}
+	control.9 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Capture Switch'
+		index 1
+		value.0 true
+		value.1 true
+	}
+	control.10 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Capture Switch'
+		index 2
+		value.0 true
+		value.1 true
+	}
+	control.11 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -1200
+		comment.dbmax 3450
+		iface MIXER
+		name 'Capture Volume'
+		value.0 16
+		value.1 16
+	}
+	control.12 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -1200
+		comment.dbmax 3450
+		iface MIXER
+		name 'Capture Volume'
+		index 1
+		value.0 0
+		value.1 0
+	}
+	control.13 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -1200
+		comment.dbmax 3450
+		iface MIXER
+		name 'Capture Volume'
+		index 2
+		value.0 0
+		value.1 0
+	}
+	control.14 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 31'
+		comment.dbmin -3450
+		comment.dbmax 1200
+		iface MIXER
+		name 'Beep Playback Volume'
+		value.0 1
+		value.1 1
+	}
+	control.15 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 2
+		iface MIXER
+		name 'Beep Playback Switch'
+		value.0 false
+		value.1 false
+	}
+	control.16 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.count 1
+		comment.range '0 - 30'
+		comment.dbmin -4500
+		comment.dbmax 0
+		iface MIXER
+		name 'Master Playback Volume'
+		value 30
+	}
+	control.17 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		comment.count 1
+		iface MIXER
+		name 'Master Playback Switch'
+		value true
+	}
+	control.18 {
+		comment.access 'read write user'
+		comment.type INTEGER
+		comment.count 2
+		comment.range '0 - 255'
+		comment.tlv '0000000100000008ffffec1400000014'
+		comment.dbmin -5100
+		comment.dbmax 0
+		iface MIXER
+		name 'PCM Playback Volume'
+		value.0 255
+		value.1 255
+	}
+}
+--endcollapse--
+
+
+!!All Loaded Modules
+!!------------------
+
+Module
+snd_hda_codec_realtek
+snd_hda_intel
+snd_hda_codec
+snd_hwdep
+snd_pcm_oss
+snd_mixer_oss
+snd_pcm
+snd_timer
+snd
+aes_x86_64
+aes_generic
+i915
+drm_kms_helper
+drm
+i2c_algo_bit
+i2c_core
+sco
+bridge
+stp
+llc
+bnep
+rfcomm
+l2cap
+ipv6
+acpi_cpufreq
+cpufreq_userspace
+cpufreq_conservative
+cpufreq_powersave
+cpufreq_stats
+cpufreq_ondemand
+freq_table
+kvm_intel
+kvm
+fuse
+loop
+btusb
+bluetooth
+arc4
+ecb
+pcmcia
+iwlagn
+iwlcore
+mac80211
+sdhci_pci
+video
+sdhci
+sg
+sony_laptop
+uhci_hcd
+backlight
+mmc_core
+output
+battery
+yenta_socket
+rsrc_nonstatic
+pcspkr
+sr_mod
+evdev
+ac
+psmouse
+led_class
+cfg80211
+processor
+pcmcia_core
+button
+cdrom
+e1000e
+intel_agp
+ehci_hcd
+soundcore
+snd_page_alloc
+thermal
+fan
+thermal_sys
+ahci
+
+
+!!Sysfs Files
+!!-----------
+
+/sys/class/sound/hwC0D0/init_pin_configs:
+0x11 0x411111f0
+0x12 0x411111f0
+0x14 0x411111f0
+0x15 0x0221101f
+0x16 0x90170110
+0x18 0x02a15020
+0x19 0x411111f0
+0x1a 0x411111f0
+0x1b 0x411111f0
+0x1c 0x411111f0
+0x1d 0x411111f0
+0x1e 0x411111f0
+0x1f 0x411111f0
+
+/sys/class/sound/hwC0D0/driver_pin_configs:
+
+/sys/class/sound/hwC0D0/user_pin_configs:
+
+/sys/class/sound/hwC0D0/init_verbs:
+
+/sys/class/sound/hwC0D1/init_pin_configs:
+0x73 0x016a10f0
+
+/sys/class/sound/hwC0D1/driver_pin_configs:
+
+/sys/class/sound/hwC0D1/user_pin_configs:
+
+/sys/class/sound/hwC0D1/init_verbs:
+
+
+!!ALSA/HDA dmesg
+!!------------------
+
+[    5.096495] hub 8-0:1.0: 2 ports detected
+[    5.580811] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[    5.609672] iwlagn 0000:02:00.0: Tunable channels: 13 802.11bg, 24 802.11a channels
+[    5.615740] input: PS/2 Mouse as /devices/platform/i8042/serio2/input/input6
+[    5.630166] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[    5.635527] iwlagn 0000:02:00.0: irq 27 for MSI/MSI-X
+--
+[   59.308636] cfg80211: Calling CRDA for country: JP
+[  129.214514] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[  137.413934] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[  137.414070] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[  138.536524] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x020c0000
+[  277.725785] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[  286.236022] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[  286.236114] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[  287.392510] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x015b8000
+[44546.537138] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[44560.606901] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[44560.607430] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[44561.724010] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x020c0000
+[44634.149988] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[44639.041890] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[44639.042164] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[44640.164015] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x01570900
+[44671.237313] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[44674.525814] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[44674.525901] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[44675.648025] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x020c0000
+[44768.957761] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[44792.103835] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[44792.104088] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[44914.026572] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[44926.386451] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[44926.386732] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[44963.002980] HDA Intel 0000:00:1b.0: PCI INT A disabled
+[44966.586454] HDA Intel 0000:00:1b.0: PCI INT A -> GSI 21 (level, low) -> IRQ 21
+[44966.586560] HDA Intel 0000:00:1b.0: setting latency timer to 64
+[44967.708510] hda-intel: azx_get_response timeout, switching to polling mode: last cmd=0x00cf0012
+
+
+
+--WIyZ46R2i8wDzkSu
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -354,4 +986,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---===============6341961537398289023==--
+--WIyZ46R2i8wDzkSu--
