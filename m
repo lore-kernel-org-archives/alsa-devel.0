@@ -1,18 +1,21 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: Artifacts present in AIC23 capture for 48
- KHz	sampling rate
-Date: Tue, 17 Nov 2009 12:09:21 -0700
-Message-ID: <4B02F4E1.3060405@boundarydevices.com>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
+From: Christian Hergert <christian.hergert@gmail.com>
+Subject: Re: PATCH: ALSA - hda - Add support for Dell E6400
+	docking station
+Date: Tue, 17 Nov 2009 12:17:59 -0800
+Message-ID: <6d4a25b10911171217u26fa066l65cb70f90f5f6eee@mail.gmail.com>
+References: <6d4a25b10911161520i50a677d6m78d057d900676469@mail.gmail.com>
+	<s5hd43h4hlv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth02.csee.onr.siteprotect.com
-	(smtpauth02.csee.onr.siteprotect.com [64.26.60.136])
-	by alsa0.perex.cz (Postfix) with ESMTP id D2FE5103800
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 20:09:33 +0100 (CET)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
+Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
+	[209.85.222.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A15E103801
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 21:18:00 +0100 (CET)
+Received: by pzk9 with SMTP id 9so239581pzk.16
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 12:17:59 -0800 (PST)
+In-Reply-To: <s5hd43h4hlv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,58 +25,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Aggarwal, Anuj wrote:
->> -----Original Message-----
->> From: Aggarwal, Anuj
->> Sent: Friday, November 06, 2009 6:28 PM
->> To: alsa-devel@alsa-project.org; 'linux-omap@vger.kernel.org'
->> Subject: Artifacts present in AIC23 capture for 48 KHz sampling rate
->>
->> Hi,
->>
->> I am observing artifacts (sharp spikes at fixed intervals) while
->> capturing audio on AM3517 EVM and AIC23 codec. They are present only
->> in one of the channels when I am capturing at 48 KHz. All other
->> sampling rates are working fine with the above said combination.
->>
->> I have also attached the screenshot taken with the help of Audacity
->> utility. Here, I tried recording silence but artifacts were observed
->> on one channel.
->>
->> Has anyone also observed the similar behavior with AIC23 codec? Any
->> hints on what could be the root cause?
-> [Aggarwal, Anuj] On further debugging, I found that the function
-> find_rate() in sound/soc/codecs/tlv320aic23.c is not returning 
-> the correct value for capture in 48KHz sample rate. In USB mode
-> (MCLK=12MHz), for 48KHz, it returns 0x7D (CLKOUT=0, CLKIN=1, 
-> SR[3:0]=0xF, BOSR=1, Normal=1) whereas as per the AIC23B spec, 
+On Tue, Nov 17, 2009 at 1:37 AM, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> At Mon, 16 Nov 2009 15:20:32 -0800,
+> Christian Hergert wrote:
+> >
+> > Hi,
+> >
+> > I made a patch to fix bug 4657[1] on the tracker. =A0I'm fairly certain=
+ that
+> > it isn't the correct approach but would like some feedback on what that
+> > would be.
+> >
+> > The power-mappings in patch_sigmatel.c seem to allow you to flip multip=
+le
+> > bits. =A0In the case of the Dell docking station, you need to enable so=
+me bits
+> > while disabling others. =A0Therefore, instead of using the power mappin=
+gs I
+> > just hacked in a quick check to work for the hardware I have on hand. =
+=A0If
+> > there is a proper way to fix this that I have missed, I'll be more than
+> > happy to fix the patch appropriately.
+> >
+> > [1] https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D4657
+>
+> The jack detection of the docking station is already there, but it seems
+> just a missing call to toggle the power-map.
+>
+> How about the patch below?
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmate=
+l.c
+> index 7f76a97..bd9a2dd 100644
+> --- a/sound/pci/hda/patch_sigmatel.c
+> +++ b/sound/pci/hda/patch_sigmatel.c
+> @@ -4396,10 +4396,12 @@ static void stac92xx_set_pinctl(struct hda_codec =
+*codec, hda_nid_t nid,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pin_ctl &=3D ~(AC_PINCTL_IN_EN | AC_PINCTL=
+_OUT_EN);
+>
+> =A0 =A0 =A0 =A0pin_ctl |=3D flag;
+> - =A0 =A0 =A0 if (old_ctl !=3D pin_ctl)
+> + =A0 =A0 =A0 if (old_ctl !=3D pin_ctl) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_write_cache(codec, nid, 0,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0AC_VERB_SET_PIN_WIDGET_CONTROL,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0pin_ctl);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 stac_toggle_power_map(codec, nid, 1);
+> + =A0 =A0 =A0 }
+> =A0}
+>
+> =A0static void stac92xx_reset_pinctl(struct hda_codec *codec, hda_nid_t n=
+id,
+> @@ -4407,10 +4409,12 @@ static void stac92xx_reset_pinctl(struct hda_code=
+c *codec, hda_nid_t nid,
+> =A0{
+> =A0 =A0 =A0 =A0unsigned int pin_ctl =3D snd_hda_codec_read(codec, nid,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A00, AC_VERB_GET_PIN_WIDGET_=
+CONTROL, 0x00);
+> - =A0 =A0 =A0 if (pin_ctl & flag)
+> + =A0 =A0 =A0 if (pin_ctl & flag) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0snd_hda_codec_write_cache(codec, nid, 0,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0AC_VERB_SET_PIN_WIDGET_CONTROL,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0pin_ctl & ~flag);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 stac_toggle_power_map(codec, nid, 0);
+> + =A0 =A0 =A0 }
+> =A0}
+>
+> =A0static int get_pin_presence(struct hda_codec *codec, hda_nid_t nid)
 
-0x7D would be BOSR = 0, USB/NORMAL = 1, SR=0xff, div2 = 1
+I tried this on top of 2.6.31.4 and, unfortunately, it did not solve
+the problem.  I'll investigate a bit to figure out why.
 
-The bug is with sr_valid_mask,
-
-static const unsigned short sr_valid_mask[] = {
-	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 0*/
-	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
-	LOWER_GROUP,			/* Usb, bosr - 0*/
-	UPPER_GROUP,			/* Usb, bosr - 1*/
-};
-
-should be
-
-static const unsigned short sr_valid_mask[] = {
-	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 0*/
-	LOWER_GROUP,			/* Usb, bosr - 0*/
-	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
-	UPPER_GROUP,			/* Usb, bosr - 1*/
-};
-
-
-Can you give this a try and let me know?
-
-Thanks
-Troy
+-- Christian
