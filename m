@@ -1,22 +1,21 @@
-From: Magnus Damm <magnus.damm@gmail.com>
-Subject: Re: Null suspend/resume functions
-Date: Tue, 17 Nov 2009 21:46:35 +0900
-Message-ID: <aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com>
-References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
-	<20091109105858.GB1245@sirena.org.uk>
-	<20091109133136.GC1245@sirena.org.uk>
-	<20091116153000.GB29479@sirena.org.uk>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCHv2 6/7] S3C64XX PCM: Defined PCM controller
+	platform devices
+Date: Tue, 17 Nov 2009 21:54:36 +0900
+Message-ID: <1b68c6790911170454uad277c2q37bf179a58010b07@mail.gmail.com>
+References: <1258444436-24394-1-git-send-email-jassi.brar@samsung.com>
+	<20091117113913.GA823@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
-	[209.85.211.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id B5CB31038E3
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 13:46:45 +0100 (CET)
-Received: by ywh28 with SMTP id 28so5785815ywh.16
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 04:46:44 -0800 (PST)
-In-Reply-To: <20091116153000.GB29479@sirena.org.uk>
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 735D41038E3
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 13:54:37 +0100 (CET)
+Received: by pwj11 with SMTP id 11so8856758pwj.32
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 04:54:36 -0800 (PST)
+In-Reply-To: <20091117113913.GA823@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,56 +26,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, Magnus Damm <damm@opensource.se>, linux-pm@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
-
-On Tue, Nov 17, 2009 at 12:30 AM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Mon, Nov 09, 2009 at 01:31:36PM +0000, Mark Brown wrote:
->> On Mon, Nov 09, 2009 at 10:58:58AM +0000, Mark Brown wrote:
->> > On Mon, Nov 09, 2009 at 11:54:47AM +0900, Kuninori Morimoto wrote:
->
-> Any chance someone from the PM side could comment on the issue below?
->
->> > > +static int fsi_runtime_nop(struct device *dev)
->> > > +{
->> > > + /* Runtime PM callback shared between ->runtime_suspend()
->> > > + =A0* and ->runtime_resume(). Simply returns success.
->> > > + =A0*
->> > > + =A0* This driver re-initializes all registers after
->> > > + =A0* pm_runtime_get_sync() anyway so there is no need
->> > > + =A0* to save and restore registers here.
->> > > + =A0*/
->> > > + return 0;
->> > > +}
->> >
->> > This sets off alarm bells but it's perfectly reasonable, especially wi=
-th
->> > platforms able to put things into a low power state with no explicit
->> > driver code now they can do power domain style things like SH. =A0I've
->> > CCed in the PM folks since this seems like a perfectly reasonable use
->> > case which ought to be handled more nicely.
-
-On SuperH we have Runtime PM enabled on a few platforms together with
-a few updated drivers. The latest driver to become more power aware is
-this FSI driver.
-
-It's all quite simple, in the FSI driver we enable the clock to the
-FSI hardware using Runtime PM functions, and whenever the clock is
-turned off the SuperH specific bus code _may_ decide to call
-->runtime_suspend() and turn off the power domain. The "_may_" comes
-from the fact that multiple hardware blocks may be grouped together
-into a single power domain, and all devices in the power domain must
-support Runtime PM and have their clocks disabled before we can turn
-off the power.
-
-At this point the SuperH specific platform bus code requires the
-callbacks ->runtime_suspend() and ->runtime_resume() to be present. It
-may be a good idea to allow them to be NULL in the future or maybe
-having some shared functions, but before starting to break out stuff
-I'd like to see how other Runtime PM implementations deal with this.
-So unless people object I prefer to keep it as-is for now.
-
-/ magnus
+T24gVHVlLCBOb3YgMTcsIDIwMDkgYXQgODozOSBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgTm92IDE3LCAyMDA5IGF0
+IDA0OjUzOjU2UE0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4KPj4gKyDCoCDCoCBkZWZhdWx0
+Ogo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ayhLRVJOX0RFQlVHICJJbnZhbGlkIFBDTSBD
+b250cm9sbGVyIG51bWJlciEiKTsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gLUVJTlZB
+TDsKPj4gKyDCoCDCoCB9Cj4KPiBBcyBJIHNhaWQgbGFzdCB0aW1lIHRoaXMgcmVhbGx5IHNob3Vs
+ZCBiZSBhbiBlcnJvciBhdCBsZWFzdC4KQWN0dWFsbHkgdGhlIGNhc2UgY3Vkbid0IGJlIHJlYWNo
+ZWQgZXZlci4gVGhlIGRyaXZlciBjaGVjayBmb3IgdmFsaWQgaW5kZXgKYmVmb3JlIGNvbnRpbnVp
+bmcgd2l0aCB0aGUgcHJvYmUuCgpBbHNvLCBQQ00gY29udHJvbGxlciBkcml2ZXIgcmVmdXNlIHRv
+IGhhbmRsZSB0aGUgZGV2aWNlIGlmIHRoZQpjYWxsYmFjayhjZmdfZ3BpbykKZmFpbCBmb3Igc29t
+ZSByZWFzb24uCgpCdHcsIHNvcnJ5LCBJIGN1ZG4ndCBmaW5kIHRoaXMgY29tbWVudCBpbiB5b3Ug
+cGFzdCByZXBsaWVzLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
