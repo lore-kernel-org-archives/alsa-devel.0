@@ -1,14 +1,14 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCHv2 4/7] S3C64XX PCM: Added PCLK clock source for
-	the PCM controllers
-Date: Tue, 17 Nov 2009 16:53:44 +0900
-Message-ID: <1258444424-24087-1-git-send-email-jassi.brar@samsung.com>
+Subject: [PATCHv2 3/7] S3C64XX PCM: Define PCM Controller base
+	registers
+Date: Tue, 17 Nov 2009 16:53:38 +0900
+Message-ID: <1258444418-24057-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34AAB24453
+	by alsa0.perex.cz (Postfix) with ESMTP id 363B024454
 	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 09:01:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,31 +25,21 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- arch/arm/plat-s3c64xx/clock.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+ arch/arm/mach-s3c6400/include/mach/map.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/plat-s3c64xx/clock.c b/arch/arm/plat-s3c64xx/clock.c
-index 7a36e89..3ab564e 100644
---- a/arch/arm/plat-s3c64xx/clock.c
-+++ b/arch/arm/plat-s3c64xx/clock.c
-@@ -129,6 +129,18 @@ static struct clk init_clocks_disable[] = {
- 		.enable		= s3c64xx_pclk_ctrl,
- 		.ctrlbit	= S3C_CLKCON_PCLK_IIS1,
- 	}, {
-+		.name		= "pcm",
-+		.id		= 0,
-+		.parent		= &clk_p,
-+		.enable		= s3c64xx_pclk_ctrl,
-+		.ctrlbit	= S3C_CLKCON_PCLK_PCM0,
-+	}, {
-+		.name		= "pcm",
-+		.id		= 1,
-+		.parent		= &clk_p,
-+		.enable		= s3c64xx_pclk_ctrl,
-+		.ctrlbit	= S3C_CLKCON_PCLK_PCM1,
-+	}, {
- 		.name		= "spi",
- 		.id		= 0,
- 		.parent		= &clk_p,
+diff --git a/arch/arm/mach-s3c6400/include/mach/map.h b/arch/arm/mach-s3c6400/include/mach/map.h
+index fc8b223..866be31 100644
+--- a/arch/arm/mach-s3c6400/include/mach/map.h
++++ b/arch/arm/mach-s3c6400/include/mach/map.h
+@@ -48,6 +48,8 @@
+ #define S3C64XX_PA_IIS1		(0x7F003000)
+ #define S3C64XX_PA_TIMER	(0x7F006000)
+ #define S3C64XX_PA_IIC0		(0x7F004000)
++#define S3C64XX_PA_PCM0		(0x7F009000)
++#define S3C64XX_PA_PCM1		(0x7F00A000)
+ #define S3C64XX_PA_IISV4	(0x7F00D000)
+ #define S3C64XX_PA_IIC1		(0x7F00F000)
+ 
 -- 
 1.6.2.5
