@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 6/7] S3C64XX PCM: Defined PCM controller
- platform devices
-Date: Tue, 17 Nov 2009 11:39:13 +0000
-Message-ID: <20091117113913.GA823@rakim.wolfsonmicro.main>
-References: <1258444436-24394-1-git-send-email-jassi.brar@samsung.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [linux-pm] Null suspend/resume functions
+Date: Tue, 17 Nov 2009 12:52:36 +0100
+Message-ID: <20091117115236.GB1376@ucw.cz>
+References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
+	<20091109105858.GB1245@sirena.org.uk>
+	<20091109133136.GC1245@sirena.org.uk>
+	<20091116153000.GB29479@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CFC68103856
-	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 12:39:14 +0100 (CET)
+Received: from atrey.karlin.mff.cuni.cz (atrey.karlin.mff.cuni.cz
+	[195.113.26.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id EDB9F103856
+	for <alsa-devel@alsa-project.org>; Tue, 17 Nov 2009 12:52:43 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1258444436-24394-1-git-send-email-jassi.brar@samsung.com>
+In-Reply-To: <20091116153000.GB29479@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, linux-kernel@vger.kernel.org, Magnus Damm <damm@opensource.se>, alsa-devel@alsa-project.org, linux-pm@lists.linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 17, 2009 at 04:53:56PM +0900, Jassi Brar wrote:
+On Mon 2009-11-16 15:30:00, Mark Brown wrote:
+> On Mon, Nov 09, 2009 at 01:31:36PM +0000, Mark Brown wrote:
+> > On Mon, Nov 09, 2009 at 10:58:58AM +0000, Mark Brown wrote:
+> > > On Mon, Nov 09, 2009 at 11:54:47AM +0900, Kuninori Morimoto wrote:
+> 
+> Any chance someone from the PM side could comment on the issue below?
+> 
+> > > > +static int fsi_runtime_nop(struct device *dev)
+> > > > +{
+> > > > +	/* Runtime PM callback shared between ->runtime_suspend()
+> > > > +	 * and ->runtime_resume(). Simply returns success.
+> > > > +	 *
+> > > > +	 * This driver re-initializes all registers after
+> > > > +	 * pm_runtime_get_sync() anyway so there is no need
+> > > > +	 * to save and restore registers here.
+> > > > +	 */
+> > > > +	return 0;
+> > > > +}
+> > > 
+> > > This sets off alarm bells but it's perfectly reasonable, especially with
+> > > platforms able to put things into a low power state with no explicit
+> > > driver code now they can do power domain style things like SH.  I've
+> > > CCed in the PM folks since this seems like a perfectly reasonable use
+> > > case which ought to be handled more nicely.
 
-> +	default:
-> +		printk(KERN_DEBUG "Invalid PCM Controller number!");
-> +		return -EINVAL;
-> +	}
-
-As I said last time this really should be an error at least.
+I believe that having few nop functions around the tree should not be
+huge problem. If it is, you can introduce one shared top function into
+the core...
+								Pavel
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
