@@ -1,15 +1,15 @@
 From: Anuj Aggarwal <anuj.aggarwal@ti.com>
-Subject: [PATCH 1/2] ASoC: Correcting the config options in
-	soc/omap/Makefile
-Date: Wed, 18 Nov 2009 18:08:59 +0530
-Message-ID: <1258547939-13450-1-git-send-email-anuj.aggarwal@ti.com>
+Subject: [PATCH 2/2] ASoC: Modifying the license string GPLv2
+	for OMAP3 EVM
+Date: Wed, 18 Nov 2009 18:09:14 +0530
+Message-ID: <1258547954-13500-1-git-send-email-anuj.aggarwal@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43EAF24374
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 13:39:06 +0100 (CET)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4559A2437C
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 13:39:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,28 +23,24 @@ To: alsa-devel@alsa-project.org
 Cc: Anuj Aggarwal <anuj.aggarwal@ti.com>, broonie@sirena.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Wrong config options were being used in the soc/omap/Makefile
-for OMAP2 & OMAP3 and AM3517 EVMs.
+Correcting the license string from GPLv2 -> GPL v2.
+Found the problem while building OMAP3 ASoC driver as
+module.
 
 Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
 ---
- sound/soc/omap/Makefile |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/omap/omap3evm.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index 02d6947..a69bd04 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -21,8 +21,8 @@ obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
- obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
- obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
- obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
--obj-$(CONFIG_MACH_OMAP2EVM) += snd-soc-omap2evm.o
--obj-$(CONFIG_MACH_OMAP3EVM) += snd-soc-omap3evm.o
-+obj-$(CONFIG_SND_OMAP_SOC_OMAP2EVM) += snd-soc-omap2evm.o
-+obj-$(CONFIG_SND_SOC_OMAP_OMAP3EVM) += snd-soc-omap3evm.o
- obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
+diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
+index 41a91b5..627fadb 100644
+--- a/sound/soc/omap/omap3evm.c
++++ b/sound/soc/omap/omap3evm.c
+@@ -144,4 +144,4 @@ module_exit(omap3evm_soc_exit);
+ 
+ MODULE_AUTHOR("Anuj Aggarwal <anuj.aggarwal@ti.com>");
+ MODULE_DESCRIPTION("ALSA SoC OMAP3 EVM");
+-MODULE_LICENSE("GPLv2");
++MODULE_LICENSE("GPL v2");
 -- 
 1.6.2.4
