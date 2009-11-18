@@ -1,39 +1,65 @@
-From: Paul Walmsley <paul@pwsan.com>
-Subject: RE: [PATCH] OMAP: Exporting functions doing common register access
-Date: Wed, 18 Nov 2009 03:40:40 -0700 (MST)
-Message-ID: <alpine.DEB.2.00.0911180324350.25515@utopia.booyaka.com>
-References: <1258384836-24854-1-git-send-email-anuj.aggarwal@ti.com> <alpine.DEB.2.00.0911161408260.29213@utopia.booyaka.com> <5A47E75E594F054BAF48C5E4FC4B92AB030A8C8EC2@dbde02.ent.ti.com> <5A47E75E594F054BAF48C5E4FC4B92AB030A9CA8F7@dbde02.ent.ti.com>
+From: Adolf Winterer <adolf.j.winterer@inn-salzach.de>
+Subject: Status of ALSA support for MacBook Pro 5,
+	2 in kernel 2.6.32
+Date: Wed, 18 Nov 2009 12:23:16 +0100
+Message-ID: <200911181223.16905.adolf.j.winterer@inn-salzach.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A9CA8F7@dbde02.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 65B97103943
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 12:21:59 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 18 Nov 2009, Aggarwal, Anuj wrote:
 
-> [Aggarwal, Anuj] Any comments on this patch? Do I have to re-work this?
+Hello,
 
-Yes.  omap_ctrl_*() should not be exported, as mentioned earlier.
+there had been a lot of messages here on the list and in other internet 
+sources about patches to snd-hda-intel regarding the sound support for 
+MacBook Pro 5,1 and MacBook Pro 5,2. But the situation is far from being 
+clear.
 
-A lot of rework will be needed at some point in sound/soc/omap/ to get all 
-of the chip- and board-integration details out of these files.  DMA 
-channels, IRQs, board data, etc. should all go into arch/arm/*omap*.  
-plat-omap/mcbsp.c needs to be moved to somewhere under drivers/ at some 
-point, but the platform_device setup for it should be kept under 
-arch/arm/*omap*.
+Some sources stated that the patches for the MacBook Pro 5,1 would 
+support the MacBook Pro 5,2 as well, others disagreed.
 
-In the interim, I would suggest that you remove the the clock source and 
-receiver source change functions from omap-mcbsp.c, split them into OMAP1 
-and OMAP2/3 variants, and place them into arch/arm/mach-omap*/mcbsp.c.  
-Expand struct omap_mcbsp_ops to add function pointers to those functions.  
-Call those from soc/omap-mcbsp.c via mcbsp->pdata->ops. That way you won't 
-need those exports.
+Recently on this list I've seen efforts to integrate the current ALSA 
+1.0.21+x into kernel 2.6.32. 
 
-I don't understand how this code compiled on OMAP1 in any case, since it 
-doesn't have a System Control Module.
+Fact is that with kernel 2.6.30-2, which has ALSA 1.0.20, from Debian 
+testing my MacBook Pro 5,2 is not working. There is no sound at all. 
 
+Compilation of ALSA sources 1.0.21 using the module assistant fails with 
+an error message regarding a missing curly bracket. There is a bug 
+report in the Debian bug tracker regarding this, but no progress is 
+visible.
 
-- Paul
+Compiling the sources directly using the 1.0.21 sources from the ALSA 
+project page goes through, but the resulting modules do not load, give 
+an error message about an unknown symbol. Therefore I was not able to 
+find out if ALSA 1.0.21 supports the MacBook Pro 5,2.
+
+Please, can anyone of the development team help with a statement 
+clearing up things by answering the following questions?
+
+* Will the support for the MacBook Pro 5,2 be part of the soon to be 
+released kernel 2.6.32?
+* Or is it already present in kernel 2.6.31?
+* What is the correct parameter for the loading of the module? Is it 
+just "auto" or "mb5"? Or anything else?
+
+Your help is greatly appreciated.
+
+Best regards,
+Adolf
