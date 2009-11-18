@@ -1,24 +1,15 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH] OMAP: Exporting functions doing common
-	register access
-Date: Wed, 18 Nov 2009 16:33:14 +0200
-Message-ID: <20091118163314.d0325283.jhnikula@gmail.com>
-References: <1258384836-24854-1-git-send-email-anuj.aggarwal@ti.com>
-	<alpine.DEB.2.00.0911161408260.29213@utopia.booyaka.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030A8C8EC2@dbde02.ent.ti.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030A9CA8F7@dbde02.ent.ti.com>
-	<alpine.DEB.2.00.0911180324350.25515@utopia.booyaka.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.33
+Date: Wed, 18 Nov 2009 14:32:32 +0000
+Message-ID: <20091118143231.GB13345@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CB6524335
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 15:32:19 +0100 (CET)
-Received: by bwz9 with SMTP id 9so2788156bwz.32
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 06:32:17 -0800 (PST)
-In-Reply-To: <alpine.DEB.2.00.0911180324350.25515@utopia.booyaka.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4F60F24335
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 15:32:33 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,33 +19,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Walmsley <paul@pwsan.com>
-Cc: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 18 Nov 2009 03:40:40 -0700 (MST)
-Paul Walmsley <paul@pwsan.com> wrote:
+The following changes since commit f9ede4eca01cc64ce37549c282b6fde727c0ec84:
+  Marin Mitov (1):
+        ASoC: Use DMA_BIT_MASK(32) instead of deprecated DMA_32BIT_MASK
 
-> In the interim, I would suggest that you remove the the clock source and 
-> receiver source change functions from omap-mcbsp.c, split them into OMAP1 
-> and OMAP2/3 variants, and place them into arch/arm/mach-omap*/mcbsp.c.  
-> Expand struct omap_mcbsp_ops to add function pointers to those functions.  
-> Call those from soc/omap-mcbsp.c via mcbsp->pdata->ops. That way you won't 
-> need those exports.
-> 
-Paul: What's your opinnion, would it be possible or would it be wise to
-handle these McBSP clock route setups with the clock framework instead?
+are available in the git repository at:
 
-Functions omap_mcbsp_dai_set_clks_src and omap_mcbsp_dai_set_rcvr_src
-are basically just setting up the input clock for McBSP SRG or McBSP1
-receiver.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
 
-> I don't understand how this code compiled on OMAP1 in any case, since it 
-> doesn't have a System Control Module.
-> 
-OMAP1 can include control.h as well :-)
+Anuj Aggarwal (1):
+      ASoC: Modifying the license string GPLv2 for OMAP3 EVM
 
-Access is anyway protected with the cpu_class_is_omap1().
+Grazvydas Ignotas (1):
+      ASoC: OMAP3 Pandora: update for TWL4030 codec changes
 
--- 
-Jarkko
+Jassi Brar (6):
+      ASoC: Rename s3c24xx_pcm prefix to s3c_dma
+      ASoC: Rename 's3c24xx-pcm' driver to 's3c-dma'
+      ARM: S3C64XX: Define PCM Controller base registers
+      ARM: S3C64XX: Added platform data header
+      ARM: S3C64XX: Defined PCM controller platform devices
+      ASoC: Added the CPU driver for PCM controllers
+
+Mark Brown (3):
+      ASoC: Remove redundant snd_soc_dapm_new_widgets() calls
+      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound-2.6 into for-2.6.33
+      Merge branch 'for-2.6.32' into for-2.6.33
+
+Mike Rapoport (1):
+      ASoC: OMAP: enable Overo driver for CM-T35
+
+Troy Kisky (2):
+      ASoC: DaVinci: remove requirement that dma_params is 1st in structure
+      ASoC: tlv320aic23 fix rate selection
+
+ arch/arm/mach-s3c6400/include/mach/map.h       |    2 +
+ arch/arm/plat-s3c/include/plat/audio.h         |   17 +
+ arch/arm/plat-s3c/include/plat/devs.h          |    3 +
+ arch/arm/plat-s3c64xx/dev-audio.c              |  101 +++++-
+ sound/soc/codecs/ad1836.c                      |    1 -
+ sound/soc/codecs/ad1938.c                      |    1 -
+ sound/soc/codecs/ak4535.c                      |    1 -
+ sound/soc/codecs/ak4671.c                      |    1 -
+ sound/soc/codecs/cx20442.c                     |    1 -
+ sound/soc/codecs/ssm2602.c                     |    1 -
+ sound/soc/codecs/tlv320aic23.c                 |    3 +-
+ sound/soc/codecs/tlv320aic3x.c                 |    1 -
+ sound/soc/codecs/tlv320dac33.c                 |    1 -
+ sound/soc/codecs/twl4030.c                     |    1 -
+ sound/soc/codecs/uda1380.c                     |    1 -
+ sound/soc/codecs/wm8350.c                      |    2 +-
+ sound/soc/codecs/wm8400.c                      |    1 -
+ sound/soc/codecs/wm8510.c                      |    1 -
+ sound/soc/codecs/wm8523.c                      |    1 -
+ sound/soc/codecs/wm8580.c                      |    1 -
+ sound/soc/codecs/wm8711.c                      |    1 -
+ sound/soc/codecs/wm8728.c                      |    2 -
+ sound/soc/codecs/wm8731.c                      |    1 -
+ sound/soc/codecs/wm8750.c                      |    1 -
+ sound/soc/codecs/wm8753.c                      |    1 -
+ sound/soc/codecs/wm8900.c                      |    2 -
+ sound/soc/codecs/wm8903.c                      |    2 -
+ sound/soc/codecs/wm8940.c                      |    1 -
+ sound/soc/codecs/wm8960.c                      |    1 -
+ sound/soc/codecs/wm8961.c                      |    1 -
+ sound/soc/codecs/wm8971.c                      |    2 -
+ sound/soc/codecs/wm8974.c                      |    1 -
+ sound/soc/codecs/wm8988.c                      |    1 -
+ sound/soc/codecs/wm8990.c                      |    1 -
+ sound/soc/codecs/wm8993.c                      |    2 -
+ sound/soc/codecs/wm9081.c                      |    1 -
+ sound/soc/codecs/wm9705.c                      |    1 -
+ sound/soc/codecs/wm9712.c                      |    1 -
+ sound/soc/codecs/wm9713.c                      |    1 -
+ sound/soc/davinci/davinci-i2s.c                |    6 +-
+ sound/soc/davinci/davinci-mcasp.c              |    1 +
+ sound/soc/davinci/davinci-mcasp.h              |    5 -
+ sound/soc/davinci/davinci-pcm.c                |    7 +-
+ sound/soc/omap/Kconfig                         |    7 +-
+ sound/soc/omap/omap3evm.c                      |    2 +-
+ sound/soc/omap/omap3pandora.c                  |    3 +-
+ sound/soc/omap/overo.c                         |    4 +-
+ sound/soc/s3c24xx/Kconfig                      |    3 +
+ sound/soc/s3c24xx/Makefile                     |    4 +-
+ sound/soc/s3c24xx/jive_wm8750.c                |    2 +-
+ sound/soc/s3c24xx/ln2440sbc_alc650.c           |    2 +-
+ sound/soc/s3c24xx/neo1973_gta02_wm8753.c       |    2 +-
+ sound/soc/s3c24xx/neo1973_wm8753.c             |    2 +-
+ sound/soc/s3c24xx/{s3c24xx-pcm.c => s3c-dma.c} |   87 ++--
+ sound/soc/s3c24xx/{s3c24xx-pcm.h => s3c-dma.h} |    8 +-
+ sound/soc/s3c24xx/s3c-i2s-v2.c                 |    4 +-
+ sound/soc/s3c24xx/s3c-i2s-v2.h                 |    4 +-
+ sound/soc/s3c24xx/s3c-pcm.c                    |  552 ++++++++++++++++++++++++
+ sound/soc/s3c24xx/s3c-pcm.h                    |  123 ++++++
+ sound/soc/s3c24xx/s3c2412-i2s.c                |    6 +-
+ sound/soc/s3c24xx/s3c2443-ac97.c               |   12 +-
+ sound/soc/s3c24xx/s3c24xx-i2s.c                |   12 +-
+ sound/soc/s3c24xx/s3c24xx_simtec.c             |    2 +-
+ sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |    2 +-
+ sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |    2 +-
+ sound/soc/s3c24xx/s3c24xx_uda134x.c            |    2 +-
+ sound/soc/s3c24xx/s3c64xx-i2s.c                |    6 +-
+ sound/soc/s3c24xx/smdk2443_wm9710.c            |    2 +-
+ sound/soc/s3c24xx/smdk64xx_wm8580.c            |    2 +-
+ 69 files changed, 900 insertions(+), 142 deletions(-)
+ create mode 100644 arch/arm/plat-s3c/include/plat/audio.h
+ rename sound/soc/s3c24xx/{s3c24xx-pcm.c => s3c-dma.c} (82%)
+ rename sound/soc/s3c24xx/{s3c24xx-pcm.h => s3c-dma.h} (87%)
+ create mode 100644 sound/soc/s3c24xx/s3c-pcm.c
+ create mode 100644 sound/soc/s3c24xx/s3c-pcm.h
