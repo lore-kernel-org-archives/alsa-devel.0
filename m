@@ -1,14 +1,16 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 05/10] intelhdmi - probe for monitor/eld
-	presence at module init time
-Date: Wed, 18 Nov 2009 12:38:03 +0800
-Message-ID: <20091118043935.310210374@intel.com>
+Subject: [PATCH 09/10] intelhdmi - sticky channel count
+Date: Wed, 18 Nov 2009 12:38:07 +0800
+Message-ID: <20091118043935.830850076@intel.com>
 References: <20091118043758.141785140@intel.com>
-Content-Type: multipart/mixed; boundary="===============0146894415069171148=="
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A6A310392E
+	by alsa0.perex.cz (Postfix) with ESMTP id BC3B3103926
 	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 05:42:49 +0100 (CET)
+Content-Disposition: inline; filename=hdmi-sticky-channel-count.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,94 +24,39 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Shane W <shane-alsa@csy.ca>, =?UTF-8?q?David=20H=C3=A4rdeman?= <david@hardeman.nu>
 List-Id: alsa-devel@alsa-project.org
 
---===============0146894415069171148==
-Content-Disposition: inline; filename=hdmi-pin-sense.patch
+Don't change channel count if not necessary.
 
-This avoids lost of presence info on module reloading.
-The presence info used to be only updated at the (rare) hotplug events.
-
-Proposed by David, thanks!
-
-CC: David Härdeman <david@hardeman.nu>
 Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- sound/pci/hda/patch_intelhdmi.c |   33 ++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ sound/pci/hda/patch_intelhdmi.c |   10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
---- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:44:26.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:47:43.000000000 +0800
-@@ -259,6 +259,25 @@ static int intel_hdmi_read_pin_conn(stru
- 	return 0;
+--- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-05 16:48:43.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-05 16:49:22.000000000 +0800
+@@ -422,24 +422,18 @@ static void hdmi_stop_infoframe_trans(st
+ 						AC_DIPXMIT_DISABLE);
  }
  
-+static void hdmi_get_show_eld(struct hda_codec *codec, hda_nid_t pin_nid,
-+			      struct hdmi_eld *eld)
-+{
-+	if (!snd_hdmi_get_eld(eld, codec, pin_nid))
-+		snd_hdmi_show_eld(eld);
-+}
-+
-+static void hdmi_present_sense(struct hda_codec *codec, hda_nid_t pin_nid,
-+			       struct hdmi_eld *eld)
-+{
-+	int present = snd_hda_pin_sense(codec, pin_nid);
-+
-+	eld->monitor_present	= !!(present & AC_PINSENSE_PRESENCE);
-+	eld->eld_valid		= !!(present & AC_PINSENSE_ELDV);
-+
-+	if (present & AC_PINSENSE_ELDV)
-+		hdmi_get_show_eld(codec, pin_nid, eld);
-+}
-+
- static int intel_hdmi_add_pin(struct hda_codec *codec, hda_nid_t pin_nid)
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+ static int hdmi_get_channel_count(struct hda_codec *codec, hda_nid_t nid)
  {
- 	struct intel_hdmi_spec *spec = codec->spec;
-@@ -269,6 +288,8 @@ static int intel_hdmi_add_pin(struct hda
- 		return -EINVAL;
- 	}
+ 	return 1 + snd_hda_codec_read(codec, nid, 0,
+ 					AC_VERB_GET_CVT_CHAN_COUNT, 0);
+ }
+-#endif
  
-+	hdmi_present_sense(codec, pin_nid, &spec->sink_eld[spec->num_pins]);
-+
- 	spec->pin[spec->num_pins] = pin_nid;
- 	spec->num_pins++;
- 
-@@ -436,15 +457,6 @@ static void hdmi_debug_channel_mapping(s
- #endif
+ static void hdmi_set_channel_count(struct hda_codec *codec,
+ 				   hda_nid_t nid, int chs)
+ {
+-	snd_hda_codec_write(codec, nid, 0, AC_VERB_SET_CVT_CHAN_COUNT, chs - 1);
+-
+-#ifdef CONFIG_SND_DEBUG_VERBOSE
+ 	if (chs != hdmi_get_channel_count(codec, nid))
+-		snd_printd(KERN_INFO "HDMI channel count: expect %d, get %d\n",
+-			   chs, hdmi_get_channel_count(codec, nid));
+-#endif
++		snd_hda_codec_write(codec, nid, 0,
++				    AC_VERB_SET_CVT_CHAN_COUNT, chs - 1);
  }
  
--static void hdmi_parse_eld(struct hda_codec *codec, int index)
--{
--	struct intel_hdmi_spec *spec = codec->spec;
--	struct hdmi_eld *eld = &spec->sink_eld[index];
--
--	if (!snd_hdmi_get_eld(eld, codec, spec->pin[index]))
--		snd_hdmi_show_eld(eld);
--}
--
- 
- /*
-  * Audio InfoFrame routines
-@@ -677,7 +690,7 @@ static void hdmi_intrinsic_event(struct 
- 	spec->sink_eld[index].eld_valid = eldv;
- 
- 	if (pind && eldv) {
--		hdmi_parse_eld(codec, index);
-+		hdmi_get_show_eld(codec, spec->pin[index], &spec->sink_eld[index]);
- 		/* TODO: do real things about ELD */
- 	}
- }
-
-
-
---===============0146894415069171148==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0146894415069171148==--
+ static void hdmi_debug_channel_mapping(struct hda_codec *codec, hda_nid_t nid)
