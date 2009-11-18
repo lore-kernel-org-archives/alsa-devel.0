@@ -1,17 +1,17 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 03/10] intelhdmi - export monitor-presence and
-	ELD-valid status
-Date: Wed, 18 Nov 2009 12:38:01 +0800
-Message-ID: <20091118043935.026962859@intel.com>
+Subject: [PATCH 06/10] intelhdmi - separate out infoframe
+	checksum routine
+Date: Wed, 18 Nov 2009 12:38:04 +0800
+Message-ID: <20091118043935.461216440@intel.com>
 References: <20091118043758.141785140@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8ACD01038FC
+	by alsa0.perex.cz (Postfix) with ESMTP id D775E1038F7
 	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 05:42:48 +0100 (CET)
-Content-Disposition: inline; filename=hdmi-export-presence-eld.patch
+Content-Disposition: inline; filename=hdmi-checksum.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,80 +25,54 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Shane W <shane-alsa@csy.ca>, =?UTF-8?q?David=20H=C3=A4rdeman?= <david@hardeman.nu>
 List-Id: alsa-devel@alsa-project.org
 
+And make it right when called for more than one times.
+
 Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- sound/pci/hda/hda_eld.c         |    8 +++++++-
- sound/pci/hda/hda_local.h       |    4 +++-
- sound/pci/hda/patch_intelhdmi.c |    8 +++-----
- 3 files changed, 13 insertions(+), 7 deletions(-)
+ sound/pci/hda/patch_intelhdmi.c |   23 +++++++++++++++++------
+ 1 file changed, 17 insertions(+), 6 deletions(-)
 
---- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:17:26.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:18:47.000000000 +0800
-@@ -62,8 +62,6 @@ struct intel_hdmi_spec {
- 	/*
- 	 * HDMI sink attached to each pin
- 	 */
--	bool		sink_present[INTEL_HDMI_PINS];
--	bool		sink_eldv[INTEL_HDMI_PINS];
- 	struct hdmi_eld sink_eld[INTEL_HDMI_PINS];
+--- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-02 16:11:22.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-02 16:27:42.000000000 +0800
+@@ -508,24 +508,35 @@ static void hdmi_clear_dip_buffers(struc
+ #endif
+ }
  
- 	/*
-@@ -645,7 +643,7 @@ static void hdmi_setup_audio_infoframe(s
- 	for (i = 0; i < spec->num_pins; i++) {
- 		if (spec->pin_cvt[i] != nid)
- 			continue;
--		if (spec->sink_present[i] != true)
-+		if (!spec->sink_eld[i].monitor_present)
- 			continue;
++static void hdmi_checksum_audio_infoframe(struct hdmi_audio_infoframe *ai)
++{
++	u8 *bytes = (u8 *)ai;
++	u8 sum = 0;
++	int i;
++
++	ai->checksum = 0;
++
++	for (i = 0; i < sizeof(*ai); i++)
++		sum += bytes[i];
++
++	ai->checksum = - sum;
++}
++
+ static void hdmi_fill_audio_infoframe(struct hda_codec *codec,
+ 				      hda_nid_t pin_nid,
+ 				      struct hdmi_audio_infoframe *ai)
+ {
+-	u8 *params = (u8 *)ai;
+-	u8 sum = 0;
++	u8 *bytes = (u8 *)ai;
+ 	int i;
  
- 		pin_nid = spec->pin[i];
-@@ -675,8 +673,8 @@ static void hdmi_intrinsic_event(struct 
- 	if (index < 0)
- 		return;
+ 	hdmi_debug_dip_size(codec, pin_nid);
+ 	hdmi_clear_dip_buffers(codec, pin_nid); /* be paranoid */
  
--	spec->sink_present[index] = pind;
--	spec->sink_eldv[index] = eldv;
-+	spec->sink_eld[index].monitor_present = pind;
-+	spec->sink_eld[index].eld_valid = eldv;
+-	for (i = 0; i < sizeof(*ai); i++)
+-		sum += params[i];
+-	ai->checksum = - sum;
++	hdmi_checksum_audio_infoframe(ai);
  
- 	if (pind && eldv) {
- 		hdmi_parse_eld(codec, index);
---- sound-2.6.orig/sound/pci/hda/hda_eld.c	2009-11-02 15:14:30.000000000 +0800
-+++ sound-2.6/sound/pci/hda/hda_eld.c	2009-11-02 15:24:04.000000000 +0800
-@@ -477,6 +477,8 @@ static void hdmi_print_eld_info(struct s
- 		[4 ... 7] = "reserved"
- 	};
+ 	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
+ 	for (i = 0; i < sizeof(*ai); i++)
+-		hdmi_write_dip_byte(codec, pin_nid, params[i]);
++		hdmi_write_dip_byte(codec, pin_nid, bytes[i]);
+ }
  
-+	snd_iprintf(buffer, "monitor_present\t\t%d\n", e->monitor_present);
-+	snd_iprintf(buffer, "eld_valid\t\t%d\n", e->eld_valid);
- 	snd_iprintf(buffer, "monitor_name\t\t%s\n", e->monitor_name);
- 	snd_iprintf(buffer, "connection_type\t\t%s\n",
- 				eld_connection_type_names[e->conn_type]);
-@@ -518,7 +520,11 @@ static void hdmi_write_eld_info(struct s
- 		 * 	monitor_name manufacture_id product_id
- 		 * 	eld_version edid_version
- 		 */
--		if (!strcmp(name, "connection_type"))
-+		if (!strcmp(name, "monitor_present"))
-+			e->monitor_present = val;
-+		else if (!strcmp(name, "eld_valid"))
-+			e->eld_valid = val;
-+		else if (!strcmp(name, "connection_type"))
- 			e->conn_type = val;
- 		else if (!strcmp(name, "port_id"))
- 			e->port_id = val;
---- sound-2.6.orig/sound/pci/hda/hda_local.h	2009-11-02 15:14:30.000000000 +0800
-+++ sound-2.6/sound/pci/hda/hda_local.h	2009-11-02 15:21:11.000000000 +0800
-@@ -516,9 +516,11 @@ struct cea_sad {
-  * ELD: EDID Like Data
-  */
- struct hdmi_eld {
-+	bool	monitor_present;
-+	bool	eld_valid;
- 	int	eld_size;
- 	int	baseline_len;
--	int	eld_ver;	/* (eld_ver == 0) indicates invalid ELD */
-+	int	eld_ver;
- 	int	cea_edid_ver;
- 	char	monitor_name[ELD_MAX_MNL + 1];
- 	int	manufacture_id;
+ /*
