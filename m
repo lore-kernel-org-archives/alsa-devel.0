@@ -1,20 +1,20 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: Re: [patch] move dereference after null check
-Date: Wed, 18 Nov 2009 10:45:11 +0200 (SAST)
-Message-ID: <alpine.DEB.2.00.0911181034370.27925@bicker>
-References: <alpine.DEB.2.00.0911151555010.12810@bicker>
-	<20091116161124.GB29365@rakim.wolfsonmicro.main>
+From: Mattia Dongili <malattia@linux.it>
+Subject: Re: patch_realtek: support Vaio Type G
+Date: Wed, 18 Nov 2009 22:32:15 +0900
+Message-ID: <20091118133215.GA3223@kamineko.org>
+References: <20091116140227.GA4386@kamineko.org> <s5hbpj2jzus.wl%tiwai@suse.de>
+	<20091116224756.GA7504@kamineko.org> <s5h8we5velv.wl%tiwai@suse.de>
+	<20091117111536.GB7504@kamineko.org> <s5hr5rx2y8i.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8026A245F3
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 09:45:36 +0100 (CET)
-Received: by bwz9 with SMTP id 9so2070028bwz.32
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 00:45:35 -0800 (PST)
-In-Reply-To: <20091116161124.GB29365@rakim.wolfsonmicro.main>
+Received: from smtp.kamineko.org (static-220-247-10-204.b-man.svips.gol.ne.jp
+	[220.247.10.204])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9F4C243DA
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 14:32:22 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hr5rx2y8i.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +24,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Dan Carpenter <error27@gmail.com>, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry about that.
-
-I wish I could but until I get broadband, or git gets a restartable clone 
-I can't use it for kernel development.  The kernel archive is too big to 
-download in one shot.
-
-Right now I pay $20 and I can use wifi for a week but it's capped out at 
-200MB.  Fortunately, I'm likely to get broadband soon.  I'll pay $156 per 
-month and it's capped at 200MB during business hours and "unlimitted" on 
-nights and weekends.  Woohoo!
-
-regards,
-dan carpenter
-
-On Mon, 16 Nov 2009, Mark Brown wrote:
-
-> On Mon, Nov 16, 2009 at 11:06:33AM +0200, Dan Carpenter wrote:
-> > The 'jack' variable was dereference before the NULL check so this patch 
-> > moves the dereference later.
+On Tue, Nov 17, 2009 at 12:21:17PM +0100, Takashi Iwai wrote:
+> At Tue, 17 Nov 2009 20:15:37 +0900,
+> Mattia Dongili wrote:
 > > 
-> > regards,
-> > dan carpenter
+> > On Tue, Nov 17, 2009 at 07:40:12AM +0100, Takashi Iwai wrote:
+> > > At Tue, 17 Nov 2009 07:47:56 +0900,
+> > > Mattia Dongili wrote:
+> > > > 
+> > > > On Mon, Nov 16, 2009 at 03:42:03PM +0100, Takashi Iwai wrote:
+...
+> > > What about model=auto?
 > > 
-> > Signed-off-by: Dan Carpenter <error27@gmail.com>
+> > err hmmm... well it works! I thought that model=auto was the same as no
+> > parameter at all so haven't tried it. Sorry about the noise.
 > 
-> This does not apply to the current ASoC code, it appears that someone
-> else has already provided an equivalent change.  When doing work like
-> this it's normally best to work against -next to help avoid duplication
-> such as this.
+> Good to hear.  You are partly right -- the model=auto isn't always the
+> default.  If a quirk is already defined in the driver, another model
+> is picked up.
 > 
+> I guess the problem is that current quirk for your device doesn't work.
+...
+> The fix patch is below.  Could you test it without model option?
+> 
+> I think we can get rid of the fallback of model=sony-assamd since
+> now model=auto works almost well as long as the BIOS pins are correct.
+
+Great, this works fine for me, I can't speak for sony-assamd specific
+models.
+Feel free to ad my
+Tested-by: Mattia Dongili <malattia@linux.it>
+Thanks
+
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index ef7d210..ba339d7 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -11470,6 +11470,7 @@ static struct snd_pci_quirk alc262_cfg_tbl[] = {
+>  	SND_PCI_QUIRK(0x104d, 0x9016, "Sony VAIO", ALC262_AUTO), /* dig-only */
+>  	SND_PCI_QUIRK(0x104d, 0x9025, "Sony VAIO Z21MN", ALC262_TOSHIBA_S06),
+>  	SND_PCI_QUIRK(0x104d, 0x9035, "Sony VAIO VGN-FW170J", ALC262_AUTO),
+> +	SND_PCI_QUIRK(0x104d, 0x9047, "Sony VAIO Type G", ALC262_AUTO),
+>  	SND_PCI_QUIRK_MASK(0x104d, 0xff00, 0x9000, "Sony VAIO",
+>  			   ALC262_SONY_ASSAMD),
+>  	SND_PCI_QUIRK(0x1179, 0x0001, "Toshiba dynabook SS RX1",
+-- 
+mattia
+:wq!
