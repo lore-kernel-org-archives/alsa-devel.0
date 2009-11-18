@@ -1,24 +1,21 @@
-From: Magnus Damm <magnus.damm@gmail.com>
-Subject: Re: Null suspend/resume functions
-Date: Wed, 18 Nov 2009 19:09:14 +0900
-Message-ID: <aec7e5c30911180209x1981978es80db2dadf7dd8ef4@mail.gmail.com>
-References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
-	<20091109105858.GB1245@sirena.org.uk>
-	<20091109133136.GC1245@sirena.org.uk>
-	<20091116153000.GB29479@sirena.org.uk>
-	<aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com>
-	<20091117125901.GF823@rakim.wolfsonmicro.main>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [PATCH] ASoC: OMAP3 Pandora: update for TWL4030
+	codec changes
+Date: Wed, 18 Nov 2009 12:12:38 +0200
+Message-ID: <6ed0b2680911180212u563518c5of93ca0a0da9a320e@mail.gmail.com>
+References: <1257628572-6049-1-git-send-email-notasas@gmail.com>
+	<1257712277.15162.3.camel@vega>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
-	[209.85.211.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id E16E8103823
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 11:09:18 +0100 (CET)
-Received: by ywh28 with SMTP id 28so946105ywh.16
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 02:09:18 -0800 (PST)
-In-Reply-To: <20091117125901.GF823@rakim.wolfsonmicro.main>
+Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
+	[209.85.220.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 41F2D10392A
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 11:12:39 +0100 (CET)
+Received: by fxm1 with SMTP id 1so2298116fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 02:12:39 -0800 (PST)
+In-Reply-To: <1257712277.15162.3.camel@vega>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,53 +26,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, Magnus Damm <damm@opensource.se>, linux-pm@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 17, 2009 at 9:59 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Tue, Nov 17, 2009 at 09:46:35PM +0900, Magnus Damm wrote:
+On Sun, Nov 8, 2009 at 10:31 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+> On Sat, 2009-11-07 at 23:16 +0200, Grazvydas Ignotas wrote:
+>> A while ago TWL4030 had it's playback stream name changed, but
+>> pandora needs it for it's playback path. Update to correct stream
+>> name so that playback works again.
+>>
+>> Also mark VIBRA output as not connected.
+>>
+>> Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+>> ---
+>> =A0sound/soc/omap/omap3pandora.c | =A0 =A03 ++-
+>> =A01 files changed, 2 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora=
+.c
+>> index ad219aa..0cd06f5 100644
+>> --- a/sound/soc/omap/omap3pandora.c
+>> +++ b/sound/soc/omap/omap3pandora.c
+>> @@ -134,7 +134,7 @@ static int omap3pandora_hp_event(struct snd_soc_dapm=
+_widget *w,
+>> =A0 * =A0|P| <--- TWL4030 <--------- Line In and MICs
+>> =A0 */
+>> =A0static const struct snd_soc_dapm_widget omap3pandora_out_dapm_widgets=
+[] =3D {
+>> - =A0 =A0 SND_SOC_DAPM_DAC("PCM DAC", "Playback", SND_SOC_NOPM, 0, 0),
+>> + =A0 =A0 SND_SOC_DAPM_DAC("PCM DAC", "HiFi Playback", SND_SOC_NOPM, 0, =
+0),
+>> =A0 =A0 =A0 SND_SOC_DAPM_PGA_E("Headphone Amplifier", SND_SOC_NOPM,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A00, 0, NULL, 0, omap3p=
+andora_hp_event,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0SND_SOC_DAPM_POST_PMU=
+ | SND_SOC_DAPM_PRE_PMD),
+>> @@ -181,6 +181,7 @@ static int omap3pandora_out_init(struct snd_soc_code=
+c *codec)
+>> =A0 =A0 =A0 snd_soc_dapm_nc_pin(codec, "CARKITR");
+>> =A0 =A0 =A0 snd_soc_dapm_nc_pin(codec, "HFL");
+>> =A0 =A0 =A0 snd_soc_dapm_nc_pin(codec, "HFR");
+>> + =A0 =A0 snd_soc_dapm_nc_pin(codec, "VIBRA");
+>>
+>> =A0 =A0 =A0 ret =3D snd_soc_dapm_new_controls(codec, omap3pandora_out_da=
+pm_widgets,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ARRAY_SIZE(o=
+map3pandora_out_dapm_widgets));
 >
->> On SuperH we have Runtime PM enabled on a few platforms together with
->> a few updated drivers. The latest driver to become more power aware is
->> this FSI driver.
->
-> I understand exactly what the runtime PM stuff and the driver are doing
-> here, the issue is the mandatory suspend and resume functions.
+> Acked-by:Liam Girdwood <lrg@slimlogic.co.uk>
 
-Cool, but don't you think it makes sense to see how other
-architectures will deal with this first?
-
->> At this point the SuperH specific platform bus code requires the
->> callbacks ->runtime_suspend() and ->runtime_resume() to be present. It
->> may be a good idea to allow them to be NULL in the future or maybe
->> having some shared functions, but before starting to break out stuff
->> I'd like to see how other Runtime PM implementations deal with this.
->> So unless people object I prefer to keep it as-is for now.
->
-> What is the reason for requiring that the driver provide stub functions?
-> For me the issue is that if it's mandatory for the driver to provide the
-> functions then having stub functions in there makes the driver look like
-> it is abusing the API by not implementing mandatory functionality.
-
-I see your point, but there is another side to it as well. Having the
-stubs there is a way of showing that these functions may be called as
-part of the Runtime PM management. Not having them would confuse
-people even more IMO.
-
-> Given that the arch is now dealing with clocking and power for the
-> device using the runtime PM system it seems fairly clear that there are
-> going to be drivers like this one that can at least skip the suspend
-> part and may not need to do anything at resume time either.
-
-Right. We just need to figure out what the arch-independent solution
-would be, and we're unfortunately not there yet.
-
-I can spend some time on updating the drivers and removing the
-nop-stubs if you'd like, but I'd rather not since I suspect that I'll
-have to update things again when we get Runtime PM for ARM or other
-non-sh architectures.
-
-Let me know what you think!
-
-/ magnus
+I wonder if this could go in as a fix, Pandora will have no working
+sound playback in .32 without this.
