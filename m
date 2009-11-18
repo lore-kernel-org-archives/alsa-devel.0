@@ -1,14 +1,14 @@
 From: Bin Gao <bin.gao@intel.com>
 Subject: There is no sound from speaker on Toshiba NB200
-Date: Wed, 18 Nov 2009 10:53:23 +0800
-Message-ID: <1258512803.1970.98.camel@DG965>
+Date: Wed, 18 Nov 2009 10:55:24 +0800
+Message-ID: <1258512924.1970.100.camel@DG965>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C9B3103846
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 03:51:48 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D7F710385F
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 03:53:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,6 +20,8 @@ Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
+
+[re-send because the previous one is not plain text format)
 
 The quirk "SND_PCI_QUIRK(0x1179, 0xff6e, "Toshiba NB200",
 ALC663_ASUS_MODE4)" works on Toshiba NB200
