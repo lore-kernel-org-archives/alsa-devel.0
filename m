@@ -1,17 +1,16 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH 00/11] Intel HDMI fixes
-Date: Wed, 18 Nov 2009 12:35:10 +0800
-Message-ID: <20091118043510.GB8665@localhost>
-References: <20091115113219.606666087@intel.com> <s5h8we7kcku.wl%tiwai@suse.de>
+Subject: [PATCH 02/10] intelhdmi - fix channel mapping slot mask
+Date: Wed, 18 Nov 2009 12:38:00 +0800
+Message-ID: <20091118043934.898840006@intel.com>
+References: <20091118043758.141785140@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF52A10385F
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 05:35:20 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h8we7kcku.wl%tiwai@suse.de>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id EA2371038F7
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 05:42:47 +0100 (CET)
+Content-Disposition: inline; filename=hdmi-channel-mapping-fix.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +21,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W <shane-alsa@csy.ca>, David =?utf-8?B?SMOkcmRlbWFu?= <david@hardeman.nu>
+Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Shane W <shane-alsa@csy.ca>, =?UTF-8?q?David=20H=C3=A4rdeman?= <david@hardeman.nu>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBOb3YgMTUsIDIwMDkgYXQgMTE6NTQ6NTdQTSArMDgwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IEF0IFN1biwgMTUgTm92IDIwMDkgMTk6MzI6MTkgKzA4MDAsCj4gV3UgRmVuZ2d1YW5n
-IHdyb3RlOgo+ID4gCj4gPiBIaSBUYWthc2hpLAo+ID4gCj4gPiBIZXJlIGlzIHNvbWUgSW50ZWwg
-SERNSSBmaXhlcywgbW9zdCBvZiB0aGVtIGFyZSBpbnNwaXJlZC93cml0dGVuIGJ5Cj4gPiBEYXZp
-ZCBIw6RyZGVtYW4gKEJpZyB0aGFua3MhKS4KPiA+IAo+ID4gLSBmaXggYXVkaW8gaW5mb2ZyYW1l
-IHNpemUKPiA+IC0gc3RpY2t5IGluZm9mcmFtZS9zdHJlYW0gaWQvY2hhbm5lbCBjb3VudCB0bwo+
-ID4gICAtIG5vdCBkaXN0dXJiIChEYXZpZCdzKSBmcmFnaWxlIGRldmljZXMKPiA+ICAgLSBhdm9p
-ZCB0aGUgZmlyc3QgMC41cyBhdWRpbyBzYW1wbGVzIGJlIGxvc3RlZAo+ID4gLSBhdm9pZCBsb3Np
-bmcgcHJlc2VuY2UgaW5mbyBkdXJpbmcKPiA+ICAgLSBtb2R1bGUgcmVsb2FkaW5nIChieSBxdWVy
-eWluZyB0aGUgcGluIHNlbnNlIHN0YXR1cykKPiA+ICAgLSBwb3dlciBvZmYgKGJ5IGRpc2FibGlu
-ZyBpdCkKPiAKPiBUaGFua3MgZm9yIHRoZSBwYXRjaGVzIQo+IAo+IE1vc3Qgb2YgdGhlbSBsb29r
-IGdvb2Q7IGhvd2V2ZXIsIEknbSBub3QgbXVjaCBjb252aW5jZWQgd3J0IHRoZQo+IGRpc2FibGVt
-ZW50IG9mIHBvd2VyLXNhdmluZy4gIEluIG1hbnkgY2FzZXMsIHRoZSBwb3dlci1zYXZpbmcgaXMg
-bW9yZSAKPiBpbXBvcnRhbnQgdGhhbiAwLjVzZWMgZHJvcC1vdXQgKHBhcnRpY3VsYXJseSBpZiBp
-dCdzIGFscmVhZHkgZml4ZWQgaW4KPiB0aGUgc3VjY2VlZGluZyBwbGF5YmFja3MpLiAgVGh1cyBk
-aXNhYmxpbmcgdGhlIHBvd2VyLXNhdmluZwo+IHVuY29uZGl0aW9uYWxseSBpcyBubyBnb29kIGlk
-ZWEuCj4gCj4gTWF5YmUgc29tZSBmbGFnLCBlaXRoZXIgYW4gb3B0aW9uIG9yIGEgbWl4ZXIgY29u
-dHJvbCwgd291bGQgYmUKPiBwcmVmZXJyZWQgZm9yIGRlZmluaW5nIHRoZSBiZWhhdmlvciwgYXMg
-YSBjb21wcm9taXNlLi4uCgpPSy4gSSdsbCBkbyB0aGlzIGluIGEgc2VwYXJhdGUgcGF0Y2guCgo+
-IEFsc28sIGl0J2QgYmUgbW9yZSByZWFkYWJsZSBpZiB3ZSBkZWZpbmUgYW5vdGhlciBjb21tb24g
-amFjawo+IGRldGVjdGlvbiByb3V0aW5lIHRoYXQgY2FsbHMgdGhlIHBpbiBzZW5zZSBmdW5jdGlv
-biwgc3VjaCBhcwo+IAo+IGludCBzbmRfaGRhX2phY2tfZGV0ZWN0KHN0cnVjdCBoZGFfY29kZWMg
-KmNvZGMsIGhkYV9uaWRfdCBuaWQpCj4gewo+IAl1MzIgc2Vuc2UgPSBzbmRfaGRhX3Bpbl9zZW5z
-ZShjb2RlYywgbmlkKTsKPiAJcmV0dXJuICEhKHNlbnNlICYgQUNfUElOU0VOU0VfUFJFU0VOQ0Up
-Owo+IH0KPiAKPiBzaW5jZSBhbGwgY2FsbGVycyBjaGVjayBvbmx5IHRoYXQgYml0Lgo+IAo+IExh
-c3QgYnV0IG5vdCBsZWFzdCwgZG9uJ3QgZm9yZ2V0IHRvIGFkZCBjb21tZW50IHRvIGVhY2ggbmV3
-IGNvbW1vbgo+IGZ1bmN0aW9uLiAgQWx0aG91Z2ggaXQncyB0cml2aWFsLCB0aGUgZG9jdW1lbnRh
-dGlvbiBpcyBhbHdheXMgYmV0dGVyCj4gdG8gaGF2ZSA6KQoKR29vZCBzdWdnZXN0aW9ucywgdGhh
-bmtzISBBbGwgaGF2ZSBiZWVuIGluY29ycG9yYXRlZCBpbnRvIHRoZSB1cGRhdGVkCnBhdGNoZXMu
-CgpUaGFua3MsCkZlbmdndWFuZwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+---
+ sound/pci/hda/patch_intelhdmi.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:14:39.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-02 15:14:46.000000000 +0800
+@@ -433,7 +433,7 @@ static void hdmi_debug_channel_mapping(s
+ 		slot = snd_hda_codec_read(codec, nid, 0,
+ 						AC_VERB_GET_HDMI_CHAN_SLOT, i);
+ 		printk(KERN_DEBUG "HDMI: ASP channel %d => slot %d\n",
+-						slot >> 4, slot & 0x7);
++						slot >> 4, slot & 0xf);
+ 	}
+ #endif
+ }
