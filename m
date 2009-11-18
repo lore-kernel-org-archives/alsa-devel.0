@@ -1,16 +1,24 @@
-From: Mike Rapoport <mike@compulab.co.il>
-Subject: Re: [PATCH (for-next 2)] ASoC: Add support for IGEP v2
-Date: Wed, 18 Nov 2009 11:59:08 +0200
-Message-ID: <4B03C56C.2000803@compulab.co.il>
-References: <1258536929-2392-1-git-send-email-eballetbo@gmail.com>
+From: Magnus Damm <magnus.damm@gmail.com>
+Subject: Re: Null suspend/resume functions
+Date: Wed, 18 Nov 2009 19:09:14 +0900
+Message-ID: <aec7e5c30911180209x1981978es80db2dadf7dd8ef4@mail.gmail.com>
+References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
+	<20091109105858.GB1245@sirena.org.uk>
+	<20091109133136.GC1245@sirena.org.uk>
+	<20091116153000.GB29479@sirena.org.uk>
+	<aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com>
+	<20091117125901.GF823@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from compulab.co.il (compulab.co.il [67.18.134.219])
-	by alsa0.perex.cz (Postfix) with ESMTP id 786A8103823
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 10:59:13 +0100 (CET)
-In-Reply-To: <1258536929-2392-1-git-send-email-eballetbo@gmail.com>
+Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
+	[209.85.211.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id E16E8103823
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 11:09:18 +0100 (CET)
+Received: by ywh28 with SMTP id 28so946105ywh.16
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 02:09:18 -0800 (PST)
+In-Reply-To: <20091117125901.GF823@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,211 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Enric Balletbo i Serra <eballetbo@gmail.com>
-Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, Magnus Damm <damm@opensource.se>, linux-pm@lists.linux-foundation.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-(adding ALSA mailing list to CC again :) )
+On Tue, Nov 17, 2009 at 9:59 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Tue, Nov 17, 2009 at 09:46:35PM +0900, Magnus Damm wrote:
+>
+>> On SuperH we have Runtime PM enabled on a few platforms together with
+>> a few updated drivers. The latest driver to become more power aware is
+>> this FSI driver.
+>
+> I understand exactly what the runtime PM stuff and the driver are doing
+> here, the issue is the mandatory suspend and resume functions.
 
-Enric Balletbo i Serra wrote:
-> From: Enric Balletbo i Serra <eballetbo@iseebcn.com>
-> 
-> 
-> Signed-off-by: Enric Balletbo i Serra <eballetbo@iseebcn.com>
-> ---
->  sound/soc/omap/Kconfig    |    7 ++
->  sound/soc/omap/Makefile   |    2 +
->  sound/soc/omap/igep0020.c |  148 +++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 157 insertions(+), 0 deletions(-)
->  create mode 100644 sound/soc/omap/igep0020.c
-> 
-> diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-> index 653a362..5cc8a63 100644
-> --- a/sound/soc/omap/Kconfig
-> +++ b/sound/soc/omap/Kconfig
-> @@ -99,3 +99,10 @@ config SND_OMAP_SOC_ZOOM2
->  	help
->  	  Say Y if you want to add support for Soc audio on Zoom2 board.
->  
-> +config SND_OMAP_SOC_IGEP0020
-> +	tristate "SoC Audio support for IGEP v2"
-> +	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_IGEP0020
-> +	select SND_OMAP_SOC_MCBSP
-> +	select SND_SOC_TWL4030
-> +	help
-> +	  Say Y if you want to add support for Soc audio on IGEP v2 board.
-> diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-> index 02d6947..d4ed23a 100644
-> --- a/sound/soc/omap/Makefile
-> +++ b/sound/soc/omap/Makefile
-> @@ -16,6 +16,7 @@ snd-soc-sdp3430-objs := sdp3430.o
->  snd-soc-omap3pandora-objs := omap3pandora.o
->  snd-soc-omap3beagle-objs := omap3beagle.o
->  snd-soc-zoom2-objs := zoom2.o
-> +snd-soc-igep0020-objs := igep0020.o
->  
->  obj-$(CONFIG_SND_OMAP_SOC_N810) += snd-soc-n810.o
->  obj-$(CONFIG_SND_OMAP_SOC_AMS_DELTA) += snd-soc-ams-delta.o
-> @@ -27,3 +28,4 @@ obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
->  obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
->  obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
->  obj-$(CONFIG_SND_OMAP_SOC_ZOOM2) += snd-soc-zoom2.o
-> +obj-$(CONFIG_SND_OMAP_SOC_IGEP0020) += snd-soc-igep0020.o
-> diff --git a/sound/soc/omap/igep0020.c b/sound/soc/omap/igep0020.c
-> new file mode 100644
-> index 0000000..3583c42
-> --- /dev/null
-> +++ b/sound/soc/omap/igep0020.c
-> @@ -0,0 +1,148 @@
-> +/*
-> + * igep0020.c  --  SoC audio for IGEP v2
-> + *
-> + * Based on sound/soc/omap/overo.c by Steve Sakoman
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * version 2 as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + * General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-> + * 02110-1301 USA
-> + *
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/platform_device.h>
-> +#include <sound/core.h>
-> +#include <sound/pcm.h>
-> +#include <sound/soc.h>
-> +#include <sound/soc-dapm.h>
-> +
-> +#include <asm/mach-types.h>
-> +#include <mach/hardware.h>
-> +#include <mach/gpio.h>
-> +#include <plat/mcbsp.h>
-> +
-> +#include "omap-mcbsp.h"
-> +#include "omap-pcm.h"
-> +#include "../codecs/twl4030.h"
-> +
-> +static int igep2_hw_params(struct snd_pcm_substream *substream,
-> +	struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-> +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-> +	int ret;
-> +
-> +	/* Set codec DAI configuration */
-> +	ret = snd_soc_dai_set_fmt(codec_dai,
-> +				  SND_SOC_DAIFMT_I2S |
-> +				  SND_SOC_DAIFMT_NB_NF |
-> +				  SND_SOC_DAIFMT_CBM_CFM);
-> +	if (ret < 0) {
-> +		printk(KERN_ERR "can't set codec DAI configuration\n");
-> +		return ret;
-> +	}
-> +
-> +	/* Set cpu DAI configuration */
-> +	ret = snd_soc_dai_set_fmt(cpu_dai,
-> +				  SND_SOC_DAIFMT_I2S |
-> +				  SND_SOC_DAIFMT_NB_NF |
-> +				  SND_SOC_DAIFMT_CBM_CFM);
-> +	if (ret < 0) {
-> +		printk(KERN_ERR "can't set cpu DAI configuration\n");
-> +		return ret;
-> +	}
-> +
-> +	/* Set the codec system clock for DAC and ADC */
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 26000000,
-> +					    SND_SOC_CLOCK_IN);
-> +	if (ret < 0) {
-> +		printk(KERN_ERR "can't set codec system clock\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct snd_soc_ops igep2_ops = {
-> +	.hw_params = igep2_hw_params,
-> +};
-> +
-> +/* Digital audio interface glue - connects codec <--> CPU */
-> +static struct snd_soc_dai_link igep2_dai = {
-> +	.name = "TWL4030",
-> +	.stream_name = "TWL4030",
-> +	.cpu_dai = &omap_mcbsp_dai[0],
-> +	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-> +	.ops = &igep2_ops,
-> +};
-> +
-> +/* Audio machine driver */
-> +static struct snd_soc_card snd_soc_card_igep2 = {
-> +	.name = "igep2",
-> +	.platform = &omap_soc_platform,
-> +	.dai_link = &igep2_dai,
-> +	.num_links = 1,
-> +};
-> +
-> +/* Audio subsystem */
-> +static struct snd_soc_device igep2_snd_devdata = {
-> +	.card = &snd_soc_card_igep2,
-> +	.codec_dev = &soc_codec_dev_twl4030,
-> +};
-> +
-> +static struct platform_device *igep2_snd_device;
-> +
-> +static int __init igep2_soc_init(void)
-> +{
-> +	int ret;
-> +
-> +	if (!machine_is_igep0020()) {
-> +		pr_debug("Not IGEP v2!\n");
-> +		return -ENODEV;
-> +	}
-> +	printk(KERN_INFO "IGEP v2 SoC init\n");
-> +
-> +	igep2_snd_device = platform_device_alloc("soc-audio", -1);
-> +	if (!igep2_snd_device) {
-> +		printk(KERN_ERR "Platform device allocation failed\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	platform_set_drvdata(igep2_snd_device, &igep2_snd_devdata);
-> +	igep2_snd_devdata.dev = &igep2_snd_device->dev;
-> +	*(unsigned int *)igep2_dai.cpu_dai->private_data = 1; /* McBSP2 */
-> +
-> +	ret = platform_device_add(igep2_snd_device);
-> +	if (ret)
-> +		goto err1;
-> +
-> +	return 0;
-> +
-> +err1:
-> +	printk(KERN_ERR "Unable to add platform device\n");
-> +	platform_device_put(igep2_snd_device);
-> +
-> +	return ret;
-> +}
-> +module_init(igep2_soc_init);
-> +
-> +static void __exit igep2_soc_exit(void)
-> +{
-> +	platform_device_unregister(igep2_snd_device);
-> +}
-> +module_exit(igep2_soc_exit);
-> +
-> +MODULE_AUTHOR("Enric Balletbo i Serra <eballetbo@iseebcn.com>");
-> +MODULE_DESCRIPTION("ALSA SoC IGEP v2");
-> +MODULE_LICENSE("GPL");
+Cool, but don't you think it makes sense to see how other
+architectures will deal with this first?
 
--- 
-Sincerely yours,
-Mike.
+>> At this point the SuperH specific platform bus code requires the
+>> callbacks ->runtime_suspend() and ->runtime_resume() to be present. It
+>> may be a good idea to allow them to be NULL in the future or maybe
+>> having some shared functions, but before starting to break out stuff
+>> I'd like to see how other Runtime PM implementations deal with this.
+>> So unless people object I prefer to keep it as-is for now.
+>
+> What is the reason for requiring that the driver provide stub functions?
+> For me the issue is that if it's mandatory for the driver to provide the
+> functions then having stub functions in there makes the driver look like
+> it is abusing the API by not implementing mandatory functionality.
+
+I see your point, but there is another side to it as well. Having the
+stubs there is a way of showing that these functions may be called as
+part of the Runtime PM management. Not having them would confuse
+people even more IMO.
+
+> Given that the arch is now dealing with clocking and power for the
+> device using the runtime PM system it seems fairly clear that there are
+> going to be drivers like this one that can at least skip the suspend
+> part and may not need to do anything at resume time either.
+
+Right. We just need to figure out what the arch-independent solution
+would be, and we're unfortunately not there yet.
+
+I can spend some time on updating the drivers and removing the
+nop-stubs if you'd like, but I'd rather not since I suspect that I'll
+have to update things again when we get Runtime PM for ARM or other
+non-sh architectures.
+
+Let me know what you think!
+
+/ magnus
