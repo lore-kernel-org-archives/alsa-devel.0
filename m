@@ -1,19 +1,19 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH 05/10] intelhdmi - probe for monitor/eld
-	presence at	module init time
-Date: Wed, 18 Nov 2009 17:16:12 +0800
-Message-ID: <20091118091612.GA2478@localhost>
-References: <20091118043758.141785140@intel.com>
-	<20091118043935.310210374@intel.com> <s5hvdh8b3vv.wl%tiwai@suse.de>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: Artifacts present in AIC23 capture for 48
+	KHz	sampling rate
+Date: Wed, 18 Nov 2009 14:50:08 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030A9CA9D0@dbde02.ent.ti.com>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
+	<4B02F4E1.3060405@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 10651103803
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 10:16:28 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hvdh8b3vv.wl%tiwai@suse.de>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5403710382C
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 10:20:16 +0100 (CET)
+In-Reply-To: <4B02F4E1.3060405@boundarydevices.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W <shane-alsa@csy.ca>, David =?utf-8?B?SMOkcmRlbWFu?= <david@hardeman.nu>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBOb3YgMTgsIDIwMDkgYXQgMDU6MDQ6MjBQTSArMDgwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IEF0IFdlZCwgMTggTm92IDIwMDkgMTI6Mzg6MDMgKzA4MDAsCj4gV3UgRmVuZ2d1YW5n
-IHdyb3RlOgo+ID4gCj4gPiBUaGlzIGF2b2lkcyBsb3N0IG9mIHByZXNlbmNlIGluZm8gb24gbW9k
-dWxlIHJlbG9hZGluZy4KPiA+IFRoZSBwcmVzZW5jZSBpbmZvIHVzZWQgdG8gYmUgb25seSB1cGRh
-dGVkIGF0IHRoZSAocmFyZSkgaG90cGx1ZyBldmVudHMuCj4gPiAKPiA+IFByb3Bvc2VkIGJ5IERh
-dmlkLCB0aGFua3MhCj4gPiAKPiA+IENDOiBEYXZpZCBIw6RyZGVtYW4gPGRhdmlkQGhhcmRlbWFu
-Lm51Pgo+ID4gU2lnbmVkLW9mZi1ieTogV3UgRmVuZ2d1YW5nIDxmZW5nZ3Vhbmcud3VAaW50ZWwu
-Y29tPgo+IAo+IEkgdGhpbmsgd2Ugc2hvdWxkIGhhbmRsZSB0aGlzIGFsc28gYXQgcmVzdW1lLgo+
-IFR5cGljYWxseSwgdGhlIGNvZGVjIHJlc3VtZSBjYWxsYmFjayBjYWxscyB0aGUgdW5zb2xpY2l0
-ZWQgZXZlbnQKPiBleHBsaWNpdGx5Lgo+IAo+IEJ1dCwgdGhlIHJlc3VtZSBjYWxsYmFjayBjYW4g
-YmUgdXNlZCBmb3IgcmVzdW1pbmcgZnJvbSB0aGUKPiBwb3dlci1zYXZpbmcgbW9kZSwgdG9vLiAg
-VGh1cyBpdCBzaG91bGQgYmUgb3B0aW1pemVkIGFuZCBsZXNzCj4gdmVyYm9zZSwgZS5nLiBjYWNo
-ZSB0aGUgRUxEIGJ5dGVzLCBjb21wYXJlIHRoZSBuZXcgZGF0YSB3aXRoIHRoZQo+IGNhY2hlZCBk
-YXRhLCBhbmQgc2tpcCB0aGUgcHJvY2VkdXJlIGlmIGl0J3MgdGhlIHNhbWUgY29udGVudC4KPiAK
-PiBBbnl3YXksIGFsbCBwYXRjaGVzIGhhdmUgYmVlbiBhcHBsaWVkLCBzbyBsZXQncyBmaXggdGhp
-cyBvbiB0aGUKPiBjdXJyZW50IHRyZWUuCgpPSywgdGhhbmtzIGZvciB0aGUgdGlwcy4gIEFjdHVh
-bGx5IEkgaGF2ZSBub3QgdGVzdGVkIHN1c3BlbmQvcmVzdW1lCnlldCwgSSB3aWxsIGRvIGl0IG5l
-eHQgd2Vlay4gQ3VycmVudGx5IEkgaGF2ZSBzb21lIHBlbmRpbmcgaXRlbXMKKHRoYXQncyB3aHkg
-SSBoYXZlIHRvIHB1dCBvZmYgdGhlIGtlZXAtcG93ZXItb24gcGF0Y2gpLgoKVGhhbmtzLApGZW5n
-Z3VhbmcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
-YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
-YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+> -----Original Message-----
+> From: Troy Kisky [mailto:troy.kisky@boundarydevices.com]
+> Sent: Wednesday, November 18, 2009 12:39 AM
+> To: Aggarwal, Anuj
+> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org
+> Subject: Re: [alsa-devel] Artifacts present in AIC23 capture for 48 KHz
+> sampling rate
+> 
+> Aggarwal, Anuj wrote:
+> >> -----Original Message-----
+> >> From: Aggarwal, Anuj
+> >> Sent: Friday, November 06, 2009 6:28 PM
+> >> To: alsa-devel@alsa-project.org; 'linux-omap@vger.kernel.org'
+> >> Subject: Artifacts present in AIC23 capture for 48 KHz sampling rate
+> >>
+> >> Hi,
+> >>
+> >> I am observing artifacts (sharp spikes at fixed intervals) while
+> >> capturing audio on AM3517 EVM and AIC23 codec. They are present only
+> >> in one of the channels when I am capturing at 48 KHz. All other
+> >> sampling rates are working fine with the above said combination.
+> >>
+> >> I have also attached the screenshot taken with the help of Audacity
+> >> utility. Here, I tried recording silence but artifacts were observed
+> >> on one channel.
+> >>
+> >> Has anyone also observed the similar behavior with AIC23 codec? Any
+> >> hints on what could be the root cause?
+> > [Aggarwal, Anuj] On further debugging, I found that the function
+> > find_rate() in sound/soc/codecs/tlv320aic23.c is not returning
+> > the correct value for capture in 48KHz sample rate. In USB mode
+> > (MCLK=12MHz), for 48KHz, it returns 0x7D (CLKOUT=0, CLKIN=1,
+> > SR[3:0]=0xF, BOSR=1, Normal=1) whereas as per the AIC23B spec,
+> 
+> 0x7D would be BOSR = 0, USB/NORMAL = 1, SR=0xff, div2 = 1
+> 
+> The bug is with sr_valid_mask,
+> 
+> static const unsigned short sr_valid_mask[] = {
+> 	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 0*/
+> 	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
+> 	LOWER_GROUP,			/* Usb, bosr - 0*/
+> 	UPPER_GROUP,			/* Usb, bosr - 1*/
+> };
+> 
+> should be
+> 
+> static const unsigned short sr_valid_mask[] = {
+> 	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 0*/
+> 	LOWER_GROUP,			/* Usb, bosr - 0*/
+> 	LOWER_GROUP|UPPER_GROUP,	/* Normal, bosr - 1*/
+> 	UPPER_GROUP,			/* Usb, bosr - 1*/
+> };
+> 
+> 
+> Can you give this a try and let me know?
+[Aggarwal, Anuj] I tried this on AM3517 EVM + AIC23B; it works
+fine for me. But I have tested the fix only with a 12 MHz clock.
+Thanks for quickly fixing this.
+> 
+> Thanks
+> Troy
+> 
