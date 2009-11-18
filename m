@@ -1,134 +1,39 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.33
-Date: Wed, 18 Nov 2009 14:32:32 +0000
-Message-ID: <20091118143231.GB13345@rakim.wolfsonmicro.main>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: [linux-pm] Null suspend/resume functions
+Date: Wed, 18 Nov 2009 17:09:08 +0100
+Message-ID: <20091118160908.GD20887@elf.ucw.cz>
+References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
+ <20091109105858.GB1245@sirena.org.uk>
+ <20091109133136.GC1245@sirena.org.uk>
+ <20091116153000.GB29479@sirena.org.uk>
+ <20091117115236.GB1376@ucw.cz>
+ <20091117124125.GD823@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4F60F24335
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 15:32:33 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757645AbZKRQJO@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <20091117124125.GD823@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>, alsa-devel@alsa-project.org, linux-pm@lists.linux-foundation.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit f9ede4eca01cc64ce37549c282b6fde727c0ec84:
-  Marin Mitov (1):
-        ASoC: Use DMA_BIT_MASK(32) instead of deprecated DMA_32BIT_MASK
+On Tue 2009-11-17 12:41:25, Mark Brown wrote:
+> On Tue, Nov 17, 2009 at 12:52:36PM +0100, Pavel Machek wrote:
+> 
+> > I believe that having few nop functions around the tree should not be
+> > huge problem. If it is, you can introduce one shared top function into
+> > the core...
+> 
+> The problem I have with that is that for most APIs noop functions are a
+> big fat warning sign that something is going wrong and the API is being
+> abused.  This then creates noise and code review problems in the driver
+> code since you've got something that normally suggests a problem.
 
-are available in the git repository at:
+That still sounds like poor reason to add tests to core. But return 0
+function for that purpose should be ok (and should make code easy to
+review, too).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
-
-Anuj Aggarwal (1):
-      ASoC: Modifying the license string GPLv2 for OMAP3 EVM
-
-Grazvydas Ignotas (1):
-      ASoC: OMAP3 Pandora: update for TWL4030 codec changes
-
-Jassi Brar (6):
-      ASoC: Rename s3c24xx_pcm prefix to s3c_dma
-      ASoC: Rename 's3c24xx-pcm' driver to 's3c-dma'
-      ARM: S3C64XX: Define PCM Controller base registers
-      ARM: S3C64XX: Added platform data header
-      ARM: S3C64XX: Defined PCM controller platform devices
-      ASoC: Added the CPU driver for PCM controllers
-
-Mark Brown (3):
-      ASoC: Remove redundant snd_soc_dapm_new_widgets() calls
-      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound-2.6 into for-2.6.33
-      Merge branch 'for-2.6.32' into for-2.6.33
-
-Mike Rapoport (1):
-      ASoC: OMAP: enable Overo driver for CM-T35
-
-Troy Kisky (2):
-      ASoC: DaVinci: remove requirement that dma_params is 1st in structure
-      ASoC: tlv320aic23 fix rate selection
-
- arch/arm/mach-s3c6400/include/mach/map.h       |    2 +
- arch/arm/plat-s3c/include/plat/audio.h         |   17 +
- arch/arm/plat-s3c/include/plat/devs.h          |    3 +
- arch/arm/plat-s3c64xx/dev-audio.c              |  101 +++++-
- sound/soc/codecs/ad1836.c                      |    1 -
- sound/soc/codecs/ad1938.c                      |    1 -
- sound/soc/codecs/ak4535.c                      |    1 -
- sound/soc/codecs/ak4671.c                      |    1 -
- sound/soc/codecs/cx20442.c                     |    1 -
- sound/soc/codecs/ssm2602.c                     |    1 -
- sound/soc/codecs/tlv320aic23.c                 |    3 +-
- sound/soc/codecs/tlv320aic3x.c                 |    1 -
- sound/soc/codecs/tlv320dac33.c                 |    1 -
- sound/soc/codecs/twl4030.c                     |    1 -
- sound/soc/codecs/uda1380.c                     |    1 -
- sound/soc/codecs/wm8350.c                      |    2 +-
- sound/soc/codecs/wm8400.c                      |    1 -
- sound/soc/codecs/wm8510.c                      |    1 -
- sound/soc/codecs/wm8523.c                      |    1 -
- sound/soc/codecs/wm8580.c                      |    1 -
- sound/soc/codecs/wm8711.c                      |    1 -
- sound/soc/codecs/wm8728.c                      |    2 -
- sound/soc/codecs/wm8731.c                      |    1 -
- sound/soc/codecs/wm8750.c                      |    1 -
- sound/soc/codecs/wm8753.c                      |    1 -
- sound/soc/codecs/wm8900.c                      |    2 -
- sound/soc/codecs/wm8903.c                      |    2 -
- sound/soc/codecs/wm8940.c                      |    1 -
- sound/soc/codecs/wm8960.c                      |    1 -
- sound/soc/codecs/wm8961.c                      |    1 -
- sound/soc/codecs/wm8971.c                      |    2 -
- sound/soc/codecs/wm8974.c                      |    1 -
- sound/soc/codecs/wm8988.c                      |    1 -
- sound/soc/codecs/wm8990.c                      |    1 -
- sound/soc/codecs/wm8993.c                      |    2 -
- sound/soc/codecs/wm9081.c                      |    1 -
- sound/soc/codecs/wm9705.c                      |    1 -
- sound/soc/codecs/wm9712.c                      |    1 -
- sound/soc/codecs/wm9713.c                      |    1 -
- sound/soc/davinci/davinci-i2s.c                |    6 +-
- sound/soc/davinci/davinci-mcasp.c              |    1 +
- sound/soc/davinci/davinci-mcasp.h              |    5 -
- sound/soc/davinci/davinci-pcm.c                |    7 +-
- sound/soc/omap/Kconfig                         |    7 +-
- sound/soc/omap/omap3evm.c                      |    2 +-
- sound/soc/omap/omap3pandora.c                  |    3 +-
- sound/soc/omap/overo.c                         |    4 +-
- sound/soc/s3c24xx/Kconfig                      |    3 +
- sound/soc/s3c24xx/Makefile                     |    4 +-
- sound/soc/s3c24xx/jive_wm8750.c                |    2 +-
- sound/soc/s3c24xx/ln2440sbc_alc650.c           |    2 +-
- sound/soc/s3c24xx/neo1973_gta02_wm8753.c       |    2 +-
- sound/soc/s3c24xx/neo1973_wm8753.c             |    2 +-
- sound/soc/s3c24xx/{s3c24xx-pcm.c => s3c-dma.c} |   87 ++--
- sound/soc/s3c24xx/{s3c24xx-pcm.h => s3c-dma.h} |    8 +-
- sound/soc/s3c24xx/s3c-i2s-v2.c                 |    4 +-
- sound/soc/s3c24xx/s3c-i2s-v2.h                 |    4 +-
- sound/soc/s3c24xx/s3c-pcm.c                    |  552 ++++++++++++++++++++++++
- sound/soc/s3c24xx/s3c-pcm.h                    |  123 ++++++
- sound/soc/s3c24xx/s3c2412-i2s.c                |    6 +-
- sound/soc/s3c24xx/s3c2443-ac97.c               |   12 +-
- sound/soc/s3c24xx/s3c24xx-i2s.c                |   12 +-
- sound/soc/s3c24xx/s3c24xx_simtec.c             |    2 +-
- sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |    2 +-
- sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |    2 +-
- sound/soc/s3c24xx/s3c24xx_uda134x.c            |    2 +-
- sound/soc/s3c24xx/s3c64xx-i2s.c                |    6 +-
- sound/soc/s3c24xx/smdk2443_wm9710.c            |    2 +-
- sound/soc/s3c24xx/smdk64xx_wm8580.c            |    2 +-
- 69 files changed, 900 insertions(+), 142 deletions(-)
- create mode 100644 arch/arm/plat-s3c/include/plat/audio.h
- rename sound/soc/s3c24xx/{s3c24xx-pcm.c => s3c-dma.c} (82%)
- rename sound/soc/s3c24xx/{s3c24xx-pcm.h => s3c-dma.h} (87%)
- create mode 100644 sound/soc/s3c24xx/s3c-pcm.c
- create mode 100644 sound/soc/s3c24xx/s3c-pcm.h
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
