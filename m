@@ -1,15 +1,17 @@
-From: Anuj Aggarwal <anuj.aggarwal@ti.com>
-Subject: [PATCH 2/2] ASoC: Modifying the license string GPLv2
-	for OMAP3 EVM
-Date: Wed, 18 Nov 2009 18:09:14 +0530
-Message-ID: <1258547954-13500-1-git-send-email-anuj.aggarwal@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Patches for Samsung SoC PCM Controller driver
+Date: Wed, 18 Nov 2009 13:06:44 +0000
+Message-ID: <20091118130643.GC6592@rakim.wolfsonmicro.main>
+References: <1258444397-23576-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4559A2437C
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 13:39:19 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1CB3B24389
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 14:06:46 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1258444397-23576-1-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,28 +21,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Anuj Aggarwal <anuj.aggarwal@ti.com>, broonie@sirena.org.uk
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Correcting the license string from GPLv2 -> GPL v2.
-Found the problem while building OMAP3 ASoC driver as
-module.
+On Tue, Nov 17, 2009 at 04:53:17PM +0900, Jassi Brar wrote:
 
-Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
----
- sound/soc/omap/omap3evm.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> Samsung SoCs S3C2450, S3C64XX and later versions have got PCM controllers
+> which drive what the ALSA stack terms DSP_A/DSP_B formats.
 
-diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
-index 41a91b5..627fadb 100644
---- a/sound/soc/omap/omap3evm.c
-+++ b/sound/soc/omap/omap3evm.c
-@@ -144,4 +144,4 @@ module_exit(omap3evm_soc_exit);
- 
- MODULE_AUTHOR("Anuj Aggarwal <anuj.aggarwal@ti.com>");
- MODULE_DESCRIPTION("ALSA SoC OMAP3 EVM");
--MODULE_LICENSE("GPLv2");
-+MODULE_LICENSE("GPL v2");
--- 
-1.6.2.4
+Applied all except patch 4, thanks.
+
+Please do try to follow the subject line conventions for the subsystem
+you're submitting to when sending patches - it makes them much easier to
+apply.
