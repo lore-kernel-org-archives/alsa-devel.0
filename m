@@ -1,15 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.32
-Date: Wed, 18 Nov 2009 14:30:07 +0000
-Message-ID: <20091118143007.GA13345@rakim.wolfsonmicro.main>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH] OMAP: Exporting functions doing common
+	register access
+Date: Wed, 18 Nov 2009 16:33:14 +0200
+Message-ID: <20091118163314.d0325283.jhnikula@gmail.com>
+References: <1258384836-24854-1-git-send-email-anuj.aggarwal@ti.com>
+	<alpine.DEB.2.00.0911161408260.29213@utopia.booyaka.com>
+	<5A47E75E594F054BAF48C5E4FC4B92AB030A8C8EC2@dbde02.ent.ti.com>
+	<5A47E75E594F054BAF48C5E4FC4B92AB030A9CA8F7@dbde02.ent.ti.com>
+	<alpine.DEB.2.00.0911180324350.25515@utopia.booyaka.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id EC91724335
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 15:30:08 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6CB6524335
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 15:32:19 +0100 (CET)
+Received: by bwz9 with SMTP id 9so2788156bwz.32
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 06:32:17 -0800 (PST)
+In-Reply-To: <alpine.DEB.2.00.0911180324350.25515@utopia.booyaka.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +28,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takaahi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Paul Walmsley <paul@pwsan.com>
+Cc: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 6fc786d5034ed7ce2d43c459211137de6d99dd28:
-  Jassi Brar (1):
-        ASoC: S3C64XX I2S: Enable audio-bus clock
+On Wed, 18 Nov 2009 03:40:40 -0700 (MST)
+Paul Walmsley <paul@pwsan.com> wrote:
 
-are available in the git repository at:
+> In the interim, I would suggest that you remove the the clock source and 
+> receiver source change functions from omap-mcbsp.c, split them into OMAP1 
+> and OMAP2/3 variants, and place them into arch/arm/mach-omap*/mcbsp.c.  
+> Expand struct omap_mcbsp_ops to add function pointers to those functions.  
+> Call those from soc/omap-mcbsp.c via mcbsp->pdata->ops. That way you won't 
+> need those exports.
+> 
+Paul: What's your opinnion, would it be possible or would it be wise to
+handle these McBSP clock route setups with the clock framework instead?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.32
+Functions omap_mcbsp_dai_set_clks_src and omap_mcbsp_dai_set_rcvr_src
+are basically just setting up the input clock for McBSP SRG or McBSP1
+receiver.
 
-All very driver-local so should be low impact.
+> I don't understand how this code compiled on OMAP1 in any case, since it 
+> doesn't have a System Control Module.
+> 
+OMAP1 can include control.h as well :-)
 
-Anuj Aggarwal (1):
-      ASoC: Modifying the license string GPLv2 for OMAP3 EVM
+Access is anyway protected with the cpu_class_is_omap1().
 
-Grazvydas Ignotas (1):
-      ASoC: OMAP3 Pandora: update for TWL4030 codec changes
-
-Troy Kisky (1):
-      ASoC: tlv320aic23 fix rate selection
-
- sound/soc/codecs/tlv320aic23.c |    2 +-
- sound/soc/omap/omap3evm.c      |    2 +-
- sound/soc/omap/omap3pandora.c  |    3 ++-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+-- 
+Jarkko
