@@ -1,72 +1,51 @@
-From: =?UTF-8?Q?Enric_Balletb=C3=B2_i_Serra?= <eballetbo@gmail.com>
-Subject: Re: [PATCH (for-next)] ASoC: Add support for IGEP v2
-Date: Wed, 18 Nov 2009 10:11:34 +0100
-Message-ID: <70c9a9110911180111k4c4e889cx93a1187e27cb5984@mail.gmail.com>
-References: <1258479067-2564-1-git-send-email-eballetbo@gmail.com>
-	 <4B03B7B2.9090401@compulab.co.il>
-	 <5A47E75E594F054BAF48C5E4FC4B92AB030A9CA9BB@dbde02.ent.ti.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH 05/10] intelhdmi - probe for monitor/eld
+	presence at	module init time
+Date: Wed, 18 Nov 2009 17:16:12 +0800
+Message-ID: <20091118091612.GA2478@localhost>
+References: <20091118043758.141785140@intel.com>
+	<20091118043935.310210374@intel.com> <s5hvdh8b3vv.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A9CA9BB@dbde02.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Gadiyar, Anand" <gadiyar@ti.com>
-Cc: Mike Rapoport <mike@compulab.co.il>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10651103803
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 10:16:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hvdh8b3vv.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W <shane-alsa@csy.ca>, David =?utf-8?B?SMOkcmRlbWFu?= <david@hardeman.nu>
 List-Id: alsa-devel@alsa-project.org
 
-> This part isn't relevant to ASoC. Shouldn't it go separately through =
-linux-omap?
->
-> It could possibly get folded into the patch adding this board support=
- in the
-> first place.
->
-> - Anand
-
-Oops, sorry is a mistake I will resend the patch without this.
-
-Thanks,
-
-Enric
-
-2009/11/18 Gadiyar, Anand <gadiyar@ti.com>:
-> Mike Rapoport wrote:
->> Enric Balletbo i Serra wrote:
->> > From: Enric Balletbo i Serra <eballetbo@iseebcn.com>
->> >
->> >
->> > Signed-off-by: Enric Balletbo i Serra <eballetbo@iseebcn.com>
->> > ---
->> > =C2=A0arch/arm/mach-omap2/Kconfig | =C2=A0 =C2=A02 +-
->> > =C2=A0sound/soc/omap/Kconfig =C2=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A07 =
-++
->> > =C2=A0sound/soc/omap/Makefile =C2=A0 =C2=A0 | =C2=A0 =C2=A02 +
->> > =C2=A0sound/soc/omap/igep0020.c =C2=A0 | =C2=A0148 +++++++++++++++=
-++++++++++++++++++++++++++++
->> > =C2=A04 files changed, 158 insertions(+), 1 deletions(-)
->> > =C2=A0create mode 100644 sound/soc/omap/igep0020.c
->> >
->> > diff --git a/arch/arm/mach-omap2/Kconfig b/arch/arm/mach-omap2/Kco=
-nfig
->> > index 68866f3..6922198 100644
->> > --- a/arch/arm/mach-omap2/Kconfig
->> > +++ b/arch/arm/mach-omap2/Kconfig
->> > @@ -114,7 +114,7 @@ config MACH_OMAP_3630SDP
->> > =C2=A0 =C2=A0 depends on ARCH_OMAP3 && ARCH_OMAP34XX
->> >
->> > =C2=A0config MACH_IGEP0020
->> > - =C2=A0 bool "IGEP0020"
->> > + =C2=A0 bool "IGEP v2 board"
->> > =C2=A0 =C2=A0 depends on ARCH_OMAP3 && ARCH_OMAP34XX
->> >
->> > =C2=A0config MACH_OMAP_4430SDP
->
->
->
->
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+T24gV2VkLCBOb3YgMTgsIDIwMDkgYXQgMDU6MDQ6MjBQTSArMDgwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IEF0IFdlZCwgMTggTm92IDIwMDkgMTI6Mzg6MDMgKzA4MDAsCj4gV3UgRmVuZ2d1YW5n
+IHdyb3RlOgo+ID4gCj4gPiBUaGlzIGF2b2lkcyBsb3N0IG9mIHByZXNlbmNlIGluZm8gb24gbW9k
+dWxlIHJlbG9hZGluZy4KPiA+IFRoZSBwcmVzZW5jZSBpbmZvIHVzZWQgdG8gYmUgb25seSB1cGRh
+dGVkIGF0IHRoZSAocmFyZSkgaG90cGx1ZyBldmVudHMuCj4gPiAKPiA+IFByb3Bvc2VkIGJ5IERh
+dmlkLCB0aGFua3MhCj4gPiAKPiA+IENDOiBEYXZpZCBIw6RyZGVtYW4gPGRhdmlkQGhhcmRlbWFu
+Lm51Pgo+ID4gU2lnbmVkLW9mZi1ieTogV3UgRmVuZ2d1YW5nIDxmZW5nZ3Vhbmcud3VAaW50ZWwu
+Y29tPgo+IAo+IEkgdGhpbmsgd2Ugc2hvdWxkIGhhbmRsZSB0aGlzIGFsc28gYXQgcmVzdW1lLgo+
+IFR5cGljYWxseSwgdGhlIGNvZGVjIHJlc3VtZSBjYWxsYmFjayBjYWxscyB0aGUgdW5zb2xpY2l0
+ZWQgZXZlbnQKPiBleHBsaWNpdGx5Lgo+IAo+IEJ1dCwgdGhlIHJlc3VtZSBjYWxsYmFjayBjYW4g
+YmUgdXNlZCBmb3IgcmVzdW1pbmcgZnJvbSB0aGUKPiBwb3dlci1zYXZpbmcgbW9kZSwgdG9vLiAg
+VGh1cyBpdCBzaG91bGQgYmUgb3B0aW1pemVkIGFuZCBsZXNzCj4gdmVyYm9zZSwgZS5nLiBjYWNo
+ZSB0aGUgRUxEIGJ5dGVzLCBjb21wYXJlIHRoZSBuZXcgZGF0YSB3aXRoIHRoZQo+IGNhY2hlZCBk
+YXRhLCBhbmQgc2tpcCB0aGUgcHJvY2VkdXJlIGlmIGl0J3MgdGhlIHNhbWUgY29udGVudC4KPiAK
+PiBBbnl3YXksIGFsbCBwYXRjaGVzIGhhdmUgYmVlbiBhcHBsaWVkLCBzbyBsZXQncyBmaXggdGhp
+cyBvbiB0aGUKPiBjdXJyZW50IHRyZWUuCgpPSywgdGhhbmtzIGZvciB0aGUgdGlwcy4gIEFjdHVh
+bGx5IEkgaGF2ZSBub3QgdGVzdGVkIHN1c3BlbmQvcmVzdW1lCnlldCwgSSB3aWxsIGRvIGl0IG5l
+eHQgd2Vlay4gQ3VycmVudGx5IEkgaGF2ZSBzb21lIHBlbmRpbmcgaXRlbXMKKHRoYXQncyB3aHkg
+SSBoYXZlIHRvIHB1dCBvZmYgdGhlIGtlZXAtcG93ZXItb24gcGF0Y2gpLgoKVGhhbmtzLApGZW5n
+Z3VhbmcKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
