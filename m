@@ -1,23 +1,37 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH (for-next 2)] ASoC: Add support for IGEP v2
-Date: Wed, 18 Nov 2009 13:25:03 +0000
-Message-ID: <20091118132503.GB698@sirena.org.uk>
-References: <1258536929-2392-1-git-send-email-eballetbo@gmail.com> <4B03C56C.2000803@compulab.co.il>
+Subject: Re: [PATCH] ASoC: tlv320aic23 fix rate selection
+Date: Wed, 18 Nov 2009 13:25:21 +0000
+Message-ID: <20091118132521.GC698@sirena.org.uk>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB030A8C9109@dbde02.ent.ti.com>
+	<1258491061-11633-1-git-send-email-troy.kisky@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 56219243DD
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 14:25:22 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4B03C56C.2000803@compulab.co.il>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mike Rapoport <mike@compulab.co.il>
-Cc: Enric Balletbo i Serra <eballetbo@gmail.com>, Enric Balletbo i Serra <eballetbo@iseebcn.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+In-Reply-To: <1258491061-11633-1-git-send-email-troy.kisky@boundarydevices.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: anuj.aggarwal@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 18, 2009 at 11:59:08AM +0200, Mike Rapoport wrote:
-> (adding ALSA mailing list to CC again :) )
+On Tue, Nov 17, 2009 at 01:51:01PM -0700, Troy Kisky wrote:
+> Fix the ordering of sr_valid_mask array.
+> The lower bit of the index represents USB
+> not bosr.
 
-Enric, please follow the instructions in Documentaion/SubmittingPatches
-when submitting patches - in particular, please do remember to CC both
-the maintainers for the relevant subsystems and the mailing list for the
-subsystem.  In this case I don't have a copy of the original patch so
-could you please resend.
+> Reported-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
+> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+
+Applied, thanks.
