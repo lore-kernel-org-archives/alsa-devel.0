@@ -1,59 +1,74 @@
-From: "Wang, Jane" <jwang@ti.com>
-Subject: Re: [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure
-	fix
-Date: Wed, 18 Nov 2009 12:49:42 -0600
-Message-ID: <13B9B4C6EF24D648824FF11BE8967162039BB36BED@dlee02.ent.ti.com>
-References: <1258133987-20488-1-git-send-email-jwang@ti.com>
-	<20091114102024.b5c302bb.jhnikula@gmail.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030A9CABBE@dbde02.ent.ti.com>
+From: Paul Walmsley <paul@pwsan.com>
+Subject: Re: [PATCH] OMAP: Exporting functions doing common register access
+Date: Wed, 18 Nov 2009 12:30:33 -0700 (MST)
+Message-ID: <alpine.DEB.2.00.0911181220560.9248@utopia.booyaka.com>
+References: <1258384836-24854-1-git-send-email-anuj.aggarwal@ti.com> <alpine.DEB.2.00.0911161408260.29213@utopia.booyaka.com> <5A47E75E594F054BAF48C5E4FC4B92AB030A8C8EC2@dbde02.ent.ti.com> <5A47E75E594F054BAF48C5E4FC4B92AB030A9CA8F7@dbde02.ent.ti.com>
+ <alpine.DEB.2.00.0911180324350.25515@utopia.booyaka.com> <20091118163314.d0325283.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07AD52435A
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 19:52:43 +0100 (CET)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A9CABBE@dbde02.ent.ti.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>, Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "peter.ujfalusi@nokia.com" <peter.ujfalusi@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20091118163314.d0325283.jhnikula@gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > Also context save/restore operations belongs more to PM callbacks
-> > of .../plat-omap/mcbsp.c. Or probably that can be done also dynamically
-> > inside the omap_mcbsp_start/-stop for keeping the whole McBSP shutdown
-> > whenever it is idle.
-> [Aggarwal, Anuj] I am sorry I couldn't understand that. Did you mean that
-> PM hooks can be added in the mcbsp driver which can be registered and
-> called
-> As and when required? Any reference driver for this, if my understanding
-> is correct?
-> >
-> > I think it's worth to look McBSP register cache concept [1] from Janusz
-> > Krzysztofik would it help all of this context save/restore operations.
-> [Aggarwal, Anuj] I tried these two patches on omap3 evm but they didn't
-> work for me. The system doesn't go to the suspend state when I do:
-> echo mem > /sys/power/state
-> And the culprits were core (think sdma) and per domain. I tried
-> disabling the mcbsp i/f clock as well but it didn't help. On mcbsp
-> register dump, I couldn't find the sysconfig register getting
-> configured. Could that be the root cause?
+Hi Jarkko,
 
-Did you include this patch?
-http://git.kernel.org/?p=linux/kernel/git/broonie/sound-2.6.git;a=commit;h=9da65a99e5e6a074c586474961dbf560e439df50
+On Wed, 18 Nov 2009, Jarkko Nikula wrote:
 
-Without this patch, omap_stop_dma() did not disable DMA channel.
+> On Wed, 18 Nov 2009 03:40:40 -0700 (MST)
+> Paul Walmsley <paul@pwsan.com> wrote:
+> 
+> > In the interim, I would suggest that you remove the the clock source and 
+> > receiver source change functions from omap-mcbsp.c, split them into OMAP1 
+> > and OMAP2/3 variants, and place them into arch/arm/mach-omap*/mcbsp.c.  
+> > Expand struct omap_mcbsp_ops to add function pointers to those functions.  
+> > Call those from soc/omap-mcbsp.c via mcbsp->pdata->ops. That way you won't 
+> > need those exports.
+> > 
+> Paul: What's your opinnion, would it be possible or would it be wise to
+> handle these McBSP clock route setups with the clock framework instead?
+> 
+> Functions omap_mcbsp_dai_set_clks_src and omap_mcbsp_dai_set_rcvr_src
+> are basically just setting up the input clock for McBSP SRG or McBSP1
+> receiver.
+
+Sure.  There already should be some support for it in clock34xx.h, but I 
+doubt anyone's tested it:
+
+static struct clk mcbsp1_fck = {
+        .name           = "mcbsp_fck",
+        .ops            = &clkops_omap2_dflt_wait,
+        .id             = 1,
+        .init           = &omap2_init_clksel_parent,
+        .enable_reg     = OMAP_CM_REGADDR(CORE_MOD, CM_FCLKEN1),
+        .enable_bit     = OMAP3430_EN_MCBSP1_SHIFT,
+        .clksel_reg     = OMAP343X_CTRL_REGADDR(OMAP2_CONTROL_DEVCONF0),
+        .clksel_mask    = OMAP2_MCBSP1_CLKS_MASK,
+        .clksel         = mcbsp_15_clksel,
+        .clkdm_name     = "core_l4_clkdm",
+        .recalc         = &omap2_clksel_recalc,
+};
+
+etc.  Some similar entries would need to be added to the clock24xx.h file.
+
+> > I don't understand how this code compiled on OMAP1 in any case, since it 
+> > doesn't have a System Control Module.
+> > 
+> OMAP1 can include control.h as well :-)
+
+Yeah, I guess it is this stuff in control.h that makes it work:
+
+#define omap_ctrl_base_get()            0
+#define omap_ctrl_readb(x)              0
+#define omap_ctrl_readw(x)              0
+#define omap_ctrl_readl(x)              0
+#define omap_ctrl_writeb(x, y)          WARN_ON(1)
+#define omap_ctrl_writew(x, y)          WARN_ON(1)
+#define omap_ctrl_writel(x, y)          WARN_ON(1)
+
+Would be nice to get rid of that at some point.
 
 
-Regards,
-
--Jane
+- Paul
