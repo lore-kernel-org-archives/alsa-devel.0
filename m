@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: DaVinci: remove requirement that
-	dma_params	is 1st in structure
-Date: Wed, 18 Nov 2009 13:29:49 +0000
-Message-ID: <20091118132949.GD698@sirena.org.uk>
-References: <1258415554-31069-1-git-send-email-troy.kisky@boundarydevices.com>
+Subject: Re: Null suspend/resume functions
+Date: Wed, 18 Nov 2009 13:41:12 +0000
+Message-ID: <20091118134112.GF6592@rakim.wolfsonmicro.main>
+References: <ud43sjtaf.wl%morimoto.kuninori@renesas.com>
+	<aec7e5c30911170446n71031671i48aca11f5276405d@mail.gmail.com>
+	<20091117125901.GF823@rakim.wolfsonmicro.main>
+	<200911172314.04396.rjw@sisk.pl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB049243D7
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 14:29:49 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 492A2243F3
+	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 14:41:14 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1258415554-31069-1-git-send-email-troy.kisky@boundarydevices.com>
+In-Reply-To: <200911172314.04396.rjw@sisk.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Troy Kisky <troy.kisky@boundarydevices.com>
-Cc: alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
+To: "Rafael J. Wysocki" <rjw@sisk.pl>
+Cc: alsa-devel@alsa-project.org, Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, Magnus Damm <damm@opensource.se>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, linux-pm@lists.linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 16, 2009 at 04:52:31PM -0700, Troy Kisky wrote:
-> Remove requirement that dma_params is 1st in the structures
-> davinci_audio_dev and davinci_mcbsp_dev.
-> 
-> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+On Tue, Nov 17, 2009 at 11:14:04PM +0100, Rafael J. Wysocki wrote:
 
-I've applied this patch but patches 2-4 don't apply against current
-ASoC, even with a three way merge.  Could you please check against
-current ASoC at
+> In fact, it's not mandatory for bus types, not for drivers.  IMO bus types
+> really have to know how to suspend a device and how to resume it,
+> otherwise the core framework won't be useful anyway.  What the bus type does
+> about drivers not implementing ->runtime_suspend() or ->runtime_resume(), it's
+> up to the bus type.  That's even documented IIRC.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
-
-and resend?  The patches look good and it's good to see that the default
-has been changed to avoid channel swapping but they appear to have been
-generated against an older tree.
+OK, thanks - I hadn't realised that these were being called directly
+from the bus type code rather than by the core.
