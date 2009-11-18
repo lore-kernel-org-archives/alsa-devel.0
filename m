@@ -1,13 +1,16 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 07/10] intelhdmi - sticky infoframe
-Date: Wed, 18 Nov 2009 12:38:05 +0800
-Message-ID: <20091118043935.586085391@intel.com>
+Subject: [PATCH 10/10] hda - show EPSS capability in proc
+Date: Wed, 18 Nov 2009 12:38:08 +0800
+Message-ID: <20091118043935.966835381@intel.com>
 References: <20091118043758.141785140@intel.com>
-Content-Type: multipart/mixed; boundary="===============5458292651268910012=="
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7EC15103936
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D71410392F
 	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 05:42:50 +0100 (CET)
+Content-Disposition: inline; filename=hda-power-epss.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,94 +24,71 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Shane W <shane-alsa@csy.ca>, =?UTF-8?q?David=20H=C3=A4rdeman?= <david@hardeman.nu>
 List-Id: alsa-devel@alsa-project.org
 
---===============5458292651268910012==
-Content-Disposition: inline; filename=hdmi-sticky-infoframe.patch
-
-Remember the active infoframe, so as to avoid stop/restart infoframe
-transmission when switching between audio clips of the same format.
-
-Proposed by Shang and David.
-
-CC: Shane W <shane-alsa@csy.ca>
-CC: David Härdeman <david@hardeman.nu>
 Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- sound/pci/hda/patch_intelhdmi.c |   38 ++++++++++++++++++++----------
- 1 file changed, 26 insertions(+), 12 deletions(-)
+ sound/pci/hda/hda_codec.h |    4 ++++
+ sound/pci/hda/hda_proc.c  |   31 +++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
 
---- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-11-05 13:52:12.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-11-05 13:56:58.000000000 +0800
-@@ -646,6 +646,27 @@ static void hdmi_setup_channel_mapping(s
- 	hdmi_debug_channel_mapping(codec, nid);
- }
+--- sound-2.6.orig/sound/pci/hda/hda_codec.h	2009-11-15 19:28:28.000000000 +0800
++++ sound-2.6/sound/pci/hda/hda_codec.h	2009-11-15 19:28:57.000000000 +0800
+@@ -286,6 +286,10 @@ enum {
+ #define AC_PWRST_D1SUP			(1<<1)
+ #define AC_PWRST_D2SUP			(1<<2)
+ #define AC_PWRST_D3SUP			(1<<3)
++#define AC_PWRST_D3COLDSUP		(1<<4)
++#define AC_PWRST_S3D3COLDSUP		(1<<29)
++#define AC_PWRST_CLKSTOP		(1<<30)
++#define AC_PWRST_EPSS			(1U<<31)
  
-+static bool hdmi_infoframe_uptodate(struct hda_codec *codec, hda_nid_t pin_nid,
-+				    struct hdmi_audio_infoframe *ai)
+ /* Power state values */
+ #define AC_PWRST_SETTING		(0xf<<0)
+--- sound-2.6.orig/sound/pci/hda/hda_proc.c	2009-11-15 19:28:28.000000000 +0800
++++ sound-2.6/sound/pci/hda/hda_proc.c	2009-11-15 19:31:44.000000000 +0800
+@@ -26,6 +26,21 @@
+ #include "hda_codec.h"
+ #include "hda_local.h"
+ 
++static char *bits_names(unsigned int bits, char *names[], int size)
 +{
-+	u8 *bytes = (u8 *)ai;
-+	u8 val;
-+	int i;
++       int i, n;
++       static char buf[128];
 +
-+	if (snd_hda_codec_read(codec, pin_nid, 0, AC_VERB_GET_HDMI_DIP_XMIT, 0)
-+							    != AC_DIPXMIT_BEST)
-+		return false;
++       for (i = 0, n = 0; i < size; i++) {
++               if (bits & (1U<<i) && names[i])
++                       n += snprintf(buf + n, sizeof(buf) - n, " %s",
++                                                               names[i]);
++       }
++       buf[n] = '\0';
 +
-+	hdmi_set_dip_index(codec, pin_nid, 0x0, 0x0);
-+	for (i = 0; i < sizeof(*ai); i++) {
-+		val = snd_hda_codec_read(codec, pin_nid, 0,
-+					 AC_VERB_GET_HDMI_DIP_DATA, 0);
-+		if (val != bytes[i])
-+			return false;
-+	}
-+
-+	return true;
++       return buf;
 +}
- 
- static void hdmi_setup_audio_infoframe(struct hda_codec *codec, hda_nid_t nid,
- 					struct snd_pcm_substream *substream)
-@@ -670,8 +691,11 @@ static void hdmi_setup_audio_infoframe(s
- 			continue;
- 
- 		pin_nid = spec->pin[i];
--		hdmi_fill_audio_infoframe(codec, pin_nid, &ai);
--		hdmi_start_infoframe_trans(codec, pin_nid);
-+		if (!hdmi_infoframe_uptodate(codec, pin_nid, &ai)) {
-+			hdmi_stop_infoframe_trans(codec, pin_nid);
-+			hdmi_fill_audio_infoframe(codec, pin_nid, &ai);
-+			hdmi_start_infoframe_trans(codec, pin_nid);
-+		}
- 	}
- }
- 
-@@ -767,16 +791,6 @@ static int intel_hdmi_playback_pcm_clean
- 					   struct hda_codec *codec,
- 					   struct snd_pcm_substream *substream)
++
+ static const char *get_wid_type_name(unsigned int wid_value)
  {
--	struct intel_hdmi_spec *spec = codec->spec;
--	int i;
--
--	for (i = 0; i < spec->num_pins; i++) {
--		if (spec->pin_cvt[i] != hinfo->nid)
--			continue;
--
--		hdmi_stop_infoframe_trans(codec, spec->pin[i]);
--	}
--
- 	snd_hda_codec_cleanup_stream(codec, hinfo->nid);
- 	return 0;
- }
-
-
-
---===============5458292651268910012==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5458292651268910012==--
+ 	static char *names[16] = {
+@@ -363,8 +378,24 @@ static const char *get_pwr_state(u32 sta
+ static void print_power_state(struct snd_info_buffer *buffer,
+ 			      struct hda_codec *codec, hda_nid_t nid)
+ {
++	static char *names[] = {
++		[ilog2(AC_PWRST_D0SUP)]		= "D0",
++		[ilog2(AC_PWRST_D1SUP)]		= "D1",
++		[ilog2(AC_PWRST_D2SUP)]		= "D2",
++		[ilog2(AC_PWRST_D3SUP)]		= "D3",
++		[ilog2(AC_PWRST_D3COLDSUP)]	= "D3cold",
++		[ilog2(AC_PWRST_S3D3COLDSUP)]	= "S3D3cold",
++		[ilog2(AC_PWRST_CLKSTOP)]	= "CLKSTOP",
++		[ilog2(AC_PWRST_EPSS)]		= "EPSS",
++	};
++
++	int sup = snd_hda_param_read(codec, nid, AC_PAR_POWER_STATE);
+ 	int pwr = snd_hda_codec_read(codec, nid, 0,
+ 				     AC_VERB_GET_POWER_STATE, 0);
++	if (sup)
++		snd_iprintf(buffer, "  Power states: %s\n",
++			    bits_names(sup, names, ARRAY_SIZE(names)));
++
+ 	snd_iprintf(buffer, "  Power: setting=%s, actual=%s\n",
+ 		    get_pwr_state(pwr & AC_PWRST_SETTING),
+ 		    get_pwr_state((pwr & AC_PWRST_ACTUAL) >>
