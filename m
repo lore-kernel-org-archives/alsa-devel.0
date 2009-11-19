@@ -1,7 +1,7 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 11/12] pca100: add sound support
-Date: Thu, 19 Nov 2009 16:48:25 +0100
-Message-ID: <1258645706-9071-12-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 12/12] pcm037: Add sound support
+Date: Thu, 19 Nov 2009 16:48:26 +0100
+Message-ID: <1258645706-9071-13-git-send-email-s.hauer@pengutronix.de>
 References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
@@ -13,11 +13,12 @@ References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-9-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-10-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-11-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-12-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1258645706-9071-11-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1258645706-9071-12-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
 	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
@@ -33,94 +34,140 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- arch/arm/mach-mx2/pca100.c |   52 ++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 52 insertions(+), 0 deletions(-)
+ arch/arm/mach-mx3/pcm037.c |   72 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 72 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/mach-mx2/pca100.c b/arch/arm/mach-mx2/pca100.c
-index aea3d34..e0eb21f 100644
---- a/arch/arm/mach-mx2/pca100.c
-+++ b/arch/arm/mach-mx2/pca100.c
-@@ -26,6 +26,7 @@
- #include <linux/spi/eeprom.h>
+diff --git a/arch/arm/mach-mx3/pcm037.c b/arch/arm/mach-mx3/pcm037.c
+index 6cbaabe..15584b5 100644
+--- a/arch/arm/mach-mx3/pcm037.c
++++ b/arch/arm/mach-mx3/pcm037.c
+@@ -33,6 +33,7 @@
  #include <linux/irq.h>
- #include <linux/gpio.h>
-+#include <linux/delay.h>
+ #include <linux/fsl_devices.h>
+ #include <linux/can/platform/sja1000.h>
++#include <linux/mfd/mc13783.h>
  
- #include <asm/mach/arch.h>
- #include <asm/mach-types.h>
-@@ -41,6 +42,8 @@
+ #include <media/soc_camera.h>
+ 
+@@ -51,6 +52,9 @@
+ #include <mach/mx3_camera.h>
+ #include <mach/mx3fb.h>
  #include <mach/mxc_nand.h>
- #include <mach/irqs.h>
- #include <mach/mmc.h>
++#include <mach/spi.h>
 +#include <mach/audmux.h>
 +#include <mach/ssi.h>
  
  #include "devices.h"
- 
-@@ -182,15 +185,64 @@ static struct imxmmc_platform_data sdhc_pdata = {
- 	.exit = pca100_sdhc2_exit,
+ #include "pcm037.h"
+@@ -124,6 +128,8 @@ static unsigned int pcm037_pins[] = {
+ 	MX31_PIN_CSPI3_SPI_RDY__CTS3,
+ 	/* LAN9217 irq pin */
+ 	IOMUX_MODE(MX31_PIN_GPIO3_1, IOMUX_CONFIG_GPIO),
++	/* MC13783 IRQ pim */
++	IOMUX_MODE(MX31_PIN_GPIO3_0, IOMUX_CONFIG_GPIO),
+ 	/* Onewire */
+ 	MX31_PIN_BATT_LINE__OWIRE,
+ 	/* Framebuffer */
+@@ -172,6 +178,15 @@ static unsigned int pcm037_pins[] = {
+ 	MX31_PIN_CSI_VSYNC__CSI_VSYNC,
+ 	/* GPIO */
+ 	IOMUX_MODE(MX31_PIN_ATA_DMACK, IOMUX_CONFIG_GPIO),
++	/* SSI */
++	MX31_PIN_STXD4__STXD4,
++	MX31_PIN_SRXD4__SRXD4,
++	MX31_PIN_SCK4__SCK4,
++	MX31_PIN_SFS4__SFS4,
++	MX31_PIN_STXD5__STXD5,
++	MX31_PIN_SRXD5__SRXD5,
++	MX31_PIN_SCK5__SCK5,
++	MX31_PIN_SFS5__SFS5,
  };
  
-+static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
-+{
-+	printk("%s\n", __func__);
-+
-+	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);
-+	gpio_set_value(GPIO_PORTC + 20, 1);
-+	udelay(2);
-+	gpio_set_value(GPIO_PORTC + 20, 0);
-+	mxc_gpio_mode(PC20_PF_SSI1_FS);
-+	msleep(2);
-+}
-+
-+static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
-+{
-+	printk("%s\n", __func__);
-+
-+	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);  /* FS */
-+	gpio_set_value(GPIO_PORTC + 20, 0);
-+	mxc_gpio_mode(GPIO_PORTC | 22 | GPIO_GPIO | GPIO_OUT);  /* TX */
-+	gpio_set_value(GPIO_PORTC + 22, 0);
-+	mxc_gpio_mode(GPIO_PORTC | 28 | GPIO_GPIO | GPIO_OUT);  /* reset */
-+	gpio_set_value(GPIO_PORTC + 28, 0);
-+	udelay(10);
-+	gpio_set_value(GPIO_PORTC + 28, 1);
-+	mxc_gpio_mode(PC20_PF_SSI1_FS);
-+	mxc_gpio_mode(PC22_PF_SSI1_TXD);
-+	msleep(2);
-+}
-+
-+static struct imx_ssi_platform_data pca100_ssi_pdata = {
-+	.ac97_reset		= pca100_ac97_cold_reset,
-+	.ac97_warm_reset	= pca100_ac97_warm_reset,
-+	.flags			= IMX_SSI_USE_AC97,
+ static struct physmap_flash_data pcm037_flash_data = {
+@@ -407,6 +422,31 @@ static void pcm970_sdhc1_exit(struct device *dev, void *data)
+ 	gpio_free(SDHC1_GPIO_WP);
+ }
+ 
++#ifdef CONFIG_SPI
++static struct mc13783_platform_data pcm037_pmic = {
++	.flags = MC13783_USE_ADC | MC13783_USE_TOUCHSCREEN |
++		 MC13783_USE_CODEC,
 +};
 +
- static void __init pca100_init(void)
++static unsigned int pcm037_spi_cs[] = {MXC_SPI_CS(0), };
++
++static struct spi_imx_master pcm037_spi_0_data = {
++	.chipselect = pcm037_spi_cs,
++	.num_chipselect = ARRAY_SIZE(pcm037_spi_cs),
++};
++
++static struct spi_board_info pcm037_spi_board_info[] __initdata = {
++	{
++		.modalias	= "mc13783",
++		.irq		= IOMUX_TO_IRQ(MX31_PIN_GPIO3_0),
++		.max_speed_hz	= 3000000,
++		.bus_num	= 0,
++		.platform_data	= &pcm037_pmic,
++		.chip_select	= 0,
++	}
++};
++#endif /* CONFIG_SPI */
++
+ static struct imxmmc_platform_data sdhc_pdata = {
+ #ifdef PCM970_SDHC_RW_SWITCH
+ 	.get_ro = pcm970_sdhc1_get_ro,
+@@ -543,6 +583,10 @@ static struct platform_device pcm970_sja1000 = {
+ 	.num_resources = ARRAY_SIZE(pcm970_sja1000_resources),
+ };
+ 
++struct imx_ssi_platform_data pcm037_ssi_pdata = {
++//	.flags = IMX_SSI_DMA,
++};
++
+ /*
+  * Board specific initialization.
+  */
+@@ -550,6 +594,26 @@ static void __init mxc_board_init(void)
  {
  	int ret;
  
-+	/* SSI unit */
-+	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
-+				  MXC_AUDMUX_V1_PCR_SYN | /* 4wire mode */
-+				  MXC_AUDMUX_V1_PCR_TFCSEL(3) |
-+				  MXC_AUDMUX_V1_PCR_TCLKDIR | /* clock is output */
-+				  MXC_AUDMUX_V1_PCR_RXDSEL(3));
-+	mxc_audmux_v1_configure_port(4,
-+				  MXC_AUDMUX_V1_PCR_SYN | /* 4wire mode */
-+				  MXC_AUDMUX_V1_PCR_TFCSEL(0) |
-+				  MXC_AUDMUX_V1_PCR_TFSDIR |
-+				  MXC_AUDMUX_V1_PCR_RXDSEL(0));
++	mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT1_SSI0,
++			MXC_AUDMUX_V2_PTCR_TFSDIR |
++			MXC_AUDMUX_V2_PTCR_TCLKDIR |
++			MXC_AUDMUX_V2_PTCR_TFSEL(MX31_AUDMUX_PORT4_SSI_PINS_4) |
++			MXC_AUDMUX_V2_PTCR_TCSEL(MX31_AUDMUX_PORT4_SSI_PINS_4) |
++			MXC_AUDMUX_V2_PTCR_RFSDIR |
++			MXC_AUDMUX_V2_PTCR_RCLKDIR |
++			MXC_AUDMUX_V2_PTCR_RFSEL(MX31_AUDMUX_PORT5_SSI_PINS_5) |
++			MXC_AUDMUX_V2_PTCR_RCSEL(MX31_AUDMUX_PORT5_SSI_PINS_5),
++			MXC_AUDMUX_V2_PDCR_RXDSEL(MX31_AUDMUX_PORT5_SSI_PINS_5));
++	mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT5_SSI_PINS_5,
++			0,
++			MXC_AUDMUX_V2_PDCR_RXDSEL(MX31_AUDMUX_PORT1_SSI0));
++	mxc_audmux_v2_configure_port(MX31_AUDMUX_PORT4_SSI_PINS_4,
++			MXC_AUDMUX_V2_PTCR_TFSEL(MX31_AUDMUX_PORT1_SSI0) |
++			MXC_AUDMUX_V2_PTCR_TCSEL(MX31_AUDMUX_PORT1_SSI0) |
++			MXC_AUDMUX_V2_PTCR_RFSEL(MX31_AUDMUX_PORT1_SSI0) |
++			MXC_AUDMUX_V2_PTCR_RCSEL(MX31_AUDMUX_PORT1_SSI0),
++			0);
 +
- 	ret = mxc_gpio_setup_multiple_pins(pca100_pins,
- 			ARRAY_SIZE(pca100_pins), "PCA100");
- 	if (ret)
- 		printk(KERN_ERR "pca100: Failed to setup pins (%d)\n", ret);
+ 	mxc_iomux_setup_multiple_pins(pcm037_pins, ARRAY_SIZE(pcm037_pins),
+ 			"pcm037");
  
-+	mxc_register_device(&imx_ssi_device0, &pca100_ssi_pdata);
+@@ -605,6 +669,14 @@ static void __init mxc_board_init(void)
+ 		mxc_register_device(&mx3_camera, &camera_pdata);
+ 
+ 	platform_device_register(&pcm970_sja1000);
 +
- 	mxc_register_device(&mxc_uart_device0, &uart_pdata);
++#ifdef CONFIG_SPI
++	mxc_register_device(&mxc_spi_device0, &pcm037_spi_0_data);
++
++	spi_register_board_info(pcm037_spi_board_info,
++			ARRAY_SIZE(pcm037_spi_board_info));
++#endif
++	mxc_register_device(&imx_ssi_device0, &pcm037_ssi_pdata);
+ }
  
- 	mxc_gpio_mode(GPIO_PORTC | 29 | GPIO_GPIO | GPIO_IN);
+ static void __init pcm037_timer_init(void)
 -- 
 1.6.5.2
