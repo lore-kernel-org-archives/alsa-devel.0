@@ -1,21 +1,20 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 05/12] mxc: mx1/mx2 DMA: add a possibility to
-	create an endless DMA transfer
-Date: Thu, 19 Nov 2009 16:48:19 +0100
-Message-ID: <1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 04/12] i.MX31 clock: rename SSI clocks to
+	driver name
+Date: Thu, 19 Nov 2009 16:48:18 +0100
+Message-ID: <1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
 References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 1D3E5103831
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 1EE8F103833
 	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 16:48:45 +0100 (CET)
-In-Reply-To: <1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,47 +28,25 @@ To: linux-arm-kernel@lists.infradead.org
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-This is useful for audio where we do not want to setup a new scatterlist
-after playing 4GB of audio data. This would cause skips in the playback.
-
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- arch/arm/plat-mxc/dma-mx1-mx2.c              |    3 ++-
- arch/arm/plat-mxc/include/mach/dma-mx1-mx2.h |    8 ++++++++
- 2 files changed, 10 insertions(+), 1 deletions(-)
+ arch/arm/mach-mx3/clock.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/plat-mxc/dma-mx1-mx2.c b/arch/arm/plat-mxc/dma-mx1-mx2.c
-index 7764643..9c1b3f9 100644
---- a/arch/arm/plat-mxc/dma-mx1-mx2.c
-+++ b/arch/arm/plat-mxc/dma-mx1-mx2.c
-@@ -156,7 +156,8 @@ static inline int imx_dma_sg_next(int channel, struct scatterlist *sg)
- 	}
- 
- 	now = min(imxdma->resbytes, sg->length);
--	imxdma->resbytes -= now;
-+	if (imxdma->resbytes != IMX_DMA_LENGTH_LOOP)
-+		imxdma->resbytes -= now;
- 
- 	if ((imxdma->dma_mode & DMA_MODE_MASK) == DMA_MODE_READ)
- 		__raw_writel(sg->dma_address, DMA_BASE + DMA_DAR(channel));
-diff --git a/arch/arm/plat-mxc/include/mach/dma-mx1-mx2.h b/arch/arm/plat-mxc/include/mach/dma-mx1-mx2.h
-index b3876cc..07be8ad 100644
---- a/arch/arm/plat-mxc/include/mach/dma-mx1-mx2.h
-+++ b/arch/arm/plat-mxc/include/mach/dma-mx1-mx2.h
-@@ -58,6 +58,14 @@ imx_dma_setup_single(int channel, dma_addr_t dma_address,
- 		unsigned int dma_length, unsigned int dev_addr,
- 		unsigned int dmamode);
- 
-+
-+/*
-+ * Use this flag as the dma_length argument to imx_dma_setup_sg()
-+ * to create an endless running dma loop. The end of the scatterlist
-+ * must be linked to the beginning for this to work.
-+ */
-+#define IMX_DMA_LENGTH_LOOP	((unsigned int)-1)
-+
- int
- imx_dma_setup_sg(int channel, struct scatterlist *sg,
- 		unsigned int sgcount, unsigned int dma_length,
+diff --git a/arch/arm/mach-mx3/clock.c b/arch/arm/mach-mx3/clock.c
+index b2a3bcf..3089786 100644
+--- a/arch/arm/mach-mx3/clock.c
++++ b/arch/arm/mach-mx3/clock.c
+@@ -558,8 +558,8 @@ static struct clk_lookup lookups[] = {
+ 	_REGISTER_CLOCK("mxc_w1.0", NULL, owire_clk)
+ 	_REGISTER_CLOCK("mxc-mmc.0", NULL, sdhc1_clk)
+ 	_REGISTER_CLOCK("mxc-mmc.1", NULL, sdhc2_clk)
+-	_REGISTER_CLOCK(NULL, "ssi", ssi1_clk)
+-	_REGISTER_CLOCK(NULL, "ssi", ssi2_clk)
++	_REGISTER_CLOCK("imx-ssi.0", NULL, ssi1_clk)
++	_REGISTER_CLOCK("imx-ssi.1", NULL, ssi2_clk)
+ 	_REGISTER_CLOCK(NULL, "firi", firi_clk)
+ 	_REGISTER_CLOCK(NULL, "ata", ata_clk)
+ 	_REGISTER_CLOCK(NULL, "rtic", rtic_clk)
 -- 
 1.6.5.2
