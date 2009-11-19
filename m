@@ -1,19 +1,20 @@
-From: Troy Kisky <troy.kisky@boundarydevices.com>
-Subject: Re: [PATCH 1/4] ASoC: DaVinci: i2s,
- reduce underruns by combining	into 1 element
-Date: Thu, 19 Nov 2009 12:12:15 -0700
-Message-ID: <4B05988F.4000804@boundarydevices.com>
-References: <1258591794-18416-1-git-send-email-troy.kisky@boundarydevices.com>
-	<20091119105054.GD15460@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 03/12] add a mc13783 codec driver
+Date: Thu, 19 Nov 2009 19:30:08 +0000
+Message-ID: <20091119193008.GC2814@sirena.org.uk>
+References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpauth01.csee.onr.siteprotect.com
-	(smtpauth01.csee.onr.siteprotect.com [64.26.60.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7650F24149
-	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 20:12:25 +0100 (CET)
-In-Reply-To: <20091119105054.GD15460@sirena.org.uk>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3523524355
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 20:30:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +24,208 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Wed, Nov 18, 2009 at 05:49:51PM -0700, Troy Kisky wrote:
->> Allow the left and right 16 bit samples to be shifted out as 1
->> 32 bit sample.
->>
->> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
-> 
-> Applied all four (finally!), thanks.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-Thanks for all your help/review with this. I feel much
-relief also that it is finally merged. Now, just the
-little davinci patches to turn things on remain. That
-can wait till this hits Kevin's tree though.
+On Thu, Nov 19, 2009 at 04:48:17PM +0100, Sascha Hauer wrote:
 
+This looks pretty good - the main non-nitpick issue here is that you've
+got a bunch of controls in here which look like they're routing and
+power control for the CODEC but which are just regular controls and are
+implemented as hand crafted code.
 
-Troy
+> --- a/sound/soc/codecs/Kconfig
+> +++ b/sound/soc/codecs/Kconfig
+> @@ -114,6 +114,9 @@ config SND_SOC_CX20442
+>  config SND_SOC_L3
+>         tristate
+>  
+> +config SND_SOC_MC13783
+> +	tristate
+> +
+>  config SND_SOC_PCM3008
+>         tristate
+>  
+
+Add this to SND_SOC_ALL_CODECS too please.
+
+> --- /dev/null
+> +++ b/sound/soc/codecs/mc13783.c
+> @@ -0,0 +1,739 @@
+> +/*
+> + * Copyright 2008 Juergen Beisert, kernel@pengutronix.de
+> + * Copyright 2009 Sascha Hauer, s.hauer@pengutronix.de
+> + *
+> + * Initial development of this code was funded by
+> + * Phytec Messtechnik GmbH, http://www.phytec.de
+
+Is this based on the FSL code at all - some of the code (eg, the name of
+the define used in the header) makes it look like it's based off
+something else?  If so it should probably credit them too.
+
+> +static int mc13783_write(struct snd_soc_codec *codec,
+> +	unsigned int reg, unsigned int value)
+> +{
+> +	struct mc13783_priv *priv = codec->private_data;
+> +
+> +	priv->reg_cache[reg] = value;
+> +
+> +	mc13783_reg_write(mc13783, reg, value);
+> +
+> +	return 0;
+> +}
+
+Pass back the return code of the core function?
+
+> +/* sample rates supported by PMIC for stereo playback operations on StDac. */
+> +static unsigned int mc13783_rates[] = {
+> +	8000, 11025, 12000, 16000,
+> +	22050, 24000, 32000,44100,
+> +	48000, 64000, 96000
+> +};
+
+It'd be good to add a comment explaining that this is used to look up
+configurations.
+
+> +			if (rate == mc13783_rates[i]) {
+> +				reg = mc13783_read(codec, PMIC_AUDIO_DAC);
+> +				/* setup the clock speed */
+> +				reg &= ~(0xf << 17);
+> +				reg |= i << 17;
+> +				mc13783_write(codec, PMIC_AUDIO_DAC, reg);
+
+snd_soc_update_bits() (older drivers don't use this but it really helps
+with legibility and will also supress no-change writes for you).
+
+> +static int mc13783_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	unsigned int reg;
+> +
+> +	if (dai->id == 1)
+
+Some defines in the header for the DAIs might help legibility, both here
+and in the machine drivers.
+
+> +static int mc13783_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+
+> +	reg |= STEREO_DAC_STD_C_EN;	/* DAC power up */
+
+The DAC power shouldn't need to be controlled here?
+
+> +static int mc13783_set_tdm_slot_codec(struct snd_soc_dai *dai,
+> +	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	unsigned int reg;
+> +
+> +	if (slots != 4)
+> +		return -EINVAL;
+> +
+> +	reg = mc13783_read(codec, PMIC_SSI_NETWORK);
+> +
+> +	reg &= ~(0xfff << 0);
+> +	reg |= (0x00 << 2);	/* primary timeslot RX/TX(?) is 0 */
+> +	reg |= (0x01 << 4);	/* secondary timeslot TX is 1 */
+> +	reg |= (0x01 << 6);	/* secondary timeslot RX is 1 */
+
+This appears to be pretty much ignoring the supplied arguments and using
+a fixed configuration?
+
+> +static int mc13783_asp_val;
+> +static int mc13783_alsp_val;
+
+Put these in the CODEC private data.
+
+> +static int mc13783_pcm_get(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	struct snd_soc_codec *codec =  snd_kcontrol_chip(kcontrol);
+> +	int val;
+> +
+> +	val = mc13783_read(codec, PMIC_AUDIO_RX_0);
+> +	ucontrol->value.enumerated.item[0] = (val >> 22) & 1;
+> +
+> +        return 0;
+
+Look to be some tab/space problem here and elsewhere in the custom
+control code.
+
+> +static struct snd_kcontrol_new mc13783_control_list[] = {
+> +	/* Output Routing */
+> +	SOC_ENUM_EXT("Asp Source", mc13783_enum[0], mc13783_get_asp, mc13783_put_asp),
+> +	SOC_ENUM_EXT("Alsp Source", mc13783_enum[1], mc13783_get_alsp, mc13783_put_alsp),
+> +	SOC_ENUM("Ahs Source", mc13783_enum[2]),
+
+Don't use an array of enums - declare individual variables.  For
+historical reasons some of the older drivers do do this but it is a bit
+hard to read and prone to off by one errors.
+
+> +	SOC_SINGLE("Ahsr enable", PMIC_AUDIO_RX_0, 9, 1, 0),
+> +	SOC_SINGLE("Ahsl enable", PMIC_AUDIO_RX_0, 10, 1, 0),
+> +	SOC_ENUM("Arxout Source", mc13783_enum[3]),
+> +	SOC_SINGLE("ArxoutR enable", PMIC_AUDIO_RX_0, 16, 1, 0),
+> +	SOC_SINGLE("ArxoutL enable", PMIC_AUDIO_RX_0, 15, 1, 0),
+
+These controls all look like they should be part of some DAPM routing
+configuration for the device and either DAPM controls exposed to users
+to set the routing or DAPM widgets automatically managed by the core.
+The enums probably want to be muxes, the enables either switches on
+mixers or widgets of some kind.
+
+I'm also not sure why these are implemented as hand crafted controls
+rather than using the standard register manipulation widgets but I have
+to confess I skipped over a lot of them since I couldn't tell what they
+were doing from the names alone as I read through the file.
+
+> +	SOC_ENUM("3D Control - Switch", mc13783_enum[5]),
+
+No Switch - Switch means on/off to ALSA.  There's some brief naming
+documentation in Documentation/sound/alsa/ControlNames.txt.
+
+> +	/* VAUDIOON -> supply audio part, BIAS enable */
+> +	priv->reg_cache[PMIC_AUDIO_RX_0] |= 0x3;
+
+Bias would normally be managed in a set_bias_level() function.
+
+> +#define MC13783_RATES_PLAYBACK (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
+> +	SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_44100 | \
+> +	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+
+SNDRV_PCM_RATE_8000_96000 is probably what you want here.
+
+> +/*
+> + * OK, this stinks. We currently only can support one MC13783.
+> + * Lets take it as an intermediate to turn this stuff into SoC
+> + * Audio.
+> + */
+> +static int mc13783_codec_probe(struct platform_device *pdev)
+> +{
+> +	struct mc13783_priv *priv;
+> +	struct snd_soc_codec *codec;
+> +	int ret;
+> +
+> +	printk(KERN_INFO "MC13783 Audio Codec\n");
+
+Please remove this, it doesn't really add anything.
+
+> +	ret = snd_soc_register_dais(mc13783_dai, ARRAY_SIZE(mc13783_dai));
+> +	if (ret)
+> +		goto out;
+> +
+> +	ret = snd_soc_register_codec(codec);
+> +	if (ret)
+> +		goto out;
+
+You should register the CODEC first then the DAIs since that's what
+everything else does (so it'll be less fragile in the future) and
+logically the DAIs hang off the CODEC.
+
+> +static int mc13783_codec_remove(struct platform_device *pdev)
+> +{
+> +	mc13783 = NULL;
+> +
+
+Should unregister the things you registered here.
