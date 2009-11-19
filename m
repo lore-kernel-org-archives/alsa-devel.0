@@ -1,18 +1,20 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: i.MX audio support
-Date: Thu, 19 Nov 2009 18:53:27 +0100
-Message-ID: <20091119175327.GV30179@pengutronix.de>
+Date: Thu, 19 Nov 2009 18:32:30 +0000
+Message-ID: <BBD75ED1-D1F8-421B-8B62-17C786975733@opensource.wolfsonmicro.com>
 References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
-	<20091119162830.GA31336@rakim.wolfsonmicro.main>
-Mime-Version: 1.0
+	<20091119163241.GB31336@rakim.wolfsonmicro.main>
+	<20091119174755.GU30179@pengutronix.de>
+	(sfid-20091119_174902_751652_79B3A281)
+Mime-Version: 1.0 (iPhone Mail 7D11)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate02.web.de (fmmailgate02.web.de [217.72.192.227])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D9B3103804
-	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 18:53:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091119162830.GA31336@rakim.wolfsonmicro.main>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AE07110380B
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 19:32:27 +0100 (CET)
+In-Reply-To: <20091119174755.GU30179@pengutronix.de>
+	(sfid-20091119_174902_751652_79B3A281)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,56 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, javier.martin@vista-silicon.com, linux-arm-kernel@lists.infradead.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On 19 Nov 2009, at 17:47, Sascha Hauer <s.hauer@pengutronix.de> wrote:
 
-On Thu, Nov 19, 2009 at 04:28:30PM +0000, Mark Brown wrote:
-> On Thu, Nov 19, 2009 at 04:48:14PM +0100, Sascha Hauer wrote:
-> 
-> > There already is a driver for i.MX in the tree, this one is a nearly complete
-> > rewrite. I haven't touched the in Kernel driver with these patches. The in
-> > Kernel driver has several problems, it doesn't use ioremap, uses direct pointer
-> > derefs instead of proper access functions and the only board supported so far is
-> > itself not supported in mainline.
-> 
-> I've CCed in Javier who wrote the currently merged code.
-> 
-> I'll review these patches tomorrow or over the weekend, however this
-> jumps out at me as being something that we'd want to fix before merging
-> since having two drivers for the same bit of hardware always leads to
-> problems going forwards.  I don't mind how this is addressed, replacing
-> the existing driver or incrementally fixing it would both work for me
-> (the latter is obviously preferrable but equally well we don't want to
-> get bogged down).
+> On Thu, Nov 19, 2009 at 04:32:41PM +0000, Mark Brown wrote:
+>> On Thu, Nov 19, 2009 at 04:48:14PM +0100, Sascha Hauer wrote:
+>>
+>>> There already is a driver for i.MX in the tree, this one is a  
+>>> nearly complete
+>>> rewrite. I haven't touched the in Kernel driver with these  
+>>> patches. The in
+>>> Kernel driver has several problems, it doesn't use ioremap, uses  
+>>> direct pointer
+>>> derefs instead of proper access functions and the only board  
+>>> supported so far is
+>>> itself not supported in mainline.
+>>
+>> BTW, unless I notice anything particularly bad in there I'm  
+>> inclined to
+>> just merge all the arch/arm patches by themselves since obviously  
+>> you're
+>> the maintainer they'd normally go via - I'm assuming the other  
+>> patches
+>> depend on them?
+>
+> I'd prefer merging the arm patches myself as I'm afraid of bothering
+> upstream upstream with merge conflicts. I think I can rebase this  
+> series
+> in a way that there won't be compile breakages during merge.
 
-My work isn't based on the mainline driver but some older (also
-Freescale based) code. Putting this into an incremental series would
-mean quite some work.
-Lets wait for your review before making further decisions.
-
-> 
-> The approach of using FIQ for i.MX3x until SDMA gets merged seems like a
-> reasonable one.  It's not ideal but it will work and it shouldn't create
-> any problems transitioning to SDMA when that is submitted.
-
-Which is in unforseeable future. So far I haven't seen anyone getting
-far on this task.
-
-> 
-> BTW, might be nice to use --no-chain-reply-to for git send-email - it
-> makes long patch sets look a lot nicer in a threaded mail reader.  Not a
-> big deal, though.
-
-I usually use the chain reply option because otherwise the patches
-sometimes get the wrong order when doing git am on a mailbox.
-
-Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Please do say when you're submitting if this is you're intention - if  
+you just send me patches without any other comment I'll tend to assume  
+that your intention is that I should apply them and go ahead and do so  
+if they review OK. Merging via ARM is OK providing the build doesn't  
+get broken. If that happens we can do the same thing as has been done  
+with TWL4030 and merge a branch into both trees.
