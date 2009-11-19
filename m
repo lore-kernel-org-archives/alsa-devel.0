@@ -1,19 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: i.MX audio support
-Date: Thu, 19 Nov 2009 18:54:27 +0000
-Message-ID: <20091119185426.GA2814@sirena.org.uk>
+Subject: Re: [PATCH 07/12] add phycore sound support
+Date: Thu, 19 Nov 2009 19:03:00 +0000
+Message-ID: <20091119190300.GB2814@sirena.org.uk>
 References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
-	<20091119162830.GA31336@rakim.wolfsonmicro.main>
-	<20091119175327.GV30179@pengutronix.de>
+	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-8-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8443010385E
-	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 19:54:29 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id AA68A10385E
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 20:03:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20091119175327.GV30179@pengutronix.de>
+In-Reply-To: <1258645706-9071-8-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,17 +29,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, javier.martin@vista-silicon.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 19, 2009 at 06:53:27PM +0100, Sascha Hauer wrote:
+On Thu, Nov 19, 2009 at 04:48:21PM +0100, Sascha Hauer wrote:
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-> My work isn't based on the mainline driver but some older (also
-> Freescale based) code. Putting this into an incremental series would
-> mean quite some work.
+> +	if (machine_is_pcm038() || machine_is_pcm037()) {
 
-That's not really my point - my point is that one way or another the new
-code needs to update the existing code.  I don't want to end up in a
-situation where we have two different drivers in mainline since that
-will create user confusion and a greater maintinence burden.  I'm not so
-fussed about how exactly that is achieved.
+Just check when probing the driver.
+
+> +		snd_soc_dai_set_fmt(cpu_dai,
+> +				SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+> +				SND_SOC_DAIFMT_CBM_CFM);
+> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +			snd_soc_dai_set_fmt(codec_dai,
+> +				SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+> +				SND_SOC_DAIFMT_CBM_CFM);
+> +		} else {
+> +			snd_soc_dai_set_fmt(codec_dai,
+> +				SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF |
+> +				SND_SOC_DAIFMT_CBM_CFM);
+> +			snd_soc_dai_set_tdm_slot(codec_dai, 0, 0, 4, 0);
+> +		}
+
+This looks very wrong.  The CPU is unconditionally configured to use I2S
+mode but the CODEC may be configured to use either I2S or DSP mode
+depending on the direction of audio.  The CPU and CODEC should at least
+be in the same mode...
+
+> +		/* Put DC field of STCCR to 1 (not zero) */
+> +		ret = cpu_dai->ops->set_tdm_slot(cpu_dai, 0x0, 0xfffffffc, 4, 0);
+
+That comment doesn't really clarify anything for me...
+
+> +static int imx_phycore_hifi_hw_free(struct snd_pcm_substream *substream)
+> +{
+> +	return 0;
+> +}
+
+> +static int imx_phycore_probe(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int imx_phycore_remove(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
+
+Remove these if they have no content.
+
+> +#ifdef CONFIG_SND_SOC_WM9712
+> +static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
+> +	{
+> +		.name		= "HiFi",
+> +		.stream_name	= "HiFi",
+> +		.codec_dai	= &wm9712_dai[WM9712_DAI_AC97_HIFI],
+> +		.ops		= &imx_phycore_hifi_ops,
+> +	},
+> +};
+> +#endif
+
+I'd make this a second machine driver, it doesn't appear to have
+anything in common with the Atlas based system and the conditionals make
+everything more complicated.
