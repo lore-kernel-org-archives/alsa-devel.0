@@ -1,21 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure
-	fix
-Date: Thu, 19 Nov 2009 09:34:49 +0200
-Message-ID: <bd7b27490911182334r7b9b4682o29a094e8ee521bc5@mail.gmail.com>
-References: <1258133987-20488-1-git-send-email-jwang@ti.com>
-	<20091114102024.b5c302bb.jhnikula@gmail.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030A9CABBE@dbde02.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Patches for Samsung SoC PCM Controller driver
+Date: Thu, 19 Nov 2009 10:25:31 +0000
+Message-ID: <20091119102531.GB9763@rakim.wolfsonmicro.main>
+References: <1258444397-23576-1-git-send-email-jassi.brar@samsung.com>
+	<20091118130643.GC6592@rakim.wolfsonmicro.main>
+	<1b68c6790911182025p4390faefvc8594d5e49dabd0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id 561A3244C6
-	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 08:34:51 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 19so779129fgg.2
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 23:34:49 -0800 (PST)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030A9CABBE@dbde02.ent.ti.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AAFC5243C0
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 11:25:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6790911182025p4390faefvc8594d5e49dabd0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,75 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "peter.ujfalusi@nokia.com" <peter.ujfalusi@nokia.com>, "Wang,
-	Jane" <jwang@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 18, 2009 at 8:28 PM, Aggarwal, Anuj <anuj.aggarwal@ti.com>wrote:
+On Thu, Nov 19, 2009 at 01:25:47PM +0900, jassi brar wrote:
 
-> > If no API or feature would require active McBSP block before the
-> > omap_mcbsp_start call, then the clock management could be done inside
-> > the omap_mcbsp_start/-stop functions.
-> [Aggarwal, Anuj] I tried doing that but it didn't work because before
-> _start, we need to call set_hw_params which configures mcbsp, for which
-> clocks are required.
-> >
->
+> well, the patches that were neither 64xx nor PCM specific, we marked
+> "S3C AUDIO", those specific were marked "S3C64XX PCM" and the driver
+> was marked "S3C PCM" since that is supposed to run all PCM controllers
+> of S3C series.
 
-First modification to .../plat-omap/mcbsp.c could be just a patch which
-keeps the
-clocks on only when needed. I.e. keep them disabled when returning from
-request
-and activate them only when accessing the McBSP registers or when it is
-running.
-
-But that said, I don't know are there some use case or API which requires
-active
-clocks after request so that should be checked.
-
-
-> > Also context save/restore operations belongs more to PM callbacks
-> > of .../plat-omap/mcbsp.c. Or probably that can be done also dynamically
-> > inside the omap_mcbsp_start/-stop for keeping the whole McBSP shutdown
-> > whenever it is idle.
-> [Aggarwal, Anuj] I am sorry I couldn't understand that. Did you mean that
-> PM hooks can be added in the mcbsp driver which can be registered and
-> called
-> As and when required? Any reference driver for this, if my understanding
-> is correct?
-> >
->
-
-Yep, the PM hooks in .../plat-omap/mcbsp.c should take care of saving the
-McBSP registers before going into suspend or restore them back when
-resuming.
-This would be second patch after the clock change patch.
-
-The comment about dynamic PM was an idea that if McBSP could be unpowered
-whenever it's not running and do the resume only when calling
-omap_mcbsp_start.
-But that would be some future improvements after basic suspend/resume
-functionality.
-
-> I think it's worth to look McBSP register cache concept [1] from Janusz
-> > Krzysztofik would it help all of this context save/restore operations.
-> [Aggarwal, Anuj] I tried these two patches on omap3 evm but they didn't
-> work for me. The system doesn't go to the suspend state when I do:
-> echo mem > /sys/power/state
-> And the culprits were core (think sdma) and per domain. I tried
-> disabling the mcbsp i/f clock as well but it didn't help. On mcbsp
-> register dump, I couldn't find the sysconfig register getting
-> configured. Could that be the root cause?
->
-
-Does it go into suspend if the audio is not running (i.e. McBSP not
-requested) or
-if you don't even compile the McBSP support? I haven't looked are there
-checks
-for active clocks in PM core but PM is easier to start with bare minimum and
-to
-see that system can do suspend/resume and then add more features one by one.
-
--- 
-Jarkko
+The bit that's missing is that for the subsystem - "ASoC: " for the
+ASoC bits.
