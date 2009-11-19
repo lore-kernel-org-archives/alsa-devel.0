@@ -1,14 +1,22 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: i.MX audio support
-Date: Thu, 19 Nov 2009 16:48:14 +0100
-Message-ID: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 07/12] add phycore sound support
+Date: Thu, 19 Nov 2009 16:48:21 +0100
+Message-ID: <1258645706-9071-8-git-send-email-s.hauer@pengutronix.de>
+References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 5173D2456A
-	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 16:48:34 +0100 (CET)
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id DE4592456C
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 16:48:44 +0100 (CET)
+In-Reply-To: <1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,81 +27,201 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-CkhpIEFsbCwKClRoaXMgc2VyaWVzIGFkZHMgc3VwcG9ydCBmb3IgQU9TQyBvbiBpLk1YIHBsYXRm
-b3Jtcy4gSXQgdXNlcyBETUEgd2hlcmUKYXZhaWxhYmxlIChpLk1YMjcpIGFuZCBmaXEgb3RoZXJ3
-aXNlLiBUaGUgZHJpdmVyIHdvcmtzIG9uIGFsbCBQaHl0ZWMgaS5NWApwbGF0Zm9ybXMsIHNvIHRo
-ZSBpLk1YMjcsIGkuTVgzMSBhbmQgdGhlIGkuTVgzNSBhcmUgc3VwcG9ydGVkIGluY2x1ZGluZwpB
-Qzk3IHN1cHBvcnQuCgpUaGVyZSBhbHJlYWR5IGlzIGEgZHJpdmVyIGZvciBpLk1YIGluIHRoZSB0
-cmVlLCB0aGlzIG9uZSBpcyBhIG5lYXJseSBjb21wbGV0ZQpyZXdyaXRlLiBJIGhhdmVuJ3QgdG91
-Y2hlZCB0aGUgaW4gS2VybmVsIGRyaXZlciB3aXRoIHRoZXNlIHBhdGNoZXMuIFRoZSBpbgpLZXJu
-ZWwgZHJpdmVyIGhhcyBzZXZlcmFsIHByb2JsZW1zLCBpdCBkb2Vzbid0IHVzZSBpb3JlbWFwLCB1
-c2VzIGRpcmVjdCBwb2ludGVyCmRlcmVmcyBpbnN0ZWFkIG9mIHByb3BlciBhY2Nlc3MgZnVuY3Rp
-b25zIGFuZCB0aGUgb25seSBib2FyZCBzdXBwb3J0ZWQgc28gZmFyIGlzCml0c2VsZiBub3Qgc3Vw
-cG9ydGVkIGluIG1haW5saW5lLgoKQUM5NyBzdXBwb3J0IGlzIGEgcHJvYmxlbSBvbiBpLk1YLiBJ
-IGZvdW5kIG5vIHdheSB0byB0ZWxsIHRoZSBTU0kgY29udHJvbGxlcgp3aGljaCBzbG90cyBpdCBz
-aG91bGQgY2FwdHVyZSwgc28gYWxsIHNsb3RzIHRoZSBjb2RlYyBkZWNpZGVzIHRvIHNlbmQgZ28g
-aW50bwpvbmUgc2luZ2xlIEZJRk8uIFRoZSBXTTk3MTIgSSB3b3JrZWQgd2l0aCBzZW5kcyBkYXRh
-IGluIHNsb3QgMTIgd2hpY2ggd2UgaGF2ZQp0byBzb3J0IG91dCBtYW51YWxseSBmcm9tIHRoZSBG
-SUZPLCBzbyBJIHRoaW5rIHRoZXJlIGlzIG5vIHdheSB0byB3b3JrIGFyb3VuZAp0aGUgZmlxIGhh
-bmRsZXIgdXNpbmcgdGhlIERNQSBlbmdpbmUgd2l0aCBBQzk3LgoKVGhlIGRldmRtYSBjb2RlIGlz
-IGFjdHVhbGx5IGEgY29weSBvZiBzb3VuZC9hcm0vZGV2ZG1hLltjaF0uIEl0IHNob3VsZCBwcm9i
-YWJseQpiZSBzZWxlY3RlZCBzb21laG93IGluc3RlYWQgb2YgZHVwbGljYXRlZC4KCkknbSBub3Qg
-dmVyeSBmYW1pbGlhciB3aXRoIEFMU0EsIHNvIEkgZXhwZWN0IHNvbWUgY29tbWVudHMgaW4gdGhp
-cyBhcmVhLiBMZXQKbWUga25vdyB3aGF0IGhhcyB0byBiZSBkb25lIHRvIGdldCB0aGlzIGludG8g
-bWFpbmxpbmUuCgpUaGlzIHNlcmllcyBkZXBlbmRzIG9uIHRoZSBTU0kgcmVzb3VyY2VzIGFuZCBh
-dWRtdXggc3VwcG9ydCBiZWluZyBwcmVzZW50LiBJIHBvc3RlZAp0aGVzZSBwYXRjaGVzIG9uIGFy
-bSBsaW51eCBrZXJuZWwgcmVjZW50bHkgYW5kIHRoZXkgYXJlIGF2YWlsYWJsZSBoZXJlOgoKZ2l0
-Oi8vZ2l0LnBlbmd1dHJvbml4LmRlL2dpdC9pbXgvbGludXgtMi42LmdpdCBteGMtbWFzdGVyCgoK
-QW55IGNvbW1lbnRzIHdlbGNvbWUuCgogIFNhc2NoYQoKVGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNp
-bmNlIGNvbW1pdCAzZjkyYThiZDVmYjEzZTdlMjUwNWM2NWQxNTQ4OTEwZWFhODQzMDI0OgogIFV3
-ZSBLbGVpbmUtS8O2bmlnICgxKToKICAgICAgICBpbXg6IGNvcHkgY29uc3RhbnRzIGZyb20gbXgz
-eC5oIHRvIG14MzUuaCB1c2luZyB0aGUgYXBwcm9wcmlhdGUgbmFtZXNwYWNlCgphcmUgYXZhaWxh
-YmxlIGluIHRoZSBnaXQgcmVwb3NpdG9yeSBhdDoKCiAgZ2l0Oi8vZ2l0LnBlbmd1dHJvbml4LmRl
-L2dpdC9pbXgvbGludXgtMi42LmdpdCBhc29jCgpTYXNjaGEgSGF1ZXIgKDEyKToKICAgICAgbXgz
-OiBBZGQgU1NJIHBpbnMgdG8gaW9tdXggdGFibGUKICAgICAgbXhjOiBpb211eCB2MzogcmVtb3Zl
-IHJlc291cmNlIGhhbmRsaW5nCiAgICAgIGFkZCBhIG1jMTM3ODMgY29kZWMgZHJpdmVyCiAgICAg
-IGkuTVgzMSBjbG9jazogcmVuYW1lIFNTSSBjbG9ja3MgdG8gZHJpdmVyIG5hbWUKICAgICAgbXhj
-OiBteDEvbXgyIERNQTogYWRkIGEgcG9zc2liaWxpdHkgdG8gY3JlYXRlIGFuIGVuZGxlc3MgRE1B
-IHRyYW5zZmVyCiAgICAgIGlteC1zc2kgc291bmQgZHJpdmVyCiAgICAgIGFkZCBwaHljb3JlIHNv
-dW5kIHN1cHBvcnQKICAgICAgc291bmQvc29jL2lteDogTWFrZWZpbGUvS2NvbmZpZyBjaGFuZ2Vz
-IGZvciBuZXcgZHJpdmVyCiAgICAgIHBjbTAzODogYWRkIHNvdW5kIHN1cHBvcnQKICAgICAgcGNt
-MDQzOiBhZGQgc291bmQgc3VwcG9ydAogICAgICBwY2ExMDA6IGFkZCBzb3VuZCBzdXBwb3J0CiAg
-ICAgIHBjbTAzNzogQWRkIHNvdW5kIHN1cHBvcnQKCiBhcmNoL2FybS9tYWNoLW14Mi9wY2ExMDAu
-YyAgICAgICAgICAgICAgICAgICB8ICAgNTIgKwogYXJjaC9hcm0vbWFjaC1teDIvcGNtMDM4LmMg
-ICAgICAgICAgICAgICAgICAgfCAgIDIzICstCiBhcmNoL2FybS9tYWNoLW14My9jbG9jay5jICAg
-ICAgICAgICAgICAgICAgICB8ICAgIDQgKy0KIGFyY2gvYXJtL21hY2gtbXgzL3BjbTAzNy5jICAg
-ICAgICAgICAgICAgICAgIHwgICA3MiArKwogYXJjaC9hcm0vbWFjaC1teDMvcGNtMDQzLmMgICAg
-ICAgICAgICAgICAgICAgfCAgMTAyICsrCiBhcmNoL2FybS9wbGF0LW14Yy9NYWtlZmlsZSAgICAg
-ICAgICAgICAgICAgICB8ICAgIDEgKwogYXJjaC9hcm0vcGxhdC1teGMvZG1hLW14MS1teDIuYyAg
-ICAgICAgICAgICAgfCAgICAzICstCiBhcmNoL2FybS9wbGF0LW14Yy9pbmNsdWRlL21hY2gvZG1h
-LW14MS1teDIuaCB8ICAgIDggKwogYXJjaC9hcm0vcGxhdC1teGMvaW5jbHVkZS9tYWNoL2lvbXV4
-LW14My5oICAgfCAgICA4ICsKIGFyY2gvYXJtL3BsYXQtbXhjL2luY2x1ZGUvbWFjaC9pb211eC12
-My5oICAgIHwgICAxNyArLQogYXJjaC9hcm0vcGxhdC1teGMvaW5jbHVkZS9tYWNoL3NzaS5oICAg
-ICAgICAgfCAgIDE3ICsKIGFyY2gvYXJtL3BsYXQtbXhjL2lvbXV4LXYzLmMgICAgICAgICAgICAg
-ICAgIHwgICAzNiArLQogYXJjaC9hcm0vcGxhdC1teGMvc3NpLWZpcS5TICAgICAgICAgICAgICAg
-ICAgfCAgMTM0ICsrKwogc291bmQvc29jL2NvZGVjcy9LY29uZmlnICAgICAgICAgICAgICAgICAg
-ICAgfCAgICAzICsKIHNvdW5kL3NvYy9jb2RlY3MvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAg
-IHwgICAgMiArCiBzb3VuZC9zb2MvY29kZWNzL21jMTM3ODMuYyAgICAgICAgICAgICAgICAgICB8
-ICA3MzkgKysrKysrKysrKysrKysKIHNvdW5kL3NvYy9jb2RlY3MvbWMxMzc4My5oICAgICAgICAg
-ICAgICAgICAgIHwgICAyOSArCiBzb3VuZC9zb2MvaW14L0tjb25maWcgICAgICAgICAgICAgICAg
-ICAgICAgICB8ICAgMTUgKy0KIHNvdW5kL3NvYy9pbXgvTWFrZWZpbGUgICAgICAgICAgICAgICAg
-ICAgICAgIHwgICAgOSArLQogc291bmQvc29jL2lteC9kZXZkbWEuYyAgICAgICAgICAgICAgICAg
-ICAgICAgfCAgIDgwICsrCiBzb3VuZC9zb2MvaW14L2RldmRtYS5oICAgICAgICAgICAgICAgICAg
-ICAgICB8ICAgIDMgKwogc291bmQvc29jL2lteC9pbXgtc3NpLmMgICAgICAgICAgICAgICAgICAg
-ICAgfCAxMzQ5ICsrKysrKysrKysrKysrKysrKysrKysrKysrCiBzb3VuZC9zb2MvaW14L2lteC1z
-c2kuaCAgICAgICAgICAgICAgICAgICAgICB8ICAgMjQgKwogc291bmQvc29jL2lteC9waHljb3Jl
-LmMgICAgICAgICAgICAgICAgICAgICAgfCAgMTgxICsrKysKIDI0IGZpbGVzIGNoYW5nZWQsIDI4
-NTEgaW5zZXJ0aW9ucygrKSwgNjAgZGVsZXRpb25zKC0pCiBjcmVhdGUgbW9kZSAxMDA2NDQgYXJj
-aC9hcm0vcGxhdC1teGMvaW5jbHVkZS9tYWNoL3NzaS5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgYXJj
-aC9hcm0vcGxhdC1teGMvc3NpLWZpcS5TCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL2Nv
-ZGVjcy9tYzEzNzgzLmMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvY29kZWNzL21jMTM3
-ODMuaAogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9pbXgvZGV2ZG1hLmMKIGNyZWF0ZSBt
-b2RlIDEwMDY0NCBzb3VuZC9zb2MvaW14L2RldmRtYS5oCiBjcmVhdGUgbW9kZSAxMDA2NDQgc291
-bmQvc29jL2lteC9pbXgtc3NpLmMKIGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC9zb2MvaW14L2lt
-eC1zc2kuaAogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9pbXgvcGh5Y29yZS5jCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ sound/soc/imx/phycore.c |  181 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 181 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/imx/phycore.c
+
+diff --git a/sound/soc/imx/phycore.c b/sound/soc/imx/phycore.c
+new file mode 100644
+index 0000000..35e5875
+--- /dev/null
++++ b/sound/soc/imx/phycore.c
+@@ -0,0 +1,181 @@
++/*
++ * phycore.c  --  SoC audio for imx_phycore
++ *
++ * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/device.h>
++#include <linux/i2c.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <asm/mach-types.h>
++
++#include "../codecs/mc13783.h"
++#include "../codecs/wm9712.h"
++#include "imx-ssi.h"
++
++static struct snd_soc_card imx_phycore;
++
++static int imx_phycore_hifi_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	int ret = 0;
++
++	/* set cpu DAI configuration */
++	if (machine_is_pcm038() || machine_is_pcm037()) {
++		snd_soc_dai_set_fmt(cpu_dai,
++				SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++				SND_SOC_DAIFMT_CBM_CFM);
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++			snd_soc_dai_set_fmt(codec_dai,
++				SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++				SND_SOC_DAIFMT_CBM_CFM);
++		} else {
++			snd_soc_dai_set_fmt(codec_dai,
++				SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF |
++				SND_SOC_DAIFMT_CBM_CFM);
++			snd_soc_dai_set_tdm_slot(codec_dai, 0, 0, 4, 0);
++		}
++		snd_soc_dai_set_sysclk(codec_dai, MC13783_CLK_CLIA, 26000000, 0);
++
++		/* Put DC field of STCCR to 1 (not zero) */
++		ret = cpu_dai->ops->set_tdm_slot(cpu_dai, 0x0, 0xfffffffc, 4, 0);
++	}
++	if (ret < 0) {
++		printk(KERN_ERR "Error from cpu DAI configuration\n");
++		return ret;
++	}
++
++	return ret;
++}
++
++static int imx_phycore_hifi_hw_free(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
++
++static struct snd_soc_ops imx_phycore_hifi_ops = {
++	.hw_params = imx_phycore_hifi_hw_params,
++	.hw_free = imx_phycore_hifi_hw_free,
++};
++
++static int imx_phycore_probe(struct platform_device *pdev)
++{
++	return 0;
++}
++
++static int imx_phycore_remove(struct platform_device *pdev)
++{
++	return 0;
++}
++
++#ifdef CONFIG_SND_SOC_MC13783
++static struct snd_soc_dai_link imx_phycore_dai_mc13783[] = {
++	{
++		.name = "MC13783 Playback",
++		.stream_name	= "Playback",
++		.codec_dai	= &mc13783_dai[0],
++		.ops		= &imx_phycore_hifi_ops,
++	}, {
++		.name = "MC13783 Capture",
++		.stream_name	= "Capture",
++		.codec_dai	= &mc13783_dai[1],
++		.ops		= &imx_phycore_hifi_ops,
++	},
++};
++#endif
++
++#ifdef CONFIG_SND_SOC_WM9712
++static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
++	{
++		.name		= "HiFi",
++		.stream_name	= "HiFi",
++		.codec_dai	= &wm9712_dai[WM9712_DAI_AC97_HIFI],
++		.ops		= &imx_phycore_hifi_ops,
++	},
++};
++#endif
++
++static struct snd_soc_card imx_phycore = {
++	.name		= "PhyCORE-audio",
++	.platform	= &imx_soc_platform,
++	.probe		= imx_phycore_probe,
++	.remove		= imx_phycore_remove,
++	.dai_link	= NULL, /* runtime */
++	.num_links	= 0, /* runtime */
++};
++
++static struct snd_soc_device imx_phycore_snd_devdata = {
++	.card		= &imx_phycore,
++	.codec_dev	= NULL, /* runtime */
++};
++
++static struct platform_device *imx_phycore_snd_device;
++
++static int __init imx_phycore_init(void)
++{
++	int ret;
++
++	if (machine_is_pcm038() || machine_is_pcm037()) {
++#ifdef CONFIG_SND_SOC_MC13783
++		imx_phycore_snd_devdata.codec_dev = &soc_codec_dev_mc13783;
++		imx_phycore.dai_link = imx_phycore_dai_mc13783;
++		imx_phycore.num_links = ARRAY_SIZE(imx_phycore_dai_mc13783);
++#endif
++	} else if (machine_is_pcm043() || machine_is_pca100()) {
++#ifdef CONFIG_SND_SOC_WM9712
++		imx_phycore_snd_devdata.codec_dev = &soc_codec_dev_wm9712;
++		imx_phycore.dai_link = imx_phycore_dai_ac97;
++		imx_phycore.num_links = ARRAY_SIZE(imx_phycore_dai_ac97);
++#endif
++	} else
++		/* return happy. We might run on a totally different machine */
++		return 0;
++
++	imx_phycore_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!imx_phycore_snd_device)
++		return -ENOMEM;
++
++#ifdef CONFIG_SND_SOC_MC13783
++	imx_phycore_dai_mc13783[0].cpu_dai = imx_ssi_pcm_dai[0];
++	imx_phycore_dai_mc13783[1].cpu_dai = imx_ssi_pcm_dai[0];
++#endif
++#ifdef CONFIG_SND_SOC_WM9712
++	imx_phycore_dai_ac97[0].cpu_dai = imx_ssi_pcm_dai[0];
++#endif
++	platform_set_drvdata(imx_phycore_snd_device, &imx_phycore_snd_devdata);
++	imx_phycore_snd_devdata.dev = &imx_phycore_snd_device->dev;
++	ret = platform_device_add(imx_phycore_snd_device);
++
++	if (ret) {
++		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
++		platform_device_put(imx_phycore_snd_device);
++	}
++
++	return ret;
++}
++
++static void __exit imx_phycore_exit(void)
++{
++	platform_device_unregister(imx_phycore_snd_device);
++}
++
++late_initcall(imx_phycore_init);
++module_exit(imx_phycore_exit);
++
++MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
++MODULE_DESCRIPTION("PhyCORE ALSA SoC driver");
++MODULE_LICENSE("GPL");
+-- 
+1.6.5.2
