@@ -1,24 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 07/12] add phycore sound support
-Date: Thu, 19 Nov 2009 19:03:00 +0000
-Message-ID: <20091119190300.GB2814@sirena.org.uk>
-References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-8-git-send-email-s.hauer@pengutronix.de>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
+Subject: Re: [PATCH 1/4] ASoC: DaVinci: i2s,
+ reduce underruns by combining	into 1 element
+Date: Thu, 19 Nov 2009 12:12:15 -0700
+Message-ID: <4B05988F.4000804@boundarydevices.com>
+References: <1258591794-18416-1-git-send-email-troy.kisky@boundarydevices.com>
+	<20091119105054.GD15460@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA68A10385E
-	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 20:03:04 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1258645706-9071-8-git-send-email-s.hauer@pengutronix.de>
+Received: from smtpauth01.csee.onr.siteprotect.com
+	(smtpauth01.csee.onr.siteprotect.com [64.26.60.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7650F24149
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 20:12:25 +0100 (CET)
+In-Reply-To: <20091119105054.GD15460@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,69 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 19, 2009 at 04:48:21PM +0100, Sascha Hauer wrote:
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Mark Brown wrote:
+> On Wed, Nov 18, 2009 at 05:49:51PM -0700, Troy Kisky wrote:
+>> Allow the left and right 16 bit samples to be shifted out as 1
+>> 32 bit sample.
+>>
+>> Signed-off-by: Troy Kisky <troy.kisky@boundarydevices.com>
+> 
+> Applied all four (finally!), thanks.
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+Thanks for all your help/review with this. I feel much
+relief also that it is finally merged. Now, just the
+little davinci patches to turn things on remain. That
+can wait till this hits Kevin's tree though.
 
-> +	if (machine_is_pcm038() || machine_is_pcm037()) {
 
-Just check when probing the driver.
-
-> +		snd_soc_dai_set_fmt(cpu_dai,
-> +				SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> +				SND_SOC_DAIFMT_CBM_CFM);
-> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> +			snd_soc_dai_set_fmt(codec_dai,
-> +				SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-> +				SND_SOC_DAIFMT_CBM_CFM);
-> +		} else {
-> +			snd_soc_dai_set_fmt(codec_dai,
-> +				SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF |
-> +				SND_SOC_DAIFMT_CBM_CFM);
-> +			snd_soc_dai_set_tdm_slot(codec_dai, 0, 0, 4, 0);
-> +		}
-
-This looks very wrong.  The CPU is unconditionally configured to use I2S
-mode but the CODEC may be configured to use either I2S or DSP mode
-depending on the direction of audio.  The CPU and CODEC should at least
-be in the same mode...
-
-> +		/* Put DC field of STCCR to 1 (not zero) */
-> +		ret = cpu_dai->ops->set_tdm_slot(cpu_dai, 0x0, 0xfffffffc, 4, 0);
-
-That comment doesn't really clarify anything for me...
-
-> +static int imx_phycore_hifi_hw_free(struct snd_pcm_substream *substream)
-> +{
-> +	return 0;
-> +}
-
-> +static int imx_phycore_probe(struct platform_device *pdev)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int imx_phycore_remove(struct platform_device *pdev)
-> +{
-> +	return 0;
-> +}
-
-Remove these if they have no content.
-
-> +#ifdef CONFIG_SND_SOC_WM9712
-> +static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
-> +	{
-> +		.name		= "HiFi",
-> +		.stream_name	= "HiFi",
-> +		.codec_dai	= &wm9712_dai[WM9712_DAI_AC97_HIFI],
-> +		.ops		= &imx_phycore_hifi_ops,
-> +	},
-> +};
-> +#endif
-
-I'd make this a second machine driver, it doesn't appear to have
-anything in common with the Atlas based system and the conditionals make
-everything more complicated.
+Troy
