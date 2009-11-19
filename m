@@ -1,137 +1,126 @@
 From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 02/12] mxc: iomux v3: remove resource handling
-Date: Thu, 19 Nov 2009 16:48:16 +0100
-Message-ID: <1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 11/12] pca100: add sound support
+Date: Thu, 19 Nov 2009 16:48:25 +0100
+Message-ID: <1258645706-9071-12-git-send-email-s.hauer@pengutronix.de>
 References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
 	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-8-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-9-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-10-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-11-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 30F17103838
-	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 16:48:45 +0100 (CET)
-In-Reply-To: <1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1258645706-9071-11-git-send-email-s.hauer@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: linux-arm-kernel@lists.infradead.org
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-The current model does not allow to put a pad into different modes
-once a pins is allocated. Remove the resource handling.
-
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- arch/arm/plat-mxc/include/mach/iomux-v3.h |   17 +-------------
- arch/arm/plat-mxc/iomux-v3.c              |   36 +---------------------------
- 2 files changed, 3 insertions(+), 50 deletions(-)
+ arch/arm/mach-mx2/pca100.c |   52 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 52 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/plat-mxc/include/mach/iomux-v3.h b/arch/arm/plat-mxc/include/mach/iomux-v3.h
-index a0fa402..1deda01 100644
---- a/arch/arm/plat-mxc/include/mach/iomux-v3.h
-+++ b/arch/arm/plat-mxc/include/mach/iomux-v3.h
-@@ -88,9 +88,7 @@ struct pad_desc {
- #define PAD_CTL_SRE_FAST		(1 << 0)
+diff --git a/arch/arm/mach-mx2/pca100.c b/arch/arm/mach-mx2/pca100.c
+index aea3d34..e0eb21f 100644
+--- a/arch/arm/mach-mx2/pca100.c
++++ b/arch/arm/mach-mx2/pca100.c
+@@ -26,6 +26,7 @@
+ #include <linux/spi/eeprom.h>
+ #include <linux/irq.h>
+ #include <linux/gpio.h>
++#include <linux/delay.h>
  
- /*
-- * setups a single pad:
-- * 	- reserves the pad so that it is not claimed by another driver
-- * 	- setups the iomux according to the configuration
-+ * setups a single pad in the iomuxer
-  */
- int mxc_iomux_v3_setup_pad(struct pad_desc *pad);
+ #include <asm/mach/arch.h>
+ #include <asm/mach-types.h>
+@@ -41,6 +42,8 @@
+ #include <mach/mxc_nand.h>
+ #include <mach/irqs.h>
+ #include <mach/mmc.h>
++#include <mach/audmux.h>
++#include <mach/ssi.h>
  
-@@ -101,19 +99,6 @@ int mxc_iomux_v3_setup_pad(struct pad_desc *pad);
- int mxc_iomux_v3_setup_multiple_pads(struct pad_desc *pad_list, unsigned count);
+ #include "devices.h"
  
- /*
-- * releases a single pad:
-- * 	- make it available for a future use by another driver
-- * 	- DOES NOT reconfigure the IOMUX in its reset state
-- */
--void mxc_iomux_v3_release_pad(struct pad_desc *pad);
--
--/*
-- * releases multiple pads
-- * convenvient way to call the above function with tables
-- */
--void mxc_iomux_v3_release_multiple_pads(struct pad_desc *pad_list, int count);
--
--/*
-  * Initialise the iomux controller
-  */
- void mxc_iomux_v3_init(void __iomem *iomux_v3_base);
-diff --git a/arch/arm/plat-mxc/iomux-v3.c b/arch/arm/plat-mxc/iomux-v3.c
-index 851ca99..b318c6a 100644
---- a/arch/arm/plat-mxc/iomux-v3.c
-+++ b/arch/arm/plat-mxc/iomux-v3.c
-@@ -31,19 +31,11 @@
+@@ -182,15 +185,64 @@ static struct imxmmc_platform_data sdhc_pdata = {
+ 	.exit = pca100_sdhc2_exit,
+ };
  
- static void __iomem *base;
- 
--static unsigned long iomux_v3_pad_alloc_map[0x200 / BITS_PER_LONG];
--
- /*
-- * setups a single pin:
-- * 	- reserves the pin so that it is not claimed by another driver
-- * 	- setups the iomux according to the configuration
-+ * setups a single pad in the iomuxer
-  */
- int mxc_iomux_v3_setup_pad(struct pad_desc *pad)
++static void pca100_ac97_warm_reset(struct snd_ac97 *ac97)
++{
++	printk("%s\n", __func__);
++
++	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);
++	gpio_set_value(GPIO_PORTC + 20, 1);
++	udelay(2);
++	gpio_set_value(GPIO_PORTC + 20, 0);
++	mxc_gpio_mode(PC20_PF_SSI1_FS);
++	msleep(2);
++}
++
++static void pca100_ac97_cold_reset(struct snd_ac97 *ac97)
++{
++	printk("%s\n", __func__);
++
++	mxc_gpio_mode(GPIO_PORTC | 20 | GPIO_GPIO | GPIO_OUT);  /* FS */
++	gpio_set_value(GPIO_PORTC + 20, 0);
++	mxc_gpio_mode(GPIO_PORTC | 22 | GPIO_GPIO | GPIO_OUT);  /* TX */
++	gpio_set_value(GPIO_PORTC + 22, 0);
++	mxc_gpio_mode(GPIO_PORTC | 28 | GPIO_GPIO | GPIO_OUT);  /* reset */
++	gpio_set_value(GPIO_PORTC + 28, 0);
++	udelay(10);
++	gpio_set_value(GPIO_PORTC + 28, 1);
++	mxc_gpio_mode(PC20_PF_SSI1_FS);
++	mxc_gpio_mode(PC22_PF_SSI1_TXD);
++	msleep(2);
++}
++
++static struct imx_ssi_platform_data pca100_ssi_pdata = {
++	.ac97_reset		= pca100_ac97_cold_reset,
++	.ac97_warm_reset	= pca100_ac97_warm_reset,
++	.flags			= IMX_SSI_USE_AC97,
++};
++
+ static void __init pca100_init(void)
  {
--	unsigned int pad_ofs = pad->pad_ctrl_ofs;
--
--	if (test_and_set_bit(pad_ofs >> 2, iomux_v3_pad_alloc_map))
--		return -EBUSY;
- 	if (pad->mux_ctrl_ofs)
- 		__raw_writel(pad->mux_mode, base + pad->mux_ctrl_ofs);
+ 	int ret;
  
-@@ -66,37 +58,13 @@ int mxc_iomux_v3_setup_multiple_pads(struct pad_desc *pad_list, unsigned count)
- 	for (i = 0; i < count; i++) {
- 		ret = mxc_iomux_v3_setup_pad(p);
- 		if (ret)
--			goto setup_error;
-+			return ret;
- 		p++;
- 	}
- 	return 0;
--
--setup_error:
--	mxc_iomux_v3_release_multiple_pads(pad_list, i);
--	return ret;
- }
- EXPORT_SYMBOL(mxc_iomux_v3_setup_multiple_pads);
++	/* SSI unit */
++	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
++				  MXC_AUDMUX_V1_PCR_SYN | /* 4wire mode */
++				  MXC_AUDMUX_V1_PCR_TFCSEL(3) |
++				  MXC_AUDMUX_V1_PCR_TCLKDIR | /* clock is output */
++				  MXC_AUDMUX_V1_PCR_RXDSEL(3));
++	mxc_audmux_v1_configure_port(4,
++				  MXC_AUDMUX_V1_PCR_SYN | /* 4wire mode */
++				  MXC_AUDMUX_V1_PCR_TFCSEL(0) |
++				  MXC_AUDMUX_V1_PCR_TFSDIR |
++				  MXC_AUDMUX_V1_PCR_RXDSEL(0));
++
+ 	ret = mxc_gpio_setup_multiple_pins(pca100_pins,
+ 			ARRAY_SIZE(pca100_pins), "PCA100");
+ 	if (ret)
+ 		printk(KERN_ERR "pca100: Failed to setup pins (%d)\n", ret);
  
--void mxc_iomux_v3_release_pad(struct pad_desc *pad)
--{
--	unsigned int pad_ofs = pad->pad_ctrl_ofs;
--
--	clear_bit(pad_ofs >> 2, iomux_v3_pad_alloc_map);
--}
--EXPORT_SYMBOL(mxc_iomux_v3_release_pad);
--
--void mxc_iomux_v3_release_multiple_pads(struct pad_desc *pad_list, int count)
--{
--	struct pad_desc *p = pad_list;
--	int i;
--
--	for (i = 0; i < count; i++) {
--		mxc_iomux_v3_release_pad(p);
--		p++;
--	}
--}
--EXPORT_SYMBOL(mxc_iomux_v3_release_multiple_pads);
--
- void mxc_iomux_v3_init(void __iomem *iomux_v3_base)
- {
- 	base = iomux_v3_base;
++	mxc_register_device(&imx_ssi_device0, &pca100_ssi_pdata);
++
+ 	mxc_register_device(&mxc_uart_device0, &uart_pdata);
+ 
+ 	mxc_gpio_mode(GPIO_PORTC | 29 | GPIO_GPIO | GPIO_IN);
 -- 
 1.6.5.2
