@@ -1,18 +1,23 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: i.MX audio support
-Date: Fri, 20 Nov 2009 13:27:00 +0100
-Message-ID: <20091120122700.GY30179@pengutronix.de>
-References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
-	<20091120111703.GB20236@rakim.wolfsonmicro.main>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure
+ fix
+Date: Fri, 20 Nov 2009 15:53:43 +0200
+Message-ID: <20091120155343.baf0b9d3.jhnikula@gmail.com>
+References: <1258133987-20488-1-git-send-email-jwang@ti.com>
+	<bd7b27490911182334r7b9b4682o29a094e8ee521bc5@mail.gmail.com>
+	<2ee9e08d0911191148x9da6112s960a283a7cffea7b@mail.gmail.com>
+	<200911200951.13181.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate02.web.de (fmmailgate02.web.de [217.72.192.227])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93A112438F
-	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 13:27:16 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091120111703.GB20236@rakim.wolfsonmicro.main>
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id D813924442
+	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 14:52:45 +0100 (CET)
+Received: by bwz9 with SMTP id 9so8216340bwz.32
+	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 05:52:44 -0800 (PST)
+In-Reply-To: <200911200951.13181.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Wang,
+	Jane" <jwang@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 20, 2009 at 11:17:03AM +0000, Mark Brown wrote:
-> On Thu, Nov 19, 2009 at 04:48:14PM +0100, Sascha Hauer wrote:
-> 
-> > one single FIFO. The WM9712 I worked with sends data in slot 12 which we have
-> > to sort out manually from the FIFO, so I think there is no way to work around
-> > the fiq handler using the DMA engine with AC97.
-> 
-> Slot 12 is used for GPIOs to allow them to be read/written without
-> register accesses - I'd expect that data there will not be uncommon.
-> 
-> > The devdma code is actually a copy of sound/arm/devdma.[ch]. It should probably
-> > be selected somehow instead of duplicated.
-> 
-> Yes, ideally.  A simple Makefile change in sound/arm should do the
-> trick.  Other than this I'm happy with all the patches I've not
-> specifically commented on.
+On Fri, 20 Nov 2009 09:51:13 +0200
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-Ok, great. I'm working on the comments you made. I expect this
-will take some days. Thanks for review.
+> > My question is: is sysfs the only way to choose threshold or can it be made
+> >  as default? I could not see that happening in the code so thinking of the
+> >  possible reason of choosing not to do so. Because the user who wants to
+> >  hit suspend will not like to issue driver specific commands. Any specific
+> >  reason of not doing that by default?
+> 
+> It is not selected as default on OMAP3, since it is a new feature, and we don't 
+> want to change the behavior of the audio. If the reports are positive regarding 
+> to the threshold mode, than we can make it as default on OMAP3, at least that is 
+> the plan AFAIK. 
 
-Sascha
+Yep. Currently we want to keep DMA behaviour consistent across the
+OMAPs and McBSP ports since the large internal FIFO is found only
+from McBSP2 on OMAP3.
+
+This is good finding that you have found that it's the audio preventing
+the suspend and the threshold transfer mode can make it hit better.
+
+But anyway, I'm afraid that threshold mode doesn't help to create
+robust suspend. Threshold allow the DMA and core to be mode in idle
+between the FIFO fills and probably that's why suspend might work
+during these idle periods. For robust implementation there must be
+explicit code stopping and resuming all activity gracefully so that it
+can hit the suspend also if the fill is happening or if using another
+transfer mode.
 
 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Jarkko
