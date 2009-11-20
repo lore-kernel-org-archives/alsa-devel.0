@@ -1,23 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 06/12] imx-ssi sound driver
-Date: Fri, 20 Nov 2009 11:11:16 +0000
-Message-ID: <20091120111115.GA1316@sirena.org.uk>
+Subject: Re: i.MX audio support
+Date: Fri, 20 Nov 2009 11:17:03 +0000
+Message-ID: <20091120111703.GB20236@rakim.wolfsonmicro.main>
 References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68B1824357
-	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 12:11:21 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C18FE24363
+	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 12:17:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
+In-Reply-To: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,58 +25,18 @@ To: Sascha Hauer <s.hauer@pengutronix.de>
 Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 19, 2009 at 04:48:20PM +0100, Sascha Hauer wrote:
+On Thu, Nov 19, 2009 at 04:48:14PM +0100, Sascha Hauer wrote:
 
-This looks pretty good overall, but it'd be nice to split the DMA bits
-out into a separate file simply because this is how the code is normally
-structured.  Given all the conditionals for the FIQ/DMA selection in the
-DMA code I did wonder if it might not be easiest to just have separate
-DMA drivers for the two (probably sharing some routines that are
-identical).  
+> one single FIFO. The WM9712 I worked with sends data in slot 12 which we have
+> to sort out manually from the FIFO, so I think there is no way to work around
+> the fiq handler using the DMA engine with AC97.
 
-Right now the conditionals are spread out through the driver which feels
-a bit intrusive given that the selection between the two models will be
-done once.  A split like that should also make it easier for someone to
-swap in SDMA support at some point in the future, I'd hope.
+Slot 12 is used for GPIOs to allow them to be read/written without
+register accesses - I'd expect that data there will not be uncommon.
 
-Otherwise my comments are all very minor, though I've not tried running
-it up on an actual platform and verifying the functionality yet:
+> The devdma code is actually a copy of sound/arm/devdma.[ch]. It should probably
+> be selected somehow instead of duplicated.
 
-> --- /dev/null
-> +++ b/sound/soc/imx/imx-ssi.c
-> @@ -0,0 +1,1349 @@
-
-> +#include "../codecs/ac97.h"
-
-Why do you need to include the header for a particular CODEC driver in a
-CPU DAI driver?  I didn't actually notice any references to it in the
-code so perhaps it could just be deleted.
-
-> +
-> +/*
-> + * SSI DAI format configuration.
-> + * Should only be called when port is inactive (i.e. SSIEN = 0).
-> + * Note: We don't use the I2S modes but instead manually configure the
-> + * SSI for I2S.
-
-Might be nice to carry on the comment and explain why not :)
-
-> +#define IMX_SSI_RATES \
-> +	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | \
-> +	SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | \
-> +	SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-> +	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | \
-> +	SNDRV_PCM_RATE_96000)
-
-SNDRV_PCM_RATE_8000_96000
-
-> +static int snd_imx_pcm_close(struct snd_pcm_substream *substream)
-> +{
-> +	return 0;
-> +}
-
-Remove this if it's not needed.
-
-> +device_initcall(imx_ssi_init);
-
-It take it this is required for the FIQ?
+Yes, ideally.  A simple Makefile change in sound/arm should do the
+trick.  Other than this I'm happy with all the patches I've not
+specifically commented on.
