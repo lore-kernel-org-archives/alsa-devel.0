@@ -1,23 +1,22 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
 Subject: Re: [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure
  fix
-Date: Fri, 20 Nov 2009 15:53:43 +0200
-Message-ID: <20091120155343.baf0b9d3.jhnikula@gmail.com>
+Date: Fri, 20 Nov 2009 16:09:16 +0200
+Message-ID: <1258726156.6157.11.camel@eenurkka-desktop>
 References: <1258133987-20488-1-git-send-email-jwang@ti.com>
 	<bd7b27490911182334r7b9b4682o29a094e8ee521bc5@mail.gmail.com>
 	<2ee9e08d0911191148x9da6112s960a283a7cffea7b@mail.gmail.com>
 	<200911200951.13181.peter.ujfalusi@nokia.com>
+	<20091120155343.baf0b9d3.jhnikula@gmail.com>
+Reply-To: ext-eero.nurkkala@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id D813924442
-	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 14:52:45 +0100 (CET)
-Received: by bwz9 with SMTP id 9so8216340bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 05:52:44 -0800 (PST)
-In-Reply-To: <200911200951.13181.peter.ujfalusi@nokia.com>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BF722447C
+	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 15:11:10 +0100 (CET)
+In-Reply-To: <20091120155343.baf0b9d3.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,40 +26,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Wang,
-	Jane" <jwang@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
+	Jane" <jwang@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 20 Nov 2009 09:51:13 +0200
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
-
-> > My question is: is sysfs the only way to choose threshold or can it be made
-> >  as default? I could not see that happening in the code so thinking of the
-> >  possible reason of choosing not to do so. Because the user who wants to
-> >  hit suspend will not like to issue driver specific commands. Any specific
-> >  reason of not doing that by default?
+On Fri, 2009-11-20 at 14:53 +0100, ext Jarkko Nikula wrote:
+> On Fri, 20 Nov 2009 09:51:13 +0200
+> Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 > 
-> It is not selected as default on OMAP3, since it is a new feature, and we don't 
-> want to change the behavior of the audio. If the reports are positive regarding 
-> to the threshold mode, than we can make it as default on OMAP3, at least that is 
-> the plan AFAIK. 
+> > > My question is: is sysfs the only way to choose threshold or can it be made
+> > >  as default? I could not see that happening in the code so thinking of the
+> > >  possible reason of choosing not to do so. Because the user who wants to
+> > >  hit suspend will not like to issue driver specific commands. Any specific
+> > >  reason of not doing that by default?
+> > 
+> > It is not selected as default on OMAP3, since it is a new feature, and we don't 
+> > want to change the behavior of the audio. If the reports are positive regarding 
+> > to the threshold mode, than we can make it as default on OMAP3, at least that is 
+> > the plan AFAIK. 
+> 
+> Yep. Currently we want to keep DMA behaviour consistent across the
+> OMAPs and McBSP ports since the large internal FIFO is found only
+> from McBSP2 on OMAP3.
+> 
+> This is good finding that you have found that it's the audio preventing
+> the suspend and the threshold transfer mode can make it hit better.
+> 
+> But anyway, I'm afraid that threshold mode doesn't help to create
+> robust suspend. Threshold allow the DMA and core to be mode in idle
+> between the FIFO fills and probably that's why suspend might work
+> during these idle periods. For robust implementation there must be
+> explicit code stopping and resuming all activity gracefully so that it
+> can hit the suspend also if the fill is happening or if using another
+> transfer mode.
+> 
+> 
 
-Yep. Currently we want to keep DMA behaviour consistent across the
-OMAPs and McBSP ports since the large internal FIFO is found only
-from McBSP2 on OMAP3.
+Looking at the very original patch, I don't know how things could get
+into deep sleep by disabling the fclk only... need to disable the iclk
+also. In threshold mode, HW autogates the iclk, so you may be just
+"lucky".
 
-This is good finding that you have found that it's the audio preventing
-the suspend and the threshold transfer mode can make it hit better.
+One may want to be aware of this also:
 
-But anyway, I'm afraid that threshold mode doesn't help to create
-robust suspend. Threshold allow the DMA and core to be mode in idle
-between the FIFO fills and probably that's why suspend might work
-during these idle periods. For robust implementation there must be
-explicit code stopping and resuming all activity gracefully so that it
-can hit the suspend also if the fill is happening or if using another
-transfer mode.
+http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git;a=commitdiff;h=72cc6d715d5b018e2cff4adb68966855850d4e77
 
+I think it's an undocumented feature.
 
--- 
-Jarkko
+- Eero
