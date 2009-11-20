@@ -1,19 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure
-	fix
-Date: Fri, 20 Nov 2009 09:51:13 +0200
-Message-ID: <200911200951.13181.peter.ujfalusi@nokia.com>
-References: <1258133987-20488-1-git-send-email-jwang@ti.com>
-	<bd7b27490911182334r7b9b4682o29a094e8ee521bc5@mail.gmail.com>
-	<2ee9e08d0911191148x9da6112s960a283a7cffea7b@mail.gmail.com>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: i.MX audio support
+Date: Fri, 20 Nov 2009 08:51:31 +0100
+Message-ID: <eedb5540911192351l5abc7a18s5a218f9b20b58d1b@mail.gmail.com>
+References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
+	<20091119162830.GA31336@rakim.wolfsonmicro.main>
+	<20091119175327.GV30179@pengutronix.de>
+	<20091119185426.GA2814@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8678A103819
-	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 08:51:31 +0100 (CET)
-In-Reply-To: <2ee9e08d0911191148x9da6112s960a283a7cffea7b@mail.gmail.com>
+Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
+	[209.85.220.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19C20103819
+	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 08:51:32 +0100 (CET)
+Received: by fxm1 with SMTP id 1so7509229fxm.32
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 23:51:32 -0800 (PST)
+In-Reply-To: <20091119185426.GA2814@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,64 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "anuj.aggarwal@ti.com" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Wang,
-	Jane" <jwang@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 19 November 2009 21:48:26 ext Anuj Aggarwal wrote:
-> [Anuj] Yes, w/o audio, it goes into suspend neatly.
-> After going through the entire patch series "[PATCHv5 00/20] OMAP
-> ASoC changes in DMA utilization", which I missed earlier, I found that the
-> sysfs entry dma_op_mode can be toggled among element/frame/threshold,
-> by default which is element hence not allowing the mcbsp driver to go into
-> idle state. I changed that at run time and after that I am able to hit
-> the suspend
-> state while playing back audio (at least the log doesn't
-> show that the system is not able to hit suspend).
-> My question is: is sysfs the only way to choose threshold or can it be ma=
-de
->  as default? I could not see that happening in the code so thinking of the
->  possible reason of choosing not to do so. Because the user who wants to
->  hit suspend will not like to issue driver specific commands. Any specific
->  reason of not doing that by default?
+Theoretically, current merged code only supports i.MX21/27 in the DMA
+part. So it would be correct adding a DMA separate driver for i.MX31.
 
-It is not selected as default on OMAP3, since it is a new feature, and we d=
-on't =
+However I disagree with completely new SSI code. It should be possible
+to add an arch define to export proper DMA structures whether we are
+using i.MX21/27 or i.MX31 in the current SSI driver.
 
-want to change the behavior of the audio. If the reports are positive regar=
-ding =
 
-to the threshold mode, than we can make it as default on OMAP3, at least th=
-at is =
-
-the plan AFAIK. =
-
-In some cases the element mode is desirable over the threshold mode, and =
-
-probably there are additional modes can be implemented for other cases, hen=
-ce =
-
-the sysfs interface is really useful feature.
-
-Back than there were quite a bit of discussion here about the threshold mod=
-e: in =
-
-the original series the threshold mode was the default, but we decided to n=
-ot to =
-
-do that before others have the chance to test it. We have been using the =
-
-threshold mode without issues internally, so it should be really stable, bu=
-t it =
-
-is still a new mode, which can break other implementations.
-
-So please test the threshold mode in your HW, and report if it is working t=
-here =
-
-OK, if we have enough positive feedbacks, than we can make it as default.
-
--- =
-
-P=E9ter
+-- 
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
