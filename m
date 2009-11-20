@@ -1,20 +1,17 @@
-From: Mattia Dongili <malattia@linux.it>
-Subject: Re: patch_realtek: support Vaio Type G
-Date: Wed, 18 Nov 2009 22:32:15 +0900
-Message-ID: <20091118133215.GA3223@kamineko.org>
-References: <20091116140227.GA4386@kamineko.org> <s5hbpj2jzus.wl%tiwai@suse.de>
-	<20091116224756.GA7504@kamineko.org> <s5h8we5velv.wl%tiwai@suse.de>
-	<20091117111536.GB7504@kamineko.org> <s5hr5rx2y8i.wl%tiwai@suse.de>
+From: Akinobu Mita <akinobu.mita@gmail.com>
+Subject: [PATCH] sound: usbmidi: Use hweight16
+Date: Fri, 20 Nov 2009 14:56:52 +0900
+Message-ID: <1258696612-15924-1-git-send-email-akinobu.mita@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.kamineko.org (static-220-247-10-204.b-man.svips.gol.ne.jp
-	[220.247.10.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9F4C243DA
-	for <alsa-devel@alsa-project.org>; Wed, 18 Nov 2009 14:32:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5hr5rx2y8i.wl%tiwai@suse.de>
+Received: from mail-yw0-f190.google.com (mail-yw0-f190.google.com
+	[209.85.211.190])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55E59103819
+	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 06:57:41 +0100 (CET)
+Received: by ywh28 with SMTP id 28so2863601ywh.16
+	for <alsa-devel@alsa-project.org>; Thu, 19 Nov 2009 21:57:40 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,55 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Akinobu Mita <akinobu.mita@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Nov 17, 2009 at 12:21:17PM +0100, Takashi Iwai wrote:
-> At Tue, 17 Nov 2009 20:15:37 +0900,
-> Mattia Dongili wrote:
-> > 
-> > On Tue, Nov 17, 2009 at 07:40:12AM +0100, Takashi Iwai wrote:
-> > > At Tue, 17 Nov 2009 07:47:56 +0900,
-> > > Mattia Dongili wrote:
-> > > > 
-> > > > On Mon, Nov 16, 2009 at 03:42:03PM +0100, Takashi Iwai wrote:
-...
-> > > What about model=auto?
-> > 
-> > err hmmm... well it works! I thought that model=auto was the same as no
-> > parameter at all so haven't tried it. Sorry about the noise.
-> 
-> Good to hear.  You are partly right -- the model=auto isn't always the
-> default.  If a quirk is already defined in the driver, another model
-> is picked up.
-> 
-> I guess the problem is that current quirk for your device doesn't work.
-...
-> The fix patch is below.  Could you test it without model option?
-> 
-> I think we can get rid of the fallback of model=sony-assamd since
-> now model=auto works almost well as long as the BIOS pins are correct.
+Use hweight16 instead of Brian Kernighan's/Peter Wegner's method
 
-Great, this works fine for me, I can't speak for sony-assamd specific
-models.
-Feel free to ad my
-Tested-by: Mattia Dongili <malattia@linux.it>
-Thanks
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
+Cc: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/usb/usbmidi.c |   13 ++-----------
+ 1 files changed, 2 insertions(+), 11 deletions(-)
 
-> ---
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index ef7d210..ba339d7 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -11470,6 +11470,7 @@ static struct snd_pci_quirk alc262_cfg_tbl[] = {
->  	SND_PCI_QUIRK(0x104d, 0x9016, "Sony VAIO", ALC262_AUTO), /* dig-only */
->  	SND_PCI_QUIRK(0x104d, 0x9025, "Sony VAIO Z21MN", ALC262_TOSHIBA_S06),
->  	SND_PCI_QUIRK(0x104d, 0x9035, "Sony VAIO VGN-FW170J", ALC262_AUTO),
-> +	SND_PCI_QUIRK(0x104d, 0x9047, "Sony VAIO Type G", ALC262_AUTO),
->  	SND_PCI_QUIRK_MASK(0x104d, 0xff00, 0x9000, "Sony VAIO",
->  			   ALC262_SONY_ASSAMD),
->  	SND_PCI_QUIRK(0x1179, 0x0001, "Toshiba dynabook SS RX1",
+diff --git a/sound/usb/usbmidi.c b/sound/usb/usbmidi.c
+index 0eff19c..e5b0689 100644
+--- a/sound/usb/usbmidi.c
++++ b/sound/usb/usbmidi.c
+@@ -1062,15 +1062,6 @@ static int snd_usbmidi_in_endpoint_create(struct snd_usb_midi* umidi,
+ 	return 0;
+ }
+ 
+-static unsigned int snd_usbmidi_count_bits(unsigned int x)
+-{
+-	unsigned int bits;
+-
+-	for (bits = 0; x; ++bits)
+-		x &= x - 1;
+-	return bits;
+-}
+-
+ /*
+  * Frees an output endpoint.
+  * May be called when ep hasn't been initialized completely.
+@@ -1914,8 +1905,8 @@ int snd_usb_create_midi_interface(struct snd_usb_audio* chip,
+ 	out_ports = 0;
+ 	in_ports = 0;
+ 	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i) {
+-		out_ports += snd_usbmidi_count_bits(endpoints[i].out_cables);
+-		in_ports += snd_usbmidi_count_bits(endpoints[i].in_cables);
++		out_ports += hweight16(endpoints[i].out_cables);
++		in_ports += hweight16(endpoints[i].in_cables);
+ 	}
+ 	err = snd_usbmidi_create_rawmidi(umidi, out_ports, in_ports);
+ 	if (err < 0) {
 -- 
-mattia
-:wq!
+1.6.5.1
