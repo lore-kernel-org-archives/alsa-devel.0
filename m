@@ -1,17 +1,14 @@
-From: =?ISO-8859-1?Q?Einar_R=FCnkaru?= <einarry@smail.ee>
-Subject: Patch: Make Dell Vostro 1015n mic and speaker
-	switching work
-Date: Fri, 20 Nov 2009 22:24:36 +0200
-Message-ID: <64f099620911201224t39e75512sf8ce69dcaf8c465f@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] opti-miro: remove snd_card pointer from
+	snd_miro structure
+Date: Sat, 21 Nov 2009 01:01:18 +0100
+Message-ID: <20091121010118.a3646fcc.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00032555a092b8fd530478d343c4
+Content-Type: multipart/mixed; boundary="===============9153641975930438852=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id D20132438F
-	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 21:24:37 +0100 (CET)
-Received: by bwz9 with SMTP id 9so9160054bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 20 Nov 2009 12:24:36 -0800 (PST)
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 460C124133
+	for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2009 00:59:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,138 +18,182 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
---00032555a092b8fd530478d343c4
-Content-Type: text/plain; charset=ISO-8859-1
+--===============9153641975930438852==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi.
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Dell Vostro 1015n uses Conexant CX20583-10Z (0x14f1:5067). Patch is
-based on "olpc-xo-1_5" branch.
-The difference is that Dell uses digital mic.
+Remove the snd_card pointer from the snd_miro structure and
+do some small code improvements.
 
-Tested on Ubuntu 9.04
+Also, move Opti chipset detection before detection of the
+ACI mixer, so the mci_base value is set in one place only.
 
-Einar
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+ sound/isa/opti9xx/miro.c |   55 ++++++++++++++++++++--------------------------
+ 1 files changed, 24 insertions(+), 31 deletions(-)
 
---00032555a092b8fd530478d343c4
-Content-Type: text/x-patch; charset=US-ASCII; name="vostro.patch"
-Content-Disposition: attachment; filename="vostro.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g29eewfe0
+diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
+index b8170ad..db4a4fb 100644
+--- a/sound/isa/opti9xx/miro.c
++++ b/sound/isa/opti9xx/miro.c
+@@ -110,7 +110,6 @@ struct snd_miro {
+ 	unsigned long pwd_reg;
+ 
+ 	spinlock_t lock;
+-	struct snd_card *card;
+ 	struct snd_pcm *pcm;
+ 
+ 	long wss_base;
+@@ -132,8 +131,6 @@ struct snd_miro {
+ 	struct mutex aci_mutex;
+ };
+ 
+-static void snd_miro_proc_init(struct snd_miro * miro);
+-
+ static char * snd_opti9xx_names[] = {
+ 	"unkown",
+ 	"82C928", "82C929",
+@@ -457,11 +454,9 @@ static int snd_miro_put_double(struct snd_kcontrol *kcontrol,
+ 	right = ucontrol->value.integer.value[1];
+ 
+ 	setreg_right = (kcontrol->private_value >> 8) & 0xff;
+-	if (setreg_right == ACI_SET_MASTER) {
+-		setreg_left = setreg_right + 1;
+-	} else {
+-		setreg_left = setreg_right + 8;
+-	}
++	setreg_left = setreg_right + 8;
++	if (setreg_right == ACI_SET_MASTER)
++		setreg_left -= 7;
+ 
+ 	getreg_right = kcontrol->private_value & 0xff;
+ 	getreg_left = getreg_right + 1;
+@@ -667,17 +662,15 @@ static int __devinit snd_set_aci_init_values(struct snd_miro *miro)
+ 	return 0;
+ }
+ 
+-static int __devinit snd_miro_mixer(struct snd_miro *miro)
++static int __devinit snd_miro_mixer(struct snd_card *card,
++				    struct snd_miro *miro)
+ {
+-	struct snd_card *card;
+ 	unsigned int idx;
+ 	int err;
+ 
+-	if (snd_BUG_ON(!miro || !miro->card))
++	if (snd_BUG_ON(!miro || !card))
+ 		return -EINVAL;
+ 
+-	card = miro->card;
+-
+ 	switch (miro->hardware) {
+ 	case OPTi9XX_HW_82C924:
+ 		strcpy(card->mixername, "ACI & OPTi924");
+@@ -950,11 +943,12 @@ static void snd_miro_proc_read(struct snd_info_entry * entry,
+ 	snd_iprintf(buffer, "  preamp  : 0x%x\n", miro->aci_preamp);
+ }
+ 
+-static void __devinit snd_miro_proc_init(struct snd_miro * miro)
++static void __devinit snd_miro_proc_init(struct snd_card *card,
++					 struct snd_miro *miro)
+ {
+ 	struct snd_info_entry *entry;
+ 
+-	if (! snd_card_proc_new(miro->card, "miro", &entry))
++	if (!snd_card_proc_new(card, "miro", &entry))
+ 		snd_info_set_text_ops(entry, miro, snd_miro_proc_read);
+ }
+ 
+@@ -971,20 +965,18 @@ static int __devinit snd_miro_configure(struct snd_miro *chip)
+ 	unsigned char mpu_irq_bits;
+ 	unsigned long flags;
+ 
++	snd_miro_write_mask(chip, OPTi9XX_MC_REG(1), 0x80, 0x80);
++	snd_miro_write_mask(chip, OPTi9XX_MC_REG(2), 0x20, 0x20); /* OPL4 */
++	snd_miro_write_mask(chip, OPTi9XX_MC_REG(5), 0x02, 0x02);
++
+ 	switch (chip->hardware) {
+ 	case OPTi9XX_HW_82C924:
+ 		snd_miro_write_mask(chip, OPTi9XX_MC_REG(6), 0x02, 0x02);
+-		snd_miro_write_mask(chip, OPTi9XX_MC_REG(1), 0x80, 0x80);
+-		snd_miro_write_mask(chip, OPTi9XX_MC_REG(2), 0x20, 0x20); /* OPL4 */
+ 		snd_miro_write_mask(chip, OPTi9XX_MC_REG(3), 0xf0, 0xff);
+-		snd_miro_write_mask(chip, OPTi9XX_MC_REG(5), 0x02, 0x02);
+ 		break;
+ 	case OPTi9XX_HW_82C929:
+ 		/* untested init commands for OPTi929 */
+-		snd_miro_write_mask(chip, OPTi9XX_MC_REG(1), 0x80, 0x80);
+-		snd_miro_write_mask(chip, OPTi9XX_MC_REG(2), 0x20, 0x20); /* OPL4 */
+ 		snd_miro_write_mask(chip, OPTi9XX_MC_REG(4), 0x00, 0x0c);
+-		snd_miro_write_mask(chip, OPTi9XX_MC_REG(5), 0x02, 0x02);
+ 		break;
+ 	default:
+ 		snd_printk(KERN_ERR "chip %d not supported\n", chip->hardware);
+@@ -1156,7 +1148,6 @@ static int __devinit snd_card_miro_aci_detect(struct snd_card *card,
+ 
+ 	/* get ACI port from OPTi9xx MC 4 */
+ 
+-	miro->mc_base = 0xf8c;
+ 	regval=inb(miro->mc_base + 4);
+ 	miro->aci_port = (regval & 0x10) ? 0x344: 0x354;
+ 
+@@ -1232,7 +1223,13 @@ static int __devinit snd_miro_probe(struct device *devptr, unsigned int n)
+ 
+ 	card->private_free = snd_card_miro_free;
+ 	miro = card->private_data;
+-	miro->card = card;
++
++	error = snd_card_miro_detect(card, miro);
++	if (error < 0) {
++		snd_card_free(card);
++		snd_printk(KERN_ERR "unable to detect OPTi9xx chip\n");
++		return -ENODEV;
++	}
+ 
+ 	if ((error = snd_card_miro_aci_detect(card, miro)) < 0) {
+ 		snd_card_free(card);
+@@ -1241,13 +1238,8 @@ static int __devinit snd_miro_probe(struct device *devptr, unsigned int n)
+ 	}
+ 
+ 	/* init proc interface */
+-	snd_miro_proc_init(miro);
++	snd_miro_proc_init(card, miro);
+ 
+-	if ((error = snd_card_miro_detect(card, miro)) < 0) {
+-		snd_card_free(card);
+-		snd_printk(KERN_ERR "unable to detect OPTi9xx chip\n");
+-		return -ENODEV;
+-	}
+ 
+ 	if (! miro->res_mc_base &&
+ 	    (miro->res_mc_base = request_region(miro->mc_base, miro->mc_base_size,
+@@ -1341,7 +1333,8 @@ static int __devinit snd_miro_probe(struct device *devptr, unsigned int n)
+ 
+ 	miro->pcm = pcm;
+ 
+-	if ((error = snd_miro_mixer(miro)) < 0) {
++	error = snd_miro_mixer(card, miro);
++	if (error < 0) {
+ 		snd_card_free(card);
+ 		return error;
+ 	}
+-- 
+1.6.4
 
-ZGlmZiAtTmF1ciBhbHNhLWRyaXZlci5vcmlnL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hfY29u
-ZXhhbnQuYyBhbHNhLWRyaXZlci9hbHNhLWtlcm5lbC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMK
-LS0tIGFsc2EtZHJpdmVyLm9yaWcvYWxzYS1rZXJuZWwvcGNpL2hkYS9wYXRjaF9jb25leGFudC5j
-CTIwMDktMTEtMTkgMTI6NTM6MTMuMDAwMDAwMDAwICswMjAwCisrKyBhbHNhLWRyaXZlci9hbHNh
-LWtlcm5lbC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMJMjAwOS0xMS0yMCAyMTo0MDoyMi4wMDAw
-MDAwMDAgKzAyMDAKQEAgLTIwMDksNiArMjAwOSw0NiBAQAogCX0KIH0KIAorLyogdG9nZ2xlIGlu
-cHV0IG9mIGJ1aWx0LWluIGRpZ2l0YWwgbWljIGFuZCBtaWMgamFjayBhcHByb3ByaWF0ZWx5ICov
-CitzdGF0aWMgdm9pZCBjeHQ1MDY2X3Zvc3Ryb19hdXRvbWljKHN0cnVjdCBoZGFfY29kZWMgKmNv
-ZGVjKQoreworCXN0cnVjdCBjb25leGFudF9zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisJdW5z
-aWduZWQgaW50IHByZXNlbnQ7CisKKwlzdHJ1Y3QgaGRhX3ZlcmIgZXh0X21pY19wcmVzZW50W10g
-PSB7CisJCS8qIGVuYWJsZSBleHRlcm5hbCBtaWMsIHBvcnQgQiAqLworCQl7MHgxYSwgQUNfVkVS
-Ql9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBzcGVjLT5leHRfbWljX2JpYXN9LAorCisJCS8qIHN3
-aXRjaCB0byBleHRlcm5hbCBtaWMgaW5wdXQgKi8KKwkJezB4MTcsIEFDX1ZFUkJfU0VUX0NPTk5F
-Q1RfU0VMLCAwfSwKKwkJezB4MTQsIEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAwfSwKKworCQkv
-KiBkaXNhYmxlIGludGVybmFsIGRpZ2l0YWwgbWljICovCisJCXsweDIzLCBBQ19WRVJCX1NFVF9Q
-SU5fV0lER0VUX0NPTlRST0wsIDB9LAorCQl7fQorCX07CisJc3RhdGljIHN0cnVjdCBoZGFfdmVy
-YiBleHRfbWljX2Fic2VudFtdID0geworCQkvKiBlbmFibGUgaW50ZXJuYWwgbWljLCBwb3J0IEMg
-Ki8KKwkJezB4MjMsIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX0lOfSwKKwor
-CQkvKiBzd2l0Y2ggdG8gaW50ZXJuYWwgbWljIGlucHV0ICovCisJCXsweDE0LCBBQ19WRVJCX1NF
-VF9DT05ORUNUX1NFTCwgMn0sCisKKwkJLyogZGlzYWJsZSBleHRlcm5hbCBtaWMsIHBvcnQgQiAq
-LworCQl7MHgxYSwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAwfSwKKwkJe30KKwl9
-OworCisJcHJlc2VudCA9IHNuZF9oZGFfamFja19kZXRlY3QoY29kZWMsIDB4MWEpOworCWlmIChw
-cmVzZW50KSB7CisJCXNuZF9wcmludGRkKCJDWFQ1MDY2OiBleHRlcm5hbCBtaWNyb3Bob25lIGRl
-dGVjdGVkXG4iKTsKKwkJc25kX2hkYV9zZXF1ZW5jZV93cml0ZShjb2RlYywgZXh0X21pY19wcmVz
-ZW50KTsKKwl9IGVsc2UgeworCQlzbmRfcHJpbnRkZCgiQ1hUNTA2NjogZXh0ZXJuYWwgbWljcm9w
-aG9uZSBhYnNlbnRcbiIpOworCQlzbmRfaGRhX3NlcXVlbmNlX3dyaXRlKGNvZGVjLCBleHRfbWlj
-X2Fic2VudCk7CisJfQorfQorCiAvKiBtdXRlIGludGVybmFsIHNwZWFrZXIgaWYgSFAgaXMgcGx1
-Z2dlZCAqLwogc3RhdGljIHZvaWQgY3h0NTA2Nl9ocF9hdXRvbXV0ZShzdHJ1Y3QgaGRhX2NvZGVj
-ICpjb2RlYykKIHsKQEAgLTIwNDEsNiArMjA4MSwyMCBAQAogCX0KIH0KIAorLyogdW5zb2xpY2l0
-ZWQgZXZlbnQgZm9yIGphY2sgc2Vuc2luZyAqLworc3RhdGljIHZvaWQgY3h0NTA2Nl92b3N0cm9f
-ZXZlbnQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIHVuc2lnbmVkIGludCByZXMpCit7CisJc25k
-X3ByaW50ZGQoIkNYVDUwNjZfdm9zdHJvOiB1bnNvbCBldmVudCAleCAoJXgpXG4iLCByZXMsIHJl
-cyA+PiAyNik7CisJc3dpdGNoIChyZXMgPj4gMjYpIHsKKwljYXNlIENPTkVYQU5UX0hQX0VWRU5U
-OgorCQljeHQ1MDY2X2hwX2F1dG9tdXRlKGNvZGVjKTsKKwkJYnJlYWs7CisJY2FzZSBDT05FWEFO
-VF9NSUNfRVZFTlQ6CisJCWN4dDUwNjZfdm9zdHJvX2F1dG9taWMoY29kZWMpOworCQlicmVhazsK
-Kwl9Cit9CisKIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX2lucHV0X211eCBjeHQ1MDY2X2FuYWxv
-Z19taWNfYm9vc3QgPSB7CiAJLm51bV9pdGVtcyA9IDUsCiAJLml0ZW1zID0gewpAQCAtMjI4Miw2
-ICsyMzM2LDY3IEBACiAJeyB9IC8qIGVuZCAqLwogfTsKIAorc3RhdGljIHN0cnVjdCBoZGFfdmVy
-YiBjeHQ1MDY2X2luaXRfdmVyYnNfdm9zdHJvW10gPSB7CisJLyogUG9ydCBBOiBoZWFkcGhvbmVz
-ICovCisJezB4MTksIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgMH0sCisJezB4MTks
-IEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAweDAwfSwgLyogREFDMSAqLworCisJLyogUG9ydCBC
-OiBleHRlcm5hbCBtaWNyb3Bob25lICovCisJezB4MWEsIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRf
-Q09OVFJPTCwgMH0sCisKKwkvKiBQb3J0IEM6IHVudXNlZCAqLworCXsweDFiLCBBQ19WRVJCX1NF
-VF9QSU5fV0lER0VUX0NPTlRST0wsIDB9LAorCisJLyogUG9ydCBEOiB1bnVzZWQgKi8KKwl7MHgx
-YywgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAwfSwKKworCS8qIFBvcnQgRTogdW51
-c2VkLCBidXQgaGFzIHByaW1hcnkgRUFQRCAqLworCXsweDFkLCBBQ19WRVJCX1NFVF9QSU5fV0lE
-R0VUX0NPTlRST0wsIDB9LAorCXsweDFkLCBBQ19WRVJCX1NFVF9FQVBEX0JUTEVOQUJMRSwgMHgy
-fSwgLyogZGVmYXVsdCBvbiAqLworCisJLyogUG9ydCBGOiB1bnVzZWQgKi8KKwl7MHgxZSwgQUNf
-VkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAwfSwKKworCS8qIFBvcnQgRzogaW50ZXJuYWwg
-c3BlYWtlcnMgKi8KKwl7MHgxZiwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5f
-T1VUfSwKKwl7MHgxZiwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9LCAvKiBEQUMxICov
-CisKKwkvKiBEQUMxICovCisJezB4MTAsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9P
-VVRfVU5NVVRFfSwKKworCS8qIERBQzI6IHVudXNlZCAqLworCXsweDExLCBBQ19WRVJCX1NFVF9B
-TVBfR0FJTl9NVVRFLCBBTVBfT1VUX01VVEV9LAorCisJezB4MTQsIEFDX1ZFUkJfU0VUX0FNUF9H
-QUlOX01VVEUsIEFNUF9JTl9NVVRFKDApfSwKKwl7MHgxNCwgQUNfVkVSQl9TRVRfQU1QX0dBSU5f
-TVVURSwgQU1QX0lOX01VVEUoMSl9LAorCXsweDE0LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRF
-LCBBTVBfSU5fTVVURSgyKX0sCisJezB4MTQsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFN
-UF9JTl9NVVRFKDMpfSwKKwl7MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lO
-X01VVEUoMCl9LAorCXsweDE1LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVU
-RSgxKX0sCisJezB4MTUsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDIp
-fSwKKwl7MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX01VVEUoMyl9LAor
-CXsweDE2LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVURSgwKX0sCisJezB4
-MTYsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDEpfSwKKwl7MHgxNiwg
-QUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX01VVEUoMil9LAorCXsweDE2LCBBQ19W
-RVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVURSgzKX0sCisKKwkvKiBEaWdpdGFsIG1p
-Y3JvcGhvbmUgcG9ydCAqLworCXsweDIzLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0ws
-IFBJTl9JTn0sCisKKwkvKiBBdWRpbyBpbnB1dCBzZWxlY3RvcnMgKi8KKwl7MHgxNywgQUNfVkVS
-Ql9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9VTk1VVEUgfCAweDN9LAorCXsweDE4LCBBQ19W
-RVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfT1VUX01VVEUgfSwKKworCS8qIERpc2FibGUgU1BE
-SUYgKi8KKwl7MHgyMCwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAwfSwKKwl7MHgy
-MiwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAwfSwKKworCS8qIGVuYWJsZSB1bnNv
-bGljaXRlZCBldmVudHMgZm9yIFBvcnQgQSBhbmQgQiAqLworCXsweDE5LCBBQ19WRVJCX1NFVF9V
-TlNPTElDSVRFRF9FTkFCTEUsIEFDX1VTUlNQX0VOIHwgQ09ORVhBTlRfSFBfRVZFTlR9LAorCXsw
-eDFhLCBBQ19WRVJCX1NFVF9VTlNPTElDSVRFRF9FTkFCTEUsIEFDX1VTUlNQX0VOIHwgQ09ORVhB
-TlRfTUlDX0VWRU5UfSwKKwl7IH0gLyogZW5kICovCit9OworCiBzdGF0aWMgc3RydWN0IGhkYV92
-ZXJiIGN4dDUwNjZfaW5pdF92ZXJic19wb3J0ZF9sb1tdID0gewogCXsweDFjLCBBQ19WRVJCX1NF
-VF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9PVVR9LAogCXsgfSAvKiBlbmQgKi8KQEAgLTIzMDMs
-NiArMjQxOCw3IEBACiAJQ1hUNTA2Nl9MQVBUT1AsCQkJLyogTGFwdG9wcyB3LyBFQVBEIHN1cHBv
-cnQgKi8KIAlDWFQ1MDY2X0RFTExfTEFQVE9QLAkvKiBEZWxsIExhcHRvcCAqLwogCUNYVDUwNjZf
-T0xQQ19YT18xXzUsCS8qIE9MUEMgWE8gMS41ICovCisgICAgICAgIENYVDUwNjZfREVMTF9WT1NU
-TywgICAgIC8qIERlbGwgVm9zdHJvIDEwMTVpICovCiAJQ1hUNTA2Nl9NT0RFTFMKIH07CiAKQEAg
-LTIzMTAsNiArMjQyNiw3IEBACiAJW0NYVDUwNjZfTEFQVE9QXQkJPSAibGFwdG9wIiwKIAlbQ1hU
-NTA2Nl9ERUxMX0xBUFRPUF0JPSAiZGVsbC1sYXB0b3AiLAogCVtDWFQ1MDY2X09MUENfWE9fMV81
-XQk9ICJvbHBjLXhvLTFfNSIsCisJW0NYVDUwNjZfREVMTF9WT1NUT10gICAgPSAiZGVsbC12b3N0
-cm8iCiB9OwogCiBzdGF0aWMgc3RydWN0IHNuZF9wY2lfcXVpcmsgY3h0NTA2Nl9jZmdfdGJsW10g
-PSB7CkBAIC0yMzE4LDYgKzI0MzUsNyBAQAogCVNORF9QQ0lfUVVJUksoMHgxMDI4LCAweDAyZjUs
-ICJEZWxsIiwKIAkJICAgICAgQ1hUNTA2Nl9ERUxMX0xBUFRPUCksCiAJU05EX1BDSV9RVUlSSygw
-eDE1MmQsIDB4MDgzMywgIk9MUEMgWE8tMS41IiwgQ1hUNTA2Nl9PTFBDX1hPXzFfNSksCisJU05E
-X1BDSV9RVUlSSygweDEwMjgsIDB4MDQwMiwgIkRlbGwgVm9zdHJvIiwgQ1hUNTA2Nl9ERUxMX1ZP
-U1RPKSwKIAl7fQogfTsKIApAQCAtMjM4NSw2ICsyNTAzLDE5IEBACiAJCS8qIGlucHV0IHNvdXJj
-ZSBhdXRvbWF0aWNhbGx5IHNlbGVjdGVkICovCiAJCXNwZWMtPmlucHV0X211eCA9IE5VTEw7CiAJ
-CWJyZWFrOworCWNhc2UgQ1hUNTA2Nl9ERUxMX1ZPU1RPOgorCQljb2RlYy0+cGF0Y2hfb3BzLnVu
-c29sX2V2ZW50ID0gY3h0NTA2Nl92b3N0cm9fZXZlbnQ7CisJCXNwZWMtPmluaXRfdmVyYnNbMF0g
-PSBjeHQ1MDY2X2luaXRfdmVyYnNfdm9zdHJvOworCQlzcGVjLT5taXhlcnNbc3BlYy0+bnVtX21p
-eGVycysrXSA9IGN4dDUwNjZfbWl4ZXJfbWFzdGVyX29scGM7CisJCXNwZWMtPm1peGVyc1tzcGVj
-LT5udW1fbWl4ZXJzKytdID0gY3h0NTA2Nl9taXhlcnM7CisJCXNwZWMtPnBvcnRfZF9tb2RlID0g
-MDsKKworCQkvKiBubyBTL1BESUYgb3V0ICovCisJCXNwZWMtPm11bHRpb3V0LmRpZ19vdXRfbmlk
-ID0gMDsKKworCQkvKiBpbnB1dCBzb3VyY2UgYXV0b21hdGljYWxseSBzZWxlY3RlZCAqLworCQlz
-cGVjLT5pbnB1dF9tdXggPSBOVUxMOworCQlicmVhazsKIAl9CiAKIAlyZXR1cm4gMDsKQEAgLTI0
-MDIsNiArMjUzMyw4IEBACiAJICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDUxIH0sCiAJeyAuaWQgPSAw
-eDE0ZjE1MDY2LCAubmFtZSA9ICJDWDIwNTgyIChQZWJibGUpIiwKIAkgIC5wYXRjaCA9IHBhdGNo
-X2N4dDUwNjYgfSwKKyAgICAgICAgeyAuaWQgPSAweDE0ZjE1MDY3LCAubmFtZSA9ICJDWDIwNTgz
-IChQZWJibGUgSFNGKSIsCisgICAgICAgICAgLnBhdGNoID0gcGF0Y2hfY3h0NTA2NiB9LAogCXt9
-IC8qIHRlcm1pbmF0b3IgKi8KIH07CiAKQEAgLTI0MDksNiArMjU0Miw3IEBACiBNT0RVTEVfQUxJ
-QVMoInNuZC1oZGEtY29kZWMtaWQ6MTRmMTUwNDciKTsKIE1PRFVMRV9BTElBUygic25kLWhkYS1j
-b2RlYy1pZDoxNGYxNTA1MSIpOwogTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlkOjE0ZjE1
-MDY2Iik7CitNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTRmMTUwNjciKTsKIAogTU9E
-VUxFX0xJQ0VOU0UoIkdQTCIpOwogTU9EVUxFX0RFU0NSSVBUSU9OKCJDb25leGFudCBIRC1hdWRp
-byBjb2RlYyIpOwo=
---00032555a092b8fd530478d343c4
+
+----------------------------------------------------------------------
+Wygraj pobyt w Alpach dla ca³ej rodziny
+Kliknij >>> http://link.interia.pl/f2446
+
+
+--===============9153641975930438852==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -163,4 +204,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---00032555a092b8fd530478d343c4--
+--===============9153641975930438852==--
