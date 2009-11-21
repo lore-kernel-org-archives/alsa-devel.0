@@ -1,50 +1,46 @@
-From: Wu Zhangjin <wuzhangjin@gmail.com>
-Subject: Re: [PATCH] MIPS: Fixups of ALSA memory maps
-Date: Sat, 21 Nov 2009 20:31:41 +0800
-Message-ID: <1258806701.5752.8.camel@falcon.domain.org>
-References: <9cbcd06037c18288a6493459b8f3a6e1562eca77.1258389992.git.wuzhangjin@gmail.com>
-	 <s5hd43iiebt.wl%tiwai@suse.de> <20091116174324.GA17748@linux-mips.org>
-	 <s5hhbst4hzt.wl%tiwai@suse.de> <20091118142056.GB6615@linux-mips.org>
-	 <s5hskcbbu80.wl%tiwai@suse.de>
-Reply-To: wuzhangjin@gmail.com
+From: "Alonso Quiroz H." <quiroz.alonso@gmail.com>
+Subject: Sigmatel STAC 9228
+Date: Sat, 21 Nov 2009 11:19:48 -0300
+Message-ID: <6e37b7cd0911210619y170b6fa2qceab4529382ec945@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754123AbZKUMcV@vger.kernel.org>
-In-Reply-To: <s5hskcbbu80.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53]) by alsa0.perex.cz (Postfix) with ESMTP id B2599245C3
+	for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2009 15:19:49 +0100 (CET)
+Received: by pwj11 with SMTP id 11so5614214pwj.32
+	for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2009 06:19:48 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2009-11-18 at 18:47 +0100, Takashi Iwai wrote:
-[...]
-> 
-> Well, we haven't reached the consensus.  The discussion faded away
-> somehow mainly because I had too little time to update and ping people
-> again.
-> 
-> In Tokyo, I talked with some guys regarding this.  Ben agreed to take
-> this approach for ppc, and David said that he doesn't mind for sparc
-> part.   Fujita-san mentioned it's no big problem to add one op from
-> the generic dma_ops.
-> 
-> So, maybe somehow need to convince James in the end (and ask Paul to
-> check SH part, too), then it'll be all up... theoretically :)
-> 
-> Anyway, I'm going to raise the discussion again on linux-arch.
-> I'm afraid it's a bit too late game for 2.6.33, but starting now is
-> better than too late again.
+Hey guys!, this is my first mail to the list. Excuse me if this is not
+the better way to send my request.
+I have a Dell XPS M1530 laptop, with a Sigmatel soundcard... well,
+read it for yourselves:
 
-Hi, Takashi Iwai
+http://pastebin.ca/1679794
 
-Before the API stuff going into the mainline(2.6.33), can we apply this
-"[PATCH] MIPS: Fixups of ALSA memory maps"(This is the minimal
-necessares) as a current fixup. and then we will not get a broken sound
-support for MIPS, and also the support to the latest Loongson2F family
-machines will benefit from it.
+By default (in Ubuntu 9.10) the card doesn't work in 5.1 mode, and
+that is my problem... by default it doesn't show the option "Surround
+5.1"
 
-and Ralf, what about your suggestion?
+I have tried a lot of combinations of model=XXXXX in
+/etc/modprobe.d/alsa-base.conf, starting by the ones in
+/usr/share/doc/alsa-base/driver/HD-Audio-Models.txt. The better result
+is with "3stack": It 's possible to select the 5.1 option, but I don't
+get sound at all. The weird thing is that de volume control of Pulse
+shows bars moving.
 
-Thanks & Best wishes,
-	Wu Zhangjin
+Thanks in advance. Sorry about my english.
+
+Alonso Quiroz H.
