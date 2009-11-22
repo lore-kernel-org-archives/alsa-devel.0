@@ -1,25 +1,15 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 06/12] imx-ssi sound driver
-Date: Sat, 21 Nov 2009 20:12:34 -0600
-Message-ID: <ed82fe3e0911211812i49342b0eg2afe861c866db90c@mail.gmail.com>
-References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH 1/2] opti-miro: make miro.h header available
+ outside the alsa directory
+Date: Sun, 22 Nov 2009 17:23:45 +0100
+Message-ID: <20091122172345.a18b0cde.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
-	[209.85.220.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3CDB1037FE
-	for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2009 03:12:35 +0100 (CET)
-Received: by fxm3 with SMTP id 3so4924010fxm.4
-	for <alsa-devel@alsa-project.org>; Sat, 21 Nov 2009 18:12:34 -0800 (PST)
-In-Reply-To: <1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 6F7A024663
+	for <alsa-devel@alsa-project.org>; Sun, 22 Nov 2009 17:22:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,27 +19,201 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 19, 2009 at 9:48 AM, Sascha Hauer <s.hauer@pengutronix.de> wrot=
-e:
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
-> =A0arch/arm/plat-mxc/Makefile =A0 =A0 =A0 =A0 =A0 | =A0 =A01 +
-> =A0arch/arm/plat-mxc/include/mach/ssi.h | =A0 17 +
-> =A0arch/arm/plat-mxc/ssi-fiq.S =A0 =A0 =A0 =A0 =A0| =A0134 ++++
-> =A0sound/soc/imx/devdma.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 80 ++
-> =A0sound/soc/imx/devdma.h =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 =A03 +
-> =A0sound/soc/imx/imx-ssi.c =A0 =A0 =A0 =A0 =A0 =A0 =A0| 1349 ++++++++++++=
-++++++++++++++++++++++
-> =A0sound/soc/imx/imx-ssi.h =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 24 +
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Why did you write a new SSI driver when there already is one in sound/soc/f=
-sl?
+Move the miro.h header to the include/sound directory. It can
+be used in the Miro PCM20 radio driver (v4l).
 
--- =
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+This is a part of my effort to restore the PCM20's radio driver.
 
-Timur Tabi
-Linux kernel developer at Freescale
+ include/sound/aci.h      |   73 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/isa/opti9xx/miro.c |    2 +-
+ sound/isa/opti9xx/miro.h |   73 ----------------------------------------------
+ 3 files changed, 74 insertions(+), 74 deletions(-)
+ create mode 100644 include/sound/aci.h
+ delete mode 100644 sound/isa/opti9xx/miro.h
+
+diff --git a/include/sound/aci.h b/include/sound/aci.h
+new file mode 100644
+index 0000000..bb796d0
+--- /dev/null
++++ b/include/sound/aci.h
+@@ -0,0 +1,73 @@
++#ifndef _ACI_H_
++#define _ACI_H_
++
++#define ACI_REG_COMMAND		0	/* write register offset */
++#define ACI_REG_STATUS		1	/* read register offset */
++#define ACI_REG_BUSY		2	/* busy register offset */
++#define ACI_REG_RDS		2	/* PCM20: RDS register offset */
++#define ACI_MINTIME		500	/* ACI time out limit */
++
++#define ACI_SET_MUTE		0x0d
++#define ACI_SET_POWERAMP	0x0f
++#define ACI_SET_TUNERMUTE	0xa3
++#define ACI_SET_TUNERMONO	0xa4
++#define ACI_SET_IDE		0xd0
++#define ACI_SET_WSS		0xd1
++#define ACI_SET_SOLOMODE	0xd2
++#define ACI_SET_PREAMP		0x03
++#define ACI_GET_PREAMP		0x21
++#define ACI_WRITE_TUNE		0xa7
++#define ACI_READ_TUNERSTEREO	0xa8
++#define ACI_READ_TUNERSTATION	0xa9
++#define ACI_READ_VERSION	0xf1
++#define ACI_READ_IDCODE		0xf2
++#define ACI_INIT		0xff
++#define ACI_STATUS		0xf0
++#define ACI_S_GENERAL		0x00
++#define ACI_ERROR_OP		0xdf
++
++/* ACI Mixer */
++
++/* These are the values for the right channel GET registers.
++   Add an offset of 0x01 for the left channel register.
++   (left=right+0x01) */
++
++#define ACI_GET_MASTER		0x03
++#define ACI_GET_MIC		0x05
++#define ACI_GET_LINE		0x07
++#define ACI_GET_CD		0x09
++#define ACI_GET_SYNTH		0x0b
++#define ACI_GET_PCM		0x0d
++#define ACI_GET_LINE1		0x10	/* Radio on PCM20 */
++#define ACI_GET_LINE2		0x12
++
++#define ACI_GET_EQ1		0x22	/* from Bass ... */
++#define ACI_GET_EQ2		0x24
++#define ACI_GET_EQ3		0x26
++#define ACI_GET_EQ4		0x28
++#define ACI_GET_EQ5		0x2a
++#define ACI_GET_EQ6		0x2c
++#define ACI_GET_EQ7		0x2e	/* ... to Treble */
++
++/* And these are the values for the right channel SET registers.
++   For left channel access you have to add an offset of 0x08.
++   MASTER is an exception, which needs an offset of 0x01 */
++
++#define ACI_SET_MASTER		0x00
++#define ACI_SET_MIC		0x30
++#define ACI_SET_LINE		0x31
++#define ACI_SET_CD		0x34
++#define ACI_SET_SYNTH		0x33
++#define ACI_SET_PCM		0x32
++#define ACI_SET_LINE1		0x35	/* Radio on PCM20 */
++#define ACI_SET_LINE2		0x36
++
++#define ACI_SET_EQ1		0x40	/* from Bass ... */
++#define ACI_SET_EQ2		0x41
++#define ACI_SET_EQ3		0x42
++#define ACI_SET_EQ4		0x43
++#define ACI_SET_EQ5		0x44
++#define ACI_SET_EQ6		0x45
++#define ACI_SET_EQ7		0x46	/* ... to Treble */
++
++#endif  /* _ACI_H_ */
+diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
+index db4a4fb..932a067 100644
+--- a/sound/isa/opti9xx/miro.c
++++ b/sound/isa/opti9xx/miro.c
+@@ -40,7 +40,7 @@
+ #define SNDRV_LEGACY_FIND_FREE_IRQ
+ #define SNDRV_LEGACY_FIND_FREE_DMA
+ #include <sound/initval.h>
+-#include "miro.h"
++#include <sound/aci.h>
+ 
+ MODULE_AUTHOR("Martin Langer <martin-langer@gmx.de>");
+ MODULE_LICENSE("GPL");
+diff --git a/sound/isa/opti9xx/miro.h b/sound/isa/opti9xx/miro.h
+deleted file mode 100644
+index 6e1385b..0000000
+--- a/sound/isa/opti9xx/miro.h
++++ /dev/null
+@@ -1,73 +0,0 @@
+-#ifndef _MIRO_H_
+-#define _MIRO_H_
+-
+-#define ACI_REG_COMMAND		0	/* write register offset */
+-#define ACI_REG_STATUS		1	/* read register offset */
+-#define ACI_REG_BUSY		2	/* busy register offset */
+-#define ACI_REG_RDS		2	/* PCM20: RDS register offset */
+-#define ACI_MINTIME		500	/* ACI time out limit */
+-
+-#define ACI_SET_MUTE		0x0d
+-#define ACI_SET_POWERAMP	0x0f
+-#define ACI_SET_TUNERMUTE	0xa3
+-#define ACI_SET_TUNERMONO	0xa4
+-#define ACI_SET_IDE		0xd0
+-#define ACI_SET_WSS		0xd1
+-#define ACI_SET_SOLOMODE	0xd2
+-#define ACI_SET_PREAMP		0x03
+-#define ACI_GET_PREAMP		0x21
+-#define ACI_WRITE_TUNE		0xa7
+-#define ACI_READ_TUNERSTEREO	0xa8
+-#define ACI_READ_TUNERSTATION	0xa9
+-#define ACI_READ_VERSION	0xf1
+-#define ACI_READ_IDCODE		0xf2
+-#define ACI_INIT		0xff
+-#define ACI_STATUS		0xf0
+-#define ACI_S_GENERAL		0x00
+-#define ACI_ERROR_OP		0xdf
+-
+-/* ACI Mixer */
+-
+-/* These are the values for the right channel GET registers.
+-   Add an offset of 0x01 for the left channel register.
+-   (left=right+0x01) */
+-
+-#define ACI_GET_MASTER		0x03
+-#define ACI_GET_MIC		0x05
+-#define ACI_GET_LINE		0x07
+-#define ACI_GET_CD		0x09
+-#define ACI_GET_SYNTH		0x0b
+-#define ACI_GET_PCM		0x0d
+-#define ACI_GET_LINE1		0x10	/* Radio on PCM20 */
+-#define ACI_GET_LINE2		0x12
+-
+-#define ACI_GET_EQ1		0x22	/* from Bass ... */
+-#define ACI_GET_EQ2		0x24
+-#define ACI_GET_EQ3		0x26
+-#define ACI_GET_EQ4		0x28
+-#define ACI_GET_EQ5		0x2a
+-#define ACI_GET_EQ6		0x2c
+-#define ACI_GET_EQ7		0x2e	/* ... to Treble */
+-
+-/* And these are the values for the right channel SET registers.
+-   For left channel access you have to add an offset of 0x08.
+-   MASTER is an exception, which needs an offset of 0x01 */
+-
+-#define ACI_SET_MASTER		0x00
+-#define ACI_SET_MIC		0x30
+-#define ACI_SET_LINE		0x31
+-#define ACI_SET_CD		0x34
+-#define ACI_SET_SYNTH		0x33
+-#define ACI_SET_PCM		0x32
+-#define ACI_SET_LINE1		0x35	/* Radio on PCM20 */
+-#define ACI_SET_LINE2		0x36
+-
+-#define ACI_SET_EQ1		0x40	/* from Bass ... */
+-#define ACI_SET_EQ2		0x41
+-#define ACI_SET_EQ3		0x42
+-#define ACI_SET_EQ4		0x43
+-#define ACI_SET_EQ5		0x44
+-#define ACI_SET_EQ6		0x45
+-#define ACI_SET_EQ7		0x46	/* ... to Treble */
+-
+-#endif  /* _MIRO_H_ */
+-- 
+1.6.4
+
+
+----------------------------------------------------------------------
+Internetowi nie placa! Otworz Konto Direct.
+Kliknij >> http://link.interia.pl/f2448
