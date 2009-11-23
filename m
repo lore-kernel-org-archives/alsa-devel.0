@@ -1,15 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.33
-Date: Mon, 23 Nov 2009 12:17:40 +0000
-Message-ID: <20091123121740.GA26793@rakim.wolfsonmicro.main>
+Subject: Re: [PATCH] ASoC: Add power down of widget powered up
+	for suspend
+Date: Mon, 23 Nov 2009 12:22:32 +0000
+Message-ID: <20091123122232.GD24326@rakim.wolfsonmicro.main>
+References: <4B0A216C.1030807@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 77D96103807
-	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2009 13:17:41 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4C9572415B
+	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2009 13:22:33 +0100 (CET)
 Content-Disposition: inline
+In-Reply-To: <4B0A216C.1030807@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,49 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 41b51dd47ea7c406a8d49b97804e8acec9dadaed:
-  Mark Brown (1):
-        Merge branch 'for-2.6.32' into for-2.6.33
+On Mon, Nov 23, 2009 at 02:45:16PM +0900, Joonyoung Shim wrote:
+> If the widget was powered up when the device enters to the suspend, it
+> remains on because the power of the widget doesn't change, but we need
+> to power down the widget on suspend.
 
-are available in the git repository at:
+Hrm, yes - good spot, this got missed in the refactoring to make the
+bais maintinence less dependant on stream state.  However...
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
-.6.33
+>  			power = w->power_check(w);
+> -			if (power)
+> +			if (power) {
+>  				sys_power = 1;
+> +				if (event == SND_SOC_DAPM_STREAM_SUSPEND)
+> +					power = 0;
+> +			}
 
-Enric Balletb=F2 i Serra (1):
-      ASoC: Add support for IGEP v2
+We don't want to set sys_power here (since we want to bring the bias
+down to standby in preparatio for suspend) and we can skip the power
+check so something like the patch below ought to do the trick.  Could
+you test and let me know, please?
 
-Graeme Gregory (1):
-      ASoC: ADS117x ADC driver
+That said, we probably want some more flexibility here for systems which
+want to suspend with bypass paths active.  They'll want to pause streams
+being directly driven by the CPU but leave any other paths active.  That
+would be a new feature, though.
 
-Mark Brown (2):
-      ASoC: Update ads117x to current APIs
-      Merge branch 'ads117x' of git://git.kernel.org/.../broonie/sound-2.6 =
-into for-2.6.33
-
-Troy Kisky (4):
-      ASoC: DaVinci: i2s, reduce underruns by combining into 1 element
-      ASoC: DaVinci: pcm, rename variables in prep for ping/pong
-      ASoC: DaVinci: pcm, fix underrun by using sram
-      ASoC: DaVinci: use edma_pause, edma_resume
-
- arch/arm/mach-davinci/include/mach/asp.h |    8 +
- sound/soc/codecs/Kconfig                 |    4 +
- sound/soc/codecs/Makefile                |    2 +
- sound/soc/codecs/ads117x.c               |  123 +++++++
- sound/soc/codecs/ads117x.h               |   13 +
- sound/soc/davinci/davinci-i2s.c          |   79 ++++-
- sound/soc/davinci/davinci-pcm.c          |  551 ++++++++++++++++++++++++++=
-----
- sound/soc/davinci/davinci-pcm.h          |    1 +
- sound/soc/omap/Kconfig                   |    7 +
- sound/soc/omap/Makefile                  |    2 +
- sound/soc/omap/igep0020.c                |  148 ++++++++
- 11 files changed, 859 insertions(+), 79 deletions(-)
- create mode 100644 sound/soc/codecs/ads117x.c
- create mode 100644 sound/soc/codecs/ads117x.h
- create mode 100644 sound/soc/omap/igep0020.c
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index eaadb4b..0d294ef 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -977,9 +977,19 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ 			if (!w->power_check)
+ 				continue;
+ 
+-			power = w->power_check(w);
+-			if (power)
+-				sys_power = 1;
++			/* If we're suspending then pull down all the 
++			 * power. */
++			switch (event) {
++			case SND_SOC_DAPM_STREAM_SUSPEND:
++				power = 0;
++				break;
++
++			default:
++				power = w->power_check(w);
++				if (power)
++					sys_power = 1;
++				break;
++			}
+ 
+ 			if (w->power == power)
+ 				continue;
+@@ -1003,8 +1013,12 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ 		case SND_SOC_DAPM_STREAM_RESUME:
+ 			sys_power = 1;
+ 			break;
++		case SND_SOC_DAPM_STREAM_SUSPEND:
++			sys_power = 0;
++			break;
+ 		case SND_SOC_DAPM_STREAM_NOP:
+ 			sys_power = codec->bias_level != SND_SOC_BIAS_STANDBY;
++			break;
+ 		default:
+ 			break;
+ 		}
