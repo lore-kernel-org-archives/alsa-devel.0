@@ -1,24 +1,27 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH] MIPS: Fixups of ALSA memory maps
-Date: Mon, 23 Nov 2009 12:36:15 +0000
-Message-ID: <20091123123615.GB32675@linux-mips.org>
-References: <9cbcd06037c18288a6493459b8f3a6e1562eca77.1258389992.git.wuzhangjin@gmail.com>
-	<s5hd43iiebt.wl%tiwai@suse.de>
-	<20091116174324.GA17748@linux-mips.org>
-	<s5hhbst4hzt.wl%tiwai@suse.de>
-	<20091118142056.GB6615@linux-mips.org>
-	<s5hskcbbu80.wl%tiwai@suse.de>
-	<1258806701.5752.8.camel@falcon.domain.org>
-	<s5h3a45aabc.wl%tiwai@suse.de>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: [PATCH] ASoC: Add power down of widget powered up
+	for suspend
+Date: Mon, 23 Nov 2009 21:48:36 +0900
+Message-ID: <4B0A84A4.7070300@samsung.com>
+References: <4B0A216C.1030807@samsung.com>
+	<20091123122232.GD24326@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from h5.dl5rb.org.uk (h5.dl5rb.org.uk [81.2.74.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7348B103823
-	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2009 13:36:07 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h3a45aabc.wl%tiwai@suse.de>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F5F110380D
+	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2009 13:48:44 +0100 (CET)
+Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KTK00KJ6BL0KX@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 23 Nov 2009 21:48:37 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KTK00MMZBL0QN@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 23 Nov 2009 21:48:36 +0900 (KST)
+In-reply-to: <20091123122232.GD24326@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,49 +31,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, wuzhangjin@gmail.com, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 23, 2009 at 09:56:39AM +0100, Takashi Iwai wrote:
-
-> > On Wed, 2009-11-18 at 18:47 +0100, Takashi Iwai wrote:
-> > [...]
-> > > 
-> > > Well, we haven't reached the consensus.  The discussion faded away
-> > > somehow mainly because I had too little time to update and ping people
-> > > again.
-> > > 
-> > > In Tokyo, I talked with some guys regarding this.  Ben agreed to take
-> > > this approach for ppc, and David said that he doesn't mind for sparc
-> > > part.   Fujita-san mentioned it's no big problem to add one op from
-> > > the generic dma_ops.
-> > > 
-> > > So, maybe somehow need to convince James in the end (and ask Paul to
-> > > check SH part, too), then it'll be all up... theoretically :)
-> > > 
-> > > Anyway, I'm going to raise the discussion again on linux-arch.
-> > > I'm afraid it's a bit too late game for 2.6.33, but starting now is
-> > > better than too late again.
-> > 
-> > Hi, Takashi Iwai
-> > 
-> > Before the API stuff going into the mainline(2.6.33), can we apply this
-> > "[PATCH] MIPS: Fixups of ALSA memory maps"(This is the minimal
-> > necessares) as a current fixup. and then we will not get a broken sound
-> > support for MIPS, and also the support to the latest Loongson2F family
-> > machines will benefit from it.
-> > 
-> > and Ralf, what about your suggestion?
+On 11/23/2009 9:22 PM, Mark Brown wrote:
+> On Mon, Nov 23, 2009 at 02:45:16PM +0900, Joonyoung Shim wrote:
+>> If the widget was powered up when the device enters to the suspend, it
+>> remains on because the power of the widget doesn't change, but we need
+>> to power down the widget on suspend.
 > 
-> The question is whether this hack can be safely added for all MIPS
-> platforms just by checking kconfig.  I had an impression that rather
-> many things have to be checked in the runtime.
+> Hrm, yes - good spot, this got missed in the refactoring to make the
+> bais maintinence less dependant on stream state.  However...
 > 
-> As I have really little clue about MIPS architecture, I'd like let
-> MIPS guys decide about it...
+>>  			power = w->power_check(w);
+>> -			if (power)
+>> +			if (power) {
+>>  				sys_power = 1;
+>> +				if (event == SND_SOC_DAPM_STREAM_SUSPEND)
+>> +					power = 0;
+>> +			}
+> 
+> We don't want to set sys_power here (since we want to bring the bias
+> down to standby in preparatio for suspend) and we can skip the power
+> check so something like the patch below ought to do the trick.  Could
+> you test and let me know, please?
+> 
 
-Okay, I'll cook up a nice kludge.  It can't cover all cases but it will
-be an improvment for most platforms.
+OK, i missed about sys_power. I tested and below patch solves this issue 
+too. I think your patch is better.
 
-  Ralf
+Thanks.
+
+> That said, we probably want some more flexibility here for systems which
+> want to suspend with bypass paths active.  They'll want to pause streams
+> being directly driven by the CPU but leave any other paths active.  That
+> would be a new feature, though.
+> 
+
+Then, is it possible that the bypass path is alive on suspend?
+
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index eaadb4b..0d294ef 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -977,9 +977,19 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+>  			if (!w->power_check)
+>  				continue;
+>  
+> -			power = w->power_check(w);
+> -			if (power)
+> -				sys_power = 1;
+> +			/* If we're suspending then pull down all the 
+> +			 * power. */
+> +			switch (event) {
+> +			case SND_SOC_DAPM_STREAM_SUSPEND:
+> +				power = 0;
+> +				break;
+> +
+> +			default:
+> +				power = w->power_check(w);
+> +				if (power)
+> +					sys_power = 1;
+> +				break;
+> +			}
+>  
+>  			if (w->power == power)
+>  				continue;
+> @@ -1003,8 +1013,12 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+>  		case SND_SOC_DAPM_STREAM_RESUME:
+>  			sys_power = 1;
+>  			break;
+> +		case SND_SOC_DAPM_STREAM_SUSPEND:
+> +			sys_power = 0;
+> +			break;
+>  		case SND_SOC_DAPM_STREAM_NOP:
+>  			sys_power = codec->bias_level != SND_SOC_BIAS_STANDBY;
+> +			break;
+>  		default:
+>  			break;
+>  		}
+> 
