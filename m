@@ -1,25 +1,15 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 06/12] imx-ssi sound driver
-Date: Mon, 23 Nov 2009 13:13:21 +0100
-Message-ID: <20091123121321.GF30179@pengutronix.de>
-References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
-	<ed82fe3e0911211812i49342b0eg2afe861c866db90c@mail.gmail.com>
-	<20091123120000.GC24326@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.33
+Date: Mon, 23 Nov 2009 12:17:40 +0000
+Message-ID: <20091123121740.GA26793@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fmmailgate02.web.de (fmmailgate02.web.de [217.72.192.227])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9C461037FB
-	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2009 13:13:21 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 77D96103807
+	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2009 13:17:41 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20091123120000.GC24326@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,35 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 23, 2009 at 12:00:01PM +0000, Mark Brown wrote:
-> On Sat, Nov 21, 2009 at 08:12:34PM -0600, Timur Tabi wrote:
-> 
-> > Why did you write a new SSI driver when there already is one in sound/soc/fsl?
-> 
-> I can't speak for Sascha here but the i.MX BSPs provided by your
-> colleagues on the i.MX team also have an independant driver for the SSI
-> port.  The latest public version of the Freescale i.MX code I'm aware of
-> is in the recent Ubuntu kernels - I've not yet checked but I'd not be
-> surprised to see substantial code sharing between Sascha's code and the
-> BSP for the SSI-specific bits.
-> 
-> It would be very much desirable to unify the various drivers, though I
-> would prefer to avoid making this a blocker for getting i.MX3x "DMA"
-> support in mainline.  Taking a brief glance through the code it looks
-> like there's some platform-specifics in the drivers - the i.MX one has
-> optional DMA support due to the whole SDMA issue, while the PowerPC one
-> is including asm/immap_86xx.h for something.
+The following changes since commit 41b51dd47ea7c406a8d49b97804e8acec9dadaed:
+  Mark Brown (1):
+        Merge branch 'for-2.6.32' into for-2.6.33
 
-This include seems unused. Timur, can you confirm this?
+are available in the git repository at:
 
-Sascha
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
+.6.33
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Enric Balletb=F2 i Serra (1):
+      ASoC: Add support for IGEP v2
+
+Graeme Gregory (1):
+      ASoC: ADS117x ADC driver
+
+Mark Brown (2):
+      ASoC: Update ads117x to current APIs
+      Merge branch 'ads117x' of git://git.kernel.org/.../broonie/sound-2.6 =
+into for-2.6.33
+
+Troy Kisky (4):
+      ASoC: DaVinci: i2s, reduce underruns by combining into 1 element
+      ASoC: DaVinci: pcm, rename variables in prep for ping/pong
+      ASoC: DaVinci: pcm, fix underrun by using sram
+      ASoC: DaVinci: use edma_pause, edma_resume
+
+ arch/arm/mach-davinci/include/mach/asp.h |    8 +
+ sound/soc/codecs/Kconfig                 |    4 +
+ sound/soc/codecs/Makefile                |    2 +
+ sound/soc/codecs/ads117x.c               |  123 +++++++
+ sound/soc/codecs/ads117x.h               |   13 +
+ sound/soc/davinci/davinci-i2s.c          |   79 ++++-
+ sound/soc/davinci/davinci-pcm.c          |  551 ++++++++++++++++++++++++++=
+----
+ sound/soc/davinci/davinci-pcm.h          |    1 +
+ sound/soc/omap/Kconfig                   |    7 +
+ sound/soc/omap/Makefile                  |    2 +
+ sound/soc/omap/igep0020.c                |  148 ++++++++
+ 11 files changed, 859 insertions(+), 79 deletions(-)
+ create mode 100644 sound/soc/codecs/ads117x.c
+ create mode 100644 sound/soc/codecs/ads117x.h
+ create mode 100644 sound/soc/omap/igep0020.c
