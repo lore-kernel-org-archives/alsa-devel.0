@@ -1,20 +1,19 @@
-From: =?ISO-8859-1?Q?Einar_R=FCnkaru?= <einarry@smail.ee>
-Subject: Re: Patch: Make Dell Vostro 1015n mic and speaker
-	switching work
-Date: Mon, 23 Nov 2009 22:57:00 +0200
-Message-ID: <64f099620911231257x32f332e5wbe4b657861832742@mail.gmail.com>
-References: <64f099620911201224t39e75512sf8ce69dcaf8c465f@mail.gmail.com>
-	<s5h4oolaahk.wl%tiwai@suse.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: USB patch failures alsa-driver git
+Date: Tue, 24 Nov 2009 14:29:21 +1300
+Message-ID: <4B0B36F1.1010702@audioscience.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00032555488e1c30c50479101123
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f221.google.com (mail-bw0-f221.google.com
-	[209.85.218.221])
-	by alsa0.perex.cz (Postfix) with ESMTP id 691012443B
-	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2009 21:57:02 +0100 (CET)
-Received: by bwz21 with SMTP id 21so5791987bwz.4
-	for <alsa-devel@alsa-project.org>; Mon, 23 Nov 2009 12:57:00 -0800 (PST)
-In-Reply-To: <s5h4oolaahk.wl%tiwai@suse.de>
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2ACD5103820
+	for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2009 02:29:50 +0100 (CET)
+Received: from [192.168.1.82]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0KTL0061EAT3E300@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Tue, 24 Nov 2009 14:29:38 +1300 (NZDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,182 +23,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
---00032555488e1c30c50479101123
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Greetings,
 
-Reformated patch with sign-off attached.
+trying to build alsa-driver, I get the following patch failures???
+Maybe recent alsa-kernel usb changes have broken the patches in alsa-driver?
+(for now, I get around the problem by copying the original files instead
+of patching)
 
-Einar
+uname -a
+Linux 2.6.28-16-generic #55-Ubuntu SMP Tue Oct 20 19:48:24 UTC 2009 i686
+GNU/Linux
 
-On Mon, Nov 23, 2009 at 10:52 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Fri, 20 Nov 2009 22:24:36 +0200,
-> Einar R=FCnkaru wrote:
->>
->> Hi.
->>
->> Dell Vostro 1015n uses Conexant CX20583-10Z (0x14f1:5067). Patch is
->> based on "olpc-xo-1_5" branch.
->> The difference is that Dell uses digital mic.
->
-> The patch looks almost OK as a quick glance.
-> Could you give your sign-off for merging?
->
->
-> Thanks!
->
-> Takashi
->
->>
->> Tested on Ubuntu 9.04
->>
->> Einar
 
---00032555488e1c30c50479101123
-Content-Type: text/x-patch; charset=UTF-8;
-	name="0001-ALSA-hda-Make-Dell-Vostro-1015n-mic-and-speaker-s.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Make-Dell-Vostro-1015n-mic-and-speaker-s.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g2dpm0xl0
+copying file alsa-kernel/usb/usbmidi.c
+patching file usbmidi.c
+Hunk #2 succeeded at 245 (offset 8 lines).
+Hunk #3 FAILED at 269.
+Hunk #4 FAILED at 392.
+Hunk #5 succeeded at 1699 (offset 97 lines).
+Hunk #6 succeeded at 2070 (offset 102 lines).
+2 out of 6 hunks FAILED -- saving rejects to file usbmidi.c.rej
+make[1]: *** [usbmidi.c] Error 1
+make[1]: Leaving directory `/home/eliot/src/alsagit/alsa-driver/usb'
+make: *** [modules] Error 2
 
-RnJvbSBkZjllYTUwY2JmMGZmMTExODVkNmUxMmRhYzAzODg1NDIzNDA4NTU0IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiA9P3V0Zi04P3E/RWluYXI9MjBSPUMzPUJDbmthcnU/PSA8ZWlu
-YXJyeUBzbWFpbC5lZT4KRGF0ZTogTW9uLCAyMyBOb3YgMjAwOSAyMjoyMzo0OSArMDIwMApTdWJq
-ZWN0OiBbUEFUQ0ggMS8xXSBBTFNBOiBoZGEgLSBNYWtlIERlbGwgVm9zdHJvIDEwMTVuIG1pYyBh
-bmQgc3BlYWtlciBzd2l0Y2hpbmcgd29yawpNSU1FLVZlcnNpb246IDEuMApDb250ZW50LVR5cGU6
-IHRleHQvcGxhaW47IGNoYXJzZXQ9dXRmLTgKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogOGJp
-dAoKRGVsbCBWb3N0cm8gMTAxNW4gdXNlcyBDb25leGFudCBDWDIwNTgzLTEwWiAoMHgxNGYxOjUw
-NjcpLiBQYXRjaCBpcwpiYXNlZCBvbiAib2xwYy14by0xXzUiIGJyYW5jaC4gRGVsbCB1c2VzIGRp
-Z2l0YWwgbWljCgpTaWduZWQtb2ZmLWJ5OiBFaW5hciBSw7xua2FydSA8ZWluYXJyeUBzbWFpbC5l
-ZT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMgYi9zb3VuZC9w
-Y2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKaW5kZXggMGIwOTdmYS4uZmQ5NmFiOSAxMDA2NDQKLS0t
-IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0
-Y2hfY29uZXhhbnQuYwpAQCAtMjAwOSw2ICsyMDA5LDQ2IEBAIHN0YXRpYyB2b2lkIGN4dDUwNjZf
-YXV0b21pYyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAl9CiB9CiAKKy8qIHRvZ2dsZSBpbnB1
-dCBvZiBidWlsdC1pbiBkaWdpdGFsIG1pYyBhbmQgbWljIGphY2sgYXBwcm9wcmlhdGVseSAqLwor
-c3RhdGljIHZvaWQgY3h0NTA2Nl92b3N0cm9fYXV0b21pYyhzdHJ1Y3QgaGRhX2NvZGVjICpjb2Rl
-YykKK3sKKwlzdHJ1Y3QgY29uZXhhbnRfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOworCXVuc2ln
-bmVkIGludCBwcmVzZW50OworCisJc3RydWN0IGhkYV92ZXJiIGV4dF9taWNfcHJlc2VudFtdID0g
-eworCQkvKiBlbmFibGUgZXh0ZXJuYWwgbWljLCBwb3J0IEIgKi8KKwkJezB4MWEsIEFDX1ZFUkJf
-U0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgc3BlYy0+ZXh0X21pY19iaWFzfSwKKworCQkvKiBzd2l0
-Y2ggdG8gZXh0ZXJuYWwgbWljIGlucHV0ICovCisJCXsweDE3LCBBQ19WRVJCX1NFVF9DT05ORUNU
-X1NFTCwgMH0sCisJCXsweDE0LCBBQ19WRVJCX1NFVF9DT05ORUNUX1NFTCwgMH0sCisKKwkJLyog
-ZGlzYWJsZSBpbnRlcm5hbCBkaWdpdGFsIG1pYyAqLworCQl7MHgyMywgQUNfVkVSQl9TRVRfUElO
-X1dJREdFVF9DT05UUk9MLCAwfSwKKwkJe30KKwl9OworCXN0YXRpYyBzdHJ1Y3QgaGRhX3ZlcmIg
-ZXh0X21pY19hYnNlbnRbXSA9IHsKKwkJLyogZW5hYmxlIGludGVybmFsIG1pYywgcG9ydCBDICov
-CisJCXsweDIzLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9JTn0sCisKKwkJ
-Lyogc3dpdGNoIHRvIGludGVybmFsIG1pYyBpbnB1dCAqLworCQl7MHgxNCwgQUNfVkVSQl9TRVRf
-Q09OTkVDVF9TRUwsIDJ9LAorCisJCS8qIGRpc2FibGUgZXh0ZXJuYWwgbWljLCBwb3J0IEIgKi8K
-KwkJezB4MWEsIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgMH0sCisJCXt9CisJfTsK
-KworCXByZXNlbnQgPSBzbmRfaGRhX2phY2tfZGV0ZWN0KGNvZGVjLCAweDFhKTsKKwlpZiAocHJl
-c2VudCkgeworCQlzbmRfcHJpbnRkZCgiQ1hUNTA2NjogZXh0ZXJuYWwgbWljcm9waG9uZSBkZXRl
-Y3RlZFxuIik7CisJCXNuZF9oZGFfc2VxdWVuY2Vfd3JpdGUoY29kZWMsIGV4dF9taWNfcHJlc2Vu
-dCk7CisJfSBlbHNlIHsKKwkJc25kX3ByaW50ZGQoIkNYVDUwNjY6IGV4dGVybmFsIG1pY3JvcGhv
-bmUgYWJzZW50XG4iKTsKKwkJc25kX2hkYV9zZXF1ZW5jZV93cml0ZShjb2RlYywgZXh0X21pY19h
-YnNlbnQpOworCX0KK30KKwogLyogbXV0ZSBpbnRlcm5hbCBzcGVha2VyIGlmIEhQIGlzIHBsdWdn
-ZWQgKi8KIHN0YXRpYyB2b2lkIGN4dDUwNjZfaHBfYXV0b211dGUoc3RydWN0IGhkYV9jb2RlYyAq
-Y29kZWMpCiB7CkBAIC0yMDQxLDYgKzIwODEsMjAgQEAgc3RhdGljIHZvaWQgY3h0NTA2Nl91bnNv
-bF9ldmVudChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywgdW5zaWduZWQgaW50IHJlcykKIAl9CiB9
-CiAKKy8qIHVuc29saWNpdGVkIGV2ZW50IGZvciBqYWNrIHNlbnNpbmcgKi8KK3N0YXRpYyB2b2lk
-IGN4dDUwNjZfdm9zdHJvX2V2ZW50KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCB1bnNpZ25lZCBp
-bnQgcmVzKQoreworCXNuZF9wcmludGRkKCJDWFQ1MDY2X3Zvc3RybzogdW5zb2wgZXZlbnQgJXgg
-KCV4KVxuIiwgcmVzLCByZXMgPj4gMjYpOworCXN3aXRjaCAocmVzID4+IDI2KSB7CisJY2FzZSBD
-T05FWEFOVF9IUF9FVkVOVDoKKwkJY3h0NTA2Nl9ocF9hdXRvbXV0ZShjb2RlYyk7CisJCWJyZWFr
-OworCWNhc2UgQ09ORVhBTlRfTUlDX0VWRU5UOgorCQljeHQ1MDY2X3Zvc3Ryb19hdXRvbWljKGNv
-ZGVjKTsKKwkJYnJlYWs7CisJfQorfQorCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9pbnB1dF9t
-dXggY3h0NTA2Nl9hbmFsb2dfbWljX2Jvb3N0ID0gewogCS5udW1faXRlbXMgPSA1LAogCS5pdGVt
-cyA9IHsKQEAgLTIyODIsNiArMjMzNiw2NyBAQCBzdGF0aWMgc3RydWN0IGhkYV92ZXJiIGN4dDUw
-NjZfaW5pdF92ZXJic19vbHBjW10gPSB7CiAJeyB9IC8qIGVuZCAqLwogfTsKIAorc3RhdGljIHN0
-cnVjdCBoZGFfdmVyYiBjeHQ1MDY2X2luaXRfdmVyYnNfdm9zdHJvW10gPSB7CisJLyogUG9ydCBB
-OiBoZWFkcGhvbmVzICovCisJezB4MTksIEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwg
-MH0sCisJezB4MTksIEFDX1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAweDAwfSwgLyogREFDMSAqLwor
-CisJLyogUG9ydCBCOiBleHRlcm5hbCBtaWNyb3Bob25lICovCisJezB4MWEsIEFDX1ZFUkJfU0VU
-X1BJTl9XSURHRVRfQ09OVFJPTCwgMH0sCisKKwkvKiBQb3J0IEM6IHVudXNlZCAqLworCXsweDFi
-LCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIDB9LAorCisJLyogUG9ydCBEOiB1bnVz
-ZWQgKi8KKwl7MHgxYywgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAwfSwKKworCS8q
-IFBvcnQgRTogdW51c2VkLCBidXQgaGFzIHByaW1hcnkgRUFQRCAqLworCXsweDFkLCBBQ19WRVJC
-X1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIDB9LAorCXsweDFkLCBBQ19WRVJCX1NFVF9FQVBEX0JU
-TEVOQUJMRSwgMHgyfSwgLyogZGVmYXVsdCBvbiAqLworCisJLyogUG9ydCBGOiB1bnVzZWQgKi8K
-Kwl7MHgxZSwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAwfSwKKworCS8qIFBvcnQg
-RzogaW50ZXJuYWwgc3BlYWtlcnMgKi8KKwl7MHgxZiwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9D
-T05UUk9MLCBQSU5fT1VUfSwKKwl7MHgxZiwgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4MDB9
-LCAvKiBEQUMxICovCisKKwkvKiBEQUMxICovCisJezB4MTAsIEFDX1ZFUkJfU0VUX0FNUF9HQUlO
-X01VVEUsIEFNUF9PVVRfVU5NVVRFfSwKKworCS8qIERBQzI6IHVudXNlZCAqLworCXsweDExLCBB
-Q19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfT1VUX01VVEV9LAorCisJezB4MTQsIEFDX1ZF
-UkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDApfSwKKwl7MHgxNCwgQUNfVkVSQl9T
-RVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX01VVEUoMSl9LAorCXsweDE0LCBBQ19WRVJCX1NFVF9B
-TVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVURSgyKX0sCisJezB4MTQsIEFDX1ZFUkJfU0VUX0FNUF9H
-QUlOX01VVEUsIEFNUF9JTl9NVVRFKDMpfSwKKwl7MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5f
-TVVURSwgQU1QX0lOX01VVEUoMCl9LAorCXsweDE1LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRF
-LCBBTVBfSU5fTVVURSgxKX0sCisJezB4MTUsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFN
-UF9JTl9NVVRFKDIpfSwKKwl7MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lO
-X01VVEUoMyl9LAorCXsweDE2LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVU
-RSgwKX0sCisJezB4MTYsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9NVVRFKDEp
-fSwKKwl7MHgxNiwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX01VVEUoMil9LAor
-CXsweDE2LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fTVVURSgzKX0sCisKKwkv
-KiBEaWdpdGFsIG1pY3JvcGhvbmUgcG9ydCAqLworCXsweDIzLCBBQ19WRVJCX1NFVF9QSU5fV0lE
-R0VUX0NPTlRST0wsIFBJTl9JTn0sCisKKwkvKiBBdWRpbyBpbnB1dCBzZWxlY3RvcnMgKi8KKwl7
-MHgxNywgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX09VVF9VTk1VVEUgfCAweDN9LAor
-CXsweDE4LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfT1VUX01VVEUgfSwKKworCS8q
-IERpc2FibGUgU1BESUYgKi8KKwl7MHgyMCwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9M
-LCAwfSwKKwl7MHgyMiwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCAwfSwKKworCS8q
-IGVuYWJsZSB1bnNvbGljaXRlZCBldmVudHMgZm9yIFBvcnQgQSBhbmQgQiAqLworCXsweDE5LCBB
-Q19WRVJCX1NFVF9VTlNPTElDSVRFRF9FTkFCTEUsIEFDX1VTUlNQX0VOIHwgQ09ORVhBTlRfSFBf
-RVZFTlR9LAorCXsweDFhLCBBQ19WRVJCX1NFVF9VTlNPTElDSVRFRF9FTkFCTEUsIEFDX1VTUlNQ
-X0VOIHwgQ09ORVhBTlRfTUlDX0VWRU5UfSwKKwl7IH0gLyogZW5kICovCit9OworCiBzdGF0aWMg
-c3RydWN0IGhkYV92ZXJiIGN4dDUwNjZfaW5pdF92ZXJic19wb3J0ZF9sb1tdID0gewogCXsweDFj
-LCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9PVVR9LAogCXsgfSAvKiBlbmQg
-Ki8KQEAgLTIzMDMsNiArMjQxOCw3IEBAIGVudW0gewogCUNYVDUwNjZfTEFQVE9QLAkJCS8qIExh
-cHRvcHMgdy8gRUFQRCBzdXBwb3J0ICovCiAJQ1hUNTA2Nl9ERUxMX0xBUFRPUCwJLyogRGVsbCBM
-YXB0b3AgKi8KIAlDWFQ1MDY2X09MUENfWE9fMV81LAkvKiBPTFBDIFhPIDEuNSAqLworICAgICAg
-ICBDWFQ1MDY2X0RFTExfVk9TVE8sICAgICAvKiBEZWxsIFZvc3RybyAxMDE1aSAqLwogCUNYVDUw
-NjZfTU9ERUxTCiB9OwogCkBAIC0yMzEwLDYgKzI0MjYsNyBAQCBzdGF0aWMgY29uc3QgY2hhciAq
-Y3h0NTA2Nl9tb2RlbHNbQ1hUNTA2Nl9NT0RFTFNdID0gewogCVtDWFQ1MDY2X0xBUFRPUF0JCT0g
-ImxhcHRvcCIsCiAJW0NYVDUwNjZfREVMTF9MQVBUT1BdCT0gImRlbGwtbGFwdG9wIiwKIAlbQ1hU
-NTA2Nl9PTFBDX1hPXzFfNV0JPSAib2xwYy14by0xXzUiLAorCVtDWFQ1MDY2X0RFTExfVk9TVE9d
-ICAgID0gImRlbGwtdm9zdHJvIgogfTsKIAogc3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIGN4
-dDUwNjZfY2ZnX3RibFtdID0gewpAQCAtMjMxOCw2ICsyNDM1LDcgQEAgc3RhdGljIHN0cnVjdCBz
-bmRfcGNpX3F1aXJrIGN4dDUwNjZfY2ZnX3RibFtdID0gewogCVNORF9QQ0lfUVVJUksoMHgxMDI4
-LCAweDAyZjUsICJEZWxsIiwKIAkJICAgICAgQ1hUNTA2Nl9ERUxMX0xBUFRPUCksCiAJU05EX1BD
-SV9RVUlSSygweDE1MmQsIDB4MDgzMywgIk9MUEMgWE8tMS41IiwgQ1hUNTA2Nl9PTFBDX1hPXzFf
-NSksCisJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDQwMiwgIkRlbGwgVm9zdHJvIiwgQ1hUNTA2
-Nl9ERUxMX1ZPU1RPKSwKIAl7fQogfTsKIApAQCAtMjM4NSw2ICsyNTAzLDE5IEBAIHN0YXRpYyBp
-bnQgcGF0Y2hfY3h0NTA2NihzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJLyogaW5wdXQgc291
-cmNlIGF1dG9tYXRpY2FsbHkgc2VsZWN0ZWQgKi8KIAkJc3BlYy0+aW5wdXRfbXV4ID0gTlVMTDsK
-IAkJYnJlYWs7CisJY2FzZSBDWFQ1MDY2X0RFTExfVk9TVE86CisJCWNvZGVjLT5wYXRjaF9vcHMu
-dW5zb2xfZXZlbnQgPSBjeHQ1MDY2X3Zvc3Ryb19ldmVudDsKKwkJc3BlYy0+aW5pdF92ZXJic1sw
-XSA9IGN4dDUwNjZfaW5pdF92ZXJic192b3N0cm87CisJCXNwZWMtPm1peGVyc1tzcGVjLT5udW1f
-bWl4ZXJzKytdID0gY3h0NTA2Nl9taXhlcl9tYXN0ZXJfb2xwYzsKKwkJc3BlYy0+bWl4ZXJzW3Nw
-ZWMtPm51bV9taXhlcnMrK10gPSBjeHQ1MDY2X21peGVyczsKKwkJc3BlYy0+cG9ydF9kX21vZGUg
-PSAwOworCisJCS8qIG5vIFMvUERJRiBvdXQgKi8KKwkJc3BlYy0+bXVsdGlvdXQuZGlnX291dF9u
-aWQgPSAwOworCisJCS8qIGlucHV0IHNvdXJjZSBhdXRvbWF0aWNhbGx5IHNlbGVjdGVkICovCisJ
-CXNwZWMtPmlucHV0X211eCA9IE5VTEw7CisJCWJyZWFrOwogCX0KIAogCXJldHVybiAwOwpAQCAt
-MjQwMiw2ICsyNTMzLDggQEAgc3RhdGljIHN0cnVjdCBoZGFfY29kZWNfcHJlc2V0IHNuZF9oZGFf
-cHJlc2V0X2NvbmV4YW50W10gPSB7CiAJICAucGF0Y2ggPSBwYXRjaF9jeHQ1MDUxIH0sCiAJeyAu
-aWQgPSAweDE0ZjE1MDY2LCAubmFtZSA9ICJDWDIwNTgyIChQZWJibGUpIiwKIAkgIC5wYXRjaCA9
-IHBhdGNoX2N4dDUwNjYgfSwKKyAgICAgICAgeyAuaWQgPSAweDE0ZjE1MDY3LCAubmFtZSA9ICJD
-WDIwNTgzIChQZWJibGUgSFNGKSIsCisgICAgICAgICAgLnBhdGNoID0gcGF0Y2hfY3h0NTA2NiB9
-LAogCXt9IC8qIHRlcm1pbmF0b3IgKi8KIH07CiAKQEAgLTI0MDksNiArMjU0Miw3IEBAIE1PRFVM
-RV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxNGYxNTA0NSIpOwogTU9EVUxFX0FMSUFTKCJzbmQt
-aGRhLWNvZGVjLWlkOjE0ZjE1MDQ3Iik7CiBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6
-MTRmMTUwNTEiKTsKIE1PRFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxNGYxNTA2NiIpOwor
-TU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlkOjE0ZjE1MDY3Iik7CiAKIE1PRFVMRV9MSUNF
-TlNFKCJHUEwiKTsKIE1PRFVMRV9ERVNDUklQVElPTigiQ29uZXhhbnQgSEQtYXVkaW8gY29kZWMi
-KTsKLS0gCjEuNi4wLjQKCg==
---00032555488e1c30c50479101123
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+copying file alsa-kernel/usb/usx2y/usX2Yhwdep.c
+patching file usX2Yhwdep.c
+Hunk #5 FAILED at 196.
+Hunk #6 succeeded at 252 with fuzz 2.
+1 out of 7 hunks FAILED -- saving rejects to file usX2Yhwdep.c.rej
+make[2]: *** [usX2Yhwdep.c] Error 1
+make[2]: Leaving directory `/home/eliot/src/alsagit/alsa-driver/usb/usx2y'
+make[1]: *** [prepare] Error 1
+make[1]: Leaving directory `/home/eliot/src/alsagit/alsa-driver/usb'
+make: *** [modules] Error 2
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+copying file alsa-kernel/usb/usx2y/usbusx2y.c
+patching file usbusx2y.c
+Hunk #4 succeeded at 268 with fuzz 1.
+Hunk #5 FAILED at 281.
+Hunk #7 succeeded at 391 with fuzz 2 (offset -1 lines).
+Hunk #8 succeeded at 415 (offset -2 lines).
+Hunk #9 succeeded at 441 (offset -1 lines).
+Hunk #10 succeeded at 462 (offset -1 lines).
+Hunk #11 succeeded at 522 (offset -2 lines).
+Hunk #12 succeeded at 542 (offset -2 lines).
 
---00032555488e1c30c50479101123--
+copying file alsa-kernel/usb/usx2y/usbusx2yaudio.c
+patching file usbusx2yaudio.c
+Hunk #3 succeeded at 316 (offset 1 line).
+Hunk #4 succeeded at 349 (offset 1 line).
+Hunk #5 succeeded at 365 (offset 1 line).
+Hunk #6 succeeded at 391 (offset 1 line).
+Hunk #7 succeeded at 407 (offset 1 line).
+Hunk #8 succeeded at 524 (offset 1 line).
+Hunk #9 succeeded at 547 (offset 1 line).
+Hunk #10 succeeded at 696 (offset 1 line).
+Hunk #11 FAILED at 1059.
+0
