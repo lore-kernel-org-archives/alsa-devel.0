@@ -1,71 +1,97 @@
-From: "Narnakaje, Snehaprabha" <nsnehaprabha-l0cyMroinI0@public.gmane.org>
-Subject: RE: Handling two audio codec in the same kernel
-Date: Wed, 25 Nov 2009 12:06:44 -0600
-Message-ID: <7A436F7769CA33409C6B44B358BFFF0C012B5950DF@dlee02.ent.ti.com>
-References: <1253647760-32558-1-git-send-email-miguel.aguilar@ridgerun.com>
-	<20090922213604.GB4736@sirena.org.uk> <4ABA3C52.6010509@ridgerun.com>
-	<20090923154916.GA4257@sirena.org.uk> <4ABA4855.9080201@ridgerun.com>
-	<20090923163914.GB31134@opensource.wolfsonmicro.com>
-	<4B0C0BD5.9050407@ridgerun.com>
-	<20091125112100.GA18883@opensource.wolfsonmicro.com>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: RE: [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume hang
+Date: Thu, 26 Nov 2009 00:49:11 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F77@dbde02.ent.ti.com>
+References: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
+ <20091125133340.GB3737@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <20091125112100.GA18883-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20091125133340.GB3737@sirena.org.uk>
 Content-Language: en-US
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Miguel Aguilar <miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>
-Cc: "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, "clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org" <clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, "santiago.nunez-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org" <santiago.nunez-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org" <todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>
+Sender: linux-omap-owner@vger.kernel.org
+To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
 > -----Original Message-----
-> From: Mark Brown [mailto:broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org]
-> Sent: Wednesday, November 25, 2009 6:21 AM
-> To: Miguel Aguilar
-> Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org;
-> clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org; santiago.nunez-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org;
-> diego.dompe-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org; alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org; Narnakaje,
-> Snehaprabha; todd.fischer-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org
-> Subject: Re: Handling two audio codec in the same kernel
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Wednesday, November 25, 2009 7:04 PM
+> To: Aggarwal, Anuj
+> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org
+> Subject: Re: [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume hang
 > 
-> On Tue, Nov 24, 2009 at 10:37:41AM -0600, Miguel Aguilar wrote:
+> On Wed, Nov 25, 2009 at 06:40:31PM +0530, Anuj Aggarwal wrote:
 > 
-> > * How is the proper way to register both codecs in the same kernel?
+> > System hang is observed While trying to do suspend. It was because
+> > of an infinite loop in the AIC23 resume path which was trying to
+> > restore AIC23 register values from the register cache.
 > 
-> At the minute you can't really.  However, if the CODEC for the voice
-> interface is mostly empty (which I seem to recall was the case?) then
-> you can skip registering the CODEC and only register the DAI.
+> This doesn't appear to tie in with the actual patch - where's the
+> infinite loop?  The register cache restore loop has a constant bound and
+> I can't see anything that would make it spin infinitely.
+[Aggarwal, Anuj] Here is the original code:
 
-Yes, voice codec does not call the snd_soc_register_codec handler. But it does call the snd_soc_register_dai handler. However we have the snd_soc_codec_device structure defined for the voice codec. This structure initializes the probe, remove, suspend and resume handlers for the voice codec. This probe function initializes the voice codec peripheral, powers it on and adds the controls for amixer. However the probe function does not get invoked since we have configured AIC3101 codec as the default codec for .codec_dev in the snd_soc_device structure. Some how, we have to invoke the voice codec probe function. Not sure, if the evm_init() in sound/soc/davinci/davinci-evm.c is the right place to call soc_codec_dev_cq93vc.probe(). It seems to work if I call the .probe() in evm_init().
+<snip>
+        int i;
+        u16 reg;
 
-It looks like we also need to comment out snd_soc_init_card() in the voice codec probe function, since the card would already have registered by the AIC3101 codec.
+        /* Sync reg_cache with the hardware */
+        for (reg = 0; reg < ARRAY_SIZE(tlv320aic23_reg); i++) {
+                u16 val = tlv320aic23_read_reg_cache(codec, reg);
+                tlv320aic23_write(codec, reg, val);
+        }
+</snip>
 
-Question related to amixer - should we be seeing controls for both the codecs? How do we change the gain settings specific to a codec?
-
-Thanks
-Sneha
-
+I can see 'i' getting incremented, instead of 'reg'. Isn't this an
+infinite loop?
 > 
-> > * If I have registered in the same kernel, How I can choose the codec
-> > that will be used in the alsamixer menu?
+> > This patch fixes the problem by correcting the resume path and
+> > properly activating/deactivating the digital interface while
+> > doing the suspend / off transitions.
 > 
-> The application layer will do this based on which DAI it chooses to play
-> audio down - each will appear separately to them, as you're doing below.
+> What do you mean by "properly activating/deactivating the digital
+> interface"?
+[Aggarwal, Anuj] The driver was only deactivating the digital
+interface and not activating it. Hence added that part. 
 > 
-> > The DMA logic works fine as you see in the examples above. However, only
-> > the AIC works recording/playback, the voice codec doesn't work. If I
-> > switch the default codec to Voice Codec it works.
+> >  	case SND_SOC_BIAS_STANDBY:
+> > -		/* everything off except vref/vmid, */
+> > -		tlv320aic23_write(codec, TLV320AIC23_PWR, reg | 0x0040);
+> > +		/* Activate the digital interface */
+> > +		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x1);
+> >  		break;
+> >  	case SND_SOC_BIAS_OFF:
+> > -		/* everything off, dac mute, inactive */
+> > +		/* Deactivate the digital interface */
+> >  		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
+> > -		tlv320aic23_write(codec, TLV320AIC23_PWR, 0xffff);
+> >  		break;
 > 
-> Initially I'd suggest testing with hw rather than plughw to make sure
-> the test is isolated to the drivers.
+> This looks wrong - the driver is now no longer managing bias levels at
+> all.
+[Aggarwal, Anuj] The bias levels were wrongly managed earlier. While doing 
+a suspend, it was powering off all the interfaces and while coming up, it
+was not switching on the required interfaces. Hence no sound was coming
+out if audio was played back. 
+Moreover, I referred twl4030 codec and there also the driver was only
+handling the codec power control bit in _STANDBY. So based my patch
+on that. 
+On each bias level, which are the interfaces which need to be switched
+on / off?
+> 
+> > -	u16 reg;
+> > -
+> > -	/* Sync reg_cache with the hardware */
+> > -	for (reg = 0; reg < ARRAY_SIZE(tlv320aic23_reg); i++) {
+> > -		u16 val = tlv320aic23_read_reg_cache(codec, reg);
+> > -		tlv320aic23_write(codec, reg, val);
+> > -	}
+> 
+> This also looks wrong, the register cache restore has been completely
+> removed so if the power to the device is cut during suspend then the
+> device will go back to register defaults and no longer function
+> correctly after resume.
+[Aggarwal, Anuj] I can add that register cache restore again with the
+necessary checks.
