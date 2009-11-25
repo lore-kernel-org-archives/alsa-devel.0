@@ -1,70 +1,95 @@
-From: Anuj Aggarwal <anuj.aggarwal@ti.com>
-Subject: [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume hang
-Date: Wed, 25 Nov 2009 18:40:31 +0530
-Message-ID: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
-Return-path: <linux-omap-owner@vger.kernel.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: broonie@opensource.wolfsonmicro.com, Anuj Aggarwal <anuj.aggarwal@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 16/17] ALSA: ARM: add Raumfeld audio support
+Date: Wed, 25 Nov 2009 13:29:13 +0000
+Message-ID: <20091125132912.GB14045@rakim.wolfsonmicro.main>
+References: <1259145751-3331-1-git-send-email-daniel@caiaq.de>
+	<1259145751-3331-17-git-send-email-daniel@caiaq.de>
+	<20091125110218.GD17420@opensource.wolfsonmicro.com>
+	<20091125122436.GI29442@buzzloop.caiaq.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 636B61037FC
+	for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2009 14:29:14 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20091125122436.GI29442@buzzloop.caiaq.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-System hang is observed While trying to do suspend. It was because
-of an infinite loop in the AIC23 resume path which was trying to
-restore AIC23 register values from the register cache.
+On Wed, Nov 25, 2009 at 01:24:36PM +0100, Daniel Mack wrote:
+> On Wed, Nov 25, 2009 at 11:02:18AM +0000, Mark Brown wrote:
 
-This patch fixes the problem by correcting the resume path and
-properly activating/deactivating the digital interface while
-doing the suspend / off transitions.
+> > > +static struct i2c_board_info max9486_hwmon_info = {
+> > > +	I2C_BOARD_INFO("max9485", 0x63),
+> > > +};
 
-Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
----
- sound/soc/codecs/tlv320aic23.c |   16 +++-------------
- 1 files changed, 3 insertions(+), 13 deletions(-)
+> > This should be in the board file under arch/arm.
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 6b24d8b..cabe60c 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -565,13 +565,12 @@ static int tlv320aic23_set_bias_level(struct snd_soc_codec *codec,
- 	case SND_SOC_BIAS_PREPARE:
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		/* everything off except vref/vmid, */
--		tlv320aic23_write(codec, TLV320AIC23_PWR, reg | 0x0040);
-+		/* Activate the digital interface */
-+		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x1);
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		/* everything off, dac mute, inactive */
-+		/* Deactivate the digital interface */
- 		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
--		tlv320aic23_write(codec, TLV320AIC23_PWR, 0xffff);
- 		break;
- 	}
- 	codec->bias_level = level;
-@@ -615,7 +614,6 @@ static int tlv320aic23_suspend(struct platform_device *pdev,
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct snd_soc_codec *codec = socdev->card->codec;
- 
--	tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
- 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 
- 	return 0;
-@@ -625,14 +623,6 @@ static int tlv320aic23_resume(struct platform_device *pdev)
- {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct snd_soc_codec *codec = socdev->card->codec;
--	int i;
--	u16 reg;
--
--	/* Sync reg_cache with the hardware */
--	for (reg = 0; reg < ARRAY_SIZE(tlv320aic23_reg); i++) {
--		u16 val = tlv320aic23_read_reg_cache(codec, reg);
--		tlv320aic23_write(codec, reg, val);
--	}
- 
- 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	tlv320aic23_set_bias_level(codec, codec->suspend_bias_level);
--- 
-1.6.2.4
+> Well, the problem is that if I do it there, I don't get a handle for the
+> actual data transfer, which I now get from i2c_new_device(). There is no
+> driver matching this device (it wasn't taken because it's 'too simple').
 
+> How would I get a handle to pass to i2c_master_send() or an equivalent
+> function?
+
+In the same way as any other I2C driver would?
+
+> > > +extern void raumfeld_enable_audio(bool en);
+
+> > This should be in a proper header file somewhere.
+
+> Hmm, I thought so too, but it would be the only thing to add there.
+> Hence I decided to not do that. You really prefer that?
+
+Well, see my other comments once I found the actual implementation of
+the function but yes - bad practice is bad practice.
+
+> > Remove this and the other empty functions.
+
+> Hmm, I tried that and it crashed the kernel. I will check again as that
+> was some month ago.
+
+If this were required then almost all machine drivers would be buggy...
+
+> > look like a boolean but that's not what's really going on here.  It may
+> > be better to do this as a proper driver, there was at least one driver I
+> > remember being posted for a TDM clock generator which I think got
+> > merged.
+
+> No, it wasn't.
+
+There was at least one unrelated driver for a different part - I
+remember the discussion since someone needed to explain to people (Alan
+Cox, I think) that this wasn't an RTC but rather a TDM clock generator.
+
+>   http://marc.info/?l=linux-i2c&m=122457836326525&w=2
+
+> Jean Delvare's last comment on this was:
+
+> > Honestly I don't see any value in this driver. There's nothing you can
+> > do with it that you couldn't already do without it.
+
+> The driver itself would do the right thing, but I doubt that
+> resubmitting will help much.
+
+Looking at the thread in the archive I don't see any effort to answer
+Jean's question there - the reply from Jon talks about device tree
+binding which is, as Jean says, pretty much irrelevant to the question:
+
+   http://marc.info/?l=linux-i2c&m=122465761327694&w=2
+
+The question seemed to be more about what the driver was supposed to
+accomplish - talking about the functionality is provided by the driver
+once it's bound to the device should address that.
