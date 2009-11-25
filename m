@@ -1,89 +1,94 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Troy Kisky <troy.kisky@boundarydevices.com>
 Subject: Re: [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume hang
-Date: Wed, 25 Nov 2009 19:39:34 +0000
-Message-ID: <20091125193934.GA9263@rakim.wolfsonmicro.main>
+Date: Wed, 25 Nov 2009 13:22:42 -0700
+Message-ID: <4B0D9212.1060805@boundarydevices.com>
 References: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
- <20091125133340.GB3737@sirena.org.uk>
- <5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F77@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F77@dbde02.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpauth03.csee.onr.siteprotect.com
+	(smtpauth03.csee.onr.siteprotect.com [64.26.60.137])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61CC9243CE
+	for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2009 21:22:51 +0100 (CET)
+In-Reply-To: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Anuj Aggarwal <anuj.aggarwal@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Arun KS <arunks@mistralsolutions.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 26, 2009 at 12:49:11AM +0530, Aggarwal, Anuj wrote:
-
-> <snip>
->         int i;
->         u16 reg;
+Anuj Aggarwal wrote:
+> System hang is observed While trying to do suspend. It was because
+> of an infinite loop in the AIC23 resume path which was trying to
+> restore AIC23 register values from the register cache.
 > 
->         /* Sync reg_cache with the hardware */
->         for (reg = 0; reg < ARRAY_SIZE(tlv320aic23_reg); i++) {
->                 u16 val = tlv320aic23_read_reg_cache(codec, reg);
->                 tlv320aic23_write(codec, reg, val);
->         }
-> </snip>
+> This patch fixes the problem by correcting the resume path and
+> properly activating/deactivating the digital interface while
+> doing the suspend / off transitions.
+> 
+> Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
+> ---
+>  sound/soc/codecs/tlv320aic23.c |   16 +++-------------
+>  1 files changed, 3 insertions(+), 13 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+> index 6b24d8b..cabe60c 100644
+> --- a/sound/soc/codecs/tlv320aic23.c
+> +++ b/sound/soc/codecs/tlv320aic23.c
+> @@ -565,13 +565,12 @@ static int tlv320aic23_set_bias_level(struct snd_soc_codec *codec,
+>  	case SND_SOC_BIAS_PREPARE:
+>  		break;
+>  	case SND_SOC_BIAS_STANDBY:
+> -		/* everything off except vref/vmid, */
+> -		tlv320aic23_write(codec, TLV320AIC23_PWR, reg | 0x0040);
+> +		/* Activate the digital interface */
+> +		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x1);
+>  		break;
+>  	case SND_SOC_BIAS_OFF:
+> -		/* everything off, dac mute, inactive */
+> +		/* Deactivate the digital interface */
+>  		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
+> -		tlv320aic23_write(codec, TLV320AIC23_PWR, 0xffff);
+>  		break;
+>  	}
+>  	codec->bias_level = level;
+> @@ -615,7 +614,6 @@ static int tlv320aic23_suspend(struct platform_device *pdev,
+>  	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+>  	struct snd_soc_codec *codec = socdev->card->codec;
+>  
+> -	tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
+>  	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_OFF);
+>  
+>  	return 0;
+> @@ -625,14 +623,6 @@ static int tlv320aic23_resume(struct platform_device *pdev)
+>  {
+>  	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+>  	struct snd_soc_codec *codec = socdev->card->codec;
+> -	int i;
+> -	u16 reg;
+> -
+> -	/* Sync reg_cache with the hardware */
+> -	for (reg = 0; reg < ARRAY_SIZE(tlv320aic23_reg); i++) {
+> -		u16 val = tlv320aic23_read_reg_cache(codec, reg);
+> -		tlv320aic23_write(codec, reg, val);
+> -	}
 
-> I can see 'i' getting incremented, instead of 'reg'. Isn't this an
-> infinite loop?
+Changing to
+	for (reg = 0; reg < ARRAY_SIZE(tlv320aic23_reg); reg++) {
 
-Yes, that does look entirely buggy - it seems fairly clear that suspend
-and resume have never worked with this driver.  The fact that you were
-removing the loop entirely meant I didn't read the actual code for bugs.
+should be enough to fix the infinite loop.
+Could you try this without the rest of the patch?
 
-> > > This patch fixes the problem by correcting the resume path and
-> > > properly activating/deactivating the digital interface while
-> > > doing the suspend / off transitions.
+>  
+>  	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+>  	tlv320aic23_set_bias_level(codec, codec->suspend_bias_level);
 
-> > What do you mean by "properly activating/deactivating the digital
-> > interface"?
-
-> [Aggarwal, Anuj] The driver was only deactivating the digital
-> interface and not activating it. Hence added that part. 
-
-So this is a separate issue, and should ideally be a separate patch - it
-looks like you've got three different changes here, one to fix the buggy
-register cache restore, one to manage the PWR bit on suspend and another
-to possibly fix the bias configuration.  You certainly need to identify
-all three changes in the changelog, especially for things like this
-which look like they should go in as bug fixes (and bearing in mind that
-it's the end of the release cycle).
-
-Glancing at the code there's much more management required here -
-there's other places where it's managed and the code needs to be joined
-up with them.  The setting should only be restored if the device was
-active when suspended, not unconditionally.
-
-> > >  	case SND_SOC_BIAS_STANDBY:
-> > > -		/* everything off except vref/vmid, */
-> > > -		tlv320aic23_write(codec, TLV320AIC23_PWR, reg | 0x0040);
-> > > +		/* Activate the digital interface */
-> > > +		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x1);
-> > >  		break;
-> > >  	case SND_SOC_BIAS_OFF:
-> > > -		/* everything off, dac mute, inactive */
-> > > +		/* Deactivate the digital interface */
-> > >  		tlv320aic23_write(codec, TLV320AIC23_ACTIVE, 0x0);
-> > > -		tlv320aic23_write(codec, TLV320AIC23_PWR, 0xffff);
-> > >  		break;
-> > 
-> > This looks wrong - the driver is now no longer managing bias levels at
-> > all.
-> [Aggarwal, Anuj] The bias levels were wrongly managed earlier. While doing 
-> a suspend, it was powering off all the interfaces and while coming up, it
-> was not switching on the required interfaces. Hence no sound was coming
-> out if audio was played back. 
-
-Note that this CODEC driver impelements DAPM and so all the bits in the
-power register which are controlled by DAPM will be managed by the ASoC
-core without any action by the driver.
-
-> On each bias level, which are the interfaces which need to be switched
-> on / off?
-
-The biases and any other device-wide settings, everything else should be
-managed via DAPM if it's in use.
+Adding Arun to cc list
