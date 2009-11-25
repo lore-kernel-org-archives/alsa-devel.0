@@ -1,21 +1,17 @@
-From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
-Subject: Handling two audio codec in the same kernel
-Date: Tue, 24 Nov 2009 10:37:41 -0600
-Message-ID: <4B0C0BD5.9050407@ridgerun.com>
-References: <1253647760-32558-1-git-send-email-miguel.aguilar@ridgerun.com>
-	<20090922213604.GB4736@sirena.org.uk>
-	<4ABA3C52.6010509@ridgerun.com>
-	<20090923154916.GA4257@sirena.org.uk>
-	<4ABA4855.9080201@ridgerun.com>
-	<20090923163914.GB31134@opensource.wolfsonmicro.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: intel8x0: Mute External Amplifier by
+	default for Gateway 4525GZ
+Date: Tue, 24 Nov 2009 22:55:46 -0500
+Message-ID: <604760770911241955l704c0a0al5682efb894ac47b1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=001636e0b9659e4b0904792a0880
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1903F1037EA
-	for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2009 17:37:42 +0100 (CET)
-In-Reply-To: <20090923163914.GB31134@opensource.wolfsonmicro.com>
+Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
+	[209.85.222.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FFF42434F
+	for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2009 04:55:48 +0100 (CET)
+Received: by pzk9 with SMTP id 9so473580pzk.16
+	for <alsa-devel@alsa-project.org>; Tue, 24 Nov 2009 19:55:47 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,133 +21,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+--001636e0b9659e4b0904792a0880
+Content-Type: text/plain; charset=UTF-8
 
-I have been working on developing the voice codec driver for the davinci 
-platforms, in particularly for the DM365 EVM. This board has one AIC codec and 
-one voice codec.
+Hi,
 
-Some time ago I sent the initial patch for adding support for the Voice codec. 
-You suggested me that I should register in the case of DM365 EVM both codecs in 
-the same kernel (AIC and Voice Codec):
-
->> [MA] But how I can tell the kernel to use one or the other one in 
->> runtime?, and Why do we need to have both compiled at the same time? if 
->> this is really needed What is the best way to that?
-> 
-> The kernel would just expose both devices to user space so the choice
-> would be down to the application layer.  This would give maximum
-> flexibility to systems, allowing them to chop and change at runtime if
-> they needed to for some reason (eg, using a lower quality but lower
-> power voice output for telephony style applications but a higer quality
-> higher power output for MP3 playback).  It'd also mean that for the EVM
-> the user would be able to use a single kernel image to evaluate both
-> outputs which makes life easier for things like distros.
-> 
-
-There was another problem because both codecs share the same DMA channels, 
-however this it was solved by following your suggestion:
-
-> The implementation I suggested above with returning EBUSY if the DMA is
-> already in use would probably work.
-> 
-
-At this point the both drivers AIC and Voice Codec are implemented, and also the 
-logic to handle the dma channels properly.
-
-I have some questions:
-
-* How is the proper way to register both codecs in the same kernel?
-* If I have registered in the same kernel, How I can choose the codec that will 
-be used in the alsamixer menu?
-
-At this point I have added the following structures to the 
-sound/soc/davinci/davinci-evm.c file:
-
-static struct snd_soc_dai_link dm365_evm_dai[] = {
-	{
-		.name = "TLV320AIC3X",
-		.stream_name = "AIC3X",
-		.cpu_dai = &davinci_i2s_dai,
-		.codec_dai = &aic3x_dai,
-		.init = evm_aic3x_init,
-		.ops = &evm_ops,
-	},
-	{
-		.name = "Voice Codec - CQ93VC",
-		.stream_name = "CQ93",
-		.cpu_dai = &davinci_vcif_dai,
-		.codec_dai = &cq93vc_dai,
-	},
-};
-
-/* davinci dm365 evm audio machine driver external or internal */
-static struct snd_soc_card dm365_snd_soc_card_evm = {
-	.name = "DaVinci DM365 EVM",
-	.platform = &davinci_soc_platform,
-	.dai_link = dm365_evm_dai,
-	.num_links = ARRAY_SIZE(dm365_evm_dai),
-};
-
-/* evm audio subsystem */
-static struct snd_soc_device dm365_evm_snd_devdata = {
-	.card = &dm365_snd_soc_card_evm,
-	.codec_dev = &soc_codec_dev_aic3x,  // Only codec_dev at time?
-	.codec_data = &aic3x_setup,
-};
-
-This is the output:
-...
- > Advanced Linux Sound Architecture Driver Version 1.0.21.
- > No device for DAI tlv320aic3x
- > No device for DAI davinci-i2s
- > asoc: tlv320aic3x <-> davinci-i2s mapping ok
- > asoc: CQ93VC <-> davinci-vcif mapping ok
- > ALSA device list:
- >   #0: DaVinci DM365 EVM (tlv320aic3x)
- > ...
-
-
-root@dm365-evm:/apps# arecord -D 'plughw:0,0'| aplay -D 'plughw:0,0' &
-Recording WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-Playing WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-
-root@dm365-evm:/apps# arecord -D 'plughw:0,1'| aplay -D 'plughw:0,1'
-davinci_pcm: Failed to get dma channels
-asoc: can't open platform davinci-audio
-arecord: main:608: audio open error: Device or resource busy
-davinci_pcm: Failed to get dma channels
-asoc: can't open platform davinci-audio
-aplay: main:608: audio open error: Device or resource busy
-
-root@dm365-evm:/apps# arecord -D 'plughw:0,1'| aplay -D 'plughw:0,1' &
-Recording WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-Playing WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-
-root@dm365-evm:/apps# arecord -D 'plughw:0,0'| aplay -D 'plughw:0,0'
-davinci_pcm: Failed to get dma channels
-asoc: can't open platform davinci-audio
-davinci_pcm: Failed to get dma channels
-arecord: main:60asoc: can't open platform davinci-audio
-8: audio open error: Device or resource busy
-aplay: main:608: audio open error: Device or resource busy
-
-You can do different combinations as well -
-root@dm365-evm:/apps# arecord -D 'plughw:0,0'| aplay -D 'plughw:0,1'
-Recording WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-Playing WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-
-root@dm365-evm:/apps# arecord -D 'plughw:0,1'| aplay -D 'plughw:0,0'
-Recording WAVE 'stdin' : Unsigned 8 bit, ate 8000 Hz, Mono
-Playing WAVE 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-
-The DMA logic works fine as you see in the examples above. However, only the AIC 
-works recording/playback, the voice codec doesn't work. If I switch the default 
-codec to Voice Codec it works.
+Attached please find a patch against current sound-2.6 HEAD setting
+the inv_eapd quirk for the Gateway 4525GZ.
 
 Thanks,
-Miguel Aguilar
+Dan
+
+--001636e0b9659e4b0904792a0880
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ALSA-intel8x0-Mute-External-Amplifier-by-default-for.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-intel8x0-Mute-External-Amplifier-by-default-for.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g2fkaved0
+
+RnJvbSBkMmRkZDIwZWM2ZTI3MjRiMDZjMmNhYzYyMGI0YmFmN2I2NDk2ZGU0IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFR1ZSwgMjQgTm92IDIwMDkgMjI6NTE6MDUgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBpbnRlbDh4MDogTXV0ZSBFeHRlcm5hbCBBbXBsaWZpZXIgYnkgZGVmYXVsdCBmb3IgR2F0ZXdh
+eSA0NTI1R1oKCkJ1Z0xpbms6IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3MvNDg3ODg0
+CgpUaGlzIEdhdGV3YXkgbW9kZWwgbmVlZHMgRXh0ZXJuYWwgQW1wbGlmaWVyIG11dGVkIGZvciBh
+dWRpYmxlIHBsYXliYWNrLApzbyBzZXQgdGhlIGludl9lYXBkIHF1aXJrIGZvciBpdC4KClNpZ25l
+ZC1vZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5AdWJ1bnR1LmNvbT4KLS0tCiBzb3VuZC9w
+Y2kvaW50ZWw4eDAuYyB8ICAgIDYgKysrKysrCiAxIGZpbGVzIGNoYW5nZWQsIDYgaW5zZXJ0aW9u
+cygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaW50ZWw4eDAuYyBi
+L3NvdW5kL3BjaS9pbnRlbDh4MC5jCmluZGV4IGFhYzIwZmIuLmI5OTAxNDMgMTAwNjQ0Ci0tLSBh
+L3NvdW5kL3BjaS9pbnRlbDh4MC5jCisrKyBiL3NvdW5kL3BjaS9pbnRlbDh4MC5jCkBAIC0yMDYz
+LDYgKzIwNjMsMTIgQEAgc3RhdGljIHN0cnVjdCBhYzk3X3F1aXJrIGFjOTdfcXVpcmtzW10gX19k
+ZXZpbml0ZGF0YSA9IHsKIAkJLnR5cGUgPSBBQzk3X1RVTkVfSFBfT05MWQogCX0sCiAJeworCQku
+c3VidmVuZG9yID0gMHgxNjFmLAorCQkuc3ViZGV2aWNlID0gMHgyMDNhLAorCQkubmFtZSA9ICJH
+YXRld2F5IDQ1MjVHWiIsCQkvKiBBRDE5ODFCICovCisJCS50eXBlID0gQUM5N19UVU5FX0lOVl9F
+QVBECisJfSwKKwl7CiAJCS5zdWJ2ZW5kb3IgPSAweDE3MzQsCiAJCS5zdWJkZXZpY2UgPSAweDAw
+ODgsCiAJCS5uYW1lID0gIkZ1aml0c3UtU2llbWVucyBEMTUyMiIsCS8qIEFEMTk4MSAqLwotLSAK
+MS42LjMuMwoK
+--001636e0b9659e4b0904792a0880
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--001636e0b9659e4b0904792a0880--
