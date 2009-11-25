@@ -1,20 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
- CS4270 codec driver
-Date: Wed, 25 Nov 2009 15:38:04 +0000
-Message-ID: <20091125153804.GA12750@rakim.wolfsonmicro.main>
-References: <1259159787-21876-1-git-send-email-daniel@caiaq.de>
-	<20091125150139.GC636@rakim.wolfsonmicro.main>
-	<20091125152052.GM29442@buzzloop.caiaq.de>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH V2] Add i.MX sound support
+Date: Wed, 25 Nov 2009 16:41:03 +0100
+Message-ID: <1259163666-30344-1-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1ED352435C
-	for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2009 16:38:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091125152052.GM29442@buzzloop.caiaq.de>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 226B7243B3
+	for <alsa-devel@alsa-project.org>; Wed, 25 Nov 2009 16:41:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +18,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 25, 2009 at 04:20:52PM +0100, Daniel Mack wrote:
+Hi All,
 
-> Ok - which place would you suggest for it? Is there an ASoC callback I
-> can hook on to tell me when the whole codec isn't used anymore? I can
-> only see startup/shutdown, but I would need to my own snd_pc_substream
-> handling login in there. Other drivers do that in the probe/remove
+Here is the second version of the patches to add i.MX sound support.
 
-set_bias_level().  If the device is idle then the bias will be held in
-STANDBY (or OFF in future).  If you are happy switching off the analogue
-supply separately to the others then turn that one on when in PREPARE or
-ON, and kill the others only in OFF.
+This time I haven't included ARM related patches, so this series should
+be safe to apply.
 
-> functions, but that won't suffice for my board as we want VA disabled
-> whenever possible.
+I skipped the mc13783 driver since I'm not ready integrating the comments
+from Mark.
 
-Are the power savings really that great?  If the power saving really is
-that critical it seems like a low power focused part might be a more
-natural choice...
+The main change in the driver is that I splitted out the transport from
+the driver, so it should be easy to add another transport layer to the
+driver when SDMA support is merged. I hopefully also addressed the other
+comments from Mark.
+
+Sascha
