@@ -1,58 +1,49 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: RE: [alsa-devel] [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume hang
-Date: Thu, 26 Nov 2009 20:26:44 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030AAC3291@dbde02.ent.ti.com>
-References: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
- <4B0D9212.1060805@boundarydevices.com>
- <5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F86@dbde02.ent.ti.com>
- <20091126102230.GB27562@rakim.wolfsonmicro.main>
+From: Cristian KLEIN <cristiklein@gmail.com>
+Subject: Re: Conexant CX20549 (Venice) PCM volume to loud
+Date: Thu, 26 Nov 2009 16:00:24 +0100
+Message-ID: <4B0E9808.8050006@gmail.com>
+References: <4B0D5E36.3090502@gmail.com>	<604760770911251537n16a2646cwf7fbd7efd8c6610e@mail.gmail.com>
+	<s5h4oohodi3.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20091126102230.GB27562@rakim.wolfsonmicro.main>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: 'Mark Brown' <broonie@opensource.wolfsonmicro.com>
-Cc: 'Troy Kisky' <troy.kisky@boundarydevices.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Arun KS <arunks@mistralsolutions.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id B323B24468
+	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 16:00:28 +0100 (CET)
+Received: by bwz9 with SMTP id 9so1674918bwz.32
+	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 07:00:27 -0800 (PST)
+In-Reply-To: <s5h4oohodi3.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Daniel Chen <seven.steps@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Thursday, November 26, 2009 3:53 PM
-> To: Aggarwal, Anuj
-> Cc: 'Troy Kisky'; alsa-devel@alsa-project.org; linux-omap@vger.kernel.org;
-> Arun KS
-> Subject: Re: [alsa-devel] [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume
-> hang
-> 
-> On Thu, Nov 26, 2009 at 08:31:11AM +0530, Aggarwal, Anuj wrote:
-> 
-> > I have already tried that but it doesn't fix the problem entirely.
-> > Still, I was not able to playback properly because the bias settings
-> > were not handled correctly and as you can see, it writes to some
-> > invalid registers too (all registers don't exist between 0 and
-> ARRAY_SIZE).
-> 
-> Please also note the following patch which is queued for 2.6.32:
-> 
-> commit 50b6bce59d154b5db137907a5c0ed45a4e7a3829
-> Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Date:   Mon Nov 23 13:11:53 2009 +0000
-> 
->     ASoC: Fix suspend with active audio streams
-> 
-[Aggarwal, Anuj] I am also seeing one more problem with the original 
-driver, although I am not sure if the problem is in the audio driver. 
-When tried to capture, using NFS as storage, it gives overrun error and comes out with:
-arecord: pcm_read:1617: read error: Input/output error
+On 26/11/2009 10:13, Takashi Iwai wrote:
+> At Wed, 25 Nov 2009 18:37:36 -0500,
+> Daniel Chen wrote:
+>>
+>> Hi,
+>>
+>> On Wed, Nov 25, 2009 at 11:41 AM, Cristian KLEIN<cristiklein@gmail.com>  wrote:
+>>> Could anybody please have a look at this bug:
+>>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4792
+>>
+>> I've spun the attached patch against current sound-2.6 HEAD. Thanks
+>> for chasing this!
+>
+> Thanks, applied now.
 
-It happen always after ~20 sec, file size ~5MB. Tried with multiple
-configurations in arecord but no use.
-When tried: arecord -f cd /dev/null, it works fine. Same issue doesn't 
-come too when I try to store the captured audio file on a MMC card.
+Great! Can't wait for linux-backports-modules-alsa to catch his. Sorry 
+for not submitting a nice patch from start.
 
-Any idea what could be the problem? Why arecord goes for a toss after a 
-single overrun error and why it is happening always after ~20 sec? Is
-there something which can be tried to narrow down the problem?
-
+Could anybody close the original bug report?
