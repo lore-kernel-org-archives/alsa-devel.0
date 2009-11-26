@@ -1,85 +1,50 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume
- hang
-Date: Thu, 26 Nov 2009 10:22:31 +0000
-Message-ID: <20091126102230.GB27562@rakim.wolfsonmicro.main>
-References: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
- <4B0D9212.1060805@boundarydevices.com>
- <5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F86@dbde02.ent.ti.com>
+Subject: Re: AK4671 pin sharing
+Date: Thu, 26 Nov 2009 10:43:09 +0000
+Message-ID: <20091126104308.GA12885@sirena.org.uk>
+References: <2A201BEEC85E064DA2513CADA373DB0DA765C9@mx2.telecom.sna.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 43AA924150
+	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 11:43:10 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F86@dbde02.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: 'Troy Kisky' <troy.kisky@boundarydevices.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Arun KS <arunks@mistralsolutions.com>
+In-Reply-To: <2A201BEEC85E064DA2513CADA373DB0DA765C9@mx2.telecom.sna.samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Misael Lopez <mlopez@sta.samsung.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 26, 2009 at 08:31:11AM +0530, Aggarwal, Anuj wrote:
+On Wed, Nov 25, 2009 at 11:44:47AM -0600, Misael Lopez wrote:
 
-> I have already tried that but it doesn't fix the problem entirely.
-> Still, I was not able to playback properly because the bias settings
-> were not handled correctly and as you can see, it writes to some 
-> invalid registers too (all registers don't exist between 0 and ARRAY_SIZE).
+> full-differential mode as well. However, the chip doesn't have separate
+> pins for the differential input/outputs, but instead the same pins
+> used in single-ended mode can be reconfigured and reused.
 
-Please also note the following patch which is queued for 2.6.32:
+This is a common arrangement.
 
-commit 50b6bce59d154b5db137907a5c0ed45a4e7a3829
-Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Date:   Mon Nov 23 13:11:53 2009 +0000
+> (full-differential). Changing the function of a pin also modifies the
+> audio map:
 
-    ASoC: Fix suspend with active audio streams
-    
-    When we get a stream suspend event force the power down since otherwise
-    the stream would remain marked as active.  In future we'll probably want
-    to make this stream-specific and add an interface to make the power down
-    of other widgets optional in order to support leaving bypass paths
-    active while suspending the processor.
-    
-    Cc: stable@kernel.org
-    Reported-by: Joonyoung Shim <jy0922.shim@samsung.com>
-    Tested-by: Joonyoung Shim <jy0922.shim@samsung.com>
-    Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-    Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> My concerns are:
+> - When inputs/outputs are single-ended, then they have its own widgets,
+>   i.e.: 
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index d89f6dc..66d4c16 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -973,9 +973,19 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 			if (!w->power_check)
- 				continue;
- 
--			power = w->power_check(w);
--			if (power)
--				sys_power = 1;
-+			/* If we're suspending then pull down all the 
-+			 * power. */
-+			switch (event) {
-+			case SND_SOC_DAPM_STREAM_SUSPEND:
-+				power = 0;
-+				break;
-+
-+			default:
-+				power = w->power_check(w);
-+				if (power)
-+					sys_power = 1;
-+				break;
-+			}
- 
- 			if (w->power == power)
- 				continue;
-@@ -999,8 +1009,12 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
- 		case SND_SOC_DAPM_STREAM_RESUME:
- 			sys_power = 1;
- 			break;
-+		case SND_SOC_DAPM_STREAM_SUSPEND:
-+			sys_power = 0;
-+			break;
- 		case SND_SOC_DAPM_STREAM_NOP:
- 			sys_power = codec->bias_level != SND_SOC_BIAS_STANDBY;
-+			break;
- 		default:
- 			break;
- 		}
+> - Audio map changes depending on the mode of inputs or outputs, I don't
+>   know how the SoC codec driver could handle that.
+
+> Any suggestion on what to do in above scenarios?
+
+The WM8993 has similar routing changes when in fully differential mode.
+It uses platform data to configure the mode and registers different
+widgets depending on the configuration.
