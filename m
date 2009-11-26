@@ -1,15 +1,21 @@
-From: Ondrej Zary <linux@rainbow-software.org>
-Subject: tea575x-tuner: fix mute
-Date: Thu, 26 Nov 2009 21:41:15 +0100
-Message-ID: <200911262141.17143.linux@rainbow-software.org>
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 4/5] ALSA: pcm - fix page conversion on
+ non-coherent PPC arch
+Date: Fri, 27 Nov 2009 07:51:44 +1100
+Message-ID: <1259268704.18084.4.camel@pasglop>
+References: <1259248388-20095-1-git-send-email-tiwai@suse.de>
+	<1259248388-20095-2-git-send-email-tiwai@suse.de>
+	<1259248388-20095-3-git-send-email-tiwai@suse.de>
+	<1259248388-20095-4-git-send-email-tiwai@suse.de>
+	<1259248388-20095-5-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.atlantis.sk (mail1-out1.atlantis.sk [80.94.52.55])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4361E24563
-	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 21:41:26 +0100 (CET)
-Content-Disposition: inline
+Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02DF42456F
+	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 21:52:15 +0100 (CET)
+In-Reply-To: <1259248388-20095-5-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,25 +25,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Becky Bruce <beckyb@kernel.crashing.org>, Wu Zhangjin <wuzhangjin@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Kumar Gala <galak@gate.crashing.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix mute state reporting in tea575x-tuner.
-This fixes mute function in kradio on SF64-PCR radio card.
+On Thu, 2009-11-26 at 16:13 +0100, Takashi Iwai wrote:
+> The non-cohernet PPC arch doesn't give the correct address by a simple
+> virt_to_page() for pages allocated via dma_alloc_coherent().
+> This patch adds a hack to fix the conversion similarly like MIPS.
+> 
+> Note that this doesn't fix perfectly: the pages should be marked with
+> proper pgprot value.  This will be done in a future implementation like
+> the conversion to dma_mmap_coherent().
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Signed-off-by: Ondrej Zary <linux@rainbow-software.org>
+This will not work with swiotlb, but then, I don't think we have -yet-
+to deal with a platform that does both swiotlb and isn't DMA
+coherent :-)
 
---- linux-source-2.6.31-orig/sound/i2c/other/tea575x-tuner.c	2009-09-10 00:13:59.000000000 +0200
-+++ linux-source-2.6.31/sound/i2c/other/tea575x-tuner.c	2009-11-26 21:30:28.000000000 +0100
-@@ -225,7 +225,7 @@ static int vidioc_s_ctrl(struct file *fi
- 	case V4L2_CID_AUDIO_MUTE:
- 		if (tea->ops->mute) {
- 			tea->ops->mute(tea, ctrl->value);
--			tea->mute = 1;
-+			tea->mute = ctrl->value;
- 			return 0;
- 		}
- 	}
+Of course, the conversion to dma_mmap_coherent will makes things better
+though we really will want to push that function into the dma ops.
 
--- 
-Ondrej Zary
+So it's hackish but for now its an
+
+Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+
+Cheers,
+Ben.
+
+> ---
+>  sound/core/pcm_native.c |   10 ++++++++++
+>  1 files changed, 10 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index e48c5f6..76eb763 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -3070,6 +3070,16 @@ snd_pcm_default_page_ops(struct snd_pcm_substream *substream, unsigned long ofs)
+>  	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
+>  		return virt_to_page(CAC_ADDR(vaddr));
+>  #endif
+> +#if defined(CONFIG_PPC32) && defined(CONFIG_NOT_COHERENT_CACHE)
+> +	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV) {
+> +		dma_addr_t addr = substream->runtime->dma_addr + ofs;
+> +		addr -= get_dma_offset(substream->dma_buffer.dev.dev);
+> +		/* assume dma_handle set via pfn_to_phys() in
+> +		 * mm/dma-noncoherent.c
+> +		 */
+> +		return pfn_to_page(dma_handle >> PAGE_SHIFT);
+> +	}
+> +#endif
+>  	return virt_to_page(vaddr);
+>  }
+>  
