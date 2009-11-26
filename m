@@ -1,22 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
- CS4270 codec driver
-Date: Thu, 26 Nov 2009 16:03:51 +0000
-Message-ID: <20091126160351.GB10674@rakim.wolfsonmicro.main>
-References: <1259159787-21876-1-git-send-email-daniel@caiaq.de>
-	<20091125150139.GC636@rakim.wolfsonmicro.main>
-	<20091125152052.GM29442@buzzloop.caiaq.de>
-	<20091125153804.GA12750@rakim.wolfsonmicro.main>
-	<20091126154807.GI14091@buzzloop.caiaq.de>
+Subject: ASoC updates for 2.6.33
+Date: Thu, 26 Nov 2009 16:04:34 +0000
+Message-ID: <20091126160434.GC10674@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B331F244DA
-	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 17:03:52 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E185103886
+	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 17:04:35 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20091126154807.GI14091@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,55 +19,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 26, 2009 at 04:48:07PM +0100, Daniel Mack wrote:
+The following changes since commit 97cef58521288ade8d957e4d568a3d409dea7d64:
+  Mark Brown (1):
+        Merge branch 'for-2.6.32' into for-2.6.33
 
-> - I only added VA for now because when VD is disabled, we need to
->   restore all codec information, and I can't test that here. We can
->   still add that later, right?
+are available in the git repository at:
 
-I'd suggest just adding it blind.  The code is very simple and it's much
-easier to fix if there's a problem than it is to go through retrofit the
-additional regulator hookups to boards if the other supplies are added
-later.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
 
-You can test the flow by defining a fixed voltage regulator with no soft
-control, obviously it won't actually turn the power on or off but the
-code will run.
+Daniel J Blueman (1):
+      mfd: twl4030: fix ELF section mismatch...
 
-> - I'm tracking the va_reg enable state inside the driver to take anyone
->   else's reference. Is that the way do do it?
+Mark Brown (2):
+      Merge branch 'twl4030-mfd' into for-2.6.33
+      ASoC: Add BCLK calculation utility for TDM mode too
 
-Yes.  You can also check if you're doing a PREPARE<->STANDBY transition
-but either way works.  Existing drivers only do the enables/disables in
-off which makes this really easy.
+Peter Ujfalusi (1):
+      ASoC: tlv320dac33: Change RT wq to singlethread wq
 
-> +	/* get the power supply regulators (optional) */
-> +	cs4270->va_reg = regulator_get(&pdev->dev, "va");
-> +	if (IS_ERR(cs4270->va_reg))
-> +		cs4270->va_reg = NULL;
-
-Just fail if you can't get the supply.  If you can't get the regulator
-then you've no analogue supply and the CODEC isn't going to work
-terribly well.  Currently the assumption is that if you've built in the
-regulator API you intend to use it, otherwise it's very hard to tell if
-the operation failed and broke something or failed because the API isn't
-in use.
-
->  	struct cs4270_private *cs4270 = i2c_get_clientdata(client);
->  	struct snd_soc_codec *codec = &cs4270->codec;
->  
-> +	cs4270_set_bias_level(codec, SND_SOC_BIAS_OFF);
-> +
->  	return snd_soc_suspend_device(codec->dev);
->  }
-
-This patch isn't against current for-2.6.33 - those functions have been
-removed.  Better to do the bias management in the ASoC suspend/resume
-callbacks anyway so that it's joined up with the register save/restore.
-Until we get the pm_link stuff in the next merge window there's no link
-between the I2C bus suspend and the platform bus suspend for the ASoC
-core.
+ drivers/mfd/twl4030-core.c     |    2 +-
+ include/sound/soc.h            |    1 +
+ sound/soc/codecs/tlv320dac33.c |    3 ++-
+ sound/soc/soc-utils.c          |    6 ++++++
+ 4 files changed, 10 insertions(+), 2 deletions(-)
