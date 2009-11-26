@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: AK4671 pin sharing
-Date: Thu, 26 Nov 2009 10:43:09 +0000
-Message-ID: <20091126104308.GA12885@sirena.org.uk>
-References: <2A201BEEC85E064DA2513CADA373DB0DA765C9@mx2.telecom.sna.samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: tlv320dac33: Change RT wq to
+	singlethread wq
+Date: Thu, 26 Nov 2009 13:55:11 +0200
+Message-ID: <1259236511-25805-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43AA924150
-	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 11:43:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <2A201BEEC85E064DA2513CADA373DB0DA765C9@mx2.telecom.sna.samsung.com>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 101C2243E9
+	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 12:56:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,30 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Misael Lopez <mlopez@sta.samsung.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, sfr@canb.auug.org.au
+Cc: tj@kernel.org, tiwai@suse.de, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Nov 25, 2009 at 11:44:47AM -0600, Misael Lopez wrote:
+RT workqueue is going away in the near future, replace it with
+singlethread wq for now, which is still supported.
 
-> full-differential mode as well. However, the chip doesn't have separate
-> pins for the differential input/outputs, but instead the same pins
-> used in single-ended mode can be reconfigured and reused.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
 
-This is a common arrangement.
+Hello,
 
-> (full-differential). Changing the function of a pin also modifies the
-> audio map:
+I believe this patch fixes the linux-next breakage (in the tlv320dac33 codec
+driver) caused by the removal of the RT workqueue in the wq tree.
 
-> My concerns are:
-> - When inputs/outputs are single-ended, then they have its own widgets,
->   i.e.: 
+ sound/soc/codecs/tlv320dac33.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-> - Audio map changes depending on the mode of inputs or outputs, I don't
->   know how the SoC codec driver could handle that.
-
-> Any suggestion on what to do in above scenarios?
-
-The WM8993 has similar routing changes when in fully differential mode.
-It uses platform data to configure the mode and registers different
-widgets depending on the configuration.
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 2a013e4..9c8903d 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -1118,7 +1118,8 @@ static int dac33_i2c_probe(struct i2c_client *client,
+ 		}
+ 		if (dac33->irq != -1) {
+ 			/* Setup work queue */
+-			dac33->dac33_wq = create_rt_workqueue("tlv320dac33");
++			dac33->dac33_wq =
++				create_singlethread_workqueue("tlv320dac33");
+ 			if (dac33->dac33_wq == NULL) {
+ 				free_irq(dac33->irq, &dac33->codec);
+ 				ret = -ENOMEM;
+--
+1.6.5.3
