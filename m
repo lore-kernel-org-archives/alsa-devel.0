@@ -1,88 +1,54 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 4/5] ALSA: pcm - fix page conversion on
- non-coherent PPC arch
-Date: Fri, 27 Nov 2009 08:14:12 +1100
-Message-ID: <1259270052.18084.29.camel@pasglop>
-References: <1259248388-20095-1-git-send-email-tiwai@suse.de>
-	<1259248388-20095-2-git-send-email-tiwai@suse.de>
-	<1259248388-20095-3-git-send-email-tiwai@suse.de>
-	<1259248388-20095-4-git-send-email-tiwai@suse.de>
-	<1259248388-20095-5-git-send-email-tiwai@suse.de>
-	<s5hpr751ayp.wl%tiwai@suse.de>
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] ASoC: tlv320dac33: Change RT wq to singlethread wq
+Date: Fri, 27 Nov 2009 09:34:07 +1100
+Message-ID: <20091127093407.4c58ee0b.sfr@canb.auug.org.au>
+References: <1259236511-25805-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20091126154746.GA10674@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2FDF1038CB
-	for <alsa-devel@alsa-project.org>; Thu, 26 Nov 2009 22:14:21 +0100 (CET)
-In-Reply-To: <s5hpr751ayp.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Becky Bruce <beckyb@kernel.crashing.org>, Wu Zhangjin <wuzhangjin@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Kumar Gala <galak@gate.crashing.org>
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Fri__27_Nov_2009_09_34_07_+1100_90F3il4Pqwr6EKSy"
+Return-path: <linux-next-owner@vger.kernel.org>
+In-Reply-To: <20091126154746.GA10674@rakim.wolfsonmicro.main>
+Sender: linux-next-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, tj@kernel.org, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2009-11-26 at 17:56 +0100, Takashi Iwai wrote:
-> Sorry, a typo was in this patch.  The fixed version is below.
-> 
-> FYI, the patchset is found in sound git tree topic/pcm-dma-fix branch:
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git topic/pcm-dma-fix
-> 
+--Signature=_Fri__27_Nov_2009_09_34_07_+1100_90F3il4Pqwr6EKSy
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ah, I didn't notice the typo :-) Ack still.
+Hi Mark, Peter,
 
+On Thu, 26 Nov 2009 15:47:46 +0000 Mark Brown <broonie@opensource.wolfsonmi=
+cro.com> wrote:
+>
+> On Thu, Nov 26, 2009 at 01:55:11PM +0200, Peter Ujfalusi wrote:
+> > RT workqueue is going away in the near future, replace it with
+> > singlethread wq for now, which is still supported.
+> >=20
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+>=20
+> Applied, thanks.
+
+Thanks guys.
+
+--=20
 Cheers,
-Ben.
+Stephen Rothwell                    sfr@canb.auug.org.au
+http://www.canb.auug.org.au/~sfr/
 
-> thanks,
-> 
-> Takashi
-> 
-> 
-> From bc01f9e365d3afc041ab2c296107728c56410f8f Mon Sep 17 00:00:00 2001
-> From: Takashi Iwai <tiwai@suse.de>
-> Date: Thu, 26 Nov 2009 15:04:24 +0100
-> Subject: [PATCH] ALSA: pcm - fix page conversion on non-coherent PPC arch
-> 
-> The non-cohernet PPC arch doesn't give the correct address by a simple
-> virt_to_page() for pages allocated via dma_alloc_coherent().
-> This patch adds a hack to fix the conversion similarly like MIPS.
-> 
-> Note that this doesn't fix perfectly: the pages should be marked with
-> proper pgprot value.  This will be done in a future implementation like
-> the conversion to dma_mmap_coherent().
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/pcm_native.c |   10 ++++++++++
->  1 files changed, 10 insertions(+), 0 deletions(-)
-> 
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index e48c5f6..29ab46a 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -3070,6 +3070,16 @@ snd_pcm_default_page_ops(struct snd_pcm_substream *substream, unsigned long ofs)
->  	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
->  		return virt_to_page(CAC_ADDR(vaddr));
->  #endif
-> +#if defined(CONFIG_PPC32) && defined(CONFIG_NOT_COHERENT_CACHE)
-> +	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV) {
-> +		dma_addr_t addr = substream->runtime->dma_addr + ofs;
-> +		addr -= get_dma_offset(substream->dma_buffer.dev.dev);
-> +		/* assume dma_handle set via pfn_to_phys() in
-> +		 * mm/dma-noncoherent.c
-> +		 */
-> +		return pfn_to_page(addr >> PAGE_SHIFT);
-> +	}
-> +#endif
->  	return virt_to_page(vaddr);
->  }
->  
+--Signature=_Fri__27_Nov_2009_09_34_07_+1100_90F3il4Pqwr6EKSy
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAksPAl8ACgkQjjKRsyhoI8yC6gCfU1/r5DS/rfuiTu4X0k13y6N9
+JVYAmQEBXhBwmbHnd4y5JX4QkWHHmnsC
+=xr7m
+-----END PGP SIGNATURE-----
+
+--Signature=_Fri__27_Nov_2009_09_34_07_+1100_90F3il4Pqwr6EKSy--
