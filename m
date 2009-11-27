@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [alsa-devel] [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume
  hang
-Date: Fri, 27 Nov 2009 11:42:46 +0000
-Message-ID: <20091127114245.GD29821@rakim.wolfsonmicro.main>
+Date: Fri, 27 Nov 2009 11:47:19 +0000
+Message-ID: <20091127114719.GE29821@rakim.wolfsonmicro.main>
 References: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
  <4B0D9212.1060805@boundarydevices.com>
  <5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F86@dbde02.ent.ti.com>
@@ -27,16 +27,7 @@ On Fri, Nov 27, 2009 at 01:37:54PM +0530, Aggarwal, Anuj wrote:
 > [Aggarwal, Anuj] We were able to fine tune NFS and use arecord to capture
 > large files. But some more problems cropped up when tried to suspend /
 > resume. Basic playback is working fine wrt suspend/resume. But capture,
-> either tried independently or with playback, is creating a system wide
-> hang. I fixed that infinite-loop in resume path but I believe something
-> else needs cleanup too.
-> Any pointers? 
 
-Have you got CONFIG_DETECT_SOFTLOCKUP turned on?  With any luck that
-will at least pinpoint where the code has locked up.  Otherwise it's
-going to be a case of bisection via printk().
-
-A contrast and compare of the hardware initialisation on initial boot
-compared to coming out of suspend might identify the problem.  If the
-playback is working it's *probably* something missing in the CPU init
-that's specific to capture.
+Incidentally, it'd be good to get the fixes for the CODEC driver (at
+least the infinite loop one) in sooner rather than later - there's a
+clear bug there which it'd good to try to get into 2.6.32.
