@@ -1,21 +1,21 @@
-From: Ralf Baechle <ralf@linux-mips.org>
-Subject: Re: [PATCH 3/5] ALSA: pcm - fix page conversion on
- non-coherent MIPS arch
-Date: Fri, 27 Nov 2009 08:46:35 +0000
-Message-ID: <20091127084635.GA18741@linux-mips.org>
-References: <1259248388-20095-1-git-send-email-tiwai@suse.de>
-	<1259248388-20095-2-git-send-email-tiwai@suse.de>
-	<1259248388-20095-3-git-send-email-tiwai@suse.de>
-	<1259248388-20095-4-git-send-email-tiwai@suse.de>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: [PATCH V2] Add i.MX sound support
+Date: Fri, 27 Nov 2009 10:01:37 +0100
+Message-ID: <eedb5540911270101o4bf06b2ct6ff22e29b7c1fe15@mail.gmail.com>
+References: <1259163666-30344-1-git-send-email-s.hauer@pengutronix.de>
+	<eedb5540911260753u369d6cffp97c05089cdd30868@mail.gmail.com>
+	<20091127075834.GG27548@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from h5.dl5rb.org.uk (h5.dl5rb.org.uk [81.2.74.5])
-	by alsa0.perex.cz (Postfix) with ESMTP id 33FDF1038A0
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 09:46:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1259248388-20095-4-git-send-email-tiwai@suse.de>
+Received: from mail-ew0-f210.google.com (mail-ew0-f210.google.com
+	[209.85.219.210])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6184824587
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 10:01:40 +0100 (CET)
+Received: by ewy2 with SMTP id 2so4415765ewy.32
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 01:01:39 -0800 (PST)
+In-Reply-To: <20091127075834.GG27548@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,32 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Becky Bruce <beckyb@kernel.crashing.org>, Wu Zhangjin <wuzhangjin@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Kumar Gala <galak@gate.crashing.org>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 26, 2009 at 04:13:06PM +0100, Takashi Iwai wrote:
+2009/11/27 Sascha Hauer <s.hauer@pengutronix.de>
 
-> The non-coherent MIPS arch doesn't give the correct address by a simple
-> virt_to_page() for pages allocated via dma_alloc_coherent().
-> 
-> Original patch by Wu Zhangjin <wuzj@lemote.com>.  A proper check of the
-> buffer allocation type was added to avoid the wrong conversion.
+> Hi Javier,
+>
+> On Thu, Nov 26, 2009 at 04:53:21PM +0100, javier Martin wrote:
+> > Dear Sascha,
+> > what repository - branch are these patches tested against? They don't
+> seem
+> > to apply in git://git.pengutronix.de/git/imx/linux-2.6.git mxc-master
+> > branch.
+>
+> Try this branch instead to get a full series also containing the mc13783
+> support and full board support for the Phytec boards:
+>
+> git://git.pengutronix.de/git/imx/linux-2.6.git asoc
+>
+> I posted only the patches relevant to the alsa list. By now mxc-master
+> should contain the missing bits.
+>
 
-The origins of this patch go back far further.  The oldest patch I could
-find which is a superset of this was written by Atsushi Nemoto and
-various incarnations of it have been sumitted to and reject by me
-a number of times through the years.
+Sascha,
+it seems that git://git.pengutronix.de/git/imx/linux-2.6.git asoc is in an
+intermediate state since some files are already created (imx-ssi.*) and
+others aren't (imx-pcm-dma-mx2.c), this result in nasty errors when applying
+your last patches (v2).
 
-> Note that this doesn't fix perfectly: the pages should be marked with
-> proper pgprot value.  This will be done in a future implementation like
-> the conversion to dma_mmap_coherent().
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+There are also errors when applying on  git://
+git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33 .
 
-So while this is ugly I don't think this patch will actually make the
-the situation worse for any MIPS platform.  So with both eyes closed:
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
-
-  Ralf
+-- 
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
