@@ -1,53 +1,50 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] ASoC: tlv320dac33: Change RT wq to singlethread wq
-Date: Fri, 27 Nov 2009 17:50:46 +1100
-Message-ID: <20091127175046.ee37c8f6.sfr@canb.auug.org.au>
-References: <1259236511-25805-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20091126154746.GA10674@rakim.wolfsonmicro.main>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: snd-fm801: autodetect SF64-PCR (tuner-only) card
+Date: Fri, 27 Nov 2009 07:59:26 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0911270756140.4095@eeebox2.perex-int.cz>
+References: <200911262159.44083.linux@rainbow-software.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Fri__27_Nov_2009_17_50_46_+1100_JOagmm34_4TSLs4I"
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20091126154746.GA10674@rakim.wolfsonmicro.main>
-Sender: linux-next-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, tj@kernel.org, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 53189103843
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 07:59:21 +0100 (CET)
+In-Reply-To: <200911262159.44083.linux@rainbow-software.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ondrej Zary <linux@rainbow-software.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---Signature=_Fri__27_Nov_2009_17_50_46_+1100_JOagmm34_4TSLs4I
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 26 Nov 2009, Ondrej Zary wrote:
 
-On Thu, 26 Nov 2009 15:47:46 +0000 Mark Brown <broonie@opensource.wolfsonmi=
-cro.com> wrote:
->
-> On Thu, Nov 26, 2009 at 01:55:11PM +0200, Peter Ujfalusi wrote:
-> > RT workqueue is going away in the near future, replace it with
-> > singlethread wq for now, which is still supported.
-> >=20
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
->=20
-> Applied, thanks.
+> When primary AC97 is not found, don't fail with tons of AC97 errors.
+> Assume that the card is SF64-PCR (tuner-only).
+> This makes the SF64-PCR radio card work "out of the box".
 
-I also put this patch in linux-next (after the sound tree merge) for
-today.
+I would leave the possibility to force FM tuner only detection without 
+touching AC97 bus. The auto detection is a good idea. Could you recode 
+your patch?
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+> Also fixes a bug that can cause an oops here:
+> 	if (tea575x_tuner > 0 && (tea575x_tuner & 0x000f) < 4) {
+> when tea575x_tuner == 16, it passes this check and causes problems
+> a couple lines below:
+> 	chip->tea.ops = &snd_fm801_tea_ops[(tea575x_tuner & 0x000f) - 1];
 
---Signature=_Fri__27_Nov_2009_17_50_46_+1100_JOagmm34_4TSLs4I
-Content-Type: application/pgp-signature
+Thanks for catching this bug.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+ 						Jaroslav
 
-iEYEARECAAYFAksPdsYACgkQjjKRsyhoI8xSMwCeP0VrFTOt1+nhBg1atgarZD/S
-AuEAn0yWIoDegzPTRqjczwcp5EqHnV0a
-=u6ZS
------END PGP SIGNATURE-----
-
---Signature=_Fri__27_Nov_2009_17_50_46_+1100_JOagmm34_4TSLs4I--
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
