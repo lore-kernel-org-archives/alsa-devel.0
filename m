@@ -1,67 +1,42 @@
-From: =?UTF-8?Q?Br=C3=A1ulio_B_O_Bhavamitra?= <brauliobo@gmail.com>
-Subject: Problem with ASUSTeK Computer Inc. Device 8398
-Date: Fri, 27 Nov 2009 09:37:05 -0200
-Message-ID: <1df1788c0911270337p362be7d0n24a3eeecd3b26fc3@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume
+ hang
+Date: Fri, 27 Nov 2009 11:42:46 +0000
+Message-ID: <20091127114245.GD29821@rakim.wolfsonmicro.main>
+References: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
+ <4B0D9212.1060805@boundarydevices.com>
+ <5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F86@dbde02.ent.ti.com>
+ <20091126102230.GB27562@rakim.wolfsonmicro.main>
+ <5A47E75E594F054BAF48C5E4FC4B92AB030AAC3291@dbde02.ent.ti.com>
+ <20091126151121.GC9351@rakim.wolfsonmicro.main>
+ <5A47E75E594F054BAF48C5E4FC4B92AB030AAC329C@dbde02.ent.ti.com>
+ <20091126152933.GD9351@rakim.wolfsonmicro.main>
+ <5A47E75E594F054BAF48C5E4FC4B92AB030AAC33B6@dbde02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
-	[209.85.220.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5FE5110392F
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 12:37:25 +0100 (CET)
-Received: by fxm3 with SMTP id 3so462731fxm.4
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 03:37:25 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB030AAC33B6@dbde02.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Cc: 'Troy Kisky' <troy.kisky@boundarydevices.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Arun KS <arunks@mistralsolutions.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8KCkknbSB1c2luZyBVYnVudHUgS2FybWljIG9uIGEgQXN1cyBUOTEgbmV0Ym9vay4KVGhl
-IHNvdW5kcyB3b3JrcyBleGNlcHQgZm9yIHRoZSBpbnRlcm5hbCBNSUMgc28gSSBoYXZlIGluc3Rh
-bGxlZApsaW51eC1iYWNrcG9ydHMtbW9kdWxlcy1hbHNhLWthcm1pYy1nZW5lcmljCihsaW51eC1i
-YWNrcG9ydHMtbW9kdWxlcy1hbHNhLTIuNi4zMS0xNS1nZW5lcmljKS4KTm93IHRoZSBwcm9ibGVt
-IGlzIHRoYXQgdW5wcmVkaWN0YWJseSB0aGUgc291bmQgc3RvcCB3b3JraW5nLCB0aGF0IGlzLCB0
-aGUKYXBwcyBwbGF5IGJ1dCBubyBzb3VuZCBpcyByZWFsbHkgcGxheWVkLgpMb29raW5nIGF0IGRt
-ZXNnIHJldmVhbHMgbG90cyBvZiBlcnJvcnMgKHNlZSBiZWxvdykuIGxzcGNpIG91dHB1dCBpcyBh
-bHNvCmF0dGFjaGVkLgoKU2hvdWxkIEkgcHJvdmljZSBtb3JlIGluZm9ybWF0aW9uPwpBbnkgZGV2
-ZWwgdmVyc2lvbiBJIGNhbiB1c2UvdGVzdD8KClJlZ2FyZHMsCmJyw6F1bGlvCgokIGRtZXNnClsg
-IDI0MC40MDQwMjNdIEFMU0EgaGRhX2ludGVsLmM6Njk5OiBhenhfZ2V0X3Jlc3BvbnNlIHRpbWVv
-dXQsIHN3aXRjaGluZyB0bwpwb2xsaW5nIG1vZGU6IGxhc3QgY21kPTB4MDE1ZjA5MDAKWyAgMjQx
-LjQwODAyM10gQUxTQSBoZGFfaW50ZWwuYzo3MjM6IGhkYV9pbnRlbDogYXp4X2dldF9yZXNwb25z
-ZSB0aW1lb3V0LApzd2l0Y2hpbmcgdG8gc2luZ2xlX2NtZCBtb2RlOiBsYXN0IGNtZD0weDAxNWYw
-OTAwClsgIDI0MS40MDgwOTddIEFMU0EgaGRhX2ludGVsLmM6NjQ3OiBzcHVyaW91cyByZXNwb25z
-ZSAweDA6MHgwLCBsYXN0CmNtZD0weDE1ZjA5MDAKWyAgMjQxLjQwODExNl0gQUxTQSBoZGFfaW50
-ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAsIGxhc3QKY21kPTB4MTQ3MDc0MApb
-ICAyNDEuNDA4MTk4XSBBTFNBIGhkYV9pbnRlbC5jOjY0Nzogc3B1cmlvdXMgcmVzcG9uc2UgMHgw
-OjB4MCwgbGFzdApjbWQ9MHgxNDcwNzQwClsgIDI0MS40MDgyODFdIEFMU0EgaGRhX2ludGVsLmM6
-NjQ3OiBzcHVyaW91cyByZXNwb25zZSAweDA6MHgwLCBsYXN0CmNtZD0weDE4ZjA5MDAKWyAgMjQx
-LjQwODMwM10gQUxTQSBoZGFfaW50ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAs
-IGxhc3QKY21kPTB4MjM3MDEwNQpbICAyNDEuNDA4Mzg2XSBBTFNBIGhkYV9pbnRlbC5jOjY0Nzog
-c3B1cmlvdXMgcmVzcG9uc2UgMHgwOjB4MCwgbGFzdApjbWQ9MHgyM2EwMmIKWyAgMjQxLjQwODQ2
-OV0gQUxTQSBoZGFfaW50ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAsIGxhc3QK
-Y21kPTB4MjM5MDJiClsgIDI0MS40MDg0OTBdIEFMU0EgaGRhX2ludGVsLmM6NjQ3OiBzcHVyaW91
-cyByZXNwb25zZSAweDA6MHgwLCBsYXN0CmNtZD0weDE1MzkwMDAKWyAgMjQxLjQwODU3M10gQUxT
-QSBoZGFfaW50ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAsIGxhc3QKY21kPTB4
-MTUzOTAwMApbICAyNDEuNDA4NjU2XSBBTFNBIGhkYV9pbnRlbC5jOjY0Nzogc3B1cmlvdXMgcmVz
-cG9uc2UgMHgwOjB4MCwgbGFzdApjbWQ9MHgzM2EwMWYKWyAgMjQxLjQwODY3N10gQUxTQSBoZGFf
-aW50ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAsIGxhc3QKY21kPTB4MzM5MDFm
-ClsgIDI0MS40MDg3NjBdIEFMU0EgaGRhX2ludGVsLmM6NjQ3OiBzcHVyaW91cyByZXNwb25zZSAw
-eDA6MHgwLCBsYXN0CmNtZD0weDgzNTAxNAooY29udGludWVzKQoKJCBsc3BjaSAtdgowMDoxYi4w
-IEF1ZGlvIGRldmljZTogSW50ZWwgQ29ycG9yYXRpb24gU3lzdGVtIENvbnRyb2xsZXIgSHViIChT
-Q0ggUG91bHNibykKSEQgQXVkaW8gQ29udHJvbGxlciAocmV2IDA3KQogICAgICAgIFN1YnN5c3Rl
-bTogQVNVU1RlSyBDb21wdXRlciBJbmMuIERldmljZQo4Mzk4CiAgICAgICAgRmxhZ3M6IGJ1cyBt
-YXN0ZXIsIGZhc3QgZGV2c2VsLCBsYXRlbmN5IDAsIElSUQoyMwogICAgICAgIE1lbW9yeSBhdCBm
-M2YzODAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKQpbc2l6ZT0xNktdCiAgICAgICAgQ2Fw
-YWJpbGl0aWVzOiA8YWNjZXNzCmRlbmllZD4KICAgICAgICBLZXJuZWwgZHJpdmVyIGluIHVzZTog
-SERBCkludGVsCiAgICAgICAgS2VybmVsIG1vZHVsZXM6IHNuZC1oZGEtaW50ZWwKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Fri, Nov 27, 2009 at 01:37:54PM +0530, Aggarwal, Anuj wrote:
+
+> [Aggarwal, Anuj] We were able to fine tune NFS and use arecord to capture
+> large files. But some more problems cropped up when tried to suspend /
+> resume. Basic playback is working fine wrt suspend/resume. But capture,
+> either tried independently or with playback, is creating a system wide
+> hang. I fixed that infinite-loop in resume path but I believe something
+> else needs cleanup too.
+> Any pointers? 
+
+Have you got CONFIG_DETECT_SOFTLOCKUP turned on?  With any luck that
+will at least pinpoint where the code has locked up.  Otherwise it's
+going to be a case of bisection via printk().
+
+A contrast and compare of the hardware initialisation on initial boot
+compared to coming out of suspend might identify the problem.  If the
+playback is working it's *probably* something missing in the CPU init
+that's specific to capture.
