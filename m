@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ALSA: ARM: add Raumfeld audio support
-Date: Fri, 27 Nov 2009 11:34:49 +0000
-Message-ID: <20091127113449.GB29821@rakim.wolfsonmicro.main>
-References: <1259258341-31114-1-git-send-email-daniel@caiaq.de>
-	<1259258341-31114-2-git-send-email-daniel@caiaq.de>
-	<1259258341-31114-3-git-send-email-daniel@caiaq.de>
+From: =?UTF-8?Q?Br=C3=A1ulio_B_O_Bhavamitra?= <brauliobo@gmail.com>
+Subject: Problem with ASUSTeK Computer Inc. Device 8398
+Date: Fri, 27 Nov 2009 09:37:05 -0200
+Message-ID: <1df1788c0911270337p362be7d0n24a3eeecd3b26fc3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E61BD103802
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 12:34:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1259258341-31114-3-git-send-email-daniel@caiaq.de>
+Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
+	[209.85.220.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5FE5110392F
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 12:37:25 +0100 (CET)
+Received: by fxm3 with SMTP id 3so462731fxm.4
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 03:37:25 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Nov 26, 2009 at 06:59:00PM +0100, Daniel Mack wrote:
-
-> +static struct regulator_consumer_supply audio_va_consumer_supply =
-> +	REGULATOR_SUPPLY("va", "soc-audio.0");
-
-I hadn't spotted this in your cs4270 patches but the device used should
-be the I2C device, not the soc-audio device.  I'd also expect to see
-this regulator setup done in arch/arm - the stuff I'd expect to see in
-here is the resource claiming stuff.  Having it here is also fine, it's
-just a little surprising.
-
-> +static int raumfeld_ak4104_init(struct snd_soc_codec *codec)
-> +{
-> +	return 0;
-> +}
-
-Remove empty functions like this (I think this is the only one that's
-left).
-
-> +static int __init raumfeld_audio_init(void)
-> +{
-> +	int ret;
-> +
-> +	if (!machine_is_raumfeld_speaker() &&
-> +	    !machine_is_raumfeld_connector())
-> +		return 0;
-> +
-> +	max9486_client = i2c_new_device(i2c_get_adapter(0),
-> +					&max9486_hwmon_info);
-> +
-> +	if (!max9486_client)
-> +		return -ENOMEM;
-
-I'd still really prefer to see this as a regular I2C device driver with
-the code in arch/arm (even if the driver itself ends up embedded in this
-file, which is what GTA01 did for a similar situation) but I guess I'm
-OK.  max9486_hwmon_info could be renamed, though.
-
-> +       platform_add_devices(regulator_devices, ARRAY_SIZE(regulator_devices));
-
-Nothing ever reverses this (one of the reasons to shove this bit into
-arch/arm :) ).
+SGVsbG8KCkknbSB1c2luZyBVYnVudHUgS2FybWljIG9uIGEgQXN1cyBUOTEgbmV0Ym9vay4KVGhl
+IHNvdW5kcyB3b3JrcyBleGNlcHQgZm9yIHRoZSBpbnRlcm5hbCBNSUMgc28gSSBoYXZlIGluc3Rh
+bGxlZApsaW51eC1iYWNrcG9ydHMtbW9kdWxlcy1hbHNhLWthcm1pYy1nZW5lcmljCihsaW51eC1i
+YWNrcG9ydHMtbW9kdWxlcy1hbHNhLTIuNi4zMS0xNS1nZW5lcmljKS4KTm93IHRoZSBwcm9ibGVt
+IGlzIHRoYXQgdW5wcmVkaWN0YWJseSB0aGUgc291bmQgc3RvcCB3b3JraW5nLCB0aGF0IGlzLCB0
+aGUKYXBwcyBwbGF5IGJ1dCBubyBzb3VuZCBpcyByZWFsbHkgcGxheWVkLgpMb29raW5nIGF0IGRt
+ZXNnIHJldmVhbHMgbG90cyBvZiBlcnJvcnMgKHNlZSBiZWxvdykuIGxzcGNpIG91dHB1dCBpcyBh
+bHNvCmF0dGFjaGVkLgoKU2hvdWxkIEkgcHJvdmljZSBtb3JlIGluZm9ybWF0aW9uPwpBbnkgZGV2
+ZWwgdmVyc2lvbiBJIGNhbiB1c2UvdGVzdD8KClJlZ2FyZHMsCmJyw6F1bGlvCgokIGRtZXNnClsg
+IDI0MC40MDQwMjNdIEFMU0EgaGRhX2ludGVsLmM6Njk5OiBhenhfZ2V0X3Jlc3BvbnNlIHRpbWVv
+dXQsIHN3aXRjaGluZyB0bwpwb2xsaW5nIG1vZGU6IGxhc3QgY21kPTB4MDE1ZjA5MDAKWyAgMjQx
+LjQwODAyM10gQUxTQSBoZGFfaW50ZWwuYzo3MjM6IGhkYV9pbnRlbDogYXp4X2dldF9yZXNwb25z
+ZSB0aW1lb3V0LApzd2l0Y2hpbmcgdG8gc2luZ2xlX2NtZCBtb2RlOiBsYXN0IGNtZD0weDAxNWYw
+OTAwClsgIDI0MS40MDgwOTddIEFMU0EgaGRhX2ludGVsLmM6NjQ3OiBzcHVyaW91cyByZXNwb25z
+ZSAweDA6MHgwLCBsYXN0CmNtZD0weDE1ZjA5MDAKWyAgMjQxLjQwODExNl0gQUxTQSBoZGFfaW50
+ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAsIGxhc3QKY21kPTB4MTQ3MDc0MApb
+ICAyNDEuNDA4MTk4XSBBTFNBIGhkYV9pbnRlbC5jOjY0Nzogc3B1cmlvdXMgcmVzcG9uc2UgMHgw
+OjB4MCwgbGFzdApjbWQ9MHgxNDcwNzQwClsgIDI0MS40MDgyODFdIEFMU0EgaGRhX2ludGVsLmM6
+NjQ3OiBzcHVyaW91cyByZXNwb25zZSAweDA6MHgwLCBsYXN0CmNtZD0weDE4ZjA5MDAKWyAgMjQx
+LjQwODMwM10gQUxTQSBoZGFfaW50ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAs
+IGxhc3QKY21kPTB4MjM3MDEwNQpbICAyNDEuNDA4Mzg2XSBBTFNBIGhkYV9pbnRlbC5jOjY0Nzog
+c3B1cmlvdXMgcmVzcG9uc2UgMHgwOjB4MCwgbGFzdApjbWQ9MHgyM2EwMmIKWyAgMjQxLjQwODQ2
+OV0gQUxTQSBoZGFfaW50ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAsIGxhc3QK
+Y21kPTB4MjM5MDJiClsgIDI0MS40MDg0OTBdIEFMU0EgaGRhX2ludGVsLmM6NjQ3OiBzcHVyaW91
+cyByZXNwb25zZSAweDA6MHgwLCBsYXN0CmNtZD0weDE1MzkwMDAKWyAgMjQxLjQwODU3M10gQUxT
+QSBoZGFfaW50ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAsIGxhc3QKY21kPTB4
+MTUzOTAwMApbICAyNDEuNDA4NjU2XSBBTFNBIGhkYV9pbnRlbC5jOjY0Nzogc3B1cmlvdXMgcmVz
+cG9uc2UgMHgwOjB4MCwgbGFzdApjbWQ9MHgzM2EwMWYKWyAgMjQxLjQwODY3N10gQUxTQSBoZGFf
+aW50ZWwuYzo2NDc6IHNwdXJpb3VzIHJlc3BvbnNlIDB4MDoweDAsIGxhc3QKY21kPTB4MzM5MDFm
+ClsgIDI0MS40MDg3NjBdIEFMU0EgaGRhX2ludGVsLmM6NjQ3OiBzcHVyaW91cyByZXNwb25zZSAw
+eDA6MHgwLCBsYXN0CmNtZD0weDgzNTAxNAooY29udGludWVzKQoKJCBsc3BjaSAtdgowMDoxYi4w
+IEF1ZGlvIGRldmljZTogSW50ZWwgQ29ycG9yYXRpb24gU3lzdGVtIENvbnRyb2xsZXIgSHViIChT
+Q0ggUG91bHNibykKSEQgQXVkaW8gQ29udHJvbGxlciAocmV2IDA3KQogICAgICAgIFN1YnN5c3Rl
+bTogQVNVU1RlSyBDb21wdXRlciBJbmMuIERldmljZQo4Mzk4CiAgICAgICAgRmxhZ3M6IGJ1cyBt
+YXN0ZXIsIGZhc3QgZGV2c2VsLCBsYXRlbmN5IDAsIElSUQoyMwogICAgICAgIE1lbW9yeSBhdCBm
+M2YzODAwMCAoNjQtYml0LCBub24tcHJlZmV0Y2hhYmxlKQpbc2l6ZT0xNktdCiAgICAgICAgQ2Fw
+YWJpbGl0aWVzOiA8YWNjZXNzCmRlbmllZD4KICAgICAgICBLZXJuZWwgZHJpdmVyIGluIHVzZTog
+SERBCkludGVsCiAgICAgICAgS2VybmVsIG1vZHVsZXM6IHNuZC1oZGEtaW50ZWwKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
