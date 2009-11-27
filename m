@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: AIC23: Fixing infinite loop in
-	resume path
-Date: Fri, 27 Nov 2009 16:48:25 +0000
-Message-ID: <20091127164825.GD11913@rakim.wolfsonmicro.main>
-References: <1259323858-32203-1-git-send-email-anuj.aggarwal@ti.com>
+Subject: Re: [PATCH 2/3] ALSA: ARM: add Raumfeld audio support
+Date: Fri, 27 Nov 2009 16:48:42 +0000
+Message-ID: <20091127164841.GE11913@rakim.wolfsonmicro.main>
+References: <1259326031-8856-1-git-send-email-daniel@caiaq.de>
+	<1259326031-8856-2-git-send-email-daniel@caiaq.de>
+	<1259326031-8856-3-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6F492243A1
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 17:48:27 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E7C5524633
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 17:48:42 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1259323858-32203-1-git-send-email-anuj.aggarwal@ti.com>
+In-Reply-To: <1259326031-8856-3-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +23,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anuj Aggarwal <anuj.aggarwal@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 27, 2009 at 05:40:58PM +0530, Anuj Aggarwal wrote:
-> This patch fixes two issues:
-> a) Infinite loop in resume function
-> b) Writes to non-existing registers in resume function
-> 
-> Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
+On Fri, Nov 27, 2009 at 01:47:10PM +0100, Daniel Mack wrote:
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
 
 Applied, thanks.
