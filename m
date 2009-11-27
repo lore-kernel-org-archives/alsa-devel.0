@@ -1,24 +1,21 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: Re: [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume hang
-Date: Fri, 27 Nov 2009 13:37:54 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB030AAC33B6@dbde02.ent.ti.com>
-References: <1259154631-15251-1-git-send-email-anuj.aggarwal@ti.com>
-	<4B0D9212.1060805@boundarydevices.com>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030AAC2F86@dbde02.ent.ti.com>
-	<20091126102230.GB27562@rakim.wolfsonmicro.main>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030AAC3291@dbde02.ent.ti.com>
-	<20091126151121.GC9351@rakim.wolfsonmicro.main>
-	<5A47E75E594F054BAF48C5E4FC4B92AB030AAC329C@dbde02.ent.ti.com>
-	<20091126152933.GD9351@rakim.wolfsonmicro.main>
+From: Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH 3/5] ALSA: pcm - fix page conversion on
+ non-coherent MIPS arch
+Date: Fri, 27 Nov 2009 08:46:35 +0000
+Message-ID: <20091127084635.GA18741@linux-mips.org>
+References: <1259248388-20095-1-git-send-email-tiwai@suse.de>
+	<1259248388-20095-2-git-send-email-tiwai@suse.de>
+	<1259248388-20095-3-git-send-email-tiwai@suse.de>
+	<1259248388-20095-4-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E0161038FB
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 09:08:03 +0100 (CET)
-In-Reply-To: <20091126152933.GD9351@rakim.wolfsonmicro.main>
-Content-Language: en-US
+Received: from h5.dl5rb.org.uk (h5.dl5rb.org.uk [81.2.74.5])
+	by alsa0.perex.cz (Postfix) with ESMTP id 33FDF1038A0
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 09:46:22 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1259248388-20095-4-git-send-email-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,49 +25,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Arun KS <arunks@mistralsolutions.com>, 'Troy Kisky' <troy.kisky@boundarydevices.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Becky Bruce <beckyb@kernel.crashing.org>, Wu Zhangjin <wuzhangjin@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Kumar Gala <galak@gate.crashing.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Thursday, November 26, 2009 9:00 PM
-> To: Aggarwal, Anuj
-> Cc: 'Troy Kisky'; alsa-devel@alsa-project.org; linux-omap@vger.kernel.org;
-> Arun KS
-> Subject: Re: [alsa-devel] [PATCH] ASoC: AM3517: Fix AIC23 suspend/resume
-> hang
+On Thu, Nov 26, 2009 at 04:13:06PM +0100, Takashi Iwai wrote:
+
+> The non-coherent MIPS arch doesn't give the correct address by a simple
+> virt_to_page() for pages allocated via dma_alloc_coherent().
 > 
-> On Thu, Nov 26, 2009 at 08:52:08PM +0530, Aggarwal, Anuj wrote:
+> Original patch by Wu Zhangjin <wuzj@lemote.com>.  A proper check of the
+> buffer allocation type was added to avoid the wrong conversion.
+
+The origins of this patch go back far further.  The oldest patch I could
+find which is a superset of this was written by Atsushi Nemoto and
+various incarnations of it have been sumitted to and reject by me
+a number of times through the years.
+
+> Note that this doesn't fix perfectly: the pages should be marked with
+> proper pgprot value.  This will be done in a future implementation like
+> the conversion to dma_mmap_coherent().
 > 
-> > [Aggarwal, Anuj] I am still surprised how this could be a NFS writeout
-> issue
-> > as we are seeing a consistent read/write rate of 2Mbps over tftp. When
-> dd
-> > command is used for read/write to further check NFS performance, 2Mbps
-> for write and 4Mbps for read is observed.
-> > Does that still mean nfs is the culprit? What could be tweaked in
-> audio/network driver to avoid this problem, any suggestions?
-> 
-> There can also be issues with the way the data gets pushed into NFS
-> interacting poorly - it's not just the raw data rate that's in play
-> here, it's also things like how often the writes are done and how big
-> they are.  Possibly also overhead from interacting with the ethernet
-> chip but that's not normally an issue for anything modern.
-> 
-> The fact that this only happens when NFS is in use seems a fairly clear
-> pointer to an interacton there.
-[Aggarwal, Anuj] We were able to fine tune NFS and use arecord to capture
-large files. But some more problems cropped up when tried to suspend /
-resume. Basic playback is working fine wrt suspend/resume. But capture,
-either tried independently or with playback, is creating a system wide
-hang. I fixed that infinite-loop in resume path but I believe something
-else needs cleanup too.
-Any pointers? 
-> 
-> > [Aggarwal, Anuj] Any other utility to try capture which does error
-> > recovering too?
-> 
-> Not for the console off the top of my head, and TBH I don't really know
-> how good the error handling is in the various apps.  You could also try
-> playing with the buffer size options in arecord.
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+So while this is ugly I don't think this patch will actually make the
+the situation worse for any MIPS platform.  So with both eyes closed:
+
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
+
+  Ralf
