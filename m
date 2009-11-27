@@ -1,54 +1,56 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] ASoC: tlv320dac33: Change RT wq to singlethread wq
-Date: Fri, 27 Nov 2009 09:34:07 +1100
-Message-ID: <20091127093407.4c58ee0b.sfr@canb.auug.org.au>
-References: <1259236511-25805-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20091126154746.GA10674@rakim.wolfsonmicro.main>
+From: Wu Zhangjin <wuzhangjin@gmail.com>
+Subject: Re: [PATCH 3/5] ALSA: pcm - fix page conversion on non-coherent
+ MIPS arch
+Date: Fri, 27 Nov 2009 11:52:58 +0800
+Message-ID: <1259293978.3197.92.camel@falcon.domain.org>
+References: <1259248388-20095-1-git-send-email-tiwai@suse.de>
+         <1259248388-20095-2-git-send-email-tiwai@suse.de>
+         <1259248388-20095-3-git-send-email-tiwai@suse.de>
+         <1259248388-20095-4-git-send-email-tiwai@suse.de>
+Reply-To: wuzhangjin@gmail.com
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Fri__27_Nov_2009_09_34_07_+1100_90F3il4Pqwr6EKSy"
-Return-path: <linux-next-owner@vger.kernel.org>
-In-Reply-To: <20091126154746.GA10674@rakim.wolfsonmicro.main>
-Sender: linux-next-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, tj@kernel.org, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <1259248388-20095-4-git-send-email-tiwai@suse.de>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Ralf Baechle <ralf@linux-mips.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@linux-mips.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Kumar Gala <galak@gate.crashing.org>, Becky Bruce <beckyb@kernel.crashing.org>
 List-Id: alsa-devel@alsa-project.org
 
---Signature=_Fri__27_Nov_2009_09_34_07_+1100_90F3il4Pqwr6EKSy
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2009-11-26 at 16:13 +0100, Takashi Iwai wrote:
+> The non-coherent MIPS arch doesn't give the correct address by a simple
+> virt_to_page() for pages allocated via dma_alloc_coherent().
+> 
+> Original patch by Wu Zhangjin <wuzj@lemote.com>.  A proper check of the
+> buffer allocation type was added to avoid the wrong conversion.
+> 
+> Note that this doesn't fix perfectly: the pages should be marked with
+> proper pgprot value.  This will be done in a future implementation like
+> the conversion to dma_mmap_coherent().
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/pcm_native.c |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
+> 
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index c906be2..e48c5f6 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -3066,6 +3066,10 @@ static inline struct page *
+>  snd_pcm_default_page_ops(struct snd_pcm_substream *substream, unsigned long ofs)
+>  {
+>  	void *vaddr = substream->runtime->dma_area + ofs;
+> +#if defined(CONFIG_MIPS) && defined(CONFIG_DMA_NONCOHERENT)
+> +	if (substream->dma_buffer.dev.type == SNDRV_DMA_TYPE_DEV)
+> +		return virt_to_page(CAC_ADDR(vaddr));
+> +#endif
+>  	return virt_to_page(vaddr);
+>  }
 
-Hi Mark, Peter,
+Works well on Loongson family machines, thanks!
 
-On Thu, 26 Nov 2009 15:47:46 +0000 Mark Brown <broonie@opensource.wolfsonmi=
-cro.com> wrote:
->
-> On Thu, Nov 26, 2009 at 01:55:11PM +0200, Peter Ujfalusi wrote:
-> > RT workqueue is going away in the near future, replace it with
-> > singlethread wq for now, which is still supported.
-> >=20
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
->=20
-> Applied, thanks.
-
-Thanks guys.
-
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
-
---Signature=_Fri__27_Nov_2009_09_34_07_+1100_90F3il4Pqwr6EKSy
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAksPAl8ACgkQjjKRsyhoI8yC6gCfU1/r5DS/rfuiTu4X0k13y6N9
-JVYAmQEBXhBwmbHnd4y5JX4QkWHHmnsC
-=xr7m
------END PGP SIGNATURE-----
-
---Signature=_Fri__27_Nov_2009_09_34_07_+1100_90F3il4Pqwr6EKSy--
+Regards,
+	Wu Zhangjin
