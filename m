@@ -1,20 +1,14 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH V2] Add i.MX sound support
-Date: Fri, 27 Nov 2009 10:54:16 +0100
-Message-ID: <20091127095416.GK27548@pengutronix.de>
-References: <1259163666-30344-1-git-send-email-s.hauer@pengutronix.de>
-	<eedb5540911260753u369d6cffp97c05089cdd30868@mail.gmail.com>
-	<20091127075834.GG27548@pengutronix.de>
-	<eedb5540911270101o4bf06b2ct6ff22e29b7c1fe15@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] opti-miro: fix OOPS if hardware is not detected
+Date: Fri, 27 Nov 2009 11:20:56 +0100
+Message-ID: <20091127112056.828e6bf7.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0369710659759840558=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6BA48103917
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 10:54:17 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <eedb5540911270101o4bf06b2ct6ff22e29b7c1fe15@mail.gmail.com>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40A701038E1
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 11:19:57 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +18,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 27, 2009 at 10:01:37AM +0100, javier Martin wrote:
-> 2009/11/27 Sascha Hauer <s.hauer@pengutronix.de>
-> 
-> > Hi Javier,
-> >
-> > On Thu, Nov 26, 2009 at 04:53:21PM +0100, javier Martin wrote:
-> > > Dear Sascha,
-> > > what repository - branch are these patches tested against? They don't
-> > seem
-> > > to apply in git://git.pengutronix.de/git/imx/linux-2.6.git mxc-master
-> > > branch.
-> >
-> > Try this branch instead to get a full series also containing the mc13783
-> > support and full board support for the Phytec boards:
-> >
-> > git://git.pengutronix.de/git/imx/linux-2.6.git asoc
-> >
-> > I posted only the patches relevant to the alsa list. By now mxc-master
-> > should contain the missing bits.
-> >
-> 
-> Sascha,
-> it seems that git://git.pengutronix.de/git/imx/linux-2.6.git asoc is in an
-> intermediate state since some files are already created (imx-ssi.*) and
-> others aren't (imx-pcm-dma-mx2.c), this result in nasty errors when applying
-> your last patches (v2).
+--===============0369710659759840558==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The asoc branch I gave you already contains all relevant patches
-including the ones I posted on this list. You don't need to apply anything
-but your own board support on it. I just checked that it compiles and works.
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Sascha
+If a hardware is not detected there is a kernel crash
+due to not initialized snd_miro->aci pointer. This pointer
+is initialized after detection of the opti (miro) chip.
 
+This bug was introduced by patches to expose
+ACI mikser outside the snd-miro driver.
 
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+
+ sound/isa/opti9xx/miro.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/sound/isa/opti9xx/miro.c b/sound/isa/opti9xx/miro.c
+index 40b64cd..e374869 100644
+--- a/sound/isa/opti9xx/miro.c
++++ b/sound/isa/opti9xx/miro.c
+@@ -1229,7 +1229,8 @@ static void snd_card_miro_free(struct snd_card *card)
+ 	struct snd_miro *miro = card->private_data;
+         
+ 	release_and_free_resource(miro->res_aci_port);
+-	miro->aci->aci_port = 0;
++	if (miro->aci)
++		miro->aci->aci_port = 0;
+ 	release_and_free_resource(miro->res_mc_base);
+ }
+ 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.6.4
+
+
+----------------------------------------------------------------------
+Wygraj pobyt w Alpach dla ca³ej rodziny
+Kliknij >>> http://link.interia.pl/f2446
+
+
+--===============0369710659759840558==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0369710659759840558==--
