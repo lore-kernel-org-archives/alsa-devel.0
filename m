@@ -1,19 +1,26 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Sound support for Neuros OSD2 Davinci based board.
-Date: Fri, 27 Nov 2009 13:28:11 +0000
-Message-ID: <20091127132811.GA17711@rakim.wolfsonmicro.main>
-References: <4B0E7D5E.3080906@chelcom.ru> <002e01ca6e9c$2dab6040$890220c0$@com>
-	<20091127111254.GB29512@sirena.org.uk>
-	<4B0FD0B2.9070303@chelcom.ru>
+Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
+ CS4270 codec driver
+Date: Fri, 27 Nov 2009 13:32:25 +0000
+Message-ID: <20091127133225.GB17711@rakim.wolfsonmicro.main>
+References: <1259159787-21876-1-git-send-email-daniel@caiaq.de>
+	<20091125150139.GC636@rakim.wolfsonmicro.main>
+	<20091125152052.GM29442@buzzloop.caiaq.de>
+	<20091125153804.GA12750@rakim.wolfsonmicro.main>
+	<20091126154807.GI14091@buzzloop.caiaq.de>
+	<20091126160351.GB10674@rakim.wolfsonmicro.main>
+	<20091126174245.GJ14091@buzzloop.caiaq.de>
+	<20091127112550.GA29821@rakim.wolfsonmicro.main>
+	<20091127124139.GR14091@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 029242434A
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 14:28:12 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7A93524367
+	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 14:32:26 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4B0FD0B2.9070303@chelcom.ru>
+In-Reply-To: <20091127124139.GR14091@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +30,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "A. Porodko" <panda@chelcom.ru>
-Cc: alsa-devel@alsa-project.org, 'David Brownell' <dbrownell@users.sourceforge.net>, 'Takashi Iwai' <tiwai@suse.de>, linux-kernel@vger.kernel.org, 'Troy Kisky' <troy.kisky@boundarydevices.com>, 'Kevin Hilman' <khilman@deeprootsystems.com>, Chaithrika U S <chaithrika@ti.com>, 'Liam Girdwood' <lrg@slimlogic.co.uk>
+To: Daniel Mack <daniel@caiaq.de>, Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Nov 27, 2009 at 06:14:26PM +0500, A. Porodko wrote:
-> Mark Brown wrote:
+On Fri, Nov 27, 2009 at 01:41:39PM +0100, Daniel Mack wrote:
 
-> > I raised the same query when Andrey sent an off-list copy to me by
-> > mistake - he said that in future he intends to extend the driver to 
-> > have additional features not present on the EVM (though for me that
-> > could always change the || later).
+> Ok, agreed. Next try below.
 
-> Understood. Shall I change if if to if || then?
-
-Honestly I'm not that bothered, I was mostly following up to the list so
-that readers and the archives could see the answer to the query (I
-guessed you may have mistakenly replied off list).
+Looks good to me, though I suspect Timur will want error checking for
+those enable calls - Timur?
