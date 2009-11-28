@@ -1,33 +1,35 @@
 From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 06/12] imx-ssi sound driver
-Date: Sat, 28 Nov 2009 13:53:30 -0600
-Message-ID: <4B117FBA.601@freescale.com>
-References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
-	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
-	<ed82fe3e0911211812i49342b0eg2afe861c866db90c@mail.gmail.com>
-	<20091123121055.GE30179@pengutronix.de>
+Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
+	CS4270 codec driver
+Date: Sat, 28 Nov 2009 14:23:20 -0600
+Message-ID: <4B1186B8.6070606@freescale.com>
+References: <1259159787-21876-1-git-send-email-daniel@caiaq.de>
+	<20091125150139.GC636@rakim.wolfsonmicro.main>
+	<20091125152052.GM29442@buzzloop.caiaq.de>
+	<20091125153804.GA12750@rakim.wolfsonmicro.main>
+	<20091126154807.GI14091@buzzloop.caiaq.de>
+	<20091126160351.GB10674@rakim.wolfsonmicro.main>
+	<20091126174245.GJ14091@buzzloop.caiaq.de>
+	<20091127112550.GA29821@rakim.wolfsonmicro.main>
+	<20091127124139.GR14091@buzzloop.caiaq.de>
+	<20091127133225.GB17711@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from az33egw02.freescale.net (az33egw02.freescale.net
 	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05EAD247BA
-	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 20:53:52 +0100 (CET)
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAA362480D
+	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 21:23:23 +0100 (CET)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
 	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	nASJrXiL001111
-	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 12:53:44 -0700 (MST)
+	nASKNMRW003590
+	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 13:23:22 -0700 (MST)
 Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
 	[10.64.32.16])
-	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id nASJwC0t029803
-	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 13:58:13 -0600 (CST)
-In-Reply-To: <20091123121055.GE30179@pengutronix.de>
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id nASKRial007203
+	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 14:27:44 -0600 (CST)
+In-Reply-To: <20091127133225.GB17711@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,38 +39,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Sascha Hauer wrote:
-> Mainly because I wasn't aware of the fact that the fsl driver is the
-> same:(
+Mark Brown wrote:
+> Looks good to me, though I suspect Timur will want error checking for
+> those enable calls - Timur?
 
-So "fsl-ssi.c" was not a clue? :-)
-
->
-> I'm currently looking if and how the code can be merged. I don't know if
-> it's worth it though since the common code doesn't seem to be very big.
-
-That's probably because my driver only supports I2S and yours supports AC97. 
-Please, DMA is different.  I wasn't really expecting you to be able to re-use 
-my driver, but I figured you could at least re-use the macros I've defined in 
-fsl-ssi.h
-
-> There will have to be some changes in the fsl-ssi driver. For example I
-> need the irq handler for my fiq handler which means that the fsl-ssi
-> driver is not allowed to request the irq for it's statistic.
-
-That shouldn't be a problem, since the statistics never show anything useful 
-anyway.
-
-> The other
-> thing is the hardware accesses as we do not have in_be*, out_be* and
-> setbits/clrbits. Of course all these things are doable and shouldn't be
-> a showstopper.
-
-These should be defined in the arch/arm header files anyway.
+Yes, I'd like to see error checking on those calls, but I'm more concerned 
+that I don't see "#ifdef CONFIG_REGULATOR" anywhere in this patch.
 
 -- 
 Timur Tabi
