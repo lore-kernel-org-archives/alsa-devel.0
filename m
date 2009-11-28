@@ -1,107 +1,75 @@
-From: "Andrey A. Porodko" <andrey.porodko@gmail.com>
-Subject: Re: Sound support for Neuros OSD2 Davinci based board.
-Date: Sat, 28 Nov 2009 20:07:06 +0500
-Message-ID: <4B113C9A.9050002@gmail.com>
-References: <4B0E7D5E.3080906@chelcom.ru> <20091127164733.GC11913@rakim.wolfsonmicro.main>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 06/12] imx-ssi sound driver
+Date: Sat, 28 Nov 2009 13:53:30 -0600
+Message-ID: <4B117FBA.601@freescale.com>
+References: <1258645706-9071-1-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-2-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-3-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-4-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-5-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-6-git-send-email-s.hauer@pengutronix.de>
+	<1258645706-9071-7-git-send-email-s.hauer@pengutronix.de>
+	<ed82fe3e0911211812i49342b0eg2afe861c866db90c@mail.gmail.com>
+	<20091123121055.GE30179@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751963AbZK1PHI@vger.kernel.org>
-In-Reply-To: <20091127164733.GC11913@rakim.wolfsonmicro.main>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "A. Porodko" <panda@chelcom.ru>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Chaithrika U S <chaithrika@ti.com>, Troy Kisky <troy.kisky@boundarydevices.com>, David Brownell <dbrownell@users.sourceforge.net>, Kevin Hilman <khilman@deeprootsystems.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05EAD247BA
+	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 20:53:52 +0100 (CET)
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
+	nASJrXiL001111
+	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 12:53:44 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])
+	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id nASJwC0t029803
+	for <alsa-devel@alsa-project.org>; Sat, 28 Nov 2009 13:58:13 -0600 (CST)
+In-Reply-To: <20091123121055.GE30179@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Thu, Nov 26, 2009 at 06:06:38PM +0500, A. Porodko wrote:
->   
->> Hello,
->>
->> Here is a patch for Neuros OSD2 Davinci (DM6446) based board sound support.
->> Patch made against 2.6.32-rc6 kernel.
->>     
->
-> This doesn't apply against current ASoC.  Could you please regenerate
-> against this branch:
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
->
->   
-Mark Brown wrote:
-> On Thu, Nov 26, 2009 at 06:06:38PM +0500, A. Porodko wrote:
->   
->> Hello,
->>
->> Here is a patch for Neuros OSD2 Davinci (DM6446) based board sound support.
->> Patch made against 2.6.32-rc6 kernel.
->>     
->
-> This doesn't apply against current ASoC.  Could you please regenerate
-> against this branch:
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
->
->   
-Hi,
+Sascha Hauer wrote:
+> Mainly because I wasn't aware of the fact that the fsl driver is the
+> same:(
 
-I wish I knew how to do this. I'm new with git and anly learn how to
-work with one tree.
-Complex operations confuse me a little. I generated something, but it
-doesn't look different from what I had before.
+So "fsl-ssi.c" was not a clue? :-)
 
-P.S. Reading alsa-project wiki didn't shed more light. For my main tree
-is davinci tree and git is damn tricky.
----------------------------
->From 699bbf676a3e74989063b398ff662fcf40469a16 Mon Sep 17 00:00:00 2001
-From: Andrey Porodko <panda@chelcom.ru>
-Date: Mon, 23 Nov 2009 13:56:53 +0500
-Subject: [PATCH] Davinci sound soc driver patch for Neuros OSD2 board
-support.
+>
+> I'm currently looking if and how the code can be merged. I don't know if
+> it's worth it though since the common code doesn't seem to be very big.
 
-Signed-off-by: Andrey Porodko <panda@chelcom.ru>
----
- sound/soc/davinci/davinci-evm.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+That's probably because my driver only supports I2S and yours supports AC97. 
+Please, DMA is different.  I wasn't really expecting you to be able to re-use 
+my driver, but I figured you could at least re-use the macros I've defined in 
+fsl-ssi.h
 
-diff --git a/sound/soc/davinci/davinci-evm.c
-b/sound/soc/davinci/davinci-evm.c
-index 67414f6..ffdd30e 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -55,6 +55,9 @@ static int evm_hw_params(struct snd_pcm_substream
-*substream,
-     else if (machine_is_davinci_evm())
-         sysclk = 12288000;
- 
-+    else if (machine_is_neuros_osd2())
-+        sysclk = 27000000;
-+
-     else if (machine_is_davinci_da830_evm() ||
-                 machine_is_davinci_da850_evm())
-         sysclk = 24576000;
-@@ -246,6 +249,9 @@ static int __init evm_init(void)
-     if (machine_is_davinci_evm()) {
-         evm_snd_dev_data = &evm_snd_devdata;
-         index = 0;
-+    } else if (machine_is_neuros_osd2()) {
-+        evm_snd_dev_data = &evm_snd_devdata;
-+        index = 0;
-     } else if (machine_is_davinci_dm355_evm()) {
-         evm_snd_dev_data = &evm_snd_devdata;
-         index = 1;
--- 
-1.5.6.5
------------------------------------------
+> There will have to be some changes in the fsl-ssi driver. For example I
+> need the irq handler for my fiq handler which means that the fsl-ssi
+> driver is not allowed to request the irq for it's statistic.
+
+That shouldn't be a problem, since the statistics never show anything useful 
+anyway.
+
+> The other
+> thing is the hardware accesses as we do not have in_be*, out_be* and
+> setbits/clrbits. Of course all these things are doable and shouldn't be
+> a showstopper.
+
+These should be defined in the arch/arm header files anyway.
 
 -- 
-Best regards
-Andrey A. Porodko
- 
-
-
-
--- 
-Best regards
-Andrey A. Porodko
- 
+Timur Tabi
+Linux Kernel Developer @ Freescale
