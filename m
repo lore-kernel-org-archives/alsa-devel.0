@@ -1,27 +1,15 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
- CS4270 codec driver
-Date: Sun, 29 Nov 2009 09:35:54 +0100
-Message-ID: <20091129083554.GC14091@buzzloop.caiaq.de>
-References: <20091126160351.GB10674@rakim.wolfsonmicro.main>
-	<20091126174245.GJ14091@buzzloop.caiaq.de>
-	<20091127112550.GA29821@rakim.wolfsonmicro.main>
-	<20091127124139.GR14091@buzzloop.caiaq.de>
-	<20091127133225.GB17711@rakim.wolfsonmicro.main>
-	<4B1186B8.6070606@freescale.com>
-	<C78B2A7F-3D02-406C-A87B-8C3231456726@opensource.wolfsonmicro.com>
-	<4B11A19D.4070301@freescale.com>
-	<20091129004433.GZ14091@buzzloop.caiaq.de>
-	<ed82fe3e0911282034t6bb8fa87o5141e48f7b0e6a7f@mail.gmail.com>
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: [PATCH 1/2] ALSA: AACI: fix AC97 multiple-open bug
+Date: Sun, 29 Nov 2009 16:39:52 +0000
+Message-ID: <E1NEmoS-0001dM-3b@rmk-PC.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 083E92463E
-	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 09:35:58 +0100 (CET)
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id D3EEF243BC
+	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 17:40:04 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <ed82fe3e0911282034t6bb8fa87o5141e48f7b0e6a7f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,26 +19,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 28, 2009 at 10:34:12PM -0600, Timur Tabi wrote:
-> On Sat, Nov 28, 2009 at 6:44 PM, Daniel Mack <daniel@caiaq.de> wrote:
-> 
-> > It does compile and does boot,
-> 
-> Does it compile and boot on a Freescale MPC8610 HPCD?
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ sound/arm/aaci.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-No, I don't have such a board. But I see no reason why it shouldn't
-compile as no part of the patch is platform depended.
-
-And for configurations with CONFIG_REGULATOR=n, all the new calls are
-NOPs. The only heads-up is that for CONFIG_REGULATOR=y, you now need to
-provide the regulators the codec driver needs.
-
-Anyway - I'll rebase the driver to 'for-2.6.33' so you can give it a
-try.
-
-Thanks,
-Daniel
+diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
+index a03fe80..1456fc7 100644
+--- a/sound/arm/aaci.c
++++ b/sound/arm/aaci.c
+@@ -501,6 +501,10 @@ static int aaci_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	int err;
+ 
+ 	aaci_pcm_hw_free(substream);
++	if (aacirun->pcm_open) {
++		snd_ac97_pcm_close(aacirun->pcm);
++		aacirun->pcm_open = 0;
++	}
+ 
+ 	err = devdma_hw_alloc(NULL, substream,
+ 			      params_buffer_bytes(params));
+-- 
+1.6.2.5
