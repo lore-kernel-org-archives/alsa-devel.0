@@ -1,24 +1,15 @@
 From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH 1/2] opti-93x: fix irq freeing after
-	request_irq error
-Date: Sun, 29 Nov 2009 20:22:26 +0100
-Message-ID: <20091129202226.cb5703ee.krzysztof.h1@poczta.fm>
+Subject: [PATCH 2/2] opti93x: set MC indirect registers base
+	from PnP data
+Date: Sun, 29 Nov 2009 20:23:28 +0100
+Message-ID: <20091129202328.9c3244cc.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
-	[217.74.64.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id D46081037EA
-	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 20:20:27 +0100 (CET)
-Received: from poczta.interia.pl (mi02.poczta.interia.pl [10.217.12.2])
-	by smtp240.poczta.interia.pl (INTERIA.PL) with ESMTP id 6541327027E
-	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 20:20:15 +0100 (CET)
-Received: from krzysio.net (93-181-133-4.as.kn.pl [93.181.133.4])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.poczta.fm (INTERIA.PL) with ESMTP id 87E182BC0E6
-	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 20:20:15 +0100 (CET)
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 0B68B2415D
+	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 20:23:28 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,43 +20,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Rene Herman <rene.herman@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-Set snd_opti->irq value to -1 if the request_irq() fails to avoid
-freeing the irq inside the snd_card_free().
+The PnP data on the OPTI931 and OPTI933 contains io port
+range for the MC indirect registers. Use the PnP range
+instead of hardwired value 0xE0E.
+
+Also, request region of MC indirect registers so it is
+marked as used to other drivers (this was missing previously).
 
 Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
 ---
- sound/isa/opti9xx/opti92x-ad1848.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+ sound/isa/opti9xx/opti92x-ad1848.c |   53 +++++++++++++++++++++++++++++------
+ 1 files changed, 44 insertions(+), 9 deletions(-)
 
 diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-index 5cd5553..438c1da 100644
+index 438c1da..07ab288 100644
 --- a/sound/isa/opti9xx/opti92x-ad1848.c
 +++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -688,9 +688,9 @@ static void snd_card_opti9xx_free(struct snd_card *card)
+@@ -135,6 +135,8 @@ struct snd_opti9xx {
+ 	unsigned long mc_base_size;
+ #ifdef OPTi93X
+ 	unsigned long mc_indir_index;
++	unsigned long mc_indir_size;
++	struct resource *res_mc_indir;
+ 	struct snd_wss *codec;
+ #endif	/* OPTi93X */
+ 	unsigned long pwd_reg;
+@@ -245,7 +247,10 @@ static int __devinit snd_opti9xx_init(struct snd_opti9xx *chip,
+ 	case OPTi9XX_HW_82C931:
+ 	case OPTi9XX_HW_82C933:
+ 		chip->mc_base = (hardware == OPTi9XX_HW_82C930) ? 0xf8f : 0xf8d;
+-		chip->mc_indir_index = 0xe0e;
++		if (!chip->mc_indir_index) {
++			chip->mc_indir_index = 0xe0e;
++			chip->mc_indir_size = 2;
++		}
+ 		chip->password = 0xe4;
+ 		chip->pwd_reg = 0;
+ 		break;
+@@ -579,10 +584,10 @@ static int __devinit snd_card_opti9xx_detect(struct snd_card *card,
+ 					     struct snd_opti9xx *chip)
+ {
+ 	int i, err;
++	unsigned char value;
+ 
+ #ifndef OPTi93X
+ 	for (i = OPTi9XX_HW_82C928; i < OPTi9XX_HW_82C930; i++) {
+-		unsigned char value;
+ 
+ 		if ((err = snd_opti9xx_init(chip, i)) < 0)
+ 			return err;
+@@ -602,18 +607,26 @@ static int __devinit snd_card_opti9xx_detect(struct snd_card *card,
+ #else	/* OPTi93X */
+ 	for (i = OPTi9XX_HW_82C931; i >= OPTi9XX_HW_82C930; i--) {
+ 		unsigned long flags;
+-		unsigned char value;
+ 
+-		if ((err = snd_opti9xx_init(chip, i)) < 0)
++		err = snd_opti9xx_init(chip, i);
++		if (err < 0)
+ 			return err;
+ 
+-		if ((chip->res_mc_base = request_region(chip->mc_base, chip->mc_base_size, "OPTi9xx MC")) == NULL)
+-			continue;
++		chip->res_mc_base = request_region(chip->mc_base,
++						   chip->mc_base_size,
++						   "OPTi9xx MC");
++		if (chip->res_mc_base == NULL)
++			return -EBUSY;
++
++		chip->res_mc_indir = request_region(chip->mc_indir_index,
++						    chip->mc_indir_size,
++						    "OPTi93x MC");
++		if (chip->res_mc_indir == NULL)
++			return -EBUSY;
+ 
+ 		spin_lock_irqsave(&chip->lock, flags);
+ 		outb(chip->password, chip->mc_base + chip->pwd_reg);
+-		outb(((chip->mc_indir_index & (1 << 8)) >> 4) |
+-			((chip->mc_indir_index & 0xf0) >> 4), chip->mc_base);
++		outb(((chip->mc_indir_index & 0x1f0) >> 4), chip->mc_base);
+ 		spin_unlock_irqrestore(&chip->lock, flags);
+ 
+ 		value = snd_opti9xx_read(chip, OPTi9XX_MC_REG(7));
+@@ -621,6 +634,8 @@ static int __devinit snd_card_opti9xx_detect(struct snd_card *card,
+ 		if (snd_opti9xx_read(chip, OPTi9XX_MC_REG(7)) == 0xff - value)
+ 			return 1;
+ 
++		release_and_free_resource(chip->res_mc_indir);
++		chip->res_mc_indir = NULL;
+ 		release_and_free_resource(chip->res_mc_base);
+ 		chip->res_mc_base = NULL;
+ 	}
+@@ -654,6 +669,8 @@ static int __devinit snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
+ #ifdef OPTi93X
+ 	port = pnp_port_start(pdev, 0) - 4;
+ 	fm_port = pnp_port_start(pdev, 1) + 8;
++	chip->mc_indir_index = pnp_port_start(pdev, 3) + 2;
++	chip->mc_indir_size = pnp_port_len(pdev, 3) - 2;
+ #else
+ 	if (pid->driver_data != 0x0924)
+ 		port = pnp_port_start(pdev, 1);
+@@ -684,7 +701,7 @@ static int __devinit snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
+ static void snd_card_opti9xx_free(struct snd_card *card)
+ {
+ 	struct snd_opti9xx *chip = card->private_data;
+-        
++
  	if (chip) {
  #ifdef OPTi93X
  		struct snd_wss *codec = chip->codec;
--		if (codec && codec->irq > 0) {
--			disable_irq(codec->irq);
--			free_irq(codec->irq, codec);
-+		if (codec && chip->irq > 0) {
-+			disable_irq(chip->irq);
-+			free_irq(chip->irq, codec);
+@@ -692,6 +709,7 @@ static void snd_card_opti9xx_free(struct snd_card *card)
+ 			disable_irq(chip->irq);
+ 			free_irq(chip->irq, codec);
  		}
++		release_and_free_resource(chip->res_mc_indir);
  #endif
  		release_and_free_resource(chip->res_mc_base);
-@@ -767,6 +767,7 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
- 			    IRQF_DISABLED, DEV_NAME" - WSS", codec);
- 	if (error < 0) {
- 		snd_printk(KERN_ERR "opti9xx: can't grab IRQ %d\n", chip->irq);
-+		chip->irq = -1;
- 		return error;
  	}
- #endif
+@@ -709,12 +727,29 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
+ 	struct snd_pcm *pcm;
+ 	struct snd_rawmidi *rmidi;
+ 	struct snd_hwdep *synth;
++#ifdef OPTi93X
++	unsigned long flags;
++#endif
+ 
+ 	if (! chip->res_mc_base &&
+ 	    (chip->res_mc_base = request_region(chip->mc_base, chip->mc_base_size,
+ 						"OPTi9xx MC")) == NULL)
+ 		return -ENOMEM;
+ 
++#ifdef OPTi93X
++	if (chip->res_mc_indir == NULL) {
++		chip->res_mc_indir = request_region(chip->mc_indir_index,
++						    chip->mc_indir_size,
++						    "OPTi93x MC");
++		if (chip->res_mc_indir == NULL)
++			return -ENOMEM;
++	}
++	/* store MC indirect range address */
++	spin_lock_irqsave(&chip->lock, flags);
++	outb(chip->password, chip->mc_base + chip->pwd_reg);
++	outb(((chip->mc_indir_index & 0x1f0) >> 4), chip->mc_base);
++	spin_unlock_irqrestore(&chip->lock, flags);
++#endif
+ 	chip->wss_base = port;
+ 	chip->fm_port = fm_port;
+ 	chip->mpu_port = mpu_port;
 -- 
 1.6.4
 
