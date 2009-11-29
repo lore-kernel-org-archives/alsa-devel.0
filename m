@@ -1,20 +1,27 @@
-From: Ryan <ryanphilips19@googlemail.com>
-Subject: audio pm on omap - resume tik sound
-Date: Fri, 27 Nov 2009 13:57:27 +0530
-Message-ID: <376636be0911270027l47032cftcd97758aa168f9a3@mail.gmail.com>
-References: <376636be0911262340j6eefc305gfccef5e196ec8814@mail.gmail.com>
-	<376636be0911270014q115c70adj60544194ff207a5e@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
+ CS4270 codec driver
+Date: Sun, 29 Nov 2009 09:35:54 +0100
+Message-ID: <20091129083554.GC14091@buzzloop.caiaq.de>
+References: <20091126160351.GB10674@rakim.wolfsonmicro.main>
+	<20091126174245.GJ14091@buzzloop.caiaq.de>
+	<20091127112550.GA29821@rakim.wolfsonmicro.main>
+	<20091127124139.GR14091@buzzloop.caiaq.de>
+	<20091127133225.GB17711@rakim.wolfsonmicro.main>
+	<4B1186B8.6070606@freescale.com>
+	<C78B2A7F-3D02-406C-A87B-8C3231456726@opensource.wolfsonmicro.com>
+	<4B11A19D.4070301@freescale.com>
+	<20091129004433.GZ14091@buzzloop.caiaq.de>
+	<ed82fe3e0911282034t6bb8fa87o5141e48f7b0e6a7f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f172.google.com (mail-iw0-f172.google.com
-	[209.85.223.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CC8D1038A0
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 09:27:29 +0100 (CET)
-Received: by iwn2 with SMTP id 2so785968iwn.16
-	for <alsa-devel@alsa-project.org>; Fri, 27 Nov 2009 00:27:27 -0800 (PST)
-In-Reply-To: <376636be0911270014q115c70adj60544194ff207a5e@mail.gmail.com>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 083E92463E
+	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 09:35:58 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <ed82fe3e0911282034t6bb8fa87o5141e48f7b0e6a7f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +31,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Timur Tabi <timur@freescale.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Sat, Nov 28, 2009 at 10:34:12PM -0600, Timur Tabi wrote:
+> On Sat, Nov 28, 2009 at 6:44 PM, Daniel Mack <daniel@caiaq.de> wrote:
+> 
+> > It does compile and does boot,
+> 
+> Does it compile and boot on a Freescale MPC8610 HPCD?
 
-=A0 When audio resumes from suspend i hear a tik sound on my speakers.
-=A0 Why is this sound produced and is there a fix somewhere for this.
+No, I don't have such a board. But I see no reason why it shouldn't
+compile as no part of the patch is platform depended.
 
+And for configurations with CONFIG_REGULATOR=n, all the new calls are
+NOPs. The only heads-up is that for CONFIG_REGULATOR=y, you now need to
+provide the regulators the codec driver needs.
 
-Regards,
-=A0ryan
+Anyway - I'll rebase the driver to 'for-2.6.33' so you can give it a
+try.
+
+Thanks,
+Daniel
