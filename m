@@ -1,15 +1,19 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH 2/2] opti93x: set MC indirect registers base
-	from PnP data
-Date: Sun, 29 Nov 2009 20:23:28 +0100
-Message-ID: <20091129202328.9c3244cc.krzysztof.h1@poczta.fm>
+From: GNUtoo <GNUtoo@no-log.org>
+Subject: Re: [PATCH] Sound: MSM soc : imported alsa for the MSM
+ from codeaurora
+Date: Mon, 30 Nov 2009 00:16:42 +0100
+Message-ID: <1259536602.3374.129.camel@gnutoo-desktop>
+References: <1257435101.25623.1.camel@localhost>
+	<1257720370-23012-1-git-send-email-GNUtoo@no-log.org>
+	<20091113145050.GC30966@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
-	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 0B68B2415D
-	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 20:23:28 +0100 (CET)
+Received: from smtp-out13.alice.it (smtp-out13.alice.it [85.33.2.18])
+	by alsa0.perex.cz (Postfix) with ESMTP id 17F30103809
+	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 00:16:53 +0100 (CET)
+In-Reply-To: <20091113145050.GC30966@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,163 +23,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
-Cc: Rene Herman <rene.herman@gmail.com>
+To: alsa-devel@alsa-project.org, pavel@ucw.cz
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+On Fri, 2009-11-13 at 14:50 +0000, Mark Brown wrote:
+> > +                     /* Update with actual sent buffer size */
+> > +                     if (prtd->out[idx].used != BUF_INVALID_LEN)
+> > +                             prtd->pcm_irq_pos +=
+> prtd->out[idx].used;
+> > +
+> > +                     if (prtd->pcm_irq_pos > prtd->pcm_size)
+> > +                             prtd->pcm_irq_pos = prtd->pcm_count;
+> 
+> This looks suspicious - it looks like what's going on is that you're
+> getting a notification from the DSP that it has consumed a data buffer
+> but this might go out of bounds and get clamped.
 
-The PnP data on the OPTI931 and OPTI933 contains io port
-range for the MC indirect registers. Use the PnP range
-instead of hardwired value 0xE0E.
+The first time that it's called prtd->out[idx].used = BUF_INVALID_LEN so
+it's skipped(it's the same first bogus time than in my previous mails).
 
-Also, request region of MC indirect registers so it is
-marked as used to other drivers (this was missing previously).
+The second time prtd->out[idx].used is equal to the period_bytes_max 
+which is equal to the .buffer_bytes_max / 2
+prtd->pcm_irq_pos is 0 then is incremented to prtd->out[idx].used
+So it's clamped only the first time.
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
- sound/isa/opti9xx/opti92x-ad1848.c |   53 +++++++++++++++++++++++++++++------
- 1 files changed, 44 insertions(+), 9 deletions(-)
 
-diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-index 438c1da..07ab288 100644
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -135,6 +135,8 @@ struct snd_opti9xx {
- 	unsigned long mc_base_size;
- #ifdef OPTi93X
- 	unsigned long mc_indir_index;
-+	unsigned long mc_indir_size;
-+	struct resource *res_mc_indir;
- 	struct snd_wss *codec;
- #endif	/* OPTi93X */
- 	unsigned long pwd_reg;
-@@ -245,7 +247,10 @@ static int __devinit snd_opti9xx_init(struct snd_opti9xx *chip,
- 	case OPTi9XX_HW_82C931:
- 	case OPTi9XX_HW_82C933:
- 		chip->mc_base = (hardware == OPTi9XX_HW_82C930) ? 0xf8f : 0xf8d;
--		chip->mc_indir_index = 0xe0e;
-+		if (!chip->mc_indir_index) {
-+			chip->mc_indir_index = 0xe0e;
-+			chip->mc_indir_size = 2;
-+		}
- 		chip->password = 0xe4;
- 		chip->pwd_reg = 0;
- 		break;
-@@ -579,10 +584,10 @@ static int __devinit snd_card_opti9xx_detect(struct snd_card *card,
- 					     struct snd_opti9xx *chip)
- {
- 	int i, err;
-+	unsigned char value;
+By the way I've used that info to skip it in the alsa_send_buffer
+so it looks like this:
+in alsa_send_buffer I've tried to add a check for the invalid len before
+of after the "if (frame->used && prtd->out_needed) {"
+
+here an example of it beeing before "if (frame->used &&
+prtd->out_needed) {"
+@@ -411,6 +418,10 @@ ssize_t alsa_send_buffer(struct msm_audio *prtd,
+const char __user *buf,
  
- #ifndef OPTi93X
- 	for (i = OPTi9XX_HW_82C928; i < OPTi9XX_HW_82C930; i++) {
--		unsigned char value;
- 
- 		if ((err = snd_opti9xx_init(chip, i)) < 0)
- 			return err;
-@@ -602,18 +607,26 @@ static int __devinit snd_card_opti9xx_detect(struct snd_card *card,
- #else	/* OPTi93X */
- 	for (i = OPTi9XX_HW_82C931; i >= OPTi9XX_HW_82C930; i--) {
- 		unsigned long flags;
--		unsigned char value;
- 
--		if ((err = snd_opti9xx_init(chip, i)) < 0)
-+		err = snd_opti9xx_init(chip, i);
-+		if (err < 0)
- 			return err;
- 
--		if ((chip->res_mc_base = request_region(chip->mc_base, chip->mc_base_size, "OPTi9xx MC")) == NULL)
--			continue;
-+		chip->res_mc_base = request_region(chip->mc_base,
-+						   chip->mc_base_size,
-+						   "OPTi9xx MC");
-+		if (chip->res_mc_base == NULL)
-+			return -EBUSY;
+                spin_lock_irqsave(&the_locks.write_dsp_lock, flag);
+                frame = prtd->out + prtd->out_tail;
++               if (frame->used == BUF_INVALID_LEN){
 +
-+		chip->res_mc_indir = request_region(chip->mc_indir_index,
-+						    chip->mc_indir_size,
-+						    "OPTi93x MC");
-+		if (chip->res_mc_indir == NULL)
-+			return -EBUSY;
- 
- 		spin_lock_irqsave(&chip->lock, flags);
- 		outb(chip->password, chip->mc_base + chip->pwd_reg);
--		outb(((chip->mc_indir_index & (1 << 8)) >> 4) |
--			((chip->mc_indir_index & 0xf0) >> 4), chip->mc_base);
-+		outb(((chip->mc_indir_index & 0x1f0) >> 4), chip->mc_base);
- 		spin_unlock_irqrestore(&chip->lock, flags);
- 
- 		value = snd_opti9xx_read(chip, OPTi9XX_MC_REG(7));
-@@ -621,6 +634,8 @@ static int __devinit snd_card_opti9xx_detect(struct snd_card *card,
- 		if (snd_opti9xx_read(chip, OPTi9XX_MC_REG(7)) == 0xff - value)
- 			return 1;
- 
-+		release_and_free_resource(chip->res_mc_indir);
-+		chip->res_mc_indir = NULL;
- 		release_and_free_resource(chip->res_mc_base);
- 		chip->res_mc_base = NULL;
- 	}
-@@ -654,6 +669,8 @@ static int __devinit snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
- #ifdef OPTi93X
- 	port = pnp_port_start(pdev, 0) - 4;
- 	fm_port = pnp_port_start(pdev, 1) + 8;
-+	chip->mc_indir_index = pnp_port_start(pdev, 3) + 2;
-+	chip->mc_indir_size = pnp_port_len(pdev, 3) - 2;
- #else
- 	if (pid->driver_data != 0x0924)
- 		port = pnp_port_start(pdev, 1);
-@@ -684,7 +701,7 @@ static int __devinit snd_card_opti9xx_pnp(struct snd_opti9xx *chip,
- static void snd_card_opti9xx_free(struct snd_card *card)
- {
- 	struct snd_opti9xx *chip = card->private_data;
--        
+spin_unlock_irqrestore(&the_locks.write_dsp_lock, flag);
++                       break;
++               }
+                if (frame->used && prtd->out_needed) {
+                        audio_dsp_send_buffer(prtd, prtd->out_tail,
+                                              frame->used);
+@@ -418,10 +429,12 @@ ssize_t alsa_send_buffer(struct msm_audio *prtd,
+const char __user *buf,
+                        prtd->out_needed--;
+                }
+
+                spin_unlock_irqrestore(&the_locks.write_dsp_lock, flag);
+for the try where it was after the spin_unlock was not necessary because
+it was put just after the spin_unlock
+
+Then...
+mplayer said:
+alsa-init: got buffersize=19200
+alsa-init: got period size 600
+and it played a song for half a second
+and then the kernel panicked
+
+here the code of mplayer:
+      // gets buffersize for control
+      if ((err = snd_pcm_hw_params_get_buffer_size(alsa_hwparams,
+&bufsize)) < 0)
+        {
+          mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_ALSA_UnableToGetBufferSize,
+snd_strerror(err));
+          return 0;
+        }
+      else {
+        ao_data.buffersize = bufsize * bytes_per_sample;
+          mp_msg(MSGT_AO,MSGL_V,"alsa-init: got buffersize=%i\n",
+ao_data.buffersize);
+      }
+
+      if ((err = snd_pcm_hw_params_get_period_size(alsa_hwparams,
+&chunk_size, NULL)) < 0) {
+        mp_msg(MSGT_AO,MSGL_ERR,MSGTR_AO_ALSA_UnableToGetPeriodSize,
+snd_strerror(err));
+        return 0;
+      } else {
+        mp_msg(MSGT_AO,MSGL_V,"alsa-init: got period size %li\n",
+chunk_size);
+      }
+      ao_data.outburst = chunk_size * bytes_per_sample;
+
+
+a strace shows that:
+
+ioctl(0, TIOCGWINSZ, {ws_row=51, ws_col=202, ws_xpixel=0, ws_ypixel=0})
+= 0
+) = 401, "A:   0.0 (00.0) of 2.0 (02.0) ??"..., 40A:   0.0 (00.0) of 2.0
+(02.0) ??,?% 
+gettimeofday({1259531032, 572021}, NULL) = 0
+select(1, [0], NULL, NULL, {0, 0})      = 0SNDRV_PCM_IOCTL_STATUS
+(Timeout)
+ioctl(6, 0x806c4120, 0xbee5dac0)        = 0
+nanosleep({0, 27000000}, NULL)          = 0
+ioctl(6, 0x806c4120, 0xbee5dac0)        = 0
+nanosleep({0, 27000000}, Read from remote host 192.168.0.202: Connection
+reset by peer
+Connection to 192.168.0.202 closed.
+
+0x806c4120 corresponds to A 0x20 that corresponds to
+SNDRV_PCM_IOCTL_STATUS = _IOR('A', 0x20, struct snd_pcm_status) in
+asound.h
+
+After that I moved the snd_pcm_period_elapsed like this:
+
+@@ -154,7 +158,10 @@ void alsa_dsp_event(void *data, unsigned id,
+uint16_t *msg)
+                                wake_up(&the_locks.write_wait);
+                        }
+
+spin_unlock_irqrestore(&the_locks.write_dsp_lock, flag);
 +
- 	if (chip) {
- #ifdef OPTi93X
- 		struct snd_wss *codec = chip->codec;
-@@ -692,6 +709,7 @@ static void snd_card_opti9xx_free(struct snd_card *card)
- 			disable_irq(chip->irq);
- 			free_irq(chip->irq, codec);
- 		}
-+		release_and_free_resource(chip->res_mc_indir);
- #endif
- 		release_and_free_resource(chip->res_mc_base);
- 	}
-@@ -709,12 +727,29 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
- 	struct snd_pcm *pcm;
- 	struct snd_rawmidi *rmidi;
- 	struct snd_hwdep *synth;
-+#ifdef OPTi93X
-+	unsigned long flags;
-+#endif
- 
- 	if (! chip->res_mc_base &&
- 	    (chip->res_mc_base = request_region(chip->mc_base, chip->mc_base_size,
- 						"OPTi9xx MC")) == NULL)
- 		return -ENOMEM;
- 
-+#ifdef OPTi93X
-+	if (chip->res_mc_indir == NULL) {
-+		chip->res_mc_indir = request_region(chip->mc_indir_index,
-+						    chip->mc_indir_size,
-+						    "OPTi93x MC");
-+		if (chip->res_mc_indir == NULL)
-+			return -ENOMEM;
-+	}
-+	/* store MC indirect range address */
-+	spin_lock_irqsave(&chip->lock, flags);
-+	outb(chip->password, chip->mc_base + chip->pwd_reg);
-+	outb(((chip->mc_indir_index & 0x1f0) >> 4), chip->mc_base);
-+	spin_unlock_irqrestore(&chip->lock, flags);
-+#endif
- 	chip->wss_base = port;
- 	chip->fm_port = fm_port;
- 	chip->mpu_port = mpu_port;
--- 
-1.6.4
+snd_pcm_period_elapsed(prtd->playback_substream);
+                        break;
 
+and removed it from the old location: 
 
-----------------------------------------------------------------------
-Codziennie 11 tys. ofert pracy!
-Sprawdz: http://link.interia.pl/f2447
+diff --git a/sound/soc/msm/msm7k-pcm.c b/sound/soc/msm/msm7k-pcm.c
+index 38e8283..3e54184 100644
+--- a/sound/soc/msm/msm7k-pcm.c
++++ b/sound/soc/msm/msm7k-pcm.c
+@@ -152,8 +152,6 @@ static struct snd_pcm_hw_constraint_list
+constraints_sample_rates = {
+ 
+ static void playback_event_handler(void *data)
+ {
+-       struct msm_audio *prtd = data;
+-       snd_pcm_period_elapsed(prtd->playback_substream);
+ }
+
+If I remember well aplay doesn't use the SNDRV_PCM_IOCTL_STATUS
+
+Denis.
