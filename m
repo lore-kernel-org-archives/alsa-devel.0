@@ -1,14 +1,14 @@
 From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: [PATCH 2/2] ALSA: AACI: fix recording bug
-Date: Sun, 29 Nov 2009 16:39:59 +0000
-Message-ID: <E1NEmoZ-0001dQ-St@rmk-PC.arm.linux.org.uk>
+Subject: AC97 slot information
+Date: Sun, 29 Nov 2009 16:50:58 +0000
+Message-ID: <20091129165058.GA15959@n2100.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
-	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 75A39243C2
-	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 17:40:10 +0100 (CET)
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 55D0024415
+	for <alsa-devel@alsa-project.org>; Sun, 29 Nov 2009 17:51:06 +0100 (CET)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,27 +22,15 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-pcm->r[1].slots is the double rate slot information, not the
-capture information.  For capture, 'pcm' will already be the
-capture ac97 pcm structure.
+When opening an AC'97 codec under ALSA using snd_ac97_pcm_open(),
+specifying the number of channels desired (2, 4 or 6) is there a
+way to read back which slots will be in use?
 
-Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
----
- sound/arm/aaci.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Currently, in the AACI driver, I use a lookup table to convert from
+channels to a slot mask - if this information is already available
+from ALSA, I'd much rather use it rather than inventing keeping my
+own solution.
 
-diff --git a/sound/arm/aaci.c b/sound/arm/aaci.c
-index 1456fc7..eb715e7 100644
---- a/sound/arm/aaci.c
-+++ b/sound/arm/aaci.c
-@@ -518,7 +518,7 @@ static int aaci_pcm_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		err = snd_ac97_pcm_open(aacirun->pcm, params_rate(params),
- 					params_channels(params),
--					aacirun->pcm->r[1].slots);
-+					aacirun->pcm->r[0].slots);
- 
- 	if (err)
- 		goto out;
--- 
-1.6.2.5
+Also, should the 'slots' value passed to snd_ac97_pcm_open() be
+those in pcm->r[].slots or should it be selected from the number
+of channels?
