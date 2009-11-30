@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoc: pxa/raumfeld: adopt new
- snd_soc_dai_set_pll() API
-Date: Mon, 30 Nov 2009 12:55:43 +0000
-Message-ID: <20091130125543.GE10968@rakim.wolfsonmicro.main>
-References: <1259575964-32251-1-git-send-email-daniel@caiaq.de>
+Subject: Re: [PATCH v3] ASoC: sh: fsi: Add runtime PM support
+Date: Mon, 30 Nov 2009 13:06:29 +0000
+Message-ID: <20091130130629.GA18877@rakim.wolfsonmicro.main>
+References: <u3a3wcl1b.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F347810384E
-	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 13:55:44 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B150E10385D
+	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 14:06:30 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1259575964-32251-1-git-send-email-daniel@caiaq.de>
+In-Reply-To: <u3a3wcl1b.wl%morimoto.kuninori@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: alsa-devel@alsa-project.org, Magnus Damm <magnus.damm@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 30, 2009 at 11:12:44AM +0100, Daniel Mack wrote:
-> This is needed for recent changes in the for-2.6.33 branch.
+On Mon, Nov 30, 2009 at 08:24:48PM +0900, Kuninori Morimoto wrote:
+> This patch add support runtime PM.
+> Driver callbacks for Runtime PM are empty because
+> the device registers are always re-initialized after
+> pm_runtime_get_sync(). The Runtime PM functions replaces the
+> clock framework module stop bit handling in this driver.
 
-Which changes?
-
-> -	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, clk);
-> +	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, clk, clk);
->  	if (ret < 0)
->  		return ret;
-
-This looks wrong - why would you configure a PLL to produce the same
-frequency as is being input?  I suspect you're trying to update for the
-addition of the additional source argument to set_pll()...
+Applied both, thanks.
