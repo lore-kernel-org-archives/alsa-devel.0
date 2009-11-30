@@ -1,17 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: AC97 slot information
-Date: Mon, 30 Nov 2009 12:03:52 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0911301141430.14639@eeebox2.perex-int.cz>
-References: <20091129165058.GA15959@n2100.arm.linux.org.uk>
-	<s5hpr709vog.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] Sound: MSM soc : imported alsa for the	MSM
+	from codeaurora
+Date: Mon, 30 Nov 2009 11:20:52 +0000
+Message-ID: <20091130112052.GA12133@sirena.org.uk>
+References: <1257435101.25623.1.camel@localhost>
+	<1257720370-23012-1-git-send-email-GNUtoo@no-log.org>
+	<20091113145050.GC30966@sirena.org.uk>
+	<1259536602.3374.129.camel@gnutoo-desktop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF23024471
-	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 12:03:52 +0100 (CET)
-In-Reply-To: <s5hpr709vog.wl%tiwai@suse.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FFBA244B2
+	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 12:20:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1259536602.3374.129.camel@gnutoo-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,52 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: GNUtoo <GNUtoo@no-log.org>
+Cc: alsa-devel@alsa-project.org, pavel@ucw.cz
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 30 Nov 2009, Takashi Iwai wrote:
+On Mon, Nov 30, 2009 at 12:16:42AM +0100, GNUtoo wrote:
+> On Fri, 2009-11-13 at 14:50 +0000, Mark Brown wrote:
 
-> At Sun, 29 Nov 2009 16:50:58 +0000,
-> Russell King - ARM Linux wrote:
->>
->> When opening an AC'97 codec under ALSA using snd_ac97_pcm_open(),
->> specifying the number of channels desired (2, 4 or 6) is there a
->> way to read back which slots will be in use?
->
-> Hm, a quick look through the code, there seems no such way right now.
-> Actually, slots subsets are determined in snd_ac97_pcm_assign(), and
-> the open function just accepts the reduced slots in there.
->
->> Currently, in the AACI driver, I use a lookup table to convert from
->> channels to a slot mask - if this information is already available
->> from ALSA, I'd much rather use it rather than inventing keeping my
->> own solution.
->>
->> Also, should the 'slots' value passed to snd_ac97_pcm_open() be
->> those in pcm->r[].slots or should it be selected from the number
->> of channels?
->
-> pcm->r[].slots, I suppose.  Well, but snd_ac97_pcm_open() behaves a
-> bit differently from what I thought.  It doesn't check cfg value
-> (usually the number of channels (2, 4 or 6) is passed) to reduce the
-> assigned slots, so it'll try always the full slots.  Then reducing
-> the slots bits in the caller look mandatory right now...
->
-> Jaroslav, is it the intended behavior, or just a missing piece?
+Please remember to keep people CCed on mails.
 
-The slot management is left to the lowlevel driver - see ac97_pcm_defs in 
-intel8x0.c driver for example (all slots are configured in the 
-snd_ac97_pcm_open() call - even if less channels are requested). The cfg 
-value is not used for channel count handling (because we really do not 
-know the ac97 slot -> real channel position mapping in the universal ac97 
-routines - it depends how the ac97 controller is set). Actually, I don't 
-have any idea to simplify this mapping and if it's worth to add handling 
-of this mapping to the AC97 driver tree.
+> > This looks suspicious - it looks like what's going on is that you're
+> > getting a notification from the DSP that it has consumed a data buffer
+> > but this might go out of bounds and get clamped.
 
- 					Jaroslav
+> The first time that it's called prtd->out[idx].used = BUF_INVALID_LEN so
+> it's skipped(it's the same first bogus time than in my previous mails).
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+My more general comment on this stuff was that all the buffer management
+code was extremely difficult to follow and hence likely to have errors.
