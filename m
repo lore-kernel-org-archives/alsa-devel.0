@@ -1,27 +1,17 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
- CS4270 codec driver
-Date: Mon, 30 Nov 2009 17:51:04 +0100
-Message-ID: <20091130165104.GK14091@buzzloop.caiaq.de>
-References: <20091127133225.GB17711@rakim.wolfsonmicro.main>
-	<4B1186B8.6070606@freescale.com>
-	<C78B2A7F-3D02-406C-A87B-8C3231456726@opensource.wolfsonmicro.com>
-	<4B11A19D.4070301@freescale.com>
-	<20091129004433.GZ14091@buzzloop.caiaq.de>
-	<5610599F537DD74A8D1F5CC946A7507303478C40@az33exm25.fsl.freescale.net>
-	<20091130120158.GD10968@rakim.wolfsonmicro.main>
-	<20091130123617.GG14091@buzzloop.caiaq.de>
-	<20091130155742.GI14091@buzzloop.caiaq.de>
-	<20091130161209.GD18944@rakim.wolfsonmicro.main>
+Subject: [PATCH] ALSA: ASoc: Add regulator support to CS4270
+	codec driver
+Date: Mon, 30 Nov 2009 17:56:11 +0100
+Message-ID: <1259600171-30357-1-git-send-email-daniel@caiaq.de>
+References: <20091130165104.GK14091@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6BA712441E
-	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 17:51:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091130161209.GD18944@rakim.wolfsonmicro.main>
+	by alsa0.perex.cz (Postfix) with ESMTP id 1EC6024426
+	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 17:56:24 +0100 (CET)
+In-Reply-To: <20091130165104.GK14091@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,43 +21,124 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Tabi Timur-B04825 <B04825@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 30, 2009 at 04:12:09PM +0000, Mark Brown wrote:
-> On Mon, Nov 30, 2009 at 04:57:42PM +0100, Daniel Mack wrote:
-> 
-> > The current aproach does not work reliably, unfortunately. It turns out
-> > that the codec necessarily needs its analogue supply to maintain its
-> > state. For all other operations (iow, any of the volatges not applied),
-> > it has to be held in reset mode. I did that manually by driving the GPIO
-> > directly before, but with the current regulator framework support,
-> > that's not possible anymore.
-> 
-> This is one of the reasons why your previous code looked suspect to me,
-> actually - since the CODEC driver had no idea that you'd suspended the
-> device it'd do things like try to write volume updates to the device
-> while you were keeping the power off.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Timur Tabi <timur@freescale.com>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+---
+ sound/soc/codecs/cs4270.c |   43 ++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 40 insertions(+), 3 deletions(-)
 
-Yes, I totally agree. It's just that the whole power regulator framework
-was new to me, and hence I didn't use and fully understand it. Once you
-know what it is designed for, it all makes sense.
-
-> When runtime PM hits in 2.6.33 I intend to try to enable support for it
-> in ASoC, it's relatively straightforward I think.  Unfortunately it'll
-> end up depending on the platform bus on the relevant platform being
-> capable of runtime pm but that should become more widely supported as
-> things progress.
-> 
-> Given this I would suggest doing the same thing the other drivers are
-> doing and only turning things off when the device is suspended (either
-> via the explicit functions or via set_bias_level()) and then let the
-> ASoC core deal with actually doing the suspend - it's probably less
-> hassle for you that way.  Converting to use the shared register I/O code
-> in soc-cache.c might also help here.
-
-Ok, I'll first post a new version for the regulators again and will care
-for the rest later :)
-
-Daniel
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index ffe122d..8b54575 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -28,6 +28,7 @@
+ #include <sound/initval.h>
+ #include <linux/i2c.h>
+ #include <linux/delay.h>
++#include <linux/regulator/consumer.h>
+ 
+ #include "cs4270.h"
+ 
+@@ -106,6 +107,10 @@
+ #define CS4270_MUTE_DAC_A	0x01
+ #define CS4270_MUTE_DAC_B	0x02
+ 
++static const char *supply_names[] = {
++	"va", "vd", "vlc"
++};
++
+ /* Private data for the CS4270 */
+ struct cs4270_private {
+ 	struct snd_soc_codec codec;
+@@ -114,6 +119,9 @@ struct cs4270_private {
+ 	unsigned int mode; /* The mode (I2S or left-justified) */
+ 	unsigned int slave_mode;
+ 	unsigned int manual_mute;
++
++	/* power domain regulators */
++	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
+ };
+ 
+ /**
+@@ -579,7 +587,8 @@ static int cs4270_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+ 	struct snd_soc_codec *codec = cs4270_codec;
+-	int ret;
++	struct cs4270_private *cs4270 = codec->private_data;
++	int i, ret;
+ 
+ 	/* Connect the codec to the socdev.  snd_soc_new_pcms() needs this. */
+ 	socdev->card->codec = codec;
+@@ -599,6 +608,15 @@ static int cs4270_probe(struct platform_device *pdev)
+ 		goto error_free_pcms;
+ 	}
+ 
++	/* get the power supply regulators */
++	for (i = 0; i < ARRAY_SIZE(supply_names); i++)
++		cs4270->supplies[i].supply = supply_names[i];
++
++	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(cs4270->supplies),
++				 cs4270->supplies);
++	if (ret < 0)
++		goto error_free_pcms;
++
+ 	return 0;
+ 
+ error_free_pcms:
+@@ -616,8 +634,11 @@ error_free_pcms:
+ static int cs4270_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = cs4270_codec;
++	struct cs4270_private *cs4270 = codec->private_data;
+ 
+ 	snd_soc_free_pcms(socdev);
++	regulator_bulk_free(ARRAY_SIZE(cs4270->supplies), cs4270->supplies);
+ 
+ 	return 0;
+ };
+@@ -799,17 +820,33 @@ MODULE_DEVICE_TABLE(i2c, cs4270_id);
+ static int cs4270_soc_suspend(struct platform_device *pdev, pm_message_t mesg)
+ {
+ 	struct snd_soc_codec *codec = cs4270_codec;
+-	int reg = snd_soc_read(codec, CS4270_PWRCTL) | CS4270_PWRCTL_PDN_ALL;
++	struct cs4270_private *cs4270 = codec->private_data;
++	int reg, ret;
+ 
+-	return snd_soc_write(codec, CS4270_PWRCTL, reg);
++	reg = snd_soc_read(codec, CS4270_PWRCTL) | CS4270_PWRCTL_PDN_ALL;
++	if (reg < 0)
++		return reg;
++
++	ret = snd_soc_write(codec, CS4270_PWRCTL, reg);
++	if (ret < 0)
++		return ret;
++
++	regulator_bulk_disable(ARRAY_SIZE(cs4270->supplies),
++			       cs4270->supplies);
++
++	return 0;
+ }
+ 
+ static int cs4270_soc_resume(struct platform_device *pdev)
+ {
+ 	struct snd_soc_codec *codec = cs4270_codec;
++	struct cs4270_private *cs4270 = codec->private_data;
+ 	struct i2c_client *i2c_client = codec->control_data;
+ 	int reg;
+ 
++	regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
++			      cs4270->supplies);
++
+ 	/* In case the device was put to hard reset during sleep, we need to
+ 	 * wait 500ns here before any I2C communication. */
+ 	ndelay(500);
+-- 
+1.6.5.2
