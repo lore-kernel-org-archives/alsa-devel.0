@@ -1,19 +1,24 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] ALSA: ASoc: pxa/raumfeld: adopt new
- snd_soc_dai_set_pll() API
-Date: Mon, 30 Nov 2009 14:06:37 +0100
-Message-ID: <20091130130637.GH14091@buzzloop.caiaq.de>
-References: <1259575964-32251-1-git-send-email-daniel@caiaq.de>
-	<20091130125543.GE10968@rakim.wolfsonmicro.main>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: [PATCH V2] Add i.MX sound support
+Date: Mon, 30 Nov 2009 14:13:47 +0100
+Message-ID: <eedb5540911300513j3730078v1393b9b42dca497b@mail.gmail.com>
+References: <1259163666-30344-1-git-send-email-s.hauer@pengutronix.de>
+	<eedb5540911260753u369d6cffp97c05089cdd30868@mail.gmail.com>
+	<20091127075834.GG27548@pengutronix.de>
+	<eedb5540911270101o4bf06b2ct6ff22e29b7c1fe15@mail.gmail.com>
+	<20091127095416.GK27548@pengutronix.de>
+	<eedb5540911300243t20ecf407o317b414720cf962e@mail.gmail.com>
+	<20091130124305.GQ27548@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE87C103879
-	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 14:06:43 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20091130125543.GE10968@rakim.wolfsonmicro.main>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id A3E5824534
+	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 14:13:48 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 3so879107eyh.16
+	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 05:13:48 -0800 (PST)
+In-Reply-To: <20091130124305.GQ27548@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,69 +28,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 30, 2009 at 12:55:43PM +0000, Mark Brown wrote:
-> On Mon, Nov 30, 2009 at 11:12:44AM +0100, Daniel Mack wrote:
-> > This is needed for recent changes in the for-2.6.33 branch.
-> 
-> Which changes?
+2009/11/30 Sascha Hauer <s.hauer@pengutronix.de>
 
-snd_soc_dai_set_pll() takes an additional argument now.
+> On Mon, Nov 30, 2009 at 11:43:23AM +0100, javier Martin wrote:
+> > Hi Sascha,
+> > have you tested capture direction on an i.MX27 based board?
+> >
+> > I have been testing your patches in the place you suggested and playback
+> > seems to work fine but I have several problems with capture stream. I
+> found
+> > a BUG in the audmux_v1 code
+> > and I have fixed it but I am still having problems with capture. The file
+> > keeps empty and nothing is recorded.
+>
+> Capture works fine on my boards.
+>
+>
+>
+> > Please could you try the following on an i.MX27 based board?
+> >
+> > arecord -t raw -c 1 -f S16_LE test.wav
+>
+> Does it work with two channels? Do you use DMA or FIQ? Could you try the
+> other variant?
+>
 
-> 
-> > -	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, clk);
-> > +	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, clk, clk);
-> >  	if (ret < 0)
-> >  		return ret;
-> 
-> This looks wrong - why would you configure a PLL to produce the same
-> frequency as is being input?  I suspect you're trying to update for the
-> addition of the additional source argument to set_pll()...
+ Unfortunately, I can't test it using two channels because our board has a
+wm8974 mono codec. Please could you point me how can I change between FIQ
+and DMA? I thought FIQ was only for AC97,
 
-Ah, right. The pxa-ssp code doesn't pay attention to either argument,
-hence I didn't notice. Thanks!
+It helped me a lot during development to use a tool like memedit
+> (http://www.pengutronix.de/software/memedit/index_en.html) to show a
+> register dump of the SSI/Audmux units of a working setup and a non
+> working setup. Usually the differences showed quite fast why one was
+> working and the other was not.
+>
 
-Daniel
+ Indeed, this will be my next step.
+
+ Thank you for the tip.
 
 
->From fdc23d80fa7a3b2aa76e05ee9fbd85dea0f647d8 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@caiaq.de>
-Date: Mon, 30 Nov 2009 11:08:17 +0100
-Subject: [PATCH] ALSA: ASoc: pxa/raumfeld: adopt new snd_soc_dai_set_pll() API
-
-ALSA's for-2.6.33 branch has a new source argument to
-snd_soc_dai_set_pll().
-
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/pxa/raumfeld.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/pxa/raumfeld.c b/sound/soc/pxa/raumfeld.c
-index 5d7bb8c..e713181 100644
---- a/sound/soc/pxa/raumfeld.c
-+++ b/sound/soc/pxa/raumfeld.c
-@@ -116,7 +116,7 @@ static int raumfeld_cs4270_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 
- 	/* setup the CPU DAI */
--	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, clk);
-+	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, 0, clk);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -205,7 +205,7 @@ static int raumfeld_ak4104_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 
- 	/* setup the CPU DAI */
--	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, clk);
-+	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, 0, clk);
- 	if (ret < 0)
- 		return ret;
- 
 -- 
-1.6.5.2
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
