@@ -1,27 +1,22 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
- CS4270 codec driver
-Date: Mon, 30 Nov 2009 13:36:17 +0100
-Message-ID: <20091130123617.GG14091@buzzloop.caiaq.de>
-References: <20091126174245.GJ14091@buzzloop.caiaq.de>
-	<20091127112550.GA29821@rakim.wolfsonmicro.main>
-	<20091127124139.GR14091@buzzloop.caiaq.de>
-	<20091127133225.GB17711@rakim.wolfsonmicro.main>
-	<4B1186B8.6070606@freescale.com>
-	<C78B2A7F-3D02-406C-A87B-8C3231456726@opensource.wolfsonmicro.com>
-	<4B11A19D.4070301@freescale.com>
-	<20091129004433.GZ14091@buzzloop.caiaq.de>
-	<5610599F537DD74A8D1F5CC946A7507303478C40@az33exm25.fsl.freescale.net>
-	<20091130120158.GD10968@rakim.wolfsonmicro.main>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH V2] Add i.MX sound support
+Date: Mon, 30 Nov 2009 13:43:05 +0100
+Message-ID: <20091130124305.GQ27548@pengutronix.de>
+References: <1259163666-30344-1-git-send-email-s.hauer@pengutronix.de>
+	<eedb5540911260753u369d6cffp97c05089cdd30868@mail.gmail.com>
+	<20091127075834.GG27548@pengutronix.de>
+	<eedb5540911270101o4bf06b2ct6ff22e29b7c1fe15@mail.gmail.com>
+	<20091127095416.GK27548@pengutronix.de>
+	<eedb5540911300243t20ecf407o317b414720cf962e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 311E824384
-	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 13:36:22 +0100 (CET)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id D6970103816
+	for <alsa-devel@alsa-project.org>; Mon, 30 Nov 2009 13:43:06 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20091130120158.GD10968@rakim.wolfsonmicro.main>
+In-Reply-To: <eedb5540911300243t20ecf407o317b414720cf962e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,21 +26,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Tabi Timur-B04825 <B04825@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: javier Martin <javier.martin@vista-silicon.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 30, 2009 at 12:01:59PM +0000, Mark Brown wrote:
-> On Sat, Nov 28, 2009 at 07:46:22PM -0700, Tabi Timur-B04825 wrote:
+On Mon, Nov 30, 2009 at 11:43:23AM +0100, javier Martin wrote:
+> Hi Sascha,
+> have you tested capture direction on an i.MX27 based board?
 > 
-> > Have you tested it on a Freescale MPC8610 HPCD?  Are you sure it still
-> > compiles and builds on any PowerPC system?
-> 
-> I can do a compile test on PowerPC (and that's one of the platforms that
-> gets tested with linux-next too) but I don't have hardware to do runtime
-> tests with.  Timur, would you be OK with compile tests for now - I'd not
-> expect to see 2.6.33 go out this year so if there are any runtime issues
-> it should be possible to fix them once you're back in the office?
+> I have been testing your patches in the place you suggested and playback
+> seems to work fine but I have several problems with capture stream. I found
+> a BUG in the audmux_v1 code
+> and I have fixed it but I am still having problems with capture. The file
+> keeps empty and nothing is recorded.
 
-Wait a sec before applying this, please. We might have caused a
-regression, I'm still investiating.
+Capture works fine on my boards.
+
+> 
+> Please could you try the following on an i.MX27 based board?
+> 
+> arecord -t raw -c 1 -f S16_LE test.wav
+
+Does it work with two channels? Do you use DMA or FIQ? Could you try the
+other variant?
+
+It helped me a lot during development to use a tool like memedit
+(http://www.pengutronix.de/software/memedit/index_en.html) to show a
+register dump of the SSI/Audmux units of a working setup and a non
+working setup. Usually the differences showed quite fast why one was
+working and the other was not.
+
+Sascha
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
