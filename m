@@ -1,21 +1,17 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 1/3] ASoC: Add a new imx-ssi sound driver
-Date: Tue, 1 Dec 2009 16:49:20 +0100
-Message-ID: <20091201154920.GW27548@pengutronix.de>
-References: <1259163666-30344-1-git-send-email-s.hauer@pengutronix.de>
-	<1259163666-30344-2-git-send-email-s.hauer@pengutronix.de>
-	<20091125155807.GD12750@rakim.wolfsonmicro.main>
-	<eedb5540911300840p230fc57fh3fd5c8453b0e1f73@mail.gmail.com>
-	<eedb5540911300909vf042b39l44e06b432351b@mail.gmail.com>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: [PATCH 0/2] ASoC: au1x updates for 2.6.33
+Date: Tue,  1 Dec 2009 18:10:33 +0100
+Message-ID: <1259687435-7066-1-git-send-email-manuel.lauss@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 573A62456A
-	for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2009 16:49:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <eedb5540911300909vf042b39l44e06b432351b@mail.gmail.com>
+Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
+	[209.85.220.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8401D2412E
+	for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2009 18:10:24 +0100 (CET)
+Received: by fxm3 with SMTP id 3so3994761fxm.4
+	for <alsa-devel@alsa-project.org>; Tue, 01 Dec 2009 09:10:24 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: javier Martin <javier.martin@vista-silicon.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
+Cc: Manuel Lauss <manuel.lauss@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 30, 2009 at 06:09:24PM +0100, javier Martin wrote:
-> 2009/11/30 javier Martin <javier.martin@vista-silicon.com>
-> 
-> > Dear Sascha,
-> > in "imx_ssi_set_dai_fmt()" callback you should add something like:
-> >
-> >     /* sync */
-> >     scr |= SSI_SCR_SYN;
-> >
-> > This would enable SSI working in SYN mode which means that RX and TX
-> > sections will share same frame and bit clocks. Right now I can't imagine a
-> > situation where this is not desirable. Moreover, if I don't add SYN mode I
-> > cannot get it working in my i.mx27 based board with an wm8974.
-> >
-> 
-> Well, after a chat with Mark it seems that it is not so uncommon that RX and
-> TX sections have different clocks. So you could add a flag in the platform
-> data similar to the one that switches between FIQ and DMA so that people can
-> choose if they want the feature or not.
+Hi Mark,
 
-Ok, will do. I myself use the asynchronous mode. The MC13783 I use has
-two SSI ports, one for capture and one for playback. I route both ports
-to the same SSI unit using the audio muxer.
+The following two patches fix 2 issues in the updated au1x asoc drivers
+in your/Takashis queue for 2.6.33.  If possible, please either fold them
+into commit 0f83d639d84c99a775c60696dbde77372c2cf4ac ("au1x: convert to
+platform drivers") found in Takashi's tree.
 
-Sascha
+Thank you!
+     Manuel Lauss
 
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Manuel Lauss (2):
+  ASoC: au1x: dbdma2: fix oops on soc device removal.
+  ASoC: au1x: dbdma2: plug memleak in pcm device creation error path
+
+ sound/soc/au1x/dbdma2.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
