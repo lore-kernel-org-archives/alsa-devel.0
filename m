@@ -1,52 +1,106 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: [PATCH 2/2] ASoC: au1x: dbdma2: plug memleak in pcm
-	device creation error path
-Date: Tue,  1 Dec 2009 18:10:35 +0100
-Message-ID: <1259687435-7066-3-git-send-email-manuel.lauss@gmail.com>
-References: <1259687435-7066-1-git-send-email-manuel.lauss@gmail.com>
-	<1259687435-7066-2-git-send-email-manuel.lauss@gmail.com>
+From: mark gross <mgross@linux.intel.com>
+Subject: [PATCH]PM_QOS-to-use-handle-based-requests-pcm-update 5/5
+Date: Tue, 1 Dec 2009 13:38:40 -0800
+Message-ID: <20091201213840.GE19688@linux.intel.com>
+Reply-To: mgross@linux.intel.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
-	[209.85.220.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id D797C2414C
-	for <alsa-devel@alsa-project.org>; Tue,  1 Dec 2009 18:10:28 +0100 (CET)
-Received: by mail-fx0-f211.google.com with SMTP id 3so3994761fxm.4
-	for <alsa-devel@alsa-project.org>; Tue, 01 Dec 2009 09:10:28 -0800 (PST)
-In-Reply-To: <1259687435-7066-2-git-send-email-manuel.lauss@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org
-Cc: Manuel Lauss <manuel.lauss@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754655AbZLAVih@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-pm <linux-pm@lists.linux-foundation.org>
+Cc: lkml <linux-kernel@vger.kernel.org>, tiwai@suse.de, perex@perex.cz, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-free the allocated pcm platform device in the error path.
+This is the patch to update sound pcm's dependencies on the pmqos api
+that was changed in the first patch in this series.
 
-Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
+Updated per input from RFC.
+
+--mgross
+
+Signed-off-by: mark gross <mgross@linux.intel.com>
+
+
+
+>From 7a0daea4708a2fca0e615ba36daeac60efea3cd6 Mon Sep 17 00:00:00 2001
+From: mark gross <mgross@mgross-hp8510w.(none)>
+Date: Tue, 1 Dec 2009 13:01:04 -0800
+Subject: [PATCH 5/5] PM_QOS to use handle based requests pcm update
+
 ---
- sound/soc/au1x/dbdma2.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ include/sound/pcm.h     |    3 ++-
+ sound/core/pcm.c        |    3 ---
+ sound/core/pcm_native.c |   14 ++++++++------
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/au1x/dbdma2.c b/sound/soc/au1x/dbdma2.c
-index 148e205..6d9f4c6 100644
---- a/sound/soc/au1x/dbdma2.c
-+++ b/sound/soc/au1x/dbdma2.c
-@@ -478,6 +478,7 @@ struct platform_device *au1xpsc_pcm_add(struct platform_device *pdev)
- 	if (!ret)
- 		return pd;
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index de6d981..91daac3 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -29,6 +29,7 @@
+ #include <linux/poll.h>
+ #include <linux/mm.h>
+ #include <linux/bitops.h>
++#include <linux/pm_qos_params.h>
  
-+	platform_device_put(pd);
- out:
- 	kfree(res);
- 	return NULL;
+ #define snd_pcm_substream_chip(substream) ((substream)->private_data)
+ #define snd_pcm_chip(pcm) ((pcm)->private_data)
+@@ -355,7 +356,7 @@ struct snd_pcm_substream {
+ 	int number;
+ 	char name[32];			/* substream name */
+ 	int stream;			/* stream (direction) */
+-	char latency_id[20];		/* latency identifier */
++	struct pm_qos_request_list *latency_pm_qos_req; /* pm_qos latency request */
+ 	size_t buffer_bytes_max;	/* limit ring buffer size */
+ 	struct snd_dma_buffer dma_buffer;
+ 	unsigned int dma_buf_id;
+diff --git a/sound/core/pcm.c b/sound/core/pcm.c
+index c69c60b..6faf4b5 100644
+--- a/sound/core/pcm.c
++++ b/sound/core/pcm.c
+@@ -647,9 +647,6 @@ int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count)
+ 		substream->number = idx;
+ 		substream->stream = stream;
+ 		sprintf(substream->name, "subdevice #%i", idx);
+-		snprintf(substream->latency_id, sizeof(substream->latency_id),
+-			 "ALSA-PCM%d-%d%c%d", pcm->card->number, pcm->device,
+-			 (stream ? 'c' : 'p'), idx);
+ 		substream->buffer_bytes_max = UINT_MAX;
+ 		if (prev == NULL)
+ 			pstr->substream = substream;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index ab73edf..2aab6cf 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -447,11 +447,13 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	snd_pcm_timer_resolution_change(substream);
+ 	runtime->status->state = SNDRV_PCM_STATE_SETUP;
+ 
+-	pm_qos_remove_requirement(PM_QOS_CPU_DMA_LATENCY,
+-				substream->latency_id);
++	if (substream->latency_pm_qos_req) {
++		pm_qos_remove_request(substream->latency_pm_qos_req);
++		substream->latency_pm_qos_req = NULL;
++	}
+ 	if ((usecs = period_to_usecs(runtime)) >= 0)
+-		pm_qos_add_requirement(PM_QOS_CPU_DMA_LATENCY,
+-					substream->latency_id, usecs);
++		substream->latency_pm_qos_req = pm_qos_add_request(
++					PM_QOS_CPU_DMA_LATENCY, usecs);
+ 	return 0;
+  _error:
+ 	/* hardware might be unuseable from this time,
+@@ -506,8 +508,8 @@ static int snd_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	if (substream->ops->hw_free)
+ 		result = substream->ops->hw_free(substream);
+ 	runtime->status->state = SNDRV_PCM_STATE_OPEN;
+-	pm_qos_remove_requirement(PM_QOS_CPU_DMA_LATENCY,
+-		substream->latency_id);
++	pm_qos_remove_request(substream->latency_pm_qos_req);
++	substream->latency_pm_qos_req = NULL;
+ 	return result;
+ }
+ 
 -- 
-1.6.5.3
+1.6.3.3
