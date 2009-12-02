@@ -1,15 +1,16 @@
-From: Chaithrika U S <chaithrika@ti.com>
-Subject: [PATCH] ASoC: DaVinci: Update suspend/resume support
-	for McASP driver
-Date: Wed,  2 Dec 2009 12:39:00 +0530
-Message-ID: <1259737740-27324-1-git-send-email-chaithrika@ti.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: hw_ptr accuracy with intel8x0 -> PulseAudio issue
+Date: Wed, 2 Dec 2009 03:15:16 -0600
+Message-ID: <6160a5130912020115t45bd4635hceb0ac3de4fb1efe@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73A7324359
-	for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2009 08:26:22 +0100 (CET)
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53]) by alsa0.perex.cz (Postfix) with ESMTP id E2C9F24458
+	for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2009 10:15:17 +0100 (CET)
+Received: by pwj11 with SMTP id 11so7925335pwj.32
+	for <alsa-devel@alsa-project.org>; Wed, 02 Dec 2009 01:15:16 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,97 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: khilman@deeprootsystems.com, Chaithrika U S <chaithrika@ti.com>, davinci-linux-open-source@linux.davincidsp.com, broonie@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org, Lennart Poettering <lennart@poettering.net>
 List-Id: alsa-devel@alsa-project.org
 
-Add clock enable and disable calls to resume and suspend respectively.
-Also add a member to the audio device data structure which tracks the clock
-status.
+Hi,
+I have been having issues for a while now with PulseAudio running on
+an older Thinkpad X41. PulseAudio relies on snd_pcm_avail() to detect
+underflows and increases the timer watermark when they happen. There
+are actually no audible underflows though...
+So I instrumented both PulseAudio (enabling DEBUG_TIMING in the
+alsa-sink.c code) and the kernel (latest alsa-kernel git) by adding
+the following printk  in pcm.h:
 
-Tested on DA850/OMAP-L138 EVM. For the purpose of testing, the patches[1] which 
-add suspend-to-RAM support to DA850/OMAP-L138 SoC were applied.
+static inline snd_pcm_uframes_t snd_pcm_playback_avail(struct
+snd_pcm_runtime *runtime)
+{
+	snd_pcm_sframes_t avail = runtime->status->hw_ptr +
+runtime->buffer_size - runtime->control->appl_ptr;
+	if (avail < 0)
+		avail += runtime->boundary;
+	else if ((snd_pcm_uframes_t) avail >= runtime->boundary)
+		avail -= runtime->boundary;
+        //plb
+        if(avail > runtime->buffer_size) {
+            snd_printk(KERN_ERR "avail %d hw_ptr %d buffer %d appl_ptr %d \n",
+                       avail, runtime->status->hw_ptr,
+runtime->buffer_size, runtime->control->appl_ptr);
+        }
+	return avail;
+}
 
-[1] http://linux.davincidsp.com/pipermail/davinci-linux-open-source/
-2009-November/016958.html
+In my tests this error condition where avail is larger than the ring
+buffer happens fairly often. The dmesg log show messages such as
+[  834.524479] ALSA include/sound/pcm.h:600: avail 16403 hw_ptr 24351
+buffer 16384 appl_ptr 24332
+[  835.266937] ALSA include/sound/pcm.h:600: avail 16407 hw_ptr 55841
+buffer 16384 appl_ptr 55818
+and these messages are correlated with the times when PulseAudio
+detects underflows.
+The full log can be found at http://pastebin.com/f210aa108.
 
-Signed-off-by: Chaithrika U S <chaithrika@ti.com>
----
-Applies to ALSA GIT tree on branch topic/asoc at
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=shortlog;
-h=topic/asoc
+I believe the issue is the accuracy of the hw_ptr reported by
+snd_intel8x0_pcm_pointer. If indeed such a condition occurred, it
+should be flagged as underflow, shouldn't it? There's been some
+changes in this part of the code to avoid extremely large values, here
+the issue seems more subtle, the pointer is only slightly off in most
+cases. This does screw-up PulseAudio though, the timer watermark keeps
+increasing and low-latency isn't possible.
 
- sound/soc/davinci/davinci-mcasp.c |   18 ++++++++++++++++--
- sound/soc/davinci/davinci-mcasp.h |    1 +
- sound/soc/davinci/davinci-pcm.c   |    2 +-
- 3 files changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 0a302e1..0d263f1 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -767,14 +767,27 @@ static int davinci_mcasp_trigger(struct snd_pcm_substream *substream,
- 	int ret = 0;
- 
- 	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-+		if (!dev->clk_active) {
-+			clk_enable(dev->clk);
-+			dev->clk_active = 1;
-+		}
-+
-+	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		davinci_mcasp_start(dev, substream->stream);
- 		break;
- 
--	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
-+		davinci_mcasp_stop(dev, substream->stream);
-+		if (dev->clk_active) {
-+			clk_disable(dev->clk);
-+			dev->clk_active = 0;
-+		}
-+
-+		break;
-+
-+	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		davinci_mcasp_stop(dev, substream->stream);
- 		break;
-@@ -866,6 +879,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
- 	}
- 
- 	clk_enable(dev->clk);
-+	dev->clk_active = 1;
- 
- 	dev->base = (void __iomem *)IO_ADDRESS(mem->start);
- 	dev->op_mode = pdata->op_mode;
-diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
-index 582c924..e755b51 100644
---- a/sound/soc/davinci/davinci-mcasp.h
-+++ b/sound/soc/davinci/davinci-mcasp.h
-@@ -44,6 +44,7 @@ struct davinci_audio_dev {
- 	int sample_rate;
- 	struct clk *clk;
- 	unsigned int codec_fmt;
-+	u8 clk_active;
- 
- 	/* McASP specific data */
- 	int	tdm_slots;
-diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index ad4d7f4..80c7fdf 100644
---- a/sound/soc/davinci/davinci-pcm.c
-+++ b/sound/soc/davinci/davinci-pcm.c
-@@ -49,7 +49,7 @@ static void print_buf_info(int slot, char *name)
- static struct snd_pcm_hardware pcm_hardware_playback = {
- 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
--		 SNDRV_PCM_INFO_PAUSE),
-+		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
- 	.formats = (SNDRV_PCM_FMTBIT_S16_LE),
- 	.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
- 		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
--- 
-1.5.6
+I'd be more than happy to run more experiments, however I have no idea
+what the hardware does to report the position of the hw pointer.
+Thanks for your feedback
+- Pierre
