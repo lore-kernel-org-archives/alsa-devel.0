@@ -1,21 +1,15 @@
-From: vivek kaushik <vic.techlist@gmail.com>
-Subject: Re: testing mic-in for tlv320aic33
-Date: Wed, 2 Dec 2009 21:51:24 +0530
-Message-ID: <1932e3c30912020821n251b9a43s3700b90ea8619851@mail.gmail.com>
-References: <1932e3c30911301059s23ad8110rd5f106d44d331f71@mail.gmail.com>
-	<20091201100904.b4f8f036.jhnikula@gmail.com>
-	<1932e3c30912020628ue7bf3c0p4bc2c2ee7e41d0d1@mail.gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH 1/2] opti93x: fix irq releasing if the irq
+ cannot be allocated
+Date: Wed, 2 Dec 2009 18:12:36 +0100
+Message-ID: <20091202181236.d3de630d.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1480261492573858197=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f171.google.com (mail-vw0-f171.google.com
-	[209.85.212.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id D9A92243A9
-	for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2009 17:21:25 +0100 (CET)
-Received: by vws1 with SMTP id 1so143037vws.23
-	for <alsa-devel@alsa-project.org>; Wed, 02 Dec 2009 08:21:24 -0800 (PST)
-In-Reply-To: <1932e3c30912020628ue7bf3c0p4bc2c2ee7e41d0d1@mail.gmail.com>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id F145B103802
+	for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2009 18:10:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,75 +19,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jarkko,
+--===============1480261492573858197==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Thanks for your support.
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-There was a mistake in I2C configuration of tlv320aic33 and In pin muxing I
-tested after that now its working.
+Move irq allocating earlier so the codec pointer and codec->irq
+are not set if the request_irq() fails.
 
-Cheers,
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+The third version. The irq is correctly freed if the snd_wss_create() fails
+(this is the only change since the previous version).
 
-Vivek
+ sound/isa/opti9xx/opti92x-ad1848.c |   31 +++++++++++++++++++------------
+ 1 files changed, 19 insertions(+), 12 deletions(-)
 
-On 12/2/09, vivek kaushik <vic.techlist@gmail.com> wrote:
->
-> Thanks Jarkko for the support.
->
-> I have applied the patch. I am kernel 2.6.29.
->
-> In my board CLKR and FSR are connected so I am calling functions as:
-> snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_CLKR_SRC_CLKR, 0,
-> SND_SOC_CLOCK_IN);
-> snd_soc_dai_set_sysclk(cpu_dai, OMAP_MCBSP_FSR_SRC_FSR, 0,
-> SND_SOC_CLOCK_IN);
->
-> I checked pin muxing is also fine but still I am getting the same error.
->
-> Thanks and regards
->
-> Vivek
->
->  On 12/1/09, Jarkko Nikula <jhnikula@gmail.com> wrote:
->>
->> Hi
->>
->> On Tue, 1 Dec 2009 00:29:53 +0530
->> vivek kaushik <vic.techlist@gmail.com> wrote:
->>
->> > Hi All,
->> >
->> > I am testing MIC IN on tlv320aic33. but getting the following error:
->> > arecord: pcm_read:1338: read error: Input/output error
->> >
->> > On my custom board tlv320aic33 is connected mcbsp-1 of omap3530, i am
->> > configuring tlv as mater and omap3530 as slave.aplay is working fine for
->> me
->> > but getting the above error in case of arecord.
->> >
->> > I am testing MIC IN with following command
->> >
->> > arecord -fdat record.wav
->> >
->> > when i probe signals I am getting proper MCLK, WCLK(48khz) and
->> BCLK(1.5Mhz)
->> > but there is no toggling on data line.
->> >
->> I believe the reason is that OMAP expects to get McBSP1 receiver clocks
->> from its own CLKR and FSR pins. Does it work if you configure the McBP1
->> receiver to use CLKX and FSX pins?
->>
->> You could look help from following commit and file in sound-2.6.git
->> tree:
->> commit d2c0bdaa9362c4b2ab7416420d034a0a2d1ec979
->> sound/soc/omap/am3517evm.c
->>
->> --
->> Jarkko
->>
->
->
+diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
+index 5cd5553..7c97ca8 100644
+--- a/sound/isa/opti9xx/opti92x-ad1848.c
++++ b/sound/isa/opti9xx/opti92x-ad1848.c
+@@ -558,10 +558,13 @@ __skip_mpu:
+ 
+ static irqreturn_t snd_opti93x_interrupt(int irq, void *dev_id)
+ {
+-	struct snd_wss *codec = dev_id;
+-	struct snd_opti9xx *chip = codec->card->private_data;
++	struct snd_opti9xx *chip = dev_id;
++	struct snd_wss *codec = chip->codec;
+ 	unsigned char status;
+ 
++	if (!codec)
++		return IRQ_HANDLED;
++
+ 	status = snd_opti9xx_read(chip, OPTi9XX_MC_REG(11));
+ 	if ((status & OPTi93X_IRQ_PLAYBACK) && codec->playback_substream)
+ 		snd_pcm_period_elapsed(codec->playback_substream);
+@@ -690,7 +693,7 @@ static void snd_card_opti9xx_free(struct snd_card *card)
+ 		struct snd_wss *codec = chip->codec;
+ 		if (codec && codec->irq > 0) {
+ 			disable_irq(codec->irq);
+-			free_irq(codec->irq, codec);
++			free_irq(codec->irq, chip);
+ 		}
+ #endif
+ 		release_and_free_resource(chip->res_mc_base);
+@@ -738,6 +741,14 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
+ 	if (error)
+ 		return error;
+ 
++#ifdef OPTi93X
++	error = request_irq(chip->irq, snd_opti93x_interrupt,
++			    IRQF_DISABLED, DEV_NAME" - WSS", chip);
++	if (error < 0) {
++		snd_printk(KERN_ERR "opti9xx: can't grab IRQ %d\n", chip->irq);
++		return error;
++	}
++#endif
+ 	error = snd_wss_create(card, chip->wss_base + 4, -1,
+ 			       chip->irq, chip->dma1, chip->dma2,
+ #ifdef OPTi93X
+@@ -746,8 +757,12 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
+ 			       WSS_HW_DETECT, 0,
+ #endif
+ 			       &codec);
+-	if (error < 0)
++	if (error < 0) {
++#ifdef OPTi93X
++		free_irq(chip->irq, chip);
++#endif
+ 		return error;
++	}
+ #ifdef OPTi93X
+ 	chip->codec = codec;
+ #endif
+@@ -762,14 +777,6 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
+ 	if (error < 0)
+ 		return error;
+ #endif
+-#ifdef OPTi93X
+-	error = request_irq(chip->irq, snd_opti93x_interrupt,
+-			    IRQF_DISABLED, DEV_NAME" - WSS", codec);
+-	if (error < 0) {
+-		snd_printk(KERN_ERR "opti9xx: can't grab IRQ %d\n", chip->irq);
+-		return error;
+-	}
+-#endif
+ 	strcpy(card->driver, chip->name);
+ 	sprintf(card->shortname, "OPTi %s", card->driver);
+ #if defined(CS4231) || defined(OPTi93X)
+-- 
+1.6.4
+
+
+----------------------------------------------------------------------
+Jak zrobiæ swoj± w³asn± tapetê na telefon?
+Sprawdz >>> http://link.interia.pl/f24c3
+
+
+--===============1480261492573858197==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1480261492573858197==--
