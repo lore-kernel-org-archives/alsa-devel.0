@@ -1,15 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.33
-Date: Thu, 3 Dec 2009 11:05:06 +0000
-Message-ID: <20091203110505.GE13165@rakim.wolfsonmicro.main>
+From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
+Subject: io-plugin does not call start callback function
+Date: Thu, 03 Dec 2009 12:49:32 +0100
+Message-ID: <4B17A5CC.5050906@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1A0E31038AD
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 12:05:07 +0100 (CET)
-Content-Disposition: inline
+Received: from netfinity.tbmn.org (mail.tbmn.org [88.117.197.126])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FEF0243FC
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 12:49:34 +0100 (CET)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by netfinity.tbmn.org (Postfix) with ESMTP id 096EF4BEE0
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 12:49:34 +0100 (CET)
+Received: from netfinity.tbmn.org ([127.0.0.1])
+	by localhost (netfinity.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id qM119CroWCnp for <alsa-devel@alsa-project.org>;
+	Thu,  3 Dec 2009 12:49:33 +0100 (CET)
+Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
+	[80.108.1.212])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: mne@tbmn.org)
+	by netfinity.tbmn.org (Postfix) with ESMTPSA id A2BE94BE05
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 12:49:33 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,24 +32,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit a649d1fcc9bd2299cb06b6594fabb429fa50f174:
-  Daniel Mack (1):
-        ASoC: pxa/raumfeld: adopt new snd_soc_dai_set_pll() API
+Hi,
 
-are available in the git repository at:
+I'm writing an io plugin that should transfer all PCM samples to a UNIX socket.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
+For this reason in my plugin I open the socket and then fill the plugin struct like this:
 
-Very last minute but these would qualify as bug fixes during the release
-cycle so I feel comfortable merging them now.
+socketdump->io.mmap_rw = 0;
+socketdump->io.poll_fd = socketdump->sock_fd;
+socketdump->io.poll_events = POLLOUT;
 
-Manuel Lauss (2):
-      ASoC: au1x: dbdma2: fix oops on soc device removal.
-      ASoC: au1x: dbdma2: plug memleak in pcm device creation error path
+Thus for my understanding (the alsa doc is really bad), every time
+the socket file descriptor is available for writing the alsa plugin would generally speaking issue a data transfer.
 
- sound/soc/au1x/dbdma2.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+However, when playing audio over that plugin for some reason the start callback function is never called.
+Instead I get output like this:
+
+socketdump_hw_constraint:417 26944 
+_snd_pcm_socketdump_open:585 26944 SND_PCM_PLUGIN_DEFINE_FUNC(): done, err=0
+
+Playing WAVE 'test_8khz_16LE_mono.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
+snd_pcm_socketdump_prepare:309 26944 Preparing with io->period_size=164 io->buffer_size=3936
+snd_pcm_socketdump_pointer:229 26944 hw_ptr: 0 ()
+snd_pcm_socketdump_write:268 26944 snd_pcm_socketdump_write(): areas->step=16 areas->first=0 areas->addr=0x22f1f60 offset=0, size=164 io->nonblock=0
+......
+
+
+Do you have any idea why the start callback function is not called at all ?
+
+cheers,
+stefan
