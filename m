@@ -1,19 +1,17 @@
-From: Alberto Martinez de la Ossa <delaossa@mail.desy.de>
-Subject: About TASCAM US-122 mkII support
-Date: Wed, 02 Dec 2009 18:26:59 +0100
-Message-ID: <4B16A363.50503@mail.desy.de>
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Subject: Re: [PATCH] ASoC: DaVinci: Update suspend/resume
+ support for McASP driver
+Date: Thu, 03 Dec 2009 16:00:19 +0300
+Message-ID: <4B17B663.70206@ru.mvista.com>
+References: <1259737740-27324-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------020308060807060803090403"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-3.desy.de (smtp-out-3.desy.de [131.169.56.86])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9AAA8103819
-	for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2009 18:27:00 +0100 (CET)
-Received: from smtp-map-3.desy.de (smtp-map-3.desy.de [131.169.56.68])
-	by smtp-out-3.desy.de (DESY_OUT_3) with ESMTP id 6C4141105
-	for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2009 18:27:00 +0100 (MET)
-Received: from adserv71.win.desy.de (adserv71.win.desy.de [131.169.97.57])
-	by smtp-map-3.desy.de (DESY_MAP_3) with ESMTP id 65A8310FE
-	for <alsa-devel@alsa-project.org>; Wed,  2 Dec 2009 18:27:00 +0100 (MET)
+Received: from imap.sh.mvista.com (gateway-1237.mvista.com [206.112.117.35])
+	by alsa0.perex.cz (Postfix) with SMTP id 40F2E24444
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 13:59:16 +0100 (CET)
+In-Reply-To: <1259737740-27324-1-git-send-email-chaithrika@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,75 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, samuel.mimram@ens-lyon.org, fzu@wemgehoertderstaat.de
+To: Chaithrika U S <chaithrika@ti.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------020308060807060803090403
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hello.
 
-Hello,
-I have just got the TASCAM US-122 mkI 
-<http://www.tascam.com/products/us-122mkII.html>I audio/midi interface, 
-which seemed to me a great product and a good deal.
-The problem is that I use a linux system (ubuntu-studio karmic) for 
-music production and the interface can not be recognized when plugged.
-Among other reasons I chose this device because I thought it would work 
-in linux:
-There were alsa drivers for its predecessors, the us-122 
-<http://alsa.opensrc.org/Tascam_US-122>  and the us-122l 
-<http://www.pps.jussieu.fr/%7Esmimram/tascam/> models.
-The latter, thanks to Karsten Wiese who wrote a patch for the us-122l 
-version, which was latter included by default in newer alsa-firmware 
-releases.
+Chaithrika U S wrote:
 
-Unfortunately, the new model (US-122 mkII), the one I have, is not 
-supported yet.
-I have even tried to get it replaced by the previous us-122l model, but 
-it is not available anymore in the music store -> http://www.justmusic.de
-On the other hand, the "linux specialist" of the music store told me 
-that a new linux driver for the us-122 mkII is been prepared,
-although he doesn't know when it will be ready.
-Being you the experts I have found in the web in regards with ALSA and 
-TASCAM usb interfaces, I have decided to directly ask you about this.
-I would really appreciate any information about the topic.
+> Add clock enable and disable calls to resume and suspend respectively.
+> Also add a member to the audio device data structure which tracks the clock
+> status.
 
-Thanks in advance for your attention.
+> Tested on DA850/OMAP-L138 EVM. For the purpose of testing, the patches[1] which 
+> add suspend-to-RAM support to DA850/OMAP-L138 SoC were applied.
 
-Best regards,
+> [1] http://linux.davincidsp.com/pipermail/davinci-linux-open-source/
+> 2009-November/016958.html
 
+> Signed-off-by: Chaithrika U S <chaithrika@ti.com>
+> ---
 
+[...]
 
---------------020308060807060803090403
-Content-Type: text/x-vcard; charset=utf-8;
- name="delaossa.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="delaossa.vcf"
+> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+> index 0a302e1..0d263f1 100644
+> --- a/sound/soc/davinci/davinci-mcasp.c
+> +++ b/sound/soc/davinci/davinci-mcasp.c
+> @@ -767,14 +767,27 @@ static int davinci_mcasp_trigger(struct snd_pcm_substream *substream,
+>  	int ret = 0;
+>  
+>  	switch (cmd) {
+> -	case SNDRV_PCM_TRIGGER_START:
+>  	case SNDRV_PCM_TRIGGER_RESUME:
+> +		if (!dev->clk_active) {
+> +			clk_enable(dev->clk);
+> +			dev->clk_active = 1;
+> +		}
 
-begin:vcard
-fn;quoted-printable:Alberto Mart=C3=ADnez de la Ossa
-n;quoted-printable:Mart=C3=ADnez de la Ossa;Alberto
-org:@ DESY;University of Colorado
-adr:;;Notkestrasse 85;Hamburg;;22607;Germany
-email;internet:delaossa@mail.desy.de
-title:Member, HERMES Collaboration
-tel;work:+49-40-8998-4789
-x-mozilla-html:TRUE
-version:2.1
-end:vcard
+   You should add a comment in the cases where *break* is ommitted 
+deliberately (if it indeed is), like:
 
+		/* FALL THRU */
 
---------------020308060807060803090403
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> +
+> +	case SNDRV_PCM_TRIGGER_START:
+>  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>  		davinci_mcasp_start(dev, substream->stream);
+>  		break;
+>  
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---------------020308060807060803090403--
+WBR, Sergei
