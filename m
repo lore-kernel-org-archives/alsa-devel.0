@@ -1,28 +1,19 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: io plugin: playback and capture over a socket
-Date: Thu, 03 Dec 2009 13:07:02 +0100
-Message-ID: <4B17A9E6.8080307@gmail.com>
+From: "Chaithrika U S" <chaithrika@ti.com>
+Subject: Re: [PATCH] ASoC: DaVinci: Update suspend/resume
+	support	for McASP driver
+Date: Thu, 3 Dec 2009 17:58:08 +0530
+Message-ID: <000301ca7414$12280120$36780360$@com>
+References: <1259737740-27324-1-git-send-email-chaithrika@ti.com>
+	<s5hskbtybeg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from netfinity.tbmn.org (mail.tbmn.org [88.117.197.126])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD73B10388B
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 13:07:24 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by netfinity.tbmn.org (Postfix) with ESMTP id 237B04BEE0
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 13:07:10 +0100 (CET)
-Received: from netfinity.tbmn.org ([127.0.0.1])
-	by localhost (netfinity.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id IDy-3PJchlGx for <alsa-devel@alsa-project.org>;
-	Thu,  3 Dec 2009 13:07:09 +0100 (CET)
-Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
-	[80.108.1.212])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: mne@tbmn.org)
-	by netfinity.tbmn.org (Postfix) with ESMTPSA id 99DD84BE05
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 13:07:09 +0100 (CET)
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B2B62442A
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 13:30:46 +0100 (CET)
+In-Reply-To: <s5hskbtybeg.wl%tiwai@suse.de>
+Content-Language: en-us
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,44 +23,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: khilman@deeprootsystems.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, Dec 02, 2009 at 14:56:31, Takashi Iwai wrote:
+> At Wed,  2 Dec 2009 12:39:00 +0530,
+> Chaithrika U S wrote:
+> > 
+> > diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+> > index ad4d7f4..80c7fdf 100644
+> > --- a/sound/soc/davinci/davinci-pcm.c
+> > +++ b/sound/soc/davinci/davinci-pcm.c
+> > @@ -49,7 +49,7 @@ static void print_buf_info(int slot, char *name)
+> >  static struct snd_pcm_hardware pcm_hardware_playback = {
+> >  	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+> >  		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+> > -		 SNDRV_PCM_INFO_PAUSE),
+> > +		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
+> 
+> Note that unless your driver supports the "full" resume,
+> SNDRV_PCM_INFO_RESUME shouldn't be set.  Here, the "full" resume means
+> that the hardware gets back to a completely sane state and the PCM
+> streams are resumed without extra PCM prepare call at PM resume.
+> If the PCM (or whatever) needs another re-initialization (like in many
+> cases), don't set this flag.
+> 
+> Just to be sure...
+> 
+> 
+> Takashi
+> 
 
-I'm having difficulties writing a simple alsa plugin that plays and
-captures from a socket.
+PCM prepare call is not needed in this case. Testing was done with audio
+loopback and after a suspend/resume cycle the audio output was proper. Hope
+my understanding is correct. Is this test sufficient to prove that driver
+supports full resume?
 
-The background is that there should be a "server" application that
-processes PCM data.
-In order to "connect" ALSA to that application I would like to use a socket.
-
-I looked at the bluez bluetooth audio plugin which seems to do a similar
-task.
-
-Basically the idea is that the alsa plugin transfer callback function
-just sends and receives PCM samples in periods to/from the socket
-(depending on whether the plugin is used for playback or capture).
-
-To control the timing and to increment the hw_ptr a separate thread in
-the alsa plugin is used.
-Basically for each period the thread will increment the hw_ptr and
-signal to the alsa plugin that the next period can be written.
-
-This signaling is done by using a pipe.
-As the plugin code is poll-based I guess it needs to poll both the
-socket and the pipe (which is used to communicate with the "timing" thread).
-
-For this reason the alsa plugin would only write to the socket if the
-socket is ready for writing _and_ the time for writing the next period
-has come (which will be signaled by a write to the pipe by the timing
-thread).
-
-Would such a implementation work so far ?
-
-At the moment I'm having some real difficulties as for some reason the
-start callback function that would start the thread is not called at all.
-My code is pretty much the same as in the bluez bluetooth audio plugin.
-
-cheers,
-stefan
+Regards, 
+Chaithrika
