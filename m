@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.33
-Date: Thu, 3 Dec 2009 10:35:12 +0000
-Message-ID: <20091203103511.GA24206@sirena.org.uk>
-References: <20091130155032.GC18944@rakim.wolfsonmicro.main>
-	<s5hws17vr7d.wl%tiwai@suse.de>
-	<20091203101316.GA24033@sirena.org.uk>
-	<s5hocmgwe3k.wl%tiwai@suse.de>
+Subject: Re: [PATCH 0/2] ASoC: au1x updates for 2.6.33
+Date: Thu, 3 Dec 2009 10:51:06 +0000
+Message-ID: <20091203105106.GC13165@rakim.wolfsonmicro.main>
+References: <1259687435-7066-1-git-send-email-manuel.lauss@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB35910387F
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 11:35:12 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5872E103873
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 11:51:07 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hocmgwe3k.wl%tiwai@suse.de>
+In-Reply-To: <1259687435-7066-1-git-send-email-manuel.lauss@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 03, 2009 at 11:23:27AM +0100, Takashi Iwai wrote:
+On Tue, Dec 01, 2009 at 06:10:33PM +0100, Manuel Lauss wrote:
 
-> BTW, I'm preparing "what's in sound git tree" for 2.6.33 now.
-> Since 2.6.32 is out, I'm going to post it on Friday.
+> The following two patches fix 2 issues in the updated au1x asoc drivers
+> in your/Takashis queue for 2.6.33.  If possible, please either fold them
+> into commit 0f83d639d84c99a775c60696dbde77372c2cf4ac ("au1x: convert to
+> platform drivers") found in Takashi's tree.
 
-> Could you make it up for ASoC bits?  It'd be really helpful.
-
-Sure:
-
-This has been another fairly quiet release for ASoC.  Aside from the
-addition of virtual mux support to DAPM and some further preparatory
-work for multi-CODEC cards the majority of changes have been driver
-updates, including:
-
-  - New drivers for ADS117x, AK4671, TLV320DAC33, TPA6130A2, WM8711 and
-    WM8727.
-  - Substantial improvements to DMA performance and reliability on
-    MPC5200 and DaVinci.
-  - Capture support for the FSI port on SH.
-
-Due to cross tree merge issues some updates to the TWL4030 MFD code are
-also included, enabling sharing of the CODEC hardware by support for the
-VIBRA interface of the devices.
+Applied both, thanks.
