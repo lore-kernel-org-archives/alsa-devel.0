@@ -1,44 +1,115 @@
-From: "Chaithrika U S" <chaithrika-l0cyMroinI0@public.gmane.org>
-Subject: RE: [alsa-devel] [PATCH] ASoC: DaVinci: Update suspend/resume	support
-	for McASP driver
-Date: Thu, 3 Dec 2009 19:04:54 +0530
-Message-ID: <000901ca741d$65cedd90$316c98b0$@com>
-References: <1259737740-27324-1-git-send-email-chaithrika@ti.com>
-	<s5hskbtybeg.wl%tiwai@suse.de>
-	<000301ca7414$12280120$36780360$@com>
-	<s5h3a3sw68g.wl%tiwai@suse.de> <20091203132717.GA412@sirena.org.uk>
+From: Chaithrika U S <chaithrika@ti.com>
+Subject: [PATCH v2] ASoC: DaVinci: Update suspend/resume
+	support for McASP driver
+Date: Thu,  3 Dec 2009 18:56:56 +0530
+Message-ID: <1259846816-24730-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <20091203132717.GA412-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Content-Language: en-us
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces+gld-davinci-linux-open-source=gmane.org-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: 'Mark Brown' <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, 'Takashi Iwai' <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CB821038BA
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 14:44:36 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: khilman@deeprootsystems.com, Chaithrika U S <chaithrika@ti.com>, davinci-linux-open-source@linux.davincidsp.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 03, 2009 at 18:57:17, Mark Brown wrote:
-> On Thu, Dec 03, 2009 at 02:13:19PM +0100, Takashi Iwai wrote:
-> 
-> > Yeah, if it worked with an actual app, it's fine :)
-> > That was just a slight concern.
-> 
-> Chaithrika, could you please fix the issue with the comment for
-> fallthrough and resubmit?
-> 
+Add clock enable and disable calls to resume and suspend respectively.
+Also add a member to the audio device data structure which tracks the clock
+status.
 
-Mark,
+Tested on DA850/OMAP-L138 EVM. For the purpose of testing, the patches[1] which
+add suspend-to-RAM support to DA850/OMAP-L138 SoC were applied.
 
-I will resubmit this patch soon.
+[1] http://linux.davincidsp.com/pipermail/davinci-linux-open-source/
+2009-November/016958.html
 
-Regards, 
-Chaithrika
+Signed-off-by: Chaithrika U S <chaithrika@ti.com>
+---
+Applies to ALSA GIT tree on branch topic/asoc at
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=shortlog;
+h=topic/asoc
+
+ sound/soc/davinci/davinci-mcasp.c |   18 ++++++++++++++++--
+ sound/soc/davinci/davinci-mcasp.h |    1 +
+ sound/soc/davinci/davinci-pcm.c   |    2 +-
+ 3 files changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 0a302e1..a613bbb 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -767,14 +767,27 @@ static int davinci_mcasp_trigger(struct snd_pcm_substream *substream,
+ 	int ret = 0;
+ 
+ 	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
++		if (!dev->clk_active) {
++			clk_enable(dev->clk);
++			dev->clk_active = 1;
++		}
++		/* Fall through */
++	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		davinci_mcasp_start(dev, substream->stream);
+ 		break;
+ 
+-	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
++		davinci_mcasp_stop(dev, substream->stream);
++		if (dev->clk_active) {
++			clk_disable(dev->clk);
++			dev->clk_active = 0;
++		}
++
++		break;
++
++	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		davinci_mcasp_stop(dev, substream->stream);
+ 		break;
+@@ -866,6 +879,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	clk_enable(dev->clk);
++	dev->clk_active = 1;
+ 
+ 	dev->base = (void __iomem *)IO_ADDRESS(mem->start);
+ 	dev->op_mode = pdata->op_mode;
+diff --git a/sound/soc/davinci/davinci-mcasp.h b/sound/soc/davinci/davinci-mcasp.h
+index 582c924..e755b51 100644
+--- a/sound/soc/davinci/davinci-mcasp.h
++++ b/sound/soc/davinci/davinci-mcasp.h
+@@ -44,6 +44,7 @@ struct davinci_audio_dev {
+ 	int sample_rate;
+ 	struct clk *clk;
+ 	unsigned int codec_fmt;
++	u8 clk_active;
+ 
+ 	/* McASP specific data */
+ 	int	tdm_slots;
+diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
+index ad4d7f4..80c7fdf 100644
+--- a/sound/soc/davinci/davinci-pcm.c
++++ b/sound/soc/davinci/davinci-pcm.c
+@@ -49,7 +49,7 @@ static void print_buf_info(int slot, char *name)
+ static struct snd_pcm_hardware pcm_hardware_playback = {
+ 	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
+ 		 SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID |
+-		 SNDRV_PCM_INFO_PAUSE),
++		 SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
+ 	.formats = (SNDRV_PCM_FMTBIT_S16_LE),
+ 	.rates = (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000 |
+ 		  SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 |
+-- 
+1.5.6
