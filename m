@@ -1,14 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: ASoC: OMAP mcbsp: dai->dev is missing warning
-Date: Thu, 3 Dec 2009 11:45:47 +0200
-Message-ID: <200912031145.47139.peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for 2.6.33
+Date: Thu, 3 Dec 2009 10:13:17 +0000
+Message-ID: <20091203101316.GA24033@sirena.org.uk>
+References: <20091130155032.GC18944@rakim.wolfsonmicro.main>
+	<s5hws17vr7d.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id D066C243B2
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 10:45:55 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAA26243D7
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 11:13:17 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hws17vr7d.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,43 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Mon, Nov 30, 2009 at 06:48:54PM +0100, Takashi Iwai wrote:
+> 
+> Pulled this one, too.  Thanks.
 
-Recently the following warnings appeared during the bootup on OMAP platform=
-s:
+> > Anuj Aggarwal (1):
+> >       ASoC: AIC23: Fixing infinite loop in resume path
 
-No device for DAI omap-mcbsp-dai-0
-No device for DAI omap-mcbsp-dai-1
-No device for DAI omap-mcbsp-dai-2
-No device for DAI omap-mcbsp-dai-3
-No device for DAI omap-mcbsp-dai-4
-
-I have taken a look, and it is printed, because the dai->dev is NULL for OM=
-AP =
-
-McBSP DAIs. Also the comment there states, that the dai->dev will become =
-
-mandatory in the future.
-At the moment the platform device/driver is not used for the =
-
-sound/soc/omap/omap-mcbsp, it is used for the arch/arm/plat-omap/mcbsp.c, s=
-o we =
-
-really don't have possibility at the moment to provide a valid dai->dev for=
- ASoC =
-
-at the moment.
-
-Mark: Do you have some estimates, when the dai->dev will become mandatory?
-
-Jarkko: Shall we start to think about the possibilities to provide a valid =
-dai-
->dev for the mcbsp DAIs?
-
--- =
-
-P=E9ter
+It doesn't seem to be showing up in your git or -next yet?
