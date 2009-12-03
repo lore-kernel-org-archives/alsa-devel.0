@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/2] ASoC: au1x updates for 2.6.33
-Date: Thu, 3 Dec 2009 10:51:06 +0000
-Message-ID: <20091203105106.GC13165@rakim.wolfsonmicro.main>
-References: <1259687435-7066-1-git-send-email-manuel.lauss@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: ASoC updates for 2.6.33
+Date: Thu, 3 Dec 2009 12:56:52 +0200
+Message-ID: <200912031256.52944.peter.ujfalusi@nokia.com>
+References: <20091130155032.GC18944@rakim.wolfsonmicro.main>
+	<s5hocmgwe3k.wl%tiwai@suse.de>
+	<20091203103511.GA24206@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5872E103873
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 11:51:07 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1259687435-7066-1-git-send-email-manuel.lauss@gmail.com>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id C50EC10389C
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 11:57:30 +0100 (CET)
+In-Reply-To: <20091203103511.GA24206@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,15 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: Manuel Lauss <manuel.lauss@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 01, 2009 at 06:10:33PM +0100, Manuel Lauss wrote:
+On Thursday 03 December 2009 12:35:12 ext Mark Brown wrote:
+> Due to cross tree merge issues some updates to the TWL4030 MFD code are
+> also included, enabling sharing of the CODEC hardware by support for the
+> VIBRA interface of the devices.
 
-> The following two patches fix 2 issues in the updated au1x asoc drivers
-> in your/Takashis queue for 2.6.33.  If possible, please either fold them
-> into commit 0f83d639d84c99a775c60696dbde77372c2cf4ac ("au1x: convert to
-> platform drivers") found in Takashi's tree.
+To be precise: the twl4030-codec MFD driver as such (with updates) is going=
+ to =
 
-Applied both, thanks.
+be introduced through the sound-2.6 tree as far as I know. With this change=
+ the =
+
+twl4030 soc codec driver now using much nicer way of loading/probing, this =
+also =
+
+affected some OMAP based boards (the changes for their platform code also g=
+oing =
+
+via the sound-2.6 tree).
+All in all, it was quite a bit of internal change, which actually should no=
+t =
+
+affect the users at the end.
+
+-- =
+
+P=E9ter
