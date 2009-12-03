@@ -1,28 +1,28 @@
 From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: io-plugin does not call start callback function
-Date: Thu, 03 Dec 2009 12:49:32 +0100
-Message-ID: <4B17A5CC.5050906@gmail.com>
+Subject: io plugin: playback and capture over a socket
+Date: Thu, 03 Dec 2009 13:07:02 +0100
+Message-ID: <4B17A9E6.8080307@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from netfinity.tbmn.org (mail.tbmn.org [88.117.197.126])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FEF0243FC
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 12:49:34 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id AD73B10388B
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 13:07:24 +0100 (CET)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-	by netfinity.tbmn.org (Postfix) with ESMTP id 096EF4BEE0
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 12:49:34 +0100 (CET)
+	by netfinity.tbmn.org (Postfix) with ESMTP id 237B04BEE0
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 13:07:10 +0100 (CET)
 Received: from netfinity.tbmn.org ([127.0.0.1])
 	by localhost (netfinity.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id qM119CroWCnp for <alsa-devel@alsa-project.org>;
-	Thu,  3 Dec 2009 12:49:33 +0100 (CET)
+	with ESMTP id IDy-3PJchlGx for <alsa-devel@alsa-project.org>;
+	Thu,  3 Dec 2009 13:07:09 +0100 (CET)
 Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
 	[80.108.1.212])
 	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
 	(Authenticated sender: mne@tbmn.org)
-	by netfinity.tbmn.org (Postfix) with ESMTPSA id A2BE94BE05
-	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 12:49:33 +0100 (CET)
+	by netfinity.tbmn.org (Postfix) with ESMTPSA id 99DD84BE05
+	for <alsa-devel@alsa-project.org>; Thu,  3 Dec 2009 13:07:09 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,31 +37,39 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I'm writing an io plugin that should transfer all PCM samples to a UNIX socket.
+I'm having difficulties writing a simple alsa plugin that plays and
+captures from a socket.
 
-For this reason in my plugin I open the socket and then fill the plugin struct like this:
+The background is that there should be a "server" application that
+processes PCM data.
+In order to "connect" ALSA to that application I would like to use a socket.
 
-socketdump->io.mmap_rw = 0;
-socketdump->io.poll_fd = socketdump->sock_fd;
-socketdump->io.poll_events = POLLOUT;
+I looked at the bluez bluetooth audio plugin which seems to do a similar
+task.
 
-Thus for my understanding (the alsa doc is really bad), every time
-the socket file descriptor is available for writing the alsa plugin would generally speaking issue a data transfer.
+Basically the idea is that the alsa plugin transfer callback function
+just sends and receives PCM samples in periods to/from the socket
+(depending on whether the plugin is used for playback or capture).
 
-However, when playing audio over that plugin for some reason the start callback function is never called.
-Instead I get output like this:
+To control the timing and to increment the hw_ptr a separate thread in
+the alsa plugin is used.
+Basically for each period the thread will increment the hw_ptr and
+signal to the alsa plugin that the next period can be written.
 
-socketdump_hw_constraint:417 26944 
-_snd_pcm_socketdump_open:585 26944 SND_PCM_PLUGIN_DEFINE_FUNC(): done, err=0
+This signaling is done by using a pipe.
+As the plugin code is poll-based I guess it needs to poll both the
+socket and the pipe (which is used to communicate with the "timing" thread).
 
-Playing WAVE 'test_8khz_16LE_mono.wav' : Signed 16 bit Little Endian, Rate 8000 Hz, Mono
-snd_pcm_socketdump_prepare:309 26944 Preparing with io->period_size=164 io->buffer_size=3936
-snd_pcm_socketdump_pointer:229 26944 hw_ptr: 0 ()
-snd_pcm_socketdump_write:268 26944 snd_pcm_socketdump_write(): areas->step=16 areas->first=0 areas->addr=0x22f1f60 offset=0, size=164 io->nonblock=0
-......
+For this reason the alsa plugin would only write to the socket if the
+socket is ready for writing _and_ the time for writing the next period
+has come (which will be signaled by a write to the pipe by the timing
+thread).
 
+Would such a implementation work so far ?
 
-Do you have any idea why the start callback function is not called at all ?
+At the moment I'm having some real difficulties as for some reason the
+start callback function that would start the thread is not called at all.
+My code is pretty much the same as in the bluez bluetooth audio plugin.
 
 cheers,
 stefan
