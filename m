@@ -1,22 +1,23 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: hw_ptr accuracy with intel8x0 -> PulseAudio issue
-Date: Thu, 3 Dec 2009 18:50:58 -0600
-Message-ID: <6160a5130912031650u5949c921jc86d0847b2844803@mail.gmail.com>
-References: <6160a5130912020115t45bd4635hceb0ac3de4fb1efe@mail.gmail.com>
-	<4f3252890912021826g732292ecv8959a7cfbf574446@mail.gmail.com>
-	<6160a5130912030828m5b2401f3w31a67b6b51e8d8b6@mail.gmail.com>
-	<4f3252890912031442i56ccc905g935a4d6ed48f40c6@mail.gmail.com>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: [PATCH] ASoC: Rename controls with a / in wm_hubs
+Date: Fri, 04 Dec 2009 15:12:10 +0900
+Message-ID: <4B18A83A.6010300@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f191.google.com (mail-pz0-f191.google.com
-	[209.85.222.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id B21952415F
-	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 01:51:00 +0100 (CET)
-Received: by pzk29 with SMTP id 29so1828309pzk.17
-	for <alsa-devel@alsa-project.org>; Thu, 03 Dec 2009 16:50:58 -0800 (PST)
-In-Reply-To: <4f3252890912031442i56ccc905g935a4d6ed48f40c6@mail.gmail.com>
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0AF0424502
+	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 07:12:12 +0100 (CET)
+Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KU400HW76K99L@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 04 Dec 2009 15:12:09 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KU400ETT6K9K5@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 04 Dec 2009 15:12:09 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,22 +27,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: kyungmin.park@samsung.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
->> =A0 17. hwptr 24351 buffer 16384 appl 24332, avail=3D16403
->
-> appl pointer is behind hwprtr ( =A0underrun ) , need timestamp to find out
-> whether PA is unable to write audio data in time since
+This renames from a character / to : of controls. A / occurs below error
+messages.
 
-Nah, it's not an audio underflow. In the default PulseAudio code, the
-timer value is increased by 20ms each time this errror condition is
-reached. PA ends-up waking-up 150ms or so before the deadline and yet
-it still encounters this error. I don't think it's a problem with PA
-not refilling the buffer on time, it's more that the information
-provided by snd_pcm_avail() is misleading. I commented out the portion
-of the code that increases the watermark and clamped the number of
-available samples to the buffer size, and it works just fine, no audio
-underflows.
-- P
+ASoC: Failed to create IN2RP/VXRP debugfs file
+ASoC: Failed to create IN2LP/VXRN debugfs file
+
+Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
+---
+If there is the better a delimiter or other idea, please inform me it.
+
+ sound/soc/codecs/wm_hubs.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
+index 810a563..d73c305 100644
+--- a/sound/soc/codecs/wm_hubs.c
++++ b/sound/soc/codecs/wm_hubs.c
+@@ -438,11 +438,11 @@ static const struct snd_soc_dapm_widget analogue_dapm_widgets[] = {
+ SND_SOC_DAPM_INPUT("IN1LN"),
+ SND_SOC_DAPM_INPUT("IN1LP"),
+ SND_SOC_DAPM_INPUT("IN2LN"),
+-SND_SOC_DAPM_INPUT("IN2LP/VXRN"),
++SND_SOC_DAPM_INPUT("IN2LP:VXRN"),
+ SND_SOC_DAPM_INPUT("IN1RN"),
+ SND_SOC_DAPM_INPUT("IN1RP"),
+ SND_SOC_DAPM_INPUT("IN2RN"),
+-SND_SOC_DAPM_INPUT("IN2RP/VXRP"),
++SND_SOC_DAPM_INPUT("IN2RP:VXRP"),
+ 
+ SND_SOC_DAPM_MICBIAS("MICBIAS2", WM8993_POWER_MANAGEMENT_1, 5, 0),
+ SND_SOC_DAPM_MICBIAS("MICBIAS1", WM8993_POWER_MANAGEMENT_1, 4, 0),
+@@ -537,14 +537,14 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ 	{ "IN1R PGA", "IN1RP Switch", "IN1RP" },
+ 	{ "IN1R PGA", "IN1RN Switch", "IN1RN" },
+ 
+-	{ "IN2L PGA", "IN2LP Switch", "IN2LP/VXRN" },
++	{ "IN2L PGA", "IN2LP Switch", "IN2LP:VXRN" },
+ 	{ "IN2L PGA", "IN2LN Switch", "IN2LN" },
+ 
+-	{ "IN2R PGA", "IN2RP Switch", "IN2RP/VXRP" },
++	{ "IN2R PGA", "IN2RP Switch", "IN2RP:VXRP" },
+ 	{ "IN2R PGA", "IN2RN Switch", "IN2RN" },
+ 
+-	{ "Direct Voice", NULL, "IN2LP/VXRN" },
+-	{ "Direct Voice", NULL, "IN2RP/VXRP" },
++	{ "Direct Voice", NULL, "IN2LP:VXRN" },
++	{ "Direct Voice", NULL, "IN2RP:VXRP" },
+ 
+ 	{ "MIXINL", "IN1L Switch", "IN1L PGA" },
+ 	{ "MIXINL", "IN2L Switch", "IN2L PGA" },
+@@ -565,7 +565,7 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ 	{ "Left Output Mixer", "Right Input Switch", "MIXINR" },
+ 	{ "Left Output Mixer", "IN2RN Switch", "IN2RN" },
+ 	{ "Left Output Mixer", "IN2LN Switch", "IN2LN" },
+-	{ "Left Output Mixer", "IN2LP Switch", "IN2LP/VXRN" },
++	{ "Left Output Mixer", "IN2LP Switch", "IN2LP:VXRN" },
+ 	{ "Left Output Mixer", "IN1L Switch", "IN1L PGA" },
+ 	{ "Left Output Mixer", "IN1R Switch", "IN1R PGA" },
+ 
+@@ -573,7 +573,7 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
+ 	{ "Right Output Mixer", "Right Input Switch", "MIXINR" },
+ 	{ "Right Output Mixer", "IN2LN Switch", "IN2LN" },
+ 	{ "Right Output Mixer", "IN2RN Switch", "IN2RN" },
+-	{ "Right Output Mixer", "IN2RP Switch", "IN2RP/VXRP" },
++	{ "Right Output Mixer", "IN2RP Switch", "IN2RP:VXRP" },
+ 	{ "Right Output Mixer", "IN1L Switch", "IN1L PGA" },
+ 	{ "Right Output Mixer", "IN1R Switch", "IN1R PGA" },
+ 
+-- 
+1.6.3.3
