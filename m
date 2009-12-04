@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA Control Questions (atomicity, error handling)
-Date: Fri, 04 Dec 2009 13:33:17 +0100
-Message-ID: <4B19018D.4040000@ladisch.de>
-References: <4B1803CE.3080501@gmx.de>	<20091203195018.GK14091@buzzloop.caiaq.de>
-	<4B18D6DA.6070809@gmx.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tlv320dac33: Add support
+	for	regulator framework
+Date: Fri, 4 Dec 2009 12:36:17 +0000
+Message-ID: <20091204123617.GA2966@sirena.org.uk>
+References: <1259927350-29227-1-git-send-email-ilkka.koskinen@nokia.com>
+	<200912041429.59978.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8585410389A
-	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 13:33:22 +0100 (CET)
-In-Reply-To: <4B18D6DA.6070809@gmx.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 724411038CD
+	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 13:36:18 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <200912041429.59978.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,20 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobias Schneider <tobsnyder@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Tobias Schneider wrote:
-> Another point: I figured out that the "ALSA middlelayer" seems to filter
-> the given values of a control. So if the user sets value=1000 where
-> maximum is 10, I will get 10 instead of 1000 in the put callback...so
-> it's not necessary to check values in those callbacks,
+On Fri, Dec 04, 2009 at 02:29:59PM +0200, Peter Ujfalusi wrote:
+> On Friday 04 December 2009 13:49:10 Koskinen Ilkka (Nokia-D/Tampere) wrote:
+> > Take the regulator framework in use for managing the power sources.
 
-It is, because it is possible to use low-level ALSA functions or to call
-the IOCTLs directly, and in this way arbitrary values can reach your
-driver's put callback.
+> > Signed-off-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
 
+> For me this looks right, thanks.
 
-Best regards,
-Clemens
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+
+Applied, thanks.
