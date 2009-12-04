@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.33
-Date: Fri, 4 Dec 2009 11:00:03 +0000
-Message-ID: <20091204110003.GB28498@opensource.wolfsonmicro.com>
-References: <20091203110505.GE13165@rakim.wolfsonmicro.main>
-	<s5hzl60urmf.wl%tiwai@suse.de>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: ALSA Control Questions (atomicity, error handling)
+Date: Fri, 4 Dec 2009 12:27:07 +0100
+Message-ID: <20091204112707.GQ14091@buzzloop.caiaq.de>
+References: <4B1803CE.3080501@gmx.de>
+	<20091203195018.GK14091@buzzloop.caiaq.de>
+	<4B18D6DA.6070809@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 863041038A4
-	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 12:00:04 +0100 (CET)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id E5E7D103801
+	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 12:27:15 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <s5hzl60urmf.wl%tiwai@suse.de>
+In-Reply-To: <4B18D6DA.6070809@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Tobias Schneider <tobsnyder@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 03, 2009 at 02:14:16PM +0100, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Fri, Dec 04, 2009 at 10:31:06AM +0100, Tobias Schneider wrote:
+> Actually I know where the problem in my code is: inside the put
+> callback (see below) I am calling a function (dsp_setoutput) that is
+> sending the signal to the DSP, there I wanted to wait for the reply
+> of the DSP to get a feedback whether the request was successful or
+> not. This was done by a semaphore (going down and waiting for IRQ
+> from DSP that is setting sema up), and thats the point where the
+> posted bug occured.
+> 
+> So I was just wondering that it seems that there is no possibility
+> to wait for a reply of the DSP, to be sure that a given value has
+> been set?
+> 
+> 
+> (for the interested ones, here is the code..)
+> 
+> static int snd_mychip_output_set_put(struct snd_kcontrol *kcontrol,
+>                                     struct snd_ctl_elem_value *ucontrol)
+> {
+>  struct snd_mychip *mychip = snd_kcontrol_chip(kcontrol);
+>  int addr = kcontrol->private_value;
+>  short change = 0;
+> 
+>  spin_lock_irq(&mychip->mixer_lock);
 
-> > Very last minute but these would qualify as bug fixes during the release
-> > cycle so I feel comfortable merging them now.
+As I said - here you're holding a spinlock ...
 
-> Great.  I pulled this now.
+>  if (ucontrol->value.integer.value[0] != mychip->output_set[addr]) {
+>    if (dsp_setoutput(addr+1, ucontrol->value.integer.value[0]) >= 0)
+>    {
+>      mychip->output_set[addr] = ucontrol->value.integer.value[0];
+>      change = 1;
+>    }
+>    else  // error sending signal
+>    {
+>      change = -EBUSY;  // device or resource busy
+>    }
+>  }
+>  spin_unlock_irq(&mychip->mixer_lock);
+>  return change;
+> }
+> 
+> later on in the called function...
+> // wait for reply via semaphore
+>  while(!end)
+>  {
+>    if (down_interruptible(&dsp_reply_sema)==-EINTR)   // HERE WE GET
 
-Sorry, a couple more updates.  The arch/arm change is a bug fix on top
-of patches queued in ASoC due to cross tree issues.  Neither of these is
-terribly urgent so you may want to hold off on pulling until after Linus
-has taken your initial pull request.
+And here you allow the CPU to reschedule while waiting for a mutex.
+That doesn't fly. You should remove the spinlock from the function above
+and move it to the actual lowlevel I/O function (whatever
+dsp_setoutput() does eventually).
 
-The following changes since commit efd9eb96d5604c2c133e500f7b8c7b3f3fbdece8:
-  Manuel Lauss (1):
-        ASoC: au1x: dbdma2: plug memleak in pcm device creation error path
+Think about where locking is actually needed, at which point your
+function flow must not be interrupted by anything to avoid data
+corruption. Use locking there, and remove it from other places.
 
-are available in the git repository at:
+This might also be a good read to get an overview:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
+  http://www.kernel.org/pub/linux/kernel/people/rusty/kernel-locking/index.html
 
-Joonyoung Shim (1):
-      ASoC: Rename controls with a / in wm_hubs
+> Another point: I figured out that the "ALSA middlelayer" seems to
+> filter the given values of a control. So if the user sets value=1000
+> where maximum is 10, I will get 10 instead of 1000 in the put
+> callback...so it's not necessary to check values in those callbacks,
+> but unfortunately that's not always good - because sometimes it
+> doesn't make sense to use the max or min values if the user just
+> entered a wrong number...
 
-Mark Brown (1):
-      S3C64XX: Staticise platform data for PCM devices
+For integer values, it does make sense to clamp values to their limits.
+For enums, that might be different. Not sure what the ALSA core does
+there.
 
- arch/arm/plat-s3c64xx/dev-audio.c |    4 ++--
- sound/soc/codecs/wm_hubs.c        |   16 ++++++++--------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+Daniel
