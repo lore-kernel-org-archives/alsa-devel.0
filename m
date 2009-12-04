@@ -1,23 +1,17 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: [PATCH] ASoC: Rename controls with a / in wm_hubs
-Date: Fri, 04 Dec 2009 15:12:10 +0900
-Message-ID: <4B18A83A.6010300@samsung.com>
+From: Achilles H <leehadji@gmail.com>
+Subject: syslog says snd-usb-audio bug?
+Date: Fri, 4 Dec 2009 17:33:43 +1100
+Message-ID: <fb0a16ef0912032233s2de8a6acs6abe753fefb3c670@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0AF0424502
-	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 07:12:12 +0100 (CET)
-Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KU400HW76K99L@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 04 Dec 2009 15:12:09 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KU400ETT6K9K5@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 04 Dec 2009 15:12:09 +0900 (KST)
+Received: from mail-pz0-f191.google.com (mail-pz0-f191.google.com
+	[209.85.222.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id CFF6A24504
+	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 07:33:44 +0100 (CET)
+Received: by pzk29 with SMTP id 29so2070240pzk.17
+	for <alsa-devel@alsa-project.org>; Thu, 03 Dec 2009 22:33:43 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,76 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: kyungmin.park@samsung.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This renames from a character / to : of controls. A / occurs below error
-messages.
+Dec  4 00:16:21 susbwoy pulseaudio[1719]: alsa-sink.c: ALSA woke us up
+to write new data to the device, but there was actually nothing to
+write!
+Dec  4 00:16:21 susbwoy pulseaudio[1719]: alsa-sink.c: Most likely
+this is a bug in the ALSA driver 'snd_usb_audio'. Please report this
+issue to the ALSA developers.
+Dec  4 00:16:21 susbwoy pulseaudio[1719]: alsa-sink.c: We were woken
+up with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0
+or another value < min_avail.
 
-ASoC: Failed to create IN2RP/VXRP debugfs file
-ASoC: Failed to create IN2LP/VXRN debugfs file
 
-Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
----
-If there is the better a delimiter or other idea, please inform me it.
+I am using Ubuntu 9.10 64bit with an Edirol UA-25 USB sound card. I
+installed OpenArena, and tried to open it. Screen went black - Could
+only get back to the desktop by killing X.
 
- sound/soc/codecs/wm_hubs.c |   16 ++++++++--------
- 1 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_hubs.c b/sound/soc/codecs/wm_hubs.c
-index 810a563..d73c305 100644
---- a/sound/soc/codecs/wm_hubs.c
-+++ b/sound/soc/codecs/wm_hubs.c
-@@ -438,11 +438,11 @@ static const struct snd_soc_dapm_widget analogue_dapm_widgets[] = {
- SND_SOC_DAPM_INPUT("IN1LN"),
- SND_SOC_DAPM_INPUT("IN1LP"),
- SND_SOC_DAPM_INPUT("IN2LN"),
--SND_SOC_DAPM_INPUT("IN2LP/VXRN"),
-+SND_SOC_DAPM_INPUT("IN2LP:VXRN"),
- SND_SOC_DAPM_INPUT("IN1RN"),
- SND_SOC_DAPM_INPUT("IN1RP"),
- SND_SOC_DAPM_INPUT("IN2RN"),
--SND_SOC_DAPM_INPUT("IN2RP/VXRP"),
-+SND_SOC_DAPM_INPUT("IN2RP:VXRP"),
- 
- SND_SOC_DAPM_MICBIAS("MICBIAS2", WM8993_POWER_MANAGEMENT_1, 5, 0),
- SND_SOC_DAPM_MICBIAS("MICBIAS1", WM8993_POWER_MANAGEMENT_1, 4, 0),
-@@ -537,14 +537,14 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
- 	{ "IN1R PGA", "IN1RP Switch", "IN1RP" },
- 	{ "IN1R PGA", "IN1RN Switch", "IN1RN" },
- 
--	{ "IN2L PGA", "IN2LP Switch", "IN2LP/VXRN" },
-+	{ "IN2L PGA", "IN2LP Switch", "IN2LP:VXRN" },
- 	{ "IN2L PGA", "IN2LN Switch", "IN2LN" },
- 
--	{ "IN2R PGA", "IN2RP Switch", "IN2RP/VXRP" },
-+	{ "IN2R PGA", "IN2RP Switch", "IN2RP:VXRP" },
- 	{ "IN2R PGA", "IN2RN Switch", "IN2RN" },
- 
--	{ "Direct Voice", NULL, "IN2LP/VXRN" },
--	{ "Direct Voice", NULL, "IN2RP/VXRP" },
-+	{ "Direct Voice", NULL, "IN2LP:VXRN" },
-+	{ "Direct Voice", NULL, "IN2RP:VXRP" },
- 
- 	{ "MIXINL", "IN1L Switch", "IN1L PGA" },
- 	{ "MIXINL", "IN2L Switch", "IN2L PGA" },
-@@ -565,7 +565,7 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
- 	{ "Left Output Mixer", "Right Input Switch", "MIXINR" },
- 	{ "Left Output Mixer", "IN2RN Switch", "IN2RN" },
- 	{ "Left Output Mixer", "IN2LN Switch", "IN2LN" },
--	{ "Left Output Mixer", "IN2LP Switch", "IN2LP/VXRN" },
-+	{ "Left Output Mixer", "IN2LP Switch", "IN2LP:VXRN" },
- 	{ "Left Output Mixer", "IN1L Switch", "IN1L PGA" },
- 	{ "Left Output Mixer", "IN1R Switch", "IN1R PGA" },
- 
-@@ -573,7 +573,7 @@ static const struct snd_soc_dapm_route analogue_routes[] = {
- 	{ "Right Output Mixer", "Right Input Switch", "MIXINR" },
- 	{ "Right Output Mixer", "IN2LN Switch", "IN2LN" },
- 	{ "Right Output Mixer", "IN2RN Switch", "IN2RN" },
--	{ "Right Output Mixer", "IN2RP Switch", "IN2RP/VXRP" },
-+	{ "Right Output Mixer", "IN2RP Switch", "IN2RP:VXRP" },
- 	{ "Right Output Mixer", "IN1L Switch", "IN1L PGA" },
- 	{ "Right Output Mixer", "IN1R Switch", "IN1R PGA" },
- 
--- 
-1.6.3.3
+This is what happened in the terminal when OpenArena Died at Initializing sound
+
+------ Initializing Sound ------
+bt_audio_service_open: connect() failed: Connection refused (111)
+bt_audio_service_open: connect() failed: Connection refused (111)
+bt_audio_service_open: connect() failed: Connection refused (111)
+bt_audio_service_open: connect() failed: Connection refused (111)
+Allocated 96 sources.
+OpenAL default capture device is 'ALSA Capture on default'
+AL lib: alsa.c:675: set access failed: Invalid argument
+AL lib: oss.c:307: Could not open /dev/dsp: No such file or directory
+Killed
+
+
+I have no issues with sound at all apart from trying to use
+OpenAL.Warsow(another great game) will also refuse to run with OpenAL,
+except it runs great in the default sound mode 'qf'.
+
+What is going on here? thanks
