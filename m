@@ -1,19 +1,17 @@
-From: Christophe Osuna <christophe.osuna@gmail.com>
-Subject: Re: Underruns in basic audio playback application
-Date: Fri, 4 Dec 2009 09:28:57 +0100
-Message-ID: <b6251a620912040028k7fdfaf23xbf07be01898aaaa6@mail.gmail.com>
-References: <829197380912030804u672b31c6ybf30e87828b7576b@mail.gmail.com>
+From: Tobias Schneider <tobsnyder@gmx.de>
+Subject: Re: ALSA Control Questions (atomicity, error handling)
+Date: Fri, 04 Dec 2009 10:31:06 +0100
+Message-ID: <4B18D6DA.6070809@gmx.de>
+References: <4B1803CE.3080501@gmx.de>
+	<20091203195018.GK14091@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id 77CE310380B
-	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 09:28:59 +0100 (CET)
-Received: by bwz9 with SMTP id 9so4464601bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 04 Dec 2009 00:28:58 -0800 (PST)
-In-Reply-To: <829197380912030804u672b31c6ybf30e87828b7576b@mail.gmail.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 232C9103801
+	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 10:31:08 +0100 (CET)
+In-Reply-To: <20091203195018.GK14091@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,40 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Devin Heitmueller <dheitmueller@kernellabs.com>
+To: Daniel Mack <daniel@caiaq.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2009/12/3 Devin Heitmueller <dheitmueller@kernellabs.com>:
-> I am working on a very basic application that reads a capture device
-> and outputs to a playback device. =A0It's what you would traditionally
-> accomplish with something like the following:
->
-> arecord -D hw:1,0 -r 48000 -c 2 -f S16_LE | aplay -
->
-> However, in this case, since the final result will be part of a TV
-> watching application, I need to maintain less than 30ms of latency to
-> preserve lipsync.
->
-> The application I ended up with essentially creates two PCM streams
-> (one for capture, one for playback), sets them up with the same
-> parameters in terms of rate, format, channels, etc., and then has a
-> loop of snd_pcm_readi() and snd_pcm_writei() calls.
->
-> The application works, except I am getting a considerable amount of
-> underruns on the playback device.
->
-> Given my relative inexperience with alsa-lib, I suspect that I have
-> misconfigured one of the parameters effecting buffering - buffer size,
-> buffer time, period size, period time.
->
-> Can anyone offer any constructive suggestions or tips on what these
-> tuning parameters should be set to for a continuous 48000Khz, 2
-> channel stream of audio? =A0Also, should the buffering configuration
-> really be the same for both the capture and playback stream, or do I
-> need to play some games such that one requires more/less buffering
-> than the other?
+Thanks for the reply.
 
-I don't have much experience myself, but in such a situation I would
-recommend either increasing buffer size, or linking capture and
-playback devices with snd_pcm_link().
+Actually I know where the problem in my code is: inside the put callback 
+(see below) I am calling a function (dsp_setoutput) that is sending the 
+signal to the DSP, there I wanted to wait for the reply of the DSP to 
+get a feedback whether the request was successful or not. This was done 
+by a semaphore (going down and waiting for IRQ from DSP that is setting 
+sema up), and thats the point where the posted bug occured.
+
+So I was just wondering that it seems that there is no possibility to 
+wait for a reply of the DSP, to be sure that a given value has been set?
+
+
+(for the interested ones, here is the code..)
+
+static int snd_mychip_output_set_put(struct snd_kcontrol *kcontrol,
+                                     struct snd_ctl_elem_value *ucontrol)
+{
+  struct snd_mychip *mychip = snd_kcontrol_chip(kcontrol);
+  int addr = kcontrol->private_value;
+  short change = 0; 
+
+  spin_lock_irq(&mychip->mixer_lock);
+  if (ucontrol->value.integer.value[0] != mychip->output_set[addr]) {
+    if (dsp_setoutput(addr+1, ucontrol->value.integer.value[0]) >= 0)
+    {
+      mychip->output_set[addr] = ucontrol->value.integer.value[0];
+      change = 1;
+    }
+    else  // error sending signal
+    {
+      change = -EBUSY;  // device or resource busy
+    }
+  }
+  spin_unlock_irq(&mychip->mixer_lock);
+  return change;
+}
+
+later on in the called function...
+ // wait for reply via semaphore
+  while(!end)
+  {
+    if (down_interruptible(&dsp_reply_sema)==-EINTR)   // HERE WE GET 
+BUG: scheduling while atomic: amixer/0x00000001/430 ...
+      // waked by signal (terminate), leave thread
+      printk(INFO "reply: catched signal\n");
+      end=1;
+      break;
+    }   
+    printk(INFO "dsp_reply signaled (saved status = 
+%i)\n",stDspReply.status);
+    end=1;
+ ...
+}
+
+
+
+Another point: I figured out that the "ALSA middlelayer" seems to filter 
+the given values of a control. So if the user sets value=1000 where 
+maximum is 10, I will get 10 instead of 1000 in the put callback...so 
+it's not necessary to check values in those callbacks, but unfortunately 
+that's not always good - because sometimes it doesn't make sense to use 
+the max or min values if the user just entered a wrong number...
+
+thanks so far
