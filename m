@@ -1,19 +1,15 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: ALSA Control Questions (atomicity, error handling)
-Date: Fri, 4 Dec 2009 12:34:34 +0100
-Message-ID: <20091204113434.GR14091@buzzloop.caiaq.de>
-References: <4B1803CE.3080501@gmx.de>
-	<20091203195018.GK14091@buzzloop.caiaq.de>
-	<4B18D6DA.6070809@gmx.de>
+From: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+Subject: [PATCH] ASoC: tlv320dac33: Add support for regulator
+	framework
+Date: Fri,  4 Dec 2009 13:49:10 +0200
+Message-ID: <1259927350-29227-1-git-send-email-ilkka.koskinen@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id DA290103803
-	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 12:34:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4B18D6DA.6070809@gmx.de>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id B211D103803
+	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 12:51:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,56 +19,203 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobias Schneider <tobsnyder@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, peter.ujfalusi@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 04, 2009 at 10:31:06AM +0100, Tobias Schneider wrote:
-> (for the interested ones, here is the code..)
+Take the regulator framework in use for managing the power sources.
 
-One more thing: in case you intend to bring your code mainline, please
-run scripts/checkpatch.pl on the patches before you submit. The sniplet
-you posted has a number of style issues that should be fixed. In
-particular, pay attention to indentation, comment style and parenthesis
-positions - checkpatch.pl will help pointing out most if them.
+Signed-off-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+---
+ sound/soc/codecs/tlv320dac33.c |   92 ++++++++++++++++++++++++++++++++++------
+ 1 files changed, 79 insertions(+), 13 deletions(-)
 
-Daniel
-
-> static int snd_mychip_output_set_put(struct snd_kcontrol *kcontrol,
->                                     struct snd_ctl_elem_value *ucontrol)
-> {
->  struct snd_mychip *mychip = snd_kcontrol_chip(kcontrol);
->  int addr = kcontrol->private_value;
->  short change = 0;
-> 
->  spin_lock_irq(&mychip->mixer_lock);
->  if (ucontrol->value.integer.value[0] != mychip->output_set[addr]) {
->    if (dsp_setoutput(addr+1, ucontrol->value.integer.value[0]) >= 0)
->    {
->      mychip->output_set[addr] = ucontrol->value.integer.value[0];
->      change = 1;
->    }
->    else  // error sending signal
->    {
->      change = -EBUSY;  // device or resource busy
->    }
->  }
->  spin_unlock_irq(&mychip->mixer_lock);
->  return change;
-> }
-> 
-> later on in the called function...
-> // wait for reply via semaphore
->  while(!end)
->  {
->    if (down_interruptible(&dsp_reply_sema)==-EINTR)   // HERE WE GET
-> BUG: scheduling while atomic: amixer/0x00000001/430 ...
->      // waked by signal (terminate), leave thread
->      printk(INFO "reply: catched signal\n");
->      end=1;
->      break;
->    }      printk(INFO "dsp_reply signaled (saved status =
-> %i)\n",stDspReply.status);
->    end=1;
-> ...
-> }
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 9c8903d..5037454 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -30,6 +30,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/interrupt.h>
+ #include <linux/gpio.h>
++#include <linux/regulator/consumer.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -58,11 +59,19 @@ enum dac33_state {
+ 	DAC33_FLUSH,
+ };
+ 
++#define DAC33_NUM_SUPPLIES 3
++static const char *dac33_supply_names[DAC33_NUM_SUPPLIES] = {
++	"AVDD",
++	"DVDD",
++	"IOVDD",
++};
++
+ struct tlv320dac33_priv {
+ 	struct mutex mutex;
+ 	struct workqueue_struct *dac33_wq;
+ 	struct work_struct work;
+ 	struct snd_soc_codec codec;
++	struct regulator_bulk_data supplies[DAC33_NUM_SUPPLIES];
+ 	int power_gpio;
+ 	int chip_power;
+ 	int irq;
+@@ -297,28 +306,49 @@ static inline void dac33_soft_power(struct snd_soc_codec *codec, int power)
+ 	dac33_write(codec, DAC33_PWR_CTRL, reg);
+ }
+ 
+-static void dac33_hard_power(struct snd_soc_codec *codec, int power)
++static int dac33_hard_power(struct snd_soc_codec *codec, int power)
+ {
+ 	struct tlv320dac33_priv *dac33 = codec->private_data;
++	int ret;
+ 
+ 	mutex_lock(&dac33->mutex);
+ 	if (power) {
+-		if (dac33->power_gpio >= 0) {
+-			gpio_set_value(dac33->power_gpio, 1);
+-			dac33->chip_power = 1;
+-			/* Restore registers */
+-			dac33_restore_regs(codec);
++		ret = regulator_bulk_enable(ARRAY_SIZE(dac33->supplies),
++					  dac33->supplies);
++		if (ret != 0) {
++			dev_err(codec->dev,
++				"Failed to enable supplies: %d\n", ret);
++				goto exit;
+ 		}
++
++		if (dac33->power_gpio >= 0)
++			gpio_set_value(dac33->power_gpio, 1);
++
++		dac33->chip_power = 1;
++
++		/* Restore registers */
++		dac33_restore_regs(codec);
++
+ 		dac33_soft_power(codec, 1);
+ 	} else {
+ 		dac33_soft_power(codec, 0);
+-		if (dac33->power_gpio >= 0) {
++		if (dac33->power_gpio >= 0)
+ 			gpio_set_value(dac33->power_gpio, 0);
+-			dac33->chip_power = 0;
++
++		ret = regulator_bulk_disable(ARRAY_SIZE(dac33->supplies),
++					     dac33->supplies);
++		if (ret != 0) {
++			dev_err(codec->dev,
++				"Failed to disable supplies: %d\n", ret);
++			goto exit;
+ 		}
++
++		dac33->chip_power = 0;
+ 	}
+-	mutex_unlock(&dac33->mutex);
+ 
++exit:
++	mutex_unlock(&dac33->mutex);
++	return ret;
+ }
+ 
+ static int dac33_get_nsample(struct snd_kcontrol *kcontrol,
+@@ -469,6 +499,8 @@ static int dac33_add_widgets(struct snd_soc_codec *codec)
+ static int dac33_set_bias_level(struct snd_soc_codec *codec,
+ 				enum snd_soc_bias_level level)
+ {
++	int ret;
++
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+ 		dac33_soft_power(codec, 1);
+@@ -476,12 +508,19 @@ static int dac33_set_bias_level(struct snd_soc_codec *codec,
+ 	case SND_SOC_BIAS_PREPARE:
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		if (codec->bias_level == SND_SOC_BIAS_OFF)
+-			dac33_hard_power(codec, 1);
++		if (codec->bias_level == SND_SOC_BIAS_OFF) {
++			ret = dac33_hard_power(codec, 1);
++			if (ret != 0)
++				return ret;
++		}
++
+ 		dac33_soft_power(codec, 0);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		dac33_hard_power(codec, 0);
++		ret = dac33_hard_power(codec, 0);
++		if (ret != 0)
++			return ret;
++
+ 		break;
+ 	}
+ 	codec->bias_level = level;
+@@ -959,6 +998,9 @@ static int dac33_soc_probe(struct platform_device *pdev)
+ 	/* power on device */
+ 	dac33_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
++	/* Bias level configuration has enabled regulator an extra time */
++	regulator_bulk_disable(ARRAY_SIZE(dac33->supplies), dac33->supplies);
++
+ 	return 0;
+ 
+ pcm_err:
+@@ -1039,7 +1081,7 @@ static int dac33_i2c_probe(struct i2c_client *client,
+ 	struct tlv320dac33_platform_data *pdata;
+ 	struct tlv320dac33_priv *dac33;
+ 	struct snd_soc_codec *codec;
+-	int ret = 0;
++	int ret, i;
+ 
+ 	if (client->dev.platform_data == NULL) {
+ 		dev_err(&client->dev, "Platform data not set\n");
+@@ -1130,6 +1172,24 @@ static int dac33_i2c_probe(struct i2c_client *client,
+ 		}
+ 	}
+ 
++	for (i = 0; i < ARRAY_SIZE(dac33->supplies); i++)
++		dac33->supplies[i].supply = dac33_supply_names[i];
++
++	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(dac33->supplies),
++				 dac33->supplies);
++
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
++		goto err_get;
++	}
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(dac33->supplies),
++				    dac33->supplies);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
++		goto err_enable;
++	}
++
+ 	ret = snd_soc_register_codec(codec);
+ 	if (ret != 0) {
+ 		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
+@@ -1149,6 +1209,10 @@ static int dac33_i2c_probe(struct i2c_client *client,
+ 	return ret;
+ 
+ error_codec:
++	regulator_bulk_disable(ARRAY_SIZE(dac33->supplies), dac33->supplies);
++err_enable:
++	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
++err_get:
+ 	if (dac33->irq >= 0) {
+ 		free_irq(dac33->irq, &dac33->codec);
+ 		destroy_workqueue(dac33->dac33_wq);
+@@ -1177,6 +1241,8 @@ static int dac33_i2c_remove(struct i2c_client *client)
+ 	if (dac33->irq >= 0)
+ 		free_irq(dac33->irq, &dac33->codec);
+ 
++	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
++
+ 	destroy_workqueue(dac33->dac33_wq);
+ 	snd_soc_unregister_dai(&dac33_dai);
+ 	snd_soc_unregister_codec(&dac33->codec);
+-- 
+1.6.0.4
