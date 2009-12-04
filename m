@@ -1,20 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
-	CS4270 codec driver
-Date: Sat, 5 Dec 2009 11:03:49 -0600
-Message-ID: <ed82fe3e0912050903t7391ec51s8823b2059b6b5df1@mail.gmail.com>
-References: <20091130165104.GK14091@buzzloop.caiaq.de>
-	<1259600171-30357-1-git-send-email-daniel@caiaq.de>
+From: Ilkka Koskinen <ikoskine@nokia.com>
+Subject: Re: [PATCH] ASoC: tlv320dac33: Add support for
+	regulator framework
+Date: Fri, 4 Dec 2009 13:44:03 +0200 (EET)
+Message-ID: <alpine.DEB.2.00.0912041343190.28928@tumpelo.ntc.nokia.com>
+References: <1259914317-6535-1-git-send-email-ilkka.koskinen@nokia.com>
+	<200912041025.08574.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id E7A3624344
-	for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2009 18:03:50 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id e12so217272fga.2
-	for <alsa-devel@alsa-project.org>; Sat, 05 Dec 2009 09:03:49 -0800 (PST)
-In-Reply-To: <1259600171-30357-1-git-send-email-daniel@caiaq.de>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 025EA103813
+	for <alsa-devel@alsa-project.org>; Fri,  4 Dec 2009 12:47:12 +0100 (CET)
+In-Reply-To: <200912041025.08574.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Nov 30, 2009 at 10:56 AM, Daniel Mack <daniel@caiaq.de> wrote:
-> Signed-off-by: Daniel Mack <daniel@caiaq.de>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: Timur Tabi <timur@freescale.com>
-> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-> ---
 
-Ack
+Hi,
 
-> +static const char *supply_names[] =3D {
-> + =A0 =A0 =A0 "va", "vd", "vlc"
-> +};
+On Fri, 4 Dec 2009, Ujfalusi Peter (Nokia-D/Tampere) wrote:
 
-Minor nit -- this array would take up less space if it were an array
-of strings instead of an array of pointers to strings.
+> Hello,
+>
+> On Friday 04 December 2009 10:11:57 Koskinen Ilkka (Nokia-D/Tampere) wrote:
+>> Take the regulator framework in use for managing the power sources.
+>>
+>> Signed-off-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+>
+> Looks good for me, but unfortunately it does not apply on top of topic/asoc
+> branch, can you resend it?
 
-static const char supply_names[4][] =3D {
-       "va", "vd", "vlc"
-};
+Oops, sorry about that. I'll resend it right away.
 
--- =
-
-Timur Tabi
-Linux kernel developer at Freescale
+Cheers, Ilkka
