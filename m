@@ -1,23 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Timur Tabi <timur@freescale.com>
 Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
 	CS4270 codec driver
-Date: Sat, 5 Dec 2009 03:51:13 +0000
-Message-ID: <C8F3ED1D-6FAD-42AD-8036-AC9D41C1CB2C@opensource.wolfsonmicro.com>
+Date: Sat, 5 Dec 2009 11:03:49 -0600
+Message-ID: <ed82fe3e0912050903t7391ec51s8823b2059b6b5df1@mail.gmail.com>
 References: <20091130165104.GK14091@buzzloop.caiaq.de>
 	<1259600171-30357-1-git-send-email-daniel@caiaq.de>
-	<20091204120007.GH29442@buzzloop.caiaq.de>
-	<20091204120721.GA30155@opensource.wolfsonmicro.com>
-	<ed82fe3e0912041854l545a3c9bl7ac790694dadfb07@mail.gmail.com>
-	(sfid-20091205_025446_583321_DC66769B)
-Mime-Version: 1.0 (iPhone Mail 7D11)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 562A8244B2
-	for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2009 04:50:57 +0100 (CET)
-In-Reply-To: <ed82fe3e0912041854l545a3c9bl7ac790694dadfb07@mail.gmail.com>
-	(sfid-20091205_025446_583321_DC66769B)
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id E7A3624344
+	for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2009 18:03:50 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id e12so217272fga.2
+	for <alsa-devel@alsa-project.org>; Sat, 05 Dec 2009 09:03:49 -0800 (PST)
+In-Reply-To: <1259600171-30357-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,21 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On 5 Dec 2009, at 02:54, Timur Tabi <timur@freescale.com> wrote:
+On Mon, Nov 30, 2009 at 10:56 AM, Daniel Mack <daniel@caiaq.de> wrote:
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Timur Tabi <timur@freescale.com>
+> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+> ---
 
-> On Fri, Dec 4, 2009 at 6:07 AM, Mark Brown
-> <broonie@opensource.wolfsonmicro.com> wrote:
->> On Fri, Dec 04, 2009 at 01:00:07PM +0100, Daniel Mack wrote:
->>> Was that one applied?
->>
->> No, need review from Timur still.
->
-> Wait, I'm confused.  I thought the patch didn't work at all and Daniel
-> rescinded it.
+Ack
 
-Yes, but then he posted a new revision which didn't try to turn off  
-the analogue supply seperately which ought to work.
+> +static const char *supply_names[] =3D {
+> + =A0 =A0 =A0 "va", "vd", "vlc"
+> +};
+
+Minor nit -- this array would take up less space if it were an array
+of strings instead of an array of pointers to strings.
+
+static const char supply_names[4][] =3D {
+       "va", "vd", "vlc"
+};
+
+-- =
+
+Timur Tabi
+Linux kernel developer at Freescale
