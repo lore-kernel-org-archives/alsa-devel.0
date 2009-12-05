@@ -1,23 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: hw_ptr accuracy with intel8x0 -> PulseAudio issue
-Date: Sat, 5 Dec 2009 10:17:07 +0800
-Message-ID: <4f3252890912041817u7ab83a3eh7643476d64d709f3@mail.gmail.com>
-References: <6160a5130912020115t45bd4635hceb0ac3de4fb1efe@mail.gmail.com>
-	<4f3252890912021826g732292ecv8959a7cfbf574446@mail.gmail.com>
-	<6160a5130912030828m5b2401f3w31a67b6b51e8d8b6@mail.gmail.com>
-	<4f3252890912031442i56ccc905g935a4d6ed48f40c6@mail.gmail.com>
-	<6160a5130912031650u5949c921jc86d0847b2844803@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ALSA: ASoc: Add regulator support to
+	CS4270 codec driver
+Date: Fri, 4 Dec 2009 20:54:39 -0600
+Message-ID: <ed82fe3e0912041854l545a3c9bl7ac790694dadfb07@mail.gmail.com>
+References: <20091130165104.GK14091@buzzloop.caiaq.de>
+	<1259600171-30357-1-git-send-email-daniel@caiaq.de>
+	<20091204120007.GH29442@buzzloop.caiaq.de>
+	<20091204120721.GA30155@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f184.google.com (mail-pz0-f184.google.com
-	[209.85.222.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25B542443D
-	for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2009 03:17:08 +0100 (CET)
-Received: by pzk14 with SMTP id 14so2929759pzk.23
-	for <alsa-devel@alsa-project.org>; Fri, 04 Dec 2009 18:17:08 -0800 (PST)
-In-Reply-To: <6160a5130912031650u5949c921jc86d0847b2844803@mail.gmail.com>
+Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
+	[209.85.220.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E5B424466
+	for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2009 03:54:40 +0100 (CET)
+Received: by fxm3 with SMTP id 3so3217743fxm.4
+	for <alsa-devel@alsa-project.org>; Fri, 04 Dec 2009 18:54:39 -0800 (PST)
+In-Reply-To: <20091204120721.GA30155@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,22 +27,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2009/12/4 pl bossart <bossart.nospam@gmail.com>
-
-> >>   17. hwptr 24351 buffer 16384 appl 24332, avail=16403
-> >
-> > appl pointer is behind hwprtr (  underrun ) , need timestamp to find out
-> > whether PA is unable to write audio data in time since
+On Fri, Dec 4, 2009 at 6:07 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Fri, Dec 04, 2009 at 01:00:07PM +0100, Daniel Mack wrote:
+>> Was that one applied?
 >
->  I commented out the portion of the code that increases the watermark and
-> clamped the number of available samples to the buffer size, and it works
-> just fine, no audio
-> underflows.
->
+> No, need review from Timur still.
 
-Do you mean that the underrun is related the the portion of code that
-increase the watermark (i.e It is a pulseaudio bug instead of driver bug  )
-?
+Wait, I'm confused.  I thought the patch didn't work at all and Daniel
+rescinded it.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
