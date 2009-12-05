@@ -1,12 +1,17 @@
-From: David Santinoli <david@santinoli.com>
-Subject: [PATCH] hda/realtek: quirk for D945GCLF2 mainboard
-Date: Fri, 4 Dec 2009 23:19:18 +0100
-Message-ID: <20091204221918.GA28065@aidi.santinoli.com>
+From: =?UTF-8?Q?Vedran_Mileti=C4=87?= <rivanvx@gmail.com>
+Subject: CA0110 taints kernel
+Date: Sat, 5 Dec 2009 12:59:50 +0100
+Message-ID: <fd3eb9bf0912050359tc02f4bch39e9747ab4385dd2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 96DE724572
+	for <alsa-devel@alsa-project.org>; Sat,  5 Dec 2009 13:00:17 +0100 (CET)
+Received: by yxe34 with SMTP id 34so2857686yxe.16
+	for <alsa-devel@alsa-project.org>; Sat, 05 Dec 2009 04:00:16 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,26 +21,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel mailing list <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-
-Quirk for the ALC662 found on the Intel D945GCLF2 (and possibly other)
-mainboards.
-
-Signed-off-by: David Santinoli <david@santinoli.com>
----
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 7e8b17a..b26fa53 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -16801,6 +16801,7 @@ static struct snd_pci_quirk alc662_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x101e, "Lenovo", ALC662_LENOVO_101E),
- 	SND_PCI_QUIRK(0x1849, 0x3662, "ASROCK K10N78FullHD-hSLI R3.0",
- 					ALC662_3ST_6ch_DIG),
-+	SND_PCI_QUIRK(0x8086, 0xd604, "Intel mobo", ALC662_3ST_2ch_DIG),
- 	SND_PCI_QUIRK_MASK(0x1854, 0xf000, 0x2000, "ASUS H13-200x",
- 			   ALC663_ASUS_H13),
- 	{}
+SGksCgpJIGV4cGVyaWVuY2UgZnJlcXVlbnQga2VybmVsIGNyYXNoZXMgd2l0aCAyLjYuMzEgYW5k
+IENBMDExMC4gSSBrbm93CnRoaXMgY2FyZCBkb2Vzbid0IHdvcmssIGFuZCB0aGVyZSBpcyBubyBw
+cm9ibGVtIHdpdGggdGhhdDsgaG93ZXZlciwgaXQKY3Jhc2hpbmcgbm9uLXN0b3AgaXMgbm90IHZl
+cnkgbmljZS4KCkFsc28sIGNhcmQgZG9lc24ndCBnZXQgYW55IGNvbnRyb2xzIChhbmQgSSBiZWxp
+ZXZlIGl0IGRvZXMgZ2V0IHNvbWUKY29udHJvbHMgd2hlbiBpdCdzIHRoZSBvbmx5IGNhcmQgdXNp
+bmcgSERBIGRyaXZlciwgdGhhdCBpcyB3aGVuIEkKZGlzYWJsZSBvbmJvYXJkIG9uZSkuCgpkbWVz
+ZyBpcyBoZXJlOgpodHRwOi8vcGFzdGViaW4uY29tL203YzUzNTYyZgoKbHNwY2k6CjAyOjAwLjAg
+UENJIGJyaWRnZTogQ3JlYXRpdmUgTGFicyBEZXZpY2UgNzAwNiAocHJvZy1pZiAwMCBbTm9ybWFs
+IGRlY29kZV0pCglGbGFnczogYnVzIG1hc3RlciwgZmFzdCBkZXZzZWwsIGxhdGVuY3kgMAoJQnVz
+OiBwcmltYXJ5PTAyLCBzZWNvbmRhcnk9MDMsIHN1Ym9yZGluYXRlPTAzLCBzZWMtbGF0ZW5jeT02
+NAoJTWVtb3J5IGJlaGluZCBicmlkZ2U6IGZlOTAwMDAwLWZlOWZmZmZmCglDYXBhYmlsaXRpZXM6
+IFs1MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMKCUNhcGFiaWxpdGllczogWzYwXSBNU0k6
+IEVuYWJsZS0gQ291bnQ9MS8xNiBNYXNrYWJsZS0gNjRiaXQrCglDYXBhYmlsaXRpZXM6IFs4MF0g
+U3Vic3lzdGVtOiBDcmVhdGl2ZSBMYWJzIERldmljZSAwMDEwCglDYXBhYmlsaXRpZXM6IFs5MF0g
+RXhwcmVzcyBQQ0kvUENJLVggQnJpZGdlLCBNU0kgMDAKCUNhcGFiaWxpdGllczogWzEwMF0gQWR2
+YW5jZWQgRXJyb3IgUmVwb3J0aW5nCglLZXJuZWwgbW9kdWxlczogc2hwY2hwCgowMzowMC4wIEF1
+ZGlvIGRldmljZTogQ3JlYXRpdmUgTGFicyBbU0IgWC1GaSBYdHJlbWUgQXVkaW9dIENBMDExMC1J
+QkcKCVN1YnN5c3RlbTogQ3JlYXRpdmUgTGFicyBEZXZpY2UgMDAxOAoJRmxhZ3M6IGJ1cyBtYXN0
+ZXIsIG1lZGl1bSBkZXZzZWwsIGxhdGVuY3kgNjQsIElSUSAxNgoJTWVtb3J5IGF0IGZlOWZjMDAw
+ICgzMi1iaXQsIG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTE2S10KCUNhcGFiaWxpdGllczogW2Rj
+XSBQb3dlciBNYW5hZ2VtZW50IHZlcnNpb24gMwoJS2VybmVsIGRyaXZlciBpbiB1c2U6IEhEQSBJ
+bnRlbAoJS2VybmVsIG1vZHVsZXM6IHNuZC1oZGEtaW50ZWwKCkFueSBpZGVhcz8KCi0tIApWZWRy
+YW4gTWlsZXRpxIcKClAuUy4KUGxlYXNlIENDIG1lLCBhcyBJJ20gbm90IHN1YnNjcmliZWQgdG8g
+bWFpbGluZyBsaXN0IGF0IHRoZSBtb21lbnQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
