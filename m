@@ -1,16 +1,16 @@
 From: Alexey Fisher <bug-track@fisher-privat.net>
-Subject: [PATCH] Introduce config for intel dg45id board
-Date: Sun,  6 Dec 2009 11:14:13 +0100
-Message-ID: <1260094453-3496-1-git-send-email-bug-track@fisher-privat.net>
-References: <1260093674.3229.14.camel@zwerg>
+Subject: [PATCH v2] Introduce config for intel dg45id board
+Date: Sun,  6 Dec 2009 11:29:13 +0100
+Message-ID: <1260095353-3262-1-git-send-email-bug-track@fisher-privat.net>
+References: <1260094453-3496-1-git-send-email-bug-track@fisher-privat.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 86022103824
-	for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2009 11:14:21 +0100 (CET)
-In-Reply-To: <1260093674.3229.14.camel@zwerg>
+	by alsa0.perex.cz (Postfix) with SMTP id E065E10382C
+	for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2009 11:29:19 +0100 (CET)
+In-Reply-To: <1260094453-3496-1-git-send-email-bug-track@fisher-privat.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,16 +31,16 @@ Both Mics provide VREF_80 (4,05 V) in mic mode and no VREF in line-in mode.
 
 Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
 
-	modified:   sound/pci/hda/patch_sigmatel.c
+modified:   sound/pci/hda/patch_sigmatel.c
 ---
- sound/pci/hda/patch_sigmatel.c |   56 +++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 55 insertions(+), 1 deletions(-)
+ sound/pci/hda/patch_sigmatel.c |   53 +++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 52 insertions(+), 1 deletions(-)
 
 diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 86de305..0448139 100644
+index 6b0bc04..e604bae 100644
 --- a/sound/pci/hda/patch_sigmatel.c
 +++ b/sound/pci/hda/patch_sigmatel.c
-@@ -859,6 +859,40 @@ static struct hda_verb dell_eq_core_init[] = {
+@@ -860,6 +860,37 @@ static struct hda_verb dell_eq_core_init[] = {
  	{}
  };
  
@@ -63,9 +63,6 @@ index 86de305..0448139 100644
 +	/* TODO: make option for 0x0c to be line-in
 +	 * { 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7217}, */
 +
-+	/* FIXME: 0x0a is output */
-+	{ 0x1d, 0x707, 0x40},
-+
 +	/* extra check all DACs */
 +	/* 0x18 -> 0x0c */
 +	{ 0x0c, AC_VERB_SET_CONNECT_SEL, 0x03},
@@ -81,7 +78,7 @@ index 86de305..0448139 100644
  static struct hda_verb stac92hd73xx_core_init[] = {
  	/* set master volume and direct control */
  	{ 0x1f, AC_VERB_SET_VOLUME_KNOB_CONTROL, 0xff},
-@@ -1530,6 +1564,19 @@ static unsigned int dell_m6_pin_configs[13] = {
+@@ -1531,6 +1562,19 @@ static unsigned int dell_m6_pin_configs[13] = {
  	0x4f0000f0,
  };
  
@@ -101,7 +98,7 @@ index 86de305..0448139 100644
  static unsigned int alienware_m17x_pin_configs[13] = {
  	0x0321101f, 0x0321101f, 0x03a11020, 0x03014020,
  	0x90170110, 0x4f0000f0, 0x4f0000f0, 0x4f0000f0,
-@@ -1543,6 +1590,7 @@ static unsigned int *stac92hd73xx_brd_tbl[STAC_92HD73XX_MODELS] = {
+@@ -1544,6 +1588,7 @@ static unsigned int *stac92hd73xx_brd_tbl[STAC_92HD73XX_MODELS] = {
  	[STAC_DELL_M6_DMIC]	= dell_m6_pin_configs,
  	[STAC_DELL_M6_BOTH]	= dell_m6_pin_configs,
  	[STAC_DELL_EQ]	= dell_m6_pin_configs,
@@ -109,7 +106,7 @@ index 86de305..0448139 100644
  	[STAC_ALIENWARE_M17X]	= alienware_m17x_pin_configs,
  };
  
-@@ -5072,6 +5120,11 @@ again:
+@@ -5127,6 +5172,11 @@ again:
  			break;
  		}
  		break;
@@ -121,7 +118,7 @@ index 86de305..0448139 100644
  	case STAC_ALIENWARE_M17X:
  		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
  		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
-@@ -5109,7 +5162,8 @@ again:
+@@ -5164,7 +5214,8 @@ again:
  		return err;
  	}
  
