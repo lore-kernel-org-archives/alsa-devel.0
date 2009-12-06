@@ -1,19 +1,16 @@
 From: Alexey Fisher <bug-track@fisher-privat.net>
-Subject: Re: line-in on Intel DG45ID
-Date: Sun, 06 Dec 2009 11:01:14 +0100
-Message-ID: <1260093674.3229.14.camel@zwerg>
-References: <1259568400.4835.25.camel@zwerg> <s5hhbsazqgt.wl%tiwai@suse.de>
-	<1259682335.3397.9.camel@zwerg> <s5h638qzobx.wl%tiwai@suse.de>
-	<1259749850.3195.22.camel@mini> <1260051299.3187.39.camel@zwerg>
-	<68720af30912051947t72c307fcm621fae436baa6850@mail.gmail.com>
+Subject: [PATCH] Introduce config for intel dg45id board
+Date: Sun,  6 Dec 2009 11:14:13 +0100
+Message-ID: <1260094453-3496-1-git-send-email-bug-track@fisher-privat.net>
+References: <1260093674.3229.14.camel@zwerg>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 3BB351037FC
-	for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2009 11:01:16 +0100 (CET)
-In-Reply-To: <68720af30912051947t72c307fcm621fae436baa6850@mail.gmail.com>
+	by alsa0.perex.cz (Postfix) with SMTP id 86022103824
+	for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2009 11:14:21 +0100 (CET)
+In-Reply-To: <1260093674.3229.14.camel@zwerg>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,97 +20,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paulo Cavalcanti <promac@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Paulo Cavalcanti <promac@gmail.com>
+Cc: Alexey Fisher <bug-track@fisher-privat.net>
 List-Id: alsa-devel@alsa-project.org
 
-Am Sonntag, den 06.12.2009, 01:47 -0200 schrieb Paulo Cavalcanti:
-> On Sat, Dec 5, 2009 at 8:14 PM, Alexey Fisher
-> <bug-track@fisher-privat.net>wrote:
-> 
-> > Am Mittwoch, den 02.12.2009, 11:30 +0100 schrieb Alexey Fisher:
-> > > Am Dienstag, den 01.12.2009, 16:49 +0100 schrieb Takashi Iwai:
-> > > > At Tue, 01 Dec 2009 16:45:35 +0100,
-> > > > Alexey Fisher wrote:
-> > > > >
-> > > > > Am Dienstag, den 01.12.2009, 16:03 +0100 schrieb Takashi Iwai:
-> > > > > > At Mon, 30 Nov 2009 09:06:40 +0100,
-> > > > > > Alexey Fisher wrote:
-> > > > > > >
-> > > > > > > Hi,
-> > > > > > > i recently tried to digitalise some tapes and found line-in not
-> > enabled
-> > > > > > > on my board (Intel DG45ID). (Codec: IDT 92HD73E1X5)
-> > > > > > > >From the board documentation i know  blue jack used for line-in
-> > or side
-> > > > > > > surround. Even i use normal stereo i can't enable line-in.
-> > > > > > >
-> > > > > > > So my question, is it really to make a switch between surround
-> > and
-> > > > > > > stereo with line-in? I know it should be possible. Or to have
-> > this
-> > > > > > > switch for mic input?
-> > > > > >
-> > > > > > Which ALSA driver version are you using?
-> > > > > >
-> > > > > > The very latest one should have a "Line Jack Mode", with which you
-> > > > > > can change the input/output via enum control.
-> > > > >
-> > > > > i use recent alsa-kernel.git, i found this switch.
-> > > >
-> > > > Check sound GIT tree, to be sure:
-> > > >   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git
-> > > >
-> > > > A snapshot tarball for external builds is:
-> > > >
-> > ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver-snapshot.tar.gz
-> > > >
-> > > > > Currently i trying to
-> > > > > dig deeper in the code. Seems like this board is not really
-> > supported...
-> > > > > for normal tasks like stereo in / stereo out - is ok, but surround
-> > seems
-> > > > > to be messed up, mixer map too.
-> > > > > For example: "speaker-test -c 6" will produce "Front L/R" on all
-> > jacks.
-> > > >
-> > > > You have to pass -Dsurround51, too.
-> > >
-> > > Tank you for the tip, speaker-test worked for my Hercules so i thout
-> > > should work for intel too. So with tiwai.git and -Dsurround51 or
-> > > surrounf71 outputs are working. Bad the mixer map is in really bad
-> > > state. Here is my current investigation, here are the controls i tested:
-> > >
-> > > [jack]  [surround]; [mixers;...]
-> > > green - front r/l;Master; PCM; Speeker 0;
-> > > blue - side r/l ------- PCM; Speaker 3;
-> > > black - rear r/l; Master; PCM; Speaker 1;
-> > > orange - cenrat f/r; Master; PCM; ------; swap;
-> > > ('Swap Center/LFE Playback Switch' (change front and reare outputs))
-> >
-> > I need help,
-> >
-> > one and half problem solved:
-> > hp_out and mic_in didn't worked on front panel,
-> > mic was silent, and hp did only high frequency noise (sound like
-> > something wrong).
-> > Now front and rear mic working. hp don't do the noise any more but i
-> > still can't get any output from it.
-> > Mixer is working now too, so i can use three inputs together, but it
-> > seems not supported by driver, so i force selection with:
-> > hda-verb /dev/snd/hwC0D2 0x20 SET_CONNECT_SEL 0x0b
-> >
-> > I used .ini file from windows to set it up, see attachment. There is
-> > cadec dump before and after tweaks, and patch.
-> >
-> >
-> >
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2009-February/014825.html
-> 
+This patch introduce pin config and some workarounds for dg45id board.
+Currently tested Mic + Surround 7.1 on rear panel, and Mic + HP on front panel.
+SPDIF front and SPDIF rear are untested.
+Both Mics provide VREF_80 (4,05 V) in mic mode and no VREF in line-in mode.
 
-Thank you,
-now it is working, currently only SPDIF not checked.
-i do not wont to touch blue jack, there is ready two mic inputs and you
-can switch on each of them between mic and line-in. If i'll make blue
-jack - line in, it will reduce surround 7.1 to 5.1. Probably not all
-will be happy about this.
+Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
+
+	modified:   sound/pci/hda/patch_sigmatel.c
+---
+ sound/pci/hda/patch_sigmatel.c |   56 +++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 55 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 86de305..0448139 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -859,6 +859,40 @@ static struct hda_verb dell_eq_core_init[] = {
+ 	{}
+ };
+ 
++static struct hda_verb intel_dg45id_init[] = {
++	/* connect all inputs to the mixer */
++	/* 0x0b -> mixer */
++	{ 0x28, AC_VERB_SET_CONNECT_SEL, 0x01},
++	/* 0x0e -> mixer */
++	{ 0x29, AC_VERB_SET_CONNECT_SEL, 0x01},
++	/* FIXME: if sorround51 0x0c can be used for line-in
++	 * currently do not working */
++	{ 0x2a, AC_VERB_SET_CONNECT_SEL, 0x01},
++
++	/* connect mixer to the switch */
++	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x0b},
++
++	/* unmute inputs on mixer */
++	{ 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7017},
++	{ 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7117},
++	/* TODO: make option for 0x0c to be line-in
++	 * { 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7217}, */
++
++	/* FIXME: 0x0a is output */
++	{ 0x1d, 0x707, 0x40},
++
++	/* extra check all DACs */
++	/* 0x18 -> 0x0c */
++	{ 0x0c, AC_VERB_SET_CONNECT_SEL, 0x03},
++	/* 0x15 -> 0x0d */
++	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* 0x16 -> 0x0f */
++	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x02},
++	/* 0x17 -> 0x10 */
++	{ 0x10, AC_VERB_SET_CONNECT_SEL, 0x01},
++	{}
++};
++
+ static struct hda_verb stac92hd73xx_core_init[] = {
+ 	/* set master volume and direct control */
+ 	{ 0x1f, AC_VERB_SET_VOLUME_KNOB_CONTROL, 0xff},
+@@ -1530,6 +1564,19 @@ static unsigned int dell_m6_pin_configs[13] = {
+ 	0x4f0000f0,
+ };
+ 
++/* TODO: _config[1] (PIN 0x0a) still do not working (Front panel speaker/hp),
++ * $.ini provide some variants of this pin: 0x02214230, 0x0221421F, 0x0211421F.
++ * Def. and Seq. should make difference.
++ * Same for _config[4] (0x0d): wariants 0x01114210, 0x0121421f -should be
++ * some hove in sync with 0x0a? _config[3] (0x0c) can be switched to line-in
++ * wariant 0x0181325e. */
++static unsigned int intel_dg45id_pin_configs[14] = {
++	0x02214230, 0x02A19240, 0x01113214, 0x01114210,
++	0x01A19250, 0x01111212, 0x01116211, 0x40f000f0,
++	0x40f000f0, 0x40f000f0, 0x40f000f0, 0x014510A0,
++	0x074510B0, 0x40f000f0
++};
++
+ static unsigned int alienware_m17x_pin_configs[13] = {
+ 	0x0321101f, 0x0321101f, 0x03a11020, 0x03014020,
+ 	0x90170110, 0x4f0000f0, 0x4f0000f0, 0x4f0000f0,
+@@ -1543,6 +1590,7 @@ static unsigned int *stac92hd73xx_brd_tbl[STAC_92HD73XX_MODELS] = {
+ 	[STAC_DELL_M6_DMIC]	= dell_m6_pin_configs,
+ 	[STAC_DELL_M6_BOTH]	= dell_m6_pin_configs,
+ 	[STAC_DELL_EQ]	= dell_m6_pin_configs,
++	[STAC_92HD73XX_INTEL]	= intel_dg45id_pin_configs,
+ 	[STAC_ALIENWARE_M17X]	= alienware_m17x_pin_configs,
+ };
+ 
+@@ -5072,6 +5120,11 @@ again:
+ 			break;
+ 		}
+ 		break;
++	case STAC_92HD73XX_INTEL:
++		spec->init = intel_dg45id_init;
++		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
++		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
++		break;
+ 	case STAC_ALIENWARE_M17X:
+ 		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
+ 		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
+@@ -5109,7 +5162,8 @@ again:
+ 		return err;
+ 	}
+ 
+-	if (spec->board_config == STAC_92HD73XX_NO_JD)
++	if (spec->board_config == STAC_92HD73XX_NO_JD ||
++		spec->board_config == STAC_92HD73XX_INTEL)
+ 		spec->hp_detect = 0;
+ 
+ 	codec->patch_ops = stac92xx_patch_ops;
+-- 
+1.6.3.3
