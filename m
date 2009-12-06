@@ -1,16 +1,14 @@
 From: Alexey Fisher <bug-track@fisher-privat.net>
-Subject: [PATCH v2] Introduce config for intel dg45id board
-Date: Sun,  6 Dec 2009 11:29:13 +0100
-Message-ID: <1260095353-3262-1-git-send-email-bug-track@fisher-privat.net>
-References: <1260094453-3496-1-git-send-email-bug-track@fisher-privat.net>
+Subject: ControlNames: Input Source/ Capture Source/ Jack Mode?
+Date: Sun, 06 Dec 2009 12:26:52 +0100
+Message-ID: <1260098812.3767.34.camel@zwerg>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id E065E10382C
-	for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2009 11:29:19 +0100 (CET)
-In-Reply-To: <1260094453-3496-1-git-send-email-bug-track@fisher-privat.net>
+	by alsa0.perex.cz (Postfix) with SMTP id E789D24400
+	for <alsa-devel@alsa-project.org>; Sun,  6 Dec 2009 12:26:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,113 +18,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Paulo Cavalcanti <promac@gmail.com>
-Cc: Alexey Fisher <bug-track@fisher-privat.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch introduce pin config and some workarounds for dg45id board.
-Currently tested Mic + Surround 7.1 on rear panel, and Mic + HP on front panel.
-SPDIF front and SPDIF rear are untested.
-Both Mics provide VREF_80 (4,05 V) in mic mode and no VREF in line-in mode.
+Hallo,
+i have question about controlnames, or if i correctly understand it:
 
-Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
+Capture Source - you can capture only from one of two (or more) sources.
+On switching mic a or mic b will be enabled or disabled.
+             /--(o)--mic b
+cap switch---
+             \--(x)--mic a
 
-modified:   sound/pci/hda/patch_sigmatel.c
----
- sound/pci/hda/patch_sigmatel.c |   53 +++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 52 insertions(+), 1 deletions(-)
+Input Source - same as capture source but more verbose
+                           /---(Mute/Vol)--Mic a
+input switch--(a(x)/b(o))--
+                           \---(Mute/Vol)--Mic b
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 6b0bc04..e604bae 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -860,6 +860,37 @@ static struct hda_verb dell_eq_core_init[] = {
- 	{}
- };
- 
-+static struct hda_verb intel_dg45id_init[] = {
-+	/* connect all inputs to the mixer */
-+	/* 0x0b -> mixer */
-+	{ 0x28, AC_VERB_SET_CONNECT_SEL, 0x01},
-+	/* 0x0e -> mixer */
-+	{ 0x29, AC_VERB_SET_CONNECT_SEL, 0x01},
-+	/* FIXME: if sorround51 0x0c can be used for line-in
-+	 * currently do not working */
-+	{ 0x2a, AC_VERB_SET_CONNECT_SEL, 0x01},
-+
-+	/* connect mixer to the switch */
-+	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x0b},
-+
-+	/* unmute inputs on mixer */
-+	{ 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7017},
-+	{ 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7117},
-+	/* TODO: make option for 0x0c to be line-in
-+	 * { 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7217}, */
-+
-+	/* extra check all DACs */
-+	/* 0x18 -> 0x0c */
-+	{ 0x0c, AC_VERB_SET_CONNECT_SEL, 0x03},
-+	/* 0x15 -> 0x0d */
-+	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x00},
-+	/* 0x16 -> 0x0f */
-+	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x02},
-+	/* 0x17 -> 0x10 */
-+	{ 0x10, AC_VERB_SET_CONNECT_SEL, 0x01},
-+	{}
-+};
-+
- static struct hda_verb stac92hd73xx_core_init[] = {
- 	/* set master volume and direct control */
- 	{ 0x1f, AC_VERB_SET_VOLUME_KNOB_CONTROL, 0xff},
-@@ -1531,6 +1562,19 @@ static unsigned int dell_m6_pin_configs[13] = {
- 	0x4f0000f0,
- };
- 
-+/* TODO: _config[1] (PIN 0x0a) still do not working (Front panel speaker/hp),
-+ * $.ini provide some variants of this pin: 0x02214230, 0x0221421F, 0x0211421F.
-+ * Def. and Seq. should make difference.
-+ * Same for _config[4] (0x0d): wariants 0x01114210, 0x0121421f -should be
-+ * some hove in sync with 0x0a? _config[3] (0x0c) can be switched to line-in
-+ * wariant 0x0181325e. */
-+static unsigned int intel_dg45id_pin_configs[14] = {
-+	0x02214230, 0x02A19240, 0x01113214, 0x01114210,
-+	0x01A19250, 0x01111212, 0x01116211, 0x40f000f0,
-+	0x40f000f0, 0x40f000f0, 0x40f000f0, 0x014510A0,
-+	0x074510B0, 0x40f000f0
-+};
-+
- static unsigned int alienware_m17x_pin_configs[13] = {
- 	0x0321101f, 0x0321101f, 0x03a11020, 0x03014020,
- 	0x90170110, 0x4f0000f0, 0x4f0000f0, 0x4f0000f0,
-@@ -1544,6 +1588,7 @@ static unsigned int *stac92hd73xx_brd_tbl[STAC_92HD73XX_MODELS] = {
- 	[STAC_DELL_M6_DMIC]	= dell_m6_pin_configs,
- 	[STAC_DELL_M6_BOTH]	= dell_m6_pin_configs,
- 	[STAC_DELL_EQ]	= dell_m6_pin_configs,
-+	[STAC_92HD73XX_INTEL]	= intel_dg45id_pin_configs,
- 	[STAC_ALIENWARE_M17X]	= alienware_m17x_pin_configs,
- };
- 
-@@ -5127,6 +5172,11 @@ again:
- 			break;
- 		}
- 		break;
-+	case STAC_92HD73XX_INTEL:
-+		spec->init = intel_dg45id_init;
-+		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
-+		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
-+		break;
- 	case STAC_ALIENWARE_M17X:
- 		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
- 		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
-@@ -5164,7 +5214,8 @@ again:
- 		return err;
- 	}
- 
--	if (spec->board_config == STAC_92HD73XX_NO_JD)
-+	if (spec->board_config == STAC_92HD73XX_NO_JD ||
-+		spec->board_config == STAC_92HD73XX_INTEL)
- 		spec->hp_detect = 0;
- 
- 	codec->patch_ops = stac92xx_patch_ops;
--- 
-1.6.3.3
+more complicated setup:
+
+                            +---(Mute/Vol)--Mic a
+input switch a-(a(x)/b(o))--+
+                            +---(Mute/Vol)--Mic b
+input switch b-(a(x)/b(o))--+
+
+
+jack mode - you can choice to put VREF on the line or not.
+                           /---(Mute/Vol)-(mode)-Mic a
+input switch--(a(x)/b(o))--
+                           \---(Mute/Vol)-(mode)-Mic b
+
+i hope i understand it correctly.
+Now is my situation:
+
+                                   +---------+--(Mute/Rec)-(mode)-Mic a
+input switch a-(a(x)/b(o)/mix(o))--+         |
+                                   +---------+--(Mute/Rec)-(mode)-Mic b
+input switch b-(a(x)/b(o)/mix(o))--+         |
+                                   +--mixer--+<---(Mute/Vol for Mic a/b)
+
+
+are there any way to make alsamixer less verbose but still productive?
