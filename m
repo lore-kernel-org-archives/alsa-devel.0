@@ -1,16 +1,17 @@
-From: Tobias Hansen <Tobias.Hansen@physik.uni-hamburg.de>
-Subject: [PATCH] snd-usb-us122l: add product IDs of US-122MKII
- and US-144MKII
-Date: Mon, 07 Dec 2009 19:08:19 +0100
-Message-ID: <4B1D4493.2010706@physik.uni-hamburg.de>
+From: "Justin P. Mattock" <justinmattock@gmail.com>
+Subject: [Updated]iMac_91_sound_patch.
+Date: Mon,  7 Dec 2009 15:07:45 -0800
+Message-ID: <1260227266-6206-1-git-send-email-justinmattock@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.physnet.uni-hamburg.de (MAIL.PHYSnet.uni-hamburg.de
-	[134.100.106.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id B2FC724556
-	for <alsa-devel@alsa-project.org>; Mon,  7 Dec 2009 19:08:26 +0100 (CET)
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3940324469
+	for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2009 00:07:46 +0100 (CET)
+Received: by yxe34 with SMTP id 34so4515014yxe.16
+	for <alsa-devel@alsa-project.org>; Mon, 07 Dec 2009 15:07:44 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,113 +21,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, fzu@wemgehoertderstaat.de, delaossa@mail.desy.de
+To: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-snd-usb-us122l: add product IDs of US-122MKII and US-144MKII
 
-I added the product IDs of the new revisions of the devices, so owners 
-can test whether this suffices to make them work. Patched against ALSA 
-snapshot 20091207.
 
-Signed-off-by: Tobias Hansen <Tobias.Hansen at physik.uni-hamburg.de <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>>
+This is an updated patch for the Apple iMac 9,1 model to add sound.
+Original patch posted here:
+http://article.gmane.org/gmane.linux.alsa.devel/61361/match=
 
----
+I have been using this patch for a while now
+and have to say it works vary well, except for a few minor 
+things:
 
-diff -upr alsa-driver.orig/alsa-kernel/usb/usx2y/us122l.c 
-alsa-driver/alsa-kernel/usb/usx2y/us122l.c
---- alsa-driver.orig/alsa-kernel/usb/usx2y/us122l.c    2009-12-07 
-00:05:40.000000000 +0100
-+++ alsa-driver/alsa-kernel/usb/usx2y/us122l.c    2009-12-07 
-18:50:27.801975964 +0100
-@@ -194,7 +194,8 @@ static int usb_stream_hwdep_open(struct
-     if (!us122l->first)
-         us122l->first = file;
- 
--    if (us122l->dev->descriptor.idProduct == USB_ID_US144) {
-+    if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
-+        us122l->dev->descriptor.idProduct == USB_ID_US144MKII) {
-         iface = usb_ifnum_to_if(us122l->dev, 0);
-         usb_autopm_get_interface(iface);
-     }
-@@ -209,7 +210,8 @@ static int usb_stream_hwdep_release(stru
-     struct usb_interface *iface;
-     snd_printdd(KERN_DEBUG "%p %p\n", hw, file);
- 
--    if (us122l->dev->descriptor.idProduct == USB_ID_US144) {
-+    if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
-+        us122l->dev->descriptor.idProduct == USB_ID_US144MKII) {
-         iface = usb_ifnum_to_if(us122l->dev, 0);
-         usb_autopm_put_interface(iface);
-     }
-@@ -476,7 +478,8 @@ static bool us122l_create_card(struct sn
-     int err;
-     struct us122l *us122l = US122L(card);
- 
--    if (us122l->dev->descriptor.idProduct == USB_ID_US144) {
-+    if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
-+        us122l->dev->descriptor.idProduct == USB_ID_US144MKII) {
-         err = usb_set_interface(us122l->dev, 0, 1);
-         if (err) {
-             snd_printk(KERN_ERR "usb_set_interface error \n");
-@@ -495,7 +498,8 @@ static bool us122l_create_card(struct sn
-     if (!us122l_start(us122l, 44100, 256))
-         return false;
- 
--    if (us122l->dev->descriptor.idProduct == USB_ID_US144)
-+    if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
-+        us122l->dev->descriptor.idProduct == USB_ID_US144MKII)
-         err = us144_create_usbmidi(card);
-     else
-         err = us122l_create_usbmidi(card);
-@@ -597,7 +601,8 @@ static int snd_us122l_probe(struct usb_i
-     struct snd_card *card;
-     int err;
- 
--    if (device->descriptor.idProduct == USB_ID_US144
-+    if ((device->descriptor.idProduct == USB_ID_US144 ||
-+        us122l->dev->descriptor.idProduct == USB_ID_US144MKII)
-         && device->speed == USB_SPEED_HIGH) {
-         snd_printk(KERN_ERR "disable ehci-hcd to run US-144 \n");
-         return -ENODEV;
-@@ -692,7 +697,8 @@ static int snd_us122l_resume(struct usb_
- 
-     mutex_lock(&us122l->mutex);
-     /* needed, doesn't restart without: */
--    if (us122l->dev->descriptor.idProduct == USB_ID_US144) {
-+    if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
-+        us122l->dev->descriptor.idProduct == USB_ID_US144MKII) {
-         err = usb_set_interface(us122l->dev, 0, 1);
-         if (err) {
-             snd_printk(KERN_ERR "usb_set_interface error \n");
-@@ -737,6 +743,16 @@ static struct usb_device_id snd_us122l_u
-         .idVendor =    0x0644,
-         .idProduct =    USB_ID_US144
-     },
-+    {
-+        .match_flags =    USB_DEVICE_ID_MATCH_DEVICE,
-+        .idVendor =    0x0644,
-+        .idProduct =    USB_ID_US122MKII
-+    },
-+    {
-+        .match_flags =    USB_DEVICE_ID_MATCH_DEVICE,
-+        .idVendor =    0x0644,
-+        .idProduct =    USB_ID_US144MKII
-+    },
-     { /* terminator */ }
- };
- 
-diff -upr alsa-driver.orig/alsa-kernel/usb/usx2y/us122l.h 
-alsa-driver/alsa-kernel/usb/usx2y/us122l.h
---- alsa-driver.orig/alsa-kernel/usb/usx2y/us122l.h    2009-12-07 
-00:05:40.000000000 +0100
-+++ alsa-driver/alsa-kernel/usb/usx2y/us122l.h    2009-12-07 
-18:44:03.990236199 +0100
-@@ -25,5 +25,7 @@ struct us122l {
- 
- #define USB_ID_US122L 0x800E
- #define USB_ID_US144 0x800F
-+#define USB_ID_US122MKII 0x8021
-+#define USB_ID_US144MKII 0x8020
- 
- #endif
+	With the iMac 24-inch 3.06GHz Intel Core 2 Duo
+	everything seems to be working as it should,
+        although I have not looked into the microphone
+	(never really use one, nor have any apps to test,
+	my guess is it doesn't work, or I never figured out how
+	to get it to work).
+
+	With the iMac 24-inch 2.66GHz Intel Core 2 Duo
+	everything is the same as with the above machine 
+	except I'm hearing a light scratchy/distortion noise
+	come out of the speakers when using headphones(above machine
+	does not do this).
+
+Other than that the sound level is great(especially with good Dj headphones).
+
+Now onto this patch. I took the liberty of sighning off on it
+although I don't feel comfortable doing so, since this is not my
+work(except for a few changes to fit the latest kernel).
+In reading:
+http://article.gmane.org/gmane.linux.alsa.devel/61596/match=
+there was mention of a sign off, but something happened. 
+
+Anyways I'll leave it up to the people in charge of patches
+to make the descision on what to do with this. 
+
+
+ Documentation/sound/alsa/HD-Audio-Models.txt |    1 +
+ sound/pci/hda/patch_realtek.c                |  111 ++++++++++++++++++++++++++
+ 2 files changed, 112 insertions(+), 0 deletions(-)
