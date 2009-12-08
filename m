@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Wrong variable returned on error
-Date: Tue, 8 Dec 2009 12:56:39 +0000
-Message-ID: <20091208125639.GA1844@rakim.wolfsonmicro.main>
-References: <4B1D9F0E.4010009@gmail.com>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: Re: [PATCH v2] Introduce config for intel dg45id board
+Date: Tue, 08 Dec 2009 14:02:43 +0100
+Message-ID: <1260277363.10891.69.camel@zwerg>
+References: <1260094453-3496-1-git-send-email-bug-track@fisher-privat.net>
+	<1260095353-3262-1-git-send-email-bug-track@fisher-privat.net>
+	<s5hskblsp56.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AC80024563
-	for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2009 13:56:40 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4B1D9F0E.4010009@gmail.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 141A72456D
+	for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2009 14:02:45 +0100 (CET)
+In-Reply-To: <s5hskblsp56.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,13 +22,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Roel Kluin <roel.kluin@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, javier.martin@vista-silicon.com, Andrew Morton <akpm@linux-foundation.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Paulo Cavalcanti <promac@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 08, 2009 at 01:34:22AM +0100, Roel Kluin wrote:
-> The wrong variable was returned in the case of an error
+Am Dienstag, den 08.12.2009, 12:04 +0100 schrieb Takashi Iwai:
+> At Sun,  6 Dec 2009 11:29:13 +0100,
+> Alexey Fisher wrote:
+> > 
+> > This patch introduce pin config and some workarounds for dg45id board.
+> > Currently tested Mic + Surround 7.1 on rear panel, and Mic + HP on front panel.
+> > SPDIF front and SPDIF rear are untested.
+> > Both Mics provide VREF_80 (4,05 V) in mic mode and no VREF in line-in mode.
+> > 
+> > Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
 > 
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> Thanks for the patch.
+> 
+> But, I still don't see the reason for so many init verbs, especially
+> doing static routings.  Can't be they connected properly by the
+> parser?  If so, it's the parser to be fixed, not a quirky init table.
 
-Applied, thanks.
+Ok. I prefer to have the part with mixer. The driver currently can't
+handle this. It seems to make some problem with front HP. By default All
+mixer inputs use 0x0a (Front HP out), in this situation i get hi freq
+noise on 0x0a. So or driver should learn to work with mixer or...?
+
+> And, your machine has really no headphone detection?  I mean, not
+> about your taste but it's not physically doable?
+
+HP detection working on rear green (0x0d), not on front green (0x0a).
+May be there is something wrong with connector. Anyway, it working fine
+under M$. May be we should provide UI control for this (to make user
+completely confused:)? 
+
+> thanks,
+> 
+> Takashi
+> 
+> > 
+> > modified:   sound/pci/hda/patch_sigmatel.c
+> > ---
+> >  sound/pci/hda/patch_sigmatel.c |   53 +++++++++++++++++++++++++++++++++++++++-
+> >  1 files changed, 52 insertions(+), 1 deletions(-)
+> > 
+> > diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+> > index 6b0bc04..e604bae 100644
+> > --- a/sound/pci/hda/patch_sigmatel.c
+> > +++ b/sound/pci/hda/patch_sigmatel.c
+> > @@ -860,6 +860,37 @@ static struct hda_verb dell_eq_core_init[] = {
+> >  	{}
+> >  };
+> >  
+> > +static struct hda_verb intel_dg45id_init[] = {
+> > +	/* connect all inputs to the mixer */
+> > +	/* 0x0b -> mixer */
+> > +	{ 0x28, AC_VERB_SET_CONNECT_SEL, 0x01},
+> > +	/* 0x0e -> mixer */
+> > +	{ 0x29, AC_VERB_SET_CONNECT_SEL, 0x01},
+> > +	/* FIXME: if sorround51 0x0c can be used for line-in
+> > +	 * currently do not working */
+> > +	{ 0x2a, AC_VERB_SET_CONNECT_SEL, 0x01},
+> > +
+> > +	/* connect mixer to the switch */
+> > +	{ 0x20, AC_VERB_SET_CONNECT_SEL, 0x0b},
+> > +
+> > +	/* unmute inputs on mixer */
+> > +	{ 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7017},
+> > +	{ 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7117},
+> > +	/* TODO: make option for 0x0c to be line-in
+> > +	 * { 0x1d, AC_VERB_SET_AMP_GAIN_MUTE, 0x7217}, */
+
+This part is not really important. I used this to copy settings of M$
+driver. Thirst two, are correctly set by BIOS, second two are switched.
+
+
+> > +	/* extra check all DACs */
+> > +	/* 0x18 -> 0x0c */
+> > +	{ 0x0c, AC_VERB_SET_CONNECT_SEL, 0x03},
+> > +	/* 0x15 -> 0x0d */
+> > +	{ 0x0d, AC_VERB_SET_CONNECT_SEL, 0x00},
+> > +	/* 0x16 -> 0x0f */
+> > +	{ 0x0f, AC_VERB_SET_CONNECT_SEL, 0x02},
+> > +	/* 0x17 -> 0x10 */
+> > +	{ 0x10, AC_VERB_SET_CONNECT_SEL, 0x01},
+> > +	{}
+> > +};
+> > +
+> >  static struct hda_verb stac92hd73xx_core_init[] = {
+> >  	/* set master volume and direct control */
+> >  	{ 0x1f, AC_VERB_SET_VOLUME_KNOB_CONTROL, 0xff},
+> > @@ -1531,6 +1562,19 @@ static unsigned int dell_m6_pin_configs[13] = {
+> >  	0x4f0000f0,
+> >  };
+
+The comment is not up to date any more. HP is working  now.
+You said about wrong pincfgs. What you mean should be changed here to
+make difference between speaker and jack?
+
+PS: up now, i trawling and not able to test this PC for about 6 months.
+So if you doubt, we can leave this patch till juli.
+ 
+> > +/* TODO: _config[1] (PIN 0x0a) still do not working (Front panel speaker/hp),
+> > + * $.ini provide some variants of this pin: 0x02214230, 0x0221421F, 0x0211421F.
+> > + * Def. and Seq. should make difference.
+> > + * Same for _config[4] (0x0d): wariants 0x01114210, 0x0121421f -should be
+> > + * some hove in sync with 0x0a? _config[3] (0x0c) can be switched to line-in
+> > + * wariant 0x0181325e. */
+> > +static unsigned int intel_dg45id_pin_configs[14] = {
+> > +	0x02214230, 0x02A19240, 0x01113214, 0x01114210,
+> > +	0x01A19250, 0x01111212, 0x01116211, 0x40f000f0,
+> > +	0x40f000f0, 0x40f000f0, 0x40f000f0, 0x014510A0,
+> > +	0x074510B0, 0x40f000f0
+> > +};
+> > +
+> >  static unsigned int alienware_m17x_pin_configs[13] = {
+> >  	0x0321101f, 0x0321101f, 0x03a11020, 0x03014020,
+> >  	0x90170110, 0x4f0000f0, 0x4f0000f0, 0x4f0000f0,
+> > @@ -1544,6 +1588,7 @@ static unsigned int *stac92hd73xx_brd_tbl[STAC_92HD73XX_MODELS] = {
+> >  	[STAC_DELL_M6_DMIC]	= dell_m6_pin_configs,
+> >  	[STAC_DELL_M6_BOTH]	= dell_m6_pin_configs,
+> >  	[STAC_DELL_EQ]	= dell_m6_pin_configs,
+> > +	[STAC_92HD73XX_INTEL]	= intel_dg45id_pin_configs,
+> >  	[STAC_ALIENWARE_M17X]	= alienware_m17x_pin_configs,
+> >  };
+> >  
+> > @@ -5127,6 +5172,11 @@ again:
+> >  			break;
+> >  		}
+> >  		break;
+> > +	case STAC_92HD73XX_INTEL:
+> > +		spec->init = intel_dg45id_init;
+> > +		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
+> > +		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
+> > +		break;
+> >  	case STAC_ALIENWARE_M17X:
+> >  		spec->num_dmics = STAC92HD73XX_NUM_DMICS;
+> >  		spec->num_smuxes = ARRAY_SIZE(stac92hd73xx_smux_nids);
+> > @@ -5164,7 +5214,8 @@ again:
+> >  		return err;
+> >  	}
+> >  
+> > -	if (spec->board_config == STAC_92HD73XX_NO_JD)
+> > +	if (spec->board_config == STAC_92HD73XX_NO_JD ||
+> > +		spec->board_config == STAC_92HD73XX_INTEL)
+> >  		spec->hp_detect = 0;
+> >  
+> >  	codec->patch_ops = stac92xx_patch_ops;
+> > 
