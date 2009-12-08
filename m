@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: How to use soc API without codec driver
-Date: Tue, 8 Dec 2009 14:51:04 +0000
-Message-ID: <20091208145104.GC9018@sirena.org.uk>
-References: <4B1E66DD.1000906@heig-vd.ch>
+Subject: Re: PLL computation in TLV320AIC3x SoC driver
+Date: Tue, 8 Dec 2009 14:56:06 +0000
+Message-ID: <20091208145606.GB10846@rakim.wolfsonmicro.main>
+References: <alpine.DEB.2.00.0912081127460.22770@hippogriff.cosy.sbg.ac.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A48A10384E
-	for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2009 15:51:05 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9274F10384E
+	for <alsa-devel@alsa-project.org>; Tue,  8 Dec 2009 15:56:08 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4B1E66DD.1000906@heig-vd.ch>
+In-Reply-To: <alpine.DEB.2.00.0912081127460.22770@hippogriff.cosy.sbg.ac.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marc Garnier <marc.garnier@heig-vd.ch>
-Cc: alsa-devel@alsa-project.org
+To: Peter Meerwald <pmeerw@pmeerw.net>
+Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 08, 2009 at 03:46:53PM +0100, Marc Garnier wrote:
+On Tue, Dec 08, 2009 at 12:28:30PM +0100, Peter Meerwald wrote:
 
-> I need to receive and transmit PCM data through SSC port of a sam9261 to 
-> a device which doesn't have any kind of I/O controls (neither i2c nor 
-> spi). So, I wonder how to deal with the codec driver side.
-> Someone could explain me what are the minimum requirements to write a 
-> Asoc driver of this kind?
+> I'm trying to use the SoC TLV320AIC3x codec driver with sysclk 16384000 
+> and ran into some problems with setting PLL; below is a patch against 
+> linux-2.6-asoc
 
-There's a couple of drivers for such CODECs in the tree already - have a
-look at the wm8727 driver for one example.  You need to register at
-least a DAI with whatever the capabilities of the hardware are and can
-leave all the operations blank.
+Please submit patches against the most recent for- branch of
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
+
+You've also forgotten your Signed-off-by.
+
+> further, the original code does not respect the constraints on j (>= 4, <= 
+> 55 for d==0) according to the codec's datasheet, and similarly for d!=0
+
+Might be helpful to point out what these constraints are and how the
+code fails to respect them - given that your change is a total rewrite
+of the relevant code it's not as easy as it might be to spot what's
+changed.
