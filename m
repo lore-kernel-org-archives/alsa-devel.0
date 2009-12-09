@@ -1,24 +1,23 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] opti93x: fix irq releasing if the irq cannot
-	be allocated
-Date: Wed, 9 Dec 2009 20:12:43 +0100
-Message-ID: <20091209201243.9b67fc71.krzysztof.h1@poczta.fm>
+From: Vladimir Barinov <vova.barinov@gmail.com>
+Subject: Re: PLL computation in TLV320AIC3x SoC driver
+Date: Wed, 09 Dec 2009 23:35:01 +0300
+Message-ID: <4B2009F5.8020107@gmail.com>
+References: <alpine.DEB.2.00.0912081127460.22770@hippogriff.cosy.sbg.ac.at>
+	<4B1E66C8.4070402@gmail.com>
+	<alpine.DEB.2.00.0912081552430.22770@hippogriff.cosy.sbg.ac.at>
+	<4B1E74D7.9080400@gmail.com> <4B1E7965.6030000@gmail.com>
+	<alpine.DEB.2.00.0912091447230.17383@hippogriff.cosy.sbg.ac.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
-	[217.74.64.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0194103811
-	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 20:10:55 +0100 (CET)
-Received: from poczta.interia.pl (mi01.poczta.interia.pl [10.217.12.1])
-	by smtp240.poczta.interia.pl (INTERIA.PL) with ESMTP id EA217106953
-	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 20:10:53 +0100 (CET)
-Received: from krzysio.net (93-181-133-4.as.kn.pl [93.181.133.4])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.poczta.fm (INTERIA.PL) with ESMTP id C69C825A5B1B
-	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 20:10:52 +0100 (CET)
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E16D103813
+	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 21:35:08 +0100 (CET)
+Received: by ewy23 with SMTP id 23so6849727ewy.4
+	for <alsa-devel@alsa-project.org>; Wed, 09 Dec 2009 12:35:07 -0800 (PST)
+In-Reply-To: <alpine.DEB.2.00.0912091447230.17383@hippogriff.cosy.sbg.ac.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,69 +27,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: Peter Meerwald <pmeerw@pmeerw.net>
+Cc: vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+Hello Peter,
 
-Use the chip->irq to check if the irq should be released so the irq is not released
-if it has not been allocated.
-
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
- sound/isa/opti9xx/opti92x-ad1848.c |   18 ++++++++++--------
- 1 files changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-index 8c88401..d8eac3f 100644
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -548,10 +548,13 @@ __skip_mpu:
- 
- static irqreturn_t snd_opti93x_interrupt(int irq, void *dev_id)
- {
--	struct snd_wss *codec = dev_id;
--	struct snd_opti9xx *chip = codec->card->private_data;
-+	struct snd_opti9xx *chip = dev_id;
-+	struct snd_wss *codec = chip->codec;
- 	unsigned char status;
- 
-+	if (!codec)
-+		return IRQ_HANDLED;
-+
- 	status = snd_opti9xx_read(chip, OPTi9XX_MC_REG(11));
- 	if ((status & OPTi93X_IRQ_PLAYBACK) && codec->playback_substream)
- 		snd_pcm_period_elapsed(codec->playback_substream);
-@@ -691,10 +694,9 @@ static void snd_card_opti9xx_free(struct snd_card *card)
- 
- 	if (chip) {
- #ifdef OPTi93X
--		struct snd_wss *codec = chip->codec;
--		if (codec && codec->irq > 0) {
--			disable_irq(codec->irq);
--			free_irq(codec->irq, codec);
-+		if (chip->irq > 0) {
-+			disable_irq(chip->irq);
-+			free_irq(chip->irq, chip);
- 		}
- 		release_and_free_resource(chip->res_mc_indir);
- #endif
-@@ -759,9 +761,9 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
- #endif
- #ifdef OPTi93X
- 	error = request_irq(irq, snd_opti93x_interrupt,
--			    IRQF_DISABLED, DEV_NAME" - WSS", codec);
-+			    IRQF_DISABLED, DEV_NAME" - WSS", chip);
- 	if (error < 0) {
--		snd_printk(KERN_ERR "opti9xx: can't grab IRQ %d\n", chip->irq);
-+		snd_printk(KERN_ERR "opti9xx: can't grab IRQ %d\n", irq);
- 		return error;
- 	}
- #endif
--- 
-1.6.4
-
-
-----------------------------------------------------------------------
-Internetowi nie placa! Otworz Konto Direct.
-http://link.interia.pl/f24f7
+Peter Meerwald wrote:
+> Hello,
+>
+>   
+>>>>>> I'm trying to use the SoC TLV320AIC3x codec driver with sysclk
+>>>>>> 16384000 and
+>>>>>> ran into some problems with setting PLL; below is a patch against
+>>>>>> linux-2.6-asoc
+>>>>>>             
+>
+>   
+>>> I just tested your patch works fine with sysclk=16384000 and 12288000 but
+>>> fails with 11286900: it returns FSREF=45467 instead of desired 44100. I
+>>> think that this is a valuable difference. Please check it.
+>>>       
+>> Please check  also 33868800  sysclk, it  returns  FSREF=47545 instead of
+>> 48000.
+>>     
+>
+> I have put the proposed code at http://pmeerw.net/clk/ for review;
+>
+>
+>   
+> note that the proposed code has less deviation from fsref in all cases and 
+> manages to stay within recommended settings for sysclk 33868800 
+>
+> I have modified the following line to get rid of rounding errors as much 
+> as possible:
+> /* do not use codec_clk here since we'd loose precision */
+> d = ((2048 * p * fsref) - j * sysclk) * 100 / (sysclk/100);
+> and fixed a bug which always set pll_p = 1 in case d!=0
+>
+>   
+I confirm that it handles all cases with best precision now.
+> if code looks good, I'll submit a patch against linux-sound-2.6 as Mark 
+> suggested
+>
+>   
+I'm ok to submit.
