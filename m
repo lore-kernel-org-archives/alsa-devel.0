@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/7] ASoC: S3C64XX: Move gpio pin setup in
-	platform	init code
-Date: Wed, 9 Dec 2009 11:01:14 +0000
-Message-ID: <20091209110114.GD19851@opensource.wolfsonmicro.com>
-References: <1260332984-11505-1-git-send-email-jassisinghbrar@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: ASoC: S3C64XX: Patches for reforming s3c64xx-i2s
+ driver
+Date: Wed, 09 Dec 2009 11:07:02 +0000
+Message-ID: <1260356822.3614.112.camel@odin>
+References: <1260332950-11352-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AE4C42435D
-	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 12:01:14 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1260332984-11505-1-git-send-email-jassisinghbrar@gmail.com>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id F3B5D10381F
+	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 12:07:04 +0100 (CET)
+Received: by ewy23 with SMTP id 23so6156722ewy.4
+	for <alsa-devel@alsa-project.org>; Wed, 09 Dec 2009 03:07:04 -0800 (PST)
+In-Reply-To: <1260332950-11352-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: jassisinghbrar@gmail.com
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 09, 2009 at 01:29:44PM +0900, jassisinghbrar@gmail.com wrote:
+On Wed, 2009-12-09 at 13:29 +0900, jassisinghbrar@gmail.com wrote:
 > From: Jassi Brar <jassi.brar@samsung.com>
+> 
+> Hello,
+>   I am going to submit some cleanup and reforming patches to enable the
+> s3c64xx-i2s.c to become generic enough to handle I2S-v3 controllers of
+> other SoCs as well.
+>  
+>  Testing for build after each patch has been success.
 
-> Like for other IPs, the configuration of MUX'ed GPIO to I2S mode
-> should be done in platform initialization code.
+Had a quick scan and this series looks initially ok.
 
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+It has my 
 
-This is also OK but with the arch/arm dependency.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk> 
+
+if Ben and Mark are happy with it too.
+
+Thanks
+
+Liam
