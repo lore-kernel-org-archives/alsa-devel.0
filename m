@@ -1,15 +1,16 @@
-From: jassisinghbrar@gmail.com
-Subject: [PATCH 4/7] ASoC: S3C64XX: USE DMA info from platform
-	data
-Date: Wed,  9 Dec 2009 13:29:38 +0900
-Message-ID: <1260332978-11475-1-git-send-email-jassisinghbrar@gmail.com>
+From: Marc Garnier <marc.garnier@heig-vd.ch>
+Subject: Re: How to use soc API without codec driver
+Date: Wed, 9 Dec 2009 07:39:19 +0100
+Message-ID: <4B1F4617.1020307@heig-vd.ch>
+References: <4B1E66DD.1000906@heig-vd.ch> <20091208145104.GC9018@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60037243B7
-	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 05:36:11 +0100 (CET)
+Received: from heig-vd.ch (mailcl1.heig-vd.ch [193.134.216.182])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05B58244DC
+	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 07:39:20 +0100 (CET)
+In-Reply-To: <20091208145104.GC9018@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,69 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jassi Brar <jassi.brar@samsung.com>
+You mean I just have to use snd_soc_register_dai()? Things like 
+soc_init_card() and snd_soc_new_pcms() are not mandatory?
+So, i think code like this one could be ok :
 
-Instead of hardcoding DMA channel numbers and address, for each controller
-in the driver, let the information be read from platform data.
+#define Q2686_RATES (SNDRV_PCM_RATE_8000_192000)
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/s3c24xx/s3c64xx-i2s.c |   31 +++++++++++++++++++++----------
- 1 files changed, 21 insertions(+), 10 deletions(-)
+#define Q2686_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE |\
+    SNDRV_PCM_FMTBIT_S24_LE)
 
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-index 93ed3aa..8ca3c1d 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
-@@ -147,6 +147,7 @@ static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
- {
- 	struct s3c_i2sv2_info *i2s;
- 	struct snd_soc_dai *dai;
-+	struct resource *res;
- 	int ret;
- 
- 	if (pdev->id >= MAX_I2SV3) {
-@@ -174,17 +175,27 @@ static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
- 	i2s->dma_capture = &s3c64xx_i2s_pcm_stereo_in[pdev->id];
- 	i2s->dma_playback = &s3c64xx_i2s_pcm_stereo_out[pdev->id];
- 
--	if (pdev->id == 0) {
--		i2s->dma_capture->channel = DMACH_I2S0_IN;
--		i2s->dma_capture->dma_addr = S3C64XX_PA_IIS0 + S3C2412_IISRXD;
--		i2s->dma_playback->channel = DMACH_I2S0_OUT;
--		i2s->dma_playback->dma_addr = S3C64XX_PA_IIS0 + S3C2412_IISTXD;
--	} else {
--		i2s->dma_capture->channel = DMACH_I2S1_IN;
--		i2s->dma_capture->dma_addr = S3C64XX_PA_IIS1 + S3C2412_IISRXD;
--		i2s->dma_playback->channel = DMACH_I2S1_OUT;
--		i2s->dma_playback->dma_addr = S3C64XX_PA_IIS1 + S3C2412_IISTXD;
-+	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Unable to get I2S-TX dma resource\n");
-+		return -ENXIO;
- 	}
-+	i2s->dma_playback->channel = res->start;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Unable to get I2S-RX dma resource\n");
-+		return -ENXIO;
-+	}
-+	i2s->dma_capture->channel = res->start;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Unable to get I2S SFR address\n");
-+		return -ENXIO;
-+	}
-+	i2s->dma_capture->dma_addr = res->start + S3C2412_IISRXD;
-+	i2s->dma_playback->dma_addr = res->start + S3C2412_IISTXD;
- 
- 	i2s->dma_capture->client = &s3c64xx_dma_client_in;
- 	i2s->dma_capture->dma_size = 4;
--- 
-1.6.2.5
+static struct snd_soc_dai_ops q2686_dai_ops = {
+};
+
+struct snd_soc_dai q2686_dai = {
+    .name = "Q2686",
+    .playback = {
+        .stream_name = "Playback",
+        .channels_min = 2,
+        .channels_max = 2,
+        .rates = Q2686_RATES,
+        .formats = Q2686_FORMATS,
+    },
+    .capture = {
+        .stream_name = "Capture",
+        .channels_min = 2,
+        .channels_max = 2,
+        .rates = Q2686_RATES,
+        .formats = Q2686_FORMATS,},
+    .ops = &wm8728_dai_ops,
+};
+EXPORT_SYMBOL_GPL(q2686_dai);
+
+static int __init q2686_modinit(void)
+{
+    return snd_soc_register_dai(&q2686_dai);
+}
+module_init(q2686_modinit);
+
+static void __exit q2686_exit(void)
+{
+    snd_soc_unregister_dai(&q2686_dai);
+}
+module_exit(q2686_exit);
+
+MODULE_DESCRIPTION("ASoC Q2686 driver");
+MODULE_AUTHOR("Marc Garnier");
+MODULE_LICENSE("GPL");
+
+Mark Brown wrote:
+> On Tue, Dec 08, 2009 at 03:46:53PM +0100, Marc Garnier wrote:
+>
+>   
+>> I need to receive and transmit PCM data through SSC port of a sam9261 to 
+>> a device which doesn't have any kind of I/O controls (neither i2c nor 
+>> spi). So, I wonder how to deal with the codec driver side.
+>> Someone could explain me what are the minimum requirements to write a 
+>> Asoc driver of this kind?
+>>     
+>
+> There's a couple of drivers for such CODECs in the tree already - have a
+> look at the wm8727 driver for one example.  You need to register at
+> least a DAI with whatever the capabilities of the hardware are and can
+> leave all the operations blank.
+>   
