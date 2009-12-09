@@ -1,17 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: tpa6130a2: Add support for regulator
-	framework
-Date: Wed, 9 Dec 2009 12:24:56 +0200
-Message-ID: <200912091224.57017.peter.ujfalusi@nokia.com>
-References: <1260353150-19530-1-git-send-email-ilkka.koskinen@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 7/7] ASoC: S3C24XX: Remove I2Sv3 specific
+	check
+Date: Wed, 9 Dec 2009 10:41:25 +0000
+Message-ID: <20091209104125.GB17832@opensource.wolfsonmicro.com>
+References: <1260333001-11565-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E33524653
-	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 11:25:00 +0100 (CET)
-In-Reply-To: <1260353150-19530-1-git-send-email-ilkka.koskinen@nokia.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CECAB1037E3
+	for <alsa-devel@alsa-project.org>; Wed,  9 Dec 2009 11:41:25 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1260333001-11565-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,17 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
+To: jassisinghbrar@gmail.com
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wed, Dec 09, 2009 at 01:30:01PM +0900, jassisinghbrar@gmail.com wrote:
+> From: Jassi Brar <jassi.brar@samsung.com>
 
-On Wednesday 09 December 2009 12:05:50 Koskinen Ilkka (Nokia-D/Tampere) wrote:
-> Take the regulator framework in use for managing the power sources
-> 
-> Signed-off-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+> Since, now the I2Sv3 driver itself figures out and provides the start
+> address of the base register, the s3c64xx specific patch can be
+> discarded in the I2Sv2 core code.
 
-For me this looks right, thanks.
+> -	if (!base) {
+> -		struct resource *res = platform_get_resource(pdev,
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+This is used by the S3C24xx IIS as well so they need converting over
+before this can be removed.  To be honest I hadn't realised that S3C64xx
+was using this at all.
