@@ -1,21 +1,23 @@
-From: Ray Lee <ray-lk@madrabbit.org>
-Subject: Re: Q: Why I do have to restart alsa everytime after a
-	resume from disk/ram ? Is this alsa- or kernel or config related??
-Date: Sun, 13 Dec 2009 15:27:48 -0800
-Message-ID: <2c0942db0912131527x118f9689oe1dc128543f4fc27@mail.gmail.com>
-References: <ffd8902a0912110121k795223ar6af644c41cd357b8@mail.gmail.com>
-	<4B22DD11.7000905@gmail.com>
+From: douglas <douglas.pearless@pearless.co.nz>
+Subject: Re: HD-Audio device unsuppored (Nvidia G2xx-series	GPU
+ implemented)
+Date: Fri, 11 Dec 2009 04:20:05 +1300
+Message-ID: <4B2111A5.60903@pearless.co.nz>
+References: <4B22751D.2070909@arcor.de> <s5h638dus61.wl%tiwai@suse.de>
+	<4B254A1C.2060001@arcor.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f172.google.com (mail-iw0-f172.google.com
-	[209.85.223.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB01D103812
-	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 00:28:09 +0100 (CET)
-Received: by iwn2 with SMTP id 2so1683939iwn.16
-	for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2009 15:28:08 -0800 (PST)
-In-Reply-To: <4B22DD11.7000905@gmail.com>
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 96FD510381C
+	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 01:31:33 +0100 (CET)
+Received: from pearless.co.nz
+	(203-97-104-97.cable.telstraclear.net [203.97.104.97])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with SMTP id <0KUM007FU9GCGN10@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Mon, 14 Dec 2009 13:31:26 +1300 (NZDT)
+In-reply-to: <4B254A1C.2060001@arcor.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,27 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Hancock <hancockrwd@gmail.com>
-Cc: alsa-devel@alsa-project.org, Christian Hartmann <cornogle@googlemail.com>, linux-kernel@vger.kernel.org
+To: Stefan Ringel <stefan.ringel@arcor.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 11, 2009 at 4:00 PM, Robert Hancock <hancockrwd@gmail.com> wrote:
-> On 12/11/2009 03:21 AM, Christian Hartmann wrote:
+Stefan Ringel wrote:
+> Takashi Iwai schrieb:
+>   
+>> Care to create a patch and submit?  Don't forget your sign-off.
 >>
->> hello list,
+>>   
+>>     
+> 1.diff
+>   
+>> This look fairly easy to support.
+>> In anyway, please provide alsa-info.sh output (run with --no-upload
+>> option).
 >>
->> everytime I suspended to disk or to ram, regardless of the used kernel
->> (git or stable from distri), I must restart alsa to hear sound again.
->> searched google and tried a lot but still the same awful behaviour.
->> Has anybode some suggestions for me? is this alsa related ? or is this
->> a kernel issue which could be dealt here?
+>>   
+>>     
+> alsa-info.txt
 >
-> I'm not sure what you mean by restarting ALSA, do you mean reloading the
-> audio device module or something?
+> Stefan Ringel  <stefan.ringel@arcor.de>
 >
-> You didn't mention which kind of sound hardware you were using either..
-
-Data point: Older versions of PulseAudio are very picky about the
-timing data that comes back from ALSA, and throws a hissy-fit and goes
-and sulks if it believes it's getting lied to. Perhaps you need to try
-upgrading the PulseAudio packages, and try again.
+>   
+> ------------------------------------------------------------------------
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+I am very interested in this issue (I have a GT220) and would be more 
+than happy to test any patches.
