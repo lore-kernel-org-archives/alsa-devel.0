@@ -1,16 +1,17 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 5/5] intelhdmi - dont power off HDA link
-Date: Fri, 11 Dec 2009 12:28:37 +0800
-Message-ID: <20091211043213.436814565@intel.com>
+Subject: [PATCH 4/5] intelhdmi - add channel mapping for
+	typical configurations
+Date: Fri, 11 Dec 2009 12:28:36 +0800
+Message-ID: <20091211043213.294570052@intel.com>
 References: <20091211042832.691808920@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id A10BF1037EA
+	by alsa0.perex.cz (Postfix) with ESMTP id EEB8F243CF
 	for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2009 05:32:43 +0100 (CET)
-Content-Disposition: inline; filename=hdmi-dont-power-off-controller.patch
+Content-Disposition: inline; filename=hdmi-swap-channel-mapping.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +25,158 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>, Shane W <shane-alsa@csy.ca>
 List-Id: alsa-devel@alsa-project.org
 
-For codecs without EPSS support (G45/IbexPeak), the hotplug event will
-be lost if the HDA is powered off during the time. After that the pin
-presence detection verb returns inaccurate info.
+IbexPeak is the first Intel HDMI audio codec to support channel mapping.
 
-So always power-on HDA link for !EPSS codecs.
+Currently the outstanding problem is, the HDMI channel order do not
+agree with that of ALSA.  This patch presents workaround for some
+typical use cases. It gives priority to the typical ALSA surround
+configurations, and defines channel mapping for them.
+
+We may need better kernel+userspace interactive channel mapping scheme.
+For example, in current scheme if user plays with the surround50 device,
+the kernel is unaware of this and will still select the surround41
+channel allocation and channel mapping..
+
+Thanks to Marcin for offering good tips!
 
 Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
 ---
- sound/pci/hda/hda_codec.h       |    1 +
- sound/pci/hda/hda_intel.c       |    2 ++
- sound/pci/hda/patch_intelhdmi.c |   11 +++++++++++
- 3 files changed, 14 insertions(+)
+ sound/pci/hda/patch_intelhdmi.c |   89 ++++++++++++++++++++++--------
+ 1 file changed, 67 insertions(+), 22 deletions(-)
 
---- sound-2.6.orig/sound/pci/hda/hda_intel.c	2009-12-10 12:45:24.000000000 +0800
-+++ sound-2.6/sound/pci/hda/hda_intel.c	2009-12-10 20:10:51.000000000 +0800
-@@ -2079,6 +2079,8 @@ static void azx_power_notify(struct hda_
- 			power_on = 1;
- 			break;
- 		}
-+		if (c->power_keep_link_on)
-+			power_save_controller = 0;
- 	}
- 	if (power_on)
- 		azx_init_chip(chip);
---- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-12-10 12:56:41.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-12-10 20:19:32.000000000 +0800
-@@ -391,6 +391,17 @@ static int intel_hdmi_parse_codec(struct
- 		}
- 	}
+--- sound-2.6.orig/sound/pci/hda/patch_intelhdmi.c	2009-12-10 20:32:01.000000000 +0800
++++ sound-2.6/sound/pci/hda/patch_intelhdmi.c	2009-12-11 11:21:04.000000000 +0800
+@@ -146,38 +146,78 @@ struct cea_channel_speaker_allocation {
+ };
  
-+	/*
-+	 * G45/IbexPeak don't support EPSS: the unsolicited pin hot plug event
-+	 * can be lost and presence sense verb will become inaccurate if the
-+	 * HDA link is powered off at hot plug or hw initialization time.
-+	 */
-+#ifdef CONFIG_SND_HDA_POWER_SAVE
-+	if (!(snd_hda_param_read(codec, codec->afg, AC_PAR_POWER_STATE) &
-+	      AC_PWRST_EPSS))
-+	codec->power_keep_link_on = 1;
-+#endif
+ /*
++ * ALSA sequence is:
++ *
++ *       surround40   surround41   surround50   surround51   surround71
++ * ch0   front left   =            =            =            =
++ * ch1   front right  =            =            =            =
++ * ch2   rear left    =            =            =            =
++ * ch3   rear right   =            =            =            =
++ * ch4                LFE          center       center       center
++ * ch5                                          LFE          LFE
++ * ch6                                                       side left
++ * ch7                                                       side right
++ *
++ * surround71 = {FL, FR, RLC, RRC, FC, LFE, RL, RR}
++ */
++static int hdmi_channel_mapping[0x32][8] = {
++	/* stereo */
++	[0x00] = { 0x00, 0x11, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7 },
++	/* 2.1 */
++	[0x01] = { 0x00, 0x11, 0x22, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7 },
++	/* Dolby Surround */
++	[0x02] = { 0x00, 0x11, 0x23, 0xf2, 0xf4, 0xf5, 0xf6, 0xf7 },
++	/* surround40 */
++	[0x08] = { 0x00, 0x11, 0x24, 0x35, 0xf3, 0xf2, 0xf6, 0xf7 },
++	/* 4ch */
++	[0x03] = { 0x00, 0x11, 0x23, 0x32, 0x44, 0xf5, 0xf6, 0xf7 },
++	/* surround41 */
++	[0x09] = { 0x00, 0x11, 0x24, 0x34, 0x43, 0xf2, 0xf6, 0xf7 },
++	/* surround50 */
++	[0x0a] = { 0x00, 0x11, 0x24, 0x35, 0x43, 0xf2, 0xf6, 0xf7 },
++	/* surround51 */
++	[0x0b] = { 0x00, 0x11, 0x24, 0x35, 0x43, 0x52, 0xf6, 0xf7 },
++	/* 7.1 */
++	[0x13] = { 0x00, 0x11, 0x26, 0x37, 0x43, 0x52, 0x64, 0x75 },
++};
 +
- 	return 0;
- }
++/*
+  * This is an ordered list!
+  *
+  * The preceding ones have better chances to be selected by
+  * hdmi_setup_channel_allocation().
+  */
+ static struct cea_channel_speaker_allocation channel_allocations[] = {
+-/* 			  channel:   8     7    6    5    4     3    2    1  */
++/* 			  channel:   7     6    5    4    3     2    1    0  */
+ { .ca_index = 0x00,  .speakers = {   0,    0,   0,   0,   0,    0,  FR,  FL } },
+ 				 /* 2.1 */
+ { .ca_index = 0x01,  .speakers = {   0,    0,   0,   0,   0,  LFE,  FR,  FL } },
+ 				 /* Dolby Surround */
+ { .ca_index = 0x02,  .speakers = {   0,    0,   0,   0,  FC,    0,  FR,  FL } },
++				 /* surround40 */
++{ .ca_index = 0x08,  .speakers = {   0,    0,  RR,  RL,   0,    0,  FR,  FL } },
++				 /* surround41 */
++{ .ca_index = 0x09,  .speakers = {   0,    0,  RR,  RL,   0,  LFE,  FR,  FL } },
++				 /* surround50 */
++{ .ca_index = 0x0a,  .speakers = {   0,    0,  RR,  RL,  FC,    0,  FR,  FL } },
++				 /* surround51 */
++{ .ca_index = 0x0b,  .speakers = {   0,    0,  RR,  RL,  FC,  LFE,  FR,  FL } },
++				 /* 6.1 */
++{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,  FR,  FL } },
++				 /* surround71 */
++{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,  FR,  FL } },
++
+ { .ca_index = 0x03,  .speakers = {   0,    0,   0,   0,  FC,  LFE,  FR,  FL } },
+ { .ca_index = 0x04,  .speakers = {   0,    0,   0,  RC,   0,    0,  FR,  FL } },
+ { .ca_index = 0x05,  .speakers = {   0,    0,   0,  RC,   0,  LFE,  FR,  FL } },
+ { .ca_index = 0x06,  .speakers = {   0,    0,   0,  RC,  FC,    0,  FR,  FL } },
+ { .ca_index = 0x07,  .speakers = {   0,    0,   0,  RC,  FC,  LFE,  FR,  FL } },
+-{ .ca_index = 0x08,  .speakers = {   0,    0,  RR,  RL,   0,    0,  FR,  FL } },
+-{ .ca_index = 0x09,  .speakers = {   0,    0,  RR,  RL,   0,  LFE,  FR,  FL } },
+-{ .ca_index = 0x0a,  .speakers = {   0,    0,  RR,  RL,  FC,    0,  FR,  FL } },
+-				 /* 5.1 */
+-{ .ca_index = 0x0b,  .speakers = {   0,    0,  RR,  RL,  FC,  LFE,  FR,  FL } },
+ { .ca_index = 0x0c,  .speakers = {   0,   RC,  RR,  RL,   0,    0,  FR,  FL } },
+ { .ca_index = 0x0d,  .speakers = {   0,   RC,  RR,  RL,   0,  LFE,  FR,  FL } },
+ { .ca_index = 0x0e,  .speakers = {   0,   RC,  RR,  RL,  FC,    0,  FR,  FL } },
+-				 /* 6.1 */
+-{ .ca_index = 0x0f,  .speakers = {   0,   RC,  RR,  RL,  FC,  LFE,  FR,  FL } },
+ { .ca_index = 0x10,  .speakers = { RRC,  RLC,  RR,  RL,   0,    0,  FR,  FL } },
+ { .ca_index = 0x11,  .speakers = { RRC,  RLC,  RR,  RL,   0,  LFE,  FR,  FL } },
+ { .ca_index = 0x12,  .speakers = { RRC,  RLC,  RR,  RL,  FC,    0,  FR,  FL } },
+-				 /* 7.1 */
+-{ .ca_index = 0x13,  .speakers = { RRC,  RLC,  RR,  RL,  FC,  LFE,  FR,  FL } },
+ { .ca_index = 0x14,  .speakers = { FRC,  FLC,   0,   0,   0,    0,  FR,  FL } },
+ { .ca_index = 0x15,  .speakers = { FRC,  FLC,   0,   0,   0,  LFE,  FR,  FL } },
+ { .ca_index = 0x16,  .speakers = { FRC,  FLC,   0,   0,  FC,    0,  FR,  FL } },
+@@ -210,7 +250,6 @@ static struct cea_channel_speaker_alloca
+ { .ca_index = 0x31,  .speakers = { FRW,  FLW,  RR,  RL,  FC,  LFE,  FR,  FL } },
+ };
  
---- sound-2.6.orig/sound/pci/hda/hda_codec.h	2009-12-10 12:45:24.000000000 +0800
-+++ sound-2.6/sound/pci/hda/hda_codec.h	2009-12-10 20:10:51.000000000 +0800
-@@ -819,6 +819,7 @@ struct hda_codec {
- #ifdef CONFIG_SND_HDA_POWER_SAVE
- 	unsigned int power_on :1;	/* current (global) power-state */
- 	unsigned int power_transition :1; /* power-state in transition */
-+	unsigned int power_keep_link_on :1; /* don't power off HDA link */
- 	int power_count;	/* current (global) power refcount */
- 	struct delayed_work power_work; /* delayed task for powerdown */
- 	unsigned long power_on_acct;
+-
+ /*
+  * HDA/HDMI auto parsing
+  */
+@@ -625,19 +664,25 @@ static void hdmi_setup_channel_mapping(s
+ 				       struct hdmi_audio_infoframe *ai)
+ {
+ 	int i;
++	int ca = ai->CA;
++	int err;
+ 
+-	if (!ai->CA)
+-		return;
+-
+-	/*
+-	 * TODO: adjust channel mapping if necessary
+-	 * ALSA sequence is front/surr/clfe/side?
+-	 */
++	if (hdmi_channel_mapping[ca][1] == 0) {
++		for (i = 0; i < channel_allocations[ca].channels; i++)
++			hdmi_channel_mapping[ca][i] = i | (i << 4);
++		for (; i < 8; i++)
++			hdmi_channel_mapping[ca][i] = 0xf | (i << 4);
++	}
+ 
+-	for (i = 0; i < 8; i++)
+-		snd_hda_codec_write(codec, pin_nid, 0,
+-				    AC_VERB_SET_HDMI_CHAN_SLOT,
+-				    (i << 4) | i);
++	for (i = 0; i < 8; i++) {
++		err = snd_hda_codec_write(codec, pin_nid, 0,
++					  AC_VERB_SET_HDMI_CHAN_SLOT,
++					  hdmi_channel_mapping[ca][i]);
++		if (err) {
++			snd_printdd(KERN_INFO "HDMI: channel mapping failed\n");
++			break;
++		}
++	}
+ 
+ 	hdmi_debug_channel_mapping(codec, pin_nid);
+ }
