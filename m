@@ -1,24 +1,28 @@
-From: Krzysztof Helt <krzysztof.h1@poczta.fm>
-Subject: [PATCH] opti93x: move controls definitions to opti93x
-	driver
-Date: Thu, 10 Dec 2009 20:40:18 +0100
-Message-ID: <20091210204018.0106f136.krzysztof.h1@poczta.fm>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: hw_ptr accuracy with intel8x0 -> PulseAudio issue
+Date: Fri, 11 Dec 2009 09:14:48 +0800
+Message-ID: <4f3252890912101714l1fe24128y4b527a7f10fa7a85@mail.gmail.com>
+References: <6160a5130912020115t45bd4635hceb0ac3de4fb1efe@mail.gmail.com>
+	<6160a5130912030828m5b2401f3w31a67b6b51e8d8b6@mail.gmail.com>
+	<4f3252890912031442i56ccc905g935a4d6ed48f40c6@mail.gmail.com>
+	<6160a5130912031650u5949c921jc86d0847b2844803@mail.gmail.com>
+	<4f3252890912041817u7ab83a3eh7643476d64d709f3@mail.gmail.com>
+	<s5h4oo1sisn.wl%tiwai@suse.de>
+	<4f3252890912090355n70a2b5cfu4fbb74d473480a94@mail.gmail.com>
+	<s5hr5r4ntus.wl%tiwai@suse.de>
+	<4f3252890912091941y34509e3brd235360485c8c967@mail.gmail.com>
+	<6160a5130912100644m7f090fdaxaa193737441c337d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
-	[217.74.64.240])
-	by alsa0.perex.cz (Postfix) with ESMTP id C075B10385F
-	for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2009 20:38:26 +0100 (CET)
-Received: from poczta.interia.pl (mi05.te.interia.pl [10.217.12.5])
-	by smtp240.poczta.interia.pl (INTERIA.PL) with ESMTP id 378052704AC
-	for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2009 20:38:26 +0100 (CET)
-Received: from krzysio.net (93-181-133-4.as.kn.pl [93.181.133.4])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by www.poczta.fm (INTERIA.PL) with ESMTP id A42B3BE1876
-	for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2009 20:38:25 +0100 (CET)
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB9071037EE
+	for <alsa-devel@alsa-project.org>; Fri, 11 Dec 2009 02:14:49 +0100 (CET)
+Received: by pwi18 with SMTP id 18so722225pwi.32
+	for <alsa-devel@alsa-project.org>; Thu, 10 Dec 2009 17:14:48 -0800 (PST)
+In-Reply-To: <6160a5130912100644m7f090fdaxaa193737441c337d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,248 +32,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Krzysztof Helt <krzysztof.h1@wp.pl>
+2009/12/10 pl bossart <bossart.nospam@gmail.com>
 
-Move OPTi93x controls definitions to the opti93x driver
-from the common wss-lib library module. These controls
-are used only by the opti93x driver.
+> > 2) why PA use  snd_pcm_hw_params_get_buffer_size_max() instead of
+> > snd_pcm_hw_params_get_buffer_size() after snd_pcm_hw_params() ?
+>
+> Precisely to use the maximum preallocated buffer size.
+>
 
-Also, fix capture source names. They are the same as
-opl3sa2 names.
+The driver only allocate 8K bytes for the substream when the application
+request 2 fragments and 64 Kbytes when the application request 16 fragments
 
-Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
----
- sound/isa/opti9xx/opti92x-ad1848.c |   85 ++++++++++++++++++++++++++++++++++++
- sound/isa/wss/wss_lib.c            |   80 ++++++---------------------------
- 2 files changed, 100 insertions(+), 65 deletions(-)
+It is wrong for PA to think that 371ms is the buffer size on pulseaudio
+0.9.21
 
-diff --git a/sound/isa/opti9xx/opti92x-ad1848.c b/sound/isa/opti9xx/opti92x-ad1848.c
-index d8eac3f..0991321 100644
---- a/sound/isa/opti9xx/opti92x-ad1848.c
-+++ b/sound/isa/opti9xx/opti92x-ad1848.c
-@@ -33,6 +33,7 @@
- #include <asm/io.h>
- #include <asm/dma.h>
- #include <sound/core.h>
-+#include <sound/tlv.h>
- #include <sound/wss.h>
- #include <sound/mpu401.h>
- #include <sound/opl3.h>
-@@ -546,6 +547,85 @@ __skip_mpu:
- 
- #ifdef OPTi93X
- 
-+static const DECLARE_TLV_DB_SCALE(db_scale_6bit, -9450, 150, 0);
-+
-+static struct snd_kcontrol_new snd_opti93x_controls[] = {
-+WSS_DOUBLE("Master Playback Switch", 0,
-+		OPTi93X_OUT_LEFT, OPTi93X_OUT_RIGHT, 7, 7, 1, 1),
-+WSS_DOUBLE_TLV("Master Playback Volume", 0,
-+		OPTi93X_OUT_LEFT, OPTi93X_OUT_RIGHT, 1, 1, 31, 1,
-+		db_scale_6bit),
-+WSS_DOUBLE("PCM Playback Volume", 0,
-+		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 0, 0, 31, 1),
-+WSS_DOUBLE("FM Playback Volume", 0,
-+		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 1, 1, 15, 1),
-+WSS_DOUBLE("Line Playback Switch", 0,
-+		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 7, 7, 1, 1),
-+WSS_DOUBLE("Line Playback Volume", 0,
-+		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 0, 0, 15, 1),
-+WSS_DOUBLE("Mic Playback Switch", 0,
-+		OPTi93X_MIC_LEFT_INPUT, OPTi93X_MIC_RIGHT_INPUT, 7, 7, 1, 1),
-+WSS_DOUBLE("Mic Playback Volume", 0,
-+		OPTi93X_MIC_LEFT_INPUT, OPTi93X_MIC_RIGHT_INPUT, 1, 1, 15, 1),
-+WSS_DOUBLE("CD Playback Volume", 0,
-+		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 1, 1, 15, 1),
-+WSS_DOUBLE("Aux Playback Switch", 0,
-+		OPTi931_AUX_LEFT_INPUT, OPTi931_AUX_RIGHT_INPUT, 7, 7, 1, 1),
-+WSS_DOUBLE("Aux Playback Volume", 0,
-+		OPTi931_AUX_LEFT_INPUT, OPTi931_AUX_RIGHT_INPUT, 1, 1, 15, 1),
-+};
-+
-+static int __devinit snd_opti93x_mixer(struct snd_wss *chip)
-+{
-+	struct snd_card *card;
-+	unsigned int idx;
-+	struct snd_ctl_elem_id id1, id2;
-+	int err;
-+
-+	if (snd_BUG_ON(!chip || !chip->pcm))
-+		return -EINVAL;
-+
-+	card = chip->card;
-+
-+	strcpy(card->mixername, chip->pcm->name);
-+
-+	memset(&id1, 0, sizeof(id1));
-+	memset(&id2, 0, sizeof(id2));
-+	id1.iface = id2.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	/* reassign AUX0 switch to CD */
-+	strcpy(id1.name, "Aux Playback Switch");
-+	strcpy(id2.name, "CD Playback Switch");
-+	err = snd_ctl_rename_id(card, &id1, &id2);
-+	if (err < 0) {
-+		snd_printk(KERN_ERR "Cannot rename opti93x control\n");
-+		return err;
-+	}
-+	/* reassign AUX1 switch to FM */
-+	strcpy(id1.name, "Aux Playback Switch"); id1.index = 1;
-+	strcpy(id2.name, "FM Playback Switch");
-+	err = snd_ctl_rename_id(card, &id1, &id2);
-+	if (err < 0) {
-+		snd_printk(KERN_ERR "Cannot rename opti93x control\n");
-+		return err;
-+	}
-+	/* remove AUX1 volume */
-+	strcpy(id1.name, "Aux Playback Volume"); id1.index = 1;
-+	snd_ctl_remove_id(card, &id1);
-+
-+	/* Replace WSS volume controls with OPTi93x volume controls */
-+	id1.index = 0;
-+	for (idx = 0; idx < ARRAY_SIZE(snd_opti93x_controls); idx++) {
-+		strcpy(id1.name, snd_opti93x_controls[idx].name);
-+		snd_ctl_remove_id(card, &id1);
-+
-+		err = snd_ctl_add(card,
-+				snd_ctl_new1(&snd_opti93x_controls[idx], chip));
-+		if (err < 0)
-+			return err;
-+	}
-+	return 0;
-+}
-+
- static irqreturn_t snd_opti93x_interrupt(int irq, void *dev_id)
- {
- 	struct snd_opti9xx *chip = dev_id;
-@@ -754,6 +834,11 @@ static int __devinit snd_opti9xx_probe(struct snd_card *card)
- 	error = snd_wss_mixer(codec);
- 	if (error < 0)
- 		return error;
-+#ifdef OPTi93X
-+	error = snd_opti93x_mixer(codec);
-+	if (error < 0)
-+		return error;
-+#endif
- #ifdef CS4231
- 	error = snd_wss_timer(codec, 0, &timer);
- 	if (error < 0)
-diff --git a/sound/isa/wss/wss_lib.c b/sound/isa/wss/wss_lib.c
-index 5b9d6c1..9191b32 100644
---- a/sound/isa/wss/wss_lib.c
-+++ b/sound/isa/wss/wss_lib.c
-@@ -2014,6 +2014,7 @@ static int snd_wss_info_mux(struct snd_kcontrol *kcontrol,
- 	case WSS_HW_INTERWAVE:
- 		ptexts = gusmax_texts;
- 		break;
-+	case WSS_HW_OPTI93X:
- 	case WSS_HW_OPL3SA2:
- 		ptexts = opl3sa_texts;
- 		break;
-@@ -2246,54 +2247,12 @@ WSS_SINGLE("Beep Bypass Playback Switch", 0,
- 		CS4231_MONO_CTRL, 5, 1, 0),
- };
- 
--static struct snd_kcontrol_new snd_opti93x_controls[] = {
--WSS_DOUBLE("Master Playback Switch", 0,
--		OPTi93X_OUT_LEFT, OPTi93X_OUT_RIGHT, 7, 7, 1, 1),
--WSS_DOUBLE_TLV("Master Playback Volume", 0,
--		OPTi93X_OUT_LEFT, OPTi93X_OUT_RIGHT, 1, 1, 31, 1,
--		db_scale_6bit),
--WSS_DOUBLE("PCM Playback Switch", 0,
--		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 7, 7, 1, 1),
--WSS_DOUBLE("PCM Playback Volume", 0,
--		CS4231_LEFT_OUTPUT, CS4231_RIGHT_OUTPUT, 0, 0, 31, 1),
--WSS_DOUBLE("FM Playback Switch", 0,
--		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 7, 7, 1, 1),
--WSS_DOUBLE("FM Playback Volume", 0,
--		CS4231_AUX2_LEFT_INPUT, CS4231_AUX2_RIGHT_INPUT, 1, 1, 15, 1),
--WSS_DOUBLE("Line Playback Switch", 0,
--		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 7, 7, 1, 1),
--WSS_DOUBLE("Line Playback Volume", 0,
--		CS4231_LEFT_LINE_IN, CS4231_RIGHT_LINE_IN, 0, 0, 15, 1),
--WSS_DOUBLE("Mic Playback Switch", 0,
--		OPTi93X_MIC_LEFT_INPUT, OPTi93X_MIC_RIGHT_INPUT, 7, 7, 1, 1),
--WSS_DOUBLE("Mic Playback Volume", 0,
--		OPTi93X_MIC_LEFT_INPUT, OPTi93X_MIC_RIGHT_INPUT, 1, 1, 15, 1),
--WSS_DOUBLE("Mic Boost", 0,
--		CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT, 5, 5, 1, 0),
--WSS_DOUBLE("CD Playback Switch", 0,
--		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 7, 7, 1, 1),
--WSS_DOUBLE("CD Playback Volume", 0,
--		CS4231_AUX1_LEFT_INPUT, CS4231_AUX1_RIGHT_INPUT, 1, 1, 15, 1),
--WSS_DOUBLE("Aux Playback Switch", 0,
--		OPTi931_AUX_LEFT_INPUT, OPTi931_AUX_RIGHT_INPUT, 7, 7, 1, 1),
--WSS_DOUBLE("Aux Playback Volume", 0,
--		OPTi931_AUX_LEFT_INPUT, OPTi931_AUX_RIGHT_INPUT, 1, 1, 15, 1),
--WSS_DOUBLE("Capture Volume", 0,
--		CS4231_LEFT_INPUT, CS4231_RIGHT_INPUT, 0, 0, 15, 0),
--{
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	.name = "Capture Source",
--	.info = snd_wss_info_mux,
--	.get = snd_wss_get_mux,
--	.put = snd_wss_put_mux,
--}
--};
--
- int snd_wss_mixer(struct snd_wss *chip)
- {
- 	struct snd_card *card;
- 	unsigned int idx;
- 	int err;
-+	int count = ARRAY_SIZE(snd_wss_controls);
- 
- 	if (snd_BUG_ON(!chip || !chip->pcm))
- 		return -EINVAL;
-@@ -2302,28 +2261,19 @@ int snd_wss_mixer(struct snd_wss *chip)
- 
- 	strcpy(card->mixername, chip->pcm->name);
- 
--	if (chip->hardware == WSS_HW_OPTI93X)
--		for (idx = 0; idx < ARRAY_SIZE(snd_opti93x_controls); idx++) {
--			err = snd_ctl_add(card,
--					snd_ctl_new1(&snd_opti93x_controls[idx],
--						     chip));
--			if (err < 0)
--				return err;
--		}
--	else {
--		int count = ARRAY_SIZE(snd_wss_controls);
--
--		/* Use only the first 11 entries on AD1848 */
--		if (chip->hardware & WSS_HW_AD1848_MASK)
--			count = 11;
--
--		for (idx = 0; idx < count; idx++) {
--			err = snd_ctl_add(card,
--					snd_ctl_new1(&snd_wss_controls[idx],
--						     chip));
--			if (err < 0)
--				return err;
--		}
-+	/* Use only the first 11 entries on AD1848 */
-+	if (chip->hardware & WSS_HW_AD1848_MASK)
-+		count = 11;
-+	/* There is no loopback on OPTI93X */
-+	else if (chip->hardware == WSS_HW_OPTI93X)
-+		count = 9;
-+
-+	for (idx = 0; idx < count; idx++) {
-+		err = snd_ctl_add(card,
-+				snd_ctl_new1(&snd_wss_controls[idx],
-+					     chip));
-+		if (err < 0)
-+			return err;
- 	}
- 	return 0;
- }
--- 
-1.6.4
+If the user select 8 fragements in deamon.conf , the pulseaudio-0.9.21 still
+calculated the wrong buffer time and wakeup time.
+
+Do you know what is PA 's "hwbuf_unused_frames"  ?
 
 
-----------------------------------------------------------------------
-Internetowi nie placa! Otworz Konto Direct.
-http://link.interia.pl/f24f7
+/* hw_params callback */
+static int
+snd_vortex_pcm_hw_params(struct snd_pcm_substream *substream,
+			 struct snd_pcm_hw_params *hw_params)
+{
+	vortex_t *chip = snd_pcm_substream_chip(substream);
+	stream_t *stream = (stream_t *) (substream->runtime->private_data);
+	int err;
+
+	// Alloc buffer memory.
+	err =
+	    snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+
+
+
+
+>
+> > I: module-alsa-sink.c: Using 2 fragments of size 4096 bytes, buffer time
+> is
+> > 46.44ms
+> > D: alsa-util.c:   buffer_size  : 2048
+> > D: alsa-util.c:   period_size  : 1024
+>
+> With small buffers like this, I don't see the point of the timer-based
+> scheduling, you will have one interrupt every 23ms.
+>
+>
+au8810, au8820 and au8830 were designed for those 3D sound game (low
+latency) and support multiple DMA connections (i.e. hardware mixing ) , they
+does not need any sound server (software mixing) at all.
+
+
+>
+> > 5) it seem bug in snd_pcm_sw_params_set_avail_min() since 4661 is larger
+> > than the buffer size 2048 since PA still think that 371ms is the maximum
+> > buffer size
+> >
+> >
+> > D: alsa-util.c:   buffer_size  : 2048
+> > D: alsa-util.c:   period_size  : 1024
+> > D: alsa-util.c:   period_time  : 23219
+> > D: alsa-util.c:   tstamp_mode  : NONE
+> > D: alsa-util.c:   period_step  : 1
+> > D: alsa-util.c:   avail_min    : 4661
+>
+> This doesn't make sense. But avail_min isn't really used with the
+> timer-based scheduling
+>
+>
+Are you sure ?
+
+
+> >
+> > For pulseaudio-0.9.14 on Fedora 10
+>
+> Man, you are using an old version here, the alsa sink code was changed
+> several times already.
+>
+
+PA 0.9.14 run quite well with my au8830 with 2 fragements on Fedora 10 but
+PA 0.9.19 run badly on hypersonic 's au8830 on Karmic
+
+It seem to be regression of PA
+
+The possible reasons may be
+
+1) PA 's 20ms process time  may not enough for hyper_sonic 's CPU ( ICH2 or
+ICH4 since he is using intelx8x0)  and  I am a faster CPU since my
+motherboard is using HDA ( ICH8)
+
+2) PA may only handle 1 or 2 periods or use the wrong buffer size in
+calculating the watermark
+
+3) snd_pcm_rewindable() is returning a wrong value since au88x0 has FIFO
+buffer as described in the patent )
+
+http://0pointer.de/blog/projects/pulse-glitch-free.html
+
+The rewriting of the client buffers causing rewriting of the hardware buffer
+complicates the resampling/converting step immensly. In general the code to
+implement this model is more complex than for the traditional model. Also,
+ALSA has not really been designed with this design in mind, which makes some
+things very hard to get right and suboptimal.
+
+The transfer of the audio data (48000Hz) only occur at ac97 link between
+AC97 codec and AC97 controller. The AC97 controller fetch audio from memory
+at the rate of PCI bus instead of the sampling rate of the audio. Therefore
+rewind the application pointer to hardware pointer and immediate rewrite  is
+almost impossible
+
+4) the default fragments in daemon.conf seem oboselte in PA 0.9.21 but there
+is no proper documentation
