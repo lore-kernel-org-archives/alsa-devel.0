@@ -1,14 +1,21 @@
-From: Dan Chen <crimsunkg@yahoo.com>
-Subject: [PATCH] ALSA: hda: Fix max PCM level to 0 dB for
-	AD1981_HP
-Date: Sun, 13 Dec 2009 13:32:56 -0800 (PST)
-Message-ID: <290497.87649.qm@web112612.mail.gq1.yahoo.com>
+From: Ray Lee <ray-lk@madrabbit.org>
+Subject: Re: Q: Why I do have to restart alsa everytime after a
+	resume from disk/ram ? Is this alsa- or kernel or config related??
+Date: Sun, 13 Dec 2009 15:27:48 -0800
+Message-ID: <2c0942db0912131527x118f9689oe1dc128543f4fc27@mail.gmail.com>
+References: <ffd8902a0912110121k795223ar6af644c41cd357b8@mail.gmail.com>
+	<4B22DD11.7000905@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-177302244-1260739976=:87649"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web112612.mail.gq1.yahoo.com (web112612.mail.gq1.yahoo.com
-	[98.137.27.192]) by alsa0.perex.cz (Postfix) with SMTP id 6C110103812
-	for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2009 22:32:58 +0100 (CET)
+Received: from mail-iw0-f172.google.com (mail-iw0-f172.google.com
+	[209.85.223.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB01D103812
+	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 00:28:09 +0100 (CET)
+Received: by iwn2 with SMTP id 2so1683939iwn.16
+	for <alsa-devel@alsa-project.org>; Sun, 13 Dec 2009 15:28:08 -0800 (PST)
+In-Reply-To: <4B22DD11.7000905@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,68 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Robert Hancock <hancockrwd@gmail.com>
+Cc: alsa-devel@alsa-project.org, Christian Hartmann <cornogle@googlemail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---0-177302244-1260739976=:87649
-Content-Type: text/plain; charset=us-ascii
+On Fri, Dec 11, 2009 at 4:00 PM, Robert Hancock <hancockrwd@gmail.com> wrote:
+> On 12/11/2009 03:21 AM, Christian Hartmann wrote:
+>>
+>> hello list,
+>>
+>> everytime I suspended to disk or to ram, regardless of the used kernel
+>> (git or stable from distri), I must restart alsa to hear sound again.
+>> searched google and tried a lot but still the same awful behaviour.
+>> Has anybode some suggestions for me? is this alsa related ? or is this
+>> a kernel issue which could be dealt here?
+>
+> I'm not sure what you mean by restarting ALSA, do you mean reloading the
+> audio device module or something?
+>
+> You didn't mention which kind of sound hardware you were using either..
 
-Hi, Takashi,
-
-Attached is a patch against sound-2.6 (master) HEAD capping PCM at 0 dB
-for the AD1981_HP model.
-
-Thanks,
-Dan
-
-
-      
---0-177302244-1260739976=:87649
-Content-Type: application/octet-stream; name="0001-ALSA-hda-Fix-max-PCM-level-to-0-dB-for-AD1981_HP.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="0001-ALSA-hda-Fix-max-PCM-level-to-0-dB-for-AD1981_HP.patch"
-
-RnJvbSA1MWMzNzQ1NGFlYjE2YTdlNmU0NTQ5MjdjNDg4ZTdhNjMwNzYwYjQx
-IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVu
-IDxjcmltc3VuQHVidW50dS5jb20+CkRhdGU6IFN1biwgMTMgRGVjIDIwMDkg
-MTY6MjI6NTggLTA1MDAKU3ViamVjdDogW1BBVENIXSBBTFNBOiBoZGE6IEZp
-eCBtYXggUENNIGxldmVsIHRvIDAgZEIgZm9yIEFEMTk4MV9IUAoKQnVnTGlu
-azogaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvYnVncy80NjEwNjIKClRo
-ZSBvcmlnaW5hbCByZXBvcnRlciBzdGF0ZXMgdGhhdCBQQ00gbWF4ZXMgYXQg
-KzEyIGRCIGFuZCByZXN1bHRzIGluCnZlcnkgYmFkIGRpc3RvcnRpb24uICBD
-YXAgUENNIGF0IDAgZEIgdG8gcmVzb2x2ZSB0aGlzIHN5bXB0b20uCgpTaWdu
-ZWQtb2ZmLWJ5OiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+
-Ci0tLQogc291bmQvcGNpL2hkYS9wYXRjaF9hbmFsb2cuYyB8ICAgIDggKysr
-KysrKysKIDEgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAwIGRl
-bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hf
-YW5hbG9nLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2FuYWxvZy5jCmluZGV4
-IDQ0N2VkYTEuLjFhMzYxMzcgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEv
-cGF0Y2hfYW5hbG9nLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9hbmFs
-b2cuYwpAQCAtMTc4OSw2ICsxNzg5LDE0IEBAIHN0YXRpYyBpbnQgcGF0Y2hf
-YWQxOTgxKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCiAJCWNvZGVjLT5w
-YXRjaF9vcHMuaW5pdCA9IGFkMTk4MV9ocF9pbml0OwogCQljb2RlYy0+cGF0
-Y2hfb3BzLnVuc29sX2V2ZW50ID0gYWQxOTgxX2hwX3Vuc29sX2V2ZW50Owor
-CQkvKiBzZXQgdGhlIHVwcGVyLWxpbWl0IGZvciBtaXhlciBhbXAgdG8gMGRC
-IGZvciBhdm9pZGluZyB0aGUKKwkJICogcG9zc2libGUgZGFtYWdlIGJ5IG92
-ZXJsb2FkaW5nCisJCSAqLworCQlzbmRfaGRhX292ZXJyaWRlX2FtcF9jYXBz
-KGNvZGVjLCAweDExLCBIREFfSU5QVVQsCisJCQkJCSAgKDB4MTcgPDwgQUNf
-QU1QQ0FQX09GRlNFVF9TSElGVCkgfAorCQkJCQkgICgweDE3IDw8IEFDX0FN
-UENBUF9OVU1fU1RFUFNfU0hJRlQpIHwKKwkJCQkJICAoMHgwNSA8PCBBQ19B
-TVBDQVBfU1RFUF9TSVpFX1NISUZUKSB8CisJCQkJCSAgKDEgPDwgQUNfQU1Q
-Q0FQX01VVEVfU0hJRlQpKTsKIAkJYnJlYWs7CiAJY2FzZSBBRDE5ODFfVEhJ
-TktQQUQ6CiAJCXNwZWMtPm1peGVyc1swXSA9IGFkMTk4MV90aGlua3BhZF9t
-aXhlcnM7Ci0tIAoxLjYuMy4zCgo=
-
---0-177302244-1260739976=:87649
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---0-177302244-1260739976=:87649--
+Data point: Older versions of PulseAudio are very picky about the
+timing data that comes back from ALSA, and throws a hissy-fit and goes
+and sulks if it believes it's getting lied to. Perhaps you need to try
+upgrading the PulseAudio packages, and try again.
