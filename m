@@ -1,7 +1,7 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Vladimir Barinov <vova.barinov@gmail.com>
 Subject: Re: PLL computation in TLV320AIC3x SoC driver
-Date: Mon, 14 Dec 2009 10:40:21 +0000
-Message-ID: <20091214104021.GA20649@rakim.wolfsonmicro.main>
+Date: Mon, 14 Dec 2009 13:41:11 +0300
+Message-ID: <4B261647.5010706@gmail.com>
 References: <alpine.DEB.2.00.0912081127460.22770@hippogriff.cosy.sbg.ac.at>
 	<4B1E66C8.4070402@gmail.com>
 	<alpine.DEB.2.00.0912081552430.22770@hippogriff.cosy.sbg.ac.at>
@@ -13,10 +13,12 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 27A81103805
-	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 11:40:23 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-ew0-f212.google.com (mail-ew0-f212.google.com
+	[209.85.219.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81EB110380D
+	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 11:41:17 +0100 (CET)
+Received: by ewy4 with SMTP id 4so207136ewy.32
+	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 02:41:17 -0800 (PST)
 In-Reply-To: <alpine.DEB.2.00.0912141116370.1905@hippogriff.cosy.sbg.ac.at>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,16 +30,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Peter Meerwald <pmeerw@pmeerw.net>
-Cc: Vladimir Barinov <vova.barinov@gmail.com>, vbarinov@embeddedalley.com, alsa-devel@alsa-project.org
+Cc: Vladimir Barinov <vova.barinov@gmail.com>, vbarinov@embeddedalley.com, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 14, 2009 at 11:24:58AM +0100, Peter Meerwald wrote:
+Hello Peter,
 
-> +    /* try with d != 0 */
-> +    for (p = 1; p <= 8; p++) {
-> +
-> +        j = codec_clk * p / 1000;
+Peter Meerwald wrote:
+>
+> fix precision of PLL computation for TLV320AIC3x SoC driver, 
+> test results are at http://pmeerw.net/clk
+>
+> Signed-off-by: Peter Meerwald <pmeerw@pmeerw.net>
+>   
+if you could make checkpatch.pl passed then:
+Acked-by: Vladimir Barinov <vova.barinov@gmail.com>
 
-There are many codign style issues around the indentation in this code -
-could you please run the patch through scripts/checkpatch.pl and clean
-up the issues it identifies?
+Regards,
+Vladimir
