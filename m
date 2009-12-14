@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsi-ak4642: Remove
-	ak4642_add_i2c_device
-Date: Mon, 14 Dec 2009 11:41:20 +0000
-Message-ID: <20091214114119.GE21066@rakim.wolfsonmicro.main>
-References: <ur5qychhv.wl%morimoto.kuninori@renesas.com>
+From: Stefan Ringel <stefan.ringel@arcor.de>
+Subject: Re: HD-Audio device unsuppored (Nvidia G2xx-series GPU
+ implemented)
+Date: Mon, 14 Dec 2009 12:50:26 +0100
+Message-ID: <4B262682.60400@arcor.de>
+References: <4B238733.2070706@arcor.de> <s5heimxlrjd.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 581FC24572
-	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 12:41:21 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <ur5qychhv.wl%morimoto.kuninori@renesas.com>
+Received: from mail-in-15.arcor-online.net (mail-in-15.arcor-online.net
+	[151.189.21.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 307D41037F7
+	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 12:50:30 +0100 (CET)
+In-Reply-To: <s5heimxlrjd.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +22,236 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 14, 2009 at 01:22:04PM +0900, Kuninori Morimoto wrote:
-> I2C devices should be registered when platform board setting
-> in latest ASoC.
+Am 14.12.2009 12:32, schrieb Takashi Iwai:
+> At Sat, 12 Dec 2009 13:06:11 +0100,
+> Stefan Ringel wrote:
+>   
+>> I forgot this attachment 1.patch and alsa-info.txt.
+>>     
+> Thanks.  Now I added your patch for the Nvidia controller part.
+>
+> Looking through alsa-info.sh, the new Nvidia provides 4 codecs
+> for 8-channel HDMI, instead of 4 pins in one codec.  This is fairly
+> crazy setup, but who knows why...
+>
+> Could you try the patch below?  This is a very quick and blind hack.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_nvhdmi.c b/sound/pci/hda/patch_nvhdmi.c
+> index 6afdab0..343ea27 100644
+> --- a/sound/pci/hda/patch_nvhdmi.c
+> +++ b/sound/pci/hda/patch_nvhdmi.c
+> @@ -391,6 +391,180 @@ static int patch_nvhdmi_2ch(struct hda_codec *codec)
+>  	return 0;
+>  }
+>  
+> +/* 4x 2ch codecs */
+> +
+> +static int nvhdmi_dig_playback_pcm_close_sep_8ch(struct hda_pcm_stream *hinfo,
+> +					struct hda_codec *codec,
+> +					struct snd_pcm_substream *substream)
+> +{
+> +	struct nvhdmi_spec *spec = codec->spec;
+> +	int i;
+> +	for (i = 0; i < 4; i++) {
+> +		struct hda_codec *cp = codec->bus->caddr_tbl[i];
+> +		if (!cp)
+> +			continue;
+> +		snd_hda_codec_write(cp, Nv_Master_Convert_nid, 0,
+> +				    AC_VERB_SET_CHANNEL_STREAMID, 0);
+> +		snd_hda_codec_write(cp, Nv_Master_Convert_nid, 0,
+> +				    AC_VERB_SET_STREAM_FORMAT, 0);
+> +	}
+> +	return snd_hda_multi_out_dig_close(codec, &spec->multiout);
+> +}
+> +
+> +static int nvhdmi_dig_playback_pcm_prepare_sep_8ch(struct hda_pcm_stream *hinfo,
+> +					struct hda_codec *codec,
+> +					unsigned int stream_tag,
+> +					unsigned int format,
+> +					struct snd_pcm_substream *substream)
+> +{
+> +	int chs;
+> +	unsigned int dataDCC1, dataDCC2, chan, chanmask, channel_id;
+> +	int i;
+> +
+> +	mutex_lock(&codec->spdif_mutex);
+> +
+> +	chs = substream->runtime->channels;
+> +	chan = chs ? (chs - 1) : 1;
+> +
+> +	switch (chs) {
+> +	default:
+> +	case 0:
+> +	case 2:
+> +		chanmask = 0x00;
+> +		break;
+> +	case 4:
+> +		chanmask = 0x08;
+> +		break;
+> +	case 6:
+> +		chanmask = 0x0b;
+> +		break;
+> +	case 8:
+> +		chanmask = 0x13;
+> +		break;
+> +	}
+> +	dataDCC1 = AC_DIG1_ENABLE | AC_DIG1_COPYRIGHT;
+> +	dataDCC2 = 0x2;
+> +
+> +	for (i = 0; i < 4; i++) {
+> +		struct hda_codec *cp = codec->bus->caddr_tbl[i];
+> +		if (!cp)
+> +			continue;
+> +		if (chs == 2)
+> +			channel_id = 0;
+> +		else
+> +			channel_id = i * 2;
+> +
+> +		/* set the Audio InforFrame Channel Allocation */
+> +		snd_hda_codec_write(cp, 0x1, 0,
+> +			Nv_VERB_SET_Channel_Allocation, chanmask);
+> +
+> +		/* turn off SPDIF once;
+> +		 *otherwise the IEC958 bits won't be updated
+> +		 */
+> +		if (codec->spdif_status_reset &&
+> +		(codec->spdif_ctls & AC_DIG1_ENABLE))
+> +			snd_hda_codec_write(cp,
+> +				Nv_Master_Convert_nid,
+> +				0,
+> +				AC_VERB_SET_DIGI_CONVERT_1,
+> +				codec->spdif_ctls & ~AC_DIG1_ENABLE & 0xff);
+> +		/* set the stream id */
+> +		snd_hda_codec_write(cp,
+> +				Nv_Master_Convert_nid,
+> +				0,
+> +				AC_VERB_SET_CHANNEL_STREAMID,
+> +				(stream_tag << 4) | channel_id);
+> +		/* set the stream format */
+> +		snd_hda_codec_write(cp,
+> +				Nv_Master_Convert_nid,
+> +				0,
+> +				AC_VERB_SET_STREAM_FORMAT,
+> +				format);
+> +		/* turn on again (if needed) */
+> +		/* enable and set the channel status audio/data flag */
+> +		if (codec->spdif_status_reset &&
+> +		(codec->spdif_ctls & AC_DIG1_ENABLE)) {
+> +			snd_hda_codec_write(cp,
+> +					Nv_Master_Convert_nid,
+> +					0,
+> +					AC_VERB_SET_DIGI_CONVERT_1,
+> +					codec->spdif_ctls & 0xff);
+> +			snd_hda_codec_write(cp,
+> +					Nv_Master_Convert_nid,
+> +					0,
+> +					AC_VERB_SET_DIGI_CONVERT_2, dataDCC2);
+> +		}
+> +
+> +		/* set the Audio Info Frame Checksum */
+> +		snd_hda_codec_write(cp, 0x1, 0,
+> +				    Nv_VERB_SET_Info_Frame_Checksum,
+> +				    (0x71 - chan - chanmask));
+> +	}
+> +
+> +	mutex_unlock(&codec->spdif_mutex);
+> +	return 0;
+> +}
+> +
+> +static struct hda_pcm_stream nvhdmi_pcm_digital_playback_sep_8ch = {
+> +	.substreams = 1,
+> +	.channels_min = 2,
+> +	.channels_max = 8,
+> +	.nid = Nv_Master_Convert_nid,
+> +	.rates = SUPPORTED_RATES,
+> +	.maxbps = SUPPORTED_MAXBPS,
+> +	.formats = SUPPORTED_FORMATS,
+> +	.ops = {
+> +		.open = nvhdmi_dig_playback_pcm_open,
+> +		.close = nvhdmi_dig_playback_pcm_close_sep_8ch,
+> +		.prepare = nvhdmi_dig_playback_pcm_prepare_sep_8ch
+> +	},
+> +};
+> +
+> +static int nvhdmi_build_pcms_sep_8ch(struct hda_codec *codec)
+> +{
+> +	struct nvhdmi_spec *spec = codec->spec;
+> +	struct hda_pcm *info = &spec->pcm_rec;
+> +
+> +	codec->num_pcms = 1;
+> +	codec->pcm_info = info;
+> +
+> +	info->name = "NVIDIA HDMI";
+> +	info->pcm_type = HDA_PCM_TYPE_HDMI;
+> +	info->stream[SNDRV_PCM_STREAM_PLAYBACK]
+> +					= nvhdmi_pcm_digital_playback_sep_8ch;
+> +
+> +	return 0;
+> +}
+> +
+> +static struct hda_codec_ops nvhdmi_patch_ops_sep_8ch = {
+> +	.build_controls = nvhdmi_build_controls,
+> +	.build_pcms = nvhdmi_build_pcms_sep_8ch,
+> +	.init = nvhdmi_init,
+> +	.free = nvhdmi_free,
+> +};
+> +
+> +static int patch_nvhdmi_sep_8ch(struct hda_codec *codec)
+> +{
+> +	struct nvhdmi_spec *spec;
+> +
+> +	if (codec->addr > 0)
+> +		return 0;
+> +
+> +	spec = kzalloc(sizeof(*spec), GFP_KERNEL);
+> +	if (spec == NULL)
+> +		return -ENOMEM;
+> +
+> +	codec->spec = spec;
+> +
+> +	spec->multiout.num_dacs = 0;  /* no analog */
+> +	spec->multiout.max_channels = 8;
+> +	spec->multiout.dig_out_nid = Nv_Master_Convert_nid;
+> +
+> +	codec->patch_ops = nvhdmi_patch_ops_sep_8ch;
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * patch entries
+>   */
+> @@ -400,6 +574,8 @@ static struct hda_codec_preset snd_hda_preset_nvhdmi[] = {
+>  	{ .id = 0x10de0005, .name = "MCP78 HDMI", .patch = patch_nvhdmi_8ch },
+>  	{ .id = 0x10de0006, .name = "MCP78 HDMI", .patch = patch_nvhdmi_8ch },
+>  	{ .id = 0x10de0007, .name = "MCP7A HDMI", .patch = patch_nvhdmi_8ch },
+> +	{ .id = 0x10de000a, .name = "MCP HDMI", .patch = patch_nvhdmi_sep_8ch },
+> +	{ .id = 0x10de000b, .name = "MCP HDMI", .patch = patch_nvhdmi_sep_8ch },
+>  	{ .id = 0x10de0067, .name = "MCP67 HDMI", .patch = patch_nvhdmi_2ch },
+>  	{ .id = 0x10de8001, .name = "MCP73 HDMI", .patch = patch_nvhdmi_2ch },
+>  	{} /* terminator */
+> @@ -410,6 +586,8 @@ MODULE_ALIAS("snd-hda-codec-id:10de0003");
+>  MODULE_ALIAS("snd-hda-codec-id:10de0005");
+>  MODULE_ALIAS("snd-hda-codec-id:10de0006");
+>  MODULE_ALIAS("snd-hda-codec-id:10de0007");
+> +MODULE_ALIAS("snd-hda-codec-id:10de000a");
+> +MODULE_ALIAS("snd-hda-codec-id:10de000b");
+>  MODULE_ALIAS("snd-hda-codec-id:10de0067");
+>  MODULE_ALIAS("snd-hda-codec-id:10de8001");
+>  
+>   
+hi Takashi,
 
-> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+one codec-id missed (0x10de000d) and codec-name is "G2xx HDMI".
 
-It'd be better to do a single patch which updates both ASoC and MIPS
-trees simultaneously in order to ensure that bisection continues to
-work.  Of course, if the MIPS side has been updated separately then we
-should just apply this code - has that happened?
+Stefan Ringel <stefan.ringel@arcor.de>
