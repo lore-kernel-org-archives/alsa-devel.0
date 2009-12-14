@@ -1,19 +1,19 @@
 From: James Courtier-Dutton <james.dutton@gmail.com>
 Subject: Re: DMA and delay feedback
-Date: Mon, 14 Dec 2009 15:34:39 +0000
-Message-ID: <ad2655cb0912140734s3dcb27abpb31a8ae88adc4fe7@mail.gmail.com>
+Date: Mon, 14 Dec 2009 15:35:41 +0000
+Message-ID: <ad2655cb0912140735r7ac66c7t45119f957d12dfc5@mail.gmail.com>
 References: <ad2655cb0912140602s138b7246u6db75e40a699c729@mail.gmail.com>
 	<6160a5130912140646g3738731fqbc5caacc153b9da8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
-	[209.85.220.211])
-	by alsa0.perex.cz (Postfix) with ESMTP id D32A02413A
-	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 16:34:42 +0100 (CET)
-Received: by fxm3 with SMTP id 3so3550428fxm.4
-	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 07:34:42 -0800 (PST)
+Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
+	[209.85.218.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6F442413F
+	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 16:35:43 +0100 (CET)
+Received: by bwz9 with SMTP id 9so5219098bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 07:35:43 -0800 (PST)
 In-Reply-To: <6160a5130912140646g3738731fqbc5caacc153b9da8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
