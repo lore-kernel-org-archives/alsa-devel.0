@@ -1,13 +1,24 @@
-From: Alain Lauzon <alauzon@alainlauzon.com>
-Subject: Help needed to develop quirks for USB Sound device for
- Roland Edirol PC-80 MIDI controller
-Date: Mon, 14 Dec 2009 21:19:45 -0500
-Message-ID: <1260843585.11219.15.camel__14354.9406705008$1260865098$gmane$org@Ubuntu>
-Reply-To: alauzon@alainlauzon.com
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: More HDA NID / control / proc related changes
+Date: Tue, 15 Dec 2009 09:42:04 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0912150935540.2598@eeebox2.perex-int.cz>
+References: <alpine.LNX.2.00.0912081753300.14639@eeebox2.perex-int.cz>
+	<alpine.LNX.2.00.0912140943390.2598@eeebox2.perex-int.cz>
+	<s5h6389lqdc.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0912141313150.2598@eeebox2.perex-int.cz>
+	<s5h3a3dlmqo.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0912141457520.2598@eeebox2.perex-int.cz>
+	<s5hy6l5k3x3.wl%tiwai@suse.de>
+	<alpine.LNX.2.00.0912141627500.2598@eeebox2.perex-int.cz>
+	<s5hk4wpjxkk.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 77E0D24558
+	for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2009 09:42:05 +0100 (CET)
+In-Reply-To: <s5hk4wpjxkk.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,67 +28,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Heloo I just bought a Roland Edirol PC-80 MIDI controller and found out
-that it was not supported on LINUX.  I looked on the web and found
-the /usr/src/alsa/alsa-driver-xxx/usbquirks.h file to be the place to
-change some code to support it.
+On Mon, 14 Dec 2009, Takashi Iwai wrote:
 
-I have tried many things but I don't enough info to get it right once
-and for all.
+> At Mon, 14 Dec 2009 16:45:18 +0100 (CET),
+> Jaroslav Kysela wrote:
+>>
+>> Anyway, I created for-next branch in my repository. Could you import changes
+>> without explicitly asking if you do not have any comments? I'll merge
+>> patches from Clemens there as well.
+>
+> Could you rebase it rather on the latest Linus tree instead?
+> Or, rebase it on topic/hda branch I opened now for 2.6.34
+> development.
+>
+> My master branch is for the development tip, and its merge history
+> is pretty messy.  Ditto for for-next branch.  It contains lots of
+> unneeded merge commits.  The merge history gets straightened when
+> backed to for-linus branch.
+>
+> If your changes are only for HD-audio, then you can branch from either
+> fix/hda or topic/hda branch in my tree.  The former is for the current
+> kernel and the latter for the next kernel.
+> For ASoC, fix/asoc and topic/asoc, and for others, fix/misc and
+> topic/misc branches are available for (relatively) straight history.
+>
+> I cherry-pick'ed the last commit of Clemens to topic/misc.
+> So I'd need only your topic/hda-nid branch for merge.
 
-Here is what I did :
+Ok, I would propose a bit different approach. I created two new branches
+in my tree:
 
-{
-	/* PC-80 Wave */
-	USB_DEVICE(0x0582, 0x0092),
-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-		/* .vendor_name = "EDIROL", */
-		/* .product_name = "PC-80", */
-		.ifnum = QUIRK_ANY_INTERFACE,
-		.type = QUIRK_COMPOSITE,
-		.data = (const struct snd_usb_audio_quirk[]) {
-			{
-				.ifnum = 0,
-				.type = QUIRK_AUDIO_EDIROL_UAXX
-			},
-			{
-				.ifnum = 1,
-				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
-				.data = & (const struct audioformat) {
-					.format = SNDRV_PCM_FORMAT_S24_3LE,
-					.channels = 2,
-					.iface = 0,
-					.altsetting = 1,
-					.altset_idx = 1,
-					.attributes = 0,
-					.endpoint = 0x81,
-					.ep_attr = 0x01,
-					.rates = SNDRV_PCM_RATE_CONTINUOUS,
-					.rate_min = 48000,
-					.rate_max = 48000, //(96?)
-				}
-			},
-			{
-				.ifnum = 2,
-				.type = QUIRK_MIDI_FIXED_ENDPOINT,
-				.data = & (const struct snd_usb_midi_endpoint_info) {
-					.out_cables = 0x0007,
-					.in_cables  = 0x0007
-				}
-			},
-			{
-				.ifnum = -1
-			}
-		}
-}
+fixes - for current kernel
+devel - for next kernel
 
-What I got working is the audio out but cannot have the audio working.
+To avoid too many merges, I would like that you pull from these branches
+only when you compose the changeset for Linus (fixes) or for your next 
+kernel (master branch - pull from fixes+devel). In case of problems or 
+comments, I will fix them with new patch (so, in these trees, my patches 
+will have stable SHA keys).
 
-Is there some resources somewhere that I could read to understand what I
-need to do?
+Do you think that it will work for you?
 
-Thank you, Alain Lauzon
+ 					Thanks,
+ 						Jaroslav
 
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
