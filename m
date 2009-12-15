@@ -1,42 +1,24 @@
-From: Alex Austin <circuitsoft.alex@gmail.com>
-Subject: Re: Testing spam filter - please reply.
-Date: Mon, 14 Dec 2009 21:18:47 -0600
-Message-ID: <53baa24a0912141918j24cd2984i995f5bb7b0601bc2@mail.gmail.com>
-References: <18c89c30912141407l6434d971ue608745bd52a055c@mail.gmail.com>
+From: Paul Mundt <lethal@linux-sh.org>
+Subject: Re: [PATCH] sh: ms7724se: Add ak4642 support
+Date: Tue, 15 Dec 2009 12:39:43 +0900
+Message-ID: <20091215033943.GD7395@linux-sh.org>
+References: <uk4wp9j3m.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f172.google.com (mail-iw0-f172.google.com
-	[209.85.223.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A3D024518
-	for <alsa-devel@alsa-project.org>; Tue, 15 Dec 2009 04:18:49 +0100 (CET)
-Received: by iwn2 with SMTP id 2so2513738iwn.16
-	for <alsa-devel@alsa-project.org>; Mon, 14 Dec 2009 19:18:47 -0800 (PST)
-In-Reply-To: <18c89c30912141407l6434d971ue608745bd52a055c@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Shareef Jalloq <shareef@jalloq.co.uk>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <uk4wp9j3m.wl%morimoto.kuninori@renesas.com>
+Sender: linux-sh-owner@vger.kernel.org
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Linux-SH <linux-sh@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-It got through.
-
-On Mon, Dec 14, 2009 at 4:07 PM, Shareef Jalloq <shareef@jalloq.co.uk>wrote:
-
-> Sorry - having amazing trouble trying to post to this mailing list.
-> Replaced post with this text to see if it gets through.
->
-> Shareef.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+On Tue, Dec 15, 2009 at 09:27:57AM +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+> ---
+> This patch is based on ALSA ak4642 patch.
+> 
+>  arch/sh/boards/mach-se/7724/setup.c |   17 +++++++++++++++++
+>  1 files changed, 17 insertions(+), 0 deletions(-)
+> 
+I've applied this, as it has no unmet dependencies.
