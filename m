@@ -1,14 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: Fix build of DA7210
-Date: Wed, 16 Dec 2009 20:57:32 +0000
-Message-ID: <1260997052-15510-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Stefan Ringel <stefan.ringel@arcor.de>
+Subject: Re: HD-Audio device unsuppored (Nvidia G2xx-series GPU
+ implemented)
+Date: Wed, 16 Dec 2009 22:15:50 +0100
+Message-ID: <4B294E06.6060001@arcor.de>
+References: <4B238733.2070706@arcor.de>	<s5heimxlrjd.wl%tiwai@suse.de>	<4B262682.60400@arcor.de>	<s5h7hsplqlz.wl%tiwai@suse.de>
+	<s5h7hspjvpv.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F25422449D
-	for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2009 21:57:36 +0100 (CET)
+Received: from mail-in-07.arcor-online.net (mail-in-07.arcor-online.net
+	[151.189.21.47]) by alsa0.perex.cz (Postfix) with ESMTP id 26AEA244BE
+	for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2009 22:15:55 +0100 (CET)
+In-Reply-To: <s5h7hspjvpv.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,33 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Mark Brown <broonie@finisterre.wolfsonmicro.main>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mark Brown <broonie@finisterre.wolfsonmicro.main>
+Am 14.12.2009 18:45, schrieb Takashi Iwai:
+> At Mon, 14 Dec 2009 12:52:40 +0100,
+> I wrote:
+>   
+>> > 
+>>     
+>>> > > 
+>>> > > one codec-id missed (0x10de000d) and codec-name is "G2xx HDMI".
+>>>       
+>> > 
+>> > OK, I'll update.
+>>     
+> Below is the updated patch.  This also replaces the PCI ID check using
+> the generic hd-audio class check.
+>
+>
+> Takashi
+>
+>   
+Hi Takashi,
 
-DAC_VOICE_EN was not defined - looks to have been overly enthusiastically
-deleted from a previous revision of the patch, pull the value from v1.
+I have a theory,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/da7210.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+4 codec with 2 channels bundling to one pcm device for 8 channels
+uncompressed lpcm audio and compressed audio over first codec.
 
-diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
-index 14f5f34..fbf3ab4 100644
---- a/sound/soc/codecs/da7210.c
-+++ b/sound/soc/codecs/da7210.c
-@@ -81,6 +81,9 @@
- #define DA7210_ADC_L_EN			(1 << 3)
- #define DA7210_ADC_R_EN			(1 << 7)
- 
-+/* DAC_HPF fields */
-+#define DA7210_DAC_VOICE_EN		(1 << 7)
-+
- /* DAC_SEL bit fields */
- #define DA7210_DAC_L_SRC_DAI_L		(4 << 0)
- #define DA7210_DAC_L_EN			(1 << 3)
--- 
-1.6.5.4
+Actual configuration is 4 separate pcm device.
