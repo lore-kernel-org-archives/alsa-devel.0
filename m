@@ -1,57 +1,47 @@
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=
-	<u.kleine-koenig@pengutronix.de>
-Subject: [PATCH 7/7] ASoC: sh: FSI:: don't check platform_get_irq's return value against zero
-Date: Wed, 16 Dec 2009 17:10:09 +0100
-Message-ID: <1260979809-24811-7-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1260979809-24811-1-git-send-email-u.kleine-koenig@pengutronix.de>
- <1260979809-24811-2-git-send-email-u.kleine-koenig@pengutronix.de>
- <1260979809-24811-3-git-send-email-u.kleine-koenig@pengutronix.de>
- <1260979809-24811-4-git-send-email-u.kleine-koenig@pengutronix.de>
- <1260979809-24811-5-git-send-email-u.kleine-koenig@pengutronix.de>
- <1260979809-24811-6-git-send-email-u.kleine-koenig@pengutronix.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: CELF Project Proposal - ALSA scenario/use case support
+Date: Wed, 16 Dec 2009 17:26:53 +0000
+Message-ID: <1260984413.3525.351.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S934979AbZLPQMd@vger.kernel.org>
-In-Reply-To: <1260979809-24811-6-git-send-email-u.kleine-koenig@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: David Vrabel <dvrabel@arcom.com>, Greg Kroah-Hartman <gregkh@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Paul Mundt <lethal@linux-sh.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-embedded-owner@vger.kernel.org>
+Sender: linux-embedded-owner@vger.kernel.org
+To: CE Linux Developers List <celinux-dev@tree.celinuxforum.org>, linux-embedded <linux-embedded@vger.kernel.org>
+Cc: Tim Bird <tim.bird@am.sony.com>, Stefan Schmidt <stefan@datenfreihafen.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-platform_get_irq returns -ENXIO on failure, so !irq was probably
-always true.  Better use (int)irq <=3D 0.  Note that a return value of
-zero is still handled as error even though this could mean irq0.
+Summary: Complete ALSA hardware scenario/use case support in alsa-lib
+and salsa-lib
 
-This is a followup to 305b3228f9ff4d59f49e6d34a7034d44ee8ce2f0 that
-changed the return value of platform_get_irq from 0 to -ENXIO on error.
+Proposer: Liam Girdwood
 
-Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Cc: David Vrabel <dvrabel@arcom.com>
-Cc: Greg Kroah-Hartman <gregkh@suse.de>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: Paul Mundt <lethal@linux-sh.org>
-Cc: alsa-devel@alsa-project.org
----
- sound/soc/sh/fsi.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Description:
+Modern mobile devices are increasingly required to provide a rich set of
+audio functionality required by today's applications. ALSA currently
+lacks a portable and high level API to configure audio hardware function
+and signal routing.
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index 9c49c11..42813b8 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -876,7 +876,7 @@ static int fsi_probe(struct platform_device *pdev)
-=20
- 	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	irq =3D platform_get_irq(pdev, 0);
--	if (!res || !irq) {
-+	if (!res || (int)irq <=3D 0) {
- 		dev_err(&pdev->dev, "Not enough FSI platform resources.\n");
- 		ret =3D -ENODEV;
- 		goto exit;
---=20
-1.6.5.2
+e.g. there is no portable method atm to configure the audio hardware to
+make a "handset gsm phone call" or "handset voip phone call", etc.
+
+This purpose of this project would be to complete the ALSA scenario
+manager API and get it accepted upstream in alsa-lib and salsa-lib. The
+code is nearly ready for upstream, with some work required on it's file
+format as the main piece of outstanding work.
+
+More Info:
+** http://www.slimlogic.co.uk/?p=40
+
+API header:
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=include/ascenario.h;h=b1395515b035629d09cd9b3d3a224743053aa159;hb=ascenario
+
+Development branch now hosted as alsa-lib branch here :-
+** http://git.alsa-project.org/?p=alsa-lib.git;a=shortlog;h=ascenario
+
+
+Scope: This project will probably take between 2 - 4 weeks.
+
+Thanks
+
+Liam
