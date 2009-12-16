@@ -1,184 +1,29 @@
-From: =?ISO-8859-1?Q?Einar_R=FCnkaru?= <einarry@smail.ee>
-Subject: Two patches for Dell Vostro 1015 (CX20583)
-Date: Thu, 17 Dec 2009 00:32:30 +0200
-Message-ID: <64f099620912161432n2011bfb0ve4f8472081905e84@mail.gmail.com>
+From: Tim Bird <tim.bird@am.sony.com>
+Subject: Re: CELF Project Proposal - ALSA scenario/use case support
+Date: Wed, 16 Dec 2009 14:35:53 -0800
+Message-ID: <4B2960C9.8030401@am.sony.com>
+References: <1260984413.3525.351.camel@odin>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00032555b336fffcea047ae0148d
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f217.google.com (mail-bw0-f217.google.com
-	[209.85.218.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id E876624348
-	for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2009 23:32:31 +0100 (CET)
-Received: by bwz9 with SMTP id 9so2440795bwz.32
-	for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2009 14:32:30 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-embedded-owner@vger.kernel.org>
+In-Reply-To: <1260984413.3525.351.camel@odin>
+Sender: linux-embedded-owner@vger.kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: CE Linux Developers List <celinux-dev@tree.celinuxforum.org>, linux-embedded <linux-embedded@vger.kernel.org>, "Bird, Tim" <Timothy.Bird@am.sony.com>, Stefan Schmidt <stefan@datenfreihafen.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---00032555b336fffcea047ae0148d
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Liam Girdwood wrote:
+> Summary: Complete ALSA hardware scenario/use case support in alsa-lib
+> and salsa-lib
 
-Hi.
+This looks like an interesting proposal.  I created a page for it at:
+http://elinux.org/CELF_Project_Proposal/Complete_hardware,_use-case_handling_in_ALSA
 
-Attached two patches:
+ -- Tim
 
-1. Corrected initialization of  Conexant CX20583-10Z - forgot proper
-initialization of internal mic.
-Int mic was muted until external mic was plugged/unplugged. Also added
-control for internal mic boost.
-I renamed 'analog mic boost' to 'ext mic boost'. Alternative was to
-use names analog-digital, which seemed
-very confusing. If the renaming breaks something, it can be dropped.
-
-2. Made use of the chips beep device. Now it's possible to change
-volume of beep. (It was too loud)
-To make use of it in Ubuntu 9.04 pcspkr must be blacklisted.
-
-Einar R=FCnkaru
-
---00032555b336fffcea047ae0148d
-Content-Type: text/x-patch; charset=UTF-8;
-	name="0001-ALSA-hda-Fixed-internal-mic-initialization-for-De.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Fixed-internal-mic-initialization-for-De.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g3aoaxpv0
-
-RnJvbSA1ZTM0YjU5OTA0NDJiZjk2MDNlYTY3YmQ2MTgzZWZmNWM4YzQ1YjA1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiA9P3V0Zi04P3E/RWluYXI9MjBSPUMzPUJDbmthcnU/PSA8ZWlu
-YXJyeUBzbWFpbC5lZT4KRGF0ZTogV2VkLCAxNiBEZWMgMjAwOSAyMjoxNjoxMyArMDIwMApTdWJq
-ZWN0OiBbUEFUQ0hdIEFMU0E6IGhkYSAtIEZpeGVkIGludGVybmFsIG1pYyBpbml0aWFsaXphdGlv
-biBmb3IgRGVsbCBWb3N0cm8gMTAxNQpNSU1FLVZlcnNpb246IDEuMApDb250ZW50LVR5cGU6IHRl
-eHQvcGxhaW47IGNoYXJzZXQ9dXRmLTgKQ29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogOGJpdAoK
-Rml4ZWQgaW5pdGlhbGl6YXRpb24gb2YgaW50ZXJuYWwgbWljIGFuZCBhZGRlZCBpbnRlcm5hbCBt
-aWMgYm9vc3QgY29udHJvbApSZW5hbWVkIGFuYWxvZyBtaWMgYm9vc3QgY29udHJvbCB0byBleHQg
-bWljIGJvb3N0IGNvbnRvbC4KTmFtZSBwYWlyIGFuYWxvZy9kaWdpdGFsIHNlZW1zIHRvbyBjb25m
-dXNpbmcgZm9yIGEgbm9ybWFsIHVzZXIuCgpTaWduZWQtb2ZmLWJ5OiBFaW5hciBSw7xua2FydSA8
-ZWluYXJyeUBzbWFpbC5lZT4KLS0tCiBzb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMgfCAg
-IDM5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLQogMSBmaWxlcyBjaGFu
-Z2VkLCAzMyBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5k
-L3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQu
-YwppbmRleCAxYWIyOTU4Li41ZjVkZGY2IDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNo
-X2NvbmV4YW50LmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCkBAIC0xMTEs
-NiArMTExLDcgQEAgc3RydWN0IGNvbmV4YW50X3NwZWMgewogCXVuc2lnbmVkIGludCBkZWxsX2F1
-dG9tdXRlOwogCXVuc2lnbmVkIGludCBwb3J0X2RfbW9kZTsKIAl1bnNpZ25lZCBjaGFyIGV4dF9t
-aWNfYmlhczsKKwl1bnNpZ25lZCBpbnQgZGVsbF92b3N0cm87CiB9OwogCiBzdGF0aWMgaW50IGNv
-bmV4YW50X3BsYXliYWNrX3BjbV9vcGVuKHN0cnVjdCBoZGFfcGNtX3N0cmVhbSAqaGluZm8sCkBA
-IC0yMTA5LDkgKzIxMTAsMTIgQEAgc3RhdGljIGludCBjeHQ1MDY2X21pY19ib29zdF9tdXhfZW51
-bV9nZXQoc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCiB7CiAJc3RydWN0IGhkYV9jb2Rl
-YyAqY29kZWMgPSBzbmRfa2NvbnRyb2xfY2hpcChrY29udHJvbCk7CiAJaW50IHZhbDsKKwloZGFf
-bmlkX3QgbmlkID0ga2NvbnRyb2wtPnByaXZhdGVfdmFsdWUgJiAweGZmOworCWludCBpbm91dCA9
-IChrY29udHJvbC0+cHJpdmF0ZV92YWx1ZSAmIDB4MTAwKSA/CisJCUFDX0FNUF9HRVRfSU5QVVQg
-OiBBQ19BTVBfR0VUX09VVFBVVDsKIAotCXZhbCA9IHNuZF9oZGFfY29kZWNfcmVhZChjb2RlYywg
-MHgxNywgMCwKLQkJQUNfVkVSQl9HRVRfQU1QX0dBSU5fTVVURSwgQUNfQU1QX0dFVF9PVVRQVVQp
-OworCXZhbCA9IHNuZF9oZGFfY29kZWNfcmVhZChjb2RlYywgbmlkLCAwLAorCQlBQ19WRVJCX0dF
-VF9BTVBfR0FJTl9NVVRFLCBpbm91dCk7CiAKIAl1Y29udHJvbC0+dmFsdWUuZW51bWVyYXRlZC5p
-dGVtWzBdID0gdmFsICYgQUNfQU1QX0dBSU47CiAJcmV0dXJuIDA7CkBAIC0yMTIzLDYgKzIxMjcs
-OSBAQCBzdGF0aWMgaW50IGN4dDUwNjZfbWljX2Jvb3N0X211eF9lbnVtX3B1dChzdHJ1Y3Qgc25k
-X2tjb250cm9sICprY29udHJvbCwKIAlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyA9IHNuZF9rY29u
-dHJvbF9jaGlwKGtjb250cm9sKTsKIAljb25zdCBzdHJ1Y3QgaGRhX2lucHV0X211eCAqaW11eCA9
-ICZjeHQ1MDY2X2FuYWxvZ19taWNfYm9vc3Q7CiAJdW5zaWduZWQgaW50IGlkeDsKKwloZGFfbmlk
-X3QgbmlkID0ga2NvbnRyb2wtPnByaXZhdGVfdmFsdWUgJiAweGZmOworCWludCBpbm91dCA9IChr
-Y29udHJvbC0+cHJpdmF0ZV92YWx1ZSAmIDB4MTAwKSA/CisJCUFDX0FNUF9TRVRfSU5QVVQgOiBB
-Q19BTVBfU0VUX09VVFBVVDsKIAogCWlmICghaW11eC0+bnVtX2l0ZW1zKQogCQlyZXR1cm4gMDsK
-QEAgLTIxMzAsOSArMjEzNyw5IEBAIHN0YXRpYyBpbnQgY3h0NTA2Nl9taWNfYm9vc3RfbXV4X2Vu
-dW1fcHV0KHN0cnVjdCBzbmRfa2NvbnRyb2wgKmtjb250cm9sLAogCWlmIChpZHggPj0gaW11eC0+
-bnVtX2l0ZW1zKQogCQlpZHggPSBpbXV4LT5udW1faXRlbXMgLSAxOwogCi0Jc25kX2hkYV9jb2Rl
-Y193cml0ZV9jYWNoZShjb2RlYywgMHgxNywgMCwKKwlzbmRfaGRhX2NvZGVjX3dyaXRlX2NhY2hl
-KGNvZGVjLCBuaWQsIDAsCiAJCUFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsCi0JCUFDX0FNUF9T
-RVRfUklHSFQgfCBBQ19BTVBfU0VUX0xFRlQgfCBBQ19BTVBfU0VUX09VVFBVVCB8CisJCUFDX0FN
-UF9TRVRfUklHSFQgfCBBQ19BTVBfU0VUX0xFRlQgfCBpbm91dCB8CiAJCQlpbXV4LT5pdGVtc1tp
-ZHhdLmluZGV4KTsKIAogCXJldHVybiAxOwpAQCAtMjIwMiwxMCArMjIwOSwxMSBAQCBzdGF0aWMg
-c3RydWN0IHNuZF9rY29udHJvbF9uZXcgY3h0NTA2Nl9taXhlcnNbXSA9IHsKIAogCXsKIAkJLmlm
-YWNlID0gU05EUlZfQ1RMX0VMRU1fSUZBQ0VfTUlYRVIsCi0JCS5uYW1lID0gIkFuYWxvZyBNaWMg
-Qm9vc3QgQ2FwdHVyZSBFbnVtIiwKKwkJLm5hbWUgPSAiRXh0IE1pYyBCb29zdCBDYXB0dXJlIEVu
-dW0iLAogCQkuaW5mbyA9IGN4dDUwNjZfbWljX2Jvb3N0X211eF9lbnVtX2luZm8sCiAJCS5nZXQg
-PSBjeHQ1MDY2X21pY19ib29zdF9tdXhfZW51bV9nZXQsCiAJCS5wdXQgPSBjeHQ1MDY2X21pY19i
-b29zdF9tdXhfZW51bV9wdXQsCisJCS5wcml2YXRlX3ZhbHVlID0gMHgxNywKIAl9LAogCiAJSERB
-X0JJTkRfVk9MKCJDYXB0dXJlIFZvbHVtZSIsICZjeHQ1MDY2X2JpbmRfY2FwdHVyZV92b2xfb3Ro
-ZXJzKSwKQEAgLTIyMTMsNiArMjIyMSwxOCBAQCBzdGF0aWMgc3RydWN0IHNuZF9rY29udHJvbF9u
-ZXcgY3h0NTA2Nl9taXhlcnNbXSA9IHsKIAl7fQogfTsKIAorc3RhdGljIHN0cnVjdCBzbmRfa2Nv
-bnRyb2xfbmV3IGN4dDUwNjZfdm9zdHJvX21peGVyc1tdID0geworCXsKKwkJLmlmYWNlID0gU05E
-UlZfQ1RMX0VMRU1fSUZBQ0VfTUlYRVIsCisJCS5uYW1lID0gIkludCBNaWMgQm9vc3QgQ2FwdHVy
-ZSBFbnVtIiwKKwkJLmluZm8gPSBjeHQ1MDY2X21pY19ib29zdF9tdXhfZW51bV9pbmZvLAorCQku
-Z2V0ID0gY3h0NTA2Nl9taWNfYm9vc3RfbXV4X2VudW1fZ2V0LAorCQkucHV0ID0gY3h0NTA2Nl9t
-aWNfYm9vc3RfbXV4X2VudW1fcHV0LAorCQkucHJpdmF0ZV92YWx1ZSA9IDB4MjMgfCAweDEwMCwK
-Kwl9LAorCXt9Cit9OworCiBzdGF0aWMgc3RydWN0IGhkYV92ZXJiIGN4dDUwNjZfaW5pdF92ZXJi
-c1tdID0gewogCXsweDFhLCBBQ19WRVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9WUkVG
-ODB9LCAvKiBQb3J0IEIgKi8KIAl7MHgxYiwgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9M
-LCBQSU5fVlJFRjgwfSwgLyogUG9ydCBDICovCkBAIC0yMzk4LDExICsyNDE4LDE2IEBAIHN0YXRp
-YyBzdHJ1Y3QgaGRhX3ZlcmIgY3h0NTA2Nl9pbml0X3ZlcmJzX3BvcnRkX2xvW10gPSB7CiAvKiBp
-bml0aWFsaXplIGphY2stc2Vuc2luZywgdG9vICovCiBzdGF0aWMgaW50IGN4dDUwNjZfaW5pdChz
-dHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIHsKKwlzdHJ1Y3QgY29uZXhhbnRfc3BlYyAqc3BlYyA9
-IGNvZGVjLT5zcGVjOworCiAJc25kX3ByaW50ZGQoIkNYVDUwNjY6IGluaXRcbiIpOwogCWNvbmV4
-YW50X2luaXQoY29kZWMpOwogCWlmIChjb2RlYy0+cGF0Y2hfb3BzLnVuc29sX2V2ZW50KSB7CiAJ
-CWN4dDUwNjZfaHBfYXV0b211dGUoY29kZWMpOwotCQljeHQ1MDY2X2F1dG9taWMoY29kZWMpOwor
-CQlpZiAoc3BlYy0+ZGVsbF92b3N0cm8pCisJCQljeHQ1MDY2X3Zvc3Ryb19hdXRvbWljKGNvZGVj
-KTsKKwkJZWxzZQorCQkJY3h0NTA2Nl9hdXRvbWljKGNvZGVjKTsKIAl9CiAJcmV0dXJuIDA7CiB9
-CkBAIC0yNTAxLDcgKzI1MjYsOSBAQCBzdGF0aWMgaW50IHBhdGNoX2N4dDUwNjYoc3RydWN0IGhk
-YV9jb2RlYyAqY29kZWMpCiAJCXNwZWMtPmluaXRfdmVyYnNbMF0gPSBjeHQ1MDY2X2luaXRfdmVy
-YnNfdm9zdHJvOwogCQlzcGVjLT5taXhlcnNbc3BlYy0+bnVtX21peGVycysrXSA9IGN4dDUwNjZf
-bWl4ZXJfbWFzdGVyX29scGM7CiAJCXNwZWMtPm1peGVyc1tzcGVjLT5udW1fbWl4ZXJzKytdID0g
-Y3h0NTA2Nl9taXhlcnM7CisJCXNwZWMtPm1peGVyc1tzcGVjLT5udW1fbWl4ZXJzKytdID0gY3h0
-NTA2Nl92b3N0cm9fbWl4ZXJzOwogCQlzcGVjLT5wb3J0X2RfbW9kZSA9IDA7CisJCXNwZWMtPmRl
-bGxfdm9zdHJvID0gMTsKIAogCQkvKiBubyBTL1BESUYgb3V0ICovCiAJCXNwZWMtPm11bHRpb3V0
-LmRpZ19vdXRfbmlkID0gMDsKLS0gCjEuNi4wLjQKCg==
---00032555b336fffcea047ae0148d
-Content-Type: text/x-patch; charset=UTF-8;
-	name="0002-ALSA-hda-Make-use-of-beep-device-found-in-Dell-Vo.patch"
-Content-Disposition: attachment;
-	filename="0002-ALSA-hda-Make-use-of-beep-device-found-in-Dell-Vo.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g3aobqu61
-
-RnJvbSBkNDZkMjRmZDAwODZjZDIwNDE5MTg4ZmE2NWM3Y2JiNjRlNTdkNmIzIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiA9P3V0Zi04P3E/RWluYXI9MjBSPUMzPUJDbmthcnU/PSA8ZWlu
-YXJyeUBzbWFpbC5lZT4KRGF0ZTogV2VkLCAxNiBEZWMgMjAwOSAyMjo0MTozNiArMDIwMApTdWJq
-ZWN0OiBbUEFUQ0hdIEFMU0E6IGhkYSAtIE1ha2UgdXNlIG9mIGJlZXAgZGV2aWNlIGZvdW5kIGlu
-IERlbGwgVm9zdHJvIDEwMTVuCk1JTUUtVmVyc2lvbjogMS4wCkNvbnRlbnQtVHlwZTogdGV4dC9w
-bGFpbjsgY2hhcnNldD11dGYtOApDb250ZW50LVRyYW5zZmVyLUVuY29kaW5nOiA4Yml0CgpDb25l
-eGFudCBDWDIwNTgzLTEwWiBoYXMgZGlnaXRhbCBiZWVwIGRldmljZSB3aXRoIHZvbHVtZSBjb250
-cm9sLgpNYWtpbmcgdXNlIG9mIHRoZW0uCgpTaWduZWQtb2ZmLWJ5OiBFaW5hciBSw7xua2FydSA8
-ZWluYXJyeUBzbWFpbC5lZT4KLS0tCiBzb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMgfCAg
-ICA0ICsrKysKIDEgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygt
-KQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3Bj
-aS9oZGEvcGF0Y2hfY29uZXhhbnQuYwppbmRleCA1ZjVkZGY2Li45NDc3ODVmIDEwMDY0NAotLS0g
-YS9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRj
-aF9jb25leGFudC5jCkBAIC0yOSw2ICsyOSw3IEBACiAKICNpbmNsdWRlICJoZGFfY29kZWMuaCIK
-ICNpbmNsdWRlICJoZGFfbG9jYWwuaCIKKyNpbmNsdWRlICJoZGFfYmVlcC5oIgogCiAjZGVmaW5l
-IENYVF9QSU5fRElSX0lOICAgICAgICAgICAgICAweDAwCiAjZGVmaW5lIENYVF9QSU5fRElSX09V
-VCAgICAgICAgICAgICAweDAxCkBAIC00NzcsNiArNDc4LDcgQEAgc3RhdGljIHZvaWQgY29uZXhh
-bnRfZnJlZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJc25kX2FycmF5X2ZyZWUoJnNwZWMt
-PmphY2tzKTsKIAl9CiAjZW5kaWYKKwlzbmRfaGRhX2RldGFjaF9iZWVwX2RldmljZShjb2RlYyk7
-CiAJa2ZyZWUoY29kZWMtPnNwZWMpOwogfQogCkBAIC0yMjMwLDYgKzIyMzIsNyBAQCBzdGF0aWMg
-c3RydWN0IHNuZF9rY29udHJvbF9uZXcgY3h0NTA2Nl92b3N0cm9fbWl4ZXJzW10gPSB7CiAJCS5w
-dXQgPSBjeHQ1MDY2X21pY19ib29zdF9tdXhfZW51bV9wdXQsCiAJCS5wcml2YXRlX3ZhbHVlID0g
-MHgyMyB8IDB4MTAwLAogCX0sCisJSERBX0NPREVDX1ZPTFVNRV9NT05PKCJCZWVwIFBsYXliYWNr
-IFZvbHVtZSIsIDB4MTMsIDEsIDB4MCwgSERBX09VVFBVVCksCiAJe30KIH07CiAKQEAgLTI1Mjks
-NiArMjUzMiw3IEBAIHN0YXRpYyBpbnQgcGF0Y2hfY3h0NTA2NihzdHJ1Y3QgaGRhX2NvZGVjICpj
-b2RlYykKIAkJc3BlYy0+bWl4ZXJzW3NwZWMtPm51bV9taXhlcnMrK10gPSBjeHQ1MDY2X3Zvc3Ry
-b19taXhlcnM7CiAJCXNwZWMtPnBvcnRfZF9tb2RlID0gMDsKIAkJc3BlYy0+ZGVsbF92b3N0cm8g
-PSAxOworCQlzbmRfaGRhX2F0dGFjaF9iZWVwX2RldmljZShjb2RlYywgMHgxMyk7CiAKIAkJLyog
-bm8gUy9QRElGIG91dCAqLwogCQlzcGVjLT5tdWx0aW91dC5kaWdfb3V0X25pZCA9IDA7Ci0tIAox
-LjYuMC40Cgo=
---00032555b336fffcea047ae0148d
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---00032555b336fffcea047ae0148d--
+=============================
+Tim Bird
+Architecture Group Chair, CE Linux Forum
+Senior Staff Engineer, Sony Corporation of America
+=============================
