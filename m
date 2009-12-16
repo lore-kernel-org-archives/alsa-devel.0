@@ -1,47 +1,50 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: CELF Project Proposal - ALSA scenario/use case support
-Date: Wed, 16 Dec 2009 17:26:53 +0000
-Message-ID: <1260984413.3525.351.camel@odin>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Fix build of DA7210
+Date: Wed, 16 Dec 2009 20:57:32 +0000
+Message-ID: <1260997052-15510-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-embedded-owner@vger.kernel.org>
-Sender: linux-embedded-owner@vger.kernel.org
-To: CE Linux Developers List <celinux-dev@tree.celinuxforum.org>, linux-embedded <linux-embedded@vger.kernel.org>
-Cc: Tim Bird <tim.bird@am.sony.com>, Stefan Schmidt <stefan@datenfreihafen.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>, alsa-devel <alsa-devel@alsa-project.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id F25422449D
+	for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2009 21:57:36 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Mark Brown <broonie@finisterre.wolfsonmicro.main>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Summary: Complete ALSA hardware scenario/use case support in alsa-lib
-and salsa-lib
+From: Mark Brown <broonie@finisterre.wolfsonmicro.main>
 
-Proposer: Liam Girdwood
+DAC_VOICE_EN was not defined - looks to have been overly enthusiastically
+deleted from a previous revision of the patch, pull the value from v1.
 
-Description:
-Modern mobile devices are increasingly required to provide a rich set of
-audio functionality required by today's applications. ALSA currently
-lacks a portable and high level API to configure audio hardware function
-and signal routing.
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/da7210.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-e.g. there is no portable method atm to configure the audio hardware to
-make a "handset gsm phone call" or "handset voip phone call", etc.
-
-This purpose of this project would be to complete the ALSA scenario
-manager API and get it accepted upstream in alsa-lib and salsa-lib. The
-code is nearly ready for upstream, with some work required on it's file
-format as the main piece of outstanding work.
-
-More Info:
-** http://www.slimlogic.co.uk/?p=40
-
-API header:
-http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=include/ascenario.h;h=b1395515b035629d09cd9b3d3a224743053aa159;hb=ascenario
-
-Development branch now hosted as alsa-lib branch here :-
-** http://git.alsa-project.org/?p=alsa-lib.git;a=shortlog;h=ascenario
-
-
-Scope: This project will probably take between 2 - 4 weeks.
-
-Thanks
-
-Liam
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index 14f5f34..fbf3ab4 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -81,6 +81,9 @@
+ #define DA7210_ADC_L_EN			(1 << 3)
+ #define DA7210_ADC_R_EN			(1 << 7)
+ 
++/* DAC_HPF fields */
++#define DA7210_DAC_VOICE_EN		(1 << 7)
++
+ /* DAC_SEL bit fields */
+ #define DA7210_DAC_L_SRC_DAI_L		(4 << 0)
+ #define DA7210_DAC_L_EN			(1 << 3)
+-- 
+1.6.5.4
