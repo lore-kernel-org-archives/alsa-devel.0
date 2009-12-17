@@ -1,23 +1,17 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 1/2] ALSA: pcm - Ensure wakeup at each
-	periodic interrupt
-Date: Thu, 17 Dec 2009 17:21:28 +0900
-Message-ID: <1b68c6790912170021x2a7f462en99acc0ffb7480ba2@mail.gmail.com>
-References: <1261029602-14407-1-git-send-email-jassisinghbrar@gmail.com>
-	<s5hbphyw0a8.wl%tiwai@suse.de>
-	<1b68c6790912162331t23ee8c36sb4989b90dc9920c9@mail.gmail.com>
-	<s5h7hsmvyea.wl%tiwai@suse.de>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: 2.6.32-gitX: oops in ac97 codec registration
+Date: Thu, 17 Dec 2009 09:40:50 +0100
+Message-ID: <f861ec6f0912170040m57874014s7b1a6bb3b863c0f1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f190.google.com (mail-vw0-f190.google.com
-	[209.85.212.190])
-	by alsa0.perex.cz (Postfix) with ESMTP id 758D0103827
-	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 09:21:30 +0100 (CET)
-Received: by vws28 with SMTP id 28so554699vws.16
-	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 00:21:28 -0800 (PST)
-In-Reply-To: <s5h7hsmvyea.wl%tiwai@suse.de>
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14D8D103827
+	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 09:40:51 +0100 (CET)
+Received: by fxm4 with SMTP id 4so6541431fxm.32
+	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 00:40:50 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,43 +21,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBEZWMgMTcsIDIwMDkgYXQgNDo0MyBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
-LmRlPiB3cm90ZToKPiBBdCBUaHUsIDE3IERlYyAyMDA5IDE2OjMxOjA4ICswOTAwLAo+IGphc3Np
-IGJyYXIgd3JvdGU6Cj4+Cj4+IE9uIFRodSwgRGVjIDE3LCAyMDA5IGF0IDQ6MDIgUE0sIFRha2Fz
-aGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cj4+ID4gQXQgVGh1LCAxNyBEZWMgMjAwOSAx
-NTowMDowMiArMDkwMCwKPj4gPiBqYXNzaXNpbmdoYnJhckBnbWFpbC5jb20gd3JvdGU6Cj4+ID4+
-Cj4+ID4+IEZyb206IEphc3NpIEJyYXIgPGphc3NpLmJyYXJAc2Ftc3VuZy5jb20+Cj4+ID4+Cj4+
-ID4+IFRoZSBjaGVjayBmb3IgYXQgbGVhc3QgJ2F2YWlsX21pbicgYXZhaWxhYmxlIGRhdGEgYmVm
-b3JlIGNhbGxpbmcgd2FrZV91cAo+PiA+PiBkb2Vzbid0IGFsd2F5cyBob2xkIGdvb2QgYXMgaXQg
-ZG9lcyBub3QgZ3VhcmFudGVlIGNhbGxiYWNrcyBhdCBlYWNoIHBlcmlvZGljCj4+ID4+IGludGVy
-cnVwdC4KPj4gPgo+PiA+IFdlbGwsIGF2YWlsX21pbiBjYW4gYmUgZ3JlYXRlciB0aGFuIHBlcmlv
-ZF9zaXplLiDCoEFuZCwgYXZhaWxfbWluIHdvbid0IGJlCj4+ID4gbGVzcyB0aGFuIHBlcmlvZCBz
-aXplLgo+PiA+Cj4+ID4gRm9yIGV4YW1wbGUsIHdoZW4gYXZhaWxfbWluID0gMi41IHggcGVyaW9k
-X3NpemUsIHRoZSBkcml2ZXIgd2FrZXMgdXAKPj4gPiBpbiBwZXJpb2RzIGxpa2UgMywgMiwgMywg
-MiwgLi4uCj4+IGNvcnJlY3QsIGJ1dCBpZiB3ZSBlbnN1cmUgd2FrZV91cCdzIGFmdGVyIGVhY2gg
-cGVyaW9kIGFuZCBsZXQgdGhlICdzbGVlcGVycycKPj4gdHJhY2sgaWYgdGhlIGRhdGEgYXZhaWxh
-YmxlIGlzIGVub3VnaCBvciBub3QsIHdlIHdpbGwgaGF2ZSBtb3JlIGZpbmUgZ3JhaW5lZAo+PiBj
-b250cm9sLgo+PiBUaGUgcG9pbnQgaXM6LSBXYWtpbmcgdXAgX2FmdGVyXyBhdmFpbF9taW4gaXMg
-d29ya2luZywgYnV0IGRvZXMgd2FraW5nIHVwIGJlZm9yZQo+PiBhdmFpbF9taW4oYnV0IGF0IHBl
-cmlvZCBib3VuZGFyeSkgYnJlYWsgdGhlIHN5c3RlbT8KPgo+IFB1bHNlQXVkaW8gbWF5IGNvbXBs
-YWluIDopCkkgbWVhbnQgZWZmZWN0cyBvbiBBTFNBIHN0YXRlLW1hY2hpbmUgd2l0aGluIHRoZSBr
-ZXJuZWwuCkZyb20gd2hhdCBpIGhhdmUgc2VlbiwgZXZlcnkgdXNlIG9mIHNsZWVwIGlzIGp1c3Qg
-dG8ga2lsbCBzb21lIHRpbWUsCmkuZSwgd2FrZV91cAppcyBub3QgdGFrZW4gYXMgaW5kaWNhdGlv
-biBvZiBjb21wbGV0aW9uIG9mIHRoZSBwdXJwb3NlLgoKSWYgeW91IGhhdmUgdGltZSwgY291bGQg
-dSBwbGVhc2UgY29uZmlybS9jb3JyZWN0IG15IHVuZGVyc3RhbmRpbmc/ClRoYW5rcy4KCj4+ID4+
-IEFuIGV4YW1wbGUgb2Ygc3VjaCBzaXR1YXRpb24gaXMgc25kX3BjbV9saWJfcmVhZDEvd3JpdGUx
-IGNvbnN1bWluZyBzb21lIHNwYWNlCj4+ID4+IG9mIHRoZSBwZXJpb2QgYW5kIGdvaW5nIHRvIHNs
-ZWVwIGZyb20gd2FpdF9mb3JfYXZhaWxfbWluIHVwb24gc3luY2luZyB3aXRoCj4+ID4+IHRoZSBE
-TUEgcG9pbnRlci4gQ2xlYXJseSBqdXN0IHRoZSByZW1haW5kZXIgb2YgcGVyaW9kIHNpemUgaXMg
-bmVlZGVkLCBidXQKPj4gPj4gd2FrZV91cCBpcyBjYWxsZWQgb25seSBhZnRlciBfdHdvXyBwZXJp
-b2RpYyBpbnRlcnJ1cHRzIGZyb20gdGhhdCBwb2ludC4KPj4gPgo+PiA+IEluIHRoYXQgY2FzZSwg
-dGhlIG9yaWdpbmFsIGJlaGF2aW9yIGlzIGNvcnJlY3QuCj4+IGdvaW5nIGJ5IGN1cnJlbnQgaW1w
-bGVtZW50YXRpb24sIHRoYXQgaXMgY29ycmVjdCwgYnV0IGlzIHRoYXQgZGVzaXJhYmxlPwo+Cj4g
-Q29ycmVjdCA9IHdvcmtpbmcgYXMgZGVzaWduZWQuCj4KPgo+IFRha2FzaGkKPgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Mark,
+
+current 2.6.32-git spits out the following oops when I load my machine
+driver with the generic AC97 codec:
+
+No device for DAI au1xpsc_ac97
+AC97 SoC Audio Codec 0.6
+asoc: AC97 HiFi <-> au1xpsc_ac97 mapping ok
+CPU 0 Unable to handle kernel paging request at virtual address
+000001f0, epc == 80366320, ra == 803662c0
+Oops[#1]:
+Cpu 0
+$ 0   : 00000000 10003c00 00000000 00000000
+$ 4   : 00000000 00004b39 00000001 00004b39
+$ 8   : 00000000 00000002 8041a7a0 8d140af0
+$12   : 00000004 ad55ad55 00000003 00000001
+$16   : 00000000 c1179a94 8d1f2520 c007b420
+$20   : 8d49cfe0 8d1f2520 804fc03c 804fc130
+$24   : 00000000 0000ad55
+$28   : 8d590000 8d591af0 00000000 803662c0
+Hi    : 00000000
+Lo    : 00000004
+epc   : 80366320 snd_soc_new_pcms+0x300/0x358
+    Not tainted
+ra    : 803662c0 snd_soc_new_pcms+0x2a0/0x358
+Status: 10003c03    KERNEL EXL IE
+Cause : 0080800c
+BadVA : 000001f0
+PrId  : 04030202 (Au1250)
+Modules linked in: snd_soc_exm32cexx(+) snd_soc_cs4251x snd_soc_ac97
+snd_ac97_codec snd_soc_au1xpsc_ac97 snd_soc_au1xpsc_i2s
+Process modprobe (pid: 673, threadinfo=8d590000, task=8d430938, tls=2aacf2d0)
+Stack : 8d591b30 c007b3c4 c0074afc 00010000 00000001 8d591b08 8d17d1c0 37394341
+        46694820 43412069 48203739 2d694669 8d170030 804fc16c 8d17d2c8 0000001c
+        10003c01 8d17d2c8 804fc16c 8d17d2c8 10003c01 8d17d2d0 00000024 80500000
+        c0074b58 00000001 c11799f4 00000000 8d1f2528 00000001 fffffff4 8d1f2520
+        c11798f0 00000001 8d17d0c0 00000001 804fc130 00000000 804f4980 c007b288
+        ...
+Call Trace:
+[<80366320>] snd_soc_new_pcms+0x300/0x358
+[<c007b288>] ac97_soc_probe+0x108/0x1d0 [snd_soc_ac97]
+[<80365108>] snd_soc_instantiate_cards+0x22c/0x694
+[<803655ec>] soc_probe+0x7c/0xc4
+[<802c73b8>] driver_probe_device+0xbc/0x194
+[<802c6748>] bus_for_each_drv+0x60/0xb0
+[<802c7638>] device_attach+0x60/0x88
+[<802c6524>] bus_probe_device+0x30/0x54
+[<802c4d74>] device_add+0x3a4/0x53c
+[<802c8e48>] platform_device_add+0x14c/0x1b8
+[<c11794ec>] cexx_audio_probe+0x310/0x374 [snd_soc_exm32cexx]
+[<802c73b8>] driver_probe_device+0xbc/0x194
+[<802c74fc>] __driver_attach+0x6c/0xa4
+[<802c6afc>] bus_for_each_dev+0x60/0xb0
+[<802c6264>] bus_add_driver+0xc8/0x268
+[<802c78ac>] driver_register+0xdc/0x194
+[<8010a010>] do_one_initcall+0x68/0x1f4
+[<80154268>] sys_init_module+0xec/0x23c
+[<801022a0>] stack_done+0x20/0x3c
+
+
+Oops is inside snd_ac97_dev_add_pdata() call: seems ac97->dev is NULL.
+
+I'm not entirely sure that this isn't somehow the fault of my machine driver;
+has the procedure to register the asoc device changed since 2.6.32?
+
+Thanks!
+     Manuel Lauss
