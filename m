@@ -1,19 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 2.6.30-rc8 skipping regression also affects cmipci
-Date: Thu, 17 Dec 2009 10:46:03 +0800
-Message-ID: <4f3252890912161846nee2a6bfmf882a7d7b0200a5a@mail.gmail.com>
-References: <hgbiph$4kr$1@ger.gmane.org>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: build alsa-tools using static alsa lib?
+ linux2.6.28+marvell littleton
+Date: Thu, 17 Dec 2009 11:31:20 +0800
+Message-ID: <20091217033119.GC28375@buzzloop.caiaq.de>
+References: <200912171055137035452@neusoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f173.google.com (mail-px0-f173.google.com
-	[209.85.216.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D29D243C7
-	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 03:46:05 +0100 (CET)
-Received: by pxi3 with SMTP id 3so1109988pxi.16
-	for <alsa-devel@alsa-project.org>; Wed, 16 Dec 2009 18:46:04 -0800 (PST)
-In-Reply-To: <hgbiph$4kr$1@ger.gmane.org>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F81C103804
+	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 04:31:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <200912171055137035452@neusoft.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: =?utf-8?B?546L5YmR?= <wang.jian@neusoft.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2009/12/17 Fr=E9d=E9ric Bri=E8re <fbriere@fbriere.net>
-
-> Hi everybody,
->
-> I was only recently able to upgrade from 2.6.26 to 2.6.32 (long story).
-> In so doing, I noticed infrequent occurrences of audio skipping, which I
-> managed to bisect down to c87d973.  It would appear that this commit
-> also affects cmipci (CMI8738), albeit not as badly as it did for
-> intel8x0.  (I guess I'm the only person left on Earth still using a
-> stand-alone PCI sound card, which is why this was never reported.  <g>)
->
-
-
-http://git.alsa-project.org/?p=3Dalsa-kernel.git;a=3Dcommit;h=3Dc87d9732004=
-b3f8fd82d729f12ccfb96c0df279e
-
-The patch seem just fix the problem of the usb audio card in
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D4523
-
-
-This patch actually cause pulseaudio 0.9.14 server abort on my au8830
-
-E: memblock.c: Assertion 'length' failed at pulsecore/memblock.c:356,
-function pa_memblock_new_fixed(). Aborting.
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D4455#c20892
-
-and the output by using 48000 x 256 Hz Clock in Vortex chip
-
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D4455#c20905
-
-
-That's why I still stay with the driver come with Fedora 10
-2.6.27.41-170.2.117.fc10.i686
+T24gVGh1LCBEZWMgMTcsIDIwMDkgYXQgMTA6NTU6MTRBTSArMDgwMCwg546L5YmRIHdyb3RlOgo+
+IGFsc2EtZGV2ZWxIZWxsbyBldmVyeWJvZHk6Cj4gCQo+IAlpIGNvdWxkbm90IGJ1aWxkIGFsc2Et
+dG9vbHMsIHNlZSBhcyBmb2xsb3dzLCBjb3VsZCBhbnlib2R5IGhlbHAgbWUsIHRoYW5rcyEKPiAK
+PiBxdWVzdGlvbiA6Cj4gCQo+IGFAYS1kZXNrdG9wOn4vTk1TL2tlcm5lbC8yMDA5V1cyMV9idWls
+ZC9zcmMvcHJldmlldy1raXQvYWxzYS10b29scyQgbWFrZQo+IGFybS1saW51eC1nY2MgLUkvaG9t
+ZS9hL05NUy9rZXJuZWwvMjAwOVdXMjEvcHhhbGludXgvLi4vLi4vMjAwOVdXMjFfYnVpbGQvL3Ny
+Yy9wcmV2aWV3LWtpdC9saW51eC9pbmNsdWRlIC1JL2hvbWUvYS9OTVMva2VybmVsLzIwMDlXVzIx
+L3B4YWxpbnV4Ly4uLy4uLzIwMDlXVzIxX2J1aWxkLy9yZWwvaG9zdC9pbmNsdWRlIC1ML2hvbWUv
+YS9OTVMva2VybmVsLzIwMDlXVzIxL3B4YWxpbnV4Ly4uLy4uLzIwMDlXVzIxX2J1aWxkLy9yZWwv
+aG9zdC9saWIgLUwvaG9tZS9hL05NUy9rZXJuZWwvMjAwOVdXMjEvcHhhbGludXgvLi4vLi4vMjAw
+OVdXMjFfYnVpbGQvL3JlbC90YXJnZXQvcm9vdGZzL2xpYiAtZyAtV2FnZ3JlZ2F0ZS1yZXR1cm4g
+LVdtaXNzaW5nLW5vcmV0dXJuIC1XIC1XYWxsIC1tY3B1PWl3bW14dCAtbXR1bmU9aXdtbXh0IC1t
+YWJpPWFhcGNzLWxpbnV4IC1JL2hvbWUvYS9OTVMva2VybmVsLzIwMDlXVzIxL3B4YWxpbnV4Ly4u
+Ly4uLzIwMDlXVzIxX2J1aWxkLy9yZWwvaG9zdC9pbmNsdWRlIC1zdGF0aWMgLUwvaG9tZS9hL05N
+Uy9rZXJuZWwvMjAwOVdXMjEvcHhhbGludXgvLi4vLi4vMjAwOVdXMjFfYnVpbGQvL3JlbC9ob3N0
+L2luY2x1ZGUgLWxhc291bmQgIGNvbnRyb2wuYyAtbyBjb250cm9sIAo+IGNvbnRyb2wuYzogSW4g
+ZnVuY3Rpb24gJ21haW4nOgo+IGNvbnRyb2wuYzo3Mjogd2FybmluZzogZnVuY3Rpb24gY2FsbCBo
+YXMgYWdncmVnYXRlIHZhbHVlCj4gL3RtcC9jY0lGd1Mwby5vOiBJbiBmdW5jdGlvbiBgbWFpbic6
+Cj4gL2hvbWUvYS9OTVMva2VybmVsLzIwMDlXVzIxX2J1aWxkL3NyYy9wcmV2aWV3LWtpdC9hbHNh
+LXRvb2xzL2NvbnRyb2wuYzoxNTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgc25kX2N0bF9jYXJk
+X2luZm9fc2l6ZW9mJwoKV2hpY2ggdmVyc2lvbiBpcyB0aGF0PyBJIHN1Z2dlc3QgdXNpbmcgQnVp
+bGRyb290IG9yIE9FIHRvIGNyb3NzLWNvbXBpbGUKdGhpbmdzIHVubGVzcyB5b3Uga25vdyB3aGF0
+IHlvdSdyZSBkb2luZyBhbmQgaGF2ZSBhIGdvb2QgcmVhc29uIG5vdCB0bwpkbyBzbyA6KQoKU2Vl
+CgoJaHR0cDovL2J1aWxkcm9vdC51Y2xpYmMub3JnLwoJaHR0cDovL3dpa2kub3BlbmVtYmVkZGVk
+Lm5ldC9pbmRleC5waHAvTWFpbl9QYWdlCgpEYW5pZWwKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
