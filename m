@@ -1,18 +1,15 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: build alsa-tools using static alsa lib?
- linux2.6.28+marvell littleton
-Date: Thu, 17 Dec 2009 11:31:20 +0800
-Message-ID: <20091217033119.GC28375@buzzloop.caiaq.de>
-References: <200912171055137035452@neusoft.com>
+From: jassisinghbrar@gmail.com
+Subject: [PATCH 2/2] ALSA: pcm - specify amount of data needed
+	in wait_for_avail_min
+Date: Thu, 17 Dec 2009 15:00:09 +0900
+Message-ID: <1261029609-14437-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F81C103804
-	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 04:31:28 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <200912171055137035452@neusoft.com>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA4A010382C
+	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 07:07:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +19,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?B?546L5YmR?= <wang.jian@neusoft.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lrg@slimlogic.co.uk, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBEZWMgMTcsIDIwMDkgYXQgMTA6NTU6MTRBTSArMDgwMCwg546L5YmRIHdyb3RlOgo+
-IGFsc2EtZGV2ZWxIZWxsbyBldmVyeWJvZHk6Cj4gCQo+IAlpIGNvdWxkbm90IGJ1aWxkIGFsc2Et
-dG9vbHMsIHNlZSBhcyBmb2xsb3dzLCBjb3VsZCBhbnlib2R5IGhlbHAgbWUsIHRoYW5rcyEKPiAK
-PiBxdWVzdGlvbiA6Cj4gCQo+IGFAYS1kZXNrdG9wOn4vTk1TL2tlcm5lbC8yMDA5V1cyMV9idWls
-ZC9zcmMvcHJldmlldy1raXQvYWxzYS10b29scyQgbWFrZQo+IGFybS1saW51eC1nY2MgLUkvaG9t
-ZS9hL05NUy9rZXJuZWwvMjAwOVdXMjEvcHhhbGludXgvLi4vLi4vMjAwOVdXMjFfYnVpbGQvL3Ny
-Yy9wcmV2aWV3LWtpdC9saW51eC9pbmNsdWRlIC1JL2hvbWUvYS9OTVMva2VybmVsLzIwMDlXVzIx
-L3B4YWxpbnV4Ly4uLy4uLzIwMDlXVzIxX2J1aWxkLy9yZWwvaG9zdC9pbmNsdWRlIC1ML2hvbWUv
-YS9OTVMva2VybmVsLzIwMDlXVzIxL3B4YWxpbnV4Ly4uLy4uLzIwMDlXVzIxX2J1aWxkLy9yZWwv
-aG9zdC9saWIgLUwvaG9tZS9hL05NUy9rZXJuZWwvMjAwOVdXMjEvcHhhbGludXgvLi4vLi4vMjAw
-OVdXMjFfYnVpbGQvL3JlbC90YXJnZXQvcm9vdGZzL2xpYiAtZyAtV2FnZ3JlZ2F0ZS1yZXR1cm4g
-LVdtaXNzaW5nLW5vcmV0dXJuIC1XIC1XYWxsIC1tY3B1PWl3bW14dCAtbXR1bmU9aXdtbXh0IC1t
-YWJpPWFhcGNzLWxpbnV4IC1JL2hvbWUvYS9OTVMva2VybmVsLzIwMDlXVzIxL3B4YWxpbnV4Ly4u
-Ly4uLzIwMDlXVzIxX2J1aWxkLy9yZWwvaG9zdC9pbmNsdWRlIC1zdGF0aWMgLUwvaG9tZS9hL05N
-Uy9rZXJuZWwvMjAwOVdXMjEvcHhhbGludXgvLi4vLi4vMjAwOVdXMjFfYnVpbGQvL3JlbC9ob3N0
-L2luY2x1ZGUgLWxhc291bmQgIGNvbnRyb2wuYyAtbyBjb250cm9sIAo+IGNvbnRyb2wuYzogSW4g
-ZnVuY3Rpb24gJ21haW4nOgo+IGNvbnRyb2wuYzo3Mjogd2FybmluZzogZnVuY3Rpb24gY2FsbCBo
-YXMgYWdncmVnYXRlIHZhbHVlCj4gL3RtcC9jY0lGd1Mwby5vOiBJbiBmdW5jdGlvbiBgbWFpbic6
-Cj4gL2hvbWUvYS9OTVMva2VybmVsLzIwMDlXVzIxX2J1aWxkL3NyYy9wcmV2aWV3LWtpdC9hbHNh
-LXRvb2xzL2NvbnRyb2wuYzoxNTogdW5kZWZpbmVkIHJlZmVyZW5jZSB0byBgc25kX2N0bF9jYXJk
-X2luZm9fc2l6ZW9mJwoKV2hpY2ggdmVyc2lvbiBpcyB0aGF0PyBJIHN1Z2dlc3QgdXNpbmcgQnVp
-bGRyb290IG9yIE9FIHRvIGNyb3NzLWNvbXBpbGUKdGhpbmdzIHVubGVzcyB5b3Uga25vdyB3aGF0
-IHlvdSdyZSBkb2luZyBhbmQgaGF2ZSBhIGdvb2QgcmVhc29uIG5vdCB0bwpkbyBzbyA6KQoKU2Vl
-CgoJaHR0cDovL2J1aWxkcm9vdC51Y2xpYmMub3JnLwoJaHR0cDovL3dpa2kub3BlbmVtYmVkZGVk
-Lm5ldC9pbmRleC5waHAvTWFpbl9QYWdlCgpEYW5pZWwKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Jassi Brar <jassi.brar@samsung.com>
+
+For better accuracy, make the waiting time more specific. That helps
+avoiding users of wait_for_avail_min(i.e, snd_pcm_lib_write1/read1) to
+wait until atleast avail_min amount is available, whereas all that might
+be needed is just 1 frame(for example).
+
+Since the waiting is not for avail_min, the name has been changed to
+reflect that. The users of the new function are also updated to pass
+exact minimum data needed.
+
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/core/pcm_lib.c |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index ee2d7b9..4a92804 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1664,12 +1664,12 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
+ EXPORT_SYMBOL(snd_pcm_period_elapsed);
+ 
+ /*
+- * Wait until avail_min data becomes available
++ * Wait until atleast the requested amount(*availp) of data becomes available
+  * Returns a negative error code if any error occurs during operation.
+  * The available space is stored on availp.  When err = 0 and avail = 0
+  * on the capture stream, it indicates the stream is in DRAINING state.
+  */
+-static int wait_for_avail_min(struct snd_pcm_substream *substream,
++static int wait_for_min(struct snd_pcm_substream *substream,
+ 			      snd_pcm_uframes_t *availp)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -1719,7 +1719,7 @@ static int wait_for_avail_min(struct snd_pcm_substream *substream,
+ 			avail = snd_pcm_playback_avail(runtime);
+ 		else
+ 			avail = snd_pcm_capture_avail(runtime);
+-		if (avail >= runtime->control->avail_min)
++		if (avail >= *availp)
+ 			break;
+ 	}
+  _endloop:
+@@ -1794,7 +1794,8 @@ static snd_pcm_sframes_t snd_pcm_lib_write1(struct snd_pcm_substream *substream,
+ 				err = -EAGAIN;
+ 				goto _end_unlock;
+ 			}
+-			err = wait_for_avail_min(substream, &avail);
++			avail = size;
++			err = wait_for_min(substream, &avail);
+ 			if (err < 0)
+ 				goto _end_unlock;
+ 		}
+@@ -2016,7 +2017,8 @@ static snd_pcm_sframes_t snd_pcm_lib_read1(struct snd_pcm_substream *substream,
+ 				err = -EAGAIN;
+ 				goto _end_unlock;
+ 			}
+-			err = wait_for_avail_min(substream, &avail);
++			avail = size;
++			err = wait_for_min(substream, &avail);
+ 			if (err < 0)
+ 				goto _end_unlock;
+ 			if (!avail)
+-- 
+1.6.2.5
