@@ -1,14 +1,14 @@
 From: jassisinghbrar@gmail.com
-Subject: [PATCH 2/2] ALSA: pcm - specify amount of data needed
-	in wait_for_avail_min
-Date: Thu, 17 Dec 2009 15:00:09 +0900
-Message-ID: <1261029609-14437-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: [PATCH 1/2] ALSA: pcm - Ensure wakeup at each periodic
+	interrupt
+Date: Thu, 17 Dec 2009 15:00:02 +0900
+Message-ID: <1261029602-14407-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA4A010382C
+	by alsa0.perex.cz (Postfix) with ESMTP id BA8E5103831
 	for <alsa-devel@alsa-project.org>; Thu, 17 Dec 2009 07:07:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,67 +25,48 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jassi Brar <jassi.brar@samsung.com>
 
-For better accuracy, make the waiting time more specific. That helps
-avoiding users of wait_for_avail_min(i.e, snd_pcm_lib_write1/read1) to
-wait until atleast avail_min amount is available, whereas all that might
-be needed is just 1 frame(for example).
+The check for at least 'avail_min' available data before calling wake_up
+doesn't always hold good as it does not guarantee callbacks at each periodic
+interrupt.
 
-Since the waiting is not for avail_min, the name has been changed to
-reflect that. The users of the new function are also updated to pass
-exact minimum data needed.
+An example of such situation is snd_pcm_lib_read1/write1 consuming some space
+of the period and going to sleep from wait_for_avail_min upon syncing with
+the DMA pointer. Clearly just the remainder of period size is needed, but
+wake_up is called only after _two_ periodic interrupts from that point.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/core/pcm_lib.c |   12 +++++++-----
- 1 files changed, 7 insertions(+), 5 deletions(-)
+ sound/core/pcm_lib.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index ee2d7b9..4a92804 100644
+index 30f4108..ee2d7b9 100644
 --- a/sound/core/pcm_lib.c
 +++ b/sound/core/pcm_lib.c
-@@ -1664,12 +1664,12 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
- EXPORT_SYMBOL(snd_pcm_period_elapsed);
- 
- /*
-- * Wait until avail_min data becomes available
-+ * Wait until atleast the requested amount(*availp) of data becomes available
-  * Returns a negative error code if any error occurs during operation.
-  * The available space is stored on availp.  When err = 0 and avail = 0
-  * on the capture stream, it indicates the stream is in DRAINING state.
-  */
--static int wait_for_avail_min(struct snd_pcm_substream *substream,
-+static int wait_for_min(struct snd_pcm_substream *substream,
- 			      snd_pcm_uframes_t *availp)
+@@ -189,7 +189,7 @@ snd_pcm_update_hw_ptr_pos(struct snd_pcm_substream *substream,
+ static int snd_pcm_update_hw_ptr_post(struct snd_pcm_substream *substream,
+ 				      struct snd_pcm_runtime *runtime)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -1719,7 +1719,7 @@ static int wait_for_avail_min(struct snd_pcm_substream *substream,
- 			avail = snd_pcm_playback_avail(runtime);
- 		else
- 			avail = snd_pcm_capture_avail(runtime);
--		if (avail >= runtime->control->avail_min)
-+		if (avail >= *availp)
- 			break;
- 	}
-  _endloop:
-@@ -1794,7 +1794,8 @@ static snd_pcm_sframes_t snd_pcm_lib_write1(struct snd_pcm_substream *substream,
- 				err = -EAGAIN;
- 				goto _end_unlock;
- 			}
--			err = wait_for_avail_min(substream, &avail);
-+			avail = size;
-+			err = wait_for_min(substream, &avail);
- 			if (err < 0)
- 				goto _end_unlock;
+-	snd_pcm_uframes_t avail;
++	snd_pcm_uframes_t avail, prd_short;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		avail = snd_pcm_playback_avail(runtime);
+@@ -208,8 +208,14 @@ static int snd_pcm_update_hw_ptr_post(struct snd_pcm_substream *substream,
+ 			return -EPIPE;
  		}
-@@ -2016,7 +2017,8 @@ static snd_pcm_sframes_t snd_pcm_lib_read1(struct snd_pcm_substream *substream,
- 				err = -EAGAIN;
- 				goto _end_unlock;
- 			}
--			err = wait_for_avail_min(substream, &avail);
-+			avail = size;
-+			err = wait_for_min(substream, &avail);
- 			if (err < 0)
- 				goto _end_unlock;
- 			if (!avail)
+ 	}
+-	if (avail >= runtime->control->avail_min)
++
++	prd_short = runtime->period_size
++			- runtime->status->hw_ptr % runtime->period_size;
++
++	if (avail >= runtime->control->avail_min
++			|| avail >= prd_short)
+ 		wake_up(&runtime->sleep);
++
+ 	return 0;
+ }
+ 
 -- 
 1.6.2.5
