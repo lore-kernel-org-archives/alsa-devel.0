@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.33
-Date: Fri, 18 Dec 2009 13:39:28 +0000
-Message-ID: <20091218133928.GA9630@rakim.wolfsonmicro.main>
-References: <20091218131621.GA30425@rakim.wolfsonmicro.main>
-	<s5heims76zn.wl%tiwai@suse.de>
+From: Markus Luttenberger <m.luttenberger@avibit.com>
+Subject: Play multiple sounds concurrently
+Date: Fri, 18 Dec 2009 14:44:30 +0100
+Message-ID: <4B2B873E.6010906@avibit.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9B4DF1038F9
-	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 14:39:29 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5heims76zn.wl%tiwai@suse.de>
+Received: from avibit.com (avserver.avibit.com [62.99.140.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id DF3B81038F9
+	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 14:44:30 +0100 (CET)
+Received: from pc14.avibit.com (pc14.avibit.com [10.1.1.54])
+	by avibit.com (Postfix) with ESMTP id 90D38684134
+	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 14:44:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 18, 2009 at 02:21:32PM +0100, Takashi Iwai wrote:
+Hey,
 
-> BTW, feel free to proceed your branch to 2.6.33-rc.
-> Some fixes went in from others.
 
-I was holding off since there would have been a merge commit due to
-there being a couple of commits that didn't hit Linus' tree yet.  If
-you're OK with the merge commit I'll do the merge up & build tests over
-the weekend.
+I want to play multiple sounds concurrently with ALSA. The audio data is 
+mono and G.711 a-law encoded. I can successfully play a single source of 
+audio data but the sound is distorted when I try to play two sources.
+
+Basically, this is what I'm doing:
+
+-----8<-----------------
+char buf1[1024];    // filled with audio data from source 1
+char buf2[1024];    // filled with audio data from source 2
+char wr_buf[1024];
+
+for (int count = 0; count < 1024; count++)
+   wr_buf[count] = (char) (0.5 * buf1[count]) +
+                   (char) (0.5 * buf2[count]);
+
+snd_pcm_writei(dev_handle, wr_buf, 1024);
+-----8<-----------------
+
+
+I think I have to use a scale value to correct the values or else 
+clipping occures. However, this is the problem. How do I have to modify 
+the audio bytes in order to add them together and write them into one 
+buffer?
+
+
+
+
+greetings..
+..Markus
