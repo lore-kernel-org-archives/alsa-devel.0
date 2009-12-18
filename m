@@ -1,44 +1,44 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: 2.6.32-gitX: oops in ac97 codec registration
-Date: Fri, 18 Dec 2009 10:46:50 +0000
-Message-ID: <20091218104649.GA19544@sirena.org.uk>
-References: <f861ec6f0912170040m57874014s7b1a6bb3b863c0f1@mail.gmail.com>
-	<20091217105559.GC20667@rakim.wolfsonmicro.main>
-	<f861ec6f0912170831r16b98515u7afdc68fcbb64fcd@mail.gmail.com>
+Subject: Re: [alsa-devel] [PATCH 2/3] ASoC: OMAP4: Add support for McPDM
+Date: Fri, 18 Dec 2009 10:51:30 +0000
+Message-ID: <20091218105129.GB19544@sirena.org.uk>
+References: <2256F256009DAA4CBE661E9F41EAC84B8BA0A6D2@dlee01.ent.ti.com> <20091217202821.GA30379@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B547110380A
-	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 11:46:51 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <f861ec6f0912170831r16b98515u7afdc68fcbb64fcd@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: alsa-devel@alsa-project.org
+In-Reply-To: <20091217202821.GA30379@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Felipe Balbi <felipe.balbi@nokia.com>
+Cc: "ext Candelaria Villareal, Jorge" <x0107209@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 17, 2009 at 05:31:14PM +0100, Manuel Lauss wrote:
-> On Thu, Dec 17, 2009 at 11:56 AM, Mark Brown
+On Thu, Dec 17, 2009 at 10:28:21PM +0200, Felipe Balbi wrote:
+> On Thu, Dec 17, 2009 at 08:40:32PM +0100, ext Candelaria Villareal, Jorge wrote:
 
-> > The generic AC97 bodge code is broken. ?Again. ?I've not checked the
-> > ordering requirements here but reversing the order of snd_soc_new_pcms()
-> > and snd_ac97_bus() in ac97_soc_probe() might do the trick.
+> >+config SND_OMAP_SOC_MCPDM
+> >+       tristate
 
-> It's not that easy; seems something else is fishy.  I even get an oops with
-> I2S.  I'll try to find out what's going on (the same code works on
-> vanilla 2.6.32
-> though).
+> look at how SND_OMAP_SOC_N810 is done, can't you follow that ? put some 
+> description ad help ?
 
-Ah, oh dear.  That sounds like it'll be something platform specific -
-I'd expect to have heard about it if it was more widespread, and my
-tests have certainly been OK.
+This is fine - DAI drivers should be selected by machine drivers rather
+than by users since they are useless without the machine drivers.  This
+means that they shouldn't have a description.
+
+> >+EXPORT_SYMBOL(omap_mcpdm_start);
+> >+EXPORT_SYMBOL(omap_mcpdm_stop);
+> >+EXPORT_SYMBOL(omap_mcpdm_set_uplink);
+> >+EXPORT_SYMBOL(omap_mcpdm_set_downlink);
+> >+EXPORT_SYMBOL(omap_mcpdm_clr_uplink);
+> >+EXPORT_SYMBOL(omap_mcpdm_clr_downlink);
+> >+EXPORT_SYMBOL(omap_mcpdm_request);
+> >+EXPORT_SYMBOL(omap_mcpdm_free);
+
+> way too many exported symbols, no ? Doesn't ALSA API have proper place 
+> for this kind of stuff ? I'd need ALSA experts to reply to that but it 
+> does smell funny...
+
+With the McBSP these things are all exported because the McBSP isn't
+just used by ALSA, I beleive, but a PDM interface is probably only ever
+going to be used by audio.
