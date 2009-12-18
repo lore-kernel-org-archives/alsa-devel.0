@@ -1,15 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Help needed to develop quirks for USB Sound device
- for Roland Edirol PC-80 MIDI controller
-Date: Fri, 18 Dec 2009 15:19:03 +0100
-Message-ID: <4B2B8F57.90401__39312.2553512969$1261145967$gmane$org@ladisch.de>
-References: <1260843585.11219.15.camel@Ubuntu> <4B28C5AC.30706@ladisch.de>
-	<1261076148.5000.1.camel@Ubuntu>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for 2.6.34
+Date: Fri, 18 Dec 2009 14:32:24 +0000
+Message-ID: <20091218143224.GC9630@rakim.wolfsonmicro.main>
+References: <20091218135900.GB9630@rakim.wolfsonmicro.main>
+	<s5h8wd074di.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1261076148.5000.1.camel@Ubuntu>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 966A1103918
+	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 15:32:26 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h8wd074di.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-usb@vger.kernel.org, alsa-devel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-(please don't top-post)
-
-Alain Lauzon wrote:
-> Bus 001 Device 014: ID 0582:0092 Roland Corp. EDIROL PC-80 WAVE
-> ...
-> Bus 001 Device 013: ID 0582:0093 Roland Corp. EDIROL PC-80 MIDI
-> ...
-
-This is implemented as two logical devices, so it will show up as two
-ALSA sound cards.
-
-You didn't show the descriptors for a full-duplex mode, so I'm assuming
-it works like with any other Roland device.
-
-Please try the following quirk entries:
-
-{
-	/* WAVE part only; see ID 0x0093 for MIDI */
-	USB_DEVICE(0x0582, 0x0092),
-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-		/* .vendor_name = "EDIROL", */
-		/* .product_name = "PC-80", */
-		.ifnum = QUIRK_ANY_INTERFACE,
-		.type = QUIRK_COMPOSITE,
-		.data = (const struct snd_usb_audio_quirk[]) {
-			{
-				.ifnum = 0,
-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-			},
-			{
-				.ifnum = 1,
-				.type = QUIRK_AUDIO_STANDARD_INTERFACE
-			},
-			{
-				.ifnum = -1
-			}
-		}
-	}
-},
-{
-	/* MIDI part only; see ID 0x0092 for WAVE */
-	USB_DEVICE(0x0582, 0x0093),
-	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-		/* .vendor_name = "EDIROL", */
-		/* .product_name = "PC-80", */
-		.ifnum = 0,
-		.type = QUIRK_MIDI_FIXED_ENDPOINT,
-		.data = & (const struct snd_usb_midi_endpoint_info) {
-			.out_cables = 0x0000,
-			.in_cables = 0x0003,
-		}
-	}
-},
+T24gRnJpLCBEZWMgMTgsIDIwMDkgYXQgMDM6MTg6MDFQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgoKPiBUaGFua3MsIHB1bGxlZCBub3cuCgo+IEJ1dCwgSSBnZXQgdGhlIGZvbGxvd2luZyBj
+b21waWxlIHdhcm5pbmc6Cgo+IHNvdW5kL3NvYy9jb2RlY3Mvd204OTA0LmM6IEluIGZ1bmN0aW9u
+IOKAmHdtODkwNF9zZXRfZmxs4oCZOgo+IHNvdW5kL3NvYy9jb2RlY3Mvd204OTA0LmM6MTg4OTog
+d2FybmluZzog4oCYY2xvY2sy4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBm
+dW5jdGlvbgoKPiBhbmQgdGhpcyBsb29rcyBsaWtlIGEgcmVhbCBidWcuICBDb3VsZCB5b3UgZml4
+IHRoaXM/CgpIcm0sIHllYWggLSB0aGFua3MuICBXaHkgZG8gSSBoYXZlIGNvbXBpbGVycyB0aGF0
+IGFyZSBzbyBydWJiaXNoIGF0CmdlbmVyYXRpbmcgd2FybmluZ3M/CgpUaGUgZm9sbG93aW5nIGNo
+YW5nZXMgc2luY2UgY29tbWl0IGExN2FjY2I3YWU5MjkxZWY1YTBhZDYwOWY5MmFhNDMyNjM3MzU4
+NTU6CiAgTWFyayBCcm93biAoMSk6CiAgICAgICAgTWVyZ2UgYnJhbmNoICdmb3ItMi42LjMzJyBp
+bnRvIGZvci0yLjYuMzQKCmFyZSBhdmFpbGFibGUgaW4gdGhlIGdpdCByZXBvc2l0b3J5IGF0OgoK
+ICBzc2g6Ly9tYXN0ZXIua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYnJvb25p
+ZS9zb3VuZC0yLjYuZ2l0IGZvci0yLjYuMzQKCk1hcmsgQnJvd24gKDEpOgogICAgICBBU29DOiBI
+b3N0IGNsb2NrMiByZWFkIHVwIGluIFdNODkwNCBGTEwgY29uZmlndXJhdGlvbgoKIHNvdW5kL3Nv
+Yy9jb2RlY3Mvd204OTA0LmMgfCAgICAzICsrLQogMSBmaWxlcyBjaGFuZ2VkLCAyIGluc2VydGlv
+bnMoKyksIDEgZGVsZXRpb25zKC0pCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
