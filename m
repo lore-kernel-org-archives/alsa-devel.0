@@ -1,20 +1,19 @@
-From: Felipe Balbi <felipe.balbi@nokia.com>
-Subject: Re: [PATCH 2/3] ASoC: OMAP4: Add support for McPDM
-Date: Fri, 18 Dec 2009 13:13:55 +0200
-Message-ID: <20091218111355.GF32312@nokia.com>
-References: <2256F256009DAA4CBE661E9F41EAC84B8BA0A6D2@dlee01.ent.ti.com>
-	<20091217202821.GA30379@nokia.com>
-	<20091218105129.GB19544@sirena.org.uk>
-Reply-To: felipe.balbi@nokia.com
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: alsa device drain power
+Date: Fri, 18 Dec 2009 11:32:26 +0000
+Message-ID: <20091218113225.GD19544@sirena.org.uk>
+References: <4B29F03F.4020100@gandalf.sssup.it>
+	<20091217110334.GB12245@sirena.org.uk>
+	<4B2B536F.4060800@gandalf.sssup.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14BB41038B8
-	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 12:14:53 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D414A1038B8
+	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 12:32:26 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20091218105129.GB19544@sirena.org.uk>
+In-Reply-To: <4B2B536F.4060800@gandalf.sssup.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,42 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Balbi Felipe (Nokia-D/Helsinki)" <felipe.balbi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "ext Candelaria Villareal, Jorge" <x0107209@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 18, 2009 at 11:51:30AM +0100, ext Mark Brown wrote:
->On Thu, Dec 17, 2009 at 10:28:21PM +0200, Felipe Balbi wrote:
->> On Thu, Dec 17, 2009 at 08:40:32PM +0100, ext Candelaria Villareal, Jorge wrote:
->
->> >+config SND_OMAP_SOC_MCPDM
->> >+       tristate
->
->> look at how SND_OMAP_SOC_N810 is done, can't you follow that ? put some
->> description ad help ?
->
->This is fine - DAI drivers should be selected by machine drivers rather
->than by users since they are useless without the machine drivers.  This
->means that they shouldn't have a description.
->
->> >+EXPORT_SYMBOL(omap_mcpdm_start);
->> >+EXPORT_SYMBOL(omap_mcpdm_stop);
->> >+EXPORT_SYMBOL(omap_mcpdm_set_uplink);
->> >+EXPORT_SYMBOL(omap_mcpdm_set_downlink);
->> >+EXPORT_SYMBOL(omap_mcpdm_clr_uplink);
->> >+EXPORT_SYMBOL(omap_mcpdm_clr_downlink);
->> >+EXPORT_SYMBOL(omap_mcpdm_request);
->> >+EXPORT_SYMBOL(omap_mcpdm_free);
->
->> way too many exported symbols, no ? Doesn't ALSA API have proper place
->> for this kind of stuff ? I'd need ALSA experts to reply to that but it
->> does smell funny...
->
->With the McBSP these things are all exported because the McBSP isn't
->just used by ALSA, I beleive, but a PDM interface is probably only ever
->going to be used by audio.
+On Fri, Dec 18, 2009 at 11:03:27AM +0100, Michael Trimarchi wrote:
 
-thanks for the explanation :-)
+> As reported by the datasheet the LM4853 has a bias circuitry shutdown.
+> This shutdown function is activated by applying a logic high to the
+> SHUTDOWN pin. This pin as command by the
 
--- 
-balbi
+So this is an ASoC-specific question, not a generic ALSA one...
+
+> static int lm4853_event(struct snd_soc_dapm_widget *w,
+>                         struct snd_kcontrol *k,
+>                         int event)
+
+> in gta02. I don't put any debug stuff there but I suppose
+> if I open the device with and asound.conf that set
+> the value to true of the Stereo Out this event is called. Is it right?
+
+ASoC will only power things up if they're being used so setting that
+control may or may not power things up.  I'm still not sure what you're
+getting at with these questions - are you experiencing some problem, or
+is this just a case of getting things straight in your head?
