@@ -1,20 +1,17 @@
-From: Felipe Balbi <felipe.balbi@nokia.com>
-Subject: Re: [PATCH 2/3] ASoC: OMAP4: Add support for McPDM
-Date: Fri, 18 Dec 2009 11:33:38 +0200
-Message-ID: <20091218093338.GA31755@nokia.com>
-References: <2256F256009DAA4CBE661E9F41EAC84B8BA0A6D2@dlee01.ent.ti.com>
-	<20091217202821.GA30379@nokia.com>
-	<2256F256009DAA4CBE661E9F41EAC84B8BA0AA88@dlee01.ent.ti.com>
-Reply-To: felipe.balbi@nokia.com
+From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+Subject: Re: alsa device drain power
+Date: Fri, 18 Dec 2009 11:03:27 +0100
+Message-ID: <4B2B536F.4060800@gandalf.sssup.it>
+References: <4B29F03F.4020100@gandalf.sssup.it>
+	<20091217110334.GB12245@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7E3AB1037FE
-	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 10:34:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8BA0AA88@dlee01.ent.ti.com>
+Received: from panicking.kicks-ass.org (unknown [77.224.194.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id B33A7103815
+	for <alsa-devel@alsa-project.org>; Fri, 18 Dec 2009 11:03:47 +0100 (CET)
+In-Reply-To: <20091217110334.GB12245@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Candelaria Villareal, Jorge" <x0107209@ti.com>
-Cc: "Balbi Felipe (Nokia-D/Helsinki)" <felipe.balbi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Fri, Dec 18, 2009 at 03:23:14AM +0100, ext Candelaria Villareal, Jorge wrote:
->Is this because if two interrupts were set, my approach would
->not recognize it as one of the cases and exit without processing
->the interrupt?
-
-you don't have a break in your switch. your approach would go through 
-all irq cases no matter what :-p
-
->> what ? so even if you don't have a platform_device you register the
->> driver ??
+Mark Brown wrote:
+> On Thu, Dec 17, 2009 at 09:47:59AM +0100, Michael Trimarchi wrote:
 >
->So, it would be better if I had declared a platform_device structure
->in .../arch/arm/plat-omap/devices.c, and register its resources (irq
->and memory base) in there?
+>   
+>> I have a simple question is the general behavior that an alsa device 
+>> start to drain power
+>> when it starts to play sound or start to recording. What happen if there 
+>> is an external amplifier
+>> connect to sound device?
+>>     
+>
+> In general any audio component is going to draw more power if there is a
+> signal going through it than if it's idle.  This is true regardless of
+> how the audio subsystem is split in terms of physical chips.
+>
+> What are you trying to find out here?
+>
+>   
+As reported by the datasheet the LM4853 has a bias circuitry shutdown.
+This shutdown function is activated by applying a logic high to the
+SHUTDOWN pin. This pin as command by the
 
-IMO yeah. It would look cleaner. But McBSP is the same mess so I don't 
-know what the ALSA people will say. Jarkko Nikula probably has some 
-ideas as he did most of the OMAP ASoC implementation.
+static int lm4853_event(struct snd_soc_dapm_widget *w,
+                        struct snd_kcontrol *k,
+                        int event)
 
--- 
-balbi
+in gta02. I don't put any debug stuff there but I suppose
+if I open the device with and asound.conf that set
+the value to true of the Stereo Out this event is called. Is it right?
+
+Michael
