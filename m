@@ -1,16 +1,19 @@
-From: Alain Lauzon <alauzon@alainlauzon.com>
-Subject: Re: Help needed to develop quirks for USB Sound device
- for Roland Edirol PC-80 MIDI controller
-Date: Fri, 18 Dec 2009 10:34:53 -0500
-Message-ID: <1261150493.4212.16.camel__14624.1278075196$1261295059$gmane$org@Ubuntu>
-References: <1260843585.11219.15.camel@Ubuntu>  <4B28C5AC.30706@ladisch.de>
-	<1261076148.5000.1.camel@Ubuntu>  <4B2B8F57.90401@ladisch.de>
-Reply-To: alauzon@alainlauzon.com
+From: Belisko Marek <marek.belisko@gmail.com>
+Subject: No device for DAI omap-eac-dai error
+Date: Sat, 19 Dec 2009 17:51:59 +0100
+Message-ID: <e7c6a05e0912190851q273555beg2f1ed415a8c9399f@mail.gmail.com>
+References: <e7c6a05e0912180618h771b9b7fl9d197d500bc534c1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <4B2B8F57.90401@ladisch.de>
+Received: from mail-iw0-f172.google.com (mail-iw0-f172.google.com
+	[209.85.223.172])
+	by alsa0.perex.cz (Postfix) with ESMTP id C46F62414D
+	for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2009 17:52:00 +0100 (CET)
+Received: by iwn2 with SMTP id 2so32335iwn.16
+	for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2009 08:52:00 -0800 (PST)
+In-Reply-To: <e7c6a05e0912180618h771b9b7fl9d197d500bc534c1@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,44 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: linux-usb@vger.kernel.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-TGUgdmVuZHJlZGkgMTggZMOpY2VtYnJlIDIwMDkgw6AgMTU6MTkgKzAxMDAsIENsZW1lbnMgTGFk
-aXNjaCBhIMOpY3JpdCA6Cj4gKHBsZWFzZSBkb24ndCB0b3AtcG9zdCkKPiAKPiBBbGFpbiBMYXV6
-b24gd3JvdGU6Cj4gPiBCdXMgMDAxIERldmljZSAwMTQ6IElEIDA1ODI6MDA5MiBSb2xhbmQgQ29y
-cC4gRURJUk9MIFBDLTgwIFdBVkUKPiA+IC4uLgo+ID4gQnVzIDAwMSBEZXZpY2UgMDEzOiBJRCAw
-NTgyOjAwOTMgUm9sYW5kIENvcnAuIEVESVJPTCBQQy04MCBNSURJCj4gPiAuLi4KPiAKPiBUaGlz
-IGlzIGltcGxlbWVudGVkIGFzIHR3byBsb2dpY2FsIGRldmljZXMsIHNvIGl0IHdpbGwgc2hvdyB1
-cCBhcyB0d28KPiBBTFNBIHNvdW5kIGNhcmRzLgo+IAo+IFlvdSBkaWRuJ3Qgc2hvdyB0aGUgZGVz
-Y3JpcHRvcnMgZm9yIGEgZnVsbC1kdXBsZXggbW9kZSwgc28gSSdtIGFzc3VtaW5nCj4gaXQgd29y
-a3MgbGlrZSB3aXRoIGFueSBvdGhlciBSb2xhbmQgZGV2aWNlLgo+IAo+IFBsZWFzZSB0cnkgdGhl
-IGZvbGxvd2luZyBxdWlyayBlbnRyaWVzOgo+IAo+IHsKPiAJLyogV0FWRSBwYXJ0IG9ubHk7IHNl
-ZSBJRCAweDAwOTMgZm9yIE1JREkgKi8KPiAJVVNCX0RFVklDRSgweDA1ODIsIDB4MDA5MiksCj4g
-CS5kcml2ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9h
-dWRpb19xdWlyaykgewo+IAkJLyogLnZlbmRvcl9uYW1lID0gIkVESVJPTCIsICovCj4gCQkvKiAu
-cHJvZHVjdF9uYW1lID0gIlBDLTgwIiwgKi8KPiAJCS5pZm51bSA9IFFVSVJLX0FOWV9JTlRFUkZB
-Q0UsCj4gCQkudHlwZSA9IFFVSVJLX0NPTVBPU0lURSwKPiAJCS5kYXRhID0gKGNvbnN0IHN0cnVj
-dCBzbmRfdXNiX2F1ZGlvX3F1aXJrW10pIHsKPiAJCQl7Cj4gCQkJCS5pZm51bSA9IDAsCj4gCQkJ
-CS50eXBlID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJGQUNFCj4gCQkJfSwKPiAJCQl7Cj4g
-CQkJCS5pZm51bSA9IDEsCj4gCQkJCS50eXBlID0gUVVJUktfQVVESU9fU1RBTkRBUkRfSU5URVJG
-QUNFCj4gCQkJfSwKPiAJCQl7Cj4gCQkJCS5pZm51bSA9IC0xCj4gCQkJfQo+IAkJfQo+IAl9Cj4g
-fSwKPiB7Cj4gCS8qIE1JREkgcGFydCBvbmx5OyBzZWUgSUQgMHgwMDkyIGZvciBXQVZFICovCj4g
-CVVTQl9ERVZJQ0UoMHgwNTgyLCAweDAwOTMpLAo+IAkuZHJpdmVyX2luZm8gPSAodW5zaWduZWQg
-bG9uZykgJiAoY29uc3Qgc3RydWN0IHNuZF91c2JfYXVkaW9fcXVpcmspIHsKPiAJCS8qIC52ZW5k
-b3JfbmFtZSA9ICJFRElST0wiLCAqLwo+IAkJLyogLnByb2R1Y3RfbmFtZSA9ICJQQy04MCIsICov
-Cj4gCQkuaWZudW0gPSAwLAo+IAkJLnR5cGUgPSBRVUlSS19NSURJX0ZJWEVEX0VORFBPSU5ULAo+
-IAkJLmRhdGEgPSAmIChjb25zdCBzdHJ1Y3Qgc25kX3VzYl9taWRpX2VuZHBvaW50X2luZm8pIHsK
-PiAJCQkub3V0X2NhYmxlcyA9IDB4MDAwMCwKPiAJCQkuaW5fY2FibGVzID0gMHgwMDAzLAo+IAkJ
-fQo+IAl9Cj4gfSwKPiAtLQoKQW5vdGhlciBxdWVzdGlvbiBJIGhhdmUgaXMgaXMgdGhlcmUgYSB3
-YXkgdG8gbW9kaWZ5IHRoZSBxdWlyayBhbmQgdHJ5IGl0CndpdGhvdXQgaGF2aW5nIHRvIHJlYm9v
-dCBteSBjb21wdXRlcj8gIEkgaGF2ZSB0cmllZCByZXN0YXJ0aW5nIEFMU0EgYnV0Cml0IHdhcyBu
-b3QgZ2l2aW5nIG1lIHRoZSBjaGFuZ2VzIHNvIEkga2VlcCByZWJvb3RpbmcgbXkgY29tcHV0ZXIg
-d2l0aApldmVyeSB0cnkgSSBkbyBvbiB0aGUgcXVpcmtzIGZpbGUuCgpBbGFpbiBMYXV6b24KCi0t
-ClRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmli
-ZSBhbHNhLWRldmVsIiBpbgp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIu
-a2VybmVsLm9yZwpNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3Jn
-L21ham9yZG9tby1pbmZvLmh0bWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+Hi,
+
+I'm writing new omap dai (for EAC codec base omap's).
+My code is based on existing omap-mcbsp.c code basically.
+
+After loadingof module I got error which appear in init function when
+call snd_soc_register_dai().
+
+I browse for code but can't figure out where dai->dev should be set to
+don't get error message and init dai properly.
+
+Thanks for any suggestions
+
+Marek
