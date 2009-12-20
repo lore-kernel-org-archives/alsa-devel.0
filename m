@@ -1,22 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: alsa-util.c: snd_pcm_avail() returned a value that
-	is exceptionally large: 349696 bytes (1821 ms).
-Date: Sun, 20 Dec 2009 09:54:28 +0800
-Message-ID: <4f3252890912191754s3536500eqc95058eac5da2ad6@mail.gmail.com>
-References: <1261191766.18070.10.camel@localhost.localdomain>
-	<4f3252890912191547x1996cf7es190e8dac71dacaae@mail.gmail.com>
-	<1261272369.18070.42.camel@localhost.localdomain>
+From: "Brian Welch" <Brian-Welch@cox.net>
+Subject: Installing a "different" version of Alsa
+Date: Sat, 19 Dec 2009 21:48:16 -0700
+Message-ID: <0640B473256C4948B7A16988809F8AB2@brianoffice>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f183.google.com (mail-px0-f183.google.com
-	[209.85.216.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id B9D371037F2
-	for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2009 02:54:29 +0100 (CET)
-Received: by pxi13 with SMTP id 13so2900143pxi.24
-	for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2009 17:54:28 -0800 (PST)
-In-Reply-To: <1261272369.18070.42.camel@localhost.localdomain>
+Received: from fed1rmmtao106.cox.net (fed1rmmtao106.cox.net [68.230.241.40])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DFC424564
+	for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2009 05:48:20 +0100 (CET)
+Received: from fed1rmimpo02.cox.net ([70.169.32.72]) by fed1rmmtao106.cox.net
+	(InterMail vM.8.00.01.00 201-2244-105-20090324) with ESMTP id
+	<20091220044818.ZLRI18268.fed1rmmtao106.cox.net@fed1rmimpo02.cox.net>
+	for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2009 23:48:18 -0500
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,112 +25,14 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-if I use default period size of aplay , the pulseaudio server run quite well
-when I play audio with different sample rate
+Hello,
 
-May be bug in PA server when adjusting latency if you play audio at
-different rate.
+It's been a year since I posted to this list, but I'm running into a problem and can't figure out the best way to solve it, so I'm hoping someone here can help.
 
-Another bug
+I've got an SDK for an embedded platform that includes a specific version of Linux with ALSA built-in.  On my platform, I want to use a different (newer) version of ALSA than the built-in version, so I want to build and load the binaries from the newer version and, more importantly, I want to compile my custom sound hardware driver against the newer alsa version and the SDK's Linux version.  I don't really want to touch the kernel files that are in the kerenl/include/sound directory in the SDK.
 
+When I use kbuild to build my custom sound hardware driver against the SDK in the kernel, it always trys to pick up the older ALSA header files that are in the SDK, but I want to use the newer versions that are in the directory with the newer version of ALSA.  What the best way to make sure I get the correct headers?  Is what I'm trying "dangerous" and should I be going about this a different way?
 
-I: sink-input.c: Created input 21 "ALSA Playback" on
-alsa_output.pci_12eb_2_sound_card_0_alsa_playback_0 with sample spec s16le
-2ch 22050Hz and channel map front-left,front-right
-I: protocol-native.c: Requested tlength=500.68 ms, minreq=1.45 ms
-D: protocol-native.c: Early requests mode enabled, configuring sink latency
-to minreq.
-D: memblockq.c: memblockq requested: maxlength=4194304, tlength=44160,
-base=4, prebuf=44032, minreq=128 maxrewind=0
-D: memblockq.c: memblockq sanitized: maxlength=4194304, tlength=44160,
-base=4, prebuf=44032, minreq=128 maxrewind=0
-I: protocol-native.c: Final latency 502.13 ms = 497.78 ms + 2*1.45 ms + 1.45
-ms
-D: module-alsa-sink.c: latency set to 4.00ms
-D: module-alsa-sink.c: hwbuf_unused_frames=1872
-D: module-alsa-sink.c: setting avail_min=2225
-D: module-alsa-sink.c: Requesting rewind due to latency change.
-D: module-alsa-sink.c: Requested to rewind 8192 bytes.
-D: module-alsa-sink.c: Limited to 7804 bytes.
-D: module-alsa-sink.c: before: 1951
-D: module-alsa-sink.c: after: 1951
-D: module-alsa-sink.c: Rewound 7804 bytes.
-D: sink.c: Processing rewind...
-D: sink-input.c: Have to rewind 7804 bytes on render memblockq.
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-I: module-alsa-sink.c: Underrun!
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncq.c: q overrun, queuing locally
-E: asyncmsgq.c: Assertion 'pa_asyncq_push(a->asyncq, &i, TRUE) == 0' failed
-at pulsecore/asyncmsgq.c:164, function pa_asyncmsgq_send(). Aborting.
-Aborted
+Thanks for any advice,
 
-
-2009/12/20 Chris <cpollock@embarqmail.com>
-
-> On Sun, 2009-12-20 at 07:47 +0800, Raymond Yau wrote:
-> > I can reproduce this bug on pulseaudio-0.9.14 by
-> >
-> > aplay -v --period-size=32  any_rate_not_equal_44100Hz.wav
-> >
-> >
-> Note - I reported this as bug#
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4834 on 14
-> December.
->
->
+Brian
