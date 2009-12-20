@@ -1,84 +1,66 @@
-From: Felipe Balbi <felipe.balbi@nokia.com>
-Subject: Re: [PATCH 2/3] ASoC: OMAP4: Add support for McPDM
-Date: Sun, 20 Dec 2009 16:19:41 +0200
-Message-ID: <20091220141941.GA6089@nokia.com>
-References: <2256F256009DAA4CBE661E9F41EAC84B8BA0A6D2@dlee01.ent.ti.com>
-	<20091217202821.GA30379@nokia.com>
-	<2256F256009DAA4CBE661E9F41EAC84B8BA0AA88@dlee01.ent.ti.com>
-	<20091218093338.GA31755@nokia.com>
-	<2256F256009DAA4CBE661E9F41EAC84B8BB2A669@dlee01.ent.ti.com>
-Reply-To: felipe.balbi@nokia.com
+From: Maciej Rutecki <maciej.rutecki@gmail.com>
+Subject: [2.6.33-rc1] [SOUND] HDA: high cpu usage, noise
+Date: Sun, 20 Dec 2009 18:27:45 +0100
+Message-ID: <8db1092f0912200927y7cdab36ftd1f73d56cd89763f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE79610381B
-	for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2009 15:23:21 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8BB2A669@dlee01.ent.ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext Candelaria Villareal, Jorge" <x0107209@ti.com>
-Cc: "Balbi Felipe (Nokia-D/Helsinki)" <felipe.balbi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755729AbZLTR1t@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, perex@perex.cz, tiwai@suse.de, "Rafael J. Wysocki" <rjw@sisk.pl>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi
 
-On Fri, Dec 18, 2009 at 06:01:19PM +0100, ext Candelaria Villareal, Jorge wrote:
->Mmm... But it _does_ have some breaks. Besides, I am still unsure that
->if structure should be used here. Code would be duplicated, for example,
->DN_IRQ_FULL and DN_IRQ_EMPTY share the same procedure to acknowledge
->the request.
+Affected kernel: 2.6.33-rc1
+Last known good: 2.6.32
 
-quoting your switch for irq here:
+Hadware:
+/proc/asound/pcm
+00-00: AD198x Analog : AD198x Analog : playback 1 : capture 1
+00-06: Si3054 Modem : Si3054 Modem : playback 1 : capture 1
 
-> +       switch (irq_status) {
-> +       case DN_IRQ_FULL:
-> +       case DN_IRQ_EMTPY:
-> +               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
-> +               omap_mcpdm_reset(MCPDM_DOWNLINK, 1);
-> +               omap_mcpdm_set_downlink(mcpdm_irq->downlink);
-> +               omap_mcpdm_reset(MCPDM_DOWNLINK, 0);
-> +               break;
-> +       case DN_IRQ:
-> +               dev_dbg(mcpdm_irq->dev, "DN write request\n");
-> +               break;
-> +       case UP_IRQ_FULL:
-> +       case UP_IRQ_EMPTY:
-> +               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
-> +               omap_mcpdm_reset(MCPDM_UPLINK, 1);
-> +               omap_mcpdm_set_uplink(mcpdm_irq->uplink);
-> +               omap_mcpdm_reset(MCPDM_UPLINK, 0);
-> +               break;
-> +       case UP_IRQ:
-> +               dev_dbg(mcpdm_irq->dev, "UP write request\n");
-> +               break;
-> +       }
+I notice high cpu load during idle/playing sounds. From "ps aux":
 
-what happens if you have both DN_IRQ_FULL and DN_IRQ_EMPTY at the same 
-time ?
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root      1119 26.4  0.0      0     0 ?        R    18:09   1:47 [hd-audio0]
 
-irq_status == DN_IRQ_FULL will evaluate to false and
-irq_status == DN_IRQ_EMPTY will also evaluate to false so none of those 
-case statements will execute. Similarly to other case statements.
+Also I hear noise, during (probably) disk I/O operations. Any suggestions?
 
-if you have to execute the same piece of code for two different irqs you 
-can always:
+cat /proc/interrupts
+           CPU0       CPU1
+  0:      58385          0   IO-APIC-edge      timer
+  1:         77        201   IO-APIC-edge      i8042
+  8:          1          0   IO-APIC-edge      rtc0
+  9:         67        117   IO-APIC-fasteoi   acpi
+ 12:        157      14303   IO-APIC-edge      i8042
+ 14:       1625          0   IO-APIC-edge      ata_piix
+ 15:          0          0   IO-APIC-edge      ata_piix
+ 16:       1115          0   IO-APIC-fasteoi   i915@pci:0000:00:02.0, eth0
+ 18:          0          0   IO-APIC-fasteoi   yenta, uhci_hcd:usb4
+ 19:          1          0   IO-APIC-fasteoi   ohci1394, uhci_hcd:usb5
+ 20:        146          2   IO-APIC-fasteoi   ehci_hcd:usb1, uhci_hcd:usb2
+ 21:          0          0   IO-APIC-fasteoi   uhci_hcd:usb3
+ 27:       4013      10861   PCI-MSI-edge      ahci
+ 28:       3452          0   PCI-MSI-edge      iwl3945
+ 29:    1556997          0   PCI-MSI-edge      HDA Intel
+NMI:          0          0   Non-maskable interrupts
+LOC:      16143      35244   Local timer interrupts
+SPU:          0          0   Spurious interrupts
+PMI:          0          0   Performance monitoring interrupts
+PND:          0          0   Performance pending work
+RES:      27154     126864   Rescheduling interrupts
+CAL:         59         34   Function call interrupts
+TLB:        899        748   TLB shootdowns
+TRM:          0          0   Thermal event interrupts
+THR:          0          0   Threshold APIC interrupts
+MCE:          0          0   Machine check exceptions
+MCP:          1          1   Machine check polls
+ERR:          0
+MIS:          0
 
-if ((irq_status & DN_IRQ_FULL) || (irq_status & DN_IRQ_EMPTY))
-	ack_those_irqs();
-
-this code might be working now only out of luck, simply because you 
-didn't have two irqs hapenning at the same time. Do not use switch() on 
-bitmasks, it won't work always.
+Config, dmesg and lspci:
+http://unixy.pl/maciek/download/kernel/2.6.33-rc1/gumis/
 
 -- 
-balbi
+Maciej Rutecki
+http://www.maciek.unixy.pl
