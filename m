@@ -1,17 +1,16 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: pcm: Properly close timer when freeing
-	slaves
-Date: Sun, 20 Dec 2009 15:27:08 -0500
-Message-ID: <604760770912201227g60e71a3alb86f36c2a4da3d4e@mail.gmail.com>
+From: =?UTF-8?Q?Rafael_Esp=C3=ADndola?= <rafael.espindola@gmail.com>
+Subject: [patch] Add support for the new 27 inch IMacs
+Date: Sun, 20 Dec 2009 16:46:15 -0500
+Message-ID: <564d96fb0912201346y29f3fbcamfa9e82760bdc8b2d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636e0a4ec07c635047b2ecc47
+Content-Type: multipart/mixed; boundary=001517477fa6fee00a047b2fe649
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f183.google.com (mail-px0-f183.google.com
-	[209.85.216.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9CE8110380D
-	for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2009 21:27:10 +0100 (CET)
-Received: by pxi13 with SMTP id 13so3180344pxi.24
-	for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2009 12:27:08 -0800 (PST)
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 593BB103813
+	for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2009 22:46:17 +0100 (CET)
+Received: by fxm4 with SMTP id 4so18286028fxm.32
+	for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2009 13:46:16 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,58 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---001636e0a4ec07c635047b2ecc47
+--001517477fa6fee00a047b2fe649
 Content-Type: text/plain; charset=UTF-8
 
-Hi,
+With the attached patch I am able to use the sound on a new IMac 27. What works:
 
-Here's a patch originally from Dan McCombs against alsa-lib.git HEAD
-fixing a fairly nasty fd leak for timers.
+*) Internal speakers
+*) Internal microphone
+*) Headphone
 
-Thanks,
-Dan
+I don't have an external mic or a SPDIF device to test the rest.
 
---001636e0a4ec07c635047b2ecc47
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-ALSA-pcm-Properly-close-timer-when-freeing-slaves.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-pcm-Properly-close-timer-when-freeing-slaves.patch"
+Cheers,
+Rafael
+
+--001517477fa6fee00a047b2fe649
+Content-Type: text/x-patch; charset=US-ASCII; name="imac27.patch"
+Content-Disposition: attachment; filename="imac27.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g3g9qcyv0
+X-Attachment-Id: f_g3gcjc0x0
 
-RnJvbSBmMzEwOWU3YTEyMDJjYTgxZDU0NWJlZDQ1ZDk4NDkyNjQ5NWY2Njk5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFN1biwgMjAgRGVjIDIwMDkgMTU6MTM6MzkgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBwY206IFByb3Blcmx5IGNsb3NlIHRpbWVyIHdoZW4gZnJlZWluZyBzbGF2ZXMKCkJ1Z0xpbms6
-IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3MvNDUxODkzCgpEYW4gTWNDb21icyBkaXNj
-b3ZlcmVkIHRoYXQgc25kX3BjbV9jbG9zZSgpIGludm9jYXRpb25zIGFyZSBub3QgbGVhZGluZwp0
-byBhc3NvY2lhdGVkIHRpbWVycyBiZWluZyBjbG9zZWQsIHdoaWNoIHJlc3VsdHMgaW4gc3VjY2Vz
-c2l2ZWx5IG1vcmUKdGltZXJzIGJlaW5nIGNyZWF0ZWQgYnV0IG5vdCBmcmVlZC4KClNpZ25lZC1v
-ZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5AdWJ1bnR1LmNvbT4KLS0tCiBzcmMvcGNtL3Bj
-bV9ody5jIHwgICAxNyArKysrKysrKystLS0tLS0tLQogMSBmaWxlcyBjaGFuZ2VkLCA5IGluc2Vy
-dGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc3JjL3BjbS9wY21faHcuYyBi
-L3NyYy9wY20vcGNtX2h3LmMKaW5kZXggMjA5NWIwMS4uOTQ0NGE2MSAxMDA2NDQKLS0tIGEvc3Jj
-L3BjbS9wY21faHcuYworKysgYi9zcmMvcGNtL3BjbV9ody5jCkBAIC0zMzgsOSArMzM4LDE4IEBA
-IHN0YXRpYyBpbnQgc25kX3BjbV9od19od19wYXJhbXMoc25kX3BjbV90ICpwY20sIHNuZF9wY21f
-aHdfcGFyYW1zX3QgKiBwYXJhbXMpCiAJcmV0dXJuIDA7CiB9CiAKK3N0YXRpYyB2b2lkIHNuZF9w
-Y21faHdfY2xvc2VfdGltZXIoc25kX3BjbV9od190ICpodykKK3sKKwlpZiAoaHctPnBlcmlvZF90
-aW1lcikgeworCQlzbmRfdGltZXJfY2xvc2UoaHctPnBlcmlvZF90aW1lcik7CisJCWh3LT5wZXJp
-b2RfdGltZXIgPSBOVUxMOworCX0KK30KKwogc3RhdGljIGludCBzbmRfcGNtX2h3X2h3X2ZyZWUo
-c25kX3BjbV90ICpwY20pCiB7CiAJc25kX3BjbV9od190ICpodyA9IHBjbS0+cHJpdmF0ZV9kYXRh
-OworCXNuZF9wY21faHdfY2xvc2VfdGltZXIoaHcpOwogCWludCBmZCA9IGh3LT5mZCwgZXJyOwog
-CWlmIChpb2N0bChmZCwgU05EUlZfUENNX0lPQ1RMX0hXX0ZSRUUpIDwgMCkgewogCQllcnIgPSAt
-ZXJybm87CkBAIC0zNTAsMTQgKzM1OSw2IEBAIHN0YXRpYyBpbnQgc25kX3BjbV9od19od19mcmVl
-KHNuZF9wY21fdCAqcGNtKQogCXJldHVybiAwOwogfQogCi1zdGF0aWMgdm9pZCBzbmRfcGNtX2h3
-X2Nsb3NlX3RpbWVyKHNuZF9wY21faHdfdCAqaHcpCi17Ci0JaWYgKGh3LT5wZXJpb2RfdGltZXIp
-IHsKLQkJc25kX3RpbWVyX2Nsb3NlKGh3LT5wZXJpb2RfdGltZXIpOwotCQlody0+cGVyaW9kX3Rp
-bWVyID0gTlVMTDsKLQl9Ci19Ci0KIHN0YXRpYyBpbnQgc25kX3BjbV9od19jaGFuZ2VfdGltZXIo
-c25kX3BjbV90ICpwY20sIGludCBlbmFibGUpCiB7CiAJc25kX3BjbV9od190ICpodyA9IHBjbS0+
-cHJpdmF0ZV9kYXRhOwotLSAKMS42LjUKCg==
---001636e0a4ec07c635047b2ecc47
+ZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY2lycnVzLmMgYi9zb3VuZC9wY2kvaGRh
+L3BhdGNoX2NpcnJ1cy5jCmluZGV4IGVlYjkxZjYuLjdkMTFjNDggMTAwNjQ0Ci0tLSBhL3NvdW5k
+L3BjaS9oZGEvcGF0Y2hfY2lycnVzLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9jaXJydXMu
+YwpAQCAtNjYsNiArNjYsNyBAQCBzdHJ1Y3QgY3Nfc3BlYyB7CiAvKiBhdmFpbGFibGUgbW9kZWxz
+ICovCiBlbnVtIHsKIAlDUzQyMFhfTUJQNTUsCisJQ1M0MjBYX0lNQUMyNywKIAlDUzQyMFhfQVVU
+TywKIAlDUzQyMFhfTU9ERUxTCiB9OwpAQCAtODMzLDcgKzgzNCw4IEBAIHN0YXRpYyB2b2lkIGNz
+X2F1dG9tdXRlKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCQkJCSAgICBBQ19WRVJCX1NFVF9Q
+SU5fV0lER0VUX0NPTlRST0wsCiAJCQkJICAgIGhwX3ByZXNlbnQgPyAwIDogUElOX09VVCk7CiAJ
+fQotCWlmIChzcGVjLT5ib2FyZF9jb25maWcgPT0gQ1M0MjBYX01CUDU1KSB7CisJaWYgKHNwZWMt
+PmJvYXJkX2NvbmZpZyA9PSBDUzQyMFhfTUJQNTUgfHwKKwkgICAgc3BlYy0+Ym9hcmRfY29uZmln
+ID09IENTNDIwWF9JTUFDMjcpIHsKIAkJdW5zaWduZWQgaW50IGdwaW8gPSBocF9wcmVzZW50ID8g
+MHgwMiA6IDB4MDg7CiAJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MDEsIDAsCiAJCQkJ
+ICAgIEFDX1ZFUkJfU0VUX0dQSU9fREFUQSwgZ3Bpbyk7CkBAIC0xMDc1LDEyICsxMDc3LDE0IEBA
+IHN0YXRpYyBpbnQgY3NfcGFyc2VfYXV0b19jb25maWcoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMp
+CiAKIHN0YXRpYyBjb25zdCBjaGFyICpjczQyMHhfbW9kZWxzW0NTNDIwWF9NT0RFTFNdID0gewog
+CVtDUzQyMFhfTUJQNTVdID0gIm1icDU1IiwKKwlbQ1M0MjBYX0lNQUMyN10gPSAiaW1hYzI3IiwK
+IAlbQ1M0MjBYX0FVVE9dID0gImF1dG8iLAogfTsKIAogCiBzdGF0aWMgc3RydWN0IHNuZF9wY2lf
+cXVpcmsgY3M0MjB4X2NmZ190YmxbXSA9IHsKIAlTTkRfUENJX1FVSVJLKDB4MTBkZSwgMHhjYjc5
+LCAiTWFjQm9va1BybyA1LDUiLCBDUzQyMFhfTUJQNTUpLAorCVNORF9QQ0lfUVVJUksoMHg4MDg2
+LCAweDcyNzAsICJJTWFjIDI3IEluY2giLCBDUzQyMFhfSU1BQzI3KSwKIAl7fSAvKiB0ZXJtaW5h
+dG9yICovCiB9OwogCkBAIC0xMTAzLDggKzExMDcsMjMgQEAgc3RhdGljIHN0cnVjdCBjc19waW5j
+ZmcgbWJwNTVfcGluY2Znc1tdID0gewogCXt9IC8qIHRlcm1pbmF0b3IgKi8KIH07CiAKK3N0YXRp
+YyBzdHJ1Y3QgY3NfcGluY2ZnIGltYWMyN19waW5jZmdzW10gPSB7CisJeyAweDA5LCAweDAxMmI0
+MDUwfSwKKwl7IDB4MGEsIDB4OTAxMDAxNDB9LAorCXsgMHgwYiwgMHg5MDEwMDE0Mn0sCisJeyAw
+eDBjLCAweDAxOGIzMDIwfSwKKwl7IDB4MGQsIDB4OTBhMDAxMTB9LAorCXsgMHgwZSwgMHg0MDAw
+MDBmMH0sCisJeyAweDBmLCAweDAxY2JlMDMwfSwKKwl7IDB4MTAsIDB4MDE0YmUwNjB9LAorCXsg
+MHgxMiwgMHgwMWFiOTA3MH0sCisJeyAweDE1LCAweDQwMDAwMGYwfSwKKwl7fSAvKiB0ZXJtaW5h
+dG9yICovCit9OworCiBzdGF0aWMgc3RydWN0IGNzX3BpbmNmZyAqY3NfcGluY2Znc1tDUzQyMFhf
+TU9ERUxTXSA9IHsKIAlbQ1M0MjBYX01CUDU1XSA9IG1icDU1X3BpbmNmZ3MsCisJW0NTNDIwWF9J
+TUFDMjddID0gaW1hYzI3X3BpbmNmZ3MsCiB9OwogCiBzdGF0aWMgdm9pZCBmaXhfcGluY2ZnKHN0
+cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBpbnQgbW9kZWwpCkBAIC0xMTM0LDYgKzExNTMsNyBAQCBz
+dGF0aWMgaW50IHBhdGNoX2NzNDIweChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJZml4X3Bp
+bmNmZyhjb2RlYywgc3BlYy0+Ym9hcmRfY29uZmlnKTsKIAogCXN3aXRjaCAoc3BlYy0+Ym9hcmRf
+Y29uZmlnKSB7CisJY2FzZSBDUzQyMFhfSU1BQzI3OgogCWNhc2UgQ1M0MjBYX01CUDU1OgogCQkv
+KiBHUElPMSA9IGhlYWRwaG9uZXMgKi8KIAkJLyogR1BJTzMgPSBzcGVha2VycyAqLwo=
+--001517477fa6fee00a047b2fe649
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -83,4 +89,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---001636e0a4ec07c635047b2ecc47--
+--001517477fa6fee00a047b2fe649--
