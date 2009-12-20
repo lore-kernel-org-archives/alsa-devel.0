@@ -1,19 +1,17 @@
-From: Belisko Marek <marek.belisko@gmail.com>
-Subject: No device for DAI omap-eac-dai error
-Date: Sat, 19 Dec 2009 17:51:59 +0100
-Message-ID: <e7c6a05e0912190851q273555beg2f1ed415a8c9399f@mail.gmail.com>
-References: <e7c6a05e0912180618h771b9b7fl9d197d500bc534c1@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Installing a "different" version of Alsa
+Date: Sun, 20 Dec 2009 12:47:28 +0000
+Message-ID: <20091220124727.GA2881@sirena.org.uk>
+References: <0640B473256C4948B7A16988809F8AB2@brianoffice>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f172.google.com (mail-iw0-f172.google.com
-	[209.85.223.172])
-	by alsa0.perex.cz (Postfix) with ESMTP id C46F62414D
-	for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2009 17:52:00 +0100 (CET)
-Received: by iwn2 with SMTP id 2so32335iwn.16
-	for <alsa-devel@alsa-project.org>; Sat, 19 Dec 2009 08:52:00 -0800 (PST)
-In-Reply-To: <e7c6a05e0912180618h771b9b7fl9d197d500bc534c1@mail.gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id DF8871037F7
+	for <alsa-devel@alsa-project.org>; Sun, 20 Dec 2009 13:47:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <0640B473256C4948B7A16988809F8AB2@brianoffice>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Brian Welch <Brian-Welch@cox.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, Dec 19, 2009 at 09:48:16PM -0700, Brian Welch wrote:
 
-I'm writing new omap dai (for EAC codec base omap's).
-My code is based on existing omap-mcbsp.c code basically.
+[Please fix your MUA to word wrap lines at ~80 columns, it would make
+your mails much easier to read.]
 
-After loadingof module I got error which appear in init function when
-call snd_soc_register_dai().
+> When I use kbuild to build my custom sound hardware driver against the SDK in the kernel, it always trys to pick up the older ALSA header files that are in the SDK, but I want to use the newer versions that are in the directory with the newer version of ALSA.  What the best way to make sure I get the correct headers?  Is what I'm trying "dangerous" and should I be going about this a different way?
 
-I browse for code but can't figure out where dai->dev should be set to
-don't get error message and init dai properly.
-
-Thanks for any suggestions
-
-Marek
+The best way of integrating with the toolchain you're using will usually
+depend on the toolchain - you'll generally be able to get better advice
+about how to work with the toolchain by asking people who work with the
+toolchain.
