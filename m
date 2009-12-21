@@ -1,16 +1,16 @@
-From: Zerg Cannibal <cnb_zerg@yahoo.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: [PATCH 1/1] alsa-lib softvol S24_3LE distrotion fix
-Date: Mon, 21 Dec 2009 13:19:14 -0800 (PST)
-Message-ID: <349784.77923.qm@web56103.mail.re3.yahoo.com>
-References: <896914.42199.qm@web56103.mail.re3.yahoo.com>
+Date: Mon, 21 Dec 2009 22:24:08 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0912212221490.2598@eeebox2.perex-int.cz>
+References: <349784.77923.qm@web56103.mail.re3.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from n76.bullet.mail.sp1.yahoo.com (n76.bullet.mail.sp1.yahoo.com
-	[98.136.44.48]) by alsa0.perex.cz (Postfix) with SMTP id 6F0D52414C
-	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 22:19:16 +0100 (CET)
-In-Reply-To: <896914.42199.qm@web56103.mail.re3.yahoo.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BF272414F
+	for <Alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 22:24:09 +0100 (CET)
+In-Reply-To: <349784.77923.qm@web56103.mail.re3.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,70 +20,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel@alsa-project.org
+To: Zerg Cannibal <cnb_zerg@yahoo.com>
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-My previos message has broken line indents, here is the fixed one:
-(By the way, is here the right place to post the alsa-lib patches?)
+On Mon, 21 Dec 2009, Zerg Cannibal wrote:
 
+> My previos message has broken line indents, here is the fixed one:
+> (By the way, is here the right place to post the alsa-lib patches?)
 
-Summary: Fix the sound distortions for S24_3LE stream in alsa-lib softvol.
+Applied to ALSA GIT repository. You may send your small patches to this 
+list. For large patches, store your patch on a public place and post only 
+URL.
 
-This patch fixes sound distortions in alsa-lib "softvol"
-for S24_3LE sound stream, when softvol slider isn't at 0.0dB
-position.
+ 					Thanks,
+ 						Jaroslav
 
-Signed-off-by: CannibalZerg <cnb_zerg@yahoo.com>
----
- src/pcm/pcm_softvol.c |   22 ++++++++++++++++++++--
- 1 files changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
-index 637e5cb..2c7c006 100644
---- a/src/pcm/pcm_softvol.c
-+++ b/src/pcm/pcm_softvol.c
-@@ -107,7 +107,8 @@ static inline int MULTI_DIV_32x16(int a, unsigned short b)
- 	v.i = a;
- 	y.i = 0;
- #if __BYTE_ORDER == __LITTLE_ENDIAN
--	x.i = (unsigned int)v.s[0] * b;
-+	x.i = (unsigned short)v.s[0];
-+	x.i *= b;
- 	y.s[0] = x.s[1];
- 	y.i += (int)v.s[1] * b;
- #else
-@@ -135,6 +136,23 @@ static inline int MULTI_DIV_int(int a, unsigned int b, int swap)
- 	return swap ? (int)bswap_32(fraction) : fraction;
- }
- 
-+/* always little endian */
-+static inline int MULTI_DIV_24(int a, unsigned int b)
-+{
-+	unsigned int gain = b >> VOL_SCALE_SHIFT;
-+	int fraction;
-+	fraction = MULTI_DIV_32x16(a, b & VOL_SCALE_MASK);
-+	if (gain) {
-+		long long amp = (long long)a * gain + fraction;
-+		if (amp > (int)0x7fffff)
-+			amp = (int)0x7fffff;
-+		else if (amp < (int)0x800000)
-+			amp = (int)0x800000;
-+		return (int)amp;
-+	}
-+	return fraction;
-+}
-+
- static inline short MULTI_DIV_short(short a, unsigned int b, int swap)
- {
- 	unsigned int gain = b >> VOL_SCALE_SHIFT;
-@@ -223,7 +241,7 @@ static inline short MULTI_DIV_short(short a, unsigned int b, int swap)
- 				tmp = src[0] |				\
- 				      (src[1] << 8) |			\
- 				      (((signed char *) src)[2] << 16);	\
--				tmp = MULTI_DIV_int(tmp, vol_scale, 0);	\
-+				tmp = MULTI_DIV_24(tmp, vol_scale);	\
- 				dst[0] = tmp;				\
- 				dst[1] = tmp >> 8;			\
- 				dst[2] = tmp >> 16;			\
--- 
-1.6.5.6
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
