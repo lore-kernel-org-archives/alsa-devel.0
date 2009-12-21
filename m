@@ -1,70 +1,232 @@
-From: =?UTF-8?B?w4lyaWMgUGllbA==?= <eric.piel@tremplin-utc.net>
-Subject: Re: [2.6.33-rc1] [SOUND] HDA: high cpu usage, noise
-Date: Mon, 21 Dec 2009 20:08:34 +0100
-Message-ID: <4B2FC7B2.7000001@tremplin-utc.net>
-References: <8db1092f0912200927y7cdab36ftd1f73d56cd89763f@mail.gmail.com>	 <s5hmy1cpqo4.wl%tiwai@suse.de> <8db1092f0912211012mcdd6639oaaf0bddc118e7d66@mail.gmail.com>
+From: Zerg Cannibal <cnb_zerg@yahoo.com>
+Subject: [PATCH 1/1] Added functionality for E-mu
+	0404USB/0202USB/TrackerPre
+Date: Mon, 21 Dec 2009 12:39:27 -0800 (PST)
+Message-ID: <794724.87445.qm@web56107.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1757036AbZLUTIu@vger.kernel.org>
-In-Reply-To: <8db1092f0912211012mcdd6639oaaf0bddc118e7d66@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maciej Rutecki <maciej.rutecki@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, perex@perex.cz, "Rafael J. Wysocki" <rjw@sisk.pl>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from n2b.bullet.mail.ac4.yahoo.com (n2b.bullet.mail.ac4.yahoo.com
+	[76.13.13.72]) by alsa0.perex.cz (Postfix) with SMTP id 17F3D103806
+	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 21:39:28 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Op 21-12-09 19:12, Maciej Rutecki schreef:
-> 2009/12/21 Takashi Iwai <tiwai@suse.de>:
->> At Sun, 20 Dec 2009 18:27:45 +0100,
->> Maciej Rutecki wrote:
->>>
->>> Hi
->>>
->>> Affected kernel: 2.6.33-rc1
->>> Last known good: 2.6.32
->>
->> The only fundamental change, AFAIK, is the use of MSI as default.
->> Could you try to add enable_msi=0 option to snd-hda-intel?
->>
-> 
-> root@gumis:/# cat /sys/module/snd_hda_intel/parameters/enable_msi
-> 0
-> 
-> Still the same:
-> ps aux:
-> 
-> root      1117 27.4  0.0      0     0 ?        S    19:00   2:05 [hd-audio0]
-> 
-> I also notice short sound during booting system, when sound modules is
-> loading.  I can try bisection, but in next week; already I don't have
-> to much time.
-Hello,
-I've got the same problem here (high hd-audio0 usage + clicks in the
-output sound).
+Added functionality:
+1) Extension Units support (all XU settings now available at alsamixer, kmix, etc):
+ - "AnalogueIn soft limiter" switch;
+ - "Sample rate" selector (values 0,1,2,3,4,5 corresponds to 44.1 48 ... 192 kHz);
+ - "DigitalIn CLK source" selector (internal/external) (**);
+ - "DigitalOut format SPDIF/AC3" switch (**);
+(**)E-mu-0404usb only.
 
-Hardware is identical:
-/proc/asound/pcm
-00-00: AD198x Analog : AD198x Analog : playback 1 : capture 1
+2) Automatic device sample rate adjustment depending on substream samplerate for both capture and playback substream. 
+  
+Patch is based on Mac OS-X driver (http://sourceforge.net/projects/zaudiodrivermac/) and successfully tested by Ubuntu community users for 0404usb and 0202usb.
 
-I haven't tried the enable_msi parameter but, just to give more info,
-here is the log ("dmesg | grep -i hda") when the bug happens:
-Dec 18 10:39:10 dutifh kernel: HDA Intel 0000:00:1b.0: power state
-changed by ACPI to D0
-Dec 18 10:39:10 dutifh kernel: HDA Intel 0000:00:1b.0: PCI INT A -> GSI
-17 (level, low) -> IRQ 17
-Dec 18 10:39:10 dutifh kernel: input: HDA Digital PCBeep as
-/devices/pci0000:00/0000:00:1b.0/input/input12
-Dec 18 10:39:10 dutifh kernel: hda-intel: azx_get_response timeout,
-switching to polling mode: last cmd=0x006f0900
+Signed-off-by: CannibalZerg <cnb_zerg@yahoo.com>
+---
+ sound/usb/usbaudio.c |   44 ++++++++++++++++++++++++++++++
+ sound/usb/usbaudio.h |    2 +
+ sound/usb/usbmixer.c |   73 +++++++++++++++++++++++++++++++++++++++++++++++---
+ 3 files changed, 115 insertions(+), 4 deletions(-)
 
-And here is with 2.6.32, working fine
-Dec 18 11:46:03 dutifh kernel: HDA Intel 0000:00:1b.0: power state
-changed by ACPI to D0
-Dec 18 11:46:03 dutifh kernel: HDA Intel 0000:00:1b.0: PCI INT A -> GSI
-17 (level, low) -> IRQ 17
-Dec 18 11:46:03 dutifh kernel: input: HDA Digital PCBeep as
-/devices/pci0000:00/0000:00:1b.0/input/input11
-
-Could it be coming from this timeout?
-
-Eric
+diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
+index 31b63ea..d8eb029 100644
+--- a/sound/usb/usbaudio.c
++++ b/sound/usb/usbaudio.c
+@@ -1271,6 +1271,42 @@ static int init_usb_sample_rate(struct usb_device *dev, int iface,
+ }
+ 
+ /*
++ * For E-Mu 0404USB/0202USB/TrackerPre sample rate should be set for device,
++ * not for interface.
++*/
++static void set_format_emu_quirk(struct snd_usb_substream *subs, struct audioformat *fmt)
++{
++	unsigned char emu_samplerate_id = 0;
++
++	/* When capture is active sample rate shouldn't be changed by playback substream*/
++	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (subs->stream->substream[SNDRV_PCM_STREAM_CAPTURE].interface != -1)
++			return;
++	}
++
++	switch (fmt->rate_min) {
++	case 48000:
++		emu_samplerate_id = 1;
++		break;
++	case 88200:
++		emu_samplerate_id = 2;
++		break;
++	case 96000:
++		emu_samplerate_id = 3;
++		break;
++	case 176400:
++		emu_samplerate_id = 4;
++		break;
++	case 192000:
++		emu_samplerate_id = 5;
++		break;
++	default:
++		emu_samplerate_id = 0;
++	}
++	snd_emuusb_set_samplerate(subs->stream->chip, emu_samplerate_id);
++}
++
++/*
+  * find a matching format and set up the interface
+  */
+ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+@@ -1383,6 +1419,14 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+ 
+ 	subs->cur_audiofmt = fmt;
+ 
++	switch (subs->stream->chip->usb_id) {
++	case USB_ID(0x041e, 0x3f02): /* E-Mu 0202 USB */
++	case USB_ID(0x041e, 0x3f04): /* E-Mu 0404 USB */
++	case USB_ID(0x041e, 0x3f0a): /* E-Mu Tracker Pre */
++		set_format_emu_quirk(subs, fmt);
++	break;
++	}
++
+ #if 0
+ 	printk(KERN_DEBUG
+ 	       "setting done: format = %d, rate = %d..%d, channels = %d\n",
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 9826337..8558773 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -233,6 +233,8 @@ void snd_usbmidi_input_stop(struct list_head* p);
+ void snd_usbmidi_input_start(struct list_head* p);
+ void snd_usbmidi_disconnect(struct list_head *p);
+ 
++void snd_emuusb_set_samplerate(struct snd_usb_audio *chip, unsigned char samplerate_id);
++
+ /*
+  * retrieve usb_interface descriptor from the host interface
+  * (conditional for compatibility with the older API)
+diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
+index c998220..400208c 100644
+--- a/sound/usb/usbmixer.c
++++ b/sound/usb/usbmixer.c
+@@ -186,6 +186,21 @@ enum {
+ 	USB_PROC_DCR_RELEASE = 6,
+ };
+ 
++/*E-mu 0202(0404) eXtension Unit(XU) control*/
++enum {
++  USB_XU_CLOCK_RATE 		= 0xe301,
++  USB_XU_CLOCK_SOURCE		= 0xe302,
++  USB_XU_DIGITAL_IO_STATUS	= 0xe303,
++  USB_XU_DEVICE_OPTIONS	= 0xe304,
++  USB_XU_DIRECT_MONITORING	= 0xe305,
++  USB_XU_METERING		= 0xe306
++};
++enum {
++	USB_XU_CLOCK_SOURCE_SELECTOR = 0x02,	/* clock source*/
++	USB_XU_CLOCK_RATE_SELECTOR = 0x03,	/* clock rate */
++	USB_XU_DIGITAL_FORMAT_SELECTOR = 0x01,   /* the spdif format */
++	USB_XU_SOFT_LIMIT_SELECTOR = 0x03 /* soft limiter */
++};
+ 
+ /*
+  * manual mapping of mixer names
+@@ -1330,7 +1345,32 @@ static struct procunit_info procunits[] = {
+ 	{ USB_PROC_DCR, "DCR", dcr_proc_info },
+ 	{ 0 },
+ };
+-
++/*
++ * predefined data for extension units
++ */
++static struct procunit_value_info clock_rate_xu_info[] = {
++       { USB_XU_CLOCK_RATE_SELECTOR, "Selector", USB_MIXER_U8, 0},
++       { 0 }
++};
++static struct procunit_value_info clock_source_xu_info[] = {
++	{ USB_XU_CLOCK_SOURCE_SELECTOR, "External", USB_MIXER_BOOLEAN},
++	{ 0 }
++};
++static struct procunit_value_info spdif_format_xu_info[] = {
++	{ USB_XU_DIGITAL_FORMAT_SELECTOR, "SPDIF/AC3", USB_MIXER_BOOLEAN},
++	{ 0 }
++};
++static struct procunit_value_info soft_limit_xu_info[] = {
++	{ USB_XU_SOFT_LIMIT_SELECTOR, " ", USB_MIXER_BOOLEAN},
++	{ 0 }
++};
++static struct procunit_info extunits[] = {
++	{ USB_XU_CLOCK_RATE, "Clock rate", clock_rate_xu_info },
++	{ USB_XU_CLOCK_SOURCE, "DigitalIn CLK source", clock_source_xu_info },
++	{ USB_XU_DIGITAL_IO_STATUS, "DigitalOut format:", spdif_format_xu_info },
++	{ USB_XU_DEVICE_OPTIONS, "AnalogueIn Soft Limit", soft_limit_xu_info },
++	{ 0 }
++};
+ /*
+  * build a processing/extension unit
+  */
+@@ -1391,8 +1431,16 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, unsigned
+ 			cval->max = dsc[15];
+ 			cval->res = 1;
+ 			cval->initialized = 1;
+-		} else
+-			get_min_max(cval, valinfo->min_value);
++		} else {
++			if (type == USB_XU_CLOCK_RATE) {
++				/*E-Mu USB 0404/0202/TrackerPre samplerate control quirk*/
++						cval->min = 0;
++						cval->max = 5;
++						cval->res = 1;
++						cval->initialized = 1;
++			} else
++				get_min_max(cval, valinfo->min_value);
++		}
+ 
+ 		kctl = snd_ctl_new1(&mixer_procunit_ctl, cval);
+ 		if (! kctl) {
+@@ -1433,7 +1481,7 @@ static int parse_audio_processing_unit(struct mixer_build *state, int unitid, un
+ 
+ static int parse_audio_extension_unit(struct mixer_build *state, int unitid, unsigned char *desc)
+ {
+-	return build_audio_procunit(state, unitid, desc, NULL, "Extension Unit");
++	return build_audio_procunit(state, unitid, desc, extunits, "Extension Unit");
+ }
+ 
+ 
+@@ -2109,6 +2157,23 @@ static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixer)
+ 	return 0;
+ }
+ 
++void snd_emuusb_set_samplerate(struct snd_usb_audio *chip, unsigned char samplerate_id)
++{
++	 struct usb_mixer_interface *mixer;
++	 struct list_head *p;
++	 struct usb_mixer_elem_info *cval;
++	 int unitid = 12; /*SampleRate ExtensionUnit ID*/
++	 list_for_each(p, &chip->mixer_list) {
++		 mixer = list_entry(p, struct usb_mixer_interface, list);
++		 cval = mixer->id_elems[unitid];
++		 if (cval) {
++			 set_cur_ctl_value(cval, cval->control << 8, samplerate_id);
++			 snd_usb_mixer_notify_id(mixer, unitid);
++		 }
++		 break;
++	 }
++}
++
+ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
+ 			 int ignore_error)
+ {
+-- 
+1.6.5.6
