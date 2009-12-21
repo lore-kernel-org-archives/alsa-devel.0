@@ -1,17 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: No device for DAI omap-eac-dai error
-Date: Mon, 21 Dec 2009 08:42:37 +0200
-Message-ID: <200912210842.37511.peter.ujfalusi@nokia.com>
-References: <e7c6a05e0912180618h771b9b7fl9d197d500bc534c1@mail.gmail.com>
-	<e7c6a05e0912190851q273555beg2f1ed415a8c9399f@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH] ALSA: pcm: Properly close timer when
+ freeing slaves
+Date: Mon, 21 Dec 2009 09:13:46 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0912210911540.2598@eeebox2.perex-int.cz>
+References: <604760770912201227g60e71a3alb86f36c2a4da3d4e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92EF210384D
-	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 07:42:44 +0100 (CET)
-In-Reply-To: <e7c6a05e0912190851q273555beg2f1ed415a8c9399f@mail.gmail.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88FEE10384E
+	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 09:13:46 +0100 (CET)
+In-Reply-To: <604760770912201227g60e71a3alb86f36c2a4da3d4e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,45 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: ext Belisko Marek <marek.belisko@gmail.com>
+To: Daniel Chen <seven.steps@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Sun, 20 Dec 2009, Daniel Chen wrote:
 
-On Saturday 19 December 2009 18:51:59 ext Belisko Marek wrote:
 > Hi,
-> =
+>
+> Here's a patch originally from Dan McCombs against alsa-lib.git HEAD
+> fixing a fairly nasty fd leak for timers.
 
-> I'm writing new omap dai (for EAC codec base omap's).
-> My code is based on existing omap-mcbsp.c code basically.
-> =
+Thanks for notice. The patch proposed patch does reset hw->period_event 
+and pcm->fast_ops variables (the application might reuse pcm handle after 
+hw_free call to initialize PCM handle for another parameters). My 
+corrected version is in ALSA GIT now:
 
-> After loadingof module I got error which appear in init function when
-> call snd_soc_register_dai().
+http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=a256766c10c52cb6667de8a65f5cbb332fad4cc7
 
-It is a warning about the missing dai->dev, if the McBSP dais are in use yo=
-u get =
+ 					Jaroslav
 
-the same warning for all the ports.
-AFAIK at the moment it is harmless.
- =
-
-> I browse for code but can't figure out where dai->dev should be set to
-> don't get error message and init dai properly.
-> =
-
-> Thanks for any suggestions
-> =
-
-> Marek
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> =
-
-
--- =
-
-P=E9ter
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
