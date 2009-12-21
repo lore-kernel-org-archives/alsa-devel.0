@@ -1,32 +1,22 @@
-From: Stefan Ringel <stefan.ringel@arcor.de>
-Subject: Re: HD-Audio device unsuppored (Nvidia G2xx-series GPU
- implemented)
-Date: Mon, 21 Dec 2009 15:41:47 +0100
-Message-ID: <4B2F892B.7030009@arcor.de>
-References: <4B238733.2070706@arcor.de>
-	<s5heimxlrjd.wl%tiwai@suse.de>	<4B262682.60400@arcor.de>
-	<s5h7hsplqlz.wl%tiwai@suse.de>	<s5h7hspjvpv.wl%tiwai@suse.de>
-	<4B294E06.6060001@arcor.de>	<4B2CC8C7.4050507@arcor.de>
-	<s5hmy1clhpt.wl%tiwai@suse.de>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] refine rate selection in snd_interval_ratnum()
+Date: Mon, 21 Dec 2009 17:07:08 +0100
+Message-ID: <20091221170708.968b614a.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-in-06.arcor-online.net (mail-in-06.arcor-online.net
-	[151.189.21.46]) by alsa0.perex.cz (Postfix) with ESMTP id 08D47243CF
-	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 15:41:55 +0100 (CET)
-Received: from mail-in-02-z2.arcor-online.net (mail-in-02-z2.arcor-online.net
-	[151.189.8.14]) by mx.arcor.de (Postfix) with ESMTP id 6501339A51D
-	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 15:41:53 +0100 (CET)
-Received: from mail-in-17.arcor-online.net (mail-in-17.arcor-online.net
-	[151.189.21.57])
-	by mail-in-02-z2.arcor-online.net (Postfix) with ESMTP id 50508114173
-	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 15:41:53 +0100 (CET)
-Received: from [192.168.2.102] (dslb-094-222-026-034.pools.arcor-ip.net
-	[94.222.26.34]) (Authenticated sender: stefan.ringel@arcor.de)
-	by mail-in-17.arcor-online.net (Postfix) with ESMTPA id 1F2F33B2497
-	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 15:41:52 +0100 (CET)
-In-Reply-To: <s5hmy1clhpt.wl%tiwai@suse.de>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240]) by alsa0.perex.cz (Postfix) with ESMTP id 09E262412E
+	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 17:04:32 +0100 (CET)
+Received: from poczta.interia.pl (mi06.poczta.interia.pl [10.217.12.6])
+	by smtp240.poczta.interia.pl (INTERIA.PL) with ESMTP id 29A721068C4
+	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 17:04:30 +0100 (CET)
+Received: from krzysio.net (93-181-133-4.as.kn.pl [93.181.133.4])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by www.poczta.fm (INTERIA.PL) with ESMTP id 680D913247A
+	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 17:04:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,94 +26,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am 21.12.2009 11:55, schrieb Takashi Iwai:
-> At Sat, 19 Dec 2009 13:36:23 +0100,
-> Stefan Ringel wrote:
->   
->> Am 16.12.2009 22:15, schrieb Stefan Ringel:
->>     
->>> Am 14.12.2009 18:45, schrieb Takashi Iwai:
->>>   
->>>       
->>>> At Mon, 14 Dec 2009 12:52:40 +0100,
->>>> I wrote:
->>>>   
->>>>     
->>>>         
->>>>>>         
->>>>>>             
->>>>>     
->>>>>       
->>>>>           
->>>>>>>> one codec-id missed (0x10de000d) and codec-name is "G2xx HDMI".
->>>>>>>>             
->>>>>>>>                 
->>>>>>       
->>>>>>
->>>>>> OK, I'll update.
->>>>>>         
->>>>>>             
->>>>>     
->>>>>       
->>>>>           
->>>> Below is the updated patch.  This also replaces the PCI ID check using
->>>> the generic hd-audio class check.
->>>>
->>>>
->>>> Takashi
->>>>
->>>>   
->>>>     
->>>>         
->>> Hi Takashi,
->>>
->>> I have a theory,
->>>
->>> 4 codec with 2 channels bundling to one pcm device for 8 channels
->>> uncompressed lpcm audio and compressed audio over first codec.
->>>
->>> Actual configuration is 4 separate pcm device.
->>>
->>>
->>>   
->>>       
->> Hi Takashi,
->>  
->> I tested your patch and it doesn't work.
->> I checked caps from nodes 0x04 and 0x05 and comparing with  
->> http://download.intel.com/standards/hdaudio/pdf/hda034-a2.pdf. document.
->> The configuration is 4 full HDMI codec not 4 2-channels pcm codec. It
->> have CP-flag, ext-channel and in pin-widget that HDMI-flag.
->>     
-> But still it's not sure whether it's really compliant.
-> Nvidia HDMI codecs have been incompatible with that standard although
-> they have already supported 8 channels.
-> And, one wonders why there are 4 HDMI codecs there.
->
-> Anyway, try to set up just one codec and don't do anything else.
-> If it's a standard codec, patch_intelhdmi.c would work.  Create a new
-> patch code that ignores the instances with codec->addr > 1, so that
-> you concentrate on only the first codec address.
-> Or, patch_atihdmi.c can be used by changing the fixed pins...
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->   
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-I tested your patch  with using HDA-Analyzer once again. I enabled and
-disabled the codecs step to step and as I enabled the second codec I
-hear rear left and rear right, but not other channels. As I enabled all
-codecs I hear only rear
-left and rear right.
+Refine the rate selection by choosing the rate
+closer to the requested one in case of selecting
+single frequency. Previously, the higher rate was
+always selected.
 
-Stefan Ringel <stefan.ringel@arcor.de>
+Also, fix problem with the best_diff unsigned int
+value wrapping (turning negative).
 
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+ sound/core/pcm_lib.c |   20 +++++++++++++++++---
+ 1 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index a27545b..b07cc36 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -745,10 +745,13 @@ int snd_interval_ratnum(struct snd_interval *i,
+ 			unsigned int rats_count, struct snd_ratnum *rats,
+ 			unsigned int *nump, unsigned int *denp)
+ {
+-	unsigned int best_num, best_diff, best_den;
++	unsigned int best_num, best_den;
++	int best_diff;
+ 	unsigned int k;
+ 	struct snd_interval t;
+ 	int err;
++	unsigned int result_num, result_den;
++	int result_diff;
+ 
+ 	best_num = best_den = best_diff = 0;
+ 	for (k = 0; k < rats_count; ++k) {
+@@ -770,6 +773,8 @@ int snd_interval_ratnum(struct snd_interval *i,
+ 				den -= r;
+ 		}
+ 		diff = num - q * den;
++		if (diff < 0)
++			diff = -diff;
+ 		if (best_num == 0 ||
+ 		    diff * best_den < best_diff * den) {
+ 			best_diff = diff;
+@@ -784,6 +789,9 @@ int snd_interval_ratnum(struct snd_interval *i,
+ 	t.min = div_down(best_num, best_den);
+ 	t.openmin = !!(best_num % best_den);
+ 	
++	result_num = best_num;
++	result_diff = best_diff;
++	result_den = best_den;
+ 	best_num = best_den = best_diff = 0;
+ 	for (k = 0; k < rats_count; ++k) {
+ 		unsigned int num = rats[k].num;
+@@ -806,6 +814,8 @@ int snd_interval_ratnum(struct snd_interval *i,
+ 				den += rats[k].den_step - r;
+ 		}
+ 		diff = q * den - num;
++		if (diff < 0)
++			diff = -diff;
+ 		if (best_num == 0 ||
+ 		    diff * best_den < best_diff * den) {
+ 			best_diff = diff;
+@@ -825,10 +835,14 @@ int snd_interval_ratnum(struct snd_interval *i,
+ 		return err;
+ 
+ 	if (snd_interval_single(i)) {
++		if (best_diff * result_den < result_diff * best_den) {
++			result_num = best_num;
++			result_den = best_den;
++		}
+ 		if (nump)
+-			*nump = best_num;
++			*nump = result_num;
+ 		if (denp)
+-			*denp = best_den;
++			*denp = result_den;
+ 	}
+ 	return err;
+ }
 -- 
-Stefan Ringel <stefan.ringel@arcor.de>
+1.6.4
+
+
+----------------------------------------------------------------------
+Milosc, praca, pieniadze.
+Sprawdz swoj horoskop na dzis >> http://link.interia.pl/f2531
