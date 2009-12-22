@@ -1,29 +1,17 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: need help with io plugin programming: how to add delay
-	?
-Date: Tue, 22 Dec 2009 20:55:33 +0100
-Message-ID: <4B312435.800@gmail.com>
+From: "Brian Welch" <Brian-Welch@cox.net>
+Subject: Re: Installing a "different" version of Alsa
+Date: Tue, 22 Dec 2009 14:50:42 -0700
+Message-ID: <3DE0C4BC819942189FD9EA0AB2630C68@brianoffice>
+References: <mailman.3791.1261331960.2074.alsa-devel@alsa-project.org>
+	<69F4A42643E24687BFFD4D3D0F485DEA@brianoffice>
+	<20091222125847.GB8522@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from netfinity.tbmn.org (mail.tbmn.org [88.117.197.126])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5AA724506
-	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 20:55:42 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by netfinity.tbmn.org (Postfix) with ESMTP id 23BE24BEE9
-	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 20:55:40 +0100 (CET)
-Received: from netfinity.tbmn.org ([127.0.0.1])
-	by localhost (netfinity.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id D+IrKcO38lKS for <alsa-devel@alsa-project.org>;
-	Tue, 22 Dec 2009 20:55:39 +0100 (CET)
-Received: from [192.168.1.132] (85-127-149-164.dynamic.xdsl-line.inode.at
-	[85.127.149.164])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: mne@tbmn.org)
-	by netfinity.tbmn.org (Postfix) with ESMTPSA id 83B934BE05
-	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 20:55:39 +0100 (CET)
+Received: from fed1rmmtao107.cox.net (fed1rmmtao107.cox.net [68.230.241.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id C79C6245F9
+	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 22:50:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,97 +22,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I would like to write a simple alsa io plugin that takes some amount of
-PCM samples and sends them to a socket in a timely manner (this would be
-playback).
-Later on it should work the other way round as well (recording).
-(Well, actually I have been working on this for a month already but so
-far I still did not manage to get a working solution.)
-
-
-However, if the PCM stream comes from something prerecorded (i.e. a wav
-file) there needs to be some kind of delay.
-If for example the wav file would have a sampling rate of 8 kHz, 16 bit
-resolution and one period should consist of 160 samples, it would be
-necessary to write on period exactly each 20ms.
-For this reason delay needs to be added somewhere so that each 20ms
-exactly one period is begin sent to the socket.
-Otherwise all the PCM samples would be just immediately written to the
-socket without any delay.
+----- Original Message ----- 
+From: "Mark Brown" <broonie@opensource.wolfsonmicro.com>
+To: "Brian Welch" <Brian-Welch@cox.net>
+Cc: <alsa-devel@alsa-project.org>
+Sent: Tuesday, December 22, 2009 5:58 AM
+Subject: Re: [alsa-devel] Installing a "different" version of Alsa
 
 
-I read a lot of other alsa plugin code but still I have found no way to
-properly solve the delay problem.
+> On Sun, Dec 20, 2009 at 11:34:03PM -0700, Brian Welch wrote:
+>
+>> I guess I don't understand exactly what you mean by "toolchain."  I've
+>> already
+>> contacted the people that package up the SDK and they said I should solve 
+>> it
+>
+> I mean the people who produce whatever embedded Linux distribution you
+> are using (you didn't mention?), or the user community surrounding it.
+> If you're having trouble getting support from them there's other
+> distributions out there such as the OpenEmbedded based ones which do
+> have more of an active user community around them:
+>
+> http://openembedded.net/
+>
+>> myself.  I originally hoped that I could just re-build the kernel without
+>> Alsa
+>> built-in, then add my new version of Alsa, but they claim that causes 
+>> other
+>> issues (i.e. no sound at all).
+>
+> If it's just the drivers you need to update it's probably easier to
+> merge the newer ALSA version into the kernel rather than trying to keep
+> an out of tree version as well, it will hopefully reduce the level of
+> confusion within the toolchain.
 
-* Where and how do I need to add delay ??
+Hmmm, yeah, problems all the way around.  Maybe I should explain in
+more detail.  This SDK is for a platform (silicon/software/dev-board) still
+very much under development and I can't say too much without violating NDA,
+etc.  The SDK is currently supported by the silicon manufacturer.  It 
+includes a
+vanilla Linux distribution directly from kernel.org and a small kernel 
+patch.
+In addition to the Linux distrubution there are drivers in the SDK for 
+dozens of
+custom devices including custom sound hardware.  Basically, they're rolling 
+their
+own toolchain and supporting it (for now).
 
+I've written an Alsa-compatible sound driver layer to go between Alsa and
+their custom driver and it's been working for a few months, but they 
+recently
+decided to start supporting two versions of the SDK, each having a different
+version of Linux.  The version of Alsa built-in to Linux in each version of 
+the
+SDK is different, and they would like to supply a version of Alsa 
+"out-of-tree"
+so that both SDKs are the same and so that customers can theoretically
+swap out to any version of Alsa they want.
 
-My first approach was to add delay by sleeping in the transfer callback
-function.
-After I had implemented that solution (and it did not work that well) I
-was told that this is not the proper way to do it.
+This change has caused my driver to not build correctly/reliably on both
+SDK versions.  The reason is that the symbols in linux/include/sound are
+different than the out-of-tree include files that I need to build against. 
+I can
+make it work by hacking the SDK directory structure but they want to
+eventually integrate everything into the SDK so minimizing hacks is 
+desirable.
 
-* What is the proper way then ?
+Merging the correct version of Alsa into the kernel will fix my immediate
+problem but they don't want to do it because it won't satisfy the desire to
+be able to swap in any version of Alsa (assuming that's actually possible).
 
+Another thing I thought of was to fix up the kernel/include/sound directory
+structure with soft links when "installing" the out-of-tree version of Alsa 
+into
+the SDK, but I didn't get a positive reaction when I suggested it.
 
-I was told that the alsa plugin framework is poll based and I should
-come up with a poll based solution.
-However, I can not just let the alsa io plugin poll for POLLOUT on the
-socket as this would not add any delay at all.
-(It would just wait until new data can be written to the socket.)
-
-
-
-After looking at the bluetooth alsa plugin I came up with another idea
-(and my second approach):
-
-Basically it should be possible to create an independent timing thread
-in the alsa plugin that writes dummy data (e.g. a single byte) to a pipe
-each period (thus in my case each 20ms).
-
-The plugin would then poll for POLLIN on the above mentioned pipe and
-poll for POLLOUT on the socket at the same time.
-This way the transfer callback function would be called if and only if
-the following two conditions are met:
-
-	* 20 ms period time has passed
-	* the socket can accept new data
-
-* Would this solution be the proper way ?
-
-
-Another solution (my third one already) would be to introduce *no* delay
-in the alsa plugin itself, but do everything in the application that is
-listening on the socket.
-For this reason the application would read one period, process the data
-and then sleep for the rest of the time until the time for one period
-(i.e. 20ms) is over.
-After that the next period is read from the socket and so forth.
-The alsa plugin would then "automatically" write new data to the socket
-each time the application listening to that socket reads data and there
-is free space in the socket send buffer.
-
-* Once again, would this be a proper solution ?
-
-* If so, how do I know when to increment the hardware pointer ?
-  (- After the send() call in the transfer callback function ?
-   - Using an independent thread in the plugin that just increments the
-     hardware pointer each 20ms ?)
-   - something even more complex ?)
-
-My guess is that the third solution (delay is added in the application
-that listens to the socket) might work well as the delay is added at the
-end of the "audio processing chain" which makes it less sensitive to
-delays that are introduced in between.
-
-* Is this correct ?
-
-I would appreciate any help as I have invested way too much time in this
-already.
-
-cheers,
-stefan
+Brian 
