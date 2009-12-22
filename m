@@ -1,24 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 7/7] ASoC: sh: FSI:: don't check
-	platform_get_irq's	return value against zero
-Date: Tue, 22 Dec 2009 12:34:40 +0000
-Message-ID: <20091222123440.GB19056@opensource.wolfsonmicro.com>
-References: <1260979809-24811-1-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1260979809-24811-2-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1260979809-24811-3-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1260979809-24811-4-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1260979809-24811-5-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1260979809-24811-6-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1260979809-24811-7-git-send-email-u.kleine-koenig@pengutronix.de>
+Subject: Re: Installing a "different" version of Alsa
+Date: Tue, 22 Dec 2009 12:58:47 +0000
+Message-ID: <20091222125847.GB8522@sirena.org.uk>
+References: <mailman.3791.1261331960.2074.alsa-devel@alsa-project.org>
+	<69F4A42643E24687BFFD4D3D0F485DEA@brianoffice>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6972010382D
-	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 13:34:41 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2686810383B
+	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 13:58:48 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1260979809-24811-7-git-send-email-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <69F4A42643E24687BFFD4D3D0F485DEA@brianoffice>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,20 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@suse.de>, linux-kernel@vger.kernel.org, Paul Mundt <lethal@linux-sh.org>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, David Vrabel <dvrabel@arcom.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Brian Welch <Brian-Welch@cox.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 16, 2009 at 05:10:09PM +0100, Uwe Kleine-K=F6nig wrote:
-> platform_get_irq returns -ENXIO on failure, so !irq was probably
-> always true.  Better use (int)irq <=3D 0.  Note that a return value of
-> zero is still handled as error even though this could mean irq0.
-> =
+On Sun, Dec 20, 2009 at 11:34:03PM -0700, Brian Welch wrote:
 
-> This is a followup to 305b3228f9ff4d59f49e6d34a7034d44ee8ce2f0 that
-> changed the return value of platform_get_irq from 0 to -ENXIO on error.
-> =
+> I guess I don't understand exactly what you mean by "toolchain."  I've 
+> already
+> contacted the people that package up the SDK and they said I should solve it
 
-> Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+I mean the people who produce whatever embedded Linux distribution you
+are using (you didn't mention?), or the user community surrounding it.
+If you're having trouble getting support from them there's other
+distributions out there such as the OpenEmbedded based ones which do
+have more of an active user community around them:
 
-Applied, thanks.
+	http://openembedded.net/
+
+> myself.  I originally hoped that I could just re-build the kernel without 
+> Alsa
+> built-in, then add my new version of Alsa, but they claim that causes other
+> issues (i.e. no sound at all).
+
+If it's just the drivers you need to update it's probably easier to
+merge the newer ALSA version into the kernel rather than trying to keep
+an out of tree version as well, it will hopefully reduce the level of
+confusion within the toolchain.
