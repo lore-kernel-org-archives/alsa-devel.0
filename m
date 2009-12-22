@@ -1,38 +1,55 @@
-From: =?UTF-8?B?w4lyaWMgUGllbA==?= <eric.piel@tremplin-utc.net>
-Subject: Re: [2.6.33-rc1] [SOUND] HDA: high cpu usage, noise
-Date: Tue, 22 Dec 2009 10:15:20 +0100
-Message-ID: <4B308E28.1090609@tremplin-utc.net>
-References: <8db1092f0912200927y7cdab36ftd1f73d56cd89763f@mail.gmail.com>	<s5hmy1cpqo4.wl%tiwai@suse.de>	<8db1092f0912211012mcdd6639oaaf0bddc118e7d66@mail.gmail.com>	<4B2FC7B2.7000001@tremplin-utc.net> <s5hk4wf1obu.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: add missing parameter to
+	mx27vis_hifi_hw_free()
+Date: Tue, 22 Dec 2009 10:30:49 +0000
+Message-ID: <1261477849.3555.0.camel@odin>
+References: <Pine.LNX.4.64.0912220923490.4919@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1751626AbZLVJP1@vger.kernel.org>
-In-Reply-To: <s5hk4wf1obu.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Maciej Rutecki <maciej.rutecki@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, perex@perex.cz, "Rafael J. Wysocki" <rjw@sisk.pl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f212.google.com (mail-ew0-f212.google.com
+	[209.85.219.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id D0A41243E4
+	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 11:30:53 +0100 (CET)
+Received: by ewy4 with SMTP id 4so19510081ewy.32
+	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 02:30:53 -0800 (PST)
+In-Reply-To: <Pine.LNX.4.64.0912220923490.4919@axis700.grange>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Op 22-12-09 08:04, Takashi Iwai schreef:
-> At Mon, 21 Dec 2009 20:08:34 +0100,
-> =C3=89ric Piel wrote:
-:
->> Could it be coming from this timeout?
->=20
-> It shouldn't.  The polling mode doesn't give any behavioral change,
-> and the CPU usage can't be that high.
->=20
-> Try is to pass bdl_pos_adj=3D0 option.  This should reduce the CPU ho=
-g,
-> at least.  But it doesn't mean it's the right fix...
-I'll try
+On Tue, 2009-12-22 at 09:26 +0100, Guennadi Liakhovetski wrote:
+> Commit 2ccafed4 added an extra parameter to the DAI .set_pll() method, but 
+> it missed this call in sound/soc/imx/mx27vis_wm8974.c.
+> 
+> Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> ---
+>  sound/soc/imx/mx27vis_wm8974.c |    3 ++-
+>  1 files changed, 2 insertions(+), 1 deletions(-)
+> 
+> diff --git a/sound/soc/imx/mx27vis_wm8974.c b/sound/soc/imx/mx27vis_wm8974.c
+> index 0267d2d..07d2a24 100644
+> --- a/sound/soc/imx/mx27vis_wm8974.c
+> +++ b/sound/soc/imx/mx27vis_wm8974.c
+> @@ -180,7 +180,8 @@ static int mx27vis_hifi_hw_free(struct snd_pcm_substream *substream)
+>  	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+>  
+>  	/* disable the PLL */
+> -	return codec_dai->ops->set_pll(codec_dai, IGNORED_ARG, 0, 0);
+> +	return codec_dai->ops->set_pll(codec_dai, IGNORED_ARG, IGNORED_ARG,
+> +				       0, 0);
+>  }
+>  
+>  /*
 
->=20
-> Another thing to try is to replace the whole HD-audio stack with the
-> last working one (was it 2.6.32?), and check whether it works with
-> 2.6.32 core.
-Could you give more details on how to do this?
-Does it consist in taking the sound/ directory of 2.6.32 and copying it
-over 2.6.33-rc1 ? Or less files?
-
-Eric
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
