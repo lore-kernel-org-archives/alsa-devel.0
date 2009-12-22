@@ -1,22 +1,19 @@
-From: "Candelaria Villareal, Jorge" <x0107209@ti.com>
-Subject: Re: [PATCH 2/3] ASoC: OMAP4: Add support for McPDM
-Date: Mon, 21 Dec 2009 16:50:18 -0600
-Message-ID: <2256F256009DAA4CBE661E9F41EAC84B8BC5C1F8@dlee01.ent.ti.com>
-References: <2256F256009DAA4CBE661E9F41EAC84B8BA0A6D2@dlee01.ent.ti.com>
-	<20091217202821.GA30379@nokia.com>
-	<2256F256009DAA4CBE661E9F41EAC84B8BA0AA88@dlee01.ent.ti.com>
-	<20091218093338.GA31755@nokia.com>
-	<2256F256009DAA4CBE661E9F41EAC84B8BB2A669@dlee01.ent.ti.com>,
-	<20091220141941.GA6089@nokia.com>
+From: =?UTF-8?Q?Rafael_Esp=C3=ADndola?= <rafael.espindola@gmail.com>
+Subject: Re: [patch] Add support for the new 27 inch IMacs
+Date: Mon, 21 Dec 2009 19:26:50 -0500
+Message-ID: <564d96fb0912211626w2d906841o787c0e4e495f3fcf@mail.gmail.com>
+References: <564d96fb0912201346y29f3fbcamfa9e82760bdc8b2d@mail.gmail.com>
+	<s5hljgwlh2z.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=0015174028da19424f047b4643d9
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60A41243B0
-	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 23:53:41 +0100 (CET)
-In-Reply-To: <20091220141941.GA6089@nokia.com>
-Content-Language: en-US
+Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
+	[209.85.220.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id A09C424156
+	for <alsa-devel@alsa-project.org>; Tue, 22 Dec 2009 01:26:52 +0100 (CET)
+Received: by fxm3 with SMTP id 3so2875814fxm.4
+	for <alsa-devel@alsa-project.org>; Mon, 21 Dec 2009 16:26:51 -0800 (PST)
+In-Reply-To: <s5hljgwlh2z.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,59 +23,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "felipe.balbi@nokia.com" <felipe.balbi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->On Fri, Dec 18, 2009 at 06:01:19PM +0100, ext Candelaria Villareal, Jorge wrote:
->>Mmm... But it _does_ have some breaks. Besides, I am still unsure that
->>if structure should be used here. Code would be duplicated, for example,
->>DN_IRQ_FULL and DN_IRQ_EMPTY share the same procedure to acknowledge
->>the request.
->
->quoting your switch for irq here:
->
->> +       switch (irq_status) {
->> +       case DN_IRQ_FULL:
->> +       case DN_IRQ_EMTPY:
->> +               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
->> +               omap_mcpdm_reset(MCPDM_DOWNLINK, 1);
->> +               omap_mcpdm_set_downlink(mcpdm_irq->downlink);
->> +               omap_mcpdm_reset(MCPDM_DOWNLINK, 0);
->> +               break;
->> +       case DN_IRQ:
->> +               dev_dbg(mcpdm_irq->dev, "DN write request\n");
->> +               break;
->> +       case UP_IRQ_FULL:
->> +       case UP_IRQ_EMPTY:
->> +               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
->> +               omap_mcpdm_reset(MCPDM_UPLINK, 1);
->> +               omap_mcpdm_set_uplink(mcpdm_irq->uplink);
->> +               omap_mcpdm_reset(MCPDM_UPLINK, 0);
->> +               break;
->> +       case UP_IRQ:
->> +               dev_dbg(mcpdm_irq->dev, "UP write request\n");
->> +               break;
->> +       }
->
->what happens if you have both DN_IRQ_FULL and DN_IRQ_EMPTY at the same
->time ?
->
->irq_status == DN_IRQ_FULL will evaluate to false and
->irq_status == DN_IRQ_EMPTY will also evaluate to false so none of those
->case statements will execute. Similarly to other case statements.
->
->if you have to execute the same piece of code for two different irqs you
->can always:
->
->if ((irq_status & DN_IRQ_FULL) || (irq_status & DN_IRQ_EMPTY))
->        ack_those_irqs();
->
->this code might be working now only out of luck, simply because you
->didn't have two irqs hapenning at the same time. Do not use switch() on
->bitmasks, it won't work always.
->
->--
->balbi
+--0015174028da19424f047b4643d9
+Content-Type: text/plain; charset=UTF-8
 
-OK, I get what you say now. This change will be added to version 2. Thanks
+> Could you fix these and repost?
+
+Sure. It is attached.
+
+> thanks,
+>
+> Takashi
+>
+
+Signed-off-by: Rafael Avila de Espindola <rafael.espindola@gmail.com>
+
+--0015174028da19424f047b4643d9
+Content-Type: text/plain; charset=US-ASCII; name="imac27.patch.txt"
+Content-Disposition: attachment; filename="imac27.patch.txt"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g3hxpz4w0
+
+ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vc291bmQvYWxzYS9IRC1BdWRpby1Nb2RlbHMudHh0
+IGIvRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0hELUF1ZGlvLU1vZGVscy50eHQKaW5kZXggZTkz
+YWZmZi4uZTcyY2VlOSAxMDA2NDQKLS0tIGEvRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0hELUF1
+ZGlvLU1vZGVscy50eHQKKysrIGIvRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhL0hELUF1ZGlvLU1v
+ZGVscy50eHQKQEAgLTQwMyw0ICs0MDMsNSBAQCBTVEFDOTg3MgogQ2lycnVzIExvZ2ljIENTNDIw
+Ni80MjA3CiA9PT09PT09PT09PT09PT09PT09PT09PT0KICAgbWJwNTUJCU1hY0Jvb2sgUHJvIDUs
+NQorICBpbWFjMjcJSU1hYyAyNyBJbmNoCiAgIGF1dG8JCUJJT1Mgc2V0dXAgKGRlZmF1bHQpCmRp
+ZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX2NpcnJ1cy5jIGIvc291bmQvcGNpL2hkYS9w
+YXRjaF9jaXJydXMuYwppbmRleCBlZWI5MWY2Li4wOTNjZmJiIDEwMDY0NAotLS0gYS9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX2NpcnJ1cy5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY2lycnVzLmMK
+QEAgLTY2LDYgKzY2LDcgQEAgc3RydWN0IGNzX3NwZWMgewogLyogYXZhaWxhYmxlIG1vZGVscyAq
+LwogZW51bSB7CiAJQ1M0MjBYX01CUDU1LAorCUNTNDIwWF9JTUFDMjcsCiAJQ1M0MjBYX0FVVE8s
+CiAJQ1M0MjBYX01PREVMUwogfTsKQEAgLTgzMyw3ICs4MzQsOCBAQCBzdGF0aWMgdm9pZCBjc19h
+dXRvbXV0ZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJCQkgICAgQUNfVkVSQl9TRVRfUElO
+X1dJREdFVF9DT05UUk9MLAogCQkJCSAgICBocF9wcmVzZW50ID8gMCA6IFBJTl9PVVQpOwogCX0K
+LQlpZiAoc3BlYy0+Ym9hcmRfY29uZmlnID09IENTNDIwWF9NQlA1NSkgeworCWlmIChzcGVjLT5i
+b2FyZF9jb25maWcgPT0gQ1M0MjBYX01CUDU1IHx8CisJICAgIHNwZWMtPmJvYXJkX2NvbmZpZyA9
+PSBDUzQyMFhfSU1BQzI3KSB7CiAJCXVuc2lnbmVkIGludCBncGlvID0gaHBfcHJlc2VudCA/IDB4
+MDIgOiAweDA4OwogCQlzbmRfaGRhX2NvZGVjX3dyaXRlKGNvZGVjLCAweDAxLCAwLAogCQkJCSAg
+ICBBQ19WRVJCX1NFVF9HUElPX0RBVEEsIGdwaW8pOwpAQCAtMTA3NSwxMiArMTA3NywxNCBAQCBz
+dGF0aWMgaW50IGNzX3BhcnNlX2F1dG9fY29uZmlnKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQog
+CiBzdGF0aWMgY29uc3QgY2hhciAqY3M0MjB4X21vZGVsc1tDUzQyMFhfTU9ERUxTXSA9IHsKIAlb
+Q1M0MjBYX01CUDU1XSA9ICJtYnA1NSIsCisJW0NTNDIwWF9JTUFDMjddID0gImltYWMyNyIsCiAJ
+W0NTNDIwWF9BVVRPXSA9ICJhdXRvIiwKIH07CiAKIAogc3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1
+aXJrIGNzNDIweF9jZmdfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDEwZGUsIDB4Y2I3OSwg
+Ik1hY0Jvb2tQcm8gNSw1IiwgQ1M0MjBYX01CUDU1KSwKKwlTTkRfUENJX1FVSVJLKDB4ODA4Niwg
+MHg3MjcwLCAiSU1hYyAyNyBJbmNoIiwgQ1M0MjBYX0lNQUMyNyksCiAJe30gLyogdGVybWluYXRv
+ciAqLwogfTsKIApAQCAtMTEwMyw4ICsxMTA3LDIzIEBAIHN0YXRpYyBzdHJ1Y3QgY3NfcGluY2Zn
+IG1icDU1X3BpbmNmZ3NbXSA9IHsKIAl7fSAvKiB0ZXJtaW5hdG9yICovCiB9OwogCitzdGF0aWMg
+c3RydWN0IGNzX3BpbmNmZyBpbWFjMjdfcGluY2Znc1tdID0geworCXsgMHgwOSwgMHgwMTJiNDA1
+MCB9LAorCXsgMHgwYSwgMHg5MDEwMDE0MCB9LAorCXsgMHgwYiwgMHg5MDEwMDE0MiB9LAorCXsg
+MHgwYywgMHgwMThiMzAyMCB9LAorCXsgMHgwZCwgMHg5MGEwMDExMCB9LAorCXsgMHgwZSwgMHg0
+MDAwMDBmMCB9LAorCXsgMHgwZiwgMHgwMWNiZTAzMCB9LAorCXsgMHgxMCwgMHgwMTRiZTA2MCB9
+LAorCXsgMHgxMiwgMHgwMWFiOTA3MCB9LAorCXsgMHgxNSwgMHg0MDAwMDBmMCB9LAorCXt9IC8q
+IHRlcm1pbmF0b3IgKi8KK307CisKIHN0YXRpYyBzdHJ1Y3QgY3NfcGluY2ZnICpjc19waW5jZmdz
+W0NTNDIwWF9NT0RFTFNdID0gewogCVtDUzQyMFhfTUJQNTVdID0gbWJwNTVfcGluY2ZncywKKwlb
+Q1M0MjBYX0lNQUMyN10gPSBpbWFjMjdfcGluY2ZncywKIH07CiAKIHN0YXRpYyB2b2lkIGZpeF9w
+aW5jZmcoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGludCBtb2RlbCkKQEAgLTExMzQsNiArMTE1
+Myw3IEBAIHN0YXRpYyBpbnQgcGF0Y2hfY3M0MjB4KHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQog
+CQlmaXhfcGluY2ZnKGNvZGVjLCBzcGVjLT5ib2FyZF9jb25maWcpOwogCiAJc3dpdGNoIChzcGVj
+LT5ib2FyZF9jb25maWcpIHsKKwljYXNlIENTNDIwWF9JTUFDMjc6CiAJY2FzZSBDUzQyMFhfTUJQ
+NTU6CiAJCS8qIEdQSU8xID0gaGVhZHBob25lcyAqLwogCQkvKiBHUElPMyA9IHNwZWFrZXJzICov
+Cg==
+--0015174028da19424f047b4643d9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0015174028da19424f047b4643d9--
