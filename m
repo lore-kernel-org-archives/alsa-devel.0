@@ -1,31 +1,20 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: Re: need help with io plugin programming: how to add
-	delay ?
-Date: Wed, 23 Dec 2009 00:08:19 +0100
-Message-ID: <4B315163.5090404@gmail.com>
-References: <4B312435.800@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Installing a "different" version of Alsa
+Date: Tue, 22 Dec 2009 23:44:36 +0000
+Message-ID: <20091222234435.GA2643@sirena.org.uk>
+References: <mailman.3791.1261331960.2074.alsa-devel@alsa-project.org>
+	<69F4A42643E24687BFFD4D3D0F485DEA@brianoffice>
+	<20091222125847.GB8522@sirena.org.uk>
+	<3DE0C4BC819942189FD9EA0AB2630C68@brianoffice>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from netfinity.tbmn.org (mail.tbmn.org [88.117.197.126])
-	by alsa0.perex.cz (Postfix) with ESMTP id B403D103818
-	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 00:08:43 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by netfinity.tbmn.org (Postfix) with ESMTP id 60C124BEE9
-	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 00:08:28 +0100 (CET)
-Received: from netfinity.tbmn.org ([127.0.0.1])
-	by localhost (netfinity.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id w5VAF6mWEUOF for <alsa-devel@alsa-project.org>;
-	Wed, 23 Dec 2009 00:08:28 +0100 (CET)
-Received: from [192.168.1.132] (85-127-149-164.dynamic.xdsl-line.inode.at
-	[85.127.149.164])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: mne@tbmn.org)
-	by netfinity.tbmn.org (Postfix) with ESMTPSA id A04BD4BE05
-	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 00:08:27 +0100 (CET)
-In-Reply-To: <4B312435.800@gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E06224625
+	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 00:44:37 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <3DE0C4BC819942189FD9EA0AB2630C68@brianoffice>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,366 +24,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Brian Welch <Brian-Welch@cox.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Stefan Schoenleitner wrote:
-> Another solution (my third one already) would be to introduce *no* delay
-> in the alsa plugin itself, but do everything in the application that is
-> listening on the socket.
-> For this reason the application would read one period, process the data
-> and then sleep for the rest of the time until the time for one period
-> (i.e. 20ms) is over.
-> After that the next period is read from the socket and so forth.
-> The alsa plugin would then "automatically" write new data to the socket
-> each time the application listening to that socket reads data and there
-> is free space in the socket send buffer.
-
-I now tested this idea by writing a simple socket reader and writer (see code below).
-
-The writer just sends data (160 bytes each) over the socket as soon as the socket is available for writing.
-(For this reason if no one is reading from the other end of the socket, it just fills up the socket buffer and then blocks).
-
-The counterpart of the writer is the reader application that should control the timing (as I mentioned in my previous post).
-For this reason it basically just reads a chunk of data (160 bytes each) from the socket and then sleeps until a certain amount of time (20ms, i.e. one period) is over.
-
-However, the result is not satisfying at all as the delay between the received chunks varies and sometimes even takes a whole 15ms (!) longer (i.e. 35ms delay instead of 20ms).
-
-Here is some example output of the reader:
-
-last recv 23.691140ms ago
-sleeping for 9ms
-last recv 20.127908ms ago
-sleeping for 9ms
-last recv 20.105699ms ago
-sleeping for 9ms
-last recv 20.052133ms ago
-sleeping for 9ms
-last recv 20.116666ms ago
-sleeping for 3ms
-last recv 25.770387ms ago
-sleeping for 6ms
-last recv 21.651706ms ago
-sleeping for 9ms
-last recv 36.320541ms ago
-sleeping for 5ms
-last recv 20.348258ms ago
-
-
-As the calculation of the sleep time uses an *absolute* point of time
-as reference (which is takes before starting to poll() and recv() from the socket), all delay after the time measurement and before the actual sleep does not influence the precision, right ?
-For this reason I have no idea where the high delay variations are coming from.
-I mean how should it work with an alsa plugin if not even this simple simulation code works 
-in a timely and precise manner ?
-
-* What am I doing wrong ?
-
-I thought of adding buffering so that the socket read operations do not have a strict timing schedule.
-However, as I said earlier, if the time for socket polling or recv varies, it does not influence the precision as an absolute point of time is used as timeout and the (absolute) start time measurement is done *before* all the socket operations.
-Thus I think that for this reason adding buffering would not make much difference here, right ?
-
-Maybe you can have a quick look at the code snippets ?
-The reader is pretty much what I would be doing in my daemon that should
-receive the PCM samples from the alsa plugin.
-
-cheers,
-stefan
-
-
-
----------------------------- reader.c ----------------------------
-#define _POSIX_C_SOURCE 199309L
-#define _BSD_SOURCE
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <string.h>
-#include <errno.h>
-#include <pthread.h>
-#include <poll.h>
-#include <assert.h>
-
-#define SOCK_PATH	"/tmp/pcm.socket"
-#define PCM_BUFFERSIZE	160
-
-/* adapted from glibc sys/time.h timersub() macro */
-#define priv_timespecsub(a, b, result)                  \
-    do {                                \
-        (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;       \
-        (result)->tv_nsec = (a)->tv_nsec - (b)->tv_nsec;    \
-        if ((result)->tv_nsec < 0) {                \
-            --(result)->tv_sec;             \
-            (result)->tv_nsec += 1000000000;        \
-        }                           \
-    } while (0)
-
-#define priv_timespecadd(a, b, result)                  \
-    do {                                \
-        (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;       \
-        (result)->tv_nsec = (a)->tv_nsec + (b)->tv_nsec;    \
-        if ((result)->tv_nsec >=1000000000L) {                \
-            ++(result)->tv_sec;             \
-            (result)->tv_nsec -= 1000000000L;        \
-        }                           \
-    } while (0)
-
-pthread_mutex_t timer_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t timer_condition = PTHREAD_COND_INITIALIZER;
-
-int main(void)
-{
-	int s, s2, t, len, ret;
-	struct sockaddr_un local, remote;
-	char buf[PCM_BUFFERSIZE];
-	struct timespec start, now, period_time, delta, timeout;
-	struct timespec prev, delta_prev;
-	struct pollfd fds;
-	unsigned int poll_timeout;
-
-	// one period is 20ms
-	period_time.tv_sec=0;
-	period_time.tv_nsec = 20 * 1000000L;
-	poll_timeout = period_time.tv_nsec / 1000000L;
-
-
-	if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
-		perror("socket");
-		exit(1);
-	}
-
-	local.sun_family = AF_UNIX;
-	strcpy(local.sun_path, SOCK_PATH);
-	unlink(local.sun_path);
-	len = strlen(local.sun_path) + sizeof(local.sun_family);
-	if (bind(s, (struct sockaddr *)&local, len) == -1) {
-		perror("bind");
-		exit(1);
-	}
-
-	if (listen(s, 0) == -1) {
-		perror("listen");
-		exit(1);
-	}
-
-	start.tv_sec=0;
-	start.tv_nsec=0;
-
-	for(;;) {
-		int done, n;
-		printf("Waiting for a connection...\n");
-		t = (int)sizeof(remote);
-		if ((s2 = accept(s, (struct sockaddr *)&remote, (unsigned int *)&t)) == -1) {
-			perror("accept");
-			exit(1);
-		}
-
-		printf("Connected.\n");
-
-		done = 0;
-
-		fds.fd = s2;
-		fds.events = POLLIN;
-
-		// sleep for some time so that socket buffer fills up
-		usleep(80000);
-
-		clock_gettime(CLOCK_REALTIME, &start);
-
-		do {
-			memcpy(&prev, &start, sizeof(struct timespec));
-			clock_gettime(CLOCK_REALTIME, &start);
-
-			// use poll to check out when we can read
-			if ((ret = poll(&fds, 1, poll_timeout))<0)
-			{
-				perror("poll");
-				exit(1);
-			}
-
-			if (ret == 0)
-			{
-				printf("timeout --> underflow\n");
-				continue;
-			}
-
-			assert (ret == 1 && (fds.revents & POLLIN));
-			
-			priv_timespecadd(&start, &period_time, &timeout);
-			//printf("timeout at %li:%li\n", timeout.tv_sec, timeout.tv_nsec/1000000L);
-
-			priv_timespecsub(&start, &prev, &delta_prev);
-			printf("last recv %fms ago\n", delta_prev.tv_sec*1000.0 + delta_prev.tv_nsec/1000000.0);
-
-			n = recv(s2, buf, PCM_BUFFERSIZE, MSG_DONTWAIT);
-			if (n <= 0) {
-				if (n < 0) perror("recv");
-				done = 1;
-				break;
-			}
-
-			// -------------------------- BEGIN PROCESSING BLOCK --------------------------
-			assert (n==PCM_BUFFERSIZE);
-			//printf("received %i bytes at %li:%li\n", n, start.tv_sec, start.tv_nsec/1000000L);
-
-			// process data (requires some amount of time)
-			usleep(10000);
-
-			
-			// --------------------------  END PROCESSING BLOCK  --------------------------
-			
-			// sleep for the rest of the time until the period is over
-			clock_gettime(CLOCK_REALTIME, &now);
-			//printf("now: %li:%li\n", now.tv_sec, now.tv_nsec/1000000L);
-			priv_timespecsub(&timeout, &now, &delta);
-			
-
-			if ((now.tv_sec >= timeout.tv_sec) && (now.tv_nsec >= timeout.tv_nsec))
-			{
-				printf("we're late, don't sleep\n");
-			}
-			else
-			{
-
-				printf("sleeping for %lims\n", delta.tv_sec*1000 + delta.tv_nsec/1000000L);
-				//nanosleep(&delta, NULL);
-
-
-				// wait for absolute timeout using a fake pthread condition which is never signaled
-				pthread_mutex_lock(&timer_mutex);
-				pthread_cond_timedwait(&timer_condition, &timer_mutex, &timeout);
-				pthread_mutex_unlock(&timer_mutex);
-			}
-
-		} while (!done);
-
-		close(s2);
-	}
-
-	return 0;
-}
-------------------------------------------------------------------
-
-
-
----------------------------- writer.c ----------------------------
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <poll.h>
-#include <assert.h>
-
-#define SOCK_PATH "/tmp/pcm.socket"
-#define PCM_BUFSIZE 160
-
-int main(void)
-{
-	int s, len;
-	struct sockaddr_un remote;
-	char str[PCM_BUFSIZE];
-	struct pollfd fds;
-	int ret;
-	int value;
-	unsigned int optlen;
-
-	if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
-		perror("socket");
-		exit(1);
-	}
-
-
-    // set send buffer size
-	// man 7 socket --> The minimum value for this option is 2048.
-    value=2048;
-    if (setsockopt(s, SOL_SOCKET, SO_SNDBUF, &value, sizeof(value))<0)
-    {
-        perror("setsockopt()");
-        return -1;
-    }
-
-    // check size
-	optlen=sizeof(value);
-    if (getsockopt(s, SOL_SOCKET, SO_SNDBUF, &value, &optlen)<0)
-    {
-        perror("getsockopt()");
-        return -1;
-    }
-
-	printf("optlen = %i, value: %i\n", optlen, value);
-	assert (optlen == sizeof(value));
-
-    printf("send buffer size is %i bytes\n", value);
-
-
-	printf("Trying to connect...\n");
-
-	remote.sun_family = AF_UNIX;
-	strcpy(remote.sun_path, SOCK_PATH);
-	len = strlen(remote.sun_path) + sizeof(remote.sun_family);
-	if (connect(s, (struct sockaddr *)&remote, len) == -1) {
-		perror("connect");
-		exit(1);
-	}
-
-	printf("Connected.\n");
-
-	// set up poll fds
-	fds.fd = s;
-	fds.events = POLLOUT;	// writing now will not block
-
-
-	while(1)
-	{
-		// poll socket to see if it's ready, timeout: 20 ms
-		ret = poll(&fds, 1, 20);
-
-		if (ret<0)
-		{
-			perror("poll");
-			exit(1);
-		}
-
-		if (ret==0)
-		{
-			printf("timeout\n");
-			continue;
-		}
-
-		if (fds.revents & (POLLERR | POLLHUP | POLLNVAL))
-		{
-			printf("POLLERR | POLLHUP | POLLNVAL)\n");
-			exit(1);
-		}
-
-		if (fds.revents == POLLOUT)
-			printf("POLLOUT, we can write now ..\n");
-		else
-			printf("revent is not POLLOUT !\n");
-
-
-		// send PCM_BUFSIZE bytes
-		if ((ret=send(s, str, PCM_BUFSIZE, MSG_DONTWAIT))<0) {
-			perror("send");
-			exit(1);
-		}
-
-		printf("sent %i bytes\n", ret);
-	}
-
-	// never reached
-	close(s);
-
-	return 0;
-}
-------------------------------------------------------------------
+On Tue, Dec 22, 2009 at 02:50:42PM -0700, Brian Welch wrote:
+> From: "Mark Brown" <broonie@opensource.wolfsonmicro.com>
+> To: "Brian Welch" <Brian-Welch@cox.net>
+
+> > If it's just the drivers you need to update it's probably easier to
+> > merge the newer ALSA version into the kernel rather than trying to keep
+> > an out of tree version as well, it will hopefully reduce the level of
+> > confusion within the toolchain.
+
+> Hmmm, yeah, problems all the way around.  Maybe I should explain in
+> more detail.  This SDK is for a platform (silicon/software/dev-board) still
+> very much under development and I can't say too much without violating NDA,
+> etc.  The SDK is currently supported by the silicon manufacturer.  It 
+
+Feel free to contact me off-list if you feel you're able to discuss
+things a bit more that way, I might be able to advise in more detail
+with more information.  Please also feel free to put the vendor in touch
+with me directly, I can discuss these issues from the point of view of a
+silicon vendor.
+
+> includes a
+> vanilla Linux distribution directly from kernel.org and a small kernel 
+> patch.
+> In addition to the Linux distrubution there are drivers in the SDK for 
+> dozens of
+> custom devices including custom sound hardware.  Basically, they're rolling 
+> their
+> own toolchain and supporting it (for now).
+
+On this front it may well be worth pointing out to them that a number of
+large companies have tried this approach and run into trouble with it in
+the longer term due to things like the effort involved in maintaining
+things once you've got a number of legacy products or customer pressure
+to have mainline work.  There's an awful lot of work in maintaining a
+full Linux kernel, never mind distribution, and many customers are not
+going to use large parts of this work anyway (especially at the
+distribution level) and use their preferred software stack.
+
+> I've written an Alsa-compatible sound driver layer to go between Alsa and
+> their custom driver and it's been working for a few months, but they 
+> recently
+> decided to start supporting two versions of the SDK, each having a different
+> version of Linux.  The version of Alsa built-in to Linux in each version of 
+> the
+> SDK is different, and they would like to supply a version of Alsa 
+> "out-of-tree"
+> so that both SDKs are the same and so that customers can theoretically
+> swap out to any version of Alsa they want.
+
+Hrm, are these standard ALSA drivers, not ASoC drivers?  If this is a
+standard embedded processor setup with an I2S or similar controller in
+the processor talking to an external device providing the audio CODEC
+then the code really ought to be written in terms of ASoC in which case
+trying to go for compatibility with multiple kernel versions is going to
+be more trouble than its worth since the ASoC APIs are fairly fluid and
+are likely to continue to be so for the forseeable future.
+
+The big win from ASoC from the point of view of the CPU vendor is that
+they will get compatibility with all the audio CODEC devices supported
+by Linux without having to reinvent the wheel each time, and won't have
+to support customisations for individual customer boards within their
+code.  This really does save a lot of time, especially once you start to
+address a wide customer base.
+
+> This change has caused my driver to not build correctly/reliably on both
+> SDK versions.  The reason is that the symbols in linux/include/sound are
+> different than the out-of-tree include files that I need to build against. 
+> I can
+> make it work by hacking the SDK directory structure but they want to
+> eventually integrate everything into the SDK so minimizing hacks is 
+> desirable.
+
+Without knowing what their SDK is doing it's going to be hard to comment
+in much more detail than to say that contributing the code to the kernel
+is the simplest way to get something that's up to date with kernel API
+changes.  If they don't want to contribute their code upstream then the
+easiest approach is usually to track the current ASoC version and
+backport ASoC (and possibly all ALSA) en masse to whatever kernel
+version they are targetting.  This will make life easier if/when they do
+decide to work upstream and avoids having to deal with any bugs or
+missing features in older kernels.
+
+Trying to mix and match an in kernel ALSA with an out of tree ALSA isn't
+going to work well, if you are using an out of tree ALSA then you should
+completely disable the in tree version 
+
+> Merging the correct version of Alsa into the kernel will fix my immediate
+> problem but they don't want to do it because it won't satisfy the desire to
+> be able to swap in any version of Alsa (assuming that's actually possible).
+
+ALSA and ASoC are generally relatively independant of the kernel
+version, though it's likely that ASoC is going to grow support for
+runtime PM very soon which will be a bit of a backporting issue.
+
+Like I say it's hard to comment in too much detail without more
+information but it does sound like the vendor is expecting a stable
+in-kernel API which isn't something you can rely on with Linux in any
+area.  Greg K-H's Stable API Nonsense article
+
+	http://www.kroah.com/log/linux/stable_api_nonsense.html
+
+covers this in a bit of detail, and there's discussion in the kernel
+mailing list archives.  Embedded audio is one of the areas that's
+fairly actively developed at the minute, right now there are a number of
+reasonable system designs which can't really be addressed without some
+refactoring and newer audio hardware presents new opportunities for the
+kernel to improve performance.
