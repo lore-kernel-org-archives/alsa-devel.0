@@ -1,22 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: need help with io plugin programming: how to
 	add	delay ?
-Date: Wed, 23 Dec 2009 17:09:35 +0000
-Message-ID: <20091223170934.GA21444@sirena.org.uk>
+Date: Wed, 23 Dec 2009 17:40:10 +0000
+Message-ID: <20091223174009.GB21444@sirena.org.uk>
 References: <4B312435.800@gmail.com> <4B315163.5090404@gmail.com>
 	<53baa24a0912221814t3e8628c4odc908c0813c0a56b@mail.gmail.com>
 	<4B31D184.3020300@gmail.com>
 	<53baa24a0912230128p5fee628en39b7b81f45e9fb9c@mail.gmail.com>
 	<4B31FC67.2090201@gmail.com> <4B3247B4.4000506@kiilerich.com>
+	<4B324E76.7040003@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 547DD1038AF
-	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 18:09:36 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id D96AC1038B5
+	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 18:40:12 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4B3247B4.4000506@kiilerich.com>
+In-Reply-To: <4B324E76.7040003@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +27,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mads Kiilerich <mads@kiilerich.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Stefan Schoenleitner <dev.c0debabe@gmail.com>
+To: Stefan Schoenleitner <dev.c0debabe@gmail.com>
+Cc: Mads Kiilerich <mads@kiilerich.com>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 23, 2009 at 05:39:16PM +0100, Mads Kiilerich wrote:
-> Stefan Schoenleitner wrote, On 12/23/2009 12:08 AM:
+On Wed, Dec 23, 2009 at 06:08:06PM +0100, Stefan Schoenleitner wrote:
 
-> > I mean how should it work with an alsa plugin if not even this simple simulation code works
-> > in a timely and precise manner ?
+> However, right now I found out that there seems to be no way
+> to execute *anything* each 20ms +/- 1ms.
 
-> > * What am I doing wrong ?
+> So far I tried
 
-> > I thought of adding buffering so that the socket read operations do not have a strict timing schedule.
+> 	* nanosleep()
+> 	* pthread_cond_timed_wait()
+> 	* usleep()
 
-At this point you're not really dealing with ALSA issues at all, the
-scheduling of tasks in Linux is handled by the core kernel scheduler
-code.  Rather than looking at the audio APIs it seems like you'd be
-better off looking at either reducing your dependency on highly accurate
-scheduling or looking at how to work best with the scheduler to get the
-best possible performance from it.
+> I'm looking forward to try
 
-> > It is connected over UART at 460800 baud and requires exactly 160 16bit PCM samples
-> > with 8kHz sampling rate each 20ms for speech compression.
+> 	* HPET
+> 	* RTC
+> 	* setitimer()
+> 	* alsa timers ?
+> 	* anything else ?
 
-> It is my experience that it matters that two different oscillators never 
-> have exactly the same frequency, so over time you will get an over- or 
-> under-run.
+I'd be somewhat surprised if any of them do any better to be honest.  A
+brief glance at the AT91 RTC drivers suggests they don't implement any
+sort of high resolution tick, HPET is an x86 thing and the others are
+likely to be implemented in terms of the same underlying constructs as
+the things you've tried already.
 
-Indeed.  If you've got two different clock domains and no way of lining
-them up you'll eventually get drift between the two sufficient to cause
-an under or overrun if you run for long enough without a break.
+> I don't understand why all the function I have tried
+> so far have microsecond or even nanosecond precision and in the
+> end I'm off not for some nano- or microseconds, but for a full 15ms !
+> This is really bad :(
+
+These APIs are all standards based ones.  The time units they use are
+deliberately chosen to be much smaller than might have realistically
+been used on systems when they were specified to allow room for systems
+with highly accurate timers that might come along, but they're all
+specified in terms of a minimum requested delay rather than a guaranteed
+accuracy.
+
+Much of the timing in Linux is based of HZ, which is often set quite low
+for power reasons.  As well as the scheduler it's probably also worth
+asking the AT91 port people how to get the best out of the hardware.  It
+may be that some work is needed to hook the port into the kernel time
+framework to better use the capabilities of the hardware, for example.
