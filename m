@@ -1,22 +1,23 @@
-From: Mads Kiilerich <mads@kiilerich.com>
-Subject: Re: need help with io plugin programming: how to add
- delay ?
-Date: Wed, 23 Dec 2009 17:39:16 +0100
-Message-ID: <4B3247B4.4000506@kiilerich.com>
-References: <4B312435.800@gmail.com>
-	<4B315163.5090404@gmail.com>		<53baa24a0912221814t3e8628c4odc908c0813c0a56b@mail.gmail.com>		<4B31D184.3020300@gmail.com>	<53baa24a0912230128p5fee628en39b7b81f45e9fb9c@mail.gmail.com>
-	<4B31FC67.2090201@gmail.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] jazz16: refine dma and irq selection
+Date: Wed, 23 Dec 2009 18:02:41 +0100
+Message-ID: <20091223180241.eaaf83fe.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f212.google.com (mail-ew0-f212.google.com
-	[209.85.219.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5EC3710380E
-	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 17:39:20 +0100 (CET)
-Received: by ewy4 with SMTP id 4so24436427ewy.32
-	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 08:39:19 -0800 (PST)
-In-Reply-To: <4B31FC67.2090201@gmail.com>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8843B10380E
+	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 17:59:58 +0100 (CET)
+Received: from poczta.interia.pl (mi06.poczta.interia.pl [10.217.12.6])
+	by smtp240.poczta.interia.pl (INTERIA.PL) with ESMTP id 79DFA27040F
+	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 17:59:56 +0100 (CET)
+Received: from krzysio.net (93-181-133-4.as.kn.pl [93.181.133.4])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by www.poczta.fm (INTERIA.PL) with ESMTP id ABCD0132476
+	for <alsa-devel@alsa-project.org>; Wed, 23 Dec 2009 17:59:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,57 +27,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Stefan Schoenleitner wrote, On 12/23/2009 12:08 AM:
-> However, the result is not satisfying at all as the delay between the received chunks varies and sometimes even takes a whole 15ms (!) longer (i.e. 35ms delay instead of 20ms).
->    
-...
-> As the calculation of the sleep time uses an *absolute* point of time
-> as reference (which is takes before starting to poll() and recv() from the socket), all delay after the time measurement and before the actual sleep does not influence the precision, right ?
-> For this reason I have no idea where the high delay variations are coming from.
-> I mean how should it work with an alsa plugin if not even this simple simulation code works
-> in a timely and precise manner ?
->
-> * What am I doing wrong ?
->
-> I thought of adding buffering so that the socket read operations do not have a strict timing schedule.
-> However, as I said earlier, if the time for socket polling or recv varies, it does not influence the precision as an absolute point of time is used as timeout and the (absolute) start time measurement is done *before* all the socket operations.
-> Thus I think that for this reason adding buffering would not make much difference here, right ?
->    
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-AFAIK ALSA gurantees no deadlines, so I think you will have to add a 
-"sufficiently large" buffer somewhere - and make sure to handle 
-over/underruns somehow anyway.
+Narrow the dma and irq selection after the DOS driver.
 
-> Just before starting to write yet another implementation
-> (the fourth one,
+Add ALSA configuration description as well.
 
-I did the same exercise. It _is_ really hard to get started writing 
-sound applications and figure out which abstraction level and 
-implementation to use and how to use it correctly.
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+The dma8 must be 8-bit otherwise the 8-bit sound played
+through 16-bit dma has metalic noise. The 8-bit DMA cannot
+play 16-bit sound.
 
-I ended up coding for the pulseaudio API. My case was for 
-http://bitbucket.org/kiilerix/tcpcam/ . The result isn't pretty, but it 
-could have been worse. The result isn't very stable or understood in all 
-details, but it is good enough for my case. This case is different than 
-yours, but I had problems similar to yours when I tried to code for the 
-ALSA api. My numbers also happens to be exactly the same as in your case.
+ Documentation/sound/alsa/ALSA-Configuration.txt |   15 +++++++++++++++
+ sound/isa/sb/jazz16.c                           |   21 ++++++++++++++++++++-
+ sound/isa/sb/sb8_main.c                         |    3 ++-
+ 3 files changed, 37 insertions(+), 2 deletions(-)
 
-> this time with jack)
+diff --git a/Documentation/sound/alsa/ALSA-Configuration.txt b/Documentation/sound/alsa/ALSA-Configuration.txt
+index 8923597..92b0975 100644
+--- a/Documentation/sound/alsa/ALSA-Configuration.txt
++++ b/Documentation/sound/alsa/ALSA-Configuration.txt
+@@ -1123,6 +1123,21 @@ Prior to version 0.9.0rc4 options had a 'snd_' prefix. This was removed.
+ 
+     This module supports multiple cards, autoprobe and ISA PnP.
+ 
++  Module snd-jazz16
++  -------------------
++
++    Module for Media Vision Jazz16 chipset. The chipset consists of 3 chips:
++    MVD1216 + MVA416 + MVA514.
++
++    port	- port # for SB DSP chip (0x210,0x220,0x230,0x240,0x250,0x260)
++    irq		- IRQ # for SB DSP chip (3,5,7,9,10,15)
++    dma8	- DMA # for SB DSP chip (1,3)
++    dma16	- DMA # for SB DSP chip (5,7)
++    mpu_port	- MPU-401 port # (0x300,0x310,0x320,0x330)
++    mpu_irq	- MPU-401 irq # (2,3,5,7)
++
++    This module supports multiple cards.
++
+   Module snd-korg1212
+   -------------------
+ 
+diff --git a/sound/isa/sb/jazz16.c b/sound/isa/sb/jazz16.c
+index d52966b..8d21a3f 100644
+--- a/sound/isa/sb/jazz16.c
++++ b/sound/isa/sb/jazz16.c
+@@ -189,10 +189,29 @@ static int __devinit snd_jazz16_match(struct device *devptr, unsigned int dev)
+ 	if (port[dev] == SNDRV_AUTO_PORT) {
+ 		snd_printk(KERN_ERR "please specify port\n");
+ 		return 0;
++	} else if (port[dev] == 0x200 || (port[dev] & ~0x270)) {
++		snd_printk(KERN_ERR "incorrect port specified\n");
++		return 0;
++	}
++	if (dma8[dev] != SNDRV_AUTO_DMA &&
++	    dma8[dev] != 1 && dma8[dev] != 3) {
++		snd_printk(KERN_ERR "dma8 must be 1 or 3\n");
++		return 0;
+ 	}
+ 	if (dma16[dev] != SNDRV_AUTO_DMA &&
+ 	    dma16[dev] != 5 && dma16[dev] != 7) {
+-		snd_printk(KERN_ERR "dma16 must be 5 or 7");
++		snd_printk(KERN_ERR "dma16 must be 5 or 7\n");
++		return 0;
++	}
++	if (mpu_port[dev] != SNDRV_AUTO_PORT &&
++	    (mpu_port[dev] & ~0x030) != 0x300) {
++		snd_printk(KERN_ERR "incorrect mpu_port specified\n");
++		return 0;
++	}
++	if (mpu_irq[dev] != SNDRV_AUTO_DMA &&
++	    mpu_irq[dev] != 2 && mpu_irq[dev] != 3 &&
++	    mpu_irq[dev] != 5 && mpu_irq[dev] != 7) {
++		snd_printk(KERN_ERR "mpu_irq must be 2, 3, 5 or 7\n");
+ 		return 0;
+ 	}
+ 	return 1;
+diff --git a/sound/isa/sb/sb8_main.c b/sound/isa/sb/sb8_main.c
+index 3222aed..7d84c9f 100644
+--- a/sound/isa/sb/sb8_main.c
++++ b/sound/isa/sb/sb8_main.c
+@@ -510,7 +510,8 @@ static int snd_sb8_open(struct snd_pcm_substream *substream)
+ 	}
+ 	switch (chip->hardware) {
+ 	case SB_HW_JAZZ16:
+-		runtime->hw.formats |= SNDRV_PCM_FMTBIT_S16_LE;
++		if (chip->dma16 == 5 || chip->dma16 == 7)
++			runtime->hw.formats |= SNDRV_PCM_FMTBIT_S16_LE;
+ 		runtime->hw.rates |= SNDRV_PCM_RATE_8000_48000;
+ 		runtime->hw.rate_min = 4000;
+ 		runtime->hw.rate_max = 50000;
+-- 
+1.6.4
 
-Jack to some extent builds on top of ALSA, so jack can't do it any 
-better than ALSA. But jack might use ALSA the right way and thus give 
-you someting close to what you want. AFAIK.
 
-> It is connected over UART at 460800 baud and requires exactly 160 16bit PCM samples
-> with 8kHz sampling rate each 20ms for speech compression.
->    
-
-It is my experience that it matters that two different oscillators never 
-have exactly the same frequency, so over time you will get an over- or 
-under-run.
-
-/Mads
+----------------------------------------------------------------------
+Sprawdz sekrety swojego biorytmu.
+Kliknij >> http://link.interia.pl/f2534
