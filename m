@@ -1,23 +1,15 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: Re: [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure
- fix
-Date: Thu, 24 Dec 2009 18:46:42 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB031DF2E43A@dbde02.ent.ti.com>
-References: <1258133987-20488-1-git-send-email-jwang@ti.com>
-	<bd7b27490911182334r7b9b4682o29a094e8ee521bc5@mail.gmail.com>
-	<2ee9e08d0911191148x9da6112s960a283a7cffea7b@mail.gmail.com>
-	<200911200951.13181.peter.ujfalusi@nokia.com>
-	<20091120155343.baf0b9d3.jhnikula@gmail.com>
-	<1258726156.6157.11.camel@eenurkka-desktop>
-	<2ee9e08d0911200647o33a57e45j1bb4de6d9604d29a@mail.gmail.com>
+From: "Kunal Narkhede" <kunal.narkhede@gmail.com>
+Subject: Personal invitation from Kunal Narkhede
+Date: Thu, 24 Dec 2009 09:03:13 -0400
+Message-ID: <7plag0$185hgl4@ironport-b.unyk.com>
+Reply-To: kunal.narkhede@gmail.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDF78103819
-	for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2009 14:16:50 +0100 (CET)
-Content-Language: en-US
+Received: from mta103.unyk.com (mta103.unyk.com [204.92.8.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA7A91037F1
+	for <alsa-devel@alsa-project.org>; Thu, 24 Dec 2009 15:03:15 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,55 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ext-eero.nurkkala@nokia.com" <ext-eero.nurkkala@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
-	Jane" <jwang@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Aggarwal, Anuj
-> Sent: Monday, November 30, 2009 5:21 PM
-> To: ext-eero.nurkkala@nokia.com
-> Cc: ext Jarkko Nikula; alsa-devel@alsa-project.org; Wang, Jane;
-> broonie@opensource.wolfsonmicro.com; Ujfalusi Peter (Nokia-D/Tampere);
-> linux-omap@vger.kernel.org
-> Subject: RE: [alsa-devel] [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure
-> fix
-> 
-> > > Looking at the very original patch, I don't know how things could get
-> > > into deep sleep by disabling the fclk only... need to disable the iclk
-> > > also. In threshold mode, HW autogates the iclk, so you may be just
-> > > "lucky".
-> > [Anuj] No, I am not :(. I had to modify the original patch to include
-> > the disable part for the ICLK too. Without that, I was not able to hit
-> > retention.
-> > I will try to do some further regression on OMAP3 EVM and post my
-> > findings. As of now, audio is working fine with these patches + ICLK
-> > modification.
-> [Aggarwal, Anuj] After further testing, I found that there is some
-> problem in the capture path. While capturing in background, if I tried
-> to do suspend, capture fails after a few seconds giving;
-> arecord: pcm_read:1617: read error: Input/output error
-> This I was discussing in another thread (*) for AIC23/AM3517 on NFS but
-> now
-> I realized after finishing my tests that this behavior is common for
-> both omap3530/twl4030 and am3517/aic23. Moreover, the problem doesn't
-> depend on the underlying file system - both NFS and ramdisk produce the
-> same error.
-> To make matter worse, if suspend/resume is tried while audio
-> loopback is running, system just hangs. Even telnet to the evm doesn't
-> work.
-> So the audio capture path, from suspend/resume point of view, definitely
-> needs some more time.
-> I will continue debugging at my end. But pointers are always welcome.
-[Aggarwal, Anuj] I think I found one possible root cause of the hang which 
-is observed if suspend/resume is tried while audio loopback is going on.
 
-soc_suspend() calls snd_pcm_suspend_all() which calls snd_pcm_suspend() 
-for all the substreams in the pcm->streams[]. On debugging, I found that 
-I am not able to come out of snd_pcm_suspend_all(). I think this API needs 
-some fix as the comment also suggests:
-FIXME: the open/close code should lock this as well
 
-Could this be the root cause of this hang? Any pointers on what needs to be
-fixed?
+If you are not able to click these links, click the following: =AB=A0Show c=
+ontent=A0=BB and try again.
+E-mail sent 12/24/2009 9:01:58 AM, by Kunal Narkhede:
+
+
+
+Hello,
+
+
+
+Finally, a smart and simple way to manage your contacts!
+
+With UNYK, I put all my contacts together in <b>one address book</b> that i=
+s <b>automatically updated</b>. One of my contacts changes his or her infor=
+mation at UNYK.com: My address book is updated. I change information at UNY=
+K.com: My contacts=92 address books are updated. Simple, but life-changing!
+
+Can I add you as one of my contacts? To accept, click here!
+http://www.unyk.com/ml/245/1/?i=3DC7B72DD0179E4FD7A6DED23A2976A060&s=3D1726=
+7503
+
+You too can create your own smart address book.
+
+
+
+Kunal Narkhede
+UNYK : ESJ 288
+
+
+
+Please do not reply to this email directly. Questions? Contact us - http://=
+unyk.com/en/Contact
+UNYK Inc., 1010 de Serigny, suite 820, Longueuil, QC, J4K 5G7, Canada.
+
+I no longer wish to receive invitations to join UNYK from Kunal Narkhede: U=
+nsubscribe
+http://www.unyk.com/ml/245/74/?mid=3D9E98A4AA807983A0&email=3Dalsa-devel@al=
+sa-project.org&s=3D17267503
+
+I never again wish to receive invitation to join UNYK: Unsubscribe
+http://www.unyk.com/ml/245/2/?i=3DC7B72DD0179E4FD7A6DED23A2976A060&s=3D1726=
+7503
+
+
+
+UNYK, the first smart address book that updates itself!
