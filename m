@@ -1,15 +1,16 @@
-From: Jan-Benedict Glaw <jbglaw@lug-owl.de>
+From: "Markus Vogl" <markus.vogl@gmx.net>
 Subject: Re: frequency analysis with alsa and fftw
-Date: Sun, 27 Dec 2009 13:53:43 +0100
-Message-ID: <20091227125343.GG7599@lug-owl.de>
-References: <20091227122631.62660@gmx.net>
+Date: Sun, 27 Dec 2009 14:50:20 +0100
+Message-ID: <DCFE698CA76D4C32B964618FB02D7745@RDF2008PC>
+References: <20091227122631.62660@gmx.net> <20091227125343.GG7599@lug-owl.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1457662004994457877=="
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lug-owl.de (lug-owl.de [195.71.106.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF33524490
-	for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2009 13:53:44 +0100 (CET)
-In-Reply-To: <20091227122631.62660@gmx.net>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 0258424347
+	for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2009 14:50:22 +0100 (CET)
+In-Reply-To: <20091227125343.GG7599@lug-owl.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,69 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Markus Vogl <markus.vogl@gmx.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+hi,
 
---===============1457662004994457877==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="enbeIAqa8YisR7TD"
-Content-Disposition: inline
+i have to do this in realtime (like a guitartuner) and with my "project" i
+have to see the frequency shift in realtime in a terminal window.
+
+regards
+markus =
 
 
---enbeIAqa8YisR7TD
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+-----Urspr=FCngliche Nachricht-----
+Von: Jan-Benedict Glaw [mailto:jbglaw@lug-owl.de] =
+
+Gesendet: Sonntag, 27. Dezember 2009 13:54
+An: Markus Vogl
+Cc: alsa-devel@alsa-project.org
+Betreff: Re: [alsa-devel] frequency analysis with alsa and fftw
 
 On Sun, 2009-12-27 13:26:31 +0100, Markus Vogl <markus.vogl@gmx.net> wrote:
-> my project is to analyse the mic input frequency from my asus eepc
-> 1008ha with ubuntu 9.10  and show it in a terminal window. i would
-> use my acoustic 6 string guitar to play in front of my netbook.
-> =20
-> i=C2=B4ve testet the howto from linuxjornal.com ..
-> http://www.linuxjournal.com/article/6735
-> =20
-> ...but i=C2=B4ve no plan to use the mic input and  then analyse it with f=
-ftw.
+> my project is to analyse the mic input frequency from my asus eepc =
 
-Why do you need to do ALSA programming in the first place? Isn't it
-enough to use any given ALSA-capable audio recorder (eg. arecord) to
-record some sound, convert it to raw PCM data (eg. cut off the WAV
+> 1008ha with ubuntu 9.10  and show it in a terminal window. i would use =
+
+> my acoustic 6 string guitar to play in front of my netbook.
+>  =
+
+> i=B4ve testet the howto from linuxjornal.com ..
+> http://www.linuxjournal.com/article/6735
+>  =
+
+> ...but i=B4ve no plan to use the mic input and  then analyse it with fftw.
+
+Why do you need to do ALSA programming in the first place? Isn't it enough
+to use any given ALSA-capable audio recorder (eg. arecord) to record some
+sound, convert it to raw PCM data (eg. cut off the WAV
 header) and then shift all the data into the FFT lib?
 
 MfG, JBG
 
---=20
+-- =
+
       Jan-Benedict Glaw      jbglaw@lug-owl.de              +49-172-7608481
  Signature of:                            If it doesn't work, force it.
  the second  :                   If it breaks, it needed replacing anyway.
-
---enbeIAqa8YisR7TD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAks3WNcACgkQHb1edYOZ4bvfgACfaXg9h0fuIzC0jgcnGiECBsgR
-2aEAoJIJz1PdMyXI9C0Dpui6bxy6d8/e
-=9hHF
------END PGP SIGNATURE-----
-
---enbeIAqa8YisR7TD--
-
---===============1457662004994457877==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1457662004994457877==--
