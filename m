@@ -1,16 +1,17 @@
 From: johnsgruber@gmail.com
-Subject: [PATCH 2/3] sound: usb-audio: relax urb data align.
+Subject: [PATCH 3/3] sound: usb-audio: relax urb data align.
 	restriction HVR-950Q and HVR-850 only
-Date: Sun, 27 Dec 2009 12:19:58 -0500
-Message-ID: <4b379785.9453f10a.5e00.ffffcc0a@mx.google.com>
+Date: Sun, 27 Dec 2009 12:19:59 -0500
+Message-ID: <4b379790.9653f10a.5e5e.ffffdb82@mx.google.com>
 References: <s5hy6krtc1r.wl%tiwai@suse.de>
 	<1261934399-2820-1-git-send-email-me>
 	<1261934399-2820-2-git-send-email-me>
+	<1261934399-2820-3-git-send-email-me>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1261934399-2820-2-git-send-email-me>
+In-Reply-To: <1261934399-2820-3-git-send-email-me>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,109 +27,207 @@ List-Id: alsa-devel@alsa-project.org
 
 From: John S. Gruber <JohnSGruber@gmail.com>
 
-Addressing audio quality problem.
-
-In sound/usb/usbaudio.c, for the Hauppage HVR-950Q and HVR-850 only, change
-retire_capture_urb to allow transfers on audio sub-slot boundaries rather
-than audio slots boundaries.
-
-With these devices the left and right channel samples can be split between
-two different urbs. Throwing away extra channel samples causes a sound
-quality problem for stereo streams as the left and right channels are
-swapped repeatedly, perhaps many times per second.
-
-Urbs unaligned on sub-slot boundaries are still truncated to the next
-lowest stride (audio slot) to retain synchronization on samples even
-though left/right channel synchronization may be lost in this case.
-
-Detect the quirk using a case statement in snd_usb_audio_probe.
-
-BugLink: https://bugs.launchpad.net/ubuntu/+bug/495745
+Detect the HVR-950Q HVR-850 urb data alignment quirk using usbquirk.h
+rather than using a case statement in snd_usb_audio_probe.
 
 Signed-off-by: John S. Gruber <JohnSGruber@gmail.com>
 ---
- sound/usb/usbaudio.c |   29 +++++++++++++++++++++++++++--
- sound/usb/usbaudio.h |    1 +
- 2 files changed, 28 insertions(+), 2 deletions(-)
+ sound/usb/usbaudio.c  |   30 ++++++------
+ sound/usb/usbaudio.h  |    1 +
+ sound/usb/usbquirks.h |  114 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 130 insertions(+), 15 deletions(-)
 
 diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
-index 1ba8f41..be6f017 100644
+index be6f017..0cfff95 100644
 --- a/sound/usb/usbaudio.c
 +++ b/sound/usb/usbaudio.c
-@@ -169,6 +169,7 @@ struct snd_usb_substream {
- 	unsigned int curpacksize;	/* current packet size in bytes (for capture) */
- 	unsigned int curframesize;	/* current packet size in frames (for capture) */
- 	unsigned int fill_max: 1;	/* fill max packet size always */
-+	unsigned int txfr_quirk:1;	/* allow sub-frame alignment */
- 	unsigned int fmt_type;		/* USB audio format type (1-3) */
+@@ -3152,6 +3152,18 @@ static int ignore_interface_quirk(struct snd_usb_audio *chip,
+ 	return 0;
+ }
  
- 	unsigned int running: 1;	/* running status */
-@@ -353,14 +354,23 @@ static int retire_capture_urb(struct snd_usb_substream *subs,
- 			snd_printd(KERN_ERR "frame %d active: %d\n", i, urb->iso_frame_desc[i].status);
- 			// continue;
- 		}
--		frames = urb->iso_frame_desc[i].actual_length / stride;
--		bytes = frames * stride;
-+		bytes = urb->iso_frame_desc[i].actual_length;
-+		frames = bytes / stride;
-+		if (!subs->txfr_quirk)
-+			bytes = frames * stride;
-+		if (bytes % (runtime->sample_bits >> 3) != 0) {
-+			int oldbytes = bytes;
-+			bytes = frames * stride;
-+			snd_printdd(KERN_ERR "Corrected urb data len. %d->%d\n",
-+							oldbytes, bytes);
-+		}
- 		/* update the current pointer */
- 		spin_lock_irqsave(&subs->lock, flags);
- 		oldptr = subs->hwptr_done;
- 		subs->hwptr_done += bytes;
- 		if (subs->hwptr_done >= runtime->buffer_size * stride)
- 			subs->hwptr_done -= runtime->buffer_size * stride;
-+		frames = (bytes + (oldptr % stride)) / stride;
- 		subs->transfer_done += frames;
- 		if (subs->transfer_done >= runtime->period_size) {
- 			subs->transfer_done -= runtime->period_size;
-@@ -2189,6 +2199,7 @@ static void init_substream(struct snd_usb_stream *as, int stream, struct audiofo
- 	subs->stream = as;
- 	subs->direction = stream;
- 	subs->dev = as->chip->dev;
-+	subs->txfr_quirk = as->chip->txfr_quirk;
- 	if (snd_usb_get_speed(subs->dev) == USB_SPEED_FULL) {
- 		subs->ops = audio_urb_ops[stream];
- 	} else {
-@@ -3569,6 +3580,20 @@ static void *snd_usb_audio_probe(struct usb_device *dev,
++/*
++ * Allow alignment on audio sub-slot (channel samples) rather than
++ * on audio slots (audio frames)
++ */
++static int create_align_transfer_quirk(struct snd_usb_audio *chip,
++				  struct usb_interface *iface,
++				  const struct snd_usb_audio_quirk *quirk)
++{
++	chip->txfr_quirk = 1;
++	return 1;	/* Continue with creating streams and mixer */
++}
++
+ 
+ /*
+  * boot quirks
+@@ -3326,7 +3338,8 @@ static int snd_usb_create_quirk(struct snd_usb_audio *chip,
+ 		[QUIRK_AUDIO_STANDARD_INTERFACE] = create_standard_audio_quirk,
+ 		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
+ 		[QUIRK_AUDIO_EDIROL_UA1000] = create_ua1000_quirk,
+-		[QUIRK_AUDIO_EDIROL_UAXX] = create_uaxx_quirk
++		[QUIRK_AUDIO_EDIROL_UAXX] = create_uaxx_quirk,
++		[QUIRK_AUDIO_ALIGN_TRANSFER] = create_align_transfer_quirk
+ 	};
+ 
+ 	if (quirk->type < QUIRK_TYPE_COUNT) {
+@@ -3580,20 +3593,7 @@ static void *snd_usb_audio_probe(struct usb_device *dev,
  		}
  	}
  
-+	switch (chip->usb_id) {
-+	case USB_ID(0x2040, 0x7200): /* Hauppage hvr950Q */
-+	case USB_ID(0x2040, 0x7221): /* Hauppage hvr950Q */
-+	case USB_ID(0x2040, 0x7222): /* Hauppage hvr950Q */
-+	case USB_ID(0x2040, 0x7223): /* Hauppage hvr950Q */
-+	case USB_ID(0x2040, 0x7224): /* Hauppage hvr950Q */
-+	case USB_ID(0x2040, 0x7225): /* Hauppage hvr950Q */
-+	case USB_ID(0x2040, 0x7230): /* Hauppage hvr850 */
-+	case USB_ID(0x2040, 0x7250): /* Hauppage hvr950Q */
-+		chip->txfr_quirk = 1;
-+		break;
-+	default:
-+		chip->txfr_quirk = 0;
-+		}
+-	switch (chip->usb_id) {
+-	case USB_ID(0x2040, 0x7200): /* Hauppage hvr950Q */
+-	case USB_ID(0x2040, 0x7221): /* Hauppage hvr950Q */
+-	case USB_ID(0x2040, 0x7222): /* Hauppage hvr950Q */
+-	case USB_ID(0x2040, 0x7223): /* Hauppage hvr950Q */
+-	case USB_ID(0x2040, 0x7224): /* Hauppage hvr950Q */
+-	case USB_ID(0x2040, 0x7225): /* Hauppage hvr950Q */
+-	case USB_ID(0x2040, 0x7230): /* Hauppage hvr850 */
+-	case USB_ID(0x2040, 0x7250): /* Hauppage hvr950Q */
+-		chip->txfr_quirk = 1;
+-		break;
+-	default:
+-		chip->txfr_quirk = 0;
+-		}
++	chip->txfr_quirk = 0;
  	err = 1; /* continue */
  	if (quirk && quirk->ifnum != QUIRK_NO_INTERFACE) {
  		/* need some special handlings */
 diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index 9826337..228da06 100644
+index 228da06..9c88f60 100644
 --- a/sound/usb/usbaudio.h
 +++ b/sound/usb/usbaudio.h
-@@ -125,6 +125,7 @@ struct snd_usb_audio {
- 	struct snd_card *card;
- 	u32 usb_id;
- 	int shutdown;
-+	unsigned int txfr_quirk:1; /* Subframe boundaries on transfers */
- 	int num_interfaces;
- 	int num_suspended_intf;
+@@ -161,6 +161,7 @@ enum quirk_type {
+ 	QUIRK_AUDIO_FIXED_ENDPOINT,
+ 	QUIRK_AUDIO_EDIROL_UA1000,
+ 	QUIRK_AUDIO_EDIROL_UAXX,
++	QUIRK_AUDIO_ALIGN_TRANSFER,
  
+ 	QUIRK_TYPE_COUNT
+ };
+diff --git a/sound/usb/usbquirks.h b/sound/usb/usbquirks.h
+index bd6706c..65bbd22 100644
+--- a/sound/usb/usbquirks.h
++++ b/sound/usb/usbquirks.h
+@@ -2074,6 +2074,120 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+ 	}
+ },
+ 
++/* Hauppauge HVR-950Q and HVR-850 */
++{
++	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7200),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Hauppauge",
++		.product_name = "HVR-950Q",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
++	}
++},
++{
++	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7201),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Hauppauge",
++		.product_name = "HVR-950Q",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
++	}
++},
++{
++	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7202),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Hauppauge",
++		.product_name = "HVR-950Q",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
++	}
++},
++{
++	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7203),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Hauppauge",
++		.product_name = "HVR-950Q",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
++	}
++},
++{
++	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7204),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Hauppauge",
++		.product_name = "HVR-950Q",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
++	}
++},
++{
++	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7205),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Hauppauge",
++		.product_name = "HVR-950Q",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
++	}
++},
++{
++	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7250),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Hauppauge",
++		.product_name = "HVR-950Q",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
++	}
++},
++{
++	USB_DEVICE_VENDOR_SPEC(0x2040, 0x7230),
++	.match_flags = USB_DEVICE_ID_MATCH_DEVICE |
++		       USB_DEVICE_ID_MATCH_INT_CLASS |
++		       USB_DEVICE_ID_MATCH_INT_SUBCLASS,
++	.bInterfaceClass = USB_CLASS_AUDIO,
++	.bInterfaceSubClass = USB_SUBCLASS_AUDIO_CONTROL,
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.vendor_name = "Hauppauge",
++		.product_name = "HVR-850",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_AUDIO_ALIGN_TRANSFER,
++	}
++},
++
+ {
+ 	/*
+ 	 * Some USB MIDI devices don't have an audio control interface,
 -- 
 1.6.3.3
