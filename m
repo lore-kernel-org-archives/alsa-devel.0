@@ -1,17 +1,17 @@
-From: Roel Kluin <roel.kluin@gmail.com>
-Subject: [PATCH] ALSA: test off by one in setsamplerate()
-Date: Sun, 27 Dec 2009 22:26:47 +0100
-Message-ID: <4B37D117.3000700@gmail.com>
+From: Devin Heitmueller <dheitmueller@kernellabs.com>
+Subject: Use of default device with snd_pcm_link()
+Date: Sun, 27 Dec 2009 19:59:28 -0500
+Message-ID: <829197380912271659k5b9fd29aj3927fda3a1001874@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f212.google.com (mail-ew0-f212.google.com
-	[209.85.219.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id B97082452D
-	for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2009 22:23:54 +0100 (CET)
-Received: by ewy4 with SMTP id 4so39298375ewy.32
-	for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2009 13:23:54 -0800 (PST)
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28EFF243F1
+	for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2009 01:59:29 +0100 (CET)
+Received: by fxm4 with SMTP id 4so32105473fxm.32
+	for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2009 16:59:29 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andrew Morton <akpm@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-With `while (i++ < MAX_WRITE_RETRY)' i reaches MAX_WRITE_RETRY + 1 after the loop
+I am working on some code which captures from one PCM device and plays
+to another, based off of the latency.c found in alsa-lib.  I noticed
+something strange:
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
----
- sound/pci/riptide/riptide.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+The code works if I set the capture device to hw:1,0 and playback
+device to hw:0,0.  However, if I change the playback device to
+"default:0", the snd_pcm_link() call fails with -ENOSYS (error 38).
 
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index b5ca02e..e66ef2b 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -1058,7 +1058,7 @@ setsamplerate(struct cmdif *cif, unsigned char *intdec, unsigned int rate)
- 				 rptr.retwords[2] != M &&
- 				 rptr.retwords[3] != N &&
- 				 i++ < MAX_WRITE_RETRY);
--			if (i == MAX_WRITE_RETRY) {
-+			if (i > MAX_WRITE_RETRY) {
- 				snd_printdd("sent samplerate %d: %d failed\n",
- 					    *intdec, rate);
- 				return -EIO;
+If I dump out the properties, I can see that the the default device
+*is* mapped to device 0,0, so it's not clear why the behaviour would
+differ.
+
+My goal was just to playback to whatever the default device is, and I
+was under the impression that default:0 should be equivalent to
+"hw:0,0".  Can anyone offer any brief explanation as to why the
+snd_pcm_link() call would fail?
+
+Thanks in advance,
+
+Devin
+
+-- 
+Devin J. Heitmueller - Kernel Labs
+http://www.kernellabs.com
