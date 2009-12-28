@@ -1,25 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: alsa-util.c: snd_pcm_avail() returned a value that
-	is exceptionally large: 349696 bytes (1821 ms).
-Date: Mon, 28 Dec 2009 13:14:29 +0800
-Message-ID: <4f3252890912272114t6dcfa58bj4d5b5e6e606c5004@mail.gmail.com>
-References: <1261191766.18070.10.camel@localhost.localdomain>
-	<4f3252890912191547x1996cf7es190e8dac71dacaae@mail.gmail.com>
-	<1261352484.18070.47.camel@localhost.localdomain>
-	<1261869811.30924.69.camel@localhost.localdomain>
-	<4f3252890912261739x372fb678yde8a8e0edb93fe6e@mail.gmail.com>
-	<1261947691.24632.29.camel@localhost.localdomain>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: [PATCH 1/2] OMAP3: MCBSP: Suspend/resume failure
+ fix
+Date: Mon, 28 Dec 2009 11:40:39 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB031DF2E5A5@dbde02.ent.ti.com>
+References: <1258133987-20488-1-git-send-email-jwang@ti.com>
+	<bd7b27490911182334r7b9b4682o29a094e8ee521bc5@mail.gmail.com>
+	<2ee9e08d0911191148x9da6112s960a283a7cffea7b@mail.gmail.com>
+	<200911200951.13181.peter.ujfalusi@nokia.com>
+	<20091120155343.baf0b9d3.jhnikula@gmail.com>
+	<1258726156.6157.11.camel@eenurkka-desktop>
+	<2ee9e08d0911200647o33a57e45j1bb4de6d9604d29a@mail.gmail.com>
+	<5A47E75E594F054BAF48C5E4FC4B92AB031DF2E43A@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id D564110380F
-	for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2009 06:14:31 +0100 (CET)
-Received: by pwi18 with SMTP id 18so25385813pwi.32
-	for <alsa-devel@alsa-project.org>; Sun, 27 Dec 2009 21:14:30 -0800 (PST)
-In-Reply-To: <1261947691.24632.29.camel@localhost.localdomain>
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 42559103824
+	for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2009 07:10:47 +0100 (CET)
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB031DF2E43A@dbde02.ent.ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,45 +29,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "ext-eero.nurkkala@nokia.com" <ext-eero.nurkkala@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Wang,
+	Jane" <jwang@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Do you mean that you cannot find a test case to reproduce the bug ?
-
-you have to ask alsa developer whether it is correct to post your bzip in
-the mailing list
-
-AFAIK there is a limit of 60KB on this mailing list
-
-e.g. you will receive an Email
-
-Is being held until the list moderator can review it for approval.
-
-The reason it is being held:
-
-   Message body is too big: xxxxx bytes with a limit of 60 KB
-
-Either the message will get posted to the list, or you will receive
-notification of the moderator's decision.
-
-
-
-2009/12/28 Chris <cpollock@embarqmail.com>
-
-> On Sun, 2009-12-27 at 09:39 +0800, Raymond Yau wrote:
-> > You have to provide the full pulseaudio log in order to find out which
-> > application cause the problem
+> > -----Original Message-----
+> > From: Aggarwal, Anuj
+> > Sent: Monday, November 30, 2009 5:21 PM
+> > To: ext-eero.nurkkala@nokia.com
+> > Cc: ext Jarkko Nikula; alsa-devel@alsa-project.org; Wang, Jane;
+> > broonie@opensource.wolfsonmicro.com; Ujfalusi Peter (Nokia-D/Tampere);
+> > linux-omap@vger.kernel.org
+> > Subject: RE: [alsa-devel] [PATCH 1/2] OMAP3: MCBSP: Suspend/resume
+> failure
+> > fix
 > >
-> Where should I post this log Raymond? I can bzip it and post here if
-> that's allowed.
->
+> > > > Looking at the very original patch, I don't know how things could
+> get
+> > > > into deep sleep by disabling the fclk only... need to disable the
+> iclk
+> > > > also. In threshold mode, HW autogates the iclk, so you may be just
+> > > > "lucky".
+> > > [Anuj] No, I am not :(. I had to modify the original patch to include
+> > > the disable part for the ICLK too. Without that, I was not able to hit
+> > > retention.
+> > > I will try to do some further regression on OMAP3 EVM and post my
+> > > findings. As of now, audio is working fine with these patches + ICLK
+> > > modification.
+> > [Aggarwal, Anuj] After further testing, I found that there is some
+> > problem in the capture path. While capturing in background, if I tried
+> > to do suspend, capture fails after a few seconds giving;
+> > arecord: pcm_read:1617: read error: Input/output error
+> > This I was discussing in another thread (*) for AIC23/AM3517 on NFS but
+> > now
+> > I realized after finishing my tests that this behavior is common for
+> > both omap3530/twl4030 and am3517/aic23. Moreover, the problem doesn't
+> > depend on the underlying file system - both NFS and ramdisk produce the
+> > same error.
+> > To make matter worse, if suspend/resume is tried while audio
+> > loopback is running, system just hangs. Even telnet to the evm doesn't
+> > work.
+> > So the audio capture path, from suspend/resume point of view, definitely
+> > needs some more time.
+> > I will continue debugging at my end. But pointers are always welcome.
+> [Aggarwal, Anuj] I think I found one possible root cause of the hang which
+> is observed if suspend/resume is tried while audio loopback is going on.
+> 
+> soc_suspend() calls snd_pcm_suspend_all() which calls snd_pcm_suspend()
+> for all the substreams in the pcm->streams[]. On debugging, I found that
+> I am not able to come out of snd_pcm_suspend_all(). I think this API needs
+> some fix as the comment also suggests:
+> FIXME: the open/close code should lock this as well
+> 
+> Could this be the root cause of this hang? Any pointers on what needs to
+> be
+> fixed?
+> 
+[Aggarwal, Anuj] Can someone please confirm that the problem lies in this 
+API? Also, any help on how that can be fixed would be great.
+
 > --
-> KeyID 0xE372A7DA98E6705C
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
