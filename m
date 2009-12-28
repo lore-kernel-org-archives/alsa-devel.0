@@ -1,20 +1,19 @@
-From: =?UTF-8?B?T3phbiDDh2HEn2xheWFu?= <ozan@pardus.org.tr>
-Subject: hda-intel: no codecs found
-Date: Mon, 28 Dec 2009 12:22:36 +0200
-Message-ID: <4B3886EC.2050905@pardus.org.tr>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: Re: ALSA: HDA VIA VT2020 support
+Date: Mon, 28 Dec 2009 05:33:06 -0500
+Message-ID: <604760770912280233h183c13fdv8159f95246c86f33@mail.gmail.com>
+References: <4B379281.7040401@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lider.pardus.org.tr (lider.pardus.org.tr [193.140.100.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 04FC7103876
-	for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2009 11:16:25 +0100 (CET)
-Received: from [192.168.3.203] (uekae-subnet-out.ume.tubitak.gov.tr
-	[194.27.222.253])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested) (Authenticated sender: ozan)
-	by lider.pardus.org.tr (Postfix) with ESMTPSA id E61D7A7A217
-	for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2009 12:09:37 +0200 (EET)
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B0B1103810
+	for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2009 11:33:08 +0100 (CET)
+Received: by pwi18 with SMTP id 18so25768221pwi.32
+	for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2009 02:33:06 -0800 (PST)
+In-Reply-To: <4B379281.7040401@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,14 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: draco <draco31.fr@free.fr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, Dec 27, 2009 at 11:59 AM, draco <draco31.fr@free.fr> wrote:
+> Unfortunately, despite all was OK from the 1.0.21+git devel snapshot few
+> month ago, the alsa-driver v1.0.22 doesn't work.
+> I tried different snapshot from 1.0.22, and sent a bug report here :
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4857
 
-Does that warning can be interpreted as a hardware failure? I'm reverting to older alsa-driver snapshots that I'm sure was working OK but still having this warning. I'm suspecting the power outage that the system suffered on Friday.
+See:
+http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=commit;h=21949f00a022e090a7e8bc9a01dfca88273c6146
 
-Is there a way to understand whether it's driver related or HW related?
+It may be a good idea to roll an alsa-driver 1.0.22.1.
 
-Thanks,
-Ozan
+-Dan
