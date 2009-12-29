@@ -1,20 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: DMA and delay feedback
-Date: Tue, 29 Dec 2009 09:05:25 +0800
-Message-ID: <4f3252890912281705r356200afp7e5bfefb369fae22@mail.gmail.com>
-References: <ad2655cb0912140602s138b7246u6db75e40a699c729@mail.gmail.com>
-	<6160a5130912140646g3738731fqbc5caacc153b9da8@mail.gmail.com>
+From: Chris <cpollock@embarqmail.com>
+Subject: Re: alsa-util.c: snd_pcm_avail() returned a value that
+ is exceptionally large: 349696 bytes (1821 ms).
+Date: Mon, 28 Dec 2009 21:49:13 -0600
+Message-ID: <1262058553.20808.15.camel@localhost.localdomain>
+References: <1261191766.18070.10.camel@localhost.localdomain>
+	<4f3252890912191547x1996cf7es190e8dac71dacaae@mail.gmail.com>
+	<1261352484.18070.47.camel@localhost.localdomain>
+	<1261869811.30924.69.camel@localhost.localdomain>
+	<4f3252890912261739x372fb678yde8a8e0edb93fe6e@mail.gmail.com>
+	<1261947691.24632.29.camel@localhost.localdomain>
+	<4f3252890912272114t6dcfa58bj4d5b5e6e606c5004@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1446990015926627554=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 989AC10380A
-	for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2009 02:05:26 +0100 (CET)
-Received: by pwi18 with SMTP id 18so26938536pwi.32
-	for <alsa-devel@alsa-project.org>; Mon, 28 Dec 2009 17:05:25 -0800 (PST)
-In-Reply-To: <6160a5130912140646g3738731fqbc5caacc153b9da8@mail.gmail.com>
+Received: from mailrelay.embarq.synacor.com (mailrelay.embarq.synacor.com
+	[208.47.184.3]) by alsa0.perex.cz (Postfix) with ESMTP id A4D1E10380E
+	for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2009 04:49:16 +0100 (CET)
+In-Reply-To: <4f3252890912272114t6dcfa58bj4d5b5e6e606c5004@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,35 +29,98 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2009/12/14 pl bossart <bossart.nospam@gmail.com>
 
-> > For transfer purposes, one only needs to know that DMA transfer is
-> > complete on period X so that period X can now be over-written.
->
-> That's the 'traditional' view. ALSA is now used in different ways.
-> PulseAudio sets a timer and relies on snd_pcm_avail() to query how
-> many samples it can write to the ring buffer, the notion of period
-> isn't used at all. I think we could use additional information in the
-> way the hw_ptr position is reported, namely hints on how precise this
-> information is and the granularity of the updates.
-> - Pierre
->
+--===============1446990015926627554==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-FUYezjl0uPbq0hQVavr1"
 
 
-Pulseaudio need more than a timer and relies on snd_pcm_avail() to query how
-many samples it can write to the ring buffer,
+--=-FUYezjl0uPbq0hQVavr1
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Refer to http://0pointer.de/blog/projects/pulse-glitch-free.html
+On Mon, 2009-12-28 at 13:14 +0800, Raymond Yau wrote:
+> Do you mean that you cannot find a test case to reproduce the bug ?
 
-The third basic idea is to allow rewriting of the hardware buffer at any
-time. .
+Not exactly, for instance 20 seconds after freshclam ran I see this in
+my syslog:
+
+Dec 28 21:26:30 localhost pulseaudio[11266]: ratelimit.c: 52 events
+suppressed
+Dec 28 21:26:30 localhost pulseaudio[11266]: asyncq.c: q overrun,
+queuing locally
+Dec 28 21:26:30 localhost last message repeated 10 times
+
+then this:
+
+Dec 28 21:27:24 localhost pulseaudio[11266]: asyncq.c: q overrun,
+queuing locally
+Dec 28 21:27:24 localhost last message repeated 10 times
+Dec 28 21:27:37 localhost pulseaudio[11266]: alsa-util.c:
+snd_pcm_avail() returned a value that is exceptionally large: 839968
+bytes (4761 ms).
+
+The above is while the drive was 'thrashing' for a couple of minutes
+
+I've also determined via experimentation that with pulseaudio running
+copying a 1.2Gb file to a thumb drive takes an average of 30minutes.
+This what I've done:
+
+1. Using Gnome Commander I attempted to copy the 1.2 Gb file to a thumb
+drive, after about 30 minutes I had to stop the transfer at about 35%.
+2. Disabled pulseaudio in Mandriva command center, logged out and back
+in again.
+3. Again tried to copy the save file to the thumb drive, this time it
+took about 3 minutes.
+4. Re-enabled pulseaudio and again tried to copy the file, this time
+using pulseaudio -k ; pulseaudio -vvvv on the command line. I saw
+outputs like this:
+
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: asyncq.c: q overrun, queuing locally
+W: ratelimit.c: 600 events suppressed
+
+I have the complete log as a 15k bziped file. Can it be sent to the
+list?
+
+Chris
+
+--=20
+KeyID 0xE372A7DA98E6705C
 
 
->> For example, If the playback position is 0, the hardware has probably
->> already transferred one period of the sound card.
->> So, one cannot write to playback position 2 and expect it to be output
->> to the sound card if the period size is 1024
+--=-FUYezjl0uPbq0hQVavr1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-Using mmap only can allow writing of the hardware buffer at any time but
-rewriting of the hardware buffer depend on the two new function
-snd_pcm_rewind() and snd_pcm_rewindable()
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEABECAAYFAks5fDkACgkQ43Kn2pjmcFxXMACfUjWWyG0w3GEWBTQNJJY9vrEC
+KxsAnAujqJb+FU3ASVCsWdfaeQcHSLOS
+=Gfzx
+-----END PGP SIGNATURE-----
+
+--=-FUYezjl0uPbq0hQVavr1--
+
+
+--===============1446990015926627554==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1446990015926627554==--
