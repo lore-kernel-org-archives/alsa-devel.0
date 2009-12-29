@@ -1,15 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.33
-Date: Tue, 29 Dec 2009 12:35:55 +0000
-Message-ID: <20091229123555.GC5784@opensource.wolfsonmicro.com>
+From: David Mohr <damailings@mcbf.net>
+Subject: Front jack not working with hda-intel driver SigmaTel
+	STAC9271D codec
+Date: Tue, 29 Dec 2009 16:57:12 +0100
+Message-ID: <472d4b250912290757r68b6d421id289314d1cb1ea9f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 03122243B9
-	for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2009 13:35:59 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-px0-f185.google.com (mail-px0-f185.google.com
+	[209.85.216.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07DA724435
+	for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2009 16:57:13 +0100 (CET)
+Received: by pxi15 with SMTP id 15so7949393pxi.23
+	for <alsa-devel@alsa-project.org>; Tue, 29 Dec 2009 07:57:13 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,32 +22,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 6b7b284958d47b77d06745b36bc7f36dab769d9b:
-  Linus Torvalds (1):
-        Linux 2.6.33-rc2
+Hi,
+I'm running ubuntu 9.10. I had to force model=5stack to get any audio
+output at all. While the jack in the back now works, I still don't get
+any sound on the front jack. I haven't found any options in alsamixer,
+and switching the output mode in pavucontrol to the headphones just
+makes the sound disappear from the back jack, but I still get nothing
+in the front.
 
-are available in the git repository at:
+I uploaded my alsa-info.sh output here:
+http://www.alsa-project.org/db/?f=3ed2ab9e7732bf08d2bbfbe8adb74bf037d9e618
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
+Can I fix this somehow, or is it a bug?
 
-The change in the branch is much bigger than the diffstat shows due to
-the merge up of Linus' tree (which now builds for ARM).
+And of course thanks everyone for the usually great working alsa system.
 
-Guennadi Liakhovetski (1):
-      ASoC: fix params_rate() macro use in several codecs
-
-Kuninori Morimoto (1):
-      ASoC: fsi-ak4642: Remove ak4642_add_i2c_device
-
-Mark Brown (1):
-      Merge commit 'v2.6.33-rc2' into for-2.6.33
-
- sound/soc/codecs/wm8510.c |   14 +++++++-------
- sound/soc/codecs/wm8940.c |   14 +++++++-------
- sound/soc/codecs/wm8974.c |   14 +++++++-------
- sound/soc/sh/fsi-ak4642.c |   30 ------------------------------
- 4 files changed, 21 insertions(+), 51 deletions(-)
+~David
