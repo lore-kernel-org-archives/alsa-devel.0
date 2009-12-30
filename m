@@ -1,17 +1,17 @@
-From: Austin Robertson <austinrobertson@gmail.com>
-Subject: Trouble with sound over HDMI with Nvidia MCP7A HDMI
-Date: Sat, 2 Jan 2010 22:07:11 -0600
-Message-ID: <797193071001022007i6f15353coac213a11c38088ba@mail.gmail.com>
+From: draco <draco31.fr@free.fr>
+Subject: Re: ALSA: HDA VIA VT2020 support
+Date: Wed, 30 Dec 2009 16:26:10 +0100
+Message-ID: <4B3B7112.20004@free.fr>
+References: <4B379281.7040401@free.fr>
+	<604760770912280233h183c13fdv8159f95246c86f33@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f175.google.com (mail-yx0-f175.google.com
-	[209.85.210.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01B062413B
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jan 2010 05:07:31 +0100 (CET)
-Received: by yxe5 with SMTP id 5so9462700yxe.24
-	for <alsa-devel@alsa-project.org>; Sat, 02 Jan 2010 20:07:31 -0800 (PST)
+Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9138F244D1
+	for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2009 16:26:16 +0100 (CET)
+In-Reply-To: <604760770912280233h183c13fdv8159f95246c86f33@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,214 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Chen <seven.steps@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am having trouble getting sound over hdmi with my Nvidia MCP7A HDMI. The
-strange thing is that everything works fine in a Live disc, but once I do a
-fresh install of that Live disc I get no sound, even though my configuration
-is exactly the same (as far as I can tell). I've checked the little things
-like alsamixer volumes, aplay -l, etc etc. Everything looks good to me. I
-can reproduce on multiple TVs so its not the receiver. Video drivers are the
-same in both live version and installed. aplay -l detects my device.
-sound/pci/hda/patch_nvhdmi.c already has my correct vendor id in it. Perhaps
-the following info can help figure out what my installed environment is
-lacking. I've been at it for days now and I'm stumped! Any ideas?
-
-*Live Disc Info*
-
-XMBC Live 9.11 (basically a optimized version of Karmic configured to start
-XBMC, or Xbox Media Center, see http://www.xbmc.org for more info)
-NOTE: My problem is not specific to the XBMC program. Things like aplay and
-speaker-test don't work either.
-
-*Hardware*
-
-Acer Aspire Revo R1600
-
-http://www.newegg.com/Product/Product.aspx?Item=N82E16883103228&Tpk=AR1600
-
-*XBMC Live installed to hard disk via Ubuntu installer*
-
-(This setup gives me no sound over HDMI)
-
-(This is a fresh install. No additional changes were made)
-
-alsa-info.sh
-
-http://www.alsa-project.org/db/?f=ab7cef7c7233f8c42756d36e362df684b9147d38
-
-xbmc@XBMCLive:~$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: NVidia [HDA NVidia], device 0: ALC662 rev1 Analog [ALC662 rev1
-Analog]
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 0: NVidia [HDA NVidia], device 3: NVIDIA HDMI [NVIDIA HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-xbmc@XBMCLive:~$ aplay -L
-default:CARD=NVidia
-    HDA NVidia, ALC662 rev1 Analog
-    Default Audio Device
-front:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    Front speakers
-surround40:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-hdmi:CARD=NVidia,DEV=0
-    HDA NVidia, NVIDIA HDMI
-    HDMI Audio Output
-null
-    Discard all samples (playback) or generate zero samples (capture)
-
-*
-### speaker-test executes but NO SOUND over hdmi*. *I've also tried other
-devices like -D hdmi:0 -D hw:0,3 -D hdmi -D plug:hdmi, etc, etc*
-
-xbmc@XBMCLive:~$ speaker-test -D plughw:0,3 -c2
-
-speaker-test 1.0.20
-
-Playback device is plughw:0,3
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 64 to 16384
-Period size range from 32 to 8192
-Using max buffer size 16384
-Periods = 4
-was set period_size = 4096
-was set buffer_size = 16384
- 0 - Front Left
- 1 - Front Right
-Time per period = 5.637709
- 0 - Front Left
-
-xbmc@XBMCLive:~$ cat /proc/driver/nvidia/version
-NVRM version: NVIDIA UNIX x86 Kernel Module 190.53 Tue Dec 8 18:51:41 PST
-2009
-GCC version: gcc version 4.4.1 (Ubuntu 4.4.1-4ubuntu8)
-
-*
-XMBC Live Disc
-*
-
-**
-(This setup gives me audio over hdmi perfectly)
-
-(This is running as a Live disc, ie not installed)
-
-**
-alsa-info.sh
-
-http://www.alsa-project.org/db/?f=c95bebdc433f15147fb0be415be4e61e4d0b72ad [
-^<http://www.alsa-project.org/db/?f=c95bebdc433f15147fb0be415be4e61e4d0b72ad>
-]
-
-xbmc@XBMCLive:~$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: NVidia [HDA NVidia], device 0: ALC662 rev1 Analog [ALC662 rev1
-Analog]
-  Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 0: NVidia [HDA NVidia], device 3: NVIDIA HDMI [NVIDIA HDMI]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-
-
-xbmc@XBMCLive:~$ aplay -L
-default:CARD=NVidia
-    HDA NVidia, ALC662 rev1 Analog
-    Default Audio Device
-front:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    Front speakers
-surround40:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=NVidia,DEV=0
-    HDA NVidia, ALC662 rev1 Analog
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-hdmi:CARD=NVidia,DEV=0
-    HDA NVidia, NVIDIA HDMI
-    HDMI Audio Output
-null
-    Discard all samples (playback) or generate zero samples (capture)
-
-###* speaker-test plays audio over hdmi perfectly. other programs play audio
-over hdmi.*
-
-xbmc@XBMCLive:~$ speaker-test -D plughw:0,3 -c2
-
-speaker-test 1.0.20
-
-Playback device is plughw:0,3
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 64 to 16384
-Period size range from 32 to 8192
-Using max buffer size 16384
-Periods = 4
-was set period_size = 4096
-was set buffer_size = 16384
- 0 - Front Left
- 1 - Front Right
-Time per period = 5.638693
-
-xbmc@XBMCLive:~$ cat /proc/driver/nvidia/version
-NVRM version: NVIDIA UNIX x86 Kernel Module 190.53 Tue Dec 8 18:51:41 PST
-2009
-GCC version: gcc version 4.4.1 (Ubuntu 4.4.1-4ubuntu8)
-
-
-*Additional Information
-
-*
-I had an idea to run a diff on the two alsa-info.sh outputs of my installed
-and live version. (non-working and working, see above) I figured that might
-give me a clue on what I was missing. Most things should be identical with a
-few exceptions like timestamps, etc.
-
-MacBook-Austin:Desktop Austin$ diff -crB alsa-info_installed.txt
-alsa-info_live.txt > alsa-infodiff.diff
-
-alsa-info_installed.txt: http://pastebin.com/f63afa045 (non-working, same as
-above)
-
-alsa-info_live.txt: http://pastebin.com/f7b47d46d (working, same as above)
-
-alsa-infodiff.diff: http://pastebin.com/f79cf9c15
-
-Only a few things caught my attention. At first I thought I had my playback
-volumes muted (line 525,532) according to the diff. But then I realized that
-was just for the mic, so that shouldn't matter. The only other thing that I
-saw was that my Amp-Out vals differed (line 123, 129). Perhaps, a more
-trained eye will have better luck.
-
-Bug has also been reported here:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4865
+RGFuaWVsIENoZW4gYSDDqWNyaXQgOgo+IE9uIFN1biwgRGVjIDI3LCAyMDA5IGF0IDExOjU5IEFN
+LCBkcmFjbyA8ZHJhY28zMS5mckBmcmVlLmZyPiB3cm90ZToKPiAgIAo+PiBVbmZvcnR1bmF0ZWx5
+LCBkZXNwaXRlIGFsbCB3YXMgT0sgZnJvbSB0aGUgMS4wLjIxK2dpdCBkZXZlbCBzbmFwc2hvdCBm
+ZXcKPj4gbW9udGggYWdvLCB0aGUgYWxzYS1kcml2ZXIgdjEuMC4yMiBkb2Vzbid0IHdvcmsuCj4+
+IEkgdHJpZWQgZGlmZmVyZW50IHNuYXBzaG90IGZyb20gMS4wLjIyLCBhbmQgc2VudCBhIGJ1ZyBy
+ZXBvcnQgaGVyZSA6Cj4+IGh0dHBzOi8vYnVndHJhY2suYWxzYS1wcm9qZWN0Lm9yZy9hbHNhLWJ1
+Zy92aWV3LnBocD9pZD00ODU3Cj4+ICAgICAKPgo+IFNlZToKPiBodHRwOi8vZ2l0Lmtlcm5lbC5v
+cmcvP3A9bGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC0yLjYuZ2l0O2E9Y29tbWl0O2g9MjE5
+NDlmMDBhMDIyZTA5MGE3ZThiYzlhMDFkZmNhODgyNzNjNjE0Ngo+Cj4gSXQgbWF5IGJlIGEgZ29v
+ZCBpZGVhIHRvIHJvbGwgYW4gYWxzYS1kcml2ZXIgMS4wLjIyLjEuCj4KPiAtRGFuCj4KPiAgIApI
+aSBEYW4sCgpUaGFuayB5b3UgZm9yIHlvdXIgbWFpbC4KSSdtIHJ1bm5pbmcgd2l0aCB0aGUgMS4w
+LjIyLjEgc2luY2UgMSBob3VyIGFuZCBhbGwgc2VlbXMgdG8gYmUgT0suCkkgd2lsbCB1cGdyYWRl
+IHRoZSBidWcgcmVwb3J0IHRvIGpvaW4gdGhlIGNvcnJlc3BvbmRpbmcgYWxzYS1pbmZvLnR4dCBp
+biAKb3JkZXIgeW91IHNob3VsZCBtYXJrIGl0IGFzIHNvbHZlZC4KCkEgYmlnIHRoYW5rIHlvdSB0
+byBhbGwgdGhlIGRldmVsb3BtZW50IHRlYW0uCkJlc3Qgd2lzaGVzOwpkcmFjbwoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
