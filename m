@@ -1,24 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: fsi-ak4642: Remove
- ak4642_add_i2c_device
-Date: Wed, 30 Dec 2009 12:39:24 +0000
-Message-ID: <20091230123924.GA32304@opensource.wolfsonmicro.com>
-References: <ur5qychhv.wl%morimoto.kuninori@renesas.com>
-	<20091214114119.GE21066@rakim.wolfsonmicro.main>
-	<uljh59k1j.wl%morimoto.kuninori@renesas.com>
-	<6D292CE0-15AA-4990-9042-0381EDC07570@opensource.wolfsonmicro.com>
-	<u637wx5nk.wl%morimoto.kuninori@renesas.com>
-	<20091224114017.GA11850@opensource.wolfsonmicro.com>
-	<20091225004502.GA32097@linux-sh.org>
+Subject: Re: [PATCH] soc-cache: fix training whitespace
+	checkpatch issue
+Date: Wed, 30 Dec 2009 13:17:17 +0000
+Message-ID: <20091230131717.GB369@opensource.wolfsonmicro.com>
+References: <1261731644-23949-1-git-send-email-21cnbao@gmail.com>
+	<3c17e3570912272043x5d98919ai3a1cd85069cfd8f0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D0AF3243DC
-	for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2009 13:39:29 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CFC1C243FE
+	for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2009 14:17:20 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20091225004502.GA32097@linux-sh.org>
+In-Reply-To: <3c17e3570912272043x5d98919ai3a1cd85069cfd8f0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,20 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Mundt <lethal@linux-sh.org>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 25, 2009 at 09:45:02AM +0900, Paul Mundt wrote:
+On Mon, Dec 28, 2009 at 12:43:01PM +0800, Barry Song wrote:
+> Sorry. For uniform coding style with the context, the patch should be:
 
-> I missed the rest of this discussion, but if your conerns are about
-> bisection, it's not an issue in this case. Board patches that add i2c or
-> platform device data with no unmet dependencies I usually merge early.
-> The main rationale for this is that the driver often shows up quite a bit
-> later, and the board code will likely have had more paches piled up on
-> top of it and merge conflicts ensue.
-
-What I was hoping for was a single patch which removed the existing code
-within ASoC and added the matching arch code so that there wouldn't be
-any versions which either had duplicate adds or missing adds.  There's
-no build time dependency, only a runtime one.
+Sure - please resend with the commit message and so on (for a small fix
+like this fixing up manually would be more hassle than the fix).
