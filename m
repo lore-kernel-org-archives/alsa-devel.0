@@ -1,29 +1,24 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: alsa-util.c: snd_pcm_avail() returned a value that
-	is exceptionally large: 349696 bytes (1821 ms).
-Date: Thu, 31 Dec 2009 12:20:43 +0800
-Message-ID: <4f3252890912302020k35efb96eu686fb16d47783ec5@mail.gmail.com>
-References: <1261191766.18070.10.camel@localhost.localdomain>
-	<4f3252890912191547x1996cf7es190e8dac71dacaae@mail.gmail.com>
-	<1261352484.18070.47.camel@localhost.localdomain>
-	<1261869811.30924.69.camel@localhost.localdomain>
-	<4f3252890912261739x372fb678yde8a8e0edb93fe6e@mail.gmail.com>
-	<1261947691.24632.29.camel@localhost.localdomain>
-	<4f3252890912272114t6dcfa58bj4d5b5e6e606c5004@mail.gmail.com>
-	<1262058553.20808.15.camel@localhost.localdomain>
-	<4f3252890912292307qc3c4b29m98c7d6e4c8fd6a7d@mail.gmail.com>
-	<1262192170.11628.13.camel@localhost.localdomain>
+From: michael@cadilhac.name (=?iso-8859-1?Q?Micha=EBl?= Cadilhac)
+Subject: Re: Getting pcm_usb_stream plugin to know its limits.
+	[Kind of SOLVED]
+Date: Wed, 30 Dec 2009 23:57:46 -0500
+Message-ID: <87aawzviyd.fsf_-_@cadilhac.name>
+References: <87ljgkuzdl.fsf@cadilhac.name> <87eimbvkxg.fsf@cadilhac.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-=-="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f185.google.com (mail-px0-f185.google.com
-	[209.85.216.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 944D010381F
-	for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2009 05:20:44 +0100 (CET)
-Received: by pxi15 with SMTP id 15so8924013pxi.23
-	for <alsa-devel@alsa-project.org>; Wed, 30 Dec 2009 20:20:43 -0800 (PST)
-In-Reply-To: <1262192170.11628.13.camel@localhost.localdomain>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 328DE103800
+	for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2009 05:58:14 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1NQD6y-0004P1-Pu
+	for alsa-devel@alsa-project.org; Thu, 31 Dec 2009 05:58:12 +0100
+Received: from 70.35.166.123 ([70.35.166.123])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2009 05:58:12 +0100
+Received: from michael by 70.35.166.123 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2009 05:58:12 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,52 +31,202 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2009/12/31 Chris <cpollock@embarqmail.com>
+--=-=-=
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-> On Wed, 2009-12-30 at 15:07 +0800, Raymond Yau wrote:
-> > Please post the output of alsa-info.sh
-> Raymond, I can't seem to locate that script.
+michael@cadilhac.name (Micha=EBl Cadilhac) writes:
+
+> michael@cadilhac.name (Micha=EBl Cadilhac) writes:
 >
-
-http://git.alsa-project.org/?p=alsa-driver.git;a=blob_plain;f=utils/alsa-info.sh
-
-
-
-> > Do your VIA 8237/ens1371 has any digital output/input ?
-> That I can't answer
+>> Next, Audacity stopped segfaulting but still didn't work: it couldn't
+>> manage to configure the plugin properly.
 >
-
-Do your motherboard/sound card  has optical/coaxial spdif ?
-
-
-
-> Sorry, not much help I know
+> My second idea was to allow usb_stream to fix its own rate and
+> period_size, as in:
 >
+> pcm.!usb_stream {
+> 	type usb_stream
+> 	period_size 128
+> 	rate 44100
+> 	card "1"
+> }
 >
-> --
-> KeyID 0xE372A7DA98E6705C
+> This would be great because it would prevent PortAudio from doing lots
+> of test (which are pretty slow).  This is what I thought would work:
 >
->
-> Did PA developer tell you the meaning of those messages ?
+[...]
+> +	unsigned rate_min =3D us->rate ? us->rate : 44100,
+> +		rate_max =3D us->rate ? us->rate : 96000,
+> +		period_size_min =3D us->period_size ? us->period_size : 128,
+> +		period_size_max =3D us->period_size ? us->period_size : 64*4096;
+[...]
 
-D: memblock.c: Pool full
+Ah!  Sorry, I got mixed up between period_size and period_bytes (I'm new
+to all that stuff).  Multiplying period_size by the frame_size (which is
+hardcoded as 6) get it to work.
 
-and
+So, my final saying is the following patch.  It fixes the segfault on
+stopping a non-started usb_stream, plus it adds the ability to set a
+period size and sound rate.  The latter offers a workaround for the
+second issue I came with (that the default values for period bytes, and
+hence period size, were too high for us122l to work).
 
-W: asyncq.c: q overrun, queuing locally
 
-There are another message which need the PA developer to explain the meaning
-of "Underrun on "*/*.ogg" 0 bytes in queue "
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: inline; filename=all.patch
+
+--- /dd/alsa-plugins/usb_stream/pcm_usb_stream.c	2008-11-21 18:08:16.000000000 -0500
++++ pcm_usb_stream.c	2009-12-30 23:40:46.467973740 -0500
+@@ -48,6 +48,9 @@
+ #define VDBG(f, ...)
+ #endif
+ 
++#define FRAME_SIZE 6
++
++
+ #define LCARD 32
+ struct user_usb_stream {
+ 	char			card[LCARD];
+@@ -70,6 +73,8 @@
+ 	unsigned		periods_done;
+ 
+ 	unsigned 		channels;
++	snd_pcm_uframes_t	period_size;
++	unsigned int		rate;
+ } snd_pcm_us_t;
+ 
+ static struct user_usb_stream *uus;
+@@ -177,7 +182,7 @@
+ 	VDBG("");
+ 
+ 	us_cfg.version = USB_STREAM_INTERFACE_VERSION;
+-	us_cfg.frame_size = 6;
++	us_cfg.frame_size = FRAME_SIZE;
+ 	us_cfg.sample_rate = io->rate;
+ 	us_cfg.period_frames = io->period_size;
+ 
+@@ -256,8 +261,11 @@
+ static int snd_pcm_us_stop(snd_pcm_ioplug_t *io)
+ {
+ 	snd_pcm_us_t *us = io->private_data;
+-	VDBG("%u", us->uus->s->periods_done);
+ 
++	if (!us->uus->s)
++	  return 0;
++
++	VDBG("%u", us->uus->s->periods_done);
+ 	if (io->stream == SND_PCM_STREAM_PLAYBACK)
+ 		memset(us->uus->write_area, 0, us->uus->s->write_size);
+ 
+@@ -370,6 +378,10 @@
+ 	};
+ 
+ 	int err;
++	unsigned int rate_min = us->rate ? us->rate : 44100,
++		rate_max = us->rate ? us->rate : 96000,
++		period_bytes_min = us->period_size ? FRAME_SIZE * us->period_size : 128,
++		period_bytes_max = us->period_size ? FRAME_SIZE * us->period_size : 64*4096;
+ 
+ 	if ((err = snd_pcm_ioplug_set_param_list(&us->io, SND_PCM_IOPLUG_HW_ACCESS,
+ 						 ARRAY_SIZE(access_list), access_list)) < 0 ||
+@@ -378,19 +390,20 @@
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW_CHANNELS,
+ 						   us->channels, us->channels)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW_RATE,
+-						   44100, 96000)) < 0 ||
++						   rate_min, rate_max)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW_PERIOD_BYTES,
+-						   128, 64*4096)) < 0 ||
++						   period_bytes_min, period_bytes_max)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW_PERIODS,
+ 						   2, 2)) < 0)
+ 		return err;
+-
+ 	return 0;
+ }
+ 
+ static int snd_pcm_us_open(snd_pcm_t **pcmp, const char *name,
+ 				   const char *card,
+-				   snd_pcm_stream_t stream, int mode)
++			   snd_pcm_stream_t stream, int mode,
++			   snd_pcm_uframes_t period_size,
++			   unsigned int rate)
+ {
+ 	snd_pcm_us_t *us;
+ 	int err;
+@@ -421,6 +434,8 @@
+ 	snd_hwdep_poll_descriptors(us->hwdep, &us->pfd, 1);
+ 
+ 	us->channels = 2;
++	us->period_size = period_size;
++	us->rate = rate;
+ 
+ 	us->io.version = SND_PCM_IOPLUG_VERSION;
+ 	us->io.name = "ALSA <-> USB_STREAM PCM I/O Plugin";
+@@ -455,6 +470,7 @@
+ 	snd_config_iterator_t i, next;
+ 	const char *card;
+ 	int err;
++	long period_size = 0, rate = 0;
+ 	
+ 	snd_config_for_each(i, next, conf) {
+ 		snd_config_t *n = snd_config_iterator_entry(i);
+@@ -472,12 +488,27 @@
+ 			snd_config_get_string(n, &card);
+ 			continue;
+ 		}
++		if (strcmp(id, "period_size") == 0) {
++			if (snd_config_get_type(n) != SND_CONFIG_TYPE_INTEGER) {
++				SNDERR("Invalid type for %s", id);
++				return -EINVAL;
++			}
++			snd_config_get_integer(n, &period_size);
++			continue;
++		}
++		if (strcmp(id, "rate") == 0) {
++			if (snd_config_get_type(n) != SND_CONFIG_TYPE_INTEGER) {
++				SNDERR("Invalid type for %s", id);
++				return -EINVAL;
++			}
++			snd_config_get_integer(n, &rate);
++			continue;
++		}
+ 		SNDERR("Unknown field %s", id);
+ 		return -EINVAL;
+ 	}
+ 
+-	err = snd_pcm_us_open(pcmp, name, card, stream, mode);
+-
++	err = snd_pcm_us_open(pcmp, name, card, stream, mode, period_size, rate);
+ 	return err;
+ }
+ 
+
+--=-=-=
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
 
-D: protocol-native.c: Requesting rewind due to end of underrun.
-D: alsa-sink.c: Requested to rewind 17632 bytes.
-D: alsa-sink.c: Limited to 17600 bytes.
-D: alsa-sink.c: before: 4400
-D: alsa-sink.c: after: 4400
-D: alsa-sink.c: Rewound 17600 bytes.
-D: sink.c: Processing rewind...
-D: sink-input.c: Have to rewind 17600 bytes on render memblockq.
-D: source.c: Processing rewind...
-D: protocol-native.c: Underrun on
-'/usr/share/sounds/gnome/default/alerts/sonar.ogg', 0 bytes in queue.
+Again, happy new year to everyone.
+
+--=20
+Micha=EBl `Micha' Cadilhac (LITQ, U. de Montr=E9al) -- http://michael.cad=
+ilhac.name
+	||     Emacs is GNU, Emacs is free
+	||     For more information,
+	||     Type C-h C-p
+
+--=-=-=
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-=-=--
