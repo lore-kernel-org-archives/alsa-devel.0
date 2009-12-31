@@ -1,19 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 3/5] ASoC: tlv320dac33: Clean up the hardware
-	configuration code
-Date: Thu, 31 Dec 2009 10:30:21 +0200
-Message-ID: <1262248223-9335-4-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 4/5] ASoC: tlv320dac33: Add new FIFO mode: mode
+	7
+Date: Thu, 31 Dec 2009 10:30:22 +0200
+Message-ID: <1262248223-9335-5-git-send-email-peter.ujfalusi@nokia.com>
 References: <1262248223-9335-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1262248223-9335-2-git-send-email-peter.ujfalusi@nokia.com>
 	<1262248223-9335-3-git-send-email-peter.ujfalusi@nokia.com>
+	<1262248223-9335-4-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AD821038A3
-	for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2009 09:31:40 +0100 (CET)
-In-Reply-To: <1262248223-9335-3-git-send-email-peter.ujfalusi@nokia.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 9944E1038A6
+	for <alsa-devel@alsa-project.org>; Thu, 31 Dec 2009 09:34:24 +0100 (CET)
+In-Reply-To: <1262248223-9335-4-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,118 +28,116 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Use switch instead of if statements to configure FIFO bypass
-and mode1.
-With this change adding new FIFO mode is going to be easier,
-and cleaner.
+Mode 7 of tlv320dac33 operates in the following way:
+The codec is in master mode.
+Host configures upper and lower thresholds in tlv320dac33
+During playback the codec will clock in the data until the
+upper threshold is reached in FIFO. At this point the codec
+stops the colocks on the serial bus.
+When the FIFO fill is reaching the lower threshold limit the
+codec will enable the clocks on the serial bus, and clocks
+in data till the upper threshold is reached.
+
+In this mode, we can also request interrupts for threshold
+events (upper, lower and alarm), which could be used for
+power management.
+
+At this point the interrupts are not enabled for this mode,
+but it can be taken into use in the future, when the surrounding
+code makes it possible to use it.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/tlv320dac33.c |   61 +++++++++++++++++++++++++++++----------
- 1 files changed, 45 insertions(+), 16 deletions(-)
+ sound/soc/codecs/tlv320dac33.c |   35 ++++++++++++++++++++++++++++++++++-
+ 1 files changed, 34 insertions(+), 1 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index f7c7bbc..c684aa2 100644
+index c684aa2..bc35f3f 100644
 --- a/sound/soc/codecs/tlv320dac33.c
 +++ b/sound/soc/codecs/tlv320dac33.c
-@@ -707,7 +707,7 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
- 	struct snd_soc_codec *codec = socdev->card->codec;
- 	struct tlv320dac33_priv *dac33 = codec->private_data;
- 	unsigned int oscset, ratioset, pwr_ctrl, reg_tmp;
--	u8 aictrl_a, fifoctrl_a;
-+	u8 aictrl_a, aictrl_b, fifoctrl_a;
+@@ -62,6 +62,7 @@ enum dac33_state {
+ enum dac33_fifo_modes {
+ 	DAC33_FIFO_BYPASS = 0,
+ 	DAC33_FIFO_MODE1,
++	DAC33_FIFO_MODE7,
+ 	DAC33_FIFO_LAST_MODE,
+ };
  
- 	switch (substream->runtime->rate) {
- 	case 44100:
-@@ -764,6 +764,7 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
- 	dac33_oscwait(codec);
+@@ -422,7 +423,7 @@ static int dac33_set_fifo_mode(struct snd_kcontrol *kcontrol,
  
- 	if (dac33->fifo_mode) {
-+		/* Generic for all FIFO modes */
- 		/* 50-51 : ASRC Control registers */
- 		dac33_write(codec, DAC33_ASRC_CTRL_A, (1 << 4)); /* div=2 */
- 		dac33_write(codec, DAC33_ASRC_CTRL_B, 1); /* ??? */
-@@ -773,38 +774,66 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
+ /* Codec operation modes */
+ static const char *dac33_fifo_mode_texts[] = {
+-	"Bypass", "Mode 1"
++	"Bypass", "Mode 1", "Mode 7"
+ };
  
- 		/* Set interrupts to high active */
- 		dac33_write(codec, DAC33_INTP_CTRL_A, DAC33_INTPM_AHIGH);
--
--		dac33_write(codec, DAC33_FIFO_IRQ_MODE_B,
--			    DAC33_ATM(DAC33_FIFO_IRQ_MODE_LEVEL));
--		dac33_write(codec, DAC33_FIFO_IRQ_MASK, DAC33_MAT);
- 	} else {
-+		/* FIFO bypass mode */
- 		/* 50-51 : ASRC Control registers */
- 		dac33_write(codec, DAC33_ASRC_CTRL_A, DAC33_SRCBYP);
- 		dac33_write(codec, DAC33_ASRC_CTRL_B, 0); /* ??? */
- 	}
- 
--	if (dac33->fifo_mode)
-+	/* Interrupt behaviour configuration */
-+	switch (dac33->fifo_mode) {
-+	case DAC33_FIFO_MODE1:
-+		dac33_write(codec, DAC33_FIFO_IRQ_MODE_B,
-+			    DAC33_ATM(DAC33_FIFO_IRQ_MODE_LEVEL));
-+		dac33_write(codec, DAC33_FIFO_IRQ_MASK, DAC33_MAT);
+ static const struct soc_enum dac33_fifo_mode_enum =
+@@ -556,6 +557,10 @@ static inline void dac33_prefill_handler(struct tlv320dac33_priv *dac33)
+ 		dac33_write16(codec, DAC33_PREFILL_MSB,
+ 				DAC33_THRREG(dac33->alarm_threshold));
+ 		break;
++	case DAC33_FIFO_MODE7:
++		dac33_write16(codec, DAC33_PREFILL_MSB,
++				DAC33_THRREG(20));
 +		break;
-+	default:
-+		/* in FIFO bypass mode, the interrupts are not used */
+ 	default:
+ 		dev_warn(codec->dev, "Unhandled FIFO mode: %d\n",
+ 							dac33->fifo_mode);
+@@ -574,6 +579,9 @@ static inline void dac33_playback_handler(struct tlv320dac33_priv *dac33)
+ 		dac33_write16(codec, DAC33_NSAMPLE_MSB,
+ 				DAC33_THRREG(dac33->nsample));
+ 		break;
++	case DAC33_FIFO_MODE7:
++		/* At the moment we are not using interrupts in mode7 */
 +		break;
-+	}
-+
-+	aictrl_b = dac33_read_reg_cache(codec, DAC33_SER_AUDIOIF_CTRL_B);
-+
-+	switch (dac33->fifo_mode) {
-+	case DAC33_FIFO_MODE1:
+ 	default:
+ 		dev_warn(codec->dev, "Unhandled FIFO mode: %d\n",
+ 							dac33->fifo_mode);
+@@ -788,6 +796,10 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
+ 			    DAC33_ATM(DAC33_FIFO_IRQ_MODE_LEVEL));
+ 		dac33_write(codec, DAC33_FIFO_IRQ_MASK, DAC33_MAT);
+ 		break;
++	case DAC33_FIFO_MODE7:
++		/* Disable all interrupts */
++		dac33_write(codec, DAC33_FIFO_IRQ_MASK, 0);
++		break;
+ 	default:
+ 		/* in FIFO bypass mode, the interrupts are not used */
+ 		break;
+@@ -807,6 +819,17 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
+ 		fifoctrl_a &= ~DAC33_FAUTO;
+ 		aictrl_b &= ~DAC33_BCLKON;
+ 		break;
++	case DAC33_FIFO_MODE7:
 +		/*
 +		 * For mode1:
 +		 * Disable the FIFO bypass (Enable the use of FIFO)
-+		 * Select nSample mode
++		 * Select Threshold mode
 +		 * BCLK is only running when data is needed by DAC33
 +		 */
- 		fifoctrl_a &= ~DAC33_FBYPAS;
--	else
-+		fifoctrl_a &= ~DAC33_FAUTO;
++		fifoctrl_a &= ~DAC33_FBYPAS;
++		fifoctrl_a |= DAC33_FAUTO;
 +		aictrl_b &= ~DAC33_BCLKON;
 +		break;
-+	default:
-+		/*
-+		 * For FIFO bypass mode:
-+		 * Enable the FIFO bypass (Disable the FIFO use)
-+		 * Set the BCLK as continous
-+		 */
- 		fifoctrl_a |= DAC33_FBYPAS;
--	dac33_write(codec, DAC33_FIFO_CTRL_A, fifoctrl_a);
-+		aictrl_b |= DAC33_BCLKON;
-+		break;
-+	}
- 
-+	dac33_write(codec, DAC33_FIFO_CTRL_A, fifoctrl_a);
- 	dac33_write(codec, DAC33_SER_AUDIOIF_CTRL_A, aictrl_a);
--	reg_tmp = dac33_read_reg_cache(codec, DAC33_SER_AUDIOIF_CTRL_B);
--	if (dac33->fifo_mode)
--		reg_tmp &= ~DAC33_BCLKON;
--	else
--		reg_tmp |= DAC33_BCLKON;
--	dac33_write(codec, DAC33_SER_AUDIOIF_CTRL_B, reg_tmp);
-+	dac33_write(codec, DAC33_SER_AUDIOIF_CTRL_B, aictrl_b);
- 
--	if (dac33->fifo_mode) {
-+	switch (dac33->fifo_mode) {
-+	case DAC33_FIFO_MODE1:
- 		/* 20: BCLK divide ratio */
- 		dac33_write(codec, DAC33_SER_AUDIOIF_CTRL_C, 3);
- 
+ 	default:
+ 		/*
+ 		 * For FIFO bypass mode:
+@@ -830,6 +853,16 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
  		dac33_write16(codec, DAC33_ATHR_MSB,
  			      DAC33_THRREG(dac33->alarm_threshold));
--	} else {
+ 		break;
++	case DAC33_FIFO_MODE7:
++		/*
++		 * Configure the threshold levels, and leave 10 sample space
++		 * at the bottom, and also at the top of the FIFO
++		 */
++		dac33_write16(codec, DAC33_UTHR_MSB,
++			DAC33_THRREG(DAC33_BUFFER_SIZE_SAMPLES - 10));
++		dac33_write16(codec, DAC33_LTHR_MSB,
++			DAC33_THRREG(10));
 +		break;
-+	default:
-+		/* BYPASS mode */
+ 	default:
+ 		/* BYPASS mode */
  		dac33_write(codec, DAC33_SER_AUDIOIF_CTRL_C, 32);
-+		break;
- 	}
- 
- 	mutex_unlock(&dac33->mutex);
 -- 
 1.6.6
