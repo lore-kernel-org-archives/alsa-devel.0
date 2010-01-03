@@ -1,29 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: alsa-util.c: snd_pcm_avail() returned a value that
-	is exceptionally large: 349696 bytes (1821 ms).
-Date: Sun, 3 Jan 2010 08:49:16 +0800
-Message-ID: <4f3252891001021649v59b1add5q6e786e5fedfc1c2@mail.gmail.com>
-References: <1261191766.18070.10.camel@localhost.localdomain>
-	<4f3252890912191547x1996cf7es190e8dac71dacaae@mail.gmail.com>
-	<1261352484.18070.47.camel@localhost.localdomain>
-	<1261869811.30924.69.camel@localhost.localdomain>
-	<4f3252890912261739x372fb678yde8a8e0edb93fe6e@mail.gmail.com>
-	<1261947691.24632.29.camel@localhost.localdomain>
-	<4f3252890912272114t6dcfa58bj4d5b5e6e606c5004@mail.gmail.com>
-	<1262058553.20808.15.camel@localhost.localdomain>
-	<4f3252890912292307qc3c4b29m98c7d6e4c8fd6a7d@mail.gmail.com>
-	<hhi2m3$26b$1@ger.gmane.org>
+From: Jie Jiang <jjinfo@nudt.edu.cn>
+Subject: Cross-compile problem with alsa-driver version 1.0.22
+Date: Sun, 03 Jan 2010 11:08:17 +0800
+Message-ID: <462487291.07446@nudt.edu.cn>
+Reply-To: jjinfo@nudt.edu.cn
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f195.google.com (mail-yw0-f195.google.com
-	[209.85.211.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id 21B2D1037FE
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jan 2010 01:49:20 +0100 (CET)
-Received: by ywh33 with SMTP id 33so14254672ywh.23
-	for <alsa-devel@alsa-project.org>; Sat, 02 Jan 2010 16:49:16 -0800 (PST)
-In-Reply-To: <hhi2m3$26b$1@ger.gmane.org>
+Received: from nudt.edu.cn (mail.nudt.edu.cn [202.197.0.188])
+	by alsa0.perex.cz (Postfix) with SMTP id 8072A1037EA
+	for <alsa-devel@alsa-project.org>; Sun,  3 Jan 2010 04:08:26 +0100 (CET)
+Received: from [192.168.1.2] (unknown [218.76.41.91])
+	(Authenticated sender: jjinfo)
+	by ksg.nudt.edu.cn (KILL Mail Shield Gateway) with ESMTP id 7F3F81AF6B8
+	for <alsa-devel@alsa-project.org>; Sun,  3 Jan 2010 11:08:17 +0800 (CST)
+Message-Id: <1262488097.5781.1.camel@UT43>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,42 +27,83 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2009/12/31 Colin Guthrie <gmane@colin.guthr.ie>
+Hi all,
 
-> 'Twas brillig, and Raymond Yau at 30/12/09 07:07 did gyre and gimble:
-> > Why do PA server try to open an non-existing device iec958 so many times
-> ?
->
-> It has to try and open the device several times to probe for available
-> profiles. This is only done at startup and then cached for the duration
-> of the run in the form of a list of available profiles.
->
-> Col
->
-> --
->
+Recently I downloaded alsa-driver 1.0.22 and tried to build for i.MX27
+platform.
+
+The "INSTALL" file enclosed in this release requires
+"--with-cross=arm-linux-" configuration option to cross-compile alsa
+driver for this ARM platform. 
+
+Here is my build process
+
+#./configure --with-cross=arm-linux-
+--with-kernel=/home/working/bsp/Kernel/linux-2.6.19.2
+--with-build=/home/working/bsp/    Kernel/linux-2.6.19.2
+--with-moddir=/home/working/bsp/tmp --with-debug=full
+--enable-dynamic-minors --with-cards=all
+
+checking for gcc... arm-linux-gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... configure: error: cannot run C
+compiled programs.
+If you meant to cross compile, use `--host'.
+See `config.log' for more details.
 
 
-what is the meaning of those messages in pulseaudio log ?
+It seems that "--host=arm-linux" should be provided to configure script.
+However, when given the --host option, in the generated "Makefile.conf",
+I saw the following outputs, which are very confusing:
 
-1) D: memblock.c: Pool full
+ NEW_KBUILD       =
+  
+  mainsrcdir  = .
+  MAINSRCDIR  = /work/63/alsa/alsa-driver-1.0.22
+  
+  CROSS_COMPILE   ?= arm-linux-
+  ARCH            ?=
+  ifdef NEW_KBUILD
+  CC      = $(CROSS_COMPILE)arm-linux-gcc
+  CPP     = $(CROSS_COMPILE)arm-linux-gcc -E
+  export CROSS_COMPILE ARCH
+  else
+  AS      = $(CROSS_COMPILE)as
+  LD      = $(CROSS_COMPILE)ld
+  CC      = $(CROSS_COMPILE)arm-linux-gcc
+  CPP     = $(CROSS_COMPILE)arm-linux-gcc -E
+  AR      = $(CROSS_COMPILE)ar
+  MODFLAGS    = -DMODULE=1
+  CFLAGS_KERNEL   =
+  GENKSYMS    = /sbin/genksyms -k 0.0.0
+  endif
 
-2) W: asyncq.c: q overrun, queuing locally
+Obviously, the CC and CPP variables are not expected as "arm-linux-gcc".
+(There is one more $(CROSS_COMPILE)!)
 
-3)  D: protocol-native.c: Requesting rewind due to end of underrun.
 
-4)  D: alsa-sink.c: Requested to rewind 17632 bytes.
+I overcome this problem by providing CC and CROSS_COMPILE variables with
+configure script:
+CC=gcc CROSS_COMPILE=arm-linux-gcc  ./configure --with-cross=arm-linux-
+--with-kernel=/home/working/bsp/Kernel/linux-2.6.19.2
+--with-build=/home/working/bsp/Kernel/linux-2.6.19.2
+--with-moddir=/home/working/bsp/tmp --with-debug=full
+--enable-dynamic-minors --with-cards=all
 
-5)  D: alsa-sink.c: Limited to 17600 bytes.
+Then things become OK.
 
-D: alsa-sink.c: before: 4400
-D: alsa-sink.c: after: 4400
-D: alsa-sink.c: Rewound 17600 bytes.
-D: sink.c: Processing rewind...
+What's wrong with the "INSTALL" file?
 
-6) D: sink-input.c: Have to rewind 17600 bytes on render memblockq.
 
-D: source.c: Processing rewind...
+Another problem.
+Even if "--with-cards=all" is given,  codes in soc/codecs, soc/imx, and
+many other subdirs are not built.  Is this because my target kernel
+version is too low (2.6.19.2)? It seems that the configure script
+sets some variables according to the kernel version and target platform
+and outputs into "toplevel.config".  Is it possible to manually edit
+"toplevel.config" file (after configure process) to get soc/codecs,
+soc/imx codes compiled?
 
-7) D: protocol-native.c: Underrun on '/usr/share/sounds/gnome/
-default/alerts/sonar.ogg', 0 bytes in queue.
+
+Regards,
+Jie 
