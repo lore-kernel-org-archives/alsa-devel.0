@@ -1,14 +1,19 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Echoaudio, suspend/resume question on rawmidi device
-Date: Sun, 3 Jan 2010 21:55:45 +0100
-Message-ID: <20100103215545.1e76385e@Jay>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 5/5] ASoC: tlv320dac33: Safety check for
+	codec slave mode
+Date: Mon, 4 Jan 2010 09:03:23 +0200
+Message-ID: <201001040903.23159.peter.ujfalusi@nokia.com>
+References: <1262248223-9335-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1262248223-9335-6-git-send-email-peter.ujfalusi@nokia.com>
+	<20091231115218.GA4110@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out01.alice.it (smtp-out01.alice.it [85.33.2.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5C07F24350
-	for <alsa-devel@alsa-project.org>; Sun,  3 Jan 2010 21:56:25 +0100 (CET)
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE0741037F1
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2010 08:03:54 +0100 (CET)
+In-Reply-To: <20091231115218.GA4110@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,35 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-I have some patches that add PM support to all echoaudio drivers. It seems
-to work fine, but it has been tested on two cards only and the rawmidi
-device hasn't been tested at all. I can't test it because
-suspend-to-anything does not work on my pmac. I want to be sure at least it
-cannot deadlock.
+Hello,
 
- * On suspend:
+On Thursday 31 December 2009 13:52:19 ext Mark Brown wrote:
+> On Thu, Dec 31, 2009 at 10:30:23AM +0200, Peter Ujfalusi wrote:
+> > The currently available FIFO modes (mode1 and mode7) require master
+> > mode from the codec.
+> > Do not allow the slave configuration when the FIFO is in use.
+> >
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> =
 
-Rawmidi input is interrupt-driven. The driver tells the card to stop
-accepting data.
+> Ideally the mode configuration control ought to have a corresponding
+> limit in it too, so that these modes can't be enabled when the device
+> is configured as a slave and is active.
 
-Rawmidi output is timer-driven. The driver uses a timer to check if the
-card's output buffer has room for more data to send. Do del_timer_sync()
-and wait until all buffered data is sent, which may take 20ms (64 bytes at
-31250bps).
+Well, the FIFO mode can not be changed runtime (while the playback is runni=
+ng) =
 
- * On resume:
+for various reasons.
+The control is protected against changes while the playback is running.
+Since at the moment the driver only supports master mode FIFO scenarios (ex=
+pect =
 
-Input: Re-enable midi in.
+for the FIFO bypass mode, which should work in slave mode as well) I think =
+this =
 
-Output: Restart the timer.
+check is sufficient to ensure that the codec/cpu dai is configured correctl=
+y.
+As far as I know the set_dai_fmt is the place where the machine driver =
 
+configures the codec to master/slave, so this must be the correct place for=
+ a =
 
-Do you see any race condition or weak points in this scheme, especially in
-the midi-out part ? Is del_timer_sync() safe ?
+safety check.
 
+-- =
 
--- 
-Giuliano.
+P=E9ter
