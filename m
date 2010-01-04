@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] Davinci: DM365: Enable DaVinci
-	Voice	Codec support for DM365 EVM
-Date: Fri, 8 Jan 2010 11:31:22 +0000
-Message-ID: <20100108113121.GB10128@sirena.org.uk>
-References: <1262902641-14821-1-git-send-email-miguel.aguilar@ridgerun.com>
+From: Joern Bernhardt <joern.bernhardt@gmx.net>
+Subject: Speakers won't turn off, when headphones are plugged in
+Date: Mon, 04 Jan 2010 17:36:26 +0100
+Message-ID: <4B42190A.1000206@gmx.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 769F82447C
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2010 12:31:25 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1262902641-14821-1-git-send-email-miguel.aguilar@ridgerun.com>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 03D871037F3
+	for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2010 17:36:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,20 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: miguel.aguilar@ridgerun.com
-Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 07, 2010 at 04:17:21PM -0600, miguel.aguilar@ridgerun.com wrote:
+Hi there,
 
-> +		if (device == 0)
-> +			davinci_cfg_reg(DM365_EVT2_ASP_TX);
-> +		else
-> +			davinci_cfg_reg(DM365_EVT2_VC_TX);
+my speakers won't turn off, when I plug in headphones. I've tried all of 
+these models:
 
-I'd be a bit more comfortable with this if it were using something more
-symbolic like a #define or enum rather than checking a bare number to
-work out which device it's talking to.
+   ref           Reference board
+   ref-no-jd     Reference board without HP/Mic jack detection
+   3stack        D965 3stack
+   5stack        D965 5stack   SPDIF
+   5stack-no-fp  D965 5stack without front panel
+   dell-3stack   Dell Dimension E520
+   dell-bios     Fixes with Dell BIOS setup
+   auto          BIOS setup (default)
 
-Otherwise this looks good, but I've no familiarity with DaVinci
-specifics so...
+Some of these only had sound when headphones were plugged in (speakers 
+didn't work at all) or when they were plugged in the microphone jack.
+
+My laptop is a HP HDX 9000 and my alsa-info script output is here:
+
+http://www.alsa-project.org/db/?f=b5a4386553266384382868ddef56553d643e7b4a
+
+Thanks for helping,
+
+Joern
