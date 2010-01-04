@@ -1,15 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.33
-Date: Mon, 4 Jan 2010 22:35:17 +0000
-Message-ID: <20100104223517.GA3865@opensource.wolfsonmicro.com>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: [PATCH] sbawe: fix memory detection part 2
+Date: Mon, 4 Jan 2010 22:23:34 +0100
+Message-ID: <20100104222334.8947028a.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7B65D1037F7
-	for <alsa-devel@alsa-project.org>; Mon,  4 Jan 2010 23:35:22 +0100 (CET)
-Content-Disposition: inline
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60738103803
+	for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2010 02:18:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,38 +19,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Alsa-devel <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit c5974b835a909ff15c3b7e6cf6789b5eb919f419:
-  Linus Torvalds (1):
-        Merge branch 'limits_cleanup' of git://decibel.fi.muni.cz/~xslaby/linux
+From: Krzysztof Helt <krzysztof.h1@wp.pl>
 
-are available in the git repository at:
+The patch "sbawe: fix memory detection" fixed detection
+for memoryless SB32 cards but broke detection of memory
+above 512KB. This patch fixes the regression.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
+The patch has been tested on the SB32 card (CT3670) with
+0MB, 2MB and 8MB memory installed.
 
-Takashi is on holiday for the first few weeks of the year so he said to
-send direct pull requests in the interim.  The patch from Morimoto-san
-is finishing off a cross-tree merge while the others are driver-specific
-fixes.
+Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+---
+ sound/isa/sb/emu8000.c |   11 +++++++----
+ 1 files changed, 7 insertions(+), 4 deletions(-)
 
-Guennadi Liakhovetski (1):
-      ASoC: fix params_rate() macro use in several codecs
+diff --git a/sound/isa/sb/emu8000.c b/sound/isa/sb/emu8000.c
+index 751762f..0c40951 100644
+--- a/sound/isa/sb/emu8000.c
++++ b/sound/isa/sb/emu8000.c
+@@ -377,12 +377,13 @@ init_arrays(struct snd_emu8000 *emu)
+ static void __devinit
+ size_dram(struct snd_emu8000 *emu)
+ {
+-	int i, size;
++	int i, size, detected_size;
+ 
+ 	if (emu->dram_checked)
+ 		return;
+ 
+ 	size = 0;
++	detected_size = 0;
+ 
+ 	/* write out a magic number */
+ 	snd_emu8000_dma_chan(emu, 0, EMU8000_RAM_WRITE);
+@@ -393,6 +394,8 @@ size_dram(struct snd_emu8000 *emu)
+ 
+ 	while (size < EMU8000_MAX_DRAM) {
+ 
++		size += 512 * 1024;  /* increment 512kbytes */
++
+ 		/* Write a unique data on the test address.
+ 		 * if the address is out of range, the data is written on
+ 		 * 0x200000(=EMU8000_DRAM_OFFSET).  Then the id word is
+@@ -414,7 +417,7 @@ size_dram(struct snd_emu8000 *emu)
+ 		if (EMU8000_SMLD_READ(emu) != UNIQUE_ID2)
+ 			break; /* no memory at this address */
+ 
+-		size += 512 * 1024;  /* increment 512kbytes */
++		detected_size = size;
+ 
+ 		snd_emu8000_read_wait(emu);
+ 
+@@ -442,9 +445,9 @@ size_dram(struct snd_emu8000 *emu)
+ 	snd_emu8000_dma_chan(emu, 1, EMU8000_RAM_CLOSE);
+ 
+ 	snd_printdd("EMU8000 [0x%lx]: %d Kb on-board memory detected\n",
+-		    emu->port1, size/1024);
++		    emu->port1, detected_size/1024);
+ 
+-	emu->mem_size = size;
++	emu->mem_size = detected_size;
+ 	emu->dram_checked = 1;
+ }
+ 
+-- 
+1.6.4
 
-Kuninori Morimoto (1):
-      ASoC: fsi-ak4642: Remove ak4642_add_i2c_device
 
-Manuel Lauss (1):
-      ASoC: fixup oops in generic AC97 codec glue
-
-Mark Brown (1):
-      Merge commit 'v2.6.33-rc2' into for-2.6.33
-
- sound/soc/codecs/ac97.c   |    6 ++++++
- sound/soc/codecs/wm8510.c |   14 +++++++-------
- sound/soc/codecs/wm8940.c |   14 +++++++-------
- sound/soc/codecs/wm8974.c |   14 +++++++-------
- sound/soc/sh/fsi-ak4642.c |   30 ------------------------------
- 5 files changed, 27 insertions(+), 51 deletions(-)
+----------------------------------------------------------------------
+Sypie, sypie, ale czy sypac bedzie nadal?
+Sprawdz pogode >> http://link.interia.pl/f2530
