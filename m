@@ -1,29 +1,26 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: alsa-util.c: snd_pcm_avail() returned a value that
-	is exceptionally large: 349696 bytes (1821 ms).
-Date: Tue, 5 Jan 2010 10:32:51 +0800
-Message-ID: <4f3252891001041832t60acdbd6rc46e408c9f5ef3c7@mail.gmail.com>
-References: <1261191766.18070.10.camel@localhost.localdomain>
-	<4f3252890912191547x1996cf7es190e8dac71dacaae@mail.gmail.com>
-	<1261352484.18070.47.camel@localhost.localdomain>
-	<1261869811.30924.69.camel@localhost.localdomain>
-	<4f3252890912261739x372fb678yde8a8e0edb93fe6e@mail.gmail.com>
-	<1261947691.24632.29.camel@localhost.localdomain>
-	<4f3252890912272114t6dcfa58bj4d5b5e6e606c5004@mail.gmail.com>
-	<1262058553.20808.15.camel@localhost.localdomain>
-	<4f3252890912292307qc3c4b29m98c7d6e4c8fd6a7d@mail.gmail.com>
-	<hhi2m3$26b$1@ger.gmane.org>
+From: michael@cadilhac.name (=?iso-8859-1?Q?Micha=EBl?= Cadilhac)
+Subject: Re: Getting pcm_usb_stream plugin to know its limits.
+	[Kind of SOLVED]
+Date: Mon, 04 Jan 2010 22:26:23 -0500
+Message-ID: <87y6kdz0yo.fsf@cadilhac.name>
+References: <87ljgkuzdl.fsf@cadilhac.name> <87eimbvkxg.fsf@cadilhac.name>
+	<87aawzviyd.fsf_-_@cadilhac.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 33BA910380B
-	for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2010 03:32:53 +0100 (CET)
-Received: by pwi18 with SMTP id 18so39265355pwi.32
-	for <alsa-devel@alsa-project.org>; Mon, 04 Jan 2010 18:32:52 -0800 (PST)
-In-Reply-To: <hhi2m3$26b$1@ger.gmane.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3200510380B
+	for <alsa-devel@alsa-project.org>; Tue,  5 Jan 2010 04:26:51 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1NS04H-0006Oa-4g
+	for alsa-devel@alsa-project.org; Tue, 05 Jan 2010 04:26:49 +0100
+Received: from 64.235.212.30 ([64.235.212.30])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 05 Jan 2010 04:26:49 +0100
+Received: from michael by 64.235.212.30 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 05 Jan 2010 04:26:49 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,30 +33,170 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2009/12/31 Colin Guthrie <gmane@colin.guthr.ie>
+michael@cadilhac.name (Micha=EBl Cadilhac) writes:
 
-> 'Twas brillig, and Raymond Yau at 30/12/09 07:07 did gyre and gimble:
-> > Why do PA server try to open an non-existing device iec958 so many times
-> ?
->
-> It has to try and open the device several times to probe for available
-> profiles. This is only done at startup and then cached for the duration
-> of the run in the form of a list of available profiles.
->
-> Col
->
->
+> So, my final saying is the following patch.  It fixes the segfault on
+> stopping a non-started usb_stream, plus it adds the ability to set a
+> period size and sound rate.  The latter offers a workaround for the
+> second issue I came with (that the default values for period bytes, and
+> hence period size, were too high for us122l to work).
 
-D: alsa-mixer.c: Checking for recording on Digital Surround 4.0 (IEC958)
-(iec958-surround-40)
-D: alsa-util.c: Trying iec958:0 with SND_PCM_NO_AUTO_FORMAT ...
+Any comment on that patch would be greatly appreciated.  I'm just
+wondering if it's safe for me to give it to some people.
 
+> --- /dd/alsa-plugins/usb_stream/pcm_usb_stream.c	2008-11-21 18:08:16.0000=
+00000 -0500
+> +++ pcm_usb_stream.c	2009-12-30 23:40:46.467973740 -0500
+> @@ -48,6 +48,9 @@
+>  #define VDBG(f, ...)
+>  #endif
+>  =
 
-Refer to http://thread.gmane.org/gmane.linux.alsa.devel/53004/focus=53038
+> +#define FRAME_SIZE 6
+> +
+> +
+>  #define LCARD 32
+>  struct user_usb_stream {
+>  	char			card[LCARD];
+> @@ -70,6 +73,8 @@
+>  	unsigned		periods_done;
+>  =
 
-SPDIF is limited to 2 channels when using PCM. DTS/AC3 is the only way
-to get multi-channel out of SPDIF.
+>  	unsigned 		channels;
+> +	snd_pcm_uframes_t	period_size;
+> +	unsigned int		rate;
+>  } snd_pcm_us_t;
+>  =
 
+>  static struct user_usb_stream *uus;
+> @@ -177,7 +182,7 @@
+>  	VDBG("");
+>  =
 
-Have any PA developers really tested the "iec958-surround-40"  profile on
-any machines ?
+>  	us_cfg.version =3D USB_STREAM_INTERFACE_VERSION;
+> -	us_cfg.frame_size =3D 6;
+> +	us_cfg.frame_size =3D FRAME_SIZE;
+>  	us_cfg.sample_rate =3D io->rate;
+>  	us_cfg.period_frames =3D io->period_size;
+>  =
+
+> @@ -256,8 +261,11 @@
+>  static int snd_pcm_us_stop(snd_pcm_ioplug_t *io)
+>  {
+>  	snd_pcm_us_t *us =3D io->private_data;
+> -	VDBG("%u", us->uus->s->periods_done);
+>  =
+
+> +	if (!us->uus->s)
+> +	  return 0;
+> +
+> +	VDBG("%u", us->uus->s->periods_done);
+>  	if (io->stream =3D=3D SND_PCM_STREAM_PLAYBACK)
+>  		memset(us->uus->write_area, 0, us->uus->s->write_size);
+>  =
+
+> @@ -370,6 +378,10 @@
+>  	};
+>  =
+
+>  	int err;
+> +	unsigned int rate_min =3D us->rate ? us->rate : 44100,
+> +		rate_max =3D us->rate ? us->rate : 96000,
+> +		period_bytes_min =3D us->period_size ? FRAME_SIZE * us->period_size : =
+128,
+> +		period_bytes_max =3D us->period_size ? FRAME_SIZE * us->period_size : =
+64*4096;
+>  =
+
+>  	if ((err =3D snd_pcm_ioplug_set_param_list(&us->io, SND_PCM_IOPLUG_HW_A=
+CCESS,
+>  						 ARRAY_SIZE(access_list), access_list)) < 0 ||
+> @@ -378,19 +390,20 @@
+>  	    (err =3D snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW=
+_CHANNELS,
+>  						   us->channels, us->channels)) < 0 ||
+>  	    (err =3D snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW=
+_RATE,
+> -						   44100, 96000)) < 0 ||
+> +						   rate_min, rate_max)) < 0 ||
+>  	    (err =3D snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW=
+_PERIOD_BYTES,
+> -						   128, 64*4096)) < 0 ||
+> +						   period_bytes_min, period_bytes_max)) < 0 ||
+>  	    (err =3D snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW=
+_PERIODS,
+>  						   2, 2)) < 0)
+>  		return err;
+> -
+>  	return 0;
+>  }
+>  =
+
+>  static int snd_pcm_us_open(snd_pcm_t **pcmp, const char *name,
+>  				   const char *card,
+> -				   snd_pcm_stream_t stream, int mode)
+> +			   snd_pcm_stream_t stream, int mode,
+> +			   snd_pcm_uframes_t period_size,
+> +			   unsigned int rate)
+>  {
+>  	snd_pcm_us_t *us;
+>  	int err;
+> @@ -421,6 +434,8 @@
+>  	snd_hwdep_poll_descriptors(us->hwdep, &us->pfd, 1);
+>  =
+
+>  	us->channels =3D 2;
+> +	us->period_size =3D period_size;
+> +	us->rate =3D rate;
+>  =
+
+>  	us->io.version =3D SND_PCM_IOPLUG_VERSION;
+>  	us->io.name =3D "ALSA <-> USB_STREAM PCM I/O Plugin";
+> @@ -455,6 +470,7 @@
+>  	snd_config_iterator_t i, next;
+>  	const char *card;
+>  	int err;
+> +	long period_size =3D 0, rate =3D 0;
+>  	=
+
+>  	snd_config_for_each(i, next, conf) {
+>  		snd_config_t *n =3D snd_config_iterator_entry(i);
+> @@ -472,12 +488,27 @@
+>  			snd_config_get_string(n, &card);
+>  			continue;
+>  		}
+> +		if (strcmp(id, "period_size") =3D=3D 0) {
+> +			if (snd_config_get_type(n) !=3D SND_CONFIG_TYPE_INTEGER) {
+> +				SNDERR("Invalid type for %s", id);
+> +				return -EINVAL;
+> +			}
+> +			snd_config_get_integer(n, &period_size);
+> +			continue;
+> +		}
+> +		if (strcmp(id, "rate") =3D=3D 0) {
+> +			if (snd_config_get_type(n) !=3D SND_CONFIG_TYPE_INTEGER) {
+> +				SNDERR("Invalid type for %s", id);
+> +				return -EINVAL;
+> +			}
+> +			snd_config_get_integer(n, &rate);
+> +			continue;
+> +		}
+>  		SNDERR("Unknown field %s", id);
+>  		return -EINVAL;
+>  	}
+>  =
+
+> -	err =3D snd_pcm_us_open(pcmp, name, card, stream, mode);
+> -
+> +	err =3D snd_pcm_us_open(pcmp, name, card, stream, mode, period_size, ra=
+te);
+>  	return err;
+>  }
+
+-- =
+
+Micha=EBl `Micha' Cadilhac (LITQ, U. de Montr=E9al) -- http://michael.cadil=
+hac.name
+	|| <ESC>ape this <COLON> thing,
+	||   <Q>uit and do <NOT> <RET>urn.
+	||         -- VI
