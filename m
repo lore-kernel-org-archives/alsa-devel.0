@@ -1,15 +1,21 @@
-From: "Daniel Grandja" <oracle_sod@hotmail.com>
-Subject: Sound still not working after 1.0.22.1 update
-Date: Wed, 6 Jan 2010 04:14:19 -0800
-Message-ID: <SNT124-DS137905233B6014ED26C0F9FE720@phx.gbl>
+From: Riccardo Magliocchetti <riccardo.magliocchetti@gmail.com>
+Subject: Re: capturing data from the microphone
+Date: Wed, 06 Jan 2010 14:34:23 +0100
+Message-ID: <4B44915F.9050407@gmail.com>
+References: <4B1E66DD.1000906@heig-vd.ch>
+	<20091208145104.GC9018@sirena.org.uk>	<4B1F4617.1020307@heig-vd.ch>	<20091209104502.GC17832@opensource.wolfsonmicro.com>	<4B44617B.2030002@heig-vd.ch>	<20100106103937.GA25344@rakim.wolfsonmicro.main>	<4B446974.1090205@heig-vd.ch>
+	<20100106113916.GA26282@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from snt0-omc3-s34.snt0.hotmail.com (snt0-omc3-s34.snt0.hotmail.com
-	[65.55.90.173]) by alsa0.perex.cz (Postfix) with ESMTP id 1891910380B
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2010 13:15:47 +0100 (CET)
-Content-Language: en-au
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id D2FF210380B
+	for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2010 14:34:27 +0100 (CET)
+Received: by fxm4 with SMTP id 4so55496226fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 06 Jan 2010 05:34:27 -0800 (PST)
+In-Reply-To: <20100106113916.GA26282@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,23 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Marc Garnier <marc.garnier@heig-vd.ch>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have managed to Download / Compile / Install the upgrade, but still no
-sound, and now i can't log in to Gnome (Xfce still works)
+Marc,
 
-http://www.alsa-project.org/db/?f=f31c932fe24d1ad6a8d67189eb2e984f03545be8
+Mark Brown ha scritto:
+> On Wed, Jan 06, 2010 at 11:44:04AM +0100, Marc Garnier wrote:
+>> OK, well, I work on a custom device platform based on an Atmel
+>> at91sam9261. I wrote an alsa driver composed of 2 files
+> 
+> CCing in the list and Sedji, who wrote the driver.  Please also try
+> avoid top posting - Linux lists generally intersperse replies with the
+> relevant context from the original message since it makes mails much
+> more legible.
 
+The next time please also try to avoid hijacking other people's threads.
 
-i have a VIA VT82xx based onboard card
-
-any ideas as to what has gone wrong ? from the log i noticed that the driver
-version was still 1.0.20 is this correct ? i wonder why that didn't update ?
-can i force it somehow ?
-
-cheers
-
- 
-
-Daniel
+thanks,
+riccardo
