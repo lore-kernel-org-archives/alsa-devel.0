@@ -1,44 +1,54 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: question on dapm_reg_event()
-Date: Wed, 6 Jan 2010 15:59:17 +0000
-Message-ID: <20100106155917.GA11245@rakim.wolfsonmicro.main>
-References: <771cded01001041810n490145ednefccea066eaf271a@mail.gmail.com>
-	<20100106145321.GC5783@sirena.org.uk>
-	<20100106174859.227f1cd8.jhnikula@gmail.com>
+From: John Kacur <jkacur@gmail.com>
+Subject: WARNING: at sound/core/sound_oss.c:96 snd_oss_kernel_minor+0xdf/0x120
+	[snd]()
+Date: Wed, 6 Jan 2010 17:53:24 +0100
+Message-ID: <520f0cf11001060853i5c296744rf94c947cb7798774@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 50AF02454C
-	for <alsa-devel@alsa-project.org>; Wed,  6 Jan 2010 16:59:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20100106174859.227f1cd8.jhnikula@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Haojian Zhuang <haojian.zhuang@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S932274Ab0AFQx3@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 06, 2010 at 05:48:59PM +0200, Jarkko Nikula wrote:
-> Mark Brown <broonie@opensource.wolfsonmicro.com> wrote:
+The following was in my 2.6.33-rc3 dmesg (of course that doesn't mean
+that the problem didn't exist earlier too)
 
-> > Hrm, no, that's not at all clear to me either.  CCing Jarkko who
-> > contributed the register write control originally.
-
-> IIRC, there were some reason to avoid register update by the
-> dapm_update_bits and negative register value was used to prevent it.
-
-> Reg+1 makes sure that the value is negative also for register 0.
-
-Ah, you're using some of the shared fields that the generic widget
-handling code then tries to interpret itself.  It'd probably be less
-surprising to special case this widget in the generic code (as we do in
-a few other cases, like the PGA ramping).
+WARNING: at /home/jkacur/rt.linux.git/sound/core/sound_oss.c:96
+snd_oss_kernel_minor+0xdf/0x120 [snd]()
+Hardware name: 2241B48
+BUG? (minor < 0 || minor >= 128)
+Modules linked in: snd_mixer_oss thinkpad_acpi(+) sdhci hwmon i2c_i801
+firewire_ohci snd_pcm mmc_core snd_timer cfg80211 firewire_core btusb
+joydev iTCO_wdt bluetooth ata_generic e1000e i2c_core ppdev snd
+battery ac iTCO_vendor_support parport_pc ricoh_mmc intel_agp
+pata_acpi pcspkr parport tpm_tis video wmi output soundcore button tpm
+rfkill sr_mod tpm_bios snd_page_alloc crc_itu_t cdrom sg ahci libata
+sd_mod scsi_mod crc_t10dif xfs exportfs uhci_hcd ohci_hcd ehci_hcd
+[last unloaded: scsi_wait_scan]
+Pid: 1317, comm: modprobe Not tainted 2.6.33-rc3 #1
+Call Trace:
+ [<ffffffffa027bb25>] ? snd_oss_kernel_minor+0xdf/0x120 [snd]
+ [<ffffffff8104338c>] warn_slowpath_common+0x7c/0xa9
+ [<ffffffff81043410>] warn_slowpath_fmt+0x41/0x43
+ [<ffffffffa027bb25>] snd_oss_kernel_minor+0xdf/0x120 [snd]
+ [<ffffffffa027bc7e>] snd_register_oss_device+0x2c/0x21a [snd]
+ [<ffffffffa0271e1e>] snd_mixer_oss_notify_handler+0xa5/0x2e5 [snd_mixer_oss]
+ [<ffffffff81375e00>] ? __mutex_unlock_slowpath+0x5c/0x141
+ [<ffffffff810710d5>] ? trace_hardirqs_on_caller+0x11f/0x14a
+ [<ffffffff8107110d>] ? trace_hardirqs_on+0xd/0xf
+sdhci-pci 0000:15:00.2: SDHCI controller found [1180:0822] (rev 21)
+sdhci-pci 0000:15:00.2: PCI INT C -> GSI 18 (level, low) -> IRQ 18
+ [<ffffffff81375ed3>] ? __mutex_unlock_slowpath+0x12f/0x141
+sdhci-pci 0000:15:00.2: Will use DMA mode even though HW doesn't fully
+claim to support it.
+Registered led device: mmc0::
+mmc0: SDHCI controller on PCI [0000:15:00.2] using DMA
+ [<ffffffffa027628a>] snd_card_register+0x135/0x14b [snd]
+ [<ffffffffa0370c88>] volume_init+0x335/0x3d2 [thinkpad_acpi]
+ [<ffffffffa037289b>] thinkpad_acpi_module_init+0x61f/0xa4f [thinkpad_acpi]
+ [<ffffffffa037227c>] ? thinkpad_acpi_module_init+0x0/0xa4f [thinkpad_acpi]
+ [<ffffffff810001fa>] do_one_initcall+0x5f/0x154
+ [<ffffffff8107ff34>] sys_init_module+0xd7/0x234
+ [<ffffffff81002d5b>] system_call_fastpath+0x16/0x1b
+---[ end trace a6d53dc318f09cb5 ]---
