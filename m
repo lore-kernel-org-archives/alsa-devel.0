@@ -1,109 +1,221 @@
-From: John Kacur <jkacur@gmail.com>
-Subject: Re: WARNING: at sound/core/sound_oss.c:96 snd_oss_kernel_minor+0xdf/0x120
-	[snd]()
-Date: Wed, 6 Jan 2010 18:02:12 +0100
-Message-ID: <520f0cf11001060902k643758dat8d26ac9fd964679d@mail.gmail.com>
-References: <520f0cf11001060853i5c296744rf94c947cb7798774@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: capturing data from the microphone
+Date: Thu, 7 Jan 2010 07:59:28 +0800
+Message-ID: <4f3252891001061559p71933643wcbb59ede24ac29aa@mail.gmail.com>
+References: <4B4227BC.70705@gmail.com>
+	<6160a5131001050848r48f9c6ecw4db2e56bb6fd7533@mail.gmail.com>
+	<4B43B949.5010702@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1755993Ab0AFRCS@vger.kernel.org>
-In-Reply-To: <520f0cf11001060853i5c296744rf94c947cb7798774@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-px0-f173.google.com (mail-px0-f173.google.com
+	[209.85.216.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id C604A24484
+	for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2010 00:59:30 +0100 (CET)
+Received: by pxi3 with SMTP id 3so12383336pxi.16
+	for <alsa-devel@alsa-project.org>; Wed, 06 Jan 2010 15:59:29 -0800 (PST)
+In-Reply-To: <4B43B949.5010702@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 6, 2010 at 5:53 PM, John Kacur <jkacur@gmail.com> wrote:
-> The following was in my 2.6.33-rc3 dmesg (of course that doesn't mean
-> that the problem didn't exist earlier too)
+2010/1/6 Riccardo Magliocchetti <riccardo.magliocchetti@gmail.com>
+
+> Hi Pierre,
 >
-> WARNING: at /home/jkacur/rt.linux.git/sound/core/sound_oss.c:96
-> snd_oss_kernel_minor+0xdf/0x120 [snd]()
-> Hardware name: 2241B48
-> BUG? (minor < 0 || minor >=3D 128)
-> Modules linked in: snd_mixer_oss thinkpad_acpi(+) sdhci hwmon i2c_i80=
-1
-> firewire_ohci snd_pcm mmc_core snd_timer cfg80211 firewire_core btusb
-> joydev iTCO_wdt bluetooth ata_generic e1000e i2c_core ppdev snd
-> battery ac iTCO_vendor_support parport_pc ricoh_mmc intel_agp
-> pata_acpi pcspkr parport tpm_tis video wmi output soundcore button tp=
-m
-> rfkill sr_mod tpm_bios snd_page_alloc crc_itu_t cdrom sg ahci libata
-> sd_mod scsi_mod crc_t10dif xfs exportfs uhci_hcd ohci_hcd ehci_hcd
-> [last unloaded: scsi_wait_scan]
-> Pid: 1317, comm: modprobe Not tainted 2.6.33-rc3 #1
-> Call Trace:
-> =A0[<ffffffffa027bb25>] ? snd_oss_kernel_minor+0xdf/0x120 [snd]
-> =A0[<ffffffff8104338c>] warn_slowpath_common+0x7c/0xa9
-> =A0[<ffffffff81043410>] warn_slowpath_fmt+0x41/0x43
-> =A0[<ffffffffa027bb25>] snd_oss_kernel_minor+0xdf/0x120 [snd]
-> =A0[<ffffffffa027bc7e>] snd_register_oss_device+0x2c/0x21a [snd]
-> =A0[<ffffffffa0271e1e>] snd_mixer_oss_notify_handler+0xa5/0x2e5 [snd_=
-mixer_oss]
-> =A0[<ffffffff81375e00>] ? __mutex_unlock_slowpath+0x5c/0x141
-> =A0[<ffffffff810710d5>] ? trace_hardirqs_on_caller+0x11f/0x14a
-> =A0[<ffffffff8107110d>] ? trace_hardirqs_on+0xd/0xf
-> sdhci-pci 0000:15:00.2: SDHCI controller found [1180:0822] (rev 21)
-> sdhci-pci 0000:15:00.2: PCI INT C -> GSI 18 (level, low) -> IRQ 18
-> =A0[<ffffffff81375ed3>] ? __mutex_unlock_slowpath+0x12f/0x141
-> sdhci-pci 0000:15:00.2: Will use DMA mode even though HW doesn't full=
-y
-> claim to support it.
-> Registered led device: mmc0::
-> mmc0: SDHCI controller on PCI [0000:15:00.2] using DMA
-> =A0[<ffffffffa027628a>] snd_card_register+0x135/0x14b [snd]
-> =A0[<ffffffffa0370c88>] volume_init+0x335/0x3d2 [thinkpad_acpi]
-> =A0[<ffffffffa037289b>] thinkpad_acpi_module_init+0x61f/0xa4f [thinkp=
-ad_acpi]
-> =A0[<ffffffffa037227c>] ? thinkpad_acpi_module_init+0x0/0xa4f [thinkp=
-ad_acpi]
-> =A0[<ffffffff810001fa>] do_one_initcall+0x5f/0x154
-> =A0[<ffffffff8107ff34>] sys_init_module+0xd7/0x234
-> =A0[<ffffffff81002d5b>] system_call_fastpath+0x16/0x1b
-> ---[ end trace a6d53dc318f09cb5 ]---
+> pl bossart ha scritto:
+> > You haven't specified the buffer/period size in the hw params. See
+> > alsa-lib/test/pcm.c
+> > - Pierre
+>
+> They fail when opening default device so I had to remove them, work fine
+> when opening
+> plughw:0,0 though.
+>
+> > On Mon, Jan 4, 2010 at 11:39 AM, Riccardo Magliocchetti
+> > <riccardo.magliocchetti@gmail.com> wrote:
+> >> [the same message is waiting in moderator queue, sorry if you receive it
+> two times]
+> >>
+> >> Hello,
+> >>
+> >> i'm trying to capture audio data from the microphone, but i'm not able
+> to
+> >> read any frames.
+> >> The frames are always 0 and delay is fixed to 2730. I've tried calling
+> >> snd_pcm_avail_delay,  snd_pcm_avail_update but does not make a
+> difference.
+> >> The soundcard is driven by  snd_hda_intel. The code is more or less the
+> >> same as Paul Davis' tutorial on using the alsa api.
+> >>
+> >> This is the code for init and the loop that tries to read the data:
+> >>
+> >> #define MIC_BUFSIZE 4096
+> >>
+> >> static gpointer snd_pcm_read(gpointer data)
+> >> {
+> >>   int error;
+> >>   snd_pcm_sframes_t frames = MIC_BUFSIZE;
+> >>
+> >>   while (TRUE) {
+> >>
+> >>     if ((error = snd_pcm_wait (pcm_handle, 1000)) < 0) {
+> >>         g_printerr("Failed to poll: %s\n", snd_strerror(error));
+> >>         continue;
+> >>     }
+> >>
+> >>     if ((error = snd_pcm_avail(pcm_handle)) < 0) {
+> >>       if (error == -EPIPE) {
+> >>         g_printerr("xrun! %s\n", snd_strerror(error));
+> >>         continue;
+> >>         //return GINT_TO_POINTER(FALSE);
+> >>       } else {
+> >>         g_printerr("alsa_pcm_avail_update error %s\n",
+> snd_strerror(error));
+> >>         continue;
+> >>         //return GINT_TO_POINTER(FALSE);
+> >>       }
+> >>     }
+> >>
+> >>     frames = error;
+> >>     if (frames == 0)
+> >>       continue;
+> >>
+> >>     frames = frames > MIC_BUFSIZE ? MIC_BUFSIZE : frames;
+> >>     g_printerr ("frames: %ld\n", frames);
+> >>     g_static_mutex_lock(&mutex);
+> >>     error = snd_pcm_readi(pcm_handle, Mic_Buffer[Mic_WriteBuf], frames);
+> >>     g_static_mutex_unlock(&mutex);
+> >>     if (error < 0)
+> >>         error = snd_pcm_recover(pcm_handle, error, 0);
+> >>     if (error < 0) {
+> >>        LOG("snd_pcm_readi FAIL!: %s\n", snd_strerror(error));
+> >>     }
+> >>   }
+> >>
+> >>   return GINT_TO_POINTER(TRUE);
+> >> }
+> >>
+> >> BOOL Mic_Init()
+> >> {
+> >>     snd_pcm_hw_params_t *hwparams;
+> >>     snd_pcm_sw_params_t *swparams;
+> >>     int err;
+> >>
+> >>     if (Mic_Inited)
+> >>         return TRUE;
+> >>
+> >>     // Open the default sound card in capture
+> >>     if ((err = snd_pcm_open(&pcm_handle, "default",
+> SND_PCM_STREAM_CAPTURE,
+> >> /*SND_PCM_NONBLOCK*/ 0)) < 0) {
+> >>         g_printerr("Failed to open device: %s\n", snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     // Allocate the snd_pcm_hw_params_t structure and fill it.
+> >>     snd_pcm_hw_params_alloca(&hwparams);
+> >>     if ((err = snd_pcm_hw_params_any(pcm_handle, hwparams)) < 0) {
+> >>         g_printerr("Failed to setup hw parameters: %s\n",
+> snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     //Set the access
+> >>     if ((err = snd_pcm_hw_params_set_access(pcm_handle, hwparams,
+> >> SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
+> >>         g_printerr("Failed to set access: %s\n", snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     //dir 0 == exacte (Rate = 16K exacte)
+> >>     if ((err = snd_pcm_hw_params_set_rate(pcm_handle, hwparams, 16000,
+> 0)) < 0) {
+> >>         g_printerr("Failed to set rate: %s\n", snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     /* Set sample format */
+> >>     if ((err = snd_pcm_hw_params_set_format(pcm_handle, hwparams,
+> SND_PCM_FORMAT_S8)) < 0) {
+> >>         g_printerr("Failed to set format: %s\n", snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     // Set one channel (mono)
+> >>     if ((err = snd_pcm_hw_params_set_channels(pcm_handle, hwparams, 1))
+> < 0) {
+> >>         g_printerr("Failed to set channels: %s\n", snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     //Set the params
+> >>     if ((err = snd_pcm_hw_params(pcm_handle, hwparams)) < 0) {
+> >>         g_printerr("Failed to set hw parameters: %s\n",
+> snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     snd_pcm_sw_params_alloca(&swparams);
+> >>     if ((err = snd_pcm_sw_params_current (pcm_handle, swparams)) < 0) {
+> >>         g_printerr("Failed to set current sw parameters: %s\n",
+> snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     if ((err = snd_pcm_sw_params_set_avail_min (pcm_handle, swparams,
+> MIC_BUFSIZE)) < 0) {
+> >>         g_printerr("Failed to set minimum available count: %s\n",
+> snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     if ((err = snd_pcm_sw_params_set_start_threshold (pcm_handle,
+> swparams, 0U)) < 0) {
+> >>         g_printerr("Failed to set start mode: %s\n", snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     if ((err = snd_pcm_sw_params (pcm_handle, swparams)) < 0) {
+> >>         g_printerr("Failed to set sw parameters: %s\n",
+> snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     if ((err = snd_pcm_prepare (pcm_handle)) < 0) {
+> >>         g_printerr("Failed to prepare audio interface to use: %s\n",
+> snd_strerror(err));
+> >>         return FALSE;
+> >>     }
+> >>
+> >>     Mic_Inited = TRUE;
+> >>     Mic_Reset();
+> >>
+> >>     mic_reader = g_thread_create(snd_pcm_read, NULL, TRUE, NULL);
+> >>
+> >>     return TRUE;
+> >> }
+> >>
+> >>
+> >> thanks,
+> >> Riccardo
+> >>
 >
 
-Here is a slightly different trace back of the same problem in case
-that helps anyone
-to debug it. Thanks!
+Even 4096 bytes is x86 DMA page size , seem to be a good choice for those
+PCI sound cards, however you cannot assume all sound cards/plugins support
+this buffer size
 
-WARNING: at /home/jkacur/rt.linux.git/sound/core/sound_oss.c:96
-snd_oss_kernel_minor+0xdf/0x120 [snd]()
-Hardware name: 2241B48
-BUG? (minor < 0 || minor >=3D 128)
-Modules linked in: snd_mixer_oss(+) snd_pcm btusb firewire_ohci
-sdhci_pci thinkpad_acpi sdhci snd_timer hwmon firewire_core bluetooth
-e1000e ata_generic mmc_core iTCO_wdt i2c_i801 iTCO_vendor_support
-ppdev snd tpm_tis i2c_core intel_agp wmi parport_pc parport ricoh_mmc
-pata_acpi joydev tpm pcspkr video tpm_bios output sr_mod crc_itu_t
-snd_page_alloc button soundcore cdrom ac battery rfkill sg ahci libata
-sd_mod scsi_mod crc_t10dif xfs exportfs uhci_hcd ohci_hcd ehci_hcd
-[last unloaded: scsi_wait_scan]
-Pid: 1571, comm: modprobe Not tainted 2.6.33-rc3 #1
-Call Trace:
- [<ffffffffa029db25>] ? snd_oss_kernel_minor+0xdf/0x120 [snd]
- [<ffffffff8104338c>] warn_slowpath_common+0x7c/0xa9
- [<ffffffff81043410>] warn_slowpath_fmt+0x41/0x43
- [<ffffffffa029db25>] snd_oss_kernel_minor+0xdf/0x120 [snd]
- [<ffffffffa029dc7e>] snd_register_oss_device+0x2c/0x21a [snd]
- [<ffffffffa0240e1e>] snd_mixer_oss_notify_handler+0xa5/0x2e5 [snd_mixe=
-r_oss]
- [<ffffffff8137b1e7>] ? sub_preempt_count+0xa3/0xb6
- [<ffffffff8137816d>] ? _raw_spin_unlock_irqrestore+0x6b/0x79
- [<ffffffff811ba1fe>] ? __up_read+0x7c/0x85
- [<ffffffffa024b000>] ? alsa_mixer_oss_init+0x0/0x3e [snd_mixer_oss]
- [<ffffffffa024b02a>] alsa_mixer_oss_init+0x2a/0x3e [snd_mixer_oss]
- [<ffffffff810001fa>] do_one_initcall+0x5f/0x154
- [<ffffffff8107ff34>] sys_init_module+0xd7/0x234
- [<ffffffff81002d5b>] system_call_fastpath+0x16/0x1b
-cfg80211: Using static regulatory domain info
-cfg80211: Regulatory domain: 00
-    (start_freq - end_freq @ bandwidth), (max_antenna_gain, max_eirp)
-    (2402000 KHz - 2472000 KHz @ 40000 KHz), (600 mBi, 2000 mBm)
-    (2457000 KHz - 2482000 KHz @ 20000 KHz), (600 mBi, 2000 mBm)
-    (2474000 KHz - 2494000 KHz @ 20000 KHz), (600 mBi, 2000 mBm)
-    (5170000 KHz - 5250000 KHz @ 40000 KHz), (600 mBi, 2000 mBm)
-    (5735000 KHz - 5835000 KHz @ 40000 KHz), (600 mBi, 2000 mBm)
-cfg80211: Calling CRDA to update world regulatory domain
----[ end trace bc1eb15b8cb7671c ]---
+If you did not set period_size, buffer_size or periods (period_time,
+buffer_time or periods)  , you should call
+snd_pcm_hw_params_get_buffer_size() and snd_pcm_hw_params_get_period_size()
+after snd_pcm_hw_params()
