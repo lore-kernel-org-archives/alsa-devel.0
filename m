@@ -1,68 +1,75 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: RE: [PATCH] OMAP: Exporting functions doing common register access
-Date: Thu, 7 Jan 2010 19:39:59 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB031E0A39D8@dbde02.ent.ti.com>
-References: <1258384836-24854-1-git-send-email-anuj.aggarwal@ti.com>
- <alpine.DEB.2.00.0911161408260.29213@utopia.booyaka.com>
- <5A47E75E594F054BAF48C5E4FC4B92AB030A8C8EC2@dbde02.ent.ti.com>
- <5A47E75E594F054BAF48C5E4FC4B92AB030A9CA8F7@dbde02.ent.ti.com>
- <alpine.DEB.2.00.0911180324350.25515@utopia.booyaka.com>
- <20091118163314.d0325283.jhnikula@gmail.com>
- <alpine.DEB.2.00.0911181220560.9248@utopia.booyaka.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Duplicate wake-ups in pcm_lib.c
+Date: Thu, 7 Jan 2010 15:59:41 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>
+References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>
+	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>
+	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0911181220560.9248@utopia.booyaka.com>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: Paul Walmsley <paul@pwsan.com>, Jarkko Nikula <jhnikula@gmail.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lohithakshan, Ranjith" <ranjithl@ti.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8FC7E2454F
+	for <alsa-devel@alsa-project.org>; Thu,  7 Jan 2010 15:59:42 +0100 (CET)
+In-Reply-To: <6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Lennart Poettering <lennart@poettering.net>
 List-Id: alsa-devel@alsa-project.org
 
-> > > In the interim, I would suggest that you remove the the clock source
-> and
-> > > receiver source change functions from omap-mcbsp.c, split them into
-> OMAP1
-> > > and OMAP2/3 variants, and place them into arch/arm/mach-omap*/mcbsp.c.
-> > > Expand struct omap_mcbsp_ops to add function pointers to those
-> functions.
-> > > Call those from soc/omap-mcbsp.c via mcbsp->pdata->ops. That way you
-> won't
-> > > need those exports.
-> > >
-> > Paul: What's your opinnion, would it be possible or would it be wise to
-> > handle these McBSP clock route setups with the clock framework instead?
-> >
-> > Functions omap_mcbsp_dai_set_clks_src and omap_mcbsp_dai_set_rcvr_src
-> > are basically just setting up the input clock for McBSP SRG or McBSP1
-> > receiver.
-> 
-> Sure.  There already should be some support for it in clock34xx.h, but I
-> doubt anyone's tested it:
-> 
-> static struct clk mcbsp1_fck = {
->         .name           = "mcbsp_fck",
->         .ops            = &clkops_omap2_dflt_wait,
->         .id             = 1,
->         .init           = &omap2_init_clksel_parent,
->         .enable_reg     = OMAP_CM_REGADDR(CORE_MOD, CM_FCLKEN1),
->         .enable_bit     = OMAP3430_EN_MCBSP1_SHIFT,
->         .clksel_reg     = OMAP343X_CTRL_REGADDR(OMAP2_CONTROL_DEVCONF0),
->         .clksel_mask    = OMAP2_MCBSP1_CLKS_MASK,
->         .clksel         = mcbsp_15_clksel,
->         .clkdm_name     = "core_l4_clkdm",
->         .recalc         = &omap2_clksel_recalc,
-> };
-> 
-> etc.  Some similar entries would need to be added to the clock24xx.h file.
-[Aggarwal, Anuj] One problem which I found in trying the above discussed 
-approach is that I am not able to get mcbsp clock handles in omap-mcbsp.c 
-file. To call clk_set_parent() with the new parent clock as "mcbsp_clks" 
-(in case of an external clock), I need the mcbsp_fck clock handle. But this
-handle is not shared with the omap_mcbsp_dai[].
+On Wed, 6 Jan 2010, pl bossart wrote:
 
-What should be the right method of getting this handle in 
-omap_mcbsp_dai_set_dai_sysclk(), in case I understood the concept properly.
-Basically, we want to get rid of the low level stuff in this function 
-and instead use standard clock framework APIs?
+>>> A wake-up is generated during the period interrupt, and a second
+>>> wake-up is generated during the write loop, after the application was
+>>> awaken but just before the pointers are updated. This second wake-up
+>>> shouldn't exist, since the write loop actually fills the ring buffer.
+>>> By the time the second wake-up is actually handled, there's really no
+>>> space left in the buffer and a null event is generated; it'll wake-up
+>>> the application a second time for nothing. Maybe we should move the
+>>> call to snd_pcm_update_hw_ptr() after the transfer took place?
+>>
+>> The right fix should be to preserve wakeups when write operation is in
+>> progress (also for interrupts). Something like this (untested):
+>
+> Thanks Jaroslav for your feedback. It seems your fix is similar to
+> what I suggested, that is check the pointers and generate a wake-up
+> after the write loop completes rather than right before the write
+> starts. I modified your patch to correct the behavior when errors
+> occur; the jumps to _end_wake compared to _end_unlock weren't self
+> explanatory and not always consistent. I only perform a pointer update
+> if nothing wrong happened. In case of errors, I unlock or just return
+> the status as before. I am testing the changes and should have a patch
+> shortly.
+> Cheers
+
+The improved and more clean fix in now in my tree:
+
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=1250932e48d3b698415b1f04775433cf1da688d6
+
+Note that you should apply these 4 patches (in reverse order):
+
+4: ALSA: pcm_lib - optimize wake_up() calls for PCM I/O
+3: ALSA: pcm_lib - cleanup & merge hw_ptr update functions
+2: ALSA: pcm_lib - add possibility to log last 10 DMA ring buffer positions
+1: ALSA: pcm_lib.c - convert second xrun_debug() parameter to use defines
+
+Patch #3 should definitely fix problems with large avail or delay values 
+reported in PA. I finally figured the culprit (and decide to cleanup all
+relevant code rather do just another workaround). In other words, new 
+hw_ptr pointer should never be less than previous one now.
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
