@@ -1,23 +1,20 @@
-From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: Re: alsa support for HDA ALC889A nVidia Corporation
- MCP55 High Definition Audio EVGA 122-CK-NF68
-Date: Fri, 08 Jan 2010 09:50:43 -0800
-Message-ID: <4B477073.4030206@gmail.com>
-References: <e15870681001071639v5507b254vee2d9892364dd6bf@mail.gmail.com>	
-	<4B475364.60904@gmail.com>	
-	<e15870681001080937t186f16afnb982cb931012b548@mail.gmail.com>
-	<e15870681001080941k4a7ece4x5e50c8184714f4e5@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] Davinci: DM365: Enable DaVinci Voice
+ Codec support for DM365 EVM
+Date: Fri, 8 Jan 2010 19:37:21 +0000
+Message-ID: <20100108193720.GA3088@sirena.org.uk>
+References: <1262902641-14821-1-git-send-email-miguel.aguilar@ridgerun.com>
+	<20100108113121.GB10128@sirena.org.uk>
+	<4B476D3B.3050200@ridgerun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f175.google.com (mail-yx0-f175.google.com
-	[209.85.210.175])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0ABCA10384E
-	for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2010 18:50:14 +0100 (CET)
-Received: by yxe5 with SMTP id 5so14493687yxe.24
-	for <alsa-devel@alsa-project.org>; Fri, 08 Jan 2010 09:50:13 -0800 (PST)
-In-Reply-To: <e15870681001080941k4a7ece4x5e50c8184714f4e5@mail.gmail.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A39A10384F
+	for <alsa-devel@alsa-project.org>; Fri,  8 Jan 2010 20:37:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4B476D3B.3050200@ridgerun.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,33 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Oliver Stieber <oliverthered@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
 List-Id: alsa-devel@alsa-project.org
 
-On 01/08/10 09:41, Oliver Stieber wrote:
-> just quit x and tried mb3, no sound.
-> module snd-hda-intel did unload ok though (often the module is still
-> showen as used when it's not)
->
-> i wrote a little bash script to try every model listed in the source
-> code, and mb5 was the only one that workedish and i had lots of kernel
-> mess along the way.
->
->> On Jan 8, 2010 3:46 PM, "Justin P. Mattock" <justinmattock@gmail.com
->> <mailto:justinmattock@gmail.com>> wrote:
->>
->> On 01/07/10 16:39, Oliver Stieber wrote: > > Hi, > > I'm having some
->> issues, (and think I've discove...
->>
->> using model=mb3 gives no effect?
->>
->> Justin P. Mattock
->>
+On Fri, Jan 08, 2010 at 11:36:59AM -0600, Miguel Aguilar wrote:
+> Mark Brown wrote:
+> > On Thu, Jan 07, 2010 at 04:17:21PM -0600, miguel.aguilar@ridgerun.com wrote:
 
-is this a new macbook, or an older macbook?
-(if this is a new macbook, I saw a patch
-for this,which might be in the latest kernel
-2.6.33-rc3 from git);
+> >> +		if (device == 0)
+> >> +			davinci_cfg_reg(DM365_EVT2_ASP_TX);
+> >> +		else
+> >> +			davinci_cfg_reg(DM365_EVT2_VC_TX);
 
-Justin P. Mattock
+> > I'd be a bit more comfortable with this if it were using something more
+> > symbolic like a #define or enum rather than checking a bare number to
+> > work out which device it's talking to.
+
+> The idea of these function is check at runtime if the user space application is 
+> requesting the AIC3x or the voice codec, then it will set the proper source for 
+> the dma channels, since the ASP and the Voice Codec share the same dma channels, 
+> so that's why use a #define doesn't make sense.
+
+I see what your code is doing but at the minute it's making this
+decision based on the device number that's being passed in by comparing
+it as a pure number.  This seems fragile - something symbolic that
+joined things up a bit more wouldn't raise eyebrows in the same way.
+
+> Can you check the part of this patch related to registering both codecs AIC3x 
+> and the voice codec?
+
+Like I say that all looks fine to me but I can't really check if the
+DaVinci code is idiomatic.
