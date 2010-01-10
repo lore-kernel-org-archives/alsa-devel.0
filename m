@@ -1,16 +1,17 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: aplay - Audio Surveilance
-Date: Sun, 10 Jan 2010 18:59:35 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1001101858460.4210@eeebox2.perex-int.cz>
-References: <1262988011.13167.10.camel@sauterws02.sauterhome>
+Subject: Re: [PATCH] ALSA: ac97: Add Dell Dimension 2400 to
+ Headphone/Line Jack Sense blacklist
+Date: Sun, 10 Jan 2010 19:02:21 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1001101901270.4210@eeebox2.perex-int.cz>
+References: <604760771001082227s6e3f6bbah97c1cbcc4c163f7f@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6397924788
-	for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2010 18:59:36 +0100 (CET)
-In-Reply-To: <1262988011.13167.10.camel@sauterws02.sauterhome>
+	by alsa0.perex.cz (Postfix) with ESMTP id BE27124788
+	for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2010 19:02:21 +0100 (CET)
+In-Reply-To: <604760771001082227s6e3f6bbah97c1cbcc4c163f7f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,23 +21,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Sauter <John_Sauter@systemeyescomputerstore.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Daniel Chen <seven.steps@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 8 Jan 2010, John Sauter wrote:
+On Sat, 9 Jan 2010, Daniel Chen wrote:
 
-> I have added some features to aplay to make audio surveillance easier:
-> --process-id-file writes the PID to a file so another program can signal
-> aplay to close its capture file and open another one without missing any
-> sound.  --max-file-time causes the close and re-open to happen
-> automatically.  --use-strftime allows capture files to be named for
-> their start times.  Details are in the man file.
+> Hi,
+>
+> Attached is a patch against current sound-2.6 master HEAD fixing
+> inaudible playback by default.
 
-Thanks. I've applied all three patches with some minor modifications to 
-the ALSA GIT tree.
+Thanks. I've applied this patch to my "fixes" GIT tree.
 
- 					Jaroslav
+ 						Jaroslav
 
 -----
 Jaroslav Kysela <perex@perex.cz>
