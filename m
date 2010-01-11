@@ -1,22 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: Flag the i.MX SSI driver as
- using symmetric rates
-Date: Mon, 11 Jan 2010 12:30:23 +0000
-Message-ID: <20100111123022.GA27161@rakim.wolfsonmicro.main>
-References: <1262967598-4096-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1262967598-4096-4-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<20100111112047.GT6923@pengutronix.de>
-	<20100111113631.GE3440@sirena.org.uk>
-	<20100111121419.GV6923@pengutronix.de>
+From: Riccardo Magliocchetti <riccardo.magliocchetti@gmail.com>
+Subject: Re: capturing data from the microphone
+Date: Mon, 11 Jan 2010 14:59:03 +0100
+Message-ID: <4B4B2EA7.2080504@gmail.com>
+References: <4B4227BC.70705@gmail.com>	<6160a5131001050848r48f9c6ecw4db2e56bb6fd7533@mail.gmail.com>	<4B43B949.5010702@gmail.com>
+	<4f3252891001061559p71933643wcbb59ede24ac29aa@mail.gmail.com>
+	<4B46293A.3040600@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9D87324596
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 13:30:27 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20100111121419.GV6923@pengutronix.de>
+Received: from mail-fx0-f211.google.com (mail-fx0-f211.google.com
+	[209.85.220.211])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C2431037FF
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 14:59:06 +0100 (CET)
+Received: by fxm3 with SMTP id 3so11935751fxm.4
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 05:59:06 -0800 (PST)
+In-Reply-To: <4B46293A.3040600@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Timur Tabi <timur@freescale.com>, Javier Martin <javier.martin@vista-silicon.com>
+To: alsa-devel@alsa-project.org
+Cc: pl bossart <bossart.nospam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 11, 2010 at 01:14:19PM +0100, Sascha Hauer wrote:
-> On Mon, Jan 11, 2010 at 11:36:31AM +0000, Mark Brown wrote:
+Riccardo Magliocchetti ha scritto:
+> Raymond Yau ha scritto:
+>> 2010/1/6 Riccardo Magliocchetti <riccardo.magliocchetti@gmail.com>
+>>
+>>> Hi Pierre,
+>>>
+>>> pl bossart ha scritto:
+>>>> You haven't specified the buffer/period size in the hw params. See
+>>>> alsa-lib/test/pcm.c
+>>>> - Pierre
+>>> They fail when opening default device so I had to remove them, work fine
+>>> when opening
+>>> plughw:0,0 though.
+>>>
+>>>> On Mon, Jan 4, 2010 at 11:39 AM, Riccardo Magliocchetti
+>>>> <riccardo.magliocchetti@gmail.com> wrote:
+>>>>> [the same message is waiting in moderator queue, sorry if you 
+>>>>> receive it
+>>> two times]
+>>>>> Hello,
+>>>>>
+>>>>> i'm trying to capture audio data from the microphone, but i'm not able
+>>> to
+>>>>> read any frames.
+>>>>> The frames are always 0 and delay is fixed to 2730. I've tried calling
+>>>>> snd_pcm_avail_delay,  snd_pcm_avail_update but does not make a
+>>> difference.
+>>>>> The soundcard is driven by  snd_hda_intel. The code is more or less 
+>>>>> the
+>>>>> same as Paul Davis' tutorial on using the alsa api.
+> 
+>>
+>> Even 4096 bytes is x86 DMA page size , seem to be a good choice for those
+>> PCI sound cards, however you cannot assume all sound cards/plugins 
+>> support
+>> this buffer size
+>>
+>> If you did not set period_size, buffer_size or periods (period_time,
+>> buffer_time or periods)  , you should call
+>> snd_pcm_hw_params_get_buffer_size() and 
+>> snd_pcm_hw_params_get_period_size()
+>> after snd_pcm_hw_params()
+> 
+> Thank you both Pierre and Raymond, using the get functions after 
+> snd_pcm_hw_params() is working, now i have some concurrency issues to 
+> resolve before i can say everything is working properly.
 
-> > At least some of the driver was unconditionally setting both TX and RX
-> > configuration simultaneously, though looking again hw_params() is OK.
+The init works fine but snd_pcm_avail() always returns 0, full code is here 
+http://pastebin.com/f687bf37a
 
-> You probably mean imx_ssi_set_dai_fmt(), imx_ssi_set_dai_tdm_slot()
-> and imx_ssi_set_dai_sysclk(). We do not have the playback/record
-> information available in these functions. Should we pass a struct
-> snd_pcm_substream * to the functions?
-
-Hrm, I think it was tdm_slot() - you get separate RX and TX masks so it
-should be able to work asymmetrically.
-
-> > I'll drop the patch.  Like I say, I've never actually seen the driver
-> > working - even when configured as the master it doesn't seem to do any
-> > DMA (well, FIQs).
-
-> Unfortunately I do not have a mx31ads available, so I can't provide a
-> driver for this board. I never used master mode, but if I understand the
-> datasheet correctly the SSI unit has two clock inputs, one for the
-> register accesses which gets enabled by clk_enable and one for the baud
-> rate which doesn't get touched by the driver atm. Have you checked that
-> the baud clock is configured correctly?
-
-Oh, then the master mode support should just be removed from the driver
-until it actually does all the required work.  That'd have saved me some
-time...
-
-> If you have by chance a mx27ads or a mx35 3stack board I could see that
-> I make the driver work on one of these boards.
-
-I have neither of those boards.
+thanks,
+riccardo
