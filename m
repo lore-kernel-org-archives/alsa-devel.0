@@ -1,20 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: capturing data from the microphone
-Date: Mon, 11 Jan 2010 15:03:03 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1001111500470.4210@eeebox2.perex-int.cz>
-References: <4B4227BC.70705@gmail.com>
-	<6160a5131001050848r48f9c6ecw4db2e56bb6fd7533@mail.gmail.com>
-	<4B43B949.5010702@gmail.com>
-	<4f3252891001061559p71933643wcbb59ede24ac29aa@mail.gmail.com>
-	<4B46293A.3040600@gmail.com> <4B4B2EA7.2080504@gmail.com>
+From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Subject: Re: [PATCH 2/2] Davinci: DM365: Enable DaVinci Voice
+ Codec support for DM365 EVM
+Date: Mon, 11 Jan 2010 09:11:19 -0600
+Message-ID: <4B4B3F97.8060508@ridgerun.com>
+References: <1262902641-14821-1-git-send-email-miguel.aguilar@ridgerun.com>
+	<20100108113121.GB10128@sirena.org.uk>
+	<4B476D3B.3050200@ridgerun.com>
+	<20100108193720.GA3088@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 735A21037FF
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 15:03:04 +0100 (CET)
-In-Reply-To: <4B4B2EA7.2080504@gmail.com>
+Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3DC7710380B
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 16:12:11 +0100 (CET)
+In-Reply-To: <20100108193720.GA3088@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,68 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Riccardo Magliocchetti <riccardo.magliocchetti@gmail.com>
-Cc: pl bossart <bossart.nospam@gmail.com>, ALSA development <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Jan 2010, Riccardo Magliocchetti wrote:
+Mark Brown wrote:
+> On Fri, Jan 08, 2010 at 11:36:59AM -0600, Miguel Aguilar wrote:
+>> Mark Brown wrote:
+>>> On Thu, Jan 07, 2010 at 04:17:21PM -0600, miguel.aguilar@ridgerun.com wrote:
+> 
+>>>> +		if (device == 0)
+>>>> +			davinci_cfg_reg(DM365_EVT2_ASP_TX);
+>>>> +		else
+>>>> +			davinci_cfg_reg(DM365_EVT2_VC_TX);
+> 
+>>> I'd be a bit more comfortable with this if it were using something more
+>>> symbolic like a #define or enum rather than checking a bare number to
+>>> work out which device it's talking to.
+> 
+>> The idea of these function is check at runtime if the user space application is 
+>> requesting the AIC3x or the voice codec, then it will set the proper source for 
+>> the dma channels, since the ASP and the Voice Codec share the same dma channels, 
+>> so that's why use a #define doesn't make sense.
+> 
+> I see what your code is doing but at the minute it's making this
+> decision based on the device number that's being passed in by comparing
+> it as a pure number.  This seems fragile - something symbolic that
+> joined things up a bit more wouldn't raise eyebrows in the same way.
+> 
+>> Can you check the part of this patch related to registering both codecs AIC3x 
+>> and the voice codec?
+> 
+> Like I say that all looks fine to me but I can't really check if the
+> DaVinci code is idiomatic.
 
-> Riccardo Magliocchetti ha scritto:
->> Raymond Yau ha scritto:
->>> 2010/1/6 Riccardo Magliocchetti <riccardo.magliocchetti@gmail.com>
->>>
->>>> Hi Pierre,
->>>>
->>>> pl bossart ha scritto:
->>>>> You haven't specified the buffer/period size in the hw params. See
->>>>> alsa-lib/test/pcm.c
->>>>> - Pierre
->>>> They fail when opening default device so I had to remove them, work fine
->>>> when opening
->>>> plughw:0,0 though.
->>>>
->>>>> On Mon, Jan 4, 2010 at 11:39 AM, Riccardo Magliocchetti
->>>>> <riccardo.magliocchetti@gmail.com> wrote:
->>>>>> [the same message is waiting in moderator queue, sorry if you
->>>>>> receive it
->>>> two times]
->>>>>> Hello,
->>>>>>
->>>>>> i'm trying to capture audio data from the microphone, but i'm not able
->>>> to
->>>>>> read any frames.
->>>>>> The frames are always 0 and delay is fixed to 2730. I've tried calling
->>>>>> snd_pcm_avail_delay,  snd_pcm_avail_update but does not make a
->>>> difference.
->>>>>> The soundcard is driven by  snd_hda_intel. The code is more or less
->>>>>> the
->>>>>> same as Paul Davis' tutorial on using the alsa api.
->>
->>>
->>> Even 4096 bytes is x86 DMA page size , seem to be a good choice for those
->>> PCI sound cards, however you cannot assume all sound cards/plugins
->>> support
->>> this buffer size
->>>
->>> If you did not set period_size, buffer_size or periods (period_time,
->>> buffer_time or periods)  , you should call
->>> snd_pcm_hw_params_get_buffer_size() and
->>> snd_pcm_hw_params_get_period_size()
->>> after snd_pcm_hw_params()
->>
->> Thank you both Pierre and Raymond, using the get functions after
->> snd_pcm_hw_params() is working, now i have some concurrency issues to
->> resolve before i can say everything is working properly.
->
-> The init works fine but snd_pcm_avail() always returns 0, full code is here
-> http://pastebin.com/f687bf37a
-
-The PCM stream must be triggered via snd_pcm_start() or using 
-snd_pcm_read*() when sw_param->start_threshold is set appropriately.
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Is there any way to tell alsamixer to use the controls of one subdevice or the 
+other?
