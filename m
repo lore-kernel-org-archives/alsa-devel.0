@@ -1,30 +1,22 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 4/4] ASoC: Flag the i.MX SSI driver as
- using symmetric rates
-Date: Mon, 11 Jan 2010 09:51:22 -0600
-Message-ID: <4B4B48FA.6070402@freescale.com>
-References: <1262967598-4096-1-git-send-email-broonie@opensource.wolfsonmicro.com>	
-	<1262967598-4096-4-git-send-email-broonie@opensource.wolfsonmicro.com>	
-	<20100111112047.GT6923@pengutronix.de>	
-	<20100111113631.GE3440@sirena.org.uk>
-	<eedb5541001110339s6c7af715g2c95c65ab1028898@mail.gmail.com>
+From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Subject: Re: [PATCH 2/2] Davinci: DM365: Enable DaVinci Voice
+ Codec support for DM365 EVM
+Date: Mon, 11 Jan 2010 09:53:43 -0600
+Message-ID: <4B4B4987.1080507@ridgerun.com>
+References: <1262902641-14821-1-git-send-email-miguel.aguilar@ridgerun.com>
+	<20100108113121.GB10128@sirena.org.uk>
+	<4B476D3B.3050200@ridgerun.com>
+	<20100108193720.GA3088@sirena.org.uk>
+	<4B4B3F97.8060508@ridgerun.com>
+	<20100111153458.GA2661@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7FE7D103811
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 16:51:42 +0100 (CET)
-Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	o0BFpNkZ010634
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 08:51:34 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])
-	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id o0BFpQO2021545
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 09:51:26 -0600 (CST)
-In-Reply-To: <eedb5541001110339s6c7af715g2c95c65ab1028898@mail.gmail.com>
+Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8009A103822
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 16:54:28 +0100 (CET)
+In-Reply-To: <20100111153458.GA2661@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,18 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: javier Martin <javier.martin@vista-silicon.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, santiago.nunez@ridgerun.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
 List-Id: alsa-devel@alsa-project.org
 
-javier Martin wrote:
-> I think it would be a good idea to add an optional flag to activate
-> symmetric rate.
+Mark Brown wrote:
+> On Mon, Jan 11, 2010 at 09:11:19AM -0600, Miguel Aguilar wrote:
+>> Mark Brown wrote:
+> 
+>>>> Can you check the part of this patch related to registering both
+>>>> codecs AIC3x and the voice codec?
+> 
+>>> Like I say that all looks fine to me but I can't really check if the
+>>> DaVinci code is idiomatic.
+> 
+>> Is there any way to tell alsamixer to use the controls of one
+>> subdevice or the other?
+> 
+> Not from the arch/arm stuff, but that's a machine driver issue anyway.
+> If you really only want to use a single device then just don't hook up
+> the other device in the machine driver and it'll never appear.
 
-FYI, we already have this on the PowerPC version of the SSI driver.  Asynchronous mode is only supported if the "fsl,ssi-asynchronous" property exists in the device tree.
-
-I think the default should be synchronous unless asynchronous support is specified.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+Do you think that I still using the approach of having both codecs registered in 
+the same kernel? or should I get back to the initial approach of selecting the 
+wanted codec from the configuration menu?
