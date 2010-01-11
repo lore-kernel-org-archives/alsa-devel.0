@@ -1,20 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Duplicate wake-ups in pcm_lib.c
-Date: Mon, 11 Jan 2010 08:18:15 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1001110814310.4210@eeebox2.perex-int.cz>
-References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>
-	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>
-	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>
-	<alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>
-	<4f3252891001102011l603d30cdlbe2a14163bbc7405@mail.gmail.com>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: Re: [PATCH 1/4] ASoC: Add a new imx-ssi sound driver
+Date: Mon, 11 Jan 2010 08:33:08 +0100
+Message-ID: <eedb5541001102333lc865ef7jd40bee92af1da4cc@mail.gmail.com>
+References: <1262967598-4096-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1F4F24415
-	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 08:18:15 +0100 (CET)
-In-Reply-To: <4f3252891001102011l603d30cdlbe2a14163bbc7405@mail.gmail.com>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0F1B824451
+	for <alsa-devel@alsa-project.org>; Mon, 11 Jan 2010 08:33:08 +0100 (CET)
+Received: by ewy23 with SMTP id 23so8427558ewy.4
+	for <alsa-devel@alsa-project.org>; Sun, 10 Jan 2010 23:33:08 -0800 (PST)
+In-Reply-To: <1262967598-4096-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,59 +23,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Timur Tabi <timur@freescale.com>, Sascha Hauer <s.hauer@pengutronix.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Jan 2010, Raymond Yau wrote:
+2010/1/8 Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-> 2010/1/7 Jaroslav Kysela <perex@perex.cz>
+> From: Sascha Hauer <s.hauer@pengutronix.de>
 >
->> On Wed, 6 Jan 2010, pl bossart wrote:
->>
->>
->>
->> The improved and more clean fix in now in my tree:
->>
->>
->> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=1250932e48d3b698415b1f04775433cf1da688d6
->>
->> Note that you should apply these 4 patches (in reverse order):
->>
->> 4: ALSA: pcm_lib - optimize wake_up() calls for PCM I/O
->> 3: ALSA: pcm_lib - cleanup & merge hw_ptr update functions
->> 2: ALSA: pcm_lib - add possibility to log last 10 DMA ring buffer positions
->> 1: ALSA: pcm_lib.c - convert second xrun_debug() parameter to use defines
->>
->> Patch #3 should definitely fix problems with large avail or delay values
->> reported in PA. I finally figured the culprit (and decide to cleanup all
->> relevant code rather do just another workaround). In other words, new
->> hw_ptr pointer should never be less than previous one now.
->>
->>                                                Jaroslav
->>
->> -
->>
+> The old driver has the number of SSI units in the system hardcoded,
+> does not make use of the device model and works only on i.MX21/27.
 >
-> using alsa-driver-1.0.22.1.1.g231e3.14.g812cb and Fedora 12 inside Virtual
-> Box
+> This driver replaces it. It works in DMA mode on i.MX21/27 and using
+> an FIQ handler on other systems. It also supports AC97 mode of
+> the SSI units.
 >
-> aplay -D plughw:0,0 /usr/share/sounds/alsa/*.wav
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> ---
+>  arch/arm/plat-mxc/Makefile       |    6 +
+>  arch/arm/plat-mxc/ssi-fiq-ksym.c |   20 +
+>  arch/arm/plat-mxc/ssi-fiq.S      |  134 +++++++
+>  sound/soc/imx/Kconfig            |   20 +-
+>  sound/soc/imx/Makefile           |   12 +-
+>  sound/soc/imx/imx-pcm-dma-mx2.c  |  313 ++++++++++++++++
+>  sound/soc/imx/imx-pcm-fiq.c      |  277 ++++++++++++++
+>  sound/soc/imx/imx-ssi.c          |  762
+> ++++++++++++++++++++++++++++++++++++++
+>  sound/soc/imx/imx-ssi.h          |  238 ++++++++++++
+>  9 files changed, 1762 insertions(+), 20 deletions(-)
+>  create mode 100644 arch/arm/plat-mxc/ssi-fiq-ksym.c
+>  create mode 100644 arch/arm/plat-mxc/ssi-fiq.S
+>  create mode 100644 sound/soc/imx/imx-pcm-dma-mx2.c
+>  create mode 100644 sound/soc/imx/imx-pcm-fiq.c
+>  create mode 100644 sound/soc/imx/imx-ssi.c
+>  create mode 100644 sound/soc/imx/imx-ssi.h
 >
-> "Front Left" sound as "Front Front Left" when playing "Front_left.wav"
 >
-> only when echo 4 > /proc/asound/card0/pcm0p/xrun_debug
+Acked-by: Javier Martin <javier.martin@vista-silicon.com<lrg@slimlogic.co.uk>
+>
 
-Thanks for testing.
-
-It means that with other values is no sound generated?
-
-Could you use value 29 for xrun_debug and report all sound related 
-messages from dmesg output after playback of "Front_left.wav"?
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+-- 
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
