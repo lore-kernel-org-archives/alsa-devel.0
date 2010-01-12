@@ -1,19 +1,18 @@
-From: Chris Clayton <chris2553@googlemail.com>
-Subject: Re: No CD audio with kernel 2.6.32.3
-Date: Tue, 12 Jan 2010 19:11:02 +0000
-Message-ID: <c6b1100b1001121111r128c5808v9fcfbb7eac126924@mail.gmail.com>
-References: <c6b1100b1001111251pb33f11atf5131228de6dc90d@mail.gmail.com>
-	<s5hr5pv64je.wl%tiwai@suse.de>
+From: Tvrtko Ursulin <tvrtko@ursulin.net>
+Subject: Re: [2.6.33-rc3] HDA works in polling mode
+Date: Tue, 12 Jan 2010 22:53:51 +0000
+Message-ID: <201001122253.51882.tvrtko@ursulin.net>
+References: <201001091022.17056.tvrtko@ursulin.net>
+	<s5h3a2b7lm5.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.157])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4C1B10383B
-	for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2010 20:11:03 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 19so243531fgg.2
-	for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2010 11:11:03 -0800 (PST)
-In-Reply-To: <s5hr5pv64je.wl%tiwai@suse.de>
+Received: from mk-outboundfilter-4.mail.uk.tiscali.com
+	(mk-outboundfilter-4.mail.uk.tiscali.com [212.74.114.32])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92E482467A
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2010 23:53:53 +0100 (CET)
+In-Reply-To: <s5h3a2b7lm5.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,41 +26,45 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+On Tuesday 12 Jan 2010 08:50:26 Takashi Iwai wrote:
+> At Sat, 9 Jan 2010 10:22:17 +0000,
+> 
+> Tvrtko Ursulin wrote:
+> > Hi,
+> >
+> > I have a AMD 785G motherboard where there is a worrying situation logged
+> > by ALSA drivers. Sound nevertheless works.
+> >
+> > lspci:
+> > 00:14.2 Audio device: ATI Technologies Inc SBx00 Azalia (Intel HDA)
+> >
+> > dmesg:
+> > HDA Intel 0000:01:05.1: PCI INT B disabled
+> > HDA Intel 0000:00:14.2: PCI INT A disabled
+> > HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
+> > HDA Intel 0000:01:05.1: PCI INT B -> GSI 19 (level, low) -> IRQ 19
+> > HDA Intel 0000:01:05.1: irq 28 for MSI/MSI-X
+> > HDA Intel 0000:01:05.1: setting latency timer to 64
+> > hda-intel: azx_get_response timeout, switching to polling mode: last
+> > cmd=0x000f0000
+> >
+> > I tried position_fix=0, 1 and 2 with no difference. I also tried
+> > enable_msi=0 to make it use IO-APIC interrupt. Then this error is not
+> > displayed, sound works, but again no interrupts are generated at least
+> > count is not growing in /proc/interrupts.
+> >
+> > Please tell me what else I can try and what debugging info you need.
+> 
+> The switching to polling mode itself isn't a big problem at all.
+> This can be usually ignored.  If you have any other issues wrt sound
+> quality, just ignore this.
 
-Yes, that was it. Thanks for your help.
+Hi,
 
-Chris
+Yes sounds quality seems OK. So there are no performance issues with polling? 
+Messages as this usually raise attention so if it is normal I suggest changing 
+the message to something less alarming.
 
-2010/1/12 Takashi Iwai <tiwai@suse.de>:
-> At Mon, 11 Jan 2010 20:51:57 +0000,
-> Chris Clayton wrote:
->>
->> Hi,
->>
->> Please cc me on any reply - I'm not subscribed.
->>
->> Except for CD audio, sound is working fine on my new HP G61 laptop
->> with kernel 2.6.32.3. I can play CD audio fine in Windows.
->>
->> IIRC, on my (very) old Dell laptop, alsamixer showed a CD audio
->> device, but that's not the case on the G61. I have asla built as
->> modules.
->
-> Recent laptops have usually no analog CD connection, and yours is
-> likely such one. =A0Most CD players have CDDA mode to extract the CD
-> data and play it back, so use it.
->
->
-> HTH,
->
-> Takashi
->
+Thanks,
 
-
-
--- =
-
-No, Sir; there is nothing which has yet been contrived by man, by which
-so much happiness is produced as by a good tavern or inn - Doctor Samuel
-Johnson
+Tvrtko
