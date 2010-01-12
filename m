@@ -1,25 +1,76 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] Audio suspend/resume status on OMAP3 based
-	platforms
-Date: Tue, 12 Jan 2010 16:11:10 +0000
-Message-ID: <20100112161109.GC17092@sirena.org.uk>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB031E1D7807@dbde02.ent.ti.com>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: X-Fi notebook support
+Date: Tue, 12 Jan 2010 19:52:34 +0300
+Message-ID: <4B4CA8D2.30303@gmail.com>
+References: <4B3B03C8.2070808@gmail.com> <4B3B7E37.7050503@gmail.com>
+	<4B3B9B28.1090102@gmail.com> <4B4C1EA7.3060305@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB031E1D7807@dbde02.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB9BE24638
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2010 17:52:39 +0100 (CET)
+Received: by ewy23 with SMTP id 23so145547ewy.4
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2010 08:52:38 -0800 (PST)
+In-Reply-To: <4B4C1EA7.3060305@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 12, 2010 at 09:35:15PM +0530, Aggarwal, Anuj wrote:
-
-> b) same command, when audio loopback is running in 
-> background
-
-It'd be helpful to specify what you mean by audio loopback here - I
-think you mean something along the lines of 'arecord | aplay -' but
-it'd be good to confirm since there's multiple meanings people use for
-the term.
+MTIuMDEuMjAxMCAxMDowMywgVGhlIFNvdXJjZSDQv9C40YjQtdGCOgo+IDMwLjEyLjIwMDkgMjE6
+MjUsIFRoZSBTb3VyY2Ug0L/QuNGI0LXRgjoKPj4gMzAuMTIuMjAwOSAxOToyMiwgVGhlIFNvdXJj
+ZSDQv9C40YjQtdGCOgo+Pj4gMzAuMTIuMjAwOSAxMDozOSwgVGhlIFNvdXJjZSDQv9C40YjQtdGC
+Ogo+Pj4+IEhlbGxvLiBJIGhhdmUgc29tZSBpbmZvIG9uIHRoYXQgY2FyZCwgYnV0IG5vdCBtdWNo
+LiBJIGhhdmUgCj4+Pj4gZGlzY292ZXJlZCB0aGF0IHRoaXMgY2FyZCBpcyBkZXRlY3RlZCBjb25u
+ZWN0ZWQgdmlhIFVTQiByYXRoZXIgdGhhbiAKPj4+PiBQQ0ktRSAodGhlIHNsb3QgaXMgRXhwcmVz
+c0NhcmQpLiBzbmRfY3R4ZmkgdXNlcyBQQ0kgaW50ZXJmYWNlcyAKPj4+PiByaWdodD8gQ2FuIFgt
+Rmkgc3VwcG9ydCBiZSBhbHNvIGFkZGVkIHRvIHNuZF91c2JfYXVkaW8/IE9yIGNhbiAKPj4+PiBz
+bmRfY3R4Zmkgc3VwcG9ydCBVU0I/Cj4+Pj4KPj4+PiBsc3VzYiAtdiBvdXRwdXQgb24gdGhhdCBj
+YXJkIGlzIGF0dGFjaGVkIChzb3JyeSBmb3IgZHVwbGljYXRlIG1haWwsIAo+Pj4+IGZvcmdvdCB0
+byBhdHRhY2ggaXQgZmlyc3QgdGltZSkuIEkgbm93IGhhdmUgdGhpcyBjYXJkIGFuZCB3aWxsaW5n
+IAo+Pj4+IHRvIGhlbHAgdG8gdGVzdCAob3IgcGVyaGFwcyBjcmVhdGUpIHByb3BlciBkcml2ZXIu
+Cj4+PiBBZGRpdGlvbmFsIGluZm8uIFRoZSBjYXJkIGlzIHBhcnRpYWxseSByZWNvZ25pemVkIC0g
+QW5hbG9nIFN0ZXJlbyAKPj4+IElucHV0IGRldmljZSBpcyBhdmFpbGFibGUuIEJ1dCBzYWRseSBu
+byBvdXRwdXQuCj4+PiBBbHNvIEkgdGVzdGVkIHRoZSBjYXJkIGluIFZpcnR1YWwgQm94IChXaW5Y
+UCA2NCBndWVzdCkgYW5kIGV2ZW4gCj4+PiB3aXRob3V0IGNyZWF0aXZlIGRyaXZlcnMgdGhlIGNh
+cmQgaXMgcmVjb2duaXplZCBhcyBVU0IgQXVkaW8gRGV2aWNlIAo+Pj4gYW5kIHdvcmtzIGZpbmUu
+IFNvIGl0IHNlZW1zIGl0J3MgdXNiIGF1ZGlvIGNvbXBsaWFudC4gSSBob3BlIHRoaXMgaXMgCj4+
+PiBoZWxwZnVsLgo+PiBIbW0sIGl0IGxvb2tzIGxpa2UgSW5wdXQgd29ya2luZyBpcyB0aGUgcmVz
+dWx0IG9mIG15IGFkZGl0aW9uIHRvIAo+PiBhbHNhLWtlcm5lbC91c2IvdXNicXVpcmtzLmgKPj4g
+UmVjb3JkaW5nIGZyb20gbWljIG5vdyB3b3JrcyAob24gdmVyeSBsb3cgdm9sdW1lIHRob3VnaCkK
+Pj4KPj4gLyogQ3JlYXRpdmUgWC1GaSBOb3RlYm9vayAqLwo+PiB7Cj4+ICAgICAubWF0Y2hfZmxh
+Z3MgPSBVU0JfREVWSUNFX0lEX01BVENIX1ZFTkRPUiB8IAo+PiBVU0JfREVWSUNFX0lEX01BVENI
+X1BST0RVQ1QsCj4+ICAgICAuaWRWZW5kb3IgPSAweDA0MWUsCj4+ICAgICAuaWRQcm9kdWN0ID0g
+MHgzMGQyLAo+PiAgICAgLmJJbnRlcmZhY2VDbGFzcyA9IFVTQl9DTEFTU19BVURJTywKPj4gICAg
+IC5kcml2ZXJfaW5mbyA9ICh1bnNpZ25lZCBsb25nKSAmIChjb25zdCBzdHJ1Y3QgCj4+IHNuZF91
+c2JfYXVkaW9fcXVpcmspIHsKPj4gICAgICAgICAudmVuZG9yX25hbWUgPSAiQ3JlYXRpdmUgTGFi
+cyIsCj4+ICAgICAgICAgLnByb2R1Y3RfbmFtZSA9ICJYLUZpIE5vdGVib29rIiwKPj4gICAgICAg
+ICAuaWZudW0gPSBRVUlSS19OT19JTlRFUkZBQ0UKPj4gICAgIH0KPj4gfSwKPj4KPj4gSSB0ZXN0
+ZWQgc29tZSBvdGhlciBxdWlyayB2YWx1ZXMgYnV0IG5vdGhpbmcgZWxzZSB3b3JrcyBhdCBhbGwu
+IEFzIAo+PiBmb3Igb3V0cHV0IC0gYWxzYW1peGVyIGFjdHVhbGx5IHNob3dzIGl0IGFuZCBhbGxv
+d3MgdG8gY2hhbmdlIGl0J3MgCj4+IHZvbHVtZSwgYnV0IGNoYW5uZWwgbnVtYmVyIGlzIG5vdCBh
+dmFpbGFibGUuIEZvciBleGFtcGxlIHNwZWFrZXItdGVzdCAKPj4gc2F5cyAnRXJyb3Igc2V0dGlu
+ZyBod3BhcmFtczogSW52YWxpZCBhcmd1bWVudCIgYW5kIGFwbGF5IHNheXMgCj4+ICJDaGFubmVs
+IG51bWJlciBpcyBub3QgYXZhaWxhYmxlIiBvbiBhbnkgY2hhbm5lbCBudW1iZXIuCj4+IGFsc2Et
+aW5mbyBvdXRwdXQgaXMgYXR0YWNoZWQuCj4+IEkgYXNrIGZvciBhbnkgaGVscCBmcm9tIGV4cGVy
+aWVuY2VkIGFsc2EgZGV2ZWxvcGVyIChzbmRfdXNiX2F1ZGlvIAo+PiBzcGVjaWZpY2FsbHkpLgo+
+Cj4gSSBmb3VuZCBvdXQgdGhhdCA2IGlzIHRoZSBvbmx5IHZhbGlkIG51bWJlciBmb3IgY2hhbm5l
+bHMuIFNvdW5kIGlzIAo+IHBsYXllZCBmaW5lIHdoZW4gY2hhbm5lbHMgaXMgc2V0IHRvIDYuIE90
+aGVyIHZhbHVlcyBsaWtlIDIgcmVzdWx0IGluIAo+ICdpbnZhbGlkIGFyZ3VtZW50JwpMYXRlc3Qg
+dGVzdCByZXN1bHRzOiBpZiB0aGUgY2FyZCBpcyBwbHVnZ2VkIGJlZm9yZSBzeXN0ZW0gc3RhcnRz
+LCAKZXZlcnl0aGluZyBpcyBmaW5lLiBBbGwgb3V0cHV0IGRldmljZXMgaXMgc2VlbiBieSBldmVy
+eW9uZSBpbmNsdWRpbmcgCnB1bHNlYXVkaW8uIE5vIHN1Y2ggbHVjayBpZiB0aGUgY2FyZCBpcyBo
+b3RwbHVnZ2VkLiBJIHdvbmRlciB3aHk/Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
