@@ -1,20 +1,17 @@
-From: Nickolas <ultrageek.lloyd@gmail.com>
-Subject: Re: [PATCH] - fix speaker output for toshiba nb205
-	netbooks
-Date: Wed, 13 Jan 2010 14:13:08 -0500
-Message-ID: <20100113141308.39344e5c@nick-PC>
-References: <20100112165832.35b5d23f@nick-PC> <s5hwrzm4e1j.wl%tiwai@suse.de>
-	<20100113110611.73625b1e@nick-PC> <s5haawivv1r.wl%tiwai@suse.de>
+From: Josh Lehan <alsa@krellan.com>
+Subject: Re: Newbie question: Sending untimed MIDI data to ALSA
+ seq
+Date: Wed, 13 Jan 2010 11:17:02 -0800
+Message-ID: <4B4E1C2E.1010209@krellan.com>
+References: <4B490D93.1050506@krellan.com> <s5hpr5f64cl.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.144])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50EB6103818
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 20:13:12 +0100 (CET)
-Received: by qw-out-1920.google.com with SMTP id 14so4178233qwa.56
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 11:13:10 -0800 (PST)
-In-Reply-To: <s5haawivv1r.wl%tiwai@suse.de>
+Received: from server3.hostdango.com (server3.hostdango.com [67.222.146.219])
+	by alsa0.perex.cz (Postfix) with ESMTP id C026410382A
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 20:17:28 +0100 (CET)
+In-Reply-To: <s5hpr5f64cl.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Josh Lehan <alsa@krellan.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 13 Jan 2010 17:17:20 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+Takashi Iwai wrote:
+> At Sat, 09 Jan 2010 15:13:23 -0800,
+> Josh Lehan wrote:
+>> Hello.
+>>
+>> Newbie question: I'm wondering about sending untimed MIDI data to the
+>> ALSA sequencer subsystem.
+>>
+>> The application would be for a "beep"-like program, from the command
+>> line, that instead of making beeps, would play MIDI instruments to make
+>> better-sounding beeps.
+>>
+>> Does such a program already exist?
+> 
+> I don't know of such thing, too.
+> It'd be nice to have in alsa-utils.
 
-> At Wed, 13 Jan 2010 11:06:11 -0500,
-> Nickolas wrote:
-> > 
-> > On Wed, 13 Jan 2010 09:14:32 +0100
-> > Takashi Iwai <tiwai@suse.de> wrote:
-> > 
-> > > At Tue, 12 Jan 2010 16:58:32 -0500,
-> > > Nickolas wrote:
-> > > > 
-> > > > this is a quick fix i wrote up a couple days ago to fix speaker
-> > > > output on the Realtek ALC272 codec present in toshiba nb205
-> > > > netbooks.  presently, speaker output doesn't work at all on this
-> > > > model, regardless of settings in the mixer.  this is because the
-> > > > current driver thinks the speaker is at nid 0x0c instead of the
-> > > > correct 0x17.  i'm not too familiar with this hardware, so i'm not
-> > > > sure that this patch won't have any negative effects for other
-> > > > hardware.  it also seems like a messy way of fixing the problem.
-> > > > any comments or suggestions are welcome, as is testing for those who
-> > > > have this board.  diffed against the latest git.
-> > > 
-> > > Thanks for the patch.  The change looks safe to me.
-> > > 
-> > > But I'm still wondering whether model=auto doesn't work for this device.
-> > > Could you try it with the latest driver?
-> > > 
-> > > 
-> > > thanks,
-> > > 
-> > > Takashi
-> > > 
-> > 
-> > hmm, i feel stupid.  so, it works with model=auto, but why is that not implied when the model parameter isn't specified on the command line?
-> 
-> OK, that's good to hear.  IIRC, the quirk was there because it didn't work
-> with model=auto, at least, at that time.
-> 
-> I guess it's time to back to auto option again.  I'll fix now.
-> 
-> Thanks for quick testing!
-> 
-> 
-> Takashi
+Thanks for the suggestion!
 
-no problem.  i'll test all the ports later today when i have time to make sure that they work properly with model=auto, just to be sure.  thanks for the help!
+A few days ago, I started writing a program to do just this.  It is
+coming along nicely.  When it's finished, I'll post a link to it here,
+for your review.
 
-Nick
+Josh
