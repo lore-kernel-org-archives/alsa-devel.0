@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: support more sample rates
-	on	raumfeld devices
-Date: Wed, 13 Jan 2010 16:27:50 +0000
-Message-ID: <20100113162749.GA26519@sirena.org.uk>
-References: <1263378338-21791-1-git-send-email-daniel@caiaq.de>
-	<20100113130208.GD27473@rakim.wolfsonmicro.main>
-	<20100113154320.GD9007@buzzloop.caiaq.de>
+From: Anisse Astier <anisse@astier.eu>
+Subject: Re: Mic Boost control problem with snd-hda-intel codec
+	AL662 rev 1
+Date: Wed, 13 Jan 2010 18:45:25 +0100
+Message-ID: <20100113184525.576d7b94@destiny.ordissimo>
+References: <20100106164338.2f3764bf@destiny.ordissimo>
+	<s5hhbqro8fi.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30846103851
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 17:27:51 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20100113154320.GD9007@buzzloop.caiaq.de>
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 75726103802
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 18:45:40 +0100 (CET)
+Received: by fxm4 with SMTP id 4so72623878fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 09:45:39 -0800 (PST)
+In-Reply-To: <s5hhbqro8fi.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 13, 2010 at 04:43:20PM +0100, Daniel Mack wrote:
+On Tue, 12 Jan 2010 12:43:13 +0100, Takashi Iwai <tiwai@suse.de> wrote :
 
-> For this application, the codec driver would need to be as dumb as
-> possible: I would just get the information about which MCLK and LRCLK it
-> runs with and it could reject invalid configurations by return value.
-> But that would imply major changes to the clocking logic in the cs4270
-> driver, which is fine as-is when it acts as master.
+> At Wed, 6 Jan 2010 16:43:38 +0100,
+> Anisse Astier wrote:
+> > 
+> > Hi,
+> > 
+> > The Mic Boost control on a laptop seems to behave incorrectly. The
+> > control has the flag "volume" instead of "cvolume", causing it to appear
+> > in both the "Playback" and "Capture" tabs of alsamixer.
+> > This wouldn't be a problem if it would just work in the Capture tab: it
+> > doesn't.
+> > When I modify it in Capture, it doesn't retain its value: it's gone after
+> > i close alsamixer. But if i modify it in "Playback" it will retain its
+> > value and the value will be mirrored by the Mic Boost in Capture (both
+> > Mic Boost seem to reflect the same control, except one is RO, the other
+> > is RW).
+> > 
+> > It's a minor a annoyance, but I'd like to fix it and have "Mic Boost"
+> > appear only as a Capture control and retaining its value. Maybe I should
+> > create a new mixer configuration for this hardware in patch_realtek.c, but
+> > I don't know where to start. Bios autoprobing works for everything but
+> > just what I mentioned.
+> 
+> Well, Mic Boost is applied to both playback and capture in case you
+> have analog loopback.  So, it's not entirely wrong.
+> 
+> The problem is rather the inconsistent behavior in alsamixer.
+> I guess it's a bug of old alsa-lib.  Try to upgrade the alsa-lib and
+> alsa-utils first.
 
-That's not quite true.  The problem you're seeing is that the CODEC
-driver has variable constraints depending on the master clock, so it at
-least needs to know what master clocks it might get so it can specify
-the constraints.  Even more ideally than what I suggested we'd be able
-to use a clock API with constraint handling which we could use to figure
-stuff out but obviously tackling that is very much an uphill struggle.
+You were right, problem goes away after upgrading userland lib and utils.
 
-> I'm uncertain and hence I just went the other way which bypasses this
-> logic for now, also not to break existing platforms.
+Thanks!
 
-It doesn't do anything for maintainability of the stack, though,
-especially if other people try to copy it.
-
-If you're going to do anything that doesn't involve the core API I'd
-have the CODEC driver manually apply the constraints from MCLK in the
-startup function iff an MCLK is currently set.  Machines with fixed
-MCLKs can set the MCLK on init() and machines with dynamic MCLKs can set
-the value in hw_params() and reset it when shutting down, imposing any
-constraints that do exist themselves.  The rates fixed in the DAI would
-be all the rates that can possibly be used.
+Anisse
