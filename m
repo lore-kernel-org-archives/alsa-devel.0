@@ -1,12 +1,18 @@
-From: murray.alex@gmail.com
-Subject: [PATCH - hda 1/1] ALSA: hda - Improved MacBook (Pro) 5,
-	1 / 5, 2 support
-Date: Wed, 13 Jan 2010 23:15:03 +1030
-Message-ID: <4b4dc076.0f0bca0a.2927.63a7@mx.google.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: ASoC: support more sample rates on
+ raumfeld devices
+Date: Wed, 13 Jan 2010 13:02:09 +0000
+Message-ID: <20100113130208.GD27473@rakim.wolfsonmicro.main>
+References: <1263378338-21791-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BE83C103853
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 14:02:10 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1263378338-21791-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -16,80 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Alex Murray <murray.alex@gmail.com>, alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Alex Murray <murray.alex@gmail.com>
+On Wed, Jan 13, 2010 at 11:25:38AM +0100, Daniel Mack wrote:
+> Add support for sample rates other than 44100Khz on raumfeld audio
+> devices. Force the codec's supported sample rates as the table of
+> supported rates which is calculated at run-time does not suffice: if we
+> call snd_soc_dai_set_sysclk() at stream startup, half of the possible
+> rates are missing.
 
-This patch adds support for automatically muting the speakers when headphones
-are inserted, as well as relabelling the headphone widgets from the
-non-standard "HP" to the standard "Headphone" for the mb5 model.
-
-Signed-off-by: Alex Murray <murray.alex@gmail.com>
----
- pci/hda/patch_realtek.c |   28 ++++++++++++++++++++++++++--
- 1 files changed, 26 insertions(+), 2 deletions(-)
-
-diff --git a/pci/hda/patch_realtek.c b/pci/hda/patch_realtek.c
-index f858dcd..bd65e47 100644
---- a/pci/hda/patch_realtek.c
-+++ b/pci/hda/patch_realtek.c
-@@ -7201,8 +7201,8 @@ static struct snd_kcontrol_new alc885_mb5_mixer[] = {
- 	HDA_BIND_MUTE   ("Surround Playback Switch", 0x0d, 0x02, HDA_INPUT),
- 	HDA_CODEC_VOLUME("LFE Playback Volume", 0x0e, 0x00, HDA_OUTPUT),
- 	HDA_BIND_MUTE   ("LFE Playback Switch", 0x0e, 0x02, HDA_INPUT),
--	HDA_CODEC_VOLUME("HP Playback Volume", 0x0f, 0x00, HDA_OUTPUT),
--	HDA_BIND_MUTE   ("HP Playback Switch", 0x0f, 0x02, HDA_INPUT),
-+	HDA_CODEC_VOLUME("Headphone Playback Volume", 0x0f, 0x00, HDA_OUTPUT),
-+	HDA_BIND_MUTE   ("Headphone Playback Switch", 0x0f, 0x02, HDA_INPUT),
- 	HDA_CODEC_VOLUME("Line Playback Volume", 0x0b, 0x02, HDA_INPUT),
- 	HDA_CODEC_MUTE  ("Line Playback Switch", 0x0b, 0x02, HDA_INPUT),
- 	HDA_CODEC_VOLUME("Mic Playback Volume", 0x0b, 0x01, HDA_INPUT),
-@@ -7603,6 +7603,7 @@ static struct hda_verb alc885_mb5_init_verbs[] = {
- 	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
- 	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
- 	{0x14, AC_VERB_SET_CONNECT_SEL, 0x03},
-+	{0x14, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
- 	/* Front Mic pin: input vref at 80% */
- 	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREF80},
- 	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-@@ -7787,6 +7788,27 @@ static void alc885_mbp3_setup(struct hda_codec *codec)
- 	spec->autocfg.speaker_pins[0] = 0x14;
- }
- 
-+static void alc885_mb5_automute(struct hda_codec *codec)
-+{
-+	unsigned int present;
-+
-+	present = snd_hda_codec_read(codec, 0x14, 0,
-+				     AC_VERB_GET_PIN_SENSE, 0) & 0x80000000;
-+	snd_hda_codec_amp_stereo(codec, 0x18, HDA_OUTPUT, 0,
-+				 HDA_AMP_MUTE, present ? HDA_AMP_MUTE : 0);
-+	snd_hda_codec_amp_stereo(codec, 0x1a, HDA_OUTPUT, 0,
-+				 HDA_AMP_MUTE, present ? HDA_AMP_MUTE : 0);
-+
-+}
-+
-+static void alc885_mb5_unsol_event(struct hda_codec *codec,
-+				    unsigned int res)
-+{
-+	/* Headphone insertion or removal. */
-+	if ((res >> 26) == ALC880_HP_EVENT)
-+		alc885_mb5_automute(codec);
-+}
-+
- static void alc885_imac91_automute(struct hda_codec *codec)
- {
-  	unsigned int present;
-@@ -9233,6 +9255,8 @@ static struct alc_config_preset alc882_presets[] = {
- 		.input_mux = &mb5_capture_source,
- 		.dig_out_nid = ALC882_DIGOUT_NID,
- 		.dig_in_nid = ALC882_DIGIN_NID,
-+		.unsol_event = alc885_mb5_unsol_event,
-+		.init_hook = alc885_mb5_automute,
- 	},
- 	[ALC885_MACPRO] = {
- 		.mixers = { alc882_macpro_mixer },
--- 
-1.6.3.3
+I'm not massively enthusiastic about this - I'd much rather be able to
+give the CODEC a hook to let it know what MCLK rates it can have and a
+callback to update them.  It's a perfect case for the clock API but of
+course we can't use that off-SoC :/
