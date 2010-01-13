@@ -1,21 +1,15 @@
-From: Anisse Astier <anisse@astier.eu>
-Subject: Re: Mic Boost control problem with snd-hda-intel codec
-	AL662 rev 1
-Date: Wed, 13 Jan 2010 18:45:25 +0100
-Message-ID: <20100113184525.576d7b94@destiny.ordissimo>
-References: <20100106164338.2f3764bf@destiny.ordissimo>
-	<s5hhbqro8fi.wl%tiwai@suse.de>
+From: Konrad Schlichtherle <kconny@gmx.de>
+Subject: alsa-sink.c: ALSA woke us up to write new data to the
+ device, but there was actually nothing to write!
+Date: Wed, 13 Jan 2010 19:43:48 +0100
+Message-ID: <4B4E1464.3090801@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
-	[209.85.220.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75726103802
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 18:45:40 +0100 (CET)
-Received: by fxm4 with SMTP id 4so72623878fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 09:45:39 -0800 (PST)
-In-Reply-To: <s5hhbqro8fi.wl%tiwai@suse.de>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 1A5E7103843
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 19:43:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,43 +19,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 Jan 2010 12:43:13 +0100, Takashi Iwai <tiwai@suse.de> wrote :
+Hello,
 
-> At Wed, 6 Jan 2010 16:43:38 +0100,
-> Anisse Astier wrote:
-> > 
-> > Hi,
-> > 
-> > The Mic Boost control on a laptop seems to behave incorrectly. The
-> > control has the flag "volume" instead of "cvolume", causing it to appear
-> > in both the "Playback" and "Capture" tabs of alsamixer.
-> > This wouldn't be a problem if it would just work in the Capture tab: it
-> > doesn't.
-> > When I modify it in Capture, it doesn't retain its value: it's gone after
-> > i close alsamixer. But if i modify it in "Playback" it will retain its
-> > value and the value will be mirrored by the Mic Boost in Capture (both
-> > Mic Boost seem to reflect the same control, except one is RO, the other
-> > is RW).
-> > 
-> > It's a minor a annoyance, but I'd like to fix it and have "Mic Boost"
-> > appear only as a Capture control and retaining its value. Maybe I should
-> > create a new mixer configuration for this hardware in patch_realtek.c, but
-> > I don't know where to start. Bios autoprobing works for everything but
-> > just what I mentioned.
-> 
-> Well, Mic Boost is applied to both playback and capture in case you
-> have analog loopback.  So, it's not entirely wrong.
-> 
-> The problem is rather the inconsistent behavior in alsamixer.
-> I guess it's a bug of old alsa-lib.  Try to upgrade the alsa-lib and
-> alsa-utils first.
+sometimes it occure that my speakers do not play sound although the
+speakers should play music with VLC. Then i took a look at
+/var/log/messages and found this:
 
-You were right, problem goes away after upgrading userland lib and utils.
+Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: ALSA woke us up to
+write new data to the device, but there was actually nothing to write!
+Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: Most likely this is
+a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to
+the ALSA developers.
+Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: We were woken up
+with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or
+another value < min_avail.
 
-Thanks!
+The output of utils_alsa-info.sh is there:
+http://www.alsa-project.org/db/?f=1767e9bc745724a67c908549d20c137375d0605e
 
-Anisse
+I didn't know wether this is a bug or a misconfiguration of my openSUSE 11.2
+
+Konrad
