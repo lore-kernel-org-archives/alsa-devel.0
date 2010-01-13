@@ -1,15 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH] ASoC: TWL4030: Replace comma with semicolon in
-	probe function
-Date: Wed, 13 Jan 2010 12:37:49 +0200
-Message-ID: <1263379069-24326-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ALSA DMIX support without MMAP ?
+Date: Wed, 13 Jan 2010 11:27:28 +0000
+Message-ID: <20100113112727.GA23853@sirena.org.uk>
+References: <22118431.247131263375996658.JavaMail.weblogic@epml17>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF0AD103804
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 11:37:56 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3620B103849
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 12:27:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <22118431.247131263375996658.JavaMail.weblogic@epml17>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,30 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com
+To: ANISH KUMAR <anish.singh@samsung.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The codec structure initialization statements should be
-separated by semicolons.
+On Wed, Jan 13, 2010 at 09:46:36AM +0000, ANISH KUMAR wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/twl4030.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> Problem is when i am trying to use dmix plugin i am not getting any sound (logs shown below).Is it because i don't have mmap mode support on my device???
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 2a27f7b..74f0d65 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -2192,7 +2192,7 @@ static int __devinit twl4030_codec_probe(struct platform_device *pdev)
- 	codec->write = twl4030_write;
- 	codec->set_bias_level = twl4030_set_bias_level;
- 	codec->dai = twl4030_dai;
--	codec->num_dai = ARRAY_SIZE(twl4030_dai),
-+	codec->num_dai = ARRAY_SIZE(twl4030_dai);
- 	codec->reg_cache_size = sizeof(twl4030_reg);
- 	codec->reg_cache = kmemdup(twl4030_reg, sizeof(twl4030_reg),
- 					GFP_KERNEL);
--- 
-1.6.6
+mmap is supported by the Samsung drivers.
+
+> If yes then can't dmix work without mmap mode???   Logs shown below:
+> 
+> Entered s3c24xx_pcm_hw_params,
+> Entered s3c24xx_pcm_hw_params, line 330
+> Entered s3c24xx_pcm_mmap
+> Entered s3c24xx_pcm_prepare
+> Entered s3c24xx_pcm_enqueue
+> Entered s3c24xx_pcm_trigger
+> Entered s3c24xx_pcm_pointer
+> Entered s3c24xx_pcm_pointer res_value[0]
+> snd_pcm_update_hw_ptr_pos xun: [0]occured XRUN!
+
+This looks like the dmix data rates are getting out of sync with what
+the hardware is doing.  Enabling CONFIG_SND_PCM_XRUN_DEBUG will produce
+more diagnostic information from the driver side.
