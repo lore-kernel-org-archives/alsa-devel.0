@@ -1,48 +1,38 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-Subject: [PATCH] alsa: use subsys_initcall for sound core instead of module_init
-Date: Tue, 12 Jan 2010 20:20:39 -0200
-Message-ID: <1263334840-6118-1-git-send-email-cascardo@holoscopio.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754330Ab0ALWWh@vger.kernel.org>
+From: Seth Heasley <seth.heasley@intel.com>
+Subject: [PATCH 2.6.32.3] hda_intel: ALSA HD Audio patch for Intel Cougar Point DeviceIDs
+Date: Tue, 12 Jan 2010 17:03:35 -0800
+Message-ID: <201001121703.36016.seth.heasley@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753036Ab0AMBII@vger.kernel.org>
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: ibm-acpi@hmh.eng.br, Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+To: perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.de
+Cc: seth.heasley@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This is needed for built-in drivers which are built before the sound directory,
-like thinkpad_acpi.
+This patch adds the Intel Cougar Point (PCH) HD Audio Controller DeviceIDs.
 
-Otherwise, registering a card fails.
+Signed-off-by: Seth Heasley <seth.heasley@intel.com>
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
----
- sound/core/sound.c |    4 ++--
- sound/sound_core.c |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/core/sound.c b/sound/core/sound.c
-index 7872a02..563d196 100644
---- a/sound/core/sound.c
-+++ b/sound/core/sound.c
-@@ -468,5 +468,5 @@ static void __exit alsa_sound_exit(void)
- 	unregister_chrdev(major, "alsa");
- }
- 
--module_init(alsa_sound_init)
--module_exit(alsa_sound_exit)
-+subsys_initcall(alsa_sound_init);
-+module_exit(alsa_sound_exit);
-diff --git a/sound/sound_core.c b/sound/sound_core.c
-index dbca7c9..7c2d677 100644
---- a/sound/sound_core.c
-+++ b/sound/sound_core.c
-@@ -61,7 +61,7 @@ static void __exit cleanup_soundcore(void)
- 	class_destroy(sound_class);
- }
- 
--module_init(init_soundcore);
-+subsys_initcall(init_soundcore);
- module_exit(cleanup_soundcore);
- 
- 
--- 
-1.6.6
+--- linux-2.6.32.3/sound/pci/hda/hda_intel.c.orig	2010-01-06 15:07:45.000000000 -0800
++++ linux-2.6.32.3/sound/pci/hda/hda_intel.c	2010-01-07 13:10:28.000000000 -0800
+@@ -116,6 +116,7 @@
+ 			 "{Intel, ICH9},"
+ 			 "{Intel, ICH10},"
+ 			 "{Intel, PCH},"
++			 "{Intel, CPT},"
+ 			 "{Intel, SCH},"
+ 			 "{ATI, SB450},"
+ 			 "{ATI, SB600},"
+@@ -2648,6 +2649,8 @@
+ 	{ PCI_DEVICE(0x8086, 0x3a6e), .driver_data = AZX_DRIVER_ICH },
+ 	/* PCH */
+ 	{ PCI_DEVICE(0x8086, 0x3b56), .driver_data = AZX_DRIVER_ICH },
++	/* CPT */
++	{ PCI_DEVICE(0x8086, 0x1c20), .driver_data = AZX_DRIVER_ICH },
+ 	/* SCH */
+ 	{ PCI_DEVICE(0x8086, 0x811b), .driver_data = AZX_DRIVER_SCH },
+ 	/* ATI SB 450/600 */
