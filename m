@@ -1,17 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: TWL4030: Fix typo in comment in
-	header file
-Date: Wed, 13 Jan 2010 08:56:26 +0200
-Message-ID: <201001130856.26704.peter.ujfalusi@nokia.com>
-References: <1263312438-4193-1-git-send-email-weber@corscience.de>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: Audio suspend/resume status on OMAP3 based
+ platforms
+Date: Wed, 13 Jan 2010 08:58:20 +0200
+Message-ID: <20100113085820.6d8564d4.jhnikula@gmail.com>
+References: <5A47E75E594F054BAF48C5E4FC4B92AB031E1D7807@dbde02.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0FF4C10384C
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 07:56:32 +0100 (CET)
-In-Reply-To: <1263312438-4193-1-git-send-email-weber@corscience.de>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6E501038D7
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 07:57:24 +0100 (CET)
+Received: by ewy23 with SMTP id 23so303267ewy.4
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2010 22:57:24 -0800 (PST)
+In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB031E1D7807@dbde02.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Thomas Weber <weber@corscience.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 12 January 2010 18:07:18 ext Thomas Weber wrote:
-> Signed-off-by: Thomas Weber <weber@corscience.de>
-> ---
->  sound/soc/codecs/twl4030.h |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
-> index dd6396e..f206d24 100644
-> --- a/sound/soc/codecs/twl4030.h
-> +++ b/sound/soc/codecs/twl4030.h
-> @@ -25,7 +25,7 @@
->  /* Register descriptions are here */
->  #include <linux/mfd/twl4030-codec.h>
-> 
-> -/* Sgadow register used by the audio driver */
-> +/* Shadow register used by the audio driver */
->  #define TWL4030_REG_SW_SHADOW		0x4A
->  #define TWL4030_CACHEREGNUM	(TWL4030_REG_SW_SHADOW + 1)
+On Tue, 12 Jan 2010 21:35:15 +0530
+"Aggarwal, Anuj" <anuj.aggarwal@ti.com> wrote:
 
-Oh yes, thank you!
+> I want to check the status of suspend/resume functionality when audio
+> subsystem is being used. Specifically, has some one tried the following 
+> tests on their omap3 based platforms:
+> 
+> a) echo mem > /sys/power/state, when audio playback is running in 
+> background
+> b) same command, when audio capture is running in 
+> background
+> b) same command, when audio loopback is running in 
+> background
+> 
+> I am facing some issues with (b) & (c) so wanted to confirm whether
+> someone else has faced similar problem or not.
+> 
+Unfortunately the proper OMAP ASoC suspend/resume functionality is still
+missing and the development progress has been slow. There are few
+issues in low-level McBSP code like proper clock management,
+context save/restore, how to deal with the FIFO, etc. and those should
+be addressed first.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Fortunately Janusz Krzysztofik has been cleaning up and developing the
+register cache support in McBSP and that work could help the PM work as
+well. Clock management changes don't look complicated but just requires
+that one develops it.
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-November/023119.html
+
+
+-- 
+Jarkko
