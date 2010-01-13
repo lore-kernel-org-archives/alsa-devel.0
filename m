@@ -1,15 +1,20 @@
-From: Konrad Schlichtherle <kconny@gmx.de>
-Subject: alsa-sink.c: ALSA woke us up to write new data to the
- device, but there was actually nothing to write!
-Date: Wed, 13 Jan 2010 19:43:48 +0100
-Message-ID: <4B4E1464.3090801@gmx.de>
+From: Nickolas <ultrageek.lloyd@gmail.com>
+Subject: Re: [PATCH] - fix speaker output for toshiba nb205
+	netbooks
+Date: Wed, 13 Jan 2010 14:13:08 -0500
+Message-ID: <20100113141308.39344e5c@nick-PC>
+References: <20100112165832.35b5d23f@nick-PC> <s5hwrzm4e1j.wl%tiwai@suse.de>
+	<20100113110611.73625b1e@nick-PC> <s5haawivv1r.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 1A5E7103843
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 19:43:59 +0100 (CET)
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id 50EB6103818
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 20:13:12 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 14so4178233qwa.56
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 11:13:10 -0800 (PST)
+In-Reply-To: <s5haawivv1r.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,27 +24,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wed, 13 Jan 2010 17:17:20 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-sometimes it occure that my speakers do not play sound although the
-speakers should play music with VLC. Then i took a look at
-/var/log/messages and found this:
+> At Wed, 13 Jan 2010 11:06:11 -0500,
+> Nickolas wrote:
+> > 
+> > On Wed, 13 Jan 2010 09:14:32 +0100
+> > Takashi Iwai <tiwai@suse.de> wrote:
+> > 
+> > > At Tue, 12 Jan 2010 16:58:32 -0500,
+> > > Nickolas wrote:
+> > > > 
+> > > > this is a quick fix i wrote up a couple days ago to fix speaker
+> > > > output on the Realtek ALC272 codec present in toshiba nb205
+> > > > netbooks.  presently, speaker output doesn't work at all on this
+> > > > model, regardless of settings in the mixer.  this is because the
+> > > > current driver thinks the speaker is at nid 0x0c instead of the
+> > > > correct 0x17.  i'm not too familiar with this hardware, so i'm not
+> > > > sure that this patch won't have any negative effects for other
+> > > > hardware.  it also seems like a messy way of fixing the problem.
+> > > > any comments or suggestions are welcome, as is testing for those who
+> > > > have this board.  diffed against the latest git.
+> > > 
+> > > Thanks for the patch.  The change looks safe to me.
+> > > 
+> > > But I'm still wondering whether model=auto doesn't work for this device.
+> > > Could you try it with the latest driver?
+> > > 
+> > > 
+> > > thanks,
+> > > 
+> > > Takashi
+> > > 
+> > 
+> > hmm, i feel stupid.  so, it works with model=auto, but why is that not implied when the model parameter isn't specified on the command line?
+> 
+> OK, that's good to hear.  IIRC, the quirk was there because it didn't work
+> with model=auto, at least, at that time.
+> 
+> I guess it's time to back to auto option again.  I'll fix now.
+> 
+> Thanks for quick testing!
+> 
+> 
+> Takashi
 
-Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: ALSA woke us up to
-write new data to the device, but there was actually nothing to write!
-Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: Most likely this is
-a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to
-the ALSA developers.
-Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: We were woken up
-with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or
-another value < min_avail.
+no problem.  i'll test all the ports later today when i have time to make sure that they work properly with model=auto, just to be sure.  thanks for the help!
 
-The output of utils_alsa-info.sh is there:
-http://www.alsa-project.org/db/?f=1767e9bc745724a67c908549d20c137375d0605e
-
-I didn't know wether this is a bug or a misconfiguration of my openSUSE 11.2
-
-Konrad
+Nick
