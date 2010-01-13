@@ -1,20 +1,26 @@
-From: Andreas Mohr <andi@lisas.de>
-Subject: Re: [PATCH 0/5] PCM mmap (temporary) fixes for
-	non-coherent	architectures
-Date: Wed, 13 Jan 2010 10:28:25 +0100
-Message-ID: <20100113092825.GA15394@rhlx01.hs-esslingen.de>
-References: <1259248388-20095-1-git-send-email-tiwai@suse.de>
-	<20100101193130.GA21510@rhlx01.hs-esslingen.de>
-	<s5haawj7qlv.wl%tiwai@suse.de>
+From: ANISH KUMAR <anish.singh@samsung.com>
+Subject: ALSA DMIX support without MMAP ?
+Date: Wed, 13 Jan 2010 09:46:36 +0000 (GMT)
+Message-ID: <22118431.247131263375996658.JavaMail.weblogic@epml17>
+Reply-To: anish.singh@samsung.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rhlx01.hs-esslingen.de (rhlx01.hs-esslingen.de [129.143.116.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71FBC1037FE
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 10:28:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5haawj7qlv.wl%tiwai@suse.de>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6114103804
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 10:46:40 +0100 (CET)
+Received: from ep_ms13_bk (mailout4.samsung.com [203.254.224.34])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KW600HI3J5OFS@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 13 Jan 2010 18:46:36 +0900 (KST)
+Received: from ep_spt02 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0KW6003YOJ5OPB@ms13.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 13 Jan 2010 18:46:36 +0900 (KST)
+Content-return: prohibited
+MIME-version: 1.0
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +30,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Becky Bruce <beckyb@kernel.crashing.org>, Wu Zhangjin <wuzhangjin@gmail.com>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Ralf Baechle <ralf@linux-mips.org>, Andreas Mohr <andi@lisas.de>, Kumar Gala <galak@gate.crashing.org>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Tue, Jan 12, 2010 at 08:02:36AM +0100, Takashi Iwai wrote:
-> At Fri, 1 Jan 2010 20:31:30 +0100,
-> Andreas Mohr wrote:
-> > 
-> > Hi,
-> > 
-> > I've tried this patch set (with the typo-corrected part 4) on my ASUS
-> > WL-500gP v2 MIPSEL via a backport to 2.6.31.9, but all I get is a
-> > small blip of the sound I wanted to play, and then the system is fubar
-> > (I believe just the same thing as what happened without having this patch
-> > applied).
+I am working on android and and in our device we use ALSA.
 
-Crap, you already managed to beat me to my own reply! ;)
-(I'll try your patch in the other mail _ASAP_)
+ I  have enabled dmix support for andoid as by default android doesn't have this plugin enabled and soon will post it in android forum however i have run into some problems.Hoping takashi can help me out on this.
 
-> As I mentioned in the previous followup, if your device is a
-> USB-audio, the patch doesn't help because it's for devices with
-> buffers using dma_alloc_coherent().  For USB-audio, it uses vmalloc
-> for an intermediate buffer.  Maybe this should be changed to dma_*()
-> stuff for such architectures.
+Problem is when i am trying to use dmix plugin i am not getting any sound (logs shown below).Is it because i don't have mmap mode support on my device???
 
-I've been searching the mailing list postings up and down,
-but I couldn't deduce anything to that effect from that content
-(but I'm mailing list-externally - maybe I just really didn't find the
-correct posting or there was a threading split)
+If yes then can't dmix work without mmap mode???   Logs shown below:
 
-> Nevertheless, I don't know whether the crash is related with the
-> audio part...
+Entered s3c24xx_pcm_hw_params,
+Entered s3c24xx_pcm_hw_params, line 330
+Entered s3c24xx_pcm_mmap
+Entered s3c24xx_pcm_prepare
+Entered s3c24xx_pcm_enqueue
+Entered s3c24xx_pcm_trigger
+Entered s3c24xx_pcm_pointer
+Entered s3c24xx_pcm_pointer res_value[0]
+snd_pcm_update_hw_ptr_pos xun: [0]occured XRUN!
 
-Yes, I wasn't fully pointing at the crash being caused by insufficient
-patches in that area either...
-(but I haven't fully investigated these OOPSes yet)
+Normal playback and recording is fine if i dont use dmix plugin.During my normal playback and recording i don't use mmap as i preallocate DMA memory  and use them.
 
-Thanks a lot for your new test patch,
-
-Andreas Mohr
+Regards,
+anish
