@@ -1,15 +1,27 @@
-From: "Kunal Narkhede" <kunal.narkhede@gmail.com>
-Subject: Personal invitation from Kunal Narkhede
-Date: Wed, 13 Jan 2010 09:00:32 -0400
-Message-ID: <7plag0$18nsket@ironport-b.unyk.com>
-Reply-To: kunal.narkhede@gmail.com
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH] ALSA: ASoC: support more sample rates on
+	raumfeld devices
+Date: Wed, 13 Jan 2010 09:35:55 -0600
+Message-ID: <4B4DE85B.6020502@freescale.com>
+References: <1263378338-21791-1-git-send-email-daniel@caiaq.de>
+	<20100113130208.GD27473@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mta103.unyk.com (mta103.unyk.com [204.92.8.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id D15911038DE
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 15:00:35 +0100 (CET)
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id E95B4103844
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 16:36:12 +0100 (CET)
+Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
+	o0DFZuXx025762
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 08:36:06 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])
+	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id o0DFf93l001270
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 09:41:10 -0600 (CST)
+In-Reply-To: <20100113130208.GD27473@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,52 +31,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Mark Brown wrote:
+> On Wed, Jan 13, 2010 at 11:25:38AM +0100, Daniel Mack wrote:
+>> Add support for sample rates other than 44100Khz on raumfeld audio
+>> devices. Force the codec's supported sample rates as the table of
+>> supported rates which is calculated at run-time does not suffice: if we
+>> call snd_soc_dai_set_sysclk() at stream startup, half of the possible
+>> rates are missing.
+> 
+> I'm not massively enthusiastic about this - I'd much rather be able to
+> give the CODEC a hook to let it know what MCLK rates it can have and a
+> callback to update them.  It's a perfect case for the clock API but of
+> course we can't use that off-SoC :/
 
+This is how I was planning on doing it for the P1022DS.
 
-    Hi,
-    =
-
-    On 12/24/2009 9:02:23 AM, you were invited to join Kunal Narkhede's UNY=
-K address book so he/she would always have access to your contact info and =
-you to his/hers.
-    =
-
-    To accept his/her request, Click here.
-http://www.unyk.com/ml/65/5/?i=3DC7B72DD0179E4FD7A6DED23A2976A060&s=3D17267=
-503
-
-
-
-    UNYK is a smart and simple way to manage your contacts so you never los=
-e anyone=92s contact information again.
-    =
-
-    No more worrying about your contacts' info. From now on, let them do it=
- for you. By changing their information in UNYK.com, you address book will =
-be automatically updated. By changing your information in UNYK.com, their a=
-ddress book will be automatically updated.
-    =
-
-    It=92s so simple and it=92s free... Already 25 million users.
-
-
-
-Please do not reply to this email. Questions ? Contact us - http://unyk.com=
-/en/Contact
-UNYK Inc., 1010 de Serigny, suite 820, Longueuil, QC, J4K 5G7, Canada.
-
-I no longer wish to receive invitations to join UNYK from Kunal Narkhede: U=
-nsubscribe
-http://www.unyk.com/ml/245/74/?mid=3D9E98A4AA807983A0&email=3Dalsa-devel@al=
-sa-project.org&s=3D17267503
-
-I never again wish to receive invitation to join UNYK: Unsubscribe
-http://www.unyk.com/ml/65/6/?i=3DC7B72DD0179E4FD7A6DED23A2976A060&s=3D17267=
-503
-
-
-
-UNYK, the first smart address book that updates itself!
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
