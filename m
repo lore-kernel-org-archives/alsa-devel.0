@@ -1,20 +1,24 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: Audio suspend/resume status on OMAP3 based
- platforms
-Date: Wed, 13 Jan 2010 08:58:20 +0200
-Message-ID: <20100113085820.6d8564d4.jhnikula@gmail.com>
-References: <5A47E75E594F054BAF48C5E4FC4B92AB031E1D7807@dbde02.ent.ti.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Duplicate wake-ups in pcm_lib.c
+Date: Wed, 13 Jan 2010 14:58:41 +0800
+Message-ID: <4f3252891001122258j5c3bd7c5u7184cad199f5cf40@mail.gmail.com>
+References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>
+	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>
+	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>
+	<alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>
+	<4f3252891001102011l603d30cdlbe2a14163bbc7405@mail.gmail.com>
+	<alpine.LNX.2.00.1001110814310.4210@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id B6E501038D7
-	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 07:57:24 +0100 (CET)
-Received: by ewy23 with SMTP id 23so303267ewy.4
-	for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2010 22:57:24 -0800 (PST)
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB031E1D7807@dbde02.ent.ti.com>
+Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
+	[209.85.222.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CDEBC1038C9
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 07:58:43 +0100 (CET)
+Received: by pzk9 with SMTP id 9so4764904pzk.16
+	for <alsa-devel@alsa-project.org>; Tue, 12 Jan 2010 22:58:42 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1001110814310.4210@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,40 +28,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 Jan 2010 21:35:15 +0530
-"Aggarwal, Anuj" <anuj.aggarwal@ti.com> wrote:
+2010/1/11 Jaroslav Kysela <perex@perex.cz>
 
-> I want to check the status of suspend/resume functionality when audio
-> subsystem is being used. Specifically, has some one tried the following 
-> tests on their omap3 based platforms:
-> 
-> a) echo mem > /sys/power/state, when audio playback is running in 
-> background
-> b) same command, when audio capture is running in 
-> background
-> b) same command, when audio loopback is running in 
-> background
-> 
-> I am facing some issues with (b) & (c) so wanted to confirm whether
-> someone else has faced similar problem or not.
-> 
-Unfortunately the proper OMAP ASoC suspend/resume functionality is still
-missing and the development progress has been slow. There are few
-issues in low-level McBSP code like proper clock management,
-context save/restore, how to deal with the FIFO, etc. and those should
-be addressed first.
+> On Mon, 11 Jan 2010, Raymond Yau wrote:
+>
+>  2010/1/7 Jaroslav Kysela <perex@perex.cz>
+>>
+>>  On Wed, 6 Jan 2010, pl bossart wrote:
+>>>
+>>>
+>>>
+>>> The improved and more clean fix in now in my tree:
+>>>
+>>>
+>>>
+>>> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=1250932e48d3b698415b1f04775433cf1da688d6
+>>>
+>>> Note that you should apply these 4 patches (in reverse order):
+>>>
+>>> 4: ALSA: pcm_lib - optimize wake_up() calls for PCM I/O
+>>> 3: ALSA: pcm_lib - cleanup & merge hw_ptr update functions
+>>> 2: ALSA: pcm_lib - add possibility to log last 10 DMA ring buffer
+>>> positions
+>>> 1: ALSA: pcm_lib.c - convert second xrun_debug() parameter to use defines
+>>>
+>>> Patch #3 should definitely fix problems with large avail or delay values
+>>> reported in PA. I finally figured the culprit (and decide to cleanup all
+>>> relevant code rather do just another workaround). In other words, new
+>>> hw_ptr pointer should never be less than previous one now.
+>>>
+>>>                                               Jaroslav
+>>>
+>>> -
+>>>
+>>>
+>> using alsa-driver-1.0.22.1.1.g231e3.14.g812cb and Fedora 12 inside Virtual
+>> Box
+>>
+>> aplay -D plughw:0,0 /usr/share/sounds/alsa/*.wav
+>>
+>> "Front Left" sound as "Front Front Left" when playing "Front_left.wav"
+>>
+>> only when echo 4 > /proc/asound/card0/pcm0p/xrun_debug
+>>
+>
+> Thanks for testing.
+>
+> It means that with other values is no sound generated?
+>
+> Could you use value 29 for xrun_debug and report all sound related messages
+> from dmesg output after playback of "Front_left.wav"?
+>
+>                                        Jaroslav
+>
+> -----
 
-Fortunately Janusz Krzysztofik has been cleaning up and developing the
-register cache support in McBSP and that work could help the PM work as
-well. Clock management changes don't look complicated but just requires
-that one develops it.
-
-http://mailman.alsa-project.org/pipermail/alsa-devel/2009-November/023119.html
 
 
--- 
-Jarkko
+do you mean 27 instead of 29 since the echo only occur when the value
+contain XRUN_DEBUG_JIFFIESCHECK  bit  ?
+
+aplay -Dplughw:0,0 and mplayer -ao alsa:device=hw=0,0 work normal
+
+except when the value of xrun_debug contain XRUN_DEBUG_JIFFIESCHECK  bit  (
+same result for the three  virtual box audio backend oss, pulseaudio and
+alsa )
