@@ -1,17 +1,17 @@
-From: Cliff Cai <cliffcai.sh@gmail.com>
-Subject: soc-cache problem
-Date: Fri, 15 Jan 2010 15:12:13 +0800
-Message-ID: <da1989291001142312g24d66135n903f87983e733532@mail.gmail.com>
+From: d binderman <dcb314@hotmail.com>
+Subject: Linux kernel 2.6.32.3 bug report
+Date: Thu, 14 Jan 2010 09:04:46 +0000
+Message-ID: <BLU108-W18CA5E21987A7358A506A9C6A0@phx.gbl>
+References: <BLU108-W27682899250D440C060CCE9C6D0@phx.gbl>,
+	<24570AF61BB706468FA3869A991A4321057CB6A8EA@EXCMB1.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
-	[209.85.222.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id AAE0224158
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 08:12:14 +0100 (CET)
-Received: by pzk9 with SMTP id 9so396631pzk.16
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 23:12:13 -0800 (PST)
+Received: from blu0-omc3-s21.blu0.hotmail.com (blu0-omc3-s21.blu0.hotmail.com
+	[65.55.116.96]) by alsa0.perex.cz (Postfix) with ESMTP id 9EC52103859
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 10:04:47 +0100 (CET)
+In-Reply-To: <24570AF61BB706468FA3869A991A4321057CB6A8EA@EXCMB1.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +24,26 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-Nowadays, soc tries to  set up standard I/O functions with same
-addr_bits and data_bits for a codec.
-My problem is some codec might have registers with different data
-length.i.e.ADAU1761,
-Most of its registers are 8 bits long except PLL register,which is a 8
-bytes long one.In order to set/read PLL ,
- a block of data(8 bytes) needs to be transfer to/from the PLL
-register  at a time.
 
-So, if soc-cache needs to consider this kind of case, or just keep it
-in local driver?
+Hello there,
 
-Thanks
+I just ran the sourceforge tool cppcheck over the source
+code of the Linux kernel 2.6.32.3
 
-Cliff
+It said
+
+[./sound/soc/s3c24xx/s3c24xx-pcm.c:128]: (error) Possible null pointer dereference: substream - otherwise it is redundant to check if substream is null at line 130
+
+I checked the source code and I agree with the compiler.
+Suggest code rework.
+
+
+Regards
+
+David Binderman
+
+ 		 	   		  
+_________________________________________________________________
+Do you have a story that started on Hotmail? Tell us now
+http://clk.atdmt.com/UKM/go/195013117/direct/01/
