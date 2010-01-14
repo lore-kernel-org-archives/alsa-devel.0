@@ -1,66 +1,110 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: snd_pcm_avail_update returns 0
-Date: Thu, 14 Jan 2010 16:31:10 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1001141624260.4324@eeebox2.perex-int.cz>
-References: <3baf3d761001140641x41854ecax4012d8342ea22aaf@mail.gmail.com>
-	<alpine.LNX.2.00.1001141604100.4324@eeebox2.perex-int.cz>
-	<3baf3d761001140717j755c13bbg4f682ac6940911a2@mail.gmail.com>
+From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+Subject: Re: [PATCH] alsa: use subsys_initcall for sound core instead of
+ module_init
+Date: Thu, 14 Jan 2010 13:53:43 -0200
+Message-ID: <20100114155342.GA1396@holoscopio.com>
+References: <1263334840-6118-1-git-send-email-cascardo@holoscopio.com>
+ <s5h63765wm0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58358103888
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 16:31:11 +0100 (CET)
-In-Reply-To: <3baf3d761001140717j755c13bbg4f682ac6940911a2@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Singaravelan Nallasellan <singaravelann@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756974Ab0ANPzq@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h63765wm0.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, ibm-acpi@hmh.eng.br, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 14 Jan 2010, Singaravelan Nallasellan wrote:
 
-> Thanks for the response.
->
-> I am using mmap for the playback. What is the return value of
-> snd_pcm_avail_update when the ring buffer is empty?
+--IJpNTDwzlM2Ie8A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-ring buffer size
+On Wed, Jan 13, 2010 at 07:48:07AM +0100, Takashi Iwai wrote:
+> At Tue, 12 Jan 2010 20:20:39 -0200,
+> Thadeu Lima de Souza Cascardo wrote:
+> >=20
+> > This is needed for built-in drivers which are built before the sound di=
+rectory,
+> > like thinkpad_acpi.
+> >=20
+> > Otherwise, registering a card fails.
+>=20
+> Oh well, this kind of problem hits again.
+>=20
+> I don't remember why subsys_init() wasn't taken before...  Maybe some
+> dependency between sound and V4L or so.  But, it's worth to check again.
+>=20
 
-> How does ALSA identify the  empty buffer?
+Any references to this dependency problem, so I can try to help and investi=
+gate
+about it and do some tests?
 
-hw_ptr == appl_ptr
+> I'll apply this after some testing.
+>=20
 
-> We incremented the hardware pointer continuously to large value more
-> than the hw buffer size. ALSA core did not round of the hw_ptr
-> properly. The firmware in the audio engine is now rounding of hw ptr
-> in the audio engine itself. It will always report the hw ptr between 0
-> and hw buffer size.
+Built-in thinkpad-acpi started working for me after these changes. I can't =
+tell
+you about any subsystem that stopped working, like some V4L driver.
 
-hw_ptr and appl_ptr are from range 0..boundary to detect xruns. The driver 
-should not write to these values and should track own pointers.
+>=20
+> thanks,
+>=20
+> Takashi
+>=20
 
-> Moreover our driver uses the batch mode and updates the hardware
-> pointer for every period. Is it the right way to do?
+Regards,
+Cascardo.
 
-I'm not sure about what pointers you're talking. If it's hw_ptr and 
-appl_ptr, then driver shouldn't write to these pointers. The 
-snd_pcm_period_elapsed() function should be called to synchronize hw_ptr 
-when playback of period is finished.
+> >=20
+> > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+> > ---
+> >  sound/core/sound.c |    4 ++--
+> >  sound/sound_core.c |    2 +-
+> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/sound/core/sound.c b/sound/core/sound.c
+> > index 7872a02..563d196 100644
+> > --- a/sound/core/sound.c
+> > +++ b/sound/core/sound.c
+> > @@ -468,5 +468,5 @@ static void __exit alsa_sound_exit(void)
+> >  	unregister_chrdev(major, "alsa");
+> >  }
+> > =20
+> > -module_init(alsa_sound_init)
+> > -module_exit(alsa_sound_exit)
+> > +subsys_initcall(alsa_sound_init);
+> > +module_exit(alsa_sound_exit);
+> > diff --git a/sound/sound_core.c b/sound/sound_core.c
+> > index dbca7c9..7c2d677 100644
+> > --- a/sound/sound_core.c
+> > +++ b/sound/sound_core.c
+> > @@ -61,7 +61,7 @@ static void __exit cleanup_soundcore(void)
+> >  	class_destroy(sound_class);
+> >  }
+> > =20
+> > -module_init(init_soundcore);
+> > +subsys_initcall(init_soundcore);
+> >  module_exit(cleanup_soundcore);
+> > =20
+> > =20
+> > --=20
+> > 1.6.6
+> >=20
 
-Maybe you can put your code to a public place so we can check it.
+--IJpNTDwzlM2Ie8A6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
- 						Jaroslav
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+iEYEARECAAYFAktPPgYACgkQyTpryRcqtS1DCwCeJI57xt9ZXn6Ej9ij4vyi/hmo
+r3sAn0TWiWODiyy6I5H21/c5P1SLMpnQ
+=5cqY
+-----END PGP SIGNATURE-----
+
+--IJpNTDwzlM2Ie8A6--
