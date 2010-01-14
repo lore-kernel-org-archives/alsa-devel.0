@@ -1,79 +1,113 @@
-From: Paul Walmsley <paul@pwsan.com>
-Subject: RE: [PATCH] OMAP: Exporting functions doing common register access
-Date: Wed, 13 Jan 2010 15:30:21 -0700 (MST)
-Message-ID: <alpine.DEB.2.00.1001131525420.4769@utopia.booyaka.com>
-References: <1258384836-24854-1-git-send-email-anuj.aggarwal@ti.com> <alpine.DEB.2.00.0911161408260.29213@utopia.booyaka.com> <5A47E75E594F054BAF48C5E4FC4B92AB030A8C8EC2@dbde02.ent.ti.com> <5A47E75E594F054BAF48C5E4FC4B92AB030A9CA8F7@dbde02.ent.ti.com>
- <alpine.DEB.2.00.0911180324350.25515@utopia.booyaka.com> <20091118163314.d0325283.jhnikula@gmail.com> <alpine.DEB.2.00.0911181220560.9248@utopia.booyaka.com> <5A47E75E594F054BAF48C5E4FC4B92AB031E0A39D8@dbde02.ent.ti.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsa-sink.c: ALSA woke us up to write new data to
+	the device, but there was actually nothing to write!
+Date: Thu, 14 Jan 2010 08:39:15 +0800
+Message-ID: <4f3252891001131639r32839116g725dce03f75846e1@mail.gmail.com>
+References: <4B4E1464.3090801@gmx.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB031E0A39D8@dbde02.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: Jarkko Nikula <jhnikula@gmail.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Lohithakshan, Ranjith" <ranjithl@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pz0-f198.google.com (mail-pz0-f198.google.com
+	[209.85.222.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id C9A89103815
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 01:39:16 +0100 (CET)
+Received: by pzk36 with SMTP id 36so16099982pzk.5
+	for <alsa-devel@alsa-project.org>; Wed, 13 Jan 2010 16:39:15 -0800 (PST)
+In-Reply-To: <4B4E1464.3090801@gmx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Anuj,
+2010/1/14 Konrad Schlichtherle <kconny@gmx.de>
 
-On Thu, 7 Jan 2010, Aggarwal, Anuj wrote:
-
-> > > > In the interim, I would suggest that you remove the the clock source
-> > and
-> > > > receiver source change functions from omap-mcbsp.c, split them into
-> > OMAP1
-> > > > and OMAP2/3 variants, and place them into arch/arm/mach-omap*/mcbsp.c.
-> > > > Expand struct omap_mcbsp_ops to add function pointers to those
-> > functions.
-> > > > Call those from soc/omap-mcbsp.c via mcbsp->pdata->ops. That way you
-> > won't
-> > > > need those exports.
-> > > >
-> > > Paul: What's your opinnion, would it be possible or would it be wise to
-> > > handle these McBSP clock route setups with the clock framework instead?
-> > >
-> > > Functions omap_mcbsp_dai_set_clks_src and omap_mcbsp_dai_set_rcvr_src
-> > > are basically just setting up the input clock for McBSP SRG or McBSP1
-> > > receiver.
-> > 
-> > Sure.  There already should be some support for it in clock34xx.h, but I
-> > doubt anyone's tested it:
-> > 
-> > static struct clk mcbsp1_fck = {
-> >         .name           = "mcbsp_fck",
-> >         .ops            = &clkops_omap2_dflt_wait,
-> >         .id             = 1,
-> >         .init           = &omap2_init_clksel_parent,
-> >         .enable_reg     = OMAP_CM_REGADDR(CORE_MOD, CM_FCLKEN1),
-> >         .enable_bit     = OMAP3430_EN_MCBSP1_SHIFT,
-> >         .clksel_reg     = OMAP343X_CTRL_REGADDR(OMAP2_CONTROL_DEVCONF0),
-> >         .clksel_mask    = OMAP2_MCBSP1_CLKS_MASK,
-> >         .clksel         = mcbsp_15_clksel,
-> >         .clkdm_name     = "core_l4_clkdm",
-> >         .recalc         = &omap2_clksel_recalc,
-> > };
-> > 
-> > etc.  Some similar entries would need to be added to the clock24xx.h file.
-> [Aggarwal, Anuj] One problem which I found in trying the above discussed 
-> approach is that I am not able to get mcbsp clock handles in omap-mcbsp.c 
-> file. 
-
-Why not?  Looks like there are init and exit functions in there.  Those 
-would seem like logical places for clk_get()/clk_put().
-
-> To call clk_set_parent() with the new parent clock as "mcbsp_clks" 
-> (in case of an external clock), I need the mcbsp_fck clock handle. But this
-> handle is not shared with the omap_mcbsp_dai[].
-
-Have you considered static variable(s)?
-
-> What should be the right method of getting this handle in 
-> omap_mcbsp_dai_set_dai_sysclk(), in case I understood the concept properly.
-> Basically, we want to get rid of the low level stuff in this function 
-> and instead use standard clock framework APIs?
-
-Yep, the contents of both the omap_mcbsp_dai_set_clks_src() function and 
-the omap_mcbsp_dai_set_rcvr_src() should be implementable with standard 
-clock framework APIs.
+> Hello,
+>
+> sometimes it occure that my speakers do not play sound although the
+> speakers should play music with VLC. Then i took a look at
+> /var/log/messages and found this:
+>
+> Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: ALSA woke us up to
+> write new data to the device, but there was actually nothing to write!
+> Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: Most likely this is
+> a bug in the ALSA driver 'snd_hda_intel'. Please report this issue to
+> the ALSA developers.
+> Jan 13 17:01:39 riker pulseaudio[3335]: alsa-sink.c: We were woken up
+> with POLLOUT set -- however a subsequent snd_pcm_avail() returned 0 or
+> another value < min_avail.
+>
+> The output of utils_alsa-info.sh is there:
+> http://www.alsa-project.org/db/?f=1767e9bc745724a67c908549d20c137375d0605e
+>
+> I didn't know wether this is a bug or a misconfiguration of my openSUSE
+> 11.2
+>
+> Konrad
+> _
 
 
-- Paul
+you better upgraded to 1.0.22.1 since there are some patches for HDA VIA
+codec
+
+provide a full pulseaudio log using the latest pulseaudio git  and a test
+case which can reproduce the bug
+
+pulseaudio -k; pulseaudio -vvvvv
+
+!!ALSA Version
+!!------------
+
+Driver version:     1.0.20
+Library version:    1.0.22
+Utilities version:  1.0.22
+
+
+Independent HP mode ON seem allow the front panel green jack to be used
+independent of the rear panel green jack (HDA multi streaming )
+
+
+	control.15 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.count 1
+		comment.item.0 OFF
+		comment.item.1 ON
+		iface MIXER
+		name 'Independent HP'
+		value ON
+	}
+
+You have two subdevices on playback device 0 and capture device 0
+
+http://pulseaudio.org/ticket/743
+
+
+!!Aplay/Arecord output
+!!------------
+
+APLAY
+
+**** List of PLAYBACK Hardware Devices ****
+card 0: NVidia [HDA NVidia], device 0: VT1708B Analog [VT1708B Analog]
+  Subdevices: 1/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
+card 0: NVidia [HDA NVidia], device 1: VT1708B Digital [VT1708B Digital]
+  Subdevices: 1/1
+  Subdevice #0: subdevice #0
+
+ARECORD
+
+**** List of CAPTURE Hardware Devices ****
+card 0: NVidia [HDA NVidia], device 0: VT1708B Analog [VT1708B Analog]
+  Subdevices: 2/2
+  Subdevice #0: subdevice #0
+  Subdevice #1: subdevice #1
