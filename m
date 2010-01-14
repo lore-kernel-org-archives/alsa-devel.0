@@ -1,110 +1,58 @@
-From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-Subject: Re: [PATCH] alsa: use subsys_initcall for sound core instead of
- module_init
-Date: Thu, 14 Jan 2010 13:53:43 -0200
-Message-ID: <20100114155342.GA1396@holoscopio.com>
-References: <1263334840-6118-1-git-send-email-cascardo@holoscopio.com>
- <s5h63765wm0.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd-hdsp driver error?
+Date: Fri, 15 Jan 2010 00:02:05 +0800
+Message-ID: <4f3252891001140802y7bb31156q74f87ba13bca82f4@mail.gmail.com>
+References: <933ed0910911020433j59c4907q94ee073e5f09e328@mail.gmail.com>
+	<4f3252890911022248w5d2a2d73s74bb0412e8f4e0c7@mail.gmail.com>
+	<933ed0910911031105m608009cbg2ccd1c543887befa@mail.gmail.com>
+	<4f3252890911042029m18db97d0qc324b37d1c1dd330@mail.gmail.com>
+	<933ed0910911051646u71594153ue23984ae32c70d8e@mail.gmail.com>
+	<4f3252890911051753x650bc617te8086af4fc3a745f@mail.gmail.com>
+	<933ed0910911060823x4f512b32h546167eea73050df@mail.gmail.com>
+	<4f3252890911061512i5f6c439cyd977e5fb67c84693@mail.gmail.com>
+	<s5h4op5qp94.wl%tiwai@suse.de>
+	<933ed0910911081030p1323d375g7fd719358bfa9e9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756974Ab0ANPzq@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h63765wm0.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, ibm-acpi@hmh.eng.br, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
+	[209.85.160.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BBF61038FF
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 17:02:07 +0100 (CET)
+Received: by pwj3 with SMTP id 3so5581223pwj.32
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 08:02:05 -0800 (PST)
+In-Reply-To: <933ed0910911081030p1323d375g7fd719358bfa9e9@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+2009/11/9 Lars Zobbe <fedesensfar@gmail.com>
 
---IJpNTDwzlM2Ie8A6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Thanks a lot Takashi and Raymond.
+>
+> I guess that means the fix from tom-ipp, that Raymond referred to, won't
+> work. So what can I do to help you fix this. Do you want me to try and run
+> something? I would be pleased to help out.
+> When you say "the problem is somewhere else". Do you have an idea about
+> where that could be?
+>
+> Greetings
+> Lars.
+>
+>
+Refer to
 
-On Wed, Jan 13, 2010 at 07:48:07AM +0100, Takashi Iwai wrote:
-> At Tue, 12 Jan 2010 20:20:39 -0200,
-> Thadeu Lima de Souza Cascardo wrote:
-> >=20
-> > This is needed for built-in drivers which are built before the sound di=
-rectory,
-> > like thinkpad_acpi.
-> >=20
-> > Otherwise, registering a card fails.
->=20
-> Oh well, this kind of problem hits again.
->=20
-> I don't remember why subsys_init() wasn't taken before...  Maybe some
-> dependency between sound and V4L or so.  But, it's worth to check again.
->=20
+http://pulseaudio.org/ticket/764#comment:1
 
-Any references to this dependency problem, so I can try to help and investi=
-gate
-about it and do some tests?
 
-> I'll apply this after some testing.
->=20
-
-Built-in thinkpad-acpi started working for me after these changes. I can't =
-tell
-you about any subsystem that stopped working, like some V4L driver.
-
->=20
-> thanks,
->=20
-> Takashi
->=20
-
-Regards,
-Cascardo.
-
-> >=20
-> > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
-> > ---
-> >  sound/core/sound.c |    4 ++--
-> >  sound/sound_core.c |    2 +-
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/sound/core/sound.c b/sound/core/sound.c
-> > index 7872a02..563d196 100644
-> > --- a/sound/core/sound.c
-> > +++ b/sound/core/sound.c
-> > @@ -468,5 +468,5 @@ static void __exit alsa_sound_exit(void)
-> >  	unregister_chrdev(major, "alsa");
-> >  }
-> > =20
-> > -module_init(alsa_sound_init)
-> > -module_exit(alsa_sound_exit)
-> > +subsys_initcall(alsa_sound_init);
-> > +module_exit(alsa_sound_exit);
-> > diff --git a/sound/sound_core.c b/sound/sound_core.c
-> > index dbca7c9..7c2d677 100644
-> > --- a/sound/sound_core.c
-> > +++ b/sound/sound_core.c
-> > @@ -61,7 +61,7 @@ static void __exit cleanup_soundcore(void)
-> >  	class_destroy(sound_class);
-> >  }
-> > =20
-> > -module_init(init_soundcore);
-> > +subsys_initcall(init_soundcore);
-> >  module_exit(cleanup_soundcore);
-> > =20
-> > =20
-> > --=20
-> > 1.6.6
-> >=20
-
---IJpNTDwzlM2Ie8A6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAktPPgYACgkQyTpryRcqtS1DCwCeJI57xt9ZXn6Ej9ij4vyi/hmo
-r3sAn0TWiWODiyy6I5H21/c5P1SLMpnQ
-=5cqY
------END PGP SIGNATURE-----
-
---IJpNTDwzlM2Ie8A6--
+load-module module-alsa-sink device_id=0 tsched=0 load-module
+module-alsa-source device_id=0 tsched=0
