@@ -1,20 +1,18 @@
-From: Singaravelan Nallasellan <singaravelann@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: snd_pcm_avail_update returns 0
-Date: Thu, 14 Jan 2010 20:47:23 +0530
-Message-ID: <3baf3d761001140717j755c13bbg4f682ac6940911a2@mail.gmail.com>
+Date: Thu, 14 Jan 2010 16:31:10 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1001141624260.4324@eeebox2.perex-int.cz>
 References: <3baf3d761001140641x41854ecax4012d8342ea22aaf@mail.gmail.com>
 	<alpine.LNX.2.00.1001141604100.4324@eeebox2.perex-int.cz>
+	<3baf3d761001140717j755c13bbg4f682ac6940911a2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 80B8D103872
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 16:17:24 +0100 (CET)
-Received: by pwj3 with SMTP id 3so5511557pwj.32
-	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 07:17:23 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1001141604100.4324@eeebox2.perex-int.cz>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58358103888
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 16:31:11 +0100 (CET)
+In-Reply-To: <3baf3d761001140717j755c13bbg4f682ac6940911a2@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
+To: Singaravelan Nallasellan <singaravelann@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhhbmtzIGZvciB0aGUgcmVzcG9uc2UuCgpJIGFtIHVzaW5nIG1tYXAgZm9yIHRoZSBwbGF5YmFj
-ay4gV2hhdCBpcyB0aGUgcmV0dXJuIHZhbHVlIG9mCnNuZF9wY21fYXZhaWxfdXBkYXRlIHdoZW4g
-dGhlIHJpbmcgYnVmZmVyIGlzIGVtcHR5PyBIb3cgZG9lcyBBTFNBCmlkZW50aWZ5IHRoZSAgZW1w
-dHkgYnVmZmVyPwoKV2UgaW5jcmVtZW50ZWQgdGhlIGhhcmR3YXJlIHBvaW50ZXIgY29udGludW91
-c2x5IHRvIGxhcmdlIHZhbHVlIG1vcmUKdGhhbiB0aGUgaHcgYnVmZmVyIHNpemUuIEFMU0EgY29y
-ZSBkaWQgbm90IHJvdW5kIG9mIHRoZSBod19wdHIKcHJvcGVybHkuIFRoZSBmaXJtd2FyZSBpbiB0
-aGUgYXVkaW8gZW5naW5lIGlzIG5vdyByb3VuZGluZyBvZiBodyBwdHIKaW4gdGhlIGF1ZGlvIGVu
-Z2luZSBpdHNlbGYuIEl0IHdpbGwgYWx3YXlzIHJlcG9ydCB0aGUgaHcgcHRyIGJldHdlZW4gMAph
-bmQgaHcgYnVmZmVyIHNpemUuCgpNb3Jlb3ZlciBvdXIgZHJpdmVyIHVzZXMgdGhlIGJhdGNoIG1v
-ZGUgYW5kIHVwZGF0ZXMgdGhlIGhhcmR3YXJlCnBvaW50ZXIgZm9yIGV2ZXJ5IHBlcmlvZC4gSXMg
-aXQgdGhlIHJpZ2h0IHdheSB0byBkbz8KClNpbmcKCk9uIFRodSwgSmFuIDE0LCAyMDEwIGF0IDg6
-MzUgUE0sIEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+IHdyb3RlOgo+IE9uIFRodSwg
-MTQgSmFuIDIwMTAsIFNpbmdhcmF2ZWxhbiBOYWxsYXNlbGxhbiB3cm90ZToKPgo+PiBIaSwKPj4K
-Pj4gT3VyIGF1ZGlvIGRyaXZlciB1c2VzIHRoZSBpbmRpcmVjdCBQQ00gZGF0YSB0cmFuc2ZlciBt
-ZWNoYW5pc20gdG8KPj4gdHJhbnNmZXIgdGhlIGJ1ZmZlciBwb2ludGVycyBhbmQgdGhlIHNpemUg
-b2YgdGhlIGJ1ZmZlciB0byB0aGUgQXVkaW8KPj4gZW5naW5lIHdoaWNoIERNQXMgdGhlIFBDTSBk
-YXRhIHRvIHRoZSBzb3VuZCBjYXJkLgo+Pgo+PiBUaGUgZHJpdmVyIHVzZXMgdGhlIC5hY2sgY2Fs
-bGJhY2sgdG8gcmVjZWl2ZSB0aGUgYnVmZmVyIHBvaW50ZXIgYW5kCj4+IHRoZSBzaXplLiBJdCBh
-bHNvIHNlbmRzIGl0IHRvIHRoZSBhdWRpbyBlbmdpbmUuCj4+Cj4+IFdlIGFyZSBmYWNpbmcgYSBw
-cm9ibGVtIHdoZW4gd2UgcGxheSBsb25nIHdhdiBmaWxlIHVzaW5nIG91ciBkcml2ZXIuCj4+Cj4+
-IFRoZSBhcHBsaWNhdGlvbiBoYXMgd3JpdHRlbiB0aGUgUENNIGRhdGEgYW5kIHRoZSByaW5nIGJ1
-ZmZlciBpcyBmdWxsLgo+PiBzbmRfcGNtX2F2YWlsX3VwZGF0ZSByZXR1cm5zIDAgc3BvcmFkaWNh
-bGx5LiBCdXQgdGhlIC5hY2sgY2FsbGJhY2sgd2FzCj4+IG5vdCBjYWxsZWQuIFRoZSBwbGF5YmFj
-ayBpcyBzdHVjay4gSXQgaXMgbm90IHByb2dyZXNzaW5nLgo+Pgo+PiBJIGhhdmUgdHJpZWQgd2l0
-aCBwdWxzZWF1ZGlvICgwLjkuMTUpIGFuZCB3aXRoIG15IG93biBwbGF5ZXIuIEJvdGgKPj4gZ2l2
-ZXMgdGhlIHNhbWUgcmVzdWx0Lgo+Pgo+PiBJIHdvdWxkIGFwcHJlY2lhdGUgaWYgc29tZWJvZHkg
-Y291bGQgcHJvdmlkZSBzb21lIHBvaW50ZXIgdG8gaWRlbnRpZnkKPj4gdGhlIGNhdXNlIG9mIHRo
-aXMgaXNzdWUuIExldCBtZSBrbm93IGlmIGFueWJvZHkgbmVlZHMgbW9yZSBpbmZvLgo+Cj4gTm8g
-aWRlYS4gWW91IG1heSBwdXQgc29tZSBkZWJ1ZyBwcmludGsgbGluZXMgdG8gc25kX3BjbV9saWJf
-d3JpdGUxKCkgcm91dGluZQo+IGlmIGFsbCBjb3JyZXNwb2Rpbmcgd3JpdGUgc2VxdWVuY2VzIGVu
-ZHMgd2l0aCAtPmFjayBjYWxsYmFjayBjYWxsLgo+Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBKYXJvc2xhdgo+Cj4gLS0tLS0KPiBK
-YXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6Pgo+IExpbnV4IEtlcm5lbCBTb3VuZCBNYWlu
-dGFpbmVyCj4gQUxTQSBQcm9qZWN0LCBSZWQgSGF0LCBJbmMuCj4KPgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, 14 Jan 2010, Singaravelan Nallasellan wrote:
+
+> Thanks for the response.
+>
+> I am using mmap for the playback. What is the return value of
+> snd_pcm_avail_update when the ring buffer is empty?
+
+ring buffer size
+
+> How does ALSA identify the  empty buffer?
+
+hw_ptr == appl_ptr
+
+> We incremented the hardware pointer continuously to large value more
+> than the hw buffer size. ALSA core did not round of the hw_ptr
+> properly. The firmware in the audio engine is now rounding of hw ptr
+> in the audio engine itself. It will always report the hw ptr between 0
+> and hw buffer size.
+
+hw_ptr and appl_ptr are from range 0..boundary to detect xruns. The driver 
+should not write to these values and should track own pointers.
+
+> Moreover our driver uses the batch mode and updates the hardware
+> pointer for every period. Is it the right way to do?
+
+I'm not sure about what pointers you're talking. If it's hw_ptr and 
+appl_ptr, then driver shouldn't write to these pointers. The 
+snd_pcm_period_elapsed() function should be called to synchronize hw_ptr 
+when playback of period is finished.
+
+Maybe you can put your code to a public place so we can check it.
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
