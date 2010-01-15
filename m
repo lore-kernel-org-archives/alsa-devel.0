@@ -1,19 +1,21 @@
-From: Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com>
-Subject: [PATCH v3] ALSA: Fix mute led GPIO on HP dv-series
-	notebooks.
-Date: Fri, 15 Jan 2010 21:01:47 +0530
-Message-ID: <1263569507-668-1-git-send-email-kunal.gangakhedkar@gmail.com>
-References: <s5hmy0fld0l.wl%tiwai@suse.de>
+From: Lee Trager <lee.trager@hp.com>
+Subject: [PATCH]  Fix automute issue on HP T5735
+Date: Fri, 15 Jan 2010 11:56:19 -0500
+Message-ID: <1263574579.2368.88.camel@ltrager-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 820051037F7
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 16:32:17 +0100 (CET)
-Received: by gv-out-0910.google.com with SMTP id n29so53493gve.24
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 07:32:15 -0800 (PST)
-In-Reply-To: <s5hmy0fld0l.wl%tiwai@suse.de>
+Received: from g4t0017.houston.hp.com (g4t0017.houston.hp.com [15.201.24.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07B3F1037F3
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 19:32:55 +0100 (CET)
+Received: from g4t0018.houston.hp.com (g4t0018.houston.hp.com [16.234.32.27])
+	by g4t0017.houston.hp.com (Postfix) with ESMTP id 637423869E
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 18:32:54 +0000 (UTC)
+Received: from [16.120.182.143] (ltrager-laptop.americas.hpqcorp.net
+	[16.120.182.143])
+	by g4t0018.houston.hp.com (Postfix) with ESMTP id 2F4901005C
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 18:32:54 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,126 +25,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Devel List <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Goldwyn Rodrigues <goldwynr@gmail.com>, Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On my laptop (HP dv6-1110ax), there are no OEM strings in SMBIOS of type
-"HP_Mute_LED*". Hence, the GPIO for the mute button LED doesn't get set
-properly. I didn't find the strings in my cousin's laptop (HP dv9500t CTO)
-either.
+The following patch fixes an issue where when you plug something into
+the headphone jack the internal speaker does not automute. This also
+will close alsa bug #0004766
 
-As per the documentation of find_mute_led_gpio(), these strings occur
-in HP B-series systems - so, before scanning the SMBIOS strings, we need to
-check if we're dealing with a B-series system.
-Need to get confirmation from HP if this logic takes care of all the
-systems. I'm trying to poke a friend there.
+Lee
 
-Please let me know if this looks OK or needs change.
-
-Signed-off-by: Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com>
----
- sound/pci/hda/patch_sigmatel.c |   61 +++++++++++++++++++++++++++++----------
- 1 files changed, 45 insertions(+), 16 deletions(-)
-
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 117919a..7d3e66a 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -4737,6 +4737,26 @@ static void stac92xx_unsol_event(struct hda_codec *codec, unsigned int res)
- 	}
+--- alsa-driver-orig/alsa-kernel/pci/hda/patch_realtek.c	2009-08-28
+07:41:39.000000000 -0400
++++ alsa-driver/alsa-kernel/pci/hda/patch_realtek.c	2009-10-13
+14:24:40.000000000 -0400
+@@ -10028,7 +10028,9 @@
+ 	struct alc_spec *spec = codec->spec;
+ 
+ 	spec->autocfg.hp_pins[0] = 0x15;
+-	spec->autocfg.speaker_pins[0] = 0x0c; /* HACK: not actually a pin */
++	spec->autocfg.speaker_pins[0] = 0x14;
++
++	alc_automute_amp(codec);
  }
  
-+static int hp_blike_system(u32 subsystem_id);
-+
-+static void set_hp_led_gpio(struct hda_codec *codec)
-+{
-+	struct sigmatel_spec *spec = codec->spec;
-+	switch (codec->vendor_id) {
-+	case 0x111d7608:
-+		/* GPIO 0 */
-+		spec->gpio_led = 0x01;
-+		break;
-+	case 0x111d7600:
-+	case 0x111d7601:
-+	case 0x111d7602:
-+	case 0x111d7603:
-+		/* GPIO 3 */
-+		spec->gpio_led = 0x08;
-+		break;
-+	}
-+}
-+
- /*
-  * This method searches for the mute LED GPIO configuration
-  * provided as OEM string in SMBIOS. The format of that string
-@@ -4748,6 +4768,14 @@ static void stac92xx_unsol_event(struct hda_codec *codec, unsigned int res)
-  *
-  * So, HP B-series like systems may have HP_Mute_LED_0 (current models)
-  * or  HP_Mute_LED_0_3 (future models) OEM SMBIOS strings
-+ *
-+ *
-+ * The dv-series laptops don't seem to have the HP_Mute_LED* strings in
-+ * SMBIOS - at least the ones I have seen do not have them - which include
-+ * my own system (HP Pavilion dv6-1110ax) and my cousin's
-+ * HP Pavilion dv9500t CTO.
-+ * Need more information on whether it is true across the entire series.
-+ * -- kunal
-  */
- static int find_mute_led_gpio(struct hda_codec *codec)
- {
-@@ -4758,28 +4786,27 @@ static int find_mute_led_gpio(struct hda_codec *codec)
- 		while ((dev = dmi_find_device(DMI_DEV_TYPE_OEM_STRING,
- 								NULL, dev))) {
- 			if (sscanf(dev->name, "HP_Mute_LED_%d_%d",
--			      &spec->gpio_led_polarity,
--			      &spec->gpio_led) == 2) {
-+				  &spec->gpio_led_polarity,
-+				  &spec->gpio_led) == 2) {
- 				spec->gpio_led = 1 << spec->gpio_led;
- 				return 1;
- 			}
- 			if (sscanf(dev->name, "HP_Mute_LED_%d",
--			      &spec->gpio_led_polarity) == 1) {
--				switch (codec->vendor_id) {
--				case 0x111d7608:
--					/* GPIO 0 */
--					spec->gpio_led = 0x01;
--					return 1;
--				case 0x111d7600:
--				case 0x111d7601:
--				case 0x111d7602:
--				case 0x111d7603:
--					/* GPIO 3 */
--					spec->gpio_led = 0x08;
--					return 1;
--				}
-+				  &spec->gpio_led_polarity) == 1) {
-+				set_hp_led_gpio(codec);
-+				return 1;
- 			}
- 		}
-+
-+		/*
-+		 * Fallback case - if we don't find the DMI strings,
-+		 * we statically set the GPIO - if not a B-series system.
-+		 */
-+		if (!hp_blike_system(codec->subsystem_id)) {
-+			set_hp_led_gpio(codec);
-+			spec->gpio_led_polarity = 1;
-+			return 1;
-+		}
- 	}
- 	return 0;
- }
-@@ -5603,6 +5630,8 @@ again:
- 	spec->num_dmuxes = ARRAY_SIZE(stac92hd71bxx_dmux_nids);
- 	spec->num_smuxes = stac92hd71bxx_connected_smuxes(codec, 0x1e);
- 
-+	snd_printd("Found board config: %d\n", spec->board_config);
-+
- 	switch (spec->board_config) {
- 	case STAC_HP_M4:
- 		/* enable internal microphone */
--- 
-1.6.6.60.gc2ff1
+ static struct snd_kcontrol_new alc262_hp_t5735_mixer[] = {
