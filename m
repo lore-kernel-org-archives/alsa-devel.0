@@ -1,20 +1,22 @@
 From: Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com>
-Subject: [PATCH v2] ALSA: Fix mute led GPIO on HP dv-series
+Subject: Re: [PATCH v2] ALSA: Fix mute led GPIO on HP dv-series
 	notebooks.
-Date: Fri, 15 Jan 2010 18:35:19 +0530
-Message-ID: <1263560719-4702-1-git-send-email-kunal.gangakhedkar@gmail.com>
+Date: Fri, 15 Jan 2010 19:02:17 +0530
+Message-ID: <201001151902.17260.kunal.gangakhedkar@gmail.com>
 References: <s5hockvlryh.wl%tiwai@suse.de>
+	<1263560719-4702-1-git-send-email-kunal.gangakhedkar@gmail.com>
+	<s5hmy0fld0l.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f195.google.com (mail-yw0-f195.google.com
-	[209.85.211.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id EED0124445
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 14:10:24 +0100 (CET)
-Received: by ywh33 with SMTP id 33so437631ywh.23
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 05:10:23 -0800 (PST)
-In-Reply-To: <s5hockvlryh.wl%tiwai@suse.de>
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5780324469
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 14:32:26 +0100 (CET)
+Received: by yxe34 with SMTP id 34so376122yxe.16
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 05:32:25 -0800 (PST)
+In-Reply-To: <s5hmy0fld0l.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,151 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Devel List <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Goldwyn Rodrigues <goldwynr@gmail.com>, Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Devel List <alsa-devel@alsa-project.org>, Goldwyn Rodrigues <goldwynr@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On my laptop (HP dv6-1110ax), there are no OEM strings in SMBIOS of type
-"HP_Mute_LED*". Hence, the GPIO for the mute button LED doesn't get set
-properly. I didn't find the strings in my cousin's laptop (HP dv9500t CTO)
-either.
+On Friday 15 Jan 2010 6:51:30 pm Takashi Iwai wrote:
+> At Fri, 15 Jan 2010 18:35:19 +0530,
+> Kunal Gangakhedkar wrote:
+> > 
+> > On my laptop (HP dv6-1110ax), there are no OEM strings in SMBIOS of type
+> > "HP_Mute_LED*". Hence, the GPIO for the mute button LED doesn't get set
+> > properly. I didn't find the strings in my cousin's laptop (HP dv9500t CTO)
+> > either.
+> > 
+> > As per the documentation of find_mute_led_gpio(), these strings occur
+> > in HP B-series systems - so, before scanning the SMBIOS strings, we need to
+> > check if we're dealing with a B-series system.
+> > Need to get confirmation from HP if this logic takes care of all the
+> > systems. I'm trying to poke a friend there.
+> > 
+> > Please let me know if this looks OK or needs changes.
+> 
+> Well, the open switch() for blike-system should be replaced with
+> set_hp_led_gpio().  That's the very purpose I proposed to create a
+> function.
+> 
 
-As per the documentation of find_mute_led_gpio(), these strings occur
-in HP B-series systems - so, before scanning the SMBIOS strings, we need to
-check if we're dealing with a B-series system.
-Need to get confirmation from HP if this logic takes care of all the
-systems. I'm trying to poke a friend there.
+I don't think you can do that since both cases (b-like and non-b-like) have
+different ways of setting the gpio. 
 
-Please let me know if this looks OK or needs changes.
+> Thinking the logic again, however, it might be safer to check DMI
+> entries no matter which model is.  Then set statically if it's DV
+> series (i.e. !hp_blike_system()) as fallback.  I suppose HP will
+> implement the DMI entry for their new BIOS on other models in future,
+> too, so the chance is high that the right setup is detected through
+> DMI check instead of blindly fixed setup.
+> 
 
-Signed-off-by: Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com>
----
- sound/pci/hda/patch_sigmatel.c |   88 +++++++++++++++++++++++++++++++---------
- 1 files changed, 68 insertions(+), 20 deletions(-)
+They're notorious to discontinue models really fast. For example, my laptop model
+is already discontinued in less than 6 months. So, I don't think I'll be getting updates
+for my BIOS at all. What do you propose for such cases?
 
-diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
-index 117919a..85abf14 100644
---- a/sound/pci/hda/patch_sigmatel.c
-+++ b/sound/pci/hda/patch_sigmatel.c
-@@ -4737,6 +4737,26 @@ static void stac92xx_unsol_event(struct hda_codec *codec, unsigned int res)
- 	}
- }
- 
-+static int hp_blike_system(u32 subsystem_id);
-+
-+static void set_hp_led_gpio(struct hda_codec *codec)
-+{
-+	struct sigmatel_spec *spec = codec->spec;
-+	switch (codec->vendor_id) {
-+	case 0x111d7608:
-+		/* GPIO 0 */
-+		spec->gpio_led = 0x01;
-+		break;
-+	case 0x111d7600:
-+	case 0x111d7601:
-+	case 0x111d7602:
-+	case 0x111d7603:
-+		/* GPIO 3 */
-+		spec->gpio_led = 0x08;
-+		break;
-+	}
-+}
-+
- /*
-  * This method searches for the mute LED GPIO configuration
-  * provided as OEM string in SMBIOS. The format of that string
-@@ -4748,6 +4768,19 @@ static void stac92xx_unsol_event(struct hda_codec *codec, unsigned int res)
-  *
-  * So, HP B-series like systems may have HP_Mute_LED_0 (current models)
-  * or  HP_Mute_LED_0_3 (future models) OEM SMBIOS strings
-+ *
-+ *
-+ * The dv-series laptops don't seem to have the HP_Mute_LED* strings in
-+ * SMBIOS - at least the ones I have seen do not have them - which include
-+ * my own system (HP Pavilion dv6-1110ax) and my cousin's
-+ * HP Pavilion dv9500t CTO.
-+ * Need more information on whether it is true across the entire series.
-+ *
-+ * The "else" could be converted into a conditional check for dv-series -
-+ * say, hp_dv_series_system() - just like hp_blike_system(); however,
-+ * I don't have all the PCI ids to identify the dv-series machines - maybe,
-+ * we can add that later.
-+ * -- kunal
-  */
- static int find_mute_led_gpio(struct hda_codec *codec)
- {
-@@ -4755,30 +4788,43 @@ static int find_mute_led_gpio(struct hda_codec *codec)
- 	const struct dmi_device *dev = NULL;
- 
- 	if ((codec->subsystem_id >> 16) == PCI_VENDOR_ID_HP) {
--		while ((dev = dmi_find_device(DMI_DEV_TYPE_OEM_STRING,
-+		if (hp_blike_system(codec->subsystem_id)) {
-+			while ((dev = dmi_find_device(DMI_DEV_TYPE_OEM_STRING,
- 								NULL, dev))) {
--			if (sscanf(dev->name, "HP_Mute_LED_%d_%d",
--			      &spec->gpio_led_polarity,
--			      &spec->gpio_led) == 2) {
--				spec->gpio_led = 1 << spec->gpio_led;
--				return 1;
--			}
--			if (sscanf(dev->name, "HP_Mute_LED_%d",
--			      &spec->gpio_led_polarity) == 1) {
--				switch (codec->vendor_id) {
--				case 0x111d7608:
--					/* GPIO 0 */
--					spec->gpio_led = 0x01;
--					return 1;
--				case 0x111d7600:
--				case 0x111d7601:
--				case 0x111d7602:
--				case 0x111d7603:
--					/* GPIO 3 */
--					spec->gpio_led = 0x08;
-+				if (sscanf(dev->name, "HP_Mute_LED_%d_%d",
-+					  &spec->gpio_led_polarity,
-+					  &spec->gpio_led) == 2) {
-+					spec->gpio_led = 1 << spec->gpio_led;
- 					return 1;
- 				}
-+				if (sscanf(dev->name, "HP_Mute_LED_%d",
-+					  &spec->gpio_led_polarity) == 1) {
-+					switch (codec->vendor_id) {
-+					case 0x111d7608:
-+						/* GPIO 0 */
-+						spec->gpio_led = 0x01;
-+						return 1;
-+					case 0x111d7600:
-+					case 0x111d7601:
-+					case 0x111d7602:
-+					case 0x111d7603:
-+						/* GPIO 3 */
-+						spec->gpio_led = 0x08;
-+						return 1;
-+					}
-+				}
- 			}
-+		} else {
-+			/*
-+			 * Pavilion dv series notebooks do not seem to have
-+			 * HP_Mute_LED* in SMBIOS.
-+			 * If HP decides to add it in dv series,
-+			 * we'll need to fix this part
-+			 * - or merge it with the B-like check above.
-+			 */
-+			set_hp_led_gpio(codec);
-+			spec->gpio_led_polarity = 1;
-+			return 1;
- 		}
- 	}
- 	return 0;
-@@ -5603,6 +5649,8 @@ again:
- 	spec->num_dmuxes = ARRAY_SIZE(stac92hd71bxx_dmux_nids);
- 	spec->num_smuxes = stac92hd71bxx_connected_smuxes(codec, 0x1e);
- 
-+	snd_printd("Found board config: %d\n", spec->board_config);
-+
- 	switch (spec->board_config) {
- 	case STAC_HP_M4:
- 		/* enable internal microphone */
--- 
-1.6.6.60.gc2ff1
+I agree with your approach that we should be checking for DMI string unconditionally and 
+use the fixed setup as fallback - I can send the patch with those fixes too.
+Let me know if that's what you'd prefer.
+
+Thanks,
+Kunal
+
+> 
+> thanks,
+> 
+> Takashi
+> 
+> > 
