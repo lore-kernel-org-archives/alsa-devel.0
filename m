@@ -1,20 +1,17 @@
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Subject: Re: [PATCH 0/5] PCM mmap (temporary) fixes for
- non-coherent architectures
-Date: Fri, 15 Jan 2010 17:50:49 +1100
-Message-ID: <1263538249.724.405.camel@pasglop>
-References: <1259248388-20095-1-git-send-email-tiwai@suse.de>
-	<20100101193130.GA21510@rhlx01.hs-esslingen.de>
-	<s5haawj7qlv.wl%tiwai@suse.de> <s5hljg24bl7.wl%tiwai@suse.de>
-	<1263526082.724.395.camel@pasglop>  <s5hvdf3lvfi.wl%tiwai@suse.de>
+From: Cliff Cai <cliffcai.sh@gmail.com>
+Subject: soc-cache problem
+Date: Fri, 15 Jan 2010 15:12:13 +0800
+Message-ID: <da1989291001142312g24d66135n903f87983e733532@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id DCDFC10380E
-	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 07:51:01 +0100 (CET)
-In-Reply-To: <s5hvdf3lvfi.wl%tiwai@suse.de>
+Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
+	[209.85.222.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id AAE0224158
+	for <alsa-devel@alsa-project.org>; Fri, 15 Jan 2010 08:12:14 +0100 (CET)
+Received: by pzk9 with SMTP id 9so396631pzk.16
+	for <alsa-devel@alsa-project.org>; Thu, 14 Jan 2010 23:12:13 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Becky Bruce <beckyb@kernel.crashing.org>, Wu Zhangjin <wuzhangjin@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Andreas Mohr <andi@lisas.de>, Kumar Gala <galak@gate.crashing.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-01-15 at 07:43 +0100, Takashi Iwai wrote:
-> 
-> > It -might- be worth looking at adding code to the USB stack to
-> propagate
-> > the parent device dma_ops down to USB devices... hard to tell.
-> 
-> Or we may simply need to drop the mmap support on such
-> architectures...
+Hi all,
 
-Nah, that would suck since that includes x86 nowadays :-)
+Nowadays, soc tries to  set up standard I/O functions with same
+addr_bits and data_bits for a codec.
+My problem is some codec might have registers with different data
+length.i.e.ADAU1761,
+Most of its registers are 8 bits long except PLL register,which is a 8
+bytes long one.In order to set/read PLL ,
+ a block of data(8 bytes) needs to be transfer to/from the PLL
+register  at a time.
 
-I think you probably need to separate the struct device * used for DMA
-(it could be default be the same as the "main" struct device tho or it
-could default to NULL which means no mmap support).
+So, if soc-cache needs to consider this kind of case, or just keep it
+in local driver?
 
-USB could (if not already) provide an accessor to obtain the HC's struct
-device for such mappings. We'll have to discuss that with Alan Stern I
-suppose.
+Thanks
 
-The USB Audio or similar drivers could then use that accessors to fill
-up Alsa's dma_device field to replace the "default".
-
-Cheers,
-Ben.
+Cliff
