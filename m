@@ -1,15 +1,22 @@
-From: Mark Brown <broonie@sirena.org.uk>
-Subject: ASoC updates for 2.6.34
-Date: Sun, 17 Jan 2010 17:24:02 +0000
-Message-ID: <20100117172358.GA21861@sirena.org.uk>
+From: gnutoo <GNUtoo@no-log.org>
+Subject: Re: [PATCH] Sound: MSM soc : imported alsa for the MSM
+ from codeaurora
+Date: Sun, 17 Jan 2010 22:18:07 +0100
+Message-ID: <1263763087.3726.9.camel@gnutoo-desktop>
+References: <1257435101.25623.1.camel@localhost>
+	<1257720370-23012-1-git-send-email-GNUtoo@no-log.org>
+	<20091113145050.GC30966@sirena.org.uk>
+	<1258315600.3690.4.camel@gnutoo-desktop>
+	<20091116112521.GB24114@rakim.wolfsonmicro.main>
+	<1263318539.3736.49.camel@gnutoo-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B2F11037EE
-	for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2010 18:24:19 +0100 (CET)
-Content-Disposition: inline
+Received: from smtp-out112.alice.it (smtp-out112.alice.it [85.37.17.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id F1C9D103803
+	for <alsa-devel@alsa-project.org>; Sun, 17 Jan 2010 22:18:46 +0100 (CET)
+In-Reply-To: <1263318539.3736.49.camel@gnutoo-desktop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,68 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, pavel@ucw.cz
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 735fe4cfbc3cedea41bd0ed31955054dae6beb46:
-  Mark Brown (1):
-        ASoC: Add missing __devexit and __devinit annotations
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
-
-Daniel Mack (3):
-      ASoC: ak4104: allow more sample rates
-      ASoC: cs4270: allow passing freq=0 in set_dai_sysclk()
-      ASoC: support more sample rates on raumfeld devices
-
-Mark Brown (6):
-      ASoC: Fix i.MX audio build for i.MX3x
-      ASoC: Convert new i.MX SSI driver to use static DAI array
-      ASoC: i.MX SSI driver does not yet support master mode
-      ASoC: Remove old i.MX driver code
-      ASoC: Mark new i.MX drivers as BROKEN until arch/arm merged
-      Merge branch 'mxc-audio' into for-2.6.34
-
-Peter Ujfalusi (1):
-      ASoC: TWL4030: Replace comma with semicolon in probe function
-
-Sascha Hauer (1):
-      ASoC: Add a new imx-ssi sound driver
-
-Thomas Weber (1):
-      ASoC: TWL4030: Fix typo in comment in header file
-
- arch/arm/plat-mxc/Makefile       |    4 +
- arch/arm/plat-mxc/ssi-fiq-ksym.c |   20 +
- arch/arm/plat-mxc/ssi-fiq.S      |  134 ++++++
- sound/soc/codecs/ak4104.c        |    4 +-
- sound/soc/codecs/cs4270.c        |   38 ++-
- sound/soc/codecs/twl4030.c       |    2 +-
- sound/soc/codecs/twl4030.h       |    2 +-
- sound/soc/imx/Kconfig            |   20 +-
- sound/soc/imx/Makefile           |   12 +-
- sound/soc/imx/imx-pcm-dma-mx2.c  |  313 ++++++++++++++
- sound/soc/imx/imx-pcm-fiq.c      |  277 ++++++++++++
- sound/soc/imx/imx-ssi.c          |  758 +++++++++++++++++++++++++++++++++
- sound/soc/imx/imx-ssi.h          |  237 +++++++++++
- sound/soc/imx/mx1_mx2-pcm.c      |  488 ---------------------
- sound/soc/imx/mx1_mx2-pcm.h      |   26 --
- sound/soc/imx/mx27vis_wm8974.c   |  318 --------------
- sound/soc/imx/mxc-ssi.c          |  860 --------------------------------------
- sound/soc/imx/mxc-ssi.h          |  238 -----------
- sound/soc/pxa/raumfeld.c         |   61 ++-
- 19 files changed, 1823 insertions(+), 1989 deletions(-)
- create mode 100644 arch/arm/plat-mxc/ssi-fiq-ksym.c
- create mode 100644 arch/arm/plat-mxc/ssi-fiq.S
- create mode 100644 sound/soc/imx/imx-pcm-dma-mx2.c
- create mode 100644 sound/soc/imx/imx-pcm-fiq.c
- create mode 100644 sound/soc/imx/imx-ssi.c
- create mode 100644 sound/soc/imx/imx-ssi.h
- delete mode 100644 sound/soc/imx/mx1_mx2-pcm.c
- delete mode 100644 sound/soc/imx/mx1_mx2-pcm.h
- delete mode 100644 sound/soc/imx/mx27vis_wm8974.c
- delete mode 100644 sound/soc/imx/mxc-ssi.c
- delete mode 100644 sound/soc/imx/mxc-ssi.h
+U29tZW9uZSBuYW1lZCBUaGluZ29sIGluICNhbHNhIGhlbHBlZCBtZSBhbmQgdG9sZCBtZSBob3cg
+dG8gZml4IGl0OgoKPFRoaW5nb2w+IGlmIHNvLCB0aGVuIG1heWJlIGl0IHdvdWxkIGhlbHAgdG8g
+bW92ZSB0aGUgY2FsbCB0bwphbHNhX2F1ZGlvX2NvbmZpZ3VyZSAocHJvYmFibHkgYmVmb3JlIHRo
+ZSBlbmQgb2YgdGhhdCB3aGlsZSBsb29wKSwgYnV0CnlvdSBoYXZlIHRvIG1ha2Ugc3VyZSBpdCBv
+bmx5IGdldHMgY2FsbGVkIG9uY2UuCgpJIGRpZCB0aGF0IGFuZCBpdCB1bmJsb2NrZWQgbXBsYXll
+ci4uLgpBdWRpbyBub3cgd29ya3MgbmVhcmx5IGZsYXdsZXNzbHkoeW91IGNhbiBzdGlsbCBoZWFy
+IHNvbWUgY3JhY2tzIGJ1dAp0aGF0J3MgbmVhcmx5IG5vdCBub3RpY2VhYmxlKQoKV2UgYWxzbyBu
+ZWVkIHRvIGxvb2sgaW4gdGhlIHNpbGVuY2UgY2FsbGJhY2sgYmVjYXVzZSBmb3IgZml4aW5nCnNv
+bWV0aGluZywgRGF2aWQgTGFuemVuZMO2cmZlcih3aG8gZml4ZWQgdGhlIG9zcyBlbXVsYXRpb25z
+IHByb2JsZW1zKQppZmRlZmVkIHRoZSB3aG9sZSBjb250ZW50IG9mIHNuZF9wY21fZm9ybWF0X3Nl
+dF9zaWxlbmNlLgoobWF5YmUgdGhhdCdzIHdoeSB0aGVyZSBhcmUgc29tZSBjcmFja3MgaW4gdGhl
+IGF1ZGlvLi4uKQoKRGVuaXMuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
