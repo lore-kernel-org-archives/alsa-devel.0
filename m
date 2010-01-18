@@ -1,169 +1,221 @@
-From: John Kacur <jkacur@redhat.com>
-Subject: Re: WARNING: at sound/core/sound_oss.c:96 snd_oss_kernel_minor+0xdf/0x120
- 	[snd]()
-Date: Mon, 18 Jan 2010 15:48:29 +0100 (CET)
-Message-ID: <alpine.LFD.2.00.1001181543070.3781@localhost.localdomain>
-References: <520f0cf11001060853i5c296744rf94c947cb7798774@mail.gmail.com> <s5hzl4j66pr.wl%tiwai@suse.de> <520f0cf11001180015ub28da4fp4c8c38d3c02c78d5@mail.gmail.com> <s5h1vhnps86.wl%tiwai@suse.de> <520f0cf11001180336k76fddf9u47c5ab316c7e42e5@mail.gmail.com>
- <s5hvdezo8y4.wl%tiwai@suse.de>
+From: "Andrew Kohlsmith (Mailing List Account)" <aklists@mixdown.ca>
+Subject: issue with sound stopping and not being able to restart
+Date: Mon, 18 Jan 2010 10:04:52 -0500
+Message-ID: <201001181004.55594.aklists@mixdown.ca>
+Reply-To: akohlsmith-lists@mixdown.ca
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-1323940160-1263826113=:3781"
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753384Ab0AROsn@vger.kernel.org>
-In-Reply-To: <s5hvdezo8y4.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gromit.mixdown.ca (gromit.mixdown.ca [208.68.91.47])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9C546103821
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2010 16:05:01 +0100 (CET)
+Received: from aklaptop.localnet (localhost.localdomain [127.0.0.1])
+	by gromit.mixdown.ca (Postfix) with ESMTP id 149FEE130017
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2010 10:03:25 -0500 (EST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Good morning,
 
---8323328-1323940160-1263826113=:3781
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+I am new to ALSA development, but experienced in C. I wrote up a little test 
+application which simply opens one playback and one capture device and spits 
+noise into the playback and recording it on the capture device.  I cross-
+correlate the data streams to determine the "depth" or latency of the pipe, 
+end-to-end.
 
+I'm using playback and capture callbacks to handle the audio.
 
+The program seems to work reasonably well, but at seemingly random times 
+either the playback or capture stream will "hiccup" (xrun) -- I am handling 
+this case, but it's fairly often that the stream does NOT resume and I'm stuck 
+with either no playback or no capture.
 
-On Mon, 18 Jan 2010, Takashi Iwai wrote:
+I've looked at the example programs and the documentation and I do not see 
+what it is I'm doing wrong.  I'm posting my code here, hopefully someone can 
+show me the error of my way.
 
-> At Mon, 18 Jan 2010 12:36:38 +0100,
-> John Kacur wrote:
-> > 
-> > On Mon, Jan 18, 2010 at 12:28 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> > > At Mon, 18 Jan 2010 09:15:23 +0100,
-> > > John Kacur wrote:
-> > >>
-> > >> On Tue, Jan 12, 2010 at 9:57 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> > >> > At Wed, 6 Jan 2010 17:53:24 +0100,
-> > >> > John Kacur wrote:
-> > >> >>
-> > >> >> The following was in my 2.6.33-rc3 dmesg (of course that doesn't mean
-> > >> >> that the problem didn't exist earlier too)
-> > >> >>
-> > >> >> WARNING: at /home/jkacur/rt.linux.git/sound/core/sound_oss.c:96
-> > >> >> snd_oss_kernel_minor+0xdf/0x120 [snd]()
-> > >> >> Hardware name: 2241B48
-> > >> >> BUG? (minor < 0 || minor >= 128)
-> > >> >> Modules linked in: snd_mixer_oss thinkpad_acpi(+) sdhci hwmon i2c_i801
-> > >> >> firewire_ohci snd_pcm mmc_core snd_timer cfg80211 firewire_core btusb
-> > >> >> joydev iTCO_wdt bluetooth ata_generic e1000e i2c_core ppdev snd
-> > >> >> battery ac iTCO_vendor_support parport_pc ricoh_mmc intel_agp
-> > >> >> pata_acpi pcspkr parport tpm_tis video wmi output soundcore button tpm
-> > >> >> rfkill sr_mod tpm_bios snd_page_alloc crc_itu_t cdrom sg ahci libata
-> > >> >> sd_mod scsi_mod crc_t10dif xfs exportfs uhci_hcd ohci_hcd ehci_hcd
-> > >> >> [last unloaded: scsi_wait_scan]
-> > >> >> Pid: 1317, comm: modprobe Not tainted 2.6.33-rc3 #1
-> > >> >> Call Trace:
-> > >> >>  [<ffffffffa027bb25>] ? snd_oss_kernel_minor+0xdf/0x120 [snd]
-> > >> >>  [<ffffffff8104338c>] warn_slowpath_common+0x7c/0xa9
-> > >> >>  [<ffffffff81043410>] warn_slowpath_fmt+0x41/0x43
-> > >> >>  [<ffffffffa027bb25>] snd_oss_kernel_minor+0xdf/0x120 [snd]
-> > >> >>  [<ffffffffa027bc7e>] snd_register_oss_device+0x2c/0x21a [snd]
-> > >> >>  [<ffffffffa0271e1e>] snd_mixer_oss_notify_handler+0xa5/0x2e5 [snd_mixer_oss]
-> > >> >>  [<ffffffff81375e00>] ? __mutex_unlock_slowpath+0x5c/0x141
-> > >> >>  [<ffffffff810710d5>] ? trace_hardirqs_on_caller+0x11f/0x14a
-> > >> >>  [<ffffffff8107110d>] ? trace_hardirqs_on+0xd/0xf
-> > >> >> sdhci-pci 0000:15:00.2: SDHCI controller found [1180:0822] (rev 21)
-> > >> >> sdhci-pci 0000:15:00.2: PCI INT C -> GSI 18 (level, low) -> IRQ 18
-> > >> >>  [<ffffffff81375ed3>] ? __mutex_unlock_slowpath+0x12f/0x141
-> > >> >> sdhci-pci 0000:15:00.2: Will use DMA mode even though HW doesn't fully
-> > >> >> claim to support it.
-> > >> >> Registered led device: mmc0::
-> > >> >> mmc0: SDHCI controller on PCI [0000:15:00.2] using DMA
-> > >> >>  [<ffffffffa027628a>] snd_card_register+0x135/0x14b [snd]
-> > >> >>  [<ffffffffa0370c88>] volume_init+0x335/0x3d2 [thinkpad_acpi]
-> > >> >>  [<ffffffffa037289b>] thinkpad_acpi_module_init+0x61f/0xa4f [thinkpad_acpi]
-> > >> >>  [<ffffffffa037227c>] ? thinkpad_acpi_module_init+0x0/0xa4f [thinkpad_acpi]
-> > >> >>  [<ffffffff810001fa>] do_one_initcall+0x5f/0x154
-> > >> >>  [<ffffffff8107ff34>] sys_init_module+0xd7/0x234
-> > >> >>  [<ffffffff81002d5b>] system_call_fastpath+0x16/0x1b
-> > >> >> ---[ end trace a6d53dc318f09cb5 ]---
-> > >> >
-> > >> > Looks like the code path from thinkpad-acpi...
-> > >> >
-> > >> > Could you add some printk's in sound/core/sound_oss.c:snd_oss_kernel_minor()
-> > >> > to inspect which values are taken and calculated?
-> > >> >
-> > >>
-> > >> I'm getting a card->number equal to 29, and a dev equal to 0.
-> > >
-> > > The card number 29 is very strange.  Is it the correct number?
-> > > You can see the sound instances in /proc/asound/cards.
-> > >
-> > >> The case is SNDRV_OSS_DEVICE_TYPE_MIXER:
-> > >> So that does  minor = SNDRV_MINOR_OSS(card->number, (dev ?
-> > >> SNDRV_MINOR_OSS_MIXER1 : SNDRV_MINOR_OSS_MIXER));
-> > >> and according to the formula #define SNDRV_MINOR_OSS(card,
-> > >> dev)  (((card) << 4) | (dev))
-> > >> That works out to 464 which of course is not in the acceptable range
-> > >> between 0 and 128.
-> > >
-> > > Do you build thinkpad-acpi as a module or built-in?  How about the
-> > > sound stuff?
-> > >
-> > >
-> > > Takashi
-> > > --
-> > > To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> > > the body of a message to majordomo@vger.kernel.org
-> > > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> > > Please read the FAQ at  http://www.tux.org/lkml/
-> > >
-> > 
-> >  cat /proc/asound/card
-> > card0/  card29/ cards
-> > [jkacur@tycho rt.linux.git]$ cat /proc/asound/cards
-> >  0 [Intel          ]: HDA-Intel - HDA Intel
-> >                       HDA Intel at 0xfc020000 irq 31
-> > 29 [ThinkPadEC     ]: ThinkPad EC - ThinkPad Console Audio Control
-> >                       ThinkPad Console Audio Control at EC reg 0x30,
-> > fw 7VHT12WW-1.01
-> 
-> OK, then the ALSA core driver behavior is correct.  But, another
-> question is why such a strange number is passed.  Let me see the
-> code...
-> 
->  static int alsa_index = ~((1 << (SNDRV_CARDS - 3)) - 1); /* last three slots */
-> 
-> So, this behavior is intentional, too.
+Capture/playback setup (error checking removed):
+snd_pcm_open(handle, fname, stream, SND_PCM_NONBLOCK);
+snd_pcm_hw_params_malloc(hwptr);
+snd_pcm_hw_params_any(h, hwp);
+snd_pcm_hw_params_set_access(h, hwp, 
+SND_PCM_ACCESS_RW_INTERLEAVED);
+snd_pcm_hw_params_set_format(h, hwp, SND_PCM_FORMAT_S16_LE);
+snd_pcm_hw_params_set_rate(h, hwp, 8000, 0);
+snd_pcm_hw_params_set_channels(h, hwp, 2);
+snd_pcm_hw_params_set_buffer_size(h, hwp, BUF_SIZE);
+snd_pcm_hw_params(h, hwp);
 
-Okay, it took me a little bit to work it out that with SNDRV_CARDS = 32
-the above is - the 29th bit. Kinda cryptic no?
+At this point I have the capture or playback device set up for 16 bit signed 
+linear data in interleaved format and two channels. I've set up the buffers to 
+be 160 frames, or 20ms. Each of these calls is checked for errors, and I do 
+verify that the rate, buffer size and buffer time are what I expect.  There is 
+nothing unusual going on with these calls that I can determine.
 
-Also, it does seem like the code intentionally makes use of that, at first
-I was concerned you would be turning of a debug message for one use case,
-but it seems consistent.
+I set up the playback and capture callbacks thusly (again checking for errors)
+snd_async_add_pcm_handler(&ahp, hp, playback_callback, &pb_data);
+snd_async_add_pcm_handler(&ahc, hc, capture_callback, &cap_data);
 
-Even though the code looks obviously okay, I applied your patch, 
-recompiled and booted, and the false message is gone.
+At this point I believe I'm ready to go, all I have to do is start playback 
+and capture:
+if((fcount = snd_pcm_writei(h[PLAYBACK], pb_data.buf, BUF_SIZE)) != BUF_SIZE) 
+{
+	if(fcount < 0) {
+		if((e = snd_pcm_recover(h[PLAYBACK], fcount, 0)) < 0)
+			fprintf(stderr, "initial: can't writei: %s\n", snd_strerror(e));
+	} else {
+		fprintf(stderr, "initial: short write: %d instead of %d\n", fcount, 
+BUF_SIZE);
+	}
+}
 
-Acked-by: John Kacur <jkacur@redhat.com>
+if((e = snd_pcm_start(h[CAPTURE])) < 0) {
+	fprintf(stderr, "capture prepare error: %s\n", snd_strerror(e));
+	return 1;
+}
 
-Are you going to push that to Linus for 2.6.33?
+Now the playback and capture handlers are called by ALSA as required.  The 
+capture handler looks like this:
 
-Thank You.
+/* capture callback. Called by ALSA whenever a period time is up */
+void capture_callback(snd_async_handler_t *ah)
+{
+	snd_pcm_t *h = snd_async_handler_get_pcm(ah);
+	struct async_data *d = snd_async_handler_get_callback_private(ah);
+	snd_pcm_sframes_t fa;
+	short *p;
+	int i, fc, e, faloops;
+	struct timeval tv;
+	static int c=0;
 
-> 
-> In short, the warning message is just superfluous.
-> The patch below fixes the issue.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/core/sound_oss.c b/sound/core/sound_oss.c
-> index 7fe1226..0c164e5 100644
-> --- a/sound/core/sound_oss.c
-> +++ b/sound/core/sound_oss.c
-> @@ -93,7 +93,7 @@ static int snd_oss_kernel_minor(int type, struct snd_card *card, int dev)
->  	default:
->  		return -EINVAL;
->  	}
-> -	if (snd_BUG_ON(minor < 0 || minor >= SNDRV_OSS_MINORS))
-> +	if (minor < 0 || minor >= SNDRV_OSS_MINORS)
->  		return -EINVAL;
->  	return minor;
->  }
-> 
---8323328-1323940160-1263826113=:3781--
+/* read in whatever is available */
+
+	fa = snd_pcm_avail_update(h);
+	faloops = 0;
+	while(fa > 0) {
+		if(fa > BUF_SIZE)
+			fa = BUF_SIZE;
+
+		if((fc = snd_pcm_readi(h, d->buf, fa)) != fa) {
+			if(fc < 0) {
+				if((e = snd_pcm_recover(h, e, 0)) < 0) {
+					fprintf(stderr, "callback: can't readi: %s\n", 
+snd_strerror(e));
+				}
+
+				fc = 0;
+			} else {
+				fprintf(stderr, "callback: short read: %d instead of %ld\n", fc, 
+fa);
+			}
+		}
+
+		for(i=0,p=&d->buf[0]; i<fc; i++) {
+			*d->ptr++ = *p++;
+			p++;
+
+			if(d->ptr > &in[MAX_BUFS * (BUF_SIZE - 1)]) {
+				d->ptr = (short *)&in[0];
+			}
+		}
+
+		c += fc;
+		if(c >= BUF_SIZE) {
+			gettimeofday(&tv, NULL);
+			c -= BUF_SIZE;
+
+			in_step++;
+			if(in_step >= MAX_BUFS)
+				in_step = 0;
+		}
+
+		frames_cap += fc;
+		fa = snd_pcm_avail_update(h);
+		faloops++;
+	};
+
+	cap_faloops=faloops;
+}
+
+The playback callback is very similar:
+
+/* playback callback. Called by ALSA whenever a period time is up */
+void playback_callback(snd_async_handler_t *ah)
+{
+	snd_pcm_t *h = snd_async_handler_get_pcm(ah);
+	struct async_data *d = snd_async_handler_get_callback_private(ah);
+	snd_pcm_sframes_t fa;
+	int i, fc, e, faloops;
+	static int c=0;
+	struct timeval tv;
+
+	fa = snd_pcm_avail_update(h);
+	faloops = 0;
+	while(fa > 0) {
+		if(fa > BUF_SIZE)
+			fa = BUF_SIZE;
+
+		for(i=0; i<fa; i++) {
+			d->buf[i*2] = awgn(&noise_source);
+			d->buf[i*2+1] = awgn(&noise_source);
+		}
+
+		if((fc = snd_pcm_writei(h, d->buf, fa)) != fa) {
+			if(fc < 0) {
+				if((e = snd_pcm_recover(h, e, 0)) < 0) {
+					fprintf(stderr, "callback: can't writei: error %x %s\n", e, 
+snd_strerror(e));
+				}
+
+				fc = 0;
+			} else {
+				fprintf(stderr, "callback: short write: %d instead of %ld\n", fc, 
+fa);
+			}
+		}
+
+		for(i=0; i<fc; i++) {
+			*d->ptr++ = d->buf[i*2];
+			if(d->ptr > &out[MAX_BUFS * (BUF_SIZE - 1)]) {
+				d->ptr = (short *)&out[0];
+			}
+		}
+
+		c += fc;
+		if(c >= BUF_SIZE) {
+			gettimeofday(&tv, NULL);
+			c -= BUF_SIZE;
+			out_step++;
+			if(out_step >= MAX_BUFS)
+				out_step = 0;
+		}
+
+		frames_pb += fc;
+		fa = snd_pcm_avail_update(h);
+		faloops++;
+	};
+
+	pb_faloops = faloops;
+}
+
+That's really it; the main loop keeps track of the in_step and out_step 
+variables and does the cross-correlation as the data comes in.  Now it seems 
+that it's the capture playback that is getting xruns, but I when capture xruns 
+occur my playback callback seems to stop, and sometimes the entire program 
+just hangs as if it is waiting for ALSA to call one of the callbacks.
+
+Can anyone shed any light on this? I'm certain it's something very simple and 
+braindead, but I can't find it.
+
+Regards,
+Andrew
