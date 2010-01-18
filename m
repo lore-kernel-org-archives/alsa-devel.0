@@ -1,26 +1,17 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Duplicate wake-ups in pcm_lib.c
-Date: Mon, 18 Jan 2010 18:32:02 +0000
-Message-ID: <hj29f0$v5d$1@ger.gmane.org>
-References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>
-	<alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>
+From: Brendan Pike <spike@spykes.net>
+Subject: Re: How much of the X-Fi (emu20k1) chip has Creative
+ documented?
+Date: Mon, 18 Jan 2010 15:51:55 -0500
+Message-ID: <20100118155155.0f954199@darius>
+References: <760045.1231.qm@web52904.mail.re2.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF76B103802
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2010 19:32:26 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1NWwOm-0005CT-So
-	for alsa-devel@alsa-project.org; Mon, 18 Jan 2010 19:32:24 +0100
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2010 19:32:24 +0100
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2010 19:32:24 +0100
-In-Reply-To: <alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>
+Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
+	by alsa0.perex.cz (Postfix) with ESMTP id 32094103818
+	for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2010 21:51:58 +0100 (CET)
+In-Reply-To: <760045.1231.qm@web52904.mail.re2.yahoo.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,66 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Chris Rankin <rankincj@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
+On Sun, 17 Jan 2010 16:43:08 -0800 (PST)
+Chris Rankin <rankincj@yahoo.com> wrote:
 
-'Twas brillig, and Jaroslav Kysela at 07/01/10 14:59 did gyre and gimble:
-> The improved and more clean fix in now in my tree:
+> Hi,
 > 
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=1250932e48d3b698415b1f04775433cf1da688d6
+> I am thinking about upgrading my Audigy2 sound card, and was looking at the X-Fi. However, the feature matrix for X-Fi cards on the ALSA site only says "PCI". (I assume that also includes PCIe these days.) Given that there is a basic snd-ctxfi driver, it seems likely that this matrix should also include "ANALOGio", and so I was wondering if someone could tell me what the actual matrix entry for the X-Fi cards should be these days, please?
 > 
-> Note that you should apply these 4 patches (in reverse order):
+> Would the documentation that Creative has released allow any additional features to be implemented in the future? I am obviously hoping at least for feature parity with the Audigy2, i.e. multi-voiced hardware mixing. That "crystalizer" would seem to be one of the cards main selling points, too. However, if the driver is "feature complete" as far as Creative's documentation goes, then one of the Xonar cards would seem better value for money.
 > 
-> 4: ALSA: pcm_lib - optimize wake_up() calls for PCM I/O
-> 3: ALSA: pcm_lib - cleanup & merge hw_ptr update functions
-> 2: ALSA: pcm_lib - add possibility to log last 10 DMA ring buffer positions
-> 1: ALSA: pcm_lib.c - convert second xrun_debug() parameter to use defines
+> Thanks for any assistance,
+> Cheers,
+> Chris
 > 
-> Patch #3 should definitely fix problems with large avail or delay values 
-> reported in PA. I finally figured the culprit (and decide to cleanup all
-> relevant code rather do just another workaround). In other words, new 
-> hw_ptr pointer should never be less than previous one now.
 
+The matrix is horribly out of date. Yes PCIe cards (emu20k2) are
+supported. HWMix also exists and works perfectly, I can play
+many things at once directly accessing ALSA, without the need of
+pulseaudio or whatever meme of the year it is. Its probably the only
+fancy feature that is supported on the chip.
 
-Just wanted to ask about the status of this.
+There is no sequencer support, and no access to the DSP features,
+which would be needed to put it in line with the old emu10k1 features.
 
-We included the fixes in Mandriva cooker kernel for wider testing but
-some users are seeing issues.
+I use an Auzentech X-Fi Forte myself, which works great. If all you
+want is hardware mixing and record capabilities, then you can upgrade
+without worry.
 
-These four *seem* to be OK, but after also adding the "something must be
-really wrong" commit
-(http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=7b3a177b0d4f92b3431b8dca777313a07533a710)
-folks started getting some errors.
-
-We also added the jiffies fix commit
-(http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=ed69c6a8eef679f2783848ed624897a937a434ac)
-but that didn't seem to help.
-
-This is handled in our bug report here:
-https://qa.mandriva.com/show_bug.cgi?id=57010
-
-For reference relating to comment 12:
-2.6.32.3-1mnb: First introduced the above 4 fixes.
-2.6.32.3-2mnb: included 7b3a177
-2.6.32.4-0.rc1.1mnb: included ed69c6a
-
-Is there something more that needs done?
-
-Col
-
-
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+I would like to see DSP based equalizer support someday, but I'm not
+counting on it happening. Creative would need to release more specs to
+allow access to and use the DSP to load the necessary firmware that
+provides these effects features. (Including crystalizer)
