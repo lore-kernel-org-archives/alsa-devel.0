@@ -1,169 +1,71 @@
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH 3/4] sh: add DMA slave definitions and SIU
- platform data to sh7722 setup
-Date: Tue, 19 Jan 2010 09:09:06 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1001190903500.4607@axis700.grange>
+Subject: [PATCH 4/4] sh: audio support for the sh7722 Migo-R board
+Date: Tue, 19 Jan 2010 09:09:10 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1001190906030.4607@axis700.grange>
 References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id A5A0B10384D
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 09:09:02 +0100 (CET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-sh-owner@vger.kernel.org>
 In-Reply-To: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: linux-sh-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-sh@vger.kernel.org
+Cc: linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <damm@opensource.se>
 List-Id: alsa-devel@alsa-project.org
 
-This patch is required to use the SIU ASoC driver on sh7722 systems.
+Configure SIU port B pins and register the WM8978 audio codec.
 
 Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 ---
- arch/sh/kernel/cpu/sh4a/setup-sh7722.c |  103 ++++++++++++++++++++++++++++++--
- 1 files changed, 97 insertions(+), 6 deletions(-)
+ arch/sh/boards/mach-migor/setup.c       |   16 ++++++++++++++++
+ arch/sh/include/mach-migor/mach/migor.h |    1 +
+ 2 files changed, 17 insertions(+), 0 deletions(-)
 
-diff --git a/arch/sh/kernel/cpu/sh4a/setup-sh7722.c b/arch/sh/kernel/cpu/sh4a/setup-sh7722.c
-index adb65a9..5c6a40d 100644
---- a/arch/sh/kernel/cpu/sh4a/setup-sh7722.c
-+++ b/arch/sh/kernel/cpu/sh4a/setup-sh7722.c
-@@ -18,8 +18,77 @@
- #include <asm/clock.h>
- #include <asm/mmzone.h>
- #include <asm/dma-sh.h>
-+#include <asm/siu.h>
- #include <cpu/sh7722.h>
- 
-+static struct sh_dmae_slave_config sh7722_dmae_slaves[] = {
+diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
+index e1972a8..8f2bd4e 100644
+--- a/arch/sh/boards/mach-migor/setup.c
++++ b/arch/sh/boards/mach-migor/setup.c
+@@ -419,6 +419,9 @@ static struct i2c_board_info migor_i2c_devices[] = {
+ 		I2C_BOARD_INFO("migor_ts", 0x51),
+ 		.irq = 38, /* IRQ6 */
+ 	},
 +	{
-+		.slave_id	= SHDMA_SLAVE_SCIF0_TX,
-+		.addr		= 0xffe0000c,
-+		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
-+		.mid_rid	= 0x21,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SCIF0_RX,
-+		.addr		= 0xffe00014,
-+		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
-+		.mid_rid	= 0x22,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SCIF1_TX,
-+		.addr		= 0xffe1000c,
-+		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
-+		.mid_rid	= 0x25,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SCIF1_RX,
-+		.addr		= 0xffe10014,
-+		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
-+		.mid_rid	= 0x26,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SCIF2_TX,
-+		.addr		= 0xffe2000c,
-+		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
-+		.mid_rid	= 0x29,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SCIF2_RX,
-+		.addr		= 0xffe20014,
-+		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_8BIT),
-+		.mid_rid	= 0x2a,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SIUA_TX,
-+		.addr		= 0xa454c098,
-+		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_32BIT),
-+		.mid_rid	= 0xb1,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SIUA_RX,
-+		.addr		= 0xa454c090,
-+		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_32BIT),
-+		.mid_rid	= 0xb2,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SIUB_TX,
-+		.addr		= 0xa454c09c,
-+		.chcr		= DM_FIX | SM_INC | 0x800 | TS_INDEX2VAL(XMIT_SZ_32BIT),
-+		.mid_rid	= 0xb5,
-+	}, {
-+		.slave_id	= SHDMA_SLAVE_SIUB_RX,
-+		.addr		= 0xa454c094,
-+		.chcr		= DM_INC | SM_FIX | 0x800 | TS_INDEX2VAL(XMIT_SZ_32BIT),
-+		.mid_rid	= 0xb6,
++		I2C_BOARD_INFO("wm8978", 0x1a),
 +	},
-+};
-+
-+static struct sh_dmae_pdata dma_platform_data = {
-+	.mode		= 0,
-+	.config		= sh7722_dmae_slaves,
-+	.config_num	= ARRAY_SIZE(sh7722_dmae_slaves),
-+};
-+
-+struct platform_device dma_device = {
-+	.name		= "sh-dma-engine",
-+	.id		= -1,
-+	.dev		= {
-+		.platform_data	= &dma_platform_data,
-+	},
-+};
-+
- /* Serial */
- static struct plat_sci_port scif0_platform_data = {
- 	.mapbase        = 0xffe00000,
-@@ -388,15 +457,36 @@ static struct platform_device tmu2_device = {
- 	},
  };
  
--static struct sh_dmae_pdata dma_platform_data = {
--	.mode = 0,
-+static struct siu_platform siu_platform_data = {
-+	.dma_dev	= &dma_device.dev,
-+	.dma_slave_tx_a	= SHDMA_SLAVE_SIUA_TX,
-+	.dma_slave_rx_a	= SHDMA_SLAVE_SIUA_RX,
-+	.dma_slave_tx_b	= SHDMA_SLAVE_SIUB_TX,
-+	.dma_slave_rx_b	= SHDMA_SLAVE_SIUB_RX,
- };
+ static struct i2c_board_info migor_i2c_camera[] = {
+@@ -631,6 +634,19 @@ static int __init migor_devices_setup(void)
  
--static struct platform_device dma_device = {
--	.name		= "sh-dma-engine",
-+static struct resource siu_resources[] = {
-+	[0] = {
-+		.start	= 0xa4540000,
-+		.end	= 0xa454c10f,
-+		.flags	= IORESOURCE_MEM,
-+	},
-+	[1] = {
-+		.start	= 108,
-+		.flags	= IORESOURCE_IRQ,
-+	},
-+};
+ 	platform_resource_setup_memory(&migor_ceu_device, "ceu", 4 << 20);
+ 
++	/* SIU: Port B */
++	gpio_request(GPIO_FN_SIUBOLR, NULL);
++	gpio_request(GPIO_FN_SIUBOBT, NULL);
++	gpio_request(GPIO_FN_SIUBISLD, NULL);
++	gpio_request(GPIO_FN_SIUBOSLD, NULL);
++	gpio_request(GPIO_FN_SIUMCKB, NULL);
 +
-+static struct platform_device siu_device = {
-+	.name		= "sh_siu",
- 	.id		= -1,
--	.dev		= {
--		.platform_data	= &dma_platform_data,
-+	.dev = {
-+		.platform_data	= &siu_platform_data,
-+	},
-+	.resource	= siu_resources,
-+	.num_resources	= ARRAY_SIZE(siu_resources),
-+	.archdata = {
-+		.hwblk_id = HWBLK_SIU,
- 	},
- };
++	/*
++	 * The original driver sets SIUB OLR/OBT, ILR/IBT, and SIUA OLR/OBT to
++	 * output. Need only SIUB, set to output for master mode (table 34.2)
++	 */
++	ctrl_outw(ctrl_inw(PORT_MSELCRA) | 1, PORT_MSELCRA);
++
+ 	i2c_register_board_info(0, migor_i2c_devices,
+ 				ARRAY_SIZE(migor_i2c_devices));
  
-@@ -414,6 +504,7 @@ static struct platform_device *sh7722_devices[] __initdata = {
- 	&vpu_device,
- 	&veu_device,
- 	&jpu_device,
-+	&siu_device,
- 	&dma_device,
- };
+diff --git a/arch/sh/include/mach-migor/mach/migor.h b/arch/sh/include/mach-migor/mach/migor.h
+index cee6cb8..42fccf9 100644
+--- a/arch/sh/include/mach-migor/mach/migor.h
++++ b/arch/sh/include/mach-migor/mach/migor.h
+@@ -1,6 +1,7 @@
+ #ifndef __ASM_SH_MIGOR_H
+ #define __ASM_SH_MIGOR_H
  
++#define PORT_MSELCRA 0xa4050180
+ #define PORT_MSELCRB 0xa4050182
+ #define BSC_CS4BCR 0xfec10010
+ #define BSC_CS6ABCR 0xfec1001c
 -- 
 1.6.2.4
+
