@@ -1,53 +1,42 @@
-From: Alex Austin <circuitsoft.alex@gmail.com>
-Subject: Re: About audio driver architecture
-Date: Tue, 19 Jan 2010 02:04:58 -0600
-Message-ID: <53baa24a1001190004l74390c34y95608343937634a@mail.gmail.com>
-References: <f74f98341001182326s1c03d5e2va470207ff194c2ad@mail.gmail.com>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: [PATCH 0/4] ALSA: SH: add ASoC driver for SIU audio engine, an audio
+ codec and platform support
+Date: Tue, 19 Jan 2010 09:08:52 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f178.google.com (mail-iw0-f178.google.com
-	[209.85.223.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3260F244E0
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 09:04:59 +0100 (CET)
-Received: by iwn8 with SMTP id 8so1670186iwn.23
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 00:04:58 -0800 (PST)
-In-Reply-To: <f74f98341001182326s1c03d5e2va470207ff194c2ad@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Michael Qiu <fallwind@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-sh-owner@vger.kernel.org>
+Sender: linux-sh-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <damm@opensource.se>
 List-Id: alsa-devel@alsa-project.org
 
-http://www.alsa-project.org/main/index.php/ASoC
+Hi
 
-Perhaps that's what you're looking for? What processor are you using? There
-may already be implementations for it.
+This patch series adds support for the Sound Interface Unit (SIU), found 
+on several SuperH SoCs, including sh7722, sh7343, sh7354, sh7367. The 
+driver supports playback and capture at various bitrates, mono and stereo, 
+so far only tested with an I2S codec, support for the PCM 
+(SND_SOC_DAIFMT_LEFT_J) is also included. The hardware also supports 
+S/PDIF, but including support for it would require more work and testing 
+on a suitable hardware platform.
 
-On Tue, Jan 19, 2010 at 1:26 AM, Michael Qiu <fallwind@gmail.com> wrote:
+The SIU engine includes a DSP, that has to be programmed separately. The 
+driver uses the standard request_firmware() API to load the program and 
+data.
 
-> Hi,
->  I'm going to write an audio driver for a developping soc used for
-> dvb set top box.
-> As I've never done such things before, so I've some questions.
-> 1. Seems the "ALSA Driver Documentation" is mainly for PCI(and for PC)
-> based audio card. Where can I got a document for SOC which has no PCI
-> bus. If there are some existing drivers it will be even better.
-> 2. Is there any standard for such a audio driver which upper
-> applications will depend on it? Or I can just follow ALSA?
->
-> Best regards
-> Michael Qiu
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+This patch series also requires the earlier
+
+[PATCH] sh: support SIU sourcing from external clock on sh7722
+(http://www.spinics.net/lists/linux-sh/msg04075.html)
+
+patch for proper functionality.
+
+Comments welcome.
+
+Thanks
+Guennadi
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
