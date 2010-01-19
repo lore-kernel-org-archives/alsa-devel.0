@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: State of the bugtracker
-Date: Tue, 19 Jan 2010 22:12:46 +0000
-Message-ID: <20100119221246.GB29306@sirena.org.uk>
-References: <hj4r0o$nh1$1@ger.gmane.org>
+From: Aleksander Adamowski <alsa@olo.org.pl>
+Subject: No alsa-driver snapshots since 2009-12-19?
+Date: Tue, 19 Jan 2010 23:59:22 +0100
+Message-ID: <1c690d741001191459v62e3a6c0u809bc3dfbbdea243@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 139F4243BB
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 23:12:47 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <hj4r0o$nh1$1@ger.gmane.org>
+Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
+	[209.85.210.196])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1EA5E1038A3
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 23:59:43 +0100 (CET)
+Received: by yxe34 with SMTP id 34so1941993yxe.16
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 14:59:43 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,15 +21,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 19, 2010 at 05:43:54PM +0000, Colin Guthrie wrote:
+Hi!
 
-> So really this is just a "what is the state of the bug tracker"
-> question. Do the main devs check it and triage it or is there no
-> specific process?
+Seems that alsa-driver snapshots have stopped being updated on
+http://ftp.kernel.org/pub/linux/kernel/people/tiwai/alsa/alsa-driver/
+- the last one is from 2009-12-19.
 
-I never look at the bug tracker for ASoC stuff, I'd expect any reports
-there to come in on the mailing list.
+What happened?
+
+-- 
+Best Regards,
+  Aleksander Adamowski
+  http://olo.org.pl
