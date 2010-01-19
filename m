@@ -1,17 +1,15 @@
-From: Michael Qiu <fallwind@gmail.com>
-Subject: About audio driver architecture
-Date: Tue, 19 Jan 2010 15:26:06 +0800
-Message-ID: <f74f98341001182326s1c03d5e2va470207ff194c2ad@mail.gmail.com>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: [PATCH] ASoC: fix compile breakage - add a missing
+	header include
+Date: Tue, 19 Jan 2010 08:39:05 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1001190832580.4607@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f196.google.com (mail-yx0-f196.google.com
-	[209.85.210.196])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D764244C1
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 08:26:08 +0100 (CET)
-Received: by yxe34 with SMTP id 34so1259249yxe.16
-	for <alsa-devel@alsa-project.org>; Mon, 18 Jan 2010 23:26:06 -0800 (PST)
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id CD5C8244CA
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 08:39:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,18 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-  I'm going to write an audio driver for a developping soc used for
-dvb set top box.
-As I've never done such things before, so I've some questions.
-1. Seems the "ALSA Driver Documentation" is mainly for PCI(and for PC)
-based audio card. Where can I got a document for SOC which has no PCI
-bus. If there are some existing drivers it will be even better.
-2. Is there any standard for such a audio driver which upper
-applications will depend on it? Or I can just follow ALSA?
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+---
 
-Best regards
-Michael Qiu
+It might well have been reported and / or fixed in some trees, sorry for 
+the noise, if that's the case.
+
+ include/sound/soc-dai.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index ca24e7f..061f16d 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -16,6 +16,8 @@
+ 
+ #include <linux/list.h>
+ 
++#include <sound/soc.h>
++
+ struct snd_pcm_substream;
+ 
+ /*
+-- 
+1.6.2.4
