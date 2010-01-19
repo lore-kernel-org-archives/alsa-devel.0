@@ -1,26 +1,17 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Duplicate wake-ups in pcm_lib.c
-Date: Wed, 20 Jan 2010 01:24:10 +0000
-Message-ID: <hj5lvn$is9$1@ger.gmane.org>
-References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>	<alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>	<hj29f0$v5d$1@ger.gmane.org>
-	<alpine.LNX.2.00.1001182233280.4324@eeebox2.perex-int.cz>
+From: Lee Trager <lee.trager@hp.com>
+Subject: Re: [PATCH]  Fix automute issue on HP T5735
+Date: Tue, 19 Jan 2010 14:26:09 -0500
+Message-ID: <1263929169.2368.134.camel@ltrager-laptop>
+References: <1263574579.2368.88.camel@ltrager-laptop>
+	<s5hzl4ckjez.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id BDFB4103801
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2010 02:24:32 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1NXPJ7-0003QR-T8
-	for alsa-devel@alsa-project.org; Wed, 20 Jan 2010 02:24:29 +0100
-Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2010 02:24:29 +0100
-Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2010 02:24:29 +0100
-In-Reply-To: <alpine.LNX.2.00.1001182233280.4324@eeebox2.perex-int.cz>
+Received: from g1t0028.austin.hp.com (g1t0028.austin.hp.com [15.216.28.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B7A61038B0
+	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 20:26:12 +0100 (CET)
+In-Reply-To: <s5hzl4ckjez.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,56 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The patch you sent works fine. The only reason I called alc_automute_amp
+was because if I didn't if headphones were plugged in at boot it
+wouldn't work. This doesn't happen on your patch however. If anything
+else is needed to get this patch in let me know.
 
-'Twas brillig, and Jaroslav Kysela at 18/01/10 21:39 did gyre and gimble:
-> On Mon, 18 Jan 2010, Colin Guthrie wrote:
->> This is handled in our bug report here:
->> https://qa.mandriva.com/show_bug.cgi?id=57010
->>
->> For reference relating to comment 12:
->> 2.6.32.3-1mnb: First introduced the above 4 fixes.
->> 2.6.32.3-2mnb: included 7b3a177
->> 2.6.32.4-0.rc1.1mnb: included ed69c6a
->>
->> Is there something more that needs done?
+Thanks,
+
+Lee
+
+On Sun, 2010-01-17 at 12:25 +0000, Takashi Iwai wrote:
+> At Fri, 15 Jan 2010 11:56:19 -0500,
+> Lee Trager wrote:
+> > 
+> > The following patch fixes an issue where when you plug something into
+> > the headphone jack the internal speaker does not automute. This also
+> > will close alsa bug #0004766
 > 
-> Thanks for feedback. Please, provide debug information:
+> Hm, the present quirk is already broken as its changing 0x15 with
+> alc_automute_amp().  There are already mixer elements with these NIDs,
+> and changing dynamically via unsol event conflicts with the mixers.
+> Also, alc_automute_amp() shouldn't be called in setup callback but in
+> init_hook callback instead.
 > 
-> http://www.alsa-project.org/main/index.php/XRUN_Debug
+> I wonder whether the output pin control works with your device.  If it
+> does, it's much easier.  For example, how about the patch below?
 > 
-> Use 101 or 29 values for xrun_debug and try to put ksyslog messages 
-> to a relation with the audiable problems.
-
-Just following up on this on behalf of a colleage.
-
-He's set the 101 value and this annoyingly seems to fix his problem
-(well, no glitches to the ear anyway!).
-
-However he does get the following messages:
-
-kernel: PCM: hw_ptr skipping! [Q] (pos=1024, delta=8192, period=1024,
-jdelta=0/170/0, hw_ptr=140116992/140116992)
-
-When he does the 29 value it spams the log >one every second and he
-didn't try too long to get it to fail before he switched to 101. I can
-get the full log of the above too if it's useful or run the 29 test and
-capture the output if it'll still help even tho it's not showing the error.
-
-Col
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ---
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 7e0ea37..b0c8ae0 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -10490,7 +10490,7 @@ static void alc262_hp_t5735_setup(struct hda_codec *codec)
+>  	struct alc_spec *spec = codec->spec;
+>  
+>  	spec->autocfg.hp_pins[0] = 0x15;
+> -	spec->autocfg.speaker_pins[0] = 0x0c; /* HACK: not actually a pin */
+> +	spec->autocfg.speaker_pins[0] = 0x14;
+>  }
+>  
+>  static struct snd_kcontrol_new alc262_hp_t5735_mixer[] = {
+> @@ -11919,9 +11919,9 @@ static struct alc_config_preset alc262_presets[] = {
+>  		.num_channel_mode = ARRAY_SIZE(alc262_modes),
+>  		.channel_mode = alc262_modes,
+>  		.input_mux = &alc262_capture_source,
+> -		.unsol_event = alc_automute_amp_unsol_event,
+> +		.unsol_event = alc_sku_unsol_event,
+>  		.setup = alc262_hp_t5735_setup,
+> -		.init_hook = alc_automute_amp,
+> +		.init_hook = alc_inithook,
+>  	},
+>  	[ALC262_HP_RP5700] = {
+>  		.mixers = { alc262_hp_rp5700_mixer },
