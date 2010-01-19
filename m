@@ -1,164 +1,177 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] ASoC: add a WM8978 codec driver
-Date: Tue, 19 Jan 2010 10:57:29 +0000
-Message-ID: <42962.538105394$1263901961@news.gmane.org>
+Subject: Re: [PATCH 2/4] ASoC: add DAI and platform drivers for SH SIU and
+ support for the Migo-R board
+Date: Tue, 19 Jan 2010 12:34:16 +0000
+Message-ID: <20100119123416.GA3040@opensource.wolfsonmicro.com>
 References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
-	<Pine.LNX.4.64.1001190851380.4607@axis700.grange>
+ <Pine.LNX.4.64.1001190902000.4607@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 10843103860
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 12:52:26 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1001190851380.4607@axis700.grange>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <Pine.LNX.4.64.1001190902000.4607@axis700.grange>
+Sender: linux-sh-owner@vger.kernel.org
 To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Magnus Damm <damm@opensource.se>, linux-sh@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 19, 2010 at 09:08:57AM +0100, Guennadi Liakhovetski wrote:
+On Tue, Jan 19, 2010 at 09:09:01AM +0100, Guennadi Liakhovetski wrote:
 
-This all looks pretty good - there's a few issues below but they're
-largely stylistic rather than anything fundamental.
+> Several SuperH platforms, including sh7722, sh7343, sh7354, sh7367 include a
+> Sound Interface Unit (SIU). This patch adds drivers for this interface and
+> support for the sh7722 Migo-R board.
 
-> +	0x0000, 0x0000, 0x0000, 0x01ff,	/* 0x08...0x0b */ /* 0x0b contains the VU bit */
-> +	0x01ff, 0x0000, 0x0100, 0x01ff,	/* 0x0c...0x0f */ /* 0x0c and 0x0f contain the VU bit */
-> +	0x01ff, 0x0000, 0x012c, 0x002c,	/* 0x10...0x13 */ /* 0x10 contains the VU bit */
+Normally you'd split the board support into a separate patch, and
+splitting the DMA and DAI drivers wouldn't hurt either.  It makes the
+review easier by keeping the patches smaller and more focused.
 
-What do these comments refer to - do you mean to say that these are not
-the actual chip register defaults?  The normal way to deal with those is
-to have a write (or other update of the cache defaults).  This avoids
-potential confusion later on if the chip updates the register defaults
-or when reviewing against the datasheet.
-
-> +#define ARRAY_SINGLE(xreg, xshift, xtexts) SOC_ENUM_SINGLE(xreg, xshift, \
-> +						ARRAY_SIZE(xtexts), xtexts)
-
-This looks generic - please namespace it and add it to the header file,
-other drivers can benefit from it.
-
-> +static const struct soc_enum wm8978_enum[] = {
-> +	/* adc */
-> +	ARRAY_SINGLE(WM8978_COMPANDING_CONTROL, 1, wm8978_companding),
-
-Please define individual variables for this - indexing into the array
-gets hard to follow, it's far too easy to have an off by one errors
-trying to match things up.
-
-> +#define MIXER_ARRAY(n, r, s, i, m) SND_SOC_DAPM_MIXER(n, r, s, i, \
-> +                                                       m, ARRAY_SIZE(m))
-
-
-> +/* Mixer #3: Boost (Input) mixer */
-> +static const struct snd_kcontrol_new wm8978_left_boost_mixer[] = {
-> +SOC_DAPM_SINGLE("Left PGA Mute", WM8978_LEFT_INP_PGA_CONTROL, 6, 1, 0),
-> +};
-> +static const struct snd_kcontrol_new wm8978_right_boost_mixer[] = {
-> +SOC_DAPM_SINGLE("Right PGA Mute", WM8978_RIGHT_INP_PGA_CONTROL, 6, 1, 0),
-> +};
-
-These should have "Switch" at the end of the name.  Also, the names are
-going be concatenated with the mixer names so you'll end up with things
-"Left Boost Mixer Left PGA Switch" - the individual controls should
-probably be just "Switch" so you end up with "Left Boost Mixer Switch".
-
-> +/* Mic Input boost vol */
-> +static const struct snd_kcontrol_new wm8978_mic_boost_controls[] = {
-> +SOC_DAPM_SINGLE("Left Mic Volume", WM8978_LEFT_ADC_BOOST_CONTROL, 4, 7, 0),
-> +SOC_DAPM_SINGLE("Right Mic Volume", WM8978_RIGHT_ADC_BOOST_CONTROL, 4, 7, 0),
-> +};
-
-This doesn't seem to be referenced anywhere?
-
-> +#define MIXER_ARRAY(n, r, s, i, m) SND_SOC_DAPM_MIXER(n, r, s, i, \
-> +							m, ARRAY_SIZE(m))
-
-Again, this should be done somewhere generic.  Probably by going through
-and changing the SND_SOC_DAPM_MIXER definition.
-
-> +	/* Output PLL to GPIO1 */
-> +	snd_soc_write(codec, WM8978_GPIO_CONTROL,
-> +		      snd_soc_read(codec, WM8978_GPIO_CONTROL) | 0x4);
-
-This should be being done unconditionally.  Put a switch in via the
-set_dai_clkdiv() call.
-
-> +	/* Mic bias */
-> +	snd_soc_write(codec, WM8978_POWER_MANAGEMENT_1,
-> +		      (snd_soc_read(codec, 1) & ~4) | 0x10);
+> +config SND_SIU_MIGOR
+> +	tristate "SIU sound support on Migo-R"
+> +	depends on SND_SOC_SH4_SIU && SH_MIGOR
+> +	select SND_SOC_WM8978
+> +	help
+> +	  This option enables generic sound support for the
+> +	  SH7722 Migo-R board
 > +
-> +	/* Out-1 enabled, left/right input channel enabled */
-> +	snd_soc_write(codec, WM8978_POWER_MANAGEMENT_2, 0x1bf);
+
+I'd be tempted to just make SND_SOC_SH4_SIU a hidden variable and select
+it from here.  I know that most of the CPU DAIs are exposed but it
+doesn't actually seem to buy us anything.
+
+> +/* Default 8000Hz sampling frequency */
+> +static unsigned long codec_freq = 49152350 / 12;
+
+Perhaps a #define for the input clock rate (I'm assuming that this is
+what the 49152350 is)?
+
+> +	switch (rate) {
+> +	case 48000:
+> +		mclk_div = 0x40;
+> +		opclk_div = 0;
+> +		/* f2 = 98304000, was 98304050 */
+
+Like Liam says either remove these comments or clarify them please :)
+
+> +	/*
+> +	 * Calculate f2, according to Figure 40 "PLL and Clock Select Circuit"
+> +	 * in WM8978 datasheet
+> +	 */
+> +	f2 = rate * 256 * 4 * mclk_numerator[mclk_idx] /
+> +		mclk_denominator[mclk_idx];
+
+Figure 40 of the current datasheet is the DSP mode B clock diagram -
+it's now figure 41.  Better to include a datasheet revision.
+
+> +	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8978_MCLKDIV,
+> +				     mclk_div & 0xe0);
+> +	if (ret < 0)
+> +		return ret;
+
+This doesn't feel like something that the machine driver should have to
+figure out, the CODEC driver should be able to figure out the MCLK
+division from a set_sysclk() call telling it the PLL/MCLK frequency.
+This would mean that the machine driver would need to at most specify
+the PLL output frequency.
+
+> +	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8978_OPCLKDIV, opclk_div);
+> +	if (ret < 0)
+> +		return ret;
+
+I said add a set_clkdiv() option for the output clock GPIO configuration
+- now that I think about it you can probably do this on any configuration
+of OPCLKDIV by a machine driver.
+
+> +	ret = snd_soc_dai_set_clkdiv(codec_dai, WM8978_DACCLK, 8);
+> +	if (ret < 0)
+> +		return ret;
+
+The DAC clock configuration can probably be factored into the CODEC
+driver - you should know (or be able to be told) the CODEC system clock
+so this should then only have an internal effect.
+
+> +	/* See Figure 40 */
+> +	codec_freq = f2 / ((opclk_div >> 4) + 1) >> 2;
+
+This feels like something that should be wrapped up in the CODEC
+driver.  In any case, 
+
+> +static int migor_hw_free(struct snd_pcm_substream *substream)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
 > +
-> +	/* Out-2 disabled, right/left output channel enabled, dac enabled */
-> +	snd_soc_write(codec, WM8978_POWER_MANAGEMENT_3, 0x10f);
+> +	/* disable the PLL */
+> +	return snd_soc_dai_set_pll(codec_dai, 0, 0, 0, 0);
 
-These should all be being managed via DAPM.
+This will happen for both playback and once for record, meaning that if
+you've got both running then the first one to stop will halt the PLL
+which probably isn't what you want.
 
-> +static int wm8978_set_bias_level(struct snd_soc_codec *codec,
-> +				 enum snd_soc_bias_level level)
+> +static int migor_startup(struct snd_pcm_substream *substream)
 > +{
-> +	u16 power1 = snd_soc_read(codec, WM8978_POWER_MANAGEMENT_1) & ~3;
-
-This bitmask maintains everything except the two LSB...
-
-> +	switch (level) {
-> +	case SND_SOC_BIAS_ON:
-> +	case SND_SOC_BIAS_PREPARE:
-> +		power1 |= 1;  /* VMID 75k */
-> +		snd_soc_write(codec, WM8978_POWER_MANAGEMENT_1, power1);
-> +		break;
-> +	case SND_SOC_BIAS_STANDBY:
-> +		power1 |= 0xC;
-
-...but this is also managing other bits.
-
-> +		if (codec->bias_level == SND_SOC_BIAS_OFF) {
-> +			/* Initial cap charge at VMID 5k */
-> +			snd_soc_write(codec, WM8978_POWER_MANAGEMENT_1,
-> +				      power1 | 0x3);
-> +			mdelay(100);
-> +		}
-
-> +/* Also supports 12kHz */
-> +#define WM8978_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | \
-> +	SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | \
-> +	SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
-
-SNDRV_PCM_RATE_8000_48000
-
-> +static int wm8978_suspend(struct platform_device *pdev, pm_message_t state)
-> +{
-> +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_device *socdev = rtd->socdev;
 > +	struct snd_soc_codec *codec = socdev->card->codec;
+> +	int ret;
 > +
-> +	/* we only need to suspend if we are a valid card */
-> +	if (!codec->card)
-> +		return 0;
-
-Don't need to check for the card any more, the core will stop you
-getting called without a card.
-
-> +	/* Sync reg_cache with the hardware */
-> +	for (i = 0; i < ARRAY_SIZE(wm8978_reg); i++) {
-> +		if (i == WM8978_RESET)
-> +			continue;
-
-You can also skip the write if the register has the default value (this
-will speed up resume slightly).
-
-> +		data = cpu_to_be16((i << 9) | (cache[i] & 0x1ff));
-> +		codec->hw_write(codec->control_data, (char *)&data, 2);
+> +	/* Activate DAC output routes */
+> +	ret = snd_soc_dapm_enable_pin(codec, "Left Speaker Out");
+> +	if (ret < 0) {
+> +		dev_warn(socdev->dev, "Left err %d\n", ret);
+> +		return ret;
 > +	}
 
-Just use snd_soc_write()?
+Why are you doing this?  DAPM will automatically manage the power of the
+DAC widget based on the playback state.
+
+> +/* Board specifics */
+> +#if defined(CONFIG_CPU_SUBTYPE_SH7722)
+> +# define MAX_VOLUME		0x1000
+> +#else
+> +# define MAX_VOLUME		0x7fff
+> +#endif
+
+These defines could do with namespacing.
+
+> +/* SIU registers */
+> +#define IFCTL		(0x000 / sizeof(u32))
+> +#define SRCTL		(0x004 / sizeof(u32))
+
+As could all these.
+
+> +/*
+> + * At the moment only fixed Left-upper, Left-lower, Right-upper, Right-lower
+> + * packing is supported
+
+In what way are these supported?  The function appears to always set the
+same register value...
+ 
+> +static struct snd_kcontrol_new capture_controls = {
+> +	.iface		= SNDRV_CTL_ELEM_IFACE_MIXER,
+> +	.name		= "PCM Capture Volume",
+
+When we have multi-CODEC support we'll want to integrate these controls
+with that since that'll have to be able to sort out the potential
+namespace collison issues.
+
+> +/*
+> + * SIU can set bus format to I2S / PCM / SPDIF independently for playback and
+> + * capture, however, the current API sets the bus format globally for a DAI.
+> + */
+
+You should handle this by having separate DAIs for playback and capture
+at the ASoC level if you want to support it, if all the signals going
+out of the processor are independant there's no need for the rest of the
+system to know that they're related internally.  However, forcing
+symmetry is fine for now.
+
+> +	parent_clk = clk_get(siu_i2s_dai.dev, parent_name);
+> +	if (!IS_ERR(parent_clk)) {
+> +		ret = clk_set_parent(siu_clk, parent_clk);
+> +		if (!ret)
+> +			clk_set_rate(siu_clk, freq);
+> +	}
+
+> +	clk_put(parent_clk);
+
+Does clk_put() mind getting fed PTR_ERR() pointers?
