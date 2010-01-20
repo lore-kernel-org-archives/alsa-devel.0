@@ -1,50 +1,59 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [alsa-devel] [PATCH 1/4] ASoC: add a WM8978 codec driver
-Date: Wed, 20 Jan 2010 20:25:46 +0000
-Message-ID: <1264019146.6554.25.camel@odin>
-References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
-	 <Pine.LNX.4.64.1001190851380.4607@axis700.grange>
-	 <1263897964.3089.54.camel@odin>
-	 <Pine.LNX.4.64.1001202051370.4151@axis700.grange>
+From: "Ambrose, Martin" <martin@ti.com>
+Subject: Re: [PATCH] ARM: DaVinci: Audio support for
+	DA850/OMAP-L138 EVM
+Date: Wed, 20 Jan 2010 16:12:31 -0600
+Message-ID: <A24693684029E5489D1D202277BE894451741A35@dlee02.ent.ti.com>
+References: <1250024605-27215-1-git-send-email-chaithrika@ti.com>
+	<A24693684029E5489D1D202277BE8944515C9CC3@dlee02.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1001202051370.4151@axis700.grange>
-Sender: linux-sh-owner@vger.kernel.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-sh@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 38E1C103810
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2010 23:12:35 +0100 (CET)
+In-Reply-To: <A24693684029E5489D1D202277BE8944515C9CC3@dlee02.ent.ti.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Ambrose, Martin" <martin@ti.com>, "Subrahmanya, Chaithrika" <chaithrika@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>
+Cc: "Tufino, Bobby" <tufino@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-01-20 at 21:01 +0100, Guennadi Liakhovetski wrote:
-> On Tue, 19 Jan 2010, Liam Girdwood wrote:
-> > 
-> > It would be nice to have the relevant bits defined here for set_fmt()
-> > etc instead of just the magic numbers used in the above codec driver. 
-> 
-> As I explained privately, I agree, that using names instead of bits helps 
-> - but (mostly) only where those bits are reused multiple times in the 
-> code. If you only have to initialise a register once with some bitmask, I 
-> think, code like
-> 
-> 	/* Enable input X, output Y, set default W polarity to Z */
-> 	__raw_writel(0x123, reg);
-> 
-> looks better than
-> 
-> 	__raw_writel(CHIP_INPUT_X_ENABLE | CHIP_OUTPUT_Y_ENABLE | 
-> 			CHIP_SIGNAL_W_POLARITY_Z, reg);
-> 
-> so, unless there strong preferences in ALSA world, I'll try to combine 
-> both. Let me know if this contradicts the common ALSA style.
+Hello.
 
-I disagree, it's far better to use the bottom example as I can see
-explicitly which bits you intend to write.  This makes it easier for
-others to extend and debug your code.
+> -----Original Message-----
+> From: davinci-linux-open-source-bounces@linux.davincidsp.com [mailto:davinci-linux-open-source-
 
-Furthermore, WM codecs also have software generated register bits and
-register macros (available upon request) that further reduce any effort
-and any potential register value bugs.
+...
 
-Liam
+> On DA850/OMAPL138 the McASP AMUTE pin is multiplexed with UART2_RTS.
+> As a consequence, I believe, of the below additions when the kernel is built with
+> SOC audio support the ttyS2 console stops accepting input after boot.
+> 
+> Moreover on the EVM the AMUTE pin is only connected to headers AFAICT.
+> Specifically I think the DA850_AMUTE pin can be removed from below without
+> any loss of audio functionality while preserving console input.
+> 
+> > +const short da850_mcasp_pins[] __initdata = {
+> > +	DA850_AHCLKX, DA850_ACLKX, DA850_AFSX,
+> > +	DA850_AHCLKR, DA850_ACLKR, DA850_AFSR, DA850_AMUTE,
+> > +	DA850_AXR_11, DA850_AXR_12,
+> > +	-1
+> > +};
 
+Looking more deeply I see that the board setting intent is
+to use UART2 in 3-wire mode with no flow control. After setting
+my serial port appropriately I don't see a problem with leaving
+AMUTE as a McASP pin.
+
+Sorry for noise.
+
+-Martin
