@@ -1,17 +1,18 @@
-From: Lee Trager <lee.trager@hp.com>
-Subject: Re: [PATCH]  Fix automute issue on HP T5735
-Date: Tue, 19 Jan 2010 14:26:09 -0500
-Message-ID: <1263929169.2368.134.camel@ltrager-laptop>
-References: <1263574579.2368.88.camel@ltrager-laptop>
-	<s5hzl4ckjez.wl%tiwai@suse.de>
+From: "S. Aguinaga" <sa_jr@yahoo.com>
+Subject: Re: Echo Indigo card on Sabayon Gentoo
+Date: Tue, 19 Jan 2010 23:15:41 -0800 (PST)
+Message-ID: <152312.48176.qm@web65610.mail.ac4.yahoo.com>
+References: <898710.10745.qm@web65614.mail.ac4.yahoo.com>
+	<20100117230438.33ca6692@Jay>
+Reply-To: "S. Aguinaga" <sa_jr@yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from g1t0028.austin.hp.com (g1t0028.austin.hp.com [15.216.28.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B7A61038B0
-	for <alsa-devel@alsa-project.org>; Tue, 19 Jan 2010 20:26:12 +0100 (CET)
-In-Reply-To: <s5hzl4ckjez.wl%tiwai@suse.de>
+Received: from n6c.bullet.mail.ac4.yahoo.com (n6c.bullet.mail.ac4.yahoo.com
+	[76.13.13.83]) by alsa0.perex.cz (Postfix) with SMTP id 6B4931037E3
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2010 08:15:42 +0100 (CET)
+In-Reply-To: <20100117230438.33ca6692@Jay>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,64 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch you sent works fine. The only reason I called alc_automute_amp
-was because if I didn't if headphones were plugged in at boot it
-wouldn't work. This doesn't happen on your patch however. If anything
-else is needed to get this patch in let me know.
 
-Thanks,
 
-Lee
+Hello Giuliano,
 
-On Sun, 2010-01-17 at 12:25 +0000, Takashi Iwai wrote:
-> At Fri, 15 Jan 2010 11:56:19 -0500,
-> Lee Trager wrote:
-> > 
-> > The following patch fixes an issue where when you plug something into
-> > the headphone jack the internal speaker does not automute. This also
-> > will close alsa bug #0004766
-> 
-> Hm, the present quirk is already broken as its changing 0x15 with
-> alc_automute_amp().  There are already mixer elements with these NIDs,
-> and changing dynamically via unsol event conflicts with the mixers.
-> Also, alc_automute_amp() shouldn't be called in setup callback but in
-> init_hook callback instead.
-> 
-> I wonder whether the output pin control works with your device.  If it
-> does, it's much easier.  For example, how about the patch below?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ---
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index 7e0ea37..b0c8ae0 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -10490,7 +10490,7 @@ static void alc262_hp_t5735_setup(struct hda_codec *codec)
->  	struct alc_spec *spec = codec->spec;
->  
->  	spec->autocfg.hp_pins[0] = 0x15;
-> -	spec->autocfg.speaker_pins[0] = 0x0c; /* HACK: not actually a pin */
-> +	spec->autocfg.speaker_pins[0] = 0x14;
->  }
->  
->  static struct snd_kcontrol_new alc262_hp_t5735_mixer[] = {
-> @@ -11919,9 +11919,9 @@ static struct alc_config_preset alc262_presets[] = {
->  		.num_channel_mode = ARRAY_SIZE(alc262_modes),
->  		.channel_mode = alc262_modes,
->  		.input_mux = &alc262_capture_source,
-> -		.unsol_event = alc_automute_amp_unsol_event,
-> +		.unsol_event = alc_sku_unsol_event,
->  		.setup = alc262_hp_t5735_setup,
-> -		.init_hook = alc_automute_amp,
-> +		.init_hook = alc_inithook,
->  	},
->  	[ALC262_HP_RP5700] = {
->  		.mixers = { alc262_hp_rp5700_mixer },
+No luck, same behavior. I edited the first file listed listed below and recompiled it and installed it.
+Then I restarted the system with the indigo card in place, and the VU meters show levels in the -120 to -100 dB?
+
+I do have alsa-driver-1.0.22
+my kernel is 2.6.31
+
+// Salvador
+
+
+
+
+
+
+________________________________
+From: Giuliano Pochini <pochini@shiny.it>
+To: S. Aguinaga <sa_jr@yahoo.com>
+Sent: Sun, January 17, 2010 4:04:38 PM
+Subject: Re: [alsa-devel] Echo Indigo card on Sabayon Gentoo
+
+On Thu, 14 Jan 2010 12:13:55 -0800 (PST)
+"S. Aguinaga" <sa_jr@yahoo.com> wrote:
+
+> Hello Fellows, 
+> Just downloaded the latest (released)  alsa-lib, alsa-driver, and alsa-utils, but my Indigo card does not work. It has been tested on the same system using the same drivers and on the same system using Fedora 10, that works fine.
+
+First install a recent version of echomixer.
+
+If you are using alsa-driver 1.0.22 or kernel 2.6.32, try to add this line:
+
+#define ECHOCARD_HAS_LINE_OUT_GAIN
+
+in
+
+alsa-driver-1.0.22/alsa-kernel/pci/echoaudio/indigoio.c
+
+or in
+
+linux-2.6.32/sound/pci/echoaudio/indigoio.c
+
+and recompile. It re-enables the line-out control that I removed last year
+because it was not supposed to exist in that card.
+
+
+-- 
+Giuliano.
