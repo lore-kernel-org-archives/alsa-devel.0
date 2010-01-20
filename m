@@ -1,24 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Duplicate wake-ups in pcm_lib.c
-Date: Wed, 20 Jan 2010 11:42:32 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1001201141590.4324@eeebox2.perex-int.cz>
-References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>
-	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>
-	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>
-	<alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>
-	<4f3252891001102011l603d30cdlbe2a14163bbc7405@mail.gmail.com>
-	<alpine.LNX.2.00.1001110814310.4210@eeebox2.perex-int.cz>
-	<4f3252891001122258j5c3bd7c5u7184cad199f5cf40@mail.gmail.com>
-	<alpine.LNX.2.00.1001130803290.4324@eeebox2.perex-int.cz>
-	<4f3252891001192338r53b3847dq8f3bfab03cc8a914@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 0/2] ASoC: tlv320dac33: Burst mode BCLK
+ divider fixes
+Date: Wed, 20 Jan 2010 11:35:52 +0000
+Message-ID: <1263987352.3071.0.camel@odin>
+References: <1263973176-15925-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 305C224495
-	for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2010 11:42:34 +0100 (CET)
-In-Reply-To: <4f3252891001192338r53b3847dq8f3bfab03cc8a914@mail.gmail.com>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 97E7A244D6
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2010 12:35:57 +0100 (CET)
+Received: by ewy23 with SMTP id 23so4354052ewy.4
+	for <alsa-devel@alsa-project.org>; Wed, 20 Jan 2010 03:35:57 -0800 (PST)
+In-Reply-To: <1263973176-15925-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,115 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 20 Jan 2010, Raymond Yau wrote:
+On Wed, 2010-01-20 at 09:39 +0200, Peter Ujfalusi wrote:
+> Hello,
+> 
+> The following patches provides fixes for the BCLK clock divider configuration
+> in tlv320dac33 codec.
+> BCLK divider is used to specify the speed of the serial bus.
+> The speed of the bus can be (must be) faster than the actual stream's
+> sample rate in order to use the system in burst mode.
+> 
+> With the introduction of mode7 FIFO mode, the BCLK handling got broken in this
+> mode, the first patch fixes this issue.
+> The second patch adds support for configuring the burst mode BCLK through
+> platform data.
+> 
+> ---
+> Peter Ujfalusi (2):
+>   ASoC: tlv320dac33: BCLK divider fix
+>   ASoC: tlv320dac33: Burst mode BCLK divider configuration
+> 
+>  include/sound/tlv320dac33-plat.h |    1 +
+>  sound/soc/codecs/tlv320dac33.c   |   22 +++++++++++++++++-----
+>  2 files changed, 18 insertions(+), 5 deletions(-)
+> 
 
-> 2010/1/13 Jaroslav Kysela <perex@perex.cz>
->
->> On Wed, 13 Jan 2010, Raymond Yau wrote:
->>
->>  2010/1/11 Jaroslav Kysela <perex@perex.cz>
->>>
->>>  On Mon, 11 Jan 2010, Raymond Yau wrote:
->>>>
->>>>  2010/1/7 Jaroslav Kysela <perex@perex.cz>
->>>>
->>>>>
->>>>>  On Wed, 6 Jan 2010, pl bossart wrote:
->>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>>> The improved and more clean fix in now in my tree:
->>>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>>> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=1250932e48d3b698415b1f04775433cf1da688d6
->>>>>>
->>>>>> Note that you should apply these 4 patches (in reverse order):
->>>>>>
->>>>>> 4: ALSA: pcm_lib - optimize wake_up() calls for PCM I/O
->>>>>> 3: ALSA: pcm_lib - cleanup & merge hw_ptr update functions
->>>>>> 2: ALSA: pcm_lib - add possibility to log last 10 DMA ring buffer
->>>>>> positions
->>>>>> 1: ALSA: pcm_lib.c - convert second xrun_debug() parameter to use
->>>>>> defines
->>>>>>
->>>>>> Patch #3 should definitely fix problems with large avail or delay
->>>>>> values
->>>>>> reported in PA. I finally figured the culprit (and decide to cleanup
->>>>>> all
->>>>>> relevant code rather do just another workaround). In other words, new
->>>>>> hw_ptr pointer should never be less than previous one now.
->>>>>>
->>>>>>                                              Jaroslav
->>>>>>
->>>>>> -
->>>>>>
->>>>>>
->>>>>>  using alsa-driver-1.0.22.1.1.g231e3.14.g812cb and Fedora 12 inside
->>>>> Virtual
->>>>> Box
->>>>>
->>>>> aplay -D plughw:0,0 /usr/share/sounds/alsa/*.wav
->>>>>
->>>>> "Front Left" sound as "Front Front Left" when playing "Front_left.wav"
->>>>>
->>>>> only when echo 4 > /proc/asound/card0/pcm0p/xrun_debug
->>>>>
->>>>>
->>>> Thanks for testing.
->>>>
->>>> It means that with other values is no sound generated?
->>>>
->>>> Could you use value 29 for xrun_debug and report all sound related
->>>> messages
->>>> from dmesg output after playback of "Front_left.wav"?
->>>>
->>>>                                       Jaroslav
->>>>
->>>> -----
->>>>
->>>
->>>
->>>
->>> do you mean 27 instead of 29 since the echo only occur when the value
->>> contain XRUN_DEBUG_JIFFIESCHECK  bit  ?
->>>
->>> aplay -Dplughw:0,0 and mplayer -ao alsa:device=hw=0,0 work normal
->>>
->>> except when the value of xrun_debug contain XRUN_DEBUG_JIFFIESCHECK  bit
->>>  (
->>> same result for the three  virtual box audio backend oss, pulseaudio and
->>> alsa )
->>>
->>
->> Ok, I understand now. It would be better to use value 101 then - to see
->> last 10 ring buffer positions when jiffies correction occurs. Also, get
->> latest snapshot - there is a fix for jiffies check. Thanks.
->>
->>                                        Jaroslav
->>
->>
-> alsa-driver-1.0.22.1.1.g231e3.61.g42efb
-> copying file alsa/kernel/core/sound.c
-> patchfile file sound.c
-> Hunk# 12  FAILED at 518
-> 1 out of 12 hunks FAILED -- saving rejects to file sound.c.rej
->
->
-> seem related to
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=8a822c23333694e7d1e6ccb15267e251af6d8f4f
-
-The problem should be fixed now. Thanks for the notice.
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
