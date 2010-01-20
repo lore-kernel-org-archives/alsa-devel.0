@@ -1,60 +1,69 @@
 From: Christoph Egger <siccegge@stud.informatik.uni-erlangen.de>
-Subject: [PATCH] Obsolete config in kernel source (USE_MIXARTLOADER)
-Date: Wed, 20 Jan 2010 14:31:44 +0100
-Message-ID: <20100120133144.GD3580@faui49.informatik.uni-erlangen.de>
+Subject: Re: [PATCH] Obsolete config in kernel source (USE_MIXARTLOADER)
+Date: Wed, 20 Jan 2010 14:38:27 +0100
+Message-ID: <20100120133827.GB2040@stud.informatik.uni-erlangen.de>
+References: <20100120133144.GD3580@faui49.informatik.uni-erlangen.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="+pHx0qQiF2pBVqBT"
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752111Ab0ATNb2@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="liOOAslEiF7prFVr"
+Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1753502Ab0ATNid@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <20100120133144.GD3580@faui49.informatik.uni-erlangen.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc: siccegge@stud.informatik.uni-erlangen.de, Reinhard.Tartler@informatik.uni-erlangen.de
+Cc: Reinhard.Tartler@informatik.uni-erlangen.de
 List-Id: alsa-devel@alsa-project.org
 
 
---+pHx0qQiF2pBVqBT
+--liOOAslEiF7prFVr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi all!
+On Wed, Jan 20, 2010 at 02:31:44PM +0100, Christoph Egger wrote:
+> Hi all!
+> 
+> 	As part of the VAMOS[0] research project at the University of
+> Erlangen we're checking referential integrity between kernel KConfig
+> options and in-code Conditional blocks.
+> 
+> 	The config Variable USE_MIXARTLOADER has been non-existent for
+> all git based linux kernels (2.6.12-rc) and seems to be no longer
+> relevant. It is only referenced at one place in the Code
+> (sound/pci/mixart/mixart_hwdep.c).
+> 
+> 	The attached patch makes the behaviour more obvious as it is
+> equivalent to the old one when assuming CONFIG_MIXARTLOADER as not
+> defined.
+> 
+> 	Please keep me informed of this patch getting confirmed /
+> merged so we can keep track of it.
 
-	As part of the VAMOS[0] research project at the University of
-Erlangen we're checking referential integrity between kernel KConfig
-options and in-code Conditional blocks.
-
-	The config Variable USE_MIXARTLOADER has been non-existent for
-all git based linux kernels (2.6.12-rc) and seems to be no longer
-relevant. It is only referenced at one place in the Code
-(sound/pci/mixart/mixart_hwdep.c).
-
-	The attached patch makes the behaviour more obvious as it is
-equivalent to the old one when assuming CONFIG_MIXARTLOADER as not
-defined.
-
-	Please keep me informed of this patch getting confirmed /
-merged so we can keep track of it.
-
+	Same is, of course, true for USE_PCXHRLOADER. Attached is a
+patch doing the same for both of them.
+ 
 Regards
 
 	Christoph Egger
 
 
---+pHx0qQiF2pBVqBT
+
+--liOOAslEiF7prFVr
 Content-Type: text/x-diff; charset=us-ascii
 Content-Disposition: attachment; filename="0001-config-USE_MIXARTLOADER-has-never-existed-in-KConfig.patch"
 
->From 974a2f370b3401e948821bae47c3e9edb1b21a5e Mon Sep 17 00:00:00 2001
+>From 5a6f78fb03278e0f825be74c94546a7d05c222df Mon Sep 17 00:00:00 2001
 From: Christoph Egger <siccegge@stud.informatik.uni-erlangen.de>
 Date: Wed, 20 Jan 2010 14:23:47 +0100
 Subject: [PATCH] config USE_MIXARTLOADER has never existed in KConfig for 2.6 linux
  kernels so this part of the check always evaluates to true thus
  removing the part of the check.
 
+The same is true for USE_PCXHRLOADER
 
 Signed-off-by: Christoph Egger <siccegge@stud.informatik.uni-erlangen.de>
 ---
  sound/pci/mixart/mixart_hwdep.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/pci/pcxhr/pcxhr_hwdep.c   |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/pci/mixart/mixart_hwdep.c b/sound/pci/mixart/mixart_hwdep.c
 index 4cf4cd8..ef39a58 100644
@@ -69,8 +78,21 @@ index 4cf4cd8..ef39a58 100644
  #define SND_MIXART_FW_LOADER	/* use the standard firmware loader */
  #endif
  #endif
+diff --git a/sound/pci/pcxhr/pcxhr_hwdep.c b/sound/pci/pcxhr/pcxhr_hwdep.c
+index 17cb123..16152ce 100644
+--- a/sound/pci/pcxhr/pcxhr_hwdep.c
++++ b/sound/pci/pcxhr/pcxhr_hwdep.c
+@@ -35,7 +35,7 @@
+ 
+ 
+ #if defined(CONFIG_FW_LOADER) || defined(CONFIG_FW_LOADER_MODULE)
+-#if !defined(CONFIG_USE_PCXHRLOADER) && !defined(CONFIG_SND_PCXHR) /* built-in kernel */
++#if !defined(CONFIG_SND_PCXHR) /* built-in kernel */
+ #define SND_PCXHR_FW_LOADER	/* use the standard firmware loader */
+ #endif
+ #endif
 -- 
 1.6.3.3
 
 
---+pHx0qQiF2pBVqBT--
+--liOOAslEiF7prFVr--
