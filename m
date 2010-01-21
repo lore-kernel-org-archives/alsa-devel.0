@@ -1,14 +1,15 @@
 From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH] add simplified versions of widget macros
-Date: Thu, 21 Jan 2010 21:10:47 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1001212046320.9137@axis700.grange>
+Subject: [PATCH] ASoC: add helper macros to declare struct
+	soc_enum instances
+Date: Thu, 21 Jan 2010 22:04:03 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1001212157160.9137@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 3B10210387C
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 21:10:40 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with SMTP id 447552451D
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 22:04:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,60 +23,36 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Many macros from include/sound/soc-dapm.h take an array and a number of 
-elements in it as arguments, whereas most users use static arrays and use 
-"x, ARRAY_SIZE(x)" as arguments. This patch adds simplified versions of 
-those macros, calling ARRAY_SIZE() internally.
+Several shortcuts for popular uses of some of SOC_ENUM_* and 
+SOC_VALUE_ENUM_* macros.
 
 Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 ---
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index c5c95e1..c0922a0 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -95,6 +95,21 @@
- 	.shift = wshift, .invert = winvert, .kcontrols = wcontrols, \
- 	.num_kcontrols = 1}
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 08909cc..9537144 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -169,6 +169,23 @@
+ 	.private_value = (unsigned long)&xenum }
  
-+/* Simplified versions of above macros, assuming wncontrols = ARRAY_SIZE(wcontrols) */
-+#define SOC_PGA_ARRAY(wname, wreg, wshift, winvert,\
-+	 wcontrols) \
-+{	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
-+	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols)}
-+#define SOC_MIXER_ARRAY(wname, wreg, wshift, winvert, \
-+	 wcontrols)\
-+{	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
-+	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols)}
-+#define SOC_MIXER_NAMED_CTL_ARRAY(wname, wreg, wshift, winvert, \
-+	 wcontrols)\
-+{       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, .reg = wreg, \
-+	.shift = wshift, .invert = winvert, .kcontrols = wcontrols, \
-+	.num_kcontrols = ARRAY_SIZE(wcontrols)}
+ /*
++ * Simplified versions of above macros, declaring a struct and calculating
++ * ARRAY_SIZE internally
++ */
++#define SOC_ENUM_DOUBLE_DECL(name, xreg, xshift_l, xshift_r, xtexts) \
++	struct soc_enum name = SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, \
++						ARRAY_SIZE(xtexts), xtexts)
++#define SOC_ENUM_SINGLE_DECL(name, xreg, xshift, xtexts) \
++	SOC_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xtexts)
++#define SOC_ENUM_SINGLE_EXT_DECL(name, xtexts) \
++	struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
++#define SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift_l, xshift_r, xmask, xtexts, xvalues) \
++	struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, \
++							ARRAY_SIZE(xtexts), xtexts, xvalues)
++#define SOC_VALUE_ENUM_SINGLE_DECL(name, xreg, xshift, xmask, xtexts, xvalues) \
++	SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
 +
- /* path domain with event - event handler must return 0 for success */
- #define SND_SOC_DAPM_PGA_E(wname, wreg, wshift, winvert, wcontrols, \
- 	wncontrols, wevent, wflags) \
-@@ -126,6 +141,23 @@
- 	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = 1, \
- 	.event = wevent, .event_flags = wflags}
- 
-+/* Simplified versions of above macros, assuming wncontrols = ARRAY_SIZE(wcontrols) */
-+#define SOC_PGA_E_ARRAY(wname, wreg, wshift, winvert, wcontrols, \
-+	wevent, wflags) \
-+{	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
-+	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols), \
-+	.event = wevent, .event_flags = wflags}
-+#define SOC_MIXER_E_ARRAY(wname, wreg, wshift, winvert, wcontrols, \
-+	wevent, wflags) \
-+{	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
-+	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols), \
-+	.event = wevent, .event_flags = wflags}
-+#define SOC_MIXER_NAMED_CTL_E_ARRAY(wname, wreg, wshift, winvert, \
-+	wcontrols, wevent, wflags) \
-+{       .id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
-+	.invert = winvert, .kcontrols = wcontrols, \
-+	.num_kcontrols = ARRAY_SIZE(wcontrols), .event = wevent, .event_flags = wflags}
-+
- /* events that are pre and post DAPM */
- #define SND_SOC_DAPM_PRE(wname, wevent) \
- {	.id = snd_soc_dapm_pre, .name = wname, .kcontrols = NULL, \
++/*
+  * Bias levels
+  *
+  * @ON:      Bias is fully on for audio playback and capture operations.
