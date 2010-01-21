@@ -1,61 +1,81 @@
-From: Steve Chen <schen-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH 0/5] Add Voice Codec support for DaVinci platforms
-Date: Thu, 21 Jan 2010 13:36:34 -0600
-Message-ID: <1264102595.3207.180.camel@linux-1lbu>
-References: <4B58904E.4030108@ridgerun.com>
-	<1264099975.3207.176.camel@linux-1lbu>
-	(sfid-20100121_185231_613114_5A2091DA)
-	<66B80913-5079-4E5D-8D89-0CE78D02A14C@opensource.wolfsonmicro.com>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: [PATCH] add simplified versions of widget macros
+Date: Thu, 21 Jan 2010 21:10:47 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1001212046320.9137@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-In-Reply-To: <66B80913-5079-4E5D-8D89-0CE78D02A14C-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Santiago Nunez <santiago.nunez-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org" <davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>, Miguel Aguilar <miguel.aguilar-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>, clarkbecker <clark.becker-9uBrGCPFOa1Wk0Htik3J/w@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 3B10210387C
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 21:10:40 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-01-21 at 19:25 +0000, Mark Brown wrote:
-> On 21 Jan 2010, at 18:52, Steve Chen <schen-Igf4POYTYCDQT0dZR+AlfA@public.gmane.org> wrote:
-> 
-> > On Thu, 2010-01-21 at 11:35 -0600, Miguel Aguilar wrote:
-> >> Hi,
-> >>
-> >> The following patch series adds support for the Voice Codec in the  
-> >> Davinci
-> >> platform and in this particular case for the DM365 EVM.
-> >>
-> >> The DM365 EVM has two codecs the AIC3x and the Voice Codec, however  
-> >> at this
-> >> point is not possible to have both enabled simultaneously since the  
-> >> soc-core
-> >> doesn't support that, so a patch for enable both simultaneously  
-> >> will be sent
-> >> when this support is available in the soc-core.
-> >
-> > I thought, perhaps incorrectly, that soc-core already has the  
-> > ability to
-> > support multiple codecs.  When I worked on ALSA soc support for  
-> > DM6467,
-> > one of the McASP was connected to AIC3x and the other is SPDIF output.
-> > Both interface can work at the same time.  I just assumed that if we
-> > have two  McASP (or other audio controllers) connected to two codecs.
-> > They would both just work under ALSA soc.  Please let me know if I'm
-> > mistaken.
-> 
-> It can only cope with one CODEC with registers. That S/PDIF interface  
-> has no registers so could be made to work.
+Many macros from include/sound/soc-dapm.h take an array and a number of 
+elements in it as arguments, whereas most users use static arrays and use 
+"x, ARRAY_SIZE(x)" as arguments. This patch adds simplified versions of 
+those macros, calling ARRAY_SIZE() internally.
 
-I just pull up the code and looked at it again.  You are right.  Sorry
-about the noise.
-
-Steve
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+---
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index c5c95e1..c0922a0 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -95,6 +95,21 @@
+ 	.shift = wshift, .invert = winvert, .kcontrols = wcontrols, \
+ 	.num_kcontrols = 1}
+ 
++/* Simplified versions of above macros, assuming wncontrols = ARRAY_SIZE(wcontrols) */
++#define SOC_PGA_ARRAY(wname, wreg, wshift, winvert,\
++	 wcontrols) \
++{	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
++	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols)}
++#define SOC_MIXER_ARRAY(wname, wreg, wshift, winvert, \
++	 wcontrols)\
++{	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
++	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols)}
++#define SOC_MIXER_NAMED_CTL_ARRAY(wname, wreg, wshift, winvert, \
++	 wcontrols)\
++{       .id = snd_soc_dapm_mixer_named_ctl, .name = wname, .reg = wreg, \
++	.shift = wshift, .invert = winvert, .kcontrols = wcontrols, \
++	.num_kcontrols = ARRAY_SIZE(wcontrols)}
++
+ /* path domain with event - event handler must return 0 for success */
+ #define SND_SOC_DAPM_PGA_E(wname, wreg, wshift, winvert, wcontrols, \
+ 	wncontrols, wevent, wflags) \
+@@ -126,6 +141,23 @@
+ 	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = 1, \
+ 	.event = wevent, .event_flags = wflags}
+ 
++/* Simplified versions of above macros, assuming wncontrols = ARRAY_SIZE(wcontrols) */
++#define SOC_PGA_E_ARRAY(wname, wreg, wshift, winvert, wcontrols, \
++	wevent, wflags) \
++{	.id = snd_soc_dapm_pga, .name = wname, .reg = wreg, .shift = wshift, \
++	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols), \
++	.event = wevent, .event_flags = wflags}
++#define SOC_MIXER_E_ARRAY(wname, wreg, wshift, winvert, wcontrols, \
++	wevent, wflags) \
++{	.id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
++	.invert = winvert, .kcontrols = wcontrols, .num_kcontrols = ARRAY_SIZE(wcontrols), \
++	.event = wevent, .event_flags = wflags}
++#define SOC_MIXER_NAMED_CTL_E_ARRAY(wname, wreg, wshift, winvert, \
++	wcontrols, wevent, wflags) \
++{       .id = snd_soc_dapm_mixer, .name = wname, .reg = wreg, .shift = wshift, \
++	.invert = winvert, .kcontrols = wcontrols, \
++	.num_kcontrols = ARRAY_SIZE(wcontrols), .event = wevent, .event_flags = wflags}
++
+ /* events that are pre and post DAPM */
+ #define SND_SOC_DAPM_PRE(wname, wevent) \
+ {	.id = snd_soc_dapm_pre, .name = wname, .kcontrols = NULL, \
