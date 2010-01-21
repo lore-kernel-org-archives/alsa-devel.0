@@ -1,15 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_pcm_hw_params_free() immediately after
- snd_pcm_hw_params() ???
-Date: Thu, 21 Jan 2010 11:18:50 +0100
-Message-ID: <4B582A0A.8030603@ladisch.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: Reforming s3c2443 ac97 driver
+Date: Thu, 21 Jan 2010 10:37:47 +0000
+Message-ID: <1264070267.2396.92.camel@odin>
+References: <29946650.33531262928531169.JavaMail.weblogic@epml17>
+	<9A9547C8-08FD-4310-A69C-44CA8A3E01C2@opensource.wolfsonmicro.com>
+	<1b68c6791001202258p7ef0ebcdt444a3be2eeaaff36@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id A5AF610384D
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 11:18:54 +0100 (CET)
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.159])
+	by alsa0.perex.cz (Postfix) with ESMTP id 10AE52412E
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 11:37:50 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 22so108332fge.2
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 02:37:49 -0800 (PST)
+In-Reply-To: <1b68c6791001202258p7ef0ebcdt444a3be2eeaaff36@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,21 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "jassi.brar@samsung.com" <jassi.brar@samsung.com>, "graeme.gregory@wolfsonmicro.com" <graeme.gregory@wolfsonmicro.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "ben-linux@fluff.org" <ben-linux@fluff.org>, SeungHyun Choi <sh428.choi@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote:
-> Is there any flags in substream which can indicate snd_xxx_hw_params() was
-> called at first time since snd_xxx_hw_params() were called many times
-> during OSS emulation (probing the supported rates , channels , .... ) ?
+On Thu, 2010-01-21 at 15:58 +0900, jassi brar wrote:
 
-There is no such flag.  It is the responsibility of the driver to track
-the resources it has allocated.
+> The s3c2443-ac97.c is used by SMDK2443 and LN2440SBC machines. My new
+> driver is at least as good as old one for SMDK2443(both detect
+> controller fine but none produce any sound..
+> might be some h/w issue on the only board I have got).
 
-If a resource does not depend on the hardware parameters, it might be
-a better idea to allocate/free it in the open/close callbacks.
+It does sound like the AC97 link is up and running. What codec is used
+here ? 
 
+> I have no access to LN2440SBC but there is no reason for it to
+> complain.
+> Besides, the new AC97 controller driver(plus a machine driver for
+> SMDKs with WM9713 attached to AC97 port) has been tested on all
+> SoCs that I could get my hands on(6410, C100, C110 and V210).
+> 
 
-Best regards,
-Clemens
+It would be good if you could also confirm that AC97 warm reset, AC97
+cold reset and VRA (rates other than 48kHz) all work with the new
+driver. Fwiw, it does sound like AC97 warm reset works since the WM9713
+probes (it's default state requires warm reset to wake up the link).
+
+Liam
