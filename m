@@ -1,21 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_pcm_hw_params_free() immediately after
-	snd_pcm_hw_params() ???
-Date: Thu, 21 Jan 2010 17:12:27 +0800
-Message-ID: <4f3252891001210112j7ee41cdwb5b5a1f09061e003@mail.gmail.com>
-References: <4f3252891001202032o59ff0bc1q79b023d80c6dcd17@mail.gmail.com>
-	<s5h4omgc59e.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Reforming s3c2443 ac97 driver
+Date: Thu, 21 Jan 2010 10:03:48 +0000
+Message-ID: <20100121100348.GA18797@rakim.wolfsonmicro.main>
+References: <29946650.33531262928531169.JavaMail.weblogic@epml17>
+	<9A9547C8-08FD-4310-A69C-44CA8A3E01C2@opensource.wolfsonmicro.com>
+	<1b68c6791001202258p7ef0ebcdt444a3be2eeaaff36@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94A66103856
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 10:12:29 +0100 (CET)
-Received: by pwi4 with SMTP id 4so10590029pwi.32
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 01:12:27 -0800 (PST)
-In-Reply-To: <s5h4omgc59e.wl%tiwai@suse.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6FE3F10384D
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 11:03:51 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6791001202258p7ef0ebcdt444a3be2eeaaff36@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, SeungHyun Choi <sh428.choi@samsung.com>, "ben-linux@fluff.org" <ben-linux@fluff.org>, "graeme.gregory@wolfsonmicro.com" <graeme.gregory@wolfsonmicro.com>, "jassi.brar@samsung.com" <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-2010/1/21 Takashi Iwai <tiwai@suse.de>
+On Thu, Jan 21, 2010 at 03:58:46PM +0900, jassi brar wrote:
 
->
->
-> Confusingly, snd_pcm_hw_params_free() and snd_pcm_hw_free() are
-> different.
->
-> The former is just to free the malloced snd_pcm_hw_params struct
-> while the latter corresponds to snd_xxx_hw_free().
->
->
-> Takashi
->
+> Both parts(platform_device interface and ALSA AC97 interface)
+> of s3c2443-ac97.c needed so much reforming that I found rewriting the
+> driver again a better option.
+> The new driver is called 's3c-ac97.c' ... hoping the AC97 controller
+> doesn't change in SoCs released after you read this mail :)
 
-Is there any flags in substream which can indicate snd_xxx_hw_params() was
-called at first time since snd_xxx_hw_params() were called many times
-during OSS emulation (probing the supported rates , channels , .... ) ?
+That sounds fine, though it will requier slightly more cross tree
+coordination with there being changes in both arch/arm and sound/soc.
+Please go ahead.
