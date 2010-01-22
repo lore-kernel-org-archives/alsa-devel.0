@@ -1,16 +1,22 @@
-From: shariff <shariffsinbox@gmail.com>
-Subject: Reg: Audio recording with twl4030 codec
-Date: Fri, 22 Jan 2010 15:27:23 +0530
-Message-ID: <1cbe56071001220157u5133ae91mf89dabb2f4da8fdb@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4] ASoC: add a WM8978 codec driver
+Date: Fri, 22 Jan 2010 10:35:04 +0000
+Message-ID: <20100122103504.GC10997@rakim.wolfsonmicro.main>
+References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
+	<Pine.LNX.4.64.1001190851380.4607@axis700.grange>
+	<20100119105729.GA32559@opensource.wolfsonmicro.com::587>
+	<Pine.LNX.4.64.1001191445520.4607@axis700.grange>
+	<20100120201726.GD7725@sirena.org.uk>
+	<Pine.LNX.4.64.1001220934230.4652@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53]) by alsa0.perex.cz (Postfix) with ESMTP id DA55524396
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2010 10:57:25 +0100 (CET)
-Received: by pwi4 with SMTP id 4so1518185pwi.32
-	for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2010 01:57:23 -0800 (PST)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E21F2243C4
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2010 11:35:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1001220934230.4652@axis700.grange>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Fri, Jan 22, 2010 at 09:35:44AM +0100, Guennadi Liakhovetski wrote:
+> On Wed, 20 Jan 2010, Mark Brown wrote:
 
-        I am working with OMAP3 based custom board that has twl4030 codec &
-        using linux-2.6.29 kernel from opensource.
+> > That seems wrong - if they're being managed in the bias level
+> > configuration they ought to be being turned off at some point.  If they
+> > should be set all the time then set them during chip init.
 
-        I have some queries regarding Audio recording.
+> Right, a couple of lines below:
 
-       Audio codec is connected to twl4030 as bellow
+> +	case SND_SOC_BIAS_OFF:
+> +		snd_soc_write(codec, WM8978_POWER_MANAGEMENT_1, 0);
 
-                                  TWL4030
-                             |--------------------|
-                             |                    |------ MAINMIC
-      McBSP2  ------  |i2s/tdm         |
-                             | ___________|
+Yeah, I saw that.  This is one of those cases where numeric bitmask
+based updates make things much harder to follow - without referring to
+the datasheet and thinking about it it's not clear what's going on and
+if it's intentional.
 
-      --> One Analog MIC is connected to Main Mic and I am using Audio path
-not the Voice path.
-
-           After selecting Main Mic through amixer control.
-
-           and recording audio using "arecord -c 1 -r 8000 -f S16_LE -t wav
--d 20 record-file.wav"
-
-       --> Here record is successful but with lot of noise.
-
-          1) Can we record Mono(1 channel) through I2S from TWL4030 codec?
-
-          2) To record stereo(2 channels), do we need two Mic's ? (i.e do I
-need Sub Mic also).
-
-Regards,
-Shariff
+I'd suggest changing all this code to use snd_soc_update_bits() and
+symbolic names for the bits that are getting twiddled - it really is a
+lot easier to follow.
