@@ -1,15 +1,19 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH] ASoC: add helper macros to declare struct
-	soc_enum instances
-Date: Thu, 21 Jan 2010 22:04:03 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1001212157160.9137@axis700.grange>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: Reforming s3c2443 ac97 driver
+Date: Fri, 22 Jan 2010 10:03:20 +0900
+Message-ID: <1b68c6791001211703v64422b13r56c871e3032c0de5@mail.gmail.com>
+References: <0KWM003YNI0X6D@ms11.samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 447552451D
-	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 22:04:07 +0100 (CET)
+Received: from mail-qy0-f185.google.com (mail-qy0-f185.google.com
+	[209.85.221.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id 82686245AA
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2010 02:03:22 +0100 (CET)
+Received: by qyk15 with SMTP id 15so344176qyk.23
+	for <alsa-devel@alsa-project.org>; Thu, 21 Jan 2010 17:03:21 -0800 (PST)
+In-Reply-To: <0KWM003YNI0X6D@ms11.samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,40 +23,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: sh428.choi@samsung.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "ben-linux@fluff.org" <ben-linux@fluff.org>, "graeme.gregory@wolfsonmicro.com" <graeme.gregory@wolfsonmicro.com>, =?UTF-8?B?7J6Q7JSo?= <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Several shortcuts for popular uses of some of SOC_ENUM_* and 
-SOC_VALUE_ENUM_* macros.
-
-Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
----
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 08909cc..9537144 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -169,6 +169,23 @@
- 	.private_value = (unsigned long)&xenum }
- 
- /*
-+ * Simplified versions of above macros, declaring a struct and calculating
-+ * ARRAY_SIZE internally
-+ */
-+#define SOC_ENUM_DOUBLE_DECL(name, xreg, xshift_l, xshift_r, xtexts) \
-+	struct soc_enum name = SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, \
-+						ARRAY_SIZE(xtexts), xtexts)
-+#define SOC_ENUM_SINGLE_DECL(name, xreg, xshift, xtexts) \
-+	SOC_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xtexts)
-+#define SOC_ENUM_SINGLE_EXT_DECL(name, xtexts) \
-+	struct soc_enum name = SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(xtexts), xtexts)
-+#define SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift_l, xshift_r, xmask, xtexts, xvalues) \
-+	struct soc_enum name = SOC_VALUE_ENUM_DOUBLE(xreg, xshift_l, xshift_r, xmask, \
-+							ARRAY_SIZE(xtexts), xtexts, xvalues)
-+#define SOC_VALUE_ENUM_SINGLE_DECL(name, xreg, xshift, xmask, xtexts, xvalues) \
-+	SOC_VALUE_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xmask, xtexts, xvalues)
-+
-+/*
-  * Bias levels
-  *
-  * @ON:      Bias is fully on for audio playback and capture operations.
+T24gRnJpLCBKYW4gMjIsIDIwMTAgYXQgOTo0MyBBTSwgU2V1bmdIeXVuIENob2kgPHNoNDI4LmNo
+b2lAc2Ftc3VuZy5jb20+IHdyb3RlOgo+Cj4gRGVhci4gSmFzc2kKPgo+IFRoYW5rIHlvdSBmb3Ig
+YWxsIHRoZSBpbmZvcm1hdGlvbiBvZiBBQzk3IHJlZm9ybWluZy4KPgo+IEknbSB3b3JraW5nIGZv
+ciBBbmRyb2lkIHNtYXJ0IHBob25lwqBub3cgYXMgVC9MIHdpdGggU2Ftc3VuZyBIYW5kc2V0IGRp
+dmlzaW9uIChTM0M2NDEwIC0tPiBHYWxheHktc3BpY2EsIEluc3RpbmN0USkKPgo+IEFjdHVhbGx5
+LCB3ZSBhcmUgdXNpbmcgSTJTIGludGVyZmFjZSBhbmQgZXh0ZXJuYWwgY29kZWMgY2hpcCDCoGZv
+ciBhdWRpbyBiZWNhdXNlIG9mIHZhcmlvdXMgZnVuY3Rpb25zIG9mIGF1ZGlvIGxpa2UgY29ubmVj
+dGluZyBCVCBvciBtb2RlbS4uIGV0Yy4KPgo+IEhvbmVzdGx5IMKgb3V0IG9mIG15IG1pbmQgYWJv
+dXQgQUM5NyBjb2RlYy4gQnV0IHlvdXIgd29ya3MgYXJlIGxvb2sgZmluZS4gSSBhZ3JlZSB0b28u
+CnRoYW5rcyBmb3IgYWdyZWVpbmcuCgo+Cj4gSSd2ZSByZWZvcm1lZCBpMmMgJiBwY23CoGRyaXZl
+ciBpbiBsaW51eCAyLjYuMjkgdG9vIHNpbmNlIGFuZHJvaWQgZG9lc24ndCBoYXZlIGF1ZGlvIGxp
+YnJhcnkgYW5kIGRpZmZyZW50IGZyb20gb3RoZXIgT1MgbGlrZSBXTSBvcsKgTGludXgKSSBrZWVw
+IHVwZGF0ZWQoYWZ0ZXIgYmFja3BvcnRpbmcgbGF0ZXN0IGNvZGUgZnJvbSBNYXJrJ3MgR0lUKSBT
+YW1zdW5nCmxpbnV4LTIuNi4yOS8zMSB0aGF0IHlvdSBtaWdodCB3YW50IHRvIHRyeSBvdXQuCgo+
+IEl0IHdhcyBzbyBkaWZmaWN1bHQgdG8gaGFuZGxlIGJ1ZmZlciBtYW5hZ2VtZW50IGJldHdlZW4g
+UGxhdGZvcm0gYW5kIEtlcm5lbC4gKG5vaXNlLCBkaXN0b3J0aW9uLiAuLi4pCj4KPiBOZXh0IHRp
+bWUsIEknZCBsaWtlIHRvIHNoYXJlwqB3aXRoIHlvdSBpZiB0aGVyZSBpcyBhIGNoYW5jZS4KPgo+
+IFJlZ2FyZHMuCj4KPgo+Cj4gLS0tLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tLS0KPiBTZW5k
+ZXIgOiBqYXNzaSBicmFyPGphc3Npc2luZ2hicmFyQGdtYWlsLmNvbT4KPiBEYXRlIDogMjAxMC0w
+MS0yMSAxNTo1OCAoR01UKzA5OjAwKQo+IFRpdGxlIDogUmU6IFthbHNhLWRldmVsXSBSZWZvcm1p
+bmcgczNjMjQ0MyBhYzk3IGRyaXZlcgo+Cj4gT27CoEZyaSzCoEphbsKgOCzCoDIwMTDCoGF0wqA2
+OjQ4wqBQTSzCoE1hcmvCoEJyb3duCj4gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8u
+Y29tPsKgd3JvdGU6Cj4gPsKgT27CoDjCoEphbsKgMjAxMCzCoGF0wqAwNToyOCzCoEpBU1dJTkRF
+UlNJTkdIwqBCUkFSwqA8amFzc2kuYnJhckBzYW1zdW5nLmNvbT4KPiA+wqB3cm90ZToKPiA+Cj4g
+Pj7CoEhpLAo+ID4+wqDCoMKgwqDCoFJpZ2h0wqBub3fCoHRoZcKgUzNDMjQ0MydzwqBBQzk3X3Zl
+cjIuMMKgY29udHJvbGxlcsKgZHJpdmVywqBpc24ndAo+ID4+wqBmbGV4aWJsZcKgZW5vdWdoCj4g
+Pj7CoHRvwqBoYW5kbGXCoG5ld2VywqBTb0NzLgo+ID4+wqDCoMKgSW7CoG9yZGVywqB0b8KgcHJl
+cGFyZcKgZ3JvdW5kwqBmb3LCoHN1cHBvcnRpbmfCoDY0eHjCoGFuZMKgUzVQeHh4eMKgdGhlCj4g
+Pj7CoGV4dGFudMKgZHJpdmVyCj4gPj7CoG5lZWRzwqB0b8KgYmXCoHJlZm9ybWVkLMKgYW5kwqB0
+aGF0wqBpc8Kgd2hhdMKgacKgYW3CoHBsYW5uaW5nwqB0b8KgZG/CoG5leHQuCj4gPj4KPiA+PsKg
+ScKgcGxhbsKgdG/CoGRvwqB0aGXCoGZvbGxvd2luZzotCj4gPj7CoDEpwqBVc2VywqBwbGF0Zm9y
+bV9kcml2ZXLCoHN0cnVjdHVyZcKgdG/CoGRldGVjdMKgYW5kwqBtYW5hZ2XCoEFDOTfCoGNvbnRy
+b2xsZXIKPiA+PsKgcGxhdGZvcm3CoGRldmljZXMuCj4gPj7CoDIpwqBSZW1vdmXCoGhhcmRjb2Rl
+ZMKgcGFyYW1ldGVycyhETUEswqBJT8KgYWRkcmVzcyzCoElSUcKgZXRjKcKgYW5kwqBwYXNzwqB2
+aWEKPiA+PsKgcGxhdGZvcm3CoHJlc291cmNlcy4KPiA+PsKgMynCoEluaXRpYWxpemXCoHBsYXRm
+b3JtwqBzcGVjaWZpY8Kgc3R1ZmbCoGJ5wqBjYWxsYmFja8KgcG9pbnRlcnPCoHRvCj4gPj7CoHBs
+YXRmb3JtwqBjb2RlKGNmZ19ncGlvKQo+ID4+Cj4gPj7CoE9iamVjdGlvbnMswqBzdWdnZXN0aW9u
+c8Kgd2VsY29tZS4KPiA+Cj4gPsKgVGhpc8Kgc291bmRzwqBsaWtlwqBhwqBnb29kwqBhcHByb2Fj
+aMKgLcKgcGxlYXNlwqBnb8KgYWhlYWQuCj4gVGhlcmXCoGhhc8KgYmVlbsKgYcKgc2xpZ2h0wqBj
+aGFuZ2XCoHRob3VnaC4KPgo+IEJvdGjCoHBhcnRzKHBsYXRmb3JtX2RldmljZcKgaW50ZXJmYWNl
+wqBhbmTCoEFMU0HCoEFDOTfCoGludGVyZmFjZSkKPiBvZsKgczNjMjQ0My1hYzk3LmPCoG5lZWRl
+ZMKgc2/CoG11Y2jCoHJlZm9ybWluZ8KgdGhhdMKgScKgZm91bmTCoHJld3JpdGluZ8KgdGhlCj4g
+ZHJpdmVywqBhZ2FpbsKgYcKgYmV0dGVywqBvcHRpb24uCj4gVGhlwqBuZXfCoGRyaXZlcsKgaXPC
+oGNhbGxlZMKgJ3MzYy1hYzk3LmMnwqAuLi7CoGhvcGluZ8KgdGhlwqBBQzk3wqBjb250cm9sbGVy
+Cj4gZG9lc24ndMKgY2hhbmdlwqBpbsKgU29Dc8KgcmVsZWFzZWTCoGFmdGVywqB5b3XCoHJlYWTC
+oHRoaXPCoG1haWzCoDopCj4KPiBUaGXCoHMzYzI0NDMtYWM5Ny5jwqBpc8KgdXNlZMKgYnnCoFNN
+REsyNDQzwqBhbmTCoExOMjQ0MFNCQ8KgbWFjaGluZXMuwqBNecKgbmV3Cj4gZHJpdmVywqBpc8Kg
+YXTCoGxlYXN0wqBhc8KgZ29vZMKgYXPCoG9sZMKgb25lwqBmb3LCoFNNREsyNDQzKGJvdGjCoGRl
+dGVjdAo+IGNvbnRyb2xsZXLCoGZpbmXCoGJ1dMKgbm9uZcKgcHJvZHVjZcKgYW55wqBzb3VuZC4u
+Cj4gbWlnaHTCoGJlwqBzb21lwqBoL3fCoGlzc3VlwqBvbsKgdGhlwqBvbmx5wqBib2FyZMKgScKg
+aGF2ZcKgZ290KS4KPiBJwqBoYXZlwqBub8KgYWNjZXNzwqB0b8KgTE4yNDQwU0JDwqBidXTCoHRo
+ZXJlwqBpc8Kgbm/CoHJlYXNvbsKgZm9ywqBpdMKgdG8KPiBjb21wbGFpbi4KPiBCZXNpZGVzLMKg
+dGhlwqBuZXfCoEFDOTfCoGNvbnRyb2xsZXLCoGRyaXZlcihwbHVzwqBhwqBtYWNoaW5lwqBkcml2
+ZXLCoGZvcgo+IFNNREtzwqB3aXRowqBXTTk3MTPCoGF0dGFjaGVkwqB0b8KgQUM5N8KgcG9ydCnC
+oGhhc8KgYmVlbsKgdGVzdGVkwqBvbsKgYWxsCj4gU29Dc8KgdGhhdMKgScKgY291bGTCoGdldMKg
+bXnCoGhhbmRzwqBvbig2NDEwLMKgQzEwMCzCoEMxMTDCoGFuZMKgVjIxMCkuCj4KPiBUcnlpbmfC
+oHRvwqBhdm9pZMKgb25lwqBvdXRyaWdodMKgcmVqZWN0ZWTCoHNlcmllc8Kgb2bCoHBhdGNoZXMs
+wqBJwqB3YW50ZWTCoHRvCj4gY29uZmlybcKgaWbCoG15wqBhcHByb2FjaMKgaXPCoGFjY2VwdGFi
+bGUuCj4KPgo+Cj4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4KPgo+Cj4g
+7LWcIOyKuSDtmIQg7LGF7J6ECj4KPiDsgrzshLHsoITsnpDso7zsi53tmozsgqwKPgo+IEVtYmVk
+ZGVkIFMvVyBDZW50ZXIKPgo+IFN5c3RlbSBMU0nsgqzsl4XrtoAKPgo+IOuwmOuPhOyytOy0neq0
+hAo+Cj4KPgo+IDAzMS0yMDktODMzMAo+Cj4gc2g0MjguY2hvaUBzYW1zdW5nLmNvbQo+Cj4KPgo+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4KPgo+Cj4KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
