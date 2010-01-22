@@ -1,58 +1,33 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/4 v2] ASoC: add a WM8978 codec driver
-Date: Fri, 22 Jan 2010 17:39:20 +0000
-Message-ID: <1264181960.3094.159.camel@odin>
-References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
-	 <Pine.LNX.4.64.1001190851380.4607@axis700.grange>
-	 <Pine.LNX.4.64.1001221659410.4652@axis700.grange>
+Subject: Re: [PATCH] ASoC: fix a memory-leak in wm8903
+Date: Fri, 22 Jan 2010 17:39:33 +0000
+Message-ID: <1264181973.3094.160.camel@odin>
+References: <Pine.LNX.4.64.1001221756240.4652@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.64.1001221659410.4652@axis700.grange>
-Sender: linux-sh-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id E69D7243CE
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2010 18:39:37 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 26so376996eyw.16
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2010 09:39:36 -0800 (PST)
+In-Reply-To: <Pine.LNX.4.64.1001221756240.4652@axis700.grange>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <damm@opensource.se>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-01-22 at 17:27 +0100, Guennadi Liakhovetski wrote:
-> The WM8978 codec from Wolfson Microelectronics is very similar to wm8974, but
-> is stereo and also has some differences in pin configuration and internal
-> signal routing. This driver is based on wm8974 and takes the differences into
-> account.
+On Fri, 2010-01-22 at 18:00 +0100, Guennadi Liakhovetski wrote:
+> Remember to free the temporary register-cache.
 > 
 > Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-> ---
-> 
-
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
-> 
-> In short - addressed all comments (thanks a lot again!) - except one... I 
-> still would not like to use symbolic names for register bits. Instead I 
-> thoroughly commented all multi-bit register manipulations. Reasons:
-> 
-> 1. thanks for the header, Mark, but unfortunately it contains errors 
->    (duplicate register names, duplicate and wrong bitfield names)
-> 2. the header also uses spaces for indentation, which would have to be 
->    manually replaced with TABs
-> 3. I am still not convinced, that macro names like WM8978_WL or 
->    WM8978_DLRSWAP or WM8978_MS or... better describe the meaning of the 
->    bitfield than respective comment in the source. Here's an example of a 
->    comment from this patch:
-> 
-> 	/* bit 3: enable bias, bit 2: enable I/O tie off buffer */
-> 	power1 |= 0xc;
-> 
->    Where bit-field names do make sense, IMHO, is in drivers, where the 
->    same bitfields have to be written / evaluated multiple times at 
->    different locations. Than indeed giving those bits symbolic names helps 
->    finding them. So, I'd like to request a permission to preserve the 
->    present style of the driver.
-> 
-
-I think we will have to agree to disagree on this one, but it can be
-fixed at a later stage.
-
-Liam
-
