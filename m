@@ -1,18 +1,22 @@
-From: David Fries <david@fries.net>
-Subject: Re: [PATCH] modem.conf Off-hook improve behavior
-Date: Sat, 23 Jan 2010 00:06:20 -0600
-Message-ID: <20100123060620.GA19304@spacedout.fries.net>
-References: <20091225202238.GA12403@spacedout.fries.net>
-	<s5h1vhi8l9s.wl%tiwai@suse.de>
+From: Alex Murray <murray.alex@gmail.com>
+Subject: Re: [PATCH - hda 1/1] ALSA: hda - Add PCI quirk for
+	17" MacBook Pro 5, 2 model (July 2009) to use existing mb5 model
+Date: Fri, 22 Jan 2010 20:17:03 +1030
+Message-ID: <6e7aaa1d1001220147m4c9a8347maadf29affc04447b@mail.gmail.com>
+References: <4b583eaa.0d0bca0a.753e.37fc@mx.google.com>
+	<s5h8wbracy1.wl%tiwai@suse.de>
+	<6e7aaa1d1001210437g5bad7982p28ad2c424bf0aed5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from SpacedOut.fries.net (SpacedOut.fries.net [67.64.210.234])
-	by alsa0.perex.cz (Postfix) with ESMTP id 449FF103814
-	for <alsa-devel@alsa-project.org>; Sat, 23 Jan 2010 07:06:24 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h1vhi8l9s.wl%tiwai@suse.de>
+Received: from mail-pz0-f179.google.com (mail-pz0-f179.google.com
+	[209.85.222.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 76EE624390
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2010 10:47:19 +0100 (CET)
+Received: by pzk9 with SMTP id 9so732480pzk.16
+	for <alsa-devel@alsa-project.org>; Fri, 22 Jan 2010 01:47:18 -0800 (PST)
+In-Reply-To: <6e7aaa1d1001210437g5bad7982p28ad2c424bf0aed5@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,38 +30,52 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 22, 2010 at 11:51:59AM +0100, Takashi Iwai wrote:
-> At Fri, 25 Dec 2009 14:22:38 -0600,
-> David Fries wrote:
-> > On a side note, do any of the alsa voice/software modems support
-> > notifying userspace when the line is ringing?  I'm using intel8x0m,
-> > not that I think it matters here.
-> 
-> I don't know of any, too.
+Indeed - turns out is was a config error, and the patch is invalid -
+thats a bit embarrassing - sorry for the noise. Thanks for looking at
+it nonetheless.
+Cheers
 
-I have a patch adding a mixer control to provide Ring Detection
-notification when the ring GPIO pin is going crazy.  That's used to
-indicate when a local phone went off hook, but only the first time
-after being on hook for an extended time, or when a local phone goes
-back on hook, when the modem goes on hook or off hook, when a local
-user dials pulse (not tone), or if going crazy for an extended period
-of time the line might actually be ringing.  In practice it has been
-very reliable as long as you ignore the short pulses, other than when
-someone is pulse dialing that is.
-
-I also hooked up Caller ID and Loop Current Sense which is used to
-detect remote hangup (or a local phone going off hook when Caller ID
-is enabled).  It is working, but it needs some cleanup before it is
-ready to be submitted.  As dealing with the interrupts is more
-hardware specific I'm also thinking of moving setting up the sticky
-and interrupt mask setup from snd_ac97_modem_build to someplace in the
-intel8x0m.c file.  Dealing with the hardware to get a usable ring
-indication out makes me long for the days when you could just wait for
-RING and the modem hid he details.
-
-I have some changes to Asterisk as well to make use of it, though it
-is suffering from some audio glitches and isn't as far along.
-
--- 
-David Fries <david@fries.net>
-http://fries.net/~david/ (PGP encryption key available)
+2010/1/21 Alex Murray <murray.alex@gmail.com>:
+> Patch was supplied here:
+> https://bugs.launchpad.net/ubuntu/+source/alsa-driver/+bug/337314/comment=
+s/148
+> so no I can't personally confirm it works...
+>
+> I agree it definitely looks odd - especially compared to the existing
+> entries... okay I'll see if I can get some more info then and will
+> repost if I can defintiely confirm it.
+>
+>
+>
+> 2010/1/21 Takashi Iwai <tiwai@suse.de>:
+>> At Thu, 21 Jan 2010 22:16:26 +1030,
+>> murray.alex@gmail.com wrote:
+>>>
+>>> From: Alex Murray <murray.alex@gmail.com>
+>>>
+>>>
+>>> Signed-off-by: Alex Murray <murray.alex@gmail.com>
+>>> ---
+>>> =A0pci/hda/patch_realtek.c | =A0 =A01 +
+>>> =A01 files changed, 1 insertions(+), 0 deletions(-)
+>>>
+>>> diff --git a/pci/hda/patch_realtek.c b/pci/hda/patch_realtek.c
+>>> index 7e0ea37..d044db9 100644
+>>> --- a/pci/hda/patch_realtek.c
+>>> +++ b/pci/hda/patch_realtek.c
+>>> @@ -9223,6 +9223,7 @@ static struct snd_pci_quirk alc882_ssid_cfg_tbl[]=
+ =3D {
+>>> =A0 =A0 =A0 =A0*/
+>>> =A0 =A0 =A0 SND_PCI_QUIRK(0x106b, 0x4000, "MacbookPro 5,1", ALC885_MB5),
+>>> =A0 =A0 =A0 SND_PCI_QUIRK(0x106b, 0x4600, "MacbookPro 5,2", ALC885_MB5),
+>>> + =A0 =A0 SND_PCI_QUIRK(0x10ec, 0x0885, "MacbookPro 5,2", ALC885_MB5),
+>>
+>> Thanks for the patch.
+>> But I wonder whether this entry is really correct. =A0The value looks
+>> like the codec vendor id. =A0There you need a PCI SSID.
+>> Did you confirm that your patch really works?
+>>
+>>
+>> Takashi
+>>
+>
