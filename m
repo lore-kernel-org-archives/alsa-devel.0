@@ -1,18 +1,17 @@
-From: Brendan Pike <spike@spykes.net>
+From: Chris Rankin <rankincj@yahoo.com>
 Subject: Re: How much of the X-Fi (emu20k1) chip has Creative
- documented?
-Date: Sat, 23 Jan 2010 17:41:04 -0500
-Message-ID: <20100123174104.5dbac1a3@darius>
-References: <20100118172718.07c1053f@darius>
-	<161831.52985.qm@web52905.mail.re2.yahoo.com>
+	documented?
+Date: Sat, 23 Jan 2010 14:46:37 -0800 (PST)
+Message-ID: <880778.92550.qm@web52906.mail.re2.yahoo.com>
+References: <20100123174104.5dbac1a3@darius>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C42D24526
-	for <alsa-devel@alsa-project.org>; Sat, 23 Jan 2010 23:41:06 +0100 (CET)
-In-Reply-To: <161831.52985.qm@web52905.mail.re2.yahoo.com>
+Received: from web52906.mail.re2.yahoo.com (web52906.mail.re2.yahoo.com
+	[206.190.49.16]) by alsa0.perex.cz (Postfix) with SMTP id 94DAC24533
+	for <alsa-devel@alsa-project.org>; Sat, 23 Jan 2010 23:46:39 +0100 (CET)
+In-Reply-To: <20100123174104.5dbac1a3@darius>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,50 +21,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chris Rankin <rankincj@yahoo.com>
+To: Brendan Pike <spike@spykes.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Its impossible for me to be using dmix as dmix isn't even compiled into
-my alsa-libs.
+--- On Sat, 23/1/10, Brendan Pike <spike@spykes.net> wrote:
+> I'm 100% sure that HwMix is supported. When I said direct
+> hardware access I meant it. I'm sure anyone else with an XFi card
+> can confirm this too.
 
-I'm 100% sure that HwMix is supported. When I said direct hardware
-access I meant it. I'm sure anyone else with an XFi card can confirm
-this too.
+That's just it - someone on Phoronix is saying that it isn't supported:
+http://www.phoronix.com/forums/showthread.php?t=21486
 
-Calculating dependencies... done!
-[ebuild   R   ] media-libs/alsa-lib-1.0.22  USE="python -alisp -debug
--doc" ALSA_PCM_PLUGINS="extplug ioplug ladspa lfloat plug -adpcm -alaw
--asym -copy -dmix -dshare -dsnoop -empty -file -hooks -iec958 -linear
--meter -mmap_emul -mulaw -multi -null -rate -route -share -shm
--softvol" 0 kB
+"Just as a FYI multi voice hardware mixing is not present in the linux x-fi drivers."
 
+That post is dated 17th Jan 2010.
 
-
-On Sat, 23 Jan 2010 14:04:12 -0800 (PST)
-Chris Rankin <rankincj@yahoo.com> wrote:
-
-> --- On Mon, 18/1/10, Brendan Pike <spike@spykes.net> wrote:
-> > HWMix also exists and works perfectly,
-> 
-> The last time someone assured me that a card supported HWMix, it turned out that he was using dmix without realising it.
-> 
-> Can you confirm that you can still play two sounds concurrently with the following $HOME/.asoundrc file, please?
-> 
-> pcm.XFi {
->     type plug
->     slave {
->         pcm "hw:0"
->     }
-> }
-> 
-> So you would run the following command simultaneously across two terminals:
-> 
-> $ aplay -D XFi <wav-file>
-> 
-> Cheers,
-> Chris
-> 
-> 
-> 
->       
+Cheers,
+Chris
