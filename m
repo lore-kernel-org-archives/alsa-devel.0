@@ -1,21 +1,24 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: AC97: S3C: Add controller driver
-Date: Tue, 26 Jan 2010 20:17:25 +0900
-Message-ID: <1b68c6791001260317k44893521vc0310ea35bac8ee1@mail.gmail.com>
-References: <1264485101-13782-1-git-send-email-jassisinghbrar@gmail.com>
-	<1264485101-13782-2-git-send-email-jassisinghbrar@gmail.com>
-	<20100126104723.GF15759@rakim.wolfsonmicro.main>
+From: Jacopo De Simoi <jacopods@gmail.com>
+Subject: Re:
+ =?iso-8859-1?q?=5BPATCH_-_hda_intel_conextant_1/1=5D?=
+ =?iso-8859-1?q?_Fixed_microphone=09mixer_for_HP_Compaq_Presario_F700_Adde?=
+ =?iso-8859-1?q?d_conextant_patch_for=09Hewlett-Packard_Company_Device_Sub?=
+ =?iso-8859-1?q?system_id_-_103c=3A30ea?=
+Date: Sun, 24 Jan 2010 14:59:10 +0100
+Message-ID: <201001241459.10484.jacopods@gmail.com>
+References: <1262565656-2737-1-git-send-email-knprox@mi.rr.com>
+	<s5hvdf766a1.wl%tiwai@suse.de> <s5h4ombbxok.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f178.google.com (mail-qy0-f178.google.com
-	[209.85.221.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 726EE103871
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 12:17:26 +0100 (CET)
-Received: by qyk8 with SMTP id 8so2473546qyk.24
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 03:17:25 -0800 (PST)
-In-Reply-To: <20100126104723.GF15759@rakim.wolfsonmicro.main>
+Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
+	[209.85.219.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A7F324434
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 12:33:41 +0100 (CET)
+Received: by ewy5 with SMTP id 5so7147564ewy.32
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 03:33:41 -0800 (PST)
+In-Reply-To: <s5h4ombbxok.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,113 +28,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKYW4gMjYsIDIwMTAgYXQgNzo0NyBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgSmFuIDI2LCAyMDEwIGF0
-IDAyOjUxOjQwUE0gKzA5MDAsIGphc3Npc2luZ2hicmFyQGdtYWlsLmNvbSB3cm90ZToKPgo+IFRo
-aXMgbG9va3MgZ29vZCBvdmVyYWxsLCBqdXN0IGEgZmV3IHNtYWxsaXNoIGlzc3VlczoKPgo+PiAr
-c3RhdGljIHZvaWQgczNjX2FjOTdfYWN0aXZhdGUoc3RydWN0IHNuZF9hYzk3ICphYzk3KQo+PiAr
-ewo+PiArIMKgIMKgIHUzMiBhY19nbGJjdHJsLCBzdGF0Owo+PiArCj4+ICsgwqAgwqAgc3RhdCA9
-IHJlYWRsKHMzY19hYzk3LnJlZ3MgKyBTM0NfQUM5N19HTEJTVEFUKSAmIDB4NzsKPj4gKyDCoCDC
-oCBzd2l0Y2ggKHN0YXQpIHsKPj4gKyDCoCDCoCBjYXNlIFMzQ19BQzk3X0dMQlNUQVRfTUFJTlNU
-QVRFX0FDVElWRToKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm47Cj4+ICsgwqAgwqAgY2Fz
-ZSBTM0NfQUM5N19HTEJTVEFUX01BSU5TVEFURV9SRUFEWToKPj4gKyDCoCDCoCBjYXNlIFMzQ19B
-Qzk3X0dMQlNUQVRfTUFJTlNUQVRFX0lOSVQ6Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7
-Cj4+ICsgwqAgwqAgZGVmYXVsdDoKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBzM2NfYWM5N19jb2xk
-X3Jlc2V0KGFjOTcpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHMzY19hYzk3X3dhcm1fcmVzZXQo
-YWM5Nyk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4+ICsgwqAgwqAgfQo+Cj4gVGhp
-cyBhdXRvbWF0aWMgY29sZCBhbmQgd2FybSByZXNldCBsb29rcyBhIGJpdCBmaXNoeSAtIG9idmlv
-dXNseSBpZiB0aGlzCj4gY29kZSBwYXRoIGV2ZXIgZ2V0cyBoaXQgaW4gbm9ybWFsIG9wZXJhdGlv
-biB0aGVuIGl0J3MgZ29pbmcgdG8gc2VyaW91c2x5Cj4gZGlzcnVwdCB0aGluZ3Mgc2luY2UgaXQn
-bGwgcmVzZXQgdGhlIENPREVDIHJlZ2lzdGVycy4gwqBBIHdhcm0gcmVzZXQgYnkKPiBpdHNlbGYg
-d291bGRuJ3QgYmUgYSBwcm9ibGVtIGJ1dCBJJ2QgcmF0aGVyIHNlZSBleHBsaWNpdCBjb2xkIHJl
-c2V0cyBpbgo+IHRoZSBjYWxsZXJzIHdoZXJlIHRoYXQncyByZXF1aXJlZC4KQmVmb3JlIHJlYWQv
-d3JpdGUgd2UgbmVlZCB0byBlbnN1cmUgdGhlIGxpbmsgaXMgYWN0aXZlLiBBbmQgdG8gcmVhY2gg
-dGhlCmFjdGl2ZSBzdGF0ZSB3ZSBoYXZlIHRvIGRvIHRoYXQgYXMgc3VnZ2VzdGVkIGJ5IHRoZSBG
-U00gc2hvd24gaW4gU29DcycgTWFudWFsLgpBbHNvLCB0aGlzIGhlbHBzIG5vdCByZWx5aW5nIG9u
-IGNvZGVjL2NvcmUgdG8gcGVyZm9ybSBwYXJ0aWN1bGFyIHN0ZXBzCm9mIGluaXRpYWxpemF0aW9u
-cy4KCj4+ICsgwqAgwqAgYWNfZ2xiY3RybCA9IHJlYWRsKHMzY19hYzk3LnJlZ3MgKyBTM0NfQUM5
-N19HTEJDVFJMKTsKPj4gKyDCoCDCoCBhY19nbGJjdHJsID0gUzNDX0FDOTdfR0xCQ1RSTF9BQ0xJ
-TktPTjsKPj4gKyDCoCDCoCB3cml0ZWwoYWNfZ2xiY3RybCwgczNjX2FjOTcucmVncyArIFMzQ19B
-Qzk3X0dMQkNUUkwpOwo+PiArIMKgIMKgIG1zbGVlcCgxKTsKPgo+IFRoaXMgYWxzbyBsb29rcyBh
-IGJpdCBvZGQsIEFDTElOS09OIHNvdW5kcyBsaWtlIGJyaW5naW5nIHVwIHRoZSBsaW5rCj4gd2hp
-Y2ggaXMgd2hhdCBhIHdhcm0gcmVzZXQgZG9lcy4KQXMgc2hvd24gaW4gRlNNIG9mIFNvQ3MgbWFu
-dWFsLCB0aGlzIHNldHMgdGhlIGNvbnRyb2xsZXIgc3RhdGUgdG8gUkVBRFkuClBsZWFzZSBoYXZl
-IGEgbG9vayBhdCBhbnkgbWFudWFsJ3MgQUM5NyBjaGFwdGVyLgoKPj4gKyDCoCDCoCBJTklUX0NP
-TVBMRVRJT04oczNjX2FjOTcuZG9uZSk7Cj4+ICsKPj4gKyDCoCDCoCBpZiAoIXdhaXRfZm9yX2Nv
-bXBsZXRpb25fdGltZW91dCgmczNjX2FjOTcuZG9uZSwgSFopKQo+PiArIMKgIMKgIMKgIMKgIMKg
-IMKgIHByaW50ayhLRVJOX0VSUiAiQUM5NzogVW5hYmxlIHRvIGFjdGl2YXRlISIpOwo+Cj4gVGhp
-cyBsb29rcyByYWN5IC0gdGhlIElOSVRfQ09NUExFVElPTigpIGhhcHBlbnMgYWZ0ZXIgYWxsIHRo
-ZSBoYXJkd2FyZQo+IGNvbmZpZ3VyYXRpb24gd2hpY2ggc3VnZ2VzdHMgdGhhdCBpZiB5b3UncmUg
-dW5sdWNreSB0aGUgZXZlbnQgd2hpY2gKPiBzaG91bGQgdHJpZ2dlciB0aGUgY29tcGxldGlvbiB3
-aWxsIGhhdmUgaGFwcGVuZWQgYmVmb3JlIHRoZSBpbml0LiDCoEEKPiBidW5jaCBvZiBpbnRlcnJ1
-cHRzIGFycml2aW5nIGF0IGFuIGluY29udmVuaWVudCB0aW1lIGNvdWxkIHRyaWdnZXIgdGhpcywK
-PiBmb3IgZXhhbXBsZS4KWWVzLCBpbml0IG5lZWRzIHRvIGJlIG1vdmVkIGVhcmx5LgoKPiBUaGUg
-c2FtZSBpZGlvbSBhcHBlYXJzIGluIHRoZSByZWdpc3RlciByZWFkcyBhbmQgd3JpdGVzLgo+Cj4+
-ICsgwqAgwqAgaWYgKGFkZHIgIT0gcmVnKQo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ayhL
-RVJOX0VSUiAiczNjLWFjOTc6IHJlcSBhZGRyID0gJTAyeCwiCj4+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgIiByZXAgYWRkciA9ICUwMnhcbiIsIHJlZywgYWRk
-cik7Cj4KPiBQbGVhc2UgZG9uJ3Qgc3BsaXQgZXJyb3IgbWVzc2FnZXMgb3ZlciBtdWx0aXBsZSBs
-aW5lcywgaXQgbWFrZXMgZ3JlcHBpbmcKPiBmb3IgdGhlbSBoYXJkZXIuCm9rLgoKPj4gK3N0YXRp
-YyBpcnFyZXR1cm5fdCBzM2NfYWM5N19pcnEoaW50IGlycSwgdm9pZCAqZGV2X2lkKQo+PiArewo+
-PiArIMKgIMKgIHUzMiBhY19nbGJjdHJsLCBhY19nbGJzdGF0Owo+PiArCj4+ICsgwqAgwqAgYWNf
-Z2xic3RhdCA9IHJlYWRsKHMzY19hYzk3LnJlZ3MgKyBTM0NfQUM5N19HTEJTVEFUKTsKPj4gKwo+
-PiArIMKgIMKgIGlmIChhY19nbGJzdGF0ICYgUzNDX0FDOTdfR0xCU1RBVF9DT0RFQ1JFQURZKSB7
-Cj4+ICsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBhY19nbGJjdHJsID0gcmVhZGwoczNjX2FjOTcu
-cmVncyArIFMzQ19BQzk3X0dMQkNUUkwpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIGFjX2dsYmN0
-cmwgJj0gflMzQ19BQzk3X0dMQkNUUkxfQ09ERUNSRUFEWUlFOwo+PiArIMKgIMKgIMKgIMKgIMKg
-IMKgIHdyaXRlbChhY19nbGJjdHJsLCBzM2NfYWM5Ny5yZWdzICsgUzNDX0FDOTdfR0xCQ1RSTCk7
-Cj4+ICsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBhY19nbGJjdHJsID0gcmVhZGwoczNjX2FjOTcu
-cmVncyArIFMzQ19BQzk3X0dMQkNUUkwpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIGFjX2dsYmN0
-cmwgfD0gKDE8PDMwKTsgLyogQ2xlYXIgaW50ZXJydXB0ICovCj4+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgd3JpdGVsKGFjX2dsYmN0cmwsIHMzY19hYzk3LnJlZ3MgKyBTM0NfQUM5N19HTEJDVFJMKTsK
-Pj4gKwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIGNvbXBsZXRlKCZzM2NfYWM5Ny5kb25lKTsKPj4g
-KyDCoCDCoCB9Cj4+ICsKPj4gKyDCoCDCoCByZXR1cm4gSVJRX0hBTkRMRUQ7Cj4+ICt9Cj4KPiBZ
-b3Ugc2hvdWxkIG9ubHkgYmUgcmV0dXJuaW5nIElSUV9IQU5ETEVEIGlmIHlvdSBhY3R1YWxseSBo
-YW5kbGVkIGFuCj4gaW50ZXJydXB0IGhlcmUuCkknZCByYXRoZXIgbW92ZSB0aGUgaW50ci1jbGVh
-cmluZyBvdXQgb2YgdGhlIGJsb2NrLgoKPj4gKyNkZWZpbmUgUzNDX0FDOTdfUkFURVMgKFNORFJW
-X1BDTV9SQVRFXzgwMDAgfCBTTkRSVl9QQ01fUkFURV8xMTAyNSB8XAo+PiArIMKgIMKgIMKgIMKg
-IMKgIMKgIFNORFJWX1BDTV9SQVRFXzE2MDAwIHwgU05EUlZfUENNX1JBVEVfMjIwNTAgfCBcCj4+
-ICsgwqAgwqAgwqAgwqAgwqAgwqAgU05EUlZfUENNX1JBVEVfMzIwMDAgfCBTTkRSVl9QQ01fUkFU
-RV80NDEwMCB8IFwKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBTTkRSVl9QQ01fUkFURV80ODAwMCkK
-Pgo+IFNORFJWX1BDTV9SQVRFXzgwMDBfNDgwMDAuCnllcy4KCj4+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgLmNhcHR1cmUgPSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgLnN0cmVh
-bV9uYW1lID0gIkFDOTcgQ2FwdHVyZSIsCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgLyogTk9URTogSWYgdGhlIGNvZGVjIG91cHV0cyBqdXN0IG9uZSBzbG90LAo+PiArIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKiBpdCAqc2VlbXMqIG91ciBBQzk3IGNvbnRyb2xs
-ZXIgcmVhZHMgdGhlIG9ubHkKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCog
-dmFsaWQgc2xvdChpZiBlaXRoZXIgMyBvciA0KSBmb3IgUENNLUluLgo+PiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgKiBGb3Igc3VjaCBjYXNlcywgd2UgcmVjb3JkIE1vbm8uCj4+
-ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAqLwo+Cj4gVGhpcyBzZWVtcyBsaWtl
-IHVuc3VycHJpc2luZyBiZWhhdmlvdXIgZm9yIGFuIEFDOTcgY29udHJvbGxlciAtIHRoZSBzbG90
-Cj4gdmFsaWRpdHkgaW5mb3JtYXRpb24gaXMgdGhlcmUgZm9yIGp1c3QgdGhpcyBwdXJwb3NlLiDC
-oEknZCBqdXN0IHJlbW92ZQo+IHRoZSBjb21tZW50IGFzIGEgcmVzdWx0Lgo+Cj4+ICsgwqAgwqAg
-wqAgwqAgwqAgwqAgLmNhcHR1cmUgPSB7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgLnN0cmVhbV9uYW1lID0gIkFDOTcgTWljIENhcHR1cmUiLAo+PiArIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIC5jaGFubmVsc19taW4gPSAxLAo+PiArIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIC8qIE5PVEU6IElmIHRoZSBjb2RlYyhsaWtlIFdNOTcxMykgY2FuJ3Qgb3Vw
-dXQganVzdAo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKiBvbmUgc2xvdCwg
-aXQgKnNlZW1zKiBvdXIgQUM5NyBjb250cm9sbGVyIHJlYWRzCj4+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAqIHR3byBzbG90cyhpZiBvbmUgb2YgdGhlbSBpcyBTbG90LTYpIGZv
-ciBNSUMgYWxzby4KPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCogRm9yIHN1
-Y2ggY2FzZXMsIHdlIHJlY29yZCBTdGVyZW8uCj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAqLwo+Cj4gU2ltaWxhcmx5IGhlcmUuCj4KPj4gKyDCoCDCoCBpZiAoYWM5N19wZGF0
-YS0+Y2ZnX2dwaW8ocGRldikpIHsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCBkZXZfZXJyKCZwZGV2
-LT5kZXYsICJVbmFibGUgdG8gY29uZmlndXJlIGdwaW9cbiIpOwo+PiArIMKgIMKgIMKgIMKgIMKg
-IMKgIHJldCA9IC1FSU5WQUw7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgZ290byBsYjM7Cj4+ICsg
-wqAgwqAgfQo+Cj4gU2hvdWxkIHJlYWxseSBjaGVjayBmb3IgdGhlIGZ1bmN0aW9uIGJlaW5nIG5v
-bi1OVUxMIGhlcmUuCmFscmVhZHkgY2hlY2tlZCBhdCB0aGUgc3RhcnQgYW5kIHByb2JlIGZhaWxz
-IGlmIGl0cyBOVUxMCgo+PiArbGI1Ogo+PiArIMKgIMKgIGZyZWVfaXJxKGlycV9yZXMtPnN0YXJ0
-LCBOVUxMKTsKPgo+IFBlcmhhcHMgYSBiZXR0ZXIgbmFtZSB0aGFuICdsYicgLSBlcnIsIG9yIGZh
-aWwgb3Igc29tZXRoaW5nLiDCoGxiIG1lYW5zCj4gbm90aGluZyB0byBtZSBhdCBsZWFzdC4KbWVh
-bnMgbGFiZWwgdG8gbWUgOikKCj4+ICsgwqAgwqAgaXJxX3JlcyA9IHBsYXRmb3JtX2dldF9yZXNv
-dXJjZShwZGV2LCBJT1JFU09VUkNFX0lSUSwgMCk7Cj4+ICsgwqAgwqAgaWYgKGlycV9yZXMpCj4+
-ICsgwqAgwqAgwqAgwqAgwqAgwqAgZnJlZV9pcnEoaXJxX3Jlcy0+c3RhcnQsIE5VTEwpOwo+Cj4g
-VGhpcyBzaG91bGQgbmV2ZXIgZ2V0IGNhbGxlZCBpZiB0aGUgcmVzb3VyY2VzIGFyZW4ndCBhbGxv
-Y2F0ZWQuCmJ1dCB0aGUgc3RhdGljIGNvZGUgYW5hbHlzZXIgZG9lc24ndCB1bmRlcnN0YW5kIHRo
-YXQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+I can confirm that this patch applies to HP dv2700 subsystem 103c:30d6 (at least with 
+-	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1) | 0x03},
++	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0) | 0x03},
+ ). 
+
+Node 0x14 supports multiple connections to 0x17 (0x01) and 0x1d (0x00); 0x1d is apparently not working; 
+Also, I don't understand if 0x15-0x18 are working. It doesn't do anything here, but it might be stuff from the expansion slot (?)
+
+
+On Sunday 24 January 2010 11:32:27 Takashi Iwai wrote:
+> At Tue, 12 Jan 2010 10:07:02 +0100,
+> I wrote:
+> > 
+> > At Fri, 8 Jan 2010 09:09:54 +0100 (CET),
+> > Jaroslav Kysela wrote:
+> > > 
+> > > On Sun, 3 Jan 2010, knprox@mi.rr.com wrote:
+> > > 
+> > > > From: Ken Prox <kprox@users.sourceforge.net>
+> > > >
+> > > >
+> > > > Signed-off-by: Ken Prox <kprox@users.sourceforge.net>
+> > > 
+> > > I've applied your patch to my "devel" git tree with space/tab 
+> > > replacements. Please, use same coding style matching other ALSA code and 
+> > > run "scripts/checkpatch.pl" on your patch before posting. Thanks.
+> > 
+> > I pulled your branches now to sound git tree.
+> 
+> And, now I'm checking the code and your change again while I'm working
+> on fixing / clean-up of cxt5051 code.  I don't understand why your patch
+> works.  Does it really work as is?
+> 
+> For example, the pin 0x17 has no multiple connections.  So, changing
+> the amp for the input #1 doesn't make sense at all.  If it supports only
+> the pin 0x1d, then the init verbs have to be different.
+> 
+> Doesn't another model, e.g. model=hp-dv6736, work as is?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
