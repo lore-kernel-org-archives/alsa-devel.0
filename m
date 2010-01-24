@@ -1,18 +1,16 @@
-From: Brendan Pike <spike@spykes.net>
+From: Chris Rankin <rankincj@yahoo.com>
 Subject: Re: How much of the X-Fi (emu20k1) chip has Creative
- documented?
-Date: Sun, 24 Jan 2010 09:26:55 -0500
-Message-ID: <20100124092655.18d6a92c@darius>
-References: <20100123174104.5dbac1a3@darius>
-	<880778.92550.qm@web52906.mail.re2.yahoo.com>
-	<s5h7hr7bxvm.wl%tiwai@suse.de>
+	documented?
+Date: Sun, 24 Jan 2010 08:57:30 -0800 (PST)
+Message-ID: <641799.25718.qm@web52902.mail.re2.yahoo.com>
+References: <s5h7hr7bxvm.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.spykes.net (dsl.spykes.net [76.10.173.13])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C698103820
-	for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2010 15:26:58 +0100 (CET)
+Received: from web52902.mail.re2.yahoo.com (web52902.mail.re2.yahoo.com
+	[206.190.49.12]) by alsa0.perex.cz (Postfix) with SMTP id 56CB0243F6
+	for <alsa-devel@alsa-project.org>; Sun, 24 Jan 2010 17:57:32 +0100 (CET)
 In-Reply-To: <s5h7hr7bxvm.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,37 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Brendan Pike <spike@spykes.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 24 Jan 2010 11:28:13 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> At Sat, 23 Jan 2010 14:46:37 -0800 (PST),
-> Chris Rankin wrote:
-> > 
-> > --- On Sat, 23/1/10, Brendan Pike <spike@spykes.net> wrote:
-> > > I'm 100% sure that HwMix is supported. When I said direct
-> > > hardware access I meant it. I'm sure anyone else with an XFi card
-> > > can confirm this too.
-> > 
-> > That's just it - someone on Phoronix is saying that it isn't supported:
-> > http://www.phoronix.com/forums/showthread.php?t=21486
-> > 
-> > "Just as a FYI multi voice hardware mixing is not present in the linux x-fi drivers."
-> > 
-> > That post is dated 17th Jan 2010.
+--- On Sun, 24/1/10, Takashi Iwai <tiwai@suse.de> wrote:
+> > "Just as a FYI multi voice hardware mixing is not
+> > present in the linux x-fi drivers."
 > 
 > It's a wrong information.
-> 
-> 
-> Takashi
 
-X-Fi is such a generic term these days with Creative.
-There are non emu20k1/2 based X-Fi's that do NOT support HWMix.
-The Phoronix post was probably referring to those cards and thinking
-it applies to all of them as a result.
+Takashi,
 
-Just a peek in the source code would show you that the hardware SRC is
-supported.
+Thanks for replying, and confirming what Brendan has been saying :-). So how many hardware "voices" does the X-Fi driver support, please? And is further development of snd-ctxfi stalled, pending any additional information from Creative?
+
+Thanks,
+Chris
