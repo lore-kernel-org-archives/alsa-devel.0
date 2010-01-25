@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/5] Add Voice Codec support for DaVinci
-	platforms
-Date: Mon, 25 Jan 2010 12:35:15 +0000
-Message-ID: <20100125123515.GB26017@rakim.wolfsonmicro.main>
-References: <4B58904E.4030108@ridgerun.com>
+Subject: Re: [PATCHv2 0/6] McPDM driver patch series
+Date: Mon, 25 Jan 2010 12:50:27 +0000
+Message-ID: <20100125125026.GC26017__39291.1514653408$1264425033$gmane$org@rakim.wolfsonmicro.main>
+References: <2256F256009DAA4CBE661E9F41EAC84B8C43A8AB@dlee01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9B232103824
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 13:35:16 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 143DC10384F
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 13:50:28 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <4B58904E.4030108@ridgerun.com>
+In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8C43A8AB@dlee01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,14 +21,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Miguel Aguilar <miguel.aguilar@ridgerun.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, clarkbecker <clark.becker@ridgerun.com>, Santiago Nunez <santiago.nunez@ridgerun.com>, Diego Dompe <diego.dompe@ridgerun.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Narnakaje,
-	Snehaprabha" <nsnehaprabha@ti.com>, Todd Fischer <todd.fischer@ridgerun.com>
+To: "Candelaria Villareal, Jorge" <x0107209@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 21, 2010 at 11:35:10AM -0600, Miguel Aguilar wrote:
+On Fri, Jan 22, 2010 at 05:14:48PM -0600, Candelaria Villareal, Jorge wrote:
+> McPDM module is the interface between the OMAP and TWL6030 audio codec.
 
-> The following patch series adds support for the Voice Codec in the
-> Davinci platform and in this particular case for the DM365 EVM.
+> The interface supports the following:
+> * Up to 5 downlink channels and 3 uplink channels
+> * 88.2 and 96 KHz
+> * 32 bit sample size
 
-All the other patches for this look good.
+Liam already asked all the questions I had about this series - apart
+from what he said it looks OK to me.
