@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/5] DaVinci: DM365: Voice codec
-	support	for the DM365 SoC
-Date: Mon, 25 Jan 2010 11:17:56 +0000
-Message-ID: <20100125111756.GD22909@sirena.org.uk>
-References: <1264095711-1385-1-git-send-email-miguel.aguilar@ridgerun.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: Duplicate wake-ups in pcm_lib.c
+Date: Mon, 25 Jan 2010 11:52:17 +0000
+Message-ID: <hjk0lg$3ti$1@ger.gmane.org>
+References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>	<alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>	<hj29f0$v5d$1@ger.gmane.org>	<alpine.LNX.2.00.1001182233280.4324@eeebox2.perex-int.cz>	<hj5lvn$is9$1@ger.gmane.org>
+	<hj76gs$m9i$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE989103870
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 12:17:57 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1264095711-1385-1-git-send-email-miguel.aguilar@ridgerun.com>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id BE5D2103824
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 12:52:42 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1NZNUk-00032a-3N
+	for alsa-devel@alsa-project.org; Mon, 25 Jan 2010 12:52:38 +0100
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 12:52:38 +0100
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 12:52:38 +0100
+In-Reply-To: <hj76gs$m9i$1@ger.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,137 +30,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: miguel.aguilar@ridgerun.com
-Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, Kevin Hilman <khilman@deeprootsystems.com>, nsekhar@ti.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 21, 2010 at 11:41:51AM -0600, miguel.aguilar@ridgerun.com wrote:
-> From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+'Twas brillig, and Colin Guthrie at 20/01/10 15:12 did gyre and gimble:
+> 'Twas brillig, and Colin Guthrie at 20/01/10 01:24 did gyre and gimble:
+>> Hi,
+>>
+>> 'Twas brillig, and Jaroslav Kysela at 18/01/10 21:39 did gyre and gimble:
+>>> On Mon, 18 Jan 2010, Colin Guthrie wrote:
+>>>> This is handled in our bug report here:
+>>>> https://qa.mandriva.com/show_bug.cgi?id=57010
+>>>>
+>>>> For reference relating to comment 12:
+>>>> 2.6.32.3-1mnb: First introduced the above 4 fixes.
+>>>> 2.6.32.3-2mnb: included 7b3a177
+>>>> 2.6.32.4-0.rc1.1mnb: included ed69c6a
+>>>>
+>>>> Is there something more that needs done?
+>>>
+>>> Thanks for feedback. Please, provide debug information:
+>>>
+>>> http://www.alsa-project.org/main/index.php/XRUN_Debug
+>>>
+>>> Use 101 or 29 values for xrun_debug and try to put ksyslog messages 
+>>> to a relation with the audiable problems.
+>>
+>> Just following up on this on behalf of a colleage.
+>>
+>> He's set the 101 value and this annoyingly seems to fix his problem
+>> (well, no glitches to the ear anyway!).
+>>
+>> However he does get the following messages:
+>>
+>> kernel: PCM: hw_ptr skipping! [Q] (pos=1024, delta=8192, period=1024,
+>> jdelta=0/170/0, hw_ptr=140116992/140116992)
+>>
+>> When he does the 29 value it spams the log >one every second and he
+>> didn't try too long to get it to fail before he switched to 101. I can
+>> get the full log of the above too if it's useful or run the 29 test and
+>> capture the output if it'll still help even tho it's not showing the error.
 > 
-> This patch adds the generic Voice Codec support for the DM365 based
-> platforms.
+> Another reply on the bug with some debug output:
 > 
-> Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+> https://qa.mandriva.com/show_bug.cgi?id=57010#c14
+> 
+> 
+> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
+> hwptr=1900536/1884160
+> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
+> hwptr=1900536/1884160
+> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
+> hwptr=1900536/1884160
+> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
+> hwptr=1900536/1884160
+> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
+> hwptr=1900536/1884160
+> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
+> hwptr=1900536/1884160
+> hwptr log: pcmC0D0p:0: j=3421759, pos=0/8192/16384, hwptr=1900536/1884160
+> hwptr log: pcmC0D0p:0: j=3421759, pos=0/8192/16384, hwptr=1900544/1900544
+> hwptr log: pcmC0D0p:0: j=3421759, pos=0/8192/16384, hwptr=1900544/1900544
+> hwptr log: pcmC0D0p:0: j=3421759, pos=0/8192/16384, hwptr=1900544/1900544
+> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
+> jdelta=0/371/0, hw_ptr=1900544/1900544)
+> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
+> jdelta=1/371/0, hw_ptr=4882432/4882432)
+> PCM: hw_ptr skipping! [Q] (pos=8192, delta=16384, period=8192,
+> jdelta=0/371/0,hw_ptr=11395072/11395072)
+> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
+> jdelta=0/371/0, hw_ptr=13156352/13156352)
+> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
+> jdelta=0/371/0, hw_ptr=13893632/13893632)
+> PCM: hw_ptr skipping! [Q] (pos=8192, delta=16384, period=8192,
+> jdelta=0/371/0, hw_ptr=20209664/20209664)
+> PCM: hw_ptr skipping! [Q] (pos=8192, delta=16384, period=8192,
+> jdelta=0/371/0, hw_ptr=27860992/27860992)
+> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
+> jdelta=0/371/0, hw_ptr=28639232/28639232)
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-It doesn't look like there should be any cross tree issues so probably
-easiest to merge this via the DaVinci tree.
+Does this info help at all? Is there anything else I can get the guys
+suffering with this to do?
 
-> ---
->  arch/arm/mach-davinci/dm365.c              |   37 +++++++++++++++++++++++++++-
->  arch/arm/mach-davinci/include/mach/dm365.h |    5 ++++
->  arch/arm/mach-davinci/include/mach/mux.h   |    2 +
->  3 files changed, 43 insertions(+), 1 deletions(-)
-> 
-> diff --git a/arch/arm/mach-davinci/dm365.c b/arch/arm/mach-davinci/dm365.c
-> index c63afc0..b5345d5 100644
-> --- a/arch/arm/mach-davinci/dm365.c
-> +++ b/arch/arm/mach-davinci/dm365.c
-> @@ -455,7 +455,7 @@ static struct clk_lookup dm365_clks[] = {
->  	CLK(NULL, "timer3", &timer3_clk),
->  	CLK(NULL, "usb", &usb_clk),
->  	CLK("davinci_emac.1", NULL, &emac_clk),
-> -	CLK("voice_codec", NULL, &voicecodec_clk),
-> +	CLK("davinci_voicecodec", NULL, &voicecodec_clk),
->  	CLK("davinci-asp.0", NULL, &asp0_clk),
->  	CLK(NULL, "rto", &rto_clk),
->  	CLK(NULL, "mjcp", &mjcp_clk),
-> @@ -606,6 +606,8 @@ INT_CFG(DM365,  INT_NSF_DISABLE,     25,    1,    0,     false)
->  
->  EVT_CFG(DM365,	EVT2_ASP_TX,         0,     1,    0,     false)
->  EVT_CFG(DM365,	EVT3_ASP_RX,         1,     1,    0,     false)
-> +EVT_CFG(DM365,	EVT2_VC_TX,          0,     1,    1,     false)
-> +EVT_CFG(DM365,	EVT3_VC_RX,          1,     1,    1,     false)
->  #endif
->  };
->  
-> @@ -835,6 +837,31 @@ static struct platform_device dm365_asp_device = {
->  	.resource	= dm365_asp_resources,
->  };
->  
-> +static struct resource dm365_vc_resources[] = {
-> +	{
-> +		.start	= DAVINCI_DM365_VC_BASE,
-> +		.end	= DAVINCI_DM365_VC_BASE + SZ_1K - 1,
-> +		.flags	= IORESOURCE_MEM,
-> +	},
-> +	{
-> +		.start	= DAVINCI_DMA_VC_TX,
-> +		.end	= DAVINCI_DMA_VC_TX,
-> +		.flags	= IORESOURCE_DMA,
-> +	},
-> +	{
-> +		.start	= DAVINCI_DMA_VC_RX,
-> +		.end	= DAVINCI_DMA_VC_RX,
-> +		.flags	= IORESOURCE_DMA,
-> +	},
-> +};
-> +
-> +static struct platform_device dm365_vc_device = {
-> +	.name		= "davinci_voicecodec",
-> +	.id		= -1,
-> +	.num_resources	= ARRAY_SIZE(dm365_vc_resources),
-> +	.resource	= dm365_vc_resources,
-> +};
-> +
->  static struct resource dm365_rtc_resources[] = {
->  	{
->  		.start = DM365_RTC_BASE,
-> @@ -991,6 +1018,14 @@ void __init dm365_init_asp(struct snd_platform_data *pdata)
->  	platform_device_register(&dm365_asp_device);
->  }
->  
-> +void __init dm365_init_vc(struct snd_platform_data *pdata)
-> +{
-> +	davinci_cfg_reg(DM365_EVT2_VC_TX);
-> +	davinci_cfg_reg(DM365_EVT3_VC_RX);
-> +	dm365_vc_device.dev.platform_data = pdata;
-> +	platform_device_register(&dm365_vc_device);
-> +}
-> +
->  void __init dm365_init_ks(struct davinci_ks_platform_data *pdata)
->  {
->  	dm365_ks_device.dev.platform_data = pdata;
-> diff --git a/arch/arm/mach-davinci/include/mach/dm365.h b/arch/arm/mach-davinci/include/mach/dm365.h
-> index 3c07a88..57e51eb 100644
-> --- a/arch/arm/mach-davinci/include/mach/dm365.h
-> +++ b/arch/arm/mach-davinci/include/mach/dm365.h
-> @@ -31,8 +31,13 @@
->  
->  #define DM365_RTC_BASE			(0x01C69000)
->  
-> +#define DAVINCI_DM365_VC_BASE		(0x01D0C000)
-> +#define DAVINCI_DMA_VC_TX		2
-> +#define DAVINCI_DMA_VC_RX		3
-> +
->  void __init dm365_init(void);
->  void __init dm365_init_asp(struct snd_platform_data *pdata);
-> +void __init dm365_init_vc(struct snd_platform_data *pdata);
->  void __init dm365_init_ks(struct davinci_ks_platform_data *pdata);
->  void __init dm365_init_rtc(void);
->  
-> diff --git a/arch/arm/mach-davinci/include/mach/mux.h b/arch/arm/mach-davinci/include/mach/mux.h
-> index 137bfba..2a68c1d 100644
-> --- a/arch/arm/mach-davinci/include/mach/mux.h
-> +++ b/arch/arm/mach-davinci/include/mach/mux.h
-> @@ -327,6 +327,8 @@ enum davinci_dm365_index {
->  	/* EDMA event muxing */
->  	DM365_EVT2_ASP_TX,
->  	DM365_EVT3_ASP_RX,
-> +	DM365_EVT2_VC_TX,
-> +	DM365_EVT3_VC_RX,
->  	DM365_EVT26_MMC0_RX,
->  };
->  
-> -- 
-> 1.6.0.4
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+Col
 
 -- 
-"You grabbed my hand and we fell into it, like a daydream - or a fever."
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
