@@ -1,37 +1,26 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 0/6] McPDM driver patch series
-Date: Mon, 25 Jan 2010 12:50:27 +0000
-Message-ID: <20100125125026.GC26017__39291.1514653408$1264425033$gmane$org@rakim.wolfsonmicro.main>
-References: <2256F256009DAA4CBE661E9F41EAC84B8C43A8AB@dlee01.ent.ti.com>
+Subject: Re: [PATCH 2b/4 v2] ASoC: add support for the sh7722 Migo-R board
+Date: Mon, 25 Jan 2010 13:21:03 +0000
+Message-ID: <20100125132102.GA26613@rakim.wolfsonmicro.main>
+References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
+ <Pine.LNX.4.64.1001190902000.4607@axis700.grange>
+ <Pine.LNX.4.64.1001221909050.4652@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 143DC10384F
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 13:50:28 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8C43A8AB@dlee01.ent.ti.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Candelaria Villareal, Jorge" <x0107209@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.1001221909050.4652@axis700.grange>
+Sender: linux-sh-owner@vger.kernel.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 22, 2010 at 05:14:48PM -0600, Candelaria Villareal, Jorge wrote:
-> McPDM module is the interface between the OMAP and TWL6030 audio codec.
+On Fri, Jan 22, 2010 at 07:17:09PM +0100, Guennadi Liakhovetski wrote:
+> Add support for audio on sh7722-based Migo-R boards, using SIU and wm8978 
+> codec, recording via external microphone and playback via headphones are 
+> implemented.
 
-> The interface supports the following:
-> * Up to 5 downlink channels and 3 uplink channels
-> * 88.2 and 96 KHz
-> * 32 bit sample size
+> Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 
-Liam already asked all the questions I had about this series - apart
-from what he said it looks OK to me.
+This is fine for me but can't be applied yet due to the CODEC driver
+dependency.
