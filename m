@@ -1,33 +1,47 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [alsa-devel] [PATCH 2b/4 v2] ASoC: add support for the sh7722
- Migo-R board
-Date: Mon, 25 Jan 2010 13:47:56 +0000
-Message-ID: <1264427276.3038.20.camel@odin>
+Subject: Re: [PATCH 2a/4 v2] ASoC: add DAI and platform / DMA drivers for
+ SH SIU
+Date: Mon, 25 Jan 2010 13:58:38 +0000
+Message-ID: <1264427918.3038.21.camel@odin>
 References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
 	 <Pine.LNX.4.64.1001190902000.4607@axis700.grange>
-	 <Pine.LNX.4.64.1001221909050.4652@axis700.grange>
-	 <20100125132102.GA26613@rakim.wolfsonmicro.main>
+	 <Pine.LNX.4.64.1001221900030.4652@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20100125132102.GA26613@rakim.wolfsonmicro.main>
+In-Reply-To: <Pine.LNX.4.64.1001221900030.4652@axis700.grange>
 Sender: linux-sh-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Guennadi Liakhovetski <g.liakhovetski@gmx.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, Magnus Damm <damm@opensource.se>, linux-sh@vger.kernel.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Magnus Damm <damm@opensource.se>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-01-25 at 13:21 +0000, Mark Brown wrote:
-> On Fri, Jan 22, 2010 at 07:17:09PM +0100, Guennadi Liakhovetski wrote:
-> > Add support for audio on sh7722-based Migo-R boards, using SIU and wm8978 
-> > codec, recording via external microphone and playback via headphones are 
-> > implemented.
+On Fri, 2010-01-22 at 19:09 +0100, Guennadi Liakhovetski wrote:
+> Several SuperH platforms, including sh7722, sh7343, sh7354, sh7367 include 
+> a Sound Interface Unit (SIU). This patch adds DAI and platform / DMA 
+> drivers for this interface.
 > 
-> > Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> ---
 > 
-> This is fine for me but can't be applied yet due to the CODEC driver
-> dependency.
+> v1 -> v2:
+> 
+> 1. splitted off board support into a separate patch
+> 2. made SND_SOC_SH4_SIU a hidden Kconfig variable
+> 3. SND_SOC_SH4_SIU now can be selected on other SuperH platforms, not only 
+>    on sh7722
+> 4. moved many defines, that are only used in one of .c-files in those 
+>    files
+> 5. prefixed remaining defines in the header with SIU_
+> 6. clarification: "only fixed Left-upper, Left-lower, Right-upper, 
+>    Right-lower packing is supported" means - only this byte order is 
+>    hard-coded without support for other possible byte-orders
+> 7. clk_put() doesn't mind getting an error code as its argument, but moved 
+>    it under the respective "if" just in case;)
+> 8. removed mono-emulation via data-copying. Looking for a recipe to achive 
+>    this via alsa-configuration, anyone?
+> 
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Acked-by:Liam Girdwood <lrg@slimlogic.co.uk>
 
 
