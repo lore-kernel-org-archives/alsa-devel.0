@@ -1,26 +1,37 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2a/4 v2] ASoC: add DAI and platform / DMA drivers for
- SH SIU
-Date: Mon, 25 Jan 2010 15:06:25 +0000
-Message-ID: <20100125150625.GA27920@rakim.wolfsonmicro.main>
-References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
- <Pine.LNX.4.64.1001190902000.4607@axis700.grange>
- <Pine.LNX.4.64.1001221900030.4652@axis700.grange>
+Subject: Re: [PATCH v2] ad1836: reset and restore clock control
+ mode in suspend/resume entry
+Date: Mon, 25 Jan 2010 15:06:36 +0000
+Message-ID: <20100125150636.GB27920@rakim.wolfsonmicro.main>
+References: <1264408945-25762-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 54DF91038A1
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 16:06:37 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1001221900030.4652@axis700.grange>
-Sender: linux-sh-owner@vger.kernel.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>
+In-Reply-To: <1264408945-25762-1-git-send-email-21cnbao@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 22, 2010 at 07:09:03PM +0100, Guennadi Liakhovetski wrote:
-> Several SuperH platforms, including sh7722, sh7343, sh7354, sh7367 include 
-> a Sound Interface Unit (SIU). This patch adds DAI and platform / DMA 
-> drivers for this interface.
+On Mon, Jan 25, 2010 at 04:42:25PM +0800, Barry Song wrote:
+> tests show frequent suspend/resume(frequent poweroff/on ad1836 internal components)
+> maybe make ad1836 clock mode wrong sometimes after wakeup. This patch reset/restore
+> ad1836 clock mode while executing PM, then ad1836 can always resume to right clock
+> status.
 > 
-> Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> Signed-off-by: Barry Song <21cnbao@gmail.com>
 
 Applied, thanks.
