@@ -1,15 +1,17 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH v2] ad1836: reset and restore clock control
-	mode in suspend/resume entry
-Date: Mon, 25 Jan 2010 16:42:25 +0800
-Message-ID: <1264408945-25762-1-git-send-email-21cnbao@gmail.com>
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: Re: How much of the X-Fi (emu20k1) chip has Creative
+	documented?
+Date: Mon, 25 Jan 2010 00:49:38 -0800 (PST)
+Message-ID: <682811.71185.qm@web52907.mail.re2.yahoo.com>
+References: <s5hzl42acy2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
-	by alsa0.perex.cz (Postfix) with ESMTP id 93D9A1037F2
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 09:42:44 +0100 (CET)
+Received: from web52907.mail.re2.yahoo.com (web52907.mail.re2.yahoo.com
+	[206.190.49.17]) by alsa0.perex.cz (Postfix) with SMTP id 4BC38103846
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 09:49:40 +0100 (CET)
+In-Reply-To: <s5hzl42acy2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,84 +21,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Brendan Pike <spike@spykes.net>
 List-Id: alsa-devel@alsa-project.org
 
-tests show frequent suspend/resume(frequent poweroff/on ad1836 internal components)
-maybe make ad1836 clock mode wrong sometimes after wakeup. This patch reset/restore
-ad1836 clock mode while executing PM, then ad1836 can always resume to right clock
-status.
+--- On Mon, 25/1/10, Takashi Iwai <tiwai@suse.de> wrote:
+> It's stalled, AFAIK.=A0 I have no time for it, and no
+> any patches given by others, too.
 
-Signed-off-by: Barry Song <21cnbao@gmail.com>
----
- -v2: commit forgotten ad1836.h
+Fair enough. So for reference, the current ALSA matrix entry for snd-ctxfi =
+would be:
 
- sound/soc/codecs/ad1836.c |   32 ++++++++++++++++++++++++++++++++
- sound/soc/codecs/ad1836.h |    1 +
- 2 files changed, 33 insertions(+), 0 deletions(-)
+[PCI]/[PCIe] [ANALOGio] [HWMix] [5.1] [7.1] ... and?
 
-diff --git a/sound/soc/codecs/ad1836.c b/sound/soc/codecs/ad1836.c
-index 2c18e3d..83add2f 100644
---- a/sound/soc/codecs/ad1836.c
-+++ b/sound/soc/codecs/ad1836.c
-@@ -223,6 +223,36 @@ static unsigned int ad1836_read_reg_cache(struct snd_soc_codec *codec,
- 	return reg_cache[reg];
- }
- 
-+#ifdef CONFIG_PM
-+static int ad1836_soc_suspend(struct platform_device *pdev,
-+		pm_message_t state)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+
-+	/* reset clock control mode */
-+	u16 adc_ctrl2 =  codec->read(codec, AD1836_ADC_CTRL2);
-+	adc_ctrl2 &= ~AD1836_ADC_SERFMT_MASK;
-+
-+	return codec->write(codec, AD1836_ADC_CTRL2, adc_ctrl2);
-+}
-+
-+static int ad1836_soc_resume(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+
-+	/* restore clock control mode */
-+	u16 adc_ctrl2 = codec->read(codec, AD1836_ADC_CTRL2);
-+	adc_ctrl2 |= AD1836_ADC_AUX;
-+
-+	return codec->write(codec, AD1836_ADC_CTRL2, adc_ctrl2);
-+}
-+#else
-+#define ad1836_soc_suspend NULL
-+#define ad1836_soc_resume  NULL
-+#endif
-+
- static int __devinit ad1836_spi_probe(struct spi_device *spi)
- {
- 	struct snd_soc_codec *codec;
-@@ -404,6 +434,8 @@ static int ad1836_remove(struct platform_device *pdev)
- struct snd_soc_codec_device soc_codec_dev_ad1836 = {
- 	.probe = 	ad1836_probe,
- 	.remove = 	ad1836_remove,
-+	.suspend =      ad1836_soc_suspend,
-+	.resume =       ad1836_soc_resume,
- };
- EXPORT_SYMBOL_GPL(soc_codec_dev_ad1836);
- 
-diff --git a/sound/soc/codecs/ad1836.h b/sound/soc/codecs/ad1836.h
-index 7660ee6..e9d90d3 100644
---- a/sound/soc/codecs/ad1836.h
-+++ b/sound/soc/codecs/ad1836.h
-@@ -54,6 +54,7 @@
- #define AD1836_ADC_SERFMT_MASK	       (7 << 6)
- #define AD1836_ADC_SERFMT_PCK256       (0x4 << 6)
- #define AD1836_ADC_SERFMT_PCK128       (0x5 << 6)
-+#define AD1836_ADC_AUX                 (0x6 << 6)
- 
- #define AD1836_ADC_CTRL3               14
- 
--- 
-1.5.6.3
+> Maybe you can ask Creative guys for any problems.
+
+Heh, that sounds like a plan. Something along the lines of "I am thinking o=
+f buying a X-Fi card, and was wondering how functional it would be under Li=
+nux." ;-).
+
+Thanks,
+Chris
+
+
+      =
