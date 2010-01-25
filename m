@@ -1,26 +1,18 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Duplicate wake-ups in pcm_lib.c
-Date: Mon, 25 Jan 2010 11:52:17 +0000
-Message-ID: <hjk0lg$3ti$1@ger.gmane.org>
-References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>	<alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>	<hj29f0$v5d$1@ger.gmane.org>	<alpine.LNX.2.00.1001182233280.4324@eeebox2.perex-int.cz>	<hj5lvn$is9$1@ger.gmane.org>
-	<hj76gs$m9i$1@ger.gmane.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/5] Add Voice Codec support for DaVinci
+	platforms
+Date: Mon, 25 Jan 2010 12:35:15 +0000
+Message-ID: <20100125123515.GB26017@rakim.wolfsonmicro.main>
+References: <4B58904E.4030108@ridgerun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE5D2103824
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 12:52:42 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1NZNUk-00032a-3N
-	for alsa-devel@alsa-project.org; Mon, 25 Jan 2010 12:52:38 +0100
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 12:52:38 +0100
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 12:52:38 +0100
-In-Reply-To: <hj76gs$m9i$1@ger.gmane.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9B232103824
+	for <alsa-devel@alsa-project.org>; Mon, 25 Jan 2010 13:35:16 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4B58904E.4030108@ridgerun.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,100 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, clarkbecker <clark.becker@ridgerun.com>, Santiago Nunez <santiago.nunez@ridgerun.com>, Diego Dompe <diego.dompe@ridgerun.com>, "Nori, Sekhar" <nsekhar@ti.com>, "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "Narnakaje,
+	Snehaprabha" <nsnehaprabha@ti.com>, Todd Fischer <todd.fischer@ridgerun.com>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Colin Guthrie at 20/01/10 15:12 did gyre and gimble:
-> 'Twas brillig, and Colin Guthrie at 20/01/10 01:24 did gyre and gimble:
->> Hi,
->>
->> 'Twas brillig, and Jaroslav Kysela at 18/01/10 21:39 did gyre and gimble:
->>> On Mon, 18 Jan 2010, Colin Guthrie wrote:
->>>> This is handled in our bug report here:
->>>> https://qa.mandriva.com/show_bug.cgi?id=57010
->>>>
->>>> For reference relating to comment 12:
->>>> 2.6.32.3-1mnb: First introduced the above 4 fixes.
->>>> 2.6.32.3-2mnb: included 7b3a177
->>>> 2.6.32.4-0.rc1.1mnb: included ed69c6a
->>>>
->>>> Is there something more that needs done?
->>>
->>> Thanks for feedback. Please, provide debug information:
->>>
->>> http://www.alsa-project.org/main/index.php/XRUN_Debug
->>>
->>> Use 101 or 29 values for xrun_debug and try to put ksyslog messages 
->>> to a relation with the audiable problems.
->>
->> Just following up on this on behalf of a colleage.
->>
->> He's set the 101 value and this annoyingly seems to fix his problem
->> (well, no glitches to the ear anyway!).
->>
->> However he does get the following messages:
->>
->> kernel: PCM: hw_ptr skipping! [Q] (pos=1024, delta=8192, period=1024,
->> jdelta=0/170/0, hw_ptr=140116992/140116992)
->>
->> When he does the 29 value it spams the log >one every second and he
->> didn't try too long to get it to fail before he switched to 101. I can
->> get the full log of the above too if it's useful or run the 29 test and
->> capture the output if it'll still help even tho it's not showing the error.
-> 
-> Another reply on the bug with some debug output:
-> 
-> https://qa.mandriva.com/show_bug.cgi?id=57010#c14
-> 
-> 
-> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
-> hwptr=1900536/1884160
-> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
-> hwptr=1900536/1884160
-> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
-> hwptr=1900536/1884160
-> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
-> hwptr=1900536/1884160
-> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
-> hwptr=1900536/1884160
-> hwptr log: pcmC0D0p:0: j=3421759, pos=16376/8192/16384,
-> hwptr=1900536/1884160
-> hwptr log: pcmC0D0p:0: j=3421759, pos=0/8192/16384, hwptr=1900536/1884160
-> hwptr log: pcmC0D0p:0: j=3421759, pos=0/8192/16384, hwptr=1900544/1900544
-> hwptr log: pcmC0D0p:0: j=3421759, pos=0/8192/16384, hwptr=1900544/1900544
-> hwptr log: pcmC0D0p:0: j=3421759, pos=0/8192/16384, hwptr=1900544/1900544
-> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
-> jdelta=0/371/0, hw_ptr=1900544/1900544)
-> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
-> jdelta=1/371/0, hw_ptr=4882432/4882432)
-> PCM: hw_ptr skipping! [Q] (pos=8192, delta=16384, period=8192,
-> jdelta=0/371/0,hw_ptr=11395072/11395072)
-> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
-> jdelta=0/371/0, hw_ptr=13156352/13156352)
-> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
-> jdelta=0/371/0, hw_ptr=13893632/13893632)
-> PCM: hw_ptr skipping! [Q] (pos=8192, delta=16384, period=8192,
-> jdelta=0/371/0, hw_ptr=20209664/20209664)
-> PCM: hw_ptr skipping! [Q] (pos=8192, delta=16384, period=8192,
-> jdelta=0/371/0, hw_ptr=27860992/27860992)
-> PCM: hw_ptr skipping! [Q] (pos=0, delta=16384, period=8192,
-> jdelta=0/371/0, hw_ptr=28639232/28639232)
+On Thu, Jan 21, 2010 at 11:35:10AM -0600, Miguel Aguilar wrote:
 
+> The following patch series adds support for the Voice Codec in the
+> Davinci platform and in this particular case for the DM365 EVM.
 
-Does this info help at all? Is there anything else I can get the guys
-suffering with this to do?
-
-Col
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+All the other patches for this look good.
