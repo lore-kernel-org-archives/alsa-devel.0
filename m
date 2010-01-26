@@ -1,23 +1,17 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: AC97: S3C: Add controller driver
-Date: Tue, 26 Jan 2010 21:11:55 +0900
-Message-ID: <1b68c6791001260411u2b39d8actf35a0f3541fda92d@mail.gmail.com>
-References: <1264485101-13782-1-git-send-email-jassisinghbrar@gmail.com>
-	<1264485101-13782-2-git-send-email-jassisinghbrar@gmail.com>
-	<20100126104723.GF15759@rakim.wolfsonmicro.main>
-	<1b68c6791001260317k44893521vc0310ea35bac8ee1@mail.gmail.com>
-	<20100126115258.GM15759@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: DaVinci: Fix stream restart error
+Date: Tue, 26 Jan 2010 12:42:31 +0000
+Message-ID: <20100126124231.GR15759@rakim.wolfsonmicro.main>
+References: <1263987393-29886-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f178.google.com (mail-qy0-f178.google.com
-	[209.85.221.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id A19B41038D2
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 13:11:57 +0100 (CET)
-Received: by qyk8 with SMTP id 8so2488561qyk.24
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 04:11:56 -0800 (PST)
-In-Reply-To: <20100126115258.GM15759@rakim.wolfsonmicro.main>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BC100103813
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 13:42:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1263987393-29886-1-git-send-email-chaithrika@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,76 +21,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Chaithrika U S <chaithrika@ti.com>
+Cc: khilman@deeprootsystems.com, alsa-devel@alsa-project.org, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKYW4gMjYsIDIwMTAgYXQgODo1MiBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgSmFuIDI2LCAyMDEwIGF0
-IDA4OjE3OjI1UE0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4+IE9uIFR1ZSwgSmFuIDI2LCAy
-MDEwIGF0IDc6NDcgUE0sIE1hcmsgQnJvd24KPgo+PiA+PiArIMKgIMKgIGRlZmF1bHQ6Cj4+ID4+
-ICsgwqAgwqAgwqAgwqAgwqAgwqAgczNjX2FjOTdfY29sZF9yZXNldChhYzk3KTsKPj4gPj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCBzM2NfYWM5N193YXJtX3Jlc2V0KGFjOTcpOwo+PiA+PiArIMKgIMKg
-IMKgIMKgIMKgIMKgIGJyZWFrOwo+PiA+PiArIMKgIMKgIH0KPgo+PiA+IFRoaXMgYXV0b21hdGlj
-IGNvbGQgYW5kIHdhcm0gcmVzZXQgbG9va3MgYSBiaXQgZmlzaHkgLSBvYnZpb3VzbHkgaWYgdGhp
-cwo+PiA+IGNvZGUgcGF0aCBldmVyIGdldHMgaGl0IGluIG5vcm1hbCBvcGVyYXRpb24gdGhlbiBp
-dCdzIGdvaW5nIHRvIHNlcmlvdXNseQo+PiA+IGRpc3J1cHQgdGhpbmdzIHNpbmNlIGl0J2xsIHJl
-c2V0IHRoZSBDT0RFQyByZWdpc3RlcnMuIMKgQSB3YXJtIHJlc2V0IGJ5Cj4+ID4gaXRzZWxmIHdv
-dWxkbid0IGJlIGEgcHJvYmxlbSBidXQgSSdkIHJhdGhlciBzZWUgZXhwbGljaXQgY29sZCByZXNl
-dHMgaW4KPj4gPiB0aGUgY2FsbGVycyB3aGVyZSB0aGF0J3MgcmVxdWlyZWQuCj4KPj4gQmVmb3Jl
-IHJlYWQvd3JpdGUgd2UgbmVlZCB0byBlbnN1cmUgdGhlIGxpbmsgaXMgYWN0aXZlLiBBbmQgdG8g
-cmVhY2ggdGhlCj4+IGFjdGl2ZSBzdGF0ZSB3ZSBoYXZlIHRvIGRvIHRoYXQgYXMgc3VnZ2VzdGVk
-IGJ5IHRoZSBGU00gc2hvd24gaW4gU29DcycgTWFudWFsLgo+Cj4gVGhhdCdzIG5vdCBhZGRyZXNz
-aW5nIHRoZSBwcm9ibGVtLCB0aG91Z2ggLSB0aGUgYmlnIGlzc3VlIGlzIG5vdAo+IGJyaW5naW5n
-IHVwIHRoZSBBQzk3IGxpbmssIGl0J3MgdGhlIGZhY3QgdGhhdCB5b3UncmUgZG9pbmcgYW4KPiB1
-bmNvbnRyb2xsZWQgY29sZCByZXNldC4gwqBJZiB3ZSBoaXQgdGhpcyBjb2RlIHBhdGggaXQnbGwg
-cmV2ZXJ0IHRoZQo+IGRldmljZSByZWdpc3RlcnMgdG8gZGVmYXVsdCB3aGljaCB3aWxsIHVwc2V0
-IHRoZSBkcml2ZXJzIGZvciB0aGUgQ09ERUMKPiByYXRoZXIgYmFkbHkuIMKgVGhlcmUgc2hvdWxk
-IGJlIG5vIHBvc3NpYmlsaXR5IG9mIHRoYXQgaGFwcGVuaW5nLCBpZiBpdAo+IGlzIGhhcHBlbmlu
-ZyBpdCdzIHNvbWV0aGluZyB0aGF0IGNhbGxlcnMgcmVhbGx5IHNob3VsZCBrbm93IGFib3V0LgpJ
-dCBzaG91bGQgbmV2ZXIgYmUgcmVhY2hlZCBhZnRlciB0aGUgbGluayBpcyB1cCBhbmQgcnVubmlu
-Zy4gT25seSBpZiBzb21ldGhpbmcKZ29lcyB3cm9uZyBhdCBydW50aW1lLCB3b3VsZCB0aGUgY29u
-dHJvbGxlciBzdGF0ZSBiZSBjaGFuZ2VkLiBBbmQKdGhpcyBpcyBhbiBhdHRlbXB0IHRvIHJlY292
-ZXIgZnJvbSB0aGF0IGZhaWx1cmUuIElmIHRoZSB1cHBlciBsYXllciBzaG91bGQKa25vdyBvZiBz
-dWNoIGZhaWx1cmUsIHRoZW4gbWF5YmUgd2Ugc2hvdWxkIG5vdCBkbyBpdC4KSSBoYXZlIG5ldmVy
-IHNlZW4gc3VjaCBydW50aW1lIGVycm9yIHRob3VnaC4KCj4+IEFsc28sIHRoaXMgaGVscHMgbm90
-IHJlbHlpbmcgb24gY29kZWMvY29yZSB0byBwZXJmb3JtIHBhcnRpY3VsYXIgc3RlcHMKPj4gb2Yg
-aW5pdGlhbGl6YXRpb25zLgo+Cj4gRXF1YWxseSB3ZWxsIGlmIHRoZSBjb250cm9sbGVyIGRyaXZl
-ciBkaXZlcmdlcyBmcm9tIHdoYXQgb3RoZXIgZHJpdmVycwo+IGRvIGl0J3MgZ29pbmcgdG8gbGVh
-ZCB0byBpbnRlcm9wZXJhYmlsaXR5IHNrZXcgZm9yIGRyaXZlcnMuCj4KPiBGb3IgdGhlIHdhcm0g
-cmVzZXQgZnVuY3Rpb24gSSdkIHN1Z2dlc3QgYWRkaW5nIHNvbWV0aGluZyB3aGljaCBjaGVja3Mg
-dG8KPiBzZWUgaWYgdGhlIGxpbmsgaXMgYWxyZWFkeSBhY3RpdmUgYW5kIHN1cHByZXNzZXMgdGhl
-IHdhcm0gcmVzZXQgaW4gdGhhdAo+IGNhc2UuIMKgVGhhdCB3aWxsIGF2b2lkIHNsb3dpbmcgZXZl
-cnl0aGluZyBkb3duIHdpdGggc3B1cmlvdXMgd2FybSByZXNldHMKPiB3aGVuIHRoZSBsaW5rIGlz
-IGFscmVhZHkgcnVubm5pbmcgYW5kIG90aGVyIGRyaXZlcnMgYXNzdW1lIHRoZXkgbmVlZCB0bwo+
-IGJyaW5nIGl0IHVwIC0gd2l0aCB0aGUgd2F5IHRoaW5ncyBhcmUgc3RydWN0dXJlZCBhdCBwcmVz
-ZW50IG1hbnkgd2FybQo+IHJlc2V0cyByZXF1ZXN0ZWQgYnkgb3RoZXIgZHJpdmVycyBhcmUgbGlr
-ZWx5IHRvIGJlIHNwdXJpb3VzLgpvaywgaSB3aWxsIGFkZCB0aGUgY2hlY2sgaW4gd2FybSByZXNl
-dC4KCj4gSWRlYWxseSB0aGUgY29yZSB3b3VsZCBrZWVwIHRyYWNrIG9mIHRoaXMgYW5kIHRyYW5z
-cGFyZW50bHkgdHJpZ2dlciB0aGUKPiB3YXJtIHJlc2V0IHdoZW4gcmVxdWlyZWQsIGJ1dCBkcml2
-ZXIgbG9jYWwgaXMgZmluZSBzaW5jZSB0aGF0J3Mgbm90Cj4gdGhlcmUgeWV0Lgo+Cj4+ID4+ICsg
-wqAgwqAgYWNfZ2xiY3RybCA9IFMzQ19BQzk3X0dMQkNUUkxfQUNMSU5LT047Cj4+ID4+ICsgwqAg
-wqAgd3JpdGVsKGFjX2dsYmN0cmwsIHMzY19hYzk3LnJlZ3MgKyBTM0NfQUM5N19HTEJDVFJMKTsK
-Pj4gPj4gKyDCoCDCoCBtc2xlZXAoMSk7Cj4KPj4gPiBUaGlzIGFsc28gbG9va3MgYSBiaXQgb2Rk
-LCBBQ0xJTktPTiBzb3VuZHMgbGlrZSBicmluZ2luZyB1cCB0aGUgbGluawo+PiA+IHdoaWNoIGlz
-IHdoYXQgYSB3YXJtIHJlc2V0IGRvZXMuCj4KPj4gQXMgc2hvd24gaW4gRlNNIG9mIFNvQ3MgbWFu
-dWFsLCB0aGlzIHNldHMgdGhlIGNvbnRyb2xsZXIgc3RhdGUgdG8gUkVBRFkuCj4+IFBsZWFzZSBo
-YXZlIGEgbG9vayBhdCBhbnkgbWFudWFsJ3MgQUM5NyBjaGFwdGVyLgo+Cj4gUmlnaHQsIGJ1dCB3
-aHkgaXMgdGhpcyBiZWluZyBkb25lIGJ5IHRoaXMgZnVuY3Rpb24gYW5kIG5vdCwgZm9yIGV4YW1w
-bGUsCj4gYnkgdGhlIHdhcm0gcmVzZXQ/IMKgSXQncyB0aGUgc3RydWN0dXJlIG9mIHRoZSBjb2Rl
-IEknbSBjb21tZW50aW5nIG9uCj4gcmF0aGVyIHRoYW4gdGhlIG9wZXJhdGlvbnMgdGhhdCBnZXQg
-cGVyZm9ybWVkIG9uIHRoZSBoYXJkd2FyZS4KSSBhc3N1bWUgdGhlIEFMU0EgZGVmaW5pdGlvbiBv
-ZiBjb2xkL3dhcm0gcmVzZXQgaXMgc2FtZSBhcyB0aGF0IG9mCnRoZSBBQzk3IGNvbnRyb2xsZXIu
-IEFueXRoaW5nIHJlbWFpbmluZyBzaG91bGQgYmUgZG9uZSBvbmx5IHdoZW4gbmVjZXNzYXJ5LgpG
-b3IgZXgsIHRoZSBBTFNBIG1pZ2h0IHdhbnQgdG8gbGVhdmUgY29udHJvbGxlciBhZnRlciBqdXN0
-IGNvbGQvd2FybQpyZXNldCAuLi4gYXMKdGhlIFNvQyBtYW51YWwgc2F5cyBpdCdzIGluIGxvdy1w
-b3dlciBtb2RlIHdpdGhvdXQgdGhlIEFDLWxpbmsgb24uCgo+PiA+PiArbGI1Ogo+PiA+PiArIMKg
-IMKgIGZyZWVfaXJxKGlycV9yZXMtPnN0YXJ0LCBOVUxMKTsKPgo+PiA+IFBlcmhhcHMgYSBiZXR0
-ZXIgbmFtZSB0aGFuICdsYicgLSBlcnIsIG9yIGZhaWwgb3Igc29tZXRoaW5nLiDCoGxiIG1lYW5z
-Cj4+ID4gbm90aGluZyB0byBtZSBhdCBsZWFzdC4KPgo+PiBtZWFucyBsYWJlbCB0byBtZSA6KQo+
-Cj4gSWYgeW91J2Qgc3BlbHQgb3V0IGxhYmVsIEknZCBwcm9iYWJseSBoYXZlIGJlZW4gT0ssIGJ1
-dCBpbiBFbmdsaXNoIGxiIGlzCj4gbm9ybWFsbHkgb25seSBhbiBhYmJyZXZpYXRpb24gZm9yIHBv
-dW5kcyBhcyBhIHVuaXQgb2Ygd2VpZ2h0Lgpvaywgd2lsbCByZW5hbWUgdGhlIGxhYmVscy4KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
-YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
-c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Wed, Jan 20, 2010 at 05:06:33PM +0530, Chaithrika U S wrote:
+> Sometimes after a suspend-resume cycle, the ALSA application
+> restarts the stream when resume fails and McASP fails to work
+> as the clock is not enabled. This patch corrects this bug.
+> 
+> Testes on TI DA850/OMAP-L138 EVM.
+> 
+> Signed-off-by: Chaithrika U S <chaithrika@ti.com>
+
+Applied, thanks.
