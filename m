@@ -1,25 +1,37 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCHv2 5/6] ASoC: OMAP4: Add support for McPDM
-Date: Tue, 26 Jan 2010 09:57:31 +0000
-Message-ID: <20100126095730.GA15759@rakim.wolfsonmicro.main>
-References: <2256F256009DAA4CBE661E9F41EAC84B8C43A8B4@dlee01.ent.ti.com>
- <1264211090.3480.141.camel@odin>
- <2256F256009DAA4CBE661E9F41EAC84B8C4CEF35@dlee01.ent.ti.com>
+Subject: Re: [PATCH 1/3] ARM: S3C64XX: Add AC97 platform
+	resources
+Date: Tue, 26 Jan 2010 10:12:46 +0000
+Message-ID: <20100126101246.GD15759@rakim.wolfsonmicro.main>
+References: <1264485101-13782-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DB85F243F3
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 11:12:47 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8C4CEF35@dlee01.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+In-Reply-To: <1264485101-13782-1-git-send-email-jassisinghbrar@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: jassisinghbrar@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 25, 2010 at 03:06:27PM -0600, Candelaria Villareal, Jorge wrote:
-> Liam Girdwood wrote:
+On Tue, Jan 26, 2010 at 02:51:39PM +0900, jassisinghbrar@gmail.com wrote:
+> From: Jassi Brar <jassi.brar@samsung.com>
+> 
+> This patch defines the platform device and the resources: IRQ, DMA and MEM,
+> needed by the AC97 controller driver.
+> 
+> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-> > What does this do and why is it not static ?
-
-> It enables and configures offset cancelation for the analog headset path. It is supposed to be called by the codec driver, so it should'nt be static. But, offset cancelation is probably not going to be used at first.
-
-So this is a DC offset in the output?
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
