@@ -1,22 +1,15 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCHv2 6/6] ASoC: OMAP4: Add McPDM platform
- driver
-Date: Tue, 26 Jan 2010 10:27:48 +0200
-Message-ID: <20100126102748.3b9fb04d.jhnikula@gmail.com>
-References: <2256F256009DAA4CBE661E9F41EAC84B8C43A8B5@dlee01.ent.ti.com>
-	<1264210638.3480.127.camel@odin>
-	<2256F256009DAA4CBE661E9F41EAC84B8C4CEF36@dlee01.ent.ti.com>
+From: Wei Ni <wni@nvidia.com>
+Subject: [PATCH]Add support for more the 8 streams
+Date: Tue, 26 Jan 2010 17:32:08 +0800
+Message-ID: <6B4D417B830BC44B8026029FD256F7F1BFEAFA4033@HKMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+	boundary="_004_6B4D417B830BC44B8026029FD256F7F1BFEAFA4033HKMAIL01nvidi_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
-	[209.85.219.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92016103815
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 09:25:34 +0100 (CET)
-Received: by ewy5 with SMTP id 5so6791186ewy.32
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 00:25:33 -0800 (PST)
-In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8C4CEF36@dlee01.ent.ti.com>
+Received: from hqemgate04.nvidia.com (hqemgate04.nvidia.com [216.228.121.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0AF8424389
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 10:35:35 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,62 +19,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: 'akpm' <akpm@linux-foundation.org>, 'alsa-devel' <alsa-devel@alsa-project.org>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'Pavel Hofman' <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+--_004_6B4D417B830BC44B8026029FD256F7F1BFEAFA4033HKMAIL01nvidi_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 25 Jan 2010 15:06:44 -0600
-"Candelaria Villareal, Jorge" <jorge.candelaria@ti.com> wrote:
+Hi, Takashi
+When I develop the hdmi audio driver on my new chipset, I found a bug in =
+the hda_intel.c
+It use azx_readb/azx_writeb to read/write SIE, so it just support 8 strea=
+ms.
+The new HAD controller has more than 8 streams, so I think it should use =
+azx_readl/azx_writel.
 
-> > > +static int omap_mcpdm_dai_startup(struct snd_pcm_substream 
-> > *substream,
-> > > +				  struct snd_soc_dai *dai)
-> > > +{
-> > > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> > > +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-> > > +	int err = 0;
-> > > +
-> > > +	if (!cpu_dai->active)
-> > > +		err = omap_mcpdm_request();
-> > 
-> > Will anything else use this hw interface other than ALSA audio ?
-> > If not, the request is probably better in the machine driver probe().
-> 
-> omap_mcpdm_request will enable the functional clock. Isn't it better
-> for the clock to be enabled only when is about to get used?
-> 
-Definitely yes if there is no any need to keep block active after the
-request. That would help the power-management if there are no active
-clocks when the streams are suspended with omap_mcpdm_stop() but the
-block remains reserved (i.e. omap_mcpdm_free is not called).
-
-The current McBSP implementation is not the best example here but
-hopefully that will get fixed at some point.
-
-> > stream is either PLAYBACK or CAPTURE here.
-> 
-> Downlink and uplink were chosen instead to avoid confusion
-> because that is how it is referred in McPDM technical
-> documentation. But I do understand that we are talking
-> about ALSA stream, not McPDM...
-...
-> Here, however, the methods set_uplink & set_downlink are
-> Named after McPDM data paths. In this case is it preferred
-> to name everything using ALSA convention? Or would it be ok
-> to use downlink/uplink on certain cases?
-> 
-I think something like below is clear enough. It is easy to see that we
-are dealing with ALSA playback stream which corresponds to downlink path
-in HW.
-
-if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-	omap_mcpdm_downlink_opxxx();
-
-Also for the user(-space) standard playback and capture naming is more
-clear than downlink/uplink terminology.
+I attached the patch file, please check it.
 
 
--- 
-Jarkko
+
+Thanks
+Wei.
+
+
+-------------------------------------------------------------------------=
+----------
+This email message is for the sole use of the intended recipient(s) and m=
+ay contain
+confidential information.  Any unauthorized review, use, disclosure or di=
+stribution
+is prohibited.  If you are not the intended recipient, please contact the=
+=20sender by
+reply email and destroy all copies of the original message.
+-------------------------------------------------------------------------=
+----------
+
+--_004_6B4D417B830BC44B8026029FD256F7F1BFEAFA4033HKMAIL01nvidi_
+Content-Type: application/octet-stream;
+	name="0001-Add-support-for-more-the-8-streams.patch"
+Content-Description: 0001-Add-support-for-more-the-8-streams.patch
+Content-Disposition: attachment;
+	filename="0001-Add-support-for-more-the-8-streams.patch"; size=1580;
+	creation-date="Tue, 26 Jan 2010 17:22:58 GMT";
+	modification-date="Tue, 26 Jan 2010 17:22:58 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSBlYTc0MmU4Y2U2ZjA3ZmFmMGFmM2ViM2FjZWQ3ZWQzZWNjNzBlNDY3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBXZWkgTmkgPHduaUBudmlkaWEuY29tPgpEYXRlOiBUdWUsIDI2
+IEphbiAyMDEwIDE1OjU5OjMzICswODAwClN1YmplY3Q6IFtQQVRDSF0gQWRkIHN1cHBvcnQgZm9y
+IG1vcmUgdGhlIDggc3RyZWFtcwoKSW4gYXp4X3N0cmVhbV9zdGFydCgpIGFuZCBhenhfc3RyZWFt
+X3N0b3AoKSwKaXQgdXNlIGF6eF9yZWFkYi9henhfd3JpdGViIHRvIHJlYWQvd3JpdGUgU0lFLApp
+dCBqdXN0IGVuYWJsZS9kaXNhYmxlIDggc3RyZWFtcy4KQnV0IGFjY29yZGluZyB0byB0aGUgSERB
+IHNwZWMsIGl0IHN1cHBvcnQgMzAgc3RyZWFtcywKYW5kIHRoZSBuZXcgSERBIGNvbnRyb2xsZXIg
+d2lsbCBzdXBwb3J0IG1vcmUgdGhlbiA4CnN0cmVhbXMuIFNvIHdlIHNob3VsZCB1c2UgYXp4X3Jl
+YWRsL2F6eF93cml0ZWwgdG8KcmVhZC93cml0ZSBTSUUuCgpTaWduZWQtb2ZmLWJ5OiBXZWkgTmkg
+PHduaUBudmlkaWEuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMgfCAgICA4ICsr
+KystLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkK
+CmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jIGIvc291bmQvcGNpL2hkYS9o
+ZGFfaW50ZWwuYwppbmRleCA2ZDMzMWM0Li42ZWVlZmRhIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kv
+aGRhL2hkYV9pbnRlbC5jCisrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKQEAgLTk1NCw4
+ICs5NTQsOCBAQCBzdGF0aWMgdm9pZCBhenhfc3RyZWFtX3N0YXJ0KHN0cnVjdCBhenggKmNoaXAs
+IHN0cnVjdCBhenhfZGV2ICphenhfZGV2KQogCWF6eF9kZXYtPmluc3VmZmljaWVudCA9IDE7CiAK
+IAkvKiBlbmFibGUgU0lFICovCi0JYXp4X3dyaXRlYihjaGlwLCBJTlRDVEwsCi0JCSAgIGF6eF9y
+ZWFkYihjaGlwLCBJTlRDVEwpIHwgKDEgPDwgYXp4X2Rldi0+aW5kZXgpKTsKKwlhenhfd3JpdGVs
+KGNoaXAsIElOVENUTCwKKwkJICAgYXp4X3JlYWRsKGNoaXAsIElOVENUTCkgfCAoMSA8PCBhenhf
+ZGV2LT5pbmRleCkpOwogCS8qIHNldCBETUEgc3RhcnQgYW5kIGludGVycnVwdCBtYXNrICovCiAJ
+YXp4X3NkX3dyaXRlYihhenhfZGV2LCBTRF9DVEwsIGF6eF9zZF9yZWFkYihhenhfZGV2LCBTRF9D
+VEwpIHwKIAkJICAgICAgU0RfQ1RMX0RNQV9TVEFSVCB8IFNEX0lOVF9NQVNLKTsKQEAgLTk3NCw4
+ICs5NzQsOCBAQCBzdGF0aWMgdm9pZCBhenhfc3RyZWFtX3N0b3Aoc3RydWN0IGF6eCAqY2hpcCwg
+c3RydWN0IGF6eF9kZXYgKmF6eF9kZXYpCiB7CiAJYXp4X3N0cmVhbV9jbGVhcihjaGlwLCBhenhf
+ZGV2KTsKIAkvKiBkaXNhYmxlIFNJRSAqLwotCWF6eF93cml0ZWIoY2hpcCwgSU5UQ1RMLAotCQkg
+ICBhenhfcmVhZGIoY2hpcCwgSU5UQ1RMKSAmIH4oMSA8PCBhenhfZGV2LT5pbmRleCkpOworCWF6
+eF93cml0ZWwoY2hpcCwgSU5UQ1RMLAorCQkgICBhenhfcmVhZGwoY2hpcCwgSU5UQ1RMKSAmIH4o
+MSA8PCBhenhfZGV2LT5pbmRleCkpOwogfQogCiAKLS0gCjEuNS42Cgo=
+
+--_004_6B4D417B830BC44B8026029FD256F7F1BFEAFA4033HKMAIL01nvidi_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--_004_6B4D417B830BC44B8026029FD256F7F1BFEAFA4033HKMAIL01nvidi_--
