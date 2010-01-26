@@ -1,35 +1,88 @@
-From: Singaravelan Nallasellan <singaravelann@gmail.com>
-Subject: substream usage
-Date: Tue, 26 Jan 2010 22:23:24 +0530
-Message-ID: <3baf3d761001260853p69a22578nf551d2f98cc0e47c@mail.gmail.com>
+From: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
+Subject: RE: [alsa-devel] [PATCHv2 6/6] ASoC: OMAP4: Add McPDM platform
+ driver
+Date: Tue, 26 Jan 2010 11:55:46 -0600
+Message-ID: <2256F256009DAA4CBE661E9F41EAC84B8C569C02@dlee01.ent.ti.com>
+References: <2256F256009DAA4CBE661E9F41EAC84B8C43A8B5@dlee01.ent.ti.com>
+	<1264210638.3480.127.camel@odin>
+	<2256F256009DAA4CBE661E9F41EAC84B8C4CEF36@dlee01.ent.ti.com>
+ <20100126102748.3b9fb04d.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f53.google.com (mail-pw0-f53.google.com
-	[209.85.160.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40C5A10385B
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 17:53:27 +0100 (CET)
-Received: by pwi4 with SMTP id 4so8488725pwi.32
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 08:53:26 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20100126102748.3b9fb04d.jhnikula@gmail.com>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+ 
 
-In my system, I have three microphones to capture. Can I represent
-each of channels of a single capture stream as substream?
+Jarkko Nikula wrote:
+> Hi
+> 
+> On Mon, 25 Jan 2010 15:06:44 -0600
+> "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com> wrote:
+> 
+> > > > +static int omap_mcpdm_dai_startup(struct snd_pcm_substream 
+> > > *substream,
+> > > > +				  struct snd_soc_dai *dai)
+> > > > +{
+> > > > +	struct snd_soc_pcm_runtime *rtd = 
+> substream->private_data;
+> > > > +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+> > > > +	int err = 0;
+> > > > +
+> > > > +	if (!cpu_dai->active)
+> > > > +		err = omap_mcpdm_request();
+> > > 
+> > > Will anything else use this hw interface other than ALSA audio ?
+> > > If not, the request is probably better in the machine 
+> driver probe().
+> > 
+> > omap_mcpdm_request will enable the functional clock. Isn't it better
+> > for the clock to be enabled only when is about to get used?
+> > 
+> Definitely yes if there is no any need to keep block active after the
+> request. That would help the power-management if there are no active
+> clocks when the streams are suspended with omap_mcpdm_stop() but the
+> block remains reserved (i.e. omap_mcpdm_free is not called).
+> 
+> The current McBSP implementation is not the best example here but
+> hopefully that will get fixed at some point.
+> 
+> > > stream is either PLAYBACK or CAPTURE here.
+> > 
+> > Downlink and uplink were chosen instead to avoid confusion
+> > because that is how it is referred in McPDM technical
+> > documentation. But I do understand that we are talking
+> > about ALSA stream, not McPDM...
+> ...
+> > Here, however, the methods set_uplink & set_downlink are
+> > Named after McPDM data paths. In this case is it preferred
+> > to name everything using ALSA convention? Or would it be ok
+> > to use downlink/uplink on certain cases?
+> > 
+> I think something like below is clear enough. It is easy to 
+> see that we
+> are dealing with ALSA playback stream which corresponds to 
+> downlink path
+> in HW.
+> 
+> if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+> 	omap_mcpdm_downlink_opxxx();
+> 
+> Also for the user(-space) standard playback and capture naming is more
+> clear than downlink/uplink terminology.
 
-How will be able include or exclude a substream to the stream?
+So the idea would be to show that ALSA playback/capture correspond
+to McPDM downlink/uplink paths. Sounds good, I can try this for all
+downlink/uplink operations.
 
-Thanks
-Sing
+> 
+> 
+> -- 
+> Jarkko
+> 
