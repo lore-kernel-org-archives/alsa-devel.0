@@ -1,236 +1,151 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 5/5] DaVinci: DM365: Voice Codec support
-	for the DM365 EVM
-Date: Tue, 26 Jan 2010 00:07:05 +0000
-Message-ID: <CA86DB3C-FA5E-4720-8537-6F6A9A4F41FC@opensource.wolfsonmicro.com>
-References: <1264095840-1455-1-git-send-email-miguel.aguilar@ridgerun.com>
-	<87pr4x3fix.fsf@deeprootsystems.com>
-	(sfid-20100125_235631_996169_0E781434)
-Mime-Version: 1.0 (iPod Mail 7D11)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D27B3243CB
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 01:08:07 +0100 (CET)
-In-Reply-To: <87pr4x3fix.fsf@deeprootsystems.com>
-	(sfid-20100125_235631_996169_0E781434)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@deeprootsystems.com>
-Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "clark.becker@ridgerun.com" <clark.becker@ridgerun.com>, "nsekhar@ti.com" <nsekhar@ti.com>, "diego.dompe@ridgerun.com" <diego.dompe@ridgerun.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "nsnehaprabha@ti.com" <nsnehaprabha@ti.com>, "todd.fischer@ridgerun.com" <todd.fischer@ridgerun.com>, "miguel.aguilar@ridgerun.com" <miguel.aguilar@ridgerun.com>
+From: jassisinghbrar@gmail.com
+Subject: [PATCH 1/3] ARM: S3C64XX: Add AC97 platform resources
+Date: Tue, 26 Jan 2010 14:51:39 +0900
+Message-ID: <1264485101-13782-1-git-send-email-jassisinghbrar@gmail.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc: ben-linux@fluff.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 25 Jan 2010, at 23:56, Kevin Hilman <khilman@deeprootsystems.com>  
-wrote:
+From: Jassi Brar <jassi.brar@samsung.com>
 
-> miguel.aguilar@ridgerun.com writes:
->
->> From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
->>
->> The DM365 EVM has two codecs: the Audio Codec (AIC3x) and the Voice  
->> Codec,
->> the idea is to have both enabled in the same kernel simultaneously.  
->> However,
->> the current soc-core doesn't support simultaneous codecs, once that
->> support will have added, a patch will be posted to enable both  
->> codecs in
->> the DM365 EVM.
->>
->> Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
->
-> Does this have to be a Kconfig option?  Couldn't it instead be a flag
-> set in the board file and be a run-time option?
+This patch defines the platform device and the resources: IRQ, DMA and MEM,
+needed by the AC97 controller driver.
 
-ASoC doesn't yet support multiple CODECs with registers in one board.  
-Once it does it should be a simple update to remove the relevant board  
-option and make it runtime selectable via ALSA (or let both run  
-simultaneously if systems end up supporting that).
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ arch/arm/plat-s3c/include/plat/audio.h |    8 +++
+ arch/arm/plat-s3c/include/plat/devs.h  |    3 +
+ arch/arm/plat-s3c64xx/dev-audio.c      |   78 ++++++++++++++++++++++++++++++++
+ 3 files changed, 89 insertions(+), 0 deletions(-)
 
-
->
-> Kevin
->
->
->> ---
->> arch/arm/mach-davinci/board-dm365-evm.c |    4 +++
->> sound/soc/davinci/Kconfig               |   24 +++++++++++++++-
->> sound/soc/davinci/davinci-evm.c         |   45 +++++++++++++++++++++ 
->> ++++++++-
->> 3 files changed, 69 insertions(+), 4 deletions(-)
->>
->> diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/ 
->> mach-davinci/board-dm365-evm.c
->> index 5c2636c..865d06a 100644
->> --- a/arch/arm/mach-davinci/board-dm365-evm.c
->> +++ b/arch/arm/mach-davinci/board-dm365-evm.c
->> @@ -516,7 +516,11 @@ static __init void dm365_evm_init(void)
->>    /* maybe setup mmc1/etc ... _after_ mmc0 */
->>    evm_init_cpld();
->>
->> +#ifdef CONFIG_SND_DM365_AIC3X_CODEC
->>    dm365_init_asp(&dm365_evm_snd_data);
->> +#elif defined(CONFIG_SND_DM365_VOICE_CODEC)
->> +    dm365_init_vc(&dm365_evm_snd_data);
->> +#endif
->>    dm365_init_rtc();
->>    dm365_init_ks(&dm365evm_ks_data);
->> }
->> diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
->> index 47e7cce..6bbf001 100644
->> --- a/sound/soc/davinci/Kconfig
->> +++ b/sound/soc/davinci/Kconfig
->> @@ -18,12 +18,32 @@ config SND_DAVINCI_SOC_VCIF
->> config SND_DAVINCI_SOC_EVM
->>    tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365  
->> EVM"
->>    depends on SND_DAVINCI_SOC
->> -    depends on MACH_DAVINCI_EVM || MACH_DAVINCI_DM355_EVM  ||  
->> MACH_DAVINCI_DM365_EVM
->> +    depends on MACH_DAVINCI_EVM || MACH_DAVINCI_DM355_EVM ||  
->> MACH_DAVINCI_DM365_EVM
->>    select SND_DAVINCI_SOC_I2S
->>    select SND_SOC_TLV320AIC3X
->>    help
->>      Say Y if you want to add support for SoC audio on TI
->> -      DaVinci DM6446 or DM355 EVM platforms.
->> +      DaVinci DM6446, DM355 or DM365 EVM platforms.
->> +
->> +choice
->> +    prompt "DM365 codec select"
->> +    depends on SND_DAVINCI_SOC_EVM
->> +    depends on MACH_DAVINCI_DM365_EVM
->> +    default SND_DM365_EXTERNAL_CODEC
->> +
->> +config SND_DM365_AIC3X_CODEC
->> +    bool "Audio Codec - AIC3101"
->> +    help
->> +      Say Y if you want to add support for AIC3101 audio codec
->> +
->> +config SND_DM365_VOICE_CODEC
->> +    bool "Voice Codec - CQ93VC"
->> +    select MFD_DAVINCI_VOICECODEC
->> +    select SND_DAVINCI_SOC_VCIF
->> +    select SND_SOC_CQ0093VC
->> +    help
->> +      Say Y if you want to add support for SoC On-chip voice codec
->> +endchoice
->>
->> config  SND_DM6467_SOC_EVM
->>    tristate "SoC Audio support for DaVinci DM6467 EVM"
->> diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/ 
->> davinci-evm.c
->> index 7ccbe66..ef63096 100644
->> --- a/sound/soc/davinci/davinci-evm.c
->> +++ b/sound/soc/davinci/davinci-evm.c
->> @@ -28,10 +28,12 @@
->> #include <mach/mux.h>
->>
->> #include "../codecs/tlv320aic3x.h"
->> +#include "../codecs/cq93vc.h"
->> #include "../codecs/spdif_transciever.h"
->> #include "davinci-pcm.h"
->> #include "davinci-i2s.h"
->> #include "davinci-mcasp.h"
->> +#include "davinci-vcif.h"
->>
->> #define AUDIO_FORMAT (SND_SOC_DAIFMT_DSP_B | \
->>        SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_IB_NF)
->> @@ -151,6 +153,22 @@ static struct snd_soc_dai_link evm_dai = {
->>    .ops = &evm_ops,
->> };
->>
->> +static struct snd_soc_dai_link dm365_evm_dai = {
->> +#ifdef CONFIG_SND_DM365_AIC3X_CODEC
->> +    .name = "TLV320AIC3X",
->> +    .stream_name = "AIC3X",
->> +    .cpu_dai = &davinci_i2s_dai,
->> +    .codec_dai = &aic3x_dai,
->> +    .init = evm_aic3x_init,
->> +    .ops = &evm_ops,
->> +#elif defined(CONFIG_SND_DM365_VOICE_CODEC)
->> +    .name = "Voice Codec - CQ93VC",
->> +    .stream_name = "CQ93",
->> +    .cpu_dai = &davinci_vcif_dai,
->> +    .codec_dai = &cq93vc_dai,
->> +#endif
->> +};
->> +
->> static struct snd_soc_dai_link dm6467_evm_dai[] = {
->>    {
->>        .name = "TLV320AIC3X",
->> @@ -177,7 +195,7 @@ static struct snd_soc_dai_link da8xx_evm_dai = {
->>    .ops = &evm_ops,
->> };
->>
->> -/* davinci dm6446, dm355 or dm365 evm audio machine driver */
->> +/* davinci dm6446, dm355 evm audio machine driver */
->> static struct snd_soc_card snd_soc_card_evm = {
->>    .name = "DaVinci EVM",
->>    .platform = &davinci_soc_platform,
->> @@ -185,6 +203,15 @@ static struct snd_soc_card snd_soc_card_evm = {
->>    .num_links = 1,
->> };
->>
->> +/* davinci dm365 evm audio machine driver */
->> +static struct snd_soc_card dm365_snd_soc_card_evm = {
->> +    .name = "DaVinci DM365 EVM",
->> +    .platform = &davinci_soc_platform,
->> +    .dai_link = &dm365_evm_dai,
->> +    .num_links = 1,
->> +};
->> +
->> +
->> /* davinci dm6467 evm audio machine driver */
->> static struct snd_soc_card dm6467_snd_soc_card_evm = {
->>    .name = "DaVinci DM6467 EVM",
->> @@ -217,6 +244,17 @@ static struct snd_soc_device evm_snd_devdata = {
->> };
->>
->> /* evm audio subsystem */
->> +static struct snd_soc_device dm365_evm_snd_devdata = {
->> +    .card = &dm365_snd_soc_card_evm,
->> +#ifdef CONFIG_SND_DM365_AIC3X_CODEC
->> +    .codec_dev = &soc_codec_dev_aic3x,
->> +    .codec_data = &aic3x_setup,
->> +#elif defined(CONFIG_SND_DM365_VOICE_CODEC)
->> +    .codec_dev = &soc_codec_dev_cq93vc,
->> +#endif
->> +};
->> +
->> +/* evm audio subsystem */
->> static struct snd_soc_device dm6467_evm_snd_devdata = {
->>    .card = &dm6467_snd_soc_card_evm,
->>    .codec_dev = &soc_codec_dev_aic3x,
->> @@ -244,12 +282,15 @@ static int __init evm_init(void)
->>    int index;
->>    int ret;
->>
->> -    if (machine_is_davinci_evm() || machine_is_davinci_dm365_evm 
->> ()) {
->> +    if (machine_is_davinci_evm()) {
->>        evm_snd_dev_data = &evm_snd_devdata;
->>        index = 0;
->>    } else if (machine_is_davinci_dm355_evm()) {
->>        evm_snd_dev_data = &evm_snd_devdata;
->>        index = 1;
->> +    } else if (machine_is_davinci_dm365_evm()) {
->> +        evm_snd_dev_data = &dm365_evm_snd_devdata;
->> +        index = 0;
->>    } else if (machine_is_davinci_dm6467_evm()) {
->>        evm_snd_dev_data = &dm6467_evm_snd_devdata;
->>        index = 0;
->> -- 
->> 1.6.0.4
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/arch/arm/plat-s3c/include/plat/audio.h b/arch/arm/plat-s3c/include/plat/audio.h
+index f22d23b..e07c941 100644
+--- a/arch/arm/plat-s3c/include/plat/audio.h
++++ b/arch/arm/plat-s3c/include/plat/audio.h
+@@ -8,6 +8,14 @@
+  * published by the Free Software Foundation.
+  */
+ 
++/* The machine init code calls s3c*_ac97_setup_gpio with
++ * one of these defines in order to select appropriate bank
++ * of GPIO for AC97 pins
++ */
++#define S3C64XX_AC97_GPD  0
++#define S3C64XX_AC97_GPE  1
++extern void s3c64xx_ac97_setup_gpio(int);
++
+ /**
+  * struct s3c_audio_pdata - common platform data for audio device drivers
+  * @cfg_gpio: Callback function to setup mux'ed pins in I2S/PCM/AC97 mode
+diff --git a/arch/arm/plat-s3c/include/plat/devs.h b/arch/arm/plat-s3c/include/plat/devs.h
+index c6f9b73..65317eb 100644
+--- a/arch/arm/plat-s3c/include/plat/devs.h
++++ b/arch/arm/plat-s3c/include/plat/devs.h
+@@ -35,7 +35,10 @@ extern struct platform_device s3c64xx_device_spi1;
+ extern struct platform_device s3c64xx_device_pcm0;
+ extern struct platform_device s3c64xx_device_pcm1;
+ 
++extern struct platform_device s3c64xx_device_ac97;
++
+ extern struct platform_device s3c_device_ts;
++
+ extern struct platform_device s3c_device_fb;
+ extern struct platform_device s3c_device_ohci;
+ extern struct platform_device s3c_device_lcd;
+diff --git a/arch/arm/plat-s3c64xx/dev-audio.c b/arch/arm/plat-s3c64xx/dev-audio.c
+index f6b7bfb..63088b7 100644
+--- a/arch/arm/plat-s3c64xx/dev-audio.c
++++ b/arch/arm/plat-s3c64xx/dev-audio.c
+@@ -11,6 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
+ 
+ #include <mach/irqs.h>
+ #include <mach/map.h>
+@@ -254,3 +255,80 @@ struct platform_device s3c64xx_device_pcm1 = {
+ 	},
+ };
+ EXPORT_SYMBOL(s3c64xx_device_pcm1);
++
++/* AC97 Controller platform devices */
++
++static int s3c64xx_ac97_cfg_gpd(struct platform_device *pdev)
++{
++	s3c_gpio_cfgpin(S3C64XX_GPD(0), S3C64XX_GPD0_AC97_BITCLK);
++	s3c_gpio_cfgpin(S3C64XX_GPD(1), S3C64XX_GPD1_AC97_nRESET);
++	s3c_gpio_cfgpin(S3C64XX_GPD(2), S3C64XX_GPD2_AC97_SYNC);
++	s3c_gpio_cfgpin(S3C64XX_GPD(3), S3C64XX_GPD3_AC97_SDI);
++	s3c_gpio_cfgpin(S3C64XX_GPD(4), S3C64XX_GPD4_AC97_SDO);
++
++	return 0;
++}
++
++static int s3c64xx_ac97_cfg_gpe(struct platform_device *pdev)
++{
++	s3c_gpio_cfgpin(S3C64XX_GPE(0), S3C64XX_GPE0_AC97_BITCLK);
++	s3c_gpio_cfgpin(S3C64XX_GPE(1), S3C64XX_GPE1_AC97_nRESET);
++	s3c_gpio_cfgpin(S3C64XX_GPE(2), S3C64XX_GPE2_AC97_SYNC);
++	s3c_gpio_cfgpin(S3C64XX_GPE(3), S3C64XX_GPE3_AC97_SDI);
++	s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_AC97_SDO);
++
++	return 0;
++}
++
++static struct resource s3c64xx_ac97_resource[] = {
++	[0] = {
++		.start = S3C64XX_PA_AC97,
++		.end   = S3C64XX_PA_AC97 + 0x100 - 1,
++		.flags = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start = DMACH_AC97_PCMOUT,
++		.end   = DMACH_AC97_PCMOUT,
++		.flags = IORESOURCE_DMA,
++	},
++	[2] = {
++		.start = DMACH_AC97_PCMIN,
++		.end   = DMACH_AC97_PCMIN,
++		.flags = IORESOURCE_DMA,
++	},
++	[3] = {
++		.start = DMACH_AC97_MICIN,
++		.end   = DMACH_AC97_MICIN,
++		.flags = IORESOURCE_DMA,
++	},
++	[4] = {
++		.start = IRQ_AC97,
++		.end   = IRQ_AC97,
++		.flags = IORESOURCE_IRQ,
++	},
++};
++
++static struct s3c_audio_pdata s3c_ac97_pdata;
++
++static u64 s3c64xx_ac97_dmamask = DMA_BIT_MASK(32);
++
++struct platform_device s3c64xx_device_ac97 = {
++	.name		  = "s3c-ac97",
++	.id		  = -1,
++	.num_resources	  = ARRAY_SIZE(s3c64xx_ac97_resource),
++	.resource	  = s3c64xx_ac97_resource,
++	.dev = {
++		.platform_data = &s3c_ac97_pdata,
++		.dma_mask = &s3c64xx_ac97_dmamask,
++		.coherent_dma_mask = DMA_BIT_MASK(32),
++	},
++};
++EXPORT_SYMBOL(s3c64xx_device_ac97);
++
++void __init s3c64xx_ac97_setup_gpio(int num)
++{
++	if (num == S3C64XX_AC97_GPD)
++		s3c_ac97_pdata.cfg_gpio = s3c64xx_ac97_cfg_gpd;
++	else
++		s3c_ac97_pdata.cfg_gpio = s3c64xx_ac97_cfg_gpe;
++}
+-- 
+1.6.2.5
