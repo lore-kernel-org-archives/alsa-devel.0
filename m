@@ -1,19 +1,18 @@
-From: Ken Prox <knprox@mi.rr.com>
-Subject: Re: [PATCH - hda intel conextant 1/1] Fixed microphone
- mixer for HP Compaq Presario F700 Added conextant patch for	Hewlett-Packard
- Company Device Subsystem id - 103c:30ea
-Date: Mon, 25 Jan 2010 19:19:31 -0500
-Message-ID: <4B5E3513.6050907@mi.rr.com>
-References: <1262565656-2737-1-git-send-email-knprox@mi.rr.com>	<alpine.LNX.2.00.1001080908040.4210@eeebox2.perex-int.cz>	<s5hvdf766a1.wl%tiwai@suse.de>
-	<s5h4ombbxok.wl%tiwai@suse.de>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCH 1/5] MFD: DaVinci Voice Codec
+Date: Tue, 26 Jan 2010 09:57:39 +0100
+Message-ID: <20100126085738.GB28172@sortiz.org>
+References: <1264095584-765-1-git-send-email-miguel.aguilar@ridgerun.com>
+	<20100125110333.GB22909@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hrndva-omtalb.mail.rr.com (hrndva-omtalb.mail.rr.com
-	[71.74.56.124]) by alsa0.perex.cz (Postfix) with ESMTP id 6E421243EE
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 01:19:36 +0100 (CET)
-In-Reply-To: <s5h4ombbxok.wl%tiwai@suse.de>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 669A82412E
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 09:56:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20100125110333.GB22909@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,61 +22,416 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Ken Prox <kprox@users.sourceforge.net>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, clark.becker@ridgerun.com, nsekhar@ti.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, nsnehaprabha@ti.com, todd.fischer@ridgerun.com, miguel.aguilar@ridgerun.com
 List-Id: alsa-devel@alsa-project.org
 
-On 01/24/2010 05:32 AM, Takashi Iwai wrote:
-> At Tue, 12 Jan 2010 10:07:02 +0100,
-> I wrote:
->    
->> At Fri, 8 Jan 2010 09:09:54 +0100 (CET),
->> Jaroslav Kysela wrote:
->>      
->>> On Sun, 3 Jan 2010, knprox@mi.rr.com wrote:
->>>
->>>        
->>>> From: Ken Prox<kprox@users.sourceforge.net>
->>>>
->>>>
->>>> Signed-off-by: Ken Prox<kprox@users.sourceforge.net>
->>>>          
->>> I've applied your patch to my "devel" git tree with space/tab
->>> replacements. Please, use same coding style matching other ALSA code and
->>> run "scripts/checkpatch.pl" on your patch before posting. Thanks.
->>>        
->> I pulled your branches now to sound git tree.
->>      
-> And, now I'm checking the code and your change again while I'm working
-> on fixing / clean-up of cxt5051 code.  I don't understand why your patch
-> works.  Does it really work as is?
->
-> For example, the pin 0x17 has no multiple connections.  So, changing
-> the amp for the input #1 doesn't make sense at all.  If it supports only
-> the pin 0x1d, then the init verbs have to be different.
->
-> Doesn't another model, e.g. model=hp-dv6736, work as is?
->    
+Hi Mark,
 
-> thanks,
->
-> Takashi
->    
+On Mon, Jan 25, 2010 at 11:03:34AM +0000, Mark Brown wrote:
+> On Thu, Jan 21, 2010 at 11:39:44AM -0600, miguel.aguilar@ridgerun.com wrote:
+> > From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+> > 
+> > This is the MFD driver for the DaVinci Voice codec, it has two clients:
+> > 
+> > * Voice codec interface
+> > * Voice codec CQ93VC
+> 
+> CCing in Samuel, who maintains the MFD subsystem and not cutting any
+> text as a result.  I'm OK with this - Samuel, should it get merged via
+> the MFD tree or ASoC?
+I guess you also got the codec drivers that this MFD enables ? If that's so, I
+think it would make sense to merge the whole patchset via the ASOC tree as
+long as it doesnt drag you into too much maintenance pain.
 
-Hello Takashi,
+The patch looks good to me as well, feel free to add my
+Acked-by: Samuel Ortiz <sameo@linux.intel.com>
 
-Yes, using model=hp-dv6736 works for device 103c:30ea, but the mixer 
-control does not control the microphone.  However, with the patch I 
-supplied, the microphone mixer control does work.
+Cheers,
+Samuel.
 
-Yes, the patch for the 103c:30ea does work as is.  If there is a change 
-to the init verbs that you would like me to try, I would be more than 
-happy to help.
+
+> > 
+> > Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+> > ---
+> >  drivers/mfd/Kconfig                    |    4 +
+> >  drivers/mfd/Makefile                   |    1 +
+> >  drivers/mfd/davinci_voicecodec.c       |  189 ++++++++++++++++++++++++++++++++
+> >  include/linux/mfd/davinci_voicecodec.h |  126 +++++++++++++++++++++
+> >  4 files changed, 320 insertions(+), 0 deletions(-)
+> >  create mode 100644 drivers/mfd/davinci_voicecodec.c
+> >  create mode 100644 include/linux/mfd/davinci_voicecodec.h
+> > 
+> > diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> > index 8782978..6e93c0b 100644
+> > --- a/drivers/mfd/Kconfig
+> > +++ b/drivers/mfd/Kconfig
+> > @@ -43,6 +43,10 @@ config MFD_SH_MOBILE_SDHI
+> >  	  This driver supports the SDHI hardware block found in many
+> >  	  SuperH Mobile SoCs.
+> >  
+> > +config MFD_DAVINCI_VOICECODEC
+> > +	tristate
+> > +	select MFD_CORE
+> > +
+> >  config MFD_DM355EVM_MSP
+> >  	bool "DaVinci DM355 EVM microcontroller"
+> >  	depends on I2C && MACH_DAVINCI_DM355_EVM
+> > diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> > index ca2f2c4..f5c617f 100644
+> > --- a/drivers/mfd/Makefile
+> > +++ b/drivers/mfd/Makefile
+> > @@ -9,6 +9,7 @@ obj-$(CONFIG_MFD_SH_MOBILE_SDHI)		+= sh_mobile_sdhi.o
+> >  obj-$(CONFIG_HTC_EGPIO)		+= htc-egpio.o
+> >  obj-$(CONFIG_HTC_PASIC3)	+= htc-pasic3.o
+> >  
+> > +obj-$(CONFIG_MFD_DAVINCI_VOICECODEC)	+= davinci_voicecodec.o
+> >  obj-$(CONFIG_MFD_DM355EVM_MSP)	+= dm355evm_msp.o
+> >  
+> >  obj-$(CONFIG_MFD_T7L66XB)	+= t7l66xb.o
+> > diff --git a/drivers/mfd/davinci_voicecodec.c b/drivers/mfd/davinci_voicecodec.c
+> > new file mode 100644
+> > index 0000000..9886aa8
+> > --- /dev/null
+> > +++ b/drivers/mfd/davinci_voicecodec.c
+> > @@ -0,0 +1,189 @@
+> > +/*
+> > + * DaVinci Voice Codec Core Interface for TI platforms
+> > + *
+> > + * Copyright (C) 2010 Texas Instruments, Inc
+> > + *
+> > + * Author: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+> > + *
+> > + * This program is free software; you can redistribute it and/or modify
+> > + * it under the terms of the GNU General Public License as published by
+> > + * the Free Software Foundation; either version 2 of the License, or
+> > + * (at your option) any later version.
+> > + *
+> > + * This program is distributed in the hope that it will be useful,
+> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> > + * GNU General Public License for more details.
+> > + *
+> > + * You should have received a copy of the GNU General Public License
+> > + * along with this program; if not, write to the Free Software
+> > + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> > + */
+> > +
+> > +#include <linux/init.h>
+> > +#include <linux/module.h>
+> > +#include <linux/device.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/io.h>
+> > +#include <linux/clk.h>
+> > +
+> > +#include <sound/pcm.h>
+> 
+> I didn't spot the usage of this.  If it's needed by the voicecodec.h
+> header then that ought to include it directly.
+> 
+> > +
+> > +#include <linux/mfd/davinci_voicecodec.h>
+> > +
+> > +u32 davinci_vc_read(struct davinci_vc *davinci_vc, int reg)
+> > +{
+> > +	return __raw_readl(davinci_vc->base + reg);
+> > +}
+> > +
+> > +void davinci_vc_write(struct davinci_vc *davinci_vc,
+> > +					   int reg, u32 val)
+> > +{
+> > +	__raw_writel(val, davinci_vc->base + reg);
+> > +}
+> > +
+> > +static int __init davinci_vc_probe(struct platform_device *pdev)
+> > +{
+> > +	struct davinci_vc *davinci_vc;
+> > +	struct resource *res, *mem;
+> > +	struct mfd_cell *cell = NULL;
+> > +	int ret;
+> > +
+> > +	davinci_vc = kzalloc(sizeof(struct davinci_vc), GFP_KERNEL);
+> > +	if (!davinci_vc) {
+> > +		dev_dbg(&pdev->dev,
+> > +			    "could not allocate memory for private data\n");
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> > +	davinci_vc->clk = clk_get(&pdev->dev, NULL);
+> > +	if (IS_ERR(davinci_vc->clk)) {
+> > +		dev_dbg(&pdev->dev,
+> > +			    "could not get the clock for voice codec\n");
+> > +		ret = -ENODEV;
+> > +		goto fail1;
+> > +	}
+> > +	clk_enable(davinci_vc->clk);
+> > +
+> > +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +	if (!res) {
+> > +		dev_err(&pdev->dev, "no mem resource\n");
+> > +		ret = -ENODEV;
+> > +		goto fail2;
+> > +	}
+> > +
+> > +	davinci_vc->pbase = res->start;
+> > +	davinci_vc->base_size = resource_size(res);
+> > +
+> > +	mem = request_mem_region(davinci_vc->pbase, davinci_vc->base_size,
+> > +				 pdev->name);
+> > +	if (!mem) {
+> > +		dev_err(&pdev->dev, "VCIF region already claimed\n");
+> > +		ret = -EBUSY;
+> > +		goto fail2;
+> > +	}
+> > +
+> > +	davinci_vc->base = ioremap(davinci_vc->pbase, davinci_vc->base_size);
+> > +	if (!davinci_vc->base) {
+> > +		dev_err(&pdev->dev, "can't ioremap mem resource.\n");
+> > +		ret = -ENOMEM;
+> > +		goto fail3;
+> > +	}
+> > +
+> > +	res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+> > +	if (!res) {
+> > +		dev_err(&pdev->dev, "no DMA resource\n");
+> > +		return -ENXIO;
+> > +	}
+> > +
+> > +	davinci_vc->davinci_vcif.dma_tx_channel = res->start;
+> > +	davinci_vc->davinci_vcif.dma_tx_addr =
+> > +		(dma_addr_t)(io_v2p(davinci_vc->base) + DAVINCI_VC_WFIFO);
+> > +
+> > +	res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
+> > +	if (!res) {
+> > +		dev_err(&pdev->dev, "no DMA resource\n");
+> > +		return -ENXIO;
+> > +	}
+> > +
+> > +	davinci_vc->davinci_vcif.dma_rx_channel = res->start;
+> > +	davinci_vc->davinci_vcif.dma_rx_addr =
+> > +		(dma_addr_t)(io_v2p(davinci_vc->base) + DAVINCI_VC_RFIFO);
+> > +
+> > +	davinci_vc->dev = &pdev->dev;
+> > +	davinci_vc->pdev = pdev;
+> > +
+> > +	/* Voice codec interface client */
+> > +	cell = &davinci_vc->cells[DAVINCI_VC_VCIF_CELL];
+> > +	cell->name = "davinci_vcif";
+> > +	cell->driver_data = davinci_vc;
+> > +
+> > +	/* Voice codec CQ93VC client */
+> > +	cell = &davinci_vc->cells[DAVINCI_VC_CQ93VC_CELL];
+> > +	cell->name = "cq93vc";
+> > +	cell->driver_data = davinci_vc;
+> > +
+> > +	ret = mfd_add_devices(&pdev->dev, pdev->id, davinci_vc->cells,
+> > +			      DAVINCI_VC_CELLS, NULL, 0);
+> > +	if (ret != 0) {
+> > +		dev_err(&pdev->dev, "fail to register client devices\n");
+> > +		goto fail4;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +fail4:
+> > +	iounmap(davinci_vc->base);
+> > +fail3:
+> > +	release_mem_region(davinci_vc->pbase, davinci_vc->base_size);
+> > +fail2:
+> > +	clk_disable(davinci_vc->clk);
+> > +	clk_put(davinci_vc->clk);
+> > +	davinci_vc->clk = NULL;
+> > +fail1:
+> > +	kfree(davinci_vc);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int __devexit davinci_vc_remove(struct platform_device *pdev)
+> > +{
+> > +	struct davinci_vc *davinci_vc = platform_get_drvdata(pdev);
+> > +
+> > +	mfd_remove_devices(&pdev->dev);
+> > +
+> > +	iounmap(davinci_vc->base);
+> > +	release_mem_region(davinci_vc->pbase, davinci_vc->base_size);
+> > +
+> > +	clk_disable(davinci_vc->clk);
+> > +	clk_put(davinci_vc->clk);
+> > +	davinci_vc->clk = NULL;
+> > +
+> > +	kfree(davinci_vc);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static struct platform_driver davinci_vc_driver = {
+> > +	.driver	= {
+> > +		.name = "davinci_voicecodec",
+> > +		.owner = THIS_MODULE,
+> > +	},
+> > +	.remove	= __devexit_p(davinci_vc_remove),
+> > +};
+> > +
+> > +static int __init davinci_vc_init(void)
+> > +{
+> > +	return platform_driver_probe(&davinci_vc_driver, davinci_vc_probe);
+> > +}
+> > +module_init(davinci_vc_init);
+> > +
+> > +static void __exit davinci_vc_exit(void)
+> > +{
+> > +	platform_driver_unregister(&davinci_vc_driver);
+> > +}
+> > +module_exit(davinci_vc_exit);
+> > +
+> > +MODULE_AUTHOR("Miguel Aguilar");
+> > +MODULE_DESCRIPTION("Texas Instruments DaVinci Voice Codec Core Interface");
+> > +MODULE_LICENSE("GPL");
+> > diff --git a/include/linux/mfd/davinci_voicecodec.h b/include/linux/mfd/davinci_voicecodec.h
+> > new file mode 100644
+> > index 0000000..0ab6132
+> > --- /dev/null
+> > +++ b/include/linux/mfd/davinci_voicecodec.h
+> > @@ -0,0 +1,126 @@
+> > +/*
+> > + * DaVinci Voice Codec Core Interface for TI platforms
+> > + *
+> > + * Copyright (C) 2010 Texas Instruments, Inc
+> > + *
+> > + * Author: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+> > + *
+> > + * This program is free software; you can redistribute it and/or modify
+> > + * it under the terms of the GNU General Public License as published by
+> > + * the Free Software Foundation; either version 2 of the License, or
+> > + * (at your option) any later version.
+> > + *
+> > + * This program is distributed in the hope that it will be useful,
+> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> > + * GNU General Public License for more details.
+> > + *
+> > + * You should have received a copy of the GNU General Public License
+> > + * along with this program; if not, write to the Free Software
+> > + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+> > + */
+> > +
+> > +#ifndef __LINUX_MFD_DAVINCI_VOICECODEC_H_
+> > +#define __LINUX_MFD_DAVINIC_VOICECODEC_H_
+> > +
+> > +#include <linux/kernel.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/mfd/core.h>
+> > +
+> > +#include <mach/edma.h>
+> > +
+> > +/*
+> > + * Register values.
+> > + */
+> > +#define DAVINCI_VC_PID			0x00
+> > +#define DAVINCI_VC_CTRL			0x04
+> > +#define DAVINCI_VC_INTEN		0x08
+> > +#define DAVINCI_VC_INTSTATUS		0x0c
+> > +#define DAVINCI_VC_INTCLR		0x10
+> > +#define DAVINCI_VC_EMUL_CTRL		0x14
+> > +#define DAVINCI_VC_RFIFO		0x20
+> > +#define DAVINCI_VC_WFIFO		0x24
+> > +#define DAVINCI_VC_FIFOSTAT		0x28
+> > +#define DAVINCI_VC_TST_CTRL		0x2C
+> > +#define DAVINCI_VC_REG05		0x94
+> > +#define DAVINCI_VC_REG09		0xA4
+> > +#define DAVINCI_VC_REG12		0xB0
+> > +
+> > +/* DAVINCI_VC_CTRL bit fields */
+> > +#define DAVINCI_VC_CTRL_MASK		0x5500
+> > +#define DAVINCI_VC_CTRL_RSTADC		BIT(0)
+> > +#define DAVINCI_VC_CTRL_RSTDAC		BIT(1)
+> > +#define DAVINCI_VC_CTRL_RD_BITS_8	BIT(4)
+> > +#define DAVINCI_VC_CTRL_RD_UNSIGNED	BIT(5)
+> > +#define DAVINCI_VC_CTRL_WD_BITS_8	BIT(6)
+> > +#define DAVINCI_VC_CTRL_WD_UNSIGNED	BIT(7)
+> > +#define DAVINCI_VC_CTRL_RFIFOEN		BIT(8)
+> > +#define DAVINCI_VC_CTRL_RFIFOCL		BIT(9)
+> > +#define DAVINCI_VC_CTRL_RFIFOMD_WORD_1	BIT(10)
+> > +#define DAVINCI_VC_CTRL_WFIFOEN		BIT(12)
+> > +#define DAVINCI_VC_CTRL_WFIFOCL		BIT(13)
+> > +#define DAVINCI_VC_CTRL_WFIFOMD_WORD_1	BIT(14)
+> > +
+> > +/* DAVINCI_VC_INT bit fields */
+> > +#define DAVINCI_VC_INT_MASK		0x3F
+> > +#define DAVINCI_VC_INT_RDRDY_MASK	BIT(0)
+> > +#define DAVINCI_VC_INT_RERROVF_MASK	BIT(1)
+> > +#define DAVINCI_VC_INT_RERRUDR_MASK	BIT(2)
+> > +#define DAVINCI_VC_INT_WDREQ_MASK	BIT(3)
+> > +#define DAVINCI_VC_INT_WERROVF_MASKBIT	BIT(4)
+> > +#define DAVINCI_VC_INT_WERRUDR_MASK	BIT(5)
+> > +
+> > +/* DAVINCI_VC_REG05 bit fields */
+> > +#define DAVINCI_VC_REG05_PGA_GAIN	0x07
+> > +
+> > +/* DAVINCI_VC_REG09 bit fields */
+> > +#define DAVINCI_VC_REG09_MUTE		0x40
+> > +#define DAVINCI_VC_REG09_DIG_ATTEN	0x3F
+> > +
+> > +/* DAVINCI_VC_REG12 bit fields */
+> > +#define DAVINCI_VC_REG12_POWER_ALL_ON	0xFD
+> > +#define DAVINCI_VC_REG12_POWER_ALL_OFF	0x00
+> > +
+> > +#define DAVINCI_VC_CELLS		2
+> > +
+> > +enum davinci_vc_cells {
+> > +	DAVINCI_VC_VCIF_CELL,
+> > +	DAVINCI_VC_CQ93VC_CELL,
+> > +};
+> > +
+> > +struct davinci_vcif {
+> > +	struct platform_device	*pdev;
+> > +	u32 dma_tx_channel;
+> > +	u32 dma_rx_channel;
+> > +	dma_addr_t dma_tx_addr;
+> > +	dma_addr_t dma_rx_addr;
+> > +};
+> > +
+> > +struct cq93vc {
+> > +	struct platform_device *pdev;
+> > +	struct snd_soc_codec *codec;
+> > +	u32 sysclk;
+> > +};
+> > +
+> > +struct davinci_vc;
+> > +
+> > +struct davinci_vc {
+> > +	/* Device data */
+> > +	struct device *dev;
+> > +	struct platform_device *pdev;
+> > +	struct clk *clk;
+> > +
+> > +	/* Memory resources */
+> > +	void __iomem *base;
+> > +	resource_size_t pbase;
+> > +	size_t base_size;
+> > +
+> > +	/* MFD cells */
+> > +	struct mfd_cell cells[DAVINCI_VC_CELLS];
+> > +
+> > +	/* Client devices */
+> > +	struct davinci_vcif davinci_vcif;
+> > +	struct cq93vc cq93vc;
+> > +};
+> > +
+> > +#endif
+> > -- 
+> > 1.6.0.4
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
+> 
+> -- 
+> "You grabbed my hand and we fell into it, like a daydream - or a fever."
 
 -- 
-"So often do the spirits of great events stride on before the events. And in today already walks tomorrow." - Coleridge
-
-Ken
-
-pgp     hkp://wwwkeys.eu.pgp.net
-Skype   callto://ken.prox
+Intel Open Source Technology Centre
+http://oss.intel.com/
