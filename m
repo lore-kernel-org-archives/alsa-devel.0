@@ -1,21 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4 v2] ASoC: add a WM8978 codec driver
-Date: Tue, 26 Jan 2010 13:26:16 +0000
-Message-ID: <20100126132616.GT15759@rakim.wolfsonmicro.main>
-References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
-	<Pine.LNX.4.64.1001190851380.4607@axis700.grange>
-	<Pine.LNX.4.64.1001221659410.4652@axis700.grange>
-	<20100123204730.GC4174@sirena.org.uk>
-	<Pine.LNX.4.64.1001261341180.4950@axis700.grange>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: hw_ptr_interrupt removal broke interrupt pointer
+	updates
+Date: Tue, 26 Jan 2010 14:39:39 +0100
+Message-ID: <4B5EF09B.3040900@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B30BB103926
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 14:26:17 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1001261341180.4950@axis700.grange>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 2A3802448D
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 14:39:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,68 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 26, 2010 at 02:04:45PM +0100, Guennadi Liakhovetski wrote:
+Commit "cleanup & merge hw_ptr update functions" says:
+> The main change is hw_ptr_interrupt variable removal to simplify code
+> logic. This variable can be computed directly from hw_ptr.
 
-This is mostly good, there's a few relatively small changes needed but
-the broad concept is fine:
+The hw_ptr_interrupt variable was needed to differentiate between the
+position at the last normal pointer update and the position of the last
+signaled period boundary.
 
-> 1. wm8978 needs an input clock for its operation, and it needs to know its 
->    frequency. The only way to supply this information to the driver is to 
->    use
-> 
-> 	snd_soc_dai_set_pll(dai, 0, 0, f_in, f_out);
-> 
->    where if f_in == 0, input clock is off and the driver has nothing 
->    better to do but to switch its own clocking off too. f_out is the 
->    frequency, that the user (board) is asking wm8978 to provide on its 
->    OPCLK (GPIO1) output. If f_out == 0, this means, the board does not 
->    need that output _and_ it is asking the codec to switch PLL off. 
->    Otherwise PLL is immediately configured and switched on.
+	if (in_interrupt) {
+		/* we know that one period was processed */
+		/* delta = "expected next hw_ptr" for in_interrupt != 0 */
+		delta = old_hw_ptr - (old_hw_ptr % runtime->period_size)
+			+ runtime->period_size;
+		if (delta > new_hw_ptr) {
+			hw_base += runtime->buffer_size;
 
-The PLL is not tied in with OPCLK.  set_pll() should pay no attention to
-OPCLK, it should just start the PLL when given a configuration and stop
-the PLL when given no input/output frequency.
+It is possible for the status/delay ioctls to be called when the sound
+card's pointer register alreay shows a position at the beginning of the
+new period, but immediately before the interrupt is actually executed.
+(This happens regularly on a SMP machine with mplayer.)  When that
+happens, the code thinks that the position must be at least one period
+ahead of the current position and drops an entire buffer of data.
 
-Remember, OPCLK may not be being used at all and there are separate
-dividers from the PLL output for it and the main SYSCLK in the CODEC.
 
-> 2. having configured codec's PLL the board can select, which clock the 
->    codec shall be using as a source for its system clock - PLL or codec 
->    input clock directly. The board uses
-
-> 	snd_soc_dai_set_sysclk(dai, WM8978_PLL, f_sysclk, 0);
-
->    or
-> 
-> 	snd_soc_dai_set_sysclk(dai, WM8978_MCLK, f_sysclk, 0);
-
-This is mostly OK but...
-
->    for this. Notice, that f_sysclk is ignored, because in wm8978 it is 
->    fixed at 256 * fs, and therefore it has to be configured in 
->    .hw_params().
-
-If the MCLK is being used as SYSCLK then the frequency should be used -
-if it's recorded then the driver can automatically configure MCLKDIV to
-generate the 256fs by itself (see below).  It could also generate
-constraints for ALSA to let applications know what frequencies are
-supported, though that's less urgent.
-
-The clock rate passed in needn't be the actual system clock, it's more
-useful if it's the rate of the clock that is used to generate that,
-which is what the outside world can see.
-
-> 3. in .hw_params() we configure the MCLK divider, based on the system 
->    clock frequency and baudrate, and set up the selected clock source.
-
-> This allows for the most flexible clock configuration, one can even 
-> configure to use PLL for output clock and input clock directly for the 
-> system clock, even if such a configuration doesn't make much sense.
-
-This is why you need the input clock frequency when the MCLK is being
-used directly - you can't configure the divider without knowing what
-MCLK is.
+Best regards,
+Clemens
