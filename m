@@ -1,17 +1,15 @@
-From: Yiliang Bao <yiliangb@gmail.com>
-Subject: How to unload a sound module.
-Date: Tue, 26 Jan 2010 11:37:07 -0800
-Message-ID: <e5baf3861001261137x2b186559ma8dd1756b9a23455@mail.gmail.com>
+From: Steve Strobel <steve.strobel@link-comm.com>
+Subject: Recommendations for 4-channel USB-connected audio
+	interface
+Date: Tue, 26 Jan 2010 13:51:12 -0700
+Message-ID: <0McV8y-1NICye2Mzo-00Hqac@mrelay.perfora.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f171.google.com (mail-pz0-f171.google.com
-	[209.85.222.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CA681037F5
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 20:37:10 +0100 (CET)
-Received: by pzk1 with SMTP id 1so3539745pzk.16
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 11:37:09 -0800 (PST)
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id 97E20244D1
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 21:51:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +22,32 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I am in need of an ALSA-compatible audio interface that will connect 
+to a PC via USB and record/play four or more audio channels 
+simultaneously.  Any recommendations (or warnings) about specific 
+products or chipsets would be greatly appreciated.  High resolution 
+and sample rates aren't necessary.
 
-I am new to alsa driver development. The first problem I encountered is I
-could not unload a module just inserted. I always get the following message
-(using snd-dummy as an example).
+The rest of the story is that my company is working on a project 
+using an embedded x86 computer to interface with four independent 
+mono audio devices.  I will be responsible for the audio processing 
+and want to make sure that we use an audio chipset for which an ALSA 
+driver is already available.  I would also prefer that it interface 
+via USB so I can easily test on my development PC, then move it to 
+the embedded system.  We will eventually put the audio chipset on a 
+custom PCB, so it is the audio chipset and driver that are my primary 
+concerns, but a readily-available audio interface using the chipset 
+would serve as a nice prototype.  Thanks for any suggestions.
 
-> sudo rmmod snd-dummy
-ERROR: Module snd_dummy is in use
+Steve
 
-I checked who is using snd-dummy. Here is what I got and I do not know what
-applications are using it.
 
-Module                  Size  Used by
-snd_dummy               9600  2
-
-Is there any easy way to unload the sound module?
-
-Thanks,
-Yiliang
+---
+Steve Strobel
+Link Communications, Inc.
+1035 Cerise Rd
+Billings, MT 59101-7378
+(406) 245-5002 ext 102
+(406) 245-4889 (fax)
+WWW: http://www.link-comm.com
+MailTo:steve.strobel@link-comm.com
