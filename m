@@ -1,88 +1,66 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 1/4 v2] ASoC: add a WM8978 codec driver
-Date: Tue, 26 Jan 2010 15:22:06 +0000
-Message-ID: <20100126152206.GV15759@rakim.wolfsonmicro.main>
-References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
- <Pine.LNX.4.64.1001190851380.4607@axis700.grange>
- <Pine.LNX.4.64.1001221659410.4652@axis700.grange>
- <20100123204730.GC4174@sirena.org.uk>
- <Pine.LNX.4.64.1001261341180.4950@axis700.grange>
- <20100126132616.GT15759@rakim.wolfsonmicro.main>
- <Pine.LNX.4.64.1001261440210.4950@axis700.grange>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: hw_ptr_interrupt removal broke interrupt pointer
+	updates
+Date: Tue, 26 Jan 2010 17:16:19 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1001261713430.6542@eeebox2.perex-int.cz>
+References: <4B5EF09B.3040900@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1001261440210.4950@axis700.grange>
-Sender: linux-sh-owner@vger.kernel.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A60C103844
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 17:16:20 +0100 (CET)
+In-Reply-To: <4B5EF09B.3040900@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 26, 2010 at 03:08:44PM +0100, Guennadi Liakhovetski wrote:
+On Tue, 26 Jan 2010, Clemens Ladisch wrote:
 
-> here f_MCLK is what is fed into the codec, f_OPCLK is the master clock, 
-> that the codec is generating for the outside world, PLL_mul, MCLK_div, and 
-> OPCLK_div are internal coefficients, that have to be configured. So, there 
-> are 3 equations with 4 unknowns: f_PLLOUT, PLL_mul, MCLK_div, and 
-> OPCLK_div. Since there are additional constraints on all of them, there 
-> are usually not too many possible solutions. Still, this system is not 
-> uniquely resolvable and you have to use some heuristics to select a 
-> specific solution.
+> Commit "cleanup & merge hw_ptr update functions" says:
+>> The main change is hw_ptr_interrupt variable removal to simplify code
+>> logic. This variable can be computed directly from hw_ptr.
+>
+> The hw_ptr_interrupt variable was needed to differentiate between the
+> position at the last normal pointer update and the position of the last
+> signaled period boundary.
+>
+> 	if (in_interrupt) {
+> 		/* we know that one period was processed */
+> 		/* delta = "expected next hw_ptr" for in_interrupt != 0 */
+> 		delta = old_hw_ptr - (old_hw_ptr % runtime->period_size)
+> 			+ runtime->period_size;
+> 		if (delta > new_hw_ptr) {
+> 			hw_base += runtime->buffer_size;
+>
+> It is possible for the status/delay ioctls to be called when the sound
+> card's pointer register alreay shows a position at the beginning of the
+> new period, but immediately before the interrupt is actually executed.
+> (This happens regularly on a SMP machine with mplayer.)  When that
+> happens, the code thinks that the position must be at least one period
+> ahead of the current position and drops an entire buffer of data.
 
-Right, the CODEC driver needs something to tell it what frequency to
-generate from both the PLL and OPCLK.  Given the PLL configuration it
-can work out the CODEC-side bits of things but it has no idea what's
-going on with OPCLK or how that is related to the PLL.
+Clements, thank you for nice explanation how I was wrong. I returned 
+hw_ptr_interrupt variable back. I am testing this patch now:
 
-> Now, Mark, you are suggesting, that the board code should call
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=04d64a69fcb9fd182d73d6f1a8de55b2f527a1de
 
-> 	snd_soc_dai_set_pll(dai, 0, 0, f_in, f_out);
+A review is always welcome. Thanks.
 
-> with f_out = f_PLLOUT. This means, the board has to use its own heuristics 
-> to configure the codec, which I find a bad idea. Especially since there is 
-> not a single simple recipe like "f_PLLOUT = f_OPCLK, OPCLK_div = 1," you 
-> really have to vary all those variables to get to a suitable result. Now, 
 
-The CODEC only needs to know OPCLKDIV and the PLL output frequency.  It
-doesn't really care that these are related.  There's no way it can know
-what the requirements are for OPCLK, when it's safe to vary it or in
-what way it's safe to vary it - reconfiguring the PLL requires that the
-PLL be stopped, which may be undesirable.  The CODEC driver can't assume
-that OPCLK is only needed when the CODEC is handling audio, and 
+ 						Jaroslav
 
-There's also the fact that set_pll() normally does exactly that - it
-configures the PLL.  If you start making it do other magic 
-
-> You remember those superfluous "was-comments," that we have removed. See, 
-> the board driver chooses an OPCLK_div, and, thereby, f_PLLOUT. And this is 
-
-I'm not sure how those comments are directly related to this issue?
-
-> exactly what I disliked about that code and was quite happy to remove. If 
-> you insist, I will put it back and switch to using f_PLLOUT for 
-> .set_pll(), but I emphasise, that I really dislike this approach, and I 
-> really believe, that the board really should keep its fingers away from 
-> devices' internals - ever. The only thing that the board knows is input 
-> clock, required output clock and sampling rate. The rest should be solely 
-> a matter of specific device drivers.
-
-The machine driver already needs to know about the clocking scheme for
-the system - at the end of the day it's entirely specific to the
-combination of CODEC, CPU, whatever other components are there, the
-way they've been wired up and anything system level that software has to
-be able to achieve.  Solving this sort of problem in a generic fashion
-is non-trivial, there's a reason why we don't have an algorithm for it
-hidden away in a generic clock API.
-
-If you want to try to do this automatically I'd say that at a bare
-minimum you need to remove set_pll() from the driver API and make
-configuring OPCLK a bolt on which is not part of the standard flow for
-using the device with the PLL.  Use set_sysclk() to specify the input
-frequency for the PLL, and use something like the set_clkdiv() API to
-specify the OPCLK output rate.
-
-Your previous patches have all treated the PLL output frequency and
-OPCLK frequency too interchangibly (or documented themselves as doing
-so) - if the normal flow is worrying about what OPCLK is or if the
-system clock is being stored as OPCLK something is wrong.
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
