@@ -1,26 +1,22 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Duplicate wake-ups in pcm_lib.c
-Date: Tue, 26 Jan 2010 09:23:33 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1001260917290.6542@eeebox2.perex-int.cz>
-References: <6160a5130912231228g29669e4ctfef9ea8f42633120@mail.gmail.com>
-	<alpine.LNX.2.00.0912240922460.2598@eeebox2.perex-int.cz>
-	<6160a5131001062059i1ef74831p4210987579feb759@mail.gmail.com>
-	<alpine.LNX.2.00.1001071552060.4210@eeebox2.perex-int.cz>
-	<4f3252891001102011l603d30cdlbe2a14163bbc7405@mail.gmail.com>
-	<alpine.LNX.2.00.1001110814310.4210@eeebox2.perex-int.cz>
-	<4f3252891001122258j5c3bd7c5u7184cad199f5cf40@mail.gmail.com>
-	<alpine.LNX.2.00.1001130803290.4324@eeebox2.perex-int.cz>
-	<4f3252891001192338r53b3847dq8f3bfab03cc8a914@mail.gmail.com>
-	<alpine.LNX.2.00.1001201141590.4324@eeebox2.perex-int.cz>
-	<4f3252891001252325i5ab1ecf6o48e21f50c1b5ac29@mail.gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCHv2 6/6] ASoC: OMAP4: Add McPDM platform
+ driver
+Date: Tue, 26 Jan 2010 10:27:48 +0200
+Message-ID: <20100126102748.3b9fb04d.jhnikula@gmail.com>
+References: <2256F256009DAA4CBE661E9F41EAC84B8C43A8B5@dlee01.ent.ti.com>
+	<1264210638.3480.127.camel@odin>
+	<2256F256009DAA4CBE661E9F41EAC84B8C4CEF36@dlee01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5EFF244AB
-	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 09:23:33 +0100 (CET)
-In-Reply-To: <4f3252891001252325i5ab1ecf6o48e21f50c1b5ac29@mail.gmail.com>
+Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
+	[209.85.219.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92016103815
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 09:25:34 +0100 (CET)
+Received: by ewy5 with SMTP id 5so6791186ewy.32
+	for <alsa-devel@alsa-project.org>; Tue, 26 Jan 2010 00:25:33 -0800 (PST)
+In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8C4CEF36@dlee01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,30 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 26 Jan 2010, Raymond Yau wrote:
+Hi
 
->>>> Ok, I understand now. It would be better to use value 101 then - to see
->>>> last 10 ring buffer positions when jiffies correction occurs. Also, get
->>>> latest snapshot - there is a fix for jiffies check. Thanks.
->
-> alsa-lib/test/pcm --verbose -Dhw -c2 -r48000 -f440  --method write_and_poll
->
-> How do I know the double wake up is fixed ?
+On Mon, 25 Jan 2010 15:06:44 -0600
+"Candelaria Villareal, Jorge" <jorge.candelaria@ti.com> wrote:
 
-As far as know, only pulseaudio reports this issue in verbose mode.
+> > > +static int omap_mcpdm_dai_startup(struct snd_pcm_substream 
+> > *substream,
+> > > +				  struct snd_soc_dai *dai)
+> > > +{
+> > > +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> > > +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+> > > +	int err = 0;
+> > > +
+> > > +	if (!cpu_dai->active)
+> > > +		err = omap_mcpdm_request();
+> > 
+> > Will anything else use this hw interface other than ALSA audio ?
+> > If not, the request is probably better in the machine driver probe().
+> 
+> omap_mcpdm_request will enable the functional clock. Isn't it better
+> for the clock to be enabled only when is about to get used?
+> 
+Definitely yes if there is no any need to keep block active after the
+request. That would help the power-management if there are no active
+clocks when the streams are suspended with omap_mcpdm_stop() but the
+block remains reserved (i.e. omap_mcpdm_free is not called).
 
-> the echo still exist only XRUN_DEBUG_JIFFIESCHECK  bit is set
+The current McBSP implementation is not the best example here but
+hopefully that will get fixed at some point.
 
-Please, could you set 101 to xrun_debug proc file and report relevant 
-messages in dmesg as I asked before? I am curious where the problem is.
+> > stream is either PLAYBACK or CAPTURE here.
+> 
+> Downlink and uplink were chosen instead to avoid confusion
+> because that is how it is referred in McPDM technical
+> documentation. But I do understand that we are talking
+> about ALSA stream, not McPDM...
+...
+> Here, however, the methods set_uplink & set_downlink are
+> Named after McPDM data paths. In this case is it preferred
+> to name everything using ALSA convention? Or would it be ok
+> to use downlink/uplink on certain cases?
+> 
+I think something like below is clear enough. It is easy to see that we
+are dealing with ALSA playback stream which corresponds to downlink path
+in HW.
 
- 						Jaroslav
+if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+	omap_mcpdm_downlink_opxxx();
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Also for the user(-space) standard playback and capture naming is more
+clear than downlink/uplink terminology.
+
+
+-- 
+Jarkko
