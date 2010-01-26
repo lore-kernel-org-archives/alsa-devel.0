@@ -1,70 +1,106 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: AC97: S3C: Add controller driver
-Date: Tue, 26 Jan 2010 13:00:57 +0000
-Message-ID: <20100126130057.GS15759@rakim.wolfsonmicro.main>
-References: <1264485101-13782-1-git-send-email-jassisinghbrar@gmail.com>
- <1264485101-13782-2-git-send-email-jassisinghbrar@gmail.com>
- <20100126104723.GF15759@rakim.wolfsonmicro.main>
- <1b68c6791001260317k44893521vc0310ea35bac8ee1@mail.gmail.com>
- <20100126115258.GM15759@rakim.wolfsonmicro.main>
- <1b68c6791001260411u2b39d8actf35a0f3541fda92d@mail.gmail.com>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [alsa-devel] [PATCH 1/4 v2] ASoC: add a WM8978 codec driver
+Date: Tue, 26 Jan 2010 14:04:45 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1001261341180.4950@axis700.grange>
+References: <Pine.LNX.4.64.1001190839110.4607@axis700.grange>
+ <Pine.LNX.4.64.1001190851380.4607@axis700.grange>
+ <Pine.LNX.4.64.1001221659410.4652@axis700.grange> <20100123204730.GC4174@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1b68c6791001260411u2b39d8actf35a0f3541fda92d@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20100123204730.GC4174@sirena.org.uk>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 26, 2010 at 09:11:55PM +0900, jassi brar wrote:
-> On Tue, Jan 26, 2010 at 8:52 PM, Mark Brown
+On Sat, 23 Jan 2010, Mark Brown wrote:
 
-> > That's not addressing the problem, though - the big issue is not
-> > bringing up the AC97 link, it's the fact that you're doing an
-> > uncontrolled cold reset. =A0If we hit this code path it'll revert t=
-he
-> > device registers to default which will upset the drivers for the CO=
-DEC
-> > rather badly. =A0There should be no possibility of that happening, =
-if it
-> > is happening it's something that callers really should know about.
+> On Fri, Jan 22, 2010 at 05:27:53PM +0100, Guennadi Liakhovetski wrote:
 
-> It should never be reached after the link is up and running. Only if =
-something
-> goes wrong at runtime, would the controller state be changed. And
-> this is an attempt to recover from that failure. If the upper layer s=
-hould
-> know of such failure, then maybe we should not do it.
-> I have never seen such runtime error though.
+[snip]
 
-Sounds like the code should be changed to log and return an error if
-that case is hit?
+> > +	if (freq_in == 0 || freq_out == 0) {
+> > +		/* Clock CODEC directly from MCLK */
+> > +		reg = snd_soc_read(codec, WM8978_CLOCKING);
+> > +		snd_soc_write(codec, WM8978_CLOCKING, reg & ~0x100);
+> > +
+> > +		/* Turn off PLL */
+> > +		reg = snd_soc_read(codec, WM8978_POWER_MANAGEMENT_1);
+> > +		snd_soc_write(codec, WM8978_POWER_MANAGEMENT_1, reg & ~0x20);
+> > +		return 0;
+> > +	}
+> 
+> Note that ideally the PLL updates will handle the case where the PLL is
+> already on and power down the PLL while reconfiguring it, though it's
+> not essential.
+> 
+> > +	opclk_div = ((snd_soc_read(codec, WM8978_GPIO_CONTROL) & 0x30) >> 4) + 1;
+> 
+> > +	wm8978->f_pllout = freq_out * opclk_div;
+> 
+> Hrm.  I fear that there's a bit of confusion here - the PLL output is
+> used separately as the source for both OPCLK and the system clock for
+> the CODEC.  This means that the PLL output frequency that we need to
+> refer to later on is that before the OPCLK divide.
+> 
+> Looking further down the driver f_pllout is also being used as the
+> system master clock frequency, meaning that the driver will only work
+> when the PLL is in use.  Normally what would happen with this stuff is
+> that the system clock used by hw_params() will be set using the
+> set_sysclk() API call, which can tell the driver what the clock rate is
+> and also select between multiple clock sources.  You'd end up saying
+> something like:
+> 
+> 	snd_soc_dai_set_pll(dai, 0, 0, 12000000, 256 * params_rate(params));
+> 	snd_soc_dai_set_sysclk(dai, WM8978_PLL, 256 * params_rate(params), 0);
+> 
+> in the machine driver (note that this also means that the switchover to
+> use of the PLL as the clock would then be managed via set_sysclk() not
+> set_pll()).
 
->=20
-> >> >> + =A0 =A0 ac_glbctrl =3D S3C_AC97_GLBCTRL_ACLINKON;
-> >> >> + =A0 =A0 writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
-> >> >> + =A0 =A0 msleep(1);
+Ok, my new concept is the following:
 
-=2E..
+1. wm8978 needs an input clock for its operation, and it needs to know its 
+   frequency. The only way to supply this information to the driver is to 
+   use
 
-> I assume the ALSA definition of cold/warm reset is same as that of
-> the AC97 controller. Anything remaining should be done only when nece=
-ssary.
-> For ex, the ALSA might want to leave controller after just cold/warm
-> reset ... as
-> the SoC manual says it's in low-power mode without the AC-link on.
+	snd_soc_dai_set_pll(dai, 0, 0, f_in, f_out);
 
-A warm reset pretty much means "start the AC-link" - it's what you do t=
-o
-exit low power mode and start clocking the link (which is mastered by
-the CODEC), it doesn't have any other effect.  That's a big part of why
-this is confusing, I'd expect a warm reset would also do any setup on
-the controller side that was needed to cope with the clock restarting.
+   where if f_in == 0, input clock is off and the driver has nothing 
+   better to do but to switch its own clocking off too. f_out is the 
+   frequency, that the user (board) is asking wm8978 to provide on its 
+   OPCLK (GPIO1) output. If f_out == 0, this means, the board does not 
+   need that output _and_ it is asking the codec to switch PLL off. 
+   Otherwise PLL is immediately configured and switched on.
 
-Due to the way AC97 is structured this stuff is all shared between the
-controller and the CODECs on the bus.  It's not particularly pretty fro=
-m
-a software point of view at the minute.
+2. having configured codec's PLL the board can select, which clock the 
+   codec shall be using as a source for its system clock - PLL or codec 
+   input clock directly. The board uses
+
+	snd_soc_dai_set_sysclk(dai, WM8978_PLL, f_sysclk, 0);
+
+   or
+
+	snd_soc_dai_set_sysclk(dai, WM8978_MCLK, f_sysclk, 0);
+
+   for this. Notice, that f_sysclk is ignored, because in wm8978 it is 
+   fixed at 256 * fs, and therefore it has to be configured in 
+   .hw_params().
+
+3. in .hw_params() we configure the MCLK divider, based on the system 
+   clock frequency and baudrate, and set up the selected clock source.
+
+This allows for the most flexible clock configuration, one can even 
+configure to use PLL for output clock and input clock directly for the 
+system clock, even if such a configuration doesn't make much sense.
+
+I'll be submitting an updated patch shortly, please, let me know if there 
+are any problems with this concept.
+
+Thanks
+Guennadi
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
