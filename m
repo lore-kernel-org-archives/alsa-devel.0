@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 03/10] ARM: S3C24XX: Update AC97 platform
-	resources
-Date: Wed, 27 Jan 2010 10:40:16 +0000
-Message-ID: <20100127104016.GC22551@rakim.wolfsonmicro.main>
-References: <1264571938-15054-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 2/2] ad1938: use soc-cache framework for
+ codec registers access
+Date: Wed, 27 Jan 2010 10:43:26 +0000
+Message-ID: <20100127104326.GD22551@rakim.wolfsonmicro.main>
+References: <1264563978-18927-1-git-send-email-21cnbao@gmail.com>
+	<1264563978-18927-2-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7E10C103902
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 11:40:17 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CBF751038CF
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 11:43:27 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1264571938-15054-1-git-send-email-jassisinghbrar@gmail.com>
+In-Reply-To: <1264563978-18927-2-git-send-email-21cnbao@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,16 +23,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassisinghbrar@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <Barry.Song@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 27, 2010 at 02:58:58PM +0900, jassisinghbrar@gmail.com wrote:
-> From: Jassi Brar <jassi.brar@samsung.com>
-> 
-> Modify the AC97 platform backend so that the controller can be run
-> by the s3c-ac97.c
-> 
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+On Wed, Jan 27, 2010 at 11:46:18AM +0800, Barry Song wrote:
+> Signed-off-by: Barry Song <Barry.Song@analog.com>
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Applied both, thanks.
