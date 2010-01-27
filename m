@@ -1,25 +1,18 @@
-From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
-Subject: Re: How to unload a sound module.
-Date: Wed, 27 Jan 2010 21:43:41 +1300
-Message-ID: <4B5FFCBD.7010107@audioscience.com>
-References: <e5baf3861001261137x2b186559ma8dd1756b9a23455@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: hw_ptr_interrupt removal broke interrupt pointer
+ updates
+Date: Wed, 27 Jan 2010 10:49:50 +0100
+Message-ID: <4B600C3E.6090208@ladisch.de>
+References: <4B5EF09B.3040900@ladisch.de>
+	<alpine.LNX.2.00.1001261713430.6542@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2723910384D
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 09:44:10 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1Na3VM-0005CA-Pc
-	for alsa-devel@alsa-project.org; Wed, 27 Jan 2010 09:44:04 +0100
-Received: from 121-72-250-62.cable.telstraclear.net ([121.72.250.62])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 09:44:04 +0100
-Received: from eblennerhassett by 121-72-250-62.cable.telstraclear.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 09:44:04 +0100
-In-Reply-To: <e5baf3861001261137x2b186559ma8dd1756b9a23455@mail.gmail.com>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 4B0E82415F
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 10:49:53 +0100 (CET)
+In-Reply-To: <alpine.LNX.2.00.1001261713430.6542@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,20 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yiliang Bao wrote:
-> Hi,
+Jaroslav Kysela wrote:
+> I returned hw_ptr_interrupt variable back. I am testing this patch now:
 > 
-> I am new to alsa driver development. The first problem I encountered is I
-> could not unload a module just inserted. I always get the following message
-> (using snd-dummy as an example).
+> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=04d64a69fcb9fd182d73d6f1a8de55b2f527a1de
 > 
->> sudo rmmod snd-dummy
-> ERROR: Module snd_dummy is in use
-> 
-> I checked who is using snd-dummy. Here is what I got and I do not know what
-> applications are using it.
+> A review is always welcome. Thanks.
 
-sudo lsof /dev/snd/*
+The patch looks fine, and it works again now.
+
+
+A somewhat unrelated issue:  Both old and new code assume that
+hw_ptr==0 is a period boundary, but that is not true if the boundary
+is not an integer multiple of the period size, and the pointer wraps.
+I'm not sure what happens then.
+
+
+Best regards,
+Clemens
