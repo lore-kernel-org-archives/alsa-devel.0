@@ -1,54 +1,78 @@
-From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: Re: I hear sound from headphones but i can't hear
- sound without headphones
-Date: Wed, 27 Jan 2010 11:26:09 -0800
-Message-ID: <4B609351.8010708@gmail.com>
-References: <305918.51076.qm@web23507.mail.ird.yahoo.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4 v4] ASoC: add a WM8978 codec driver
+Date: Wed, 27 Jan 2010 20:17:55 +0000
+Message-ID: <20100127201755.GA11601@rakim.wolfsonmicro.main>
+References: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
-	[209.85.220.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBBC5103835
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 20:26:53 +0100 (CET)
-Received: by fxm1 with SMTP id 1so312070fxm.4
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 11:26:53 -0800 (PST)
-In-Reply-To: <305918.51076.qm@web23507.mail.ird.yahoo.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Angelo D." <naelgod@yahoo.it>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
+Sender: linux-sh-owner@vger.kernel.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 01/27/10 11:15, Angelo D. wrote:
-> Hi,
-> i have a problem with my audio card. I hear sound from headphones but i can't hear sound without headphones.This is the result of the esecution alsa-info.sh:
-> http://www.alsa-project.org/db/?f=4a72836b153be44d5a3b84bce66638fe41afadb7
->
-> This is the link to my related post on ubuntuforum:
-> http://ubuntuforums.org/showthread.php?p=8707917#post8707917
->
->
->   AngeloD
->
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+On Wed, Jan 27, 2010 at 06:56:23PM +0100, Guennadi Liakhovetski wrote:
 
+> The WM8978 codec from Wolfson Microelectronics is very similar to wm8974, 
+> but
+> is stereo and also has some differences in pin configuration and internal
+> signal routing. This driver is based on wm8974 and takes the differences 
+> into
+> account.
 
-was there a good working kernel?
-if so are you able to bisect?
+I suspect something funny with word wrapping :)
 
-Justin P. Mattock
+There's a few more fairly small issues below but I'll apply the patch
+as-is, please send incremental patches to fix these things.
+
+> +	if (f_opclk) {
+
+...
+
+> +		if (16 * f_opclk < 3 * f_mclk || 4 * f_opclk >= 13 * f_mclk)
+> +			return -EINVAL;
+> +
+> +		if (4 * f_opclk < 3 * f_mclk)
+> +			/* Have to use OPCLKDIV */
+> +			opclk_div = (3 * f_mclk / 4 + f_opclk - 1) / f_opclk;
+> +		else
+> +			opclk_div = 1;
+
+I'm fairly sure this and the similar logic for SYSCLK can be squashed
+together with some suitable local variables.  Might be more legible
+since this requires some staring at.  I didn't actually go so far as to
+work out what the relevant code is, though.
+
+> +	case WM8978_MCLKDIV:
+> +		if (div & ~0xe0)
+> +			return -EINVAL;
+> +		snd_soc_update_bits(codec, WM8978_CLOCKING, 0xe0, div);
+> +		break;
+
+This is now configured automatically isn't it?
+
+> +	case WM8978_ADCCLK:
+> +		if (div & ~8)
+> +			return -EINVAL;
+> +		snd_soc_update_bits(codec, WM8978_ADC_CONTROL, 8, div);
+> +		break;
+> +	case WM8978_DACCLK:
+> +		if (div & ~8)
+> +			return -EINVAL;
+> +		snd_soc_update_bits(codec, WM8978_DAC_CONTROL, 8, div);
+> +		break;
+
+These should be user visible controls to select the DAC and ADC
+oversampling rates.
+
+[suspend..]
+> +	/* Put to sleep */
+> +	snd_soc_write(codec, WM8978_POWER_MANAGEMENT_2, 0x40);
+
+This control isn't going to do much over suspend since it's likely the
+device will completely loose power and you've already turned off all the
+biases anyway.  However, it would be useful to turn it on when the
+device is in BIAS_STANDBY since it should produce a small power saving
+then.
