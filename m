@@ -1,78 +1,36 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4 v4] ASoC: add a WM8978 codec driver
-Date: Wed, 27 Jan 2010 20:17:55 +0000
-Message-ID: <20100127201755.GA11601@rakim.wolfsonmicro.main>
-References: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
+Subject: Re: [Rev2]Samsung: New driver for AC97 controllers
+Date: Wed, 27 Jan 2010 20:45:10 +0000
+Message-ID: <20100127204510.GB11601@rakim.wolfsonmicro.main>
+References: <1264571815-14893-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E1D661037F1
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 21:45:11 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
-Sender: linux-sh-owner@vger.kernel.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org
+In-Reply-To: <1264571815-14893-1-git-send-email-jassisinghbrar@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: jassisinghbrar@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 27, 2010 at 06:56:23PM +0100, Guennadi Liakhovetski wrote:
+On Wed, Jan 27, 2010 at 02:56:55PM +0900, jassisinghbrar@gmail.com wrote:
 
-> The WM8978 codec from Wolfson Microelectronics is very similar to wm8974, 
-> but
-> is stereo and also has some differences in pin configuration and internal
-> signal routing. This driver is based on wm8974 and takes the differences 
-> into
-> account.
+>  A machine driver, for SMDKs with wm9713 as AC97 codec attached, has also
+> been added. The driver is generic enough to be used as such with newer SoCs.
 
-I suspect something funny with word wrapping :)
-
-There's a few more fairly small issues below but I'll apply the patch
-as-is, please send incremental patches to fix these things.
-
-> +	if (f_opclk) {
-
-...
-
-> +		if (16 * f_opclk < 3 * f_mclk || 4 * f_opclk >= 13 * f_mclk)
-> +			return -EINVAL;
-> +
-> +		if (4 * f_opclk < 3 * f_mclk)
-> +			/* Have to use OPCLKDIV */
-> +			opclk_div = (3 * f_mclk / 4 + f_opclk - 1) / f_opclk;
-> +		else
-> +			opclk_div = 1;
-
-I'm fairly sure this and the similar logic for SYSCLK can be squashed
-together with some suitable local variables.  Might be more legible
-since this requires some staring at.  I didn't actually go so far as to
-work out what the relevant code is, though.
-
-> +	case WM8978_MCLKDIV:
-> +		if (div & ~0xe0)
-> +			return -EINVAL;
-> +		snd_soc_update_bits(codec, WM8978_CLOCKING, 0xe0, div);
-> +		break;
-
-This is now configured automatically isn't it?
-
-> +	case WM8978_ADCCLK:
-> +		if (div & ~8)
-> +			return -EINVAL;
-> +		snd_soc_update_bits(codec, WM8978_ADC_CONTROL, 8, div);
-> +		break;
-> +	case WM8978_DACCLK:
-> +		if (div & ~8)
-> +			return -EINVAL;
-> +		snd_soc_update_bits(codec, WM8978_DAC_CONTROL, 8, div);
-> +		break;
-
-These should be user visible controls to select the DAC and ADC
-oversampling rates.
-
-[suspend..]
-> +	/* Put to sleep */
-> +	snd_soc_write(codec, WM8978_POWER_MANAGEMENT_2, 0x40);
-
-This control isn't going to do much over suspend since it's likely the
-device will completely loose power and you've already turned off all the
-biases anyway.  However, it would be useful to turn it on when the
-device is in BIAS_STANDBY since it should produce a small power saving
-then.
+OK, works for me with a smoke test so I've applied all the sound/soc
+parts.  I'll add a commit detailing the CFG jumper settings expected to
+make it work out of the box on SMDK6410 since that catches quite a few
+people out.
