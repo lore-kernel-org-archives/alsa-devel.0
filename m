@@ -1,19 +1,15 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Support for floating point controls?
-Date: Thu, 28 Jan 2010 12:12:01 +1300
-Message-ID: <4B60C841.9010306@audioscience.com>
+From: Mark Brown <broonie@sirena.org.uk>
+Subject: ASoC updates for 2.6.34
+Date: Wed, 27 Jan 2010 23:16:09 +0000
+Message-ID: <20100127231608.GA23326@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7ACB81037F9
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 00:12:05 +0100 (CET)
-Received: from [192.168.1.6]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp5.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0KWX00HPQHS3R110@smtp5.clear.net.nz> for
-	alsa-devel@alsa-project.org; Thu, 28 Jan 2010 12:12:03 +1300 (NZDT)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B26A71037F9
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 00:16:10 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,40 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+The following changes since commit f1487fcbe47cd2bc0c71e8598bf9eb6a82dec544:
+  Mark Brown (1):
+        Merge branch 'for-2.6.33' into for-2.6.34
 
-some of our products now have control paramters that are 32 bit floating
-point values.
+are available in the git repository at:
 
-I wonder if a patch implementing float ctl elements would be accepted?
-Note that the floats are not manipulated in the kernel at all, the
-values are just passed through from the hardware to userspace (?)
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
 
-Adding something like:
+Barry Song (2):
+      ASoC: ad1836: use soc-cache framework for codec registers access
+      ASoC: ad1938: use soc-cache framework for codec registers access
 
-#define	SNDRV_CTL_ELEM_TYPE_FLOAT	((__force snd_ctl_elem_type_t) 7)
+Chaithrika U S (1):
+      ASoC: DaVinci: Fix stream restart error
 
-struct snd_ctl_elem_info {
-...
-  union {
-	struct {
-		float min;		/* R: minimum value */
-		float max;		/* R: maximum value */
-		float step;		/* R: step (0 variable) */
-	} float;
-...
-}
+Guennadi Liakhovetski (1):
+      ASoC: add a WM8978 codec driver
 
-struct snd_ctl_elem_value {
-  union {
-	union {
-		float value[128];
-	} float;
+Jassi Brar (5):
+      ASoC: AC97: S3C: Add controller driver
+      ASoC: AC97: SMDK: Add wm9713 machine driver
+      ASoC: AC97: SMDK2443: Switch to s3c-ac97.c
+      ASoC: AC97: LN2440SBC: Switch to s3c-ac97.c
+      ASoC: AC97: S3C2443: Remove unused driver
 
+Mark Brown (1):
+      ASoC: Note jumper settings for smdk_wm9713 driver on SMDK6410
 
---
-Eliot Blennerhassett
-AudioScience Inc
+ sound/soc/codecs/Kconfig             |    4 +
+ sound/soc/codecs/Makefile            |    2 +
+ sound/soc/codecs/ad1836.c            |   92 +--
+ sound/soc/codecs/ad1938.c            |  164 ++----
+ sound/soc/codecs/wm8978.c            | 1124 ++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm8978.h            |   89 +++
+ sound/soc/davinci/davinci-mcasp.c    |    5 +-
+ sound/soc/s3c24xx/Kconfig            |   22 +-
+ sound/soc/s3c24xx/Makefile           |    7 +-
+ sound/soc/s3c24xx/ln2440sbc_alc650.c |    4 +-
+ sound/soc/s3c24xx/s3c-ac97.c         |  518 ++++++++++++++++
+ sound/soc/s3c24xx/s3c-ac97.h         |   23 +
+ sound/soc/s3c24xx/s3c2443-ac97.c     |  432 -------------
+ sound/soc/s3c24xx/s3c24xx-ac97.h     |   25 -
+ sound/soc/s3c24xx/smdk2443_wm9710.c  |    4 +-
+ sound/soc/s3c24xx/smdk_wm9713.c      |  103 +++
+ sound/soc/soc-cache.c                |  175 ++++++
+ 17 files changed, 2123 insertions(+), 670 deletions(-)
+ create mode 100644 sound/soc/codecs/wm8978.c
+ create mode 100644 sound/soc/codecs/wm8978.h
+ create mode 100644 sound/soc/s3c24xx/s3c-ac97.c
+ create mode 100644 sound/soc/s3c24xx/s3c-ac97.h
+ delete mode 100644 sound/soc/s3c24xx/s3c2443-ac97.c
+ delete mode 100644 sound/soc/s3c24xx/s3c24xx-ac97.h
+ create mode 100644 sound/soc/s3c24xx/smdk_wm9713.c
