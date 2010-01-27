@@ -1,23 +1,36 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 02/10] ARM: S3C64XX: Add AC97 platform resources
-Date: Wed, 27 Jan 2010 10:38:07 +0000
-Message-ID: <20100127103806.GB22551@rakim.wolfsonmicro.main>
-References: <1264571924-15023-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: Re: [PATCHv2 03/10] ARM: S3C24XX: Update AC97 platform
+	resources
+Date: Wed, 27 Jan 2010 10:40:16 +0000
+Message-ID: <20100127104016.GC22551@rakim.wolfsonmicro.main>
+References: <1264571938-15054-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7E10C103902
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 11:40:17 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1264571924-15023-1-git-send-email-jassisinghbrar@gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
+In-Reply-To: <1264571938-15054-1-git-send-email-jassisinghbrar@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: jassisinghbrar@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, ben-linux@fluff.org, lrg@slimlogic.co.uk, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 27, 2010 at 02:58:44PM +0900, jassisinghbrar@gmail.com wrote:
+On Wed, Jan 27, 2010 at 02:58:58PM +0900, jassisinghbrar@gmail.com wrote:
 > From: Jassi Brar <jassi.brar@samsung.com>
 > 
-> This patch defines the platform device and the resources: IRQ, DMA and MEM,
-> needed by the AC97 controller driver.
+> Modify the AC97 platform backend so that the controller can be run
+> by the s3c-ac97.c
 > 
 > Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
