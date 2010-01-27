@@ -1,20 +1,19 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [Rev2]Samsung: New driver for AC97 controllers
-Date: Thu, 28 Jan 2010 08:01:32 +0900
-Message-ID: <1b68c6791001271501vf4db64k6fcd09b333def30d@mail.gmail.com>
-References: <1264571815-14893-1-git-send-email-jassisinghbrar@gmail.com>
-	<20100127204510.GB11601@rakim.wolfsonmicro.main>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Support for floating point controls?
+Date: Thu, 28 Jan 2010 12:12:01 +1300
+Message-ID: <4B60C841.9010306@audioscience.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f181.google.com (mail-qy0-f181.google.com
-	[209.85.221.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8BC4024442
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 00:01:33 +0100 (CET)
-Received: by qyk11 with SMTP id 11so38181qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 15:01:32 -0800 (PST)
-In-Reply-To: <20100127204510.GB11601@rakim.wolfsonmicro.main>
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7ACB81037F9
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 00:12:05 +0100 (CET)
+Received: from [192.168.1.6]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0KWX00HPQHS3R110@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 28 Jan 2010 12:12:03 +1300 (NZDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBKYW4gMjgsIDIwMTAgYXQgNTo0NSBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFdlZCwgSmFuIDI3LCAyMDEwIGF0
-IDAyOjU2OjU1UE0gKzA5MDAsIGphc3Npc2luZ2hicmFyQGdtYWlsLmNvbSB3cm90ZToKPgo+PiDC
-oEEgbWFjaGluZSBkcml2ZXIsIGZvciBTTURLcyB3aXRoIHdtOTcxMyBhcyBBQzk3IGNvZGVjIGF0
-dGFjaGVkLCBoYXMgYWxzbwo+PiBiZWVuIGFkZGVkLiBUaGUgZHJpdmVyIGlzIGdlbmVyaWMgZW5v
-dWdoIHRvIGJlIHVzZWQgYXMgc3VjaCB3aXRoIG5ld2VyIFNvQ3MuCj4KPiBPSywgd29ya3MgZm9y
-IG1lIHdpdGggYSBzbW9rZSB0ZXN0IHNvIEkndmUgYXBwbGllZCBhbGwgdGhlIHNvdW5kL3NvYwo+
-IHBhcnRzLiDCoEknbGwgYWRkIGEgY29tbWl0IGRldGFpbGluZyB0aGUgQ0ZHIGp1bXBlciBzZXR0
-aW5ncyBleHBlY3RlZCB0bwo+IG1ha2UgaXQgd29yayBvdXQgb2YgdGhlIGJveCBvbiBTTURLNjQx
-MCBzaW5jZSB0aGF0IGNhdGNoZXMgcXVpdGUgYSBmZXcKPiBwZW9wbGUgb3V0LgpUaGFua3MuCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Greetings,
+
+some of our products now have control paramters that are 32 bit floating
+point values.
+
+I wonder if a patch implementing float ctl elements would be accepted?
+Note that the floats are not manipulated in the kernel at all, the
+values are just passed through from the hardware to userspace (?)
+
+Adding something like:
+
+#define	SNDRV_CTL_ELEM_TYPE_FLOAT	((__force snd_ctl_elem_type_t) 7)
+
+struct snd_ctl_elem_info {
+...
+  union {
+	struct {
+		float min;		/* R: minimum value */
+		float max;		/* R: maximum value */
+		float step;		/* R: step (0 variable) */
+	} float;
+...
+}
+
+struct snd_ctl_elem_value {
+  union {
+	union {
+		float value[128];
+	} float;
+
+
+--
+Eliot Blennerhassett
+AudioScience Inc
