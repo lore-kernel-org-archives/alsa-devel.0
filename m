@@ -1,57 +1,44 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: hw_ptr_interrupt removal broke interrupt pointer
- updates
-Date: Wed, 27 Jan 2010 11:11:59 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1001271057160.6542@eeebox2.perex-int.cz>
-References: <4B5EF09B.3040900@ladisch.de>
-	<alpine.LNX.2.00.1001261713430.6542@eeebox2.perex-int.cz>
-	<4B600C3E.6090208@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: AC97: S3C: Add controller driver
+Date: Wed, 27 Jan 2010 10:25:36 +0000
+Message-ID: <20100127102536.GA22551@rakim.wolfsonmicro.main>
+References: <1264485101-13782-1-git-send-email-jassisinghbrar@gmail.com>
+ <1264485101-13782-2-git-send-email-jassisinghbrar@gmail.com>
+ <20100126102343.GA24843@trinity.fluff.org>
+ <1b68c6791001260303m38e6e689p2ee8c2c4c6ac2af3@mail.gmail.com>
+ <1b68c6791001261845y7635b92dm2fd4c7ad240d40c7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 73A0824142
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 11:12:00 +0100 (CET)
-In-Reply-To: <4B600C3E.6090208@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1b68c6791001261845y7635b92dm2fd4c7ad240d40c7@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: Ben Dooks <ben-linux@fluff.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 27 Jan 2010, Clemens Ladisch wrote:
+On Wed, Jan 27, 2010 at 11:45:24AM +0900, jassi brar wrote:
+> On Tue, Jan 26, 2010 at 8:03 PM, jassi brar <jassisinghbrar@gmail.com> wrote:
 
-> Jaroslav Kysela wrote:
->> I returned hw_ptr_interrupt variable back. I am testing this patch now:
->>
->> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=04d64a69fcb9fd182d73d6f1a8de55b2f527a1de
->>
->> A review is always welcome. Thanks.
->
-> The patch looks fine, and it works again now.
->
->
-> A somewhat unrelated issue:  Both old and new code assume that
-> hw_ptr==0 is a period boundary, but that is not true if the boundary
-> is not an integer multiple of the period size, and the pointer wraps.
-> I'm not sure what happens then.
+> >> It would be nice t osee something to convert a 'struct snd_ac97' to a
+> >> 'struct s3c_ac97_info' as this is being passed in to most place and
+> >> would also help if there is ever >1 block.
 
-I'm not exactly sure what you're talking about. Where is the 
-hw_ptr==0 assumption? I see wrapping only for hw_base which is good, 
-because this value is based on buffer_size.
+> > ok, will find a way to do that.
 
- 				Thanks,
- 					Jaroslav
+> after looking, I found there is no convenient way to extract driver private
+> data from the snd_ac97 structure. Its possible, but after ugly voodoo
+> stuff.  Not to forget that no other ASoC ac97 controller driver does
+> it either.
+> And since we have just 1 AC97 controller in SoCs till date(no plans of
+> adding another anytime soon) I think we can live with it?
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+I think this is fine.  It's vanishingly unlikely that we'll see CPUs
+with multiple AC97 controllers and there are plenty of places in the
+core which assume that there will only be a single AC97 bus in the
+system.
+
+Please also let me renew my reminder to cut irrelevant text from
+replies, it really does help with finding the new text in the mail and
+is especially helpful to those of us who read some of our mail on mobile
+phones.
