@@ -1,36 +1,53 @@
 From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCHv2 06/10] ARM: SMDK64XX: Enable AC97 device
-Date: Thu, 28 Jan 2010 14:31:49 +0900
-Message-ID: <1b68c6791001272131u388f1980l48a1a587070f0189@mail.gmail.com>
-References: <1264571969-15145-1-git-send-email-jassisinghbrar@gmail.com>
-	 <20100128034152.GA14154@trinity.fluff.org>
-	 <1b68c6791001272008k7341d360oeb0e84b181e74b0c@mail.gmail.com>
+Subject: Re: [PATCH 4/7] ASoC: S3C64XX: USE DMA info from
+	platform data
+Date: Thu, 28 Jan 2010 15:38:45 +0900
+Message-ID: <1b68c6791001272238q6f421a2dxc2522a06e8855889@mail.gmail.com>
+References: <1260332978-11475-1-git-send-email-jassisinghbrar@gmail.com>
+	<20091209110024.GC19851@opensource.wolfsonmicro.com>
+	<20100128042715.GR10014@trinity.fluff.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1b68c6791001272008k7341d360oeb0e84b181e74b0c@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Ben Dooks <ben@trinity.fluff.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, ben-linux@fluff.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AFF2710381A
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 07:38:46 +0100 (CET)
+Received: by vws17 with SMTP id 17so82194vws.38
+	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 22:38:45 -0800 (PST)
+In-Reply-To: <20100128042715.GR10014@trinity.fluff.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ben Dooks <ben-linux@fluff.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 28, 2010 at 1:08 PM, jassi brar <jassisinghbrar@gmail.com> wrote:
-> On Thu, Jan 28, 2010 at 12:41 PM, Ben Dooks <ben@trinity.fluff.org> wrote:
->> On Wed, Jan 27, 2010 at 02:59:29PM +0900, jassisinghbrar@gmail.com wrote:
->>> From: Jassi Brar <jassi.brar@samsung.com>
->>>
->>> Add AC97 controller to platform devices and initialize the AC97 gpios.
+On Thu, Jan 28, 2010 at 1:27 PM, Ben Dooks <ben-linux@fluff.org> wrote:
+> On Wed, Dec 09, 2009 at 11:00:24AM +0000, Mark Brown wrote:
+>> On Wed, Dec 09, 2009 at 01:29:38PM +0900, jassisinghbrar@gmail.com wrote:
+>> > From: Jassi Brar <jassi.brar@samsung.com>
 >>
->> I'd much rather see platform devices always added unless there is a really
->> good reason not to. People can build things as modules and this means you
->> end up having to rebuild the core kernel as well as the module if you want
->> to change.
-> Yes, sounds good to me. I will revise this patch accordingly.
-> Thanks
-
-s3c64xx_device_ac97 device is exported from dev-audio.c
-which is compiled only if CONFIG_SND_S3C24XX_SOC is defined.
-So, If we unconditionally add the platform device, it will give error in case
-the user didn't select Samsung ASoC option.
-So, I guess i should make it conditional on CONFIG_SND_S3C24XX_SOC
-rather than CONFIG_SND_SOC_SMDK_WM9713
+>> > Instead of hardcoding DMA channel numbers and address, for each controller
+>> > in the driver, let the information be read from platform data.
+>>
+>> > Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+>>
+>> OK, but this needs to go along with the arch/arm side to avoid breaking
+>> the driver.
+>
+> I've applied the arch/arm side of the patch already, as this was quite
+> eassy to do. It is then a case of whether I should take the patch to
+> remove it from sound/soc/s3c24xx/s3c64xx-i2s.c or should we wait until
+> my/rmk's tree has been merged into the mainline?
+btw, patch 5/7 http://mailman.alsa-project.org/pipermail/alsa-devel/2009-December/023782.html
+is pending too for the same reason.
+ofcourse, I will resend as you decide how to proceed.
+thanks
