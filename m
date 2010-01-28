@@ -1,22 +1,17 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 4/7] ASoC: S3C64XX: USE DMA info from
-	platform data
-Date: Thu, 28 Jan 2010 15:38:45 +0900
-Message-ID: <1b68c6791001272238q6f421a2dxc2522a06e8855889@mail.gmail.com>
-References: <1260332978-11475-1-git-send-email-jassisinghbrar@gmail.com>
-	<20091209110024.GC19851@opensource.wolfsonmicro.com>
-	<20100128042715.GR10014@trinity.fluff.org>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [PATCH 1/4 v4] ASoC: add a WM8978 codec driver
+Date: Thu, 28 Jan 2010 09:24:04 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1001280854040.4356@axis700.grange>
+References: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
+	<20100127201755.GA11601@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id AFF2710381A
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 07:38:46 +0100 (CET)
-Received: by vws17 with SMTP id 17so82194vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 22:38:45 -0800 (PST)
-In-Reply-To: <20100128042715.GR10014@trinity.fluff.org>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id BB6D61037F3
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 09:24:01 +0100 (CET)
+In-Reply-To: <20100127201755.GA11601@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,28 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-linux@fluff.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jassi Brar <jassi.brar@samsung.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Nobuhiro Iwamatsu <iwamatsu@nigauri.org>, linux-sh@vger.kernel.org, Magnus Damm <damm@opensource.se>, Paul Mundt <lethal@linux-sh.org>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Dan Williams <dan.j.williams@intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 28, 2010 at 1:27 PM, Ben Dooks <ben-linux@fluff.org> wrote:
-> On Wed, Dec 09, 2009 at 11:00:24AM +0000, Mark Brown wrote:
->> On Wed, Dec 09, 2009 at 01:29:38PM +0900, jassisinghbrar@gmail.com wrote:
->> > From: Jassi Brar <jassi.brar@samsung.com>
->>
->> > Instead of hardcoding DMA channel numbers and address, for each controller
->> > in the driver, let the information be read from platform data.
->>
->> > Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
->>
->> OK, but this needs to go along with the arch/arm side to avoid breaking
->> the driver.
->
-> I've applied the arch/arm side of the patch already, as this was quite
-> eassy to do. It is then a case of whether I should take the patch to
-> remove it from sound/soc/s3c24xx/s3c64xx-i2s.c or should we wait until
-> my/rmk's tree has been merged into the mainline?
-btw, patch 5/7 http://mailman.alsa-project.org/pipermail/alsa-devel/2009-December/023782.html
-is pending too for the same reason.
-ofcourse, I will resend as you decide how to proceed.
-thanks
+On Wed, 27 Jan 2010, Mark Brown wrote:
+
+> On Wed, Jan 27, 2010 at 06:56:23PM +0100, Guennadi Liakhovetski wrote:
+> 
+> > The WM8978 codec from Wolfson Microelectronics is very similar to wm8974, 
+> > but
+> > is stereo and also has some differences in pin configuration and internal
+> > signal routing. This driver is based on wm8974 and takes the differences 
+> > into
+> > account.
+> 
+> I suspect something funny with word wrapping :)
+> 
+> There's a few more fairly small issues below but I'll apply the patch
+> as-is, please send incremental patches to fix these things.
+
+Great, thanks! Now, the SIU driver itself depends on some other patches, 
+some of which are still not in any public tree. Specifically, these ones:
+
+http://thread.gmane.org/gmane.linux.ports.sh.devel/7129
+
+are needed to compile the DMA driver. Dan, Iwamatsu-san, what's the status 
+of those patches?
+
+Also a remark to patches 3 and 4 from this series
+
+http://thread.gmane.org/gmane.linux.ports.sh.devel/7171
+
+logically, they depend on patches 1, 2a, and 2b, and they affect the 
+arch/sh directory. So, maybe Paul can just ack them and then we can pull 
+them via the ALSA tree?
+
+I'll try to make incremental patches for the codec in the meantime.
+
+Thanks
+Guennadi
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
