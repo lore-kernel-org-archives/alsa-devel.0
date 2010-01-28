@@ -1,68 +1,25 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 0/2] McBSP: OMAP3: Add sidetone feature
-Date: Thu, 28 Jan 2010 18:57:02 +0200
-Message-ID: <20100128185702.6c1c0f04.jhnikula@gmail.com>
-References: <1264693587-4764-1-git-send-email-ilkka.koskinen@nokia.com>
+From: Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH 1/4 v4] ASoC: add a WM8978 codec driver
+Date: Thu, 28 Jan 2010 12:01:20 -0700
+Message-ID: <4B61DF00.2050701@intel.com>
+References: <Pine.LNX.4.64.1001271846020.5073@axis700.grange> <20100127201755.GA11601@rakim.wolfsonmicro.main> <Pine.LNX.4.64.1001280854040.4356@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
-	[209.85.219.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 14A08103886
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 17:54:21 +0100 (CET)
-Received: by ewy5 with SMTP id 5so1167387ewy.32
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 08:54:20 -0800 (PST)
-In-Reply-To: <1264693587-4764-1-git-send-email-ilkka.koskinen@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ilkka Koskinen <ilkka.koskinen@nokia.com>
-Cc: alsa-devel@alsa-project.org, tony@atomide.com, peter.ujfalusi@nokia.com, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com, ext-eero.nurkkala@nokia.com, linux-omap@vger.kernel.org
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.1001280854040.4356@axis700.grange>
+Sender: linux-sh-owner@vger.kernel.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Nobuhiro Iwamatsu <iwamatsu@nigauri.org>, Paul Mundt <lethal@linux-sh.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 28 Jan 2010 17:46:25 +0200
-Ilkka Koskinen <ilkka.koskinen@nokia.com> wrote:
+Guennadi Liakhovetski wrote:
+> Great, thanks! Now, the SIU driver itself depends on some other patches, 
+> some of which are still not in any public tree. Specifically, these ones:
 
-> The first patch implements McBSP sidetone feature on OMAP3 while the second one
-> provides ALSA interface for using it.
-> 
-> The patch set is based on the patch Eduardo Valentin sent to alsa-devel
-> mailing list in October 2009. Channel gain control and enabling the sidetone
-> have been moved to ALSA interface as suggested in comments. 
-> 
-> Eero Nurkkala (1):
->   McBSP: OMAP3: Add sidetone feature
-> 
-> Ilkka Koskinen (1):
->   ASoC: OMAP-McBSP: ASoC interface for McBSP sidetone
-> 
->  arch/arm/mach-omap2/mcbsp.c             |    2 +
->  arch/arm/plat-omap/include/plat/mcbsp.h |   63 +++++
->  arch/arm/plat-omap/mcbsp.c              |  402 ++++++++++++++++++++++++++++++-
->  sound/soc/omap/omap-mcbsp.c             |  187 ++++++++++++++
->  sound/soc/omap/omap-mcbsp.h             |    2 +
->  5 files changed, 655 insertions(+), 1 deletions(-)
-> 
-For me the separation between arch/arm/plat-omap/mcbsp.c and
-sound/soc/omap/omap-mcbsp.c and board specific control registration
-function omap_mcbsp_st_add_controls looks ok.
+Yes, I have been slow to apply DMA patches this cycle due to travel.  I 
+hope to catching up in the next few days.
 
-Set applies well on top of vanilla but the patch 1 doesn't apply on
-linux-omap due commit bcbb73c6fe8544bb50cddb8b5df0e2fcbb08b4b0.
+--
+Dan
 
-I was thinking that it makes sense to base the patch 1 on top of McBSP
-register cache patches from Janusz Krzysztofik after Tony applies
-them (+ having cache for ST regs). That avoid conflicts in mainline
-and makes the sidetone also ready for McBSP context save/restore
-functionality.
-
-
--- 
-Jarkko
