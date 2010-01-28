@@ -1,18 +1,14 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: TWL4030: Modify codec default
-	settings
-Date: Fri, 29 Jan 2010 09:01:30 +0200
-Message-ID: <201001290901.30102.peter.ujfalusi@nokia.com>
-References: <1264687024-7241-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100128143424.GA10637@rakim.wolfsonmicro.main>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] ALSA: ASoC: fix PXA SSP port resume
+Date: Thu, 28 Jan 2010 18:34:18 +0800
+Message-ID: <1264674858-27461-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6901810380F
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 08:01:42 +0100 (CET)
-In-Reply-To: <20100128143424.GA10637@rakim.wolfsonmicro.main>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A9AE103827
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 08:06:55 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +18,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 28 January 2010 16:34:24 ext Mark Brown wrote:
-> On Thu, Jan 28, 2010 at 03:57:04PM +0200, Peter Ujfalusi wrote:
-> > Change the legacy default register configuration, which left some
-> > internal components on.
-> > Now we have either DAPM, or other ways to control these bits,
-> > so there is no need to enable them by default.
-> =
+Invalidate the cached hardware format on resume for PXA SSP ports.
+Otherwise hw_params() will bail out early at the next stream start,
+leaving the registers in a bogus state.
 
-> Applied, thanks.  Though if they're regular DAPM controls then they
-> should get turned off again during startup if they're not used.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Cc: Eric Miao <eric.y.miao@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Philipp Zabel <philipp.zabel@gmail.com>
+---
+ sound/soc/pxa/pxa-ssp.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-What I have found out is that after boot these bits were set (obviously), a=
-fter =
-
-the audio activity, they were cleared (not all, since if the given DAPM con=
-trol =
-
-was not in the path, it was left enabled either way).
-Now these bits are 0 after boot, and only enabled, when a certain path need=
-s it.
-In short: the overall power consumption was higher after boot, than what wa=
-s =
-
-after for example the playback was stopped...
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 3bd7712..ebde673 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -146,6 +146,9 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct ssp_priv *priv = cpu_dai->private_data;
+ 
++	/* the cached format information is invalid now */
++	priv->dai_fmt = (unsigned int) -1;
++
+ 	if (!cpu_dai->active)
+ 		return 0;
+ 
+-- 
+1.6.3.3
