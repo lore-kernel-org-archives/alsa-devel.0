@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 05/10] ASoC: AC97: SMDK: Add
-	wm9713	machine driver
-Date: Thu, 28 Jan 2010 12:00:26 +0000
-Message-ID: <20100128120020.GA19270@sirena.org.uk>
-References: <1264571959-15115-1-git-send-email-jassisinghbrar@gmail.com>
+Subject: Re: [PATCH] ASoC: fsi: Add spin lock operation for
+ accessing shared area
+Date: Thu, 28 Jan 2010 12:44:37 +0000
+Message-ID: <20100128124437.GA8732@rakim.wolfsonmicro.main>
+References: <uhbq66d2m.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40C7D10382D
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 13:00:29 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CC16E103847
+	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 13:44:38 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1264571959-15115-1-git-send-email-jassisinghbrar@gmail.com>
+In-Reply-To: <uhbq66d2m.wl%morimoto.kuninori@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassisinghbrar@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 27, 2010 at 02:59:19PM +0900, jassisinghbrar@gmail.com wrote:
+On Thu, Jan 28, 2010 at 01:46:16PM +0900, Kuninori Morimoto wrote:
+> fsi_master_xxx function should be protected by spin lock,
+> because it are used from both FSI-A and FSI-B.
+> 
+> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
 
-> +	Headphone Playback Switch - On
-> +	$ amixer cset numid=4 1
-> +
-
-Actually, one thing that really needs fixing here - these instructions
-refer to the controls by number.  This is extremely fragile in the face
-of any changes in the CODEC driver since the control numbering is worked
-out at runtime and any change in the set of controls exported by the
-device may change the result.  It is much better to refer to the
-controls by name since the names are much less likely to change.  This
-is also helpful for people using other UIs which don't display the
-control names.
+Applied, thanks.
