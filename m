@@ -1,35 +1,78 @@
-From: Jon Smirl <jonsmirl@gmail.com>
-Subject: Synchronizing multiple machines
-Date: Wed, 27 Jan 2010 20:52:54 -0500
-Message-ID: <9e4733911001271752r4b9f77e2kef54d720ede5a704@mail.gmail.com>
+From: Ben Dooks <ben@trinity.fluff.org>
+Subject: Re: [PATCHv2 06/10] ARM: SMDK64XX: Enable AC97 device
+Date: Thu, 28 Jan 2010 03:41:52 +0000
+Message-ID: <20100128034152.GA14154@trinity.fluff.org>
+References: <1264571969-15145-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f181.google.com (mail-qy0-f181.google.com
-	[209.85.221.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47EE92414F
-	for <alsa-devel@alsa-project.org>; Thu, 28 Jan 2010 02:52:55 +0100 (CET)
-Received: by qyk11 with SMTP id 11so96536qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 27 Jan 2010 17:52:54 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel mailing list <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1264571969-15145-1-git-send-email-jassisinghbrar@gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: jassisinghbrar@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, ben-linux@fluff.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-What's the best strategy for synchronizing alsa between multiple
-machines within earshot of each other? I can synchronize the CPU
-clocks to microsecond accuracy. But how do I deal with drift in the
-audio clocks? Can I periodically stop the stream and restart it using
-CPU clock? That would compensate for the audio clock drift.
+On Wed, Jan 27, 2010 at 02:59:29PM +0900, jassisinghbrar@gmail.com wrote:
+> From: Jassi Brar <jassi.brar@samsung.com>
+> 
+> Add AC97 controller to platform devices and initialize the AC97 gpios.
+
+I'd much rather see platform devices always added unless there is a really
+good reason not to. People can build things as modules and this means you
+end up having to rebuild the core kernel as well as the module if you want
+to change.
+ 
+> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+> ---
+>  arch/arm/mach-s3c6410/mach-smdk6410.c |    9 ++++++++-
+>  1 files changed, 8 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/arm/mach-s3c6410/mach-smdk6410.c b/arch/arm/mach-s3c6410/mach-smdk6410.c
+> index eba345f..259ebbb 100644
+> --- a/arch/arm/mach-s3c6410/mach-smdk6410.c
+> +++ b/arch/arm/mach-s3c6410/mach-smdk6410.c
+> @@ -55,6 +55,7 @@
+>  #include <plat/gpio-cfg.h>
+>  
+>  #include <plat/s3c6410.h>
+> +#include <plat/audio.h>
+>  #include <plat/clock.h>
+>  #include <plat/devs.h>
+>  #include <plat/cpu.h>
+> @@ -253,7 +254,9 @@ static struct platform_device *smdk6410_devices[] __initdata = {
+>  	&smdk6410_b_pwr_5v,
+>  #endif
+>  	&smdk6410_lcd_powerdev,
+> -
+> +#ifdef CONFIG_SND_SOC_SMDK_WM9713
+> +	&s3c64xx_device_ac97,
+> +#endif
+>  	&smdk6410_smsc911x,
+>  };
+>  
+> @@ -475,6 +478,10 @@ static void __init smdk6410_machine_init(void)
+>  	i2c_register_board_info(0, i2c_devs0, ARRAY_SIZE(i2c_devs0));
+>  	i2c_register_board_info(1, i2c_devs1, ARRAY_SIZE(i2c_devs1));
+>  
+> +#ifdef CONFIG_SND_SOC_SMDK_WM9713
+> +	s3c64xx_ac97_setup_gpio(S3C64XX_AC97_GPD);
+> +#endif
+> +
+>  	platform_add_devices(smdk6410_devices, ARRAY_SIZE(smdk6410_devices));
+>  }
+>  
+> -- 
+> 1.6.2.5
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-samsung-soc" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 -- 
-Jon Smirl
-jonsmirl@gmail.com
+-- 
+Ben
+
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
