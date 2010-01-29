@@ -1,15 +1,19 @@
-From: Anuj Aggarwal <anuj.aggarwal@ti.com>
-Subject: [PATCH 1/1] ASoC: AM3517: ASoC driver not getting
-	compiled
-Date: Fri, 29 Jan 2010 15:49:22 +0530
-Message-ID: <1264760362-25465-1-git-send-email-anuj.aggarwal@ti.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: AC97: SMDK-WM9713: Convert notes
+ from cset to sset
+Date: Fri, 29 Jan 2010 10:58:47 +0000
+Message-ID: <1264762727.3080.22.camel@odin>
+References: <1264730227-855-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8232E1038E7
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 11:19:29 +0100 (CET)
+Received: from mail-ww0-f51.google.com (unknown [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 84F121038D6
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 11:58:51 +0100 (CET)
+Received: by wwb17 with SMTP id 17so114754wwb.38
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 02:58:50 -0800 (PST)
+In-Reply-To: <1264730227-855-1-git-send-email-jassisinghbrar@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,33 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: Anuj Aggarwal <anuj.aggarwal@ti.com>, broonie@opensource.wolfsonmicro.com
+To: jassisinghbrar@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 761c9d45 (ASoC: Fix build of OMAP sound drivers) changes
-CONFIG_MACH_OMAP3517EVM -> CONFIG_SND_OMAP_SOC_OMAP3517EVM in the
-Makefile. Whereas the config option defined in Kconfig is
-SND_OMAP_SOC_AM3517EVM. Because of this, ASoC driver for AM3517
-was not getting compiled.
+On Fri, 2010-01-29 at 10:57 +0900, jassisinghbrar@gmail.com wrote:
+> From: Jassi Brar <jassi.brar@samsung.com>
+> 
+> It's more robust when references are provided in control names
+> rather than numid.
+> 
+> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+> ---
+>  sound/soc/s3c24xx/smdk_wm9713.c |   23 +++++++----------------
+>  1 files changed, 7 insertions(+), 16 deletions(-)
 
-Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
----
- sound/soc/omap/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Btw, I have some time to finish the alsalib use case manager now, so
+this should further simplify your signal routing to userspace when
+completed.
 
-diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
-index 3db8a6c..19283e5 100644
---- a/sound/soc/omap/Makefile
-+++ b/sound/soc/omap/Makefile
-@@ -25,7 +25,7 @@ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
- obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP2EVM) += snd-soc-omap2evm.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3EVM) += snd-soc-omap3evm.o
--obj-$(CONFIG_SND_OMAP_SOC_OMAP3517EVM) += snd-soc-am3517evm.o
-+obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
- obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
- obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
--- 
-1.6.2.4
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
