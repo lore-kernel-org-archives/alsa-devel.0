@@ -1,41 +1,73 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [alsa-devel] [PATCHv2 05/10] ASoC: AC97: SMDK: Add wm9713 machine
-	driver
-Date: Fri, 29 Jan 2010 10:08:04 +0900
-Message-ID: <1b68c6791001281708ve324caaoa52581e3ebce09bd@mail.gmail.com>
-References: <1264571959-15115-1-git-send-email-jassisinghbrar@gmail.com>
-	 <20100128120020.GA19270@sirena.org.uk>
+From: jassisinghbrar@gmail.com
+Subject: [PATCH] ASoC: AC97: SMDK-WM9713: Convert notes from
+	cset to sset
+Date: Fri, 29 Jan 2010 10:57:07 +0900
+Message-ID: <1264730227-855-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <20100128120020.GA19270@sirena.org.uk>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7A72B10388F
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 03:07:24 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 28, 2010 at 9:00 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Jan 27, 2010 at 02:59:19PM +0900, jassisinghbrar@gmail.com wr=
-ote:
->
->> + =C2=A0 =C2=A0 Headphone Playback Switch - On
->> + =C2=A0 =C2=A0 $ amixer cset numid=3D4 1
->> +
->
-> Actually, one thing that really needs fixing here - these instruction=
-s
-> refer to the controls by number. =C2=A0This is extremely fragile in t=
-he face
-> of any changes in the CODEC driver since the control numbering is wor=
-ked
-> out at runtime and any change in the set of controls exported by the
-> device may change the result. =C2=A0It is much better to refer to the
-> controls by name since the names are much less likely to change. =C2=A0=
-This
-> is also helpful for people using other UIs which don't display the
-> control names.
-I will submit a patch for it, though I used exact control names and the=
-ir
-values before every command.
+From: Jassi Brar <jassi.brar@samsung.com>
+
+It's more robust when references are provided in control names
+rather than numid.
+
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/s3c24xx/smdk_wm9713.c |   23 +++++++----------------
+ 1 files changed, 7 insertions(+), 16 deletions(-)
+
+diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
+index 6fa2c9d..24fd39f 100644
+--- a/sound/soc/s3c24xx/smdk_wm9713.c
++++ b/sound/soc/s3c24xx/smdk_wm9713.c
+@@ -29,24 +29,15 @@ static struct snd_soc_card smdk;
+ 
+ /*
+  Playback (HeadPhone):-
+-	Headphone Playback Switch - On
+-	$ amixer cset numid=4 1
+-
+-	Right Headphone Out Mux - Headphone
+-	$ amixer cset numid=92 2
+-	Left Headphone Out Mux - Headphone
+-	$ amixer cset numid=93 2
+-
+-	Right HP Mixer PCM Playback Switch - On
+-	$ amixer cset numid=75 1
+-	Left HP Mixer PCM Playback Switch - On
+-	$ amixer cset numid=81 1
++	$ amixer sset 'Headphone' unmute
++	$ amixer sset 'Right Headphone Out Mux' 'Headphone'
++	$ amixer sset 'Left Headphone Out Mux' 'Headphone'
++	$ amixer sset 'Right HP Mixer PCM' unmute
++	$ amixer sset 'Left HP Mixer PCM' unmute
+ 
+  Capture (LineIn):-
+-	Right Capture Source - Line
+-	$ amixer cset numid=86 2
+-	Left Capture Source - Line
+-	$ amixer cset numid=87 2
++	$ amixer sset 'Right Capture Source' 'Line'
++	$ amixer sset 'Left Capture Source' 'Line'
+ */
+ 
+ static struct snd_soc_dai_link smdk_dai = {
+-- 
+1.6.2.5
