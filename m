@@ -1,49 +1,23 @@
-From: Anuj Aggarwal <anuj.aggarwal@ti.com>
-Subject: [PATCH 1/1] ASoC: AIC23: Fixing writes to non-existing
-	registers in resume function
-Date: Fri, 29 Jan 2010 13:58:55 +0530
-Message-ID: <1264753735-7190-1-git-send-email-anuj.aggarwal@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCHv2 05/10] ASoC: AC97: SMDK: Add wm9713
+	machine driver
+Date: Fri, 29 Jan 2010 09:55:58 +0000
+Message-ID: <20100129095558.GB19270@sirena.org.uk>
+References: <1264571959-15115-1-git-send-email-jassisinghbrar@gmail.com> <20100128120020.GA19270@sirena.org.uk> <1b68c6791001281708ve324caaoa52581e3ebce09bd@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E060103898
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 09:29:03 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: Anuj Aggarwal <anuj.aggarwal@ti.com>, broonie@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1b68c6791001281708ve324caaoa52581e3ebce09bd@mail.gmail.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Commit e9ff5eb2 (Fixing infinite loop in resume path) uses wrong AIC23
-register in resume function because of which register writes happen
-on some non-existing registers.
+On Fri, Jan 29, 2010 at 10:08:04AM +0900, jassi brar wrote:
 
-Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
----
- sound/soc/codecs/tlv320aic23.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> I will submit a patch for it, though I used exact control names and their
+> values before every command.
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index a9dc5fb..da589d8 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -627,7 +627,7 @@ static int tlv320aic23_resume(struct platform_device *pdev)
- 	u16 reg;
- 
- 	/* Sync reg_cache with the hardware */
--	for (reg = 0; reg < TLV320AIC23_RESET; reg++) {
-+	for (reg = 0; reg <= TLV320AIC23_ACTIVE; reg++) {
- 		u16 val = tlv320aic23_read_reg_cache(codec, reg);
- 		tlv320aic23_write(codec, reg, val);
- 	}
--- 
-1.6.2.4
+Normally the renumbering happens as a result of a source code change
+such as the addition of a new control or some change in ALSA core.
