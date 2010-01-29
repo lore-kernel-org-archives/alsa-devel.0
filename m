@@ -1,18 +1,21 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] ALSA: ASoC: fix PXA SSP port resume
-Date: Fri, 29 Jan 2010 12:08:36 +0100
-Message-ID: <20100129110836.GV28972@buzzloop.caiaq.de>
-References: <1264674858-27461-1-git-send-email-daniel@caiaq.de>
-	<20100129101307.GA3201@rakim.wolfsonmicro.main>
+From: <ilkka.koskinen@nokia.com>
+Subject: Re: [PATCH 2/2] ASoC: OMAP-McBSP: ASoC interface for
+ McBSP sidetone
+Date: Fri, 29 Jan 2010 13:06:24 +0100
+Message-ID: <F80267346F10C541946CBE8909F1C39E24928B7EE8@NOK-EUMSG-02.mgdnok.nokia.com>
+References: <1264693587-4764-1-git-send-email-ilkka.koskinen@nokia.com>
+	<1264693587-4764-2-git-send-email-ilkka.koskinen@nokia.com>
+	<1264693587-4764-3-git-send-email-ilkka.koskinen@nokia.com>
+	<1264695703.3044.244.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06DEF1038F5
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 12:08:40 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20100129101307.GA3201@rakim.wolfsonmicro.main>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB96C24481
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 13:06:34 +0100 (CET)
+In-Reply-To: <1264695703.3044.244.camel@odin>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +25,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
+To: lrg@slimlogic.co.uk
+Cc: alsa-devel@alsa-project.org, tony@atomide.com, eduardo.valentin@nokia.com, broonie@opensource.wolfsonmicro.com, peter.ujfalusi@nokia.com, ext-Eero.Nurkkala@nokia.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 29, 2010 at 10:13:08AM +0000, Mark Brown wrote:
-> On Thu, Jan 28, 2010 at 06:34:18PM +0800, Daniel Mack wrote:
-> > Invalidate the cached hardware format on resume for PXA SSP ports.
-> > Otherwise hw_params() will bail out early at the next stream start,
-> > leaving the registers in a bogus state.
-> 
-> Would it not be better to write the cached state back to the hardware?
-> Putting an invalid value in the cache seems like asking for trouble.
 
-Hmm. I considered that, but the reason why the system failed to resume
-in my case was that the ssp port was not active at this time. Otherwise,
-the suspend/resume code would have already done the right thing.
+Hi,
 
-And as the next client will indirectly call hw_params() again, the code
-there will do the right thing with the invalidated cache.
+>From: ext Liam Girdwood [mailto:lrg@slimlogic.co.uk] 
+>Sent: 28 January, 2010 18:22
+>On Thu, 2010-01-28 at 17:46 +0200, Ilkka Koskinen wrote:
+>> Add ASoC interface for OMAP McBSP2 and McBSP3 sidetones.
+>> 
+>> Signed-off-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+>> ---
+>>  sound/soc/omap/omap-mcbsp.c |  187 
+>+++++++++++++++++++++++++++++++++++++++++++
+>>  sound/soc/omap/omap-mcbsp.h |    2 +
+>>  2 files changed, 189 insertions(+), 0 deletions(-)
+>> 
+>> diff --git a/sound/soc/omap/omap-mcbsp.c 
+>b/sound/soc/omap/omap-mcbsp.c
+>> index 6bbbd2a..295620b 100644
+>> --- a/sound/soc/omap/omap-mcbsp.c
+>> +++ b/sound/soc/omap/omap-mcbsp.c
+>> @@ -39,6 +39,14 @@
+>
+>snip
+>
+>> +/* McBSP Sidetone Switch */
+>> +static const char *omap_mcbsp_st_status[] = {
+>> +	"off",
+>> +	"on",
+>> +};
+>> +
+>
+>Should this not be a switch (like a mute switch) rather than an enum
+>kcontrol ?
 
-Restoring the register values from priv->dai_fmt would imply adding code
-to do everything what the other bit-fiddling functions do in a reverse
-manner. Which is something I'd like to avoid :)
+Makes sense. I'll change it.
 
-Another idea is to unconditionally save and restore the register set,
-and deal with possible side-effects. Not sure what's really better.
+>> +static const struct soc_enum omap_mcbsp_st_status_enum[] = {
+>> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(omap_mcbsp_st_status),
+>> +			    omap_mcbsp_st_status),
+>> +};
+>> +
+>> +static const struct snd_kcontrol_new omap_mcbsp2_st_controls[] = {
+>> +	SOC_ENUM_EXT("McBSP2 Sidetone Switch", 
+>omap_mcbsp_st_status_enum[0],
+>> +			omap_mcbsp2_st_get_mode, 
+>omap_mcbsp2_st_set_mode),
+>> +	OMAP_MCBSP_SOC_SINGLE_S16_EXT("McBSP2 Sidetone Channel 
+>0 Volume",
+>> +				      -32768, 32767,
+>> +				      omap_mcbsp2_get_st_ch0_volume,
+>> +				      omap_mcbsp2_set_st_ch0_volume),
+>> +	OMAP_MCBSP_SOC_SINGLE_S16_EXT("McBSP2 Sidetone Channel 
+>1 Volume",
+>> +				      -32768, 32767,
+>> +				      omap_mcbsp2_get_st_ch1_volume,
+>> +				      omap_mcbsp2_set_st_ch1_volume),
+>> +};
+>> +
+>> +static const struct snd_kcontrol_new omap_mcbsp3_st_controls[] = {
+>> +	SOC_ENUM_EXT("McBSP3 Sidetone Switch", 
+>omap_mcbsp_st_status_enum[0],
+>> +			omap_mcbsp3_st_get_mode, 
+>omap_mcbsp3_st_set_mode),
+>> +	OMAP_MCBSP_SOC_SINGLE_S16_EXT("McBSP3 Sidetone Channel 
+>0 Volume",
+>> +				      -32768, 32767,
+>> +				      omap_mcbsp3_get_st_ch0_volume,
+>> +				      omap_mcbsp3_set_st_ch0_volume),
+>> +	OMAP_MCBSP_SOC_SINGLE_S16_EXT("McBSP3 Sidetone Channel 
+>1 Volume",
+>> +				      -32768, 32767,
+>> +				      omap_mcbsp3_get_st_ch1_volume,
+>> +				      omap_mcbsp3_set_st_ch1_volume),
+>> +};
+>> +
+>> +int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, 
+>int mcbsp_id)
+>> +{
+>> +	if (!cpu_is_omap34xx())
+>> +		return -ENODEV;
+>> +
+>> +	switch (mcbsp_id) {
+>> +	case 2: /* McBSP 2 */
+>> +		return snd_soc_add_controls(codec, 
+>omap_mcbsp2_st_controls,
+>> +					
+>ARRAY_SIZE(omap_mcbsp2_st_controls));
+>> +	case 3: /* McBSP 3 */
+>> +		return snd_soc_add_controls(codec, 
+>omap_mcbsp3_st_controls,
+>> +					
+>ARRAY_SIZE(omap_mcbsp3_st_controls));
+>> +	default:
+>> +		break;
+>> +	}
+>> +
+>> +	return -1;
+>
+>-EINVAL;
 
-Daniel
+Oops, thanks.
+
+Cheers, Ilkka
+
+>> +}
+>> +EXPORT_SYMBOL_GPL(omap_mcbsp_st_add_controls);
+>> +
+>>  static int __init snd_omap_mcbsp_init(void)
+>>  {
+>>  	return snd_soc_register_dais(omap_mcbsp_dai,
+>> diff --git a/sound/soc/omap/omap-mcbsp.h 
+>b/sound/soc/omap/omap-mcbsp.h
+>> index 647d2f9..7537435 100644
+>> --- a/sound/soc/omap/omap-mcbsp.h
+>> +++ b/sound/soc/omap/omap-mcbsp.h
+>> @@ -57,4 +57,6 @@ enum omap_mcbsp_div {
+>>  
+>>  extern struct snd_soc_dai omap_mcbsp_dai[NUM_LINKS];
+>>  
+>> +int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, 
+>int mcbsp_id);
+>> +
+>>  #endif
+>
+>
+>
