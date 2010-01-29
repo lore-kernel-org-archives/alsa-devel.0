@@ -1,15 +1,18 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH] ALSA: ASoC: cs4270: enable regulators at probe
-	time
-Date: Thu, 28 Jan 2010 18:59:31 +0800
-Message-ID: <1264676371-29977-1-git-send-email-daniel@caiaq.de>
+From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
+Subject: Re: [PATCH 0/4] ASOC: Add AM3517 EVM support in ASOC
+Date: Fri, 29 Jan 2010 13:46:09 +0530
+Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB031E4F20BB@dbde02.ent.ti.com>
+References: <1256842337-30334-1-git-send-email-anuj.aggarwal@ti.com>
+	<20091029222933.GA7953@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F369103827
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 08:32:05 +0100 (CET)
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id EB53010382E
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 09:16:18 +0100 (CET)
+In-Reply-To: <20091029222933.GA7953@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,50 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "tony@atomide.com" <tony@atomide.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable the bulk regulators at probe time so we can safely disable them
-again when going to suspend without confusing the reference counter.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Friday, October 30, 2009 4:00 AM
+> To: Aggarwal, Anuj
+> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org;
+> tony@atomide.com
+> Subject: Re: [alsa-devel] [PATCH 0/4] ASOC: Add AM3517 EVM support in ASOC
+> 
+> On Fri, Oct 30, 2009 at 12:22:17AM +0530, Anuj Aggarwal wrote:
+> > This patch series add support for OMAP3517 / AM3517 EVM in ASOC.
+> > It also enables the required drivers - I2C and McBSP, along with
+> > Alsa SoC subsystem, in the default configuration for the EVM.
+> >
+> > Anuj Aggarwal (4):
+> >   Audio: Adding OMAP3517 / AM3517 EVM support in ASOC
+> >   Audio: Modifying Kconfig/Makefile for AM3517 EVM
+> >   Audio: Modifying board-evm file for audio codec
+> >   Audio: Modifying the defconfig for OMAP3517 / AM3517 EVM
+> 
+> These all look good - I've applied patches 1 and 2 to ASoC, patches 3
+> and 4 should go via OMAP and are
+Tony,
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Timur Tabi <timur@freescale.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/cs4270.c |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+I could not find patches 3 & 4 on l-o master. Am I looking at the right 
+branch?
 
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 8b54575..70c5edb 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -617,8 +617,17 @@ static int cs4270_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		goto error_free_pcms;
- 
-+	ret = regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
-+				    cs4270->supplies);
-+	if (ret < 0)
-+		goto error_free_regulators;
-+
- 	return 0;
- 
-+error_free_regulators:
-+		regulator_bulk_free(ARRAY_SIZE(cs4270->supplies),
-+				    cs4270->supplies);
-+
- error_free_pcms:
- 	snd_soc_free_pcms(socdev);
- 
-@@ -638,6 +647,7 @@ static int cs4270_remove(struct platform_device *pdev)
- 	struct cs4270_private *cs4270 = codec->private_data;
- 
- 	snd_soc_free_pcms(socdev);
-+	regulator_bulk_disable(ARRAY_SIZE(cs4270->supplies), cs4270->supplies);
- 	regulator_bulk_free(ARRAY_SIZE(cs4270->supplies), cs4270->supplies);
- 
- 	return 0;
--- 
-1.6.3.3
+> 
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> 
+> if it helps (or even if it doesn't!).  Thanks.
