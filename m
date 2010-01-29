@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: remove bogus SLEEP mode from wm8978
-	driver
-Date: Fri, 29 Jan 2010 11:04:35 +0000
-Message-ID: <1264763075.3080.24.camel@odin>
-References: <Pine.LNX.4.64.1001281627540.4356@axis700.grange>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH] ALSA: ASoC: fix PXA SSP port resume
+Date: Fri, 29 Jan 2010 12:08:36 +0100
+Message-ID: <20100129110836.GV28972@buzzloop.caiaq.de>
+References: <1264674858-27461-1-git-send-email-daniel@caiaq.de>
+	<20100129101307.GA3201@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
-	[209.85.219.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34DCE1038E8
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 12:04:38 +0100 (CET)
-Received: by ewy5 with SMTP id 5so3578613ewy.32
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 03:04:38 -0800 (PST)
-In-Reply-To: <Pine.LNX.4.64.1001281627540.4356@axis700.grange>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 06DEF1038F5
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 12:08:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20100129101307.GA3201@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,18 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-01-28 at 16:28 +0100, Guennadi Liakhovetski wrote:
-> Tests showed, that bit 6 of the WM8978_POWER_MANAGEMENT_2 register of wm8978
-> affects codec clocks. Being useless for suspend / resume, it cannot be used in
-> bias-level control either. Remove this bit handling.
+On Fri, Jan 29, 2010 at 10:13:08AM +0000, Mark Brown wrote:
+> On Thu, Jan 28, 2010 at 06:34:18PM +0800, Daniel Mack wrote:
+> > Invalidate the cached hardware format on resume for PXA SSP ports.
+> > Otherwise hw_params() will bail out early at the next stream start,
+> > leaving the registers in a bogus state.
 > 
-> Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-> ---
+> Would it not be better to write the cached state back to the hardware?
+> Putting an invalid value in the cache seems like asking for trouble.
 
-Both Wm8978 patches :-
+Hmm. I considered that, but the reason why the system failed to resume
+in my case was that the ssp port was not active at this time. Otherwise,
+the suspend/resume code would have already done the right thing.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+And as the next client will indirectly call hw_params() again, the code
+there will do the right thing with the invalidated cache.
+
+Restoring the register values from priv->dai_fmt would imply adding code
+to do everything what the other bit-fiddling functions do in a reverse
+manner. Which is something I'd like to avoid :)
+
+Another idea is to unconditionally save and restore the register set,
+and deal with possible side-effects. Not sure what's really better.
+
+Daniel
