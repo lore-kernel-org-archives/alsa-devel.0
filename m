@@ -1,26 +1,17 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ALSA: ASoC: cs4270: enable regulators at
-	probe time
-Date: Fri, 29 Jan 2010 07:55:03 -0600
-Message-ID: <4B62E8B7.5080403@freescale.com>
-References: <1264676371-29977-1-git-send-email-daniel@caiaq.de>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [PATCH 1/4 v4] ASoC: add a WM8978 codec driver
+Date: Fri, 29 Jan 2010 14:57:34 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1001291452110.4613@axis700.grange>
+References: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
+	<20100127201755.GA11601@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9D0641038ED
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 14:55:22 +0100 (CET)
-Received: from az33smr01.freescale.net (az33smr01.freescale.net [10.64.34.199])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	o0TDt4sq008626
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 06:55:15 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])
-	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id o0TE0kR8010110
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 08:00:46 -0600 (CST)
-In-Reply-To: <1264676371-29977-1-git-send-email-daniel@caiaq.de>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 1630E1038FA
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 14:57:26 +0100 (CET)
+In-Reply-To: <20100127201755.GA11601@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,18 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
+On Wed, 27 Jan 2010, Mark Brown wrote:
 
-> +error_free_regulators:
-> +		regulator_bulk_free(ARRAY_SIZE(cs4270->supplies),
-> +				    cs4270->supplies);
+> On Wed, Jan 27, 2010 at 06:56:23PM +0100, Guennadi Liakhovetski wrote:
 
-I think this is indented too much.
+[snip]
 
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+> > +	if (f_opclk) {
+> 
+> ...
+> 
+> > +		if (16 * f_opclk < 3 * f_mclk || 4 * f_opclk >= 13 * f_mclk)
+> > +			return -EINVAL;
+> > +
+> > +		if (4 * f_opclk < 3 * f_mclk)
+> > +			/* Have to use OPCLKDIV */
+> > +			opclk_div = (3 * f_mclk / 4 + f_opclk - 1) / f_opclk;
+> > +		else
+> > +			opclk_div = 1;
+> 
+> I'm fairly sure this and the similar logic for SYSCLK can be squashed
+> together with some suitable local variables.  Might be more legible
+> since this requires some staring at.  I didn't actually go so far as to
+> work out what the relevant code is, though.
+
+Well, not really. In one case f_PLLOUT can be derived directly, because 
+OPCLKDIV covers the whole its value range 1-4, whereas MCLKDIV takes 
+values 1, 3/2, 2, 3, 4, 6, 8, 12, so, you have to apply an iterative 
+process to select the best match. I've just sent a patch, that improves 
+these calculations. It should be the last patch for my SIU / wm8978 / 
+migor support so far.
+
+Thanks
+Guennadi
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
