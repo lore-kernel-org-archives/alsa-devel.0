@@ -1,20 +1,15 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: TWL4030: Modify codec default
-	settings
-Date: Fri, 29 Jan 2010 10:17:09 +0000
-Message-ID: <20100129101708.GB3201@rakim.wolfsonmicro.main>
-References: <1264687024-7241-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100128143424.GA10637@rakim.wolfsonmicro.main>
-	<201001290901.30102.peter.ujfalusi@nokia.com>
+From: Anuj Aggarwal <anuj.aggarwal@ti.com>
+Subject: [PATCH 1/1] ASoC: AM3517: ASoC driver not getting
+	compiled
+Date: Fri, 29 Jan 2010 15:49:22 +0530
+Message-ID: <1264760362-25465-1-git-send-email-anuj.aggarwal@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 18CCB1038CE
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 11:17:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <201001290901.30102.peter.ujfalusi@nokia.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8232E1038E7
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 11:19:29 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: Anuj Aggarwal <anuj.aggarwal@ti.com>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 29, 2010 at 09:01:30AM +0200, Peter Ujfalusi wrote:
+Commit 761c9d45 (ASoC: Fix build of OMAP sound drivers) changes
+CONFIG_MACH_OMAP3517EVM -> CONFIG_SND_OMAP_SOC_OMAP3517EVM in the
+Makefile. Whereas the config option defined in Kconfig is
+SND_OMAP_SOC_AM3517EVM. Because of this, ASoC driver for AM3517
+was not getting compiled.
 
-> What I have found out is that after boot these bits were set (obviously), after 
-> the audio activity, they were cleared (not all, since if the given DAPM control 
-> was not in the path, it was left enabled either way).
-> Now these bits are 0 after boot, and only enabled, when a certain path needs it.
-> In short: the overall power consumption was higher after boot, than what was 
-> after for example the playback was stopped...
+Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
+---
+ sound/soc/omap/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Hrm, that shouldn't happen - DAPM should be syncing during startup which
-will turn off anything that's left turned on.  I'll have to fake up a
-test for this, I'd not notice problems normally since all the devices I
-start with power everything off by default.
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index 3db8a6c..19283e5 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -25,7 +25,7 @@ obj-$(CONFIG_SND_OMAP_SOC_OSK5912) += snd-soc-osk5912.o
+ obj-$(CONFIG_SND_OMAP_SOC_OVERO) += snd-soc-overo.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP2EVM) += snd-soc-omap2evm.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3EVM) += snd-soc-omap3evm.o
+-obj-$(CONFIG_SND_OMAP_SOC_OMAP3517EVM) += snd-soc-am3517evm.o
++obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
+ obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
+-- 
+1.6.2.4
