@@ -1,17 +1,19 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH 1/4 v4] ASoC: add a WM8978 codec driver
-Date: Fri, 29 Jan 2010 14:57:34 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1001291452110.4613@axis700.grange>
-References: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
-	<20100127201755.GA11601@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: ASoC: fix PXA SSP port resume
+Date: Fri, 29 Jan 2010 14:00:01 +0000
+Message-ID: <20100129140001.GB4768@rakim.wolfsonmicro.main>
+References: <1264674858-27461-1-git-send-email-daniel@caiaq.de>
+	<20100129101307.GA3201@rakim.wolfsonmicro.main>
+	<20100129110836.GV28972@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 1630E1038FA
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 14:57:26 +0100 (CET)
-In-Reply-To: <20100127201755.GA11601@rakim.wolfsonmicro.main>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3CA491038FA
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 15:00:03 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20100129110836.GV28972@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,44 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 27 Jan 2010, Mark Brown wrote:
+On Fri, Jan 29, 2010 at 12:08:36PM +0100, Daniel Mack wrote:
 
-> On Wed, Jan 27, 2010 at 06:56:23PM +0100, Guennadi Liakhovetski wrote:
+> And as the next client will indirectly call hw_params() again, the code
+> there will do the right thing with the invalidated cache.
 
-[snip]
+Yeah, I know the code is actually reasonably safe - it just doesn't give
+me the warm and fuzzies to do the invalidation by programming a random
+value in there simply on the off chance that at some point in the future
+that winds up being a valid value and so the same problem recurs.
 
-> > +	if (f_opclk) {
-> 
-> ...
-> 
-> > +		if (16 * f_opclk < 3 * f_mclk || 4 * f_opclk >= 13 * f_mclk)
-> > +			return -EINVAL;
-> > +
-> > +		if (4 * f_opclk < 3 * f_mclk)
-> > +			/* Have to use OPCLKDIV */
-> > +			opclk_div = (3 * f_mclk / 4 + f_opclk - 1) / f_opclk;
-> > +		else
-> > +			opclk_div = 1;
-> 
-> I'm fairly sure this and the similar logic for SYSCLK can be squashed
-> together with some suitable local variables.  Might be more legible
-> since this requires some staring at.  I didn't actually go so far as to
-> work out what the relevant code is, though.
+> Restoring the register values from priv->dai_fmt would imply adding code
+> to do everything what the other bit-fiddling functions do in a reverse
+> manner. Which is something I'd like to avoid :)
 
-Well, not really. In one case f_PLLOUT can be derived directly, because 
-OPCLKDIV covers the whole its value range 1-4, whereas MCLKDIV takes 
-values 1, 3/2, 2, 3, 4, 6, 8, 12, so, you have to apply an iterative 
-process to select the best match. I've just sent a patch, that improves 
-these calculations. It should be the last patch for my SIU / wm8978 / 
-migor support so far.
+Oh, right.  I'd forgotten that that was what it was actually storing.
 
-Thanks
-Guennadi
----
-Guennadi Liakhovetski, Ph.D.
-Freelance Open-Source Software Developer
-http://www.open-technology.de/
+> Another idea is to unconditionally save and restore the register set,
+> and deal with possible side-effects. Not sure what's really better.
+
+I think that'd be the the most robust solution with the way things are
+structured in the driver.
