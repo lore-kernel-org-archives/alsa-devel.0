@@ -1,23 +1,34 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCHv2 05/10] ASoC: AC97: SMDK: Add wm9713
-	machine driver
-Date: Fri, 29 Jan 2010 09:55:58 +0000
-Message-ID: <20100129095558.GB19270@sirena.org.uk>
-References: <1264571959-15115-1-git-send-email-jassisinghbrar@gmail.com> <20100128120020.GA19270@sirena.org.uk> <1b68c6791001281708ve324caaoa52581e3ebce09bd@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: ASoC: fix PXA SSP port resume
+Date: Fri, 29 Jan 2010 10:13:08 +0000
+Message-ID: <20100129101307.GA3201@rakim.wolfsonmicro.main>
+References: <1264674858-27461-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CA0651038B9
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 11:13:09 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1b68c6791001281708ve324caaoa52581e3ebce09bd@mail.gmail.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+In-Reply-To: <1264674858-27461-1-git-send-email-daniel@caiaq.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 29, 2010 at 10:08:04AM +0900, jassi brar wrote:
+On Thu, Jan 28, 2010 at 06:34:18PM +0800, Daniel Mack wrote:
+> Invalidate the cached hardware format on resume for PXA SSP ports.
+> Otherwise hw_params() will bail out early at the next stream start,
+> leaving the registers in a bogus state.
 
-> I will submit a patch for it, though I used exact control names and their
-> values before every command.
-
-Normally the renumbering happens as a result of a source code change
-such as the addition of a new control or some change in ALSA core.
+Would it not be better to write the cached state back to the hardware?
+Putting an invalid value in the cache seems like asking for trouble.
