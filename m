@@ -1,21 +1,15 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 0/2] McBSP: OMAP3: Add sidetone feature
-Date: Fri, 29 Jan 2010 17:23:02 +0200
-Message-ID: <20100129172302.15e5b096.jhnikula@gmail.com>
-References: <1264693587-4764-1-git-send-email-ilkka.koskinen@nokia.com>
-	<20100128185702.6c1c0f04.jhnikula@gmail.com>
-	<alpine.DEB.2.00.1001291638470.11819@tumpelo.nmp.nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.33
+Date: Fri, 29 Jan 2010 16:32:01 +0000
+Message-ID: <20100129163200.GA21514@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id E9FEF103820
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 16:20:12 +0100 (CET)
-Received: by ewy23 with SMTP id 23so1130247ewy.4
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 07:20:11 -0800 (PST)
-In-Reply-To: <alpine.DEB.2.00.1001291638470.11819@tumpelo.nmp.nokia.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 24C8D1038FE
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 17:32:04 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,36 +19,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ilkka Koskinen <ikoskine@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 29 Jan 2010 16:51:16 +0200 (EET)
-Ilkka Koskinen <ikoskine@nokia.com> wrote:
+The following changes since commit 64a028a6de08545a2c94f302bc7694bf48aee5b5:
+  Linus Torvalds (1):
+        Merge branch 'for-linus' of git://git.kernel.org/.../viro/vfs-2.6
 
-> > Set applies well on top of vanilla but the patch 1 doesn't apply on
-> > linux-omap due commit bcbb73c6fe8544bb50cddb8b5df0e2fcbb08b4b0.
-> 
-> I guess that's the case, since I just tested the patches on top 
-> linux-omap-2.6 master and sound tree...
-> 
-Yeah, McBSP is always bit problematic as it spreads between two
-subsystems. Some recent patches has been pushed via ALSA tree but now
-that would lead to conflict.
+are available in the git repository at:
 
-> > I was thinking that it makes sense to base the patch 1 on top of McBSP
-> > register cache patches from Janusz Krzysztofik after Tony applies
-> > them (+ having cache for ST regs). That avoid conflicts in mainline
-> > and makes the sidetone also ready for McBSP context save/restore
-> > functionality.
-> 
-> I'm ok with that. So would you suggest me to prepare the cache patch for 
-> ST registers? If so, would it be possible to make it as follow-up patch?
-> 
-That's ok. As there is no currently implementation for context
-save/restore in McBSP, the follow-up patch is even better than doing
-everything in the patch 2.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
 
+Pull request against Linus' current master branch since fix/asoc doesn't
+seem to have been updated - should I be looking at a different branch?
 
--- 
-Jarkko
+Anuj Aggarwal (2):
+      ASoC: AIC23: Fixing writes to non-existing registers in resume function
+      ASoC: AM3517: ASoC driver not getting compiled
+
+ sound/soc/codecs/tlv320aic23.c |    2 +-
+ sound/soc/omap/Makefile        |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
