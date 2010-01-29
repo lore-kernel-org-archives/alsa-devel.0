@@ -1,18 +1,15 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: Re: [PATCH 0/4] ASOC: Add AM3517 EVM support in ASOC
-Date: Fri, 29 Jan 2010 13:46:09 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB031E4F20BB@dbde02.ent.ti.com>
-References: <1256842337-30334-1-git-send-email-anuj.aggarwal@ti.com>
-	<20091029222933.GA7953@sirena.org.uk>
+From: Anuj Aggarwal <anuj.aggarwal@ti.com>
+Subject: [PATCH 1/1] ASoC: AIC23: Fixing writes to non-existing
+	registers in resume function
+Date: Fri, 29 Jan 2010 13:58:55 +0530
+Message-ID: <1264753735-7190-1-git-send-email-anuj.aggarwal@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB53010382E
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 09:16:18 +0100 (CET)
-In-Reply-To: <20091029222933.GA7953@sirena.org.uk>
-Content-Language: en-US
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E060103898
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 09:29:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "tony@atomide.com" <tony@atomide.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: Anuj Aggarwal <anuj.aggarwal@ti.com>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Friday, October 30, 2009 4:00 AM
-> To: Aggarwal, Anuj
-> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org;
-> tony@atomide.com
-> Subject: Re: [alsa-devel] [PATCH 0/4] ASOC: Add AM3517 EVM support in ASOC
-> 
-> On Fri, Oct 30, 2009 at 12:22:17AM +0530, Anuj Aggarwal wrote:
-> > This patch series add support for OMAP3517 / AM3517 EVM in ASOC.
-> > It also enables the required drivers - I2C and McBSP, along with
-> > Alsa SoC subsystem, in the default configuration for the EVM.
-> >
-> > Anuj Aggarwal (4):
-> >   Audio: Adding OMAP3517 / AM3517 EVM support in ASOC
-> >   Audio: Modifying Kconfig/Makefile for AM3517 EVM
-> >   Audio: Modifying board-evm file for audio codec
-> >   Audio: Modifying the defconfig for OMAP3517 / AM3517 EVM
-> 
-> These all look good - I've applied patches 1 and 2 to ASoC, patches 3
-> and 4 should go via OMAP and are
-Tony,
+Commit e9ff5eb2 (Fixing infinite loop in resume path) uses wrong AIC23
+register in resume function because of which register writes happen
+on some non-existing registers.
 
-I could not find patches 3 & 4 on l-o master. Am I looking at the right 
-branch?
+Signed-off-by: Anuj Aggarwal <anuj.aggarwal@ti.com>
+---
+ sound/soc/codecs/tlv320aic23.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> 
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> 
-> if it helps (or even if it doesn't!).  Thanks.
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index a9dc5fb..da589d8 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -627,7 +627,7 @@ static int tlv320aic23_resume(struct platform_device *pdev)
+ 	u16 reg;
+ 
+ 	/* Sync reg_cache with the hardware */
+-	for (reg = 0; reg < TLV320AIC23_RESET; reg++) {
++	for (reg = 0; reg <= TLV320AIC23_ACTIVE; reg++) {
+ 		u16 val = tlv320aic23_read_reg_cache(codec, reg);
+ 		tlv320aic23_write(codec, reg, val);
+ 	}
+-- 
+1.6.2.4
