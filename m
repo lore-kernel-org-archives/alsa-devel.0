@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: remove bogus SLEEP mode from wm8978
-	driver
-Date: Fri, 29 Jan 2010 14:22:40 +0000
-Message-ID: <20100129142240.GB5824@rakim.wolfsonmicro.main>
-References: <Pine.LNX.4.64.1001281627540.4356@axis700.grange>
+From: javier Martin <javier.martin@vista-silicon.com>
+Subject: AT91 AC97 Support broken in menuconfig.
+Date: Fri, 29 Jan 2010 15:28:17 +0100
+Message-ID: <eedb5541001290628k57edd1e9n7f75ddfef9c24c8c@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DAD1D103900
-	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 15:22:41 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1001281627540.4356@axis700.grange>
+Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
+	[209.85.220.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id A0253103927
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 15:28:18 +0100 (CET)
+Received: by fxm4 with SMTP id 4so3166203fxm.32
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 06:28:18 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +21,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 28, 2010 at 04:28:55PM +0100, Guennadi Liakhovetski wrote:
-> Tests showed, that bit 6 of the WM8978_POWER_MANAGEMENT_2 register of wm8978
-> affects codec clocks. Being useless for suspend / resume, it cannot be used in
-> bias-level control either. Remove this bit handling.
+Hello,
+I was trying to get AC97 support for an AT91SAM9G45 in kernel 2.6.32 and I
+have noticed that it requires that AVR32 is selected, however the following
+commit states that driver for AVR32 was adapted for AT91 too:
 
-Applied, thanks but I had to manually merge the patch - not sure what
-the conflict was, I suspect there may be a whitespace issue or
-something.
+commit d9fbd9a2cd5ac1b286a7d7cdb1a180ce1edaee2f
+Merge: f25f60b... baea7b9...
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu Sep 24 17:06:51 2009 -0700
+
+    Merge branch 'for-linus' of master.kernel.org:/home/rmk/linux-2.6-arm
+
+    * 'for-linus' of master.kernel.org:/home/rmk/linux-2.6-arm: (103
+commits)
+      ....
+      ARM: 5710/1: at91: add AC97 support to at91sam9rl and at91sam9rlek
+board
+      ARM: 5709/1: at91: add AC97 support to at91sam9g45 series and
+at91sam9m10g45ek board
+      ARM: 5621/1: at91/dmaengine: integration of at_hdmac driver in
+at91sam9g45 series
+      ARM: 5620/1: at91/dmaengine: integration of at_hdmac driver in
+at91sam9rl
+      ...
+
+I just wanted to know if this is just an error in Kconfig tree or the driver
+under "sound/atmel/" does not support at91sam9g54.
+
+Thanks.
+
+-- 
+Javier Martin
+Vista Silicon S.L.
+CDTUC - FASE C - Oficina S-345
+Avda de los Castros s/n
+39005- Santander. Cantabria. Spain
++34 942 25 32 60
+www.vista-silicon.com
