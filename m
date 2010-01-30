@@ -1,14 +1,14 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 3/5] Echoaudio - add suspend/resume support
-Date: Sat, 30 Jan 2010 16:32:08 +0100
-Message-ID: <20100130163208.1898f322@Jay>
+Subject: [PATCH 4/5] Echoaudio - add suspend/resume support
+Date: Sat, 30 Jan 2010 16:32:26 +0100
+Message-ID: <20100130163226.02010ead@Jay>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out27.alice.it (smtp-out27.alice.it [85.33.2.27])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75F9C103852
-	for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2010 16:32:51 +0100 (CET)
+Received: from smtp-out26.alice.it (smtp-out26.alice.it [85.33.2.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EB5010385A
+	for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2010 16:33:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,460 +22,465 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-3/5 Add suspend support #1:
-	This patch moves the code that initializes the card's controls with
-	default valued from the init_hw() function into a separated
-	set_mixer_defaults() function (one for each of the 16 supported
-	cards). This change is necessary because during resume we must
-	resurrect the hardware without losing the previous settings.
-	set_mixer_defaults() must be called only once when the module is
-	loaded.
+4/5 Add suspend support #2:
+	This patch adds suspend and resume callbacks.
+	It also rearranges parts of the initialization code so it can be
+	used in both the first initialization (when the module is loaded we
+	also have to load default settings) and the resume callback (where
+	we have to restore the previous settings).
+	P.S. I'll fix "rettings" later.
 
 Short description:
 
-Move the controls init code outside the init_hw() function because is must
-not be called during resume.
+This patch adds rearranges parts of the initialization code and adds
+suspend and resume callbacks.
 
 
 Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
 
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/darla20_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/darla20_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/darla20_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/darla20_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -57,15 +57,19 @@ static int init_hw(struct echoaudio *chi
+diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c
+--- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio.c	2010-01-29 23:09:09.000000000 +0100
++++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c	2010-01-29 23:11:43.000000000 +0100
+@@ -753,6 +753,8 @@ static int pcm_trigger(struct snd_pcm_su
+ 
+ 	spin_lock(&chip->lock);
+ 	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_RESUME:
++		DE_ACT(("pcm_trigger resume\n"));
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		DE_ACT(("pcm_trigger start\n"));
+@@ -776,6 +778,8 @@ static int pcm_trigger(struct snd_pcm_su
+ 		err = start_transport(chip, channelmask,
+ 				      chip->pipe_cyclic_mask);
+ 		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++		DE_ACT(("pcm_trigger suspend\n"));
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 		DE_ACT(("pcm_trigger stop\n"));
+ 		for (i = 0; i < DSP_MAXPIPES; i++) {
+@@ -1951,18 +1955,27 @@ static __devinit int snd_echo_create(str
  		return err;
- 	chip->bad_board = FALSE;
+ 	pci_set_master(pci);
  
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
+-	/* allocate a chip-specific data */
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (!chip) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
++	/* Allocate chip if needed */
++	if (!*rchip) {
++		chip = kzalloc(sizeof(*chip), GFP_KERNEL);
++		if (!chip) {
++			pci_disable_device(pci);
++			return -ENOMEM;
++		}
++		DE_INIT(("chip=%p\n", chip));
++		spin_lock_init(&chip->lock);
++		chip->card = card;
++		chip->pci = pci;
++		chip->irq = -1;
++		atomic_set(&chip->opencount, 0);
++		mutex_init(&chip->mode_mutex);
++		chip->can_set_rate = 1;
++	} else {
++		/* If this was called from the resume function, chip is
++		 * already allocated and it contains current card settings.
++		 */
++		chip = *rchip;
+ 	}
+-	DE_INIT(("chip=%p\n", chip));
 -
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
+-	spin_lock_init(&chip->lock);
+-	chip->card = card;
+-	chip->pci = pci;
+-	chip->irq = -1;
+ 
+ 	/* PCI resource allocation */
+ 	chip->dsp_registers_phys = pci_resource_start(pci, 0);
+@@ -2002,7 +2015,9 @@ static __devinit int snd_echo_create(str
+ 	chip->comm_page = (struct comm_page *)chip->commpage_dma_buf.area;
+ 
+ 	err = init_hw(chip, chip->pci->device, chip->pci->subsystem_device);
+-	if (err) {
++	if (err >= 0)
++		err = set_mixer_defaults(chip);
++	if (err < 0) {
+ 		DE_INIT(("init_hw err=%d\n", err));
+ 		snd_echo_free(chip);
+ 		return err;
+@@ -2013,9 +2028,6 @@ static __devinit int snd_echo_create(str
+ 		snd_echo_free(chip);
+ 		return err;
+ 	}
+-	atomic_set(&chip->opencount, 0);
+-	mutex_init(&chip->mode_mutex);
+-	chip->can_set_rate = 1;
+ 	*rchip = chip;
+ 	/* Init done ! */
+ 	return 0;
+@@ -2048,6 +2060,7 @@ static int __devinit snd_echo_probe(stru
+ 
+ 	snd_card_set_dev(card, &pci->dev);
+ 
++	chip = NULL;	/* Tells snd_echo_create to allocate chip */
+ 	if ((err = snd_echo_create(card, pci, &chip)) < 0) {
+ 		snd_card_free(card);
+ 		return err;
+@@ -2187,6 +2200,112 @@ ctl_error:
  
  
  
-+static int set_mixer_defaults(struct echoaudio *chip)
++#if defined(CONFIG_PM)
++
++static int snd_echo_suspend(struct pci_dev *pci, pm_message_t state)
 +{
-+	return init_line_levels(chip);
++	struct echoaudio *chip = pci_get_drvdata(pci);
++
++	DE_INIT(("suspend start\n"));
++	snd_pcm_suspend_all(chip->analog_pcm);
++	snd_pcm_suspend_all(chip->digital_pcm);
++
++#ifdef ECHOCARD_HAS_MIDI
++	/* This call can sleep */
++	if (chip->midi_out)
++		snd_echo_midi_output_trigger(chip->midi_out, 0);
++#endif
++	spin_lock_irq(&chip->lock);
++	if (wait_handshake(chip)) {
++		spin_unlock_irq(&chip->lock);
++		return -EIO;
++	}
++	clear_handshake(chip);
++	if (send_vector(chip, DSP_VC_GO_COMATOSE) < 0) {
++		spin_unlock_irq(&chip->lock);
++		return -EIO;
++	}
++	spin_unlock_irq(&chip->lock);
++
++	chip->dsp_code = NULL;
++	free_irq(chip->irq, chip);
++	chip->irq = -1;
++	pci_save_state(pci);
++	pci_disable_device(pci);
++
++	DE_INIT(("suspend done\n"));
++	return 0;
 +}
 +
 +
 +
- /* The Darla20 has no external clock sources */
- static u32 detect_input_clocks(const struct echoaudio *chip)
++static int snd_echo_resume(struct pci_dev *pci)
++{
++	struct echoaudio *chip = pci_get_drvdata(pci);
++	struct comm_page *commpage, *commpage_bak;
++	u32 pipe_alloc_mask;
++	int err;
++
++	DE_INIT(("resume start\n"));
++	pci_restore_state(pci);
++	commpage_bak = kmalloc(sizeof(struct echoaudio), GFP_KERNEL);
++	commpage = chip->comm_page;
++	memcpy(commpage_bak, commpage, sizeof(struct comm_page));
++
++	err = init_hw(chip, chip->pci->device, chip->pci->subsystem_device);
++	if (err < 0) {
++		kfree(commpage_bak);
++		DE_INIT(("resume init_hw err=%d\n", err));
++		snd_echo_free(chip);
++		return err;
++	}
++	DE_INIT(("resume init OK\n"));
++
++	/* Temporarily set chip->pipe_alloc_mask=0 otherwise
++	 * restore_dsp_settings() fails.
++	 */
++	pipe_alloc_mask = chip->pipe_alloc_mask;
++	chip->pipe_alloc_mask = 0;
++	err = restore_dsp_rettings(chip);
++	chip->pipe_alloc_mask = pipe_alloc_mask;
++	if (err < 0) {
++		kfree(commpage_bak);
++		return err;
++	}
++	DE_INIT(("resume restore OK\n"));
++
++	memcpy(&commpage->audio_format, &commpage_bak->audio_format,
++		sizeof(commpage->audio_format));
++	memcpy(&commpage->sglist_addr, &commpage_bak->sglist_addr,
++		sizeof(commpage->sglist_addr));
++	memcpy(&commpage->midi_output, &commpage_bak->midi_output,
++		sizeof(commpage->midi_output));
++	kfree(commpage_bak);
++
++	if (request_irq(pci->irq, snd_echo_interrupt, IRQF_SHARED,
++			ECHOCARD_NAME, chip)) {
++		snd_echo_free(chip);
++		snd_printk(KERN_ERR "cannot grab irq\n");
++		return -EBUSY;
++	}
++	chip->irq = pci->irq;
++	DE_INIT(("resume irq=%d\n", chip->irq));
++
++#ifdef ECHOCARD_HAS_MIDI
++	if (chip->midi_input_enabled)
++		enable_midi_input(chip, TRUE);
++	if (chip->midi_out)
++		snd_echo_midi_output_trigger(chip->midi_out, 1);
++#endif
++
++	DE_INIT(("resume done\n"));
++	return 0;
++}
++
++#endif /* CONFIG_PM */
++
++
++
+ static void __devexit snd_echo_remove(struct pci_dev *pci)
  {
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/darla24_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/darla24_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/darla24_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/darla24_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -56,15 +56,19 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
+ 	struct echoaudio *chip;
+@@ -2209,6 +2328,10 @@ static struct pci_driver driver = {
+ 	.id_table = snd_echo_ids,
+ 	.probe = snd_echo_probe,
+ 	.remove = __devexit_p(snd_echo_remove),
++#ifdef CONFIG_PM
++	.suspend = snd_echo_suspend,
++	.resume = snd_echo_resume,
++#endif /* CONFIG_PM */
+ };
  
--	if ((err = init_line_levels(chip)) < 0)
+ 
+Only in alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/: echoaudio.c.orig
+diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio_dsp.c
+--- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio_dsp.c	2010-01-29 23:08:13.000000000 +0100
++++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio_dsp.c	2010-01-29 23:11:43.000000000 +0100
+@@ -497,9 +497,6 @@ static int load_firmware(struct echoaudi
+ 	if ((box_type = load_asic(chip)) < 0)
+ 		return box_type;	/* error */
+ 
+-	if ((err = restore_dsp_rettings(chip)) < 0)
 -		return err;
 -
- 	DE_INIT(("init_hw done\n"));
- 	return err;
+ 	return box_type;
  }
  
+@@ -659,51 +656,106 @@ static void get_audio_meters(struct echo
  
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
+ static int restore_dsp_rettings(struct echoaudio *chip)
  {
- 	u32 clocks_from_dsp, clock_bits;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echo3g_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echo3g_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echo3g_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echo3g_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -97,20 +97,6 @@ static int init_hw(struct echoaudio *chi
- 	chip->digital_modes =	ECHOCAPS_HAS_DIGITAL_MODE_SPDIF_RCA |
- 				ECHOCAPS_HAS_DIGITAL_MODE_SPDIF_OPTICAL |
- 				ECHOCAPS_HAS_DIGITAL_MODE_ADAT;
--	chip->digital_mode =	DIGITAL_MODE_SPDIF_RCA;
--	chip->professional_spdif = FALSE;
--	chip->non_audio_spdif = FALSE;
--	chip->bad_board = FALSE;
--
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
--	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
--	if (err < 0)
--		return err;
--	err = set_phantom_power(chip, 0);
--	if (err < 0)
--		return err;
--	err = set_professional_spdif(chip, TRUE);
+-	int err;
++	int i, o, err;
+ 	DE_INIT(("restore_dsp_settings\n"));
  
- 	DE_INIT(("init_hw done\n"));
- 	return err;
-@@ -118,6 +104,18 @@ static int init_hw(struct echoaudio *chi
+ 	if ((err = check_asic_status(chip)) < 0)
+ 		return err;
  
+-	/* @ Gina20/Darla20 only. Should be harmless for other cards. */
++	/* Gina20/Darla20 only. Should be harmless for other cards. */
+ 	chip->comm_page->gd_clock_state = GD_CLOCK_UNDEF;
+ 	chip->comm_page->gd_spdif_status = GD_SPDIF_STATUS_UNDEF;
+ 	chip->comm_page->handshake = 0xffffffff;
  
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	chip->digital_mode = DIGITAL_MODE_SPDIF_RCA;
-+	chip->professional_spdif = FALSE;
-+	chip->non_audio_spdif = FALSE;
-+	chip->bad_board = FALSE;
-+	chip->phantom_power = FALSE;
-+	return init_line_levels(chip);
-+}
+-	if ((err = set_sample_rate(chip, chip->sample_rate)) < 0)
++	/* Restore output busses */
++	for (i = 0; i < num_busses_out(chip); i++) {
++		err = set_output_gain(chip, i, chip->output_gain[i]);
++		if (err < 0)
++			return err;
++	}
 +
++#ifdef ECHOCARD_HAS_VMIXER
++	for (i = 0; i < num_pipes_out(chip); i++)
++		for (o = 0; o < num_busses_out(chip); o++) {
++			err = set_vmixer_gain(chip, o, i,
++						chip->vmixer_gain[o][i]);
++			if (err < 0)
++				return err;
++		}
++	if (update_vmixer_level(chip) < 0)
++		return -EIO;
++#endif /* ECHOCARD_HAS_VMIXER */
 +
++#ifdef ECHOCARD_HAS_MONITOR
++	for (o = 0; o < num_busses_out(chip); o++)
++		for (i = 0; i < num_busses_in(chip); i++) {
++			err = set_monitor_gain(chip, o, i,
++						chip->monitor_gain[o][i]);
++			if (err < 0)
++				return err;
++		}
++#endif /* ECHOCARD_HAS_MONITOR */
 +
- static int set_phantom_power(struct echoaudio *chip, char on)
++#ifdef ECHOCARD_HAS_INPUT_GAIN
++	for (i = 0; i < num_busses_in(chip); i++) {
++		err = set_input_gain(chip, i, chip->input_gain[i]);
++		if (err < 0)
++			return err;
++	}
++#endif /* ECHOCARD_HAS_INPUT_GAIN */
++
++	err = update_output_line_level(chip);
++	if (err < 0)
+ 		return err;
+ 
+-	if (chip->meters_enabled)
+-		if (send_vector(chip, DSP_VC_METERS_ON) < 0)
+-			return -EIO;
++	err = update_input_line_level(chip);
++	if (err < 0)
++		return err;
+ 
+-#ifdef ECHOCARD_HAS_EXTERNAL_CLOCK
+-	if (set_input_clock(chip, chip->input_clock) < 0)
++	err = set_sample_rate(chip, chip->sample_rate);
++	if (err < 0)
++		return err;
++
++	if (chip->meters_enabled) {
++		err = send_vector(chip, DSP_VC_METERS_ON);
++		if (err < 0)
++			return err;
++	}
++
++#ifdef ECHOCARD_HAS_DIGITAL_MODE_SWITCH
++	if (set_digital_mode(chip, chip->digital_mode) < 0)
+ 		return -EIO;
+ #endif
+ 
+-#ifdef ECHOCARD_HAS_OUTPUT_CLOCK_SWITCH
+-	if (set_output_clock(chip, chip->output_clock) < 0)
++#ifdef ECHOCARD_HAS_DIGITAL_IO
++	if (set_professional_spdif(chip, chip->professional_spdif) < 0)
+ 		return -EIO;
+ #endif
+ 
+-	if (update_output_line_level(chip) < 0)
++#ifdef ECHOCARD_HAS_PHANTOM_POWER
++	if (set_phantom_power(chip, chip->phantom_power) < 0)
+ 		return -EIO;
++#endif
+ 
+-	if (update_input_line_level(chip) < 0)
++#ifdef ECHOCARD_HAS_EXTERNAL_CLOCK
++	/* set_input_clock() also restores automute setting */
++	if (set_input_clock(chip, chip->input_clock) < 0)
+ 		return -EIO;
++#endif
+ 
+-#ifdef ECHOCARD_HAS_VMIXER
+-	if (update_vmixer_level(chip) < 0)
++#ifdef ECHOCARD_HAS_OUTPUT_CLOCK_SWITCH
++	if (set_output_clock(chip, chip->output_clock) < 0)
+ 		return -EIO;
+ #endif
+ 
+ 	if (wait_handshake(chip) < 0)
+ 		return -EIO;
+ 	clear_handshake(chip);
++	if (send_vector(chip, DSP_VC_UPDATE_FLAGS) < 0)
++		return -EIO;
+ 
+ 	DE_INIT(("restore_dsp_rettings done\n"));
+-	return send_vector(chip, DSP_VC_UPDATE_FLAGS);
++	return 0;
+ }
+ 
+ 
+@@ -920,9 +972,6 @@ static int init_dsp_comm_page(struct ech
+ 	chip->card_name = ECHOCARD_NAME;
+ 	chip->bad_board = TRUE;	/* Set TRUE until DSP loaded */
+ 	chip->dsp_code = NULL;	/* Current DSP code not loaded */
+-	chip->digital_mode = DIGITAL_MODE_NONE;
+-	chip->input_clock = ECHO_CLOCK_INTERNAL;
+-	chip->output_clock = ECHO_CLOCK_WORD;
+ 	chip->asic_loaded = FALSE;
+ 	memset(chip->comm_page, 0, sizeof(struct comm_page));
+ 
+@@ -933,7 +982,6 @@ static int init_dsp_comm_page(struct ech
+ 	chip->comm_page->midi_out_free_count =
+ 		cpu_to_le32(DSP_MIDI_OUT_FIFO_SIZE);
+ 	chip->comm_page->sample_rate = cpu_to_le32(44100);
+-	chip->sample_rate = 44100;
+ 
+ 	/* Set line levels so we don't blast any inputs on startup */
+ 	memset(chip->comm_page->monitors, ECHOGAIN_MUTED, MONITOR_ARRAY_SIZE);
+@@ -944,50 +992,21 @@ static int init_dsp_comm_page(struct ech
+ 
+ 
+ 
+-/* This function initializes the several volume controls for busses and pipes.
+-This MUST be called after the DSP is up and running ! */
++/* This function initializes the chip structure with default values, ie. all
++ * muted and internal clock source. Then it copies the settings to the DSP.
++ * This MUST be called after the DSP is up and running !
++ */
+ static int init_line_levels(struct echoaudio *chip)
  {
- 	u32 control_reg = le32_to_cpu(chip->comm_page->control_register);
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/gina20_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/gina20_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/gina20_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/gina20_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -62,17 +62,20 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
+-	int st, i, o;
 -
--	err = set_professional_spdif(chip, TRUE);
+ 	DE_INIT(("init_line_levels\n"));
 -
- 	DE_INIT(("init_hw done\n"));
- 	return err;
+-	/* Mute output busses */
+-	for (i = 0; i < num_busses_out(chip); i++)
+-		if ((st = set_output_gain(chip, i, ECHOGAIN_MUTED)))
+-			return st;
+-	if ((st = update_output_line_level(chip)))
+-		return st;
+-
+-#ifdef ECHOCARD_HAS_VMIXER
+-	/* Mute the Vmixer */
+-	for (i = 0; i < num_pipes_out(chip); i++)
+-		for (o = 0; o < num_busses_out(chip); o++)
+-			if ((st = set_vmixer_gain(chip, o, i, ECHOGAIN_MUTED)))
+-				return st;
+-	if ((st = update_vmixer_level(chip)))
+-		return st;
+-#endif /* ECHOCARD_HAS_VMIXER */
+-
+-#ifdef ECHOCARD_HAS_MONITOR
+-	/* Mute the monitor mixer */
+-	for (o = 0; o < num_busses_out(chip); o++)
+-		for (i = 0; i < num_busses_in(chip); i++)
+-			if ((st = set_monitor_gain(chip, o, i, ECHOGAIN_MUTED)))
+-				return st;
+-	if ((st = update_output_line_level(chip)))
+-		return st;
+-#endif /* ECHOCARD_HAS_MONITOR */
+-
+-#ifdef ECHOCARD_HAS_INPUT_GAIN
+-	for (i = 0; i < num_busses_in(chip); i++)
+-		if ((st = set_input_gain(chip, i, ECHOGAIN_MUTED)))
+-			return st;
+-	if ((st = update_input_line_level(chip)))
+-		return st;
+-#endif /* ECHOCARD_HAS_INPUT_GAIN */
+-
+-	return 0;
++	memset(chip->output_gain, ECHOGAIN_MUTED, sizeof(chip->output_gain));
++	memset(chip->input_gain, ECHOGAIN_MUTED, sizeof(chip->input_gain));
++	memset(chip->monitor_gain, ECHOGAIN_MUTED, sizeof(chip->monitor_gain));
++	memset(chip->vmixer_gain, ECHOGAIN_MUTED, sizeof(chip->vmixer_gain));
++	chip->input_clock = ECHO_CLOCK_INTERNAL;
++	chip->output_clock = ECHO_CLOCK_WORD;
++	chip->sample_rate = 44100;
++	return restore_dsp_rettings(chip);
  }
  
  
+diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio.h alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.h
+--- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio.h	2010-01-29 23:08:36.000000000 +0100
++++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.h	2010-01-29 23:11:43.000000000 +0100
+@@ -472,6 +472,8 @@ static void free_firmware(const struct f
  
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	chip->professional_spdif = FALSE;
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	u32 clocks_from_dsp, clock_bits;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/gina24_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/gina24_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/gina24_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/gina24_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -57,9 +57,6 @@ static int init_hw(struct echoaudio *chi
- 		ECHO_CLOCK_BIT_INTERNAL | ECHO_CLOCK_BIT_SPDIF |
- 		ECHO_CLOCK_BIT_ESYNC | ECHO_CLOCK_BIT_ESYNC96 |
- 		ECHO_CLOCK_BIT_ADAT;
--	chip->professional_spdif = FALSE;
--	chip->digital_in_automute = TRUE;
--	chip->digital_mode = DIGITAL_MODE_SPDIF_RCA;
- 
- 	/* Gina24 comes in both '301 and '361 flavors */
- 	if (chip->device_id == DEVICE_ID_56361) {
-@@ -81,19 +78,22 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
--	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
--	if (err < 0)
--		return err;
--	err = set_professional_spdif(chip, TRUE);
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
- 
- 
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	chip->digital_mode = DIGITAL_MODE_SPDIF_RCA;
-+	chip->professional_spdif = FALSE;
-+	chip->digital_in_automute = TRUE;
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	u32 clocks_from_dsp, clock_bits;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigodj_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigodj_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigodj_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigodj_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -60,15 +60,19 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
- 
- 
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	return ECHO_CLOCK_BIT_INTERNAL;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigodjx_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigodjx_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigodjx_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigodjx_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -59,10 +59,13 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	err = init_line_levels(chip);
--	if (err < 0)
--		return err;
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
-+
-+
-+
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	return init_line_levels(chip);
-+}
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigo_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigo_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigo_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigo_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -60,15 +60,19 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
- 
- 
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	return ECHO_CLOCK_BIT_INTERNAL;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigo_express_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigo_express_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigo_express_dsp.c	2009-12-28 15:21:33.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigo_express_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -61,6 +61,7 @@ static int set_sample_rate(struct echoau
- 
- 	control_reg |= clock;
- 	if (control_reg != old_control_reg) {
-+		DE_ACT(("set_sample_rate: %d clock %d\n", rate, clock));
- 		chip->comm_page->control_register = cpu_to_le32(control_reg);
- 		chip->sample_rate = rate;
- 		clear_handshake(chip);
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigoio_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigoio_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigoio_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigoio_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -60,15 +60,19 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
- 
- 
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	return ECHO_CLOCK_BIT_INTERNAL;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigoiox_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigoiox_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/indigoiox_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/indigoiox_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -59,10 +59,13 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	err = init_line_levels(chip);
--	if (err < 0)
--		return err;
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
-+
-+
-+
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	return init_line_levels(chip);
-+}
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/layla20_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/layla20_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/layla20_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/layla20_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -64,17 +64,20 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
--
--	err = set_professional_spdif(chip, TRUE);
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
- 
- 
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	chip->professional_spdif = FALSE;
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	u32 clocks_from_dsp, clock_bits;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/layla24_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/layla24_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/layla24_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/layla24_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -61,9 +61,6 @@ static int init_hw(struct echoaudio *chi
- 		ECHOCAPS_HAS_DIGITAL_MODE_SPDIF_RCA |
- 		ECHOCAPS_HAS_DIGITAL_MODE_SPDIF_OPTICAL |
- 		ECHOCAPS_HAS_DIGITAL_MODE_ADAT;
--	chip->digital_mode =		DIGITAL_MODE_SPDIF_RCA;
--	chip->professional_spdif = FALSE;
--	chip->digital_in_automute = TRUE;
- 
- 	if ((err = load_firmware(chip)) < 0)
- 		return err;
-@@ -72,17 +69,22 @@ static int init_hw(struct echoaudio *chi
- 	if ((err = init_line_levels(chip)) < 0)
- 		return err;
- 
--	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
--	if (err < 0)
--		return err;
--	err = set_professional_spdif(chip, TRUE);
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
- 
- 
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	chip->digital_mode = DIGITAL_MODE_SPDIF_RCA;
-+	chip->professional_spdif = FALSE;
-+	chip->digital_in_automute = TRUE;
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	u32 clocks_from_dsp, clock_bits;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/mia_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/mia_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/mia_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/mia_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -66,15 +66,19 @@ static int init_hw(struct echoaudio *chi
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	if ((err = init_line_levels(chip)))
--		return err;
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
- 
- 
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	u32 clocks_from_dsp, clock_bits;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/mona_dsp.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/mona_dsp.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/mona_dsp.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/mona_dsp.c	2010-01-29 23:11:43.000000000 +0100
-@@ -67,28 +67,26 @@ static int init_hw(struct echoaudio *chi
- 	else
- 		chip->dsp_code_to_load = FW_MONA_301_DSP;
- 
--	chip->digital_mode = DIGITAL_MODE_SPDIF_RCA;
--	chip->professional_spdif = FALSE;
--	chip->digital_in_automute = TRUE;
--
- 	if ((err = load_firmware(chip)) < 0)
- 		return err;
- 	chip->bad_board = FALSE;
- 
--	if ((err = init_line_levels(chip)) < 0)
--		return err;
--
--	err = set_digital_mode(chip, DIGITAL_MODE_SPDIF_RCA);
--	if (err < 0)
--		return err;
--	err = set_professional_spdif(chip, TRUE);
--
- 	DE_INIT(("init_hw done\n"));
- 	return err;
- }
- 
- 
- 
-+static int set_mixer_defaults(struct echoaudio *chip)
-+{
-+	chip->digital_mode = DIGITAL_MODE_SPDIF_RCA;
-+	chip->professional_spdif = FALSE;
-+	chip->digital_in_automute = TRUE;
-+	return init_line_levels(chip);
-+}
-+
-+
-+
- static u32 detect_input_clocks(const struct echoaudio *chip)
- {
- 	u32 clocks_from_dsp, clock_bits;
+ #ifdef ECHOCARD_HAS_MIDI
+ static int enable_midi_input(struct echoaudio *chip, char enable);
++static void snd_echo_midi_output_trigger(
++			struct snd_rawmidi_substream *substream, int up);
+ static int midi_service_irq(struct echoaudio *chip);
+ static int __devinit snd_echo_midi_create(struct snd_card *card,
+ 					  struct echoaudio *chip);
 
 
 -- 
