@@ -1,14 +1,17 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 0/5] Echoaudio - add suspend/resume support
-Date: Sat, 30 Jan 2010 16:31:23 +0100
-Message-ID: <20100130163123.54d60739@Jay>
+From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+Subject: Re: [Q] playing / recording mono on a stereo-only
+	hardware
+Date: Sat, 30 Jan 2010 17:29:05 +0100
+Message-ID: <4B645E51.900@gandalf.sssup.it>
+References: <Pine.LNX.4.64.1001301045500.4260@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out112.alice.it (smtp-out112.alice.it [85.37.17.112])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60CEE103846
-	for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2010 16:36:26 +0100 (CET)
+Received: from panicking.kicks-ass.org (unknown [77.224.194.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 603F224337
+	for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2010 17:29:13 +0100 (CET)
+In-Reply-To: <Pine.LNX.4.64.1001301045500.4260@axis700.grange>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,27 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Guennadi Liakhovetski wrote:
+> Hi
+>
+> I know this question belongs rather to alsa-users, and I did ask it there, 
+> but got no solution so far. Maybe someone here can help.
+>
+> The recently posted SuperH SIU driver only supports stereo playback and 
+> capture (channels_min = channels_max = 2). Is there a way to tell alsa-lib 
+> to duplicate the mono-channel during playback and to mix recorded channels 
+> (or use one of them), if mono recording is requested?
+>   
+I'm not an expert but I think that you can use plughw support of alsa-lib
 
-The following patch set adds suspend/resume support to all echoaudio drivers.
-It has been tested on an IndigoIOx and a Gina3G. Rawmidi device has been
-tested partially. PCM and controls interfaces have been tested more and I
-think it's reasonably safe. I also have a Gina24 and a Gina3G, but I didn't
-test suspend/resume with them because I couldn't manage to make PM test
-system work on my pmac.
+pcm.record {
+       type plug
+       slave {
+               pcm record_hw
+       }
+       route_policy average
+       rate_converter "linear"
+}
 
-Echoaudio soundcards do not support power management and Dx PCI states.
-Anyway, the card can enter a "comatose" state by sending a command to the
-DSP that is supposed to turn parts of the hardware off and reduce power
-consumption. Doing that causes the loss of the card's internal state, thus
-it is impossible, upon resume, to make the card continue from the exact
-point where it was suspended. The driver restores all controls and PCM
-settings and the applications have to call prepare() to restart the
-substreams. Rawmidi is restarted automatically, but some data in the i/o
-buffers may be lost.
+I think that automatically change rate and channel for supporting mono 
+channel too
+
+Michael
 
 
--- 
-Giuliano.
+> Thanks
+> Guennadi
+> ---
+> Guennadi Liakhovetski, Ph.D.
+> Freelance Open-Source Software Developer
+> http://www.open-technology.de/
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+>   
