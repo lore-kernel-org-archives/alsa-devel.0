@@ -1,13 +1,13 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH 2/5] Echoaudio - add suspend/resume support
-Date: Sat, 30 Jan 2010 16:31:55 +0100
-Message-ID: <20100130163155.266126d3@Jay>
+Subject: [PATCH 0/5] Echoaudio - add suspend/resume support
+Date: Sat, 30 Jan 2010 16:31:23 +0100
+Message-ID: <20100130163123.54d60739@Jay>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out04.alice.it (smtp-out04.alice.it [85.37.17.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4900F103809
+Received: from smtp-out112.alice.it (smtp-out112.alice.it [85.37.17.112])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60CEE103846
 	for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2010 16:36:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,106 +21,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2/4 Add firmware cache #2:
-	This patch changes get_firmware(), free_firmware() and adds
-	free_firmware_cache(). The first two functions implement a very
-	simple cache and the latter is used to actually release all the
-	stored firmwares when the module is unloaded.
-	When CONFIG_PM is not enabled those functions act as before, that
-	is free_firmware() releases the firmware immediately and
-	free_firmware_cache() does nothing.
 
-Short description:
+The following patch set adds suspend/resume support to all echoaudio drivers.
+It has been tested on an IndigoIOx and a Gina3G. Rawmidi device has been
+tested partially. PCM and controls interfaces have been tested more and I
+think it's reasonably safe. I also have a Gina24 and a Gina3G, but I didn't
+test suspend/resume with them because I couldn't manage to make PM test
+system work on my pmac.
 
-This patch implements a simple cache for the firmware files when CONFIG_PM is defined.
-
-
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
-
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio.c alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio.c	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c	2010-01-29 23:09:09.000000000 +0100
-@@ -43,12 +43,24 @@ static int get_firmware(const struct fir
- {
- 	int err;
- 	char name[30];
--	const struct firmware *frm = &card_fw[fw_index];
- 
--	DE_ACT(("firmware requested: %s\n", frm->data));
--	snprintf(name, sizeof(name), "ea/%s", frm->data);
--	if ((err = request_firmware(fw_entry, name, pci_device(chip))) < 0)
-+#ifdef CONFIG_PM
-+	if (chip->fw_cache[fw_index]) {
-+		DE_ACT(("firmware requested: %s is cached\n", card_fw[fw_index].data));
-+		*fw_entry = chip->fw_cache[fw_index];
-+		return 0;
-+	}
-+#endif
-+
-+	DE_ACT(("firmware requested: %s\n", card_fw[fw_index].data));
-+	snprintf(name, sizeof(name), "ea/%s", card_fw[fw_index].data);
-+	err = request_firmware(fw_entry, name, pci_device(chip));
-+	if (err < 0)
- 		snd_printk(KERN_ERR "get_firmware(): Firmware not available (%d)\n", err);
-+#ifdef CONFIG_PM
-+	else
-+		chip->fw_cache[fw_index] = *fw_entry;
-+#endif
- 	return err;
- }
- 
-@@ -56,8 +68,29 @@ static int get_firmware(const struct fir
- 
- static void free_firmware(const struct firmware *fw_entry)
- {
-+#ifdef CONFIG_PM
-+	DE_ACT(("firmware not released (kept in cache)\n"));
-+#else
- 	release_firmware(fw_entry);
- 	DE_ACT(("firmware released\n"));
-+#endif
-+}
-+
-+
-+
-+static void free_firmware_cache(struct echoaudio *chip)
-+{
-+#ifdef CONFIG_PM
-+	int i;
-+
-+	for (i = 0; i < 8 ; i++)
-+		if (chip->fw_cache[i]) {
-+			release_firmware(chip->fw_cache[i]);
-+			DE_ACT(("release_firmware(%d)\n", i));
-+		}
-+
-+	DE_ACT(("firmware_cache released\n"));
-+#endif
- }
- 
- 
-@@ -1880,6 +1913,7 @@ static int snd_echo_free(struct echoaudi
- 	pci_disable_device(chip->pci);
- 
- 	/* release chip data */
-+	free_firmware_cache(chip);
- 	kfree(chip);
- 	DE_INIT(("Chip freed.\n"));
- 	return 0;
-diff -dup alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio.h alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.h
---- alsa-driver-1.0.22.1__orig//alsa-kernel/pci/echoaudio/echoaudio.h	2010-01-29 23:08:13.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.h	2010-01-29 23:08:36.000000000 +0100
-@@ -449,6 +449,9 @@ struct echoaudio {
- 	volatile u32 __iomem *dsp_registers;	/* DSP's register base */
- 	u32 active_mask;			/* Chs. active mask or
- 						 * punks out */
-+#ifdef CONFIG_PM
-+	const struct firmware *fw_cache[8];	/* Cached firmwares */
-+#endif
- 
- #ifdef ECHOCARD_HAS_MIDI
- 	u16 mtc_state;				/* State for MIDI input parsing state machine */
+Echoaudio soundcards do not support power management and Dx PCI states.
+Anyway, the card can enter a "comatose" state by sending a command to the
+DSP that is supposed to turn parts of the hardware off and reduce power
+consumption. Doing that causes the loss of the card's internal state, thus
+it is impossible, upon resume, to make the card continue from the exact
+point where it was suspended. The driver restores all controls and PCM
+settings and the applications have to call prepare() to restart the
+substreams. Rawmidi is restarted automatically, but some data in the i/o
+buffers may be lost.
 
 
 -- 
