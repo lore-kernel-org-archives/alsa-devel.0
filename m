@@ -1,17 +1,17 @@
-From: Tobias Schneider <tobsnyder@gmx.de>
-Subject: Re: overrun in second capture device after stopping
- first capture device
-Date: Fri, 29 Jan 2010 19:12:46 +0100
-Message-ID: <4B63251E.7080403@gmx.de>
-References: <4B584B38.9030000@gmx.de> <4B5EFAC7.6050402@gmx.de>
+From: Jani Frilander <j.frilander@gmail.com>
+Subject: A driver for Zoom R16 (USB)?
+Date: Sat, 30 Jan 2010 08:08:05 +0200
+Message-ID: <e53c6f621001292208v3a813be8v3c3875d43aa885e8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 2B523103906
-	for <Alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 19:12:51 +0100 (CET)
-In-Reply-To: <4B5EFAC7.6050402@gmx.de>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8D4BD103907
+	for <alsa-devel@alsa-project.org>; Sat, 30 Jan 2010 07:08:06 +0100 (CET)
+Received: by ewy23 with SMTP id 23so96781ewy.4
+	for <alsa-devel@alsa-project.org>; Fri, 29 Jan 2010 22:08:06 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobias Schneider <tobsnyder@gmx.de>
-Cc: Alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am still searching what causes the problem, I now figured out that the 
-underruns occur because appl_ptr = hw_ptr - so this is because appl_ptr 
-is not moved forward. Are there any reasons for this?
+Hi.
 
-<7>DEBUG: p1 hw_ptr=0x3cdd43 (3988803) appl_ptr=0x3cebbc (3992508) 
-jiffie=21775142
-<7>DEBUG: p1 hw_ptr=0x3ce028 (3989544) appl_ptr=0x3ceea1 (3993249) 
-jiffie=21775165
-<7>DEBUG: p1 hw_ptr=0x3ce30d (3990285) appl_ptr=0x3cf186 (3993990) 
-jiffie=21775188
-<7>DEBUG: p1 hw_ptr=0x3ce5f2 (3991026) appl_ptr=0x3cf46b (3994731) 
-jiffie=21775212
-<7>DEBUG: p1 hw_ptr=0x3ce8d7 (3991767) appl_ptr=0x3cf750 (3995472) 
-jiffie=21775235
-<7>DEBUG: p1 hw_ptr=0x3cebbc (3992508) appl_ptr=0x3cf750 (3995472) 
-jiffie=21775258
-<7>DEBUG: p1 hw_ptr=0x3ceea1 (3993249) appl_ptr=0x3cf750 (3995472) 
-jiffie=21775281
-<7>DEBUG: p1 hw_ptr=0x3cf186 (3993990) appl_ptr=0x3cf750 (3995472) 
-jiffie=21775304
-<7>DEBUG: p1 hw_ptr=0x3cf46b (3994731) appl_ptr=0x3cf750 (3995472) 
-jiffie=21775328
-<7>DEBUG: p1 hw_ptr=0x3cf750 (3995472) appl_ptr=0x3cf750 (3995472) 
-jiffie=21775351
-<3>ERROR: p1 XRUN B! avail = 4446  stop_threshold = 4446 jiffie_diff=23
-<7>DEBUG: playback trigger (1): cmd=stop
-<7>DEBUG: trigger stop jiffies=21775351
-<7>DEBUG: trigger stop jiffies difference =124742
-<7>DEBUG: - pcm_timer_stop
-<7>DEBUG: pcm prepare
+I have a Zoom R16 multitrack recorder / USB audio interface / control
+surface unit.
+Unfortunately it's audio interface/control surface part currently don't work
+with linux.
+When I plug it in kernel (2.6.31-9-rt) won't recognize it as a audio
+interface.
 
-I will go on searching for the reason, but I am thankful for any hint...
+Is there a way to make it work? It probably needs to be hacked, because Zoom
+won't
+provide any technical information, according to their email I received.
+
+I'm a total newbie in driver development, but I'll be willing to work with
+this.
+
+Regards,
+Jani Frilander
