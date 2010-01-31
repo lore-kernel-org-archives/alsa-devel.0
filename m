@@ -1,78 +1,38 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 10/10] sound/soc/blackfin: Fix continuation line formats
-Date: Sun, 31 Jan 2010 12:02:12 -0800
-Message-ID: <aee58f4fc07709fe8a34021899e701824a0a6b53.1264967500.git.joe@perches.com>
-References: <cover.1264967493.git.joe@perches.com>
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1754243Ab0AaUCs@vger.kernel.org>
-In-Reply-To: <cover.1264967493.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+From: Louise Hoffman <louise.hoffman@gmail.com>
+Subject: Re:
+	=?windows-1252?q?Warning/error_from_ALSA=92s_pcm=5Fm?=
+	=?windows-1252?q?in=2Ec_example=2E_Possible_problem=3F?=
+Date: Sun, 31 Jan 2010 21:41:30 +0100
+Message-ID: <30c82f5f1001311241r4c683f22p9bcff1709301984b@mail.gmail.com>
+References: <30c82f5f1001301151r6de4761fh9453829c1af85e15@mail.gmail.com>
+	<alpine.LNX.2.00.1001310944330.25340@eeebox2.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f221.google.com (mail-ew0-f221.google.com
+	[209.85.219.221])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC81124463
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2010 21:41:31 +0100 (CET)
+Received: by ewy21 with SMTP id 21so1624352ewy.22
+	for <alsa-devel@alsa-project.org>; Sun, 31 Jan 2010 12:41:31 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1001310944330.25340@eeebox2.perex-int.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-String constants that are continued on subsequent lines with \
-are not good.
+> It was a bug in alsa-lib. I fixed it in patch bellow. Thank you for your
+> report.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/soc/blackfin/bf5xx-ac97-pcm.c |    8 ++------
- sound/soc/blackfin/bf5xx-i2s-pcm.c  |    3 +--
- sound/soc/blackfin/bf5xx-tdm-pcm.c  |    3 +--
- 3 files changed, 4 insertions(+), 10 deletions(-)
+Cool. And that was the big one, you fixed there =)
 
-diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.c b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-index cf0dfb7..67cbfe7 100644
---- a/sound/soc/blackfin/bf5xx-ac97-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-@@ -349,9 +349,7 @@ static int bf5xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- 			sport_handle->tx_dma_buf = dma_alloc_coherent(NULL, \
- 				size, &sport_handle->tx_dma_phy, GFP_KERNEL);
- 			if (!sport_handle->tx_dma_buf) {
--				pr_err("Failed to allocate memory for tx dma \
--					buf - Please increase uncached DMA \
--					memory region\n");
-+				pr_err("Failed to allocate memory for tx dma buf - Please increase uncached DMA memory region\n");
- 				return -ENOMEM;
- 			} else
- 				memset(sport_handle->tx_dma_buf, 0, size);
-@@ -362,9 +360,7 @@ static int bf5xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- 			sport_handle->rx_dma_buf = dma_alloc_coherent(NULL, \
- 				size, &sport_handle->rx_dma_phy, GFP_KERNEL);
- 			if (!sport_handle->rx_dma_buf) {
--				pr_err("Failed to allocate memory for rx dma \
--					buf - Please increase uncached DMA \
--					memory region\n");
-+				pr_err("Failed to allocate memory for rx dma buf - Please increase uncached DMA memory region\n");
- 				return -ENOMEM;
- 			} else
- 				memset(sport_handle->rx_dma_buf, 0, size);
-diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-index 62fbb84..c6c6a4a 100644
---- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-@@ -207,8 +207,7 @@ static int bf5xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- 	buf->area = dma_alloc_coherent(pcm->card->dev, size,
- 			&buf->addr, GFP_KERNEL);
- 	if (!buf->area) {
--		pr_err("Failed to allocate dma memory \
--			Please increase uncached DMA memory region\n");
-+		pr_err("Failed to allocate dma memory - Please increase uncached DMA memory region\n");
- 		return -ENOMEM;
- 	}
- 	buf->bytes = size;
-diff --git a/sound/soc/blackfin/bf5xx-tdm-pcm.c b/sound/soc/blackfin/bf5xx-tdm-pcm.c
-index a8c73cb..5e03bb2 100644
---- a/sound/soc/blackfin/bf5xx-tdm-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-tdm-pcm.c
-@@ -244,8 +244,7 @@ static int bf5xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream)
- 	buf->area = dma_alloc_coherent(pcm->card->dev, size * 4,
- 		&buf->addr, GFP_KERNEL);
- 	if (!buf->area) {
--		pr_err("Failed to allocate dma memory \
--			Please increase uncached DMA memory region\n");
-+		pr_err("Failed to allocate dma memory - Please increase uncached DMA memory region\n");
- 		return -ENOMEM;
- 	}
- 	buf->bytes = size;
--- 
-1.6.6.rc0.57.gad7a
+Can you also patch pcm_min.c ?
