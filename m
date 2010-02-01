@@ -1,42 +1,33 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: Support for floating point controls?
-Date: Mon, 1 Feb 2010 18:13:47 +0000
-Message-ID: <ad2655cb1002011013m15b6c59atcafa9210078e1366@mail.gmail.com>
-References: <4B60C841.9010306@audioscience.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f212.google.com (mail-fx0-f212.google.com
-	[209.85.220.212])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8707C243FC
-	for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2010 19:13:48 +0100 (CET)
-Received: by fxm4 with SMTP id 4so819167fxm.32
-	for <alsa-devel@alsa-project.org>; Mon, 01 Feb 2010 10:13:48 -0800 (PST)
-In-Reply-To: <4B60C841.9010306@audioscience.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: alsa-devel@alsa-project.org
+From: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+Subject: [PATCH] trivial: sound seq ioctl dbg: print hexadecimal value padded with 0s
+Date: Mon,  1 Feb 2010 16:17:01 -0200
+Message-ID: <1265048222-8050-1-git-send-email-cascardo@holoscopio.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: trivial@kernel.org
+Cc: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Which hardware supports these 32 bit float controls?
+Instead of padding with blanks and printing "number=0x a", print
+"number=0x0a".
 
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@holoscopio.com>
+---
+ sound/core/seq/seq_clientmgr.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-On 27 January 2010 23:12, Eliot Blennerhassett <linux@audioscience.com> wrote:
-> Greetings,
->
-> some of our products now have control paramters that are 32 bit floating
-> point values.
->
-> I wonder if a patch implementing float ctl elements would be accepted?
-> Note that the floats are not manipulated in the kernel at all, the
-> values are just passed through from the hardware to userspace (?)
->
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index 8ca2be3..48eca9f 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -2190,7 +2190,7 @@ static int snd_seq_do_ioctl(struct snd_seq_client *client, unsigned int cmd,
+ 		if (p->cmd == cmd)
+ 			return p->func(client, arg);
+ 	}
+-	snd_printd("seq unknown ioctl() 0x%x (type='%c', number=0x%2x)\n",
++	snd_printd("seq unknown ioctl() 0x%x (type='%c', number=0x%02x)\n",
+ 		   cmd, _IOC_TYPE(cmd), _IOC_NR(cmd));
+ 	return -ENOTTY;
+ }
+-- 
+1.6.6.1
