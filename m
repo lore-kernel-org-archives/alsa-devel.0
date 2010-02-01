@@ -1,17 +1,17 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: Some installation questions
-Date: Mon, 01 Feb 2010 09:07:09 +0100
-Message-ID: <4B668BAD.7020103@ivitera.com>
-References: <d9690f191001300342ve4095cfl82e01a5b5118e1e8@mail.gmail.com>
+From: Dougall Irving <dougall.irving@versonic.com>
+Subject: RME HDSPe Raydat
+Date: Mon, 1 Feb 2010 16:27:50 +0800
+Message-ID: <ac7eefbd1002010027g49148edfm45957d39b921b973@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server.insite.cz
-	(171-43-207-85.zapcechy.adsl-llu.static.bluetone.cz [85.207.43.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FC9A24436
-	for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2010 09:07:10 +0100 (CET)
-In-Reply-To: <d9690f191001300342ve4095cfl82e01a5b5118e1e8@mail.gmail.com>
+Received: from mail-iw0-f189.google.com (mail-iw0-f189.google.com
+	[209.85.223.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90B0724450
+	for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2010 09:27:51 +0100 (CET)
+Received: by iwn27 with SMTP id 27so480566iwn.8
+	for <alsa-devel@alsa-project.org>; Mon, 01 Feb 2010 00:27:50 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,52 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Klaus Schulz <kls.schlz@googlemail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Klaus Schulz napsal(a):
-> Hi there.
-> 
-> I am still maintaining the (inoffical) Ubuntu Alsa Upgrade Script over at
-> http://ubuntuforums.org/showthread.php?t=1046137
-> 
-> 
-> Perhaps somebody can give me a hint on some installation problems I am
-> running into:
-> 
-> 
-> 1. Quite some people reporting that /proc/asound/version is still showing
-> the "original" revision  after running  the upgrade-script instead of
-> 1.0.22.1.
-> 
->    What could be the issue? What is setting /proc/asound/version?
-> 
-> 
-> 2. I also introduced a kind of restore function. What it does is basically
-> reinstalling all the required Ubuntu packages from the repo to overwrite the
-> (by my script) upgraded files again.
->     a. My first problem was that I was only able to get the original modules
-> activated when running the module assistant. ( module-assistant -f -t -q a-i
-> alsa-source )
->        Just a re-installation of kernel packages and alsa-packages didn't
-> work.
->     b. When redoing the Alsa Upgrade  after the restore (by my script) , I
-> still see in /proc/asound the old Alsa version.
-> 
->     Looks again a bit like I am having slight problems with the module
-> handling
-> 
-> 
+I've been trying to get an RME HDSPe Raydat working.  I've installed
+the latest firmware on the card using the Windows firmware uploader.
+The stock hdspm module in ALSA version 1.0.22.1 doesn't work
+correctly.
 
-Hi,
+The first problem I found is that external ADAT equipment were not
+able to sync with RME adat outputs.  Following some old alsa code
+posted on another site, I changed the HDSPM_freqReg to 100 MHz
+(instead of 105) and found that I could get external equipment to sync
+to the raydat at 48kHz.
 
-I do not know the actual cause. But some drivers in ubuntu are put to
-/lib/modules/kernel_version/ubuntu, the backports package used to put
-there alsa drivers too. Installing drivers from git required removing
-them from the ubuntu directory, or somehow forcing depmod -a to skip the
-directory. I do not remember the details, but you might have a look at that.
+The second issue I had was the audio output was turning on and off
+every second.  I found if I changed the .params to only use float 32
+instead of int 32 and I forced the card to use precise pointer I could
+get continuous audio but only with larger buffer sizes.  I get a quite
+a few buffer underruns also.  With smaller buffer sizes I get silence.
 
-Regards,
+There is a comment in the code which don't follow.  I wonder if there
+is an issue with this code....
 
-Pavel.
+/* hwpointer comes in bytes and is 64Bytes accurate (by docu since
+	   PCI Burst)
+	   i have experimented that it is at most 64 Byte to much for playing
+	   so substraction of 64 byte should be ok for ALSA, but use it only
+	   for application where you know what you do since if you come to
+	   near with record pointer it can be a disaster */
+
+	position &= HDSPM_BufferPositionMask;
+	position = ((position - 64) % (2 * hdspm->period_bytes)) / 4;
+
+
+Does anyone have any suggestions or ideas for debugging these
+problems?  Is there any information RME from available?
+
+Alternatively, has anyone had success with this card and earlier
+firmware revisions?
