@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 10/10] sound/soc/blackfin: Fix continuation
-	line formats
-Date: Mon, 1 Feb 2010 14:47:46 +0000
-Message-ID: <20100201144745.GC26011@rakim.wolfsonmicro.main>
-References: <cover.1264967493.git.joe@perches.com>
-	<aee58f4fc07709fe8a34021899e701824a0a6b53.1264967500.git.joe@perches.com>
+From: =?ISO-8859-1?Q?Richard_R=F6jfors?=
+ <richard.rojfors@mocean-labs.com>
+Subject: Re: [PATCH] alsa: Add support for timberdale I2S block
+Date: Mon, 01 Feb 2010 16:20:38 +0100
+Message-ID: <4B66F146.2050201@mocean-labs.com>
+References: <4AE59E01.9000802@mocean-labs.com>
+	<20091026130931.GA18781@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5CE5D10380B
-	for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2010 15:47:47 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <aee58f4fc07709fe8a34021899e701824a0a6b53.1264967500.git.joe@perches.com>
+Received: from relay.bearnet.nu (relay.bearnet.nu [80.252.223.222])
+	by alsa0.perex.cz (Postfix) with ESMTP id 639A62443D
+	for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2010 16:20:49 +0100 (CET)
+In-Reply-To: <20091026130931.GA18781@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, alsa-devel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 31, 2010 at 12:02:12PM -0800, Joe Perches wrote:
-> String constants that are continued on subsequent lines with \
-> are not good.
+Mark Brown wrote:
+> On Mon, Oct 26, 2009 at 02:02:57PM +0100, Richard R?jfors wrote:
+>> This driver adds support for the I2S block of the timberdale FPGA.
+>>
+>> The timberdale is a FPGA found on intel development boards for
+>> In-Vehicle Infotainment.
+>>
+>> The block has support for up to 8 I2S channels, can be clocked
+>> from either the FPGA or the device side.
+>>
+>> This driver introduces support for this block, by exposing each
+>> I2S channel as an ALSA PCM channel.
+>>
+>> Signed-off-by: Richard R?jfors <richard.rojfors@mocean-labs.com>
 > 
-> Signed-off-by: Joe Perches <joe@perches.com>
+> Without having investigated in any great detail I'd really expect this
+> driver to be done within ASoC if it's producing generic I2S output.  If
+> it's producing I2S out then presumably system designers will be able to
+> attach whatever CODECs they desire and if those CODECs require any soft
+> control then there will be a need to interoperate with CODEC drivers.
 
-Gah, I thought I'd caught most of these when reviewing.  If you're using
-a script to pick this stuff up it'd be worth checking for extraneous
-continuations in the middle of code - outside of macros there's little
-call for it.
+This thing produces raw I2S/captures raw I2S as you say. It's used to
+connect to bluetooth chips and radio DSP:s. So there are no CODEC:s
+involved. Does it make sense to do it within ASoC?
 
-Applied, thanks.
+--Richard
