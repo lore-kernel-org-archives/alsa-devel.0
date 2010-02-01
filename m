@@ -1,15 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: safe support for rewind in ALSA
-Date: Mon, 1 Feb 2010 19:00:52 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1002011840020.25340@eeebox2.perex-int.cz>
+Date: Mon, 1 Feb 2010 18:01:39 +0000
+Message-ID: <20100201180139.GC15509@sirena.org.uk>
 References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E61E243F0
-	for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2010 19:00:53 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id F2E40243F3
+	for <alsa-devel@alsa-project.org>; Mon,  1 Feb 2010 19:01:40 +0100 (CET)
+Content-Disposition: inline
 In-Reply-To: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,32 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: pl bossart <bossart.nospam@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Kai Vehmanen <kvehmanen@eca.cx>
+Cc: alsa-devel@alsa-project.org, Kai Vehmanen <kvehmanen@eca.cx>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Feb 2010, pl bossart wrote:
+On Mon, Feb 01, 2010 at 11:20:25AM -0600, pl bossart wrote:
 
-> All,
-> I'd like to reopen a thread on concerns with the current
-> implementation of rewind in ALSA. This was already discussed on the
-> mailing list last year without any progress.
+> My suggestion would be to add a 'fifo' parameter to the runtime
+> structure (so that it's visible to the core), let the driver developer
+> fill the value in the .open routine, and use this parameter in rewind
+> to prevent rewinding too much. This parameter would include both
+> hardware FIFOs and DMA buffers.
 
-I don't think that there have been no progress. The queued samples can be 
-stored to runtime->delay now, so snd_pcm_delay() returns a correct 
-value.
+I think we want to split these concepts out a bit - with some devices
+the stuff that's in the FIFO is not represented to the ALSA data
+management code because it's past where the DMA controller says it's
+working and trying to retrofit the data into what the DMA controller
+reports gets too complicated.  I'd also expect a degree of lumpiness in
+the memory regions the DMA controller is working on which it might be
+useful to convey to applications.  Perhaps for the DMA we could add a
+pointer for the first area the CPU can currently access safely?
 
-The snd_pcm_rewind() and snd_pcm_forward() functions should operate in the 
-ring buffer and it's ok. See the USB driver for an example. Just add 
-support for runtime->delay to the lowlevel drivers and use snd_pcm_delay() 
-correctly in the user space and everything will work as expected.
-
-In other words - for hardware with large FIFOs, the runtime->delay should 
-be used for queued samples and the hw_ptr in the ring buffer should be 
-increased as soon as the FIFO is filled with samples from the ring buffer.
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+For FIFO style latencies I think we'd want to allow the value reported
+to be variable (since for example changes in any DSP algorithms that are
+active could change the latency), and since it's not entirely joined up
+with the DMA itself it might be better to just explicitly report to
+applications and let them figure out what they think is a sensible way
+of dealing with it.  This seems easier than trying to integrate the
+information with the DMA data and more useful for latencies which we
+know as actual time delays rather than buffer sizes in the hardware.
