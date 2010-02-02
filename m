@@ -1,18 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: fix PXA SSP port resume
-Date: Tue, 2 Feb 2010 11:41:04 +0000
-Message-ID: <20100202114103.GJ6566@rakim.wolfsonmicro.main>
-References: <1265107888.4194.59.camel@odin>
-	<1265107527-15524-1-git-send-email-daniel@caiaq.de>
+Subject: ASoC updates for 2.6.34
+Date: Tue, 2 Feb 2010 13:51:52 +0000
+Message-ID: <20100202135152.GA31841@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4AEAF103830
-	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 12:41:05 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 95F04243EE
+	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 14:51:54 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1265107527-15524-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +19,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 02, 2010 at 06:45:27PM +0800, Daniel Mack wrote:
-> Unconditionally save the register states when suspending and restore
-> them again at resume time. Register contents were not preserved over
-> suspend, and hence the driver takes false assumptions about them.
-> 
-> The clock must be enabled to access the register block.
+The following changes since commit 9e6e96a197a03752d39a63e4f83e0b707ccedad7:
+  Mark Brown (1):
+        ASoC: Add WM8994 CODEC driver
 
-Applied, thanks.
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
+
+Daniel Mack (1):
+      ASoC: fix PXA SSP port resume
+
+Joe Perches (1):
+      ASoC: Fix continuation line formats
+
+Joonyoung Shim (1):
+      ASoC: Fix BCLK calculation of WM8994
+
+Mark Brown (1):
+      ASoC: Fix WM8994 dependency
+
+ sound/soc/codecs/Kconfig    |    2 +-
+ sound/soc/codecs/wm8994.c   |    7 ++-----
+ sound/soc/pxa/pxa-ssp.c     |   12 +++++++-----
+ sound/soc/s3c24xx/s3c-pcm.c |    3 +--
+ 4 files changed, 11 insertions(+), 13 deletions(-)
