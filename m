@@ -1,17 +1,22 @@
-From: Jani Frilander <j.frilander@gmail.com>
-Subject: Zoom R16 (USB), will a quirk make it work
-Date: Tue, 2 Feb 2010 07:46:36 +0200
-Message-ID: <e53c6f621002012146n71ac0f7enb7e9f6e9c3b098d2@mail.gmail.com>
+From: michael@cadilhac.name (=?iso-8859-1?Q?Micha=EBl?= Cadilhac)
+Subject: Re: Getting pcm_usb_stream plugin to know its
+	limits.	[Kind of SOLVED]
+Date: Tue, 02 Feb 2010 00:24:22 -0500
+Message-ID: <87636gw6pl.fsf@cadilhac.name>
+References: <87ljgkuzdl.fsf@cadilhac.name> <87eimbvkxg.fsf@cadilhac.name>
+	<87aawzviyd.fsf_-_@cadilhac.name> <87y6kdz0yo.fsf@cadilhac.name>
+	<yvzgiqb8fq1k.fsf@cadilhac.name> <s5hockz646u.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-=-="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CA972447F
-	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 06:46:37 +0100 (CET)
-Received: by ewy23 with SMTP id 23so2395539ewy.4
-	for <alsa-devel@alsa-project.org>; Mon, 01 Feb 2010 21:46:36 -0800 (PST)
+Received: from mail-qy0-f187.google.com (mail-qy0-f187.google.com
+	[209.85.221.187])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3D1E524415
+	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 06:24:35 +0100 (CET)
+Received: by qyk17 with SMTP id 17so3046202qyk.2
+	for <alsa-devel@alsa-project.org>; Mon, 01 Feb 2010 21:24:33 -0800 (PST)
+In-Reply-To: <s5hockz646u.wl%tiwai@suse.de> (Takashi Iwai's message of "Tue,
+	12 Jan 2010 10:52:09 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,228 +26,225 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+--=-=-=
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I have a Zoom R16 which audio interface part doesn't work with linux.
+Takashi Iwai <tiwai@suse.de> writes:
 
-lsusb -v:
-Bus 001 Device 004: ID 1686:00dd ZOOM Corporation
-Device Descriptor:
- bLength                18
- bDescriptorType         1
- bcdUSB               2.00
- bDeviceClass          255 Vendor Specific Class
- bDeviceSubClass         0
- bDeviceProtocol       255
- bMaxPacketSize0        64
- idVendor           0x1686 ZOOM Corporation
- idProduct          0x00dd
- bcdDevice            0.02
- iManufacturer           1 ZOOM Corporation
- iProduct                2 R16
- iSerial                 3 0
- bNumConfigurations      1
- Configuration Descriptor:
-   bLength                 9
-   bDescriptorType         2
-   wTotalLength          259
-   bNumInterfaces          4
-   bConfigurationValue     1
-   iConfiguration          0
-   bmAttributes         0x80
-     (Bus Powered)
-   MaxPower              480mA
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        0
-     bAlternateSetting       0
-     bNumEndpoints           0
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass      1
-     bInterfaceProtocol      0
-     iInterface              0
-     ** UNRECOGNIZED:  0b 24 01 00 01 35 00 03 01 02 03
-     ** UNRECOGNIZED:  0c 24 02 05 01 01 00 02 03 00 00 00
-     ** UNRECOGNIZED:  09 24 03 08 01 03 00 05 00
-     ** UNRECOGNIZED:  0c 24 02 09 01 02 00 08 00 00 00 00
-     ** UNRECOGNIZED:  09 24 03 0c 01 01 00 09 00
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        1
-     bAlternateSetting       0
-     bNumEndpoints           0
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass      2
-     bInterfaceProtocol      0
-     iInterface              0
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        1
-     bAlternateSetting       1
-     bNumEndpoints           1
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass      2
-     bInterfaceProtocol      0
-     iInterface              0
-     ** UNRECOGNIZED:  07 24 01 05 01 01 00
-     ** UNRECOGNIZED:  14 24 02 01 02 04 18 04 44 ac 00 80 bb 00 88
-58 01 00 77 01
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x03  EP 3 OUT
-       bmAttributes            9
-         Transfer Type            Isochronous
-         Synch Type               Adaptive
-         Usage Type               Data
-       wMaxPacketSize     0x006c  1x 108 bytes
-       bInterval               1
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        2
-     bAlternateSetting       0
-     bNumEndpoints           0
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass      2
-     bInterfaceProtocol      0
-     iInterface              0
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        2
-     bAlternateSetting       1
-     bNumEndpoints           1
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass      2
-     bInterfaceProtocol      0
-     iInterface              0
-     ** UNRECOGNIZED:  07 24 01 0c 01 01 00
-     ** UNRECOGNIZED:  14 24 02 01 08 04 18 04 44 ac 00 80 bb 00 88
-58 01 00 77 01
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x84  EP 4 IN
-       bmAttributes           13
-         Transfer Type            Isochronous
-         Synch Type               Synchronous
-         Usage Type               Data
-       wMaxPacketSize     0x01a0  1x 416 bytes
-       bInterval               1
-   Interface Descriptor:
-     bLength                 9
-     bDescriptorType         4
-     bInterfaceNumber        3
-     bAlternateSetting       0
-     bNumEndpoints           2
-     bInterfaceClass       255 Vendor Specific Class
-     bInterfaceSubClass      3
-     bInterfaceProtocol      0
-     iInterface              0
-     ** UNRECOGNIZED:  07 24 01 00 01 41 00
-     ** UNRECOGNIZED:  06 24 02 01 01 00
-     ** UNRECOGNIZED:  06 24 02 02 02 00
-     ** UNRECOGNIZED:  09 24 03 01 03 01 02 01 00
-     ** UNRECOGNIZED:  09 24 03 02 04 01 01 01 00
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x01  EP 1 OUT
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0040  1x 64 bytes
-       bInterval               0
-     Endpoint Descriptor:
-       bLength                 7
-       bDescriptorType         5
-       bEndpointAddress     0x82  EP 2 IN
-       bmAttributes            2
-         Transfer Type            Bulk
-         Synch Type               None
-         Usage Type               Data
-       wMaxPacketSize     0x0040  1x 64 bytes
-       bInterval               0
-Device Qualifier (for other device speed):
- bLength                10
- bDescriptorType         6
- bcdUSB               2.00
- bDeviceClass          255 Vendor Specific Class
- bDeviceSubClass         0
- bDeviceProtocol       255
- bMaxPacketSize0        64
- bNumConfigurations      1
-Device Status:     0x0001
- Self Powered
+> At Mon, 11 Jan 2010 13:35:19 -0500,
+> Micha=EBl Cadilhac wrote:
+>>=20
+>> michael@cadilhac.name (Micha=EBl Cadilhac) writes:
+>>=20
+>> > michael@cadilhac.name (Micha=EBl Cadilhac) writes:
+>> >
+>> >> So, my final saying is the following patch.  It fixes the segfault =
+on
+>> >> stopping a non-started usb_stream, plus it adds the ability to set =
+a
+>> >> period size and sound rate.  The latter offers a workaround for the
+>> >> second issue I came with (that the default values for period bytes,=
+ and
+>> >> hence period size, were too high for us122l to work).
+>> >
+>> > Any comment on that patch would be greatly appreciated.  I'm just
+>> > wondering if it's safe for me to give it to some people.
+>>=20
+>> Anyone?  Note that this also fixes a real bug, so it might be of
+>> interest to include it in the trunk.
+>
+> Through a quick glance, the patch looks OK to me.
+> Could you give a proper subject and changelog to merge your patch
+> to git tree?
 
-I have added following lines to usbquirks.h:
-/* Zoom R16 */
-{
-        .match_flags = USB_DEVICE_ID_MATCH_DEVICE,
-        .idVendor = 0x1686,
-        .idProduct = 0x00dd,
-        .bInterfaceClass = USB_CLASS_AUDIO,
-},
+Hi there Takashi, and sorry for the delay.  Here are the patch,
+subdivised in two distinct logical changes.  I hope the format is what
+you asked for.
 
-But it doesn't work.
+	* usb_stream/pcm_usb_stream.c (snd_pcm_us_stop): Prevent
+	dereferencing when structure is not initialized.
 
-If I try to play a
-file with mplayer:
 
-$ mplayer -msglevel ao=9 -ao alsa:device=hw=2 piisi.mp3
-MPlayer UNKNOWN-4.4.1 (C) 2000-2009 MPlayer Team
-mplayer: could not connect to socket
-mplayer: No such file or directory
-Failed to open LIRC support. You will not be able to use your remote control.
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: inline; filename=00fix-deref.patch
 
-Playing piisi.mp3.
-Audio only file format detected.
-==========================================================================
-Opening audio decoder: [mp3lib] MPEG layer-2, layer-3
-AUDIO: 44100 Hz, 2 ch, s16le, 128.0 kbit/9.07% (ratio: 16000->176400)
-Selected audio codec: [mp3] afm: mp3lib (mp3lib MPEG layer-2, layer-3)
-==========================================================================
-Trying preferred audio driver 'alsa', options 'device=hw=2'
-alsa-init: requested format: 44100 Hz, 2 channels, 9
-alsa-init: using ALSA 1.0.20
-alsa-init: setup for 1/2 channel(s)
-alsa-init: using device hw:2
-alsa-init: pcm opened in blocking mode
-[AO_ALSA] Format s16le is not supported by hardware, trying default.
-[AO_ALSA] Unable to set format: Invalid argument
-Failed to initialize audio driver 'alsa:device=hw=2'
-Could not open/initialize audio device -> no sound.
-Audio: no sound
-Video: no video
+--- usb_stream/pcm_usb_stream.c	2009-12-16 10:18:55.000000000 -0500
++++ usb_stream/pcm_usb_stream.c	2010-01-23 10:19:09.032559296 -0500
+@@ -1,7 +1,7 @@
+ /*
+  *  PCM - USB_STREAM plugin
+  *
+- *  Copyright (c) 2008 by Karsten Wiese <fzu@wemgehoertderstaat.de>
++ *  Copyright (c) 2008, 2010 by Karsten Wiese <fzu@wemgehoertderstaat.de>
+  *
+  * This library is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU Lesser General Public License as
+@@ -256,8 +256,11 @@
+ static int snd_pcm_us_stop(snd_pcm_ioplug_t *io)
+ {
+ 	snd_pcm_us_t *us = io->private_data;
+-	VDBG("%u", us->uus->s->periods_done);
+ 
++	if (!us->uus->s)
++	  return 0;
++
++	VDBG("%u", us->uus->s->periods_done);
+ 	if (io->stream == SND_PCM_STREAM_PLAYBACK)
+ 		memset(us->uus->write_area, 0, us->uus->s->write_size);
+ 
 
-$ cat /proc/asound/cards
- 0 [Audigy         ]: Audigy - SB Audigy 1 [SB0090]
-                     SB Audigy 1 [SB0090] (rev.3, serial:0x511102) at
-0x9c00, irq 17
- 1 [NVidia         ]: HDA-Intel - HDA NVidia
-                     HDA NVidia at 0xfe024000 irq 27
- 2 [R16            ]: USB-Audio - R16
-                     ZOOM Corporation R16 at usb-0000:00:0b.1-6, high speed
+--=-=-=
 
-$ ls /dev/snd/
-by-id      controlC2  midiC0D0  midiC2D0  pcmC0D2c  pcmC1D0p  seq
-by-path    hwC0D0     midiC0D1  pcmC0D0c  pcmC0D2p  pcmC1D1p  timer
-controlC0  hwC0D2     midiC0D2  pcmC0D0p  pcmC0D3p  pcmC2D0c
-controlC1  hwC1D0     midiC0D3  pcmC0D1c  pcmC1D0c  pcmC2D0p
 
-What can i do to make it work? I have a wireshark log of a winxp session.
-Does it help a bit?
+	* usb_stream/pcm_usb_stream.c: Allow user-set period-size and
+	rate.
 
-http://sites.google.com/site/zoomr16linux/zoomwire.bz2
 
-Thanks for any advice.
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: inline; filename=01add-tweaking.patch
 
-Sincerely, Jani Frilander
+--- usb_stream/pcm_usb_stream.c	2010-01-23 10:19:09.032559296 -0500
++++ usb_stream/pcm_usb_stream.c	2010-01-23 10:20:36.006628021 -0500
+@@ -48,6 +48,8 @@
+ #define VDBG(f, ...)
+ #endif
+ 
++#define FRAME_SIZE 6
++
+ #define LCARD 32
+ struct user_usb_stream {
+ 	char			card[LCARD];
+@@ -70,6 +72,8 @@
+ 	unsigned		periods_done;
+ 
+ 	unsigned 		channels;
++	snd_pcm_uframes_t	period_size;
++	unsigned int		rate;
+ } snd_pcm_us_t;
+ 
+ static struct user_usb_stream *uus;
+@@ -177,7 +181,7 @@
+ 	VDBG("");
+ 
+ 	us_cfg.version = USB_STREAM_INTERFACE_VERSION;
+-	us_cfg.frame_size = 6;
++	us_cfg.frame_size = FRAME_SIZE;
+ 	us_cfg.sample_rate = io->rate;
+ 	us_cfg.period_frames = io->period_size;
+ 
+@@ -373,6 +377,10 @@
+ 	};
+ 
+ 	int err;
++	unsigned int rate_min = us->rate ? us->rate : 44100,
++		rate_max = us->rate ? us->rate : 96000,
++		period_bytes_min = us->period_size ? FRAME_SIZE * us->period_size : 128,
++		period_bytes_max = us->period_size ? FRAME_SIZE * us->period_size : 64*4096;
+ 
+ 	if ((err = snd_pcm_ioplug_set_param_list(&us->io, SND_PCM_IOPLUG_HW_ACCESS,
+ 						 ARRAY_SIZE(access_list), access_list)) < 0 ||
+@@ -381,9 +389,9 @@
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW_CHANNELS,
+ 						   us->channels, us->channels)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW_RATE,
+-						   44100, 96000)) < 0 ||
++						   rate_min, rate_max)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW_PERIOD_BYTES,
+-						   128, 64*4096)) < 0 ||
++						   period_bytes_min, period_bytes_max)) < 0 ||
+ 	    (err = snd_pcm_ioplug_set_param_minmax(&us->io, SND_PCM_IOPLUG_HW_PERIODS,
+ 						   2, 2)) < 0)
+ 		return err;
+@@ -393,7 +401,9 @@
+ 
+ static int snd_pcm_us_open(snd_pcm_t **pcmp, const char *name,
+ 				   const char *card,
+-				   snd_pcm_stream_t stream, int mode)
++				   snd_pcm_stream_t stream, int mode,
++				   snd_pcm_uframes_t period_size,
++				   unsigned int rate)
+ {
+ 	snd_pcm_us_t *us;
+ 	int err;
+@@ -424,6 +434,8 @@
+ 	snd_hwdep_poll_descriptors(us->hwdep, &us->pfd, 1);
+ 
+ 	us->channels = 2;
++	us->period_size = period_size;
++	us->rate = rate;
+ 
+ 	us->io.version = SND_PCM_IOPLUG_VERSION;
+ 	us->io.name = "ALSA <-> USB_STREAM PCM I/O Plugin";
+@@ -458,6 +470,7 @@
+ 	snd_config_iterator_t i, next;
+ 	const char *card;
+ 	int err;
++	long period_size = 0, rate = 0;
+ 
+ 	snd_config_for_each(i, next, conf) {
+ 		snd_config_t *n = snd_config_iterator_entry(i);
+@@ -475,11 +488,27 @@
+ 			snd_config_get_string(n, &card);
+ 			continue;
+ 		}
++		if (strcmp(id, "period_size") == 0) {
++			if (snd_config_get_type(n) != SND_CONFIG_TYPE_INTEGER) {
++				SNDERR("Invalid type for %s", id);
++				return -EINVAL;
++			}
++			snd_config_get_integer(n, &period_size);
++			continue;
++		}
++		if (strcmp(id, "rate") == 0) {
++			if (snd_config_get_type(n) != SND_CONFIG_TYPE_INTEGER) {
++				SNDERR("Invalid type for %s", id);
++				return -EINVAL;
++			}
++			snd_config_get_integer(n, &rate);
++			continue;
++		}
+ 		SNDERR("Unknown field %s", id);
+ 		return -EINVAL;
+ 	}
+ 
+-	err = snd_pcm_us_open(pcmp, name, card, stream, mode);
++	err = snd_pcm_us_open(pcmp, name, card, stream, mode, period_size, rate);
+ 
+ 	return err;
+ }
+
+--=-=-=
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+
+  I can write the according documentation, if needed.
+
+  Have a great day.
+
+--=20
+Micha=EBl `Micha' Cadilhac (LITQ, U. de Montr=E9al) -- http://michael.cad=
+ilhac.name
+	||   This .sig has been generated by Outlook Express 98
+	||        $@(%@#%$*@(#)%$!%)(%$#(@#$%**!@#$+!#?%
+	||  and triple-checked on Windows Mail Vista.
+
+--=-=-=
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--=-=-=--
