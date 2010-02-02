@@ -1,20 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ALSA: ASoC: fix PXA SSP port resume
-Date: Tue, 02 Feb 2010 10:51:28 +0000
-Message-ID: <1265107888.4194.59.camel@odin>
-References: <20100129140001.GB4768@rakim.wolfsonmicro.main>
-	<1265081575-24583-1-git-send-email-daniel@caiaq.de>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] ALSA: ASoC: fix PXA SSP port resume
+Date: Tue,  2 Feb 2010 18:45:27 +0800
+Message-ID: <1265107527-15524-1-git-send-email-daniel@caiaq.de>
+References: <1265107888.4194.59.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3D8F710381A
-	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 11:51:32 +0100 (CET)
-Received: by ewy23 with SMTP id 23so2578926ewy.4
-	for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2010 02:51:32 -0800 (PST)
-In-Reply-To: <1265081575-24583-1-git-send-email-daniel@caiaq.de>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id A96AF103826
+	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 11:59:14 +0100 (CET)
+In-Reply-To: <1265107888.4194.59.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Looks fine except for commit message (sorry to nitpick).
+Unconditionally save the register states when suspending and restore
+them again at resume time. Register contents were not preserved over
+suspend, and hence the driver takes false assumptions about them.
 
-On Tue, 2010-02-02 at 11:32 +0800, Daniel Mack wrote:
-> Unconditionally save the register states in resume 
+The clock must be enabled to access the register block.
 
-I assume you mean suspend here ?
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Cc: Eric Miao <eric.y.miao@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Philipp Zabel <philipp.zabel@gmail.com>
+---
+ sound/soc/pxa/pxa-ssp.c |   12 +++++++-----
+ 1 files changed, 7 insertions(+), 5 deletions(-)
 
-> and restore them
-> again at resume time. Register contents are not preserved over suspend,
-
-were not being preserved
-
-> and the driver takes false assumptions about them otherwise.
-> 
-
-Thanks
-
-Liam
-
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 3bd7712..e69397f 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -135,10 +135,11 @@ static int pxa_ssp_suspend(struct snd_soc_dai *cpu_dai)
+ 	struct ssp_priv *priv = cpu_dai->private_data;
+ 
+ 	if (!cpu_dai->active)
+-		return 0;
++		clk_enable(priv->dev.ssp->clk);
+ 
+ 	ssp_save_state(&priv->dev, &priv->state);
+ 	clk_disable(priv->dev.ssp->clk);
++
+ 	return 0;
+ }
+ 
+@@ -146,12 +147,13 @@ static int pxa_ssp_resume(struct snd_soc_dai *cpu_dai)
+ {
+ 	struct ssp_priv *priv = cpu_dai->private_data;
+ 
+-	if (!cpu_dai->active)
+-		return 0;
+-
+ 	clk_enable(priv->dev.ssp->clk);
+ 	ssp_restore_state(&priv->dev, &priv->state);
+-	ssp_enable(&priv->dev);
++
++	if (cpu_dai->active)
++		ssp_enable(&priv->dev);
++	else
++		clk_disable(priv->dev.ssp->clk);
+ 
+ 	return 0;
+ }
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.6.3.3
