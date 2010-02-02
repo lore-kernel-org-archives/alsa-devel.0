@@ -1,36 +1,56 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 10/10] sound/soc/s3c24xx/s2c-pcm.c: Fix continuation line formats
-Date: Mon,  1 Feb 2010 23:22:16 -0800
-Message-ID: <56a3bdf490f3fe20c266b43bdc070c7af65b14b9.1265095094.git.joe@perches.com>
-References: <cover.1265095093.git.joe@perches.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cover.1265095093.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: alsa-pulse plugin
+Date: Tue, 2 Feb 2010 08:43:21 +0100
+Message-ID: <20100202074321.GC14209@tango.0pointer.de>
+References: <4f3252891002010028u338830d4jba98dae1d383bb97@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC39F1037EE
+	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 08:43:46 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4f3252891002010028u338830d4jba98dae1d383bb97@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-String constants that are continued on subsequent lines with \
-are not good.
+On Mon, 01.02.10 16:28, Raymond Yau (superquad.vortex2@gmail.com) wrote:
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/soc/s3c24xx/s3c-pcm.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+> When try to abort aplay -D pulse any.wav  in a terminal  on Fedora 12
+> 
+> the following error appear on some occasion and the terminal hang
+> 
+> aplay -v any.wav
+> ,,,
+>  ^CAborted by signal Interrupt...
+> Assertion 'pthread_mutex_destroy(&m->mutex) == 0' failed at
+> pulsecore/mutex-posix.c:83 function pa_mutex_free(). Aborting
+> Aborted by signal Aborted....
+> *** glibc detected *** aplay: double free corruption(top): 0x09e69708 ****
+> *** glibc detected *** aplay corrupted double-linked list : 0x09e5dcb8 ***
 
-diff --git a/sound/soc/s3c24xx/s3c-pcm.c b/sound/soc/s3c24xx/s3c-pcm.c
-index 9e61a7c..a98f40c 100644
---- a/sound/soc/s3c24xx/s3c-pcm.c
-+++ b/sound/soc/s3c24xx/s3c-pcm.c
-@@ -229,8 +229,7 @@ static int s3c_pcm_hw_params(struct snd_pcm_substream *substream,
- 
- 	spin_unlock_irqrestore(&pcm->lock, flags);
- 
--	dev_dbg(pcm->dev, "PCMSOURCE_CLK-%lu SCLK=%ufs \
--				SCLK_DIV=%d SYNC_DIV=%d\n",
-+	dev_dbg(pcm->dev, "PCMSOURCE_CLK-%lu SCLK=%ufs SCLK_DIV=%d SYNC_DIV=%d\n",
- 				clk_get_rate(clk), pcm->sclk_per_fs,
- 				sclk_div, sync_div);
- 
+Hmm, we had a couple of issues with PI mutex support being broken in
+glibc that could result in errors like this, but that should now be
+fixed in F12. Please update to the latest F12, then install debuginfo
+symbols and try to reproduce within valgrind. Please file the output
+as bug in rhbz against the alsa-plugins package!
+
+Thank you,
+
+Lennart
+
 -- 
-1.6.6.rc0.57.gad7a
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
