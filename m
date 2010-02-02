@@ -1,56 +1,58 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: alsa-pulse plugin
-Date: Tue, 2 Feb 2010 08:43:21 +0100
-Message-ID: <20100202074321.GC14209@tango.0pointer.de>
-References: <4f3252891002010028u338830d4jba98dae1d383bb97@mail.gmail.com>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 00/10] Non-printk continuation line fixes
+Date: Mon,  1 Feb 2010 23:22:06 -0800
+Message-ID: <cover.1265095093.git.joe@perches.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id AC39F1037EE
-	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 08:43:46 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4f3252891002010028u338830d4jba98dae1d383bb97@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <dri-devel-bounces@lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=dri-devel>
+List-Post: <mailto:dri-devel@lists.sourceforge.net>
+List-Help: <mailto:dri-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/dri-devel>,
+	<mailto:dri-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.sourceforge.net
+To: linux-kernel@vger.kernel.org
+Cc: linux-fbdev@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-ia64@vger.kernel.org, kvm@vger.kernel.org, David Airlie <airlied@linux.ie>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Grant Likely <grant.likely@secretlab.ca>, linux-ide@vger.kernel.org, devel@driverdev.osuosl.org, David Brownell <dbrownell@users.sourceforge.net>, linux-scsi@vger.kernel.org, lm-sensors@lm-sensors.org, Takashi Iwai <tiwai@suse.de>, Scott Fang <ScottFang@viatech.com.cn>, Avi Kivity <avi@redhat.com>, dri-devel@lists.sourceforge.net, Jeff Garzik <jgarzik@pobox.com>, Xiantao Zhang <xiantao.zhang@intel.com>, Andrew Vasquez <andrew.vasquez@qlogic.com>, Fenghua Yu <fenghua.yu@intel.com>, Roger Lucas <vt8231@hiddenengine.co.uk>, Greg Kroah-Hartman <gregkh@suse.de>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Tony
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 01.02.10 16:28, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+Some more fixes to formats with continuation lines
 
-> When try to abort aplay -D pulse any.wav  in a terminal  on Fedora 12
-> 
-> the following error appear on some occasion and the terminal hang
-> 
-> aplay -v any.wav
-> ,,,
->  ^CAborted by signal Interrupt...
-> Assertion 'pthread_mutex_destroy(&m->mutex) == 0' failed at
-> pulsecore/mutex-posix.c:83 function pa_mutex_free(). Aborting
-> Aborted by signal Aborted....
-> *** glibc detected *** aplay: double free corruption(top): 0x09e69708 ****
-> *** glibc detected *** aplay corrupted double-linked list : 0x09e5dcb8 ***
+Joe Perches (10):
+  arch/ia64: Fix continuation line formats
+  drivers/ata: Fix continuation line formats
+  drivers/gpu/drm/i915/intel_bios.c: Fix continuation line formats
+  drivers/hwmon/vt8231.c: Fix continuation line formats
+  drivers/net/davinci_emac.c: Fix continuation line formats
+  drivers/scsi/qla2xxx/qua_os.c: Fix continuation line formats
+  drivers/spi/spi_s3c64xx.c: Fix continuation line formats
+  drivers/staging: Fix continuation line formats
+  drivers/video/via: Fix continuation line formats
+  sound/soc/s3c24xx/s2c-pcm.c: Fix continuation line formats
 
-Hmm, we had a couple of issues with PI mutex support being broken in
-glibc that could result in errors like this, but that should now be
-fixed in F12. Please update to the latest F12, then install debuginfo
-symbols and try to reproduce within valgrind. Please file the output
-as bug in rhbz against the alsa-plugins package!
+ arch/ia64/kvm/mmio.c                   |    4 ++--
+ arch/ia64/kvm/vcpu.c                   |    4 ++--
+ drivers/ata/pata_at91.c                |    4 ++--
+ drivers/gpu/drm/i915/intel_bios.c      |    3 +--
+ drivers/hwmon/vt8231.c                 |    3 +--
+ drivers/net/davinci_emac.c             |    3 +--
+ drivers/scsi/qla2xxx/qla_os.c          |    4 ++--
+ drivers/spi/spi_s3c64xx.c              |   11 +++++------
+ drivers/staging/rtl8192su/r8192S_phy.c |   16 ++++++++--------
+ drivers/staging/sep/sep_driver.c       |    5 +++--
+ drivers/staging/slicoss/slicoss.c      |    6 ++----
+ drivers/video/via/dvi.c                |    8 ++++----
+ drivers/video/via/lcd.c                |   12 ++++++------
+ sound/soc/s3c24xx/s3c-pcm.c            |    3 +--
+ 14 files changed, 40 insertions(+), 46 deletions(-)
 
-Thank you,
 
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+------------------------------------------------------------------------------
+The Planet: dedicated and managed hosting, cloud storage, colocation
+Stay online with enterprise data centers and the best network in the business
+Choose flexible plans and management services without long-term contracts
+Personal 24x7 support from experience hosting pros just a phone call away.
+http://p.sf.net/sfu/theplanet-com
+--
