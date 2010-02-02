@@ -1,58 +1,73 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 00/10] Non-printk continuation line fixes
-Date: Mon,  1 Feb 2010 23:22:06 -0800
-Message-ID: <cover.1265095093.git.joe@perches.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Zoom R16 (USB), will a quirk make it work
+Date: Tue, 02 Feb 2010 08:59:26 +0100
+Message-ID: <4B67DB5E.9080208@ladisch.de>
+References: <e53c6f621002012146n71ac0f7enb7e9f6e9c3b098d2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <dri-devel-bounces@lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=dri-devel>
-List-Post: <mailto:dri-devel@lists.sourceforge.net>
-List-Help: <mailto:dri-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/dri-devel>,
-	<mailto:dri-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.sourceforge.net
-To: linux-kernel@vger.kernel.org
-Cc: linux-fbdev@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-ia64@vger.kernel.org, kvm@vger.kernel.org, David Airlie <airlied@linux.ie>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Grant Likely <grant.likely@secretlab.ca>, linux-ide@vger.kernel.org, devel@driverdev.osuosl.org, David Brownell <dbrownell@users.sourceforge.net>, linux-scsi@vger.kernel.org, lm-sensors@lm-sensors.org, Takashi Iwai <tiwai@suse.de>, Scott Fang <ScottFang@viatech.com.cn>, Avi Kivity <avi@redhat.com>, dri-devel@lists.sourceforge.net, Jeff Garzik <jgarzik@pobox.com>, Xiantao Zhang <xiantao.zhang@intel.com>, Andrew Vasquez <andrew.vasquez@qlogic.com>, Fenghua Yu <fenghua.yu@intel.com>, Roger Lucas <vt8231@hiddenengine.co.uk>, Greg Kroah-Hartman <gregkh@suse.de>, "James E.J. Bottomley" <James.Bottomley@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Tony
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 8F63F1037F9
+	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 08:59:29 +0100 (CET)
+In-Reply-To: <e53c6f621002012146n71ac0f7enb7e9f6e9c3b098d2@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jani Frilander <j.frilander@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Some more fixes to formats with continuation lines
+Jani Frilander wrote:
+> I have a Zoom R16 which audio interface part doesn't work with linux.
+> 
+> lsusb -v:
 
-Joe Perches (10):
-  arch/ia64: Fix continuation line formats
-  drivers/ata: Fix continuation line formats
-  drivers/gpu/drm/i915/intel_bios.c: Fix continuation line formats
-  drivers/hwmon/vt8231.c: Fix continuation line formats
-  drivers/net/davinci_emac.c: Fix continuation line formats
-  drivers/scsi/qla2xxx/qua_os.c: Fix continuation line formats
-  drivers/spi/spi_s3c64xx.c: Fix continuation line formats
-  drivers/staging: Fix continuation line formats
-  drivers/video/via: Fix continuation line formats
-  sound/soc/s3c24xx/s2c-pcm.c: Fix continuation line formats
+Thanks.  Please try the following quirk entry:
 
- arch/ia64/kvm/mmio.c                   |    4 ++--
- arch/ia64/kvm/vcpu.c                   |    4 ++--
- drivers/ata/pata_at91.c                |    4 ++--
- drivers/gpu/drm/i915/intel_bios.c      |    3 +--
- drivers/hwmon/vt8231.c                 |    3 +--
- drivers/net/davinci_emac.c             |    3 +--
- drivers/scsi/qla2xxx/qla_os.c          |    4 ++--
- drivers/spi/spi_s3c64xx.c              |   11 +++++------
- drivers/staging/rtl8192su/r8192S_phy.c |   16 ++++++++--------
- drivers/staging/sep/sep_driver.c       |    5 +++--
- drivers/staging/slicoss/slicoss.c      |    6 ++----
- drivers/video/via/dvi.c                |    8 ++++----
- drivers/video/via/lcd.c                |   12 ++++++------
- sound/soc/s3c24xx/s3c-pcm.c            |    3 +--
- 14 files changed, 40 insertions(+), 46 deletions(-)
+{
+	/* ZOOM R16 in USB 2.0 mode */
+	USB_DEVICE(0x1686, 0x00dd),
+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
+		.ifnum = QUIRK_ANY_INTERFACE,
+		.type = QUIRK_COMPOSITE,
+		.data = (const struct snd_usb_audio_quirk[]) {
+			{
+				.ifnum = 1,
+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+			},
+			{
+				.ifnum = 2,
+				.type = QUIRK_AUDIO_STANDARD_INTERFACE
+			},
+			{
+				.ifnum = 3,
+				.type = QUIRK_MIDI_STANDARD_INTERFACE
+			},
+			{
+				.ifnum = .1
+			},
+		}
+	}
+},
+
+> If I try to play a file with mplayer:
+> 
+> $ mplayer -msglevel ao=9 -ao alsa:device=hw=2 piisi.mp3
+> ...
+> [AO_ALSA] Format s16le is not supported by hardware, trying default.
+
+I don't know why there was an audio device at all (in theory, your quirk
+entry shouldn't have worked), but the device supports only 24-bit
+samples, so use "plughw" instead of "hw" (or better "default" for
+software mixing).
 
 
-------------------------------------------------------------------------------
-The Planet: dedicated and managed hosting, cloud storage, colocation
-Stay online with enterprise data centers and the best network in the business
-Choose flexible plans and management services without long-term contracts
-Personal 24x7 support from experience hosting pros just a phone call away.
-http://p.sf.net/sfu/theplanet-com
---
+HTH
+Clemens
