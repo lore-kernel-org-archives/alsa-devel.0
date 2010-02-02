@@ -1,25 +1,22 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: Re: [PATCH] ASoC: Fix BCLK calculation of WM8994
-Date: Tue, 02 Feb 2010 18:53:19 +0900
-Message-ID: <4B67F60F.4090803@samsung.com>
-References: <4B67F35D.905@samsung.com>
+From: Rodolfo Giometti <giometti@enneenne.com>
+Subject: SoC on PXA27x with two codecs
+Date: Tue, 2 Feb 2010 10:58:18 +0100
+Message-ID: <20100202095818.GH1854@enneenne.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30CD3243AE
-	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 10:53:23 +0100 (CET)
-Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KX700F1IKSVZ8@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Tue, 02 Feb 2010 18:53:20 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KX700DCIKSVQZ@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Tue, 02 Feb 2010 18:53:19 +0900 (KST)
-In-reply-to: <4B67F35D.905@samsung.com>
+Received: from mail.enneenne.com (81-174-11-161.static.ngi.it [81.174.11.161])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81EC6243BB
+	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 10:58:21 +0100 (CET)
+Received: from tekkaman.enneenne.com ([192.168.32.37] helo=tekkaman)
+	by mail.enneenne.com with esmtp (Exim 4.69)
+	(envelope-from <giometti@enneenne.com>) id 1NcDeU-0004Su-5M
+	for alsa-devel@alsa-project.org; Tue, 02 Feb 2010 08:58:28 +0100
+Received: from giometti by tekkaman with local (Exim 4.69)
+	(envelope-from <giometti@enneenne.com>) id 1NcFWU-0000ZQ-Cf
+	for alsa-devel@alsa-project.org; Tue, 02 Feb 2010 10:58:18 +0100
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,54 +26,184 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: kyungmin.park@samsung.com, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>, cw00.choi@samsung.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2/2/2010 6:41 PM, Joonyoung Shim wrote:
-> Content-Type: text/plain; charset=UTF-8
-> Content-Transfer-Encoding: 7bit
-> 
-> This fixes BCLK calculation and removes unnecessary check code.
-> 
-> Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
+Hello,
 
+on my custom board I have a PXA27x CPU and 2 codecs: one connected as
+primary codec and one connected as secondary codec.
 
-Sorry, dummy texts were added. Please use below patch.
+I modify the SoC support in order to allow defining two audio cards,
+one to manage the first codec and one to manage the second one.
 
->From a531baaf93e3514f92a290a2e0bdd5ea5d928a4b Mon Sep 17 00:00:00 2001
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Date: Tue, 2 Feb 2010 18:05:42 +0900
-Subject: [PATCH] ASoC: Fix BCLK calculation of WM8994
+Here the SoC schema:
 
-This fixes BCLK calculation and removes unnecessary check code.
+   static struct snd_soc_dai_link bt270p_dai[] = {
+           {
+                   .name = "AC97 HiFi",
+                   .stream_name = "audio out",
+                   .cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_HIFI],
+                   .codec_dai = &cs4299_dai[CS4299_DAI_AC97_HIFI],
+                   .init = bt270_ac97_init,
+                   .ops = &bt270_ops,
+           },
+           {
+                   .name = "AC97 Aux",
+                   .stream_name = "AC97 Aux",
+                   .cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_AUX],
+                   .codec_dai = &cs4299_dai[CS4299_DAI_AC97_AUX],
+                   .init = bt270_ac97_init,
+                   .ops = &bt270_ops,
+           },
+   };
 
-Signed-off-by: Joonyoung Shim <jy0922.shim@samsung.com>
----
- sound/soc/codecs/wm8994.c |    7 ++-----
- 1 files changed, 2 insertions(+), 5 deletions(-)
+   static struct snd_soc_dai_link bt270s_dai[] = {
+           {
+                   .name = "AC97 HiFi",
+                   .stream_name = "speakers",
+                   .cpu_dai = &pxa_ac97_dai[PXA2XX_DAI_AC97_HIFI],
+                   .codec_dai = &cs4299_dai[CS4299_DAI_AC97_HIFI],
+                   .init = bt270_ac97_init,
+                   .ops = &bt270_ops,
+           },
+   };
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 5dd4b29..29f3771 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -3267,15 +3267,12 @@ static int wm8994_hw_params(struct snd_pcm_substream *substream,
- 	 */
- 	best = 0;
- 	for (i = 0; i < ARRAY_SIZE(bclk_divs); i++) {
--		if (bclk_divs[i] < 0)
--			continue;
--		cur_val = (wm8994->aifclk[id] * 10 / bclk_divs[i])
--			- bclk_rate * 10;
-+		cur_val = (wm8994->aifclk[id] * 10 / bclk_divs[i]) - bclk_rate;
- 		if (cur_val < 0) /* BCLK table is sorted */
- 			break;
- 		best = i;
- 	}
--	bclk_rate = wm8994->aifclk[id] / bclk_divs[best];
-+	bclk_rate = wm8994->aifclk[id] * 10 / bclk_divs[best];
- 	dev_dbg(dai->dev, "Using BCLK_DIV %d for actual BCLK %dHz\n",
- 		bclk_divs[best], bclk_rate);
- 	bclk |= best << WM8994_AIF1_BCLK_DIV_SHIFT;
+   static struct snd_soc_card bt270_asoc[] = {
+           {
+                   .name = "BT270 primary",
+                   .platform = &pxa2xx_soc_platform,
+                   .dai_link = bt270p_dai,
+                   .num_links = ARRAY_SIZE(bt270p_dai),
+           },
+           {
+                   .name = "BT270 secondary",
+                   .platform = &pxa2xx_soc_platform,
+                   .dai_link = bt270s_dai,
+                   .num_links = ARRAY_SIZE(bt270s_dai),
+           },
+   };
+
+   static struct cs4299_data cs4299_data[] = {
+           {
+                   .ac97_line = 0,
+           },
+           {
+                   .ac97_line = 1,
+           },
+   };
+
+   static struct snd_soc_device bt270_snd_devdata[2] = {
+           {
+                   .card = &bt270_asoc[0],
+                   .codec_dev = &soc_codec_dev_cs4299,
+                   .codec_data = &cs4299_data[0],
+           },
+           {
+                   .card = &bt270_asoc[1],
+                   .codec_dev = &soc_codec_dev_cs4299,
+                   .codec_data = &cs4299_data[1],
+           },
+   };
+
+   static struct platform_device *bt270_snd_device[2];
+
+I'm using the ac97_line parameters into codec's code in order to
+select the primary and the second codecs as follow:
+
+   static int cs4299_soc_probe(struct platform_device *pdev)
+   {
+           struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+           struct cs4299_data *data = (struct cs4299_data *) socdev->codec_data;
+           struct snd_soc_codec *codec;
+           int ac97_line;
+           int ret = 0;
+
+           printk(KERN_INFO "CS4299 SoC Audio Codec %s\n", CS4299_VERSION);
+
+           /* Check specific codec data or set default if not defined */
+           ac97_line = 0;
+           if (data)
+                   ac97_line = data->ac97_line;
+
+           socdev->card->codec = kzalloc(sizeof(struct snd_soc_codec),
+                                         GFP_KERNEL);
+           if (socdev->card->codec == NULL)
+                   return -ENOMEM;
+           codec = socdev->card->codec;
+           mutex_init(&codec->mutex);
+
+           codec->reg_cache = kmemdup(cs4299_reg, sizeof(cs4299_reg), GFP_KERNEL);
+
+           if (codec->reg_cache == NULL) {
+                   ret = -ENOMEM;
+                   goto cache_err;
+           }
+           codec->reg_cache_size = sizeof(cs4299_reg);
+           codec->reg_cache_step = 2;
+
+           codec->name = "CS4299";
+           codec->id = ac97_line;
+           codec->owner = THIS_MODULE;
+           codec->dai = cs4299_dai;
+           codec->num_dai = ARRAY_SIZE(cs4299_dai);
+           codec->write = ac97_write;
+           codec->read = ac97_read;
+           INIT_LIST_HEAD(&codec->dapm_widgets);
+           INIT_LIST_HEAD(&codec->dapm_paths);
+
+           ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, ac97_line);
+           if (ret < 0) {
+                   printk(KERN_ERR "cs4299: failed to register AC97
+   		codec\n");
+                   goto codec_err;
+           }
+
+           /* register pcms */
+           ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+           if (ret < 0)
+                   goto pcm_err;
+
+           ret = cs4299_reset(codec, 0);
+           if (ret < 0) {
+                   printk(KERN_ERR "Failed to reset CS4299: AC97 link
+   		error\n");
+                   goto reset_err;
+           }
+
+           snd_soc_add_controls(codec, cs4299_snd_ac97_controls,
+                                   ARRAY_SIZE(cs4299_snd_ac97_controls));
+           cs4299_add_widgets(codec);
+           ret = snd_soc_init_card(socdev);
+           if (ret < 0) {
+                   printk(KERN_ERR "cs4299: failed to register card\n");
+                   goto reset_err;
+           }
+
+           return 0;
+
+Everything is working ok but the PCM play/record. In fact I can manage
+both codecs' registers by using:
+
+   alsamixer -c 0   and
+   alsamixer -c 1
+
+but when I try to play an MP3 file I can hear the music only on the
+second codec no matter which audio card I select for playing.
+
+I tested the hardware by defining just one codec at time, and doing in
+this manner the music goes to the right codec.
+
+Any suggeston? :)
+
+Thanks in advance,
+
+Rodolfo
+
 -- 
-1.6.3.3
+
+GNU/Linux Solutions                  e-mail: giometti@enneenne.com
+Linux Device Driver                          giometti@linux.it
+Embedded Systems                     phone:  +39 349 2432127
+UNIX programming                     skype:  rodolfo.giometti
+Freelance ICT Italia - Consulente ICT Italia - www.consulenti-ict.it
