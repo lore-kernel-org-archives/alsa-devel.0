@@ -1,36 +1,49 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: [alsa-devel] Crash 2.6.32.x, Echo 3G, Alsa, SCSI
-Date: Tue, 2 Feb 2010 17:02:07 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1002021655170.24618@denise.shiny.it>
-References: <73211.74714.qm@web180714.mail.sp1.yahoo.com> <4B684513.8090201@ladisch.de>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: Re: [Q] playing / recording mono on a stereo-only
+ hardware
+Date: Tue, 2 Feb 2010 17:38:27 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1002021733550.6324@axis700.grange>
+References: <Pine.LNX.4.64.1001301045500.4260@axis700.grange>
+	<4B645E51.900@gandalf.sssup.it>
+	<Pine.LNX.4.64.1001301744580.9593@axis700.grange>
+	<4B683B48.1030707@gandalf.sssup.it>
+	<Pine.LNX.4.64.1002021552450.6324@axis700.grange>
+	<4B683DDC.5030209@gandalf.sssup.it>
+	<Pine.LNX.4.64.1002021606340.6324@axis700.grange>
+	<4B6843E1.4050001@gandalf.sssup.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4B684513.8090201@ladisch.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Frederick V Heitkamp <heitkamp@ameritech.net>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id D2F031037FE
+	for <alsa-devel@alsa-project.org>; Tue,  2 Feb 2010 17:38:18 +0100 (CET)
+In-Reply-To: <4B6843E1.4050001@gandalf.sssup.it>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2 Feb 2010, Michael Trimarchi wrote:
 
+> I have tested it on the no-bluetooth interface. What is your testing
+> application and the reporting error?
 
-On Tue, 2 Feb 2010, Clemens Ladisch wrote:
+Using aplayer / arecord, I posted a couple of logs in other threads, see, 
+e.g., http://thread.gmane.org/gmane.linux.alsa.user/33861 and a log with 
+some debugging http://pastebin.ca/1773284
 
->> [ 5485.965788]  [<c10041c0>] ? do_divide_error+0x0/0x90
->> [ 5485.980619]  [<f87aa037>] ? pcm_pointer+0x37/0x70 [snd_echo3g]
->> [ 5485.998047]  [<c104764e>] ? run_timer_softirq+0x17e/0x2e0
->> [ 5486.014175]  [<f87ac9bf>] ? snd_echo_interrupt+0x11f/0x240 [snd_echo3g]
->> [ 5486.033940]  [<c107a5d5>] ? handle_IRQ_event+0x45/0x190
->
-> bytes_to_frames() divides by runtime->frame_bits which is not set until
-> after the hw_params callback has succeeded, but the corresponding
-> chip->substream[] entry is set in that callback, by init_engine().  It
-> should probably have been set in the prepare callback.
-
-How can an irq arrive before hw_params() and prepare() ?
-
-Frederick, are you using the midi interface ?
-
-
---
-Giuliano.
+Thanks
+Guennadi
+---
+Guennadi Liakhovetski, Ph.D.
+Freelance Open-Source Software Developer
+http://www.open-technology.de/
