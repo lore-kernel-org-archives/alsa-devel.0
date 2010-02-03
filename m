@@ -1,19 +1,21 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: amixer scontents fails, amixer contents succeeds
-Date: Wed, 03 Feb 2010 22:56:39 +1300
-Message-ID: <4B694857.8050606@audioscience.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/4 v4] ASoC: add a WM8978 codec driver
+Date: Wed, 3 Feb 2010 10:34:07 +0000
+Message-ID: <20100203103406.GC8300@opensource.wolfsonmicro.com>
+References: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
+	<20100127201755.GA11601@rakim.wolfsonmicro.main>
+	<Pine.LNX.4.64.1001291452110.4613@axis700.grange>
+	<20100201143120.GA26011@rakim.wolfsonmicro.main>
+	<Pine.LNX.4.64.1002012047200.4617@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9A5F424368
-	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 10:56:50 +0100 (CET)
-Received: from [192.168.1.6]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp4.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0KX900MJ4FMM3B10@smtp4.clear.net.nz> for
-	alsa-devel@alsa-project.org; Wed, 03 Feb 2010 22:56:46 +1300 (NZDT)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 850372413B
+	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 11:34:06 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1002012047200.4617@axis700.grange>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +25,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+On Mon, Feb 01, 2010 at 09:01:41PM +0100, Guennadi Liakhovetski wrote:
+> On Mon, 1 Feb 2010, Mark Brown wrote:
 
-Probably a bug in my driver (asihpi), but I don't understand how "amixer
-controls" can work while "amixer scontrols" fails.
+> > I don't follow your logic there at all, I'm afraid.  Both options have a
+> > table of possible values for the divider (and hence the PLL output
+> > frequencies they can use) which they need to additionally constrain
+> > based on the PLL operating conditions.
 
-(with error code -EINVAL: "Mixer hw:1 load error: Invalid argument")
+> In principle, yes, both dividers have a table of possible values. But, 
+> possible OPCLK dividers are 1, 2, 3, and 4, which makes it possible to 
+> just calculate the needed divisor by dividing the target through the 
+> source. Whereas possible MCLK divisors are 1, 3/2, 2, 3, 4, 6, 8, 12, so, 
+> you cannot compute the index, therefore I just iterate over the table and 
+> try each. Of course, the sequence is ascending, so, you could bisection, 
+> but I found that to be an overkill for this case;)
 
-Where should I start looking for why this happens?
-
-thanks
-
---
-Eliot
+You're missing the point here.  It's not the working out the divisor
+bit that I'm noticing, it's all the stuff around it imposing the
+constraints for the input frequency and the PLL itself.  What's there at
+the minute seems to split the OPCLK and non-OPCLK cases too early and
+has these very large comments explaining what it's trying to do - a more
+step by step approach might be clearer.
