@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Add a cache_sync bit to the CODEC
-	structure
-Date: Wed,  3 Feb 2010 18:05:02 +0000
-Message-ID: <1265220302-26589-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1265220302-26589-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Kai Vehmanen <kvehmanen@eca.cx>
+Subject: Re: safe support for rewind in ALSA
+Date: Wed, 3 Feb 2010 20:03:26 +0200 (EET)
+Message-ID: <alpine.DEB.1.10.1002031911310.3125@ecabase.localdomain>
+References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
+	<alpine.LNX.2.00.1002011840020.25340@eeebox2.perex-int.cz>
+	<6160a5131002011440p52fb1b2dv9d077681544adb8c@mail.gmail.com>
+	<4f3252891002021820s677de613m60395a2153c7ec55@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C0876103827
-	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 19:05:09 +0100 (CET)
-In-Reply-To: <1265220302-26589-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi
+	[195.197.172.115])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0EA47103827
+	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 19:07:03 +0100 (CET)
+In-Reply-To: <4f3252891002021820s677de613m60395a2153c7ec55@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,99 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a bit to the CODEC structure indicating if a cache sync is required.
-By default this will be set if a cache only write is done to a soc-cache
-register cache.  This allows us to avoid syncing the cache back after
-using cache only writes if there were no changes.
+Hi,
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+On Wed, 3 Feb 2010, Raymond Yau wrote:
 
-SQUASH CACHE SYNC
----
- include/sound/soc.h   |    1 +
- sound/soc/soc-cache.c |   20 +++++++++++++++-----
- 2 files changed, 16 insertions(+), 5 deletions(-)
+>> - the 'only' change is to make sure the hw_ptr reported in .pointer is
+>> NOT the number of samples pushed out to the interface. hw_ptr should
+[...]
+> if snd_xxx_pointer call back return the next read position , the hw_ptr will
+> always be multiple of PCI/PCIe brust size
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 4e8f14b..e6a6d10 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -424,6 +424,7 @@ struct snd_soc_codec {
- 
- 	unsigned int idle_bias_off:1; /* Use BIAS_OFF instead of STANDBY */
- 	unsigned int cache_only:1;  /* Suppress writes to hardware */
-+	unsigned int cache_sync:1; /* Cache needs to be synced to hardware */
- 
- 	/* dapm */
- 	u32 pop_time;
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 84b6916..5869dc3 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -39,8 +39,10 @@ static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
- 	if (reg < codec->reg_cache_size)
- 		cache[reg] = value;
- 
--	if (codec->cache_only)
-+	if (codec->cache_only) {
-+		codec->cache_sync = 1;
- 		return 0;
-+	}
- 
- 	ret = codec->hw_write(codec->control_data, data, 2);
- 	if (ret == 2)
-@@ -105,8 +107,10 @@ static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
- 	if (reg < codec->reg_cache_size)
- 		cache[reg] = value;
- 
--	if (codec->cache_only)
-+	if (codec->cache_only) {
-+		codec->cache_sync = 1;
- 		return 0;
-+	}
- 
- 	ret = codec->hw_write(codec->control_data, data, 2);
- 	if (ret == 2)
-@@ -161,8 +165,10 @@ static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 	if (reg < codec->reg_cache_size)
- 		cache[reg] = value;
- 
--	if (codec->cache_only)
-+	if (codec->cache_only) {
-+		codec->cache_sync = 1;
- 		return 0;
-+	}
- 
- 	if (codec->hw_write(codec->control_data, data, 2) == 2)
- 		return 0;
-@@ -192,8 +198,10 @@ static int snd_soc_8_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 	if (!snd_soc_codec_volatile_register(codec, reg))
- 		reg_cache[reg] = value;
- 
--	if (codec->cache_only)
-+	if (codec->cache_only) {
-+		codec->cache_sync = 1;
- 		return 0;
-+	}
- 
- 	if (codec->hw_write(codec->control_data, data, 3) == 3)
- 		return 0;
-@@ -313,8 +321,10 @@ static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 	if (reg < codec->reg_cache_size)
- 		cache[reg] = value;
- 
--	if (codec->cache_only)
-+	if (codec->cache_only) {
-+		codec->cache_sync = 1;
- 		return 0;
-+	}
- 
- 	ret = codec->hw_write(codec->control_data, data, 3);
- 	if (ret == 3)
--- 
-1.6.6
+yep, that's the point I was trying to make in my longish earlier
+mail yesterday:
+http://article.gmane.org/gmane.linux.alsa.devel/70306
+
+I also presented two solutions for this. So let hw_ptr be a multiple of 
+burst/batch size, but compensate by:
+
+1) driver updates runtime->delay in its pointer() callback, or
+ 	-> finegrained playout delay can be reported even if
+ 	   hw_ptr is a multiple of burst/batch size
+2) use of snd_pcm_status_get_tstamp() (original idea from Eero)
+         -> assumes runtime->delay is updated in sync with hw_ptr
+
+Both are possible with existing ALSA infra, and driver and app developers
+could just use these, but what is missing is the consensus whether this is 
+a valid/allowed thing to do and rely on.
