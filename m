@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4 v4] ASoC: add a WM8978 codec driver
-Date: Wed, 3 Feb 2010 10:34:07 +0000
-Message-ID: <20100203103406.GC8300@opensource.wolfsonmicro.com>
-References: <Pine.LNX.4.64.1001271846020.5073@axis700.grange>
-	<20100127201755.GA11601@rakim.wolfsonmicro.main>
-	<Pine.LNX.4.64.1001291452110.4613@axis700.grange>
-	<20100201143120.GA26011@rakim.wolfsonmicro.main>
-	<Pine.LNX.4.64.1002012047200.4617@axis700.grange>
+From: Jani Frilander <j.frilander@gmail.com>
+Subject: Re: Zoom R16 (USB), will a quirk make it work
+Date: Wed, 3 Feb 2010 14:07:18 +0200
+Message-ID: <e53c6f621002030407o3fd3cd05w4936b98919fc37cf@mail.gmail.com>
+References: <e53c6f621002012146n71ac0f7enb7e9f6e9c3b098d2@mail.gmail.com>
+	<4B67DB5E.9080208@ladisch.de>
+	<e53c6f621002021023s64f7cefct668505aa6ed72c5@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 850372413B
-	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 11:34:06 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1002012047200.4617@axis700.grange>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6D91D24154
+	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 13:07:20 +0100 (CET)
+Received: by ewy23 with SMTP id 23so979580ewy.4
+	for <alsa-devel@alsa-project.org>; Wed, 03 Feb 2010 04:07:18 -0800 (PST)
+In-Reply-To: <e53c6f621002021023s64f7cefct668505aa6ed72c5@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, alsa-devel@alsa-project.org, linux-sh@vger.kernel.org, Magnus Damm <damm@opensource.se>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 01, 2010 at 09:01:41PM +0100, Guennadi Liakhovetski wrote:
-> On Mon, 1 Feb 2010, Mark Brown wrote:
+Current status of Zoom R16 quirk:
 
-> > I don't follow your logic there at all, I'm afraid.  Both options have a
-> > table of possible values for the divider (and hence the PLL output
-> > frequencies they can use) which they need to additionally constrain
-> > based on the PLL operating conditions.
+Control surface works, it sends midi events.
 
-> In principle, yes, both dividers have a table of possible values. But, 
-> possible OPCLK dividers are 1, 2, 3, and 4, which makes it possible to 
-> just calculate the needed divisor by dividing the target through the 
-> source. Whereas possible MCLK divisors are 1, 3/2, 2, 3, 4, 6, 8, 12, so, 
-> you cannot compute the index, therefore I just iterate over the table and 
-> try each. Of course, the sequence is ascending, so, you could bisection, 
-> but I found that to be an overkill for this case;)
+Audio doesn't work. When using plughw with aplay,
+no sound can be heard. Aplay just seems to play the
+file happily. Sample rate on the LCD changes accordingly.
 
-You're missing the point here.  It's not the working out the divisor
-bit that I'm noticing, it's all the stuff around it imposing the
-constraints for the input frequency and the PLL itself.  What's there at
-the minute seems to split the OPCLK and non-OPCLK cases too early and
-has these very large comments explaining what it's trying to do - a more
-step by step approach might be clearer.
+When using plughw with mplayer, the device freezes. It
+reacts the USB-disconnect button anymore. Mplayer also
+starts playback happily, but no sound comes out.
+
+I really would like to get this work. Thanks to everyone in
+advance.
+
+-Jani F.
