@@ -1,20 +1,15 @@
-From: John Graham <johngavingraham@googlemail.com>
-Subject: Re: Access to bytes from the raw audio stream? (AC'97)
-Date: Wed, 3 Feb 2010 16:27:05 +0000
-Message-ID: <94cf76f1002030827p6b420c17wae026b19cd077e60@mail.gmail.com>
-References: <94cf76f1002030808t1d54dc08oab179673e814f016@mail.gmail.com>
-	<20100203161737.GC12034@sirena.org.uk>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: [PATCH] ASoC: fix compilation breakage in
+	sound/soc/sh/fsi.c
+Date: Wed, 3 Feb 2010 17:37:23 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1002031735230.6324@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f221.google.com (mail-bw0-f221.google.com
-	[209.85.218.221])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8AD3A24404
-	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 17:27:07 +0100 (CET)
-Received: by bwz21 with SMTP id 21so1192953bwz.4
-	for <alsa-devel@alsa-project.org>; Wed, 03 Feb 2010 08:27:06 -0800 (PST)
-In-Reply-To: <20100203161737.GC12034@sirena.org.uk>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 803BF24404
+	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 17:37:08 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +19,130 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Paul Mundt <lethal@linux-sh.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> With a lot of AC97 controllers the hardware won't allow you direct
-> access to the cooked wire data, you'll only be able to see decoded audio
-> streams. =A0What is it that you're actually trying to do?
+ctrl_outl() has become void at some point, which breaks compilation of fsi.c.
+Make writing functions void, as their output is anyway not evaluated, and use
+__raw_writel and __raw_readl instead of deprecated ctrl_outl and ctrl_inl
+respectively.
 
-Basically, we've got a problem where we think our processor is
-bit-shifting the sample for some reason, and I was going to see if I
-could either (i) un-bit-shift it (it looks like we're not actually
-losing any data, the sound's just being multiplied by 2^4), or (ii)
-reproduce the problem we see by bit-shifting the samples on a
-known-good platform.
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+---
 
+=> linux-next / 2.6.34
 
-> For embedded platforms you mostly want to look under sound/soc though
-> there are a few platforms outside of there.
+ sound/soc/sh/fsi.c |   40 +++++++++++++++++-----------------------
+ 1 files changed, 17 insertions(+), 23 deletions(-)
 
-I know the drivers for our particular setup (UBC1400 codec/i.MX25
-processor) are under sound/arm, but I'm not sure if there's anything
-in there that actually sees the samples as they come through.
-
-
-Would I be able to access samples quite early on in the generic AC'97
-code (I don't know where that is, either, but it would be interesting
-to see, at least :p)
-
-Thanks,
-
-John G
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index ebf3588..3c36d24 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -120,35 +120,35 @@ struct fsi_master {
+ 
+ 
+ ************************************************************************/
+-static int __fsi_reg_write(u32 reg, u32 data)
++static void __fsi_reg_write(u32 reg, u32 data)
+ {
+ 	/* valid data area is 24bit */
+ 	data &= 0x00ffffff;
+ 
+-	return ctrl_outl(data, reg);
++	__raw_writel(data, reg);
+ }
+ 
+ static u32 __fsi_reg_read(u32 reg)
+ {
+-	return ctrl_inl(reg);
++	return __raw_readl(reg);
+ }
+ 
+-static int __fsi_reg_mask_set(u32 reg, u32 mask, u32 data)
++static void __fsi_reg_mask_set(u32 reg, u32 mask, u32 data)
+ {
+ 	u32 val = __fsi_reg_read(reg);
+ 
+ 	val &= ~mask;
+ 	val |= data & mask;
+ 
+-	return __fsi_reg_write(reg, val);
++	__fsi_reg_write(reg, val);
+ }
+ 
+-static int fsi_reg_write(struct fsi_priv *fsi, u32 reg, u32 data)
++static void fsi_reg_write(struct fsi_priv *fsi, u32 reg, u32 data)
+ {
+ 	if (reg > REG_END)
+-		return -1;
++		return;
+ 
+-	return __fsi_reg_write((u32)(fsi->base + reg), data);
++	__fsi_reg_write((u32)(fsi->base + reg), data);
+ }
+ 
+ static u32 fsi_reg_read(struct fsi_priv *fsi, u32 reg)
+@@ -159,28 +159,25 @@ static u32 fsi_reg_read(struct fsi_priv *fsi, u32 reg)
+ 	return __fsi_reg_read((u32)(fsi->base + reg));
+ }
+ 
+-static int fsi_reg_mask_set(struct fsi_priv *fsi, u32 reg, u32 mask, u32 data)
++static void fsi_reg_mask_set(struct fsi_priv *fsi, u32 reg, u32 mask, u32 data)
+ {
+ 	if (reg > REG_END)
+-		return -1;
++		return;
+ 
+-	return __fsi_reg_mask_set((u32)(fsi->base + reg), mask, data);
++	__fsi_reg_mask_set((u32)(fsi->base + reg), mask, data);
+ }
+ 
+-static int fsi_master_write(struct fsi_master *master, u32 reg, u32 data)
++static void fsi_master_write(struct fsi_master *master, u32 reg, u32 data)
+ {
+-	int ret;
+ 	unsigned long flags;
+ 
+ 	if ((reg < MREG_START) ||
+ 	    (reg > MREG_END))
+-		return -1;
++		return;
+ 
+ 	spin_lock_irqsave(&master->lock, flags);
+-	ret = __fsi_reg_write((u32)(master->base + reg), data);
++	__fsi_reg_write((u32)(master->base + reg), data);
+ 	spin_unlock_irqrestore(&master->lock, flags);
+-
+-	return ret;
+ }
+ 
+ static u32 fsi_master_read(struct fsi_master *master, u32 reg)
+@@ -199,21 +196,18 @@ static u32 fsi_master_read(struct fsi_master *master, u32 reg)
+ 	return ret;
+ }
+ 
+-static int fsi_master_mask_set(struct fsi_master *master,
++static void fsi_master_mask_set(struct fsi_master *master,
+ 			       u32 reg, u32 mask, u32 data)
+ {
+-	int ret;
+ 	unsigned long flags;
+ 
+ 	if ((reg < MREG_START) ||
+ 	    (reg > MREG_END))
+-		return -1;
++		return;
+ 
+ 	spin_lock_irqsave(&master->lock, flags);
+-	ret = __fsi_reg_mask_set((u32)(master->base + reg), mask, data);
++	__fsi_reg_mask_set((u32)(master->base + reg), mask, data);
+ 	spin_unlock_irqrestore(&master->lock, flags);
+-
+-	return ret;
+ }
+ 
+ /************************************************************************
+-- 
+1.6.2.4
