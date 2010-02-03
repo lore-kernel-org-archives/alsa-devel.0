@@ -1,76 +1,56 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [alsa-devel] Crash 2.6.32.x, Echo 3G, Alsa, SCSI
-Date: Tue, 2 Feb 2010 23:09:11 +0100
-Message-ID: <20100202230911.71e8b600@Jay>
-References: <73211.74714.qm@web180714.mail.sp1.yahoo.com>
- <4B684513.8090201@ladisch.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [Q] playing / recording mono on a stereo-only
+	hardware
+Date: Wed, 3 Feb 2010 10:07:59 +0800
+Message-ID: <4f3252891002021807x4276d0b8y4c61c69aee2af3dc@mail.gmail.com>
+References: <Pine.LNX.4.64.1001301045500.4260@axis700.grange>
+	<4B645E51.900@gandalf.sssup.it>
+	<Pine.LNX.4.64.1001301744580.9593@axis700.grange>
+	<4B683B48.1030707@gandalf.sssup.it>
+	<Pine.LNX.4.64.1002021552450.6324@axis700.grange>
+	<4B683DDC.5030209@gandalf.sssup.it>
+	<Pine.LNX.4.64.1002021606340.6324@axis700.grange>
+	<4B6843E1.4050001@gandalf.sssup.it>
+	<Pine.LNX.4.64.1002021733550.6324@axis700.grange>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4B684513.8090201@ladisch.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Frederick V Heitkamp <heitkamp@ameritech.net>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-px0-f173.google.com (mail-px0-f173.google.com
+	[209.85.216.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 61C9E103802
+	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 03:08:00 +0100 (CET)
+Received: by pxi3 with SMTP id 3so821834pxi.16
+	for <alsa-devel@alsa-project.org>; Tue, 02 Feb 2010 18:07:59 -0800 (PST)
+In-Reply-To: <Pine.LNX.4.64.1002021733550.6324@axis700.grange>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 02 Feb 2010 16:30:27 +0100
-Clemens Ladisch <clemens@ladisch.de> wrote:
+2010/2/3 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 
-> Frederick V Heitkamp wrote:
-> > Repeatable Hard Crash.
-> > What else do I need to provide?
-> > 
-> > [ 5484.995249] WriteControlReg: not written, no change
-> > [ 5485.069621] divide error: 0000 [#1] pcm_hw_params ok
-> > [ 5485.070159] Prepare rate=44100 format=2 channels=2
-> > [ 5485.070161] set_audio_format[14] = 5
-> > [ 5485.070166] Prepare rate=44100 format=2 channels=2
-> > [ 5485.070167] set_audio_format[14] = 5
-> > [ 5485.070003] PREEMPT SMP 
-> > ...
-> > [ 5485.070003] EIP is at pcm_pointer+0x37/0x70 [snd_echo3g]
-> > ...
-> > [ 5485.965788]  [<c10041c0>] ? do_divide_error+0x0/0x90
-> > [ 5485.980619]  [<f87aa037>] ? pcm_pointer+0x37/0x70 [snd_echo3g]
-> > [ 5485.998047]  [<c104764e>] ? run_timer_softirq+0x17e/0x2e0
-> > [ 5486.014175]  [<f87ac9bf>] ? snd_echo_interrupt+0x11f/0x240 [snd_echo3g]
-> > [ 5486.033940]  [<c107a5d5>] ? handle_IRQ_event+0x45/0x190
-> 
-> bytes_to_frames() divides by runtime->frame_bits which is not set until
-> after the hw_params callback has succeeded, but the corresponding
-> chip->substream[] entry is set in that callback, by init_engine().  It
-> should probably have been set in the prepare callback.
+> On Tue, 2 Feb 2010, Michael Trimarchi wrote:
+>
+> > I have tested it on the no-bluetooth interface. What is your testing
+> > application and the reporting error?
+>
+> Using aplayer / arecord, I posted a couple of logs in other threads, see,
+> e.g., http://thread.gmane.org/gmane.linux.alsa.user/33861 and a log with
+> some debugging http://pastebin.ca/1773284
+>
+> Thanks
+> Guennadi
+>
 
-I've just had another look at my code. Although it never happened to me, it
-is indeed possible when hw_params() completes if another substream is
-already running. The reason is that the card delivers an irq when it
-executes an irq instruction in any of the running s-g lists. The irq
-handler cannot know which substream caused it, so it has to call the
-pointer() function for each of the configured substreams (ie. the ones
-which completed one of the pcm_*_hw_params() callbacks.
+ Try
 
-There is another possible fix. I tested it briefly. It looks ok wrt race
-conditions because pipe->state is set only in the trigger callback. I hope
-I didn't overlook anything again...
-
-
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
---- alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c__orig	2010-02-02 22:37:33.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c	2010-02-02 22:44:03.000000000 +0100
-@@ -1821,7 +1821,9 @@ static irqreturn_t snd_echo_interrupt(in
- 	/* The hardware doesn't tell us which substream caused the irq,
- 	thus we have to check all running substreams. */
- 	for (ss = 0; ss < DSP_MAXPIPES; ss++) {
--		if ((substream = chip->substream[ss])) {
-+		substream = chip->substream[ss];
-+		if (substream && ((struct audiopipe *)substream->runtime->
-+				private_data)->state == PIPE_STATE_STARTED) {
- 			period = pcm_pointer(substream) /
- 				substream->runtime->period_size;
- 			if (period != chip->last_period[ss]) {
-
-
--- 
-Giuliano.
+export LIBASOUND_DEBUG=1
+arecord -v -Dplughw:0,0 -c 1 -f S16_LE -r 800 -d 30  any.wav
