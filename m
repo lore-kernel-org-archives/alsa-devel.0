@@ -1,32 +1,40 @@
-From: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Subject: RE: [alsa-devel] [PATCH 0/4] ASOC: Add AM3517 EVM support in ASOC
-Date: Thu, 4 Feb 2010 13:41:19 +0530
-Message-ID: <5A47E75E594F054BAF48C5E4FC4B92AB031E612C4F@dbde02.ent.ti.com>
-References: <1256842337-30334-1-git-send-email-anuj.aggarwal@ti.com>
- <20091029222933.GA7953@sirena.org.uk>
- <5A47E75E594F054BAF48C5E4FC4B92AB031E4F20BB@dbde02.ent.ti.com>
- <20100204015102.GO22747@atomide.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ioctl problem - help please!!
+Date: Thu, 04 Feb 2010 10:45:06 +0100
+Message-ID: <4B6A9722.3070109@ladisch.de>
+References: <60ef6ece1002021334q4eb53641p5308f84847ed3949@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20100204015102.GO22747@atomide.com>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 11D3224153
+	for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2010 10:45:10 +0100 (CET)
+In-Reply-To: <60ef6ece1002021334q4eb53641p5308f84847ed3949@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "Rene E. Henriquez G." <rene.henriquez@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> Hmm, well I still have about 70 patches pending and have
-> not yet gotten into looking at the board-*.c files that much..
+Rene E. Henriquez G. wrote:
+> Does anybody know what might cause this:
 > 
-> But looks like I had marked these as "awaiting upstream".
-> I've marked them "new" again and will queue into omap for-next
-> when I get to dealing with the board-*.c files.
+> 2925  open("/dev/snd/pcmC0D0c", O_RDWR|O_NONBLOCK) = 5
+> 2925  ioctl(5, 0x80184151, 0x7ffff3351890) = -1 EIO (Input/output error)
 > 
-> BTW, I assume these two patches are the missing ones:
-> 
-> http://patchwork.kernel.org/patch/56501/
-> http://patchwork.kernel.org/patch/56502/
+> to give EIO?
 
-[Aggarwal, Anuj] Yes, you are right Tony.
+Some error detected by the driver.  Which driver?
+Does normal recording work?
+
+
+Regards,
+Clemens
