@@ -1,18 +1,13 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: [PATCH] ASoC: pandora: Add APLL supply to fix audio
-	output
-Date: Fri,  5 Feb 2010 00:55:33 +0200
-Message-ID: <1265324133-23607-1-git-send-email-notasas@gmail.com>
+From: linux@audioscience.com
+Subject: [PATCH] Allow mux to have up to 256 sources. Log
+ warning and return index 0 rather than error if DSP returns invalid value.
+ (amixer fails if error returned on get)
+Date: Fri, 05 Feb 2010 12:50:40 +1300
+Message-ID: <1265327440-6672-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 90718103807
-	for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2010 23:56:06 +0100 (CET)
-Received: by ewy23 with SMTP id 23so9004ewy.4
-	for <alsa-devel@alsa-project.org>; Thu, 04 Feb 2010 14:56:04 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,35 +17,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Grazvydas Ignotas <notasas@gmail.com>
+To: patch@alsa-project.org
+Cc: Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pandora's external DAC is using 256*Fs output from the TWL4030
-codec, and TWL4030 needs to have APLL enabled for it's 256*Fs
-output to function.
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
-I noticed this a bit late because TWL4030 codec used to have APLL
-enable hardcoded until that was clean up by not-so-old patch.
-Would be nice to see this in next -rc, as without this audio
-won't work completely on pandora (again)..
+ pci/asihpi/asihpi.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
- sound/soc/omap/omap3pandora.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index 71b2c16..68980c1 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -145,6 +145,7 @@ static const struct snd_soc_dapm_widget omap3pandora_in_dapm_widgets[] = {
- };
+diff --git a/pci/asihpi/asihpi.c b/pci/asihpi/asihpi.c
+index 0c7b4fb..4f82e9f 100644
+--- a/pci/asihpi/asihpi.c
++++ b/pci/asihpi/asihpi.c
+@@ -2187,7 +2187,7 @@ static int snd_asihpi_mux_get(struct snd_kcontrol *kcontrol,
+ 	HPI_HandleError(HPI_Multiplexer_GetSource(phSubSys, hControl,
+ 				&wSourceType, &wSourceIndex));
+ 	/* Should cache this search result! */
+-	for (s = 0; s < 16; s++) {
++	for (s = 0; s < 256; s++) {
+ 		if (HPI_Multiplexer_QuerySource(phSubSys, hControl, s,
+ 					    &wSrcNodeType, &wSrcNodeIndex))
+ 			break;
+@@ -2198,7 +2198,10 @@ static int snd_asihpi_mux_get(struct snd_kcontrol *kcontrol,
+ 			return 0;
+ 		}
+ 	}
+-	return -EINVAL;
++	snd_printd(KERN_WARNING "Control %x failed to match mux source %hu %hu\n",
++			hControl, wSourceType, wSourceIndex);
++	ucontrol->value.enumerated.item[0] = 0;
++	return 0;
+ }
  
- static const struct snd_soc_dapm_route omap3pandora_out_map[] = {
-+	{"PCM DAC", NULL, "APLL Enable"},
- 	{"Headphone Amplifier", NULL, "PCM DAC"},
- 	{"Line Out", NULL, "PCM DAC"},
- 	{"Headphone Jack", NULL, "Headphone Amplifier"},
+ static int snd_asihpi_mux_put(struct snd_kcontrol *kcontrol,
 -- 
-1.6.3.3
+1.7.0.rc0.8.ge3f67d
