@@ -1,66 +1,61 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [alsa-devel] [PATCH 0/4] ASOC: Add AM3517 EVM support in ASOC
-Date: Wed, 3 Feb 2010 17:51:02 -0800
-Message-ID: <20100204015102.GO22747@atomide.com>
-References: <1256842337-30334-1-git-send-email-anuj.aggarwal@ti.com>
- <20091029222933.GA7953@sirena.org.uk>
- <5A47E75E594F054BAF48C5E4FC4B92AB031E4F20BB@dbde02.ent.ti.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: TWL4030: Module unloading fix
+Date: Thu,  4 Feb 2010 09:10:10 +0200
+Message-ID: <1265267410-8007-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5A47E75E594F054BAF48C5E4FC4B92AB031E4F20BB@dbde02.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Aggarwal, Anuj" <anuj.aggarwal@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id E78A8103895
+	for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2010 08:11:08 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-* Aggarwal, Anuj <anuj.aggarwal@ti.com> [100129 00:13]:
-> > -----Original Message-----
-> > From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> > Sent: Friday, October 30, 2009 4:00 AM
-> > To: Aggarwal, Anuj
-> > Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org;
-> > tony@atomide.com
-> > Subject: Re: [alsa-devel] [PATCH 0/4] ASOC: Add AM3517 EVM support in ASOC
-> > 
-> > On Fri, Oct 30, 2009 at 12:22:17AM +0530, Anuj Aggarwal wrote:
-> > > This patch series add support for OMAP3517 / AM3517 EVM in ASOC.
-> > > It also enables the required drivers - I2C and McBSP, along with
-> > > Alsa SoC subsystem, in the default configuration for the EVM.
-> > >
-> > > Anuj Aggarwal (4):
-> > >   Audio: Adding OMAP3517 / AM3517 EVM support in ASOC
-> > >   Audio: Modifying Kconfig/Makefile for AM3517 EVM
-> > >   Audio: Modifying board-evm file for audio codec
-> > >   Audio: Modifying the defconfig for OMAP3517 / AM3517 EVM
-> > 
-> > These all look good - I've applied patches 1 and 2 to ASoC, patches 3
-> > and 4 should go via OMAP and are
-> Tony,
-> 
-> I could not find patches 3 & 4 on l-o master. Am I looking at the right 
-> branch?
+The module unloading path had several problems:
+- it freed up the private structure twice
+- it freed up the codec structure, which was allocated as part
+  of the private structure
+- it did not freed up the reg_cache
+- it did not unregistered the dais and the codec
 
-Hmm, well I still have about 70 patches pending and have
-not yet gotten into looking at the board-*.c files that much..
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/twl4030.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-But looks like I had marked these as "awaiting upstream".
-I've marked them "new" again and will queue into omap for-next
-when I get to dealing with the board-*.c files.
-
-BTW, I assume these two patches are the missing ones:
-
-http://patchwork.kernel.org/patch/56501/
-http://patchwork.kernel.org/patch/56502/
-
-Regards,
-
-Tony
-
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index e0106a5..b32aeb3 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -2152,8 +2152,6 @@ static int twl4030_soc_remove(struct platform_device *pdev)
+ 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
+ 	snd_soc_free_pcms(socdev);
+ 	snd_soc_dapm_free(socdev);
+-	kfree(codec->private_data);
+-	kfree(codec);
  
-> > 
-> > Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> > 
-> > if it helps (or even if it doesn't!).  Thanks.
-> 
+ 	return 0;
+ }
+@@ -2237,6 +2235,9 @@ static int __devexit twl4030_codec_remove(struct platform_device *pdev)
+ {
+ 	struct twl4030_priv *twl4030 = platform_get_drvdata(pdev);
+ 
++	snd_soc_unregister_dais(&twl4030_dai[0], ARRAY_SIZE(twl4030_dai));
++	snd_soc_unregister_codec(&twl4030->codec);
++	kfree(twl4030->codec.reg_cache);
+ 	kfree(twl4030);
+ 
+ 	twl4030_codec = NULL;
+-- 
+1.6.6.1
