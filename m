@@ -1,22 +1,29 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: safe support for rewind in ALSA
-Date: Wed, 3 Feb 2010 16:57:18 -0600
-Message-ID: <6160a5131002031457h3b6f6ccev4acbd412841b25c8@mail.gmail.com>
-References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
-	<alpine.LNX.2.00.1002011840020.25340@eeebox2.perex-int.cz>
-	<6160a5131002011440p52fb1b2dv9d077681544adb8c@mail.gmail.com>
-	<alpine.DEB.1.10.1002032005330.3125@ecabase.localdomain>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [Q] playing / recording mono on a stereo-only
+	hardware
+Date: Thu, 4 Feb 2010 08:12:38 +0800
+Message-ID: <4f3252891002031612g5d384eb6o851f690f94b7945a@mail.gmail.com>
+References: <Pine.LNX.4.64.1001301045500.4260@axis700.grange>
+	<Pine.LNX.4.64.1001301744580.9593@axis700.grange>
+	<4B683B48.1030707@gandalf.sssup.it>
+	<Pine.LNX.4.64.1002021552450.6324@axis700.grange>
+	<4B683DDC.5030209@gandalf.sssup.it>
+	<Pine.LNX.4.64.1002021606340.6324@axis700.grange>
+	<4B6843E1.4050001@gandalf.sssup.it>
+	<Pine.LNX.4.64.1002021733550.6324@axis700.grange>
+	<4f3252891002021807x4276d0b8y4c61c69aee2af3dc@mail.gmail.com>
+	<Pine.LNX.4.64.1002032310230.19438@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f171.google.com (mail-pz0-f171.google.com
-	[209.85.222.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96824103827
-	for <alsa-devel@alsa-project.org>; Wed,  3 Feb 2010 23:57:19 +0100 (CET)
-Received: by pzk1 with SMTP id 1so426816pzk.16
-	for <alsa-devel@alsa-project.org>; Wed, 03 Feb 2010 14:57:18 -0800 (PST)
-In-Reply-To: <alpine.DEB.1.10.1002032005330.3125@ecabase.localdomain>
+Received: from mail-px0-f173.google.com (mail-px0-f173.google.com
+	[209.85.216.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A446103895
+	for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2010 01:12:40 +0100 (CET)
+Received: by pxi3 with SMTP id 3so2063833pxi.16
+	for <alsa-devel@alsa-project.org>; Wed, 03 Feb 2010 16:12:38 -0800 (PST)
+In-Reply-To: <Pine.LNX.4.64.1002032310230.19438@axis700.grange>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +33,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kai Vehmanen <kvehmanen@eca.cx>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> - the 'only' change is to make sure the hw_ptr reported in .pointer is
->> NOT the number of samples pushed out to the interface. hw_ptr should
->
-> although, I'm not entirely sure this still makes rewinds fully safe. After
-> driver has called period elapsed and hw_ptr jumps ahead one period worth of
-> samples, the DMA for the next burst/batch is already programmed and possibly
-> ongoing. And with some drivers the burst size (of a single DMA transaction)
-> may be fairly large, while some transfer sample at a time, at codec rate.
->
-> This might lead to undefined behaviour when application rewinds upto hw_ptr
-> and starts to refill the segment of the ringbuffer just after hw_ptr, while
-> at the same time DMA engine is already transferring data out of that same
-> ringbuffer segment.
->
-> So a safer bet would be to limit rewinds to hw_ptr+X, where X is highly
-> driver/hw specific. At the minimum, 'X >= dma_get_cache_alignment()' (see
-> linux/Documentation/DMA-API.txt) to get deterministic results on different
-> platforms. A sane convervative assumption is 'X >= period-size'.
+2010/2/4 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 
-Well, we went from my interpretation that was completely broken to
-something that can still be broken at times...
- If you really want to be safe, you'd need a means to specify this X
-value for your system. Actually it would make a lot of sense to do so.
-On most embedded systems the DMA bursts and buffering in FIFOs can be
-programmed. It'd be nice to have the ability to set different values
-for DMA bursts and delay depending on the mode (low-power,
-low-latency, etc).
+> On Wed, 3 Feb 2010, Raymond Yau wrote:
+>
+> > 2010/2/3 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+> >
+> > > On Tue, 2 Feb 2010, Michael Trimarchi wrote:
+> > >
+> > > > I have tested it on the no-bluetooth interface. What is your testing
+> > > > application and the reporting error?
+> > >
+> > > Using aplayer / arecord, I posted a couple of logs in other threads,
+> see,
+> > > e.g., http://thread.gmane.org/gmane.linux.alsa.user/33861 and a log
+> with
+> > > some debugging http://pastebin.ca/1773284
+> > >
+> > > Thanks
+> > > Guennadi
+> > >
+> >
+> >  Try
+> >
+> > export LIBASOUND_DEBUG=1
+> > arecord -v -Dplughw:0,0 -c 1 -f S16_LE -r 800 -d 30  any.wav
+>
+> No success either (with 8000Hz instead of 800):
+>
+> Recording WAVE '/tmp/any.wav' : Signed 16 bit Little Endian, Rate 8000 Hz,
+> Mono
+> CHOOSE called:
+> ACCESS:  RW_INTERLEAVED
+> FORMAT:  S16_LE
+> SUBFORMAT:  STD
+> SAMPLE_BITS: 16
+> FRAME_BITS: 16
+> CHANNELS: 1
+> RATE: 8000
+> PERIOD_TIME: 125000
+> PERIOD_SIZE: 1000
+> PERIOD_BYTES: 2000
+> PERIODS: 4
+> BUFFER_TIME: 500000
+> BUFFER_SIZE: 4000
+> BUFFER_BYTES: 8000
+> TICK_TIME: ALL
+> choose done
+> ACCESS:  RW_INTERLEAVED
+> FORMAT:  S16_LE
+> SUBFORMAT:  STD
+> SAMPLE_BITS: 16
+> FRAME_BITS: 16
+> CHANNELS: 1
+> RATE: 8000
+> PERIOD_TIME: 125000
+> PERIOD_SIZE: 1000
+> PERIOD_BYTES: 2000
+> PERIODS: 4
+> BUFFER_TIME: 500000
+> BUFFER_SIZE: 4000
+> BUFFER_BYTES: 8000
+> TICK_TIME: 0
+> arecord: set_params:1053: Unable to install hw params:
+> ACCESS:  RW_INTERLEAVED
+> FORMAT:  S16_LE
+> SUBFORMAT:  STD
+> SAMPLE_BITS: 16
+> FRAME_BITS: 16
+> CHANNELS: 1
+> RATE: 8000
+> PERIOD_TIME: 125000
+> PERIOD_SIZE: 1000
+> PERIOD_BYTES: 2000
+> PERIODS: 4
+> BUFFER_TIME: 500000
+> BUFFER_SIZE: 4000
+> BUFFER_BYTES: 8000
+> TICK_TIME: 0
+>
+> Thanks
+> Guennadi
+> ---
+>
+>
+if LIBASOUND_DEBUG = 1 cannot tell you which parameter fail in hw_params() ,
+you will need to define RULES_DEBUG in alsa-kernel/core/pcm_native.c and
+compile driver with debug=verbose
+
+-#undef RULES_DEBUG
++#define RULES DEBUG 1
+
+you can find out how ALSA refine the hw parameters by examing the system log
