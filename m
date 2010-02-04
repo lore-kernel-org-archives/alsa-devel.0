@@ -1,16 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ioctl problem - help please!!
-Date: Thu, 04 Feb 2010 10:45:06 +0100
-Message-ID: <4B6A9722.3070109@ladisch.de>
-References: <60ef6ece1002021334q4eb53641p5308f84847ed3949@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: TWL4030: Module unloading fix
+Date: Thu, 04 Feb 2010 10:14:15 +0000
+Message-ID: <1265278455.3198.10.camel@odin>
+References: <1265267410-8007-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 11D3224153
-	for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2010 10:45:10 +0100 (CET)
-In-Reply-To: <60ef6ece1002021334q4eb53641p5308f84847ed3949@mail.gmail.com>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0A6F224362
+	for <alsa-devel@alsa-project.org>; Thu,  4 Feb 2010 11:14:20 +0100 (CET)
+Received: by ewy23 with SMTP id 23so125847ewy.4
+	for <alsa-devel@alsa-project.org>; Thu, 04 Feb 2010 02:14:19 -0800 (PST)
+In-Reply-To: <1265267410-8007-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,21 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Rene E. Henriquez G." <rene.henriquez@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Rene E. Henriquez G. wrote:
-> Does anybody know what might cause this:
+On Thu, 2010-02-04 at 09:10 +0200, Peter Ujfalusi wrote:
+> The module unloading path had several problems:
+> - it freed up the private structure twice
+> - it freed up the codec structure, which was allocated as part
+>   of the private structure
+> - it did not freed up the reg_cache
+> - it did not unregistered the dais and the codec
 > 
-> 2925  open("/dev/snd/pcmC0D0c", O_RDWR|O_NONBLOCK) = 5
-> 2925  ioctl(5, 0x80184151, 0x7ffff3351890) = -1 EIO (Input/output error)
-> 
-> to give EIO?
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
 
-Some error detected by the driver.  Which driver?
-Does normal recording work?
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-
-Regards,
-Clemens
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
