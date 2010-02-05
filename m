@@ -1,15 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC update for 2.6.33
-Date: Fri, 5 Feb 2010 14:13:06 +0000
-Message-ID: <20100205141305.GA2039@rakim.wolfsonmicro.main>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [PATCH -next] ASoC: pandora: Add DAC regulator
+	support
+Date: Fri, 5 Feb 2010 16:29:53 +0200
+Message-ID: <6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
+References: <1265375612-9079-1-git-send-email-notasas@gmail.com>
+	<1265378923.3177.11.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=001485f8d188e9b592047edb48c2
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A85F91038D0
-	for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2010 15:13:07 +0100 (CET)
-Content-Disposition: inline
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id 66E741038E5
+	for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2010 15:29:53 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id e21so8802fga.2
+	for <alsa-devel@alsa-project.org>; Fri, 05 Feb 2010 06:29:53 -0800 (PST)
+In-Reply-To: <1265378923.3177.11.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,20 +23,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 5bbd4953a4fb5d8d597b4a53b8da97eee320b634:
-  Anuj Aggarwal (1):
-        ASoC: AM3517: ASoC driver not getting compiled
+--001485f8d188e9b592047edb48c2
+Content-Type: text/plain; charset=ISO-8859-1
 
-are available in the git repository at:
+On Fri, Feb 5, 2010 at 4:08 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+> On Fri, 2010-02-05 at 15:13 +0200, Grazvydas Ignotas wrote:
+>> Pandora's external DAC is connected to VSIM TWL4030 supply, so let's
+>> start switching it too to save more power.
+>>
+>> Also DAC got it's own DAPM handler and the delay was removed
+>> (it gave on audible improvement).
+>>
+>
+> That's good to hear (pun intended).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.33
+Uh, I meant "no audible improvement". However I've just checked the
+DAC datasheet again and it requires 1ms delay between turning on/off
+the supply and switching /PD pin (connected to
+OMAP3_PANDORA_DAC_POWER_GPIO). Even though I hear no difference,
+adding the delays back just in case. Updated patch attached.
 
-Grazvydas Ignotas (1):
-      ASoC: pandora: Add APLL supply to fix audio output
+--001485f8d188e9b592047edb48c2
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ASoC-pandora-add-DAC-regulator-support.patch"
+Content-Disposition: attachment;
+	filename="0001-ASoC-pandora-add-DAC-regulator-support.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g5b2msqs0
 
- sound/soc/omap/omap3pandora.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+RnJvbSA3MmNkZjM2ZTQzMmE5OTI5YmFmZjg4NDFkZjk3OWYxMzQ5MmRjODEzIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBHcmF6dnlkYXMgSWdub3RhcyA8bm90YXNhc0BnbWFpbC5jb20+
+CkRhdGU6IEZyaSwgNSBGZWIgMjAxMCAxMjo1NzozNyArMDIwMApTdWJqZWN0OiBbUEFUQ0ggLW5l
+eHRdIEFTb0M6IHBhbmRvcmE6IEFkZCBEQUMgcmVndWxhdG9yIHN1cHBvcnQKClBhbmRvcmEncyBl
+eHRlcm5hbCBEQUMgaXMgY29ubmVjdGVkIHRvIFZTSU0gVFdMNDAzMCBzdXBwbHksIHNvIGxldCdz
+CnN0YXJ0IHN3aXRjaGluZyBpdCB0b28gdG8gc2F2ZSBtb3JlIHBvd2VyLgpBbHNvIERBQyBnb3Qg
+aXQncyBvd24gREFQTSBoYW5kbGVyLgoKU2lnbmVkLW9mZi1ieTogR3JhenZ5ZGFzIElnbm90YXMg
+PG5vdGFzYXNAZ21haWwuY29tPgotLS0KIHNvdW5kL3NvYy9vbWFwL29tYXAzcGFuZG9yYS5jIHwg
+ICA0MiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tCiAxIGZpbGVzIGNo
+YW5nZWQsIDM3IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291
+bmQvc29jL29tYXAvb21hcDNwYW5kb3JhLmMgYi9zb3VuZC9zb2Mvb21hcC9vbWFwM3BhbmRvcmEu
+YwppbmRleCA2ODk4MGMxLi5kZTEwZjc2IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvb21hcC9vbWFw
+M3BhbmRvcmEuYworKysgYi9zb3VuZC9zb2Mvb21hcC9vbWFwM3BhbmRvcmEuYwpAQCAtMjMsNiAr
+MjMsNyBAQAogI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgogI2luY2x1ZGUgPGxp
+bnV4L2dwaW8uaD4KICNpbmNsdWRlIDxsaW51eC9kZWxheS5oPgorI2luY2x1ZGUgPGxpbnV4L3Jl
+Z3VsYXRvci9jb25zdW1lci5oPgogCiAjaW5jbHVkZSA8c291bmQvY29yZS5oPgogI2luY2x1ZGUg
+PHNvdW5kL3BjbS5oPgpAQCAtNDAsNiArNDEsOCBAQAogCiAjZGVmaW5lIFBSRUZJWCAiQVNvQyBv
+bWFwM3BhbmRvcmE6ICIKIAorc3RhdGljIHN0cnVjdCByZWd1bGF0b3IgKm9tYXAzcGFuZG9yYV9k
+YWNfcmVnOworCiBzdGF0aWMgaW50IG9tYXAzcGFuZG9yYV9jbW5faHdfcGFyYW1zKHN0cnVjdCBz
+bmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCXN0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAq
+cGFyYW1zLCB1bnNpZ25lZCBpbnQgZm10KQogewpAQCAtMTA2LDIxICsxMDksMzcgQEAgc3RhdGlj
+IGludCBvbWFwM3BhbmRvcmFfaW5faHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
+c3Vic3RyZWFtLAogCQkJCQkgIFNORF9TT0NfREFJRk1UX0NCU19DRlMpOwogfQogCi1zdGF0aWMg
+aW50IG9tYXAzcGFuZG9yYV9ocF9ldmVudChzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCAqdywK
+K3N0YXRpYyBpbnQgb21hcDNwYW5kb3JhX2RhY19ldmVudChzdHJ1Y3Qgc25kX3NvY19kYXBtX3dp
+ZGdldCAqdywKIAlzdHJ1Y3Qgc25kX2tjb250cm9sICprLCBpbnQgZXZlbnQpCiB7CisJLyoKKwkg
+KiBUaGUgUENNMTc3MyBEQUMgZGF0YXNoZWV0IHJlcXVpcmVzIDFtcyBkZWxheSBiZXR3ZWVuIHN3
+aXRjaGluZworCSAqIFZDQyBwb3dlciBvbi9vZmYgYW5kIC9QRCBwaW4gaGlnaC9sb3cKKwkgKi8K
+IAlpZiAoU05EX1NPQ19EQVBNX0VWRU5UX09OKGV2ZW50KSkgeworCQlyZWd1bGF0b3JfZW5hYmxl
+KG9tYXAzcGFuZG9yYV9kYWNfcmVnKTsKKwkJbWRlbGF5KDEpOwogCQlncGlvX3NldF92YWx1ZShP
+TUFQM19QQU5ET1JBX0RBQ19QT1dFUl9HUElPLCAxKTsKLQkJZ3Bpb19zZXRfdmFsdWUoT01BUDNf
+UEFORE9SQV9BTVBfUE9XRVJfR1BJTywgMSk7CiAJfSBlbHNlIHsKLQkJZ3Bpb19zZXRfdmFsdWUo
+T01BUDNfUEFORE9SQV9BTVBfUE9XRVJfR1BJTywgMCk7Ci0JCW1kZWxheSgxKTsKIAkJZ3Bpb19z
+ZXRfdmFsdWUoT01BUDNfUEFORE9SQV9EQUNfUE9XRVJfR1BJTywgMCk7CisJCW1kZWxheSgxKTsK
+KwkJcmVndWxhdG9yX2Rpc2FibGUob21hcDNwYW5kb3JhX2RhY19yZWcpOwogCX0KIAogCXJldHVy
+biAwOwogfQogCitzdGF0aWMgaW50IG9tYXAzcGFuZG9yYV9ocF9ldmVudChzdHJ1Y3Qgc25kX3Nv
+Y19kYXBtX3dpZGdldCAqdywKKwlzdHJ1Y3Qgc25kX2tjb250cm9sICprLCBpbnQgZXZlbnQpCit7
+CisJaWYgKFNORF9TT0NfREFQTV9FVkVOVF9PTihldmVudCkpCisJCWdwaW9fc2V0X3ZhbHVlKE9N
+QVAzX1BBTkRPUkFfQU1QX1BPV0VSX0dQSU8sIDEpOworCWVsc2UKKwkJZ3Bpb19zZXRfdmFsdWUo
+T01BUDNfUEFORE9SQV9BTVBfUE9XRVJfR1BJTywgMCk7CisKKwlyZXR1cm4gMDsKK30KKwogLyoK
+ICAqIEF1ZGlvIHBhdGhzIG9uIFBhbmRvcmEgYm9hcmQ6CiAgKgpAQCAtMTMwLDcgKzE0OSw5IEBA
+IHN0YXRpYyBpbnQgb21hcDNwYW5kb3JhX2hwX2V2ZW50KHN0cnVjdCBzbmRfc29jX2RhcG1fd2lk
+Z2V0ICp3LAogICogIHxQfCA8LS0tIFRXTDQwMzAgPC0tLS0tLS0tLSBMaW5lIEluIGFuZCBNSUNz
+CiAgKi8KIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBvbWFwM3BhbmRv
+cmFfb3V0X2RhcG1fd2lkZ2V0c1tdID0gewotCVNORF9TT0NfREFQTV9EQUMoIlBDTSBEQUMiLCAi
+SGlGaSBQbGF5YmFjayIsIFNORF9TT0NfTk9QTSwgMCwgMCksCisJU05EX1NPQ19EQVBNX0RBQ19F
+KCJQQ00gREFDIiwgIkhpRmkgUGxheWJhY2siLCBTTkRfU09DX05PUE0sCisJCQkgICAwLCAwLCBv
+bWFwM3BhbmRvcmFfZGFjX2V2ZW50LAorCQkJICAgU05EX1NPQ19EQVBNX1BPU1RfUE1VIHwgU05E
+X1NPQ19EQVBNX1BSRV9QTUQpLAogCVNORF9TT0NfREFQTV9QR0FfRSgiSGVhZHBob25lIEFtcGxp
+ZmllciIsIFNORF9TT0NfTk9QTSwKIAkJCSAgIDAsIDAsIE5VTEwsIDAsIG9tYXAzcGFuZG9yYV9o
+cF9ldmVudCwKIAkJCSAgIFNORF9TT0NfREFQTV9QT1NUX1BNVSB8IFNORF9TT0NfREFQTV9QUkVf
+UE1EKSwKQEAgLTMwNiw4ICszMjcsMTggQEAgc3RhdGljIGludCBfX2luaXQgb21hcDNwYW5kb3Jh
+X3NvY19pbml0KHZvaWQpCiAJCWdvdG8gZmFpbDI7CiAJfQogCisJb21hcDNwYW5kb3JhX2RhY19y
+ZWcgPSByZWd1bGF0b3JfZ2V0KCZvbWFwM3BhbmRvcmFfc25kX2RldmljZS0+ZGV2LCAidmNjIik7
+CisJaWYgKElTX0VSUihvbWFwM3BhbmRvcmFfZGFjX3JlZykpIHsKKwkJcHJfZXJyKFBSRUZJWCAi
+RmFpbGVkIHRvIGdldCBEQUMgcmVndWxhdG9yIGZyb20gJXM6ICVsZFxuIiwKKwkJCWRldl9uYW1l
+KCZvbWFwM3BhbmRvcmFfc25kX2RldmljZS0+ZGV2KSwKKwkJCVBUUl9FUlIob21hcDNwYW5kb3Jh
+X2RhY19yZWcpKTsKKwkJZ290byBmYWlsMzsKKwl9CisKIAlyZXR1cm4gMDsKIAorZmFpbDM6CisJ
+cGxhdGZvcm1fZGV2aWNlX2RlbChvbWFwM3BhbmRvcmFfc25kX2RldmljZSk7CiBmYWlsMjoKIAlw
+bGF0Zm9ybV9kZXZpY2VfcHV0KG9tYXAzcGFuZG9yYV9zbmRfZGV2aWNlKTsKIGZhaWwxOgpAQCAt
+MzIwLDYgKzM1MSw3IEBAIG1vZHVsZV9pbml0KG9tYXAzcGFuZG9yYV9zb2NfaW5pdCk7CiAKIHN0
+YXRpYyB2b2lkIF9fZXhpdCBvbWFwM3BhbmRvcmFfc29jX2V4aXQodm9pZCkKIHsKKwlyZWd1bGF0
+b3JfcHV0KG9tYXAzcGFuZG9yYV9kYWNfcmVnKTsKIAlwbGF0Zm9ybV9kZXZpY2VfdW5yZWdpc3Rl
+cihvbWFwM3BhbmRvcmFfc25kX2RldmljZSk7CiAJZ3Bpb19mcmVlKE9NQVAzX1BBTkRPUkFfQU1Q
+X1BPV0VSX0dQSU8pOwogCWdwaW9fZnJlZShPTUFQM19QQU5ET1JBX0RBQ19QT1dFUl9HUElPKTsK
+LS0gCjEuNi4zLjMKCg==
+--001485f8d188e9b592047edb48c2
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--001485f8d188e9b592047edb48c2--
