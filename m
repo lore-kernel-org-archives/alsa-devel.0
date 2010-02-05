@@ -1,19 +1,22 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
 Subject: Re: [PATCH -next] ASoC: pandora: Add DAC regulator
-	support
-Date: Fri, 5 Feb 2010 16:29:53 +0200
-Message-ID: <6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
+ support
+Date: Fri, 05 Feb 2010 15:16:50 +0000
+Message-ID: <1265383010.3177.13.camel@odin>
 References: <1265375612-9079-1-git-send-email-notasas@gmail.com>
 	<1265378923.3177.11.camel@odin>
+	<6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001485f8d188e9b592047edb48c2
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 66E741038E5
-	for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2010 15:29:53 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id e21so8802fga.2
-	for <alsa-devel@alsa-project.org>; Fri, 05 Feb 2010 06:29:53 -0800 (PST)
-In-Reply-To: <1265378923.3177.11.camel@odin>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id A3852243DA
+	for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2010 16:16:51 +0100 (CET)
+Received: by ewy23 with SMTP id 23so338215ewy.4
+	for <alsa-devel@alsa-project.org>; Fri, 05 Feb 2010 07:16:51 -0800 (PST)
+In-Reply-To: <6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,113 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
+To: Grazvydas Ignotas <notasas@gmail.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
---001485f8d188e9b592047edb48c2
-Content-Type: text/plain; charset=ISO-8859-1
+On Fri, 2010-02-05 at 16:29 +0200, Grazvydas Ignotas wrote:
+> On Fri, Feb 5, 2010 at 4:08 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+> > On Fri, 2010-02-05 at 15:13 +0200, Grazvydas Ignotas wrote:
+> >> Pandora's external DAC is connected to VSIM TWL4030 supply, so let's
+> >> start switching it too to save more power.
+> >>
+> >> Also DAC got it's own DAPM handler and the delay was removed
+> >> (it gave on audible improvement).
+> >>
+> >
+> > That's good to hear (pun intended).
+> 
+> Uh, I meant "no audible improvement". However I've just checked the
+> DAC datasheet again and it requires 1ms delay between turning on/off
+> the supply and switching /PD pin (connected to
+> OMAP3_PANDORA_DAC_POWER_GPIO). Even though I hear no difference,
+> adding the delays back just in case. Updated patch attached.
+> _______________________________________________
 
-On Fri, Feb 5, 2010 at 4:08 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
-> On Fri, 2010-02-05 at 15:13 +0200, Grazvydas Ignotas wrote:
->> Pandora's external DAC is connected to VSIM TWL4030 supply, so let's
->> start switching it too to save more power.
->>
->> Also DAC got it's own DAPM handler and the delay was removed
->> (it gave on audible improvement).
->>
->
-> That's good to hear (pun intended).
+Btw, have you tried turning the volume to mute when the DAC is enabled.
+It may lessen the pop at switch on.
 
-Uh, I meant "no audible improvement". However I've just checked the
-DAC datasheet again and it requires 1ms delay between turning on/off
-the supply and switching /PD pin (connected to
-OMAP3_PANDORA_DAC_POWER_GPIO). Even though I hear no difference,
-adding the delays back just in case. Updated patch attached.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
---001485f8d188e9b592047edb48c2
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-ASoC-pandora-add-DAC-regulator-support.patch"
-Content-Disposition: attachment;
-	filename="0001-ASoC-pandora-add-DAC-regulator-support.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g5b2msqs0
-
-RnJvbSA3MmNkZjM2ZTQzMmE5OTI5YmFmZjg4NDFkZjk3OWYxMzQ5MmRjODEzIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBHcmF6dnlkYXMgSWdub3RhcyA8bm90YXNhc0BnbWFpbC5jb20+
-CkRhdGU6IEZyaSwgNSBGZWIgMjAxMCAxMjo1NzozNyArMDIwMApTdWJqZWN0OiBbUEFUQ0ggLW5l
-eHRdIEFTb0M6IHBhbmRvcmE6IEFkZCBEQUMgcmVndWxhdG9yIHN1cHBvcnQKClBhbmRvcmEncyBl
-eHRlcm5hbCBEQUMgaXMgY29ubmVjdGVkIHRvIFZTSU0gVFdMNDAzMCBzdXBwbHksIHNvIGxldCdz
-CnN0YXJ0IHN3aXRjaGluZyBpdCB0b28gdG8gc2F2ZSBtb3JlIHBvd2VyLgpBbHNvIERBQyBnb3Qg
-aXQncyBvd24gREFQTSBoYW5kbGVyLgoKU2lnbmVkLW9mZi1ieTogR3JhenZ5ZGFzIElnbm90YXMg
-PG5vdGFzYXNAZ21haWwuY29tPgotLS0KIHNvdW5kL3NvYy9vbWFwL29tYXAzcGFuZG9yYS5jIHwg
-ICA0MiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tCiAxIGZpbGVzIGNo
-YW5nZWQsIDM3IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL29tYXAvb21hcDNwYW5kb3JhLmMgYi9zb3VuZC9zb2Mvb21hcC9vbWFwM3BhbmRvcmEu
-YwppbmRleCA2ODk4MGMxLi5kZTEwZjc2IDEwMDY0NAotLS0gYS9zb3VuZC9zb2Mvb21hcC9vbWFw
-M3BhbmRvcmEuYworKysgYi9zb3VuZC9zb2Mvb21hcC9vbWFwM3BhbmRvcmEuYwpAQCAtMjMsNiAr
-MjMsNyBAQAogI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2RldmljZS5oPgogI2luY2x1ZGUgPGxp
-bnV4L2dwaW8uaD4KICNpbmNsdWRlIDxsaW51eC9kZWxheS5oPgorI2luY2x1ZGUgPGxpbnV4L3Jl
-Z3VsYXRvci9jb25zdW1lci5oPgogCiAjaW5jbHVkZSA8c291bmQvY29yZS5oPgogI2luY2x1ZGUg
-PHNvdW5kL3BjbS5oPgpAQCAtNDAsNiArNDEsOCBAQAogCiAjZGVmaW5lIFBSRUZJWCAiQVNvQyBv
-bWFwM3BhbmRvcmE6ICIKIAorc3RhdGljIHN0cnVjdCByZWd1bGF0b3IgKm9tYXAzcGFuZG9yYV9k
-YWNfcmVnOworCiBzdGF0aWMgaW50IG9tYXAzcGFuZG9yYV9jbW5faHdfcGFyYW1zKHN0cnVjdCBz
-bmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogCXN0cnVjdCBzbmRfcGNtX2h3X3BhcmFtcyAq
-cGFyYW1zLCB1bnNpZ25lZCBpbnQgZm10KQogewpAQCAtMTA2LDIxICsxMDksMzcgQEAgc3RhdGlj
-IGludCBvbWFwM3BhbmRvcmFfaW5faHdfcGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
-c3Vic3RyZWFtLAogCQkJCQkgIFNORF9TT0NfREFJRk1UX0NCU19DRlMpOwogfQogCi1zdGF0aWMg
-aW50IG9tYXAzcGFuZG9yYV9ocF9ldmVudChzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCAqdywK
-K3N0YXRpYyBpbnQgb21hcDNwYW5kb3JhX2RhY19ldmVudChzdHJ1Y3Qgc25kX3NvY19kYXBtX3dp
-ZGdldCAqdywKIAlzdHJ1Y3Qgc25kX2tjb250cm9sICprLCBpbnQgZXZlbnQpCiB7CisJLyoKKwkg
-KiBUaGUgUENNMTc3MyBEQUMgZGF0YXNoZWV0IHJlcXVpcmVzIDFtcyBkZWxheSBiZXR3ZWVuIHN3
-aXRjaGluZworCSAqIFZDQyBwb3dlciBvbi9vZmYgYW5kIC9QRCBwaW4gaGlnaC9sb3cKKwkgKi8K
-IAlpZiAoU05EX1NPQ19EQVBNX0VWRU5UX09OKGV2ZW50KSkgeworCQlyZWd1bGF0b3JfZW5hYmxl
-KG9tYXAzcGFuZG9yYV9kYWNfcmVnKTsKKwkJbWRlbGF5KDEpOwogCQlncGlvX3NldF92YWx1ZShP
-TUFQM19QQU5ET1JBX0RBQ19QT1dFUl9HUElPLCAxKTsKLQkJZ3Bpb19zZXRfdmFsdWUoT01BUDNf
-UEFORE9SQV9BTVBfUE9XRVJfR1BJTywgMSk7CiAJfSBlbHNlIHsKLQkJZ3Bpb19zZXRfdmFsdWUo
-T01BUDNfUEFORE9SQV9BTVBfUE9XRVJfR1BJTywgMCk7Ci0JCW1kZWxheSgxKTsKIAkJZ3Bpb19z
-ZXRfdmFsdWUoT01BUDNfUEFORE9SQV9EQUNfUE9XRVJfR1BJTywgMCk7CisJCW1kZWxheSgxKTsK
-KwkJcmVndWxhdG9yX2Rpc2FibGUob21hcDNwYW5kb3JhX2RhY19yZWcpOwogCX0KIAogCXJldHVy
-biAwOwogfQogCitzdGF0aWMgaW50IG9tYXAzcGFuZG9yYV9ocF9ldmVudChzdHJ1Y3Qgc25kX3Nv
-Y19kYXBtX3dpZGdldCAqdywKKwlzdHJ1Y3Qgc25kX2tjb250cm9sICprLCBpbnQgZXZlbnQpCit7
-CisJaWYgKFNORF9TT0NfREFQTV9FVkVOVF9PTihldmVudCkpCisJCWdwaW9fc2V0X3ZhbHVlKE9N
-QVAzX1BBTkRPUkFfQU1QX1BPV0VSX0dQSU8sIDEpOworCWVsc2UKKwkJZ3Bpb19zZXRfdmFsdWUo
-T01BUDNfUEFORE9SQV9BTVBfUE9XRVJfR1BJTywgMCk7CisKKwlyZXR1cm4gMDsKK30KKwogLyoK
-ICAqIEF1ZGlvIHBhdGhzIG9uIFBhbmRvcmEgYm9hcmQ6CiAgKgpAQCAtMTMwLDcgKzE0OSw5IEBA
-IHN0YXRpYyBpbnQgb21hcDNwYW5kb3JhX2hwX2V2ZW50KHN0cnVjdCBzbmRfc29jX2RhcG1fd2lk
-Z2V0ICp3LAogICogIHxQfCA8LS0tIFRXTDQwMzAgPC0tLS0tLS0tLSBMaW5lIEluIGFuZCBNSUNz
-CiAgKi8KIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBvbWFwM3BhbmRv
-cmFfb3V0X2RhcG1fd2lkZ2V0c1tdID0gewotCVNORF9TT0NfREFQTV9EQUMoIlBDTSBEQUMiLCAi
-SGlGaSBQbGF5YmFjayIsIFNORF9TT0NfTk9QTSwgMCwgMCksCisJU05EX1NPQ19EQVBNX0RBQ19F
-KCJQQ00gREFDIiwgIkhpRmkgUGxheWJhY2siLCBTTkRfU09DX05PUE0sCisJCQkgICAwLCAwLCBv
-bWFwM3BhbmRvcmFfZGFjX2V2ZW50LAorCQkJICAgU05EX1NPQ19EQVBNX1BPU1RfUE1VIHwgU05E
-X1NPQ19EQVBNX1BSRV9QTUQpLAogCVNORF9TT0NfREFQTV9QR0FfRSgiSGVhZHBob25lIEFtcGxp
-ZmllciIsIFNORF9TT0NfTk9QTSwKIAkJCSAgIDAsIDAsIE5VTEwsIDAsIG9tYXAzcGFuZG9yYV9o
-cF9ldmVudCwKIAkJCSAgIFNORF9TT0NfREFQTV9QT1NUX1BNVSB8IFNORF9TT0NfREFQTV9QUkVf
-UE1EKSwKQEAgLTMwNiw4ICszMjcsMTggQEAgc3RhdGljIGludCBfX2luaXQgb21hcDNwYW5kb3Jh
-X3NvY19pbml0KHZvaWQpCiAJCWdvdG8gZmFpbDI7CiAJfQogCisJb21hcDNwYW5kb3JhX2RhY19y
-ZWcgPSByZWd1bGF0b3JfZ2V0KCZvbWFwM3BhbmRvcmFfc25kX2RldmljZS0+ZGV2LCAidmNjIik7
-CisJaWYgKElTX0VSUihvbWFwM3BhbmRvcmFfZGFjX3JlZykpIHsKKwkJcHJfZXJyKFBSRUZJWCAi
-RmFpbGVkIHRvIGdldCBEQUMgcmVndWxhdG9yIGZyb20gJXM6ICVsZFxuIiwKKwkJCWRldl9uYW1l
-KCZvbWFwM3BhbmRvcmFfc25kX2RldmljZS0+ZGV2KSwKKwkJCVBUUl9FUlIob21hcDNwYW5kb3Jh
-X2RhY19yZWcpKTsKKwkJZ290byBmYWlsMzsKKwl9CisKIAlyZXR1cm4gMDsKIAorZmFpbDM6CisJ
-cGxhdGZvcm1fZGV2aWNlX2RlbChvbWFwM3BhbmRvcmFfc25kX2RldmljZSk7CiBmYWlsMjoKIAlw
-bGF0Zm9ybV9kZXZpY2VfcHV0KG9tYXAzcGFuZG9yYV9zbmRfZGV2aWNlKTsKIGZhaWwxOgpAQCAt
-MzIwLDYgKzM1MSw3IEBAIG1vZHVsZV9pbml0KG9tYXAzcGFuZG9yYV9zb2NfaW5pdCk7CiAKIHN0
-YXRpYyB2b2lkIF9fZXhpdCBvbWFwM3BhbmRvcmFfc29jX2V4aXQodm9pZCkKIHsKKwlyZWd1bGF0
-b3JfcHV0KG9tYXAzcGFuZG9yYV9kYWNfcmVnKTsKIAlwbGF0Zm9ybV9kZXZpY2VfdW5yZWdpc3Rl
-cihvbWFwM3BhbmRvcmFfc25kX2RldmljZSk7CiAJZ3Bpb19mcmVlKE9NQVAzX1BBTkRPUkFfQU1Q
-X1BPV0VSX0dQSU8pOwogCWdwaW9fZnJlZShPTUFQM19QQU5ET1JBX0RBQ19QT1dFUl9HUElPKTsK
-LS0gCjEuNi4zLjMKCg==
---001485f8d188e9b592047edb48c2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---001485f8d188e9b592047edb48c2--
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
