@@ -1,8 +1,8 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH -next] ASoC: pandora: Add DAC regulator
  support
-Date: Fri, 05 Feb 2010 15:16:50 +0000
-Message-ID: <1265383010.3177.13.camel@odin>
+Date: Fri, 5 Feb 2010 17:20:31 +0000
+Message-ID: <20100205172031.GA31523@rakim.wolfsonmicro.main>
 References: <1265375612-9079-1-git-send-email-notasas@gmail.com>
 	<1265378923.3177.11.camel@odin>
 	<6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
@@ -10,12 +10,10 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3852243DA
-	for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2010 16:16:51 +0100 (CET)
-Received: by ewy23 with SMTP id 23so338215ewy.4
-	for <alsa-devel@alsa-project.org>; Fri, 05 Feb 2010 07:16:51 -0800 (PST)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6E414243AA
+	for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2010 18:20:34 +0100 (CET)
+Content-Disposition: inline
 In-Reply-To: <6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,34 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-02-05 at 16:29 +0200, Grazvydas Ignotas wrote:
-> On Fri, Feb 5, 2010 at 4:08 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
-> > On Fri, 2010-02-05 at 15:13 +0200, Grazvydas Ignotas wrote:
-> >> Pandora's external DAC is connected to VSIM TWL4030 supply, so let's
-> >> start switching it too to save more power.
-> >>
-> >> Also DAC got it's own DAPM handler and the delay was removed
-> >> (it gave on audible improvement).
-> >>
-> >
-> > That's good to hear (pun intended).
-> 
+On Fri, Feb 05, 2010 at 04:29:53PM +0200, Grazvydas Ignotas wrote:
+
 > Uh, I meant "no audible improvement". However I've just checked the
 > DAC datasheet again and it requires 1ms delay between turning on/off
 > the supply and switching /PD pin (connected to
 > OMAP3_PANDORA_DAC_POWER_GPIO). Even though I hear no difference,
 > adding the delays back just in case. Updated patch attached.
-> _______________________________________________
 
-Btw, have you tried turning the volume to mute when the DAC is enabled.
-It may lessen the pop at switch on.
+Which step of the powerup is the one that generates the pop?  As Liam
+says if you can mute the DAC while powering up might help if that's
+possible, though looking I don't think it is.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> From 72cdf36e432a9929baff8841df979f13492dc813 Mon Sep 17 00:00:00 2001
+> From: Grazvydas Ignotas <notasas@gmail.com>
+> Date: Fri, 5 Feb 2010 12:57:37 +0200
+> Subject: [PATCH -next] ASoC: pandora: Add DAC regulator support
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Please don't append patches to messages like this, it makes them harder
+to apply since the e-mail text ends up as part of the commit message as
+does the patch header.
+
+Applied, thanks.
