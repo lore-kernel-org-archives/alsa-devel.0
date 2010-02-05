@@ -1,21 +1,21 @@
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: RFC: workaround for 'azx_get_response timeout,
- switching to polling mode...'
-Date: Fri, 05 Feb 2010 11:46:55 +0200
-Message-ID: <1265363215.15383.28.camel@maxim-laptop>
-References: <1265314817.19186.8.camel@maxim-laptop>
-	<s5hljf8umlc.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: pandora: Add APLL supply to fix
+ audio output
+Date: Fri, 05 Feb 2010 10:13:21 +0000
+Message-ID: <1265364801.3177.6.camel@odin>
+References: <1265324133-23607-1-git-send-email-notasas@gmail.com>
+	<201002050850.56430.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f221.google.com (mail-bw0-f221.google.com
-	[209.85.218.221])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3220524380
-	for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2010 10:47:00 +0100 (CET)
-Received: by bwz21 with SMTP id 21so3013593bwz.4
-	for <alsa-devel@alsa-project.org>; Fri, 05 Feb 2010 01:46:59 -0800 (PST)
-In-Reply-To: <s5hljf8umlc.wl%tiwai@suse.de>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03521243A8
+	for <alsa-devel@alsa-project.org>; Fri,  5 Feb 2010 11:13:25 +0100 (CET)
+Received: by ewy23 with SMTP id 23so492414ewy.4
+	for <alsa-devel@alsa-project.org>; Fri, 05 Feb 2010 02:13:25 -0800 (PST)
+In-Reply-To: <201002050850.56430.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,39 +25,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@Nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, ext Grazvydas Ignotas <notasas@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-02-05 at 09:13 +0100, Takashi Iwai wrote: 
-> At Thu, 04 Feb 2010 22:20:17 +0200,
-> Maxim Levitsky wrote:
+On Fri, 2010-02-05 at 08:50 +0200, Peter Ujfalusi wrote:
+> On Friday 05 February 2010 00:55:33 ext Grazvydas Ignotas wrote:
+> > Pandora's external DAC is using 256*Fs output from the TWL4030
+> > codec, and TWL4030 needs to have APLL enabled for it's 256*Fs
+> > output to function.
 > > 
-> > Hi,
-> > 
-> > Although I thought that polling mode is harmless, it sometimes isn't.
-> > I found out that after few dozens of hibernate cycles, the timeout would
-> > happen again kicking out first MSI, and then whole RRIB (single_cmd).
-> > 
-> > However, I also found out that if I resend the command that caused the
-> > timeout, it would complete normally.
-> > Even futher, it is possible to poll for this command, and send next
-> > normally. It just works.
-> > So interrupts do work, but sometimes (very rarely) are missed. It might
-> > be even a hardware bug.
-> > 
-> > The patch I send allows to delay switch to polling till we get 3 such
-> > timeouts in a row.
-> > 
-> > I tested this approach for about 130 hibernate cycles.
+> > Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
+> > ---
+> > I noticed this a bit late because TWL4030 codec used to have APLL
+> > enable hardcoded until that was clean up by not-so-old patch.
+> > Would be nice to see this in next -rc, as without this audio
+> > won't work completely on pandora (again)..
 > 
-> Thanks!  Applied both patches now.
+> Yeah, when I made the changes to the twl4030 codec, I did missed the pandora 
+> setup..
 > 
-> I changed snd_printd() to snd_printdd() since the former is enabled on
-> vendor kernels often as default, and this can worry innocent users (I
-> know from my experiences :) 
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-Thanks a lot!
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Best regards,
-Maxim Levitsky
+Btw, I may be getting a pandora soon so I should be able to keep on top
+of any future breakages.
+
+Liam
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
