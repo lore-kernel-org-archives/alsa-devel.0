@@ -1,20 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: safe support for rewind in ALSA
-Date: Sat, 6 Feb 2010 19:59:12 +0800
-Message-ID: <4f3252891002060359j11d68819idf5d12705e2a60bc@mail.gmail.com>
-References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
-	<alpine.LNX.2.00.1002011840020.25340@eeebox2.perex-int.cz>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [PATCH -next] ASoC: pandora: Add DAC regulator
+	support
+Date: Sat, 6 Feb 2010 19:33:08 +0200
+Message-ID: <6ed0b2681002060933x38009b77r237db131ab172fee@mail.gmail.com>
+References: <1265375612-9079-1-git-send-email-notasas@gmail.com>
+	<1265378923.3177.11.camel@odin>
+	<6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
+	<20100205172031.GA31523@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f173.google.com (mail-px0-f173.google.com
-	[209.85.216.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5A2D024462
-	for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2010 12:59:14 +0100 (CET)
-Received: by pxi3 with SMTP id 3so392356pxi.16
-	for <alsa-devel@alsa-project.org>; Sat, 06 Feb 2010 03:59:13 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1002011840020.25340@eeebox2.perex-int.cz>
+Received: from mail-fx0-f223.google.com (mail-fx0-f223.google.com
+	[209.85.220.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A7FB244D1
+	for <alsa-devel@alsa-project.org>; Sat,  6 Feb 2010 18:33:09 +0100 (CET)
+Received: by fxm23 with SMTP id 23so2149045fxm.22
+	for <alsa-devel@alsa-project.org>; Sat, 06 Feb 2010 09:33:08 -0800 (PST)
+In-Reply-To: <20100205172031.GA31523@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +27,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/2 Jaroslav Kysela <perex@perex.cz>
+On Fri, Feb 5, 2010 at 7:20 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Fri, Feb 05, 2010 at 04:29:53PM +0200, Grazvydas Ignotas wrote:
+>
+>> Uh, I meant "no audible improvement". However I've just checked the
+>> DAC datasheet again and it requires 1ms delay between turning on/off
+>> the supply and switching /PD pin (connected to
+>> OMAP3_PANDORA_DAC_POWER_GPIO). Even though I hear no difference,
+>> adding the delays back just in case. Updated patch attached.
+>
+> Which step of the powerup is the one that generates the pop? =A0As Liam
+> says if you can mute the DAC while powering up might help if that's
+> possible, though looking I don't think it is.
 
-> On Mon, 1 Feb 2010, pl bossart wrote:
->
-> > All,
-> > I'd like to reopen a thread on concerns with the current
-> > implementation of rewind in ALSA. This was already discussed on the
-> > mailing list last year without any progress.
->
-> I don't think that there have been no progress. The queued samples can be
-> stored to runtime->delay now, so snd_pcm_delay() returns a correct
-> value.
->
-> The snd_pcm_rewind() and snd_pcm_forward() functions should operate in the
-> ring buffer and it's ok. See the USB driver for an example. Just add
-> support for runtime->delay to the lowlevel drivers and use snd_pcm_delay()
-> correctly in the user space and everything will work as expected.
->
-> In other words - for hardware with large FIFOs, the runtime->delay should
-> be used for queued samples and the hw_ptr in the ring buffer should be
-> increased as soon as the FIFO is filled with samples from the ring buffer.
->
->                                        Jaroslav
->
->
-How about those alsa plugins ( e.g. pulse , jack , oss , .... )
+It's on powerdown, there is a faint pop. It appears its the amp (final
+part in the path), I tried to toggle it while playing /dev/zero
+manually and it always pops on powerdown. On powerup there is a small
+sound cutoff too, probably because of amp capacitors charging, but we
+decided to leave it instead of halting every sound playing program
+until the amp gets ready.
 
-Can alsa application use snd_pcm_rewind() for pulse plugin or oss plugin ?
+>
+>> From 72cdf36e432a9929baff8841df979f13492dc813 Mon Sep 17 00:00:00 2001
+>> From: Grazvydas Ignotas <notasas@gmail.com>
+>> Date: Fri, 5 Feb 2010 12:57:37 +0200
+>> Subject: [PATCH -next] ASoC: pandora: Add DAC regulator support
+>
+> Please don't append patches to messages like this, it makes them harder
+> to apply since the e-mail text ends up as part of the commit message as
+> does the patch header.
+>
+> Applied, thanks.
+
+noted, thanks.
