@@ -1,24 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH -next] ASoC: pandora: Add DAC regulator
- support
-Date: Sun, 7 Feb 2010 11:07:32 +0200
-Message-ID: <20100207110732.9279b77a.jhnikula@gmail.com>
-References: <1265375612-9079-1-git-send-email-notasas@gmail.com>
-	<1265378923.3177.11.camel@odin>
-	<6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
-	<20100205172031.GA31523@rakim.wolfsonmicro.main>
-	<6ed0b2681002060933x38009b77r237db131ab172fee@mail.gmail.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: Re: ALSA Driver 1.0.22.1
+Date: Sun, 7 Feb 2010 05:29:09 -0500
+Message-ID: <604760771002070229w6f12e501vd783c895cb00b2a7@mail.gmail.com>
+References: <c75a76611002070020v245a4edckb6b85dbd187365db@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 27699243EF
-	for <alsa-devel@alsa-project.org>; Sun,  7 Feb 2010 10:03:37 +0100 (CET)
-Received: by ewy23 with SMTP id 23so19254ewy.4
-	for <alsa-devel@alsa-project.org>; Sun, 07 Feb 2010 01:03:35 -0800 (PST)
-In-Reply-To: <6ed0b2681002060933x38009b77r237db131ab172fee@mail.gmail.com>
+Received: from mail-px0-f200.google.com (mail-px0-f200.google.com
+	[209.85.216.200])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3346F2412E
+	for <alsa-devel@alsa-project.org>; Sun,  7 Feb 2010 11:29:10 +0100 (CET)
+Received: by pxi38 with SMTP id 38so15896pxi.16
+	for <alsa-devel@alsa-project.org>; Sun, 07 Feb 2010 02:29:10 -0800 (PST)
+In-Reply-To: <c75a76611002070020v245a4edckb6b85dbd187365db@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,31 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: darsen@berkeley.edu
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 6 Feb 2010 19:33:08 +0200
-Grazvydas Ignotas <notasas@gmail.com> wrote:
+On Sun, Feb 7, 2010 at 3:20 AM, Darsen Lu <darsenlu@gmail.com> wrote:
+> After that I started noticing conflicts between different sound-playback
+> applications.
+> For example, if I watch a Flash video on Firefox, stop it, and then start
+> playing an MP3 file on Totem (a Media Player), I don't hear any sound.
+> Once I close Firefox the music from Totem starts coming out.
+> This never happened before on my Linux system. I'd be very grateful if
+> someone could give me advices!
 
-> It's on powerdown, there is a faint pop. It appears its the amp (final
-> part in the path), I tried to toggle it while playing /dev/zero
-> manually and it always pops on powerdown. On powerup there is a small
-> sound cutoff too, probably because of amp capacitors charging, but we
-> decided to leave it instead of halting every sound playing program
-> until the amp gets ready.
-> 
-My side comment for the /dev/zero test. You may hear pops also
-if /dev/zero is played as unsigned 8-bit samples on signed DAC since
-then samples gets converted to maximum negative value.
+This symptom is very improbably related to your upgrading of the
+driver. Instead, it's a userspace issue. Use "sudo fuser -v /dev/dsp*
+/dev/snd/* /dev/seq*" when you're experiencing the symptom to start
+troubleshooting.
 
-So there is a difference how the /dev/zero is played. First command
-below produces a pop because it's playing a pop and second produces a
-pop only if HW is producing it.
-
-aplay /dev/zero
-aplay -f S16_LE /dev/zero
-
-
--- 
-Jarkko
+Best,
+-Dan
