@@ -1,18 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: ANISH KUMAR <anish.singh@samsung.com>
 Subject: Re: DMA interrupt not getting triggered(nailed
 	the	problem need solution)
-Date: Mon, 8 Feb 2010 11:05:16 +0000
-Message-ID: <20100208110515.GA12780@sirena.org.uk>
-References: <15824817.821301265596468706.JavaMail.weblogic@epml09>
+Date: Mon, 08 Feb 2010 11:17:01 +0000 (GMT)
+Message-ID: <4218975.894361265627821377.JavaMail.weblogic@epml09>
+Reply-To: anish.singh@samsung.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 454B72446A
-	for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2010 12:05:19 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <15824817.821301265596468706.JavaMail.weblogic@epml09>
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 02E9A24472
+	for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2010 12:17:05 +0100 (CET)
+Received: from ep_ms13_bk (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KXI00LMASODEO@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 08 Feb 2010 20:17:01 +0900 (KST)
+Received: from ep_spt04 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0KXI00CACSODKN@ms13.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 08 Feb 2010 20:17:01 +0900 (KST)
+Content-return: prohibited
+MIME-version: 1.0
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +31,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ANISH KUMAR <anish.singh@samsung.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, jassi brar <jassisinghbrar@gmail.com>, "JaroslavKyselaperex@perex.cz" <JaroslavKyselaperex@perex.cz>, ben-linux@fluff.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, jassi brar <jassisinghbrar@gmail.com>, "JaroslavKyselaperex@perex.cz" <JaroslavKyselaperex@perex.cz>, "ben-linux@fluff.org" <ben-linux@fluff.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 08, 2010 at 02:34:29AM +0000, ANISH KUMAR wrote:
+>If the initial hardware state happens to result in LRCLK being where the
+>lrsync() function is trying to get it then the driver will start up, but
+>the misclocking of the configuration will result in ALSA detecting an
+>error which will eventually result in a restart of the audio stream.
+Mark in my case it is not restarting the audio stream(though it is trying to call trigger again for restarting) 
+because in s3c_snd_lrsync function again i am getting time out(ETIMEDOUT).
 
-> This problem is due to ETIMEDOUT(timeout) happening in s3c_snd_lrsync function(called by trigger).
+iiscon = readl(s3c_i2s.regs + S3C_IISCON);
+if (iiscon & S3C_IISCON_LRI)
+break;
 
-Please don't start a new thread for each mail, please continue
-discussion in the existing thread.  It makes it much easier to follow
-which problem you are talking about.
+This LRI register bit is not getting set properly causing timeout.How this situation is not coming always(4/10)??
+And who should suppose to set it?
 
-> As i understand this could be due I2S being broken. This basically happens because 
-> of improper initialization of CPU or CODEC.
+If my machine driver had a problem then this should have come always??
 
-> But if that is the case then it would not have produced sound initially also but that
-> is not the case(initially it is ringing i.e. interrupt coming for a short time then after i am getting time out problem)??
-
-If the initial hardware state happens to result in LRCLK being where the
-lrsync() function is trying to get it then the driver will start up, but
-the misclocking of the configuration will result in ALSA detecting an
-error which will eventually result in a restart of the audio stream.
-
-> Please provide any pointers which can help me out.
-
-You've probably got a problem with the machine driver for your system,
-check the way the clocks are set up in there.
+Thanks for your reply.
