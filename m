@@ -1,22 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH -next] ASoC: pandora: Add DAC regulator
- support
-Date: Mon, 8 Feb 2010 11:39:35 +0000
-Message-ID: <20100208113935.GA15883@rakim.wolfsonmicro.main>
-References: <1265375612-9079-1-git-send-email-notasas@gmail.com>
-	<1265378923.3177.11.camel@odin>
-	<6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
-	<20100205172031.GA31523@rakim.wolfsonmicro.main>
-	<6ed0b2681002060933x38009b77r237db131ab172fee@mail.gmail.com>
+From: ANISH KUMAR <anish.singh@samsung.com>
+Subject: Re: DMA interrupt not getting triggered(nailed
+	the	problem need solution)
+Date: Mon, 08 Feb 2010 12:15:57 +0000 (GMT)
+Message-ID: <5781224.897561265631357494.JavaMail.weblogic@epml09>
+Reply-To: anish.singh@samsung.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A75792433C
-	for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2010 12:39:36 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <6ed0b2681002060933x38009b77r237db131ab172fee@mail.gmail.com>
+Received: from mailout5.samsung.com (mailout5.samsung.com [203.254.224.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4AAE02439E
+	for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2010 13:16:00 +0100 (CET)
+Received: from ep_ms13_bk (mailout5.samsung.com [203.254.224.35])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KXI004V8VELOI@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 08 Feb 2010 21:15:57 +0900 (KST)
+Received: from ep_spt02 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0KXI005H7VELQ4@ms13.samsung.com> for
+	alsa-devel@alsa-project.org; Mon, 08 Feb 2010 21:15:57 +0900 (KST)
+Content-return: prohibited
+MIME-version: 1.0
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +31,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, jassi brar <jassisinghbrar@gmail.com>, "ben-linux@fluff.org" <ben-linux@fluff.org>, "JaroslavKyselaperex@perex.cz" <JaroslavKyselaperex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Feb 06, 2010 at 07:33:08PM +0200, Grazvydas Ignotas wrote:
-> On Fri, Feb 5, 2010 at 7:20 PM, Mark Brown
+> If the initial hardware state happens to result in LRCLK being where the
+ >lrsync() function is trying to get it then the driver will start up, but
+ >the misclocking of the configuration will result in ALSA detecting an
+ >error which will eventually result in a restart of the audio stream.
 
-> > Which step of the powerup is the one that generates the pop? =A0As Liam
-> > says if you can mute the DAC while powering up might help if that's
-> > possible, though looking I don't think it is.
+>From the lrsync function i know that it is just trying to check whether a particular
+bit is set or not.So according to my understanding this lrsync function will timeout if the 
+clock itself is not coming.
 
-> It's on powerdown, there is a faint pop. It appears its the amp (final
-> part in the path), I tried to toggle it while playing /dev/zero
-> manually and it always pops on powerdown. On powerup there is a small
-
-Like Jarkko says be careful what you're actually playing there -
-especially given the ramp you appear to have at startup which would mask
-any sudden DC offset in the samples at startup.
-
-> sound cutoff too, probably because of amp capacitors charging, but we
-> decided to leave it instead of halting every sound playing program
-> until the amp gets ready.
-
-If this goes off too much you might want to tweak the delay ASoC uses to
-defer power down of DAPM widgets after streams stop.  There's a command
-line option pmdown_time, it really ought to have a sysfs file to tweak
-but there's not been any demand.
+Please forgive for not understanding your reply.
+But i am not able to understand "where the lrsync() function is trying to get-FROM YOUR REPLY"??
+And misclocking of the configuration??Please explain this term(googling didn't help much).
