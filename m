@@ -1,27 +1,24 @@
-From: ANISH KUMAR <anish.singh@samsung.com>
-Subject: Re: DMA interrupt not getting triggered(nailed
-	the	problem need solution)
-Date: Mon, 08 Feb 2010 12:15:57 +0000 (GMT)
-Message-ID: <5781224.897561265631357494.JavaMail.weblogic@epml09>
-Reply-To: anish.singh@samsung.com
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [PATCH -next] ASoC: pandora: Add DAC regulator
+	support
+Date: Mon, 8 Feb 2010 14:29:17 +0200
+Message-ID: <6ed0b2681002080429m6cdc0bc0u98849ae546c7f6e8@mail.gmail.com>
+References: <1265375612-9079-1-git-send-email-notasas@gmail.com>
+	<1265378923.3177.11.camel@odin>
+	<6ed0b2681002050629p1d38c19m19d1a124ddce307a@mail.gmail.com>
+	<20100205172031.GA31523@rakim.wolfsonmicro.main>
+	<6ed0b2681002060933x38009b77r237db131ab172fee@mail.gmail.com>
+	<20100207110732.9279b77a.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout5.samsung.com (mailout5.samsung.com [203.254.224.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4AAE02439E
-	for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2010 13:16:00 +0100 (CET)
-Received: from ep_ms13_bk (mailout5.samsung.com [203.254.224.35])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KXI004V8VELOI@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 08 Feb 2010 21:15:57 +0900 (KST)
-Received: from ep_spt02 (ms13.samsung.com [203.254.225.109])
-	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0KXI005H7VELQ4@ms13.samsung.com> for
-	alsa-devel@alsa-project.org; Mon, 08 Feb 2010 21:15:57 +0900 (KST)
-Content-return: prohibited
-MIME-version: 1.0
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.155])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7053C243B1
+	for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2010 13:29:18 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 22so24826fge.2
+	for <alsa-devel@alsa-project.org>; Mon, 08 Feb 2010 04:29:17 -0800 (PST)
+In-Reply-To: <20100207110732.9279b77a.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,19 +28,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, jassi brar <jassisinghbrar@gmail.com>, "ben-linux@fluff.org" <ben-linux@fluff.org>, "JaroslavKyselaperex@perex.cz" <JaroslavKyselaperex@perex.cz>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-> If the initial hardware state happens to result in LRCLK being where the
- >lrsync() function is trying to get it then the driver will start up, but
- >the misclocking of the configuration will result in ALSA detecting an
- >error which will eventually result in a restart of the audio stream.
+On Sun, Feb 7, 2010 at 11:07 AM, Jarkko Nikula <jhnikula@gmail.com> wrote:
+> On Sat, 6 Feb 2010 19:33:08 +0200
+> Grazvydas Ignotas <notasas@gmail.com> wrote:
+>
+>> It's on powerdown, there is a faint pop. It appears its the amp (final
+>> part in the path), I tried to toggle it while playing /dev/zero
+>> manually and it always pops on powerdown. On powerup there is a small
+>> sound cutoff too, probably because of amp capacitors charging, but we
+>> decided to leave it instead of halting every sound playing program
+>> until the amp gets ready.
+>>
+> My side comment for the /dev/zero test. You may hear pops also
+> if /dev/zero is played as unsigned 8-bit samples on signed DAC since
+> then samples gets converted to maximum negative value.
+>
+> So there is a difference how the /dev/zero is played. First command
+> below produces a pop because it's playing a pop and second produces a
+> pop only if HW is producing it.
+>
+> aplay /dev/zero
+> aplay -f S16_LE /dev/zero
 
->From the lrsync function i know that it is just trying to check whether a particular
-bit is set or not.So according to my understanding this lrsync function will timeout if the 
-clock itself is not coming.
+I was testing with '-f cd' which should also be signed. Actually doing
+just 'aplay /dev/zero' makes matters worse, there is some additional
+'squeek' noise audible when I turn the volume up.
 
-Please forgive for not understanding your reply.
-But i am not able to understand "where the lrsync() function is trying to get-FROM YOUR REPLY"??
-And misclocking of the configuration??Please explain this term(googling didn't help much).
+On Mon, Feb 8, 2010 at 1:39 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> If this goes off too much you might want to tweak the delay ASoC uses to
+> defer power down of DAPM widgets after streams stop.  There's a command
+> line option pmdown_time, it really ought to have a sysfs file to tweak
+> but there's not been any demand.
+
+Yes we are already using that (set to 1 minute), and the sysfs file
+would be useful for us (we have a hack for that in our tree).
