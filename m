@@ -1,26 +1,15 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: Re: [PATCH] ASoC: TWL4030: Add supply for audio serial
- interface control
-Date: Wed, 10 Feb 2010 09:11:19 +0900
-Message-ID: <4B71F9A7.7010504@samsung.com>
-References: <1265721844-5065-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Thomas Weber <weber@corscience.de>
+Subject: [PATCH V2 3/4] Add ASoC support for Devkit8000
+Date: Tue,  9 Feb 2010 17:08:48 +0100
+Message-ID: <1265731728-5639-1-git-send-email-weber@corscience.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 230EA2432F
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 01:11:22 +0100 (CET)
-Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KXL00KJKN6VRW@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 10 Feb 2010 09:11:19 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KXL005O6N6U4U@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 10 Feb 2010 09:11:18 +0900 (KST)
-In-reply-to: <1265721844-5065-1-git-send-email-peter.ujfalusi@nokia.com>
+Received: from moutng.kundenserver.de (moutng.kundenserver.de
+	[212.227.126.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9C77103816
+	for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2010 17:09:16 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,35 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, x0052729@ti.com, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: Thomas Weber <weber@corscience.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 2/9/2010 10:24 PM, Peter Ujfalusi wrote:
-> The serial interface (TDM/I2S) for the audio block have been
-> constantly enabled.
-> Introduce a new DAPM_SUPPLY for handling the AIF_EN bit, so
-> the interface is only enabled, when there is a need for it.
-> For example when only the analog loopback is enabled, there
-> is no need to keep the serial interface active.
-> 
-> I have added the persons who contributed to the Voice path
-> of twl4030 codec driver, so they might have the ability
-> to test this patch, and send an update for the Voice path,
-> if it is necessary
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
-> 
-> This patch has been tested in OPTION 1 mode, where the Voice
-> path is not in use.
-> I have looked for dependencies in the Voice path regarding to 
-> the Audio interface enable bit, but I have not found any.
-> If someone could test, if the Voice path also needs the AIF_EN
-> bit set, than please send a patch, which adds this new supply
-> to the DAPM rule for the Voice path.
-> 
+This patch expands the omap3beagle sound soc for the
+beagle board clone DevKit8000.
 
-Unfortunately, i cannot test the twl4030 codec anymore, but i think
-there is no dependency in the Voice path by this patch. The AIF_EN bit
-is only for the audio interface(DIN, DOUT, SYNC, CLK).
+Signed-off-by: Thomas Weber <weber@corscience.de>
+---
+ sound/soc/omap/Kconfig       |    8 +++++---
+ sound/soc/omap/omap3beagle.c |    6 +++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 61952aa..1cdd541 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -94,12 +94,14 @@ config SND_OMAP_SOC_OMAP3_PANDORA
+ 	  Say Y if you want to add support for SoC audio on the OMAP3 Pandora.
+ 
+ config SND_OMAP_SOC_OMAP3_BEAGLE
+-	tristate "SoC Audio support for OMAP3 Beagle"
+-	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_BEAGLE
++	tristate "SoC Audio support for OMAP3 Beagle and Devkit8000"
++	depends on TWL4030_CORE && SND_OMAP_SOC 
++	depends on (MACH_OMAP3_BEAGLE || MACH_DEVKIT8000)
+ 	select SND_OMAP_SOC_MCBSP
+ 	select SND_SOC_TWL4030
+ 	help
+-	  Say Y if you want to add support for SoC audio on the Beagleboard.
++	  Say Y if you want to add support for SoC audio on the Beagleboard or 
++	  the clone Devkit8000.
+ 
+ config SND_OMAP_SOC_ZOOM2
+ 	tristate "SoC Audio support for Zoom2"
+diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
+index d88ad5c..240e097 100644
+--- a/sound/soc/omap/omap3beagle.c
++++ b/sound/soc/omap/omap3beagle.c
+@@ -117,11 +117,11 @@ static int __init omap3beagle_soc_init(void)
+ {
+ 	int ret;
+ 
+-	if (!machine_is_omap3_beagle()) {
+-		pr_debug("Not OMAP3 Beagle!\n");
++	if (!(machine_is_omap3_beagle() || machine_is_devkit8000())) {
++		pr_debug("Not OMAP3 Beagle or Devkit8000!\n");
+ 		return -ENODEV;
+ 	}
+-	pr_info("OMAP3 Beagle SoC init\n");
++	pr_info("OMAP3 Beagle/Devkit8000 SoC init\n");
+ 
+ 	omap3beagle_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!omap3beagle_snd_device) {
+-- 
+1.6.4.4
