@@ -1,27 +1,18 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH] ALSA: ASoC: cs4270: enable regulators at
-	probe time
-Date: Tue, 09 Feb 2010 09:55:28 -0600
-Message-ID: <4B718570.4050200@freescale.com>
-References: <4B62E8B7.5080403@freescale.com>
-	<1265653979-2333-1-git-send-email-daniel@caiaq.de>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH V2 3/4] Add ASoC support for Devkit8000
+Date: Tue, 9 Feb 2010 18:33:16 +0200
+Message-ID: <20100209183316.ebd62093.jhnikula@gmail.com>
+References: <1265731728-5639-1-git-send-email-weber@corscience.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7635B1037E3
-	for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2010 16:55:48 +0100 (CET)
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	o19FtUB7015710
-	for <alsa-devel@alsa-project.org>; Tue, 9 Feb 2010 08:55:40 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])
-	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id o19G2nhv001330
-	for <alsa-devel@alsa-project.org>; Tue, 9 Feb 2010 10:02:49 -0600 (CST)
-In-Reply-To: <1265653979-2333-1-git-send-email-daniel@caiaq.de>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19854103816
+	for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2010 17:29:05 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 4so1646881eyg.16
+	for <alsa-devel@alsa-project.org>; Tue, 09 Feb 2010 08:29:03 -0800 (PST)
+In-Reply-To: <1265731728-5639-1-git-send-email-weber@corscience.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,21 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Thomas Weber <weber@corscience.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
-> Enable the bulk regulators at probe time so we can safely disable them
-> again when going to suspend without confusing the reference counter.
-> 
-> Signed-off-by: Daniel Mack <daniel@caiaq.de>
-> Cc: Timur Tabi <timur@freescale.com>
-> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Hi
 
-I don't have any way to test this, but it looks okay.  Mark, feel free to apply if you're okay with it.
+On Tue,  9 Feb 2010 17:08:48 +0100
+Thomas Weber <weber@corscience.de> wrote:
+
+>  config SND_OMAP_SOC_OMAP3_BEAGLE
+> -	tristate "SoC Audio support for OMAP3 Beagle"
+> -	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_BEAGLE
+> +	tristate "SoC Audio support for OMAP3 Beagle and Devkit8000"
+> +	depends on TWL4030_CORE && SND_OMAP_SOC 
+> +	depends on (MACH_OMAP3_BEAGLE || MACH_DEVKIT8000)
+>  	select SND_OMAP_SOC_MCBSP
+>  	select SND_SOC_TWL4030
+>  	help
+> -	  Say Y if you want to add support for SoC audio on the Beagleboard.
+> +	  Say Y if you want to add support for SoC audio on the Beagleboard or 
+> +	  the clone Devkit8000.
+>  
+I was thinking here that would it be better to have own Kconfig option
+for the Devkit8000 already now? I don't know the Devkit8000 but it makes
+easier to maintain e.g. defconfigs if there is ever need to separate
+audio functionality, select statements, etc. of these two board.
+
 
 -- 
-Timur Tabi
-Linux kernel developer at Freescale
+Jarkko
