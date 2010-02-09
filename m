@@ -1,23 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: safe support for rewind in ALSA
-Date: Tue, 9 Feb 2010 06:59:45 +0800
-Message-ID: <4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>
-References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
-	<20100201180139.GC15509@sirena.org.uk>
-	<alpine.LNX.2.00.1002011903330.25340@eeebox2.perex-int.cz>
-	<alpine.DEB.1.10.1002012239220.3125@ecabase.localdomain>
-	<alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] Add Phytec i.MX sound support for AC97
+Date: Tue, 9 Feb 2010 11:14:28 +0100
+Message-ID: <20100209101428.GG17643@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f171.google.com (mail-pz0-f171.google.com
-	[209.85.222.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1D46103805
-	for <alsa-devel@alsa-project.org>; Mon,  8 Feb 2010 23:59:46 +0100 (CET)
-Received: by pzk1 with SMTP id 1so570123pzk.16
-	for <alsa-devel@alsa-project.org>; Mon, 08 Feb 2010 14:59:45 -0800 (PST)
-In-Reply-To: <alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id D06E42452B
+	for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2010 11:14:31 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,85 +20,171 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/2 Kai Vehmanen <kvehmanen@eca.cx>
+Hi Marc et all,
 
-> Hi all,
->
-> and then about the "other problem", e.g. of rewinding with drivers/HW that
-> do burst transfers of samples from ALSA ringbuffer to a separate HW
-> buffer. Uh oh, and what the subject says this thread is ought to be
-> about.:)
->
-> On Mon, 1 Feb 2010, Kai Vehmanen wrote:
->
-> > So while snd_pcm_delay() provides a snapshot of the delay at the last DMA
-> > burst/block-transfer (when hw_ptr+runtime->delay were last updated in the
-> > driver), the information may be refined with snd_pcm_status_get_tstamp(),
-> > which essentially tells the diff between T1&T3. So essentially what the
-> > application is looking for is 'snd_pcm_delay()-(T3-T1)'.
-> [...]
-> > One idea is to tie this to the existing SNDRV_PCM_INFO_BATCH flag (e.g.
-> > quoting existing documentation in pcm_local.h -> "device transfers
-> samples in
-> > batch"). So if the PCM has this flag set, application should interpret
-> > snd_pcm_delay() results as referring to the last batch.
->
-> Maybe the same INFO_BATCH flag could be used to help solve the rewind
-> problem as well. If set, it is a signal that a segment of the ringbuffer
-> (N samples after current hw_ptr) may have been already transferred, or is
-> currently in transfer, and cannot be rewound (without stopping the stream
-> and causing a glitch), but the elapsed callback and hw_ptr have not yet
-> occured. And most importantly, when pointer() cb reports that hw_ptr jumps
-> in bursts, so current snd_pcm_rewindable() implementation may not be
-> accurate with these drivers.
->
-> But then how much is N? I guess we can't assume N=period-size (does not
-> apply for e.g. how pulseaudio uses ALSA in glitch free mode).
-> Sw-params:xfer-align is not the same thing plus it's now deprecated. Any
-> ideas?
->
-> Hmm, or on a second though, maybe N=period-size is a good idea after all.
-> E.g. drivers would configure the DMA transfers according to the
-> hwparams:period-size, and apps such as pulseaudio could decide (by setting
-> the period-size) how close to hw-ptr it wants to live (and still rewind if
-> needed). Of course, it's not obvious how useful PA glitch-free is if used
-> in this way...
->
-> For applications, this would be hidden in the implementation of
-> snd_pcm_rewindable() and snd_pcm_rewind() (they would check for
-> INFO_BATCH and limit rewinding appropriately).
->
-> PS Like with my earlier mail, I'm not 100% convinced this is a generic
->    enough approach (or if the wider community thinks this is
->    a serious enough of a problem), but with these proposals I'm
->    thinking what can be done within the scope of current (driver)
->    APIs...
->
->
->>  - at T3, application calls snd_pcm_delay() to query how many samples
->>   of delay there is currently (e.g. if it write a sample to ALSA
->>   PCM device now, how long before it hits the speaker)
+The following patch adds support for Phytec i.MX boards in AC97
+mode. With this patch only some board glue code is missing to
+enable sound for the first i.MX boards. I'll push the board code
+through my i.MX tree. Please consider including this patch for -next.
 
-No, your assumption (how long before it hits the speaker ) is wrong , refer
-to
+Sascha
 
-http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html
 
-For playback the delay is defined as the time that a frame that is written
-to the PCM stream shortly after this call will take to be actually audible.
-It is as such the overall latency from the write call to the final DAC.
+>From 264b0916b712d6cbbcbd2f7b208b1c84b40a3f54 Mon Sep 17 00:00:00 2001
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Date: Wed, 25 Nov 2009 16:18:28 +0100
+Subject: [PATCH 1/6] ASoC: add phycore-ac97 sound support
 
-For capture the delay is defined as the time that a frame that was digitized
-by the audio device takes until it can be read from the PCM stream shortly
-after this call returns. It is as such the overall latency from the initial
-ADC to the read call.
-(e.g. the latency of decoding those AC3 or DTS pass through spdif by the
-digital receiver is not included)
+This patch adds sound support for Phytec PhyCORE / PhyCARD
+modules in AC97 mode.
 
-How about those sound cards which only support non-inteleaved mode ?
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ sound/soc/imx/Kconfig        |   11 +++++-
+ sound/soc/imx/Makefile       |    2 +
+ sound/soc/imx/phycore-ac97.c |   90 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 102 insertions(+), 1 deletions(-)
+ create mode 100644 sound/soc/imx/phycore-ac97.c
 
-why do PA insist to use one period per buffer when only those ISA drivers
-and intel8x0 have periods_min =1 , the most common HDA driver and most sound
-cards have periods_min =2 ?
+diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
+index 5f006f0..e687d53 100644
+--- a/sound/soc/imx/Kconfig
++++ b/sound/soc/imx/Kconfig
+@@ -1,6 +1,6 @@
+ config SND_IMX_SOC
+ 	tristate "SoC Audio for Freecale i.MX CPUs"
+-	depends on ARCH_MXC && BROKEN
++	depends on ARCH_MXC
+ 	select SND_PCM
+ 	select FIQ
+ 	select SND_SOC_AC97_BUS
+@@ -11,3 +11,12 @@ config SND_IMX_SOC
+ config SND_MXC_SOC_SSI
+ 	tristate
+ 
++config SND_SOC_PHYCORE_AC97
++	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
++	depends on MACH_PCM043 || MACH_PCA100
++	select SND_IMX_SOC
++	select SND_SOC_WM9712
++	help
++	  Say Y if you want to add support for SoC audio on Phytec phyCORE
++	  and phyCARD boards in AC97 mode
++
+diff --git a/sound/soc/imx/Makefile b/sound/soc/imx/Makefile
+index d05cc95..9f8bb92 100644
+--- a/sound/soc/imx/Makefile
++++ b/sound/soc/imx/Makefile
+@@ -8,3 +8,5 @@ endif
+ obj-$(CONFIG_SND_IMX_SOC) += snd-soc-imx.o
+ 
+ # i.MX Machine Support
++snd-soc-phycore-ac97-objs := phycore-ac97.o
++obj-$(CONFIG_SND_SOC_PHYCORE_AC97) += snd-soc-phycore-ac97.o
+diff --git a/sound/soc/imx/phycore-ac97.c b/sound/soc/imx/phycore-ac97.c
+new file mode 100644
+index 0000000..a8307d5
+--- /dev/null
++++ b/sound/soc/imx/phycore-ac97.c
+@@ -0,0 +1,90 @@
++/*
++ * phycore-ac97.c  --  SoC audio for imx_phycore in AC97 mode
++ *
++ * Copyright 2009 Sascha Hauer, Pengutronix <s.hauer@pengutronix.de>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/device.h>
++#include <linux/i2c.h>
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <asm/mach-types.h>
++
++#include "../codecs/wm9712.h"
++#include "imx-ssi.h"
++
++static struct snd_soc_card imx_phycore;
++
++static struct snd_soc_ops imx_phycore_hifi_ops = {
++};
++
++static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
++	{
++		.name		= "HiFi",
++		.stream_name	= "HiFi",
++		.codec_dai	= &wm9712_dai[WM9712_DAI_AC97_HIFI],
++		.ops		= &imx_phycore_hifi_ops,
++	},
++};
++
++static struct snd_soc_card imx_phycore = {
++	.name		= "PhyCORE-audio",
++	.platform	= &imx_soc_platform,
++	.dai_link	= imx_phycore_dai_ac97,
++	.num_links	= ARRAY_SIZE(imx_phycore_dai_ac97),
++};
++
++static struct snd_soc_device imx_phycore_snd_devdata = {
++	.card		= &imx_phycore,
++	.codec_dev	= &soc_codec_dev_wm9712,
++};
++
++static struct platform_device *imx_phycore_snd_device;
++
++static int __init imx_phycore_init(void)
++{
++	int ret;
++
++	if (!machine_is_pcm043() && !machine_is_pca100())
++		/* return happy. We might run on a totally different machine */
++		return 0;
++
++	imx_phycore_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!imx_phycore_snd_device)
++		return -ENOMEM;
++
++	imx_phycore_dai_ac97[0].cpu_dai = &imx_ssi_pcm_dai[0];
++
++	platform_set_drvdata(imx_phycore_snd_device, &imx_phycore_snd_devdata);
++	imx_phycore_snd_devdata.dev = &imx_phycore_snd_device->dev;
++	ret = platform_device_add(imx_phycore_snd_device);
++
++	if (ret) {
++		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
++		platform_device_put(imx_phycore_snd_device);
++	}
++
++	return ret;
++}
++
++static void __exit imx_phycore_exit(void)
++{
++	platform_device_unregister(imx_phycore_snd_device);
++}
++
++late_initcall(imx_phycore_init);
++module_exit(imx_phycore_exit);
++
++MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
++MODULE_DESCRIPTION("PhyCORE ALSA SoC driver");
++MODULE_LICENSE("GPL");
+-- 
+1.6.6
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
