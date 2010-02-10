@@ -1,55 +1,78 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: safe support for rewind in ALSA
-Date: Wed, 10 Feb 2010 14:36:37 +0100
-Message-ID: <4B72B665.3060903@ladisch.de>
-References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>	<20100201180139.GC15509@sirena.org.uk>	<alpine.LNX.2.00.1002011903330.25340@eeebox2.perex-int.cz>	<alpine.DEB.1.10.1002012239220.3125@ecabase.localdomain>	<alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>	<4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>	<alpine.DEB.1.10.1002092242540.3125@ecabase.localdomain>
-	<4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 0296E244DE
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 14:36:39 +0100 (CET)
-Received: from compute1.internal (compute1.internal [10.202.2.41])
-	by gateway1.messagingengine.com (Postfix) with ESMTP id 05BC3E0B4D
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 08:36:39 -0500 (EST)
-Received: from [10.1.2.38] (srv004.schk01.int.dmc-one.com [85.232.8.141])
-	by mail.messagingengine.com (Postfix) with ESMTPSA id 8304A4C2A02
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 08:36:38 -0500 (EST)
-In-Reply-To: <4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+From: Thomas Weber <swirl@gmx.li>
+Subject: [PATCHv3 3/4] Add ASoC support for DevKit8000
+Date: Wed, 10 Feb 2010 20:23:04 +0100
+Message-ID: <1265829784-19224-1-git-send-email-swirl@gmx.li>
+Return-path: <linux-omap-owner@vger.kernel.org>
+Sender: linux-omap-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
+Cc: linux-omap@vger.kernel.org, Thomas Weber <swirl@gmx.li>, felipe.balbi@nokia.com, tony@atomride.com, Tomi.Valkeinen@nokia.com, jhnikula@gmail.com, weber@corscience.de
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote:
-> ...
-> The rest of those sound cards which have period_mins = 1 are regarded as
-> broken by PA developer  (e.g. intel8x0 ,emu10k1 , ens1371 , ... ) and aplay
-> did not work with one period per buffer too.
-> 
-> what is the hardware requirement for the driver to support one period per
-> buffer ?
+This patch expands the omap3beagle sound soc for the
+beagle board clone Devkit8000.
 
-That the hardware can be programmed to generate only one interrupt per
-buffer.
+Change log
+V2
+	Expand omap3beagle sound soc for DevKit8000 support.
+V3 
+	Separate Kconfig for Devkit8000.
 
-> if none of the those driver can be fixed
->  why don't we change the period_min of all those broken drivers from 1 to 2
-> ?
+Signed-off-by: Thomas Weber <swirl@gmx.li>
+---
+ sound/soc/omap/Kconfig       |    8 ++++++++
+ sound/soc/omap/Makefile      |    1 +
+ sound/soc/omap/omap3beagle.c |    6 +++---
+ 3 files changed, 12 insertions(+), 3 deletions(-)
 
-Because period_min has nothing to do with the brokenness.  PA wants to
-use as few periods as possible because it does not use period interrupts
-but the DMA pointer, and it's the latter that is broken.
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index 61952aa..8520b75 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -101,6 +101,14 @@ config SND_OMAP_SOC_OMAP3_BEAGLE
+ 	help
+ 	  Say Y if you want to add support for SoC audio on the Beagleboard.
+ 
++config SND_OMAP_SOC_DEVKIT8000
++	tristate "SoC Audio support for DevKit8000"
++	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_DEVKIT8000
++	select SND_OMAP_SOC_MCBSP
++	select SND_SOC_TWL4030
++	help
++	  Say Y if you want to add support for SoC audio on the DevKit8000
++
+ config SND_OMAP_SOC_ZOOM2
+ 	tristate "SoC Audio support for Zoom2"
+ 	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP_ZOOM2
+diff --git a/sound/soc/omap/Makefile b/sound/soc/omap/Makefile
+index 19283e5..c8195c9 100644
+--- a/sound/soc/omap/Makefile
++++ b/sound/soc/omap/Makefile
+@@ -29,5 +29,6 @@ obj-$(CONFIG_SND_OMAP_SOC_AM3517EVM) += snd-soc-am3517evm.o
+ obj-$(CONFIG_SND_OMAP_SOC_SDP3430) += snd-soc-sdp3430.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_PANDORA) += snd-soc-omap3pandora.o
+ obj-$(CONFIG_SND_OMAP_SOC_OMAP3_BEAGLE) += snd-soc-omap3beagle.o
++obj-$(CONFIG_SND_OMAP_SOC_DEVKIT8000) += snd-soc-omap3beagle.o
+ obj-$(CONFIG_SND_OMAP_SOC_ZOOM2) += snd-soc-zoom2.o
+ obj-$(CONFIG_SND_OMAP_SOC_IGEP0020) += snd-soc-igep0020.o
+diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
+index d88ad5c..240e097 100644
+--- a/sound/soc/omap/omap3beagle.c
++++ b/sound/soc/omap/omap3beagle.c
+@@ -117,11 +117,11 @@ static int __init omap3beagle_soc_init(void)
+ {
+ 	int ret;
+ 
+-	if (!machine_is_omap3_beagle()) {
+-		pr_debug("Not OMAP3 Beagle!\n");
++	if (!(machine_is_omap3_beagle() || machine_is_devkit8000())) {
++		pr_debug("Not OMAP3 Beagle or Devkit8000!\n");
+ 		return -ENODEV;
+ 	}
+-	pr_info("OMAP3 Beagle SoC init\n");
++	pr_info("OMAP3 Beagle/Devkit8000 SoC init\n");
+ 
+ 	omap3beagle_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!omap3beagle_snd_device) {
+-- 
+1.6.4.4
 
-
-Regards,
-Clemens
