@@ -1,15 +1,17 @@
-From: Thomas Weber <weber@corscience.de>
-Subject: [PATCH V2 3/4] Add ASoC support for Devkit8000
-Date: Tue,  9 Feb 2010 17:08:48 +0100
-Message-ID: <1265731728-5639-1-git-send-email-weber@corscience.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH][ALSA] usbmidi support for Access Music
+	synths.
+Date: Wed, 10 Feb 2010 09:56:26 +0100
+Message-ID: <4B7274BA.3040801@ladisch.de>
+References: <4B726306.8070506@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9C77103816
-	for <alsa-devel@alsa-project.org>; Tue,  9 Feb 2010 17:09:16 +0100 (CET)
+Received: from smtprelay04.ispgateway.de (smtprelay04.ispgateway.de
+	[80.67.31.38]) by alsa0.perex.cz (Postfix) with ESMTP id 5B3DB24388
+	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 09:56:29 +0100 (CET)
+In-Reply-To: <4B726306.8070506@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,59 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Thomas Weber <weber@corscience.de>
+To: Sebastien Alaiwan <sebastien.alaiwan@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch expands the omap3beagle sound soc for the
-beagle board clone DevKit8000.
+Sebastien Alaiwan wrote:
+> here's a patch that adds MIDI support through USB for one of the
+> Access Music synths, the VirusTI. 
 
-Signed-off-by: Thomas Weber <weber@corscience.de>
----
- sound/soc/omap/Kconfig       |    8 +++++---
- sound/soc/omap/omap3beagle.c |    6 +++---
- 2 files changed, 8 insertions(+), 6 deletions(-)
+Thanks!
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 61952aa..1cdd541 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -94,12 +94,14 @@ config SND_OMAP_SOC_OMAP3_PANDORA
- 	  Say Y if you want to add support for SoC audio on the OMAP3 Pandora.
- 
- config SND_OMAP_SOC_OMAP3_BEAGLE
--	tristate "SoC Audio support for OMAP3 Beagle"
--	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_BEAGLE
-+	tristate "SoC Audio support for OMAP3 Beagle and Devkit8000"
-+	depends on TWL4030_CORE && SND_OMAP_SOC 
-+	depends on (MACH_OMAP3_BEAGLE || MACH_DEVKIT8000)
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TWL4030
- 	help
--	  Say Y if you want to add support for SoC audio on the Beagleboard.
-+	  Say Y if you want to add support for SoC audio on the Beagleboard or 
-+	  the clone Devkit8000.
- 
- config SND_OMAP_SOC_ZOOM2
- 	tristate "SoC Audio support for Zoom2"
-diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
-index d88ad5c..240e097 100644
---- a/sound/soc/omap/omap3beagle.c
-+++ b/sound/soc/omap/omap3beagle.c
-@@ -117,11 +117,11 @@ static int __init omap3beagle_soc_init(void)
- {
- 	int ret;
- 
--	if (!machine_is_omap3_beagle()) {
--		pr_debug("Not OMAP3 Beagle!\n");
-+	if (!(machine_is_omap3_beagle() || machine_is_devkit8000())) {
-+		pr_debug("Not OMAP3 Beagle or Devkit8000!\n");
- 		return -ENODEV;
- 	}
--	pr_info("OMAP3 Beagle SoC init\n");
-+	pr_info("OMAP3 Beagle/Devkit8000 SoC init\n");
- 
- 	omap3beagle_snd_device = platform_device_alloc("soc-audio", -1);
- 	if (!omap3beagle_snd_device) {
--- 
-1.6.4.4
+Please run the checkpatch script on your patch.
+
+> +	u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 }; // "midi send" enable
+> +
+> +	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x05), seq,
+> +			ARRAY_SIZE(seq), &actual_length, 1000);
+
+There are architectures where doing DMA with data on the stack is not
+possible.  Have a look at send_bulk_static_data.
+
+>  /*
+> + * Detects the endpoints for Access Music Virus TI
+> + */
+> +static int snd_usbmidi_detect_two_cables_per_endpoint(struct snd_usb_midi* umidi,
+> +    struct snd_usb_midi_endpoint_info* endpoints)
+> +{
+> +	int err, i;
+> +
+> +	err = snd_usbmidi_detect_endpoints(umidi, endpoints, MIDI_MAX_ENDPOINTS);
+> +	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i) {
+> +		if (endpoints[i].in_ep) {
+> +			printk("Creating two in cables for input EP 0x%.2X\n", endpoints[i].in_ep);
+
+If this is just for debugging, use snd_printdd.
+
+> +			endpoints[i].in_cables = 0x0003;
+> +		}
+> +		if (endpoints[i].out_ep) {
+> +			printk("Creating two out cables for output EP 0x%.2X\n", endpoints[i].out_ep);
+> +			endpoints[i].out_cables = 0x0003;
+> +		}
+> +	}
+> +	return err;
+> +}
+
+Does this device use more than one endpoint per direction?  If not, this
+could be done with QUIRK_MIDI_FIXED_ENDPOINT.
+
+> +++ b/sound/usb/usbquirks.h
+> @@ -2105,6 +2105,28 @@
+>  	}
+>  },
+>  
+> +/* Access Music devices */
+> +{
+> +	/* VirusTI Desktop */
+> +	USB_DEVICE_VENDOR_SPEC(0x133e, 0x0815),
+
+Please keep the list sorted (as much as possible).
+
+> +		.vendor_name = "AccessMusic",
+> +		.product_name = "Virus TI",
+
+These are needed only if the device hasn't vendor/product strings.
+
+> +				// "Virus TI MIDI" and "Virus TI Synth"
+
+If these are port names, put them into the snd_usbmidi_port_info array.
+
+
+Regards,
+Clemens
