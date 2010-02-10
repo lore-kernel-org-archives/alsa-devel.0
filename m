@@ -1,15 +1,22 @@
-From: Willem Jan Palenstijn <wjp@usecode.org>
-Subject: unpadded USB MIDI commands
-Date: Wed, 10 Feb 2010 17:17:14 +0000
-Message-ID: <20100210171714.GA5280@usecode.org>
+From: michael@cadilhac.name (=?iso-8859-1?Q?Micha=EBl?= Cadilhac)
+Subject: Re: Getting pcm_usb_stream plugin to know its
+	limits.	[Kind of SOLVED]
+Date: Wed, 10 Feb 2010 17:56:26 -0500
+Message-ID: <yvzghbpor97p.fsf@cadilhac.name>
+References: <87ljgkuzdl.fsf@cadilhac.name> <87eimbvkxg.fsf@cadilhac.name>
+	<87aawzviyd.fsf_-_@cadilhac.name> <87y6kdz0yo.fsf@cadilhac.name>
+	<yvzgiqb8fq1k.fsf@cadilhac.name> <s5hockz646u.wl%tiwai@suse.de>
+	<87636gw6pl.fsf@cadilhac.name>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from belar.usecode.org (belar.usecode.org [85.13.250.20])
-	by alsa0.perex.cz (Postfix) with ESMTP id F348A103818
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 18:17:15 +0100 (CET)
-Content-Disposition: inline
+Received: from mercure.iro.umontreal.ca (mercure.iro.umontreal.ca
+	[132.204.24.67])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7EF0A10382B
+	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 23:56:53 +0100 (CET)
+In-Reply-To: <87636gw6pl.fsf@cadilhac.name> (=?iso-8859-1?Q?=22Micha=EBl?=
+	Cadilhac"'s message of "Tue, 02 Feb 2010 00:24:22 -0500")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,55 +27,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+michael@cadilhac.name (Micha=EBl Cadilhac) writes:
 
-I recently investigated some trouble with sending MIDI via a USB MIDI cable
-(15ca:1806) to a Roland MT-32. In some cases, commands were being dropped.
+> Takashi Iwai <tiwai@suse.de> writes:
+>
+>> At Mon, 11 Jan 2010 13:35:19 -0500,
+>> Micha=EBl Cadilhac wrote:
+>>> =
 
-(This is what is reported on
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3752 . I'm the colleague
-mentioned by druon in note 0021737 there.)
+>>> michael@cadilhac.name (Micha=EBl Cadilhac) writes:
+>>> =
 
-After we experimented a bit, it turned out that packets of 2 MIDI commands (8
-bytes total) were being sent to the USB MIDI cable, and that if the first of
-these was a 2-byte MIDI command (such as a 0xC0 or 0xD0 command), the second
-command in the packet would get dropped.
+>>> > michael@cadilhac.name (Micha=EBl Cadilhac) writes:
+>>> >
+>>> >> So, my final saying is the following patch.  It fixes the segfault on
+>>> >> stopping a non-started usb_stream, plus it adds the ability to set a
+>>> >> period size and sound rate.  The latter offers a workaround for the
+>>> >> second issue I came with (that the default values for period bytes, =
+and
+>>> >> hence period size, were too high for us122l to work).
+>>> >
+>>> > Any comment on that patch would be greatly appreciated.  I'm just
+>>> > wondering if it's safe for me to give it to some people.
+>>> =
 
-A workaround is to limit the packet size to 4 bytes, as is already happening on
-at least one other device (the ESI M4U referred to in usbmidi.c).
+>>> Anyone?  Note that this also fixes a real bug, so it might be of
+>>> interest to include it in the trunk.
+>>
+>> Through a quick glance, the patch looks OK to me.
+>> Could you give a proper subject and changelog to merge your patch
+>> to git tree?
+>
+> Hi there Takashi, and sorry for the delay.  Here are the patch,
+> subdivised in two distinct logical changes.  I hope the format is what
+> you asked for.
 
+Pinging.  IIUC, I forgot to include "subject" lines.  The first one
+should be "usb_stream: Check for NULL-ness before dereferencing", and the
+second one "usb_stream: Allow user-set period-size and rate.".
 
-I played with it some more this week, and it turns out that if the zero-padding
-from the USB MIDI commands is removed (violating the specs, as far as I
-understand), the second command does actually not get dropped.
+-- =
 
-
-Example:
-
-When sending the two commands 0xD1 0x10 and 0x91 0x40 0x40 normally,
-it would produce:
-sending packet: [ 0d d1 10 00 09 91 40 40 ]
-When routing the MIDI output through the MIDI THRU port on the MT-32 to a
-MIDI port on an ES1371, the captured stream is:
-d1 10
-and no note is played on the MT-32. (The 0x91 command is a note-on.)
-
-
-After hacking out the zero padding, it looks like this:
-sending packet: [ 0d d1 10 09 91 40 40 ]
-The re-captured stream is:
-d1 10 91 40 40,
-and a note is properly played.
-
-
-What do you think would be the right way to handle this problem? Don't zero-pad
-the outgoing packets for this specific device (and maybe a few others mentioned
-on bug #3752, if they end up suffering from the same bug)? Limit the outgoing
-packets to 4 bytes like with the ESI M4U for these devices? Add an option to
-the snd-usb-audio module to toggle this behaviour? Something else?
-
-
-Best regards,
-Willem Jan
+Micha=EBl `Micha' Cadilhac (LITQ, U. de Montr=E9al) -- http://michael.cadil=
+hac.name
+	|| Perhaps we should start making protest releases
+	||  before doing a fall release.
+	||         -- David Kastrup
