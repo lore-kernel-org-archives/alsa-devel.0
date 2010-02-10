@@ -1,22 +1,15 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: [PATCH] ASoC: Typo. s/Freecale/Freescale/
-Date: Wed, 10 Feb 2010 12:06:13 +0100
-Message-ID: <1265799973.19314.25.camel@mattotaupa>
-References: <1265712147.25544.0.camel@mattotaupa>
-	<20100210105832.GA27173@sirena.org.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.34
+Date: Wed, 10 Feb 2010 11:35:26 +0000
+Message-ID: <20100210113526.GA4901@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0195433828956610338=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9BD6924431
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 12:06:16 +0100 (CET)
-Received: from f053036166.adsl.alicedsl.de ([78.53.36.166]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1NfAOd-0002sO-1O
-	for alsa-devel@alsa-project.org; Wed, 10 Feb 2010 11:06:15 +0000
-In-Reply-To: <20100210105832.GA27173@sirena.org.uk>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A48EC24453
+	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 12:35:24 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,57 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiawi@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+The following changes since commit c50749de02f272be6e09b9016e13a17307d29066:
+  Grazvydas Ignotas (1):
+        ASoC: pandora: Add DAC regulator support
 
---===============0195433828956610338==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-zClAR3qDU9JJByCCY50j"
+are available in the git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
 
---=-zClAR3qDU9JJByCCY50j
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Daniel Mack (1):
+      ASoC: cs4270: enable regulators at probe time
 
-Am Mittwoch, den 10.02.2010, 10:58 +0000 schrieb Mark Brown:
-> On Tue, Feb 09, 2010 at 11:42:27AM +0100, Paul Menzel wrote:
-> >=20
-> > Signed-off-by: Paul Menzel <paulepanter@users.sourceforge.net>
->=20
-> Applied, thanks.
+Mark Brown (1):
+      ASoC: add phycore-ac97 sound support
 
-Thanks.
+Paul Menzel (1):
+      ASoC: Typo. s/Freecale/Freescale/
 
-> Please do remember to follow the procedure documented
-> in Documentation/SubmittingPatches and CC maintainers on patches that
-> you submit.
+Peter Ujfalusi (1):
+      ASoC: TWL4030: Add supply for audio serial interface control
 
-Thank you for the pointer!
-
---=-zClAR3qDU9JJByCCY50j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Dies ist ein digital signierter Nachrichtenteil
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAktykyQACgkQPX1aK2wOHVhYEQCfZUcBTIPTOAMXLwGIcAywBBT4
-/2EAn0mgy1IUXQFrBcBbh/S73Ra+KJMc
-=8r/a
------END PGP SIGNATURE-----
-
---=-zClAR3qDU9JJByCCY50j--
-
-
---===============0195433828956610338==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============0195433828956610338==--
+ sound/soc/codecs/cs4270.c    |   10 +++++
+ sound/soc/codecs/twl4030.c   |   14 ++++++-
+ sound/soc/imx/Kconfig        |    2 +-
+ sound/soc/imx/Makefile       |    2 +
+ sound/soc/imx/phycore-ac97.c |   90 ++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 116 insertions(+), 2 deletions(-)
+ create mode 100644 sound/soc/imx/phycore-ac97.c
