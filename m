@@ -1,17 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH][ALSA] usbmidi support for Access Music
-	synths.
-Date: Wed, 10 Feb 2010 09:56:26 +0100
-Message-ID: <4B7274BA.3040801@ladisch.de>
-References: <4B726306.8070506@gmail.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH] Add Phytec i.MX sound support for AC97
+Date: Wed, 10 Feb 2010 11:24:15 +0100
+Message-ID: <20100210102415.GO17643@pengutronix.de>
+References: <20100209101428.GG17643@pengutronix.de>
+	<20100209195322.GA13437@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay04.ispgateway.de (smtprelay04.ispgateway.de
-	[80.67.31.38]) by alsa0.perex.cz (Postfix) with ESMTP id 5B3DB24388
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 09:56:29 +0100 (CET)
-In-Reply-To: <4B726306.8070506@gmail.com>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 75D6724385
+	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 11:24:17 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20100209195322.GA13437@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,75 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sebastien Alaiwan <sebastien.alaiwan@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sebastien Alaiwan wrote:
-> here's a patch that adds MIDI support through USB for one of the
-> Access Music synths, the VirusTI. 
+On Tue, Feb 09, 2010 at 07:53:22PM +0000, Mark Brown wrote:
+> On Tue, Feb 09, 2010 at 11:14:28AM +0100, Sascha Hauer wrote:
+> 
+> >  config SND_IMX_SOC
+> >  	tristate "SoC Audio for Freecale i.MX CPUs"
+> > -	depends on ARCH_MXC && BROKEN
+> > +	depends on ARCH_MXC
+> 
+> BTW, this should not be here - we still need to wait for the arch/arm
+> side of things to merge in before the drivers will work.
 
-Thanks!
+I added the corresponding files to my mxc-master branch and they should
+show up on -next tomorrow. I removed the BROKEN in this patch because I
+was sure that I add the files during this merge window and because it
+shouldn't cause compile breakage in the mean time since the driver is
+not selected in any config. But of course you are right, will do so
+next time.
 
-Please run the checkpatch script on your patch.
+Sascha
 
-> +	u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 }; // "midi send" enable
-> +
-> +	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x05), seq,
-> +			ARRAY_SIZE(seq), &actual_length, 1000);
-
-There are architectures where doing DMA with data on the stack is not
-possible.  Have a look at send_bulk_static_data.
-
->  /*
-> + * Detects the endpoints for Access Music Virus TI
-> + */
-> +static int snd_usbmidi_detect_two_cables_per_endpoint(struct snd_usb_midi* umidi,
-> +    struct snd_usb_midi_endpoint_info* endpoints)
-> +{
-> +	int err, i;
-> +
-> +	err = snd_usbmidi_detect_endpoints(umidi, endpoints, MIDI_MAX_ENDPOINTS);
-> +	for (i = 0; i < MIDI_MAX_ENDPOINTS; ++i) {
-> +		if (endpoints[i].in_ep) {
-> +			printk("Creating two in cables for input EP 0x%.2X\n", endpoints[i].in_ep);
-
-If this is just for debugging, use snd_printdd.
-
-> +			endpoints[i].in_cables = 0x0003;
-> +		}
-> +		if (endpoints[i].out_ep) {
-> +			printk("Creating two out cables for output EP 0x%.2X\n", endpoints[i].out_ep);
-> +			endpoints[i].out_cables = 0x0003;
-> +		}
-> +	}
-> +	return err;
-> +}
-
-Does this device use more than one endpoint per direction?  If not, this
-could be done with QUIRK_MIDI_FIXED_ENDPOINT.
-
-> +++ b/sound/usb/usbquirks.h
-> @@ -2105,6 +2105,28 @@
->  	}
->  },
->  
-> +/* Access Music devices */
-> +{
-> +	/* VirusTI Desktop */
-> +	USB_DEVICE_VENDOR_SPEC(0x133e, 0x0815),
-
-Please keep the list sorted (as much as possible).
-
-> +		.vendor_name = "AccessMusic",
-> +		.product_name = "Virus TI",
-
-These are needed only if the device hasn't vendor/product strings.
-
-> +				// "Virus TI MIDI" and "Virus TI Synth"
-
-If these are port names, put them into the snd_usbmidi_port_info array.
-
-
-Regards,
-Clemens
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
