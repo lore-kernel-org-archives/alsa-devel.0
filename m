@@ -1,27 +1,15 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: safe support for rewind in ALSA
-Date: Thu, 11 Feb 2010 14:52:52 +0800
-Message-ID: <4f3252891002102252vb6d7a94l76fb78e33da37775@mail.gmail.com>
-References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
-	<20100201180139.GC15509@sirena.org.uk>
-	<alpine.LNX.2.00.1002011903330.25340@eeebox2.perex-int.cz>
-	<alpine.DEB.1.10.1002012239220.3125@ecabase.localdomain>
-	<alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>
-	<4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>
-	<alpine.DEB.1.10.1002092242540.3125@ecabase.localdomain>
-	<4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>
-	<4B72B665.3060903@ladisch.de>
+From: Willem Jan Palenstijn <wjp@usecode.org>
+Subject: unpadded USB MIDI commands
+Date: Wed, 10 Feb 2010 17:17:14 +0000
+Message-ID: <20100210171714.GA5280@usecode.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f171.google.com (mail-pz0-f171.google.com
-	[209.85.222.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 30DB224396
-	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 07:52:54 +0100 (CET)
-Received: by pzk1 with SMTP id 1so1059438pzk.16
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 22:52:52 -0800 (PST)
-In-Reply-To: <4B72B665.3060903@ladisch.de>
+Received: from belar.usecode.org (belar.usecode.org [85.13.250.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id F348A103818
+	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 18:17:15 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,47 +22,53 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/10 Clemens Ladisch <clemens@ladisch.de>
+Hi,
 
-> Raymond Yau wrote:
-> > ...
-> > The rest of those sound cards which have period_mins = 1 are regarded as
-> > broken by PA developer  (e.g. intel8x0 ,emu10k1 , ens1371 , ... ) and
-> aplay
-> > did not work with one period per buffer too.
-> >
-> > what is the hardware requirement for the driver to support one period per
-> > buffer ?
->
-> That the hardware can be programmed to generate only one interrupt per
-> buffer.
->
-> > if none of the those driver can be fixed
-> >  why don't we change the period_min of all those broken drivers from 1 to
-> 2
-> > ?
->
-> Because period_min has nothing to do with the brokenness.  PA wants to
-> use as few periods as possible because it does not use period interrupts
-> but the DMA pointer, and it's the latter that is broken.
->
->
-> Regards,
-> Clemens
->
+I recently investigated some trouble with sending MIDI via a USB MIDI cable
+(15ca:1806) to a Roland MT-32. In some cases, commands were being dropped.
 
-Are the one period per buffer designed for specific purpose such as
-playing/looping the pre-loaded soundfont ?
+(This is what is reported on
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3752 . I'm the colleague
+mentioned by druon in note 0021737 there.)
 
-Other than pulseaudio , are there any application use this mode  properly
-without glitch ?
+After we experimented a bit, it turned out that packets of 2 MIDI commands (8
+bytes total) were being sent to the USB MIDI cable, and that if the first of
+these was a 2-byte MIDI command (such as a 0xC0 or 0xD0 command), the second
+command in the packet would get dropped.
 
-Do you mean that PA only wake up once when configure sound card to use two
-periods per buffer ?
+A workaround is to limit the packet size to 4 bytes, as is already happening on
+at least one other device (the ESI M4U referred to in usbmidi.c).
 
-if sound card only support non-interleaved mode and exactly two periods ,
-even if you limit the rewind of application pointer to the period boundary
-is not 100% safe if the sound card pre-fetch audio using DMA
 
-Most sound cards hardware register only provide the number of  sample
-processed
+I played with it some more this week, and it turns out that if the zero-padding
+from the USB MIDI commands is removed (violating the specs, as far as I
+understand), the second command does actually not get dropped.
+
+
+Example:
+
+When sending the two commands 0xD1 0x10 and 0x91 0x40 0x40 normally,
+it would produce:
+sending packet: [ 0d d1 10 00 09 91 40 40 ]
+When routing the MIDI output through the MIDI THRU port on the MT-32 to a
+MIDI port on an ES1371, the captured stream is:
+d1 10
+and no note is played on the MT-32. (The 0x91 command is a note-on.)
+
+
+After hacking out the zero padding, it looks like this:
+sending packet: [ 0d d1 10 09 91 40 40 ]
+The re-captured stream is:
+d1 10 91 40 40,
+and a note is properly played.
+
+
+What do you think would be the right way to handle this problem? Don't zero-pad
+the outgoing packets for this specific device (and maybe a few others mentioned
+on bug #3752, if they end up suffering from the same bug)? Limit the outgoing
+packets to 4 bytes like with the ESI M4U for these devices? Add an option to
+the snd-usb-audio module to toggle this behaviour? Something else?
+
+
+Best regards,
+Willem Jan
