@@ -1,16 +1,26 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: IEC958 / SPDIF raw capture
-Date: Thu, 11 Feb 2010 08:26:34 +0100
-Message-ID: <4B73B12A.7030508@ladisch.de>
-References: <325dd9ac1002101514u73929570l51a12d28ecddd7b@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: safe support for rewind in ALSA
+Date: Thu, 11 Feb 2010 08:27:25 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1002110822480.19278@eeebox2.perex-int.cz>
+References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
+	<20100201180139.GC15509@sirena.org.uk>
+	<alpine.LNX.2.00.1002011903330.25340@eeebox2.perex-int.cz>
+	<alpine.DEB.1.10.1002012239220.3125@ecabase.localdomain>
+	<alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>
+	<4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>
+	<alpine.DEB.1.10.1002092242540.3125@ecabase.localdomain>
+	<4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>
+	<4B72B665.3060903@ladisch.de>
+	<4f3252891002102252vb6d7a94l76fb78e33da37775@mail.gmail.com>
+	<4B73AFD5.4080205@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 07579243CA
-	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 08:26:37 +0100 (CET)
-In-Reply-To: <325dd9ac1002101514u73929570l51a12d28ecddd7b@mail.gmail.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8787243CA
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 08:27:25 +0100 (CET)
+In-Reply-To: <4B73AFD5.4080205@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,37 +30,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Donald Tournier <d.tournier@brain.org.au>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Donald Tournier wrote:
-> We have an application in our institute that will require recording of
-> a digital signal via an optical cable. We have to be able to guarantee
-> perfect bitwise reproduction of the signal (the odd bit error is not a
-> problem). We're thinking of using SPDIF and ALSA to capture the signal
-> (obviously we'll have to make sure the signal is properly encoded to
-> begin with).
-> 
-> However, after some initial attempts, it's becoming clear that ALSA
-> can't necessarily guarantee bitwise perfect capture. ALSA might change
-> the format, or resample the signal after capture (although I've heard
-> that can be turned off with "snd_pcm_hw_params_set_rate_resample
-> (capture_handle, hw_params, 0)").
+On Thu, 11 Feb 2010, Clemens Ladisch wrote:
 
-If you open the device as "hw:x", ALSA will not do any conversions and
-will give you the data exactly as it comes from the sound card.
+>> Do you mean that PA only wake up once when configure sound card to use two
+>> periods per buffer ?
+>
+> When using two periods per buffer, ALSA tries to wake up PA two times.
+> However, PA ignores the sound card's interrupts and is woken up by its
+> own timer.
 
-> can this be done? If so, which card/driver would be recommended?
+PA can drive the wake-ups using avail_min sw parameter. If this value is 
+high enough, no userspace wake up is called, only interrupt is processed 
+and internal ring buffer pointers in the driver are updated.
 
-PCI(-E) cards based on C-Media chips (CMI87x8, CMI8770, AV200) are known
-to allow bit-perfect digital capture.
+ 					Jaroslav
 
-> Ideally, we would like to capture the raw SPDIF subframes.
-
-Some very old revisions of the CMI8738 did this, because proper decoding
-of subframes wasn't implemented, but these aren't sold anymore.
-
-
-HTH
-Clemens
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
