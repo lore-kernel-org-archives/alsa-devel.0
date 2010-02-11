@@ -1,90 +1,74 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH][ALSA] usbmidi support for Access Music synths.
-Date: Thu, 11 Feb 2010 09:46:36 +0100
-Message-ID: <4B73C3EC.2040606@ladisch.de>
-References: <4B726306.8070506@gmail.com> <4B7274BA.3040801@ladisch.de> <4B73B96A.9040006@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCHv3 3/4] Add ASoC support for DevKit8000
+Date: Thu, 11 Feb 2010 09:55:12 +0000
+Message-ID: <1265882112.3179.1.camel@odin>
+References: <1265829784-19224-1-git-send-email-swirl@gmx.li>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4B73B96A.9040006@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Sebastien Alaiwan <sebastien.alaiwan@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7E852103847
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 10:55:17 +0100 (CET)
+Received: by ewy23 with SMTP id 23so7628ewy.4
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 01:55:16 -0800 (PST)
+In-Reply-To: <1265829784-19224-1-git-send-email-swirl@gmx.li>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Thomas Weber <swirl@gmx.li>
+Cc: alsa-devel@alsa-project.org, weber@corscience.de, Tomi.Valkeinen@nokia.com, tony@atomride.com, felipe.balbi@nokia.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Sebastien Alaiwan wrote:
-> Clemens Ladisch wrote:
->> Please run the checkpatch script on your patch.
+On Wed, 2010-02-10 at 20:23 +0100, Thomas Weber wrote:
+> This patch expands the omap3beagle sound soc for the
+> beagle board clone Devkit8000.
 > 
-> Done!
-> I did not know such a tool did exist, thank you for pointing this out. Is there
-> a document I could read about such rules of thumb?
-
-Documentation/CodingStyle
-Documentation/SubmitChecklist
-Documentation/SubmittingDrivers
-Documentation/SubmittingPatches
-
->> Does this device use more than one endpoint per direction?  If not, this
->> could be done with QUIRK_MIDI_FIXED_ENDPOINT.
+> Change log
+> V2
+> 	Expand omap3beagle sound soc for DevKit8000 support.
+> V3 
+> 	Separate Kconfig for Devkit8000.
 > 
-> There's only one endpoint per direction, but there are two cables per endpoint:
-> endpoint 0x05, cable 0 : physical MIDI output port of the device.
-> endpoint 0x05, cable 1 : synth (output: send note-on, etc...)
-> endpoint 0x85, cable 0 : physical MIDI input port of the device.
-> endpoint 0x85, cable 1 : synth (input: recv sysex, controller changes)
+> Signed-off-by: Thomas Weber <swirl@gmx.li>
+> ---
+>  sound/soc/omap/Kconfig       |    8 ++++++++
+>  sound/soc/omap/Makefile      |    1 +
+>  sound/soc/omap/omap3beagle.c |    6 +++---
+>  3 files changed, 12 insertions(+), 3 deletions(-)
 > 
-> Please correct me if I'm wrong, but it seems QUIRK_MIDI_FIXED_ENDPOINT would not
-> do the job, otherwise where do I signal the number of cables?
+> diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+> index 61952aa..8520b75 100644
+> --- a/sound/soc/omap/Kconfig
+> +++ b/sound/soc/omap/Kconfig
+> @@ -101,6 +101,14 @@ config SND_OMAP_SOC_OMAP3_BEAGLE
+>  	help
+>  	  Say Y if you want to add support for SoC audio on the Beagleboard.
+>  
+> +config SND_OMAP_SOC_DEVKIT8000
+> +	tristate "SoC Audio support for DevKit8000"
+> +	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_DEVKIT8000
+> +	select SND_OMAP_SOC_MCBSP
+> +	select SND_SOC_TWL4030
+> +	help
+> +	  Say Y if you want to add support for SoC audio on the DevKit8000
+> +
 
-With the bits in the out/in_cables fields.
+Since this shares the same mach driver as beagle you should share the
+Kconfig option too (like the Overo).
 
-> +	u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 }; /* "midi send" enable */
+Thanks
 
-This should be static const.
+Liam
 
-> @@ -1407,6 +1407,9 @@ static struct port_info {
->  	EXTERNAL_PORT(0x086a, 0x0001, 8, "%s Broadcast"),
->  	EXTERNAL_PORT(0x086a, 0x0002, 8, "%s Broadcast"),
->  	EXTERNAL_PORT(0x086a, 0x0003, 4, "%s Broadcast"),
-> +	/* Access Music Virus TI */
-> +	EXTERNAL_PORT(0x133e, 0x0815, 0, "%s MIDI"),
-> +	CONTROL_PORT(0x133e, 0x0815, 1, "%s Control"),
-
-According to your description, this is not a control port but should be
-called "Synth".  There is no helper macro for a generic MIDI port; use
-something like this:
-
-PORT_INFO(0x133e, 0x0815, 1, "%s Synth", numberofvoices,
-          SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC |
-          SNDRV_SEQ_PORT_TYPE_MIDI_GM |
-          SNDRV_SEQ_PORT_TYPE_HARDWARE |
-          SNDRV_SEQ_PORT_TYPE_SYNTHESIZER),
-
-and add flags for any other supported MIDI standards.
-
-> +	/* VirusTI Desktop */
-> +	USB_DEVICE_VENDOR_SPEC(0x133e, 0x0815),
-> +	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-> +		.ifnum = QUIRK_ANY_INTERFACE,
-> +		.type = QUIRK_COMPOSITE,
-> +		.data = &(const struct snd_usb_audio_quirk[]) {
-> +			{
-> +				/* "Virus TI MIDI" and "Virus TI Synth" */
-> +				.ifnum = 3,
-> +				.type = QUIRK_MIDI_ACCESSMUSIC,
-> +			},
-> +			{
-> +				.ifnum = -1
-> +			}
-> +		}
-> +	}
-> +},
-
-For only one interface, you don't need to use QUIRK_COMPOSITE; see the
-entry for the UM-880.
-
-
-Regards,
-Clemens
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
