@@ -1,21 +1,15 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RESEND][PATCHv2 3/4] Add ASoC support for
-	Devkit8000
-Date: Thu, 11 Feb 2010 18:56:42 +0200
-Message-ID: <20100211185642.34eb234e.jhnikula@gmail.com>
-References: <1265901239-31285-1-git-send-email-weber@corscience.de>
-	<1265901628.3179.14.camel@odin>
+From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Subject: [PATCH] ASoC: fix compile breakage if
+ CONFIG_SH_DMA_API=y && CONFIG_SND_SIU_MIGOR!=n
+Date: Thu, 11 Feb 2010 18:11:10 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1002111809250.4484@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9E92E10384D
-	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 17:52:15 +0100 (CET)
-Received: by ewy23 with SMTP id 23so242359ewy.4
-	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 08:52:14 -0800 (PST)
-In-Reply-To: <1265901628.3179.14.camel@odin>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id CD4C6103852
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 18:09:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,27 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, jy0922.shim@samsung.com, jkrzyszt@tis.icnet.pl, tiwai@suse.de, Thomas Weber <weber@corscience.de>, broonie@opensource.wolfsonmicro.com, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, tony@atomide.com, x0052729@ti.com, anuj.aggarwal@ti.com, linux-omap@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Feb 2010 15:20:28 +0000
-Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+Audio on Migo-R cannot work if CONFIG_SH_DMA_API=y, but compilation should not
+break anyway.
 
-> On Thu, 2010-02-11 at 16:13 +0100, Thomas Weber wrote:
-> > This patch expands the omap3beagle sound soc for the
-> > beagle board clone DevKit8000.
-> > 
-> > Signed-off-by: Thomas Weber <weber@corscience.de>
-> 
-> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-> 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+---
+ sound/soc/sh/Kconfig |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-Note, this is safe to push even if this goes to mainline before the
-basic board file and arch/arm/mach-omap2/Kconfig change from linux-omap.
-The machine type and so machine_is_devkit8000() are already there.
-
-
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index a86696b..1066749 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -29,6 +29,7 @@ config SND_SOC_SH4_FSI
+ config SND_SOC_SH4_SIU
+ 	tristate
+ 	depends on (SUPERH || ARCH_SHMOBILE) && HAVE_CLK
++	select DMA_ENGINE
+ 	select DMADEVICES
+ 	select SH_DMAE
+ 
 -- 
-Jarkko
+1.6.2.4
