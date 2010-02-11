@@ -1,120 +1,143 @@
-From: Sebastien Alaiwan <sebastien.alaiwan@gmail.com>
-Subject: Re: [PATCH][ALSA] usbmidi support for Access Music synths.
-Date: Thu, 11 Feb 2010 20:39:44 +0100
-Message-ID: <4B745D00.5060201@gmail.com>
-References: <4B726306.8070506@gmail.com> <4B7274BA.3040801@ladisch.de> <4B73B96A.9040006@gmail.com> <4B73C3EC.2040606@ladisch.de>
+From: Misael Lopez <mlopez@sta.samsung.com>
+Subject: Re: [PATCH] ASoC: TWL4030: Add supply for audio
+	serial	interface control
+Date: Thu, 11 Feb 2010 14:03:41 -0600
+Message-ID: <9357A55138006545BB696D907C4EDB481467DBC8C1@staex7mb1.telecom.sna.samsung.com>
+References: <1265721844-5065-1-git-send-email-peter.ujfalusi@nokia.com>
+	<201002091530.13119.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4B73C3EC.2040606@ladisch.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cuda1.sta.samsung.com (mailedge.sta.samsung.com [63.166.115.4])
+	by alsa0.perex.cz (Postfix) with ESMTP id 077EE2448A
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 21:04:30 +0100 (CET)
+In-Reply-To: <201002091530.13119.peter.ujfalusi@nokia.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "hnagalla@ti.com" <hnagalla@ti.com>, "jorge.candelaria@ti.com" <jorge.candelaria@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "jy0922.shim@samsung.com" <jy0922.shim@samsung.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+> Hello,
+> =
 
-Thanks for your advice!
+> On Tuesday 09 February 2010 15:24:04 Ujfalusi Peter (Nokia-
+> D/Tampere) wrote:
+> > The serial interface (TDM/I2S) for the audio block have been
+> > constantly enabled.
+> > Introduce a new DAPM_SUPPLY for handling the AIF_EN bit, so
+> > the interface is only enabled, when there is a need for it.
+> > For example when only the analog loopback is enabled, there
+> > is no need to keep the serial interface active.
+> >
+> > I have added the persons who contributed to the Voice path
+> > of twl4030 codec driver, so they might have the ability
+> > to test this patch, and send an update for the Voice path,
+> > if it is necessary
+> =
 
-Clemens Ladisch wrote:
-> For only one interface, you don't need to use QUIRK_COMPOSITE; see the
-> entry for the UM-880.
+> I meant to place this part after the ---, so this should not be
+> part of the
+> commit message. Sorry about that, should I resend it?
+> Also, it seams that the email address for Misael Lopez at TI is
+> no longer
+> active...
 
-I've replaced the QUIRK_COMPOSITE by a QUIRK_MIDI_FIXED_ENDPOINT, the module also probes (and fails) the USB interface 4 (I don't know what this interface is for on this device) which results in the printing of an error in the kernel log. How can I inform the snd-usb-audio driver that the USB interface 4 should be left alone?
+My TI email is not longer active. And I don't have any hardware
+available to test that, but I have a couple of comments.
 
-Please find an updated (and shrinked!) patch below.
+IIRC the AIF_EN bit only enables the Audio (HiFi) port (I2S/TDM) of
+twl4030, so the changes doesn't break anything in voice path.
+OTOH, a similar strategy needs to be followed for Voice path but
+using VIF_EN bit of Voice Interface register.
 
-Signed-off-by: Sebastien Alaiwan <sebastien.alaiwan@gmail.com>
----
-diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
-index 9edef46..aaf8f7c 100644
---- a/sound/usb/usbaudio.c
-+++ b/sound/usb/usbaudio.c
-@@ -3327,6 +3327,31 @@ static int snd_usb_cm6206_boot_quirk(struct usb_device *dev)
- }
- 
- /*
-+ * This call will put the synth in "USB send" mode, i.e it will send MIDI
-+ * messages through USB (this is disabled at startup). The synth will aknowledge
-+ * by sending a sysex on endpoint 0x85 and by displaying a USB sign on its LCD.
-+ * Values here are chosen based on sniffing USB traffic under Windows.
-+ */
-+static int snd_usb_accessmusic_boot_quirk(struct usb_device *dev)
-+{
-+	int err, actual_length;
-+
-+	/* "midi send" enable */
-+	static const u8 seq[] = { 0x4e, 0x73, 0x52, 0x01 };
-+
-+	void *buf = kmemdup(seq, ARRAY_SIZE(seq), GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+	err = usb_interrupt_msg(dev, usb_sndintpipe(dev, 0x05), buf,
-+			ARRAY_SIZE(seq), &actual_length, 1000);
-+	kfree(buf);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
-+
-+/*
-  * Setup quirks
-  */
- #define AUDIOPHILE_SET			0x01 /* if set, parse device_setup */
-@@ -3624,6 +3649,12 @@ static void *snd_usb_audio_probe(struct usb_device *dev,
- 			goto __err_val;
- 	}
- 
-+	/* Access Music VirusTI Desktop */
-+	if (id == USB_ID(0x133e, 0x0815)) {
-+		if (snd_usb_accessmusic_boot_quirk(dev) < 0)
-+			goto __err_val;
-+	}
-+
- 	/*
- 	 * found a config.  now register to ALSA
- 	 */
-diff --git a/sound/usb/usbmidi.c b/sound/usb/usbmidi.c
-index 6e89b83..8f5bc1e 100644
---- a/sound/usb/usbmidi.c
-+++ b/sound/usb/usbmidi.c
-@@ -1407,6 +1407,12 @@ static struct port_info {
- 	EXTERNAL_PORT(0x086a, 0x0001, 8, "%s Broadcast"),
- 	EXTERNAL_PORT(0x086a, 0x0002, 8, "%s Broadcast"),
- 	EXTERNAL_PORT(0x086a, 0x0003, 4, "%s Broadcast"),
-+	/* Access Music Virus TI */
-+	EXTERNAL_PORT(0x133e, 0x0815, 0, "%s MIDI"),
-+	PORT_INFO(0x133e, 0x0815, 1, "%s Synth", 0,
-+		SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC |
-+		SNDRV_SEQ_PORT_TYPE_HARDWARE |
-+		SNDRV_SEQ_PORT_TYPE_SYNTHESIZER),
- };
- 
- static struct port_info *find_port_info(struct snd_usb_midi* umidi, int number)
-diff --git a/sound/usb/usbquirks.h b/sound/usb/usbquirks.h
-index a892bda..853788d 100644
---- a/sound/usb/usbquirks.h
-+++ b/sound/usb/usbquirks.h
-@@ -2073,6 +2073,20 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- 
-+/* Access Music devices */
-+{
-+	/* VirusTI Desktop */
-+	USB_DEVICE_VENDOR_SPEC(0x133e, 0x0815),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.ifnum = 3,
-+		.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+		.data = &(const struct snd_usb_midi_endpoint_info) {
-+			.out_cables = 0x0003,
-+			.in_cables  = 0x0003
-+		}
-+	}
-+},
-+
- /* */
- {
- 	/* aka. Serato Scratch Live DJ Box */
+-Misa
+
+> --
+> P=E9ter
+> =
+
+> >
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> > ---
+> >
+> > This patch has been tested in OPTION 1 mode, where the Voice
+> > path is not in use.
+> > I have looked for dependencies in the Voice path regarding to
+> > the Audio interface enable bit, but I have not found any.
+> > If someone could test, if the Voice path also needs the AIF_EN
+> > bit set, than please send a patch, which adds this new supply
+> > to the DAPM rule for the Voice path.
+> >
+> >  sound/soc/codecs/twl4030.c |   14 +++++++++++++-
+> >  1 files changed, 13 insertions(+), 1 deletions(-)
+> >
+> > diff --git a/sound/soc/codecs/twl4030.c
+> b/sound/soc/codecs/twl4030.c
+> > index b32aeb3..277862e 100644
+> > --- a/sound/soc/codecs/twl4030.c
+> > +++ b/sound/soc/codecs/twl4030.c
+> > @@ -55,7 +55,7 @@ static const u8
+> twl4030_reg[TWL4030_CACHEREGNUM] =3D {
+> >  	0x0c, /* REG_ATXR1PGA		(0xB)	*/
+> >  	0x00, /* REG_AVTXL2PGA		(0xC)	*/
+> >  	0x00, /* REG_AVTXR2PGA		(0xD)	*/
+> > -	0x01, /* REG_AUDIO_IF		(0xE)	*/
+> > +	0x00, /* REG_AUDIO_IF		(0xE)	*/
+> >  	0x00, /* REG_VOICE_IF		(0xF)	*/
+> >  	0x00, /* REG_ARXR1PGA		(0x10)	*/
+> >  	0x00, /* REG_ARXL1PGA		(0x11)	*/
+> > @@ -1203,6 +1203,8 @@ static const struct snd_soc_dapm_widget
+> >  twl4030_dapm_widgets[] =3D { SND_SOC_DAPM_SUPPLY("APLL Enable",
+> >  SND_SOC_NOPM, 0, 0, apll_event,
+> >  SND_SOC_DAPM_PRE_PMU|SND_SOC_DAPM_POST_PMD),
+> >
+> > +	SND_SOC_DAPM_SUPPLY("AIF Enable", TWL4030_REG_AUDIO_IF, 0,
+> 0, NULL, 0),
+> > +
+> >  	/* Output MIXER controls */
+> >  	/* Earpiece */
+> >  	SND_SOC_DAPM_MIXER("Earpiece Mixer", SND_SOC_NOPM, 0, 0,
+> > @@ -1337,6 +1339,11 @@ static const struct snd_soc_dapm_route
+> intercon[] =3D
+> >  { {"Digital L2 Playback Mixer", NULL, "APLL Enable"},
+> >  	{"Digital Voice Playback Mixer", NULL, "APLL Enable"},
+> >
+> > +	{"Digital R1 Playback Mixer", NULL, "AIF Enable"},
+> > +	{"Digital L1 Playback Mixer", NULL, "AIF Enable"},
+> > +	{"Digital R2 Playback Mixer", NULL, "AIF Enable"},
+> > +	{"Digital L2 Playback Mixer", NULL, "AIF Enable"},
+> > +
+> >  	{"Analog L1 Playback Mixer", NULL, "Digital L1 Playback
+> Mixer"},
+> >  	{"Analog R1 Playback Mixer", NULL, "Digital R1 Playback
+> Mixer"},
+> >  	{"Analog L2 Playback Mixer", NULL, "Digital L2 Playback
+> Mixer"},
+> > @@ -1455,6 +1462,11 @@ static const struct snd_soc_dapm_route
+> intercon[] =3D
+> >  { {"ADC Virtual Left2", NULL, "APLL Enable"},
+> >  	{"ADC Virtual Right2", NULL, "APLL Enable"},
+> >
+> > +	{"ADC Virtual Left1", NULL, "AIF Enable"},
+> > +	{"ADC Virtual Right1", NULL, "AIF Enable"},
+> > +	{"ADC Virtual Left2", NULL, "AIF Enable"},
+> > +	{"ADC Virtual Right2", NULL, "AIF Enable"},
+> > +
+> >  	/* Analog bypass routes */
+> >  	{"Right1 Analog Loopback", "Switch", "Analog Right"},
+> >  	{"Left1 Analog Loopback", "Switch", "Analog Left"},
+> >
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
