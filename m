@@ -1,15 +1,18 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH] ASoC: fix compile breakage if
- CONFIG_SH_DMA_API=y && CONFIG_SND_SIU_MIGOR!=n
-Date: Thu, 11 Feb 2010 18:11:10 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1002111809250.4484@axis700.grange>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RESEND][PATCHv2 3/4] Add ASoC support for
+	Devkit8000
+Date: Thu, 11 Feb 2010 18:26:07 +0000
+Message-ID: <20100211182606.GA18896@rakim.wolfsonmicro.main>
+References: <1265901239-31285-1-git-send-email-weber@corscience.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id CD4C6103852
-	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 18:09:53 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 94C6824348
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 19:26:09 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1265901239-31285-1-git-send-email-weber@corscience.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,29 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Thomas Weber <weber@corscience.de>
+Cc: alsa-devel@alsa-project.org, jy0922.shim@samsung.com, jkrzyszt@tis.icnet.pl, tiwai@suse.de, peter.ujfalusi@nokia.com, linux-kernel@vger.kernel.org, tony@atomide.com, x0052729@ti.com, anuj.aggarwal@ti.com, linux-omap@vger.kernel.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Audio on Migo-R cannot work if CONFIG_SH_DMA_API=y, but compilation should not
-break anyway.
+On Thu, Feb 11, 2010 at 04:13:59PM +0100, Thomas Weber wrote:
+> This patch expands the omap3beagle sound soc for the
+> beagle board clone DevKit8000.
+> 
+> Signed-off-by: Thomas Weber <weber@corscience.de>
 
-Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
----
- sound/soc/sh/Kconfig |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index a86696b..1066749 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -29,6 +29,7 @@ config SND_SOC_SH4_FSI
- config SND_SOC_SH4_SIU
- 	tristate
- 	depends on (SUPERH || ARCH_SHMOBILE) && HAVE_CLK
-+	select DMA_ENGINE
- 	select DMADEVICES
- 	select SH_DMAE
- 
--- 
-1.6.2.4
+Applied, thanks.
