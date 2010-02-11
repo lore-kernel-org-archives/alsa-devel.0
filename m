@@ -1,22 +1,23 @@
-From: michael@cadilhac.name (=?iso-8859-1?Q?Micha=EBl?= Cadilhac)
-Subject: Re: Getting pcm_usb_stream plugin to know its
-	limits.	[Kind of SOLVED]
-Date: Wed, 10 Feb 2010 17:56:26 -0500
-Message-ID: <yvzghbpor97p.fsf@cadilhac.name>
-References: <87ljgkuzdl.fsf@cadilhac.name> <87eimbvkxg.fsf@cadilhac.name>
-	<87aawzviyd.fsf_-_@cadilhac.name> <87y6kdz0yo.fsf@cadilhac.name>
-	<yvzgiqb8fq1k.fsf@cadilhac.name> <s5hockz646u.wl%tiwai@suse.de>
-	<87636gw6pl.fsf@cadilhac.name>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: safe support for rewind in ALSA
+Date: Thu, 11 Feb 2010 08:20:53 +0100
+Message-ID: <4B73AFD5.4080205@ladisch.de>
+References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>	<20100201180139.GC15509@sirena.org.uk>	<alpine.LNX.2.00.1002011903330.25340@eeebox2.perex-int.cz>	<alpine.DEB.1.10.1002012239220.3125@ecabase.localdomain>	<alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>	<4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>	<alpine.DEB.1.10.1002092242540.3125@ecabase.localdomain>	<4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>	<4B72B665.3060903@ladisch.de>
+	<4f3252891002102252vb6d7a94l76fb78e33da37775@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mercure.iro.umontreal.ca (mercure.iro.umontreal.ca
-	[132.204.24.67])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7EF0A10382B
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 23:56:53 +0100 (CET)
-In-Reply-To: <87636gw6pl.fsf@cadilhac.name> (=?iso-8859-1?Q?=22Micha=EBl?=
-	Cadilhac"'s message of "Tue, 02 Feb 2010 00:24:22 -0500")
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 333CD243BA
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 08:20:55 +0100 (CET)
+Received: from compute1.internal (compute1 [10.202.2.41])
+	by gateway1.messagingengine.com (Postfix) with ESMTP id 95DB5E0F39
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 02:20:54 -0500 (EST)
+Received: from [10.1.2.38] (srv004.schk01.int.dmc-one.com [85.232.8.141])
+	by mail.messagingengine.com (Postfix) with ESMTPSA id 19A4A4AD40F
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 02:20:53 -0500 (EST)
+In-Reply-To: <4f3252891002102252vb6d7a94l76fb78e33da37775@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,52 +28,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-michael@cadilhac.name (Micha=EBl Cadilhac) writes:
+Raymond Yau wrote:
+> Are the one period per buffer designed for specific purpose such as
+> playing/looping the pre-loaded soundfont ?
 
-> Takashi Iwai <tiwai@suse.de> writes:
->
->> At Mon, 11 Jan 2010 13:35:19 -0500,
->> Micha=EBl Cadilhac wrote:
->>> =
+No, it's just a consequence of how the card's DMA controller is designed.
 
->>> michael@cadilhac.name (Micha=EBl Cadilhac) writes:
->>> =
+> Other than pulseaudio , are there any application use this mode  properly
+> without glitch ?
 
->>> > michael@cadilhac.name (Micha=EBl Cadilhac) writes:
->>> >
->>> >> So, my final saying is the following patch.  It fixes the segfault on
->>> >> stopping a non-started usb_stream, plus it adds the ability to set a
->>> >> period size and sound rate.  The latter offers a workaround for the
->>> >> second issue I came with (that the default values for period bytes, =
-and
->>> >> hence period size, were too high for us122l to work).
->>> >
->>> > Any comment on that patch would be greatly appreciated.  I'm just
->>> > wondering if it's safe for me to give it to some people.
->>> =
+The number of periods has nothing to do with glitching.
 
->>> Anyone?  Note that this also fixes a real bug, so it might be of
->>> interest to include it in the trunk.
->>
->> Through a quick glance, the patch looks OK to me.
->> Could you give a proper subject and changelog to merge your patch
->> to git tree?
->
-> Hi there Takashi, and sorry for the delay.  Here are the patch,
-> subdivised in two distinct logical changes.  I hope the format is what
-> you asked for.
+> Do you mean that PA only wake up once when configure sound card to use two
+> periods per buffer ?
 
-Pinging.  IIUC, I forgot to include "subject" lines.  The first one
-should be "usb_stream: Check for NULL-ness before dereferencing", and the
-second one "usb_stream: Allow user-set period-size and rate.".
+When using two periods per buffer, ALSA tries to wake up PA two times.
+However, PA ignores the sound card's interrupts and is woken up by its
+own timer.
 
--- =
 
-Micha=EBl `Micha' Cadilhac (LITQ, U. de Montr=E9al) -- http://michael.cadil=
-hac.name
-	|| Perhaps we should start making protest releases
-	||  before doing a fall release.
-	||         -- David Kastrup
+Regards,
+Clemens
