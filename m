@@ -1,20 +1,27 @@
-From: "Jason A. Donenfeld" <jason@zx2c4.com>
-Subject: Realtek ALC275
-Date: Wed, 10 Feb 2010 19:07:48 -0500
-Message-ID: <f8d7c6611002101607m7701aa8el4c85d84ef1b61f8@mail.gmail.com>
-References: <f8d7c6611002101605k4a57581gfc0f36ed64adb1c7@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: safe support for rewind in ALSA
+Date: Thu, 11 Feb 2010 14:52:52 +0800
+Message-ID: <4f3252891002102252vb6d7a94l76fb78e33da37775@mail.gmail.com>
+References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
+	<20100201180139.GC15509@sirena.org.uk>
+	<alpine.LNX.2.00.1002011903330.25340@eeebox2.perex-int.cz>
+	<alpine.DEB.1.10.1002012239220.3125@ecabase.localdomain>
+	<alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>
+	<4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>
+	<alpine.DEB.1.10.1002092242540.3125@ecabase.localdomain>
+	<4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>
+	<4B72B665.3060903@ladisch.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636c92d7ff65b13047f47f079
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.210.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6511A2432C
-	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 01:07:51 +0100 (CET)
-Received: by yxe9 with SMTP id 9so488897yxe.23
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 16:07:50 -0800 (PST)
-Received: by ywh15 with SMTP id 15so640865ywh.5
-	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 16:07:49 -0800 (PST)
-In-Reply-To: <f8d7c6611002101605k4a57581gfc0f36ed64adb1c7@mail.gmail.com>
+Received: from mail-pz0-f171.google.com (mail-pz0-f171.google.com
+	[209.85.222.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id 30DB224396
+	for <alsa-devel@alsa-project.org>; Thu, 11 Feb 2010 07:52:54 +0100 (CET)
+Received: by pzk1 with SMTP id 1so1059438pzk.16
+	for <alsa-devel@alsa-project.org>; Wed, 10 Feb 2010 22:52:52 -0800 (PST)
+In-Reply-To: <4B72B665.3060903@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,65 +34,47 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---001636c92d7ff65b13047f47f079
-Content-Type: text/plain; charset=ISO-8859-1
+2010/2/10 Clemens Ladisch <clemens@ladisch.de>
 
-Hello All,
+> Raymond Yau wrote:
+> > ...
+> > The rest of those sound cards which have period_mins = 1 are regarded as
+> > broken by PA developer  (e.g. intel8x0 ,emu10k1 , ens1371 , ... ) and
+> aplay
+> > did not work with one period per buffer too.
+> >
+> > what is the hardware requirement for the driver to support one period per
+> > buffer ?
+>
+> That the hardware can be programmed to generate only one interrupt per
+> buffer.
+>
+> > if none of the those driver can be fixed
+> >  why don't we change the period_min of all those broken drivers from 1 to
+> 2
+> > ?
+>
+> Because period_min has nothing to do with the brokenness.  PA wants to
+> use as few periods as possible because it does not use period interrupts
+> but the DMA pointer, and it's the latter that is broken.
+>
+>
+> Regards,
+> Clemens
+>
 
-The new Vaio F series has a Realtek ALC 275, which is currently setup
-in patch_realtek.c to use the 269 configuration. Unfortunately this
-does not correctly enable the internal microphone, and the line-in is
-not tied to any mixer control. The attached file will enable the
-internal microphone, but will do so at the expense of the line-in.
+Are the one period per buffer designed for specific purpose such as
+playing/looping the pre-loaded soundfont ?
 
-According to Takashi, "The problem is that the digital-mic of pin 0x12
-has the exclusive connection to the selector 0x22, followed to ADC
-0x11, while other analog input pins are connected to 0x23/0x24, to ADC
-0x08/0x09. Thus, the driver requires the dynamic switching of ADCs,
-which isn't fully guaranteed to work. A similar situation is found for
-Conexant codecs, and a same style hack would be needed for the realtek
-codec."
+Other than pulseaudio , are there any application use this mode  properly
+without glitch ?
 
-This bug is being tracked here:
-http://code.google.com/p/vaio-f11-linux/issues/detail?id=2 and here:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4909 .
+Do you mean that PA only wake up once when configure sound card to use two
+periods per buffer ?
 
-I'm wondering if anyone has any advice on how to implement the
-necessary dynamic ADC switching.
+if sound card only support non-interleaved mode and exactly two periods ,
+even if you limit the rewind of application pointer to the period boundary
+is not 100% safe if the sound card pre-fetch audio using DMA
 
-Thanks,
-Jason Donenfeld
-
---001636c92d7ff65b13047f47f079
-Content-Type: text/x-patch; charset=US-ASCII; name="enable-internal-microphone.patch"
-Content-Disposition: attachment; filename="enable-internal-microphone.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g5ise81n0
-
-RnJvbSAxOThkNzkxNzkyYTE1YzgxMjhkZWU3Y2MwMmMwM2ViODEwNzkyMWVlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBKYXNvbiBBLiBEb25lbmZlbGQgPEphc29uQHp4MmM0LmNvbT4K
-RGF0ZTogV2VkLCAxMCBGZWIgMjAxMCAxODo0OToxNiAtMDUwMApTdWJqZWN0OiBbUEFUQ0hdIEZv
-cmNlIEFMQzI2OSB0byB1c2UgaW50ZXJuYWwgbWljcm9waG9uZSBvbiBWUENGMTEuCgoKU2lnbmVk
-LW9mZi1ieTogSmFzb24gQS4gRG9uZW5mZWxkIDxKYXNvbkB6eDJjNC5jb20+Ci0tLQogc291bmQv
-cGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgfCAgICA0ICsrLS0KIDEgZmlsZXMgY2hhbmdlZCwgMiBp
-bnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEv
-cGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggZGEz
-NDA5NS4uZTYyYzVhNyAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMK
-KysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTEzMTE5LDExICsxMzExOSwx
-MSBAQCBzdGF0aWMgaW50IHBhdGNoX2FsYzI2OChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAog
-c3RhdGljIGhkYV9uaWRfdCBhbGMyNjlfYWRjX25pZHNbMV0gPSB7CiAJLyogQURDMSAqLwotCTB4
-MDgsCisJMHgxMSwKIH07CiAKIHN0YXRpYyBoZGFfbmlkX3QgYWxjMjY5X2NhcHNyY19uaWRzWzFd
-ID0gewotCTB4MjMsCisJMHgyMiwKIH07CiAKIC8qIE5PVEU6IEFEQzIgKDB4MDcpIGlzIGNvbm5l
-Y3RlZCBmcm9tIGEgcmVjb3JkaW5nICpNSVhFUiogKDB4MjQpLAotLSAKMS42LjYuMQoK
---001636c92d7ff65b13047f47f079
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---001636c92d7ff65b13047f47f079--
+Most sound cards hardware register only provide the number of  sample
+processed
