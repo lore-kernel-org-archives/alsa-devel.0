@@ -1,16 +1,14 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: Make pmdown_time runtime configurable
-Date: Fri, 12 Feb 2010 11:40:19 +0000
-Message-ID: <1265974819-25151-2-git-send-email-broonie@opensource.wolfsonmicro.com>
-References: <1265974819-25151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/2] ASoC: Make pmdown_time a per-card setting
+Date: Fri, 12 Feb 2010 11:40:18 +0000
+Message-ID: <1265974819-25151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D182A244AF
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D15222444F
 	for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2010 12:40:22 +0100 (CET)
-In-Reply-To: <1265974819-25151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,58 +22,51 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Grazvydas Ignotas <notasas@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Provide a sysfs file allowing userspace to inspect and change the
-pmdown_time setting at runtime.
+Make the pmdown_time a per-card setting rather than a global one,
+initialised before the card initialisation runs. This allows cards
+to override the default setting if it makes sense to do so (for
+example, due to an unavoidable pop).
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/soc-core.c |   27 +++++++++++++++++++++++++++
- 1 files changed, 27 insertions(+), 0 deletions(-)
+ include/sound/soc.h  |    2 ++
+ sound/soc/soc-core.c |    4 +++-
+ 2 files changed, 5 insertions(+), 1 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index e6a6d10..d9d88dd 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -521,6 +521,8 @@ struct snd_soc_card {
+ 	int (*set_bias_level)(struct snd_soc_card *,
+ 			      enum snd_soc_bias_level level);
+ 
++	int pmdown_time;
++
+ 	/* CPU <--> Codec DAI links  */
+ 	struct snd_soc_dai_link *dai_link;
+ 	int num_links;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 94b9cde..c2008bc 100644
+index ca89c78..94b9cde 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -130,6 +130,29 @@ static ssize_t codec_reg_show(struct device *dev,
+@@ -542,7 +542,7 @@ static int soc_codec_close(struct snd_pcm_substream *substream)
+ 		/* start delayed pop wq here for playback streams */
+ 		codec_dai->pop_wait = 1;
+ 		schedule_delayed_work(&card->delayed_work,
+-			msecs_to_jiffies(pmdown_time));
++			msecs_to_jiffies(card->pmdown_time));
+ 	} else {
+ 		/* capture streams can be powered down now */
+ 		snd_soc_dapm_stream_event(codec,
+@@ -1039,6 +1039,8 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	dev_dbg(card->dev, "All components present, instantiating\n");
  
- static DEVICE_ATTR(codec_reg, 0444, codec_reg_show, NULL);
- 
-+static ssize_t pmdown_time_show(struct device *dev,
-+				struct device_attribute *attr, char *buf)
-+{
-+	struct snd_soc_device *socdev = dev_get_drvdata(dev);
-+	struct snd_soc_card *card = socdev->card;
+ 	/* Found everything, bring it up */
++	card->pmdown_time = pmdown_time;
 +
-+	return sprintf(buf, "%d\n", card->pmdown_time);
-+}
-+
-+static ssize_t pmdown_time_set(struct device *dev,
-+			       struct device_attribute *attr,
-+			       const char *buf, size_t count)
-+{
-+	struct snd_soc_device *socdev = dev_get_drvdata(dev);
-+	struct snd_soc_card *card = socdev->card;
-+
-+	strict_strtol(buf, 10, &card->pmdown_time);
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR(pmdown_time, 0644, pmdown_time_show, pmdown_time_set);
-+
- #ifdef CONFIG_DEBUG_FS
- static int codec_reg_open_file(struct inode *inode, struct file *file)
- {
-@@ -1124,6 +1147,10 @@ static void snd_soc_instantiate_card(struct snd_soc_card *card)
- 	if (ret < 0)
- 		printk(KERN_WARNING "asoc: failed to add dapm sysfs entries\n");
- 
-+	ret = device_create_file(card->socdev->dev, &dev_attr_pmdown_time);
-+	if (ret < 0)
-+		printk(KERN_WARNING "asoc: failed to add pmdown_time sysfs\n");
-+
- 	ret = device_create_file(card->socdev->dev, &dev_attr_codec_reg);
- 	if (ret < 0)
- 		printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
+ 	if (card->probe) {
+ 		ret = card->probe(pdev);
+ 		if (ret < 0)
 -- 
 1.6.6.1
