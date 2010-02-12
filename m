@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Jack Detection ??
-Date: Fri, 12 Feb 2010 10:07:34 +0000
-Message-ID: <20100212100734.GA3742@sirena.org.uk>
-References: <0D4616E6925F9541919B60692F61509E579CAED9@orsmsx502.amr.corp.intel.com>
+Subject: Re: [PATCH] ASoC: fix compile breakage if
+ CONFIG_SH_DMA_API=y && CONFIG_SND_SIU_MIGOR!=n
+Date: Fri, 12 Feb 2010 10:22:02 +0000
+Message-ID: <20100212102202.GA16988@rakim.wolfsonmicro.main>
+References: <Pine.LNX.4.64.1002111809250.4484@axis700.grange>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E03FF2443A
-	for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2010 11:07:35 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 985E324451
+	for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2010 11:22:03 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <0D4616E6925F9541919B60692F61509E579CAED9@orsmsx502.amr.corp.intel.com>
+In-Reply-To: <Pine.LNX.4.64.1002111809250.4484@axis700.grange>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,22 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Johnson, Charles F" <charles.f.johnson@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 11, 2010 at 03:03:17PM -0800, Johnson, Charles F wrote:
+On Thu, Feb 11, 2010 at 06:11:10PM +0100, Guennadi Liakhovetski wrote:
+> Audio on Migo-R cannot work if CONFIG_SH_DMA_API=y, but compilation should not
+> break anyway.
+> 
+> Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 
-> I'm trying to understand the level of jack detection implemented in ALSA.  
-> I admit some amount of ignorance here - is this documented somewhere that I haven't been able to find yet ??
-
-I'm not sure what exactly you're looking for here but the API used for
-jack reporting is documented here:
-
-	http://www.kernel.org/pub/linux/kernel/people/tiwai/docs/alsa-driver-api/ch06s02.html
-
-The jack will appear as an input device.  If you're working on an
-embedded system then ASoC has a wrapper around this which hooks in to
-DAPM and makes it easier to combine multiple jack detection methods into
-a single jack (eg, for microphone plus headphone detection on a headset
-jack).
+Applied, thanks.
