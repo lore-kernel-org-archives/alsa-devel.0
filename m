@@ -1,20 +1,15 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2/2] ASoC: Make pmdown_time runtime
- configurable
-Date: Fri, 12 Feb 2010 14:22:31 +0000
-Message-ID: <1265984551.3231.10.camel@odin>
-References: <1265974819-25151-1-git-send-email-broonie@opensource.wolfsonmicro.com>
-	<1265974819-25151-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.34
+Date: Fri, 12 Feb 2010 16:27:09 +0000
+Message-ID: <20100212162709.GA22297@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47CE42452E
-	for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2010 15:22:34 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id e12so246395fga.2
-	for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2010 06:22:33 -0800 (PST)
-In-Reply-To: <1265974819-25151-2-git-send-email-broonie@opensource.wolfsonmicro.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 54DB824133
+	for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2010 17:27:12 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Grazvydas Ignotas <notasas@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-02-12 at 11:40 +0000, Mark Brown wrote:
-> Provide a sysfs file allowing userspace to inspect and change the
-> pmdown_time setting at runtime.
-> 
-> Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/soc-core.c |   27 +++++++++++++++++++++++++++
->  1 files changed, 27 insertions(+), 0 deletions(-)
-> 
+The following changes since commit c6848bf566c7217a6090693ff5cc47091fa772f5:
+  Paul Menzel (1):
+        ASoC: Typo. s/Freecale/Freescale/
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+are available in the git repository at:
 
-Btw, I wonder if we should make this configurable via alsa-lib in the
-future (probably could be part of a QoS API). It's on my todo list now. 
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
 
-Liam
+Guennadi Liakhovetski (1):
+      ASoC: fix compile breakage if CONFIG_SH_DMA_API=y && CONFIG_SND_SIU_MIGOR!=n
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Mark Brown (3):
+      ASoC: Add WM2000 driver
+      ASoC: Make pmdown_time a per-card setting
+      ASoC: Make pmdown_time runtime configurable
+
+Thomas Weber (1):
+      ASoC: Add ASoC support for Devkit8000
+
+ include/sound/soc.h          |    2 +
+ include/sound/wm2000.h       |   26 ++
+ sound/soc/codecs/Kconfig     |    4 +
+ sound/soc/codecs/Makefile    |    2 +
+ sound/soc/codecs/wm2000.c    |  888 ++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm2000.h    |   79 ++++
+ sound/soc/omap/Kconfig       |    8 +-
+ sound/soc/omap/omap3beagle.c |    6 +-
+ sound/soc/sh/Kconfig         |    1 +
+ sound/soc/soc-core.c         |   31 ++-
+ 10 files changed, 1040 insertions(+), 7 deletions(-)
+ create mode 100644 include/sound/wm2000.h
+ create mode 100644 sound/soc/codecs/wm2000.c
+ create mode 100644 sound/soc/codecs/wm2000.h
