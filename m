@@ -1,18 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: IEC958 / SPDIF raw capture
-Date: Fri, 12 Feb 2010 08:03:43 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1002120802520.28127@eeebox2.perex-int.cz>
-References: <325dd9ac1002101514u73929570l51a12d28ecddd7b@mail.gmail.com>
-	<4B73B12A.7030508@ladisch.de>
-	<325dd9ac1002111944h182fbcfbm9658a6106939448e@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH][ALSA] usbmidi support for Access Music
+	synths.
+Date: Fri, 12 Feb 2010 10:24:04 +0100
+Message-ID: <4B751E34.1000703@ladisch.de>
+References: <4B726306.8070506@gmail.com> <4B7274BA.3040801@ladisch.de>
+	<4B73B96A.9040006@gmail.com> <4B73C3EC.2040606@ladisch.de>
+	<4B745D00.5060201@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3858E2413F
-	for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2010 08:03:44 +0100 (CET)
-In-Reply-To: <325dd9ac1002111944h182fbcfbm9658a6106939448e@mail.gmail.com>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 79B39243FB
+	for <alsa-devel@alsa-project.org>; Fri, 12 Feb 2010 10:24:11 +0100 (CET)
+In-Reply-To: <4B745D00.5060201@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Donald Tournier <d.tournier@brain.org.au>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: Sebastien Alaiwan <sebastien.alaiwan@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Feb 2010, Donald Tournier wrote:
+Sebastien Alaiwan wrote:
+> I've replaced the QUIRK_COMPOSITE by a QUIRK_MIDI_FIXED_ENDPOINT, the
+> module also probes (and fails) the USB interface 4 (I don't know
+> what this interface is for on this device) which results in the
+> printing of an error in the kernel log. How can I inform the
+> snd-usb-audio driver that the USB interface 4 should be left alone?
 
-> Thanks Clemens, that very helpful. We'll try to source one of these
-> C-Media cards as soon as possible.
->
-> Also nice to know about the "hw:x" trick, although I'm not too sure
-> how to use that in practice. I've just tried this command, with no
-> success:
->
-> $ arecord -D hw:x -t raw output.raw
-> ALSA lib pcm_hw.c:1435:(_snd_pcm_hw_open) Invalid value for card
-> arecord: main:608: audio open error: No such device
->
-> How exactly should this be used?
+With a QUIRK_IGNORE_INTERFACE for that interface.  This means you need
+QUIRK_COMPOSITE again.
 
-Note that 'x' means card number or name. Just use 0 if you have only one 
-card in system or use 'arecord -l' to list cards.
 
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+HTH
+Clemens
