@@ -1,17 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: dmix and dsnoop
-Date: Sun, 14 Feb 2010 15:26:08 +0800
-Message-ID: <4f3252891002132326n3aa31c0aoa6742c49c0117039@mail.gmail.com>
+From: Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
+Subject: Since kernel-2.6.32, alsactl fails to restore defaults
+Date: Sun, 14 Feb 2010 15:05:07 +0100
+Message-ID: <1266156307.23964.3.camel@localhost.localdomain>
+Reply-To: pacho@condmat1.ciencias.uniovi.es
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6633856476473951121=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f171.google.com (mail-pz0-f171.google.com
-	[209.85.222.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A91D243A1
-	for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2010 08:26:12 +0100 (CET)
-Received: by pzk1 with SMTP id 1so2747341pzk.16
-	for <alsa-devel@alsa-project.org>; Sat, 13 Feb 2010 23:26:09 -0800 (PST)
+Received: from smtp01.jazztel.es (smtp01.jazztel.es [62.14.3.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54FD224390
+	for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2010 15:05:15 +0100 (CET)
+Received: from [87.222.150.26] (helo=[192.168.1.201])
+	by smtp01.jazztel.es with esmtpa (Exim 4.69)
+	(envelope-from <pacho@condmat1.ciencias.uniovi.es>)
+	id 1Ngf60-0003ii-Ta
+	for alsa-devel@alsa-project.org; Sun, 14 Feb 2010 15:05:13 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +26,59 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-why do dmix and dsnoop 's slave alway open subdevice 0 ?
 
-for those hardware mixing sound cards which has two or more playback
-subdevices or hda-intel which may have 3 recording subdevices
-
-when subdevice 0 is opened by another application ,
-
-dmix / dsnoop always fail even when there are available subdevices
-
-aplay -v -Dplug:dmix test.wav
-ALSA lib pcm_dmix.c:1010:(snd_pcm_dmix_open) unable to open slave
-aplay: main:654: audio open error: Device or resource busy
+--===============6633856476473951121==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-HbM4mTJ3o4ulP53iWfwh"
 
 
+--=-HbM4mTJ3o4ulP53iWfwh
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-arecord -v -Dplug:dsnoop:1 -f cd -d20 tt.wav
-ALSA lib pcm_dsnoop.c:593:(snd_pcm_dsnoop_open) unable to open slave
-arecord: main:654: audio open error: Device or resource busy
+I originally reported this issue downstream to:
+http://bugs.gentoo.org/show_bug.cgi?id=3D299362=20
+
+Later to kernel:
+http://bugzilla.kernel.org/show_bug.cgi?id=3D15107=20
+
+And they told me that this is an alsactl issue, since it's not exiting
+with 0 when it notices that the device doesn't need special quirks:
+# alsactl -f /var/lib/alsa/asound.state restore
+Unknown hardware: "VIA8237" "Realtek ALC658D" "AC97a:414c4781" "0x147b"
+"0x1415"
+Hardware is initialized using a guess method
+# echo $?
+157
+
+What could I do? Thanks for helping me, if you need more information,
+simply ask me for it :-)
+
+
+--=-HbM4mTJ3o4ulP53iWfwh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Esta parte del mensaje =?ISO-8859-1?Q?est=E1?= firmada
+ digitalmente
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.14 (GNU/Linux)
+
+iEYEABECAAYFAkt4AxMACgkQCaWpQKGI+9SOzwCfWqQ+pksJh9LNR8hll2h44YyZ
+uLUAnRZ6uIcnbuBnVO3DrUB3ICINV09u
+=HiMS
+-----END PGP SIGNATURE-----
+
+--=-HbM4mTJ3o4ulP53iWfwh--
+
+
+--===============6633856476473951121==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6633856476473951121==--
