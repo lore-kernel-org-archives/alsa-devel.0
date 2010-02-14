@@ -1,17 +1,20 @@
-From: Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
-Subject: Re: Since kernel-2.6.32,
- alsactl fails to restore defaults
-Date: Sun, 14 Feb 2010 20:14:36 +0100
-Message-ID: <1266174876.23964.10.camel@localhost.localdomain>
-References: <alpine.LNX.2.00.1002142008190.28127@eeebox2.perex-int.cz>
-Reply-To: pacho@condmat1.ciencias.uniovi.es
+From: Zaar Hai <haizaar@haizaar.com>
+Subject: Is Intel 82801G (ICH7 family) with VIA VT1708B 8-Ch
+	supported?
+Date: Sun, 14 Feb 2010 22:33:12 +0200
+Message-ID: <cfb54191002141233w4ba7cc85j81c31aabd45950c6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5402580337261138546=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp01.jazztel.es (smtp01.jazztel.es [62.14.3.170])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7C3112444A
-	for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2010 20:14:44 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1002142008190.28127@eeebox2.perex-int.cz>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C8D524498
+	for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2010 21:33:36 +0100 (CET)
+Received: by ewy23 with SMTP id 23so120192ewy.4
+	for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2010 12:33:34 -0800 (PST)
+Received: by ewy23 with SMTP id 23so120155ewy.4
+	for <alsa-devel@alsa-project.org>; Sun, 14 Feb 2010 12:33:32 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,66 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============5402580337261138546==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-NmgeQKAvQkwo611GkDxt"
-
-
---=-NmgeQKAvQkwo611GkDxt
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-El dom, 14-02-2010 a las 20:10 +0100, Jaroslav Kysela escribi=C3=B3:
->=20
-> The files look good. The question is why the initialization is called=20
-> when a default state already exists (it shouldn't).
->=20
-> Does 'alsactl -f test.state restore' show some messages? Use test.state=20
-> file you sent me.
->=20
->  					Jaroslav
->=20
-> -----
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, Red Hat, Inc.
-
-Yes, it shows:
-# alsactl -f test.state restore
-Unknown hardware: "VIA8237" "Realtek ALC658D" "AC97a:414c4781" "0x147b"
-"0x1415"
-Hardware is initialized using a guess method
-
-
---=-NmgeQKAvQkwo611GkDxt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Esta parte del mensaje =?ISO-8859-1?Q?est=E1?= firmada
- digitalmente
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.14 (GNU/Linux)
-
-iEYEABECAAYFAkt4S5wACgkQCaWpQKGI+9T8LgCbB2mmXTxd7Uud6xsCJ62Cr8b4
-5ZgAn0Lh64jeWiZ+h1QnVgOWuMMOaX0k
-=gAdX
------END PGP SIGNATURE-----
-
---=-NmgeQKAvQkwo611GkDxt--
-
-
---===============5402580337261138546==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============5402580337261138546==--
+R29vZCBkYXksIGRlYXIgQUxTQSBkZXZlbG9wZXJzIQoKSSd2ZSBnb3Qgc2V2ZXJhbCBib2FyZHMg
+YmFzZWQgb24gSW50ZWwgRzQxIGNoaXBzZXQsIHdoaWNoIGhhcyBJQ0g3CnNvdXRoIGJyaWRnZSB3
+aXRoIFZUMTcwOEIgY29kZWMgb24gaXQuIFdoaWxlIFZUMTcwOEIgc2VlbXMgdG8gYmUKc3VwcG9y
+dGVkIHNpbmNlIDIwMDcsIG9uIGFsbCBteSBjb21wdXRlcnMgdGhlIGNhcmQgaXMgcmVjb2duaXpl
+ZCwgYnV0Cm1peGVyIGRvZXMgbm90IHdvcms6CgrCoCAkIGFsc2FtaXhlcgrCoCBhbHNhbWl4ZXI6
+IGZ1bmN0aW9uIHNuZF9taXhlcl9sb2FkIGZhaWxlZDogSW52YWxpZCBhcmd1bWVudAoKSSd2ZSB0
+cmllZCBpdCBvbiBEZWJpYW4sIE9wZW5TdXNlIGFuZCBVYnVudHUgKGluY2x1ZGluZyBuaWdodGx5
+CmJ1aWxkcyksIGJvdGggMzIgYW5kIDY0IGJpdCB2ZXJzaW9uLCBvbiA0IGNvbXB1dGVycyAoYWxs
+IGhhdmUgdGhlIHNhbWUKaGFyZHdhcmUpIC0gcmVzdWx0IGlzIHRoZSBzYW1lOiBjYXJkIHJlY29n
+bml6ZWQsIHNvdW5kIGlzIHBsYXllZCwgYnV0Cm1peGVyICh2b2x1bWUgY2hhbm5lbHMsIGV0Yy4p
+IGRvZXMgbm90LgoKU28sIEkndmUgdGhvdWdodCwgdGhhdCBzaW5jZSBHNDEgaXMgcmF0aGVyIG5l
+dywgbWF5IGJlIHRoaXMgSUNINyB3aXRoClZUMTcwOEIgY29tYm8gaXMgbm90IHN1cHBvcnRlZCBi
+eSBhbHNhIHlldD8KClsxXS4gaHR0cDovL3Bhc3RlYmluLmNvbS9tNTBkY2JmZjAgLSBjb250ZW50
+cyBvZiAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMjMApbMl0uIGh0dHA6Ly9wYXN0ZWJpbi5jb20v
+bTQyMzIwYWZjIC0gbHNwY2kgb3V0cHV0ClszXS4gaHR0cDovL3Bhc3RlYmluLmNvbS9tNDQzZWFh
+MTIgLSBhcGxheSAtbCBvdXRwdXQKClAuUy4gSWYgeW91IHRoaW5rIHRoaXMgbWVzc2FnZSByYXRo
+ZXIgYmVsb25ncyB0byB1c2VycyBhbmQgbm90IGRldmVsCmxpc3QsIGp1c3QgdGVsbCBtZSB0byBn
+byB0aGVyZS4gSSd2ZSBqdXN0IHRob3VnaHQgdGhhdCBzdXBwb3J0ZWQvbm90CnN1cHBvcnRlZCBx
+dWVzdGlvbiBzaG91bGQgYmV0dGVyIGJlIGFza2VkIGRldmVsIGxpc3QuCi0tClphYXIKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
