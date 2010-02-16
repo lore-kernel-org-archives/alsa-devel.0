@@ -1,17 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Tue, 16 Feb 2010 09:32:50 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1002160924210.28127@eeebox2.perex-int.cz>
-References: <20100215192451.GA17938@tango.0pointer.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH][ALSA] usbmidi support for Access Music
+	synths.
+Date: Tue, 16 Feb 2010 09:34:33 +0100
+Message-ID: <4B7A5899.4000400@ladisch.de>
+References: <4B726306.8070506@gmail.com> <4B7274BA.3040801@ladisch.de>
+	<4B73B96A.9040006@gmail.com> <4B73C3EC.2040606@ladisch.de>
+	<4B745D00.5060201@gmail.com> <4B751E34.1000703@ladisch.de>
+	<4B7A4BEF.1030005@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 430DD245FF
-	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 09:32:51 +0100 (CET)
-In-Reply-To: <20100215192451.GA17938@tango.0pointer.de>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 52EAF24602
+	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 09:34:35 +0100 (CET)
+In-Reply-To: <4B7A4BEF.1030005@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,39 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Sebastien Alaiwan <sebastien.alaiwan@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 15 Feb 2010, Lennart Poettering wrote:
+Sebastien Alaiwan wrote:
+> Clemens Ladisch wrote:
+>> Sebastien Alaiwan wrote:
+>>> How can I inform the
+>>> snd-usb-audio driver that the USB interface 4 should be left alone?
+>> 
+>> With a QUIRK_IGNORE_INTERFACE for that interface.  This means you need
+>> QUIRK_COMPOSITE again.
+> 
+> Ok, this is done.
+> Here's an updated patch.
 
-> Heya,
->
-> a while back I wrote a little tool "dbmeasure" which can be used to
-> determine dB attenuation data for alsa mixer controls. I have now
-> extended this little dB tools suite to include a tiny tool "dbverify"
-> that can be used to verify the correctness of existing dB data exposed
-> by the drivers. It should be relatively easy to use that tool,
-> suitable even for non-guru folks who want to debug the dB information
-> from alsa.
->
-> http://git.0pointer.de/?p=dbmeasure.git
-> git://git.0pointer.de/dbmeasure.git
+Applied; thanks!
 
-Thank you for this code. I'm playing with an idea to start gathering of 
-all ALSA tests around and make a GUI for them. But it might make sense to 
-use something more portable than C language and use standard ALSA tools 
-(amixer, aplay) as backends ;-)
 
-For USB cards, the dB ranges read from hw are not correct. We have to 
-overwrite these bad values in the driver. Unfortunately, the USB driver 
-doesn't show the USB descriptor -> ALSA control mapping to gather all 
-necessary information for the code updates. I'm working on a patch right 
-now to obtain this information using procfs.
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Clemens
