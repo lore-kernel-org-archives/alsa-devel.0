@@ -1,17 +1,15 @@
-From: Yiliang Bao <yiliangb@gmail.com>
-Subject: What is the required accuracy of audio sampling rate?
-Date: Tue, 16 Feb 2010 15:58:59 -0800
-Message-ID: <e5baf3861002161558x1d36f74anf63c5db145762668@mail.gmail.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [PATCH] Echoaudio,
+	fix Guru Meditation #00000005.48454C50
+Date: Wed, 17 Feb 2010 00:57:44 +0100
+Message-ID: <20100217005744.672d6429@Jay>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f171.google.com (mail-pz0-f171.google.com
-	[209.85.222.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 05945103845
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 00:59:00 +0100 (CET)
-Received: by pzk1 with SMTP id 1so5492970pzk.16
-	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 15:58:59 -0800 (PST)
+Received: from smtp-out26.alice.it (smtp-out26.alice.it [85.33.2.26])
+	by alsa0.perex.cz (Postfix) with ESMTP id D25F5103845
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 00:59:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,19 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+(resend: I mistyped the list address)
 
-I have a PCI-e audio card that does not give very accurate sampling rate
-(about -0.2% error, i.e., if I set the sampling rate to 8K, I got only 7984
-samples per second on average). It caused various synchronization problems
-in applications like gstreamer.
+There is a small window between the hw_params() callback and when
+runtime->frame_bits is set by ALSA middle layer. When another substream is
+already running, if an interrupt is delivered during that window the irq
+handler calls pcm_pointer() which does a division by zero. The patch below
+makes the irq handler skip substreams that are initialized but not started
+yet. Cc to Clemens Ladisch because he proposed an alternate fix.
 
-Since there will be some difference from one clock domain to another, I am
-wondering if there is any defined tolerance on the sampling rate, and where
-the right place is to correct this kind of error. I would really appreciate
-if someone can point me to the related documents/links.
+For more information, please read the original thread in the linux-kernel
+mailing list: http://lkml.org/lkml/2010/2/2/187
 
-Thanks,
-Yiliang
+
+Short description: This patch fixes a division by zero error in the irq handler.
+
+
+Signed-off-by: Giuliano Pochini <pochini@shiny.it>
+
+--- alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c__orig	2010-02-16 22:21:36.000000000 +0100
++++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c	2010-02-16 22:21:45.000000000 +0100
+@@ -1864,7 +1864,9 @@ static irqreturn_t snd_echo_interrupt(in
+ 	/* The hardware doesn't tell us which substream caused the irq,
+ 	thus we have to check all running substreams. */
+ 	for (ss = 0; ss < DSP_MAXPIPES; ss++) {
+-		if ((substream = chip->substream[ss])) {
++		substream = chip->substream[ss];
++		if (substream && ((struct audiopipe *)substream->runtime->
++				private_data)->state == PIPE_STATE_STARTED) {
+ 			period = pcm_pointer(substream) /
+ 				substream->runtime->period_size;
+ 			if (period != chip->last_period[ss]) {
+
+
+-- 
+Giuliano.
