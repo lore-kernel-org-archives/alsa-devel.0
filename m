@@ -1,18 +1,14 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Tue, 16 Feb 2010 11:36:55 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1002161127310.28127@eeebox2.perex-int.cz>
-References: <20100215192451.GA17938@tango.0pointer.de>
-	<alpine.LNX.2.00.1002160924210.28127@eeebox2.perex-int.cz>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/2] ASoC: tlv320dac33: small fixes
+Date: Tue, 16 Feb 2010 13:23:14 +0200
+Message-ID: <1266319396-25066-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B3C424337
-	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 11:36:56 +0100 (CET)
-In-Reply-To: <alpine.LNX.2.00.1002160924210.28127@eeebox2.perex-int.cz>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6AA6B243F8
+	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 12:23:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +18,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 16 Feb 2010, Jaroslav Kysela wrote:
+Hello,
 
-> On Mon, 15 Feb 2010, Lennart Poettering wrote:
->
->> Heya,
->> 
->> a while back I wrote a little tool "dbmeasure" which can be used to
->> determine dB attenuation data for alsa mixer controls. I have now
->> extended this little dB tools suite to include a tiny tool "dbverify"
->> that can be used to verify the correctness of existing dB data exposed
->> by the drivers. It should be relatively easy to use that tool,
->> suitable even for non-guru folks who want to debug the dB information
->> from alsa.
->> 
->> http://git.0pointer.de/?p=dbmeasure.git
->> git://git.0pointer.de/dbmeasure.git
->
-> Thank you for this code. I'm playing with an idea to start gathering of all 
-> ALSA tests around and make a GUI for them. But it might make sense to use 
-> something more portable than C language and use standard ALSA tools (amixer, 
-> aplay) as backends ;-)
->
-> For USB cards, the dB ranges read from hw are not correct. We have to 
-> overwrite these bad values in the driver. Unfortunately, the USB driver 
-> doesn't show the USB descriptor -> ALSA control mapping to gather all 
-> necessary information for the code updates. I'm working on a patch right now 
-> to obtain this information using procfs.
+Two small fixes for the tlv320dac33 codec driver:
+Clearing the FIFFLUSH flag before playback start
+ The register cache has the bit set after the playback is stopped, so clear it
+ before the playback.
+OSCSET calculation in case of 44.1KHz sampling rate was off by 1 (0x1588
+ instead of 0x1589, which is the value should be used according to TI).
 
-The patch is available here:
+---
+Peter Ujfalusi (2):
+  ASoC: tlv320dac33: Clearing FIFOFLUSH flag before playback
+  ASoC: tlv320dac33: Correct the OSCSET calculation
 
-http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=6daf48108cb0136b762998bb5c2b0b32234b4e93
-
-I also updated the alsa-info.sh script to gather this information.
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+ sound/soc/codecs/tlv320dac33.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
