@@ -1,22 +1,26 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Verifying mixer dB data/Invalid dB data from
- USB	cards, especially Aureon 5.1 MkII
-Date: Tue, 16 Feb 2010 16:40:16 +0100
-Message-ID: <20100216154015.GA612@tango.0pointer.de>
+	USB	cards, especially Aureon 5.1 MkII
+Date: Tue, 16 Feb 2010 15:49:19 +0000
+Message-ID: <20100216154919.GC10586@sirena.org.uk>
 References: <20100215192451.GA17938@tango.0pointer.de>
 	<4B7A5268.5050704@ladisch.de>
 	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
 	<20100216143200.GB25489@tango.0pointer.de>
 	<20100216144047.GB10586@sirena.org.uk>
+	<20100216154015.GA612@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F94F24133
-	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 16:40:41 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D39D24334
+	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 16:49:20 +0100 (CET)
+Received: from broonie by cassiel.sirena.org.uk with local (Exim 4.69)
+	(envelope-from <broonie@sirena.org.uk>) id 1NhPfr-0000Ae-VA
+	for alsa-devel@alsa-project.org; Tue, 16 Feb 2010 15:49:19 +0000
 Content-Disposition: inline
-In-Reply-To: <20100216144047.GB10586@sirena.org.uk>
+In-Reply-To: <20100216154015.GA612@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,40 +33,16 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 16.02.10 14:40, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
+On Tue, Feb 16, 2010 at 04:40:16PM +0100, Lennart Poettering wrote:
 
-> 
-> On Tue, Feb 16, 2010 at 03:32:01PM +0100, Lennart Poettering wrote:
-> > On Tue, 16.02.10 09:24, Jaroslav Kysela (perex@perex.cz) wrote:
-> 
-> > > Line: 0dB..47.81dB		# seems correct -47.81dB..0dB
-> > > Line Capture: -0.18dB..23.81dB	# seems correct
-> > > -17.81dB..6.18dB
-> 
-> > Hmm, how did you choose where to put 0dB?
-> 
-> The Line one looks like someone got attenuation and gain confused, which
-> is a fairly common mistake for people to make when copying information
-> from one place to another.  Possibly a similar thing going on with the
-> Line Capture control, plus a fixed 6dB gain (which may well be a
-> separate amp...).
+> Now, what Jaroslav listed above suggests that he chose carefully where
+> he put 0dB. I was just wondering about that. Jaroslav, how did you
+> choose where to put 0dB?
 
-I remember that a while back we had a discussion on alsa-devel
-regarding the fact that ALSA does not define relative to what the dB
-values reported by the mixer elements actually are measured. Some
-mixer controls export dB values relative to max amplification (e.g. my
-integrated USB speakers here), others relative to the output of some
-other mixer element, and others relative to different standard or
-not-so-standard output voltages.  And there is no API to figure out
-what the base is.
+FWIW all the drivers I do take whatever the datasheet says the
+gain/attenuation range is for the control in question.  For most modern
+embedded CODECs there will be multiple user controllable gains in the
+path.
 
-Now, what Jaroslav listed above suggests that he chose carefully where
-he put 0dB. I was just wondering about that. Jaroslav, how did you
-choose where to put 0dB?
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+We really need to get an API for exposing path information to userspace
+to fully describe what's going on here.
