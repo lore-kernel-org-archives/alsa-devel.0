@@ -1,22 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Tue, 16 Feb 2010 17:29:48 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
-References: <20100215192451.GA17938@tango.0pointer.de>
-	<4B7A5268.5050704@ladisch.de>
-	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
-	<20100216143200.GB25489@tango.0pointer.de>
-	<20100216144047.GB10586@sirena.org.uk>
-	<20100216154015.GA612@tango.0pointer.de>
+From: Pedro Ribeiro <pedrib@gmail.com>
+Subject: Strange behaviour in snd-usb-cayak with Audio4DJ
+Date: Tue, 16 Feb 2010 16:35:29 +0000
+Message-ID: <74fd948d1002160835j3df4a44sbfa3d3fdaabfdb60@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id C84982438F
-	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 17:29:48 +0100 (CET)
-In-Reply-To: <20100216154015.GA612@tango.0pointer.de>
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5B91024398
+	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 17:35:31 +0100 (CET)
+Received: by ewy23 with SMTP id 23so730562ewy.4
+	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 08:35:30 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,60 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 16 Feb 2010, Lennart Poettering wrote:
+Hi all,
 
-> On Tue, 16.02.10 14:40, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
->
->>
->> On Tue, Feb 16, 2010 at 03:32:01PM +0100, Lennart Poettering wrote:
->>> On Tue, 16.02.10 09:24, Jaroslav Kysela (perex@perex.cz) wrote:
->>
->>>> Line: 0dB..47.81dB		# seems correct -47.81dB..0dB
->>>> Line Capture: -0.18dB..23.81dB	# seems correct
->>>> -17.81dB..6.18dB
->>
->>> Hmm, how did you choose where to put 0dB?
->>
->> The Line one looks like someone got attenuation and gain confused, which
->> is a fairly common mistake for people to make when copying information
->> from one place to another.  Possibly a similar thing going on with the
->> Line Capture control, plus a fixed 6dB gain (which may well be a
->> separate amp...).
->
-> I remember that a while back we had a discussion on alsa-devel
-> regarding the fact that ALSA does not define relative to what the dB
-> values reported by the mixer elements actually are measured. Some
-> mixer controls export dB values relative to max amplification (e.g. my
-> integrated USB speakers here), others relative to the output of some
-> other mixer element, and others relative to different standard or
-> not-so-standard output voltages.  And there is no API to figure out
-> what the base is.
->
-> Now, what Jaroslav listed above suggests that he chose carefully where
-> he put 0dB. I was just wondering about that. Jaroslav, how did you
-> choose where to put 0dB?
+I'm trying to setup my Audio4DJ usb soundcard. It has 4 channels (2
+stereo ones).
 
-Basically, if I remember correctly the discussion, 0dB on all elements 
-should main unchanged volume, <0dB attenuation and >0dB gain. We cannot 
-measure precisely other components on path like analog volume wheels 
-(like SB MP3+ has to change line-out volume), analog amplifiers and other 
-analog signal modificators.
+ALSA information script output is here
+http://www.alsa-project.org/db/?f=fe4cc3eda2df49c6055f55d4cef935524124d1a1
+and my .asoundrc is here  http://pastebin.com/m3f70572d
 
-So, if you use one headphones and speakers with defined and fixed volume 
-settings, you can measure differences for the card with broken dB volume 
-ranges. I just used another HDA card in notebook with 0dB settings on all 
-playback controls on path, captured stream from this card on my USB card 
-and played this stream back on my USB card watching and relating the 
-volume levels according dB values. It's not 100% correct, but at least 
-it's something to start with.
+Currently my .asoundrc has 4 devices:
+- Audio4DJ_A (combines channels 1 and 2)
+- Audio4DJ_B (combines channels 3 and 4)
+- Audio4DJ (combines Audio4DJ_A and Audio4DJ_B)
+- ttable is a device for JACK according to this
+http://alsa-project.org/main/index.php/Asoundrc#Virtual_multi_channel_devices
 
- 					Jaroslav
+My goal is to have a separate ALSA soundcard for each pair of
+channels, an ALSA soundcard for 4 channels and a JACK device for all 4
+channels.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Running speaker-test -c2 -D plughw:Audio4DJ,0,X -twav -l1
+with X=0 and X=1 correctly outputs to each channel. Also,
+pcm.Audio4DJ_A and pcm.Audio4DJ_B correctly work through both ALSA and
+JACK for each pair of channels.
+
+However, if I try to use the pcm.Audio4DJ (which combines both
+pcm.Audio4DJ_A and pcm.Audio4DJ_B), I get correct output through
+channels 1 and 2, but channels 3 and 4 have a lot of garbage - you can
+hear the track playing but it is at a very high pitch and distorted.
+
+JACK doesn't even start with the Audio4DJ device:
+
+#  jackd -R --timeout 4500 -d alsa -d Audio4DJ -p 128 -n 3 -r 44100 -i 4 -o
+apparent rate = 44100
+creating alsa driver ... Audio4DJ|Audio4DJ|128|3|44100|4|4|nomon|swmeter|-|32bit
+configuring for 44100Hz, period = 128 frames (2.9 ms), buffer = 3 periods
+ALSA: final selected sample format for capture: 32bit float little-endian
+ALSA: use 3 periods for capture
+ALSA: final selected sample format for playback: 32bit float little-endian
+ALSA: use 3 periods for playback
+ALSA: could not complete read of 0 frames: error = -32
+cycle execution failure, exiting
+DRIVER NT: could not run driver cycle
+jack main caught signal 12
+(crashes immediately)
+
+The ttable device locks up the system for a few seconds and then JACK crashes:
+
+#  jackd -R --timeout 4500 -d alsa -d ttable -p 128 -n 3 -r 44100 -i 4 -o
+apparent rate = 44100
+creating alsa driver ... ttable|ttable|128|3|44100|4|4|nomon|swmeter|-|32bit
+configuring for 44100Hz, period = 128 frames (2.9 ms), buffer = 3 periods
+ALSA: final selected sample format for capture: 32bit integer little-endian
+ALSA: use 3 periods for capture
+ALSA: final selected sample format for playback: 32bit integer little-endian
+ALSA: use 3 periods for playback
+jackd watchdog: timeout - killing jackd
+
+Without a .asoundrc it doesn't even work.
+
+Can someone please tell me if this is expected behaviour or a bug?
+
+Thanks,
+Pedro
