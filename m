@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Separate dma driver for cpu_dais
-Date: Wed, 17 Feb 2010 12:42:05 +0000
-Message-ID: <20100217124205.GA11510@rakim.wolfsonmicro.main>
-References: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
-	<20100217104222.GA31765@sirena.org.uk>
-	<1b68c6791002170413o61958189y786b13477fd7e12a@mail.gmail.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: What is the required accuracy of audio sampling
+	rate?
+Date: Wed, 17 Feb 2010 12:52:57 +0000
+Message-ID: <ad2655cb1002170452s617ada8du1de85aa3baa9c6fb@mail.gmail.com>
+References: <e5baf3861002161558x1d36f74anf63c5db145762668@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17F1B103856
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 13:42:07 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1b68c6791002170413o61958189y786b13477fd7e12a@mail.gmail.com>
+Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
+	[209.85.220.209])
+	by alsa0.perex.cz (Postfix) with ESMTP id 406DA103856
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 13:52:58 +0100 (CET)
+Received: by fxm1 with SMTP id 1so7710620fxm.4
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 04:52:57 -0800 (PST)
+In-Reply-To: <e5baf3861002161558x1d36f74anf63c5db145762668@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Yiliang Bao <yiliangb@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 17, 2010 at 09:13:05PM +0900, jassi brar wrote:
-> On Wed, Feb 17, 2010 at 7:42 PM, Mark Brown
+On 16 February 2010 23:58, Yiliang Bao <yiliangb@gmail.com> wrote:
+> Hi,
+>
+> I have a PCI-e audio card that does not give very accurate sampling rate
+> (about -0.2% error, i.e., if I set the sampling rate to 8K, I got only 7984
+> samples per second on average). It caused various synchronization problems
+> in applications like gstreamer.
+>
+> Since there will be some difference from one clock domain to another, I am
+> wondering if there is any defined tolerance on the sampling rate, and where
+> the right place is to correct this kind of error. I would really appreciate
+> if someone can point me to the related documents/links.
+>
 
-> > So. =A0Ideally for hardware mixing you'd represent the hardware mixing =
-as
-> > a device within ASoC but that's not currently supported - the multi
-> > CODEC work should take care of it but it's not there yet.
+There is no defined tolerance on sampling rate.
+Audio apps should be able to deal with a certain amount of error.
+xine uses the system clock for its synchronization, and resamples the
+audio output if the audio hardware is running at a different rate.
+Other apps might use the audio clock and sync to that. In that case,
+it might get the problems you describe.
+Try playing your media in xine and see if the problem disappears.
 
-> is that work visible on some branch in ur tree?
+Kind Regards
 
-I'm not doing it, it's on Liam's list.  I generally don't maintian
-branches for anything.
-
-> > Overall I don't see any immediate problem with supporting this in
-> > mainline as-is from what I've looked at so far.
-
-> I assume this is about dma_id flag?
-
-The hardware mixing too, like I say it's the most trivial case possible
-so doesn't run into many problems.
+James
