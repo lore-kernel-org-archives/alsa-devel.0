@@ -1,19 +1,19 @@
-From: jassi brar <jassisinghbrar@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: Separate dma driver for cpu_dais
-Date: Wed, 17 Feb 2010 21:15:56 +0900
-Message-ID: <1b68c6791002170415q457d0893jb1a77b864031ee6c@mail.gmail.com>
+Date: Wed, 17 Feb 2010 12:42:05 +0000
+Message-ID: <20100217124205.GA11510@rakim.wolfsonmicro.main>
 References: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
-	<4B7B9387.1070506@samsung.com> <20100217105202.GB31765@sirena.org.uk>
+	<20100217104222.GA31765@sirena.org.uk>
+	<1b68c6791002170413o61958189y786b13477fd7e12a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id ECDDB2439C
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 13:15:57 +0100 (CET)
-Received: by vws18 with SMTP id 18so599503vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 04:15:57 -0800 (PST)
-In-Reply-To: <20100217105202.GB31765@sirena.org.uk>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 17F1B103856
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 13:42:07 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6791002170413o61958189y786b13477fd7e12a@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,38 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: kyungmin.park@samsung.com, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBGZWIgMTcsIDIwMTAgYXQgNzo1MiBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFdlZCwgRmViIDE3LCAyMDEwIGF0
-IDAzOjU4OjE1UE0gKzA5MDAsIEpvb255b3VuZyBTaGltIHdyb3RlOgo+PiBUaGVyZSBpcyB0aGUg
-Y2FzZSBhdCB0aGUgUzVQQzFYWCwgaXQgc3VwcG9ydHMgdGhlIGhhcmR3YXJlIG1peGluZyBieQo+
-PiB1c2luZyB0d28gdHggZmlmby4gRmlyc3QgSmFzc2kgaW1wbGVtZW50ZWQgY29kZXMgdXNpbmcg
-ZWFjaCBvdGhlciBjcHUKPj4gZGFpIGFzIEphc3NpIHNheXMgYXQgdGhlIGFib3ZlIGZvciB0aGUg
-aGFyZHdhcmUgbWl4aW5nLCBidXQgaXQgc2hvdWxkCj4+IHNoYXJlIGNvZGVjX2RhaSBhbmQgbmVl
-ZCBzb21lIG1vZGlmaWNhdGlvbiBvZiBBU29DIGNvcmUuCj4KPiBXaGF0IG1vZGlmaWNhdGlvbnMg
-YXJlIHlvdSBsb29raW5nIGZvciBoZXJlPyDCoEFTb0MgZG9lc24ndCBtYWtlIGFueQo+IGVmZm9y
-dCB0byBhdm9pZCByZXVzZSBvZiBEQUlzIGluIG11bHRpcGxlIGxpbmtzIC0gaXQgZG9lc24ndCBh
-Y3RpdmVseSBkbwo+IGFueXRoaW5nIHRvIGhlbHAgaGVyZSBidXQgZXF1YWxseSB3ZWxsIGl0J3Mg
-bm90IHN1cHBvc2VkIHRvIGdldCBpbiB0aGUKPiB3YXkuClRoZSB3b3JrYXJvdW5kIHRvIGVuYWJs
-ZSBhIGNwdV9kYWkgdG8gYmUgdXNlZCBpbiBtdWx0aXBsZSBkYWlfbGlua3MgaXNuJ3QKZ29pbmcg
-dG8gd29yayBhcyBzdWNoIGJlY2F1c2Ugb2YgY3B1X2RhaS0+cnVudGltZSA9IHJ1bnRpbWUgZG9u
-ZQppbiBzb2NfcGNtX29wZW4uCkx1Y2tpbHkgZm9yIGNvZGVjX2RhaSwgd2UgY2FuIHVzZSB0aGUg
-c2FtZSBpbiBtb3JlIHRoYW4gb25lIGRhaV9saW5rLgoKPiBUaGUgb25seSB0aGluZyBJIGNhbiB0
-aGluayBvZiBvZmYgdGhlIHRvcCBvZiBteSBoZWFkIHRoYXQgd291bGQgY2F1c2UKPiBhY3R1YWwg
-cHJvYmxlbXMgaXMgdGhhdCB0aGUgREFQTSBldmVudHMgZm9yIHN0cmVhbSBzdG9wL3N0YXJ0IGlu
-IHRoZQo+IENPREVDIG1pZ2h0IG5vdCBiZSBkb2luZyByZWZlcmVuY2UgY291bnRpbmcsIEknZCBu
-ZWVkIHRvIGNoZWNrLiDCoE90aGVyCj4gdGhhbiB0aGF0IHRoZXJlJ3MgYSBidW5jaCBvZiB0aGlu
-Z3MgdGhhdCBjb3VsZCBtYWtlIHVzZSBjYXNlcyBsaWtlIHRoaXMKPiBuaWNlciBsaWtlIHByb3Zp
-ZGluZyBhIHdheSBvZiBidW5kbGluZyBsaW5rcyB0aGF0IHNoYXJlIHNpZ25hbHMgdG9nZXRoZXIK
-PiBhbmQgcHJvdmlkaW5nIGNhbGxiYWNrcyB3aGVuIHRoaW5ncyBzdGFydCBhbmQgc3RvcCAoc28g
-c2hhcmVkIGNsb2NraW5nCj4gY2FuIGJlIHR1cm5lZCBvbiBhbmQgb2ZmLCBmb3IgZXhhbXBsZSkg
-YnV0IHRoZXNlIHNob3VsZCBiZSB0aGluZ3MgdGhhdAo+IGNvdWxkIGJlIG9wZW4gY29kZWQgaW4g
-aW5kaXZpZHVhbCBkcml2ZXJzLgpBbHNvLCBob3cgY2xlYW5seSBjb3VsZCB3ZSBhdm9pZCBzdGFy
-dHVwL3NodXRkb3duL211dGUgZXRjIGNhbGxiYWNrcwp3aGVuIGEgY29kZWNfZGFpIGlzIHVzZWQg
-aW4gbXVsdGlwbGUgZGFpX2xpbmtzLCBpcyB0byBiZSBzZWVuLgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, Feb 17, 2010 at 09:13:05PM +0900, jassi brar wrote:
+> On Wed, Feb 17, 2010 at 7:42 PM, Mark Brown
+
+> > So. =A0Ideally for hardware mixing you'd represent the hardware mixing =
+as
+> > a device within ASoC but that's not currently supported - the multi
+> > CODEC work should take care of it but it's not there yet.
+
+> is that work visible on some branch in ur tree?
+
+I'm not doing it, it's on Liam's list.  I generally don't maintian
+branches for anything.
+
+> > Overall I don't see any immediate problem with supporting this in
+> > mainline as-is from what I've looked at so far.
+
+> I assume this is about dma_id flag?
+
+The hardware mixing too, like I say it's the most trivial case possible
+so doesn't run into many problems.
