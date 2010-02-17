@@ -1,27 +1,21 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Verifying mixer dB data/Invalid dB data from
- USB	cards, especially Aureon 5.1 MkII
-Date: Wed, 17 Feb 2010 14:01:55 +0100
-Message-ID: <20100217130155.GC24165@tango.0pointer.de>
-References: <20100216143200.GB25489@tango.0pointer.de>
-	<20100216144047.GB10586@sirena.org.uk>
-	<20100216154015.GA612@tango.0pointer.de>
-	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
-	<20100216210703.GA18109@tango.0pointer.de>
-	<20100216223938.GA23623@sirena.org.uk>
-	<20100216224212.GA1486@tango.0pointer.de>
-	<20100216233825.GB23623@sirena.org.uk>
-	<20100216235658.GA6766@tango.0pointer.de>
-	<20100217111721.GA2032@sirena.org.uk>
+From: Jon Smirl <jonsmirl@gmail.com>
+Subject: Re: What is the required accuracy of audio sampling
+	rate?
+Date: Wed, 17 Feb 2010 08:03:17 -0500
+Message-ID: <9e4733911002170503w1d89c1abn1e6afcf8d56ccb1b@mail.gmail.com>
+References: <e5baf3861002161558x1d36f74anf63c5db145762668@mail.gmail.com>
+	<ad2655cb1002170452s617ada8du1de85aa3baa9c6fb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE8F0103874
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 14:02:21 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20100217111721.GA2032@sirena.org.uk>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C0A7103883
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 14:03:20 +0100 (CET)
+Received: by pwi9 with SMTP id 9so969309pwi.38
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 05:03:18 -0800 (PST)
+In-Reply-To: <ad2655cb1002170452s617ada8du1de85aa3baa9c6fb@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,30 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <james.dutton@gmail.com>
+Cc: Yiliang Bao <yiliangb@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 17.02.10 11:17, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
+On Wed, Feb 17, 2010 at 7:52 AM, James Courtier-Dutton
+<james.dutton@gmail.com> wrote:
+> On 16 February 2010 23:58, Yiliang Bao <yiliangb@gmail.com> wrote:
+>> Hi,
+>>
+>> I have a PCI-e audio card that does not give very accurate sampling rate
+>> (about -0.2% error, i.e., if I set the sampling rate to 8K, I got only 7984
+>> samples per second on average). It caused various synchronization problems
+>> in applications like gstreamer.
+>>
+>> Since there will be some difference from one clock domain to another, I am
+>> wondering if there is any defined tolerance on the sampling rate, and where
+>> the right place is to correct this kind of error. I would really appreciate
+>> if someone can point me to the related documents/links.
+>>
+>
+> There is no defined tolerance on sampling rate.
+> Audio apps should be able to deal with a certain amount of error.
+> xine uses the system clock for its synchronization, and resamples the
+> audio output if the audio hardware is running at a different rate.
+> Other apps might use the audio clock and sync to that. In that case,
+> it might get the problems you describe.
+> Try playing your media in xine and see if the problem disappears.
 
-> 
-> On Wed, Feb 17, 2010 at 12:56:58AM +0100, Lennart Poettering wrote:
-> 
-> > Nah. I actually don't need this value for PulseAudio. In PulseAudio I
-> > chose to shift all scales so that maximum amplification becomes 0 dB,
-> > so that the UIs are similar to how most hifi racks do it, and which I
-> 
-> Interesting.  The hifi equipment I've dealt with typically doesn't
-> present any units at all in the UI outside of level monitors.
+The -0.2% error is cumulative, not random. After a three hour movie
+your audio will be off by 20 seconds.
 
-My old Yamaha hifi rack had a volume dial where the max was labeled 0
-dB and the min setting was -inf dB. My new Yamaha shows the dB level
-on an LCD screen whever you touch the volume dial, and it too goes
-from -inf dB to 0 dB. I kinda assumed that stereos from other
-manufacturers would do the exact same thing, but tbh never checked.
+Best solution is the get the audio clock synched as closely as
+possible to the video one. Any remaining error has to be dealt with in
+software like xine does.
 
-Lennart
+
+>
+> Kind Regards
+>
+> James
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
+
+
 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Jon Smirl
+jonsmirl@gmail.com
