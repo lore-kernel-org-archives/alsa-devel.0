@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Separate dma driver for cpu_dais
-Date: Wed, 17 Feb 2010 13:14:22 +0000
-Message-ID: <20100217131421.GB11510@rakim.wolfsonmicro.main>
-References: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
-	<4B7B9387.1070506@samsung.com>
-	<20100217105202.GB31765@sirena.org.uk>
-	<1b68c6791002170415q457d0893jb1a77b864031ee6c@mail.gmail.com>
+From: Mads Kiilerich <mads@kiilerich.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+ cards, especially Aureon 5.1 MkII
+Date: Wed, 17 Feb 2010 14:15:31 +0100
+Message-ID: <4B7BEBF3.6000403@kiilerich.com>
+References: <20100216143200.GB25489@tango.0pointer.de>	<20100216144047.GB10586@sirena.org.uk>	<20100216154015.GA612@tango.0pointer.de>	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>	<20100216210703.GA18109@tango.0pointer.de>	<20100216223938.GA23623@sirena.org.uk>	<20100216224212.GA1486@tango.0pointer.de>	<20100216233825.GB23623@sirena.org.uk>	<20100216235658.GA6766@tango.0pointer.de>	<20100217111721.GA2032@sirena.org.uk>
+	<20100217130155.GC24165@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3D6D0103894
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 14:14:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1b68c6791002170415q457d0893jb1a77b864031ee6c@mail.gmail.com>
+Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
+	[209.85.219.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8113B103897
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 14:15:33 +0100 (CET)
+Received: by ewy5 with SMTP id 5so2659459ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 05:15:33 -0800 (PST)
+In-Reply-To: <20100217130155.GC24165@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: kyungmin.park@samsung.com, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 17, 2010 at 09:15:56PM +0900, jassi brar wrote:
-> On Wed, Feb 17, 2010 at 7:52 PM, Mark Brown
+On 02/17/2010 02:01 PM, Lennart Poettering wrote:
+> On Wed, 17.02.10 11:17, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
+>
+>> On Wed, Feb 17, 2010 at 12:56:58AM +0100, Lennart Poettering wrote:
+>>
+>>> Nah. I actually don't need this value for PulseAudio. In PulseAudio I
+>>> chose to shift all scales so that maximum amplification becomes 0 dB,
+>>> so that the UIs are similar to how most hifi racks do it, and which I
+>>
+>> Interesting.  The hifi equipment I've dealt with typically doesn't
+>> present any units at all in the UI outside of level monitors.
+>
+> My old Yamaha hifi rack had a volume dial where the max was labeled 0
+> dB and the min setting was -inf dB. My new Yamaha shows the dB level
+> on an LCD screen whever you touch the volume dial, and it too goes
+> from -inf dB to 0 dB. I kinda assumed that stereos from other
+> manufacturers would do the exact same thing, but tbh never checked.
 
-> > What modifications are you looking for here? =A0ASoC doesn't make any
-> > effort to avoid reuse of DAIs in multiple links - it doesn't actively do
-> > anything to help here but equally well it's not supposed to get in the
-> > way.
+At least some of them do it differently:
+http://en.wikipedia.org/wiki/Up_to_eleven
 
-> The workaround to enable a cpu_dai to be used in multiple dai_links isn't
-
-What workaround?
-
-> going to work as such because of cpu_dai->runtime =3D runtime done
-> in soc_pcm_open.
-> Luckily for codec_dai, we can use the same in more than one dai_link.
-
-Right, OK - CPU DAIs don't come up so much so I've not noticed that.
-
-> > The only thing I can think of off the top of my head that would cause
-> > actual problems is that the DAPM events for stream stop/start in the
-> > CODEC might not be doing reference counting, I'd need to check. =A0Other
-> > than that there's a bunch of things that could make use cases like this
-> > nicer like providing a way of bundling links that share signals together
-> > and providing callbacks when things start and stop (so shared clocking
-> > can be turned on and off, for example) but these should be things that
-> > could be open coded in individual drivers.
-
-> Also, how cleanly could we avoid startup/shutdown/mute etc callbacks
-> when a codec_dai is used in multiple dai_links, is to be seen.
-
-The mute is just part of the reference counting I was mentioning, that's
-fairly straightforward to resolve I'd expect.
-
-Startup and shutdown will just work for a lot of drivers, either through
-not having relevant callbacks in the first place or winding up being a
-noop due to rewriting an identical configuration - as a first
-approximation we can probably get away with open coding in any drivers
-that do have a problem.
+/Mads
