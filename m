@@ -1,20 +1,20 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: Separate dma driver for cpu_dais
-Date: Wed, 17 Feb 2010 16:24:35 +0900
-Message-ID: <1b68c6791002162324kbeb220dm23031e3115e617ca@mail.gmail.com>
-References: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
-	<4B7B9387.1070506@samsung.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Understanding SND_PCM_INFO_ [BATCH, BLOCK_TRANSFER,
+	DOUBLE]
+Date: Wed, 17 Feb 2010 20:35:36 +1300
+Message-ID: <4B7B9C48.5070608@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 443361037F7
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 08:24:37 +0100 (CET)
-Received: by vws18 with SMTP id 18so533416vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 23:24:35 -0800 (PST)
-In-Reply-To: <4B7B9387.1070506@samsung.com>
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 924DC103847
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 08:36:29 +0100 (CET)
+Received: from [192.168.1.6]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0KXZ0028U6GPWN20@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Wed, 17 Feb 2010 20:36:26 +1300 (NZDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, kyungmin.park@samsung.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 17, 2010 at 3:58 PM, Joonyoung Shim <jy0922.shim@samsung.com> wrote:
-> Additionally, i have one more question.
->
-> At the ASoC, is there a situation to share the dai(cpu or codec)?
-Currently, ASOC doesn't allow sharing cpu or codec dai.
+I've been looking at these info flags, and whether they cause the driver
+to be accessed any differently by the upper layers.
+So far I can find hardly any examples where they are used in any
+significant way - what am I missing if anything?
 
-> If the dai is shared, i just think the ASoC core cannot support it.
-Correct.
+SND_/SNDRV_
+_PCM_INFO_BATCH
+double buffering
+skips the check enabled by XRUN_DEBUG_JIFFIESCHECK
+alsa-lib returns it in snd_pcm_hw_params_is_batch()
 
-> There is the case at the S5PC1XX, it supports the hardware mixing by
-> using two tx fifo. First Jassi implemented codes using each other cpu
-> dai as Jassi says at the above for the hardware mixing, but it should
-> share codec_dai and need some modification of ASoC core.
-> (I can see codes at the below url
-> http://git.kernel.org/?p=linux/kernel/git/kki_ap/linux-2.6-samsung.git)
-> Jassi, how do you think about this?
-Though outside this topic, please see latest code from samsung GIT.
-I already share wm8580 dai with I2S primary_fifo dai as well
-as secondary_fifo dai. I implemented temporary workaround to share
-dais(luckily codec_dai wasn't used in a way to make it impossible,
-though cpu_dai still can't be shared).
-Also, there is some reason I didn't point to our repository:- the code is
-not meant for mainline. It's just a 'workaround' for urgent requirement.
+_PCM_INFO_BLOCK_TRANSFER
+/* hardware transfer block of samples */
+translated by pcm_oss.c into ~DSP_CAP_REALTIME
+lib: snd_pcm_hw_params_is_block_transfer()
 
-Now, I wud like to get back to getting suggestions about how to
-approach the solution from mainline's POV rather than discussing
-Samsung's internal code.
+_PCM_INFO_DOUBLE
+/* double buffering needed for PCM start/stop */
+snd_pcm_hw_params_is_double()
+
+I don't see any of these functions called by aplay...
+
+
+--
+Eliot
