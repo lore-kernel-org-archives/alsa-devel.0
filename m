@@ -1,27 +1,22 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Wed, 17 Feb 2010 14:06:12 +0100
-Message-ID: <20100217130612.GD24165@tango.0pointer.de>
-References: <20100216143200.GB25489@tango.0pointer.de>
-	<20100216144047.GB10586@sirena.org.uk>
-	<20100216154015.GA612@tango.0pointer.de>
-	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
-	<20100216210703.GA18109@tango.0pointer.de>
-	<20100216223938.GA23623@sirena.org.uk>
-	<20100216224212.GA1486@tango.0pointer.de>
-	<4B7B2E9F.3080809@audioscience.com>
-	<20100217001047.GB6766@tango.0pointer.de>
-	<alpine.LNX.2.00.1002170924570.28127@eeebox2.perex-int.cz>
+From: Zaar Hai <haizaar@haizaar.com>
+Subject: Re: Is Intel 82801G (ICH7 family) with VIA VT1708B
+	8-Ch supported?
+Date: Wed, 17 Feb 2010 15:07:33 +0200
+Message-ID: <cfb54191002170507n25e28f1fodec06458570cf7ae@mail.gmail.com>
+References: <cfb54191002141233w4ba7cc85j81c31aabd45950c6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91339103889
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 14:06:40 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.00.1002170924570.28127@eeebox2.perex-int.cz>
+Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
+	[209.85.219.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1954B10388A
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 14:07:58 +0100 (CET)
+Received: by ewy5 with SMTP id 5so2643987ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 05:07:57 -0800 (PST)
+Received: by ewy5 with SMTP id 5so2643904ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 05:07:55 -0800 (PST)
+In-Reply-To: <cfb54191002141233w4ba7cc85j81c31aabd45950c6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,28 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 17.02.10 10:04, Jaroslav Kysela (perex@perex.cz) wrote:
+No one have replied, so I'll ask again.
+May be someone can give just yes/no answer: VIA VT1708B as ICH7 HDA codec -
+supported or not?
 
-> The second question is if the represented dB range and scale reported from 
-> the driver (hardware and audio chip datasheets) really matches the 
-> hardware and how we can measure these values. I suspect a lot of trouble 
-> here, because the analog parts of soundcards might have strange curves - 
-> it's probably thing you deal with in PA now.
+On Sun, Feb 14, 2010 at 10:33 PM, Zaar Hai <haizaar@haizaar.com> wrote:
 
-Yes, that is indeed the problem.
+> Good day, dear ALSA developers!
+>
+> I've got several boards based on Intel G41 chipset, which has ICH7
+> south bridge with VT1708B codec on it. While VT1708B seems to be
+> supported since 2007, on all my computers the card is recognized, but
+> mixer does not work:
+>
+>   $ alsamixer
+>   alsamixer: function snd_mixer_load failed: Invalid argument
+>
+> I've tried it on Debian, OpenSuse and Ubuntu (including nightly
+> builds), both 32 and 64 bit version, on 4 computers (all have the same
+> hardware) - result is the same: card recognized, sound is played, but
+> mixer (volume channels, etc.) does not.
+>
+> So, I've thought, that since G41 is rather new, may be this ICH7 with
+> VT1708B combo is not supported by alsa yet?
+>
+> [1]. http://pastebin.com/m50dcbff0 - contents of
+> /proc/asound/card0/codec#0
+> [2]. http://pastebin.com/m42320afc - lspci output
+> [3]. http://pastebin.com/m443eaa12 - aplay -l output
+>
+> P.S. If you think this message rather belongs to users and not devel
+> list, just tell me to go there. I've just thought that supported/not
+> supported question should better be asked devel list.
+> --
+> Zaar
+>
 
-For PA I don't care whether the dB curve reported by ALSA might be
-shifted relative to some reference level, what matters is that
-otherwise the curve reflects properly how volume increases with higher
-discrete volume settings.
 
-Lennart
 
 -- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Zaar
