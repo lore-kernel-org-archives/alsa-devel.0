@@ -1,15 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH] ASoC: TWL4030: Use codec defaults for Headset
-	initial configuration
-Date: Wed, 17 Feb 2010 09:49:54 +0200
-Message-ID: <1266392994-29551-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+ cards, especially Aureon 5.1 MkII
+Date: Wed, 17 Feb 2010 09:08:42 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1002170858110.28127@eeebox2.perex-int.cz>
+References: <20100215192451.GA17938@tango.0pointer.de>
+	<4B7A5268.5050704@ladisch.de>
+	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
+	<20100216143200.GB25489@tango.0pointer.de>
+	<20100216144047.GB10586@sirena.org.uk>
+	<20100216154015.GA612@tango.0pointer.de>
+	<ad2655cb1002161348p7be432a1qb5fcf28804ef5c00@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 98725103862
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 08:50:25 +0100 (CET)
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1D27D24555
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 09:08:43 +0100 (CET)
+In-Reply-To: <ad2655cb1002161348p7be432a1qb5fcf28804ef5c00@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,38 +27,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: James Courtier-Dutton <james.dutton@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Disable the amplifiers for the headset outputs, and do not select
-routings by default to the headset outputs.
+On Tue, 16 Feb 2010, James Courtier-Dutton wrote:
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
+> I guess a good start would be what digital values should create what
+> voltages on the line output?
+> One can then at least get the 0dB point set right.
 
-The obvious side effect of this patch is that on boards which are using the
-headset output the playback will not work 'out of box'.
-The user need to specifically enable the routings for the boards.
-Board that came to my mind is the Beagle, and probably it's clones as well.
+It seems that I have to buy a precise voltmeter or good digital 
+oscilloscope to get these results :-) Anyway, the voltage levels 
+expressions are described nicely here:
 
- sound/soc/codecs/twl4030.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+http://en.wikipedia.org/wiki/Decibel
 
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 277862e..6f5d4af 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -75,8 +75,8 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
- 	0x00, /* REG_BTPGA		(0x1F)	*/
- 	0x00, /* REG_BTSTPGA		(0x20)	*/
- 	0x00, /* REG_EAR_CTL		(0x21)	*/
--	0x24, /* REG_HS_SEL		(0x22)	*/
--	0x0a, /* REG_HS_GAIN_SET	(0x23)	*/
-+	0x00, /* REG_HS_SEL		(0x22)	*/
-+	0x00, /* REG_HS_GAIN_SET	(0x23)	*/
- 	0x00, /* REG_HS_POPN_SET	(0x24)	*/
- 	0x00, /* REG_PREDL_CTL		(0x25)	*/
- 	0x00, /* REG_PREDR_CTL		(0x26)	*/
---
-1.7.0
+>From above pro-equipment works with 0.775V as reference volume (0dBu) 
+and consumer electronics with 1V as reference volume (0dBV).
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
