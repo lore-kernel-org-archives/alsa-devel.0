@@ -1,22 +1,15 @@
-From: Yiliang Bao <yiliangb@gmail.com>
-Subject: Re: What is the required accuracy of audio sampling
-	rate?
-Date: Wed, 17 Feb 2010 09:14:46 -0800
-Message-ID: <e5baf3861002170914q3b70e3e6geeb298c1d01f3195@mail.gmail.com>
-References: <e5baf3861002161558x1d36f74anf63c5db145762668@mail.gmail.com>
-	<ad2655cb1002170452s617ada8du1de85aa3baa9c6fb@mail.gmail.com>
-	<9e4733911002170503w1d89c1abn1e6afcf8d56ccb1b@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Latency of mixer reconfiguration
+Date: Wed, 17 Feb 2010 19:15:30 +0100
+Message-ID: <20100217181530.GA23152@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f195.google.com (mail-iw0-f195.google.com
-	[209.85.223.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1A90C2414B
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 18:14:47 +0100 (CET)
-Received: by iwn33 with SMTP id 33so1797234iwn.16
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 09:14:46 -0800 (PST)
-In-Reply-To: <9e4733911002170503w1d89c1abn1e6afcf8d56ccb1b@mail.gmail.com>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id AABFC243EF
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 19:15:58 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,85 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jon Smirl <jonsmirl@gmail.com>
-Cc: alsa-devel@alsa-project.org, James Courtier-Dutton <james.dutton@gmail.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Heya!
 
-Thanks for all the replies. To reply Pierre's question:
+So, as some of you might know in PA we extend the abilities of the
+hardware volume control in software. Meaning that if a hw mixer
+control only allows a limited range or granularity of a volume scale
+or does not distuingish between channels then PA will configure the
+hardware to the next higher available setting of the real
+volume it wants to achieve, and then attenuates the PCM stream to
+compensate for the rest.
 
-> Can you be more specific on your sync issues? Generally the audio clock is
-used as reference, and video adjusts to it.
+This actually works quite well but there is a certain probelm with
+latency: i.e. the mixer setting will be applied at a slightly
+different time than the PCM attenuation. 
 
-I played the audio using gstreamer alsasrc and alsasink. The audio plays
-well at the beginning, and gradually the sound becomes broken, and
-eventually unlistenable. If I play the audio along with video, there is a
-similar issue. In addition to the problem in the audio channel, the video
-will become intermittent as well after some time. I think the gstreamer is
-dropping video frames trying to synchronize the video with audio.
+Now the question I have is, how should I best deal with this? I
+currently assume that mixer volume changes are basically instantaneous
+when I call the respective function of ALSA. But are they really? How
+big is the latency at max? Do we need an API to query it?
 
-Similar to what is suggested here, I did some experiment on the audio driver
-so that its output is synchronized to the kernel clock, and the problems are
-gone (at least for the testing period of 2 hours). This confirms that the
-issues were indeed caused by inaccuracy in audio sampling rate and it
-appears gstreamer is not adaptive enough to accommodate such sampling error.
+Lennart
 
-Thanks,
-Yiliang
-
-On Wed, Feb 17, 2010 at 5:03 AM, Jon Smirl <jonsmirl@gmail.com> wrote:
-
-> On Wed, Feb 17, 2010 at 7:52 AM, James Courtier-Dutton
-> <james.dutton@gmail.com> wrote:
-> > On 16 February 2010 23:58, Yiliang Bao <yiliangb@gmail.com> wrote:
-> >> Hi,
-> >>
-> >> I have a PCI-e audio card that does not give very accurate sampling rate
-> >> (about -0.2% error, i.e., if I set the sampling rate to 8K, I got only
-> 7984
-> >> samples per second on average). It caused various synchronization
-> problems
-> >> in applications like gstreamer.
-> >>
-> >> Since there will be some difference from one clock domain to another, I
-> am
-> >> wondering if there is any defined tolerance on the sampling rate, and
-> where
-> >> the right place is to correct this kind of error. I would really
-> appreciate
-> >> if someone can point me to the related documents/links.
-> >>
-> >
-> > There is no defined tolerance on sampling rate.
-> > Audio apps should be able to deal with a certain amount of error.
-> > xine uses the system clock for its synchronization, and resamples the
-> > audio output if the audio hardware is running at a different rate.
-> > Other apps might use the audio clock and sync to that. In that case,
-> > it might get the problems you describe.
-> > Try playing your media in xine and see if the problem disappears.
->
-> The -0.2% error is cumulative, not random. After a three hour movie
-> your audio will be off by 20 seconds.
->
-> Best solution is the get the audio clock synched as closely as
-> possible to the video one. Any remaining error has to be dealt with in
-> software like xine does.
->
->
-> >
-> > Kind Regards
-> >
-> > James
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->
->
->
-> --
-> Jon Smirl
-> jonsmirl@gmail.com
->
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
