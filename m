@@ -1,20 +1,19 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: What is the required accuracy of audio sampling
-	rate?
-Date: Wed, 17 Feb 2010 12:52:57 +0000
-Message-ID: <ad2655cb1002170452s617ada8du1de85aa3baa9c6fb@mail.gmail.com>
-References: <e5baf3861002161558x1d36f74anf63c5db145762668@mail.gmail.com>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+ cards, especially Aureon 5.1 MkII
+Date: Wed, 17 Feb 2010 13:54:28 +0100
+Message-ID: <20100217125427.GB24165@tango.0pointer.de>
+References: <20100215192451.GA17938@tango.0pointer.de>
+	<4f3252891002161944m197e60c1pbb600cab8e0fd483@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f209.google.com (mail-fx0-f209.google.com
-	[209.85.220.209])
-	by alsa0.perex.cz (Postfix) with ESMTP id 406DA103856
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 13:52:58 +0100 (CET)
-Received: by fxm1 with SMTP id 1so7710620fxm.4
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 04:52:57 -0800 (PST)
-In-Reply-To: <e5baf3861002161558x1d36f74anf63c5db145762668@mail.gmail.com>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id A34D1103874
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 13:54:53 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4f3252891002161944m197e60c1pbb600cab8e0fd483@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Yiliang Bao <yiliangb@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 16 February 2010 23:58, Yiliang Bao <yiliangb@gmail.com> wrote:
-> Hi,
->
-> I have a PCI-e audio card that does not give very accurate sampling rate
-> (about -0.2% error, i.e., if I set the sampling rate to 8K, I got only 7984
-> samples per second on average). It caused various synchronization problems
-> in applications like gstreamer.
->
-> Since there will be some difference from one clock domain to another, I am
-> wondering if there is any defined tolerance on the sampling rate, and where
-> the right place is to correct this kind of error. I would really appreciate
-> if someone can point me to the related documents/links.
->
+On Wed, 17.02.10 11:44, Raymond Yau (superquad.vortex2@gmail.com) wrote:
 
-There is no defined tolerance on sampling rate.
-Audio apps should be able to deal with a certain amount of error.
-xine uses the system clock for its synchronization, and resamples the
-audio output if the audio hardware is running at a different rate.
-Other apps might use the audio clock and sync to that. In that case,
-it might get the problems you describe.
-Try playing your media in xine and see if the problem disappears.
+> WHAT YOU NEED?
+> 
+>          a) A sound card where input and output are synchronous
+>          b) A feedback cable that allows you to feed sound card output
+> 
+> 
+> how do I know my sound card support synchronous playback and
+> capture ?
 
-Kind Regards
+We had a discussion about that on alsa-devel a month back or so. The
+conclusion was basically that software may assume that playback and
+capturing on the same card is clocked the same way and that is all
+this tool needs.
 
-James
+> do you program able to find out whether the sound card support synchronous
+> playback and  capture ?
+
+No.
+
+> do your result still valid if the sound card does not support synchronous
+> playback and  capture ?
+
+It's fine if there is a constant phase shift between what you play
+back and record. What matters is that the clock of playback and clock
+of capture have the same speed. The tool will sum up a recorded sample
+window a couple of times to reduce the noise level below some
+threshold, and for that to work we need to make sure that our sine
+wave isn't shifted each time we sum it up.
+
+> do the result different if I use analog loop back of the ac97 codec instead
+> of a loop back cable ?
+
+Presumably.
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
