@@ -1,15 +1,27 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] Echoaudio,
-	fix Guru Meditation #00000005.48454C50
-Date: Wed, 17 Feb 2010 00:57:44 +0100
-Message-ID: <20100217005744.672d6429@Jay>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+ cards, especially Aureon 5.1 MkII
+Date: Wed, 17 Feb 2010 01:10:47 +0100
+Message-ID: <20100217001047.GB6766@tango.0pointer.de>
+References: <4B7A5268.5050704@ladisch.de>
+	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
+	<20100216143200.GB25489@tango.0pointer.de>
+	<20100216144047.GB10586@sirena.org.uk>
+	<20100216154015.GA612@tango.0pointer.de>
+	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
+	<20100216210703.GA18109@tango.0pointer.de>
+	<20100216223938.GA23623@sirena.org.uk>
+	<20100216224212.GA1486@tango.0pointer.de>
+	<4B7B2E9F.3080809@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out26.alice.it (smtp-out26.alice.it [85.33.2.26])
-	by alsa0.perex.cz (Postfix) with ESMTP id D25F5103845
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 00:59:54 +0100 (CET)
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0765810382B
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 01:11:12 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <4B7B2E9F.3080809@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,41 +32,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-(resend: I mistyped the list address)
+On Wed, 17.02.10 12:47, Eliot Blennerhassett (linux@audioscience.com) wrote:
 
-There is a small window between the hw_params() callback and when
-runtime->frame_bits is set by ALSA middle layer. When another substream is
-already running, if an interrupt is delivered during that window the irq
-handler calls pcm_pointer() which does a division by zero. The patch below
-makes the irq handler skip substreams that are initialized but not started
-yet. Cc to Clemens Ladisch because he proposed an alternate fix.
+> For our cards this is adjustable, but lets say for consumer cards it is
+> fixed.  This information is not currently available via the ALSA
+> API.
 
-For more information, please read the original thread in the linux-kernel
-mailing list: http://lkml.org/lkml/2010/2/2/187
+I wonder how realistic it would even be to add an API for
+this. i.e. can we even know the refernce level? On many cards most
+likely not. For example, for my integrated USB speakers speaking of a
+reference voltage would already be misleading...
 
+> A hypothetical example.
+> [DAC>---[Variable gain>---[amplifier>---[output jack]
+> 
+> Lets say
+> the DAC produces 2Vpp (6dBVpp) for fullscale digital input (0dBFS)
+> and the amplifier has 6dB gain.
+> and the variable gain is from -40dB to 0dB
+> and the units of the reference level are dBVpp
+> 
+> Combining these we represent the DAC + gain + amplifier as a single
+> Level control with units of dBVpp and range -28dBVpp to +12dBVpp
+> 
+> or equally valid, could represent it as
+> a Volume with range -40dB to 0dB followed by a
+> a fixed level of +12dBVpp
+> 
+> or equally valid, could represent it as
+> a Volume with range 0dB to +40dB followed by a
+> a fixed level of -28dBVpp
+> 
+> i.e. the 0dB position is arbitrary, related to what is chosen as the
+> output reference level.
 
-Short description: This patch fixes a division by zero error in the irq handler.
+Yepp, that's the exactly what I was asking, Jaroslav's measurements
+suggested to shift one of the mixer controls from 0..x dB to -x..0 dB
+and I was just wondering why, since we don't define the ref level in
+ALSA, hence the shift is kinda arbitrary...
 
+Anyway, I am not pushing for adding an API for reference levels to
+ALSA. As mentioned for the PA case I decided to shift 0dB to max
+amplification in any case, which I think is a workable way to avoid
+this problem.
 
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
---- alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c__orig	2010-02-16 22:21:36.000000000 +0100
-+++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c	2010-02-16 22:21:45.000000000 +0100
-@@ -1864,7 +1864,9 @@ static irqreturn_t snd_echo_interrupt(in
- 	/* The hardware doesn't tell us which substream caused the irq,
- 	thus we have to check all running substreams. */
- 	for (ss = 0; ss < DSP_MAXPIPES; ss++) {
--		if ((substream = chip->substream[ss])) {
-+		substream = chip->substream[ss];
-+		if (substream && ((struct audiopipe *)substream->runtime->
-+				private_data)->state == PIPE_STATE_STARTED) {
- 			period = pcm_pointer(substream) /
- 				substream->runtime->period_size;
- 			if (period != chip->last_period[ss]) {
-
+Lennart
 
 -- 
-Giuliano.
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
