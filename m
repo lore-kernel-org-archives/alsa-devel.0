@@ -1,26 +1,28 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: safe support for rewind in ALSA
-Date: Wed, 17 Feb 2010 16:46:56 +0100
-Message-ID: <20100217154656.GF6891@tango.0pointer.de>
-References: <alpine.DEB.1.10.1002012239220.3125@ecabase.localdomain>
-	<alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>
-	<4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>
-	<alpine.DEB.1.10.1002092242540.3125@ecabase.localdomain>
-	<4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>
-	<4B72B665.3060903@ladisch.de>
-	<4f3252891002102252vb6d7a94l76fb78e33da37775@mail.gmail.com>
-	<4B73AFD5.4080205@ladisch.de>
-	<alpine.LNX.2.00.1002110822480.19278@eeebox2.perex-int.cz>
-	<4f3252891002141903q34144f58n60978e28e65640b4@mail.gmail.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Wed, 17 Feb 2010 16:17:24 +0000
+Message-ID: <ad2655cb1002170817i6cf90f6bh90ffe778390adada@mail.gmail.com>
+References: <20100216154015.GA612@tango.0pointer.de>
+	<20100216210703.GA18109@tango.0pointer.de>
+	<20100216223938.GA23623@sirena.org.uk>
+	<20100216224212.GA1486@tango.0pointer.de>
+	<4B7B2E9F.3080809@audioscience.com>
+	<20100217001047.GB6766@tango.0pointer.de>
+	<alpine.LNX.2.00.1002170924570.28127@eeebox2.perex-int.cz>
+	<20100217130612.GD24165@tango.0pointer.de>
+	<ad2655cb1002170555l462981cheff2b1798a14c9d0@mail.gmail.com>
+	<20100217143540.GA404@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id A58C7103871
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 16:47:21 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4f3252891002141903q34144f58n60978e28e65640b4@mail.gmail.com>
+Received: from gv-out-0910.google.com (gv-out-0910.google.com [216.239.58.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id B99041038BF
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 17:17:25 +0100 (CET)
+Received: by gv-out-0910.google.com with SMTP id n40so40523gve.24
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 08:17:25 -0800 (PST)
+In-Reply-To: <20100217143540.GA404@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,30 +32,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 15.02.10 11:03, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+On 17 February 2010 14:35, Lennart Poettering <mznyfn@0pointer.de> wrote:
+>
+>> This is a good aim, but I still think getting the correct 0dB points
+>> is more important to ensure the best audio quality.
+>> I personally think that PA should just set the hardware ALSA controls
+>> to 0dB and do all the volume control in software within PA.
+>> The 0dB points in hardware should result in the best sound quality.
+>
+> I don't think this would be a good idea. In a lot of hardware you
+> definitely want to make as much use of the built-in volume adjustment
+> capabilities as you can. For example, on my integrated USB speakers
+> you may control the built-in amplifier with the alsa mixer, and that's
+> definitely much better than attenuating the 16bit PCM stream and
+> having the USB speakers amplifier constantly configured to a very high
+> volume level.
+>
 
-> For USB case , the driver cannot give accurate hw pointer position , hw
-> pointer increase in steps for the current implementation, (i.e. the graph is
-> a stepping fuction if you plot the position of hardware pointer against time
-> elasped ) .
+I was thinking more specifically of the line-out and line-in where
+knowing the 0dB gain points is very useful and what most people need,
+with maybe a new dBv or dBu
 
-The granularity of write transfer blocks and of playback pointer
-updates is currently not quriable nor configurable in ALSA. We only
-have periods which tries to cover both in a way.
-
-For the use in PA it is really important to get better APIs for
-this. Ideally both for querying the latency and the transfer
-granularityand configuring it, but most importantly for querying it.
-
-This has been discussed before on this mailing list, btw.
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Mic and Speaker amp levels is a whole other kettle of fish.
