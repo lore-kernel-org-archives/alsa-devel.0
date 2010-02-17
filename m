@@ -1,27 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Verifying mixer dB data/Invalid dB data from
-	USB	cards, especially Aureon 5.1 MkII
-Date: Wed, 17 Feb 2010 11:50:49 +0000
-Message-ID: <20100217115048.GB2032@sirena.org.uk>
-References: <20100216143200.GB25489@tango.0pointer.de>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Wed, 17 Feb 2010 11:55:17 +0000
+Message-ID: <ad2655cb1002170355n7d2df930ha6cf036b6e00218@mail.gmail.com>
+References: <4B7A5268.5050704@ladisch.de>
+	<20100216143200.GB25489@tango.0pointer.de>
 	<20100216144047.GB10586@sirena.org.uk>
 	<20100216154015.GA612@tango.0pointer.de>
 	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
 	<20100216210703.GA18109@tango.0pointer.de>
 	<20100216223938.GA23623@sirena.org.uk>
 	<20100216224212.GA1486@tango.0pointer.de>
-	<4B7B2E9F.3080809@audioscience.com>
-	<20100217001047.GB6766@tango.0pointer.de>
-	<4B7B3DBB.30703@audioscience.com>
+	<20100216233825.GB23623@sirena.org.uk>
+	<20100216235658.GA6766@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 332A4103866
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 12:50:50 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4B7B3DBB.30703@audioscience.com>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8ABB8103859
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 12:55:18 +0100 (CET)
+Received: by fg-out-1718.google.com with SMTP id 16so179073fgg.2
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 03:55:17 -0800 (PST)
+In-Reply-To: <20100216235658.GA6766@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,33 +32,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 17, 2010 at 01:52:11PM +1300, Eliot Blennerhassett wrote:
-> Lennart Poettering wrote:
+On 16 February 2010 23:56, Lennart Poettering <mznyfn@0pointer.de> wrote:
+>
+> The reason I was asking how Jaroslav chose the 0dB position for his
+> measurements was purely because I wanted to do my own measurements for
+> that Aureon card. The dbmeasure tool I wrote for stuff like that puts
+> 0dB at max amplification, however Jaroslav didn't, so I was wondering
+> how he chose 0dB then.
+>
+> Lennart
+>
 
-> > I wonder how realistic it would even be to add an API for
-> > this. i.e. can we even know the refernce level? On many cards most
-> > likely not. For example, for my integrated USB speakers speaking of a
-> > reference voltage would already be misleading...
+I think the digital side is clear. So I will not go into that.
 
-> Certainly. Same for laptop speakers.
+I think we need to separate the analogue side into a number of categories:
+1) Standard consumer line-out levels.
+2) Standard pro line-out levels.
+3) Consumer line-in levels.
+4) Pro line-in levels.
+5) Consumer mic levels.
+6) Pro mic levels.
+7) Consumer speaker levels.
+8) Pro speaker levels.
 
-> Perhaps could define 0dB as the highest valid volume setting that
-> doesn't cause distortion in the audio when playing a full scale digital
-> signal.
+On the analogue side, I believe the 0dB gain point is intended to be
+the point at which one can be fairly sure that the distortion will be
+low for a sensible full scale input.
+I think we can get better definition on items 1 to 4.
+To this end, I think ALSA needs a new control type so the user can set
+what line out voltages will occur using standard full scale digital
+inputs.
+http://en.wikipedia.org/wiki/Decibel
+>From above pro-equipment works with 0.775V as reference volume (0dBu)
+and consumer electronics with 1V as reference volume (0dBV).
 
-I think it's something we can leave to be specified for a given bit of
-hardware - the absolute level doesn't really mean a huge amount unless
-the user is actually interacting it in some way and going with the
-reference level that the hardware is using internally means that we get
-an idea of how much the control is affecting the signal, which is useful
-for getting an idea of the optimal level to set a given control to
-(generally the specified 0dB will give the lowest noise, particularly
-for amplification).
+So, the new level control types will show dBu and dBV. The current
+"gain" controls will show dB.
 
-It's when the signal is being presented in a fashion which means it
-might have to be matched with that on another device that the absolute
-levels become interesting.
+I think we should focus on items 1 to 4 first, and then sort out 5 to 8 later.
+Measurement should be with a volt meter if possible, but we will have
+to get the correct output frequency right to match what the volt meter
+is expecting, otherwise the readings will be wrong.
+We could even be more specific. If we can get items 1 and 2 correct
+for all sound cards, we can then more easily calibrate 3 and 4.
+Considering that there are over 1000 different sound card variants out
+there, this is going to take a long long time.
+
+Kind Regards
+
+James
