@@ -1,14 +1,17 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: 2.6.31.x vs. rme vs. alsa 1.0.22?
-Date: Tue, 16 Feb 2010 17:58:02 -0800
-Message-ID: <1266371882.3361.40.camel@localhost.localdomain>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Separate dma driver for cpu_dais
+Date: Wed, 17 Feb 2010 11:39:47 +0900
+Message-ID: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.stanford.edu (smtp3.Stanford.EDU [171.67.219.83])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B955103839
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 02:58:48 +0100 (CET)
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8E924103842
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 03:39:51 +0100 (CET)
+Received: by vws18 with SMTP id 18so469815vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 16 Feb 2010 18:39:50 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,25 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: The Linux Audio Developers' Mailing List <linux-audio-dev@lists.linuxaudio.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hey, has anyone been seeing strange behavior from this combination?
+Hi,
+  The query concerns ASOC.
 
-  kernel 2.6.31.x rt20 + alsa 1.0.22 userland
-  RME card (pcmcia card + multiface)
+Currently we have one platform per card.
+What if my card has two dai_links with each cpu_dai fed data
+with different mechanism(one with system dma controller and
+the other with a dma dedicated to the Audio block). The cpu_dai's
+are tightly coupled and I don't wanna have separate socdev's for them.
 
-hdspmixer is not doing the right thing (does not initialize the card in
-a way in which playback works), it does not see the hwdep interface (or
-something like that) and disables metering, alsamixer even segfaults
-when I reach the end of the controls listed. Plain weird. Smells like
-something changed deep in the kernel that makes alsa-lib very unhappy.
-Alsa-tools rebuilt from source does not make a difference. 
+Presently, I define a dma_id flag in snd_soc_dai, make the snd_soc_card
+point to a 'wrapper/muxed' platform driver that checks the dma_id flag and
+calls the relevant platform's callbacks. Of course, each cpu_dai initializes
+the dma_id to a unique value that corresponds to it's real dma mechanism.
 
-Weirdness goes away when I boot into 2.6.29.6 rt23...
+What approach/changes would you suggest I take, so that someday I could
+submit the implementation for mainline inclusion?
 
-Is there anything in alsa-* that depends on which _kernel_ is available
-at compile time?
+(For those curious to have a reference - I am talking about Samsung's SoCs
+<http://dev.odroid.com/wiki/odroid/pds/HardwareInformation/S5PC100_UM_REV101.pdf
+refer to figures on page-1635 & 1637>
+that have I2S controllers with h/w mixing capability and where
+'secondary fifo' can be
+fed with I2S internal DMA controller with dedicated h/w ring buffer)
 
--- Fernando
+Thanks.
