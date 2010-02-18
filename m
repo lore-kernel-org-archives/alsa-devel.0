@@ -1,20 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 1/2] McBSP: OMAP3: Add sidetone feature
-Date: Thu, 18 Feb 2010 11:01:06 +0000
-Message-ID: <20100218110106.GC3542@rakim.wolfsonmicro.main>
-References: <1266417960-22787-1-git-send-email-ilkka.koskinen@nokia.com>
-	<1266417960-22787-2-git-send-email-ilkka.koskinen@nokia.com>
-	<20100218002543.GG21755@atomide.com>
-	<alpine.DEB.2.00.1002181244400.13895@tumpelo.nmp.nokia.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: Separate dma driver for cpu_dais
+Date: Thu, 18 Feb 2010 20:59:38 +0900
+Message-ID: <1b68c6791002180359k65381c09t143d37ec5eef1cf8@mail.gmail.com>
+References: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
+	<20100217105202.GB31765@sirena.org.uk>
+	<1b68c6791002170415q457d0893jb1a77b864031ee6c@mail.gmail.com>
+	<20100217131421.GB11510@rakim.wolfsonmicro.main>
+	<1b68c6791002171814k28fccf9emcbcf17c54c445a4f@mail.gmail.com>
+	<20100218093459.GB3315@rakim.wolfsonmicro.main>
+	<1b68c6791002180142l422a9203se2a71cae5795d6a9@mail.gmail.com>
+	<20100218095249.GE3315@rakim.wolfsonmicro.main>
+	<1b68c6791002180232p6cd86811sc78699ac87236015@mail.gmail.com>
+	<20100218105750.GB3542@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 231B610390C
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 12:01:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1002181244400.13895@tumpelo.nmp.nokia.com>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 279F91038FA
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 12:59:41 +0100 (CET)
+Received: by vws18 with SMTP id 18so1145737vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 03:59:39 -0800 (PST)
+In-Reply-To: <20100218105750.GB3542@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +32,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ilkka Koskinen <ikoskine@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, ext Tony Lindgren <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: kyungmin.park@samsung.com, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 18, 2010 at 12:58:55PM +0200, Ilkka Koskinen wrote:
-
-> Is that easiest way to do that? I mean, I'm afraid that the ALSA
-> tree doesn't have Janusz Krzysztofik's McBSP register cache patches
-> nor does it have your "omap3: Replace ARCH_OMAP34XX with ARCH_OMAP3"
-> patch either.
-
-> Anyway, I'll send the updated patches still today.
-
-Given that the merge window is likely to open within a week it might be
-simplest to just wait until that's sorted through, or if the patches
-will both apply in the OMAP tree and merge cleanly with ASoC then I'd be
-happy with pushing them that way (I'd expect, I'd need to review the
-second one).
+T24gVGh1LCBGZWIgMTgsIDIwMTAgYXQgNzo1NyBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFRodSwgRmViIDE4LCAyMDEwIGF0
+IDA3OjMyOjIyUE0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4+IE9uIFRodSwgRmViIDE4LCAy
+MDEwIGF0IDY6NTIgUE0sIE1hcmsgQnJvd24KPgo+PiA+IFdoZXJlIGlzIHRoZSBjb2RlIHlvdSBh
+cmUgdGFsa2luZyBhYm91dCBoZXJlPyDCoFRoaXMgc291bmRzIGxpa2UgZHJpdmVyCj4+ID4gY29k
+ZS4uLgo+Cj4+IEFoaC4uLiBpdCdzIGFsbCBtZXNzZWQgdXAgYnkgdGhhdCBzYW1zdW5nLmdpdCBs
+aW5rIHRoYXQgSm9vbnlvdW5nIFNoaW0gc2hhcmVkLgo+PiBJIGFzc3VtZWQgeW91IGhhZCBhIGxv
+b2sgYXQgdGhhdC4gVGhlIGNvZGUganVzdCBhIHF1aWNrIHdvcmthcm91bmQsIHNvCj4+IEkgZGlk
+bid0IHB1dCBpdCB1cCBoZXJlCj4+IGh0dHA6Ly9naXQua2VybmVsLm9yZy8/cD1saW51eC9rZXJu
+ZWwvZ2l0L2traV9hcC9saW51eC0yLjYtc2Ftc3VuZy5naXQ7YT1jb21taXRkaWZmO2g9ZTU4NTg5
+NDhiYjJjNTM0MjUxYjY1YTg1MGNhZjE5N2FlODgwY2UxZgo+Cj4gSGlzIGxpbmsgd2FzIHRvIHRo
+ZSBlbnRpcmUgdHJlZSByYXRoZXIgdGhhbiBhIHBhcnRpY3VsYXIgYml0IG9mIGNvZGUsIGEKPiBi
+aXQgb2YgYSBuZWVkbGUgaW4gdGhlIGhheXN0YWNrIHRoaW5nIGdvaW5nIG9uIHRoZXJlIChlc3Bl
+Y2lhbGx5IHNpbmNlCj4geW91IGhhdmUgYWN0dWFsbHkgbW9kaWZpZWQgdGhlIGNvcmUgYW5kIGZv
+ciBsb29raW5nIGF0IHN0dWZmIGxpa2UgdGhhdAo+IEknZCBnZW5lcmFsbHkgZHJpbGwgZG93biBp
+bnRvIHRoZSBwbGF0Zm9ybSBkaXJlY3RvcnkgYmVmb3JlIGxvb2tpbmcgYXQKPiBsb2dzIG9yIGNv
+ZGUpLgpBY3R1YWxseSBteSBwYXRjaGVzIGFyZSBhdCB0aGUgdG9wIG9mIDIuNi4yOSBicmFuY2go
+dGhlIG9ubHkgb25lIHRoYXQKaGFzIHJlbGV2YW50IGNvZGUpLgogSSB3YW50ZWQgdG8gc3RhcnQg
+c2VwYXJhdGUgdGhyZWFkcyBmb3IgZWFjaCBpbmRlcGVuZGVudCB0b3BpY3MgdG93YXJkcwppbXBs
+ZW1lbnRpbmcgYSkgcGxhdGZvcm0gcGVyIGRhaV9saW5rLCBiKSBkYWkgc2hhcmluZyBhbW9uZyBk
+YWlfbGlua3MKYW5kIGMpIG11bHRpLWRldmljZSBwZXIgY2FyZCwgYnV0IHRoZSB0aHJlYWQgdmVl
+cmVkIG9mZi4gQW55d2F5cy4uLgoKPiBUaGUgYml0cyBvZiB0aGF0IHBhdGNoIHRoYXQgbWFrZSBh
+Y3RpdmUgYSByZWZlcmVuY2UgY291bnRlciBsb29rIGdvb2QgYXQKPiBmaXJzdCBnbGFuY2UsIGNv
+dWxkIHlvdSBwbGVhc2UgcHVsbCB0aGVtIG91dCBhbmQgc3VibWl0IHRoZW0/ClN1cmUgSSBjYW4s
+IHRob3VnaCBJIHRoaW5rIG9mIGEgZmV3IG1vcmUgY2hlY2tzIHRvIHBsYWNlIGluIHRoZSBjb2Rl
+LgpXaWxsIHN1Ym1pdCB0b21vcnJvdyBmcm9tIHdvcmtwbGFjZS4KCj4gwqBMaWtlIEkKPiBzYWlk
+IGluIHJlcGx5IHRvIEpvb255b3VuZyBpdCdzIG5vdCBpbW1lZGlhdGVseSBjbGVhciB0byBtZSB0
+aGF0IHRoZQo+IHN0YXJ0dXAgYW5kIHNodXRkb3duIGNhbGxzIHNob3VsZCBiZSBzdXBwcmVzc2Vk
+IHNpbmNlIEknZCBleHBlY3QgdGhhdCBhdAo+IGxlYXN0IHNvbWUgZHJpdmVycyBhcmUgZ29pbmcg
+dG8gd2FudCB0byBrbm93IGFib3V0IG11bHRpcGxlIHVzZXMgKGZvcgo+IGV4YW1wbGUsIHJldHVy
+bmluZyAtRUJVU1kgaWYgc29tZW9uZSB0cmllcyB0byBoYXZlIHRvbyBtYW55IHRoaW5ncwo+IGFj
+dGl2ZSBhdCBvbmNlKS4KSU1PIGNvZGVjcyBzaG91bGQgc2ltcGx5IGRvIGFzIGRpcmVjdGVkIGJ5
+IHRoZSBBU09DLgpUaGUgbXVsdGktaW5zdGFuY2UgbG9naWMgaGFzIGJldHRlciBiZSBhdCBvbmUg
+cGxhY2Uoc29jLWNvcmUuYykgcmF0aGVyIHRoYW4KaW4gZWFjaCBjb2RlYydzIGRyaXZlci4KRm9y
+IHRoYXQgcmVhc29uIEkgbW9kaWZpZWQgc29jLWNvcmUuYyByYXRoZXIgdGhhbiBteSBkZXZpY2Un
+cyBjb2RlYwphbmQgY3B1IGRyaXZlci4KCj4gSW4gZ2VuZXJhbCBmb3IgYSB2ZW5kb3IgQlNQIEkn
+ZCBzdHJvbmdseSByZWNvbW1lbmQgYWdhaW5zdCBhbnkgY2hhbmdlcwo+IGluIHRoZSBjb3JlIHRo
+YXQgZG9uJ3QgZ2V0IHN1Ym1pdHRlZCB0byBtYWlubGluZSAtIGl0J3MgbW9yZSBvZiBhCj4gbWFp
+bnRpbmFuY2UgYnVyZGVuIGFuZCBtYWtlcyBpdCBoYXJkZXIgZm9yIHBlb3BsZSB0byB0YWtlIHRo
+ZSBkcml2ZXJzCj4gYW5kIHVzZSB0aGVtIHdpdGggb3RoZXIga2VybmVsIHZlcnNpb25zIGlmIHRo
+ZXkgZG9uJ3Qgbm90aWNlIHRoZSBjaGFuZ2UuCkFzIGV4cGxhaW5lZCBhYm92ZSwgSSB0aG91Z2h0
+IEkgaGFkIGEgcmVhc29uIHRvIGRvIHNvLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
