@@ -1,9 +1,10 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Verifying mixer dB data/Invalid dB data from USB
 	cards, especially Aureon 5.1 MkII
-Date: Thu, 18 Feb 2010 09:48:09 +0800
-Message-ID: <4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
-References: <4B7A5268.5050704@ladisch.de>
+Date: Thu, 18 Feb 2010 10:11:03 +0800
+Message-ID: <4f3252891002171811q7fbfaady417165e1da497e4e@mail.gmail.com>
+References: <20100215192451.GA17938@tango.0pointer.de>
+	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
 	<20100216143200.GB25489@tango.0pointer.de>
 	<20100216144047.GB10586@sirena.org.uk>
 	<20100216154015.GA612@tango.0pointer.de>
@@ -11,19 +12,18 @@ References: <4B7A5268.5050704@ladisch.de>
 	<20100216210703.GA18109@tango.0pointer.de>
 	<20100216223938.GA23623@sirena.org.uk>
 	<20100216224212.GA1486@tango.0pointer.de>
-	<20100216233825.GB23623@sirena.org.uk>
-	<20100216235658.GA6766@tango.0pointer.de>
+	<4B7B2E9F.3080809@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f198.google.com (mail-pz0-f198.google.com
-	[209.85.222.198])
-	by alsa0.perex.cz (Postfix) with ESMTP id EDC3710386A
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 02:48:10 +0100 (CET)
-Received: by pzk36 with SMTP id 36so9089292pzk.23
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 17:48:10 -0800 (PST)
-In-Reply-To: <20100216235658.GA6766@tango.0pointer.de>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 337B310387F
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 03:11:06 +0100 (CET)
+Received: by pwi9 with SMTP id 9so1109658pwi.38
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 18:11:05 -0800 (PST)
+In-Reply-To: <4B7B2E9F.3080809@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,51 +36,17 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/17 Lennart Poettering <mznyfn@0pointer.de>
+2010/2/17 Eliot Blennerhassett <linux@audioscience.com>
 
-> On Tue, 16.02.10 23:38, Mark Brown (broonie@opensource.wolfsonmicro.com)
-> wrote:
+> 2) Absolute calibration of output levels.
+> (This is *not* required to solve Lennart's problem)
+> This would be required if you wanted two different (brands of) soundcard
+> to output the same voltage for given source pcm.
 >
-> >
-> > On Tue, Feb 16, 2010 at 11:42:12PM +0100, Lennart Poettering wrote:
-> > > On Tue, 16.02.10 22:39, Mark Brown (
-> broonie@opensource.wolfsonmicro.com) wrote:
-> >
-> > > > Typically the DACs and ADCs will have a full scale signal at line
-> > > > reference level - it should generally be a good approximation with
-> > > > nothing else to go on.
-> >
-> > > "line reference level"? What is that?
-> >
-> > As I understand it (and bear in mind that I'm a software rather than
-> > electrical engineer) it's not 100% fixed, though since the actual result
-> > depends very much on what it's connected to an absolute answer isn't as
-> > important as it might be.  1V RMS is very standard in consumer stuff at
-> > least.
-> >
-> > If you could frame exactly the information that you're looking for then
-> > I should be able to ask a few people who are electrical engineers and
-> > get a more coherent answer for you.   I guess you're looking at trying
-> > to have PulseAudio set sensible levels by default?
 >
-> Nah. I actually don't need this value for PulseAudio. In PulseAudio I
-> chose to shift all scales so that maximum amplification becomes 0 dB,
-> so that the UIs are similar to how most hifi racks do it, and which I
-> think is a nice, easy and understandable logic. That way my volume
-> scales range from -inf dB to 0 dB in all cases, regardless of the
-> hardware/drivers in use. Of course, that means that ALSA's own 0dB is
-> not directly visible on the scale. Because it might be sometimes
-> useful to know where it is, we export that position as "base volume"
-> and the UIs show it with a little marker at the side.
->
-> The reason I was asking how Jaroslav chose the 0dB position for his
-> measurements was purely because I wanted to do my own measurements for
-> that Aureon card. The dbmeasure tool I wrote for stuff like that puts
-> 0dB at max amplification, however Jaroslav didn't, so I was wondering
-> how he chose 0dB then.
->
-> Lennart
->
-> From the viewpoint of user, they only care how easy to find the point which
-is no software gain or software auttentation  since software gain lead to
-clipping
+On windows ,there are benchmark program to compare the sound card 's SNR at
+different rate , format
+
+http://audio.rightmark.org/
+
+can the program be used to measure SNR ?
