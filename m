@@ -1,83 +1,125 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: Separate dma driver for cpu_dais
-Date: Thu, 18 Feb 2010 20:59:38 +0900
-Message-ID: <1b68c6791002180359k65381c09t143d37ec5eef1cf8@mail.gmail.com>
-References: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
-	<20100217105202.GB31765@sirena.org.uk>
-	<1b68c6791002170415q457d0893jb1a77b864031ee6c@mail.gmail.com>
-	<20100217131421.GB11510@rakim.wolfsonmicro.main>
-	<1b68c6791002171814k28fccf9emcbcf17c54c445a4f@mail.gmail.com>
-	<20100218093459.GB3315@rakim.wolfsonmicro.main>
-	<1b68c6791002180142l422a9203se2a71cae5795d6a9@mail.gmail.com>
-	<20100218095249.GE3315@rakim.wolfsonmicro.main>
-	<1b68c6791002180232p6cd86811sc78699ac87236015@mail.gmail.com>
-	<20100218105750.GB3542@rakim.wolfsonmicro.main>
+From: Ed Tomlinson <edt@aei.ca>
+Subject: Re: [LOCKDEP] 33-rc8 Running aplay with pulse as the default
+Date: Thu, 18 Feb 2010 07:25:38 -0500
+Message-ID: <201002180725.38635.edt@aei.ca>
+References: <alpine.LFD.2.00.1002121142100.3922@localhost.localdomain> <201002170816.33209.edt@aei.ca> <s5heikkndf2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 279F91038FA
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 12:59:41 +0100 (CET)
-Received: by vws18 with SMTP id 18so1145737vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 03:59:39 -0800 (PST)
-In-Reply-To: <20100218105750.GB3542@rakim.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: kyungmin.park@samsung.com, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5heikkndf2.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBGZWIgMTgsIDIwMTAgYXQgNzo1NyBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFRodSwgRmViIDE4LCAyMDEwIGF0
-IDA3OjMyOjIyUE0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4+IE9uIFRodSwgRmViIDE4LCAy
-MDEwIGF0IDY6NTIgUE0sIE1hcmsgQnJvd24KPgo+PiA+IFdoZXJlIGlzIHRoZSBjb2RlIHlvdSBh
-cmUgdGFsa2luZyBhYm91dCBoZXJlPyDCoFRoaXMgc291bmRzIGxpa2UgZHJpdmVyCj4+ID4gY29k
-ZS4uLgo+Cj4+IEFoaC4uLiBpdCdzIGFsbCBtZXNzZWQgdXAgYnkgdGhhdCBzYW1zdW5nLmdpdCBs
-aW5rIHRoYXQgSm9vbnlvdW5nIFNoaW0gc2hhcmVkLgo+PiBJIGFzc3VtZWQgeW91IGhhZCBhIGxv
-b2sgYXQgdGhhdC4gVGhlIGNvZGUganVzdCBhIHF1aWNrIHdvcmthcm91bmQsIHNvCj4+IEkgZGlk
-bid0IHB1dCBpdCB1cCBoZXJlCj4+IGh0dHA6Ly9naXQua2VybmVsLm9yZy8/cD1saW51eC9rZXJu
-ZWwvZ2l0L2traV9hcC9saW51eC0yLjYtc2Ftc3VuZy5naXQ7YT1jb21taXRkaWZmO2g9ZTU4NTg5
-NDhiYjJjNTM0MjUxYjY1YTg1MGNhZjE5N2FlODgwY2UxZgo+Cj4gSGlzIGxpbmsgd2FzIHRvIHRo
-ZSBlbnRpcmUgdHJlZSByYXRoZXIgdGhhbiBhIHBhcnRpY3VsYXIgYml0IG9mIGNvZGUsIGEKPiBi
-aXQgb2YgYSBuZWVkbGUgaW4gdGhlIGhheXN0YWNrIHRoaW5nIGdvaW5nIG9uIHRoZXJlIChlc3Bl
-Y2lhbGx5IHNpbmNlCj4geW91IGhhdmUgYWN0dWFsbHkgbW9kaWZpZWQgdGhlIGNvcmUgYW5kIGZv
-ciBsb29raW5nIGF0IHN0dWZmIGxpa2UgdGhhdAo+IEknZCBnZW5lcmFsbHkgZHJpbGwgZG93biBp
-bnRvIHRoZSBwbGF0Zm9ybSBkaXJlY3RvcnkgYmVmb3JlIGxvb2tpbmcgYXQKPiBsb2dzIG9yIGNv
-ZGUpLgpBY3R1YWxseSBteSBwYXRjaGVzIGFyZSBhdCB0aGUgdG9wIG9mIDIuNi4yOSBicmFuY2go
-dGhlIG9ubHkgb25lIHRoYXQKaGFzIHJlbGV2YW50IGNvZGUpLgogSSB3YW50ZWQgdG8gc3RhcnQg
-c2VwYXJhdGUgdGhyZWFkcyBmb3IgZWFjaCBpbmRlcGVuZGVudCB0b3BpY3MgdG93YXJkcwppbXBs
-ZW1lbnRpbmcgYSkgcGxhdGZvcm0gcGVyIGRhaV9saW5rLCBiKSBkYWkgc2hhcmluZyBhbW9uZyBk
-YWlfbGlua3MKYW5kIGMpIG11bHRpLWRldmljZSBwZXIgY2FyZCwgYnV0IHRoZSB0aHJlYWQgdmVl
-cmVkIG9mZi4gQW55d2F5cy4uLgoKPiBUaGUgYml0cyBvZiB0aGF0IHBhdGNoIHRoYXQgbWFrZSBh
-Y3RpdmUgYSByZWZlcmVuY2UgY291bnRlciBsb29rIGdvb2QgYXQKPiBmaXJzdCBnbGFuY2UsIGNv
-dWxkIHlvdSBwbGVhc2UgcHVsbCB0aGVtIG91dCBhbmQgc3VibWl0IHRoZW0/ClN1cmUgSSBjYW4s
-IHRob3VnaCBJIHRoaW5rIG9mIGEgZmV3IG1vcmUgY2hlY2tzIHRvIHBsYWNlIGluIHRoZSBjb2Rl
-LgpXaWxsIHN1Ym1pdCB0b21vcnJvdyBmcm9tIHdvcmtwbGFjZS4KCj4gwqBMaWtlIEkKPiBzYWlk
-IGluIHJlcGx5IHRvIEpvb255b3VuZyBpdCdzIG5vdCBpbW1lZGlhdGVseSBjbGVhciB0byBtZSB0
-aGF0IHRoZQo+IHN0YXJ0dXAgYW5kIHNodXRkb3duIGNhbGxzIHNob3VsZCBiZSBzdXBwcmVzc2Vk
-IHNpbmNlIEknZCBleHBlY3QgdGhhdCBhdAo+IGxlYXN0IHNvbWUgZHJpdmVycyBhcmUgZ29pbmcg
-dG8gd2FudCB0byBrbm93IGFib3V0IG11bHRpcGxlIHVzZXMgKGZvcgo+IGV4YW1wbGUsIHJldHVy
-bmluZyAtRUJVU1kgaWYgc29tZW9uZSB0cmllcyB0byBoYXZlIHRvbyBtYW55IHRoaW5ncwo+IGFj
-dGl2ZSBhdCBvbmNlKS4KSU1PIGNvZGVjcyBzaG91bGQgc2ltcGx5IGRvIGFzIGRpcmVjdGVkIGJ5
-IHRoZSBBU09DLgpUaGUgbXVsdGktaW5zdGFuY2UgbG9naWMgaGFzIGJldHRlciBiZSBhdCBvbmUg
-cGxhY2Uoc29jLWNvcmUuYykgcmF0aGVyIHRoYW4KaW4gZWFjaCBjb2RlYydzIGRyaXZlci4KRm9y
-IHRoYXQgcmVhc29uIEkgbW9kaWZpZWQgc29jLWNvcmUuYyByYXRoZXIgdGhhbiBteSBkZXZpY2Un
-cyBjb2RlYwphbmQgY3B1IGRyaXZlci4KCj4gSW4gZ2VuZXJhbCBmb3IgYSB2ZW5kb3IgQlNQIEkn
-ZCBzdHJvbmdseSByZWNvbW1lbmQgYWdhaW5zdCBhbnkgY2hhbmdlcwo+IGluIHRoZSBjb3JlIHRo
-YXQgZG9uJ3QgZ2V0IHN1Ym1pdHRlZCB0byBtYWlubGluZSAtIGl0J3MgbW9yZSBvZiBhCj4gbWFp
-bnRpbmFuY2UgYnVyZGVuIGFuZCBtYWtlcyBpdCBoYXJkZXIgZm9yIHBlb3BsZSB0byB0YWtlIHRo
-ZSBkcml2ZXJzCj4gYW5kIHVzZSB0aGVtIHdpdGggb3RoZXIga2VybmVsIHZlcnNpb25zIGlmIHRo
-ZXkgZG9uJ3Qgbm90aWNlIHRoZSBjaGFuZ2UuCkFzIGV4cGxhaW5lZCBhYm92ZSwgSSB0aG91Z2h0
-IEkgaGFkIGEgcmVhc29uIHRvIGRvIHNvLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+On Wednesday 17 February 2010 09:29:37 Takashi Iwai wrote:
+> At Wed, 17 Feb 2010 08:16:32 -0500,
+> Ed Tomlinson wrote:
+> > 
+> > On Tuesday 16 February 2010 08:37:46 Takashi Iwai wrote:
+> > > > Thanks for the patch.  It helps in that it eliminates the opps but lockdep still triggers and aplay still fails.  
+> > > > Here is the new traceback.
+> > > 
+> > > Hmm, fixing this isn't so trivial.  The same problem occurs on other
+> > > subsystems like NFS over years.  And it's still there, AFAIK.
+> > > The mmap mutex appears suddenly in the strange code path at close.
+> > > 
+> > > The patch below might fix, but I'm not 100% sure whether this has no
+> > > side effect.
+> > > 
+> > > Anyway, I doubt very much it being a regression.  There is no change
+> > > in ALSA core side, and also in V4L em28xx code.  Maybe the lockdep
+> > > wasn't triggered by some reason.  And, this lockdep warning is almost
+> > > harmless...
+> > 
+> > Takashi,
+> > 
+> > The second patch eliminating the lock causes oppes every time (one follows just in case
+> > its helpful).
+> 
+> Are you sure?  The patch should causes a compile error, so you must have
+> patched manually in a wrong place ;)
+
+Yes I am sure.  I fixed the compile error the same way it is fixed below.
+
+Ed
+ 
+> Try the patch below (again untested, though).
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ---
+> diff --git a/drivers/media/video/em28xx/em28xx-audio.c b/drivers/media/video/em28xx/em28xx-audio.c
+> index bd78338..c51e623 100644
+> --- a/drivers/media/video/em28xx/em28xx-audio.c
+> +++ b/drivers/media/video/em28xx/em28xx-audio.c
+> @@ -301,23 +301,12 @@ static int snd_em28xx_capture_open(struct snd_pcm_substream *substream)
+>  	/* Sets volume, mute, etc */
+>  
+>  	dev->mute = 0;
+> -	mutex_lock(&dev->lock);
+>  	ret = em28xx_audio_analog_set(dev);
+> -	mutex_unlock(&dev->lock);
+>  	if (ret < 0)
+>  		goto err;
+>  
+>  	runtime->hw = snd_em28xx_hw_capture;
+> -	if (dev->alt == 0 && dev->adev.users == 0) {
+> -		int errCode;
+> -		dev->alt = 7;
+> -		errCode = usb_set_interface(dev->udev, 0, 7);
+> -		dprintk("changing alternate number to 7\n");
+> -	}
+> -
+> -	mutex_lock(&dev->lock);
+>  	dev->adev.users++;
+> -	mutex_unlock(&dev->lock);
+>  
+>  	snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+>  	dev->adev.capture_pcm_substream = substream;
+> @@ -336,7 +325,6 @@ static int snd_em28xx_pcm_close(struct snd_pcm_substream *substream)
+>  	dprintk("closing device\n");
+>  
+>  	dev->mute = 1;
+> -	mutex_lock(&dev->lock);
+>  	dev->adev.users--;
+>  	em28xx_audio_analog_set(dev);
+>  	if (substream->runtime->dma_area) {
+> @@ -344,7 +332,6 @@ static int snd_em28xx_pcm_close(struct snd_pcm_substream *substream)
+>  		vfree(substream->runtime->dma_area);
+>  		substream->runtime->dma_area = NULL;
+>  	}
+> -	mutex_unlock(&dev->lock);
+>  
+>  	return 0;
+>  }
+> @@ -352,6 +339,7 @@ static int snd_em28xx_pcm_close(struct snd_pcm_substream *substream)
+>  static int snd_em28xx_hw_capture_params(struct snd_pcm_substream *substream,
+>  					struct snd_pcm_hw_params *hw_params)
+>  {
+> +	struct em28xx *dev = snd_pcm_substream_chip(substream);
+>  	unsigned int channels, rate, format;
+>  	int ret;
+>  
+> @@ -366,6 +354,14 @@ static int snd_em28xx_hw_capture_params(struct snd_pcm_substream *substream,
+>  	/* TODO: set up em28xx audio chip to deliver the correct audio format,
+>  	   current default is 48000hz multiplexed => 96000hz mono
+>  	   which shouldn't matter since analogue TV only supports mono */
+> +
+> +	if (dev->alt == 0 && dev->adev.users == 1) {
+> +		int errCode;
+> +		dev->alt = 7;
+> +		errCode = usb_set_interface(dev->udev, 0, 7);
+> +		dprintk("changing alternate number to 7\n");
+> +	}
+> +
+>  	return 0;
+>  }
+>  
+> 
+> 
