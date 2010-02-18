@@ -1,27 +1,14 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Thu, 18 Feb 2010 19:13:23 +0100
-Message-ID: <20100218181322.GB5606@tango.0pointer.de>
-References: <20100216154015.GA612@tango.0pointer.de>
-	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
-	<20100216210703.GA18109@tango.0pointer.de>
-	<20100216223938.GA23623@sirena.org.uk>
-	<20100216224212.GA1486@tango.0pointer.de>
-	<20100216233825.GB23623@sirena.org.uk>
-	<20100216235658.GA6766@tango.0pointer.de>
-	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
-	<20100218023742.GC23637@tango.0pointer.de>
-	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+From: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+Subject: [PATCHv4 0/2] McBSP: OMAP3: Add sidetone feature
+Date: Thu, 18 Feb 2010 20:42:27 +0200
+Message-ID: <1266518549-23809-1-git-send-email-ilkka.koskinen@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2925B10390D
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 19:13:48 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2324D10391F
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 19:41:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,41 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, peter.ujfalusi@nokia.com, jhnikula@gmail.com, broonie@opensource.wolfsonmicro.com, tony@atomide.com
+Cc: eduardo.valentin@nokia.com, ext-Eero.Nurkkala@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAxOC4wMi4xMCAxNDoxNSwgUmF5bW9uZCBZYXUgKHN1cGVycXVhZC52b3J0ZXgyQGdt
-YWlsLmNvbSkgd3JvdGU6Cgo+IFZMQyBtZWRpYSBwbGF5ZXIgaGFzIGEgc2xpZGVyIGZyb20gMCUg
-dG8gMzAwJSAsIHNvIHRoZSB1c2VyIGFyZSBlYXNpbHkgdG8KPiBrbm93ICAxMDAlIGlzIHRoZSBw
-b2ludCB3aGljaCB0aGVyZSBpcyBubyBzb2Z0d2FyZSBnYWluIGFuZCBubyBzb2Z0d2FyZQo+IGF1
-dGVudGF0aW9uCj4gCj4gSG93IGRpZCBQQSBleHBvc2UgdGhlc2Ugc29mdHdhcmUgYW1wbGljYXRp
-b24gaW4gdGhlIFVJIHNvIHRoYXQgb3JkaW5hcnkgdXNlcgo+IGNhbiBrbm93IHRoYXQgcG9pbnQg
-PwoKRGVwZW5kcyBvbiB0aGUgVUkgcHJvZ3JhbS4gZ25vbWUtdm9sdW1lLWNvbnRyb2wgY3VycmVu
-dGx5IG9ubHkgcHV0cyBhCm1hcmtlciBhdCB0aGUgQUxTQSAwZEIgcG9pbnQsIGJ1dCBub3QgYSBz
-ZWNvbmQgb25lIHdoZXJlIHNvZnR3YXJlIGFtcApzdGFydHMuCgpIb3dldmVyLCBJIGhhdmUgYmVl
-biB0YWxraW5nIHRvIGEgY291cGxlIG9mIGZvbGtzIHJlZ2FyZGluZyBwcmVzZW50aW5nCnRoYXQg
-aW4gYSBuaWNlciB3YXksIGkuZS4gY29sb3VyIHNsaWRlciByYW5nZXMgZ3JlZW4veWVsbG93L3Jl
-ZDoKCmh0dHA6Ly9wdWxzZWF1ZGlvLm9yZy93aWtpL1dyaXRpbmdWb2x1bWVDb250cm9sVUlzI0Nv
-bG91cmVkdm9sdW1lc2xpZGVycwoKU3VtbWFyeTogZ3JlZW4g4oaSIGFsbCBodyB2b2wgY29udHJv
-bCB3aGVyZSBhbHNhIHJlcG9ydHMgPCAwZEI7IHllbGxvdyDihpIKaHcgY29udHJvbCB3aGVyZSBh
-bHNhIHJlcG9ydHMgPiAwZEI7IGFuZCBmaW5hbGx5IHJlZCDihpIgc29mdHdhcmUgdm9sdW1lCmNv
-bnRyb2wuCgpJIHRoaW5rIHRoaXMgY29sb3IgY29kaW5nIG9mIHRoZSBzbGlkZXIgcmFuZ2VzIGlz
-IHRoZSBiZXN0IG9uY2UgY2FuIGRvCnRvIHJlcHJlc2VudCB0aGUgdGVjaG5pY2FsIGJhY2tncm91
-bmQgb2YgYWxsIG9mIHRoaXMgaW4gYSB3YXkgdGhhdApnaXZlcyB0aGUgcmlnaHQgaW5kaWNhdGlv
-biBldmVuIGZvciBwZW9wbGUgd2l0aCBubyB0ZWNobmljYWwgYmFja2dyb3VuZC4KCj4gRm9yIHRo
-ZSBNaWMgQm9vc3QgKzIwZEIgY2FzZSAsIGhvdyBQQSBoYW5kbGUgdGhpcyArMjBkQiBzd2l0Y2gg
-aW4gdGhlICJGbGF0Cj4gVm9sdW1lIiBtb2RlbCBpZiB5b3UgZGlkIG5vdCBleHBvc3QgdGhlIE1p
-YyBCb29zdCBzd2l0Y2ggdG8gdGhlIHVzZXIgaW4gdGhlCj4gbWl4ZXIgY29udHJvbCA/Cj4gCj4g
-KzIwZEIgaXMgcXVpdGUgc2lnbmlmaWNhbnQgaW4gd2l0aCB0aGUgQ2FwdHVyZSBWb2x1bWUgY29u
-dHJvbAoKV2UgY3VycmVudGx5IGRvbid0IGNvdmVyIGJvb3N0IHN3aXRjaGVzLCBzaW1wbHkgYmVj
-YXVzZSB0ZWhyZSBpcyBubyBkQgpkYXRhIHF1ZXJpYWJsZSBmb3IgdGhlbS4KCkknZCByZWFsbHkg
-cHJlZmVyIGlmIHRob3NlIGJvb3N0IHN3aXRjaGVzIHdvdWxkIGJlIHR1cm5lZCBpbnRvIGJpbmFy
-eQp2b2x1bWUgZWxlbWVudHMgd2hpY2ggY2Fycnkgbm9ybWFsIGRCIGluZm9ybWF0aW9uIGxpa2Ug
-YW55IG90aGVyCnZvbHVtZSBlbGVtZW50LiBBZnRlciBhbGwgdGhleSBhcmUganVzdCBhIHZvbHVt
-ZSBlbGVtZW50LCB3aXRoIG9ubHkKdHdvIHN0ZXBzLgoKTGVubmFydAoKLS0gCkxlbm5hcnQgUG9l
-dHRlcmluZyAgICAgICAgICAgICAgICAgICAgICAgIFJlZCBIYXQsIEluYy4KbGVubmFydCBbYXRd
-IHBvZXR0ZXJpbmcgW2RvdF0gbmV0Cmh0dHA6Ly8wcG9pbnRlci5uZXQvbGVubmFydC8gICAgICAg
-ICAgIEdudVBHIDB4MUEwMTVDQzQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+The first patch implements McBSP sidetone feature on OMAP3 while the second
+one provides ALSA interface for using it.
+
+The patch set is based on the patch Eduardo Valentin sent to alsa-devel
+mailing list in October 2009. Channel gain control and enabling the sidetone
+have been moved to ALSA interface as suggested in comments. 
+
+These patches apply on top of Janusz Krzysztofik's McBSP register cache
+patches in linux-omap-2.6.git
+
+Since the version 3, the buggy channel gain control has been fixed. ASoC part 
+have been simplified resulting in removing a couple unnecessary functions.
+Added a comment to ASoC part explaining McBSP port number vs. index values
+used in OMAP McBSP implementation.
+
+Eero Nurkkala (1):
+  McBSP: OMAP3: Add sidetone feature
+
+Ilkka Koskinen (1):
+  ASoC: OMAP-McBSP: ASoC interface for McBSP sidetone
+
+ arch/arm/mach-omap2/mcbsp.c             |    2 +
+ arch/arm/plat-omap/include/plat/mcbsp.h |   60 +++++
+ arch/arm/plat-omap/mcbsp.c              |  402 ++++++++++++++++++++++++++++++-
+ sound/soc/omap/omap-mcbsp.c             |  138 +++++++++++
+ sound/soc/omap/omap-mcbsp.h             |    2 +
+ 5 files changed, 603 insertions(+), 1 deletions(-)
