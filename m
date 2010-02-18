@@ -1,74 +1,53 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCHv4 0/2] McBSP: OMAP3: Add sidetone feature
-Date: Fri, 19 Feb 2010 10:34:32 +0200
-Message-ID: <201002191034.32391.peter.ujfalusi@nokia.com>
-References: <1266518549-23809-1-git-send-email-ilkka.koskinen@nokia.com> <20100218222229.0f0eb3a9.jhnikula@gmail.com>
+From: Dan Carpenter <error27@gmail.com>
+Subject: bug report:  using snd_BUG_ON() instead of WARN_ON()
+Date: Thu, 18 Feb 2010 12:19:36 +0300
+Message-ID: <20100218091936.GA5621@bicker>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20100218222229.0f0eb3a9.jhnikula@gmail.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: ext Jarkko Nikula <jhnikula@gmail.com>
-Cc: "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "tony@atomide.com" <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f225.google.com (mail-fx0-f225.google.com
+	[209.85.220.225])
+	by alsa0.perex.cz (Postfix) with ESMTP id 142D71038E8
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 10:20:54 +0100 (CET)
+Received: by fxm25 with SMTP id 25so1000241fxm.32
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 01:20:52 -0800 (PST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 18 February 2010 22:22:29 ext Jarkko Nikula wrote:
->=20
-> I still have two concern:
->=20
-> 1. port number vs. index difference inside driver code is not enough
->=20
-> It's just confusing if a machine driver and internal API (mcbsp.c) ha=
-s
-> to use different indexing. See:
->=20
-> omap_mcbsp_st_add_controls(codec, 2);
-> ...
-> *(unsigned int *)omap3beagle_dai.cpu_dai->private_data =3D 1; /* McBS=
-P2 */
+Smatch found a couple places try use the return value for snd_BUG_ON() 
+without realizing it's always zero or that it can be defined away entirely
+under certain configs.
 
-Agreed.
+sound/core/info_oss.c
+    46          if (snd_BUG_ON(dev < 0 || dev >= SNDRV_OSS_INFO_DEV_COUNT))
+    47                  return -ENXIO;
+    48          if (snd_BUG_ON(num < 0 || num >= SNDRV_CARDS))
+    49                  return -ENXIO;
 
-=20
-> and mcbsp->id use in mcbsp.c.
+sound/drivers/opl3/opl3_midi.c +652 snd_opl3_kill_voice(34) warn: buffer overflow 'opl3->voices' 18 <= 20
 
-It has always bothered me, I'll take a look and check if there is a rea=
-son why=20
-it is like that, and if possible I'll change the mcbsp->id to be 0 base=
-d (thus=20
-harmonizing the internal and external interface).
-=20
-> 2. I cannot change the sidetone level with alsamixer
->=20
-> Is this bug with the alsamixer? With amixer I'm able to set positive
-> values but not negative
->=20
-> amixer set -D hw:0 'McBSP2 Sidetone Channel 0' 32767
->=20
-> What I'm looking here, is that I can execute a test below with unit
-> impulse response tap filter, hear the sound and note that the volume =
-is
-> changing as I'm changing the sidetone volume :-)
+	opl3_midi.c checks the range with snd_BUG_ON() and then adds 3 so 
+	it possibly goes out of bounds.  I'm not sure the situation there.
 
-I'm not sure, but you might need to configure the taps as well to have =
-the=20
-correct sidetone.
-Also I have a recollection, that the McBSP sidetone requires DSP mode (=
-TDM) in=20
-order to operate correctly, so on Beagle you might need to set up 4 cha=
-nnel=20
-mode. And how the channel mapping in 4 channel mode works in McBSP side=
-tone is=20
-another matter...
+sound/core/seq/seq_midi.c +403 snd_seq_midisynth_register_port(126) error: buffer overflow 'client->ports_per_device' 8 <= 8
+sound/core/seq/seq_midi.c +404 snd_seq_midisynth_register_port(127) error: buffer overflow 'client->ports' 8 <= 8
+sound/core/info_oss.c +52 snd_oss_info_register(10) error: buffer overflow 'snd_sndstat_strings[num]' 6 <= 6
+sound/core/info_oss.c +52 snd_oss_info_register(10) error: buffer overflow 'snd_sndstat_strings' 32 <= 32
+sound/core/info_oss.c +63 snd_oss_info_register(21) error: buffer overflow 'snd_sndstat_strings[num]' 6 <= 6
+sound/core/info_oss.c +63 snd_oss_info_register(21) error: buffer overflow 'snd_sndstat_strings' 32 <= 32
+sound/pci/cs46xx/dsp_spos_scb_lib.c +1497 cs46xx_dsp_destroy_pcm_channel(28) error: buffer overflow 'ins->src_scb_slots' 14 <= 14
 
->=20
-> arecord -f dat >/dev/null |aplay -f dat /dev/zero
-
---=20
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+regards,
+dan carpenter
