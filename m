@@ -1,22 +1,29 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: safe support for rewind in ALSA
-Date: Thu, 18 Feb 2010 09:31:18 +0800
-Message-ID: <4f3252891002171731j133b5e7ew7d3bcf9d72c76aec@mail.gmail.com>
-References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
-	<alpine.LNX.2.00.1002011840020.25340@eeebox2.perex-int.cz>
-	<4f3252891002060359j11d68819idf5d12705e2a60bc@mail.gmail.com>
-	<20100217153024.GA6891@tango.0pointer.de>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Thu, 18 Feb 2010 09:48:09 +0800
+Message-ID: <4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+References: <4B7A5268.5050704@ladisch.de>
+	<20100216143200.GB25489@tango.0pointer.de>
+	<20100216144047.GB10586@sirena.org.uk>
+	<20100216154015.GA612@tango.0pointer.de>
+	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
+	<20100216210703.GA18109@tango.0pointer.de>
+	<20100216223938.GA23623@sirena.org.uk>
+	<20100216224212.GA1486@tango.0pointer.de>
+	<20100216233825.GB23623@sirena.org.uk>
+	<20100216235658.GA6766@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f171.google.com (mail-pz0-f171.google.com
-	[209.85.222.171])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20015103872
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 02:31:19 +0100 (CET)
-Received: by pzk1 with SMTP id 1so6846811pzk.16
-	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 17:31:18 -0800 (PST)
-In-Reply-To: <20100217153024.GA6891@tango.0pointer.de>
+Received: from mail-pz0-f198.google.com (mail-pz0-f198.google.com
+	[209.85.222.198])
+	by alsa0.perex.cz (Postfix) with ESMTP id EDC3710386A
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 02:48:10 +0100 (CET)
+Received: by pzk36 with SMTP id 36so9089292pzk.23
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 17:48:10 -0800 (PST)
+In-Reply-To: <20100216235658.GA6766@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,19 +38,49 @@ List-Id: alsa-devel@alsa-project.org
 
 2010/2/17 Lennart Poettering <mznyfn@0pointer.de>
 
-> On Sat, 06.02.10 19:59, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+> On Tue, 16.02.10 23:38, Mark Brown (broonie@opensource.wolfsonmicro.com)
+> wrote:
 >
-> > How about those alsa plugins ( e.g. pulse , jack , oss , .... )
 > >
-> > Can alsa application use snd_pcm_rewind() for pulse plugin or oss plugin
-> ?
+> > On Tue, Feb 16, 2010 at 11:42:12PM +0100, Lennart Poettering wrote:
+> > > On Tue, 16.02.10 22:39, Mark Brown (
+> broonie@opensource.wolfsonmicro.com) wrote:
+> >
+> > > > Typically the DACs and ADCs will have a full scale signal at line
+> > > > reference level - it should generally be a good approximation with
+> > > > nothing else to go on.
+> >
+> > > "line reference level"? What is that?
+> >
+> > As I understand it (and bear in mind that I'm a software rather than
+> > electrical engineer) it's not 100% fixed, though since the actual result
+> > depends very much on what it's connected to an absolute answer isn't as
+> > important as it might be.  1V RMS is very standard in consumer stuff at
+> > least.
+> >
+> > If you could frame exactly the information that you're looking for then
+> > I should be able to ask a few people who are electrical engineers and
+> > get a more coherent answer for you.   I guess you're looking at trying
+> > to have PulseAudio set sensible levels by default?
 >
-> If your question is wether the PA plugin for libasound supports
-> snd_pcm_rewind(), then the answer is no, it doesn't. I am not even
-> sure the ioplug stuff would even allow that as it stands now.
+> Nah. I actually don't need this value for PulseAudio. In PulseAudio I
+> chose to shift all scales so that maximum amplification becomes 0 dB,
+> so that the UIs are similar to how most hifi racks do it, and which I
+> think is a nice, easy and understandable logic. That way my volume
+> scales range from -inf dB to 0 dB in all cases, regardless of the
+> hardware/drivers in use. Of course, that means that ALSA's own 0dB is
+> not directly visible on the scale. Because it might be sometimes
+> useful to know where it is, we export that position as "base volume"
+> and the UIs show it with a little marker at the side.
+>
+> The reason I was asking how Jaroslav chose the 0dB position for his
+> measurements was purely because I wanted to do my own measurements for
+> that Aureon card. The dbmeasure tool I wrote for stuff like that puts
+> 0dB at max amplification, however Jaroslav didn't, so I was wondering
+> how he chose 0dB then.
 >
 > Lennart
 >
->
-So this mean that snd_pcm_rewindable() should return zero when using pulse
-device
+> From the viewpoint of user, they only care how easy to find the point which
+is no software gain or software auttentation  since software gain lead to
+clipping
