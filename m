@@ -1,26 +1,29 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: Re: Separate dma driver for cpu_dais
-Date: Thu, 18 Feb 2010 15:12:53 +0900
-Message-ID: <4B7CDA65.6000301@samsung.com>
-References: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
-	<4B7B9387.1070506@samsung.com> <20100217105202.GB31765@sirena.org.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Thu, 18 Feb 2010 14:15:23 +0800
+Message-ID: <4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+References: <20100216143200.GB25489@tango.0pointer.de>
+	<20100216154015.GA612@tango.0pointer.de>
+	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
+	<20100216210703.GA18109@tango.0pointer.de>
+	<20100216223938.GA23623@sirena.org.uk>
+	<20100216224212.GA1486@tango.0pointer.de>
+	<20100216233825.GB23623@sirena.org.uk>
+	<20100216235658.GA6766@tango.0pointer.de>
+	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+	<20100218023742.GC23637@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8791F1038B2
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 07:12:57 +0100 (CET)
-Received: from epmmp1 (mailout2.samsung.com [203.254.224.25])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KY0005IGX9H23@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 18 Feb 2010 15:12:54 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KY000B3SX9HZL@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 18 Feb 2010 15:12:53 +0900 (KST)
-In-reply-to: <20100217105202.GB31765@sirena.org.uk>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 301881038BE
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 07:15:25 +0100 (CET)
+Received: by pwi9 with SMTP id 9so1159236pwi.38
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 22:15:24 -0800 (PST)
+In-Reply-To: <20100218023742.GC23637@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,50 +33,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, jassi brar <jassisinghbrar@gmail.com>, kyungmin.park@samsung.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2/17/2010 7:52 PM, Mark Brown wrote:
-> On Wed, Feb 17, 2010 at 03:58:15PM +0900, Joonyoung Shim wrote:
-> 
->> At the ASoC, is there a situation to share the dai(cpu or codec)?
->> If the dai is shared, i just think the ASoC core cannot support it.
-> 
-> I'm not sure what you mean by "sharing" the DAI - sharing between what?
-> I think you mean using the same DAI in multiple dai_links but I'm not
-> 100% sure?
-> 
+2010/2/18 Lennart Poettering <mznyfn@0pointer.de>
 
-Yes, it is what i mean.
+> On Thu, 18.02.10 09:48, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+>
+> > From the viewpoint of user, they only care how easy to find the point
+> which
+> > is no software gain or software auttentation  since software gain lead to
+> > clipping
+>
+> We decided to expose software amplification in the UI, since it is
+> actually a much requested feature, and I have used myself a couple of
+> times.
+>
+> The primary use case is when you play a DVD (which very often has
+> audio normalized to a very low volume) on weak speakers, such as
+> laptop speakers.
+>
+> Lennart
+>
+>
+VLC media player has a slider from 0% to 300% , so the user are easily to
+know  100% is the point which there is no software gain and no software
+autentation
 
->> There is the case at the S5PC1XX, it supports the hardware mixing by
->> using two tx fifo. First Jassi implemented codes using each other cpu
->> dai as Jassi says at the above for the hardware mixing, but it should
->> share codec_dai and need some modification of ASoC core.
-> 
-> What modifications are you looking for here?  ASoC doesn't make any
+How did PA expose these software amplication in the UI so that ordinary user
+can know that point ?
 
-Thing modified is the active counting of DAI(struct snd_soc_dai) and pcm
-stream(struct snd_soc_pcm_stream). Also, startup() in ops functions of 
-same DAI shouldn't be called several times when the device using same 
-DAI is opened.
+For the Mic Boost +20dB case , how PA handle this +20dB switch in the "Flat
+Volume" model if you did not expost the Mic Boost switch to the user in the
+mixer control ?
 
-> effort to avoid reuse of DAIs in multiple links - it doesn't actively do
-> anything to help here but equally well it's not supposed to get in the
-> way.
-> 
-> The only thing I can think of off the top of my head that would cause
-> actual problems is that the DAPM events for stream stop/start in the
-> CODEC might not be doing reference counting, I'd need to check.  Other
-
-Ah, i didn't think about this. Right, this should be considered too.
-
-> than that there's a bunch of things that could make use cases like this
-> nicer like providing a way of bundling links that share signals together
-> and providing callbacks when things start and stop (so shared clocking
-> can be turned on and off, for example) but these should be things that
-> could be open coded in individual drivers.
-> 
-
-Sorry, what does "be open coded" mean?
++20dB is quite significant in with the Capture Volume control
