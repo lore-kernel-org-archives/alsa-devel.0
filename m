@@ -1,62 +1,68 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCHv4 0/2] McBSP: OMAP3: Add sidetone feature
-Date: Thu, 18 Feb 2010 22:22:29 +0200
-Message-ID: <20100218222229.0f0eb3a9.jhnikula@gmail.com>
-References: <1266518549-23809-1-git-send-email-ilkka.koskinen@nokia.com>
+From: Hans-Kristian Arntzen <maister@archlinux.us>
+Subject: Troubles using the external SDK
+Date: Thu, 18 Feb 2010 23:44:49 +0100
+Message-ID: <4B7DC2E1.6050106@archlinux.us>
+References: <mailman.5292.1266501879.2074.alsa-devel@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1266518549-23809-1-git-send-email-ilkka.koskinen@nokia.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Ilkka Koskinen <ilkka.koskinen@nokia.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, peter.ujfalusi@nokia.com, broonie@opensource.wolfsonmicro.com, tony@atomide.com, eduardo.valentin@nokia.com, ext-Eero.Nurkkala@nokia.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
+	[209.85.219.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E9AA243CF
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 23:44:54 +0100 (CET)
+Received: by ewy5 with SMTP id 5so881452ewy.32
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 14:44:54 -0800 (PST)
+In-Reply-To: <mailman.5292.1266501879.2074.alsa-devel@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18 Feb 2010 20:42:27 +0200
-Ilkka Koskinen <ilkka.koskinen@nokia.com> wrote:
+I am trying to make an alsa output plugin that streams the audio over 
+network (something like esd, just even more simplistic) using the 
+external SDK, however, I am having trouble implementing some things 
+correctly it seems, and the docs weren't descriptive enough.
 
-> The first patch implements McBSP sidetone feature on OMAP3 while the second
-> one provides ALSA interface for using it.
-> 
-> The patch set is based on the patch Eduardo Valentin sent to alsa-devel
-> mailing list in October 2009. Channel gain control and enabling the sidetone
-> have been moved to ALSA interface as suggested in comments. 
-> 
-> These patches apply on top of Janusz Krzysztofik's McBSP register cache
-> patches in linux-omap-2.6.git
-> 
-> Since the version 3, the buggy channel gain control has been fixed. ASoC part 
-> have been simplified resulting in removing a couple unnecessary functions.
-> Added a comment to ASoC part explaining McBSP port number vs. index values
-> used in OMAP McBSP implementation.
-> 
-I still have two concern:
+So far, it works quite well with music playback that doesn't really care 
+about audio blocking, etc. The main problem is audio sync and blocking 
+with more complex applications like MPlayer. As far as I can see in the 
+MPlayer source, to retain audio sync, it uses
 
-1. port number vs. index difference inside driver code is not enough
+     snd_pcm_delay() for delay, and
+     snd_pcm_status_get_avail() to figure out how much it can write 
+without audio blocking.
 
-It's just confusing if a machine driver and internal API (mcbsp.c) has
-to use different indexing. See:
+This is fine, but how can snd_pcm_status_get_avail() get the data it 
+needs from the plugins? It doesn't seem to call on any callbacks to do this.
+It seems so far that snd_pcm_status_get_avail() always returns 
+buffer_size, since I seem to get working audio, but the video starts to 
+stutter. The stuttering goes away when I force a really small maximum 
+buffer size (we're talking 512-ish bytes), but this is really, really 
+bad, and doesn't work
+too well on my netbook (performance/timing issues I guess). Is it 
+possible to define a snd_pcm_status_get_avail() callback in the SDK in 
+some way?
 
-omap_mcbsp_st_add_controls(codec, 2);
-...
-*(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 1; /* McBSP2 */
+Anyways. I want to know how you'd do this. The OSS driver for example 
+doesn't even seem to define a delay() callback, which strikes me as odd.
+How can it know about the delay?
 
-and mcbsp->id use in mcbsp.c.
+Also, I want to know the reasoning behind the pointer() function. It 
+seems to be called all the time. I don't know what it really does, and 
+what good it does. Is it supposed to represent where in the buffer we 
+are? As in, it's supposed to stay somewhere between 0 and buffer_size? 
+If so, my experience with it doesn't make sense at all. If I return that 
+actual value, the programs simply stop up and loop endlessly over the 
+pointer() function. The temporary "hack" (as in probably very wrong) was 
+to return the total amount of data that's been sent since the start. Can 
+anyone help a frustrated programmer? :P
 
-2. I cannot change the sidetone level with alsamixer
-
-Is this bug with the alsamixer? With amixer I'm able to set positive
-values but not negative
-
-amixer set -D hw:0 'McBSP2 Sidetone Channel 0' 32767
-
-What I'm looking here, is that I can execute a test below with unit
-impulse response tap filter, hear the sound and note that the volume is
-changing as I'm changing the sidetone volume :-)
-
-arecord -f dat >/dev/null |aplay -f dat /dev/zero
-
-
--- 
-Jarkko
+  -- Themaister
