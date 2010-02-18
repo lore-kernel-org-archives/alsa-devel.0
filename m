@@ -1,39 +1,60 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [alsa-devel] [PATCHv3 1/2] McBSP: OMAP3: Add sidetone feature
-Date: Thu, 18 Feb 2010 17:41:30 +0200
-Message-ID: <20100218174130.9bab289e.jhnikula@gmail.com>
-References: <1266496635-31347-1-git-send-email-ilkka.koskinen@nokia.com>
-	<1266496635-31347-2-git-send-email-ilkka.koskinen@nokia.com>
-	<20100218152413.11d0189a.jhnikula@gmail.com>
-	<201002181556.03245.peter.ujfalusi@nokia.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCHv2 1/2] McBSP: OMAP3: Add sidetone feature
+Date: Thu, 18 Feb 2010 09:14:17 -0800
+Message-ID: <20100218171417.GP21755@atomide.com>
+References: <1266417960-22787-1-git-send-email-ilkka.koskinen@nokia.com>
+	<1266417960-22787-2-git-send-email-ilkka.koskinen@nokia.com>
+	<20100218002543.GG21755@atomide.com>
+	<alpine.DEB.2.00.1002181244400.13895@tumpelo.nmp.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <201002181556.03245.peter.ujfalusi@nokia.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mho-02-ewr.mailhop.org (mho-02-ewr.mailhop.org [204.13.248.72])
+	by alsa0.perex.cz (Postfix) with ESMTP id 46DA7103875
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 18:13:37 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1002181244400.13895@tumpelo.nmp.nokia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ilkka Koskinen <ikoskine@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18 Feb 2010 15:56:03 +0200
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
-
-> > Are you sure about these ids? Same comment to the patch 2 as well.
-> > Worth to check.
+* Ilkka Koskinen <ikoskine@nokia.com> [100218 02:54]:
 > 
-> They are correct.
-> mcbsp->id is 1 based (1 -> McBSP1, 2 -> McBSP2, etc)
-> While the exported functions expect the id to
-> be 0 based (0 -> McBSP1, 1 -> McBSP2, etc)
+> Hi,
 > 
-> But, yes it is confusing at times...
+> On Thu, 18 Feb 2010, ext Tony Lindgren wrote:
+> >* Ilkka Koskinen <ilkka.koskinen@nokia.com> [100217 06:41]:
+> >>From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+> >>
+> >>Add sidetone feature to McBSP instances 2 and 3 on OMAP3 based devices.
+> >>
+> >>Signed-off-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+> >
+> >This one looks good to me and can be merged via Alsa list along with
+> >the other patch.
+> >
+> >Acked-by: Tony Lindgren <tony@atomide.com>
 > 
-Definitely. As existing API is using 0 based indexing, it's better to
-use here as well. That would make the lines like below simpler too :-)
+> Is that easiest way to do that? I mean, I'm afraid that the ALSA
+> tree doesn't have Janusz Krzysztofik's McBSP register cache patches
+> nor does it have your "omap3: Replace ARCH_OMAP34XX with ARCH_OMAP3"
+> patch either.
+> 
+> Anyway, I'll send the updated patches still today.
 
-+	return omap_st_set_chgain((id)-1, val, 0, channel);
+OH, that's right, I totally forgot about that. Sounds like I should
+add them both to omap for-next once everybody is happy.
 
+Regards,
 
--- 
-Jarkko
+Tony
