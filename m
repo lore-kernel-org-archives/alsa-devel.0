@@ -1,42 +1,74 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCHv2 1/2] McBSP: OMAP3: Add sidetone feature
-Date: Thu, 18 Feb 2010 09:16:18 -0800
-Message-ID: <20100218171618.GQ21755@atomide.com>
-References: <1266417960-22787-1-git-send-email-ilkka.koskinen@nokia.com>
- <1266417960-22787-2-git-send-email-ilkka.koskinen@nokia.com>
- <20100218002543.GG21755@atomide.com>
- <alpine.DEB.2.00.1002181244400.13895@tumpelo.nmp.nokia.com>
- <20100218110106.GC3542@rakim.wolfsonmicro.main>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: Latency of mixer reconfiguration
+Date: Thu, 18 Feb 2010 19:04:22 +0100
+Message-ID: <20100218180422.GA5606@tango.0pointer.de>
+References: <20100217181530.GA23152@tango.0pointer.de>
+	<20100218100127.GJ2032@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6514D103901
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 19:04:48 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20100218110106.GC3542@rakim.wolfsonmicro.main>
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Ilkka Koskinen <ikoskine@nokia.com>, "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "jhnikula@gmail.com" <jhnikula@gmail.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+In-Reply-To: <20100218100127.GJ2032@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-* Mark Brown <broonie@opensource.wolfsonmicro.com> [100218 02:58]:
-> On Thu, Feb 18, 2010 at 12:58:55PM +0200, Ilkka Koskinen wrote:
-> 
-> > Is that easiest way to do that? I mean, I'm afraid that the ALSA
-> > tree doesn't have Janusz Krzysztofik's McBSP register cache patches
-> > nor does it have your "omap3: Replace ARCH_OMAP34XX with ARCH_OMAP3"
-> > patch either.
-> 
-> > Anyway, I'll send the updated patches still today.
-> 
-> Given that the merge window is likely to open within a week it might be
-> simplest to just wait until that's sorted through, or if the patches
-> will both apply in the OMAP tree and merge cleanly with ASoC then I'd be
-> happy with pushing them that way (I'd expect, I'd need to review the
-> second one).
+On Thu, 18.02.10 10:01, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
 
-Yeah I can add them once they're OK from ASoC point of view.
-Or we can wait and you can merge them later. Either way works
-just fine for me.
+> > Now the question I have is, how should I best deal with this? I
+> > currently assume that mixer volume changes are basically instantaneous
+> > when I call the respective function of ALSA. But are they really? How
+> > big is the latency at max? Do we need an API to query it?
+> 
+> For the embedded case the hardware update should happen synchronously
+> with the ALSA API call to adjust the setting and begin affecting the
+> played audio instantaneously.  The time taken to do the hardware update
+> will be dominated by I/O costs, which will in turn depend on the bus
+> used to access the codec - it'd be good if the buses could provide some
+> information to ASoC to allow it to do an estimate, but at the minute
+> we've got nothing really to go on.
 
-Regards,
+But what would you guess? In which range will this most likely be? < 1ms? 
+1ms? 10ms? 100ms? 1s? 1h? 10h? 10d? 10y?
 
-Tony
+tbh I feared less the actually IO latency but more that some PCM data
+fifos might need flushing before the volume is actually updated. And
+the latency of those fifos I feared might be more than a handful of
+samples?
+
+> What's more interesting from this point of view is that the update will
+> affect the audio going through the chip at the current moment so there
+> will be latency from the DMA chain and possibly also from the DSP chain
+> within the CODEC (which may vary depending on which volume you're
+> updating).
+> 
+> I suspect that trying to offer additional resolution in this way is more
+> trouble than it's worth if you're concerned about the artifacts that are
+> introduced during updates.  Providing per-channel differentiation if the
+> hardware has only mono control has much fewer problems, though.
+
+The current logic is to not do any software adjustment if the hardware
+adjustment is "close enough" to the total adjustment we want to do,
+tested against a threshold. Which I think is quite a reasonable
+approach because it enables/disables this feature not globally, but
+looks at each case and enables this logic only if it really has a
+benefit.
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
