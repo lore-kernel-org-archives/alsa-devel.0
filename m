@@ -1,27 +1,24 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Thu, 18 Feb 2010 03:37:42 +0100
-Message-ID: <20100218023742.GC23637@tango.0pointer.de>
-References: <20100216143200.GB25489@tango.0pointer.de>
-	<20100216144047.GB10586@sirena.org.uk>
-	<20100216154015.GA612@tango.0pointer.de>
-	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
-	<20100216210703.GA18109@tango.0pointer.de>
-	<20100216223938.GA23623@sirena.org.uk>
-	<20100216224212.GA1486@tango.0pointer.de>
-	<20100216233825.GB23623@sirena.org.uk>
-	<20100216235658.GA6766@tango.0pointer.de>
-	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: safe support for rewind in ALSA
+Date: Thu, 18 Feb 2010 11:21:28 +0800
+Message-ID: <4f3252891002171921h62200bbfh8c010117ec21d219@mail.gmail.com>
+References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
+	<alpine.LNX.2.00.1002011840020.25340@eeebox2.perex-int.cz>
+	<4f3252891002060359j11d68819idf5d12705e2a60bc@mail.gmail.com>
+	<20100217153024.GA6891@tango.0pointer.de>
+	<4f3252891002171731j133b5e7ew7d3bcf9d72c76aec@mail.gmail.com>
+	<20100218023358.GB23637@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id A82951038B2
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 03:38:07 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+Received: from mail-px0-f197.google.com (mail-px0-f197.google.com
+	[209.85.216.197])
+	by alsa0.perex.cz (Postfix) with ESMTP id ACA9B103872
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 04:21:30 +0100 (CET)
+Received: by pxi35 with SMTP id 35so490603pxi.16
+	for <alsa-devel@alsa-project.org>; Wed, 17 Feb 2010 19:21:28 -0800 (PST)
+In-Reply-To: <20100218023358.GB23637@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,23 +31,23 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18.02.10 09:48, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+2010/2/18 Lennart Poettering <mznyfn@0pointer.de>
 
-> From the viewpoint of user, they only care how easy to find the point which
-> is no software gain or software auttentation  since software gain lead to
-> clipping
-
-We decided to expose software amplification in the UI, since it is
-actually a much requested feature, and I have used myself a couple of
-times.
-
-The primary use case is when you play a DVD (which very often has
-audio normalized to a very low volume) on weak speakers, such as
-laptop speakers.
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+> On Thu, 18.02.10 09:31, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+>
+> > > If your question is wether the PA plugin for libasound supports
+> > > snd_pcm_rewind(), then the answer is no, it doesn't. I am not even
+> > > sure the ioplug stuff would even allow that as it stands now.
+> > >
+> > > Lennart
+> > >
+> > >
+> > So this mean that snd_pcm_rewindable() should return zero when using
+> pulse
+> > device
+>
+> Yes, it should.
+>
+> Lennart
+>
+> how about those ladspa , mulaw , alaw , a52 , oss and jack plugin ?
