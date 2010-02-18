@@ -1,14 +1,16 @@
-From: Florian Faber <faber@faberman.de>
-Subject: alsamixer crashes with SIGFPE
-Date: Thu, 18 Feb 2010 09:29:44 +0100
-Message-ID: <4B7CFA78.6090104@faberman.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsamixer crashes with SIGFPE
+Date: Thu, 18 Feb 2010 09:44:22 +0100
+Message-ID: <4B7CFDE6.5080700@ladisch.de>
+References: <4B7CFA78.6090104@faberman.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from india820.server4you.de (india820.server4you.de [85.25.152.101])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A91D1038BD
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 09:29:51 +0100 (CET)
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id D7F601038AD
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 09:44:26 +0100 (CET)
+In-Reply-To: <4B7CFA78.6090104@faberman.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,23 +20,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Florian Faber <faber@faberman.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Florian Faber wrote:
+> there are several spots in alsamixer's mixer_display.c that cause SIGFPE
+> through division by zero if (max-min) is zero:
+> 
+> bar_height = ((volumes[c] - min) * volume_height + max - min - 1) / (max - min);
+> value = ((volumes[0] - min) * 100 + (max - min) / 2) / (max - min);
 
-there are several spots in alsamixer's mixer_display.c that cause SIGFPE
-through division by zero if (max-min) is zero:
-
-bar_height = ((volumes[c] - min) * volume_height + max - min - 1) / (max
-- min);
-
-value = ((volumes[0] - min) * 100 + (max - min) / 2) / (max - min);
-
-etc.
+Thanks.  With which hardware do you see this error?
 
 
-Flo
--- 
-Machines can do the work, so people have time to think.
-public key DA43FEF4          x-hkp://wwwkeys.eu.pgp.net
+Regards,
+Clemens
