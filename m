@@ -1,24 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Separate dma driver for cpu_dais
-Date: Thu, 18 Feb 2010 09:52:49 +0000
-Message-ID: <20100218095249.GE3315@rakim.wolfsonmicro.main>
-References: <1b68c6791002161839q705df04cmeda046736948c614@mail.gmail.com>
-	<4B7B9387.1070506@samsung.com>
-	<20100217105202.GB31765@sirena.org.uk>
-	<1b68c6791002170415q457d0893jb1a77b864031ee6c@mail.gmail.com>
-	<20100217131421.GB11510@rakim.wolfsonmicro.main>
-	<1b68c6791002171814k28fccf9emcbcf17c54c445a4f@mail.gmail.com>
-	<20100218093459.GB3315@rakim.wolfsonmicro.main>
-	<1b68c6791002180142l422a9203se2a71cae5795d6a9@mail.gmail.com>
+Subject: Re: Latency of mixer reconfiguration
+Date: Thu, 18 Feb 2010 10:01:27 +0000
+Message-ID: <20100218100127.GJ2032@sirena.org.uk>
+References: <20100217181530.GA23152@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A788B1038D6
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 10:52:50 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C26E1038F7
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 11:01:28 +0100 (CET)
+Received: from broonie by cassiel.sirena.org.uk with local (Exim 4.69)
+	(envelope-from <broonie@sirena.org.uk>) id 1Ni3CJ-0006KF-VF
+	for alsa-devel@alsa-project.org; Thu, 18 Feb 2010 10:01:27 +0000
 Content-Disposition: inline
-In-Reply-To: <1b68c6791002180142l422a9203se2a71cae5795d6a9@mail.gmail.com>
+In-Reply-To: <20100217181530.GA23152@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,20 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: kyungmin.park@samsung.com, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 18, 2010 at 06:42:26PM +0900, jassi brar wrote:
-> On Thu, Feb 18, 2010 at 6:35 PM, Mark Brown
+On Wed, Feb 17, 2010 at 07:15:30PM +0100, Lennart Poettering wrote:
 
-> > Could you please be more specific about what the workaround you are
-> > referring to is? =A0I'm genuinely not clear what you mean here.
+> Now the question I have is, how should I best deal with this? I
+> currently assume that mixer volume changes are basically instantaneous
+> when I call the respective function of ALSA. But are they really? How
+> big is the latency at max? Do we need an API to query it?
 
-> In order for a codec_dai to be used in more than one dai_link
-> I check for its 'active' counter and call shutdown, startup, mute
-> and schedule_delayed_work only if no other dai_link is
-> actively using that codec_dai.
+For the embedded case the hardware update should happen synchronously
+with the ALSA API call to adjust the setting and begin affecting the
+played audio instantaneously.  The time taken to do the hardware update
+will be dominated by I/O costs, which will in turn depend on the bus
+used to access the codec - it'd be good if the buses could provide some
+information to ASoC to allow it to do an estimate, but at the minute
+we've got nothing really to go on.
 
-Where is the code you are talking about here?  This sounds like driver
-code...
+What's more interesting from this point of view is that the update will
+affect the audio going through the chip at the current moment so there
+will be latency from the DMA chain and possibly also from the DSP chain
+within the CODEC (which may vary depending on which volume you're
+updating).
+
+I suspect that trying to offer additional resolution in this way is more
+trouble than it's worth if you're concerned about the artifacts that are
+introduced during updates.  Providing per-channel differentiation if the
+hardware has only mono control has much fewer problems, though.
