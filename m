@@ -1,18 +1,27 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Latency of mixer reconfiguration
-Date: Thu, 18 Feb 2010 19:04:22 +0100
-Message-ID: <20100218180422.GA5606@tango.0pointer.de>
-References: <20100217181530.GA23152@tango.0pointer.de>
-	<20100218100127.GJ2032@sirena.org.uk>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+ cards, especially Aureon 5.1 MkII
+Date: Thu, 18 Feb 2010 19:13:23 +0100
+Message-ID: <20100218181322.GB5606@tango.0pointer.de>
+References: <20100216154015.GA612@tango.0pointer.de>
+	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
+	<20100216210703.GA18109@tango.0pointer.de>
+	<20100216223938.GA23623@sirena.org.uk>
+	<20100216224212.GA1486@tango.0pointer.de>
+	<20100216233825.GB23623@sirena.org.uk>
+	<20100216235658.GA6766@tango.0pointer.de>
+	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+	<20100218023742.GC23637@tango.0pointer.de>
+	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6514D103901
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 19:04:48 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 2925B10390D
+	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 19:13:48 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20100218100127.GJ2032@sirena.org.uk>
+In-Reply-To: <4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +34,38 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18.02.10 10:01, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
-
-> > Now the question I have is, how should I best deal with this? I
-> > currently assume that mixer volume changes are basically instantaneous
-> > when I call the respective function of ALSA. But are they really? How
-> > big is the latency at max? Do we need an API to query it?
-> 
-> For the embedded case the hardware update should happen synchronously
-> with the ALSA API call to adjust the setting and begin affecting the
-> played audio instantaneously.  The time taken to do the hardware update
-> will be dominated by I/O costs, which will in turn depend on the bus
-> used to access the codec - it'd be good if the buses could provide some
-> information to ASoC to allow it to do an estimate, but at the minute
-> we've got nothing really to go on.
-
-But what would you guess? In which range will this most likely be? < 1ms? 
-1ms? 10ms? 100ms? 1s? 1h? 10h? 10d? 10y?
-
-tbh I feared less the actually IO latency but more that some PCM data
-fifos might need flushing before the volume is actually updated. And
-the latency of those fifos I feared might be more than a handful of
-samples?
-
-> What's more interesting from this point of view is that the update will
-> affect the audio going through the chip at the current moment so there
-> will be latency from the DMA chain and possibly also from the DSP chain
-> within the CODEC (which may vary depending on which volume you're
-> updating).
-> 
-> I suspect that trying to offer additional resolution in this way is more
-> trouble than it's worth if you're concerned about the artifacts that are
-> introduced during updates.  Providing per-channel differentiation if the
-> hardware has only mono control has much fewer problems, though.
-
-The current logic is to not do any software adjustment if the hardware
-adjustment is "close enough" to the total adjustment we want to do,
-tested against a threshold. Which I think is quite a reasonable
-approach because it enables/disables this feature not globally, but
-looks at each case and enables this logic only if it really has a
-benefit.
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+T24gVGh1LCAxOC4wMi4xMCAxNDoxNSwgUmF5bW9uZCBZYXUgKHN1cGVycXVhZC52b3J0ZXgyQGdt
+YWlsLmNvbSkgd3JvdGU6Cgo+IFZMQyBtZWRpYSBwbGF5ZXIgaGFzIGEgc2xpZGVyIGZyb20gMCUg
+dG8gMzAwJSAsIHNvIHRoZSB1c2VyIGFyZSBlYXNpbHkgdG8KPiBrbm93ICAxMDAlIGlzIHRoZSBw
+b2ludCB3aGljaCB0aGVyZSBpcyBubyBzb2Z0d2FyZSBnYWluIGFuZCBubyBzb2Z0d2FyZQo+IGF1
+dGVudGF0aW9uCj4gCj4gSG93IGRpZCBQQSBleHBvc2UgdGhlc2Ugc29mdHdhcmUgYW1wbGljYXRp
+b24gaW4gdGhlIFVJIHNvIHRoYXQgb3JkaW5hcnkgdXNlcgo+IGNhbiBrbm93IHRoYXQgcG9pbnQg
+PwoKRGVwZW5kcyBvbiB0aGUgVUkgcHJvZ3JhbS4gZ25vbWUtdm9sdW1lLWNvbnRyb2wgY3VycmVu
+dGx5IG9ubHkgcHV0cyBhCm1hcmtlciBhdCB0aGUgQUxTQSAwZEIgcG9pbnQsIGJ1dCBub3QgYSBz
+ZWNvbmQgb25lIHdoZXJlIHNvZnR3YXJlIGFtcApzdGFydHMuCgpIb3dldmVyLCBJIGhhdmUgYmVl
+biB0YWxraW5nIHRvIGEgY291cGxlIG9mIGZvbGtzIHJlZ2FyZGluZyBwcmVzZW50aW5nCnRoYXQg
+aW4gYSBuaWNlciB3YXksIGkuZS4gY29sb3VyIHNsaWRlciByYW5nZXMgZ3JlZW4veWVsbG93L3Jl
+ZDoKCmh0dHA6Ly9wdWxzZWF1ZGlvLm9yZy93aWtpL1dyaXRpbmdWb2x1bWVDb250cm9sVUlzI0Nv
+bG91cmVkdm9sdW1lc2xpZGVycwoKU3VtbWFyeTogZ3JlZW4g4oaSIGFsbCBodyB2b2wgY29udHJv
+bCB3aGVyZSBhbHNhIHJlcG9ydHMgPCAwZEI7IHllbGxvdyDihpIKaHcgY29udHJvbCB3aGVyZSBh
+bHNhIHJlcG9ydHMgPiAwZEI7IGFuZCBmaW5hbGx5IHJlZCDihpIgc29mdHdhcmUgdm9sdW1lCmNv
+bnRyb2wuCgpJIHRoaW5rIHRoaXMgY29sb3IgY29kaW5nIG9mIHRoZSBzbGlkZXIgcmFuZ2VzIGlz
+IHRoZSBiZXN0IG9uY2UgY2FuIGRvCnRvIHJlcHJlc2VudCB0aGUgdGVjaG5pY2FsIGJhY2tncm91
+bmQgb2YgYWxsIG9mIHRoaXMgaW4gYSB3YXkgdGhhdApnaXZlcyB0aGUgcmlnaHQgaW5kaWNhdGlv
+biBldmVuIGZvciBwZW9wbGUgd2l0aCBubyB0ZWNobmljYWwgYmFja2dyb3VuZC4KCj4gRm9yIHRo
+ZSBNaWMgQm9vc3QgKzIwZEIgY2FzZSAsIGhvdyBQQSBoYW5kbGUgdGhpcyArMjBkQiBzd2l0Y2gg
+aW4gdGhlICJGbGF0Cj4gVm9sdW1lIiBtb2RlbCBpZiB5b3UgZGlkIG5vdCBleHBvc3QgdGhlIE1p
+YyBCb29zdCBzd2l0Y2ggdG8gdGhlIHVzZXIgaW4gdGhlCj4gbWl4ZXIgY29udHJvbCA/Cj4gCj4g
+KzIwZEIgaXMgcXVpdGUgc2lnbmlmaWNhbnQgaW4gd2l0aCB0aGUgQ2FwdHVyZSBWb2x1bWUgY29u
+dHJvbAoKV2UgY3VycmVudGx5IGRvbid0IGNvdmVyIGJvb3N0IHN3aXRjaGVzLCBzaW1wbHkgYmVj
+YXVzZSB0ZWhyZSBpcyBubyBkQgpkYXRhIHF1ZXJpYWJsZSBmb3IgdGhlbS4KCkknZCByZWFsbHkg
+cHJlZmVyIGlmIHRob3NlIGJvb3N0IHN3aXRjaGVzIHdvdWxkIGJlIHR1cm5lZCBpbnRvIGJpbmFy
+eQp2b2x1bWUgZWxlbWVudHMgd2hpY2ggY2Fycnkgbm9ybWFsIGRCIGluZm9ybWF0aW9uIGxpa2Ug
+YW55IG90aGVyCnZvbHVtZSBlbGVtZW50LiBBZnRlciBhbGwgdGhleSBhcmUganVzdCBhIHZvbHVt
+ZSBlbGVtZW50LCB3aXRoIG9ubHkKdHdvIHN0ZXBzLgoKTGVubmFydAoKLS0gCkxlbm5hcnQgUG9l
+dHRlcmluZyAgICAgICAgICAgICAgICAgICAgICAgIFJlZCBIYXQsIEluYy4KbGVubmFydCBbYXRd
+IHBvZXR0ZXJpbmcgW2RvdF0gbmV0Cmh0dHA6Ly8wcG9pbnRlci5uZXQvbGVubmFydC8gICAgICAg
+ICAgIEdudVBHIDB4MUEwMTVDQzQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
