@@ -1,27 +1,17 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Fri, 19 Feb 2010 16:13:28 +0100
-Message-ID: <20100219151328.GC25873@tango.0pointer.de>
-References: <20100216223938.GA23623@sirena.org.uk>
-	<20100216224212.GA1486@tango.0pointer.de>
-	<20100216233825.GB23623@sirena.org.uk>
-	<20100216235658.GA6766@tango.0pointer.de>
-	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
-	<20100218023742.GC23637@tango.0pointer.de>
-	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
-	<20100218181322.GB5606@tango.0pointer.de>
-	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
-	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsamixer crashes with SIGFPE
+Date: Fri, 19 Feb 2010 17:54:07 +0100
+Message-ID: <4B7EC22F.9010001@ladisch.de>
+References: <4B7CFA78.6090104@faberman.de> <4B7CFDE6.5080700@ladisch.de>
+	<4B7CFF8B.7040601@faberman.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBBE3103958
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 16:13:53 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 5C98C103958
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 17:54:11 +0100 (CET)
+In-Reply-To: <4B7CFF8B.7040601@faberman.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,33 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
+To: Florian Faber <faber@faberman.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19.02.10 18:57, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+Florian Faber wrote:
+>>> bar_height = ((volumes[c] - min) * volume_height + max - min - 1) / (max - min);
+>>> value = ((volumes[0] - min) * 100 + (max - min) / 2) / (max - min);
+>> 
+>> Thanks.  With which hardware do you see this error?
+> 
+> I tried it with the hdspm driver after seeing all the complaints about
+> hdsp no longer working with 2.6.32.
 
-> PA assume every sound card can only record from one capture source at the
-> same time (like those AC97 card )
+That driver does not appear to have any controls where min==max.
+Anyway, I've fixed alsamixer.
 
-That is true. PA does not try to cover the complete functionality of
-the hardware. We limit ourselves to what we think is common on the
-desktop or in a mobile environment, and I don't think recording from
-mic and line-in at the same time would be useful in more than
-exceptional cases.
+The hdsp problems are probably caused by the firmware loader change.
 
-> Is HDA_SUBDEV_NID_FLAG or any API for the application to find the correct
-> mixer control for these kind of capturing subdevices  ? ( simple mixer api
-> is not able to know the subdevice number )
 
-There is currently no API at all to figure out the relation between PCM
-devices and mixer controls in ALSA. PA hences bases this all on
-assumptions and expectes in this acse that the first mixer control is
-also the first PCM device, if you understand what I mean by that.
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+Regards,
+Clemens
