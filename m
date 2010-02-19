@@ -1,20 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v3 3/3] ASoC: OMAP4: Add McPDM platform
-	driver
-Date: Fri, 19 Feb 2010 11:00:48 +0000
-Message-ID: <1266577248.3236.31.camel@odin>
-References: <2256F256009DAA4CBE661E9F41EAC84B8F94A4F1@dlee01.ent.ti.com>
+From: Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
+Subject: Re: Since kernel-2.6.32,
+ alsactl fails to restore defaults
+Date: Fri, 19 Feb 2010 12:25:15 +0100
+Message-ID: <1266578715.5249.2.camel@localhost.localdomain>
+References: <1266174876.23964.10.camel@localhost.localdomain>
+Reply-To: pacho@condmat1.ciencias.uniovi.es
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1407196429957707314=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
-	[209.85.219.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8AF7A10393B
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 12:00:53 +0100 (CET)
-Received: by ewy5 with SMTP id 5so2001227ewy.32
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 03:00:52 -0800 (PST)
-In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8F94A4F1@dlee01.ent.ti.com>
+Received: from smtp01.jazztel.es (smtp01.jazztel.es [62.14.3.170])
+	by alsa0.perex.cz (Postfix) with ESMTP id 80554244F3
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 12:25:24 +0100 (CET)
+In-Reply-To: <1266174876.23964.10.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-02-18 at 18:32 -0600, Candelaria Villareal, Jorge wrote:
-> From: Misael Lopez Cruz <x0052729@ti.com>
-> 
-> McPDM platform driver is configured to use sDMA in order to transfer
-> to/from memory. Support for interfacing with ABE will be added later.
-> 
-> McPDM dai currently supports up to 4 downlink channels and 2 uplink
-> channels simultaneously, as well as 88.2 and 96 KHz, and a sample
-> size of 32 bits.
-> 
-> Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
-> Signed-off-by: Margarita Olaya <x0080101@ti.com>
-> Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 
-This one is good. Can you fix the other two and re-submit.
+--===============1407196429957707314==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-RTBtRuiOWtUKHZvS8n4j"
 
-Thanks
 
-Liam
+--=-RTBtRuiOWtUKHZvS8n4j
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+El dom, 14-02-2010 a las 20:14 +0100, Pacho Ramos escribi=C3=B3:
+> El dom, 14-02-2010 a las 20:10 +0100, Jaroslav Kysela escribi=C3=B3:
+> >=20
+> > The files look good. The question is why the initialization is called=20
+> > when a default state already exists (it shouldn't).
+> >=20
+> > Does 'alsactl -f test.state restore' show some messages? Use test.state=
+=20
+> > file you sent me.
+> >=20
+> >  					Jaroslav
+> >=20
+> > -----
+> > Jaroslav Kysela <perex@perex.cz>
+> > Linux Kernel Sound Maintainer
+> > ALSA Project, Red Hat, Inc.
+>=20
+> Yes, it shows:
+> # alsactl -f test.state restore
+> Unknown hardware: "VIA8237" "Realtek ALC658D" "AC97a:414c4781" "0x147b"
+> "0x1415"
+> Hardware is initialized using a guess method
+>=20
+
+Any news on this? Do you need any more information? Thanks a lot :-)
+
+--=-RTBtRuiOWtUKHZvS8n4j
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Esta parte del mensaje =?ISO-8859-1?Q?est=E1?= firmada
+ digitalmente
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.14 (GNU/Linux)
+
+iEYEABECAAYFAkt+dRsACgkQCaWpQKGI+9RuJQCggK0Hrj+hJ9UkZcUxkDD1EO29
++vgAmwamBV042/lE/uZvoILx8oiUdXrg
+=1WGn
+-----END PGP SIGNATURE-----
+
+--=-RTBtRuiOWtUKHZvS8n4j--
+
+
+--===============1407196429957707314==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============1407196429957707314==--
