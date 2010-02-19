@@ -1,18 +1,15 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: bug report:  using snd_BUG_ON() instead of WARN_ON()
-Date: Thu, 18 Feb 2010 12:19:36 +0300
-Message-ID: <20100218091936.GA5621@bicker>
+From: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
+Subject: [PATCH v3 0/3] McPDM driver patches series
+Date: Thu, 18 Feb 2010 18:32:46 -0600
+Message-ID: <2256F256009DAA4CBE661E9F41EAC84B8F94A4EE@dlee01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f225.google.com (mail-fx0-f225.google.com
-	[209.85.220.225])
-	by alsa0.perex.cz (Postfix) with ESMTP id 142D71038E8
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 10:20:54 +0100 (CET)
-Received: by fxm25 with SMTP id 25so1000241fxm.32
-	for <alsa-devel@alsa-project.org>; Thu, 18 Feb 2010 01:20:52 -0800 (PST)
-Content-Disposition: inline
+Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
+	by alsa0.perex.cz (Postfix) with ESMTP id DCE1C1038D5
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 01:32:51 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Smatch found a couple places try use the return value for snd_BUG_ON() 
-without realizing it's always zero or that it can be defined away entirely
-under certain configs.
+McPDM module is the interface between the OMAP and TWL6030 audio codec.
 
-sound/core/info_oss.c
-    46          if (snd_BUG_ON(dev < 0 || dev >= SNDRV_OSS_INFO_DEV_COUNT))
-    47                  return -ENXIO;
-    48          if (snd_BUG_ON(num < 0 || num >= SNDRV_CARDS))
-    49                  return -ENXIO;
+The interface supports the following:
+* Up to 5 downlink channels and 3 uplink channels
+* 88.2 and 96 KHz
+* 32 bit sample size
 
-sound/drivers/opl3/opl3_midi.c +652 snd_opl3_kill_voice(34) warn: buffer overflow 'opl3->voices' 18 <= 20
+Currently, driver is set to support up to 4 downlink channels. If 2
+channels are selected, output will go to the headset, and if 4 channels
+are selected, output will go to the headset and speakers. Functionality
+to select the output at runtime will be added afterwards.
 
-	opl3_midi.c checks the range with snd_BUG_ON() and then adds 3 so 
-	it possibly goes out of bounds.  I'm not sure the situation there.
+Command and status mode is not supported in current patches.
 
-sound/core/seq/seq_midi.c +403 snd_seq_midisynth_register_port(126) error: buffer overflow 'client->ports_per_device' 8 <= 8
-sound/core/seq/seq_midi.c +404 snd_seq_midisynth_register_port(127) error: buffer overflow 'client->ports' 8 <= 8
-sound/core/info_oss.c +52 snd_oss_info_register(10) error: buffer overflow 'snd_sndstat_strings[num]' 6 <= 6
-sound/core/info_oss.c +52 snd_oss_info_register(10) error: buffer overflow 'snd_sndstat_strings' 32 <= 32
-sound/core/info_oss.c +63 snd_oss_info_register(21) error: buffer overflow 'snd_sndstat_strings[num]' 6 <= 6
-sound/core/info_oss.c +63 snd_oss_info_register(21) error: buffer overflow 'snd_sndstat_strings' 32 <= 32
-sound/pci/cs46xx/dsp_spos_scb_lib.c +1497 cs46xx_dsp_destroy_pcm_channel(28) error: buffer overflow 'ins->src_scb_slots' 14 <= 14
+Changes from v2:
+- Functions have been renamed using playback/capture convention
 
-regards,
-dan carpenter
+--
+
+Jorge Eduardo Candelaria (1):
+      ASoC: OMAP4: Add support for McPDM
+
+Misael Lopez Cruz (2):
+      ASoC: OMAP: data_type and sync_mode configurable in audio dma
+      ASoC: OMAP4: Add McPDM platform driver
+
+ sound/soc/omap/Kconfig      |    3 +
+ sound/soc/omap/Makefile     |    2 +
+ sound/soc/omap/mcpdm.c      |  490 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/omap/mcpdm.h      |  151 +++++++++++++
+ sound/soc/omap/omap-mcbsp.c |    2 +
+ sound/soc/omap/omap-mcpdm.c |  251 ++++++++++++++++++++++
+ sound/soc/omap/omap-mcpdm.h |   29 +++
+ sound/soc/omap/omap-pcm.c   |   15 +-
+ sound/soc/omap/omap-pcm.h   |    4 +-
+ 9 files changed, 939 insertions(+), 8 deletions(-)
+ create mode 100644 sound/soc/omap/mcpdm.c
+ create mode 100644 sound/soc/omap/mcpdm.h
+ create mode 100644 sound/soc/omap/omap-mcpdm.c
+ create mode 100644 sound/soc/omap/omap-mcpdm.h
