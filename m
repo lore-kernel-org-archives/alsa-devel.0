@@ -1,18 +1,27 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Latency of mixer reconfiguration
-Date: Fri, 19 Feb 2010 10:01:26 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1002190952310.28127@eeebox2.perex-int.cz>
-References: <20100217181530.GA23152@tango.0pointer.de>
-	<20100218100127.GJ2032@sirena.org.uk>
-	<20100218180422.GA5606@tango.0pointer.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from
+	USB	cards, especially Aureon 5.1 MkII
+Date: Fri, 19 Feb 2010 09:40:26 +0000
+Message-ID: <20100219094026.GK2032@sirena.org.uk>
+References: <20100216210703.GA18109@tango.0pointer.de>
+	<20100216223938.GA23623@sirena.org.uk>
+	<20100216224212.GA1486@tango.0pointer.de>
+	<20100216233825.GB23623@sirena.org.uk>
+	<20100216235658.GA6766@tango.0pointer.de>
+	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+	<20100218023742.GC23637@tango.0pointer.de>
+	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+	<20100218181322.GB5606@tango.0pointer.de>
+	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6842F1037EA
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 10:01:27 +0100 (CET)
-In-Reply-To: <20100218180422.GA5606@tango.0pointer.de>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5063610391D
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 10:40:28 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,46 +31,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lennart Poettering <mznyfn@0pointer.de>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18 Feb 2010, Lennart Poettering wrote:
+On Fri, Feb 19, 2010 at 09:17:01AM +0100, Jaroslav Kysela wrote:
+> On Thu, 18 Feb 2010, Lennart Poettering wrote:
 
-> On Thu, 18.02.10 10:01, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
->
->>> Now the question I have is, how should I best deal with this? I
->>> currently assume that mixer volume changes are basically instantaneous
->>> when I call the respective function of ALSA. But are they really? How
->>> big is the latency at max? Do we need an API to query it?
->>
->> For the embedded case the hardware update should happen synchronously
->> with the ALSA API call to adjust the setting and begin affecting the
->> played audio instantaneously.  The time taken to do the hardware update
->> will be dominated by I/O costs, which will in turn depend on the bus
->> used to access the codec - it'd be good if the buses could provide some
->> information to ASoC to allow it to do an estimate, but at the minute
->> we've got nothing really to go on.
->
-> But what would you guess? In which range will this most likely be? < 1ms?
-> 1ms? 10ms? 100ms? 1s? 1h? 10h? 10d? 10y?
+> > I'd really prefer if those boost switches would be turned into binary
+> > volume elements which carry normal dB information like any other
+> > volume element. After all they are just a volume element, with only
+> > two steps.
 
-Some drivers uses a queue (like HDA) for serial bus to update the audio 
-mixer registers. But anyway, the real write should take several ms for 
-maximum (maybe more on USB bus).
+> I like this idea.
 
-> tbh I feared less the actually IO latency but more that some PCM data
-> fifos might need flushing before the volume is actually updated. And
-> the latency of those fifos I feared might be more than a handful of
-> samples?
-
-It's quite complex question and probably only hardware vendors knows 
-these internals for all devices. I guess also, that some devices also uses 
-volume ramping to avoid clicks.
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Me too, in fact I've already been doing it for drivers I've been working
+on.
