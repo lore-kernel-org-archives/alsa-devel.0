@@ -1,20 +1,21 @@
 From: Dan Carpenter <error27@gmail.com>
 Subject: Re: [patch] oxygen: clean up. make precedence explicit
-Date: Fri, 19 Feb 2010 13:10:47 +0300
-Message-ID: <20100219101047.GB17130@bicker>
-References: <4B7E4BD1.3040106@ladisch.de>
+Date: Fri, 19 Feb 2010 14:29:21 +0300
+Message-ID: <20100219112921.GC17130@bicker>
+References: <4B7E4BD1.3040106@ladisch.de> <20100219101047.GB17130@bicker>
+	<1266575610.31443.6.camel@thorin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
-	[209.85.219.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id C755D1037EA
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 11:11:02 +0100 (CET)
-Received: by ewy5 with SMTP id 5so1879547ewy.32
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 02:11:00 -0800 (PST)
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 27FF410393B
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 12:29:38 +0100 (CET)
+Received: by ewy23 with SMTP id 23so2232984ewy.4
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 03:29:36 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <4B7E4BD1.3040106@ladisch.de>
+In-Reply-To: <1266575610.31443.6.camel@thorin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,56 +25,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+To: Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+Cc: Takashi Iwai <tiwai@suse.de>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 19, 2010 at 09:29:05AM +0100, Clemens Ladisch wrote:
-> > This doesn't change anything, but I think it makes the code clearer.
-> > It silences a smatch warning:
-> > sound/pci/oxygen/oxygen_mixer.c +91 dac_mute_put(7) warn: add some parenthesis here?
+On Fri, Feb 19, 2010 at 11:33:30AM +0100, Bernd Petrovitsch wrote:
+> On Fre, 2010-02-19 at 13:10 +0300, Dan Carpenter wrote:
+> > On Fri, Feb 19, 2010 at 09:29:05AM +0100, Clemens Ladisch wrote:
+> > > > This doesn't change anything, but I think it makes the code clearer.
+> > > > It silences a smatch warning:
+> > > > sound/pci/oxygen/oxygen_mixer.c +91 dac_mute_put(7) warn: add some parenthesis here?
+> > > 
+> > > That message doesn't say why some parentheses should be added.
+> > > And it's a question; how do I give it the answer "no"?  :-)
+> > > 
+> > > > -	changed = !value->value.integer.value[0] != chip->dac_mute;
+> > > > +	changed = (!value->value.integer.value[0]) != chip->dac_mute;
+> > > 
+> > > This doesn't look any clearer to me; I don't think that the unary
+> > > negation operator could be thought to have lower precedence than "!=".
+> > 
+> > Well, it's hard to argue that it's more ambiguous.  :P
+> But it doesn't make the code clearer - unless you are a C novice. Unary
+> operators generally bind stronger than others - be it "+", "-", "!",
+> "~", "*".
+> I would expect kernel programmers to know that (and I don't assume
+> in-depth knowledge of operator precedence rules).
 > 
-> That message doesn't say why some parentheses should be added.
-> And it's a question; how do I give it the answer "no"?  :-)
+> > > Why does smatch warn about this combination?  Do such errors actually
+> > > happen:
+> > 
+> > Yep.  I have made some myself when writing smatch.
+> > 
+> > For example here are some related bugs in the current kernel.
+> > 
+> > drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
+> >    721          if (!ext->ext_flags & IW_ENCODE_EXT_GROUP_KEY &&
+> Well, I see potential bugs here and the if() should have been
+> a) if (!(ext->ext_flags & IW_ENCODE_EXT_GROUP_KEY) &&
+
+Yep.  This is clearly what the code should say.
+
+The problem in the original code is that IW_ENCODE_EXT_GROUP_KEY is not 
+equal to either 1 or to 0.  (So that means the condition in the original 
+code is always false).
+
+> b) if (!ext->ext_flags && IW_ENCODE_EXT_GROUP_KEY &&
+> So you one has to look at the driver for the correct fix (and perhaps
+> both of above are wrong).
 > 
-> > -	changed = !value->value.integer.value[0] != chip->dac_mute;
-> > +	changed = (!value->value.integer.value[0]) != chip->dac_mute;
-> 
-> This doesn't look any clearer to me; I don't think that the unary
-> negation operator could be thought to have lower precedence than "!=".
+> And I don't see what parenthesis around a logical negations can help
+> with the above error example.
 > 
 
-Well, it's hard to argue that it's more ambiguous.  :P
+Basically often when people write:
+	if (!foo == bar) { ...
 
-> Why does smatch warn about this combination?  Do such errors actually
-> happen?
-> 
+What they mean is:
+	if (!(foo == bar)) { ...
 
-Yep.  I have made some myself when writing smatch.
+But if they really do mean the original code they could just write 
+this so it's clear to everyone: 
+	if ((!foo) == bar) { ...
 
-For example here are some related bugs in the current kernel.
+To me it's like "==" vs "=".  Of course, every programmer knows the 
+what the difference is but it helps to have gcc warn about adding the 
+extra parenthesis.  Maybe I suck, but it definitely has helped me in 
+then past.
 
-drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
-   721          if (!ext->ext_flags & IW_ENCODE_EXT_GROUP_KEY &&
-   722              ext->alg != IW_ENCODE_ALG_WEP)
-   723                  if (idx != 0 || ieee->iw_mode != IW_MODE_INFRA)
-   724                          return -EINVAL;
-
-                        if (!j->dsp.low != 0x20) {
-
-drivers/telephony/ixj.c
-  6834                          if (!j->dsp.low != 0x20) {
-
-Mostly the real bugs have been fixed now.  Roel Kluin fixed quite a 
-few of these before and I've fixed a couple.
+I don't have strong feelings about this btw.  The original code in
+oxygyn_mixer works fine.  I just was making some changes to smatch and
+that was a new warning today.  There is no method to my madness.
 
 regards,
 dan carpenter
 
-> 
-> Regards,
-> Clemens
-> --
-> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+> 	Bernd
+> -- 
+> Bernd Petrovitsch                  Email : bernd@petrovitsch.priv.at
+>                      LUGA : http://www.luga.at
