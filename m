@@ -1,18 +1,16 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [patch] oxygen: clean up. make precedence explicit
-Date: Fri, 19 Feb 2010 18:24:10 +0100
-Message-ID: <4B7EC93A.5010304@ladisch.de>
-References: <4B7E4BD1.3040106@ladisch.de> <20100219101047.GB17130@bicker>	
-	<1266575610.31443.6.camel@thorin> <20100219112921.GC17130@bicker>
-	<1266584951.31443.15.camel@thorin>
+Subject: Re: bug report: using snd_BUG_ON() instead of WARN_ON()
+Date: Fri, 19 Feb 2010 18:41:22 +0100
+Message-ID: <4B7ECD42.5050403@ladisch.de>
+References: <20100218091936.GA5621@bicker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id EF6E8103958
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 18:24:12 +0100 (CET)
-In-Reply-To: <1266584951.31443.15.camel@thorin>
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id AC0EC1037FC
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 18:41:25 +0100 (CET)
+In-Reply-To: <20100218091936.GA5621@bicker>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,42 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Bernd Petrovitsch <bernd@petrovitsch.priv.at>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Dan Carpenter <error27@gmail.com>
+To: Dan Carpenter <error27@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Bernd Petrovitsch wrote:
-> On Fre, 2010-02-19 at 14:29 +0300, Dan Carpenter wrote:
-> > On Fri, Feb 19, 2010 at 11:33:30AM +0100, Bernd Petrovitsch wrote:
-> > Basically often when people write:
-> > 	if (!foo == bar) { ...
-> > 
-> > What they mean is:
-> > 	if (!(foo == bar)) { ...
+Dan Carpenter wrote:
+> Smatch found a couple places try use the return value for snd_BUG_ON() 
+> without realizing it's always zero
 
-But there are also cases where they mean what they've written.
+snd_BUG_ON() returns the return value of WARN() which is the value of the
+condition.
 
-> Ugh. The IMHO better way is 
-> 	if (foo != bar) { ...
+> or that it can be defined away entirely under certain configs.
 
-In my case, the driver compares an "enabled" variable against a
-"disabled" one; negating the comparison operator would obfuscate the
-logic.
+This is the point of this debugging macro.
 
-> > But if they really do mean the original code they could just write 
-> > this so it's clear to everyone: 
-> > 	if ((!foo) == bar) { ...
+> sound/drivers/opl3/opl3_midi.c +652 snd_opl3_kill_voice(34) warn: buffer overflow 'opl3->voices' 18 <= 20
+> 
+> 	opl3_midi.c checks the range with snd_BUG_ON() and then adds 3 so 
+> 	it possibly goes out of bounds.  I'm not sure the situation there.
 
-This is unnatural (especially in a simple example like this) because
-the parens haven't been needed at all before smatch.
+A four-operator sound needs two voices with that offset.
+opl3_get_voice() takes care of allocating appropriate voices for that,
+but this case is not checked with snd_BUG_ON().  It would be possible to
+add snd_BUG_ON(voice+3) into the if().
 
+> sound/core/seq/seq_midi.c +403 snd_seq_midisynth_register_port(126) error: buffer overflow 'client->ports_per_device' 8 <= 8
+> sound/core/seq/seq_midi.c +404 snd_seq_midisynth_register_port(127) error: buffer overflow 'client->ports' 8 <= 8
 
-!foo==bar is always identical to !(foo==bar) for boolean values; to
-avoid false positives, you could output the warning only when the code
-is trying to manipulate non-boolean values.  IMO the message would be
-justified if it said "using suspicious boolean operations on non-boolean
-types".  (In fact, my driver uses types long and u8 in this expression,
-so I will clean it up.)
+There is a snd_BUG_ON(device>=8) in line 291, so device can be at most 7.
+
+> sound/core/info_oss.c +52 snd_oss_info_register(10) error: buffer overflow 'snd_sndstat_strings[num]' 6 <= 6
+> sound/core/info_oss.c +52 snd_oss_info_register(10) error: buffer overflow 'snd_sndstat_strings' 32 <= 32
+> sound/core/info_oss.c +63 snd_oss_info_register(21) error: buffer overflow 'snd_sndstat_strings[num]' 6 <= 6
+> sound/core/info_oss.c +63 snd_oss_info_register(21) error: buffer overflow 'snd_sndstat_strings' 32 <= 32
+> sound/pci/cs46xx/dsp_spos_scb_lib.c +1497 cs46xx_dsp_destroy_pcm_channel(28) error: buffer overflow 'ins->src_scb_slots' 14 <= 14
+
+Same type of false positive; it looks as if >= in snd_BUG_ON() is not
+handled correctly.
 
 
 Regards,
