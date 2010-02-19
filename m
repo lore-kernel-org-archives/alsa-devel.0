@@ -1,27 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Sat, 20 Feb 2010 09:41:59 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1002200938561.28127@eeebox2.perex-int.cz>
-References: <20100216154015.GA612@tango.0pointer.de>
-	<20100216223938.GA23623@sirena.org.uk>
-	<20100216224212.GA1486@tango.0pointer.de>
-	<20100216233825.GB23623@sirena.org.uk>
-	<20100216235658.GA6766@tango.0pointer.de>
-	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
-	<20100218023742.GC23637@tango.0pointer.de>
-	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
-	<20100218181322.GB5606@tango.0pointer.de>
-	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
-	<ad2655cb1002190347m5ae42684ic4de989f5f35eb84@mail.gmail.com>
+From: Dan Carpenter <error27@gmail.com>
+Subject: Re: [patch] oxygen: clean up. make precedence explicit
+Date: Fri, 19 Feb 2010 13:10:47 +0300
+Message-ID: <20100219101047.GB17130@bicker>
+References: <4B7E4BD1.3040106@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C071103806
-	for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2010 09:42:00 +0100 (CET)
-In-Reply-To: <ad2655cb1002190347m5ae42684ic4de989f5f35eb84@mail.gmail.com>
+Received: from mail-ew0-f213.google.com (mail-ew0-f213.google.com
+	[209.85.219.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id C755D1037EA
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 11:11:02 +0100 (CET)
+Received: by ewy5 with SMTP id 5so1879547ewy.32
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 02:11:00 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <4B7E4BD1.3040106@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,42 +24,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lennart Poettering <mznyfn@0pointer.de>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Feb 2010, James Courtier-Dutton wrote:
+On Fri, Feb 19, 2010 at 09:29:05AM +0100, Clemens Ladisch wrote:
+> > This doesn't change anything, but I think it makes the code clearer.
+> > It silences a smatch warning:
+> > sound/pci/oxygen/oxygen_mixer.c +91 dac_mute_put(7) warn: add some parenthesis here?
+> 
+> That message doesn't say why some parentheses should be added.
+> And it's a question; how do I give it the answer "no"?  :-)
+> 
+> > -	changed = !value->value.integer.value[0] != chip->dac_mute;
+> > +	changed = (!value->value.integer.value[0]) != chip->dac_mute;
+> 
+> This doesn't look any clearer to me; I don't think that the unary
+> negation operator could be thought to have lower precedence than "!=".
+> 
 
-> On 19 February 2010 08:17, Jaroslav Kysela <perex@perex.cz> wrote:
->> On Thu, 18 Feb 2010, Lennart Poettering wrote:
->>
->>>> For the Mic Boost +20dB case , how PA handle this +20dB switch in the "Flat
->>>> Volume" model if you did not expost the Mic Boost switch to the user in the
->>>> mixer control ?
->>>>
->>>> +20dB is quite significant in with the Capture Volume control
->>>
->>> We currently don't cover boost switches, simply because tehre is no dB
->>> data queriable for them.
->>>
->>> I'd really prefer if those boost switches would be turned into binary
->>> volume elements which carry normal dB information like any other
->>> volume element. After all they are just a volume element, with only
->>> two steps.
->>
->> I like this idea.
->>
->
-> Seems like a good idea but what should we call it.
-> If we already have a mic capture gain control, what shall we call the
-> mic boost gain control so as not to confuse it with each other?
-> Would keeping its current name be OK?
+Well, it's hard to argue that it's more ambiguous.  :P
 
-I would keep the Boost suffix. It's easy to understand.
+> Why does smatch warn about this combination?  Do such errors actually
+> happen?
+> 
 
- 					Jaroslav
+Yep.  I have made some myself when writing smatch.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+For example here are some related bugs in the current kernel.
+
+drivers/staging/rtl8192u/ieee80211/ieee80211_wx.c
+   721          if (!ext->ext_flags & IW_ENCODE_EXT_GROUP_KEY &&
+   722              ext->alg != IW_ENCODE_ALG_WEP)
+   723                  if (idx != 0 || ieee->iw_mode != IW_MODE_INFRA)
+   724                          return -EINVAL;
+
+                        if (!j->dsp.low != 0x20) {
+
+drivers/telephony/ixj.c
+  6834                          if (!j->dsp.low != 0x20) {
+
+Mostly the real bugs have been fixed now.  Roel Kluin fixed quite a 
+few of these before and I've fixed a couple.
+
+regards,
+dan carpenter
+
+> 
+> Regards,
+> Clemens
+> --
+> To unsubscribe from this list: send the line "unsubscribe kernel-janitors" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
