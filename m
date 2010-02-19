@@ -1,43 +1,74 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [patch] oxygen: clean up. make precedence explicit
-Date: Fri, 19 Feb 2010 09:29:05 +0100
-Message-ID: <4B7E4BD1.3040106@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCHv4 0/2] McBSP: OMAP3: Add sidetone feature
+Date: Fri, 19 Feb 2010 10:34:32 +0200
+Message-ID: <201002191034.32391.peter.ujfalusi@nokia.com>
+References: <1266518549-23809-1-git-send-email-ilkka.koskinen@nokia.com> <20100218222229.0f0eb3a9.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 1D1EF10391D
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 09:29:08 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20100218222229.0f0eb3a9.jhnikula@gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "tony@atomide.com" <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-> This doesn't change anything, but I think it makes the code clearer.
-> It silences a smatch warning:
-> sound/pci/oxygen/oxygen_mixer.c +91 dac_mute_put(7) warn: add some parenthesis here?
+On Thursday 18 February 2010 22:22:29 ext Jarkko Nikula wrote:
+>=20
+> I still have two concern:
+>=20
+> 1. port number vs. index difference inside driver code is not enough
+>=20
+> It's just confusing if a machine driver and internal API (mcbsp.c) ha=
+s
+> to use different indexing. See:
+>=20
+> omap_mcbsp_st_add_controls(codec, 2);
+> ...
+> *(unsigned int *)omap3beagle_dai.cpu_dai->private_data =3D 1; /* McBS=
+P2 */
 
-That message doesn't say why some parentheses should be added.
-And it's a question; how do I give it the answer "no"?  :-)
+Agreed.
 
-> -	changed = !value->value.integer.value[0] != chip->dac_mute;
-> +	changed = (!value->value.integer.value[0]) != chip->dac_mute;
+=20
+> and mcbsp->id use in mcbsp.c.
 
-This doesn't look any clearer to me; I don't think that the unary
-negation operator could be thought to have lower precedence than "!=".
+It has always bothered me, I'll take a look and check if there is a rea=
+son why=20
+it is like that, and if possible I'll change the mcbsp->id to be 0 base=
+d (thus=20
+harmonizing the internal and external interface).
+=20
+> 2. I cannot change the sidetone level with alsamixer
+>=20
+> Is this bug with the alsamixer? With amixer I'm able to set positive
+> values but not negative
+>=20
+> amixer set -D hw:0 'McBSP2 Sidetone Channel 0' 32767
+>=20
+> What I'm looking here, is that I can execute a test below with unit
+> impulse response tap filter, hear the sound and note that the volume =
+is
+> changing as I'm changing the sidetone volume :-)
 
-Why does smatch warn about this combination?  Do such errors actually
-happen?
+I'm not sure, but you might need to configure the taps as well to have =
+the=20
+correct sidetone.
+Also I have a recollection, that the McBSP sidetone requires DSP mode (=
+TDM) in=20
+order to operate correctly, so on Beagle you might need to set up 4 cha=
+nnel=20
+mode. And how the channel mapping in 4 channel mode works in McBSP side=
+tone is=20
+another matter...
 
+>=20
+> arecord -f dat >/dev/null |aplay -f dat /dev/zero
 
-Regards,
-Clemens
+--=20
+P=E9ter
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
