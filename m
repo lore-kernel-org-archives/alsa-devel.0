@@ -1,71 +1,83 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Latency of mixer reconfiguration
-Date: Fri, 19 Feb 2010 09:54:38 +0000
-Message-ID: <20100219095438.GM2032@sirena.org.uk>
-References: <20100217181530.GA23152@tango.0pointer.de>
-	<20100218100127.GJ2032@sirena.org.uk>
-	<20100218180422.GA5606@tango.0pointer.de>
+From: Ilkka Koskinen <ikoskine@nokia.com>
+Subject: Re: [PATCHv4 0/2] McBSP: OMAP3: Add sidetone feature
+Date: Fri, 19 Feb 2010 12:05:40 +0200 (EET)
+Message-ID: <alpine.DEB.2.00.1002191026060.2509@tumpelo.nmp.nokia.com>
+References: <1266518549-23809-1-git-send-email-ilkka.koskinen@nokia.com> <20100218222229.0f0eb3a9.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id E38AB103957
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 10:54:38 +0100 (CET)
-Received: from broonie by cassiel.sirena.org.uk with local (Exim 4.69)
-	(envelope-from <broonie@sirena.org.uk>) id 1NiPZG-0003GC-M4
-	for alsa-devel@alsa-project.org; Fri, 19 Feb 2010 09:54:38 +0000
-Content-Disposition: inline
-In-Reply-To: <20100218180422.GA5606@tango.0pointer.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20100218222229.0f0eb3a9.jhnikula@gmail.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "tony@atomide.com" <tony@atomide.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 18, 2010 at 07:04:22PM +0100, Lennart Poettering wrote:
-> On Thu, 18.02.10 10:01, Mark Brown (broonie@opensource.wolfsonmicro.com) wrote:
 
-> > will be dominated by I/O costs, which will in turn depend on the bus
-> > used to access the codec - it'd be good if the buses could provide some
-> > information to ASoC to allow it to do an estimate, but at the minute
-> > we've got nothing really to go on.
 
-> But what would you guess? In which range will this most likely be? < 1ms? 
-> 1ms? 10ms? 100ms? 1s? 1h? 10h? 10d? 10y?
+On Thu, 18 Feb 2010, ext Jarkko Nikula wrote:
+> On Thu, 18 Feb 2010 20:42:27 +0200
+> Ilkka Koskinen <ilkka.koskinen@nokia.com> wrote:
+>
+>> The first patch implements McBSP sidetone feature on OMAP3 while the second
+>> one provides ALSA interface for using it.
+>>
+>> The patch set is based on the patch Eduardo Valentin sent to alsa-devel
+>> mailing list in October 2009. Channel gain control and enabling the sidetone
+>> have been moved to ALSA interface as suggested in comments.
+>>
+>> These patches apply on top of Janusz Krzysztofik's McBSP register cache
+>> patches in linux-omap-2.6.git
+>>
+>> Since the version 3, the buggy channel gain control has been fixed. ASoC part
+>> have been simplified resulting in removing a couple unnecessary functions.
+>> Added a comment to ASoC part explaining McBSP port number vs. index values
+>> used in OMAP McBSP implementation.
+>>
+> I still have two concern:
+>
+> 1. port number vs. index difference inside driver code is not enough
+>
+> It's just confusing if a machine driver and internal API (mcbsp.c) has
+> to use different indexing. See:
+>
+> omap_mcbsp_st_add_controls(codec, 2);
+> ...
+> *(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 1; /* McBSP2 */
+>
+> and mcbsp->id use in mcbsp.c.
 
-1ms or less normally - worst case will be a couple of I2C writes, though
-potentially over a congested bus.
+Ah, that's what you meant by it. Sure, I'll change it.
 
-> tbh I feared less the actually IO latency but more that some PCM data
-> fifos might need flushing before the volume is actually updated. And
-> the latency of those fifos I feared might be more than a handful of
-> samples?
+> 2. I cannot change the sidetone level with alsamixer
+>
+I think with the previous patch set, it was impossible to set the other 
+channel's gain as Peter pointed out. But at least now that I try, i can 
+change it with alsamixer.
 
-Yes, mostly the buffers in the CPU.  These vary from very small to very
-large - some systems allow relatively large audio buffers (hundreds of
-kilobytes for example) in order to allow the CPU and RAM to be powered
-down for extended periods of time during playback.  It's the same
-problem as working out the latency for video sync.
+> Is this bug with the alsamixer? With amixer I'm able to set positive
+> values but not negative
+>
+> amixer set -D hw:0 'McBSP2 Sidetone Channel 0' 32767
 
-> > I suspect that trying to offer additional resolution in this way is more
-> > trouble than it's worth if you're concerned about the artifacts that are
-> > introduced during updates.  Providing per-channel differentiation if the
-> > hardware has only mono control has much fewer problems, though.
+If you try to give negative values, you need to put '--' before the value.
 
-> The current logic is to not do any software adjustment if the hardware
-> adjustment is "close enough" to the total adjustment we want to do,
-> tested against a threshold. Which I think is quite a reasonable
-> approach because it enables/disables this feature not globally, but
-> looks at each case and enables this logic only if it really has a
-> benefit.
+Such as:
 
-That sounds reasonable, though it's kind of surprising to me that there
-is hardware out there which benefits from it - I'd have expected either
-adequate resolution or nothing at all there.
+# amixer -Dhw:0 -- sset 'McBSP3 Sidetone Channel 0' -10000
+Simple mixer control 'McBSP3 Sidetone Channel 0',0
+   Capabilities: volume volume-joined
+   Playback channels: Mono
+   Capture channels: Mono
+   Limits: -32768 - 32767
+   Mono: -10000 [35%]
+
+
+> What I'm looking here, is that I can execute a test below with unit
+> impulse response tap filter, hear the sound and note that the volume is
+> changing as I'm changing the sidetone volume :-)
+>
+> arecord -f dat >/dev/null |aplay -f dat /dev/zero
+
+As Peter said in the other mail, you need to have the taps also.
+
+Cheers, Ilkka
