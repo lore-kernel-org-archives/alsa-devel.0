@@ -1,21 +1,26 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Latency of mixer reconfiguration
-Date: Sat, 20 Feb 2010 11:59:29 +0800
-Message-ID: <4f3252891002191959v418f6cb4u6cf4b4deb0a7a15b@mail.gmail.com>
-References: <20100217181530.GA23152@tango.0pointer.de>
-	<20100218100127.GJ2032@sirena.org.uk>
-	<20100218180422.GA5606@tango.0pointer.de>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Sat, 20 Feb 2010 15:24:42 +0800
+Message-ID: <4f3252891002192324m5a744079h1c17b5a20a419928@mail.gmail.com>
+References: <20100215192451.GA17938@tango.0pointer.de>
+	<4B7A5268.5050704@ladisch.de>
+	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
+	<20100216143200.GB25489@tango.0pointer.de>
+	<20100216144047.GB10586@sirena.org.uk>
+	<20100216154015.GA612@tango.0pointer.de>
+	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E26A41037E3
-	for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2010 04:59:30 +0100 (CET)
-Received: by pwi9 with SMTP id 9so719780pwi.38
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 19:59:29 -0800 (PST)
-In-Reply-To: <20100218180422.GA5606@tango.0pointer.de>
+Received: from mail-pv0-f51.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 823661037F1
+	for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2010 08:24:44 +0100 (CET)
+Received: by pvc22 with SMTP id 22so66179pvc.38
+	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 23:24:43 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,22 +33,63 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/19 Lennart Poettering <mznyfn@0pointer.de>
+2010/2/17 Jaroslav Kysela <perex@perex.cz>
 
+> On Tue, 16 Feb 2010, Lennart Poettering wrote:
 >
-> On Thu, 18.02.10 10:01, Mark Brown (broonie@opensource.wolfsonmicro.com)
+> > On Tue, 16.02.10 14:40, Mark Brown (broonie@opensource.wolfsonmicro.com)
 > wrote:
+> >
+> >>
+> >> On Tue, Feb 16, 2010 at 03:32:01PM +0100, Lennart Poettering wrote:
+> >>> On Tue, 16.02.10 09:24, Jaroslav Kysela (perex@perex.cz) wrote:
+> >>
+> >>>> Line: 0dB..47.81dB         # seems correct -47.81dB..0dB
+> >>>> Line Capture: -0.18dB..23.81dB     # seems correct
+> >>>> -17.81dB..6.18dB
+> >>
+> >>> Hmm, how did you choose where to put 0dB?
+> >>
+> >> The Line one looks like someone got attenuation and gain confused, which
+> >> is a fairly common mistake for people to make when copying information
+> >> from one place to another.  Possibly a similar thing going on with the
+> >> Line Capture control, plus a fixed 6dB gain (which may well be a
+> >> separate amp...).
+> >
+> > I remember that a while back we had a discussion on alsa-devel
+> > regarding the fact that ALSA does not define relative to what the dB
+> > values reported by the mixer elements actually are measured. Some
+> > mixer controls export dB values relative to max amplification (e.g. my
+> > integrated USB speakers here), others relative to the output of some
+> > other mixer element, and others relative to different standard or
+> > not-so-standard output voltages.  And there is no API to figure out
+> > what the base is.
+> >
+> > Now, what Jaroslav listed above suggests that he chose carefully where
+> > he put 0dB. I was just wondering about that. Jaroslav, how did you
+> > choose where to put 0dB?
 >
+> Basically, if I remember correctly the discussion, 0dB on all elements
+> should main unchanged volume, <0dB attenuation and >0dB gain. We cannot
+> measure precisely other components on path like analog volume wheels
+> (like SB MP3+ has to change line-out volume), analog amplifiers and other
+> analog signal modificators.
 >
-> The current logic is to not do any software adjustment if the hardware
-> adjustment is "close enough" to the total adjustment we want to do,
-> tested against a threshold. Which I think is quite a reasonable
-> approach because it enables/disables this feature not globally, but
-> looks at each case and enables this logic only if it really has a
-> benefit.
+> So, if you use one headphones and speakers with defined and fixed volume
+> settings, you can measure differences for the card with broken dB volume
+> ranges. I just used another HDA card in notebook with 0dB settings on all
+> playback controls on path, captured stream from this card on my USB card
+> and played this stream back on my USB card watching and relating the
+> volume levels according dB values. It's not 100% correct, but at least
+> it's something to start with.
 >
-> Lennart
+>                                        Jaroslav
 >
+>  <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
 >
-PA 's watermark is already 20 ms if you want to do any software adjustment
-by PA server
+
+Yes, 0dB for 10 bands graphic equalizer of au8830 should be no gain and no
+attenuation
+
+how can I calibrate the au8830 10 bands equalizer control as there are 10
+bands peak values ?
