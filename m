@@ -1,26 +1,27 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: Verifying mixer dB data/Invalid dB data from USB
-	cards, especially Aureon 5.1 MkII
-Date: Sat, 20 Feb 2010 15:24:42 +0800
-Message-ID: <4f3252891002192324m5a744079h1c17b5a20a419928@mail.gmail.com>
-References: <20100215192451.GA17938@tango.0pointer.de>
-	<4B7A5268.5050704@ladisch.de>
-	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
-	<20100216143200.GB25489@tango.0pointer.de>
-	<20100216144047.GB10586@sirena.org.uk>
-	<20100216154015.GA612@tango.0pointer.de>
-	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
+ cards, especially Aureon 5.1 MkII
+Date: Sat, 20 Feb 2010 09:38:12 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1002200937560.28127@eeebox2.perex-int.cz>
+References: <20100216154015.GA612@tango.0pointer.de>
+	<20100216223938.GA23623@sirena.org.uk>
+	<20100216224212.GA1486@tango.0pointer.de>
+	<20100216233825.GB23623@sirena.org.uk>
+	<20100216235658.GA6766@tango.0pointer.de>
+	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+	<20100218023742.GC23637@tango.0pointer.de>
+	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+	<20100218181322.GB5606@tango.0pointer.de>
+	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
+	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f51.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 823661037F1
-	for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2010 08:24:44 +0100 (CET)
-Received: by pvc22 with SMTP id 22so66179pvc.38
-	for <alsa-devel@alsa-project.org>; Fri, 19 Feb 2010 23:24:43 -0800 (PST)
-In-Reply-To: <alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id A9D7B1037FE
+	for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2010 09:38:12 +0100 (CET)
+In-Reply-To: <4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,66 +31,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/17 Jaroslav Kysela <perex@perex.cz>
+On Fri, 19 Feb 2010, Raymond Yau wrote:
 
-> On Tue, 16 Feb 2010, Lennart Poettering wrote:
+> 2010/2/19 Jaroslav Kysela <perex@perex.cz>
 >
-> > On Tue, 16.02.10 14:40, Mark Brown (broonie@opensource.wolfsonmicro.com)
-> wrote:
-> >
-> >>
-> >> On Tue, Feb 16, 2010 at 03:32:01PM +0100, Lennart Poettering wrote:
-> >>> On Tue, 16.02.10 09:24, Jaroslav Kysela (perex@perex.cz) wrote:
-> >>
-> >>>> Line: 0dB..47.81dB         # seems correct -47.81dB..0dB
-> >>>> Line Capture: -0.18dB..23.81dB     # seems correct
-> >>>> -17.81dB..6.18dB
-> >>
-> >>> Hmm, how did you choose where to put 0dB?
-> >>
-> >> The Line one looks like someone got attenuation and gain confused, which
-> >> is a fairly common mistake for people to make when copying information
-> >> from one place to another.  Possibly a similar thing going on with the
-> >> Line Capture control, plus a fixed 6dB gain (which may well be a
-> >> separate amp...).
-> >
-> > I remember that a while back we had a discussion on alsa-devel
-> > regarding the fact that ALSA does not define relative to what the dB
-> > values reported by the mixer elements actually are measured. Some
-> > mixer controls export dB values relative to max amplification (e.g. my
-> > integrated USB speakers here), others relative to the output of some
-> > other mixer element, and others relative to different standard or
-> > not-so-standard output voltages.  And there is no API to figure out
-> > what the base is.
-> >
-> > Now, what Jaroslav listed above suggests that he chose carefully where
-> > he put 0dB. I was just wondering about that. Jaroslav, how did you
-> > choose where to put 0dB?
+>> On Thu, 18 Feb 2010, Lennart Poettering wrote:
+>>
+>>>> For the Mic Boost +20dB case , how PA handle this +20dB switch in the
+>> "Flat
+>>>> Volume" model if you did not expost the Mic Boost switch to the user in
+>> the
+>>>> mixer control ?
+>>>>
+>>>> +20dB is quite significant in with the Capture Volume control
+>>>
+>>> We currently don't cover boost switches, simply because tehre is no dB
+>>> data queriable for them.
+>>>
+>>> I'd really prefer if those boost switches would be turned into binary
+>>> volume elements which carry normal dB information like any other
+>>> volume element. After all they are just a volume element, with only
+>>> two steps.
+>>
+>> I like this idea.
+>>
+>>                                Jaroslav
+>>
+>>
+> PA assume every sound card can only record from one capture source at the
+> same time (like those AC97 card )
 >
-> Basically, if I remember correctly the discussion, 0dB on all elements
-> should main unchanged volume, <0dB attenuation and >0dB gain. We cannot
-> measure precisely other components on path like analog volume wheels
-> (like SB MP3+ has to change line-out volume), analog amplifiers and other
-> analog signal modificators.
+> However HDA support multi streaming capture , the capture device 0 may have
+> more than one subdevice "Capture sources"  depend on the codec and  device
+> 2  has 2 subdevice for capturing "Input sources" on some codec
 >
-> So, if you use one headphones and speakers with defined and fixed volume
-> settings, you can measure differences for the card with broken dB volume
-> ranges. I just used another HDA card in notebook with 0dB settings on all
-> playback controls on path, captured stream from this card on my USB card
-> and played this stream back on my USB card watching and relating the
-> volume levels according dB values. It's not 100% correct, but at least
-> it's something to start with.
->
->                                        Jaroslav
->
->  <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
->
+> Is HDA_SUBDEV_NID_FLAG or any API for the application to find the correct
+> mixer control for these kind of capturing subdevices  ? ( simple mixer api
+> is not able to know the subdevice number )
 
-Yes, 0dB for 10 bands graphic equalizer of au8830 should be no gain and no
-attenuation
+This API is not implemented at the time.
 
-how can I calibrate the au8830 10 bands equalizer control as there are 10
-bands peak values ?
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
