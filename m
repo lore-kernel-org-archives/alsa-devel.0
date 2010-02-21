@@ -1,27 +1,22 @@
-From: Kai Vehmanen <kvehmanen@eca.cx>
-Subject: Re: safe support for rewind in ALSA
-Date: Sun, 21 Feb 2010 12:35:07 +0200 (EET)
-Message-ID: <alpine.DEB.1.10.1002211208120.3327@ecabase.localdomain>
-References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
-	<alpine.DEB.1.10.1002012239220.3125@ecabase.localdomain>
-	<alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>
-	<4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>
-	<alpine.DEB.1.10.1002092242540.3125@ecabase.localdomain>
-	<4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>
-	<4B72B665.3060903@ladisch.de>
-	<4f3252891002102252vb6d7a94l76fb78e33da37775@mail.gmail.com>
-	<4B73AFD5.4080205@ladisch.de>
-	<alpine.LNX.2.00.1002110822480.19278@eeebox2.perex-int.cz>
-	<4f3252891002141903q34144f58n60978e28e65640b4@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: aplay: possible circular locking dependency detected
+Date: Sun, 21 Feb 2010 14:31:51 +0100
+Message-ID: <20100221133151.GA28396@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gw02.mail.saunalahti.fi (gw02.mail.saunalahti.fi
-	[195.197.172.116])
-	by alsa0.perex.cz (Postfix) with ESMTP id C3DB8103805
-	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 11:38:24 +0100 (CET)
-In-Reply-To: <4f3252891002141903q34144f58n60978e28e65640b4@mail.gmail.com>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4528224484
+	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 14:31:58 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by buzzloop.caiaq.de (Postfix) with ESMTP id EB9A784000C
+	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 14:31:56 +0100 (CET)
+Received: from buzzloop.caiaq.de ([127.0.0.1])
+	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id xitd+xfBXOGt for <alsa-devel@alsa-project.org>;
+	Sun, 21 Feb 2010 14:31:52 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,37 +26,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I got this once while testing an USB audio device. Appeareantly not reproducable.
 
-On Mon, 15 Feb 2010, Raymond Yau wrote:
+Daniel
 
-> Even using a high resolution timer , the application still cannot achieve
-> latency better than the configured period size
->
-> For USB case , the driver cannot give accurate hw pointer position , hw
-> pointer increase in steps for the current implementation, (i.e. the graph is
 
-... but that's a real hardware limitation for the USB-driver, right? And 
-even in the USB case, hw pointer is incremented in steps of URB transfer 
-size, so even in this case, latency of a highres timer based application 
-is not limited by the set period-size.
-
-Of course, there is no ALSA API to query the burst size (e.g. the 
-granularity of hw_ptr updates), which is a real problem for generic apps 
-(that are not hardcoded to work with just one ALSA driver).
-
-But you can query the SNDRV_PCM_INFO_BATCH flag (it's set by e.g. the USB 
-driver) and adjust your hrtimer-based application's logic based on that 
-(if set, assume hw_ptr will jump in bursts). I know, not really ideal (you 
-essentially have to e.g. disable PA glitch-free for these cards 
-currently).
-
-> This mean that the wake up time cannot be calculated using as number of
-> sample/rate since the fuction is not linear especially when using max buffer
-> size , min period --> max period size is much greater than the watermark
-
-Yep, that's what SNDRV_PCM_INFO_BATCH flag warns you about.
+Feb 21 14:26:29 jup kernel: [69661.385427] 
+Feb 21 14:26:29 jup kernel: [69661.385430] =======================================================
+Feb 21 14:26:29 jup kernel: [69661.385435] [ INFO: possible circular locking dependency detected ]
+Feb 21 14:26:29 jup kernel: [69661.385439] 2.6.33-rc8 #21
+Feb 21 14:26:29 jup kernel: [69661.385441] -------------------------------------------------------
+Feb 21 14:26:29 jup kernel: [69661.385444] aplay/11761 is trying to acquire lock:
+Feb 21 14:26:29 jup kernel: [69661.385446]  (sysfs_mutex){+.+.+.}, at: [<c10f0668>] sysfs_get_dirent+0x15/0x4c
+Feb 21 14:26:29 jup kernel: [69661.385457] 
+Feb 21 14:26:29 jup kernel: [69661.385457] but task is already holding lock:
+Feb 21 14:26:29 jup kernel: [69661.385460]  (&pcm->open_mutex){+.+.+.}, at: [<fb68bc8e>] snd_pcm_release+0x55/0x9e [snd_pcm]
+Feb 21 14:26:29 jup kernel: [69661.385474] 
+Feb 21 14:26:29 jup kernel: [69661.385474] which lock already depends on the new lock.
+Feb 21 14:26:29 jup kernel: [69661.385476] 
+Feb 21 14:26:29 jup kernel: [69661.385478] 
+Feb 21 14:26:29 jup kernel: [69661.385479] the existing dependency chain (in reverse order) is:
+Feb 21 14:26:29 jup kernel: [69661.385481] 
+Feb 21 14:26:29 jup kernel: [69661.385482] -> #2 (&pcm->open_mutex){+.+.+.}:
+Feb 21 14:26:29 jup kernel: [69661.385487]        [<c1059070>] __lock_acquire+0x10ff/0x1422
+Feb 21 14:26:29 jup kernel: [69661.385493]        [<c105943b>] lock_acquire+0xa8/0xbf
+Feb 21 14:26:29 jup kernel: [69661.385498]        [<c13720d3>] mutex_lock_nested+0x47/0x2b2
+Feb 21 14:26:29 jup kernel: [69661.385503]        [<fb68bc8e>] snd_pcm_release+0x55/0x9e [snd_pcm]
+Feb 21 14:26:29 jup kernel: [69661.385513]        [<c10aabe9>] __fput+0xeb/0x196
+Feb 21 14:26:29 jup kernel: [69661.385517]        [<c10aacad>] fput+0x19/0x1b
+Feb 21 14:26:29 jup kernel: [69661.385522]        [<c109ae3b>] remove_vma+0x39/0x58
+Feb 21 14:26:29 jup kernel: [69661.385528]        [<c109bab3>] do_munmap+0x23c/0x259
+Feb 21 14:26:29 jup kernel: [69661.385532]        [<c109bb00>] sys_munmap+0x30/0x3f
+Feb 21 14:26:29 jup kernel: [69661.385536]        [<c10028d0>] sysenter_do_call+0x12/0x36
+Feb 21 14:26:29 jup kernel: [69661.385541] 
+Feb 21 14:26:29 jup kernel: [69661.385542] -> #1 (&mm->mmap_sem){++++++}:
+Feb 21 14:26:29 jup kernel: [69661.385547]        [<c1059070>] __lock_acquire+0x10ff/0x1422
+Feb 21 14:26:29 jup kernel: [69661.385551]        [<c105943b>] lock_acquire+0xa8/0xbf
+Feb 21 14:26:29 jup kernel: [69661.385556]        [<c10968db>] might_fault+0x6b/0x88
+Feb 21 14:26:29 jup kernel: [69661.385561]        [<c11b3cf0>] copy_to_user+0x2c/0xfc
+Feb 21 14:26:29 jup kernel: [69661.385565]        [<c10b5e73>] filldir64+0x97/0xcd
+Feb 21 14:26:29 jup kernel: [69661.385570]        [<c10f0534>] sysfs_readdir+0x117/0x14b
+Feb 21 14:26:29 jup kernel: [69661.385574]        [<c10b6085>] vfs_readdir+0x68/0x94
+Feb 21 14:26:29 jup kernel: [69661.385578]        [<c10b6114>] sys_getdents64+0x63/0xa0
+Feb 21 14:26:29 jup kernel: [69661.385582]        [<c10028d0>] sysenter_do_call+0x12/0x36
+Feb 21 14:26:29 jup kernel: [69661.385587] 
+Feb 21 14:26:29 jup kernel: [69661.385587] -> #0 (sysfs_mutex){+.+.+.}:
+Feb 21 14:26:29 jup kernel: [69661.385592]        [<c1058dc6>] __lock_acquire+0xe55/0x1422
+Feb 21 14:26:29 jup kernel: [69661.385597]        [<c105943b>] lock_acquire+0xa8/0xbf
+Feb 21 14:26:29 jup kernel: [69661.385601]        [<c13720d3>] mutex_lock_nested+0x47/0x2b2
+Feb 21 14:26:29 jup kernel: [69661.385605]        [<c10f0668>] sysfs_get_dirent+0x15/0x4c
+Feb 21 14:26:29 jup kernel: [69661.385609]        [<c10f1b4a>] sysfs_remove_group+0x1e/0xa3
+Feb 21 14:26:29 jup kernel: [69661.385614]        [<c12359b8>] dpm_sysfs_remove+0x10/0x12
+Feb 21 14:26:29 jup kernel: [69661.385619]        [<c123114c>] device_del+0x33/0x154
+Feb 21 14:26:29 jup kernel: [69661.385625]        [<c1231278>] device_unregister+0xb/0x15
+Feb 21 14:26:29 jup kernel: [69661.385629]        [<c129a209>] usb_remove_ep_devs+0x15/0x1f
+Feb 21 14:26:29 jup kernel: [69661.385635]        [<c12943ff>] remove_intf_ep_devs+0x21/0x32
+Feb 21 14:26:29 jup kernel: [69661.385640]        [<c12954ea>] usb_set_interface+0x18c/0x22c
+Feb 21 14:26:29 jup kernel: [69661.385644]        [<fc703cd7>] snd_usb_playback_close+0x20/0x33 [snd_usb_audio]
+Feb 21 14:26:29 jup kernel: [69661.385654]        [<fb68bc10>] snd_pcm_release_substream+0x3d/0x66 [snd_pcm]
+Feb 21 14:26:29 jup kernel: [69661.385664]        [<fb68bc95>] snd_pcm_release+0x5c/0x9e [snd_pcm]
+Feb 21 14:26:29 jup kernel: [69661.385673]        [<c10aabe9>] __fput+0xeb/0x196
+Feb 21 14:26:29 jup kernel: [69661.385677]        [<c10aacad>] fput+0x19/0x1b
+Feb 21 14:26:29 jup kernel: [69661.385681]        [<c109ae3b>] remove_vma+0x39/0x58
+Feb 21 14:26:29 jup kernel: [69661.385685]        [<c109bab3>] do_munmap+0x23c/0x259
+Feb 21 14:26:29 jup kernel: [69661.385689]        [<c109bb00>] sys_munmap+0x30/0x3f
+Feb 21 14:26:29 jup kernel: [69661.385693]        [<c10028d0>] sysenter_do_call+0x12/0x36
+Feb 21 14:26:29 jup kernel: [69661.385698] 
+Feb 21 14:26:29 jup kernel: [69661.385698] other info that might help us debug this:
+Feb 21 14:26:29 jup kernel: [69661.385700] 
+Feb 21 14:26:29 jup kernel: [69661.385702] 2 locks held by aplay/11761:
+Feb 21 14:26:29 jup kernel: [69661.385705]  #0:  (&mm->mmap_sem){++++++}, at: [<c109baf3>] sys_munmap+0x23/0x3f
+Feb 21 14:26:29 jup kernel: [69661.385711]  #1:  (&pcm->open_mutex){+.+.+.}, at: [<fb68bc8e>] snd_pcm_release+0x55/0x9e [snd_pcm]
+Feb 21 14:26:29 jup kernel: [69661.385723] 
+Feb 21 14:26:29 jup kernel: [69661.385724] stack backtrace:
+Feb 21 14:26:29 jup kernel: [69661.385727] Pid: 11761, comm: aplay Not tainted 2.6.33-rc8 #21
+Feb 21 14:26:29 jup kernel: [69661.385730] Call Trace:
+Feb 21 14:26:29 jup kernel: [69661.385735]  [<c137062c>] ? printk+0xf/0x11
+Feb 21 14:26:29 jup kernel: [69661.385740]  [<c1057b26>] print_circular_bug+0x90/0x9c
+Feb 21 14:26:29 jup kernel: [69661.385744]  [<c1058dc6>] __lock_acquire+0xe55/0x1422
+Feb 21 14:26:29 jup kernel: [69661.385748]  [<c105917f>] ? __lock_acquire+0x120e/0x1422
+Feb 21 14:26:29 jup kernel: [69661.385753]  [<c103d4d3>] ? try_to_del_timer_sync+0x9c/0xa4
+Feb 21 14:26:29 jup kernel: [69661.385758]  [<c105943b>] lock_acquire+0xa8/0xbf
+Feb 21 14:26:29 jup kernel: [69661.385762]  [<c10f0668>] ? sysfs_get_dirent+0x15/0x4c
+Feb 21 14:26:29 jup kernel: [69661.385766]  [<c10f0668>] ? sysfs_get_dirent+0x15/0x4c
+Feb 21 14:26:29 jup kernel: [69661.385769]  [<c13720d3>] mutex_lock_nested+0x47/0x2b2
+Feb 21 14:26:29 jup kernel: [69661.385773]  [<c10f0668>] ? sysfs_get_dirent+0x15/0x4c
+Feb 21 14:26:29 jup kernel: [69661.385777]  [<c137187f>] ? __mutex_unlock_slowpath+0xe9/0x105
+Feb 21 14:26:29 jup kernel: [69661.385781]  [<c10572e5>] ? trace_hardirqs_on_caller+0xff/0x120
+Feb 21 14:26:29 jup kernel: [69661.385785]  [<c10f0668>] sysfs_get_dirent+0x15/0x4c
+Feb 21 14:26:29 jup kernel: [69661.385789]  [<c10f1b4a>] sysfs_remove_group+0x1e/0xa3
+Feb 21 14:26:29 jup kernel: [69661.385793]  [<c12359b8>] dpm_sysfs_remove+0x10/0x12
+Feb 21 14:26:29 jup kernel: [69661.385797]  [<c123114c>] device_del+0x33/0x154
+Feb 21 14:26:29 jup kernel: [69661.385801]  [<c1231278>] device_unregister+0xb/0x15
+Feb 21 14:26:29 jup kernel: [69661.385805]  [<c129a209>] usb_remove_ep_devs+0x15/0x1f
+Feb 21 14:26:29 jup kernel: [69661.385809]  [<c12943ff>] remove_intf_ep_devs+0x21/0x32
+Feb 21 14:26:29 jup kernel: [69661.385813]  [<c12954ea>] usb_set_interface+0x18c/0x22c
+Feb 21 14:26:29 jup kernel: [69661.385822]  [<fc703cd7>] snd_usb_playback_close+0x20/0x33 [snd_usb_audio]
+Feb 21 14:26:29 jup kernel: [69661.385830]  [<fb68bc10>] snd_pcm_release_substream+0x3d/0x66 [snd_pcm]
+Feb 21 14:26:29 jup kernel: [69661.385839]  [<fb68bc95>] snd_pcm_release+0x5c/0x9e [snd_pcm]
+Feb 21 14:26:29 jup kernel: [69661.385843]  [<c10aabe9>] __fput+0xeb/0x196
+Feb 21 14:26:29 jup kernel: [69661.385847]  [<c10aacad>] fput+0x19/0x1b
+Feb 21 14:26:29 jup kernel: [69661.385851]  [<c109ae3b>] remove_vma+0x39/0x58
+Feb 21 14:26:29 jup kernel: [69661.385854]  [<c109bab3>] do_munmap+0x23c/0x259
+Feb 21 14:26:29 jup kernel: [69661.385858]  [<c109bb00>] sys_munmap+0x30/0x3f
+Feb 21 14:26:29 jup kernel: [69661.385862]  [<c10028d0>] sysenter_do_call+0x12/0x36
