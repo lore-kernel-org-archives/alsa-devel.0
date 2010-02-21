@@ -1,23 +1,29 @@
-From: dbm <db.mo@bigpond.com>
-Subject: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG
-	(SB0820)
-Date: Sun, 21 Feb 2010 11:41:32 +1000
-Message-ID: <4B808F4C.1020904@bigpond.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Sun, 21 Feb 2010 12:01:20 +0800
+Message-ID: <4f3252891002202001gb6df8cg6c023c52e7d8394a@mail.gmail.com>
+References: <20100216223938.GA23623@sirena.org.uk>
+	<20100216233825.GB23623@sirena.org.uk>
+	<20100216235658.GA6766@tango.0pointer.de>
+	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+	<20100218023742.GC23637@tango.0pointer.de>
+	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+	<20100218181322.GB5606@tango.0pointer.de>
+	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
+	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
+	<20100219151328.GC25873@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nskntmtas04p.mx.bigpond.com (nskntmtas04p.mx.bigpond.com
-	[61.9.168.146]) by alsa0.perex.cz (Postfix) with ESMTP id 71116103800
-	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 02:41:42 +0100 (CET)
-Received: from nskntotgx03p.mx.bigpond.com ([124.187.27.162])
-	by nskntmtas04p.mx.bigpond.com with ESMTP id
-	<20100221014138.QPFI1858.nskntmtas04p.mx.bigpond.com@nskntotgx03p.mx.bigpond.com>
-	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 01:41:38 +0000
-Received: from [192.168.1.1] (really [124.187.27.162])
-	by nskntotgx03p.mx.bigpond.com with ESMTP
-	id <20100221014138.EUFD1978.nskntotgx03p.mx.bigpond.com@[192.168.1.1]>
-	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 01:41:38 +0000
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31431103807
+	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 05:01:22 +0100 (CET)
+Received: by pvc22 with SMTP id 22so29115pvc.38
+	for <alsa-devel@alsa-project.org>; Sat, 20 Feb 2010 20:01:20 -0800 (PST)
+In-Reply-To: <20100219151328.GC25873@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,49 +36,24 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Greetings,
+2010/2/19 Lennart Poettering <mznyfn@0pointer.de>
 
-  Just bought one of these to get around the fact the mobo involved 
-wouldn't recognize
-any soundcard plugged into either PCI slots (onboard sound disabled in 
-BIOS) -- it will
-however see a soundcard plugged into the pcie 1x slot.....
+>
+>
+> > Is HDA_SUBDEV_NID_FLAG or any API for the application to find the correct
+> > mixer control for these kind of capturing subdevices  ? ( simple mixer
+> api
+> > is not able to know the subdevice number )
+>
+> There is currently no API at all to figure out the relation between PCM
+> devices and mixer controls in ALSA. PA hences bases this all on
+> assumptions and expectes in this acse that the first mixer control is
+> also the first PCM device, if you understand what I mean by that.
+>
+> Lennart
+>
+>
+No, there is API which allow PA to find out the correct mixer control
 
-03:00.0 PCI bridge: Creative Labs Device 7006 (prog-if 00 [Normal decode])
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=03, secondary=04, subordinate=04, sec-latency=32
-        Memory behind bridge: ee000000-ee0fffff
-        Capabilities: [50] Power Management version 3
-        Capabilities: [60] Message Signalled Interrupts: Mask- 64bit+ 
-Queue=0/4 Enable-
-        Capabilities: [80] Subsystem: Creative Labs Device 0010
-        Capabilities: [90] Express PCI/PCI-X Bridge, MSI 00
-        Capabilities: [100] Advanced Error Reporting <?>
-        Kernel modules: shpchp
-
-04:00.0 Audio device: Creative Labs [SB X-Fi Xtreme Audio] CA0110-IBG
-        Subsystem: Creative Labs Device 0018
-        Flags: bus master, medium devsel, latency 32, IRQ 16
-        Memory at ee000000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [dc] Power Management version 3
-        Kernel driver in use: HDA Intel
-        Kernel modules: snd-hda-intel
-
-
-Does seemed to be claimed by snd-hda-intel  (vid/pid  1102/0009), but 
-subsystem descriptor
-of 1102/0018 is seemingly unknown by the drivers. Wild guess here is 
-this should be claimed
-by ctxfi.ko? I can provide a list of hardware IC's fitted to the card -- 
-most of them are *not*
-codec chips afaict.....that said, 2 oncard chips I cannot readily 
-identify. My suspicion is it's
-like other cards covered by  ctxfi.ko in that the card  has no 
-ac97-codec  fitted and is just a
-plain ole' sblive type card....but this is only speculation...
-
-Anyone seens one of these, or have any idea where to start poking for 
-clues (if any) to get it
-working?
-
-Cheers!
+However Simple Mixer API cannot know the subdevice number , you have to use
+control API ( the lower level API used by Simple Mixer API )
