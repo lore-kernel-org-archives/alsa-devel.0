@@ -1,49 +1,191 @@
 From: Ilkka Koskinen <ilkka.koskinen@nokia.com>
-Subject: [PATCHv5 0/2] McBSP: OMAP3: Add sidetone feature
-Date: Mon, 22 Feb 2010 14:21:10 +0200
-Message-ID: <1266841272-13135-1-git-send-email-ilkka.koskinen@nokia.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47B1510385D
-	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 13:20:19 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+Subject: [PATCHv5 2/2] ASoC: OMAP-McBSP: ASoC interface for McBSP sidetone
+Date: Mon, 22 Feb 2010 14:21:12 +0200
+Message-ID: <1266841272-13135-3-git-send-email-ilkka.koskinen@nokia.com>
+References: <1266841272-13135-1-git-send-email-ilkka.koskinen@nokia.com>
+ <1266841272-13135-2-git-send-email-ilkka.koskinen@nokia.com>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1266841272-13135-2-git-send-email-ilkka.koskinen@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, peter.ujfalusi@nokia.com, jhnikula@gmail.com, broonie@opensource.wolfsonmicro.com, tony@atomide.com
 Cc: eduardo.valentin@nokia.com, ext-Eero.Nurkkala@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-The first patch implements McBSP sidetone feature on OMAP3 while the second
-one provides ALSA interface for using it.
+Add ASoC interface for OMAP McBSP2 and McBSP3 sidetones.
 
-The patch set is based on the patch Eduardo Valentin sent to alsa-devel
-mailing list in October 2009. Channel gain control and enabling the sidetone
-have been moved to ALSA interface as suggested in comments. 
+Signed-off-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+---
+ sound/soc/omap/omap-mcbsp.c |  138 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/omap/omap-mcbsp.h |    2 +
+ 2 files changed, 140 insertions(+), 0 deletions(-)
 
-These patches apply on top of Janusz Krzysztofik's McBSP register cache
-patches in linux-omap-2.6.git
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index c0039b3..8da14f5 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -39,6 +39,14 @@
+ 
+ #define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_96000)
+ 
++#define OMAP_MCBSP_SOC_SINGLE_S16_EXT(xname, xmin, xmax, \
++	xhandler_get, xhandler_put) \
++{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, \
++	.info = omap_mcbsp_st_info_volsw, \
++	.get = xhandler_get, .put = xhandler_put, \
++	.private_value = (unsigned long) &(struct soc_mixer_control) \
++	{.min = xmin, .max = xmax} }
++
+ struct omap_mcbsp_data {
+ 	unsigned int			bus_id;
+ 	struct omap_mcbsp_reg_cfg	regs;
+@@ -637,6 +645,136 @@ struct snd_soc_dai omap_mcbsp_dai[] = {
+ 
+ EXPORT_SYMBOL_GPL(omap_mcbsp_dai);
+ 
++int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
++			struct snd_ctl_elem_info *uinfo)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	int max = mc->max;
++	int min = mc->min;
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = min;
++	uinfo->value.integer.max = max;
++	return 0;
++}
++
++#define OMAP_MCBSP_ST_SET_CHANNEL_VOLUME(id, channel)			\
++static int								\
++omap_mcbsp##id##_set_st_ch##channel##_volume(struct snd_kcontrol *kc,	\
++					struct snd_ctl_elem_value *uc)	\
++{									\
++	struct soc_mixer_control *mc =					\
++		(struct soc_mixer_control *)kc->private_value;		\
++	int max = mc->max;						\
++	int min = mc->min;						\
++	int val = uc->value.integer.value[0];				\
++									\
++	if (val < min || val > max)					\
++		return -EINVAL;						\
++									\
++	/* OMAP McBSP implementation uses index values 0..4 */		\
++	return omap_st_set_chgain((id)-1, channel, val);		\
++}
++
++#define OMAP_MCBSP_ST_GET_CHANNEL_VOLUME(id, channel)			\
++static int								\
++omap_mcbsp##id##_get_st_ch##channel##_volume(struct snd_kcontrol *kc,	\
++					struct snd_ctl_elem_value *uc)	\
++{									\
++	s16 chgain;							\
++									\
++	if (omap_st_get_chgain((id)-1, channel, &chgain))		\
++		return -EAGAIN;						\
++									\
++	uc->value.integer.value[0] = chgain;				\
++	return 0;							\
++}
++
++OMAP_MCBSP_ST_SET_CHANNEL_VOLUME(2, 0)
++OMAP_MCBSP_ST_SET_CHANNEL_VOLUME(2, 1)
++OMAP_MCBSP_ST_SET_CHANNEL_VOLUME(3, 0)
++OMAP_MCBSP_ST_SET_CHANNEL_VOLUME(3, 1)
++OMAP_MCBSP_ST_GET_CHANNEL_VOLUME(2, 0)
++OMAP_MCBSP_ST_GET_CHANNEL_VOLUME(2, 1)
++OMAP_MCBSP_ST_GET_CHANNEL_VOLUME(3, 0)
++OMAP_MCBSP_ST_GET_CHANNEL_VOLUME(3, 1)
++
++static int omap_mcbsp_st_put_mode(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	u8 value = ucontrol->value.integer.value[0];
++
++	if (value == omap_st_is_enabled(mc->reg))
++		return 0;
++
++	if (value)
++		omap_st_enable(mc->reg);
++	else
++		omap_st_disable(mc->reg);
++
++	return 1;
++}
++
++static int omap_mcbsp_st_get_mode(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++
++	ucontrol->value.integer.value[0] = omap_st_is_enabled(mc->reg);
++	return 0;
++}
++
++static const struct snd_kcontrol_new omap_mcbsp2_st_controls[] = {
++	SOC_SINGLE_EXT("McBSP2 Sidetone Switch", 1, 0, 1, 0,
++			omap_mcbsp_st_get_mode, omap_mcbsp_st_put_mode),
++	OMAP_MCBSP_SOC_SINGLE_S16_EXT("McBSP2 Sidetone Channel 0 Volume",
++				      -32768, 32767,
++				      omap_mcbsp2_get_st_ch0_volume,
++				      omap_mcbsp2_set_st_ch0_volume),
++	OMAP_MCBSP_SOC_SINGLE_S16_EXT("McBSP2 Sidetone Channel 1 Volume",
++				      -32768, 32767,
++				      omap_mcbsp2_get_st_ch1_volume,
++				      omap_mcbsp2_set_st_ch1_volume),
++};
++
++static const struct snd_kcontrol_new omap_mcbsp3_st_controls[] = {
++	SOC_SINGLE_EXT("McBSP3 Sidetone Switch", 2, 0, 1, 0,
++			omap_mcbsp_st_get_mode, omap_mcbsp_st_put_mode),
++	OMAP_MCBSP_SOC_SINGLE_S16_EXT("McBSP3 Sidetone Channel 0 Volume",
++				      -32768, 32767,
++				      omap_mcbsp3_get_st_ch0_volume,
++				      omap_mcbsp3_set_st_ch0_volume),
++	OMAP_MCBSP_SOC_SINGLE_S16_EXT("McBSP3 Sidetone Channel 1 Volume",
++				      -32768, 32767,
++				      omap_mcbsp3_get_st_ch1_volume,
++				      omap_mcbsp3_set_st_ch1_volume),
++};
++
++int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, int mcbsp_id)
++{
++	if (!cpu_is_omap34xx())
++		return -ENODEV;
++
++	switch (mcbsp_id) {
++	case 1: /* McBSP 2 */
++		return snd_soc_add_controls(codec, omap_mcbsp2_st_controls,
++					ARRAY_SIZE(omap_mcbsp2_st_controls));
++	case 2: /* McBSP 3 */
++		return snd_soc_add_controls(codec, omap_mcbsp3_st_controls,
++					ARRAY_SIZE(omap_mcbsp3_st_controls));
++	default:
++		break;
++	}
++
++	return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(omap_mcbsp_st_add_controls);
++
+ static int __init snd_omap_mcbsp_init(void)
+ {
+ 	return snd_soc_register_dais(omap_mcbsp_dai,
+diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
+index 1968d03..6c363e5 100644
+--- a/sound/soc/omap/omap-mcbsp.h
++++ b/sound/soc/omap/omap-mcbsp.h
+@@ -57,4 +57,6 @@ enum omap_mcbsp_div {
+ 
+ extern struct snd_soc_dai omap_mcbsp_dai[NUM_LINKS];
+ 
++int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, int mcbsp_id);
++
+ #endif
+-- 
+1.6.0.4
 
-Since the version 4, ASoC part has been modified to deal with McBSP ids
-consistently (zero based indexing).
-
-Eero Nurkkala (1):
-  McBSP: OMAP3: Add sidetone feature
-
-Ilkka Koskinen (1):
-  ASoC: OMAP-McBSP: ASoC interface for McBSP sidetone
-
- arch/arm/mach-omap2/mcbsp.c             |    2 +
- arch/arm/plat-omap/include/plat/mcbsp.h |   60 +++++
- arch/arm/plat-omap/mcbsp.c              |  402 ++++++++++++++++++++++++++++++-
- sound/soc/omap/omap-mcbsp.c             |  138 +++++++++++
- sound/soc/omap/omap-mcbsp.h             |    2 +
- 5 files changed, 603 insertions(+), 1 deletions(-)
