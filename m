@@ -1,15 +1,16 @@
-From: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
-Subject: [PATCH v4 2/3] ASoC: OMAP4: Add support for McPDM
-Date: Mon, 22 Feb 2010 17:17:21 -0600
-Message-ID: <2256F256009DAA4CBE661E9F41EAC84B8FA52BF5@dlee01.ent.ti.com>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: 2.6.31.x vs. rme vs. alsa 1.0.22?
+Date: Mon, 22 Feb 2010 23:51:29 +0000
+Message-ID: <1266882689.3704.178.camel@localhost.localdomain>
+References: <1266371882.3361.40.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from arroyo.ext.ti.com (arroyo.ext.ti.com [192.94.94.40])
-	by alsa0.perex.cz (Postfix) with ESMTP id 996FE2445F
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 00:17:24 +0100 (CET)
-Content-Language: en-US
+Received: from smtp.stanford.edu (smtp5.Stanford.EDU [171.67.219.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E22E244B4
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 00:52:16 +0100 (CET)
+In-Reply-To: <1266371882.3361.40.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,672 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: The Linux Audio Developers' Mailing List <linux-audio-dev@lists.linuxaudio.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-McPDM is the interface between Phoenix audio codec
-and the OMAP4430 processor. It enables data to be transfered
-to/from Phoenix at sample rates of 88.4 or 96 KHz.
+On Tue, 2010-02-16 at 17:58 -0800, Fernando Lopez-Lezcano wrote:
+> Hey, has anyone been seeing strange behavior from this combination?
+> 
+>   kernel 2.6.31.x rt20 + alsa 1.0.22 userland
+>   RME card (pcmcia card + multiface)
+> 
+> hdspmixer is not doing the right thing (does not initialize the card in
+> a way in which playback works), it does not see the hwdep interface (or
+> something like that) and disables metering,
 
-Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-Signed-off-by: Margarita Olaya <x0080101@ti.com>
----
+This is what hdspmixer prints when I attempt to run it:
 
-Resending patch to fix an issue reset_playback function
+----
+$ hdspmixer
 
- sound/soc/omap/mcpdm.c |  484 ++++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/omap/mcpdm.h |  151 +++++++++++++++
- 2 files changed, 635 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/omap/mcpdm.c
- create mode 100644 sound/soc/omap/mcpdm.h
+HDSPMixer 1.6 - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>
+This program comes with ABSOLUTELY NO WARRANTY
+HDSPMixer is free software, see the file COPYING for details
 
-diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
-new file mode 100644
-index 0000000..6ee9067
---- /dev/null
-+++ b/sound/soc/omap/mcpdm.c
-@@ -0,0 +1,484 @@
-+/*
-+ * mcpdm.c  --  McPDM interface driver
-+ *
-+ * Author: Jorge Eduardo Candelaria <x0107209@ti.com>
-+ * Copyright (C) 2009 - Texas Instruments, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/wait.h>
-+#include <linux/interrupt.h>
-+#include <linux/err.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/irq.h>
-+
-+#include "mcpdm.h"
-+
-+static struct omap_mcpdm *mcpdm;
-+
-+static inline void omap_mcpdm_write(u16 reg, u32 val)
-+{
-+       __raw_writel(val, mcpdm->io_base + reg);
-+}
-+
-+static inline int omap_mcpdm_read(u16 reg)
-+{
-+       return __raw_readl(mcpdm->io_base + reg);
-+}
-+
-+static void omap_mcpdm_reg_dump(void)
-+{
-+       dev_dbg(mcpdm->dev, "***********************\n");
-+       dev_dbg(mcpdm->dev, "IRQSTATUS_RAW:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQSTATUS_RAW));
-+       dev_dbg(mcpdm->dev, "IRQSTATUS:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQSTATUS));
-+       dev_dbg(mcpdm->dev, "IRQENABLE_SET:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQENABLE_SET));
-+       dev_dbg(mcpdm->dev, "IRQENABLE_CLR:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQENABLE_CLR));
-+       dev_dbg(mcpdm->dev, "IRQWAKE_EN: 0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQWAKE_EN));
-+       dev_dbg(mcpdm->dev, "DMAENABLE_SET: 0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DMAENABLE_SET));
-+       dev_dbg(mcpdm->dev, "DMAENABLE_CLR:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DMAENABLE_CLR));
-+       dev_dbg(mcpdm->dev, "DMAWAKEEN:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DMAWAKEEN));
-+       dev_dbg(mcpdm->dev, "CTRL:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_CTRL));
-+       dev_dbg(mcpdm->dev, "DN_DATA:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DN_DATA));
-+       dev_dbg(mcpdm->dev, "UP_DATA: 0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_UP_DATA));
-+       dev_dbg(mcpdm->dev, "FIFO_CTRL_DN: 0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_FIFO_CTRL_DN));
-+       dev_dbg(mcpdm->dev, "FIFO_CTRL_UP:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_FIFO_CTRL_UP));
-+       dev_dbg(mcpdm->dev, "DN_OFFSET:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DN_OFFSET));
-+       dev_dbg(mcpdm->dev, "***********************\n");
-+}
-+
-+/*
-+ * Takes the McPDM module in and out of reset state.
-+ * Uplink and downlink can be reset individually.
-+ */
-+static void omap_mcpdm_reset_capture(int reset)
-+{
-+       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+
-+       if (reset)
-+               ctrl |= SW_UP_RST;
-+       else
-+               ctrl &= ~SW_UP_RST;
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+}
-+
-+static void omap_mcpdm_reset_playback(int reset)
-+{
-+       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+
-+       if (reset)
-+               ctrl |= SW_DN_RST;
-+       else
-+               ctrl &= ~SW_DN_RST;
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+}
-+
-+/*
-+ * Enables the transfer through the PDM interface to/from the Phoenix
-+ * codec by enabling the corresponding UP or DN channels.
-+ */
-+void omap_mcpdm_start(int stream)
-+{
-+       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+
-+       if (stream)
-+               ctrl |= mcpdm->up_channels;
-+       else
-+               ctrl |= mcpdm->dn_channels;
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+}
-+
-+/*
-+ * Disables the transfer through the PDM interface to/from the Phoenix
-+ * codec by disabling the corresponding UP or DN channels.
-+ */
-+void omap_mcpdm_stop(int stream)
-+{
-+       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+
-+       if (stream)
-+               ctrl &= ~mcpdm->up_channels;
-+       else
-+               ctrl &= ~mcpdm->dn_channels;
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+}
-+
-+/*
-+ * Configures McPDM uplink for audio recording.
-+ * This function should be called before omap_mcpdm_start.
-+ */
-+int omap_mcpdm_capture_open(struct omap_mcpdm_link *uplink)
-+{
-+       int irq_mask = 0;
-+       int ctrl;
-+
-+       if (!uplink)
-+               return -EINVAL;
-+
-+       mcpdm->uplink = uplink;
-+
-+       /* Enable irq request generation */
-+       irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
-+       omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
-+
-+       /* Configure uplink threshold */
-+       if (uplink->threshold > UP_THRES_MAX)
-+               uplink->threshold = UP_THRES_MAX;
-+
-+       omap_mcpdm_write(MCPDM_FIFO_CTRL_UP, uplink->threshold);
-+
-+       /* Configure DMA controller */
-+       omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_UP_ENABLE);
-+
-+       /* Set pdm out format */
-+       ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+       ctrl &= ~PDMOUTFORMAT;
-+       ctrl |= uplink->format & PDMOUTFORMAT;
-+
-+       /* Uplink channels */
-+       mcpdm->up_channels = uplink->channels & (PDM_UP_MASK | PDM_STATUS_MASK);
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+
-+       return 0;
-+}
-+
-+/*
-+ * Configures McPDM downlink for audio playback.
-+ * This function should be called before omap_mcpdm_start.
-+ */
-+int omap_mcpdm_playback_open(struct omap_mcpdm_link *downlink)
-+{
-+       int irq_mask = 0;
-+       int ctrl;
-+
-+       if (!downlink)
-+               return -EINVAL;
-+
-+       mcpdm->downlink = downlink;
-+
-+       /* Enable irq request generation */
-+       irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
-+       omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
-+
-+       /* Configure uplink threshold */
-+       if (downlink->threshold > DN_THRES_MAX)
-+               downlink->threshold = DN_THRES_MAX;
-+
-+       omap_mcpdm_write(MCPDM_FIFO_CTRL_DN, downlink->threshold);
-+
-+       /* Enable DMA request generation */
-+       omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_DN_ENABLE);
-+
-+       /* Set pdm out format */
-+       ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+       ctrl &= ~PDMOUTFORMAT;
-+       ctrl |= downlink->format & PDMOUTFORMAT;
-+
-+       /* Downlink channels */
-+       mcpdm->dn_channels = downlink->channels & (PDM_DN_MASK | PDM_CMD_MASK);
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+
-+       return 0;
-+}
-+
-+/*
-+ * Cleans McPDM uplink configuration.
-+ * This function should be called when the stream is closed.
-+ */
-+int omap_mcpdm_capture_close(struct omap_mcpdm_link *uplink)
-+{
-+       int irq_mask = 0;
-+
-+       if (!uplink)
-+               return -EINVAL;
-+
-+       /* Disable irq request generation */
-+       irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
-+       omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
-+
-+       /* Disable DMA request generation */
-+       omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_UP_ENABLE);
-+
-+       /* Clear Downlink channels */
-+       mcpdm->up_channels = 0;
-+
-+       mcpdm->uplink = NULL;
-+
-+       return 0;
-+}
-+
-+/*
-+ * Cleans McPDM downlink configuration.
-+ * This function should be called when the stream is closed.
-+ */
-+int omap_mcpdm_playback_close(struct omap_mcpdm_link *downlink)
-+{
-+       int irq_mask = 0;
-+
-+       if (!downlink)
-+               return -EINVAL;
-+
-+       /* Disable irq request generation */
-+       irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
-+       omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
-+
-+       /* Disable DMA request generation */
-+       omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_DN_ENABLE);
-+
-+       /* clear Downlink channels */
-+       mcpdm->dn_channels = 0;
-+
-+       mcpdm->downlink = NULL;
-+
-+       return 0;
-+}
-+
-+static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
-+{
-+       struct omap_mcpdm *mcpdm_irq = dev_id;
-+       int irq_status;
-+
-+       irq_status = omap_mcpdm_read(MCPDM_IRQSTATUS);
-+
-+       /* Acknowledge irq event */
-+       omap_mcpdm_write(MCPDM_IRQSTATUS, irq_status);
-+
-+       if (irq & MCPDM_DN_IRQ_FULL) {
-+               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
-+               omap_mcpdm_reset_playback(1);
-+               omap_mcpdm_playback_open(mcpdm_irq->downlink);
-+               omap_mcpdm_reset_playback(0);
-+       }
-+
-+       if (irq & MCPDM_DN_IRQ_EMPTY) {
-+               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
-+               omap_mcpdm_reset_playback(1);
-+               omap_mcpdm_playback_open(mcpdm_irq->downlink);
-+               omap_mcpdm_reset_playback(0);
-+       }
-+
-+       if (irq & MCPDM_DN_IRQ) {
-+               dev_dbg(mcpdm_irq->dev, "DN write request\n");
-+       }
-+
-+       if (irq & MCPDM_UP_IRQ_FULL) {
-+               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
-+               omap_mcpdm_reset_capture(1);
-+               omap_mcpdm_capture_open(mcpdm_irq->uplink);
-+               omap_mcpdm_reset_capture(0);
-+       }
-+
-+       if (irq & MCPDM_UP_IRQ_EMPTY) {
-+               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
-+               omap_mcpdm_reset_capture(1);
-+               omap_mcpdm_capture_open(mcpdm_irq->uplink);
-+               omap_mcpdm_reset_capture(0);
-+       }
-+
-+       if (irq & MCPDM_UP_IRQ) {
-+               dev_dbg(mcpdm_irq->dev, "UP write request\n");
-+       }
-+
-+       return IRQ_HANDLED;
-+}
-+
-+int omap_mcpdm_request(void)
-+{
-+       int ret;
-+
-+       clk_enable(mcpdm->clk);
-+
-+       spin_lock(&mcpdm->lock);
-+
-+       if (!mcpdm->free) {
-+               dev_err(mcpdm->dev, "McPDM interface is in use\n");
-+               spin_unlock(&mcpdm->lock);
-+               ret = -EBUSY;
-+               goto err;
-+       }
-+       mcpdm->free = 0;
-+
-+       spin_unlock(&mcpdm->lock);
-+
-+       /* Disable lines while request is ongoing */
-+       omap_mcpdm_write(MCPDM_CTRL, 0x00);
-+
-+       ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler,
-+                               0, "McPDM", (void *)mcpdm);
-+       if (ret) {
-+               dev_err(mcpdm->dev, "Request for McPDM IRQ failed\n");
-+               goto err;
-+       }
-+
-+       return 0;
-+
-+err:
-+       clk_disable(mcpdm->clk);
-+       return ret;
-+}
-+
-+void omap_mcpdm_free(void)
-+{
-+       spin_lock(&mcpdm->lock);
-+       if (mcpdm->free) {
-+               dev_err(mcpdm->dev, "McPDM interface is already free\n");
-+               spin_unlock(&mcpdm->lock);
-+               return;
-+       }
-+       mcpdm->free = 1;
-+       spin_unlock(&mcpdm->lock);
-+
-+       clk_disable(mcpdm->clk);
-+
-+       free_irq(mcpdm->irq, (void *)mcpdm);
-+}
-+
-+/* Enable/disable DC offset cancelation for the analog
-+ * headset path (PDM channels 1 and 2).
-+ */
-+int omap_mcpdm_set_offset(int offset1, int offset2)
-+{
-+       int offset;
-+
-+       if ((offset1 > DN_OFST_MAX) || (offset2 > DN_OFST_MAX))
-+               return -EINVAL;
-+
-+       offset = (offset1 << DN_OFST_RX1) | (offset2 << DN_OFST_RX2);
-+
-+       /* offset cancellation for channel 1 */
-+       if (offset1)
-+               offset |= DN_OFST_RX1_EN;
-+       else
-+               offset &= ~DN_OFST_RX1_EN;
-+
-+       /* offset cancellation for channel 2 */
-+       if (offset2)
-+               offset |= DN_OFST_RX2_EN;
-+       else
-+               offset &= ~DN_OFST_RX2_EN;
-+
-+       omap_mcpdm_write(MCPDM_DN_OFFSET, offset);
-+
-+       return 0;
-+}
-+
-+static int __devinit omap_mcpdm_probe(struct platform_device *pdev)
-+{
-+       struct resource *res;
-+       int ret = 0;
-+
-+       mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
-+       if (!mcpdm) {
-+               ret = -ENOMEM;
-+               goto exit;
-+       }
-+
-+       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+       if (res == NULL) {
-+               dev_err(&pdev->dev, "no resource\n");
-+               goto err_resource;
-+       }
-+
-+       spin_lock_init(&mcpdm->lock);
-+       mcpdm->free = 1;
-+       mcpdm->io_base = ioremap(res->start, resource_size(res));
-+       if (!mcpdm->io_base) {
-+               ret = -ENOMEM;
-+               goto err_resource;
-+       }
-+
-+       mcpdm->irq = platform_get_irq(pdev, 0);
-+
-+       mcpdm->clk = clk_get(&pdev->dev, "pdm_ck");
-+       if (IS_ERR(mcpdm->clk)) {
-+               ret = PTR_ERR(mcpdm->clk);
-+               dev_err(&pdev->dev, "unable to get pdm_ck: %d\n", ret);
-+               goto err_clk;
-+       }
-+
-+       mcpdm->dev = &pdev->dev;
-+       platform_set_drvdata(pdev, mcpdm);
-+
-+       return 0;
-+
-+err_clk:
-+       iounmap(mcpdm->io_base);
-+err_resource:
-+       kfree(mcpdm);
-+exit:
-+       return ret;
-+}
-+
-+static int __devexit omap_mcpdm_remove(struct platform_device *pdev)
-+{
-+       struct omap_mcpdm *mcpdm_ptr = platform_get_drvdata(pdev);
-+
-+       platform_set_drvdata(pdev, NULL);
-+
-+       clk_put(mcpdm_ptr->clk);
-+
-+       iounmap(mcpdm_ptr->io_base);
-+
-+       mcpdm_ptr->clk = NULL;
-+       mcpdm_ptr->free = 0;
-+       mcpdm_ptr->dev = NULL;
-+
-+       kfree(mcpdm_ptr);
-+
-+       return 0;
-+}
-+
-+static struct platform_driver omap_mcpdm_driver = {
-+       .probe = omap_mcpdm_probe,
-+       .remove = __devexit_p(omap_mcpdm_remove),
-+       .driver = {
-+               .name = "omap-mcpdm",
-+       },
-+};
-+
-+static struct platform_device *omap_mcpdm_device;
-+
-+static int __init omap_mcpdm_init(void)
-+{
-+       return platform_driver_register(&omap_mcpdm_driver);
-+}
-+arch_initcall(omap_mcpdm_init);
-diff --git a/sound/soc/omap/mcpdm.h b/sound/soc/omap/mcpdm.h
-new file mode 100644
-index 0000000..41e50cc
---- /dev/null
-+++ b/sound/soc/omap/mcpdm.h
-@@ -0,0 +1,151 @@
-+/*
-+ * mcpdm.h -- Defines for McPDM driver
-+ *
-+ * Author: Jorge Eduardo Candelaria <x0107209@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
-+
-+/* McPDM registers */
-+
-+#define MCPDM_REVISION         0x00
-+#define MCPDM_SYSCONFIG                0x10
-+#define MCPDM_IRQSTATUS_RAW    0x24
-+#define MCPDM_IRQSTATUS                0x28
-+#define MCPDM_IRQENABLE_SET    0x2C
-+#define MCPDM_IRQENABLE_CLR    0x30
-+#define MCPDM_IRQWAKE_EN       0x34
-+#define MCPDM_DMAENABLE_SET    0x38
-+#define MCPDM_DMAENABLE_CLR    0x3C
-+#define MCPDM_DMAWAKEEN                0x40
-+#define MCPDM_CTRL             0x44
-+#define MCPDM_DN_DATA          0x48
-+#define MCPDM_UP_DATA          0x4C
-+#define MCPDM_FIFO_CTRL_DN     0x50
-+#define MCPDM_FIFO_CTRL_UP     0x54
-+#define MCPDM_DN_OFFSET                0x58
-+
-+/*
-+ * MCPDM_IRQ bit fields
-+ * IRQSTATUS_RAW, IRQSTATUS, IRQENABLE_SET, IRQENABLE_CLR
-+ */
-+
-+#define MCPDM_DN_IRQ                   (1 << 0)
-+#define MCPDM_DN_IRQ_EMPTY             (1 << 1)
-+#define MCPDM_DN_IRQ_ALMST_EMPTY       (1 << 2)
-+#define MCPDM_DN_IRQ_FULL              (1 << 3)
-+
-+#define MCPDM_UP_IRQ                   (1 << 8)
-+#define MCPDM_UP_IRQ_EMPTY             (1 << 9)
-+#define MCPDM_UP_IRQ_ALMST_FULL                (1 << 10)
-+#define MCPDM_UP_IRQ_FULL              (1 << 11)
-+
-+#define MCPDM_DOWNLINK_IRQ_MASK                0x00F
-+#define MCPDM_UPLINK_IRQ_MASK          0xF00
-+
-+/*
-+ * MCPDM_DMAENABLE bit fields
-+ */
-+
-+#define DMA_DN_ENABLE          0x1
-+#define DMA_UP_ENABLE          0x2
-+
-+/*
-+ * MCPDM_CTRL bit fields
-+ */
-+
-+#define PDM_UP1_EN             0x0001
-+#define PDM_UP2_EN             0x0002
-+#define PDM_UP3_EN             0x0004
-+#define PDM_DN1_EN             0x0008
-+#define PDM_DN2_EN             0x0010
-+#define PDM_DN3_EN             0x0020
-+#define PDM_DN4_EN             0x0040
-+#define PDM_DN5_EN             0x0080
-+#define PDMOUTFORMAT           0x0100
-+#define CMD_INT                        0x0200
-+#define STATUS_INT             0x0400
-+#define SW_UP_RST              0x0800
-+#define SW_DN_RST              0x1000
-+#define PDM_UP_MASK            0x007
-+#define PDM_DN_MASK            0x0F8
-+#define PDM_CMD_MASK           0x200
-+#define PDM_STATUS_MASK                0x400
-+
-+
-+#define PDMOUTFORMAT_LJUST     (0 << 8)
-+#define PDMOUTFORMAT_RJUST     (1 << 8)
-+
-+/*
-+ * MCPDM_FIFO_CTRL bit fields
-+ */
-+
-+#define UP_THRES_MAX           0xF
-+#define DN_THRES_MAX           0xF
-+
-+/*
-+ * MCPDM_DN_OFFSET bit fields
-+ */
-+
-+#define DN_OFST_RX1_EN         0x0001
-+#define DN_OFST_RX2_EN         0x0100
-+
-+#define DN_OFST_RX1            1
-+#define DN_OFST_RX2            9
-+#define DN_OFST_MAX            0x1F
-+
-+#define MCPDM_UPLINK           1
-+#define MCPDM_DOWNLINK         2
-+
-+struct omap_mcpdm_link {
-+       int irq_mask;
-+       int threshold;
-+       int format;
-+       int channels;
-+};
-+
-+struct omap_mcpdm_platform_data {
-+       unsigned long phys_base;
-+       u16 irq;
-+};
-+
-+struct omap_mcpdm {
-+       struct device *dev;
-+       unsigned long phys_base;
-+       void __iomem *io_base;
-+       u8 free;
-+       int irq;
-+
-+       spinlock_t lock;
-+       struct omap_mcpdm_platform_data *pdata;
-+       struct clk *clk;
-+       struct omap_mcpdm_link *downlink;
-+       struct omap_mcpdm_link *uplink;
-+       struct completion irq_completion;
-+
-+       int dn_channels;
-+       int up_channels;
-+};
-+
-+extern void omap_mcpdm_start(int stream);
-+extern void omap_mcpdm_stop(int stream);
-+extern int omap_mcpdm_capture_open(struct omap_mcpdm_link *uplink);
-+extern int omap_mcpdm_playback_open(struct omap_mcpdm_link *downlink);
-+extern int omap_mcpdm_capture_close(struct omap_mcpdm_link *uplink);
-+extern int omap_mcpdm_playback_close(struct omap_mcpdm_link *downlink);
-+extern int omap_mcpdm_request(void);
-+extern void omap_mcpdm_free(void);
-+extern int omap_mcpdm_set_offset(int offset1, int offset2);
---
-1.6.0.4
+Looking for HDSP cards :
+Card 0 : HDA Intel at 0xfe020000 irq 17
+Card 1 : RME Hammerfall DSP + Multiface at 0xc0000000, irq 16
+Multiface found !
+1 Hammerfall DSP card found.
+Initializing default presets
+HwDep ioctl failed. Metering stopped
+----
+
+> alsamixer even segfaults
+> when I reach the end of the controls listed. Plain weird. Smells like
+> something changed deep in the kernel that makes alsa-lib very unhappy.
+> Alsa-tools rebuilt from source does not make a difference. 
+> 
+> Weirdness goes away when I boot into 2.6.29.6 rt23...
+> 
+> Is there anything in alsa-* that depends on which _kernel_ is available
+> at compile time?
+
+I have been trying to see if I can figure _anything_ out of this...
+
+A diff of 2.6.29 (last known working) against 2.6.31.12 reveals
+something that might have an influence on the problem:
+
+in snd_hdsp_create_hwdep there are two lines added:
+
++ hw->ops.open = snd_hdsp_hwdep_dummy_op;
+  hw->ops.ioctl = snd_hdsp_hwdep_ioctl;
++ hw->ops.release = snd_hdsp_hwdep_dummy_op;
+
+And snd_hdsp_hwdep_dummy_op just returns 0...
+
+Other differences between the two files (not that many) seem irrelevant
+to me. 
+
+I imagine this is what is causing the difference in behavior (hwdep
+fails). Any suggestions on what I could try to fix this?
+
+Thanks for any help!
+
+-- Fernando
