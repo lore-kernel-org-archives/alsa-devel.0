@@ -1,16 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCHv5 0/2] McBSP: OMAP3: Add sidetone feature
-Date: Mon, 22 Feb 2010 16:18:15 +0200
-Message-ID: <201002221618.15859.peter.ujfalusi@nokia.com>
-References: <1266841272-13135-1-git-send-email-ilkka.koskinen@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHES_v1] ASoC: Towards dropping runtime
+	field	from snd_soc_dai
+Date: Mon, 22 Feb 2010 14:27:49 +0000
+Message-ID: <20100222142748.GB27789@sirena.org.uk>
+References: <1b68c6791002212255j69faa9b7k13da803bf65c2177@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1C5CF10382F
-	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 15:18:43 +0100 (CET)
-In-Reply-To: <1266841272-13135-1-git-send-email-ilkka.koskinen@nokia.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id D70D610383A
+	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 15:27:49 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6791002212255j69faa9b7k13da803bf65c2177@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 22 February 2010 14:21:10 Koskinen Ilkka (Nokia-D/Tampere) wrote:
-> The first patch implements McBSP sidetone feature on OMAP3 while the second
-> one provides ALSA interface for using it.
-> 
-> The patch set is based on the patch Eduardo Valentin sent to alsa-devel
-> mailing list in October 2009. Channel gain control and enabling the
-> sidetone have been moved to ALSA interface as suggested in comments.
-> 
-> These patches apply on top of Janusz Krzysztofik's McBSP register cache
-> patches in linux-omap-2.6.git
-> 
-> Since the version 4, ASoC part has been modified to deal with McBSP ids
-> consistently (zero based indexing).
-> 
-> Eero Nurkkala (1):
->   McBSP: OMAP3: Add sidetone feature
-> 
-> Ilkka Koskinen (1):
->   ASoC: OMAP-McBSP: ASoC interface for McBSP sidetone
-> 
->  arch/arm/mach-omap2/mcbsp.c             |    2 +
->  arch/arm/plat-omap/include/plat/mcbsp.h |   60 +++++
->  arch/arm/plat-omap/mcbsp.c              |  402
-> ++++++++++++++++++++++++++++++- sound/soc/omap/omap-mcbsp.c             | 
-> 138 +++++++++++
->  sound/soc/omap/omap-mcbsp.h             |    2 +
->  5 files changed, 603 insertions(+), 1 deletions(-)
+On Mon, Feb 22, 2010 at 03:55:59PM +0900, jassi brar wrote:
 
-Both looks OK for me:
+I've applied all three changes for 2.6.35 after testing on an AT91 board
+here, thanks.  Unfortunately it looks like the SSC suspend and resume
+code is a bit broken anyway since it doesn't seem to cope too well with
+being suspended during playback but your patches don't affect that one
+way or another.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> <Due to some problem I am unable to send inline patches, please accept
+> the attached patches for this time>
+
+If you're going to do this please send just the patches as the
+attachments, including the patch description in the attachment cases
+them to come out like this:
+
+    ASOC: ATMEL: Getting cpu_dai method change
+    
+    [PATCH 2/3] ASOC: ATMEL: Getting cpu_dai method change
+    
+    Currently only the atmel driver make use of snd_soc_dai.runtime field.
+
+when applied which isn't ideal.  It also seems that your attachments are
+coming out base64 encoded rather than text/plain.
+
+> [PATCH 1/3] ASoC: PLATFORM: Pass dai_link as argument to suspend, resume
+> [PATCH 2/3] ASOC: ATMEL: Getting cpu_dai method change
+> [PATCH 3/3] ASOC: SND_SOC_DAI: Get rid of 'runtime' field
+
+Note also the different spellings of ASoC here (and elsewhere in your
+commit messages) - the first is correct.  You don't need to capitalise
+all the letters in names.
+
+If your problems are (as I'm guessing is the case) gmail breakage you
+might want to look into imap-send, which will dump the patches in an
+IMAP mailbox for transmission.
