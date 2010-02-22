@@ -1,15 +1,17 @@
-From: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
-Subject: [PATCH v4 2/3] ASoC: OMAP4: Add support for McPDM
-Date: Mon, 22 Feb 2010 15:09:20 -0600
-Message-ID: <2256F256009DAA4CBE661E9F41EAC84B8FA52A12@dlee01.ent.ti.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH 1/5] ALSA: usbaudio: parse USB descriptors with
+	structs
+Date: Mon, 22 Feb 2010 23:49:09 +0100
+Message-ID: <1266878953-9184-2-git-send-email-daniel@caiaq.de>
+References: <1266878953-9184-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id D071410388C
-	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 22:09:23 +0100 (CET)
-Content-Language: en-US
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6E0BD24468
+	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 23:49:42 +0100 (CET)
+In-Reply-To: <1266878953-9184-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,671 +21,577 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-McPDM is the interface between Phoenix audio codec
-and the OMAP4430 processor. It enables data to be transfered
-to/from Phoenix at sample rates of 88.4 or 96 KHz.
+In preparation of support for v2.0 audio class, use the structs from
+linux/usb/audio.h and add some new ones to describe the fields that are
+actually parsed by the descriptor decoders.
 
-Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-Signed-off-by: Margarita Olaya <x0080101@ti.com>
+Also, factor out code from usb_create_streams(). This makes it easier to
+adopt the new iteration logic needed for v2.0.
+
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
 ---
- sound/soc/omap/mcpdm.c |  486 ++++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/omap/mcpdm.h |  151 +++++++++++++++
- 2 files changed, 637 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/omap/mcpdm.c
- create mode 100644 sound/soc/omap/mcpdm.h
+ include/linux/usb/audio.h |   32 +++++++-
+ sound/usb/usbaudio.c      |  198 +++++++++++++++++++++++++++------------------
+ sound/usb/usbmixer.c      |   39 +++++-----
+ 3 files changed, 168 insertions(+), 101 deletions(-)
 
-diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
-new file mode 100644
-index 0000000..33f3ed6
---- /dev/null
-+++ b/sound/soc/omap/mcpdm.c
-@@ -0,0 +1,486 @@
-+/*
-+ * mcpdm.c  --  McPDM interface driver
-+ *
-+ * Author: Jorge Eduardo Candelaria <x0107209@ti.com>
-+ * Copyright (C) 2009 - Texas Instruments, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
+diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
+index eaf9dff..44f82d8 100644
+--- a/include/linux/usb/audio.h
++++ b/include/linux/usb/audio.h
+@@ -81,7 +81,7 @@
+ 
+ /* Terminal Control Selectors */
+ /* 4.3.2  Class-Specific AC Interface Descriptor */
+-struct uac_ac_header_descriptor {
++struct uac_ac_header_descriptor_v1 {
+ 	__u8  bLength;			/* 8 + n */
+ 	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
+ 	__u8  bDescriptorSubtype;	/* UAC_MS_HEADER */
+@@ -95,7 +95,7 @@ struct uac_ac_header_descriptor {
+ 
+ /* As above, but more useful for defining your own descriptors: */
+ #define DECLARE_UAC_AC_HEADER_DESCRIPTOR(n) 			\
+-struct uac_ac_header_descriptor_##n {				\
++struct uac_ac_header_descriptor_v1_##n {			\
+ 	__u8  bLength;						\
+ 	__u8  bDescriptorType;					\
+ 	__u8  bDescriptorSubtype;				\
+@@ -131,7 +131,7 @@ struct uac_input_terminal_descriptor {
+ #define UAC_INPUT_TERMINAL_PROC_MICROPHONE_ARRAY	0x206
+ 
+ /* 4.3.2.2 Output Terminal Descriptor */
+-struct uac_output_terminal_descriptor {
++struct uac_output_terminal_descriptor_v1 {
+ 	__u8  bLength;			/* in bytes: 9 */
+ 	__u8  bDescriptorType;		/* CS_INTERFACE descriptor type */
+ 	__u8  bDescriptorSubtype;	/* OUTPUT_TERMINAL descriptor subtype */
+@@ -171,7 +171,7 @@ struct uac_feature_unit_descriptor_##ch {			\
+ } __attribute__ ((packed))
+ 
+ /* 4.5.2 Class-Specific AS Interface Descriptor */
+-struct uac_as_header_descriptor {
++struct uac_as_header_descriptor_v1 {
+ 	__u8  bLength;			/* in bytes: 7 */
+ 	__u8  bDescriptorType;		/* USB_DT_CS_INTERFACE */
+ 	__u8  bDescriptorSubtype;	/* AS_GENERAL */
+@@ -232,6 +232,19 @@ struct uac_format_type_i_discrete_descriptor_##n {		\
+ 
+ #define UAC_FORMAT_TYPE_I_DISCRETE_DESC_SIZE(n)	(8 + (n * 3))
+ 
++/* Formats - Audio Data Format Type I Codes */
 +
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/wait.h>
-+#include <linux/interrupt.h>
-+#include <linux/err.h>
-+#include <linux/clk.h>
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/irq.h>
++struct uac_format_type_ii_discrete_descriptor {
++	__u8 bLength;
++	__u8 bDescriptorType;
++	__u8 bDescriptorSubtype;
++	__u8 bFormatType;
++	__le16 wMaxBitRate;
++	__le16 wSamplesPerFrame;
++	__u8 bSamFreqType;
++	__u8 tSamFreq[][3];
++} __attribute__((packed));
 +
-+#include "mcpdm.h"
+ /* Formats - A.2 Format Type Codes */
+ #define UAC_FORMAT_TYPE_UNDEFINED	0x0
+ #define UAC_FORMAT_TYPE_I		0x1
+@@ -253,6 +266,17 @@ struct uac_iso_endpoint_descriptor {
+ #define UAC_EP_CS_ATTR_FILL_MAX		0x80
+ 
+ /* A.10.2 Feature Unit Control Selectors */
 +
-+static struct omap_mcpdm *mcpdm;
++struct uac_feature_unit_descriptor {
++	__u8 bLength;
++	__u8 bDescriptorType;
++	__u8 bDescriptorSubtype;
++	__u8 bUnitID;
++	__u8 bSourceID;
++	__u8 bControlSize;
++	__u8 controls[0]; /* variable length */
++} __attribute__((packed));
 +
-+static inline void omap_mcpdm_write(u16 reg, u32 val)
+ #define UAC_FU_CONTROL_UNDEFINED	0x00
+ #define UAC_MUTE_CONTROL		0x01
+ #define UAC_VOLUME_CONTROL		0x02
+diff --git a/sound/usb/usbaudio.c b/sound/usb/usbaudio.c
+index 4208b44..5d7d659 100644
+--- a/sound/usb/usbaudio.c
++++ b/sound/usb/usbaudio.c
+@@ -46,6 +46,8 @@
+ #include <linux/usb.h>
+ #include <linux/moduleparam.h>
+ #include <linux/mutex.h>
++#include <linux/usb/audio.h>
++
+ #include <sound/core.h>
+ #include <sound/info.h>
+ #include <sound/pcm.h>
+@@ -2421,15 +2423,17 @@ static int is_big_endian_format(struct snd_usb_audio *chip, struct audioformat *
+  * @fmt: the format type descriptor
+  */
+ static int parse_audio_format_i_type(struct snd_usb_audio *chip, struct audioformat *fp,
+-				     int format, unsigned char *fmt)
++				     int format, void *fmt_raw)
+ {
+ 	int pcm_format;
+ 	int sample_width, sample_bytes;
++	struct uac_format_type_i_discrete_descriptor *fmt = fmt_raw;
+ 
+ 	/* FIXME: correct endianess and sign? */
+ 	pcm_format = -1;
+-	sample_width = fmt[6];
+-	sample_bytes = fmt[5];
++	sample_width = fmt->bBitResolution;
++	sample_bytes = fmt->bSubframeSize;
++
+ 	switch (format) {
+ 	case 0: /* some devices don't define this correctly... */
+ 		snd_printdd(KERN_INFO "%d:%u:%d : format type 0 is detected, processed as PCM\n",
+@@ -2442,7 +2446,7 @@ static int parse_audio_format_i_type(struct snd_usb_audio *chip, struct audiofor
+ 				   sample_width, sample_bytes);
+ 		}
+ 		/* check the format byte size */
+-		switch (fmt[5]) {
++		switch (sample_bytes) {
+ 		case 1:
+ 			pcm_format = SNDRV_PCM_FORMAT_S8;
+ 			break;
+@@ -2463,8 +2467,8 @@ static int parse_audio_format_i_type(struct snd_usb_audio *chip, struct audiofor
+ 			break;
+ 		default:
+ 			snd_printk(KERN_INFO "%d:%u:%d : unsupported sample bitwidth %d in %d bytes\n",
+-				   chip->dev->devnum, fp->iface,
+-				   fp->altsetting, sample_width, sample_bytes);
++				   chip->dev->devnum, fp->iface, fp->altsetting,
++				   sample_width, sample_bytes);
+ 			break;
+ 		}
+ 		break;
+@@ -2564,11 +2568,12 @@ static int parse_audio_format_rates(struct snd_usb_audio *chip, struct audioform
+  * parse the format type I and III descriptors
+  */
+ static int parse_audio_format_i(struct snd_usb_audio *chip, struct audioformat *fp,
+-				int format, unsigned char *fmt)
++				int format, void *fmt_raw)
+ {
+ 	int pcm_format;
++	struct uac_format_type_i_discrete_descriptor *fmt = fmt_raw;
+ 
+-	if (fmt[3] == USB_FORMAT_TYPE_III) {
++	if (fmt->bFormatType == USB_FORMAT_TYPE_III) {
+ 		/* FIXME: the format type is really IECxxx
+ 		 *        but we give normal PCM format to get the existing
+ 		 *        apps working...
+@@ -2590,23 +2595,27 @@ static int parse_audio_format_i(struct snd_usb_audio *chip, struct audioformat *
+ 		if (pcm_format < 0)
+ 			return -1;
+ 	}
++
+ 	fp->format = pcm_format;
+-	fp->channels = fmt[4];
++	fp->channels = fmt->bNrChannels;
++
+ 	if (fp->channels < 1) {
+ 		snd_printk(KERN_ERR "%d:%u:%d : invalid channels %d\n",
+ 			   chip->dev->devnum, fp->iface, fp->altsetting, fp->channels);
+ 		return -1;
+ 	}
+-	return parse_audio_format_rates(chip, fp, fmt, 7);
++	return parse_audio_format_rates(chip, fp, fmt_raw, 7);
+ }
+ 
+ /*
+- * prase the format type II descriptor
++ * parse the format type II descriptor
+  */
+ static int parse_audio_format_ii(struct snd_usb_audio *chip, struct audioformat *fp,
+-				 int format, unsigned char *fmt)
++				 int format, void *fmt_raw)
+ {
+ 	int brate, framesize;
++	struct uac_format_type_ii_discrete_descriptor *fmt = fmt_raw;
++
+ 	switch (format) {
+ 	case USB_AUDIO_FORMAT_AC3:
+ 		/* FIXME: there is no AC3 format defined yet */
+@@ -2622,20 +2631,25 @@ static int parse_audio_format_ii(struct snd_usb_audio *chip, struct audioformat
+ 		fp->format = SNDRV_PCM_FORMAT_MPEG;
+ 		break;
+ 	}
++
+ 	fp->channels = 1;
+-	brate = combine_word(&fmt[4]); 	/* fmt[4,5] : wMaxBitRate (in kbps) */
+-	framesize = combine_word(&fmt[6]); /* fmt[6,7]: wSamplesPerFrame */
++
++	brate = le16_to_cpu(fmt->wMaxBitRate);
++	framesize = le16_to_cpu(fmt->wSamplesPerFrame);
+ 	snd_printd(KERN_INFO "found format II with max.bitrate = %d, frame size=%d\n", brate, framesize);
+ 	fp->frame_size = framesize;
+-	return parse_audio_format_rates(chip, fp, fmt, 8); /* fmt[8..] sample rates */
++	return parse_audio_format_rates(chip, fp, fmt_raw, 8); /* fmt[8..] sample rates */
+ }
+ 
+ static int parse_audio_format(struct snd_usb_audio *chip, struct audioformat *fp,
+-			      int format, unsigned char *fmt, int stream)
++			      int format, void *fmt_raw, int stream)
+ {
+ 	int err;
++	/* we only parse the common header of all format types here,
++	 * so it is safe to take a type_i struct */
++	struct uac_format_type_i_discrete_descriptor *fmt = fmt_raw;
+ 
+-	switch (fmt[3]) {
++	switch (fmt->bFormatType) {
+ 	case USB_FORMAT_TYPE_I:
+ 	case USB_FORMAT_TYPE_III:
+ 		err = parse_audio_format_i(chip, fp, format, fmt);
+@@ -2645,10 +2659,10 @@ static int parse_audio_format(struct snd_usb_audio *chip, struct audioformat *fp
+ 		break;
+ 	default:
+ 		snd_printd(KERN_INFO "%d:%u:%d : format type %d is not supported yet\n",
+-			   chip->dev->devnum, fp->iface, fp->altsetting, fmt[3]);
++			   chip->dev->devnum, fp->iface, fp->altsetting, fmt->bFormatType);
+ 		return -1;
+ 	}
+-	fp->fmt_type = fmt[3];
++	fp->fmt_type = fmt->bFormatType;
+ 	if (err < 0)
+ 		return err;
+ #if 1
+@@ -2659,7 +2673,7 @@ static int parse_audio_format(struct snd_usb_audio *chip, struct audioformat *fp
+ 	if (chip->usb_id == USB_ID(0x041e, 0x3000) ||
+ 	    chip->usb_id == USB_ID(0x041e, 0x3020) ||
+ 	    chip->usb_id == USB_ID(0x041e, 0x3061)) {
+-		if (fmt[3] == USB_FORMAT_TYPE_I &&
++		if (fmt->bFormatType == USB_FORMAT_TYPE_I &&
+ 		    fp->rates != SNDRV_PCM_RATE_48000 &&
+ 		    fp->rates != SNDRV_PCM_RATE_96000)
+ 			return -1;
+@@ -2708,6 +2722,8 @@ static int parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 		num = 4;
+ 
+ 	for (i = 0; i < num; i++) {
++		struct uac_as_header_descriptor_v1 *as;
++
+ 		alts = &iface->altsetting[i];
+ 		altsd = get_iface_desc(alts);
+ 		/* skip invalid one */
+@@ -2726,7 +2742,7 @@ static int parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 		stream = (get_endpoint(alts, 0)->bEndpointAddress & USB_DIR_IN) ?
+ 			SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
+ 		altno = altsd->bAlternateSetting;
+-	
++
+ 		/* audiophile usb: skip altsets incompatible with device_setup
+ 		 */
+ 		if (chip->usb_id == USB_ID(0x0763, 0x2003) && 
+@@ -2734,20 +2750,21 @@ static int parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 			continue;
+ 
+ 		/* get audio formats */
+-		fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, AS_GENERAL);
+-		if (!fmt) {
++		as = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, AS_GENERAL);
++
++		if (!as) {
+ 			snd_printk(KERN_ERR "%d:%u:%d : AS_GENERAL descriptor not found\n",
+ 				   dev->devnum, iface_no, altno);
+ 			continue;
+ 		}
+ 
+-		if (fmt[0] < 7) {
++		if (as->bLength < sizeof(*as)) {
+ 			snd_printk(KERN_ERR "%d:%u:%d : invalid AS_GENERAL desc\n",
+ 				   dev->devnum, iface_no, altno);
+ 			continue;
+ 		}
+ 
+-		format = (fmt[6] << 8) | fmt[5]; /* remember the format value */
++		format = le16_to_cpu(as->wFormatTag); /* remember the format value */
+ 
+ 		/* get format type */
+ 		fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, FORMAT_TYPE);
+@@ -2875,6 +2892,65 @@ static void snd_usb_stream_disconnect(struct list_head *head)
+ 	}
+ }
+ 
++static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int interface)
 +{
-+       __raw_writel(val, mcpdm->io_base + reg);
++	struct usb_device *dev = chip->dev;
++	struct usb_host_interface *alts;
++	struct usb_interface_descriptor *altsd;
++	struct usb_interface *iface = usb_ifnum_to_if(dev, interface);
++
++	if (!iface) {
++		snd_printk(KERN_ERR "%d:%u:%d : does not exist\n",
++			   dev->devnum, ctrlif, interface);
++		return -EINVAL;
++	}
++
++	if (usb_interface_claimed(iface)) {
++		snd_printdd(KERN_INFO "%d:%d:%d: skipping, already claimed\n",
++						dev->devnum, ctrlif, interface);
++		return -EINVAL;
++	}
++
++	alts = &iface->altsetting[0];
++	altsd = get_iface_desc(alts);
++	if ((altsd->bInterfaceClass == USB_CLASS_AUDIO ||
++	     altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC) &&
++	    altsd->bInterfaceSubClass == USB_SUBCLASS_MIDI_STREAMING) {
++		int err = snd_usbmidi_create(chip->card, iface,
++					     &chip->midi_list, NULL);
++		if (err < 0) {
++			snd_printk(KERN_ERR "%d:%u:%d: cannot create sequencer device\n",
++						dev->devnum, ctrlif, interface);
++			return -EINVAL;
++		}
++		usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
++
++		return 0;
++	}
++
++	if ((altsd->bInterfaceClass != USB_CLASS_AUDIO &&
++	     altsd->bInterfaceClass != USB_CLASS_VENDOR_SPEC) ||
++	    altsd->bInterfaceSubClass != USB_SUBCLASS_AUDIO_STREAMING) {
++		snd_printdd(KERN_ERR "%d:%u:%d: skipping non-supported interface %d\n",
++					dev->devnum, ctrlif, interface, altsd->bInterfaceClass);
++		/* skip non-supported classes */
++		return -EINVAL;
++	}
++
++	if (snd_usb_get_speed(dev) == USB_SPEED_LOW) {
++		snd_printk(KERN_ERR "low speed audio streaming not supported\n");
++		return -EINVAL;
++	}
++
++	if (! parse_audio_endpoints(chip, interface)) {
++		usb_set_interface(dev, interface, 0); /* reset the current interface */
++		usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
++		return -EINVAL;
++	}
++
++	return 0;
 +}
 +
-+static inline int omap_mcpdm_read(u16 reg)
-+{
-+       return __raw_readl(mcpdm->io_base + reg);
-+}
-+
-+static void omap_mcpdm_reg_dump(void)
-+{
-+       dev_dbg(mcpdm->dev, "***********************\n");
-+       dev_dbg(mcpdm->dev, "IRQSTATUS_RAW:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQSTATUS_RAW));
-+       dev_dbg(mcpdm->dev, "IRQSTATUS:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQSTATUS));
-+       dev_dbg(mcpdm->dev, "IRQENABLE_SET:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQENABLE_SET));
-+       dev_dbg(mcpdm->dev, "IRQENABLE_CLR:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQENABLE_CLR));
-+       dev_dbg(mcpdm->dev, "IRQWAKE_EN: 0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_IRQWAKE_EN));
-+       dev_dbg(mcpdm->dev, "DMAENABLE_SET: 0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DMAENABLE_SET));
-+       dev_dbg(mcpdm->dev, "DMAENABLE_CLR:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DMAENABLE_CLR));
-+       dev_dbg(mcpdm->dev, "DMAWAKEEN:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DMAWAKEEN));
-+       dev_dbg(mcpdm->dev, "CTRL:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_CTRL));
-+       dev_dbg(mcpdm->dev, "DN_DATA:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DN_DATA));
-+       dev_dbg(mcpdm->dev, "UP_DATA: 0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_UP_DATA));
-+       dev_dbg(mcpdm->dev, "FIFO_CTRL_DN: 0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_FIFO_CTRL_DN));
-+       dev_dbg(mcpdm->dev, "FIFO_CTRL_UP:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_FIFO_CTRL_UP));
-+       dev_dbg(mcpdm->dev, "DN_OFFSET:  0x%04x\n",
-+                       omap_mcpdm_read(MCPDM_DN_OFFSET));
-+       dev_dbg(mcpdm->dev, "***********************\n");
-+}
-+
-+/*
-+ * Takes the McPDM module in and out of reset state.
-+ * Uplink and downlink can be reset individually.
-+ */
-+static void omap_mcpdm_reset_capture(int reset)
-+{
-+       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+
-+       if (reset)
-+               ctrl |= SW_UP_RST;
-+       else
-+               ctrl &= ~SW_UP_RST;
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+}
-+
-+static void omap_mcpdm_reset_playback(int reset)
-+{
-+       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+
-+       if (links & MCPDM_DOWNLINK) {
-+               if (reset)
-+                       ctrl |= SW_DN_RST;
-+               else
-+                       ctrl &= ~SW_DN_RST;
-+       }
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+}
-+
-+/*
-+ * Enables the transfer through the PDM interface to/from the Phoenix
-+ * codec by enabling the corresponding UP or DN channels.
-+ */
-+void omap_mcpdm_start(int stream)
-+{
-+       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+
-+       if (stream)
-+               ctrl |= mcpdm->up_channels;
-+       else
-+               ctrl |= mcpdm->dn_channels;
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+}
-+
-+/*
-+ * Disables the transfer through the PDM interface to/from the Phoenix
-+ * codec by disabling the corresponding UP or DN channels.
-+ */
-+void omap_mcpdm_stop(int stream)
-+{
-+       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+
-+       if (stream)
-+               ctrl &= ~mcpdm->up_channels;
-+       else
-+               ctrl &= ~mcpdm->dn_channels;
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+}
-+
-+/*
-+ * Configures McPDM uplink for audio recording.
-+ * This function should be called before omap_mcpdm_start.
-+ */
-+int omap_mcpdm_capture_open(struct omap_mcpdm_link *uplink)
-+{
-+       int irq_mask = 0;
-+       int ctrl;
-+
-+       if (!uplink)
-+               return -EINVAL;
-+
-+       mcpdm->uplink = uplink;
-+
-+       /* Enable irq request generation */
-+       irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
-+       omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
-+
-+       /* Configure uplink threshold */
-+       if (uplink->threshold > UP_THRES_MAX)
-+               uplink->threshold = UP_THRES_MAX;
-+
-+       omap_mcpdm_write(MCPDM_FIFO_CTRL_UP, uplink->threshold);
-+
-+       /* Configure DMA controller */
-+       omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_UP_ENABLE);
-+
-+       /* Set pdm out format */
-+       ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+       ctrl &= ~PDMOUTFORMAT;
-+       ctrl |= uplink->format & PDMOUTFORMAT;
-+
-+       /* Uplink channels */
-+       mcpdm->up_channels = uplink->channels & (PDM_UP_MASK | PDM_STATUS_MASK);
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+
-+       return 0;
-+}
-+
-+/*
-+ * Configures McPDM downlink for audio playback.
-+ * This function should be called before omap_mcpdm_start.
-+ */
-+int omap_mcpdm_playback_open(struct omap_mcpdm_link *downlink)
-+{
-+       int irq_mask = 0;
-+       int ctrl;
-+
-+       if (!downlink)
-+               return -EINVAL;
-+
-+       mcpdm->downlink = downlink;
-+
-+       /* Enable irq request generation */
-+       irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
-+       omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
-+
-+       /* Configure uplink threshold */
-+       if (downlink->threshold > DN_THRES_MAX)
-+               downlink->threshold = DN_THRES_MAX;
-+
-+       omap_mcpdm_write(MCPDM_FIFO_CTRL_DN, downlink->threshold);
-+
-+       /* Enable DMA request generation */
-+       omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_DN_ENABLE);
-+
-+       /* Set pdm out format */
-+       ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+       ctrl &= ~PDMOUTFORMAT;
-+       ctrl |= downlink->format & PDMOUTFORMAT;
-+
-+       /* Downlink channels */
-+       mcpdm->dn_channels = downlink->channels & (PDM_DN_MASK | PDM_CMD_MASK);
-+
-+       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+
-+       return 0;
-+}
-+
-+/*
-+ * Cleans McPDM uplink configuration.
-+ * This function should be called when the stream is closed.
-+ */
-+int omap_mcpdm_capture_close(struct omap_mcpdm_link *uplink)
-+{
-+       int irq_mask = 0;
-+
-+       if (!uplink)
-+               return -EINVAL;
-+
-+       /* Disable irq request generation */
-+       irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
-+       omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
-+
-+       /* Disable DMA request generation */
-+       omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_UP_ENABLE);
-+
-+       /* Clear Downlink channels */
-+       mcpdm->up_channels = 0;
-+
-+       mcpdm->uplink = NULL;
-+
-+       return 0;
-+}
-+
-+/*
-+ * Cleans McPDM downlink configuration.
-+ * This function should be called when the stream is closed.
-+ */
-+int omap_mcpdm_playback_close(struct omap_mcpdm_link *downlink)
-+{
-+       int irq_mask = 0;
-+
-+       if (!downlink)
-+               return -EINVAL;
-+
-+       /* Disable irq request generation */
-+       irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
-+       omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
-+
-+       /* Disable DMA request generation */
-+       omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_DN_ENABLE);
-+
-+       /* clear Downlink channels */
-+       mcpdm->dn_channels = 0;
-+
-+       mcpdm->downlink = NULL;
-+
-+       return 0;
-+}
-+
-+static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
-+{
-+       struct omap_mcpdm *mcpdm_irq = dev_id;
-+       int irq_status;
-+
-+       irq_status = omap_mcpdm_read(MCPDM_IRQSTATUS);
-+
-+       /* Acknowledge irq event */
-+       omap_mcpdm_write(MCPDM_IRQSTATUS, irq_status);
-+
-+       if (irq & MCPDM_DN_IRQ_FULL) {
-+               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
-+               omap_mcpdm_reset_playback(1);
-+               omap_mcpdm_playback_open(mcpdm_irq->downlink);
-+               omap_mcpdm_reset_playback(0);
-+       }
-+
-+       if (irq & MCPDM_DN_IRQ_EMPTY) {
-+               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
-+               omap_mcpdm_reset_playback(1);
-+               omap_mcpdm_playback_open(mcpdm_irq->downlink);
-+               omap_mcpdm_reset_playback(0);
-+       }
-+
-+       if (irq & MCPDM_DN_IRQ) {
-+               dev_dbg(mcpdm_irq->dev, "DN write request\n");
-+       }
-+
-+       if (irq & MCPDM_UP_IRQ_FULL) {
-+               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
-+               omap_mcpdm_reset_capture(1);
-+               omap_mcpdm_capture_open(mcpdm_irq->uplink);
-+               omap_mcpdm_reset_capture(0);
-+       }
-+
-+       if (irq & MCPDM_UP_IRQ_EMPTY) {
-+               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
-+               omap_mcpdm_reset_capture(1);
-+               omap_mcpdm_capture_open(mcpdm_irq->uplink);
-+               omap_mcpdm_reset_capture(0);
-+       }
-+
-+       if (irq & MCPDM_UP_IRQ) {
-+               dev_dbg(mcpdm_irq->dev, "UP write request\n");
-+       }
-+
-+       return IRQ_HANDLED;
-+}
-+
-+int omap_mcpdm_request(void)
-+{
-+       int ret;
-+
-+       clk_enable(mcpdm->clk);
-+
-+       spin_lock(&mcpdm->lock);
-+
-+       if (!mcpdm->free) {
-+               dev_err(mcpdm->dev, "McPDM interface is in use\n");
-+               spin_unlock(&mcpdm->lock);
-+               ret = -EBUSY;
-+               goto err;
-+       }
-+       mcpdm->free = 0;
-+
-+       spin_unlock(&mcpdm->lock);
-+
-+       /* Disable lines while request is ongoing */
-+       omap_mcpdm_write(MCPDM_CTRL, 0x00);
-+
-+       ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler,
-+                               0, "McPDM", (void *)mcpdm);
-+       if (ret) {
-+               dev_err(mcpdm->dev, "Request for McPDM IRQ failed\n");
-+               goto err;
-+       }
-+
-+       return 0;
-+
-+err:
-+       clk_disable(mcpdm->clk);
-+       return ret;
-+}
-+
-+void omap_mcpdm_free(void)
-+{
-+       spin_lock(&mcpdm->lock);
-+       if (mcpdm->free) {
-+               dev_err(mcpdm->dev, "McPDM interface is already free\n");
-+               spin_unlock(&mcpdm->lock);
-+               return;
-+       }
-+       mcpdm->free = 1;
-+       spin_unlock(&mcpdm->lock);
-+
-+       clk_disable(mcpdm->clk);
-+
-+       free_irq(mcpdm->irq, (void *)mcpdm);
-+}
-+
-+/* Enable/disable DC offset cancelation for the analog
-+ * headset path (PDM channels 1 and 2).
-+ */
-+int omap_mcpdm_set_offset(int offset1, int offset2)
-+{
-+       int offset;
-+
-+       if ((offset1 > DN_OFST_MAX) || (offset2 > DN_OFST_MAX))
-+               return -EINVAL;
-+
-+       offset = (offset1 << DN_OFST_RX1) | (offset2 << DN_OFST_RX2);
-+
-+       /* offset cancellation for channel 1 */
-+       if (offset1)
-+               offset |= DN_OFST_RX1_EN;
-+       else
-+               offset &= ~DN_OFST_RX1_EN;
-+
-+       /* offset cancellation for channel 2 */
-+       if (offset2)
-+               offset |= DN_OFST_RX2_EN;
-+       else
-+               offset &= ~DN_OFST_RX2_EN;
-+
-+       omap_mcpdm_write(MCPDM_DN_OFFSET, offset);
-+
-+       return 0;
-+}
-+
-+static int __devinit omap_mcpdm_probe(struct platform_device *pdev)
-+{
-+       struct resource *res;
-+       int ret = 0;
-+
-+       mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
-+       if (!mcpdm) {
-+               ret = -ENOMEM;
-+               goto exit;
-+       }
-+
-+       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+       if (res == NULL) {
-+               dev_err(&pdev->dev, "no resource\n");
-+               goto err_resource;
-+       }
-+
-+       spin_lock_init(&mcpdm->lock);
-+       mcpdm->free = 1;
-+       mcpdm->io_base = ioremap(res->start, resource_size(res));
-+       if (!mcpdm->io_base) {
-+               ret = -ENOMEM;
-+               goto err_resource;
-+       }
-+
-+       mcpdm->irq = platform_get_irq(pdev, 0);
-+
-+       mcpdm->clk = clk_get(&pdev->dev, "pdm_ck");
-+       if (IS_ERR(mcpdm->clk)) {
-+               ret = PTR_ERR(mcpdm->clk);
-+               dev_err(&pdev->dev, "unable to get pdm_ck: %d\n", ret);
-+               goto err_clk;
-+       }
-+
-+       mcpdm->dev = &pdev->dev;
-+       platform_set_drvdata(pdev, mcpdm);
-+
-+       return 0;
-+
-+err_clk:
-+       iounmap(mcpdm->io_base);
-+err_resource:
-+       kfree(mcpdm);
-+exit:
-+       return ret;
-+}
-+
-+static int __devexit omap_mcpdm_remove(struct platform_device *pdev)
-+{
-+       struct omap_mcpdm *mcpdm_ptr = platform_get_drvdata(pdev);
-+
-+       platform_set_drvdata(pdev, NULL);
-+
-+       clk_put(mcpdm_ptr->clk);
-+
-+       iounmap(mcpdm_ptr->io_base);
-+
-+       mcpdm_ptr->clk = NULL;
-+       mcpdm_ptr->free = 0;
-+       mcpdm_ptr->dev = NULL;
-+
-+       kfree(mcpdm_ptr);
-+
-+       return 0;
-+}
-+
-+static struct platform_driver omap_mcpdm_driver = {
-+       .probe = omap_mcpdm_probe,
-+       .remove = __devexit_p(omap_mcpdm_remove),
-+       .driver = {
-+               .name = "omap-mcpdm",
-+       },
-+};
-+
-+static struct platform_device *omap_mcpdm_device;
-+
-+static int __init omap_mcpdm_init(void)
-+{
-+       return platform_driver_register(&omap_mcpdm_driver);
-+}
-+arch_initcall(omap_mcpdm_init);
-diff --git a/sound/soc/omap/mcpdm.h b/sound/soc/omap/mcpdm.h
-new file mode 100644
-index 0000000..41e50cc
---- /dev/null
-+++ b/sound/soc/omap/mcpdm.h
-@@ -0,0 +1,151 @@
-+/*
-+ * mcpdm.h -- Defines for McPDM driver
-+ *
-+ * Author: Jorge Eduardo Candelaria <x0107209@ti.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
-+
-+/* McPDM registers */
-+
-+#define MCPDM_REVISION         0x00
-+#define MCPDM_SYSCONFIG                0x10
-+#define MCPDM_IRQSTATUS_RAW    0x24
-+#define MCPDM_IRQSTATUS                0x28
-+#define MCPDM_IRQENABLE_SET    0x2C
-+#define MCPDM_IRQENABLE_CLR    0x30
-+#define MCPDM_IRQWAKE_EN       0x34
-+#define MCPDM_DMAENABLE_SET    0x38
-+#define MCPDM_DMAENABLE_CLR    0x3C
-+#define MCPDM_DMAWAKEEN                0x40
-+#define MCPDM_CTRL             0x44
-+#define MCPDM_DN_DATA          0x48
-+#define MCPDM_UP_DATA          0x4C
-+#define MCPDM_FIFO_CTRL_DN     0x50
-+#define MCPDM_FIFO_CTRL_UP     0x54
-+#define MCPDM_DN_OFFSET                0x58
-+
-+/*
-+ * MCPDM_IRQ bit fields
-+ * IRQSTATUS_RAW, IRQSTATUS, IRQENABLE_SET, IRQENABLE_CLR
-+ */
-+
-+#define MCPDM_DN_IRQ                   (1 << 0)
-+#define MCPDM_DN_IRQ_EMPTY             (1 << 1)
-+#define MCPDM_DN_IRQ_ALMST_EMPTY       (1 << 2)
-+#define MCPDM_DN_IRQ_FULL              (1 << 3)
-+
-+#define MCPDM_UP_IRQ                   (1 << 8)
-+#define MCPDM_UP_IRQ_EMPTY             (1 << 9)
-+#define MCPDM_UP_IRQ_ALMST_FULL                (1 << 10)
-+#define MCPDM_UP_IRQ_FULL              (1 << 11)
-+
-+#define MCPDM_DOWNLINK_IRQ_MASK                0x00F
-+#define MCPDM_UPLINK_IRQ_MASK          0xF00
-+
-+/*
-+ * MCPDM_DMAENABLE bit fields
-+ */
-+
-+#define DMA_DN_ENABLE          0x1
-+#define DMA_UP_ENABLE          0x2
-+
-+/*
-+ * MCPDM_CTRL bit fields
-+ */
-+
-+#define PDM_UP1_EN             0x0001
-+#define PDM_UP2_EN             0x0002
-+#define PDM_UP3_EN             0x0004
-+#define PDM_DN1_EN             0x0008
-+#define PDM_DN2_EN             0x0010
-+#define PDM_DN3_EN             0x0020
-+#define PDM_DN4_EN             0x0040
-+#define PDM_DN5_EN             0x0080
-+#define PDMOUTFORMAT           0x0100
-+#define CMD_INT                        0x0200
-+#define STATUS_INT             0x0400
-+#define SW_UP_RST              0x0800
-+#define SW_DN_RST              0x1000
-+#define PDM_UP_MASK            0x007
-+#define PDM_DN_MASK            0x0F8
-+#define PDM_CMD_MASK           0x200
-+#define PDM_STATUS_MASK                0x400
-+
-+
-+#define PDMOUTFORMAT_LJUST     (0 << 8)
-+#define PDMOUTFORMAT_RJUST     (1 << 8)
-+
-+/*
-+ * MCPDM_FIFO_CTRL bit fields
-+ */
-+
-+#define UP_THRES_MAX           0xF
-+#define DN_THRES_MAX           0xF
-+
-+/*
-+ * MCPDM_DN_OFFSET bit fields
-+ */
-+
-+#define DN_OFST_RX1_EN         0x0001
-+#define DN_OFST_RX2_EN         0x0100
-+
-+#define DN_OFST_RX1            1
-+#define DN_OFST_RX2            9
-+#define DN_OFST_MAX            0x1F
-+
-+#define MCPDM_UPLINK           1
-+#define MCPDM_DOWNLINK         2
-+
-+struct omap_mcpdm_link {
-+       int irq_mask;
-+       int threshold;
-+       int format;
-+       int channels;
-+};
-+
-+struct omap_mcpdm_platform_data {
-+       unsigned long phys_base;
-+       u16 irq;
-+};
-+
-+struct omap_mcpdm {
-+       struct device *dev;
-+       unsigned long phys_base;
-+       void __iomem *io_base;
-+       u8 free;
-+       int irq;
-+
-+       spinlock_t lock;
-+       struct omap_mcpdm_platform_data *pdata;
-+       struct clk *clk;
-+       struct omap_mcpdm_link *downlink;
-+       struct omap_mcpdm_link *uplink;
-+       struct completion irq_completion;
-+
-+       int dn_channels;
-+       int up_channels;
-+};
-+
-+extern void omap_mcpdm_start(int stream);
-+extern void omap_mcpdm_stop(int stream);
-+extern int omap_mcpdm_capture_open(struct omap_mcpdm_link *uplink);
-+extern int omap_mcpdm_playback_open(struct omap_mcpdm_link *downlink);
-+extern int omap_mcpdm_capture_close(struct omap_mcpdm_link *uplink);
-+extern int omap_mcpdm_playback_close(struct omap_mcpdm_link *downlink);
-+extern int omap_mcpdm_request(void);
-+extern void omap_mcpdm_free(void);
-+extern int omap_mcpdm_set_offset(int offset1, int offset2);
---
-1.6.0.4
+ /*
+  * parse audio control descriptor and create pcm/midi streams
+  */
+@@ -2882,69 +2958,36 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
+ {
+ 	struct usb_device *dev = chip->dev;
+ 	struct usb_host_interface *host_iface;
+-	struct usb_interface *iface;
+-	unsigned char *p1;
+-	int i, j;
++	struct uac_ac_header_descriptor_v1 *h1;
++	void *control_header;
++	int i;
+ 
+ 	/* find audiocontrol interface */
+ 	host_iface = &usb_ifnum_to_if(dev, ctrlif)->altsetting[0];
+-	if (!(p1 = snd_usb_find_csint_desc(host_iface->extra, host_iface->extralen, NULL, HEADER))) {
++	control_header = snd_usb_find_csint_desc(host_iface->extra,
++						 host_iface->extralen,
++						 NULL, HEADER);
++
++	if (!control_header) {
+ 		snd_printk(KERN_ERR "cannot find HEADER\n");
+ 		return -EINVAL;
+ 	}
+-	if (! p1[7] || p1[0] < 8 + p1[7]) {
+-		snd_printk(KERN_ERR "invalid HEADER\n");
++
++	h1 = control_header;
++
++	if (!h1->bInCollection) {
++		snd_printk(KERN_INFO "skipping empty audio interface (v1)\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	/*
+-	 * parse all USB audio streaming interfaces
+-	 */
+-	for (i = 0; i < p1[7]; i++) {
+-		struct usb_host_interface *alts;
+-		struct usb_interface_descriptor *altsd;
+-		j = p1[8 + i];
+-		iface = usb_ifnum_to_if(dev, j);
+-		if (!iface) {
+-			snd_printk(KERN_ERR "%d:%u:%d : does not exist\n",
+-				   dev->devnum, ctrlif, j);
+-			continue;
+-		}
+-		if (usb_interface_claimed(iface)) {
+-			snd_printdd(KERN_INFO "%d:%d:%d: skipping, already claimed\n", dev->devnum, ctrlif, j);
+-			continue;
+-		}
+-		alts = &iface->altsetting[0];
+-		altsd = get_iface_desc(alts);
+-		if ((altsd->bInterfaceClass == USB_CLASS_AUDIO ||
+-		     altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC) &&
+-		    altsd->bInterfaceSubClass == USB_SUBCLASS_MIDI_STREAMING) {
+-			int err = snd_usbmidi_create(chip->card, iface,
+-						     &chip->midi_list, NULL);
+-			if (err < 0) {
+-				snd_printk(KERN_ERR "%d:%u:%d: cannot create sequencer device\n", dev->devnum, ctrlif, j);
+-				continue;
+-			}
+-			usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
+-			continue;
+-		}
+-		if ((altsd->bInterfaceClass != USB_CLASS_AUDIO &&
+-		     altsd->bInterfaceClass != USB_CLASS_VENDOR_SPEC) ||
+-		    altsd->bInterfaceSubClass != USB_SUBCLASS_AUDIO_STREAMING) {
+-			snd_printdd(KERN_ERR "%d:%u:%d: skipping non-supported interface %d\n", dev->devnum, ctrlif, j, altsd->bInterfaceClass);
+-			/* skip non-supported classes */
+-			continue;
+-		}
+-		if (snd_usb_get_speed(dev) == USB_SPEED_LOW) {
+-			snd_printk(KERN_ERR "low speed audio streaming not supported\n");
+-			continue;
+-		}
+-		if (! parse_audio_endpoints(chip, j)) {
+-			usb_set_interface(dev, j, 0); /* reset the current interface */
+-			usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
+-		}
++	if (h1->bLength < sizeof(*h1) + h1->bInCollection) {
++		snd_printk(KERN_ERR "invalid HEADER (v1)\n");
++		return -EINVAL;
+ 	}
+ 
++	for (i = 0; i < h1->bInCollection; i++)
++		snd_usb_create_stream(chip, ctrlif, h1->baInterfaceNr[i]);
++
+ 	return 0;
+ }
+ 
+@@ -3581,7 +3624,6 @@ static void *snd_usb_audio_probe(struct usb_device *dev,
+ 	ifnum = get_iface_desc(alts)->bInterfaceNumber;
+ 	id = USB_ID(le16_to_cpu(dev->descriptor.idVendor),
+ 		    le16_to_cpu(dev->descriptor.idProduct));
+-
+ 	if (quirk && quirk->ifnum >= 0 && ifnum != quirk->ifnum)
+ 		goto __err_val;
+ 
+diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
+index dd0c1d7..3631595 100644
+--- a/sound/usb/usbmixer.c
++++ b/sound/usb/usbmixer.c
+@@ -32,6 +32,8 @@
+ #include <linux/slab.h>
+ #include <linux/string.h>
+ #include <linux/usb.h>
++#include <linux/usb/audio.h>
++
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/hwdep.h>
+@@ -278,7 +280,6 @@ static void *find_audio_control_unit(struct mixer_build *state, unsigned char un
+ {
+ 	unsigned char *p;
+ 
+-	p = NULL;
+ 	while ((p = snd_usb_find_desc(state->buffer, state->buflen, p,
+ 				      USB_DT_CS_INTERFACE)) != NULL) {
+ 		if (p[0] >= 4 && p[2] >= INPUT_TERMINAL && p[2] <= EXTENSION_UNIT && p[3] == unit)
+@@ -1083,29 +1084,30 @@ static void build_feature_ctl(struct mixer_build *state, unsigned char *desc,
+  *
+  * most of controlls are defined here.
+  */
+-static int parse_audio_feature_unit(struct mixer_build *state, int unitid, unsigned char *ftr)
++static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void *_ftr)
+ {
+ 	int channels, i, j;
+ 	struct usb_audio_term iterm;
+ 	unsigned int master_bits, first_ch_bits;
+ 	int err, csize;
++	struct uac_feature_unit_descriptor *ftr = _ftr;
+ 
+-	if (ftr[0] < 7 || ! (csize = ftr[5]) || ftr[0] < 7 + csize) {
++	if (ftr->bLength < 7 || ! (csize = ftr->bControlSize) || ftr->bLength < 7 + csize) {
+ 		snd_printk(KERN_ERR "usbaudio: unit %u: invalid FEATURE_UNIT descriptor\n", unitid);
+ 		return -EINVAL;
+ 	}
+ 
+ 	/* parse the source unit */
+-	if ((err = parse_audio_unit(state, ftr[4])) < 0)
++	if ((err = parse_audio_unit(state, ftr->bSourceID)) < 0)
+ 		return err;
+ 
+ 	/* determine the input source type and name */
+-	if (check_input_term(state, ftr[4], &iterm) < 0)
++	if (check_input_term(state, ftr->bSourceID, &iterm) < 0)
+ 		return -EINVAL;
+ 
+-	channels = (ftr[0] - 7) / csize - 1;
++	channels = (ftr->bLength - 7) / csize - 1;
+ 
+-	master_bits = snd_usb_combine_bytes(ftr + 6, csize);
++	master_bits = snd_usb_combine_bytes(ftr->controls, csize);
+ 	/* master configuration quirks */
+ 	switch (state->chip->usb_id) {
+ 	case USB_ID(0x08bb, 0x2702):
+@@ -1116,21 +1118,21 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, unsig
+ 		break;
+ 	}
+ 	if (channels > 0)
+-		first_ch_bits = snd_usb_combine_bytes(ftr + 6 + csize, csize);
++		first_ch_bits = snd_usb_combine_bytes(ftr->controls + csize, csize);
+ 	else
+ 		first_ch_bits = 0;
+ 	/* check all control types */
+ 	for (i = 0; i < 10; i++) {
+ 		unsigned int ch_bits = 0;
+ 		for (j = 0; j < channels; j++) {
+-			unsigned int mask = snd_usb_combine_bytes(ftr + 6 + csize * (j+1), csize);
++			unsigned int mask = snd_usb_combine_bytes(ftr->controls + csize * (j+1), csize);
+ 			if (mask & (1 << i))
+ 				ch_bits |= (1 << j);
+ 		}
+ 		if (ch_bits & 1) /* the first channel must be set (for ease of programming) */
+-			build_feature_ctl(state, ftr, ch_bits, i, &iterm, unitid);
++			build_feature_ctl(state, _ftr, ch_bits, i, &iterm, unitid);
+ 		if (master_bits & (1 << i))
+-			build_feature_ctl(state, ftr, 0, i, &iterm, unitid);
++			build_feature_ctl(state, _ftr, 0, i, &iterm, unitid);
+ 	}
+ 
+ 	return 0;
+@@ -1777,7 +1779,7 @@ static int snd_usb_mixer_dev_free(struct snd_device *device)
+  */
+ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+ {
+-	unsigned char *desc;
++	struct uac_output_terminal_descriptor_v1 *desc;
+ 	struct mixer_build state;
+ 	int err;
+ 	const struct usbmix_ctl_map *map;
+@@ -1800,15 +1802,14 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+ 		}
+ 	}
+ 
+-	desc = NULL;
+ 	while ((desc = snd_usb_find_csint_desc(hostif->extra, hostif->extralen, desc, OUTPUT_TERMINAL)) != NULL) {
+-		if (desc[0] < 9)
++		if (desc->bLength < 9)
+ 			continue; /* invalid descriptor? */
+-		set_bit(desc[3], state.unitbitmap);  /* mark terminal ID as visited */
+-		state.oterm.id = desc[3];
+-		state.oterm.type = combine_word(&desc[4]);
+-		state.oterm.name = desc[8];
+-		err = parse_audio_unit(&state, desc[7]);
++		set_bit(desc->bTerminalID, state.unitbitmap);  /* mark terminal ID as visited */
++		state.oterm.id = desc->bTerminalID;
++		state.oterm.type = le16_to_cpu(desc->wTerminalType);
++		state.oterm.name = desc->iTerminal;
++		err = parse_audio_unit(&state, desc->bSourceID);
+ 		if (err < 0)
+ 			return err;
+ 	}
+-- 
+1.6.6.2
