@@ -1,18 +1,15 @@
-From: Reimundo Heluani <rheluani@gmail.com>
-Subject: Re: Macbook Air 2,1 - no mic nor main speakers
-Date: Sun, 21 Feb 2010 22:30:58 -0800
-Message-ID: <1266820258.3074.16.camel@vino>
-References: <1265480879.2466.21.camel@vino>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: [PATCH 2/3] ASOC: ATMEL: Getting cpu_dai method change
+Date: Mon, 22 Feb 2010 15:59:02 +0900
+Message-ID: <1b68c6791002212259kc4c0edav2f9d6c6b0d9b51c5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=001636920a05dc521204802af72c
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id 483D810380D
-	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 07:31:01 +0100 (CET)
-Received: by qw-out-1920.google.com with SMTP id 5so332253qwf.56
-	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 22:31:00 -0800 (PST)
-In-Reply-To: <1265480879.2466.21.camel@vino>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id F2E522439E
+	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 07:59:02 +0100 (CET)
+Received: by vws13 with SMTP id 13so320984vws.38
+	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 22:59:02 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,167 +19,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2010-02-06 at 10:27 -0800, Reimundo Heluani wrote:
-> Hello list, this came up a year ago and Takashi's answer was "a broken
-> bios". I was hoping someone here could point me to documentation to read
-> in order to diagnose the problem if indeed is a broken bios. I don't
-> want to start randombly reading the driver's code.
-> 
-> Macbook Air 2,1
-> 2.6.32-gentoo-r3 SMP x86_64
-> Alsa Driver 1.0.21 libs 1.0.22
-> nVidia Corporation MCP79 High Definition Audio (rev b1)
-> HDA NVidia at 0x93380000 irq 19
-> 00:08.0 0403: 10de:0ac0 (rev b1)  Subsystem: 10de:cb79
-> Codec: Realtek ALC889A
-> 
-> Booting with snd_hda_intel.model=mbp3 get sound on headphones, but not on mainspeakers. The mic never worked.
-> 
+--001636920a05dc521204802af72c
+Content-Type: text/plain; charset=UTF-8
 
-Hello again, I found out that puting the pin in 0x18 as a PIN_OUT I get
-sound in the internal speaker. Currently I can change patch_realtek.c to
-load the driver using an "mba21" model and I get sound on the main
-speaker. One of the (many) problems I have is that I need to use
-something like
+[PATCH 2/3] ASOC: ATMEL: Getting cpu_dai method change
 
-{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, (PIN_OUT | AC_PINCTL_VREF_50) } 
+Currently only the atmel driver make use of snd_soc_dai.runtime field.
+If the dais are to be shared among two or more dai_links, the field
+must be got rid of.
+So, in atmel driver reach the substream via dai_link->pcm so as to
+not depend of snd_soc_dai.runtime field.
 
-otherwise it goes into HiZ and I get no audio. Looking at that
-patch_realtek.c I don't see anything similar. Anyway, I don't have a
-clue about ALSA, I just started reading the HDA specification and looked
-over patch_realtek.c and came up with the small change below to have a
-working main speaker. I'd appreciate if you had any suggestion for the
-mic or to point me towards the right documentation.
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/atmel/atmel-pcm.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
-Sincerely, 
+--001636920a05dc521204802af72c
+Content-Type: application/octet-stream;
+	name="0002-ASOC-ATMEL-Getting-cpu_dai-method-change.patch"
+Content-Disposition: attachment;
+	filename="0002-ASOC-ATMEL-Getting-cpu_dai-method-change.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g5yx4oxq0
 
-R.
+RnJvbSA5MGMzYWE4NWUxN2Q0NTMzMDg2Y2M3ZjdjZGUxMDAyN2M1ZDY4OTk2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBKYXNzaSBCcmFyIDxqYXNzaS5icmFyQHNhbXN1bmcuY29tPgpE
+YXRlOiBGcmksIDE5IEZlYiAyMDEwIDE3OjU0OjIxICswOTAwClN1YmplY3Q6IFtQQVRDSCAyLzNd
+IEFTT0M6IEFUTUVMOiBHZXR0aW5nIGNwdV9kYWkgbWV0aG9kIGNoYW5nZQoKQ3VycmVudGx5IG9u
+bHkgdGhlIGF0bWVsIGRyaXZlciBtYWtlIHVzZSBvZiBzbmRfc29jX2RhaS5ydW50aW1lIGZpZWxk
+LgpJZiB0aGUgZGFpcyBhcmUgdG8gYmUgc2hhcmVkIGFtb25nIHR3byBvciBtb3JlIGRhaV9saW5r
+cywgdGhlIGZpZWxkCm11c3QgYmUgZ290IHJpZCBvZi4KU28sIGluIGF0bWVsIGRyaXZlciByZWFj
+aCB0aGUgc3Vic3RyZWFtIHZpYSBkYWlfbGluay0+cGNtIHNvIGFzIHRvCm5vdCBkZXBlbmQgb2Yg
+c25kX3NvY19kYWkucnVudGltZSBmaWVsZC4KClNpZ25lZC1vZmYtYnk6IEphc3NpIEJyYXIgPGph
+c3NpLmJyYXJAc2Ftc3VuZy5jb20+Ci0tLQogc291bmQvc29jL2F0bWVsL2F0bWVsLXBjbS5jIHwg
+ICAxMiArKysrKysrKy0tLS0KIDEgZmlsZXMgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCA0IGRl
+bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hdG1lbC9hdG1lbC1wY20uYyBiL3Nv
+dW5kL3NvYy9hdG1lbC9hdG1lbC1wY20uYwppbmRleCA2N2EzMjkyLi5mZGIyNTUzIDEwMDY0NAot
+LS0gYS9zb3VuZC9zb2MvYXRtZWwvYXRtZWwtcGNtLmMKKysrIGIvc291bmQvc29jL2F0bWVsL2F0
+bWVsLXBjbS5jCkBAIC00MTcsOCArNDE3LDEwIEBAIHN0YXRpYyB2b2lkIGF0bWVsX3BjbV9mcmVl
+X2RtYV9idWZmZXJzKHN0cnVjdCBzbmRfcGNtICpwY20pCiAjaWZkZWYgQ09ORklHX1BNCiBzdGF0
+aWMgaW50IGF0bWVsX3BjbV9zdXNwZW5kKHN0cnVjdCBzbmRfc29jX2RhaV9saW5rICpkYWlfbGlu
+aykKIHsKLQlzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSA9IGRhaV9saW5rLT5jcHVfZGFpOwotCXN0
+cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBkYWktPnJ1bnRpbWU7CisJc3RydWN0IHNu
+ZF9wY20gKnBjbSA9IGRhaV9saW5rLT5wY207CisJc3RydWN0IHNuZF9wY21fc3RyICpzdHJlYW0g
+PSAmcGNtLT5zdHJlYW1zWzBdOworCXN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFt
+ID0gc3RyZWFtLT5zdWJzdHJlYW07CisJc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSA9
+IHN1YnN0cmVhbS0+cnVudGltZTsKIAlzdHJ1Y3QgYXRtZWxfcnVudGltZV9kYXRhICpwcnRkOwog
+CXN0cnVjdCBhdG1lbF9wY21fZG1hX3BhcmFtcyAqcGFyYW1zOwogCkBAIC00NDIsOCArNDQ0LDEw
+IEBAIHN0YXRpYyBpbnQgYXRtZWxfcGNtX3N1c3BlbmQoc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsg
+KmRhaV9saW5rKQogCiBzdGF0aWMgaW50IGF0bWVsX3BjbV9yZXN1bWUoc3RydWN0IHNuZF9zb2Nf
+ZGFpX2xpbmsgKmRhaV9saW5rKQogewotCXN0cnVjdCBzbmRfc29jX2RhaSAqZGFpID0gZGFpX2xp
+bmstPmNwdV9kYWk7Ci0Jc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSA9IGRhaS0+cnVu
+dGltZTsKKwlzdHJ1Y3Qgc25kX3BjbSAqcGNtID0gZGFpX2xpbmstPnBjbTsKKwlzdHJ1Y3Qgc25k
+X3BjbV9zdHIgKnN0cmVhbSA9ICZwY20tPnN0cmVhbXNbMF07CisJc3RydWN0IHNuZF9wY21fc3Vi
+c3RyZWFtICpzdWJzdHJlYW0gPSBzdHJlYW0tPnN1YnN0cmVhbTsKKwlzdHJ1Y3Qgc25kX3BjbV9y
+dW50aW1lICpydW50aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOwogCXN0cnVjdCBhdG1lbF9ydW50
+aW1lX2RhdGEgKnBydGQ7CiAJc3RydWN0IGF0bWVsX3BjbV9kbWFfcGFyYW1zICpwYXJhbXM7CiAK
+LS0gCjEuNi4yLjUKCg==
+--001636920a05dc521204802af72c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-*** patch_realtek.c.orig	Sun Feb 21 01:23:58 2010
---- patch_realtek.c	Sun Feb 21 19:42:13 2010
-***************
-*** 205,210 ****
---- 205,211 ----
-  	ALC882_ASUS_A7J,
-  	ALC882_ASUS_A7M,
-  	ALC885_MACPRO,
-+ 	ALC885_MBA21,
-  	ALC885_MBP3,
-  	ALC885_MB5,
-  	ALC885_IMAC24,
-***************
-*** 6749,6754 ****
---- 6750,6766 ----
-  	{ 8, alc882_sixstack_ch8_init },
-  };
-  
-+ /* Macbook Air I have no clue how it works yet */
-+ 
-+ static struct hda_verb alc885_mba21_init[] = {
-+ 	{ 0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
-+ 	{ } /* end */
-+ };
-+ 
-+ static struct hda_channel_mode alc885_mba21_ch_modes[1] = {
-+ 	{ 2, alc885_mba21_init },
-+ };
-+ 
-  /*
-   * macbook pro ALC885 can switch LineIn to LineOut without losing Mic
-   */
-***************
-*** 7020,7025 ****
---- 7032,7045 ----
-  	{ } /* end */
-  };
-  
-+ 
-+ static struct snd_kcontrol_new alc885_mba21_mixer[] = {
-+ 	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
-+ 	HDA_BIND_MUTE	("Speaker Playback Switch", 0x0c, 0x02, HDA_OUTPUT),
-+ 	{ }
-+ };
-+ 
-+ 
-  static struct snd_kcontrol_new alc885_mbp3_mixer[] = {
-  	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
-  	HDA_BIND_MUTE   ("Speaker Playback Switch", 0x0c, 0x02, HDA_INPUT),
-***************
-*** 7444,7449 ****
---- 7464,7482 ----
-  	{ }
-  };
-  
-+ static struct hda_verb alc885_mba21_init_verbs[] = {
-+ 	/*Internal Speaker Mixer*/
-+ 	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO}, 
-+     {0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+ 	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+ 	/*Internal Speaker Pin*/
-+ 	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, (PIN_OUT |
-AC_PINCTL_VREF_50) },
-+ 	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+ 	{0x18, AC_VERB_SET_CONNECT_SEL, 0x00},
-+ 
-+ 	{ }
-+ };
-+ 
-  /* Macbook Pro rev3 */
-  static struct hda_verb alc885_mbp3_init_verbs[] = {
-  	/* Front mixer: unmute input/output amp left and right (volume = 0)
-*/
-***************
-*** 7546,7551 ****
---- 7579,7593 ----
-  	spec->autocfg.speaker_pins[1] = 0x1a;
-  }
-  
-+ /* Macbook Air don't know how this works */
-+ static void alc885_mba21_setup (struct hda_codec *codec)
-+ {
-+ 	struct alc_spec *spec = codec->spec;
-+ 
-+ 	spec->autocfg.speaker_pins[0] = 0x18;
-+ }
-+ 
-+ 
-  static void alc885_mbp3_setup(struct hda_codec *codec)
-  {
-  	struct alc_spec *spec = codec->spec;
-***************
-*** 8737,8742 ****
---- 8779,8785 ----
-  	[ALC882_ASUS_A7M]	= "asus-a7m",
-  	[ALC885_MACPRO]		= "macpro",
-  	[ALC885_MB5]		= "mb5",
-+ 	[ALC885_MBA21]		= "mba21",
-  	[ALC885_MBP3]		= "mbp3",
-  	[ALC885_IMAC24]		= "imac24",
-  	[ALC883_3ST_2ch_DIG]	= "3stack-2ch-dig",
-***************
-*** 8969,8974 ****
---- 9012,9032 ----
-  		.input_mux = &alc882_capture_source,
-  		.dig_out_nid = ALC882_DIGOUT_NID,
-  	},
-+ 	[ALC885_MBA21] = {
-+ 		.mixers = { alc885_mba21_mixer }, 
-+ 		.init_verbs = { alc885_mba21_init_verbs, alc880_gpio1_init_verbs },
-+ 		.num_dacs = 2,
-+ 		.dac_nids = alc882_dac_nids,
-+ 		.hp_nid = 0x04,
-+ 		.channel_mode = alc885_mba21_ch_modes,
-+ 		.num_channel_mode = ARRAY_SIZE(alc885_mba21_ch_modes),
-+ 		.input_mux = &alc882_capture_source,
-+ 		.dig_out_nid = ALC882_DIGOUT_NID,
-+ 		.dig_in_nid = ALC882_DIGIN_NID,
-+ 		.unsol_event = alc_automute_amp_unsol_event,
-+ 		.setup = alc885_mba21_setup,
-+ 		.init_hook = alc_automute_amp,
-+ 	},
-  	[ALC885_MBP3] = {
-  		.mixers = { alc885_mbp3_mixer, alc882_chmode_mixer },
-  		.init_verbs = { alc885_mbp3_init_verbs,
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--001636920a05dc521204802af72c--
