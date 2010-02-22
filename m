@@ -1,22 +1,18 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: aplay: possible circular locking dependency detected
-Date: Sun, 21 Feb 2010 14:31:51 +0100
-Message-ID: <20100221133151.GA28396@buzzloop.caiaq.de>
+From: Reimundo Heluani <rheluani@gmail.com>
+Subject: Re: Macbook Air 2,1 - no mic nor main speakers
+Date: Sun, 21 Feb 2010 22:30:58 -0800
+Message-ID: <1266820258.3074.16.camel@vino>
+References: <1265480879.2466.21.camel@vino>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4528224484
-	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 14:31:58 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by buzzloop.caiaq.de (Postfix) with ESMTP id EB9A784000C
-	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 14:31:56 +0100 (CET)
-Received: from buzzloop.caiaq.de ([127.0.0.1])
-	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id xitd+xfBXOGt for <alsa-devel@alsa-project.org>;
-	Sun, 21 Feb 2010 14:31:52 +0100 (CET)
-Content-Disposition: inline
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id 483D810380D
+	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 07:31:01 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 5so332253qwf.56
+	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 22:31:00 -0800 (PST)
+In-Reply-To: <1265480879.2466.21.camel@vino>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,110 +22,167 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I got this once while testing an USB audio device. Appeareantly not reproducable.
+On Sat, 2010-02-06 at 10:27 -0800, Reimundo Heluani wrote:
+> Hello list, this came up a year ago and Takashi's answer was "a broken
+> bios". I was hoping someone here could point me to documentation to read
+> in order to diagnose the problem if indeed is a broken bios. I don't
+> want to start randombly reading the driver's code.
+> 
+> Macbook Air 2,1
+> 2.6.32-gentoo-r3 SMP x86_64
+> Alsa Driver 1.0.21 libs 1.0.22
+> nVidia Corporation MCP79 High Definition Audio (rev b1)
+> HDA NVidia at 0x93380000 irq 19
+> 00:08.0 0403: 10de:0ac0 (rev b1)  Subsystem: 10de:cb79
+> Codec: Realtek ALC889A
+> 
+> Booting with snd_hda_intel.model=mbp3 get sound on headphones, but not on mainspeakers. The mic never worked.
+> 
 
-Daniel
+Hello again, I found out that puting the pin in 0x18 as a PIN_OUT I get
+sound in the internal speaker. Currently I can change patch_realtek.c to
+load the driver using an "mba21" model and I get sound on the main
+speaker. One of the (many) problems I have is that I need to use
+something like
 
+{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, (PIN_OUT | AC_PINCTL_VREF_50) } 
 
-Feb 21 14:26:29 jup kernel: [69661.385427] 
-Feb 21 14:26:29 jup kernel: [69661.385430] =======================================================
-Feb 21 14:26:29 jup kernel: [69661.385435] [ INFO: possible circular locking dependency detected ]
-Feb 21 14:26:29 jup kernel: [69661.385439] 2.6.33-rc8 #21
-Feb 21 14:26:29 jup kernel: [69661.385441] -------------------------------------------------------
-Feb 21 14:26:29 jup kernel: [69661.385444] aplay/11761 is trying to acquire lock:
-Feb 21 14:26:29 jup kernel: [69661.385446]  (sysfs_mutex){+.+.+.}, at: [<c10f0668>] sysfs_get_dirent+0x15/0x4c
-Feb 21 14:26:29 jup kernel: [69661.385457] 
-Feb 21 14:26:29 jup kernel: [69661.385457] but task is already holding lock:
-Feb 21 14:26:29 jup kernel: [69661.385460]  (&pcm->open_mutex){+.+.+.}, at: [<fb68bc8e>] snd_pcm_release+0x55/0x9e [snd_pcm]
-Feb 21 14:26:29 jup kernel: [69661.385474] 
-Feb 21 14:26:29 jup kernel: [69661.385474] which lock already depends on the new lock.
-Feb 21 14:26:29 jup kernel: [69661.385476] 
-Feb 21 14:26:29 jup kernel: [69661.385478] 
-Feb 21 14:26:29 jup kernel: [69661.385479] the existing dependency chain (in reverse order) is:
-Feb 21 14:26:29 jup kernel: [69661.385481] 
-Feb 21 14:26:29 jup kernel: [69661.385482] -> #2 (&pcm->open_mutex){+.+.+.}:
-Feb 21 14:26:29 jup kernel: [69661.385487]        [<c1059070>] __lock_acquire+0x10ff/0x1422
-Feb 21 14:26:29 jup kernel: [69661.385493]        [<c105943b>] lock_acquire+0xa8/0xbf
-Feb 21 14:26:29 jup kernel: [69661.385498]        [<c13720d3>] mutex_lock_nested+0x47/0x2b2
-Feb 21 14:26:29 jup kernel: [69661.385503]        [<fb68bc8e>] snd_pcm_release+0x55/0x9e [snd_pcm]
-Feb 21 14:26:29 jup kernel: [69661.385513]        [<c10aabe9>] __fput+0xeb/0x196
-Feb 21 14:26:29 jup kernel: [69661.385517]        [<c10aacad>] fput+0x19/0x1b
-Feb 21 14:26:29 jup kernel: [69661.385522]        [<c109ae3b>] remove_vma+0x39/0x58
-Feb 21 14:26:29 jup kernel: [69661.385528]        [<c109bab3>] do_munmap+0x23c/0x259
-Feb 21 14:26:29 jup kernel: [69661.385532]        [<c109bb00>] sys_munmap+0x30/0x3f
-Feb 21 14:26:29 jup kernel: [69661.385536]        [<c10028d0>] sysenter_do_call+0x12/0x36
-Feb 21 14:26:29 jup kernel: [69661.385541] 
-Feb 21 14:26:29 jup kernel: [69661.385542] -> #1 (&mm->mmap_sem){++++++}:
-Feb 21 14:26:29 jup kernel: [69661.385547]        [<c1059070>] __lock_acquire+0x10ff/0x1422
-Feb 21 14:26:29 jup kernel: [69661.385551]        [<c105943b>] lock_acquire+0xa8/0xbf
-Feb 21 14:26:29 jup kernel: [69661.385556]        [<c10968db>] might_fault+0x6b/0x88
-Feb 21 14:26:29 jup kernel: [69661.385561]        [<c11b3cf0>] copy_to_user+0x2c/0xfc
-Feb 21 14:26:29 jup kernel: [69661.385565]        [<c10b5e73>] filldir64+0x97/0xcd
-Feb 21 14:26:29 jup kernel: [69661.385570]        [<c10f0534>] sysfs_readdir+0x117/0x14b
-Feb 21 14:26:29 jup kernel: [69661.385574]        [<c10b6085>] vfs_readdir+0x68/0x94
-Feb 21 14:26:29 jup kernel: [69661.385578]        [<c10b6114>] sys_getdents64+0x63/0xa0
-Feb 21 14:26:29 jup kernel: [69661.385582]        [<c10028d0>] sysenter_do_call+0x12/0x36
-Feb 21 14:26:29 jup kernel: [69661.385587] 
-Feb 21 14:26:29 jup kernel: [69661.385587] -> #0 (sysfs_mutex){+.+.+.}:
-Feb 21 14:26:29 jup kernel: [69661.385592]        [<c1058dc6>] __lock_acquire+0xe55/0x1422
-Feb 21 14:26:29 jup kernel: [69661.385597]        [<c105943b>] lock_acquire+0xa8/0xbf
-Feb 21 14:26:29 jup kernel: [69661.385601]        [<c13720d3>] mutex_lock_nested+0x47/0x2b2
-Feb 21 14:26:29 jup kernel: [69661.385605]        [<c10f0668>] sysfs_get_dirent+0x15/0x4c
-Feb 21 14:26:29 jup kernel: [69661.385609]        [<c10f1b4a>] sysfs_remove_group+0x1e/0xa3
-Feb 21 14:26:29 jup kernel: [69661.385614]        [<c12359b8>] dpm_sysfs_remove+0x10/0x12
-Feb 21 14:26:29 jup kernel: [69661.385619]        [<c123114c>] device_del+0x33/0x154
-Feb 21 14:26:29 jup kernel: [69661.385625]        [<c1231278>] device_unregister+0xb/0x15
-Feb 21 14:26:29 jup kernel: [69661.385629]        [<c129a209>] usb_remove_ep_devs+0x15/0x1f
-Feb 21 14:26:29 jup kernel: [69661.385635]        [<c12943ff>] remove_intf_ep_devs+0x21/0x32
-Feb 21 14:26:29 jup kernel: [69661.385640]        [<c12954ea>] usb_set_interface+0x18c/0x22c
-Feb 21 14:26:29 jup kernel: [69661.385644]        [<fc703cd7>] snd_usb_playback_close+0x20/0x33 [snd_usb_audio]
-Feb 21 14:26:29 jup kernel: [69661.385654]        [<fb68bc10>] snd_pcm_release_substream+0x3d/0x66 [snd_pcm]
-Feb 21 14:26:29 jup kernel: [69661.385664]        [<fb68bc95>] snd_pcm_release+0x5c/0x9e [snd_pcm]
-Feb 21 14:26:29 jup kernel: [69661.385673]        [<c10aabe9>] __fput+0xeb/0x196
-Feb 21 14:26:29 jup kernel: [69661.385677]        [<c10aacad>] fput+0x19/0x1b
-Feb 21 14:26:29 jup kernel: [69661.385681]        [<c109ae3b>] remove_vma+0x39/0x58
-Feb 21 14:26:29 jup kernel: [69661.385685]        [<c109bab3>] do_munmap+0x23c/0x259
-Feb 21 14:26:29 jup kernel: [69661.385689]        [<c109bb00>] sys_munmap+0x30/0x3f
-Feb 21 14:26:29 jup kernel: [69661.385693]        [<c10028d0>] sysenter_do_call+0x12/0x36
-Feb 21 14:26:29 jup kernel: [69661.385698] 
-Feb 21 14:26:29 jup kernel: [69661.385698] other info that might help us debug this:
-Feb 21 14:26:29 jup kernel: [69661.385700] 
-Feb 21 14:26:29 jup kernel: [69661.385702] 2 locks held by aplay/11761:
-Feb 21 14:26:29 jup kernel: [69661.385705]  #0:  (&mm->mmap_sem){++++++}, at: [<c109baf3>] sys_munmap+0x23/0x3f
-Feb 21 14:26:29 jup kernel: [69661.385711]  #1:  (&pcm->open_mutex){+.+.+.}, at: [<fb68bc8e>] snd_pcm_release+0x55/0x9e [snd_pcm]
-Feb 21 14:26:29 jup kernel: [69661.385723] 
-Feb 21 14:26:29 jup kernel: [69661.385724] stack backtrace:
-Feb 21 14:26:29 jup kernel: [69661.385727] Pid: 11761, comm: aplay Not tainted 2.6.33-rc8 #21
-Feb 21 14:26:29 jup kernel: [69661.385730] Call Trace:
-Feb 21 14:26:29 jup kernel: [69661.385735]  [<c137062c>] ? printk+0xf/0x11
-Feb 21 14:26:29 jup kernel: [69661.385740]  [<c1057b26>] print_circular_bug+0x90/0x9c
-Feb 21 14:26:29 jup kernel: [69661.385744]  [<c1058dc6>] __lock_acquire+0xe55/0x1422
-Feb 21 14:26:29 jup kernel: [69661.385748]  [<c105917f>] ? __lock_acquire+0x120e/0x1422
-Feb 21 14:26:29 jup kernel: [69661.385753]  [<c103d4d3>] ? try_to_del_timer_sync+0x9c/0xa4
-Feb 21 14:26:29 jup kernel: [69661.385758]  [<c105943b>] lock_acquire+0xa8/0xbf
-Feb 21 14:26:29 jup kernel: [69661.385762]  [<c10f0668>] ? sysfs_get_dirent+0x15/0x4c
-Feb 21 14:26:29 jup kernel: [69661.385766]  [<c10f0668>] ? sysfs_get_dirent+0x15/0x4c
-Feb 21 14:26:29 jup kernel: [69661.385769]  [<c13720d3>] mutex_lock_nested+0x47/0x2b2
-Feb 21 14:26:29 jup kernel: [69661.385773]  [<c10f0668>] ? sysfs_get_dirent+0x15/0x4c
-Feb 21 14:26:29 jup kernel: [69661.385777]  [<c137187f>] ? __mutex_unlock_slowpath+0xe9/0x105
-Feb 21 14:26:29 jup kernel: [69661.385781]  [<c10572e5>] ? trace_hardirqs_on_caller+0xff/0x120
-Feb 21 14:26:29 jup kernel: [69661.385785]  [<c10f0668>] sysfs_get_dirent+0x15/0x4c
-Feb 21 14:26:29 jup kernel: [69661.385789]  [<c10f1b4a>] sysfs_remove_group+0x1e/0xa3
-Feb 21 14:26:29 jup kernel: [69661.385793]  [<c12359b8>] dpm_sysfs_remove+0x10/0x12
-Feb 21 14:26:29 jup kernel: [69661.385797]  [<c123114c>] device_del+0x33/0x154
-Feb 21 14:26:29 jup kernel: [69661.385801]  [<c1231278>] device_unregister+0xb/0x15
-Feb 21 14:26:29 jup kernel: [69661.385805]  [<c129a209>] usb_remove_ep_devs+0x15/0x1f
-Feb 21 14:26:29 jup kernel: [69661.385809]  [<c12943ff>] remove_intf_ep_devs+0x21/0x32
-Feb 21 14:26:29 jup kernel: [69661.385813]  [<c12954ea>] usb_set_interface+0x18c/0x22c
-Feb 21 14:26:29 jup kernel: [69661.385822]  [<fc703cd7>] snd_usb_playback_close+0x20/0x33 [snd_usb_audio]
-Feb 21 14:26:29 jup kernel: [69661.385830]  [<fb68bc10>] snd_pcm_release_substream+0x3d/0x66 [snd_pcm]
-Feb 21 14:26:29 jup kernel: [69661.385839]  [<fb68bc95>] snd_pcm_release+0x5c/0x9e [snd_pcm]
-Feb 21 14:26:29 jup kernel: [69661.385843]  [<c10aabe9>] __fput+0xeb/0x196
-Feb 21 14:26:29 jup kernel: [69661.385847]  [<c10aacad>] fput+0x19/0x1b
-Feb 21 14:26:29 jup kernel: [69661.385851]  [<c109ae3b>] remove_vma+0x39/0x58
-Feb 21 14:26:29 jup kernel: [69661.385854]  [<c109bab3>] do_munmap+0x23c/0x259
-Feb 21 14:26:29 jup kernel: [69661.385858]  [<c109bb00>] sys_munmap+0x30/0x3f
-Feb 21 14:26:29 jup kernel: [69661.385862]  [<c10028d0>] sysenter_do_call+0x12/0x36
+otherwise it goes into HiZ and I get no audio. Looking at that
+patch_realtek.c I don't see anything similar. Anyway, I don't have a
+clue about ALSA, I just started reading the HDA specification and looked
+over patch_realtek.c and came up with the small change below to have a
+working main speaker. I'd appreciate if you had any suggestion for the
+mic or to point me towards the right documentation.
+
+Sincerely, 
+
+R.
+
+*** patch_realtek.c.orig	Sun Feb 21 01:23:58 2010
+--- patch_realtek.c	Sun Feb 21 19:42:13 2010
+***************
+*** 205,210 ****
+--- 205,211 ----
+  	ALC882_ASUS_A7J,
+  	ALC882_ASUS_A7M,
+  	ALC885_MACPRO,
++ 	ALC885_MBA21,
+  	ALC885_MBP3,
+  	ALC885_MB5,
+  	ALC885_IMAC24,
+***************
+*** 6749,6754 ****
+--- 6750,6766 ----
+  	{ 8, alc882_sixstack_ch8_init },
+  };
+  
++ /* Macbook Air I have no clue how it works yet */
++ 
++ static struct hda_verb alc885_mba21_init[] = {
++ 	{ 0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT },
++ 	{ } /* end */
++ };
++ 
++ static struct hda_channel_mode alc885_mba21_ch_modes[1] = {
++ 	{ 2, alc885_mba21_init },
++ };
++ 
+  /*
+   * macbook pro ALC885 can switch LineIn to LineOut without losing Mic
+   */
+***************
+*** 7020,7025 ****
+--- 7032,7045 ----
+  	{ } /* end */
+  };
+  
++ 
++ static struct snd_kcontrol_new alc885_mba21_mixer[] = {
++ 	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
++ 	HDA_BIND_MUTE	("Speaker Playback Switch", 0x0c, 0x02, HDA_OUTPUT),
++ 	{ }
++ };
++ 
++ 
+  static struct snd_kcontrol_new alc885_mbp3_mixer[] = {
+  	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
+  	HDA_BIND_MUTE   ("Speaker Playback Switch", 0x0c, 0x02, HDA_INPUT),
+***************
+*** 7444,7449 ****
+--- 7464,7482 ----
+  	{ }
+  };
+  
++ static struct hda_verb alc885_mba21_init_verbs[] = {
++ 	/*Internal Speaker Mixer*/
++ 	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO}, 
++     {0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++ 	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++ 	/*Internal Speaker Pin*/
++ 	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, (PIN_OUT |
+AC_PINCTL_VREF_50) },
++ 	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++ 	{0x18, AC_VERB_SET_CONNECT_SEL, 0x00},
++ 
++ 	{ }
++ };
++ 
+  /* Macbook Pro rev3 */
+  static struct hda_verb alc885_mbp3_init_verbs[] = {
+  	/* Front mixer: unmute input/output amp left and right (volume = 0)
+*/
+***************
+*** 7546,7551 ****
+--- 7579,7593 ----
+  	spec->autocfg.speaker_pins[1] = 0x1a;
+  }
+  
++ /* Macbook Air don't know how this works */
++ static void alc885_mba21_setup (struct hda_codec *codec)
++ {
++ 	struct alc_spec *spec = codec->spec;
++ 
++ 	spec->autocfg.speaker_pins[0] = 0x18;
++ }
++ 
++ 
+  static void alc885_mbp3_setup(struct hda_codec *codec)
+  {
+  	struct alc_spec *spec = codec->spec;
+***************
+*** 8737,8742 ****
+--- 8779,8785 ----
+  	[ALC882_ASUS_A7M]	= "asus-a7m",
+  	[ALC885_MACPRO]		= "macpro",
+  	[ALC885_MB5]		= "mb5",
++ 	[ALC885_MBA21]		= "mba21",
+  	[ALC885_MBP3]		= "mbp3",
+  	[ALC885_IMAC24]		= "imac24",
+  	[ALC883_3ST_2ch_DIG]	= "3stack-2ch-dig",
+***************
+*** 8969,8974 ****
+--- 9012,9032 ----
+  		.input_mux = &alc882_capture_source,
+  		.dig_out_nid = ALC882_DIGOUT_NID,
+  	},
++ 	[ALC885_MBA21] = {
++ 		.mixers = { alc885_mba21_mixer }, 
++ 		.init_verbs = { alc885_mba21_init_verbs, alc880_gpio1_init_verbs },
++ 		.num_dacs = 2,
++ 		.dac_nids = alc882_dac_nids,
++ 		.hp_nid = 0x04,
++ 		.channel_mode = alc885_mba21_ch_modes,
++ 		.num_channel_mode = ARRAY_SIZE(alc885_mba21_ch_modes),
++ 		.input_mux = &alc882_capture_source,
++ 		.dig_out_nid = ALC882_DIGOUT_NID,
++ 		.dig_in_nid = ALC882_DIGIN_NID,
++ 		.unsol_event = alc_automute_amp_unsol_event,
++ 		.setup = alc885_mba21_setup,
++ 		.init_hook = alc_automute_amp,
++ 	},
+  	[ALC885_MBP3] = {
+  		.mixers = { alc885_mbp3_mixer, alc882_chmode_mixer },
+  		.init_verbs = { alc885_mbp3_init_verbs,
