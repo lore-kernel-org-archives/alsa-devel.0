@@ -1,16 +1,16 @@
 From: jassi brar <jassisinghbrar@gmail.com>
-Subject: [PATCH 1/3] ASoC: PLATFORM: Pass dai_link as argument
-	to suspend, resume
-Date: Mon, 22 Feb 2010 15:58:04 +0900
-Message-ID: <1b68c6791002212258n4b37b2f0h39d4ac775240d262@mail.gmail.com>
+Subject: [PATCH 3/3] ASOC: SND_SOC_DAI: Get rid of 'runtime'
+	field
+Date: Mon, 22 Feb 2010 16:00:20 +0900
+Message-ID: <1b68c6791002212300x1530920dq3aaf7db35cecc02d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=0016e68def2568d2be04802af449
+Content-Type: multipart/mixed; boundary=0016e6471a868d010304802afcb4
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 6C8C32439E
-	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 07:58:06 +0100 (CET)
-Received: by vws13 with SMTP id 13so320679vws.38
-	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 22:58:04 -0800 (PST)
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id AC68B243A1
+	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 08:00:21 +0100 (CET)
+Received: by vws13 with SMTP id 13so321349vws.38
+	for <alsa-devel@alsa-project.org>; Sun, 21 Feb 2010 23:00:21 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,90 +24,58 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
---0016e68def2568d2be04802af449
+--0016e6471a868d010304802afcb4
 Content-Type: text/plain; charset=UTF-8
 
-[PATCH 1/3] ASoC: PLATFORM: Pass dai_link as argument to suspend, resume
+[PATCH 3/3] ASOC: SND_SOC_DAI: Get rid of 'runtime' field
 
-Passing pointer to relevant dai_link provides easier reach to the
-ASOC tree in suspend/resume of snd_soc_platform. It also provides
-direct access to the dai at the other end of the dai_link.
-
-Also, modified ATMEL pcm suspend/resume callbacks for the new API.
+In order for having snd_soc_dai's shared among two or more dai_links,
+remove the relatively global 'runtime' field from the 'struct snd_soc_dai'
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- include/sound/soc.h         |    5 +++--
- sound/soc/atmel/atmel-pcm.c |    6 ++++--
- sound/soc/soc-core.c        |    4 ++--
- 3 files changed, 9 insertions(+), 6 deletions(-)
+ include/sound/soc-dai.h |    1 -
+ sound/soc/soc-core.c    |    2 --
+ 2 files changed, 0 insertions(+), 3 deletions(-)
 
---0016e68def2568d2be04802af449
+--0016e6471a868d010304802afcb4
 Content-Type: application/octet-stream;
-	name="0001-ASoC-PLATFORM-Pass-dai_link-as-argument-to-suspend.patch"
+	name="0003-ASOC-SND_SOC_DAI-Get-rid-of-unused-runtime-paramet.patch"
 Content-Disposition: attachment;
-	filename="0001-ASoC-PLATFORM-Pass-dai_link-as-argument-to-suspend.patch"
+	filename="0003-ASOC-SND_SOC_DAI-Get-rid-of-unused-runtime-paramet.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g5yx2kx70
+X-Attachment-Id: f_g5yx6ucq0
 
-RnJvbSA3MDgwYzBjOWIyODdhNTZjZWVlOTUyNjQyYmI3YWE3OWFlODA1ZTIzIE1vbiBTZXAgMTcg
+RnJvbSAyMWQ0ZDI4NjgyNGNhOWRkYzlhN2IzZmZhZjM2MTA3OTJhM2ZlMmY0IE1vbiBTZXAgMTcg
 MDA6MDA6MDAgMjAwMQpGcm9tOiBKYXNzaSBCcmFyIDxqYXNzaS5icmFyQHNhbXN1bmcuY29tPgpE
-YXRlOiBGcmksIDE5IEZlYiAyMDEwIDE4OjE3OjI3ICswOTAwClN1YmplY3Q6IFtQQVRDSCAxLzNd
-IEFTb0M6IFBMQVRGT1JNOiBQYXNzIGRhaV9saW5rIGFzIGFyZ3VtZW50IHRvIHN1c3BlbmQsIHJl
-c3VtZQoKUGFzc2luZyBwb2ludGVyIHRvIHJlbGV2YW50IGRhaV9saW5rIHByb3ZpZGVzIGVhc2ll
-ciByZWFjaCB0byB0aGUKQVNPQyB0cmVlIGluIHN1c3BlbmQvcmVzdW1lIG9mIHNuZF9zb2NfcGxh
-dGZvcm0uIEl0IGFsc28gcHJvdmlkZXMKZGlyZWN0IGFjY2VzcyB0byB0aGUgZGFpIGF0IHRoZSBv
-dGhlciBlbmQgb2YgdGhlIGRhaV9saW5rLgoKQWxzbywgbW9kaWZpZWQgQVRNRUwgcGNtIHN1c3Bl
-bmQvcmVzdW1lIGNhbGxiYWNrcyBmb3IgdGhlIG5ldyBBUEkuCgpTaWduZWQtb2ZmLWJ5OiBKYXNz
-aSBCcmFyIDxqYXNzaS5icmFyQHNhbXN1bmcuY29tPgotLS0KIGluY2x1ZGUvc291bmQvc29jLmgg
-ICAgICAgICB8ICAgIDUgKysrLS0KIHNvdW5kL3NvYy9hdG1lbC9hdG1lbC1wY20uYyB8ICAgIDYg
-KysrKy0tCiBzb3VuZC9zb2Mvc29jLWNvcmUuYyAgICAgICAgfCAgICA0ICsrLS0KIDMgZmlsZXMg
-Y2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCA2IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2lu
-Y2x1ZGUvc291bmQvc29jLmggYi9pbmNsdWRlL3NvdW5kL3NvYy5oCmluZGV4IDVkMjM0YTguLjI3
-YTJhZDkgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvc291bmQvc29jLmgKKysrIGIvaW5jbHVkZS9zb3Vu
-ZC9zb2MuaApAQCAtMjEyLDYgKzIxMiw3IEBAIHN0cnVjdCBzbmRfc29jX2RhaV9tb2RlOwogc3Ry
-dWN0IHNuZF9zb2NfcGNtX3J1bnRpbWU7CiBzdHJ1Y3Qgc25kX3NvY19kYWk7CiBzdHJ1Y3Qgc25k
-X3NvY19wbGF0Zm9ybTsKK3N0cnVjdCBzbmRfc29jX2RhaV9saW5rOwogc3RydWN0IHNuZF9zb2Nf
-Y29kZWM7CiBzdHJ1Y3Qgc29jX2VudW07CiBzdHJ1Y3Qgc25kX3NvY19hYzk3X29wczsKQEAgLTQ2
-MSw4ICs0NjIsOCBAQCBzdHJ1Y3Qgc25kX3NvY19wbGF0Zm9ybSB7CiAKIAlpbnQgKCpwcm9iZSko
-c3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldik7CiAJaW50ICgqcmVtb3ZlKShzdHJ1Y3QgcGxh
-dGZvcm1fZGV2aWNlICpwZGV2KTsKLQlpbnQgKCpzdXNwZW5kKShzdHJ1Y3Qgc25kX3NvY19kYWkg
-KmRhaSk7Ci0JaW50ICgqcmVzdW1lKShzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSk7CisJaW50ICgq
-c3VzcGVuZCkoc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgKmRhaV9saW5rKTsKKwlpbnQgKCpyZXN1
-bWUpKHN0cnVjdCBzbmRfc29jX2RhaV9saW5rICpkYWlfbGluayk7CiAKIAkvKiBwY20gY3JlYXRp
-b24gYW5kIGRlc3RydWN0aW9uICovCiAJaW50ICgqcGNtX25ldykoc3RydWN0IHNuZF9jYXJkICos
-IHN0cnVjdCBzbmRfc29jX2RhaSAqLApkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVsL2F0bWVs
-LXBjbS5jIGIvc291bmQvc29jL2F0bWVsL2F0bWVsLXBjbS5jCmluZGV4IDllZjZiOTYuLjY3YTMy
-OTIgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9hdG1lbC9hdG1lbC1wY20uYworKysgYi9zb3VuZC9z
-b2MvYXRtZWwvYXRtZWwtcGNtLmMKQEAgLTQxNSw4ICs0MTUsOSBAQCBzdGF0aWMgdm9pZCBhdG1l
-bF9wY21fZnJlZV9kbWFfYnVmZmVycyhzdHJ1Y3Qgc25kX3BjbSAqcGNtKQogfQogCiAjaWZkZWYg
-Q09ORklHX1BNCi1zdGF0aWMgaW50IGF0bWVsX3BjbV9zdXNwZW5kKHN0cnVjdCBzbmRfc29jX2Rh
-aSAqZGFpKQorc3RhdGljIGludCBhdG1lbF9wY21fc3VzcGVuZChzdHJ1Y3Qgc25kX3NvY19kYWlf
-bGluayAqZGFpX2xpbmspCiB7CisJc3RydWN0IHNuZF9zb2NfZGFpICpkYWkgPSBkYWlfbGluay0+
-Y3B1X2RhaTsKIAlzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lID0gZGFpLT5ydW50aW1l
-OwogCXN0cnVjdCBhdG1lbF9ydW50aW1lX2RhdGEgKnBydGQ7CiAJc3RydWN0IGF0bWVsX3BjbV9k
-bWFfcGFyYW1zICpwYXJhbXM7CkBAIC00MzksOCArNDQwLDkgQEAgc3RhdGljIGludCBhdG1lbF9w
-Y21fc3VzcGVuZChzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSkKIAlyZXR1cm4gMDsKIH0KIAotc3Rh
-dGljIGludCBhdG1lbF9wY21fcmVzdW1lKHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpKQorc3RhdGlj
-IGludCBhdG1lbF9wY21fcmVzdW1lKHN0cnVjdCBzbmRfc29jX2RhaV9saW5rICpkYWlfbGluaykK
-IHsKKwlzdHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSA9IGRhaV9saW5rLT5jcHVfZGFpOwogCXN0cnVj
-dCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBkYWktPnJ1bnRpbWU7CiAJc3RydWN0IGF0bWVs
-X3J1bnRpbWVfZGF0YSAqcHJ0ZDsKIAlzdHJ1Y3QgYXRtZWxfcGNtX2RtYV9wYXJhbXMgKnBhcmFt
-czsKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtY29yZS5jIGIvc291bmQvc29jL3NvYy1jb3Jl
-LmMKaW5kZXggZTFjMDMzNi4uNTI0YTg1YSAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvYy1jb3Jl
-LmMKKysrIGIvc291bmQvc29jL3NvYy1jb3JlLmMKQEAgLTg1NCw3ICs4NTQsNyBAQCBzdGF0aWMg
-aW50IHNvY19zdXNwZW5kKHN0cnVjdCBkZXZpY2UgKmRldikKIAkJaWYgKGNwdV9kYWktPnN1c3Bl
-bmQgJiYgIWNwdV9kYWktPmFjOTdfY29udHJvbCkKIAkJCWNwdV9kYWktPnN1c3BlbmQoY3B1X2Rh
-aSk7CiAJCWlmIChwbGF0Zm9ybS0+c3VzcGVuZCkKLQkJCXBsYXRmb3JtLT5zdXNwZW5kKGNwdV9k
-YWkpOworCQkJcGxhdGZvcm0tPnN1c3BlbmQoJmNhcmQtPmRhaV9saW5rW2ldKTsKIAl9CiAKIAkv
-KiBjbG9zZSBhbnkgd2FpdGluZyBzdHJlYW1zIGFuZCBzYXZlIHN0YXRlICovCkBAIC05NDMsNyAr
-OTQzLDcgQEAgc3RhdGljIHZvaWQgc29jX3Jlc3VtZV9kZWZlcnJlZChzdHJ1Y3Qgd29ya19zdHJ1
-Y3QgKndvcmspCiAJCWlmIChjcHVfZGFpLT5yZXN1bWUgJiYgIWNwdV9kYWktPmFjOTdfY29udHJv
-bCkKIAkJCWNwdV9kYWktPnJlc3VtZShjcHVfZGFpKTsKIAkJaWYgKHBsYXRmb3JtLT5yZXN1bWUp
-Ci0JCQlwbGF0Zm9ybS0+cmVzdW1lKGNwdV9kYWkpOworCQkJcGxhdGZvcm0tPnJlc3VtZSgmY2Fy
-ZC0+ZGFpX2xpbmtbaV0pOwogCX0KIAogCWlmIChjYXJkLT5yZXN1bWVfcG9zdCkKLS0gCjEuNi4y
-LjUKCg==
---0016e68def2568d2be04802af449
+YXRlOiBGcmksIDE5IEZlYiAyMDEwIDE3OjU5OjQxICswOTAwClN1YmplY3Q6IFtQQVRDSCAzLzNd
+IEFTT0M6IFNORF9TT0NfREFJOiBHZXQgcmlkIG9mICdydW50aW1lJyBmaWVsZAoKSW4gb3JkZXIg
+Zm9yIGhhdmluZyBzbmRfc29jX2RhaSdzIHNoYXJlZCBhbW9uZyB0d28gb3IgbW9yZSBkYWlfbGlu
+a3MsCnJlbW92ZSB0aGUgcmVsYXRpdmVseSBnbG9iYWwgJ3J1bnRpbWUnIGZpZWxkIGZyb20gdGhl
+ICdzdHJ1Y3Qgc25kX3NvY19kYWknCgpTaWduZWQtb2ZmLWJ5OiBKYXNzaSBCcmFyIDxqYXNzaS5i
+cmFyQHNhbXN1bmcuY29tPgotLS0KIGluY2x1ZGUvc291bmQvc29jLWRhaS5oIHwgICAgMSAtCiBz
+b3VuZC9zb2Mvc29jLWNvcmUuYyAgICB8ICAgIDIgLS0KIDIgZmlsZXMgY2hhbmdlZCwgMCBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUvc291bmQvc29j
+LWRhaS5oIGIvaW5jbHVkZS9zb3VuZC9zb2MtZGFpLmgKaW5kZXggMDYxZjE2ZC4uMjBkZTBiYyAx
+MDA2NDQKLS0tIGEvaW5jbHVkZS9zb3VuZC9zb2MtZGFpLmgKKysrIGIvaW5jbHVkZS9zb3VuZC9z
+b2MtZGFpLmgKQEAgLTIxNSw3ICsyMTUsNiBAQCBzdHJ1Y3Qgc25kX3NvY19kYWkgewogCXVuc2ln
+bmVkIGludCBzeW1tZXRyaWNfcmF0ZXM6MTsKIAogCS8qIERBSSBydW50aW1lIGluZm8gKi8KLQlz
+dHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50aW1lOwogCXN0cnVjdCBzbmRfc29jX2NvZGVjICpj
+b2RlYzsKIAl1bnNpZ25lZCBpbnQgYWN0aXZlOwogCXVuc2lnbmVkIGNoYXIgcG9wX3dhaXQ6MTsK
+ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9zb2MtY29yZS5jIGIvc291bmQvc29jL3NvYy1jb3JlLmMK
+aW5kZXggNTI0YTg1YS4uMTIxNWEwZSAxMDA2NDQKLS0tIGEvc291bmQvc29jL3NvYy1jb3JlLmMK
+KysrIGIvc291bmQvc29jL3NvYy1jb3JlLmMKQEAgLTQ1OSw3ICs0NTksNiBAQCBzdGF0aWMgaW50
+IHNvY19wY21fb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAllbHNl
+CiAJCWNwdV9kYWktPmNhcHR1cmUuYWN0aXZlID0gY29kZWNfZGFpLT5jYXB0dXJlLmFjdGl2ZSA9
+IDE7CiAJY3B1X2RhaS0+YWN0aXZlID0gY29kZWNfZGFpLT5hY3RpdmUgPSAxOwotCWNwdV9kYWkt
+PnJ1bnRpbWUgPSBydW50aW1lOwogCWNhcmQtPmNvZGVjLT5hY3RpdmUrKzsKIAltdXRleF91bmxv
+Y2soJnBjbV9tdXRleCk7CiAJcmV0dXJuIDA7CkBAIC01NTksNyArNTU4LDYgQEAgc3RhdGljIGlu
+dCBzb2NfY29kZWNfY2xvc2Uoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiAK
+IAlpZiAocGxhdGZvcm0tPnBjbV9vcHMtPmNsb3NlKQogCQlwbGF0Zm9ybS0+cGNtX29wcy0+Y2xv
+c2Uoc3Vic3RyZWFtKTsKLQljcHVfZGFpLT5ydW50aW1lID0gTlVMTDsKIAogCWlmIChzdWJzdHJl
+YW0tPnN0cmVhbSA9PSBTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKSB7CiAJCS8qIHN0YXJ0IGRl
+bGF5ZWQgcG9wIHdxIGhlcmUgZm9yIHBsYXliYWNrIHN0cmVhbXMgKi8KLS0gCjEuNi4yLjUKCg==
+--0016e6471a868d010304802afcb4
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -118,4 +86,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---0016e68def2568d2be04802af449--
+--0016e6471a868d010304802afcb4--
