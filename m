@@ -1,22 +1,26 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: [PATCH] ALSA: hda - Refer to macmini3 channel mode
- functions
-Date: Tue, 23 Feb 2010 11:34:31 +0100
-Message-ID: <1266921271.3710.41.camel@mattotaupa>
-References: <1266902758-16160-1-git-send-email-themuso@ubuntu.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Separate dma driver for cpu_dais
+Date: Tue, 23 Feb 2010 10:37:08 +0000
+Message-ID: <20100223103708.GB14629@rakim.wolfsonmicro.main>
+References: <20100217131421.GB11510@rakim.wolfsonmicro.main>
+	<1b68c6791002171814k28fccf9emcbcf17c54c445a4f@mail.gmail.com>
+	<20100218093459.GB3315@rakim.wolfsonmicro.main>
+	<1b68c6791002180142l422a9203se2a71cae5795d6a9@mail.gmail.com>
+	<20100218095249.GE3315@rakim.wolfsonmicro.main>
+	<1b68c6791002180232p6cd86811sc78699ac87236015@mail.gmail.com>
+	<20100218105750.GB3542@rakim.wolfsonmicro.main>
+	<1b68c6791002180359k65381c09t143d37ec5eef1cf8@mail.gmail.com>
+	<20100218131027.GF3542@rakim.wolfsonmicro.main>
+	<1b68c6791002222145r543b0e45sfd842d8ddde4280f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3775143235702525059=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id D49EF1038D8
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 11:34:32 +0100 (CET)
-Received: from f053034224.adsl.alicedsl.de ([78.53.34.224]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1Njs64-00069t-HS
-	for alsa-devel@alsa-project.org; Tue, 23 Feb 2010 10:34:32 +0000
-In-Reply-To: <1266902758-16160-1-git-send-email-themuso@ubuntu.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5E6561038D4
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 11:37:10 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6791002222145r543b0e45sfd842d8ddde4280f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,75 +30,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: kyungmin.park@samsung.com, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Feb 23, 2010 at 02:45:47PM +0900, jassi brar wrote:
 
---===============3775143235702525059==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-PA6+22CalDTeWX2KV/+k"
+> Okay. Here's another perspective ...
+> If a dai can have further parallel sub-configurations, perhaps it should
+> be further divided into more dais.
+> So, I see a snd_soc_dai as the simplest h/w unit in the system and
+> presumably  already fully exploited by the active dai_link i.e, none of
+> its bits can be changed without disturbing the active stream. The
+> number of shares should be transparent to a dai.
+> If this assumption is valid please read on, otherwise correct me.
 
+That doesn't map too well to hardware - it's relatively rare for devices
+to require complete symmetry between the playback and capture portions
+of the device, though often there are some constraints.  Usually there
+is sufficient overlap in the hardware and documentation to describe them
+as a single interface but not so much as to force the same configuration
+for playback and record.
 
---=-PA6+22CalDTeWX2KV/+k
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> The set of {rate, sample size & format, channels} defines one active
+> dai. The second stream sharing this dai can not change any of these
+> parameters without spoiling the active playback/capture - we can allow
+> this configuration overriding as a feature or prevent as a bug. I
+> prefer latter. Since there isn't anything new to do now, the ASoC core
+> can
+> simply avoid calling hooks in drivers rather than having 50 drivers
+> implement a check.
 
-Am Dienstag, den 23.02.2010, 16:25 +1100 schrieb Luke Yelavich:
-> From: Luke Yelavich <luke.yelavich@canonical.com>
->=20
-> Refer to alc885_macmini3_{2,6}ch_mode_init functions instead of those for=
- the
-> mb5 model quirk. While they are the functino contents are the same now, t=
-hings
+If we were to go down this route it'd mean changing the existing drivers
+to split their DAIs, which seems like a lot of work and doesn't save us
+from having to implement the constraints that do exist.  This would be
+pretty invasive and I can't clearly see if either approach gives much of
+a win in itself.
 
-While the functions are the same now, =E2=80=A6
-
-> may change later. This also gets rid of compiler warnings about initializ=
-ed,
-> but unused functions.
->=20
-> Signed-off-by: Luke Yelavich <luke.yelavich@canonical.com>
-
-Maybe you can send a v2 patch (see `--subject-prefix` in `git help
-format-patch` or edit manually) and CC the maintainers (for example
-`--cc`) [2] as documented in [1]. At least I was told so [3] and I think
-you patch will be taken care off earlier when doing so.
-
-
-Thanks,
-
-Paul
-
-
-[1] http://git.kernel.org/?p=3Dlinux/kernel/git/tiwai/sound-2.6.git;a=3Dblo=
-b;f=3DDocumentation/SubmittingPatches
-[2] http://git.kernel.org/?p=3Dlinux/kernel/git/tiwai/sound-2.6.git;a=3Dblo=
-b;f=3DMAINTAINERS
-[3] http://www.spinics.net/lists/alsa-devel/msg31371.html
-
---=-PA6+22CalDTeWX2KV/+k
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Dies ist ein digital signierter Nachrichtenteil
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAkuDrzYACgkQPX1aK2wOHVhlEACcDJ8u62oqQ1RMCqGJGGC3Y36Q
-9kIAn1rwqeI/CNNGIMktT7DH3FCK9qli
-=x9G8
------END PGP SIGNATURE-----
-
---=-PA6+22CalDTeWX2KV/+k--
-
-
---===============3775143235702525059==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============3775143235702525059==--
+It seems easier to approach this by providing ways for drivers to
+communicate common constraints to the core with things like flags.
+That'd at least mean less change for existing code.
