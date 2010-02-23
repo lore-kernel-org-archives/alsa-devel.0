@@ -1,21 +1,22 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] usb/gadget/{f_audio,
- gmidi}.c: follow recent changes in audio.h
-Date: Tue, 23 Feb 2010 11:29:23 +0100
-Message-ID: <20100223102923.GS28972@buzzloop.caiaq.de>
-References: <20100223082634.GR28972@buzzloop.caiaq.de>
-	<1266917400-26397-1-git-send-email-daniel@caiaq.de>
-	<s5hocjg1dqm.wl%tiwai@suse.de>
-	<1266920091.3710.29.camel@mattotaupa>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: Re: [PATCH] ALSA: hda - Refer to macmini3 channel mode
+ functions
+Date: Tue, 23 Feb 2010 11:34:31 +0100
+Message-ID: <1266921271.3710.41.camel@mattotaupa>
+References: <1266902758-16160-1-git-send-email-themuso@ubuntu.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3775143235702525059=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8D3D1038D2
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 11:29:26 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1266920091.3710.29.camel@mattotaupa>
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+	by alsa0.perex.cz (Postfix) with ESMTP id D49EF1038D8
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 11:34:32 +0100 (CET)
+Received: from f053034224.adsl.alicedsl.de ([78.53.34.224]
+	helo=[192.168.178.21])
+	by mail.gw90.de with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
+	id 1Njs64-00069t-HS
+	for alsa-devel@alsa-project.org; Tue, 23 Feb 2010 10:34:32 +0000
+In-Reply-To: <1266902758-16160-1-git-send-email-themuso@ubuntu.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,25 +26,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Paul Menzel <paulepanter@users.sourceforge.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBGZWIgMjMsIDIwMTAgYXQgMTE6MTQ6NTFBTSArMDEwMCwgUGF1bCBNZW56ZWwgd3Jv
-dGU6Cj4gQW0gRGllbnN0YWcsIGRlbiAyMy4wMi4yMDEwLCAxMDo1MSArMDEwMCBzY2hyaWViIFRh
-a2FzaGkgSXdhaToKPiA+IEF0IFR1ZSwgMjMgRmViIDIwMTAgMTA6MzA6MDAgKzAxMDAsCj4gPiBE
-YW5pZWwgTWFjayB3cm90ZToKPiA+ID4gCj4gPiA+IFNvbWUgc3RydWN0cyBpbiBsaW51eC91c2Iv
-YXVkaW8uaCBoYXZlIGdvdCBuZXcgbmFtZXMgdG8gbWFyayB0aGVtIGFzCj4gPiA+IHBhcnQgb2Yg
-dmVyc2lvbiAxLjAgb2YgdGhlIFVTQiBhdWRpbyBzdGFuZGFyZC4gRm9sbG93IHRoZXNlIGNoYW5n
-ZXMKPiA+ID4gaW4gdGhlIGdhZGdldCBkcml2ZXJzLgo+ID4gPiAKPiA+ID4gTm90IHRoYXQgdGhp
-cyBoZWFkZXIgYW5kIHRoZSBBTFNBIFVTQiBkcml2ZXIgd2lsbCB1bmRlcmdvIHNvbWUKPiAKPiBz
-L05vdC9Ob3RlLwo+IAo+IFvigKZdCj4gCj4gPiBZZXAsIG5vdyBhcHBsaWVkIHRvIHRvcGljL3Vz
-Yi12Mi4wIGJyYW5jaCBvZiBzb3VuZCBnaXQgdHJlZS4KPiA+IAo+ID4gSWYgYW55b25lIGhhcyBu
-byBvYmplY3Rpb24sIEknbGwgbWVyZ2UgdGhpcyBicmFuY2ggdG9kYXkgZm9yCj4gPiBsaW51eC1u
-ZXh0Lgo+IAo+IFNvcnJ5IGZvciB0aGlzIG5pdC1waWNraW5nLCBidXQgSSB0aGluayB0aGlzIHR5
-cG8gbWFrZXMgZXZlcnlvbmUgdG8gcmVhZAo+IHRoaXMgcGFyYWdyYXBoIHR3aWNlLgoKWWVzLCBJ
-IG5vdGljZWQgdGhhdCBhZnRlciBJIHNlbnQsIHNvcnJ5LiBUYWthc2hpLCBjYW4geW91IGFtZW5k
-PwoKVGhhbmtzLApEYW5pZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+
+--===============3775143235702525059==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-PA6+22CalDTeWX2KV/+k"
+
+
+--=-PA6+22CalDTeWX2KV/+k
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Am Dienstag, den 23.02.2010, 16:25 +1100 schrieb Luke Yelavich:
+> From: Luke Yelavich <luke.yelavich@canonical.com>
+>=20
+> Refer to alc885_macmini3_{2,6}ch_mode_init functions instead of those for=
+ the
+> mb5 model quirk. While they are the functino contents are the same now, t=
+hings
+
+While the functions are the same now, =E2=80=A6
+
+> may change later. This also gets rid of compiler warnings about initializ=
+ed,
+> but unused functions.
+>=20
+> Signed-off-by: Luke Yelavich <luke.yelavich@canonical.com>
+
+Maybe you can send a v2 patch (see `--subject-prefix` in `git help
+format-patch` or edit manually) and CC the maintainers (for example
+`--cc`) [2] as documented in [1]. At least I was told so [3] and I think
+you patch will be taken care off earlier when doing so.
+
+
+Thanks,
+
+Paul
+
+
+[1] http://git.kernel.org/?p=3Dlinux/kernel/git/tiwai/sound-2.6.git;a=3Dblo=
+b;f=3DDocumentation/SubmittingPatches
+[2] http://git.kernel.org/?p=3Dlinux/kernel/git/tiwai/sound-2.6.git;a=3Dblo=
+b;f=3DMAINTAINERS
+[3] http://www.spinics.net/lists/alsa-devel/msg31371.html
+
+--=-PA6+22CalDTeWX2KV/+k
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Dies ist ein digital signierter Nachrichtenteil
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEABECAAYFAkuDrzYACgkQPX1aK2wOHVhlEACcDJ8u62oqQ1RMCqGJGGC3Y36Q
+9kIAn1rwqeI/CNNGIMktT7DH3FCK9qli
+=x9G8
+-----END PGP SIGNATURE-----
+
+--=-PA6+22CalDTeWX2KV/+k--
+
+
+--===============3775143235702525059==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============3775143235702525059==--
