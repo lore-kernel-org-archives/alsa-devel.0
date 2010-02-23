@@ -1,22 +1,29 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 1/5] ALSA: usbaudio: parse USB descriptors
- with	structs
-Date: Tue, 23 Feb 2010 09:26:34 +0100
-Message-ID: <20100223082634.GR28972@buzzloop.caiaq.de>
-References: <1266878953-9184-1-git-send-email-daniel@caiaq.de>
-	<1266878953-9184-2-git-send-email-daniel@caiaq.de>
-	<4B8388C5.9070101@ladisch.de> <s5h7hq42xlf.wl%tiwai@suse.de>
-	<20100223081032.GQ28972@buzzloop.caiaq.de>
-	<s5h1vgc2wg2.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Tue, 23 Feb 2010 16:43:03 +0800
+Message-ID: <4f3252891002230043jac570eekde1164df62c75853@mail.gmail.com>
+References: <20100216233825.GB23623@sirena.org.uk>
+	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+	<20100218023742.GC23637@tango.0pointer.de>
+	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+	<20100218181322.GB5606@tango.0pointer.de>
+	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
+	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
+	<20100219151328.GC25873@tango.0pointer.de>
+	<4f3252891002201949k48e0208fw40590803ac1a8192@mail.gmail.com>
+	<20100221193933.GA31800@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 64B0210387A
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 09:26:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <s5h1vgc2wg2.wl%tiwai@suse.de>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6524F103882
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 09:43:06 +0100 (CET)
+Received: by pwi9 with SMTP id 9so3150340pwi.38
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 00:43:05 -0800 (PST)
+In-Reply-To: <20100221193933.GA31800@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,32 +33,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 23, 2010 at 09:22:21AM +0100, Takashi Iwai wrote:
-> At Tue, 23 Feb 2010 09:10:32 +0100,
-> Daniel Mack wrote:
+2010/2/22 Lennart Poettering <mznyfn@0pointer.de>
 
-> > It does break compilation though, so I'll fix that up somehow before
-> > merge.
-> 
-> Well, I'd like to merge this stuff ASAP because the merge window is
-> closing, and I don't want to put such a big thing after the merge
-> window.
-> 
-> If you are OK with merging for 2.6.35, then I'm fine to wait.
-> If this is for 2.6.34, I can't wait long.
+> On Sun, 21.02.10 11:49, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+>
+> > The most common onboard audio is HDA so this is not any exceptional cases
+> >
+> > Those HDA multi streaming  feature are most users wanted in desktop
+> > enviornment, are pulseaudio really designed for deskop or just only for
+> > notebook and mobile ?
+> >
+> > The front panel green/pink jack can be used by one application while the
+> > rear panel audio jacks can be used to another application for surround or
+> > mic for karaoke
+>
+>
+> >  Send a game's sound through 5.1 speakers while the Internet chatting
+> audio
+> > is sent through your headset.
+>
+> More often than not you'd probably use two seperate cards for that.
+>
 
-That's right. There hasn't been much real refactoring done, so that's a
-good state to merge it and test it for regressions. More support for v2
-can be aimed for for .35.
+why do you need another sound card when you onboard audio HDA already
+support this feature ?
 
-> Otherwise, it's easier to put things merged first, then refactor
-> gradually.
+e.g. Skype can use alsa hw device for better latency
+l<http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
 
-Ok good. I'll fix the gadget drivers later today.
-
-Thanks,
-Daniel
+>
