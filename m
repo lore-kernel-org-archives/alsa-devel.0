@@ -1,20 +1,15 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH v4 0/3] McPDM driver patch series
-Date: Tue, 23 Feb 2010 18:25:57 +0200
-Message-ID: <20100223182557.7c2e7bfe.jhnikula@gmail.com>
-References: <2256F256009DAA4CBE661E9F41EAC84B8FA52A10@dlee01.ent.ti.com>
-	<1266919705.3156.0.camel@odin>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.34
+Date: Tue, 23 Feb 2010 19:48:53 +0000
+Message-ID: <20100223194852.GA21422@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 57D3E24380
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 17:25:26 +0100 (CET)
-Received: by ewy23 with SMTP id 23so197660ewy.4
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 08:25:24 -0800 (PST)
-In-Reply-To: <1266919705.3156.0.camel@odin>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id C098F103875
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 20:48:55 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,25 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 23 Feb 2010 10:08:25 +0000
-Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+The following changes since commit 6c5f1fed49f96a0600aa9a97ac3faf972c33a341:
+  Mark Brown (1):
+        ASoC: Make pmdown_time a long
 
-> > Jorge Eduardo Candelaria (1):
-> >       ASoC: OMAP4: Add support for McPDM
-> > 
-> > Misael Lopez Cruz (2):
-> >       ASoC: OMAP: data_type and sync_mode configurable in audio dma
-> >       ASoC: OMAP4: Add McPDM platform driver
-> > 
-> 
-> All Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-> 
-Have my ack too. I didn't do OMAP4 compile test but the OMAP3 Beagle
-compile and runtime tests went fine. I'll see it important to have this
-second DAI driver to ASoC OMAP and also OMAP4 to be covered.
+are available in the git repository at:
 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
+
+Candelaria Villareal, Jorge (1):
+      ASoC: OMAP4: Add support for McPDM
+
+Kuninori Morimoto (1):
+      ASoC: fsi: Modify over/under run error settlement
+
+Misael Lopez Cruz (2):
+      ASoC: OMAP: data_type and sync_mode configurable in audio dma
+      ASoC: OMAP4: Add McPDM platform driver
+
+Peter Ujfalusi (1):
+      ASoC: core: On resume also check the soc device state
+
+ sound/soc/omap/Kconfig      |    3 +
+ sound/soc/omap/Makefile     |    2 +
+ sound/soc/omap/mcpdm.c      |  484 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/omap/mcpdm.h      |  151 ++++++++++++++
+ sound/soc/omap/omap-mcbsp.c |    2 +
+ sound/soc/omap/omap-mcpdm.c |  251 ++++++++++++++++++++++
+ sound/soc/omap/omap-mcpdm.h |   29 +++
+ sound/soc/omap/omap-pcm.c   |   15 +-
+ sound/soc/omap/omap-pcm.h   |    4 +-
+ sound/soc/sh/fsi.c          |   46 +++--
+ sound/soc/soc-core.c        |    6 +
+ 11 files changed, 964 insertions(+), 29 deletions(-)
+ create mode 100644 sound/soc/omap/mcpdm.c
+ create mode 100644 sound/soc/omap/mcpdm.h
+ create mode 100644 sound/soc/omap/omap-mcpdm.c
+ create mode 100644 sound/soc/omap/omap-mcpdm.h
