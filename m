@@ -1,24 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
- cards, especially Aureon 5.1 MkII
-Date: Tue, 23 Feb 2010 11:08:18 +0100
-Message-ID: <4B83A912.1050501@ladisch.de>
-References: <20100216233825.GB23623@sirena.org.uk>	<20100216235658.GA6766@tango.0pointer.de>	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>	<20100218023742.GC23637@tango.0pointer.de>	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>	<20100218181322.GB5606@tango.0pointer.de>	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>	<20100219151328.GC25873@tango.0pointer.de>	<4f3252891002202001gb6df8cg6c023c52e7d8394a@mail.gmail.com>
-	<20100221192951.GD30380@tango.0pointer.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v4 0/3] McPDM driver patch series
+Date: Tue, 23 Feb 2010 10:08:25 +0000
+Message-ID: <1266919705.3156.0.camel@odin>
+References: <2256F256009DAA4CBE661E9F41EAC84B8FA52A10@dlee01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 6A70B1038A2
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 11:08:20 +0100 (CET)
-Received: from compute2.internal (compute2 [10.202.2.42])
-	by gateway1.messagingengine.com (Postfix) with ESMTP id D59E9E268D
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 05:08:19 -0500 (EST)
-Received: from [10.1.2.38] (srv004.schk01.int.dmc-one.com [85.232.8.141])
-	by mail.messagingengine.com (Postfix) with ESMTPSA id 1AFFD4BC3E9
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 05:08:19 -0500 (EST)
-In-Reply-To: <20100221192951.GD30380@tango.0pointer.de>
+Received: from mail-fx0-f220.google.com (mail-fx0-f220.google.com
+	[209.85.220.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 146B81038CE
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 11:08:31 +0100 (CET)
+Received: by fxm20 with SMTP id 20so8694465fxm.32
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 02:08:29 -0800 (PST)
+In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8FA52A10@dlee01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,35 +23,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Lennart Poettering wrote:
-> On Sun, 21.02.10 12:01, Raymond Yau (superquad.vortex2@gmail.com) wrote:
-> > However Simple Mixer API cannot know the subdevice number , you have to use
-> > control API ( the lower level API used by Simple Mixer API )
+On Mon, 2010-02-22 at 15:09 -0600, Candelaria Villareal, Jorge wrote:
+> McPDM module is the interface between the OMAP and TWL6030 audio codec.
 > 
-> Unfortunately there is no way from the simple mixer to the lower level
-> mixer.
+> The interface supports the following:
+> * Up to 5 downlink channels and 3 uplink channels
+> * 88.2 and 96 KHz
+> * 32 bit sample size
+> 
+> Currently, driver is set to support up to 4 downlink channels. If 2
+> channels are selected, output will go to the headset, and if 4 channels
+> are selected, output will go to the headset and speakers. Functionality
+> to select the output at runtime will be added afterwards.
+> 
+> Command and status mode is not supported in current patches.
+> 
+> Changes from v3:
+> - Implemented changes based on comments from Liam Girdwood.
+> 
+> --
+> 
+> Jorge Eduardo Candelaria (1):
+>       ASoC: OMAP4: Add support for McPDM
+> 
+> Misael Lopez Cruz (2):
+>       ASoC: OMAP: data_type and sync_mode configurable in audio dma
+>       ASoC: OMAP4: Add McPDM platform driver
+> 
+>  sound/soc/omap/Kconfig      |    3 +
+>  sound/soc/omap/Makefile     |    2 +
+>  sound/soc/omap/mcpdm.c      |  486 +++++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/omap/mcpdm.h      |  151 +++++++++++++
+>  sound/soc/omap/omap-mcbsp.c |    2 +
+>  sound/soc/omap/omap-mcpdm.c |  251 ++++++++++++++++++++++
+>  sound/soc/omap/omap-mcpdm.h |   29 +++
+>  sound/soc/omap/omap-pcm.c   |   15 +-
+>  sound/soc/omap/omap-pcm.h   |    4 +-
+>  9 files changed, 935 insertions(+), 8 deletions(-)
+>  create mode 100644 sound/soc/omap/mcpdm.c
+>  create mode 100644 sound/soc/omap/mcpdm.h
+>  create mode 100644 sound/soc/omap/omap-mcpdm.c
+>  create mode 100644 sound/soc/omap/omap-mcpdm.h
+> _______________________________________________
 
->From the check_unplugged function in alsa-utils/alsamixer/mixer_widget.c:
+All Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-	err = snd_mixer_get_hctl(mixer, mixer_device_name, &hctl);
-	if (err >= 0)
-		ctl = snd_hctl_ctl(hctl);
-
-> It would be great if the smixer would include some API that gives me a
-> hint to which device/subdevice a specific snd_mixer_elem_t belongs to.
-
-Often, there is no 1:1 correspondence between mixer elements and PCM
-devices.  Only mixer controls with interface PCM (not MIXER) have (sub-)
-device numbers, and at the moment this is used only for controls that
-are associated with the streams of hardware-mixing-capable cards.
-
-Getting information about the mixer layout (like the nodes reported by
-HDA and USB devices) is on the TODO list; the only reason it isn't being
-implemented is lack of time.
-
-
-Regards,
-Clemens
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
