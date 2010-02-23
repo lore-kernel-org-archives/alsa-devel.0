@@ -1,16 +1,16 @@
 From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 Subject: Re: 2.6.31.x vs. rme vs. alsa 1.0.22?
-Date: Tue, 23 Feb 2010 00:06:57 +0000
-Message-ID: <1266883617.3704.195.camel@localhost.localdomain>
+Date: Tue, 23 Feb 2010 00:16:55 +0000
+Message-ID: <1266884215.3704.208.camel@localhost.localdomain>
 References: <1266371882.3361.40.camel@localhost.localdomain>
 	<1266882689.3704.178.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.stanford.edu (smtp5.Stanford.EDU [171.67.219.85])
-	by alsa0.perex.cz (Postfix) with ESMTP id 74122103851
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 01:07:38 +0100 (CET)
+Received: from smtp.stanford.edu (smtp4.Stanford.EDU [171.67.219.84])
+	by alsa0.perex.cz (Postfix) with ESMTP id 829DF103851
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 01:17:42 +0100 (CET)
 In-Reply-To: <1266882689.3704.178.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,57 +35,7 @@ On Mon, 2010-02-22 at 23:51 +0000, Fernando Lopez-Lezcano wrote:
 > > hdspmixer is not doing the right thing (does not initialize the card in
 > > a way in which playback works), it does not see the hwdep interface (or
 > > something like that) and disables metering,
-> 
-> This is what hdspmixer prints when I attempt to run it:
-> 
-> ----
-> $ hdspmixer
-> 
-> HDSPMixer 1.6 - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>
-> This program comes with ABSOLUTELY NO WARRANTY
-> HDSPMixer is free software, see the file COPYING for details
-> 
-> Looking for HDSP cards :
-> Card 0 : HDA Intel at 0xfe020000 irq 17
-> Card 1 : RME Hammerfall DSP + Multiface at 0xc0000000, irq 16
-> Multiface found !
-> 1 Hammerfall DSP card found.
-> Initializing default presets
-> HwDep ioctl failed. Metering stopped
-> ----
-
-And this is what strace says:
-
-----
-open("/dev/snd/controlC1", O_RDONLY|O_CLOEXEC) = 5
-fcntl64(5, F_SETFD, FD_CLOEXEC)         = 0
-ioctl(5, UI_DEV_CREATE, 0xbff6aef4)     = 0
-close(5)                                = 0
-open("/dev/snd/hwC1D0", O_RDONLY|O_CLOEXEC) = 5
-fcntl64(5, F_SETFD, FD_CLOEXEC)         = 0
-ioctl(5, 0x80044800, 0xbff6b270)        = 0
-ioctl(5, SNDRV_HDSP_IOCTL_GET_PEAK_RMS, 0xbff6b57c) = -1 EINVAL (Invalid
-argument)
-write(2, "HwDep ioctl failed. Metering sto"..., 37HwDep ioctl failed.
-Metering stopped
-) = 37
-close(5)                                = 0
-----
-
--- Fernando
-
-
-
-> > alsamixer even segfaults
-> > when I reach the end of the controls listed. Plain weird. Smells like
-> > something changed deep in the kernel that makes alsa-lib very unhappy.
-> > Alsa-tools rebuilt from source does not make a difference. 
-> > 
-> > Weirdness goes away when I boot into 2.6.29.6 rt23...
-> > 
-> > Is there anything in alsa-* that depends on which _kernel_ is available
-> > at compile time?
-> 
+[MUNCH]
 > I have been trying to see if I can figure _anything_ out of this...
 > 
 > A diff of 2.6.29 (last known working) against 2.6.31.12 reveals
@@ -94,6 +44,16 @@ close(5)                                = 0
 > in snd_hdsp_create_hwdep there are two lines added:
 > 
 > + hw->ops.open = snd_hdsp_hwdep_dummy_op;
+
+Hmmm, looks like snd_hdsp_hwdep_dummy_op is not passing back the
+hdsp->hwdep structure to the open call at all (returning 0 is not enough
+from the description of the alsa api). That would explain what is
+happening, most probably no ioctls are found...
+
+Am I on the right track?
+-- Fernando
+
+
 >   hw->ops.ioctl = snd_hdsp_hwdep_ioctl;
 > + hw->ops.release = snd_hdsp_hwdep_dummy_op;
 > 
@@ -106,11 +66,3 @@ close(5)                                = 0
 > fails). Any suggestions on what I could try to fix this?
 > 
 > Thanks for any help!
-> 
-> -- Fernando
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
