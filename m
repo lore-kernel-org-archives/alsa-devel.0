@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: safe support for rewind in ALSA
-Date: Tue, 23 Feb 2010 10:37:51 +0800
-Message-ID: <4f3252891002221837l54990a10o7858ef4fbf5ce406@mail.gmail.com>
+Date: Tue, 23 Feb 2010 10:44:22 +0800
+Message-ID: <4f3252891002221844o46844423x92b275d36640b127@mail.gmail.com>
 References: <6160a5131002010920j4417a34ai9f410fb500f7f305@mail.gmail.com>
 	<4f3252891002081459q29f02414hf168a596ab641995@mail.gmail.com>
 	<alpine.DEB.1.10.1002092242540.3125@ecabase.localdomain>
@@ -16,11 +16,11 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 16DF8244D3
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 03:37:52 +0100 (CET)
-Received: by pvc22 with SMTP id 22so216986pvc.38
-	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 18:37:51 -0800 (PST)
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id DFA93244DA
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 03:44:23 +0100 (CET)
+Received: by pwi9 with SMTP id 9so2891675pwi.38
+	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 18:44:22 -0800 (PST)
 In-Reply-To: <alpine.DEB.1.10.1002211208120.3327@ecabase.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -55,12 +55,5 @@ List-Id: alsa-devel@alsa-project.org
 > not limited by the set period-size.
 >
 >
-I don't think so since the sound card still use interrupt driven , the
-latency cannot be better than the period size
-
-To achieve lower latency , you have to set a smaller period size even if you
-are using high resoultion timer
-
-The glitch is most likely underrun since the watermark may be too low on
-machine with slow CPU since you assume all CPU have enough power and disk
-I/O to write ( buttfer time - 20ms ) audio data in 20ms
+I guess alsa pulse plugin also has the same problem since the value returned
+by pointer callback of the pulse device is also not accurate
