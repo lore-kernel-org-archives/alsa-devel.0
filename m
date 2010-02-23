@@ -1,17 +1,17 @@
-From: Reimundo Heluani <rheluani@gmail.com>
-Subject: [PATCH] ALSA: add support for Macbook Air 2,
-	1 internal speaker.
-Date: Tue, 23 Feb 2010 01:19:51 -0800
-Message-ID: <1266916791.4582.19.camel@vino>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsa-compile.sh - easy testing of latest ALSA code
+Date: Tue, 23 Feb 2010 10:26:13 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1002231003530.28127@eeebox2.perex-int.cz>
+References: <alpine.LNX.2.00.1002221725120.28127@eeebox2.perex-int.cz>
+	<s5h3a0s2wlu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A64B10389F
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 10:19:51 +0100 (CET)
-Received: by gwj15 with SMTP id 15so791231gwj.38
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 01:19:50 -0800 (PST)
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A6F310389F
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 10:26:14 +0100 (CET)
+In-Reply-To: <s5h3a0s2wlu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,137 +21,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: tiwai@suse.de, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Reimundo Heluani <rheluani@gmail.com>
+On Tue, 23 Feb 2010, Takashi Iwai wrote:
 
-Add support for Macbook Air 2,1 (late 2008) internal speaker and 
-headphones. Create a "mba21" model for snd-hda-intel.
+> At Mon, 22 Feb 2010 17:37:29 +0100 (CET),
+> Jaroslav Kysela wrote:
+>>
+>> Hi all,
+>>
+>>  	I'm instroducing a new bash script - alsa-compile.sh - to allow
+>> easy testing of new ALSA code by all users using standard Linux
+>> desktop distributions. For example to get latest driver snapshot from
+>> www.alsa-project.org, compile it and insert new kernel modules, just type:
+>>
+>>   wget -O alsa-compile.sh http://www.alsa-project.org/alsa-compile.sh
+>>   chmod 755 alsa-compile.sh
+>>   ./alsa-compile.sh --driver --kmodules
+>>
+>> More information are available using --help option.
+>> More examples are available using --examples option.
+>>
+>> Actually, Fedora and openSUSE distributions are supported. Please,
+>> send patches extending functionality for other distributions to this list
+>> or directly to me.
+>>
+>> Takashi, you might want to add support (option) for your driver tarballs.
+>> It would be probably a good idea to create a link to latest tarball in
+>> your web directory.
+>>
+>> Please, send ideas, bugs, patches and any other issues to this list.
+>
+> Just one point I noticed quickly is that the standard directory for
+> update modules is either /lib/modules/$VERSION/updates or
+> /lib/modules/$VERSION/extras.  We should follow that.
 
-Signed-off-by: Reimundo Heluani <rheluani@gmail.com>
+The script just call 'make install-modules' in the alsa-driver package. 
+Anyway, overwriting kernel modules is just a workaround to bypass the 
+standard packaging. I don't think that using a special directory helps.
 
----
-Still missing internal microphone support
+> I find this a good move in general.  But, wouldn't it be better to
+> cooperate with the existing packaging?  For example, for openSUSE,
+> there is already the snapshot RPM for each user-space stuff and the
+> alsa-driver update KMP for all maintained distro versions on OBS.
+> User can install the up-to-date packages simply via zypper without
+> compiling.
 
---- linux-2.6/sound/pci/hda/patch_realtek.c.orig	2010-02-23
-00:36:16.000000000 -0800
-+++ linux-2.6/sound/pci/hda/patch_realtek.c	2010-02-23
-00:44:35.000000000 -0800
-@@ -207,6 +207,7 @@ enum {
- 	ALC882_ASUS_A7J,
- 	ALC882_ASUS_A7M,
- 	ALC885_MACPRO,
-+	ALC885_MBA21,
- 	ALC885_MBP3,
- 	ALC885_MB5,
- 	ALC885_IMAC24,
-@@ -6852,6 +6853,13 @@ static struct hda_channel_mode alc882_si
- 	{ 8, alc882_sixstack_ch8_init },
- };
- 
-+
-+/* Macbook Air 2,1 */
-+
-+static struct hda_channel_mode alc885_mba21_ch_modes[1] = {
-+      { 2, NULL },
-+};
-+
- /*
-  * macbook pro ALC885 can switch LineIn to LineOut without losing Mic
-  */
-@@ -7123,6 +7131,15 @@ static struct snd_kcontrol_new alc882_ba
- 	{ } /* end */
- };
- 
-+/* Macbook Air 2,1 same control for HP and internal Speaker */
-+
-+static struct snd_kcontrol_new alc885_mba21_mixer[] = {
-+      HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00,
-HDA_OUTPUT),
-+      HDA_BIND_MUTE("Speaker Playback Switch", 0x0c, 0x02, HDA_OUTPUT),
-+     { }
-+};
-+
-+
- static struct snd_kcontrol_new alc885_mbp3_mixer[] = {
- 	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
- 	HDA_BIND_MUTE   ("Speaker Playback Switch", 0x0c, 0x02, HDA_INPUT),
-@@ -7562,6 +7579,29 @@ static struct hda_verb alc885_mb5_init_v
- 	{ }
- };
- 
-+
-+static struct hda_verb alc885_mba21_init_verbs[] = {
-+	/*Internal and HP Speaker Mixer*/
-+	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
-+	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
-+	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
-+	/*Internal Speaker Pin (0x0c)*/
-+	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, (PIN_OUT |
-AC_PINCTL_VREF_50) },
-+	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x18, AC_VERB_SET_CONNECT_SEL, 0x00},
-+	/* HP Pin: output 0 (0x0e) */
-+	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc4},
-+	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
-+	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
-+	{0x14, AC_VERB_SET_UNSOLICITED_ENABLE, (ALC880_HP_EVENT |
-AC_USRSP_EN)},
-+	/* Line in (is hp when jack connected)*/
-+	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, AC_PINCTL_VREF_50},
-+	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
-+
-+	{ }
-+ };
-+
-+
- /* Macbook Pro rev3 */
- static struct hda_verb alc885_mbp3_init_verbs[] = {
- 	/* Front mixer: unmute input/output amp left and right (volume = 0) */
-@@ -7724,6 +7764,17 @@ static void alc885_imac24_setup(struct h
- 	spec->autocfg.speaker_pins[1] = 0x1a;
- }
- 
-+/* Macbook Air 2,1 */
-+static void alc885_mba21_setup(struct hda_codec *codec)
-+{
-+       struct alc_spec *spec = codec->spec;
-+
-+       spec->autocfg.hp_pins[0] = 0x14;
-+       spec->autocfg.speaker_pins[0] = 0x18;
-+}
-+
-+
-+
- static void alc885_mbp3_setup(struct hda_codec *codec)
- {
- 	struct alc_spec *spec = codec->spec;
-@@ -8938,6 +8989,7 @@ static const char *alc882_models[ALC882_
- 	[ALC882_ASUS_A7M]	= "asus-a7m",
- 	[ALC885_MACPRO]		= "macpro",
- 	[ALC885_MB5]		= "mb5",
-+	[ALC885_MBA21]		= "mba21",
- 	[ALC885_MBP3]		= "mbp3",
- 	[ALC885_IMAC24]		= "imac24",
- 	[ALC885_IMAC91]		= "imac91",
-@@ -9172,6 +9224,18 @@ static struct alc_config_preset alc882_p
- 		.input_mux = &alc882_capture_source,
- 		.dig_out_nid = ALC882_DIGOUT_NID,
- 	},
-+	   [ALC885_MBA21] = {
-+			.mixers = { alc885_mba21_mixer },
-+			.init_verbs = { alc885_mba21_init_verbs, alc880_gpio1_init_verbs },
-+			.num_dacs = 2,
-+			.dac_nids = alc882_dac_nids,
-+			.channel_mode = alc885_mba21_ch_modes,
-+			.num_channel_mode = ARRAY_SIZE(alc885_mba21_ch_modes),
-+			.input_mux = &alc882_capture_source,
-+			.unsol_event = alc_automute_amp_unsol_event,
-+			.setup = alc885_mba21_setup,
-+			.init_hook = alc_automute_amp,
-+       },
- 	[ALC885_MBP3] = {
- 		.mixers = { alc885_mbp3_mixer, alc882_chmode_mixer },
- 		.init_verbs = { alc885_mbp3_init_verbs,
+You may add a new command to the script to handle latest distribution 
+packages, something like:
+
+   alsa-compile.sh --lib --install-snapshot-package
+
+> OTOH, if the purpose is to make easier to install from the source
+> tree, then we can give a spec or deb file, or a script to set up such
+> files so that user can kick off the packager to have the
+> installation-ready test package.
+
+The purpose of this script is primary to compile and test latest sources. 
+Installation is not the primary goal - many distributions uses own 
+modifications and users can push package maintainers to upgrade the 
+official distribution packages.
+
+The idea is to have an independant script which allows users to test 
+the latest ALSA code without the knowledge of the packaging and other 
+distribution internals. We can do more interactive development using it 
+with almost all users. I am going to add --patch option to apply test 
+patches and do 'dmesg' output (for the driver package) which can be sent 
+back to the developer working on a given issue.
+
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
