@@ -1,27 +1,28 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: Separate dma driver for cpu_dais
-Date: Tue, 23 Feb 2010 14:45:47 +0900
-Message-ID: <1b68c6791002222145r543b0e45sfd842d8ddde4280f@mail.gmail.com>
-References: <20100217105202.GB31765@sirena.org.uk>
-	<20100217131421.GB11510@rakim.wolfsonmicro.main>
-	<1b68c6791002171814k28fccf9emcbcf17c54c445a4f@mail.gmail.com>
-	<20100218093459.GB3315@rakim.wolfsonmicro.main>
-	<1b68c6791002180142l422a9203se2a71cae5795d6a9@mail.gmail.com>
-	<20100218095249.GE3315@rakim.wolfsonmicro.main>
-	<1b68c6791002180232p6cd86811sc78699ac87236015@mail.gmail.com>
-	<20100218105750.GB3542@rakim.wolfsonmicro.main>
-	<1b68c6791002180359k65381c09t143d37ec5eef1cf8@mail.gmail.com>
-	<20100218131027.GF3542@rakim.wolfsonmicro.main>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: semantics of SNDRV_PCM_INFO_BATCH (was: Re: safe
+	support for rewind in ALSA)
+Date: Tue, 23 Feb 2010 15:02:35 +0800
+Message-ID: <4f3252891002222302i6c65b672l40ff7a781ef824b8@mail.gmail.com>
+References: <alpine.DEB.1.10.1002012328440.3125@ecabase.localdomain>
+	<4f3252891002100519h132fddb8t1f2bc56e97bf5c40@mail.gmail.com>
+	<4B72B665.3060903@ladisch.de>
+	<4f3252891002102252vb6d7a94l76fb78e33da37775@mail.gmail.com>
+	<4B73AFD5.4080205@ladisch.de>
+	<alpine.LNX.2.00.1002110822480.19278@eeebox2.perex-int.cz>
+	<4f3252891002141903q34144f58n60978e28e65640b4@mail.gmail.com>
+	<alpine.DEB.1.10.1002211208120.3327@ecabase.localdomain>
+	<20100221203500.GH31800@tango.0pointer.de>
+	<alpine.DEB.1.10.1002221958390.3327@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id B4B1424390
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 06:45:49 +0100 (CET)
-Received: by vws13 with SMTP id 13so738133vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 21:45:48 -0800 (PST)
-In-Reply-To: <20100218131027.GF3542@rakim.wolfsonmicro.main>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9360B24347
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 08:02:37 +0100 (CET)
+Received: by pwi9 with SMTP id 9so3083194pwi.38
+	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 23:02:36 -0800 (PST)
+In-Reply-To: <alpine.DEB.1.10.1002221958390.3327@ecabase.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,39 +32,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: kyungmin.park@samsung.com, alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBGZWIgMTgsIDIwMTAgYXQgMTA6MTAgUE0sIE1hcmsgQnJvd24KPGJyb29uaWVAb3Bl
-bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBUaHUsIEZlYiAxOCwgMjAxMCBh
-dCAwODo1OTozOFBNICswOTAwLCBqYXNzaSBicmFyIHdyb3RlOgo+PiBPbiBUaHUsIEZlYiAxOCwg
-MjAxMCBhdCA3OjU3IFBNLCBNYXJrIEJyb3duCj4+IElNTyBjb2RlY3Mgc2hvdWxkIHNpbXBseSBk
-byBhcyBkaXJlY3RlZCBieSB0aGUgQVNPQy4KPgo+IFJpZ2h0LCBidXQgdGhhdCBkb2Vzbid0IG1l
-YW4gdGhhdCB0aGUgZGV2aWNlIGRyaXZlcnMgY2FuJ3QgZG8gYW55dGhpbmcKPiB1c2VmdWwgaGVy
-ZSAtIGluIHRlcm1zIG9mIHJlc3RyaWN0aW9ucyB0aGV5IGNhbid0IGRvIGFueXRoaW5nIHRoZQo+
-IGhhcmR3YXJlIGNhbid0IGltcGxtZW5lbnQuIMKgQW5vdGhlciBleGFtcGxlIGhlcmUgaXMgdGhh
-dCBzdGFydHVwCj4gZnVuY3Rpb24gY2FuIHNldCBjb25zdHJhaW50cyBiYXNlZCBvbiB0aGUgY29u
-ZmlndXJhdGlvbiBvZiBvdGhlciBydW5uaW5nCj4gbGlua3MgaWYgdGhlIGhhcmR3YXJlIGhhcyBh
-bnkgbGltaXRhdGlvbnMgaW4gdGhhdCByZWdhcmQgKHNvbWUgd2lsbCwKPiBzb21lIHdvbid0LCBh
-bmQgdGhlIGxpbWl0YXRpb25zIG1heSBub3QgZXZlbiBiZSBhbnl0aGluZyB0byBkbyB3aXRoCj4g
-YXVkaW8gaW4gc29tZSBkZXNpZ25zKS4KT2theS4gSGVyZSdzIGFub3RoZXIgcGVyc3BlY3RpdmUg
-Li4uCklmIGEgZGFpIGNhbiBoYXZlIGZ1cnRoZXIgcGFyYWxsZWwgc3ViLWNvbmZpZ3VyYXRpb25z
-LCBwZXJoYXBzIGl0IHNob3VsZApiZSBmdXJ0aGVyIGRpdmlkZWQgaW50byBtb3JlIGRhaXMuClNv
-LCBJIHNlZSBhIHNuZF9zb2NfZGFpIGFzIHRoZSBzaW1wbGVzdCBoL3cgdW5pdCBpbiB0aGUgc3lz
-dGVtIGFuZApwcmVzdW1hYmx5ICBhbHJlYWR5IGZ1bGx5IGV4cGxvaXRlZCBieSB0aGUgYWN0aXZl
-IGRhaV9saW5rIGkuZSwgbm9uZSBvZgppdHMgYml0cyBjYW4gYmUgY2hhbmdlZCB3aXRob3V0IGRp
-c3R1cmJpbmcgdGhlIGFjdGl2ZSBzdHJlYW0uIFRoZQpudW1iZXIgb2Ygc2hhcmVzIHNob3VsZCBi
-ZSB0cmFuc3BhcmVudCB0byBhIGRhaS4KSWYgdGhpcyBhc3N1bXB0aW9uIGlzIHZhbGlkIHBsZWFz
-ZSByZWFkIG9uLCBvdGhlcndpc2UgY29ycmVjdCBtZS4KClRoZSBzZXQgb2Yge3JhdGUsIHNhbXBs
-ZSBzaXplICYgZm9ybWF0LCBjaGFubmVsc30gZGVmaW5lcyBvbmUgYWN0aXZlCmRhaS4gVGhlIHNl
-Y29uZCBzdHJlYW0gc2hhcmluZyB0aGlzIGRhaSBjYW4gbm90IGNoYW5nZSBhbnkgb2YgdGhlc2UK
-cGFyYW1ldGVycyB3aXRob3V0IHNwb2lsaW5nIHRoZSBhY3RpdmUgcGxheWJhY2svY2FwdHVyZSAt
-IHdlIGNhbiBhbGxvdwp0aGlzIGNvbmZpZ3VyYXRpb24gb3ZlcnJpZGluZyBhcyBhIGZlYXR1cmUg
-b3IgcHJldmVudCBhcyBhIGJ1Zy4gSQpwcmVmZXIgbGF0dGVyLiBTaW5jZSB0aGVyZSBpc24ndCBh
-bnl0aGluZyBuZXcgdG8gZG8gbm93LCB0aGUgQVNvQyBjb3JlCmNhbgpzaW1wbHkgYXZvaWQgY2Fs
-bGluZyBob29rcyBpbiBkcml2ZXJzIHJhdGhlciB0aGFuIGhhdmluZyA1MCBkcml2ZXJzCmltcGxl
-bWVudCBhIGNoZWNrLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+2010/2/23 Kai Vehmanen <kvehmanen@eca.cx>
+
+> Hi,
+>
+> On Sun, 21 Feb 2010, Lennart Poettering wrote:
+>
+>  But you can query the SNDRV_PCM_INFO_BATCH flag (it's set by e.g. the USB
+>>> driver) and adjust your hrtimer-based application's logic based on that
+>>>
+>>
+It is not easy to calculate the correct wake up time if the function is a
+stepping function since you must keep track of the elasped time instead of
+relying on the hw ptr positon
+
+
+>  [...]
+>
+>> This mean that the wake up time cannot be calculated using as number of
+>>>> sample/rate since the fuction is not linear especially when using max
+>>>> buffer
+>>>> size , min period --> max period size is much greater than the watermark
+>>>>
+>>>
+>>> Yep, that's what SNDRV_PCM_INFO_BATCH flag warns you about.
+>>>
+>>
+>> Hmm, could you elaborate a little about SNDRV_PCM_INFO_BATCH? What
+>> exactly does that mean in general and especially for the timer based
+>> audio scheduling?
+>>
+>> I am currently not making use of this, but should I?
+>>
+>
+> I'm also looking at this topic from an application developer perspective,
+> so I can only provide you my interpretation of reading current ALSA code,
+> but here goes.
+>
+> I'll also add Eliot (who asked about the same thing, in
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2010-February/025262.html) to the cc, and also Takashi, who git-annotate reveals has made most recent
+> PCM_INFO_BATCH related changes to linux/sound/core/pcm_lib.c. ;)
+>
+> Anyway, SNDRV_PCM_INFO_BATCH is set by following drivers:
+>  - isa/msnd
+>  - pcii/bt87x
+>  - pci/korg1212
+>  - pcmcia/pdaudiocf
+>  - soc/au1x
+>  - soc/fsl (mpc52xx/8610)
+>  - sparc/dbri
+>  - usbaudio
+>
+
+How about cs46xx ?
+
+
+>
+> Common to all these drivers is that audio samples are moved to/from the
+> ALSA ringbuffer, in bursts, to an intermediary block of memory, and from
+> there to/from the codec. And most importantly, pointer callback is based on
+> last ack'ed burst. IOW, hw_ptr jumps in bursts with these drivers and
+> granularity of hw_ptr is more coarse (affecting snd_pcm_avail(),
+> snd_pcm_delay() and so forth).
+>
+> Now the existing documentation for the flag (and user-space
+> snd_pcm_hw_params_is_batch() API) is rather brief as you've noted, and AFAIK
+> very few apps use these, so I'm not sure, how much we as app developers
+> should rely on these semantics (and to the fact that future drivers will use
+> the BATCH flag in a similar way).
+>
+> But anyways, the fact remains that snd_pcm_hw_params_is_batch() exists, and
+> based on a review of current (2.6.33-rc) drivers, majority/all of the
+> drivers use the flag in the same way.
+>
+> So for apps like PA, snd_pcm_hw_params_is_batch() is a hint that app should
+> not rewind closer to hw_ptr than period-size. It also hints that hw_ptr
+> granularity is more coarse, which might be useful in setting sane defaults
+> for buffer watermarks and such.
+>
+> PS Eliot: I didn't respond to your original mail, as I don't really
+>   have even good reading-the-code interpretations for the others.
+>   SNDRV_PCM_INFO_BLOCK_TRANSFER/snd_pcm_hw_params_is_block_transfer()
+>   is set by many, many drivers, but I'm not sure what the
+>   semantics really are (why cs4281 does not set the flag, while
+>   ens1370 sets it for instance). Then again SNDRV_PCM_INFO_BLOCK_DOUBLE
+>   seems very close to BATCH flag, but drivers setting DOUBLE (basicly
+>   just rme9652), _do_ support accurate pointer/hw_ptr reporting, so
+>   there is a difference.
+>
