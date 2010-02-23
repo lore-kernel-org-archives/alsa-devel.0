@@ -1,18 +1,20 @@
-From: Douglas Mencken <dougmencken@gmail.com>
-Subject: snd-powermac @ G4 DA (PowerMac3,
-	4) - headphone detection doesn't work
-Date: Tue, 23 Feb 2010 17:20:58 +0100
-Message-ID: <29bea45b1002230820m5111e0cu6006e6636201049e@mail.gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH v4 0/3] McPDM driver patch series
+Date: Tue, 23 Feb 2010 18:25:57 +0200
+Message-ID: <20100223182557.7c2e7bfe.jhnikula@gmail.com>
+References: <2256F256009DAA4CBE661E9F41EAC84B8FA52A10@dlee01.ent.ti.com>
+	<1266919705.3156.0.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f213.google.com (mail-bw0-f213.google.com
-	[209.85.218.213])
-	by alsa0.perex.cz (Postfix) with ESMTP id 643B824392
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 17:21:00 +0100 (CET)
-Received: by bwz5 with SMTP id 5so5225384bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 08:20:59 -0800 (PST)
+Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
+	[209.85.219.223])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57D3E24380
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 17:25:26 +0100 (CET)
+Received: by ewy23 with SMTP id 23so197660ewy.4
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 08:25:24 -0800 (PST)
+In-Reply-To: <1266919705.3156.0.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I can hear sound with internal speakers only if I plug headphones
-jack, without plugged jack, there's no sound at all; to listen thru
-headphones, I need to half-insert that jack and this leads to
-distortions; with h/phones jack plugged fully, no sound in phones, but
-sound in internal speaker. With the same half-plug, in OS X I head
-sound both via h/phones and internal speaker.
-Driver: snd-powermac. Audio card: Tumbler @ i2ca @ KeyLargo i2c (I can
-provide the full dump of OpenFirmware device tree).
+On Tue, 23 Feb 2010 10:08:25 +0000
+Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 
-As <gnubien> at #alsa @ irc.freenode.net suggested, I ran `alsamixer
--c 0` and MM-ed 'Auto Mute'. After that, I can fully plug h/phones
-jack and enjoy full sounds w/o distortions but still can't get any
-sound when it's unplugged.
+> > Jorge Eduardo Candelaria (1):
+> >       ASoC: OMAP4: Add support for McPDM
+> > 
+> > Misael Lopez Cruz (2):
+> >       ASoC: OMAP: data_type and sync_mode configurable in audio dma
+> >       ASoC: OMAP4: Add McPDM platform driver
+> > 
+> 
+> All Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> 
+Have my ack too. I didn't do OMAP4 compile test but the OMAP3 Beagle
+compile and runtime tests went fine. I'll see it important to have this
+second DAI driver to ASoC OMAP and also OMAP4 to be covered.
 
-The result of running ./alsa-info.sh:
-Your ALSA information is located at
-http://www.alsa-project.org/db/?f=daac9e06cbe772222b90d7fba14c1a49a65b980c
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
