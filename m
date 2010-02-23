@@ -1,23 +1,17 @@
-From: Jerone Young <jerone.young@canonical.com>
-Subject: Conexant CX20561 alsa driver not muting headphone jack
- on Thinkpads when mute button pressed .. any ideas?
-Date: Mon, 22 Feb 2010 17:55:34 -0600
-Message-ID: <1266882934.2831.40.camel@laptop>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: 2.6.31.x vs. rme vs. alsa 1.0.22?
+Date: Tue, 23 Feb 2010 00:06:57 +0000
+Message-ID: <1266883617.3704.195.camel@localhost.localdomain>
+References: <1266371882.3361.40.camel@localhost.localdomain>
+	<1266882689.3704.178.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 747DD244B8
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 00:55:49 +0100 (CET)
-Received: from hutte.canonical.com ([91.189.90.181])
-	by adelie.canonical.com with esmtp (Exim 4.69 #1 (Debian))
-	id 1Nji7n-0007o2-DU
-	for <alsa-devel@alsa-project.org>; Mon, 22 Feb 2010 23:55:42 +0000
-Received: from [32.176.102.220] by hutte.canonical.com with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <jerone.young@canonical.com>) id 1Nji7m-0005Z6-Fy
-	for alsa-devel@alsa-project.org; Mon, 22 Feb 2010 23:55:39 +0000
+Received: from smtp.stanford.edu (smtp5.Stanford.EDU [171.67.219.85])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74122103851
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 01:07:38 +0100 (CET)
+In-Reply-To: <1266882689.3704.178.camel@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,32 +21,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: The Linux Audio Developers' Mailing List <linux-audio-dev@lists.linuxaudio.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There is an interesting problem with Lenovo Thinkpads X200, X200s, X301,
-& .. looks like W500  using the Conexant CX20561 codec under Linux with
-alsa.
+On Mon, 2010-02-22 at 23:51 +0000, Fernando Lopez-Lezcano wrote:
+> On Tue, 2010-02-16 at 17:58 -0800, Fernando Lopez-Lezcano wrote:
+> > Hey, has anyone been seeing strange behavior from this combination?
+> > 
+> >   kernel 2.6.31.x rt20 + alsa 1.0.22 userland
+> >   RME card (pcmcia card + multiface)
+> > 
+> > hdspmixer is not doing the right thing (does not initialize the card in
+> > a way in which playback works), it does not see the hwdep interface (or
+> > something like that) and disables metering,
+> 
+> This is what hdspmixer prints when I attempt to run it:
+> 
+> ----
+> $ hdspmixer
+> 
+> HDSPMixer 1.6 - Copyright (C) 2003 Thomas Charbonnel <thomas@undata.org>
+> This program comes with ABSOLUTELY NO WARRANTY
+> HDSPMixer is free software, see the file COPYING for details
+> 
+> Looking for HDSP cards :
+> Card 0 : HDA Intel at 0xfe020000 irq 17
+> Card 1 : RME Hammerfall DSP + Multiface at 0xc0000000, irq 16
+> Multiface found !
+> 1 Hammerfall DSP card found.
+> Initializing default presets
+> HwDep ioctl failed. Metering stopped
+> ----
 
-But if you have your headphone plugged in. You get audio .. but if you
-press the hardware mute button .. it will not mute the headphones. By
-pulling out the headphones you will notice though that the internal
-speakers are muted.
+And this is what strace says:
 
-At first I blamed the bios. But then I did a test under FreeDOS where I
-used the beep command for sound. Sure enough I press the mute button and
-the headphone jack is muted.
+----
+open("/dev/snd/controlC1", O_RDONLY|O_CLOEXEC) = 5
+fcntl64(5, F_SETFD, FD_CLOEXEC)         = 0
+ioctl(5, UI_DEV_CREATE, 0xbff6aef4)     = 0
+close(5)                                = 0
+open("/dev/snd/hwC1D0", O_RDONLY|O_CLOEXEC) = 5
+fcntl64(5, F_SETFD, FD_CLOEXEC)         = 0
+ioctl(5, 0x80044800, 0xbff6b270)        = 0
+ioctl(5, SNDRV_HDSP_IOCTL_GET_PEAK_RMS, 0xbff6b57c) = -1 EINVAL (Invalid
+argument)
+write(2, "HwDep ioctl failed. Metering sto"..., 37HwDep ioctl failed.
+Metering stopped
+) = 37
+close(5)                                = 0
+----
 
-I've been looking for any documentation I can find on the CX20561 but
-there is non out there I can find. I could be wrong, but it seems some
-bit isn't being flipped for this codec to work correctly with this
-functionality with the alsa driver.
+-- Fernando
 
 
-Any ideas?
 
-I've created a bug here:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4928
-
-			Thanks,
-				Jerone
+> > alsamixer even segfaults
+> > when I reach the end of the controls listed. Plain weird. Smells like
+> > something changed deep in the kernel that makes alsa-lib very unhappy.
+> > Alsa-tools rebuilt from source does not make a difference. 
+> > 
+> > Weirdness goes away when I boot into 2.6.29.6 rt23...
+> > 
+> > Is there anything in alsa-* that depends on which _kernel_ is available
+> > at compile time?
+> 
+> I have been trying to see if I can figure _anything_ out of this...
+> 
+> A diff of 2.6.29 (last known working) against 2.6.31.12 reveals
+> something that might have an influence on the problem:
+> 
+> in snd_hdsp_create_hwdep there are two lines added:
+> 
+> + hw->ops.open = snd_hdsp_hwdep_dummy_op;
+>   hw->ops.ioctl = snd_hdsp_hwdep_ioctl;
+> + hw->ops.release = snd_hdsp_hwdep_dummy_op;
+> 
+> And snd_hdsp_hwdep_dummy_op just returns 0...
+> 
+> Other differences between the two files (not that many) seem irrelevant
+> to me. 
+> 
+> I imagine this is what is causing the difference in behavior (hwdep
+> fails). Any suggestions on what I could try to fix this?
+> 
+> Thanks for any help!
+> 
+> -- Fernando
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
