@@ -1,17 +1,20 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH] usb/gadget/{f_audio,
-	gmidi}.c: follow recent changes in audio.h
-Date: Tue, 23 Feb 2010 10:30:00 +0100
-Message-ID: <1266917400-26397-1-git-send-email-daniel@caiaq.de>
-References: <20100223082634.GR28972@buzzloop.caiaq.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHES_v1] ASoC: Towards dropping runtime field
+ from snd_soc_dai
+Date: Tue, 23 Feb 2010 09:34:40 +0000
+Message-ID: <20100223093440.GA14629@rakim.wolfsonmicro.main>
+References: <1b68c6791002212255j69faa9b7k13da803bf65c2177@mail.gmail.com>
+	<20100222142748.GB27789@sirena.org.uk>
+	<1b68c6791002222057t15ccff9ei395078c86cd4a67e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 31F121038A5
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 10:30:35 +0100 (CET)
-In-Reply-To: <20100223082634.GR28972@buzzloop.caiaq.de>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E1B741038AC
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 10:34:41 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6791002222057t15ccff9ei395078c86cd4a67e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,70 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, dbrownell@users.sourceforge.net, clemens@ladisch.de, gregkh@suse.de
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Some structs in linux/usb/audio.h have got new names to mark them as
-part of version 1.0 of the USB audio standard. Follow these changes
-in the gadget drivers.
+On Tue, Feb 23, 2010 at 01:57:30PM +0900, jassi brar wrote:
 
-Not that this header and the ALSA USB driver will undergo some
-refactoring soon, so there might be another update to the gadgets as
-well.
+> I intended them to be 'git am' applied. Anyways, I hope I don't have to
+> send attachments in future.
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
----
-I believe this would be best to go thru the ALSA tree as the other
-changes are there, too.
-
-drivers/usb/gadget/f_audio.c |    6 +++---
- drivers/usb/gadget/gmidi.c   |    2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/gadget/f_audio.c b/drivers/usb/gadget/f_audio.c
-index df77f61..f1e3aad 100644
---- a/drivers/usb/gadget/f_audio.c
-+++ b/drivers/usb/gadget/f_audio.c
-@@ -60,7 +60,7 @@ DECLARE_UAC_AC_HEADER_DESCRIPTOR(2);
- #define UAC_DT_TOTAL_LENGTH (UAC_DT_AC_HEADER_LENGTH + UAC_DT_INPUT_TERMINAL_SIZE \
- 	+ UAC_DT_OUTPUT_TERMINAL_SIZE + UAC_DT_FEATURE_UNIT_SIZE(0))
- /* B.3.2  Class-Specific AC Interface Descriptor */
--static struct uac_ac_header_descriptor_2 ac_header_desc = {
-+static struct uac_ac_header_descriptor_v1_2 ac_header_desc = {
- 	.bLength =		UAC_DT_AC_HEADER_LENGTH,
- 	.bDescriptorType =	USB_DT_CS_INTERFACE,
- 	.bDescriptorSubtype =	UAC_HEADER,
-@@ -124,7 +124,7 @@ static struct usb_audio_control_selector feature_unit = {
- };
- 
- #define OUTPUT_TERMINAL_ID	3
--static struct uac_output_terminal_descriptor output_terminal_desc = {
-+static struct uac_output_terminal_descriptor_v1 output_terminal_desc = {
- 	.bLength		= UAC_DT_OUTPUT_TERMINAL_SIZE,
- 	.bDescriptorType	= USB_DT_CS_INTERFACE,
- 	.bDescriptorSubtype	= UAC_OUTPUT_TERMINAL,
-@@ -154,7 +154,7 @@ static struct usb_interface_descriptor as_interface_alt_1_desc = {
- };
- 
- /* B.4.2  Class-Specific AS Interface Descriptor */
--static struct uac_as_header_descriptor as_header_desc = {
-+static struct uac_as_header_descriptor_v1 as_header_desc = {
- 	.bLength =		UAC_DT_AS_HEADER_SIZE,
- 	.bDescriptorType =	USB_DT_CS_INTERFACE,
- 	.bDescriptorSubtype =	UAC_AS_GENERAL,
-diff --git a/drivers/usb/gadget/gmidi.c b/drivers/usb/gadget/gmidi.c
-index d0b1e83..5f6a2e0 100644
---- a/drivers/usb/gadget/gmidi.c
-+++ b/drivers/usb/gadget/gmidi.c
-@@ -237,7 +237,7 @@ static const struct usb_interface_descriptor ac_interface_desc = {
- };
- 
- /* B.3.2  Class-Specific AC Interface Descriptor */
--static const struct uac_ac_header_descriptor_1 ac_header_desc = {
-+static const struct uac_ac_header_descriptor_v1_1 ac_header_desc = {
- 	.bLength =		UAC_DT_AC_HEADER_SIZE(1),
- 	.bDescriptorType =	USB_DT_CS_INTERFACE,
- 	.bDescriptorSubtype =	USB_MS_HEADER,
--- 
-1.6.6.2
+Yes, that was what I used to apply them - essentially what it does is to
+stick the contents of the attachment onto the message subject and body
+that it would normally use then process them so anything in the patch
+that's replicated from the subject and body will end up at the end of
+the body.
