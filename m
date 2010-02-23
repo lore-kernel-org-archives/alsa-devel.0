@@ -1,29 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
-	cards, especially Aureon 5.1 MkII
-Date: Tue, 23 Feb 2010 16:43:03 +0800
-Message-ID: <4f3252891002230043jac570eekde1164df62c75853@mail.gmail.com>
-References: <20100216233825.GB23623@sirena.org.uk>
-	<4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
-	<20100218023742.GC23637@tango.0pointer.de>
-	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
-	<20100218181322.GB5606@tango.0pointer.de>
-	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
-	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
-	<20100219151328.GC25873@tango.0pointer.de>
-	<4f3252891002201949k48e0208fw40590803ac1a8192@mail.gmail.com>
-	<20100221193933.GA31800@tango.0pointer.de>
+From: Reimundo Heluani <rheluani@gmail.com>
+Subject: [PATCH] ALSA: add support for Macbook Air 2,
+	1 internal speaker.
+Date: Tue, 23 Feb 2010 01:19:51 -0800
+Message-ID: <1266916791.4582.19.camel@vino>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6524F103882
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 09:43:06 +0100 (CET)
-Received: by pwi9 with SMTP id 9so3150340pwi.38
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 00:43:05 -0800 (PST)
-In-Reply-To: <20100221193933.GA31800@tango.0pointer.de>
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A64B10389F
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 10:19:51 +0100 (CET)
+Received: by gwj15 with SMTP id 15so791231gwj.38
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 01:19:50 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,35 +21,137 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: tiwai@suse.de, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/22 Lennart Poettering <mznyfn@0pointer.de>
+From: Reimundo Heluani <rheluani@gmail.com>
 
-> On Sun, 21.02.10 11:49, Raymond Yau (superquad.vortex2@gmail.com) wrote:
->
-> > The most common onboard audio is HDA so this is not any exceptional cases
-> >
-> > Those HDA multi streaming  feature are most users wanted in desktop
-> > enviornment, are pulseaudio really designed for deskop or just only for
-> > notebook and mobile ?
-> >
-> > The front panel green/pink jack can be used by one application while the
-> > rear panel audio jacks can be used to another application for surround or
-> > mic for karaoke
->
->
-> >  Send a game's sound through 5.1 speakers while the Internet chatting
-> audio
-> > is sent through your headset.
->
-> More often than not you'd probably use two seperate cards for that.
->
+Add support for Macbook Air 2,1 (late 2008) internal speaker and 
+headphones. Create a "mba21" model for snd-hda-intel.
 
-why do you need another sound card when you onboard audio HDA already
-support this feature ?
+Signed-off-by: Reimundo Heluani <rheluani@gmail.com>
 
-e.g. Skype can use alsa hw device for better latency
-l<http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
+---
+Still missing internal microphone support
 
->
+--- linux-2.6/sound/pci/hda/patch_realtek.c.orig	2010-02-23
+00:36:16.000000000 -0800
++++ linux-2.6/sound/pci/hda/patch_realtek.c	2010-02-23
+00:44:35.000000000 -0800
+@@ -207,6 +207,7 @@ enum {
+ 	ALC882_ASUS_A7J,
+ 	ALC882_ASUS_A7M,
+ 	ALC885_MACPRO,
++	ALC885_MBA21,
+ 	ALC885_MBP3,
+ 	ALC885_MB5,
+ 	ALC885_IMAC24,
+@@ -6852,6 +6853,13 @@ static struct hda_channel_mode alc882_si
+ 	{ 8, alc882_sixstack_ch8_init },
+ };
+ 
++
++/* Macbook Air 2,1 */
++
++static struct hda_channel_mode alc885_mba21_ch_modes[1] = {
++      { 2, NULL },
++};
++
+ /*
+  * macbook pro ALC885 can switch LineIn to LineOut without losing Mic
+  */
+@@ -7123,6 +7131,15 @@ static struct snd_kcontrol_new alc882_ba
+ 	{ } /* end */
+ };
+ 
++/* Macbook Air 2,1 same control for HP and internal Speaker */
++
++static struct snd_kcontrol_new alc885_mba21_mixer[] = {
++      HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00,
+HDA_OUTPUT),
++      HDA_BIND_MUTE("Speaker Playback Switch", 0x0c, 0x02, HDA_OUTPUT),
++     { }
++};
++
++
+ static struct snd_kcontrol_new alc885_mbp3_mixer[] = {
+ 	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
+ 	HDA_BIND_MUTE   ("Speaker Playback Switch", 0x0c, 0x02, HDA_INPUT),
+@@ -7562,6 +7579,29 @@ static struct hda_verb alc885_mb5_init_v
+ 	{ }
+ };
+ 
++
++static struct hda_verb alc885_mba21_init_verbs[] = {
++	/*Internal and HP Speaker Mixer*/
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	/*Internal Speaker Pin (0x0c)*/
++	{0x18, AC_VERB_SET_PIN_WIDGET_CONTROL, (PIN_OUT |
+AC_PINCTL_VREF_50) },
++	{0x18, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x18, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* HP Pin: output 0 (0x0e) */
++	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc4},
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{0x14, AC_VERB_SET_UNSOLICITED_ENABLE, (ALC880_HP_EVENT |
+AC_USRSP_EN)},
++	/* Line in (is hp when jack connected)*/
++	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, AC_PINCTL_VREF_50},
++	{0x19, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++
++	{ }
++ };
++
++
+ /* Macbook Pro rev3 */
+ static struct hda_verb alc885_mbp3_init_verbs[] = {
+ 	/* Front mixer: unmute input/output amp left and right (volume = 0) */
+@@ -7724,6 +7764,17 @@ static void alc885_imac24_setup(struct h
+ 	spec->autocfg.speaker_pins[1] = 0x1a;
+ }
+ 
++/* Macbook Air 2,1 */
++static void alc885_mba21_setup(struct hda_codec *codec)
++{
++       struct alc_spec *spec = codec->spec;
++
++       spec->autocfg.hp_pins[0] = 0x14;
++       spec->autocfg.speaker_pins[0] = 0x18;
++}
++
++
++
+ static void alc885_mbp3_setup(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
+@@ -8938,6 +8989,7 @@ static const char *alc882_models[ALC882_
+ 	[ALC882_ASUS_A7M]	= "asus-a7m",
+ 	[ALC885_MACPRO]		= "macpro",
+ 	[ALC885_MB5]		= "mb5",
++	[ALC885_MBA21]		= "mba21",
+ 	[ALC885_MBP3]		= "mbp3",
+ 	[ALC885_IMAC24]		= "imac24",
+ 	[ALC885_IMAC91]		= "imac91",
+@@ -9172,6 +9224,18 @@ static struct alc_config_preset alc882_p
+ 		.input_mux = &alc882_capture_source,
+ 		.dig_out_nid = ALC882_DIGOUT_NID,
+ 	},
++	   [ALC885_MBA21] = {
++			.mixers = { alc885_mba21_mixer },
++			.init_verbs = { alc885_mba21_init_verbs, alc880_gpio1_init_verbs },
++			.num_dacs = 2,
++			.dac_nids = alc882_dac_nids,
++			.channel_mode = alc885_mba21_ch_modes,
++			.num_channel_mode = ARRAY_SIZE(alc885_mba21_ch_modes),
++			.input_mux = &alc882_capture_source,
++			.unsol_event = alc_automute_amp_unsol_event,
++			.setup = alc885_mba21_setup,
++			.init_hook = alc_automute_amp,
++       },
+ 	[ALC885_MBP3] = {
+ 		.mixers = { alc885_mbp3_mixer, alc882_chmode_mixer },
+ 		.init_verbs = { alc885_mbp3_init_verbs,
