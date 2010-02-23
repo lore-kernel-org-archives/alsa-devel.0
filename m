@@ -1,55 +1,38 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: Re: alsa-compile.sh - easy testing of latest ALSA code
-Date: Wed, 24 Feb 2010 09:51:47 +1300
-Message-ID: <4B843FE3.3030606@audioscience.com>
-References: <alpine.LNX.2.00.1002221725120.28127@eeebox2.perex-int.cz>
-	<s5h3a0s2wlu.wl%tiwai@suse.de>
-	<alpine.LNX.2.00.1002231003530.28127@eeebox2.perex-int.cz>
+From: Paul Davis <paul-dDzkXPnfpdxaomM2pvQuqZqQE7yCjDx5@public.gmane.org>
+Subject: Re: [LAD] [alsa-devel] 2.6.31.x vs. rme vs. alsa 1.0.22?
+Date: Tue, 23 Feb 2010 16:22:27 -0500
+Message-ID: <eb4b5e1d1002231322p3b63a587h92a26ffe348d0e1e@mail.gmail.com>
+References: <1266371882.3361.40.camel@localhost.localdomain>
+	<1266882689.3704.178.camel@localhost.localdomain>
+	<1266884215.3704.208.camel@localhost.localdomain>
+	<1266884449.3704.214.camel@localhost.localdomain>
+	<1266958133.2507.234.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3B6B1038AF
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 21:52:36 +0100 (CET)
-Received: from [192.168.1.6]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0KYB00CCQBBLGU10@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Wed, 24 Feb 2010 09:52:34 +1300 (NZDT)
-In-reply-to: <alpine.LNX.2.00.1002231003530.28127@eeebox2.perex-int.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+In-Reply-To: <1266958133.2507.234.camel-bi+AKbBUZKY6gyzm1THtWbp2dZbC/Bob@public.gmane.org>
+List-Unsubscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxaudio.org/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+To: Fernando Lopez-Lezcano <nando-l0SEpsmuUtBegcJQxxnBRDe48wsgrGvP@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, The Linux Audio Developers' Mailing List <linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Tue, 23 Feb 2010, Takashi Iwai wrote:
->> Just one point I noticed quickly is that the standard directory for
->> update modules is either /lib/modules/$VERSION/updates or
->> /lib/modules/$VERSION/extras.  We should follow that.
-> 
-> The script just call 'make install-modules' in the alsa-driver package. 
-> Anyway, overwriting kernel modules is just a workaround to bypass the 
-> standard packaging. I don't think that using a special directory helps.
+On Tue, Feb 23, 2010 at 3:48 PM, Fernando Lopez-Lezcano
+<nando-l0SEpsmuUtBegcJQxxnBRDe48wsgrGvP@public.gmane.org> wrote:
 
-I think it helps:
+>ALSA sound/pci/rme9652/hdsp.c:831: Hammerfall-DSP: wait for FIFO status
+<= 0 failed after 30 iterations
 
-Building drivers from source I usually configure --with-moddir=updates/alsa
+this is bad, and i think may be related to your issues. this
+timing-sensitive loop has always been a problem. it probably just
+worked the 2nd time you tried a firmware load (by good luck).
 
-This means
-* The newly generated modules do not overwrite the distro supplied ones.
- * I can easily revert to the distro ones by deleting updates/alsa (my
-updates directory also has a dkms subdirectory) and rerunning depmod
-
-
---
-Eliot
+--p
