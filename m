@@ -1,29 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
-	cards, especially Aureon 5.1 MkII
-Date: Tue, 23 Feb 2010 20:46:28 +0800
-Message-ID: <4f3252891002230446g3fa96521yf51290e058473b94@mail.gmail.com>
-References: <20100216233825.GB23623@sirena.org.uk>
-	<20100218023742.GC23637@tango.0pointer.de>
-	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
-	<20100218181322.GB5606@tango.0pointer.de>
-	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
-	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
-	<20100219151328.GC25873@tango.0pointer.de>
-	<4f3252891002202001gb6df8cg6c023c52e7d8394a@mail.gmail.com>
-	<20100221192951.GD30380@tango.0pointer.de>
-	<4B83A912.1050501@ladisch.de>
+From: Douglas Mencken <dougmencken@gmail.com>
+Subject: snd-powermac @ G4 DA (PowerMac3,
+	4) - headphone detection doesn't work
+Date: Tue, 23 Feb 2010 17:20:58 +0100
+Message-ID: <29bea45b1002230820m5111e0cu6006e6636201049e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id ABD5710387E
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 13:46:29 +0100 (CET)
-Received: by pwi9 with SMTP id 9so3266018pwi.38
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 04:46:28 -0800 (PST)
-In-Reply-To: <4B83A912.1050501@ladisch.de>
+Received: from mail-bw0-f213.google.com (mail-bw0-f213.google.com
+	[209.85.218.213])
+	by alsa0.perex.cz (Postfix) with ESMTP id 643B824392
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 17:21:00 +0100 (CET)
+Received: by bwz5 with SMTP id 5so5225384bwz.32
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 08:20:59 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,47 +25,20 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/23 Clemens Ladisch <clemens@ladisch.de>
+I can hear sound with internal speakers only if I plug headphones
+jack, without plugged jack, there's no sound at all; to listen thru
+headphones, I need to half-insert that jack and this leads to
+distortions; with h/phones jack plugged fully, no sound in phones, but
+sound in internal speaker. With the same half-plug, in OS X I head
+sound both via h/phones and internal speaker.
+Driver: snd-powermac. Audio card: Tumbler @ i2ca @ KeyLargo i2c (I can
+provide the full dump of OpenFirmware device tree).
 
-> Lennart Poettering wrote:
-> > On Sun, 21.02.10 12:01, Raymond Yau (superquad.vortex2@gmail.com) wrote:
-> > > However Simple Mixer API cannot know the subdevice number , you have to
-> use
-> > > control API ( the lower level API used by Simple Mixer API )
-> >
-> > Unfortunately there is no way from the simple mixer to the lower level
-> > mixer.
->
-> From the check_unplugged function in alsa-utils/alsamixer/mixer_widget.c:
->
->        err = snd_mixer_get_hctl(mixer, mixer_device_name, &hctl);
->        if (err >= 0)
->                ctl = snd_hctl_ctl(hctl);
->
-> > It would be great if the smixer would include some API that gives me a
-> > hint to which device/subdevice a specific snd_mixer_elem_t belongs to.
->
-> Often, there is no 1:1 correspondence between mixer elements and PCM
-> devices.  Only mixer controls with interface PCM (not MIXER) have (sub-)
-> device numbers, and at the moment this is used only for controls that
-> are associated with the streams of hardware-mixing-capable cards.
->
-> Getting information about the mixer layout (like the nodes reported by
-> HDA and USB devices) is on the TODO list; the only reason it isn't being
-> implemented is lack of time.
->
->
-> Regards,
-> Clemens
->
->
+As <gnubien> at #alsa @ irc.freenode.net suggested, I ran `alsamixer
+-c 0` and MM-ed 'Auto Mute'. After that, I can fully plug h/phones
+jack and enjoy full sounds w/o distortions but still can't get any
+sound when it's unplugged.
 
-for hda , Since PA server open pcm device , so it still can use
-
-snd_mixer_selem_id_set_index(sid, snd_pcm_info_get_subdevice(pcm_info));
-
-pavucontrol still can query PA server to get the sudevice numer
-whenever PA resum from suspend
-
-But gnome volume control has no way to know which application open
-which subdevice
+The result of running ./alsa-info.sh:
+Your ALSA information is located at
+http://www.alsa-project.org/db/?f=daac9e06cbe772222b90d7fba14c1a49a65b980c
