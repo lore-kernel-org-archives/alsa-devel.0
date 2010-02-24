@@ -1,66 +1,49 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv4 5/7] ASoC: TWL6030: Add restrictions for low-power
- playback mode
-Date: Wed, 24 Feb 2010 13:53:38 +0000
-Message-ID: <20100224135338.GQ18896@rakim.wolfsonmicro.main>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B17@dlee06.ent.ti.com>
+From: Nitin PAI <nitinmpai@gmail.com>
+Subject: Listing virtual devices for a sound card (aplay -L)
+Date: Wed, 24 Feb 2010 19:24:22 +0530
+Message-ID: <e73559ba1002240554m22a1850o753497422954363b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE65DD1B17@dlee06.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-px0-f197.google.com (mail-px0-f197.google.com
+	[209.85.216.197])
+	by alsa0.perex.cz (Postfix) with ESMTP id E31ED10392B
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 14:54:24 +0100 (CET)
+Received: by pxi35 with SMTP id 35so174032pxi.16
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 05:54:23 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 23, 2010 at 06:10:42PM -0600, Olaya, Margarita wrote:
+Hi,
 
-> Currently, handsfree DAC and driver are the only components that can
-> prevent codec to enter to low-power playback mode. Other components
-> like earphone driver, vibrator driver or loopback (which are not yet
-> supported in the driver) can cause the same effect.
+I have added  proprietary sound cards which are statically compiled in the
+kernel. Card 0: Name=X, Card 1: Name=Y.
 
-Hrm, this vibrator is raising a red flag for me with the MFD patch - it
-sounds like we'll need to have an equivalent of the twl4030-codec MFD
-for the TWL6030 to support the vibrator since that doesn't fit within
-the audio subsystem.
+I want to create virtual devices using these cards, like front,
+left,surround,iec958.  I see that this is usually done at
+/usr/share/alsa/cards/....
 
-> In order to detect conflicting paths, CODEC driver supervises
-> non-low-power widgets powered by DAPM mechanism, just at the point
-> pcm trigger callback gets called.
+Please let me know how this mapping works?
 
-> +static int twl6030_power_mode_event(struct snd_soc_dapm_widget *w,
-> +			struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_codec *codec = w->codec;
-> +	struct twl6030_data *priv = codec->private_data;
-> +
-> +	if (SND_SOC_DAPM_EVENT_ON(event))
-> +		priv->non_lp++;
-> +	else
-> +		priv->non_lp--;
-> +
-> +	return 0;
-> +}
+I mean how does aplay -L  list these devices by mapping the sound card to
+the ones in /usr/share/alsa/cards/...
+I tried creating X.conf and Y.conf there with front,left,surroud,iec958, but
+aplay -L doesnt seem to recognize them.
 
-So what happens if we're already in low power mode and non_lp gets set
-(or conversely but less seriously, if we get to the point where we can
-enter low power mode)?
+Also, I want  iec958 card to be one of the cards listed via aplay -L, and
+defining this in asound.conf gives error with aplay.
 
-> +	switch (cmd) {
-> +	case SNDRV_PCM_TRIGGER_START:
-> +		/*
-> +		 * low-power playback mode is restricted
-> +		 * for headset path only
-> +		 */
-> +		if ((priv->sysclk == 17640000) && priv->non_lp) {
-> +			dev_err(codec->dev,
-> +				"some enabled paths aren't supported at %dHz\n",
-> +				priv->sysclk);
-> +			return -EPERM;
-> +		}
-> +		break;
+Any help will be appreciated.
 
-Should probably do this for all the startup trigger sources - _RESUME
-for example.
+Thanks,
+Nitin
