@@ -1,49 +1,37 @@
-From: Nitin PAI <nitinmpai@gmail.com>
-Subject: Listing virtual devices for a sound card (aplay -L)
-Date: Wed, 24 Feb 2010 19:24:22 +0530
-Message-ID: <e73559ba1002240554m22a1850o753497422954363b@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up sequence
+ completion
+Date: Wed, 24 Feb 2010 13:59:09 +0000
+Message-ID: <20100224135909.GR18896@rakim.wolfsonmicro.main>
+References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B19@dlee06.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f197.google.com (mail-px0-f197.google.com
-	[209.85.216.197])
-	by alsa0.perex.cz (Postfix) with ESMTP id E31ED10392B
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 14:54:24 +0100 (CET)
-Received: by pxi35 with SMTP id 35so174032pxi.16
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 05:54:23 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE65DD1B19@dlee06.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Olaya, Margarita" <magi.olaya@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, Feb 23, 2010 at 06:10:54PM -0600, Olaya, Margarita wrote:
 
-I have added  proprietary sound cards which are statically compiled in the
-kernel. Card 0: Name=X, Card 1: Name=Y.
+> +	if (naudint) {
+> +		/* wait for ready interrupt with 48 ms timeout */
+> +		time_left = wait_for_completion_timeout(&priv->ready,
+> +					msecs_to_jiffies(48));
+> +	} else {
+> +		/* retry 3 times only */
+> +		for (time_left = 3; time_left > 0; time_left--) {
+> +			mdelay(16);
+> +			twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &intid,
+> +					TWL6030_REG_INTID);
+> +			if (intid & TWL6030_READYINT)
+> +				break;
+> +		}
+> +	}
 
-I want to create virtual devices using these cards, like front,
-left,surround,iec958.  I see that this is usually done at
-/usr/share/alsa/cards/....
-
-Please let me know how this mapping works?
-
-I mean how does aplay -L  list these devices by mapping the sound card to
-the ones in /usr/share/alsa/cards/...
-I tried creating X.conf and Y.conf there with front,left,surroud,iec958, but
-aplay -L doesnt seem to recognize them.
-
-Also, I want  iec958 card to be one of the cards listed via aplay -L, and
-defining this in asound.conf gives error with aplay.
-
-Any help will be appreciated.
-
-Thanks,
-Nitin
+It strikes me that you could combine these two cases - the
+wait_for_completion_timeout() will function just as well as a delay.
+I'd also expect to see an error reported if the device doesn't report as
+ready one way or another.
