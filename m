@@ -1,29 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
-	cards, especially Aureon 5.1 MkII
-Date: Wed, 24 Feb 2010 09:52:04 +0800
-Message-ID: <4f3252891002231752s2205299dg4253ca5e4dd21bbb@mail.gmail.com>
-References: <4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
-	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
-	<20100218181322.GB5606@tango.0pointer.de>
-	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
-	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
-	<20100219151328.GC25873@tango.0pointer.de>
-	<4f3252891002201949k48e0208fw40590803ac1a8192@mail.gmail.com>
-	<20100221193933.GA31800@tango.0pointer.de>
-	<4f3252891002222047g33ecdb74qce6a997ea5792c0@mail.gmail.com>
-	<20100223222004.GA5313@tango.0pointer.de>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: ASoC status to support multiple CODECs?
+Date: Wed, 24 Feb 2010 11:37:56 +0900
+Message-ID: <4B849104.50401@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A95D21038F0
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 02:52:06 +0100 (CET)
-Received: by pwi9 with SMTP id 9so3886112pwi.38
-	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 17:52:04 -0800 (PST)
-In-Reply-To: <20100223222004.GA5313@tango.0pointer.de>
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2F4D31038E3
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 03:38:10 +0100 (CET)
+Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KYB00DJJRB9EC@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 24 Feb 2010 11:37:57 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KYB00FR5RB8M3@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 24 Feb 2010 11:37:56 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,57 +27,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/24 Lennart Poettering <mznyfn@0pointer.de>
+Hi,
 
-> On Tue, 23.02.10 12:47, Raymond Yau (superquad.vortex2@gmail.com) wrote:
->
-> > > > The most common onboard audio is HDA so this is not any exceptional
-> cases
-> > > >
-> > > > Those HDA multi streaming  feature are most users wanted in desktop
-> > > > enviornment, are pulseaudio really designed for deskop or just only
-> for
-> > > > notebook and mobile ?
-> > > >
-> > > > The front panel green/pink jack can be used by one application while
-> the
-> > > > rear panel audio jacks can be used to another application for
-> surround or
-> > > > mic for karaoke
-> > >
-> > > I am not entirely convinced that this is really a common case.
->
-> Uh, I wanted to say "use case" here...
->
-> > Do any PA developer has a desktop computer  with HDA audio ?
->
-> I certainly do. But the fact that this is not the most common use case
-> and the ALSA API is not really up to the task yet to query the full
-> routing table I am not sure supporting parallel and independant
-> streaming support for heapdphones and speakers should be a priority for PA.
->
-> > if ( snd_pcm_info_get_subdevices_count(pcm_info) > 1 ) && (
-> > snd_pcm_info_get_subdevices_count(pcm_info) < 8 ))
-> >
-> > snd_mixer_selem_id_set_index(sid, snd_pcm_info_get_subdevice(pcm_info));
->
-> Are you suggesting that on all drivers the the index part of a
-> snd_mixer_selem_id_t directly relates to the subdevice id of a PCM
-> stream on the same card? Is that true? Jaroslav, Clemens, Takashi, can
-> you say something about that?
->
-> (tbh I find that very unlikely, given that the device index would not be
-> encoded then)
->
-> Lennart
->
+Can i know the work progress status to support multiple CODECs at the 
+ASoC? I just wonder.
 
-This is only true for those Capture controls for HDA since only HDA support
-multi streaming
-
-The reason of using ( snd_pcm_info_get_subdevices_
-count(pcm_info) < 8 ) is au88x0 have at least 8 capture subdevices which
-capture from one source from AC97 codec
+Thanks.
