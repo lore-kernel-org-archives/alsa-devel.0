@@ -1,23 +1,29 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: ASoC status to support multiple CODECs?
-Date: Wed, 24 Feb 2010 11:37:56 +0900
-Message-ID: <4B849104.50401@samsung.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Wed, 24 Feb 2010 11:49:47 +0800
+Message-ID: <4f3252891002231949i1cfd6dd3h7c5e4b3dc7ba8bc8@mail.gmail.com>
+References: <20100216233825.GB23623@sirena.org.uk>
+	<20100218023742.GC23637@tango.0pointer.de>
+	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+	<20100218181322.GB5606@tango.0pointer.de>
+	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
+	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
+	<20100219151328.GC25873@tango.0pointer.de>
+	<4f3252891002202001gb6df8cg6c023c52e7d8394a@mail.gmail.com>
+	<20100221192951.GD30380@tango.0pointer.de>
+	<4B83A912.1050501@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2F4D31038E3
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 03:38:10 +0100 (CET)
-Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KYB00DJJRB9EC@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 24 Feb 2010 11:37:57 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0KYB00FR5RB8M3@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 24 Feb 2010 11:37:56 +0900 (KST)
+Received: from mail-px0-f193.google.com (mail-px0-f193.google.com
+	[209.85.216.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B0152432C
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 04:49:48 +0100 (CET)
+Received: by pxi31 with SMTP id 31so2364715pxi.26
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 19:49:47 -0800 (PST)
+In-Reply-To: <4B83A912.1050501@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,13 +33,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, kyungmin.park@samsung.com, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+2010/2/23 Clemens Ladisch <clemens@ladisch.de>
 
-Can i know the work progress status to support multiple CODECs at the 
-ASoC? I just wonder.
+> Lennart Poettering wrote:
+>
+>
+>  Only mixer controls with interface PCM (not MIXER) have (sub-)
+> device numbers, and at the moment this is used only for controls that
+> are associated with the streams of hardware-mixing-capable cards.
+>
+>
+> Regards,
+> Clemens
+>
 
-Thanks.
+Just implementing those IFACE_PCM control for the driver is not enough for
+any practical use
+
+Will need an API which allow the application to change the hardware per
+stream volume in optimized way by calling one api ? ( e.g. those API is need
+for if wine want to implement the real hardware acclerated dsound for those
+hardware mixing sound cards which support at least 16 voices )
