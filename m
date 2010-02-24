@@ -1,19 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ASoC status to support multiple CODECs?
-Date: Wed, 24 Feb 2010 09:30:52 +0000
-Message-ID: <1267003852.3274.17.camel@odin>
-References: <4B849104.50401@samsung.com>
+Subject: Re: [PATCH v4 2/3] ASoC: OMAP4: Add support for McPDM
+Date: Wed, 24 Feb 2010 09:38:03 +0000
+Message-ID: <1267004283.3274.32.camel@odin>
+References: <2256F256009DAA4CBE661E9F41EAC84B8FA52BF5@dlee01.ent.ti.com>
+	<1266920019.3156.5.camel@odin>
+	<2256F256009DAA4CBE661E9F41EAC84B8FB34CA5@dlee01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f220.google.com (mail-fx0-f220.google.com
 	[209.85.220.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8AD6924420
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 10:31:01 +0100 (CET)
-Received: by fxm20 with SMTP id 20so11721677fxm.32
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 01:31:01 -0800 (PST)
-In-Reply-To: <4B849104.50401@samsung.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id EEA9C1038FD
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 10:45:13 +0100 (CET)
+Received: by fxm20 with SMTP id 20so11755036fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 01:45:12 -0800 (PST)
+In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B8FB34CA5@dlee01.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Joonyoung Shim <jy0922.shim@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, kyungmin.park@samsung.com
+To: "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-02-24 at 11:37 +0900, Joonyoung Shim wrote:
-> Hi,
+On Tue, 2010-02-23 at 16:56 -0600, Candelaria Villareal, Jorge wrote:
+> Liam Girdwood wrote:
+> > In the future can you increment the patch version number. This way it
+> > makes it easier to see that its different from the previous version.
+> > 
+> > Since all the previous V4 patches are acked. Can you send 
+> > this as a diff
+> > to the V4 version.
+> > 
 > 
-> Can i know the work progress status to support multiple CODECs at the 
-> ASoC? I just wonder.
+> Sorry for that. It was a minimal change and didn't know how to properly
+> handle it. Anyway thanks for the tip.
+> 
+> It seems Mark applied the latest versions, including the fix. Is it
+> still necessary to send the diff?
 > 
 
-I've not started development yet as I've had other higher priority work.
-I also can't give a date for starting this atm, please feel free to give
-it a go yourself.
+Not this time.
 
 Thanks
 
