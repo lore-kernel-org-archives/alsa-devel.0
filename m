@@ -1,8 +1,8 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Verifying mixer dB data/Invalid dB data from USB
 	cards, especially Aureon 5.1 MkII
-Date: Wed, 24 Feb 2010 19:49:26 +0800
-Message-ID: <4f3252891002240349p144fddc2oda20f856a30ba900@mail.gmail.com>
+Date: Wed, 24 Feb 2010 20:07:39 +0800
+Message-ID: <4f3252891002240407u33ff25b9va343c9ee7bbd66d5@mail.gmail.com>
 References: <4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
 	<20100218181322.GB5606@tango.0pointer.de>
 	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
@@ -19,10 +19,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
 	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7CE34103906
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 12:49:28 +0100 (CET)
-Received: by pwi9 with SMTP id 9so4221602pwi.38
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 03:49:27 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id F108A103912
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 13:07:40 +0100 (CET)
+Received: by pwi9 with SMTP id 9so4231406pwi.38
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 04:07:39 -0800 (PST)
 In-Reply-To: <4B84EAC1.8040701@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -79,11 +79,13 @@ List-Id: alsa-devel@alsa-project.org
 > Clemens
 >
 >
-The current implementation of HDA capturing subdevices are almost as same as
-those playback subdevices of hardware mixing sound card
+However the playback subdevices of some HDA codec did not support the same
+range of channels
 
-each subdevice support the same format , rate , channels , the number of
-input sources are also the same
+(e.g. vt1708s has two playback subdevices ,
 
-The only difference is the type IFACE_MIXER and IFACE_PCM since using
-IFACE_PCM will break most mixer application
+ if independent HP mode is ON , one subdevice can only suppport 2 channels
+and the other subdevices support 2 ,4 ,6
+
+if independent HP mode is OFF , the subdevice may support 2, 4, 6 and 8
+channels
