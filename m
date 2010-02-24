@@ -1,16 +1,29 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH] hda - remove unnecessary msleep on power state
-	transitions
-Date: Wed, 24 Feb 2010 09:38:49 +0800
-Message-ID: <20100224013849.GA12436@localhost>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Verifying mixer dB data/Invalid dB data from USB
+	cards, especially Aureon 5.1 MkII
+Date: Wed, 24 Feb 2010 09:52:04 +0800
+Message-ID: <4f3252891002231752s2205299dg4253ca5e4dd21bbb@mail.gmail.com>
+References: <4f3252891002171748tdcaa87n4d11d9880c0043e3@mail.gmail.com>
+	<4f3252891002172215j7b85313ci3626a1bdad5c040c@mail.gmail.com>
+	<20100218181322.GB5606@tango.0pointer.de>
+	<alpine.LNX.2.00.1002190916410.28127@eeebox2.perex-int.cz>
+	<4f3252891002190257u608073c3l48f2251d8a6458ee@mail.gmail.com>
+	<20100219151328.GC25873@tango.0pointer.de>
+	<4f3252891002201949k48e0208fw40590803ac1a8192@mail.gmail.com>
+	<20100221193933.GA31800@tango.0pointer.de>
+	<4f3252891002222047g33ecdb74qce6a997ea5792c0@mail.gmail.com>
+	<20100223222004.GA5313@tango.0pointer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-	by alsa0.perex.cz (Postfix) with ESMTP id 601FE1037EE
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 02:38:51 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A95D21038F0
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 02:52:06 +0100 (CET)
+Received: by pwi9 with SMTP id 9so3886112pwi.38
+	for <alsa-devel@alsa-project.org>; Tue, 23 Feb 2010 17:52:04 -0800 (PST)
+In-Reply-To: <20100223222004.GA5313@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,58 +33,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Arjan van de Ven <arjan@linux.intel.com>, alsa-devel@alsa-project.org, Marc Boucher <marc@linuxant.com>, Zhang Rui <rui.zhang@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: "Zhang, Rui" <rui.zhang@intel.com>
+2010/2/24 Lennart Poettering <mznyfn@0pointer.de>
 
-This will save ~15ms boot time.
+> On Tue, 23.02.10 12:47, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+>
+> > > > The most common onboard audio is HDA so this is not any exceptional
+> cases
+> > > >
+> > > > Those HDA multi streaming  feature are most users wanted in desktop
+> > > > enviornment, are pulseaudio really designed for deskop or just only
+> for
+> > > > notebook and mobile ?
+> > > >
+> > > > The front panel green/pink jack can be used by one application while
+> the
+> > > > rear panel audio jacks can be used to another application for
+> surround or
+> > > > mic for karaoke
+> > >
+> > > I am not entirely convinced that this is really a common case.
+>
+> Uh, I wanted to say "use case" here...
+>
+> > Do any PA developer has a desktop computer  with HDA audio ?
+>
+> I certainly do. But the fact that this is not the most common use case
+> and the ALSA API is not really up to the task yet to query the full
+> routing table I am not sure supporting parallel and independant
+> streaming support for heapdphones and speakers should be a priority for PA.
+>
+> > if ( snd_pcm_info_get_subdevices_count(pcm_info) > 1 ) && (
+> > snd_pcm_info_get_subdevices_count(pcm_info) < 8 ))
+> >
+> > snd_mixer_selem_id_set_index(sid, snd_pcm_info_get_subdevice(pcm_info));
+>
+> Are you suggesting that on all drivers the the index part of a
+> snd_mixer_selem_id_t directly relates to the subdevice id of a PCM
+> stream on the same card? Is that true? Jaroslav, Clemens, Takashi, can
+> you say something about that?
+>
+> (tbh I find that very unlikely, given that the device index would not be
+> encoded then)
+>
+> Lennart
+>
 
-The first 10ms sleep was introduced in commit d2595d86e5 for (buggy)
-Cxt codecs, so better to limit the sleep to the problem hardware.
+This is only true for those Capture controls for HDA since only HDA support
+multi streaming
 
-For the second 10ms sleep, the HDA spec says:
-
-Power State[1:0]:
-00: Node Power state (D0) is fully on.
-01: Node Power state (D1) allows for (does not require) the lowest possible power consuming state from which it
-can return to the "fully on" state (D0) within 10 ms, excepting analog pass through circuits (e.g., CD analog
-playback) which must remain fully on.
-10: Node Power state (D2) allows for (does not require) the lowest possible power consuming state from which it
-can return to the "fully on" state (D0) within 10 ms. For modems, this is the "wake on ring" power state.
-11: Node Power state (D3) allows for (does not require) lowest possible power consuming state under software
-control. Note that any low power state set by software must retain sufficient operational capability to properly
-respond to subsequent software Power State command.
-
-So 10ms is actually the max wait time. It should be safe to
-remove/reduce it and rely on the loop of 1ms-sleeps.
-
-CC: Marc Boucher <marc@linuxant.com>
-CC: Arjan van de Ven <arjan@linux.intel.com>
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- sound/pci/hda/hda_codec.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
---- sound-2.6.orig/sound/pci/hda/hda_codec.c	2010-01-13 09:41:49.000000000 +0800
-+++ sound-2.6/sound/pci/hda/hda_codec.c	2010-02-24 09:34:14.000000000 +0800
-@@ -2767,7 +2767,8 @@ static void hda_set_power_state(struct h
- 	snd_hda_codec_read(codec, fg, 0, AC_VERB_SET_POWER_STATE,
- 			    power_state);
- 	/* partial workaround for "azx_get_response timeout" */
--	if (power_state == AC_PWRST_D0)
-+	if (power_state == AC_PWRST_D0 &&
-+	    codec->vendor_id & 0xffff0000 == 0x14f10000)
- 		msleep(10);
- 
- 	nid = codec->start_nid;
-@@ -2801,7 +2802,6 @@ static void hda_set_power_state(struct h
- 	if (power_state == AC_PWRST_D0) {
- 		unsigned long end_time;
- 		int state;
--		msleep(10);
- 		/* wait until the codec reachs to D0 */
- 		end_time = jiffies + msecs_to_jiffies(500);
- 		do {
+The reason of using ( snd_pcm_info_get_subdevices_
+count(pcm_info) < 8 ) is au88x0 have at least 8 capture subdevices which
+capture from one source from AC97 codec
