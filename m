@@ -1,18 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
- GIT repository for Linux 2.6 branch, master now at v2.6.31-rc8-407-gfc9e4a3
-Date: Wed, 24 Feb 2010 10:16:34 +0100
-Message-ID: <4B84EE72.4060707@ladisch.de>
-References: <20091006063609.B06E110381F@alsa0.perex.cz>	<s5hab05role.wl%tiwai@suse.de>	<4ACAF4AC.3000608@ladisch.de>	<s5h4oqdrlys.wl%tiwai@suse.de>	<4ACDCAAB.2060609@ladisch.de>	<s5h1vlexesm.wl%tiwai@suse.de>
-	<4ACDDD22.1050309@ladisch.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: ASoC status to support multiple CODECs?
+Date: Wed, 24 Feb 2010 09:30:52 +0000
+Message-ID: <1267003852.3274.17.camel@odin>
+References: <4B849104.50401@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 60C4E1038D5
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 10:16:37 +0100 (CET)
-In-Reply-To: <4ACDDD22.1050309@ladisch.de>
+Received: from mail-fx0-f220.google.com (mail-fx0-f220.google.com
+	[209.85.220.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8AD6924420
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 10:31:01 +0100 (CET)
+Received: by fxm20 with SMTP id 20so11721677fxm.32
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 01:31:01 -0800 (PST)
+In-Reply-To: <4B849104.50401@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,25 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Honza Maly <jmal8295@artax.karlin.mff.cuni.cz>
+To: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-I wrote:
-> > > jmal8295 wrote:
-> > > > And I _will_ be regarding it as regression if I lose possibility to
-> > > > change volume of the four streams independently.
+On Wed, 2010-02-24 at 11:37 +0900, Joonyoung Shim wrote:
+> Hi,
 > 
-> Okay, I'll see if I can extend alsamixer ...
+> Can i know the work progress status to support multiple CODECs at the 
+> ASoC? I just wonder.
+> 
 
-Well, those controls are quite hardware-specific, and I always wanted to
-try out the Python wrappers, so I wrote a separate application.
+I've not started development yet as I've had other higher priority work.
+I also can't give a date for starting this atm, please feel free to give
+it a go yourself.
 
-Honza, if you have a new kernel and the latest released alsa-lib and
-alsa-python packages, please try downloading the latest alsa-tools
-snapshot from <http://www.alsa-project.org/snapshot/> and check the
-hwmixvolume tool.
+Thanks
 
+Liam
 
-Regards,
-Clemens
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
