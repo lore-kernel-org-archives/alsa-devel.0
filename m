@@ -1,44 +1,52 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: RE: [PATCHv4 0/7] TWL6030 audio codec initial support
-Date: Wed, 24 Feb 2010 18:17:33 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65DD2303@dlee06.ent.ti.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B12@dlee06.ent.ti.com>
- <1267011618.3274.202.camel@odin>
+Subject: RE: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up sequence completion
+Date: Wed, 24 Feb 2010 18:24:05 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65DD230C@dlee06.ent.ti.com>
+References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B19@dlee06.ent.ti.com>
+ <20100224135909.GR18896@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1267011618.3274.202.camel@odin>
+In-Reply-To: <20100224135909.GR18896@rakim.wolfsonmicro.main>
 Content-Language: en-US
 Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGlhbSBHaXJkd29vZCBb
-bWFpbHRvOmxyZ0BzbGltbG9naWMuY28udWtdDQo+IFNlbnQ6IFdlZG5lc2RheSwgRmVicnVhcnkg
-MjQsIDIwMTAgNTo0MCBBTQ0KPiBUbzogT2xheWEsIE1hcmdhcml0YQ0KPiBDYzogYWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC1vbWFwQHZnZXIua2VybmVsLm9yZzsgYnJvb25pZUBv
-cGVuc291cmNlLndvbGZzb25taWNyby5jb20NCj4gU3ViamVjdDogUmU6IFtQQVRDSHY0IDAvN10g
-VFdMNjAzMCBhdWRpbyBjb2RlYyBpbml0aWFsIHN1cHBvcnQNCj4gDQo+IE9uIFR1ZSwgMjAxMC0w
-Mi0yMyBhdCAxODoxMCAtMDYwMCwgT2xheWEsIE1hcmdhcml0YSB3cm90ZToNCj4gPiBGb2xsb3dp
-bmcgcGF0Y2ggc2VyaWVzIGFkZCBpbml0aWFsIHN1cHBvcnQgZm9yIFRXTDYwMzAgY29kZWMgZHJp
-dmVyLg0KPiA+IFRoZSBwYXRjaCBzZXQgaXMgYmFzZWQgb24gdGhlIHNlcmllcyBzZW50IGZyb20g
-TWlzYWVsIExvcGV6IGluIE9jdG9iZXIgMjAwOS4NCj4gPg0KPiA+IENoYW5nZXMgZnJvbSB2MzoN
-Cj4gPiAtIFJlbW92ZSBzbmRfc29jX2luaXRfY2FyZCBmdW5jdGlvbg0KPiA+IC0gQWRhcHQgdG8g
-bGF0ZXN0IHR3bCBjb3JlIGNoYW5nZXMgYmFzZWQgb24gQmFsYWppJ3MgY29tbWVudA0KPiA+DQo+
-ID4gUmVnYXJkcywNCj4gPiBNYXJnYXJpdGENCj4gPg0KPiA+IC0tLQ0KPiA+IE1pc2FlbCBMb3Bl
-eiBDcnV6ICg3KToNCj4gPiAgIE9NQVA0OiBQTUlDOiBBZGQgc3VwcG9ydCBmb3IgdHdsNjAzMCBj
-b2RlYw0KPiA+ICAgQVNvQzogVFdMNjAzMDogQWRkIHR3bDYwMzAgY29kZWMgZHJpdmVyDQo+ID4g
-ICBBU29DOiBUV0w2MDMwOiBNYW51YWwgcG93ZXItdXAvZG93biBzZXF1ZW5jZXMNCj4gPiAgIEFT
-b0M6IFRXTDYwMzA6IEFkZCBzdXBwb3J0IGZvciBsb3ctcG93ZXIgUExMDQo+ID4gICBBU29DOiBU
-V0w2MDMwOiBBZGQgcmVzdHJpY3Rpb25zIGZvciBsb3ctcG93ZXIgcGxheWJhY2sgbW9kZQ0KPiA+
-ICAgQVNvQzogVFdMNjAzMDogRW5hYmxlIGF1ZGlvIGludGVycnVwdA0KPiA+ICAgQVNvQzogVFdM
-NjAzMDogRGV0ZWN0IHBvd2VyLXVwIHNlcXVlbmNlIGNvbXBsZXRpb24NCj4gDQo+IEJ0dywgc2lu
-Y2UgdGhpcyBpcyBhIG5ldyBkcml2ZXIgY2FuIHlvdSByZWJhc2UgdGhlIDYgY29kZWMgcGF0Y2hl
-cyBpbnRvDQo+IGEgc2luZ2xlIHBhdGNoLg0KPiANCg0KVGhlIHNlY29uZCBwYXRjaCBhZGRzIHRo
-ZSBiYXNpYyBzdXBwb3J0IGZvciB0aGUgY29kZWMgYW5kIHRoZSBvdGhlcnMgYWRkIGZlYXR1cmVz
-LCB0aGF0IHdheSBpdCBjb3VsZCBiZSBlYXNpZXIgdG8gcmV2aWV3Lg0KDQpSZWdhcmRzLA0KTWFy
-Z2FyaXRhDQogDQo+IFRoYW5rcw0KPiANCj4gTGlhbQ0KPiANCj4gLS0NCj4gRnJlZWxhbmNlIERl
-dmVsb3BlciwgU2xpbUxvZ2ljIEx0ZA0KPiBBU29DIGFuZCBWb2x0YWdlIFJlZ3VsYXRvciBNYWlu
-dGFpbmVyLg0KPiBodHRwOi8vd3d3LnNsaW1sb2dpYy5jby51aw0KDQo=
+
+
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Wednesday, February 24, 2010 7:59 AM
+> To: Olaya, Margarita
+> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org; lrg@slimlogic.co.uk
+> Subject: Re: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up sequence completion
+> 
+> On Tue, Feb 23, 2010 at 06:10:54PM -0600, Olaya, Margarita wrote:
+> 
+> > +	if (naudint) {
+> > +		/* wait for ready interrupt with 48 ms timeout */
+> > +		time_left = wait_for_completion_timeout(&priv->ready,
+> > +					msecs_to_jiffies(48));
+> > +	} else {
+> > +		/* retry 3 times only */
+> > +		for (time_left = 3; time_left > 0; time_left--) {
+> > +			mdelay(16);
+> > +			twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &intid,
+> > +					TWL6030_REG_INTID);
+> > +			if (intid & TWL6030_READYINT)
+> > +				break;
+> > +		}
+> > +	}
+> 
+> It strikes me that you could combine these two cases - the
+> wait_for_completion_timeout() will function just as well as a delay.
+> I'd also expect to see an error reported if the device doesn't report as
+> ready one way or another.
+
+It is split to prevent the case of none valid irq line connected, in such case, wait_for_completion won't work.
+
+Regards,
+Margarita 
