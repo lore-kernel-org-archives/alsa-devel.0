@@ -1,38 +1,29 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC] ASoC: Allow mulitple usage of codec and cpu
-	dai
-Date: Thu, 25 Feb 2010 10:03:26 +0000
-Message-ID: <20100225100326.GC10141@rakim.wolfsonmicro.main>
-References: <1267072011-11744-1-git-send-email-jassi.brar@samsung.com>
+Subject: Re: [PATCHv4 1/7] OMAP4: PMIC: Add support for twl6030 codec
+Date: Thu, 25 Feb 2010 10:07:18 +0000
+Message-ID: <20100225100718.GD10141@rakim.wolfsonmicro.main>
+References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B13@dlee06.ent.ti.com>
+ <1267006169.3274.88.camel@odin>
+ <20100224111328.GA2950@sortiz.org>
+ <20100224132246.GG9018@sirena.org.uk>
+ <1889FA7136B567478A67D4B0F85B0CCE65DD218C@dlee06.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB3D310381F
-	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 11:03:27 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1267072011-11744-1-git-send-email-jassi.brar@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE65DD218C@dlee06.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Olaya, Margarita" <magi.olaya@ti.com>
+Cc: Samuel Ortiz <sameo@linux.intel.com>, Liam Girdwood <lrg@slimlogic.co.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 25, 2010 at 01:26:51PM +0900, Jassi Brar wrote:
+On Wed, Feb 24, 2010 at 03:43:14PM -0600, Olaya, Margarita wrote:
 
->  	/* startup the audio subsystem */
-> -	if (cpu_dai->ops->startup) {
-> +	if (cpu_dai->active == 0 && cpu_dai->ops->startup) {
+[Reflowed into 80 columns]
 
-I thought I'd been fairly clear last time that the drivers need to have
-an option to do stuff on startup().  As I said then a separate callback
-which is called only on the transitions into and out of active would be
-fine.
+> I'll re-submit the patch series using twl6040_codec instead of
+> twl6030_codec, twl6030 is the power companion chip and twl4030 is the
+> audio chip, so in the case of this patch should I send an incremental
+> patch to rename it?
+
+Incremental patch, please.
