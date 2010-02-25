@@ -1,20 +1,19 @@
-From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: Re: [PATCHv4 0/7] TWL6030 audio codec initial support
-Date: Thu, 25 Feb 2010 11:40:46 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65DD26C5@dlee06.ent.ti.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B12@dlee06.ent.ti.com>
-	<1267011618.3274.202.camel@odin>
-	<1889FA7136B567478A67D4B0F85B0CCE65DD2303@dlee06.ent.ti.com>
-	<1267089182.3255.58.camel@odin>
-Mime-Version: 1.0
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for 2.6.34
+Date: Thu, 25 Feb 2010 17:44:07 +0000
+Message-ID: <F09D4078-E4A5-4277-A6A9-9BFF91056206@opensource.wolfsonmicro.com>
+References: <20100225160959.GA3241@opensource.wolfsonmicro.com>
+	<s5heik9l19n.wl%tiwai@suse.de>
+	(sfid-20100225_163745_623863_B585F8DB)
+Mime-Version: 1.0 (iPhone Mail 7E18)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 237C324532
-	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 18:40:49 +0100 (CET)
-In-Reply-To: <1267089182.3255.58.camel@odin>
-Content-Language: en-US
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B09C110380F
+	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 19:36:51 +0100 (CET)
+In-Reply-To: <s5heik9l19n.wl%tiwai@suse.de>
+	(sfid-20100225_163745_623863_B585F8DB)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,71 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On 25 Feb 2010, at 16:37, Takashi Iwai <tiwai@suse.de> wrote:
 
+> At Thu, 25 Feb 2010 16:10:00 +0000,
+> Mark Brown wrote:
+>>
+>> The following changes since commit  
+>> d62abe563fa4718e7f85f3e871655434db92366d:
+>>  Misael Lopez Cruz (1):
+>>        OMAP4: PMIC: Add support for twl6030 codec
+>>
+>> are available in the git repository at:
+>>
+>>  git://opensource.wolfsonmicro.com/linux-2.6-asoc.git for-2.6.34
+>>
+>> These wind up being a bug fix, without fixing the reporting of the
+>> periods a lot of hardware is going to get lots of clock domain  
+>> issues.
+>>
+>> Mark Brown (2):
+>>      ASoC: Remove a unused variables from i.MX FIQ runtime data
+>>      ASoC: Check progress when reporting periods from i.MX FIQ  
+>> handler
+>>
+>> sound/soc/imx/imx-pcm-fiq.c |   40 +++++++++++++++++++++++++++++ 
+>> +----------
+>> 1 files changed, 30 insertions(+), 10 deletions(-)
+>
+> I pulled but got only the commit:
+>
+>    commit f893e2766ad6c05288cf037716a8b041b8df3ed1
+>    Author: Jassi Brar <jassi.brar@samsung.com>
+>    Date:   Thu Feb 25 11:24:53 2010 +0900
+>
+>    ASoC: soc_pcm_open: Add missing bailout tag
+>
+> Forgot to push?
 
-> -----Original Message-----
-> From: Liam Girdwood [mailto:lrg@slimlogic.co.uk]
-> Sent: Thursday, February 25, 2010 3:13 AM
-> To: Olaya, Margarita
-> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org; broonie@opensource.wolfsonmicro.com
-> Subject: Re: [alsa-devel] [PATCHv4 0/7] TWL6030 audio codec initial support
-> 
-> On Wed, 2010-02-24 at 18:17 -0600, Olaya, Margarita wrote:
-> >
-> > > -----Original Message-----
-> > > From: Liam Girdwood [mailto:lrg@slimlogic.co.uk]
-> > > Sent: Wednesday, February 24, 2010 5:40 AM
-> > > To: Olaya, Margarita
-> > > Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org; broonie@opensource.wolfsonmicro.com
-> > > Subject: Re: [PATCHv4 0/7] TWL6030 audio codec initial support
-> > >
-> > > On Tue, 2010-02-23 at 18:10 -0600, Olaya, Margarita wrote:
-> > > > Following patch series add initial support for TWL6030 codec driver.
-> > > > The patch set is based on the series sent from Misael Lopez in October 2009.
-> > > >
-> > > > Changes from v3:
-> > > > - Remove snd_soc_init_card function
-> > > > - Adapt to latest twl core changes based on Balaji's comment
-> > > >
-> > > > Regards,
-> > > > Margarita
-> > > >
-> > > > ---
-> > > > Misael Lopez Cruz (7):
-> > > >   OMAP4: PMIC: Add support for twl6030 codec
-> > > >   ASoC: TWL6030: Add twl6030 codec driver
-> > > >   ASoC: TWL6030: Manual power-up/down sequences
-> > > >   ASoC: TWL6030: Add support for low-power PLL
-> > > >   ASoC: TWL6030: Add restrictions for low-power playback mode
-> > > >   ASoC: TWL6030: Enable audio interrupt
-> > > >   ASoC: TWL6030: Detect power-up sequence completion
-> > >
-> > > Btw, since this is a new driver can you rebase the 6 codec patches into
-> > > a single patch.
-> > >
-> >
-> > The second patch adds the basic support for the codec and the others add features, that way it
-> could be easier to review.
-> 
-> Some of the subsequent patches are actually removing chunks of code
-> rather than just adding new features. In this case it's actually easier
-> to review the complete codec driver as one patch rather than a series of
-> changes (showing your internal development history).
-> 
-Ok, I'll send a single patch then.
+Note that that's not the usual server - master.kernel.org wasn't  
+responding. I'll check when I get home.
 
-Regards,
-Margarita
-
-> Thanks
-> 
-> Liam
-> 
-> --
-> Freelance Developer, SlimLogic Ltd
-> ASoC and Voltage Regulator Maintainer.
-> http://www.slimlogic.co.uk
+>
+>
+> Takashi
