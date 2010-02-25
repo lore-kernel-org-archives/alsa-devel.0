@@ -1,82 +1,44 @@
-From: Misael Lopez <mlopez@sta.samsung.com>
-Subject: Re: [PATCHv4 1/7] OMAP4: PMIC: Add support for
-	twl6030	codec
-Date: Wed, 24 Feb 2010 18:15:43 -0600
-Message-ID: <9357A55138006545BB696D907C4EDB481B058C88E5@staex7mb1.telecom.sna.samsung.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B13@dlee06.ent.ti.com>
-	<1267006169.3274.88.camel@odin> <20100224111328.GA2950@sortiz.org>
-	<20100224132246.GG9018@sirena.org.uk>
-	<1889FA7136B567478A67D4B0F85B0CCE65DD218C@dlee06.ent.ti.com>
+From: "Olaya, Margarita" <magi.olaya@ti.com>
+Subject: RE: [PATCHv4 0/7] TWL6030 audio codec initial support
+Date: Wed, 24 Feb 2010 18:17:33 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65DD2303@dlee06.ent.ti.com>
+References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B12@dlee06.ent.ti.com>
+ <1267011618.3274.202.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cuda1.sta.samsung.com (mailedge.sta.samsung.com [63.166.115.4])
-	by alsa0.perex.cz (Postfix) with ESMTP id 023C8103869
-	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 01:16:43 +0100 (CET)
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE65DD218C@dlee06.ent.ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1267011618.3274.202.camel@odin>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Sender: linux-omap-owner@vger.kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Margarita,
-
-> Mark,
-> 
-> I'll re-submit the patch series using twl6040_codec instead of
-> twl6030_codec, twl6030 is the power companion chip and twl4030 is
-> the audio chip, so in the case of this patch should I send an
-> incremental patch to rename it?
-
-As shown in TI's website ([1], [2]):
-- TWL6030 contains PM, USB, I2C, etc
-- TWL6040 contains only audio
-
-Then, TWL6030 is the MFD and TWL6040 is a simple audio codec, and
-this patch ([PATCHv4 1/7] OMAP4: PMIC: Add support for twl6030 codec)
-is not valid since the codec doesn't belong to the MFD anymore.
-
-TWL6040 can become a MFD to support vibrator as Mark pointed out.
-
--Misa
-
-[1] http://focus.ti.com/general/docs/wtbu/wtbuproductcontent.tsp?templateId=6123&navigationId=12845&contentId=53245
-[2] http://focus.ti.com/pdfs/wtbu/twl60x0flyer_slyv008.pdf
-
-> Regards,
-> Margarita
-> 
-> > -----Original Message-----
-> > From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> > Sent: Wednesday, February 24, 2010 7:23 AM
-> > To: Samuel Ortiz
-> > Cc: Liam Girdwood; Olaya, Margarita; alsa-devel@alsa-
-> project.org; linux-omap@vger.kernel.org
-> > Subject: Re: [PATCHv4 1/7] OMAP4: PMIC: Add support for twl6030
-> codec
-> >
-> > On Wed, Feb 24, 2010 at 12:13:29PM +0100, Samuel Ortiz wrote:
-> >
-> > > > Samuel are you OK with this ?
-> >
-> > > That seems fine, yes.
-> > > Acked-by: Samuel Ortiz <sameo@linux.intel.com>
-> >
-> > OK, I've applied this one now - the cross tree issues mean it
-> seems
-> > better to get into 2.6.34.  I'll review the rest of the patches
-> now.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGlhbSBHaXJkd29vZCBb
+bWFpbHRvOmxyZ0BzbGltbG9naWMuY28udWtdDQo+IFNlbnQ6IFdlZG5lc2RheSwgRmVicnVhcnkg
+MjQsIDIwMTAgNTo0MCBBTQ0KPiBUbzogT2xheWEsIE1hcmdhcml0YQ0KPiBDYzogYWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC1vbWFwQHZnZXIua2VybmVsLm9yZzsgYnJvb25pZUBv
+cGVuc291cmNlLndvbGZzb25taWNyby5jb20NCj4gU3ViamVjdDogUmU6IFtQQVRDSHY0IDAvN10g
+VFdMNjAzMCBhdWRpbyBjb2RlYyBpbml0aWFsIHN1cHBvcnQNCj4gDQo+IE9uIFR1ZSwgMjAxMC0w
+Mi0yMyBhdCAxODoxMCAtMDYwMCwgT2xheWEsIE1hcmdhcml0YSB3cm90ZToNCj4gPiBGb2xsb3dp
+bmcgcGF0Y2ggc2VyaWVzIGFkZCBpbml0aWFsIHN1cHBvcnQgZm9yIFRXTDYwMzAgY29kZWMgZHJp
+dmVyLg0KPiA+IFRoZSBwYXRjaCBzZXQgaXMgYmFzZWQgb24gdGhlIHNlcmllcyBzZW50IGZyb20g
+TWlzYWVsIExvcGV6IGluIE9jdG9iZXIgMjAwOS4NCj4gPg0KPiA+IENoYW5nZXMgZnJvbSB2MzoN
+Cj4gPiAtIFJlbW92ZSBzbmRfc29jX2luaXRfY2FyZCBmdW5jdGlvbg0KPiA+IC0gQWRhcHQgdG8g
+bGF0ZXN0IHR3bCBjb3JlIGNoYW5nZXMgYmFzZWQgb24gQmFsYWppJ3MgY29tbWVudA0KPiA+DQo+
+ID4gUmVnYXJkcywNCj4gPiBNYXJnYXJpdGENCj4gPg0KPiA+IC0tLQ0KPiA+IE1pc2FlbCBMb3Bl
+eiBDcnV6ICg3KToNCj4gPiAgIE9NQVA0OiBQTUlDOiBBZGQgc3VwcG9ydCBmb3IgdHdsNjAzMCBj
+b2RlYw0KPiA+ICAgQVNvQzogVFdMNjAzMDogQWRkIHR3bDYwMzAgY29kZWMgZHJpdmVyDQo+ID4g
+ICBBU29DOiBUV0w2MDMwOiBNYW51YWwgcG93ZXItdXAvZG93biBzZXF1ZW5jZXMNCj4gPiAgIEFT
+b0M6IFRXTDYwMzA6IEFkZCBzdXBwb3J0IGZvciBsb3ctcG93ZXIgUExMDQo+ID4gICBBU29DOiBU
+V0w2MDMwOiBBZGQgcmVzdHJpY3Rpb25zIGZvciBsb3ctcG93ZXIgcGxheWJhY2sgbW9kZQ0KPiA+
+ICAgQVNvQzogVFdMNjAzMDogRW5hYmxlIGF1ZGlvIGludGVycnVwdA0KPiA+ICAgQVNvQzogVFdM
+NjAzMDogRGV0ZWN0IHBvd2VyLXVwIHNlcXVlbmNlIGNvbXBsZXRpb24NCj4gDQo+IEJ0dywgc2lu
+Y2UgdGhpcyBpcyBhIG5ldyBkcml2ZXIgY2FuIHlvdSByZWJhc2UgdGhlIDYgY29kZWMgcGF0Y2hl
+cyBpbnRvDQo+IGEgc2luZ2xlIHBhdGNoLg0KPiANCg0KVGhlIHNlY29uZCBwYXRjaCBhZGRzIHRo
+ZSBiYXNpYyBzdXBwb3J0IGZvciB0aGUgY29kZWMgYW5kIHRoZSBvdGhlcnMgYWRkIGZlYXR1cmVz
+LCB0aGF0IHdheSBpdCBjb3VsZCBiZSBlYXNpZXIgdG8gcmV2aWV3Lg0KDQpSZWdhcmRzLA0KTWFy
+Z2FyaXRhDQogDQo+IFRoYW5rcw0KPiANCj4gTGlhbQ0KPiANCj4gLS0NCj4gRnJlZWxhbmNlIERl
+dmVsb3BlciwgU2xpbUxvZ2ljIEx0ZA0KPiBBU29DIGFuZCBWb2x0YWdlIFJlZ3VsYXRvciBNYWlu
+dGFpbmVyLg0KPiBodHRwOi8vd3d3LnNsaW1sb2dpYy5jby51aw0KDQo=
