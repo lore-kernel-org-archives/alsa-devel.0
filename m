@@ -1,52 +1,47 @@
-From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: RE: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up sequence completion
-Date: Wed, 24 Feb 2010 18:24:05 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65DD230C@dlee06.ent.ti.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B19@dlee06.ent.ti.com>
- <20100224135909.GR18896@rakim.wolfsonmicro.main>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Troubles using the external SDK
+Date: Thu, 25 Feb 2010 08:27:53 +0800
+Message-ID: <4f3252891002241627s622e7ea1hd001d5b6b0cbc0c3@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20100224135909.GR18896@rakim.wolfsonmicro.main>
-Content-Language: en-US
-Sender: linux-omap-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA4C7103926
+	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 01:27:54 +0100 (CET)
+Received: by pwi9 with SMTP id 9so4659707pwi.38
+	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 16:27:53 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>> Anyways. I want to know how you'd do this.
+>> The OSS driver for example doesn't even seem to define a delay()
+callback,
+>> which strikes me as odd.How can it know about the delay?
+
+http://git.alsa-project.org/?p=alsa-plugins.git;a=blob_plain;f=doc/README-pcm-oss
+
+This plugin converts the ALSA API over OSS API.  With this plugin,
+ALSA native apps can run on OSS drivers.
+
+The function supported by this plugin is limited.  For example, you
+cannot use dmix together with this plugin.  Don't expect too much :)
 
 
-> -----Original Message-----
-> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
-> Sent: Wednesday, February 24, 2010 7:59 AM
-> To: Olaya, Margarita
-> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org; lrg@slimlogic.co.uk
-> Subject: Re: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up sequence completion
-> 
-> On Tue, Feb 23, 2010 at 06:10:54PM -0600, Olaya, Margarita wrote:
-> 
-> > +	if (naudint) {
-> > +		/* wait for ready interrupt with 48 ms timeout */
-> > +		time_left = wait_for_completion_timeout(&priv->ready,
-> > +					msecs_to_jiffies(48));
-> > +	} else {
-> > +		/* retry 3 times only */
-> > +		for (time_left = 3; time_left > 0; time_left--) {
-> > +			mdelay(16);
-> > +			twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &intid,
-> > +					TWL6030_REG_INTID);
-> > +			if (intid & TWL6030_READYINT)
-> > +				break;
-> > +		}
-> > +	}
-> 
-> It strikes me that you could combine these two cases - the
-> wait_for_completion_timeout() will function just as well as a delay.
-> I'd also expect to see an error reported if the device doesn't report as
-> ready one way or another.
 
-It is split to prevent the case of none valid irq line connected, in such case, wait_for_completion won't work.
+Please note that this plugin require a real OSS driver , not ALSA oss
+kernel emulation
 
-Regards,
-Margarita 
+e.g. you can use this oss plugin to use the aureal binary driver
+http://aureal.sourceforge.net/ [^ <http://aureal.sourceforge.net/>] on
+Fedore Core 1 when alsa au88x0 driver was not written
