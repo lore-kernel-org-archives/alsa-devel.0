@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: soc_pcm_open: Add missing bailout tag
-Date: Thu, 25 Feb 2010 09:50:44 +0000
-Message-ID: <1267091444.4037.71.camel@odin>
-References: <1267064693-1228-1-git-send-email-jassisinghbrar@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC] ASoC: Allow mulitple usage of codec and cpu
+	dai
+Date: Thu, 25 Feb 2010 10:03:26 +0000
+Message-ID: <20100225100326.GC10141@rakim.wolfsonmicro.main>
+References: <1267072011-11744-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f220.google.com (mail-fx0-f220.google.com
-	[209.85.220.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id C17B31037FE
-	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 10:50:48 +0100 (CET)
-Received: by fxm20 with SMTP id 20so13618221fxm.32
-	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 01:50:48 -0800 (PST)
-In-Reply-To: <1267064693-1228-1-git-send-email-jassisinghbrar@gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BB3D310381F
+	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 11:03:27 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1267072011-11744-1-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassisinghbrar@gmail.com
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-02-25 at 11:24 +0900, jassisinghbrar@gmail.com wrote:
-> From: Jassi Brar <jassi.brar@samsung.com>
-> 
-> The codec_dai needs to be shutdown should the machine startup fails.
-> This patch adds another bailout tag for that case and rename the tag
-> for configuration failures.
-> 
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
-> ---
+On Thu, Feb 25, 2010 at 01:26:51PM +0900, Jassi Brar wrote:
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+>  	/* startup the audio subsystem */
+> -	if (cpu_dai->ops->startup) {
+> +	if (cpu_dai->active == 0 && cpu_dai->ops->startup) {
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+I thought I'd been fairly clear last time that the drivers need to have
+an option to do stuff on startup().  As I said then a separate callback
+which is called only on the transitions into and out of active would be
+fine.
