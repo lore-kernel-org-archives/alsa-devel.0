@@ -1,21 +1,25 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: issues porting codec to s3c2443
-Date: Thu, 25 Feb 2010 23:25:09 +0000
-Message-ID: <20100225232509.GA5272@sirena.org.uk>
-References: <C171323BB93CB94897E300CBB6D4537F1D94251A@CLMSG-01.ad.cirrus.com>
-	<20100224175419.GI9018@sirena.org.uk>
-	<1267135804.13721.101.camel@heelrod.ad.cirrus.com>
-	<20100225230859.GA4056@sirena.org.uk>
-	<1267141697.13721.102.camel@heelrod.ad.cirrus.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [alsa-cvslog] alsa-kernel: Official ALSA project
+	GIT repository for Linux 2.6 branch,
+	master now at v2.6.31-rc8-407-gfc9e4a3
+Date: Fri, 26 Feb 2010 07:52:09 +0800
+Message-ID: <4f3252891002251552v17057febg83e039a8e9159175@mail.gmail.com>
+References: <20091006063609.B06E110381F@alsa0.perex.cz>
+	<s5hab05role.wl%tiwai@suse.de> <4ACAF4AC.3000608@ladisch.de>
+	<s5h4oqdrlys.wl%tiwai@suse.de> <4ACDCAAB.2060609@ladisch.de>
+	<s5h1vlexesm.wl%tiwai@suse.de> <4ACDDD22.1050309@ladisch.de>
+	<4B84EE72.4060707@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 494D91039CC
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 00:25:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1267141697.13721.102.camel@heelrod.ad.cirrus.com>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA40110399C
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 00:52:16 +0100 (CET)
+Received: by pwi9 with SMTP id 9so5414999pwi.38
+	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 15:52:15 -0800 (PST)
+In-Reply-To: <4B84EE72.4060707@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,14 +29,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 25, 2010 at 05:48:17PM -0600, Brian Austin wrote:
+2010/2/24 Clemens Ladisch <clemens@ladisch.de>
 
-> The alsa-devel put the patch on hold till the moderator approves it.
-> So it says
+> I wrote:
+> > > > jmal8295 wrote:
+> > > > > And I _will_ be regarding it as regression if I lose possibility to
+> > > > > change volume of the four streams independently.
+> >
+> > Okay, I'll see if I can extend alsamixer ...
+>
+> Well, those controls are quite hardware-specific, and I always wanted to
+> try out the Python wrappers, so I wrote a separate application.
+>
+> Honza, if you have a new kernel and the latest released alsa-lib and
+> alsa-python packages, please try downloading the latest alsa-tools
+> snapshot from <http://www.alsa-project.org/snapshot/> and check the
+> hwmixvolume tool.
+>
+>
+> Regards,
+> Clemens
+>
 
-Ah, probably too large.  Could you please resend with the CCs -
-sometimes the moderators are busy for a few days.
+The characteristic of the VXS Volume controls are changed after the type of
+the controls are changed from IFACE_MIXER to IFACE_PCM
+
+extend alsamixer seem break the definition of those  IFACE_PCM PCM Playback
+Volume control since the driver should reset IFACE_PCM PCM playback volume
+to 0dB whenever the subdevice is opened since most of the alsa applications
+don't check whether the sound card support hardware mixing
