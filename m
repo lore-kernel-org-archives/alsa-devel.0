@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: soc_pcm_open: Add missing bailout tag
-Date: Thu, 25 Feb 2010 13:38:10 +0000
-Message-ID: <20100225133809.GD11071@rakim.wolfsonmicro.main>
-References: <1267064693-1228-1-git-send-email-jassisinghbrar@gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: alsactl restore: unknown hardware: ymf724f
+Date: Thu, 25 Feb 2010 15:05:38 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1002251502380.28127@eeebox2.perex-int.cz>
+References: <hm5aba$p65$1@dough.gmane.org>
+	<alpine.LNX.2.00.1002250915480.28127@eeebox2.perex-int.cz>
+	<hm5u2i$2h7$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 30173103985
-	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 14:38:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1267064693-1228-1-git-send-email-jassisinghbrar@gmail.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 446CF1039A7
+	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 15:05:39 +0100 (CET)
+In-Reply-To: <hm5u2i$2h7$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,17 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassisinghbrar@gmail.com
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: Angel Tsankov <fn42551@fmi.uni-sofia.bg>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 25, 2010 at 11:24:53AM +0900, jassisinghbrar@gmail.com wrote:
-> From: Jassi Brar <jassi.brar@samsung.com>
+On Thu, 25 Feb 2010, Angel Tsankov wrote:
 
-> The codec_dai needs to be shutdown should the machine startup fails.
-> This patch adds another bailout tag for that case and rename the tag
-> for configuration failures.
+> Jaroslav Kysela wrote:
+>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
+>> 
+>>> Hello,
+>>> 
+>>> I run 'alsactl restore' on a machine with 2 sound cards -- a built-in
+>>> Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller (rev
+>>> 02) and a non-built-in Yamaha Corporation YMF-724F [DS-1 Audio
+>>> Controller] (rev 03) -- and get the following message:
+>>> 
+>>> Unknown hardware: "YMF724F" "SigmaTel STAC9700,83,84" "AC97a:83847600"
+>>> "0x1073" "0x000d"
+>>> Hardware is initialized using a guess method
+>>> 
+>>> As a consequence the volume levels of the Yamaha card do not get
+>>> restored to the levels stored in /etc/asound.state.  The volume levels
+>>> of the built-in card however are properly restored.  The asound.state
+>>> file has been created by executing 'alsactl store'.
+>>> 
+>>> The kernel has been built with support for ALSA.  I've built and
+>>> installed the kernel modules for both cards (not the ones in the
+>>> alsa-driver package but those that come with kernel version 2.6.30.2).
+>>> Any ideas why alsactl cannot find the hardware it has previously
+>>> identified as "YMF724F", "SigmaTel STAC9700,83,84", and so on?
+>> 
+>> The logic of alsactl is to restore the state from /etc/asound.state if it 
+>> is valid. It seems like the set_controls() function in alsactl/state.c 
+>> returns an error code for a reason.
+>> 
+>> Could you try to compile the latest alsa-utils snapshot 
+>> (http://www.alsa-project.org/snapshot/) and run './alsactl -d restore' in 
+>> alsa-utils/alsactl directory? A warning (fail reason) should be printed.
+>
+> I've attached a bash shell script that I used to download, configure, 
+> compile, and run alsactl.  I've also attached a .log file with stdout and 
+> stderr that I got while executing the script.
 
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+Thanks. I've added more debug print lines to state.c. Could you rerun your 
+script and append also '/etc/asound.state' file and output from 
+'alsa-info.sh --no-upload' to your output tarballs? Send me this tarball
+privately or just an URL to this list.
 
-Good spot - applied, thanks.
+ 					Thanks,
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
