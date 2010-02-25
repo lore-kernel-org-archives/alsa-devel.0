@@ -1,14 +1,25 @@
-From: jassisinghbrar@gmail.com
-Subject: [PATCH] ASoC: soc_pcm_open: Add missing bailout tag
-Date: Thu, 25 Feb 2010 11:24:53 +0900
-Message-ID: <1267064693-1228-1-git-send-email-jassisinghbrar@gmail.com>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: ASoC status to support multiple CODECs?
+Date: Thu, 25 Feb 2010 11:43:12 +0900
+Message-ID: <4B85E3C0.3000901@samsung.com>
+References: <4B849104.50401@samsung.com> <1267003852.3274.17.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 29CD2103803
-	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 03:33:54 +0100 (CET)
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1C0611037FF
+	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 03:43:16 +0100 (CET)
+Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0KYD008AWM80KH@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 25 Feb 2010 11:43:13 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0KYD003DUM80OE@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Thu, 25 Feb 2010 11:43:12 +0900 (KST)
+In-reply-to: <1267003852.3274.17.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,69 +29,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, kyungmin.park@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jassi Brar <jassi.brar@samsung.com>
+On 2/24/2010 6:30 PM, Liam Girdwood wrote:
+> On Wed, 2010-02-24 at 11:37 +0900, Joonyoung Shim wrote:
+>> Hi,
+>>
+>> Can i know the work progress status to support multiple CODECs at the 
+>> ASoC? I just wonder.
+>>
+> 
+> I've not started development yet as I've had other higher priority work.
+> I also can't give a date for starting this atm, please feel free to give
+> it a go yourself.
+> 
 
-The codec_dai needs to be shutdown should the machine startup fails.
-This patch adds another bailout tag for that case and rename the tag
-for configuration failures.
+OK. I will try development for multiple CODECs by some requirements, so 
+i've wanted to get the status of development.
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/soc-core.c |   14 +++++++++-----
- 1 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a03bac9..c81eb59 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -427,24 +427,24 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	if (!runtime->hw.rates) {
- 		printk(KERN_ERR "asoc: %s <-> %s No matching rates\n",
- 			codec_dai->name, cpu_dai->name);
--		goto machine_err;
-+		goto config_err;
- 	}
- 	if (!runtime->hw.formats) {
- 		printk(KERN_ERR "asoc: %s <-> %s No matching formats\n",
- 			codec_dai->name, cpu_dai->name);
--		goto machine_err;
-+		goto config_err;
- 	}
- 	if (!runtime->hw.channels_min || !runtime->hw.channels_max) {
- 		printk(KERN_ERR "asoc: %s <-> %s No matching channels\n",
- 			codec_dai->name, cpu_dai->name);
--		goto machine_err;
-+		goto config_err;
- 	}
- 
- 	/* Symmetry only applies if we've already got an active stream. */
- 	if (cpu_dai->active || codec_dai->active) {
- 		ret = soc_pcm_apply_symmetry(substream);
- 		if (ret != 0)
--			goto machine_err;
-+			goto config_err;
- 	}
- 
- 	pr_debug("asoc: %s <-> %s info:\n", codec_dai->name, cpu_dai->name);
-@@ -464,10 +464,14 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	mutex_unlock(&pcm_mutex);
- 	return 0;
- 
--machine_err:
-+config_err:
- 	if (machine->ops && machine->ops->shutdown)
- 		machine->ops->shutdown(substream);
- 
-+machine_err:
-+	if (codec_dai->ops->shutdown)
-+		codec_dai->ops->shutdown(substream, codec_dai);
-+
- codec_dai_err:
- 	if (platform->pcm_ops->close)
- 		platform->pcm_ops->close(substream);
--- 
-1.6.2.5
+Thanks for reply.
