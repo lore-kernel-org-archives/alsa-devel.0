@@ -1,17 +1,14 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Troubles using the external SDK
-Date: Thu, 25 Feb 2010 08:27:53 +0800
-Message-ID: <4f3252891002241627s622e7ea1hd001d5b6b0cbc0c3@mail.gmail.com>
+From: jassisinghbrar@gmail.com
+Subject: [PATCH] ASoC: soc_pcm_open: Add missing bailout tag
+Date: Thu, 25 Feb 2010 11:24:53 +0900
+Message-ID: <1267064693-1228-1-git-send-email-jassisinghbrar@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id CA4C7103926
-	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 01:27:54 +0100 (CET)
-Received: by pwi9 with SMTP id 9so4659707pwi.38
-	for <alsa-devel@alsa-project.org>; Wed, 24 Feb 2010 16:27:53 -0800 (PST)
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 29CD2103803
+	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 03:33:54 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,26 +19,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
->> Anyways. I want to know how you'd do this.
->> The OSS driver for example doesn't even seem to define a delay()
-callback,
->> which strikes me as odd.How can it know about the delay?
+From: Jassi Brar <jassi.brar@samsung.com>
 
-http://git.alsa-project.org/?p=alsa-plugins.git;a=blob_plain;f=doc/README-pcm-oss
+The codec_dai needs to be shutdown should the machine startup fails.
+This patch adds another bailout tag for that case and rename the tag
+for configuration failures.
 
-This plugin converts the ALSA API over OSS API.  With this plugin,
-ALSA native apps can run on OSS drivers.
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/soc-core.c |   14 +++++++++-----
+ 1 files changed, 9 insertions(+), 5 deletions(-)
 
-The function supported by this plugin is limited.  For example, you
-cannot use dmix together with this plugin.  Don't expect too much :)
-
-
-
-Please note that this plugin require a real OSS driver , not ALSA oss
-kernel emulation
-
-e.g. you can use this oss plugin to use the aureal binary driver
-http://aureal.sourceforge.net/ [^ <http://aureal.sourceforge.net/>] on
-Fedore Core 1 when alsa au88x0 driver was not written
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a03bac9..c81eb59 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -427,24 +427,24 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	if (!runtime->hw.rates) {
+ 		printk(KERN_ERR "asoc: %s <-> %s No matching rates\n",
+ 			codec_dai->name, cpu_dai->name);
+-		goto machine_err;
++		goto config_err;
+ 	}
+ 	if (!runtime->hw.formats) {
+ 		printk(KERN_ERR "asoc: %s <-> %s No matching formats\n",
+ 			codec_dai->name, cpu_dai->name);
+-		goto machine_err;
++		goto config_err;
+ 	}
+ 	if (!runtime->hw.channels_min || !runtime->hw.channels_max) {
+ 		printk(KERN_ERR "asoc: %s <-> %s No matching channels\n",
+ 			codec_dai->name, cpu_dai->name);
+-		goto machine_err;
++		goto config_err;
+ 	}
+ 
+ 	/* Symmetry only applies if we've already got an active stream. */
+ 	if (cpu_dai->active || codec_dai->active) {
+ 		ret = soc_pcm_apply_symmetry(substream);
+ 		if (ret != 0)
+-			goto machine_err;
++			goto config_err;
+ 	}
+ 
+ 	pr_debug("asoc: %s <-> %s info:\n", codec_dai->name, cpu_dai->name);
+@@ -464,10 +464,14 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	mutex_unlock(&pcm_mutex);
+ 	return 0;
+ 
+-machine_err:
++config_err:
+ 	if (machine->ops && machine->ops->shutdown)
+ 		machine->ops->shutdown(substream);
+ 
++machine_err:
++	if (codec_dai->ops->shutdown)
++		codec_dai->ops->shutdown(substream, codec_dai);
++
+ codec_dai_err:
+ 	if (platform->pcm_ops->close)
+ 		platform->pcm_ops->close(substream);
+-- 
+1.6.2.5
