@@ -1,60 +1,73 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up sequence completion
-Date: Thu, 25 Feb 2010 08:42:21 +0000
-Message-ID: <6119755B-D3CB-4E4C-ADA2-8AE64EBE4711@opensource.wolfsonmicro.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B19@dlee06.ent.ti.com> <20100224135909.GR18896@rakim.wolfsonmicro.main> <1889FA7136B567478A67D4B0F85B0CCE65DD230C@dlee06.ent.ti.com> (sfid-20100225_002415_552142_F4402FD1)
-Mime-Version: 1.0 (iPhone Mail 7E18)
-Content-Type: text/plain;
-	charset=us-ascii;
-	format=flowed;
-	delsp=yes
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [alsa-devel] [PATCHv4 2/7] ASoC: TWL6030: Add twl6030 codec
+ driver
+Date: Thu, 25 Feb 2010 09:06:58 +0000
+Message-ID: <1267088818.3255.42.camel@odin>
+References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B14@dlee06.ent.ti.com>
+	 <1267007881.3274.136.camel@odin>
+	 <1889FA7136B567478A67D4B0F85B0CCE65DD22C9@dlee06.ent.ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE65DD230C@dlee06.ent.ti.com> (sfid-20100225_002415_552142_F4402FD1)
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE65DD22C9@dlee06.ent.ti.com>
 Sender: linux-omap-owner@vger.kernel.org
 To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 25 Feb 2010, at 00:24, "Olaya, Margarita" <magi.olaya@ti.com> wrote:
+On Wed, 2010-02-24 at 17:37 -0600, Olaya, Margarita wrote:
+> 
+> > -----Original Message-----
+> > From: Liam Girdwood [mailto:lrg@slimlogic.co.uk]
+> > Sent: Wednesday, February 24, 2010 4:38 AM
+> > To: Olaya, Margarita
+> > Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org; broonie@opensource.wolfsonmicro.com
+> > Subject: Re: [PATCHv4 2/7] ASoC: TWL6030: Add twl6030 codec driver
+> >
+> > On Tue, 2010-02-23 at 18:10 -0600, Olaya, Margarita wrote:
+> > > From: Misael Lopez Cruz <x0052729@ti.com>
+> > >
+> > > Initial version of TWL6030 codec driver.
+> > >
+> > > The TWL6030 codec uses a propietary PDM-based digital audio interface.
+> > > Audio paths supported are:
+> > >
+> > > - Input: Main Mic, Sub Mic, Headset Mic, Auxiliary-FM Left/Right
+> > > - Output: Headset Left/Right, Handsfree Left/Right
 
->
->
->> -----Original Message-----
->> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
->> Sent: Wednesday, February 24, 2010 7:59 AM
->> To: Olaya, Margarita
->> Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org; lrg@slimlogic.co.uk
->> Subject: Re: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up sequence  
->> completion
->>
->> On Tue, Feb 23, 2010 at 06:10:54PM -0600, Olaya, Margarita wrote:
->>
->>> +    if (naudint) {
->>> +        /* wait for ready interrupt with 48 ms timeout */
->>> +        time_left = wait_for_completion_timeout(&priv->ready,
->>> +                    msecs_to_jiffies(48));
->>> +    } else {
->>> +        /* retry 3 times only */
->>> +        for (time_left = 3; time_left > 0; time_left--) {
->>> +            mdelay(16);
->>> +            twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &intid,
->>> +                    TWL6030_REG_INTID);
->>> +            if (intid & TWL6030_READYINT)
->>> +                break;
->>> +        }
->>> +    }
->>
->> It strikes me that you could combine these two cases - the
->> wait_for_completion_timeout() will function just as well as a delay.
->> I'd also expect to see an error reported if the device doesn't  
->> report as
->> ready one way or another.
->
-> It is split to prevent the case of none valid irq line connected, in  
-> such case, wait_for_completion won't work
+> > > +
+> > > +/*
+> > > + * read from twl6030 hardware register
+> > > + */
+> > > +static int twl6030_read(struct snd_soc_codec *codec,
+> > > +                       unsigned int reg)
+> > > +{
+> > > +       u8 value;
+> > > +
+> > > +       if (reg >= TWL6030_CACHEREGNUM)
+> > > +               return -EIO;
+> > > +
+> > > +       twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &value, reg);
+> > > +       twl6030_write_reg_cache(codec, reg, value);
+> >
+> >
+> > You probably want to read from the cache if the register is not
+> > volatile. This saves a slow I2C read.
+> >
+> 
+> This function is called for volatile registers; if the register is not volatile we call twl6030_read_reg_cache. I could merge those two functions with a case for those.
+> 
 
-It will - you can specify a timeout so if the interrupt doesn't happen  
-all that happens is that you delay for the specified timeout.
+Ok, could amend the name or comment so it's obvious this is for
+volatiles.
 
->
+Thanks
+
+Liam
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
+
