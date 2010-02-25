@@ -1,67 +1,52 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [alsa-devel] [PATCHv4 0/7] TWL6030 audio codec initial support
-Date: Thu, 25 Feb 2010 09:13:02 +0000
-Message-ID: <1267089182.3255.58.camel@odin>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B12@dlee06.ent.ti.com>
-	 <1267011618.3274.202.camel@odin>
-	 <1889FA7136B567478A67D4B0F85B0CCE65DD2303@dlee06.ent.ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC update for 2.6.34
+Date: Thu, 25 Feb 2010 09:31:58 +0000
+Message-ID: <20100225093157.GA10141@rakim.wolfsonmicro.main>
+References: <20100224182309.GA26018@rakim.wolfsonmicro.main>
+	<s5hzl2xyckc.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE65DD2303@dlee06.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 391EB10381F
+	for <alsa-devel@alsa-project.org>; Thu, 25 Feb 2010 10:31:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hzl2xyckc.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-02-24 at 18:17 -0600, Olaya, Margarita wrote:
-> 
-> > -----Original Message-----
-> > From: Liam Girdwood [mailto:lrg@slimlogic.co.uk]
-> > Sent: Wednesday, February 24, 2010 5:40 AM
-> > To: Olaya, Margarita
-> > Cc: alsa-devel@alsa-project.org; linux-omap@vger.kernel.org; broonie@opensource.wolfsonmicro.com
-> > Subject: Re: [PATCHv4 0/7] TWL6030 audio codec initial support
-> > 
-> > On Tue, 2010-02-23 at 18:10 -0600, Olaya, Margarita wrote:
-> > > Following patch series add initial support for TWL6030 codec driver.
-> > > The patch set is based on the series sent from Misael Lopez in October 2009.
-> > >
-> > > Changes from v3:
-> > > - Remove snd_soc_init_card function
-> > > - Adapt to latest twl core changes based on Balaji's comment
-> > >
-> > > Regards,
-> > > Margarita
-> > >
-> > > ---
-> > > Misael Lopez Cruz (7):
-> > >   OMAP4: PMIC: Add support for twl6030 codec
-> > >   ASoC: TWL6030: Add twl6030 codec driver
-> > >   ASoC: TWL6030: Manual power-up/down sequences
-> > >   ASoC: TWL6030: Add support for low-power PLL
-> > >   ASoC: TWL6030: Add restrictions for low-power playback mode
-> > >   ASoC: TWL6030: Enable audio interrupt
-> > >   ASoC: TWL6030: Detect power-up sequence completion
-> > 
-> > Btw, since this is a new driver can you rebase the 6 codec patches into
-> > a single patch.
-> > 
-> 
-> The second patch adds the basic support for the codec and the others add features, that way it could be easier to review.
+On Thu, Feb 25, 2010 at 08:55:15AM +0100, Takashi Iwai wrote:
 
-Some of the subsequent patches are actually removing chunks of code
-rather than just adding new features. In this case it's actually easier
-to review the complete codec driver as one patch rather than a series of
-changes (showing your internal development history).
+> BTW, we need to prepare slowly the announce for 2.6.34 merge.
+> Could you give the brief description of ASoC specific changes?
 
-Thanks
+Here you go:
 
-Liam
+    * Support for turning CODEC biases off completely when idle,
+      providing power savings for modern devices with ground referenced
+      outputs where this can be done quickly at runtime without pops and
+      clicks.
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+    * Support for disabling physical writes to the device in the generic
+      cache control code, allowing devices to be completely powered off when
+      idle while still providing their control to userspace through the
+      standard register interfaces.
 
+    * Support for tuning the time ASoC waits before powering things down
+      after playback has finished (in order to involve issues between tracks
+      or similar) at runtime or from the machine driver.
+
+    * New drivers for DA7210, DB1200 I2S and AC97 controllers, i.MX3x
+      SSI ports, OMAP4 McPDM ports, S3C64xx AC97 controller, SH SIU (Sound
+      Interface Unit), WM2000, WM8904, WM8912, WM8955, WM8978 and WM8994
