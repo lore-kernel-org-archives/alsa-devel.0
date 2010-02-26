@@ -1,22 +1,14 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC 3/4] OMAP3: McBSP: Add interface for transmit
- FIFO state query
-Date: Wed, 3 Mar 2010 16:18:42 +0200
-Message-ID: <20100303161842.7b82ea8c.jhnikula@gmail.com>
-References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1267596472.24345.16.camel@eenurkka-desktop>
-	<20100303090324.83d076b6.jhnikula@gmail.com>
-	<201003031202.48598.peter.ujfalusi@nokia.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] ALSA: ASoC: fix ak4104 register array access
+Date: Fri, 26 Feb 2010 14:36:54 +0800
+Message-ID: <1267166214-1977-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id DBACF1037F8
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 15:17:54 +0100 (CET)
-Received: by ey-out-1920.google.com with SMTP id 26so277950eyw.16
-	for <alsa-devel@alsa-project.org>; Wed, 03 Mar 2010 06:17:54 -0800 (PST)
-In-Reply-To: <201003031202.48598.peter.ujfalusi@nokia.com>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FFE9103806
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 15:23:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,42 +18,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, stable@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 3 Mar 2010 12:02:48 +0200
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+Don't touch the variable 'reg' to construct the value for the actual SPI
+transport. This variable is again used to access the driver's register
+cache, and so random memory is overwritten.
+Compute the value in-place instead.
 
-> The command for test:
-> aplay -fdat -d 1 /dev/urandom
-> 
-I recommend to use /dev/zero instead since urandom takes CPU time.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: stable@kernel.org
+---
+ sound/soc/codecs/ak4104.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
 
-> [   96.290924] XBUFFSTAT: 0
-> [   96.293487] XBUFFSTAT: 0
-> [   96.296020] XBUFFSTAT: 0
-> [   96.299774] XBUFFSTAT: 1
-> 
-> So the buffer is kept full in element mode, as it is expected.
-> 
-I was expecting to see more variations. IRCC, the DMA in OMAP is doing
-transfers over the memory bus using some small bursts but I'm not
-completely sure. I'm thinking if that could explain the Eero's and
-Liam's observations?
-
-> So according to XBUFSTAT we have played out 289 samples.
-> based on the time we actually played 288.528 samples.
-> 
-> I would say this is really close to what we would expect to have?
-> 
-Sounds accurate enough.
-
-> Note: I have used printk for these, which pretty much alters the behavior a bit 
-> in timing wise...
-> 
-BTW: There is OMAP3 port in LTTng.
-
-
+diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
+index b9ef7e4..b68d99f 100644
+--- a/sound/soc/codecs/ak4104.c
++++ b/sound/soc/codecs/ak4104.c
+@@ -90,12 +90,10 @@ static int ak4104_spi_write(struct snd_soc_codec *codec, unsigned int reg,
+ 	if (reg >= codec->reg_cache_size)
+ 		return -EINVAL;
+ 
+-	reg &= AK4104_REG_MASK;
+-	reg |= AK4104_WRITE;
+-
+ 	/* only write to the hardware if value has changed */
+ 	if (cache[reg] != value) {
+-		u8 tmp[2] = { reg, value };
++		u8 tmp[2] = { (reg & AK4104_REG_MASK) | AK4104_WRITE, value };
++
+ 		if (spi_write(spi, tmp, sizeof(tmp))) {
+ 			dev_err(&spi->dev, "SPI write failed\n");
+ 			return -EIO;
 -- 
-Jarkko
+1.6.3.3
