@@ -1,22 +1,21 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: Add support for Cirrus Logic CS42L52
- LowpowerStereo Codec
-Date: Fri, 26 Feb 2010 11:18:00 -0600
-Message-ID: <1267204680.13721.105.camel@heelrod.ad.cirrus.com>
-References: <1267142855-12854-1-git-send-email-brian.austin@cirrus.com>
-	<20100226005349.GA3800@opensource.wolfsonmicro.com>
-	<C8CA3F5B-3BB3-497C-98AC-EAC10536BD93@cirrus.com>
-	<20100226101259.GA18053@rakim.wolfsonmicro.main>
-Reply-To: brian.austin@cirrus.com
+From: "Olaya, Margarita" <magi.olaya@ti.com>
+Subject: Re: [PATCHv4 2/7] ASoC: TWL6030: Add twl6030 codec
+	driver
+Date: Fri, 26 Feb 2010 13:42:35 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65E7E325@dlee06.ent.ti.com>
+References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B14@dlee06.ent.ti.com>
+	<1267007881.3274.136.camel@odin>
+	<1889FA7136B567478A67D4B0F85B0CCE65DD22C9@dlee06.ent.ti.com>
+	<20100225101710.GE10141@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from VA3EHSOBE002.bigfish.com (va3ehsobe002.messaging.microsoft.com
-	[216.32.180.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id B5DC7103A19
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 17:53:48 +0100 (CET)
-In-Reply-To: <20100226101259.GA18053@rakim.wolfsonmicro.main>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id BB80C103801
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 20:42:39 +0100 (CET)
+In-Reply-To: <20100225101710.GE10141@rakim.wolfsonmicro.main>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,26 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, heelrod@gmail.com, lrg@slimlogic.co.uk
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-02-26 at 10:12 +0000, Mark Brown wrote:
-> On Thu, Feb 25, 2010 at 07:59:29PM -0600, Austin, Brian wrote:
+On Thursday, February 25, 2010 4:17 AM  Mark Brown wrote: 
+
+>>> Are these two functions writing the default codec register values
+>>> to the CODEC or are these non default (i.e. reset) values. If
+>>> they are reset values is it not better to just issue the reset
+>>> (and save the slow I2C writes) ?
 > 
-> > Thanks alot for the feedback, I'll start fixing it up tomorrow.
-> > Should I send the smdk2443 driver, or wait till this is fixed up?
+>> Yeap, but they write non default values to most of the registers.
 > 
-> May as well send it, there should be relatively little coupling to the
-> CODEC driver.  Is this a plugin module for the SMDK or does it need
-> flying wires or mods to get it hooked up?
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> Why are these non-default values being set?  The general style with
+> things like this is that the register defaults listed in the
+> driver are
+> the physical defaults, and any explicit configuration is done with
+> register writes.  This makes it clearer what's being changed and
+> means that the actual register defaults are there for use if
+> required. 
+> 
+> Normally only things that should be changed for all systems would be
+> configured in this manner, things like audio paths which might
+> change per system would be left for userspace to configure.
 > 
 
-It requires wiring onto the I2C Connector and Dropping lines on the I2S
-as well.
+I meant to say default values, sorry for the confusion
 
-The device is wired correctly, just haven't gotten it to work with the
-newer kernels.
+In TWL6040 codec, the registers belong to a power supply domain: VDD or VIO.
+When the codec hits suspend state, VIO is not longer supplied, so registers
+lose their values. However, VDD registers preserve their values as they belong
+to a different power domain which still exist in suspend state. So when codec
+resumes, it's only needed to restore VIO registers' values lost during suspend.
+That's the reason why we have two separate functions to set VDD and VIO registers.
+The former is only needed at probe time and the latter is needed every time codec
+resumes.
+
+At probe we are using the default values to keep the codec functional as many
+features have not been enabled yet, some specific values are set using write
+function.
