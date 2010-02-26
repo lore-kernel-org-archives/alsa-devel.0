@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Why use spin_lock or spin_lock_irq in trigger
- callback (audio capture)?
-Date: Fri, 26 Feb 2010 10:05:43 +0100
-Message-ID: <4B878EE7.2010200@ladisch.de>
-References: <e5baf3861002251332n7333fb12tb15b055baffaa4a2@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] [patch 1/2]AC97: add AC97 support for AT91.
+Date: Fri, 26 Feb 2010 09:13:47 +0000
+Message-ID: <1267175627.3212.4.camel@odin>
+References: <1267120770-1752-1-git-send-email-sedji.gaouaou@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id CFEA1243F8
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 10:05:45 +0100 (CET)
-In-Reply-To: <e5baf3861002251332n7333fb12tb15b055baffaa4a2@mail.gmail.com>
+Received: from mail-fx0-f220.google.com (mail-fx0-f220.google.com
+	[209.85.220.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4777124405
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 10:13:51 +0100 (CET)
+Received: by fxm20 with SMTP id 20so16713798fxm.32
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 01:13:50 -0800 (PST)
+In-Reply-To: <1267120770-1752-1-git-send-email-sedji.gaouaou@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Yiliang Bao <yiliangb@gmail.com>
+To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Yiliang Bao wrote:
-> I looked at some PCI audio capture driver like BT878 (sound/pci/bt87x.c) or
-> SAA7134 (drivers/media/video/saa7134-alsa.c), I found that spin_lock instead
-> of spin_lock_irq (or spin_lock_irqsave) is used in trigger function. Is
-> there any reason for that?
+On Thu, 2010-02-25 at 18:59 +0100, Sedji Gaouaou wrote:
+> This patch add AC97 support for ATMEL AT91, using the AVR32 code.
+> While AVR is using a DMA, the AT91 chips are using a Peripheral Data
+> Controller.
+> 
 
-Yes, the trigger callback is called with interrupts already disabled.
-http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/ch05s08.html
+Btw, any reason why the Atmel AC97 support has not been folded into
+ASoC ?
+
+> Signed-off-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+> ---
+>  sound/atmel/Kconfig |    2 +-
+>  sound/atmel/ac97c.c |  309 +++++++++++++++++++++++++++++++++++++--------------
+>  2 files changed, 226 insertions(+), 85 deletions(-)
+
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
 
-Regards,
-Clemens
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
