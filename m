@@ -1,20 +1,21 @@
 From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: Re: [PATCHv4 2/7] ASoC: TWL6030: Add twl6030 codec
-	driver
-Date: Fri, 26 Feb 2010 13:42:35 -0600
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65E7E325@dlee06.ent.ti.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B14@dlee06.ent.ti.com>
-	<1267007881.3274.136.camel@odin>
-	<1889FA7136B567478A67D4B0F85B0CCE65DD22C9@dlee06.ent.ti.com>
-	<20100225101710.GE10141@rakim.wolfsonmicro.main>
+Subject: Re: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up
+	sequence completion
+Date: Fri, 26 Feb 2010 15:04:22 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65E7E3FF@dlee06.ent.ti.com>
+References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B19@dlee06.ent.ti.com>
+	<20100224135909.GR18896@rakim.wolfsonmicro.main>
+	<1889FA7136B567478A67D4B0F85B0CCE65DD230C@dlee06.ent.ti.com>
+	(sfid-20100225_002415_552142_F4402FD1)
+	<6119755B-D3CB-4E4C-ADA2-8AE64EBE4711@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id BB80C103801
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 20:42:39 +0100 (CET)
-In-Reply-To: <20100225101710.GE10141@rakim.wolfsonmicro.main>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id F24B61037FB
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 22:04:26 +0100 (CET)
+In-Reply-To: <6119755B-D3CB-4E4C-ADA2-8AE64EBE4711@opensource.wolfsonmicro.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,42 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, February 25, 2010 4:17 AM  Mark Brown wrote: 
+On Thursday, February 25, 2010 2:42 AM  Mark Brown wrote: 
 
->>> Are these two functions writing the default codec register values
->>> to the CODEC or are these non default (i.e. reset) values. If
->>> they are reset values is it not better to just issue the reset
->>> (and save the slow I2C writes) ?
-> 
->> Yeap, but they write non default values to most of the registers.
-> 
-> Why are these non-default values being set?  The general style with
-> things like this is that the register defaults listed in the
-> driver are
-> the physical defaults, and any explicit configuration is done with
-> register writes.  This makes it clearer what's being changed and
-> means that the actual register defaults are there for use if
-> required. 
-> 
-> Normally only things that should be changed for all systems would be
-> configured in this manner, things like audio paths which might
-> change per system would be left for userspace to configure.
-> 
+>>> On Tue, Feb 23, 2010 at 06:10:54PM -0600, Olaya, Margarita wrote:
+>>> 
+>>>> +    if (naudint) {
+>>>> +        /* wait for ready interrupt with 48 ms timeout */
+>>>> +        time_left = wait_for_completion_timeout(&priv->ready,
+>>>> +                    msecs_to_jiffies(48));
 
-I meant to say default values, sorry for the confusion
+Phoenix manages automatic and manual power on sequences. READYINT
+indicates the completion of power up sequence, Phoenix audio drives
+the NAUDINT line low when an interrupt is internally detected, when
+automatic power on sequence is used, the state of READYINIT is verified
+through the interrupt handler using wait_for_completion.
 
-In TWL6040 codec, the registers belong to a power supply domain: VDD or VIO.
-When the codec hits suspend state, VIO is not longer supplied, so registers
-lose their values. However, VDD registers preserve their values as they belong
-to a different power domain which still exist in suspend state. So when codec
-resumes, it's only needed to restore VIO registers' values lost during suspend.
-That's the reason why we have two separate functions to set VDD and VIO registers.
-The former is only needed at probe time and the latter is needed every time codec
-resumes.
+>>>> +    } else {
+>>>> +        /* retry 3 times only */
+>>>> +        for (time_left = 3; time_left > 0; time_left--) { +    
+>>>> mdelay(16); +           
+>>>> twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &intid, +           
+>>>> TWL6030_REG_INTID); +            if (intid & TWL6030_READYINT)
+>>>> +                break;
+>>>> +        }
 
-At probe we are using the default values to keep the codec functional as many
-features have not been enabled yet, some specific values are set using write
-function.
+When manual power on sequence is used the driver verifies the status of 
+READYINIT by polling.
+
+In both cases if READYINIT is not set before the timeout runs out it means
+the codec is not powering on and the driver reports an error.
+
+- Margarita
+
+>>>> +    }
+>>> 
+
+
+
+>>> It strikes me that you could combine these two cases - the
+>>> wait_for_completion_timeout() will function just as well as a
+>>> delay. I'd also expect to see an error reported if the device
+>>> doesn't report as ready one way or another.
+>> 
+>> It is split to prevent the case of none valid irq line connected,
+>> in such case, wait_for_completion won't work
+> 
+> It will - you can specify a timeout so if the interrupt doesn't
+> happen all that happens is that you delay for the specified timeout.
