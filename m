@@ -1,29 +1,21 @@
-From: giggzounet <giggzounet@gmail.com>
-Subject: Re: [Regression] With the new 2.6.33 when I plug in
- headphones, the speakers don't turn off anymore
-Date: Fri, 26 Feb 2010 15:00:52 +0100
-Message-ID: <4B87D414.5050409@gmail.com>
-References: <hm82oh$1am$1@dough.gmane.org>	<1267176828.3751.12.camel@mattotaupa>
-	<hm8aat$shn$1@dough.gmane.org>	<hm8afm$shn$2@dough.gmane.org>
-	<1267184543.3802.13.camel@mattotaupa>
+From: Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
+Subject: Re: alsactl restore: unknown hardware: ymf724f
+Date: Fri, 26 Feb 2010 15:05:54 +0100
+Message-ID: <1267193154.29204.0.camel@localhost.localdomain>
+References: <hm5aba$p65$1@dough.gmane.org>
+	<alpine.LNX.2.00.1002250915480.28127@eeebox2.perex-int.cz>
+	<hm5u2i$2h7$1@dough.gmane.org>
+	<alpine.LNX.2.00.1002251502380.28127@eeebox2.perex-int.cz>
+	<4f3252891002251511p4605f104jdac236e589d01149@mail.gmail.com>
+	<hm8cus$56i$1@dough.gmane.org>
+Reply-To: pacho@condmat1.ciencias.uniovi.es
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============6427658045217265536=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 58C3D1037F8
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 15:01:07 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Nl0kc-0008In-FS
-	for alsa-devel@alsa-project.org; Fri, 26 Feb 2010 15:01:06 +0100
-Received: from celsius02.unibw-hamburg.de ([139.11.215.121])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 15:01:06 +0100
-Received: from giggzounet by celsius02.unibw-hamburg.de with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 15:01:06 +0100
-In-Reply-To: <1267184543.3802.13.camel@mattotaupa>
+Received: from smtp02.jazztel.es (smtp02.jazztel.es [62.14.3.171])
+	by alsa0.perex.cz (Postfix) with ESMTP id DACFC1037F8
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 15:06:04 +0100 (CET)
+In-Reply-To: <hm8cus$56i$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,58 +25,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Angel Tsankov <fn42551@fmi.uni-sofia.bg>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Menzel a =E9crit :
-> Am Freitag, den 26.02.2010, 12:15 +0100 schrieb giggzounet:
->> [snip]
->>
->>>> I do not know why enable_msi is set to =BB-1=AB and not one since it s=
-hould
->>>> be enabled by default now [1]. Could you try to load the sound module
->>>> with `enable_msi` set to `0` and report back your findings, please.
->>>>
->>>>         $ sudo modinfo snd-hda-intel
->>>>         [=85]
->>>>         parm:           enable_msi:Enable Message Signaled Interrupt (=
-MSI) (int)
->>>>         [=85]
->>>>
->>> I have modified /etc/modprobe.d/sound with :
->>> snd-hda-intel index=3D0 enable_msi=3D0
->>>
->>> I attach the log of alsa-info.
->>>
->> I have forgotten to say that the problem is always here with
->> enable_msi=3D0
->>
->> [snip]
-> =
 
-> That=92s unfortunate. It would have been nice if this had fixed it.
-> =
+--===============6427658045217265536==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-QQHuSRQ1+nmPd+uU3hi/"
 
 
-I have take a look to the history of changes of hda_intel.f and found that :
-http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dcomm=
-it;h=3D0a27fcfaaf61108d94f0377f91bed81b2dd35f52
+--=-QQHuSRQ1+nmPd+uU3hi/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-in the source I'm seeing a blacklist :
-/*
- * white/black-list for enable_msi
- */
-static struct snd_pci_quirk msi_black_list[] __devinitdata =3D {
-	SND_PCI_QUIRK(0x1043, 0x81f2, "ASUS", 0), /* Athlon64 X2 + nvidia */
-	SND_PCI_QUIRK(0x1043, 0x81f6, "ASUS", 0), /* nvidia */
-	{}
-};
+El vie, 26-02-2010 a las 13:57 +0200, Angel Tsankov escribi=C3=B3:
+> Raymond Yau wrote:
+> > 2010/2/25 Jaroslav Kysela <perex@perex.cz>
+> >=20
+> >> On Thu, 25 Feb 2010, Angel Tsankov wrote:
+> >>
+> >>> Jaroslav Kysela wrote:
+> >>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
+> >>>>
+> >>>>> Hello,
+> >>>>>
+> >>>>> I run 'alsactl restore' on a machine with 2 sound cards -- a built-=
+in
+> >>>>> Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller (r=
+ev
+> >>>>> 02) and a non-built-in Yamaha Corporation YMF-724F [DS-1 Audio
+> >>>>> Controller] (rev 03) -- and get the following message:
+> >>>>>
+> >>>>> Unknown hardware: "YMF724F" "SigmaTel STAC9700,83,84" "AC97a:838476=
+00"
+> >>>>> "0x1073" "0x000d"
+> >>>>> Hardware is initialized using a guess method
+> >>>>>
+> >>>>> As a consequence the volume levels of the Yamaha card do not get
+> >>>>> restored to the levels stored in /etc/asound.state.  The volume lev=
+els
+> >>>>> of the built-in card however are properly restored.  The asound.sta=
+te
+> >>>>> file has been created by executing 'alsactl store'.
+> >>>>>
+> >>>>> The kernel has been built with support for ALSA.  I've built and
+> >>>>> installed the kernel modules for both cards (not the ones in the
+> >>>>> alsa-driver package but those that come with kernel version 2.6.30.=
+2).
+> >>>>> Any ideas why alsactl cannot find the hardware it has previously
+> >>>>> identified as "YMF724F", "SigmaTel STAC9700,83,84", and so on?
+> >>>> The logic of alsactl is to restore the state from /etc/asound.state =
+if
+> >> it
+> >>>> is valid. It seems like the set_controls() function in alsactl/state=
+.c
+> >>>> returns an error code for a reason.
+> >>>>
+> >>>> Could you try to compile the latest alsa-utils snapshot
+> >>>> (http://www.alsa-project.org/snapshot/) and run './alsactl -d restor=
+e'
+> >> in
+> >>>> alsa-utils/alsactl directory? A warning (fail reason) should be prin=
+ted.
+> >>> I've attached a bash shell script that I used to download, configure,
+> >>> compile, and run alsactl.  I've also attached a .log file with stdout=
+ and
+> >>> stderr that I got while executing the script.
+> >> Thanks. I've added more debug print lines to state.c. Could you rerun =
+your
+> >> script and append also '/etc/asound.state' file and output from
+> >> 'alsa-info.sh --no-upload' to your output tarballs? Send me this tarba=
+ll
+> >> privately or just an URL to this list.
 
-And on my eeepc 1201n there is lot's of nvidia things...How can I know
-if I'm on this blacklist or not ? ...sorry, I don't have a lot of
-knowledge in C. But this could be explain why msi is not enabled by
-default...
 
-Best regards,
-Guillaume
+Looks similar to my problem:
+http://www.spinics.net/lists/alsa-devel/msg31422.html
+
+
+--=-QQHuSRQ1+nmPd+uU3hi/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Esta parte del mensaje =?ISO-8859-1?Q?est=E1?= firmada
+ digitalmente
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.14 (GNU/Linux)
+
+iEYEABECAAYFAkuH1UIACgkQCaWpQKGI+9QI1gCfbJ94iWO7LLPmbQMZZdR6Ckvj
+heUAn30MewehVny3dW1c7ngEyptUeGaa
+=+oSD
+-----END PGP SIGNATURE-----
+
+--=-QQHuSRQ1+nmPd+uU3hi/--
+
+
+--===============6427658045217265536==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============6427658045217265536==--
