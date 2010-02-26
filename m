@@ -1,27 +1,29 @@
-From: Angel Tsankov <fn42551@fmi.uni-sofia.bg>
-Subject: Re: alsactl restore: unknown hardware: ymf724f
-Date: Fri, 26 Feb 2010 13:57:32 +0200
-Message-ID: <hm8cus$56i$1@dough.gmane.org>
-References: <hm5aba$p65$1@dough.gmane.org>	<alpine.LNX.2.00.1002250915480.28127@eeebox2.perex-int.cz>	<hm5u2i$2h7$1@dough.gmane.org>	<alpine.LNX.2.00.1002251502380.28127@eeebox2.perex-int.cz>
-	<4f3252891002251511p4605f104jdac236e589d01149@mail.gmail.com>
+From: giggzounet <giggzounet@gmail.com>
+Subject: Re: [Regression] With the new 2.6.33 when I plug in
+ headphones, the speakers don't turn off anymore
+Date: Fri, 26 Feb 2010 13:09:05 +0100
+Message-ID: <4B87B9E1.4040809@gmail.com>
+References: <hm82oh$1am$1@dough.gmane.org>	<1267176828.3751.12.camel@mattotaupa>
+	<hm8aat$shn$1@dough.gmane.org>	<hm8afm$shn$2@dough.gmane.org>
+	<1267184543.3802.13.camel@mattotaupa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42A27103805
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 12:57:33 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D3AA103A2A
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 13:09:23 +0100 (CET)
 Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Nkyp0-0007dM-CR
-	for alsa-devel@alsa-project.org; Fri, 26 Feb 2010 12:57:30 +0100
-Received: from client-144-140.speedy-net.bg ([78.159.144.140])
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Nkz0R-0006C6-HF
+	for alsa-devel@alsa-project.org; Fri, 26 Feb 2010 13:09:19 +0100
+Received: from celsius02.unibw-hamburg.de ([139.11.215.121])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 12:57:30 +0100
-Received: from fn42551 by client-144-140.speedy-net.bg with local (Gmexim 0.1
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 13:09:19 +0100
+Received: from giggzounet by celsius02.unibw-hamburg.de with local (Gmexim 0.1
 	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 12:57:30 +0100
-In-Reply-To: <4f3252891002251511p4605f104jdac236e589d01149@mail.gmail.com>
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 13:09:19 +0100
+In-Reply-To: <1267184543.3802.13.camel@mattotaupa>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,83 +33,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote:
-> 2010/2/25 Jaroslav Kysela <perex@perex.cz>
-> 
->> On Thu, 25 Feb 2010, Angel Tsankov wrote:
->>
->>> Jaroslav Kysela wrote:
->>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
->>>>
->>>>> Hello,
->>>>>
->>>>> I run 'alsactl restore' on a machine with 2 sound cards -- a built-in
->>>>> Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller (rev
->>>>> 02) and a non-built-in Yamaha Corporation YMF-724F [DS-1 Audio
->>>>> Controller] (rev 03) -- and get the following message:
->>>>>
->>>>> Unknown hardware: "YMF724F" "SigmaTel STAC9700,83,84" "AC97a:83847600"
->>>>> "0x1073" "0x000d"
->>>>> Hardware is initialized using a guess method
->>>>>
->>>>> As a consequence the volume levels of the Yamaha card do not get
->>>>> restored to the levels stored in /etc/asound.state.  The volume levels
->>>>> of the built-in card however are properly restored.  The asound.state
->>>>> file has been created by executing 'alsactl store'.
->>>>>
->>>>> The kernel has been built with support for ALSA.  I've built and
->>>>> installed the kernel modules for both cards (not the ones in the
->>>>> alsa-driver package but those that come with kernel version 2.6.30.2).
->>>>> Any ideas why alsactl cannot find the hardware it has previously
->>>>> identified as "YMF724F", "SigmaTel STAC9700,83,84", and so on?
->>>> The logic of alsactl is to restore the state from /etc/asound.state if
->> it
->>>> is valid. It seems like the set_controls() function in alsactl/state.c
->>>> returns an error code for a reason.
->>>>
->>>> Could you try to compile the latest alsa-utils snapshot
->>>> (http://www.alsa-project.org/snapshot/) and run './alsactl -d restore'
->> in
->>>> alsa-utils/alsactl directory? A warning (fail reason) should be printed.
->>> I've attached a bash shell script that I used to download, configure,
->>> compile, and run alsactl.  I've also attached a .log file with stdout and
->>> stderr that I got while executing the script.
->> Thanks. I've added more debug print lines to state.c. Could you rerun your
->> script and append also '/etc/asound.state' file and output from
->> 'alsa-info.sh --no-upload' to your output tarballs? Send me this tarball
->> privately or just an URL to this list.
->>
->>                                        Thanks,
->>                                                 Jaroslav
->>
->>
-> did alsactl restore those IFACE_PCM volume since they are supposed at 0dB by
-> default whenever the subdevice is open ?
-> 
-> store the values in asound.state seem to be for debugging only
-> 
->     control.61 {
->         comment.access 'read write inactive'
->         comment.type INTEGER
->         comment.count 2
->         comment.range '0 - 32768'
->         iface PCM
->         subdevice 1
->         name 'PCM Playback Volume'
->         value.0 26214
->         value.1 26214
->     }
-
-In fact, alsactl seems to restore the volume levels (despite the 
-"Unknown hardware" message) when the system is up and running, but it 
-does not restore the PCM and master levels at boot time. This should be 
-done when the hardware is detected by udev, as I have the following udev 
-rule:
-
-KERNEL=="controlC[0-9]*", ACTION=="add", RUN+="/usr/sbin/alsactl restore %n"
-
-
-Angel Tsankov
+UGF1bCBNZW56ZWwgYSDDqWNyaXQgOgo+IEFtIEZyZWl0YWcsIGRlbiAyNi4wMi4yMDEwLCAxMjox
+NSArMDEwMCBzY2hyaWViIGdpZ2d6b3VuZXQ6Cj4+IFtzbmlwXQo+Pgo+Pj4+IEkgZG8gbm90IGtu
+b3cgd2h5IGVuYWJsZV9tc2kgaXMgc2V0IHRvIMK7LTHCqyBhbmQgbm90IG9uZSBzaW5jZSBpdCBz
+aG91bGQKPj4+PiBiZSBlbmFibGVkIGJ5IGRlZmF1bHQgbm93IFsxXS4gQ291bGQgeW91IHRyeSB0
+byBsb2FkIHRoZSBzb3VuZCBtb2R1bGUKPj4+PiB3aXRoIGBlbmFibGVfbXNpYCBzZXQgdG8gYDBg
+IGFuZCByZXBvcnQgYmFjayB5b3VyIGZpbmRpbmdzLCBwbGVhc2UuCj4+Pj4KPj4+PiAgICAgICAg
+ICQgc3VkbyBtb2RpbmZvIHNuZC1oZGEtaW50ZWwKPj4+PiAgICAgICAgIFvigKZdCj4+Pj4gICAg
+ICAgICBwYXJtOiAgICAgICAgICAgZW5hYmxlX21zaTpFbmFibGUgTWVzc2FnZSBTaWduYWxlZCBJ
+bnRlcnJ1cHQgKE1TSSkgKGludCkKPj4+PiAgICAgICAgIFvigKZdCj4+Pj4KPj4+IEkgaGF2ZSBt
+b2RpZmllZCAvZXRjL21vZHByb2JlLmQvc291bmQgd2l0aCA6Cj4+PiBzbmQtaGRhLWludGVsIGlu
+ZGV4PTAgZW5hYmxlX21zaT0wCj4+Pgo+Pj4gSSBhdHRhY2ggdGhlIGxvZyBvZiBhbHNhLWluZm8u
+Cj4+Pgo+PiBJIGhhdmUgZm9yZ290dGVuIHRvIHNheSB0aGF0IHRoZSBwcm9ibGVtIGlzIGFsd2F5
+cyBoZXJlIHdpdGgKPj4gZW5hYmxlX21zaT0wCj4+Cj4+IFtzbmlwXQo+IAo+IFRoYXTigJlzIHVu
+Zm9ydHVuYXRlLiBJdCB3b3VsZCBoYXZlIGJlZW4gbmljZSBpZiB0aGlzIGhhZCBmaXhlZCBpdC4K
+PiAKPiBJIENDIFRha2FzaGksIHNpbmNlIGhlIGlzIHRoZSBhdXRob3Igb2YgWzFdLiBNYXliZSBo
+ZSBjYW4gdGVsbCB1cyBpZiBpdAo+IGlzIHJlbGF0ZWQuCj4gCj4gVGhlIG9ubHkgcmVsZXZhbnQo
+PykgZGlmZmVyZW5jZSB0aGVyZSBpcyB0aGUgZm9sbG93aW5nLgo+IAo+ICAgICAgICAgJCBkaWZm
+IC11IGFsc2EtaW5mb18yLjYuMzIuOS5sb2cgYWxzYS1pbmZvXzIuNi4zM19lbmFibGVfbXNpLmxv
+Zwo+ICAgICAgICAgW+KApl0KPiAgICAgICAgIEBAIC04NSwxMSArODUsMTIgQEAKPiAgICAgICAg
+ICAKPiAgICAgICAgICAhIU1vZHVsZTogc25kX2hkYV9pbnRlbAo+ICAgICAgICAgIAliZGxfcG9z
+X2FkaiA6IDMyLC0xLC0xLC0xLC0xLC0xLC0xLC0xCj4gICAgICAgICArCWJlZXBfbW9kZSA6IDEs
+MSwxLDEsMSwxLDEsMQo+ICAgICAgICAgW+KApl0KPiAKPiBUaGUgb25seSBvdGhlciB0aGluZyBJ
+IGNhbiB0aGluayBvZiBpcywgdGhhdCB5b3UgZ28gdHJvdWdoIHRoZSBjb21taXQKPiBsb2cgeW91
+cnNlbGYgYW5kIHRyeSB0byBmaWd1cmUgb3V0IHdoYXQgY2hhbmdlZCByZWdhcmRpbmcgdG8geW91
+cgo+IGNoaXBzZXQgYW5kIENPREVDLgo+IAo+IEFuZCBsYXN0IG5vdCBsZWFzdCB5b3UgY291bGQg
+dHJ5IERlYlBrZzpsaWJhc291bmQyIGZyb20gdW5zdGFibGUgYW5kIHNlZQo+IGlmIHRoaXMgY2hh
+bmdlcyBhbnl0aGluZy4gQWx0aG91Z2ggSSBndWVzcyBpdCB3aWxsIG5vdC4KPiAKCkknbSB1c2lu
+ZyB0aGUgbGliYXNvdW5kMiBmcm9tIGxlbm55LWJhY2twb3J0IHZlcnNpb24gMS4wLjIxLiBBbHNv
+IGl0IGlzCm5vdCB2ZXJ5IGZhciBmcm9tIHRoZSBvbmUgaW4gdW5zdGFibGUgKDEuMC4yMikuCgo+
+IAo+IFRoYW5rcywKPiAKPiBQYXVsCj4gCj4gCj4gWzFdIGh0dHA6Ly9naXQua2VybmVsLm9yZy8/
+cD1saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LTIuNi5naXQ7YT1jb21taXRkaWZmO2g9
+NzE2MjM4NTVlMjBjM2ZlYmViYjVmYTYwNTI4Y2RlMjU5MjY3OGJkNQo+IAoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
