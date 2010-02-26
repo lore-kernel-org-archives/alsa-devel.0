@@ -1,27 +1,39 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCHv4 7/7] ASoC: TWL6030: Detect power-up
-	sequence completion
-Date: Fri, 26 Feb 2010 21:27:18 +0000
-Message-ID: <20100226212717.GB6615@sirena.org.uk>
-References: <1889FA7136B567478A67D4B0F85B0CCE65DD1B19@dlee06.ent.ti.com> <20100224135909.GR18896@rakim.wolfsonmicro.main> <1889FA7136B567478A67D4B0F85B0CCE65DD230C@dlee06.ent.ti.com> <6119755B-D3CB-4E4C-ADA2-8AE64EBE4711@opensource.wolfsonmicro.com> <1889FA7136B567478A67D4B0F85B0CCE65E7E3FF@dlee06.ent.ti.com>
+Subject: Re: [PATCH] ASoC: Add support for Cirrus Logic	CS42L52
+	LowpowerStereo Codec
+Date: Fri, 26 Feb 2010 21:28:28 +0000
+Message-ID: <20100226212828.GC6615@sirena.org.uk>
+References: <1267142855-12854-1-git-send-email-brian.austin@cirrus.com>
+	<20100226005349.GA3800@opensource.wolfsonmicro.com>
+	<C8CA3F5B-3BB3-497C-98AC-EAC10536BD93@cirrus.com>
+	<20100226101259.GA18053@rakim.wolfsonmicro.main>
+	<1267204680.13721.105.camel@heelrod.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2CBA0103812
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 22:28:29 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE65E7E3FF@dlee06.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+In-Reply-To: <1267204680.13721.105.camel@heelrod.ad.cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, heelrod@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 26, 2010 at 03:04:22PM -0600, Olaya, Margarita wrote:
+On Fri, Feb 26, 2010 at 11:18:00AM -0600, Brian Austin wrote:
 
-> In both cases if READYINIT is not set before the timeout runs out it means
-> the codec is not powering on and the driver reports an error.
+> The device is wired correctly, just haven't gotten it to work with the
+> newer kernels.
 
-That's kind of my point - because you're checking for the same status
-there shouldn't be any need to special case the situation where there's
-no interrupt, I'd expect to be able to use wait_for_timeout_interruptible()
-for the delay and have the timeout completion interrupt cause that to be
-signalled.  No *terribly* important but it makes it clearer what's going
-on.
+Sure, I was more wondering if this is something for mainline or not - if
+it's a flying wire style setup then that doesn't generally get merged.
