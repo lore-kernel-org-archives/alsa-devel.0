@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] [patch 2/2] AC97: add full duplex
-	support	for atmel AT91 and AVR.
-Date: Fri, 26 Feb 2010 10:02:34 +0000
-Message-ID: <20100226100233.GA31530@sirena.org.uk>
-References: <1267120780-1788-1-git-send-email-sedji.gaouaou@atmel.com>
+Subject: Re: [PATCH] ASoC: Add support for Cirrus Logic CS42L52
+ LowpowerStereo Codec
+Date: Fri, 26 Feb 2010 10:12:59 +0000
+Message-ID: <20100226101259.GA18053@rakim.wolfsonmicro.main>
+References: <1267142855-12854-1-git-send-email-brian.austin@cirrus.com>
+	<20100226005349.GA3800@opensource.wolfsonmicro.com>
+	<C8CA3F5B-3BB3-497C-98AC-EAC10536BD93@cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id C96821039FD
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 11:02:34 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4CF35103A09
+	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 11:13:02 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1267120780-1788-1-git-send-email-sedji.gaouaou@atmel.com>
+In-Reply-To: <C8CA3F5B-3BB3-497C-98AC-EAC10536BD93@cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sedji Gaouaou <sedji.gaouaou@atmel.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: "Austin, Brian" <Brian.Austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, heelrod@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 25, 2010 at 06:59:40PM +0100, Sedji Gaouaou wrote:
-> This patch add full duplex support on AT91 and AVR.
-> It was a bug: we needed to check first if there are some chips opened so we
-> could enable both reception and sending of the data.
-> 
-> Signed-off-by: Sedji Gaouaou <sedji.gaouaou@atmel.com>
+On Thu, Feb 25, 2010 at 07:59:29PM -0600, Austin, Brian wrote:
 
-Both patches
+> Thanks alot for the feedback, I'll start fixing it up tomorrow.
+> Should I send the smdk2443 driver, or wait till this is fixed up?
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+May as well send it, there should be relatively little coupling to the
+CODEC driver.  Is this a plugin module for the SMDK or does it need
+flying wires or mods to get it hooked up?
