@@ -1,25 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: alsactl restore: unknown hardware: ymf724f
-Date: Sat, 27 Feb 2010 15:14:01 +0800
-Message-ID: <4f3252891002262314l2a08358al439c3bd3c3ec748a@mail.gmail.com>
-References: <hm5aba$p65$1@dough.gmane.org>
-	<alpine.LNX.2.00.1002250915480.28127@eeebox2.perex-int.cz>
-	<hm5u2i$2h7$1@dough.gmane.org>
-	<alpine.LNX.2.00.1002251502380.28127@eeebox2.perex-int.cz>
-	<4f3252891002251511p4605f104jdac236e589d01149@mail.gmail.com>
-	<hm8cus$56i$1@dough.gmane.org>
-	<1267193154.29204.0.camel@localhost.localdomain>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH] opti92x: use PnP data to select Master
+ Control port
+Date: Sat, 27 Feb 2010 08:53:54 +0100
+Message-ID: <20100227085354.772f6ada.krzysztof.h1@poczta.fm>
+References: <20100219195945.79cd53ab.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f191.google.com (mail-px0-f191.google.com
-	[209.85.216.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id E904610382C
-	for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2010 08:14:02 +0100 (CET)
-Received: by pxi29 with SMTP id 29so324148pxi.5
-	for <alsa-devel@alsa-project.org>; Fri, 26 Feb 2010 23:14:01 -0800 (PST)
-In-Reply-To: <1267193154.29204.0.camel@localhost.localdomain>
+Received: from smtp240.poczta.interia.pl (smtp240.poczta.interia.pl
+	[217.74.64.240])
+	by alsa0.perex.cz (Postfix) with ESMTP id ACF9910380D
+	for <alsa-devel@alsa-project.org>; Sat, 27 Feb 2010 08:49:35 +0100 (CET)
+In-Reply-To: <20100219195945.79cd53ab.krzysztof.h1@poczta.fm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,86 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/26 Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
+Hi Takashi,
 
-> El vie, 26-02-2010 a las 13:57 +0200, Angel Tsankov escribi=F3:
-> > Raymond Yau wrote:
-> > > 2010/2/25 Jaroslav Kysela <perex@perex.cz>
-> > >
-> > >> On Thu, 25 Feb 2010, Angel Tsankov wrote:
-> > >>
-> > >>> Jaroslav Kysela wrote:
-> > >>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
-> > >>>>
-> > >>>>> Hello,
-> > >>>>>
-> > >>>>> I run 'alsactl restore' on a machine with 2 sound cards -- a
-> built-in
-> > >>>>> Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller
-> (rev
-> > >>>>> 02) and a non-built-in Yamaha Corporation YMF-724F [DS-1 Audio
-> > >>>>> Controller] (rev 03) -- and get the following message:
-> > >>>>>
-> > >>>>> Unknown hardware: "YMF724F" "SigmaTel STAC9700,83,84"
-> "AC97a:83847600"
-> > >>>>> "0x1073" "0x000d"
-> > >>>>> Hardware is initialized using a guess method
-> > >>>>>
-> > >>>>> As a consequence the volume levels of the Yamaha card do not get
-> > >>>>> restored to the levels stored in /etc/asound.state.  The volume
-> levels
-> > >>>>> of the built-in card however are properly restored.  The
-> asound.state
-> > >>>>> file has been created by executing 'alsactl store'.
-> > >>>>>
-> > >>>>> The kernel has been built with support for ALSA.  I've built and
-> > >>>>> installed the kernel modules for both cards (not the ones in the
-> > >>>>> alsa-driver package but those that come with kernel version
-> 2.6.30.2).
-> > >>>>> Any ideas why alsactl cannot find the hardware it has previously
-> > >>>>> identified as "YMF724F", "SigmaTel STAC9700,83,84", and so on?
-> > >>>> The logic of alsactl is to restore the state from /etc/asound.state
-> if
-> > >> it
-> > >>>> is valid. It seems like the set_controls() function in
-> alsactl/state.c
-> > >>>> returns an error code for a reason.
-> > >>>>
-> > >>>> Could you try to compile the latest alsa-utils snapshot
-> > >>>> (http://www.alsa-project.org/snapshot/) and run './alsactl -d
-> restore'
-> > >> in
-> > >>>> alsa-utils/alsactl directory? A warning (fail reason) should be
-> printed.
-> > >>> I've attached a bash shell script that I used to download, configur=
-e,
-> > >>> compile, and run alsactl.  I've also attached a .log file with stdo=
-ut
-> and
-> > >>> stderr that I got while executing the script.
-> > >> Thanks. I've added more debug print lines to state.c. Could you rerun
-> your
-> > >> script and append also '/etc/asound.state' file and output from
-> > >> 'alsa-info.sh --no-upload' to your output tarballs? Send me this
-> tarball
-> > >> privately or just an URL to this list.
->
->
-> Looks similar to my problem:
-> http://www.spinics.net/lists/alsa-devel/msg31422.html
->
->
->
-what is the content of your asound.state ?
+Is there any chance to get his patch queued in the ALSA tree?
 
-seem related to this patch if alsactl count those iface_pcm controls
+Regards,
+Krzysztof
 
-when driver contains more controls than state file. In this case,
-initialization procedure should be run
+On Fri, 19 Feb 2010 19:59:45 +0100
+Krzysztof Helt <krzysztof.h1@poczta.fm> wrote:
 
-http://git.alsa-project.org/?p=3Dalsa-utils.git;a=3Dcommitdiff;h=3D05f78cc6=
-811110156c701fd9a2a5d15de8b4b1c7;hp=3D6232f1c96cde1fee247e95cd97235c48cc7b1=
-68d
+> From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> 
+> The Master Control port (MC) is available as the last
+> PnP resource (OPT005). Use this value instead fo guessing.
+> 
+> Also, add some comments to the code.
+> 
+> Signed-off-by: Krzysztof Helt <krzysztof.h1@wp.pl>
+> ---
+
+
+----------------------------------------------------------------------
+Szybkie i niedrogie... Tylko dla mezczyzn!
+Sprawdz >>> http://link.interia.pl/f25a7
