@@ -1,268 +1,230 @@
-From: Norberto Lopes <nlopes.ml@gmail.com>
-Subject: [PATCH 1/1] sound/pci/hda/hda_codec.c: various coding style fixes
-Date: Sun, 28 Feb 2010 20:16:53 +0100
-Message-ID: <1267384613-20983-1-git-send-email-nlopes.ml@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.de, fengguang.wu@intel.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Norberto Lopes <nlopes.ml@gmail.com>
+From: Jonathan Thibault <jonathan@navigue.com>
+Subject: STAC9200 spdif output problem on Dell Precision M65
+Date: Sun, 28 Feb 2010 17:18:05 -0500
+Message-ID: <4B8AEB9D.3040704@navigue.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.navigue.com (mail.navigue.com [74.117.40.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C09B24541
+	for <alsa-devel@alsa-project.org>; Sun, 28 Feb 2010 23:18:07 +0100 (CET)
+Received: from [192.168.34.155] (unknown [74.117.40.9])
+	(using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mail.navigue.com (Postfix) with ESMTPSA id 005B6528F72
+	for <alsa-devel@alsa-project.org>; Sun, 28 Feb 2010 17:18:05 -0500 (EST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello alsa devs :)
 
-Signed-off-by: Norberto Lopes <nlopes.ml@gmail.com>
----
- sound/pci/hda/hda_codec.c |   69 ++++++++++++++++++++++++--------------------
- 1 files changed, 38 insertions(+), 31 deletions(-)
+I've tried to change the pin configuration for model=dell-m22 to match that of the windows driver as per this section of the relevant .INI file, but that hasn't really changed anything.  I haven't really incorporated the windows gpio settings as I couldn't find figure out how to do so.
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index f98b47c..444b989 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -955,8 +955,9 @@ static void hda_set_power_state(struct hda_codec *codec, hda_nid_t fg,
-  *
-  * Returns 0 if successful, or a negative error code.
-  */
--int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus, unsigned int codec_addr,
--				    struct hda_codec **codecp)
-+int /*__devinit*/ snd_hda_codec_new(struct hda_bus *bus,
-+				unsigned int codec_addr,
-+				struct hda_codec **codecp)
- {
- 	struct hda_codec *codec;
- 	char component[31];
-@@ -1162,7 +1163,7 @@ EXPORT_SYMBOL_HDA(snd_hda_codec_cleanup_stream);
-  */
- 
- /* FIXME: more better hash key? */
--#define HDA_HASH_KEY(nid,dir,idx) (u32)((nid) + ((idx) << 16) + ((dir) << 24))
-+#define HDA_HASH_KEY(nid, dir, idx) (u32)((nid) + ((idx) << 16) + ((dir) << 24))
- #define HDA_HASH_PINCAP_KEY(nid) (u32)((nid) + (0x02 << 24))
- #define HDA_HASH_PARPCM_KEY(nid) (u32)((nid) + (0x03 << 24))
- #define HDA_HASH_PARSTR_KEY(nid) (u32)((nid) + (0x04 << 24))
-@@ -1332,7 +1333,8 @@ u32 snd_hda_pin_sense(struct hda_codec *codec, hda_nid_t nid)
- 	if (!codec->no_trigger_sense) {
- 		pincap = snd_hda_query_pin_caps(codec, nid);
- 		if (pincap & AC_PINCAP_TRIG_REQ) /* need trigger? */
--			snd_hda_codec_read(codec, nid, 0, AC_VERB_SET_PIN_SENSE, 0);
-+			snd_hda_codec_read(codec, nid, 0,
-+					AC_VERB_SET_PIN_SENSE, 0);
- 	}
- 	return snd_hda_codec_read(codec, nid, 0,
- 				  AC_VERB_GET_PIN_SENSE, 0);
-@@ -1348,8 +1350,8 @@ EXPORT_SYMBOL_HDA(snd_hda_pin_sense);
-  */
- int snd_hda_jack_detect(struct hda_codec *codec, hda_nid_t nid)
- {
--        u32 sense = snd_hda_pin_sense(codec, nid);
--        return !!(sense & AC_PINSENSE_PRESENCE);
-+	u32 sense = snd_hda_pin_sense(codec, nid);
-+	return !!(sense & AC_PINSENSE_PRESENCE);
- }
- EXPORT_SYMBOL_HDA(snd_hda_jack_detect);
- 
-@@ -1891,7 +1893,7 @@ int snd_hda_add_vmaster(struct hda_codec *codec, char *name,
- 	err = snd_hda_ctl_add(codec, 0, kctl);
- 	if (err < 0)
- 		return err;
--	
-+
- 	for (s = slaves; *s; s++) {
- 		struct snd_kcontrol *sctl;
- 		int i = 0;
-@@ -2378,27 +2380,27 @@ static struct snd_kcontrol_new dig_mixes[] = {
- 	{
- 		.access = SNDRV_CTL_ELEM_ACCESS_READ,
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = SNDRV_CTL_NAME_IEC958("",PLAYBACK,CON_MASK),
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, CON_MASK),
- 		.info = snd_hda_spdif_mask_info,
- 		.get = snd_hda_spdif_cmask_get,
- 	},
- 	{
- 		.access = SNDRV_CTL_ELEM_ACCESS_READ,
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = SNDRV_CTL_NAME_IEC958("",PLAYBACK,PRO_MASK),
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, PRO_MASK),
- 		.info = snd_hda_spdif_mask_info,
- 		.get = snd_hda_spdif_pmask_get,
- 	},
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
- 		.info = snd_hda_spdif_mask_info,
- 		.get = snd_hda_spdif_default_get,
- 		.put = snd_hda_spdif_default_put,
- 	},
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = SNDRV_CTL_NAME_IEC958("",PLAYBACK,SWITCH),
-+		.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, SWITCH),
- 		.info = snd_hda_spdif_out_switch_info,
- 		.get = snd_hda_spdif_out_switch_get,
- 		.put = snd_hda_spdif_out_switch_put,
-@@ -2549,7 +2551,7 @@ static int snd_hda_spdif_in_status_get(struct snd_kcontrol *kcontrol,
- static struct snd_kcontrol_new dig_in_ctls[] = {
- 	{
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = SNDRV_CTL_NAME_IEC958("",CAPTURE,SWITCH),
-+		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, SWITCH),
- 		.info = snd_hda_spdif_in_switch_info,
- 		.get = snd_hda_spdif_in_switch_get,
- 		.put = snd_hda_spdif_in_switch_put,
-@@ -2557,7 +2559,7 @@ static struct snd_kcontrol_new dig_in_ctls[] = {
- 	{
- 		.access = SNDRV_CTL_ELEM_ACCESS_READ,
- 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = SNDRV_CTL_NAME_IEC958("",CAPTURE,DEFAULT),
-+		.name = SNDRV_CTL_NAME_IEC958("", CAPTURE, DEFAULT),
- 		.info = snd_hda_spdif_mask_info,
- 		.get = snd_hda_spdif_in_status_get,
- 	},
-@@ -2822,7 +2824,7 @@ int /*__devinit*/ snd_hda_build_controls(struct hda_bus *bus)
- 		int err = snd_hda_codec_build_controls(codec);
- 		if (err < 0) {
- 			printk(KERN_ERR "hda_codec: cannot build controls"
--			       "for #%d (error %d)\n", codec->addr, err); 
-+			       "for #%d (error %d)\n", codec->addr, err);
- 			err = snd_hda_codec_reset(codec);
- 			if (err < 0) {
- 				printk(KERN_ERR
-@@ -2918,8 +2920,12 @@ unsigned int snd_hda_calc_stream_format(unsigned int rate,
- 	val |= channels - 1;
- 
- 	switch (snd_pcm_format_width(format)) {
--	case 8:  val |= 0x00; break;
--	case 16: val |= 0x10; break;
-+	case 8:
-+		val |= 0x00;
-+		break;
-+	case 16:
-+		val |= 0x10;
-+		break;
- 	case 20:
- 	case 24:
- 	case 32:
-@@ -3235,7 +3241,8 @@ static int get_empty_pcm_device(struct hda_bus *bus, int type)
- 		if (!test_and_set_bit(audio_idx[type][i], bus->pcm_dev_bits))
- 			return audio_idx[type][i];
- 
--	snd_printk(KERN_WARNING "Too many %s devices\n", snd_hda_pcm_type_name[type]);
-+	snd_printk(KERN_WARNING "Too many %s devices\n",
-+		snd_hda_pcm_type_name[type]);
- 	return -EAGAIN;
- }
- 
-@@ -3273,7 +3280,7 @@ int snd_hda_codec_build_pcms(struct hda_codec *codec)
- 		err = codec->patch_ops.build_pcms(codec);
- 		if (err < 0) {
- 			printk(KERN_ERR "hda_codec: cannot build PCMs"
--			       "for #%d (error %d)\n", codec->addr, err); 
-+			       "for #%d (error %d)\n", codec->addr, err);
- 			err = snd_hda_codec_reset(codec);
- 			if (err < 0) {
- 				printk(KERN_ERR
-@@ -3403,8 +3410,8 @@ EXPORT_SYMBOL_HDA(snd_hda_check_board_config);
- 
- /**
-  * snd_hda_check_board_codec_sid_config - compare the current codec
--				          subsystem ID with the
--					  config table
-+					subsystem ID with the
-+					config table
- 
- 	   This is important for Gateway notebooks with SB450 HDA Audio
- 	   where the vendor ID of the PCI device is:
-@@ -3542,7 +3549,7 @@ void snd_hda_update_power_acct(struct hda_codec *codec)
-  *
-  * Increment the power-up counter and power up the hardware really when
-  * not turned on yet.
-- */ 
-+ */
- void snd_hda_power_up(struct hda_codec *codec)
- {
- 	struct hda_bus *bus = codec->bus;
-@@ -3571,7 +3578,7 @@ EXPORT_SYMBOL_HDA(snd_hda_power_up);
-  *
-  * Decrement the power-up counter and schedules the power-off work if
-  * the counter rearches to zero.
-- */ 
-+ */
- void snd_hda_power_down(struct hda_codec *codec)
- {
- 	--codec->power_count;
-@@ -3597,7 +3604,7 @@ EXPORT_SYMBOL_HDA(snd_hda_power_down);
-  *
-  * This function is supposed to be set or called from the check_power_status
-  * patch ops.
-- */ 
-+ */
- int snd_hda_check_amp_list_power(struct hda_codec *codec,
- 				 struct hda_loopback_check *check,
- 				 hda_nid_t nid)
-@@ -3765,7 +3772,7 @@ static void setup_dig_out_stream(struct hda_codec *codec, hda_nid_t nid,
- {
- 	/* turn off SPDIF once; otherwise the IEC958 bits won't be updated */
- 	if (codec->spdif_status_reset && (codec->spdif_ctls & AC_DIG1_ENABLE))
--		set_dig_out_convert(codec, nid, 
-+		set_dig_out_convert(codec, nid,
- 				    codec->spdif_ctls & ~AC_DIG1_ENABLE & 0xff,
- 				    -1);
- 	snd_hda_codec_setup_stream(codec, nid, stream_tag, 0, format);
-@@ -4024,13 +4031,13 @@ static int is_in_nid_list(hda_nid_t nid, hda_nid_t *list)
- /*
-  * Sort an associated group of pins according to their sequence numbers.
-  */
--static void sort_pins_by_sequence(hda_nid_t * pins, short * sequences,
-+static void sort_pins_by_sequence(hda_nid_t *pins, short *sequences,
- 				  int num_pins)
- {
- 	int i, j;
- 	short seq;
- 	hda_nid_t nid;
--	
-+
- 	for (i = 0; i < num_pins; i++) {
- 		for (j = i + 1; j < num_pins; j++) {
- 			if (sequences[i] > sequences[j]) {
-@@ -4058,7 +4065,7 @@ static void sort_pins_by_sequence(hda_nid_t * pins, short * sequences,
-  * is detected, one of speaker of HP pins is assigned as the primary
-  * output, i.e. to line_out_pins[0].  So, line_outs is always positive
-  * if any analog output exists.
-- * 
-+ *
-  * The analog input pins are assigned to input_pins array.
-  * The digital input/output pins are assigned to dig_in_pin and dig_out_pin,
-  * respectively.
-@@ -4121,9 +4128,9 @@ int snd_hda_parse_pin_def_config(struct hda_codec *codec,
- 		case AC_JACK_SPEAKER:
- 			seq = get_defcfg_sequence(def_conf);
- 			assoc = get_defcfg_association(def_conf);
--			if (! assoc)
-+			if (!assoc)
- 				continue;
--			if (! assoc_speaker)
-+			if (!assoc_speaker)
- 				assoc_speaker = assoc;
- 			else if (assoc_speaker != assoc)
- 				continue;
-@@ -4221,7 +4228,7 @@ int snd_hda_parse_pin_def_config(struct hda_codec *codec,
- 			      cfg->speaker_outs);
- 	sort_pins_by_sequence(cfg->hp_pins, sequences_hp,
- 			      cfg->hp_outs);
--	
-+
- 	/* if we have only one mic, make it AUTO_PIN_MIC */
- 	if (!cfg->input_pins[AUTO_PIN_MIC] &&
- 	    cfg->input_pins[AUTO_PIN_FRONT_MIC]) {
-@@ -4371,7 +4378,7 @@ EXPORT_SYMBOL_HDA(snd_hda_resume);
- /**
-  * snd_array_new - get a new element from the given array
-  * @array: the array object
-- * 
-+ *
-  * Get a new element from the given array.  If it exceeds the
-  * pre-allocated array size, re-allocate the array.
-  *
--- 
-1.6.4
+Jonathan
+
+---- relevant bits of windows .ini ----
+[HKR\Settings\pin]
+CodecName = STAC9200-32
+[HKR\Settings\pin\08]
+CfgDflt = dword: 0x40C003FA     
+[HKR\Settings\pin\09]
+CfgDflt = dword: 0x01441340     
+[HKR\Settings\pin\10]
+CfgDflt = dword: 0x03A1102E     
+AltCfg = hex: 2F,10,81,03     	
+Bias = hex: FF,04,02
+[HKR\Settings\pin\11]
+CfgDflt = dword: 0x401003FB     
+[HKR\Settings\pin\12]
+CfgDflt = dword: 0x403003FC     
+[HKR\Settings\pin\0d]
+CfgDflt = dword: 0x0321121F     
+Action = hex: 80,00,81,0E,87,00
+[HKR\Settings\pin\0e]
+CfgDflt = dword: 0x90170310     
+[HKR\Settings\pin\0F]
+CfgDflt = dword: 0x90A70320
+...
+[HKR\Settings\gpio]
+02 = hex: 0x00, 0x01, 0x0E, 0x00, 0x00, 0x07, 0x00
+01 = hex: 0x82
+03 = hex: 0x82
+----------------------------------------
+
+Here is the codec information.
+
+cat /proc/asound/card0/codec#0 
+Codec: SigmaTel STAC9200
+Address: 0
+Function Id: 0x1
+Vendor Id: 0x83847690
+Subsystem Id: 0x102801c8
+Revision Id: 0x102201
+No Modem Function Group found
+Default PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: N/A
+Default Amp-Out caps: ofs=0x1f, nsteps=0x1f, stepsize=0x05, mute=1
+GPIO: io=4, o=0, i=0, unsolicited=1, wake=1
+  IO[0]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[3]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+Node 0x02 [Audio Output] wcaps 0xd0401: Stereo
+  Converter: stream=5, channel=0
+  Power: setting=D0, actual=D0
+  Delay: 13 samples
+Node 0x03 [Audio Input] wcaps 0x1d0541: Stereo
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  Power: setting=D0, actual=D0
+  Delay: 13 samples
+  Connection: 1
+     0x0a
+  Processing caps: benign=0, ncoeff=0
+Node 0x04 [Audio Input] wcaps 0x140311: Stereo Digital
+  Converter: stream=0, channel=0
+  SDI-Select: 0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Delay: 4 samples
+  Connection: 1
+     0x08
+Node 0x05 [Audio Output] wcaps 0x40211: Stereo Digital
+  Converter: stream=5, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x1e0]: 44100 48000 88200 96000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+  Delay: 4 samples
+Node 0x06 [Vendor Defined Widget] wcaps 0xf30201: Stereo Digital
+  Delay: 3 samples
+Node 0x07 [Audio Selector] wcaps 0x300901: Stereo R/L
+  Connection: 3
+     0x02* 0x08 0x0a
+Node 0x08 [Pin Complex] wcaps 0x430681: Stereo Digital
+  Pincap 0x00010024: IN EAPD Detect
+  EAPD 0x0:
+  Pin Default 0x40c003fa: [N/A] SPDIF In at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0xa
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Unsolicited: tag=00, enabled=0
+  Power: setting=D0, actual=D0
+  Delay: 3 samples
+Node 0x09 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x01441340: [Jack] SPDIF Out at Ext Rear
+    Conn = RCA, Color = Black
+    DefAssociation = 0x4, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Connection: 2
+     0x05* 0x0a
+Node 0x0a [Audio Selector] wcaps 0x30090d: Stereo Amp-Out R/L
+  Amp-Out caps: ofs=0x00, nsteps=0x0f, stepsize=0x05, mute=1
+  Amp-Out vals:  [0x08 0x08]
+  Connection: 1
+     0x0c
+Node 0x0b [Audio Selector] wcaps 0x300105: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x19 0x19]
+  Connection: 1
+     0x07
+Node 0x0c [Audio Selector] wcaps 0x30010d: Stereo Amp-Out
+  Amp-Out caps: ofs=0x00, nsteps=0x04, stepsize=0x27, mute=0
+  Amp-Out vals:  [0x00 0x00]
+  Connection: 5
+     0x10 0x0f* 0x0e 0x0d 0x12
+Node 0x0d [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0000003f: IN OUT HP Detect Trigger ImpSense
+  Pin Default 0x0321121f: [Jack] HP Out at Ext Left
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x1, Sequence = 0xf
+  Pin-ctls: 0x00:
+  Unsolicited: tag=01, enabled=1
+  Connection: 1
+     0x0b
+Node 0x0e [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0000003f: IN OUT HP Detect Trigger ImpSense
+  Pin Default 0x90170310: [Fixed] Speaker at Int N/A
+    Conn = Analog, Color = Unknown
+    DefAssociation = 0x1, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x40: OUT
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x0b
+Node 0x0f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x00000037: IN OUT Detect Trigger ImpSense
+  Pin Default 0x90a70320: [Fixed] Mic at Int N/A
+    Conn = Analog, Color = Unknown
+    DefAssociation = 0x2, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+  Unsolicited: tag=00, enabled=0
+  Connection: 1
+     0x0b
+Node 0x10 [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x00001737: IN OUT Detect Trigger ImpSense
+    Vref caps: HIZ 50 GRD 80
+  Pin Default 0x0381102f: [Jack] Line In at Ext Left
+    Conn = 1/8, Color = Black
+    DefAssociation = 0x2, Sequence = 0xf
+  Pin-ctls: 0x20: IN VREF_HIZ
+  Unsolicited: tag=02, enabled=1
+  Connection: 1
+     0x0b
+Node 0x11 [Pin Complex] wcaps 0x400104: Mono Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals:  [0x00]
+  Pincap 0x00000010: OUT
+  Pin Default 0x401003fb: [N/A] Speaker at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0xb
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Connection: 1
+     0x13
+Node 0x12 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x00000020: IN
+  Pin Default 0x403003fc: [N/A] CD at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0xc
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x20: IN
+Node 0x13 [Audio Mixer] wcaps 0x200100: Mono
+  Connection: 1
+     0x07
+Node 0x14 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x03, nsteps=0x03, stepsize=0x17, mute=1
+  Amp-Out vals:  [0x00]
+
+
+cat /proc/asound/card0/codec#1
+Codec: Conexant ID 2bfa
+Address: 1
+Function Id: 0x2
+Vendor Id: 0x14f12bfa
+Subsystem Id: 0x14f100c3
+Revision Id: 0x90000
+Modem Function Group: 0x2
