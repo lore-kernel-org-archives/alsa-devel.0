@@ -1,24 +1,22 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: HD-Audio device unsuppored (Nvidia G2xx-series GPU
-	implemented)
-Date: Mon, 1 Mar 2010 15:19:34 -0800
-Message-ID: <a3ef07921003011519k5ce2179bx382612a6f96f2856@mail.gmail.com>
-References: <4B238733.2070706@arcor.de> <4B294E06.6060001@arcor.de>
-	<4B2CC8C7.4050507@arcor.de> <s5hmy1clhpt.wl%tiwai@suse.de>
-	<4B2F892B.7030009@arcor.de> <4B378949.6010000@arcor.de>
-	<s5h4ona941a.wl%tiwai@suse.de> <s5h1vie91qx.wl%tiwai@suse.de>
-	<4B39C474.70007@arcor.de> <s5hvdfq6pnp.wl%tiwai@suse.de>
+From: John Lindgren <john.lindgren@tds.net>
+Subject: Re: snd_pcm_drop causing lockup with DMix
+Date: Mon, 01 Mar 2010 18:52:32 -0500
+Message-ID: <1267487552.11621.2.camel@satellite>
+References: <1267371441.14748.22.camel@satellite>
+	<alpine.LNX.2.00.1002281722140.28127@eeebox2.perex-int.cz>
+	<1267377313.14982.0.camel@satellite>
+	<alpine.LNX.2.00.1003010752570.28127@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A45381037F2
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 00:19:36 +0100 (CET)
-Received: by vws15 with SMTP id 15so1116113vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2010 15:19:34 -0800 (PST)
-In-Reply-To: <s5hvdfq6pnp.wl%tiwai@suse.de>
+Received: from mail-yw0-f179.google.com (mail-yw0-f179.google.com
+	[209.85.211.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2AAA61037FC
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 00:52:35 +0100 (CET)
+Received: by ywh9 with SMTP id 9so1499964ywh.23
+	for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2010 15:52:34 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1003010752570.28127@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,14 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Stefan Ringel <stefan.ringel@arcor.de>, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Dec 29, 2009 at 2:27 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> Anyway, Wei seems preparing the patches for new codecs, so I'll keep
-> my hands away from this.
+Still no difference.
 
-Hi.  Have the GT2XX cards been supported officially yet?
+I also noticed that with or without the patch, Audacious will
+occasionally not hang up, and instead the snd_pcm_writei call that is
+interrupted will return -EBADFD.  I haven't seen the test case do the
+same.
 
-Thanks.
+On Mon, 2010-03-01 at 07:53 +0100, Jaroslav Kysela wrote:
+> And this one?
+> 
+> diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+> index d9e596e..ae32fab 100644
+> --- a/src/pcm/pcm_direct.c
+> +++ b/src/pcm/pcm_direct.c
+> @@ -540,7 +540,6 @@ void snd_pcm_direct_clear_timer_queue(snd_pcm_direct_t *dmix)
+>   int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix)
+>   {
+>   	snd_timer_stop(dmix->timer);
+> -	snd_pcm_direct_clear_timer_queue(dmix);
+>   	return 0;
+>   }
+> 
+> @@ -1274,6 +1273,7 @@ int snd_pcm_direct_set_timer_params(snd_pcm_direct_t *dmix)
+>   	snd_timer_params_set_ticks(params, 1);
+>   	if (dmix->tread) {
+>   		filter = (1<<SND_TIMER_EVENT_TICK) |
+> +			 (1<<SND_TIMER_EVENT_STOP) |
+>   			 dmix->timer_event_suspend |
+>   			 dmix->timer_event_resume;
+>   		snd_timer_params_set_filter(params, filter);
+> 
+> -----
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, Red Hat, Inc.
