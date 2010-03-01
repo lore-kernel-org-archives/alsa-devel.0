@@ -1,15 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 2.6.34] ASoC: Fix S3C64xx IIS driver for
-	Samsung header reorg
-Date: Mon,  1 Mar 2010 19:57:59 +0000
-Message-ID: <1267473479-443-1-git-send-email-broonie@opensource.wolfsonmicro.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: HD-Audio device unsuppored (Nvidia G2xx-series GPU
+	implemented)
+Date: Mon, 1 Mar 2010 15:19:34 -0800
+Message-ID: <a3ef07921003011519k5ce2179bx382612a6f96f2856@mail.gmail.com>
+References: <4B238733.2070706@arcor.de> <4B294E06.6060001@arcor.de>
+	<4B2CC8C7.4050507@arcor.de> <s5hmy1clhpt.wl%tiwai@suse.de>
+	<4B2F892B.7030009@arcor.de> <4B378949.6010000@arcor.de>
+	<s5h4ona941a.wl%tiwai@suse.de> <s5h1vie91qx.wl%tiwai@suse.de>
+	<4B39C474.70007@arcor.de> <s5hvdfq6pnp.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0F8F62447F
-	for <alsa-devel@alsa-project.org>; Mon,  1 Mar 2010 20:58:02 +0100 (CET)
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id A45381037F2
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 00:19:36 +0100 (CET)
+Received: by vws15 with SMTP id 15so1116113vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2010 15:19:34 -0800 (PST)
+In-Reply-To: <s5hvdfq6pnp.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,38 +28,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ben Dooks <ben-linux@fluff.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stefan Ringel <stefan.ringel@arcor.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The reorgs of the Samsung headers have moved the GPIO bank definitions
-from plat/ to mach/ - the IIS driver needs to be updated to take care
-of this.
+On Tue, Dec 29, 2009 at 2:27 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> Anyway, Wei seems preparing the patches for new codecs, so I'll keep
+> my hands away from this.
 
-Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
----
+Hi.  Have the GT2XX cards been supported officially yet?
 
-Ideally this could also go in via the same path as the ARM/Samsung changes
-which do the moves.  If those get merged without this fix then it may as
-well go via ASoC.
-
- sound/soc/s3c24xx/s3c64xx-i2s.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-index 93ed3aa..a72c251 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
-@@ -22,8 +22,8 @@
- #include <sound/soc.h>
- 
- #include <plat/regs-s3c2412-iis.h>
--#include <plat/gpio-bank-d.h>
--#include <plat/gpio-bank-e.h>
-+#include <mach/gpio-bank-d.h>
-+#include <mach/gpio-bank-e.h>
- #include <plat/gpio-cfg.h>
- 
- #include <mach/map.h>
--- 
-1.7.0
+Thanks.
