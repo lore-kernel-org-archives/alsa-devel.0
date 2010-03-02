@@ -1,12 +1,26 @@
 From: Pedro Ribeiro <pedrib@gmail.com>
-Subject: Audio4DJ (snd-usb-caiaq) noise when using DVB usb adapter
-Date: Tue, 2 Mar 2010 00:45:04 +0000
-Message-ID: <74fd948d1003011645l3b595442qde58b6263b4ce710@mail.gmail.com>
+Subject: Audio4DJ (snd-usb-caiaq) noise when using DVB usb adap
+Date: Tue, 2 Mar 2010 01:50:21 +0000
+Message-ID: <74fd948d1003011750u1c8293buc12591b1a222ae84@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-media-owner@vger.kernel.org>
-Sender: linux-media-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Daniel Mack <daniel@caiaq.de>, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5620F103811
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 02:50:22 +0100 (CET)
+Received: by ey-out-1920.google.com with SMTP id 26so93851eyw.0
+	for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2010 17:50:21 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi all,
@@ -49,8 +63,6 @@ OK.
 
 
 Can anyone please give a hint on how to debug this?
-
-(Please CC me directly as I'm not in both lists).
 
 
 Regards,
