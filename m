@@ -1,21 +1,21 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC 3/4] OMAP3: McBSP: Add interface for transmit
- FIFO state query
-Date: Tue, 2 Mar 2010 16:06:15 +0200
-Message-ID: <20100302160615.51cfbd64.jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC 4/4] ASoC: OMAP3: Report delay on playback
+ caused by the internal FIFO
+Date: Tue, 2 Mar 2010 14:06:32 +0000
+Message-ID: <20100302140631.GA2502@opensource.wolfsonmicro.com>
 References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1267537191-25254-4-git-send-email-peter.ujfalusi@nokia.com>
-	<1267537920.24345.7.camel@eenurkka-desktop>
+	<1267537191-25254-5-git-send-email-peter.ujfalusi@nokia.com>
+	<20100302134707.GF10658@sirena.org.uk>
+	<201003021552.36622.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.148])
-	by alsa0.perex.cz (Postfix) with ESMTP id 954951038E8
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 15:05:27 +0100 (CET)
-Received: by ey-out-1920.google.com with SMTP id 26so73723eyw.16
-	for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2010 06:05:27 -0800 (PST)
-In-Reply-To: <1267537920.24345.7.camel@eenurkka-desktop>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C501103905
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 15:06:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <201003021552.36622.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext-eero.nurkkala@nokia.com
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 02 Mar 2010 15:52:00 +0200
-Eero Nurkkala <ext-eero.nurkkala@nokia.com> wrote:
+On Tue, Mar 02, 2010 at 03:52:36PM +0200, Peter Ujfalusi wrote:
+> On Tuesday 02 March 2010 15:47:07 ext Mark Brown wrote:
 
-> Reading the XBUFFSTAT register is by no means accurate.
-> IIRC, it reports the buffer status incorrectly about 1/50 times
-> on average (@ 48000khz); with simple math, it may be read during the DMA
-> burst. Or is it guaranteed not being read during DMA transfer / have
-> you otherwise verified the behavior?
-> 
-Do you remember how big was this variation? Was it near the burst size
-or some arbitrary difference?
+> > You're already handling the playback vs. capture thing here! :)
 
+> Oh yes, I do. I have removed the capture (rx related) reporting, since as I 
+> mentioned, I was not sure how to, and what to report.
+> But is it OK to have initially support for playback delay handling, and if there 
+> is a need, add the capture later?
 
--- 
-Jarkko
+The code is fine, this was more a comment on the earlier patch.
