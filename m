@@ -1,13 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [RFC 0/4] FIFO caused playback delay (latency)
-	handling in soc
-Date: Tue,  2 Mar 2010 15:39:47 +0200
-Message-ID: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
-Content-Type: multipart/mixed; boundary="===============1089418374610820384=="
+Subject: [RFC 1/4] ASoC: core: soc level wrapper for
+	pcm_pointer callback
+Date: Tue,  2 Mar 2010 15:39:48 +0200
+Message-ID: <1267537191-25254-2-git-send-email-peter.ujfalusi@nokia.com>
+References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id CB0681038C3
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 14:39:54 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 143CA1038CC
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 14:40:00 +0100 (CET)
+In-Reply-To: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,76 +25,58 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
---===============1089418374610820384==
+Create a soc level wrapper for pcm_pointer callbacks.
+This will facilitate the soc level handling of different
+HW buffers in the audio path.
 
-Hello,
-
-There has been discussion in alsa-devel in this subject several times,
-but no actual patches has been sent.
-
-Based on the available information the latency caused by the HW buffer
-on some systems can be handled by updating the runtime->delay.
-
-It has been discussed, that the runtime->delay can also be updated
-dynamically to show more accurate delay.
-
-To further complicate things, in ASoC we could have more buffer in the
-chain. To handle this we need soc level support.
-
-This RFC series tries to do that in soc by:
-- introducing a pcm_pointer wrapper
-- in this wrapper we call the original pcm_pointer functions to get the
-  DMA pointer
-- introducing a new interface in dai_ops to ask the delay from the dais
-- adding the cpu_dai and codec_dai returned delay to form the actual
-  delay
-- update the runtime->delay with this value.
-
-With this approach none of the existing drivers need change, but they
-can add support for specifying the FIFO caused delay.
-
-In this series on top of the core changes the omap(3) code is updated
-to take this delay reporting into use.
-I have not added the support to the tlv320dac33 codec driver, since it
-needs a bit more work, but along the same line it can be done, and if
-the tlv320dac33 is hooked to omap McBSP than applications can know the
-whole delay/latency on that path.
-
-Since this is for RFC, I have based it on sound-2.6 topc/asoc branch,
-which does not have the McBSP regcache nor the sidetone patches, but I
-would like to get feedback on this method first than create a proper
-series.
-
-I have left out linux-omap from this RFC round, since the problem
-is ALSA related.
-
-Thank you,
-Péter Ujfalusi
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
-Peter Ujfalusi (4):
-  ASoC: core: soc level wrapper for pcm_pointer callback
-  ASoC: core: Add delay operation to snd_soc_dai_ops
-  OMAP3: McBSP: Add interface for transmit FIFO state query
-  ASoC: OMAP3: Report delay on playback caused by the internal FIFO
+ sound/soc/soc-core.c |   19 ++++++++++++++++++-
+ 1 files changed, 18 insertions(+), 1 deletions(-)
 
- arch/arm/plat-omap/include/plat/mcbsp.h |    4 +++
- arch/arm/plat-omap/mcbsp.c              |   27 ++++++++++++++++++++++++
- include/sound/soc-dai.h                 |    6 +++++
- sound/soc/omap/omap-mcbsp.c             |   26 +++++++++++++++++++++++
- sound/soc/soc-core.c                    |   34 ++++++++++++++++++++++++++++++-
- 5 files changed, 96 insertions(+), 1 deletions(-)
-
-
---===============1089418374610820384==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1089418374610820384==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index a03bac9..6e35741 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -797,6 +797,23 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	return 0;
+ }
+ 
++/*
++ * soc level wrapper for pointer and pcm_delay handling
++ */
++static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_device *socdev = rtd->socdev;
++	struct snd_soc_card *card = socdev->card;
++	struct snd_soc_platform *platform = card->platform;
++	snd_pcm_uframes_t offset = 0;
++
++	if (platform->pcm_ops->pointer)
++		offset = platform->pcm_ops->pointer(substream);
++
++	return offset;
++}
++
+ /* ASoC PCM operations */
+ static struct snd_pcm_ops soc_pcm_ops = {
+ 	.open		= soc_pcm_open,
+@@ -805,6 +822,7 @@ static struct snd_pcm_ops soc_pcm_ops = {
+ 	.hw_free	= soc_pcm_hw_free,
+ 	.prepare	= soc_pcm_prepare,
+ 	.trigger	= soc_pcm_trigger,
++	.pointer	= soc_pcm_pointer,
+ };
+ 
+ #ifdef CONFIG_PM
+@@ -1331,7 +1349,6 @@ static int soc_new_pcm(struct snd_soc_device *socdev,
+ 	dai_link->pcm = pcm;
+ 	pcm->private_data = rtd;
+ 	soc_pcm_ops.mmap = platform->pcm_ops->mmap;
+-	soc_pcm_ops.pointer = platform->pcm_ops->pointer;
+ 	soc_pcm_ops.ioctl = platform->pcm_ops->ioctl;
+ 	soc_pcm_ops.copy = platform->pcm_ops->copy;
+ 	soc_pcm_ops.silence = platform->pcm_ops->silence;
+-- 
+1.7.0
