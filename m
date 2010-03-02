@@ -1,27 +1,20 @@
-From: giggzounet <giggzounet@gmail.com>
-Subject: Re: [Fwd: Re: [Regression] With the new 2.6.33 when I
- plug headphones, the speaker doen't get off anymore]
-Date: Tue, 02 Mar 2010 14:11:24 +0100
-Message-ID: <4B8D0E7C.1030309@gmail.com>
-References: <4B8BC522.1010404@hsu-hh.de> <s5hbpf816z7.wl%tiwai@suse.de>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: snd_pcm_drop causing lockup with DMix
+Date: Tue, 2 Mar 2010 14:25:56 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1003021423550.28127@eeebox2.perex-int.cz>
+References: <1267371441.14748.22.camel@satellite>
+	<alpine.LNX.2.00.1002281722140.28127@eeebox2.perex-int.cz>
+	<1267377313.14982.0.camel@satellite>
+	<alpine.LNX.2.00.1003010752570.28127@eeebox2.perex-int.cz>
+	<1267487552.11621.2.camel@satellite>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 41D3210389A
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 14:11:43 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1NmRsy-00016O-6m
-	for alsa-devel@alsa-project.org; Tue, 02 Mar 2010 14:11:40 +0100
-Received: from celsius02.unibw-hamburg.de ([139.11.215.121])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2010 14:11:40 +0100
-Received: from giggzounet by celsius02.unibw-hamburg.de with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2010 14:11:40 +0100
-In-Reply-To: <s5hbpf816z7.wl%tiwai@suse.de>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id E57691038C0
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 14:25:56 +0100 (CET)
+In-Reply-To: <1267487552.11621.2.camel@satellite>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,83 +24,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: John Lindgren <john.lindgren@tds.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGFrYXNoaSBJd2FpIGEgw6ljcml0IDoKPiBBdCBNb24sIDAxIE1hciAyMDEwIDE0OjQ2OjEwICsw
-MTAwLAo+IEd1aWxsYXVtZSBEZSBOYXllciB3cm90ZToKPj4gVGFrYXNoaSBJd2FpIGEgw6ljcml0
-IDoKPj4+IEF0IFN1biwgMjggRmViIDIwMTAgMTU6Mjk6MjUgKzAxMDAsCj4+PiBnaWdneiB3cm90
-ZToKPj4+PiBnaWdneiBhIMOpY3JpdCA6Cj4+Pj4+IGdpZ2d6b3VuZXQgYSDDqWNyaXQgOgo+Pj4+
-Pj4gSGksCj4+Pj4+Pgo+Pj4+Pj4gSSBoYXZlIGluc3RhbGxlZCBkZWJpYW4gc3RhYmxlIGxlbm55
-ICsgYmFja3BvcnRzIG9uIGFuIGVlZXBjIDEyMDFuLiBXaXRoCj4+Pj4+PiB0aGUgMi42LjMwIG9y
-IDIuNi4zMiBmcm9tIGxlbm55LWJhY2twb3J0IEkgZG9uJ3QgaGF2ZSBwcm9ibGVtIHdpdGggc291
-bmQKPj4+Pj4+IDogd2hlbiBJIHBsdWcgdGhlIGhlYWRwaG9uZXMsIHNwZWFrZXJzIGdldCBvZmYu
-Cj4+Pj4+Pgo+Pj4+Pj4gSSBoYXZlIHRlc3RlZCB3aXRoIDIuNi4zMyBhbmQgd2hlbiBJIHBsdWcg
-aGVhZHBob25lcywgc3BlYWtlcnMgZG9uJ3QgZ2V0Cj4+Pj4+PiBvZmYgYW55bW9yZS4gc28gSSBo
-YXZlIHNvdW5kIGluIGhlYWRwaG9uZXMgYW5kIHNwZWFrZXJzLgo+Pj4+Pj4KPj4+Pj4+IDIyOjQy
-IGdpZ2d6QGJhYWwgfiAlIGNhdCAvcHJvYy9hc291bmQvY2FyZDAvY29kZWMjKiB8IGdyZXAgQ29k
-ZWMKPj4+Pj4+IENvZGVjOiBSZWFsdGVrIEFMQzI2OQo+Pj4+Pj4gQ29kZWM6IE52aWRpYSBNQ1A3
-QSBIRE1JCj4+Pj4+Pgo+Pj4+Pj4gSSBhdHRhY2ggdGhlIG91dHB1dCBvZiBhbHNhLWluZm8gd2l0
-aCB0aGUgMi42LjMyLjkgYW5kIHRoZSAyLjYuMzMgKEknbQo+Pj4+Pj4gaW4gYSBVbmkgQ2FtcHVz
-IGFuZCBpdCdzIHF1aXRlIGRpZmZpY3VsdCB0byBoYXZlIGludGVybmV0IG9uIGEgZXh0ZXJuYWwK
-Pj4+Pj4+IGxhcHRvcC4uLnNvIEkgYXR0YWNoIHRoZW0gYXQgdGhpcyBtYWlsIGFuZCBJIGRvbid0
-IHVwbG9hZCB0aGVtIG9uIHBhc3RiaW4pLgo+Pj4+Pj4KPj4+Pj4+IEkgaGF2ZSBvcGVuZWQgYSBi
-dWcgb24gdGhlIGtlcm5lbCBidWd6aWxsYSAoYnVnIDE1Mzk5KS4gU2hvdWxkIEkgcHJvdmlkZQo+
-Pj4+Pj4gYW55dGhpbmcgbW9yZSA/Cj4+Pj4+Pgo+Pj4+PiBGb2xsb3dpbmcgdGhlIGFkdmljZSBv
-ZiBQYXVsIE1lbnplbCBJIGRpZCBhICJkaWZmIiBvZiB0aGUgc291cmNlcyBvZiB0aGUKPj4+Pj4g
-Mi42LjMyLjkga2VybmVsIGFuZCBvZiB0aGUgMi42LjMzLiBJbiBwYXRjaF9yZWFsdGVrLmMsIHdl
-IHNlZSB0aGF0IHRoZXJlCj4+Pj4+IGlzIGFuIG5ldyBzbmRfaGRhX2phY2tfZGV0ZWN0IGZ1bnRp
-b24gd2l0aCAyIGFyZ3VtZW50cy4gSSBoYXZlIG5vdGljZWQKPj4+Pj4gdGhhdCB0aGUgc2Vjb25k
-IGFyZ3VtZW50IGlzICJub3JtYWx5IiB0aGUgc2Vjb25kIGFyZ3VtZW50IG9mCj4+Pj4+IHNuZF9o
-ZGFfY29kZWNfcmVhZC4gSW4gdGhlIGFsYzI2OV9zcGVha2VyX2F1dG9tdXRlIGZ1bmN0aW9uIHRo
-ZXJlIGlzCj4+Pj4+IHRoaXMgbmV3IHNuZF9oZGFfamFja19kZXRlY3QgZnVuY3Rpb24sIGJ1dCB0
-aGUgc2Vjb25kIGFyZ3VtZW50IGlzICJuaWQiLgo+Pj4+PiBCdXQgaW4gdGhlIG9sZCBhbGMyNjlf
-c3BlYWtlcl9hdXRvbXV0ZSBvZiB0aGUgMi42LjMyLjkgdGhlIHNlY29uZAo+Pj4+PiBhcmd1bWVu
-dCBvZiBzbmRfaGRhX2NvZGVjX3JlYWQgaXMgMHgxNS4gU28gSSB0aGluayB0aGVyZSBpcyBwZXJo
-YXBzIGEKPj4+Pj4gYnVnIGhlcmUuLi5CdXQgSSBoZXNpdGF0ZSB0byBtb2RpZnkgdGhlIHNvdXJj
-ZS4uLnNvIEknbSB3YWl0aW5nIHRoZQo+Pj4+PiBhbndzZXIgb2YgdGhlIGRldi4KPj4+Pj4KPj4+
-Pj4gLS0tIHBhdGNoX3JlYWx0ZWsuYwkyMDEwLTAyLTI3IDE0OjU4OjA2LjAwMDAwMDAwMCArMDEw
-MAo+Pj4+PiArKysgcGF0Y2hfcmVhbHRla19tb2RpZi5jCTIwMTAtMDItMjcgMTQ6NTg6NTQuMDAw
-MDAwMDAwICswMTAwCj4+Pj4+IEBAIC0xMzM4MSw3ICsxMzM4MSw3IEBACj4+Pj4+ICAJdW5zaWdu
-ZWQgaW50IHByZXNlbnQ7Cj4+Pj4+ICAJdW5zaWduZWQgY2hhciBiaXRzOwo+Pj4+Pgo+Pj4+PiAt
-CXByZXNlbnQgPSBzbmRfaGRhX2phY2tfZGV0ZWN0KGNvZGVjLCBuaWQpOwo+Pj4+PiArCXByZXNl
-bnQgPSBzbmRfaGRhX2phY2tfZGV0ZWN0KGNvZGVjLCAweDE1KTsKPj4+Pj4gIAliaXRzID0gcHJl
-c2VudCA/IEFNUF9JTl9NVVRFKDApIDogMDsKPj4+Pj4gIAlzbmRfaGRhX2NvZGVjX2FtcF9zdGVy
-ZW8oY29kZWMsIDB4MGMsIEhEQV9JTlBVVCwgMCwKPj4+Pj4gIAkJCQlBTVBfSU5fTVVURSgwKSwg
-Yml0cyk7Cj4+Pj4+Cj4+Pj4gSSB0ZXN0ZWQgaXQuIEFuZCB3aXRoIHRoaXMgbW9kaWYgaW4gdGhl
-IGtlcm5lbCwgYWZ0ZXIgcmVjb21waWxhdGlvbiBhbmQKPj4+PiByZWJvb3QsIG15IHByb2JsZW0g
-aXMgaGVhZHBob25lcyBhbmQgc3BlYWtlciBpcyBnb25lLgo+Pj4gSXQgaW1wbGllcyB0aGF0IHRo
-ZSBzZXR1cCBvZiB0aGUgaGVhZHBob25lIHBpbiBpcyB3cm9uZy4gIFRoaXMgZG9lc24ndAo+Pj4g
-bWVhbiBhIGJ1ZyBvZiB0aGUgZHJpdmVyLCB0aG91Z2guICBJdCBtaWdodCBoYXZlIHVuY292ZXJl
-ZCB0aGUgQklPUwo+Pj4gYnVnLgo+Pj4KPj4gb2suIEkgZG9uJ3QgaGF2ZSBhbnkga25vd2xlZGdl
-IGluIEMgb3IgaW4gYmlvcy4uLnNvIHlvdSdyZSBwcm9ibGFibHkKPj4gcmlnaHQgOikKPj4KPj4g
-YnV0IGl0IHNlZW1zIHN0cmFuZ2UgdGhhdCBmb3IgYWxsIHRoZSBuZXcgbGluZSB3aXRoIHNuZF9o
-ZGFfamFja19kZXRlY3QKPj4gdGhlIHNlY29uZCBhcmd1bWVudCBpcyBhbHdheXMgdGhlIHNlY29u
-ZCBhcmd1bWVudCBvZiBzbmRfaGRhX2NvZGVjX3JlYWQKPj4gZXhjZXB0IGZvciB0aGUgYWxjMjY5
-Lgo+Pgo+Pj4gQ291bGQgeW91IHByb3ZpZGUgYWxzYS1pbmZvLnNoIHdpdGhvdXQgeW91ciBwYXRj
-aCB0byBjaGVjayB0aGUgc2V0dXA/Cj4+Pgo+Pj4KPj4gSW4gYXR0YWNobWVudCBvZiB0aGUgZmly
-c3QgcG9zdCBvbiBhbHNhLWRldmVsIG9yIG9uIHRoZSBrZXJuZWwgYnVnemlsbGEKPj4gaHR0cDov
-L2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTE1Mzk5LCB0aGVyZSBhcmUgdGhl
-IG91dHB1dAo+PiBvZiBhbHNhLWluZm8uc2ggd2l0aCB0aGUgMi42LjMyLjkgKG5vIHByb2JsZW0p
-IGFuZCB0aGUgb3V0cHV0IG9mCj4+IGFsc2EtaW5mby5zaCB3aXRoIHRoZSAyLjYuMzMgd2l0aG91
-dCBhbnkgcGF0Y2ggKHByb2JsZW0gb2NjdXJzKS4KPiAKPiBPSywgdGhhbmtzLiAgVGhpcyBsb29r
-cyBhY3R1YWxseSBsaWtlIGEgYnVnIDopCj4gCgphIGJ1ZyBpbiB0aGUgZHJpdmVyIG9yIGEgYnVn
-IGluIHRoZSBiaW9zID8KCkkgaGF2ZSB0YWtlbiBhIGxvb2sgdW5kZXIgdGhlIGdpdHdlYiA6Cmlu
-IHRoZSBjb21taXQgb2YgdGhlIGludHJvZHVjdGlvbiBvZiBzbmRfaGRhX2phY2tfZGV0ZWN0KCkK
-aHR0cDovL2dpdC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvbmV4dC9saW51eC1uZXh0
-LmdpdDthPWNvbW1pdDtoPTg2NGY5MmJlN2U4ZDRhMGJhMTFkOTEyZTNmMDNkMWE5MmEwMzFkZWUK
-SSBzZWUgOgpAQCAtMTMxODMsOCAgKzEzMDk4LDcgIEBAIHN0YXRpYyB2b2lkIGFsYzI2OV9zcGVh
-a2VyX2F1dG9tdXRlKHN0cnVjdApoZGFfY29kZWMgKmNvZGVjKQogICAgICAgIHVuc2lnbmVkIGlu
-dCBwcmVzZW50OwogICAgICAgIHVuc2lnbmVkIGNoYXIgYml0czsKCi0gICAgICAgcHJlc2VudCA9
-IHNuZF9oZGFfY29kZWNfcmVhZChjb2RlYywgMHgxNSwgMCwKLSAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBBQ19WRVJCX0dFVF9QSU5fU0VOU0UsIDApICYgMHg4MDAwMDAwMDsKKyAgICAg
-ICBwcmVzZW50ID0gc25kX2hkYV9qYWNrX2RldGVjdChjb2RlYywgMHgxNSk7CiAgICAgICAgYml0
-cyA9IHByZXNlbnQgPyBBTVBfSU5fTVVURSgwKSA6IDA7CiAgICAgICAgc25kX2hkYV9jb2RlY19h
-bXBfc3RlcmVvKGNvZGVjLCAweDBjLCBIREFfSU5QVVQsIDAsCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgQU1QX0lOX01VVEUoMCksIGJpdHMpOwoKQnV0IGluIHRoZSBjb21taXQgOgpo
-dHRwOi8vZ2l0Lmtlcm5lbC5vcmcvP3A9bGludXgva2VybmVsL2dpdC9uZXh0L2xpbnV4LW5leHQu
-Z2l0O2E9Y29tbWl0ZGlmZjtoPTJhMzIxZTFkZWZhMjY2YWQxYjRkZWQyOWNiNmNmYjBlZDVmY2Uz
-OWQKdGhlIDB4MTUgaXMgcmVwbGFjZWQgd2l0aCBuaWQuCgpDaGVlcnMsCkdpR0d6CgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Mon, 1 Mar 2010, John Lindgren wrote:
+
+> Still no difference.
+>
+> I also noticed that with or without the patch, Audacious will
+> occasionally not hang up, and instead the snd_pcm_writei call that is
+> interrupted will return -EBADFD.  I haven't seen the test case do the
+> same.
+
+Could you provide a simple C program to test this issue? You may modify 
+alsa-lib/src/test/pcm_min.c for example.
+
+ 					Thanks,
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
