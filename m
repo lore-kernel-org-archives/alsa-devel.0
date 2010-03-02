@@ -1,16 +1,19 @@
-From: Pedro Ribeiro <pedrib@gmail.com>
-Subject: Audio4DJ (snd-usb-caiaq) noise when using DVB usb adap
-Date: Tue, 2 Mar 2010 01:50:21 +0000
-Message-ID: <74fd948d1003011750u1c8293buc12591b1a222ae84@mail.gmail.com>
+From: "Olaya, Margarita" <magi.olaya@ti.com>
+Subject: Re: [PATCHv4 7/7] ASoC: TWL6030: Detect power-up
+ sequence completion
+Date: Mon, 1 Mar 2010 19:52:37 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCE65F3EAC5@dlee06.ent.ti.com>
+References: <1889FA7136B567478A67D4B0F85B0CCE65E7E58C@dlee06.ent.ti.com>
+	<20100301121336.GA26740@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5620F103811
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 02:50:22 +0100 (CET)
-Received: by ey-out-1920.google.com with SMTP id 26so93851eyw.0
-	for <alsa-devel@alsa-project.org>; Mon, 01 Mar 2010 17:50:21 -0800 (PST)
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8B4C103811
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 02:52:42 +0100 (CET)
+In-Reply-To: <20100301121336.GA26740@rakim.wolfsonmicro.main>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,50 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Monday, March 01, 2010 6:14 AM  Mark Brown wrote: 
 
-I'm encountering a problem with the Audio4DJ audio card with a  DVB
-USB adapter (Win-TV NOVA-T USB2 STICK).
+> On Fri, Feb 26, 2010 at 06:22:34PM -0600, Olaya, Margarita wrote:
+> 
+>> Do you mean something like this?
+>> time_left = wait_for_completion_timeout(&priv->ready,
+>>                                         msecs_to_jiffies(48));
+>> 	if(!time_left) { twl_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE,
+>>                                         &intid, TWL6040_REG_INTID);
+>>       if (!(intid & TWL6040_READYINT))
+>> 		goto error;
+>> }
+>> 
+>> 	return 0;
+>> 
+>> error:
+>> 	dev_err(codec->dev, "timeout waiting for READYINT\n");
+>> 	return -ETIMEDOUT;
+> 
+> Yes, or wrapped in a for loop with shorter timeouts on the
+> individual waits. 
+> 
+>> but in this case will it not take unnecessarily 48ms when the
+>> interruption line is not valid?
+> 
+> You're always going to get some additional delay when polling
+> unless you
+> busy wait for completion, which obviously has its own problems.
 
-The problem is strange because it only happens after I disconnect and
-reconnect the audio card.
-
-Procedure 1:
-- boot from fresh
-- plug the DVB adapter
-- plug the Audio4DJ
-
-Everything works correctly - meaning I can watch TV and my audio is fine.
-
-Procedure 2:
-- boot from fresh
-- plug the Audio4DJ
-- plug the DVB adapter
-
-The audio starts cracking every few seconds, and constantly if I use jackd.
-
-Procedure 3:
-- boot from fresh
-- plug the DVB adapter
-- plug the Audio4DJ
-(everything is correct, as above in Procedure 1)
-- unplug the Audio4DJ
-- plug it again
-
-Cracking audio. I'm insisting in "boot from fresh" because from now on
-(that is, from the moment that I unplug the Audio4DJ) I always get
-cracking audio.
-
-rmmod'ing the snd-usb-caiaq and the usb-dvb modules produces the same
-result. I have to boot from fresh and do Procedure 1 for it to work
-OK.
-
-
-Can anyone please give a hint on how to debug this?
-
-
-Regards,
-Pedro
+Ok, thanks for the comment I'll re-write the loop for next version of
+patches
