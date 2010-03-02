@@ -1,42 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 4/4] ASoC: OMAP3: Report delay on playback
- caused by the internal FIFO
-Date: Tue, 2 Mar 2010 14:06:32 +0000
-Message-ID: <20100302140631.GA2502@opensource.wolfsonmicro.com>
-References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1267537191-25254-5-git-send-email-peter.ujfalusi@nokia.com>
-	<20100302134707.GF10658@sirena.org.uk>
-	<201003021552.36622.peter.ujfalusi@nokia.com>
+From: Andrea Gelmini <andrea.gelmini@gelma.net>
+Subject: Re: [PATCH 22/66] sound/oss/v_midi.h: Checkpatch cleanup
+Date: Tue, 2 Mar 2010 16:23:03 +0100
+Message-ID: <9cdbb57f1003020723wbd7a2du5934d75ca1544b42@mail.gmail.com>
+References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
+	 <1267289508-31031-23-git-send-email-andrea.gelmini@gelma.net>
+	 <s5hocj7szqj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C501103905
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 15:06:29 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <201003021552.36622.peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hocj7szqj.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 02, 2010 at 03:52:36PM +0200, Peter Ujfalusi wrote:
-> On Tuesday 02 March 2010 15:47:07 ext Mark Brown wrote:
+2010/3/2 Takashi Iwai <tiwai@suse.de>:
+Hi Takashi,
+    thanks a lot for you reply.
 
-> > You're already handling the playback vs. capture thing here! :)
+> Applied all three patches for sound/* now. =C2=A0Thanks.
 
-> Oh yes, I do. I have removed the capture (rx related) reporting, since as I 
-> mentioned, I was not sure how to, and what to report.
-> But is it OK to have initially support for playback delay handling, and if there 
-> is a need, add the capture later?
+Thanks a lot.
+If you care I can check all sound subtree.
 
-The code is fine, this was more a comment on the earlier patch.
+Thanks again,
+Andrea
