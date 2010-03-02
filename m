@@ -1,26 +1,18 @@
-From: adelias <adelias@freemail.gr>
-Subject: Re: usbaudio: Support for USB audio v2.0 devices
-Date: Tue, 02 Mar 2010 11:13:04 +0200
-Message-ID: <4B8CD6A0.40204@freemail.gr>
-References: <1266856137-26252-1-git-send-email-daniel@caiaq.de>
+From: Wei Ni <wni@nvidia.com>
+Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Tue, 2 Mar 2010 17:43:28 +0800
+Message-ID: <6B4D417B830BC44B8026029FD256F7F1C068B2BA8C@HKMAIL01.nvidia.com>
+References: <6B4D417B830BC44B8026029FD256F7F1C068B2BA8B@HKMAIL01.nvidia.com>
+	<s5hmxyrp311.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id A386F1037F3
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 10:14:05 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1NmOAy-0007uY-Qb
-	for alsa-devel@alsa-project.org; Tue, 02 Mar 2010 10:14:00 +0100
-Received: from tiger.rd.forthnet.gr ([212.251.99.184])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2010 10:14:00 +0100
-Received: from adelias by tiger.rd.forthnet.gr with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 02 Mar 2010 10:14:00 +0100
-In-Reply-To: <1266856137-26252-1-git-send-email-daniel@caiaq.de>
+Received: from hqemgate03.nvidia.com (hqemgate03.nvidia.com [216.228.112.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2ED161037F5
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 10:43:43 +0100 (CET)
+In-Reply-To: <s5hmxyrp311.wl%tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,73 +22,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: 'akpm' <akpm@linux-foundation.org>, 'alsa-devel' <alsa-devel@alsa-project.org>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'Pavel Hofman' <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjIvMi8yMDEwIDY6MjggzrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4gSGksCj4KPiBJJ3Zl
-IGJlZW4gd29ya2luZyBvbiBzdXBwb3J0IGZvciBVU0IgZGV2aWNlcyBjb21wbGlhbnQgdG8gYXVk
-aW8gY2xhc3MKPiB2Mi4wIGFuZCB3b3VsZCBsaWtlIHRvIHNoYXJlIHdoYXQgSSBnb3QuCj4KPiBG
-aXJzdCBwcm9ibGVtIGlzIHRoYXQgdGhleSBsaXRlcmFsbHkgY2hhbmdlZCBldmVyeSBzaW5nbGUg
-ZGVzY3JpcHRvcgo+IHR5cGUgYnkgYWRkaW5nIG9yIHJlbW92aW5nIGZpZWxkcyBvciBjaGFuZ2lu
-ZyB0aGVpciB3aWR0aCwKPiByZXNwZWN0aXZlbHkuIEV2ZW4gd29yc2UsIHNvbWUgZW51bSB2YWx1
-ZXMgd2VyZSBkcm9wcGVkIGFuZCByZWFzc2lnbmVkCj4gc28gdGhlaXIgbnVtZXJpY2FsIHZhbHVl
-IGhhcyBhIGRpZmZlcmVudCBtZWFuaW5nIG5vdy4KPgo+IE15IGZpcnN0IHN0ZXAgd2FzIHRvIGNs
-ZWFuIHVwIG1vc3Qgb2YgdGhlIGV4aXN0aW5nIGRlc2NyaXB0b3IgcGFyc2Vycwo+IGJ5IG1vdmlu
-ZyBhd2F5IGZyb20gYW5vbnltb3VzIGJ5dGUgYXJyYXkgYWNjZXNzIHRvIHJlYWwgc3RydWN0cyBz
-byB3ZQo+IGNhbiBzZWUgd2hpY2ggZmllbGRzIHdlJ3JlIGFjdHVhbGx5IGRlcmVmZXJlbmNpbmcu
-Cj4KPiBJbiBhIHNlY29uZCBzdGVwLCBJIGFkZGVkIGRlZmluaXRpb25zIGZvciB0aGUgcmVwbGFj
-ZW1lbnQgZGVzY3JpcHRvcnMKPiBhbmQgdXNlIHRoZW0gYXQgYXBwcm9wcmlhdGUgcGxhY2VzLiBU
-aGUgYkludGVyZmFjZVByb3RvY29sIGZpZWxkIG11c3QKPiBhbHdheXMgYmUgc2V0IGNvcnJlY3Rs
-eSBvZiBjb3Vyc2UsIG90aGVyd2lzZSB3ZSdsbCBwYXJzZSBnYXJiYWdlLgo+Cj4gT3RoZXIgdGhp
-bmdzIHRoYXQgaGF2ZSBjaGFuZ2VkIGZyb20gdjEuMCB0byB2Mi4wIGFyZToKPgo+ICogVGhlIG51
-bWJlciBvZiBzdHJlYW1pbmcgaW50ZXJmYWNlcyBpcyBub3cgcmVwb3J0ZWQgYnkgYSBzdGFuZGFy
-ZAo+ICAgIGludGVyZmFjZSBhc3NvY2lhdGlvbiBkZXNjcmlwdG9yLiBUaGUgb2xkIGFwcHJvYWNo
-IHVzaW5nIGEgcHJvcHJpZXRhcnkKPiAgICBkZXNjcmlwdG9yIGV4dGVuc2lvbiBpcyBkZXByZWNh
-dGVkLgo+Cj4gKiBUaGUgbnVtYmVyIG9mIGNoYW5uZWxzIHBlciBpbnRlcmZhY2UgaXMgbm93IHN0
-b3JlZCBpbiB0aGUgQVNfR0VORVJBTAo+ICAgIGRlc2NyaXB0b3IgKHVzZWQgdG8gYmUgcGFydCBv
-ZiB0aGUgRk9STUFUX1RZUEUgZGVzY3JpcHRvcikuCj4KPiAqIFRoZSBsaXN0IG9mIHN1cHBvcnRl
-ZCBzYW1wbGUgcmF0ZXMgaXMgbm8gbG9uZ2VyIHN0b3JlZCBpbiBhIHZhcmlhYmxlCj4gICAgbGVu
-Z3RoIGFwcGVuZGl4IG9mIHRoZSBGT1JNQVRfVFlQRSBkZXNjcmlwdG9yIGJ1dCBpcyByZXRyaWV2
-ZWQgZnJvbQo+ICAgIHRoZSBkZXZpY2UgdXNpbmcgYSBjbGFzcyBzcGVjaWZpYyBHRVRfUkFOR0Ug
-Y29tbWFuZC4KPgo+ICogU3VwcG9ydGVkIHNhbXBsZSBmb3JtYXRzIGFyZSBub3cgcmVwb3J0ZWQg
-YXMgMzJiaXQgYml0bWFwIHJhdGhlciB0aGFuCj4gICAgYXMgYSBmaXhlZCB2YWx1ZS4gRm9yIG5v
-dywgdGhpcyBpcyB3b3JrZWQgYXJvdW5kIGJ5IGNob29zaW5nIGp1c3Qgb25lCj4gICAgb2YgdGhl
-bS4gRXZlbnR1YWxseSwgdGhlIGNvZGUgc2hvdWxkIHByb3BhZ2F0ZSB0aGUgZnVsbCBhYmlsaXR5
-IG9mIHRoZQo+ICAgIGRldmljZS4KPgo+ICogQSBkZXZpY2VzIG5lZWRzIHRvIGhhdmUgYXQgbGVh
-c3Qgb25lIENMT0NLX1NPVVJDRSBkZXNjcmlwdG9yIHdoaWNoCj4gICAgZGVub3RlcyBhIGNsb2Nr
-SUQgdGhhdCBpcyBuZWVkZWQgYXMgYXJndW1lbnQgdG8gdGhlIGNsYXNzIHJlcXVlc3QKPiAgICBj
-b21tYW5kLiBJZiBjYW4gaGF2ZSBtb3JlIHRoYW4gb25lIHRob3VnaCBhbmQgdGhlIGhvc3QgZHJp
-dmVyIGlzIGluCj4gICAgY2hhcmdlIHRvIGNob29zZSB0aGUgcmlnaHQgb25lLiBUaGVyZSBhcmUg
-YWxzbyBuZXcgdHlwZXMgZm9yIGNsb2NrCj4gICAgc2VsZWN0b3JzIGFuZCBzYW1wbGUgcmF0ZSBj
-b252ZXJ0ZXJzIHRoYXQgYSBkZXZpY2UgbWlnaHQgcmVwb3J0LiBUaGlzCj4gICAgaXMgYWxsIHVu
-c3VwcG9ydGVkIGF0IHRoZSBtb21lbnQuIFdlIG9ubHkgcGFyc2UgdGhlIGZpcnN0IENMT0NLX1NP
-VVJDRQo+ICAgIGFuZCB0YWtlIHRoaXMgb25lLgo+Cj4gKiBNYW55IGRlc2NyaXB0b3JzIChmb3Jt
-YXRfdHlwZSwgLi4uKSBoYXZlIGNoYW5nZWQgdGhlaXIgbGF5b3V0LiBIYW5kbGUKPiAgICB0aGlz
-IGJ5IGNhc3RpbmcgdGhlIGRlc2NyaXB0b3JzIHRvIHRoZSBhcHByb3ByaWF0ZSBzdHJ1Y3RzLgo+
-Cj4gV2l0aCB0aGUgZm9sbG93aW5nIHBhdGNoZXMgYXBwbGllZCwgYSB2Mi4wIGRldmljZSBpcyBy
-ZWNvZ25pemVkIGFuZAo+IHJlcG9ydGVkIGFzIEFMU0EgZGV2aWNlLiBJIGNhbiBldmVuIGhlYXIg
-YXQgbGVhc3Qgc29tZSBraW5kIG9mIG11c2ljLAo+IGJ1dCB0aGUgc2FtcGxlIHJhdGUgc2V0dGlu
-ZyBkb2VzIG5vdCB5ZXQgc2VlbSB0byBiZSBjb3JyZWN0Lgo+Cj4gQWxzbywgdGhlIGV4aXN0aW5n
-IG1peGVyIGNvZGUgZG9lcyBub3Qgd29yayBhdCBhbGwgZm9yIHYyLjAgZGV2aWNlcy4KPiBUaGlz
-IHdpbGwgYmUgcXVpdGUgc29tZSB3b3JrIHRvIHN1cHBvcnQgdGhhdCBhbmQgSSBmZWFyIHRoZSB3
-aG9sZSB0aGluZwo+IG11c3QgYmUgcmVpbXBsZW1lbnRlZCBmb3IgdjIuMCBzcGVjaWZpY2FsbHku
-IEZvciBub3csIEkgd29ya2VkIGFyb3VuZAo+IHRoYXQgYnkgbm90IHBhcnNpbmcgdGhlbSBhdCBh
-bGwgYnV0IGJhaWxpbmcgb3V0IHZlcnkgZWFybHkuCj4KPiBIb3dldmVyLCBJIHdvdWxkIGxpa2Ug
-dG8gbWFrZSBzdXJlIHRoZSBjaGFuZ2VzIEkgbWFkZSBzbyBmYXIgd29uJ3QKPiBjYXVzZSBhbnkg
-cmVncmVzc2lvbiBmb3IgdjEuMCBkZXZpY2VzLCBhbmQgc28gaXQgd291bGQgYmUgZ29vZCB0byBz
-ZWUKPiB0aGVtIGFwcGxpZWQgYXMgYSBwcmVsaW1pbmFyeSBzdXBwb3J0LiBJJ2xsIGNvbnRpbnVl
-IHdvcmtpbmcgb24gdGhpcwo+IGFuZCBzZW5kIG1vcmUgdXBkYXRlcyBhbG9uZy4KPgo+IExldCBt
-ZSBrbm93IHdoYXQgeW91IHRoaW5rLgo+Cj4gVGhhbmtzLAo+IERhbmllbAoKVGhhbmtzIHRvIGFs
-bCBpbnZvbHZlZCBmb3Igd29ya2luZyBvbiB1c2IgYXVkaW8gdjIuCgpMYXN0IG5pZ2h0IEkgaW5z
-dGFsbGVkIHRoZSAyMDEwMDIyNiBzbmFwc2hvdC4gSSBkaWQgYSBsaXR0bGUgdGVzdGluZyAKd2l0
-aCBteSBYTU9TIGJvYXJkIHVzaW5nIHRvc2xpbmsgb3V0IGludG8gbWF5IERBQy4gSSB0cmllZCB2
-YXJpb3VzIGZpbGVzCnJhbmdpbmcgMTZiaXQvNDQxMTBrSHotMjRiaXQvMTkyMDAwa0h6LiBUaGUg
-NDQxMTAgZmlsZXMgaGFkIHF1aXRlIGEgYml0Cm9mIHN0YXRpYywgdGhlIGhpZ2hlciBiaXRyYXRl
-IGZpbGVzIHdlcmUgYmV0dGVyLiBBcyB5b3Ugc3RhdGVkIHRoZSAKc2FtcGxpbmcgcmF0ZSBpcyBu
-b3QgY29ycmVjdCBhbmQgYmUgdmVyaWZpZWQgYnkgbG9va2luZyBhdCB0aGUgZmxhc2hpbmcKTEVE
-cyBvbiB0aGUgWE1PUyBib2FyZC4gVGhleSBzaG91bGQgZmxhc2ggZmFzdGVyIGFzIHNhbXBsaW5n
-IHJhdGUgCmluY3JlYXNlLiBJbiB0aGlzIGNhc2Ugbm8gY2hhbmdlIHdhcyBvYnNlcnZlZC4KClRo
-YW5rcywKTmlrb3MKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3Jn
-Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCg==
+Hi, Takashi
+1. About AZX_MAX_CODECS, on our new chipset, the codec_mask=0x31, it means
+the codec connect on the slot0, slot4, slot5, and on some GT2xx, the codec
+will connect to slot6 or slot7, although these chip at most have 4 codecs.
+So I change the AZX_MAX_CODECS to 8 directly.
+In hda_intel.c, the azx_command_addr(), azx_response_addr(), and
+azx_codec_create() use the AZX_MAX_CODECS, if it set as 4, the driver will
+not detect the codecs which connect to slot4~7.
+
+2. yes, it's better to merge the hdmi common codes.
+
+3. About ELD, yes, we need to change the Makefile and Kconfig as well.
+Could you help me to change it.
+
+Thanks
+Wei.
+
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Tuesday, March 02, 2010 4:00 PM
+To: Wei Ni
+Cc: 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
+Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
+
+At Mon, 1 Mar 2010 19:27:53 +0800,
+Wei Ni wrote:
+> 
+> Hi, Takashi
+> I developed the hdmi audio driver for new chipset MCP89 and GT21x.
+> The new HAD controller and codec support standard HDMI operation.
+> 
+> I attached the patch file, please check it.
+
+Thanks.  A brief review comments below.
+
+
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index d5c93ad..fbf2c29 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -267,7 +267,7 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+>  #define RIRB_INT_MASK		0x05
+>  
+>  /* STATESTS int mask: S3,SD2,SD1,SD0 */
+> -#define AZX_MAX_CODECS		4
+> +#define AZX_MAX_CODECS		8
+
+Changing this blindly to all codecs seems a bit dangerous.
+We have bad experiences regarding the codec probing, and probing more
+codec slots may result in unexpected behavior with the older chip.
+
+Do you know which controller chip supports more than 4 slots?
+ 
+
+> +struct hdmi_audio_infoframe {
+> +	u8 type; /* 0x84 */
+> +	u8 ver;  /* 0x01 */
+> +	u8 len;  /* 0x0a */
+> +
+> +	u8 checksum;	/* PB0 */
+> +	u8 CC02_CT47;	/* CC in bits 0:2, CT in 4:7 */
+> +	u8 SS01_SF24;
+> +	u8 CXT04;
+> +	u8 CA;
+> +	u8 LFEPBL01_LSV36_DM_INH7;
+...
+
+Let's merge the stuff with patch_intelhdmi.c later...
+
+
+> +static void hdmi_get_show_eld(struct hda_codec *codec, hda_nid_t pin_nid,
+> +			      struct hdmi_eld *eld)
+> +{
+> +	if (!snd_hdmi_get_eld(eld, codec, pin_nid))
+> +		snd_hdmi_show_eld(eld);
+
+So, now this module depends on the ELD helper?
+Then we need to change Makefile and Kconfig as well.
+Right now, the eld helper is built into intel-hdmi module.  Now this
+is needed to be individual or built-in snd-hda-codec.
+
+
+thanks,
+
+Takashi
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
