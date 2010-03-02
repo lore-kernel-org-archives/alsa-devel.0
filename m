@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [RFC 1/4] ASoC: core: soc level wrapper for
-	pcm_pointer callback
-Date: Tue,  2 Mar 2010 15:39:48 +0200
-Message-ID: <1267537191-25254-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [RFC 2/4] ASoC: core: Add delay operation to
+	snd_soc_dai_ops
+Date: Tue,  2 Mar 2010 15:39:49 +0200
+Message-ID: <1267537191-25254-3-git-send-email-peter.ujfalusi@nokia.com>
 References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 143CA1038CC
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 14:40:00 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BAB11038EA
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 14:40:01 +0100 (CET)
 In-Reply-To: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,58 +25,66 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Create a soc level wrapper for pcm_pointer callbacks.
-This will facilitate the soc level handling of different
-HW buffers in the audio path.
+The delay calback can be used by the core to query the delay
+on the dais caused by FIFO.
+In case if both CPU and CODEC dai has FIFO the delay reported
+by each will be added to form the full delay on the chain.
+If none of the dai has FIFO, than the delay will be kept as
+zero.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/soc-core.c |   19 ++++++++++++++++++-
- 1 files changed, 18 insertions(+), 1 deletions(-)
+ include/sound/soc-dai.h |    6 ++++++
+ sound/soc/soc-core.c    |   15 +++++++++++++++
+ 2 files changed, 21 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a03bac9..6e35741 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -797,6 +797,23 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	return 0;
- }
- 
-+/*
-+ * soc level wrapper for pointer and pcm_delay handling
-+ */
-+static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_card *card = socdev->card;
-+	struct snd_soc_platform *platform = card->platform;
-+	snd_pcm_uframes_t offset = 0;
-+
-+	if (platform->pcm_ops->pointer)
-+		offset = platform->pcm_ops->pointer(substream);
-+
-+	return offset;
-+}
-+
- /* ASoC PCM operations */
- static struct snd_pcm_ops soc_pcm_ops = {
- 	.open		= soc_pcm_open,
-@@ -805,6 +822,7 @@ static struct snd_pcm_ops soc_pcm_ops = {
- 	.hw_free	= soc_pcm_hw_free,
- 	.prepare	= soc_pcm_prepare,
- 	.trigger	= soc_pcm_trigger,
-+	.pointer	= soc_pcm_pointer,
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 061f16d..be9cd47 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -182,6 +182,12 @@ struct snd_soc_dai_ops {
+ 		struct snd_soc_dai *);
+ 	int (*trigger)(struct snd_pcm_substream *, int,
+ 		struct snd_soc_dai *);
++	/*
++	 * For hardware based FIFO caused delay reporting.
++	 * Optional.
++	 */
++	snd_pcm_sframes_t (*delay)(struct snd_pcm_substream *,
++		struct snd_soc_dai *);
  };
  
- #ifdef CONFIG_PM
-@@ -1331,7 +1349,6 @@ static int soc_new_pcm(struct snd_soc_device *socdev,
- 	dai_link->pcm = pcm;
- 	pcm->private_data = rtd;
- 	soc_pcm_ops.mmap = platform->pcm_ops->mmap;
--	soc_pcm_ops.pointer = platform->pcm_ops->pointer;
- 	soc_pcm_ops.ioctl = platform->pcm_ops->ioctl;
- 	soc_pcm_ops.copy = platform->pcm_ops->copy;
- 	soc_pcm_ops.silence = platform->pcm_ops->silence;
+ /*
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6e35741..feaf03b 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -806,11 +806,26 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ 	struct snd_soc_device *socdev = rtd->socdev;
+ 	struct snd_soc_card *card = socdev->card;
+ 	struct snd_soc_platform *platform = card->platform;
++	struct snd_soc_dai_link *machine = rtd->dai;
++	struct snd_soc_dai *cpu_dai = machine->cpu_dai;
++	struct snd_soc_dai *codec_dai = machine->codec_dai;
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_pcm_uframes_t offset = 0;
++	snd_pcm_sframes_t delay = 0;
+ 
+ 	if (platform->pcm_ops->pointer)
+ 		offset = platform->pcm_ops->pointer(substream);
+ 
++	/* Query the delay only for playback stream */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		if (cpu_dai->ops->delay)
++			delay += cpu_dai->ops->delay(substream, cpu_dai);
++
++		if (codec_dai->ops->delay)
++			delay += codec_dai->ops->delay(substream, codec_dai);
++
++		runtime->delay = delay;
++	}
+ 	return offset;
+ }
+ 
 -- 
 1.7.0
