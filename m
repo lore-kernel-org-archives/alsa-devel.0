@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [RFC 3/4] OMAP3: McBSP: Add interface for transmit
-	FIFO state query
-Date: Tue,  2 Mar 2010 15:39:50 +0200
-Message-ID: <1267537191-25254-4-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [RFC 4/4] ASoC: OMAP3: Report delay on playback caused
+	by the internal FIFO
+Date: Tue,  2 Mar 2010 15:39:51 +0200
+Message-ID: <1267537191-25254-5-git-send-email-peter.ujfalusi@nokia.com>
 References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0C5531038E7
-	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 14:39:59 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 29F5B1038CC
+	for <alsa-devel@alsa-project.org>; Tue,  2 Mar 2010 14:40:08 +0100 (CET)
 In-Reply-To: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,81 +25,57 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-New function for reading the XBUFFSTAT register, which holds
-the fill state of the transmit buffer on McBSP.
+Use the new delay calback function to report the delay through
+ALSA for application caused by the internal FIFO.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- arch/arm/plat-omap/include/plat/mcbsp.h |    4 ++++
- arch/arm/plat-omap/mcbsp.c              |   27 +++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+), 0 deletions(-)
+ sound/soc/omap/omap-mcbsp.c |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/plat-omap/include/plat/mcbsp.h b/arch/arm/plat-omap/include/plat/mcbsp.h
-index 4f22e5b..98de3d4 100644
---- a/arch/arm/plat-omap/include/plat/mcbsp.h
-+++ b/arch/arm/plat-omap/include/plat/mcbsp.h
-@@ -147,6 +147,8 @@
- #define OMAP_MCBSP_REG_WAKEUPEN	0xA8
- #define OMAP_MCBSP_REG_XCCR	0xAC
- #define OMAP_MCBSP_REG_RCCR	0xB0
-+#define OMAP_MCBSP_REG_XBUFFSTAT	0xB4
-+#define OMAP_MCBSP_REG_RBUFFSTAT	0xB8
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index d297256..72036b5 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -248,6 +248,31 @@ static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	return err;
+ }
  
- #define AUDIO_MCBSP_DATAWRITE	(OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG_DXR1)
- #define AUDIO_MCBSP_DATAREAD	(OMAP24XX_MCBSP2_BASE + OMAP_MCBSP_REG_DRR1)
-@@ -428,6 +430,7 @@ void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold);
- void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold);
- u16 omap_mcbsp_get_max_tx_threshold(unsigned int id);
- u16 omap_mcbsp_get_max_rx_threshold(unsigned int id);
-+u16 omap_mcbsp_get_tx_buffstat(unsigned int id);
- int omap_mcbsp_get_dma_op_mode(unsigned int id);
- #else
- static inline void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
-@@ -436,6 +439,7 @@ static inline void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
- { }
- static inline u16 omap_mcbsp_get_max_tx_threshold(unsigned int id) { return 0; }
- static inline u16 omap_mcbsp_get_max_rx_threshold(unsigned int id) { return 0; }
-+static inline u16 omap_mcbsp_get_tx_buffstat(unsigned int id) { return 0; }
- static inline int omap_mcbsp_get_dma_op_mode(unsigned int id) { return 0; }
- #endif
- int omap_mcbsp_request(unsigned int id);
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index f757672..e49af86 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -284,6 +284,33 @@ u16 omap_mcbsp_get_max_rx_threshold(unsigned int id)
- EXPORT_SYMBOL(omap_mcbsp_get_max_rx_threshold);
- 
- /*
-+ * omap_mcbsp_get_tx_buffstat returns the number of used slots in the McBSP FIFO
-+ */
-+u16 omap_mcbsp_get_tx_buffstat(unsigned int id)
++static snd_pcm_sframes_t omap_mcbsp_dai_delay(
++			struct snd_pcm_substream *substream,
++			struct snd_soc_dai *dai)
 +{
-+	struct omap_mcbsp *mcbsp;
-+	u16 buffstat;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	u16 fifo_use;
++	snd_pcm_sframes_t delay;
 +
-+	if (!omap_mcbsp_check_valid_id(id)) {
-+		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
-+		return -ENODEV;
-+	}
-+	mcbsp = id_to_mcbsp_ptr(id);
-+
-+	/* Returns the number of free locations in the buffer */
-+	buffstat = OMAP_MCBSP_READ(mcbsp->io_base, XBUFFSTAT);
-+
-+	/* Number of free slots on McBSP ports */
-+	if (mcbsp->id == 2)
-+		buffstat = 0x500 - buffstat;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		fifo_use = omap_mcbsp_get_tx_buffstat(mcbsp_data->bus_id);
 +	else
-+		buffstat = 0x80 - buffstat;
++		return 0;
 +
-+	return buffstat;
++	/*
++	 * Devide the used locations with the channel count to get the
++	 * FIFO usage in samples (don't care about partial samples in the
++	 * buffer).
++	 */
++	delay = fifo_use / substream->runtime->channels;
++
++	return delay;
 +}
-+EXPORT_SYMBOL(omap_mcbsp_get_tx_buffstat);
 +
-+/*
-  * omap_mcbsp_get_dma_op_mode just return the current configured
-  * operating mode for the mcbsp channel
-  */
+ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 				    struct snd_pcm_hw_params *params,
+ 				    struct snd_soc_dai *dai)
+@@ -599,6 +624,7 @@ static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
+ 	.startup	= omap_mcbsp_dai_startup,
+ 	.shutdown	= omap_mcbsp_dai_shutdown,
+ 	.trigger	= omap_mcbsp_dai_trigger,
++	.delay		= omap_mcbsp_dai_delay,
+ 	.hw_params	= omap_mcbsp_dai_hw_params,
+ 	.set_fmt	= omap_mcbsp_dai_set_dai_fmt,
+ 	.set_clkdiv	= omap_mcbsp_dai_set_clkdiv,
 -- 
 1.7.0
