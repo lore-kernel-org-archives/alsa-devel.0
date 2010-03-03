@@ -1,29 +1,101 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [alsa-devel]  [PATCH]Support MCP89 and GT21x hdmi audio
-Date: Tue, 2 Mar 2010 13:43:07 +0800
-Message-ID: <20100302054307.GA6165@localhost>
+From: Wei Ni <wni@nvidia.com>
+Subject: RE: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Wed, 3 Mar 2010 11:28:26 +0800
+Message-ID: <6B4D417B830BC44B8026029FD256F7F1C16A89A118@HKMAIL01.nvidia.com>
 References: <6B4D417B830BC44B8026029FD256F7F1C068B2BA8B@HKMAIL01.nvidia.com>
+	<s5hmxyrp311.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C068B2BA8C@HKMAIL01.nvidia.com>
+ <s5heik3ujy0.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <6B4D417B830BC44B8026029FD256F7F1C068B2BA8B@HKMAIL01.nvidia.com>
+In-Reply-To: <s5heik3ujy0.wl%tiwai@suse.de>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Ni <wni@nvidia.com>
-Cc: 'Takashi Iwai' <tiwai@suse.de>, 'akpm' <akpm@linux-foundation.org>, 'alsa-devel' <alsa-devel@alsa-project.org>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'Pavel Hofman' <pavel.hofman@insite.cz>
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: 'Pavel Hofman' <pavel.hofman@insite.cz>, 'alsa-devel' <alsa-devel@alsa-project.org>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'akpm' <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 01, 2010 at 07:27:53PM +0800, Wei Ni wrote:
-> Hi, Takashi
-> I developed the hdmi audio driver for new chipset MCP89 and GT21x.
-> The new HAD controller and codec support standard HDMI operation.
+Hi, Takashi
+I still have a question about AZX_MAX_CODECS.
+In azx_command_addr() and azx_response_addr(), they use AZX_MAX_CODECS like
+If (addr >= AZX_MAX_CODECS) {
+    snd_BUG();
+    addr = 0;
+}
+The azx_max_codes[] could not be used in these functions.
+How could we do in these functions?
+
+Thanks
+Wei.
+
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Tuesday, March 02, 2010 5:55 PM
+To: Wei Ni
+Cc: 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
+Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
+
+At Tue, 2 Mar 2010 17:43:28 +0800,
+Wei Ni wrote:
 > 
-> I attached the patch file, please check it.
+> Hi, Takashi
+> 1. About AZX_MAX_CODECS, on our new chipset, the codec_mask=0x31, it means
+> the codec connect on the slot0, slot4, slot5, and on some GT2xx, the codec
+> will connect to slot6 or slot7, although these chip at most have 4 codecs.
+> So I change the AZX_MAX_CODECS to 8 directly.
+> In hda_intel.c, the azx_command_addr(), azx_response_addr(), and
+> azx_codec_create() use the AZX_MAX_CODECS, if it set as 4, the driver will
+> not detect the codecs which connect to slot4~7.
 
-Wei Ni,
+Yeah, I understand it.  But, as mentioned, changing this to *all*
+controller chips is dangerous.
+We have already a quirk for controller chips to set max codecs depending
+on the chip model.  Right now, only teradici chip sets to 1.
 
-Can we avoid the big copy&paste and do more code reuse?
-This benefits all of us in long term.
+So, add "#define AZX_DEFAULT_CODECS 4", and use this value unless
+azx_max_codecs[] is defined.  And, for the new controller chip
+supporting more than 4, it can has 8 in azx_max_codecs[].
 
-Thanks,
-Fengguang
+Is it feasible?
+
+> 2. yes, it's better to merge the hdmi common codes.
+> 3. About ELD, yes, we need to change the Makefile and Kconfig as well.
+> Could you help me to change it.
+
+In sound/pci/hda/Makefile, hda_eld.c is built into snd-hda-codec-intelhdmi
+by the following rule:
+
+snd-hda-codec-intelhdmi-objs :=	patch_intelhdmi.o hda_eld.o
+
+Since now hda_eld.c is used in two modules, this has to be in the common
+place, such as snd-hda-codec.  For this, uncomment the line:
+
+# snd-hda-codec-$(CONFIG_SND_HDA_ELD) += hda_eld.o
+
+and remove hda_eld.o from snd-hda-codec-intelhdmi-objs line.
+
+For Kconfig, right now we have the definition
+
+config SND_HDA_ELD
+	def_bool y
+	depends on SND_HDA_CODEC_INTELHDMI
+
+Change depends on like
+
+	depends on SND_HDA_CODEC_INTELHDMI || SND_HDA_CODEC_NVHDMI
+
+This can be done via "select" instead.  But, we'd merge all hdmi codes
+later, so which way to choose is no big matter.
+
+
+thanks,
+
+Takashi
+-----------------------------------------------------------------------------------
+This email message is for the sole use of the intended recipient(s) and may contain
+confidential information.  Any unauthorized review, use, disclosure or distribution
+is prohibited.  If you are not the intended recipient, please contact the sender by
+reply email and destroy all copies of the original message.
+-----------------------------------------------------------------------------------
