@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCHv2 5/5] ASoC: OMAP3: Report delay caused by
- the internal FIFO
-Date: Wed, 03 Mar 2010 13:28:24 +0000
-Message-ID: <1267622904.3185.3.camel@odin>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHv2 0/5] FIFO caused playback delay (latency)
+	handling in	soc/omap
+Date: Wed, 3 Mar 2010 13:38:07 +0000
+Message-ID: <20100303133806.GA15105@sirena.org.uk>
 References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1267621689-30337-7-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DB7A6103956
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 14:28:27 +0100 (CET)
-Received: by wwi17 with SMTP id 17so671746wwi.38
-	for <alsa-devel@alsa-project.org>; Wed, 03 Mar 2010 05:28:26 -0800 (PST)
-In-Reply-To: <1267621689-30337-7-git-send-email-peter.ujfalusi@nokia.com>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 97E2010394D
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 14:38:08 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: tony@atomide.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ext-eero.nurkkala@nokia.com, linux-omap@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, tony@atomide.com, ext-eero.nurkkala@nokia.com, linux-omap@vger.kernel.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-03-03 at 15:08 +0200, Peter Ujfalusi wrote:
-> Use the new delay calback function to report the delay through
-> ALSA for application caused by the internal FIFO.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
+On Wed, Mar 03, 2010 at 03:08:03PM +0200, Peter Ujfalusi wrote:
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> Peter Ujfalusi (5):
+>   ASoC: core: fix tailing whitespace in soc_pcm_apply_symmetry
+>   ASoC: core: soc level wrapper for pcm_pointer callback
+>   ASoC: core: Add delay operation to snd_soc_dai_ops
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+I'll apply these just now, thanks!
+
+>   OMAP3: McBSP: Add interface for FIFO caused delay query
+>   ASoC: OMAP3: Report delay caused by the internal FIFO
+
+These also look OK to me but there's the arch/arm dependency.
