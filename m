@@ -1,24 +1,17 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: snd_pcm_drop causing lockup with DMix
-Date: Wed, 3 Mar 2010 13:59:07 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1003031352200.28127@eeebox2.perex-int.cz>
-References: <1267371441.14748.22.camel@satellite>
-	<alpine.LNX.2.00.1002281722140.28127@eeebox2.perex-int.cz>
-	<1267377313.14982.0.camel@satellite>
-	<alpine.LNX.2.00.1003010752570.28127@eeebox2.perex-int.cz>
-	<1267487552.11621.2.camel@satellite>
-	<alpine.LNX.2.00.1003021423550.28127@eeebox2.perex-int.cz>
-	<1267575866.1763.1.camel@satellite>
-	<alpine.LNX.2.00.1003031101170.28127@eeebox2.perex-int.cz>
-	<1267619324.2247.1.camel@satellite>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCHv2 5/5] ASoC: OMAP3: Report delay caused by the
+	internal FIFO
+Date: Wed,  3 Mar 2010 15:08:09 +0200
+Message-ID: <1267621689-30337-7-git-send-email-peter.ujfalusi@nokia.com>
+References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id E3F64103940
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 13:59:07 +0100 (CET)
-In-Reply-To: <1267619324.2247.1.camel@satellite>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id D5E0A103946
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 14:08:25 +0100 (CET)
+In-Reply-To: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,26 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Lindgren <john.lindgren@tds.net>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: broonie@opensource.wolfsonmicro.com, tony@atomide.com
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, ext-eero.nurkkala@nokia.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 3 Mar 2010, John Lindgren wrote:
+Use the new delay calback function to report the delay through
+ALSA for application caused by the internal FIFO.
 
-> Confirmed, that fixes the hangup.  A minor issue remains that
-> snd_pcm_writei still always returns -EIO or -EBADFD in this situation.
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/omap/omap-mcbsp.c |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
 
-I don't see a problem here. If transfer is stopped, the pcm handle is 
-not initialized for I/O transactions, thus upper layers return these 
-errors.
-
-Your application should check snd_pcm_state() in case of error and look if 
-stream is inactive (back in SND_PCM_STATE_SETUP), because your application 
-invoked the drop() call.
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index e814a95..2952fb0 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -256,6 +256,31 @@ static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	return err;
+ }
+ 
++static snd_pcm_sframes_t omap_mcbsp_dai_delay(
++			struct snd_pcm_substream *substream,
++			struct snd_soc_dai *dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	u16 fifo_use;
++	snd_pcm_sframes_t delay;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		fifo_use = omap_mcbsp_get_tx_delay(mcbsp_data->bus_id);
++	else
++		fifo_use = omap_mcbsp_get_rx_delay(mcbsp_data->bus_id);
++
++	/*
++	 * Divide the used locations with the channel count to get the
++	 * FIFO usage in samples (don't care about partial samples in the
++	 * buffer).
++	 */
++	delay = fifo_use / substream->runtime->channels;
++
++	return delay;
++}
++
+ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 				    struct snd_pcm_hw_params *params,
+ 				    struct snd_soc_dai *dai)
+@@ -607,6 +632,7 @@ static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
+ 	.startup	= omap_mcbsp_dai_startup,
+ 	.shutdown	= omap_mcbsp_dai_shutdown,
+ 	.trigger	= omap_mcbsp_dai_trigger,
++	.delay		= omap_mcbsp_dai_delay,
+ 	.hw_params	= omap_mcbsp_dai_hw_params,
+ 	.set_fmt	= omap_mcbsp_dai_set_dai_fmt,
+ 	.set_clkdiv	= omap_mcbsp_dai_set_clkdiv,
+-- 
+1.7.0
