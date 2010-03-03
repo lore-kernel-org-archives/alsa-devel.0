@@ -1,14 +1,22 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH] ALSA: ASoC: fix ak4104 register array access
-Date: Fri, 26 Feb 2010 14:36:54 +0800
-Message-ID: <1267166214-1977-1-git-send-email-daniel@caiaq.de>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCHv2 5/5] ASoC: OMAP3: Report delay caused by
+ the internal FIFO
+Date: Wed, 3 Mar 2010 16:30:12 +0200
+Message-ID: <20100303163012.37137bf7.jhnikula@gmail.com>
+References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1267621689-30337-7-git-send-email-peter.ujfalusi@nokia.com>
+	<1267622904.3185.3.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4FFE9103806
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 15:23:23 +0100 (CET)
+Received: from mail-ew0-f216.google.com (mail-ew0-f216.google.com
+	[209.85.219.216])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92AB8103806
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 15:29:25 +0100 (CET)
+Received: by ewy8 with SMTP id 8so2792812ewy.32
+	for <alsa-devel@alsa-project.org>; Wed, 03 Mar 2010 06:29:25 -0800 (PST)
+In-Reply-To: <1267622904.3185.3.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,40 +26,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, stable@kernel.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>, ext-eero.nurkkala@nokia.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Don't touch the variable 'reg' to construct the value for the actual SPI
-transport. This variable is again used to access the driver's register
-cache, and so random memory is overwritten.
-Compute the value in-place instead.
+On Wed, 03 Mar 2010 13:28:24 +0000
+Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: stable@kernel.org
----
- sound/soc/codecs/ak4104.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+> On Wed, 2010-03-03 at 15:08 +0200, Peter Ujfalusi wrote:
+> > Use the new delay calback function to report the delay through
+> > ALSA for application caused by the internal FIFO.
+> > 
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> > ---
+> 
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-index b9ef7e4..b68d99f 100644
---- a/sound/soc/codecs/ak4104.c
-+++ b/sound/soc/codecs/ak4104.c
-@@ -90,12 +90,10 @@ static int ak4104_spi_write(struct snd_soc_codec *codec, unsigned int reg,
- 	if (reg >= codec->reg_cache_size)
- 		return -EINVAL;
- 
--	reg &= AK4104_REG_MASK;
--	reg |= AK4104_WRITE;
--
- 	/* only write to the hardware if value has changed */
- 	if (cache[reg] != value) {
--		u8 tmp[2] = { reg, value };
-+		u8 tmp[2] = { (reg & AK4104_REG_MASK) | AK4104_WRITE, value };
-+
- 		if (spi_write(spi, tmp, sizeof(tmp))) {
- 			dev_err(&spi->dev, "SPI write failed\n");
- 			return -EIO;
--- 
-1.6.3.3
+Acked-by: Jarkko Nikula <jhnikula@gmail.com>
