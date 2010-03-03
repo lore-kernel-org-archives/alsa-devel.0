@@ -1,116 +1,59 @@
-From: Wei Ni <wni@nvidia.com>
-Subject: RE: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-Date: Wed, 3 Mar 2010 12:06:11 +0800
-Message-ID: <6B4D417B830BC44B8026029FD256F7F1C16A89A11A@HKMAIL01.nvidia.com>
-References: <6B4D417B830BC44B8026029FD256F7F1C068B2BA8B@HKMAIL01.nvidia.com>
-	<s5hmxyrp311.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C068B2BA8C@HKMAIL01.nvidia.com>
- <s5heik3ujy0.wl%tiwai@suse.de>
- <6B4D417B830BC44B8026029FD256F7F1C16A89A118@HKMAIL01.nvidia.com>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Subject: Re: [RFC 3/4] OMAP3: McBSP: Add interface for transmit
+ FIFO state query
+Date: Wed, 03 Mar 2010 08:07:52 +0200
+Message-ID: <1267596472.24345.16.camel@eenurkka-desktop>
+References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1267537191-25254-4-git-send-email-peter.ujfalusi@nokia.com>
+	<1267537920.24345.7.camel@eenurkka-desktop>
+	<20100302160615.51cfbd64.jhnikula@gmail.com>
+Reply-To: ext-eero.nurkkala@nokia.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6B4D417B830BC44B8026029FD256F7F1C16A89A118@HKMAIL01.nvidia.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: 'Pavel Hofman' <pavel.hofman@insite.cz>, 'alsa-devel' <alsa-devel@alsa-project.org>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'akpm' <akpm@linux-foundation.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id C7FA5103807
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 07:08:32 +0100 (CET)
+In-Reply-To: <20100302160615.51cfbd64.jhnikula@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi
-Could we add a new "#define AZX_MAX_SLOTS 8", and use it in the function
-azx_command_addr() and azx_response_addr() to instead of AZX_MAX_CODECS
-
-Thanks
-Wei.
-
------Original Message-----
-From: Wei Ni 
-Sent: Wednesday, March 03, 2010 11:28 AM
-To: 'Takashi Iwai'
-Cc: 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
-Subject: RE: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-
-Hi, Takashi
-I still have a question about AZX_MAX_CODECS.
-In azx_command_addr() and azx_response_addr(), they use AZX_MAX_CODECS like
-If (addr >= AZX_MAX_CODECS) {
-    snd_BUG();
-    addr = 0;
-}
-The azx_max_codes[] could not be used in these functions.
-How could we do in these functions?
-
-Thanks
-Wei.
-
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Tuesday, March 02, 2010 5:55 PM
-To: Wei Ni
-Cc: 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
-Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-
-At Tue, 2 Mar 2010 17:43:28 +0800,
-Wei Ni wrote:
+On Tue, 2010-03-02 at 15:06 +0100, ext Jarkko Nikula wrote:
+> On Tue, 02 Mar 2010 15:52:00 +0200
+> Eero Nurkkala <ext-eero.nurkkala@nokia.com> wrote:
 > 
-> Hi, Takashi
-> 1. About AZX_MAX_CODECS, on our new chipset, the codec_mask=0x31, it means
-> the codec connect on the slot0, slot4, slot5, and on some GT2xx, the codec
-> will connect to slot6 or slot7, although these chip at most have 4 codecs.
-> So I change the AZX_MAX_CODECS to 8 directly.
-> In hda_intel.c, the azx_command_addr(), azx_response_addr(), and
-> azx_codec_create() use the AZX_MAX_CODECS, if it set as 4, the driver will
-> not detect the codecs which connect to slot4~7.
+> > Reading the XBUFFSTAT register is by no means accurate.
+> > IIRC, it reports the buffer status incorrectly about 1/50 times
+> > on average (@ 48000khz); with simple math, it may be read during the DMA
+> > burst. Or is it guaranteed not being read during DMA transfer / have
+> > you otherwise verified the behavior?
+> > 
+> Do you remember how big was this variation? Was it near the burst size
+> or some arbitrary difference?
+> 
+> 
 
-Yeah, I understand it.  But, as mentioned, changing this to *all*
-controller chips is dangerous.
-We have already a quirk for controller chips to set max codecs depending
-on the chip model.  Right now, only teradici chip sets to 1.
+Mostly the samples were good (49/50, @48khz, 2 channels, value polled
+from userpace), but the remaining 1/50 were garbage - and actually
+matched the probability of a simultaneous DMA burst. So the problem is -
+if you read at time t0, and the DMA burst is taking place at the same
+time - you get a value that looks rather random, as when (if) you poll
+the position @ t0 + n uS, the value is (after some usecs) a lot
+different. Or maybe the XBUFFSTAT just isn't reliable at all (regardless
+of DMA bursts etc).
 
-So, add "#define AZX_DEFAULT_CODECS 4", and use this value unless
-azx_max_codecs[] is defined.  And, for the new controller chip
-supporting more than 4, it can has 8 in azx_max_codecs[].
+It's easy to check - at DMA IRQ, read out the XBUFFSTAT... if the range
+is not valid, print a message...(to rule out the DMA bursts).
 
-Is it feasible?
-
-> 2. yes, it's better to merge the hdmi common codes.
-> 3. About ELD, yes, we need to change the Makefile and Kconfig as well.
-> Could you help me to change it.
-
-In sound/pci/hda/Makefile, hda_eld.c is built into snd-hda-codec-intelhdmi
-by the following rule:
-
-snd-hda-codec-intelhdmi-objs :=	patch_intelhdmi.o hda_eld.o
-
-Since now hda_eld.c is used in two modules, this has to be in the common
-place, such as snd-hda-codec.  For this, uncomment the line:
-
-# snd-hda-codec-$(CONFIG_SND_HDA_ELD) += hda_eld.o
-
-and remove hda_eld.o from snd-hda-codec-intelhdmi-objs line.
-
-For Kconfig, right now we have the definition
-
-config SND_HDA_ELD
-	def_bool y
-	depends on SND_HDA_CODEC_INTELHDMI
-
-Change depends on like
-
-	depends on SND_HDA_CODEC_INTELHDMI || SND_HDA_CODEC_NVHDMI
-
-This can be done via "select" instead.  But, we'd merge all hdmi codes
-later, so which way to choose is no big matter.
-
-
-thanks,
-
-Takashi
------------------------------------------------------------------------------------
-This email message is for the sole use of the intended recipient(s) and may contain
-confidential information.  Any unauthorized review, use, disclosure or distribution
-is prohibited.  If you are not the intended recipient, please contact the sender by
-reply email and destroy all copies of the original message.
------------------------------------------------------------------------------------
+- Eero
