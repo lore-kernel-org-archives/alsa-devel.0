@@ -1,19 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [RFC 3/4] OMAP3: McBSP: Add interface for transmit
-	FIFO state query
-Date: Wed, 3 Mar 2010 12:07:44 +0200
-Message-ID: <201003031207.44423.peter.ujfalusi@nokia.com>
-References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100303090324.83d076b6.jhnikula@gmail.com>
-	<201003031202.48598.peter.ujfalusi@nokia.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: ASoC: SAMSUNG: About I2S_v4 support
+Date: Wed, 3 Mar 2010 20:10:32 +0900
+Message-ID: <1b68c6791003030310n64f22a5cse1aa3b59081d782e@mail.gmail.com>
+References: <1b68c6791003030032n7de8a0d8t5395a0a260d92b19@mail.gmail.com>
+	<20100303095412.GA2581@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 39CA22453A
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 11:08:24 +0100 (CET)
-In-Reply-To: <201003031202.48598.peter.ujfalusi@nokia.com>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 999C12455C
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 12:10:34 +0100 (CET)
+Received: by vws15 with SMTP id 15so473042vws.38
+	for <alsa-devel@alsa-project.org>; Wed, 03 Mar 2010 03:10:32 -0800 (PST)
+In-Reply-To: <20100303095412.GA2581@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +23,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 03 March 2010 12:02:48 Ujfalusi Peter (Nokia-D/Tampere) wrote:
-> Anyhow, I have done few tests (McBSP2):
-> printing XBUFFSTAT before trigger:start
-> printing XBUFFSTAT right after trigger:start
-> printing XBUFFSTAT at the pointer call time
-> print at DMA interrupt
-
-In DMA interrupt I only printed out "DMA" and have not printed the XBUFFSTA=
-T.
-XBUFFSTAT is only printed at the next pointer/delay call.
-Probably it would be also good to print at DMA interrupt, if there is a =
-
-demand...
-
-> printing XBUFFSTAT before trigger:stop
-> printing XBUFFSTAT right after trigger:stop
-> =
-
-
--- =
-
-P=E9ter
+T24gV2VkLCBNYXIgMywgMjAxMCBhdCA2OjU0IFBNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gV2VkLCBNYXIgMDMsIDIwMTAgYXQg
+MDU6MzI6MTNQTSArMDkwMCwgamFzc2kgYnJhciB3cm90ZToKPgo+PiBPdGhlcndpc2UsIEkgYW0g
+cGxhbm5pbmcgdG8gcmUtZmFjdG9yKGFzIGFuZCBpZiBuZWVkZWQpIHMzYy1pMnMtdjIuYywKPj4g
+czNjMjQxMi1pMnMuYyBhbmQgczNjNjR4eC1pMnMuYwo+PiBhbmQgYWRkIGEgbmV3IHMzYy1pMnMt
+djQuYyB0byBoYW5kbGUgSTJTX3Y0IGNvbnRyb2xsZXJzLgo+IEFzIEkndmUgc2FpZCB3aGVuIHlv
+dSd2ZSBtZW50aW9uZWQgdGhpcyBpbiB0aGUgcGFzdCBJJ2QgcHJlZmVyIGFuCj4gZXhwbGljaXQg
+SUlTdjQgZHJpdmVyIChzaGFyaW5nIG1vc3Qgb2YgdGhlIGFjdHVhbCBjb2RlIHdpdGggdGhlIGNv
+cmUpCk9mIGNvdXJzZSwgYW5kIHRoYXQncyB3aGF0IEkgaW50ZW5kIHRvIGRvIHdoaWxlICdyZS1m
+YWN0b3JpbmcnLgoKPj4gS2luZGx5IEFDSy9OQUsgdGhpcyBpZGVhIGlmIHlvdSBhcmUgYnVzeSB3
+aXRoIG90aGVyIHN0dWZmIGFuZCBJIGFtIHRvCj4+IHN0YXJ0IHdvcmtpbmcgb24gdGhlIGlzc3Vl
+Lgo+IFBsZWFzZSBhbHNvIHJlbWVtYmVyIHRoYXQgd2UgbmVlZCB0byBnZXQgdGhlIGNsb2NrIEFQ
+SSBjaGFuZ2VzIHRvIGFsbG93Cj4gdGhlIGRyaXZlciB0byBzdGFydC4gwqBJJ3ZlIGJlZW4gY2hh
+c2luZyBwYXRjaGVzIGZvciB0aGVzZSBmb3IgdGhlIHBhc3QKPiBjb3VwbGUgb2Yga2VybmVsIHJl
+bGVhc2VzIGJ1dCBpdCdzIG5vdCBpZGVhbCB0aGF0IEkgbmVlZCB0byBkbyB0aGlzLgpJIGd1ZXNz
+IHdoYXRldmVyIG5lZWRzIHRvIGJlIGRvbmUgZm9yIHRoZSByZWxlYXNlIHZlcnNpb24sIHdpbGwg
+YmUgZG9uZS4KVGhvdWdoIEkgYW0gbm90IHN1cmUgaWYgSSBzaG91bGQgZ2V0IGludG8gbW9kaWZ5
+aW5nIHMzYy1jbG9jayBzdXBwb3J0IGZvcgp0aGUgc2FrZSBvZiBzM2MtYXVkaW8uCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
