@@ -1,17 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: SAMSUNG: About I2S_v4 support
-Date: Wed, 3 Mar 2010 09:54:12 +0000
-Message-ID: <20100303095412.GA2581@opensource.wolfsonmicro.com>
-References: <1b68c6791003030032n7de8a0d8t5395a0a260d92b19@mail.gmail.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: snd_pcm_drop causing lockup with DMix
+Date: Wed, 3 Mar 2010 11:01:51 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1003031101170.28127@eeebox2.perex-int.cz>
+References: <1267371441.14748.22.camel@satellite>
+	<alpine.LNX.2.00.1002281722140.28127@eeebox2.perex-int.cz>
+	<1267377313.14982.0.camel@satellite>
+	<alpine.LNX.2.00.1003010752570.28127@eeebox2.perex-int.cz>
+	<1267487552.11621.2.camel@satellite>
+	<alpine.LNX.2.00.1003021423550.28127@eeebox2.perex-int.cz>
+	<1267575866.1763.1.camel@satellite>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A7631038FE
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 10:54:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1b68c6791003030032n7de8a0d8t5395a0a260d92b19@mail.gmail.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8EDB024422
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 11:01:52 +0100 (CET)
+In-Reply-To: <1267575866.1763.1.camel@satellite>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,25 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: John Lindgren <john.lindgren@tds.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 03, 2010 at 05:32:13PM +0900, jassi brar wrote:
+On Tue, 2 Mar 2010, John Lindgren wrote:
 
-> Otherwise, I am planning to re-factor(as and if needed) s3c-i2s-v2.c,
-> s3c2412-i2s.c and s3c64xx-i2s.c
-> and add a new s3c-i2s-v4.c to handle I2S_v4 controllers.
+> On Tue, 2010-03-02 at 14:25 +0100, Jaroslav Kysela wrote:
+>> Could you provide a simple C program to test this issue? You may modify
+>> alsa-lib/src/test/pcm_min.c for example.
+>
+> There is already one attached to the bug report page:
+>
+> https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=4914
+>
+> Thanks for investigating this.
 
-As I've said when you've mentioned this in the past I'd prefer an
-explicit IISv4 driver (sharing most of the actual code with the core)
-since none of the Samsung documentation covers the IISv4 and IISv2
-blocks as completely independant blocks.  This would make it easier for
-people to find what they need to use.
+This commit should solve this issue:
 
-> Kindly ACK/NAK this idea if you are busy with other stuff and I am to
-> start working on the issue.
+http://git.alsa-project.org/?p=alsa-lib.git;a=commitdiff;h=b9dbee694a94a724670b36f4df1aeceb0dd4a261
 
-Please also remember that we need to get the clock API changes to allow
-the driver to start.  I've been chasing patches for these for the past
-couple of kernel releases but it's not ideal that I need to do this.
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
