@@ -1,21 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCHv2 3/5] ASoC: core: Add delay operation to
- snd_soc_dai_ops
-Date: Wed, 03 Mar 2010 13:28:00 +0000
-Message-ID: <1267622880.3185.2.camel@odin>
+Subject: Re: [PATCHv2 5/5] ASoC: OMAP3: Report delay caused by
+ the internal FIFO
+Date: Wed, 03 Mar 2010 13:28:24 +0000
+Message-ID: <1267622904.3185.3.camel@odin>
 References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1267621689-30337-5-git-send-email-peter.ujfalusi@nokia.com>
+	<1267621689-30337-7-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f216.google.com (mail-ew0-f216.google.com
-	[209.85.219.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8FDE1103978
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 14:28:02 +0100 (CET)
-Received: by mail-ew0-f216.google.com with SMTP id 8so2686153ewy.32
-	for <alsa-devel@alsa-project.org>; Wed, 03 Mar 2010 05:28:02 -0800 (PST)
-In-Reply-To: <1267621689-30337-5-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB7A6103956
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 14:28:27 +0100 (CET)
+Received: by wwi17 with SMTP id 17so671746wwi.38
+	for <alsa-devel@alsa-project.org>; Wed, 03 Mar 2010 05:28:26 -0800 (PST)
+In-Reply-To: <1267621689-30337-7-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,18 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com, ext-eero.nurkkala@nokia.com, linux-omap@vger.kernel.org
+Cc: tony@atomide.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ext-eero.nurkkala@nokia.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 On Wed, 2010-03-03 at 15:08 +0200, Peter Ujfalusi wrote:
-> The delay callback can be used by the core to query the delay
-> on the dai caused by FIFO or delay in the platform side.
-> In case if both CPU and CODEC dai has FIFO the delay reported
-> by each will be added to form the full delay on the chain.
-> If none of the dai has FIFO, than the delay will be kept as
-> zero.
+> Use the new delay calback function to report the delay through
+> ALSA for application caused by the internal FIFO.
 > 
 > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
