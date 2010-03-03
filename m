@@ -1,16 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [patch] oxygen: change || to &&
-Date: Wed, 03 Mar 2010 09:58:06 +0100
-Message-ID: <4B8E249E.2090806@ladisch.de>
-References: <20100303070818.GD5086@bicker>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: SAMSUNG: About I2S_v4 support
+Date: Wed, 3 Mar 2010 09:54:12 +0000
+Message-ID: <20100303095412.GA2581@opensource.wolfsonmicro.com>
+References: <1b68c6791003030032n7de8a0d8t5395a0a260d92b19@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 0A4C71038AF
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 09:58:10 +0100 (CET)
-In-Reply-To: <20100303070818.GD5086@bicker>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2A7631038FE
+	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 10:54:11 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6791003030032n7de8a0d8t5395a0a260d92b19@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,27 +21,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: jassi brar <jassisinghbrar@gmail.com>
+Cc: alsa-devel@alsa-project.org, Ben Dooks <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Dan Carpenter wrote:
-> In the original code the condition was always true (hopefully) because
-> WM8776_HPLVOL is zero.
-> 
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
+On Wed, Mar 03, 2010 at 05:32:13PM +0900, jassi brar wrote:
 
-Thanks; applied.
+> Otherwise, I am planning to re-factor(as and if needed) s3c-i2s-v2.c,
+> s3c2412-i2s.c and s3c64xx-i2s.c
+> and add a new s3c-i2s-v4.c to handle I2S_v4 controllers.
 
-> diff --git a/sound/pci/oxygen/xonar_wm87x6.c b/sound/pci/oxygen/xonar_wm87x6.c
-> index 7754db1..dbc4b89 100644
-> --- a/sound/pci/oxygen/xonar_wm87x6.c
-> +++ b/sound/pci/oxygen/xonar_wm87x6.c
-> @@ -68,7 +68,7 @@ static void wm8776_write(struct oxygen *chip,
->  			 OXYGEN_SPI_CEN_LATCH_CLOCK_LO,
->  			 (reg << 9) | value);
->  	if (reg < ARRAY_SIZE(data->wm8776_regs)) {
-> -		if (reg >= WM8776_HPLVOL || reg <= WM8776_DACMASTER)
-> +		if (reg >= WM8776_HPLVOL && reg <= WM8776_DACMASTER)
->  			value &= ~WM8776_UPDATE;
->  		data->wm8776_regs[reg] = value;
->  	}
+As I've said when you've mentioned this in the past I'd prefer an
+explicit IISv4 driver (sharing most of the actual code with the core)
+since none of the Samsung documentation covers the IISv4 and IISv2
+blocks as completely independant blocks.  This would make it easier for
+people to find what they need to use.
+
+> Kindly ACK/NAK this idea if you are busy with other stuff and I am to
+> start working on the issue.
+
+Please also remember that we need to get the clock API changes to allow
+the driver to start.  I've been chasing patches for these for the past
+couple of kernel releases but it's not ideal that I need to do this.
