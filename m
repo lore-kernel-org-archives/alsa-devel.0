@@ -1,45 +1,29 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCHv2 5/5] ASoC: OMAP3: Report delay caused by
- the internal FIFO
-Date: Wed, 3 Mar 2010 16:30:12 +0200
-Message-ID: <20100303163012.37137bf7.jhnikula@gmail.com>
+Subject: Re: [PATCHv2 4/5] OMAP3: McBSP: Add interface for FIFO caused delay
+ query
+Date: Wed, 3 Mar 2010 16:38:15 +0200
+Message-ID: <20100303163815.34c7ecbe.jhnikula@gmail.com>
 References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1267621689-30337-7-git-send-email-peter.ujfalusi@nokia.com>
-	<1267622904.3185.3.camel@odin>
+	<1267621689-30337-6-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f216.google.com (mail-ew0-f216.google.com
-	[209.85.219.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92AB8103806
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 15:29:25 +0100 (CET)
-Received: by ewy8 with SMTP id 8so2792812ewy.32
-	for <alsa-devel@alsa-project.org>; Wed, 03 Mar 2010 06:29:25 -0800 (PST)
-In-Reply-To: <1267622904.3185.3.camel@odin>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com, Peter Ujfalusi <peter.ujfalusi@nokia.com>, ext-eero.nurkkala@nokia.com, linux-omap@vger.kernel.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1267621689-30337-6-git-send-email-peter.ujfalusi@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: broonie@opensource.wolfsonmicro.com, tony@atomide.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, lrg@slimlogic.co.uk, ext-eero.nurkkala@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 03 Mar 2010 13:28:24 +0000
-Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+On Wed,  3 Mar 2010 15:08:08 +0200
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-> On Wed, 2010-03-03 at 15:08 +0200, Peter Ujfalusi wrote:
-> > Use the new delay calback function to report the delay through
-> > ALSA for application caused by the internal FIFO.
-> > 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> > ---
+> New functions for querying the FIFO caused delay on both
+> TX and RX path.
+> On TX path the return value shows the number of used
+> locations in the FIFO.
+> On RX papth it returns the number of locations to be filled
+> to reach the threshold value (DMA will be triggered to read
+> the data out from the FIFO).
 > 
-> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
 Acked-by: Jarkko Nikula <jhnikula@gmail.com>
