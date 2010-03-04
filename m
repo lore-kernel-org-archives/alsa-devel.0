@@ -1,22 +1,21 @@
-From: Bryan Green <bryan.d.green@nasa.gov>
-Subject: no audio output with TYAN S7025 motherboard and
-	Realtek ALC262
-Date: Wed, 03 Mar 2010 10:54:54 -0800
-Message-ID: <20100303185454.4D36231781@vis06.nas.nasa.gov>
+From: Eero Nurkkala <ext-eero.nurkkala@nokia.com>
+Subject: Re: [RFC 3/4] OMAP3: McBSP: Add interface for transmit
+ FIFO state query
+Date: Thu, 04 Mar 2010 10:46:11 +0200
+Message-ID: <1267692371.24345.30.camel@eenurkka-desktop>
+References: <1267537191-25254-1-git-send-email-peter.ujfalusi@nokia.com>
+	<201003031202.48598.peter.ujfalusi@nokia.com>
+	<1FFEF31EBAA4F64B80D33027D42977602148968E68@NOK-EUMSG-02.mgdnok.nokia.com>
+	<201003041009.49817.peter.ujfalusi@nokia.com>
+Reply-To: ext-eero.nurkkala@nokia.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from pagent2.arc.nasa.gov (pagent2.arc.nasa.gov [128.102.31.162])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92324103961
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 19:54:57 +0100 (CET)
-Received: from vis06.nas.nasa.gov (vis06.nas.nasa.gov [129.99.125.6])
-	by pagent2.arc.nasa.gov (8.12.11.20060308/8.12.11) with ESMTP id
-	o23Issfl008683
-	for <alsa-devel@alsa-project.org>; Wed, 3 Mar 2010 10:54:54 -0800
-Received: from vis06.nas.nasa.gov (localhost [127.0.0.1])
-	by vis06.nas.nasa.gov (Postfix) with ESMTP id 4D36231781
-	for <alsa-devel@alsa-project.org>; Wed,  3 Mar 2010 10:54:54 -0800 (PST)
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id E5E8F103A00
+	for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2010 09:46:59 +0100 (CET)
+In-Reply-To: <201003041009.49817.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,51 +25,134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-Hi,
-I have several systems with a TYAN S7025 motherboard and Realtek ALC262 chipset.
-I have not been able to produce any audio output.  Well, that is except for
-one of the systems: after a variety of tweeks and tests, I got sound working
-on one system, but I do not know what change enabled sound to start working,
-and I have not been able to reproduce the effect on the other systems.
-
-I have tested with kernels up to 2.6.33, and with ALSA version 1.0.22.1.
-For a non-working system, 'alsaconf' gives the following output:
-Unknown hardware: "HDA-Intel" "Realtek ALC262"
-"HDA:10ec0262,10ec0262,00100202" "0x8086" "0x3a3e"
-
-And dmesg gives the following:
-HDA Intel 0000:00:1b.0: PCI INT A -> GSI 22 (level, low) -> IRQ 22
-HDA Intel 0000:00:1b.0: irq 89 for MSI/MSI-X
-HDA Intel 0000:00:1b.0: setting latency timer to 64
-hda_codec: ALC262: BIOS auto-probing.
-autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
-   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
-   hp_outs=0 (0x0/0x0/0x0/0x0/0x0)
-   mono: mono_out=0x0
-   dig-out=0x1e/0x0
-   inputs: mic=0x18, fmic=0x19, line=0x1a, fline=0x0, cd=0x1c, aux=0x0
-   dig-in=0x1f
-realtek: No valid SSID, checking pincfg 0x411111f0 for NID 0x1d
-realtek: Enable default setup for auto mode as fallback
-input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:1b.0/input/input8
-
-For the working system, the dmesg output is the same except for two lines:
-autoconfig: line_outs=1 (0x1b/0x0/0x0/0x0/0x0)
-   inputs: mic=0x18, fmic=0x19, line=0x1a, fline=0x0, cd=0x1c, aux=0x14
-
-Is there a method for tweaking these values on the non-working system to match
-the working system, to see if that works?
-
-I've uploaded the alsa-info output from a non-working system here:
-http://www.alsa-project.org/db/?f=91057bfc12790688f1d257743e53d5d0ec2ce1e2
-
-I've uploaded the alsa-info output from the working system here:
-http://www.alsa-project.org/db/?f=198420f14cd0062713636408640636e6d474cf94
-
-Thanks,
--bryan
+T24gVGh1LCAyMDEwLTAzLTA0IGF0IDA5OjA5ICswMTAwLCBVamZhbHVzaSBQZXRlciAoTm9raWEt
+RC9UYW1wZXJlKQp3cm90ZToKPiBIZWxsbywKPiAKPiBPbiBXZWRuZXNkYXkgMDMgTWFyY2ggMjAx
+MCAyMTowMDo1OCBOdXJra2FsYSBFZXJvLkFuIChFWFQtT2ZmY29kZS9PdWx1KSB3cm90ZToKPiA+
+IEZyb206IFVqZmFsdXNpIFBldGVyCj4gPiAKPiA+ID4gU28gYWNjb3JkaW5nIHRvIFhCVUZTVEFU
+IHdlIGhhdmUgcGxheWVkIG91dCAyODkgc2FtcGxlcy4KPiA+ID4gYmFzZWQgb24gdGhlIHRpbWUg
+d2UgYWN0dWFsbHkgcGxheWVkIDI4OC41Mjggc2FtcGxlcy4KPiA+ID4gCj4gPiA+IEkgd291bGQg
+c2F5IHRoaXMgaXMgcmVhbGx5IGNsb3NlIHRvIHdoYXQgd2Ugd291bGQgZXhwZWN0IHRvIGhhdmU/
+Cj4gPiA+IAo+ID4gPiBOb3RlOiBJIGhhdmUgdXNlZCBwcmludGsgZm9yIHRoZXNlLCB3aGljaCBw
+cmV0dHkgbXVjaCBhbHRlcnMgdGhlIGJlaGF2aW9yCj4gPiA+IGEgYml0IGluIHRpbWluZyB3aXNl
+Li4uCj4gPiA+IAo+ID4gPiAtLQo+ID4gPiBQw6l0ZXIKPiA+IAo+ID4gVGhlcmUgd2FzIHNvbWV0
+aGluZyBsaWtlIHRoaXMsIHJlYWRpbmcgWEJVRkZTVEFUIGFuZCBSQlVGRlNUQVQKPiA+IChhZGph
+Y2VudGx5KSwgYW5kIGNvbXBhcmluZyB0aGUgZGlmZiwgaXQgc2hvdWxkIGJlIDE0NSArLTEgaW4g
+dGhpcyBjYXNlLAo+ID4gYnV0IHRoYXQncyBub3QgdHJ1ZToKPiA+IAo+ID4gKHVzZXNwYWNlIGFw
+cCByZWFkaW5nIHRoZSB2YWx1ZXMgdGhyb3VnaCBhIHN5c2ZzIG5vZGUpOgo+ID4gCj4gPiAxOiB0
+eDogMjQ3LCByeDogMTAxLCAodHgtcngpOiAgMTQ2LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ2Cj4g
+PiAyOiB0eDogMzc3LCByeDogMjMyLCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDog
+MTQ1Cj4gPiAzOiB0eDogMTM2LCByeDogNDcxLCAodHgtcngpOiAtMzM1LCAoNDgwKyh0eC1yeCkp
+JTQ4MDogMTQ1Cj4gPiA0OiB0eDogIDQwLCByeDogMzc1LCAodHgtcngpOiAtMzM1LCAoNDgwKyh0
+eC1yeCkpJTQ4MDogMTQ1Cj4gPiA1OiB0eDogIDYzLCByeDogMzk4LCAodHgtcngpOiAtMzM1LCAo
+NDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiA2OiB0eDogNDQ0LCByeDogMjk5LCAodHgtcngpOiAg
+MTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiA3OiB0eDogMzMwLCByeDogMTg1LCAodHgt
+cngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiA4OiB0eDogMTk4LCByeDogIDUz
+LCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiA5OiB0eDogNDUzLCBy
+eDogMzA4LCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiAxMDogdHg6
+IDQ1OSwgcng6IDMxMywgKHR4LXJ4KTogIDE0NiwgKDQ4MCsodHgtcngpKSU0ODA6IDE0Ngo+ID4g
+MTE6IHR4OiAzNTMsIHJ4OiAyMDgsICh0eC1yeCk6ICAxNDUsICg0ODArKHR4LXJ4KSklNDgwOiAx
+NDUKPiA+IDEyOiB0eDogNDM1LCByeDogMjkwLCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkp
+JTQ4MDogMTQ1Cj4gPiAxMzogdHg6IDQyMSwgcng6IDI3NiwgKHR4LXJ4KTogIDE0NSwgKDQ4MCso
+dHgtcngpKSU0ODA6IDE0NQo+ID4gMTQ6IHR4OiAzOTcsIHJ4OiAyNTEsICh0eC1yeCk6ICAxNDYs
+ICg0ODArKHR4LXJ4KSklNDgwOiAxNDYKPiA+IDE1OiB0eDogMjk3LCByeDogMTUxLCAodHgtcngp
+OiAgMTQ2LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ2Cj4gPiAxNjogdHg6IDM0MSwgcng6IDE5Niwg
+KHR4LXJ4KTogIDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6IDE0NQo+ID4gMTc6IHR4OiAzNDcsIHJ4
+OiAyMDIsICh0eC1yeCk6ICAxNDUsICg0ODArKHR4LXJ4KSklNDgwOiAxNDUKPiA+IDE4OiB0eDog
+Mjk4LCByeDogMTUzLCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiAx
+OTogdHg6IDM0MSwgcng6IDE5NiwgKHR4LXJ4KTogIDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6IDE0
+NQo+ID4gMjA6IHR4OiAxMjEsIHJ4OiA0NTYsICh0eC1yeCk6IC0zMzUsICg0ODArKHR4LXJ4KSkl
+NDgwOiAxNDUKPiA+IDIxOiB0eDogMTA5LCByeDogNDQ0LCAodHgtcngpOiAtMzM1LCAoNDgwKyh0
+eC1yeCkpJTQ4MDogMTQ1Cj4gPiAyMjogdHg6IDQ2NSwgcng6IDMyMCwgKHR4LXJ4KTogIDE0NSwg
+KDQ4MCsodHgtcngpKSU0ODA6IDE0NQo+ID4gMjM6IHR4OiAzMDAsIHJ4OiAxNTUsICh0eC1yeCk6
+ICAxNDUsICg0ODArKHR4LXJ4KSklNDgwOiAxNDUKPiA+IDI0OiB0eDogMjE3LCByeDogIDcyLCAo
+dHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiAyNTogdHg6IDM2MSwgcng6
+IDIxNiwgKHR4LXJ4KTogIDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6IDE0NQo+ID4gMjY6IHR4OiA0
+NDMsIHJ4OiAyOTgsICh0eC1yeCk6ICAxNDUsICg0ODArKHR4LXJ4KSklNDgwOiAxNDUKPiA+IDI3
+OiB0eDogMzI1LCByeDogMTgwLCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1
+Cj4gPiAyODogdHg6IDM5OCwgcng6IDI1MiwgKHR4LXJ4KTogIDE0NiwgKDQ4MCsodHgtcngpKSU0
+ODA6IDE0Ngo+ID4gMjk6IHR4OiAzNDYsIHJ4OiAyMDEsICh0eC1yeCk6ICAxNDUsICg0ODArKHR4
+LXJ4KSklNDgwOiAxNDUKPiA+IDMwOiB0eDogNDc0LCByeDogMzI5LCAodHgtcngpOiAgMTQ1LCAo
+NDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiAzMTogdHg6IDMyMywgcng6IDE3OCwgKHR4LXJ4KTog
+IDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6IDE0NQo+ID4gMzI6IHR4OiAzNDksIHJ4OiAyMDQsICh0
+eC1yeCk6ICAxNDUsICg0ODArKHR4LXJ4KSklNDgwOiAxNDUKPiA+IDMzOiB0eDogMjAyLCByeDog
+IDU3LCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiAzNDogdHg6IDQ2
+Miwgcng6IDMxNywgKHR4LXJ4KTogIDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6IDE0NQo+ID4gMzU6
+IHR4OiAgODcsIHJ4OiA0MjIsICh0eC1yeCk6IC0zMzUsICg0ODArKHR4LXJ4KSklNDgwOiAxNDUK
+PiA+IDM2OiB0eDogNDA3LCByeDogMjYyLCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4
+MDogMTQ1Cj4gPiAzNzogdHg6IDM1NCwgcng6IDIwOSwgKHR4LXJ4KTogIDE0NSwgKDQ4MCsodHgt
+cngpKSU0ODA6IDE0NQo+ID4gMzg6IHR4OiAzNzcsIHJ4OiAyMzIsICh0eC1yeCk6ICAxNDUsICg0
+ODArKHR4LXJ4KSklNDgwOiAxNDUKPiA+IDM5OiB0eDogNDM1LCByeDogMjkwLCAodHgtcngpOiAg
+MTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiA0MDogdHg6IDQ1Niwgcng6IDMxMSwgKHR4
+LXJ4KTogIDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6IDE0NQo+ID4gNDE6IHR4OiA0NjYsIHJ4OiAz
+MjEsICh0eC1yeCk6ICAxNDUsICg0ODArKHR4LXJ4KSklNDgwOiAxNDUKPiA+IDQyOiB0eDogMzQ5
+LCByeDogMjA0LCAodHgtcngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiA0Mzog
+dHg6IDMyOCwgcng6IDE4MywgKHR4LXJ4KTogIDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6IDE0NQo+
+ID4gNDQ6IHR4OiAzODUsIHJ4OiAyNDAsICh0eC1yeCk6ICAxNDUsICg0ODArKHR4LXJ4KSklNDgw
+OiAxNDUKPiA+IDQ1OiB0eDogMTE1LCByeDogNDUwLCAodHgtcngpOiAtMzM1LCAoNDgwKyh0eC1y
+eCkpJTQ4MDogMTQ1Cj4gPiA0NjogdHg6IDI5Nywgcng6IDE1MiwgKHR4LXJ4KTogIDE0NSwgKDQ4
+MCsodHgtcngpKSU0ODA6IDE0NQo+ID4gNDc6IHR4OiAzMzIsIHJ4OiAxODcsICh0eC1yeCk6ICAx
+NDUsICg0ODArKHR4LXJ4KSklNDgwOiAxNDUKPiA+IDQ4OiB0eDogMjk4LCByeDogMTUzLCAodHgt
+cngpOiAgMTQ1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4gPiA0OTogdHg6IDQzMiwgcng6IDI4
+NiwgKHR4LXJ4KTogIDE0NiwgKDQ4MCsodHgtcngpKSU0ODA6IDE0Ngo+ID4gNTA6IHR4OiAgOTks
+IHJ4OiA0MzQsICh0eC1yeCk6IC0zMzUsICg0ODArKHR4LXJ4KSklNDgwOiAxNDUKPiA+IDUxOiB0
+eDogIDk2LCByeDogNDMxLCAodHgtcngpOiAtMzM1LCAoNDgwKyh0eC1yeCkpJTQ4MDogMTQ1Cj4g
+PiA1MjogdHg6IDM4MCwgcng6IDIzNSwgKHR4LXJ4KTogIDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6
+IDE0NQo+ID4gNTM6IHR4OiA0MTcsIHJ4OiAyNzIsICh0eC1yeCk6ICAxNDUsICg0ODArKHR4LXJ4
+KSklNDgwOiAxNDUKPiA+IDU0OiB0eDogMjcyLCByeDogMzM3LCAodHgtcngpOiAgLTY1LCAoNDgw
+Kyh0eC1yeCkpJTQ4MDogNDE1IDwgTk9LCj4gPiA1NTogdHg6IDM5MSwgcng6IDI0NiwgKHR4LXJ4
+KTogIDE0NSwgKDQ4MCsodHgtcngpKSU0ODA6IDE0NQo+ID4gNTY6IHR4OiAzMDUsIHJ4OiAzMzYs
+ICh0eC1yeCk6ICAtMzEsICg0ODArKHR4LXJ4KSklNDgwOiA0NDkgPCBOT0sKPiA+IAo+ID4gd2hh
+dCB3ZW50IHdyb25nPyAodGhlIHBjbSBwb2ludGVyIHcvZG1hIHBvcyBuZXZlciBtaXNzZWQgdGhh
+dAo+ID4gZ3JlYXRseSkKPiAKPiBJIHNlZSB5b3VyIHBvaW50Lgo+IAo+ID4gVmVyeSB1bmxpa2Vs
+eSB0aGF0IGFuIElSUSBqdXN0IGhhcHBlbmVkIHRvIGNvbWUgaW4gYmV0d2VlbiB0aGUKPiA+IHJl
+Z2lzdGVyIHJlYWRzLi53aXRoIHRoYXQgZnJlcXVlbmN5ICg+IDEvNTApCj4gCj4gSSBkb24ndCB0
+aGluayB0aGF0IHRoaXMgaGFzIGFueXRoaW5nIHRvIGRvIHdpdGggSVJRLCBpdCBsb29rcyB0byBt
+ZSBtb3JlIGxpa2UgYW4gCj4gJ2FjY2lkZW50JyBpbiB0aGUgdGltaW5nIG9mIHRoZSByZWFkaW5n
+IHRoZSBidWZmc3RhdCByZWdpc3RlcnMuCj4gCj4gPiBzbyBzdWJqZWN0aXZlbHkgWEJVRkZTVEFU
+IC8gUkJVRkZTVEFUIGFyZSBub3QgdXNlZnVsIGZvcgo+ID4gYW55ICJyZWFsIiB1c2UuLi4KPiAK
+PiBXZWxsLCB5ZXMgYW5kIG5vLiB3ZSBjYW4gZ2V0IGdvb2QgZXN0aW1hdGlvbiB3aXRoIHRoaXMg
+SSB0aGluayBzdGlsbC4KPiAKPiA+IAo+ID4gLSBFZXJvCj4gCj4gSG93IEkgc2VlIHRoaXM6Cj4g
+SW4geW91ciBjb2RlLCB5b3UgaGF2ZSBhIHN5c2ZzIGZpbGUsIHdoaWNoIGNhbiBiZSByZWFkIGZy
+b20gdXNlciBzcGFjZS4KPiBVc2VyIHNwYWNlIHNlbWkgcmFuZG9tbHkgcmVhZGluZyB0aGF0IGZp
+bGUgdG8gZ2V0IHRoZSBidWZmc3RhdCB2YWx1ZXMuCj4gVGhlc2UgcmVnaXN0ZXJzIGFyZSByZWZs
+ZWN0aW5nIHRoZSBidWZmZXIgc3RhdGUgb24gdGhlIEw0IGNsb2NrIGRvbWFpbiwgd2hpY2ggCj4g
+bWVhbnMgdGhhdCB0aGUgYWN0dWFsIHZhbHVlIG1pZ2h0IGRpZmZlci4KPiBTbyBJIHRoaW5rIHdo
+YXQgaGFwcGVucyBpcywgdGhhdCB0aGUgdXNlciBzcGFjZSBoYXBwZW5zIHRvIHJlYWQgdGhlIGJ1
+ZmZzdGF0IAo+IHJlZ2lzdGVycyBtb3N0IG9mIHRoZSB0aW1lLCB3aGVuIG5laXRoZXIgdGhlIFRY
+IG9yIFJYIGlzIGJ1ZmZlciBoYXMgYnVyc3QgRE1BIAo+IGFjY2VzcywgYnV0IHRpbWUgdG8gdGlt
+ZSB5b3UgY2FuIGhpdCBhIHBvaW50ICdieSBhY2NpZGVudCcgb3IganVzdCBiZWNhdXNlIG9mIAo+
+IHRoZSBzdGF0ZSBvZiB0aGUgbW9vbiwgd2hlbiBlaXRoZXIgb2YgdGhlIFRYIG9yL2FuZCBSWCBp
+cyBhY3R1YWxseSB1bmRlciBETUEgCj4gYnVyc3QuIFNpbmNlIHRoaXMgYnVyc3QgaXMgZmFzdCwg
+TDQgZG9tYWluIHJlZ2lzdGVyIGNhbiBub3QgYmUgdXBkYXRlZCBhcyAKPiBmcmVxdWVudGx5LCBz
+byBpdCB3aWxsIHJlZmxlY3QgYSBiaXQgbGF0ZXIgc3RhdGUgb2YgdGhlIGJ1ZmZlci4gSWYgdGhp
+cyBoYXBwZW5zIAo+IHlvdSB3aWxsIGhhdmUgaW5jb25zaXN0ZW50IHJlbGF0aW9uIGJldHdlZW4g
+VFggYW5kIFJYLgo+IAo+IEJ1dCBJIHRoaW5rLCBpZiB5b3UgaGF2ZSBzaW1pbGFyIHN5c2ZzIGZp
+bGUgZm9yIGNvbXBhcmluZyB0aGUgRE1BIHBvaW50ZXJzIHlvdSAKPiB3aWxsIGFsc28gaGl0IHRo
+ZSBzYW1lIHNwb3QuCgpEb24ndCByZWNhbGwgc28uIE1heWJlIHRoZSBETUEgcG9pbnRlciBpcyBu
+b3QgdXBkYXRlZCBkdXJpbmcgYSBidXJzdCBhdAphbGwuCgo+IElmIHlvdSBoYXBwZW5lZCB0byBy
+ZWFkIHRoZSBwb2ludGVycyB3aGVuIG9uZSBvZiB0aGUgc3RyZWFtIGlzIGluIERNQSBidXJzdCwg
+Cj4gdGhhbiB5b3Ugd2lsbCBkZWZpbml0ZWx5IGhhdmUgdGhlIHNhbWUgcHJvYmxlbS4gIAo+IFNv
+IHRoZSBETUEgcG9pbnRlciBjb21wYXJpc29uIGlzICdjb3JyZWN0JyB3aGVuIG5laXRoZXIgb2Yg
+dGhlIHN0cmVhbSBhcmUgaW4gRE1BIAo+IGJ1cnN0Lgo+IFNhbWUgZ29lcyBmb3IgdGhlIGJ1ZmZz
+dGF0IHJlZ2lzdGVyczogaWYgbmVpdGhlciBvZiB0aGUgc3RyZWFtcyBhcmUgaW4gYnVyc3QgCj4g
+dGhleSB3aWxsIHByb3ZpZGUgcHJldHR5IGdvb2QgbnVtYmVycy4KPiAKCkkgZ3Vlc3MgdGhhdCBk
+ZXBlbmRzIG9uIHRoZSB1c2UgY2FzZS4gImxhaXNzZXotZmFpcmUiIHN0eWxlIGFwcGxpY2F0aW9u
+cwpjb3VsZCBqdXN0IHN3YWxsb3cgdGhhdCAtIGJ1dCBhcHBsaWNhdGlvbnMgcmVxdWlyaW5nIHBl
+cmZlY3QgbnVtYmVycyBhcmUKaW4gZGVlcCB0cm91YmxlLgoKPiBTaW5jZSB0aGUgcG9pbnRlciBj
+YWxsYmFjayBpcyBuYXR1cmFsbHkgY2FsbGVkIGFmdGVyIGEgcGVyaW9kIGhhcyBiZWVuIHNlbnQs
+IHRoZSAKPiBETUEgaXMgbm90IGluIGJ1cnN0IGFueW1vcmUsIHNvIHRoZSByZWFkaW5nIG9mIGJ1
+ZmZzdGF0IG9uIHRoZSBnaXZlbiBzdHJlYW0gd2lsbCAKPiBnaXZlIGNsb3NlIGVub3VnaCBlc3Rp
+bWF0aW9uIG9uIHRoZSBkZWxheSBjYXVzZWQgYnkgdGhlIEZJRk8uCj4gCgpJdCdzIGFsd2F5cyBj
+YWxsZWQgYXQgdGhhdCBwb2ludCwgYnV0IHRoZSB1c2VyIG1heSBiZSBpbnRlcmVzdGVkIG9mIHRo
+YXQKYXQgYW55IGdpdmVuIHRpbWUuCgo+IEJ1dCB5ZXMsIGFzIHlvdSBtZW50aW9uZWQgaW4geW91
+ciBtYWlsLCB0aGlzIGVzdGltYXRpb24gY2FuIGJlIGRvbmUgdXNpbmcgCj4gdGltZXN0YW1wIGlu
+IERNQSBjb21wbGV0aW9uIGhhbmRsZXIsIGFuZCB0aGFuIGNhbGN1bGF0ZSB0aGUgZGVsYXkgYmFz
+ZWQgb24gdGhlIAo+IHRpbWVzdGFtcCB3ZSBnb3QsIHRoZSB0aHJlc2hvbGQsIGFuZCB0aGUgc2l6
+ZSBvZiB0aGUgRklGTyBvbiB0aGUgZ2l2ZW4gTWNCU1AgCj4gcG9ydC4KPiAKPiAKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
