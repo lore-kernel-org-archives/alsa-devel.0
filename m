@@ -1,16 +1,23 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Use LPIB for Dell Latitude 131L
-Date: Thu, 4 Mar 2010 09:50:21 -0500
-Message-ID: <604760771003040650p5d839833gc5a520ddb4afaef7@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 1/3] ALSA: usb: move ua101 driver
+Date: Thu, 4 Mar 2010 16:16:27 +0100
+Message-ID: <20100304151627.GY9007@buzzloop.caiaq.de>
+References: <1267194883-6854-1-git-send-email-daniel@caiaq.de>
+	<1267194883-6854-2-git-send-email-daniel@caiaq.de>
+	<4B8BA4A3.1060506@ladisch.de>
+	<20100301140129.GI28972@buzzloop.caiaq.de>
+	<s5haaus16gu.wl%tiwai@suse.de>
+	<20100301141848.GJ28972@buzzloop.caiaq.de>
+	<s5h635g15p2.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00504502b000db56050480fab7ab
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f191.google.com (mail-px0-f191.google.com
-	[209.85.216.191])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91DA310382A
-	for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2010 15:50:23 +0100 (CET)
-Received: by pxi29 with SMTP id 29so193132pxi.5
-	for <alsa-devel@alsa-project.org>; Thu, 04 Mar 2010 06:50:21 -0800 (PST)
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 12DE21037F7
+	for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2010 16:16:31 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5h635g15p2.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,61 +27,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, stable@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
---00504502b000db56050480fab7ab
-Content-Type: text/plain; charset=UTF-8
+On Mon, Mar 01, 2010 at 03:23:37PM +0100, Takashi Iwai wrote:
+> At Mon, 1 Mar 2010 15:18:48 +0100,
+> Daniel Mack wrote:
+> > 
+> > Clemens fixes only make sense for v2 of the USB audio spec, which isn't
+> > fully supported yet. IOW, the code as it will go into 2.6.34 is not able
+> > to support that, with or without my refactoring. So rebasing them
+> > doesn't make sense IMO.
+> 
+> OK, then we can merge them together later.
 
-Hi,
+Any plan on when to do that? I'm not in a hurry really, but I see the
+usbaudio driver moving on, so merging would need some manual backporting
+already. I can do that if you want and prepare a new patchset.
 
-Please apply the following patch against sound-2.6 master HEAD
-(applies with tweaking against 2.6.32.x) to work around hardware
-issues on Dell Latitude 131L.
+Btw - I'm curious how the commits e61e642c and 864c11080 made it to your
+tree. Wasn't the alsa-devel list copied for the patch or am I losing
+email?
 
-Best,
--Dan
-
---00504502b000db56050480fab7ab
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-ALSA-hda-Use-LPIB-for-Dell-Latitude-131L.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Use-LPIB-for-Dell-Latitude-131L.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g6do8wd90
-
-RnJvbSA2YzE1NTk0YzVhMjk3YWM5ZTk3N2U2ODM5N2FmZmViMGQ5OTYwZGYwIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFdlZCwgMyBNYXIgMjAxMCAxODoyNDoyNiAtMDUwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
-IGhkYTogVXNlIExQSUIgZm9yIERlbGwgTGF0aXR1ZGUgMTMxTAoKQnVnTGluazogaHR0cHM6Ly9s
-YXVuY2hwYWQubmV0L2J1Z3MvNTMwMzQ2CgpUaGUgT1IgaGFzIHZlcmlmaWVkIHRoYXQgcG9zaXRp
-b25fZml4PTEgaXMgbmVjZXNzYXJ5IHRvIHdvcmsgYXJvdW5kCmVycm9ycyBvbiBoaXMgbWFjaGlu
-ZS4KClJlcG9ydGVkLWJ5OiBUb20gTG91d3JpZXIKQ2M6IDxzdGFibGVAa2VybmVsLm9yZz4KU2ln
-bmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1YnVudHUuY29tPgotLS0KIHNvdW5k
-L3BjaS9oZGEvaGRhX2ludGVsLmMgfCAgICAxICsKIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRp
-b25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvaGRhX2lu
-dGVsLmMgYi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCmluZGV4IGQ1YzkzYWQuLjk2YjM0OTAg
-MTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKKysrIGIvc291bmQvcGNpL2hk
-YS9oZGFfaW50ZWwuYwpAQCAtMjI2Myw2ICsyMjYzLDcgQEAgc3RhdGljIGludCBhenhfZGV2X2Zy
-ZWUoc3RydWN0IHNuZF9kZXZpY2UgKmRldmljZSkKIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWly
-ayBwb3NpdGlvbl9maXhfbGlzdFtdIF9fZGV2aW5pdGRhdGEgPSB7CiAJU05EX1BDSV9RVUlSSygw
-eDEwMjgsIDB4MDFjYywgIkRlbGwgRDgyMCIsIFBPU19GSVhfTFBJQiksCiAJU05EX1BDSV9RVUlS
-SygweDEwMjgsIDB4MDFkZSwgIkRlbGwgUHJlY2lzaW9uIDM5MCIsIFBPU19GSVhfTFBJQiksCisJ
-U05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDFmNiwgIkRlbGwgTGF0aXR1ZGUgMTMxTCIsIFBPU19G
-SVhfTFBJQiksCiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MzA2ZCwgIkhQIGR2MyIsIFBPU19G
-SVhfTFBJQiksCiAJU05EX1BDSV9RVUlSSygweDExMDYsIDB4MzI4OCwgIkFTVVMgTTJWLU1YIFNF
-IiwgUE9TX0ZJWF9MUElCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA0MywgMHg4MTNkLCAiQVNVUyBQ
-NUFEMiIsIFBPU19GSVhfTFBJQiksCi0tIAoxLjcuMAoK
---00504502b000db56050480fab7ab
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---00504502b000db56050480fab7ab--
+Thanks,
+Daniel
