@@ -1,154 +1,74 @@
-From: Wei Ni <wni@nvidia.com>
-Subject: RE: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-Date: Thu, 4 Mar 2010 19:46:17 +0800
-Message-ID: <6B4D417B830BC44B8026029FD256F7F1C16B1AD557@HKMAIL01.nvidia.com>
-References: <6B4D417B830BC44B8026029FD256F7F1C068B2BA8B@HKMAIL01.nvidia.com>
-	<s5hmxyrp311.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C068B2BA8C@HKMAIL01.nvidia.com>
-	<s5heik3ujy0.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16A89A118@HKMAIL01.nvidia.com>
-	<6B4D417B830BC44B8026029FD256F7F1C16A89A11A@HKMAIL01.nvidia.com>
-	<s5haaupoqew.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16A89A11C@HKMAIL01.nvidia.com>
-	<s5htysxm5yo.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16B1AD54C@HKMAIL01.nvidia.com>
-	<s5hzl2ol8qu.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16B1AD554@HKMAIL01.nvidia.com>
-	<s5h1vg0qrrr.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16B1AD555@HKMAIL01.nvidia.com>
-	<s5hwrxspblg.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16B1AD556@HKMAIL01.nvidia.com>
- <s5htyswpb18.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: Add delay information for Samsung IISv2
+	DAIs
+Date: Thu,  4 Mar 2010 12:05:58 +0000
+Message-ID: <1267704358-31501-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5htyswpb18.wl%tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: 'Pavel Hofman' <pavel.hofman@insite.cz>, 'alsa-devel' <alsa-devel@alsa-project.org>, 'linux-kernel' <linux-kernel@vger.kernel.org>, 'akpm' <akpm@linux-foundation.org>, Wu Fengguang <fengguang.wu@intel.com>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5677710382A
+	for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2010 13:06:02 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>, Jassi <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Ok, I will give you the patch tomorrow.
+Report the current FIFO depth when delay is queried. The FIFO is only
+16 frames deep so the latency will be at most a couple of miliseconds
+(and we tend to end up reporting zero most of the time) but it may
+help some applications.
 
+Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+---
+ sound/soc/s3c24xx/s3c-i2s-v2.c |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de] 
-Sent: Thursday, March 04, 2010 7:44 PM
-To: Wei Ni
-Cc: 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'; Wu Fengguang
-Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-
-At Thu, 4 Mar 2010 19:37:52 +0800,
-Wei Ni wrote:
-> 
-> Do you mean you will check in my patch first, and then I give you the
-> additional patch for adding EXPORT_SYMBOL() in hda_eld.c?
-
-Yes.  I need the integration tests first.
-Meanwhile, prepare your patch on the top of your current patches.
-Feel free to post it at any time.
-
-After that, we can merge Fengguang's patch_hdmi.c change on that.
-
-
-thanks,
-
-Takashi
-
-
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de] 
-> Sent: Thursday, March 04, 2010 7:31 PM
-> To: Wei Ni
-> Cc: 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
-> Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-> 
-> At Thu, 4 Mar 2010 19:09:29 +0800,
-> Wei Ni wrote:
-> > 
-> > Hi, Takashi
-> > I test my patch, it build successful when CONFIG_SND_HDA_*=y.
-> > Could you give me your build error messages?
-> 
-> Sorry, it's CONFIG_SND_HDA*=m.  Then load two modules, so you'll have
-> two identical objects in different modules.
-> 
-> OTOH, if it's no exported symbol, it might coexist.  Hmm.
-> 
-> If you get no errors with it, then it's fine as an intermediate state.
-> Please give the additional patch on them for further fixes.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > Thanks
-> > Wei.
-> > nvpublic
-> > 
-> > -----Original Message-----
-> > From: Takashi Iwai [mailto:tiwai@suse.de] 
-> > Sent: Thursday, March 04, 2010 6:57 PM
-> > To: Wei Ni
-> > Cc: 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
-> > Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-> > 
-> > At Thu, 4 Mar 2010 18:46:59 +0800,
-> > Wei Ni wrote:
-> > > 
-> > > Hi, Takashi
-> > > I think we can submit my patch first,
-> > 
-> > But your patch breaks the build when CONFIG_SND_HDA_*=y.
-> > So, it should be fixed in your patch.
-> > 
-> > 
-> > thanks,
-> > 
-> > Takashi
-> > 
-> > > then generate another patch
-> > > to add EXPORT_SYMBOL() in hda_eld.c, and change Makefile to remove
-> > > hda_eld.o from snd-hda-codec-xxhdmi-objs.
-> > > 
-> > > Thanks
-> > > Wei.
-> > > nvpublic
-> > > 
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de] 
-> > > Sent: Thursday, March 04, 2010 5:47 PM
-> > > To: Wei Ni
-> > > Cc: 'Pavel Hofman'; 'alsa-devel'; 'linux-kernel'; 'akpm'
-> > > Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-> > > 
-> > > At Thu, 4 Mar 2010 10:21:39 +0800,
-> > > Wei Ni wrote:
-> > > > 
-> > > > Hi, Takashi
-> > > > 1. Yes, it can works for all Nvidia controller.
-> > > 
-> > > OK.
-> > > 
-> > > > 2. The hda_eld.o doesn't export any symbols.
-> > > > I tried to put hda_eld.o to snd-had-codec-*, and remove had_eldo.o
-> > > > from snd-had-codec-intelhdmi-objs, but it will build error. It need
-> > > > to modify hda_eld.c to export symbols, it will add many changes.
-> > > 
-> > > Yes, this is unavoidable.  Please add EXPORT_SYMBOL()'s
-> > > appropriately.
-> > > 
-> > > We can reduce them again once after all HDMI stuff is merged into
-> > > one.
-> > > 
-> > > 
-> > > thanks,
-> > > 
-> > > Takashi
-> > > 
-> > 
-> 
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
+index e994d83..04a00fa 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.c
++++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
+@@ -550,6 +550,21 @@ static int s3c2412_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai,
+ 	return 0;
+ }
+ 
++static long s3c2412_i2s_delay(struct snd_pcm_substream *substream,
++			     struct snd_soc_dai *dai)
++{
++	struct s3c_i2sv2_info *i2s = to_info(dai);
++	u32 reg = readl(i2s->regs + S3C2412_IISFIC);
++	int delay;
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		delay = S3C2412_IISFIC_TXCOUNT(reg);
++	else
++		delay = S3C2412_IISFIC_RXCOUNT(reg);
++
++	return delay;
++}
++
+ /* default table of all avaialable root fs divisors */
+ static unsigned int iis_fs_tab[] = { 256, 512, 384, 768 };
+ 
+@@ -736,6 +751,10 @@ int s3c_i2sv2_register_dai(struct snd_soc_dai *dai)
+ 	ops->set_fmt = s3c2412_i2s_set_fmt;
+ 	ops->set_clkdiv = s3c2412_i2s_set_clkdiv;
+ 
++	/* Allow overriding by (for example) IISv4 */
++	if (!ops->delay)
++		ops->delay = s3c2412_i2s_delay,
++
+ 	dai->suspend = s3c2412_i2s_suspend;
+ 	dai->resume = s3c2412_i2s_resume;
+ 
+-- 
+1.7.0
