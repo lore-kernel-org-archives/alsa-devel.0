@@ -1,14 +1,18 @@
-From: Meelis Roos <mroos@linux.ee>
-Subject: [PATCH] fix jazz16 compile (udelay)
-Date: Thu, 4 Mar 2010 20:33:07 +0200 (EET)
-Message-ID: <alpine.SOC.1.00.1003042030460.4679@math.ut.ee>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [RFC 0/4] FIFO caused playback delay (latency)
+	handling in soc
+Date: Fri, 5 Mar 2010 09:19:00 +0800
+Message-ID: <4f3252891003041719h3c492e5mbde9f1c0a5a11705@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.it.da.ut.ee (smtp1.it.da.ut.ee [193.40.5.66])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9369E2444F
-	for <alsa-devel@alsa-project.org>; Thu,  4 Mar 2010 19:33:08 +0100 (CET)
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B0AB103822
+	for <alsa-devel@alsa-project.org>; Fri,  5 Mar 2010 02:19:02 +0100 (CET)
+Received: by pvg16 with SMTP id 16so905661pvg.38
+	for <alsa-devel@alsa-project.org>; Thu, 04 Mar 2010 17:19:00 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,28 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Linux Kernel list <linux-kernel@vger.kernel.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-While trying to compile jazz16 isa sound driver on alpha (2.6.33+git), I 
-found a compile failure in jazz16.c (udelay is unknown). Fix it by 
-including delay.h.
+>> Do soc support snd_pcm_rewind() and snd_pcm_forward ?
 
-Signed-foo-by: Meelis Roos <mroos@linux.ee>
+>>No driver demand yet, though it'd be trivially implemented if anyone
+>>wanted to do it.
 
-diff --git a/sound/isa/sb/jazz16.c b/sound/isa/sb/jazz16.c
-index 8d21a3f..8ccbcdd 100644
---- a/sound/isa/sb/jazz16.c
-+++ b/sound/isa/sb/jazz16.c
-@@ -14,6 +14,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/io.h>
-+#include <linux/delay.h>
- #include <asm/dma.h>
- #include <linux/isa.h>
- #include <sound/core.h>
+if size of fifo is around 1x ~ 3x fames
 
-
--- 
-Meelis Roos (mroos@linux.ee)
+How accucate do those media player need to allow A/V lip sync ,
+Video is about 24 ~ 30 frames per seconds  and audio is 48000Hz ?
