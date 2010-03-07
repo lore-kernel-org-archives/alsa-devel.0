@@ -1,19 +1,27 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: 2.6.30-rc8 skipping regression also affects cmipci
-Date: Sun, 7 Mar 2010 12:41:14 +0800
-Message-ID: <4f3252891003062041p69979f08o4bed1ee13ee27027@mail.gmail.com>
-References: <hgbiph$4kr$1@ger.gmane.org> <hmhs3e$g7g$1@dough.gmane.org>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Sun, 7 Mar 2010 11:21:38 -0800
+Message-ID: <a3ef07921003071121r24979a0breac27e3b0475bbcb@mail.gmail.com>
+References: <6B4D417B830BC44B8026029FD256F7F1C068B2BA8B@HKMAIL01.nvidia.com>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD554@HKMAIL01.nvidia.com>
+	<s5h1vg0qrrr.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD555@HKMAIL01.nvidia.com>
+	<s5hwrxspblg.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD556@HKMAIL01.nvidia.com>
+	<s5htyswpb18.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD557@HKMAIL01.nvidia.com>
+	<s5hvddcnlr6.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD558@HKMAIL01.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0667B1037EA
-	for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2010 05:41:15 +0100 (CET)
-Received: by pwj10 with SMTP id 10so2876704pwj.38
-	for <alsa-devel@alsa-project.org>; Sat, 06 Mar 2010 20:41:14 -0800 (PST)
-In-Reply-To: <hmhs3e$g7g$1@dough.gmane.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id DA29D243EE
+	for <alsa-devel@alsa-project.org>; Sun,  7 Mar 2010 20:21:40 +0100 (CET)
+Received: by vws17 with SMTP id 17so103227vws.38
+	for <alsa-devel@alsa-project.org>; Sun, 07 Mar 2010 11:21:39 -0800 (PST)
+In-Reply-To: <6B4D417B830BC44B8026029FD256F7F1C16B1AD558@HKMAIL01.nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,59 +31,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Wei Ni <wni@nvidia.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Wu Fengguang <fengguang.wu@intel.com>, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-2010/3/2 Fr=E9d=E9ric Bri=E8re <fbriere@fbriere.net>
+I think this may be relevant to this subject, if not then my apologies.
 
-> Fr=E9d=E9ric Bri=E8re <fbriere@fbriere.net> wrote:
-> > In so doing, I noticed infrequent occurrences of audio skipping, which I
-> > managed to bisect down to c87d973.  It would appear that this commit
-> > also affects cmipci (CMI8738), albeit not as badly as it did for
->
-> Apparently, this is also causing crashes for PulseAudio users:
-> <https://bugzilla.redhat.com/show_bug.cgi?id=3D524385>.  (My thanks to
-> Masanari Iida for this pointer.)
->
-> Again, if there's anything I can do to help, please let me know.  And
-> thanks for your hard work!
->
->
-> -
+I've just installed a GT220 card and was able to get audio-over-hdmi
+working by compiling the snapshot drivers from 20100307 which contain
+Wei's new code.  I further had to patch the driver to recognize my
+card with:
 
+--- alsa-driver-orig/alsa-kernel/pci/hda/patch_nvhdmi.c 2010-03-06
+18:00:12.000000000 -0800
++++ alsa-driver/alsa-kernel/pci/hda/patch_nvhdmi.c      2010-03-06
+18:02:00.000000000 -0800
+@@ -1335,6 +1335,8 @@ static struct hda_codec_preset snd_hda_p
+          .patch = patch_nvhdmi_8ch_89 },
+        { .id = 0x10de000b, .name = "GT21x HDMI",
+          .patch = patch_nvhdmi_8ch_89 },
++       { .id = 0x10de000a, .name = "GT220 HDMI",
++         .patch = patch_nvhdmi_8ch_89 },
+        { .id = 0x10de000d, .name = "GT240 HDMI",
+          .patch = patch_nvhdmi_8ch_89 },
+        {} /* terminator */
+@@ -1347,6 +1349,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0006"
+ MODULE_ALIAS("snd-hda-codec-id:10de0007");
+ MODULE_ALIAS("snd-hda-codec-id:10de0067");
+ MODULE_ALIAS("snd-hda-codec-id:10de8001");
++MODULE_ALIAS("snd-hda-codec-id:10de000a");
+ MODULE_ALIAS("snd-hda-codec-id:10de000c");
+ MODULE_ALIAS("snd-hda-codec-id:10de000b");
+ MODULE_ALIAS("snd-hda-codec-id:10de000d");
 
-Why  PA sometime use snd_pcm_avail() and sometime use snd_pcm_delay() ?
+This seems to work fine when running VDR but if I do anything else
+like upgrade packages, compile something, or maybe create a bz2, then
+I start to see _a lot_ of the following in my xine log:
 
-pulseaudio[2114]: alsa-util.c: snd_pcm_avail() returned a value that is
-exceptionally large: 18446744073709549460 bytes (418293516398 ms).
-pulseaudio[2114]: alsa-util.c: Most likely this is a bug in the ALSA driver
-'snd_cmipci'. Please report this issue to the ALSA developers.
-pulseaudio[2114]: alsa-util.c: snd_pcm_dump():
-pulseaudio[2114]: alsa-util.c: Hardware PCM card 0 'C-Media CMI8738' device=
- 0
-subdevice 0
-pulseaudio[2114]: alsa-util.c: Its setup is:
-pulseaudio[2114]: alsa-util.c:   stream       : PLAYBACK
-pulseaudio[2114]: alsa-util.c:   access       : MMAP_INTERLEAVED
-pulseaudio[2114]: alsa-util.c:   format       : S16_LE
-pulseaudio[2114]: alsa-util.c:   subformat    : STD
-pulseaudio[2114]: alsa-util.c:   channels     : 2
-pulseaudio[2114]: alsa-util.c:   rate         : 44100
-pulseaudio[2114]: alsa-util.c:   exact rate   : 44100 (44100/1)
-pulseaudio[2114]: alsa-util.c:   msbits       : 16
-pulseaudio[2114]: alsa-util.c:   buffer_size  : 16384
-pulseaudio[2114]: alsa-util.c:   period_size  : 8192
-pulseaudio[2114]: alsa-util.c:   period_time  : 185759
-pulseaudio[2114]: alsa-util.c:   tstamp_mode  : ENABLE
-pulseaudio[2114]: alsa-util.c:   period_step  : 1
-pulseaudio[2114]: alsa-util.c:   avail_min    : 15886
-pulseaudio[2114]: alsa-util.c:   period_event : 0
-pulseaudio[2114]: alsa-util.c:   start_threshold  : -1
-pulseaudio[2114]: alsa-util.c:   stop_threshold   : 4611686018427387904
-pulseaudio[2114]: alsa-util.c:   silence_threshold: 0
-pulseaudio[2114]: alsa-util.c:   silence_size : 0
-pulseaudio[2114]: alsa-util.c:   boundary     : 4611686018427387904
-pulseaudio[2114]: alsa-util.c:   appl_ptr     : 4227619
-pulseaudio[2114]: alsa-util.c:   hw_ptr       : 4210696
-pulseaudio[2114]: alsa-util.c: snd_pcm_delay() returned a value that is
-exceptionally large: 329472 bytes (1867 ms).
+pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed.
+
+With the old code this didn't happen.  However, my setup was an 8400gs
+using SPDIF OUT from my mainboard to SPDIF IN on the card.  Then using
+a dvi->hdmi cable into the tv.
+
+Again, I apologize if I'm posting this in the wrong place.
+
+Best regards.
