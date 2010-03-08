@@ -1,24 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
-	cards, especially Aureon 5.1 MkII
-Date: Mon, 8 Mar 2010 17:06:57 +0800
-Message-ID: <4f3252891003080106j3d3e74f3h6b3a98ae9f471260@mail.gmail.com>
-References: <20100215192451.GA17938@tango.0pointer.de>
-	<4B7A5268.5050704@ladisch.de>
-	<20100216142633.GA25489@tango.0pointer.de>
-	<4f3252891002161930i25d411ap6c0b9ad8977f336e@mail.gmail.com>
-	<20100217151941.GB4181@tango.0pointer.de>
+From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Subject: Re: [PATCH 3/5] ASoC: DaVinci: CQ93VC Voice Codec
+Date: Mon, 08 Mar 2010 11:26:47 -0600
+Message-ID: <4B953357.9080904@ridgerun.com>
+References: <1264095660-1323-1-git-send-email-miguel.aguilar@ridgerun.com>
+	<20100125111104.GC22909@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 92A6C103802
-	for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2010 10:06:59 +0100 (CET)
-Received: by gyg13 with SMTP id 13so262562gyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 08 Mar 2010 01:06:57 -0800 (PST)
-In-Reply-To: <20100217151941.GB4181@tango.0pointer.de>
+Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 63FB62454C
+	for <alsa-devel@alsa-project.org>; Mon,  8 Mar 2010 18:30:56 +0100 (CET)
+In-Reply-To: <20100125111104.GC22909@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,35 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, nsekhar@ti.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/17 Lennart Poettering <mznyfn@0pointer.de>
+Hi Mark,
 
-> On Wed, 17.02.10 11:30, Raymond Yau (superquad.vortex2@gmail.com) wrote:
->
-> >
-> > 2010/2/16 Lennart Poettering <mznyfn@0pointer.de>
-> >
-> > > On Tue, 16.02.10 09:08, Clemens Ladisch (clemens@ladisch.de) wrote:
-> > >
->
-> > >
-> > >
-> > if the program use a format FLOAT_LE  which is not supported by the
-> hardware
-> > and need to use plughw , you have already added error ( resampling and
-> > format conversion ) to the result
->
-> That numeric noise is neglible in contrast to the big (20dB or so?)
-> discrepancy I am seeing here.
->
-> Lennart
->
+What is the status of this patch series?, I'm still missing the change pointed 
+below for third patch.
 
+Regards,
+Miguel Aguilar
 
-For HDA , some codec can playback/record in 16 , 20, 24 or 32 bits , if you
-are using non-native format ,
-
-I think there should be some practical difference when HDA codec use 16 ,
-24, or 32 bits for running your test
+Mark Brown wrote:
+> On Thu, Jan 21, 2010 at 11:41:00AM -0600, miguel.aguilar@ridgerun.com wrote:
+> 
+>> +static __init int cq93vc_codec_probe(struct platform_device *pdev)
+>> +{
+> 
+> ...
+> 
+>> +	cq93vc_codec = codec;
+>> +
+>> +	ret = snd_soc_register_dai(&cq93vc_dai);
+>> +	if (ret != 0) {
+>> +		dev_err(davinci_vc->dev, "could register dai\n");
+>> +		goto fail1;
+>> +	}
+>> +	return 0;
+> 
+> There should also be a snd_soc_register_codec() before this, and
+> similarly on the remove.  Otherwise this looks good.
