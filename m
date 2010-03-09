@@ -1,15 +1,15 @@
-From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH] ASoC: bf5xx-sport: use common SPORT code for
-	MMR info
-Date: Tue,  9 Mar 2010 12:58:14 -0500
-Message-ID: <1268157494-13447-1-git-send-email-vapier@gentoo.org>
+From: Christian Wolf <wolflpz@web.de>
+Subject: Re: ALSA SDL VORBIS playback problem
+Date: Tue, 9 Mar 2010 19:00:43 +0100 (CET)
+Message-ID: <12959466.188846.1268157643906.JavaMail.fmail@mwmweb068>
+References: <7299058.27442.1267552227471.JavaMail.fmail@mwmweb068>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 33680103827
-	for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2010 18:54:58 +0100 (CET)
+Received: from fmmailgate01.web.de (fmmailgate01.web.de [217.72.192.221])
+	by alsa0.perex.cz (Postfix) with ESMTP id EDEF32443D
+	for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2010 19:00:44 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Barry Song <barry.song@analog.com>
+To: =?UTF-8?Q?Daniel_Gl=C3=B6ckner?= <dg@emlix.com>
+Cc: Alex Austin <circuitsoft.alex@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Barry Song <barry.song@analog.com>
-
-No point in duplicating this structure layout in each driver.
-
-Signed-off-by: Barry Song <barry.song@analog.com>
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
-this is fine for 2.6.34 or 2.6.35
-
- sound/soc/blackfin/bf5xx-sport.h |   28 +---------------------------
- 1 files changed, 1 insertions(+), 27 deletions(-)
-
-diff --git a/sound/soc/blackfin/bf5xx-sport.h b/sound/soc/blackfin/bf5xx-sport.h
-index 2e63dea..a86e8cc 100644
---- a/sound/soc/blackfin/bf5xx-sport.h
-+++ b/sound/soc/blackfin/bf5xx-sport.h
-@@ -34,33 +34,7 @@
- #include <linux/wait.h>
- #include <linux/workqueue.h>
- #include <asm/dma.h>
--
--struct sport_register {
--	u16 tcr1;	u16 reserved0;
--	u16 tcr2;	u16 reserved1;
--	u16 tclkdiv;	u16 reserved2;
--	u16 tfsdiv;	u16 reserved3;
--	u32 tx;
--	u32 reserved_l0;
--	u32 rx;
--	u32 reserved_l1;
--	u16 rcr1;	u16 reserved4;
--	u16 rcr2;	u16 reserved5;
--	u16 rclkdiv;	u16 reserved6;
--	u16 rfsdiv;	u16 reserved7;
--	u16 stat;	u16 reserved8;
--	u16 chnl;	u16 reserved9;
--	u16 mcmc1;	u16 reserved10;
--	u16 mcmc2;	u16 reserved11;
--	u32 mtcs0;
--	u32 mtcs1;
--	u32 mtcs2;
--	u32 mtcs3;
--	u32 mrcs0;
--	u32 mrcs1;
--	u32 mrcs2;
--	u32 mrcs3;
--};
-+#include <asm/bfin_sport.h>
- 
- #define DESC_ELEMENT_COUNT 9
- 
--- 
-1.7.0.2
+bGlidHJlbW9yIGZpeGVkIHRoZSBwcm9ibGVtLiBpdCBzZWVtcyB0aGUgYXJtIGNwdSB3YXMgdG8g
+YnVzeSB3aXRoIGRlY29kaW5nIG9nZyBmaWxlcyB0aHJ1IHRoZSB2b3JiaXMvb2dnIGZsb2F0aW5n
+IHBvaW50IGxpYnJhcmllcy4KCnRoZXJlZm9yZSBpIGRpZCB0aGUgZm9sbG93aW5nOgoKMS4gaSBk
+b3dubG9hZGVkIHRoZSBzb3VyY2VzIGZvciBsaWJ0cmVtb3IgZnJvbSB0aGUgc3ZuOiBbaHR0cDov
+L3N2bi54aXBoLm9yZy90cnVuay9UcmVtb3IvXQoyLiBjcm9zcyBjb21waWxlZCB0aGVtIGZvciBt
+eSBhcm0gYm9hcmQKMy4gaSBhbHNvIGhhZCB0byBjcm9zcyBjb21waWxlIHRoZSBTRExfbWl4ZXIg
+bGlicmFyeSBhZ2FpbiBieSBhZGRpbmcgdGhlIHBhcmFtZXRlciAiLS1lbmFibGUtbXVzaWMtb2dn
+LXRyZW1vciIgdG8gdGhlIGNvbmZpZ3VyZSBjb21tYW5kCgpUaGVzZSBzdGVwcyBmaW5hbGx5IGZp
+eGVkIHRoZSBidWZmZXIgdW5kZXJydW4gcHJvYmxlbSBjb21wbGV0ZWx5LgoKVGhhbmtzIGZvciB0
+aGUgaGVscCEhIQoKQ2hyaXN0aWFuCgo8NTNiYWEyNGExMDAzMDIxMTA5eGUxYzc2ZGVrYzdmMzkw
+YTJhODUxZGYyOEBtYWlsLmdtYWlsLmNvbT4sCiA8NEI4RDZGMDIuMTA2MDYwOEBlbWxpeC5jb20+
+CkluLVJlcGx5LVRvOiA8NEI4RDZGMDIuMTA2MDYwOEBlbWxpeC5jb20+ClN1YmplY3Q6IFJlOiBb
+YWxzYS1kZXZlbF0gQUxTQSBTREwgVk9SQklTIHBsYXliYWNrIHByb2JsZW0KQ29udGVudC1UeXBl
+OiB0ZXh0L3BsYWluOyBjaGFyc2V0PWlzby04ODU5LTEKQ29udGVudC1UcmFuc2Zlci1FbmNvZGlu
+ZzogcXVvdGVkLXByaW50YWJsZQpYLVVJLU1lc3NhZ2UtVHlwZTogbWFpbApYLVVJLUFUVEFDSE1F
+TlQtSUQtUE9TVEZJWDogMTNhNzVjY2MtYjhmOC00N2IwLWE0ZDAtMzVkYzE1NWMyMTRjCgoKCi0t
+LS0tVXJzcHI9RkNuZ2xpY2hlIE5hY2hyaWNodC0tLS0tClZvbjogIkRhbmllbCBHbMO2Y2tuZXIi
+IDxkZ0BlbWxpeC5jb20+Ckdlc2VuZGV0OiAwMi1NYXItMjAxMCAyMTowMzoxNApBbjogQ2hyaXN0
+aWFuIFdvbGYgPHdvbGZscHpAd2ViLmRlPgpCZXRyZWZmOiBSZTogW2Fsc2EtZGV2ZWxdIEFMU0Eg
+U0RMIFZPUkJJUyBwbGF5YmFjayBwcm9ibGVtCgpPbiAwMy8wMi8yMDEwIDA4OjA5IFBNLCBBbGV4
+IEF1c3RpbiB3cm90ZToKPiBCYXNpY2FsbHksIHNlZSBpZiBhIHN0cmFpZ2h0LXVwIHBpcGUgd2ls
+bCBidWZmZXIgcmVhc29uYWJseS4gSWYgbm90LCBJCj4gc3VwcG9zZSBpdCdzIHJlbW90ZWx5IHBv
+c3NpYmxlIHRoYXQgdGhpcyBpcyBqdXN0IGEgQ1BVLWJvdW5kIG9wZXJhdGlvbiBhbj0KZAo+IGl0
+IGNhbid0IGtlZXAgdXAuIEkgY2FuJ3QgaW1hZ2luZSB0aGF0J3MgcmVhbGx5IHRoZSBjYXNlIHRo
+b3VnaCB3aXRoIHRoYXQKPiBDUFUuCgpMaWJ2b3JiaXMgdXNlcyBmbG9hdGluZyBwb2ludCBvcGVy
+YXRpb25zIHdoaWxlIG9uIHlvdXIgQVQ5MVNBTTkyNjEgeW91CmhhdmUgYSBzb2Z0LWZsb2F0IGxp
+YnJhcnkgKG9yIGV2ZW4gd29yc2UgRlBVIGVtdWxhdGlvbikuCgpUcnkgdGhlIGludGVnZXIgb25s
+eSBUcmVtb3IgbGlicmFyeSBsaW5rZWQgaGVyZToKaHR0cDovL3d3dy54aXBoLm9yZy92b3JiaXMv
+CgpUaGUgQVBJIGlzIHNsaWdodGx5IGRpZmZlcmVudCAoZWFzaWVyKSwgYXMgaXQgY2FuIG9ubHkg
+Z2VuZXJhdGUgUzE2X0xFCnNhbXBsZXMuCgogIERhbmllbAoKCi0tID0zRAoKRGlwbC4tTWF0aC4g
+RGFuaWVsIEdsPTNERjZja25lciwgZW1saXggR21iSCwgaHR0cDovL3d3dy5lbWxpeC5jb20KRm9u
+ICs0OSA1NTEgMzA2NjQtMCwgRmF4IC0xMSwgQmFobmhvZnNhbGxlZSAxYiwgMzcwODEgRz0zREY2
+dHRpbmdlbiwgR2VybWFuPQp5ClNpdHogZGVyIEdlc2VsbHNjaGFmdDogRz0zREY2dHRpbmdlbiwg
+QW10c2dlcmljaHQgRz0zREY2dHRpbmdlbiBIUiBCIDMxNjAKR2VzY2g9M0RFNGZ0c2Y9M0RGQ2hy
+ZXI6IERyLiBVd2UgS3JhY2tlLCBVc3QtSWROci46IERFIDIwNSAxOTggMDU1CgplbWxpeCAtIHlv
+dXIgZW1iZWRkZWQgbGludXggcGFydG5lcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KV0VCLkRFIERTTDogSW50ZXJuZXQsIFRlbGVmb24gdW5kIEVudGVy
+dGFpbm1lbnQgZsO8ciBudXIgMTksOTkgRVVSL210bC4hCmh0dHA6Ly9wcm9kdWt0ZS53ZWIuZGUv
+Z28vMDIvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
