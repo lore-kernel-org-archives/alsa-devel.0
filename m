@@ -1,15 +1,15 @@
 From: Mike Frysinger <vapier@gentoo.org>
-Subject: [PATCH] alsa: provide a more useful get_unmapped_area
-	handler for pcm
-Date: Tue,  9 Mar 2010 12:57:52 -0500
-Message-ID: <1268157472-13341-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH] ASoC: SSM2602: add SND control for mic boost2
+	and default it to off
+Date: Tue,  9 Mar 2010 12:58:09 -0500
+Message-ID: <1268157489-13412-1-git-send-email-vapier@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.gentoo.org (smtp.gentoo.org [140.211.166.183])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2729424433
-	for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2010 18:54:39 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id C343C10381E
+	for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2010 18:54:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,60 +19,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, Cliff Cai <cliff.cai@analog.com>, =?UTF-8?q?Daniel=20Gl=C3=B6ckner?= <dg@emlix.com>
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Cliff Cai <cliff.cai@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogRGFuaWVsIEdsw7Zja25lciA8ZGdAZW1saXguY29tPgoKU2hhcmVkIG1lbW9yeSBtYXBw
-aW5ncyBvbiBub21tdSBtYWNoaW5lcyByZXF1aXJlIGEgZ2V0X3VubWFwcGVkX2FyZWEKZmlsZSBv
-cGVyYXRpb24gdGhhdCBzdWdnZXN0cyBhbiBhZGRyZXNzIGZvciB0aGUgbWFwcGluZy4gVGhlIGN1
-cnJlbnQKaW1wbGVtZW50YXRpb24gcmV0dXJucyAwIGFuZCB0aHVzIGZvcmNlcyB0aGUgZHJpdmVy
-IHRvIGltcGxlbWVudCBhbgptbWFwIGhhbmRsZXIgdGhhdCBmaXhlcyB1cCB0aGUgc3RhcnQgYW5k
-IGVuZCBhZGRyZXNzIG9mIHRoZSB2bWEuCgpUaGlzIHBhdGNoIHJldHVybnMgdGhlIGFkZHJlc3Mg
-b2YgdGhlIGRtYSBidWZmZXIsIHNvIGl0IHNob3VsZCB3b3JrCm91dCBvZiB0aGUgYm94IGZvciBh
-bGwgZHJpdmVycyB0aGF0IHVzZSB0aGUgc25kX3BjbV9ydW50aW1lLT5kbWFfYXJlYQpwb2ludGVy
-LgoKQWRkcmVzc2VzIGZvciBtYXBwaW5nIHRoZSBzdGF0dXMgYW5kIGNvbnRyb2wgcGFnZXMgYXJl
-IHJldHVybmVkIGFzCndlbGwsIGJ1dCB0byBtYWtlIHRob3NlIHdvcmsgdGhlIGNvbmRpdGlvbmFs
-IGNvbXBpbGF0aW9uIG9mCnNuZF9wY21fbW1hcF97c3RhdHVzLGNvbnRyb2x9IHdvdWxkIG5lZWQg
-dG8gYmUgcmV2aXNlZC4KClVSTDogaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUubGludXgu
-YWxzYS5kZXZlbC82MTIzMApTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgR2zDtmNrbmVyIDxkZ0BlbWxp
-eC5jb20+ClNpZ25lZC1vZmYtYnk6IENsaWZmIENhaSA8Y2xpZmYuY2FpQGFuYWxvZy5jb20+ClNp
-Z25lZC1vZmYtYnk6IE1pa2UgRnJ5c2luZ2VyIDx2YXBpZXJAZ2VudG9vLm9yZz4KLS0tCnRoaXMg
-aGFzIGJlZW4gcG9zdGVkIGJlZm9yZSBidXQgZGlkbnQgc2VlbSB0byBnZXQgYW55IGZlZWRiYWNr
-IC4uLgoKIHNvdW5kL2NvcmUvcGNtX25hdGl2ZS5jIHwgICAzMCArKysrKysrKysrKysrKysrKysr
-KysrLS0tLS0tLS0KIDEgZmlsZXMgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlv
-bnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9jb3JlL3BjbV9uYXRpdmUuYyBiL3NvdW5kL2NvcmUv
-cGNtX25hdGl2ZS5jCmluZGV4IDg3Mjg4NzYuLjk2ODE1MTggMTAwNjQ0Ci0tLSBhL3NvdW5kL2Nv
-cmUvcGNtX25hdGl2ZS5jCisrKyBiL3NvdW5kL2NvcmUvcGNtX25hdGl2ZS5jCkBAIC0zNDM0LDE0
-ICszNDM0LDI4IEBAIG91dDoKICNlbmRpZiAvKiBDT05GSUdfU05EX1NVUFBPUlRfT0xEX0FQSSAq
-LwogCiAjaWZuZGVmIENPTkZJR19NTVUKLXVuc2lnbmVkIGxvbmcgZHVtbXlfZ2V0X3VubWFwcGVk
-X2FyZWEoc3RydWN0IGZpbGUgKmZpbGUsIHVuc2lnbmVkIGxvbmcgYWRkciwKLQkJCQkgICAgICB1
-bnNpZ25lZCBsb25nIGxlbiwgdW5zaWduZWQgbG9uZyBwZ29mZiwKLQkJCQkgICAgICB1bnNpZ25l
-ZCBsb25nIGZsYWdzKQotewotCXJldHVybiAwOworc3RhdGljIHVuc2lnbmVkIGxvbmcgc25kX3Bj
-bV9nZXRfdW5tYXBwZWRfYXJlYShzdHJ1Y3QgZmlsZSAqZmlsZSwKKwkJCQkJICAgICAgIHVuc2ln
-bmVkIGxvbmcgYWRkciwKKwkJCQkJICAgICAgIHVuc2lnbmVkIGxvbmcgbGVuLAorCQkJCQkgICAg
-ICAgdW5zaWduZWQgbG9uZyBwZ29mZiwKKwkJCQkJICAgICAgIHVuc2lnbmVkIGxvbmcgZmxhZ3Mp
-Cit7CisJc3RydWN0IHNuZF9wY21fZmlsZSAqcGNtX2ZpbGUgPSBmaWxlLT5wcml2YXRlX2RhdGE7
-CisJc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0gPSBwY21fZmlsZS0+c3Vic3Ry
-ZWFtOworCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUgKnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRp
-bWU7CisJdW5zaWduZWQgbG9uZyBvZmZzZXQgPSBwZ29mZiA8PCBQQUdFX1NISUZUOworCisJc3dp
-dGNoIChvZmZzZXQpIHsKKwljYXNlIFNORFJWX1BDTV9NTUFQX09GRlNFVF9TVEFUVVM6CisJCXJl
-dHVybiAodW5zaWduZWQgbG9uZylydW50aW1lLT5zdGF0dXM7CisJY2FzZSBTTkRSVl9QQ01fTU1B
-UF9PRkZTRVRfQ09OVFJPTDoKKwkJcmV0dXJuICh1bnNpZ25lZCBsb25nKXJ1bnRpbWUtPmNvbnRy
-b2w7CisJZGVmYXVsdDoKKwkJcmV0dXJuICh1bnNpZ25lZCBsb25nKXJ1bnRpbWUtPmRtYV9hcmVh
-ICsgb2Zmc2V0OworCX0KIH0KICNlbHNlCi0jIGRlZmluZSBkdW1teV9nZXRfdW5tYXBwZWRfYXJl
-YSBOVUxMCisjIGRlZmluZSBzbmRfcGNtX2dldF91bm1hcHBlZF9hcmVhIE5VTEwKICNlbmRpZgog
-CiAvKgpAQCAtMzQ2MCw3ICszNDc0LDcgQEAgY29uc3Qgc3RydWN0IGZpbGVfb3BlcmF0aW9ucyBz
-bmRfcGNtX2Zfb3BzWzJdID0gewogCQkuY29tcGF0X2lvY3RsID0gCXNuZF9wY21faW9jdGxfY29t
-cGF0LAogCQkubW1hcCA9CQkJc25kX3BjbV9tbWFwLAogCQkuZmFzeW5jID0JCXNuZF9wY21fZmFz
-eW5jLAotCQkuZ2V0X3VubWFwcGVkX2FyZWEgPQlkdW1teV9nZXRfdW5tYXBwZWRfYXJlYSwKKwkJ
-LmdldF91bm1hcHBlZF9hcmVhID0Jc25kX3BjbV9nZXRfdW5tYXBwZWRfYXJlYSwKIAl9LAogCXsK
-IAkJLm93bmVyID0JCVRISVNfTU9EVUxFLApAQCAtMzQ3Myw2ICszNDg3LDYgQEAgY29uc3Qgc3Ry
-dWN0IGZpbGVfb3BlcmF0aW9ucyBzbmRfcGNtX2Zfb3BzWzJdID0gewogCQkuY29tcGF0X2lvY3Rs
-ID0gCXNuZF9wY21faW9jdGxfY29tcGF0LAogCQkubW1hcCA9CQkJc25kX3BjbV9tbWFwLAogCQku
-ZmFzeW5jID0JCXNuZF9wY21fZmFzeW5jLAotCQkuZ2V0X3VubWFwcGVkX2FyZWEgPQlkdW1teV9n
-ZXRfdW5tYXBwZWRfYXJlYSwKKwkJLmdldF91bm1hcHBlZF9hcmVhID0Jc25kX3BjbV9nZXRfdW5t
-YXBwZWRfYXJlYSwKIAl9CiB9OwotLSAKMS43LjAuMgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+From: Cliff Cai <cliff.cai@analog.com>
+
+Signed-off-by: Cliff Cai <cliff.cai@analog.com>
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+this is fine for 2.6.34 or 2.6.35
+
+ sound/soc/codecs/ssm2602.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index d2ff1cd..942f5dc 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -139,6 +139,7 @@ SOC_DOUBLE_R("Capture Volume", SSM2602_LINVOL, SSM2602_RINVOL, 0, 31, 0),
+ SOC_DOUBLE_R("Capture Switch", SSM2602_LINVOL, SSM2602_RINVOL, 7, 1, 1),
+ 
+ SOC_SINGLE("Mic Boost (+20dB)", SSM2602_APANA, 0, 1, 0),
++SOC_SINGLE("Mic Boost2 (+20dB)", SSM2602_APANA, 7, 1, 0),
+ SOC_SINGLE("Mic Switch", SSM2602_APANA, 1, 1, 1),
+ 
+ SOC_SINGLE("Sidetone Playback Volume", SSM2602_APANA, 6, 3, 1),
+@@ -604,8 +605,7 @@ static int ssm2602_init(struct snd_soc_device *socdev)
+ 	reg = ssm2602_read_reg_cache(codec, SSM2602_ROUT1V);
+ 	ssm2602_write(codec, SSM2602_ROUT1V, reg | ROUT1V_RLHP_BOTH);
+ 	/*select Line in as default input*/
+-	ssm2602_write(codec, SSM2602_APANA,
+-			APANA_ENABLE_MIC_BOOST2 | APANA_SELECT_DAC |
++	ssm2602_write(codec, SSM2602_APANA, APANA_SELECT_DAC |
+ 			APANA_ENABLE_MIC_BOOST);
+ 	ssm2602_write(codec, SSM2602_PWR, 0);
+ 
+-- 
+1.7.0.2
