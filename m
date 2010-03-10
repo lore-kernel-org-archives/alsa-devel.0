@@ -1,28 +1,24 @@
-From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 13/20] ASoC: S3C2412: I2S: Return correct
-	source clock
-Date: Wed, 10 Mar 2010 16:49:02 +0900
-Message-ID: <1268207349-9979-13-git-send-email-jassi.brar@samsung.com>
-References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-9-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-10-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-11-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-12-git-send-email-jassi.brar@samsung.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Wed, 10 Mar 2010 08:58:16 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>
+References: <s5h1vg0qrrr.wl%tiwai@suse.de> <s5hwrxspblg.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD556@HKMAIL01.nvidia.com>
+	<s5htyswpb18.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD557@HKMAIL01.nvidia.com>
+	<s5hvddcnlr6.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD558@HKMAIL01.nvidia.com>
+	<a3ef07921003071121r24979a0breac27e3b0475bbcb@mail.gmail.com>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD562@HKMAIL01.nvidia.com>
+	<20100308044614.GA29026@localhost>
+	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-236765046-1268207896=:4672"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 925E710384F
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:23:01 +0100 (CET)
-In-Reply-To: <1268207349-9979-12-git-send-email-jassi.brar@samsung.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id E6492103869
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 08:58:29 +0100 (CET)
+In-Reply-To: <a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,37 +28,127 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
+To: VDR User <user.vdr@gmail.com>
+Cc: Wei Ni <wni@nvidia.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <jkysela@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Wu Fengguang <fengguang.wu@intel.com>, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Until now, s3c2412_get_iisclk would return NULL since iis_clk was never
-initialized.
-Return appropriate pointer as per the selection made for source clock.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/s3c24xx/s3c2412-i2s.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+--8323584-236765046-1268207896=:4672
+Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index e6871f7..4996843 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -94,7 +94,13 @@ static int s3c2412_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
- 
- struct clk *s3c2412_get_iisclk(void)
- {
--	return s3c2412_i2s.iis_clk;
-+	struct s3c_i2sv2_info *i2s = &s3c2412_i2s;
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
-+		return i2s->iis_cclk;
-+	else
-+		return i2s->iis_pclk;
- }
- EXPORT_SYMBOL_GPL(s3c2412_get_iisclk);
- 
--- 
-1.6.2.5
+On Tue, 9 Mar 2010, VDR User wrote:
+
+> On Sun, Mar 7, 2010 at 8:46 PM, Wu Fengguang <fengguang.wu@intel.com> wro=
+te:
+>> CC Jaroslav, maybe he has some idea on
+>>
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_=
+DELAY failed.
+>>
+>> On Mon, Mar 08, 2010 at 12:35:37PM +0800, Wei Ni wrote:
+>>> Hi,
+>>> Because I don't have GT220 card on hand, I didn't test it yet.
+>>> So I didn't add this card to the patch file. I think you could add it a=
+fter
+>>> you test it.
+>>>
+>>> About the warning messages, I don't know why.
+>>> May be some others can answer.
+>>>
+>>> Thanks
+>>> Wei.
+>>> nvpublic
+>>>
+>>> -----Original Message-----
+>>> From: VDR User [mailto:user.vdr@gmail.com]
+>>> Sent: Monday, March 08, 2010 3:22 AM
+>>> To: Wei Ni
+>>> Cc: Takashi Iwai; akpm; alsa-devel; Wu Fengguang; linux-kernel; Pavel H=
+ofman
+>>> Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
+>>>
+>>> I think this may be relevant to this subject, if not then my apologies.
+>>>
+>>> I've just installed a GT220 card and was able to get audio-over-hdmi
+>>> working by compiling the snapshot drivers from 20100307 which contain
+>>> Wei's new code. =C2=A0I further had to patch the driver to recognize my
+>>> card with:
+>>>
+>>> --- alsa-driver-orig/alsa-kernel/pci/hda/patch_nvhdmi.c 2010-03-06
+>>> 18:00:12.000000000 -0800
+>>> +++ alsa-driver/alsa-kernel/pci/hda/patch_nvhdmi.c =C2=A0 =C2=A0 =C2=A0=
+2010-03-06
+>>> 18:02:00.000000000 -0800
+>>> @@ -1335,6 +1335,8 @@ static struct hda_codec_preset snd_hda_p
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000b, .name =3D "GT21x HDMI=
+",
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
+>>> + =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000a, .name =3D "GT220 HDMI",
+>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000d, .name =3D "GT240 HDMI=
+",
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 {} /* terminator */
+>>> @@ -1347,6 +1349,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0006"
+>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de0007");
+>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de0067");
+>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de8001");
+>>> +MODULE_ALIAS("snd-hda-codec-id:10de000a");
+>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000c");
+>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000b");
+>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000d");
+>>>
+>>> This seems to work fine when running VDR but if I do anything else
+>>> like upgrade packages, compile something, or maybe create a bz2, then
+>>> I start to see _a lot_ of the following in my xine log:
+>>>
+>>> pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed.
+>>>
+>>> With the old code this didn't happen. =C2=A0However, my setup was an 84=
+00gs
+>>> using SPDIF OUT from my mainboard to SPDIF IN on the card. =C2=A0Then u=
+sing
+>>> a dvi->hdmi cable into the tv.
+>>>
+>>> Again, I apologize if I'm posting this in the wrong place.
+>>>
+>>> Best regards.
+>
+> So nobody has any ideas at all?  This is turning out to be a big
+> problem and I've discovered it will occur even without anything else
+> happening on the system.  (originally I thought you needed to do some
+> other activity.)  I've checked with some other devs I know and
+> everyone has said the problem is with alsa so it would seem there is a
+> serious bug somewhere since eventually those errors will happen and
+> the audio will start skipping like crazy.
+>
+> Please let me know if there's anything I can do within my ability to help=
+=2E
+
+Could you do strace for ALSA ioctls? At least having the error code might=
+=20
+help to identify this issue.
+
+ =09=09=09=09=09Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
+
+--8323584-236765046-1268207896=:4672
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--8323584-236765046-1268207896=:4672--
