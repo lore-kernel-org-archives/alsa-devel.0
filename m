@@ -1,18 +1,33 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 03/20] ASoC: S3C64XX: I2S: Make BCLK
-	independent of sample size
-Date: Wed, 10 Mar 2010 16:48:52 +0900
-Message-ID: <1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
+Subject: [PATCH 19/20] ASoC: S3C64XX: IISv4: Add CPU driver
+Date: Wed, 10 Mar 2010 16:49:08 +0900
+Message-ID: <1268207349-9979-19-git-send-email-jassi.brar@samsung.com>
 References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
 	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-9-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-10-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-11-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-12-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-13-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-14-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-15-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-16-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-17-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-18-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 95C6B24350
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 08:58:03 +0100 (CET)
-In-Reply-To: <1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 80AA0103845
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:23:01 +0100 (CET)
+In-Reply-To: <1268207349-9979-18-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,43 +41,277 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-For some CPU-CODEC and source clock combination we might need to set
-BCLK to N*Sample_size*LRCLK, where N may be even 3 or 4, not just 2.
-
-We can simply remove the dependency of BCLK on sample size as there
-is already a callback(S3C_I2SV2_DIV_BCLK) available to set required BCLK.
+Add the CPU driver for the IISv4 block found on S3C6410.
+For now, the driver is almost a copy of s3c64xx-i2s.c but
+it should diverge as more IISv4 specific stuff is added.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/s3c-i2s-v2.c |    9 +++------
- 1 files changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/s3c24xx/Kconfig          |    5 +
+ sound/soc/s3c24xx/Makefile         |    2 +
+ sound/soc/s3c24xx/s3c64xx-i2s-v4.c |  206 ++++++++++++++++++++++++++++++++++++
+ sound/soc/s3c24xx/s3c64xx-i2s.h    |    1 +
+ 4 files changed, 214 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/s3c24xx/s3c64xx-i2s-v4.c
 
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index fd5c842..b01f50e 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -364,19 +364,16 @@ static int s3c2412_i2s_hw_params(struct snd_pcm_substream *substream,
- #endif
+diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
+index 15fe57e..c0c7edf 100644
+--- a/sound/soc/s3c24xx/Kconfig
++++ b/sound/soc/s3c24xx/Kconfig
+@@ -24,6 +24,11 @@ config SND_S3C64XX_SOC_I2S
+ 	select SND_S3C_I2SV2_SOC
+ 	select S3C64XX_DMA
  
- #ifdef CONFIG_PLAT_S3C64XX
--	iismod &= ~(S3C64XX_IISMOD_BLC_MASK | S3C2412_IISMOD_BCLK_MASK);
++config SND_S3C64XX_SOC_I2S_V4
++	tristate
++	select SND_S3C_I2SV2_SOC
++	select S3C64XX_DMA
++
+ config SND_S3C_SOC_PCM
+ 	tristate
+ 
+diff --git a/sound/soc/s3c24xx/Makefile b/sound/soc/s3c24xx/Makefile
+index df071a3..81d8dc5 100644
+--- a/sound/soc/s3c24xx/Makefile
++++ b/sound/soc/s3c24xx/Makefile
+@@ -4,6 +4,7 @@ snd-soc-s3c24xx-i2s-objs := s3c24xx-i2s.o
+ snd-soc-s3c2412-i2s-objs := s3c2412-i2s.o
+ snd-soc-s3c64xx-i2s-objs := s3c64xx-i2s.o
+ snd-soc-s3c-ac97-objs := s3c-ac97.o
++snd-soc-s3c64xx-i2s-v4-objs := s3c64xx-i2s-v4.o
+ snd-soc-s3c-i2s-v2-objs := s3c-i2s-v2.o
+ snd-soc-s3c-pcm-objs := s3c-pcm.o
+ 
+@@ -12,6 +13,7 @@ obj-$(CONFIG_SND_S3C24XX_SOC_I2S) += snd-soc-s3c24xx-i2s.o
+ obj-$(CONFIG_SND_S3C_SOC_AC97) += snd-soc-s3c-ac97.o
+ obj-$(CONFIG_SND_S3C2412_SOC_I2S) += snd-soc-s3c2412-i2s.o
+ obj-$(CONFIG_SND_S3C64XX_SOC_I2S) += snd-soc-s3c64xx-i2s.o
++obj-$(CONFIG_SND_S3C64XX_SOC_I2S_V4) += snd-soc-s3c64xx-i2s-v4.o
+ obj-$(CONFIG_SND_S3C_I2SV2_SOC) += snd-soc-s3c-i2s-v2.o
+ obj-$(CONFIG_SND_S3C_SOC_PCM) += snd-soc-s3c-pcm.o
+ 
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
+new file mode 100644
+index 0000000..d1fa837
+--- /dev/null
++++ b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
+@@ -0,0 +1,206 @@
++/* sound/soc/s3c24xx/s3c64xx-i2s-v4.c
++ *
++ * ALSA SoC Audio Layer - S3C64XX I2Sv4 driver
++ * Copyright (c) 2010 Samsung Electronics Co. Ltd
++ * 	Author: Jaswinder Singh <jassi.brar@samsung.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/clk.h>
++#include <linux/gpio.h>
++#include <linux/io.h>
++
++#include <sound/soc.h>
++#include <sound/pcm_params.h>
++
++#include <plat/gpio-bank-c.h>
++#include <plat/gpio-bank-h.h>
++#include <plat/gpio-cfg.h>
++
++#include <mach/map.h>
++#include <mach/dma.h>
++
++#include "s3c-dma.h"
++#include "regs-i2s-v2.h"
++#include "s3c64xx-i2s.h"
++
++static struct s3c2410_dma_client s3c64xx_dma_client_out = {
++	.name		= "I2Sv4 PCM Stereo out"
++};
++
++static struct s3c2410_dma_client s3c64xx_dma_client_in = {
++	.name		= "I2Sv4 PCM Stereo in"
++};
++
++static struct s3c_dma_params s3c64xx_i2sv4_pcm_stereo_out;
++static struct s3c_dma_params s3c64xx_i2sv4_pcm_stereo_in;
++static struct s3c_i2sv2_info s3c64xx_i2sv4;
++
++struct snd_soc_dai s3c64xx_i2s_v4_dai;
++EXPORT_SYMBOL_GPL(s3c64xx_i2s_v4_dai);
++
++static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
++{
++	return cpu_dai->private_data;
++}
++
++static int s3c64xx_i2sv4_probe(struct platform_device *pdev,
++			     struct snd_soc_dai *dai)
++{
++	/* configure GPIO for i2s port */
++	s3c_gpio_cfgpin(S3C64XX_GPC(4), S3C64XX_GPC4_I2S_V40_DO0);
++	s3c_gpio_cfgpin(S3C64XX_GPC(5), S3C64XX_GPC5_I2S_V40_DO1);
++	s3c_gpio_cfgpin(S3C64XX_GPC(7), S3C64XX_GPC7_I2S_V40_DO2);
++	s3c_gpio_cfgpin(S3C64XX_GPH(6), S3C64XX_GPH6_I2S_V40_BCLK);
++	s3c_gpio_cfgpin(S3C64XX_GPH(7), S3C64XX_GPH7_I2S_V40_CDCLK);
++	s3c_gpio_cfgpin(S3C64XX_GPH(8), S3C64XX_GPH8_I2S_V40_LRCLK);
++	s3c_gpio_cfgpin(S3C64XX_GPH(9), S3C64XX_GPH9_I2S_V40_DI);
++
++	return 0;
++}
++
++static int s3c_i2sv4_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params,
++				 struct snd_soc_dai *cpu_dai)
++{
++	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
++	u32 iismod;
++
++	dev_dbg(cpu_dai->dev, "Entered %s\n", __func__);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		cpu_dai->dma_data = i2s->dma_playback;
++	else
++		cpu_dai->dma_data = i2s->dma_capture;
++
++	iismod = readl(i2s->regs + S3C2412_IISMOD);
++	dev_dbg(cpu_dai->dev, "%s: r: IISMOD: %x\n", __func__, iismod);
++
 +	iismod &= ~S3C64XX_IISMOD_BLC_MASK;
- 	/* Sample size */
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_S8:
--		/* 8 bit sample, 16fs BCLK */
--		iismod |= (S3C64XX_IISMOD_BLC_8BIT | S3C2412_IISMOD_BCLK_16FS);
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S8:
 +		iismod |= S3C64XX_IISMOD_BLC_8BIT;
- 		break;
- 	case SNDRV_PCM_FORMAT_S16_LE:
--		/* 16 bit sample, 32fs BCLK */
- 		break;
- 	case SNDRV_PCM_FORMAT_S24_LE:
--		/* 24 bit sample, 48fs BCLK */
--		iismod |= (S3C64XX_IISMOD_BLC_24BIT | S3C2412_IISMOD_BCLK_48FS);
++		break;
++	case SNDRV_PCM_FORMAT_S16_LE:
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
 +		iismod |= S3C64XX_IISMOD_BLC_24BIT;
- 		break;
- 	}
- #endif
++		break;
++	}
++
++	writel(iismod, i2s->regs + S3C2412_IISMOD);
++	dev_dbg(cpu_dai->dev, "%s: w: IISMOD: %x\n", __func__, iismod);
++
++	return 0;
++}
++
++static struct snd_soc_dai_ops s3c64xx_i2sv4_dai_ops = {
++	.hw_params	= s3c_i2sv4_hw_params,
++};
++
++static __devinit int s3c64xx_i2sv4_dev_probe(struct platform_device *pdev)
++{
++	struct s3c_i2sv2_info *i2s;
++	struct snd_soc_dai *dai;
++	int ret;
++
++	i2s = &s3c64xx_i2sv4;
++	dai = &s3c64xx_i2s_v4_dai;
++
++	if (dai->dev) {
++		dev_dbg(dai->dev, "%s: \
++			I2Sv4 instance already registered!\n", __func__);
++		return -EBUSY;
++	}
++
++	dai->dev = &pdev->dev;
++	dai->name = "s3c64xx-i2s-v4";
++	dai->id = 0;
++	dai->symmetric_rates = 1;
++	dai->playback.channels_min = 2;
++	dai->playback.channels_max = 2;
++	dai->playback.rates = S3C64XX_I2S_RATES;
++	dai->playback.formats = S3C64XX_I2S_FMTS;
++	dai->capture.channels_min = 2;
++	dai->capture.channels_max = 2;
++	dai->capture.rates = S3C64XX_I2S_RATES;
++	dai->capture.formats = S3C64XX_I2S_FMTS;
++	dai->probe = s3c64xx_i2sv4_probe;
++	dai->ops = &s3c64xx_i2sv4_dai_ops;
++
++	i2s->feature |= S3C_FEATURE_CDCLKCON;
++
++	i2s->dma_capture = &s3c64xx_i2sv4_pcm_stereo_in;
++	i2s->dma_playback = &s3c64xx_i2sv4_pcm_stereo_out;
++
++	i2s->dma_capture->channel = DMACH_HSI_I2SV40_RX;
++	i2s->dma_capture->dma_addr = S3C64XX_PA_IISV4 + S3C2412_IISRXD;
++	i2s->dma_playback->channel = DMACH_HSI_I2SV40_TX;
++	i2s->dma_playback->dma_addr = S3C64XX_PA_IISV4 + S3C2412_IISTXD;
++
++	i2s->dma_capture->client = &s3c64xx_dma_client_in;
++	i2s->dma_capture->dma_size = 4;
++	i2s->dma_playback->client = &s3c64xx_dma_client_out;
++	i2s->dma_playback->dma_size = 4;
++
++	i2s->iis_cclk = clk_get(&pdev->dev, "audio-bus");
++	if (IS_ERR(i2s->iis_cclk)) {
++		dev_err(&pdev->dev, "failed to get audio-bus\n");
++		ret = PTR_ERR(i2s->iis_cclk);
++		goto err;
++	}
++
++	clk_enable(i2s->iis_cclk);
++
++	ret = s3c_i2sv2_probe(pdev, dai, i2s, 0);
++	if (ret)
++		goto err_clk;
++
++	ret = s3c_i2sv2_register_dai(dai);
++	if (ret != 0)
++		goto err_i2sv2;
++
++	return 0;
++
++err_i2sv2:
++	/* Not implemented for I2Sv2 core yet */
++err_clk:
++	clk_put(i2s->iis_cclk);
++err:
++	return ret;
++}
++
++static __devexit int s3c64xx_i2sv4_dev_remove(struct platform_device *pdev)
++{
++	dev_err(&pdev->dev, "Device removal not yet supported\n");
++	return 0;
++}
++
++static struct platform_driver s3c64xx_i2sv4_driver = {
++	.probe  = s3c64xx_i2sv4_dev_probe,
++	.remove = s3c64xx_i2sv4_dev_remove,
++	.driver = {
++		.name = "s3c64xx-iis-v4",
++		.owner = THIS_MODULE,
++	},
++};
++
++static int __init s3c64xx_i2sv4_init(void)
++{
++	return platform_driver_register(&s3c64xx_i2sv4_driver);
++}
++module_init(s3c64xx_i2sv4_init);
++
++static void __exit s3c64xx_i2sv4_exit(void)
++{
++	platform_driver_unregister(&s3c64xx_i2sv4_driver);
++}
++module_exit(s3c64xx_i2sv4_exit);
++
++/* Module information */
++MODULE_AUTHOR("Jaswinder Singh, <jassi.brar@samsung.com>");
++MODULE_DESCRIPTION("S3C64XX I2Sv4 SoC Interface");
++MODULE_LICENSE("GPL");
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
+index f27ed50..7a40f43 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s.h
++++ b/sound/soc/s3c24xx/s3c64xx-i2s.h
+@@ -37,5 +37,6 @@ struct clk;
+ 	 SNDRV_PCM_FMTBIT_S24_LE)
+ 
+ extern struct snd_soc_dai s3c64xx_i2s_dai[];
++extern struct snd_soc_dai s3c64xx_i2s_v4_dai;
+ 
+ #endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
 -- 
 1.6.2.5
