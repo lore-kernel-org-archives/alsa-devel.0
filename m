@@ -1,169 +1,44 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
-Date: Wed, 10 Mar 2010 09:17:16 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1003100915310.4672@eeebox2.perex-int.cz>
-References: <s5h1vg0qrrr.wl%tiwai@suse.de> <s5htyswpb18.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16B1AD557@HKMAIL01.nvidia.com>
-	<s5hvddcnlr6.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16B1AD558@HKMAIL01.nvidia.com>
-	<a3ef07921003071121r24979a0breac27e3b0475bbcb@mail.gmail.com>
-	<6B4D417B830BC44B8026029FD256F7F1C16B1AD562@HKMAIL01.nvidia.com>
-	<20100308044614.GA29026@localhost>
-	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
-	<alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>
-	<a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
+From: maximilian attems <max@stro.at>
+Subject: Bug#573243: Front Mic Boost mixer control missing on 2.6.33
+Date: Wed, 10 Mar 2010 03:30:52 +0100
+Message-ID: <20100310023052.GU7231@baikonur.stro.at>
+References: <20100310015828.15599.86090.reportbug@Heisenberg.home>
+Reply-To: maximilian attems <max@stro.at>, 573243@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-2121109706-1268209036=:4672"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60DAB2438A
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:17:17 +0100 (CET)
-In-Reply-To: <a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: VDR User <user.vdr@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <bounce-debian-kernel=glddk-debian-kernel=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.573243.B573243.126819057216970@bugs.debian.org>
+Content-Disposition: inline
+In-Reply-To: <20100310015828.15599.86090.reportbug@Heisenberg.home>
+List-URL: <http://lists.debian.org/debian-kernel/>
+List-Post: <mailto:debian-kernel@lists.debian.org>
+List-Help: <mailto:debian-kernel-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-kernel-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-kernel-request@lists.debian.org?subject=unsubscribe>
+To: Anthony DeRobertis <anthony@derobert.net>, 573243@bugs.debian.org
+Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue, Mar 09, 2010 at 08:58:28PM -0500, Anthony DeRobertis wrote:
+> Package: linux-2.6
+> Version: 2.6.33-1~experimental.2
+> Severity: normal
+> 
+> This is an Asus UL30A.
+> 
+> On 2.6.32, I get two Mic Boosts: One called "Mic Boost" and one called
+> "Front Mic Boost". The "Front Mic Boost" is for the built-in microphone
+> mounted at the top of the display; the other is assumably the mic input
+> jack (have not tested).
+> 
+> On 2.6.33, the Front Mic Boost goes away, making the built-in mic
+> unusable.
+> 
+> Attached is the output of "amixer contents" on 2.6.33. Please let me
+> know if you need one from 2.6.32.
+> 
 
---8323584-2121109706-1268209036=:4672
-Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+please sent output of alsa-info.sh of 2.6.32 and 2.6.33
 
-On Wed, 10 Mar 2010, VDR User wrote:
-
-> On Tue, Mar 9, 2010 at 11:58 PM, Jaroslav Kysela <perex@perex.cz> wrote:
->> On Tue, 9 Mar 2010, VDR User wrote:
->>
->>> On Sun, Mar 7, 2010 at 8:46 PM, Wu Fengguang <fengguang.wu@intel.com>
->>> wrote:
->>>>
->>>> CC Jaroslav, maybe he has some idea on
->>>>
->>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCT=
-L_DELAY failed.
->>>>
->>>> On Mon, Mar 08, 2010 at 12:35:37PM +0800, Wei Ni wrote:
->>>>>
->>>>> Hi,
->>>>> Because I don't have GT220 card on hand, I didn't test it yet.
->>>>> So I didn't add this card to the patch file. I think you could add it
->>>>> after
->>>>> you test it.
->>>>>
->>>>> About the warning messages, I don't know why.
->>>>> May be some others can answer.
->>>>>
->>>>> Thanks
->>>>> Wei.
->>>>> nvpublic
->>>>>
->>>>> -----Original Message-----
->>>>> From: VDR User [mailto:user.vdr@gmail.com]
->>>>> Sent: Monday, March 08, 2010 3:22 AM
->>>>> To: Wei Ni
->>>>> Cc: Takashi Iwai; akpm; alsa-devel; Wu Fengguang; linux-kernel; Pavel
->>>>> Hofman
->>>>> Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
->>>>>
->>>>> I think this may be relevant to this subject, if not then my apologie=
-s.
->>>>>
->>>>> I've just installed a GT220 card and was able to get audio-over-hdmi
->>>>> working by compiling the snapshot drivers from 20100307 which contain
->>>>> Wei's new code. =C2=A0I further had to patch the driver to recognize =
-my
->>>>> card with:
->>>>>
->>>>> --- alsa-driver-orig/alsa-kernel/pci/hda/patch_nvhdmi.c 2010-03-06
->>>>> 18:00:12.000000000 -0800
->>>>> +++ alsa-driver/alsa-kernel/pci/hda/patch_nvhdmi.c =C2=A0 =C2=A0 =C2=
-=A02010-03-06
->>>>> 18:02:00.000000000 -0800
->>>>> @@ -1335,6 +1335,8 @@ static struct hda_codec_preset snd_hda_p
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000b, .name =3D "GT21x HD=
-MI",
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
->>>>> + =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000a, .name =3D "GT220 HDMI",
->>>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000d, .name =3D "GT240 HD=
-MI",
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
->>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 {} /* terminator */
->>>>> @@ -1347,6 +1349,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0006"
->>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de0007");
->>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de0067");
->>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de8001");
->>>>> +MODULE_ALIAS("snd-hda-codec-id:10de000a");
->>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000c");
->>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000b");
->>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000d");
->>>>>
->>>>> This seems to work fine when running VDR but if I do anything else
->>>>> like upgrade packages, compile something, or maybe create a bz2, then
->>>>> I start to see _a lot_ of the following in my xine log:
->>>>>
->>>>> pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed.
->>>>>
->>>>> With the old code this didn't happen. =C2=A0However, my setup was an =
-8400gs
->>>>> using SPDIF OUT from my mainboard to SPDIF IN on the card. =C2=A0Then=
- using
->>>>> a dvi->hdmi cable into the tv.
->>>>>
->>>>> Again, I apologize if I'm posting this in the wrong place.
->>>>>
->>>>> Best regards.
->>>
->>> So nobody has any ideas at all? =C2=A0This is turning out to be a big
->>> problem and I've discovered it will occur even without anything else
->>> happening on the system. =C2=A0(originally I thought you needed to do s=
-ome
->>> other activity.) =C2=A0I've checked with some other devs I know and
->>> everyone has said the problem is with alsa so it would seem there is a
->>> serious bug somewhere since eventually those errors will happen and
->>> the audio will start skipping like crazy.
->>>
->>> Please let me know if there's anything I can do within my ability to he=
-lp.
->>
->> Could you do strace for ALSA ioctls? At least having the error code migh=
-t
->> help to identify this issue.
->
-> I don't know how but I'm willing to try if you want to tell me how to
-> do it.  Please keep in mind, I'm just an end-user -- not a developer
-> or even c coder.  The most I've done is run xine in gdb to help supply
-> bug info to those devs.
-
-strace -e trace=3Dopen,ioctl <xine>
-
- =09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
-
---8323584-2121109706-1268209036=:4672
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---8323584-2121109706-1268209036=:4672--
+thanks
