@@ -1,28 +1,23 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 11/20] ASoC: SAMSUNG: I2S: Add bit
-	definitions
-Date: Wed, 10 Mar 2010 21:49:03 +0900
-Message-ID: <1b68c6791003100449m13934b66hce1cd0e8a14c42f3@mail.gmail.com>
-References: <1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-9-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-10-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-11-git-send-email-jassi.brar@samsung.com>
-	<20100310110020.GH24422@rakim.wolfsonmicro.main>
-	<1b68c6791003100424l56812e3fy69890846736acb6d@mail.gmail.com>
-	<20100310123811.GQ24422@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 04/20] ASoC: S3C: I2Sv2: Remove
+ S3C_IIS_V2_SUPPORTED define
+Date: Wed, 10 Mar 2010 12:51:34 +0000
+Message-ID: <20100310125133.GR24422@rakim.wolfsonmicro.main>
+References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
+	<20100310104913.GF24422@rakim.wolfsonmicro.main>
+	<1b68c6791003100438m220c15eid0206b4b36188f5f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id 25E96103921
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:49:04 +0100 (CET)
-Received: by qw-out-1920.google.com with SMTP id 4so473688qwk.56
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 04:49:03 -0800 (PST)
-In-Reply-To: <20100310123811.GQ24422@rakim.wolfsonmicro.main>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 48B9B1038B8
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:51:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1b68c6791003100438m220c15eid0206b4b36188f5f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,29 +27,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: jassi brar <jassisinghbrar@gmail.com>
 Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgOTozOCBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFdlZCwgTWFyIDEwLCAyMDEwIGF0
-IDA5OjI0OjQ1UE0gKzA5MDAsIGphc3NpIGJyYXIgd3JvdGU6Cj4+IE9uIFdlZCwgTWFyIDEwLCAy
-MDEwIGF0IDg6MDAgUE0sIE1hcmsgQnJvd24KPgo+PiA+IE9uZSBvdGhlciB0aGluZyBJJ2Qgc3Vn
-Z2VzdCBpcyB0aGF0IHdoZW4gY29uc3RydWN0aW5nIGEgcGF0Y2ggc2VyaWVzCj4+ID4gaXQnZCBi
-ZSBiZXR0ZXIgdG8gcHV0IHRoZSBtb3JlIGludmFzaXZlIG9yIGNvbnRyb3ZlcnNpYWwgY2hhbmdl
-cyAobGlrZQo+PiA+IG1vdmluZyB0aGUgaGVhZGVycykgbGFzdC4gwqBUaGlzIG1ha2VzIGl0IGVh
-c2VyIHRvIGFwcGx5IGJpdHMgb2YgdGhlCj4+ID4gc2VyaWVzIGlmIHRoZXJlIGlzIGFueSBjb250
-cm92ZXJzeS4KPgo+PiBJIHRob3VnaHQgSSBhbHJlYWR5IG1hZGUgdGhhdCBzdXJlLgo+PiBJbiBt
-eSBvcGluaW9uLCB0aGUgb25seSBjb250cm92ZXJzaWFsIHBhdGNoIHdhcyAnaGVhZGVyLWNvcHlp
-bmcnIGFuZCBJIGNvdWxkbid0Cj4+IG1vdmUgdGhhdCBhbnkgZnVydGhlciBkb3duIHRoZSBzZXJp
-ZXMgb3Igb3RoZXIgY2hhbmdlcyB3aXRob3V0IHRoYXQuCj4KPiBJIGFncmVlIHRoYXQgdGhpcyBp
-cyB0aGUgb25seSByZWFsbHkgY29udHJvdmVyc2lhbCBjaGFuZ2UsIGJ1dCBpdCBzZWVtZWQKPiBs
-aWtlIHByZXR0eSBtdWNoIGFsbCB0aGUgY2hhbmdlcyB0aGF0IGFkZGVkIHN0dWZmIHRvIHRoZSBo
-ZWFkZXJzIG9yIHVzZWQKPiB0aGVtIGNvdWxkJ3ZlIGJlZW4gZG9uZSBwcmUtbW92ZSBzbyB0aGF0
-IHRoZXkgZGlkbid0IGRlcGVuZCBvbiBpdC4KTm90IHN1cmUgd2hpY2ggcGF0Y2ggeW91IHBvaW50
-LCBidXQgaXQgd2FzIGRlY2lzaW9uIG9mIGxvZ2ljYWwKYnVpbGQtdXAgYW5kIHN1Y2Nlc3NmdWwK
-Y29tcGlsYXRpb24gYWZ0ZXIgZWFjaCBwYXRjaCB0aGF0IG1hZGUgdGhlIHBhdGNoIHNlcmllcyBh
-cyBpdCBpcyBub3cuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+On Wed, Mar 10, 2010 at 09:38:16PM +0900, jassi brar wrote:
+
+> The way I see it, if we keep it we will have to add every supported
+> SoC to the list
+
+I agree that the current situation sucks.  Like I say, I suspect that we
+can handle this better with platform data if we knew what the
+underlying changes in the blocks are but right now this is all being
+reverse engineered from the datasheets which don't explicitly mention
+any differences or similarities between the IIS controllers of the
+various CPUs that people happen to have been able to obtain datasheets
+for - you're in a much better position to be able to do something about
+this than most since you have access to Samsung internal information.
+
+What I'm saying here is that while the driver needs to have per
+processor ifdefs I'd rather keep the matching plain text #error - if we
+can get those removed then this block could also go but it should happen
+in that order.
+
+> which is kinda redundant since that information could already be extracted from
+> Makefile. The list of supported SoC could be useful if we somehow knew
+> the future SoCs' characteristics to tell if they wud work or not, but
+> the developer
+> has to first check the Manual and see if the s3c-i2s-v2.c could be
+> made use of or not.
+> Besides, I assume 'user' to be the MACHINE driver writer and 'developer' to be
+> the CPU driver writer.
+
+Thing is that people writing machine drivers will frequently try
+building the driver if they're working on a SoC that isn't supported yet
+- they'll see a generic Samsung IIS controller driver and so (reasonably
+enough) try to use it.  The error message is there to try to make it
+clearer to them that they either need to turn into a CPU driver
+developer and make sure support is OK or get someone else to do the
+required work.
