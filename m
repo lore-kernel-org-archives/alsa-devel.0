@@ -1,79 +1,104 @@
-From: Chaithrika U S <chaithrika-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH] ASoC: DaVinci: Add hw_param callback for S/PDIF DIT link
-Date: Wed, 10 Mar 2010 14:48:33 +0530
-Message-ID: <1268212713-12041-1-git-send-email-chaithrika@ti.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Wed, 10 Mar 2010 14:01:07 +0800
+Message-ID: <20100310060107.GA27334@localhost>
+References: <s5hwrxspblg.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD556@HKMAIL01.nvidia.com>
+	<s5htyswpb18.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD557@HKMAIL01.nvidia.com>
+	<s5hvddcnlr6.wl%tiwai@suse.de>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD558@HKMAIL01.nvidia.com>
+	<a3ef07921003071121r24979a0breac27e3b0475bbcb@mail.gmail.com>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD562@HKMAIL01.nvidia.com>
+	<20100308044614.GA29026@localhost>
+	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7AF0E24368
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 07:01:14 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: VDR User <user.vdr@gmail.com>
+Cc: Wei Ni <wni@nvidia.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <jkysela@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On TI DM6467 EVM, S/PDIF DIT codec fails to open as it is unable to install
-hardware params. This dummy codec has no set_fmt and set_sysclk implementations
-and calls from the application to these functions cause errors. This patch adds
-a new hardware params callback function for S/PDIF transciever codec.
-
-Signed-off-by: Chaithrika U S <chaithrika-l0cyMroinI0@public.gmane.org>
-Tested-by: Anuj Aggarwal <anuj.aggarwal-l0cyMroinI0@public.gmane.org>
----
-This patch has been re-worked upon based on the review comments for
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-January/024621.html
-
-Applies to ALSA GIT tree on branch topic/asoc at
-http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=shortlog;
-h=topic/asoc
-
- sound/soc/davinci/davinci-evm.c |   16 +++++++++++++++-
- 1 files changed, 15 insertions(+), 1 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 7ccbe66..dba6651 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -81,10 +81,24 @@ static int evm_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int evm_spdif_hw_params(struct snd_pcm_substream *substream,
-+				struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+
-+	/* set cpu DAI configuration */
-+	return snd_soc_dai_set_fmt(cpu_dai, AUDIO_FORMAT);
-+}
-+
- static struct snd_soc_ops evm_ops = {
- 	.hw_params = evm_hw_params,
- };
- 
-+static struct snd_soc_ops evm_spdif_ops = {
-+	.hw_params = evm_spdif_hw_params,
-+};
-+
- /* davinci-evm machine dapm widgets */
- static const struct snd_soc_dapm_widget aic3x_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-@@ -165,7 +179,7 @@ static struct snd_soc_dai_link dm6467_evm_dai[] = {
- 		.stream_name = "spdif",
- 		.cpu_dai = &davinci_mcasp_dai[DAVINCI_MCASP_DIT_DAI],
- 		.codec_dai = &dit_stub_dai,
--		.ops = &evm_ops,
-+		.ops = &evm_spdif_ops,
- 	},
- };
- static struct snd_soc_dai_link da8xx_evm_dai = {
--- 
-1.5.6
+T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgMDE6NDI6MDVQTSArMDgwMCwgVkRSIFVzZXIgd3JvdGU6
+Cj4gT24gU3VuLCBNYXIgNywgMjAxMCBhdCA4OjQ2IFBNLCBXdSBGZW5nZ3VhbmcgPGZlbmdndWFu
+Zy53dUBpbnRlbC5jb20+IHdyb3RlOgo+ID4gQ0MgSmFyb3NsYXYsIG1heWJlIGhlIGhhcyBzb21l
+IGlkZWEgb24KPiA+Cj4gPiDCoCDCoCDCoCDCoHBjbV9ody5jOiBzbmRfcGNtX2h3X2RlbGF5KCkg
+U05EUlZfUENNX0lPQ1RMX0RFTEFZIGZhaWxlZC4KPiA+Cj4gPiBPbiBNb24sIE1hciAwOCwgMjAx
+MCBhdCAxMjozNTozN1BNICswODAwLCBXZWkgTmkgd3JvdGU6Cj4gPj4gSGksCj4gPj4gQmVjYXVz
+ZSBJIGRvbid0IGhhdmUgR1QyMjAgY2FyZCBvbiBoYW5kLCBJIGRpZG4ndCB0ZXN0IGl0IHlldC4K
+PiA+PiBTbyBJIGRpZG4ndCBhZGQgdGhpcyBjYXJkIHRvIHRoZSBwYXRjaCBmaWxlLiBJIHRoaW5r
+IHlvdSBjb3VsZCBhZGQgaXQgYWZ0ZXIKPiA+PiB5b3UgdGVzdCBpdC4KPiA+Pgo+ID4+IEFib3V0
+IHRoZSB3YXJuaW5nIG1lc3NhZ2VzLCBJIGRvbid0IGtub3cgd2h5Lgo+ID4+IE1heSBiZSBzb21l
+IG90aGVycyBjYW4gYW5zd2VyLgo+ID4+Cj4gPj4gVGhhbmtzCj4gPj4gV2VpLgo+ID4+IG52cHVi
+bGljCj4gPj4KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4+IEZyb206IFZEUiBV
+c2VyIFttYWlsdG86dXNlci52ZHJAZ21haWwuY29tXQo+ID4+IFNlbnQ6IE1vbmRheSwgTWFyY2gg
+MDgsIDIwMTAgMzoyMiBBTQo+ID4+IFRvOiBXZWkgTmkKPiA+PiBDYzogVGFrYXNoaSBJd2FpOyBh
+a3BtOyBhbHNhLWRldmVsOyBXdSBGZW5nZ3Vhbmc7IGxpbnV4LWtlcm5lbDsgUGF2ZWwgSG9mbWFu
+Cj4gPj4gU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0hdU3VwcG9ydCBNQ1A4OSBhbmQg
+R1QyMXggaGRtaSBhdWRpbwo+ID4+Cj4gPj4gSSB0aGluayB0aGlzIG1heSBiZSByZWxldmFudCB0
+byB0aGlzIHN1YmplY3QsIGlmIG5vdCB0aGVuIG15IGFwb2xvZ2llcy4KPiA+Pgo+ID4+IEkndmUg
+anVzdCBpbnN0YWxsZWQgYSBHVDIyMCBjYXJkIGFuZCB3YXMgYWJsZSB0byBnZXQgYXVkaW8tb3Zl
+ci1oZG1pCj4gPj4gd29ya2luZyBieSBjb21waWxpbmcgdGhlIHNuYXBzaG90IGRyaXZlcnMgZnJv
+bSAyMDEwMDMwNyB3aGljaCBjb250YWluCj4gPj4gV2VpJ3MgbmV3IGNvZGUuIMKgSSBmdXJ0aGVy
+IGhhZCB0byBwYXRjaCB0aGUgZHJpdmVyIHRvIHJlY29nbml6ZSBteQo+ID4+IGNhcmQgd2l0aDoK
+PiA+Pgo+ID4+IC0tLSBhbHNhLWRyaXZlci1vcmlnL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hf
+bnZoZG1pLmMgMjAxMC0wMy0wNgo+ID4+IDE4OjAwOjEyLjAwMDAwMDAwMCAtMDgwMAo+ID4+ICsr
+KyBhbHNhLWRyaXZlci9hbHNhLWtlcm5lbC9wY2kvaGRhL3BhdGNoX252aGRtaS5jIMKgIMKgIMKg
+MjAxMC0wMy0wNgo+ID4+IDE4OjAyOjAwLjAwMDAwMDAwMCAtMDgwMAo+ID4+IEBAIC0xMzM1LDYg
+KzEzMzUsOCBAQCBzdGF0aWMgc3RydWN0IGhkYV9jb2RlY19wcmVzZXQgc25kX2hkYV9wCj4gPj4g
+wqAgwqAgwqAgwqAgwqAgLnBhdGNoID0gcGF0Y2hfbnZoZG1pXzhjaF84OSB9LAo+ID4+IMKgIMKg
+IMKgIMKgIHsgLmlkID0gMHgxMGRlMDAwYiwgLm5hbWUgPSAiR1QyMXggSERNSSIsCj4gPj4gwqAg
+wqAgwqAgwqAgwqAgLnBhdGNoID0gcGF0Y2hfbnZoZG1pXzhjaF84OSB9LAo+ID4+ICsgwqAgwqAg
+wqAgeyAuaWQgPSAweDEwZGUwMDBhLCAubmFtZSA9ICJHVDIyMCBIRE1JIiwKPiA+PiArIMKgIMKg
+IMKgIMKgIC5wYXRjaCA9IHBhdGNoX252aGRtaV84Y2hfODkgfSwKPiA+PiDCoCDCoCDCoCDCoCB7
+IC5pZCA9IDB4MTBkZTAwMGQsIC5uYW1lID0gIkdUMjQwIEhETUkiLAo+ID4+IMKgIMKgIMKgIMKg
+IMKgIC5wYXRjaCA9IHBhdGNoX252aGRtaV84Y2hfODkgfSwKPiA+PiDCoCDCoCDCoCDCoCB7fSAv
+KiB0ZXJtaW5hdG9yICovCj4gPj4gQEAgLTEzNDcsNiArMTM0OSw3IEBAIE1PRFVMRV9BTElBUygi
+c25kLWhkYS1jb2RlYy1pZDoxMGRlMDAwNiIKPiA+PiDCoE1PRFVMRV9BTElBUygic25kLWhkYS1j
+b2RlYy1pZDoxMGRlMDAwNyIpOwo+ID4+IMKgTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlk
+OjEwZGUwMDY3Iik7Cj4gPj4gwqBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTBkZTgw
+MDEiKTsKPiA+PiArTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlkOjEwZGUwMDBhIik7Cj4g
+Pj4gwqBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTBkZTAwMGMiKTsKPiA+PiDCoE1P
+RFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxMGRlMDAwYiIpOwo+ID4+IMKgTU9EVUxFX0FM
+SUFTKCJzbmQtaGRhLWNvZGVjLWlkOjEwZGUwMDBkIik7Cj4gPj4KPiA+PiBUaGlzIHNlZW1zIHRv
+IHdvcmsgZmluZSB3aGVuIHJ1bm5pbmcgVkRSIGJ1dCBpZiBJIGRvIGFueXRoaW5nIGVsc2UKPiA+
+PiBsaWtlIHVwZ3JhZGUgcGFja2FnZXMsIGNvbXBpbGUgc29tZXRoaW5nLCBvciBtYXliZSBjcmVh
+dGUgYSBiejIsIHRoZW4KPiA+PiBJIHN0YXJ0IHRvIHNlZSBfYSBsb3RfIG9mIHRoZSBmb2xsb3dp
+bmcgaW4gbXkgeGluZSBsb2c6Cj4gPj4KPiA+PiBwY21faHcuYzogc25kX3BjbV9od19kZWxheSgp
+IFNORFJWX1BDTV9JT0NUTF9ERUxBWSBmYWlsZWQuCj4gPj4KPiA+PiBXaXRoIHRoZSBvbGQgY29k
+ZSB0aGlzIGRpZG4ndCBoYXBwZW4uIMKgSG93ZXZlciwgbXkgc2V0dXAgd2FzIGFuIDg0MDBncwo+
+ID4+IHVzaW5nIFNQRElGIE9VVCBmcm9tIG15IG1haW5ib2FyZCB0byBTUERJRiBJTiBvbiB0aGUg
+Y2FyZC4gwqBUaGVuIHVzaW5nCj4gPj4gYSBkdmktPmhkbWkgY2FibGUgaW50byB0aGUgdHYuCj4g
+Pj4KPiA+PiBBZ2FpbiwgSSBhcG9sb2dpemUgaWYgSSdtIHBvc3RpbmcgdGhpcyBpbiB0aGUgd3Jv
+bmcgcGxhY2UuCj4gPj4KPiA+PiBCZXN0IHJlZ2FyZHMuCj4gCj4gU28gbm9ib2R5IGhhcyBhbnkg
+aWRlYXMgYXQgYWxsPyAgVGhpcyBpcyB0dXJuaW5nIG91dCB0byBiZSBhIGJpZwo+IHByb2JsZW0g
+YW5kIEkndmUgZGlzY292ZXJlZCBpdCB3aWxsIG9jY3VyIGV2ZW4gd2l0aG91dCBhbnl0aGluZyBl
+bHNlCj4gaGFwcGVuaW5nIG9uIHRoZSBzeXN0ZW0uICAob3JpZ2luYWxseSBJIHRob3VnaHQgeW91
+IG5lZWRlZCB0byBkbyBzb21lCj4gb3RoZXIgYWN0aXZpdHkuKSAgSSd2ZSBjaGVja2VkIHdpdGgg
+c29tZSBvdGhlciBkZXZzIEkga25vdyBhbmQKPiBldmVyeW9uZSBoYXMgc2FpZCB0aGUgcHJvYmxl
+bSBpcyB3aXRoIGFsc2Egc28gaXQgd291bGQgc2VlbSB0aGVyZSBpcyBhCj4gc2VyaW91cyBidWcg
+c29tZXdoZXJlIHNpbmNlIGV2ZW50dWFsbHkgdGhvc2UgZXJyb3JzIHdpbGwgaGFwcGVuIGFuZAo+
+IHRoZSBhdWRpbyB3aWxsIHN0YXJ0IHNraXBwaW5nIGxpa2UgY3JhenkuCj4gCj4gUGxlYXNlIGxl
+dCBtZSBrbm93IGlmIHRoZXJlJ3MgYW55dGhpbmcgSSBjYW4gZG8gd2l0aGluIG15IGFiaWxpdHkg
+dG8gaGVscC4KClRoZSBmaXJzdCBzdGVwIHdvdWxkIGJlIHRvIHJ1biB2YW5pbGxhIDIuNi4zMyB3
+aXRoIFdlaSBOaSdzIHBhdGNoLAppbiBvcmRlciB0byB0ZWxsIHdoZXRoZXIgdGhlIGJ1ZyBpcyBp
+bnRlcm5hbCB0byB0aGUgSERNSSBjb2RlLCBvciBpcwppbnRyb2R1Y2VkIGJ5IGJsZWVkaW5nIGVk
+Z2UgQUxTQSBkZXZlbG9wbWVudC4KClRoYW5rcywKRmVuZ2d1YW5nCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
