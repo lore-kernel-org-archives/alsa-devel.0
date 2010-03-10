@@ -1,15 +1,21 @@
-From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 15/20] ASoC: S3C: I2Sv2: Unify i2s_get_clock
-	callback
-Date: Wed, 10 Mar 2010 17:12:22 +0900
-Message-ID: <1268208742-22713-1-git-send-email-jassi.brar@samsung.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 04/20] ASoC: S3C: I2Sv2: Remove
+ S3C_IIS_V2_SUPPORTED define
+Date: Wed, 10 Mar 2010 10:49:13 +0000
+Message-ID: <20100310104913.GF24422@rakim.wolfsonmicro.main>
+References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61B6410380A
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:23:01 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9F90E2438E
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 11:49:14 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,145 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Now that we have two callbacks s3c2412_i2s_get_clock & s3c64xx_i2s_get_clock
-doing exactly the same thing, we can define one generic s3c_i2sv2_get_clock
-and discard other two copies. Also, switch the users to make calls to the
-newly defined and generic s3c_i2sv2_get_clock
+On Wed, Mar 10, 2010 at 04:48:53PM +0900, Jassi Brar wrote:
+> The code in s3c-i2s-v2.c is compiled via Makefile and not implicitly
+> by include'ing. Also, the driver developer anyways has to refer to the
+> manual to see if the code can be reused for the SoC under consideration.
+> That makes the S3C_IIS_V2_SUPPORTED retrospective rather than a check.
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/s3c24xx/jive_wm8750.c |    2 +-
- sound/soc/s3c24xx/s3c-i2s-v2.c  |   12 ++++++++++++
- sound/soc/s3c24xx/s3c-i2s-v2.h  |    2 ++
- sound/soc/s3c24xx/s3c2412-i2s.c |   13 -------------
- sound/soc/s3c24xx/s3c2412-i2s.h |    2 --
- sound/soc/s3c24xx/s3c64xx-i2s.c |   12 ------------
- sound/soc/s3c24xx/s3c64xx-i2s.h |    2 --
- 7 files changed, 15 insertions(+), 30 deletions(-)
+> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/s3c24xx/jive_wm8750.c
-index 59dc2c6..304240d 100644
---- a/sound/soc/s3c24xx/jive_wm8750.c
-+++ b/sound/soc/s3c24xx/jive_wm8750.c
-@@ -70,7 +70,7 @@ static int jive_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- 	s3c_i2sv2_iis_calc_rate(&div, NULL, params_rate(params),
--				s3c2412_get_iisclk());
-+				s3c_i2sv2_get_clock(cpu_dai));
- 
- 	/* set codec DAI configuration */
- 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index 1b29b4b..ecb3054 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -499,6 +499,18 @@ static snd_pcm_sframes_t s3c2412_i2s_delay(struct snd_pcm_substream *substream,
- 	return delay;
- }
- 
-+struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai)
-+{
-+	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
-+		return i2s->iis_cclk;
-+	else
-+		return i2s->iis_pclk;
-+}
-+EXPORT_SYMBOL_GPL(s3c_i2sv2_get_clock);
-+
- /* default table of all avaialable root fs divisors */
- static unsigned int iis_fs_tab[] = { 256, 512, 384, 768 };
- 
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/s3c24xx/s3c-i2s-v2.h
-index ea56467..39a6db6 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.h
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.h
-@@ -60,6 +60,8 @@ struct s3c_i2sv2_info {
- 	u32		 suspend_iispsr;
- };
- 
-+extern struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai);
-+
- struct s3c_i2sv2_rate_calc {
- 	unsigned int	clk_div;	/* for prescaler */
- 	unsigned int	fs_div;		/* for root frame clock */
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index 4996843..fe90867 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -91,19 +91,6 @@ static int s3c2412_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
- 	return 0;
- }
- 
--
--struct clk *s3c2412_get_iisclk(void)
--{
--	struct s3c_i2sv2_info *i2s = &s3c2412_i2s;
--	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
--
--	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
--		return i2s->iis_cclk;
--	else
--		return i2s->iis_pclk;
--}
--EXPORT_SYMBOL_GPL(s3c2412_get_iisclk);
--
- static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
- {
- 	return cpu_dai->private_data;
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.h b/sound/soc/s3c24xx/s3c2412-i2s.h
-index 60cac00..0b5686b 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.h
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.h
-@@ -24,8 +24,6 @@
- #define S3C2412_CLKSRC_PCLK	S3C_I2SV2_CLKSRC_PCLK
- #define S3C2412_CLKSRC_I2SCLK	S3C_I2SV2_CLKSRC_AUDIOBUS
- 
--extern struct clk *s3c2412_get_iisclk(void);
--
- extern struct snd_soc_dai s3c2412_i2s_dai;
- 
- #endif /* __SND_SOC_S3C24XX_S3C2412_I2S_H */
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-index 9bcc99d..9343349 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
-@@ -91,18 +91,6 @@ static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
- 	return 0;
- }
- 
--struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai)
--{
--	struct s3c_i2sv2_info *i2s = to_info(dai);
--	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
--
--	if (iismod & S3C64XX_IISMOD_IMS_SYSMUX)
--		return i2s->iis_cclk;
--	else
--		return i2s->iis_pclk;
--}
--EXPORT_SYMBOL_GPL(s3c64xx_i2s_get_clock);
--
- static int s3c64xx_i2s_probe(struct platform_device *pdev,
- 			     struct snd_soc_dai *dai)
- {
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
-index 53d2a0a..f27ed50 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.h
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.h
-@@ -38,6 +38,4 @@ struct clk;
- 
- extern struct snd_soc_dai s3c64xx_i2s_dai[];
- 
--extern struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai);
--
- #endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
--- 
-1.6.2.5
+This code is in there for pure defensiveness - since at least the
+S3C64xx and S3C24xx have slightly different register maps for the block
+(the ones that are currently handled are the IISMOD master settings,
+there may be more) the code needs to have explicit support for the
+processors.  The goal of this block is to print a #error saying exactly
+what's going on rather than just have the build fail with missing
+defines in order to help make it more immediately clear to users what is
+going on if they try to select a processor combination they don't know
+how to handle.  
+
+Users often have a strong expectation that the driver will just work
+and so relying on them consulting the processor manual isn't always
+realistic.
+
+It may be that these differences are due to some being IISv2 and some
+being IISv3 or something and could easily be handled via mandatory
+platform data but since none of the documentation refers to any of this
+stuff and it has to be reverse engineered we've got this system based on
+build time processor selection.
