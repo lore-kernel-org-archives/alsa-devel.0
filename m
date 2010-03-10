@@ -1,22 +1,14 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: Reforming S3C I2S towards supporting I2Sv4
-Date: Wed, 10 Mar 2010 18:22:29 +0900
-Message-ID: <1b68c6791003100122u16294a69y541f28b6cabc69a2@mail.gmail.com>
-References: <1268207335-9947-1-git-send-email-jassi.brar@samsung.com>
-	<1268209468.3760.8.camel@odin>
-	<1b68c6791003100031m7be14ecr218e4f988bd30cab@mail.gmail.com>
-	<1268211847.3760.23.camel@odin>
+From: Jassi Brar <jassi.brar@samsung.com>
+Subject: [PATCH 16/20] ASoC: S3C64XX: I2S: Use s3c2412 defines
+Date: Wed, 10 Mar 2010 17:12:26 +0900
+Message-ID: <1268208746-22748-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f192.google.com (mail-qy0-f192.google.com
-	[209.85.221.192])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5CB86103823
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 10:22:32 +0100 (CET)
-Received: by qyk30 with SMTP id 30so7902269qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 01:22:30 -0800 (PST)
-In-Reply-To: <1268211847.3760.23.camel@odin>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7D11810382A
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:23:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,53 +18,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgNjowNCBQTSwgTGlhbSBHaXJkd29vZCA8bHJnQHNsaW1s
-b2dpYy5jby51az4gd3JvdGU6Cj4gT24gV2VkLCAyMDEwLTAzLTEwIGF0IDE3OjMxICswOTAwLCBq
-YXNzaSBicmFyIHdyb3RlOgo+PiBPbiBXZWQsIE1hciAxMCwgMjAxMCBhdCA1OjI0IFBNLCBMaWFt
-IEdpcmR3b29kIDxscmdAc2xpbWxvZ2ljLmNvLnVrPiB3cm90ZToKPj4gPiBPbiBXZWQsIDIwMTAt
-MDMtMTAgYXQgMTY6NDggKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4+ID4+IMKgVGhlIGhlYWRl
-ciB3aXRoIEkyUyByZWdpc3RlciBtYXAgYW5kIGJpdCBkZWZpbml0aW9ucyBoYXMgYmVlbiBjb3Bp
-ZWQKPj4gPj4gdG8gd2hlcmUgdGhlIGRyaXZlcnMgYXJlKHNvdW5kL3NvYy9zM2MyNHh4Lykgc2lu
-Y2UgdGhlIGhlYWRlciBoYXMgbm90aGluZwo+PiA+PiB1c2FibGUgZm9yIHBsYXRmb3JtIGNvZGUu
-IEFsc28sIGl0IHdpbGwgaGVscCBhdm9pZCBuZWVkIGZvciBjby1vcmRpbmF0aW9uCj4+ID4+IGJl
-dHdlZW4gQVNvQyBhbmQgUzNDIEFSQ0ggdHJlZXMuIEZvciBub3csIHRoZSBoZWFkZXIgcmVncy1z
-M2MyNDEyLWlpcy5oCj4+ID4+IGlzIGxlZnQgaW50YWN0IGJ1dCByZW5kZXJlZCB1c2VsZXNzIGJ5
-IG1ha2luZyBBU29DIGRyaXZlcnMgaW5jbHVkZSB0aGUKPj4gPj4gbmV3bHkgY29waWVkIHZlcnNp
-b24gb2YgaXQgKHNvdW5kL3NvYy9zM2MyNHh4L3JlZ3MtaTJzLXYyLmgpIExhdGVyIHRoZQo+PiA+
-PiBoZWFkZXIgY291bGQgYmUgZHJvcHBlZCBieSBwYXRjaGVzIHRvIFMzQyBQTEFUIHRyZWUuCj4+
-ID4+Cj4+ID4KPj4gPiBJJ20gbm90IHRvbyBrZWVuIG9uIG1vdmluZyBDUFUgcmVnaXN0ZXIgYW5k
-IGJpdCBkZWZpbml0aW9ucyBvdXQgb2YgQVJDSC4KPj4gVGhlIGhlYWRlciBkb2Vzbid0IGNvbnRh
-aW4gYWJzb2x1dGUgcmVnaXN0ZXIgYWRkcmVzc2VzLCBidXQgb25seQo+PiBvZmZzZXRzLgo+Cj4g
-SXNuJ3QgdGhpcyByZWFsbHkgdGhlIHNhbWUgdGhpbmcgPwpJZiB0d28gU29DcyBoYXZlIHNhbWUg
-Y29udHJvbGxlcnMgYnV0IG1hcHBlZCBhdCBkaWZmZXJlbnQgYWRkcmVzc2VzLAp0aGUgQVJDSCBt
-YWludGFpbmVyIHdvdWxkIGZpbmQgYSBjb21tb24gcGxhY2UgZm9yIHRoZSBoZWFkZXIgcmF0aGVy
-CnRoYW4gbWFraW5nIHR3byBoZWFkZXJzIHdpdGggb25lIGRlZmluZSBkaWZmZXJlbnQgYW5kIHJl
-c3QgYWxsIHNhbWUuCklmIGFub3RoZXIgc3VjaCBTb0MgY29tZXMgdXAgdGhlIGN5Y2xlIHN0YXJ0
-cyBhZ2Fpbi4oVGhhdCBoYXMKYXBwYXJhbnRseSBoYXBwZW5lZCB3aXRoIFMzQyBzdXBwb3J0IG92
-ZXIgdGhlIHllYXJzKQpOb3csIHJhdGhlciB0aGFuIG1vdmluZyBhcm91bmQgdGhlIGhlYWRlciB3
-aXRoIGRlZmluaXRpb25zIG9mIHdoYXQgaXMKX29ubHlfIHVzZWQgYnkgdGhlIGNvbnRyb2xsZXIg
-ZHJpdmVyLCB3aHkgbm90IG1vdmUgaXQgY2xvc2UgdG8gdGhlIGRyaXZlcj8KVGhlIGJhc2UgYWRk
-cmVzc2VzIGNhbihhbmQgc2hvdWxkKSBhbHdheXMgYmUgZGVmaW5lZCBpbiBQTEFUIHNwZWNpZmlj
-IGxvY2F0aW9uLgoKPj4gVGhlIGJhc2UgYWRkcmVzcyBvZiBJMlMgY29udHJvbGxlcnMgYXJlIGRl
-ZmluZWQgaW4gUExBVAo+PiBzcGVjaWZpYyBoZWFkZXIuIFNvLCBJIHRoaW5rIHdlIGNhbiBtb3Zl
-IHRoZSBoZWFkZXIuCj4gSSBkb24ndCB0aGluayB5b3VyIHJlYXNvbiBvZiAiY28tb3JkaW5hdGlv
-biBiZXR3ZWVuIEFTb0MgYW5kIFMzQyBBUkNICj4gdHJlZXMiIGNhbiBqdXN0aWZ5IGJyZWFraW5n
-IGtlcm5lbCBwb2xpY3kuCkkgYmVsaWV2ZSB0aGUgcG9saWN5IGlzIG5vdCBhZ2FpbnN0IG1vdmlu
-ZyBkZWZpbml0aW9ucyBvZiBiaXRzIHRoYXQgYXJlCnRpZ2h0bHkgbGlua2VkIHRvIHRoZSBkZXZp
-Y2UgY29udHJvbGxlciBlc3Agd2hlbiB3ZSBzZWVpbmcgbW9yZSBhbmQgbW9yZQpTb0NzIGNvbWlu
-ZyB3aXRoIHN0YW5kYXJkIG9mLXRoZS1zaGVsZiB0aGlyZCBwYXJ0eSBjb250cm9sbGVycy4KU29t
-ZSBkcml2ZXJzIGRvIGhhdmUgdGhlIGNvbnRyb2xsZXIgYml0IGRlZmluaXRpb25zIGJlc2lkZSBk
-cml2ZXJzLiBJIGNvdWxkCmF0bGVhc3Qgc2VlIHNvbWUgc2VyaWFsIGFuZCBzcGkgZHJpdmVycy4K
-ClRoZW4sIEkgcmVhbGx5IHdhbnQgUzNDIEFTb0MgbW9kaWZpY2F0aW9ucyB0byBub3Qgd2FpdCBv
-biBTM0MKQVJDSCBwYXRjaGVzIGFwcGVhcmluZyB1cHN0cmVhbSBmaXJzdC4KCkhhdmluZyBzYWlk
-IHRoYXQsIEkgYW0gd2lsbGluZyB0byhub3QgdG8gbWVhbiBJIGhhdmUgYW5vdGhlciBjaG9pY2Up
-CnRha2Ugd29yZCBvZiB0aGUgbWFpbnRhaW5lciBvbiB0aGUgbWF0dGVyIGFuZCBmaXJzdCBzZW5k
-IHBhdGNoZXMgdG8KczNjIEFSQ0ggYW5kIHdhaXQgdW50aWwgdGhleSBhcHBlYXIgaW4gTWFyaydz
-IHRyZWUgYmVmb3JlIHN1Ym1pdHRpbmcKdGhlIHJlbWFpbmluZyBwYXRjaGVzLgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Now that the fields are defined for s3c2412, use them and avoid having
+multiple copies of same defines.
+
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/s3c24xx/regs-i2s-v2.h |    3 ---
+ sound/soc/s3c24xx/s3c64xx-i2s.c |    4 ++--
+ 2 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/s3c24xx/regs-i2s-v2.h b/sound/soc/s3c24xx/regs-i2s-v2.h
+index f612468..ad06937 100644
+--- a/sound/soc/s3c24xx/regs-i2s-v2.h
++++ b/sound/soc/s3c24xx/regs-i2s-v2.h
+@@ -73,9 +73,6 @@
+ #define S3C64XX_IISMOD_BLC_24BIT	(2 << 13)
+ #define S3C64XX_IISMOD_BLC_MASK		(3 << 13)
+ 
+-#define S3C64XX_IISMOD_IMS_PCLK		(0 << 10)
+-#define S3C64XX_IISMOD_IMS_SYSMUX	(1 << 10)
+-
+ #define S3C2412_IISMOD_IMS_SYSMUX	(1 << 10)
+ #define S3C2412_IISMOD_SLAVE		(1 << 11)
+ #define S3C2412_IISMOD_MODE_TXONLY	(0 << 8)
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
+index 9343349..1a29564 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
+@@ -62,11 +62,11 @@ static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 
+ 	switch (clk_id) {
+ 	case S3C64XX_CLKSRC_PCLK:
+-		iismod &= ~S3C64XX_IISMOD_IMS_SYSMUX;
++		iismod &= ~S3C2412_IISMOD_IMS_SYSMUX;
+ 		break;
+ 
+ 	case S3C64XX_CLKSRC_MUX:
+-		iismod |= S3C64XX_IISMOD_IMS_SYSMUX;
++		iismod |= S3C2412_IISMOD_IMS_SYSMUX;
+ 		break;
+ 
+ 	case S3C64XX_CLKSRC_CDCLK:
+-- 
+1.6.2.5
