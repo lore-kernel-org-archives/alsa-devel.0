@@ -1,27 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 17/20] ASoC: S3C: I2Sv2: Define new field
- for controller features
-Date: Wed, 10 Mar 2010 11:09:59 +0000
-Message-ID: <20100310110958.GI24422@rakim.wolfsonmicro.main>
-References: <1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 11/20] ASoC: SAMSUNG: I2S: Add bit
+	definitions
+Date: Wed, 10 Mar 2010 21:24:45 +0900
+Message-ID: <1b68c6791003100424l56812e3fy69890846736acb6d@mail.gmail.com>
+References: <1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
 	<1268207349-9979-9-git-send-email-jassi.brar@samsung.com>
 	<1268207349-9979-10-git-send-email-jassi.brar@samsung.com>
 	<1268207349-9979-11-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-12-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-13-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-14-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-15-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-16-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-17-git-send-email-jassi.brar@samsung.com>
+	<20100310110020.GH24422@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3F6ED243B0
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 12:10:00 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1268207349-9979-17-git-send-email-jassi.brar@samsung.com>
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.144])
+	by alsa0.perex.cz (Postfix) with ESMTP id B471910387C
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:24:47 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 4so467835qwk.56
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 04:24:45 -0800 (PST)
+In-Reply-To: <20100310110020.GH24422@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,28 +32,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 10, 2010 at 04:49:06PM +0900, Jassi Brar wrote:
-
-> While adding support for new SoCs' I2S, check for the blocks
-> of older SoCs that have similar feature and set the flag for
-> that feature.
-
-As a result of this...
-
-> +/* Set this flag for I2S controllers that have the bit IISMOD[12]
-> + * bridge/break RCLK signal and external Xi2sCDCLK pin.
-> + */
-> +#define S3C_FEATURE_CDCLKCON	(1 << 0)
-> +
-
-...I'd suggest moving this into the patch that adds support for
-CDCLKCON (or merging that patch in with this one).
-
-Probably worth namespacing these defines a bit more (eg, S3C_IIS_) since
-I'd expect they'll end up being used by the arch/arm code too in the
-platform data definition.  They ought to be in include/sound or arch/arm
-for visibility to arch/arm code too.
+T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgODowMCBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFdlZCwgTWFyIDEwLCAyMDEwIGF0
+IDA0OjQ5OjAwUE0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4+IERlZmluZSBtb3JlIGJpdCBk
+ZWZpbml0aW9ucyBpbiB0aGUgb3JkZXIgb2YgbWFpbmxpbmUgc3VwcG9ydCBmb3IgdGhlCj4+IFNv
+Qy4KPiBGb3IgY2hhbmdlcyBsaWtlIHRoaXMgaXQnZCBiZSBiZXR0ZXIgaWYgdGhlIGNoYW5nZWxv
+ZyBzYWlkIHNvbWV0aGluZwo+IGxpa2UgIkFkZCByZWdpc3RlciBiaXQgZGVmaW5pdGlvbnMgZm9y
+IFM1UEMxeHgiIC0gdGhpcyBpcyBhbGwgbWFpbmxpbmUKPiBjb2RlIHNvIGl0J3MgbXVjaCBjbGVh
+cmVyIHRvIHNheSB0aGF0IHRoaXMgaXMgYWRkaW5nIHN1cHBvcnQgZm9yIGEgbmV3Cj4gU29DLgpJ
+IHRob3VnaHQgb2YgYWRkaW5nIGRlZmluaXRpb25zIGluICdjaHJvbm9sb2dpY2FsIG9yZGVyIG9m
+IHN1cHBvcnQnIGluIGtlcm5lbApyYXRoZXIgdGhhbiBTb0Mgd2lzZS4KT2ssIHdpbGwgZGl2aWRl
+IGluIHR3byBwYXRjaGVzLgoKPiBPbmUgb3RoZXIgdGhpbmcgSSdkIHN1Z2dlc3QgaXMgdGhhdCB3
+aGVuIGNvbnN0cnVjdGluZyBhIHBhdGNoIHNlcmllcwo+IGl0J2QgYmUgYmV0dGVyIHRvIHB1dCB0
+aGUgbW9yZSBpbnZhc2l2ZSBvciBjb250cm92ZXJzaWFsIGNoYW5nZXMgKGxpa2UKPiBtb3Zpbmcg
+dGhlIGhlYWRlcnMpIGxhc3QuIMKgVGhpcyBtYWtlcyBpdCBlYXNlciB0byBhcHBseSBiaXRzIG9m
+IHRoZQo+IHNlcmllcyBpZiB0aGVyZSBpcyBhbnkgY29udHJvdmVyc3kuCkkgdGhvdWdodCBJIGFs
+cmVhZHkgbWFkZSB0aGF0IHN1cmUuCkluIG15IG9waW5pb24sIHRoZSBvbmx5IGNvbnRyb3ZlcnNp
+YWwgcGF0Y2ggd2FzICdoZWFkZXItY29weWluZycgYW5kIEkgY291bGRuJ3QKbW92ZSB0aGF0IGFu
+eSBmdXJ0aGVyIGRvd24gdGhlIHNlcmllcyBvciBvdGhlciBjaGFuZ2VzIHdpdGhvdXQgdGhhdC4K
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
