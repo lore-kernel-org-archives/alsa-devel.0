@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: bf5xx-sport: use common SPORT code
- for MMR info
-Date: Tue, 09 Mar 2010 20:50:34 +0000
-Message-ID: <1268167834.3720.78.camel@odin>
-References: <1268157494-13447-1-git-send-email-vapier@gentoo.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: DaVinci: Add hw_param callback for
+ S/PDIF DIT link
+Date: Wed, 10 Mar 2010 12:00:22 +0000
+Message-ID: <20100310120022.GL24422@rakim.wolfsonmicro.main>
+References: <1268212713-12041-1-git-send-email-chaithrika@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
-	[209.85.218.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id DE6E2244EA
-	for <alsa-devel@alsa-project.org>; Tue,  9 Mar 2010 21:50:31 +0100 (CET)
-Received: by mail-bw0-f220.google.com with SMTP id 20so6563086bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 09 Mar 2010 12:50:31 -0800 (PST)
-In-Reply-To: <1268157494-13447-1-git-send-email-vapier@gentoo.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 49A392443D
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:00:23 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1268212713-12041-1-git-send-email-chaithrika@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Barry Song <barry.song@analog.com>
+To: Chaithrika U S <chaithrika@ti.com>
+Cc: khilman@deeprootsystems.com, alsa-devel@alsa-project.org, sudhakar.raj@ti.com, nsekhar@ti.com, davinci-linux-open-source@linux.davincidsp.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-03-09 at 12:58 -0500, Mike Frysinger wrote:
-> From: Barry Song <barry.song@analog.com>
-> 
-> No point in duplicating this structure layout in each driver.
-> 
-> Signed-off-by: Barry Song <barry.song@analog.com>
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+On Wed, Mar 10, 2010 at 02:48:33PM +0530, Chaithrika U S wrote:
+> On TI DM6467 EVM, S/PDIF DIT codec fails to open as it is unable to install
+> hardware params. This dummy codec has no set_fmt and set_sysclk implementations
+> and calls from the application to these functions cause errors. This patch adds
+> a new hardware params callback function for S/PDIF transciever codec.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk
-
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Applied, thanks.
