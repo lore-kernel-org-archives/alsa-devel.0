@@ -1,10 +1,8 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
-Date: Wed, 10 Mar 2010 14:01:07 +0800
-Message-ID: <20100310060107.GA27334@localhost>
-References: <s5hwrxspblg.wl%tiwai@suse.de>
-	<6B4D417B830BC44B8026029FD256F7F1C16B1AD556@HKMAIL01.nvidia.com>
-	<s5htyswpb18.wl%tiwai@suse.de>
+Date: Wed, 10 Mar 2010 09:17:16 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1003100915310.4672@eeebox2.perex-int.cz>
+References: <s5h1vg0qrrr.wl%tiwai@suse.de> <s5htyswpb18.wl%tiwai@suse.de>
 	<6B4D417B830BC44B8026029FD256F7F1C16B1AD557@HKMAIL01.nvidia.com>
 	<s5hvddcnlr6.wl%tiwai@suse.de>
 	<6B4D417B830BC44B8026029FD256F7F1C16B1AD558@HKMAIL01.nvidia.com>
@@ -12,15 +10,15 @@ References: <s5hwrxspblg.wl%tiwai@suse.de>
 	<6B4D417B830BC44B8026029FD256F7F1C16B1AD562@HKMAIL01.nvidia.com>
 	<20100308044614.GA29026@localhost>
 	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
+	<alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>
+	<a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-2121109706-1268209036=:4672"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7AF0E24368
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 07:01:14 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 60DAB2438A
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:17:17 +0100 (CET)
+In-Reply-To: <a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,74 +29,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: VDR User <user.vdr@gmail.com>
-Cc: Wei Ni <wni@nvidia.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <jkysela@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Pavel Hofman <pavel.hofman@insite.cz>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgMDE6NDI6MDVQTSArMDgwMCwgVkRSIFVzZXIgd3JvdGU6
-Cj4gT24gU3VuLCBNYXIgNywgMjAxMCBhdCA4OjQ2IFBNLCBXdSBGZW5nZ3VhbmcgPGZlbmdndWFu
-Zy53dUBpbnRlbC5jb20+IHdyb3RlOgo+ID4gQ0MgSmFyb3NsYXYsIG1heWJlIGhlIGhhcyBzb21l
-IGlkZWEgb24KPiA+Cj4gPiDCoCDCoCDCoCDCoHBjbV9ody5jOiBzbmRfcGNtX2h3X2RlbGF5KCkg
-U05EUlZfUENNX0lPQ1RMX0RFTEFZIGZhaWxlZC4KPiA+Cj4gPiBPbiBNb24sIE1hciAwOCwgMjAx
-MCBhdCAxMjozNTozN1BNICswODAwLCBXZWkgTmkgd3JvdGU6Cj4gPj4gSGksCj4gPj4gQmVjYXVz
-ZSBJIGRvbid0IGhhdmUgR1QyMjAgY2FyZCBvbiBoYW5kLCBJIGRpZG4ndCB0ZXN0IGl0IHlldC4K
-PiA+PiBTbyBJIGRpZG4ndCBhZGQgdGhpcyBjYXJkIHRvIHRoZSBwYXRjaCBmaWxlLiBJIHRoaW5r
-IHlvdSBjb3VsZCBhZGQgaXQgYWZ0ZXIKPiA+PiB5b3UgdGVzdCBpdC4KPiA+Pgo+ID4+IEFib3V0
-IHRoZSB3YXJuaW5nIG1lc3NhZ2VzLCBJIGRvbid0IGtub3cgd2h5Lgo+ID4+IE1heSBiZSBzb21l
-IG90aGVycyBjYW4gYW5zd2VyLgo+ID4+Cj4gPj4gVGhhbmtzCj4gPj4gV2VpLgo+ID4+IG52cHVi
-bGljCj4gPj4KPiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4+IEZyb206IFZEUiBV
-c2VyIFttYWlsdG86dXNlci52ZHJAZ21haWwuY29tXQo+ID4+IFNlbnQ6IE1vbmRheSwgTWFyY2gg
-MDgsIDIwMTAgMzoyMiBBTQo+ID4+IFRvOiBXZWkgTmkKPiA+PiBDYzogVGFrYXNoaSBJd2FpOyBh
-a3BtOyBhbHNhLWRldmVsOyBXdSBGZW5nZ3Vhbmc7IGxpbnV4LWtlcm5lbDsgUGF2ZWwgSG9mbWFu
-Cj4gPj4gU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0hdU3VwcG9ydCBNQ1A4OSBhbmQg
-R1QyMXggaGRtaSBhdWRpbwo+ID4+Cj4gPj4gSSB0aGluayB0aGlzIG1heSBiZSByZWxldmFudCB0
-byB0aGlzIHN1YmplY3QsIGlmIG5vdCB0aGVuIG15IGFwb2xvZ2llcy4KPiA+Pgo+ID4+IEkndmUg
-anVzdCBpbnN0YWxsZWQgYSBHVDIyMCBjYXJkIGFuZCB3YXMgYWJsZSB0byBnZXQgYXVkaW8tb3Zl
-ci1oZG1pCj4gPj4gd29ya2luZyBieSBjb21waWxpbmcgdGhlIHNuYXBzaG90IGRyaXZlcnMgZnJv
-bSAyMDEwMDMwNyB3aGljaCBjb250YWluCj4gPj4gV2VpJ3MgbmV3IGNvZGUuIMKgSSBmdXJ0aGVy
-IGhhZCB0byBwYXRjaCB0aGUgZHJpdmVyIHRvIHJlY29nbml6ZSBteQo+ID4+IGNhcmQgd2l0aDoK
-PiA+Pgo+ID4+IC0tLSBhbHNhLWRyaXZlci1vcmlnL2Fsc2Eta2VybmVsL3BjaS9oZGEvcGF0Y2hf
-bnZoZG1pLmMgMjAxMC0wMy0wNgo+ID4+IDE4OjAwOjEyLjAwMDAwMDAwMCAtMDgwMAo+ID4+ICsr
-KyBhbHNhLWRyaXZlci9hbHNhLWtlcm5lbC9wY2kvaGRhL3BhdGNoX252aGRtaS5jIMKgIMKgIMKg
-MjAxMC0wMy0wNgo+ID4+IDE4OjAyOjAwLjAwMDAwMDAwMCAtMDgwMAo+ID4+IEBAIC0xMzM1LDYg
-KzEzMzUsOCBAQCBzdGF0aWMgc3RydWN0IGhkYV9jb2RlY19wcmVzZXQgc25kX2hkYV9wCj4gPj4g
-wqAgwqAgwqAgwqAgwqAgLnBhdGNoID0gcGF0Y2hfbnZoZG1pXzhjaF84OSB9LAo+ID4+IMKgIMKg
-IMKgIMKgIHsgLmlkID0gMHgxMGRlMDAwYiwgLm5hbWUgPSAiR1QyMXggSERNSSIsCj4gPj4gwqAg
-wqAgwqAgwqAgwqAgLnBhdGNoID0gcGF0Y2hfbnZoZG1pXzhjaF84OSB9LAo+ID4+ICsgwqAgwqAg
-wqAgeyAuaWQgPSAweDEwZGUwMDBhLCAubmFtZSA9ICJHVDIyMCBIRE1JIiwKPiA+PiArIMKgIMKg
-IMKgIMKgIC5wYXRjaCA9IHBhdGNoX252aGRtaV84Y2hfODkgfSwKPiA+PiDCoCDCoCDCoCDCoCB7
-IC5pZCA9IDB4MTBkZTAwMGQsIC5uYW1lID0gIkdUMjQwIEhETUkiLAo+ID4+IMKgIMKgIMKgIMKg
-IMKgIC5wYXRjaCA9IHBhdGNoX252aGRtaV84Y2hfODkgfSwKPiA+PiDCoCDCoCDCoCDCoCB7fSAv
-KiB0ZXJtaW5hdG9yICovCj4gPj4gQEAgLTEzNDcsNiArMTM0OSw3IEBAIE1PRFVMRV9BTElBUygi
-c25kLWhkYS1jb2RlYy1pZDoxMGRlMDAwNiIKPiA+PiDCoE1PRFVMRV9BTElBUygic25kLWhkYS1j
-b2RlYy1pZDoxMGRlMDAwNyIpOwo+ID4+IMKgTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlk
-OjEwZGUwMDY3Iik7Cj4gPj4gwqBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTBkZTgw
-MDEiKTsKPiA+PiArTU9EVUxFX0FMSUFTKCJzbmQtaGRhLWNvZGVjLWlkOjEwZGUwMDBhIik7Cj4g
-Pj4gwqBNT0RVTEVfQUxJQVMoInNuZC1oZGEtY29kZWMtaWQ6MTBkZTAwMGMiKTsKPiA+PiDCoE1P
-RFVMRV9BTElBUygic25kLWhkYS1jb2RlYy1pZDoxMGRlMDAwYiIpOwo+ID4+IMKgTU9EVUxFX0FM
-SUFTKCJzbmQtaGRhLWNvZGVjLWlkOjEwZGUwMDBkIik7Cj4gPj4KPiA+PiBUaGlzIHNlZW1zIHRv
-IHdvcmsgZmluZSB3aGVuIHJ1bm5pbmcgVkRSIGJ1dCBpZiBJIGRvIGFueXRoaW5nIGVsc2UKPiA+
-PiBsaWtlIHVwZ3JhZGUgcGFja2FnZXMsIGNvbXBpbGUgc29tZXRoaW5nLCBvciBtYXliZSBjcmVh
-dGUgYSBiejIsIHRoZW4KPiA+PiBJIHN0YXJ0IHRvIHNlZSBfYSBsb3RfIG9mIHRoZSBmb2xsb3dp
-bmcgaW4gbXkgeGluZSBsb2c6Cj4gPj4KPiA+PiBwY21faHcuYzogc25kX3BjbV9od19kZWxheSgp
-IFNORFJWX1BDTV9JT0NUTF9ERUxBWSBmYWlsZWQuCj4gPj4KPiA+PiBXaXRoIHRoZSBvbGQgY29k
-ZSB0aGlzIGRpZG4ndCBoYXBwZW4uIMKgSG93ZXZlciwgbXkgc2V0dXAgd2FzIGFuIDg0MDBncwo+
-ID4+IHVzaW5nIFNQRElGIE9VVCBmcm9tIG15IG1haW5ib2FyZCB0byBTUERJRiBJTiBvbiB0aGUg
-Y2FyZC4gwqBUaGVuIHVzaW5nCj4gPj4gYSBkdmktPmhkbWkgY2FibGUgaW50byB0aGUgdHYuCj4g
-Pj4KPiA+PiBBZ2FpbiwgSSBhcG9sb2dpemUgaWYgSSdtIHBvc3RpbmcgdGhpcyBpbiB0aGUgd3Jv
-bmcgcGxhY2UuCj4gPj4KPiA+PiBCZXN0IHJlZ2FyZHMuCj4gCj4gU28gbm9ib2R5IGhhcyBhbnkg
-aWRlYXMgYXQgYWxsPyAgVGhpcyBpcyB0dXJuaW5nIG91dCB0byBiZSBhIGJpZwo+IHByb2JsZW0g
-YW5kIEkndmUgZGlzY292ZXJlZCBpdCB3aWxsIG9jY3VyIGV2ZW4gd2l0aG91dCBhbnl0aGluZyBl
-bHNlCj4gaGFwcGVuaW5nIG9uIHRoZSBzeXN0ZW0uICAob3JpZ2luYWxseSBJIHRob3VnaHQgeW91
-IG5lZWRlZCB0byBkbyBzb21lCj4gb3RoZXIgYWN0aXZpdHkuKSAgSSd2ZSBjaGVja2VkIHdpdGgg
-c29tZSBvdGhlciBkZXZzIEkga25vdyBhbmQKPiBldmVyeW9uZSBoYXMgc2FpZCB0aGUgcHJvYmxl
-bSBpcyB3aXRoIGFsc2Egc28gaXQgd291bGQgc2VlbSB0aGVyZSBpcyBhCj4gc2VyaW91cyBidWcg
-c29tZXdoZXJlIHNpbmNlIGV2ZW50dWFsbHkgdGhvc2UgZXJyb3JzIHdpbGwgaGFwcGVuIGFuZAo+
-IHRoZSBhdWRpbyB3aWxsIHN0YXJ0IHNraXBwaW5nIGxpa2UgY3JhenkuCj4gCj4gUGxlYXNlIGxl
-dCBtZSBrbm93IGlmIHRoZXJlJ3MgYW55dGhpbmcgSSBjYW4gZG8gd2l0aGluIG15IGFiaWxpdHkg
-dG8gaGVscC4KClRoZSBmaXJzdCBzdGVwIHdvdWxkIGJlIHRvIHJ1biB2YW5pbGxhIDIuNi4zMyB3
-aXRoIFdlaSBOaSdzIHBhdGNoLAppbiBvcmRlciB0byB0ZWxsIHdoZXRoZXIgdGhlIGJ1ZyBpcyBp
-bnRlcm5hbCB0byB0aGUgSERNSSBjb2RlLCBvciBpcwppbnRyb2R1Y2VkIGJ5IGJsZWVkaW5nIGVk
-Z2UgQUxTQSBkZXZlbG9wbWVudC4KClRoYW5rcywKRmVuZ2d1YW5nCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323584-2121109706-1268209036=:4672
+Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Wed, 10 Mar 2010, VDR User wrote:
+
+> On Tue, Mar 9, 2010 at 11:58 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+>> On Tue, 9 Mar 2010, VDR User wrote:
+>>
+>>> On Sun, Mar 7, 2010 at 8:46 PM, Wu Fengguang <fengguang.wu@intel.com>
+>>> wrote:
+>>>>
+>>>> CC Jaroslav, maybe he has some idea on
+>>>>
+>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCT=
+L_DELAY failed.
+>>>>
+>>>> On Mon, Mar 08, 2010 at 12:35:37PM +0800, Wei Ni wrote:
+>>>>>
+>>>>> Hi,
+>>>>> Because I don't have GT220 card on hand, I didn't test it yet.
+>>>>> So I didn't add this card to the patch file. I think you could add it
+>>>>> after
+>>>>> you test it.
+>>>>>
+>>>>> About the warning messages, I don't know why.
+>>>>> May be some others can answer.
+>>>>>
+>>>>> Thanks
+>>>>> Wei.
+>>>>> nvpublic
+>>>>>
+>>>>> -----Original Message-----
+>>>>> From: VDR User [mailto:user.vdr@gmail.com]
+>>>>> Sent: Monday, March 08, 2010 3:22 AM
+>>>>> To: Wei Ni
+>>>>> Cc: Takashi Iwai; akpm; alsa-devel; Wu Fengguang; linux-kernel; Pavel
+>>>>> Hofman
+>>>>> Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
+>>>>>
+>>>>> I think this may be relevant to this subject, if not then my apologie=
+s.
+>>>>>
+>>>>> I've just installed a GT220 card and was able to get audio-over-hdmi
+>>>>> working by compiling the snapshot drivers from 20100307 which contain
+>>>>> Wei's new code. =C2=A0I further had to patch the driver to recognize =
+my
+>>>>> card with:
+>>>>>
+>>>>> --- alsa-driver-orig/alsa-kernel/pci/hda/patch_nvhdmi.c 2010-03-06
+>>>>> 18:00:12.000000000 -0800
+>>>>> +++ alsa-driver/alsa-kernel/pci/hda/patch_nvhdmi.c =C2=A0 =C2=A0 =C2=
+=A02010-03-06
+>>>>> 18:02:00.000000000 -0800
+>>>>> @@ -1335,6 +1335,8 @@ static struct hda_codec_preset snd_hda_p
+>>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
+>>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000b, .name =3D "GT21x HD=
+MI",
+>>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
+>>>>> + =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000a, .name =3D "GT220 HDMI",
+>>>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
+>>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 { .id =3D 0x10de000d, .name =3D "GT240 HD=
+MI",
+>>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 .patch =3D patch_nvhdmi_8ch_89 },
+>>>>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 {} /* terminator */
+>>>>> @@ -1347,6 +1349,7 @@ MODULE_ALIAS("snd-hda-codec-id:10de0006"
+>>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de0007");
+>>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de0067");
+>>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de8001");
+>>>>> +MODULE_ALIAS("snd-hda-codec-id:10de000a");
+>>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000c");
+>>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000b");
+>>>>> =C2=A0MODULE_ALIAS("snd-hda-codec-id:10de000d");
+>>>>>
+>>>>> This seems to work fine when running VDR but if I do anything else
+>>>>> like upgrade packages, compile something, or maybe create a bz2, then
+>>>>> I start to see _a lot_ of the following in my xine log:
+>>>>>
+>>>>> pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed.
+>>>>>
+>>>>> With the old code this didn't happen. =C2=A0However, my setup was an =
+8400gs
+>>>>> using SPDIF OUT from my mainboard to SPDIF IN on the card. =C2=A0Then=
+ using
+>>>>> a dvi->hdmi cable into the tv.
+>>>>>
+>>>>> Again, I apologize if I'm posting this in the wrong place.
+>>>>>
+>>>>> Best regards.
+>>>
+>>> So nobody has any ideas at all? =C2=A0This is turning out to be a big
+>>> problem and I've discovered it will occur even without anything else
+>>> happening on the system. =C2=A0(originally I thought you needed to do s=
+ome
+>>> other activity.) =C2=A0I've checked with some other devs I know and
+>>> everyone has said the problem is with alsa so it would seem there is a
+>>> serious bug somewhere since eventually those errors will happen and
+>>> the audio will start skipping like crazy.
+>>>
+>>> Please let me know if there's anything I can do within my ability to he=
+lp.
+>>
+>> Could you do strace for ALSA ioctls? At least having the error code migh=
+t
+>> help to identify this issue.
+>
+> I don't know how but I'm willing to try if you want to tell me how to
+> do it.  Please keep in mind, I'm just an end-user -- not a developer
+> or even c coder.  The most I've done is run xine in gdb to help supply
+> bug info to those devs.
+
+strace -e trace=3Dopen,ioctl <xine>
+
+ =09=09=09=09=09Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
+
+--8323584-2121109706-1268209036=:4672
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--8323584-2121109706-1268209036=:4672--
