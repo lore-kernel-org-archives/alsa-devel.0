@@ -1,22 +1,20 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 02/20] ASoC: S3C: I2Sv2: Reject immidiate
-	register value
-Date: Wed, 10 Mar 2010 21:27:10 +0900
-Message-ID: <1b68c6791003100427h20a7af3cr750e0de4ce1d1c1a@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 03/20] ASoC: S3C64XX: I2S: Make
+	BCLK	independent of sample size
+Date: Wed, 10 Mar 2010 12:31:18 +0000
+Message-ID: <20100310123117.GA6850@sirena.org.uk>
 References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
 	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
-	<20100310103203.GE24422@rakim.wolfsonmicro.main>
+	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f192.google.com (mail-qy0-f192.google.com
-	[209.85.221.192])
-	by alsa0.perex.cz (Postfix) with ESMTP id C1A21103898
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:27:12 +0100 (CET)
-Received: by qyk30 with SMTP id 30so8003614qyk.16
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 04:27:11 -0800 (PST)
-In-Reply-To: <20100310103203.GE24422@rakim.wolfsonmicro.main>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id B603F10387C
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:31:19 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,28 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgNzozMiBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFdlZCwgTWFyIDEwLCAyMDEwIGF0
-IDA0OjQ4OjUxUE0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4+IFRvd2FyZHMgZ2VuZXJhbGl6
-aW5nIENQVSBkcml2ZXIgaW50ZXJmYWNlLCBkbyBub3QgYWNjZXB0IGRpcmVjdCBmaWVsZAo+PiB2
-YWx1ZXMgZm9yIHRoZSBCQ0xLIGFuZCBSQ0xLLgo+PiBUaGUgbWFjaGluZSBkcml2ZXIgc2hvdWxk
-IHNpbXBseSByZXF1ZXN0IHRoZSBGUy1tdWx0aXBsZSBhbmQgbm90IHByb3ZpZGUKPj4gdGhlIHZh
-bHVlIHRvIGJlIHNldCBpbiBkaXZpZGUgZmllbGQgb2YgSUlTTU9ELgo+Cj4+IFNpZ25lZC1vZmYt
-Ynk6IEphc3NpIEJyYXIgPGphc3NpLmJyYXJAc2Ftc3VuZy5jb20+Cj4KPiBUaGlzIGlzIGdvb2Qg
-YnV0IGl0IG5lZWRzIHRvIGFsc28gdXBkYXRlIGFsbCB0aGUgbWFjaGluZSBkcml2ZXJzIHRoYXQK
-PiB1c2UgdGhlIGRpcmVjdCByZWdpc3RlciB2YWx1ZXMuIMKgQSBicmllZiBncmVwIHRocm91Z2gg
-c3VnZ2VzdHMgdGhhdCB0aGUKPiB1ZGExMzR4IG1hY2hpbmUgYW5kIHRoZSBPcGVuTW9rbyBtYWNo
-aW5lcyBuZWVkIGEgbG9vaywgdGhvdWdoIEkgZGlkbid0Cj4gYWN0dWFsbHkgY2hlY2sgd2hpY2gg
-REFJIGRyaXZlciB0aGV5J3JlIGFsbCB1c2luZy4gwqBJZiBub3RoaW5nIHVzZXMgdGhpcwo+IGZl
-YXR1cmUgdGhlbiBqdXN0IG5vdGUgdGhhdCBpbiB0aGUgY2hhbmdlbG9nIChpZiB0aGUgZmVhdHVy
-ZSBpcyB1bnVzZWQKPiB0aGF0J3MgZXZlbiBtb3JlIHJlYXNvbiB0byByZW1vdmUgaXQgYW55d2F5
-KS4KczNjLWkycy12Mi5jIGlzIHNoYXJlZCBvbmx5IGJ5IHMzYzI0MTIgYW5kIHMzYzY0eHguCnNt
-ZGs2NHh4X3dtODU4MCBhbmQgaml2ZV93bTg3NTAgYWxyZWFkeSB1c2UgYXBwcm9wcmlhdGUgdmFs
-dWVzLgpXaWxsIGFkZCB0aGUgbm90ZSBpbiBjaGFuZ2Vsb2cuCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Wed, Mar 10, 2010 at 04:48:52PM +0900, Jassi Brar wrote:
+> For some CPU-CODEC and source clock combination we might need to set
+> BCLK to N*Sample_size*LRCLK, where N may be even 3 or 4, not just 2.
+
+> We can simply remove the dependency of BCLK on sample size as there
+> is already a callback(S3C_I2SV2_DIV_BCLK) available to set required BCLK.
+
+I've applied this but I'd rather see the code changed so that the BCLK
+is set automatically by default and the explict divider configuration
+disables that.  This way we get the best of both worlds - most users
+won't need to worry about the BCLK configuration but those that need to
+configure it can do so.  An awful lot of users don't really understand
+audio hardware and find having to learn about which clock rates they
+need and so on a bit of a learning curve.
