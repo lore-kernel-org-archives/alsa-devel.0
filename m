@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 03/20] ASoC: S3C64XX: I2S: Make
-	BCLK	independent of sample size
-Date: Wed, 10 Mar 2010 12:31:18 +0000
-Message-ID: <20100310123117.GA6850@sirena.org.uk>
+Subject: Re: [PATCH 01/20] ASoC: S3C: I2Sv2: Add missing
+	semicolon
+Date: Wed, 10 Mar 2010 12:32:05 +0000
+Message-ID: <20100310123205.GP24422@rakim.wolfsonmicro.main>
 References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B603F10387C
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:31:19 +0100 (CET)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B55561038E3
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:32:06 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
+In-Reply-To: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,17 +26,9 @@ To: Jassi Brar <jassi.brar@samsung.com>
 Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 10, 2010 at 04:48:52PM +0900, Jassi Brar wrote:
-> For some CPU-CODEC and source clock combination we might need to set
-> BCLK to N*Sample_size*LRCLK, where N may be even 3 or 4, not just 2.
+On Wed, Mar 10, 2010 at 04:48:50PM +0900, Jassi Brar wrote:
+> Add missing semicolon after s3c2412_i2s_delay
+> 
+> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-> We can simply remove the dependency of BCLK on sample size as there
-> is already a callback(S3C_I2SV2_DIV_BCLK) available to set required BCLK.
-
-I've applied this but I'd rather see the code changed so that the BCLK
-is set automatically by default and the explict divider configuration
-disables that.  This way we get the best of both worlds - most users
-won't need to worry about the BCLK configuration but those that need to
-configure it can do so.  An awful lot of users don't really understand
-audio hardware and find having to learn about which clock rates they
-need and so on a bit of a learning curve.
+Applied, thanks.
