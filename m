@@ -1,18 +1,27 @@
-From: Anisse Astier <anisse@astier.eu>
-Subject: [PATCH] ALSA: hda - Add PCI quirks for MSI all-in-one
- computers NetOn AP1900 and Wind Top AE2220
-Date: Wed, 10 Mar 2010 19:17:46 +0100
-Message-ID: <20100310191746.5ff22c1b@destiny.ordissimo>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 09/20] ASoC: S3C: I2Sv2:
+	Segregate	hw_params callback
+Date: Wed, 10 Mar 2010 18:46:31 +0000
+Message-ID: <20100310184629.GK6850@sirena.org.uk>
+References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-9-git-send-email-jassi.brar@samsung.com>
+	<20100310141417.GZ24422@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f223.google.com (mail-ew0-f223.google.com
-	[209.85.219.223])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53FC310380A
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 19:17:56 +0100 (CET)
-Received: by ewy23 with SMTP id 23so1849226ewy.4
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 10:17:55 -0800 (PST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 191DE24359
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 19:46:32 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20100310141417.GZ24422@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +31,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Mar 10, 2010 at 02:14:17PM +0000, Mark Brown wrote:
+> On Wed, Mar 10, 2010 at 04:48:58PM +0900, Jassi Brar wrote:
+> > Towards having build for multiple SoCs segregate hw_params callback
+> > for s3c2412 and s3c64xx.
+> > Since, all new SoCs have s3c64xx like register map, we keep that as
+> > default implementation if no SoC specific callback is already defined.
 
+> > Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-Signed-off-by: Anisse Astier <anisse@astier.eu>
----
-Hi,
+> This is OK but appears to depend on one or more of the other patches
+> that didn't get applied yet.
 
-This should make the speakers and jack detection work on those computers.
-
-Regards,
-
-Anisse
-
- sound/pci/hda/patch_realtek.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index e8cbe21..970d0b2 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9191,6 +9191,7 @@ static struct snd_pci_quirk alc882_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1462, 0x4314, "MSI", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x4319, "MSI", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x4324, "MSI", ALC883_TARGA_DIG),
-+	SND_PCI_QUIRK(0x1462, 0x4570, "MSI Wind Top AE2220", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x6510, "MSI GX620", ALC883_TARGA_8ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x6668, "MSI", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x7187, "MSI", ALC883_6ST_DIG),
-@@ -9200,6 +9201,7 @@ static struct snd_pci_quirk alc882_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x1462, 0x7280, "MSI", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x7327, "MSI", ALC883_6ST_DIG),
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI", ALC883_6ST_DIG),
-+	SND_PCI_QUIRK(0x1462, 0x7437, "MSI NetOn AP1900", ALC883_TARGA_DIG),
- 	SND_PCI_QUIRK(0x1462, 0xa422, "MSI", ALC883_TARGA_2ch_DIG),
- 	SND_PCI_QUIRK(0x1462, 0xaa08, "MSI", ALC883_TARGA_2ch_DIG),
- 
--- 
-1.6.5.7
+Actually it does apply - patch 3 hadn't actually made it into the queue
+I was applying and that was the dependency.  I've now got them both
+applied, though they were missing from the pull I sent to Takashi
+earlier so I've not pushed them up to kernel.org yet.
