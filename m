@@ -1,21 +1,14 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Reforming S3C I2S towards supporting I2Sv4
-Date: Wed, 10 Mar 2010 10:18:17 +0000
-Message-ID: <20100310101817.GC24422@rakim.wolfsonmicro.main>
-References: <1268207335-9947-1-git-send-email-jassi.brar@samsung.com>
-	<1268209468.3760.8.camel@odin>
-	<1b68c6791003100031m7be14ecr218e4f988bd30cab@mail.gmail.com>
-	<1268211847.3760.23.camel@odin>
-	<1b68c6791003100122u16294a69y541f28b6cabc69a2@mail.gmail.com>
+From: Jassi Brar <jassi.brar@samsung.com>
+Subject: [PATCH 11/20] ASoC: SAMSUNG: I2S: Add bit definitions
+Date: Wed, 10 Mar 2010 17:11:59 +0900
+Message-ID: <1268208719-22590-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C43FC103858
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 11:18:18 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1b68c6791003100122u16294a69y541f28b6cabc69a2@mail.gmail.com>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72441103821
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:23:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +18,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 10, 2010 at 06:22:29PM +0900, jassi brar wrote:
-> On Wed, Mar 10, 2010 at 6:04 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+Define more bit definitions in the order of mainline support for the
+SoC.
 
-> > I don't think your reason of "co-ordination between ASoC and S3C ARCH
-> > trees" can justify breaking kernel policy.
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/s3c24xx/regs-i2s-v2.h |   41 +++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 41 insertions(+), 0 deletions(-)
 
-> I believe the policy is not against moving definitions of bits that are
-> tightly linked to the device controller esp when we seeing more and more
-> SoCs coming with standard of-the-shelf third party controllers.
-
-Plus controllers that may be used in multiple subsystems (like the
-generic serial ports a lot of SoCs have).  Some architectures also like
-to keep headers for the IPs with the arch either due to preference or
-due to device differences which can be hidden from the driver with arch
-level compile stuff.
-
-I personally don't mind either way for things like the I2S controller
-which don't have any obvious application outside ASoC so whatever you
-guys and Ben want works for me.
-
-> Then, I really want S3C ASoC modifications to not wait on S3C
-> ARCH patches appearing upstream first.
-
-If the headers stay in arch/arm we can still deal with that by either
-agreeing to merge them via ASoC (as has been done in the past) or by
-creating a branch which is merged into both ASoC and Samsung trees.  It
-is obviously less effort to avoid this, but it's not insurmountable.
+diff --git a/sound/soc/s3c24xx/regs-i2s-v2.h b/sound/soc/s3c24xx/regs-i2s-v2.h
+index 8e1a585..dea199e 100644
+--- a/sound/soc/s3c24xx/regs-i2s-v2.h
++++ b/sound/soc/s3c24xx/regs-i2s-v2.h
+@@ -20,6 +20,24 @@
+ #define S3C2412_IISTXD			(0x10)
+ #define S3C2412_IISRXD			(0x14)
+ 
++#define S5PC1XX_IISFICS		0x18
++#define S5PC1XX_IISTXDS		0x1C
++
++#define S5PC1XX_IISCON_SW_RST		(1 << 31)
++#define S5PC1XX_IISCON_FRXOFSTATUS	(1 << 26)
++#define S5PC1XX_IISCON_FRXORINTEN	(1 << 25)
++#define S5PC1XX_IISCON_FTXSURSTAT	(1 << 24)
++#define S5PC1XX_IISCON_FTXSURINTEN	(1 << 23)
++#define S5PC1XX_IISCON_TXSDMAPAUSE	(1 << 20)
++#define S5PC1XX_IISCON_TXSDMACTIVE	(1 << 18)
++
++#define S3C64XX_IISCON_FTXURSTATUS	(1 << 17)
++#define S3C64XX_IISCON_FTXURINTEN	(1 << 16)
++#define S3C64XX_IISCON_TXFIFO2_EMPTY	(1 << 15)
++#define S3C64XX_IISCON_TXFIFO1_EMPTY	(1 << 14)
++#define S3C64XX_IISCON_TXFIFO2_FULL	(1 << 13)
++#define S3C64XX_IISCON_TXFIFO1_FULL	(1 << 12)
++
+ #define S3C2412_IISCON_LRINDEX		(1 << 11)
+ #define S3C2412_IISCON_TXFIFO_EMPTY	(1 << 10)
+ #define S3C2412_IISCON_RXFIFO_EMPTY	(1 << 9)
+@@ -33,6 +51,23 @@
+ #define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
+ #define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
+ 
++#define S5PC1XX_IISMOD_OPCLK_CDCLK_OUT	(0 << 30)
++#define S5PC1XX_IISMOD_OPCLK_CDCLK_IN	(1 << 30)
++#define S5PC1XX_IISMOD_OPCLK_BCLK_OUT	(2 << 30)
++#define S5PC1XX_IISMOD_OPCLK_PCLK	(3 << 30)
++#define S5PC1XX_IISMOD_OPCLK_MASK	(3 << 30)
++#define S5PC1XX_IISMOD_TXS_IDMA		(1 << 28) /* Sec_TXFIFO use I-DMA */
++#define S5PC1XX_IISMOD_BLCS_MASK	0x3
++#define S5PC1XX_IISMOD_BLCS_SHIFT	26
++#define S5PC1XX_IISMOD_BLCP_MASK	0x3
++#define S5PC1XX_IISMOD_BLCP_SHIFT	24
++
++#define S3C64XX_IISMOD_C2DD_HHALF	(1 << 21) /* Discard Higher-half */
++#define S3C64XX_IISMOD_C2DD_LHALF	(1 << 20) /* Discard Lower-half */
++#define S3C64XX_IISMOD_C1DD_HHALF	(1 << 19)
++#define S3C64XX_IISMOD_C1DD_LHALF	(1 << 18)
++#define S3C64XX_IISMOD_DC2_EN		(1 << 17)
++#define S3C64XX_IISMOD_DC1_EN		(1 << 16)
+ #define S3C64XX_IISMOD_BLC_16BIT	(0 << 13)
+ #define S3C64XX_IISMOD_BLC_8BIT		(1 << 13)
+ #define S3C64XX_IISMOD_BLC_24BIT	(2 << 13)
+@@ -71,9 +106,15 @@
+ 
+ #define S3C2412_IISPSR_PSREN		(1 << 15)
+ 
++#define S3C64XX_IISFIC_TX2COUNT(x)	(((x) >>  24) & 0xf)
++#define S3C64XX_IISFIC_TX1COUNT(x)	(((x) >>  16) & 0xf)
++
+ #define S3C2412_IISFIC_TXFLUSH		(1 << 15)
+ #define S3C2412_IISFIC_RXFLUSH		(1 << 7)
+ #define S3C2412_IISFIC_TXCOUNT(x)	(((x) >>  8) & 0xf)
+ #define S3C2412_IISFIC_RXCOUNT(x)	(((x) >>  0) & 0xf)
+ 
++#define S5PC1XX_IISFICS_TXFLUSH		(1 << 15)
++#define S5PC1XX_IISFICS_TXCOUNT(x)	(((x) >>  8) & 0x7f)
++
+ #endif /* __REGS_IISV2_H */
+-- 
+1.6.2.5
