@@ -1,14 +1,14 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 20/20] ASoC: SMDK64XX: Switch to IISv4 CPU
-	driver
-Date: Wed, 10 Mar 2010 17:12:48 +0900
-Message-ID: <1268208768-22875-1-git-send-email-jassi.brar@samsung.com>
+Subject: [PATCH 15/20] ASoC: S3C: I2Sv2: Unify i2s_get_clock
+	callback
+Date: Wed, 10 Mar 2010 17:12:22 +0900
+Message-ID: <1268208742-22713-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA80B10385A
+	by alsa0.perex.cz (Postfix) with ESMTP id 61B6410380A
 	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:23:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,67 +23,141 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Switch the MACHINE driver to use IISv4 CPU dai.
-Remove BROKEN dependency now that we have proper CPU driver available.
-Also, disable build for SMDK6400, since the S3C6400 doesn't have IISv4
-controller.
+Now that we have two callbacks s3c2412_i2s_get_clock & s3c64xx_i2s_get_clock
+doing exactly the same thing, we can define one generic s3c_i2sv2_get_clock
+and discard other two copies. Also, switch the users to make calls to the
+newly defined and generic s3c_i2sv2_get_clock
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Kconfig           |    7 +++----
- sound/soc/s3c24xx/smdk64xx_wm8580.c |    6 ++----
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ sound/soc/s3c24xx/jive_wm8750.c |    2 +-
+ sound/soc/s3c24xx/s3c-i2s-v2.c  |   12 ++++++++++++
+ sound/soc/s3c24xx/s3c-i2s-v2.h  |    2 ++
+ sound/soc/s3c24xx/s3c2412-i2s.c |   13 -------------
+ sound/soc/s3c24xx/s3c2412-i2s.h |    2 --
+ sound/soc/s3c24xx/s3c64xx-i2s.c |   12 ------------
+ sound/soc/s3c24xx/s3c64xx-i2s.h |    2 --
+ 7 files changed, 15 insertions(+), 30 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index c0c7edf..2ac1f33 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -64,12 +64,11 @@ config SND_S3C24XX_SOC_JIVE_WM8750
+diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/s3c24xx/jive_wm8750.c
+index 59dc2c6..304240d 100644
+--- a/sound/soc/s3c24xx/jive_wm8750.c
++++ b/sound/soc/s3c24xx/jive_wm8750.c
+@@ -70,7 +70,7 @@ static int jive_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
- config SND_S3C64XX_SOC_WM8580
- 	tristate "SoC I2S Audio support for WM8580 on SMDK64XX"
--	depends on SND_S3C24XX_SOC && (MACH_SMDK6400 || MACH_SMDK6410)
--	depends on BROKEN
-+	depends on SND_S3C24XX_SOC && MACH_SMDK6410
- 	select SND_SOC_WM8580
--	select SND_S3C64XX_SOC_I2S
-+	select SND_S3C64XX_SOC_I2S_V4
- 	help
--	  Sat Y if you want to add support for SoC audio on the SMDK64XX.
-+	  Say Y if you want to add support for SoC audio on the SMDK64XX.
+ 	s3c_i2sv2_iis_calc_rate(&div, NULL, params_rate(params),
+-				s3c2412_get_iisclk());
++				s3c_i2sv2_get_clock(cpu_dai));
  
- config SND_S3C24XX_SOC_SMDK2443_WM9710
- 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
-diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-index efe4901..07e8e51 100644
---- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
-+++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-@@ -22,8 +22,6 @@
- #include "s3c-dma.h"
- #include "s3c64xx-i2s.h"
+ 	/* set codec DAI configuration */
+ 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
+index 1b29b4b..ecb3054 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.c
++++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
+@@ -499,6 +499,18 @@ static snd_pcm_sframes_t s3c2412_i2s_delay(struct snd_pcm_substream *substream,
+ 	return delay;
+ }
  
--#define S3C64XX_I2S_V4 2
++struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai)
++{
++	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
++	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
++
++	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
++		return i2s->iis_cclk;
++	else
++		return i2s->iis_pclk;
++}
++EXPORT_SYMBOL_GPL(s3c_i2sv2_get_clock);
++
+ /* default table of all avaialable root fs divisors */
+ static unsigned int iis_fs_tab[] = { 256, 512, 384, 768 };
+ 
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/s3c24xx/s3c-i2s-v2.h
+index ea56467..39a6db6 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.h
++++ b/sound/soc/s3c24xx/s3c-i2s-v2.h
+@@ -60,6 +60,8 @@ struct s3c_i2sv2_info {
+ 	u32		 suspend_iispsr;
+ };
+ 
++extern struct clk *s3c_i2sv2_get_clock(struct snd_soc_dai *cpu_dai);
++
+ struct s3c_i2sv2_rate_calc {
+ 	unsigned int	clk_div;	/* for prescaler */
+ 	unsigned int	fs_div;		/* for root frame clock */
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
+index 4996843..fe90867 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.c
++++ b/sound/soc/s3c24xx/s3c2412-i2s.c
+@@ -91,19 +91,6 @@ static int s3c2412_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 	return 0;
+ }
+ 
 -
- /* SMDK64XX has a 12MHZ crystal attached to WM8580 */
- #define SMDK64XX_WM8580_FREQ 12000000
+-struct clk *s3c2412_get_iisclk(void)
+-{
+-	struct s3c_i2sv2_info *i2s = &s3c2412_i2s;
+-	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
+-
+-	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
+-		return i2s->iis_cclk;
+-	else
+-		return i2s->iis_pclk;
+-}
+-EXPORT_SYMBOL_GPL(s3c2412_get_iisclk);
+-
+ static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
+ {
+ 	return cpu_dai->private_data;
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.h b/sound/soc/s3c24xx/s3c2412-i2s.h
+index 60cac00..0b5686b 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.h
++++ b/sound/soc/s3c24xx/s3c2412-i2s.h
+@@ -24,8 +24,6 @@
+ #define S3C2412_CLKSRC_PCLK	S3C_I2SV2_CLKSRC_PCLK
+ #define S3C2412_CLKSRC_I2SCLK	S3C_I2SV2_CLKSRC_AUDIOBUS
  
-@@ -215,7 +213,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- { /* Primary Playback i/f */
- 	.name = "WM8580 PAIF RX",
- 	.stream_name = "Playback",
--	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
-+	.cpu_dai = &s3c64xx_i2s_v4_dai,
- 	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFRX],
- 	.init = smdk64xx_wm8580_init_paifrx,
- 	.ops = &smdk64xx_ops,
-@@ -223,7 +221,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- { /* Primary Capture i/f */
- 	.name = "WM8580 PAIF TX",
- 	.stream_name = "Capture",
--	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
-+	.cpu_dai = &s3c64xx_i2s_v4_dai,
- 	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFTX],
- 	.init = smdk64xx_wm8580_init_paiftx,
- 	.ops = &smdk64xx_ops,
+-extern struct clk *s3c2412_get_iisclk(void);
+-
+ extern struct snd_soc_dai s3c2412_i2s_dai;
+ 
+ #endif /* __SND_SOC_S3C24XX_S3C2412_I2S_H */
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
+index 9bcc99d..9343349 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
+@@ -91,18 +91,6 @@ static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 	return 0;
+ }
+ 
+-struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai)
+-{
+-	struct s3c_i2sv2_info *i2s = to_info(dai);
+-	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
+-
+-	if (iismod & S3C64XX_IISMOD_IMS_SYSMUX)
+-		return i2s->iis_cclk;
+-	else
+-		return i2s->iis_pclk;
+-}
+-EXPORT_SYMBOL_GPL(s3c64xx_i2s_get_clock);
+-
+ static int s3c64xx_i2s_probe(struct platform_device *pdev,
+ 			     struct snd_soc_dai *dai)
+ {
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
+index 53d2a0a..f27ed50 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s.h
++++ b/sound/soc/s3c24xx/s3c64xx-i2s.h
+@@ -38,6 +38,4 @@ struct clk;
+ 
+ extern struct snd_soc_dai s3c64xx_i2s_dai[];
+ 
+-extern struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai);
+-
+ #endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
 -- 
 1.6.2.5
