@@ -1,35 +1,22 @@
-From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 20/20] ASoC: SMDK64XX: Switch to IISv4 CPU
-	driver
-Date: Wed, 10 Mar 2010 16:49:09 +0900
-Message-ID: <1268207349-9979-20-git-send-email-jassi.brar@samsung.com>
-References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-9-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-10-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-11-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-12-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-13-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-14-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-15-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-16-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-17-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-18-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-19-git-send-email-jassi.brar@samsung.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: Reforming S3C I2S towards supporting I2Sv4
+Date: Wed, 10 Mar 2010 18:22:29 +0900
+Message-ID: <1b68c6791003100122u16294a69y541f28b6cabc69a2@mail.gmail.com>
+References: <1268207335-9947-1-git-send-email-jassi.brar@samsung.com>
+	<1268209468.3760.8.camel@odin>
+	<1b68c6791003100031m7be14ecr218e4f988bd30cab@mail.gmail.com>
+	<1268211847.3760.23.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7EB76103839
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:23:01 +0100 (CET)
-In-Reply-To: <1268207349-9979-19-git-send-email-jassi.brar@samsung.com>
+Received: from mail-qy0-f192.google.com (mail-qy0-f192.google.com
+	[209.85.221.192])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5CB86103823
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 10:22:32 +0100 (CET)
+Received: by qyk30 with SMTP id 30so7902269qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 01:22:30 -0800 (PST)
+In-Reply-To: <1268211847.3760.23.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -39,71 +26,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Switch the MACHINE driver to use IISv4 CPU dai.
-Remove BROKEN dependency now that we have proper CPU driver available.
-Also, disable build for SMDK6400, since the S3C6400 doesn't have IISv4
-controller.
-
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/s3c24xx/Kconfig           |    7 +++----
- sound/soc/s3c24xx/smdk64xx_wm8580.c |    6 ++----
- 2 files changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index c0c7edf..2ac1f33 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -64,12 +64,11 @@ config SND_S3C24XX_SOC_JIVE_WM8750
- 
- config SND_S3C64XX_SOC_WM8580
- 	tristate "SoC I2S Audio support for WM8580 on SMDK64XX"
--	depends on SND_S3C24XX_SOC && (MACH_SMDK6400 || MACH_SMDK6410)
--	depends on BROKEN
-+	depends on SND_S3C24XX_SOC && MACH_SMDK6410
- 	select SND_SOC_WM8580
--	select SND_S3C64XX_SOC_I2S
-+	select SND_S3C64XX_SOC_I2S_V4
- 	help
--	  Sat Y if you want to add support for SoC audio on the SMDK64XX.
-+	  Say Y if you want to add support for SoC audio on the SMDK64XX.
- 
- config SND_S3C24XX_SOC_SMDK2443_WM9710
- 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
-diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-index efe4901..07e8e51 100644
---- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
-+++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-@@ -22,8 +22,6 @@
- #include "s3c-dma.h"
- #include "s3c64xx-i2s.h"
- 
--#define S3C64XX_I2S_V4 2
--
- /* SMDK64XX has a 12MHZ crystal attached to WM8580 */
- #define SMDK64XX_WM8580_FREQ 12000000
- 
-@@ -215,7 +213,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- { /* Primary Playback i/f */
- 	.name = "WM8580 PAIF RX",
- 	.stream_name = "Playback",
--	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
-+	.cpu_dai = &s3c64xx_i2s_v4_dai,
- 	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFRX],
- 	.init = smdk64xx_wm8580_init_paifrx,
- 	.ops = &smdk64xx_ops,
-@@ -223,7 +221,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- { /* Primary Capture i/f */
- 	.name = "WM8580 PAIF TX",
- 	.stream_name = "Capture",
--	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
-+	.cpu_dai = &s3c64xx_i2s_v4_dai,
- 	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFTX],
- 	.init = smdk64xx_wm8580_init_paiftx,
- 	.ops = &smdk64xx_ops,
--- 
-1.6.2.5
+T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgNjowNCBQTSwgTGlhbSBHaXJkd29vZCA8bHJnQHNsaW1s
+b2dpYy5jby51az4gd3JvdGU6Cj4gT24gV2VkLCAyMDEwLTAzLTEwIGF0IDE3OjMxICswOTAwLCBq
+YXNzaSBicmFyIHdyb3RlOgo+PiBPbiBXZWQsIE1hciAxMCwgMjAxMCBhdCA1OjI0IFBNLCBMaWFt
+IEdpcmR3b29kIDxscmdAc2xpbWxvZ2ljLmNvLnVrPiB3cm90ZToKPj4gPiBPbiBXZWQsIDIwMTAt
+MDMtMTAgYXQgMTY6NDggKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4+ID4+IMKgVGhlIGhlYWRl
+ciB3aXRoIEkyUyByZWdpc3RlciBtYXAgYW5kIGJpdCBkZWZpbml0aW9ucyBoYXMgYmVlbiBjb3Bp
+ZWQKPj4gPj4gdG8gd2hlcmUgdGhlIGRyaXZlcnMgYXJlKHNvdW5kL3NvYy9zM2MyNHh4Lykgc2lu
+Y2UgdGhlIGhlYWRlciBoYXMgbm90aGluZwo+PiA+PiB1c2FibGUgZm9yIHBsYXRmb3JtIGNvZGUu
+IEFsc28sIGl0IHdpbGwgaGVscCBhdm9pZCBuZWVkIGZvciBjby1vcmRpbmF0aW9uCj4+ID4+IGJl
+dHdlZW4gQVNvQyBhbmQgUzNDIEFSQ0ggdHJlZXMuIEZvciBub3csIHRoZSBoZWFkZXIgcmVncy1z
+M2MyNDEyLWlpcy5oCj4+ID4+IGlzIGxlZnQgaW50YWN0IGJ1dCByZW5kZXJlZCB1c2VsZXNzIGJ5
+IG1ha2luZyBBU29DIGRyaXZlcnMgaW5jbHVkZSB0aGUKPj4gPj4gbmV3bHkgY29waWVkIHZlcnNp
+b24gb2YgaXQgKHNvdW5kL3NvYy9zM2MyNHh4L3JlZ3MtaTJzLXYyLmgpIExhdGVyIHRoZQo+PiA+
+PiBoZWFkZXIgY291bGQgYmUgZHJvcHBlZCBieSBwYXRjaGVzIHRvIFMzQyBQTEFUIHRyZWUuCj4+
+ID4+Cj4+ID4KPj4gPiBJJ20gbm90IHRvbyBrZWVuIG9uIG1vdmluZyBDUFUgcmVnaXN0ZXIgYW5k
+IGJpdCBkZWZpbml0aW9ucyBvdXQgb2YgQVJDSC4KPj4gVGhlIGhlYWRlciBkb2Vzbid0IGNvbnRh
+aW4gYWJzb2x1dGUgcmVnaXN0ZXIgYWRkcmVzc2VzLCBidXQgb25seQo+PiBvZmZzZXRzLgo+Cj4g
+SXNuJ3QgdGhpcyByZWFsbHkgdGhlIHNhbWUgdGhpbmcgPwpJZiB0d28gU29DcyBoYXZlIHNhbWUg
+Y29udHJvbGxlcnMgYnV0IG1hcHBlZCBhdCBkaWZmZXJlbnQgYWRkcmVzc2VzLAp0aGUgQVJDSCBt
+YWludGFpbmVyIHdvdWxkIGZpbmQgYSBjb21tb24gcGxhY2UgZm9yIHRoZSBoZWFkZXIgcmF0aGVy
+CnRoYW4gbWFraW5nIHR3byBoZWFkZXJzIHdpdGggb25lIGRlZmluZSBkaWZmZXJlbnQgYW5kIHJl
+c3QgYWxsIHNhbWUuCklmIGFub3RoZXIgc3VjaCBTb0MgY29tZXMgdXAgdGhlIGN5Y2xlIHN0YXJ0
+cyBhZ2Fpbi4oVGhhdCBoYXMKYXBwYXJhbnRseSBoYXBwZW5lZCB3aXRoIFMzQyBzdXBwb3J0IG92
+ZXIgdGhlIHllYXJzKQpOb3csIHJhdGhlciB0aGFuIG1vdmluZyBhcm91bmQgdGhlIGhlYWRlciB3
+aXRoIGRlZmluaXRpb25zIG9mIHdoYXQgaXMKX29ubHlfIHVzZWQgYnkgdGhlIGNvbnRyb2xsZXIg
+ZHJpdmVyLCB3aHkgbm90IG1vdmUgaXQgY2xvc2UgdG8gdGhlIGRyaXZlcj8KVGhlIGJhc2UgYWRk
+cmVzc2VzIGNhbihhbmQgc2hvdWxkKSBhbHdheXMgYmUgZGVmaW5lZCBpbiBQTEFUIHNwZWNpZmlj
+IGxvY2F0aW9uLgoKPj4gVGhlIGJhc2UgYWRkcmVzcyBvZiBJMlMgY29udHJvbGxlcnMgYXJlIGRl
+ZmluZWQgaW4gUExBVAo+PiBzcGVjaWZpYyBoZWFkZXIuIFNvLCBJIHRoaW5rIHdlIGNhbiBtb3Zl
+IHRoZSBoZWFkZXIuCj4gSSBkb24ndCB0aGluayB5b3VyIHJlYXNvbiBvZiAiY28tb3JkaW5hdGlv
+biBiZXR3ZWVuIEFTb0MgYW5kIFMzQyBBUkNICj4gdHJlZXMiIGNhbiBqdXN0aWZ5IGJyZWFraW5n
+IGtlcm5lbCBwb2xpY3kuCkkgYmVsaWV2ZSB0aGUgcG9saWN5IGlzIG5vdCBhZ2FpbnN0IG1vdmlu
+ZyBkZWZpbml0aW9ucyBvZiBiaXRzIHRoYXQgYXJlCnRpZ2h0bHkgbGlua2VkIHRvIHRoZSBkZXZp
+Y2UgY29udHJvbGxlciBlc3Agd2hlbiB3ZSBzZWVpbmcgbW9yZSBhbmQgbW9yZQpTb0NzIGNvbWlu
+ZyB3aXRoIHN0YW5kYXJkIG9mLXRoZS1zaGVsZiB0aGlyZCBwYXJ0eSBjb250cm9sbGVycy4KU29t
+ZSBkcml2ZXJzIGRvIGhhdmUgdGhlIGNvbnRyb2xsZXIgYml0IGRlZmluaXRpb25zIGJlc2lkZSBk
+cml2ZXJzLiBJIGNvdWxkCmF0bGVhc3Qgc2VlIHNvbWUgc2VyaWFsIGFuZCBzcGkgZHJpdmVycy4K
+ClRoZW4sIEkgcmVhbGx5IHdhbnQgUzNDIEFTb0MgbW9kaWZpY2F0aW9ucyB0byBub3Qgd2FpdCBv
+biBTM0MKQVJDSCBwYXRjaGVzIGFwcGVhcmluZyB1cHN0cmVhbSBmaXJzdC4KCkhhdmluZyBzYWlk
+IHRoYXQsIEkgYW0gd2lsbGluZyB0byhub3QgdG8gbWVhbiBJIGhhdmUgYW5vdGhlciBjaG9pY2Up
+CnRha2Ugd29yZCBvZiB0aGUgbWFpbnRhaW5lciBvbiB0aGUgbWF0dGVyIGFuZCBmaXJzdCBzZW5k
+IHBhdGNoZXMgdG8KczNjIEFSQ0ggYW5kIHdhaXQgdW50aWwgdGhleSBhcHBlYXIgaW4gTWFyaydz
+IHRyZWUgYmVmb3JlIHN1Ym1pdHRpbmcKdGhlIHJlbWFpbmluZyBwYXRjaGVzLgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
