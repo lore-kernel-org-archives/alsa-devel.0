@@ -1,27 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 11/20] ASoC: SAMSUNG: I2S: Add bit
- definitions
-Date: Wed, 10 Mar 2010 12:38:11 +0000
-Message-ID: <20100310123811.GQ24422@rakim.wolfsonmicro.main>
-References: <1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-9-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-10-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-11-git-send-email-jassi.brar@samsung.com>
-	<20100310110020.GH24422@rakim.wolfsonmicro.main>
-	<1b68c6791003100424l56812e3fy69890846736acb6d@mail.gmail.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 04/20] ASoC: S3C: I2Sv2: Remove
+	S3C_IIS_V2_SUPPORTED define
+Date: Wed, 10 Mar 2010 21:38:16 +0900
+Message-ID: <1b68c6791003100438m220c15eid0206b4b36188f5f@mail.gmail.com>
+References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
+	<20100310104913.GF24422@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4394510388E
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:38:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1b68c6791003100424l56812e3fy69890846736acb6d@mail.gmail.com>
+Received: from mail-qy0-f192.google.com (mail-qy0-f192.google.com
+	[209.85.221.192])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CF231038DB
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 13:38:17 +0100 (CET)
+Received: by qyk30 with SMTP id 30so8012064qyk.16
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 04:38:16 -0800 (PST)
+In-Reply-To: <20100310104913.GF24422@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,23 +28,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jassi brar <jassisinghbrar@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 10, 2010 at 09:24:45PM +0900, jassi brar wrote:
-> On Wed, Mar 10, 2010 at 8:00 PM, Mark Brown
-
-> > One other thing I'd suggest is that when constructing a patch series
-> > it'd be better to put the more invasive or controversial changes (like
-> > moving the headers) last. =A0This makes it easer to apply bits of the
-> > series if there is any controversy.
-
-> I thought I already made that sure.
-> In my opinion, the only controversial patch was 'header-copying' and I co=
-uldn't
-> move that any further down the series or other changes without that.
-
-I agree that this is the only really controversial change, but it seemed
-like pretty much all the changes that added stuff to the headers or used
-them could've been done pre-move so that they didn't depend on it.
+T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgNzo0OSBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFdlZCwgTWFyIDEwLCAyMDEwIGF0
+IDA0OjQ4OjUzUE0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4+IFRoZSBjb2RlIGluIHMzYy1p
+MnMtdjIuYyBpcyBjb21waWxlZCB2aWEgTWFrZWZpbGUgYW5kIG5vdCBpbXBsaWNpdGx5Cj4+IGJ5
+IGluY2x1ZGUnaW5nLiBBbHNvLCB0aGUgZHJpdmVyIGRldmVsb3BlciBhbnl3YXlzIGhhcyB0byBy
+ZWZlciB0byB0aGUKPj4gbWFudWFsIHRvIHNlZSBpZiB0aGUgY29kZSBjYW4gYmUgcmV1c2VkIGZv
+ciB0aGUgU29DIHVuZGVyIGNvbnNpZGVyYXRpb24uCj4+IFRoYXQgbWFrZXMgdGhlIFMzQ19JSVNf
+VjJfU1VQUE9SVEVEIHJldHJvc3BlY3RpdmUgcmF0aGVyIHRoYW4gYSBjaGVjay4KPgo+PiBTaWdu
+ZWQtb2ZmLWJ5OiBKYXNzaSBCcmFyIDxqYXNzaS5icmFyQHNhbXN1bmcuY29tPgo+Cj4gVGhpcyBj
+b2RlIGlzIGluIHRoZXJlIGZvciBwdXJlIGRlZmVuc2l2ZW5lc3MgLSBzaW5jZSBhdCBsZWFzdCB0
+aGUKPiBTM0M2NHh4IGFuZCBTM0MyNHh4IGhhdmUgc2xpZ2h0bHkgZGlmZmVyZW50IHJlZ2lzdGVy
+IG1hcHMgZm9yIHRoZSBibG9jawo+ICh0aGUgb25lcyB0aGF0IGFyZSBjdXJyZW50bHkgaGFuZGxl
+ZCBhcmUgdGhlIElJU01PRCBtYXN0ZXIgc2V0dGluZ3MsCj4gdGhlcmUgbWF5IGJlIG1vcmUpIHRo
+ZSBjb2RlIG5lZWRzIHRvIGhhdmUgZXhwbGljaXQgc3VwcG9ydCBmb3IgdGhlCj4gcHJvY2Vzc29y
+cy4gwqBUaGUgZ29hbCBvZiB0aGlzIGJsb2NrIGlzIHRvIHByaW50IGEgI2Vycm9yIHNheWluZyBl
+eGFjdGx5Cj4gd2hhdCdzIGdvaW5nIG9uIHJhdGhlciB0aGFuIGp1c3QgaGF2ZSB0aGUgYnVpbGQg
+ZmFpbCB3aXRoIG1pc3NpbmcKPiBkZWZpbmVzIGluIG9yZGVyIHRvIGhlbHAgbWFrZSBpdCBtb3Jl
+IGltbWVkaWF0ZWx5IGNsZWFyIHRvIHVzZXJzIHdoYXQgaXMKPiBnb2luZyBvbiBpZiB0aGV5IHRy
+eSB0byBzZWxlY3QgYSBwcm9jZXNzb3IgY29tYmluYXRpb24gdGhleSBkb24ndCBrbm93Cj4gaG93
+IHRvIGhhbmRsZS4KVGhlIHdheSBJIHNlZSBpdCwgaWYgd2Uga2VlcCBpdCB3ZSB3aWxsIGhhdmUg
+dG8gYWRkIGV2ZXJ5IHN1cHBvcnRlZApTb0MgdG8gdGhlIGxpc3QKd2hpY2ggaXMga2luZGEgcmVk
+dW5kYW50IHNpbmNlIHRoYXQgaW5mb3JtYXRpb24gY291bGQgYWxyZWFkeSBiZSBleHRyYWN0ZWQg
+ZnJvbQpNYWtlZmlsZS4gVGhlIGxpc3Qgb2Ygc3VwcG9ydGVkIFNvQyBjb3VsZCBiZSB1c2VmdWwg
+aWYgd2Ugc29tZWhvdyBrbmV3CnRoZSBmdXR1cmUgU29DcycgY2hhcmFjdGVyaXN0aWNzIHRvIHRl
+bGwgaWYgdGhleSB3dWQgd29yayBvciBub3QsIGJ1dAp0aGUgZGV2ZWxvcGVyCmhhcyB0byBmaXJz
+dCBjaGVjayB0aGUgTWFudWFsIGFuZCBzZWUgaWYgdGhlIHMzYy1pMnMtdjIuYyBjb3VsZCBiZQpt
+YWRlIHVzZSBvZiBvciBub3QuCkJlc2lkZXMsIEkgYXNzdW1lICd1c2VyJyB0byBiZSB0aGUgTUFD
+SElORSBkcml2ZXIgd3JpdGVyIGFuZCAnZGV2ZWxvcGVyJyB0byBiZQp0aGUgQ1BVIGRyaXZlciB3
+cml0ZXIuCgo+IFVzZXJzIG9mdGVuIGhhdmUgYSBzdHJvbmcgZXhwZWN0YXRpb24gdGhhdCB0aGUg
+ZHJpdmVyIHdpbGwganVzdCB3b3JrCj4gYW5kIHNvIHJlbHlpbmcgb24gdGhlbSBjb25zdWx0aW5n
+IHRoZSBwcm9jZXNzb3IgbWFudWFsIGlzbid0IGFsd2F5cwo+IHJlYWxpc3RpYy4Kd2VsbCwgSSBh
+bSBub3Qgc3VyZSBpZiB3ZSBzaG91bGQgc3ltcGF0aGl6ZSB3aXRoIHN1Y2ggYSBkZXZlbG9wZXIg
+OikKCj4gSXQgbWF5IGJlIHRoYXQgdGhlc2UgZGlmZmVyZW5jZXMgYXJlIGR1ZSB0byBzb21lIGJl
+aW5nIElJU3YyIGFuZCBzb21lCj4gYmVpbmcgSUlTdjMgb3Igc29tZXRoaW5nIGFuZCBjb3VsZCBl
+YXNpbHkgYmUgaGFuZGxlZCB2aWEgbWFuZGF0b3J5Cj4gcGxhdGZvcm0gZGF0YSBidXQgc2luY2Ug
+bm9uZSBvZiB0aGUgZG9jdW1lbnRhdGlvbiByZWZlcnMgdG8gYW55IG9mIHRoaXMKPiBzdHVmZiBh
+bmQgaXQgaGFzIHRvIGJlIHJldmVyc2UgZW5naW5lZXJlZCB3ZSd2ZSBnb3QgdGhpcyBzeXN0ZW0g
+YmFzZWQgb24KPiBidWlsZCB0aW1lIHByb2Nlc3NvciBzZWxlY3Rpb24uClllcywgbWF5YmUgc29t
+ZSBtb3JlIGRvY3VtZW50YXRpb24gaXMgd2hhdCBpcyBuZWVkZWQuCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
