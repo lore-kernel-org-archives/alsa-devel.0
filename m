@@ -1,14 +1,23 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: Reforming S3C I2S towards supporting I2Sv4
-Date: Wed, 10 Mar 2010 16:48:55 +0900
-Message-ID: <1268207335-9947-1-git-send-email-jassi.brar@samsung.com>
+Subject: [PATCH 08/20] ASoC: S3C64XX: I2S: Move RATE and FMT
+	defines to header
+Date: Wed, 10 Mar 2010 16:48:57 +0900
+Message-ID: <1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
+References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
+	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0234D103832
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 08:58:08 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 8DD7D24346
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 08:58:03 +0100 (CET)
+In-Reply-To: <1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +31,54 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
- I have prepared some patches that debug and modify the behaviour of
-extant S3C I2S support towards managing I2Sv4 controllers as well.
-
-Overall pic...
- For now the 'new' I2Sv4 CPU driver(s3c64xx-i2s-v4.c) is almost a copy
-of s3c64xx-i2s.c The driver will evolve as support for more features is
-added.
- Minor quirks in otherwise similar controllers are handled by defining
-a new field(feature) in 'struct s3c_i2sv2_info' that is meant to contain
-1-bit flags for absence/presence of such quirks.
- The header with I2S register map and bit definitions has been copied
-to where the drivers are(sound/soc/s3c24xx/) since the header has nothing
-usable for platform code. Also, it will help avoid need for co-ordination
-between ASoC and S3C ARCH trees. For now, the header regs-s3c2412-iis.h
-is left intact but rendered useless by making ASoC drivers include the
-newly copied version of it (sound/soc/s3c24xx/regs-i2s-v2.h) Later the
-header could be dropped by patches to S3C PLAT tree.
-
-The patches apply against 'for-2.6.35' of 
-http://www.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
-
-Regards.
+In order for the RATE and FMT defines to be reuseable in future by the
+i2sv4 driver, move the MACROs out to the header file.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/s3c24xx/s3c64xx-i2s.c |    9 ---------
+ sound/soc/s3c24xx/s3c64xx-i2s.h |    9 +++++++++
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
+index 39563ed..6552894 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s.c
++++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
+@@ -127,15 +127,6 @@ static int s3c64xx_i2s_probe(struct platform_device *pdev,
+ }
+ 
+ 
+-#define S3C64XX_I2S_RATES \
+-	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
+-	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
+-	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+-
+-#define S3C64XX_I2S_FMTS \
+-	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
+-	 SNDRV_PCM_FMTBIT_S24_LE)
+-
+ static struct snd_soc_dai_ops s3c64xx_i2s_dai_ops = {
+ 	.set_sysclk	= s3c64xx_i2s_set_sysclk,	
+ };
+diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
+index e350d28..53d2a0a 100644
+--- a/sound/soc/s3c24xx/s3c64xx-i2s.h
++++ b/sound/soc/s3c24xx/s3c64xx-i2s.h
+@@ -27,6 +27,15 @@ struct clk;
+ #define S3C64XX_CLKSRC_MUX	S3C_I2SV2_CLKSRC_AUDIOBUS
+ #define S3C64XX_CLKSRC_CDCLK    S3C_I2SV2_CLKSRC_CDCLK
+ 
++#define S3C64XX_I2S_RATES \
++	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
++	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
++	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
++
++#define S3C64XX_I2S_FMTS \
++	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
++	 SNDRV_PCM_FMTBIT_S24_LE)
++
+ extern struct snd_soc_dai s3c64xx_i2s_dai[];
+ 
+ extern struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai);
+-- 
+1.6.2.5
