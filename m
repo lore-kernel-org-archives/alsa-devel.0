@@ -1,25 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 08/20] ASoC: S3C64XX: I2S: Move RATE and
- FMT defines to header
-Date: Wed, 10 Mar 2010 10:51:10 +0000
-Message-ID: <20100310105109.GG24422@rakim.wolfsonmicro.main>
-References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: Reforming S3C I2S towards supporting I2Sv4
+Date: Wed, 10 Mar 2010 17:31:03 +0900
+Message-ID: <1b68c6791003100031m7be14ecr218e4f988bd30cab@mail.gmail.com>
+References: <1268207335-9947-1-git-send-email-jassi.brar@samsung.com>
+	<1268209468.3760.8.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2BAC524391
-	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 11:51:11 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id A7C9A103821
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 09:31:14 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 4so426736qwk.56
+	for <alsa-devel@alsa-project.org>; Wed, 10 Mar 2010 00:31:04 -0800 (PST)
+In-Reply-To: <1268209468.3760.8.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,20 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 10, 2010 at 04:48:57PM +0900, Jassi Brar wrote:
-> In order for the RATE and FMT defines to be reuseable in future by the
-> i2sv4 driver, move the MACROs out to the header file.
-
-I'll apply this but for the rates...
-
-> -#define S3C64XX_I2S_RATES \
-> -	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 | SNDRV_PCM_RATE_16000 | \
-> -	SNDRV_PCM_RATE_22050 | SNDRV_PCM_RATE_32000 | SNDRV_PCM_RATE_44100 | \
-> -	SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-
-This is just SNDRV_PCM_RATE_8000_96000 anyway so may as well use it
-directly.
+T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgNToyNCBQTSwgTGlhbSBHaXJkd29vZCA8bHJnQHNsaW1s
+b2dpYy5jby51az4gd3JvdGU6Cj4gT24gV2VkLCAyMDEwLTAzLTEwIGF0IDE2OjQ4ICswOTAwLCBK
+YXNzaSBCcmFyIHdyb3RlOgo+PiDCoFRoZSBoZWFkZXIgd2l0aCBJMlMgcmVnaXN0ZXIgbWFwIGFu
+ZCBiaXQgZGVmaW5pdGlvbnMgaGFzIGJlZW4gY29waWVkCj4+IHRvIHdoZXJlIHRoZSBkcml2ZXJz
+IGFyZShzb3VuZC9zb2MvczNjMjR4eC8pIHNpbmNlIHRoZSBoZWFkZXIgaGFzIG5vdGhpbmcKPj4g
+dXNhYmxlIGZvciBwbGF0Zm9ybSBjb2RlLiBBbHNvLCBpdCB3aWxsIGhlbHAgYXZvaWQgbmVlZCBm
+b3IgY28tb3JkaW5hdGlvbgo+PiBiZXR3ZWVuIEFTb0MgYW5kIFMzQyBBUkNIIHRyZWVzLiBGb3Ig
+bm93LCB0aGUgaGVhZGVyIHJlZ3MtczNjMjQxMi1paXMuaAo+PiBpcyBsZWZ0IGludGFjdCBidXQg
+cmVuZGVyZWQgdXNlbGVzcyBieSBtYWtpbmcgQVNvQyBkcml2ZXJzIGluY2x1ZGUgdGhlCj4+IG5l
+d2x5IGNvcGllZCB2ZXJzaW9uIG9mIGl0IChzb3VuZC9zb2MvczNjMjR4eC9yZWdzLWkycy12Mi5o
+KSBMYXRlciB0aGUKPj4gaGVhZGVyIGNvdWxkIGJlIGRyb3BwZWQgYnkgcGF0Y2hlcyB0byBTM0Mg
+UExBVCB0cmVlLgo+Pgo+Cj4gSSdtIG5vdCB0b28ga2VlbiBvbiBtb3ZpbmcgQ1BVIHJlZ2lzdGVy
+IGFuZCBiaXQgZGVmaW5pdGlvbnMgb3V0IG9mIEFSQ0guClRoZSBoZWFkZXIgZG9lc24ndCBjb250
+YWluIGFic29sdXRlIHJlZ2lzdGVyIGFkZHJlc3NlcywgYnV0IG9ubHkKb2Zmc2V0cy4gVGhlIGJh
+c2UgYWRkcmVzcyBvZiBJMlMgY29udHJvbGxlcnMgYXJlIGRlZmluZWQgaW4gUExBVApzcGVjaWZp
+YyBoZWFkZXIuIFNvLCBJIHRoaW5rIHdlIGNhbiBtb3ZlIHRoZSBoZWFkZXIuCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
