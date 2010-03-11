@@ -1,67 +1,50 @@
-From: Roland Dreier <rdreier@cisco.com>
-Subject: Re: [PATCH 25/37] drivers/infiniband: use .dev.of_node instead of .node in struct of_device
-Date: Thu, 11 Mar 2010 11:57:53 -0800
-Message-ID: <adavdd2d41q.fsf@roland-alpha.cisco.com>
-References: <20100311174830.4824.19820.stgit@angua>
-	<20100311180605.4824.3613.stgit@angua>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: ALSA: usb-mixer: Add support for UAC2 devices
+Date: Thu, 11 Mar 2010 21:13:19 +0100
+Message-ID: <1268338405-8944-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <sparclinux-owner@vger.kernel.org>
-In-Reply-To: <20100311180605.4824.3613.stgit@angua> (Grant Likely's message of
-	"Thu, 11 Mar 2010 11:06:06 -0700")
-Sender: sparclinux-owner@vger.kernel.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: Hoang-Nam Nguyen <hnguyen@de.ibm.com>, Christoph Raisch <raisch@de.ibm.com>, monstr@monstr.eu, gregkh@suse.de, benh@kernel.crashing.org, akpm@linux-foundation.org, davem@davemloft.net, sfr@canb.auug.org.au, jgarzik@pobox.com, ben-linux@fluff.org, dwmw2@infradead.org, jeremy.kerr@canonical.com, James.Bottomley@suse.de, broonie@opensource.wolfsonmicro.com, microblaze-uclinux@itee.uq.edu.au, linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org, sparclinux@vger.kernel.org, linux-ide@vger.kernel.org, netdev@vger.kernel.org, linux-i2c@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 90151103804
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 21:14:10 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Seems fine... adding EHCA guys just to make sure.
+This patch series adds support for mixer interfaces in USB audio class
+v2 devices. Successfully tested on a XMOS L1 eval kit. They apply on
+top of the topic/usb branch.
 
- > .node is being removed
- > 
- > Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
- > ---
- > 
- >  drivers/infiniband/hw/ehca/ehca_main.c |   11 ++++++-----
- >  1 files changed, 6 insertions(+), 5 deletions(-)
- > 
- > diff --git a/drivers/infiniband/hw/ehca/ehca_main.c b/drivers/infiniband/hw/ehca/ehca_main.c
- > index 129a6be..2639185 100644
- > --- a/drivers/infiniband/hw/ehca/ehca_main.c
- > +++ b/drivers/infiniband/hw/ehca/ehca_main.c
- > @@ -291,8 +291,9 @@ static int ehca_sense_attributes(struct ehca_shca *shca)
- >  	};
- >  
- >  	ehca_gen_dbg("Probing adapter %s...",
- > -		     shca->ofdev->node->full_name);
- > -	loc_code = of_get_property(shca->ofdev->node, "ibm,loc-code", NULL);
- > +		     shca->ofdev->dev.of_node->full_name);
- > +	loc_code = of_get_property(shca->ofdev->dev.of_node, "ibm,loc-code",
- > +				   NULL);
- >  	if (loc_code)
- >  		ehca_gen_dbg(" ... location lode=%s", loc_code);
- >  
- > @@ -720,16 +721,16 @@ static int __devinit ehca_probe(struct of_device *dev,
- >  	int ret, i, eq_size;
- >  	unsigned long flags;
- >  
- > -	handle = of_get_property(dev->node, "ibm,hca-handle", NULL);
- > +	handle = of_get_property(dev->dev.of_node, "ibm,hca-handle", NULL);
- >  	if (!handle) {
- >  		ehca_gen_err("Cannot get eHCA handle for adapter: %s.",
- > -			     dev->node->full_name);
- > +			     dev->dev.of_node->full_name);
- >  		return -ENODEV;
- >  	}
- >  
- >  	if (!(*handle)) {
- >  		ehca_gen_err("Wrong eHCA handle for adapter: %s.",
- > -			     dev->node->full_name);
- > +			     dev->dev.of_node->full_name);
- >  		return -ENODEV;
- >  	}
- >  
- > 
- > -- 
-Roland Dreier  <rolandd@cisco.com>
-For corporate legal information go to:
-http://www.cisco.com/web/about/doing_business/legal/cri/index.html
+There's a number significant differences between v1 and v2
+implementations, which the patches itself may explain best :)
+
+I moved most quirks out into a seperate file, and hope you agree that
+it's cleaner that way. Most descriptors are now parsed with structs
+which makes the code more readable. However, there are quite some
+descriptors with variable field lengths so they can't be mapped into
+structs. I introduces some macros to access these fields.
+
+Again, please test this with v1 devices, as I can't be entirely
+confident that I didn't break anything in the transition.
+
+Thanks,
+Daniel
+
+
+[PATCH 1/6] linux/usb/audio.h: split header
+[PATCH 2/6] ALSA: usb-mixer: use defines from audio.h
+[PATCH 3/6] ALSA: usb-mixer: factor out quirks
+[PATCH 4/6] ALSA: usb-mixer: rename usbmixer.[ch] -> mixer.[ch]
+[PATCH 5/6] ALSA: usb-mixer: parse descriptors with structs
+[PATCH 6/6] ALSA: usb-mixer: Add support for Audio Class v2.0
