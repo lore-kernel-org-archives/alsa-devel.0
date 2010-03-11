@@ -1,18 +1,18 @@
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 08/27] drivers/crypto/of: don't use deprecated
+Subject: [PATCH 09/27] drivers/atm/of: don't use deprecated
 	field in	of_platform_driver
-Date: Thu, 11 Mar 2010 11:22:32 -0700
-Message-ID: <20100311182231.13103.47091.stgit@angua>
+Date: Thu, 11 Mar 2010 11:22:37 -0700
+Message-ID: <20100311182237.13103.61327.stgit@angua>
 References: <20100311181604.13103.30088.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f203.google.com (mail-pz0-f203.google.com
-	[209.85.222.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id D2F1F103AC7
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0CA94103B0F
 	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:22:40 +0100 (CET)
-Received: by mail-pz0-f203.google.com with SMTP id 41so181718pzk.23
+Received: by mail-pw0-f51.google.com with SMTP id 10so163737pwj.38
 	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:22:40 -0800 (PST)
 In-Reply-To: <20100311181604.13103.30088.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -33,43 +33,24 @@ and device_driver, so the of_platform_driver copies will be removed soon.
 Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
 
- drivers/crypto/amcc/crypto4xx_core.c |    7 +++++--
- drivers/crypto/talitos.c             |    7 +++++--
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/atm/fore200e.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/amcc/crypto4xx_core.c b/drivers/crypto/amcc/crypto4xx_core.c
-index 1c3849f..36b5fb1 100644
---- a/drivers/crypto/amcc/crypto4xx_core.c
-+++ b/drivers/crypto/amcc/crypto4xx_core.c
-@@ -1280,8 +1280,11 @@ static const struct of_device_id crypto4xx_match[] = {
- };
+diff --git a/drivers/atm/fore200e.c b/drivers/atm/fore200e.c
+index 593a03a..da8f176 100644
+--- a/drivers/atm/fore200e.c
++++ b/drivers/atm/fore200e.c
+@@ -2695,8 +2695,11 @@ static const struct of_device_id fore200e_sba_match[] = {
+ MODULE_DEVICE_TABLE(of, fore200e_sba_match);
  
- static struct of_platform_driver crypto4xx_driver = {
--	.name		= "crypto4xx",
--	.match_table	= crypto4xx_match,
+ static struct of_platform_driver fore200e_sba_driver = {
+-	.name		= "fore_200e",
+-	.match_table	= fore200e_sba_match,
 +	.driver = {
-+		.name = "crypto4xx",
++		.name = "fore_200e",
 +		.owner = THIS_MODULE,
-+		.of_match_table = crypto4xx_match,
++		.of_match_table = fore200e_sba_match,
 +	},
- 	.probe		= crypto4xx_probe,
- 	.remove		= crypto4xx_remove,
- };
-diff --git a/drivers/crypto/talitos.c b/drivers/crypto/talitos.c
-index fd529d6..917faf7 100644
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -1967,8 +1967,11 @@ static const struct of_device_id talitos_match[] = {
- MODULE_DEVICE_TABLE(of, talitos_match);
- 
- static struct of_platform_driver talitos_driver = {
--	.name = "talitos",
--	.match_table = talitos_match,
-+	.driver = {
-+		.name = "talitos",
-+		.owner = THIS_MODULE,
-+		.of_match_table = talitos_match,
-+	},
- 	.probe = talitos_probe,
- 	.remove = talitos_remove,
+ 	.probe		= fore200e_sba_probe,
+ 	.remove		= __devexit_p(fore200e_sba_remove),
  };
