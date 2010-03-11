@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4] mmp: support ssp in pxa168
-Date: Thu, 11 Mar 2010 10:58:05 +0000
-Message-ID: <20100311105804.GD2585@rakim.wolfsonmicro.main>
-References: <771cded01003100514r70f0f53eydda7b916f92bef64@mail.gmail.com>
-	<20100310142832.GB24422@rakim.wolfsonmicro.main>
-	<f17812d71003110020g67bb7fd6tfe1381294b6cfe8f@mail.gmail.com>
+Subject: Re: [PATCH 2/2 v2] ASoC: da7210: Add
+ 11025/22050/44100/88200 rate support
+Date: Thu, 11 Mar 2010 11:02:18 +0000
+Message-ID: <20100311110218.GE2585@rakim.wolfsonmicro.main>
+References: <uy6hzh9c7.wl%morimoto.kuninori@renesas.com>
+	<1268304989.3758.69.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 92C37103920
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 11:58:06 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A44BD103934
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 12:02:19 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <f17812d71003110020g67bb7fd6tfe1381294b6cfe8f@mail.gmail.com>
+In-Reply-To: <1268304989.3758.69.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, lrg@slimlogic.co.uk
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Kuninori Morimoto <morimoto.kuninori@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Phil Edworthy <Phil.Edworthy@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 11, 2010 at 04:20:35PM +0800, Eric Miao wrote:
-> On Wed, Mar 10, 2010 at 10:28 PM, Mark Brown
+On Thu, Mar 11, 2010 at 10:56:29AM +0000, Liam Girdwood wrote:
+> On Thu, 2010-03-11 at 11:37 +0900, Kuninori Morimoto wrote:
+> > This driver USE PLL for 11025/22050/44100/88200 rate.
+> > To enable switching to bypass mode, PLL is always turned on.
+> > Special thanks to Phil
+> > 
+> > Signed-off-by: Phil Edworthy <Phil.Edworthy@renesas.com>
+> > Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+> 
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-> > cycle? =A0I can apply the patches on a branch by themselves which can a=
-lso
-> > be pulled into the PXA tree if needed.
-
-> I'd expect there to be some merge conflicts I need to solve along with
-> my cleaning up of the SSP code. That said, it's better to go via -pxa
-> tree and get the multi-codec work solved in linux-next?
-
-That's not going to be possible with at least the machine driver - if
-it's only present in one tree we can't do fixups in the other.  This is
-why I'm saying put it on a branch and merge it into both trees, that way
-both trees have the code in them as though things had been merged into
-mainline already so problems are much less likely.
-
-> Mark, could you please point me the reference to the multi-codec work
-> so I can have a rough feeling of the possible merge issues?
-
-There's a branch in Liam's git tree (still sketching out the goal rather
-than the finished product):
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
-
-Big thing is that there's most likely going to be at least cosmetic
-changes to how cards are registered.
+Applied, thanks.
