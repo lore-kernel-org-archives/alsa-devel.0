@@ -1,18 +1,22 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 3/6] ALSA: usb-mixer: factor out quirks
-Date: Thu, 11 Mar 2010 21:13:22 +0100
-Message-ID: <1268338405-8944-4-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 6/6] ALSA: usb-mixer: Add support for Audio
+	Class v2.0
+Date: Thu, 11 Mar 2010 21:13:25 +0100
+Message-ID: <1268338405-8944-7-git-send-email-daniel@caiaq.de>
 References: <1268338405-8944-1-git-send-email-daniel@caiaq.de>
 	<1268338405-8944-2-git-send-email-daniel@caiaq.de>
 	<1268338405-8944-3-git-send-email-daniel@caiaq.de>
+	<1268338405-8944-4-git-send-email-daniel@caiaq.de>
+	<1268338405-8944-5-git-send-email-daniel@caiaq.de>
+	<1268338405-8944-6-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B662F103828
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 21:14:28 +0100 (CET)
-In-Reply-To: <1268338405-8944-3-git-send-email-daniel@caiaq.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id B7D4E1038D0
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 21:14:32 +0100 (CET)
+In-Reply-To: <1268338405-8944-6-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,1056 +30,734 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Move all non-standard mixer controls and vendor-specific extensions to a
-separate file. Some structs need to be exported now.
+USB Audio Class v2.0 compliant devices have different descriptors and a
+different way of setting/getting min/max/res/cur properties. This patch
+adds support for them.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Cc: Clemens Ladisch <clemens@ladisch.de>
 Cc: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/Makefile       |    1 +
- sound/usb/mixer_quirks.c |  411 ++++++++++++++++++++++++++++++++++++++++++++
- sound/usb/mixer_quirks.h |   13 ++
- sound/usb/quirks.c       |    1 +
- sound/usb/usbmixer.c     |  425 ++--------------------------------------------
- sound/usb/usbmixer.h     |   45 +++++-
- 6 files changed, 480 insertions(+), 416 deletions(-)
- create mode 100644 sound/usb/mixer_quirks.c
- create mode 100644 sound/usb/mixer_quirks.h
+ include/linux/usb/audio-v2.h |   47 ++++++
+ include/linux/usb/audio.h    |   71 +++++++---
+ sound/usb/mixer.c            |  322 +++++++++++++++++++++++++++++++-----------
+ sound/usb/mixer.h            |    3 +
+ 4 files changed, 343 insertions(+), 100 deletions(-)
 
-diff --git a/sound/usb/Makefile b/sound/usb/Makefile
-index 0758d8d..744024a 100644
---- a/sound/usb/Makefile
-+++ b/sound/usb/Makefile
-@@ -4,6 +4,7 @@
+diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
+index 3b8560d..0952231 100644
+--- a/include/linux/usb/audio-v2.h
++++ b/include/linux/usb/audio-v2.h
+@@ -43,6 +43,53 @@ struct uac_clock_selector_descriptor {
+ 	__u8 baCSourceID[];
+ } __attribute__((packed));
  
- snd-usb-audio-objs := 	card.o \
- 			usbmixer.o \
-+			mixer_quirks.o \
- 			proc.o \
- 			quirks.o \
- 			format.o \
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-new file mode 100644
-index 0000000..d2f4dcd
---- /dev/null
-+++ b/sound/usb/mixer_quirks.c
-@@ -0,0 +1,411 @@
-+/*
-+ *   USB Audio Driver for ALSA
-+ *
-+ *   Quirks and vendor-specific extensions for mixer interfaces
-+ *
-+ *   Copyright (c) 2002 by Takashi Iwai <tiwai@suse.de>
-+ *
-+ *   Many codes borrowed from audio.c by
-+ *	    Alan Cox (alan@lxorguk.ukuu.org.uk)
-+ *	    Thomas Sailer (sailer@ife.ee.ethz.ch)
-+ *
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program; if not, write to the Free Software
-+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ */
++/* 4.7.2.4 Input terminal descriptor */
 +
-+#include <linux/init.h>
-+#include <linux/usb.h>
-+#include <linux/usb/audio.h>
++struct uac2_input_terminal_descriptor {
++	__u8 bLength;
++	__u8 bDescriptorType;
++	__u8 bDescriptorSubtype;
++	__u8 bTerminalID;
++	__u16 wTerminalType;
++	__u8 bAssocTerminal;
++	__u8 bCSourceID;
++	__u8 bNrChannels;
++	__u32 bmChannelConfig;
++	__u8 iChannelNames;
++	__u16 bmControls;
++	__u8 iTerminal;
++} __attribute__((packed));
 +
-+#include <sound/core.h>
-+#include <sound/control.h>
-+#include <sound/hwdep.h>
-+#include <sound/info.h>
++/* 4.7.2.5 Output terminal descriptor */
 +
-+#include "usbaudio.h"
-+#include "usbmixer.h"
-+#include "mixer_quirks.h"
-+#include "helper.h"
++struct uac2_output_terminal_descriptor {
++	__u8 bLength;
++	__u8 bDescriptorType;
++	__u8 bDescriptorSubtype;
++	__u8 bTerminalID;
++	__u16 wTerminalType;
++	__u8 bAssocTerminal;
++	__u8 bSourceID;
++	__u8 bCSourceID;
++	__u16 bmControls;
++	__u8 iTerminal;
++} __attribute__((packed));
 +
-+/*
-+ * Sound Blaster remote control configuration
-+ *
-+ * format of remote control data:
-+ * Extigy:       xx 00
-+ * Audigy 2 NX:  06 80 xx 00 00 00
-+ * Live! 24-bit: 06 80 xx yy 22 83
-+ */
-+static const struct rc_config {
-+	u32 usb_id;
-+	u8  offset;
-+	u8  length;
-+	u8  packet_length;
-+	u8  min_packet_length; /* minimum accepted length of the URB result */
-+	u8  mute_mixer_id;
-+	u32 mute_code;
-+} rc_configs[] = {
-+	{ USB_ID(0x041e, 0x3000), 0, 1, 2, 1,  18, 0x0013 }, /* Extigy       */
-+	{ USB_ID(0x041e, 0x3020), 2, 1, 6, 6,  18, 0x0013 }, /* Audigy 2 NX  */
-+	{ USB_ID(0x041e, 0x3040), 2, 2, 6, 6,  2,  0x6e91 }, /* Live! 24-bit */
-+	{ USB_ID(0x041e, 0x3048), 2, 2, 6, 6,  2,  0x6e91 }, /* Toshiba SB0500 */
-+};
 +
-+static void snd_usb_soundblaster_remote_complete(struct urb *urb)
-+{
-+	struct usb_mixer_interface *mixer = urb->context;
-+	const struct rc_config *rc = mixer->rc_cfg;
-+	u32 code;
 +
-+	if (urb->status < 0 || urb->actual_length < rc->min_packet_length)
-+		return;
++/* 4.7.2.8 Feature Unit Descriptor */
 +
-+	code = mixer->rc_buffer[rc->offset];
-+	if (rc->length == 2)
-+		code |= mixer->rc_buffer[rc->offset + 1] << 8;
++struct uac2_feature_unit_descriptor {
++	__u8 bLength;
++	__u8 bDescriptorType;
++	__u8 bDescriptorSubtype;
++	__u8 bUnitID;
++	__u8 bSourceID;
++	/* bmaControls is actually u32,
++	 * but u8 is needed for the hybrid parser */
++	__u8 bmaControls[0]; /* variable length */
++} __attribute__((packed));
 +
-+	/* the Mute button actually changes the mixer control */
-+	if (code == rc->mute_code)
-+		snd_usb_mixer_notify_id(mixer, rc->mute_mixer_id);
-+	mixer->rc_code = code;
-+	wmb();
-+	wake_up(&mixer->rc_waitq);
-+}
-+
-+static long snd_usb_sbrc_hwdep_read(struct snd_hwdep *hw, char __user *buf,
-+				     long count, loff_t *offset)
-+{
-+	struct usb_mixer_interface *mixer = hw->private_data;
-+	int err;
-+	u32 rc_code;
-+
-+	if (count != 1 && count != 4)
-+		return -EINVAL;
-+	err = wait_event_interruptible(mixer->rc_waitq,
-+				       (rc_code = xchg(&mixer->rc_code, 0)) != 0);
-+	if (err == 0) {
-+		if (count == 1)
-+			err = put_user(rc_code, buf);
-+		else
-+			err = put_user(rc_code, (u32 __user *)buf);
-+	}
-+	return err < 0 ? err : count;
-+}
-+
-+static unsigned int snd_usb_sbrc_hwdep_poll(struct snd_hwdep *hw, struct file *file,
-+					    poll_table *wait)
-+{
-+	struct usb_mixer_interface *mixer = hw->private_data;
-+
-+	poll_wait(file, &mixer->rc_waitq, wait);
-+	return mixer->rc_code ? POLLIN | POLLRDNORM : 0;
-+}
-+
-+static int snd_usb_soundblaster_remote_init(struct usb_mixer_interface *mixer)
-+{
-+	struct snd_hwdep *hwdep;
-+	int err, len, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(rc_configs); ++i)
-+		if (rc_configs[i].usb_id == mixer->chip->usb_id)
-+			break;
-+	if (i >= ARRAY_SIZE(rc_configs))
-+		return 0;
-+	mixer->rc_cfg = &rc_configs[i];
-+
-+	len = mixer->rc_cfg->packet_length;
-+
-+	init_waitqueue_head(&mixer->rc_waitq);
-+	err = snd_hwdep_new(mixer->chip->card, "SB remote control", 0, &hwdep);
-+	if (err < 0)
-+		return err;
-+	snprintf(hwdep->name, sizeof(hwdep->name),
-+		 "%s remote control", mixer->chip->card->shortname);
-+	hwdep->iface = SNDRV_HWDEP_IFACE_SB_RC;
-+	hwdep->private_data = mixer;
-+	hwdep->ops.read = snd_usb_sbrc_hwdep_read;
-+	hwdep->ops.poll = snd_usb_sbrc_hwdep_poll;
-+	hwdep->exclusive = 1;
-+
-+	mixer->rc_urb = usb_alloc_urb(0, GFP_KERNEL);
-+	if (!mixer->rc_urb)
-+		return -ENOMEM;
-+	mixer->rc_setup_packet = kmalloc(sizeof(*mixer->rc_setup_packet), GFP_KERNEL);
-+	if (!mixer->rc_setup_packet) {
-+		usb_free_urb(mixer->rc_urb);
-+		mixer->rc_urb = NULL;
-+		return -ENOMEM;
-+	}
-+	mixer->rc_setup_packet->bRequestType =
-+		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE;
-+	mixer->rc_setup_packet->bRequest = UAC_GET_MEM;
-+	mixer->rc_setup_packet->wValue = cpu_to_le16(0);
-+	mixer->rc_setup_packet->wIndex = cpu_to_le16(0);
-+	mixer->rc_setup_packet->wLength = cpu_to_le16(len);
-+	usb_fill_control_urb(mixer->rc_urb, mixer->chip->dev,
-+			     usb_rcvctrlpipe(mixer->chip->dev, 0),
-+			     (u8*)mixer->rc_setup_packet, mixer->rc_buffer, len,
-+			     snd_usb_soundblaster_remote_complete, mixer);
-+	return 0;
-+}
-+
-+#define snd_audigy2nx_led_info		snd_ctl_boolean_mono_info
-+
-+static int snd_audigy2nx_led_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
-+	int index = kcontrol->private_value;
-+
-+	ucontrol->value.integer.value[0] = mixer->audigy2nx_leds[index];
-+	return 0;
-+}
-+
-+static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
-+	int index = kcontrol->private_value;
-+	int value = ucontrol->value.integer.value[0];
-+	int err, changed;
-+
-+	if (value > 1)
-+		return -EINVAL;
-+	changed = value != mixer->audigy2nx_leds[index];
-+	err = snd_usb_ctl_msg(mixer->chip->dev,
-+			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
-+			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
-+			      value, index + 2, NULL, 0, 100);
-+	if (err < 0)
-+		return err;
-+	mixer->audigy2nx_leds[index] = value;
-+	return changed;
-+}
-+
-+static struct snd_kcontrol_new snd_audigy2nx_controls[] = {
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "CMSS LED Switch",
-+		.info = snd_audigy2nx_led_info,
-+		.get = snd_audigy2nx_led_get,
-+		.put = snd_audigy2nx_led_put,
-+		.private_value = 0,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Power LED Switch",
-+		.info = snd_audigy2nx_led_info,
-+		.get = snd_audigy2nx_led_get,
-+		.put = snd_audigy2nx_led_put,
-+		.private_value = 1,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Dolby Digital LED Switch",
-+		.info = snd_audigy2nx_led_info,
-+		.get = snd_audigy2nx_led_get,
-+		.put = snd_audigy2nx_led_put,
-+		.private_value = 2,
-+	},
-+};
-+
-+static int snd_audigy2nx_controls_create(struct usb_mixer_interface *mixer)
-+{
-+	int i, err;
-+
-+	for (i = 0; i < ARRAY_SIZE(snd_audigy2nx_controls); ++i) {
-+		if (i > 1 && /* Live24ext has 2 LEDs only */
-+			(mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
-+			 mixer->chip->usb_id == USB_ID(0x041e, 0x3048)))
-+			break; 
-+		err = snd_ctl_add(mixer->chip->card,
-+				  snd_ctl_new1(&snd_audigy2nx_controls[i], mixer));
-+		if (err < 0)
-+			return err;
-+	}
-+	mixer->audigy2nx_leds[1] = 1; /* Power LED is on by default */
-+	return 0;
-+}
-+
-+static void snd_audigy2nx_proc_read(struct snd_info_entry *entry,
-+				    struct snd_info_buffer *buffer)
-+{
-+	static const struct sb_jack {
-+		int unitid;
-+		const char *name;
-+	}  jacks_audigy2nx[] = {
-+		{4,  "dig in "},
-+		{7,  "line in"},
-+		{19, "spk out"},
-+		{20, "hph out"},
-+		{-1, NULL}
-+	}, jacks_live24ext[] = {
-+		{4,  "line in"}, /* &1=Line, &2=Mic*/
-+		{3,  "hph out"}, /* headphones */
-+		{0,  "RC     "}, /* last command, 6 bytes see rc_config above */
-+		{-1, NULL}
-+	};
-+	const struct sb_jack *jacks;
-+	struct usb_mixer_interface *mixer = entry->private_data;
-+	int i, err;
-+	u8 buf[3];
-+
-+	snd_iprintf(buffer, "%s jacks\n\n", mixer->chip->card->shortname);
-+	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020))
-+		jacks = jacks_audigy2nx;
-+	else if (mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
-+		 mixer->chip->usb_id == USB_ID(0x041e, 0x3048))
-+		jacks = jacks_live24ext;
+ /* 4.9.2 Class-Specific AS Interface Descriptor */
+ 
+ struct uac_as_header_descriptor_v2 {
+diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
+index bc78a83..905a87c 100644
+--- a/include/linux/usb/audio.h
++++ b/include/linux/usb/audio.h
+@@ -196,20 +196,33 @@ static inline __u8 uac_mixer_unit_bNrChannels(struct uac_mixer_unit_descriptor *
+ 	return desc->baSourceID[desc->bNrInPins];
+ }
+ 
+-static inline __u16 uac_mixer_unit_wChannelConfig(struct uac_mixer_unit_descriptor *desc)
++static inline __u32 uac_mixer_unit_wChannelConfig(struct uac_mixer_unit_descriptor *desc,
++						  int protocol)
+ {
+-	return (desc->baSourceID[desc->bNrInPins + 2] << 8) |
+-		desc->baSourceID[desc->bNrInPins + 1];
++	if (protocol == UAC_VERSION_1)
++		return (desc->baSourceID[desc->bNrInPins + 2] << 8) |
++			desc->baSourceID[desc->bNrInPins + 1];
 +	else
-+		return;
-+
-+	for (i = 0; jacks[i].name; ++i) {
-+		snd_iprintf(buffer, "%s: ", jacks[i].name);
-+		err = snd_usb_ctl_msg(mixer->chip->dev,
-+				      usb_rcvctrlpipe(mixer->chip->dev, 0),
-+				      UAC_GET_MEM, USB_DIR_IN | USB_TYPE_CLASS |
-+				      USB_RECIP_INTERFACE, 0,
-+				      jacks[i].unitid << 8, buf, 3, 100);
-+		if (err == 3 && (buf[0] == 3 || buf[0] == 6))
-+			snd_iprintf(buffer, "%02x %02x\n", buf[1], buf[2]);
-+		else
-+			snd_iprintf(buffer, "?\n");
-+	}
-+}
-+
-+static int snd_xonar_u1_switch_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = !!(mixer->xonar_u1_status & 0x02);
-+	return 0;
-+}
-+
-+static int snd_xonar_u1_switch_put(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
-+	u8 old_status, new_status;
-+	int err, changed;
-+
-+	old_status = mixer->xonar_u1_status;
-+	if (ucontrol->value.integer.value[0])
-+		new_status = old_status | 0x02;
++		return  (desc->baSourceID[desc->bNrInPins + 4] << 24) |
++			(desc->baSourceID[desc->bNrInPins + 3] << 16) |
++			(desc->baSourceID[desc->bNrInPins + 2] << 8)  |
++			(desc->baSourceID[desc->bNrInPins + 1]);
+ }
+ 
+-static inline __u8 uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor *desc)
++static inline __u8 uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor *desc,
++						int protocol)
+ {
+-	return desc->baSourceID[desc->bNrInPins + 3];
++	return (protocol == UAC_VERSION_1) ?
++		desc->baSourceID[desc->bNrInPins + 3] :
++		desc->baSourceID[desc->bNrInPins + 5];
+ }
+ 
+-static inline __u8 *uac_mixer_unit_bmControls(struct uac_mixer_unit_descriptor *desc)
++static inline __u8 *uac_mixer_unit_bmControls(struct uac_mixer_unit_descriptor *desc,
++					      int protocol)
+ {
+-	return &desc->baSourceID[desc->bNrInPins + 4];
++	return (protocol == UAC_VERSION_1) ?
++		&desc->baSourceID[desc->bNrInPins + 4] :
++		&desc->baSourceID[desc->bNrInPins + 6];
+ }
+ 
+ static inline __u8 uac_mixer_unit_iMixer(struct uac_mixer_unit_descriptor *desc)
+@@ -267,36 +280,54 @@ static inline __u8 uac_processing_unit_bNrChannels(struct uac_processing_unit_de
+ 	return desc->baSourceID[desc->bNrInPins];
+ }
+ 
+-static inline __u16 uac_processing_unit_wChannelConfig(struct uac_processing_unit_descriptor *desc)
++static inline __u32 uac_processing_unit_wChannelConfig(struct uac_processing_unit_descriptor *desc,
++						       int protocol)
+ {
+-	return (desc->baSourceID[desc->bNrInPins + 2] << 8) |
+-		desc->baSourceID[desc->bNrInPins + 1];
++	if (protocol == UAC_VERSION_1)
++		return (desc->baSourceID[desc->bNrInPins + 2] << 8) |
++			desc->baSourceID[desc->bNrInPins + 1];
 +	else
-+		new_status = old_status & ~0x02;
-+	changed = new_status != old_status;
-+	err = snd_usb_ctl_msg(mixer->chip->dev,
-+			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x08,
-+			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
-+			      50, 0, &new_status, 1, 100);
-+	if (err < 0)
-+		return err;
-+	mixer->xonar_u1_status = new_status;
-+	return changed;
-+}
-+
-+static struct snd_kcontrol_new snd_xonar_u1_output_switch = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "Digital Playback Switch",
-+	.info = snd_ctl_boolean_mono_info,
-+	.get = snd_xonar_u1_switch_get,
-+	.put = snd_xonar_u1_switch_put,
-+};
-+
-+static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixer)
-+{
-+	int err;
-+
-+	err = snd_ctl_add(mixer->chip->card,
-+			  snd_ctl_new1(&snd_xonar_u1_output_switch, mixer));
-+	if (err < 0)
-+		return err;
-+	mixer->xonar_u1_status = 0x05;
-+	return 0;
-+}
-+
-+void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
-+			       unsigned char samplerate_id)
-+{
-+	struct usb_mixer_interface *mixer;
-+	struct usb_mixer_elem_info *cval;
-+	int unitid = 12; /* SamleRate ExtensionUnit ID */
-+
-+	list_for_each_entry(mixer, &chip->mixer_list, list) {
-+		cval = mixer->id_elems[unitid];
-+		if (cval) {
-+			snd_usb_mixer_set_ctl_value(cval, UAC_SET_CUR,
-+						    cval->control << 8,
-+						    samplerate_id);
-+			snd_usb_mixer_notify_id(mixer, unitid);
-+		}
-+		break;
-+	}
-+}
-+
-+int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
-+{
-+	int err;
-+	struct snd_info_entry *entry;
-+
-+	if ((err = snd_usb_soundblaster_remote_init(mixer)) < 0)
-+		return err;
-+
-+	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020) ||
-+	    mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
-+	    mixer->chip->usb_id == USB_ID(0x041e, 0x3048)) {
-+		if ((err = snd_audigy2nx_controls_create(mixer)) < 0)
-+			return err;
-+		if (!snd_card_proc_new(mixer->chip->card, "audigy2nx", &entry))
-+			snd_info_set_text_ops(entry, mixer,
-+					      snd_audigy2nx_proc_read);
-+	}
-+
-+	if (mixer->chip->usb_id == USB_ID(0x0b05, 0x1739) ||
-+	    mixer->chip->usb_id == USB_ID(0x0b05, 0x1743)) {
-+		err = snd_xonar_u1_controls_create(mixer);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
-+				    int unitid)
-+{
-+	if (!mixer->rc_cfg)
-+		return;
-+	/* unit ids specific to Extigy/Audigy 2 NX: */
-+	switch (unitid) {
-+	case 0: /* remote control */
-+		mixer->rc_urb->dev = mixer->chip->dev;
-+		usb_submit_urb(mixer->rc_urb, GFP_ATOMIC);
-+		break;
-+	case 4: /* digital in jack */
-+	case 7: /* line in jacks */
-+	case 19: /* speaker out jacks */
-+	case 20: /* headphones out jack */
-+		break;
-+	/* live24ext: 4 = line-in jack */
-+	case 3:	/* hp-out jack (may actuate Mute) */
-+		if (mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
-+		    mixer->chip->usb_id == USB_ID(0x041e, 0x3048))
-+			snd_usb_mixer_notify_id(mixer, mixer->rc_cfg->mute_mixer_id);
-+		break;
-+	default:
-+		snd_printd(KERN_DEBUG "memory change in unknown unit %d\n", unitid);
-+		break;
-+	}
-+}
-+
-diff --git a/sound/usb/mixer_quirks.h b/sound/usb/mixer_quirks.h
-new file mode 100644
-index 0000000..bdbfab0
---- /dev/null
-+++ b/sound/usb/mixer_quirks.h
-@@ -0,0 +1,13 @@
-+#ifndef SND_USB_MIXER_QUIRKS_H
-+#define SND_USB_MIXER_QUIRKS_H
-+
-+int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer);
-+
-+void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
-+			       unsigned char samplerate_id);
-+
-+void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
-+				    int unitid);
-+
-+#endif /* SND_USB_MIXER_QUIRKS_H */
-+
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 0c0b23b..a82cfed 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -25,6 +25,7 @@
- #include "usbaudio.h"
- #include "card.h"
- #include "usbmixer.h"
-+#include "mixer_quirks.h"
- #include "midi.h"
- #include "quirks.h"
- #include "helper.h"
-diff --git a/sound/usb/usbmixer.c b/sound/usb/usbmixer.c
-index ab8f0f0..ec2436e 100644
---- a/sound/usb/usbmixer.c
-+++ b/sound/usb/usbmixer.c
-@@ -43,60 +43,10 @@
- #include "usbaudio.h"
- #include "usbmixer.h"
- #include "helper.h"
--
--/*
-- */
--
--/* ignore error from controls - for debugging */
--/* #define IGNORE_CTL_ERROR */
--
--/*
-- * Sound Blaster remote control configuration
-- *
-- * format of remote control data:
-- * Extigy:       xx 00
-- * Audigy 2 NX:  06 80 xx 00 00 00
-- * Live! 24-bit: 06 80 xx yy 22 83
-- */
--static const struct rc_config {
--	u32 usb_id;
--	u8  offset;
--	u8  length;
--	u8  packet_length;
--	u8  min_packet_length; /* minimum accepted length of the URB result */
--	u8  mute_mixer_id;
--	u32 mute_code;
--} rc_configs[] = {
--	{ USB_ID(0x041e, 0x3000), 0, 1, 2, 1,  18, 0x0013 }, /* Extigy       */
--	{ USB_ID(0x041e, 0x3020), 2, 1, 6, 6,  18, 0x0013 }, /* Audigy 2 NX  */
--	{ USB_ID(0x041e, 0x3040), 2, 2, 6, 6,  2,  0x6e91 }, /* Live! 24-bit */
--	{ USB_ID(0x041e, 0x3048), 2, 2, 6, 6,  2,  0x6e91 }, /* Toshiba SB0500 */
--};
-+#include "mixer_quirks.h"
++		return  (desc->baSourceID[desc->bNrInPins + 4] << 24) |
++			(desc->baSourceID[desc->bNrInPins + 3] << 16) |
++			(desc->baSourceID[desc->bNrInPins + 2] << 8)  |
++			(desc->baSourceID[desc->bNrInPins + 1]);
+ }
  
- #define MAX_ID_ELEMS	256
+-static inline __u8 uac_processing_unit_iChannelNames(struct uac_processing_unit_descriptor *desc)
++static inline __u8 uac_processing_unit_iChannelNames(struct uac_processing_unit_descriptor *desc,
++						     int protocol)
+ {
+-	return desc->baSourceID[desc->bNrInPins + 3];
++	return (protocol == UAC_VERSION_1) ?
++		desc->baSourceID[desc->bNrInPins + 3] :
++		desc->baSourceID[desc->bNrInPins + 5];
+ }
  
--struct usb_mixer_interface {
--	struct snd_usb_audio *chip;
--	unsigned int ctrlif;
--	struct list_head list;
--	unsigned int ignore_ctl_error;
--	struct urb *urb;
--	/* array[MAX_ID_ELEMS], indexed by unit id */
--	struct usb_mixer_elem_info **id_elems;
--
--	/* Sound Blaster remote control stuff */
--	const struct rc_config *rc_cfg;
--	u32 rc_code;
--	wait_queue_head_t rc_waitq;
--	struct urb *rc_urb;
--	struct usb_ctrlrequest *rc_setup_packet;
--	u8 rc_buffer[6];
--
--	u8 audigy2nx_leds[3];
--	u8 xonar_u1_status;
--};
--
--
- struct usb_audio_term {
- 	int id;
- 	int type;
-@@ -118,24 +68,6 @@ struct mixer_build {
- 	const struct usbmix_selector_map *selector_map;
- };
+-static inline __u8 uac_processing_unit_bControlSize(struct uac_processing_unit_descriptor *desc)
++static inline __u8 uac_processing_unit_bControlSize(struct uac_processing_unit_descriptor *desc,
++						    int protocol)
+ {
+-	return desc->baSourceID[desc->bNrInPins + 4];
++	return (protocol == UAC_VERSION_1) ?
++		desc->baSourceID[desc->bNrInPins + 4] :
++		desc->baSourceID[desc->bNrInPins + 6];
+ }
  
--#define MAX_CHANNELS	10	/* max logical channels */
--
--struct usb_mixer_elem_info {
--	struct usb_mixer_interface *mixer;
--	struct usb_mixer_elem_info *next_id_elem; /* list of controls with same id */
--	struct snd_ctl_elem_id *elem_id;
--	unsigned int id;
--	unsigned int control;	/* CS or ICN (high byte) */
--	unsigned int cmask; /* channel mask bitmap: 0 = master */
--	int channels;
--	int val_type;
--	int min, max, res;
--	int dBmin, dBmax;
--	int cached;
--	int cache_val[MAX_CHANNELS];
--	u8 initialized;
--};
--
- enum {
- 	USB_MIXER_BOOLEAN,
- 	USB_MIXER_INV_BOOLEAN,
-@@ -431,7 +363,8 @@ static int get_cur_mix_value(struct usb_mixer_elem_info *cval,
-  * set a mixer value
+-static inline __u8 *uac_processing_unit_bmControls(struct uac_processing_unit_descriptor *desc)
++static inline __u8 *uac_processing_unit_bmControls(struct uac_processing_unit_descriptor *desc,
++						   int protocol)
+ {
+-	return &desc->baSourceID[desc->bNrInPins + 5];
++	return (protocol == UAC_VERSION_1) ?
++		&desc->baSourceID[desc->bNrInPins + 5] :
++		&desc->baSourceID[desc->bNrInPins + 7];
+ }
+ 
+-static inline __u8 uac_processing_unit_iProcessing(struct uac_processing_unit_descriptor *desc)
++static inline __u8 uac_processing_unit_iProcessing(struct uac_processing_unit_descriptor *desc,
++						   int protocol)
+ {
+-	__u8 control_size = uac_processing_unit_bControlSize(desc);
++	__u8 control_size = uac_processing_unit_bControlSize(desc, protocol);
+ 	return desc->baSourceID[desc->bNrInPins + control_size];
+ }
+ 
+-static inline __u8 *uac_processing_unit_specific(struct uac_processing_unit_descriptor *desc)
++static inline __u8 *uac_processing_unit_specific(struct uac_processing_unit_descriptor *desc,
++						 int protocol)
+ {
+-	__u8 control_size = uac_processing_unit_bControlSize(desc);
++	__u8 control_size = uac_processing_unit_bControlSize(desc, protocol);
+ 	return &desc->baSourceID[desc->bNrInPins + control_size + 1];
+ }
+ 
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 994b038..1deef62 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -33,6 +33,7 @@
+ #include <linux/string.h>
+ #include <linux/usb.h>
+ #include <linux/usb/audio.h>
++#include <linux/usb/audio-v2.h>
+ 
+ #include <sound/core.h>
+ #include <sound/control.h>
+@@ -197,6 +198,7 @@ static int check_mapped_selector_name(struct mixer_build *state, int unitid,
+ 
+ /*
+  * find an audio control unit with the given unit id
++ * this doesn't return any clock related units, so they need to be handled elsewhere
+  */
+ static void *find_audio_control_unit(struct mixer_build *state, unsigned char unit)
+ {
+@@ -205,7 +207,7 @@ static void *find_audio_control_unit(struct mixer_build *state, unsigned char un
+ 	p = NULL;
+ 	while ((p = snd_usb_find_desc(state->buffer, state->buflen, p,
+ 				      USB_DT_CS_INTERFACE)) != NULL) {
+-		if (p[0] >= 4 && p[2] >= UAC_INPUT_TERMINAL && p[2] <= UAC_EXTENSION_UNIT_V1 && p[3] == unit)
++		if (p[0] >= 4 && p[2] >= UAC_INPUT_TERMINAL && p[2] <= UAC2_EXTENSION_UNIT_V2 && p[3] == unit)
+ 			return p;
+ 	}
+ 	return NULL;
+@@ -302,7 +304,7 @@ static int get_abs_value(struct usb_mixer_elem_info *cval, int val)
+  * retrieve a mixer value
   */
  
--static int set_ctl_value(struct usb_mixer_elem_info *cval, int request, int validx, int value_set)
-+int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
-+				int request, int validx, int value_set)
+-static int get_ctl_value(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
++static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
  {
  	unsigned char buf[2];
  	int val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
-@@ -455,14 +388,14 @@ static int set_ctl_value(struct usb_mixer_elem_info *cval, int request, int vali
- 
- static int set_cur_ctl_value(struct usb_mixer_elem_info *cval, int validx, int value)
- {
--	return set_ctl_value(cval, UAC_SET_CUR, validx, value);
-+	return snd_usb_mixer_set_ctl_value(cval, UAC_SET_CUR, validx, value);
+@@ -324,6 +326,58 @@ static int get_ctl_value(struct usb_mixer_elem_info *cval, int request, int vali
+ 	return -EINVAL;
  }
  
- static int set_cur_mix_value(struct usb_mixer_elem_info *cval, int channel,
- 			     int index, int value)
++static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
++{
++	unsigned char buf[14]; /* enough space for one range of 4 bytes */
++	unsigned char *val;
++	int ret;
++	__u8 bRequest;
++
++	bRequest = (request == UAC_GET_CUR) ?
++		UAC2_CS_CUR : UAC2_CS_RANGE;
++
++	ret = snd_usb_ctl_msg(cval->mixer->chip->dev,
++			      usb_rcvctrlpipe(cval->mixer->chip->dev, 0),
++			      bRequest,
++			      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
++			      validx, cval->mixer->ctrlif | (cval->id << 8),
++			      buf, sizeof(buf), 1000);
++
++	if (ret < 0) {
++		snd_printdd(KERN_ERR "cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
++			    request, validx, cval->mixer->ctrlif | (cval->id << 8), cval->val_type);
++		return ret;
++	}
++
++	switch (request) {
++	case UAC_GET_CUR:
++		val = buf;
++		break;
++	case UAC_GET_MIN:
++		val = buf + sizeof(__u16);
++		break;
++	case UAC_GET_MAX:
++		val = buf + sizeof(__u16) * 2;
++		break;
++	case UAC_GET_RES:
++		val = buf + sizeof(__u16) * 3;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	*value_ret = convert_signed_value(cval, snd_usb_combine_bytes(val, sizeof(__u16)));
++
++	return 0;
++}
++
++static int get_ctl_value(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
++{
++	return (cval->mixer->protocol == UAC_VERSION_1) ?
++		get_ctl_value_v1(cval, request, validx, value_ret) :
++		get_ctl_value_v2(cval, request, validx, value_ret);
++}
++
+ static int get_cur_ctl_value(struct usb_mixer_elem_info *cval, int validx, int *value)
  {
- 	int err;
--	err = set_ctl_value(cval, UAC_SET_CUR, (cval->control << 8) | channel,
-+	err = snd_usb_mixer_set_ctl_value(cval, UAC_SET_CUR, (cval->control << 8) | channel,
- 			    value);
- 	if (err < 0)
+ 	return get_ctl_value(cval, UAC_GET_CUR, validx, value);
+@@ -348,8 +402,7 @@ static int get_cur_mix_value(struct usb_mixer_elem_info *cval,
+ 	err = get_cur_mix_raw(cval, channel, value);
+ 	if (err < 0) {
+ 		if (!cval->mixer->ignore_ctl_error)
+-			snd_printd(KERN_ERR "cannot get current value for "
+-				   "control %d ch %d: err = %d\n",
++			snd_printd(KERN_ERR "cannot get current value for control %d ch %d: err = %d\n",
+ 				   cval->control, channel, err);
  		return err;
-@@ -751,7 +684,8 @@ static int get_min_max(struct usb_mixer_elem_info *cval, int default_min)
- 			int last_valid_res = cval->res;
- 
- 			while (cval->res > 1) {
--				if (set_ctl_value(cval, UAC_SET_RES, (cval->control << 8) | minchn, cval->res / 2) < 0)
-+				if (snd_usb_mixer_set_ctl_value(cval, UAC_SET_RES,
-+								(cval->control << 8) | minchn, cval->res / 2) < 0)
- 					break;
- 				cval->res /= 2;
- 			}
-@@ -1808,8 +1742,7 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 	return 0;
- }
- 
--static void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer,
--				    int unitid)
-+void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
- {
- 	struct usb_mixer_elem_info *info;
- 
-@@ -1858,34 +1791,6 @@ static void snd_usb_mixer_proc_read(struct snd_info_entry *entry,
  	}
- }
- 
--static void snd_usb_mixer_memory_change(struct usb_mixer_interface *mixer,
--					int unitid)
--{
--	if (!mixer->rc_cfg)
--		return;
--	/* unit ids specific to Extigy/Audigy 2 NX: */
--	switch (unitid) {
--	case 0: /* remote control */
--		mixer->rc_urb->dev = mixer->chip->dev;
--		usb_submit_urb(mixer->rc_urb, GFP_ATOMIC);
--		break;
--	case 4: /* digital in jack */
--	case 7: /* line in jacks */
--	case 19: /* speaker out jacks */
--	case 20: /* headphones out jack */
--		break;
--	/* live24ext: 4 = line-in jack */
--	case 3:	/* hp-out jack (may actuate Mute) */
--		if (mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
--		    mixer->chip->usb_id == USB_ID(0x041e, 0x3048))
--			snd_usb_mixer_notify_id(mixer, mixer->rc_cfg->mute_mixer_id);
--		break;
--	default:
--		snd_printd(KERN_DEBUG "memory change in unknown unit %d\n", unitid);
--		break;
--	}
--}
--
- static void snd_usb_mixer_status_complete(struct urb *urb)
+@@ -367,8 +420,22 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
+ 				int request, int validx, int value_set)
  {
- 	struct usb_mixer_interface *mixer = urb->context;
-@@ -1903,7 +1808,7 @@ static void snd_usb_mixer_status_complete(struct urb *urb)
- 			if (!(buf[0] & 0x40))
- 				snd_usb_mixer_notify_id(mixer, buf[1]);
- 			else
--				snd_usb_mixer_memory_change(mixer, buf[1]);
-+				snd_usb_mixer_rc_memory_change(mixer, buf[1]);
+ 	unsigned char buf[2];
+-	int val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
+-	int timeout = 10;
++	int val_len, timeout = 10;
++
++	if (cval->mixer->protocol == UAC_VERSION_1) {
++		val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
++	} else { /* UAC_VERSION_2 */
++		/* audio class v2 controls are always 2 bytes in size */
++		val_len = sizeof(__u16);
++
++		/* FIXME */
++		if (request != UAC_SET_CUR) {
++			snd_printdd(KERN_WARNING "RANGE setting not yet supported\n");
++			return -EINVAL;
++		}
++
++		request = UAC2_CS_CUR;
++	}
+ 
+ 	value_set = convert_bytes_value(cval, value_set);
+ 	buf[0] = value_set & 0xff;
+@@ -564,46 +631,65 @@ static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm
+  */
+ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_term *term)
+ {
+-	unsigned char *p1;
++	void *p1;
+ 
+ 	memset(term, 0, sizeof(*term));
+ 	while ((p1 = find_audio_control_unit(state, id)) != NULL) {
++		unsigned char *hdr = p1;
+ 		term->id = id;
+-		switch (p1[2]) {
++		switch (hdr[2]) {
+ 		case UAC_INPUT_TERMINAL:
+-			term->type = combine_word(p1 + 4);
+-			term->channels = p1[7];
+-			term->chconfig = combine_word(p1 + 8);
+-			term->name = p1[11];
++			if (state->mixer->protocol == UAC_VERSION_1) {
++				struct uac_input_terminal_descriptor *d = p1;
++				term->type = le16_to_cpu(d->wTerminalType);
++				term->channels = d->bNrChannels;
++				term->chconfig = le16_to_cpu(d->wChannelConfig);
++				term->name = d->iTerminal;
++			} else { /* UAC_VERSION_2 */
++				struct uac2_input_terminal_descriptor *d = p1;
++				term->type = le16_to_cpu(d->wTerminalType);
++				term->channels = d->bNrChannels;
++				term->chconfig = le32_to_cpu(d->bmChannelConfig);
++				term->name = d->iTerminal;
++			}
+ 			return 0;
+-		case UAC_FEATURE_UNIT:
+-			id = p1[4];
++		case UAC_FEATURE_UNIT: {
++			/* the header is the same for v1 and v2 */
++			struct uac_feature_unit_descriptor *d = p1;
++			id = d->bUnitID;
+ 			break; /* continue to parse */
+-		case UAC_MIXER_UNIT:
+-			term->type = p1[2] << 16; /* virtual type */
+-			term->channels = p1[5 + p1[4]];
+-			term->chconfig = combine_word(p1 + 6 + p1[4]);
+-			term->name = p1[p1[0] - 1];
++		}
++		case UAC_MIXER_UNIT: {
++			struct uac_mixer_unit_descriptor *d = p1;
++			term->type = d->bDescriptorSubtype << 16; /* virtual type */
++			term->channels = uac_mixer_unit_bNrChannels(d);
++			term->chconfig = uac_mixer_unit_wChannelConfig(d, state->mixer->protocol);
++			term->name = uac_mixer_unit_iMixer(d);
+ 			return 0;
+-		case UAC_SELECTOR_UNIT:
++		}
++		case UAC_SELECTOR_UNIT: {
++			struct uac_selector_unit_descriptor *d = p1;
+ 			/* call recursively to retrieve the channel info */
+-			if (check_input_term(state, p1[5], term) < 0)
++			if (check_input_term(state, d->baSourceID[0], term) < 0)
+ 				return -ENODEV;
+-			term->type = p1[2] << 16; /* virtual type */
++			term->type = d->bDescriptorSubtype << 16; /* virtual type */
+ 			term->id = id;
+-			term->name = p1[9 + p1[0] - 1];
++			term->name = uac_selector_unit_iSelector(d);
+ 			return 0;
++		}
+ 		case UAC_PROCESSING_UNIT_V1:
+-		case UAC_EXTENSION_UNIT_V1:
+-			if (p1[6] == 1) {
+-				id = p1[7];
++		case UAC_EXTENSION_UNIT_V1: {
++			struct uac_processing_unit_descriptor *d = p1;
++			if (d->bNrInPins) {
++				id = d->baSourceID[0];
+ 				break; /* continue to parse */
+ 			}
+-			term->type = p1[2] << 16; /* virtual type */
+-			term->channels = p1[7 + p1[6]];
+-			term->chconfig = combine_word(p1 + 8 + p1[6]);
+-			term->name = p1[12 + p1[6] + p1[11 + p1[6]]];
++			term->type = d->bDescriptorSubtype << 16; /* virtual type */
++			term->channels = uac_processing_unit_bNrChannels(d);
++			term->chconfig = uac_processing_unit_wChannelConfig(d, state->mixer->protocol);
++			term->name = uac_processing_unit_iProcessing(d, state->mixer->protocol);
+ 			return 0;
++		}
+ 		default:
+ 			return -ENODEV;
+ 		}
+@@ -850,6 +936,15 @@ static struct snd_kcontrol_new usb_feature_unit_ctl = {
+ 	.put = mixer_ctl_feature_put,
+ };
+ 
++/* the read-only variant */
++static struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
++	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name = "", /* will be filled later manually */
++	.info = mixer_ctl_feature_info,
++	.get = mixer_ctl_feature_get,
++	.put = NULL,
++};
++
+ 
+ /*
+  * build a feature control
+@@ -862,7 +957,8 @@ static size_t append_ctl_name(struct snd_kcontrol *kctl, const char *str)
+ 
+ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 			      unsigned int ctl_mask, int control,
+-			      struct usb_audio_term *iterm, int unitid)
++			      struct usb_audio_term *iterm, int unitid,
++			      int read_only)
+ {
+ 	struct uac_feature_unit_descriptor *desc = raw_desc;
+ 	unsigned int len = 0;
+@@ -906,7 +1002,11 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 	/* get min/max values */
+ 	get_min_max(cval, 0);
+ 
+-	kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
++	if (read_only)
++		kctl = snd_ctl_new1(&usb_feature_unit_ctl_ro, cval);
++	else
++		kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
++
+ 	if (! kctl) {
+ 		snd_printk(KERN_ERR "cannot malloc kcontrol\n");
+ 		kfree(cval);
+@@ -1016,24 +1116,34 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 	struct usb_audio_term iterm;
+ 	unsigned int master_bits, first_ch_bits;
+ 	int err, csize;
+-	struct uac_feature_unit_descriptor *ftr = _ftr;
++	struct uac_feature_unit_descriptor *hdr = _ftr;
++	__u8 *bmaControls;
++
++	if (state->mixer->protocol == UAC_VERSION_1) {
++		csize = hdr->bControlSize;
++		channels = (hdr->bLength - 7) / csize - 1;
++		bmaControls = hdr->bmaControls;
++	} else {
++		struct uac2_feature_unit_descriptor *ftr = _ftr;
++		csize = 4;
++		channels = (hdr->bLength - 6) / 4;
++		bmaControls = ftr->bmaControls;
++	}
+ 
+-	if (ftr->bLength < 7 || ! (csize = ftr->bControlSize) || ftr->bLength < 7 + csize) {
++	if (hdr->bLength < 7 || !csize || hdr->bLength < 7 + csize) {
+ 		snd_printk(KERN_ERR "usbaudio: unit %u: invalid UAC_FEATURE_UNIT descriptor\n", unitid);
+ 		return -EINVAL;
+ 	}
+ 
+ 	/* parse the source unit */
+-	if ((err = parse_audio_unit(state, ftr->bSourceID)) < 0)
++	if ((err = parse_audio_unit(state, hdr->bSourceID)) < 0)
+ 		return err;
+ 
+ 	/* determine the input source type and name */
+-	if (check_input_term(state, ftr->bSourceID, &iterm) < 0)
++	if (check_input_term(state, hdr->bSourceID, &iterm) < 0)
+ 		return -EINVAL;
+ 
+-	channels = (ftr->bLength - 7) / csize - 1;
+-
+-	master_bits = snd_usb_combine_bytes(ftr->bmaControls, csize);
++	master_bits = snd_usb_combine_bytes(bmaControls, csize);
+ 	/* master configuration quirks */
+ 	switch (state->chip->usb_id) {
+ 	case USB_ID(0x08bb, 0x2702):
+@@ -1044,21 +1154,54 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 		break;
+ 	}
+ 	if (channels > 0)
+-		first_ch_bits = snd_usb_combine_bytes(ftr->bmaControls + csize, csize);
++		first_ch_bits = snd_usb_combine_bytes(bmaControls + csize, csize);
+ 	else
+ 		first_ch_bits = 0;
+-	/* check all control types */
+-	for (i = 0; i < 10; i++) {
+-		unsigned int ch_bits = 0;
+-		for (j = 0; j < channels; j++) {
+-			unsigned int mask = snd_usb_combine_bytes(ftr->bmaControls + csize * (j+1), csize);
+-			if (mask & (1 << i))
+-				ch_bits |= (1 << j);
++
++	if (state->mixer->protocol == UAC_VERSION_1) {
++		/* check all control types */
++		for (i = 0; i < 10; i++) {
++			unsigned int ch_bits = 0;
++			for (j = 0; j < channels; j++) {
++				unsigned int mask = snd_usb_combine_bytes(bmaControls + csize * (j+1), csize);
++				if (mask & (1 << i))
++					ch_bits |= (1 << j);
++			}
++			/* audio class v1 controls are never read-only */
++			if (ch_bits & 1) /* the first channel must be set (for ease of programming) */
++				build_feature_ctl(state, _ftr, ch_bits, i, &iterm, unitid, 0);
++			if (master_bits & (1 << i))
++				build_feature_ctl(state, _ftr, 0, i, &iterm, unitid, 0);
++		}
++	} else { /* UAC_VERSION_2 */
++		for (i = 0; i < 30/2; i++) {
++			/* From the USB Audio spec v2.0:
++			   bmaControls() is a (ch+1)-element array of 4-byte bitmaps,
++			   each containing a set of bit pairs. If a Control is present,
++			   it must be Host readable. If a certain Control is not
++			   present then the bit pair must be set to 0b00.
++			   If a Control is present but read-only, the bit pair must be
++			   set to 0b01. If a Control is also Host programmable, the bit
++			   pair must be set to 0b11. The value 0b10 is not allowed. */
++			unsigned int ch_bits = 0;
++			unsigned int ch_read_only = 0;
++
++			for (j = 0; j < channels; j++) {
++				unsigned int mask = snd_usb_combine_bytes(bmaControls + csize * (j+1), csize);
++				if (mask & (1 << (i * 2))) {
++					ch_bits |= (1 << j);
++					if (~mask & (1 << ((i * 2) + 1)))
++						ch_read_only |= (1 << j);
++				}
++			}
++
++			/* FIXME: the whole unit is read-only if any of the channels is marked read-only */
++			if (ch_bits & 1) /* the first channel must be set (for ease of programming) */
++				build_feature_ctl(state, _ftr, ch_bits, i, &iterm, unitid, !!ch_read_only);
++			if (master_bits & (1 << i * 2))
++				build_feature_ctl(state, _ftr, 0, i, &iterm, unitid,
++						  ~master_bits & (1 << ((i * 2) + 1)));
+ 		}
+-		if (ch_bits & 1) /* the first channel must be set (for ease of programming) */
+-			build_feature_ctl(state, _ftr, ch_bits, i, &iterm, unitid);
+-		if (master_bits & (1 << i))
+-			build_feature_ctl(state, _ftr, 0, i, &iterm, unitid);
+ 	}
+ 
+ 	return 0;
+@@ -1100,7 +1243,7 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
+ 	cval->control = in_ch + 1; /* based on 1 */
+ 	cval->val_type = USB_MIXER_S16;
+ 	for (i = 0; i < num_outs; i++) {
+-		if (check_matrix_bitmap(uac_mixer_unit_bmControls(desc), in_ch, i, num_outs)) {
++		if (check_matrix_bitmap(uac_mixer_unit_bmControls(desc, state->mixer->protocol), in_ch, i, num_outs)) {
+ 			cval->cmask |= (1 << i);
+ 			cval->channels++;
+ 		}
+@@ -1164,7 +1307,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid, void *r
+ 			int och, ich_has_controls = 0;
+ 
+ 			for (och = 0; och < num_outs; ++och) {
+-				if (check_matrix_bitmap(uac_mixer_unit_bmControls(desc),
++				if (check_matrix_bitmap(uac_mixer_unit_bmControls(desc, state->mixer->protocol),
+ 							ich, och, num_outs)) {
+ 					ich_has_controls = 1;
+ 					break;
+@@ -1343,7 +1486,8 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 		0, NULL, default_value_info
+ 	};
+ 
+-	if (desc->bLength < 13 || desc->bLength < 13 + num_ins || desc->bLength < num_ins + uac_processing_unit_bControlSize(desc)) {
++	if (desc->bLength < 13 || desc->bLength < 13 + num_ins ||
++	    desc->bLength < num_ins + uac_processing_unit_bControlSize(desc, state->mixer->protocol)) {
+ 		snd_printk(KERN_ERR "invalid %s descriptor (id %d)\n", name, unitid);
+ 		return -EINVAL;
+ 	}
+@@ -1361,7 +1505,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 		info = &default_info;
+ 
+ 	for (valinfo = info->values; valinfo->control; valinfo++) {
+-		__u8 *controls = uac_processing_unit_bmControls(desc);
++		__u8 *controls = uac_processing_unit_bmControls(desc, state->mixer->protocol);
+ 
+ 		if (! (controls[valinfo->control / 8] & (1 << ((valinfo->control % 8) - 1))))
+ 			continue;
+@@ -1381,7 +1525,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 
+ 		/* get min/max values */
+ 		if (type == USB_PROC_UPDOWN && cval->control == USB_PROC_UPDOWN_MODE_SEL) {
+-			__u8 *control_spec = uac_processing_unit_specific(desc);
++			__u8 *control_spec = uac_processing_unit_specific(desc, state->mixer->protocol);
+ 			/* FIXME: hard-coded */
+ 			cval->min = 1;
+ 			cval->max = control_spec[0];
+@@ -1414,7 +1558,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
+ 		else if (info->name)
+ 			strlcpy(kctl->id.name, info->name, sizeof(kctl->id.name));
+ 		else {
+-			nameid = uac_processing_unit_iProcessing(desc);
++			nameid = uac_processing_unit_iProcessing(desc, state->mixer->protocol);
+ 			len = 0;
+ 			if (nameid)
+ 				len = snd_usb_copy_string_desc(state, nameid, kctl->id.name, sizeof(kctl->id.name));
+@@ -1676,9 +1820,17 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
+ 	case UAC_FEATURE_UNIT:
+ 		return parse_audio_feature_unit(state, unitid, p1);
+ 	case UAC_PROCESSING_UNIT_V1:
+-		return parse_audio_processing_unit(state, unitid, p1);
++	/*   UAC2_EFFECT_UNIT has the same value */
++		if (state->mixer->protocol == UAC_VERSION_1)
++			return parse_audio_processing_unit(state, unitid, p1);
++		else
++			return 0; /* FIXME - effect units not implemented yet */
+ 	case UAC_EXTENSION_UNIT_V1:
+-		return parse_audio_extension_unit(state, unitid, p1);
++	/*   UAC2_PROCESSING_UNIT_V2 has the same value */
++		if (state->mixer->protocol == UAC_VERSION_1)
++			return parse_audio_extension_unit(state, unitid, p1);
++		else /* UAC_VERSION_2 */
++			return parse_audio_processing_unit(state, unitid, p1);
+ 	default:
+ 		snd_printk(KERN_ERR "usbaudio: unit %u: unexpected type 0x%02x\n", unitid, p1[2]);
+ 		return -EINVAL;
+@@ -1711,11 +1863,11 @@ static int snd_usb_mixer_dev_free(struct snd_device *device)
+  */
+ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+ {
+-	struct uac_output_terminal_descriptor_v1 *desc;
+ 	struct mixer_build state;
+ 	int err;
+ 	const struct usbmix_ctl_map *map;
+ 	struct usb_host_interface *hostif;
++	void *p;
+ 
+ 	hostif = &usb_ifnum_to_if(mixer->chip->dev, mixer->ctrlif)->altsetting[0];
+ 	memset(&state, 0, sizeof(state));
+@@ -1734,18 +1886,35 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
  		}
  	}
- 	if (urb->status != -ENOENT && urb->status != -ECONNRESET) {
-@@ -1947,296 +1852,6 @@ static int snd_usb_mixer_status_create(struct usb_mixer_interface *mixer)
+ 
+-	desc = NULL;
+-	while ((desc = snd_usb_find_csint_desc(hostif->extra, hostif->extralen, desc, UAC_OUTPUT_TERMINAL)) != NULL) {
+-		if (desc->bLength < 9)
+-			continue; /* invalid descriptor? */
+-		set_bit(desc->bTerminalID, state.unitbitmap);  /* mark terminal ID as visited */
+-		state.oterm.id = desc->bTerminalID;
+-		state.oterm.type = le16_to_cpu(desc->wTerminalType);
+-		state.oterm.name = desc->iTerminal;
+-		err = parse_audio_unit(&state, desc->bSourceID);
+-		if (err < 0)
+-			return err;
++	p = NULL;
++	while ((p = snd_usb_find_csint_desc(hostif->extra, hostif->extralen, p, UAC_OUTPUT_TERMINAL)) != NULL) {
++		if (mixer->protocol == UAC_VERSION_1) {
++			struct uac_output_terminal_descriptor_v1 *desc = p;
++
++			if (desc->bLength < sizeof(*desc))
++				continue; /* invalid descriptor? */
++			set_bit(desc->bTerminalID, state.unitbitmap);  /* mark terminal ID as visited */
++			state.oterm.id = desc->bTerminalID;
++			state.oterm.type = le16_to_cpu(desc->wTerminalType);
++			state.oterm.name = desc->iTerminal;
++			err = parse_audio_unit(&state, desc->bSourceID);
++			if (err < 0)
++				return err;
++		} else { /* UAC_VERSION_2 */
++			struct uac2_output_terminal_descriptor *desc = p;
++
++			if (desc->bLength < sizeof(*desc))
++				continue; /* invalid descriptor? */
++			set_bit(desc->bTerminalID, state.unitbitmap);  /* mark terminal ID as visited */
++			state.oterm.id = desc->bTerminalID;
++			state.oterm.type = le16_to_cpu(desc->wTerminalType);
++			state.oterm.name = desc->iTerminal;
++			err = parse_audio_unit(&state, desc->bSourceID);
++			if (err < 0)
++				return err;
++		}
+ 	}
++
  	return 0;
  }
  
--static void snd_usb_soundblaster_remote_complete(struct urb *urb)
--{
--	struct usb_mixer_interface *mixer = urb->context;
--	const struct rc_config *rc = mixer->rc_cfg;
--	u32 code;
--
--	if (urb->status < 0 || urb->actual_length < rc->min_packet_length)
--		return;
--
--	code = mixer->rc_buffer[rc->offset];
--	if (rc->length == 2)
--		code |= mixer->rc_buffer[rc->offset + 1] << 8;
--
--	/* the Mute button actually changes the mixer control */
--	if (code == rc->mute_code)
--		snd_usb_mixer_notify_id(mixer, rc->mute_mixer_id);
--	mixer->rc_code = code;
--	wmb();
--	wake_up(&mixer->rc_waitq);
--}
--
--static long snd_usb_sbrc_hwdep_read(struct snd_hwdep *hw, char __user *buf,
--				     long count, loff_t *offset)
--{
--	struct usb_mixer_interface *mixer = hw->private_data;
--	int err;
--	u32 rc_code;
--
--	if (count != 1 && count != 4)
--		return -EINVAL;
--	err = wait_event_interruptible(mixer->rc_waitq,
--				       (rc_code = xchg(&mixer->rc_code, 0)) != 0);
--	if (err == 0) {
--		if (count == 1)
--			err = put_user(rc_code, buf);
--		else
--			err = put_user(rc_code, (u32 __user *)buf);
--	}
--	return err < 0 ? err : count;
--}
--
--static unsigned int snd_usb_sbrc_hwdep_poll(struct snd_hwdep *hw, struct file *file,
--					    poll_table *wait)
--{
--	struct usb_mixer_interface *mixer = hw->private_data;
--
--	poll_wait(file, &mixer->rc_waitq, wait);
--	return mixer->rc_code ? POLLIN | POLLRDNORM : 0;
--}
--
--static int snd_usb_soundblaster_remote_init(struct usb_mixer_interface *mixer)
--{
--	struct snd_hwdep *hwdep;
--	int err, len, i;
--
--	for (i = 0; i < ARRAY_SIZE(rc_configs); ++i)
--		if (rc_configs[i].usb_id == mixer->chip->usb_id)
--			break;
--	if (i >= ARRAY_SIZE(rc_configs))
--		return 0;
--	mixer->rc_cfg = &rc_configs[i];
--
--	len = mixer->rc_cfg->packet_length;
--	
--	init_waitqueue_head(&mixer->rc_waitq);
--	err = snd_hwdep_new(mixer->chip->card, "SB remote control", 0, &hwdep);
--	if (err < 0)
--		return err;
--	snprintf(hwdep->name, sizeof(hwdep->name),
--		 "%s remote control", mixer->chip->card->shortname);
--	hwdep->iface = SNDRV_HWDEP_IFACE_SB_RC;
--	hwdep->private_data = mixer;
--	hwdep->ops.read = snd_usb_sbrc_hwdep_read;
--	hwdep->ops.poll = snd_usb_sbrc_hwdep_poll;
--	hwdep->exclusive = 1;
--
--	mixer->rc_urb = usb_alloc_urb(0, GFP_KERNEL);
--	if (!mixer->rc_urb)
--		return -ENOMEM;
--	mixer->rc_setup_packet = kmalloc(sizeof(*mixer->rc_setup_packet), GFP_KERNEL);
--	if (!mixer->rc_setup_packet) {
--		usb_free_urb(mixer->rc_urb);
--		mixer->rc_urb = NULL;
--		return -ENOMEM;
--	}
--	mixer->rc_setup_packet->bRequestType =
--		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE;
--	mixer->rc_setup_packet->bRequest = UAC_GET_MEM;
--	mixer->rc_setup_packet->wValue = cpu_to_le16(0);
--	mixer->rc_setup_packet->wIndex = cpu_to_le16(0);
--	mixer->rc_setup_packet->wLength = cpu_to_le16(len);
--	usb_fill_control_urb(mixer->rc_urb, mixer->chip->dev,
--			     usb_rcvctrlpipe(mixer->chip->dev, 0),
--			     (u8*)mixer->rc_setup_packet, mixer->rc_buffer, len,
--			     snd_usb_soundblaster_remote_complete, mixer);
--	return 0;
--}
--
--#define snd_audigy2nx_led_info		snd_ctl_boolean_mono_info
--
--static int snd_audigy2nx_led_get(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
--	int index = kcontrol->private_value;
--
--	ucontrol->value.integer.value[0] = mixer->audigy2nx_leds[index];
--	return 0;
--}
--
--static int snd_audigy2nx_led_put(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
--{
--	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
--	int index = kcontrol->private_value;
--	int value = ucontrol->value.integer.value[0];
--	int err, changed;
--
--	if (value > 1)
--		return -EINVAL;
--	changed = value != mixer->audigy2nx_leds[index];
--	err = snd_usb_ctl_msg(mixer->chip->dev,
--			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x24,
--			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
--			      value, index + 2, NULL, 0, 100);
--	if (err < 0)
--		return err;
--	mixer->audigy2nx_leds[index] = value;
--	return changed;
--}
--
--static struct snd_kcontrol_new snd_audigy2nx_controls[] = {
--	{
--		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = "CMSS LED Switch",
--		.info = snd_audigy2nx_led_info,
--		.get = snd_audigy2nx_led_get,
--		.put = snd_audigy2nx_led_put,
--		.private_value = 0,
--	},
--	{
--		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = "Power LED Switch",
--		.info = snd_audigy2nx_led_info,
--		.get = snd_audigy2nx_led_get,
--		.put = snd_audigy2nx_led_put,
--		.private_value = 1,
--	},
--	{
--		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--		.name = "Dolby Digital LED Switch",
--		.info = snd_audigy2nx_led_info,
--		.get = snd_audigy2nx_led_get,
--		.put = snd_audigy2nx_led_put,
--		.private_value = 2,
--	},
--};
--
--static int snd_audigy2nx_controls_create(struct usb_mixer_interface *mixer)
--{
--	int i, err;
--
--	for (i = 0; i < ARRAY_SIZE(snd_audigy2nx_controls); ++i) {
--		if (i > 1 && /* Live24ext has 2 LEDs only */
--			(mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
--			 mixer->chip->usb_id == USB_ID(0x041e, 0x3048)))
--			break; 
--		err = snd_ctl_add(mixer->chip->card,
--				  snd_ctl_new1(&snd_audigy2nx_controls[i], mixer));
--		if (err < 0)
--			return err;
--	}
--	mixer->audigy2nx_leds[1] = 1; /* Power LED is on by default */
--	return 0;
--}
--
--static void snd_audigy2nx_proc_read(struct snd_info_entry *entry,
--				    struct snd_info_buffer *buffer)
--{
--	static const struct sb_jack {
--		int unitid;
--		const char *name;
--	}  jacks_audigy2nx[] = {
--		{4,  "dig in "},
--		{7,  "line in"},
--		{19, "spk out"},
--		{20, "hph out"},
--		{-1, NULL}
--	}, jacks_live24ext[] = {
--		{4,  "line in"}, /* &1=Line, &2=Mic*/
--		{3,  "hph out"}, /* headphones */
--		{0,  "RC     "}, /* last command, 6 bytes see rc_config above */
--		{-1, NULL}
--	};
--	const struct sb_jack *jacks;
--	struct usb_mixer_interface *mixer = entry->private_data;
--	int i, err;
--	u8 buf[3];
--
--	snd_iprintf(buffer, "%s jacks\n\n", mixer->chip->card->shortname);
--	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020))
--		jacks = jacks_audigy2nx;
--	else if (mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
--		 mixer->chip->usb_id == USB_ID(0x041e, 0x3048))
--		jacks = jacks_live24ext;
--	else
--		return;
--
--	for (i = 0; jacks[i].name; ++i) {
--		snd_iprintf(buffer, "%s: ", jacks[i].name);
--		err = snd_usb_ctl_msg(mixer->chip->dev,
--				      usb_rcvctrlpipe(mixer->chip->dev, 0),
--				      UAC_GET_MEM, USB_DIR_IN | USB_TYPE_CLASS |
--				      USB_RECIP_INTERFACE, 0,
--				      jacks[i].unitid << 8, buf, 3, 100);
--		if (err == 3 && (buf[0] == 3 || buf[0] == 6))
--			snd_iprintf(buffer, "%02x %02x\n", buf[1], buf[2]);
--		else
--			snd_iprintf(buffer, "?\n");
--	}
--}
--
--static int snd_xonar_u1_switch_get(struct snd_kcontrol *kcontrol,
--				   struct snd_ctl_elem_value *ucontrol)
--{
--	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
--
--	ucontrol->value.integer.value[0] = !!(mixer->xonar_u1_status & 0x02);
--	return 0;
--}
--
--static int snd_xonar_u1_switch_put(struct snd_kcontrol *kcontrol,
--				   struct snd_ctl_elem_value *ucontrol)
--{
--	struct usb_mixer_interface *mixer = snd_kcontrol_chip(kcontrol);
--	u8 old_status, new_status;
--	int err, changed;
--
--	old_status = mixer->xonar_u1_status;
--	if (ucontrol->value.integer.value[0])
--		new_status = old_status | 0x02;
--	else
--		new_status = old_status & ~0x02;
--	changed = new_status != old_status;
--	err = snd_usb_ctl_msg(mixer->chip->dev,
--			      usb_sndctrlpipe(mixer->chip->dev, 0), 0x08,
--			      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
--			      50, 0, &new_status, 1, 100);
--	if (err < 0)
--		return err;
--	mixer->xonar_u1_status = new_status;
--	return changed;
--}
--
--static struct snd_kcontrol_new snd_xonar_u1_output_switch = {
--	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	.name = "Digital Playback Switch",
--	.info = snd_ctl_boolean_mono_info,
--	.get = snd_xonar_u1_switch_get,
--	.put = snd_xonar_u1_switch_put,
--};
--
--static int snd_xonar_u1_controls_create(struct usb_mixer_interface *mixer)
--{
--	int err;
--
--	err = snd_ctl_add(mixer->chip->card,
--			  snd_ctl_new1(&snd_xonar_u1_output_switch, mixer));
--	if (err < 0)
--		return err;
--	mixer->xonar_u1_status = 0x05;
--	return 0;
--}
--
--void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
--			       unsigned char samplerate_id)
--{
--	struct usb_mixer_interface *mixer;
--	struct usb_mixer_elem_info *cval;
--	int unitid = 12; /* SamleRate ExtensionUnit ID */
--
--	list_for_each_entry(mixer, &chip->mixer_list, list) {
--		cval = mixer->id_elems[unitid];
--		if (cval) {
--			set_cur_ctl_value(cval, cval->control << 8,
--					  samplerate_id);
--			snd_usb_mixer_notify_id(mixer, unitid);
--		}
--		break;
--	}
--}
--
- int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 			 int ignore_error)
- {
-@@ -2277,25 +1892,7 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 	    (err = snd_usb_mixer_status_create(mixer)) < 0)
- 		goto _error;
- 
--	if ((err = snd_usb_soundblaster_remote_init(mixer)) < 0)
--		goto _error;
--
--	if (mixer->chip->usb_id == USB_ID(0x041e, 0x3020) ||
--	    mixer->chip->usb_id == USB_ID(0x041e, 0x3040) ||
--	    mixer->chip->usb_id == USB_ID(0x041e, 0x3048)) {
--		if ((err = snd_audigy2nx_controls_create(mixer)) < 0)
--			goto _error;
--		if (!snd_card_proc_new(chip->card, "audigy2nx", &entry))
--			snd_info_set_text_ops(entry, mixer,
--					      snd_audigy2nx_proc_read);
--	}
--
--	if (mixer->chip->usb_id == USB_ID(0x0b05, 0x1739) ||
--	    mixer->chip->usb_id == USB_ID(0x0b05, 0x1743)) {
--		err = snd_xonar_u1_controls_create(mixer);
--		if (err < 0)
--			goto _error;
--	}
-+	snd_usb_mixer_apply_create_quirk(mixer);
- 
- 	err = snd_device_new(chip->card, SNDRV_DEV_LOWLEVEL, mixer, &dev_ops);
- 	if (err < 0)
-@@ -2316,7 +1913,7 @@ _error:
- void snd_usb_mixer_disconnect(struct list_head *p)
- {
+@@ -1868,7 +2037,7 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
  	struct usb_mixer_interface *mixer;
--	
-+
- 	mixer = list_entry(p, struct usb_mixer_interface, list);
- 	usb_kill_urb(mixer->urb);
- 	usb_kill_urb(mixer->rc_urb);
-diff --git a/sound/usb/usbmixer.h b/sound/usb/usbmixer.h
-index e199e4b..63101ae 100644
---- a/sound/usb/usbmixer.h
-+++ b/sound/usb/usbmixer.h
-@@ -1,11 +1,52 @@
- #ifndef __USBMIXER_H
- #define __USBMIXER_H
+ 	struct snd_info_entry *entry;
+ 	struct usb_host_interface *host_iface;
+-	int err, protocol;
++	int err;
  
-+struct usb_mixer_interface {
-+	struct snd_usb_audio *chip;
-+	unsigned int ctrlif;
-+	struct list_head list;
-+	unsigned int ignore_ctl_error;
-+	struct urb *urb;
-+	/* array[MAX_ID_ELEMS], indexed by unit id */
-+	struct usb_mixer_elem_info **id_elems;
-+
-+	/* Sound Blaster remote control stuff */
-+	const struct rc_config *rc_cfg;
-+	u32 rc_code;
-+	wait_queue_head_t rc_waitq;
-+	struct urb *rc_urb;
-+	struct usb_ctrlrequest *rc_setup_packet;
-+	u8 rc_buffer[6];
-+
-+	u8 audigy2nx_leds[3];
-+	u8 xonar_u1_status;
-+};
-+
-+#define MAX_CHANNELS	10	/* max logical channels */
-+
-+struct usb_mixer_elem_info {
-+	struct usb_mixer_interface *mixer;
-+	struct usb_mixer_elem_info *next_id_elem; /* list of controls with same id */
-+	struct snd_ctl_elem_id *elem_id;
-+	unsigned int id;
-+	unsigned int control;	/* CS or ICN (high byte) */
-+	unsigned int cmask; /* channel mask bitmap: 0 = master */
-+	int channels;
-+	int val_type;
-+	int min, max, res;
-+	int dBmin, dBmax;
-+	int cached;
-+	int cache_val[MAX_CHANNELS];
-+	u8 initialized;
-+};
-+
- int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 			 int ignore_error);
- void snd_usb_mixer_disconnect(struct list_head *p);
+ 	strcpy(chip->card->mixername, "USB Mixer");
  
--void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
--			unsigned char samplerate_id);
-+void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid);
-+
-+int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
-+				int request, int validx, int value_set);
+@@ -1886,14 +2055,7 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
+ 	}
  
- #endif /* __USBMIXER_H */
+ 	host_iface = &usb_ifnum_to_if(chip->dev, ctrlif)->altsetting[0];
+-	protocol = host_iface->desc.bInterfaceProtocol;
+-
+-	/* FIXME! */
+-	if (protocol != UAC_VERSION_1) {
+-		snd_printk(KERN_WARNING "mixer interface protocol 0x%02x not yet supported\n",
+-					protocol);
+-		return 0;
+-	}
++	mixer->protocol = host_iface->desc.bInterfaceProtocol;
+ 
+ 	if ((err = snd_usb_mixer_controls(mixer)) < 0 ||
+ 	    (err = snd_usb_mixer_status_create(mixer)) < 0)
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index 63101ae..1301238 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -10,6 +10,9 @@ struct usb_mixer_interface {
+ 	/* array[MAX_ID_ELEMS], indexed by unit id */
+ 	struct usb_mixer_elem_info **id_elems;
+ 
++	/* the usb audio specification version this interface complies to */
++	int protocol;
++
+ 	/* Sound Blaster remote control stuff */
+ 	const struct rc_config *rc_cfg;
+ 	u32 rc_code;
 -- 
 1.6.6.2
