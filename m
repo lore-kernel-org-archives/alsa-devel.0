@@ -1,36 +1,56 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
-Date: Thu, 11 Mar 2010 08:30:21 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1003110824390.4672@eeebox2.perex-int.cz>
-References: <s5htyswpb18.wl%tiwai@suse.de> <s5hvddcnlr6.wl%tiwai@suse.de>  <6B4D417B830BC44B8026029FD256F7F1C16B1AD558@HKMAIL01.nvidia.com>  <a3ef07921003071121r24979a0breac27e3b0475bbcb@mail.gmail.com>  <6B4D417B830BC44B8026029FD256F7F1C16B1AD562@HKMAIL01.nvidia.com>
-  <20100308044614.GA29026@localhost>  <a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>  <alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>  <a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>  <20100310125456.GA18509@localhost>
- <a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
+From: Eric Miao <eric.y.miao@gmail.com>
+Subject: Re: [PATCH 2/4] mmp: support ssp in pxa168
+Date: Thu, 11 Mar 2010 16:20:35 +0800
+Message-ID: <f17812d71003110020g67bb7fd6tfe1381294b6cfe8f@mail.gmail.com>
+References: <771cded01003100514r70f0f53eydda7b916f92bef64@mail.gmail.com>
+	<20100310142832.GB24422@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: VDR User <user.vdr@gmail.com>
-Cc: Wu Fengguang <fengguang.wu@intel.com>, Wei Ni <wni@nvidia.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <jkysela@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Pavel Hofman <pavel.hofman@insite.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pz0-f203.google.com (mail-pz0-f203.google.com
+	[209.85.222.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 672E71038E9
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 09:20:56 +0100 (CET)
+Received: by pzk41 with SMTP id 41so832613pzk.23
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 00:20:55 -0800 (PST)
+In-Reply-To: <20100310142832.GB24422@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Haojian Zhuang <haojian.zhuang@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 10 Mar 2010, VDR User wrote:
-
-> [pid 22651] ioctl(21, 0x80044121, 0xb439d2cc) = -1 EPIPE (Broken pipe)
-> pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed.
-
--EPIPE means underrun condition.
-
-Try 'echo 101 > /proc/asound/card0/pcm0p/xrun_debug' and send dmesg 
-output to check if the ring buffer pointer in the hda-intel driver does 
-not return wrong values. Replace card0 and pcm0p with right identifiers 
-(look to 'aplay -l' for right numbers).
-
-More info: http://www.alsa-project.org/main/index.php/XRUN_Debug
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+T24gV2VkLCBNYXIgMTAsIDIwMTAgYXQgMTA6MjggUE0sIE1hcmsgQnJvd24KPGJyb29uaWVAb3Bl
+bnNvdXJjZS53b2xmc29ubWljcm8uY29tPiB3cm90ZToKPiBPbiBXZWQsIE1hciAxMCwgMjAxMCBh
+dCAwODoxNDo0MkFNIC0wNTAwLCBIYW9qaWFuIFpodWFuZyB3cm90ZToKPj4gRnJvbSA3NWZlNGIw
+MjIzNGY2NDc2ZTcyODI3NTA4ZjExZjEwMzVkN2FhZjY4IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAw
+MQo+PiBGcm9tOiBIYW9qaWFuIFpodWFuZyA8aGFvamlhbi56aHVhbmdAbWFydmVsbC5jb20+Cj4+
+IERhdGU6IFdlZCwgMTAgTWFyIDIwMTAgMDY6MzI6NDMgLTA1MDAKPj4gU3ViamVjdDogW1BBVENI
+XSBbQVJNXSBtbXA6IHN1cHBvcnQgc3NwIGluIHB4YTE2OAo+Pgo+PiBTdXBwb3J0IHNzcCBpbiBw
+eGExNjguIFRoZSBiYXNpYyBmdW5jdGlvbiBvZiBTU1AgaXMgc2FtZSBhcyBweGEsIGJ1dCBjbG9j
+awo+PiBzb3VyY2UgYW5kIElSUSBpcyBjaGFuZ2VkLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBIYW9q
+aWFuIFpodWFuZyA8aGFvamlhbi56aHVhbmdAbWFydmVsbC5jb20+Cj4KPiBBY2tlZC1ieTogTWFy
+ayBCcm93biA8YnJvb25pZUBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+Cj4KPiBUaGF0IHNh
+aWQgbWlnaHQgaXQgbWFrZSBzZW5zZSB0byBtZXJnZSB0aGlzIGFuZCB0aGUgcHJldmlvdXMgcGF0
+Y2ggdmlhCj4gQVNvQyBzaW5jZSB0aGVyZSdzIG5ldyBkcml2ZXJzIHVzaW5nIHRoaXMgZm9sbG93
+aW5nIG9uIGFuZCBMaWFtJ3MKPiBtdWx0aS1jb2RlYyB3b3JrIGlzIGxpa2VseSB0byBiZSBjcmVh
+dGluZyBtZXJnZSBpc3N1ZXMgdGhpcyBkZXZlbG9wbWVudAo+IGN5Y2xlPyDCoEkgY2FuIGFwcGx5
+IHRoZSBwYXRjaGVzIG9uIGEgYnJhbmNoIGJ5IHRoZW1zZWx2ZXMgd2hpY2ggY2FuIGFsc28KPiBi
+ZSBwdWxsZWQgaW50byB0aGUgUFhBIHRyZWUgaWYgbmVlZGVkLgo+CgpJJ2QgZXhwZWN0IHRoZXJl
+IHRvIGJlIHNvbWUgbWVyZ2UgY29uZmxpY3RzIEkgbmVlZCB0byBzb2x2ZSBhbG9uZyB3aXRoCm15
+IGNsZWFuaW5nIHVwIG9mIHRoZSBTU1AgY29kZS4gVGhhdCBzYWlkLCBpdCdzIGJldHRlciB0byBn
+byB2aWEgLXB4YQp0cmVlIGFuZCBnZXQgdGhlIG11bHRpLWNvZGVjIHdvcmsgc29sdmVkIGluIGxp
+bnV4LW5leHQ/CgpNYXJrLCBjb3VsZCB5b3UgcGxlYXNlIHBvaW50IG1lIHRoZSByZWZlcmVuY2Ug
+dG8gdGhlIG11bHRpLWNvZGVjIHdvcmsKc28gSSBjYW4gaGF2ZSBhIHJvdWdoIGZlZWxpbmcgb2Yg
+dGhlIHBvc3NpYmxlIG1lcmdlIGlzc3Vlcz8KCi0gZXJpYwpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
