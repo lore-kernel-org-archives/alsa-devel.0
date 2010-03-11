@@ -1,19 +1,19 @@
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 33/37] sound/soc: use .dev.of_node instead of
-	.node in struct	of_device
-Date: Thu, 11 Mar 2010 11:06:50 -0700
-Message-ID: <20100311180649.4824.10368.stgit@angua>
+Subject: [PATCH 34/37] sound/sparc: use .dev.of_node instead of
+	.node in	struct of_device
+Date: Thu, 11 Mar 2010 11:06:55 -0700
+Message-ID: <20100311180655.4824.33693.stgit@angua>
 References: <20100311174830.4824.19820.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 53E83103A32
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:06:53 +0100 (CET)
-Received: by mail-pv0-f179.google.com with SMTP id 12so109477pvg.38
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:06:53 -0800 (PST)
+Received: from mail-pz0-f203.google.com (mail-pz0-f203.google.com
+	[209.85.222.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0560D1039E0
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:06:58 +0100 (CET)
+Received: by mail-pz0-f203.google.com with SMTP id 41so172871pzk.23
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:06:58 -0800 (PST)
 In-Reply-To: <20100311174830.4824.19820.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,19 +32,40 @@ List-Id: alsa-devel@alsa-project.org
 Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
 
- sound/soc/fsl/mpc8610_hpcd.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ sound/sparc/cs4231.c |    6 +++---
+ sound/sparc/dbri.c   |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
-index ef67d1c..d7e1b9a 100644
---- a/sound/soc/fsl/mpc8610_hpcd.c
-+++ b/sound/soc/fsl/mpc8610_hpcd.c
-@@ -202,7 +202,7 @@ static struct snd_soc_ops mpc8610_hpcd_ops = {
- static int mpc8610_hpcd_probe(struct of_device *ofdev,
- 	const struct of_device_id *match)
+diff --git a/sound/sparc/cs4231.c b/sound/sparc/cs4231.c
+index 8d13d93..14cb87c 100644
+--- a/sound/sparc/cs4231.c
++++ b/sound/sparc/cs4231.c
+@@ -2076,12 +2076,12 @@ static int __devinit cs4231_ebus_probe(struct of_device *op, const struct of_dev
+ static int __devinit cs4231_probe(struct of_device *op, const struct of_device_id *match)
  {
--	struct device_node *np = ofdev->node;
-+	struct device_node *np = ofdev->dev.of_node;
- 	struct device_node *codec_np = NULL;
- 	struct device_node *guts_np = NULL;
- 	struct device_node *dma_np = NULL;
+ #ifdef EBUS_SUPPORT
+-	if (!strcmp(op->node->parent->name, "ebus"))
++	if (!strcmp(op->dev.of_node->parent->name, "ebus"))
+ 		return cs4231_ebus_probe(op, match);
+ #endif
+ #ifdef SBUS_SUPPORT
+-	if (!strcmp(op->node->parent->name, "sbus") ||
+-	    !strcmp(op->node->parent->name, "sbi"))
++	if (!strcmp(op->dev.of_node->parent->name, "sbus") ||
++	    !strcmp(op->dev.of_node->parent->name, "sbi"))
+ 		return cs4231_sbus_probe(op, match);
+ #endif
+ 	return -ENODEV;
+diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
+index 1d2e51b..2734c36 100644
+--- a/sound/sparc/dbri.c
++++ b/sound/sparc/dbri.c
+@@ -2650,7 +2650,7 @@ static int __devinit dbri_probe(struct of_device *op, const struct of_device_id
+ 
+ 	printk(KERN_INFO "audio%d at %p (irq %d) is DBRI(%c)+CS4215(%d)\n",
+ 	       dev, dbri->regs,
+-	       dbri->irq, op->node->name[9], dbri->mm.version);
++	       dbri->irq, op->dev.of_node->name[9], dbri->mm.version);
+ 	dev++;
+ 
+ 	return 0;
