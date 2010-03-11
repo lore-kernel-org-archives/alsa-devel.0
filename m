@@ -1,15 +1,18 @@
-From: miguel.aguilar@ridgerun.com
-Subject: [PATCH 5/5] DaVinci: DM365: Voice Codec support for
-	the DM365 EVM
-Date: Thu, 11 Mar 2010 09:33:40 -0600
-Message-ID: <1268321620-19074-1-git-send-email-miguel.aguilar@ridgerun.com>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: [PATCH 00/37] OF: move device node pointer into struct
+	device.
+Date: Thu, 11 Mar 2010 11:03:47 -0700
+Message-ID: <20100311174830.4824.19820.stgit__25808.2182765522$1268330654$gmane$org@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED20B1039BE
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 16:33:38 +0100 (CET)
+Received: from mail-pz0-f203.google.com (mail-pz0-f203.google.com
+	[209.85.222.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6B67610392E
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:03:53 +0100 (CET)
+Received: by pzk41 with SMTP id 41so171791pzk.23
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:03:51 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,179 +22,219 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: davinci-linux-open-source@linux.davincidsp.com
-Cc: alsa-devel@alsa-project.org, nsekhar@ti.com, broonie@opensource.wolfsonmicro.com, diego.dompe@ridgerun.com, todd.fischer@ridgerun.com, Miguel Aguilar <miguel.aguilar@ridgerun.com>
+To: monstr@monstr.eu, gregkh@suse.de, benh@kernel.crashing.org, akpm@linux-foundation.org, davem@davemloft.net, sfr@canb.auug.org.au, jgarzik@pobox.com, ben-linux@fluff.org, dwmw2@infrade
 List-Id: alsa-devel@alsa-project.org
 
-From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+Currently on OF enabled platforms, the device node pointer is stored in
+both device.archdata.of_node (.prom_node on sparc), and in of_device.node
+OF device tree support is being generalized to work on any platform, so
+instead of adding the of_node pointer to each platform's archdata
+individually, this patch series moves the of_node pointer into struct
+device proper and fixes up all users to reference the new location.
 
-The DM365 EVM has two codecs: the Audio Codec (AIC3x) and the Voice Codec,
-the idea is to have both enabled in the same kernel simultaneously. However,
-the current soc-core doesn't support simultaneous codecs, once that
-support will have added, a patch will be posted to enable both codecs in
-the DM365 EVM.
+The last 3 patches in this series remove the old .archdata.of_node,
+.archdata.prom_node and of_device.node instances.
 
-Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+This series has been compile tested on powerpc, sparc and microblaze,
+(allmodconfig used on sparc and powerpc) and boot tested on an mpc5200
+powerpc.  All known (or at least all I could find) in-tree users of the
+old names have been removed.
+
+This series should also be fully bisectable.  After I collect acks, I
+would like to get this whole series into linux-next to see if I've
+missed any references, but I can probably hold off merging the last
+three patches when the 2.6.35 merge window opens to give out of tree
+users a bit more time to adapt.  In fact, I'd probably wait a few
+extra days after pushing out the bulk of this series before I push the
+last 3 patches into my linux-next branch to isolate the drivers that I
+missed while fixing.
+
+Cheers,
+g.
+
 ---
- arch/arm/mach-davinci/board-dm365-evm.c |    4 +++
- sound/soc/davinci/Kconfig               |   24 +++++++++++++++-
- sound/soc/davinci/davinci-evm.c         |   45 +++++++++++++++++++++++++++++-
- 3 files changed, 69 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
-index 5c2636c..865d06a 100644
---- a/arch/arm/mach-davinci/board-dm365-evm.c
-+++ b/arch/arm/mach-davinci/board-dm365-evm.c
-@@ -516,7 +516,11 @@ static __init void dm365_evm_init(void)
- 	/* maybe setup mmc1/etc ... _after_ mmc0 */
- 	evm_init_cpld();
- 
-+#ifdef CONFIG_SND_DM365_AIC3X_CODEC
- 	dm365_init_asp(&dm365_evm_snd_data);
-+#elif defined(CONFIG_SND_DM365_VOICE_CODEC)
-+	dm365_init_vc(&dm365_evm_snd_data);
-+#endif
- 	dm365_init_rtc();
- 	dm365_init_ks(&dm365evm_ks_data);
- }
-diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-index 47e7cce..6bbf001 100644
---- a/sound/soc/davinci/Kconfig
-+++ b/sound/soc/davinci/Kconfig
-@@ -18,12 +18,32 @@ config SND_DAVINCI_SOC_VCIF
- config SND_DAVINCI_SOC_EVM
- 	tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365 EVM"
- 	depends on SND_DAVINCI_SOC
--	depends on MACH_DAVINCI_EVM || MACH_DAVINCI_DM355_EVM  || MACH_DAVINCI_DM365_EVM
-+	depends on MACH_DAVINCI_EVM || MACH_DAVINCI_DM355_EVM || MACH_DAVINCI_DM365_EVM
- 	select SND_DAVINCI_SOC_I2S
- 	select SND_SOC_TLV320AIC3X
- 	help
- 	  Say Y if you want to add support for SoC audio on TI
--	  DaVinci DM6446 or DM355 EVM platforms.
-+	  DaVinci DM6446, DM355 or DM365 EVM platforms.
-+
-+choice
-+	prompt "DM365 codec select"
-+	depends on SND_DAVINCI_SOC_EVM
-+	depends on MACH_DAVINCI_DM365_EVM
-+	default SND_DM365_EXTERNAL_CODEC
-+
-+config SND_DM365_AIC3X_CODEC
-+	bool "Audio Codec - AIC3101"
-+	help
-+	  Say Y if you want to add support for AIC3101 audio codec
-+
-+config SND_DM365_VOICE_CODEC
-+	bool "Voice Codec - CQ93VC"
-+	select MFD_DAVINCI_VOICECODEC
-+	select SND_DAVINCI_SOC_VCIF
-+	select SND_SOC_CQ0093VC
-+	help
-+	  Say Y if you want to add support for SoC On-chip voice codec
-+endchoice
- 
- config  SND_DM6467_SOC_EVM
- 	tristate "SoC Audio support for DaVinci DM6467 EVM"
-diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
-index 7ccbe66..ef63096 100644
---- a/sound/soc/davinci/davinci-evm.c
-+++ b/sound/soc/davinci/davinci-evm.c
-@@ -28,10 +28,12 @@
- #include <mach/mux.h>
- 
- #include "../codecs/tlv320aic3x.h"
-+#include "../codecs/cq93vc.h"
- #include "../codecs/spdif_transciever.h"
- #include "davinci-pcm.h"
- #include "davinci-i2s.h"
- #include "davinci-mcasp.h"
-+#include "davinci-vcif.h"
- 
- #define AUDIO_FORMAT (SND_SOC_DAIFMT_DSP_B | \
- 		SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_IB_NF)
-@@ -151,6 +153,22 @@ static struct snd_soc_dai_link evm_dai = {
- 	.ops = &evm_ops,
- };
- 
-+static struct snd_soc_dai_link dm365_evm_dai = {
-+#ifdef CONFIG_SND_DM365_AIC3X_CODEC
-+	.name = "TLV320AIC3X",
-+	.stream_name = "AIC3X",
-+	.cpu_dai = &davinci_i2s_dai,
-+	.codec_dai = &aic3x_dai,
-+	.init = evm_aic3x_init,
-+	.ops = &evm_ops,
-+#elif defined(CONFIG_SND_DM365_VOICE_CODEC)
-+	.name = "Voice Codec - CQ93VC",
-+	.stream_name = "CQ93",
-+	.cpu_dai = &davinci_vcif_dai,
-+	.codec_dai = &cq93vc_dai,
-+#endif
-+};
-+
- static struct snd_soc_dai_link dm6467_evm_dai[] = {
- 	{
- 		.name = "TLV320AIC3X",
-@@ -177,7 +195,7 @@ static struct snd_soc_dai_link da8xx_evm_dai = {
- 	.ops = &evm_ops,
- };
- 
--/* davinci dm6446, dm355 or dm365 evm audio machine driver */
-+/* davinci dm6446, dm355 evm audio machine driver */
- static struct snd_soc_card snd_soc_card_evm = {
- 	.name = "DaVinci EVM",
- 	.platform = &davinci_soc_platform,
-@@ -185,6 +203,15 @@ static struct snd_soc_card snd_soc_card_evm = {
- 	.num_links = 1,
- };
- 
-+/* davinci dm365 evm audio machine driver */
-+static struct snd_soc_card dm365_snd_soc_card_evm = {
-+	.name = "DaVinci DM365 EVM",
-+	.platform = &davinci_soc_platform,
-+	.dai_link = &dm365_evm_dai,
-+	.num_links = 1,
-+};
-+
-+
- /* davinci dm6467 evm audio machine driver */
- static struct snd_soc_card dm6467_snd_soc_card_evm = {
- 	.name = "DaVinci DM6467 EVM",
-@@ -217,6 +244,17 @@ static struct snd_soc_device evm_snd_devdata = {
- };
- 
- /* evm audio subsystem */
-+static struct snd_soc_device dm365_evm_snd_devdata = {
-+	.card = &dm365_snd_soc_card_evm,
-+#ifdef CONFIG_SND_DM365_AIC3X_CODEC
-+	.codec_dev = &soc_codec_dev_aic3x,
-+	.codec_data = &aic3x_setup,
-+#elif defined(CONFIG_SND_DM365_VOICE_CODEC)
-+	.codec_dev = &soc_codec_dev_cq93vc,
-+#endif
-+};
-+
-+/* evm audio subsystem */
- static struct snd_soc_device dm6467_evm_snd_devdata = {
- 	.card = &dm6467_snd_soc_card_evm,
- 	.codec_dev = &soc_codec_dev_aic3x,
-@@ -244,12 +282,15 @@ static int __init evm_init(void)
- 	int index;
- 	int ret;
- 
--	if (machine_is_davinci_evm() || machine_is_davinci_dm365_evm()) {
-+	if (machine_is_davinci_evm()) {
- 		evm_snd_dev_data = &evm_snd_devdata;
- 		index = 0;
- 	} else if (machine_is_davinci_dm355_evm()) {
- 		evm_snd_dev_data = &evm_snd_devdata;
- 		index = 1;
-+	} else if (machine_is_davinci_dm365_evm()) {
-+		evm_snd_dev_data = &dm365_evm_snd_devdata;
-+		index = 0;
- 	} else if (machine_is_davinci_dm6467_evm()) {
- 		evm_snd_dev_data = &dm6467_evm_snd_devdata;
- 		index = 0;
+Grant Likely (37):
+      arch/sparc: Remove .archdata.of_node and use .of_node in struct device
+      arch/microblaze: Remove .archdata.of_node and use .of_node in struct device
+      arch/powerpc: Remove .archdata.of_node and use .of_node in struct device
+      sound/sparc: use .dev.of_node instead of .node in struct of_device
+      sound/soc: use .dev.of_node instead of .node in struct of_device
+      sound/aoa: use .dev.of_node instead of .node in struct of_device
+      drivers/of: use .of_node instead of .archdata.of_node in struct device
+      drivers/cdrom: use .of_node instead of .archdata.of_node in struct device
+      drivers/char: use .of_node instead of .archdata.of_node in struct device
+      drivers/scsi: use .of_node instead of .archdata.of_node in struct device
+      drivers/of: use .dev.of_node instead of .node in struct of_device
+      drivers/mtd: use .dev.of_node instead of .node in struct of_device
+      drivers/infiniband: use .dev.of_node instead of .node in struct of_device
+      drivers/char: use .dev.of_node instead of .node in struct of_device
+      drivers/i2c: use .dev.of_node instead of .node in struct of_device
+      drivers/leds: use .dev.of_node instead of .node in struct of_device
+      drivers/ata: use .dev.of_node instead of .node in struct of_device
+      drivers/input: use .dev.of_node instead of .node in struct of_device
+      drivers/serial: use .dev.of_node instead of .node in struct of_device
+      drivers/pcmcia: use .dev.of_node instead of .node in struct of_device
+      drivers/net: use .dev.of_node instead of .node in struct of_device
+      drivers/sbus: use .dev.of_node instead of .node in struct of_device
+      drivers/mmc: use .dev.of_node instead of .node in struct of_device
+      drivers/spi: use .dev.of_node instead of .node in struct of_device
+      drivers/macintosh: use .dev.of_node instead of .node in struct of_device
+      drivers/usb: use .dev.of_node instead of .node in struct of_device
+      drivers/scsi: use .dev.of_node instead of .node in struct of_device
+      drivers/video: use .dev.of_node instead of .node in struct of_device
+      drivers/atm: use .dev.of_node instead of .node in struct of_device
+      drivers/watchdog: use .dev.of_node instead of .node in struct of_device
+      drivers/serial: use .dev.of_node instead of .node in struct of_device
+      arch/microblaze: use .dev.of_node instead of .node in struct of_device
+      arch/powerpc: use .dev.of_node instead of .node in struct of_device
+      arch/sparc: use .dev.of_node instead of .node in struct of_device
+      of/sparc: use dev->of_node instead of dev->archdata.prom_node
+      of: Eliminate dev_archdata_get_node()
+      i2c/of: Allow device node to be passed via i2c_board_info
+
+
+ arch/microblaze/include/asm/device.h          |   14 ------------
+ arch/microblaze/include/asm/of_device.h       |    1 -
+ arch/microblaze/kernel/of_device.c            |   12 ++++------
+ arch/microblaze/kernel/of_platform.c          |    4 ++-
+ arch/powerpc/include/asm/device.h             |   22 +++++++------------
+ arch/powerpc/include/asm/macio.h              |    2 +-
+ arch/powerpc/include/asm/of_device.h          |    1 -
+ arch/powerpc/kernel/ibmebus.c                 |    4 ++-
+ arch/powerpc/kernel/of_device.c               |   12 ++++------
+ arch/powerpc/kernel/of_platform.c             |   16 +++++++-------
+ arch/powerpc/kernel/pci-common.c              |    1 -
+ arch/powerpc/kernel/vio.c                     |   17 +++++++--------
+ arch/powerpc/platforms/52xx/mpc52xx_gpio.c    |    4 ++-
+ arch/powerpc/platforms/52xx/mpc52xx_gpt.c     |   16 +++++++-------
+ arch/powerpc/platforms/52xx/mpc52xx_lpbfifo.c |    6 +++--
+ arch/powerpc/platforms/82xx/ep8248e.c         |    6 +++--
+ arch/powerpc/platforms/83xx/suspend.c         |    2 +-
+ arch/powerpc/platforms/cell/axon_msi.c        |    2 +-
+ arch/powerpc/platforms/cell/iommu.c           |    5 ++--
+ arch/powerpc/platforms/pasemi/gpio_mdio.c     |    2 +-
+ arch/powerpc/platforms/pasemi/setup.c         |    4 ++-
+ arch/powerpc/platforms/ps3/system-bus.c       |    1 -
+ arch/powerpc/platforms/pseries/iommu.c        |    2 +-
+ arch/powerpc/sysdev/axonram.c                 |    6 +++--
+ arch/powerpc/sysdev/bestcomm/bestcomm.c       |    8 +++----
+ arch/powerpc/sysdev/fsl_msi.c                 |   14 ++++++------
+ arch/powerpc/sysdev/fsl_pmc.c                 |    2 +-
+ arch/powerpc/sysdev/pmi.c                     |    2 +-
+ arch/sparc/include/asm/device.h               |   15 -------------
+ arch/sparc/include/asm/fb.h                   |    2 +-
+ arch/sparc/include/asm/floppy_64.h            |    4 ++-
+ arch/sparc/include/asm/of_device.h            |    1 -
+ arch/sparc/include/asm/parport.h              |    2 +-
+ arch/sparc/kernel/auxio_64.c                  |    2 +-
+ arch/sparc/kernel/central.c                   |    4 ++-
+ arch/sparc/kernel/chmc.c                      |   10 ++++-----
+ arch/sparc/kernel/ioport.c                    |    2 +-
+ arch/sparc/kernel/of_device_32.c              |   18 +++++++---------
+ arch/sparc/kernel/of_device_64.c              |   29 ++++++++++++-------------
+ arch/sparc/kernel/of_device_common.c          |    4 ++-
+ arch/sparc/kernel/pci.c                       |   13 ++++-------
+ arch/sparc/kernel/pci_common.c                |    9 ++++----
+ arch/sparc/kernel/pci_fire.c                  |    4 ++-
+ arch/sparc/kernel/pci_msi.c                   |   18 ++++++++--------
+ arch/sparc/kernel/pci_psycho.c                |    4 ++-
+ arch/sparc/kernel/pci_sabre.c                 |    4 ++-
+ arch/sparc/kernel/pci_schizo.c                |   14 ++++++------
+ arch/sparc/kernel/pci_sun4v.c                 |    8 +++----
+ arch/sparc/kernel/power.c                     |    4 ++-
+ arch/sparc/kernel/psycho_common.c             |    2 +-
+ arch/sparc/kernel/sbus.c                      |   16 +++++++-------
+ arch/sparc/kernel/time_32.c                   |    2 +-
+ arch/sparc/kernel/time_64.c                   |    6 +++--
+ drivers/ata/pata_macio.c                      |    2 +-
+ drivers/ata/pata_of_platform.c                |    2 +-
+ drivers/atm/fore200e.c                        |   16 ++++++++------
+ drivers/cdrom/viocd.c                         |    2 +-
+ drivers/char/hw_random/n2-drv.c               |    2 +-
+ drivers/char/hw_random/pasemi-rng.c           |    2 +-
+ drivers/char/ipmi/ipmi_si_intf.c              |    4 ++-
+ drivers/char/viotape.c                        |    2 +-
+ drivers/gpio/pca953x.c                        |    2 +-
+ drivers/i2c/busses/i2c-mpc.c                  |   17 ++++++++-------
+ drivers/i2c/i2c-core.c                        |    3 +++
+ drivers/ide/pmac.c                            |   10 ++++-----
+ drivers/infiniband/hw/ehca/ehca_main.c        |   11 +++++----
+ drivers/input/serio/i8042-sparcio.h           |    2 +-
+ drivers/input/serio/xilinx_ps2.c              |    8 +++----
+ drivers/leds/leds-gpio.c                      |    2 +-
+ drivers/macintosh/macio_asic.c                |   16 +++++++-------
+ drivers/macintosh/macio_sysfs.c               |    6 +++--
+ drivers/macintosh/rack-meter.c                |    4 ++-
+ drivers/macintosh/therm_pm72.c                |    2 +-
+ drivers/mmc/host/of_mmc_spi.c                 |    4 ++-
+ drivers/mmc/host/sdhci-of-core.c              |    2 +-
+ drivers/mtd/maps/physmap_of.c                 |    6 +++--
+ drivers/mtd/maps/sun_uflash.c                 |    2 +-
+ drivers/mtd/nand/fsl_elbc_nand.c              |    6 +++--
+ drivers/mtd/nand/pasemi_nand.c                |    2 +-
+ drivers/net/can/sja1000/sja1000_of_platform.c |    4 ++-
+ drivers/net/ehea/ehea_main.c                  |   14 ++++++------
+ drivers/net/greth.c                           |    3 ++-
+ drivers/net/ibm_newemac/core.c                |   13 ++++++-----
+ drivers/net/ibm_newemac/debug.c               |    9 ++++----
+ drivers/net/ibm_newemac/debug.h               |    4 ++-
+ drivers/net/ibm_newemac/mal.c                 |   28 ++++++++++++------------
+ drivers/net/ibm_newemac/rgmii.c               |   12 +++++-----
+ drivers/net/ibm_newemac/tah.c                 |    7 +++---
+ drivers/net/ibm_newemac/zmii.c                |    9 ++++----
+ drivers/net/myri_sbus.c                       |    2 +-
+ drivers/net/niu.c                             |   10 ++++-----
+ drivers/net/phy/mdio-gpio.c                   |    6 +++--
+ drivers/net/sunbmac.c                         |    6 +++--
+ drivers/net/sunhme.c                          |    8 +++----
+ drivers/net/sunlance.c                        |    6 +++--
+ drivers/net/sunqe.c                           |    6 +++--
+ drivers/net/xilinx_emaclite.c                 |    8 +++----
+ drivers/of/device.c                           |   20 +++++++++--------
+ drivers/of/of_i2c.c                           |    4 ++-
+ drivers/of/of_mdio.c                          |    5 ++--
+ drivers/of/of_spi.c                           |    1 -
+ drivers/pcmcia/electra_cf.c                   |    2 +-
+ drivers/sbus/char/bbc_envctrl.c               |    4 ++-
+ drivers/sbus/char/bbc_i2c.c                   |    4 ++-
+ drivers/sbus/char/display7seg.c               |    2 +-
+ drivers/sbus/char/envctrl.c                   |    2 +-
+ drivers/sbus/char/flash.c                     |    4 ++-
+ drivers/sbus/char/uctrl.c                     |    2 +-
+ drivers/scsi/ibmvscsi/ibmvfc.c                |    2 +-
+ drivers/scsi/ibmvscsi/ibmvscsi.c              |    2 +-
+ drivers/scsi/qlogicpti.c                      |   10 ++++-----
+ drivers/scsi/sun_esp.c                        |   16 +++++++-------
+ drivers/serial/apbuart.c                      |    2 +-
+ drivers/serial/mpc52xx_uart.c                 |    8 +++----
+ drivers/serial/nwpserial.c                    |    2 +-
+ drivers/serial/of_serial.c                    |    4 ++-
+ drivers/serial/pmac_zilog.c                   |    2 +-
+ drivers/serial/sunhv.c                        |    2 +-
+ drivers/serial/sunsab.c                       |    6 +++--
+ drivers/serial/sunsu.c                        |    6 +++--
+ drivers/serial/sunzilog.c                     |    8 +++----
+ drivers/serial/uartlite.c                     |    6 +++--
+ drivers/spi/mpc52xx_psc_spi.c                 |   11 +++++----
+ drivers/spi/mpc52xx_spi.c                     |   14 ++++++------
+ drivers/spi/spi_mpc8xxx.c                     |    6 +++--
+ drivers/usb/host/ehci-ppc-of.c                |    2 +-
+ drivers/usb/host/isp1760-if.c                 |    2 +-
+ drivers/usb/host/ohci-ppc-of.c                |    2 +-
+ drivers/video/cg6.c                           |    2 +-
+ drivers/video/ffb.c                           |    2 +-
+ drivers/watchdog/cpwd.c                       |    2 +-
+ include/linux/i2c.h                           |    4 +++
+ sound/aoa/fabrics/layout.c                    |    2 +-
+ sound/aoa/soundbus/core.c                     |    8 +++----
+ sound/aoa/soundbus/i2sbus/control.c           |    2 +-
+ sound/aoa/soundbus/i2sbus/core.c              |    4 ++-
+ sound/aoa/soundbus/sysfs.c                    |    4 ++-
+ sound/soc/fsl/mpc8610_hpcd.c                  |    2 +-
+ sound/sparc/cs4231.c                          |    6 +++--
+ sound/sparc/dbri.c                            |    2 +-
+ 140 files changed, 422 insertions(+), 458 deletions(-)
+
 -- 
-1.6.0.4
+Signature
