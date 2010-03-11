@@ -1,19 +1,19 @@
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 05/27] drivers/usb/of: don't use deprecated
+Subject: [PATCH 07/27] drivers/char/of: don't use deprecated
 	field in	of_platform_driver
-Date: Thu, 11 Mar 2010 11:22:15 -0700
-Message-ID: <20100311182215.13103.45160.stgit@angua>
+Date: Thu, 11 Mar 2010 11:22:26 -0700
+Message-ID: <20100311182226.13103.62140.stgit__32170.2723777436$1268331812$gmane$org@angua>
 References: <20100311181604.13103.30088.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f181.google.com (mail-px0-f181.google.com
-	[209.85.216.181])
-	by alsa0.perex.cz (Postfix) with ESMTP id CD595103AE3
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:22:18 +0100 (CET)
-Received: by mail-px0-f181.google.com with SMTP id 11so2877pxi.16
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:22:18 -0800 (PST)
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 595A1103AB4
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:22:30 +0100 (CET)
+Received: by pwj10 with SMTP id 10so163737pwj.38
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:22:29 -0800 (PST)
 In-Reply-To: <20100311181604.13103.30088.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,135 +33,82 @@ and device_driver, so the of_platform_driver copies will be removed soon.
 Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
 
- drivers/usb/gadget/fsl_qe_udc.c   |    7 +++++--
- drivers/usb/host/ehci-ppc-of.c    |    9 ++++-----
- drivers/usb/host/ehci-xilinx-of.c |    9 ++++-----
- drivers/usb/host/fhci-hcd.c       |    7 +++++--
- drivers/usb/host/isp1760-if.c     |    7 +++++--
- drivers/usb/host/ohci-ppc-of.c    |   13 ++++---------
- 6 files changed, 27 insertions(+), 25 deletions(-)
+ drivers/char/hw_random/n2-drv.c            |    7 +++++--
+ drivers/char/hw_random/pasemi-rng.c        |    7 +++++--
+ drivers/char/ipmi/ipmi_si_intf.c           |    7 +++++--
+ drivers/char/xilinx_hwicap/xilinx_hwicap.c |    5 ++---
+ 4 files changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/usb/gadget/fsl_qe_udc.c b/drivers/usb/gadget/fsl_qe_udc.c
-index 3537d51..2928523 100644
---- a/drivers/usb/gadget/fsl_qe_udc.c
-+++ b/drivers/usb/gadget/fsl_qe_udc.c
-@@ -2768,8 +2768,11 @@ static const struct of_device_id qe_udc_match[] __devinitconst = {
- MODULE_DEVICE_TABLE(of, qe_udc_match);
+diff --git a/drivers/char/hw_random/n2-drv.c b/drivers/char/hw_random/n2-drv.c
+index 4d05003..c82a571 100644
+--- a/drivers/char/hw_random/n2-drv.c
++++ b/drivers/char/hw_random/n2-drv.c
+@@ -751,8 +751,11 @@ static const struct of_device_id n2rng_match[] = {
+ MODULE_DEVICE_TABLE(of, n2rng_match);
  
- static struct of_platform_driver udc_driver = {
--	.name           = (char *)driver_name,
--	.match_table    = qe_udc_match,
+ static struct of_platform_driver n2rng_driver = {
+-	.name		= "n2rng",
+-	.match_table	= n2rng_match,
 +	.driver = {
-+		.name = (char *)driver_name,
++		.name = "n2rng",
 +		.owner = THIS_MODULE,
-+		.of_match_table = qe_udc_match,
++		.of_match_table = n2rng_match,
 +	},
- 	.probe          = qe_udc_probe,
- 	.remove         = __devexit_p(qe_udc_remove),
- #ifdef CONFIG_PM
-diff --git a/drivers/usb/host/ehci-ppc-of.c b/drivers/usb/host/ehci-ppc-of.c
-index ad06623..5aec928 100644
---- a/drivers/usb/host/ehci-ppc-of.c
-+++ b/drivers/usb/host/ehci-ppc-of.c
-@@ -274,13 +274,12 @@ MODULE_DEVICE_TABLE(of, ehci_hcd_ppc_of_match);
- 
- 
- static struct of_platform_driver ehci_hcd_ppc_of_driver = {
--	.name		= "ppc-of-ehci",
--	.match_table	= ehci_hcd_ppc_of_match,
- 	.probe		= ehci_hcd_ppc_of_probe,
- 	.remove		= ehci_hcd_ppc_of_remove,
- 	.shutdown	= ehci_hcd_ppc_of_shutdown,
--	.driver		= {
--		.name	= "ppc-of-ehci",
--		.owner	= THIS_MODULE,
-+	.driver = {
-+		.name = "ppc-of-ehci",
-+		.owner = THIS_MODULE,
-+		.of_match_table = ehci_hcd_ppc_of_match,
- 	},
+ 	.probe		= n2rng_probe,
+ 	.remove		= __devexit_p(n2rng_remove),
  };
-diff --git a/drivers/usb/host/ehci-xilinx-of.c b/drivers/usb/host/ehci-xilinx-of.c
-index f603bb2..013972b 100644
---- a/drivers/usb/host/ehci-xilinx-of.c
-+++ b/drivers/usb/host/ehci-xilinx-of.c
-@@ -288,13 +288,12 @@ static const struct of_device_id ehci_hcd_xilinx_of_match[] = {
- MODULE_DEVICE_TABLE(of, ehci_hcd_xilinx_of_match);
- 
- static struct of_platform_driver ehci_hcd_xilinx_of_driver = {
--	.name		= "xilinx-of-ehci",
--	.match_table	= ehci_hcd_xilinx_of_match,
- 	.probe		= ehci_hcd_xilinx_of_probe,
- 	.remove		= ehci_hcd_xilinx_of_remove,
- 	.shutdown	= ehci_hcd_xilinx_of_shutdown,
--	.driver		= {
--		.name	= "xilinx-of-ehci",
--		.owner	= THIS_MODULE,
-+	.driver = {
-+		.name = "xilinx-of-ehci",
-+		.owner = THIS_MODULE,
-+		.of_match_table = ehci_hcd_xilinx_of_match,
- 	},
+diff --git a/drivers/char/hw_random/pasemi-rng.c b/drivers/char/hw_random/pasemi-rng.c
+index b213855..261ba8f 100644
+--- a/drivers/char/hw_random/pasemi-rng.c
++++ b/drivers/char/hw_random/pasemi-rng.c
+@@ -140,8 +140,11 @@ static struct of_device_id rng_match[] = {
  };
-diff --git a/drivers/usb/host/fhci-hcd.c b/drivers/usb/host/fhci-hcd.c
-index 5dcfb3d..dba7af7 100644
---- a/drivers/usb/host/fhci-hcd.c
-+++ b/drivers/usb/host/fhci-hcd.c
-@@ -812,8 +812,11 @@ static const struct of_device_id of_fhci_match[] = {
- MODULE_DEVICE_TABLE(of, of_fhci_match);
  
- static struct of_platform_driver of_fhci_driver = {
--	.name		= "fsl,usb-fhci",
--	.match_table	= of_fhci_match,
+ static struct of_platform_driver rng_driver = {
+-	.name		= "pasemi-rng",
+-	.match_table	= rng_match,
 +	.driver = {
-+		.name = "fsl,usb-fhci",
++		.name = "pasemi-rng",
 +		.owner = THIS_MODULE,
-+		.of_match_table = of_fhci_match,
++		.of_match_table = rng_match,
 +	},
- 	.probe		= of_fhci_probe,
- 	.remove		= __devexit_p(of_fhci_remove),
+ 	.probe		= rng_probe,
+ 	.remove		= rng_remove,
  };
-diff --git a/drivers/usb/host/isp1760-if.c b/drivers/usb/host/isp1760-if.c
-index 36360e2..100d5fa 100644
---- a/drivers/usb/host/isp1760-if.c
-+++ b/drivers/usb/host/isp1760-if.c
-@@ -121,8 +121,11 @@ static const struct of_device_id of_isp1760_match[] = {
- MODULE_DEVICE_TABLE(of, of_isp1760_match);
+diff --git a/drivers/char/ipmi/ipmi_si_intf.c b/drivers/char/ipmi/ipmi_si_intf.c
+index 45305f2..012e63b 100644
+--- a/drivers/char/ipmi/ipmi_si_intf.c
++++ b/drivers/char/ipmi/ipmi_si_intf.c
+@@ -2492,8 +2492,11 @@ static struct of_device_id ipmi_match[] =
+ };
  
- static struct of_platform_driver isp1760_of_driver = {
--	.name           = "nxp-isp1760",
--	.match_table    = of_isp1760_match,
+ static struct of_platform_driver ipmi_of_platform_driver = {
+-	.name		= "ipmi",
+-	.match_table	= ipmi_match,
 +	.driver = {
-+		.name = "nxp-isp1760",
++		.name = "ipmi",
 +		.owner = THIS_MODULE,
-+		.of_match_table = of_isp1760_match,
++		.of_match_table = ipmi_match,
 +	},
- 	.probe          = of_isp1760_probe,
- 	.remove         = of_isp1760_remove,
+ 	.probe		= ipmi_of_probe,
+ 	.remove		= __devexit_p(ipmi_of_remove),
  };
-diff --git a/drivers/usb/host/ohci-ppc-of.c b/drivers/usb/host/ohci-ppc-of.c
-index 003aea2..df16591 100644
---- a/drivers/usb/host/ohci-ppc-of.c
-+++ b/drivers/usb/host/ohci-ppc-of.c
-@@ -244,18 +244,13 @@ MODULE_DEVICE_TABLE(of, ohci_hcd_ppc_of_match);
+diff --git a/drivers/char/xilinx_hwicap/xilinx_hwicap.c b/drivers/char/xilinx_hwicap/xilinx_hwicap.c
+index 4846d50..1fb8665 100644
+--- a/drivers/char/xilinx_hwicap/xilinx_hwicap.c
++++ b/drivers/char/xilinx_hwicap/xilinx_hwicap.c
+@@ -811,13 +811,12 @@ static const struct of_device_id __devinitconst hwicap_of_match[] = {
+ MODULE_DEVICE_TABLE(of, hwicap_of_match);
  
- 
- static struct of_platform_driver ohci_hcd_ppc_of_driver = {
--	.name		= "ppc-of-ohci",
--	.match_table	= ohci_hcd_ppc_of_match,
- 	.probe		= ohci_hcd_ppc_of_probe,
- 	.remove		= ohci_hcd_ppc_of_remove,
- 	.shutdown 	= ohci_hcd_ppc_of_shutdown,
--#ifdef CONFIG_PM
--	/*.suspend	= ohci_hcd_ppc_soc_drv_suspend,*/
--	/*.resume	= ohci_hcd_ppc_soc_drv_resume,*/
--#endif
--	.driver		= {
--		.name	= "ppc-of-ohci",
--		.owner	= THIS_MODULE,
-+	.driver = {
-+		.name = "ppc-of-ohci",
+ static struct of_platform_driver hwicap_of_driver = {
+-	.owner = THIS_MODULE,
+-	.name = DRIVER_NAME,
+-	.match_table = hwicap_of_match,
+ 	.probe = hwicap_of_probe,
+ 	.remove = __devexit_p(hwicap_of_remove),
+ 	.driver = {
+ 		.name = DRIVER_NAME,
 +		.owner = THIS_MODULE,
-+		.of_match_table = ohci_hcd_ppc_of_match,
++		.of_match_table = hwicap_of_match,
  	},
  };
