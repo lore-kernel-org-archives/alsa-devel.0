@@ -1,8 +1,8 @@
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 15/27] drivers/spi/of: don't use deprecated
+Subject: [PATCH 16/27] drivers/scsi/of: don't use deprecated
 	field in	of_platform_driver
-Date: Thu, 11 Mar 2010 11:23:11 -0700
-Message-ID: <20100311182310.13103.62043.stgit@angua>
+Date: Thu, 11 Mar 2010 11:23:16 -0700
+Message-ID: <20100311182316.13103.87138.stgit@angua>
 References: <20100311181604.13103.30088.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f203.google.com (mail-pz0-f203.google.com
 	[209.85.222.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 045DD103B3F
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:23:14 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BC2B103B42
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:23:19 +0100 (CET)
 Received: by mail-pz0-f203.google.com with SMTP id 41so181718pzk.23
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:23:14 -0800 (PST)
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:23:19 -0800 (PST)
 In-Reply-To: <20100311181604.13103.30088.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,102 +33,43 @@ and device_driver, so the of_platform_driver copies will be removed soon.
 Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
 
- drivers/spi/mpc52xx_psc_spi.c |    4 +---
- drivers/spi/mpc52xx_spi.c     |    8 +++++---
- drivers/spi/spi_mpc8xxx.c     |    7 +++++--
- drivers/spi/spi_ppc4xx.c      |    2 +-
- drivers/spi/xilinx_spi_of.c   |    2 +-
- 5 files changed, 13 insertions(+), 10 deletions(-)
+ drivers/scsi/qlogicpti.c |    7 +++++--
+ drivers/scsi/sun_esp.c   |    7 +++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/spi/mpc52xx_psc_spi.c b/drivers/spi/mpc52xx_psc_spi.c
-index f12cfd9..babd529 100644
---- a/drivers/spi/mpc52xx_psc_spi.c
-+++ b/drivers/spi/mpc52xx_psc_spi.c
-@@ -513,14 +513,12 @@ static const struct of_device_id mpc52xx_psc_spi_of_match[] = {
- MODULE_DEVICE_TABLE(of, mpc52xx_psc_spi_of_match);
+diff --git a/drivers/scsi/qlogicpti.c b/drivers/scsi/qlogicpti.c
+index 7374fbe..16dc12e 100644
+--- a/drivers/scsi/qlogicpti.c
++++ b/drivers/scsi/qlogicpti.c
+@@ -1456,8 +1456,11 @@ static const struct of_device_id qpti_match[] = {
+ MODULE_DEVICE_TABLE(of, qpti_match);
  
- static struct of_platform_driver mpc52xx_psc_spi_of_driver = {
--	.owner = THIS_MODULE,
--	.name = "mpc52xx-psc-spi",
--	.match_table = mpc52xx_psc_spi_of_match,
- 	.probe = mpc52xx_psc_spi_of_probe,
- 	.remove = __exit_p(mpc52xx_psc_spi_of_remove),
- 	.driver = {
- 		.name = "mpc52xx-psc-spi",
- 		.owner = THIS_MODULE,
-+		.of_match_table = mpc52xx_psc_spi_of_match,
- 	},
- };
- 
-diff --git a/drivers/spi/mpc52xx_spi.c b/drivers/spi/mpc52xx_spi.c
-index 907c39a..792ffb9 100644
---- a/drivers/spi/mpc52xx_spi.c
-+++ b/drivers/spi/mpc52xx_spi.c
-@@ -557,9 +557,11 @@ static const struct of_device_id mpc52xx_spi_match[] __devinitconst = {
- MODULE_DEVICE_TABLE(of, mpc52xx_spi_match);
- 
- static struct of_platform_driver mpc52xx_spi_of_driver = {
--	.owner = THIS_MODULE,
--	.name = "mpc52xx-spi",
--	.match_table = mpc52xx_spi_match,
+ static struct of_platform_driver qpti_sbus_driver = {
+-	.name		= "qpti",
+-	.match_table	= qpti_match,
 +	.driver = {
-+		.name = "mpc52xx-spi",
++		.name = "qpti",
 +		.owner = THIS_MODULE,
-+		.of_match_table = mpc52xx_spi_match,
++		.of_match_table = qpti_match,
 +	},
- 	.probe = mpc52xx_spi_probe,
- 	.remove = __exit_p(mpc52xx_spi_remove),
+ 	.probe		= qpti_sbus_probe,
+ 	.remove		= __devexit_p(qpti_sbus_remove),
  };
-diff --git a/drivers/spi/spi_mpc8xxx.c b/drivers/spi/spi_mpc8xxx.c
-index 38b9c32..fd90c30 100644
---- a/drivers/spi/spi_mpc8xxx.c
-+++ b/drivers/spi/spi_mpc8xxx.c
-@@ -1311,8 +1311,11 @@ static const struct of_device_id of_mpc8xxx_spi_match[] = {
- MODULE_DEVICE_TABLE(of, of_mpc8xxx_spi_match);
+diff --git a/drivers/scsi/sun_esp.c b/drivers/scsi/sun_esp.c
+index 4369b76..10ba30a 100644
+--- a/drivers/scsi/sun_esp.c
++++ b/drivers/scsi/sun_esp.c
+@@ -632,8 +632,11 @@ static const struct of_device_id esp_match[] = {
+ MODULE_DEVICE_TABLE(of, esp_match);
  
- static struct of_platform_driver of_mpc8xxx_spi_driver = {
--	.name		= "mpc8xxx_spi",
--	.match_table	= of_mpc8xxx_spi_match,
+ static struct of_platform_driver esp_sbus_driver = {
+-	.name		= "esp",
+-	.match_table	= esp_match,
 +	.driver = {
-+		.name = "mpc8xxx_spi",
++		.name = "esp",
 +		.owner = THIS_MODULE,
-+		.of_match_table = of_mpc8xxx_spi_match,
++		.of_match_table = esp_match,
 +	},
- 	.probe		= of_mpc8xxx_spi_probe,
- 	.remove		= __devexit_p(of_mpc8xxx_spi_remove),
- };
-diff --git a/drivers/spi/spi_ppc4xx.c b/drivers/spi/spi_ppc4xx.c
-index 6d8d402..fa6f01c 100644
---- a/drivers/spi/spi_ppc4xx.c
-+++ b/drivers/spi/spi_ppc4xx.c
-@@ -586,12 +586,12 @@ static const struct of_device_id spi_ppc4xx_of_match[] = {
- MODULE_DEVICE_TABLE(of, spi_ppc4xx_of_match);
- 
- static struct of_platform_driver spi_ppc4xx_of_driver = {
--	.match_table = spi_ppc4xx_of_match,
- 	.probe = spi_ppc4xx_of_probe,
- 	.remove = __exit_p(spi_ppc4xx_of_remove),
- 	.driver = {
- 		.name = DRIVER_NAME,
- 		.owner = THIS_MODULE,
-+		.of_match_table = spi_ppc4xx_of_match,
- 	},
- };
- 
-diff --git a/drivers/spi/xilinx_spi_of.c b/drivers/spi/xilinx_spi_of.c
-index ed34a8d..416a8cd 100644
---- a/drivers/spi/xilinx_spi_of.c
-+++ b/drivers/spi/xilinx_spi_of.c
-@@ -108,12 +108,12 @@ static const struct of_device_id xilinx_spi_of_match[] = {
- MODULE_DEVICE_TABLE(of, xilinx_spi_of_match);
- 
- static struct of_platform_driver xilinx_spi_of_driver = {
--	.match_table = xilinx_spi_of_match,
- 	.probe = xilinx_spi_of_probe,
- 	.remove = __exit_p(xilinx_spi_of_remove),
- 	.driver = {
- 		.name = "xilinx-xps-spi",
- 		.owner = THIS_MODULE,
-+		.of_match_table = xilinx_spi_of_match,
- 	},
+ 	.probe		= esp_sbus_probe,
+ 	.remove		= __devexit_p(esp_sbus_remove),
  };
