@@ -1,8 +1,8 @@
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 20/27] drivers/mmc/of: don't use deprecated
+Subject: [PATCH 22/27] drivers/i2c/of: don't use deprecated
 	field in	of_platform_driver
-Date: Thu, 11 Mar 2010 11:23:38 -0700
-Message-ID: <20100311182338.13103.88443.stgit__36171.7611238875$1268331985$gmane$org@angua>
+Date: Thu, 11 Mar 2010 11:23:49 -0700
+Message-ID: <20100311182349.13103.39322.stgit@angua>
 References: <20100311181604.13103.30088.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
 	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 37148103B5C
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:23:43 +0100 (CET)
-Received: by pwj10 with SMTP id 10so164218pwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:23:41 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 7FE6A103A93
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:23:52 +0100 (CET)
+Received: by mail-pw0-f51.google.com with SMTP id 10so164218pwj.38
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:23:52 -0800 (PST)
 In-Reply-To: <20100311181604.13103.30088.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,24 +33,69 @@ and device_driver, so the of_platform_driver copies will be removed soon.
 Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
 
- drivers/mmc/host/sdhci-of-core.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-cpm.c     |   10 +++++-----
+ drivers/i2c/busses/i2c-ibm_iic.c |    7 +++++--
+ drivers/i2c/busses/i2c-mpc.c     |    8 ++++----
+ 3 files changed, 14 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mmc/host/sdhci-of-core.c b/drivers/mmc/host/sdhci-of-core.c
-index dfe5cea..7802a54 100644
---- a/drivers/mmc/host/sdhci-of-core.c
-+++ b/drivers/mmc/host/sdhci-of-core.c
-@@ -205,8 +205,11 @@ static const struct of_device_id sdhci_of_match[] = {
- MODULE_DEVICE_TABLE(of, sdhci_of_match);
+diff --git a/drivers/i2c/busses/i2c-cpm.c b/drivers/i2c/busses/i2c-cpm.c
+index 9c2e100..47994d2 100644
+--- a/drivers/i2c/busses/i2c-cpm.c
++++ b/drivers/i2c/busses/i2c-cpm.c
+@@ -718,13 +718,13 @@ static const struct of_device_id cpm_i2c_match[] = {
+ MODULE_DEVICE_TABLE(of, cpm_i2c_match);
  
- static struct of_platform_driver sdhci_of_driver = {
--	.driver.name = "sdhci-of",
--	.match_table = sdhci_of_match,
+ static struct of_platform_driver cpm_i2c_driver = {
+-	.match_table	= cpm_i2c_match,
+ 	.probe		= cpm_i2c_probe,
+ 	.remove		= __devexit_p(cpm_i2c_remove),
+-	.driver		= {
+-		.name	= "fsl-i2c-cpm",
+-		.owner	= THIS_MODULE,
+-	}
 +	.driver = {
-+		.name = "sdhci-of",
++		.name = "fsl-i2c-cpm",
 +		.owner = THIS_MODULE,
-+		.of_match_table = sdhci_of_match,
++		.of_match_table = cpm_i2c_match,
 +	},
- 	.probe = sdhci_of_probe,
- 	.remove = __devexit_p(sdhci_of_remove),
- 	.suspend = sdhci_of_suspend,
+ };
+ 
+ static int __init cpm_i2c_init(void)
+diff --git a/drivers/i2c/busses/i2c-ibm_iic.c b/drivers/i2c/busses/i2c-ibm_iic.c
+index b1bc6e2..21dba9d 100644
+--- a/drivers/i2c/busses/i2c-ibm_iic.c
++++ b/drivers/i2c/busses/i2c-ibm_iic.c
+@@ -807,8 +807,11 @@ static const struct of_device_id ibm_iic_match[] = {
+ };
+ 
+ static struct of_platform_driver ibm_iic_driver = {
+-	.name	= "ibm-iic",
+-	.match_table = ibm_iic_match,
++	.driver = {
++		.name = "ibm-iic",
++		.owner = THIS_MODULE,
++		.of_match_table = ibm_iic_match,
++	},
+ 	.probe	= iic_probe,
+ 	.remove	= __devexit_p(iic_remove),
+ };
+diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
+index 0123a6e..6063dc3 100644
+--- a/drivers/i2c/busses/i2c-mpc.c
++++ b/drivers/i2c/busses/i2c-mpc.c
+@@ -674,12 +674,12 @@ MODULE_DEVICE_TABLE(of, mpc_i2c_of_match);
+ 
+ /* Structure for a device driver */
+ static struct of_platform_driver mpc_i2c_driver = {
+-	.match_table	= mpc_i2c_of_match,
+ 	.probe		= fsl_i2c_probe,
+ 	.remove		= __devexit_p(fsl_i2c_remove),
+-	.driver		= {
+-		.owner	= THIS_MODULE,
+-		.name	= DRV_NAME,
++	.driver = {
++		.owner = THIS_MODULE,
++		.name = DRV_NAME,
++		.of_match_table = mpc_i2c_of_match,
+ 	},
+ };
