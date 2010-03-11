@@ -1,22 +1,18 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 6/6] ALSA: usb-mixer: Add support for Audio
-	Class v2.0
-Date: Thu, 11 Mar 2010 21:13:25 +0100
-Message-ID: <1268338405-8944-7-git-send-email-daniel@caiaq.de>
+Subject: Re: [PATCH 1/6] linux/usb/audio.h: split header
+Date: Thu, 11 Mar 2010 21:17:48 +0100
+Message-ID: <20100311201748.GG28972@buzzloop.caiaq.de>
 References: <1268338405-8944-1-git-send-email-daniel@caiaq.de>
 	<1268338405-8944-2-git-send-email-daniel@caiaq.de>
-	<1268338405-8944-3-git-send-email-daniel@caiaq.de>
-	<1268338405-8944-4-git-send-email-daniel@caiaq.de>
-	<1268338405-8944-5-git-send-email-daniel@caiaq.de>
-	<1268338405-8944-6-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7D4E1038D0
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 21:14:32 +0100 (CET)
-In-Reply-To: <1268338405-8944-6-git-send-email-daniel@caiaq.de>
+	by alsa0.perex.cz (Postfix) with ESMTP id DA72210380B
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 21:17:54 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1268338405-8944-2-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,738 +22,548 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, clemens@ladisch.de
+To: Greg KH <gregkh@suse.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-USB Audio Class v2.0 compliant devices have different descriptors and a
-different way of setting/getting min/max/res/cur properties. This patch
-adds support for them.
+On Thu, Mar 11, 2010 at 09:13:20PM +0100, Daniel Mack wrote:
+> - Split the audio.h file in two to clearly denote the differences
+>   between the standards.
+> - Add many more defines to audio-v2.h. Most of them are not currently
+>   used.
+> - Replaced a magic value with a proper define
+> 
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> Cc: Clemens Ladisch <clemens@ladisch.de>
+> Cc: Takashi Iwai <tiwai@suse.de>
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>
----
- include/linux/usb/audio-v2.h |   47 ++++++
- include/linux/usb/audio.h    |   71 +++++++---
- sound/usb/mixer.c            |  322 +++++++++++++++++++++++++++++++-----------
- sound/usb/mixer.h            |    3 +
- 4 files changed, 343 insertions(+), 100 deletions(-)
+Sorry Greg, I forgot to Cc: you on this.
 
-diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
-index 3b8560d..0952231 100644
---- a/include/linux/usb/audio-v2.h
-+++ b/include/linux/usb/audio-v2.h
-@@ -43,6 +43,53 @@ struct uac_clock_selector_descriptor {
- 	__u8 baCSourceID[];
- } __attribute__((packed));
- 
-+/* 4.7.2.4 Input terminal descriptor */
-+
-+struct uac2_input_terminal_descriptor {
-+	__u8 bLength;
-+	__u8 bDescriptorType;
-+	__u8 bDescriptorSubtype;
-+	__u8 bTerminalID;
-+	__u16 wTerminalType;
-+	__u8 bAssocTerminal;
-+	__u8 bCSourceID;
-+	__u8 bNrChannels;
-+	__u32 bmChannelConfig;
-+	__u8 iChannelNames;
-+	__u16 bmControls;
-+	__u8 iTerminal;
-+} __attribute__((packed));
-+
-+/* 4.7.2.5 Output terminal descriptor */
-+
-+struct uac2_output_terminal_descriptor {
-+	__u8 bLength;
-+	__u8 bDescriptorType;
-+	__u8 bDescriptorSubtype;
-+	__u8 bTerminalID;
-+	__u16 wTerminalType;
-+	__u8 bAssocTerminal;
-+	__u8 bSourceID;
-+	__u8 bCSourceID;
-+	__u16 bmControls;
-+	__u8 iTerminal;
-+} __attribute__((packed));
-+
-+
-+
-+/* 4.7.2.8 Feature Unit Descriptor */
-+
-+struct uac2_feature_unit_descriptor {
-+	__u8 bLength;
-+	__u8 bDescriptorType;
-+	__u8 bDescriptorSubtype;
-+	__u8 bUnitID;
-+	__u8 bSourceID;
-+	/* bmaControls is actually u32,
-+	 * but u8 is needed for the hybrid parser */
-+	__u8 bmaControls[0]; /* variable length */
-+} __attribute__((packed));
-+
- /* 4.9.2 Class-Specific AS Interface Descriptor */
- 
- struct uac_as_header_descriptor_v2 {
-diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
-index bc78a83..905a87c 100644
---- a/include/linux/usb/audio.h
-+++ b/include/linux/usb/audio.h
-@@ -196,20 +196,33 @@ static inline __u8 uac_mixer_unit_bNrChannels(struct uac_mixer_unit_descriptor *
- 	return desc->baSourceID[desc->bNrInPins];
- }
- 
--static inline __u16 uac_mixer_unit_wChannelConfig(struct uac_mixer_unit_descriptor *desc)
-+static inline __u32 uac_mixer_unit_wChannelConfig(struct uac_mixer_unit_descriptor *desc,
-+						  int protocol)
- {
--	return (desc->baSourceID[desc->bNrInPins + 2] << 8) |
--		desc->baSourceID[desc->bNrInPins + 1];
-+	if (protocol == UAC_VERSION_1)
-+		return (desc->baSourceID[desc->bNrInPins + 2] << 8) |
-+			desc->baSourceID[desc->bNrInPins + 1];
-+	else
-+		return  (desc->baSourceID[desc->bNrInPins + 4] << 24) |
-+			(desc->baSourceID[desc->bNrInPins + 3] << 16) |
-+			(desc->baSourceID[desc->bNrInPins + 2] << 8)  |
-+			(desc->baSourceID[desc->bNrInPins + 1]);
- }
- 
--static inline __u8 uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor *desc)
-+static inline __u8 uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor *desc,
-+						int protocol)
- {
--	return desc->baSourceID[desc->bNrInPins + 3];
-+	return (protocol == UAC_VERSION_1) ?
-+		desc->baSourceID[desc->bNrInPins + 3] :
-+		desc->baSourceID[desc->bNrInPins + 5];
- }
- 
--static inline __u8 *uac_mixer_unit_bmControls(struct uac_mixer_unit_descriptor *desc)
-+static inline __u8 *uac_mixer_unit_bmControls(struct uac_mixer_unit_descriptor *desc,
-+					      int protocol)
- {
--	return &desc->baSourceID[desc->bNrInPins + 4];
-+	return (protocol == UAC_VERSION_1) ?
-+		&desc->baSourceID[desc->bNrInPins + 4] :
-+		&desc->baSourceID[desc->bNrInPins + 6];
- }
- 
- static inline __u8 uac_mixer_unit_iMixer(struct uac_mixer_unit_descriptor *desc)
-@@ -267,36 +280,54 @@ static inline __u8 uac_processing_unit_bNrChannels(struct uac_processing_unit_de
- 	return desc->baSourceID[desc->bNrInPins];
- }
- 
--static inline __u16 uac_processing_unit_wChannelConfig(struct uac_processing_unit_descriptor *desc)
-+static inline __u32 uac_processing_unit_wChannelConfig(struct uac_processing_unit_descriptor *desc,
-+						       int protocol)
- {
--	return (desc->baSourceID[desc->bNrInPins + 2] << 8) |
--		desc->baSourceID[desc->bNrInPins + 1];
-+	if (protocol == UAC_VERSION_1)
-+		return (desc->baSourceID[desc->bNrInPins + 2] << 8) |
-+			desc->baSourceID[desc->bNrInPins + 1];
-+	else
-+		return  (desc->baSourceID[desc->bNrInPins + 4] << 24) |
-+			(desc->baSourceID[desc->bNrInPins + 3] << 16) |
-+			(desc->baSourceID[desc->bNrInPins + 2] << 8)  |
-+			(desc->baSourceID[desc->bNrInPins + 1]);
- }
- 
--static inline __u8 uac_processing_unit_iChannelNames(struct uac_processing_unit_descriptor *desc)
-+static inline __u8 uac_processing_unit_iChannelNames(struct uac_processing_unit_descriptor *desc,
-+						     int protocol)
- {
--	return desc->baSourceID[desc->bNrInPins + 3];
-+	return (protocol == UAC_VERSION_1) ?
-+		desc->baSourceID[desc->bNrInPins + 3] :
-+		desc->baSourceID[desc->bNrInPins + 5];
- }
- 
--static inline __u8 uac_processing_unit_bControlSize(struct uac_processing_unit_descriptor *desc)
-+static inline __u8 uac_processing_unit_bControlSize(struct uac_processing_unit_descriptor *desc,
-+						    int protocol)
- {
--	return desc->baSourceID[desc->bNrInPins + 4];
-+	return (protocol == UAC_VERSION_1) ?
-+		desc->baSourceID[desc->bNrInPins + 4] :
-+		desc->baSourceID[desc->bNrInPins + 6];
- }
- 
--static inline __u8 *uac_processing_unit_bmControls(struct uac_processing_unit_descriptor *desc)
-+static inline __u8 *uac_processing_unit_bmControls(struct uac_processing_unit_descriptor *desc,
-+						   int protocol)
- {
--	return &desc->baSourceID[desc->bNrInPins + 5];
-+	return (protocol == UAC_VERSION_1) ?
-+		&desc->baSourceID[desc->bNrInPins + 5] :
-+		&desc->baSourceID[desc->bNrInPins + 7];
- }
- 
--static inline __u8 uac_processing_unit_iProcessing(struct uac_processing_unit_descriptor *desc)
-+static inline __u8 uac_processing_unit_iProcessing(struct uac_processing_unit_descriptor *desc,
-+						   int protocol)
- {
--	__u8 control_size = uac_processing_unit_bControlSize(desc);
-+	__u8 control_size = uac_processing_unit_bControlSize(desc, protocol);
- 	return desc->baSourceID[desc->bNrInPins + control_size];
- }
- 
--static inline __u8 *uac_processing_unit_specific(struct uac_processing_unit_descriptor *desc)
-+static inline __u8 *uac_processing_unit_specific(struct uac_processing_unit_descriptor *desc,
-+						 int protocol)
- {
--	__u8 control_size = uac_processing_unit_bControlSize(desc);
-+	__u8 control_size = uac_processing_unit_bControlSize(desc, protocol);
- 	return &desc->baSourceID[desc->bNrInPins + control_size + 1];
- }
- 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 994b038..1deef62 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -33,6 +33,7 @@
- #include <linux/string.h>
- #include <linux/usb.h>
- #include <linux/usb/audio.h>
-+#include <linux/usb/audio-v2.h>
- 
- #include <sound/core.h>
- #include <sound/control.h>
-@@ -197,6 +198,7 @@ static int check_mapped_selector_name(struct mixer_build *state, int unitid,
- 
- /*
-  * find an audio control unit with the given unit id
-+ * this doesn't return any clock related units, so they need to be handled elsewhere
-  */
- static void *find_audio_control_unit(struct mixer_build *state, unsigned char unit)
- {
-@@ -205,7 +207,7 @@ static void *find_audio_control_unit(struct mixer_build *state, unsigned char un
- 	p = NULL;
- 	while ((p = snd_usb_find_desc(state->buffer, state->buflen, p,
- 				      USB_DT_CS_INTERFACE)) != NULL) {
--		if (p[0] >= 4 && p[2] >= UAC_INPUT_TERMINAL && p[2] <= UAC_EXTENSION_UNIT_V1 && p[3] == unit)
-+		if (p[0] >= 4 && p[2] >= UAC_INPUT_TERMINAL && p[2] <= UAC2_EXTENSION_UNIT_V2 && p[3] == unit)
- 			return p;
- 	}
- 	return NULL;
-@@ -302,7 +304,7 @@ static int get_abs_value(struct usb_mixer_elem_info *cval, int val)
-  * retrieve a mixer value
-  */
- 
--static int get_ctl_value(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
-+static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
- {
- 	unsigned char buf[2];
- 	int val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
-@@ -324,6 +326,58 @@ static int get_ctl_value(struct usb_mixer_elem_info *cval, int request, int vali
- 	return -EINVAL;
- }
- 
-+static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
-+{
-+	unsigned char buf[14]; /* enough space for one range of 4 bytes */
-+	unsigned char *val;
-+	int ret;
-+	__u8 bRequest;
-+
-+	bRequest = (request == UAC_GET_CUR) ?
-+		UAC2_CS_CUR : UAC2_CS_RANGE;
-+
-+	ret = snd_usb_ctl_msg(cval->mixer->chip->dev,
-+			      usb_rcvctrlpipe(cval->mixer->chip->dev, 0),
-+			      bRequest,
-+			      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-+			      validx, cval->mixer->ctrlif | (cval->id << 8),
-+			      buf, sizeof(buf), 1000);
-+
-+	if (ret < 0) {
-+		snd_printdd(KERN_ERR "cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
-+			    request, validx, cval->mixer->ctrlif | (cval->id << 8), cval->val_type);
-+		return ret;
-+	}
-+
-+	switch (request) {
-+	case UAC_GET_CUR:
-+		val = buf;
-+		break;
-+	case UAC_GET_MIN:
-+		val = buf + sizeof(__u16);
-+		break;
-+	case UAC_GET_MAX:
-+		val = buf + sizeof(__u16) * 2;
-+		break;
-+	case UAC_GET_RES:
-+		val = buf + sizeof(__u16) * 3;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	*value_ret = convert_signed_value(cval, snd_usb_combine_bytes(val, sizeof(__u16)));
-+
-+	return 0;
-+}
-+
-+static int get_ctl_value(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
-+{
-+	return (cval->mixer->protocol == UAC_VERSION_1) ?
-+		get_ctl_value_v1(cval, request, validx, value_ret) :
-+		get_ctl_value_v2(cval, request, validx, value_ret);
-+}
-+
- static int get_cur_ctl_value(struct usb_mixer_elem_info *cval, int validx, int *value)
- {
- 	return get_ctl_value(cval, UAC_GET_CUR, validx, value);
-@@ -348,8 +402,7 @@ static int get_cur_mix_value(struct usb_mixer_elem_info *cval,
- 	err = get_cur_mix_raw(cval, channel, value);
- 	if (err < 0) {
- 		if (!cval->mixer->ignore_ctl_error)
--			snd_printd(KERN_ERR "cannot get current value for "
--				   "control %d ch %d: err = %d\n",
-+			snd_printd(KERN_ERR "cannot get current value for control %d ch %d: err = %d\n",
- 				   cval->control, channel, err);
- 		return err;
- 	}
-@@ -367,8 +420,22 @@ int snd_usb_mixer_set_ctl_value(struct usb_mixer_elem_info *cval,
- 				int request, int validx, int value_set)
- {
- 	unsigned char buf[2];
--	int val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
--	int timeout = 10;
-+	int val_len, timeout = 10;
-+
-+	if (cval->mixer->protocol == UAC_VERSION_1) {
-+		val_len = cval->val_type >= USB_MIXER_S16 ? 2 : 1;
-+	} else { /* UAC_VERSION_2 */
-+		/* audio class v2 controls are always 2 bytes in size */
-+		val_len = sizeof(__u16);
-+
-+		/* FIXME */
-+		if (request != UAC_SET_CUR) {
-+			snd_printdd(KERN_WARNING "RANGE setting not yet supported\n");
-+			return -EINVAL;
-+		}
-+
-+		request = UAC2_CS_CUR;
-+	}
- 
- 	value_set = convert_bytes_value(cval, value_set);
- 	buf[0] = value_set & 0xff;
-@@ -564,46 +631,65 @@ static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm
-  */
- static int check_input_term(struct mixer_build *state, int id, struct usb_audio_term *term)
- {
--	unsigned char *p1;
-+	void *p1;
- 
- 	memset(term, 0, sizeof(*term));
- 	while ((p1 = find_audio_control_unit(state, id)) != NULL) {
-+		unsigned char *hdr = p1;
- 		term->id = id;
--		switch (p1[2]) {
-+		switch (hdr[2]) {
- 		case UAC_INPUT_TERMINAL:
--			term->type = combine_word(p1 + 4);
--			term->channels = p1[7];
--			term->chconfig = combine_word(p1 + 8);
--			term->name = p1[11];
-+			if (state->mixer->protocol == UAC_VERSION_1) {
-+				struct uac_input_terminal_descriptor *d = p1;
-+				term->type = le16_to_cpu(d->wTerminalType);
-+				term->channels = d->bNrChannels;
-+				term->chconfig = le16_to_cpu(d->wChannelConfig);
-+				term->name = d->iTerminal;
-+			} else { /* UAC_VERSION_2 */
-+				struct uac2_input_terminal_descriptor *d = p1;
-+				term->type = le16_to_cpu(d->wTerminalType);
-+				term->channels = d->bNrChannels;
-+				term->chconfig = le32_to_cpu(d->bmChannelConfig);
-+				term->name = d->iTerminal;
-+			}
- 			return 0;
--		case UAC_FEATURE_UNIT:
--			id = p1[4];
-+		case UAC_FEATURE_UNIT: {
-+			/* the header is the same for v1 and v2 */
-+			struct uac_feature_unit_descriptor *d = p1;
-+			id = d->bUnitID;
- 			break; /* continue to parse */
--		case UAC_MIXER_UNIT:
--			term->type = p1[2] << 16; /* virtual type */
--			term->channels = p1[5 + p1[4]];
--			term->chconfig = combine_word(p1 + 6 + p1[4]);
--			term->name = p1[p1[0] - 1];
-+		}
-+		case UAC_MIXER_UNIT: {
-+			struct uac_mixer_unit_descriptor *d = p1;
-+			term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+			term->channels = uac_mixer_unit_bNrChannels(d);
-+			term->chconfig = uac_mixer_unit_wChannelConfig(d, state->mixer->protocol);
-+			term->name = uac_mixer_unit_iMixer(d);
- 			return 0;
--		case UAC_SELECTOR_UNIT:
-+		}
-+		case UAC_SELECTOR_UNIT: {
-+			struct uac_selector_unit_descriptor *d = p1;
- 			/* call recursively to retrieve the channel info */
--			if (check_input_term(state, p1[5], term) < 0)
-+			if (check_input_term(state, d->baSourceID[0], term) < 0)
- 				return -ENODEV;
--			term->type = p1[2] << 16; /* virtual type */
-+			term->type = d->bDescriptorSubtype << 16; /* virtual type */
- 			term->id = id;
--			term->name = p1[9 + p1[0] - 1];
-+			term->name = uac_selector_unit_iSelector(d);
- 			return 0;
-+		}
- 		case UAC_PROCESSING_UNIT_V1:
--		case UAC_EXTENSION_UNIT_V1:
--			if (p1[6] == 1) {
--				id = p1[7];
-+		case UAC_EXTENSION_UNIT_V1: {
-+			struct uac_processing_unit_descriptor *d = p1;
-+			if (d->bNrInPins) {
-+				id = d->baSourceID[0];
- 				break; /* continue to parse */
- 			}
--			term->type = p1[2] << 16; /* virtual type */
--			term->channels = p1[7 + p1[6]];
--			term->chconfig = combine_word(p1 + 8 + p1[6]);
--			term->name = p1[12 + p1[6] + p1[11 + p1[6]]];
-+			term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+			term->channels = uac_processing_unit_bNrChannels(d);
-+			term->chconfig = uac_processing_unit_wChannelConfig(d, state->mixer->protocol);
-+			term->name = uac_processing_unit_iProcessing(d, state->mixer->protocol);
- 			return 0;
-+		}
- 		default:
- 			return -ENODEV;
- 		}
-@@ -850,6 +936,15 @@ static struct snd_kcontrol_new usb_feature_unit_ctl = {
- 	.put = mixer_ctl_feature_put,
- };
- 
-+/* the read-only variant */
-+static struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "", /* will be filled later manually */
-+	.info = mixer_ctl_feature_info,
-+	.get = mixer_ctl_feature_get,
-+	.put = NULL,
-+};
-+
- 
- /*
-  * build a feature control
-@@ -862,7 +957,8 @@ static size_t append_ctl_name(struct snd_kcontrol *kctl, const char *str)
- 
- static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 			      unsigned int ctl_mask, int control,
--			      struct usb_audio_term *iterm, int unitid)
-+			      struct usb_audio_term *iterm, int unitid,
-+			      int read_only)
- {
- 	struct uac_feature_unit_descriptor *desc = raw_desc;
- 	unsigned int len = 0;
-@@ -906,7 +1002,11 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 	/* get min/max values */
- 	get_min_max(cval, 0);
- 
--	kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
-+	if (read_only)
-+		kctl = snd_ctl_new1(&usb_feature_unit_ctl_ro, cval);
-+	else
-+		kctl = snd_ctl_new1(&usb_feature_unit_ctl, cval);
-+
- 	if (! kctl) {
- 		snd_printk(KERN_ERR "cannot malloc kcontrol\n");
- 		kfree(cval);
-@@ -1016,24 +1116,34 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
- 	struct usb_audio_term iterm;
- 	unsigned int master_bits, first_ch_bits;
- 	int err, csize;
--	struct uac_feature_unit_descriptor *ftr = _ftr;
-+	struct uac_feature_unit_descriptor *hdr = _ftr;
-+	__u8 *bmaControls;
-+
-+	if (state->mixer->protocol == UAC_VERSION_1) {
-+		csize = hdr->bControlSize;
-+		channels = (hdr->bLength - 7) / csize - 1;
-+		bmaControls = hdr->bmaControls;
-+	} else {
-+		struct uac2_feature_unit_descriptor *ftr = _ftr;
-+		csize = 4;
-+		channels = (hdr->bLength - 6) / 4;
-+		bmaControls = ftr->bmaControls;
-+	}
- 
--	if (ftr->bLength < 7 || ! (csize = ftr->bControlSize) || ftr->bLength < 7 + csize) {
-+	if (hdr->bLength < 7 || !csize || hdr->bLength < 7 + csize) {
- 		snd_printk(KERN_ERR "usbaudio: unit %u: invalid UAC_FEATURE_UNIT descriptor\n", unitid);
- 		return -EINVAL;
- 	}
- 
- 	/* parse the source unit */
--	if ((err = parse_audio_unit(state, ftr->bSourceID)) < 0)
-+	if ((err = parse_audio_unit(state, hdr->bSourceID)) < 0)
- 		return err;
- 
- 	/* determine the input source type and name */
--	if (check_input_term(state, ftr->bSourceID, &iterm) < 0)
-+	if (check_input_term(state, hdr->bSourceID, &iterm) < 0)
- 		return -EINVAL;
- 
--	channels = (ftr->bLength - 7) / csize - 1;
--
--	master_bits = snd_usb_combine_bytes(ftr->bmaControls, csize);
-+	master_bits = snd_usb_combine_bytes(bmaControls, csize);
- 	/* master configuration quirks */
- 	switch (state->chip->usb_id) {
- 	case USB_ID(0x08bb, 0x2702):
-@@ -1044,21 +1154,54 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
- 		break;
- 	}
- 	if (channels > 0)
--		first_ch_bits = snd_usb_combine_bytes(ftr->bmaControls + csize, csize);
-+		first_ch_bits = snd_usb_combine_bytes(bmaControls + csize, csize);
- 	else
- 		first_ch_bits = 0;
--	/* check all control types */
--	for (i = 0; i < 10; i++) {
--		unsigned int ch_bits = 0;
--		for (j = 0; j < channels; j++) {
--			unsigned int mask = snd_usb_combine_bytes(ftr->bmaControls + csize * (j+1), csize);
--			if (mask & (1 << i))
--				ch_bits |= (1 << j);
-+
-+	if (state->mixer->protocol == UAC_VERSION_1) {
-+		/* check all control types */
-+		for (i = 0; i < 10; i++) {
-+			unsigned int ch_bits = 0;
-+			for (j = 0; j < channels; j++) {
-+				unsigned int mask = snd_usb_combine_bytes(bmaControls + csize * (j+1), csize);
-+				if (mask & (1 << i))
-+					ch_bits |= (1 << j);
-+			}
-+			/* audio class v1 controls are never read-only */
-+			if (ch_bits & 1) /* the first channel must be set (for ease of programming) */
-+				build_feature_ctl(state, _ftr, ch_bits, i, &iterm, unitid, 0);
-+			if (master_bits & (1 << i))
-+				build_feature_ctl(state, _ftr, 0, i, &iterm, unitid, 0);
-+		}
-+	} else { /* UAC_VERSION_2 */
-+		for (i = 0; i < 30/2; i++) {
-+			/* From the USB Audio spec v2.0:
-+			   bmaControls() is a (ch+1)-element array of 4-byte bitmaps,
-+			   each containing a set of bit pairs. If a Control is present,
-+			   it must be Host readable. If a certain Control is not
-+			   present then the bit pair must be set to 0b00.
-+			   If a Control is present but read-only, the bit pair must be
-+			   set to 0b01. If a Control is also Host programmable, the bit
-+			   pair must be set to 0b11. The value 0b10 is not allowed. */
-+			unsigned int ch_bits = 0;
-+			unsigned int ch_read_only = 0;
-+
-+			for (j = 0; j < channels; j++) {
-+				unsigned int mask = snd_usb_combine_bytes(bmaControls + csize * (j+1), csize);
-+				if (mask & (1 << (i * 2))) {
-+					ch_bits |= (1 << j);
-+					if (~mask & (1 << ((i * 2) + 1)))
-+						ch_read_only |= (1 << j);
-+				}
-+			}
-+
-+			/* FIXME: the whole unit is read-only if any of the channels is marked read-only */
-+			if (ch_bits & 1) /* the first channel must be set (for ease of programming) */
-+				build_feature_ctl(state, _ftr, ch_bits, i, &iterm, unitid, !!ch_read_only);
-+			if (master_bits & (1 << i * 2))
-+				build_feature_ctl(state, _ftr, 0, i, &iterm, unitid,
-+						  ~master_bits & (1 << ((i * 2) + 1)));
- 		}
--		if (ch_bits & 1) /* the first channel must be set (for ease of programming) */
--			build_feature_ctl(state, _ftr, ch_bits, i, &iterm, unitid);
--		if (master_bits & (1 << i))
--			build_feature_ctl(state, _ftr, 0, i, &iterm, unitid);
- 	}
- 
- 	return 0;
-@@ -1100,7 +1243,7 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
- 	cval->control = in_ch + 1; /* based on 1 */
- 	cval->val_type = USB_MIXER_S16;
- 	for (i = 0; i < num_outs; i++) {
--		if (check_matrix_bitmap(uac_mixer_unit_bmControls(desc), in_ch, i, num_outs)) {
-+		if (check_matrix_bitmap(uac_mixer_unit_bmControls(desc, state->mixer->protocol), in_ch, i, num_outs)) {
- 			cval->cmask |= (1 << i);
- 			cval->channels++;
- 		}
-@@ -1164,7 +1307,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid, void *r
- 			int och, ich_has_controls = 0;
- 
- 			for (och = 0; och < num_outs; ++och) {
--				if (check_matrix_bitmap(uac_mixer_unit_bmControls(desc),
-+				if (check_matrix_bitmap(uac_mixer_unit_bmControls(desc, state->mixer->protocol),
- 							ich, och, num_outs)) {
- 					ich_has_controls = 1;
- 					break;
-@@ -1343,7 +1486,8 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
- 		0, NULL, default_value_info
- 	};
- 
--	if (desc->bLength < 13 || desc->bLength < 13 + num_ins || desc->bLength < num_ins + uac_processing_unit_bControlSize(desc)) {
-+	if (desc->bLength < 13 || desc->bLength < 13 + num_ins ||
-+	    desc->bLength < num_ins + uac_processing_unit_bControlSize(desc, state->mixer->protocol)) {
- 		snd_printk(KERN_ERR "invalid %s descriptor (id %d)\n", name, unitid);
- 		return -EINVAL;
- 	}
-@@ -1361,7 +1505,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
- 		info = &default_info;
- 
- 	for (valinfo = info->values; valinfo->control; valinfo++) {
--		__u8 *controls = uac_processing_unit_bmControls(desc);
-+		__u8 *controls = uac_processing_unit_bmControls(desc, state->mixer->protocol);
- 
- 		if (! (controls[valinfo->control / 8] & (1 << ((valinfo->control % 8) - 1))))
- 			continue;
-@@ -1381,7 +1525,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
- 
- 		/* get min/max values */
- 		if (type == USB_PROC_UPDOWN && cval->control == USB_PROC_UPDOWN_MODE_SEL) {
--			__u8 *control_spec = uac_processing_unit_specific(desc);
-+			__u8 *control_spec = uac_processing_unit_specific(desc, state->mixer->protocol);
- 			/* FIXME: hard-coded */
- 			cval->min = 1;
- 			cval->max = control_spec[0];
-@@ -1414,7 +1558,7 @@ static int build_audio_procunit(struct mixer_build *state, int unitid, void *raw
- 		else if (info->name)
- 			strlcpy(kctl->id.name, info->name, sizeof(kctl->id.name));
- 		else {
--			nameid = uac_processing_unit_iProcessing(desc);
-+			nameid = uac_processing_unit_iProcessing(desc, state->mixer->protocol);
- 			len = 0;
- 			if (nameid)
- 				len = snd_usb_copy_string_desc(state, nameid, kctl->id.name, sizeof(kctl->id.name));
-@@ -1676,9 +1820,17 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
- 	case UAC_FEATURE_UNIT:
- 		return parse_audio_feature_unit(state, unitid, p1);
- 	case UAC_PROCESSING_UNIT_V1:
--		return parse_audio_processing_unit(state, unitid, p1);
-+	/*   UAC2_EFFECT_UNIT has the same value */
-+		if (state->mixer->protocol == UAC_VERSION_1)
-+			return parse_audio_processing_unit(state, unitid, p1);
-+		else
-+			return 0; /* FIXME - effect units not implemented yet */
- 	case UAC_EXTENSION_UNIT_V1:
--		return parse_audio_extension_unit(state, unitid, p1);
-+	/*   UAC2_PROCESSING_UNIT_V2 has the same value */
-+		if (state->mixer->protocol == UAC_VERSION_1)
-+			return parse_audio_extension_unit(state, unitid, p1);
-+		else /* UAC_VERSION_2 */
-+			return parse_audio_processing_unit(state, unitid, p1);
- 	default:
- 		snd_printk(KERN_ERR "usbaudio: unit %u: unexpected type 0x%02x\n", unitid, p1[2]);
- 		return -EINVAL;
-@@ -1711,11 +1863,11 @@ static int snd_usb_mixer_dev_free(struct snd_device *device)
-  */
- static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- {
--	struct uac_output_terminal_descriptor_v1 *desc;
- 	struct mixer_build state;
- 	int err;
- 	const struct usbmix_ctl_map *map;
- 	struct usb_host_interface *hostif;
-+	void *p;
- 
- 	hostif = &usb_ifnum_to_if(mixer->chip->dev, mixer->ctrlif)->altsetting[0];
- 	memset(&state, 0, sizeof(state));
-@@ -1734,18 +1886,35 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 		}
- 	}
- 
--	desc = NULL;
--	while ((desc = snd_usb_find_csint_desc(hostif->extra, hostif->extralen, desc, UAC_OUTPUT_TERMINAL)) != NULL) {
--		if (desc->bLength < 9)
--			continue; /* invalid descriptor? */
--		set_bit(desc->bTerminalID, state.unitbitmap);  /* mark terminal ID as visited */
--		state.oterm.id = desc->bTerminalID;
--		state.oterm.type = le16_to_cpu(desc->wTerminalType);
--		state.oterm.name = desc->iTerminal;
--		err = parse_audio_unit(&state, desc->bSourceID);
--		if (err < 0)
--			return err;
-+	p = NULL;
-+	while ((p = snd_usb_find_csint_desc(hostif->extra, hostif->extralen, p, UAC_OUTPUT_TERMINAL)) != NULL) {
-+		if (mixer->protocol == UAC_VERSION_1) {
-+			struct uac_output_terminal_descriptor_v1 *desc = p;
-+
-+			if (desc->bLength < sizeof(*desc))
-+				continue; /* invalid descriptor? */
-+			set_bit(desc->bTerminalID, state.unitbitmap);  /* mark terminal ID as visited */
-+			state.oterm.id = desc->bTerminalID;
-+			state.oterm.type = le16_to_cpu(desc->wTerminalType);
-+			state.oterm.name = desc->iTerminal;
-+			err = parse_audio_unit(&state, desc->bSourceID);
-+			if (err < 0)
-+				return err;
-+		} else { /* UAC_VERSION_2 */
-+			struct uac2_output_terminal_descriptor *desc = p;
-+
-+			if (desc->bLength < sizeof(*desc))
-+				continue; /* invalid descriptor? */
-+			set_bit(desc->bTerminalID, state.unitbitmap);  /* mark terminal ID as visited */
-+			state.oterm.id = desc->bTerminalID;
-+			state.oterm.type = le16_to_cpu(desc->wTerminalType);
-+			state.oterm.name = desc->iTerminal;
-+			err = parse_audio_unit(&state, desc->bSourceID);
-+			if (err < 0)
-+				return err;
-+		}
- 	}
-+
- 	return 0;
- }
- 
-@@ -1868,7 +2037,7 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 	struct usb_mixer_interface *mixer;
- 	struct snd_info_entry *entry;
- 	struct usb_host_interface *host_iface;
--	int err, protocol;
-+	int err;
- 
- 	strcpy(chip->card->mixername, "USB Mixer");
- 
-@@ -1886,14 +2055,7 @@ int snd_usb_create_mixer(struct snd_usb_audio *chip, int ctrlif,
- 	}
- 
- 	host_iface = &usb_ifnum_to_if(chip->dev, ctrlif)->altsetting[0];
--	protocol = host_iface->desc.bInterfaceProtocol;
--
--	/* FIXME! */
--	if (protocol != UAC_VERSION_1) {
--		snd_printk(KERN_WARNING "mixer interface protocol 0x%02x not yet supported\n",
--					protocol);
--		return 0;
--	}
-+	mixer->protocol = host_iface->desc.bInterfaceProtocol;
- 
- 	if ((err = snd_usb_mixer_controls(mixer)) < 0 ||
- 	    (err = snd_usb_mixer_status_create(mixer)) < 0)
-diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
-index 63101ae..1301238 100644
---- a/sound/usb/mixer.h
-+++ b/sound/usb/mixer.h
-@@ -10,6 +10,9 @@ struct usb_mixer_interface {
- 	/* array[MAX_ID_ELEMS], indexed by unit id */
- 	struct usb_mixer_elem_info **id_elems;
- 
-+	/* the usb audio specification version this interface complies to */
-+	int protocol;
-+
- 	/* Sound Blaster remote control stuff */
- 	const struct rc_config *rc_cfg;
- 	u32 rc_code;
--- 
-1.6.6.2
+As the patch touch both the include files and audio code, it would go
+thru the ALSA channel again if you don't mind.
+
+Thanks,
+Daniel
+
+
+> ---
+>  include/linux/usb/audio-v2.h |  319 ++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/usb/audio.h    |   50 +------
+>  sound/usb/card.c             |    3 +-
+>  sound/usb/endpoint.c         |    1 +
+>  sound/usb/format.c           |    1 +
+>  sound/usb/pcm.c              |    5 +-
+>  6 files changed, 333 insertions(+), 46 deletions(-)
+>  create mode 100644 include/linux/usb/audio-v2.h
+> 
+> diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
+> new file mode 100644
+> index 0000000..3b8560d
+> --- /dev/null
+> +++ b/include/linux/usb/audio-v2.h
+> @@ -0,0 +1,319 @@
+> +/*
+> + * Copyright (c) 2010 Daniel Mack <daniel@caiaq.de>
+> + *
+> + * This software is distributed under the terms of the GNU General Public
+> + * License ("GPL") version 2, as published by the Free Software Foundation.
+> + *
+> + * This file holds USB constants and structures defined
+> + * by the USB Device Class Definition for Audio Devices in version 2.0.
+> + * Comments below reference relevant sections of the documents contained
+> + * in http://www.usb.org/developers/devclass_docs/Audio2.0_final.zip
+> + */
+> +
+> +#ifndef __LINUX_USB_AUDIO_V2_H
+> +#define __LINUX_USB_AUDIO_V2_H
+> +
+> +#include <linux/types.h>
+> +
+> +/* v1.0 and v2.0 of this standard have many things in common. For the rest
+> + * of the definitions, please refer to audio.h */
+> +
+> +/* 4.7.2.1 Clock Source Descriptor */
+> +
+> +struct uac_clock_source_descriptor {
+> +	__u8 bLength;
+> +	__u8 bDescriptorType;
+> +	__u8 bDescriptorSubtype;
+> +	__u8 bClockID;
+> +	__u8 bmAttributes;
+> +	__u8 bmControls;
+> +	__u8 bAssocTerminal;
+> +	__u8 iClockSource;
+> +} __attribute__((packed));
+> +
+> +/* 4.7.2.2 Clock Source Descriptor */
+> +
+> +struct uac_clock_selector_descriptor {
+> +	__u8 bLength;
+> +	__u8 bDescriptorType;
+> +	__u8 bDescriptorSubtype;
+> +	__u8 bClockID;
+> +	__u8 bNrInPins;
+> +	__u8 bmControls;
+> +	__u8 baCSourceID[];
+> +} __attribute__((packed));
+> +
+> +/* 4.9.2 Class-Specific AS Interface Descriptor */
+> +
+> +struct uac_as_header_descriptor_v2 {
+> +	__u8 bLength;
+> +	__u8 bDescriptorType;
+> +	__u8 bDescriptorSubtype;
+> +	__u8 bTerminalLink;
+> +	__u8 bmControls;
+> +	__u8 bFormatType;
+> +	__u32 bmFormats;
+> +	__u8 bNrChannels;
+> +	__u32 bmChannelConfig;
+> +	__u8 iChannelNames;
+> +} __attribute__((packed));
+> +
+> +
+> +/* A.7 Audio Function Category Codes */
+> +#define UAC2_FUNCTION_SUBCLASS_UNDEFINED	0x00
+> +#define UAC2_FUNCTION_DESKTOP_SPEAKER		0x01
+> +#define UAC2_FUNCTION_HOME_THEATER		0x02
+> +#define UAC2_FUNCTION_MICROPHONE		0x03
+> +#define UAC2_FUNCTION_HEADSET			0x04
+> +#define UAC2_FUNCTION_TELEPHONE			0x05
+> +#define UAC2_FUNCTION_CONVERTER			0x06
+> +#define UAC2_FUNCTION_SOUND_RECORDER		0x07
+> +#define UAC2_FUNCTION_IO_BOX			0x08
+> +#define UAC2_FUNCTION_MUSICAL_INSTRUMENT	0x09
+> +#define UAC2_FUNCTION_PRO_AUDIO			0x0a
+> +#define UAC2_FUNCTION_AUDIO_VIDEO		0x0b
+> +#define UAC2_FUNCTION_CONTROL_PANEL		0x0c
+> +#define UAC2_FUNCTION_OTHER			0xff
+> +
+> +/* A.9 Audio Class-Specific AC Interface Descriptor Subtypes */
+> +/* see audio.h for the rest, which is identical to v1 */
+> +#define UAC2_EFFECT_UNIT			0x07
+> +#define UAC2_PROCESSING_UNIT_V2		0x08
+> +#define UAC2_EXTENSION_UNIT_V2		0x09
+> +#define UAC2_CLOCK_SOURCE		0x0a
+> +#define UAC2_CLOCK_SELECTOR		0x0b
+> +#define UAC2_CLOCK_MULTIPLIER		0x0c
+> +#define UAC2_SAMPLE_RATE_CONVERTER	0x0d
+> +
+> +/* A.10 Audio Class-Specific AS Interface Descriptor Subtypes */
+> +/* see audio.h for the rest, which is identical to v1 */
+> +#define UAC2_ENCODER			0x03
+> +#define UAC2_DECODER			0x04
+> +
+> +/* A.11 Effect Unit Effect Types */
+> +#define UAC2_EFFECT_UNDEFINED		0x00
+> +#define UAC2_EFFECT_PARAM_EQ		0x01
+> +#define UAC2_EFFECT_REVERB		0x02
+> +#define UAC2_EFFECT_MOD_DELAY		0x03
+> +#define UAC2_EFFECT_DYN_RANGE_COMP	0x04
+> +
+> +/* A.12 Processing Unit Process Types */
+> +#define UAC2_PROCESS_UNDEFINED		0x00
+> +#define UAC2_PROCESS_UP_DOWNMIX		0x01
+> +#define UAC2_PROCESS_DOLBY_PROLOCIC	0x02
+> +#define UAC2_PROCESS_STEREO_EXTENDER	0x03
+> +
+> +/* A.14 Audio Class-Specific Request Codes */
+> +#define UAC2_CS_CUR			0x01
+> +#define UAC2_CS_RANGE			0x02
+> +
+> +/* A.15 Encoder Type Codes */
+> +#define UAC2_ENCODER_UNDEFINED		0x00
+> +#define UAC2_ENCODER_OTHER		0x01
+> +#define UAC2_ENCODER_MPEG		0x02
+> +#define UAC2_ENCODER_AC3		0x03
+> +#define UAC2_ENCODER_WMA		0x04
+> +#define UAC2_ENCODER_DTS		0x05
+> +
+> +/* A.16 Decoder Type Codes */
+> +#define UAC2_DECODER_UNDEFINED		0x00
+> +#define UAC2_DECODER_OTHER		0x01
+> +#define UAC2_DECODER_MPEG		0x02
+> +#define UAC2_DECODER_AC3		0x03
+> +#define UAC2_DECODER_WMA		0x04
+> +#define UAC2_DECODER_DTS		0x05
+> +
+> +/* A.17.1 Clock Source Control Selectors */
+> +#define UAC2_CS_UNDEFINED		0x00
+> +#define UAC2_CS_CONTROL_SAM_FREQ	0x01
+> +#define UAC2_CS_CONTROL_CLOCK_VALID	0x02
+> +
+> +/* A.17.2 Clock Selector Control Selectors */
+> +#define UAC2_CX_UNDEFINED		0x00
+> +#define UAC2_CX_CLOCK_SELECTOR		0x01
+> +
+> +/* A.17.3 Clock Multiplier Control Selectors */
+> +#define UAC2_CM_UNDEFINED		0x00
+> +#define UAC2_CM_NUMERATOR		0x01
+> +#define UAC2_CM_DENOMINTATOR		0x02
+> +
+> +/* A.17.4 Terminal Control Selectors */
+> +#define UAC2_TE_UNDEFINED		0x00
+> +#define UAC2_TE_COPY_PROTECT		0x01
+> +#define UAC2_TE_CONNECTOR		0x02
+> +#define UAC2_TE_OVERLOAD		0x03
+> +#define UAC2_TE_CLUSTER			0x04
+> +#define UAC2_TE_UNDERFLOW		0x05
+> +#define UAC2_TE_OVERFLOW		0x06
+> +#define UAC2_TE_LATENCY			0x07
+> +
+> +/* A.17.5 Mixer Control Selectors */
+> +#define UAC2_MU_UNDEFINED		0x00
+> +#define UAC2_MU_MIXER			0x01
+> +#define UAC2_MU_CLUSTER			0x02
+> +#define UAC2_MU_UNDERFLOW		0x03
+> +#define UAC2_MU_OVERFLOW		0x04
+> +#define UAC2_MU_LATENCY			0x05
+> +
+> +/* A.17.6 Selector Control Selectors */
+> +#define UAC2_SU_UNDEFINED		0x00
+> +#define UAC2_SU_SELECTOR		0x01
+> +#define UAC2_SU_LATENCY			0x02
+> +
+> +/* A.17.7 Feature Unit Control Selectors */
+> +/* see audio.h for the rest, which is identical to v1 */
+> +#define UAC2_FU_INPUT_GAIN		0x0b
+> +#define UAC2_FU_INPUT_GAIN_PAD		0x0c
+> +#define UAC2_FU_PHASE_INVERTER		0x0d
+> +#define UAC2_FU_UNDERFLOW		0x0e
+> +#define UAC2_FU_OVERFLOW		0x0f
+> +#define UAC2_FU_LATENCY			0x10
+> +
+> +/* A.17.8.1 Parametric Equalizer Section Effect Unit Control Selectors */
+> +#define UAC2_PE_UNDEFINED		0x00
+> +#define UAC2_PE_ENABLE			0x01
+> +#define UAC2_PE_CENTERFREQ		0x02
+> +#define UAC2_PE_QFACTOR			0x03
+> +#define UAC2_PE_GAIN			0x04
+> +#define UAC2_PE_UNDERFLOW		0x05
+> +#define UAC2_PE_OVERFLOW		0x06
+> +#define UAC2_PE_LATENCY			0x07
+> +
+> +/* A.17.8.2 Reverberation Effect Unit Control Selectors */
+> +#define UAC2_RV_UNDEFINED		0x00
+> +#define UAC2_RV_ENABLE			0x01
+> +#define UAC2_RV_TYPE			0x02
+> +#define UAC2_RV_LEVEL			0x03
+> +#define UAC2_RV_TIME			0x04
+> +#define UAC2_RV_FEEDBACK		0x05
+> +#define UAC2_RV_PREDELAY		0x06
+> +#define UAC2_RV_DENSITY			0x07
+> +#define UAC2_RV_HIFREQ_ROLLOFF		0x08
+> +#define UAC2_RV_UNDERFLOW		0x09
+> +#define UAC2_RV_OVERFLOW		0x0a
+> +#define UAC2_RV_LATENCY			0x0b
+> +
+> +/* A.17.8.3 Modulation Delay Effect Control Selectors */
+> +#define UAC2_MD_UNDEFINED		0x00
+> +#define UAC2_MD_ENABLE			0x01
+> +#define UAC2_MD_BALANCE			0x02
+> +#define UAC2_MD_RATE			0x03
+> +#define UAC2_MD_DEPTH			0x04
+> +#define UAC2_MD_TIME			0x05
+> +#define UAC2_MD_FEEDBACK		0x06
+> +#define UAC2_MD_UNDERFLOW		0x07
+> +#define UAC2_MD_OVERFLOW		0x08
+> +#define UAC2_MD_LATENCY			0x09
+> +
+> +/* A.17.8.4 Dynamic Range Compressor Effect Unit Control Selectors */
+> +#define UAC2_DR_UNDEFINED		0x00
+> +#define UAC2_DR_ENABLE			0x01
+> +#define UAC2_DR_COMPRESSION_RATE	0x02
+> +#define UAC2_DR_MAXAMPL			0x03
+> +#define UAC2_DR_THRESHOLD		0x04
+> +#define UAC2_DR_ATTACK_TIME		0x05
+> +#define UAC2_DR_RELEASE_TIME		0x06
+> +#define UAC2_DR_UNDEFLOW		0x07
+> +#define UAC2_DR_OVERFLOW		0x08
+> +#define UAC2_DR_LATENCY			0x09
+> +
+> +/* A.17.9.1 Up/Down-mix Processing Unit Control Selectors */
+> +#define UAC2_UD_UNDEFINED		0x00
+> +#define UAC2_UD_ENABLE			0x01
+> +#define UAC2_UD_MODE_SELECT		0x02
+> +#define UAC2_UD_CLUSTER			0x03
+> +#define UAC2_UD_UNDERFLOW		0x04
+> +#define UAC2_UD_OVERFLOW		0x05
+> +#define UAC2_UD_LATENCY			0x06
+> +
+> +/* A.17.9.2 Dolby Prologic[tm] Processing Unit Control Selectors */
+> +#define UAC2_DP_UNDEFINED		0x00
+> +#define UAC2_DP_ENABLE			0x01
+> +#define UAC2_DP_MODE_SELECT		0x02
+> +#define UAC2_DP_CLUSTER			0x03
+> +#define UAC2_DP_UNDERFFLOW		0x04
+> +#define UAC2_DP_OVERFLOW		0x05
+> +#define UAC2_DP_LATENCY			0x06
+> +
+> +/* A.17.9.3 Stereo Expander Processing Unit Control Selectors */
+> +#define UAC2_ST_EXT_UNDEFINED		0x00
+> +#define UAC2_ST_EXT_ENABLE		0x01
+> +#define UAC2_ST_EXT_WIDTH		0x02
+> +#define UAC2_ST_EXT_UNDEFLOW		0x03
+> +#define UAC2_ST_EXT_OVERFLOW		0x04
+> +#define UAC2_ST_EXT_LATENCY		0x05
+> +
+> +/* A.17.10 Extension Unit Control Selectors */
+> +#define UAC2_XU_UNDEFINED		0x00
+> +#define UAC2_XU_ENABLE			0x01
+> +#define UAC2_XU_CLUSTER			0x02
+> +#define UAC2_XU_UNDERFLOW		0x03
+> +#define UAC2_XU_OVERFLOW		0x04
+> +#define UAC2_XU_LATENCY			0x05
+> +
+> +/* A.17.11 AudioStreaming Interface Control Selectors */
+> +#define UAC2_AS_UNDEFINED		0x00
+> +#define UAC2_AS_ACT_ALT_SETTING		0x01
+> +#define UAC2_AS_VAL_ALT_SETTINGS	0x02
+> +#define UAC2_AS_AUDIO_DATA_FORMAT	0x03
+> +
+> +/* A.17.12 Encoder Control Selectors */
+> +#define UAC2_EN_UNDEFINED		0x00
+> +#define UAC2_EN_BIT_RATE		0x01
+> +#define UAC2_EN_QUALITY			0x02
+> +#define UAC2_EN_VBR			0x03
+> +#define UAC2_EN_TYPE			0x04
+> +#define UAC2_EN_UNDERFLOW		0x05
+> +#define UAC2_EN_OVERFLOW		0x06
+> +#define UAC2_EN_ENCODER_ERROR		0x07
+> +#define UAC2_EN_PARAM1			0x08
+> +#define UAC2_EN_PARAM2			0x09
+> +#define UAC2_EN_PARAM3			0x0a
+> +#define UAC2_EN_PARAM4			0x0b
+> +#define UAC2_EN_PARAM5			0x0c
+> +#define UAC2_EN_PARAM6			0x0d
+> +#define UAC2_EN_PARAM7			0x0e
+> +#define UAC2_EN_PARAM8			0x0f
+> +
+> +/* A.17.13.1 MPEG Decoder Control Selectors */
+> +#define UAC2_MPEG_UNDEFINED		0x00
+> +#define UAC2_MPEG_DUAL_CHANNEL		0x01
+> +#define UAC2_MPEG_SECOND_STEREO		0x02
+> +#define UAC2_MPEG_MULTILINGUAL		0x03
+> +#define UAC2_MPEG_DYN_RANGE		0x04
+> +#define UAC2_MPEG_SCALING		0x05
+> +#define UAC2_MPEG_HILO_SCALING		0x06
+> +#define UAC2_MPEG_UNDERFLOW		0x07
+> +#define UAC2_MPEG_OVERFLOW		0x08
+> +#define UAC2_MPEG_DECODER_ERROR		0x09
+> +
+> +/* A17.13.2 AC3 Decoder Control Selectors */
+> +#define UAC2_AC3_UNDEFINED		0x00
+> +#define UAC2_AC3_MODE			0x01
+> +#define UAC2_AC3_DYN_RANGE		0x02
+> +#define UAC2_AC3_SCALING		0x03
+> +#define UAC2_AC3_HILO_SCALING		0x04
+> +#define UAC2_AC3_UNDERFLOW		0x05
+> +#define UAC2_AC3_OVERFLOW		0x06
+> +#define UAC2_AC3_DECODER_ERROR		0x07
+> +
+> +/* A17.13.3 WMA Decoder Control Selectors */
+> +#define UAC2_WMA_UNDEFINED		0x00
+> +#define UAC2_WMA_UNDERFLOW		0x01
+> +#define UAC2_WMA_OVERFLOW		0x02
+> +#define UAC2_WMA_DECODER_ERROR		0x03
+> +
+> +/* A17.13.4 DTS Decoder Control Selectors */
+> +#define UAC2_DTS_UNDEFINED		0x00
+> +#define UAC2_DTS_UNDERFLOW		0x01
+> +#define UAC2_DTS_OVERFLOW		0x02
+> +#define UAC2_DTS_DECODER_ERROR		0x03
+> +
+> +/* A17.14 Endpoint Control Selectors */
+> +#define UAC2_EP_CS_UNDEFINED		0x00
+> +#define UAC2_EP_CS_PITCH		0x01
+> +#define UAC2_EP_CS_DATA_OVERRUN		0x02
+> +#define UAC2_EP_CS_DATA_UNDERRUN	0x03
+> +
+> +#endif /* __LINUX_USB_AUDIO_V2_H */
+> +
+> diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
+> index 4d3e450..cdad728 100644
+> --- a/include/linux/usb/audio.h
+> +++ b/include/linux/usb/audio.h
+> @@ -13,6 +13,9 @@
+>   * Comments below reference relevant sections of that document:
+>   *
+>   * http://www.usb.org/developers/devclass_docs/audio10.pdf
+> + *
+> + * Types and defines in this file are either specific to version 1.0 of
+> + * this standard or common for newer versions.
+>   */
+>  
+>  #ifndef __LINUX_USB_AUDIO_H
+> @@ -20,14 +23,15 @@
+>  
+>  #include <linux/types.h>
+>  
+> +/* bInterfaceProtocol values to denote the version of the standard used */
+> +#define UAC_VERSION_1			0x00
+> +#define UAC_VERSION_2			0x20
+> +
+>  /* A.2 Audio Interface Subclass Codes */
+>  #define USB_SUBCLASS_AUDIOCONTROL	0x01
+>  #define USB_SUBCLASS_AUDIOSTREAMING	0x02
+>  #define USB_SUBCLASS_MIDISTREAMING	0x03
+>  
+> -#define UAC_VERSION_1			0x00
+> -#define UAC_VERSION_2			0x20
+> -
+>  /* A.5 Audio Class-Specific AC Interface Descriptor Subtypes */
+>  #define UAC_HEADER			0x01
+>  #define UAC_INPUT_TERMINAL		0x02
+> @@ -38,15 +42,6 @@
+>  #define UAC_PROCESSING_UNIT_V1		0x07
+>  #define UAC_EXTENSION_UNIT_V1		0x08
+>  
+> -/* UAC v2.0 types */
+> -#define UAC_EFFECT_UNIT			0x07
+> -#define UAC_PROCESSING_UNIT_V2		0x08
+> -#define UAC_EXTENSION_UNIT_V2		0x09
+> -#define UAC_CLOCK_SOURCE		0x0a
+> -#define UAC_CLOCK_SELECTOR		0x0b
+> -#define UAC_CLOCK_MULTIPLIER		0x0c
+> -#define UAC_SAMPLE_RATE_CONVERTER	0x0d
+> -
+>  /* A.6 Audio Class-Specific AS Interface Descriptor Subtypes */
+>  #define UAC_AS_GENERAL			0x01
+>  #define UAC_FORMAT_TYPE			0x02
+> @@ -78,10 +73,6 @@
+>  
+>  #define UAC_GET_STAT			0xff
+>  
+> -/* Audio class v2.0 handles all the parameter calls differently */
+> -#define UAC2_CS_CUR			0x01
+> -#define UAC2_CS_RANGE			0x02
+> -
+>  /* MIDI - A.1 MS Class-Specific Interface Descriptor Subtypes */
+>  #define UAC_MS_HEADER			0x01
+>  #define UAC_MIDI_IN_JACK		0x02
+> @@ -200,19 +191,6 @@ struct uac_as_header_descriptor_v1 {
+>  	__le16 wFormatTag;		/* The Audio Data Format */
+>  } __attribute__ ((packed));
+>  
+> -struct uac_as_header_descriptor_v2 {
+> -	__u8 bLength;
+> -	__u8 bDescriptorType;
+> -	__u8 bDescriptorSubtype;
+> -	__u8 bTerminalLink;
+> -	__u8 bmControls;
+> -	__u8 bFormatType;
+> -	__u32 bmFormats;
+> -	__u8 bNrChannels;
+> -	__u32 bmChannelConfig;
+> -	__u8 iChannelNames;
+> -} __attribute__((packed));
+> -
+>  #define UAC_DT_AS_HEADER_SIZE		7
+>  
+>  /* Formats - A.1.1 Audio Data Format Type I Codes */
+> @@ -277,7 +255,6 @@ struct uac_format_type_i_ext_descriptor {
+>  	__u8 bSideBandProtocol;
+>  } __attribute__((packed));
+>  
+> -
+>  /* Formats - Audio Data Format Type I Codes */
+>  
+>  #define UAC_FORMAT_TYPE_II_MPEG	0x1001
+> @@ -336,19 +313,6 @@ struct uac_iso_endpoint_descriptor {
+>  #define UAC_EP_CS_ATTR_PITCH_CONTROL	0x02
+>  #define UAC_EP_CS_ATTR_FILL_MAX		0x80
+>  
+> -/* Audio class v2.0: CLOCK_SOURCE descriptor */
+> -
+> -struct uac_clock_source_descriptor {
+> -	__u8 bLength;
+> -	__u8 bDescriptorType;
+> -	__u8 bDescriptorSubtype;
+> -	__u8 bClockID;
+> -	__u8 bmAttributes;
+> -	__u8 bmControls;
+> -	__u8 bAssocTerminal;
+> -	__u8 iClockSource;
+> -} __attribute__((packed));
+> -
+>  /* A.10.2 Feature Unit Control Selectors */
+>  
+>  struct uac_feature_unit_descriptor {
+> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> index 426aabc..78d12ff 100644
+> --- a/sound/usb/card.c
+> +++ b/sound/usb/card.c
+> @@ -45,6 +45,7 @@
+>  #include <linux/moduleparam.h>
+>  #include <linux/mutex.h>
+>  #include <linux/usb/audio.h>
+> +#include <linux/usb/audio-v2.h>
+>  
+>  #include <sound/core.h>
+>  #include <sound/info.h>
+> @@ -250,7 +251,7 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
+>  		 * clock selectors and sample rate conversion units. */
+>  
+>  		cs = snd_usb_find_csint_desc(host_iface->extra, host_iface->extralen,
+> -						NULL, UAC_CLOCK_SOURCE);
+> +						NULL, UAC2_CLOCK_SOURCE);
+>  
+>  		if (!cs) {
+>  			snd_printk(KERN_ERR "CLOCK_SOURCE descriptor not found\n");
+> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+> index 91850f8..b1309cd 100644
+> --- a/sound/usb/endpoint.c
+> +++ b/sound/usb/endpoint.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/init.h>
+>  #include <linux/usb.h>
+>  #include <linux/usb/audio.h>
+> +#include <linux/usb/audio-v2.h>
+>  
+>  #include <sound/core.h>
+>  #include <sound/pcm.h>
+> diff --git a/sound/usb/format.c b/sound/usb/format.c
+> index b613e0a..0e04efe 100644
+> --- a/sound/usb/format.c
+> +++ b/sound/usb/format.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/init.h>
+>  #include <linux/usb.h>
+>  #include <linux/usb/audio.h>
+> +#include <linux/usb/audio-v2.h>
+>  
+>  #include <sound/core.h>
+>  #include <sound/pcm.h>
+> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+> index e0f3f87..630e220 100644
+> --- a/sound/usb/pcm.c
+> +++ b/sound/usb/pcm.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/init.h>
+>  #include <linux/usb.h>
+>  #include <linux/usb/audio.h>
+> +#include <linux/usb/audio-v2.h>
+>  
+>  #include <sound/core.h>
+>  #include <sound/pcm.h>
+> @@ -215,7 +216,7 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+>  	data[3] = rate >> 24;
+>  	if ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
+>  				   USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
+> -				   0x0100, chip->clock_id << 8,
+> +				   UAC2_CS_CONTROL_SAM_FREQ << 8, chip->clock_id << 8,
+>  				   data, sizeof(data), 1000)) < 0) {
+>  		snd_printk(KERN_ERR "%d:%d:%d: cannot set freq %d (v2)\n",
+>  			   dev->devnum, iface, fmt->altsetting, rate);
+> @@ -223,7 +224,7 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
+>  	}
+>  	if ((err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
+>  				   USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
+> -				   0x0100, chip->clock_id << 8,
+> +				   UAC2_CS_CONTROL_SAM_FREQ << 8, chip->clock_id << 8,
+>  				   data, sizeof(data), 1000)) < 0) {
+>  		snd_printk(KERN_WARNING "%d:%d:%d: cannot get freq (v2)\n",
+>  			   dev->devnum, iface, fmt->altsetting);
+> -- 
+> 1.6.6.2
+> 
