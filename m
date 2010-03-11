@@ -1,20 +1,28 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 37/37] arch/sparc: Remove .archdata.of_node and
-	use .of_node	in struct device
-Date: Thu, 11 Mar 2010 11:07:12 -0700
-Message-ID: <20100311180711.4824.57524.stgit__24865.5312847861$1268331077$gmane$org@angua>
-References: <20100311174830.4824.19820.stgit@angua>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Thu, 11 Mar 2010 10:15:52 -0800
+Message-ID: <a3ef07921003111015x2386cc80x73a2a4bd679b1fe1@mail.gmail.com>
+References: <s5htyswpb18.wl%tiwai@suse.de>
+	<a3ef07921003071121r24979a0breac27e3b0475bbcb@mail.gmail.com>
+	<6B4D417B830BC44B8026029FD256F7F1C16B1AD562@HKMAIL01.nvidia.com>
+	<20100308044614.GA29026@localhost>
+	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
+	<alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>
+	<a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
+	<20100310125456.GA18509@localhost>
+	<a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
+	<alpine.LNX.2.00.1003110824390.4672@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62C49103A8D
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:07:15 +0100 (CET)
-Received: by mail-pw0-f51.google.com with SMTP id 10so154935pwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:07:15 -0800 (PST)
-In-Reply-To: <20100311174830.4824.19820.stgit@angua>
+Received: from mail-px0-f181.google.com (mail-px0-f181.google.com
+	[209.85.216.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54D7B1039E2
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:15:54 +0100 (CET)
+Received: by pxi11 with SMTP id 11so275pxi.16
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:15:53 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1003110824390.4672@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,100 +32,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: monstr@monstr.eu, gregkh@suse.de, benh@kernel.crashing.org, akpm@linux-foundation.org, davem@davemloft.net, sfr@canb.auug.org.au, jgarzik@pobox.com, ben-linux@fluff.org, dwmw2@infrade
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Wei Ni <wni@nvidia.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <jkysela@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Wu Fengguang <fengguang.wu@intel.com>, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-.archdata.of_node is being removed from Microblaze, SPARC and PowerPC
-because it duplicates the struct device .of_node pointer.  This patch
-also removes .node from struct of_device for the same reason.
+On Wed, Mar 10, 2010 at 11:30 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+> On Wed, 10 Mar 2010, VDR User wrote:
+>
+>> [pid 22651] ioctl(21, 0x80044121, 0xb439d2cc) = -1 EPIPE (Broken pipe)
+>> pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed.
+>
+> -EPIPE means underrun condition.
+>
+> Try 'echo 101 > /proc/asound/card0/pcm0p/xrun_debug' and send dmesg output
+> to check if the ring buffer pointer in the hda-intel driver does not return
+> wrong values. Replace card0 and pcm0p with right identifiers (look to 'aplay
+> -l' for right numbers).
+>
+> More info: http://www.alsa-project.org/main/index.php/XRUN_Debug
 
-Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
----
+Hi, thanks for your further reply.  However, I don't see
+"CONFIG_SND_PCM_XRUN_DEBUG" anywhere in the kernel config (both in
+menuconfig or .config).  Also, in order to use the snapshot I had to
+disable ALSA in my kernel anyways.  I did try to enable it just to see
+if that option would appear somewhere but it did not.  I am using
+stable kernel 2.6.33 btw.  I don't see how I can create
+/proc/asound/card1/pcm3p/xrun_debug!
 
- arch/sparc/include/asm/device.h    |    9 ---------
- arch/sparc/include/asm/of_device.h |    1 -
- arch/sparc/kernel/of_device_32.c   |    3 ---
- arch/sparc/kernel/of_device_64.c   |    2 --
- arch/sparc/kernel/pci.c            |    1 -
- 5 files changed, 0 insertions(+), 16 deletions(-)
-
-diff --git a/arch/sparc/include/asm/device.h b/arch/sparc/include/asm/device.h
-index 55dadca..d4c4521 100644
---- a/arch/sparc/include/asm/device.h
-+++ b/arch/sparc/include/asm/device.h
-@@ -13,19 +13,10 @@ struct dev_archdata {
- 	void			*iommu;
- 	void			*stc;
- 	void			*host_controller;
--
--	struct device_node	*prom_node;
- 	struct of_device	*op;
--
- 	int			numa_node;
- };
- 
--static inline void dev_archdata_set_node(struct dev_archdata *ad,
--					 struct device_node *np)
--{
--	ad->prom_node = np;
--}
--
- struct pdev_archdata {
- };
- 
-diff --git a/arch/sparc/include/asm/of_device.h b/arch/sparc/include/asm/of_device.h
-index a5d9811..f320246 100644
---- a/arch/sparc/include/asm/of_device.h
-+++ b/arch/sparc/include/asm/of_device.h
-@@ -14,7 +14,6 @@
-  */
- struct of_device
- {
--	struct device_node		*node;
- 	struct device			dev;
- 	struct resource			resource[PROMREG_MAX];
- 	unsigned int			irqs[PROMINTR_MAX];
-diff --git a/arch/sparc/kernel/of_device_32.c b/arch/sparc/kernel/of_device_32.c
-index 909bee0..37ab163 100644
---- a/arch/sparc/kernel/of_device_32.c
-+++ b/arch/sparc/kernel/of_device_32.c
-@@ -345,12 +345,9 @@ static struct of_device * __init scan_one_device(struct device_node *dp,
- 		return NULL;
- 
- 	sd = &op->dev.archdata;
--	sd->prom_node = dp; /* temporary */
- 	sd->op = op;
- 	op->dev.of_node = dp;
- 
--	op->node = dp;
--
- 	op->clock_freq = of_getintprop_default(dp, "clock-frequency",
- 					       (25*1000*1000));
- 	op->portid = of_getintprop_default(dp, "upa-portid", -1);
-diff --git a/arch/sparc/kernel/of_device_64.c b/arch/sparc/kernel/of_device_64.c
-index e436381..1dae807 100644
---- a/arch/sparc/kernel/of_device_64.c
-+++ b/arch/sparc/kernel/of_device_64.c
-@@ -640,11 +640,9 @@ static struct of_device * __init scan_one_device(struct device_node *dp,
- 		return NULL;
- 
- 	sd = &op->dev.archdata;
--	sd->prom_node = dp; /* temporary */
- 	sd->op = op;
- 
- 	op->dev.of_node = dp;
--	op->node = dp;
- 
- 	op->clock_freq = of_getintprop_default(dp, "clock-frequency",
- 					       (25*1000*1000));
-diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
-index 89c17d0..8a8363a 100644
---- a/arch/sparc/kernel/pci.c
-+++ b/arch/sparc/kernel/pci.c
-@@ -261,7 +261,6 @@ static struct pci_dev *of_create_pci_dev(struct pci_pbm_info *pbm,
- 	sd->iommu = pbm->iommu;
- 	sd->stc = &pbm->stc;
- 	sd->host_controller = pbm;
--	sd->prom_node = node; /* temporary */
- 	sd->op = op = of_find_device_by_node(node);
- 	sd->numa_node = pbm->numa_node;
+Best regards,
+Derek
