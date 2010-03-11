@@ -1,44 +1,37 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 33/37] sound/soc: use .dev.of_node instead of .node in
-	struct of_device
-Date: Thu, 11 Mar 2010 14:22:37 -0700
-Message-ID: <fa686aa41003111322wc1f15b2hd3f653af060f56bf@mail.gmail.com>
-References: <20100311174830.4824.19820.stgit@angua> <20100311180649.4824.10368.stgit@angua>
-	<20100311193458.GA13289@opensource.wolfsonmicro.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCHv2 0/5] FIFO caused playback delay (latency) handling in
+ soc/omap
+Date: Thu, 11 Mar 2010 14:26:55 -0800
+Message-ID: <20100311222655.GP2900@atomide.com>
+References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
+ <20100303133806.GA15105@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Return-path: <linux-ide-owner@vger.kernel.org>
-In-Reply-To: <20100311193458.GA13289@opensource.wolfsonmicro.com>
-Sender: linux-ide-owner@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20100303133806.GA15105@sirena.org.uk>
+Sender: linux-omap-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: monstr@monstr.eu, gregkh@suse.de, benh@kernel.crashing.org, akpm@linux-foundation.org, davem@davemloft.net, sfr@canb.auug.org.au, jgarzik@pobox.com, ben-linux@fluff.org, dwmw2@infradead.org, jeremy.kerr@canonical.com, James.Bottomley@suse.de, microblaze-uclinux@itee.uq.edu.au, linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org, sparclinux@vger.kernel.org, linux-ide@vger.kernel.org, netdev@vger.kernel.org, linux-i2c@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org, timur@freescale.com, lrg@slimlogic.co.uk
+Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, lrg@slimlogic.co.uk, jhnikula@gmail.com, ext-eero.nurkkala@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 11, 2010 at 12:34 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Thu, Mar 11, 2010 at 11:06:50AM -0700, Grant Likely wrote:
->> .node is being removed
->>
->> Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
->
-> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
->
-> but please ensure that Liam and especially Timur also check this (both
-> CCed).
->
-> For enormous patch serieses like this it's really nice if you can ensure
-> that each person is only CCed on the patches that they need to review.
-> Much less stuff in the inbox.
+* Mark Brown <broonie@opensource.wolfsonmicro.com> [100303 05:34]:
+> On Wed, Mar 03, 2010 at 03:08:03PM +0200, Peter Ujfalusi wrote:
+> 
+> > Peter Ujfalusi (5):
+> >   ASoC: core: fix tailing whitespace in soc_pcm_apply_symmetry
+> >   ASoC: core: soc level wrapper for pcm_pointer callback
+> >   ASoC: core: Add delay operation to snd_soc_dai_ops
+> 
+> I'll apply these just now, thanks!
+> 
+> >   OMAP3: McBSP: Add interface for FIFO caused delay query
+> >   ASoC: OMAP3: Report delay caused by the internal FIFO
+> 
+> These also look OK to me but there's the arch/arm dependency.
 
-Yeah, sorry about that (and to everyone receiving this thread, I'm
-really sorry.  I won't do it again).  I've already been yelled at for
-that.  What happened is that on a previous series I was yelled at for
-not sending all patches to everyone (so that the patches could be
-reviewed in context).  So, naturally, I made sure to include everyone
-on the whole series this time....  doh.
+I think the only one is the McBSP patch above.
 
-Next time I post I'll constrain it to small chunks.
+Care to take that too to keep things working?
 
-Thanks for the review.
-
-g.
+Acked-by: Tony Lindgren <tony@atomide.com>
