@@ -1,19 +1,19 @@
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 09/27] drivers/atm/of: don't use deprecated
+Subject: [PATCH 10/27] drivers/input/of: don't use deprecated
 	field in	of_platform_driver
-Date: Thu, 11 Mar 2010 11:22:37 -0700
-Message-ID: <20100311182237.13103.61327.stgit@angua>
+Date: Thu, 11 Mar 2010 11:22:43 -0700
+Message-ID: <20100311182243.13103.2307.stgit@angua>
 References: <20100311181604.13103.30088.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0CA94103B0F
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:22:40 +0100 (CET)
-Received: by mail-pw0-f51.google.com with SMTP id 10so163737pwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:22:40 -0800 (PST)
+Received: from mail-pz0-f203.google.com (mail-pz0-f203.google.com
+	[209.85.222.203])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4AEC6103AC5
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:22:46 +0100 (CET)
+Received: by mail-pz0-f203.google.com with SMTP id 41so181718pzk.23
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:22:46 -0800 (PST)
 In-Reply-To: <20100311181604.13103.30088.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,24 +33,76 @@ and device_driver, so the of_platform_driver copies will be removed soon.
 Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
 
- drivers/atm/fore200e.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
+ drivers/input/misc/sparcspkr.c      |   14 ++++++++++----
+ drivers/input/serio/i8042-sparcio.h |    7 +++++--
+ drivers/input/serio/xilinx_ps2.c    |    7 +++++--
+ 3 files changed, 20 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/atm/fore200e.c b/drivers/atm/fore200e.c
-index 593a03a..da8f176 100644
---- a/drivers/atm/fore200e.c
-+++ b/drivers/atm/fore200e.c
-@@ -2695,8 +2695,11 @@ static const struct of_device_id fore200e_sba_match[] = {
- MODULE_DEVICE_TABLE(of, fore200e_sba_match);
+diff --git a/drivers/input/misc/sparcspkr.c b/drivers/input/misc/sparcspkr.c
+index b064419..11ad153 100644
+--- a/drivers/input/misc/sparcspkr.c
++++ b/drivers/input/misc/sparcspkr.c
+@@ -258,8 +258,11 @@ static const struct of_device_id bbc_beep_match[] = {
+ };
  
- static struct of_platform_driver fore200e_sba_driver = {
--	.name		= "fore_200e",
--	.match_table	= fore200e_sba_match,
+ static struct of_platform_driver bbc_beep_driver = {
+-	.name		= "bbcbeep",
+-	.match_table	= bbc_beep_match,
 +	.driver = {
-+		.name = "fore_200e",
++		.name = "bbcbeep",
 +		.owner = THIS_MODULE,
-+		.of_match_table = fore200e_sba_match,
++		.of_match_table = bbc_beep_match,
 +	},
- 	.probe		= fore200e_sba_probe,
- 	.remove		= __devexit_p(fore200e_sba_remove),
+ 	.probe		= bbc_beep_probe,
+ 	.remove		= __devexit_p(bbc_remove),
+ 	.shutdown	= sparcspkr_shutdown,
+@@ -337,8 +340,11 @@ static const struct of_device_id grover_beep_match[] = {
+ };
+ 
+ static struct of_platform_driver grover_beep_driver = {
+-	.name		= "groverbeep",
+-	.match_table	= grover_beep_match,
++	.driver = {
++		.name = "groverbeep",
++		.owner = THIS_MODULE,
++		.of_match_table = grover_beep_match,
++	},
+ 	.probe		= grover_beep_probe,
+ 	.remove		= __devexit_p(grover_remove),
+ 	.shutdown	= sparcspkr_shutdown,
+diff --git a/drivers/input/serio/i8042-sparcio.h b/drivers/input/serio/i8042-sparcio.h
+index 29e1769..04e32f2 100644
+--- a/drivers/input/serio/i8042-sparcio.h
++++ b/drivers/input/serio/i8042-sparcio.h
+@@ -96,8 +96,11 @@ static const struct of_device_id sparc_i8042_match[] = {
+ MODULE_DEVICE_TABLE(of, sparc_i8042_match);
+ 
+ static struct of_platform_driver sparc_i8042_driver = {
+-	.name		= "i8042",
+-	.match_table	= sparc_i8042_match,
++	.driver = {
++		.name = "i8042",
++		.owner = THIS_MODULE,
++		.of_match_table = sparc_i8042_match,
++	},
+ 	.probe		= sparc_i8042_probe,
+ 	.remove		= __devexit_p(sparc_i8042_remove),
+ };
+diff --git a/drivers/input/serio/xilinx_ps2.c b/drivers/input/serio/xilinx_ps2.c
+index f154153..e787053 100644
+--- a/drivers/input/serio/xilinx_ps2.c
++++ b/drivers/input/serio/xilinx_ps2.c
+@@ -361,8 +361,11 @@ static const struct of_device_id xps2_of_match[] __devinitconst = {
+ MODULE_DEVICE_TABLE(of, xps2_of_match);
+ 
+ static struct of_platform_driver xps2_of_driver = {
+-	.name		= DRIVER_NAME,
+-	.match_table	= xps2_of_match,
++	.driver = {
++		.name = DRIVER_NAME,
++		.owner = THIS_MODULE,
++		.of_match_table = xps2_of_match,
++	},
+ 	.probe		= xps2_of_probe,
+ 	.remove		= __devexit_p(xps2_of_remove),
  };
