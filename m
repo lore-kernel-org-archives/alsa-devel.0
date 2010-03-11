@@ -1,14 +1,14 @@
 From: miguel.aguilar@ridgerun.com
-Subject: [PATCH v2 2/5] ASoC: DaVinci: Voice Codec Interface
-Date: Thu, 11 Mar 2010 09:32:42 -0600
-Message-ID: <1268321562-18951-1-git-send-email-miguel.aguilar@ridgerun.com>
+Subject: [PATCH v2 3/5] ASoC: DaVinci: CQ93VC Voice Codec
+Date: Thu, 11 Mar 2010 09:32:59 -0600
+Message-ID: <1268321579-18978-1-git-send-email-miguel.aguilar@ridgerun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.navvo.net (mail.navvo.net [74.208.67.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D691103944
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 16:32:41 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id A026B1039A0
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 16:32:59 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,60 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
 
-This patch adds the support for the interface needed by the DaVinci
-Voice Codec CQ93VC.
+Currently the DM365 is the only SoC that includes this Voice Codec.
 
 Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
 ---
- sound/soc/davinci/Kconfig        |    3 +
- sound/soc/davinci/Makefile       |    2 +
- sound/soc/davinci/davinci-vcif.c |  272 ++++++++++++++++++++++++++++++++++++++
- sound/soc/davinci/davinci-vcif.h |   28 ++++
- 4 files changed, 305 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/davinci/davinci-vcif.c
- create mode 100644 sound/soc/davinci/davinci-vcif.h
+ sound/soc/codecs/Kconfig  |    4 +
+ sound/soc/codecs/Makefile |    2 +
+ sound/soc/codecs/cq93vc.c |  298 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/cq93vc.h |   29 +++++
+ 4 files changed, 333 insertions(+), 0 deletions(-)
+ create mode 100644 sound/soc/codecs/cq93vc.c
+ create mode 100644 sound/soc/codecs/cq93vc.h
 
-diff --git a/sound/soc/davinci/Kconfig b/sound/soc/davinci/Kconfig
-index 047ee39..47e7cce 100644
---- a/sound/soc/davinci/Kconfig
-+++ b/sound/soc/davinci/Kconfig
-@@ -12,6 +12,9 @@ config SND_DAVINCI_SOC_I2S
- config SND_DAVINCI_SOC_MCASP
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 52b005f..0daca22 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -21,6 +21,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_AK4535 if I2C
+ 	select SND_SOC_AK4642 if I2C
+ 	select SND_SOC_AK4671 if I2C
++	select SND_SOC_CQ0093VC if MFD_DAVINCI_VOICECODEC
+ 	select SND_SOC_CS4270 if I2C
+ 	select SND_SOC_MAX9877 if I2C
+ 	select SND_SOC_PCM3008
+@@ -108,6 +109,9 @@ config SND_SOC_AK4642
+ config SND_SOC_AK4671
  	tristate
  
-+config SND_DAVINCI_SOC_VCIF
++config SND_SOC_CQ0093VC
 +	tristate
 +
- config SND_DAVINCI_SOC_EVM
- 	tristate "SoC Audio support for DaVinci DM6446, DM355 or DM365 EVM"
- 	depends on SND_DAVINCI_SOC
-diff --git a/sound/soc/davinci/Makefile b/sound/soc/davinci/Makefile
-index a6939d7..a93679d 100644
---- a/sound/soc/davinci/Makefile
-+++ b/sound/soc/davinci/Makefile
-@@ -2,10 +2,12 @@
- snd-soc-davinci-objs := davinci-pcm.o
- snd-soc-davinci-i2s-objs := davinci-i2s.o
- snd-soc-davinci-mcasp-objs:= davinci-mcasp.o
-+snd-soc-davinci-vcif-objs:= davinci-vcif.o
- 
- obj-$(CONFIG_SND_DAVINCI_SOC) += snd-soc-davinci.o
- obj-$(CONFIG_SND_DAVINCI_SOC_I2S) += snd-soc-davinci-i2s.o
- obj-$(CONFIG_SND_DAVINCI_SOC_MCASP) += snd-soc-davinci-mcasp.o
-+obj-$(CONFIG_SND_DAVINCI_SOC_VCIF) += snd-soc-davinci-vcif.o
- 
- # DAVINCI Machine Support
- snd-soc-evm-objs := davinci-evm.o
-diff --git a/sound/soc/davinci/davinci-vcif.c b/sound/soc/davinci/davinci-vcif.c
+ # Cirrus Logic CS4270 Codec
+ config SND_SOC_CS4270
+ 	tristate
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index dbaecb1..dff91fb 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -8,6 +8,7 @@ snd-soc-ak4104-objs := ak4104.o
+ snd-soc-ak4535-objs := ak4535.o
+ snd-soc-ak4642-objs := ak4642.o
+ snd-soc-ak4671-objs := ak4671.o
++snd-soc-cq93vc-objs := cq93vc.o
+ snd-soc-cs4270-objs := cs4270.o
+ snd-soc-cx20442-objs := cx20442.o
+ snd-soc-l3-objs := l3.o
+@@ -64,6 +65,7 @@ obj-$(CONFIG_SND_SOC_AK4104)	+= snd-soc-ak4104.o
+ obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-ak4535.o
+ obj-$(CONFIG_SND_SOC_AK4642)	+= snd-soc-ak4642.o
+ obj-$(CONFIG_SND_SOC_AK4671)	+= snd-soc-ak4671.o
++obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
+ obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
+ obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
+ obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
 new file mode 100644
-index 0000000..03f3feb
+index 0000000..5132974
 --- /dev/null
-+++ b/sound/soc/davinci/davinci-vcif.c
-@@ -0,0 +1,272 @@
++++ b/sound/soc/codecs/cq93vc.c
+@@ -0,0 +1,298 @@
 +/*
-+ * ALSA SoC Voice Codec Interface for TI DAVINCI processor
++ * ALSA SoC CQ0093 Voice Codec Driver for DaVinci platforms
 + *
-+ * Copyright (C) 2010 Texas Instruments.
++ * Copyright (C) 2010 Texas Instruments, Inc
 + *
 + * Author: Miguel Aguilar <miguel.aguilar@ridgerun.com>
 + *
@@ -95,267 +105,293 @@ index 0000000..03f3feb
 + * along with this program; if not, write to the Free Software
 + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 + */
-+
-+#include <linux/init.h>
 +#include <linux/module.h>
-+#include <linux/device.h>
-+#include <linux/delay.h>
++#include <linux/moduleparam.h>
++#include <linux/init.h>
 +#include <linux/io.h>
++#include <linux/delay.h>
++#include <linux/pm.h>
++#include <linux/platform_device.h>
++#include <linux/device.h>
++#include <linux/clk.h>
 +#include <linux/mfd/davinci_voicecodec.h>
 +
 +#include <sound/core.h>
 +#include <sound/pcm.h>
 +#include <sound/pcm_params.h>
-+#include <sound/initval.h>
 +#include <sound/soc.h>
++#include <sound/soc-dai.h>
++#include <sound/soc-dapm.h>
++#include <sound/initval.h>
 +
-+#include "davinci-pcm.h"
-+#include "davinci-i2s.h"
-+#include "davinci-vcif.h"
++#include <mach/dm365.h>
 +
-+#define MOD_REG_BIT(val, mask, set) do { \
-+	if (set) { \
-+		val |= mask; \
-+	} else { \
-+		val &= ~mask; \
-+	} \
-+} while (0)
++#include "cq93vc.h"
 +
-+struct davinci_vcif_dev {
-+	struct davinci_vc *davinci_vc;
-+	struct davinci_pcm_dma_params	dma_params[2];
-+};
-+
-+static void davinci_vcif_start(struct snd_pcm_substream *substream)
++static inline unsigned int cq93vc_read(struct snd_soc_codec *codec,
++						unsigned int reg)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct davinci_vcif_dev *davinci_vcif_dev =
-+					rtd->dai->cpu_dai->private_data;
-+	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
-+	u32 w;
++	struct davinci_vc *davinci_vc = codec->control_data;
 +
-+	/* Start the sample generator and enable transmitter/receiver */
-+	w = readl(davinci_vc->base + DAVINCI_VC_CTRL);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTDAC, 1);
-+	else
-+		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTADC, 1);
-+
-+	writel(w, davinci_vc->base + DAVINCI_VC_CTRL);
++	return readl(davinci_vc->base + reg);
 +}
 +
-+static void davinci_vcif_stop(struct snd_pcm_substream *substream)
++static inline int cq93vc_write(struct snd_soc_codec *codec, unsigned int reg,
++		       unsigned int value)
 +{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct davinci_vcif_dev *davinci_vcif_dev =
-+					rtd->dai->cpu_dai->private_data;
-+	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
-+	u32 w;
++	struct davinci_vc *davinci_vc = codec->control_data;
 +
-+	/* Reset transmitter/receiver and sample rate/frame sync generators */
-+	w = readl(davinci_vc->base + DAVINCI_VC_CTRL);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTDAC, 0);
-+	else
-+		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RSTADC, 0);
-+
-+	writel(w, davinci_vc->base + DAVINCI_VC_CTRL);
-+}
-+
-+static int davinci_vcif_hw_params(struct snd_pcm_substream *substream,
-+				  struct snd_pcm_hw_params *params,
-+				  struct snd_soc_dai *dai)
-+{
-+	struct davinci_vcif_dev *davinci_vcif_dev = dai->private_data;
-+	struct davinci_vc *davinci_vc = davinci_vcif_dev->davinci_vc;
-+	struct davinci_pcm_dma_params *dma_params =
-+			&davinci_vcif_dev->dma_params[substream->stream];
-+	u32 w;
-+
-+	/* Restart the codec before setup */
-+	davinci_vcif_stop(substream);
-+	davinci_vcif_start(substream);
-+
-+	/* General line settings */
-+	writel(DAVINCI_VC_CTRL_MASK, davinci_vc->base + DAVINCI_VC_CTRL);
-+
-+	writel(DAVINCI_VC_INT_MASK, davinci_vc->base + DAVINCI_VC_INTCLR);
-+
-+	writel(DAVINCI_VC_INT_MASK, davinci_vc->base + DAVINCI_VC_INTEN);
-+
-+	w = readl(davinci_vc->base + DAVINCI_VC_CTRL);
-+
-+	/* Determine xfer data type */
-+	switch (params_format(params)) {
-+	case SNDRV_PCM_FORMAT_U8:
-+		dma_params->data_type = 0;
-+
-+		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RD_BITS_8 |
-+			    DAVINCI_VC_CTRL_RD_UNSIGNED |
-+			    DAVINCI_VC_CTRL_WD_BITS_8 |
-+			    DAVINCI_VC_CTRL_WD_UNSIGNED, 1);
-+		break;
-+	case SNDRV_PCM_FORMAT_S8:
-+		dma_params->data_type = 1;
-+
-+		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RD_BITS_8 |
-+			    DAVINCI_VC_CTRL_WD_BITS_8, 1);
-+
-+		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RD_UNSIGNED |
-+			    DAVINCI_VC_CTRL_WD_UNSIGNED, 0);
-+		break;
-+	case SNDRV_PCM_FORMAT_S16_LE:
-+		dma_params->data_type = 2;
-+
-+		MOD_REG_BIT(w, DAVINCI_VC_CTRL_RD_BITS_8 |
-+			    DAVINCI_VC_CTRL_RD_UNSIGNED |
-+			    DAVINCI_VC_CTRL_WD_BITS_8 |
-+			    DAVINCI_VC_CTRL_WD_UNSIGNED, 0);
-+		break;
-+	default:
-+		printk(KERN_WARNING "davinci-vcif: unsupported PCM format");
-+		return -EINVAL;
-+	}
-+
-+	dma_params->acnt  = dma_params->data_type;
-+
-+	writel(w, davinci_vc->base + DAVINCI_VC_CTRL);
++	writel(value, davinci_vc->base + reg);
 +
 +	return 0;
 +}
 +
-+static int davinci_vcif_trigger(struct snd_pcm_substream *substream, int cmd,
-+				struct snd_soc_dai *dai)
++static const struct snd_kcontrol_new cq93vc_snd_controls[] = {
++	SOC_SINGLE("PGA Capture Volume", DAVINCI_VC_REG05, 0, 0x03, 0),
++	SOC_SINGLE("Mono DAC Playback Volume", DAVINCI_VC_REG09, 0, 0x3f, 0),
++};
++
++static int cq93vc_mute(struct snd_soc_dai *dai, int mute)
 +{
-+	int ret = 0;
++	struct snd_soc_codec *codec = dai->codec;
++	u8 reg = cq93vc_read(codec, DAVINCI_VC_REG09) & ~DAVINCI_VC_REG09_MUTE;
 +
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		davinci_vcif_start(substream);
-+	case SNDRV_PCM_TRIGGER_STOP:
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		davinci_vcif_stop(substream);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+	}
++	if (mute)
++		cq93vc_write(codec, DAVINCI_VC_REG09,
++			     reg | DAVINCI_VC_REG09_MUTE);
++	else
++		cq93vc_write(codec, DAVINCI_VC_REG09, reg);
 +
-+	return ret;
++	return 0;
 +}
 +
-+#define DAVINCI_VCIF_RATES	SNDRV_PCM_RATE_8000_48000
-+
-+static struct snd_soc_dai_ops davinci_vcif_dai_ops = {
-+	.trigger	= davinci_vcif_trigger,
-+	.hw_params	= davinci_vcif_hw_params,
-+};
-+
-+struct snd_soc_dai davinci_vcif_dai = {
-+	.name = "davinci-vcif",
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = DAVINCI_VCIF_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = DAVINCI_VCIF_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
-+	.ops = &davinci_vcif_dai_ops,
-+
-+};
-+EXPORT_SYMBOL_GPL(davinci_vcif_dai);
-+
-+static int davinci_vcif_probe(struct platform_device *pdev)
++static int cq93vc_set_dai_sysclk(struct snd_soc_dai *codec_dai,
++				 int clk_id, unsigned int freq, int dir)
 +{
-+	struct davinci_vc *davinci_vc = platform_get_drvdata(pdev);
-+	struct davinci_vcif_dev *davinci_vcif_dev;
++	struct snd_soc_codec *codec = codec_dai->codec;
++	struct davinci_vc *davinci_vc = codec->control_data;
++
++	switch (freq) {
++	case 22579200:
++	case 27000000:
++	case 33868800:
++		davinci_vc->cq93vc.sysclk = freq;
++		return 0;
++	}
++
++	return -EINVAL;
++}
++
++static int cq93vc_set_bias_level(struct snd_soc_codec *codec,
++				enum snd_soc_bias_level level)
++{
++	switch (level) {
++	case SND_SOC_BIAS_ON:
++		cq93vc_write(codec, DAVINCI_VC_REG12,
++			     DAVINCI_VC_REG12_POWER_ALL_ON);
++		break;
++	case SND_SOC_BIAS_PREPARE:
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		cq93vc_write(codec, DAVINCI_VC_REG12,
++			     DAVINCI_VC_REG12_POWER_ALL_OFF);
++		break;
++	case SND_SOC_BIAS_OFF:
++		/* force all power off */
++		cq93vc_write(codec, DAVINCI_VC_REG12,
++			     DAVINCI_VC_REG12_POWER_ALL_OFF);
++		break;
++	}
++	codec->bias_level = level;
++
++	return 0;
++}
++
++#define CQ93VC_RATES	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000)
++#define CQ93VC_FORMATS	(SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S16_LE)
++
++static struct snd_soc_dai_ops cq93vc_dai_ops = {
++	.digital_mute	= cq93vc_mute,
++	.set_sysclk	= cq93vc_set_dai_sysclk,
++};
++
++struct snd_soc_dai cq93vc_dai = {
++	.name = "CQ93VC",
++	.playback = {
++		.stream_name = "Playback",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = CQ93VC_RATES,
++		.formats = CQ93VC_FORMATS,},
++	.capture = {
++		.stream_name = "Capture",
++		.channels_min = 1,
++		.channels_max = 2,
++		.rates = CQ93VC_RATES,
++		.formats = CQ93VC_FORMATS,},
++	.ops = &cq93vc_dai_ops,
++};
++EXPORT_SYMBOL_GPL(cq93vc_dai);
++
++static int cq93vc_resume(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->card->codec;
++
++	cq93vc_set_bias_level(codec, codec->suspend_bias_level);
++
++	return 0;
++}
++
++static struct snd_soc_codec *cq93vc_codec;
++
++static int cq93vc_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct device *dev = &pdev->dev;
++	struct snd_soc_codec *codec;
 +	int ret;
 +
-+	davinci_vcif_dev = kzalloc(sizeof(struct davinci_vcif_dev), GFP_KERNEL);
-+	if (!davinci_vc) {
-+		dev_dbg(&pdev->dev,
-+			"could not allocate memory for private data\n");
++	socdev->card->codec = cq93vc_codec;
++	codec = socdev->card->codec;
++
++	/* Register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		dev_err(dev, "%s: failed to create pcms\n", pdev->name);
++		return ret;
++	}
++
++	/* Set controls */
++	snd_soc_add_controls(codec, cq93vc_snd_controls,
++			     ARRAY_SIZE(cq93vc_snd_controls));
++
++	/* Off, with power on */
++	cq93vc_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++
++	return 0;
++}
++
++static int cq93vc_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++
++	return 0;
++}
++
++struct snd_soc_codec_device soc_codec_dev_cq93vc = {
++	.probe = cq93vc_probe,
++	.remove = cq93vc_remove,
++	.resume = cq93vc_resume,
++};
++EXPORT_SYMBOL_GPL(soc_codec_dev_cq93vc);
++
++static __init int cq93vc_codec_probe(struct platform_device *pdev)
++{
++	struct davinci_vc *davinci_vc = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec;
++	int ret;
++
++	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
++	if (codec == NULL) {
++		dev_dbg(davinci_vc->dev,
++			"could not allocate memory for codec data\n");
 +		return -ENOMEM;
 +	}
 +
-+	/* DMA tx params */
-+	davinci_vcif_dev->davinci_vc = davinci_vc;
-+	davinci_vcif_dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].channel =
-+					davinci_vc->davinci_vcif.dma_tx_channel;
-+	davinci_vcif_dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].dma_addr =
-+					davinci_vc->davinci_vcif.dma_tx_addr;
++	davinci_vc->cq93vc.codec = codec;
 +
-+	/* DMA rx params */
-+	davinci_vcif_dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].channel =
-+					davinci_vc->davinci_vcif.dma_rx_channel;
-+	davinci_vcif_dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].dma_addr =
-+					davinci_vc->davinci_vcif.dma_rx_addr;
++	cq93vc_dai.dev = &pdev->dev;
 +
-+	davinci_vcif_dai.dev = &pdev->dev;
-+	davinci_vcif_dai.dma_data = davinci_vcif_dev->dma_params;
-+	davinci_vcif_dai.private_data = davinci_vcif_dev;
++	mutex_init(&codec->mutex);
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++	codec->dev = &pdev->dev;
++	codec->name = "CQ93VC";
++	codec->owner = THIS_MODULE;
++	codec->read = cq93vc_read;
++	codec->write = cq93vc_write;
++	codec->set_bias_level = cq93vc_set_bias_level;
++	codec->dai = &cq93vc_dai;
++	codec->num_dai = 1;
++	codec->control_data = davinci_vc;
 +
-+	ret = snd_soc_register_dai(&davinci_vcif_dai);
-+	if (ret != 0) {
-+		dev_err(&pdev->dev, "could not register dai\n");
-+		goto fail;
++	cq93vc_codec = codec;
++
++	ret = snd_soc_register_codec(codec);
++	if (ret) {
++		dev_err(davinci_vc->dev, "failed to register codec\n");
++		goto fail1;
 +	}
 +
++	ret = snd_soc_register_dai(&cq93vc_dai);
++	if (ret) {
++		dev_err(davinci_vc->dev, "could register dai\n");
++		goto fail2;
++	}
 +	return 0;
 +
-+fail:
-+	kfree(davinci_vcif_dev);
++fail2:
++	snd_soc_unregister_codec(codec);
++
++fail1:
++	kfree(codec);
++	cq93vc_codec = NULL;
 +
 +	return ret;
 +}
 +
-+static int davinci_vcif_remove(struct platform_device *pdev)
++static int __devexit cq93vc_codec_remove(struct platform_device *pdev)
 +{
-+	snd_soc_unregister_dai(&davinci_vcif_dai);
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec = socdev->card->codec;
++
++	snd_soc_unregister_dai(&cq93vc_dai);
++	snd_soc_unregister_codec(&codec);
++
++	kfree(codec);
++	cq93vc_codec = NULL;
 +
 +	return 0;
 +}
 +
-+static struct platform_driver davinci_vcif_driver = {
-+	.probe		= davinci_vcif_probe,
-+	.remove		= davinci_vcif_remove,
-+	.driver		= {
-+		.name	= "davinci_vcif",
-+		.owner	= THIS_MODULE,
-+	},
++static struct platform_driver cq93vc_codec_driver = {
++	.driver = {
++		   .name = "cq93vc",
++		   .owner = THIS_MODULE,
++		   },
++	.probe = cq93vc_codec_probe,
++	.remove = __devexit_p(cq93vc_codec_remove),
 +};
 +
-+static int __init davinci_vcif_init(void)
++static __init int cq93vc_init(void)
 +{
-+	return platform_driver_probe(&davinci_vcif_driver, davinci_vcif_probe);
++	return platform_driver_probe(&cq93vc_codec_driver, cq93vc_codec_probe);
 +}
-+module_init(davinci_vcif_init);
++module_init(cq93vc_init);
 +
-+static void __exit davinci_vcif_exit(void)
++static __exit void cq93vc_exit(void)
 +{
-+	platform_driver_unregister(&davinci_vcif_driver);
++	platform_driver_unregister(&cq93vc_codec_driver);
 +}
-+module_exit(davinci_vcif_exit);
++module_exit(cq93vc_exit);
 +
++MODULE_DESCRIPTION("Texas Instruments DaVinci ASoC CQ0093 Voice Codec Driver");
 +MODULE_AUTHOR("Miguel Aguilar");
-+MODULE_DESCRIPTION("Texas Instruments DaVinci ASoC Voice Codec Interface");
 +MODULE_LICENSE("GPL");
-diff --git a/sound/soc/davinci/davinci-vcif.h b/sound/soc/davinci/davinci-vcif.h
+diff --git a/sound/soc/codecs/cq93vc.h b/sound/soc/codecs/cq93vc.h
 new file mode 100644
-index 0000000..571c994
+index 0000000..845b196
 --- /dev/null
-+++ b/sound/soc/davinci/davinci-vcif.h
-@@ -0,0 +1,28 @@
++++ b/sound/soc/codecs/cq93vc.h
+@@ -0,0 +1,29 @@
 +/*
-+ * ALSA SoC Voice Codec Interface for TI DAVINCI processor
++ * ALSA SoC CQ0093 Voice Codec Driver for DaVinci platforms
 + *
-+ * Copyright (C) 2010 Texas Instruments.
++ * Copyright (C) 2010 Texas Instruments, Inc
 + *
 + * Author: Miguel Aguilar <miguel.aguilar@ridgerun.com>
 + *
@@ -374,10 +410,11 @@ index 0000000..571c994
 + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 + */
 +
-+#ifndef _DAVINCI_VCIF_H
-+#define _DAVINCI_VCIF_H
++#ifndef _CQ93VC_H
++#define _CQ93VC_H
 +
-+extern struct snd_soc_dai davinci_vcif_dai;
++extern struct snd_soc_dai cq93vc_dai;
++extern struct snd_soc_codec_device soc_codec_dev_cq93vc;
 +
 +#endif
 -- 
