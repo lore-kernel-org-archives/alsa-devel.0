@@ -1,8 +1,8 @@
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 23/37] drivers/i2c: use .dev.of_node instead of
-	.node in	struct of_device
-Date: Thu, 11 Mar 2010 11:05:55 -0700
-Message-ID: <20100311180554.4824.52872.stgit__4660.17568619481$1268330939$gmane$org@angua>
+Subject: [PATCH 25/37] drivers/infiniband: use .dev.of_node
+	instead of .node	in struct of_device
+Date: Thu, 11 Mar 2010 11:06:06 -0700
+Message-ID: <20100311180605.4824.3613.stgit__10900.7367319011$1268330948$gmane$org@angua>
 References: <20100311174830.4824.19820.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f203.google.com (mail-pz0-f203.google.com
 	[209.85.222.203])
-	by alsa0.perex.cz (Postfix) with ESMTP id 02BCD1039F1
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:05:58 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 64139103A48
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:06:10 +0100 (CET)
 Received: by mail-pz0-f203.google.com with SMTP id 41so172871pzk.23
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:05:58 -0800 (PST)
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:06:10 -0800 (PST)
 In-Reply-To: <20100311174830.4824.19820.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,63 +32,41 @@ List-Id: alsa-devel@alsa-project.org
 Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
 
- drivers/i2c/busses/i2c-mpc.c |   17 +++++++++--------
- 1 files changed, 9 insertions(+), 8 deletions(-)
+ drivers/infiniband/hw/ehca/ehca_main.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index 78a15af..0123a6e 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -559,14 +559,14 @@ static int __devinit fsl_i2c_probe(struct of_device *op,
+diff --git a/drivers/infiniband/hw/ehca/ehca_main.c b/drivers/infiniband/hw/ehca/ehca_main.c
+index 129a6be..2639185 100644
+--- a/drivers/infiniband/hw/ehca/ehca_main.c
++++ b/drivers/infiniband/hw/ehca/ehca_main.c
+@@ -291,8 +291,9 @@ static int ehca_sense_attributes(struct ehca_shca *shca)
+ 	};
  
- 	init_waitqueue_head(&i2c->queue);
+ 	ehca_gen_dbg("Probing adapter %s...",
+-		     shca->ofdev->node->full_name);
+-	loc_code = of_get_property(shca->ofdev->node, "ibm,loc-code", NULL);
++		     shca->ofdev->dev.of_node->full_name);
++	loc_code = of_get_property(shca->ofdev->dev.of_node, "ibm,loc-code",
++				   NULL);
+ 	if (loc_code)
+ 		ehca_gen_dbg(" ... location lode=%s", loc_code);
  
--	i2c->base = of_iomap(op->node, 0);
-+	i2c->base = of_iomap(op->dev.of_node, 0);
- 	if (!i2c->base) {
- 		dev_err(i2c->dev, "failed to map controller\n");
- 		result = -ENOMEM;
- 		goto fail_map;
+@@ -720,16 +721,16 @@ static int __devinit ehca_probe(struct of_device *dev,
+ 	int ret, i, eq_size;
+ 	unsigned long flags;
+ 
+-	handle = of_get_property(dev->node, "ibm,hca-handle", NULL);
++	handle = of_get_property(dev->dev.of_node, "ibm,hca-handle", NULL);
+ 	if (!handle) {
+ 		ehca_gen_err("Cannot get eHCA handle for adapter: %s.",
+-			     dev->node->full_name);
++			     dev->dev.of_node->full_name);
+ 		return -ENODEV;
  	}
  
--	i2c->irq = irq_of_parse_and_map(op->node, 0);
-+	i2c->irq = irq_of_parse_and_map(op->dev.of_node, 0);
- 	if (i2c->irq != NO_IRQ) { /* i2c->irq = NO_IRQ implies polling */
- 		result = request_irq(i2c->irq, mpc_i2c_isr,
- 				     IRQF_SHARED, "i2c-mpc", i2c);
-@@ -576,21 +576,22 @@ static int __devinit fsl_i2c_probe(struct of_device *op,
- 		}
+ 	if (!(*handle)) {
+ 		ehca_gen_err("Wrong eHCA handle for adapter: %s.",
+-			     dev->node->full_name);
++			     dev->dev.of_node->full_name);
+ 		return -ENODEV;
  	}
- 
--	if (of_get_property(op->node, "fsl,preserve-clocking", NULL)) {
-+	if (of_get_property(op->dev.of_node, "fsl,preserve-clocking", NULL)) {
- 		clock = MPC_I2C_CLOCK_PRESERVE;
- 	} else {
--		prop = of_get_property(op->node, "clock-frequency", &plen);
-+		prop = of_get_property(op->dev.of_node, "clock-frequency",
-+					&plen);
- 		if (prop && plen == sizeof(u32))
- 			clock = *prop;
- 	}
- 
- 	if (match->data) {
- 		struct mpc_i2c_data *data = match->data;
--		data->setup(op->node, i2c, clock, data->prescaler);
-+		data->setup(op->dev.of_node, i2c, clock, data->prescaler);
- 	} else {
- 		/* Backwards compatibility */
--		if (of_get_property(op->node, "dfsrr", NULL))
--			mpc_i2c_setup_8xxx(op->node, i2c, clock, 0);
-+		if (of_get_property(op->dev.of_node, "dfsrr", NULL))
-+			mpc_i2c_setup_8xxx(op->dev.of_node, i2c, clock, 0);
- 	}
- 
- 	dev_set_drvdata(&op->dev, i2c);
-@@ -604,7 +605,7 @@ static int __devinit fsl_i2c_probe(struct of_device *op,
- 		dev_err(i2c->dev, "failed to add adapter\n");
- 		goto fail_add;
- 	}
--	of_register_i2c_devices(&i2c->adap, op->node);
-+	of_register_i2c_devices(&i2c->adap, op->dev.of_node);
- 
- 	return result;
