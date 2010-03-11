@@ -1,47 +1,36 @@
-From: ANISH KUMAR <anish.singh@samsung.com>
-Subject: Re: underrun problem when short audio play
-Date: Thu, 11 Mar 2010 05:27:44 +0000 (GMT)
-Message-ID: <4832775.195611268285264233.JavaMail.weblogic@epml13>
-Reply-To: anish.singh@samsung.com
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [alsa-devel] [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Thu, 11 Mar 2010 08:30:21 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1003110824390.4672@eeebox2.perex-int.cz>
+References: <s5htyswpb18.wl%tiwai@suse.de> <s5hvddcnlr6.wl%tiwai@suse.de>  <6B4D417B830BC44B8026029FD256F7F1C16B1AD558@HKMAIL01.nvidia.com>  <a3ef07921003071121r24979a0breac27e3b0475bbcb@mail.gmail.com>  <6B4D417B830BC44B8026029FD256F7F1C16B1AD562@HKMAIL01.nvidia.com>
+  <20100308044614.GA29026@localhost>  <a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>  <alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>  <a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>  <20100310125456.GA18509@localhost>
+ <a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id 50758103871
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 06:27:52 +0100 (CET)
-Received: from ep_ms13_bk (mailout2.samsung.com [203.254.224.25])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0KZ300H8NR68ZJ@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 11 Mar 2010 14:27:44 +0900 (KST)
-Received: from ep_spt01 (ms13.samsung.com [203.254.225.109])
-	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0KZ3004IYR68SN@ms13.samsung.com> for
-	alsa-devel@alsa-project.org; Thu, 11 Mar 2010 14:27:44 +0900 (KST)
-Content-return: prohibited
-MIME-version: 1.0
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "ben@simtec.co.uk" <ben@simtec.co.uk>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "jkysela@redhat.com" <jkysela@redhat.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: VDR User <user.vdr@gmail.com>
+Cc: Wu Fengguang <fengguang.wu@intel.com>, Wei Ni <wni@nvidia.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <jkysela@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
- 
-Just to add to my previous post.
-This problem of underrun is happening towards the end of the short audio.
-This causes unclear sound.This underrun is not happening with regular 
-music (long duration audio).
+On Wed, 10 Mar 2010, VDR User wrote:
 
-ALSA version:1.0.18a
- 
-Regards,
-anish
+> [pid 22651] ioctl(21, 0x80044121, 0xb439d2cc) = -1 EPIPE (Broken pipe)
+> pcm_hw.c: snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed.
+
+-EPIPE means underrun condition.
+
+Try 'echo 101 > /proc/asound/card0/pcm0p/xrun_debug' and send dmesg 
+output to check if the ring buffer pointer in the hda-intel driver does 
+not return wrong values. Replace card0 and pcm0p with right identifiers 
+(look to 'aplay -l' for right numbers).
+
+More info: http://www.alsa-project.org/main/index.php/XRUN_Debug
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
