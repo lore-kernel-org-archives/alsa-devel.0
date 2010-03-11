@@ -1,19 +1,20 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 00/37] OF: move device node pointer into
-	struct device.
-Date: Thu, 11 Mar 2010 10:23:47 -0800 (PST)
-Message-ID: <20100311.102347.169562565.davem@davemloft.net>
-References: <20100311174830.4824.19820.stgit@angua>
-	<20100311.102043.40590962.davem@davemloft.net>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: [PATCH 18/27] drivers/parport/of: don't use deprecated
+	field in	of_platform_driver
+Date: Thu, 11 Mar 2010 11:23:27 -0700
+Message-ID: <20100311182327.13103.91141.stgit@angua>
+References: <20100311181604.13103.30088.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sunset.davemloft.net
-	(74-93-104-97-Washington.hfc.comcastbusiness.net [74.93.104.97])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E4AF103B21
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:23:28 +0100 (CET)
-In-Reply-To: <20100311.102043.40590962.davem@davemloft.net>
+Received: from mail-px0-f181.google.com (mail-px0-f181.google.com
+	[209.85.216.181])
+	by alsa0.perex.cz (Postfix) with ESMTP id 99AC4103B1E
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:23:30 +0100 (CET)
+Received: by mail-px0-f181.google.com with SMTP id 11so3407pxi.16
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:23:30 -0800 (PST)
+In-Reply-To: <20100311181604.13103.30088.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: grant.likely@secretlab.ca
-Cc: sfr@canb.auug.org.au, monstr@monstr.eu, broonie@opensource.wolfsonmicro.com, linux-scsi@vger.kernel.org, linux-ide@vger.kernel.org, benh@kernel.crashing.org, devicetree-discuss@lists.ozlabs.org, gregkh@suse.de, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, jeremy.kerr@canonical.com, linuxppc-dev@ozlabs.org, James.Bottomley@suse.de, linux-i2c@vger.kernel.org, ben-linux@fluff.org, microblaze-uclinux@itee.uq.edu.au, sparclinux@vger.kernel.org, akpm@linux-foundation.org, alsa-devel@alsa-project.org, jgarzik@pobox.com, dwmw2@infradead.org
+To: monstr@monstr.eu, gregkh@suse.de, benh@kernel.crashing.org, akpm@linux-foundation.org, davem@davemloft.net, sfr@canb.auug.org.au, jgarzik@pobox.com, ben-linux@fluff.org, dwmw2@infrade
 List-Id: alsa-devel@alsa-project.org
 
-From: David Miller <davem@davemloft.net>
-Date: Thu, 11 Mar 2010 10:20:43 -0800 (PST)
+.name, .match_table and .owner are duplicated in both of_platform_driver
+and device_driver, so the of_platform_driver copies will be removed soon.
 
-> Three or four of the patches don't apply because only your tree
-> has those "/* temporary */" comments, f.e. in arch/sparc/kernel/pci.c
-> 
-> I took care of this when applying to my tree.
+Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+---
 
-It also doesn't build, what the heck is this against
-Grant?
+ drivers/parport/parport_sunbpp.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-drivers/of/device.c: In function 'of_match_device':
-drivers/of/device.c:24: error: 'const struct device' has no member named 'of_node'
-drivers/of/device.c:26: error: 'const struct device' has no member named 'of_node'
-
-Please make a patch set against Linus's vanilla tree so
-I and others can test this.
+diff --git a/drivers/parport/parport_sunbpp.c b/drivers/parport/parport_sunbpp.c
+index 065f229..9a5b4b8 100644
+--- a/drivers/parport/parport_sunbpp.c
++++ b/drivers/parport/parport_sunbpp.c
+@@ -382,8 +382,11 @@ static const struct of_device_id bpp_match[] = {
+ MODULE_DEVICE_TABLE(of, bpp_match);
+ 
+ static struct of_platform_driver bpp_sbus_driver = {
+-	.name		= "bpp",
+-	.match_table	= bpp_match,
++	.driver = {
++		.name = "bpp",
++		.owner = THIS_MODULE,
++		.of_match_table = bpp_match,
++	},
+ 	.probe		= bpp_probe,
+ 	.remove		= __devexit_p(bpp_remove),
+ };
