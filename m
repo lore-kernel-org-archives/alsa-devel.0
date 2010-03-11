@@ -1,8 +1,8 @@
 From: Grant Likely <grant.likely@secretlab.ca>
-Subject: [PATCH 21/27] drivers/hwmon/of: don't use deprecated
+Subject: [PATCH 20/27] drivers/mmc/of: don't use deprecated
 	field in	of_platform_driver
-Date: Thu, 11 Mar 2010 11:23:44 -0700
-Message-ID: <20100311182343.13103.98096.stgit@angua>
+Date: Thu, 11 Mar 2010 11:23:38 -0700
+Message-ID: <20100311182338.13103.88443.stgit__36171.7611238875$1268331985$gmane$org@angua>
 References: <20100311181604.13103.30088.stgit@angua>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
 	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D848B103B61
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:23:46 +0100 (CET)
-Received: by mail-pw0-f51.google.com with SMTP id 10so164218pwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:23:46 -0800 (PST)
+	by alsa0.perex.cz (Postfix) with ESMTP id 37148103B5C
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 19:23:43 +0100 (CET)
+Received: by pwj10 with SMTP id 10so164218pwj.38
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 10:23:41 -0800 (PST)
 In-Reply-To: <20100311181604.13103.30088.stgit@angua>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,24 +33,24 @@ and device_driver, so the of_platform_driver copies will be removed soon.
 Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
 ---
 
- drivers/hwmon/ultra45_env.c |    7 +++++--
+ drivers/mmc/host/sdhci-of-core.c |    7 +++++--
  1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hwmon/ultra45_env.c b/drivers/hwmon/ultra45_env.c
-index 68e90ab..5da5942 100644
---- a/drivers/hwmon/ultra45_env.c
-+++ b/drivers/hwmon/ultra45_env.c
-@@ -300,8 +300,11 @@ static const struct of_device_id env_match[] = {
- MODULE_DEVICE_TABLE(of, env_match);
+diff --git a/drivers/mmc/host/sdhci-of-core.c b/drivers/mmc/host/sdhci-of-core.c
+index dfe5cea..7802a54 100644
+--- a/drivers/mmc/host/sdhci-of-core.c
++++ b/drivers/mmc/host/sdhci-of-core.c
+@@ -205,8 +205,11 @@ static const struct of_device_id sdhci_of_match[] = {
+ MODULE_DEVICE_TABLE(of, sdhci_of_match);
  
- static struct of_platform_driver env_driver = {
--	.name		= "ultra45_env",
--	.match_table	= env_match,
+ static struct of_platform_driver sdhci_of_driver = {
+-	.driver.name = "sdhci-of",
+-	.match_table = sdhci_of_match,
 +	.driver = {
-+		.name = "ultra45_env",
++		.name = "sdhci-of",
 +		.owner = THIS_MODULE,
-+		.of_match_table = env_match,
++		.of_match_table = sdhci_of_match,
 +	},
- 	.probe		= env_probe,
- 	.remove		= __devexit_p(env_remove),
- };
+ 	.probe = sdhci_of_probe,
+ 	.remove = __devexit_p(sdhci_of_remove),
+ 	.suspend = sdhci_of_suspend,
