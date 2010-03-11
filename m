@@ -1,21 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2/4] mmp: support ssp in pxa168
-Date: Thu, 11 Mar 2010 11:11:38 +0000
-Message-ID: <1268305898.3758.75.camel@odin>
-References: <771cded01003100514r70f0f53eydda7b916f92bef64@mail.gmail.com>
-	<20100310142832.GB24422@rakim.wolfsonmicro.main>
-	<f17812d71003110020g67bb7fd6tfe1381294b6cfe8f@mail.gmail.com>
-	<20100311105804.GD2585@rakim.wolfsonmicro.main>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 2/2] ASoC: tlv320dac33: Add option for keeping
+	the BCLK running
+Date: Thu, 11 Mar 2010 16:26:22 +0200
+Message-ID: <1268317582-10284-3-git-send-email-peter.ujfalusi@nokia.com>
+References: <1268317582-10284-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF47D103965
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 12:11:42 +0100 (CET)
-Received: by fg-out-1718.google.com with SMTP id 22so2170117fge.2
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 03:11:42 -0800 (PST)
-In-Reply-To: <20100311105804.GD2585@rakim.wolfsonmicro.main>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id D6DAA10394E
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 15:26:41 +0100 (CET)
+In-Reply-To: <1268317582-10284-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,48 +21,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-03-11 at 10:58 +0000, Mark Brown wrote:
-> On Thu, Mar 11, 2010 at 04:20:35PM +0800, Eric Miao wrote:
-> > On Wed, Mar 10, 2010 at 10:28 PM, Mark Brown
-> 
-> > > cycle?  I can apply the patches on a branch by themselves which can also
-> > > be pulled into the PXA tree if needed.
-> 
-> > I'd expect there to be some merge conflicts I need to solve along with
-> > my cleaning up of the SSP code. That said, it's better to go via -pxa
-> > tree and get the multi-codec work solved in linux-next?
-> 
-> That's not going to be possible with at least the machine driver - if
-> it's only present in one tree we can't do fixups in the other.  This is
-> why I'm saying put it on a branch and merge it into both trees, that way
-> both trees have the code in them as though things had been merged into
-> mainline already so problems are much less likely.
-> 
-> > Mark, could you please point me the reference to the multi-codec work
-> > so I can have a rough feeling of the possible merge issues?
-> 
-> There's a branch in Liam's git tree (still sketching out the goal rather
-> than the finished product):
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
-> 
-> Big thing is that there's most likely going to be at least cosmetic
-> changes to how cards are registered.
+Platform data option for the codec to keep the BCLK clock
+continuously running in FIFO modes (codec master).
 
-Just to add, this is very experimental stuff in here atm (it will change
-and be rebased a lot!). I'm going over a few different approaches to see
-what fits best. I'll make proper announcement when Mark and I are happy
-with the general flow of the multic-codec work
+OMAP3 McBSP when in slave mode needs continuous BCLK running
+on the serial bus in order to operate correctly.
 
-Btw, time frame for this stuff is around 2.6.36.
+Since in FIFO mode the DAC33 can also shut down the BCLK clock
+and enable it only when it is needed, let the platforms decide
+if the CPU side needs the BCLK running or not.
 
-Liam
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ include/sound/tlv320dac33-plat.h |    1 +
+ sound/soc/codecs/tlv320dac33.c   |   13 +++++++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
+diff --git a/include/sound/tlv320dac33-plat.h b/include/sound/tlv320dac33-plat.h
+index ac06652..3f428d5 100644
+--- a/include/sound/tlv320dac33-plat.h
++++ b/include/sound/tlv320dac33-plat.h
+@@ -15,6 +15,7 @@
+ 
+ struct tlv320dac33_platform_data {
+ 	int power_gpio;
++	int keep_bclk;	/* Keep the BCLK running in FIFO modes */
+ 	u8 burst_bclkdiv;
+ };
+ 
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index e845c4b..a6f1927 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -93,6 +93,8 @@ struct tlv320dac33_priv {
+ 	unsigned int nsample;		/* burst read amount from host */
+ 	u8 burst_bclkdiv;		/* BCLK divider value in burst mode */
+ 
++	int keep_bclk;			/* Keep the BCLK continuously running
++					 * in FIFO modes */
+ 	enum dac33_state state;
+ };
+ 
+@@ -803,7 +805,10 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
+ 		 */
+ 		fifoctrl_a &= ~DAC33_FBYPAS;
+ 		fifoctrl_a &= ~DAC33_FAUTO;
+-		aictrl_b &= ~DAC33_BCLKON;
++		if (dac33->keep_bclk)
++			aictrl_b |= DAC33_BCLKON;
++		else
++			aictrl_b &= ~DAC33_BCLKON;
+ 		break;
+ 	case DAC33_FIFO_MODE7:
+ 		/*
+@@ -814,7 +819,10 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
+ 		 */
+ 		fifoctrl_a &= ~DAC33_FBYPAS;
+ 		fifoctrl_a |= DAC33_FAUTO;
+-		aictrl_b &= ~DAC33_BCLKON;
++		if (dac33->keep_bclk)
++			aictrl_b |= DAC33_BCLKON;
++		else
++			aictrl_b &= ~DAC33_BCLKON;
+ 		break;
+ 	default:
+ 		/*
+@@ -1234,6 +1242,7 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
+ 
+ 	dac33->power_gpio = pdata->power_gpio;
+ 	dac33->burst_bclkdiv = pdata->burst_bclkdiv;
++	dac33->keep_bclk = pdata->keep_bclk;
+ 	dac33->irq = client->irq;
+ 	dac33->nsample = NSAMPLE_MAX;
+ 	/* Disable FIFO use by default */
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.0.2
