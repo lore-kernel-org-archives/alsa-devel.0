@@ -1,25 +1,21 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
-Date: Fri, 12 Mar 2010 09:08:46 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1003120905250.4672@eeebox2.perex-int.cz>
-References: <s5htyswpb18.wl%tiwai@suse.de> <20100308044614.GA29026@localhost>
-	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
-	<alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>
-	<a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
-	<20100310125456.GA18509@localhost>
-	<a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
-	<alpine.LNX.2.00.1003110824390.4672@eeebox2.perex-int.cz>
-	<a3ef07921003111015x2386cc80x73a2a4bd679b1fe1@mail.gmail.com>
-	<alpine.LNX.2.00.1003111927570.4672@eeebox2.perex-int.cz>
-	<a3ef07921003112032v3c3effb8n7e8f6599f4cbb453@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/2] ASoC: tlv320dac33: Start/stop sequence
+ change
+Date: Fri, 12 Mar 2010 08:10:32 +0000
+Message-ID: <1268381432.3755.5.camel@odin>
+References: <1268317582-10284-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1268317582-10284-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id E12FB2434D
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 09:08:46 +0100 (CET)
-In-Reply-To: <a3ef07921003112032v3c3effb8n7e8f6599f4cbb453@mail.gmail.com>
+Received: from mail-qy0-f173.google.com (mail-qy0-f173.google.com
+	[209.85.221.173])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2E28324363
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 09:10:36 +0100 (CET)
+Received: by qyk4 with SMTP id 4so1012465qyk.2
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 00:10:36 -0800 (PST)
+In-Reply-To: <1268317582-10284-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,32 +25,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: VDR User <user.vdr@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Mar 2010, VDR User wrote:
+On Thu, 2010-03-11 at 16:26 +0200, Peter Ujfalusi wrote:
+> To avoid race condition especially in FIFO modes the
+> sequence for enabling and disabling the codec need to
+> be changed.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-> On Thu, Mar 11, 2010 at 10:32 AM, Jaroslav Kysela <perex@perex.cz> wrote:
->> All these parameters should be set: CONFIG_SND_PCM_XRUN_DEBUG,
->> CONFIG_SND_VERBOSE_PROCFS, CONFIG_SND_DEBUG . I updated wiki.
->
-> I have replied with both the result of my dmesg and syslog.  However,
-> the mailing list seems to have rejected the message due to size (62k,
-> but 60k is the limit).  Please let me know if you've received that
-> post or if I have to repost and split dmesg + syslog into two.
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-I received that. Please, stop cross posting.
-
-I don't see the problem (the ring buffer positions were dumped too early 
-when one interrupt was missed). Try value 37 for xrun_debug proc file and 
-send log files directly to me or send only an URL to obtain them 
-(http://pastebin.ca works ok).
-
- 					Thanks,
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
