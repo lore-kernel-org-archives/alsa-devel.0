@@ -1,64 +1,28 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH] ASoC: PCM_RATE: Check for KNOT and
-	CONTINUOUS flags
-Date: Fri, 12 Mar 2010 21:32:14 +0900
-Message-ID: <1b68c6791003120432j26fa5c43nfb7ee34c9b7d75c@mail.gmail.com>
-References: <1268368732-27758-1-git-send-email-jassi.brar@samsung.com>
-	<20100312111613.GA21260@rakim.wolfsonmicro.main>
+From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+Subject: Re: [PATCH 25/37] drivers/infiniband: use .dev.of_node instead of
+ .node in struct of_device
+Date: Fri, 12 Mar 2010 14:30:22 +0100
+Message-ID: <20100312143022.18b954a5@alex-laptop>
+References: <20100311174830.4824.19820.stgit@angua>
+	<20100311180605.4824.3613.stgit@angua>
+	<adavdd2d41q.fsf@roland-alpha.cisco.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f173.google.com (mail-qy0-f173.google.com
-	[209.85.221.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 707161037FC
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 13:32:16 +0100 (CET)
-Received: by qyk4 with SMTP id 4so1147168qyk.2
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 04:32:14 -0800 (PST)
-In-Reply-To: <20100312111613.GA21260@rakim.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-scsi-owner@vger.kernel.org>
+In-Reply-To: <adavdd2d41q.fsf@roland-alpha.cisco.com>
+Sender: linux-scsi-owner@vger.kernel.org
+To: Roland Dreier <rdreier@cisco.com>
+Cc: Grant Likely <grant.likely@secretlab.ca>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, linux-ide@vger.kernel.org, James.Bottomley@suse.de, linux-i2c@vger.kernel.org, sparclinux@vger.kernel.org, jeremy.kerr@canonical.com, sfr@canb.auug.org.au, linux-scsi@vger.kernel.org, jgarzik@pobox.com, microblaze-uclinux@itee.uq.edu.au, devicetree-discuss@lists.ozlabs.org, Christoph Raisch <raisch@de.ibm.com>, ben-linux@fluff.org, monstr@monstr.eu, linuxppc-dev@ozlabs.org, netdev@vger.kernel.org, gregkh@suse.de, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, dwmw2@infradead.org, davem@davemloft.net
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXIgMTIsIDIwMTAgYXQgODoxNiBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
-c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIEZyaSwgTWFyIDEyLCAyMDEwIGF0
-IDAxOjM4OjUyUE0gKzA5MDAsIEphc3NpIEJyYXIgd3JvdGU6Cj4+IEZvciBBU29DLCBpZiBlaXRo
-ZXIgQ1BVIG9yIENPREVDIGRyaXZlciBoYXMgc2V0IHRoZSBmbGFnLCB0aGUgTUFDSElORSBkcml2
-ZXIKPj4gc2hvdWxkIGJlIGdpdmVuIGEgY2hhbmNlIHRvIGZpZ3VyZSBvdXQgaWYgdGhlIGRhaSwg
-dGhhdCBzZXQgdGhlIGZsYWcsIGNhbgo+PiBhY2NvbW9kYXRlIGEgcmF0ZSB0aGF0IGl0IGRvZXMg
-bm90IGV4cGxpY2l0bHkgc3BlY2lmeSBidXQgaXMgc3BlY2lmaWVkCj4+IGJ5IHRoZSBkYWkgYXQg
-dGhlIG90aGVyIGVuZCBvZiB0aGUgbGluay4KPj4KPj4gU2lnbmVkLW9mZi1ieTogSmFzc2kgQnJh
-ciA8amFzc2kuYnJhckBzYW1zdW5nLmNvbT4KPgo+IEFwcGxpZWQsIHRoYW5rcy4KPgo+IFdlJ2xs
-IGhhdmUgdG8gd29yayBvdXQgaG93IHRvIG1hbmFnZSB0aGUgc2hhcmluZyBvZiByZXNwb25zaWJp
-bGl0eSBmb3IKPiB0aGUgY2xvY2sgY29uZmlndXJhdGlvbiBiZXR3ZWVuIHRoZSBjb21wb25lbnQg
-ZHJpdmVycyBhbmQgdGhlIG1hY2hpbmUKPiBkcml2ZXJzLiDCoE15IGZpcnN0IHRob3VnaHQgaXMg
-dG8gaGF2ZSB0aGUgY29tcG9uZW50IGRyaXZlcnMgcHJvdmlkZQo+IGZ1bmN0aW9ucyBtYWNoaW5l
-IGRyaXZlcnMgY2FuIHVzZSBpZiB0aGV5IHdhbnQgdG8uIMKgSXQgbWlnaHQgYWxzbyBiZQo+IGRl
-c2lyYWJsZSB0byBhbGxvdyBtYWNoaW5lIGRyaXZlcnMgdG8gc3VwcHJlc3MgdGhlc2UgZmxhZ3Mg
-aWYgdGhleSBqdXN0Cj4gd2FudCB0byB1c2Ugc3RhbmRhcmQgcmF0ZXMsIHRob3VnaCBJSVJDIHRo
-ZSBjb3JlIGRvZXMgdGhlIHJpZ2h0IHRoaW5nCj4gYW55d2F5LgogVXN1YWxseSBldmVuIHRoZSBu
-b24tc3RhbmRhcmQgcmF0ZXMsIHRob3NlIG5vdCBleHBsaWNpdGx5IG1lbnRpb25lZCBpbiB0aGUK
-Y2hpcCdzIG1hbnVhbCwgYXJlIHBvc3NpYmxlIHRvIGdlbmVyYXRlIGdpdmVuIGEgc3VpdGFibGUg
-c291cmNlIG9mIGNsb2NrIGFuZAp0aGlzIHNvdXJjZSBjbG9jayB1c3VhbGx5IGNsb3NlbHkgZGVw
-ZW5kcyBvbiB0aGUgYm9hcmQvbWFjaGluZS4KVGhhdCBzdWdnZXN0cyBoYXZpbmcgdGhlIE1BQ0hJ
-TkUgZHJpdmVyIGRlY2lkZSB3aGljaCByYXRlcyB3b3VsZApiZSBzdXBwb3J0ZWQgb24gaXQgKGFz
-IG9ubHkgaXQga25vd3MgY3B1L2NvZGVjIGRhaXMgYW5kIHRoZSBzb3VyY2Ugb2YgY2xvY2tzKS4K
-QnV0IGZ1bmN0aW9ucyBzZWVtIG92ZXJraWxsLCB0aGUgbWFjaGluZSBkcml2ZXIgY291bGQgYWxy
-ZWFkeSBleHRyYWN0IHN1cHBvcnRlZApyYXRlcyBmcm9tIGNwdV9kYWkgYW5kIGNvZGVjX2RhaSBt
-ZW1iZXJzIG9mIHRoZSBkYWlfbGluay4KClNvLCBpbWhvLCByYXRlcyBzcGVjaWZpZWQgYnkgZGFp
-cyBzaG91bGQgYmUgdXNlZCBvbmx5IGJ5IHRoZSBtYWNoaW5lIGRyaXZlcgp3aGljaCwgYWZ0ZXIg
-Y29uc2lkZXJpbmcgdGhlIGRlc2lnbiBhbmQgcHVycG9zZSBvZiB0aGUgZGV2aWNlLCBwcm92aWRl
-IGEgbGlzdCBvZgpzdXBwb3J0ZWQgcmF0ZXMgdG8gdGhlIEFTb0MuIE9mIGNvdXJzZSwgc29jLWNv
-cmUuYyB3b3VsZCBuZWVkIHRvIGJlIG1vZGlmaWVkLgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Thu, 11 Mar 2010 11:57:53 -0800
+Roland Dreier <rdreier@cisco.com> wrote:
+
+> Seems fine... adding EHCA guys just to make sure.
+> 
+>  > .node is being removed
+>  > 
+>  > Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+
+Acked-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
