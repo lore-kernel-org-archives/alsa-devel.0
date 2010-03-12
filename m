@@ -1,21 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 0/5] FIFO caused playback delay (latency)
-	handling in soc/omap
-Date: Thu, 11 Mar 2010 22:43:41 +0000
-Message-ID: <186E584F-F553-44F0-A49D-361BB76E0EE4@opensource.wolfsonmicro.com>
-References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100303133806.GA15105@sirena.org.uk>
-	<20100311222655.GP2900@atomide.com>
-	(sfid-20100311_222542_077523_F5624C8B)
-Mime-Version: 1.0 (iPhone Mail 7E18)
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Thu, 11 Mar 2010 20:32:51 -0800
+Message-ID: <a3ef07921003112032v3c3effb8n7e8f6599f4cbb453@mail.gmail.com>
+References: <s5htyswpb18.wl%tiwai@suse.de> <20100308044614.GA29026@localhost>
+	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
+	<alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>
+	<a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
+	<20100310125456.GA18509@localhost>
+	<a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
+	<alpine.LNX.2.00.1003110824390.4672@eeebox2.perex-int.cz>
+	<a3ef07921003111015x2386cc80x73a2a4bd679b1fe1@mail.gmail.com>
+	<alpine.LNX.2.00.1003111927570.4672@eeebox2.perex-int.cz>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87234103811
-	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 23:42:55 +0100 (CET)
-In-Reply-To: <20100311222655.GP2900@atomide.com>
-	(sfid-20100311_222542_077523_F5624C8B)
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.145])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3DD982445E
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 05:32:53 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 4so267757qwk.56
+	for <alsa-devel@alsa-project.org>; Thu, 11 Mar 2010 20:32:52 -0800 (PST)
+In-Reply-To: <alpine.LNX.2.00.1003111927570.4672@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +30,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "ext-eero.nurkkala@nokia.com" <ext-eero.nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Wei Ni <wni@nvidia.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@alsa-project.org>, Jaroslav Kysela <jkysela@redhat.com>, linux-kernel <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>, Wu Fengguang <fengguang.wu@intel.com>, Pavel Hofman <pavel.hofman@insite.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On 11 Mar 2010, at 22:26, Tony Lindgren <tony@atomide.com> wrote:
+On Thu, Mar 11, 2010 at 10:32 AM, Jaroslav Kysela <perex@perex.cz> wrote:
+> All these parameters should be set: CONFIG_SND_PCM_XRUN_DEBUG,
+> CONFIG_SND_VERBOSE_PROCFS, CONFIG_SND_DEBUG . I updated wiki.
 
-> * Mark Brown <broonie@opensource.wolfsonmicro.com> [100303 05:34]:
->> On Wed, Mar 03, 2010 at 03:08:03PM +0200, Peter Ujfalusi wrote:
->>
->>> Peter Ujfalusi (5):
->>>  ASoC: core: fix tailing whitespace in soc_pcm_apply_symmetry
->>>  ASoC: core: soc level wrapper for pcm_pointer callback
->>>  ASoC: core: Add delay operation to snd_soc_dai_ops
->>
->> I'll apply these just now, thanks!
->>
->>>  OMAP3: McBSP: Add interface for FIFO caused delay query
->>>  ASoC: OMAP3: Report delay caused by the internal FIFO
->>
->> These also look OK to me but there's the arch/arm dependency.
->
-> I think the only one is the McBSP patch above.
->
-> Care to take that too to keep things working?
->
-> Acked-by: Tony Lindgren <tony@atomide.com>
+I have replied with both the result of my dmesg and syslog.  However,
+the mailing list seems to have rejected the message due to size (62k,
+but 60k is the limit).  Please let me know if you've received that
+post or if I have to repost and split dmesg + syslog into two.
 
-I can do, though there was some debate about how useful the  
-information the hardware returns actually is - could folks confirm  
-what the consensus there was, please?
+Thanks,
+Derek
