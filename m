@@ -1,45 +1,43 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: PCM_RATE: Check for KNOT and
- CONTINUOUS flags
-Date: Fri, 12 Mar 2010 08:26:39 +0000
-Message-ID: <1268382399.3755.7.camel@odin>
-References: <1268368732-27758-1-git-send-email-jassi.brar@samsung.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCHv2 0/5] FIFO caused playback delay (latency) handling in
+ soc/omap
+Date: Fri, 12 Mar 2010 10:30:50 +0200
+Message-ID: <20100312103050.b83db5c4.jhnikula@gmail.com>
+References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100311222655.GP2900@atomide.com>
+	<186E584F-F553-44F0-A49D-361BB76E0EE4@opensource.wolfsonmicro.com>
+	<201003120818.30290.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
-	[209.85.218.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 797701038F3
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 09:26:43 +0100 (CET)
-Received: by bwz20 with SMTP id 20so1957424bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 00:26:43 -0800 (PST)
-In-Reply-To: <1268368732-27758-1-git-send-email-jassi.brar@samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <201003120818.30290.peter.ujfalusi@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-03-12 at 13:38 +0900, Jassi Brar wrote:
-> For ASoC, if either CPU or CODEC driver has set the flag, the MACHINE driver
-> should be given a chance to figure out if the dai, that set the flag, can
-> accomodate a rate that it does not explicitly specify but is specified
-> by the dai at the other end of the link.
-> 
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
-> ---
+On Fri, 12 Mar 2010 08:18:30 +0200
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> On Friday 12 March 2010 00:43:41 ext Mark Brown wrote:
+> 
+> > I can do, though there was some debate about how useful the
+> > information the hardware returns actually is - could folks confirm
+> > what the consensus there was, please?
+> 
+> Yeah, that thread went silent without final go or no go...
+> 
+...
+> All in all, I think the usage of the BUFFSTAT register is a good compromise for 
+> all cases, and it is needed for the cases, where the codec also have buffer of 
+> it's own.
+> 
+And one point is that the BUFFSTAT use doesn't make things worse than
+currently.  Now the application doesn't have any information about the
+HW buffer caused audio latencies so reporting them makes the things
+better than currently.
+
 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Jarkko
