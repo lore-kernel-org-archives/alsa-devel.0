@@ -1,15 +1,19 @@
-From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH] ASoC: PCM_RATE: Check for KNOT and CONTINUOUS
-	flags
-Date: Fri, 12 Mar 2010 13:38:52 +0900
-Message-ID: <1268368732-27758-1-git-send-email-jassi.brar@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCHv2 0/5] FIFO caused playback delay (latency)
+	handling in soc/omap
+Date: Fri, 12 Mar 2010 08:18:30 +0200
+Message-ID: <201003120818.30290.peter.ujfalusi@nokia.com>
+References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100311222655.GP2900@atomide.com>
+	<186E584F-F553-44F0-A49D-361BB76E0EE4@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 861C824471
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 05:48:36 +0100 (CET)
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 114741037EA
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 07:18:42 +0100 (CET)
+In-Reply-To: <186E584F-F553-44F0-A49D-361BB76E0EE4@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,49 +23,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
+To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-For ASoC, if either CPU or CODEC driver has set the flag, the MACHINE driver
-should be given a chance to figure out if the dai, that set the flag, can
-accomodate a rate that it does not explicitly specify but is specified
-by the dai at the other end of the link.
+On Friday 12 March 2010 00:43:41 ext Mark Brown wrote:
 
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/soc-core.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+> I can do, though there was some debate about how useful the
+> information the hardware returns actually is - could folks confirm
+> what the consensus there was, please?
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 06c38d1..eb73aab 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -404,6 +404,12 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 			codec_dai->playback.formats & cpu_dai->playback.formats;
- 		runtime->hw.rates =
- 			codec_dai->playback.rates & cpu_dai->playback.rates;
-+		if (codec_dai->playback.rates
-+			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
-+			runtime->hw.rates |= cpu_dai->playback.rates;
-+		if (cpu_dai->playback.rates
-+			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
-+			runtime->hw.rates |= codec_dai->playback.rates;
- 	} else {
- 		runtime->hw.rate_min =
- 			max(codec_dai->capture.rate_min,
-@@ -421,6 +427,12 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 			codec_dai->capture.formats & cpu_dai->capture.formats;
- 		runtime->hw.rates =
- 			codec_dai->capture.rates & cpu_dai->capture.rates;
-+		if (codec_dai->capture.rates
-+			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
-+			runtime->hw.rates |= cpu_dai->capture.rates;
-+		if (cpu_dai->capture.rates
-+			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
-+			runtime->hw.rates |= codec_dai->capture.rates;
- 	}
- 
- 	snd_pcm_limit_hw_rates(runtime);
--- 
-1.6.2.5
+Yeah, that thread went silent without final go or no go...
+
+I do agree with Eero, that the BUFFSTAT register is not the most reliable s=
+ource =
+
+of information, but I still believe that the way we are going to use it wil=
+l =
+
+give pretty close to the reality estimation on the statuses.
+Eero also mentioned timestamp based estimation, which I think can also be u=
+sed =
+
+in this way:
+In element mode, we just return the delay as the whole size of the buffer (=
+which =
+
+is not accurate when we initially fill the buffer, and when we drain it at =
+the =
+
+end, but it is not a real problem).
+In threshold mode, than we can take timestamp at DMA completion interrupts,=
+ and =
+
+calculate the delay based on the FIFO size (FIFO size - samples played out =
+since =
+
+the last timstamp). This can also give false numbers at the start of the =
+
+playback (for few periods, until the buffer utilization settles).
+
+So the timestamp based solution looks good, but it is only usable when the =
+codec =
+
+is running synchronously. It will definitely falls apart as soon as we use =
+a =
+
+codec like tlv320dac33 in burst mode (FIFO on the codec as well).
+We could have ~100 ms between DMA interrupts, so the countdown for McBSP FI=
+FO =
+
+usage is already broken.
+Furthermore since there is no way at the moment to actually synchronize the =
+
+omap-mcbsp, omap-pcm and tlv320dac33 (in DMA, McBSP threshold, McBSP mode a=
+nd =
+
+DAC33 mode sense), there could be cases, that this big silence on the bus (=
+when =
+
+DAC33 is playing from it's buffer) is not happening exactly after the DMA f=
+illed =
+
+up the McBSP FIFO, but a bit later (could be just one sample away from the =
+next =
+
+McBSP threshold event), which means that the McBSP FIFO is nowhere near to =
+be =
+
+full.
+In this case the BUFFSTAT register would give good estimation, than any =
+
+timestamp based solution for McBSP FIFO.
+
+All in all, I think the usage of the BUFFSTAT register is a good compromise=
+ for =
+
+all cases, and it is needed for the cases, where the codec also have buffer=
+ of =
+
+it's own.
+Never the less, we can also add the timestamp based estimation later, but w=
+e =
+
+need to make sure, that those can be picked somehow for the given setup.
+
+-- =
+
+P=E9ter
