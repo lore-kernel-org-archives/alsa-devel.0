@@ -1,26 +1,15 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
-Date: Fri, 12 Mar 2010 12:37:02 +0800
-Message-ID: <20100312043702.GA30428@localhost>
-References: <20100308044614.GA29026@localhost>
-	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
-	<alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>
-	<a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
-	<20100310125456.GA18509@localhost>
-	<a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
-	<alpine.LNX.2.00.1003110824390.4672@eeebox2.perex-int.cz>
-	<a3ef07921003111015x2386cc80x73a2a4bd679b1fe1@mail.gmail.com>
-	<alpine.LNX.2.00.1003111927570.4672@eeebox2.perex-int.cz>
-	<a3ef07921003112032v3c3effb8n7e8f6599f4cbb453@mail.gmail.com>
+From: Jassi Brar <jassi.brar@samsung.com>
+Subject: [PATCH] ASoC: PCM_RATE: Check for KNOT and CONTINUOUS
+	flags
+Date: Fri, 12 Mar 2010 13:38:52 +0900
+Message-ID: <1268368732-27758-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id C657624466
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 05:37:08 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <a3ef07921003112032v3c3effb8n7e8f6599f4cbb453@mail.gmail.com>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id 861C824471
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 05:48:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,21 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: VDR User <user.vdr@gmail.com>
-Cc: Wei Ni <wni@nvidia.com>, alsa-devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Jaroslav Kysela <jkysela@redhat.com>, akpm <akpm@linux-foundation.org>, Pavel Hofman <pavel.hofman@insite.cz>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 12, 2010 at 12:32:51PM +0800, VDR User wrote:
-> On Thu, Mar 11, 2010 at 10:32 AM, Jaroslav Kysela <perex@perex.cz> wrote:
-> > All these parameters should be set: CONFIG_SND_PCM_XRUN_DEBUG,
-> > CONFIG_SND_VERBOSE_PROCFS, CONFIG_SND_DEBUG . I updated wiki.
-> 
-> I have replied with both the result of my dmesg and syslog.  However,
-> the mailing list seems to have rejected the message due to size (62k,
-> but 60k is the limit).  Please let me know if you've received that
-> post or if I have to repost and split dmesg + syslog into two.
+For ASoC, if either CPU or CODEC driver has set the flag, the MACHINE driver
+should be given a chance to figure out if the dai, that set the flag, can
+accomodate a rate that it does not explicitly specify but is specified
+by the dai at the other end of the link.
 
-Never mind, the CC'ed users should be able to receive it.
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ sound/soc/soc-core.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
-Thanks,
-Fengguang
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 06c38d1..eb73aab 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -404,6 +404,12 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 			codec_dai->playback.formats & cpu_dai->playback.formats;
+ 		runtime->hw.rates =
+ 			codec_dai->playback.rates & cpu_dai->playback.rates;
++		if (codec_dai->playback.rates
++			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
++			runtime->hw.rates |= cpu_dai->playback.rates;
++		if (cpu_dai->playback.rates
++			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
++			runtime->hw.rates |= codec_dai->playback.rates;
+ 	} else {
+ 		runtime->hw.rate_min =
+ 			max(codec_dai->capture.rate_min,
+@@ -421,6 +427,12 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 			codec_dai->capture.formats & cpu_dai->capture.formats;
+ 		runtime->hw.rates =
+ 			codec_dai->capture.rates & cpu_dai->capture.rates;
++		if (codec_dai->capture.rates
++			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
++			runtime->hw.rates |= cpu_dai->capture.rates;
++		if (cpu_dai->capture.rates
++			   & (SNDRV_PCM_RATE_KNOT | SNDRV_PCM_RATE_CONTINUOUS))
++			runtime->hw.rates |= codec_dai->capture.rates;
+ 	}
+ 
+ 	snd_pcm_limit_hw_rates(runtime);
+-- 
+1.6.2.5
