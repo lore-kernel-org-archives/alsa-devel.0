@@ -1,21 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] ASoC: tlv320dac33: Start/stop sequence
- change
-Date: Fri, 12 Mar 2010 08:10:32 +0000
-Message-ID: <1268381432.3755.5.camel@odin>
+Subject: Re: [PATCH 2/2] ASoC: tlv320dac33: Add option for
+ keeping the BCLK running
+Date: Fri, 12 Mar 2010 08:10:43 +0000
+Message-ID: <1268381443.3755.6.camel@odin>
 References: <1268317582-10284-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1268317582-10284-2-git-send-email-peter.ujfalusi@nokia.com>
+	<1268317582-10284-3-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f173.google.com (mail-qy0-f173.google.com
-	[209.85.221.173])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2E28324363
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 09:10:36 +0100 (CET)
-Received: by qyk4 with SMTP id 4so1012465qyk.2
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 00:10:36 -0800 (PST)
-In-Reply-To: <1268317582-10284-2-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
+	[209.85.218.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 01DA9103811
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 09:10:50 +0100 (CET)
+Received: by bwz20 with SMTP id 20so1934089bwz.32
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 00:10:49 -0800 (PST)
+In-Reply-To: <1268317582-10284-3-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,12 +30,17 @@ Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 On Thu, 2010-03-11 at 16:26 +0200, Peter Ujfalusi wrote:
-> To avoid race condition especially in FIFO modes the
-> sequence for enabling and disabling the codec need to
-> be changed.
+> Platform data option for the codec to keep the BCLK clock
+> continuously running in FIFO modes (codec master).
+> 
+> OMAP3 McBSP when in slave mode needs continuous BCLK running
+> on the serial bus in order to operate correctly.
+> 
+> Since in FIFO mode the DAC33 can also shut down the BCLK clock
+> and enable it only when it is needed, let the platforms decide
+> if the CPU side needs the BCLK running or not.
 > 
 > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
 -- 
