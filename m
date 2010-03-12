@@ -1,57 +1,51 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 1/5] MFD: DaVinci Voice Codec
-Date: Fri, 12 Mar 2010 08:13:25 +0000
-Message-ID: <9FFC5872-87B8-452E-B85C-D029B4F67E5B@opensource.wolfsonmicro.com>
-References: <1268321541-18922-1-git-send-email-miguel.aguilar@ridgerun.com>
-	<1268380916.3755.4.camel@odin>
-	(sfid-20100312_080205_765150_09FEB7AD)
-Mime-Version: 1.0 (iPhone Mail 7E18)
-Content-Type: text/plain; charset="us-ascii"
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: [PATCH 33/37] sound/soc: use .dev.of_node instead of .node in
+  struct of_device
+Date: Fri, 12 Mar 2010 09:26:19 +0100
+Message-ID: <20100312092619.6a6f5e20@hyperion.delvare>
+References: <20100311174830.4824.19820.stgit@angua>
+	<20100311180649.4824.10368.stgit@angua>
+	<20100311193458.GA13289@opensource.wolfsonmicro.com>
+	<fa686aa41003111322wc1f15b2hd3f653af060f56bf@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87C3524366
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 09:12:40 +0100 (CET)
-In-Reply-To: <1268380916.3755.4.camel@odin>
-	(sfid-20100312_080205_765150_09FEB7AD)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "davinci-linux-open-source@linux.davincidsp.com" <davinci-linux-open-source@linux.davincidsp.com>, "nsekhar@ti.com" <nsekhar@ti.com>, "diego.dompe@ridgerun.com" <diego.dompe@ridgerun.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "todd.fischer@ridgerun.com" <todd.fischer@ridgerun.com>, "miguel.aguilar@ridgerun.com" <miguel.aguilar@ridgerun.com>
+Return-path: <linux-ide-owner@vger.kernel.org>
+In-Reply-To: <fa686aa41003111322wc1f15b2hd3f653af060f56bf@mail.gmail.com>
+Sender: linux-ide-owner@vger.kernel.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, monstr@monstr.eu, gregkh@suse.de, benh@kernel.crashing.org, akpm@linux-foundation.org, davem@davemloft.net, sfr@canb.auug.org.au, jgarzik@pobox.com, ben-linux@fluff.org, dwmw2@infradead.org, jeremy.kerr@canonical.com, James.Bottomley@suse.de, microblaze-uclinux@itee.uq.edu.au, linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org, sparclinux@vger.kernel.org, linux-ide@vger.kernel.org, netdev@vger.kernel.org, linux-i2c@vger.kernel.org, devicetree-discuss@lists.ozlabs.org, linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org, timur@freescale.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 12 Mar 2010, at 08:01, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+On Thu, 11 Mar 2010 14:22:37 -0700, Grant Likely wrote:
+> On Thu, Mar 11, 2010 at 12:34 PM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+> > On Thu, Mar 11, 2010 at 11:06:50AM -0700, Grant Likely wrote:
+> >> .node is being removed
+> >>
+> >> Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+> >
+> > Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> >
+> > but please ensure that Liam and especially Timur also check this (both
+> > CCed).
+> >
+> > For enormous patch serieses like this it's really nice if you can ensure
+> > that each person is only CCed on the patches that they need to review.
+> > Much less stuff in the inbox.
+> 
+> Yeah, sorry about that (and to everyone receiving this thread, I'm
+> really sorry.  I won't do it again).  I've already been yelled at for
+> that.  What happened is that on a previous series I was yelled at for
+> not sending all patches to everyone (so that the patches could be
+> reviewed in context).  So, naturally, I made sure to include everyone
+> on the whole series this time....  doh.
+> 
+> Next time I post I'll constrain it to small chunks.
 
-> On Thu, 2010-03-11 at 09:32 -0600, miguel.aguilar@ridgerun.com wrote:
->> From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
->>
->> This is the MFD driver for the DaVinci Voice codec, it has two  
->> clients:
->>
->> * Voice codec interface
->> * Voice codec CQ93VC
->>
->> Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
->
-> Please CC the MFD maintainer too for this one.
+A good compromise IMHO is to send only the pieces they really have to
+see and ack to each person, and provide a pointer to somewhere the full
+series can be seen and downloaded for the interested.
 
-Or if, as is the case here IIRC, they've already acked it include  
-their ack in repostings.
-
->
-> Thanks
->
-> Liam
->
-> -- 
-> Freelance Developer, SlimLogic Ltd
-> ASoC and Voltage Regulator Maintainer.
-> http://www.slimlogic.co.uk
->
+-- 
+Jean Delvare
