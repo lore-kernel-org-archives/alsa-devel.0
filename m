@@ -1,43 +1,131 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCHv2 0/5] FIFO caused playback delay (latency) handling in
- soc/omap
-Date: Fri, 12 Mar 2010 10:30:50 +0200
-Message-ID: <20100312103050.b83db5c4.jhnikula@gmail.com>
-References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100311222655.GP2900@atomide.com>
-	<186E584F-F553-44F0-A49D-361BB76E0EE4@opensource.wolfsonmicro.com>
-	<201003120818.30290.peter.ujfalusi@nokia.com>
+From: Benjamin Valentin <benpicco@zedat.fu-berlin.de>
+Subject: [PATCH 2/2] Quick fix for the audio clocks on SAM9-L9261
+Date: Fri, 12 Mar 2010 11:02:41 +0100
+Message-ID: <20100312110241.3d97237b@rechenknecht2k7>
+References: <20100312105817.4392b594@rechenknecht2k7>
+	<20100312110032.2e57fdce@rechenknecht2k7>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <201003120818.30290.peter.ujfalusi@nokia.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Tony Lindgren <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20100312110032.2e57fdce@rechenknecht2k7>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, dinuxbg@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Mar 2010 08:18:30 +0200
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+Signed-off-by: Dimitar Dimitrov <dimitar@olimex.com>
 
-> On Friday 12 March 2010 00:43:41 ext Mark Brown wrote:
-> 
-> > I can do, though there was some debate about how useful the
-> > information the hardware returns actually is - could folks confirm
-> > what the consensus there was, please?
-> 
-> Yeah, that thread went silent without final go or no go...
-> 
-...
-> All in all, I think the usage of the BUFFSTAT register is a good compromise for 
-> all cases, and it is needed for the cases, where the codec also have buffer of 
-> it's own.
-> 
-And one point is that the BUFFSTAT use doesn't make things worse than
-currently.  Now the application doesn't have any information about the
-HW buffer caused audio latencies so reporting them makes the things
-better than currently.
+>From 10a85229b2357c89d5170efde5ac0e1cba4c9f9e Mon Sep 17 00:00:00 2001
+From: Dimitar Dimitrov <dimitar@olimex.com>
+Date: Wed, 27 May 2009 08:11:37 +0300
+Subject: [PATCH] Quick fix for the audio clocks on SAM9-L9261
 
+This patch together with support from SAM9-L9261 hardware fix an issue with
+audio clocks. AT73C213 needs MCLK and BCLK with equal phase. The MCLK from
+AT91SAM9XXX clock output and BCLK from the SSC TK clock output are not
+phase-synchronized. Thus the SAM9-L9261 board provides external hardware
+divison by 8 from MCLK to BCLK, ensuring zero phase difference.
 
+See: http://www.at91.com/phpbb/viewtopic.php?t=2633
+---
+ sound/spi/at73c213.c |   54 ++++++++++++++++++++++++++++++++++++++-----------
+ 1 files changed, 42 insertions(+), 12 deletions(-)
+
+diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
+index 4c7b051..325e534 100644
+--- a/sound/spi/at73c213.c
++++ b/sound/spi/at73c213.c
+@@ -29,6 +29,8 @@
+ 
+ #include <linux/atmel-ssc.h>
+ 
++#include <asm/mach-types.h>
++
+ #include <linux/spi/spi.h>
+ #include <linux/spi/at73c213.h>
+ 
+@@ -114,7 +116,11 @@ snd_at73c213_write_reg(struct snd_at73c213 *chip, u8 reg, u8 val)
+ static struct snd_pcm_hardware snd_at73c213_playback_hw = {
+ 	.info		= SNDRV_PCM_INFO_INTERLEAVED |
+ 			  SNDRV_PCM_INFO_BLOCK_TRANSFER,
++#ifdef __BIG_ENDIAN
+ 	.formats	= SNDRV_PCM_FMTBIT_S16_BE,
++#else
++	.formats	= SNDRV_PCM_FMTBIT_S16_LE,
++#endif
+ 	.rates		= SNDRV_PCM_RATE_CONTINUOUS,
+ 	.rate_min	= 8000,  /* Replaced by chip->bitrate later. */
+ 	.rate_max	= 50000, /* Replaced by chip->bitrate later. */
+@@ -144,7 +150,8 @@ static int snd_at73c213_set_bitrate(struct snd_at73c213 *chip)
+ 	 * as practical to the desired target rate.
+ 	 *
+ 	 * The DAC master clock (MCLK) is programmable, and is either 256
+-	 * or (not here) 384 times the I2S output clock (BCLK).
++	 * or (not here) 384 times the I2S frame clock (LRC), that is
++	 * 8 or 12 times the output bit clock (BCLK).
+ 	 */
+ 
+ 	/* SSC clock / (bitrate * stereo * 16-bit). */
+@@ -747,17 +754,40 @@ cleanup:
+  */
+ static int __devinit snd_at73c213_ssc_init(struct snd_at73c213 *chip)
+ {
+-	/*
+-	 * Continuous clock output.
+-	 * Starts on falling TF.
+-	 * Delay 1 cycle (1 bit).
+-	 * Periode is 16 bit (16 - 1).
+-	 */
+-	ssc_writel(chip->ssc->regs, TCMR,
+-			SSC_BF(TCMR_CKO, 1)
+-			| SSC_BF(TCMR_START, 4)
+-			| SSC_BF(TCMR_STTDLY, 1)
+-			| SSC_BF(TCMR_PERIOD, 16 - 1));
++	if (machine_is_sam9_l9261()) {
++		/*
++		 * dimitar@olimex.com : AT73C213 needs MCLK and BCLK with equal
++		 * phase. The MCLK from AT91SAM9XXX clock output and BCLK from
++		 * the SSC TK clock output are not phase-synchronized. Thus
++		 * the SAM9-L9261 board provides external hardware divison by
++		 * 8 from MCLK to BCLK, ensuring zero phase difference.
++		 * See: http://www.at91.com/phpbb/viewtopic.php?t=2633
++		 *
++		 * TK is clock input.
++		 * Clock source is TK pin.
++		 * Starts on falling TF.
++		 * Delay 1 cycle (1 bit).
++		 * Period is 16 bit (16 - 1).
++		 */
++		ssc_writel(chip->ssc->regs, TCMR,
++				SSC_BF(TCMR_CKS, 2)
++				| SSC_BF(TCMR_CKO, 0)
++				| SSC_BF(TCMR_START, 4)
++				| SSC_BF(TCMR_STTDLY, 1)
++				| SSC_BF(TCMR_PERIOD, 16 - 1));
++	} else {
++		/*
++		 * Continuous clock output.
++		 * Starts on falling TF.
++		 * Delay 1 cycle (1 bit).
++		 * Period is 16 bit (16 - 1).
++		 */
++		ssc_writel(chip->ssc->regs, TCMR,
++				SSC_BF(TCMR_CKO, 1)
++				| SSC_BF(TCMR_START, 4)
++				| SSC_BF(TCMR_STTDLY, 1)
++				| SSC_BF(TCMR_PERIOD, 16 - 1));
++	}
+ 	/*
+ 	 * Data length is 16 bit (16 - 1).
+ 	 * Transmit MSB first.
 -- 
-Jarkko
+1.5.6.1
