@@ -1,19 +1,25 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2 1/5] MFD: DaVinci Voice Codec
-Date: Fri, 12 Mar 2010 08:01:56 +0000
-Message-ID: <1268380916.3755.4.camel@odin>
-References: <1268321541-18922-1-git-send-email-miguel.aguilar@ridgerun.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH]Support MCP89 and GT21x hdmi audio
+Date: Fri, 12 Mar 2010 09:08:46 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1003120905250.4672@eeebox2.perex-int.cz>
+References: <s5htyswpb18.wl%tiwai@suse.de> <20100308044614.GA29026@localhost>
+	<a3ef07921003092142g23b93903v2b4af9c6b691bea0@mail.gmail.com>
+	<alpine.LNX.2.00.1003100856420.4672@eeebox2.perex-int.cz>
+	<a3ef07921003100005k6c7da149k99069cc13b3c8183@mail.gmail.com>
+	<20100310125456.GA18509@localhost>
+	<a3ef07921003100938o4d94161fw559bc9b563ce55b@mail.gmail.com>
+	<alpine.LNX.2.00.1003110824390.4672@eeebox2.perex-int.cz>
+	<a3ef07921003111015x2386cc80x73a2a4bd679b1fe1@mail.gmail.com>
+	<alpine.LNX.2.00.1003111927570.4672@eeebox2.perex-int.cz>
+	<a3ef07921003112032v3c3effb8n7e8f6599f4cbb453@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
-	[209.85.218.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3A5332433C
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 09:02:03 +0100 (CET)
-Received: by bwz20 with SMTP id 20so1921562bwz.32
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 00:02:01 -0800 (PST)
-In-Reply-To: <1268321541-18922-1-git-send-email-miguel.aguilar@ridgerun.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id E12FB2434D
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 09:08:46 +0100 (CET)
+In-Reply-To: <a3ef07921003112032v3c3effb8n7e8f6599f4cbb453@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +29,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: miguel.aguilar@ridgerun.com
-Cc: davinci-linux-open-source@linux.davincidsp.com, nsekhar@ti.com, broonie@opensource.wolfsonmicro.com, diego.dompe@ridgerun.com, alsa-devel@alsa-project.org, todd.fischer@ridgerun.com
+To: VDR User <user.vdr@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-03-11 at 09:32 -0600, miguel.aguilar@ridgerun.com wrote:
-> From: Miguel Aguilar <miguel.aguilar@ridgerun.com>
-> 
-> This is the MFD driver for the DaVinci Voice codec, it has two clients:
-> 
-> * Voice codec interface
-> * Voice codec CQ93VC
-> 
-> Signed-off-by: Miguel Aguilar <miguel.aguilar@ridgerun.com>
+On Thu, 11 Mar 2010, VDR User wrote:
 
-Please CC the MFD maintainer too for this one.
+> On Thu, Mar 11, 2010 at 10:32 AM, Jaroslav Kysela <perex@perex.cz> wrote:
+>> All these parameters should be set: CONFIG_SND_PCM_XRUN_DEBUG,
+>> CONFIG_SND_VERBOSE_PROCFS, CONFIG_SND_DEBUG . I updated wiki.
+>
+> I have replied with both the result of my dmesg and syslog.  However,
+> the mailing list seems to have rejected the message due to size (62k,
+> but 60k is the limit).  Please let me know if you've received that
+> post or if I have to repost and split dmesg + syslog into two.
 
-Thanks
+I received that. Please, stop cross posting.
 
-Liam
+I don't see the problem (the ring buffer positions were dumped too early 
+when one interrupt was missed). Try value 37 for xrun_debug proc file and 
+send log files directly to me or send only an URL to obtain them 
+(http://pastebin.ca works ok).
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+ 					Thanks,
+ 						Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
