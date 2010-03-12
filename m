@@ -1,34 +1,46 @@
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 2/2] Quick fix for the audio clocks on SAM9-L9261
-Date: Fri, 12 Mar 2010 10:18:59 +0000
-Message-ID: <20100312101859.GC29306@n2100.arm.linux.org.uk>
-References: <20100312105817.4392b594@rechenknecht2k7> <20100312110032.2e57fdce@rechenknecht2k7> <20100312110241.3d97237b@rechenknecht2k7>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHv2 0/5] FIFO caused playback delay	(latency)
+	handling in soc/omap
+Date: Fri, 12 Mar 2010 11:12:36 +0000
+Message-ID: <20100312111235.GA23739@sirena.org.uk>
+References: <1267621689-30337-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100311222655.GP2900@atomide.com>
+	<186E584F-F553-44F0-A49D-361BB76E0EE4@opensource.wolfsonmicro.com>
+	<201003120818.30290.peter.ujfalusi@nokia.com>
+	<20100312103050.b83db5c4.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D9611038C7
+	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 12:12:37 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20100312110241.3d97237b@rechenknecht2k7>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Benjamin Valentin <benpicco@zedat.fu-berlin.de>
-Cc: linux-kernel@vger.kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, dinuxbg@gmail.com, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20100312103050.b83db5c4.jhnikula@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 12, 2010 at 11:02:41AM +0100, Benjamin Valentin wrote:
-> Signed-off-by: Dimitar Dimitrov <dimitar@olimex.com>
+On Fri, Mar 12, 2010 at 10:30:50AM +0200, Jarkko Nikula wrote:
+> Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-This should be...
+> > All in all, I think the usage of the BUFFSTAT register is a good compromise for 
+> > all cases, and it is needed for the cases, where the codec also have buffer of 
+> > it's own.
 
-> >From 10a85229b2357c89d5170efde5ac0e1cba4c9f9e Mon Sep 17 00:00:00 2001
-> From: Dimitar Dimitrov <dimitar@olimex.com>
-> Date: Wed, 27 May 2009 08:11:37 +0300
-> Subject: [PATCH] Quick fix for the audio clocks on SAM9-L9261
-> 
-> This patch together with support from SAM9-L9261 hardware fix an issue with
-> audio clocks. AT73C213 needs MCLK and BCLK with equal phase. The MCLK from
-> AT91SAM9XXX clock output and BCLK from the SSC TK clock output are not
-> phase-synchronized. Thus the SAM9-L9261 board provides external hardware
-> divison by 8 from MCLK to BCLK, ensuring zero phase difference.
-> 
-> See: http://www.at91.com/phpbb/viewtopic.php?t=2633
+> And one point is that the BUFFSTAT use doesn't make things worse than
+> currently.  Now the application doesn't have any information about the
+> HW buffer caused audio latencies so reporting them makes the things
+> better than currently.
 
-... here.  It's supposed to be part of the commit message.
+OK, that's what I thought - just wanted to confirm.  I've applied both
+patches now.
