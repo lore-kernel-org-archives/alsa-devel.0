@@ -1,83 +1,44 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.35
-Date: Fri, 12 Mar 2010 18:08:24 +0000
-Message-ID: <20100312180824.GA29326@rakim.wolfsonmicro.main>
+From: "Olaya, Margarita" <magi.olaya@ti.com>
+Subject: [PATCHv5 0/2] TWL6040 audio codec initial support
+Date: Fri, 12 Mar 2010 19:52:11 -0600
+Message-ID: <1889FA7136B567478A67D4B0F85B0CCE66173AF5@dlee06.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3FB4B10380B
-	for <alsa-devel@alsa-project.org>; Fri, 12 Mar 2010 19:08:26 +0100 (CET)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-omap-owner@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit fad837c16cdd856c68ce2e1335ad0fe836ed8ecd:
-  Mark Brown (1):
-        Merge commit 'v2.6.34-rc1' into for-2.6.35
+Following patch series add initial support for TWL6040 codec driver.
+The patch set is based on the series sent from Misael Lopez in October 2009.
 
-are available in the git repository at:
+Changes from v4:
+- Rename twl6030_codec as twl6040_codec
+- Rebase the 6 codec patches into a single patch
+- Rename twl6040_read as twl6040_read_reg_volatile
+- Use msleep instead of large mdelays
+- Add more trigger sources
+- Restructure set_bias_level function to avoid transitions like PREPARE->ON
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
+Regards,
+Margarita
+---
 
-Jassi Brar (3):
-      ASoC: S3C64XX: I2S: Make BCLK independent of sample size
-      ASoC: S3C: I2Sv2: Segregate hw_params callback
-      ASoC: PCM_RATE: Check for KNOT and CONTINUOUS flags
+Misael Lopez Cruz (1):
+  ASoC: TWL6040: Add twl6040 codec driver
 
-Kuninori Morimoto (1):
-      ASoC: da7210: Add 11025/22050/44100/88200 rate support
+Margarita Olaya Cabrera (1):
+  OMAP4: PMIC: Rename twl6030_codec as twl6040_codec
 
-Miguel Aguilar (4):
-      MFD: DaVinci Voice Codec
-      ASoC: DaVinci: Voice Codec Interface
-      ASoC: DaVinci: CQ93VC Voice Codec
-      DaVinci: DM365: Voice Codec support for the DM365 EVM
-
-Peter Ujfalusi (4):
-      ASoC: tlv320dac33: Start/stop sequence change
-      ASoC: tlv320dac33: Add option for keeping the BCLK running
-      OMAP3: McBSP: Add interface for FIFO caused delay query
-      ASoC: OMAP3: Report delay caused by the internal FIFO
-
- arch/arm/mach-davinci/board-dm365-evm.c |    4 +
- arch/arm/plat-omap/include/plat/mcbsp.h |    6 +
- arch/arm/plat-omap/mcbsp.c              |   55 ++++++
- drivers/mfd/Kconfig                     |    4 +
- drivers/mfd/Makefile                    |    1 +
- drivers/mfd/davinci_voicecodec.c        |  189 +++++++++++++++++++
- include/linux/mfd/davinci_voicecodec.h  |  126 +++++++++++++
- include/sound/tlv320dac33-plat.h        |    1 +
- sound/soc/codecs/Kconfig                |    4 +
- sound/soc/codecs/Makefile               |    2 +
- sound/soc/codecs/cq93vc.c               |  298 +++++++++++++++++++++++++++++++
- sound/soc/codecs/cq93vc.h               |   29 +++
- sound/soc/codecs/da7210.c               |   90 +++++++++-
- sound/soc/codecs/tlv320dac33.c          |   38 ++---
- sound/soc/davinci/Kconfig               |   27 +++-
- sound/soc/davinci/Makefile              |    2 +
- sound/soc/davinci/davinci-evm.c         |   45 +++++-
- sound/soc/davinci/davinci-vcif.c        |  272 ++++++++++++++++++++++++++++
- sound/soc/davinci/davinci-vcif.h        |   28 +++
- sound/soc/omap/omap-mcbsp.c             |   26 +++
- sound/soc/s3c24xx/s3c-i2s-v2.c          |   27 +---
- sound/soc/s3c24xx/s3c2412-i2s.c         |   37 ++++
- sound/soc/soc-core.c                    |   12 ++
- 23 files changed, 1270 insertions(+), 53 deletions(-)
- create mode 100644 drivers/mfd/davinci_voicecodec.c
- create mode 100644 include/linux/mfd/davinci_voicecodec.h
- create mode 100644 sound/soc/codecs/cq93vc.c
- create mode 100644 sound/soc/codecs/cq93vc.h
- create mode 100644 sound/soc/davinci/davinci-vcif.c
- create mode 100644 sound/soc/davinci/davinci-vcif.h
+ drivers/mfd/twl-core.c     |    4 +-
+ include/linux/i2c/twl.h    |    6 +-
+ sound/soc/codecs/Kconfig   |    4 +
+ sound/soc/codecs/Makefile  |    2 +
+ sound/soc/codecs/twl6040.c | 1223 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/twl6040.h |  141 +++++
+ 6 files changed, 1375 insertions(+), 5 deletions(-)
+ create mode 100644 sound/soc/codecs/twl6040.c
+ create mode 100644 sound/soc/codecs/twl6040.h
