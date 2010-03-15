@@ -1,85 +1,64 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: Re: [Patch v2] aconnect -x: Do not update index after
- removal of connection.
-Date: Mon, 15 Mar 2010 21:47:14 +0100
-Message-ID: <1268686034.16974.39.camel@mattotaupa>
-References: <4B9E306F.8070705@gmail.com>
-	<1268663545.9635.10.camel@mattotaupa>  <4B9E7123.4000207@gmail.com>
+From: Thomas Weber <swirl-EOsNSARiLbg@public.gmane.org>
+Subject: [PATCH 0/4] Some typo fixing
+Date: Mon, 15 Mar 2010 21:55:43 +0100
+Message-ID: <1268686558-28171-1-git-send-email-swirl@gmx.li>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7013177065534676329=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3351E103827
-	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 21:47:18 +0100 (CET)
-Received: from f053034098.adsl.alicedsl.de ([78.53.34.98]
-	helo=[192.168.178.21])
-	by mail.gw90.de with esmtpsa (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <paulepanter@users.sourceforge.net>)
-	id 1NrHC1-0002n2-Ip
-	for alsa-devel@alsa-project.org; Mon, 15 Mar 2010 20:47:17 +0000
-In-Reply-To: <4B9E7123.4000207@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/containers>,
+	<mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linux-foundation.org/pipermail/containers>
+List-Post: <mailto:containers-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/containers>,
+	<mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Karsten Keil <isdn-iHCpqvpFUx0uJkBD2foKsQ@public.gmane.org>, Lin Ming <ming.m.lin-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Benjamin Herrenschmidt <benh-XVmvHMARGAS8U2dJNN8I7kB+6BGkLq7r@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Pavel Machek <pavel-AlSwsSmVLrQ@public.gmane.org>, David Brownell <dbrownell-Rn4VEauK+AKRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>, linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, KOSAKI Motohiro <kosaki.motohiro-+CUm20s59erQFUHtdCDX3A@public.gmane.org>, Bjorn Helgaas <bjorn.helgaas-VXdhtT5mjnY@public.gmane.org>, Rusty Russell <rusty-8n+1lVoiYb80n/F98K4Iww@public.gmane.org>, "John W. Linville" <linville-2XuSBdqkA4R54TAoqtyWWQ@public.gmane.org>, Steve Conklin <sconklin-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>, Ralph Campbell <infinipath-h88ZbnxC6KDQT0dZR+AlfA@public.gmane.org>, Anton Vorontsov <avorontsov-hkdhdckH98+B+jHODAdFcQ@public.gmane.org>, cbe-oss-dev-mnsaURCQ41sdnm+yROfE0A@public.gmane.org, Liam Girdwood <lrg-kDsPt+C1G03kYMGBc/C6ZA@public.gmane.org>, Anthony Liguori <aliguori-r/Jw6+rmf7HQT0dZR+AlfA@public.gmane.org>, Jiri Kosina <jkosina-AlSwsSmVLrQ@public.gmane.org>, Randy Dunlap <rdunlap-/UHa2rfvQTnk1uMJSBkQmQ@public.gmane.org>, Tejun Heo <tj@kernel>
 List-Id: alsa-devel@alsa-project.org
 
+I have fixed some typos.
 
---===============7013177065534676329==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-GHcpA+UytN3KQTCYohnS"
+Thomas Weber (4):
+  Fix typo: [Ss]ytem => [Ss]ystem
+  Fix typo: udpate => update
+  Fix typo: paramters => parameters
+  Fix typo: orginal => original
 
-
---=-GHcpA+UytN3KQTCYohnS
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Am Montag, den 15.03.2010, 18:40 +0100 schrieb lieven moors:
-> On 03/15/2010 03:32 PM, Paul Menzel wrote:
-
-[=E2=80=A6]
-
-> Thanks for the explanation, here is a second try...
-> I'm not sure what caused the extra line breaks, but this should be plain=20
-> text now.
-> Hope this works...
-
-Unfortunately I did not. Could you just attach the patch, please?
-
-
-Thanks,
-
-Paul
-
---=-GHcpA+UytN3KQTCYohnS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Dies ist ein digital signierter Nachrichtenteil
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEABECAAYFAkuenNIACgkQPX1aK2wOHVjClgCfQFT0nokdnnsXHfZmEORYLTUi
-YoUAn3S4AtBQQvg4pg0/QEm7bJ7JqFWr
-=+gob
------END PGP SIGNATURE-----
-
---=-GHcpA+UytN3KQTCYohnS--
-
-
---===============7013177065534676329==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============7013177065534676329==--
+ Documentation/cgroups/cgroups.txt               |    2 +-
+ Documentation/kbuild/kconfig.txt                |    2 +-
+ Documentation/sysfs-rules.txt                   |    2 +-
+ Documentation/trace/events.txt                  |    8 ++++----
+ drivers/acpi/osl.c                              |    4 ++--
+ drivers/ata/ata_piix.c                          |    2 +-
+ drivers/firewire/ohci.c                         |    2 +-
+ drivers/gpu/drm/drm_bufs.c                      |    2 +-
+ drivers/infiniband/hw/ipath/ipath_iba6110.c     |    2 +-
+ drivers/infiniband/hw/ipath/ipath_iba6120.c     |    4 ++--
+ drivers/infiniband/hw/ipath/ipath_iba7220.c     |    2 +-
+ drivers/isdn/hisax/hfc4s8s_l1.c                 |    2 +-
+ drivers/macintosh/windfarm_pm81.c               |    2 +-
+ drivers/media/dvb/dvb-usb/friio-fe.c            |    2 +-
+ drivers/net/smsc911x.c                          |    4 ++--
+ drivers/pci/hotplug/cpqphp_core.c               |    2 +-
+ drivers/pci/pci.c                               |    2 +-
+ drivers/ps3/ps3-sys-manager.c                   |    2 +-
+ drivers/regulator/core.c                        |    2 +-
+ drivers/s390/char/sclp_cpi_sys.c                |    2 +-
+ drivers/scsi/bfa/include/defs/bfa_defs_cee.h    |    2 +-
+ drivers/scsi/bfa/include/defs/bfa_defs_status.h |    4 ++--
+ drivers/spi/spi_mpc8xxx.c                       |    2 +-
+ drivers/staging/iio/Documentation/overview.txt  |    2 +-
+ drivers/staging/rt2860/rtmp.h                   |    2 +-
+ drivers/staging/rtl8187se/r8180_core.c          |    4 ++--
+ drivers/staging/rtl8187se/r8180_dm.c            |    2 +-
+ drivers/staging/rtl8187se/r8185b_init.c         |    2 +-
+ drivers/virtio/virtio_pci.c                     |    2 +-
+ fs/jfs/jfs_dmap.c                               |    2 +-
+ kernel/cgroup.c                                 |    2 +-
+ mm/page_alloc.c                                 |    2 +-
+ net/wimax/op-rfkill.c                           |    2 +-
+ sound/pci/emu10k1/emu10k1_main.c                |    2 +-
+ 34 files changed, 42 insertions(+), 42 deletions(-)
