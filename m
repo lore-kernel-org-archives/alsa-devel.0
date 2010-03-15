@@ -1,19 +1,17 @@
-From: lieven moors <lievenmoors@gmail.com>
-Subject: Re: aconnect patch
-Date: Mon, 15 Mar 2010 18:40:51 +0100
-Message-ID: <4B9E7123.4000207@gmail.com>
-References: <4B9E306F.8070705@gmail.com> <1268663545.9635.10.camel@mattotaupa>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: hda: Use LPIB and 6stack-dig for
+	eMachines T5212
+Date: Mon, 15 Mar 2010 15:33:07 -0400
+Message-ID: <604760771003151233t2041ef50webb6ea8b41694fa0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=001636d34bfe5c5f930481dbf33d
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
-	[209.85.219.219])
-	by alsa0.perex.cz (Postfix) with ESMTP id 81D1C103802
-	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 18:40:58 +0100 (CET)
-Received: by ewy19 with SMTP id 19so1195900ewy.22
-	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 10:40:58 -0700 (PDT)
-In-Reply-To: <1268663545.9635.10.camel@mattotaupa>
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id DBEC7103810
+	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 20:33:08 +0100 (CET)
+Received: by pvg12 with SMTP id 12so1475576pvg.38
+	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 12:33:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,170 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, stable@kernel.org, reuben.e.bailey@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 03/15/2010 03:32 PM, Paul Menzel wrote:
-> Dear lieven,
->
->
-> Am Montag, den 15.03.2010, 14:04 +0100 schrieb lieven moors:
->
-> [=85]
->
->    =
+--001636d34bfe5c5f930481dbf33d
+Content-Type: text/plain; charset=UTF-8
 
->> Please let me know what you think about this patch, and if you think my =
-reasoning is sane...
->>      =
+Hi,
 
-> thank you for your work. Unfortunately your MUA mangled the output.
-> Could you please resend without linebreaks.
->
-> It looks like you used `git format-patch` already. Great! You can also
-> use `git send-email` if you plan on submitting more patches [1].
->
-> Anyway, could you also add a `Signed-off-by` line (`git commit -s` or
-> `git format-patch -s`) and add a more descriptive summary as `aconnect
-> -x: Do not update index after removal of connection.`. (This is just
-> taken form your summary.)
->
-> Please make sure when resending to not this by =BB[PATCH v2]=AB in front =
-of
-> your subject line, e. g. `git format-patch --subject-prefix=3D"Patch v2"`
-> (see `git help format-patch`).
->
->
-> Thanks again and sorry for the long response,
->
-> Paul
->
->
-> [1] http://git.wiki.kernel.org/index.php/GitTips#Using_gmail_to_send_your=
-_patches
-> [2] http://elinux.org/Git_usage#Sending_with_Gmail
->
->    =
+Attached is a patch against current sound-2.6 master HEAD (applicable
+also to 2.6.32.10 and 2.6.33.1) that corrects the model quirk for the
+OR's machine and adds the LPIB quirk.
 
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->    =
+Best,
+-Dan
 
+--001636d34bfe5c5f930481dbf33d
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ALSA-hda-Use-LPIB-and-6stack-dig-for-eMachines-T5212.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Use-LPIB-and-6stack-dig-for-eMachines-T5212.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g6to6io90
 
-Thanks for the explanation, here is a second try...
-I'm not sure what caused the extra line breaks, but this should be plain =
+RnJvbSAwZDMwNjI2NTE0OWVlNTdhNDYwZjhhY2I1ZGIzYWUyMTFkOTcyOGE4IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFN1biwgMTQgTWFyIDIwMTAgMjM6NDQ6MDMgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGE6IFVzZSBMUElCIGFuZCA2c3RhY2stZGlnIGZvciBlTWFjaGluZXMgVDUyMTIKCkJ1Z0xp
+bms6IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L2J1Z3MvNTM4ODk1CgpUaGUgT1IgaGFzIHZl
+cmlmaWVkIHRoYXQgYm90aCBwb3NpdGlvbl9maXg9MSBhbmQgbW9kZWw9NnN0YWNrLWRpZyBhcmUK
+bmVjZXNzYXJ5IHRvIGhhdmUgY2FwdHVyZSBmdW5jdGlvbiBwcm9wZXJseS4gKFRoZSBleGlzdGlu
+ZyAzc3RhY2stNmNoCm1vZGVsIHF1aXJrIHNlZW1zIHRvIGJlIGluY29ycmVjdC4pCgpSZXBvcnRl
+ZC1ieTogUmV1YmVuIEJhaWxleSA8cmV1YmVuLmUuYmFpbGV5QGdtYWlsLmNvbT4KVGVzdGVkLWJ5
+OiBSZXViZW4gQmFpbGV5IDxyZXViZW4uZS5iYWlsZXlAZ21haWwuY29tPgpDYzogPHN0YWJsZUBr
+ZXJuZWwub3JnPgpTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5j
+b20+Ci0tLQogc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyAgICAgfCAgICAxICsKIHNvdW5kL3Bj
+aS9oZGEvcGF0Y2hfcmVhbHRlay5jIHwgICAgMiArLQogMiBmaWxlcyBjaGFuZ2VkLCAyIGluc2Vy
+dGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFf
+aW50ZWwuYyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKaW5kZXggMGY0NGE0Zi4uOGIyOTE1
+NiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYworKysgYi9zb3VuZC9wY2kv
+aGRhL2hkYV9pbnRlbC5jCkBAIC0yMjcxLDYgKzIyNzEsNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9w
+Y2lfcXVpcmsgcG9zaXRpb25fZml4X2xpc3RbXSBfX2RldmluaXRkYXRhID0gewogCVNORF9QQ0lf
+UVVJUksoMHgxMDQzLCAweDgxM2QsICJBU1VTIFA1QUQyIiwgUE9TX0ZJWF9MUElCKSwKIAlTTkRf
+UENJX1FVSVJLKDB4MTQ2MiwgMHgxMDAyLCAiTVNJIFdpbmQgVTExNSIsIFBPU19GSVhfTFBJQiks
+CiAJU05EX1BDSV9RVUlSSygweDE1NjUsIDB4ODIwZiwgIkJpb3N0YXIgTWljcm90ZWNoIiwgUE9T
+X0ZJWF9MUElCKSwKKwlTTkRfUENJX1FVSVJLKDB4ODA4NiwgMHhkNjAxLCAiZU1hY2hpbmVzIFQ1
+MjEyIiwgUE9TX0ZJWF9MUElCKSwKIAl7fQogfTsKIApkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hk
+YS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCAw
+NzYzN2M0Li40ZWM1NzYzIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
+YworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwpAQCAtOTIzNyw3ICs5MjM3LDcg
+QEAgc3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzg4Ml9jZmdfdGJsW10gPSB7CiAJU05E
+X1BDSV9RVUlSSygweDgwODYsIDB4MDAyMiwgIkRYNThTTyIsIEFMQzg4OV9JTlRFTCksCiAJU05E
+X1BDSV9RVUlSSygweDgwODYsIDB4MDAyMSwgIkludGVsIEliZXhQZWFrIiwgQUxDODg5QV9JTlRF
+TCksCiAJU05EX1BDSV9RVUlSSygweDgwODYsIDB4M2I1NiwgIkludGVsIEliZXhQZWFrIiwgQUxD
+ODg5QV9JTlRFTCksCi0JU05EX1BDSV9RVUlSSygweDgwODYsIDB4ZDYwMSwgIkQxMDJHR0MiLCBB
+TEM4ODNfM1NUXzZjaCksCisJU05EX1BDSV9RVUlSSygweDgwODYsIDB4ZDYwMSwgIkQxMDJHR0Mi
+LCBBTEM4ODJfNlNUX0RJRyksCiAKIAl7fQogfTsKLS0gCjEuNy4wCgo=
+--001636d34bfe5c5f930481dbf33d
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-text now.
-Hope this works...
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
- From 996cf123d20dc5d7db2f98f29cebcfb7d3b013e0 Mon Sep 17 00:00:00 2001
-From: lieven moors <lievenmoors@gmail.com>
-Date: Mon, 15 Mar 2010 18:13:11 +0100
-Subject: [Patch v2] aconnect -x: Do not update index after removal of =
-
-connection.
-Signed-off-by: lieven moors <lievenmoors@gmail.com>
-
----
-seq/aconnect/aconnect.c | 43 ++++++++++++-------------------------------
-1 files changed, 12 insertions(+), 31 deletions(-)
-
-diff --git a/seq/aconnect/aconnect.c b/seq/aconnect/aconnect.c
-index 1a50666..6092748 100644
---- a/seq/aconnect/aconnect.c
-+++ b/seq/aconnect/aconnect.c
-@@ -192,52 +192,33 @@ static void remove_connection(snd_seq_t *seq, =
-
-snd_seq_client_info_t *cinfo,
-snd_seq_port_info_t *pinfo, int count)
-{
-snd_seq_query_subscribe_t *query;
--
-snd_seq_query_subscribe_alloca(&query);
-snd_seq_query_subscribe_set_root(query, snd_seq_port_info_get_addr(pinfo));
--
-snd_seq_query_subscribe_set_type(query, SND_SEQ_QUERY_SUBS_READ);
-snd_seq_query_subscribe_set_index(query, 0);
-- for (; snd_seq_query_port_subscribers(seq, query) >=3D 0;
-- snd_seq_query_subscribe_set_index(query, =
-
-snd_seq_query_subscribe_get_index(query) + 1)) {
-+
-+ while (snd_seq_query_port_subscribers(seq, query) >=3D 0)
-+ {
-snd_seq_port_info_t *port;
-snd_seq_port_subscribe_t *subs;
-const snd_seq_addr_t *sender =3D snd_seq_query_subscribe_get_root(query);
-const snd_seq_addr_t *dest =3D snd_seq_query_subscribe_get_addr(query);
-snd_seq_port_info_alloca(&port);
-- if (snd_seq_get_any_port_info(seq, dest->client, dest->port, port) < 0)
-- continue;
-- if (!(snd_seq_port_info_get_capability(port) & =
-
-SND_SEQ_PORT_CAP_SUBS_WRITE))
-- continue;
-- if (snd_seq_port_info_get_capability(port) & SND_SEQ_PORT_CAP_NO_EXPORT)
-- continue;
-- snd_seq_port_subscribe_alloca(&subs);
-- snd_seq_port_subscribe_set_queue(subs, =
-
-snd_seq_query_subscribe_get_queue(query));
-- snd_seq_port_subscribe_set_sender(subs, sender);
-- snd_seq_port_subscribe_set_dest(subs, dest);
-- snd_seq_unsubscribe_port(seq, subs);
-- }
-
-- snd_seq_query_subscribe_set_type(query, SND_SEQ_QUERY_SUBS_WRITE);
-- snd_seq_query_subscribe_set_index(query, 0);
-- for (; snd_seq_query_port_subscribers(seq, query) >=3D 0;
-- snd_seq_query_subscribe_set_index(query, =
-
-snd_seq_query_subscribe_get_index(query) + 1)) {
-- snd_seq_port_info_t *port;
-- snd_seq_port_subscribe_t *subs;
-- const snd_seq_addr_t *dest =3D snd_seq_query_subscribe_get_root(query);
-- const snd_seq_addr_t *sender =3D snd_seq_query_subscribe_get_addr(query);
-- snd_seq_port_info_alloca(&port);
-- if (snd_seq_get_any_port_info(seq, sender->client, sender->port, port) =
-
-< 0)
-- continue;
-- if (!(snd_seq_port_info_get_capability(port) & =
-
-SND_SEQ_PORT_CAP_SUBS_READ))
-- continue;
-- if (snd_seq_port_info_get_capability(port) & SND_SEQ_PORT_CAP_NO_EXPORT)
-+ if ((snd_seq_get_any_port_info(seq, dest->client, dest->port, port) < =
-
-0) ||
-+ !(snd_seq_port_info_get_capability(port) & SND_SEQ_PORT_CAP_SUBS_WRITE) ||
-+ (snd_seq_port_info_get_capability(port) & SND_SEQ_PORT_CAP_NO_EXPORT))
-+ {
-+ snd_seq_query_subscribe_set_index(query, =
-
-snd_seq_query_subscribe_get_index(query) + 1);
-continue;
-+ }
-snd_seq_port_subscribe_alloca(&subs);
-snd_seq_port_subscribe_set_queue(subs, =
-
-snd_seq_query_subscribe_get_queue(query));
-snd_seq_port_subscribe_set_sender(subs, sender);
-snd_seq_port_subscribe_set_dest(subs, dest);
-- snd_seq_unsubscribe_port(seq, subs);
-+ if(snd_seq_unsubscribe_port(seq, subs) < 0){
-+ snd_seq_query_subscribe_set_index(query, =
-
-snd_seq_query_subscribe_get_index(query) + 1);
-+ }
-}
-}
-
--- =
-
-1.6.3.3
+--001636d34bfe5c5f930481dbf33d--
