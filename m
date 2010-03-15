@@ -1,52 +1,22 @@
-From: Alan Horstmann <gineera@aspect135.co.uk>
-Subject: Re: [PATCH 2/2] Quick fix for the audio clocks on
-	SAM9-L9261
-Date: Mon, 15 Mar 2010 10:32:58 +0000
-Message-ID: <201003151032.58958.gineera@aspect135.co.uk>
-References: <20100312105817.4392b594@rechenknecht2k7>
-	<20100312110032.2e57fdce@rechenknecht2k7>
-	<20100312110241.3d97237b@rechenknecht2k7>
+From: Anthony DeRobertis <anthony@derobert.net>
+Subject: Bug#573243: Front Mic Boost mixer control missing on 2.6.33
+Date: Mon, 15 Mar 2010 07:07:07 -0400
+Message-ID: <4B9E14DB.9090408@derobert.net>
+References: <20100310015828.15599.86090.reportbug@Heisenberg.home>	<20100310023052.GU7231@baikonur.stro.at>	<4B972573.6020302@derobert.net> <s5hwrxkmx0o.wl%tiwai@suse.de>
+Reply-To: Anthony DeRobertis <anthony@derobert.net>, 573243@bugs.debian.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.ip05ir2.opaltelecom.net (out1.ip05ir2.opaltelecom.net
-	[62.24.128.241]) by alsa0.perex.cz (Postfix) with ESMTP id 11E4724490
-	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 11:33:06 +0100 (CET)
-In-Reply-To: <20100312110241.3d97237b@rechenknecht2k7>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Benjamin Valentin <benpicco@zedat.fu-berlin.de>
-Cc: ALSA devel <alsa-devel@alsa-project.org>
+Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Message-ID: <handler.573243.B573243.12686512403574@bugs.debian.org>
+In-Reply-To: <s5hwrxkmx0o.wl%tiwai@suse.de>
+List-Post: <mailto:debian-bugs-dist@lists.debian.org>
+List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: maximilian attems <max@stro.at>, 573243@bugs.debian.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 12 March 2010 10:02, Benjamin Valentin wrote:
-> Signed-off-by: Dimitar Dimitrov <dimitar@olimex.com>
->
-> From 10a85229b2357c89d5170efde5ac0e1cba4c9f9e Mon Sep 17 00:00:00 2001
-> From: Dimitar Dimitrov <dimitar@olimex.com>
-> Date: Wed, 27 May 2009 08:11:37 +0300
-> Subject: [PATCH] Quick fix for the audio clocks on SAM9-L9261
->
-> This patch together with support from SAM9-L9261 hardware fix an issue with
-> audio clocks. AT73C213 needs MCLK and BCLK with equal phase. The MCLK from
-> AT91SAM9XXX clock output and BCLK from the SSC TK clock output are not
-> phase-synchronized. Thus the SAM9-L9261 board provides external hardware
-> divison by 8 from MCLK to BCLK, ensuring zero phase difference.
->
-> See: http://www.at91.com/phpbb/viewtopic.php?t=2633
-
-I am interested to examine this issue, but the link seems dead; is the info 
-available elsewhere?
-
-Thanks
-
-Alan
+Sorry for taking so long to respond. Adding the model=auto option fixes it.
