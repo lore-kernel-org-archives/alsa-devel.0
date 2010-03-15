@@ -1,22 +1,74 @@
-From: Anthony DeRobertis <anthony@derobert.net>
-Subject: Bug#573243: Front Mic Boost mixer control missing on 2.6.33
-Date: Mon, 15 Mar 2010 07:07:07 -0400
-Message-ID: <4B9E14DB.9090408@derobert.net>
-References: <20100310015828.15599.86090.reportbug@Heisenberg.home>	<20100310023052.GU7231@baikonur.stro.at>	<4B972573.6020302@derobert.net> <s5hwrxkmx0o.wl%tiwai@suse.de>
-Reply-To: Anthony DeRobertis <anthony@derobert.net>, 573243@bugs.debian.org
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: cmipci and sound skipping ?
+Date: Mon, 15 Mar 2010 13:17:20 +0100
+Message-ID: <4B9E2550.4030404@ladisch.de>
+References: <20100313201138.GA25034@eagle102.home.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.573243.B573243.12686512403574@bugs.debian.org>
-In-Reply-To: <s5hwrxkmx0o.wl%tiwai@suse.de>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: maximilian attems <max@stro.at>, 573243@bugs.debian.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 9A57A103816
+	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 13:17:22 +0100 (CET)
+In-Reply-To: <20100313201138.GA25034@eagle102.home.lan>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Matija Nalis <mnalis-alsadev@voyager.hr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for taking so long to respond. Adding the model=auto option fixes it.
+Matija Nalis wrote:
+> My card is "Asonic C-Media8738, 4 channel" and mostly works with snd_cmipci
+> driver - it is just that (even on completely unloaded system) the sound is
+> (very annoyingly) skipping.
+> ...
+> ALSA pcm_lib.c:316: BUG: pcmC0D0p:0, pos = 4294918144, buffer size = 16384, period size = 1024
+> 
+> Note that the pos is *always* the same (4294918144 = 0xffff4000 = -16384) which might be important.
+
+This looks like a hardware bug.
+
+It's possible that we can get a valid pointer by reading the register
+multiple times.  Please try the patch below.
+
+
+Regards
+Clemens
+
+
+diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
+index 1ded64e..8416b8a 100644
+--- a/sound/pci/cmipci.c
++++ b/sound/pci/cmipci.c
+@@ -941,13 +941,21 @@ static snd_pcm_uframes_t snd_cmipci_pcm_pointer(struct cmipci *cm, struct cmipci
+ 						struct snd_pcm_substream *substream)
+ {
+ 	size_t ptr;
+-	unsigned int reg;
++	unsigned int reg, rem, tries;
++
+ 	if (!rec->running)
+ 		return 0;
+ #if 1 // this seems better..
+ 	reg = rec->ch ? CM_REG_CH1_FRAME2 : CM_REG_CH0_FRAME2;
+-	ptr = rec->dma_size - (snd_cmipci_read_w(cm, reg) + 1);
+-	ptr >>= rec->shift;
++	for (tries = 0; tries < 5; tries++) {
++		rem = snd_cmipci_read_w(cm, reg);
++		if (rem < rec->dma_size)
++			goto ok;
++	} 
++	printk(KERN_ERR "cmipci: invalid PCM pointer: %#x\n", rem);
++	return SNDRV_PCM_POS_XRUN;
++ok:
++	ptr = (rec->dma_size - (rem + 1)) >> rec->shift;
+ #else
+ 	reg = rec->ch ? CM_REG_CH1_FRAME1 : CM_REG_CH0_FRAME1;
+ 	ptr = snd_cmipci_read(cm, reg) - rec->offset;
