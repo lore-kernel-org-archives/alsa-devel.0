@@ -1,22 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Driver for a codec with built-in DSP for MP3
- playback
-Date: Mon, 15 Mar 2010 16:48:26 +0000
-Message-ID: <20100315164826.GA25002@rakim.wolfsonmicro.main>
-References: <b77ca4471003150702q69a99932m36d2e667663749aa@mail.gmail.com>
-	<20100315141404.GA13878@sirena.org.uk>
-	<b77ca4471003150901x5957d10bl97cc29ede2d072b0@mail.gmail.com>
-	<20100315161507.GA15568@rakim.wolfsonmicro.main>
-	<b77ca4471003150941v3238542bn8a944818aeb8519b@mail.gmail.com>
+From: lieven moors <lievenmoors@gmail.com>
+Subject: Re: aconnect patch
+Date: Mon, 15 Mar 2010 18:40:51 +0100
+Message-ID: <4B9E7123.4000207@gmail.com>
+References: <4B9E306F.8070705@gmail.com> <1268663545.9635.10.camel@mattotaupa>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E9D2C24518
-	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 17:48:27 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <b77ca4471003150941v3238542bn8a944818aeb8519b@mail.gmail.com>
+Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
+	[209.85.219.219])
+	by alsa0.perex.cz (Postfix) with ESMTP id 81D1C103802
+	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 18:40:58 +0100 (CET)
+Received: by ewy19 with SMTP id 19so1195900ewy.22
+	for <alsa-devel@alsa-project.org>; Mon, 15 Mar 2010 10:40:58 -0700 (PDT)
+In-Reply-To: <1268663545.9635.10.camel@mattotaupa>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,20 +23,170 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dajun Chen <dajun.chen@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 15, 2010 at 04:41:44PM +0000, Dajun Chen wrote:
+On 03/15/2010 03:32 PM, Paul Menzel wrote:
+> Dear lieven,
+>
+>
+> Am Montag, den 15.03.2010, 14:04 +0100 schrieb lieven moors:
+>
+> [=85]
+>
+>    =
 
-> Thanks.
+>> Please let me know what you think about this patch, and if you think my =
+reasoning is sane...
+>>      =
 
-In my last reply I said "Please don't top post, lack of context makes it
-difficult to follow the thread of discussion.".  This is standard
-etiquette for Linux mailing lists.
+> thank you for your work. Unfortunately your MUA mangled the output.
+> Could you please resend without linebreaks.
+>
+> It looks like you used `git format-patch` already. Great! You can also
+> use `git send-email` if you plan on submitting more patches [1].
+>
+> Anyway, could you also add a `Signed-off-by` line (`git commit -s` or
+> `git format-patch -s`) and add a more descriptive summary as `aconnect
+> -x: Do not update index after removal of connection.`. (This is just
+> taken form your summary.)
+>
+> Please make sure when resending to not this by =BB[PATCH v2]=AB in front =
+of
+> your subject line, e. g. `git format-patch --subject-prefix=3D"Patch v2"`
+> (see `git help format-patch`).
+>
+>
+> Thanks again and sorry for the long response,
+>
+> Paul
+>
+>
+> [1] http://git.wiki.kernel.org/index.php/GitTips#Using_gmail_to_send_your=
+_patches
+> [2] http://elinux.org/Git_usage#Sending_with_Gmail
+>
+>    =
 
-> Please would you point me the place to see the TI and Intel drivers?
+>
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>    =
 
-Search the mailing list archive to the Moorestown driver, it's been
-posted here at least once.  The TI stuff is in the OMAP git trees I
-believe.
+
+Thanks for the explanation, here is a second try...
+I'm not sure what caused the extra line breaks, but this should be plain =
+
+text now.
+Hope this works...
+
+
+ From 996cf123d20dc5d7db2f98f29cebcfb7d3b013e0 Mon Sep 17 00:00:00 2001
+From: lieven moors <lievenmoors@gmail.com>
+Date: Mon, 15 Mar 2010 18:13:11 +0100
+Subject: [Patch v2] aconnect -x: Do not update index after removal of =
+
+connection.
+Signed-off-by: lieven moors <lievenmoors@gmail.com>
+
+---
+seq/aconnect/aconnect.c | 43 ++++++++++++-------------------------------
+1 files changed, 12 insertions(+), 31 deletions(-)
+
+diff --git a/seq/aconnect/aconnect.c b/seq/aconnect/aconnect.c
+index 1a50666..6092748 100644
+--- a/seq/aconnect/aconnect.c
++++ b/seq/aconnect/aconnect.c
+@@ -192,52 +192,33 @@ static void remove_connection(snd_seq_t *seq, =
+
+snd_seq_client_info_t *cinfo,
+snd_seq_port_info_t *pinfo, int count)
+{
+snd_seq_query_subscribe_t *query;
+-
+snd_seq_query_subscribe_alloca(&query);
+snd_seq_query_subscribe_set_root(query, snd_seq_port_info_get_addr(pinfo));
+-
+snd_seq_query_subscribe_set_type(query, SND_SEQ_QUERY_SUBS_READ);
+snd_seq_query_subscribe_set_index(query, 0);
+- for (; snd_seq_query_port_subscribers(seq, query) >=3D 0;
+- snd_seq_query_subscribe_set_index(query, =
+
+snd_seq_query_subscribe_get_index(query) + 1)) {
++
++ while (snd_seq_query_port_subscribers(seq, query) >=3D 0)
++ {
+snd_seq_port_info_t *port;
+snd_seq_port_subscribe_t *subs;
+const snd_seq_addr_t *sender =3D snd_seq_query_subscribe_get_root(query);
+const snd_seq_addr_t *dest =3D snd_seq_query_subscribe_get_addr(query);
+snd_seq_port_info_alloca(&port);
+- if (snd_seq_get_any_port_info(seq, dest->client, dest->port, port) < 0)
+- continue;
+- if (!(snd_seq_port_info_get_capability(port) & =
+
+SND_SEQ_PORT_CAP_SUBS_WRITE))
+- continue;
+- if (snd_seq_port_info_get_capability(port) & SND_SEQ_PORT_CAP_NO_EXPORT)
+- continue;
+- snd_seq_port_subscribe_alloca(&subs);
+- snd_seq_port_subscribe_set_queue(subs, =
+
+snd_seq_query_subscribe_get_queue(query));
+- snd_seq_port_subscribe_set_sender(subs, sender);
+- snd_seq_port_subscribe_set_dest(subs, dest);
+- snd_seq_unsubscribe_port(seq, subs);
+- }
+
+- snd_seq_query_subscribe_set_type(query, SND_SEQ_QUERY_SUBS_WRITE);
+- snd_seq_query_subscribe_set_index(query, 0);
+- for (; snd_seq_query_port_subscribers(seq, query) >=3D 0;
+- snd_seq_query_subscribe_set_index(query, =
+
+snd_seq_query_subscribe_get_index(query) + 1)) {
+- snd_seq_port_info_t *port;
+- snd_seq_port_subscribe_t *subs;
+- const snd_seq_addr_t *dest =3D snd_seq_query_subscribe_get_root(query);
+- const snd_seq_addr_t *sender =3D snd_seq_query_subscribe_get_addr(query);
+- snd_seq_port_info_alloca(&port);
+- if (snd_seq_get_any_port_info(seq, sender->client, sender->port, port) =
+
+< 0)
+- continue;
+- if (!(snd_seq_port_info_get_capability(port) & =
+
+SND_SEQ_PORT_CAP_SUBS_READ))
+- continue;
+- if (snd_seq_port_info_get_capability(port) & SND_SEQ_PORT_CAP_NO_EXPORT)
++ if ((snd_seq_get_any_port_info(seq, dest->client, dest->port, port) < =
+
+0) ||
++ !(snd_seq_port_info_get_capability(port) & SND_SEQ_PORT_CAP_SUBS_WRITE) ||
++ (snd_seq_port_info_get_capability(port) & SND_SEQ_PORT_CAP_NO_EXPORT))
++ {
++ snd_seq_query_subscribe_set_index(query, =
+
+snd_seq_query_subscribe_get_index(query) + 1);
+continue;
++ }
+snd_seq_port_subscribe_alloca(&subs);
+snd_seq_port_subscribe_set_queue(subs, =
+
+snd_seq_query_subscribe_get_queue(query));
+snd_seq_port_subscribe_set_sender(subs, sender);
+snd_seq_port_subscribe_set_dest(subs, dest);
+- snd_seq_unsubscribe_port(seq, subs);
++ if(snd_seq_unsubscribe_port(seq, subs) < 0){
++ snd_seq_query_subscribe_set_index(query, =
+
+snd_seq_query_subscribe_get_index(query) + 1);
++ }
+}
+}
+
+-- =
+
+1.6.3.3
