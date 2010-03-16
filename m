@@ -1,22 +1,15 @@
-From: Dan Armbrust <daniel.armbrust.list@gmail.com>
-Subject: Re: Configuration help please?
-Date: Tue, 16 Mar 2010 11:12:26 -0500
-Message-ID: <82f04dc41003160912x2b90a806v6e8fe46c48618172@mail.gmail.com>
-References: <82f04dc41003150711m53b675f6g59c54d142cca77b@mail.gmail.com>
-	<82f04dc41003160732i61a35d11r96f38025ee7f0097@mail.gmail.com>
-	<53baa24a1003160855v4622bec1g59fceb1fc0907046@mail.gmail.com>
-	<53baa24a1003160859lcb79c4cpdcf8ceaf1b647e89@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.35
+Date: Tue, 16 Mar 2010 16:15:42 +0000
+Message-ID: <20100316161542.GA1163@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f215.google.com (mail-bw0-f215.google.com
-	[209.85.218.215])
-	by alsa0.perex.cz (Postfix) with ESMTP id CAC2124498
-	for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2010 17:12:35 +0100 (CET)
-Received: by bwz7 with SMTP id 7so120452bwz.4
-	for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2010 09:12:34 -0700 (PDT)
-In-Reply-To: <53baa24a1003160859lcb79c4cpdcf8ceaf1b647e89@mail.gmail.com>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3494024498
+	for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2010 17:15:44 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +19,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alex Austin <circuitsoft.alex@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 16, 2010 at 10:59 AM, Alex Austin
-<circuitsoft.alex@gmail.com> wrote:
-> That is a very complex thing you're asking for. 5.1 sound works by having
-> mythtv pass the raw datastream out the spdif port. Stereo analog is decoded
-> by mythtv, so to handle both, you would need mythtv to output the raw stream
-> to spdif at the same time as it decodes to stereo on analog.
->
-> You could have the stream split to two outputs, but the spdif would always
-> be PCM stereo.
->
+The following changes since commit 75581d2459d3e6e5e796a42b362e4abb612bc958:
+  Peter Ujfalusi (1):
+        ASoC: OMAP3: Report delay caused by the internal FIFO
 
-Hmm... or, I have to come up with some plugin configuration that would
-cause alsa to decode the raw data, and pass the stereo channels out
-the speakers I want... Is that even possible?
+are available in the git repository at:
 
-No wonder none of the dozens of people I have seen ask this question
-on the mailing lists in the past has ever found (or at least posted) a
-solution.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
 
-Thanks,
+Pretty much all of which is the first bit of some improvements to ASoC
+jack detection, including implementation in some drivers.
 
-Dan
+Mark Brown (9):
+      ASoC: Remove version display from WM8750
+      ASoC: Remove unused 'muted' flag from DAPM widgets
+      ASoC: Allow pins to be force enabled
+      ASoC: Add GPIO configuration support for WM8903
+      ASoC: Initial WM8903 microphone bias and short detection
+      ASoC: Add WM8903 interrupt support
+      ASoC: Implement interrupt driven microphone detection for WM8903
+      ASoC: Allow configuration of WM8904 GPIO pin functions
+      ASoC: Support GPIO based microphone detection for WM8904
+
+ include/sound/soc-dapm.h  |    4 +-
+ include/sound/wm8903.h    |  249 +++++++++++++++++++++++++++++++++++++++++++++
+ include/sound/wm8904.h    |  110 +++++++++++++++++++-
+ sound/soc/codecs/wm8750.c |    3 -
+ sound/soc/codecs/wm8903.c |  201 ++++++++++++++++++++++++++++++++++---
+ sound/soc/codecs/wm8903.h |  221 +---------------------------------------
+ sound/soc/codecs/wm8904.c |   17 +++
+ sound/soc/codecs/wm8904.h |   97 ------------------
+ sound/soc/soc-dapm.c      |   35 ++++++-
+ 9 files changed, 603 insertions(+), 334 deletions(-)
+ create mode 100644 include/sound/wm8903.h
