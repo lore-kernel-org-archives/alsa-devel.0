@@ -1,74 +1,52 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv5 2/2] ASoC: TWL6040: Add twl6040 codec
-	driver
-Date: Tue, 16 Mar 2010 18:19:26 +0000
-Message-ID: <778BD450-4E6A-481F-A87B-9C7E4CCFDB83@opensource.wolfsonmicro.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE66173AF7@dlee06.ent.ti.com>
-	<05b5d6bc0abd41e31334184e66718cec@secure211.sgcpanel.com>
-	<1889FA7136B567478A67D4B0F85B0CCE66217087@dlee06.ent.ti.com>
-	(sfid-20100316_175124_684510_30CE5530)
-Mime-Version: 1.0 (iPhone Mail 7E18)
-Content-Type: text/plain; charset="us-ascii"
+From: Brian Lindholm <brian_lindholm@users.sourceforge.net>
+Subject: PATCH:  Fix snd-hda-intel boot hang on ASUS A8N-VM
+Date: Tue, 16 Mar 2010 19:17:52 -0400
+Message-ID: <4BA011A0.5020302@users.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D557F10380A
-	for <alsa-devel@alsa-project.org>; Tue, 16 Mar 2010 19:18:57 +0100 (CET)
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE66217087@dlee06.ent.ti.com>
-	(sfid-20100316_175124_684510_30CE5530)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: Felipe Balbi <me@felipebalbi.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 16 Mar 2010, at 17:51, "Olaya, Margarita" <magi.olaya@ti.com> wrote:
+This patch fixes a regression in 2.6.33.x.  Was working in 2.6.32.x.
 
-> On Saturday, March 13, 2010 5:23 AM  Felipe Balbi wrote:
->
->> Hi,
->>
->> On Fri, 12 Mar 2010 19:52:20 -0600, "Olaya, Margarita"
->> <magi.olaya@ti.com> wrote:
->>> +/*
->>> + * twl6040 register cache & default register settings + */
->>> +static const u8 twl6040_reg[TWL6040_CACHEREGNUM] = {
->>> +       0x00, /* not used               0x00    */
->>> +       0x4B, /* TWL6040_ASICID (ro)    0x01    */
-> [snip]
->>
->> a little comment about what the default values are would be nice.
->
-> Most of the codecs only have the register description, not sure if  
-> this
-> is an standard in alsa. Some values are kind of hard to describe  
-> briefly.
+   Symptom:  Hang on boot at "HDA Intel".  Boots only if on-board sound 
+is disabled or if "snd-hda-intel.enable_msi=0" is appended to boot 
+parameters.
 
-The standard is that these are the power on reset values, used to init  
-the register cache and reduce the amount of I/O done to restore on  
-resume.
+   Machine:  ASUS A8N-VM with Athlon-X2 processor.
 
->
->>
->> #ifdef CONFIG_PM
->>
->>> +static int twl6040_suspend(struct platform_device *pdev,
-> [snip]
->>
->> #else
->> #define twl6040_suspend    NULL
->> #define twl6040_resume     NULL
->> #endif
->
-> I'll add this.
->
-> Regards,
-> Margarita
->
+   Relevant output from lspci -nn:
+
+00:10.1 Audio device [0403]: nVidia Corporation MCP51 High Definition 
+Audio [10de:026c] (rev a2)
+
+   Relevant output from alsa-info.sh:
+
+00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio 
+(rev a2)
+00:10.1 0403: 10de:026c (rev a2)
+         Subsystem: 10de:cb84
+
+   Proposed patch (which has been confirmed to allow boot, with sound 
+active):
+
+diff -dru linux-2.6.33-orig/sound/pci/hda/hda_intel.c 
+linux-2.6.33/sound/pci/hda/hda_intel.c
+--- linux-2.6.33-orig/sound/pci/hda/hda_intel.c        2010-03-16 
+17:33:23.487938000 -0400
++++ linux-2.6.33/sound/pci/hda/hda_intel.c      2010-03-16 
+17:40:36.141225010 -0400
+@@ -2354,6 +2354,7 @@ static void __devinit check_probe_mask(s
+  static struct snd_pci_quirk msi_black_list[] __devinitdata = {
+         SND_PCI_QUIRK(0x1043, 0x81f2, "ASUS", 0), /* Athlon64 X2 + 
+nvidia */
+         SND_PCI_QUIRK(0x1043, 0x81f6, "ASUS", 0), /* nvidia */
++       SND_PCI_QUIRK(0x10de, 0xcb84, "ASUS", 0), /* nvidia */
+         {}
+  };
+
+Signed-off-by: Brian E Lindholm <brian_lindholm@users.sourceforge.net>
