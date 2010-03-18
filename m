@@ -1,29 +1,30 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH] ASoC: SIU driver shall select FW_LOADER
-Date: Thu, 18 Mar 2010 09:39:59 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1003180916590.4485@axis700.grange>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [alsa-devel] [PATCHv2 1/2] OMAP4: PMIC: Rename twl6030_codec
+ as twl6040_codec
+Date: Thu, 18 Mar 2010 08:43:20 +0000
+Message-ID: <1268901800.3773.2.camel@odin>
+References: <1889FA7136B567478A67D4B0F85B0CCE662AC371@dlee06.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-sh-owner@vger.kernel.org>
-Sender: linux-sh-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE662AC371@dlee06.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Olaya, Margarita" <magi.olaya@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The SIU ASoC driver must load firmware to program the DSP, therefore it 
-has to select FW_LOADER in its Kconfig entry.
+On Wed, 2010-03-17 at 17:42 -0500, Olaya, Margarita wrote:
+> Correction for chips:
+> twl6030 is Phoenix Power chip
+> twl6040 is Phoenix Audio chip
+> 
+> Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
 
-Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
----
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index 1066749..f07f6d8 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -32,6 +32,7 @@ config SND_SOC_SH4_SIU
- 	select DMA_ENGINE
- 	select DMADEVICES
- 	select SH_DMAE
-+	select FW_LOADER
- 
- ##
- ## Boards
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
+
