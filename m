@@ -1,62 +1,83 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: Memory corruption in ASoC
-Date: Thu, 18 Mar 2010 17:48:53 +0100
-Message-ID: <20100318164853.GK30801@buzzloop.caiaq.de>
-References: <20100318161755.GJ30801@buzzloop.caiaq.de>
-	<20100318164305.GB6142@rakim.wolfsonmicro.main>
+From: Samuel Ortiz <sameo@linux.intel.com>
+Subject: Re: [PATCHv2 1/2] OMAP4: PMIC: Rename twl6030_codec as
+ twl6040_codec
+Date: Thu, 18 Mar 2010 17:38:30 +0100
+Message-ID: <20100318163829.GD3106@sortiz.org>
+References: <1889FA7136B567478A67D4B0F85B0CCE662AC371@dlee06.ent.ti.com>
+ <20100318121020.GI3080@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 409A024141
-	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 17:48:57 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20100318164305.GB6142@rakim.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+In-Reply-To: <20100318121020.GI3080@opensource.wolfsonmicro.com>
+Sender: linux-omap-owner@vger.kernel.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "Olaya, Margarita" <magi.olaya@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 18, 2010 at 04:43:06PM +0000, Mark Brown wrote:
-> On Thu, Mar 18, 2010 at 05:17:55PM +0100, Daniel Mack wrote:
+On Thu, Mar 18, 2010 at 12:10:21PM +0000, Mark Brown wrote:
+> On Wed, Mar 17, 2010 at 05:42:29PM -0500, Olaya, Margarita wrote:
+> > Correction for chips:
+> > twl6030 is Phoenix Power chip
+> > twl6040 is Phoenix Audio chip
 > 
-> > So the first stream (PLAYBACK) already exported its dma_data which is
-> > now freed by the code initializing the second stream (CAPTURE).
-> > This corrupts all existing users of course, and in this particular case,
-> > the cleanup in __pxa2xx_pcm_hw_free() dereferences a pointer which is
-> > bogus.
+> > Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
 > 
-> > What I really don't understand is why this didn't crash a lot earlier
-> > for many more users.
-> 
-> > So how is this supposed to be fixed? Should dma_data become a member of
-> > some per-stream instance? I believe that also other platforms than PXA
-> > are actually affected - am I right?
-> 
-> It should really be per-substream, yes.
+> Samuel, are you OK with doing this via the ASoC tree?
+If that's more convenient to you, then go for it, with my:
+Acked-by: Samuel Ortiz <sameo@linux.intel.com>
 
-Do you want me to fix this or are you working on this already?
+Cheers,
+Samuel.
 
-I know there are some pxa-ssp related things pending which will also
-cause merge conflicts - which tree should thing apply to currently?
+ 
+> > ---
+> >  drivers/mfd/twl-core.c  |    4 ++--
+> >  include/linux/i2c/twl.h |    6 +++---
+> >  2 files changed, 5 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
+> > index 562cd49..720e099 100644
+> > --- a/drivers/mfd/twl-core.c
+> > +++ b/drivers/mfd/twl-core.c
+> > @@ -109,7 +109,7 @@
+> >  #endif
+> >  
+> >  #if defined(CONFIG_TWL4030_CODEC) || defined(CONFIG_TWL4030_CODEC_MODULE) ||\
+> > -	defined(CONFIG_SND_SOC_TWL6030) || defined(CONFIG_SND_SOC_TWL6030_MODULE)
+> > +	defined(CONFIG_SND_SOC_TWL6040) || defined(CONFIG_SND_SOC_TWL6040_MODULE)
+> >  #define twl_has_codec()	true
+> >  #else
+> >  #define twl_has_codec()	false
+> > @@ -708,7 +708,7 @@ add_children(struct twl4030_platform_data *pdata, unsigned long features)
+> >  	/* Phoenix*/
+> >  	if (twl_has_codec() && pdata->codec && twl_class_is_6030()) {
+> >  		sub_chip_id = twl_map[TWL_MODULE_AUDIO_VOICE].sid;
+> > -		child = add_child(sub_chip_id, "twl6030_codec",
+> > +		child = add_child(sub_chip_id, "twl6040_codec",
+> >  				pdata->codec, sizeof(*pdata->codec),
+> >  				false, 0, 0);
+> >  		if (IS_ERR(child))
+> > diff --git a/include/linux/i2c/twl.h b/include/linux/i2c/twl.h
+> > index fb6784e..ebd90ce 100644
+> > --- a/include/linux/i2c/twl.h
+> > +++ b/include/linux/i2c/twl.h
+> > @@ -569,9 +569,9 @@ struct twl4030_codec_data {
+> >  	struct twl4030_codec_audio_data		*audio;
+> >  	struct twl4030_codec_vibra_data		*vibra;
+> >  
+> > -	/* twl6030 */
+> > -	int audpwron_gpio;      /* audio power-on gpio */
+> > -	int naudint_irq;        /* audio interrupt */
+> > +	/* twl6040 */
+> > +	int audpwron_gpio;	/* audio power-on gpio */
+> > +	int naudint_irq;	/* audio interrupt */
+> >  };
+> >  
+> >  struct twl4030_platform_data {
+> > -- 
+> > 1.6.1.3
 
-> It's relatively hard to trigger problems on a lot of platform since the
-> DAI data pointer is often only really used at stream setup, meaning that
-> triggering a problem requires that a system not only does simultaneous
-> playback and capture but also has overlapping startup of the two.
-
-Well, how would you initialize them in a non-overlapping way? The
-example I sent does the setup fairly straight-forward, doesn't it?
-
-I'd say any full-duplex system is affected.
-
-Daniel
+-- 
+Intel Open Source Technology Centre
+http://oss.intel.com/
