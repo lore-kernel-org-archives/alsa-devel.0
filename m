@@ -1,37 +1,59 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] ALSA: ASoC: move dma_data from snd_soc_dai
- to snd_soc_pcm_stream
-Date: Thu, 18 Mar 2010 19:11:09 +0100
-Message-ID: <20100318181109.GB30807@buzzloop.caiaq.de>
-References: <1268933737.3773.36.camel@odin>
-	<1268935739-2931-1-git-send-email-daniel@caiaq.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCHv6 2/2][RESEND] ASoC: TWL6040: Add twl6040 codec driver
+Date: Thu, 18 Mar 2010 18:16:23 +0000
+Message-ID: <20100318181623.GG6142@rakim.wolfsonmicro.main>
+References: <1889FA7136B567478A67D4B0F85B0CCE662AC7F1@dlee06.ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49285103874
-	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 19:11:15 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1268935739-2931-1-git-send-email-daniel@caiaq.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Michael Hirsch <m.hirsch@raumfeld.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE662AC7F1@dlee06.ent.ti.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: "Olaya, Margarita" <magi.olaya@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 18, 2010 at 07:08:59PM +0100, Daniel Mack wrote:
-> This fixes a memory corruption when using ASoC devices are used in
-> full-duplex mode. Specifically for pxa-ssp code, where this pointer
+On Thu, Mar 18, 2010 at 12:59:49PM -0500, Olaya, Margarita wrote:
+> From: Misael Lopez Cruz <x0052729@ti.com>
+> 
+> Initial version of TWL6040 codec driver.
+> 
+> The TWL6040 codec uses a proprietary PDM-based digital audio interface.
+> Audio paths supported are:
 
-Sorry - in case the patch is ok, could you please fix up my grammar bug?
+I'm getting exactly the same results trying to apply this.  It looks
+like there's some MUA corruption going on here, the start of the
+Makefile diff is:
 
-Thanks,
-Daniel
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -22,6 +22,7 @@ snd-soc-tlv320aic26-objs :=3D tlv320aic26.o
+ snd-soc-tlv320aic3x-objs :=3D tlv320aic3x.o
+ snd-soc-tlv320dac33-objs :=3D tlv320dac33.o
+ snd-soc-twl4030-objs :=3D twl4030.o
++snd-soc-twl6040-objs :=3D twl6040.o
+ snd-soc-uda134x-objs :=3D uda134x.o
+ snd-soc-uda1380-objs :=3D uda1380.o
+ snd-soc-wm8350-objs :=3D wm8350.o
+@@ -85,6 +86,7 @@ obj-$(CONFIG_SND_SOC_TLV320AIC26)     +=3D snd-soc-tlv320=
+aic26.o
+ obj-$(CONFIG_SND_SOC_TLV320AIC3X)      +=3D snd-soc-tlv320aic3x.o
+ obj-$(CONFIG_SND_SOC_TLV320DAC33)      +=3D snd-soc-tlv320dac33.o
+ obj-$(CONFIG_SND_SOC_TWL4030)  +=3D snd-soc-twl4030.o
+
+The quoted printable encoding should be fine but note that the 'aic26.o'
+has been word wrapped onto a new line, which is why patch says the diff
+is corrupted.  The same word wrapping issue is occurring in other places
+in the diff such as:
+
++       /* allow registers to be accessed by i2c */
++       twl6040_write(codec, TWL6040_REG_ACCCTL, cache[TWL6040_REG_ACCCTL])=
+;
+
+Looks like MUA trouble.  From the message headers it looks like you
+might be using Outlook or something, I'm not sure what to suggest for
+that - enough folks at TI are submitting patches that something must've
+been worked out for your mail system.
+
+If you can't work out a solution for sending things in-line0 then
+sending the patch as an attachment should resolve the issue.
