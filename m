@@ -1,32 +1,75 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 1/2] OMAP4: PMIC: Rename twl6030_codec as
- twl6040_codec
-Date: Thu, 18 Mar 2010 17:09:08 +0000
-Message-ID: <20100318170908.GD6142@rakim.wolfsonmicro.main>
-References: <1889FA7136B567478A67D4B0F85B0CCE662AC371@dlee06.ent.ti.com>
- <20100318121020.GI3080@opensource.wolfsonmicro.com>
- <20100318163829.GD3106@sortiz.org>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 1/4] extend ad1938
+	codec driver to ad193x supporting ad1936/7/8/9
+Date: Thu, 18 Mar 2010 13:17:11 -0400
+Message-ID: <8bd0f97a1003181017xba8e1a9oce2d40bf56818956@mail.gmail.com>
+References: <1268900221-6833-1-git-send-email-21cnbao@gmail.com>
+	<1268900221-6833-2-git-send-email-21cnbao@gmail.com>
+	<1268902095.3773.6.camel@odin>
+	<3c17e3571003180208y34e4b5dekd2d23efa0723b641@mail.gmail.com>
+	<20100318111848.GB3080@opensource.wolfsonmicro.com>
+	<8bd0f97a1003180857vdd155e0o29684b50cbd5e34e@mail.gmail.com>
+	<20100318162017.GA6142@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20100318163829.GD3106@sortiz.org>
-Sender: linux-omap-owner@vger.kernel.org
-To: Samuel Ortiz <sameo@linux.intel.com>
-Cc: "Olaya, Margarita" <magi.olaya@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
+	[209.85.211.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id EC50D24154
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 18:17:31 +0100 (CET)
+Received: by ywh6 with SMTP id 6so1400732ywh.16
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 10:17:31 -0700 (PDT)
+In-Reply-To: <20100318162017.GA6142@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Barry Song <21cnbao@gmail.com>, Barry Song <barry.song@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 18, 2010 at 05:38:30PM +0100, Samuel Ortiz wrote:
-> On Thu, Mar 18, 2010 at 12:10:21PM +0000, Mark Brown wrote:
-> > On Wed, Mar 17, 2010 at 05:42:29PM -0500, Olaya, Margarita wrote:
-> > > Correction for chips:
-> > > twl6030 is Phoenix Power chip
-> > > twl6040 is Phoenix Audio chip
-> > 
-> > > Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
-> > 
-> > Samuel, are you OK with doing this via the ASoC tree?
-> If that's more convenient to you, then go for it, with my:
-> Acked-by: Samuel Ortiz <sameo@linux.intel.com>
-
-OK, applied - thanks.
+T24gVGh1LCBNYXIgMTgsIDIwMTAgYXQgMTI6MjAsIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gVGh1
+LCBNYXIgMTgsIDIwMTAgYXQgMTE6NTc6NDNBTSAtMDQwMCwgTWlrZSBGcnlzaW5nZXIgd3JvdGU6
+Cj4+IGknbSBub3Qgc3VnZ2VzdGluZyB0aGUgQVNvQyBjb2RlY3Mgc2hvdWxkbnQgdXNlIHRoZSBz
+YW1lIHN0eWxlIGFjcm9zcwo+PiB0aGUgYm9hcmQgKGFuZCB0aHVzIHdlIHNob3VsZG50IGNoYW5n
+ZSB0aGUgQUQxOTN4IGRyaXZlciksIGp1c3QKPj4gcG9pbnRpbmcgb3V0IHlvdXIgYmFzaWMgcHJl
+bWlzZSBoZXJlIGlzIGludmFsaWQgYW5kIHRoYXQgdGhlcmUgYXJlCj4+IHByb3MvY29ucyB0byBl
+YWNoIG1ldGhvZCBhbmQgdGhhdCB0aGV5J3JlIGluZGVwZW5kZW50IG9mIHRoZQo+PiBzdWJzeXN0
+ZW0uIMKgeW91IHNpbXBseSBzZWxlY3RlZCBhIGRpZmZlcmVudCBzb2x1dGlvbi4KPgo+IE15IHBv
+aW50IGlzIHRoYXQgdGhlIGZhY3QgdGhhdCB0aGUgaW5wdXQgc3Vic3lzdGVtIGhhcyBtYWRlIGEg
+Y2hvaWNlIGlzCj4gcHJldHR5IG11Y2ggaXJyZWxldmFudCBmb3IgQVNvQywgd2hpY2ggaGFzIGRp
+ZmZlcmVudCBjb25zaWRlcmF0aW9ucyBhbmQKPiB0aGVyZWZvcmUgbWFkZSBhIGRpZmZlcmVudCBj
+aG9pY2UuIMKgQmFycnkgaGFkIHNpbXBseSBzYWlkIHRoZXJlIGhhZCBiZWVuCj4gYSBiaWcgZGlz
+Y3Vzc2lvbiBhbmQgdGhpcyBpcyB3aGF0IGhhZCBiZWVuIGFncmVlZCwgYnV0IHRoYXQgZGlzY3Vz
+c2lvbgo+IHdhcyBoZWxkIGZvciB0aGUgaW5wdXQgc3Vic3lzdGVtIGFuZCB3aGVuIHRoZSBlcXVp
+dmFsZW50IGRpc2N1c3Npb24gd2FzCj4gaGVsZCBmb3IgQVNvQyBhIGRpZmZlcmVudCBjb25jbHVz
+aW9uIHdhcyByZWFjaGVkLgoKaSBkb250IHRoaW5rIHRoYXQncyBlbnRpcmVseSB0cnVlIC4uLiBv
+bmUgb2YgdGhlIG1ham9yIHBvaW50cyBvZgpnZXR0aW5nIGRyaXZlcnMgaW50byBtYWlubGluZSBp
+cyBzbyB0aGF0IHdoZW4gY29tbW9uIHBhcmFkaWdtcyBhcmUKb2JzZXJ2ZWQsIHRoZXkgY2FuIGJl
+IHVuaWZpZWQgYWNyb3NzIGV2ZXJ5b25lLiAgc3Vic3lzdGVtcyByYXJlbHkgYXJlCnNwZWNpYWwg
+Li4uIG1vc3Qgb2YgdGhlIHRpbWUsIHBlb3BsZSBqdXN0IHRoaW5rIHRoZXkncmUgc3BlY2lhbCBh
+bmQgc28KY2FuIGlnbm9yZSB0aGUgY29tbW9uIGJlaGF2aW9yLgoKYXMgZGV2aWNlcyBnZXQgbW9y
+ZSBjb21wbGljYXRlZCBhbmQgaG9vayB1cCB0byBtb3JlIGFyYml0cmFyeSBidXNzZXMsCmknbSBz
+dXJlIHNvbWV0aGluZyB3aWxsIGFyaXNlIGluIHRoZSBmdXR1cmUgdG8gYWRkcmVzcyB0aGlzLgoK
+PiBUaGUgc3Vic3lzdGVtIGRlcGVuZGVuY3kgaGVyZSBjb21lIGZyb20gdGhlIGZhY3QgdGhhdCBB
+U29DIGhhcyBtYWNoaW5lCj4gZHJpdmVycyBhbmQgcmVsaWVzIG9uIHRoZW0gc2VsZWN0aW5nIHRo
+ZSBDT0RFQyBkcml2ZXJzIHRvIGdldCB0aGVtIGJ1aWx0Cj4gaW4gdGhlIGZpcnN0IHBsYWNlIHNv
+IGlmIHlvdSdyZSB0cnlpbmcgdG8gY2hhbmdlIHNvbWV0aGluZyBsaWtlIHRoaXMKPiB5b3UnbGwg
+bW9zdCBsaWtlbHkgbm90IG9ubHkgaGF2ZSB0byByZWJ1aWxkIHlvdXIga2VybmVsIGJ1dCBhbHNv
+IGhhdmUgdG8KPiB3cml0ZSBjb2RlLiDCoFRoaXMgaXNuJ3Qgc29tZXRoaW5nIHRoYXQgdGhlIGlu
+cHV0IGxheWVyIGhhcyAoaW5wdXQgbGF5ZXIKPiBkcml2ZXJzIGFyZSBwcmV0dHkgbXVjaCBzdGFu
+ZGFsb25lLCB1c3VhbGx5IG9ubHkgbmVlZCBwbGF0Zm9ybSBkYXRhCj4gZm9yIGFueSBwZXIgbWFj
+aGluZSBob29rdXAgYW5kIGZvciBJMkMgYW5kIFNQSSBjYW4gZXZlbiBiZSByZWdpc3RlcmVkCj4g
+ZnJvbSB1c2VyIHNwYWNlIElJUkMpIGFuZCBpdCBjaGFuZ2VzIHRoZSBjb25zaWRlcmF0aW9ucyBu
+b3RpY2FibHkuCgp0aGUgbWFjaGluZSBkcml2ZXIgc2VsZWN0cyB0aGUgY29kZWMsIGl0IGRvZXNu
+dCBzZWxlY3QgdGhlIGJ1cy4gIHRoZQpjb2RlYyB3b3JyaWVzIGFib3V0IHRoYXQuICBzbyBpIGRv
+bnQgcXVpdGUgZm9sbG93IHRoZSBsb2dpYyBoZXJlLgotbWlrZQpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
