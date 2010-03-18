@@ -1,39 +1,78 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv6 2/2] ASoC: TWL6040: Add twl6040 codec driver
-Date: Thu, 18 Mar 2010 17:17:38 +0000
-Message-ID: <20100318171737.GE6142@rakim.wolfsonmicro.main>
-References: <1889FA7136B567478A67D4B0F85B0CCE662AC372@dlee06.ent.ti.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: Memory corruption in ASoC
+Date: Thu, 18 Mar 2010 17:35:37 +0000
+Message-ID: <1268933737.3773.36.camel@odin>
+References: <20100318161755.GJ30801@buzzloop.caiaq.de>
+	<20100318164305.GB6142@rakim.wolfsonmicro.main>
+	<20100318164853.GK30801@buzzloop.caiaq.de>
+	<20100318170745.GC6142@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE662AC372@dlee06.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id ABBD424397
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 18:35:38 +0100 (CET)
+Received: by pwj7 with SMTP id 7so1668263pwj.38
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 10:35:37 -0700 (PDT)
+In-Reply-To: <20100318170745.GC6142@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sven Neumann <s.neumann@raumfeld.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 17, 2010 at 05:42:38PM -0500, Olaya, Margarita wrote:
-> From: Misael Lopez Cruz <x0052729@ti.com>
+On Thu, 2010-03-18 at 17:07 +0000, Mark Brown wrote:
+> On Thu, Mar 18, 2010 at 05:48:53PM +0100, Daniel Mack wrote:
+> > On Thu, Mar 18, 2010 at 04:43:06PM +0000, Mark Brown wrote:
 > 
-> Initial version of TWL6040 codec driver.
+> > > It should really be per-substream, yes.
+> 
+> > Do you want me to fix this or are you working on this already?
+> 
+> I'm all in favour of approaches that involve me doing less work :)
+> Though watch out for a mail from Liam shortly...
+> 
 
-I'm having trouble applying this - using patch by hand says:
+Please do.
 
-patching file sound/soc/codecs/Kconfig
-Hunk #1 FAILED at 35.
-Hunk #2 succeeded at 168 with fuzz 2.
-1 out of 2 hunks FAILED -- saving rejects to file sound/soc/codecs/Kconfig.rej
-patching file sound/soc/codecs/Makefile
-Hunk #1 FAILED at 22.
-patch: **** malformed patch at line 133: aic26.o
+Fwiw we do have some unnecessary complexity in our hw_params() and
+hw_free() calls in order to support OSS emulation. i.e. hw_params() can
+be called several times for each substream by OSS emulation with
+different audio parameters each time (hence the need to always free and
+re-config resources). This is not needed for native alsa.
 
-It looks like it should be some trivial rebasing things that need
-sorting - I'd try to fix up by hand but the "malformed patch" warning is
-making me worry something might be getting lost and I've no way of
-testing the code.  Could you please generate the patch against:
+Mark and I have just agreed we will accept patches that remove this sort
+of complexity and hence OSS emulation support. OSS is being dropped by
+distro's anyway now and we haven't been testing OSS emu on new ASoC
+drivers for a while either.....  
 
- git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
+So don't feel obliged to support OSS emulation in your fix.
 
-just to be on the safe side.  Only this patch ran into trouble, the
-first one was fine.
+> > I know there are some pxa-ssp related things pending which will also
+> > cause merge conflicts - which tree should thing apply to currently?
+> 
+
+
+The major work Mark mentioned is the multi-codec + multi-platform (Audio
+Engine) support. Mark and I are just finalising the API changes and
+there is some a development branch here :-
+
+http://git.kernel.org/?p=linux/kernel/git/lrg/asoc-2.6.git;a=shortlog;h=refs/heads/topic/multi-codec
+
+The API move things closer the the driver model and are being aimed at
+2.6.35.
+
+Liam
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
