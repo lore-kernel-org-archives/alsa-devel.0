@@ -1,15 +1,15 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH v2] ASoC: remove a card from the list,
-	if instantiation failed
-Date: Thu, 18 Mar 2010 08:23:33 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1003180818250.4485@axis700.grange>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH 0/4] extend ad1938 codec/machine driver to
+	ad193x supporting ad1936/7/8/9
+Date: Thu, 18 Mar 2010 16:16:57 +0800
+Message-ID: <1268900221-6833-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 5B5CD2453E
-	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 08:23:32 +0100 (CET)
+Received: from nwd2mail11.analog.com (nwd2mail11.analog.com [137.71.25.57])
+	by alsa0.perex.cz (Postfix) with ESMTP id 178C52458C
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 09:18:07 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,61 +19,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: broonie@opensource.wolfsonmicro.com
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-If instantiation of a card failed, we still have to remove it from the 
-card list on unregistration. This fixes an Oops on Migo-R, triggering, 
-when after a failed firmware load attempt the driver modules are removed 
-and re-inserted again.
+Hi Mark,
+The following patch series extends ad1938 codec/machine driver to support ad193x(including ad1936/ad1937/ad1938/ad1939).
+Some codecs use i2c bus and others use spi bus.
+patch 1: extend ad1938 codec driver to ad193x supporting ad1936/7/8/9
+patch 2: change bf5xx-ad1938 machine driver to bf5xx-ad193x machine driver
+patch 3: soc-cache: add i2c read entry for 8_8 mode
+patch 4: soc-cache: let reg be AND'ed by 0xff instead of data buffer for 8_8 mode
 
-Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
----
-
-Mark, is this more like what you mean?
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c8b0556..f63b59a 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1232,26 +1232,25 @@ static int soc_remove(struct platform_device *pdev)
- 	struct snd_soc_platform *platform = card->platform;
- 	struct snd_soc_codec_device *codec_dev = socdev->codec_dev;
- 
--	if (!card->instantiated)
--		return 0;
-+	if (card->instantiated) {
-+		run_delayed_work(&card->delayed_work);
- 
--	run_delayed_work(&card->delayed_work);
-+		if (platform->remove)
-+			platform->remove(pdev);
- 
--	if (platform->remove)
--		platform->remove(pdev);
-+		if (codec_dev->remove)
-+			codec_dev->remove(pdev);
- 
--	if (codec_dev->remove)
--		codec_dev->remove(pdev);
-+		for (i = 0; i < card->num_links; i++) {
-+			struct snd_soc_dai *cpu_dai = card->dai_link[i].cpu_dai;
-+			if (cpu_dai->remove)
-+				cpu_dai->remove(pdev, cpu_dai);
-+		}
- 
--	for (i = 0; i < card->num_links; i++) {
--		struct snd_soc_dai *cpu_dai = card->dai_link[i].cpu_dai;
--		if (cpu_dai->remove)
--			cpu_dai->remove(pdev, cpu_dai);
-+		if (card->remove)
-+			card->remove(pdev);
- 	}
- 
--	if (card->remove)
--		card->remove(pdev);
--
- 	snd_soc_unregister_card(card);
- 
- 	return 0;
+Thanks
+Barry
