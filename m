@@ -1,45 +1,69 @@
-From: Kevin Hilman <khilman@deeprootsystems.com>
-Subject: Re: [PATCHv6 2/2][RESEND] ASoC: TWL6040: Add twl6040 codec driver
-Date: Thu, 18 Mar 2010 11:28:21 -0700
-Message-ID: <87d3z1jxh6.fsf@deeprootsystems.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE662AC7F1@dlee06.ent.ti.com>
-	<20100318181623.GG6142@rakim.wolfsonmicro.main>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH] ALSA: ASoC: move dma_data from snd_soc_dai
+ to snd_soc_pcm_stream
+Date: Thu, 18 Mar 2010 19:28:13 +0100
+Message-ID: <20100318182813.GM30801@buzzloop.caiaq.de>
+References: <1268933737.3773.36.camel@odin>
+	<1268935739-2931-1-git-send-email-daniel@caiaq.de>
+	<20100318182211.GH6142@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <20100318181623.GG6142@rakim.wolfsonmicro.main> (Mark Brown's message of "Thu\, 18 Mar 2010 18\:16\:23 +0000")
-Sender: linux-omap-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 022BD1038A5
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 19:28:17 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20100318182211.GH6142@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "Olaya, Margarita" <magi.olaya@ti.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Michael Hirsch <m.hirsch@raumfeld.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@opensource.wolfsonmicro.com> writes:
+On Thu, Mar 18, 2010 at 06:22:11PM +0000, Mark Brown wrote:
+> On Thu, Mar 18, 2010 at 07:08:59PM +0100, Daniel Mack wrote:
+> > This fixes a memory corruption when using ASoC devices are used in
+> > full-duplex mode. Specifically for pxa-ssp code, where this pointer
+> > is dynamically allocated for each direction and destroyed upon each
+> > stream start.
+> 
+> > All other platforms are fixed blindly, I couldn't even compile-test
+> > them. Sorry for any breakage I may have caused.
+> 
+> Looks good at first pass, though I think there's some more platforms
+> have been missed?  I'm just about to leave for today, Liam and I will
+> check properly tomorrow.  Thanks for diagnosing this!
 
-> On Thu, Mar 18, 2010 at 12:59:49PM -0500, Olaya, Margarita wrote:
->> From: Misael Lopez Cruz <x0052729@ti.com>
->> 
->> Initial version of TWL6040 codec driver.
->> 
->> The TWL6040 codec uses a proprietary PDM-based digital audio interface.
->> Audio paths supported are:
->
-> I'm getting exactly the same results trying to apply this.  It looks
-> like there's some MUA corruption going on here, 
+This is all 'git grep' brought up. Other places should be easy to fix
+though in case I missed any. Thanks for double-checking.
 
-In addition, checkpatch reports a pile of whitespace problems,
-suggesting that all the tabs have been converted by spaces as well,
-another sign of Outlook mis-behavior.
 
-[...]
+> > +static inline void *snd_soc_dai_get_dma_data(const struct snd_soc_dai *dai,
+> > +					     const struct snd_pcm_substream *ss)
+> > +{
+> > +	return (ss->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+> > +		dai->playback.dma_data : dai->capture.dma_data;
+> > +}
+> > +
+> > +static inline void snd_soc_dai_set_dma_data(struct snd_soc_dai *dai,
+> > +					    const struct snd_pcm_substream *ss,
+> > +					    void *data)
+> > +{
+> > +	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> > +		dai->playback.dma_data = data;
+> > +	else
+> > +		dai->capture.dma_data = data;
+> > +}
+> 
+> Make your mind up if you like the ternery operator :P
 
-> Looks like MUA trouble.  From the message headers it looks like you
-> might be using Outlook or something, I'm not sure what to suggest for
-> that - enough folks at TI are submitting patches that something must've
-> been worked out for your mail system.
-
-Indeed, You need to get outlook out of the picture for sending patches.
-
-Using git-format-patch + git-send-email directly to your SMTP servers
-seems to be working well for others inside TI.
-
-Kevin
+Well - I do, and I use it whereever I can. But in the 'set' case, I can't.
+Or did I miss the joke? ;)
