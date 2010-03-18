@@ -1,20 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCHv6 2/2] ASoC: TWL6040: Add twl6040 codec
- driver
-Date: Thu, 18 Mar 2010 08:43:48 +0000
-Message-ID: <1268901828.3773.3.camel@odin>
-References: <1889FA7136B567478A67D4B0F85B0CCE662AC372@dlee06.ent.ti.com>
+Subject: Re: [PATCH 1/4] extend ad1938 codec driver to ad193x
+ supporting ad1936/7/8/9
+Date: Thu, 18 Mar 2010 08:48:15 +0000
+Message-ID: <1268902095.3773.6.camel@odin>
+References: <1268900221-6833-1-git-send-email-21cnbao@gmail.com>
+	<1268900221-6833-2-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iw0-f204.google.com (mail-iw0-f204.google.com
 	[209.85.223.204])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1D592245CA
-	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 09:43:52 +0100 (CET)
-Received: by iwn42 with SMTP id 42so908473iwn.6
-	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 01:43:52 -0700 (PDT)
-In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE662AC372@dlee06.ent.ti.com>
+	by alsa0.perex.cz (Postfix) with ESMTP id 9DB83245D0
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 09:48:19 +0100 (CET)
+Received: by iwn42 with SMTP id 42so910481iwn.6
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 01:48:18 -0700 (PDT)
+In-Reply-To: <1268900221-6833-2-git-send-email-21cnbao@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,48 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Olaya, Margarita" <magi.olaya@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Barry Song <barry.song@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-03-17 at 17:42 -0500, Olaya, Margarita wrote:
-> From: Misael Lopez Cruz <x0052729@ti.com>
-> 
-> Initial version of TWL6040 codec driver.
-> 
-> The TWL6040 codec uses a proprietary PDM-based digital audio interface.
-> Audio paths supported are:
-> 
-> - Input: Main Mic, Sub Mic, Headset Mic, Auxiliary-FM Left/Right
-> - Output: Headset Left/Right, Handsfree Left/Right
-> 
-> TWL6040 codec supports power-up/down manual and automatic sequence.
-> Manual sequence is done through a specific register writes sequence.
-> Automatic sequence is done when the codec is powered-up through the
-> external AUDPWRON line. The completion of the sequence is signaled
-> through the audio interrupt.
-> 
-> TWL6040 codec sysclk can be provided by: low-power or high
-> performance PLL:
-> 
-> - The low-power PLL takes a low-frequency input at 32,768 Hz and
-> generates an approximate of 17.64 or 19.2 MHz (for 44.1 KHz and 48 KHz
-> respectively)
-> 
-> - The high-performance PLL generates an exact 19.2 MHz clock signal
-> from high-frequency input at 12/19.2/26/38.4 MHz.
-> 
-> Low-power playback mode is a special scenario where only headset path
-> (headset DAC and driver) is active.
-> 
-> For the particular case of headset path, PLL being used defines the
-> headset power mode: low-power, high-performance.
-> 
-> Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
-> Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-> Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
+On Thu, 2010-03-18 at 16:16 +0800, Barry Song wrote:
+> This patch extends ad1938 codec driver to support ad1936/7/8/9,
+> ad1936/7 use i2c bus, ad1938/9 use spi bus.
+> The driver is splitted into three:
+> ad193x.h and ad193x.c: common codec driver
+> ad193x-spi.c: ad193x codec spi driver
+> ad193x-i2c.c: ad193x codec i2c driver
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+Is the new common driver code the same as the original driver minus any
+I2C/SPI changes ? It's difficult to see if anything else has been
+changed.
+
+Btw, have a look at wm8731.c. This driver supports both I2C and SPI and
+is less churn than splitting out the code into three files.
+
+Thanks
+
+Liam
 
 -- 
 Freelance Developer, SlimLogic Ltd
