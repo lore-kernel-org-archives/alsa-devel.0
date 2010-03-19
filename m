@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/2] ASoC: tlv320dac33: DSP mode and
- clocking updates
-Date: Fri, 19 Mar 2010 11:21:27 +0000
-Message-ID: <20100319112127.GC23306@rakim.wolfsonmicro.main>
-References: <1268989820-18262-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1268991483.3757.14.camel@odin>
+Subject: Re: [PATCHv6 2/2][RESEND] ASoC: TWL6040: Add twl6040
+	codec driver
+Date: Fri, 19 Mar 2010 11:27:39 +0000
+Message-ID: <20100319112739.GD23306@rakim.wolfsonmicro.main>
+References: <1889FA7136B567478A67D4B0F85B0CCE662AC7F1@dlee06.ent.ti.com>
+	<20100318181623.GG6142@rakim.wolfsonmicro.main>
+	<1889FA7136B567478A67D4B0F85B0CCE662AC853@dlee06.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B56EB1038BA
-	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 12:21:28 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9B12524427
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 12:27:40 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1268991483.3757.14.camel@odin>
+In-Reply-To: <1889FA7136B567478A67D4B0F85B0CCE662AC853@dlee06.ent.ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +24,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+To: "Olaya, Margarita" <magi.olaya@ti.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 19, 2010 at 09:38:03AM +0000, Liam Girdwood wrote:
-> On Fri, 2010-03-19 at 11:10 +0200, Peter Ujfalusi wrote:
+On Thu, Mar 18, 2010 at 01:38:56PM -0500, Olaya, Margarita wrote:
 
-> > tlv320dac33 can not support DSP_B mode since the data delay can not be set to be
-> > actually 0. Only DSP_A mode can be supported, so fix the DSP_A mode, and remove
-> > the DSP_B.
+> Please find attached the patch. I'm working to fix the issues with the
+> MUA.
 
-> > The original internal clock distribution config has been found to be not
-> > optimal, so fix that as well.
-
-> Both
-
-> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
-...and applied for 2.6.34, thanks.
+Applied now, thanks.
