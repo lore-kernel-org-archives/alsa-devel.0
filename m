@@ -1,29 +1,18 @@
-From: Barry Song <21cnbao@gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 1/4] extend ad1938
-	codec driver to ad193x supporting ad1936/7/8/9
-Date: Fri, 19 Mar 2010 11:30:01 +0800
-Message-ID: <3c17e3571003182030mc8ea095u2298f008fbcbee8e@mail.gmail.com>
-References: <1268900221-6833-1-git-send-email-21cnbao@gmail.com>
-	<1268900221-6833-2-git-send-email-21cnbao@gmail.com>
-	<1268902095.3773.6.camel@odin>
-	<3c17e3571003180208y34e4b5dekd2d23efa0723b641@mail.gmail.com>
-	<20100318111848.GB3080@opensource.wolfsonmicro.com>
-	<8bd0f97a1003180857vdd155e0o29684b50cbd5e34e@mail.gmail.com>
-	<20100318162017.GA6142@rakim.wolfsonmicro.main>
-	<8bd0f97a1003181017xba8e1a9oce2d40bf56818956@mail.gmail.com>
-	<20100318180516.GF6142@rakim.wolfsonmicro.main>
-	<8bd0f97a1003181108y3f7f5871t81c5cd5ba0c6312d@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ALSA: ASoC: move dma_data from snd_soc_dai
+	to snd_soc_pcm_stream
+Date: Fri, 19 Mar 2010 08:56:40 +0200
+Message-ID: <201003190856.40650.peter.ujfalusi@nokia.com>
+References: <20100318182211.GH6142@rakim.wolfsonmicro.main>
+	<1268940238-6283-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 44120103880
-	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 04:30:22 +0100 (CET)
-Received: by pvg12 with SMTP id 12so1382555pvg.38
-	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 20:30:21 -0700 (PDT)
-In-Reply-To: <8bd0f97a1003181108y3f7f5871t81c5cd5ba0c6312d@mail.gmail.com>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6246C103881
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 07:57:05 +0100 (CET)
+In-Reply-To: <1268940238-6283-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,46 +22,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mike Frysinger <vapier.adi@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Barry Song <barry.song@analog.com>
+To: alsa-devel@alsa-project.org
+Cc: Michael Hirsch <m.hirsch@raumfeld.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sven Neumann <s.neumann@raumfeld.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-SSB0aGluayB0aGlzIGlzc3VlIGhhcyBub3RoaW5nIHRvIGRvIHdpdGggc3Vic3lzdGVtcywgYW55
-d2F5LCBib3RoIGFyZQphY2NlcHRhYmxlIHRvIG1lLiBTaW5jZSB0aGVyZSBoYXMgYmVlbiBhbiBl
-eGFtcGxlIGluIEFTb0MsIEkgd2lsbApmb2xsb3cgaXQgYW5kIHNlbmQgdjIuCnRoYW5rcwotYmFy
-cnkKCk9uIEZyaSwgTWFyIDE5LCAyMDEwIGF0IDI6MDggQU0sIE1pa2UgRnJ5c2luZ2VyIDx2YXBp
-ZXIuYWRpQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gVGh1LCBNYXIgMTgsIDIwMTAgYXQgMTQ6MDUs
-IE1hcmsgQnJvd24gd3JvdGU6Cj4+IE9uIFRodSwgTWFyIDE4LCAyMDEwIGF0IDAxOjE3OjExUE0g
-LTA0MDAsIE1pa2UgRnJ5c2luZ2VyIHdyb3RlOgo+Pj4gPiBUaGUgc3Vic3lzdGVtIGRlcGVuZGVu
-Y3kgaGVyZSBjb21lIGZyb20gdGhlIGZhY3QgdGhhdCBBU29DIGhhcyBtYWNoaW5lCj4+PiA+IGRy
-aXZlcnMgYW5kIHJlbGllcyBvbiB0aGVtIHNlbGVjdGluZyB0aGUgQ09ERUMgZHJpdmVycyB0byBn
-ZXQgdGhlbSBidWlsdAo+Pj4gPiBpbiB0aGUgZmlyc3QgcGxhY2Ugc28gaWYgeW91J3JlIHRyeWlu
-ZyB0byBjaGFuZ2Ugc29tZXRoaW5nIGxpa2UgdGhpcwo+Pj4gPiB5b3UnbGwgbW9zdCBsaWtlbHkg
-bm90IG9ubHkgaGF2ZSB0byByZWJ1aWxkIHlvdXIga2VybmVsIGJ1dCBhbHNvIGhhdmUgdG8KPj4+
-ID4gd3JpdGUgY29kZS4gwqBUaGlzIGlzbid0IHNvbWV0aGluZyB0aGF0IHRoZSBpbnB1dCBsYXll
-ciBoYXMgKGlucHV0IGxheWVyCj4+PiA+IGRyaXZlcnMgYXJlIHByZXR0eSBtdWNoIHN0YW5kYWxv
-bmUsIHVzdWFsbHkgb25seSBuZWVkIHBsYXRmb3JtIGRhdGEKPj4+ID4gZm9yIGFueSBwZXIgbWFj
-aGluZSBob29rdXAgYW5kIGZvciBJMkMgYW5kIFNQSSBjYW4gZXZlbiBiZSByZWdpc3RlcmVkCj4+
-PiA+IGZyb20gdXNlciBzcGFjZSBJSVJDKSBhbmQgaXQgY2hhbmdlcyB0aGUgY29uc2lkZXJhdGlv
-bnMgbm90aWNhYmx5Lgo+Pgo+Pj4gdGhlIG1hY2hpbmUgZHJpdmVyIHNlbGVjdHMgdGhlIGNvZGVj
-LCBpdCBkb2VzbnQgc2VsZWN0IHRoZSBidXMuIMKgdGhlCj4+PiBjb2RlYyB3b3JyaWVzIGFib3V0
-IHRoYXQuIMKgc28gaSBkb250IHF1aXRlIGZvbGxvdyB0aGUgbG9naWMgaGVyZS4KPj4KPj4gVGhh
-dCdzIG5vdCB0aGUgY2FzZSwgQ09ERUMgZHJpdmVycyBkbyBhYnNvbHV0ZWx5IG5vdGhpbmcgdG8g
-ZW5zdXJlIHRoYXQKPj4gdGhleSBoYXZlIHRoZSBidXNlcyB0aGV5IG5lZWQuIMKgTXVsdGkgYnVz
-IENPREVDcyBzaG91bGQgYWxsIGJlIHBlcmZlY3RseQo+PiBoYXBweSB0byBidWlsZCB3aXRoIG5v
-IGJ1cyBhdCBhbGwsIHRob3VnaCBzcGFyc2UgYW5kL29yIEdDQyB3aWxsIHdhcm4uCj4+Cj4+IEtj
-b25maWcgd2lsbCBjaGVlcmZ1bGx5IGlnbm9yZSBhbnkgZGVwZW5kZW5jaWVzIG9mIHRoaW5ncyB0
-aGF0IGFyZQo+PiBzZWxlY3RlZCAtIHVubGVzcyBpdCdzIGJlZW4gdXBkYXRlZCByZWNlbnRseSBh
-bGwgYSBzZWxlY3QgZG9lcyBpcyBmb3JjZQo+PiB0aGUgc2VsZWN0ZWQgc3ltYm9sIG9uLCBpdCBk
-b2Vzbid0IHJlY3Vyc2UgdGhyb3VnaCBkZXBlbmRlbmNpZXMgYW5kCj4+IHNlbGVjdHMgb2YgdGhh
-dCBzeW1ib2wuIMKgQmVzaWRlcywgbXVsdGkgYnVzIENPREVDIGRyaXZlcnMgY2FuJ3Qga25vdwo+
-PiB3aGljaCBvZiB0aGVpciBwb3NzaWJsZSBidXNlcyBhcmUgYWN0dWFsbHkgbmVlZGVkIG9uIGEg
-Z2l2ZW4gc3lzdGVtIC0KPj4gdGhleSBqdXN0IGJ1aWxkIHN1cHBvcnQgZm9yIGFueSBidXMgdHlw
-ZXMgdGhhdCBhcmUgY29uZmlndXJlZCBhbmQgbGV0Cj4+IHNvbWV0aGluZyBlbHNlIHdvcnJ5IGFi
-b3V0IHRoZSByZXN1bHRpbmcgY29uZmlndXJhdGlvbiBhY3R1YWxseSBiZWluZwo+PiB1c2VmdWwu
-Cj4KPiBzdXJlLCBvbiB0aGUgS2NvbmZpZyBzaWRlLCBpIGNhbiBzZWUgdGhhdC4gwqBpIHdhcyB0
-aGlua2luZyB0aGUgcHVyZSBDCj4gZHJpdmVycyB0aG91Z2guIMKgdGhhbmtzIGZvciB0aGUgY2xh
-cmlmaWNhdGlvbi4KPiAtbWlrZQo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+Hello,
+
+On Thursday 18 March 2010 21:23:58 ext Daniel Mack wrote:
+> This fixes a memory corruption when ASoC devices are used in
+> full-duplex mode. Specifically for pxa-ssp code, where this pointer
+> is dynamically allocated for each direction and destroyed upon each
+> stream start.
+> =
+
+> All other platforms are fixed blindly, I couldn't even compile-test
+> them. Sorry for any breakage I may have caused.
+
+At least the OMAP code should not be affected by the bug, that you have wit=
+h the =
+
+pxa-ssp. I think the bug could be also fixed within the pxa code, since the =
+
+whole thing goes down to inconsistent memory management within the pxa code.
+
+Having said that, I do think having separate dma_data for each streams is a =
+
+really good idea.
+One thing that I can think of in OMAP case, where this could fix a nasty ra=
+ce =
+
+condition is (have never seen it, but it is in theory possible):
+Also in duplex case, when the second hw_param gets called after the first =
+
+omap_mcbsp_hw_params, and before the omap_pcm_hw_params for the first strea=
+m.
+The second omap_mcbsp_hw_params will override the dma_data, thus we would s=
+et =
+
+bogus parameters for the first stream.
+
+I do have comment however (down).
+
+For the omap-mcbsp.c and omap-pcm.c changes:
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+
+..
+
+> b/sound/soc/atmel/atmel_ssc_dai.c index e588e63..0b59806 100644
+> --- a/sound/soc/atmel/atmel_ssc_dai.c
+> +++ b/sound/soc/atmel/atmel_ssc_dai.c
+> @@ -363,12 +363,12 @@ static int atmel_ssc_hw_params(struct
+> snd_pcm_substream *substream, ssc_p->dma_params[dir] =3D dma_params;
+> =
+
+>         /*
+> -        * The cpu_dai->dma_data field is only used to communicate the
+> -        * appropriate DMA parameters to the pcm driver hw_params()
+> +        * The snd_soc_pcm_stream->dma_data field is only used to
+> communicate +        * the appropriate DMA parameters to the pcm driver
+> hw_params() * function.  It should not be used for other purposes
+>          * as it is common to all substreams.
+>          */
+> -       rtd->dai->cpu_dai->dma_data =3D dma_params;
+> +       snd_soc_dai_set_dma_data(rtd->dai->cpu_dai, substream, dma_params=
+);
+> =
+
+>         channels =3D params_channels(params);
+> =
+
+> diff --git a/sound/soc/davinci/davinci-i2s.c
+> b/sound/soc/davinci/davinci-i2s.c index 6362ca0..4aad7ec 100644
+> --- a/sound/soc/davinci/davinci-i2s.c
+> +++ b/sound/soc/davinci/davinci-i2s.c
+> @@ -585,7 +585,8 @@ static int davinci_i2s_probe(struct platform_device
+> *pdev) dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].channel =3D res->start;
+> =
+
+>         davinci_i2s_dai.private_data =3D dev;
+> -       davinci_i2s_dai.dma_data =3D dev->dma_params;
+> +       davinci_i2s_dai.capture.dma_data =3D dev->dma_params;
+> +       davinci_i2s_dai.playback.dma_data =3D dev->dma_params;
+
+Would not be more consistent around the places to actually use the
+		snd_soc_dai_set_dma_data(...);
+function instead of direct assignment here, and there randomly?
+
+>         ret =3D snd_soc_register_dai(&davinci_i2s_dai);
+>         if (ret !=3D 0)
+>                 goto err_free_mem;
+
+-- =
+
+P=E9ter
