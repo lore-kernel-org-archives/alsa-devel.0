@@ -1,39 +1,53 @@
-From: Michael Tokarev <mjt@tls.msk.ru>
-Subject: Re: PATCH: Fix snd-hda-intel boot hang on ASUS A8N-VM
-Date: Fri, 19 Mar 2010 22:26:35 +0300
-Message-ID: <4BA3CFEB.1090207@msgid.tls.msk.ru>
-References: <4BA011A0.5020302@users.sourceforge.net> <s5hr5njh0z3.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ALSA: ASoC: move dma_data from	snd_soc_dai
+	to snd_soc_pcm_stream
+Date: Fri, 19 Mar 2010 19:54:22 +0000
+Message-ID: <20100319195422.GB15902@opensource.wolfsonmicro.com>
+References: <20100318182211.GH6142@rakim.wolfsonmicro.main>
+	<1268940238-6283-1-git-send-email-daniel@caiaq.de>
+	<201003190856.40650.peter.ujfalusi@nokia.com>
+	<20100319070852.GR30801@buzzloop.caiaq.de>
+	<20100319151453.GH23306@rakim.wolfsonmicro.main>
+	<20100319183958.GA30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hr5njh0z3.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Brian Lindholm <brian_lindholm@users.sourceforge.net>, perex@perex.cz, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0D2CB1038AB
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 20:54:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20100319183958.GA30801@buzzloop.caiaq.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: Sven Neumann <s.neumann@raumfeld.com>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Michael Hirsch <m.hirsch@raumfeld.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Tue, 16 Mar 2010 19:17:52 -0400,
-> Brian Lindholm wrote:
->> This patch fixes a regression in 2.6.33.x.  Was working in 2.6.32.x.
->>
->>    Symptom:  Hang on boot at "HDA Intel".  Boots only if on-board sound 
->> is disabled or if "snd-hda-intel.enable_msi=0" is appended to boot 
->> parameters.
->>
->>    Machine:  ASUS A8N-VM with Athlon-X2 processor.
-[]
-> Thanks for the patch.  The issue was already fixed in a different way,
-> namely, disable MSI for all Nvidia controller chips.  The fix will be
-> included in the next pull request and stable kernel.
+On Fri, Mar 19, 2010 at 07:39:58PM +0100, Daniel Mack wrote:
+> On Fri, Mar 19, 2010 at 03:14:53PM +0000, Mark Brown wrote:
 
-Can you provide a bit more information?  I've the same issue at
-hand, on an Acer Aspire 9300 notebook, also with nvidia chipset.
-So far I disabled snd-hda-intel module loading, but it'd be nice
-to actually have sound working on this machine, as well as to
-test the patch... ;)
+> > I agree with both of you, we can always tidy the code up later but cross
+> > platform changes need some sync.  I've applied the patch, thanks once
+> > again for analysing this and to everyone else for their review.
 
-Thanks!
+> Thanks! I assume this is going to be taken for .34 and .35?
 
-/mjt
+I've applied it for 2.6.35 only at present, I'd rather let it cook for a
+little before picking it back - like you I can only test a limited set
+of architectures.  Unfortunately it doesn't cherry pick backwards
+either, but the updates required do appear to be trivial.
+
+> And how is backporting done - I think we should probably also get this
+> into .33 and .32?
+
+CCing stable@kernel.org is trivial but since there are new architectures
+involved the patch won't trivially apply and someone will need to CC
+Greg.
