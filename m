@@ -1,14 +1,15 @@
-From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-Subject: [PATCH] ASoC: McPDM: Use tabs for indentation
-Date: Thu, 18 Mar 2010 19:45:41 -0600
-Message-ID: <1268963141-22012-1-git-send-email-jorge.candelaria@ti.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH v2 2/4] change bf5xx-ad1938 machine driver to
+	bf5xx-ad193x machine driver
+Date: Fri, 19 Mar 2010 11:18:40 +0800
+Message-ID: <1268968720-25540-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id B90F7103874
-	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 02:54:36 +0100 (CET)
+Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id D482C103879
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 04:19:47 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,742 +19,193 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, broonie@opensource.wolfsonmicro.com
+To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Indentation in initial support for McPDM driver was converted to spaces.
-Use tabs to comply with open source coding-style.
-
-Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+Signed-off-by: Barry Song <21cnbao@gmail.com>
 ---
- sound/soc/omap/mcpdm.c |  548 ++++++++++++++++++++++++------------------------
- 1 files changed, 274 insertions(+), 274 deletions(-)
+ sound/soc/blackfin/Kconfig                         |    9 ++-
+ sound/soc/blackfin/Makefile                        |    4 +-
+ .../blackfin/{bf5xx-ad1938.c => bf5xx-ad193x.c}    |   66 ++++++++++----------
+ 3 files changed, 40 insertions(+), 39 deletions(-)
+ rename sound/soc/blackfin/{bf5xx-ad1938.c => bf5xx-ad193x.c} (65%)
 
-diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
-index ad8df6c..479d3b6 100644
---- a/sound/soc/omap/mcpdm.c
-+++ b/sound/soc/omap/mcpdm.c
-@@ -1,5 +1,5 @@
+diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
+index 97f1a25..8ef2502 100644
+--- a/sound/soc/blackfin/Kconfig
++++ b/sound/soc/blackfin/Kconfig
+@@ -49,13 +49,14 @@ config SND_BF5XX_SOC_AD1836
+ 	help
+ 	  Say Y if you want to add support for SoC audio on BF5xx STAMP/EZKIT.
+ 
+-config SND_BF5XX_SOC_AD1938
+-	tristate "SoC AD1938 Audio support for Blackfin"
++config SND_BF5XX_SOC_AD193X
++	tristate "SoC AD193X Audio support for Blackfin"
+ 	depends on SND_BF5XX_TDM
+ 	select SND_BF5XX_SOC_TDM
+-	select SND_SOC_AD1938
++	select SND_SOC_AD193X
+ 	help
+-	  Say Y if you want to add support for AD1938 codec on Blackfin.
++	  Say Y if you want to add support for AD193X codec on Blackfin.
++	  This driver supports AD1936, AD1937, AD1938 and AD1939.
+ 
+ config SND_BF5XX_AC97
+ 	tristate "SoC AC97 Audio for the ADI BF5xx chip"
+diff --git a/sound/soc/blackfin/Makefile b/sound/soc/blackfin/Makefile
+index 87e3042..49af3f3 100644
+--- a/sound/soc/blackfin/Makefile
++++ b/sound/soc/blackfin/Makefile
+@@ -20,10 +20,10 @@ snd-ad1836-objs := bf5xx-ad1836.o
+ snd-ad1980-objs := bf5xx-ad1980.o
+ snd-ssm2602-objs := bf5xx-ssm2602.o
+ snd-ad73311-objs := bf5xx-ad73311.o
+-snd-ad1938-objs := bf5xx-ad1938.o
++snd-ad193x-objs := bf5xx-ad193x.o
+ 
+ obj-$(CONFIG_SND_BF5XX_SOC_AD1836) += snd-ad1836.o
+ obj-$(CONFIG_SND_BF5XX_SOC_AD1980) += snd-ad1980.o
+ obj-$(CONFIG_SND_BF5XX_SOC_SSM2602) += snd-ssm2602.o
+ obj-$(CONFIG_SND_BF5XX_SOC_AD73311) += snd-ad73311.o
+-obj-$(CONFIG_SND_BF5XX_SOC_AD1938) += snd-ad1938.o
++obj-$(CONFIG_SND_BF5XX_SOC_AD193X) += snd-ad193x.o
+diff --git a/sound/soc/blackfin/bf5xx-ad1938.c b/sound/soc/blackfin/bf5xx-ad193x.c
+similarity index 65%
+rename from sound/soc/blackfin/bf5xx-ad1938.c
+rename to sound/soc/blackfin/bf5xx-ad193x.c
+index 2ef1e50..b8c9060 100644
+--- a/sound/soc/blackfin/bf5xx-ad1938.c
++++ b/sound/soc/blackfin/bf5xx-ad193x.c
+@@ -1,9 +1,9 @@
  /*
-- * mcpdm.c  --  McPDM interface driver
-+ * mcpdm.c  --	McPDM interface driver
+- * File:         sound/soc/blackfin/bf5xx-ad1938.c
++ * File:         sound/soc/blackfin/bf5xx-ad193x.c
+  * Author:       Barry Song <Barry.Song@analog.com>
   *
-  * Author: Jorge Eduardo Candelaria <x0107209@ti.com>
-  * Copyright (C) 2009 - Texas Instruments, Inc.
-@@ -38,46 +38,46 @@ static struct omap_mcpdm *mcpdm;
+  * Created:      Thur June 4 2009
+- * Description:  Board driver for ad1938 sound chip
++ * Description:  Board driver for ad193x sound chip
+  *
+  * Bugs:         Enter bugs at http://blackfin.uclinux.org/
+  *
+@@ -38,15 +38,15 @@
+ #include <asm/dma.h>
+ #include <asm/portmux.h>
  
- static inline void omap_mcpdm_write(u16 reg, u32 val)
+-#include "../codecs/ad1938.h"
++#include "../codecs/ad193x.h"
+ #include "bf5xx-sport.h"
+ 
+ #include "bf5xx-tdm-pcm.h"
+ #include "bf5xx-tdm.h"
+ 
+-static struct snd_soc_card bf5xx_ad1938;
++static struct snd_soc_card bf5xx_ad193x;
+ 
+-static int bf5xx_ad1938_startup(struct snd_pcm_substream *substream)
++static int bf5xx_ad193x_startup(struct snd_pcm_substream *substream)
  {
--       __raw_writel(val, mcpdm->io_base + reg);
-+	__raw_writel(val, mcpdm->io_base + reg);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+@@ -55,7 +55,7 @@ static int bf5xx_ad1938_startup(struct snd_pcm_substream *substream)
+ 	return 0;
  }
  
- static inline int omap_mcpdm_read(u16 reg)
+-static int bf5xx_ad1938_hw_params(struct snd_pcm_substream *substream,
++static int bf5xx_ad193x_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
  {
--       return __raw_readl(mcpdm->io_base + reg);
-+	return __raw_readl(mcpdm->io_base + reg);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+@@ -89,61 +89,61 @@ static int bf5xx_ad1938_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
  }
  
- static void omap_mcpdm_reg_dump(void)
- {
--       dev_dbg(mcpdm->dev, "***********************\n");
--       dev_dbg(mcpdm->dev, "IRQSTATUS_RAW:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_IRQSTATUS_RAW));
--       dev_dbg(mcpdm->dev, "IRQSTATUS:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_IRQSTATUS));
--       dev_dbg(mcpdm->dev, "IRQENABLE_SET:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_IRQENABLE_SET));
--       dev_dbg(mcpdm->dev, "IRQENABLE_CLR:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_IRQENABLE_CLR));
--       dev_dbg(mcpdm->dev, "IRQWAKE_EN: 0x%04x\n",
--                       omap_mcpdm_read(MCPDM_IRQWAKE_EN));
--       dev_dbg(mcpdm->dev, "DMAENABLE_SET: 0x%04x\n",
--                       omap_mcpdm_read(MCPDM_DMAENABLE_SET));
--       dev_dbg(mcpdm->dev, "DMAENABLE_CLR:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_DMAENABLE_CLR));
--       dev_dbg(mcpdm->dev, "DMAWAKEEN:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_DMAWAKEEN));
--       dev_dbg(mcpdm->dev, "CTRL:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_CTRL));
--       dev_dbg(mcpdm->dev, "DN_DATA:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_DN_DATA));
--       dev_dbg(mcpdm->dev, "UP_DATA: 0x%04x\n",
--                       omap_mcpdm_read(MCPDM_UP_DATA));
--       dev_dbg(mcpdm->dev, "FIFO_CTRL_DN: 0x%04x\n",
--                       omap_mcpdm_read(MCPDM_FIFO_CTRL_DN));
--       dev_dbg(mcpdm->dev, "FIFO_CTRL_UP:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_FIFO_CTRL_UP));
--       dev_dbg(mcpdm->dev, "DN_OFFSET:  0x%04x\n",
--                       omap_mcpdm_read(MCPDM_DN_OFFSET));
--       dev_dbg(mcpdm->dev, "***********************\n");
-+	dev_dbg(mcpdm->dev, "***********************\n");
-+	dev_dbg(mcpdm->dev, "IRQSTATUS_RAW:  0x%04x\n",
-+			omap_mcpdm_read(MCPDM_IRQSTATUS_RAW));
-+	dev_dbg(mcpdm->dev, "IRQSTATUS:	0x%04x\n",
-+			omap_mcpdm_read(MCPDM_IRQSTATUS));
-+	dev_dbg(mcpdm->dev, "IRQENABLE_SET:  0x%04x\n",
-+			omap_mcpdm_read(MCPDM_IRQENABLE_SET));
-+	dev_dbg(mcpdm->dev, "IRQENABLE_CLR:  0x%04x\n",
-+			omap_mcpdm_read(MCPDM_IRQENABLE_CLR));
-+	dev_dbg(mcpdm->dev, "IRQWAKE_EN: 0x%04x\n",
-+			omap_mcpdm_read(MCPDM_IRQWAKE_EN));
-+	dev_dbg(mcpdm->dev, "DMAENABLE_SET: 0x%04x\n",
-+			omap_mcpdm_read(MCPDM_DMAENABLE_SET));
-+	dev_dbg(mcpdm->dev, "DMAENABLE_CLR:  0x%04x\n",
-+			omap_mcpdm_read(MCPDM_DMAENABLE_CLR));
-+	dev_dbg(mcpdm->dev, "DMAWAKEEN:	0x%04x\n",
-+			omap_mcpdm_read(MCPDM_DMAWAKEEN));
-+	dev_dbg(mcpdm->dev, "CTRL:	0x%04x\n",
-+			omap_mcpdm_read(MCPDM_CTRL));
-+	dev_dbg(mcpdm->dev, "DN_DATA:  0x%04x\n",
-+			omap_mcpdm_read(MCPDM_DN_DATA));
-+	dev_dbg(mcpdm->dev, "UP_DATA: 0x%04x\n",
-+			omap_mcpdm_read(MCPDM_UP_DATA));
-+	dev_dbg(mcpdm->dev, "FIFO_CTRL_DN: 0x%04x\n",
-+			omap_mcpdm_read(MCPDM_FIFO_CTRL_DN));
-+	dev_dbg(mcpdm->dev, "FIFO_CTRL_UP:  0x%04x\n",
-+			omap_mcpdm_read(MCPDM_FIFO_CTRL_UP));
-+	dev_dbg(mcpdm->dev, "DN_OFFSET:	0x%04x\n",
-+			omap_mcpdm_read(MCPDM_DN_OFFSET));
-+	dev_dbg(mcpdm->dev, "***********************\n");
- }
- 
- /*
-@@ -86,26 +86,26 @@ static void omap_mcpdm_reg_dump(void)
-  */
- static void omap_mcpdm_reset_capture(int reset)
- {
--       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+	int ctrl = omap_mcpdm_read(MCPDM_CTRL);
- 
--       if (reset)
--               ctrl |= SW_UP_RST;
--       else
--               ctrl &= ~SW_UP_RST;
-+	if (reset)
-+		ctrl |= SW_UP_RST;
-+	else
-+		ctrl &= ~SW_UP_RST;
- 
--       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+	omap_mcpdm_write(MCPDM_CTRL, ctrl);
- }
- 
- static void omap_mcpdm_reset_playback(int reset)
- {
--       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+	int ctrl = omap_mcpdm_read(MCPDM_CTRL);
- 
--       if (reset)
--               ctrl |= SW_DN_RST;
--       else
--               ctrl &= ~SW_DN_RST;
-+	if (reset)
-+		ctrl |= SW_DN_RST;
-+	else
-+		ctrl &= ~SW_DN_RST;
- 
--       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+	omap_mcpdm_write(MCPDM_CTRL, ctrl);
- }
- 
- /*
-@@ -114,14 +114,14 @@ static void omap_mcpdm_reset_playback(int reset)
-  */
- void omap_mcpdm_start(int stream)
- {
--       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+	int ctrl = omap_mcpdm_read(MCPDM_CTRL);
- 
--       if (stream)
--               ctrl |= mcpdm->up_channels;
--       else
--               ctrl |= mcpdm->dn_channels;
-+	if (stream)
-+		ctrl |= mcpdm->up_channels;
-+	else
-+		ctrl |= mcpdm->dn_channels;
- 
--       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+	omap_mcpdm_write(MCPDM_CTRL, ctrl);
- }
- 
- /*
-@@ -130,14 +130,14 @@ void omap_mcpdm_start(int stream)
-  */
- void omap_mcpdm_stop(int stream)
- {
--       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+	int ctrl = omap_mcpdm_read(MCPDM_CTRL);
- 
--       if (stream)
--               ctrl &= ~mcpdm->up_channels;
--       else
--               ctrl &= ~mcpdm->dn_channels;
-+	if (stream)
-+		ctrl &= ~mcpdm->up_channels;
-+	else
-+		ctrl &= ~mcpdm->dn_channels;
- 
--       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+	omap_mcpdm_write(MCPDM_CTRL, ctrl);
- }
- 
- /*
-@@ -146,38 +146,38 @@ void omap_mcpdm_stop(int stream)
-  */
- int omap_mcpdm_capture_open(struct omap_mcpdm_link *uplink)
- {
--       int irq_mask = 0;
--       int ctrl;
-+	int irq_mask = 0;
-+	int ctrl;
- 
--       if (!uplink)
--               return -EINVAL;
-+	if (!uplink)
-+		return -EINVAL;
- 
--       mcpdm->uplink = uplink;
-+	mcpdm->uplink = uplink;
- 
--       /* Enable irq request generation */
--       irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
--       omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
-+	/* Enable irq request generation */
-+	irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
-+	omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
- 
--       /* Configure uplink threshold */
--       if (uplink->threshold > UP_THRES_MAX)
--               uplink->threshold = UP_THRES_MAX;
-+	/* Configure uplink threshold */
-+	if (uplink->threshold > UP_THRES_MAX)
-+		uplink->threshold = UP_THRES_MAX;
- 
--       omap_mcpdm_write(MCPDM_FIFO_CTRL_UP, uplink->threshold);
-+	omap_mcpdm_write(MCPDM_FIFO_CTRL_UP, uplink->threshold);
- 
--       /* Configure DMA controller */
--       omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_UP_ENABLE);
-+	/* Configure DMA controller */
-+	omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_UP_ENABLE);
- 
--       /* Set pdm out format */
--       ctrl = omap_mcpdm_read(MCPDM_CTRL);
--       ctrl &= ~PDMOUTFORMAT;
--       ctrl |= uplink->format & PDMOUTFORMAT;
-+	/* Set pdm out format */
-+	ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+	ctrl &= ~PDMOUTFORMAT;
-+	ctrl |= uplink->format & PDMOUTFORMAT;
- 
--       /* Uplink channels */
--       mcpdm->up_channels = uplink->channels & (PDM_UP_MASK | PDM_STATUS_MASK);
-+	/* Uplink channels */
-+	mcpdm->up_channels = uplink->channels & (PDM_UP_MASK | PDM_STATUS_MASK);
- 
--       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+	omap_mcpdm_write(MCPDM_CTRL, ctrl);
- 
--       return 0;
-+	return 0;
- }
- 
- /*
-@@ -186,38 +186,38 @@ int omap_mcpdm_capture_open(struct omap_mcpdm_link *uplink)
-  */
- int omap_mcpdm_playback_open(struct omap_mcpdm_link *downlink)
- {
--       int irq_mask = 0;
--       int ctrl;
-+	int irq_mask = 0;
-+	int ctrl;
- 
--       if (!downlink)
--               return -EINVAL;
-+	if (!downlink)
-+		return -EINVAL;
- 
--       mcpdm->downlink = downlink;
-+	mcpdm->downlink = downlink;
- 
--       /* Enable irq request generation */
--       irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
--       omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
-+	/* Enable irq request generation */
-+	irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
-+	omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
- 
--       /* Configure uplink threshold */
--       if (downlink->threshold > DN_THRES_MAX)
--               downlink->threshold = DN_THRES_MAX;
-+	/* Configure uplink threshold */
-+	if (downlink->threshold > DN_THRES_MAX)
-+		downlink->threshold = DN_THRES_MAX;
- 
--       omap_mcpdm_write(MCPDM_FIFO_CTRL_DN, downlink->threshold);
-+	omap_mcpdm_write(MCPDM_FIFO_CTRL_DN, downlink->threshold);
- 
--       /* Enable DMA request generation */
--       omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_DN_ENABLE);
-+	/* Enable DMA request generation */
-+	omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_DN_ENABLE);
- 
--       /* Set pdm out format */
--       ctrl = omap_mcpdm_read(MCPDM_CTRL);
--       ctrl &= ~PDMOUTFORMAT;
--       ctrl |= downlink->format & PDMOUTFORMAT;
-+	/* Set pdm out format */
-+	ctrl = omap_mcpdm_read(MCPDM_CTRL);
-+	ctrl &= ~PDMOUTFORMAT;
-+	ctrl |= downlink->format & PDMOUTFORMAT;
- 
--       /* Downlink channels */
--       mcpdm->dn_channels = downlink->channels & (PDM_DN_MASK | PDM_CMD_MASK);
-+	/* Downlink channels */
-+	mcpdm->dn_channels = downlink->channels & (PDM_DN_MASK | PDM_CMD_MASK);
- 
--       omap_mcpdm_write(MCPDM_CTRL, ctrl);
-+	omap_mcpdm_write(MCPDM_CTRL, ctrl);
- 
--       return 0;
-+	return 0;
- }
- 
- /*
-@@ -226,24 +226,24 @@ int omap_mcpdm_playback_open(struct omap_mcpdm_link *downlink)
-  */
- int omap_mcpdm_capture_close(struct omap_mcpdm_link *uplink)
- {
--       int irq_mask = 0;
-+	int irq_mask = 0;
- 
--       if (!uplink)
--               return -EINVAL;
-+	if (!uplink)
-+		return -EINVAL;
- 
--       /* Disable irq request generation */
--       irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
--       omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
-+	/* Disable irq request generation */
-+	irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
-+	omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
- 
--       /* Disable DMA request generation */
--       omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_UP_ENABLE);
-+	/* Disable DMA request generation */
-+	omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_UP_ENABLE);
- 
--       /* Clear Downlink channels */
--       mcpdm->up_channels = 0;
-+	/* Clear Downlink channels */
-+	mcpdm->up_channels = 0;
- 
--       mcpdm->uplink = NULL;
-+	mcpdm->uplink = NULL;
- 
--       return 0;
-+	return 0;
- }
- 
- /*
-@@ -252,124 +252,124 @@ int omap_mcpdm_capture_close(struct omap_mcpdm_link *uplink)
-  */
- int omap_mcpdm_playback_close(struct omap_mcpdm_link *downlink)
- {
--       int irq_mask = 0;
-+	int irq_mask = 0;
- 
--       if (!downlink)
--               return -EINVAL;
-+	if (!downlink)
-+		return -EINVAL;
- 
--       /* Disable irq request generation */
--       irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
--       omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
-+	/* Disable irq request generation */
-+	irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
-+	omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
- 
--       /* Disable DMA request generation */
--       omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_DN_ENABLE);
-+	/* Disable DMA request generation */
-+	omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_DN_ENABLE);
- 
--       /* clear Downlink channels */
--       mcpdm->dn_channels = 0;
-+	/* clear Downlink channels */
-+	mcpdm->dn_channels = 0;
- 
--       mcpdm->downlink = NULL;
-+	mcpdm->downlink = NULL;
- 
--       return 0;
-+	return 0;
- }
- 
- static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
- {
--       struct omap_mcpdm *mcpdm_irq = dev_id;
--       int irq_status;
--
--       irq_status = omap_mcpdm_read(MCPDM_IRQSTATUS);
--
--       /* Acknowledge irq event */
--       omap_mcpdm_write(MCPDM_IRQSTATUS, irq_status);
--
--       if (irq & MCPDM_DN_IRQ_FULL) {
--               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
--               omap_mcpdm_reset_playback(1);
--               omap_mcpdm_playback_open(mcpdm_irq->downlink);
--               omap_mcpdm_reset_playback(0);
--       }
--
--       if (irq & MCPDM_DN_IRQ_EMPTY) {
--               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
--               omap_mcpdm_reset_playback(1);
--               omap_mcpdm_playback_open(mcpdm_irq->downlink);
--               omap_mcpdm_reset_playback(0);
--       }
--
--       if (irq & MCPDM_DN_IRQ) {
--               dev_dbg(mcpdm_irq->dev, "DN write request\n");
--       }
--
--       if (irq & MCPDM_UP_IRQ_FULL) {
--               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
--               omap_mcpdm_reset_capture(1);
--               omap_mcpdm_capture_open(mcpdm_irq->uplink);
--               omap_mcpdm_reset_capture(0);
--       }
--
--       if (irq & MCPDM_UP_IRQ_EMPTY) {
--               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
--               omap_mcpdm_reset_capture(1);
--               omap_mcpdm_capture_open(mcpdm_irq->uplink);
--               omap_mcpdm_reset_capture(0);
--       }
--
--       if (irq & MCPDM_UP_IRQ) {
--               dev_dbg(mcpdm_irq->dev, "UP write request\n");
--       }
--
--       return IRQ_HANDLED;
-+	struct omap_mcpdm *mcpdm_irq = dev_id;
-+	int irq_status;
-+
-+	irq_status = omap_mcpdm_read(MCPDM_IRQSTATUS);
-+
-+	/* Acknowledge irq event */
-+	omap_mcpdm_write(MCPDM_IRQSTATUS, irq_status);
-+
-+	if (irq & MCPDM_DN_IRQ_FULL) {
-+		dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
-+		omap_mcpdm_reset_playback(1);
-+		omap_mcpdm_playback_open(mcpdm_irq->downlink);
-+		omap_mcpdm_reset_playback(0);
-+	}
-+
-+	if (irq & MCPDM_DN_IRQ_EMPTY) {
-+		dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
-+		omap_mcpdm_reset_playback(1);
-+		omap_mcpdm_playback_open(mcpdm_irq->downlink);
-+		omap_mcpdm_reset_playback(0);
-+	}
-+
-+	if (irq & MCPDM_DN_IRQ) {
-+		dev_dbg(mcpdm_irq->dev, "DN write request\n");
-+	}
-+
-+	if (irq & MCPDM_UP_IRQ_FULL) {
-+		dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
-+		omap_mcpdm_reset_capture(1);
-+		omap_mcpdm_capture_open(mcpdm_irq->uplink);
-+		omap_mcpdm_reset_capture(0);
-+	}
-+
-+	if (irq & MCPDM_UP_IRQ_EMPTY) {
-+		dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
-+		omap_mcpdm_reset_capture(1);
-+		omap_mcpdm_capture_open(mcpdm_irq->uplink);
-+		omap_mcpdm_reset_capture(0);
-+	}
-+
-+	if (irq & MCPDM_UP_IRQ) {
-+		dev_dbg(mcpdm_irq->dev, "UP write request\n");
-+	}
-+
-+	return IRQ_HANDLED;
- }
- 
- int omap_mcpdm_request(void)
- {
--       int ret;
-+	int ret;
- 
--       clk_enable(mcpdm->clk);
-+	clk_enable(mcpdm->clk);
- 
--       spin_lock(&mcpdm->lock);
-+	spin_lock(&mcpdm->lock);
- 
--       if (!mcpdm->free) {
--               dev_err(mcpdm->dev, "McPDM interface is in use\n");
--               spin_unlock(&mcpdm->lock);
--               ret = -EBUSY;
--               goto err;
--       }
--       mcpdm->free = 0;
-+	if (!mcpdm->free) {
-+		dev_err(mcpdm->dev, "McPDM interface is in use\n");
-+		spin_unlock(&mcpdm->lock);
-+		ret = -EBUSY;
-+		goto err;
-+	}
-+	mcpdm->free = 0;
- 
--       spin_unlock(&mcpdm->lock);
-+	spin_unlock(&mcpdm->lock);
- 
--       /* Disable lines while request is ongoing */
--       omap_mcpdm_write(MCPDM_CTRL, 0x00);
-+	/* Disable lines while request is ongoing */
-+	omap_mcpdm_write(MCPDM_CTRL, 0x00);
- 
--       ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler,
--                               0, "McPDM", (void *)mcpdm);
--       if (ret) {
--               dev_err(mcpdm->dev, "Request for McPDM IRQ failed\n");
--               goto err;
--       }
-+	ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler,
-+				0, "McPDM", (void *)mcpdm);
-+	if (ret) {
-+		dev_err(mcpdm->dev, "Request for McPDM IRQ failed\n");
-+		goto err;
-+	}
- 
--       return 0;
-+	return 0;
- 
- err:
--       clk_disable(mcpdm->clk);
--       return ret;
-+	clk_disable(mcpdm->clk);
-+	return ret;
- }
- 
- void omap_mcpdm_free(void)
- {
--       spin_lock(&mcpdm->lock);
--       if (mcpdm->free) {
--               dev_err(mcpdm->dev, "McPDM interface is already free\n");
--               spin_unlock(&mcpdm->lock);
--               return;
--       }
--       mcpdm->free = 1;
--       spin_unlock(&mcpdm->lock);
--
--       clk_disable(mcpdm->clk);
--
--       free_irq(mcpdm->irq, (void *)mcpdm);
-+	spin_lock(&mcpdm->lock);
-+	if (mcpdm->free) {
-+		dev_err(mcpdm->dev, "McPDM interface is already free\n");
-+		spin_unlock(&mcpdm->lock);
-+		return;
-+	}
-+	mcpdm->free = 1;
-+	spin_unlock(&mcpdm->lock);
-+
-+	clk_disable(mcpdm->clk);
-+
-+	free_irq(mcpdm->irq, (void *)mcpdm);
- }
- 
- /* Enable/disable DC offset cancelation for the analog
-@@ -377,108 +377,108 @@ void omap_mcpdm_free(void)
-  */
- int omap_mcpdm_set_offset(int offset1, int offset2)
- {
--       int offset;
-+	int offset;
- 
--       if ((offset1 > DN_OFST_MAX) || (offset2 > DN_OFST_MAX))
--               return -EINVAL;
-+	if ((offset1 > DN_OFST_MAX) || (offset2 > DN_OFST_MAX))
-+		return -EINVAL;
- 
--       offset = (offset1 << DN_OFST_RX1) | (offset2 << DN_OFST_RX2);
-+	offset = (offset1 << DN_OFST_RX1) | (offset2 << DN_OFST_RX2);
- 
--       /* offset cancellation for channel 1 */
--       if (offset1)
--               offset |= DN_OFST_RX1_EN;
--       else
--               offset &= ~DN_OFST_RX1_EN;
-+	/* offset cancellation for channel 1 */
-+	if (offset1)
-+		offset |= DN_OFST_RX1_EN;
-+	else
-+		offset &= ~DN_OFST_RX1_EN;
- 
--       /* offset cancellation for channel 2 */
--       if (offset2)
--               offset |= DN_OFST_RX2_EN;
--       else
--               offset &= ~DN_OFST_RX2_EN;
-+	/* offset cancellation for channel 2 */
-+	if (offset2)
-+		offset |= DN_OFST_RX2_EN;
-+	else
-+		offset &= ~DN_OFST_RX2_EN;
- 
--       omap_mcpdm_write(MCPDM_DN_OFFSET, offset);
-+	omap_mcpdm_write(MCPDM_DN_OFFSET, offset);
- 
--       return 0;
-+	return 0;
- }
- 
- static int __devinit omap_mcpdm_probe(struct platform_device *pdev)
- {
--       struct resource *res;
--       int ret = 0;
--
--       mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
--       if (!mcpdm) {
--               ret = -ENOMEM;
--               goto exit;
--       }
--
--       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--       if (res == NULL) {
--               dev_err(&pdev->dev, "no resource\n");
--               goto err_resource;
--       }
--
--       spin_lock_init(&mcpdm->lock);
--       mcpdm->free = 1;
--       mcpdm->io_base = ioremap(res->start, resource_size(res));
--       if (!mcpdm->io_base) {
--               ret = -ENOMEM;
--               goto err_resource;
--       }
--
--       mcpdm->irq = platform_get_irq(pdev, 0);
--
--       mcpdm->clk = clk_get(&pdev->dev, "pdm_ck");
--       if (IS_ERR(mcpdm->clk)) {
--               ret = PTR_ERR(mcpdm->clk);
--               dev_err(&pdev->dev, "unable to get pdm_ck: %d\n", ret);
--               goto err_clk;
--       }
--
--       mcpdm->dev = &pdev->dev;
--       platform_set_drvdata(pdev, mcpdm);
--
--       return 0;
-+	struct resource *res;
-+	int ret = 0;
-+
-+	mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
-+	if (!mcpdm) {
-+		ret = -ENOMEM;
-+		goto exit;
-+	}
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (res == NULL) {
-+		dev_err(&pdev->dev, "no resource\n");
-+		goto err_resource;
-+	}
-+
-+	spin_lock_init(&mcpdm->lock);
-+	mcpdm->free = 1;
-+	mcpdm->io_base = ioremap(res->start, resource_size(res));
-+	if (!mcpdm->io_base) {
-+		ret = -ENOMEM;
-+		goto err_resource;
-+	}
-+
-+	mcpdm->irq = platform_get_irq(pdev, 0);
-+
-+	mcpdm->clk = clk_get(&pdev->dev, "pdm_ck");
-+	if (IS_ERR(mcpdm->clk)) {
-+		ret = PTR_ERR(mcpdm->clk);
-+		dev_err(&pdev->dev, "unable to get pdm_ck: %d\n", ret);
-+		goto err_clk;
-+	}
-+
-+	mcpdm->dev = &pdev->dev;
-+	platform_set_drvdata(pdev, mcpdm);
-+
-+	return 0;
- 
- err_clk:
--       iounmap(mcpdm->io_base);
-+	iounmap(mcpdm->io_base);
- err_resource:
--       kfree(mcpdm);
-+	kfree(mcpdm);
- exit:
--       return ret;
-+	return ret;
- }
- 
- static int __devexit omap_mcpdm_remove(struct platform_device *pdev)
- {
--       struct omap_mcpdm *mcpdm_ptr = platform_get_drvdata(pdev);
-+	struct omap_mcpdm *mcpdm_ptr = platform_get_drvdata(pdev);
- 
--       platform_set_drvdata(pdev, NULL);
-+	platform_set_drvdata(pdev, NULL);
- 
--       clk_put(mcpdm_ptr->clk);
-+	clk_put(mcpdm_ptr->clk);
- 
--       iounmap(mcpdm_ptr->io_base);
-+	iounmap(mcpdm_ptr->io_base);
- 
--       mcpdm_ptr->clk = NULL;
--       mcpdm_ptr->free = 0;
--       mcpdm_ptr->dev = NULL;
-+	mcpdm_ptr->clk = NULL;
-+	mcpdm_ptr->free = 0;
-+	mcpdm_ptr->dev = NULL;
- 
--       kfree(mcpdm_ptr);
-+	kfree(mcpdm_ptr);
- 
--       return 0;
-+	return 0;
- }
- 
- static struct platform_driver omap_mcpdm_driver = {
--       .probe = omap_mcpdm_probe,
--       .remove = __devexit_p(omap_mcpdm_remove),
--       .driver = {
--               .name = "omap-mcpdm",
--       },
-+	.probe = omap_mcpdm_probe,
-+	.remove = __devexit_p(omap_mcpdm_remove),
-+	.driver = {
-+		.name = "omap-mcpdm",
-+	},
+-static struct snd_soc_ops bf5xx_ad1938_ops = {
+-	.startup = bf5xx_ad1938_startup,
+-	.hw_params = bf5xx_ad1938_hw_params,
++static struct snd_soc_ops bf5xx_ad193x_ops = {
++	.startup = bf5xx_ad193x_startup,
++	.hw_params = bf5xx_ad193x_hw_params,
  };
  
- static struct platform_device *omap_mcpdm_device;
+-static struct snd_soc_dai_link bf5xx_ad1938_dai = {
+-	.name = "ad1938",
+-	.stream_name = "AD1938",
++static struct snd_soc_dai_link bf5xx_ad193x_dai = {
++	.name = "ad193x",
++	.stream_name = "AD193X",
+ 	.cpu_dai = &bf5xx_tdm_dai,
+-	.codec_dai = &ad1938_dai,
+-	.ops = &bf5xx_ad1938_ops,
++	.codec_dai = &ad193x_dai,
++	.ops = &bf5xx_ad193x_ops,
+ };
  
- static int __init omap_mcpdm_init(void)
+-static struct snd_soc_card bf5xx_ad1938 = {
+-	.name = "bf5xx_ad1938",
++static struct snd_soc_card bf5xx_ad193x = {
++	.name = "bf5xx_ad193x",
+ 	.platform = &bf5xx_tdm_soc_platform,
+-	.dai_link = &bf5xx_ad1938_dai,
++	.dai_link = &bf5xx_ad193x_dai,
+ 	.num_links = 1,
+ };
+ 
+-static struct snd_soc_device bf5xx_ad1938_snd_devdata = {
+-	.card = &bf5xx_ad1938,
+-	.codec_dev = &soc_codec_dev_ad1938,
++static struct snd_soc_device bf5xx_ad193x_snd_devdata = {
++	.card = &bf5xx_ad193x,
++	.codec_dev = &soc_codec_dev_ad193x,
+ };
+ 
+-static struct platform_device *bfxx_ad1938_snd_device;
++static struct platform_device *bfxx_ad193x_snd_device;
+ 
+-static int __init bf5xx_ad1938_init(void)
++static int __init bf5xx_ad193x_init(void)
  {
--       return platform_driver_register(&omap_mcpdm_driver);
-+	return platform_driver_register(&omap_mcpdm_driver);
+ 	int ret;
+ 
+-	bfxx_ad1938_snd_device = platform_device_alloc("soc-audio", -1);
+-	if (!bfxx_ad1938_snd_device)
++	bfxx_ad193x_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!bfxx_ad193x_snd_device)
+ 		return -ENOMEM;
+ 
+-	platform_set_drvdata(bfxx_ad1938_snd_device, &bf5xx_ad1938_snd_devdata);
+-	bf5xx_ad1938_snd_devdata.dev = &bfxx_ad1938_snd_device->dev;
+-	ret = platform_device_add(bfxx_ad1938_snd_device);
++	platform_set_drvdata(bfxx_ad193x_snd_device, &bf5xx_ad193x_snd_devdata);
++	bf5xx_ad193x_snd_devdata.dev = &bfxx_ad193x_snd_device->dev;
++	ret = platform_device_add(bfxx_ad193x_snd_device);
+ 
+ 	if (ret)
+-		platform_device_put(bfxx_ad1938_snd_device);
++		platform_device_put(bfxx_ad193x_snd_device);
+ 
+ 	return ret;
  }
- arch_initcall(omap_mcpdm_init);
+ 
+-static void __exit bf5xx_ad1938_exit(void)
++static void __exit bf5xx_ad193x_exit(void)
+ {
+-	platform_device_unregister(bfxx_ad1938_snd_device);
++	platform_device_unregister(bfxx_ad193x_snd_device);
+ }
+ 
+-module_init(bf5xx_ad1938_init);
+-module_exit(bf5xx_ad1938_exit);
++module_init(bf5xx_ad193x_init);
++module_exit(bf5xx_ad193x_exit);
+ 
+ /* Module information */
+ MODULE_AUTHOR("Barry Song");
+-MODULE_DESCRIPTION("ALSA SoC AD1938 board driver");
++MODULE_DESCRIPTION("ALSA SoC AD193X board driver");
+ MODULE_LICENSE("GPL");
+ 
 -- 
-1.6.0.4
+1.5.6.3
