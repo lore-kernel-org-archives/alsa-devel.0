@@ -1,20 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 0/2] ASoC: tlv320dac33: DSP mode and
- clocking updates
-Date: Fri, 19 Mar 2010 09:38:03 +0000
-Message-ID: <1268991483.3757.14.camel@odin>
-References: <1268989820-18262-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: Add support for Left
+	Justified format
+Date: Fri, 19 Mar 2010 12:00:03 +0200
+Message-ID: <201003191200.03750.peter.ujfalusi@nokia.com>
+References: <1268989879-18303-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100319112854.99c1f692.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6914E10389C
-	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 10:38:08 +0100 (CET)
-Received: by vws5 with SMTP id 5so242095vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 02:38:07 -0700 (PDT)
-In-Reply-To: <1268989820-18262-1-git-send-email-peter.ujfalusi@nokia.com>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id B78642434C
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 11:00:27 +0100 (CET)
+In-Reply-To: <20100319112854.99c1f692.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-03-19 at 11:10 +0200, Peter Ujfalusi wrote:
-> Hello,
-> 
-> tlv320dac33 can not support DSP_B mode since the data delay can not be set to be
-> actually 0. Only DSP_A mode can be supported, so fix the DSP_A mode, and remove
-> the DSP_B.
-> 
-> The original internal clock distribution config has been found to be not
-> optimal, so fix that as well.
-> 
+On Friday 19 March 2010 11:28:54 ext Jarkko Nikula wrote:
+> On Fri, 19 Mar 2010 11:11:19 +0200
+> =
 
-Both
+> Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+> > Basic support for Left Justified coding for OMAP McBSP.
+> > =
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> > ---
+> > =
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+> >  sound/soc/omap/omap-mcbsp.c |   10 +++++++++-
+> >  1 files changed, 9 insertions(+), 1 deletions(-)
+> =
+
+> I don't point it out immediately but is the FS polarity correct?
+> According to WM8772 spec, the left/right justified modes has inverted
+> FS polarity from I2S.
+
+Yes, that is correct, and I'm aware of that.
+However, I have done some testing:
+I have a sample prepared, which only has data on the left channel, than I d=
+id =
+
+tried I2S and LEFT_J...
+
+With:
+/* I2S mode */
+fmt =3D	SND_SOC_DAIFMT_I2S |
+		SND_SOC_DAIFMT_NB_NF |
+		SND_SOC_DAIFMT_CBM_CFM;
+
+The data line has data when the FS is low (when FS is high, that data line =
+has =
+
+0). So this is correct I2S.
+
+Now with:
+/* Left justified */
+fmt =3D	SND_SOC_DAIFMT_LEFT_J |
+		SND_SOC_DAIFMT_NB_IF |
+ 		SND_SOC_DAIFMT_CBM_CFM;
+
+The data line has data when the FS is high (when FS is low, that data line =
+has =
+
+0). So this is correct Left Justified.
+
+At least it seams that McBSP is actually shifting out the data at the corre=
+ct =
+
+place, when it is slave..
+
+Oh, and I can not explain why this is working, but I do trust on my scope, =
+and =
+
+it shows me that it is correct :o
+
+-- =
+
+P=E9ter
