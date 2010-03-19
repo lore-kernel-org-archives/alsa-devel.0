@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: omap-mcbsp: Add support for Left
- Justified format
-Date: Fri, 19 Mar 2010 11:15:05 +0000
-Message-ID: <20100319111504.GA23306@rakim.wolfsonmicro.main>
-References: <1268994451-23682-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100319123421.50f1de54.jhnikula@gmail.com>
-	<1268995555.3757.15.camel@odin>
+Subject: Re: [PATCH] ASoC: McPDM: Use tabs for indentation
+Date: Fri, 19 Mar 2010 11:15:23 +0000
+Message-ID: <20100319111522.GB23306@rakim.wolfsonmicro.main>
+References: <1268963141-22012-1-git-send-email-jorge.candelaria@ti.com>
+	<1268987088.3757.1.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id C3D4324420
-	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 12:15:09 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DAD0B1038DD
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 12:15:23 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1268995555.3757.15.camel@odin>
+In-Reply-To: <1268987088.3757.1.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 19, 2010 at 10:45:55AM +0000, Liam Girdwood wrote:
-> On Fri, 2010-03-19 at 12:34 +0200, Jarkko Nikula wrote:
-> > Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+On Fri, Mar 19, 2010 at 08:24:48AM +0000, Liam Girdwood wrote:
+> On Thu, 2010-03-18 at 19:45 -0600, Jorge Eduardo Candelaria wrote:
+> > Indentation in initial support for McPDM driver was converted to spaces.
+> > Use tabs to comply with open source coding-style.
 
-> > > Basic support for Left Justified coding for OMAP McBSP.
-
-> > > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
-> > Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+> > Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
 
 > Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
