@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: McPDM: Use tabs for indentation
-Date: Fri, 19 Mar 2010 11:15:23 +0000
-Message-ID: <20100319111522.GB23306@rakim.wolfsonmicro.main>
-References: <1268963141-22012-1-git-send-email-jorge.candelaria@ti.com>
-	<1268987088.3757.1.camel@odin>
+Subject: Re: [PATCH 0/2] ASoC: tlv320dac33: DSP mode and
+ clocking updates
+Date: Fri, 19 Mar 2010 11:21:27 +0000
+Message-ID: <20100319112127.GC23306@rakim.wolfsonmicro.main>
+References: <1268989820-18262-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1268991483.3757.14.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DAD0B1038DD
-	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 12:15:23 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B56EB1038BA
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 12:21:28 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1268987088.3757.1.camel@odin>
+In-Reply-To: <1268991483.3757.14.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 19, 2010 at 08:24:48AM +0000, Liam Girdwood wrote:
-> On Thu, 2010-03-18 at 19:45 -0600, Jorge Eduardo Candelaria wrote:
-> > Indentation in initial support for McPDM driver was converted to spaces.
-> > Use tabs to comply with open source coding-style.
+On Fri, Mar 19, 2010 at 09:38:03AM +0000, Liam Girdwood wrote:
+> On Fri, 2010-03-19 at 11:10 +0200, Peter Ujfalusi wrote:
 
-> > Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+> > tlv320dac33 can not support DSP_B mode since the data delay can not be set to be
+> > actually 0. Only DSP_A mode can be supported, so fix the DSP_A mode, and remove
+> > the DSP_B.
+
+> > The original internal clock distribution config has been found to be not
+> > optimal, so fix that as well.
+
+> Both
 
 > Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Applied, thanks.
+...and applied for 2.6.34, thanks.
