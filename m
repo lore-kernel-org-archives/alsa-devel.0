@@ -1,15 +1,29 @@
 From: Barry Song <21cnbao@gmail.com>
-Subject: [PATCH v2 2/4] change bf5xx-ad1938 machine driver to
-	bf5xx-ad193x machine driver
-Date: Fri, 19 Mar 2010 11:18:40 +0800
-Message-ID: <1268968720-25540-1-git-send-email-21cnbao@gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 1/4] extend ad1938
+	codec driver to ad193x supporting ad1936/7/8/9
+Date: Fri, 19 Mar 2010 11:30:01 +0800
+Message-ID: <3c17e3571003182030mc8ea095u2298f008fbcbee8e@mail.gmail.com>
+References: <1268900221-6833-1-git-send-email-21cnbao@gmail.com>
+	<1268900221-6833-2-git-send-email-21cnbao@gmail.com>
+	<1268902095.3773.6.camel@odin>
+	<3c17e3571003180208y34e4b5dekd2d23efa0723b641@mail.gmail.com>
+	<20100318111848.GB3080@opensource.wolfsonmicro.com>
+	<8bd0f97a1003180857vdd155e0o29684b50cbd5e34e@mail.gmail.com>
+	<20100318162017.GA6142@rakim.wolfsonmicro.main>
+	<8bd0f97a1003181017xba8e1a9oce2d40bf56818956@mail.gmail.com>
+	<20100318180516.GF6142@rakim.wolfsonmicro.main>
+	<8bd0f97a1003181108y3f7f5871t81c5cd5ba0c6312d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
-	by alsa0.perex.cz (Postfix) with ESMTP id D482C103879
-	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 04:19:47 +0100 (CET)
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 44120103880
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 04:30:22 +0100 (CET)
+Received: by pvg12 with SMTP id 12so1382555pvg.38
+	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 20:30:21 -0700 (PDT)
+In-Reply-To: <8bd0f97a1003181108y3f7f5871t81c5cd5ba0c6312d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,193 +33,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>, Barry Song <barry.song@analog.com>
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Barry Song <21cnbao@gmail.com>
----
- sound/soc/blackfin/Kconfig                         |    9 ++-
- sound/soc/blackfin/Makefile                        |    4 +-
- .../blackfin/{bf5xx-ad1938.c => bf5xx-ad193x.c}    |   66 ++++++++++----------
- 3 files changed, 40 insertions(+), 39 deletions(-)
- rename sound/soc/blackfin/{bf5xx-ad1938.c => bf5xx-ad193x.c} (65%)
-
-diff --git a/sound/soc/blackfin/Kconfig b/sound/soc/blackfin/Kconfig
-index 97f1a25..8ef2502 100644
---- a/sound/soc/blackfin/Kconfig
-+++ b/sound/soc/blackfin/Kconfig
-@@ -49,13 +49,14 @@ config SND_BF5XX_SOC_AD1836
- 	help
- 	  Say Y if you want to add support for SoC audio on BF5xx STAMP/EZKIT.
- 
--config SND_BF5XX_SOC_AD1938
--	tristate "SoC AD1938 Audio support for Blackfin"
-+config SND_BF5XX_SOC_AD193X
-+	tristate "SoC AD193X Audio support for Blackfin"
- 	depends on SND_BF5XX_TDM
- 	select SND_BF5XX_SOC_TDM
--	select SND_SOC_AD1938
-+	select SND_SOC_AD193X
- 	help
--	  Say Y if you want to add support for AD1938 codec on Blackfin.
-+	  Say Y if you want to add support for AD193X codec on Blackfin.
-+	  This driver supports AD1936, AD1937, AD1938 and AD1939.
- 
- config SND_BF5XX_AC97
- 	tristate "SoC AC97 Audio for the ADI BF5xx chip"
-diff --git a/sound/soc/blackfin/Makefile b/sound/soc/blackfin/Makefile
-index 87e3042..49af3f3 100644
---- a/sound/soc/blackfin/Makefile
-+++ b/sound/soc/blackfin/Makefile
-@@ -20,10 +20,10 @@ snd-ad1836-objs := bf5xx-ad1836.o
- snd-ad1980-objs := bf5xx-ad1980.o
- snd-ssm2602-objs := bf5xx-ssm2602.o
- snd-ad73311-objs := bf5xx-ad73311.o
--snd-ad1938-objs := bf5xx-ad1938.o
-+snd-ad193x-objs := bf5xx-ad193x.o
- 
- obj-$(CONFIG_SND_BF5XX_SOC_AD1836) += snd-ad1836.o
- obj-$(CONFIG_SND_BF5XX_SOC_AD1980) += snd-ad1980.o
- obj-$(CONFIG_SND_BF5XX_SOC_SSM2602) += snd-ssm2602.o
- obj-$(CONFIG_SND_BF5XX_SOC_AD73311) += snd-ad73311.o
--obj-$(CONFIG_SND_BF5XX_SOC_AD1938) += snd-ad1938.o
-+obj-$(CONFIG_SND_BF5XX_SOC_AD193X) += snd-ad193x.o
-diff --git a/sound/soc/blackfin/bf5xx-ad1938.c b/sound/soc/blackfin/bf5xx-ad193x.c
-similarity index 65%
-rename from sound/soc/blackfin/bf5xx-ad1938.c
-rename to sound/soc/blackfin/bf5xx-ad193x.c
-index 2ef1e50..b8c9060 100644
---- a/sound/soc/blackfin/bf5xx-ad1938.c
-+++ b/sound/soc/blackfin/bf5xx-ad193x.c
-@@ -1,9 +1,9 @@
- /*
-- * File:         sound/soc/blackfin/bf5xx-ad1938.c
-+ * File:         sound/soc/blackfin/bf5xx-ad193x.c
-  * Author:       Barry Song <Barry.Song@analog.com>
-  *
-  * Created:      Thur June 4 2009
-- * Description:  Board driver for ad1938 sound chip
-+ * Description:  Board driver for ad193x sound chip
-  *
-  * Bugs:         Enter bugs at http://blackfin.uclinux.org/
-  *
-@@ -38,15 +38,15 @@
- #include <asm/dma.h>
- #include <asm/portmux.h>
- 
--#include "../codecs/ad1938.h"
-+#include "../codecs/ad193x.h"
- #include "bf5xx-sport.h"
- 
- #include "bf5xx-tdm-pcm.h"
- #include "bf5xx-tdm.h"
- 
--static struct snd_soc_card bf5xx_ad1938;
-+static struct snd_soc_card bf5xx_ad193x;
- 
--static int bf5xx_ad1938_startup(struct snd_pcm_substream *substream)
-+static int bf5xx_ad193x_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-@@ -55,7 +55,7 @@ static int bf5xx_ad1938_startup(struct snd_pcm_substream *substream)
- 	return 0;
- }
- 
--static int bf5xx_ad1938_hw_params(struct snd_pcm_substream *substream,
-+static int bf5xx_ad193x_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -89,61 +89,61 @@ static int bf5xx_ad1938_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static struct snd_soc_ops bf5xx_ad1938_ops = {
--	.startup = bf5xx_ad1938_startup,
--	.hw_params = bf5xx_ad1938_hw_params,
-+static struct snd_soc_ops bf5xx_ad193x_ops = {
-+	.startup = bf5xx_ad193x_startup,
-+	.hw_params = bf5xx_ad193x_hw_params,
- };
- 
--static struct snd_soc_dai_link bf5xx_ad1938_dai = {
--	.name = "ad1938",
--	.stream_name = "AD1938",
-+static struct snd_soc_dai_link bf5xx_ad193x_dai = {
-+	.name = "ad193x",
-+	.stream_name = "AD193X",
- 	.cpu_dai = &bf5xx_tdm_dai,
--	.codec_dai = &ad1938_dai,
--	.ops = &bf5xx_ad1938_ops,
-+	.codec_dai = &ad193x_dai,
-+	.ops = &bf5xx_ad193x_ops,
- };
- 
--static struct snd_soc_card bf5xx_ad1938 = {
--	.name = "bf5xx_ad1938",
-+static struct snd_soc_card bf5xx_ad193x = {
-+	.name = "bf5xx_ad193x",
- 	.platform = &bf5xx_tdm_soc_platform,
--	.dai_link = &bf5xx_ad1938_dai,
-+	.dai_link = &bf5xx_ad193x_dai,
- 	.num_links = 1,
- };
- 
--static struct snd_soc_device bf5xx_ad1938_snd_devdata = {
--	.card = &bf5xx_ad1938,
--	.codec_dev = &soc_codec_dev_ad1938,
-+static struct snd_soc_device bf5xx_ad193x_snd_devdata = {
-+	.card = &bf5xx_ad193x,
-+	.codec_dev = &soc_codec_dev_ad193x,
- };
- 
--static struct platform_device *bfxx_ad1938_snd_device;
-+static struct platform_device *bfxx_ad193x_snd_device;
- 
--static int __init bf5xx_ad1938_init(void)
-+static int __init bf5xx_ad193x_init(void)
- {
- 	int ret;
- 
--	bfxx_ad1938_snd_device = platform_device_alloc("soc-audio", -1);
--	if (!bfxx_ad1938_snd_device)
-+	bfxx_ad193x_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!bfxx_ad193x_snd_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(bfxx_ad1938_snd_device, &bf5xx_ad1938_snd_devdata);
--	bf5xx_ad1938_snd_devdata.dev = &bfxx_ad1938_snd_device->dev;
--	ret = platform_device_add(bfxx_ad1938_snd_device);
-+	platform_set_drvdata(bfxx_ad193x_snd_device, &bf5xx_ad193x_snd_devdata);
-+	bf5xx_ad193x_snd_devdata.dev = &bfxx_ad193x_snd_device->dev;
-+	ret = platform_device_add(bfxx_ad193x_snd_device);
- 
- 	if (ret)
--		platform_device_put(bfxx_ad1938_snd_device);
-+		platform_device_put(bfxx_ad193x_snd_device);
- 
- 	return ret;
- }
- 
--static void __exit bf5xx_ad1938_exit(void)
-+static void __exit bf5xx_ad193x_exit(void)
- {
--	platform_device_unregister(bfxx_ad1938_snd_device);
-+	platform_device_unregister(bfxx_ad193x_snd_device);
- }
- 
--module_init(bf5xx_ad1938_init);
--module_exit(bf5xx_ad1938_exit);
-+module_init(bf5xx_ad193x_init);
-+module_exit(bf5xx_ad193x_exit);
- 
- /* Module information */
- MODULE_AUTHOR("Barry Song");
--MODULE_DESCRIPTION("ALSA SoC AD1938 board driver");
-+MODULE_DESCRIPTION("ALSA SoC AD193X board driver");
- MODULE_LICENSE("GPL");
- 
--- 
-1.5.6.3
+SSB0aGluayB0aGlzIGlzc3VlIGhhcyBub3RoaW5nIHRvIGRvIHdpdGggc3Vic3lzdGVtcywgYW55
+d2F5LCBib3RoIGFyZQphY2NlcHRhYmxlIHRvIG1lLiBTaW5jZSB0aGVyZSBoYXMgYmVlbiBhbiBl
+eGFtcGxlIGluIEFTb0MsIEkgd2lsbApmb2xsb3cgaXQgYW5kIHNlbmQgdjIuCnRoYW5rcwotYmFy
+cnkKCk9uIEZyaSwgTWFyIDE5LCAyMDEwIGF0IDI6MDggQU0sIE1pa2UgRnJ5c2luZ2VyIDx2YXBp
+ZXIuYWRpQGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gVGh1LCBNYXIgMTgsIDIwMTAgYXQgMTQ6MDUs
+IE1hcmsgQnJvd24gd3JvdGU6Cj4+IE9uIFRodSwgTWFyIDE4LCAyMDEwIGF0IDAxOjE3OjExUE0g
+LTA0MDAsIE1pa2UgRnJ5c2luZ2VyIHdyb3RlOgo+Pj4gPiBUaGUgc3Vic3lzdGVtIGRlcGVuZGVu
+Y3kgaGVyZSBjb21lIGZyb20gdGhlIGZhY3QgdGhhdCBBU29DIGhhcyBtYWNoaW5lCj4+PiA+IGRy
+aXZlcnMgYW5kIHJlbGllcyBvbiB0aGVtIHNlbGVjdGluZyB0aGUgQ09ERUMgZHJpdmVycyB0byBn
+ZXQgdGhlbSBidWlsdAo+Pj4gPiBpbiB0aGUgZmlyc3QgcGxhY2Ugc28gaWYgeW91J3JlIHRyeWlu
+ZyB0byBjaGFuZ2Ugc29tZXRoaW5nIGxpa2UgdGhpcwo+Pj4gPiB5b3UnbGwgbW9zdCBsaWtlbHkg
+bm90IG9ubHkgaGF2ZSB0byByZWJ1aWxkIHlvdXIga2VybmVsIGJ1dCBhbHNvIGhhdmUgdG8KPj4+
+ID4gd3JpdGUgY29kZS4gwqBUaGlzIGlzbid0IHNvbWV0aGluZyB0aGF0IHRoZSBpbnB1dCBsYXll
+ciBoYXMgKGlucHV0IGxheWVyCj4+PiA+IGRyaXZlcnMgYXJlIHByZXR0eSBtdWNoIHN0YW5kYWxv
+bmUsIHVzdWFsbHkgb25seSBuZWVkIHBsYXRmb3JtIGRhdGEKPj4+ID4gZm9yIGFueSBwZXIgbWFj
+aGluZSBob29rdXAgYW5kIGZvciBJMkMgYW5kIFNQSSBjYW4gZXZlbiBiZSByZWdpc3RlcmVkCj4+
+PiA+IGZyb20gdXNlciBzcGFjZSBJSVJDKSBhbmQgaXQgY2hhbmdlcyB0aGUgY29uc2lkZXJhdGlv
+bnMgbm90aWNhYmx5Lgo+Pgo+Pj4gdGhlIG1hY2hpbmUgZHJpdmVyIHNlbGVjdHMgdGhlIGNvZGVj
+LCBpdCBkb2VzbnQgc2VsZWN0IHRoZSBidXMuIMKgdGhlCj4+PiBjb2RlYyB3b3JyaWVzIGFib3V0
+IHRoYXQuIMKgc28gaSBkb250IHF1aXRlIGZvbGxvdyB0aGUgbG9naWMgaGVyZS4KPj4KPj4gVGhh
+dCdzIG5vdCB0aGUgY2FzZSwgQ09ERUMgZHJpdmVycyBkbyBhYnNvbHV0ZWx5IG5vdGhpbmcgdG8g
+ZW5zdXJlIHRoYXQKPj4gdGhleSBoYXZlIHRoZSBidXNlcyB0aGV5IG5lZWQuIMKgTXVsdGkgYnVz
+IENPREVDcyBzaG91bGQgYWxsIGJlIHBlcmZlY3RseQo+PiBoYXBweSB0byBidWlsZCB3aXRoIG5v
+IGJ1cyBhdCBhbGwsIHRob3VnaCBzcGFyc2UgYW5kL29yIEdDQyB3aWxsIHdhcm4uCj4+Cj4+IEtj
+b25maWcgd2lsbCBjaGVlcmZ1bGx5IGlnbm9yZSBhbnkgZGVwZW5kZW5jaWVzIG9mIHRoaW5ncyB0
+aGF0IGFyZQo+PiBzZWxlY3RlZCAtIHVubGVzcyBpdCdzIGJlZW4gdXBkYXRlZCByZWNlbnRseSBh
+bGwgYSBzZWxlY3QgZG9lcyBpcyBmb3JjZQo+PiB0aGUgc2VsZWN0ZWQgc3ltYm9sIG9uLCBpdCBk
+b2Vzbid0IHJlY3Vyc2UgdGhyb3VnaCBkZXBlbmRlbmNpZXMgYW5kCj4+IHNlbGVjdHMgb2YgdGhh
+dCBzeW1ib2wuIMKgQmVzaWRlcywgbXVsdGkgYnVzIENPREVDIGRyaXZlcnMgY2FuJ3Qga25vdwo+
+PiB3aGljaCBvZiB0aGVpciBwb3NzaWJsZSBidXNlcyBhcmUgYWN0dWFsbHkgbmVlZGVkIG9uIGEg
+Z2l2ZW4gc3lzdGVtIC0KPj4gdGhleSBqdXN0IGJ1aWxkIHN1cHBvcnQgZm9yIGFueSBidXMgdHlw
+ZXMgdGhhdCBhcmUgY29uZmlndXJlZCBhbmQgbGV0Cj4+IHNvbWV0aGluZyBlbHNlIHdvcnJ5IGFi
+b3V0IHRoZSByZXN1bHRpbmcgY29uZmlndXJhdGlvbiBhY3R1YWxseSBiZWluZwo+PiB1c2VmdWwu
+Cj4KPiBzdXJlLCBvbiB0aGUgS2NvbmZpZyBzaWRlLCBpIGNhbiBzZWUgdGhhdC4gwqBpIHdhcyB0
+aGlua2luZyB0aGUgcHVyZSBDCj4gZHJpdmVycyB0aG91Z2guIMKgdGhhbmtzIGZvciB0aGUgY2xh
+cmlmaWNhdGlvbi4KPiAtbWlrZQo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
