@@ -1,20 +1,14 @@
-From: "Olaya, Margarita" <magi.olaya@ti.com>
-Subject: Re: [PATCHv6 2/2][RESEND] ASoC: TWL6040: Add twl6040
-	codec driver
-Date: Thu, 18 Mar 2010 15:37:48 -0500
-Message-ID: <1889FA7136B567478A67D4B0F85B0CCE662AC968@dlee06.ent.ti.com>
-References: <1889FA7136B567478A67D4B0F85B0CCE662AC7F1@dlee06.ent.ti.com>
-	<20100318181623.GG6142@rakim.wolfsonmicro.main>
-	<87d3z1jxh6.fsf@deeprootsystems.com>
+From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+Subject: [PATCH] ASoC: McPDM: Use tabs for indentation
+Date: Thu, 18 Mar 2010 19:45:41 -0600
+Message-ID: <1268963141-22012-1-git-send-email-jorge.candelaria@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1F689103899
-	for <alsa-devel@alsa-project.org>; Thu, 18 Mar 2010 21:37:50 +0100 (CET)
-In-Reply-To: <87d3z1jxh6.fsf@deeprootsystems.com>
-Content-Language: en-US
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id B90F7103874
+	for <alsa-devel@alsa-project.org>; Fri, 19 Mar 2010 02:54:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +18,742 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kevin Hilman <khilman@deeprootsystems.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, March 18, 2010 12:28 PM  Kevin Hilman wrote: 
+Indentation in initial support for McPDM driver was converted to spaces.
+Use tabs to comply with open source coding-style.
 
-> 
-> [...]
-> 
->> Looks like MUA trouble.  From the message headers it looks like you
->> might be using Outlook or something, I'm not sure what to suggest
->> for that - enough folks at TI are submitting patches that
->> something must've been worked out for your mail system.
-> 
-> Indeed, You need to get outlook out of the picture for
-> sending patches.
-> 
-> Using git-format-patch + git-send-email directly to your SMTP
-> servers seems to be working well for others inside TI.
-> 
-> Kevin
+Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+---
+ sound/soc/omap/mcpdm.c |  548 ++++++++++++++++++++++++------------------------
+ 1 files changed, 274 insertions(+), 274 deletions(-)
 
-Yeah, I'm using Outlook because I had some issues with my server
-and git-send-email. I'll review my configurations to avoid this
-kind of problems in futures post.
-
-Thanks & Regards,
-Margarita 
+diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
+index ad8df6c..479d3b6 100644
+--- a/sound/soc/omap/mcpdm.c
++++ b/sound/soc/omap/mcpdm.c
+@@ -1,5 +1,5 @@
+ /*
+- * mcpdm.c  --  McPDM interface driver
++ * mcpdm.c  --	McPDM interface driver
+  *
+  * Author: Jorge Eduardo Candelaria <x0107209@ti.com>
+  * Copyright (C) 2009 - Texas Instruments, Inc.
+@@ -38,46 +38,46 @@ static struct omap_mcpdm *mcpdm;
+ 
+ static inline void omap_mcpdm_write(u16 reg, u32 val)
+ {
+-       __raw_writel(val, mcpdm->io_base + reg);
++	__raw_writel(val, mcpdm->io_base + reg);
+ }
+ 
+ static inline int omap_mcpdm_read(u16 reg)
+ {
+-       return __raw_readl(mcpdm->io_base + reg);
++	return __raw_readl(mcpdm->io_base + reg);
+ }
+ 
+ static void omap_mcpdm_reg_dump(void)
+ {
+-       dev_dbg(mcpdm->dev, "***********************\n");
+-       dev_dbg(mcpdm->dev, "IRQSTATUS_RAW:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_IRQSTATUS_RAW));
+-       dev_dbg(mcpdm->dev, "IRQSTATUS:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_IRQSTATUS));
+-       dev_dbg(mcpdm->dev, "IRQENABLE_SET:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_IRQENABLE_SET));
+-       dev_dbg(mcpdm->dev, "IRQENABLE_CLR:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_IRQENABLE_CLR));
+-       dev_dbg(mcpdm->dev, "IRQWAKE_EN: 0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_IRQWAKE_EN));
+-       dev_dbg(mcpdm->dev, "DMAENABLE_SET: 0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_DMAENABLE_SET));
+-       dev_dbg(mcpdm->dev, "DMAENABLE_CLR:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_DMAENABLE_CLR));
+-       dev_dbg(mcpdm->dev, "DMAWAKEEN:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_DMAWAKEEN));
+-       dev_dbg(mcpdm->dev, "CTRL:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_CTRL));
+-       dev_dbg(mcpdm->dev, "DN_DATA:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_DN_DATA));
+-       dev_dbg(mcpdm->dev, "UP_DATA: 0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_UP_DATA));
+-       dev_dbg(mcpdm->dev, "FIFO_CTRL_DN: 0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_FIFO_CTRL_DN));
+-       dev_dbg(mcpdm->dev, "FIFO_CTRL_UP:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_FIFO_CTRL_UP));
+-       dev_dbg(mcpdm->dev, "DN_OFFSET:  0x%04x\n",
+-                       omap_mcpdm_read(MCPDM_DN_OFFSET));
+-       dev_dbg(mcpdm->dev, "***********************\n");
++	dev_dbg(mcpdm->dev, "***********************\n");
++	dev_dbg(mcpdm->dev, "IRQSTATUS_RAW:  0x%04x\n",
++			omap_mcpdm_read(MCPDM_IRQSTATUS_RAW));
++	dev_dbg(mcpdm->dev, "IRQSTATUS:	0x%04x\n",
++			omap_mcpdm_read(MCPDM_IRQSTATUS));
++	dev_dbg(mcpdm->dev, "IRQENABLE_SET:  0x%04x\n",
++			omap_mcpdm_read(MCPDM_IRQENABLE_SET));
++	dev_dbg(mcpdm->dev, "IRQENABLE_CLR:  0x%04x\n",
++			omap_mcpdm_read(MCPDM_IRQENABLE_CLR));
++	dev_dbg(mcpdm->dev, "IRQWAKE_EN: 0x%04x\n",
++			omap_mcpdm_read(MCPDM_IRQWAKE_EN));
++	dev_dbg(mcpdm->dev, "DMAENABLE_SET: 0x%04x\n",
++			omap_mcpdm_read(MCPDM_DMAENABLE_SET));
++	dev_dbg(mcpdm->dev, "DMAENABLE_CLR:  0x%04x\n",
++			omap_mcpdm_read(MCPDM_DMAENABLE_CLR));
++	dev_dbg(mcpdm->dev, "DMAWAKEEN:	0x%04x\n",
++			omap_mcpdm_read(MCPDM_DMAWAKEEN));
++	dev_dbg(mcpdm->dev, "CTRL:	0x%04x\n",
++			omap_mcpdm_read(MCPDM_CTRL));
++	dev_dbg(mcpdm->dev, "DN_DATA:  0x%04x\n",
++			omap_mcpdm_read(MCPDM_DN_DATA));
++	dev_dbg(mcpdm->dev, "UP_DATA: 0x%04x\n",
++			omap_mcpdm_read(MCPDM_UP_DATA));
++	dev_dbg(mcpdm->dev, "FIFO_CTRL_DN: 0x%04x\n",
++			omap_mcpdm_read(MCPDM_FIFO_CTRL_DN));
++	dev_dbg(mcpdm->dev, "FIFO_CTRL_UP:  0x%04x\n",
++			omap_mcpdm_read(MCPDM_FIFO_CTRL_UP));
++	dev_dbg(mcpdm->dev, "DN_OFFSET:	0x%04x\n",
++			omap_mcpdm_read(MCPDM_DN_OFFSET));
++	dev_dbg(mcpdm->dev, "***********************\n");
+ }
+ 
+ /*
+@@ -86,26 +86,26 @@ static void omap_mcpdm_reg_dump(void)
+  */
+ static void omap_mcpdm_reset_capture(int reset)
+ {
+-       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
++	int ctrl = omap_mcpdm_read(MCPDM_CTRL);
+ 
+-       if (reset)
+-               ctrl |= SW_UP_RST;
+-       else
+-               ctrl &= ~SW_UP_RST;
++	if (reset)
++		ctrl |= SW_UP_RST;
++	else
++		ctrl &= ~SW_UP_RST;
+ 
+-       omap_mcpdm_write(MCPDM_CTRL, ctrl);
++	omap_mcpdm_write(MCPDM_CTRL, ctrl);
+ }
+ 
+ static void omap_mcpdm_reset_playback(int reset)
+ {
+-       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
++	int ctrl = omap_mcpdm_read(MCPDM_CTRL);
+ 
+-       if (reset)
+-               ctrl |= SW_DN_RST;
+-       else
+-               ctrl &= ~SW_DN_RST;
++	if (reset)
++		ctrl |= SW_DN_RST;
++	else
++		ctrl &= ~SW_DN_RST;
+ 
+-       omap_mcpdm_write(MCPDM_CTRL, ctrl);
++	omap_mcpdm_write(MCPDM_CTRL, ctrl);
+ }
+ 
+ /*
+@@ -114,14 +114,14 @@ static void omap_mcpdm_reset_playback(int reset)
+  */
+ void omap_mcpdm_start(int stream)
+ {
+-       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
++	int ctrl = omap_mcpdm_read(MCPDM_CTRL);
+ 
+-       if (stream)
+-               ctrl |= mcpdm->up_channels;
+-       else
+-               ctrl |= mcpdm->dn_channels;
++	if (stream)
++		ctrl |= mcpdm->up_channels;
++	else
++		ctrl |= mcpdm->dn_channels;
+ 
+-       omap_mcpdm_write(MCPDM_CTRL, ctrl);
++	omap_mcpdm_write(MCPDM_CTRL, ctrl);
+ }
+ 
+ /*
+@@ -130,14 +130,14 @@ void omap_mcpdm_start(int stream)
+  */
+ void omap_mcpdm_stop(int stream)
+ {
+-       int ctrl = omap_mcpdm_read(MCPDM_CTRL);
++	int ctrl = omap_mcpdm_read(MCPDM_CTRL);
+ 
+-       if (stream)
+-               ctrl &= ~mcpdm->up_channels;
+-       else
+-               ctrl &= ~mcpdm->dn_channels;
++	if (stream)
++		ctrl &= ~mcpdm->up_channels;
++	else
++		ctrl &= ~mcpdm->dn_channels;
+ 
+-       omap_mcpdm_write(MCPDM_CTRL, ctrl);
++	omap_mcpdm_write(MCPDM_CTRL, ctrl);
+ }
+ 
+ /*
+@@ -146,38 +146,38 @@ void omap_mcpdm_stop(int stream)
+  */
+ int omap_mcpdm_capture_open(struct omap_mcpdm_link *uplink)
+ {
+-       int irq_mask = 0;
+-       int ctrl;
++	int irq_mask = 0;
++	int ctrl;
+ 
+-       if (!uplink)
+-               return -EINVAL;
++	if (!uplink)
++		return -EINVAL;
+ 
+-       mcpdm->uplink = uplink;
++	mcpdm->uplink = uplink;
+ 
+-       /* Enable irq request generation */
+-       irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
+-       omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
++	/* Enable irq request generation */
++	irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
++	omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
+ 
+-       /* Configure uplink threshold */
+-       if (uplink->threshold > UP_THRES_MAX)
+-               uplink->threshold = UP_THRES_MAX;
++	/* Configure uplink threshold */
++	if (uplink->threshold > UP_THRES_MAX)
++		uplink->threshold = UP_THRES_MAX;
+ 
+-       omap_mcpdm_write(MCPDM_FIFO_CTRL_UP, uplink->threshold);
++	omap_mcpdm_write(MCPDM_FIFO_CTRL_UP, uplink->threshold);
+ 
+-       /* Configure DMA controller */
+-       omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_UP_ENABLE);
++	/* Configure DMA controller */
++	omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_UP_ENABLE);
+ 
+-       /* Set pdm out format */
+-       ctrl = omap_mcpdm_read(MCPDM_CTRL);
+-       ctrl &= ~PDMOUTFORMAT;
+-       ctrl |= uplink->format & PDMOUTFORMAT;
++	/* Set pdm out format */
++	ctrl = omap_mcpdm_read(MCPDM_CTRL);
++	ctrl &= ~PDMOUTFORMAT;
++	ctrl |= uplink->format & PDMOUTFORMAT;
+ 
+-       /* Uplink channels */
+-       mcpdm->up_channels = uplink->channels & (PDM_UP_MASK | PDM_STATUS_MASK);
++	/* Uplink channels */
++	mcpdm->up_channels = uplink->channels & (PDM_UP_MASK | PDM_STATUS_MASK);
+ 
+-       omap_mcpdm_write(MCPDM_CTRL, ctrl);
++	omap_mcpdm_write(MCPDM_CTRL, ctrl);
+ 
+-       return 0;
++	return 0;
+ }
+ 
+ /*
+@@ -186,38 +186,38 @@ int omap_mcpdm_capture_open(struct omap_mcpdm_link *uplink)
+  */
+ int omap_mcpdm_playback_open(struct omap_mcpdm_link *downlink)
+ {
+-       int irq_mask = 0;
+-       int ctrl;
++	int irq_mask = 0;
++	int ctrl;
+ 
+-       if (!downlink)
+-               return -EINVAL;
++	if (!downlink)
++		return -EINVAL;
+ 
+-       mcpdm->downlink = downlink;
++	mcpdm->downlink = downlink;
+ 
+-       /* Enable irq request generation */
+-       irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
+-       omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
++	/* Enable irq request generation */
++	irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
++	omap_mcpdm_write(MCPDM_IRQENABLE_SET, irq_mask);
+ 
+-       /* Configure uplink threshold */
+-       if (downlink->threshold > DN_THRES_MAX)
+-               downlink->threshold = DN_THRES_MAX;
++	/* Configure uplink threshold */
++	if (downlink->threshold > DN_THRES_MAX)
++		downlink->threshold = DN_THRES_MAX;
+ 
+-       omap_mcpdm_write(MCPDM_FIFO_CTRL_DN, downlink->threshold);
++	omap_mcpdm_write(MCPDM_FIFO_CTRL_DN, downlink->threshold);
+ 
+-       /* Enable DMA request generation */
+-       omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_DN_ENABLE);
++	/* Enable DMA request generation */
++	omap_mcpdm_write(MCPDM_DMAENABLE_SET, DMA_DN_ENABLE);
+ 
+-       /* Set pdm out format */
+-       ctrl = omap_mcpdm_read(MCPDM_CTRL);
+-       ctrl &= ~PDMOUTFORMAT;
+-       ctrl |= downlink->format & PDMOUTFORMAT;
++	/* Set pdm out format */
++	ctrl = omap_mcpdm_read(MCPDM_CTRL);
++	ctrl &= ~PDMOUTFORMAT;
++	ctrl |= downlink->format & PDMOUTFORMAT;
+ 
+-       /* Downlink channels */
+-       mcpdm->dn_channels = downlink->channels & (PDM_DN_MASK | PDM_CMD_MASK);
++	/* Downlink channels */
++	mcpdm->dn_channels = downlink->channels & (PDM_DN_MASK | PDM_CMD_MASK);
+ 
+-       omap_mcpdm_write(MCPDM_CTRL, ctrl);
++	omap_mcpdm_write(MCPDM_CTRL, ctrl);
+ 
+-       return 0;
++	return 0;
+ }
+ 
+ /*
+@@ -226,24 +226,24 @@ int omap_mcpdm_playback_open(struct omap_mcpdm_link *downlink)
+  */
+ int omap_mcpdm_capture_close(struct omap_mcpdm_link *uplink)
+ {
+-       int irq_mask = 0;
++	int irq_mask = 0;
+ 
+-       if (!uplink)
+-               return -EINVAL;
++	if (!uplink)
++		return -EINVAL;
+ 
+-       /* Disable irq request generation */
+-       irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
+-       omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
++	/* Disable irq request generation */
++	irq_mask |= uplink->irq_mask & MCPDM_UPLINK_IRQ_MASK;
++	omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
+ 
+-       /* Disable DMA request generation */
+-       omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_UP_ENABLE);
++	/* Disable DMA request generation */
++	omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_UP_ENABLE);
+ 
+-       /* Clear Downlink channels */
+-       mcpdm->up_channels = 0;
++	/* Clear Downlink channels */
++	mcpdm->up_channels = 0;
+ 
+-       mcpdm->uplink = NULL;
++	mcpdm->uplink = NULL;
+ 
+-       return 0;
++	return 0;
+ }
+ 
+ /*
+@@ -252,124 +252,124 @@ int omap_mcpdm_capture_close(struct omap_mcpdm_link *uplink)
+  */
+ int omap_mcpdm_playback_close(struct omap_mcpdm_link *downlink)
+ {
+-       int irq_mask = 0;
++	int irq_mask = 0;
+ 
+-       if (!downlink)
+-               return -EINVAL;
++	if (!downlink)
++		return -EINVAL;
+ 
+-       /* Disable irq request generation */
+-       irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
+-       omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
++	/* Disable irq request generation */
++	irq_mask |= downlink->irq_mask & MCPDM_DOWNLINK_IRQ_MASK;
++	omap_mcpdm_write(MCPDM_IRQENABLE_CLR, irq_mask);
+ 
+-       /* Disable DMA request generation */
+-       omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_DN_ENABLE);
++	/* Disable DMA request generation */
++	omap_mcpdm_write(MCPDM_DMAENABLE_CLR, DMA_DN_ENABLE);
+ 
+-       /* clear Downlink channels */
+-       mcpdm->dn_channels = 0;
++	/* clear Downlink channels */
++	mcpdm->dn_channels = 0;
+ 
+-       mcpdm->downlink = NULL;
++	mcpdm->downlink = NULL;
+ 
+-       return 0;
++	return 0;
+ }
+ 
+ static irqreturn_t omap_mcpdm_irq_handler(int irq, void *dev_id)
+ {
+-       struct omap_mcpdm *mcpdm_irq = dev_id;
+-       int irq_status;
+-
+-       irq_status = omap_mcpdm_read(MCPDM_IRQSTATUS);
+-
+-       /* Acknowledge irq event */
+-       omap_mcpdm_write(MCPDM_IRQSTATUS, irq_status);
+-
+-       if (irq & MCPDM_DN_IRQ_FULL) {
+-               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
+-               omap_mcpdm_reset_playback(1);
+-               omap_mcpdm_playback_open(mcpdm_irq->downlink);
+-               omap_mcpdm_reset_playback(0);
+-       }
+-
+-       if (irq & MCPDM_DN_IRQ_EMPTY) {
+-               dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
+-               omap_mcpdm_reset_playback(1);
+-               omap_mcpdm_playback_open(mcpdm_irq->downlink);
+-               omap_mcpdm_reset_playback(0);
+-       }
+-
+-       if (irq & MCPDM_DN_IRQ) {
+-               dev_dbg(mcpdm_irq->dev, "DN write request\n");
+-       }
+-
+-       if (irq & MCPDM_UP_IRQ_FULL) {
+-               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
+-               omap_mcpdm_reset_capture(1);
+-               omap_mcpdm_capture_open(mcpdm_irq->uplink);
+-               omap_mcpdm_reset_capture(0);
+-       }
+-
+-       if (irq & MCPDM_UP_IRQ_EMPTY) {
+-               dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
+-               omap_mcpdm_reset_capture(1);
+-               omap_mcpdm_capture_open(mcpdm_irq->uplink);
+-               omap_mcpdm_reset_capture(0);
+-       }
+-
+-       if (irq & MCPDM_UP_IRQ) {
+-               dev_dbg(mcpdm_irq->dev, "UP write request\n");
+-       }
+-
+-       return IRQ_HANDLED;
++	struct omap_mcpdm *mcpdm_irq = dev_id;
++	int irq_status;
++
++	irq_status = omap_mcpdm_read(MCPDM_IRQSTATUS);
++
++	/* Acknowledge irq event */
++	omap_mcpdm_write(MCPDM_IRQSTATUS, irq_status);
++
++	if (irq & MCPDM_DN_IRQ_FULL) {
++		dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
++		omap_mcpdm_reset_playback(1);
++		omap_mcpdm_playback_open(mcpdm_irq->downlink);
++		omap_mcpdm_reset_playback(0);
++	}
++
++	if (irq & MCPDM_DN_IRQ_EMPTY) {
++		dev_err(mcpdm_irq->dev, "DN FIFO error %x\n", irq_status);
++		omap_mcpdm_reset_playback(1);
++		omap_mcpdm_playback_open(mcpdm_irq->downlink);
++		omap_mcpdm_reset_playback(0);
++	}
++
++	if (irq & MCPDM_DN_IRQ) {
++		dev_dbg(mcpdm_irq->dev, "DN write request\n");
++	}
++
++	if (irq & MCPDM_UP_IRQ_FULL) {
++		dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
++		omap_mcpdm_reset_capture(1);
++		omap_mcpdm_capture_open(mcpdm_irq->uplink);
++		omap_mcpdm_reset_capture(0);
++	}
++
++	if (irq & MCPDM_UP_IRQ_EMPTY) {
++		dev_err(mcpdm_irq->dev, "UP FIFO error %x\n", irq_status);
++		omap_mcpdm_reset_capture(1);
++		omap_mcpdm_capture_open(mcpdm_irq->uplink);
++		omap_mcpdm_reset_capture(0);
++	}
++
++	if (irq & MCPDM_UP_IRQ) {
++		dev_dbg(mcpdm_irq->dev, "UP write request\n");
++	}
++
++	return IRQ_HANDLED;
+ }
+ 
+ int omap_mcpdm_request(void)
+ {
+-       int ret;
++	int ret;
+ 
+-       clk_enable(mcpdm->clk);
++	clk_enable(mcpdm->clk);
+ 
+-       spin_lock(&mcpdm->lock);
++	spin_lock(&mcpdm->lock);
+ 
+-       if (!mcpdm->free) {
+-               dev_err(mcpdm->dev, "McPDM interface is in use\n");
+-               spin_unlock(&mcpdm->lock);
+-               ret = -EBUSY;
+-               goto err;
+-       }
+-       mcpdm->free = 0;
++	if (!mcpdm->free) {
++		dev_err(mcpdm->dev, "McPDM interface is in use\n");
++		spin_unlock(&mcpdm->lock);
++		ret = -EBUSY;
++		goto err;
++	}
++	mcpdm->free = 0;
+ 
+-       spin_unlock(&mcpdm->lock);
++	spin_unlock(&mcpdm->lock);
+ 
+-       /* Disable lines while request is ongoing */
+-       omap_mcpdm_write(MCPDM_CTRL, 0x00);
++	/* Disable lines while request is ongoing */
++	omap_mcpdm_write(MCPDM_CTRL, 0x00);
+ 
+-       ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler,
+-                               0, "McPDM", (void *)mcpdm);
+-       if (ret) {
+-               dev_err(mcpdm->dev, "Request for McPDM IRQ failed\n");
+-               goto err;
+-       }
++	ret = request_irq(mcpdm->irq, omap_mcpdm_irq_handler,
++				0, "McPDM", (void *)mcpdm);
++	if (ret) {
++		dev_err(mcpdm->dev, "Request for McPDM IRQ failed\n");
++		goto err;
++	}
+ 
+-       return 0;
++	return 0;
+ 
+ err:
+-       clk_disable(mcpdm->clk);
+-       return ret;
++	clk_disable(mcpdm->clk);
++	return ret;
+ }
+ 
+ void omap_mcpdm_free(void)
+ {
+-       spin_lock(&mcpdm->lock);
+-       if (mcpdm->free) {
+-               dev_err(mcpdm->dev, "McPDM interface is already free\n");
+-               spin_unlock(&mcpdm->lock);
+-               return;
+-       }
+-       mcpdm->free = 1;
+-       spin_unlock(&mcpdm->lock);
+-
+-       clk_disable(mcpdm->clk);
+-
+-       free_irq(mcpdm->irq, (void *)mcpdm);
++	spin_lock(&mcpdm->lock);
++	if (mcpdm->free) {
++		dev_err(mcpdm->dev, "McPDM interface is already free\n");
++		spin_unlock(&mcpdm->lock);
++		return;
++	}
++	mcpdm->free = 1;
++	spin_unlock(&mcpdm->lock);
++
++	clk_disable(mcpdm->clk);
++
++	free_irq(mcpdm->irq, (void *)mcpdm);
+ }
+ 
+ /* Enable/disable DC offset cancelation for the analog
+@@ -377,108 +377,108 @@ void omap_mcpdm_free(void)
+  */
+ int omap_mcpdm_set_offset(int offset1, int offset2)
+ {
+-       int offset;
++	int offset;
+ 
+-       if ((offset1 > DN_OFST_MAX) || (offset2 > DN_OFST_MAX))
+-               return -EINVAL;
++	if ((offset1 > DN_OFST_MAX) || (offset2 > DN_OFST_MAX))
++		return -EINVAL;
+ 
+-       offset = (offset1 << DN_OFST_RX1) | (offset2 << DN_OFST_RX2);
++	offset = (offset1 << DN_OFST_RX1) | (offset2 << DN_OFST_RX2);
+ 
+-       /* offset cancellation for channel 1 */
+-       if (offset1)
+-               offset |= DN_OFST_RX1_EN;
+-       else
+-               offset &= ~DN_OFST_RX1_EN;
++	/* offset cancellation for channel 1 */
++	if (offset1)
++		offset |= DN_OFST_RX1_EN;
++	else
++		offset &= ~DN_OFST_RX1_EN;
+ 
+-       /* offset cancellation for channel 2 */
+-       if (offset2)
+-               offset |= DN_OFST_RX2_EN;
+-       else
+-               offset &= ~DN_OFST_RX2_EN;
++	/* offset cancellation for channel 2 */
++	if (offset2)
++		offset |= DN_OFST_RX2_EN;
++	else
++		offset &= ~DN_OFST_RX2_EN;
+ 
+-       omap_mcpdm_write(MCPDM_DN_OFFSET, offset);
++	omap_mcpdm_write(MCPDM_DN_OFFSET, offset);
+ 
+-       return 0;
++	return 0;
+ }
+ 
+ static int __devinit omap_mcpdm_probe(struct platform_device *pdev)
+ {
+-       struct resource *res;
+-       int ret = 0;
+-
+-       mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
+-       if (!mcpdm) {
+-               ret = -ENOMEM;
+-               goto exit;
+-       }
+-
+-       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-       if (res == NULL) {
+-               dev_err(&pdev->dev, "no resource\n");
+-               goto err_resource;
+-       }
+-
+-       spin_lock_init(&mcpdm->lock);
+-       mcpdm->free = 1;
+-       mcpdm->io_base = ioremap(res->start, resource_size(res));
+-       if (!mcpdm->io_base) {
+-               ret = -ENOMEM;
+-               goto err_resource;
+-       }
+-
+-       mcpdm->irq = platform_get_irq(pdev, 0);
+-
+-       mcpdm->clk = clk_get(&pdev->dev, "pdm_ck");
+-       if (IS_ERR(mcpdm->clk)) {
+-               ret = PTR_ERR(mcpdm->clk);
+-               dev_err(&pdev->dev, "unable to get pdm_ck: %d\n", ret);
+-               goto err_clk;
+-       }
+-
+-       mcpdm->dev = &pdev->dev;
+-       platform_set_drvdata(pdev, mcpdm);
+-
+-       return 0;
++	struct resource *res;
++	int ret = 0;
++
++	mcpdm = kzalloc(sizeof(struct omap_mcpdm), GFP_KERNEL);
++	if (!mcpdm) {
++		ret = -ENOMEM;
++		goto exit;
++	}
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (res == NULL) {
++		dev_err(&pdev->dev, "no resource\n");
++		goto err_resource;
++	}
++
++	spin_lock_init(&mcpdm->lock);
++	mcpdm->free = 1;
++	mcpdm->io_base = ioremap(res->start, resource_size(res));
++	if (!mcpdm->io_base) {
++		ret = -ENOMEM;
++		goto err_resource;
++	}
++
++	mcpdm->irq = platform_get_irq(pdev, 0);
++
++	mcpdm->clk = clk_get(&pdev->dev, "pdm_ck");
++	if (IS_ERR(mcpdm->clk)) {
++		ret = PTR_ERR(mcpdm->clk);
++		dev_err(&pdev->dev, "unable to get pdm_ck: %d\n", ret);
++		goto err_clk;
++	}
++
++	mcpdm->dev = &pdev->dev;
++	platform_set_drvdata(pdev, mcpdm);
++
++	return 0;
+ 
+ err_clk:
+-       iounmap(mcpdm->io_base);
++	iounmap(mcpdm->io_base);
+ err_resource:
+-       kfree(mcpdm);
++	kfree(mcpdm);
+ exit:
+-       return ret;
++	return ret;
+ }
+ 
+ static int __devexit omap_mcpdm_remove(struct platform_device *pdev)
+ {
+-       struct omap_mcpdm *mcpdm_ptr = platform_get_drvdata(pdev);
++	struct omap_mcpdm *mcpdm_ptr = platform_get_drvdata(pdev);
+ 
+-       platform_set_drvdata(pdev, NULL);
++	platform_set_drvdata(pdev, NULL);
+ 
+-       clk_put(mcpdm_ptr->clk);
++	clk_put(mcpdm_ptr->clk);
+ 
+-       iounmap(mcpdm_ptr->io_base);
++	iounmap(mcpdm_ptr->io_base);
+ 
+-       mcpdm_ptr->clk = NULL;
+-       mcpdm_ptr->free = 0;
+-       mcpdm_ptr->dev = NULL;
++	mcpdm_ptr->clk = NULL;
++	mcpdm_ptr->free = 0;
++	mcpdm_ptr->dev = NULL;
+ 
+-       kfree(mcpdm_ptr);
++	kfree(mcpdm_ptr);
+ 
+-       return 0;
++	return 0;
+ }
+ 
+ static struct platform_driver omap_mcpdm_driver = {
+-       .probe = omap_mcpdm_probe,
+-       .remove = __devexit_p(omap_mcpdm_remove),
+-       .driver = {
+-               .name = "omap-mcpdm",
+-       },
++	.probe = omap_mcpdm_probe,
++	.remove = __devexit_p(omap_mcpdm_remove),
++	.driver = {
++		.name = "omap-mcpdm",
++	},
+ };
+ 
+ static struct platform_device *omap_mcpdm_device;
+ 
+ static int __init omap_mcpdm_init(void)
+ {
+-       return platform_driver_register(&omap_mcpdm_driver);
++	return platform_driver_register(&omap_mcpdm_driver);
+ }
+ arch_initcall(omap_mcpdm_init);
+-- 
+1.6.0.4
