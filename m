@@ -1,26 +1,24 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Question about dmix?
-Date: Sat, 20 Mar 2010 14:27:15 +0000
-Message-ID: <ho2m03$1fs$1@dough.gmane.org>
-References: <4df68b71003200705j36e71a8aicf9c44fb7f104c27@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH] ALSA: ASoC: move dma_data from snd_soc_dai
+ to snd_soc_pcm_stream
+Date: Sat, 20 Mar 2010 15:54:29 +0100
+Message-ID: <20100320145428.GC30801@buzzloop.caiaq.de>
+References: <20100318182211.GH6142@rakim.wolfsonmicro.main>
+	<1268940238-6283-1-git-send-email-daniel@caiaq.de>
+	<201003190856.40650.peter.ujfalusi@nokia.com>
+	<20100319070852.GR30801@buzzloop.caiaq.de>
+	<20100319151453.GH23306@rakim.wolfsonmicro.main>
+	<20100319183958.GA30801@buzzloop.caiaq.de>
+	<20100319195422.GB15902@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id A4B18243EB
-	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 15:27:32 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1NszeB-0007h1-7z
-	for alsa-devel@alsa-project.org; Sat, 20 Mar 2010 15:27:27 +0100
-Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 15:27:27 +0100
-Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
-	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 15:27:27 +0100
-In-Reply-To: <4df68b71003200705j36e71a8aicf9c44fb7f104c27@mail.gmail.com>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4B3F42443E
+	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 15:54:33 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20100319195422.GB15902@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,38 +28,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Sven Neumann <s.neumann@raumfeld.com>, alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Michael Hirsch <m.hirsch@raumfeld.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and cee1 at 20/03/10 14:05 did gyre and gimble:
-> Hi all,
-> I know alsa support userspace software multi-playback by dmix plugin.
-> How does it realize? I expected a daemon accepting multi-streams which
-> then mixes these streams to a single one -- it seems not the case.
+On Fri, Mar 19, 2010 at 07:54:22PM +0000, Mark Brown wrote:
+> On Fri, Mar 19, 2010 at 07:39:58PM +0100, Daniel Mack wrote:
+> > Thanks! I assume this is going to be taken for .34 and .35?
+> 
+> I've applied it for 2.6.35 only at present, I'd rather let it cook for a
+> little before picking it back - like you I can only test a limited set
+> of architectures.  Unfortunately it doesn't cherry pick backwards
+> either, but the updates required do appear to be trivial.
 
-I believe an older version of dmix used to act like a daemon, but the
-current version no longer does this and instead uses some magic spells
-that I don't even being to know about.
+Agreed. However, I believe when pushed to .34, it will get greater
+exposion, and regressions would more likely be found and get fixed.
+Faster than in your for-2.6.35 branch I mean.
 
-As far as userspace mixing goes, most linux distros and a lot of
-embedded systems (e.g. smartphones) now use PulseAudio which does run as
-a stand alone daemon and opens a single stream to alsa. It does much
-more than just mixing, but it fits in with your paradigms :)
-
-See http://pulseaudio.org for more info.
-
-Col
-
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Daniel
