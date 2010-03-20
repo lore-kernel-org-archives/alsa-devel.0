@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: move dma_data from snd_soc_dai
-	to	snd_soc_pcm_stream
-Date: Sat, 20 Mar 2010 16:14:29 +0000
-Message-ID: <20100320161428.GA1125@opensource.wolfsonmicro.com>
-References: <20100320153022.GA32428@opensource.wolfsonmicro.com>
-	<1269099560-29711-1-git-send-email-daniel@caiaq.de>
+Subject: Re: [PATCH] ALSA: ASoC: pxa-pcm-lib: initialize DMA
+ channel to -1
+Date: Sat, 20 Mar 2010 16:34:33 +0000
+Message-ID: <20100320163432.GA19916@sirena.org.uk>
+References: <1267324958-25103-1-git-send-email-daniel@caiaq.de>
+	<20100320154715.GD30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E5D39244E5
-	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 17:14:29 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35778103816
+	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 17:34:38 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <1269099560-29711-1-git-send-email-daniel@caiaq.de>
+In-Reply-To: <20100320154715.GD30801@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,12 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Sven Neumann <s.neumann@raumfeld.com>, Michael Hirsch <m.hirsch@raumfeld.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Nicolas Pitre <nico@marvell.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 20, 2010 at 04:39:20PM +0100, Daniel Mack wrote:
+On Sat, Mar 20, 2010 at 04:47:15PM +0100, Daniel Mack wrote:
+> Any oppinion about this one?
 
-> This is a backported version for 2.6.34.
+It's probably OK, but I'll wait for Liam.
 
-You really should say this a little more obviously as part of the
-changelog, preferably referencing the master commit as well.
+> (Sorry for the clock skew - the virtual machine I did this in lives in
+>  its own world)
+
+Your clock skew buries it in mail folders.
