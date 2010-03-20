@@ -1,16 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Question about dmix?
-Date: Mon, 22 Mar 2010 09:03:48 +0100
-Message-ID: <4BA72464.3050900@ladisch.de>
-References: <4df68b71003200705j36e71a8aicf9c44fb7f104c27@mail.gmail.com>
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: Re: question about sound/oss/vidc.c
+Date: Sat, 20 Mar 2010 17:42:06 +0000
+Message-ID: <20100320174206.GD14470@flint.arm.linux.org.uk>
+References: <Pine.LNX.4.64.1003162258230.26076@ask.diku.dk>
+	<s5hocinh0jj.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 664AB103804
-	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 09:03:55 +0100 (CET)
-In-Reply-To: <4df68b71003200705j36e71a8aicf9c44fb7f104c27@mail.gmail.com>
+Received: from caramon.arm.linux.org.uk (caramon.arm.linux.org.uk
+	[78.32.30.218]) by alsa0.perex.cz (Postfix) with ESMTP id 37FA1103817
+	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 18:42:23 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hocinh0jj.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,18 +22,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: cee1 <fykcee1@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Julia Lawall <julia@diku.dk>
 List-Id: alsa-devel@alsa-project.org
 
-cee1 wrote:
-> I know alsa support userspace software multi-playback by dmix plugin.
-> How does it realize? I expected a daemon accepting multi-streams which
-> then mixes these streams to a single one -- it seems not the case.
+On Wed, Mar 17, 2010 at 08:25:52AM +0100, Takashi Iwai wrote:
+> I guess these should be adev->dma_out->flags instead.
 
-The kernel maps the device's DMA buffer into all userspace processes;
-the processes then cooperate in adding samples to the buffer.
+Yes, I think so too.
 
-
-Regards,
-Clemens
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:
