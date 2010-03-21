@@ -1,19 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ALSA: ASoC: pxa-pcm-lib: initialize DMA
- channel to -1
-Date: Sat, 20 Mar 2010 16:34:33 +0000
-Message-ID: <20100320163432.GA19916@sirena.org.uk>
-References: <1267324958-25103-1-git-send-email-daniel@caiaq.de>
-	<20100320154715.GD30801@buzzloop.caiaq.de>
+From: cee1 <fykcee1@gmail.com>
+Subject: Re: Question about dmix?
+Date: Sun, 21 Mar 2010 09:58:12 +0800
+Message-ID: <4df68b71003201858p1bcd1b50w845f842408fd2d60@mail.gmail.com>
+References: <4df68b71003200705j36e71a8aicf9c44fb7f104c27@mail.gmail.com>
+	<ho2m03$1fs$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35778103816
-	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 17:34:38 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20100320154715.GD30801@buzzloop.caiaq.de>
+Received: from mail-qy0-f191.google.com (mail-qy0-f191.google.com
+	[209.85.221.191])
+	by alsa0.perex.cz (Postfix) with ESMTP id 19E3D24483
+	for <alsa-devel@alsa-project.org>; Sun, 21 Mar 2010 02:58:12 +0100 (CET)
+Received: by qyk29 with SMTP id 29so2004888qyk.2
+	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 18:58:12 -0700 (PDT)
+In-Reply-To: <ho2m03$1fs$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Nicolas Pitre <nico@marvell.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Colin Guthrie <gmane@colin.guthr.ie>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 20, 2010 at 04:47:15PM +0100, Daniel Mack wrote:
-> Any oppinion about this one?
+2010/3/20 Colin Guthrie <gmane@colin.guthr.ie>:
+> 'Twas brillig, and cee1 at 20/03/10 14:05 did gyre and gimble:
+>> Hi all,
+>> I know alsa support userspace software multi-playback by dmix plugin.
+>> How does it realize? I expected a daemon accepting multi-streams which
+>> then mixes these streams to a single one -- it seems not the case.
+>
+> I believe an older version of dmix used to act like a daemon, but the
+> current version no longer does this and instead uses some magic spells
+> that I don't even being to know about.
 
-It's probably OK, but I'll wait for Liam.
+My soundcard is driven by an experimental alsa driver, it seems always
+underrun the buffer and causes bad quality in playback. Disable dmix
+will improve playback quality a little. I'm curious about what does
+dmix do internally.
 
-> (Sorry for the clock skew - the virtual machine I did this in lives in
->  its own world)
 
-Your clock skew buries it in mail folders.
+Regards,
