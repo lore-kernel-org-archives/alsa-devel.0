@@ -1,18 +1,17 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: Re: question about sound/oss/vidc.c
-Date: Sat, 20 Mar 2010 19:00:59 +0100 (CET)
-Message-ID: <Pine.LNX.4.64.1003201900490.20541@ask.diku.dk>
-References: <Pine.LNX.4.64.1003162258230.26076@ask.diku.dk>
-	<s5hocinh0jj.wl%tiwai@suse.de>
-	<20100320174206.GD14470@flint.arm.linux.org.uk>
+From: cdstealer <cdstealer@cdstealer.com>
+Subject: Re: Gentoo alsa output
+Date: Sun, 21 Mar 2010 12:55:27 +0000
+Message-ID: <4BA6173F.4050603@cdstealer.com>
+References: <4BA5E45A.6020703@cdstealer.com> <20100321124132.GA7308@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw2.diku.dk (mgw2.diku.dk [130.225.96.92])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5B524103817
-	for <alsa-devel@alsa-project.org>; Sat, 20 Mar 2010 19:01:02 +0100 (CET)
-In-Reply-To: <20100320174206.GD14470@flint.arm.linux.org.uk>
+Received: from mtaout02-winn.ispmail.ntl.com (mtaout02-winn.ispmail.ntl.com
+	[81.103.221.48])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B37E103831
+	for <alsa-devel@alsa-project.org>; Sun, 21 Mar 2010 13:55:37 +0100 (CET)
+In-Reply-To: <20100321124132.GA7308@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +21,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Russell King <rmk+alsa@arm.linux.org.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Wu Fengguang <fengguang.wu@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W <shane-alsa@csy.ca>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 20 Mar 2010, Russell King wrote:
+Hi Fengguang,
+    I ran the command as requested:
 
-> On Wed, Mar 17, 2010 at 08:25:52AM +0100, Takashi Iwai wrote:
-> > I guess these should be adev->dma_out->flags instead.
-> 
-> Yes, I think so too.
+$ speaker-test -Dhw:0,3 -c8 -twav
 
-Thanks. I sent a patch.
+speaker-test 1.0.21
 
-julia
+Playback device is hw:0,3
+Stream parameters are 48000Hz, S16_LE, 8 channels
+WAV file(s)
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 16 to 4096
+Period size range from 8 to 2048
+Using max buffer size 4096
+Periods = 4
+was set period_size = 1024
+was set buffer_size = 4096
+ 0 - Front Left
+ 4 - Center
+ 1 - Front Right
+ 7 - Side Right
+ 3 - Rear Right
+ 2 - Rear Left
+ 6 - Side Left
+ 5 - LFE
+Time per period = 11.306881
+
+Unfortunately there was no audio output. :(
+
+Thanks
+Steve
+
+-------- Original Message  --------
+Subject: Re: Gentoo alsa output
+From: Wu Fengguang <fengguang.wu@intel.com>
+To: cdstealer <cdstealer@cdstealer.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W
+<shane-alsa@csy.ca>
+Date: Sun Mar 21 2010 12:41:32 GMT+0000 (BST)
+> Hi cdstealer,
+>
+> It looks all sane with HDMI audio. Would you verify HDMI playback with
+> command
+>
+>         speaker-test -Dhw:0,3 -c8 -twav
+>
+> ?
+>
+> Or are there any more concerns?
+>
+> Thanks,
+> Fengguang
+>
+> On Sun, Mar 21, 2010 at 05:18:18PM +0800, cdstealer wrote:
+>   
+>> Hi fengguang,
+>>     Many thanks for jumping on this.  I have run the script and uploaded the result to:
+>>
+>> http://www.alsa-project.org/db/?f=dbfb35a717aebac5b2650fb9dcf649e1a031ebc0
+>>
+>> If you need anything further, please don't hesitate to contact me.
+>>
+>> Kind regards
+>> Steve
+>>     
+>   
