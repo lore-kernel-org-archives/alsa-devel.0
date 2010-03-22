@@ -1,21 +1,29 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: Re: [PATCH] ALSA: hda: Fix 0 dB offset for HP laptops
-	using CX20551 (Waikiki)
-Date: Mon, 22 Mar 2010 00:00:19 -0400
-Message-ID: <604760771003212100x3579167cgfe2e0539dc69752e@mail.gmail.com>
-References: <604760771003211601n3457e1d5jcff90aacefdcd112@mail.gmail.com>
-	<4f3252891003212002y3de65f75xe84239e5d1458f56@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 1/4] extend ad1938
+	codec driver to ad193x supporting ad1936/7/8/9
+Date: Mon, 22 Mar 2010 13:50:08 +0800
+Message-ID: <3c17e3571003212250l5464504erb47f814319a28f6b@mail.gmail.com>
+References: <1268902095.3773.6.camel@odin>
+	<20100318111848.GB3080@opensource.wolfsonmicro.com>
+	<8bd0f97a1003180857vdd155e0o29684b50cbd5e34e@mail.gmail.com>
+	<20100318162017.GA6142@rakim.wolfsonmicro.main>
+	<8bd0f97a1003181017xba8e1a9oce2d40bf56818956@mail.gmail.com>
+	<20100318180516.GF6142@rakim.wolfsonmicro.main>
+	<8bd0f97a1003181108y3f7f5871t81c5cd5ba0c6312d@mail.gmail.com>
+	<3c17e3571003182030mc8ea095u2298f008fbcbee8e@mail.gmail.com>
+	<3c17e3571003190007p61929e99y4db8f5545e777401@mail.gmail.com>
+	<20100319122422.GE23306@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f177.google.com (mail-px0-f177.google.com
-	[209.85.216.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CA8E2455D
-	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 05:00:22 +0100 (CET)
-Received: by pxi7 with SMTP id 7so1602994pxi.5
-	for <alsa-devel@alsa-project.org>; Sun, 21 Mar 2010 21:00:19 -0700 (PDT)
-In-Reply-To: <4f3252891003212002y3de65f75xe84239e5d1458f56@mail.gmail.com>
+Received: from mail-gx0-f222.google.com (mail-gx0-f222.google.com
+	[209.85.217.222])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C80A10382A
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 06:50:29 +0100 (CET)
+Received: by gxk22 with SMTP id 22so2778864gxk.4
+	for <alsa-devel@alsa-project.org>; Sun, 21 Mar 2010 22:50:28 -0700 (PDT)
+In-Reply-To: <20100319122422.GE23306@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,14 +33,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <barry.song@analog.com>, yi.li@analog.com, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Mar 21, 2010 at 11:02 PM, Raymond Yau
-<superquad.vortex2@gmail.com> wrote:
-> how did he verifty the 0dB ? using hw device or pulseaudio
-
-He's in the recipient list; I checked with him on IRC using PulseAudio
-(latest stable-queue, flat volume disabled) running the patch applied
-to the latest daily alsa-driver stable snap.
+T24gRnJpLCBNYXIgMTksIDIwMTAgYXQgODoyNCBQTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIEZyaSwgTWFyIDE5LCAyMDEwIGF0
+IDAzOjA3OjMzUE0gKzA4MDAsIEJhcnJ5IFNvbmcgd3JvdGU6Cj4+IEl0IHNlZW1zICJnaXQtZm9y
+bWF0LXBhdGNoIC1NIiBmYWlscyB0byBkZXRlY3QgdGhpcyBwYXRjaCBhcyBhCj4+IHJlbmFtZSht
+YXliZSBkdWUgdG8gdG9vIG1hbnkgY2hhbmdlZCBsaW5lcz8pLCBzbyBJIGNvbW1pdCB0d28gdGlt
+ZXMgdG8KPj4gZ2V0IGEgcmVhZGFibGUgcGF0Y2ggYW5kIGF0dGFjaCB0aGVtLgo+PiAxLiByZW5h
+bWUgYWQxOTM4IHRvIGFkMTkzeAo+PiAyLiBleHRlbmQgYWQxOTM4IGNvZGVjIGRyaXZlciB0byBh
+ZDE5M3ggc3VwcG9ydGluZyBhZDE5MzYvNy84LzkKPgo+IFBsZWFzZSBkb24ndCB0b3AgcG9zdCBh
+bmQgcGxlYXNlIGFsd2F5cyBmb2xsb3cgdGhlIHBhdGNoIHN1Ym1pc3Npb24KPiBwcm9jZWR1cmUg
+ZG9jdW1lbnRlZCBpbiBEb2N1bWVudGF0aW9uL1N1Ym1pdHRpbmdQYXRjaGVzLiDCoEV2ZW4gaWYK
+PiBwcm9ibGVtcyB3aXRoIHlvdXIgTVVBIG1ha2UgaXQgZGlmZmljdWx0IHRvIHN1Ym1pdCBwYXRj
+aGVzIHdpdGhvdXQgdXNpbmcKPiBhdHRhY2htZW50cyB5b3Ugc2hvdWxkIGFsd2F5cyBzZW5kIG9u
+ZSBwYXRjaCBwZXIgbWVzc2FnZS4gwqBOb3QgZm9sbG93aW5nCj4gdGhlc2UgcnVsZXMgbWFrZXMg
+eW91ciBwYXRjaGVzIG11Y2ggbW9yZSBkaWZmaWN1bHQgdG8gaGFuZGxlLgo+Cj4gU2luY2UgdGhl
+IHBhdGNoZXMgYXJlbid0IGluIGxpbmUgaXQncyBkaWZmaWN1bHQgdG8gcXVvdGUgdGhpbmdzIHdo
+ZW4KPiBjb21tZW50aW5nIGJ1dCBhIGZldyBpc3N1ZXM6Cj4KPiDCoC0gWW91ciByZW5hbWUgcGF0
+Y2ggZGlkbid0IHVwZGF0ZSB0aGUgTWFrZWZpbGUgYW5kIEtjb25maWcsIHdoaWNoIHdvdWxkCj4g
+wqAgY2F1c2UgYnVpbGQgYnJlYWthZ2UgaWYgYXBwbGllZCBhbG9uZS4gwqBZb3Ugc2hvdWxkIGFs
+d2F5cyB0cnkgdG8KPiDCoCBlbnN1cmUgdGhhdCBidWlsZHMgd29yayBldmVuIHdpdGggYSBwYXJ0
+aWFsbHkgYXBwbGllZCBwYXRjaCBzZXJpZXMKPiDCoCBzaW5jZSB0aGlzIGFsbG93cyB0aGluZ3Mg
+bGlrZSBiaXNlY3Rpb24gd2hpY2ggc3RlcCB0aHJvdWdoIHRoZQo+IMKgIGhpc3RvcnkgdG8gd29y
+ay4KWWVzLiBpZiBpIHNwbGl0IGludG8gdHdvIHBhdGNoZXMsIGkgc2hvdWxkIGNoYW5nZSBNYWtl
+ZmlsZSBhbmQgS2NvbmZpZwpmb3IgdGhlIDFzdCBvbmUuCgo+Cj4gwqAtIFlvdSd2ZSBsZWZ0IHRo
+ZSBidXNfcHJvYmUoKSBmdW5jdGlvbnMgZXhwb3J0ZWQgLSBub3cgeW91J3ZlIG1lcmdlZAo+IMKg
+IGV2ZXJ5dGhpbmcgaW50byBvbmUgZmlsZSB0aGlzIGlzIG5vIGxvbmdlciBuZWVkZWQuClllcy4g
+aSBub3RpY2VkIHRoaXMgdG9vIGFmdGVyIGkgc2VudCB0aGUgcGF0Y2guCj4KPiDCoC0gVGhlIHdh
+eSB5b3UndmUgZmFjdG9yZWQgb3V0IHRoZSBidXMgcHJvYmUgYW5kIHJlbW92YWwgZnVuY3Rpb25z
+IHNvCj4gwqAgdGhhdCB0aGVyZSdzIG5vIGNvZGUgaW4gdGhlIGluZGl2aWR1YWwgSTJDIGFuZCBT
+UEkgZnVuY3Rpb25zIG1lYW5zCj4gwqAgdGhhdCB0aGUgcmVnaXN0ZXIoKSBhbmQgdW5yZWdpc3Rl
+cigpIGZ1bmN0aW9ucyBjb3VsZCBqdXN0IGJlIHNxdWFzaGVkCj4gwqAgaW50byB0aGUgYnVzX3By
+b2JlKCkgYW5kIGJ1c19yZW1vdmUoKSBmdW5jdGlvbnMgLSBhbGwgdGhhdCB0aGUKPiDCoCByZWdp
+c3RlciBhbmQgdW5yZWdpc3RlciBmdW5jdGlvbnMgYXJlIGlzIHRoZSBjb2RlIHRoYXQncyBzaGFy
+ZWQKPiDCoCBiZXR3ZWVuIHRoZSBidXMKaWYgc28sIGl0IGxpa2VzIHJlZ2lzdGVyL3VucmVnaXN0
+ZXIgc2hvdWxkIGJlIG1vdmVkIGludG8gcHJvYmUvcmVtb3ZlCmV2ZW4gZm9yIGNvZGVjcyB3aXRo
+IHNpbmdsZSBjb2RlYz8KPgo+IEkndmUgZml4ZWQgdGhlIGZpcnN0IGlzc3VlIGJ5IHNxdWFzaGlu
+ZyB0aGUgdHdvIHBhdGNoZXMgdG9nZXRoZXIgYW5kIHRoZQo+IGxhc3Qgb25lIHdpdGggYSBwYXRj
+aC4gwqBUaGUgbGFzdCBpc3N1ZSBpc24ndCBpbXBvcnRhbnQsIGl0J3MgbW9yZSBmb3IKPiBpbmZv
+cm1hdGlvbi4KPgpUaGFua3MgZm9yIHlvdXIgaGVscCB0byBmaXggaXNzdWVzLgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
