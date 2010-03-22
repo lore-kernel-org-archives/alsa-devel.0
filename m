@@ -1,127 +1,40 @@
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: [RFC PATCH 06/19] pcmcia: pass FORCED_PULSE parameter in
-	pcmcia_request_configuration()
-Date: Mon, 22 Mar 2010 00:07:24 +0100
-Message-ID: <1269212857-25364-6-git-send-email-linux@dominikbrodowski.net>
-References: <20100321230617.GA24791@comet.dominikbrodowski.net>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] ALSA: hda: Fix 0 dB offset for HP laptops
+	using CX20551 (Waikiki)
+Date: Mon, 22 Mar 2010 11:02:57 +0800
+Message-ID: <4f3252891003212002y3de65f75xe84239e5d1458f56@mail.gmail.com>
+References: <604760771003211601n3457e1d5jcff90aacefdcd112@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-pcmcia-bounces+glkpd-linux-pcmcia=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20100321230617.GA24791@comet.dominikbrodowski.net>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-pcmcia>,
-	<mailto:linux-pcmcia-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-pcmcia/>
-List-Post: <mailto:linux-pcmcia@lists.infradead.org>
-List-Help: <mailto:linux-pcmcia-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-pcmcia>,
-	<mailto:linux-pcmcia-request@lists.infradead.org?subject=subscribe>
-Sender: linux-pcmcia-bounces@lists.infradead.org
-Errors-To: linux-pcmcia-bounces+glkpd-linux-pcmcia=m.gmane.org@lists.infradead.org
-To: linux-pcmcia@lists.infradead.org
-Cc: alsa-devel@alsa-project.org, Dominik Brodowski <linux@dominikbrodowski.net>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5EC292450A
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 04:02:58 +0100 (CET)
+Received: by pwj7 with SMTP id 7so3212457pwj.38
+	for <alsa-devel@alsa-project.org>; Sun, 21 Mar 2010 20:02:57 -0700 (PDT)
+In-Reply-To: <604760771003211601n3457e1d5jcff90aacefdcd112@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-As it's only used there it makes no sense relying on pcmcia_request_irq().
+2010/3/22 Daniel Chen <seven.steps@gmail.com>
 
-CC: alsa-devel@alsa-project.org
-Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
----
- drivers/pcmcia/pcmcia_resource.c             |   10 ++--------
- drivers/staging/comedi/drivers/ni_labpc_cs.c |    5 +++--
- include/pcmcia/cs.h                          |    1 +
- sound/pcmcia/pdaudiocf/pdaudiocf.c           |    6 +++---
- 4 files changed, 9 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/pcmcia/pcmcia_resource.c b/drivers/pcmcia/pcmcia_resource.c
-index fb08e80..f629aac 100644
---- a/drivers/pcmcia/pcmcia_resource.c
-+++ b/drivers/pcmcia/pcmcia_resource.c
-@@ -425,10 +425,6 @@ static int pcmcia_release_irq(struct pcmcia_device *p_dev, irq_req_t *req)
- 	if (c->state & CONFIG_LOCKED)
- 		goto out;
- 
--	if (c->irq.Attributes != req->Attributes) {
--		dev_dbg(&s->dev, "IRQ attributes must match assigned ones\n");
--		goto out;
--	}
- 	if (s->pcmcia_irq != req->AssignedIRQ) {
- 		dev_dbg(&s->dev, "IRQ must match assigned one\n");
- 		goto out;
-@@ -552,9 +548,8 @@ int pcmcia_request_configuration(struct pcmcia_device *p_dev,
- 			if (req->Present & PRESENT_IOBASE_0)
- 				c->Option |= COR_ADDR_DECODE;
- 		}
--		if (req->Attributes & CONF_ENABLE_IRQ)
--			if (!(c->irq.Attributes & IRQ_FORCED_PULSE))
--				c->Option |= COR_LEVEL_REQ;
-+		if (req->Attributes & CONF_ENABLE_PULSE_IRQ)
-+			c->Option |= COR_LEVEL_REQ;
- 		pcmcia_write_cis_mem(s, 1, (base + CISREG_COR)>>1, 1, &c->Option);
- 		mdelay(40);
- 	}
-@@ -729,7 +724,6 @@ int pcmcia_request_irq(struct pcmcia_device *p_dev, irq_req_t *req)
- 		}
- 	}
- 
--	c->irq.Attributes = req->Attributes;
- 	req->AssignedIRQ = irq;
- 
- 	p_dev->_irq = 1;
-diff --git a/drivers/staging/comedi/drivers/ni_labpc_cs.c b/drivers/staging/comedi/drivers/ni_labpc_cs.c
-index 0b963bb..5a0e5b9 100644
---- a/drivers/staging/comedi/drivers/ni_labpc_cs.c
-+++ b/drivers/staging/comedi/drivers/ni_labpc_cs.c
-@@ -229,7 +229,7 @@ static int labpc_cs_attach(struct pcmcia_device *link)
- 	link->priv = local;
- 
- 	/* Interrupt setup */
--	link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING | IRQ_FORCED_PULSE;
-+	link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING;
- 	link->irq.Handler = NULL;
- 
- 	/*
-@@ -306,7 +306,8 @@ static int labpc_pcmcia_config_loop(struct pcmcia_device *p_dev,
- 
- 	/* Do we need to allocate an interrupt? */
- 	if (cfg->irq.IRQInfo1 || dflt->irq.IRQInfo1)
--		p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+		p_dev->conf.Attributes |=
-+			(CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ);
- 
- 	/* IO window settings */
- 	p_dev->io.NumPorts1 = p_dev->io.NumPorts2 = 0;
-diff --git a/include/pcmcia/cs.h b/include/pcmcia/cs.h
-index 75fa353..af61571 100644
---- a/include/pcmcia/cs.h
-+++ b/include/pcmcia/cs.h
-@@ -85,6 +85,7 @@ typedef struct config_req_t {
- #define CONF_ENABLE_IRQ		0x01
- #define CONF_ENABLE_DMA		0x02
- #define CONF_ENABLE_SPKR	0x04
-+#define CONF_ENABLE_PULSE_IRQ	0x08
- #define CONF_VALID_CLIENT	0x100
- 
- /* IntType field */
-diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf.c b/sound/pcmcia/pdaudiocf/pdaudiocf.c
-index edaa729..dcf8539 100644
---- a/sound/pcmcia/pdaudiocf/pdaudiocf.c
-+++ b/sound/pcmcia/pdaudiocf/pdaudiocf.c
-@@ -142,12 +142,12 @@ static int snd_pdacf_probe(struct pcmcia_device *link)
- 	link->io.Attributes1 = IO_DATA_PATH_WIDTH_AUTO;
- 	link->io.NumPorts1 = 16;
- 
--	link->irq.Attributes = IRQ_TYPE_EXCLUSIVE | IRQ_FORCED_PULSE;
-+	link->irq.Attributes = IRQ_TYPE_EXCLUSIVE;
- 	/* FIXME: This driver should be updated to allow for dynamic IRQ sharing */
--	/* link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING | IRQ_FORCED_PULSE; */
-+	/* link->irq.Attributes = IRQ_TYPE_DYNAMIC_SHARING; */
- 
- 	link->irq.Handler = pdacf_interrupt;
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->conf.Attributes = CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
- 	link->conf.IntType = INT_MEMORY_AND_IO;
- 	link->conf.ConfigIndex = 1;
- 	link->conf.Present = PRESENT_OPTION;
--- 
-1.6.3.3
+> Hi,
+>
+> Attached is a patch to fix distortion at max PCM setting for HP
+> laptops using CX20551 (Waikiki).
+>
+> Best,
+> -Dan
+>
+>
+how did he verifty the 0dB ? using hw device or pulseaudio
