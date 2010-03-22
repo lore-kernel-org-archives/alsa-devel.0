@@ -1,17 +1,22 @@
-From: cdstealer <cdstealer@cdstealer.com>
-Subject: Re: Gentoo alsa output
-Date: Sun, 21 Mar 2010 18:04:56 +0000
-Message-ID: <4BA65FC8.7060802@cdstealer.com>
-References: <4BA5E45A.6020703@cdstealer.com> <20100321124132.GA7308@localhost>
-	<4BA6173F.4050603@cdstealer.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ALSA: ASoC: pxa-pcm-lib: initialize DMA
+ channel to -1
+Date: Mon, 22 Mar 2010 08:55:46 +0000
+Message-ID: <1269248146.21688.23.camel@odin>
+References: <1267324958-25103-1-git-send-email-daniel@caiaq.de>
+	<20100320154715.GD30801@buzzloop.caiaq.de>
+	<20100320163432.GA19916@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mtaout02-winn.ispmail.ntl.com (mtaout02-winn.ispmail.ntl.com
-	[81.103.221.48]) by alsa0.perex.cz (Postfix) with ESMTP id EE04624427
-	for <alsa-devel@alsa-project.org>; Sun, 21 Mar 2010 19:05:00 +0100 (CET)
-In-Reply-To: <4BA6173F.4050603@cdstealer.com>
+Received: from mail-iw0-f189.google.com (mail-iw0-f189.google.com
+	[209.85.223.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8347D24359
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 09:55:54 +0100 (CET)
+Received: by iwn27 with SMTP id 27so1541565iwn.5
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 01:55:52 -0700 (PDT)
+In-Reply-To: <20100320163432.GA19916@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,104 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W <shane-alsa@csy.ca>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Nicolas Pitre <nico@marvell.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fengguang,
-	I've got HDMI sound working.  This is what I did:
+On Sat, 2010-03-20 at 16:34 +0000, Mark Brown wrote:
+> On Sat, Mar 20, 2010 at 04:47:15PM +0100, Daniel Mack wrote:
+> > Any oppinion about this one?
+> 
+> It's probably OK, but I'll wait for Liam.
+> 
+> > (Sorry for the clock skew - the virtual machine I did this in lives in
+> >  its own world)
+> 
+> Your clock skew buries it in mail folders.
 
-Steps to recreate:
+That maybe why I missed it.
 
-Stopped alsasound (from portage)
-removed from alsasound from rc-update
-downloaded Realteks HD drivers from http://www.realtek.com.tw/downloads/downloadsView.aspx?Langid=1&PNid=24&PFid=24&Level=4&Conn=3&DownTypeID=3&GetDown=false <http://www.realtek.com.tw/downloads/downloadsView.aspx?Langid=1&PNid=24&PFid=24&Level=4&Conn=3&DownTypeID=3&GetDown=false>
-unpacked the archive and ran the install script (as root)
-replaced the /etc/conf/alsasound with the /etc/conf/aslasound.new
-rebooted as modules could not be reloaded.
+Acked by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-This is the realtek-linux-audiopack-5.14.  So it looks like the Intel side of things are solid, it was the Realtek drivers that were the problem.  Thank you very much for you help and time.  Hopefully the correct drivers will make it into the kernel soon.
-
-Many Thanks
-Steve
-
-
--------- Original Message  --------
-Subject: Re: Gentoo alsa output
-From: cdstealer <cdstealer@cdstealer.com>
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W
-<shane-alsa@csy.ca>
-Date: Sun Mar 21 2010 12:55:27 GMT+0000 (BST)
-> Hi Fengguang,
->     I ran the command as requested:
->
-> $ speaker-test -Dhw:0,3 -c8 -twav
->
-> speaker-test 1.0.21
->
-> Playback device is hw:0,3
-> Stream parameters are 48000Hz, S16_LE, 8 channels
-> WAV file(s)
-> Rate set to 48000Hz (requested 48000Hz)
-> Buffer size range from 16 to 4096
-> Period size range from 8 to 2048
-> Using max buffer size 4096
-> Periods = 4
-> was set period_size = 1024
-> was set buffer_size = 4096
->  0 - Front Left
->  4 - Center
->  1 - Front Right
->  7 - Side Right
->  3 - Rear Right
->  2 - Rear Left
->  6 - Side Left
->  5 - LFE
-> Time per period = 11.306881
->
-> Unfortunately there was no audio output. :(
->
-> Thanks
-> Steve
->
-> -------- Original Message  --------
-> Subject: Re: Gentoo alsa output
-> From: Wu Fengguang <fengguang.wu@intel.com>
-> To: cdstealer <cdstealer@cdstealer.com>
-> Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Shane W
-> <shane-alsa@csy.ca>
-> Date: Sun Mar 21 2010 12:41:32 GMT+0000 (BST)
->   
->> Hi cdstealer,
->>
->> It looks all sane with HDMI audio. Would you verify HDMI playback with
->> command
->>
->>         speaker-test -Dhw:0,3 -c8 -twav
->>
->> ?
->>
->> Or are there any more concerns?
->>
->> Thanks,
->> Fengguang
->>
->> On Sun, Mar 21, 2010 at 05:18:18PM +0800, cdstealer wrote:
->>   
->>     
->>> Hi fengguang,
->>>     Many thanks for jumping on this.  I have run the script and uploaded the result to:
->>>
->>> http://www.alsa-project.org/db/?f=dbfb35a717aebac5b2650fb9dcf649e1a031ebc0
->>>
->>> If you need anything further, please don't hesitate to contact me.
->>>
->>> Kind regards
->>> Steve
->>>     
->>>       
->>   
->>     
->
->   
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
