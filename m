@@ -1,16 +1,16 @@
 From: Daniel Mack <daniel@caiaq.de>
 Subject: [PATCH] ALSA: ASoC: move dma_data from snd_soc_dai to
 	snd_soc_pcm_stream
-Date: Mon, 22 Mar 2010 10:10:41 +0100
-Message-ID: <1269249041-30714-1-git-send-email-daniel@caiaq.de>
+Date: Mon, 22 Mar 2010 10:11:15 +0100
+Message-ID: <1269249075-30783-1-git-send-email-daniel@caiaq.de>
 References: <20100320161428.GA1125@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9BF4D24159
-	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 10:11:13 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id 51E511038F5
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 10:11:27 +0100 (CET)
 In-Reply-To: <20100320161428.GA1125@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,7 +33,7 @@ stream start.
 All other platforms are fixed blindly, I couldn't even compile-test
 them. Sorry for any breakage I may have caused.
 
-[Note that this is a backported version for 2.6.33.
+[Note that this is a backported version for 2.6.34.
  Upstream commit is fd23b7dee]
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
@@ -51,25 +51,29 @@ Reported-by: Michael Hirsch <m.hirsch@raumfeld.com>
  sound/soc/davinci/davinci-i2s.c   |    3 +-
  sound/soc/davinci/davinci-mcasp.c |    3 +-
  sound/soc/davinci/davinci-pcm.c   |    4 ++-
+ sound/soc/imx/imx-pcm-dma-mx2.c   |    8 +++++-
+ sound/soc/imx/imx-ssi.c           |    7 ++++-
  sound/soc/omap/omap-mcbsp.c       |    4 ++-
+ sound/soc/omap/omap-mcpdm.c       |    3 +-
  sound/soc/omap/omap-pcm.c         |    4 ++-
  sound/soc/pxa/pxa-ssp.c           |   23 +++++++++++----------
  sound/soc/pxa/pxa2xx-ac97.c       |   17 +++++++++++----
  sound/soc/pxa/pxa2xx-i2s.c        |    7 ++++-
  sound/soc/pxa/pxa2xx-pcm.c        |    4 ++-
+ sound/soc/s3c24xx/s3c-ac97.c      |   21 +++++++++++--------
  sound/soc/s3c24xx/s3c-dma.c       |    4 ++-
  sound/soc/s3c24xx/s3c-i2s-v2.c    |   13 +++++++----
  sound/soc/s3c24xx/s3c-pcm.c       |    7 ++++-
  sound/soc/s3c24xx/s3c24xx-i2s.c   |   19 +++++++++--------
  sound/soc/s6000/s6000-i2s.c       |    3 +-
  sound/soc/s6000/s6000-pcm.c       |   40 ++++++++++++++++++++++++++----------
- 19 files changed, 124 insertions(+), 58 deletions(-)
+ 23 files changed, 149 insertions(+), 72 deletions(-)
 
 diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index ca24e7f..4a63120 100644
+index 061f16d..0a0b019 100644
 --- a/include/sound/soc-dai.h
 +++ b/include/sound/soc-dai.h
-@@ -217,7 +217,6 @@ struct snd_soc_dai {
+@@ -219,7 +219,6 @@ struct snd_soc_dai {
  	struct snd_soc_codec *codec;
  	unsigned int active;
  	unsigned char pop_wait:1;
@@ -77,7 +81,7 @@ index ca24e7f..4a63120 100644
  
  	/* DAI private data */
  	void *private_data;
-@@ -228,4 +227,21 @@ struct snd_soc_dai {
+@@ -230,4 +229,21 @@ struct snd_soc_dai {
  	struct list_head list;
  };
  
@@ -100,10 +104,10 @@ index ca24e7f..4a63120 100644
 +
  #endif
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0d7718f..c0d2b7f 100644
+index 5d234a8..a57fbfc 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -355,6 +355,7 @@ struct snd_soc_pcm_stream {
+@@ -375,6 +375,7 @@ struct snd_soc_pcm_stream {
  	unsigned int channels_min;	/* min channels */
  	unsigned int channels_max;	/* max channels */
  	unsigned int active:1;		/* stream is in use */
@@ -159,10 +163,10 @@ index 6362ca0..4aad7ec 100644
  	if (ret != 0)
  		goto err_free_mem;
 diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 0a302e1..4442ac7 100644
+index ab6518d..c056bfb 100644
 --- a/sound/soc/davinci/davinci-mcasp.c
 +++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -904,7 +904,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+@@ -917,7 +917,8 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
  
  	dma_data->channel = res->start;
  	davinci_mcasp_dai[pdata->op_mode].private_data = dev;
@@ -173,7 +177,7 @@ index 0a302e1..4442ac7 100644
  	ret = snd_soc_register_dai(&davinci_mcasp_dai[pdata->op_mode]);
  
 diff --git a/sound/soc/davinci/davinci-pcm.c b/sound/soc/davinci/davinci-pcm.c
-index ad4d7f4..4e41a5d 100644
+index 80c7fdf..2dc406f 100644
 --- a/sound/soc/davinci/davinci-pcm.c
 +++ b/sound/soc/davinci/davinci-pcm.c
 @@ -649,8 +649,10 @@ static int davinci_pcm_open(struct snd_pcm_substream *substream)
@@ -188,14 +192,74 @@ index ad4d7f4..4e41a5d 100644
  	if (!pa)
  		return -ENODEV;
  	params = &pa[substream->stream];
+diff --git a/sound/soc/imx/imx-pcm-dma-mx2.c b/sound/soc/imx/imx-pcm-dma-mx2.c
+index 19452e4..c78c000 100644
+--- a/sound/soc/imx/imx-pcm-dma-mx2.c
++++ b/sound/soc/imx/imx-pcm-dma-mx2.c
+@@ -83,11 +83,13 @@ static void snd_imx_dma_err_callback(int channel, void *data, int err)
+ static int imx_ssi_dma_alloc(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct imx_pcm_dma_params *dma_params = rtd->dai->cpu_dai->dma_data;
++	struct imx_pcm_dma_params *dma_params;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
+ 	int ret;
+ 
++	dma_params = snd_soc_get_dma_data(rtd->dai->cpu_dai, substream);
++
+ 	iprtd->dma = imx_dma_request_by_prio(DRV_NAME, DMA_PRIO_HIGH);
+ 	if (iprtd->dma < 0) {
+ 		pr_err("Failed to claim the audio DMA\n");
+@@ -192,10 +194,12 @@ static int snd_imx_pcm_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct imx_pcm_dma_params *dma_params = rtd->dai->cpu_dai->dma_data;
++	struct imx_pcm_dma_params *dma_params;
+ 	struct imx_pcm_runtime_data *iprtd = runtime->private_data;
+ 	int err;
+ 
++	dma_params = snd_soc_get_dma_data(rtd->dai->cpu_dai, substream);
++
+ 	iprtd->substream = substream;
+ 	iprtd->buf = (unsigned int *)substream->dma_buffer.area;
+ 	iprtd->period_cnt = 0;
+diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
+index 56f46a7..28e55c7 100644
+--- a/sound/soc/imx/imx-ssi.c
++++ b/sound/soc/imx/imx-ssi.c
+@@ -234,17 +234,20 @@ static int imx_ssi_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *cpu_dai)
+ {
+ 	struct imx_ssi *ssi = cpu_dai->private_data;
++	struct imx_pcm_dma_params *dma_data;
+ 	u32 reg, sccr;
+ 
+ 	/* Tx/Rx config */
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		reg = SSI_STCCR;
+-		cpu_dai->dma_data = &ssi->dma_params_tx;
++		dma_data = &ssi->dma_params_tx;
+ 	} else {
+ 		reg = SSI_SRCCR;
+-		cpu_dai->dma_data = &ssi->dma_params_rx;
++		dma_data = &ssi->dma_params_rx;
+ 	}
+ 
++	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
++
+ 	sccr = readl(ssi->base + reg) & ~SSI_STCCR_WL_MASK;
+ 
+ 	/* DAI data (word) size */
 diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 6bbbd2a..8997023 100644
+index e814a95..8ad9dc9 100644
 --- a/sound/soc/omap/omap-mcbsp.c
 +++ b/sound/soc/omap/omap-mcbsp.c
-@@ -287,7 +287,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	omap_mcbsp_dai_dma_params[id][substream->stream].dma_req = dma;
- 	omap_mcbsp_dai_dma_params[id][substream->stream].port_addr = port;
+@@ -297,7 +297,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
  	omap_mcbsp_dai_dma_params[id][substream->stream].sync_mode = sync_mode;
+ 	omap_mcbsp_dai_dma_params[id][substream->stream].data_type =
+ 							OMAP_DMA_DATA_TYPE_S16;
 -	cpu_dai->dma_data = &omap_mcbsp_dai_dma_params[id][substream->stream];
 +
 +	snd_soc_dai_set_dma_data(cpu_dai, substream,
@@ -203,11 +267,25 @@ index 6bbbd2a..8997023 100644
  
  	if (mcbsp_data->configured) {
  		/* McBSP already configured by another stream */
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index 25f19e4..b7f4f7e 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -150,7 +150,8 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
+ 	int stream = substream->stream;
+ 	int channels, err, link_mask = 0;
+ 
+-	cpu_dai->dma_data = &omap_mcpdm_dai_dma_params[stream];
++	snd_soc_dai_set_dma_data(cpu_dai, substream,
++				 &omap_mcpdm_dai_dma_params[stream]);
+ 
+ 	channels = params_channels(params);
+ 	switch (channels) {
 diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 9db2770..e8d910e 100644
+index 825db38..39538c0 100644
 --- a/sound/soc/omap/omap-pcm.c
 +++ b/sound/soc/omap/omap-pcm.c
-@@ -99,9 +99,11 @@ static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
+@@ -100,9 +100,11 @@ static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
  	struct snd_pcm_runtime *runtime = substream->runtime;
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
  	struct omap_runtime_data *prtd = runtime->private_data;
@@ -221,11 +299,11 @@ index 9db2770..e8d910e 100644
  	 * codec <--> BT codec or GSM modem -- lg FIXME */
  	if (!dma_data)
 diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 3bd7712..d623551 100644
+index 9e95e51..6959c51 100644
 --- a/sound/soc/pxa/pxa-ssp.c
 +++ b/sound/soc/pxa/pxa-ssp.c
-@@ -103,10 +103,9 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
- 		ssp_disable(&priv->dev);
+@@ -121,10 +121,9 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
+ 		ssp_disable(ssp);
  	}
  
 -	if (cpu_dai->dma_data) {
@@ -238,8 +316,8 @@ index 3bd7712..d623551 100644
  	return ret;
  }
  
-@@ -122,10 +121,8 @@ static void pxa_ssp_shutdown(struct snd_pcm_substream *substream,
- 		clk_disable(priv->dev.ssp->clk);
+@@ -141,10 +140,8 @@ static void pxa_ssp_shutdown(struct snd_pcm_substream *substream,
+ 		clk_disable(ssp->clk);
  	}
  
 -	if (cpu_dai->dma_data) {
@@ -251,7 +329,7 @@ index 3bd7712..d623551 100644
  }
  
  #ifdef CONFIG_PM
-@@ -536,19 +533,23 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
+@@ -569,19 +566,23 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
  	u32 sspsp;
  	int width = snd_pcm_format_physical_width(params_format(params));
  	int ttsa = ssp_read_reg(ssp, SSTSA) & 0xf;
@@ -369,6 +447,76 @@ index d38e395..adc7e6f 100644
  	/* return if this is a bufferless transfer e.g.
  	 * codec <--> BT codec or GSM modem -- lg FIXME */
  	if (!dma)
+diff --git a/sound/soc/s3c24xx/s3c-ac97.c b/sound/soc/s3c24xx/s3c-ac97.c
+index ee8ed9d..ecf4fd0 100644
+--- a/sound/soc/s3c24xx/s3c-ac97.c
++++ b/sound/soc/s3c24xx/s3c-ac97.c
+@@ -224,11 +224,14 @@ static int s3c_ac97_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct s3c_dma_params *dma_data;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		cpu_dai->dma_data = &s3c_ac97_pcm_out;
++		dma_data = &s3c_ac97_pcm_out;
+ 	else
+-		cpu_dai->dma_data = &s3c_ac97_pcm_in;
++		dma_data = &s3c_ac97_pcm_in;
++
++	snd_soc_dai_set_dma_data(cpu_dai, substream, dma_data);
+ 
+ 	return 0;
+ }
+@@ -238,8 +241,8 @@ static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	u32 ac_glbctrl;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	int channel = ((struct s3c_dma_params *)
+-		  rtd->dai->cpu_dai->dma_data)->channel;
++	struct s3c_dma_params *dma_data =
++		snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
+ 
+ 	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+@@ -265,7 +268,7 @@ static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
+ 
+ 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 
+-	s3c2410_dma_ctrl(channel, S3C2410_DMAOP_STARTED);
++	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
+ 
+ 	return 0;
+ }
+@@ -280,7 +283,7 @@ static int s3c_ac97_hw_mic_params(struct snd_pcm_substream *substream,
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		return -ENODEV;
+ 	else
+-		cpu_dai->dma_data = &s3c_ac97_mic_in;
++		snd_soc_dai_set_dma_data(cpu_dai, substream, &s3c_ac97_mic_in);
+ 
+ 	return 0;
+ }
+@@ -290,8 +293,8 @@ static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
+ {
+ 	u32 ac_glbctrl;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	int channel = ((struct s3c_dma_params *)
+-		  rtd->dai->cpu_dai->dma_data)->channel;
++	struct s3c_dma_params *dma_data =
++		snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
+ 
+ 	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 	ac_glbctrl &= ~S3C_AC97_GLBCTRL_MICINTM_MASK;
+@@ -311,7 +314,7 @@ static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
+ 
+ 	writel(ac_glbctrl, s3c_ac97.regs + S3C_AC97_GLBCTRL);
+ 
+-	s3c2410_dma_ctrl(channel, S3C2410_DMAOP_STARTED);
++	s3c2410_dma_ctrl(dma_data->channel, S3C2410_DMAOP_STARTED);
+ 
+ 	return 0;
+ }
 diff --git a/sound/soc/s3c24xx/s3c-dma.c b/sound/soc/s3c24xx/s3c-dma.c
 index 7725e26..1b61c23 100644
 --- a/sound/soc/s3c24xx/s3c-dma.c
@@ -432,7 +580,7 @@ index e994d83..8851594 100644
  		break;
  
 diff --git a/sound/soc/s3c24xx/s3c-pcm.c b/sound/soc/s3c24xx/s3c-pcm.c
-index 9e61a7c..c8f25ac 100644
+index a98f40c..326f0a9 100644
 --- a/sound/soc/s3c24xx/s3c-pcm.c
 +++ b/sound/soc/s3c24xx/s3c-pcm.c
 @@ -178,6 +178,7 @@ static int s3c_pcm_hw_params(struct snd_pcm_substream *substream,
