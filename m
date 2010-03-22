@@ -1,15 +1,17 @@
 From: Daniel Mack <daniel@caiaq.de>
 Subject: [PATCH] ALSA: usb/caiaq: Add support for Traktor
 	Kontrol X1
-Date: Mon, 22 Mar 2010 13:13:37 +0100
-Message-ID: <1269260017-9964-1-git-send-email-daniel@caiaq.de>
+Date: Mon, 22 Mar 2010 13:15:59 +0100
+Message-ID: <1269260159-10060-1-git-send-email-daniel@caiaq.de>
+References: <1269260017-9964-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68F7524439
-	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 13:13:53 +0100 (CET)
+	by alsa0.perex.cz (Postfix) with ESMTP id B64A32443C
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 13:16:26 +0100 (CET)
+In-Reply-To: <1269260017-9964-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,16 +30,21 @@ Input data is handled over a dedicated USB endpoint.
 
 All functions are supported by the driver now.
 
+Bumped the version number to 1.3.21.
+
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Cc: Takashi Iwai <tiwai@suse.de>
 Cc: Dmitry Torokhov <dtor@mail.ru>
 ---
+ The previous version forgot to bump the number.
+ Take this one instead please.
+
  sound/usb/Kconfig         |    1 +
  sound/usb/caiaq/control.c |   99 ++++++++++++++++++++++------
- sound/usb/caiaq/device.c  |    8 ++-
+ sound/usb/caiaq/device.c  |   10 ++-
  sound/usb/caiaq/device.h  |   24 ++++---
  sound/usb/caiaq/input.c   |  162 +++++++++++++++++++++++++++++++++++++++++----
- 5 files changed, 249 insertions(+), 45 deletions(-)
+ 5 files changed, 250 insertions(+), 46 deletions(-)
 
 diff --git a/sound/usb/Kconfig b/sound/usb/Kconfig
 index c570ae3..c4dcbad 100644
@@ -215,9 +222,18 @@ index 537102b..36ed703 100644
  
  	return ret;
 diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
-index a3f02dd..08ee254 100644
+index a3f02dd..3f27afe 100644
 --- a/sound/usb/caiaq/device.c
 +++ b/sound/usb/caiaq/device.c
+@@ -35,7 +35,7 @@
+ #include "input.h"
+ 
+ MODULE_AUTHOR("Daniel Mack <daniel@caiaq.de>");
+-MODULE_DESCRIPTION("caiaq USB audio, version 1.3.20");
++MODULE_DESCRIPTION("caiaq USB audio, version 1.3.21");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
+ 			 "{Native Instruments, RigKontrol3},"
 @@ -46,7 +46,8 @@ MODULE_SUPPORTED_DEVICE("{{Native Instruments, RigKontrol2},"
  			 "{Native Instruments, Audio 4 DJ},"
  			 "{Native Instruments, Audio 8 DJ},"
