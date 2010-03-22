@@ -1,18 +1,14 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: TWL4030: PM fix for output amplifiers
-Date: Mon, 22 Mar 2010 17:31:14 +0200
-Message-ID: <201003221731.14380.peter.ujfalusi@nokia.com>
-References: <1269264967-2003-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201003221646.08974.peter.ujfalusi@nokia.com>
-	<20100322150602.GD1379@rakim.wolfsonmicro.main>
+Subject: [PATCH v2] ASoC: TWL4030: PM fix for output amplifiers
+Date: Mon, 22 Mar 2010 17:46:37 +0200
+Message-ID: <1269272797-3471-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id B81B8103822
-	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 16:31:33 +0100 (CET)
-In-Reply-To: <20100322150602.GD1379@rakim.wolfsonmicro.main>
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03ABA2444C
+	for <alsa-devel@alsa-project.org>; Mon, 22 Mar 2010 16:47:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,100 +18,179 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 22 March 2010 17:06:03 ext Mark Brown wrote:
-> On Mon, Mar 22, 2010 at 04:46:08PM +0200, Peter Ujfalusi wrote:
-> > On Monday 22 March 2010 16:15:44 ext Mark Brown wrote:
-> > > I don't see any fundamental problem here - mostly this just maps on to
-> > > "if the widget is powered on write this value, otherwise write the
-> > > value configured by the control.".
-> > =
+Gain controls on outputs affect the power consumption
+when the gain is set to non 0 value.
 
-> > Hmm, I suppose it could be possible to pass the name of the DAPM widget,
-> > a bitmask to a control...
-> > Than in the handler in the core we could walk through the DAPM widgets,
-> > and find the one, check the status, and if it is on, we allow the write,
-> > otherwise we could use the mask to write only the things, that it is
-> > needed.
-> =
+Outputs with amps have one register to configure the
+routing and the gain:
+PREDL_CTL (0x25):
+bit 0: Voice enable
+bit 1: Audio L1 enable
+bit 2: Audio L2 enable
+bit 3: Audio R2 enable
+bit 4-5: Gain (0x0 - power down, 0x1 - 6dB, 0x2 - 0dB, 0x3 - -6dB)
 
-> Something like that, yes - the walk could happen at startup time to
-> avoid having to do it repeatedly.
+bit 0 - 3: is handled in DAPM domain (DAPM_MIXER)
+bit 4 - 5: has simple volume control
 
-Make sense.
+If there is no audio activity (BIAS_STANDBY), and
+user changes the volume, than the output amplifier will
+be enabled.
+If the user changes the routing (but the codec remains in
+BIAS_STANDBY), than the cached gain value also be written
+to the register, which enables the amplifier.
 
-> =
+The existing workaround for this is to have virtual
+PGAs associated with the outputs, and whit DAPM PMD
+the gain on the output will be forced to 0 (off) by
+bypassing the regcache.
+This failed to disable the amplifiers in several
+scenario (as mentioned above).
 
-> > But, in TWL case I'd like to filter out also the writes which is done by
-> > the DAPM widgets (which is visible from the user space, the mixers). As
-> > it is now, if user changes the mixer, which is associated with DAPM
-> > widget (and it is different than the PGA, they are DAPM_MIXER), than
-> > that write goes directly to the register, and this write takes the
-> > cached value, makes the changes and than writes it to register. This
-> > also enables the gain (which enables the amp, which takes power).
-> =
+Also if the codec is in BIAS_ON state, and user modifies
+a volume control, which path is actually not enabled, than
+that amplifier will be enabled as well, but it will
+be not turned off, since there is no DAPM path, which
+would make mute it.
 
-> Remember, the register cache is below the controls and transparent to
-> them - if the controls haven't written a value to the chip then it will
-> not appear in the register cache so other controls will not be affected.
+To prevent amps being enabled, when they are not
+needed, introduce the following workaround:
+Track the state of each of this type of output.
+In twl4030_write only allow actual write, when the
+given output is enabled, otherwise only update
+the reg_cache.
+The PGA event handlers on power up will write the cached
+value to the chip (restoring gain, routing selection).
+On power down 0 is written to the register (disabling
+the amp, and also just in case clearing the routing).
 
-Yes, but it also means, that the change will be not visible at all.
-I mean, if we did not update the reg_cache (when we should not write to the=
- HW), =
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+---
+ sound/soc/codecs/twl4030.c |   72 ++++++++++++++++++++++++++++++++++----------
+ 1 files changed, 56 insertions(+), 16 deletions(-)
 
-than that change will be gone.
-So you will only be able to change the gain on the output, when the path is =
-
-active?
-
-Also, I think, if we can somehow prevent the gain change on the HW, when th=
-e =
-
-associated DAPM widget is not active, we would still have the problem of th=
-e =
-
-DAPM_MIXER. That operates from the cache, and if the cache has no 0 for the =
-
-gain, than that will be written to the chip.
-
-How I see this: we can go and introduce new controls, DAPM widgets for all =
-type =
-
-just for the sake of the TWL codec. But at the end it will be still TWL =
-
-specific.
-
-I'm not saying that other codecs could not use some generic way (in a way, =
-that =
-
-you have described) to make their amps muted when they are not needed.
-What I'm saying, is that I don't see a generic way which can handle the TWL =
-
-codec.
-
-> > > Well, I was rather hoping I could convince you to make this more
-> > > generic.  But if that's not possible then yes, please do make the
-> > > commit message clearer.
-> > =
-
-> > I need to study other codes as well, before I could start doing somethi=
-ng
-> > more generic, which I totally agree would be beneficial for others as
-> > well. But for now, I would like to update the commit message, and come
-> > back later, and revisit the possibility of similar, and more generic
-> > ways of doing this.
-> =
-
-> I guess.
-
-I hope that I can convince you, that - again - the TWL codec is so special,=
- it =
-
-has to handled a bit differently.
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 6f5d4af..bf59b8a 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -135,9 +135,11 @@ struct twl4030_priv {
+ 
+ 	unsigned int sysclk;
+ 
+-	/* Headset output state handling */
+-	unsigned int hsl_enabled;
+-	unsigned int hsr_enabled;
++	/* Output (with associated amp) states */
++	u8 hsl_enabled, hsr_enabled;
++	u8 earpiece_enabled;
++	u8 predrivel_enabled, predriver_enabled;
++	u8 carkitl_enabled, carkitr_enabled;
+ };
+ 
+ /*
+@@ -173,12 +175,47 @@ static inline void twl4030_write_reg_cache(struct snd_soc_codec *codec,
+ static int twl4030_write(struct snd_soc_codec *codec,
+ 			unsigned int reg, unsigned int value)
+ {
++	struct twl4030_priv *twl4030 = codec->private_data;
++	int write_to_reg = 0;
++
+ 	twl4030_write_reg_cache(codec, reg, value);
+-	if (likely(reg < TWL4030_REG_SW_SHADOW))
+-		return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE, value,
+-					    reg);
+-	else
+-		return 0;
++	if (likely(reg < TWL4030_REG_SW_SHADOW)) {
++		/* Decide if the given register can be written */
++		switch (reg) {
++		case TWL4030_REG_EAR_CTL:
++			if (twl4030->earpiece_enabled)
++				write_to_reg = 1;
++			break;
++		case TWL4030_REG_PREDL_CTL:
++			if (twl4030->predrivel_enabled)
++				write_to_reg = 1;
++			break;
++		case TWL4030_REG_PREDR_CTL:
++			if (twl4030->predriver_enabled)
++				write_to_reg = 1;
++			break;
++		case TWL4030_REG_PRECKL_CTL:
++			if (twl4030->carkitl_enabled)
++				write_to_reg = 1;
++			break;
++		case TWL4030_REG_PRECKR_CTL:
++			if (twl4030->carkitr_enabled)
++				write_to_reg = 1;
++			break;
++		case TWL4030_REG_HS_GAIN_SET:
++			if (twl4030->hsl_enabled || twl4030->hsr_enabled)
++				write_to_reg = 1;
++			break;
++		default:
++			/* All other register can be written */
++			write_to_reg = 1;
++			break;
++		}
++		if (write_to_reg)
++			return twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
++						    value, reg);
++	}
++	return 0;
+ }
+ 
+ static void twl4030_codec_enable(struct snd_soc_codec *codec, int enable)
+@@ -525,26 +562,26 @@ static int micpath_event(struct snd_soc_dapm_widget *w,
+  * Output PGA builder:
+  * Handle the muting and unmuting of the given output (turning off the
+  * amplifier associated with the output pin)
+- * On mute bypass the reg_cache and mute the volume
+- * On unmute: restore the register content
++ * On mute bypass the reg_cache and write 0 to the register
++ * On unmute: restore the register content from the reg_cache
+  * Outputs handled in this way:  Earpiece, PreDrivL/R, CarkitL/R
+  */
+ #define TWL4030_OUTPUT_PGA(pin_name, reg, mask)				\
+ static int pin_name##pga_event(struct snd_soc_dapm_widget *w,		\
+ 		struct snd_kcontrol *kcontrol, int event)		\
+ {									\
+-	u8 reg_val;							\
++	struct twl4030_priv *twl4030 = w->codec->private_data;		\
+ 									\
+ 	switch (event) {						\
+ 	case SND_SOC_DAPM_POST_PMU:					\
++		twl4030->pin_name##_enabled = 1;			\
+ 		twl4030_write(w->codec, reg,				\
+ 			twl4030_read_reg_cache(w->codec, reg));		\
+ 		break;							\
+ 	case SND_SOC_DAPM_POST_PMD:					\
+-		reg_val = twl4030_read_reg_cache(w->codec, reg);	\
+-		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,	\
+-					reg_val & (~mask),		\
+-					reg);				\
++		twl4030->pin_name##_enabled = 0;			\
++		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,		\
++					0, reg);			\
+ 		break;							\
+ 	}								\
+ 	return 0;							\
+@@ -664,7 +701,10 @@ static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+ 		/* Headset ramp-up according to the TRM */
+ 		hs_pop |= TWL4030_VMID_EN;
+ 		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
+-		twl4030_write(codec, TWL4030_REG_HS_GAIN_SET, hs_gain);
++		/* Actually write to the register */
++		twl_i2c_write_u8(TWL4030_MODULE_AUDIO_VOICE,
++					hs_gain,
++					TWL4030_REG_HS_GAIN_SET);
+ 		hs_pop |= TWL4030_RAMP_EN;
+ 		twl4030_write(codec, TWL4030_REG_HS_POPN_SET, hs_pop);
+ 		/* Wait ramp delay time + 1, so the VMID can settle */
+-- 
+1.7.0.2
