@@ -1,20 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/3] ASoC: ak4642: Add pll select support
-Date: Tue, 23 Mar 2010 10:10:23 +0000
-Message-ID: <1269339023.3754.32.camel@odin>
+Subject: Re: [PATCH 3/3] ASoC: ak4642: Add enhanced sampling
+ rate
+Date: Tue, 23 Mar 2010 10:10:40 +0000
+Message-ID: <1269339040.3754.33.camel@odin>
 References: <uvdcn4hx0.wl%morimoto.kuninori@renesas.com>
-	<utys74hwf.wl%morimoto.kuninori@renesas.com>
+	<ur5nb4hw5.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f195.google.com (mail-iw0-f195.google.com
-	[209.85.223.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8204E103853
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 11:10:29 +0100 (CET)
-Received: by iwn33 with SMTP id 33so5292160iwn.23
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 03:10:25 -0700 (PDT)
-In-Reply-To: <utys74hwf.wl%morimoto.kuninori@renesas.com>
+Received: from mail-fx0-f217.google.com (mail-fx0-f217.google.com
+	[209.85.220.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id 224ED10385D
+	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 11:16:48 +0100 (CET)
+Received: by fxm9 with SMTP id 9so5846260fxm.4
+	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 03:16:47 -0700 (PDT)
+In-Reply-To: <ur5nb4hw5.wl%morimoto.kuninori@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,12 +30,11 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wol
 List-Id: alsa-devel@alsa-project.org
 
 On Tue, 2010-03-23 at 16:27 +0900, Kuninori Morimoto wrote:
-> Current ak4642 was not able to select pll.
-> This patch add support it.
-> It still expect PLL base input pin is MCKI.
-> see Table 5 "setting of PLL Mode" of datasheet
-> 
 > Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+> ---
+>  sound/soc/codecs/ak4642.c |   68 +++++++++++++++++++++++++++++++++++++++++---
+>  1 files changed, 63 insertions(+), 5 deletions(-)
+> 
 
 Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
