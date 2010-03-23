@@ -1,11 +1,14 @@
 From: linux@audioscience.com
-Subject: [PATCH 0/7] snd-asihpi playback improvement + others
-Date: Tue, 23 Mar 2010 21:14:20 +1300
-Message-ID: <1269332067-25959-1-git-send-email-linux@audioscience.com>
+Subject: [PATCH 1/7] Remove obsolete comment Signed-off-by:
+ Eliot Blennerhassett <eblennerhassett@audioscience.com>
+Date: Tue, 23 Mar 2010 21:14:21 +1300
+Message-ID: <1269332067-25959-2-git-send-email-linux@audioscience.com>
+References: <1269332067-25959-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-reply-to: <1269332067-25959-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,32 +24,23 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-Important:  alsa-firmware/asihpi should also be updated with contents of
-http://www.audioscience.com/internet/download/firmware/dspbins40313.zip
+---
+ pci/asihpi/hpioctl.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-asihpi.c + hpi6205.c fix choppy audio playback on busmastering adapters
-the rest are minor fixes or cosmetic
-
-Eliot Blennerhassett (7):
-  Remove obsolete comment
-  - const correct pointer parameters.     - add a new stream state wait
-    and function
-  Reinit response size for every msg/response transaction. Minor fix
-    const ptr
-  Bump lib version due to added and removed APIs
-  Use adapter properties for stream buffer constraints.     Default to
-    less logging, remove VPRINTK3     Log buffer info in decimal.
-  Keep HPI buffer pointers in sync with ALSA after prewrite.
-  Support mic control caching.  Move an enum out of public api.
-
- pci/asihpi/asihpi.c       |  102 +++++----
- pci/asihpi/hpi.h          |  513 +++++++++++++++++++++++----------------------
- pci/asihpi/hpi6205.c      |   31 ++--
- pci/asihpi/hpi_internal.h |   33 ++-
- pci/asihpi/hpicmn.c       |   10 +
- pci/asihpi/hpidebug.h     |    6 +-
- pci/asihpi/hpifunc.c      |  469 ++++++++++++++++++++++-------------------
- pci/asihpi/hpimsginit.c   |    2 +-
- pci/asihpi/hpimsgx.c      |   26 ++-
- pci/asihpi/hpioctl.c      |    3 -
- 10 files changed, 641 insertions(+), 554 deletions(-)
+diff --git a/pci/asihpi/hpioctl.c b/pci/asihpi/hpioctl.c
+index 247d5e9..dacef35 100644
+--- a/pci/asihpi/hpioctl.c
++++ b/pci/asihpi/hpioctl.c
+@@ -320,9 +320,6 @@ int __devinit asihpi_adapter_probe(
+ 	adapter.pci = pci_dev;
+ 
+ 	nm = HPI_MAX_ADAPTER_MEM_SPACES;
+-	/* temporary for DM648, handled in hpi1000 */
+-	if (pci_dev->device == 0xB003)
+-		nm = 0;	/* don't map any for this device */
+ 
+ 	for (idx = 0; idx < nm; idx++) {
+ 		HPI_DEBUG_LOG(INFO, "Resource %d %s %08llx-%08llx %04llx\n",
+-- 
+1.7.0.rc0.8.ge3f67d
