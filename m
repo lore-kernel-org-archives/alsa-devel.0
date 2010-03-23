@@ -1,20 +1,20 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: TWL4030: PM fix for output	amplifiers
-Date: Tue, 23 Mar 2010 10:02:10 +0000
-Message-ID: <20100323100209.GA7100@sirena.org.uk>
-References: <1269264967-2003-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100322161928.GA30295@rakim.wolfsonmicro.main>
-	<201003230905.39319.peter.ujfalusi@nokia.com>
-	<201003230959.14186.peter.ujfalusi@nokia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/3] ASoC: ak4642: Add pll select support
+Date: Tue, 23 Mar 2010 10:10:23 +0000
+Message-ID: <1269339023.3754.32.camel@odin>
+References: <uvdcn4hx0.wl%morimoto.kuninori@renesas.com>
+	<utys74hwf.wl%morimoto.kuninori@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CBD27103853
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 11:02:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <201003230959.14186.peter.ujfalusi@nokia.com>
+Received: from mail-iw0-f195.google.com (mail-iw0-f195.google.com
+	[209.85.223.195])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8204E103853
+	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 11:10:29 +0100 (CET)
+Received: by iwn33 with SMTP id 33so5292160iwn.23
+	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 03:10:25 -0700 (PDT)
+In-Reply-To: <utys74hwf.wl%morimoto.kuninori@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,28 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 23, 2010 at 09:59:13AM +0200, Peter Ujfalusi wrote:
+On Tue, 2010-03-23 at 16:27 +0900, Kuninori Morimoto wrote:
+> Current ak4642 was not able to select pll.
+> This patch add support it.
+> It still expect PLL base input pin is MCKI.
+> see Table 5 "setting of PLL Mode" of datasheet
+> 
+> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
 
-> /*
->  * Gain controls tied to outputs
->  * -6 dB to 6 dB in 6 dB steps (mute instead of -12)
->  */
-> static const unsigned int output_tlv[] = {
-> 	TLV_DB_RANGE_HEAD(4),
-> 	0, 0, TLV_DB_SCALE_ITEM(-1200, 0,  1),
-> 	3, 3, TLV_DB_SCALE_ITEM(-600, 0, 0),
-> 	2, 2, TLV_DB_SCALE_ITEM(0, 0, 0),
-> 	1, 1, TLV_DB_SCALE_ITEM(600, 0, 0),
-> };
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-> I'm not sure about the tlv declaration, but is there a way to actually map the 
-> gain/power control in the TWL in a standard way?
-
-I'd expect that to work in that userspace will see the various values
-with the expected gains but I'd not expect that applications would
-reorder the values so it'll look odd in the UI.  But I've not actually
-tried it.
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
