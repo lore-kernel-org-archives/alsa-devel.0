@@ -1,18 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [patch] wm8994: playback => capture
-Date: Wed, 24 Mar 2010 13:51:46 +0000
-Message-ID: <1269438706.3798.53.camel@odin>
+Date: Wed, 24 Mar 2010 14:04:45 +0000
+Message-ID: <20100324140445.GD26453@rakim.wolfsonmicro.main>
 References: <20100324115834.GG21571@bicker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
-	[209.85.218.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id F3E7C24435
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 14:51:51 +0100 (CET)
-Received: by bwz20 with SMTP id 20so8703317bwz.32
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 06:51:50 -0700 (PDT)
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 143382440C
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 15:04:48 +0100 (CET)
+Content-Disposition: inline
 In-Reply-To: <20100324115834.GG21571@bicker>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,20 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>
-Cc: alsa-devel@alsa-project.org, Joonyoung Shim <jy0922.shim@samsung.com>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Dan Carpenter <error27@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Joonyoung Shim <jy0922.shim@samsung.com>, alsa-
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-03-24 at 14:58 +0300, Dan Carpenter wrote:
+On Wed, Mar 24, 2010 at 02:58:34PM +0300, Dan Carpenter wrote:
 > Sparse caught that initialize "playback" two times instead of
 > initializing "capture".
 > 
 > Signed-off-by: Dan Carpenter <error27@gmail.com>
-> 
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Applied, thanks.
