@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [rfc patch] wm8994: range checking issue
-Date: Wed, 24 Mar 2010 12:59:46 +0000
-Message-ID: <20100324125946.GA26453@rakim.wolfsonmicro.main>
-References: <20100324120107.GH21571@bicker>
+Subject: Re: [PATCH] ASoC: Fix passing platform_data to
+	ac97	bus users and fix a leak.
+Date: Wed, 24 Mar 2010 13:06:12 +0000
+Message-ID: <20100324130611.GA26910@sirena.org.uk>
+References: <4BA99514.8020708@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 88B1624350
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 13:59:49 +0100 (CET)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 03DED2438E
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 14:06:13 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20100324120107.GH21571@bicker>
+In-Reply-To: <4BA99514.8020708@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,24 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Joonyoung Shim <jy0922.shim@samsung.com>, alsa-
+To: Graham Gower <graham.gower@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 24, 2010 at 03:01:07PM +0300, Dan Carpenter wrote:
-> Smatch complained about BUG_ON(reg > WM8994_MAX_REGISTER) because the
-> actual number of elements in the array was WM8994_REG_CACHE_SIZE + 1.
+On Wed, Mar 24, 2010 at 02:59:08PM +1030, Graham Gower wrote:
+> snd_soc_new_ac97_codec() allocates for codec->ac97, snd_soc_new_pcms()
+> then sets the platform_data. However, snd_ac97_mixer() overwrites
+> codec->ac97 with its own allocated struct snd_ac97.
 
-> I changed the BUG_ON() to return -EINVAL.
+Please remember to CC maintainers on patches, this helps avoid patches
+getting lost in mailing lists - the procedure in SubmittingPatches
+should generally be followed.
 
-Please don't introduce orthogonal changes like this in patches, it's bad
-practice and increases the chances of your patch being nacked.
+> @@ -118,11 +120,21 @@ static int ac97_soc_probe(struct platform_device *pdev)
+>  	if (ret < 0)
+>  		goto bus_err;
+>  
+> +	/* free the ac97 here so that we don't leak it in snd_ac97_mixer */
+> +	snd_soc_free_ac97_codec(codec);
+> +
 
-> I was confused why WM8994_REG_CACHE_SIZE was different from the actual
-> size of ->reg_cache and I was concerned because some places used 
-> ARRAY_SIZE() to find the end of the array and other places used 
-> WM8994_REG_CACHE_SIZE.  In my patch, I made them the same.
+Like Liam says this seems wrong - why would we have allocated this early
+on in the probe() only to free it later?
 
-This is caused by confusion with the MAX_CACHED_REGISTER definition in
-the header.  Best to use that one consistently, I guess - I've got a
-sneaking suspicion something has gone AWOL in the driver publication
-process.
+Note also that this code needs to work with both ASoC-native AC97
+drivers and the ac97.c bodge.
