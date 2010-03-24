@@ -1,18 +1,17 @@
-From: Jan Depner <eviltwin69@cableone.net>
-Subject: TASCAM US-1641
-Date: Tue, 23 Mar 2010 20:34:43 -0500
-Message-ID: <1269394483.6635.11.camel@eviltwin>
+From: Graham Gower <graham.gower@gmail.com>
+Subject: [PATCH] ASoC: Fix passing platform_data to ac97 bus
+ users and fix a leak.
+Date: Wed, 24 Mar 2010 14:59:08 +1030
+Message-ID: <4BA99514.8020708@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from s7.cableone.net (s7.cableone.net [24.116.0.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8E65E2414B
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 02:34:46 +0100 (CET)
-Received: from [192.168.0.2] (unverified [96.19.139.143])
-	by s7.cableone.net (CableOne SMTP Service s7) with ESMTP id
-	31283629-1872270
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 18:34:44 -0700
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4BD35244B8
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 05:29:16 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 14so846014qwa.56
+	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2010 21:29:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA_DEVEL <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A couple of weeks ago I purchased a TASCAM US-1641 on the off chance
-that I might be able to get the thing working on Linux (or give up and
-use it in Windows ;-)  I have built the 2.6.33 kernel and started
-playing around in Karsten Wiese's US-122L module to see what I could get
-to happen.  I did this on the off chance that TASCAM just increased the
-number of ports but used the same protocol for communication that they
-used for the US-122L.  I added an entry for the US-1641 in us122l.h
-(#define USB_ID_US1641 0x8017) and then added an entry to the
-snd_us122l_usb_id_table in us122l.c.  After recompiling and installing
-the modules I get the following in my dmesg output when I turn the
-device on:
+snd_soc_new_ac97_codec() allocates for codec->ac97, snd_soc_new_pcms()
+then sets the platform_data. However, snd_ac97_mixer() overwrites
+codec->ac97 with its own allocated struct snd_ac97.
 
-usb 1-2: new high speed USB device using ehci_hcd and address 3
-couldn't __get_free_pages()
-snd-usb-us122l: probe of 1-2:1.1 failed with error -22
+Signed-off-by: Graham Gower <graham.gower@gmail.com>
+---
+ sound/soc/codecs/ac97.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
-
-I don't have any problem with spending a lot of time on this (actually,
-it's kind of fascinating) and I am proficient in C but I could use some
-help.  I'm hoping that someone on this list might have some information
-that could help me in trying to get this thing working (I've even got
-UsbSnoop installed on my Windows partition).  Any information that could
-help would be greatly appreciated.
-
-Cheers,
-Jan Depner
+diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
+index a1bbe16..64ec797 100644
+--- a/sound/soc/codecs/ac97.c
++++ b/sound/soc/codecs/ac97.c
+@@ -80,9 +80,11 @@ static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
+ static int ac97_soc_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_card *card = socdev->card;
+ 	struct snd_soc_codec *codec;
+ 	struct snd_ac97_bus *ac97_bus;
+ 	struct snd_ac97_template ac97_template;
++	int i;
+ 	int ret = 0;
+ 
+ 	printk(KERN_INFO "AC97 SoC Audio Codec %s\n", AC97_VERSION);
+@@ -118,11 +120,21 @@ static int ac97_soc_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto bus_err;
+ 
++	/* free the ac97 here so that we don't leak it in snd_ac97_mixer */
++	snd_soc_free_ac97_codec(codec);
++
+ 	memset(&ac97_template, 0, sizeof(struct snd_ac97_template));
+ 	ret = snd_ac97_mixer(ac97_bus, &ac97_template, &codec->ac97);
+ 	if (ret < 0)
+ 		goto bus_err;
+ 
++	for (i = 0; i < card->num_links; i++) {
++		if (card->dai_link[i].codec_dai->ac97_control) {
++			snd_ac97_dev_add_pdata(codec->ac97,
++				card->dai_link[i].cpu_dai->ac97_pdata);
++		}
++	}
++
+ 	return 0;
+ 
+ bus_err:
+-- 
+1.6.4
