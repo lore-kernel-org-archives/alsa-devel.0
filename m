@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [rfc patch] wm8994: range checking issue
-Date: Wed, 24 Mar 2010 14:31:39 +0000
-Message-ID: <20100324143139.GE26453@rakim.wolfsonmicro.main>
-References: <20100324120107.GH21571@bicker>
-	<20100324125946.GA26453@rakim.wolfsonmicro.main>
-	<20100324140621.GI21571@bicker>
+From: Wolf Halton <wolf.halton@gmail.com>
+Subject: Would it be possible to Alias current versions??
+Date: Wed, 24 Mar 2010 10:40:29 -0400
+Message-ID: <f4a4e3ed1003240740j2cfe42a8s618ea2aa8b3ee1af@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 977731037EE
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 15:31:41 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20100324140621.GI21571@bicker>
+Received: from qw-out-1920.google.com (qw-out-1920.google.com [74.125.92.147])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3E8110388B
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 15:40:32 +0100 (CET)
+Received: by qw-out-1920.google.com with SMTP id 14so963570qwa.56
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 07:40:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,39 +20,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Joonyoung Shim <jy0922.shim@samsung.com>, alsa-
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 24, 2010 at 05:06:21PM +0300, Dan Carpenter wrote:
-> On Wed, Mar 24, 2010 at 12:59:46PM +0000, Mark Brown wrote:
+I am working on fixing a script that was supposed to update alsa drivers on
+ubuntu.  I am trying to figure out how to get the script to wget the most
+recent versions of everything without having to rewrite the script every
+time.  How difficult would it be to alias the most recent versions?  for
+instance ftp://ftp.alsa-project.org/pub/driver/alsa-driver-current.tar.bz2
+I could work up a script for you that would check the current stable
+versions and update the aliases.
 
-> > This is caused by confusion with the MAX_CACHED_REGISTER definition in
-> > the header.  Best to use that one consistently, I guess - I've got a
-> > sneaking suspicion something has gone AWOL in the driver publication
-> > process.
+-Wolf Halton
 
-> Hm...  That sounds more involved than I anticipated.  I don't have the
-> hardware and don't feel comfortable making complicated changes if I
-> can't test them.
-
-Not really, it's just a case of picking the value to standardise on for
-the size of the array instead of the one you picked.  However, now I
-look at it again REG_CACHE_SIZE is the one we want and _MAX_CACHED_REGISTER 
-is bitrot which should be removed.
-
-I didn't look as closely as I might due to the extraneous changes for
-BUG_ON() I mentioned which meant the patch wouldn't be applied anyway.
-Those shouldn't be changed because there's no way anything in the kernel
-should be generating a reference to a register which doesn't physically
-exist (which is what they check for).
-
-> Can someone else take care of this.
-
-Actually, now I look even more closely there's further issues with the
-patch - you're missing the fact that the register cache is only used for
-non-volatile registers but all registers beyond the end of the register
-cache are treated as volatile.  This means that I'm not convinced there
-are any actual problems here, I'm not sure what analysis smatch is doing
-but it looks to have generated false positives here.
-
-I'll send a patch for _MAX_CACHED_REGISTER later today.
+-- 
+This Apt Has Super Cow Powers - http://sourcefreedom.com
