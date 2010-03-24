@@ -1,29 +1,23 @@
-From: Bryan Green <bryan.d.green@nasa.gov>
-Subject: Re:
-	=?utf-8?q?no_audio_output_with_TYAN_S7025_motherboar?=
-	=?utf-8?q?d_and=09Realtek_ALC262?=
-Date: Wed, 24 Mar 2010 18:26:13 +0000 (UTC)
-Message-ID: <loom.20100324T191745-418@post.gmane.org>
-References: <20100303185454.4D36231781@vis06.nas.nasa.gov>
-	<1267694159.9133.7.camel@mattotaupa>
-	<loom.20100310T201304-875@post.gmane.org>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: [PATCH 0/7] snd-asihpi playback improvement +
+	others
+Date: Thu, 25 Mar 2010 09:05:49 +1300
+Message-ID: <4BAA709D.3060308@audioscience.com>
+References: <1269332067-25959-1-git-send-email-linux@audioscience.com>
+	<s5hvdcnt9mf.wl%tiwai@suse.de> <s5hvdcmq8rg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0BC8C10388E
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 19:26:40 +0100 (CET)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1NuVHr-0005Hm-FG
-	for alsa-devel@alsa-project.org; Wed, 24 Mar 2010 19:26:39 +0100
-Received: from vis06.nas.nasa.gov ([129.99.125.6])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 19:26:39 +0100
-Received: from bryan.d.green by vis06.nas.nasa.gov with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 19:26:39 +0100
+Received: from smtp4.clear.net.nz (smtp4.clear.net.nz [203.97.37.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 05F7B1038A1
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 21:06:00 +0100 (CET)
+Received: from [192.168.1.6]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp4.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0KZS00MAZYHP2920@smtp4.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 25 Mar 2010 09:05:50 +1300 (NZDT)
+In-reply-to: <s5hvdcmq8rg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,35 +27,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> OK, now I committed all your revised patches.
+> Also firmware package is updated, too.
 
-Bryan Green <bryan.d.green <at> nasa.gov> writes:
-> 
-> Paul Menzel <paulepanter <at> users.sourceforge.net> writes:
-> > 
-> > Am Mittwoch, den 03.03.2010, 10:54 -0800 schrieb Bryan Green:
-> > > I have several systems with a TYAN S7025 motherboard and Realtek ALC262
-> > > chipset.  I have not been able to produce any audio output.
-> > > ...
-> > 
-> > Have you tried different values for the model parameter [1]? If I am not
-> > mistaken you can use HDA-Analyzer [2] to change such values. But I never
-> > used it myself.
-> 
-> I tried a few values for 'model'.  I have not tried HDA-Analyzer.  I had
-> hoped to avoid going in that deep.
-> 
-> Thanks,
-> 
-> -bryan
-> 
+Great, thanks.
 
+One last thing, please also remove from firmware/asihpi the files
+dsp4300.bin and dsp5200.bin
 
-I've found that the 'hp-bpc' model works for this motherboard/chip.
+Or I could send you the -185K binary diff that removed them ;)
+with the following signoff:
 
-At least one key factor seems to be the line_out value of '0x1b', rather than
-'0x14', which it had been defaulting to when model was 'auto'.
+Remove obsolete firmware.
 
--bryan
+Signed-off-by: Eliot Blennerhassett
+
+thanks
