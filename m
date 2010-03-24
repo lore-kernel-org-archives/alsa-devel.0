@@ -1,57 +1,67 @@
-From: Bill Davidsen <davidsen@tmr.com>
-Subject: Re: 2.6.34-rc1: regression: ^Z no longer stops sound
-Date: Wed, 24 Mar 2010 12:47:37 -0400
-Message-ID: <4BAA4229.9010506@tmr.com>
-References: <20100314075831.GA13457@elf.ucw.cz> <hnjjud$k26$1@dough.gmane.org> <20100323135942.GB1703@ucw.cz> <4BA8CB73.80400@ladisch.de>
+From: Bryan Green <bryan.d.green@nasa.gov>
+Subject: Re:
+	=?utf-8?q?no_audio_output_with_TYAN_S7025_motherboar?=
+	=?utf-8?q?d_and=09Realtek_ALC262?=
+Date: Wed, 24 Mar 2010 18:26:13 +0000 (UTC)
+Message-ID: <loom.20100324T191745-418@post.gmane.org>
+References: <20100303185454.4D36231781@vis06.nas.nasa.gov>
+	<1267694159.9133.7.camel@mattotaupa>
+	<loom.20100310T201304-875@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4BA8CB73.80400@ladisch.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BC8C10388E
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 19:26:40 +0100 (CET)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1NuVHr-0005Hm-FG
+	for alsa-devel@alsa-project.org; Wed, 24 Mar 2010 19:26:39 +0100
+Received: from vis06.nas.nasa.gov ([129.99.125.6])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 19:26:39 +0100
+Received: from bryan.d.green by vis06.nas.nasa.gov with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 19:26:39 +0100
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Pavel Machek wrote:
->   
->> On Sun 2010-03-14 17:20:13, Bill Davidsen wrote:
->>     
->>> Pavel Machek wrote:
->>>       
->>>> In 2.6.33, hitting ^Z stopped mpg123 in a way you'd expect (both on
->>>> thinkpad and geode notebook).
->>>>
->>>> On 2.6.34-rc1, hit ^Z and sound starts looping.
->>>>         
->>> That's not new, I have seen it back as far as 2.6.27.25 doing a suspend 
->>> in a VM (KVM, no libvirt). But it only happens a few times a year, so I 
->>> never chased it. I hate to report an occasional problem in an obsolete 
->>> kernel, and I can't reproduce it.
->>>
->>> Does it happen repeatably with the new kernel?
->>>       
->> It happened reliably so far, yes.
->>     
->
-> This sounds as if the device has been configured to ignore underruns.
-> What are the contents of /proc/asound/card0/pcm0p/sub0/{sw_params,status}
-> when it's looping, and when it's really suspended?
->   
 
-If you can give me a hint how to read /proc when the machine is 
-suspended, other than waking it up, I'll certainly check the next time I 
-see it.
+Bryan Green <bryan.d.green <at> nasa.gov> writes:
+> 
+> Paul Menzel <paulepanter <at> users.sourceforge.net> writes:
+> > 
+> > Am Mittwoch, den 03.03.2010, 10:54 -0800 schrieb Bryan Green:
+> > > I have several systems with a TYAN S7025 motherboard and Realtek ALC262
+> > > chipset.  I have not been able to produce any audio output.
+> > > ...
+> > 
+> > Have you tried different values for the model parameter [1]? If I am not
+> > mistaken you can use HDA-Analyzer [2] to change such values. But I never
+> > used it myself.
+> 
+> I tried a few values for 'model'.  I have not tried HDA-Analyzer.  I had
+> hoped to avoid going in that deep.
+> 
+> Thanks,
+> 
+> -bryan
+> 
 
-But after reading your thought on underruns, I think you right. I see 
-from a note  I wrote myself that I get this while pushing a wav file 
-over the network to run "play" (from sox) on another machine. Every once 
-in a while it finds a musical phrase it really likes. I had assumed it 
-was a bug in sox, but a bug or mis-configure in the device fits all of 
-the observed cases I've seen.
 
--- 
-Bill Davidsen <davidsen@tmr.com>
-  "We can't solve today's problems by using the same thinking we
-   used in creating them." - Einstein
+I've found that the 'hp-bpc' model works for this motherboard/chip.
+
+At least one key factor seems to be the line_out value of '0x1b', rather than
+'0x14', which it had been defaulting to when model was 'auto'.
+
+-bryan
