@@ -1,33 +1,44 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [patch] wm8994: playback => capture
-Date: Wed, 24 Mar 2010 14:04:45 +0000
-Message-ID: <20100324140445.GD26453@rakim.wolfsonmicro.main>
-References: <20100324115834.GG21571@bicker>
+From: Dan Carpenter <error27@gmail.com>
+Subject: Re: [rfc patch] wm8994: range checking issue
+Date: Wed, 24 Mar 2010 17:06:21 +0300
+Message-ID: <20100324140621.GI21571@bicker>
+References: <20100324120107.GH21571@bicker> <20100324125946.GA26453@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 143382440C
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 15:04:48 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20100324115834.GG21571@bicker>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <error27@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Joonyoung Shim <jy0922.shim@samsung.com>, alsa-
+In-Reply-To: <20100324125946.GA26453@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Joonyoung Shim <jy0922.shim@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 24, 2010 at 02:58:34PM +0300, Dan Carpenter wrote:
-> Sparse caught that initialize "playback" two times instead of
-> initializing "capture".
+On Wed, Mar 24, 2010 at 12:59:46PM +0000, Mark Brown wrote:
+> On Wed, Mar 24, 2010 at 03:01:07PM +0300, Dan Carpenter wrote:
+> > Smatch complained about BUG_ON(reg > WM8994_MAX_REGISTER) because the
+> > actual number of elements in the array was WM8994_REG_CACHE_SIZE + 1.
 > 
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
+> > I changed the BUG_ON() to return -EINVAL.
+> 
+> Please don't introduce orthogonal changes like this in patches, it's bad
+> practice and increases the chances of your patch being nacked.
+> 
+> > I was confused why WM8994_REG_CACHE_SIZE was different from the actual
+> > size of ->reg_cache and I was concerned because some places used 
+> > ARRAY_SIZE() to find the end of the array and other places used 
+> > WM8994_REG_CACHE_SIZE.  In my patch, I made them the same.
+> 
+> This is caused by confusion with the MAX_CACHED_REGISTER definition in
+> the header.  Best to use that one consistently, I guess - I've got a
+> sneaking suspicion something has gone AWOL in the driver publication
+> process.
 
-Applied, thanks.
+
+Hm...  That sounds more involved than I anticipated.  I don't have the
+hardware and don't feel comfortable making complicated changes if I
+can't test them.
+
+Can someone else take care of this.
+
+regards,
+dan carpenter
