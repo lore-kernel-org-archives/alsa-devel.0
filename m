@@ -1,19 +1,19 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: TASCAM US-1641
-Date: Wed, 24 Mar 2010 23:50:20 +0100
-Message-ID: <20100324225020.GO30801@buzzloop.caiaq.de>
-References: <1269394483.6635.11.camel@eviltwin>
-	<20100324055626.GH30801@buzzloop.caiaq.de>
-	<1269468166.7429.7.camel@eviltwin>
+From: Graham Gower <graham.gower@gmail.com>
+Subject: Re: [PATCH] ASoC: Fix passing platform_data to ac97
+ bus users and fix a leak.
+Date: Thu, 25 Mar 2010 10:52:12 +1030
+Message-ID: <4BAAACB4.6030303@gmail.com>
+References: <4BA99514.8020708@gmail.com> <20100324130611.GA26910@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6466D243C1
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 23:50:25 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1269468166.7429.7.camel@eviltwin>
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 164B624469
+	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 01:22:24 +0100 (CET)
+Received: by wwb34 with SMTP id 34so645800wwb.38
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 17:22:22 -0700 (PDT)
+In-Reply-To: <20100324130611.GA26910@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +23,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jan Depner <eviltwin69@cableone.net>
-Cc: ALSA_DEVEL <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 24, 2010 at 05:02:46PM -0500, Jan Depner wrote:
-> On Wed, 2010-03-24 at 06:56 +0100, Daniel Mack wrote:
-> > On Tue, Mar 23, 2010 at 08:34:43PM -0500, Jan Depner wrote:
-> > I suggest adding some printk()s to the driver and see what it actually
-> > does and which values it passes around. Most probably there is more
-> > differences in the data format, and descriptors and/or message blocks
-> > have different meanings for this hardware model.
-> > 
-> 
->     I did as suggested and got back reasonable appearing numbers for
-> rate, use_packsize, and period_frames of 44100, 36, and 256 respectively
-> but am not sure how to relate this to my interface.  Is there some
-> documentation somewhere that would explain the output of lsusb -v with
-> respect to variable names in us122l.c.  My problem here is that I don't
-> know what would actually be reasonable for this interface nor how to
-> find out.
+Mark, Liam,
 
-Sorry I can't really help here. I've never dealt with any TASCAM
-interface, and I don't know how close they are to any USB class
-interface. Maybe Karsten can tell us more about that. 
+As requested, this patch removes the initial allocation of codec->ac97.
 
->     Many thanks for your help with this.  Karsten had asked me to get
-> back with him if I got one of these but my email to him must have gone
-> to the spam filter as I haven't heard anything.
 
-Cc'ed him on this mail :)
+Signed-off-by: Graham Gower <graham.gower@gmail.com>
+---
+ sound/soc/codecs/ac97.c |   15 +++++++++------
+ sound/soc/soc-core.c    |    2 +-
+ 2 files changed, 10 insertions(+), 7 deletions(-)
 
-Daniel
+diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
+index a1bbe16..bcfa532 100644
+--- a/sound/soc/codecs/ac97.c
++++ b/sound/soc/codecs/ac97.c
+@@ -80,9 +80,11 @@ static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
+ static int ac97_soc_probe(struct platform_device *pdev)
+ {
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_card *card = socdev->card;
+ 	struct snd_soc_codec *codec;
+ 	struct snd_ac97_bus *ac97_bus;
+ 	struct snd_ac97_template ac97_template;
++	int i;
+ 	int ret = 0;
+ 
+ 	printk(KERN_INFO "AC97 SoC Audio Codec %s\n", AC97_VERSION);
+@@ -102,12 +104,6 @@ static int ac97_soc_probe(struct platform_device *pdev)
+ 	INIT_LIST_HEAD(&codec->dapm_widgets);
+ 	INIT_LIST_HEAD(&codec->dapm_paths);
+ 
+-	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
+-	if (ret < 0) {
+-		printk(KERN_ERR "ASoC: failed to init gen ac97 glue\n");
+-		goto err;
+-	}
+-
+ 	/* register pcms */
+ 	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+ 	if (ret < 0)
+@@ -123,6 +119,13 @@ static int ac97_soc_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto bus_err;
+ 
++	for (i = 0; i < card->num_links; i++) {
++		if (card->dai_link[i].codec_dai->ac97_control) {
++			snd_ac97_dev_add_pdata(codec->ac97,
++				card->dai_link[i].cpu_dai->ac97_pdata);
++		}
++	}
++
+ 	return 0;
+ 
+ bus_err:
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c8b0556..5704923 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1548,7 +1548,7 @@ int snd_soc_new_pcms(struct snd_soc_device *socdev, int idx, const char *xid)
+ 			mutex_unlock(&codec->mutex);
+ 			return ret;
+ 		}
+-		if (card->dai_link[i].codec_dai->ac97_control) {
++		if (card->dai_link[i].codec_dai->ac97_control && codec->ac97) {
+ 			snd_ac97_dev_add_pdata(codec->ac97,
+ 				card->dai_link[i].cpu_dai->ac97_pdata);
+ 		}
+-- 
+1.6.4
