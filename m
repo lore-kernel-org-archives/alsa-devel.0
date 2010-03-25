@@ -1,17 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/4 v2] ASoC: fsi: Add FIFO size calculate
-Date: Thu, 25 Mar 2010 16:04:27 +0000
-Message-ID: <20100325160426.GA3025@rakim.wolfsonmicro.main>
-References: <ubpecvh9k.wl%morimoto.kuninori@renesas.com>
+Subject: Re: [PATCH] ASoC: Fix passing platform_data to ac97
+ bus users and fix a leak.
+Date: Thu, 25 Mar 2010 16:09:32 +0000
+Message-ID: <20100325160932.GB3025@rakim.wolfsonmicro.main>
+References: <4BA99514.8020708@gmail.com> <20100324130611.GA26910@sirena.org.uk>
+	<4BAAACB4.6030303@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8C97E24418
-	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 17:04:30 +0100 (CET)
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 523492441C
+	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 17:09:33 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <ubpecvh9k.wl%morimoto.kuninori@renesas.com>
+In-Reply-To: <4BAAACB4.6030303@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,19 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Graham Gower <graham.gower@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 25, 2010 at 07:15:51PM +0900, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-> ---
-> v1 -> v2
+On Thu, Mar 25, 2010 at 10:52:12AM +1030, Graham Gower wrote:
+> Mark, Liam,
 > 
-> o move calculate area to fsi_fifo_init
-> o modify fifo calculation way
-> o Add tiny document for fifo calculation
+> As requested, this patch removes the initial allocation of codec->ac97.
 
-This patch is fine but it doesn't apply against for-2.6.35.  Could you
-please check and resubmit?  I suspect a collision with the previously
-applied patches.
+Please recheck SubmittingPatches - this'd end up in the changelog (and
+now your changelog is empty so it's not clear what the actual problem is
+any more).  I've applied this with a changelog added and...
+
+>  		}
+> -		if (card->dai_link[i].codec_dai->ac97_control) {
+> +		if (card->dai_link[i].codec_dai->ac97_control && codec->ac97) {
+>  			snd_ac97_dev_add_pdata(codec->ac97,
+>  				card->dai_link[i].cpu_dai->ac97_pdata);
+
+...a comment here since otherwise it's not obvious why we're not
+complaining about the missing codec->ac97 otherwise.
