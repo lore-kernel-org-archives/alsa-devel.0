@@ -1,49 +1,58 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2/4 v2] ASoC: fsi: Add FIFO size calculate
-Date: Thu, 25 Mar 2010 10:42:02 +0000
-Message-ID: <1269513722.3758.35.camel@odin>
-References: <ubpecvh9k.wl%morimoto.kuninori@renesas.com>
+From: Dan Carpenter <error27@gmail.com>
+Subject: Re: [rfc patch] wm8994: range checking issue
+Date: Thu, 25 Mar 2010 13:58:22 +0300
+Message-ID: <20100325105822.GE5069@bicker>
+References: <20100324120107.GH21571@bicker> <20100324125946.GA26453@rakim.wolfsonmicro.main> <20100324140621.GI21571@bicker> <20100324143139.GE26453@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f178.google.com (mail-iw0-f178.google.com
-	[209.85.223.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id C40E11038BE
-	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 11:42:07 +0100 (CET)
-Received: by iwn8 with SMTP id 8so2797017iwn.16
-	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 03:42:06 -0700 (PDT)
-In-Reply-To: <ubpecvh9k.wl%morimoto.kuninori@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20100324143139.GE26453@rakim.wolfsonmicro.main>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Joonyoung Shim <jy0922.shim@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-03-25 at 19:15 +0900, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <morimoto.kuninori@renesas.com>
-> ---
-> v1 -> v2
+On Wed, Mar 24, 2010 at 02:31:39PM +0000, Mark Brown wrote:
+> On Wed, Mar 24, 2010 at 05:06:21PM +0300, Dan Carpenter wrote:
+> > On Wed, Mar 24, 2010 at 12:59:46PM +0000, Mark Brown wrote:
 > 
-> o move calculate area to fsi_fifo_init
-> o modify fifo calculation way
-> o Add tiny document for fifo calculation
+> > > This is caused by confusion with the MAX_CACHED_REGISTER definition in
+> > > the header.  Best to use that one consistently, I guess - I've got a
+> > > sneaking suspicion something has gone AWOL in the driver publication
+> > > process.
 > 
->  sound/soc/sh/fsi.c |   70 ++++++++++++++++++++++++++++++++--------------------
->  1 files changed, 43 insertions(+), 27 deletions(-)
+> > Hm...  That sounds more involved than I anticipated.  I don't have the
+> > hardware and don't feel comfortable making complicated changes if I
+> > can't test them.
+> 
+> Not really, it's just a case of picking the value to standardise on for
+> the size of the array instead of the one you picked.  However, now I
+> look at it again REG_CACHE_SIZE is the one we want and _MAX_CACHED_REGISTER 
+> is bitrot which should be removed.
+> 
+> I didn't look as closely as I might due to the extraneous changes for
+> BUG_ON() I mentioned which meant the patch wouldn't be applied anyway.
+> Those shouldn't be changed because there's no way anything in the kernel
+> should be generating a reference to a register which doesn't physically
+> exist (which is what they check for).
+> 
+> > Can someone else take care of this.
+> 
+> Actually, now I look even more closely there's further issues with the
+> patch - you're missing the fact that the register cache is only used for
+> non-volatile registers but all registers beyond the end of the register
+> cache are treated as volatile.  This means that I'm not convinced there
+> are any actual problems here, I'm not sure what analysis smatch is doing
+> but it looks to have generated false positives here.
+> 
 
-Both 2/4 and 4/4
+Yup.  You are right, this is a false positive.  I'm very sorry about that, 
+I misread the code as well.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+The problem is that Smatch doesn't do cross function analysis yet.  :/
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+regards,
+dan carpenter
+
+> I'll send a patch for _MAX_CACHED_REGISTER later today.
