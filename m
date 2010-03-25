@@ -1,19 +1,25 @@
-From: Graham Gower <graham.gower@gmail.com>
-Subject: Re: [PATCH] ASoC: Fix passing platform_data to ac97
- bus users and fix a leak.
-Date: Thu, 25 Mar 2010 10:52:12 +1030
-Message-ID: <4BAAACB4.6030303@gmail.com>
-References: <4BA99514.8020708@gmail.com> <20100324130611.GA26910@sirena.org.uk>
+From: "Candelaria Villarreal, Jorge" <jorge.candelaria@ti.com>
+Subject: Problem adding support for digital mixer in codec
+Date: Wed, 24 Mar 2010 21:33:54 -0500
+Message-ID: <2256F256009DAA4CBE661E9F41EAC84B904BD8A0@dlee01.ent.ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 164B624469
-	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 01:22:24 +0100 (CET)
-Received: by wwb34 with SMTP id 34so645800wwb.38
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 17:22:22 -0700 (PDT)
-In-Reply-To: <20100324130611.GA26910@sirena.org.uk>
+Received: from bear.ext.ti.com (bear.ext.ti.com [192.94.94.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id 105A9103889
+	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 03:33:59 +0100 (CET)
+Received: from dlep33.itg.ti.com ([157.170.170.112])
+	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id o2P2XuMd001610
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 21:33:56 -0500
+Received: from dlep26.itg.ti.com (localhost [127.0.0.1])
+	by dlep33.itg.ti.com (8.13.7/8.13.7) with ESMTP id o2P2XuLi016851
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 21:33:56 -0500 (CDT)
+Received: from dlee74.ent.ti.com (localhost [127.0.0.1])
+	by dlep26.itg.ti.com (8.13.8/8.13.8) with ESMTP id o2P2Xuen022019
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2010 21:33:56 -0500 (CDT)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,76 +29,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark, Liam,
+Hi,
 
-As requested, this patch removes the initial allocation of codec->ac97.
+I am trying to add support for a digital mixer. The digital mixer is
+connected like the following example:
+
+  
+Path 1 -------\
+Path 2 --------\
+		    MIXER ------> DAC----> ...
+Path 3 --------/
+Path 4 -------/
 
 
-Signed-off-by: Graham Gower <graham.gower@gmail.com>
----
- sound/soc/codecs/ac97.c |   15 +++++++++------
- sound/soc/soc-core.c    |    2 +-
- 2 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/ac97.c b/sound/soc/codecs/ac97.c
-index a1bbe16..bcfa532 100644
---- a/sound/soc/codecs/ac97.c
-+++ b/sound/soc/codecs/ac97.c
-@@ -80,9 +80,11 @@ static int ac97_write(struct snd_soc_codec *codec, unsigned int reg,
- static int ac97_soc_probe(struct platform_device *pdev)
- {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_card *card = socdev->card;
- 	struct snd_soc_codec *codec;
- 	struct snd_ac97_bus *ac97_bus;
- 	struct snd_ac97_template ac97_template;
-+	int i;
- 	int ret = 0;
- 
- 	printk(KERN_INFO "AC97 SoC Audio Codec %s\n", AC97_VERSION);
-@@ -102,12 +104,6 @@ static int ac97_soc_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&codec->dapm_widgets);
- 	INIT_LIST_HEAD(&codec->dapm_paths);
- 
--	ret = snd_soc_new_ac97_codec(codec, &soc_ac97_ops, 0);
--	if (ret < 0) {
--		printk(KERN_ERR "ASoC: failed to init gen ac97 glue\n");
--		goto err;
--	}
--
- 	/* register pcms */
- 	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
- 	if (ret < 0)
-@@ -123,6 +119,13 @@ static int ac97_soc_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		goto bus_err;
- 
-+	for (i = 0; i < card->num_links; i++) {
-+		if (card->dai_link[i].codec_dai->ac97_control) {
-+			snd_ac97_dev_add_pdata(codec->ac97,
-+				card->dai_link[i].cpu_dai->ac97_pdata);
-+		}
-+	}
-+
- 	return 0;
- 
- bus_err:
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c8b0556..5704923 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1548,7 +1548,7 @@ int snd_soc_new_pcms(struct snd_soc_device *socdev, int idx, const char *xid)
- 			mutex_unlock(&codec->mutex);
- 			return ret;
- 		}
--		if (card->dai_link[i].codec_dai->ac97_control) {
-+		if (card->dai_link[i].codec_dai->ac97_control && codec->ac97) {
- 			snd_ac97_dev_add_pdata(codec->ac97,
- 				card->dai_link[i].cpu_dai->ac97_pdata);
- 		}
--- 
-1.6.4
+However, I think ALSA does not support this configuration, as the DAC
+should be the first element in a route. I tried adding the DAC to the
+route first, and connected its output to the mixer inputs, like this:
+
+	  {"Mixer", "Multimedia Ext Switch", "HSDAC Left"},
+        {"Mixer", "Multimedia Ext Switch", "HSDAC Right"},
+
+        {"Mixer", "Voice Switch", "HSDAC Left"},
+        {"Mixer", "Voice Switch", "HSDAC Right"},
+
+        {"Mixer", "Multimedia Uplink Switch", "HSDAC Left"},
+        {"Mixer", "Multimedia Uplink Switch", "HSDAC Right"},
+
+        {"Mixer", "Multimedia Switch", "HSDAC Left"},
+        {"Mixer", "Multimedia Switch", "HSDAC Right"},
+
+But this does not seem to work. Can anyone give me some tips? Any comment
+would be appreciated.
+
+Thanks,
+Jorge
