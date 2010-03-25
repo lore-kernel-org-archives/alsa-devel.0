@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Fix passing platform_data to ac97
- bus users and fix a leak.
-Date: Thu, 25 Mar 2010 16:09:32 +0000
-Message-ID: <20100325160932.GB3025@rakim.wolfsonmicro.main>
-References: <4BA99514.8020708@gmail.com> <20100324130611.GA26910@sirena.org.uk>
-	<4BAAACB4.6030303@gmail.com>
+From: "Candelaria Villarreal, Jorge" <jorge.candelaria@ti.com>
+Subject: Re: Problem adding support for digital mixer in codec
+Date: Thu, 25 Mar 2010 11:56:40 -0500
+Message-ID: <2256F256009DAA4CBE661E9F41EAC84B904BDE91@dlee01.ent.ti.com>
+References: <2256F256009DAA4CBE661E9F41EAC84B904BD8A0@dlee01.ent.ti.com>
+	<201003250917.59531.peter.ujfalusi@nokia.com>
+	<1269508416.3758.19.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 523492441C
-	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 17:09:33 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <4BAAACB4.6030303@gmail.com>
+Received: from comal.ext.ti.com (comal.ext.ti.com [198.47.26.152])
+	by alsa0.perex.cz (Postfix) with ESMTP id A57452437D
+	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 17:56:46 +0100 (CET)
+In-Reply-To: <1269508416.3758.19.camel@odin>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Graham Gower <graham.gower@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter@alsa-project.org, Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 25, 2010 at 10:52:12AM +1030, Graham Gower wrote:
-> Mark, Liam,
+Liam Girdwood wrote:
+> On Thu, 2010-03-25 at 09:17 +0200, Peter Ujfalusi wrote:
+>> 
+>> What I did with the TWL4030 codec, is that I have moved the actual
+>> DAC power control from the DAPM_DAC to different widget (the
+>> DAPM_DAC is kind of a fake one). This was needed to support the
+>> digital loopback functionality. 
+>> 
+>> So if you reorder the DAPM widgets (making sure that the switch
+>> order still OK), than I think you can treat one of the paths as
+>> normal playback path (fake DAPM_DAC -> mixer (have the DAC power bit
+>> handled here) -> ...). Than you might consider of adding the rest of
+>> the paths as DAPM_INPUT, and connect them to the mixer (which after
+>> the fake DAC). 
+>> So you kind of have digital loopback from those to the analog domain.
+>> 
 > 
-> As requested, this patch removes the initial allocation of codec->ac97.
+> This approach currently works well on the twl4030. However,
+> you may want
+> to consider using SND_SOC_DAPM_AIF_IN() for your input paths
+> here. e.g.
+> 
+> AIF_IN -> MIXER -> DAC -> rest of codec
 
-Please recheck SubmittingPatches - this'd end up in the changelog (and
-now your changelog is empty so it's not clear what the actual problem is
-any more).  I've applied this with a changelog added and...
-
->  		}
-> -		if (card->dai_link[i].codec_dai->ac97_control) {
-> +		if (card->dai_link[i].codec_dai->ac97_control && codec->ac97) {
->  			snd_ac97_dev_add_pdata(codec->ac97,
->  				card->dai_link[i].cpu_dai->ac97_pdata);
-
-...a comment here since otherwise it's not obvious why we're not
-complaining about the missing codec->ac97 otherwise.
+I see now, this is exactly what I was looking for. I will give it a try
+then. Thanks.
