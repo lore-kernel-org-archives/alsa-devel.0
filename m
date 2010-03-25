@@ -1,17 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [for 2.6.34][PATCH] ALSA: pcm_lib - fix xrun
-	functionality
-Date: Fri, 26 Mar 2010 17:24:13 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1003261723080.3925@eeebox2.perex-int.cz>
-References: <1269612445-14245-1-git-send-email-jhnikula@gmail.com>
+From: Karsten Wiese <fzuuzf@googlemail.com>
+Subject: Re: TASCAM US-1641
+Date: Thu, 25 Mar 2010 11:00:15 +0100
+Message-ID: <201003251100.16073.fzuuzf@googlemail.com>
+References: <1269394483.6635.11.camel@eviltwin>
+	<20100324055626.GH30801@buzzloop.caiaq.de>
+	<1269468166.7429.7.camel@eviltwin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA03224334
-	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 17:24:14 +0100 (CET)
-In-Reply-To: <1269612445-14245-1-git-send-email-jhnikula@gmail.com>
+Received: from mout7.freenet.de (mout7.freenet.de [195.4.92.97])
+	by alsa0.perex.cz (Postfix) with ESMTP id 377B82456A
+	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 11:00:22 +0100 (CET)
+In-Reply-To: <1269468166.7429.7.camel@eviltwin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,29 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jan Depner <eviltwin69@cableone.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Mar 2010, Jarkko Nikula wrote:
+Am Mittwoch 24 M=E4rz 2010 schrieb Jan Depner:
+> =
 
-> The commit 4d96eb255c53ab5e39b37fd4d484ea3dc39ab456 broke the interrupt
-> time xrun functionality (stream stop etc.) if the CONFIG_SND_PCM_XRUN_DEBUG
-> is not set. This is because the xrun() is null defined without it.
->
-> Fix this by letting the function xrun() to be always defined as it was
-> before.
->
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> Cc: Jaroslav Kysela <perex@perex.cz>
+> =
 
-Oops. This is why I didn't see the broken behaviour in my tests (compiling 
-everything with debug mode ;-). I applied this patch to my GIT tree. 
-Thanks.
+> > I suggest adding some printk()s to the driver and see what it actually
+> > does and which values it passes around. Most probably there is more
+> > differences in the data format, and descriptors and/or message blocks
+> > have different meanings for this hardware model.
+> > =
 
- 					Jaroslav
+> =
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+>     I did as suggested and got back reasonable appearing numbers for
+> rate, use_packsize, and period_frames of 44100, 36, and 256 respectively
+> but am not sure how to relate this to my interface.
+
+I heard the US-1641 uses bulk and/or iso packets, while US-122L uses iso on=
+ly.
+so snd_usb_us122l would need some deep tweaking.
+also all the incantation stuff looks propably different.
+
+> Is there some
+> documentation somewhere that would explain the output of lsusb -v with
+> respect to variable names in us122l.c.
+
+erm, no. there are the interface and endpoint numbers.
+
+> My problem here is that I don't
+> know what would actually be reasonable for this interface nor how to
+> find out.
+
+usbsnoop and/or the developers at http://usbaudio.com.
+> =
+
+> =
+
+>     Many thanks for your help with this.  Karsten had asked me to get
+> back with him if I got one of these but my email to him must have gone
+> to the spam filter as I haven't heard anything.
+
+no spam filters, just work and short hollidays.
+
+looking back at developing snd_usb_us122l, i'm unsure if I spent my time wi=
+sely:
+the actual hardware one can buy now doesn't talk to the driver anymore. and=
+ i'm
+busy caring for real life, which i've been omitting a tad too much that tim=
+e.
+
+If in doubt, don't bother hacking on the tascam, enjoy spring instead!
+
+
+regards,
+Karsten
