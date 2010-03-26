@@ -1,21 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [for 2.6.34][PATCH] ALSA: pcm_lib - fix xrun
-	functionality
-Date: Fri, 26 Mar 2010 16:57:41 +0200
-Message-ID: <20100326165741.d15c83b9.jhnikula@gmail.com>
-References: <1269612445-14245-1-git-send-email-jhnikula@gmail.com>
-	<s5hvdcjnokb.wl%tiwai@suse.de>
+From: Udo van den Heuvel <udovdh@xs4all.nl>
+Subject: Speakertest repeats sounds on ATI HD3200 HDMI (Fedora
+ 12 x86_64, 2.6.33.1 kernel.org)
+Date: Fri, 26 Mar 2010 17:01:34 +0100
+Message-ID: <4BACDA5E.2070604@xs4all.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f226.google.com (mail-ew0-f226.google.com
-	[209.85.219.226])
-	by alsa0.perex.cz (Postfix) with ESMTP id 98CAF103821
-	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 15:55:18 +0100 (CET)
-Received: by ewy26 with SMTP id 26so140217ewy.3
-	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 07:55:18 -0700 (PDT)
-In-Reply-To: <s5hvdcjnokb.wl%tiwai@suse.de>
+Received: from pindarots.xs4all.nl (pindarots.xs4all.nl [80.101.128.228])
+	by alsa0.perex.cz (Postfix) with ESMTP id 94C4F103821
+	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 17:01:37 +0100 (CET)
+Received: from surfplank2.hierzo (localhost.localdomain [127.0.0.1])
+	by pindarots.xs4all.nl (8.14.3/8.14.3) with ESMTP id o2QG1YJ6001202
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-CAMELLIA256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 17:01:37 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Pavel@alsa-project.org, Machek <pavel@ucw.cz>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Mar 2010 15:29:56 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+Hello,
 
-> At Fri, 26 Mar 2010 16:07:25 +0200,
-> Jarkko Nikula wrote:
-> > 
-> > The commit 4d96eb255c53ab5e39b37fd4d484ea3dc39ab456 broke the interrupt
-> > time xrun functionality (stream stop etc.) if the CONFIG_SND_PCM_XRUN_DEBUG
-> > is not set. This is because the xrun() is null defined without it.
-> > 
-> > Fix this by letting the function xrun() to be always defined as it was
-> > before.
-> 
-> Thanks, that's likely the problem Pavel has seen, but never reproduced
-> on Jaroslav or my machine.
-> 
-Yeah, I just tested and my patch is fixing that [1] too :-)
+I am getting repeated sounds when using speakertest:
+FronFronFronFronFronFronFronFronFronFron... RontRontRontRont... etc.
 
+Seeh ttps://bugtrack.alsa-project.org/alsa-bug/view.php?id=4965 for
+details about the bug.
 
--- 
-Jarkko
-1.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-March/026155.html
+It's a Jetway NC81-LF w/ ATI HD3200 onboard video. HDMI connection to
+the TV. Video works great, adding audio gives stuttering effects.
+So we started debugging.
+
+I have a speakertest-strace: http://pastebin.com/Ad7j8Yc5.
+I start the test and the audio goes like:
+FronFronFronFronFronFronFronFronFronFronFronFronFronFronFronFron
+the strace sits and I pastebinned it.
+
+Then the speaker-test continues and the audio goes like
+RontRontRontRontRontRont
+See http://pastebin.com/TNpsv1bv for the strace.
+
+Any idea what might be wrong here?
+
+Kind regards,
+Udo
