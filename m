@@ -1,25 +1,17 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
-	cards, especially Aureon 5.1 MkII
-Date: Fri, 26 Mar 2010 12:26:29 +0800
-Message-ID: <4f3252891003252126y4f76d650m6adf85362cbf274@mail.gmail.com>
-References: <20100215192451.GA17938@tango.0pointer.de>
-	<4B7A5268.5050704@ladisch.de>
-	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
-	<20100216143200.GB25489@tango.0pointer.de>
-	<20100216144047.GB10586@sirena.org.uk>
-	<20100216154015.GA612@tango.0pointer.de>
-	<alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: ac97: Add IBM ThinkPad R40e to
+	Headphone/Line Jack Sense blacklist
+Date: Thu, 25 Mar 2010 22:45:36 -0700
+Message-ID: <604760771003252245h284c289y22815c2f791abdb1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=000e0cd514042e63f30482adace1
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id D4DD82440E
-	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 05:26:31 +0100 (CET)
-Received: by pwj7 with SMTP id 7so5652252pwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 21:26:29 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1002161711400.28127@eeebox2.perex-int.cz>
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9E1601037F9
+	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 06:45:37 +0100 (CET)
+Received: by pwj7 with SMTP id 7so5673750pwj.38
+	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 22:45:36 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,68 +21,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/17 Jaroslav Kysela <perex@perex.cz>
+--000e0cd514042e63f30482adace1
+Content-Type: text/plain; charset=UTF-8
 
-> On Tue, 16 Feb 2010, Lennart Poettering wrote:
->
-> > On Tue, 16.02.10 14:40, Mark Brown (broonie@opensource.wolfsonmicro.com)
-> wrote:
-> >
-> >>
-> >> On Tue, Feb 16, 2010 at 03:32:01PM +0100, Lennart Poettering wrote:
-> >>> On Tue, 16.02.10 09:24, Jaroslav Kysela (perex@perex.cz) wrote:
-> >>
-> >>>> Line: 0dB..47.81dB         # seems correct -47.81dB..0dB
-> >>>> Line Capture: -0.18dB..23.81dB     # seems correct
-> >>>> -17.81dB..6.18dB
-> >>
-> >>> Hmm, how did you choose where to put 0dB?
-> >>
-> >> The Line one looks like someone got attenuation and gain confused, which
-> >> is a fairly common mistake for people to make when copying information
-> >> from one place to another.  Possibly a similar thing going on with the
-> >> Line Capture control, plus a fixed 6dB gain (which may well be a
-> >> separate amp...).
-> >
-> > I remember that a while back we had a discussion on alsa-devel
-> > regarding the fact that ALSA does not define relative to what the dB
-> > values reported by the mixer elements actually are measured. Some
-> > mixer controls export dB values relative to max amplification (e.g. my
-> > integrated USB speakers here), others relative to the output of some
-> > other mixer element, and others relative to different standard or
-> > not-so-standard output voltages.  And there is no API to figure out
-> > what the base is.
-> >
-> > Now, what Jaroslav listed above suggests that he chose carefully where
-> > he put 0dB. I was just wondering about that. Jaroslav, how did you
-> > choose where to put 0dB?
->
-> Basically, if I remember correctly the discussion, 0dB on all elements
-> should main unchanged volume, <0dB attenuation and >0dB gain. We cannot
-> measure precisely other components on path like analog volume wheels
-> (like SB MP3+ has to change line-out volume), analog amplifiers and other
-> analog signal modificators.
->
-> So, if you use one headphones and speakers with defined and fixed volume
-> settings, you can measure differences for the card with broken dB volume
-> ranges. I just used another HDA card in notebook with 0dB settings on all
-> playback controls on path, captured stream from this card on my USB card
-> and played this stream back on my USB card watching and relating the
-> volume levels according dB values. It's not 100% correct, but at least
-> it's something to start with.
->
->                                        Jaroslav
->  <Alsa-devel@alsa-project.org>
->
+Hi,
 
-Refer  to  http://thread.gmane.org/gmane.linux.alsa.devel/15859
+Attached is a patch against current sound-2.6 master HEAD (also
+applicable to 2.6.32.y and 2.6.33.y) that adds the IBM ThinkPad R40e
+to the Headphone/Line Jack Sense blacklist, which is required for
+audible audio.
 
-Try to lower "Wave" volume - otherways there will be clipping on bass.
+Best,
+-Dan
 
-When you set "PCM" to 75 % this is 0 db.
+--000e0cd514042e63f30482adace1
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ALSA-ac97-Add-IBM-ThinkPad-R40e-to-Headphone-Line-Ja.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-ac97-Add-IBM-ThinkPad-R40e-to-Headphone-Line-Ja.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g78khe8l0
 
-The dB scale of alsa  driver was implemented because of 0dB is not at the
-maximum for emu10k1
+RnJvbSBkZmNiNzk0YjQwNTllZDNmNmNkODhiYWJiOGZhNjUxZmE2NzQxM2M1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFRodSwgMjUgTWFyIDIwMTAgMjI6Mzg6MTUgLTA3MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBhYzk3OiBBZGQgSUJNIFRoaW5rUGFkIFI0MGUgdG8gSGVhZHBob25lL0xpbmUgSmFjayBTZW5z
+ZSBibGFja2xpc3QKCkJ1Z0xpbms6IGh0dHBzOi8vbGF1bmNocGFkLm5ldC9idWdzLzMwMzc4OQoK
+VGhpcyBtb2RlbCBuZWVkcyBib3RoICdIZWFkcGhvbmUgSmFjayBTZW5zZScgYW5kICdMaW5lIEph
+Y2sgU2Vuc2UnCm11dGVkIGZvciBhdWRpYmxlIGF1ZGlvLCBzbyBqdXN0IGFkZCBpdHMgU1NJRCB0
+byB0aGUgYmxhY2tsaXN0IGFuZApkb24ndCBlbnVtZXJhdGUgdGhlIGNvbnRyb2xzLgoKQ2M6IDxz
+dGFibGVAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1
+YnVudHUuY29tPgotLS0KIHNvdW5kL3BjaS9hYzk3L2FjOTdfcGF0Y2guYyB8ICAgIDEgKwogMSBm
+aWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
+IGEvc291bmQvcGNpL2FjOTcvYWM5N19wYXRjaC5jIGIvc291bmQvcGNpL2FjOTcvYWM5N19wYXRj
+aC5jCmluZGV4IDFjYWY1ZTMuLjFhNTliNzEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9hYzk3L2Fj
+OTdfcGF0Y2guYworKysgYi9zb3VuZC9wY2kvYWM5Ny9hYzk3X3BhdGNoLmMKQEAgLTE4NTIsNiAr
+MTg1Miw3IEBAIHN0YXRpYyB1bnNpZ25lZCBpbnQgYWQxOTgxX2phY2tzX2JsYWNrbGlzdFtdID0g
+ewogCTB4MTAxNDA1MjMsIC8qIFRoaW5rcGFkIFI0MCAqLwogCTB4MTAxNDA1MzQsIC8qIFRoaW5r
+cGFkIFgzMSAqLwogCTB4MTAxNDA1MzcsIC8qIFRoaW5rcGFkIFQ0MXAgKi8KKwkweDEwMTQwNTNl
+LCAvKiBUaGlua3BhZCBSNDBlICovCiAJMHgxMDE0MDU1NCwgLyogVGhpbmtwYWQgVDQycC9SNTBw
+ICovCiAJMHgxMDE0MDU2NywgLyogVGhpbmtwYWQgVDQzcCAyNjY4LUc3VSAqLwogCTB4MTAxNDA1
+ODEsIC8qIFRoaW5rcGFkIFg0MS0yNTI3ICovCi0tIAoxLjcuMAoK
+--000e0cd514042e63f30482adace1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--000e0cd514042e63f30482adace1--
