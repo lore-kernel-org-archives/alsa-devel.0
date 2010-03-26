@@ -1,18 +1,30 @@
-From: Karsten Wiese <fzuuzf@googlemail.com>
-Subject: Re: TASCAM US-1641
-Date: Thu, 25 Mar 2010 11:00:15 +0100
-Message-ID: <201003251100.16073.fzuuzf@googlemail.com>
-References: <1269394483.6635.11.camel@eviltwin>
-	<20100324055626.GH30801@buzzloop.caiaq.de>
-	<1269468166.7429.7.camel@eviltwin>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: The volume buttons on Lenovo Thinkpad X61S (was:
+ Re: [Alsa-user] Console beep on Lenovo Thinkpad X61S)
+Date: Fri, 26 Mar 2010 17:18:22 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1003261612020.3925__10370.9943629385$1269620822$gmane$org@eeebox2.perex-int.cz>
+References: <m31vgd2v3h.fsf@fox.lamasti.net> <4B84FE55.3090101@gmail.com>
+	<alpine.LNX.2.00.1002241129480.28127@eeebox2.perex-int.cz>
+	<4B962374.4060204@gmail.com> <m3aau0u7fn.fsf@fox.lamasti.net>
+	<alpine.LNX.2.00.1003220856510.3925@eeebox2.perex-int.cz>
+	<m3ljdku4oy.fsf@fox.lamasti.net>
+	<alpine.LNX.2.00.1003220944570.3925@eeebox2.perex-int.cz>
+	<m38w9kmycc.fsf@fox.lamasti.net> <m3r5ncipz4.fsf@fox.lamasti.net>
+	<alpine.LNX.2.00.1003221219180.3925@eeebox2.perex-int.cz>
+	<m3aau0a7y1.fsf@fox.lamasti.net>
+	<alpine.LNX.2.00.1003221301270.3925@eeebox2.perex-int.cz>
+	<m339zs34ib.fsf@fox.lamasti.net> <4BA88C15.1040806@gmail.com>
+	<alpine.LNX.2.00.1003231056470.3925@eeebox2.perex-int.cz>
+	<alpine.LNX.2.00.1003261047210.3925@eeebox2.perex-int.cz>
+	<m34ok3b3yj.fsf@fox.lamasti.net>
+	<m3vdcjgp5w.fsf_-_@fox.lamasti.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1075513777-1269620302=:3925"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout7.freenet.de (mout7.freenet.de [195.4.92.97])
-	by alsa0.perex.cz (Postfix) with ESMTP id 377B82456A
-	for <alsa-devel@alsa-project.org>; Thu, 25 Mar 2010 11:00:22 +0100 (CET)
-In-Reply-To: <1269468166.7429.7.camel@eviltwin>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id CC76110384A
+	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 17:18:22 +0100 (CET)
+In-Reply-To: <m3vdcjgp5w.fsf_-_@fox.lamasti.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,62 +34,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jan Depner <eviltwin69@cableone.net>
+To: =?UTF-8?Q?Lars_Bj=C3=B8rndal?= <lars.bjorndal@broadpark.no>
+Cc: alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Mittwoch 24 M=E4rz 2010 schrieb Jan Depner:
-> =
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> =
+--8323584-1075513777-1269620302=:3925
+Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-> > I suggest adding some printk()s to the driver and see what it actually
-> > does and which values it passes around. Most probably there is more
-> > differences in the data format, and descriptors and/or message blocks
-> > have different meanings for this hardware model.
-> > =
+On Fri, 26 Mar 2010, Lars Bj=C3=B8rndal wrote:
 
-> =
+> The volume buttons up, down and mute, doesn't work from within the
+> console. How could that be fixed? Please note that I use Fedora 12,
+> and I don't use X.
 
->     I did as suggested and got back reasonable appearing numbers for
-> rate, use_packsize, and period_frames of 44100, 36, and 256 respectively
-> but am not sure how to relate this to my interface.
+It's a bit different thing. The ACPI events are translated as key-press=20
+events to the /dev/input/event* interface. So you need an application=20
+(daemon) watching for these key-press events and modifying the volume=20
+using the ALSA mixer interface. The GUI programs do this.
 
-I heard the US-1641 uses bulk and/or iso packets, while US-122L uses iso on=
-ly.
-so snd_usb_us122l would need some deep tweaking.
-also all the incantation stuff looks propably different.
+Here is a short program in python reading input events and translating=20
+them to amixer calls:
 
-> Is there some
-> documentation somewhere that would explain the output of lsusb -v with
-> respect to variable names in us122l.c.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D cut here =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+#!/usr/bin/python
+import struct
+import os
 
-erm, no. there are the interface and endpoint numbers.
+# use 'evtest' program to determine right /dev/input device and code
+acpievents =3D "/dev/input/event1"
+fmt =3D 'iihhi'
+fd =3D open(acpievents, "rb")
+event =3D fd.read(16)
+while event:
+   (time1, time2, type, code, value) =3D struct.unpack(fmt, event)
+   if type =3D=3D 1:
+     if code =3D=3D 115:=09# keypress VOLUMEUP
+       os.system("amixer -q -c 0 set PCM 10%+")
+     elif code =3D=3D 114:=09# keypress VOLUMEDOWN
+       os.system("amixer -q -c 0 set PCM 10%-")
+   event =3D fd.read(16)
+fd.close()
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D cut here =3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
 
-> My problem here is that I don't
-> know what would actually be reasonable for this interface nor how to
-> find out.
+ =09=09=09=09=09=09Jaroslav
 
-usbsnoop and/or the developers at http://usbaudio.com.
-> =
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
 
-> =
+--8323584-1075513777-1269620302=:3925
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
->     Many thanks for your help with this.  Karsten had asked me to get
-> back with him if I got one of these but my email to him must have gone
-> to the spam filter as I haven't heard anything.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-no spam filters, just work and short hollidays.
-
-looking back at developing snd_usb_us122l, i'm unsure if I spent my time wi=
-sely:
-the actual hardware one can buy now doesn't talk to the driver anymore. and=
- i'm
-busy caring for real life, which i've been omitting a tad too much that tim=
-e.
-
-If in doubt, don't bother hacking on the tascam, enjoy spring instead!
-
-
-regards,
-Karsten
+--8323584-1075513777-1269620302=:3925--
