@@ -1,44 +1,67 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] WM8750: Convert to new API
-Date: Fri, 26 Mar 2010 16:37:01 +0000
-Message-ID: <1269621421.9909.58.camel@odin>
-References: <1269613142-23942-1-git-send-email-marek.vasut@gmail.com>
+From: Torsten Kaiser <just.for.lkml@googlemail.com>
+Subject: Regressions: MSI vs HDA-Intel
+Date: Fri, 26 Mar 2010 18:25:22 +0100
+Message-ID: <64bb37e1003261025l14e2d82r64ba1e90d024bea6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id A0E85103978
-	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 17:37:01 +0100 (CET)
-Received: by pvg12 with SMTP id 12so4464652pvg.38
-	for <alsa-devel@alsa-project.org>; Fri, 26 Mar 2010 09:37:00 -0700 (PDT)
-In-Reply-To: <1269613142-23942-1-git-send-email-marek.vasut@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-03-26 at 15:19 +0100, Marek Vasut wrote:
-> Register the WM8750 as a SPI or I2C device. This patch mostly shuffles code
-> around. Hugely inspired by WM8753 which was already converted.
-> 
-> Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
-> ---
->  sound/soc/codecs/wm8750.c |  297 +++++++++++++++++++++------------------------
->  1 files changed, 140 insertions(+), 157 deletions(-)
+I have two systems that use the alsa hda-intel driver, both show
+regressions in relation to MSI.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+System 1: Athlon(tm) X2 BE-2400 with an AMD RS690/SB600 chipset
+00:14.2 Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel
+HDA) [1002:4383]
+(Mainboard is a MSI MS-7368)
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+After upgrading from 2.6.31 to 2.6.33 I get a delay during bootup:
+[    1.155925] HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level,
+low) -> IRQ 16
+[    1.159143] input: AT Translated Set 2 keyboard as
+/devices/platform/i8042/serio0/input/input2
+[    1.232595] firewire_core: created device fw0: GUID 00dc10000129c48f, S400
+[    1.252677] hda_codec: ALC888: BIOS auto-probing.
+[    1.259226] HDA Intel 0000:01:05.2: PCI INT B -> GSI 19 (level,
+low) -> IRQ 19
+[    1.260293] HDA Intel 0000:01:05.2: irq 27 for MSI/MSI-X
+[    1.314712] input: GenPS/2 Genius Mouse as
+/devices/platform/i8042/serio1/input/input3
+[    4.322508] hda-intel: azx_get_response timeout, switching to
+polling mode: last cmd=0x000f0000
+[    5.332508] hda-intel: No response from codec, disabling MSI: last
+cmd=0x000f0000
+[    6.342508] hda-intel: Codec #0 probe error; disabling it...
+[    7.392508] hda_intel: azx_get_response timeout, switching to
+single_cmd mode: last cmd=0x000f0000
+[    7.430464] ALSA device list:
+[    7.431549]   #0: HDA ATI SB at 0xfe7f4000 irq 16
+[    7.432656]   #1: HDA ATI HDMI at 0xfe9e8000 irq 27
+
+2.6.34-rc2 does not boot on this system, something related to the new
+bootmem allocator, so I can't say if this might already be fixed for
+2.6.34.
+
+Should the system be blacklisted like the two Asus Athlon X2 boards,
+or is this some other bug?
+
+
+System 2: Opteron(tm) 2218 with an nVidia MCP55 chipset
+00:06.1 Audio device [0403]: nVidia Corporation MCP55 High Definition
+Audio [10de:0371] (rev a2)
+(Mainboard is an ASUS KFN5-D SLI)
+
+Commit 80c43ed724797627d8f86855248c497a6161a214 disabled MSI for this
+system, but the MSI mode was working fine for all 2.6.33 versions I
+used.
+
+Should the generic blacklist disable MSI for all Athlon X2 instead of
+all nNvidia chipsets?
+
+
+If you need more information, please ask, I will try to provide
+anything you need.
+
+Thanks, Torsten
