@@ -1,16 +1,14 @@
-From: Valentin <a@0au.de>
-Subject: Volume levels with Geode LX/CS5536
-Date: Sat, 27 Mar 2010 06:00:46 +0100
-Message-ID: <20100327050046.GA28058@lucien.apo2k4.ath.cx>
+From: "Soeren D. Schulze" <soeren.d.schulze@gmx.de>
+Subject: Handling of the DXS controls in the via82xx driver
+Date: Sun, 28 Mar 2010 00:04:23 +0100
+Message-ID: <4BAE8EF7.20204@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2721438533427726784=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 0au.de (thankyouforhelpingushelpyouhelpusall.net [84.38.66.182])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20C90103980
-	for <alsa-devel@alsa-project.org>; Sat, 27 Mar 2010 05:00:56 +0100 (CET)
-Received: from lucien.apo2k4.ath.cx (dslb-094-217-137-043.pools.arcor-ip.net
-	[94.217.137.43]) by 0au.de (Postfix) with ESMTPSA id 7519A202FE1
-	for <alsa-devel@alsa-project.org>; Sat, 27 Mar 2010 05:00:53 +0100 (CET)
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id D059B1037F3
+	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2010 00:04:26 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,50 +21,35 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============2721438533427726784==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
-Content-Disposition: inline
-
-
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-
-the maximum volume level (100%) on my soundcard for the PCM mixer is
-12.0dB instead of 0.0dB. Is there a way for me to fix this, or help
-fixing it? crimsun on freenode/#alsa told me to ask you guys :)
-My alsa-info.sh output is at http://0au.de/~apo/p/ai.txt
-
-Cheers,
-  Valentin
-
---UlVJffcvxoiEqYs2
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.14 (GNU/Linux)
-
-iEYEARECAAYFAkutkP4ACgkQ22z6WcGtDs+sywCgq1cOjGJKSwmiNQbg5jgXFUDC
-heIAoMkoenk6HWbrLHVSA9fTpOHYLVyw
-=8+mt
------END PGP SIGNATURE-----
-
---UlVJffcvxoiEqYs2--
-
---===============2721438533427726784==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============2721438533427726784==--
+SGkgZXZlcnlvbmUsCgpiZWZvcmUgbXkgbGF0ZXN0IHVwZ3JhZGUgdG8gTGludXggMi42LjMyICh5
+ZXMsIHNvcnJ5LCBpdCdzIERlYmlhbiksIEkKaGFkIGZvdXIgbGV2ZXJzIGluIG15IGFsc2FtaXhl
+cjogVklBIERYUywgVklBIERYUyAxLCBWSUEgRFhTIDIgYW5kIFZJQQpEWFMgMy4gIFRoZXkgY29u
+dHJvbGxlZCB0aGUgaGFyZHdhcmUgbWl4aW5nIHdoZW4gYWNjZXNzaW5nIHRoZSBzb3VuZApkZXZp
+Y2UgbXVsdGlwbGUgdGltZXMuCgpOb3cgdGhleSBoYXZlIGRpc2FwcGVhcmVkLiAgSSB0aGluayBJ
+IGNhbiBwcmV0dHkgY2VydGFpbmx5IHRyYWNlIHRoaXMKZG93biB0byBjb21taXQgMmZiOTMwYjUz
+ZjUxM2NiYzRjMTAyZDQxNWQyOTIzYThhNzA5MTMzNyB0byBMaW51eApbaHR0cDovL2dpdC5rZXJu
+ZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvc3RhYmxlL2xpbnV4LTIuNi4zMi55LmdpdDthPWNv
+bW1pdDtoPTJmYjkzMGI1M2Y1MTNjYmM0YzEwMmQ0MTVkMjkyM2E4YTcwOTEzMzddLAp3aGljaCAi
+bW92ZVtzXSBEWFMgdm9sdW1lIGNvbnRyb2xzIHRvIFBDTSBpbnRlcmZhY2UiLgoKQXMgSSdtIG5v
+dCBhbiBBTFNBIGRldmVsb3BlciwgSSBkb24ndCByZWFsaXplIHRoZSBpbnRlbmRlZCBlZmZlY3Qg
+b2YKdGhpcyBjaGFuZ2UsIGJ1dCB0aGUgYWN0dWFsIGVmZmVjdCBpcyB0aGF0IEkgY2Fubm90IGNo
+YW5nZSB0aGUgRFhTCnZvbHVtZXMgYW55IG1vcmUuICBtcGxheWVyIHN0aWxsIGNvbnRyb2xzIHRo
+ZSBnbG9iYWwgUENNIHZvbHVtZS4gIFdlbGwsCmluIGZhY3QsIHRoZXJlIGlzIG9uZSB3YXkuICBX
+aGlsZSBhbiBtcGxheWVyIGlzIHJ1bm5pbmcsIEkgY2FuIGRvOgoKYW1peGVyIGNzZXQgbnVtaWQ9
+NDcsaWZhY2U9UENNLG5hbWU9J1BDTSBQbGF5YmFjayBWb2x1bWUnIDI0LDI0CgpXaGVuIHJlc3Rh
+cnRpbmcgbXBsYXllciwgdGhlIHZvbHVtZSBpcyByZXNldCB0byAzMSwzMSAobWF4aW11bSkuICBD
+b21taXQKM2QwMDk0MTM3MWE3NjU3NzljNGUzNTA5MjE0YzdlNTc5M2NjZTFmZQpbaHR0cDovL2dp
+dC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvc3RhYmxlL2xpbnV4LTIuNi4zMy55Lmdp
+dDthPWNvbW1pdDtoPTNkMDA5NDEzNzFhNzY1Nzc5YzRlMzUwOTIxNGM3ZTU3OTNjY2UxZmVdCnNl
+ZW1zIHRvIGJlIHJlc3BvbnNpYmxlIGZvciB0aGlzLgoKVGhlIGJhZCB0aGluZyBhYm91dCBpdCBp
+cyB0aGF0IDMxLDMxIGlzIGEgcmVhbGx5IGJhZCBzZXR0aW5nIGZvciBteQpwb29ybHkgZW5naW5l
+ZXJlZCBzb3VuZCBjYXJkLiAgSXQgZGlzdG9ydHMgYSBsb3QuCgpJIHN1c3BlY3QgdGhhdCB0aGUg
+cmVhbCAqYnVnKiBpcyB0aGF0IG1wbGF5ZXIgZG9lcyBub3QgdXNlIHRoZQpwZXItY2hhbm5lbCBE
+WFMgY29udHJvbHMgZXZlbiB0aG91Z2ggaXQncyBzdXBwb3NlZCB0byAod2hpY2ggc2VlbXMgdG8g
+YmUKd2h5IHRoZSBEWFMgY29udHJvbHMgYXJlIGNhbGxlZCAiUENNIFBsYXliYWNrIFZvbHVtZSIp
+LgoKUGVyc29uYWxseSwgcmF0aGVyIHRoYW4gZml4aW5nIHRoaXMgYnVnLCBJIHdvdWxkIGp1c3Qg
+cmV2ZXJ0IHRvIHRoZQpmb3JtZXIgc3RhdGUuICBJIHdhcyBhbHdheXMgaGFwcHkgd2l0aCBhbGwg
+dGhlIERYUyBsZXZlcnMgc2V0IHRvIDc1JS4KCgpUaGFuayB5b3UKClPDtnJlbgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
