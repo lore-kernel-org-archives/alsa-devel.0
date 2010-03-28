@@ -1,18 +1,28 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: ac97: Add Toshiba P500 to ac97 jack
-	sense blacklist
-Date: Sun, 28 Mar 2010 13:32:34 -0700
-Message-ID: <604760771003281332s203aae85i6137d71034fed929@mail.gmail.com>
+From: Angel Tsankov <fn42551@fmi.uni-sofia.bg>
+Subject: Re: alsactl restore: unknown hardware: ymf724f
+Date: Mon, 29 Mar 2010 00:37:32 +0300
+Message-ID: <hooi7i$fd4$1@dough.gmane.org>
+References: <hm5aba$p65$1@dough.gmane.org>	<alpine.LNX.2.00.1002250915480.28127@eeebox2.perex-int.cz>	<hm5u2i$2h7$1@dough.gmane.org>	<alpine.LNX.2.00.1002251502380.28127@eeebox2.perex-int.cz>	<4f3252891002251511p4605f104jdac236e589d01149@mail.gmail.com>	<hm8cus$56i$1@dough.gmane.org>	<1267193154.29204.0.camel@localhost.localdomain>	<4f3252891002271729p6eb66724v62ce97ea9a6eb577@mail.gmail.com>	<hohr62$f78$1@dough.gmane.org>
+	<4f3252891003280552y29015aeav7b68e9972371325b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00504502cc91e6cddf0482e24bc9
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f178.google.com (mail-pz0-f178.google.com
-	[209.85.222.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 815CE243C7
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F5C61037E3
 	for <alsa-devel@alsa-project.org>;
-	Sun, 28 Mar 2010 22:32:35 +0200 (CEST)
-Received: by pzk8 with SMTP id 8so68706pzk.16
-	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2010 13:32:34 -0700 (PDT)
+	Sun, 28 Mar 2010 23:38:11 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Nw0BN-0001py-Rx
+	for alsa-devel@alsa-project.org; Sun, 28 Mar 2010 23:38:09 +0200
+Received: from 212.73.151.246 ([212.73.151.246])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2010 23:38:09 +0200
+Received: from fn42551 by 212.73.151.246 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2010 23:38:09 +0200
+In-Reply-To: <4f3252891003280552y29015aeav7b68e9972371325b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,59 +32,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---00504502cc91e6cddf0482e24bc9
-Content-Type: text/plain; charset=UTF-8
+Raymond Yau wrote:
+> 2010/3/26 Angel Tsankov <fn42551@fmi.uni-sofia.bg>
+> =
 
-Hi,
+>> Hello again!
+>>
+>> I've recently had some time to investigate this problem further on and
+>> here's what I've discovered:
+>>
+>> Raymond Yau wrote:
+>>> 2010/2/26 Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
+>>>
+>>>> El vie, 26-02-2010 a las 13:57 +0200, Angel Tsankov escribi=F3:
+>>>>> Raymond Yau wrote:
+>>>>>> 2010/2/25 Jaroslav Kysela <perex@perex.cz>
+>>>>>>
+>>>>>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
+>>>>>>>
+>>>>>>>> Jaroslav Kysela wrote:
+>>>>>>>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
+>>>>>>>>>
+>>>>>>>>>> Hello,
+>>>>>>>>>>
+>>>>>>>>>> I run 'alsactl restore' on a machine with 2 sound cards -- a
+>>>> built-in
+>>>>>>>>>> Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller
+>>>> (rev
+>>>>>>>>>> 02) and a non-built-in Yamaha Corporation YMF-724F [DS-1 Audio
+>>>>>>>>>> Controller] (rev 03) -- and get the following message:
+>>>>>>>>>>
+>>>>>>>>>> Unknown hardware: "YMF724F" "SigmaTel STAC9700,83,84"
+>>>> "AC97a:83847600"
+>>>>>>>>>> "0x1073" "0x000d"
+>>>>>>>>>> Hardware is initialized using a guess method
+>>>>>>>>>>
+>>>>>>>>>> As a consequence the volume levels of the Yamaha card do not get
+>>>>>>>>>> restored to the levels stored in /etc/asound.state.  The volume
+>>>> levels
+>>>>>>>>>> of the built-in card however are properly restored.  The
+>>>> asound.state
+>>>>>>>>>> file has been created by executing 'alsactl store'.
+>>>>>>>>>>
+>>> your problem is "alsactl restore" become "alsactl init" when the number
+>> of
+>>> controls is more than those in state file.
+>> I'm not quite sure that the case is this since 'alsactl restore' does
+>> restore the values of the Yamaha sound card (and those of the other
+>> card, too) and 'alsactl restore 1' seems to just initialize the Yamaha
+>> card.  This is with alsa-utils version 1.0.22.
+>>
+> "Hardware is initialized using a guess method "  is the message used by
+> alsactl init
+> =
 
-Attached is a patch against sound-2.6 (also applicable to 2.6.32.y and
-2.6.33.y) adding the OR's SSID to ad1981_jacks_blacklist for audible
-audio by default.
+> http://git.alsa-project.org/?p=3Dalsa-utils.git;a=3Dcommitdiff;h=3D9a7481=
+78d1c9e783242f0cc794ab3efb27092f34;hp=3D0c02a4e3d23c7b5d03215f1bfaba9f70ed1=
+1e9b7
 
-Best,
--Dan
+I don't get what you mean. Could you explain a little bit more?
 
---00504502cc91e6cddf0482e24bc9
-Content-Type: text/x-diff; charset=US-ASCII;
-	name="0001-ALSA-ac97-Add-Toshiba-P500-to-ac97-jack-sense-blackl.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-ac97-Add-Toshiba-P500-to-ac97-jack-sense-blackl.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g7caxd8c0
 
-RnJvbSBkMWQzOWQ1ZGI4ZWJjMjk0YWNlNjk0OTIxZWFjYWJhNzhhOGI4ZjdlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFN1biwgMjggTWFyIDIwMTAgMTY6MjE6NTggLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBhYzk3OiBBZGQgVG9zaGliYSBQNTAwIHRvIGFjOTcgamFjayBzZW5zZSBibGFja2xpc3QKCkJ1
-Z0xpbms6IGh0dHBzOi8vbGF1bmNocGFkLm5ldC9idWdzLzQ4MTA1OAoKVGhlIE9SIGhhcyB2ZXJp
-ZmllZCB0aGF0IGJvdGggJ0hlYWRwaG9uZSBKYWNrIFNlbnNlJyBhbmQgJ0xpbmUgSmFjayBTZW5z
-ZScKbmVlZCB0byBiZSBtdXRlZCBmb3Igc291bmQgdG8gYmUgYXVkaWJsZSwgc28ganVzdCBhZGQg
-dGhlIG1hY2hpbmUncyBTU0lECnRvIHRoZSBhYzk3IGphY2sgc2Vuc2UgYmxhY2tsaXN0LgoKUmVw
-b3J0ZWQtYnk6IFJpY2hhcmQgR2FnbmUKVGVzdGVkLWJ5OiBSaWNoYXJkIEdhZ25lCkNjOiA8c3Rh
-YmxlQGtlcm5lbC5vcmc+ClNpZ25lZC1vZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5AdWJ1
-bnR1LmNvbT4KLS0tCiBzb3VuZC9wY2kvYWM5Ny9hYzk3X3BhdGNoLmMgfCAgICAxICsKIDEgZmls
-ZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L3NvdW5kL3BjaS9hYzk3L2FjOTdfcGF0Y2guYyBiL3NvdW5kL3BjaS9hYzk3L2FjOTdfcGF0Y2gu
-YwppbmRleCAxYTU5YjcxLi5lNjhjOThlIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvYWM5Ny9hYzk3
-X3BhdGNoLmMKKysrIGIvc291bmQvcGNpL2FjOTcvYWM5N19wYXRjaC5jCkBAIC0xODU5LDYgKzE4
-NTksNyBAQCBzdGF0aWMgdW5zaWduZWQgaW50IGFkMTk4MV9qYWNrc19ibGFja2xpc3RbXSA9IHsK
-IAkweDEwMjgwMTYwLCAvKiBEZWxsIERpbWVuc2lvbiAyNDAwICovCiAJMHgxMDQzODBiMCwgLyog
-QXN1cyBBN1Y4WC1NWCAqLwogCTB4MTE3OTAyNDEsIC8qIFRvc2hpYmEgU2F0ZWxsaXRlIEEtMTUg
-UzEyNyAqLworCTB4MTE3OWZmMTAsIC8qIFRvc2hpYmEgUDUwMCAqLwogCTB4MTQ0ZGMwMWEsIC8q
-IFNhbXN1bmcgTlAtWDIwQzAwNC9TRUcgKi8KIAkwIC8qIGVuZCAqLwogfTsKLS0gCjEuNy4wCgo=
---00504502cc91e6cddf0482e24bc9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---00504502cc91e6cddf0482e24bc9--
+Regards,
+Angel Tsankov
