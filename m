@@ -1,14 +1,28 @@
-From: "Soeren D. Schulze" <soeren.d.schulze@gmx.de>
-Subject: Handling of the DXS controls in the via82xx driver
-Date: Sun, 28 Mar 2010 00:04:23 +0100
-Message-ID: <4BAE8EF7.20204@gmx.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsactl restore: unknown hardware: ymf724f
+Date: Sun, 28 Mar 2010 20:52:19 +0800
+Message-ID: <4f3252891003280552y29015aeav7b68e9972371325b@mail.gmail.com>
+References: <hm5aba$p65$1@dough.gmane.org>
+	<alpine.LNX.2.00.1002250915480.28127@eeebox2.perex-int.cz>
+	<hm5u2i$2h7$1@dough.gmane.org>
+	<alpine.LNX.2.00.1002251502380.28127@eeebox2.perex-int.cz>
+	<4f3252891002251511p4605f104jdac236e589d01149@mail.gmail.com>
+	<hm8cus$56i$1@dough.gmane.org>
+	<1267193154.29204.0.camel@localhost.localdomain>
+	<4f3252891002271729p6eb66724v62ce97ea9a6eb577@mail.gmail.com>
+	<hohr62$f78$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id D059B1037F3
-	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2010 00:04:26 +0100 (CET)
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id C1771103804
+	for <alsa-devel@alsa-project.org>;
+	Sun, 28 Mar 2010 14:52:20 +0200 (CEST)
+Received: by pwj7 with SMTP id 7so6813522pwj.38
+	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2010 05:52:19 -0700 (PDT)
+In-Reply-To: <hohr62$f78$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -18,38 +32,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgZXZlcnlvbmUsCgpiZWZvcmUgbXkgbGF0ZXN0IHVwZ3JhZGUgdG8gTGludXggMi42LjMyICh5
-ZXMsIHNvcnJ5LCBpdCdzIERlYmlhbiksIEkKaGFkIGZvdXIgbGV2ZXJzIGluIG15IGFsc2FtaXhl
-cjogVklBIERYUywgVklBIERYUyAxLCBWSUEgRFhTIDIgYW5kIFZJQQpEWFMgMy4gIFRoZXkgY29u
-dHJvbGxlZCB0aGUgaGFyZHdhcmUgbWl4aW5nIHdoZW4gYWNjZXNzaW5nIHRoZSBzb3VuZApkZXZp
-Y2UgbXVsdGlwbGUgdGltZXMuCgpOb3cgdGhleSBoYXZlIGRpc2FwcGVhcmVkLiAgSSB0aGluayBJ
-IGNhbiBwcmV0dHkgY2VydGFpbmx5IHRyYWNlIHRoaXMKZG93biB0byBjb21taXQgMmZiOTMwYjUz
-ZjUxM2NiYzRjMTAyZDQxNWQyOTIzYThhNzA5MTMzNyB0byBMaW51eApbaHR0cDovL2dpdC5rZXJu
-ZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvc3RhYmxlL2xpbnV4LTIuNi4zMi55LmdpdDthPWNv
-bW1pdDtoPTJmYjkzMGI1M2Y1MTNjYmM0YzEwMmQ0MTVkMjkyM2E4YTcwOTEzMzddLAp3aGljaCAi
-bW92ZVtzXSBEWFMgdm9sdW1lIGNvbnRyb2xzIHRvIFBDTSBpbnRlcmZhY2UiLgoKQXMgSSdtIG5v
-dCBhbiBBTFNBIGRldmVsb3BlciwgSSBkb24ndCByZWFsaXplIHRoZSBpbnRlbmRlZCBlZmZlY3Qg
-b2YKdGhpcyBjaGFuZ2UsIGJ1dCB0aGUgYWN0dWFsIGVmZmVjdCBpcyB0aGF0IEkgY2Fubm90IGNo
-YW5nZSB0aGUgRFhTCnZvbHVtZXMgYW55IG1vcmUuICBtcGxheWVyIHN0aWxsIGNvbnRyb2xzIHRo
-ZSBnbG9iYWwgUENNIHZvbHVtZS4gIFdlbGwsCmluIGZhY3QsIHRoZXJlIGlzIG9uZSB3YXkuICBX
-aGlsZSBhbiBtcGxheWVyIGlzIHJ1bm5pbmcsIEkgY2FuIGRvOgoKYW1peGVyIGNzZXQgbnVtaWQ9
-NDcsaWZhY2U9UENNLG5hbWU9J1BDTSBQbGF5YmFjayBWb2x1bWUnIDI0LDI0CgpXaGVuIHJlc3Rh
-cnRpbmcgbXBsYXllciwgdGhlIHZvbHVtZSBpcyByZXNldCB0byAzMSwzMSAobWF4aW11bSkuICBD
-b21taXQKM2QwMDk0MTM3MWE3NjU3NzljNGUzNTA5MjE0YzdlNTc5M2NjZTFmZQpbaHR0cDovL2dp
-dC5rZXJuZWwub3JnLz9wPWxpbnV4L2tlcm5lbC9naXQvc3RhYmxlL2xpbnV4LTIuNi4zMy55Lmdp
-dDthPWNvbW1pdDtoPTNkMDA5NDEzNzFhNzY1Nzc5YzRlMzUwOTIxNGM3ZTU3OTNjY2UxZmVdCnNl
-ZW1zIHRvIGJlIHJlc3BvbnNpYmxlIGZvciB0aGlzLgoKVGhlIGJhZCB0aGluZyBhYm91dCBpdCBp
-cyB0aGF0IDMxLDMxIGlzIGEgcmVhbGx5IGJhZCBzZXR0aW5nIGZvciBteQpwb29ybHkgZW5naW5l
-ZXJlZCBzb3VuZCBjYXJkLiAgSXQgZGlzdG9ydHMgYSBsb3QuCgpJIHN1c3BlY3QgdGhhdCB0aGUg
-cmVhbCAqYnVnKiBpcyB0aGF0IG1wbGF5ZXIgZG9lcyBub3QgdXNlIHRoZQpwZXItY2hhbm5lbCBE
-WFMgY29udHJvbHMgZXZlbiB0aG91Z2ggaXQncyBzdXBwb3NlZCB0byAod2hpY2ggc2VlbXMgdG8g
-YmUKd2h5IHRoZSBEWFMgY29udHJvbHMgYXJlIGNhbGxlZCAiUENNIFBsYXliYWNrIFZvbHVtZSIp
-LgoKUGVyc29uYWxseSwgcmF0aGVyIHRoYW4gZml4aW5nIHRoaXMgYnVnLCBJIHdvdWxkIGp1c3Qg
-cmV2ZXJ0IHRvIHRoZQpmb3JtZXIgc3RhdGUuICBJIHdhcyBhbHdheXMgaGFwcHkgd2l0aCBhbGwg
-dGhlIERYUyBsZXZlcnMgc2V0IHRvIDc1JS4KCgpUaGFuayB5b3UKClPDtnJlbgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+2010/3/26 Angel Tsankov <fn42551@fmi.uni-sofia.bg>
+
+> Hello again!
+>
+> I've recently had some time to investigate this problem further on and
+> here's what I've discovered:
+>
+> Raymond Yau wrote:
+> > 2010/2/26 Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
+> >
+> >> El vie, 26-02-2010 a las 13:57 +0200, Angel Tsankov escribi=F3:
+> >>> Raymond Yau wrote:
+> >>>> 2010/2/25 Jaroslav Kysela <perex@perex.cz>
+> >>>>
+> >>>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
+> >>>>>
+> >>>>>> Jaroslav Kysela wrote:
+> >>>>>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
+> >>>>>>>
+> >>>>>>>> Hello,
+> >>>>>>>>
+> >>>>>>>> I run 'alsactl restore' on a machine with 2 sound cards -- a
+> >> built-in
+> >>>>>>>> Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controller
+> >> (rev
+> >>>>>>>> 02) and a non-built-in Yamaha Corporation YMF-724F [DS-1 Audio
+> >>>>>>>> Controller] (rev 03) -- and get the following message:
+> >>>>>>>>
+> >>>>>>>> Unknown hardware: "YMF724F" "SigmaTel STAC9700,83,84"
+> >> "AC97a:83847600"
+> >>>>>>>> "0x1073" "0x000d"
+> >>>>>>>> Hardware is initialized using a guess method
+> >>>>>>>>
+> >>>>>>>> As a consequence the volume levels of the Yamaha card do not get
+> >>>>>>>> restored to the levels stored in /etc/asound.state.  The volume
+> >> levels
+> >>>>>>>> of the built-in card however are properly restored.  The
+> >> asound.state
+> >>>>>>>> file has been created by executing 'alsactl store'.
+> >>>>>>>>
+>
+> >>
+> > your problem is "alsactl restore" become "alsactl init" when the number
+> of
+> > controls is more than those in state file.
+>
+> I'm not quite sure that the case is this since 'alsactl restore' does
+> restore the values of the Yamaha sound card (and those of the other
+> card, too) and 'alsactl restore 1' seems to just initialize the Yamaha
+> card.  This is with alsa-utils version 1.0.22.
+>
+>
+> Regards,
+>
+> Angel Tsankov
+>
+>
+"Hardware is initialized using a guess method "  is the message used by
+alsactl init
+
+http://git.alsa-project.org/?p=3Dalsa-utils.git;a=3Dcommitdiff;h=3D9a748178=
+d1c9e783242f0cc794ab3efb27092f34;hp=3D0c02a4e3d23c7b5d03215f1bfaba9f70ed11e=
+9b7
