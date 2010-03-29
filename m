@@ -1,18 +1,21 @@
-From: Gregory T Flynn <gflynn1@binghamton.edu>
-Subject: Soundcard Detection problem (ALSA regression)
-Date: Mon, 29 Mar 2010 13:57:40 -0400
-Message-ID: <b98465221003291057p2d7201c6q8c86a6c9a1a1bf17@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [Uclinux-dist-devel] bug in spi and i2c dual buses
+	codecs
+Date: Mon, 29 Mar 2010 14:25:02 -0400
+Message-ID: <8bd0f97a1003291125t77aa762eida59cd4a112927ae@mail.gmail.com>
+References: <3c17e3571003282324t2b0cf67aj93dc3c4d1e6c8ae5@mail.gmail.com>
+	<20100329094938.GB29441@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f220.google.com (mail-fx0-f220.google.com
-	[209.85.220.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91B5624524
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 722352454B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Mar 2010 19:57:41 +0200 (CEST)
-Received: by fxm20 with SMTP id 20so17860538fxm.32
-	for <alsa-devel@alsa-project.org>; Mon, 29 Mar 2010 10:57:41 -0700 (PDT)
+	Mon, 29 Mar 2010 20:25:23 +0200 (CEST)
+Received: by gwb15 with SMTP id 15so898459gwb.38
+	for <alsa-devel@alsa-project.org>; Mon, 29 Mar 2010 11:25:22 -0700 (PDT)
+In-Reply-To: <20100329094938.GB29441@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,32 +25,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-So far I have tested the current stable drive and now the current
-snapshot, both to no avail.=A0 The last ALSA driver version that worked
-on this sound card was 1.0.18.
-
-General Info from the 1.0.18 driver:
-
-!!PCI Soundcards installed in the system
-!!--------------------------------------
-00:10.1 Audio device: nVidia Corporation MCP51 High Definition Audio (rev a=
-2)
-
-
-!!Advanced information - PCI Vendor/Device/Susbsystem ID's
-!!--------------------------------------------------------
-00:10.1 0403: 10de:026c (rev a2)
-=A0=A0=A0 Subsystem: 1462:373d
-
-Currently I'm running Ubuntu 10.04 beta1 and this sounds regression
-(which was also in 9.10) is my only problem with the new system.=A0 So
-it would be awesome to get solved and packed into the beta before
-release.
-
-more details in bug report:
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D4967
---
-- Greg Flynn
+T24gTW9uLCBNYXIgMjksIDIwMTAgYXQgMDU6NDksIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gTW9u
+LCBNYXIgMjksIDIwMTAgYXQgMDI6MjQ6MjhQTSArMDgwMCwgQmFycnkgU29uZyB3cm90ZToKPj4g
+SW4gZmFjdCwgaWYgYW55IGJ1cyBpcyBjb21waWxlZCBhcyBtb2R1bGUgYW5kIGNvZGUgaXMgYnVp
+bHQtaW4sIGxpbmsgZXJyb3IKPj4gd2lsbCBiZSByZXBvcnRlZC4KPgo+IFllcywgdGhpcyBpcyBl
+eHBlY3RlZCBiZWhhdmlvdXIuIMKgSXQncyBub3QgYmVlbiBhIHByYWN0aWNhbCBwcm9ibGVtIC0K
+PiB0aGUgY29tYmluYXRpb24gb2YgYXVkaW8gYnVpbHQgaW4gYW5kIG9uZSBvZiB0aGUgYnVzZXMg
+bW9kdWxhciBpcyBmYXIKPiBmcm9tIGNvbW1vbi4KCmtub3dpbmdseSBicmVha2luZyByYW5kY29u
+ZmlnIGlzIHZpZXdlZCBhcyBhIGJhZCB0aGluZyBieSBwZW9wbGUgb24gbGttbAotbWlrZQpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
