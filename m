@@ -1,28 +1,20 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: alsactl restore: unknown hardware: ymf724f
-Date: Mon, 29 Mar 2010 09:10:14 +0800
-Message-ID: <4f3252891003281810r38e61306w83ebfe9ad2b8c69f@mail.gmail.com>
-References: <hm5aba$p65$1@dough.gmane.org> <hm5u2i$2h7$1@dough.gmane.org>
-	<alpine.LNX.2.00.1002251502380.28127@eeebox2.perex-int.cz>
-	<4f3252891002251511p4605f104jdac236e589d01149@mail.gmail.com>
-	<hm8cus$56i$1@dough.gmane.org>
-	<1267193154.29204.0.camel@localhost.localdomain>
-	<4f3252891002271729p6eb66724v62ce97ea9a6eb577@mail.gmail.com>
-	<hohr62$f78$1@dough.gmane.org>
-	<4f3252891003280552y29015aeav7b68e9972371325b@mail.gmail.com>
-	<hooi7i$fd4$1@dough.gmane.org>
+Subject: Re: Handling of the DXS controls in the via82xx driver
+Date: Mon, 29 Mar 2010 09:24:33 +0800
+Message-ID: <4f3252891003281824r4544d4bfv811f9c4e4d98381@mail.gmail.com>
+References: <4BAE8EF7.20204@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
 	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 82C871037F3
+	by alsa0.perex.cz (Postfix) with ESMTP id F1453103806
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Mar 2010 03:10:15 +0200 (CEST)
-Received: by pwj7 with SMTP id 7so7001744pwj.38
-	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2010 18:10:14 -0700 (PDT)
-In-Reply-To: <hooi7i$fd4$1@dough.gmane.org>
+	Mon, 29 Mar 2010 03:24:34 +0200 (CEST)
+Received: by pwj7 with SMTP id 7so7006618pwj.38
+	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2010 18:24:34 -0700 (PDT)
+In-Reply-To: <4BAE8EF7.20204@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,75 +27,57 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/3/29 Angel Tsankov <fn42551@fmi.uni-sofia.bg>
+2010/3/28 Soeren D. Schulze <soeren.d.schulze@gmx.de>
 
-> Raymond Yau wrote:
-> > 2010/3/26 Angel Tsankov <fn42551@fmi.uni-sofia.bg>
-> >
-> >> Hello again!
-> >>
-> >> I've recently had some time to investigate this problem further on and
-> >> here's what I've discovered:
-> >>
-> >> Raymond Yau wrote:
-> >>> 2010/2/26 Pacho Ramos <pacho@condmat1.ciencias.uniovi.es>
-> >>>
-> >>>> El vie, 26-02-2010 a las 13:57 +0200, Angel Tsankov escribi=F3:
-> >>>>> Raymond Yau wrote:
-> >>>>>> 2010/2/25 Jaroslav Kysela <perex@perex.cz>
-> >>>>>>
-> >>>>>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
-> >>>>>>>
-> >>>>>>>> Jaroslav Kysela wrote:
-> >>>>>>>>> On Thu, 25 Feb 2010, Angel Tsankov wrote:
-> >>>>>>>>>
-> >>>>>>>>>> Hello,
-> >>>>>>>>>>
-> >>>>>>>>>> I run 'alsactl restore' on a machine with 2 sound cards -- a
-> >>>> built-in
-> >>>>>>>>>> Intel Corporation 82801EB/ER (ICH5/ICH5R) AC'97 Audio Controll=
-er
-> >>>> (rev
-> >>>>>>>>>> 02) and a non-built-in Yamaha Corporation YMF-724F [DS-1 Audio
-> >>>>>>>>>> Controller] (rev 03) -- and get the following message:
-> >>>>>>>>>>
-> >>>>>>>>>> Unknown hardware: "YMF724F" "SigmaTel STAC9700,83,84"
-> >>>> "AC97a:83847600"
-> >>>>>>>>>> "0x1073" "0x000d"
-> >>>>>>>>>> Hardware is initialized using a guess method
-> >>>>>>>>>>
-> >>>>>>>>>> As a consequence the volume levels of the Yamaha card do not g=
-et
-> >>>>>>>>>> restored to the levels stored in /etc/asound.state.  The volume
-> >>>> levels
-> >>>>>>>>>> of the built-in card however are properly restored.  The
-> >>>> asound.state
-> >>>>>>>>>> file has been created by executing 'alsactl store'.
-> >>>>>>>>>>
-> >>> your problem is "alsactl restore" become "alsactl init" when the numb=
-er
-> >> of
-> >>> controls is more than those in state file.
-> >> I'm not quite sure that the case is this since 'alsactl restore' does
-> >> restore the values of the Yamaha sound card (and those of the other
-> >> card, too) and 'alsactl restore 1' seems to just initialize the Yamaha
-> >> card.  This is with alsa-utils version 1.0.22.
-> >>
-> > "Hardware is initialized using a guess method "  is the message used by
-> > alsactl init
-> >
-> >
-> http://git.alsa-project.org/?p=3Dalsa-utils.git;a=3Dcommitdiff;h=3D9a7481=
-78d1c9e783242f0cc794ab3efb27092f34;hp=3D0c02a4e3d23c7b5d03215f1bfaba9f70ed1=
-1e9b7
+> Hi everyone,
 >
-> I don't get what you mean. Could you explain a little bit more?
+> before my latest upgrade to Linux 2.6.32 (yes, sorry, it's Debian), I
+> had four levers in my alsamixer: VIA DXS, VIA DXS 1, VIA DXS 2 and VIA
+> DXS 3.  They controlled the hardware mixing when accessing the sound
+> device multiple times.
+>
+> Now they have disappeared.  I think I can pretty certainly trace this
+> down to commit 2fb930b53f513cbc4c102d415d2923a8a7091337 to Linux
+> [
+> http://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-2.6.32.y.git;a=
+=3Dcommit;h=3D2fb930b53f513cbc4c102d415d2923a8a7091337
+> ],
+> which "move[s] DXS volume controls to PCM interface".
+>
+> As I'm not an ALSA developer, I don't realize the intended effect of
+> this change, but the actual effect is that I cannot change the DXS
+> volumes any more.  mplayer still controls the global PCM volume.  Well,
+> in fact, there is one way.  While an mplayer is running, I can do:
+>
+> amixer cset numid=3D47,iface=3DPCM,name=3D'PCM Playback Volume' 24,24
+>
+> When restarting mplayer, the volume is reset to 31,31 (maximum).  Commit
+> 3d00941371a765779c4e3509214c7e5793cce1fe
+> [
+> http://git.kernel.org/?p=3Dlinux/kernel/git/stable/linux-2.6.33.y.git;a=
+=3Dcommit;h=3D3d00941371a765779c4e3509214c7e5793cce1fe
+> ]
+> seems to be responsible for this.
+>
+> The bad thing about it is that 31,31 is a really bad setting for my
+> poorly engineered sound card.  It distorts a lot.
+>
+> I suspect that the real *bug* is that mplayer does not use the
+> per-channel DXS controls even though it's supposed to (which seems to be
+> why the DXS controls are called "PCM Playback Volume").
+>
+> Personally, rather than fixing this bug, I would just revert to the
+> former state.  I was always happy with all the DXS levers set to 75%.
 >
 >
-> Regards,
-> Angel Tsankov
+> Thank you
 >
+> S=F6ren
 >
-post the output of alsa-info.sh after  "alsactl init"
 
-and immeditate after the system boot
+Those are per voice volume control , they can be used for the hardware
+acclearation in wine if wine implmenet the real hardware acceleration
+
+After this change , they are not used by the mixer any more , only those
+application which open those subdevices can find the corresponding control
+by the subdevice number
