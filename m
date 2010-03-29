@@ -1,16 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.35
-Date: Mon, 29 Mar 2010 21:13:11 +0100
-Message-ID: <20100329201310.GA7256@rakim.wolfsonmicro.main>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH] WM8750: Convert to new API
+Date: Mon, 29 Mar 2010 23:16:11 +0200
+Message-ID: <201003292316.11828.marek.vasut@gmail.com>
+References: <1269613142-23942-1-git-send-email-marek.vasut@gmail.com>
+	<20100329124808.GA8434@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1E275103805
+Received: from mail-fx0-f220.google.com (mail-fx0-f220.google.com
+	[209.85.220.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 008EC10385B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Mar 2010 22:13:12 +0200 (CEST)
-Content-Disposition: inline
+	Mon, 29 Mar 2010 23:16:53 +0200 (CEST)
+Received: by fxm20 with SMTP id 20so18138079fxm.32
+	for <alsa-devel@alsa-project.org>; Mon, 29 Mar 2010 14:16:52 -0700 (PDT)
+In-Reply-To: <20100329124808.GA8434@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,41 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 923a00427a141a6d1c83f1b151221a2458b2de8d:
-  Tejun Heo (1):
-        ASoC: update gfp/slab.h includes
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
-
-Barry Song (1):
-      ASoC: ad193x: move codec register/unregister to bus probe/remove
-
-Dan Carpenter (1):
-      ASoC: wm8994: playback => capture
-
-Graham Gower (1):
-      ASoC: Fix passing platform_data to ac97 bus users and fix a leak
-
-Kuninori Morimoto (4):
-      ASoC: fsi: ensures process inside master lock
-      ASoC: fsi: IRQ related process had be united
-      ASoC: fsi: Add FIFO size calculate
-      ASoC: fsi: Add FSI2 device support
-
-Mark Brown (2):
-      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound-2.6 into for-2.6.35
-      Merge branch 'for-2.6.34' into for-2.6.35
-
- sound/soc/codecs/ac97.c   |   15 ++--
- sound/soc/codecs/ad193x.c |  102 ++++++++++--------------
- sound/soc/codecs/wm8994.c |    2 +-
- sound/soc/sh/Kconfig      |    3 +-
- sound/soc/sh/fsi.c        |  191 ++++++++++++++++++++++++++++++++-------------
- sound/soc/soc-core.c      |    3 +-
- 6 files changed, 192 insertions(+), 124 deletions(-)
+RG5lIFBvIDI5LiBixZllem5hIDIwMTAgMTQ6NDg6MDkgTWFyayBCcm93biBuYXBzYWwoYSk6Cj4g
+T24gRnJpLCBNYXIgMjYsIDIwMTAgYXQgMDM6MTk6MDJQTSArMDEwMCwgTWFyZWsgVmFzdXQgd3Jv
+dGU6Cj4gPiBSZWdpc3RlciB0aGUgV004NzUwIGFzIGEgU1BJIG9yIEkyQyBkZXZpY2UuIFRoaXMg
+cGF0Y2ggbW9zdGx5IHNodWZmbGVzCj4gPiBjb2RlIGFyb3VuZC4gSHVnZWx5IGluc3BpcmVkIGJ5
+IFdNODc1MyB3aGljaCB3YXMgYWxyZWFkeSBjb252ZXJ0ZWQuCj4gPgo+ID4gU2lnbmVkLW9mZi1i
+eTogTWFyZWsgVmFzdXQgPG1hcmVrLnZhc3V0QGdtYWlsLmNvbT4KPiAKPiBUaGlzIGFsbCBsb29r
+cyBnb29kIGJ1dCB3ZSBuZWVkIHRoZSBtYWNoaW5lIGRyaXZlciB1cGRhdGVzIHB1bGxpbmcgb3V0
+Cj4gdGhlIHJlZ2lzdHJhdGlvbiB0b28uICBMaWtlIEkgc2F5LCB3bTg3MzEgaGFkIHRoZSBzYW1l
+IHByb2JsZW0uCj4gCj4gVGhlIHVzZSBvZiBzbmRfc29jX3JlZ2lzdGVyX2RhaXMoKSB3aXRoIGp1
+c3Qgb25lIERBSSBpcyBhIGJpdCBvZGQgYnV0Cj4gbm90IGEgcHJvYmxlbS4KPiAKb2ssIHNoYWxs
+IEkgc2VuZCB0aGF0IGluIGFub3RoZXIgcGF0Y2ggYW5kIENDIGxpbnV4LWFybSA/Cl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
