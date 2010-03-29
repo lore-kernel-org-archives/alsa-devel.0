@@ -1,53 +1,36 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC][PATCH] ASoC: OMAP: Fix capture pointer handling for
- OMAP1510 to work correctly with recent ALSA PCM code
-Date: Mon, 29 Mar 2010 11:54:59 +0300
-Message-ID: <20100329115459.b44f0d1c.jhnikula@gmail.com>
-References: <201003282229.32922.jkrzyszt@tis.icnet.pl>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: bug in spi and i2c dual buses codecs
+Date: Mon, 29 Mar 2010 10:49:38 +0100
+Message-ID: <20100329094938.GB29441@rakim.wolfsonmicro.main>
+References: <3c17e3571003282324t2b0cf67aj93dc3c4d1e6c8ae5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <201003282229.32922.jkrzyszt@tis.icnet.pl>
-Sender: linux-omap-owner@vger.kernel.org
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 63B5410381D
+	for <alsa-devel@alsa-project.org>;
+	Mon, 29 Mar 2010 11:49:40 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <3c17e3571003282324t2b0cf67aj93dc3c4d1e6c8ae5@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 28 Mar 2010 22:29:29 +0200
-Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+On Mon, Mar 29, 2010 at 02:24:28PM +0800, Barry Song wrote:
 
-> With recent (2.6.34) chnages in PCM handling, capture stopped working on my 
-> OMAP1510 based Amstrad Delta videophone.
-> 
-> Using 2.6.34-rc2, I was able to correct the problem in 3 different ways:
-> 
-> 1. reverting commit 7b3a177b0d4f92b3431b8dca777313a07533a710,
-> 2. enabling additional jiffies check with
-> 	echo 4 >/proc/asound/card0/pcm0c0/xrun_debug
-> 3. applying the patch below.
-> 
-> Since I wasn't able to reproduce the problem on my i686 PC, I guess the 
-> problem is probably machine specific.
-> 
-> The patch reuses the method for software emulation of missing hardware 
-> pointer, already implemented for playback on OMAP1510. It's possible that 
-> event if a hardware pointer is available for capture on this machine, its 
-> behaviour may be not compatible with what upper layer expects.
-> 
-> If you think the problem may be more general and should be solved differently, 
-> on a higher level, I can try to work more on it if you give me a hint.
-> 
-I don't have anything against this patch as it makes the
-playback/capture code uniform on 1510 but I don't understand why the
-capture broke now if it was working before.
+> In fact, if any bus is compiled as module and code is built-in, link error
+> will be reported.
 
-What I was thinking if there has been always some overruns which were
-not detected on 2.6.34-rc anymore and that caused somehow the capture
-not working on 1510. Could you try does a patch below have any effect?
-
-http://mailman.alsa-project.org/pipermail/alsa-devel/2010-March/026487.html
-
-
--- 
-Jarkko
+Yes, this is expected behaviour.  It's not been a practical problem -
+the combination of audio built in and one of the buses modular is far
+from common.
