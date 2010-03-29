@@ -1,20 +1,18 @@
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [RFC][PATCH] ASoC: OMAP: Fix capture pointer
-	handling for OMAP1510 to work correctly with recent ALSA PCM code
-Date: Mon, 29 Mar 2010 14:14:51 +0200
-Message-ID: <201003291414.53726.jkrzyszt@tis.icnet.pl>
-References: <201003282229.32922.jkrzyszt@tis.icnet.pl>
-	<20100329115459.b44f0d1c.jhnikula@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] WM8750: Convert to new API
+Date: Mon, 29 Mar 2010 13:48:09 +0100
+Message-ID: <20100329124808.GA8434@rakim.wolfsonmicro.main>
+References: <1269613142-23942-1-git-send-email-marek.vasut@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from d1.icnet.pl (d1.icnet.pl [212.160.220.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 334CB243FF
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3AA2624347
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Mar 2010 14:15:36 +0200 (CEST)
-In-Reply-To: <20100329115459.b44f0d1c.jhnikula@gmail.com>
+	Mon, 29 Mar 2010 14:48:14 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <1269613142-23942-1-git-send-email-marek.vasut@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-TW9uZGF5IDI5IE1hcmNoIDIwMTAgMTA6NTQ6NTkgSmFya2tvIE5pa3VsYSBuYXBpc2HFgihhKToK
-PiBPbiBTdW4sIDI4IE1hciAyMDEwIDIyOjI5OjI5ICswMjAwCj4KPiBKYW51c3ogS3J6eXN6dG9m
-aWsgPGprcnp5c3p0QHRpcy5pY25ldC5wbD4gd3JvdGU6Cj4gPiBXaXRoIHJlY2VudCAoMi42LjM0
-KSBjaG5hZ2VzIGluIFBDTSBoYW5kbGluZywgY2FwdHVyZSBzdG9wcGVkIHdvcmtpbmcgb24KPiA+
-IG15IE9NQVAxNTEwIGJhc2VkIEFtc3RyYWQgRGVsdGEgdmlkZW9waG9uZS4KPiA+Cj4gPiBVc2lu
-ZyAyLjYuMzQtcmMyLCBJIHdhcyBhYmxlIHRvIGNvcnJlY3QgdGhlIHByb2JsZW0gaW4gMyBkaWZm
-ZXJlbnQgd2F5czoKPiA+Cj4gPiAxLiByZXZlcnRpbmcgY29tbWl0IDdiM2ExNzdiMGQ0ZjkyYjM0
-MzFiOGRjYTc3NzMxM2EwNzUzM2E3MTAsCj4gPiAyLiBlbmFibGluZyBhZGRpdGlvbmFsIGppZmZp
-ZXMgY2hlY2sgd2l0aAo+ID4gCWVjaG8gNCA+L3Byb2MvYXNvdW5kL2NhcmQwL3BjbTBjMC94cnVu
-X2RlYnVnCj4gPiAzLiBhcHBseWluZyB0aGUgcGF0Y2ggYmVsb3cuCj4gPgo+ID4gU2luY2UgSSB3
-YXNuJ3QgYWJsZSB0byByZXByb2R1Y2UgdGhlIHByb2JsZW0gb24gbXkgaTY4NiBQQywgSSBndWVz
-cyB0aGUKPiA+IHByb2JsZW0gaXMgcHJvYmFibHkgbWFjaGluZSBzcGVjaWZpYy4KPiA+Cj4gPiBU
-aGUgcGF0Y2ggcmV1c2VzIHRoZSBtZXRob2QgZm9yIHNvZnR3YXJlIGVtdWxhdGlvbiBvZiBtaXNz
-aW5nIGhhcmR3YXJlCj4gPiBwb2ludGVyLCBhbHJlYWR5IGltcGxlbWVudGVkIGZvciBwbGF5YmFj
-ayBvbiBPTUFQMTUxMC4gSXQncyBwb3NzaWJsZSB0aGF0Cj4gPiBldmVudCBpZiBhIGhhcmR3YXJl
-IHBvaW50ZXIgaXMgYXZhaWxhYmxlIGZvciBjYXB0dXJlIG9uIHRoaXMgbWFjaGluZSwgaXRzCj4g
-PiBiZWhhdmlvdXIgbWF5IGJlIG5vdCBjb21wYXRpYmxlIHdpdGggd2hhdCB1cHBlciBsYXllciBl
-eHBlY3RzLgo+ID4KPiA+IElmIHlvdSB0aGluayB0aGUgcHJvYmxlbSBtYXkgYmUgbW9yZSBnZW5l
-cmFsIGFuZCBzaG91bGQgYmUgc29sdmVkCj4gPiBkaWZmZXJlbnRseSwgb24gYSBoaWdoZXIgbGV2
-ZWwsIEkgY2FuIHRyeSB0byB3b3JrIG1vcmUgb24gaXQgaWYgeW91IGdpdmUKPiA+IG1lIGEgaGlu
-dC4KPgo+IEkgZG9uJ3QgaGF2ZSBhbnl0aGluZyBhZ2FpbnN0IHRoaXMgcGF0Y2ggYXMgaXQgbWFr
-ZXMgdGhlCj4gcGxheWJhY2svY2FwdHVyZSBjb2RlIHVuaWZvcm0gb24gMTUxMCBidXQgSSBkb24n
-dCB1bmRlcnN0YW5kIHdoeSB0aGUKPiBjYXB0dXJlIGJyb2tlIG5vdyBpZiBpdCB3YXMgd29ya2lu
-ZyBiZWZvcmUuCj4KPiBXaGF0IEkgd2FzIHRoaW5raW5nIGlmIHRoZXJlIGhhcyBiZWVuIGFsd2F5
-cyBzb21lIG92ZXJydW5zIHdoaWNoIHdlcmUKPiBub3QgZGV0ZWN0ZWQgb24gMi42LjM0LXJjIGFu
-eW1vcmUgYW5kIHRoYXQgY2F1c2VkIHNvbWVob3cgdGhlIGNhcHR1cmUKPiBub3Qgd29ya2luZyBv
-biAxNTEwLiBDb3VsZCB5b3UgdHJ5IGRvZXMgYSBwYXRjaCBiZWxvdyBoYXZlIGFueSBlZmZlY3Q/
-Cj4KPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVs
-LzIwMTAtTWFyY2gvMDI2NDg3Lmh0bWwKCkhpIEphcnJrbywKCkkgc2hvdWxkIGhhdmUgbWVudGlv
-biB0aGF0IEkgd2FzIGFscmVhZHkgYXdhcmUgb2YgeW91ciBwYXRjaDsgYXBwbGllZCBhbG9uZSwg
-Cml0IGRpZG4ndCBzb2x2ZSB0aGUgcHJvYmxlbSBmb3IgbWUuIEhvd2V2ZXIsIHdoZW4gY29uZmln
-dXJpbmcgQUxTQSB3aXRoIApkZWJ1Z2dpbmcgdHVybmVkIG9mZiwgSSBoYXZlIHRvIHVzZSBib3Ro
-IHBhdGNoZXMsIHlvdXJzIGFuZCBtaW5lLCBpbiBvcmRlciB0byAKZ2V0IHRoaW5ncyB3b3JraW5n
-LgoKVGhlIG1vc3QgbXlzdGVyaW91cyBwYXJ0IG9mIHRoZSBpc3N1ZSwgYW5kIG1vc3QgaW50ZXJl
-c3RpbmcgcXVlc3Rpb24gdGhhdCBJJ20gCm5vdCBhYmxlIHRvIGZpbmQgYW4gYW5zd2VyIG15c2Vs
-ZiBmb3IsIGlzIHdoeSB0aGUgcHJvYmxlbSBjYW4gYmUgY29ycmVjdGVkIGJ5IApyZXZlcnRpbmcg
-Y29tbWl0IDdiM2ExNzdiMGQ0ZjkyYjM0MzFiOGRjYTc3NzMxM2EwNzUzM2E3MTAuCgpKYXJvc2xh
-diwgSSdtIENDaW5nIHlvdSwgdGhlIGF1dGhvciBvZiB0aGUgIm1hZ2ljIiBjb21taXQsIGluIGhv
-cGUgeW91IG1heSBiZSAKYWJsZSB0byBzaGVkIHNvbWUgbW9yZSBsaWdodCBvbiB0aGUgaXNzdWUu
-CgpUaGFua3MsCkphbnVzegpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+On Fri, Mar 26, 2010 at 03:19:02PM +0100, Marek Vasut wrote:
+> Register the WM8750 as a SPI or I2C device. This patch mostly shuffles code
+> around. Hugely inspired by WM8753 which was already converted.
+> 
+> Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
+
+This all looks good but we need the machine driver updates pulling out
+the registration too.  Like I say, wm8731 had the same problem.
+
+The use of snd_soc_register_dais() with just one DAI is a bit odd but
+not a problem.
