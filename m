@@ -1,21 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Handling of the DXS controls in the via82xx driver
-Date: Wed, 31 Mar 2010 09:39:14 +0800
-Message-ID: <z2x4f3252891003301839kdce78efu170bd4a34d60440c@mail.gmail.com>
-References: <4BAE8EF7.20204@gmx.de>
-	<1269867371.6760.1367253675@webmail.messagingengine.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: pulseaudio module-udev-detect failure on 2.6.34-rc1
+Date: Wed, 31 Mar 2010 12:40:16 +0800
+Message-ID: <20100331044016.GA17684@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDD43103814
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5FB1F103814
 	for <alsa-devel@alsa-project.org>;
-	Wed, 31 Mar 2010 03:39:15 +0200 (CEST)
-Received: by pwj7 with SMTP id 7so9019778pwj.38
-	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2010 18:39:14 -0700 (PDT)
-In-Reply-To: <1269867371.6760.1367253675@webmail.messagingengine.com>
+	Wed, 31 Mar 2010 06:40:20 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,42 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Lennart Poettering <lennart@poettering.net>
 List-Id: alsa-devel@alsa-project.org
 
-2010/3/29 Clemens Ladisch <clemens@ladisch.de>
+Greetings,
 
-> Soeren D. Schulze wrote:
->
->
-> > mplayer still controls the global PCM volume.  Well,
-> > in fact, there is one way.  While an mplayer is running, I can do:
-> >
-> > amixer cset numid=47,iface=PCM,name='PCM Playback Volume' 24,24
-> >
-> > When restarting mplayer, the volume is reset to 31,31 (maximum).
->
-> The old behaviour was considered buggy: these stream controls are
-> logically associated with a stream opened by an application, not with
-> a particular hardware stream.
->
-> > The bad thing about it is that 31,31 is a really bad setting for my
-> > poorly engineered sound card.  It distorts a lot.
->
-> If the card cannot handle any loud output, then all outputs from any
-> source must be restricted, so the logical place for lower volume would
-> be the "Master" or "PCM" controls.
->
->
-> Regards,
-> Clemens
->
->
-Correct me if I am wrong , ac97 codec support 16,18,20 bits resolution and
-the ac97 specification mention that if a sample stream of resoultion is less
-than 20 bits is transferred through ac97 link, the ac97 controller must
-stuff all trailing invalid bits with zero.
+Pulseaudio can no longer detect sound cards on kernel 2.6.34-rc1.
+Note that 2.6.33 is OK.
 
-This mean that the ac97 controller can provide a maximum of 12 dB gain if
-your codec support 20 bits resolution , any gain over 12dB by the ac97
-controller will lead to clipping
+I noticed that the related sysfs directories/files changed.
+Note that the card0/ directory is gone in new kernel:
+
+2.6.33
+wfg@hp ~% ll /sys/class/sound                          
+total 0
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 timer -> ../../devices/virtual/sound/timer
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 pcmC0D1p -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/pcmC0D1p
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 pcmC0D0p -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/pcmC0D0p
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 pcmC0D0c -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/pcmC0D0c
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 mixer5 -> ../../devices/platform/thinkpad_acpi/sound/card5/mixer5
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 mixer -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/mixer
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 hwC0D0 -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/hwC0D0
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 dsp -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/dsp
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 controlC5 -> ../../devices/platform/thinkpad_acpi/sound/card5/controlC5
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 controlC0 -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/controlC0
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 card5 -> ../../devices/platform/thinkpad_acpi/sound/card5
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 card0 -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 audio -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/audio
+lrwxrwxrwx 1 root root 0 2010-03-31 12:23 adsp -> ../../devices/pci0000:00/0000:00:1b.0/sound/card0/adsp
+
+2.6.34-rc1
+wfg@hp ~% ll /sys/class/sound                          
+total 0
+drwxr-xr-x 3 root root 0 2010-03-31 19:27 timer
+drwxr-xr-x 3 root root 0 2010-03-31 19:27 pcmC0D7p
+drwxr-xr-x 3 root root 0 2010-03-31 19:27 pcmC0D3p
+drwxr-xr-x 3 root root 0 2010-03-31 19:27 pcmC0D0p
+drwxr-xr-x 3 root root 0 2010-03-31 19:27 pcmC0D0c
+drwxr-xr-x 3 root root 0 2010-03-31 19:27 hwC0D3
+drwxr-xr-x 3 root root 0 2010-03-31 19:27 hwC0D0
+drwxr-xr-x 3 root root 0 2010-03-31 19:27 controlC0
+
+Any ideas?
+
+Thanks,
+Fengguang
