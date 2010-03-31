@@ -1,18 +1,18 @@
-From: "Soeren D. Schulze" <soeren.d.schulze@gmx.de>
-Subject: Re: Handling of the DXS controls in the via82xx driver
-Date: Mon, 29 Mar 2010 15:21:52 +0200
-Message-ID: <4BB0A970.7020600@gmx.de>
-References: <4BAE8EF7.20204@gmx.de>
-	<1269867371.6760.1367253675@webmail.messagingengine.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: mx31 snd and mc13783 codec status
+Date: Wed, 31 Mar 2010 10:34:15 +0200
+Message-ID: <20100331083415.GR2241@pengutronix.de>
+References: <4BB22576.1070108@epfl.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id CFD2E103805
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 391921037F9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 29 Mar 2010 15:21:56 +0200 (CEST)
-In-Reply-To: <1269867371.6760.1367253675@webmail.messagingengine.com>
+	Wed, 31 Mar 2010 10:34:16 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4BB22576.1070108@epfl.ch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Valentin Longchamp <valentin.longchamp@epfl.ch>
+Cc: alsa-devel@alsa-project.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
->> The bad thing about it is that 31,31 is a really bad setting for my
->> poorly engineered sound card.  It distorts a lot.
-> =
+Hi Valentin,
 
-> If the card cannot handle any loud output, then all outputs from any
-> source must be restricted, so the logical place for lower volume would
-> be the "Master" or "PCM" controls.
+On Tue, Mar 30, 2010 at 06:23:18PM +0200, Valentin Longchamp wrote:
+> Hi Sascha,
+>
+> For one of our experiments where our robots need to produce sound, I  
+> would need a sound driver for mx31moboard platform.
+>
+> I have quickly hacked something based on what you had done for pcm037  
+> with the MC13783 codec in some of your first sound patches. I know that  
+> this is not ready for mainline and I'm still struggling to debug my  
+> code, but I would like to have results quite soon so that my colleague  
+> could see what sounds (especially regarding to the volume) our system is  
+> capable to produce.
+>
+> I would like to know if by any chance you have some updates on this code  
+> ?
 
-The problem is rather that it cannot handle loud *input*.  With loud
-input from digital plus the respective DXS lever on high volume, it
-apparently overdrives at a very early stage in the sound card.  Master
-and PCM do not help anything any more.
+Find the latest version of my code here:
 
-The other workaround would probably be using softvol for reducing the
-volume before it enters analog, but lowering the DXS levers is still
-better IMHO.
+The following changes since commit 01e77706cdde7c0b47e5ca1f4284a795504c7c40:
+  Linus Torvalds (1):
+        Merge branch 'for-linus' of git://gitorious.org/linux-omap-dss2/linux
+
+are available in the git repository at:
+
+  git://git.pengutronix.de/git/sha/linux-2.6.git mc13783
+
+Sascha Hauer (3):
+      add a mc13783 codec driver
+      add phycore-mc13783 sound support
+      pcm038: add sound support
+
+ arch/arm/mach-mx2/mach-pcm038.c |   23 ++-
+ sound/soc/codecs/Kconfig        |    4 +
+ sound/soc/codecs/Makefile       |    2 +
+ sound/soc/codecs/mc13783.c      |  727 +++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/mc13783.h      |   32 ++
+ sound/soc/imx/Kconfig           |    9 +
+ sound/soc/imx/Makefile          |    3 +
+ sound/soc/imx/phycore-mc13783.c |  160 +++++++++
+ 8 files changed, 959 insertions(+), 1 deletions(-)
+ create mode 100644 sound/soc/codecs/mc13783.c
+ create mode 100644 sound/soc/codecs/mc13783.h
+ create mode 100644 sound/soc/imx/phycore-mc13783.c
+
+> And do you know if your initial mc13783 codec support coupled with  
+> mx31 had some limitations ? Our setup is quite straightforward, we have  
+> direct connection from the mx31 to the mc13783 on a single SSI.
+
+Our board uses both SSI channels of the MC13783 which we then mux into
+one channel in the DAM unit. I don't know how this affects you.
+
+Sascha
 
 
-Thank you
-
-S=F6ren
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
