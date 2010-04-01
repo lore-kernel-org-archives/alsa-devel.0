@@ -1,61 +1,89 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: line in recording w/ alsa - suggestions for a snd
- card?
-Date: Thu, 01 Apr 2010 17:20:25 +0200
-Message-ID: <4BB4B9B9.6070009@ladisch.de>
-References: <20100401151931.6ff54457@romy.gusto> <4BB4A40E.2040809@ladisch.de>
-	<20100401160133.4bbf4a77@romy.gusto>
+From: Valentin Longchamp <valentin.longchamp@epfl.ch>
+Subject: Re: mx31 snd and mc13783 codec status
+Date: Thu, 01 Apr 2010 18:01:38 +0200
+Message-ID: <4BB4C362.3000803@epfl.ch>
+References: <4BB22576.1070108@epfl.ch> <20100331083415.GR2241@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 3658C10389E
-	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Apr 2010 17:20:30 +0200 (CEST)
-In-Reply-To: <20100401160133.4bbf4a77@romy.gusto>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars Schotte <lars.schotte@schotteweb.de>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20100331083415.GR2241@pengutronix.de>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lars Schotte wrote:
-> CA0106 is supported, but I looked at the website and there is:
-> http://www.alsa-project.org/main/index.php/Matrix:Vendor-Creative_Labs
-> CA0106
-> 	Details 	[PCI] Digital/Analog input does not work yet.
-> 	Needs more development work. 
+Hi Sascha,
+
+Sascha Hauer wrote:
 > 
-> so ... that seems like line in doesnt work yet, but on the unofficial
-> http://alsa.opensrc.org/index.php/Ca0106
-> is "
-> Capture from MIC an LINE IN input. 
-> "
-> so looks like that already works, but maybe recently.
+> Find the latest version of my code here:
+> 
+> The following changes since commit 01e77706cdde7c0b47e5ca1f4284a795504c7c40:
+>   Linus Torvalds (1):
+>         Merge branch 'for-linus' of git://gitorious.org/linux-omap-dss2/linux
+> 
+> are available in the git repository at:
+> 
+>   git://git.pengutronix.de/git/sha/linux-2.6.git mc13783
+> 
+> Sascha Hauer (3):
+>       add a mc13783 codec driver
+>       add phycore-mc13783 sound support
+>       pcm038: add sound support
+> 
+>  arch/arm/mach-mx2/mach-pcm038.c |   23 ++-
+>  sound/soc/codecs/Kconfig        |    4 +
+>  sound/soc/codecs/Makefile       |    2 +
+>  sound/soc/codecs/mc13783.c      |  727 +++++++++++++++++++++++++++++++++++++++
+>  sound/soc/codecs/mc13783.h      |   32 ++
+>  sound/soc/imx/Kconfig           |    9 +
+>  sound/soc/imx/Makefile          |    3 +
+>  sound/soc/imx/phycore-mc13783.c |  160 +++++++++
+>  8 files changed, 959 insertions(+), 1 deletions(-)
+>  create mode 100644 sound/soc/codecs/mc13783.c
+>  create mode 100644 sound/soc/codecs/mc13783.h
+>  create mode 100644 sound/soc/imx/phycore-mc13783.c
+> 
+>> And do you know if your initial mc13783 codec support coupled with  
+>> mx31 had some limitations ? Our setup is quite straightforward, we have  
+>> direct connection from the mx31 to the mc13783 on a single SSI.
+> 
+> Our board uses both SSI channels of the MC13783 which we then mux into
+> one channel in the DAM unit. I don't know how this affects you.
+> 
 
-The opensrc.org entry is newer.
+I have struggled with the DAM unit (this thing is an awful bulk of 
+wires) and now I get some sound on the loudspeaker.
 
-However, the snd-ca0106 driver doesn't know the VX model; there are
-reports that playback on the VX does not work at all (white noise)
-unless the card was initialized by the Windows driver, then rebooted
-into Linux.
+The thing is that I get a less than a second sound loop (I use aplay to 
+test, so userspace app should be ok), as if the buffer that the fiq asm 
+interrupt (from ssi_fiq.S) copies to the SSI hardware never was updated.
 
-> so the question now is, which of these two - SB 5.1 VX or Asus Xonar.
-> I have a debian stable (lenny) w/ 2.6.26 old kernel and I would prefer
-> if the card were already supported by that kernel, so I dont need to
-> make any changes to the system any more.
+If I have understood the fiq behaviour correctly, you have a asm fiq 
+interrupt that does copy a larger tx buffer into the SSI hardware. 
+Besides it, you have the imx_ssi_timer_callback that checks when the tx 
+buffer was completely copied. If it is the case, then a new buffer tx 
+buffer is "issued" with the snd_pcm_period_elapsed call (and then 
+snd_pcm_update_hw_ptr0). Is this behaviour correct ?
 
-The Xonar D1 has a not-buggy driver since 2.6.27.  I don't know Debian,
-but it looks as if newer backported kernels are available.
+If then it looks like on my system, I have a problem with the 
+snd_pcm_update_hw_ptr0 call.
 
+Thanks
 
-HTH
-Clemens
+Val
+
+-- 
+Valentin Longchamp, PhD Student, EPFL-STI-LSRO1
+valentin.longchamp@epfl.ch, Phone: +41216937827
+http://people.epfl.ch/valentin.longchamp
+MEB3494, Station 9, CH-1015 Lausanne
