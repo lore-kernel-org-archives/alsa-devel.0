@@ -1,20 +1,31 @@
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: Re: [PATCH 1/4] pxa: add namespace on ssp
-Date: Thu, 1 Apr 2010 15:45:03 +0800
-Message-ID: <g2w771cded01004010045n56803dfbge90d3a70a731977d@mail.gmail.com>
-References: <k2s771cded01003310546y48e1431r71820b73f69e53d5@mail.gmail.com>
-	<y2pf17812d71004010033x5b3e789foa782dd6cd8af63ef@mail.gmail.com>
+From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
+Subject: start threshold in alsa plugin
+Date: Thu, 01 Apr 2010 10:35:54 +0200
+Message-ID: <4BB45AEA.3030204@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4C7F5244AA
+Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C2C9244BD
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Apr 2010 09:45:05 +0200 (CEST)
-Received: by pwj7 with SMTP id 7so787072pwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 01 Apr 2010 00:45:03 -0700 (PDT)
-In-Reply-To: <y2pf17812d71004010033x5b3e789foa782dd6cd8af63ef@mail.gmail.com>
+	Thu,  1 Apr 2010 10:35:58 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by keymachine.tbmn.org (Postfix) with ESMTP id F3CC38AC5C7
+	for <alsa-devel@alsa-project.org>;
+	Thu,  1 Apr 2010 10:35:55 +0200 (CEST)
+Received: from keymachine.tbmn.org ([127.0.0.1])
+	by localhost (keymachine.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id OoY+bePG9hFO for <alsa-devel@alsa-project.org>;
+	Thu,  1 Apr 2010 10:35:55 +0200 (CEST)
+Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
+	[80.108.1.212])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: mne@tbmn.org)
+	by keymachine.tbmn.org (Postfix) with ESMTPSA id A79298AC5C1
+	for <alsa-devel@alsa-project.org>;
+	Thu,  1 Apr 2010 10:35:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +35,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 1, 2010 at 3:33 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
-> On Wed, Mar 31, 2010 at 8:46 PM, Haojian Zhuang
-> <haojian.zhuang@gmail.com> wrote:
->> From b52a0d2687e82f81d38198cb450b6a39a9e53851 Mon Sep 17 00:00:00 2001
->> From: Haojian Zhuang <haojian.zhuang@marvell.com>
->> Date: Wed, 31 Mar 2010 15:08:55 -0400
->> Subject: [PATCH] [ARM] pxa: add namespace on ssp
->>
->> In order to prevent code ambiguous, add namespace on functions in ssp driver.
->>
->
-> Haojian,
->
-> This is not necessary, provided that those functions are static already.
-> Unless this driver is going to support a different SSP, in which case a
-> separate driver is needed then.
->
-> What's the real motivation behind this?
->
+Hi,
 
-It's the request from Mark. Both ssp_ and pxa_ssp_ prefix exist in
-pxa-ssp.c. From the view of naming space, it's not align.
+in my io-plugin code I would like to know the start threshold value.
 
-Thanks
-Haojian
+AFAIK the start threshold is set to a default value that depends on the
+  configured buffer size SND_PCM_IOPLUG_HW_BUFFER_BYTES.
+In my case the buffer size is 160*2*1 .. 160*2*2 bytes which is 1..2
+periods as one period has 160 samples and each sample has 16 bit (2 bytes).
+
+
+* How exactly is the default threshold value derived from the buffer size ?
+
+
+
+
+I also tried to get the start threshold value from the PCM:
+
+------------------------------------------------------------------------------
+    if (snd_pcm_sw_params_malloc(&sw_params)<0)
+        return -1;
+
+    if ((err=snd_pcm_sw_params_current(plug_info->io.pcm, sw_params))<0)
+    {
+        printf("Unable to determine current swparams: %s\n",
+snd_strerror(err));
+        return -err;
+    }
+
+    if (snd_pcm_sw_params_get_start_threshold(sw_params, &param)<0)
+        return -1;
+
+    DBG("start threshold: %lu", param);
+------------------------------------------------------------------------------
+
+Unfortunately the call to snd_pcm_sw_params_current() fails (i/o error).
+
+
+* Do you know why that call fails ?
+* Is this the right way to get the start threshold value from a pcm ?
+
+
+I'm calling the above code at the end of the plugin entry function
+SND_PCM_PLUGIN_DEFINE_FUNC() after all hw constraints (including the
+buffer size) have been set.
+
+Maybe the plugin entry function is just not the right place to retrieve
+the sw configuration from the PCM as it is too early and the sw config
+of the pcm has not yet been set up ?
+
+* Should I use a callback like sw_params to retrieve the default config ?
+
+cheers,
+Stefan
