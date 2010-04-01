@@ -1,65 +1,96 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: enable wm8753 in aspenite
-Date: Thu, 1 Apr 2010 19:21:24 +0100
-Message-ID: <20100401182124.GB26650@opensource.wolfsonmicro.com>
-References: <s2g771cded01003310548udc9ff8b8u35736bd95038f92c@mail.gmail.com>
+From: Torsten Kaiser <just.for.lkml@googlemail.com>
+Subject: Re: [alsa-devel] Regressions: MSI vs HDA-Intel
+Date: Thu, 1 Apr 2010 21:15:53 +0200
+Message-ID: <m2h64bb37e1004011215n763a5ae2i2929069a2127c593@mail.gmail.com>
+References: <64bb37e1003261025l14e2d82r64ba1e90d024bea6@mail.gmail.com>
+	 <s5hfx3nm1lh.wl%tiwai@suse.de>
+	 <64bb37e1003261059w3de67654m11ca17f1645f6c1@mail.gmail.com>
+	 <s5hhbo26d68.wl%tiwai@suse.de>
+	 <64bb37e1003261407y4d46c71cr3b39fc3058e0294a@mail.gmail.com>
+	 <s5hd3yq6anu.wl%tiwai@suse.de>
+	 <64bb37e1003270234p3c7a10e2kd066d4459a60bb51@mail.gmail.com>
+	 <4BB44A96.60709@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 98F7B1038BD
-	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Apr 2010 20:21:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s2g771cded01003310548udc9ff8b8u35736bd95038f92c@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-Cc: alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4BB44A96.60709@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 31, 2010 at 08:48:58AM -0400, Haojian Zhuang wrote:
+On Thu, Apr 1, 2010 at 9:26 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> Torsten Kaiser wrote:
+>> So all the messages about the failing codec and MSI belong to
+>> 0000:01:05.2, the HDMI output.
+>
+> MSI seems to be broken on all(?) Radeon IGPs; see
+> <http://lkml.org/lkml/2010/3/30/290>.
 
-> +/* Seek the index of MCLK configuration table */
-> +static int pxa168_seek_mclk_conf(int rate, int format, int channel)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(mclk_conf); i++) {
-> +		if ((mclk_conf[i].rate == rate)
-> +			&& (mclk_conf[i].format == format)
-> +			&& (mclk_conf[i].channel == channel))
-> +			return i;
-> +	}
-> +	return -EINVAL;
-> +}
+If you refer to "PCI quirk: RS780/RS880: work around missing MSI
+initialization", the system only has a RS690.
+And as far as I know, MSI works for the graphics part:
+~ # grep radeon /proc/interrupts
+ 25:          1        909   PCI-MSI-edge      radeon
 
-> +/* Get the MCLK frequency */
-> +static int pxa168_get_mclk(int i)
-> +{
-> +	if ((i < 0) || (i >= ARRAY_SIZE(mclk_conf)))
-> +		return -EINVAL;
-> +	return mclk_conf[i].mclk;
-> +}
+(I'm only using fbcon, no Xserver running)
 
-This stuff probably shouldn't be in the machine driver since pretty much
-all machine drivers are going to want exactly the same code - it should
-be in the library code.  Probably best to have them take hw_params
-rather than require the machine driver to decode the format, rate and
-channel since that'll save a bit of per driver boiler plate if they
-don't otherwise need that information.
+> Torsten, what is the output of "lspci -nn" on your first system?
 
-As I said last time ideally machine drivers shouldn't have to see this
-at all, of course.
+00:00.0 Host bridge [0600]: ATI Technologies Inc RS690 Host Bridge [1002:7910]
+00:01.0 PCI bridge [0604]: ATI Technologies Inc RS690 PCI to PCI
+Bridge (Internal gfx) [1002:7912]
+00:07.0 PCI bridge [0604]: ATI Technologies Inc RS690 PCI to PCI
+Bridge (PCI Express Port 3) [1002:7917]
+00:12.0 SATA controller [0106]: ATI Technologies Inc SB600 Non-Raid-5
+SATA [1002:4380]
+00:13.0 USB Controller [0c03]: ATI Technologies Inc SB600 USB (OHCI0)
+[1002:4387]
+00:13.1 USB Controller [0c03]: ATI Technologies Inc SB600 USB (OHCI1)
+[1002:4388]
+00:13.2 USB Controller [0c03]: ATI Technologies Inc SB600 USB (OHCI2)
+[1002:4389]
+00:13.3 USB Controller [0c03]: ATI Technologies Inc SB600 USB (OHCI3)
+[1002:438a]
+00:13.4 USB Controller [0c03]: ATI Technologies Inc SB600 USB (OHCI4)
+[1002:438b]
+00:13.5 USB Controller [0c03]: ATI Technologies Inc SB600 USB
+Controller (EHCI) [1002:4386]
+00:14.0 SMBus [0c05]: ATI Technologies Inc SBx00 SMBus Controller
+[1002:4385] (rev 14)
+00:14.1 IDE interface [0101]: ATI Technologies Inc SB600 IDE [1002:438c]
+00:14.2 Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel
+HDA) [1002:4383]
+00:14.3 ISA bridge [0601]: ATI Technologies Inc SB600 PCI to LPC
+Bridge [1002:438d]
+00:14.4 PCI bridge [0604]: ATI Technologies Inc SBx00 PCI to PCI
+Bridge [1002:4384]
+00:18.0 Host bridge [0600]: Advanced Micro Devices [AMD] K8
+[Athlon64/Opteron] HyperTransport Technology Configuration [1022:1100]
+00:18.1 Host bridge [0600]: Advanced Micro Devices [AMD] K8
+[Athlon64/Opteron] Address Map [1022:1101]
+00:18.2 Host bridge [0600]: Advanced Micro Devices [AMD] K8
+[Athlon64/Opteron] DRAM Controller [1022:1102]
+00:18.3 Host bridge [0600]: Advanced Micro Devices [AMD] K8
+[Athlon64/Opteron] Miscellaneous Control [1022:1103]
+01:05.0 VGA compatible controller [0300]: ATI Technologies Inc RS690
+[Radeon X1200 Series] [1002:791e]
+01:05.2 Audio device [0403]: ATI Technologies Inc Radeon X1200 Series
+Audio Controller [1002:7919]
+02:00.0 Ethernet controller [0200]: Realtek Semiconductor Co., Ltd.
+RTL8111/8168B PCI Express Gigabit Ethernet controller [10ec:8168] (rev
+01)
+03:03.0 Ethernet controller [0200]: Realtek Semiconductor Co., Ltd.
+RTL-8029(AS) [10ec:8029]
+03:05.0 Ethernet controller [0200]: MYSON Technology Inc SURECOM
+EP-320X-S 100/10M Ethernet PCI Adapter [1516:0803]
+03:06.0 FireWire (IEEE 1394) [0c00]: VIA Technologies, Inc. VT6306/7/8
+[Fire II(M)] IEEE 1394 OHCI Controller [1106:3044] (rev c0)
 
-Otherwise this series all looks basically OK.  Liam is travelling at the
-minute so it'll probably be the weekend at the earliest (more likely
-early next week) before he has a chance to look at it.
+But please note: The only problem is the 6 second delay during HDMI
+audio initialization. And that was not fixed by
+snd_hda_intel.enable_msi=0.
+As I don't have any hardware to attach to the HDMI port, I probably
+can't help you debugging this further then "the delay is gone".
+
+Thanks, Torsten
