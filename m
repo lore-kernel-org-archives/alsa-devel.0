@@ -1,17 +1,18 @@
-From: Dan Chen <crimsunkg@yahoo.com>
-Subject: Re: C-Media CMI8738-LX noise in recording from line in
-Date: Wed, 31 Mar 2010 20:31:06 -0700 (PDT)
-Message-ID: <243424.255.qm@web112607.mail.gq1.yahoo.com>
-References: <20100401031825.557be2bc@romy.gusto>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Regressions: MSI vs HDA-Intel
+Date: Thu, 01 Apr 2010 09:26:14 +0200
+Message-ID: <4BB44A96.60709@ladisch.de>
+References: <64bb37e1003261025l14e2d82r64ba1e90d024bea6@mail.gmail.com>	<s5hfx3nm1lh.wl%tiwai@suse.de>	<64bb37e1003261059w3de67654m11ca17f1645f6c1@mail.gmail.com>	<s5hhbo26d68.wl%tiwai@suse.de>	<64bb37e1003261407y4d46c71cr3b39fc3058e0294a@mail.gmail.com>	<s5hd3yq6anu.wl%tiwai@suse.de>
+	<64bb37e1003270234p3c7a10e2kd066d4459a60bb51@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web112607.mail.gq1.yahoo.com (web112607.mail.gq1.yahoo.com
-	[98.137.27.187]) by alsa0.perex.cz (Postfix) with SMTP id C9157103821
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 62D8124476
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Apr 2010 05:31:07 +0200 (CEST)
-In-Reply-To: <20100401031825.557be2bc@romy.gusto>
+	Thu,  1 Apr 2010 09:26:19 +0200 (CEST)
+In-Reply-To: <64bb37e1003270234p3c7a10e2kd066d4459a60bb51@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,17 +22,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars Schotte <lars.schotte@schotteweb.de>, alsa-devel@alsa-project.org
+To: Torsten Kaiser <just.for.lkml@googlemail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Lars Schotte <lars.schotte@schotteweb.de>
+Torsten Kaiser wrote:
+> So all the messages about the failing codec and MSI belong to
+> 0000:01:05.2, the HDMI output.
+
+MSI seems to be broken on all(?) Radeon IGPs; see
+<http://lkml.org/lkml/2010/3/30/290>.
+
+Torsten, what is the output of "lspci -nn" on your first system?
 
 
-> I have this Sweex Sorround sound card PCI and I want to use it for
-> recording / digitalizing / magnetic and other media types through
-> line-in. I have to use that card (or another) because the built-in
-> sound card doesnt work /is broken/.
->
-> The soundcard has following chipset - C-Media CMI8738-LX.
-
-Please attach http://www.alsa-project.org/alsa-info.sh output (--no-upload)
+Regards,
+Clemens
