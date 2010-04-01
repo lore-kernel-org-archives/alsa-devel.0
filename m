@@ -1,22 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Handling of the DXS controls in the via82xx driver
-Date: Thu, 1 Apr 2010 07:00:59 +0800
-Message-ID: <j2o4f3252891003311600g2f5b1579i5b634637f1da5e02@mail.gmail.com>
-References: <4BAE8EF7.20204@gmx.de>
-	<1269867371.6760.1367253675@webmail.messagingengine.com>
-	<4BB0A970.7020600@gmx.de>
+From: Lars Schotte <lars.schotte@schotteweb.de>
+Subject: C-Media CMI8738-LX noise in recording from line in
+Date: Thu, 1 Apr 2010 03:18:25 +0200
+Message-ID: <20100401031825.557be2bc@romy.gusto>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B086E10380C
+Received: from ms16-1.1blu.de (ms16-1.1blu.de [89.202.0.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5246910380C
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Apr 2010 01:01:00 +0200 (CEST)
-Received: by pwj7 with SMTP id 7so592124pwj.38
-	for <alsa-devel@alsa-project.org>; Wed, 31 Mar 2010 16:00:59 -0700 (PDT)
-In-Reply-To: <4BB0A970.7020600@gmx.de>
+	Thu,  1 Apr 2010 03:18:31 +0200 (CEST)
+Received: from [78.99.186.124] (helo=romy.gusto)
+	by ms16-1.1blu.de with esmtpsa (TLS-1.0:DHE_RSA_AES_128_CBC_SHA1:16)
+	(Exim 4.69) (envelope-from <lars.schotte@schotteweb.de>)
+	id 1Nx93D-000755-QO
+	for alsa-devel@alsa-project.org; Thu, 01 Apr 2010 03:18:27 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,35 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/3/29 Soeren D. Schulze <soeren.d.schulze@gmx.de>
+I have this Sweex Sorround sound card PCI and I want to use it for
+recording / digitalizing / magnetic and other media types through
+line-in. I have to use that card (or another) because the built-in
+sound card doesnt work /is broken/.
 
-> Clemens Ladisch wrote:
-> >> The bad thing about it is that 31,31 is a really bad setting for my
-> >> poorly engineered sound card.  It distorts a lot.
-> >
-> > If the card cannot handle any loud output, then all outputs from any
-> > source must be restricted, so the logical place for lower volume would
-> > be the "Master" or "PCM" controls.
->
-> The problem is rather that it cannot handle loud *input*.  With loud
-> input from digital plus the respective DXS lever on high volume, it
-> apparently overdrives at a very early stage in the sound card.  Master
-> and PCM do not help anything any more.
->
-> The other workaround would probably be using softvol for reducing the
-> volume before it enters analog, but lowering the DXS levers is still
-> better IMHO.
->
->
-> Thank you
->
-> S=F6ren
->
->
-did you set those per voice volume control to 0dB ?
+The soundcard has following chipset - C-Media CMI8738-LX.
 
-try to play a sine wave of full amplitude and record using analog loopback
-of ac97 codec and audacity to find out whether the sine wave is clipped
+So I try to record from the line in input, which works for listening,
+so line in input is played good through line out then. I dont know if
+there is a passthrought or sth. however, when I record it, using
+audacity, or even alsarecord / it doesnt matter / the sound is reported
+and also actually is too silent and there is a lot of noise. So with
+that noise, this card is for digitalizing useless.
+
+this soundcard has physically no shared connector with the rear, or
+bass or whatever. so there are 5 connectors, line in, mic in, front,
+rear and cent/sub. each for himself. maybe thats the case, that the old
+ones did have shared one and therefore it breaks the recording or
+whatever, just a theory. because a few years ago i had an old cmipci
+and that one worked fine.
+
+just to be clear, there is sound, so it records, the problem is that
+its too silent and there is a lot of noise in it. i write this note
+because I saw some reports that suggest that it produces _only_ noise
+in recording. thats not the case here.
+
+-- 
+-------------------
+Lars Schotte @ romy
