@@ -1,20 +1,20 @@
-From: Lars Schotte <lars.schotte@schotteweb.de>
-Subject: line in recording w/ alsa - suggestions for a snd card?
-Date: Thu, 1 Apr 2010 15:19:31 +0200
-Message-ID: <20100401151931.6ff54457@romy.gusto>
+From: Alex Austin <circuitsoft.alex@gmail.com>
+Subject: Re: line in recording w/ alsa - suggestions for a snd
+	card?
+Date: Thu, 1 Apr 2010 07:23:54 -0600
+Message-ID: <l2k53baa24a1004010623v3c85faber2cc207468414649c@mail.gmail.com>
+References: <20100401151931.6ff54457@romy.gusto>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ms16-1.1blu.de (ms16-1.1blu.de [89.202.0.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1204F243AE
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id CCF17243B1
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Apr 2010 15:19:42 +0200 (CEST)
-Received: from [78.99.186.124] (helo=romy.gusto)
-	by ms16-1.1blu.de with esmtpsa (TLS-1.0:DHE_RSA_AES_128_CBC_SHA1:16)
-	(Exim 4.69) (envelope-from <lars.schotte@schotteweb.de>)
-	id 1NxKJ3-0002ip-WB
-	for alsa-devel@alsa-project.org; Thu, 01 Apr 2010 15:19:34 +0200
+	Thu,  1 Apr 2010 15:23:55 +0200 (CEST)
+Received: by pvg12 with SMTP id 12so341135pvg.38
+	for <alsa-devel@alsa-project.org>; Thu, 01 Apr 2010 06:23:54 -0700 (PDT)
+In-Reply-To: <20100401151931.6ff54457@romy.gusto>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,8 +24,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Lars Schotte <lars.schotte@schotteweb.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
+
+Find an inexpensive card with an ICE1712. The chip is now made by VIA, but
+it has excellent analog and digital performance and good ALSA support.
+
+On Apr 1, 2010 8:19 AM, "Lars Schotte" <lars.schotte@schotteweb.de> wrote:
 
 hi folks,
 i ve given up on that problems w/ recording because it leads to LQ
@@ -39,6 +45,10 @@ the better.
 
 thanks.
 
--- 
+--
 -------------------
 Lars Schotte @ romy
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
