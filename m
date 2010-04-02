@@ -1,63 +1,42 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: mx31 snd and mc13783 codec status
-Date: Fri, 2 Apr 2010 11:42:42 +0100
-Message-ID: <20100402104241.GC27613@sirena.org.uk>
-References: <4BB22576.1070108@epfl.ch> <20100331083415.GR2241@pengutronix.de>
-	<4BB4C362.3000803@epfl.ch> <20100402095358.GZ2241@pengutronix.de>
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+Subject: Re: [RFC][PATCH] ASoC: OMAP: Fix capture pointer handling for OMAP1510 to work correctly with recent ALSA PCM code
+Date: Fri, 2 Apr 2010 12:51:44 +0200
+Message-ID: <201004021251.47488.jkrzyszt@tis.icnet.pl>
+References: <201003282229.32922.jkrzyszt@tis.icnet.pl> <20100402111036.3de0e6c7.jhnikula@gmail.com> <20100402093655.GA11134@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id ECDFD1037F7
-	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Apr 2010 12:42:45 +0200 (CEST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <20100402093655.GA11134@rakim.wolfsonmicro.main>
 Content-Disposition: inline
-In-Reply-To: <20100402095358.GZ2241@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Valentin Longchamp <valentin.longchamp@epfl.ch>
+Sender: linux-omap-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Jarkko Nikula <jhnikula@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 02, 2010 at 11:53:58AM +0200, Sascha Hauer wrote:
-> On Thu, Apr 01, 2010 at 06:01:38PM +0200, Valentin Longchamp wrote:
+=46riday 02 April 2010 11:36:56 Mark Brown napisa=C5=82(a):
+> On Fri, Apr 02, 2010 at 11:10:36AM +0300, Jarkko Nikula wrote:
+> > Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> wrote:
+> > > However, I still don't understand what happened to capture stream
+> > > handling that it stopped working for me.
+> >
+> > While I either don't understand the broke I think there's something=
+ in
+> > the capture DMA pointer which shows up only now. So I'm fine if you
+> > Janusz like to get your patch in and can have my ack. Or do you wan=
+t to
+> > debug it further?
+> >
+> > Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+>
+> Personally I don't mind as long as you guys are happy - Janusz?
 
-> > The thing is that I get a less than a second sound loop (I use aplay to  
-> > test, so userspace app should be ok), as if the buffer that the fiq asm  
-> > interrupt (from ssi_fiq.S) copies to the SSI hardware never was updated.
+I don't mind either :), please apply.
 
-> > If I have understood the fiq behaviour correctly, you have a asm fiq  
-> > interrupt that does copy a larger tx buffer into the SSI hardware.  
-> > Besides it, you have the imx_ssi_timer_callback that checks when the tx  
-> > buffer was completely copied. If it is the case, then a new buffer tx  
-> > buffer is "issued" with the snd_pcm_period_elapsed call (and then  
-> > snd_pcm_update_hw_ptr0). Is this behaviour correct ?
-
-> Yes.
-
-What sample rate are you trying to play and what buffer size?  In my
-testing the FIQ was really struggling with most applications at sample
-rates over ~16kHz since you need each audio period to be long enough to
-at least fill the interval between timer polls but applications wanted
-to select buffer sizes that were consumed faster than the timer tick.
-
-Using an application like speaker-test which has minimal overhead and no
-I/O to worry about helps too.
-
-> > If then it looks like on my system, I have a problem with the  
-> > snd_pcm_update_hw_ptr0 call.
-
-> You could try reverting b4e82b5b785670b68136765059d1afc65c0ae023. Though
-> I have tested it on my boards it may have some implications.
-
-I was seeing similar behaviour before and after that patch too, the main
-effect there was to improve the error handling when the FIQ and the
-timer get out of sync with each other.
+Thanks,
+Janusz
+--
+To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
+n
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
