@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: wrong decibel data?
-Date: Sun, 4 Apr 2010 08:09:27 +0800
-Message-ID: <i2x4f3252891004031709xf4cd516fz739bbe9f93496f3b@mail.gmail.com>
+Date: Sun, 4 Apr 2010 09:31:42 +0800
+Message-ID: <k2n4f3252891004031831n8525a23cq69bbf7a3b8978666@mail.gmail.com>
 References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
 	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>
 	<hp744t$5b5$1@dough.gmane.org>
@@ -9,12 +9,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id E1A7C243ED
+Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
+	[209.85.222.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1574A24337
 	for <alsa-devel@alsa-project.org>;
-	Sun,  4 Apr 2010 02:09:29 +0200 (CEST)
-Received: by pvg12 with SMTP id 12so1199569pvg.38
-	for <alsa-devel@alsa-project.org>; Sat, 03 Apr 2010 17:09:28 -0700 (PDT)
+	Sun,  4 Apr 2010 03:31:43 +0200 (CEST)
+Received: by pzk40 with SMTP id 40so2170892pzk.23
+	for <alsa-devel@alsa-project.org>; Sat, 03 Apr 2010 18:31:42 -0700 (PDT)
 In-Reply-To: <hp744t$5b5$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -56,11 +57,14 @@ List-Id: alsa-devel@alsa-project.org
 >
 > Col
 >
->  <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
+> --
 >
 
-if -48dB of alsa volume represent (100-14)% of the volume range of
-pulseaudio control
+since PA provide software atten/software gain ,the software atten of 16bits
+audio is -48dB
 
-i.e. the volume range of pulseaudio is only -63dB  , why do you use -200dB
-?
+I guess the problem is related to PA shift the 0dB point (i.e. the software
+gain +15dfB to 0dB)
+
+you have to ask PA developer the value of software dB gain provided by the
+PA server
