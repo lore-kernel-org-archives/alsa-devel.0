@@ -1,20 +1,20 @@
-From: "Nicolo' Chieffo" <nicolo.chieffo@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: wrong decibel data?
-Date: Sat, 3 Apr 2010 12:48:33 +0200
-Message-ID: <l2s98391a7b1004030348n2b2a540bq8fddb0a90dd7c3c9@mail.gmail.com>
+Date: Sun, 4 Apr 2010 08:09:27 +0800
+Message-ID: <i2x4f3252891004031709xf4cd516fz739bbe9f93496f3b@mail.gmail.com>
 References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
 	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>
 	<hp744t$5b5$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8C8BB24429
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id E1A7C243ED
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Apr 2010 12:48:56 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 4so73556eyg.0
-	for <alsa-devel@alsa-project.org>; Sat, 03 Apr 2010 03:48:55 -0700 (PDT)
+	Sun,  4 Apr 2010 02:09:29 +0200 (CEST)
+Received: by pvg12 with SMTP id 12so1199569pvg.38
+	for <alsa-devel@alsa-project.org>; Sat, 03 Apr 2010 17:09:28 -0700 (PDT)
 In-Reply-To: <hp744t$5b5$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,43 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SSBkb24ndCB0aGluayB0aGF0IGFueSBzcGVjaWZpYyBkZWJ1ZyBpcyBuZWVkZWQuIHB1bHNlYXVk
-aW8gZGV2ZWxvcGVycwpqdXN0IHRvbGQgdGhhdCB5b3UgaGF2ZSB0byBkZWNsYXJlIC0yMDAgZEIg
-d2hlbiB0aGUgc291bmQgaXMgZGlzYWJsZWQsCnRoYXQncyBpdC4KSXMgdGhpcyBhIGRpZmZpY3Vs
-dCB0aGluZyB0byBkbz8gd2hpY2ggZmlsZXMgbXVzdCBiZSB0b3VjaGVkPwoKT24gU2F0LCBBcHIg
-MywgMjAxMCBhdCAxMjowOSBQTSwgQ29saW4gR3V0aHJpZSA8Z21hbmVAY29saW4uZ3V0aHIuaWU+
-IHdyb3RlOgo+ICdUd2FzIGJyaWxsaWcsIGFuZCBOaWNvbG8nIENoaWVmZm8gYXQgMDIvMDQvMTAg
-MjE6MjUgZGlkIGd5cmUgYW5kIGdpbWJsZToKPj4gSSBqdXN0IGhhZCBhIGRpc2N1c3Npb24gd2l0
-aCBwdWxzZWF1ZGlvIGRldmVsb3BlcnMgaW4gd2hpY2ggdGhleSB0b2xkCj4+IG1lIHRoYXQgaWYg
-dGhlIHNwZWFrZXJzIGRvbid0IGVtaXQgYW55IGF1ZGlvIHdoZW4gdGhlIEFMU0Egdm9sdW1lIGlz
-Cj4+IDAlLCB0aGVuIHRoZSBjb3JyZWN0IGdhaW4gdmFsdWUgc2hvdWxkIGJlIC1pbmYgZEIgKGEg
-dmFsdWUgbG93ZXIgdGhhbgo+PiAtMjAwIGZvciBwdWxzZWF1ZGlvIG1lYW5zIG11dGUpLiBVbmZv
-cnR1bmF0ZWx5IG15IGNhcmQgaGFzIC00OCBkQi4KPj4KPj4gVGhleSBhbHNvIHNhaWQgdGhhdCBp
-ZiB3aXRoIC00Ny4yNSBkQiAod2hpY2ggaXMgd2hhdCBJIGdldCB3aXRoIEFMU0EKPj4gdm9sdW1l
-IHNldCB0byAyJSkgSSBjYW4gaGVhciBhdWRpbyBldmVuIGlmIGl0J3MgdmVyeSB2ZXJ5IGxvdywg
-YXQgLTQ4Cj4+IGRCIEkgc2hvdWxkIHN0aWxsIGJlIGFibGUgdG8gaGVhciBzb21ldGhpbmcgKHRo
-ZSBzY2FsZSBpcwo+PiBsb2dhcml0aG1pYykuCj4+Cj4+IFRoZWlyIHJlcXVlc3QgaXMgdG8gY2hh
-bmdlIHRvIC0yMDAgdGhlIGdhaW4gcmVwb3J0ZWQgZnJvbSBteSBjYXJkCj4+IGRyaXZlciB3aGVu
-IHRoZSBBTFNBIHZvbHVtZSBpcyBzZXQgdG8gMCUuCj4+IFRoYW5rcwo+Cj4gRldJVywgSSd2ZSBn
-b3QgdGhlIHNhbWUvc2ltaWxhciBoL3cgd2l0aCBhIGN1dG9mZiBhdCAxNCUgaW4gUEEgYXMgeW91
-Cj4gaGF2ZS4gSSd2ZSBiZWVuIG1lYW5pbmcgdG8gZ2V0IHRoaXMgZml4ZWQgZm9yIGEgd2hpbGUs
-IGJ1dCBJJ20KPiBpbmNyZWRpYmx5IGxhenkgd2l0aCBjZXJ0YWluIHRoaW5ncyB0aGF0IGRvbid0
-IGJvdGhlciBtZSBwcmFjdGljYWxseSwgc28KPiBoYXZlbid0IGZvbGxvd2VkIGl0IHVwIHlldC4K
-Pgo+IFRoYW5rcyBmb3IgZ2V0dGluZyB0aGUgYmFsbCByb2xsaW5nIDopCj4KPiBJZiBhbnkgc3Bl
-Y2lmaWMgZGVidWcgaXMgbmVlZGVkIGhlcmUsIGZlZWwgZnJlZSB0byBhc2suCj4KPiBDb2wKPgo+
-IC0tCj4KPiBDb2xpbiBHdXRocmllCj4gZ21hbmUoYXQpY29saW4uZ3V0aHIuaWUKPiBodHRwOi8v
-Y29saW4uZ3V0aHIuaWUvCj4KPiBEYXkgSm9iOgo+IMKgVHJpYmFsb2dpYyBMaW1pdGVkIFtodHRw
-Oi8vd3d3LnRyaWJhbG9naWMubmV0L10KPiBPcGVuIFNvdXJjZToKPiDCoE1hbmRyaXZhIExpbnV4
-IENvbnRyaWJ1dG9yIFtodHRwOi8vd3d3Lm1hbmRyaXZhLmNvbS9dCj4gwqBQdWxzZUF1ZGlvIEhh
-Y2tlciBbaHR0cDovL3d3dy5wdWxzZWF1ZGlvLm9yZy9dCj4gwqBUcmFjIEhhY2tlciBbaHR0cDov
-L3RyYWMuZWRnZXdhbGwub3JnL10KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+2010/4/3 Colin Guthrie <gmane@colin.guthr.ie>
+
+> 'Twas brillig, and Nicolo' Chieffo at 02/04/10 21:25 did gyre and gimble:
+> > I just had a discussion with pulseaudio developers in which they told
+> > me that if the speakers don't emit any audio when the ALSA volume is
+> > 0%, then the correct gain value should be -inf dB (a value lower than
+> > -200 for pulseaudio means mute). Unfortunately my card has -48 dB.
+> >
+> > They also said that if with -47.25 dB (which is what I get with ALSA
+> > volume set to 2%) I can hear audio even if it's very very low, at -48
+> > dB I should still be able to hear something (the scale is
+> > logarithmic).
+> >
+> > Their request is to change to -200 the gain reported from my card
+> > driver when the ALSA volume is set to 0%.
+> > Thanks
+>
+> FWIW, I've got the same/similar h/w with a cutoff at 14% in PA as you
+> have. I've been meaning to get this fixed for a while, but I'm
+> incredibly lazy with certain things that don't bother me practically, so
+> haven't followed it up yet.
+>
+> Thanks for getting the ball rolling :)
+>
+> If any specific debug is needed here, feel free to ask.
+>
+> Col
+>
+>  <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>
+>
+
+if -48dB of alsa volume represent (100-14)% of the volume range of
+pulseaudio control
+
+i.e. the volume range of pulseaudio is only -63dB  , why do you use -200dB
+?
