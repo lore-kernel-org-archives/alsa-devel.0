@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.35
-Date: Mon, 5 Apr 2010 19:44:40 +0100
-Message-ID: <20100405184440.GB2688@rakim.wolfsonmicro.main>
+From: Aleksander Adamowski <alsa@olo.org.pl>
+Subject: snd-hda-intel: Is there a way to specify a quirk for
+	the default bdl_pos_adj value for the given chipset (PCI ID)?
+Date: Mon, 5 Apr 2010 21:03:53 +0200
+Message-ID: <i2l1c690d741004051203k36fdd493z577063a9a53ae715@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4A86103824
+Received: from mail-yx0-f188.google.com (mail-yx0-f188.google.com
+	[209.85.210.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id B6DCC1038FF
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Apr 2010 20:44:41 +0200 (CEST)
-Content-Disposition: inline
+	Mon,  5 Apr 2010 21:06:21 +0200 (CEST)
+Received: by yxe26 with SMTP id 26so2306690yxe.23
+	for <alsa-devel@alsa-project.org>; Mon, 05 Apr 2010 12:06:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,56 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 2c9504228fe4e4cc65f3debf6d2a6a0f44cf4c2d:
-  Mark Brown (1):
-        Merge branch 'for-2.6.34' into for-2.6.35
+Hi!
 
-are available in the git repository at:
+I'm working on a patch against GIT for snd-hda-intel that would let my
+card's capture work properly without losing ability to capture audio (that's
+an old story available in this thread:
+http://thread.gmane.org/gmane.linux.alsa.devel/66775).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
+I know how to make position_fix=1 permanent for the given PCI ID (the
+snd_pci_quirk position_fix_list struct array in hda_intel.c), but there
+seems to be no way of making a similar quirk for bdl_pos_adj - am I looking
+in the wrong place?
 
-The MFD updates for WM8994 are here because the only real consumer of
-the interrupts on that device is the CODEC driver so it'd create cross
-tree issues to try to merge the consumer side separately to the
-controller; Samuel has acked the interrupt controller patch.
+My work on a patch goes in parallel with determining the minimal set of
+modifications that will solve the problem.
 
-Daniel Mack (1):
-      ALSA: ASoC: move dma_data from snd_soc_dai to snd_soc_pcm_stream
+Currently, I've determined that the combination of 3 module options
+described in this forum post solves my problem:
+http://www.linuxhardware.org/forums/viewtopic.php?p=66&sid=f6e8953338fd94c7c44a9d4955849e3f#66
 
-Janusz Krzysztofik (1):
-      ASoC: OMAP: Fix capture pointer handling for OMAP1510 to work correctly with recent ALSA PCM code
+I'm working on isolating the minimum set of these that solves the problem
+(which requires a couple of hours to be reproduce, so that takes time).
 
-Mark Brown (9):
-      ASoC: Avoid wraparound in wm_hubs DC servo correction
-      ASoC: Support second DC servo readback method for wm_hubs
-      ASoC: Don't do runtime wm_hubs DC servo updates if using offset correction
-      ASoC: Don't use DCS_DATAPATH_BUSY for WM hubs devices
-      ASoC: Only do WM8994 bias off transition from standby
-      mfd: Add WM8994 interrupt controller support
-      gpiolib: Implement gpio_to_irq for WM8994 GPIO controller
-      ASoC: Implement interrupt based WM8994 microphone detection
-      Merge branch 'for-2.6.34' into for-2.6.35
+I've observed that neither position_fix=1, nor bdl_pos_adj=0 solve the
+problem by themselves in isolation.
 
-Tejun Heo (1):
-      mfd: update gfp/slab.h includes
+I'm unsure whether model=3stack-6ch is necessary at all,
+because patch_realtek.c already has the model mapping for my combination of
+PCI IDs and it maps to a different model:
+SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte P35 DS3R", ALC882_6ST_DIG),
 
- drivers/gpio/wm8994-gpio.c       |   12 ++
- drivers/mfd/Kconfig              |    4 +-
- drivers/mfd/Makefile             |    2 +-
- drivers/mfd/davinci_voicecodec.c |    1 +
- drivers/mfd/wm8994-core.c        |   43 +++++-
- drivers/mfd/wm8994-irq.c         |  310 ++++++++++++++++++++++++++++++++++++++
- include/linux/mfd/wm8994/core.h  |   53 +++++++-
- include/linux/mfd/wm8994/pdata.h |    1 +
- include/sound/soc.h              |    2 +-
- sound/soc/codecs/wm8994.c        |  193 ++++++++++++++++++++----
- sound/soc/codecs/wm8994.h        |    3 +
- sound/soc/codecs/wm_hubs.c       |   83 ++++++----
- sound/soc/codecs/wm_hubs.h       |    1 +
- sound/soc/omap/omap-pcm.c        |   17 +-
- 14 files changed, 648 insertions(+), 77 deletions(-)
- create mode 100644 drivers/mfd/wm8994-irq.c
+Once the minimization is accomplished, I want to prepare a patch against GIT
+(git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git is the
+repo to work against, as far as I understand).
+
+But since it seems that bdl_pos_adj=0 is required for proper operation, I
+need a method to map the default for that option in the sources, if there is
+such a method.
+
+I'd be grateful for any pointers.
+
+-- 
+Best Regards,
+ Aleksander Adamowski
+ http://olo.org.pl
