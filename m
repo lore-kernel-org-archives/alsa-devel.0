@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.34
-Date: Mon, 5 Apr 2010 19:38:40 +0100
-Message-ID: <20100405183840.GA2688@rakim.wolfsonmicro.main>
+Subject: ASoC updates for 2.6.35
+Date: Mon, 5 Apr 2010 19:44:40 +0100
+Message-ID: <20100405184440.GB2688@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 67168103824
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B4A86103824
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Apr 2010 20:38:44 +0200 (CEST)
+	Mon,  5 Apr 2010 20:44:41 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,21 +24,18 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit fb48e3c6a4d8888aff61fbf567aadac7d206e973:
-  Graham Gower (1):
-        ASoC: Fix passing platform_data to ac97 bus users and fix a leak
+The following changes since commit 2c9504228fe4e4cc65f3debf6d2a6a0f44cf4c2d:
+  Mark Brown (1):
+        Merge branch 'for-2.6.34' into for-2.6.35
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
 
-This is rather large for a stable update due to the inclusion of
-Daniel's backported fix for corruption of DMA data due to use of
-dma_data by both capture and playback streams (which is large but
-straightforward) and my updates for WM8994, particularly DC servo
-handling.  The WM8994 updates mostly affect that part (which was only
-introduced in 2.6.34) and are strongly recommended for all users,
-individually they are all relatively straightforward.
+The MFD updates for WM8994 are here because the only real consumer of
+the interrupts on that device is the CODEC driver so it'd create cross
+tree issues to try to merge the consumer side separately to the
+controller; Samuel has acked the interrupt controller patch.
 
 Daniel Mack (1):
       ALSA: ASoC: move dma_data from snd_soc_dai to snd_soc_pcm_stream
@@ -46,37 +43,33 @@ Daniel Mack (1):
 Janusz Krzysztofik (1):
       ASoC: OMAP: Fix capture pointer handling for OMAP1510 to work correctly with recent ALSA PCM code
 
-Mark Brown (5):
+Mark Brown (9):
       ASoC: Avoid wraparound in wm_hubs DC servo correction
       ASoC: Support second DC servo readback method for wm_hubs
       ASoC: Don't do runtime wm_hubs DC servo updates if using offset correction
       ASoC: Don't use DCS_DATAPATH_BUSY for WM hubs devices
       ASoC: Only do WM8994 bias off transition from standby
+      mfd: Add WM8994 interrupt controller support
+      gpiolib: Implement gpio_to_irq for WM8994 GPIO controller
+      ASoC: Implement interrupt based WM8994 microphone detection
+      Merge branch 'for-2.6.34' into for-2.6.35
 
- include/sound/soc-dai.h           |   18 ++++++++-
- include/sound/soc.h               |    1 +
- sound/soc/atmel/atmel-pcm.c       |    2 +-
- sound/soc/atmel/atmel_ssc_dai.c   |    6 +-
- sound/soc/codecs/wm8994.c         |   56 ++++++++++++++-----------
- sound/soc/codecs/wm_hubs.c        |   83 ++++++++++++++++++++++--------------
- sound/soc/codecs/wm_hubs.h        |    1 +
- sound/soc/davinci/davinci-i2s.c   |    3 +-
- sound/soc/davinci/davinci-mcasp.c |    3 +-
- sound/soc/davinci/davinci-pcm.c   |    4 +-
- sound/soc/imx/imx-pcm-dma-mx2.c   |    8 +++-
- sound/soc/imx/imx-ssi.c           |    7 ++-
- sound/soc/omap/omap-mcbsp.c       |    4 +-
- sound/soc/omap/omap-mcpdm.c       |    3 +-
- sound/soc/omap/omap-pcm.c         |   21 +++++----
- sound/soc/pxa/pxa-ssp.c           |   23 +++++-----
- sound/soc/pxa/pxa2xx-ac97.c       |   17 +++++--
- sound/soc/pxa/pxa2xx-i2s.c        |    7 ++-
- sound/soc/pxa/pxa2xx-pcm.c        |    4 +-
- sound/soc/s3c24xx/s3c-ac97.c      |   21 +++++----
- sound/soc/s3c24xx/s3c-dma.c       |    4 +-
- sound/soc/s3c24xx/s3c-i2s-v2.c    |   13 ++++--
- sound/soc/s3c24xx/s3c-pcm.c       |    7 ++-
- sound/soc/s3c24xx/s3c24xx-i2s.c   |   19 ++++----
- sound/soc/s6000/s6000-i2s.c       |    3 +-
- sound/soc/s6000/s6000-pcm.c       |   40 +++++++++++++-----
- 26 files changed, 240 insertions(+), 138 deletions(-)
+Tejun Heo (1):
+      mfd: update gfp/slab.h includes
+
+ drivers/gpio/wm8994-gpio.c       |   12 ++
+ drivers/mfd/Kconfig              |    4 +-
+ drivers/mfd/Makefile             |    2 +-
+ drivers/mfd/davinci_voicecodec.c |    1 +
+ drivers/mfd/wm8994-core.c        |   43 +++++-
+ drivers/mfd/wm8994-irq.c         |  310 ++++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/wm8994/core.h  |   53 +++++++-
+ include/linux/mfd/wm8994/pdata.h |    1 +
+ include/sound/soc.h              |    2 +-
+ sound/soc/codecs/wm8994.c        |  193 ++++++++++++++++++++----
+ sound/soc/codecs/wm8994.h        |    3 +
+ sound/soc/codecs/wm_hubs.c       |   83 ++++++----
+ sound/soc/codecs/wm_hubs.h       |    1 +
+ sound/soc/omap/omap-pcm.c        |   17 +-
+ 14 files changed, 648 insertions(+), 77 deletions(-)
+ create mode 100644 drivers/mfd/wm8994-irq.c
