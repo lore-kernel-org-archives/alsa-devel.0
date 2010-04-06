@@ -1,29 +1,28 @@
-From: Luca Bruno <lucab@debian.org>
-Subject: Re: [PATCH] ALSA: hda - Add quirk and model 'vaio' for
- ALC269-based Sony Vaio E Series
-Date: Tue, 6 Apr 2010 14:47:06 +0200
-Message-ID: <20100406144706.8d12c144.lucab@debian.org>
-References: <1270216442-5632-1-git-send-email-lucab@debian.org>
-	<s5hiq87h5j7.wl%tiwai@suse.de>
-	<20100404133802.25104e02.lucab@debian.org>
-	<s5haatigt0t.wl%tiwai@suse.de>
-	<20100406122136.c38ce959.lucab@debian.org>
-	<s5heiis7u16.wl%tiwai@suse.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: Help! Need to switch between normal speaker and BT
+	headset dynamically
+Date: Tue, 06 Apr 2010 15:30:21 +0100
+Message-ID: <hpfghv$dm8$1@dough.gmane.org>
+References: <27215555.734641270553822178.JavaMail.weblogic@epml05>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6873467252675632461=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.unstable.it (host-93-93-202-11.planetacomnetwork.com
-	[93.93.202.11]) by alsa0.perex.cz (Postfix) with ESMTP id BD2CA103830
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id D57DF244BB
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Apr 2010 14:47:08 +0200 (CEST)
-Received: from localhost (host252-192-dynamic.21-79-r.retail.telecomitalia.it
-	[79.21.192.252])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mail.unstable.it (Postfix) with ESMTPSA id 59E8F12006F
-	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Apr 2010 14:47:37 +0200 (CEST)
-In-Reply-To: <s5heiis7u16.wl%tiwai@suse.de>
+	Tue,  6 Apr 2010 16:30:37 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1Nz9nW-0003fh-Je
+	for alsa-devel@alsa-project.org; Tue, 06 Apr 2010 16:30:34 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 06 Apr 2010 16:30:34 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 06 Apr 2010 16:30:34 +0200
+In-Reply-To: <27215555.734641270553822178.JavaMail.weblogic@epml05>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,64 +35,61 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============6873467252675632461==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Tue__6_Apr_2010_14_47_06_+0200_ttgNuxPgUniIpO3Q"
+'Twas brillig, and ANISH KUMAR at 06/04/10 12:37 did gyre and gimble:
+> As my question is related to the query what pradeep is asking and mark brown also suggested to me to use PA.
+> I have some additional questions regarding PA which i would like to clarify before starting:
+> 
+> 1.Does PA have good resampler code if my hardware doesn't support resampling?
 
---Signature=_Tue__6_Apr_2010_14_47_06_+0200_ttgNuxPgUniIpO3Q
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes. Infact this code will likely be needed in several cases when the
+h/w does support resampling. If PA has multiple streams playing at once,
+the h/w will likely only be able to cope with one rate at a time.
 
-Takashi Iwai scrisse:
+The resamplers are pluggable and can have optimized implementation for
+some hardware - e.g. I believe Palm wrote an ARM specific resampler to
+do this for their Pre platform (I could be mis-remembering tho').
 
-> Thanks.  And what actually doesn't work with model=3Dauto?
-> With the very latest driver, both mic and HP auto-switching seems
-> working.
+> I have a system where we are using ALSA as the base and on top(application side) of it there is a thread running which 
+> is pumping data and this thread is started by java code.Combination of LINUX+JAVA.
+> This thread can perform these tasks:
+> 1.Resampling for some rates.
+> 2.Talking to PV framework to get the decoded PCM data and pumping audio data to alsa.
+> 3.Routing support using asound.conf file.
+> Can i replace this thread with PA by writing some wrapper over PA??
+> What extra features PA is going to provide additionally if i start using PA other than what is listed above??As i know 
+> PA is kind of sound deamon which my thread is not.
 
-Mic was working, but got no sound via internal speakers nor through
-headphones. Switching VREF did the magic.
+One very interesting feature of PA that is particularly relevant to
+mobile platforms is the use of a timer-based model to drive the hard
+ware. This allows for very large latencies to be used (e.g. 10-20s)
+allowing for very efficient processor usage - only waking up when
+absolutely necessary, not to service interrupts.
 
-At the time, I tried various git revision till=20
-http://git.alsa-project.org/?p=3Dalsa-kernel.git;a=3Dcommitdiff;h=3Dbcd10cd=
-ee90866f7c03256a23bc77d7e3c976731
-when I decided to cook up a quirk.
+More info:
+http://0pointer.de/blog/projects/pulse-glitch-free.html
 
-If you have a particular revision to suggest, I can re-try that without
-my patch. Also, are the bleeding-edge drivers on kernel.org or on
-alsa-project.org git?=20
+This approach can bring power savings and thus increased battery life.
 
-Cheers, Luca
+> Is there any good resampler code which i can use without any licensing problem  and which can be 
+> easily integrated???
 
---=20
- .''`.  ** Debian GNU/Linux **  | Luca Bruno (kaeso)
-: :'  :   The Universal O.S.    | lucab (AT) debian.org
-`. `'`  			| GPG Key ID: 3BFB9FB3
-  `-     http://www.debian.org 	| Debian GNU/Linux Developer
+I pretty sure the included resamplers are OK to use, but it's all
+clearly documented so just take a look.
 
---Signature=_Tue__6_Apr_2010_14_47_06_+0200_ttgNuxPgUniIpO3Q
-Content-Type: application/pgp-signature
+Like I say it's easy enough to include your own too if needs be.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
+Col
 
-iEYEARECAAYFAku7LUoACgkQRqobajv7n7PHsACdGkiyMEpaswwGT6LWgtcdGyKQ
-ptoAoJg1Uqf7j69HCiaZw303HU+yMGII
-=NXfT
------END PGP SIGNATURE-----
 
---Signature=_Tue__6_Apr_2010_14_47_06_+0200_ttgNuxPgUniIpO3Q--
+-- 
 
---===============6873467252675632461==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============6873467252675632461==--
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
