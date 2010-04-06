@@ -1,62 +1,124 @@
-From: Valentin Longchamp <valentin.longchamp@epfl.ch>
-Subject: Re: mx31 snd and mc13783 codec status
-Date: Tue, 06 Apr 2010 18:00:27 +0200
-Message-ID: <4BBB5A9B.20004@epfl.ch>
-References: <4BB22576.1070108@epfl.ch> <20100331083415.GR2241@pengutronix.de>
-	<4BB4C362.3000803@epfl.ch> <20100402095358.GZ2241@pengutronix.de>
-	<20100402104241.GC27613@sirena.org.uk>
+From: Maurus Cuelenaere <mcuelenaere@gmail.com>
+Subject: [PATCH] ALSA: hda: Add support for Medion WIM2160
+Date: Tue, 6 Apr 2010 18:12:52 +0200
+Message-ID: <j2mb2e8f9f71004060912n88d89a79ke46f427aee6c22cb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20100402104241.GC27613@sirena.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
+	[209.85.218.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 695B3103880
+	for <alsa-devel@alsa-project.org>;
+	Tue,  6 Apr 2010 18:13:13 +0200 (CEST)
+Received: by bwz20 with SMTP id 20so64936bwz.32
+	for <alsa-devel@alsa-project.org>; Tue, 06 Apr 2010 09:13:12 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown wrote:
-> On Fri, Apr 02, 2010 at 11:53:58AM +0200, Sascha Hauer wrote:
->> On Thu, Apr 01, 2010 at 06:01:38PM +0200, Valentin Longchamp wrote:
-> 
-> What sample rate are you trying to play and what buffer size?  In my
-> testing the FIQ was really struggling with most applications at sample
-> rates over ~16kHz since you need each audio period to be long enough to
-> at least fill the interval between timer polls but applications wanted
-> to select buffer sizes that were consumed faster than the timer tick.
-> 
-> Using an application like speaker-test which has minimal overhead and no
-> I/O to worry about helps too.
+This adds support for the Medion WIM2160 soundcard.
+There's no PCI quirk added because it has the same PCI id as the
+Medion MD2.
 
-OK, I have done some tests with speaker-test and I experienced the same 
-as you did: with rates over 16kHz, the FIQ starts to have some problems.
+Signed-off-by: Maurus Cuelenaere <mcuelenaere@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c |   53 +++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 53 insertions(+), 0 deletions(-)
 
-> 
->>> If then it looks like on my system, I have a problem with the  
->>> snd_pcm_update_hw_ptr0 call.
-> 
->> You could try reverting b4e82b5b785670b68136765059d1afc65c0ae023. Though
->> I have tested it on my boards it may have some implications.
-> 
-> I was seeing similar behaviour before and after that patch too, the main
-> effect there was to improve the error handling when the FIQ and the
-> timer get out of sync with each other.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index da34095..79833e6 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -226,6 +226,7 @@ enum {
+ 	ALC888_ACER_ASPIRE_7730G,
+ 	ALC883_MEDION,
+ 	ALC883_MEDION_MD2,
++	ALC883_MEDION_WIM2160,
+ 	ALC883_LAPTOP_EAPD,
+ 	ALC883_LENOVO_101E_2ch,
+ 	ALC883_LENOVO_NB0763,
+@@ -8247,6 +8248,42 @@ static struct snd_kcontrol_new
+alc883_medion_md2_mixer[] = {
+ 	{ } /* end */
+ };
 
-Mark is right, the behavior is similar with or without this patch, it 
-does not improve the FIQ problems with rates over 16 kHz.
-
-Val
-
++static struct snd_kcontrol_new alc883_medion_wim2160_mixer[] = {
++	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
++	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
++	HDA_CODEC_MUTE("Speaker Playback Switch", 0x15, 0x0, HDA_OUTPUT),
++	HDA_CODEC_MUTE("Headphone Playback Switch", 0x1a, 0x0, HDA_OUTPUT),
++	HDA_CODEC_VOLUME("Line Playback Volume", 0x08, 0x0, HDA_INPUT),
++	HDA_CODEC_MUTE("Line Playback Switch", 0x08, 0x0, HDA_INPUT),
++	{ } /* end */
++};
++
++static struct hda_verb alc883_medion_wim2160_verbs[] = {
++	/* Unmute front mixer */
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++
++	/* Set speaker pin to front mixer */
++	{0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
++
++	/* Init headphone pin */
++	{0x1a, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_HP},
++	{0x1a, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x1a, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{0x1a, AC_VERB_SET_UNSOLICITED_ENABLE, ALC880_HP_EVENT | AC_USRSP_EN},
++
++	{ } /* end */
++};
++
++/* toggle speaker-output according to the hp-jack state */
++static void alc883_medion_wim2160_setup(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++
++	spec->autocfg.hp_pins[0] = 0x1a;
++	spec->autocfg.speaker_pins[0] = 0x15;
++}
++
+ static struct snd_kcontrol_new alc883_acer_aspire_mixer[] = {
+ 	HDA_CODEC_VOLUME("Front Playback Volume", 0x0c, 0x0, HDA_OUTPUT),
+ 	HDA_BIND_MUTE("Front Playback Switch", 0x0c, 2, HDA_INPUT),
+@@ -8956,6 +8993,7 @@ static const char *alc882_models[ALC882_MODEL_LAST] = {
+ 	[ALC888_ACER_ASPIRE_7730G]	= "acer-aspire-7730g",
+ 	[ALC883_MEDION]		= "medion",
+ 	[ALC883_MEDION_MD2]	= "medion-md2",
++	[ALC883_MEDION_WIM2160]	= "medion-wim2160",
+ 	[ALC883_LAPTOP_EAPD]	= "laptop-eapd",
+ 	[ALC883_LENOVO_101E_2ch] = "lenovo-101e",
+ 	[ALC883_LENOVO_NB0763]	= "lenovo-nb0763",
+@@ -9578,6 +9616,21 @@ static struct alc_config_preset alc882_presets[] = {
+ 		.setup = alc883_medion_md2_setup,
+ 		.init_hook = alc_automute_amp,
+ 	},
++	[ALC883_MEDION_WIM2160] = {
++		.mixers = { alc883_medion_wim2160_mixer },
++		.init_verbs = { alc883_init_verbs, alc883_medion_wim2160_verbs },
++		.num_dacs = ARRAY_SIZE(alc883_dac_nids),
++		.dac_nids = alc883_dac_nids,
++		.dig_out_nid = ALC883_DIGOUT_NID,
++		.num_adc_nids = ARRAY_SIZE(alc883_adc_nids),
++		.adc_nids = alc883_adc_nids,
++		.num_channel_mode = ARRAY_SIZE(alc883_3ST_2ch_modes),
++		.channel_mode = alc883_3ST_2ch_modes,
++		.input_mux = &alc883_capture_source,
++		.unsol_event = alc_automute_amp_unsol_event,
++		.setup = alc883_medion_wim2160_setup,
++		.init_hook = alc_automute_amp,
++	},
+ 	[ALC883_LAPTOP_EAPD] = {
+ 		.mixers = { alc883_base_mixer },
+ 		.init_verbs = { alc883_init_verbs, alc882_eapd_verbs },
 -- 
-Valentin Longchamp, PhD Student, EPFL-STI-LSRO1
-valentin.longchamp@epfl.ch, Phone: +41216937827
-http://people.epfl.ch/valentin.longchamp
-MEB3494, Station 9, CH-1015 Lausanne
+1.7.0.3
