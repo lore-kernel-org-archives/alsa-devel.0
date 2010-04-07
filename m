@@ -1,88 +1,64 @@
 From: Robert Hancock <hancockrwd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Wed, 07 Apr 2010 17:55:27 -0600
-Message-ID: <4BBD1B6F.3000205@gmail.com>
-References: <20100407090623.GN30807@buzzloop.caiaq.de> <Pine.LNX.4.44L0.1004071036060.1779-100000@iolanthe.rowland.org>
+Date: Wed, 07 Apr 2010 17:59:26 -0600
+Message-ID: <4BBD1C5E.4050906@gmail.com>
+References: <s5hhbnncflj.wl%tiwai@suse.de> <Pine.LNX.4.44L0.1004071452560.5760-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <Pine.LNX.4.44L0.1004071036060.1779-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.44L0.1004071452560.5760-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
 Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>, Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/07/2010 08:59 AM, Alan Stern wrote:
-> On Wed, 7 Apr 2010, Daniel Mack wrote:
+On 04/07/2010 01:13 PM, Alan Stern wrote:
+> On Wed, 7 Apr 2010, Takashi Iwai wrote:
 >
->> Hi,
+>>> Ok, I'll write some dummies for usb_malloc() and usb_zalloc() which
+>>> will just call kmalloc() with GFP_DMA32 for now.
 >>
->> I was pointed to https://bugzilla.kernel.org/show_bug.cgi?id=15580 by
->> Pedro Ribeiro, and unfortunately I'm pretty late in the game. I wasn't
->> aware of that thread until yesterday.
+>> Can't we provide only zalloc() variant?  Zero'ing doesn't cost much,
+>> and the buffer allocation shouldn't be called too often.
+>
+> Linus specifically requested us to avoid using kzalloc in usbfs.  I
+> can't find the message in the email archives, but Greg KH should be
+> able to confirm it.
+>
+> As long as we're imitating kmalloc for one use, we might as well make
+> it available to all.
+>
+>>> And while at it,
+>>> usb_alloc_buffer() will be renamed to usb_alloc_consistent().
 >>
->> While the report is quite confusing, the reason seams pretty clear to me
->> as I've been thru quite some time-demanding debugging of a very similar
->> issue on Mac OS X. But I'm not totally sure whether we really hit the
->> same issue here, so I'd like to have your opinions first.
->>
->> The problem is appearantly the way the transfer buffer is allocated in
->> the drivers. In the snd-usb-caiaq driver, I used kzalloc() to get memory
->> which works fine on 32bit systems. On x86_64, however, it seems that
->> kzalloc() hands out memory beyond the 32bit addressable boundary, which
->> the DMA controller of the 32bit PCI-connected EHCI controller is unable
->> to write to or read from. Am I correct on this conclusion?
+>> Most of recent functions are named with "coherent".
 >
-> That seems like the right answer.  You are correct that an EHCI
-> controller capable only of 32-bit memory accesses would not be able to
-> use a buffer above the 4 GB line.
+> Yes, the terminology got a little confused between the PCI and DMA
+> realms.  I agree, "coherent" is better.
 >
->> Depending on the condition of the memory management, things might work
->> or not, and especially right after a reboot, there's a better chance to
->> get lower memory.
->>
->> The fix is to use usb_buffer_alloc() for that purpose which ensures
->> memory that is suitable for DMA. And on x86_64, this also means that the
->> upper 32 bits of the address returned are all 0's.
+> BTW, although some EHCI controllers may support 64-bit DMA, the driver
+> contains this:
 >
-> That is not a good fix.  usb_buffer_alloc() provides coherent memory,
-> which is not what we want.  I believe the correct fix is to specify the
-> GFP_DMA32 flag in the kzalloc() call.
+> 	if (HCC_64BIT_ADDR(hcc_params)) {
+> 		ehci_writel(ehci, 0,&ehci->regs->segment);
+> #if 0
+> // this is deeply broken on almost all architectures
+> 		if (!dma_set_mask(hcd->self.controller, DMA_BIT_MASK(64)))
+> 			ehci_info(ehci, "enabled 64bit DMA\n");
+> #endif
+> 	}
 >
-> Of course, some EHCI hardware _is_ capable of using 64-bit addresses.
-> But not all, and other controller types aren't.  In principle we could
-> create a new allocation routine, which would take a pointer to the USB
-> bus as an additional argument and use it to decide whether the memory
-> needs to lie below 4 GB.  I'm not sure adding this extra complexity
-> would be worthwhile.
+> I don't know if the comment is still true, but until the "#if 0" is
+> removed, ehci-hcd won't make use of 64-bit DMA.
 
-AFAIK, the driver shouldn't have to worry about this at all. When the 
-buffer gets DMA-mapped for the controller, the DMA mapping code should 
-see that the device has a 32-bit DMA mask and either bounce or IOMMU-map 
-the memory so that it appears below 4GB.
-
-Not to say that something might not be sabotaging this somehow, but this 
-complexity really shouldn't be needed.
-
->
->> If what I've stated is true, there are quite some more drivers affected
->> by this issue.
->
-> Practically every USB driver, I should think.  And maybe a lot of
-> non-USB drivers too.
->
->> I collected a list of places where similar fixes are
->> needed, and I can send patches if I get a thumbs-up.
->>
->> Pedro is currently testing a patch I sent out yesterday.
->
-> Good work -- it certainly would have taken me a long time to figure
-> this out.
->
-> Alan Stern
->
-
+The comment is wrong (or at least outdated or based on an incorrect 
+assumption), but you're right, currently 64-bit DMA is not used on any 
+EHCI controllers. It could be, but it sounded like the consensus was it 
+wasn't worth the risk. Apparently Windows 7 started using it, and then 
+had to put out a patch because some NVidia EHCI controllers indicated 
+64-bit support but it didn't work properly. So you'd have to blacklist 
+those controllers, at least.
 --
 To unsubscribe from this list: send the line "unsubscribe linux-usb" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
