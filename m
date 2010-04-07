@@ -1,30 +1,40 @@
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>
 Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Wed, 7 Apr 2010 12:47:09 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1004071245410.1779-100000@iolanthe.rowland.org>
-References: <20100407161603.GL30801@buzzloop.caiaq.de>
+Date: Wed, 7 Apr 2010 18:54:55 +0200
+Message-ID: <201004071854.55530.oliver@neukum.org>
+References: <Pine.LNX.4.44L0.1004071036060.1779-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20100407161603.GL30801@buzzloop.caiaq.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <Pine.LNX.4.44L0.1004071036060.1779-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Cc: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 7 Apr 2010, Daniel Mack wrote:
-
-> Ok, I'll write some dummies for usb_malloc() and usb_zalloc() which
-> will just call kmalloc() with GFP_DMA32 for now. And while at it,
-> usb_alloc_buffer() will be renamed to usb_alloc_consistent(). Then I'll
-> try to clean up all existing drivers to use this new interface and
-> follow the changes.
+Am Mittwoch, 7. April 2010 16:59:47 schrieb Alan Stern:
+> > The fix is to use usb_buffer_alloc() for that purpose which ensures
+> > memory that is suitable for DMA. And on x86_64, this also means that the
+> > upper 32 bits of the address returned are all 0's.
 > 
-> In a next step, we should fine-tune when GFP_DMA32 is really needed.
-> And I'll leave all occurances of usb_alloc_consistent() as they are now.
+> That is not a good fix.  usb_buffer_alloc() provides coherent memory, 
+> which is not what we want.  I believe the correct fix is to specify the 
+> GFP_DMA32 flag in the kzalloc() call.
 > 
-> Does that sound ok?
+> Of course, some EHCI hardware is capable of using 64-bit addresses.  
+> But not all, and other controller types aren't.  In principle we could
+> create a new allocation routine, which would take a pointer to the USB
+> bus as an additional argument and use it to decide whether the memory 
+> needs to lie below 4 GB.  I'm not sure adding this extra complexity 
+> would be worthwhile.
 
-Yes, that should work out well.
+What about XHCI? Do you really want to limit it to 32bits?
 
-Alan Stern
+	Regards
+		Oliver
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
