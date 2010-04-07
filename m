@@ -1,53 +1,72 @@
-From: Maurus Cuelenaere <mcuelenaere@gmail.com>
-Subject: Re: [PATCH] ALSA: hda: Add support for Medion WIM2160
-Date: Wed, 07 Apr 2010 15:53:14 +0200
-Message-ID: <4BBC8E4A.3080206@gmail.com>
-References: <j2mb2e8f9f71004060912n88d89a79ke46f427aee6c22cb@mail.gmail.com>	<s5h1ves4iol.wl%tiwai@suse.de>	<k2kb2e8f9f71004061008tc94b8ff7w2295d146211d1d2d@mail.gmail.com>	<s5hy6gzdcbd.wl%tiwai@suse.de>	<4BBC710C.3090802@gmail.com>	<s5hk4sj3252.wl%tiwai@suse.de>	<4BBC73A9.4040008@gmail.com>	<s5hhbnn31ym.wl%tiwai@suse.de>	<4BBC7C18.2090902@gmail.com>
-	<s5h8w8z2zeh.wl%tiwai@suse.de>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: USB transfer_buffer allocations on 64bit systems
+Date: Wed, 7 Apr 2010 10:59:47 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1004071036060.1779-100000@iolanthe.rowland.org>
+References: <20100407090623.GN30807@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.149])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18C5310393D
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Apr 2010 15:53:18 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 4so147204eyg.16
-	for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2010 06:53:17 -0700 (PDT)
-In-Reply-To: <s5h8w8z2zeh.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20100407090623.GN30807@buzzloop.caiaq.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: linux-kernel@vger.kernel.org, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Op 07-04-10 14:57, Takashi Iwai schreef:
-> At Wed, 07 Apr 2010 14:35:36 +0200,
-> Maurus Cuelenaere wrote:
->    
->> Audio works, headphone output does not and so does automatic
->> speaker-headphone switching (haven't tested line in).
->>
->> Attached is the output of alsa-info.sh
->>
->> Tested version was commit 489008cd58740fe3842822681d33bf87c07c3412 on
->> branch sound-2.6/topic/hda.
->>      
-> OK, thanks for checking.  The problem is that BIOS doesn't set up the
-> pins correctly, especially the headphone pin.  So, the quirk is
-> mandatory, more or less.
->
-> I applied your patch to fix/hda branch now.
->    
+On Wed, 7 Apr 2010, Daniel Mack wrote:
 
-Ok, thanks.
+> Hi,
+> 
+> I was pointed to https://bugzilla.kernel.org/show_bug.cgi?id=15580 by
+> Pedro Ribeiro, and unfortunately I'm pretty late in the game. I wasn't
+> aware of that thread until yesterday.
+> 
+> While the report is quite confusing, the reason seams pretty clear to me
+> as I've been thru quite some time-demanding debugging of a very similar
+> issue on Mac OS X. But I'm not totally sure whether we really hit the
+> same issue here, so I'd like to have your opinions first.
+> 
+> The problem is appearantly the way the transfer buffer is allocated in
+> the drivers. In the snd-usb-caiaq driver, I used kzalloc() to get memory
+> which works fine on 32bit systems. On x86_64, however, it seems that
+> kzalloc() hands out memory beyond the 32bit addressable boundary, which
+> the DMA controller of the 32bit PCI-connected EHCI controller is unable
+> to write to or read from. Am I correct on this conclusion?
 
--- 
-Maurus Cuelenaere
+That seems like the right answer.  You are correct that an EHCI 
+controller capable only of 32-bit memory accesses would not be able to 
+use a buffer above the 4 GB line.
+
+> Depending on the condition of the memory management, things might work
+> or not, and especially right after a reboot, there's a better chance to
+> get lower memory.
+> 
+> The fix is to use usb_buffer_alloc() for that purpose which ensures
+> memory that is suitable for DMA. And on x86_64, this also means that the
+> upper 32 bits of the address returned are all 0's.
+
+That is not a good fix.  usb_buffer_alloc() provides coherent memory, 
+which is not what we want.  I believe the correct fix is to specify the 
+GFP_DMA32 flag in the kzalloc() call.
+
+Of course, some EHCI hardware _is_ capable of using 64-bit addresses.  
+But not all, and other controller types aren't.  In principle we could
+create a new allocation routine, which would take a pointer to the USB
+bus as an additional argument and use it to decide whether the memory 
+needs to lie below 4 GB.  I'm not sure adding this extra complexity 
+would be worthwhile.
+
+> If what I've stated is true, there are quite some more drivers affected
+> by this issue.
+
+Practically every USB driver, I should think.  And maybe a lot of 
+non-USB drivers too.
+
+> I collected a list of places where similar fixes are
+> needed, and I can send patches if I get a thumbs-up.
+> 
+> Pedro is currently testing a patch I sent out yesterday.
+
+Good work -- it certainly would have taken me a long time to figure 
+this out.
+
+Alan Stern
