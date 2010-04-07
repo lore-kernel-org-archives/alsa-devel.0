@@ -1,24 +1,19 @@
-From: "Nicolo' Chieffo" <nicolo.chieffo@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Wed, 7 Apr 2010 14:17:54 +0200
-Message-ID: <y2g98391a7b1004070517sf35fe274q1d011982b55a508e@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
-	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
-	<l2y4f3252891004061734w9b710450ic6661ff8b2e630f9@mail.gmail.com>
-	<v2t98391a7b1004070117z37c270f8ze8519c99894a07f8@mail.gmail.com>
+From: "Marcus Weigelt" <noize007@gmx.de>
+Subject: Re: User-space control elements in ext PCM plugin
+Date: Wed, 07 Apr 2010 14:22:47 +0200
+Message-ID: <20100407122247.247630@gmx.net>
+References: <20100407100104.41190@gmx.net> <hphqhb$839$1@dough.gmane.org>
+	<20100407115433.60020@gmx.net>
+	<alpine.LNX.2.00.1004071357040.3925@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
-	[209.85.219.219])
-	by alsa0.perex.cz (Postfix) with ESMTP id BD1B210392A
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id DBA961038E7
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Apr 2010 14:18:14 +0200 (CEST)
-Received: by ewy19 with SMTP id 19so475085ewy.22
-	for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2010 05:18:14 -0700 (PDT)
-In-Reply-To: <v2t98391a7b1004070117z37c270f8ze8519c99894a07f8@mail.gmail.com>
+	Wed,  7 Apr 2010 14:22:48 +0200 (CEST)
+In-Reply-To: <alpine.LNX.2.00.1004071357040.3925@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,25 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is what I'm doing:
-- got a jack-jack audio cable
-- connected the headphone to the mic
-- open alsamixer and put everything to 0 dB
-- verified that the pass-throw works by using the sound recorder
+Yes, I think the softvol plugin is the closest thing to what I want to do.
+So I think I will just try it :) Thanks for your support!
 
-./dbmeasure plughw:0 dbmeasure_hw.log
+Marcus
 
-exits with this error:
+-------- Original-Nachricht --------
+> Datum: Wed, 7 Apr 2010 13:58:40 +0200 (CEST)
+> Von: Jaroslav Kysela <perex@perex.cz>
+> An: Marcus Weigelt <noize007@gmx.de>
+> CC: alsa-devel@alsa-project.org
+> Betreff: Re: [alsa-devel] User-space control elements in ext PCM plugin
 
-Iteration 1, level is 0 (-inf dB).
-Volume level measured (0) was too high or too low.
-Please adjust mixer so that initial level is between 0.8 and 0.97.
-Test run canceled.
+> On Wed, 7 Apr 2010, Marcus Weigelt wrote:
+> =
 
+> > That=B4s where I got the idea of creating the user-space control elemen=
+ts
+> > directly inside of the PCM plugin, or did I get it wrong?
+> =
 
-I've also tried to put the mic level at 100% (22.50 dB) but the output
-is the same.
+> The build-in softvol plugin uses this mechanism. But I'm not sure, if this
+> way is supported in the external PCM plugins interface.
+> =
+
+>  						Jaroslav
+> =
+
+> -----
+> Jaroslav Kysela <perex@perex.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, Red Hat, Inc.
+
+-- =
+
+GRATIS f=FCr alle GMX-Mitglieder: Die maxdome Movie-FLAT!
+Jetzt freischalten unter http://portal.gmx.net/de/go/maxdome01
