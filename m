@@ -1,60 +1,41 @@
-From: Greg KH <greg@kroah.com>
+From: Alan Stern <stern@rowland.harvard.edu>
 Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Wed, 7 Apr 2010 08:51:22 -0700
-Message-ID: <20100407155122.GA13974@kroah.com>
-References: <20100407090623.GN30807@buzzloop.caiaq.de>
-	<Pine.LNX.4.44L0.1004071036060.1779-100000@iolanthe.rowland.org>
-	<20100407151125.GJ30801@buzzloop.caiaq.de>
-	<20100407153154.GC13425@kroah.com>
-	<20100407153551.GK30801@buzzloop.caiaq.de>
+Date: Wed, 7 Apr 2010 11:55:19 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1004071149140.1779-100000@iolanthe.rowland.org>
+References: <20100407153154.GC13425@kroah.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from coco.kroah.org (kroah.org [198.145.64.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 171DB243A4
-	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Apr 2010 17:51:46 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100407153551.GK30801@buzzloop.caiaq.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Greg KH <gregkh@suse.de>, linux-kernel@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20100407153154.GC13425@kroah.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Greg KH <greg@kroah.com>
+Cc: Daniel Mack <daniel@caiaq.de>, linux-kernel@vger.kernel.org, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 07, 2010 at 05:35:51PM +0200, Daniel Mack wrote:
-> On Wed, Apr 07, 2010 at 08:31:54AM -0700, Greg KH wrote:
-> > On Wed, Apr 07, 2010 at 05:11:25PM +0200, Daniel Mack wrote:
-> > > I vote for a clean solution, a fixup of existing implementations and
-> > > a clear note about how to allocate buffers for USB drivers. I believe
-> > > faulty allocations of this kind can explain quite a lot of problems on
-> > > x86_64 machines.
-> > 
-> > Yeah, I really don't want to have to change every driver in different
-> > ways just depending on if someone thinks it is going to need to run on
-> > this wierd hardware.
-> > 
-> > Alan, any objection to just using usb_buffer_alloc() for every driver?
-> > Or is that too much overhead?
-> 
-> FWIW, most drivers I've seen in the past hours use a wild mix of
-> kmalloc(), kzalloc(), kcalloc() and usb_buffer_alloc(). That should
-> really be unified.
+On Wed, 7 Apr 2010, Greg KH wrote:
 
-Yes, if it is necessary that we have to handle this type of crappy
-hardware, then it all needs to be unified.  Or at least unified into 2
-types of calls, one that needs the bounce buffer fun (what
-usb_buffer_alloc() does today), and one that doesn't (usb_kzalloc()
-perhaps?)
+> Yeah, I really don't want to have to change every driver in different
+> ways just depending on if someone thinks it is going to need to run on
+> this wierd hardware.
 
-thanks,
+It's not weird hardware, as far as I know.  It's just a 64-bit system
+with a 32-bit USB host controller.
 
-greg k-h
+(And remember, while there are 64-bit EHCI controllers, there are not 
+any 64-bit OHCI or UHCI controllers.  So whenever somebody plugs a 
+full-speed or low-speed device into a 64-bit machine, they will face 
+this problem.  It's like the old problem of ISA devices that could 
+only do DMA to addresses in the first 16 MB of memory -- what the 
+original GFP_DMA flag was intended for.)
+
+> Alan, any objection to just using usb_buffer_alloc() for every driver?
+> Or is that too much overhead?
+
+I don't know what the overhead is.  But usb_buffer_alloc() requires the 
+caller to keep track of the buffer's DMA address, so it's not a simple 
+plug-in replacement.  In addition, the consistent memory that 
+usb_buffer_alloc() provides is a scarce resource on some platforms.
+
+Writing new functions is the way to go.
+
+Alan Stern
