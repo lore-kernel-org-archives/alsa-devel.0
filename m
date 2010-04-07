@@ -1,15 +1,20 @@
-From: "Marcus Weigelt" <noize007@gmx.de>
-Subject: User-space control elements in ext PCM plugin
-Date: Wed, 07 Apr 2010 12:01:04 +0200
-Message-ID: <20100407100104.41190@gmx.net>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: mx31 snd and mc13783 codec status
+Date: Wed, 7 Apr 2010 13:03:50 +0200
+Message-ID: <20100407110350.GD3688@pengutronix.de>
+References: <4BB22576.1070108@epfl.ch> <20100331083415.GR2241@pengutronix.de>
+	<4BB4C362.3000803@epfl.ch> <20100402095358.GZ2241@pengutronix.de>
+	<20100402104241.GC27613@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id DE88810380B
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6F15E2452B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Apr 2010 12:01:07 +0200 (CEST)
+	Wed,  7 Apr 2010 13:03:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100402104241.GC27613@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,29 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Valentin Longchamp <valentin.longchamp@epfl.ch>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, =
+On Fri, Apr 02, 2010 at 11:42:42AM +0100, Mark Brown wrote:
+> On Fri, Apr 02, 2010 at 11:53:58AM +0200, Sascha Hauer wrote:
+> > On Thu, Apr 01, 2010 at 06:01:38PM +0200, Valentin Longchamp wrote:
+> 
+> > > The thing is that I get a less than a second sound loop (I use aplay to  
+> > > test, so userspace app should be ok), as if the buffer that the fiq asm  
+> > > interrupt (from ssi_fiq.S) copies to the SSI hardware never was updated.
+> 
+> > > If I have understood the fiq behaviour correctly, you have a asm fiq  
+> > > interrupt that does copy a larger tx buffer into the SSI hardware.  
+> > > Besides it, you have the imx_ssi_timer_callback that checks when the tx  
+> > > buffer was completely copied. If it is the case, then a new buffer tx  
+> > > buffer is "issued" with the snd_pcm_period_elapsed call (and then  
+> > > snd_pcm_update_hw_ptr0). Is this behaviour correct ?
+> 
+> > Yes.
+> 
+> What sample rate are you trying to play and what buffer size?  In my
+> testing the FIQ was really struggling with most applications at sample
+> rates over ~16kHz since you need each audio period to be long enough to
+> at least fill the interval between timer polls but applications wanted
+> to select buffer sizes that were consumed faster than the timer tick.
+
+I just stumbled upon a board which had something in /etc/asound.conf
+which decreased the buffer sizes. The result was choppy sound and a cpu
+utilisation of ~40%.
+
+After deleting the file I could play sounds (and record simultaniously)
+with rates up to 44100kHz without visible cpu utilisation.
+
+Looking at it I realised that poll_time is 0, so the timer gets reloaded
+with the actual jiffies value which of course is a bad idea. We should
+probably use a hrtimer here.
+
+Sascha
 
 
-I=B4m having an external PCM plugin that should do some processing on the a=
-udio. That part works fine. Now I=B4d like to have some way to modify the w=
-ay to give some parameters to the plugin to tell it how the processing is d=
-one (eg. set delay time, pan, attack time, ...). =
-
-I=B4ve searched the web for days and hours, but could not really find somet=
-hing. =
-
-On the alsa mailing list there was a similiar question three years ago, and=
- the answer was, that one could create user-space control elements in the p=
-lugin. How is that done? I could not find examples or good documentation ab=
-out it. Did I miss something out? Can anyone give me a hint, maybe a link t=
-o some docs about it or source of a PCM plugin creating/using user space co=
-ntrol elements? Thanks a lot.
-
-Marcus
--- =
-
-GRATIS f=FCr alle GMX-Mitglieder: Die maxdome Movie-FLAT!
-Jetzt freischalten unter http://portal.gmx.net/de/go/maxdome01
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
