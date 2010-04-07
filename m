@@ -1,20 +1,27 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: mx31 snd and mc13783 codec status
-Date: Wed, 7 Apr 2010 13:03:50 +0200
-Message-ID: <20100407110350.GD3688@pengutronix.de>
-References: <4BB22576.1070108@epfl.ch> <20100331083415.GR2241@pengutronix.de>
-	<4BB4C362.3000803@epfl.ch> <20100402095358.GZ2241@pengutronix.de>
-	<20100402104241.GC27613@sirena.org.uk>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: User-space control elements in ext PCM plugin
+Date: Wed, 07 Apr 2010 12:32:59 +0100
+Message-ID: <hphqhb$839$1@dough.gmane.org>
+References: <20100407100104.41190@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6F15E2452B
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 39DB01038B6
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Apr 2010 13:03:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100402104241.GC27613@sirena.org.uk>
+	Wed,  7 Apr 2010 13:33:14 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1NzTVO-0006Qw-NT
+	for alsa-devel@alsa-project.org; Wed, 07 Apr 2010 13:33:10 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2010 13:33:10 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2010 13:33:10 +0200
+In-Reply-To: <20100407100104.41190@gmx.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,49 +31,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Valentin Longchamp <valentin.longchamp@epfl.ch>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 02, 2010 at 11:42:42AM +0100, Mark Brown wrote:
-> On Fri, Apr 02, 2010 at 11:53:58AM +0200, Sascha Hauer wrote:
-> > On Thu, Apr 01, 2010 at 06:01:38PM +0200, Valentin Longchamp wrote:
-> 
-> > > The thing is that I get a less than a second sound loop (I use aplay to  
-> > > test, so userspace app should be ok), as if the buffer that the fiq asm  
-> > > interrupt (from ssi_fiq.S) copies to the SSI hardware never was updated.
-> 
-> > > If I have understood the fiq behaviour correctly, you have a asm fiq  
-> > > interrupt that does copy a larger tx buffer into the SSI hardware.  
-> > > Besides it, you have the imx_ssi_timer_callback that checks when the tx  
-> > > buffer was completely copied. If it is the case, then a new buffer tx  
-> > > buffer is "issued" with the snd_pcm_period_elapsed call (and then  
-> > > snd_pcm_update_hw_ptr0). Is this behaviour correct ?
-> 
-> > Yes.
-> 
-> What sample rate are you trying to play and what buffer size?  In my
-> testing the FIQ was really struggling with most applications at sample
-> rates over ~16kHz since you need each audio period to be long enough to
-> at least fill the interval between timer polls but applications wanted
-> to select buffer sizes that were consumed faster than the timer tick.
-
-I just stumbled upon a board which had something in /etc/asound.conf
-which decreased the buffer sizes. The result was choppy sound and a cpu
-utilisation of ~40%.
-
-After deleting the file I could play sounds (and record simultaniously)
-with rates up to 44100kHz without visible cpu utilisation.
-
-Looking at it I realised that poll_time is 0, so the timer gets reloaded
-with the actual jiffies value which of course is a bad idea. We should
-probably use a hrtimer here.
-
-Sascha
-
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+J1R3YXMgYnJpbGxpZywgYW5kIE1hcmN1cyBXZWlnZWx0IGF0IDA3LzA0LzEwIDExOjAxIGRpZCBn
+eXJlIGFuZCBnaW1ibGU6Cj4gSGksCj4gCj4gScK0bSBoYXZpbmcgYW4gZXh0ZXJuYWwgUENNIHBs
+dWdpbiB0aGF0IHNob3VsZCBkbyBzb21lIHByb2Nlc3Npbmcgb24KPiB0aGUgYXVkaW8uIFRoYXQg
+cGFydCB3b3JrcyBmaW5lLiBOb3cgScK0ZCBsaWtlIHRvIGhhdmUgc29tZSB3YXkgdG8KPiBtb2Rp
+ZnkgdGhlIHdheSB0byBnaXZlIHNvbWUgcGFyYW1ldGVycyB0byB0aGUgcGx1Z2luIHRvIHRlbGwg
+aXQgaG93Cj4gdGhlIHByb2Nlc3NpbmcgaXMgZG9uZSAoZWcuIHNldCBkZWxheSB0aW1lLCBwYW4s
+IGF0dGFjayB0aW1lLCAuLi4pLiAKPiBJwrR2ZSBzZWFyY2hlZCB0aGUgd2ViIGZvciBkYXlzIGFu
+ZCBob3VycywgYnV0IGNvdWxkIG5vdCByZWFsbHkgZmluZAo+IHNvbWV0aGluZy4gT24gdGhlIGFs
+c2EgbWFpbGluZyBsaXN0IHRoZXJlIHdhcyBhIHNpbWlsaWFyIHF1ZXN0aW9uCj4gdGhyZWUgeWVh
+cnMgYWdvLCBhbmQgdGhlIGFuc3dlciB3YXMsIHRoYXQgb25lIGNvdWxkIGNyZWF0ZSB1c2VyLXNw
+YWNlCj4gY29udHJvbCBlbGVtZW50cyBpbiB0aGUgcGx1Z2luLiBIb3cgaXMgdGhhdCBkb25lPyBJ
+IGNvdWxkIG5vdCBmaW5kCj4gZXhhbXBsZXMgb3IgZ29vZCBkb2N1bWVudGF0aW9uIGFib3V0IGl0
+LiBEaWQgSSBtaXNzIHNvbWV0aGluZyBvdXQ/Cj4gQ2FuIGFueW9uZSBnaXZlIG1lIGEgaGludCwg
+bWF5YmUgYSBsaW5rIHRvIHNvbWUgZG9jcyBhYm91dCBpdCBvcgo+IHNvdXJjZSBvZiBhIFBDTSBw
+bHVnaW4gY3JlYXRpbmcvdXNpbmcgdXNlciBzcGFjZSBjb250cm9sIGVsZW1lbnRzPwo+IFRoYW5r
+cyBhIGxvdC4KClRyeSBsb29raW5nIGF0IHRoZSBQdWxzZUF1ZGlvIHBsdWdpbi4gSXQgcHJlc2Vu
+dHMgdXNlcnNwYWNlIHNsaWRlcnMgdG8KY29udHJvbCB0aGUgdm9sdW1lLiBJZiBJJ3ZlIG5vdCBt
+aXN1bmRlcnN0b29kIHlvdXIgcmVxdWVzdCB0aGlzIHNob3VsZApkbyB3aGF0IHlvdSBuZWVkLgoK
+Q29sCgotLSAKCkNvbGluIEd1dGhyaWUKZ21hbmUoYXQpY29saW4uZ3V0aHIuaWUKaHR0cDovL2Nv
+bGluLmd1dGhyLmllLwoKRGF5IEpvYjoKICBUcmliYWxvZ2ljIExpbWl0ZWQgW2h0dHA6Ly93d3cu
+dHJpYmFsb2dpYy5uZXQvXQpPcGVuIFNvdXJjZToKICBNYW5kcml2YSBMaW51eCBDb250cmlidXRv
+ciBbaHR0cDovL3d3dy5tYW5kcml2YS5jb20vXQogIFB1bHNlQXVkaW8gSGFja2VyIFtodHRwOi8v
+d3d3LnB1bHNlYXVkaW8ub3JnL10KICBUcmFjIEhhY2tlciBbaHR0cDovL3RyYWMuZWRnZXdhbGwu
+b3JnL10KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
