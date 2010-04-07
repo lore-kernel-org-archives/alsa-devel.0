@@ -1,21 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: mx31 snd and mc13783 codec status
-Date: Wed, 7 Apr 2010 13:12:07 +0100
-Message-ID: <20100407121206.GC13576@rakim.wolfsonmicro.main>
-References: <4BB22576.1070108@epfl.ch> <20100331083415.GR2241@pengutronix.de>
-	<4BB4C362.3000803@epfl.ch> <20100402095358.GZ2241@pengutronix.de>
-	<20100402104241.GC27613@sirena.org.uk>
-	<20100407110350.GD3688@pengutronix.de>
+From: "Nicolo' Chieffo" <nicolo.chieffo@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Wed, 7 Apr 2010 14:17:54 +0200
+Message-ID: <y2g98391a7b1004070517sf35fe274q1d011982b55a508e@mail.gmail.com>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
+	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
+	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
+	<l2y4f3252891004061734w9b710450ic6661ff8b2e630f9@mail.gmail.com>
+	<v2t98391a7b1004070117z37c270f8ze8519c99894a07f8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BE7891038CC
+Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
+	[209.85.219.219])
+	by alsa0.perex.cz (Postfix) with ESMTP id BD1B210392A
 	for <alsa-devel@alsa-project.org>;
-	Wed,  7 Apr 2010 14:12:08 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100407110350.GD3688@pengutronix.de>
+	Wed,  7 Apr 2010 14:18:14 +0200 (CEST)
+Received: by ewy19 with SMTP id 19so475085ewy.22
+	for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2010 05:18:14 -0700 (PDT)
+In-Reply-To: <v2t98391a7b1004070117z37c270f8ze8519c99894a07f8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,32 +28,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Valentin Longchamp <valentin.longchamp@epfl.ch>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 07, 2010 at 01:03:50PM +0200, Sascha Hauer wrote:
-> On Fri, Apr 02, 2010 at 11:42:42AM +0100, Mark Brown wrote:
+This is what I'm doing:
+- got a jack-jack audio cable
+- connected the headphone to the mic
+- open alsamixer and put everything to 0 dB
+- verified that the pass-throw works by using the sound recorder
 
-> > What sample rate are you trying to play and what buffer size?  In my
-> > testing the FIQ was really struggling with most applications at sample
-> > rates over ~16kHz since you need each audio period to be long enough to
-> > at least fill the interval between timer polls but applications wanted
-> > to select buffer sizes that were consumed faster than the timer tick.
+./dbmeasure plughw:0 dbmeasure_hw.log
 
-> After deleting the file I could play sounds (and record simultaniously)
-> with rates up to 44100kHz without visible cpu utilisation.
+exits with this error:
 
-Yes, if you tweak the buffer sizes (most of the ALSA test utilities
-support this) then you can use higher sample rates - pulseaudio's high
-latency modes should work great, for example.
+Iteration 1, level is 0 (-inf dB).
+Volume level measured (0) was too high or too low.
+Please adjust mixer so that initial level is between 0.8 and 0.97.
+Test run canceled.
 
-> Looking at it I realised that poll_time is 0, so the timer gets reloaded
-> with the actual jiffies value which of course is a bad idea. We should
-> probably use a hrtimer here.
 
-Yes, by default you're only going to be able to poll at 1ms intervals so
-the poll time ends up going down to zero.  I did look at switching over
-to a hrtimer when I was fixing up the sample rate slips but I wasn't
-able to convince myself that there was a hrtimer offering sufficient
-resolution available on i.MX.
+I've also tried to put the mic level at 100% (22.50 dB) but the output
+is the same.
