@@ -1,70 +1,78 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Wed, 7 Apr 2010 15:13:11 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1004071452560.5760-100000@iolanthe.rowland.org>
-References: <s5hhbnncflj.wl%tiwai@suse.de>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH 2/3] WM8750: Fix SPITZ machine
+Date: Wed, 7 Apr 2010 22:50:22 +0200
+Message-ID: <201004072250.22351.marek.vasut@gmail.com>
+References: <1270440005-25459-1-git-send-email-marek.vasut@gmail.com>
+	<1270440818-25790-2-git-send-email-marek.vasut@gmail.com>
+	<20100405134106.GC6580@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hhbnncflj.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Mack <daniel@caiaq.de>, Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.158])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20C5C103819
+	for <alsa-devel@alsa-project.org>;
+	Wed,  7 Apr 2010 22:51:10 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id d23so574526fga.2
+	for <alsa-devel@alsa-project.org>; Wed, 07 Apr 2010 13:51:09 -0700 (PDT)
+In-Reply-To: <20100405134106.GC6580@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 7 Apr 2010, Takashi Iwai wrote:
-
-> > Ok, I'll write some dummies for usb_malloc() and usb_zalloc() which
-> > will just call kmalloc() with GFP_DMA32 for now.
+Dne Po 5. dubna 2010 15:41:07 Mark Brown napsal(a):
+> On Mon, Apr 05, 2010 at 06:13:37AM +0200, Marek Vasut wrote:
+> > This patch registers the WM8750 codec on a proper place on the SPITZ
+> > machine after the WM8750 driver was converted to new API. Moreover, the
+> > incorrect code
 > 
-> Can't we provide only zalloc() variant?  Zero'ing doesn't cost much,
-> and the buffer allocation shouldn't be called too often.
+> We also need this for the Jive machine.  FWIW I'm checking for affected
+> machines by doing 'grep -l wm8750 sound/soc/*/*.c'.
 
-Linus specifically requested us to avoid using kzalloc in usbfs.  I
-can't find the message in the email archives, but Greg KH should be
-able to confirm it.
-
-As long as we're imitating kmalloc for one use, we might as well make
-it available to all.
-
-> > And while at it,
-> > usb_alloc_buffer() will be renamed to usb_alloc_consistent().
+Will send a separate patch for that
 > 
-> Most of recent functions are named with "coherent".
-
-Yes, the terminology got a little confused between the PCI and DMA
-realms.  I agree, "coherent" is better.
-
-BTW, although some EHCI controllers may support 64-bit DMA, the driver 
-contains this:
-
-	if (HCC_64BIT_ADDR(hcc_params)) {
-		ehci_writel(ehci, 0, &ehci->regs->segment);
-#if 0
-// this is deeply broken on almost all architectures
-		if (!dma_set_mask(hcd->self.controller, DMA_BIT_MASK(64)))
-			ehci_info(ehci, "enabled 64bit DMA\n");
-#endif
-	}
-
-I don't know if the comment is still true, but until the "#if 0" is 
-removed, ehci-hcd won't make use of 64-bit DMA.
-
-Note also that just before the lines above, ehci-hcd.c contains this
-comment:
-
-	 * pci_pool consistent memory always uses segment zero.
-
-(Nowadays the driver uses dma_pool, not pci_pool.)  As far as I can
-tell, this comment isn't true on 64-bit systems, but nevertheless,
-ehci-hcd relies on it.  Of course it _is_ true for devices whose DMA
-mask indicates they can't use memory above 4 GB -- but if ehci-hcd is
-changed to enlarge the DMA mask then how do we force dma_pool memory to
-lie below 4 GB?
-
-[Actually it isn't _really_ necessary for the dma_pool to lie below 4 
-GB.  But ehci-hcd allocates several pools, and it _is_ necessary for 
-all of them to lie in the _same_ 4 GB segment.  The easiest way to do 
-that is to put them all in segment 0.]
-
-Alan Stern
+> > is hereby removed from the aSoC driver.
+> 
+> ASoC.
+> 
+> > diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+> > index c4cd2ac..d256f5f 100644
+> > --- a/sound/soc/pxa/spitz.c
+> > +++ b/sound/soc/pxa/spitz.c
+> > @@ -322,17 +322,10 @@ static struct snd_soc_card snd_soc_spitz = {
+> >  	.num_links = 1,
+> >  };
+> >
+> > -/* spitz audio private data */
+> > -static struct wm8750_setup_data spitz_wm8750_setup = {
+> > -	.i2c_bus = 0,
+> > -	.i2c_address = 0x1b,
+> > -};
+> > -
+> >  /* spitz audio subsystem */
+> >  static struct snd_soc_device spitz_snd_devdata = {
+> >  	.card = &snd_soc_spitz,
+> >  	.codec_dev = &soc_codec_dev_wm8750,
+> > -	.codec_data = &spitz_wm8750_setup,
+> >  };
+> 
+> So, this is going to break spitz if not merged in with the patch to
+> update wm8750 since prior to the conversion of the driver the setup data
+> is required while after the conversion the setup data structure no
+> longer exists and will therefore cause compile failures.
+> 
+> As I've mentioned several times before I urge you to look at how this
+> transition was done for wm8731 for an example of how this sort of change
+> can be done without too much disruption.
+> 
+Can you possibly elaborate ? I was unable to find it.
+Thanks
