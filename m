@@ -1,18 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Stereo Support in APLAY
-Date: Thu, 08 Apr 2010 08:47:45 +0200
-Message-ID: <4BBD7C11.9050906@ladisch.de>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>	<hp744t$5b5$1@dough.gmane.org>	<l2s98391a7b1004030348n2b2a540bq8fddb0a90dd7c3c9@mail.gmail.com>
-	<290463D19D2E064191F1F96ECA480A8940F04F6E80@EXMAIL02.scwf.nsc.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: USB transfer_buffer allocations on 64bit systems
+Date: Thu, 8 Apr 2010 09:30:41 +0200
+Message-ID: <20100408073041.GO30801@buzzloop.caiaq.de>
+References: <4BBD1B6F.3000205@gmail.com>
+	<Pine.LNX.4.44L0.1004072207390.18281-100000@netrider.rowland.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 11CC91037F7
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8BE81037F7
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Apr 2010 08:47:51 +0200 (CEST)
-In-Reply-To: <290463D19D2E064191F1F96ECA480A8940F04F6E80@EXMAIL02.scwf.nsc.com>
+	Thu,  8 Apr 2010 09:30:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44L0.1004072207390.18281-100000@netrider.rowland.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,22 +23,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Reddy, MR Swami" <MR.Swami.Reddy@nsc.com>
-Cc: alsa-devel@alsa-project.org
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Greg KH <gregkh@suse.de>, linux-kernel@vger.kernel.org, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Robert Hancock <hancockrwd@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Reddy, MR Swami wrote:
-> Could you plz confirm, if the ALSA drivers support the stereo format files
-> with 'aplay'?
+On Wed, Apr 07, 2010 at 10:10:17PM -0400, Alan Stern wrote:
+> On Wed, 7 Apr 2010, Robert Hancock wrote:
+> 
+> > >> The problem is appearantly the way the transfer buffer is allocated in
+> > >> the drivers. In the snd-usb-caiaq driver, I used kzalloc() to get memory
+> > >> which works fine on 32bit systems. On x86_64, however, it seems that
+> > >> kzalloc() hands out memory beyond the 32bit addressable boundary, which
+> > >> the DMA controller of the 32bit PCI-connected EHCI controller is unable
+> > >> to write to or read from. Am I correct on this conclusion?
+> > >
+> > > That seems like the right answer.  You are correct that an EHCI
+> > > controller capable only of 32-bit memory accesses would not be able to
+> > > use a buffer above the 4 GB line.
+> 
+> > AFAIK, the driver shouldn't have to worry about this at all. When the 
+> > buffer gets DMA-mapped for the controller, the DMA mapping code should 
+> > see that the device has a 32-bit DMA mask and either bounce or IOMMU-map 
+> > the memory so that it appears below 4GB.
+> 
+> That's true.  It would of course be more efficient for the buffer to be
+> allocated below 4 GB, but it should work okay either way.  Daniel, do
+> you have any idea why it fails?
 
-aplay supports stereo files; whether the driver supports this depends
-on the driver.
+No, and I can't do real tests as I lack a 64bit machine. I'll do some
+more investigation later today, but for now the only explanation I have
+is that not the remapped DMA buffer is used eventually by the EHCI code
+but the physical address of the original buffer.
 
-I don't know what you problem is, but it's likely that you tried to
-play a stereo file on a mono device or a mono file on a stereo-only
-device, and that you used a device name like "hw:0" that disables all
-automatic format conversions, instead of "default".
+It would of course be best to fix the whole problem at this level, if
+possible.
 
-
-Regards,
-Clemens
+Daniel
