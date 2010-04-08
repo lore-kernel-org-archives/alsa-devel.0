@@ -1,18 +1,18 @@
-From: Daniel Case <danielcase10@googlemail.com>
-Subject: Alsa Problems - O2 Joggler
-Date: Thu, 8 Apr 2010 21:23:51 +0100
-Message-ID: <y2g2410b0d51004081323y2096cce3x3698bf11749879cb@mail.gmail.com>
+From: Valentin Longchamp <valentin.longchamp@epfl.ch>
+Subject: Re: [PATCH 3/3] imx-ssi: Use a hrtimer in FIQ mode
+Date: Thu, 08 Apr 2010 17:29:29 +0200
+Message-ID: <4BBDF659.1080407@epfl.ch>
+References: <1270719086-23453-1-git-send-email-s.hauer@pengutronix.de>
+	<1270719086-23453-4-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CE9A103979
+Received: from smtp3.epfl.ch (smtp3.epfl.ch [128.178.224.226])
+	by alsa0.perex.cz (Postfix) with SMTP id D1052103968
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Apr 2010 22:24:13 +0200 (CEST)
-Received: by wyf19 with SMTP id 19so156102wyf.38
-	for <alsa-devel@alsa-project.org>; Thu, 08 Apr 2010 13:24:11 -0700 (PDT)
+	Thu,  8 Apr 2010 17:29:33 +0200 (CEST)
+In-Reply-To: <1270719086-23453-4-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,30 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
-I have an O2 Joggler with the alsa-info output file located here:
-http://alsa-project.org/db/?f=4012bb42964e3c87ae7ff4e0561d9ee9d3eb5e2c
+Sascha Hauer wrote:
+> Using a regular timer results in poll times < 1 jiffie with small
+> buffers, so we loaded the timer with the actual jiffie value. We can
+> be more accurate using a hrtimer. Also, we have to call
+> snd_pcm_period_elapsed after playing period_bytes and not
+> runtime->period_size (which is in samples and not in bytes).
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  sound/soc/imx/imx-pcm-fiq.c |   45 ++++++++++++++++++++----------------------
+>  1 files changed, 21 insertions(+), 24 deletions(-)
+> 
 
-The sound does not work unless I remove the following line from
-/etc/modprobe.d/alsa-base.conf
+Sorry to bother you guys in your discussion (most of which I don't 
+understand because of my poor alsa knowledge).
 
-    # Power down HDA controllers after 10 idle seconds
-   options snd-hda-intel power_save=10 power_save_controller=N
+I just wanted to tell that I have given this patch a spin on a 
+mx31moboard system. imx-ssi now works much better (the audio does not 
+loop on one buffer anymore as it did with the earlier timer version) in 
+various configuration (speaker-test with various rates up to 48 kHz as 
+well as aplay with a wav file, which had never worked for me) and the 
+CPU usage is much lower BUT I have experienced some deadlocks completely 
+hanging the system looping on what should be the last buffer of the wave 
+file.
 
-I believe this means that the chipset is not able to wake up from
-power saving, and what I get is crackling sound.
-
-What can be done so that this issue is fixed (the device works with
-power saving)?
-
-The device came with a special version of Ubuntu Linux 8.04, and the
-source code (included Alsa) is available at
-http://lists.gpl-violations.org/pipermail/legal/2009-December/001755.html
-
-Thanks!
+Val
 
 -- 
-~Daniel
+Valentin Longchamp, PhD Student, EPFL-STI-LSRO1
+valentin.longchamp@epfl.ch, Phone: +41216937827
+http://people.epfl.ch/valentin.longchamp
+MEB3494, Station 9, CH-1015 Lausanne
