@@ -1,23 +1,20 @@
-From: "Nicolo' Chieffo" <nicolo.chieffo@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Thu, 8 Apr 2010 14:42:58 +0200
-Message-ID: <z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
-	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
-	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 3/3] imx-ssi: Use a hrtimer in FIQ mode
+Date: Thu, 8 Apr 2010 15:13:53 +0200
+Message-ID: <20100408131353.GI3688@pengutronix.de>
+References: <1270719086-23453-1-git-send-email-s.hauer@pengutronix.de>
+	<1270719086-23453-4-git-send-email-s.hauer@pengutronix.de>
+	<20100408095324.GB6303@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f222.google.com (mail-ew0-f222.google.com
-	[209.85.219.222])
-	by alsa0.perex.cz (Postfix) with ESMTP id 20218243C0
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id ECB1E243DC
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Apr 2010 14:43:20 +0200 (CEST)
-Received: by ewy22 with SMTP id 22so973618ewy.17
-	for <alsa-devel@alsa-project.org>; Thu, 08 Apr 2010 05:43:19 -0700 (PDT)
-In-Reply-To: <q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
+	Thu,  8 Apr 2010 15:13:53 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100408095324.GB6303@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,22 +24,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Valentin Longchamp <valentin.longchamp@epfl.ch>
 List-Id: alsa-devel@alsa-project.org
 
-I'm sorry but I found out that I gave you wrong values of "amixer -D
-pulse": I just discovered that when I lower the alsa master volume, in
-some occasions the PCM volume goes to 99%, so now I will put it to
-100% and check the pulse volume again.
+On Thu, Apr 08, 2010 at 10:53:25AM +0100, Mark Brown wrote:
+> On Thu, Apr 08, 2010 at 11:31:26AM +0200, Sascha Hauer wrote:
+> 
+> > -	/* Restart the timer; if we didn't report we'll run on the next tick */
+> > -	add_timer(&iprtd->timer);
+> > +	hrtimer_forward_now(hrt, ns_to_ktime(iprtd->poll_time_ns));
+> 
+> Hrm, this looks like it's going to have an issue with clock drift -
+> we're now unconditionally advancing the timer every period, even if the
+> data transfer hasn't pushed through a period of data.  This will cause
+> problems on lengthy playbacks (and shorter ones if the clocks are
+> sufficiently out of sync).
 
-0 dB    =  65536 [100%]
--3 dB   =  57520 [88%]
--6 dB   =  52057 [79%]
--12 dB =  41034 [63%]
--24 dB =  26090 [40%]
--48 dB = 10151 [15%]
+We are calling snd_pcm_period_elapsed when at least one period is over.
+As I see it the worst thing that could happen is that we have not
+transfered enough data for one period in the timer callback and thus we
+call snd_pcm_period_elapsed in the next timer callback, so about one
+period too late, but the comment in sound/core/pcm_lib.c says:
 
-So again, the only problem is that -48 dB IS mute, but it's not
-declared as mute.
-This is the real issue.
+Even if more than one periods have elapsed since the last call, you
+have to call this only once.
+
+So I think this should be save.
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
