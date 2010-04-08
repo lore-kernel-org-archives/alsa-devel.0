@@ -1,21 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] WM8750: Fix SPITZ machine
-Date: Thu, 8 Apr 2010 10:40:40 +0100
-Message-ID: <20100408094040.GA6303@rakim.wolfsonmicro.main>
-References: <1270440005-25459-1-git-send-email-marek.vasut@gmail.com>
-	<1270440818-25790-2-git-send-email-marek.vasut@gmail.com>
-	<20100405134106.GC6580@rakim.wolfsonmicro.main>
-	<201004072250.22351.marek.vasut@gmail.com>
+Subject: Re: [PATCH 3/3] imx-ssi: Use a hrtimer in FIQ mode
+Date: Thu, 8 Apr 2010 10:53:25 +0100
+Message-ID: <20100408095324.GB6303@rakim.wolfsonmicro.main>
+References: <1270719086-23453-1-git-send-email-s.hauer@pengutronix.de>
+	<1270719086-23453-4-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 97C4710382F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 216E810389B
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Apr 2010 11:40:42 +0200 (CEST)
+	Thu,  8 Apr 2010 11:53:26 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <201004072250.22351.marek.vasut@gmail.com>
+In-Reply-To: <1270719086-23453-4-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +23,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Valentin Longchamp <valentin.longchamp@epfl.ch>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 07, 2010 at 10:50:22PM +0200, Marek Vasut wrote:
-> Dne Po 5. dubna 2010 15:41:07 Mark Brown napsal(a):
+On Thu, Apr 08, 2010 at 11:31:26AM +0200, Sascha Hauer wrote:
 
-> > As I've mentioned several times before I urge you to look at how this
-> > transition was done for wm8731 for an example of how this sort of change
-> > can be done without too much disruption.
+> -	/* Restart the timer; if we didn't report we'll run on the next tick */
+> -	add_timer(&iprtd->timer);
+> +	hrtimer_forward_now(hrt, ns_to_ktime(iprtd->poll_time_ns));
 
-> Can you possibly elaborate ? I was unable to find it.
-
-Commit 5998102b9095fdb7c67755812038612afea315c5 upstream:
-
-http://git.kernel.org/?p=linux/kernel/git/broonie/sound-2.6.git;a=commit;h=5998102b9095fdb7c67755812038612afea315c5
-
-Notice how this updates both the machines and the CODEC in the same
-patch so things always compile and run.
+Hrm, this looks like it's going to have an issue with clock drift -
+we're now unconditionally advancing the timer every period, even if the
+data transfer hasn't pushed through a period of data.  This will cause
+problems on lengthy playbacks (and shorter ones if the clocks are
+sufficiently out of sync).
