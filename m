@@ -1,19 +1,23 @@
-From: Huang Weiyi <weiyi.huang@gmail.com>
-Subject: [PATCH 10/16] ASoC: wm2000: remove unused #include
-	<linux/version.h>
-Date: Thu,  8 Apr 2010 19:50:08 +0800
-Message-ID: <1270727408-1672-1-git-send-email-weiyi.huang@gmail.com>
+From: "Nicolo' Chieffo" <nicolo.chieffo@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Thu, 8 Apr 2010 14:42:58 +0200
+Message-ID: <z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
+	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
+	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
+	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f187.google.com (mail-qy0-f187.google.com
-	[209.85.221.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 309B324389
+Received: from mail-ew0-f222.google.com (mail-ew0-f222.google.com
+	[209.85.219.222])
+	by alsa0.perex.cz (Postfix) with ESMTP id 20218243C0
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Apr 2010 13:50:17 +0200 (CEST)
-Received: by qyk17 with SMTP id 17so23725qyk.9
-	for <alsa-devel@alsa-project.org>; Thu, 08 Apr 2010 04:50:14 -0700 (PDT)
+	Thu,  8 Apr 2010 14:43:20 +0200 (CEST)
+Received: by ewy22 with SMTP id 22so973618ewy.17
+	for <alsa-devel@alsa-project.org>; Thu, 08 Apr 2010 05:43:19 -0700 (PDT)
+In-Reply-To: <q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,29 +27,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, Huang Weiyi <weiyi.huang@gmail.com>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Remove unused #include <linux/version.h>('s) in
-  sound/soc/codecs/wm2000.c
+I'm sorry but I found out that I gave you wrong values of "amixer -D
+pulse": I just discovered that when I lower the alsa master volume, in
+some occasions the PCM volume goes to 99%, so now I will put it to
+100% and check the pulse volume again.
 
-Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
----
- sound/soc/codecs/wm2000.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+0 dB    =  65536 [100%]
+-3 dB   =  57520 [88%]
+-6 dB   =  52057 [79%]
+-12 dB =  41034 [63%]
+-24 dB =  26090 [40%]
+-48 dB = 10151 [15%]
 
-diff --git a/sound/soc/codecs/wm2000.c b/sound/soc/codecs/wm2000.c
-index a34cbcf..002e289 100644
---- a/sound/soc/codecs/wm2000.c
-+++ b/sound/soc/codecs/wm2000.c
-@@ -23,7 +23,6 @@
- 
- #include <linux/module.h>
- #include <linux/moduleparam.h>
--#include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/firmware.h>
--- 
-1.6.1.3
+So again, the only problem is that -48 dB IS mute, but it's not
+declared as mute.
+This is the real issue.
