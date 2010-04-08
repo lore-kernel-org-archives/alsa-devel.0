@@ -1,42 +1,89 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Thu, 8 Apr 2010 18:20:36 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1004081817230.21642-100000@iolanthe.rowland.org>
-References: <201004082324.31481.oliver@neukum.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Fri, 9 Apr 2010 07:11:48 +0800
+Message-ID: <u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
+	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
+	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
+	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
+	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <201004082324.31481.oliver@neukum.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Oliver Neukum <oliver@neukum.org>
-Cc: Daniel Mack <daniel@caiaq.de>, linux-kernel@vger.kernel.org, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pz0-f178.google.com (mail-pz0-f178.google.com
+	[209.85.222.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id C990E10385C
+	for <alsa-devel@alsa-project.org>;
+	Fri,  9 Apr 2010 01:11:50 +0200 (CEST)
+Received: by pzk8 with SMTP id 8so1806498pzk.16
+	for <alsa-devel@alsa-project.org>; Thu, 08 Apr 2010 16:11:49 -0700 (PDT)
+In-Reply-To: <z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 8 Apr 2010, Oliver Neukum wrote:
+2010/4/8 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
 
-> Am Donnerstag, 8. April 2010 18:59:38 schrieb Alan Stern:
-> > On Thu, 8 Apr 2010, Oliver Neukum wrote:
-> > 
-> > > Am Mittwoch, 7. April 2010 17:46:17 schrieb Alan Stern:
-> > > > Or alternatively, instead of allocating regular memory the routine
-> > > > could simply fail.  Then the caller would be responsible for checking
-> > > > and using regular memory instead of dma-consistent memory.  Of course,
-> > > > that would put an even larger burden on the caller than just forcing it
-> > > > to keep track of what flag to use.
-> > > 
-> > > Then it would be sensible to pass it a filled URB, modify it or return
-> > > an error code.
-> > 
-> > That would work, but it doesn't match the way existing drivers use the
-> > interface.  For example, the audio driver allocates a 16-byte coherent
-> > buffer and then uses four bytes from it for each of four different 
-> > URBs.
-> 
-> That will not work with any fallback that does not yield a coherent buffer.
+> I'm sorry but I found out that I gave you wrong values of "amixer -D
+> pulse": I just discovered that when I lower the alsa master volume, in
+> some occasions the PCM volume goes to 99%, so now I will put it to
+> 100% and check the pulse volume again.
+>
+> 0 dB    =3D  65536 [100%]
+> -3 dB   =3D  57520 [88%]
+> -6 dB   =3D  52057 [79%]
+> -12 dB =3D  41034 [63%]
+> -24 dB =3D  26090 [40%]
+> -48 dB =3D 10151 [15%]
+>
+> So again, the only problem is that -48 dB IS mute, but it's not
+> declared as mute.
+> This is the real issue.
+>
 
-What you mean isn't entirely clear.  But it certainly does work in 
-various circumstances that don't yield coherent buffers.  For example, 
-it works if the controller uses PIO instead of DMA.  It also works if 
-the controller uses DMA and the URBs have to be bounced.
+Refer to HD audio specification
 
-Alan Stern
+7.3.4.10 Amplifier Capabilities
+
+Mute Capable (1 bit) reports if the respective amplifier is capable of
+muting. Muting implies a =96infinity gain (no sound passes), but the actual
+performance is determined by the hardware.
+
+http://thread.gmane.org/gmane.linux.alsa.devel/39262/focus=3D16100
+
+>> Clemens Ladisch (developer) 2004-11-09 09:26
+
+>>    The AD1981B's datasheet says that the maximum attenuation is 46.5 dB
+(which
+>> conforms to the AC'97 specification).
+>> To mute, use Mute.
+
+
+refer to your codec datasheet , the volume knob widget also affect the
+volume if it is configured in direct mode
+
+
+=95 DIRECT MODE
+=95 In Direct mode, the Volume Knob widget directly controls the volume of =
+all
+of the DACs in the part. The volume in the Volume Knob widget acts as the
+master volume and limits the maximum volume for each of the DAC amplifiers.
+The amp gain for each of the DACs can also be adjusted using the DAC
+amplifiers. However, the actual gain for an individual DAC will be the sum
+of the Volume Knob volume and the DAC amplifier volume. For example, if the
+DAC amplifier gain is set to 0x7F (0dB) and the Volume Knob volume is set to
+0x3F (-48dB) the resulting gain would be -48dB. If the combination of gains
+is less than -95.25dB
+(the equivalent to a value of 0x0 for the DAC or Volume Knob volume
+settings) then the actual gain will be -95.25dB. For example, if the Volume
+Knob is set to 0x3F (-48dB) and the DAC amplifier volume is set to 0x1F
+(-72dB) then the DAC volume will be set to -95.25dB.
