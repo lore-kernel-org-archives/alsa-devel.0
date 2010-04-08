@@ -1,30 +1,31 @@
-From: Oliver Neukum <oliver@neukum.org>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Thu, 8 Apr 2010 08:09:11 +0200
-Message-ID: <201004080809.11756.oliver@neukum.org>
-References: <20100407090623.GN30807@buzzloop.caiaq.de> <20100407153154.GC13425@kroah.com> <20100407153551.GK30801@buzzloop.caiaq.de>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: imx-ssi fixes
+Date: Thu,  8 Apr 2010 11:31:23 +0200
+Message-ID: <1270719086-23453-1-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20100407153551.GK30801@buzzloop.caiaq.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: Greg KH <greg@kroah.com>, Alan Stern <stern@rowland.harvard.edu>, linux-kernel@vger.kernel.org, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id F3ACF1037F7
+	for <alsa-devel@alsa-project.org>;
+	Thu,  8 Apr 2010 11:31:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Valentin Longchamp <valentin.longchamp@epfl.ch>
 List-Id: alsa-devel@alsa-project.org
 
-Am Mittwoch, 7. April 2010 17:35:51 schrieb Daniel Mack:
-> > Alan, any objection to just using usb_buffer_alloc() for every driver?
-> > Or is that too much overhead?
-> 
-> FWIW, most drivers I've seen in the past hours use a wild mix of
-> kmalloc(), kzalloc(), kcalloc() and usb_buffer_alloc(). That should
-> really be unified.
+Hi all,
 
-kmalloc() & friends != usb_buffer_alloc(). They do different things.
-It makes no sense to unify them. If you really need an ordinary
-buffer DMA will surely work on, this needs a third primitive.
+Here are some bugfix patches for the imx-ssi driver. It should also fix
+the problems reported in FIQ mode.
 
-	Regards
-		Oliver
+Sascha
