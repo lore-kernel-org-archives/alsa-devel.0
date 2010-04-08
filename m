@@ -1,39 +1,68 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.34
-Date: Thu, 8 Apr 2010 16:55:47 +0100
-Message-ID: <20100408155547.GE6792@sirena.org.uk>
-References: <20100408151100.GA2710@rakim.wolfsonmicro.main>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: USB transfer_buffer allocations on 64bit systems
+Date: Thu, 8 Apr 2010 12:57:34 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1004081245330.1720-100000@iolanthe.rowland.org>
+References: <20100408073041.GO30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1BB5A103984
-	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Apr 2010 17:55:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100408151100.GA2710@rakim.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20100408073041.GO30801-ahpEBR4enfnCULTFXS99ULNAH6kLmebB@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>
+Cc: Robert Hancock <hancockrwd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 08, 2010 at 04:11:01PM +0100, Mark Brown wrote:
-> The following changes since commit 5f712b2b73a9fc87fcc52124cfe8adefaa0c92f5:
->   Daniel Mack (1):
->         ALSA: ASoC: move dma_data from snd_soc_dai to snd_soc_pcm_stream
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
+On Thu, 8 Apr 2010, Daniel Mack wrote:
 
-...or not, Sascha believes he's found a problem in the hrtimer stuff so
-if you could hold off that'd be good.
+> > > AFAIK, the driver shouldn't have to worry about this at all. When the 
+> > > buffer gets DMA-mapped for the controller, the DMA mapping code should 
+> > > see that the device has a 32-bit DMA mask and either bounce or IOMMU-map 
+> > > the memory so that it appears below 4GB.
+> > 
+> > That's true.  It would of course be more efficient for the buffer to be
+> > allocated below 4 GB, but it should work okay either way.  Daniel, do
+> > you have any idea why it fails?
+> 
+> No, and I can't do real tests as I lack a 64bit machine. I'll do some
+> more investigation later today, but for now the only explanation I have
+> is that not the remapped DMA buffer is used eventually by the EHCI code
+> but the physical address of the original buffer.
+> 
+> It would of course be best to fix the whole problem at this level, if
+> possible.
+
+It definitely needs to be fixed at this level.  But I still think it's 
+appropriate to have new USB core functions for allocating and 
+deallocating I/O memory.  The additional price is small compared to 
+constantly bouncing the buffers.
+
+Pedro, in the hope of tracking down the problem, can you apply this 
+patch and see what output it produces in the system log when the 
+"interference" happens?  (Warning: It will produce quite a lot of 
+output whenever you send data to the audio device -- between 500 and 
+1000 lines per second.)
+
+Alan Stern
+
+
+
+Index: 2.6.33/drivers/usb/core/hcd.c
+===================================================================
+--- 2.6.33.orig/drivers/usb/core/hcd.c
++++ 2.6.33/drivers/usb/core/hcd.c
+@@ -1395,6 +1395,10 @@ int usb_hcd_submit_urb (struct urb *urb,
+ 		usbmon_urb_submit_error(&hcd->self, urb, status);
+ 		goto error;
+ 	}
++	if (usb_endpoint_is_isoc_out(&urb->ep->desc))
++		dev_info(&urb->dev->dev, "Iso xfer %p dma %llx\n",
++				urb->transfer_buffer,
++				(unsigned long long) urb->transfer_dma);
+ 
+ 	if (is_root_hub(urb->dev))
+ 		status = rh_urb_enqueue(hcd, urb);
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
