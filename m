@@ -1,37 +1,89 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+From: Pedro Ribeiro <pedrib@gmail.com>
 Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Thu, 8 Apr 2010 12:59:38 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1004081257450.1720-100000@iolanthe.rowland.org>
-References: <201004080812.04419.oliver@neukum.org>
+Date: Thu, 8 Apr 2010 18:17:15 +0100
+Message-ID: <h2m74fd948d1004081017p6fe8652cpee34d79edf65508b@mail.gmail.com>
+References: <20100408073041.GO30801@buzzloop.caiaq.de>
+	 <Pine.LNX.4.44L0.1004081245330.1720-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <201004080812.04419.oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>
-Cc: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.44L0.1004081245330.1720-100000@iolanthe.rowland.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Daniel Mack <daniel@caiaq.de>, Robert Hancock <hancockrwd@gmail.com>, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 8 Apr 2010, Oliver Neukum wrote:
+On 8 April 2010 17:57, Alan Stern <stern@rowland.harvard.edu> wrote:
+> On Thu, 8 Apr 2010, Daniel Mack wrote:
+>
+>> > > AFAIK, the driver shouldn't have to worry about this at all. Whe=
+n the
+>> > > buffer gets DMA-mapped for the controller, the DMA mapping code =
+should
+>> > > see that the device has a 32-bit DMA mask and either bounce or I=
+OMMU-map
+>> > > the memory so that it appears below 4GB.
+>> >
+>> > That's true. =A0It would of course be more efficient for the buffe=
+r to be
+>> > allocated below 4 GB, but it should work okay either way. =A0Danie=
+l, do
+>> > you have any idea why it fails?
+>>
+>> No, and I can't do real tests as I lack a 64bit machine. I'll do som=
+e
+>> more investigation later today, but for now the only explanation I h=
+ave
+>> is that not the remapped DMA buffer is used eventually by the EHCI c=
+ode
+>> but the physical address of the original buffer.
+>>
+>> It would of course be best to fix the whole problem at this level, i=
+f
+>> possible.
+>
+> It definitely needs to be fixed at this level. =A0But I still think i=
+t's
+> appropriate to have new USB core functions for allocating and
+> deallocating I/O memory. =A0The additional price is small compared to
+> constantly bouncing the buffers.
+>
+> Pedro, in the hope of tracking down the problem, can you apply this
+> patch and see what output it produces in the system log when the
+> "interference" happens? =A0(Warning: It will produce quite a lot of
+> output whenever you send data to the audio device -- between 500 and
+> 1000 lines per second.)
+>
+> Alan Stern
+>
+>
+>
+> Index: 2.6.33/drivers/usb/core/hcd.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- 2.6.33.orig/drivers/usb/core/hcd.c
+> +++ 2.6.33/drivers/usb/core/hcd.c
+> @@ -1395,6 +1395,10 @@ int usb_hcd_submit_urb (struct urb *urb,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usbmon_urb_submit_error(&hcd->self, ur=
+b, status);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto error;
+> =A0 =A0 =A0 =A0}
+> + =A0 =A0 =A0 if (usb_endpoint_is_isoc_out(&urb->ep->desc))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_info(&urb->dev->dev, "Iso xfer %p d=
+ma %llx\n",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 urb->tr=
+ansfer_buffer,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (unsign=
+ed long long) urb->transfer_dma);
+>
+> =A0 =A0 =A0 =A0if (is_root_hub(urb->dev))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0status =3D rh_urb_enqueue(hcd, urb);
+>
+>
 
-> Am Mittwoch, 7. April 2010 17:46:17 schrieb Alan Stern:
-> > Or alternatively, instead of allocating regular memory the routine
-> > could simply fail.  Then the caller would be responsible for checking
-> > and using regular memory instead of dma-consistent memory.  Of course,
-> > that would put an even larger burden on the caller than just forcing it
-> > to keep track of what flag to use.
-> 
-> Then it would be sensible to pass it a filled URB, modify it or return
-> an error code.
+I'll do it tonight and send you the results tomorrow morning. Do you
+want CONFIG_USB_DEBUG enabled or disabled?
 
-That would work, but it doesn't match the way existing drivers use the
-interface.  For example, the audio driver allocates a 16-byte coherent
-buffer and then uses four bytes from it for each of four different 
-URBs.
-
-Alan Stern
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Pedro
