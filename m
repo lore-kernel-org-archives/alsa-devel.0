@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] WM8750: Convert to new API
-Date: Thu, 8 Apr 2010 16:05:26 +0100
-Message-ID: <20100408150526.GA6792@sirena.org.uk>
-References: <1270738749-5048-1-git-send-email-marek.vasut@gmail.com>
+Subject: ASoC updates for 2.6.34
+Date: Thu, 8 Apr 2010 16:11:01 +0100
+Message-ID: <20100408151100.GA2710@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id B39BE243FA
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6C8CB243FA
 	for <alsa-devel@alsa-project.org>;
-	Thu,  8 Apr 2010 17:05:27 +0200 (CEST)
+	Thu,  8 Apr 2010 17:11:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1270738749-5048-1-git-send-email-marek.vasut@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,28 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: ben@simtec.co.uk, alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 08, 2010 at 04:59:09PM +0200, Marek Vasut wrote:
+The following changes since commit 5f712b2b73a9fc87fcc52124cfe8adefaa0c92f5:
+  Daniel Mack (1):
+        ALSA: ASoC: move dma_data from snd_soc_dai to snd_soc_pcm_stream
 
-> @@ -172,6 +198,10 @@ static int __init jive_init(void)
->  	if (!machine_is_jive())
->  		return 0;
->  
-> +	ret = wm8750_i2c_setup();
-> +	if (ret != 0)
-> +		return ret;
-> +
+are available in the git repository at:
 
-Quoting from my mail of 15:58 (5 minutes ago!):
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
 
-| The WM8750 on the JIVE is connected using SPI, not I2C.  You'll want to
-| CC in the JIVE and S3C maintainer too (Ben Dooks for both).  Looking at
-| the Jive machine file it's actually registering the SPI device in
-| arch/arm already so there shouldn't be any need to add any registration
-| code at all.
+The updates from Sascha are bug fixes for i.MX2x and a vast improvement
+in the performance of the FIQ based "DMA" on i.MX3x which allows it to
+handle sample rates over 16kHz.  This code is newly added in 2.6.34.
 
-To repeat, the WM8750 on JIVE is connected using SPI, not I2C.  This
-means you should not be registering an I2C device.
+Huang Weiyi (1):
+      ASoC: wm2000: remove unused #include <linux/version.h>
+
+Sascha Hauer (3):
+      ASoC: imx-ssi: honor IMX_SSI_DMA flag
+      ASoC: imx-pcm-dma-mx2: restart DMA after an error
+      ASoC: imx-ssi: Use a hrtimer in FIQ mode
+
+ sound/soc/codecs/wm2000.c       |    1 -
+ sound/soc/imx/imx-pcm-dma-mx2.c |   15 ++++++++++++-
+ sound/soc/imx/imx-pcm-fiq.c     |   45 ++++++++++++++++++--------------------
+ sound/soc/imx/imx-ssi.c         |    3 +-
+ 4 files changed, 37 insertions(+), 27 deletions(-)
