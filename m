@@ -1,89 +1,537 @@
-From: Pedro Ribeiro <pedrib@gmail.com>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Thu, 8 Apr 2010 18:17:15 +0100
-Message-ID: <h2m74fd948d1004081017p6fe8652cpee34d79edf65508b@mail.gmail.com>
-References: <20100408073041.GO30801@buzzloop.caiaq.de>
-	 <Pine.LNX.4.44L0.1004081245330.1720-100000@iolanthe.rowland.org>
+From: Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH] WM8750: Convert to new API
+Date: Thu,  8 Apr 2010 20:48:51 +0200
+Message-ID: <1270752531-6016-1-git-send-email-marek.vasut@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.44L0.1004081245330.1720-100000@iolanthe.rowland.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Daniel Mack <daniel@caiaq.de>, Robert Hancock <hancockrwd@gmail.com>, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-fx0-f220.google.com (mail-fx0-f220.google.com
+	[209.85.220.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 690BE103985
+	for <alsa-devel@alsa-project.org>;
+	Thu,  8 Apr 2010 20:49:46 +0200 (CEST)
+Received: by fxm20 with SMTP id 20so3683969fxm.32
+	for <alsa-devel@alsa-project.org>; Thu, 08 Apr 2010 11:49:45 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com
+Cc: ben@simtec.co.uk, Marek Vasut <marek.vasut@gmail.com>, alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8 April 2010 17:57, Alan Stern <stern@rowland.harvard.edu> wrote:
-> On Thu, 8 Apr 2010, Daniel Mack wrote:
->
->> > > AFAIK, the driver shouldn't have to worry about this at all. Whe=
-n the
->> > > buffer gets DMA-mapped for the controller, the DMA mapping code =
-should
->> > > see that the device has a 32-bit DMA mask and either bounce or I=
-OMMU-map
->> > > the memory so that it appears below 4GB.
->> >
->> > That's true. =A0It would of course be more efficient for the buffe=
-r to be
->> > allocated below 4 GB, but it should work okay either way. =A0Danie=
-l, do
->> > you have any idea why it fails?
->>
->> No, and I can't do real tests as I lack a 64bit machine. I'll do som=
-e
->> more investigation later today, but for now the only explanation I h=
-ave
->> is that not the remapped DMA buffer is used eventually by the EHCI c=
-ode
->> but the physical address of the original buffer.
->>
->> It would of course be best to fix the whole problem at this level, i=
-f
->> possible.
->
-> It definitely needs to be fixed at this level. =A0But I still think i=
-t's
-> appropriate to have new USB core functions for allocating and
-> deallocating I/O memory. =A0The additional price is small compared to
-> constantly bouncing the buffers.
->
-> Pedro, in the hope of tracking down the problem, can you apply this
-> patch and see what output it produces in the system log when the
-> "interference" happens? =A0(Warning: It will produce quite a lot of
-> output whenever you send data to the audio device -- between 500 and
-> 1000 lines per second.)
->
-> Alan Stern
->
->
->
-> Index: 2.6.33/drivers/usb/core/hcd.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- 2.6.33.orig/drivers/usb/core/hcd.c
-> +++ 2.6.33/drivers/usb/core/hcd.c
-> @@ -1395,6 +1395,10 @@ int usb_hcd_submit_urb (struct urb *urb,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0usbmon_urb_submit_error(&hcd->self, ur=
-b, status);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto error;
-> =A0 =A0 =A0 =A0}
-> + =A0 =A0 =A0 if (usb_endpoint_is_isoc_out(&urb->ep->desc))
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_info(&urb->dev->dev, "Iso xfer %p d=
-ma %llx\n",
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 urb->tr=
-ansfer_buffer,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (unsign=
-ed long long) urb->transfer_dma);
->
-> =A0 =A0 =A0 =A0if (is_root_hub(urb->dev))
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0status =3D rh_urb_enqueue(hcd, urb);
->
->
+Register the WM8750 as a SPI or I2C device. This patch mostly shuffles code
+around. Hugely inspired by WM8753 which was already converted.
 
-I'll do it tonight and send you the results tomorrow morning. Do you
-want CONFIG_USB_DEBUG enabled or disabled?
+Also, this patch fixes the Jive and Spitz machine.
 
-Pedro
+Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
+---
+ sound/soc/codecs/wm8750.c       |  295 ++++++++++++++++++---------------------
+ sound/soc/pxa/spitz.c           |   43 +++++-
+ sound/soc/s3c24xx/jive_wm8750.c |    5 -
+ 3 files changed, 175 insertions(+), 168 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8750.c b/sound/soc/codecs/wm8750.c
+index 3e440c0..eea7ba6 100644
+--- a/sound/soc/codecs/wm8750.c
++++ b/sound/soc/codecs/wm8750.c
+@@ -30,11 +30,6 @@
+ 
+ #include "wm8750.h"
+ 
+-/* codec private data */
+-struct wm8750_priv {
+-	unsigned int sysclk;
+-};
+-
+ /*
+  * wm8750 register cache
+  * We can't read the WM8750 register space when we
+@@ -54,6 +49,13 @@ static const u16 wm8750_reg[] = {
+ 	0x0079, 0x0079, 0x0079,          /* 40 */
+ };
+ 
++/* codec private data */
++struct wm8750_priv {
++	unsigned int sysclk;
++	struct snd_soc_codec codec;
++	u16 reg_cache[ARRAY_SIZE(wm8750_reg)];
++};
++
+ #define wm8750_reset(c)	snd_soc_write(c, WM8750_RESET, 0)
+ 
+ /*
+@@ -696,25 +698,90 @@ static int wm8750_resume(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static struct snd_soc_codec *wm8750_codec;
++
++static int wm8750_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec;
++	int ret = 0;
++
++	if (!wm8750_codec) {
++		dev_err(&pdev->dev, "WM8750 codec not yet registered\n");
++		return -EINVAL;
++	}
++
++	socdev->card->codec = wm8750_codec;
++	codec = wm8750_codec;
++
++	/* register pcms */
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		printk(KERN_ERR "wm8750: failed to create pcms\n");
++		goto err;
++	}
++
++	snd_soc_add_controls(codec, wm8750_snd_controls,
++				ARRAY_SIZE(wm8750_snd_controls));
++	wm8750_add_widgets(codec);
++
++	return 0;
++
++err:
++	return ret;
++}
++
++/* power down chip */
++static int wm8750_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++
++	snd_soc_free_pcms(socdev);
++	snd_soc_dapm_free(socdev);
++
++	return 0;
++}
++
++struct snd_soc_codec_device soc_codec_dev_wm8750 = {
++	.probe		= wm8750_probe,
++	.remove		= wm8750_remove,
++	.suspend	= wm8750_suspend,
++	.resume		= wm8750_resume,
++};
++EXPORT_SYMBOL_GPL(soc_codec_dev_wm8750);
++
+ /*
+  * initialise the WM8750 driver
+  * register the mixer and dsp interfaces with the kernel
+  */
+-static int wm8750_init(struct snd_soc_device *socdev,
+-		       enum snd_soc_control_type control)
++static int wm8750_register(struct wm8750_priv *wm8750,
++			enum snd_soc_control_type control)
+ {
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct snd_soc_codec *codec = &wm8750->codec;
+ 	int reg, ret = 0;
+ 
++	if (wm8750_codec) {
++		dev_err(codec->dev, "Multiple WM8750 devices not supported\n");
++		ret = -EINVAL;
++		goto err;
++	}
++
++	mutex_init(&codec->mutex);
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
+ 	codec->name = "WM8750";
+ 	codec->owner = THIS_MODULE;
++	codec->bias_level = SND_SOC_BIAS_STANDBY;
+ 	codec->set_bias_level = wm8750_set_bias_level;
+ 	codec->dai = &wm8750_dai;
+ 	codec->num_dai = 1;
+-	codec->reg_cache_size = ARRAY_SIZE(wm8750_reg);
+-	codec->reg_cache = kmemdup(wm8750_reg, sizeof(wm8750_reg), GFP_KERNEL);
+-	if (codec->reg_cache == NULL)
+-		return -ENOMEM;
++	codec->private_data = wm8750;
++	codec->reg_cache_size = ARRAY_SIZE(wm8750->reg_cache) + 1;
++	codec->reg_cache = &wm8750->reg_cache;
++	codec->private_data = wm8750;
++
++	memcpy(codec->reg_cache, wm8750_reg, sizeof(wm8750->reg_cache));
+ 
+ 	ret = snd_soc_codec_set_cache_io(codec, 7, 9, control);
+ 	if (ret < 0) {
+@@ -728,13 +795,6 @@ static int wm8750_init(struct snd_soc_device *socdev,
+ 		goto err;
+ 	}
+ 
+-	/* register pcms */
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+-	if (ret < 0) {
+-		printk(KERN_ERR "wm8750: failed to create pcms\n");
+-		goto err;
+-	}
+-
+ 	/* charge output caps */
+ 	wm8750_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+@@ -756,19 +816,37 @@ static int wm8750_init(struct snd_soc_device *socdev,
+ 	reg = snd_soc_read(codec, WM8750_RINVOL);
+ 	snd_soc_write(codec, WM8750_RINVOL, reg | 0x0100);
+ 
+-	snd_soc_add_controls(codec, wm8750_snd_controls,
+-				ARRAY_SIZE(wm8750_snd_controls));
+-	wm8750_add_widgets(codec);
+-	return ret;
++	wm8750_codec = codec;
+ 
++	ret = snd_soc_register_codec(codec);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
++		goto err;
++	}
++
++	ret = snd_soc_register_dais(&wm8750_dai, 1);
++	if (ret != 0) {
++		dev_err(codec->dev, "Failed to register DAIs: %d\n", ret);
++		goto err_codec;
++	}
++
++	return 0;
++
++err_codec:
++	snd_soc_unregister_codec(codec);
+ err:
+-	kfree(codec->reg_cache);
++	kfree(wm8750);
+ 	return ret;
+ }
+ 
+-/* If the i2c layer weren't so broken, we could pass this kind of data
+-   around */
+-static struct snd_soc_device *wm8750_socdev;
++static void wm8750_unregister(struct wm8750_priv *wm8750)
++{
++	wm8750_set_bias_level(&wm8750->codec, SND_SOC_BIAS_OFF);
++	snd_soc_unregister_dais(&wm8750_dai, 1);
++	snd_soc_unregister_codec(&wm8750->codec);
++	kfree(wm8750);
++	wm8750_codec = NULL;
++}
+ 
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+ 
+@@ -782,24 +860,26 @@ static struct snd_soc_device *wm8750_socdev;
+ static int wm8750_i2c_probe(struct i2c_client *i2c,
+ 			    const struct i2c_device_id *id)
+ {
+-	struct snd_soc_device *socdev = wm8750_socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-	int ret;
++	struct snd_soc_codec *codec;
++	struct wm8750_priv *wm8750;
+ 
+-	i2c_set_clientdata(i2c, codec);
++	wm8750 = kzalloc(sizeof(struct wm8750_priv), GFP_KERNEL);
++	if (wm8750 == NULL)
++		return -ENOMEM;
++
++	codec = &wm8750->codec;
+ 	codec->control_data = i2c;
++	i2c_set_clientdata(i2c, wm8750);
+ 
+-	ret = wm8750_init(socdev, SND_SOC_I2C);
+-	if (ret < 0)
+-		pr_err("failed to initialise WM8750\n");
++	codec->dev = &i2c->dev;
+ 
+-	return ret;
++	return wm8750_register(wm8750, SND_SOC_I2C);
+ }
+ 
+ static int wm8750_i2c_remove(struct i2c_client *client)
+ {
+-	struct snd_soc_codec *codec = i2c_get_clientdata(client);
+-	kfree(codec->reg_cache);
++	struct wm8750_priv *wm8750 = i2c_get_clientdata(client);
++	wm8750_unregister(wm8750);
+ 	return 0;
+ }
+ 
+@@ -818,66 +898,31 @@ static struct i2c_driver wm8750_i2c_driver = {
+ 	.remove =   wm8750_i2c_remove,
+ 	.id_table = wm8750_i2c_id,
+ };
+-
+-static int wm8750_add_i2c_device(struct platform_device *pdev,
+-				 const struct wm8750_setup_data *setup)
+-{
+-	struct i2c_board_info info;
+-	struct i2c_adapter *adapter;
+-	struct i2c_client *client;
+-	int ret;
+-
+-	ret = i2c_add_driver(&wm8750_i2c_driver);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "can't add i2c driver\n");
+-		return ret;
+-	}
+-
+-	memset(&info, 0, sizeof(struct i2c_board_info));
+-	info.addr = setup->i2c_address;
+-	strlcpy(info.type, "wm8750", I2C_NAME_SIZE);
+-
+-	adapter = i2c_get_adapter(setup->i2c_bus);
+-	if (!adapter) {
+-		dev_err(&pdev->dev, "can't get i2c adapter %d\n",
+-			setup->i2c_bus);
+-		goto err_driver;
+-	}
+-
+-	client = i2c_new_device(adapter, &info);
+-	i2c_put_adapter(adapter);
+-	if (!client) {
+-		dev_err(&pdev->dev, "can't add i2c device at 0x%x\n",
+-			(unsigned int)info.addr);
+-		goto err_driver;
+-	}
+-
+-	return 0;
+-
+-err_driver:
+-	i2c_del_driver(&wm8750_i2c_driver);
+-	return -ENODEV;
+-}
+ #endif
+ 
+ #if defined(CONFIG_SPI_MASTER)
+ static int __devinit wm8750_spi_probe(struct spi_device *spi)
+ {
+-	struct snd_soc_device *socdev = wm8750_socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-	int ret;
++	struct snd_soc_codec *codec;
++	struct wm8750_priv *wm8750;
+ 
++	wm8750 = kzalloc(sizeof(struct wm8750_priv), GFP_KERNEL);
++	if (wm8750 == NULL)
++		return -ENOMEM;
++
++	codec = &wm8750->codec;
+ 	codec->control_data = spi;
++	codec->dev = &spi->dev;
+ 
+-	ret = wm8750_init(socdev, SND_SOC_SPI);
+-	if (ret < 0)
+-		dev_err(&spi->dev, "failed to initialise WM8750\n");
++	dev_set_drvdata(&spi->dev, wm8750);
+ 
+-	return ret;
++	return wm8750_register(wm8750, SND_SOC_SPI);
+ }
+ 
+ static int __devexit wm8750_spi_remove(struct spi_device *spi)
+ {
++	struct wm8750_priv *wm8750 = dev_get_drvdata(&spi->dev);
++	wm8750_unregister(wm8750);
+ 	return 0;
+ }
+ 
+@@ -892,93 +937,31 @@ static struct spi_driver wm8750_spi_driver = {
+ };
+ #endif
+ 
+-static int wm8750_probe(struct platform_device *pdev)
++static int __init wm8750_modinit(void)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct wm8750_setup_data *setup = socdev->codec_data;
+-	struct snd_soc_codec *codec;
+-	struct wm8750_priv *wm8750;
+ 	int ret;
+-
+-	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
+-	if (codec == NULL)
+-		return -ENOMEM;
+-
+-	wm8750 = kzalloc(sizeof(struct wm8750_priv), GFP_KERNEL);
+-	if (wm8750 == NULL) {
+-		kfree(codec);
+-		return -ENOMEM;
+-	}
+-
+-	codec->private_data = wm8750;
+-	socdev->card->codec = codec;
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
+-	wm8750_socdev = socdev;
+-
+-	ret = -ENODEV;
+-
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	if (setup->i2c_address) {
+-		ret = wm8750_add_i2c_device(pdev, setup);
+-	}
++	ret = i2c_add_driver(&wm8750_i2c_driver);
++	if (ret != 0)
++		pr_err("Failed to register WM8750 I2C driver: %d\n", ret);
+ #endif
+ #if defined(CONFIG_SPI_MASTER)
+-	if (setup->spi) {
+-		ret = spi_register_driver(&wm8750_spi_driver);
+-		if (ret != 0)
+-			printk(KERN_ERR "can't add spi driver");
+-	}
++	ret = spi_register_driver(&wm8750_spi_driver);
++	if (ret != 0)
++		pr_err("Failed to register WM8750 SPI driver: %d\n", ret);
+ #endif
+-
+-	if (ret != 0) {
+-		kfree(codec->private_data);
+-		kfree(codec);
+-	}
+-	return ret;
++	return 0;
+ }
++module_init(wm8750_modinit);
+ 
+-/* power down chip */
+-static int wm8750_remove(struct platform_device *pdev)
++static void __exit wm8750_exit(void)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+-	if (codec->control_data)
+-		wm8750_set_bias_level(codec, SND_SOC_BIAS_OFF);
+-	snd_soc_free_pcms(socdev);
+-	snd_soc_dapm_free(socdev);
+ #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
+-	i2c_unregister_device(codec->control_data);
+ 	i2c_del_driver(&wm8750_i2c_driver);
+ #endif
+ #if defined(CONFIG_SPI_MASTER)
+ 	spi_unregister_driver(&wm8750_spi_driver);
+ #endif
+-	kfree(codec->private_data);
+-	kfree(codec);
+-
+-	return 0;
+-}
+-
+-struct snd_soc_codec_device soc_codec_dev_wm8750 = {
+-	.probe = 	wm8750_probe,
+-	.remove = 	wm8750_remove,
+-	.suspend = 	wm8750_suspend,
+-	.resume =	wm8750_resume,
+-};
+-EXPORT_SYMBOL_GPL(soc_codec_dev_wm8750);
+-
+-static int __init wm8750_modinit(void)
+-{
+-	return snd_soc_register_dai(&wm8750_dai);
+-}
+-module_init(wm8750_modinit);
+-
+-static void __exit wm8750_exit(void)
+-{
+-	snd_soc_unregister_dai(&wm8750_dai);
+ }
+ module_exit(wm8750_exit);
+ 
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index c4cd2ac..1941a35 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -322,19 +322,44 @@ static struct snd_soc_card snd_soc_spitz = {
+ 	.num_links = 1,
+ };
+ 
+-/* spitz audio private data */
+-static struct wm8750_setup_data spitz_wm8750_setup = {
+-	.i2c_bus = 0,
+-	.i2c_address = 0x1b,
+-};
+-
+ /* spitz audio subsystem */
+ static struct snd_soc_device spitz_snd_devdata = {
+ 	.card = &snd_soc_spitz,
+ 	.codec_dev = &soc_codec_dev_wm8750,
+-	.codec_data = &spitz_wm8750_setup,
+ };
+ 
++/*
++ * FIXME: This is a temporary bodge to avoid cross-tree merge issues.
++ * New drivers should register the wm8750 I2C device in the machine
++ * setup code (under arch/arm for ARM systems).
++ */
++static int wm8750_i2c_register(void)
++{
++	struct i2c_board_info info;
++	struct i2c_adapter *adapter;
++	struct i2c_client *client;
++
++	memset(&info, 0, sizeof(struct i2c_board_info));
++	info.addr = 0x1b;
++	strlcpy(info.type, "wm8750", I2C_NAME_SIZE);
++
++	adapter = i2c_get_adapter(0);
++	if (!adapter) {
++		printk(KERN_ERR "can't get i2c adapter 0\n");
++		return -ENODEV;
++	}
++
++	client = i2c_new_device(adapter, &info);
++	i2c_put_adapter(adapter);
++	if (!client) {
++		printk(KERN_ERR "can't add i2c device at 0x%x\n",
++		(unsigned int)info.addr);
++		return -ENODEV;
++	}
++
++	return 0;
++}
++
+ static struct platform_device *spitz_snd_device;
+ 
+ static int __init spitz_init(void)
+@@ -344,6 +369,10 @@ static int __init spitz_init(void)
+ 	if (!(machine_is_spitz() || machine_is_borzoi() || machine_is_akita()))
+ 		return -ENODEV;
+ 
++	ret = wm8750_i2c_setup();
++	if (ret != 0)
++		return ret;
++
+ 	spitz_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!spitz_snd_device)
+ 		return -ENOMEM;
+diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/s3c24xx/jive_wm8750.c
+index 59dc2c6..97d8ff3 100644
+--- a/sound/soc/s3c24xx/jive_wm8750.c
++++ b/sound/soc/s3c24xx/jive_wm8750.c
+@@ -152,15 +152,10 @@ static struct snd_soc_card snd_soc_machine_jive = {
+ 	.num_links	= 1,
+ };
+ 
+-/* jive audio private data */
+-static struct wm8750_setup_data jive_wm8750_setup = {
+-};
+-
+ /* jive audio subsystem */
+ static struct snd_soc_device jive_snd_devdata = {
+ 	.card		= &snd_soc_machine_jive,
+ 	.codec_dev	= &soc_codec_dev_wm8750,
+-	.codec_data	= &jive_wm8750_setup,
+ };
+ 
+ static struct platform_device *jive_snd_device;
+-- 
+1.7.0
