@@ -1,41 +1,56 @@
-From: "Nicolo' Chieffo" <nicolo.chieffo@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Fri, 9 Apr 2010 15:59:47 +0200
-Message-ID: <r2o98391a7b1004090659s3493aa86gb47819d4f2e9c742@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
-	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
-	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
-	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
-	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
-	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
-	<r2u4f3252891004090649p3f327273x3af60905a06045fe@mail.gmail.com>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: USB transfer_buffer allocations on 64bit systems
+Date: Fri, 9 Apr 2010 10:41:48 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1004091033150.1852-100000@iolanthe.rowland.org>
+References: <201004090804.36213.oliver@neukum.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
-	[209.85.219.219])
-	by alsa0.perex.cz (Postfix) with ESMTP id A38711037F5
-	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Apr 2010 16:00:07 +0200 (CEST)
-Received: by ewy19 with SMTP id 19so523278ewy.22
-	for <alsa-devel@alsa-project.org>; Fri, 09 Apr 2010 07:00:07 -0700 (PDT)
-In-Reply-To: <r2u4f3252891004090649p3f327273x3af60905a06045fe@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <201004090804.36213.oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Oliver Neukum <oliver-GvhC2dPhHPQdnm+yROfE0A@public.gmane.org>
+Cc: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-You are saying that the range for my card is 96 dB, do you mean that
-the audio specs are wrong?
-I mean, at 0 the volume is not audible, so I'm wondering why the -inf
-"switch register" is not activated (inside the chip)...
+On Fri, 9 Apr 2010, Oliver Neukum wrote:
+
+> Am Freitag, 9. April 2010 00:20:36 schrieb Alan Stern:
+> > > > That would work, but it doesn't match the way existing drivers use the
+> > > > interface.  For example, the audio driver allocates a 16-byte coherent
+> > > > buffer and then uses four bytes from it for each of four different 
+> > > > URBs.
+> > > 
+> > > That will not work with any fallback that does not yield a coherent buffer.
+> > 
+> > What you mean isn't entirely clear.  But it certainly does work in 
+> > various circumstances that don't yield coherent buffers.  For example, 
+> > it works if the controller uses PIO instead of DMA.  It also works if 
+> > the controller uses DMA and the URBs have to be bounced.
+> 
+> It'll work on x86. On incoherent architectures this violates the cacheline
+> rules for DMA-mapping if you have to bounce.
+
+Not true.  Consider: The driver allocates a 16-byte buffer (xbuf)  
+divided up into four sets of four bytes, and sets
+
+	urb[i].transfer_buffer_dma = xbuf_dma + 4*i;
+
+Then usb_submit_urb(urb[i]) will copy the appropriate four bytes to a
+bounce buffer and map the bounce buffer.  Accesses to the other parts
+of xbuf won't violate the cacheline rules, because xbuf isn't mapped
+for DMA -- only the bounce buffer is.  When urb[i] completes, the
+bounce buffer contents will be copied back to the original four bytes
+in xbuf.  Again, there is no violation of cacheline rules.
+
+> So it seems to me that
+> if you want to share a buffer between URBs, it must be coherent.
+
+No.  But it must be allocated via usb_alloc_buffer() (or whatever that 
+routine gets renamed to).
+
+Alan Stern
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
