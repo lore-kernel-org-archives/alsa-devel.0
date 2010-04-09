@@ -1,67 +1,102 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Sat, 10 Apr 2010 07:32:21 +0800
-Message-ID: <w2t4f3252891004091632j1728479at2c4d623e44f0d0c7@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
-	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
-	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
-	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
-	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
-	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
-	<r2u4f3252891004090649p3f327273x3af60905a06045fe@mail.gmail.com>
-	<4BBF5F81.1010205@yellowcouch.org>
+From: Robert Hancock <hancockrwd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: USB transfer_buffer allocations on 64bit systems
+Date: Fri, 9 Apr 2010 17:38:13 -0600
+Message-ID: <g2u51f3faa71004091638nc383aa0ei899777c869273a22@mail.gmail.com>
+References: <s5hhbnncflj.wl%tiwai@suse.de>
+	 <Pine.LNX.4.44L0.1004071452560.5760-100000@iolanthe.rowland.org>
+	 <20100408003313.GE4365@kroah.com> <4BBE6E57.6020600@gmail.com>
+	 <20100409165014.GC5184@xanatos>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f178.google.com (mail-pz0-f178.google.com
-	[209.85.222.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 511D02446A
-	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Apr 2010 01:32:22 +0200 (CEST)
-Received: by pzk8 with SMTP id 8so2763210pzk.16
-	for <alsa-devel@alsa-project.org>; Fri, 09 Apr 2010 16:32:21 -0700 (PDT)
-In-Reply-To: <4BBF5F81.1010205@yellowcouch.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20100409165014.GC5184@xanatos>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/4/10 Werner Van Belle <werner@yellowcouch.org>
+On Fri, Apr 9, 2010 at 10:50 AM, Sarah Sharp
+<sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org> wrote:
+>> >>I don't know if the comment is still true, but until the "#if 0" i=
+s
+>> >>removed, ehci-hcd won't make use of 64-bit DMA.
+>> >
+>> >I think someone tried to remove it recently, but I wouldn't let the=
+m :)
+>> >
+>> >What a mess, hopefully xhci will just take over and save the world =
+from
+>> >this whole thing...
+>
+> I hate to break it to you, but 64-bit DMA support is optional for an
+> xHCI implementation. =A0There's a bit in HCCPARAMS that tells whether=
+ the
+> host supports it (see the HCC_64BIT_ADDR macro in xhci.h). =A0The xHC=
+I
+> driver currently doesn't do anything with that bit, although it shoul=
+d.
+> All the implementations I've seen do 64-bit DMA.
+>
+>> True.. except for the fact that the xhci driver currently doesn't do
+>> 64-bit DMA either
+>
+> What makes you think that? =A0I've seen URB buffers with 64-bit DMA
+> addresses. =A0I can tell when the debug polling loop runs and I look =
+at
+> the DMA addresses the xHCI driver is feeding to the hardware:
+>
+> Dev 1 endpoint ring 0:
+> xhci_hcd 0000:05:00.0: @71a49800 01000680 00080000 00000008 00000841
+>
+> So the TRB at address 71a49800 is pointing to a buffer at address
+> 0x0008000001000680.
 
-> Raymond Yau wrote:
-> > The dynamic range of 16bit audio is 96dB
-> > http://en.wikipedia.org/wiki/Dynamic_range
-> >
-> Yes about that. I always wondered how they come up with 96dB ?
->
-> A perceived doubling of volume is normally assumed to be +3dB,
-> (log_10(2)=0.3) which means that if you have 16 bit audio you have 16
-> 'doublings', or in essence only 48 dB. Even worse, since the last bit is
-> a sign bit, you essentially can only achieve a dynamic range of 45dB !
->
-> Now, I know this is off topic, but I never heard any good explanation
-> why CD audio is suddenly 45 dB ?  If anybody knows, please share your
-> thoughts !
->
-> Wkr,
->
->
->
-http://en.wikipedia.org/wiki/Decibel
+I'm not sure why the address would be that huge, unless it's not
+actually a physical address, or there's some kind of remapping going
+on?
 
-When referring to measurements of amplitude it is usual to consider the
-ratio of the squares of *A*1 (measured amplitude) and *A*0 (reference
-amplitude). This is because in most applications power is proportional to
-the square of amplitude,
+>
+> If I'm setting a DMA mask wrong somewhere, or doing something else to
+> limit the DMA to 32-bit, then please let me know.
 
-in electrical circuit , dissipated power is typically proportional to the
-square of voltage or current
+The DMA mask for the controller isn't being set anywhere (in the
+version that's in Linus' current git anyway). In that case it'll
+default to 32-bit and any DMA mappings above 4GB will need to be
+remapped. The controller driver doesn't do the mapping itself but the
+USB core does, passing in the controller device as the one doing the
+DMA, so if the controller's DMA mask is set to 32-bit then the buffers
+passed in will get remapped/bounced accordingly.
+
+You should likely be setting the DMA mask for the controller device to
+64-bit if the HCC_64BIT_ADDR flag is set, similar to the code in
+ehci-hcd.c which is currently #if 0'ed out.
+
+You can see the currently set mask in sysfs under
+/sys/devices/pci(whatever)/dma_mask_bits.
+
+>
+>> nor does it support MSI even though the HW
+>> supports it (surprisingly enough the NEC Windows driver does, MSI-X
+>> even).
+>
+> There's a patch from AMD to enable MSI-X. =A0The code was there, just
+> commented out because the early prototypes didn't do MSI-X.
+
+Ah, I see it. That could presumably be tested now (the NEC D720200F1
+chip on the Asus U3S6 card I have seems to support MSI-X with 8
+vectors).
+
+>
+>> At this point only Intel likely knows how to do this
+>> properly, though, since AFAICS the spec isn't publicly available
+>> yet.
+>
+> I have tried very hard to fix this, and will continue to do so.
+>
+> Sarah Sharp
+>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
