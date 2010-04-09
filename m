@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: wrong decibel data?
-Date: Fri, 9 Apr 2010 19:37:31 +0800
-Message-ID: <j2g4f3252891004090437qaeee60ffhf68d0e06b076ba51@mail.gmail.com>
+Date: Fri, 9 Apr 2010 19:40:12 +0800
+Message-ID: <x2q4f3252891004090440h78a3c187p1f3b51be7be1e858@mail.gmail.com>
 References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
 	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
 	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
@@ -13,13 +13,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f178.google.com (mail-pz0-f178.google.com
-	[209.85.222.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 74F1A1037EA
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA02C1037EA
 	for <alsa-devel@alsa-project.org>;
-	Fri,  9 Apr 2010 13:37:33 +0200 (CEST)
-Received: by pzk8 with SMTP id 8so2084329pzk.16
-	for <alsa-devel@alsa-project.org>; Fri, 09 Apr 2010 04:37:32 -0700 (PDT)
+	Fri,  9 Apr 2010 13:40:14 +0200 (CEST)
+Received: by pwj8 with SMTP id 8so1594219pwj.38
+	for <alsa-devel@alsa-project.org>; Fri, 09 Apr 2010 04:40:13 -0700 (PDT)
 In-Reply-To: <s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -69,21 +69,5 @@ dB
 > Which one do you prefer?
 >
 
-
-All the alsa drvier are using information in the codec datasheet to
-implement the dB scale
-
-All the AC97 codec datasheet, DAC datahseet and HDA codec specifcation and
-datasheet are regarded the mute switch as -inf dB , the minimum dB are a
-finite negative number because the codec , DAC and HDA codec have finite
-bits of resolution when convert digital signal to analog signal
-
-For your case if you change DAC amplifier volume control to -inf dB , how
-can you calculate the sum of Volume knob widget and  DAC ampilifer volume
-control since the datasheet explicitly mention that the max atten is 95.25dB
-
-
-may be pulseaudio did not add the volume knob widget in the calculation
-
-I don't know how PA calculate the softvol plugin "PCM volume control" since
-you mention that PA seem not maintain "PCM volume control" at 0dB
+But you still not provide the result of dbmeasure of "pulse" , "hw:0" and
+"plug:front"
