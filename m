@@ -1,22 +1,29 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Sat, 10 Apr 2010 10:34:53 +0200
-Message-ID: <20100410083453.GN30801@buzzloop.caiaq.de>
-References: <s5hhbnncflj.wl%tiwai@suse.de>
-	<Pine.LNX.4.44L0.1004071452560.5760-100000@iolanthe.rowland.org>
-	<20100408003313.GE4365@kroah.com> <4BBE6E57.6020600@gmail.com>
-	<20100409165014.GC5184@xanatos>
-	<g2u51f3faa71004091638nc383aa0ei899777c869273a22@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Sat, 10 Apr 2010 17:27:38 +0800
+Message-ID: <h2r4f3252891004100227q1eca2166z280ebcf3f7a122e0@mail.gmail.com>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
+	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
+	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
+	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
+	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
+	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
+	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
+	<r2u4f3252891004090649p3f327273x3af60905a06045fe@mail.gmail.com>
+	<r2o98391a7b1004090659s3493aa86gb47819d4f2e9c742@mail.gmail.com>
+	<h2i98391a7b1004091135u5519f86w31e7d85ed83e2f67@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id A6ABD103826
+Received: from mail-pz0-f178.google.com (mail-pz0-f178.google.com
+	[209.85.222.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 480EA24366
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Apr 2010 10:34:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <g2u51f3faa71004091638nc383aa0ei899777c869273a22@mail.gmail.com>
+	Sat, 10 Apr 2010 11:35:52 +0200 (CEST)
+Received: by pzk8 with SMTP id 8so1907pzk.16
+	for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2010 02:35:51 -0700 (PDT)
+In-Reply-To: <h2i98391a7b1004091135u5519f86w31e7d85ed83e2f67@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,45 +33,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Robert Hancock <hancockrwd@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Sarah Sharp <sarah.a.sharp@linux.intel.com>, Greg KH <greg@kroah.com>, Greg KH <gregkh@suse.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, Alan Stern <stern@rowland.harvard.edu>, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 09, 2010 at 05:38:13PM -0600, Robert Hancock wrote:
-> On Fri, Apr 9, 2010 at 10:50 AM, Sarah Sharp
-> <sarah.a.sharp@linux.intel.com> wrote:
-> > What makes you think that? =A0I've seen URB buffers with 64-bit DMA
-> > addresses. =A0I can tell when the debug polling loop runs and I look at
-> > the DMA addresses the xHCI driver is feeding to the hardware:
-> >
-> > Dev 1 endpoint ring 0:
-> > xhci_hcd 0000:05:00.0: @71a49800 01000680 00080000 00000008 00000841
-> >
-> > So the TRB at address 71a49800 is pointing to a buffer at address
-> > 0x0008000001000680.
-> =
+2010/4/10 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
 
-> I'm not sure why the address would be that huge, unless it's not
-> actually a physical address, or there's some kind of remapping going
-> on?
-> =
+> DMBEASURE
+>
+> There's still no way to run the measurement with "pulse" because of
+> the previous error:Iteration 1, level is 0 (-inf dB).
+>    Volume level measured (0) was too high or too low.
+>   Please adjust mixer so that initial level is between 0.8 and 0.97.
+>   Test run canceled.
+> Are you sure that the test has sense using the pulse device?
+>
+> "./dbmeasure plug:front plug_front.csv" works, but seems to never end:
+>   Iteration 3297, level is 0.0414072 (-27.6585 dB).
+>   Iteration 3298, level is 0.0414074 (-27.6584 dB).
+>   Iteration 3299, level is 0.0414064 (-27.6587 dB).
+>   Iteration 3300, level is 0.041406 (-27.6587 dB).
+>   .....
+>
+>
+> "./dbmeasure hw:0 hw.csv" fails with this message: "Cannot set sample
+> format: Invalid argument"
+>
 
-> >
-> > If I'm setting a DMA mask wrong somewhere, or doing something else to
-> > limit the DMA to 32-bit, then please let me know.
-> =
+The sum the dB range of these two hardware volume controls are already -96dB
+to 0 as same as the DR of 16 bits digital audio data is 96dB
 
-> The DMA mask for the controller isn't being set anywhere (in the
-> version that's in Linus' current git anyway). In that case it'll
-> default to 32-bit and any DMA mappings above 4GB will need to be
-> remapped. The controller driver doesn't do the mapping itself but the
-> USB core does, passing in the controller device as the one doing the
-> DMA, so if the controller's DMA mask is set to 32-bit then the buffers
-> passed in will get remapped/bounced accordingly.
+the point is that PA developer think the dB range of the pulseaudio master
+volume control is -inf dB to 0dB
 
-So if we're seeing physical addresses in the log above, and the xHCI
-driver does not explicitly allow the USB core to use addresses above
-4GB, why shouldn't the same thing be true as well for EHCI?
-(Which would then be exactly the case we're seeing)
+    control.18 {
+        comment.access 'read write'
+        comment.type INTEGER
+        comment.count 1
+        comment.range '0 - 64'
+        comment.dbmin -4800
+        comment.dbmax 0
+        iface MIXER
+        name 'Master Playback Volume'
+        value 27
+    }
 
-Daniel
+    control.7 {
+        comment.access 'read write'
+        comment.type INTEGER
+        comment.count 2
+        comment.range '0 - 64'
+        comment.dbmin -4800
+        comment.dbmax 0
+        iface MIXER
+        name 'Headphone Playback Volume'
+        value.0 64
+        value.1 64
+    }
