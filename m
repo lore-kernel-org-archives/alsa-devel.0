@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: wrong decibel data?
-Date: Sat, 10 Apr 2010 08:11:36 +0800
-Message-ID: <o2x4f3252891004091711l98f5cdd7ie99ce2173053645b@mail.gmail.com>
+Date: Sat, 10 Apr 2010 08:27:09 +0800
+Message-ID: <v2i4f3252891004091727q3cda9536v6b811df88f836627@mail.gmail.com>
 References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
 	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
 	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
@@ -9,18 +9,21 @@ References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
 	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
 	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
 	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
+	<r2u4f3252891004090649p3f327273x3af60905a06045fe@mail.gmail.com>
+	<r2o98391a7b1004090659s3493aa86gb47819d4f2e9c742@mail.gmail.com>
+	<h2i98391a7b1004091135u5519f86w31e7d85ed83e2f67@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC7D91037F1
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9D1751037F3
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Apr 2010 02:11:37 +0200 (CEST)
-Received: by pwj8 with SMTP id 8so2216754pwj.38
-	for <alsa-devel@alsa-project.org>; Fri, 09 Apr 2010 17:11:36 -0700 (PDT)
-In-Reply-To: <s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
+	Sat, 10 Apr 2010 02:27:10 +0200 (CEST)
+Received: by pvg12 with SMTP id 12so2219392pvg.38
+	for <alsa-devel@alsa-project.org>; Fri, 09 Apr 2010 17:27:09 -0700 (PDT)
+In-Reply-To: <h2i98391a7b1004091135u5519f86w31e7d85ed83e2f67@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,46 +36,44 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/4/9 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
+2010/4/10 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
 
-> On Fri, Apr 9, 2010 at 1:11 AM, Raymond Yau <superquad.vortex2@gmail.com>
-> wrote:
-> > Mute Capable (1 bit) reports if the respective amplifier is capable of
-> > muting. Muting implies a =96infinity gain (no sound passes), but the ac=
-tual
-> > performance is determined by the hardware.
-> >
-> > http://thread.gmane.org/gmane.linux.alsa.devel/39262/focus=3D16100
+> DMBEASURE
 >
-> I think you missed the point, I'll explain again.
-> I'm not complaining that at 0% the audio is not mute, as the bug you
-> linked.
+> There's still no way to run the measurement with "pulse" because of
+> the previous error:Iteration 1, level is 0 (-inf dB).
+>    Volume level measured (0) was too high or too low.
+>   Please adjust mixer so that initial level is between 0.8 and 0.97.
+>   Test run canceled.
+> Are you sure that the test has sense using the pulse device?
 >
-> >>> Clemens Ladisch (developer) 2004-11-09 09:26
-> >>>    The AD1981B's datasheet says that the maximum attenuation is 46.5 =
-dB
-> >>> (which conforms to the AC'97 specification).
-> >>> To mute, use Mute.
+> "./dbmeasure plug:front plug_front.csv" works, but seems to never end:
+>   Iteration 3297, level is 0.0414072 (-27.6585 dB).
+>   Iteration 3298, level is 0.0414074 (-27.6584 dB).
+>   Iteration 3299, level is 0.0414064 (-27.6587 dB).
+>   Iteration 3300, level is 0.041406 (-27.6587 dB).
+>   .....
 >
-> In fact my problem is that at 0% I get mute, but I shouldn't (as
-> reported by that developer), since the max attenuation is not -inf,
-> but -48 dB.
-> So if you prefer, you could see this issue from a different point of
-> view: at -48 dB the audio should be still audible, but it's not.
 >
-> so you have to decide where the issue resides (but definitely not in
-> pulseaudio)
-> a) it is ok that the audio is mute at 0% (in this case you have to
-> declare -inf dB)
-> b) the audio level is really -48 dB (in this case the volume shouldn't
-> be cut off completely, but simply quite low)
-> Which one do you prefer?
+> "./dbmeasure hw:0 hw.csv" fails with this message: "Cannot set sample
+> format: Invalid argument"
 >
 
-http://en.wikipedia.org/wiki/Decibel
+The DR range of software ( 16 bits audio data ) need to be same as the range
+of hardware volume control if you want  ths slider move at same scale
 
-In electronics, the decibel is often used to express power or amplitude
-ratios (gains), in preference to arithmetic ratios or percentages. One
-advantage is that the total decibel gain of a series of components (such as
-amplifers and attenuators) can be calculated simply by summing the decibel
-gains of the individual components.
+i.e. if PA only use one hardware volume control of  -48dB to 0 but the DR
+range of 16 bits audio is 96dB , PA have to scale up the dB value by two
+
+The best way is of course to sum the DB range of  all  hardware volume
+controls in the audio path of the codec  to get a DB range of value close to
+-96dB to 0 (i.e. need to use the value of the Volume Knob widget )
+
+However the softvol plugin is in the software side , you have to verify the
+step of the solfware volume control "PCM Playback volume" behave as it
+expected
+
+The easy way is to play a full amplitude of sine wave to "front" device and
+record it using an analog loop cable with 0dB capture gain , try to lower
+the PCM volume and observe the amplitude of the recorded sine wave is
+decreased at the correct ratio
