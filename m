@@ -1,24 +1,29 @@
-From: Luca Bruno <lucab@debian.org>
-Subject: Re: [PATCH] ALSA: hda - Add quirk and model 'vaio' for
- ALC269-based Sony Vaio E Series
-Date: Sat, 10 Apr 2010 20:35:30 +0200
-Message-ID: <20100410203530.1fc8fde8.lucab@debian.org>
-References: <1270216442-5632-1-git-send-email-lucab@debian.org>
-	<s5hiq87h5j7.wl%tiwai@suse.de>
-	<20100404133802.25104e02.lucab@debian.org>
-	<s5haatigt0t.wl%tiwai@suse.de>
-	<20100406122136.c38ce959.lucab@debian.org>
-	<s5heiis7u16.wl%tiwai@suse.de>
-	<20100406144706.8d12c144.lucab@debian.org>
-	<s5h1ves64c0.wl%tiwai@suse.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Sun, 11 Apr 2010 07:32:17 +0800
+Message-ID: <q2q4f3252891004101632h5b3d7b1cmf937b9dfc5b6c9da@mail.gmail.com>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
+	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
+	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
+	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
+	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
+	<r2u4f3252891004090649p3f327273x3af60905a06045fe@mail.gmail.com>
+	<r2o98391a7b1004090659s3493aa86gb47819d4f2e9c742@mail.gmail.com>
+	<h2i98391a7b1004091135u5519f86w31e7d85ed83e2f67@mail.gmail.com>
+	<h2r4f3252891004100227q1eca2166z280ebcf3f7a122e0@mail.gmail.com>
+	<g2g98391a7b1004100241h978b490an26ef2c549aa78eb0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4247149995668954906=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.unstable.it (host-93-93-202-11.planetacomnetwork.com
-	[93.93.202.11]) by alsa0.perex.cz (Postfix) with ESMTP id C1F851037F9
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBF16103809
 	for <alsa-devel@alsa-project.org>;
-	Sat, 10 Apr 2010 20:35:34 +0200 (CEST)
-In-Reply-To: <s5h1ves64c0.wl%tiwai@suse.de>
+	Sun, 11 Apr 2010 01:32:18 +0200 (CEST)
+Received: by pwj8 with SMTP id 8so2530118pwj.38
+	for <alsa-devel@alsa-project.org>; Sat, 10 Apr 2010 16:32:17 -0700 (PDT)
+In-Reply-To: <g2g98391a7b1004100241h978b490an26ef2c549aa78eb0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,72 +33,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============4247149995668954906==
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Sat__10_Apr_2010_20_35_30_+0200_Wy.EaCWjiJmZt0Yj"
+2010/4/10 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
 
---Signature=_Sat__10_Apr_2010_20_35_30_+0200_Wy.EaCWjiJmZt0Yj
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Sat, Apr 10, 2010 at 11:27 AM, Raymond Yau
+> <superquad.vortex2@gmail.com> wrote:
+> > the point is that PA developer think the dB range of the pulseaudio
+> master
+> > volume control is -inf dB to 0dB
+>
+> The range is 200 dB, since they use that value as -inf.
+> Can you suggest something to tell to the pulseaudio developers?
+>
 
-Takashi Iwai scrisse:
+As your reported bug is "pulseaudio master volume is scaled differently as
+alsa master"
 
-> Do you mean setting the pinctl 0x22 (PIN_VREFGRD) to NID 0x19?
-
-Yes. It was mentioned that PIN_VREFHIZ works too.
-
-> Changing this via hda-verb with model=3Dauto state also fixes the issue?
-
-Yes, that's how the quirk-patch came out (I've zero knowledge of
-sound/alsa development, I was just asked to cook a patch based on that
-suggestion, as nobody was doing it).
-=20
-> For the kernel, try:
->   git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6.git=20
-> For alsa-driver snapshot, try:
->   ftp://ftp.kernel.org/pub/linux/kernel/people/tiwai/snapshot/alsa-driver=
--snapshot.tar.gz
-
-Tried latest of both, yet no luck out-of-the-box.
-Still have to apply the quirk-patch or manually change via hda-verb
-each time to have a working sound output.=20
-
-Ciao, Luca
-
---=20
- .''`.  ** Debian GNU/Linux **  | Luca Bruno (kaeso)
-: :'  :   The Universal O.S.    | lucab (AT) debian.org
-`. `'`  			| GPG Key ID: 3BFB9FB3
-  `-     http://www.debian.org 	| Debian GNU/Linux Developer
-
---Signature=_Sat__10_Apr_2010_20_35_30_+0200_Wy.EaCWjiJmZt0Yj
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAkvAxPIACgkQRqobajv7n7NcOACgrERX+sUOLIF0s7x5hNO1Vnh4
-sucAnR0tgvWclMYFqqENwF0I4O1+ShzS
-=LlLa
------END PGP SIGNATURE-----
-
---Signature=_Sat__10_Apr_2010_20_35_30_+0200_Wy.EaCWjiJmZt0Yj--
-
---===============4247149995668954906==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============4247149995668954906==--
+the answer is because "pulseaudio master volume" has a different dB ranage
+from the alsa master volume control
