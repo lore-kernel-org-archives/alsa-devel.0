@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 3/3] Zipit Z2 WM8750 aSoC driver
-Date: Mon, 12 Apr 2010 11:37:02 +0100
-Message-ID: <20100412103701.GA32087@rakim.wolfsonmicro.main>
-References: <1270440005-25459-1-git-send-email-marek.vasut@gmail.com>
-	<20100405134228.GD6580@rakim.wolfsonmicro.main>
-	<1270476738.7419.4.camel@odin>
-	<201004092348.23009.marek.vasut@gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [LKML] Re: USB transfer_buffer allocations on
+	64bit systems
+Date: Mon, 12 Apr 2010 12:48:58 +0200
+Message-ID: <20100412104858.GT30801@buzzloop.caiaq.de>
+References: <20100409202533.GA8983@phenom.dumpdata.com>
+	<Pine.LNX.4.44L0.1004091722260.1852-100000@iolanthe.rowland.org>
+	<r2n51f3faa71004091511y936975en874a02f7232bb57c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 76B7D2457B
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9A2F22459D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 12 Apr 2010 12:37:05 +0200 (CEST)
+	Mon, 12 Apr 2010 12:49:20 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <201004092348.23009.marek.vasut@gmail.com>
+In-Reply-To: <r2n51f3faa71004091511y936975en874a02f7232bb57c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,17 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Robert Hancock <hancockrwd@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Greg KH <gregkh@suse.de>, linux-kernel@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 09, 2010 at 11:48:22PM +0200, Marek Vasut wrote:
+On Fri, Apr 09, 2010 at 04:11:52PM -0600, Robert Hancock wrote:
+> On Fri, Apr 9, 2010 at 3:23 PM, Alan Stern <stern@rowland.harvard.edu> wr=
+ote:
+> > On Fri, 9 Apr 2010, Konrad Rzeszutek Wilk wrote:
+> >
+> >> On Fri, Apr 09, 2010 at 03:34:06PM -0400, Alan Stern wrote:
+> >> > On Fri, 9 Apr 2010, Pedro Ribeiro wrote:
+> >> >
+> >> > > > The DMA pointers do indeed look sane. I wanted to take a deeper =
+look at
+> >> > > > this and set up a 64bit system today. However, I fail to see the=
+ problem
+> >> > > > here. Pedro, how much RAM does your machine have installed?
+> >> >
+> >> > > It has 4 GB.
+> >> >
+> >> > That means DMA mapping cannot be the cause of the problem. =A0:-(
+> >>
+> >> That isn't entirely true. The BIOS usually allocates a 256 MB ACPI/PCI=
+ hole
+> >> that is under the 4GB.
+> >>
+> >> So end up with 3.7 GB, then the 256MB hole, and then right above the 4=
+GB
+> >> you the the remaining memory: 4.3GB.
+> >
+> > How can Pedro find out what physical addresses are in use on his
+> > system?
+> =
 
-> Mark, can you apply this as well? Thanks
+> If you have 4GB of RAM then almost certainly you have memory located
+> at addresses over 4GB. If you look at the e820 memory map printed at
+> the start of dmesg on bootup and see entries with addresses of
+> 100000000 or higher reported as usable, then this is the case.
 
-Applied, thanks.  
+Pedro, can you provide your dmesg output, please? I installed 5GB or RAM
+to my machine now, and even with your .config, I can't see the problem.
 
-Stuff like this is one of the reasons it's better to send patches as new
-rather than as replies (and resend the whole series) - especially when
-you send many revisions of things it can be hard to track which versions
-are current.
+Daniel
