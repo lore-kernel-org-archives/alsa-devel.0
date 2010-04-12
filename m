@@ -1,42 +1,41 @@
-From: Andi Kleen <andi@firstfloor.org>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Mon, 12 Apr 2010 10:59:57 +0200
-Message-ID: <87sk719hbm.fsf@basil.nowhere.org>
-References: <20100407090623.GN30807@buzzloop.caiaq.de>
-	<Pine.LNX.4.44L0.1004071036060.1779-100000@iolanthe.rowland.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 3/3] Zipit Z2 WM8750 aSoC driver
+Date: Mon, 12 Apr 2010 11:37:02 +0100
+Message-ID: <20100412103701.GA32087@rakim.wolfsonmicro.main>
+References: <1270440005-25459-1-git-send-email-marek.vasut@gmail.com>
+	<20100405134228.GD6580@rakim.wolfsonmicro.main>
+	<1270476738.7419.4.camel@odin>
+	<201004092348.23009.marek.vasut@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.44L0.1004071036060.1779-100000@iolanthe.rowland.org> (Alan Stern's message of "Wed, 7 Apr 2010 10:59:47 -0400 (EDT)")
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: Daniel Mack <daniel@caiaq.de>, linux-kernel@vger.kernel.org, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 76B7D2457B
+	for <alsa-devel@alsa-project.org>;
+	Mon, 12 Apr 2010 12:37:05 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201004092348.23009.marek.vasut@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: alsa-devel@alsa-project.org, eric.y.miao@gmail.com, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Alan Stern <stern@rowland.harvard.edu> writes:
->> 
->> The fix is to use usb_buffer_alloc() for that purpose which ensures
->> memory that is suitable for DMA. And on x86_64, this also means that the
->> upper 32 bits of the address returned are all 0's.
->
-> That is not a good fix.  usb_buffer_alloc() provides coherent memory, 
-> which is not what we want.  I believe the correct fix is to specify the 
-> GFP_DMA32 flag in the kzalloc() call.
+On Fri, Apr 09, 2010 at 11:48:22PM +0200, Marek Vasut wrote:
 
-The traditional way to handle this is to leave it to swiotlb in
-pci_map_*. pci_map_* is needed anyways if you run with a IOMMU.
+> Mark, can you apply this as well? Thanks
 
-Also note at least on x86 systems coherent memory is the same as non coherent
-memory. And GFP_DMA32 is a x86 specific flag, doesn't necessarily 
-do any good anywhere else.
+Applied, thanks.  
 
-So if you add x86isms anyways you could as well use dma_alloc_coherent()
-directly which is actually better at this than a simple GFP_DMA32
-and as a bonus handles the IOMMUs correctly too.
-
-Or just use GFP_KERNEL and pci_map_* later.
-
--Andi
-
--- 
-ak@linux.intel.com -- Speaking for myself only.
+Stuff like this is one of the reasons it's better to send patches as new
+rather than as replies (and resend the whole series) - especially when
+you send many revisions of things it can be hard to track which versions
+are current.
