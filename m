@@ -1,100 +1,95 @@
-From: Ben Hutchings <ben@decadent.org.uk>
-Subject: Bug#536896: linux-image-2.6.26-2-amd64: audio popping with gstreamer using apps when using amd64 kernel and i386 userspace
-Date: Mon, 12 Apr 2010 21:18:49 +0100
-Message-ID: <1271103529.6179.325.camel@localhost>
-References: <20090714135754.4684.74223.reportbug@zarvora>
-	 <20100225183435.GA8488@galadriel.inutil.org>
-	 <alpine.DEB.1.10.1004120102110.24942@martello.ucc.gu.uwa.edu.au>
-	 <1271017516.6179.126.camel@localhost>  <s5h633xb079.wl%tiwai@suse.de>
-Reply-To: Ben Hutchings <ben@decadent.org.uk>, 536896@bugs.debian.org
+From: Robert Hancock <hancockrwd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [alsa-devel] USB transfer_buffer allocations on 64bit systems
+Date: Mon, 12 Apr 2010 14:39:04 -0600
+Message-ID: <x2t51f3faa71004121339j67558281mc71bfd35d929e060@mail.gmail.com>
+References: <s5hhbnncflj.wl%tiwai@suse.de>
+	 <Pine.LNX.4.44L0.1004071452560.5760-100000@iolanthe.rowland.org>
+	 <20100408003313.GE4365@kroah.com> <4BBE6E57.6020600@gmail.com>
+	 <20100409165014.GC5184@xanatos>
+	 <g2u51f3faa71004091638nc383aa0ei899777c869273a22@mail.gmail.com>
+	 <20100410083453.GN30801@buzzloop.caiaq.de>
+	 <p2o51f3faa71004101002xef38c6e4z71f5a61eed7f899e@mail.gmail.com>
+	 <20100412185621.GA6101@xanatos>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-1Fm7BBt/QIaMRq0Y2HpY"
-Return-path: <bounce-debian-bugs-dist=glddb-debian-bugs-dist=m.gmane.org@lists.debian.org>
-Resent-To: debian-bugs-dist@lists.debian.org
-Resent-Message-ID: <handler.536896.B536896.12711035537658@bugs.debian.org>
-In-Reply-To: <s5h633xb079.wl%tiwai@suse.de>
-List-Post: <mailto:debian-bugs-dist@lists.debian.org>
-List-Help: <mailto:debian-bugs-dist-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-bugs-dist-request@lists.debian.org?subject=unsubscribe>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: James Andrewartha <trs80@ucc.gu.uwa.edu.au>, Jaroslav Kysela <perex@perex.cz>, 536896@bugs.debian.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20100412185621.GA6101@xanatos>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Cc: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Apr 12, 2010 at 12:56 PM, Sarah Sharp
+<sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org> wrote:
+> On Sat, Apr 10, 2010 at 11:02:53AM -0600, Robert Hancock wrote:
+>> On Sat, Apr 10, 2010 at 2:34 AM, Daniel Mack <daniel-rDUAYElUppE@public.gmane.org> wrote=
+:
+>> > On Fri, Apr 09, 2010 at 05:38:13PM -0600, Robert Hancock wrote:
+>> >> On Fri, Apr 9, 2010 at 10:50 AM, Sarah Sharp
+>> >> <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org> wrote:
+>> >> > What makes you think that? =A0I've seen URB buffers with 64-bit=
+ DMA
+>> >> > addresses. =A0I can tell when the debug polling loop runs and I=
+ look at
+>> >> > the DMA addresses the xHCI driver is feeding to the hardware:
+>> >> >
+>> >> > Dev 1 endpoint ring 0:
+>> >> > xhci_hcd 0000:05:00.0: @71a49800 01000680 00080000 00000008 000=
+00841
+>> >> >
+>> >> > So the TRB at address 71a49800 is pointing to a buffer at addre=
+ss
+>> >> > 0x0008000001000680.
+>> >>
+>> >> I'm not sure why the address would be that huge, unless it's not
+>> >> actually a physical address, or there's some kind of remapping go=
+ing
+>> >> on?
+>> >>
+>> >> >
+>> >> > If I'm setting a DMA mask wrong somewhere, or doing something e=
+lse to
+>> >> > limit the DMA to 32-bit, then please let me know.
+>> >>
+>> >> The DMA mask for the controller isn't being set anywhere (in the
+>> >> version that's in Linus' current git anyway). In that case it'll
+>> >> default to 32-bit and any DMA mappings above 4GB will need to be
+>> >> remapped. The controller driver doesn't do the mapping itself but=
+ the
+>> >> USB core does, passing in the controller device as the one doing =
+the
+>> >> DMA, so if the controller's DMA mask is set to 32-bit then the bu=
+ffers
+>> >> passed in will get remapped/bounced accordingly.
+>> >
+>> > So if we're seeing physical addresses in the log above, and the xH=
+CI
+>> > driver does not explicitly allow the USB core to use addresses abo=
+ve
+>> > 4GB, why shouldn't the same thing be true as well for EHCI?
+>> > (Which would then be exactly the case we're seeing)
+>>
+>> That is a bit suspicious, yes. With the DMA mask at default I don't
+>> expect that should happen. Sarah, what kind of traffic was happening
+>> when you saw that (bulk, isochronous, etc)?
+>
+> Ring 0 is the default control ring, so it must be control transfers.
+> That's the first control transfer on the ring (and it didn't fill), s=
+o
+> it must have come from the USB core.
+>
+> I was running the USB mass storage driver, and the bulk endpoint ring=
+s
+> don't have the high 32-bits of the address set. =A0It mostly uses the
+> scatter-gather interface, which calls usb_buffer_map_sg(), so that's =
+not
+> surprising.
 
---=-1Fm7BBt/QIaMRq0Y2HpY
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2010-04-12 at 09:26 +0200, Takashi Iwai wrote:
-> At Sun, 11 Apr 2010 21:25:16 +0100,
-> Ben Hutchings wrote:
-> >=20
-> > [1  <text/plain; UTF-8 (quoted-printable)>]
-> > [Earlier messages can be found at http://bugs.debian.org/536896 ]
-> >=20
-> > On Mon, 2010-04-12 at 01:08 +0800, James Andrewartha wrote:
-[...]
-> > > Author: Takashi Iwai <tiwai@suse.de>  2008-01-09 02:08:14
-> > > Committer: Jaroslav Kysela <perex@perex.cz>  2008-02-01 01:29:47
-> > > Parent: d948035a928400ae127c873fbf771389bee18949 ([ALSA] Remove PCM x=
-fer_align sw params)
-> > >=20
-> > >     [ALSA] PCM - clean up snd_pcm_lib_read/write
-> > >    =20
-> > >     Introduce a common helper function for snd_pcm_lib_read and snd_p=
-cm_lib_write
-> > >     for cleaning up the code.
-> > >    =20
-> > >     Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > >     Signed-off-by: Jaroslav Kysela <perex@perex.cz>
-> > >=20
-> > > I don't know anything about this code, but I'm happy to deal with ups=
-tream=20
-> > > if you'd prefer me to.
-> >=20
-> > The above commit is supposed to be cleanup, but it has at least one
-> > semantic change: snd_pcm_mmap_control::avail_min no longer applies to
-> > non-blocking file handles.  I don't know whether this is was an
-> > intentional or unintentional change, but it wasn't commented.  I also
-> > don't know whether this can explain the popping, but I expect that it
-> > has changed the timing of audio I/O.
->=20
-> The above change is essentially a fix of the buggy behavior for
-> non-blocking access.  avail_min is the definition for wake-up
-> behavior, and it doesn't define the blocking behavior.
-> But, it's possible that this changes the timing, indeed.  If so, it
-> implies that the app expects somehow wrongly.
-
-Thanks for your quick response.  I will reassign this bug to the
-applications that were mentioned.
-
-Ben.
-
---=20
-Ben Hutchings
-Once a job is fouled up, anything done to improve it makes it worse.
-
---=-1Fm7BBt/QIaMRq0Y2HpY
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQIVAwUAS8OAJ+e/yOyVhhEJAQIBSA/7Boxj94x2GHBypkL5c9dNB9wQcil6GUnN
-L5tQ7Nk2eaK8ZgvImYBzMgWx6MrqvcrW4Gz2wSP2h2ZFC/BGS8s3A/lDRQ+ScfdO
-XwhBK2Aqkfpnu2t5qfoHnq3N774T1pKaclVJ6orOjQlqpF6lglEoTvoBErEdv2UQ
-rAqjdFSHuk5dxLkKA28FkatS4vIHfzWa1LSMotFKjjaanxSp4z6SOzwO5qeA409S
-s8oQz2XNPmQO/Z8KfwebkoXCO1IF+h2u9mgIcHP76mnw3xTRC571UuL5K78d6kva
-m1zstyIjhciTA5UCY12hw2aeYfMVuFfbxUu61dwskpS/162Yq4qPGBXjtxAaVfIM
-rgG/PMeU7B+No/EuhXrwWJo+kHFsY47Qtw0h9Sfdk74ddvmIhOtQ3YN0AkL4Ntgb
-7Ez459A6Z1miciJOPyI95QeZ6eBTFkSkVRKaCUlHNAWgAHe0/ZYTt2vBSVqwELcC
-70+ucIynen9R3msqzOD2pPyyEG8PsVuO2xtRM2BjDuuKv25EF3RPuqfRd+cmcC0R
-wfHAZsTR/eqsb89k4qBqwecWABgCBu2PQ8prCoBzMIFW7+vrGNKwrJWXD0ZQDhou
-Fa9tpFT4V5VHItlwk+6hcOYLy8CwnmnAnUk/ev81KZDpobaQfEwyBEMswyO9LPa4
-Ii/P5hwu+wg=
-=kDPY
------END PGP SIGNATURE-----
-
---=-1Fm7BBt/QIaMRq0Y2HpY--
+Is this machine using an IOMMU or something which would be remapping
+physical addresses? That address 0x0008000001000680 seems huge, I
+don't see how it could even be a valid bus address otherwise..
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
