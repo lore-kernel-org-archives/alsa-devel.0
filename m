@@ -1,27 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Wed, 14 Apr 2010 09:39:10 +0800
-Message-ID: <j2w4f3252891004131839w8066f5del6124b4634c4ef6e5@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
-	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
-	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
-	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
-	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
-	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
-	<r2u4f3252891004090649p3f327273x3af60905a06045fe@mail.gmail.com>
-	<r2o98391a7b1004090659s3493aa86gb47819d4f2e9c742@mail.gmail.com>
+From: Akhilesh Soni <akhilrekha@gmail.com>
+Subject: Help needed
+Date: Tue, 13 Apr 2010 19:47:04 +0530
+Message-ID: <x2yea05c7011004130717z5fbce05dqfa7852fb10f115d8@mail.gmail.com>
+References: <u2oea05c7011004130706jc7b4a043zd1969eedb92f5069@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 8C4582444F
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D702A1037E3
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 03:39:11 +0200 (CEST)
-Received: by pvg12 with SMTP id 12so3895851pvg.38
-	for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2010 18:39:10 -0700 (PDT)
-In-Reply-To: <r2o98391a7b1004090659s3493aa86gb47819d4f2e9c742@mail.gmail.com>
+	Tue, 13 Apr 2010 16:17:05 +0200 (CEST)
+Received: by pvg12 with SMTP id 12so3510427pvg.38
+	for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2010 07:17:04 -0700 (PDT)
+In-Reply-To: <u2oea05c7011004130706jc7b4a043zd1969eedb92f5069@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,20 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/4/9 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
+Hi,
 
-> You are saying that the range for my card is 96 dB, do you mean that
-> the audio specs are wrong?
-> I mean, at 0 the volume is not audible, so I'm wondering why the -inf
-> "switch register" is not activated (inside the chip)...
->
+I'm using Osprey-440 4 channel Capture card in Centos 5.4 distribution with
+kernel 2.6.18-164.15.1.el5 #1 SMP Wed Mar 17 11:30:06 EDT 2010 x86_64 x86_64
+x86_64 GNU/Linux
 
-Have you ever studied the 92HD71B datasheet ?
+I'm able to load the bttv driver for video capture and it created
+/dev/video0 /dev/video1 /dev/video2 /dev/video3 devices which I'm able to
+capture as well.
 
-In the Figure 11. 92HD71B Widget Diagram , NID 10 ( DAC) -95.25 dB to 0dB
-with 0.75 dB step
+But when I do modprobe snd-bt87x i'm unable to get the audio capture devices
+either /dev/audio or /dev/dsp
 
-You have to ask alsa developer why the control did not return this range
+Is there any parameters to be given in inserting this module for the card.
+Please guide me to resolve this issue.
+
+Is there any place where I can get the latest driver source for this card
+
+
+Thanks in advance.
+Akhilesh
