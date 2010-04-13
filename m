@@ -1,48 +1,38 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH] USB: rename usb_buffer_alloc() and
-	usb_buffer_free()
-Date: Tue, 13 Apr 2010 23:47:01 +0200
-Message-ID: <20100413214701.GU30801@buzzloop.caiaq.de>
-References: <20100413181631.GT30801@buzzloop.caiaq.de>
-	<Pine.LNX.4.44L0.1004131525500.1551-100000@iolanthe.rowland.org>
-	<20100413202607.GA3567@suse.de>
+From: =?UTF-8?B?w4lyaWMgUGllbA==?= <Eric.Piel@tremplin-utc.net>
+Subject: [REGRESSION bisected] Sound goes too fast due to commit 7b3a177b0
+Date: Tue, 13 Apr 2010 23:54:26 +0200
+Message-ID: <4BC4E812.6050602@tremplin-utc.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 63528103843
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 23:47:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100413202607.GA3567@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Greg KH <gregkh@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>, Alan Stern <stern@rowland.harvard.edu>, Pedro Ribeiro <pedrib@gmail.com>, akpm@linux-foundation.org, Robert Hancock <hancockrwd@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Cc: "Rafael J. Wysocki" <rjw@sisk.pl>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 13, 2010 at 01:26:07PM -0700, Greg KH wrote:
-> I think I will split this up into the following set of patches:
-> 	- rename the functions and add a macro for the old names
-> 	- rename all in-kernel usages
-> 	- rename the staging tree usages
-> 	- remove the macros
-> 
-> the first patch can go in to Linus's tree now, to make it easier for the
-> 2nd and 3rd patches to live in linux-next easier as we might need to
-> look at the usages in other development trees before we can add the last
-> one.
-> 
-> Sound good?
+Hello,
 
-Yes, thanks a lot.
+Since 2.6.34-rc*, I have a regression on alsa which prevents the sound
+to be played correctly. When playing, the music goes too fast, skipping
+some parts. Typically, it's very easy to reproduce by doing:
+time mplayer -endpos 30 sound-file-which-lasts-more-than-thirty-sec.mp3
 
-Daniel
+If the wall clock is less than 30s, you have the bug. With my intel-hda
+(AD1981), it's reliably reproducible: it gives ~27s, instead of the
+normal ~31s.
+
+After bisection, it turns out that it is commit
+7b3a177b0d4f92b3431b8dca777313a07533a710, aka "ALSA: pcm_lib: fix
+"something must be really wrong" condition" which caused this
+regression. Reverting it on top of 2.6.34-rc3+ fixes the problem.
+
+Let me know if you need more info,
+Cheers,
+Eric
+
+PS: For the info, the bisection was especially hard to do because about
+80 alsa commits around the faulty one were all applied on kernel
+versions which did not boot on my laptop. On top of the first known bad
+I had to revert all of them, and run an "invert bisection" on it...
+Enjoy the bisection result ;-)
