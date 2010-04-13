@@ -1,32 +1,18 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: ALSA application programming: route audio from one PCM
-	to another
-Date: Tue, 13 Apr 2010 17:23:32 +0200
-Message-ID: <4BC48C74.5010102@gmail.com>
+From: "=?utf-8?q?R=C3=A9mi?= Denis-Courmont" <remi@remlab.net>
+Subject: Re: [PATCH] Use thread-safe locale functions
+Date: Tue, 13 Apr 2010 18:25:42 +0300
+Message-ID: <201004131825.42726.remi@remlab.net>
+References: <1271170217-10904-1-git-send-email-remi@remlab.net>
+	<4BC48B96.7040002@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id DF7301037FF
+Received: from yop.chewa.net (yop.chewa.net [91.121.105.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id CB9E410382F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 17:23:40 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by keymachine.tbmn.org (Postfix) with ESMTP id A8FB48AC5FB
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 17:23:38 +0200 (CEST)
-Received: from keymachine.tbmn.org ([127.0.0.1])
-	by localhost (keymachine.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id iZuO4Aqy4Njj for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 17:23:36 +0200 (CEST)
-Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
-	[80.108.1.212])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: mne@tbmn.org)
-	by keymachine.tbmn.org (Postfix) with ESMTPSA id AF7698AC5FA
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 17:23:35 +0200 (CEST)
+	Tue, 13 Apr 2010 17:25:44 +0200 (CEST)
+In-Reply-To: <4BC48B96.7040002@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,29 +22,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I finally managed to write an ALSA I/O plugin that does what I want.
-The plugin supports both playback and capture.
-
-Now I would like to write a simple audio application that takes audio
-samples
-
-	* from the microphone and plays it back on my plugin
-and
-	* from the plugin (capture) and plays it back on the speakers
-
-
-Hence as long as the application is running, it should do the above.
-
-* Is there a special ALSA way to route audio from one PCM to another ?
-
-* If not, I suppose it would just work if I open the plugin PCM and the
-hw PCM at the same time and copy audio frames between them ?
-
-
-cheers,
-stefan
+TGUgbWFyZGkgMTMgYXZyaWwgMjAxMCAxODoxOTo1MCBDbGVtZW5zIExhZGlzY2gsIHZvdXMgYXZl
+eiDDqWNyaXQgOgo+IFLDqW1pIERlbmlzLUNvdXJtb250IHdyb3RlOgo+ID4gc2V0bG9jYWxlKCkg
+aXMgbm90IHRocmVhZC1zYWZlLiBJdCBjYW4gYWN0dWFsbHkgdHJpZ2dlciBhIGNyYXNoIGlmCj4g
+PiBhbm90aGVyIHRocmVhZCB1c2VzIGxvY2FsZSBpbmZvcm1hdGlvbnMgYXQgdGhlIHNhbWUgdGlt
+ZSBpbiB0aGUgcHJvY2Vzcy4KPiA+IExpYnJhcnkgY29kZSBzaG91bGQgdXNlIFBPU0lYIG5ld2xv
+Y2FsZS9kdXBsb2NhbGUvdXNlbG9jYWxlL2ZyZWVsb2NhbGUKPiA+IGluc3RlYWQuCj4gCj4gSSBk
+b24ndCB0aGluayB0aGVzZSBmdW5jdGlvbnMgYXJlIGF2YWlsYWJsZSBpbiBzbWFsbCBlbWJlZGRl
+ZCBDCj4gbGlicmFyaWVzIGxpa2UgZGlldGxpYmMuCgpBbmQgeW91J3JlIHN1Z2dlc3Rpbmcgd2hh
+dD8gVGhhdCB3ZSBjb250aW51ZSB0byBsZXQgYWxzYS1saWIgY3Jhc2ggcHJvZ3JhbXMgCnRoYXQg
+dXNlIGl0PwoKLS0gClLDqW1pIERlbmlzLUNvdXJtb250Cmh0dHA6Ly93d3cucmVtbGFiLm5ldC8K
+aHR0cDovL2ZpLmxpbmtlZGluLmNvbS9pbi9yZW1pZGVuaXMKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
