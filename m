@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC updates for 2.6.34
-Date: Tue, 13 Apr 2010 09:34:34 +0100
-Message-ID: <20100413083434.GA22320@sirena.org.uk>
-References: <20100405183840.GA2688@rakim.wolfsonmicro.main>
-	<20100412113158.GV30801@buzzloop.caiaq.de>
+Subject: ASoC updates for 2.6.35
+Date: Tue, 13 Apr 2010 17:53:43 +0900
+Message-ID: <20100413085342.GA2717@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id A89E6103869
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0510D103865
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 10:34:36 +0200 (CEST)
+	Tue, 13 Apr 2010 10:53:37 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20100412113158.GV30801@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 12, 2010 at 01:31:58PM +0200, Daniel Mack wrote:
+The following changes since commit 53a61d967a480307db4c8f7950ddb8bb1a0fda9b:
+  Mark Brown (1):
+        Merge branch 'for-2.6.34' into for-2.6.35
 
-> Do you think it is safe to push this ASoC-DMA patch to stable@ as well?
-> I posted backported version already and I believe they're fine.
+are available in the git repository at:
 
-I don't think that's a good idea.  Since this changes the API
-incompatibily it will cause any out of tree users tracking the tree to
-break which isn't the sort of update that seems suitable for a stable
-update.  I'm not concerned about the code quality, it's just the simple
-fact of the interface change.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
+
+Bill Gatliff (1):
+      ASoC: Use SNDRV_PCM_RATE_8000_96000 macro for WM8731
+
+Marek Vasut (2):
+      ASoC: WM8750: Convert to new API
+      ASoC: Zipit Z2 WM8750 ASoC driver
+
+ sound/soc/codecs/wm8731.c       |    6 +-
+ sound/soc/codecs/wm8750.c       |  295 ++++++++++++++++++---------------------
+ sound/soc/pxa/Kconfig           |    8 +
+ sound/soc/pxa/Makefile          |    2 +
+ sound/soc/pxa/spitz.c           |   43 +++++-
+ sound/soc/pxa/z2.c              |  246 ++++++++++++++++++++++++++++++++
+ sound/soc/s3c24xx/jive_wm8750.c |    5 -
+ 7 files changed, 432 insertions(+), 173 deletions(-)
+ create mode 100644 sound/soc/pxa/z2.c
