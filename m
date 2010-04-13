@@ -1,21 +1,28 @@
-From: =?UTF-8?q?R=C3=A9mi=20Denis-Courmont?= <remi@remlab.net>
-Subject: [PATCH] Check if uselocale() is present
-Date: Tue, 13 Apr 2010 18:54:53 +0300
-Message-ID: <1271174093-2559-1-git-send-email-remi@remlab.net>
-References: <4BC48B96.7040002@ladisch.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: ALSA application programming: route audio from one
+	PCM to another
+Date: Tue, 13 Apr 2010 17:23:03 +0100
+Message-ID: <hq25p7$8kd$1@dough.gmane.org>
+References: <4BC48C74.5010102@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from yop.chewa.net (yop.chewa.net [91.121.105.214])
-	by alsa0.perex.cz (Postfix) with ESMTP id A5842103830
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id C34C5248D3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 17:54:55 +0200 (CEST)
-Received: from basile.remlab.net (ip6-localhost [IPv6:::1])
-	by yop.chewa.net (Postfix) with SMTP id E2215678
-	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 17:54:53 +0200 (CEST)
-In-Reply-To: <4BC48B96.7040002@ladisch.de>
+	Tue, 13 Apr 2010 18:23:16 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1O1itO-0002nz-WE
+	for alsa-devel@alsa-project.org; Tue, 13 Apr 2010 18:23:15 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2010 18:23:14 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2010 18:23:14 +0200
+In-Reply-To: <4BC48C74.5010102@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,55 +35,52 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise, assume the C run-time does not depend on the locale (at least
-not to format floating point numbers).
----
- configure.in |    1 +
- src/conf.c   |    6 ++++++
- 2 files changed, 7 insertions(+), 0 deletions(-)
+'Twas brillig, and Stefan Schoenleitner at 13/04/10 16:23 did gyre and
+gimble:
+> Hi,
+> 
+> I finally managed to write an ALSA I/O plugin that does what I want.
+> The plugin supports both playback and capture.
+> 
+> Now I would like to write a simple audio application that takes audio
+> samples
+> 
+> 	* from the microphone and plays it back on my plugin
+> and
+> 	* from the plugin (capture) and plays it back on the speakers
+> 
 
-diff --git a/configure.in b/configure.in
-index 9d985b8..e62e3bd 100644
---- a/configure.in
-+++ b/configure.in
-@@ -64,6 +64,7 @@ dnl Checks for library functions.
- AC_PROG_GCC_TRADITIONAL
- AC_CHECK_FUNC([hsearch_r], [HAVE_HSEARCH_R=yes])
- AM_CONDITIONAL(ALSA_HSEARCH_R, [test "x$HAVE_HSEARCH_R" != xyes])
-+AC_CHECK_FUNCS([uselocale])
- 
- SAVE_LIBRARY_VERSION
- AC_SUBST(LIBTOOL_VERSION_INFO)
-diff --git a/src/conf.c b/src/conf.c
-index ce252ab..d1d4a5f 100644
---- a/src/conf.c
-+++ b/src/conf.c
-@@ -499,20 +499,26 @@ static int safe_strtod(const char *str, double *val)
- {
- 	char *end;
- 	double v;
-+#ifdef HAVE_USELOCALE
- 	locale_t saved_locale, c_locale;
-+#endif
- 	int err;
- 
- 	if (!*str)
- 		return -EINVAL;
-+#ifdef HAVE_USELOCALE
- 	c_locale = newlocale(LC_NUMERIC_MASK, "C", 0);
- 	saved_locale = uselocale(c_locale);
-+#endif
- 	errno = 0;
- 	v = strtod(str, &end);
- 	err = -errno;
-+#ifdef HAVE_USELOCALE
- 	if (c_locale != (locale_t)0) {
- 		uselocale(saved_locale);
- 		freelocale(c_locale);
- 	}
-+#endif
- 	if (err)
- 		return err;
- 	if (*end)
+This sounds like something that would be more appropriate for jack
+http://jackaudio.org/
+
+> Hence as long as the application is running, it should do the above.
+> 
+> * Is there a special ALSA way to route audio from one PCM to another ?
+> 
+> * If not, I suppose it would just work if I open the plugin PCM and the
+> hw PCM at the same time and copy audio frames between them ?
+
+Dealing with this can be quite complex, especially if the pcms are
+clocked of different sources, you have to deal with a degree of
+resampling to ensure that clock skew doesn't get out of control.
+
+The module-loopback plugin in PulseAudio does a similar thing (routes
+audio from a source to a sink) and as such has to deal with these clock
+skew problems.
+
+Col
+
+
+
 -- 
-1.7.0.4
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
