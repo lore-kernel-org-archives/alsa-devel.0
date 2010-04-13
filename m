@@ -1,22 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] imx-ssi: do not call hrtimer_disable
- in trigger function
-Date: Tue, 13 Apr 2010 16:36:06 +0100
-Message-ID: <1271172966.3235.56.camel@odin>
+Subject: Re: [PATCH 2/2] imx-ssi: increase minimum periods to 4
+Date: Tue, 13 Apr 2010 16:36:35 +0100
+Message-ID: <1271172995.3235.57.camel@odin>
 References: <1271169489-339-1-git-send-email-s.hauer@pengutronix.de>
-	<1271169489-339-2-git-send-email-s.hauer@pengutronix.de>
+	<1271169489-339-3-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
-	[209.85.218.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E9641037E3
+Received: from mail-pz0-f178.google.com (mail-pz0-f178.google.com
+	[209.85.222.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id 49B96103858
 	for <alsa-devel@alsa-project.org>;
-	Tue, 13 Apr 2010 17:36:13 +0200 (CEST)
-Received: by bwz20 with SMTP id 20so8902658bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2010 08:36:13 -0700 (PDT)
-In-Reply-To: <1271169489-339-2-git-send-email-s.hauer@pengutronix.de>
+	Tue, 13 Apr 2010 17:36:43 +0200 (CEST)
+Received: by pzk8 with SMTP id 8so121713pzk.16
+	for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2010 08:36:42 -0700 (PDT)
+In-Reply-To: <1271169489-339-3-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,15 +30,15 @@ Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 On Tue, 2010-04-13 at 16:38 +0200, Sascha Hauer wrote:
-> This causes a deadlock.
+> Currently the notification of elapsed periods is not very exact.
+> Increase minimum periods to 4.
 > 
-
-Code looks fine. Can you fixup the commit message, I assume this patch
-fixes rather than causes the deadlock ?
-
-Thanks
-
-Liam
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  sound/soc/imx/imx-pcm-fiq.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
 -- 
 Freelance Developer, SlimLogic Ltd
