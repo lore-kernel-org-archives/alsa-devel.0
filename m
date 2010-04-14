@@ -1,21 +1,29 @@
-From: Alexander Beregalov <a.beregalov@gmail.com>
-Subject: Re: 2.6.34-rc: sound hungs (ice1724)
-Date: Wed, 14 Apr 2010 12:46:20 +0400
-Message-ID: <l2oa4423d671004140146za643dfcfkb3d35d25c20d9cf0@mail.gmail.com>
-References: <x2ra4423d671004131323s58d606c4i33101f32f366568c@mail.gmail.com>
-	<s5h39yy5z45.wl%tiwai@suse.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: ALSA application programming: route audio from one
+	PCM to another
+Date: Wed, 14 Apr 2010 10:00:11 +0100
+Message-ID: <hq406t$sjk$1@dough.gmane.org>
+References: <4BC48C74.5010102@gmail.com> <hq25p7$8kd$1@dough.gmane.org>
+	<4BC58082.6090508@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f218.google.com (mail-bw0-f218.google.com
-	[209.85.218.218])
-	by alsa0.perex.cz (Postfix) with ESMTP id E8742244A0
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 46BCF244C0
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 10:46:20 +0200 (CEST)
-Received: by bwz10 with SMTP id 10so4507520bwz.4
-	for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2010 01:46:20 -0700 (PDT)
-In-Reply-To: <s5h39yy5z45.wl%tiwai@suse.de>
+	Wed, 14 Apr 2010 11:00:33 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1O1ySW-0005JZ-U1
+	for alsa-devel@alsa-project.org; Wed, 14 Apr 2010 11:00:32 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2010 11:00:32 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2010 11:00:32 +0200
+In-Reply-To: <4BC58082.6090508@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +33,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTQgQXByaWwgMjAxMCAxMDoyNiwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90
-ZToKPiBBdCBXZWQsIDE0IEFwciAyMDEwIDAwOjIzOjM3ICswNDAwLAo+IEFsZXhhbmRlciBCZXJl
-Z2Fsb3Ygd3JvdGU6Cj4+Cj4+IEhpIFRha2FzaGkKPj4KPj4gQ291bGQgeW91IHBsZWFzZSBoZWxw
-IG1lIGhvdyB0byBkZWJ1ZyBhbiBpc3N1ZS4KPj4gU29tZXRpbWVzIHNvdW5nIGh1bmdzLCBpdCBo
-YXBwZW5zIGZldyBkYXlzICh1cCB0byBhIHdlZWspIGFmdGVyIGJvb3QuCj4+IEkgaGF2ZSBubyBp
-ZGVhIGhvdyB0byByZXByb2R1Y2UgaXQgb3IgaG93IHRvIGRlYnVnIGl0Lgo+PiBUaGF0J3Mgd2h5
-IGl0IGlzIHZlcnkgaGFyZCB0byBiaXNlY3QsIEkgaGF2ZSBub3QgdHJpZWQsIHRoZSBiZXR0ZXIg
-d2F5Cj4+IHNob3VsZCBleGlzdC4KPj4gVGhlIHByb2JsZW0gYXBwZWFyZWQgc29tZXdoZXJlIGFm
-dGVyIDIuNi4zMy4KPj4KPj4gQ2FyZCBpcyBNLUF1ZGlvIFJldm8gNS4xICgxNDEyOjE3MjQpLgo+
-Pgo+PiBBZnRlciBpdCBodW5ncyBBTFNBIGNvbnRpbnVlcyB0byBwbGF5IGxhc3Qgc291bmQgZnJh
-bWUgZm9yZXZlci4KPj4gV2hlbiBJIHRyeSB0byBwbGF5IHNvbWV0aGluZyBlbHNlIHBsYXlpbmcg
-ZnJhbWUgY2hhbmdlcy4KPj4gT25seSByZWJvb3QgaGVhbHMgaXQuCj4+Cj4+IHJtbW9kIGh1bmdz
-IGF0Cj4+IElORk86IHRhc2sgcm1tb2Q6MzAzNTYgYmxvY2tlZCBmb3IgbW9yZSB0aGFuIDEyMCBz
-ZWNvbmRzLgo+PiAiZWNobyAwID4gL3Byb2Mvc3lzL2tlcm5lbC9odW5nX3Rhc2tfdGltZW91dF9z
-ZWNzIiBkaXNhYmxlcyB0aGlzIG1lc3NhZ2UuCj4+IHJtbW9kIMKgIMKgIMKgIMKgIEQgZGIyODFl
-N2MgwqAgwqAgMCAzMDM1NiDCoCAyMzQ1IDB4MDAwMDAwMDQKPj4gwqBkYjI4MWU4YyAwMDAwMDA4
-NiAwMDAwMDAwMiBkYjI4MWU3YyBjYzJkN2I5MCAwMDAwMDAwMCBjMTRlOGI4MCAwOWMzNjM4YQo+
-PiDCoGMxMDI1MmEwIDAwMDAwMDAxIGMxNGUyMDAwIGMxNGUyMDAwIGMxNGU4YjgwIGMxNGU4Yjgw
-IGNjMmQ3YTAwIGRiMjgxZThjCj4+IMKgMDAwMDAyNDYgZGIyODFlOGMgYzEwNDNkMjMgMDAwMDAw
-MDEgZjY5MjMwMDAgZjY5MjMxYjQgZGIyODFlOWMgZGIyODFlYmMKPj4gQ2FsbCBUcmFjZToKPj4g
-wqBbPGMxMDI1MmEwPl0gPyBfX3dha2VfdXArMHg0MC8weDUwCj4+IMKgWzxjMTA0M2QyMz5dID8g
-cHJlcGFyZV90b193YWl0KzB4NDMvMHg3MAo+PiDCoFs8ZjhjZTMyOGQ+XSBzbmRfY2FyZF9mcmVl
-KzB4NWQvMHg5MCBbc25kXQo+PiDCoFs8YzEwNDNhZjA+XSA/IGF1dG9yZW1vdmVfd2FrZV9mdW5j
-dGlvbisweDAvMHg0MAo+PiDCoFs8ZjllYmNhYTY+XSBzbmRfdnQxNzI0X3JlbW92ZSsweDEzLzB4
-MjUgW3NuZF9pY2UxNzI0XQo+PiDCoFs8YzExY2RkYjk+XSBwY2lfZGV2aWNlX3JlbW92ZSsweDE5
-LzB4NDAKPj4gwqBbPGMxMjM5ZjNlPl0gX19kZXZpY2VfcmVsZWFzZV9kcml2ZXIrMHgzZS8weDkw
-Cj4+IMKgWzxjMTIzYTAxNz5dIGRyaXZlcl9kZXRhY2grMHg4Ny8weDkwCj4+IMKgWzxjMTIzOTMy
-Mz5dIGJ1c19yZW1vdmVfZHJpdmVyKzB4NjMvMHhhMAo+PiDCoFs8YzEyM2E1MjY+XSBkcml2ZXJf
-dW5yZWdpc3RlcisweDQ2LzB4ODAKPj4gwqBbPGMxMGQ2MTZkPl0gPyBzeXNmc19yZW1vdmVfZmls
-ZSsweGQvMHgxMAo+PiDCoFs8YzExY2RmZWQ+XSBwY2lfdW5yZWdpc3Rlcl9kcml2ZXIrMHgyZC8w
-eDgwCj4+IMKgWzxmOWViY2E5MT5dIGFsc2FfY2FyZF9pY2UxNzI0X2V4aXQrMHhkLzB4ZiBbc25k
-X2ljZTE3MjRdCj4+IMKgWzxjMTA1N2JlZT5dIHN5c19kZWxldGVfbW9kdWxlKzB4MTVlLzB4MjEw
-Cj4+IMKgWzxjMTA3ZjkxZj5dID8gcmVtb3ZlX3ZtYSsweDNmLzB4NjAKPj4gwqBbPGMxMDgwOTAy
-Pl0gPyBkb19tdW5tYXArMHgyMDIvMHgyZDAKPj4gwqBbPGMxMDAyYjUwPl0gc3lzZW50ZXJfZG9f
-Y2FsbCsweDEyLzB4MjYKPgo+IFRoaXMgaXMgb2RkLiDCoERvbid0IHlvdSBzZWUgYW55IG90aGVy
-IG1lc3NhZ2VzIGJlZm9yZSB0aGF0PwpObyBtZXNzYWdlcy4gSSBjYW4gdHJ5IHRvIGJvb3Qgd2l0
-aCBpZ25vcmVfbG9nbGV2ZWwgcGFyYW1ldGVyLgo+Cj4gVGhlcmUgYXJlIGFsbW9zdCBubyBjaGFu
-Z2UgaW4gaWNlMTcyeC4gwqBUaHVzLCBpZiBhbnksIHRoZSByZWdyZXNzaW9uCj4gbXVzdCBiZSBp
-biBBTFNBIGNvcmUuIMKgVGhlcmUgaGF2ZSBiZWVuIG1hbnkgY2hhbmdlcyBvZiBQQ00gaHctdXBk
-YXRlciwKPiBhdCBsZWFzdC4KSXQgc2VlbXMgdGhlIGJ1ZyBpcyBpbiB0aGUgY29yZSwgYnV0IGlu
-IHRoaXMgY2FzZSBJIHNob3VsZCBub3QgYmUgdGhlCm9ubHkgcmVwb3J0ZXIuCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+'Twas brillig, and Stefan Schoenleitner at 14/04/10 09:44 did gyre and
+gimble:
+> Colin Guthrie wrote:
+>> 'Twas brillig, and Stefan Schoenleitner at 13/04/10 16:23 did gyre and
+>> gimble:
+>>> Hi,
+>>>
+>>> I finally managed to write an ALSA I/O plugin that does what I want.
+>>> The plugin supports both playback and capture.
+>>>
+>>> Now I would like to write a simple audio application that takes audio
+>>> samples
+>>>
+>>> 	* from the microphone and plays it back on my plugin
+>>> and
+>>> 	* from the plugin (capture) and plays it back on the speakers
+>>>
+>>
+>> This sounds like something that would be more appropriate for jack
+>> http://jackaudio.org/
+> 
+> Thanks for your response, that really sounds like a job for JACK.
+> 
+> However, due to the nature of jack it seems that running the jack-daemon
+> is always necessary.
+> As my code is supposed to work on a very small scale embedded target, I
+> would prefer to have a small stand-alone application that does not
+> require a running jack-daemon.
+> 
+> * Do you know if it is possible to use the jack functionality without
+> having to run the jack-daemon ?
+
+I'm afraid not. Like PulseAudio, Jack needs the daemon to do all the
+hard stuff.
+
+I guess you'll just have to write some small app that does the
+record/playback. I doubt it'll be that hard.
+
+That said, with this approach, the fact that you've got an alsa plugin
+doing the processing in the middle seems slightly irrelevant... why not
+have your app sample the input, do the DSP it needs to do, then play the
+output? No need to: sample, play [process] sample, play. Rather: sample
+[process] play.
+
+Perhaps I'm not understanding the other needs/use cases of the plugin
+tho'. Just idle thoughts :)
+
+>>> Hence as long as the application is running, it should do the above.
+>>>
+>>> * Is there a special ALSA way to route audio from one PCM to another ?
+>>>
+>>> * If not, I suppose it would just work if I open the plugin PCM and the
+>>> hw PCM at the same time and copy audio frames between them ?
+>>
+>> Dealing with this can be quite complex, especially if the pcms are
+>> clocked of different sources, you have to deal with a degree of
+>> resampling to ensure that clock skew doesn't get out of control.
+> 
+> Both PCMs are on the same machine, hence they should be clocked from the
+> same source as well ?
+
+I believe this is quite likely, but I'm not really certain that it holds
+true in all cases.
+
+Someone more clued up than me may be able to comment.
+
+Col
+
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
