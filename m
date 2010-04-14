@@ -1,90 +1,150 @@
-From: Daniel Mack <daniel@caiaq.de>
+From: Pedro Ribeiro <pedrib@gmail.com>
 Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Wed, 14 Apr 2010 12:09:46 +0200
-Message-ID: <20100414100946.GS30807@buzzloop.caiaq.de>
+Date: Wed, 14 Apr 2010 11:47:33 +0100
+Message-ID: <t2w74fd948d1004140347k3447bffapb73856eacddfde55@mail.gmail.com>
 References: <20100412162947.GQ18855@one.firstfloor.org>
-	<Pine.LNX.4.44L0.1004121252310.1702-100000@iolanthe.rowland.org>
-	<20100413182233.GR30807@buzzloop.caiaq.de>
-	<k2o74fd948d1004131646k1e0e1897z7594f77a580c6b9f@mail.gmail.com>
+	 <Pine.LNX.4.44L0.1004121252310.1702-100000@iolanthe.rowland.org>
+	 <20100413182233.GR30807@buzzloop.caiaq.de>
+	 <k2o74fd948d1004131646k1e0e1897z7594f77a580c6b9f@mail.gmail.com>
+	 <20100414100946.GS30807@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8B3C11038B9
-	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 12:09:50 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <k2o74fd948d1004131646k1e0e1897z7594f77a580c6b9f@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pedro Ribeiro <pedrib@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Greg KH <gregkh@suse.de>, linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>, Alan Stern <stern@rowland.harvard.edu>, akpm@linux-foundation.org
+Content-Type: text/plain; charset=ISO-8859-1
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20100414100946.GS30807@buzzloop.caiaq.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-usb@vger.kernel.org
+Cc: Alan Stern <stern@rowland.harvard.edu>, Andi Kleen <andi@firstfloor.org>, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 14, 2010 at 12:46:42AM +0100, Pedro Ribeiro wrote:
-> On 13 April 2010 19:22, Daniel Mack <daniel@caiaq.de> wrote:
-> > Some more ideas to nail this down would be to boot the machine with
-> > mem=3D4096M and mem=3D2048M to see whether this makes any difference. A=
-lso,
-> > I think it would be interesting to know whether the patch below helps.
-> >
-> > As the real reason seems entirely obfuscated, there's unfortunately need
-> > for some trial error approach. Pedro, as you're the only one who can
-> > actually reproduce the problem, do you see any chance to do that?
-> >
-> > Thanks,
-> > Daniel
-> >
-> >
-> > diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-> > index 4328cad..26013be 100644
-> > --- a/sound/usb/caiaq/audio.c
-> > +++ b/sound/usb/caiaq/audio.c
-> > @@ -560,7 +560,7 @@ static struct urb **alloc_urbs(struct snd_usb_caiaq=
-dev *dev, int dir, int *ret)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> >
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0urbs[i]->transfer_buffer =3D
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kmalloc(FRAMES_PER_URB * =
-BYTES_PER_FRAME, GFP_KERNEL);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kmalloc(FRAMES_PER_URB * =
-BYTES_PER_FRAME, GFP_KERNEL | GFP_DMA);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (!urbs[i]->transfer_buffer) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0log("unable to kmalloc()=
- transfer buffer, OOM!?\n");
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*ret =3D -ENOMEM;
-> >
-> >
-> =
+On 14 April 2010 11:09, Daniel Mack <daniel@caiaq.de> wrote:
 
-> Good news, I can't trigger the interference with either:
-> - mem=3D2048m
-> - mem=3D4096m
-> - your patch
+> Thanks! So the only thing I can do for now is submit exactly this patch.
+> At least, it helps you and it shouldn't break anything. The question
+> remains whether this type of memory should be used for all
+> transfer_buffers.
+>
 
-Thanks! So the only thing I can do for now is submit exactly this patch.
-At least, it helps you and it shouldn't break anything. The question
-remains whether this type of memory should be used for all
-transfer_buffers.
+Is there any chance you could push this to -stable? I don't care
+because I always use the latest kernel, but the next Debian stable and
+Ubuntu LTS are going to use 2.6.32.
 
-> Any idea why is mem=3D4096m different than a regular boot since I have 4G=
-B anyway?
+>> Any idea why is mem=4096m different than a regular boot since I have 4GB anyway?
+>
+> On Fri, Apr 09, 2010 at 04:11:52PM -0600, Robert Hancock wrote:
+>> If you have 4GB of RAM then almost certainly you have memory located
+>> at addresses over 4GB. If you look at the e820 memory map printed at
+>> the start of dmesg on bootup and see entries with addresses of
+>> 100000000 or higher reported as usable, then this is the case.
+>
+> Could you post the these e820 line from your dmesg when booted with
+> mem=4096?
+>
+> Daniel
+>
+>
 
-On Fri, Apr 09, 2010 at 04:11:52PM -0600, Robert Hancock wrote:
-> If you have 4GB of RAM then almost certainly you have memory located
-> at addresses over 4GB. If you look at the e820 memory map printed at
-> the start of dmesg on bootup and see entries with addresses of
-> 100000000 or higher reported as usable, then this is the case.
+This is the e820 WITHOUT mem=4096m:
 
-Could you post the these e820 line from your dmesg when booted with
-mem=3D4096?
+[    0.000000] BIOS-provided physical RAM map:
+[    0.000000]  BIOS-e820: 0000000000000000 - 000000000009ec00 (usable)
+[    0.000000]  BIOS-e820: 000000000009ec00 - 00000000000a0000 (reserved)
+[    0.000000]  BIOS-e820: 00000000000dc000 - 0000000000100000 (reserved)
+[    0.000000]  BIOS-e820: 0000000000100000 - 00000000bd4a1000 (usable)
+[    0.000000]  BIOS-e820: 00000000bd4a1000 - 00000000bd4a7000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd4a7000 - 00000000bd5b8000 (usable)
+[    0.000000]  BIOS-e820: 00000000bd5b8000 - 00000000bd60f000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd60f000 - 00000000bd6c6000 (usable)
+[    0.000000]  BIOS-e820: 00000000bd6c6000 - 00000000bd6d1000 (ACPI NVS)
+[    0.000000]  BIOS-e820: 00000000bd6d1000 - 00000000bd6d4000 (ACPI data)
+[    0.000000]  BIOS-e820: 00000000bd6d4000 - 00000000bd6d8000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd6d8000 - 00000000bd6dc000 (ACPI NVS)
+[    0.000000]  BIOS-e820: 00000000bd6dc000 - 00000000bd6df000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd6df000 - 00000000bd706000 (ACPI NVS)
+[    0.000000]  BIOS-e820: 00000000bd706000 - 00000000bd708000 (ACPI data)
+[    0.000000]  BIOS-e820: 00000000bd708000 - 00000000bd90f000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd90f000 - 00000000bd99f000 (ACPI NVS)
+[    0.000000]  BIOS-e820: 00000000bd99f000 - 00000000bd9ff000 (ACPI data)
+[    0.000000]  BIOS-e820: 00000000bd9ff000 - 00000000bda00000 (usable)
+[    0.000000]  BIOS-e820: 00000000bdc00000 - 00000000c0000000 (reserved)
+[    0.000000]  BIOS-e820: 00000000e0000000 - 00000000f0000000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fec00000 - 00000000fec10000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fed00000 - 00000000fed00400 (reserved)
+[    0.000000]  BIOS-e820: 00000000fed10000 - 00000000fed14000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fed18000 - 00000000fed1a000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fed1c000 - 00000000fed90000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fee00000 - 00000000fee01000 (reserved)
+[    0.000000]  BIOS-e820: 00000000ff800000 - 0000000100000000 (reserved)
+[    0.000000]  BIOS-e820: 0000000100000000 - 000000013c000000 (usable)
 
-Daniel
+
+
+This is the e820 output WITH mem=4096m
+
+[    0.000000] BIOS-provided physical RAM map:
+[    0.000000]  BIOS-e820: 0000000000000000 - 000000000009ec00 (usable)
+[    0.000000]  BIOS-e820: 000000000009ec00 - 00000000000a0000 (reserved)
+[    0.000000]  BIOS-e820: 00000000000dc000 - 0000000000100000 (reserved)
+[    0.000000]  BIOS-e820: 0000000000100000 - 00000000bd4a1000 (usable)
+[    0.000000]  BIOS-e820: 00000000bd4a1000 - 00000000bd4a7000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd4a7000 - 00000000bd5b8000 (usable)
+[    0.000000]  BIOS-e820: 00000000bd5b8000 - 00000000bd60f000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd60f000 - 00000000bd6c6000 (usable)
+[    0.000000]  BIOS-e820: 00000000bd6c6000 - 00000000bd6d1000 (ACPI NVS)
+[    0.000000]  BIOS-e820: 00000000bd6d1000 - 00000000bd6d4000 (ACPI data)
+[    0.000000]  BIOS-e820: 00000000bd6d4000 - 00000000bd6d8000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd6d8000 - 00000000bd6dc000 (ACPI NVS)
+[    0.000000]  BIOS-e820: 00000000bd6dc000 - 00000000bd6df000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd6df000 - 00000000bd706000 (ACPI NVS)
+[    0.000000]  BIOS-e820: 00000000bd706000 - 00000000bd708000 (ACPI data)
+[    0.000000]  BIOS-e820: 00000000bd708000 - 00000000bd90f000 (reserved)
+[    0.000000]  BIOS-e820: 00000000bd90f000 - 00000000bd99f000 (ACPI NVS)
+[    0.000000]  BIOS-e820: 00000000bd99f000 - 00000000bd9ff000 (ACPI data)
+[    0.000000]  BIOS-e820: 00000000bd9ff000 - 00000000bda00000 (usable)
+[    0.000000]  BIOS-e820: 00000000bdc00000 - 00000000c0000000 (reserved)
+[    0.000000]  BIOS-e820: 00000000e0000000 - 00000000f0000000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fec00000 - 00000000fec10000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fed00000 - 00000000fed00400 (reserved)
+[    0.000000]  BIOS-e820: 00000000fed10000 - 00000000fed14000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fed18000 - 00000000fed1a000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fed1c000 - 00000000fed90000 (reserved)
+[    0.000000]  BIOS-e820: 00000000fee00000 - 00000000fee01000 (reserved)
+[    0.000000]  BIOS-e820: 00000000ff800000 - 0000000100000000 (reserved)
+[    0.000000]  BIOS-e820: 0000000100000000 - 000000013c000000 (usable)
+[    0.000000] NX (Execute Disable) protection: active
+[    0.000000] user-defined physical RAM map:
+[    0.000000]  user: 0000000000000000 - 000000000009ec00 (usable)
+[    0.000000]  user: 000000000009ec00 - 00000000000a0000 (reserved)
+[    0.000000]  user: 00000000000dc000 - 0000000000100000 (reserved)
+[    0.000000]  user: 0000000000100000 - 00000000bd4a1000 (usable)
+[    0.000000]  user: 00000000bd4a1000 - 00000000bd4a7000 (reserved)
+[    0.000000]  user: 00000000bd4a7000 - 00000000bd5b8000 (usable)
+[    0.000000]  user: 00000000bd5b8000 - 00000000bd60f000 (reserved)
+[    0.000000]  user: 00000000bd60f000 - 00000000bd6c6000 (usable)
+[    0.000000]  user: 00000000bd6c6000 - 00000000bd6d1000 (ACPI NVS)
+[    0.000000]  user: 00000000bd6d1000 - 00000000bd6d4000 (ACPI data)
+[    0.000000]  user: 00000000bd6d4000 - 00000000bd6d8000 (reserved)
+[    0.000000]  user: 00000000bd6d8000 - 00000000bd6dc000 (ACPI NVS)
+[    0.000000]  user: 00000000bd6dc000 - 00000000bd6df000 (reserved)
+[    0.000000]  user: 00000000bd6df000 - 00000000bd706000 (ACPI NVS)
+[    0.000000]  user: 00000000bd706000 - 00000000bd708000 (ACPI data)
+[    0.000000]  user: 00000000bd708000 - 00000000bd90f000 (reserved)
+[    0.000000]  user: 00000000bd90f000 - 00000000bd99f000 (ACPI NVS)
+[    0.000000]  user: 00000000bd99f000 - 00000000bd9ff000 (ACPI data)
+[    0.000000]  user: 00000000bd9ff000 - 00000000bda00000 (usable)
+[    0.000000]  user: 00000000bdc00000 - 00000000c0000000 (reserved)
+[    0.000000]  user: 00000000e0000000 - 00000000f0000000 (reserved)
+[    0.000000]  user: 00000000fec00000 - 00000000fec10000 (reserved)
+[    0.000000]  user: 00000000fed00000 - 00000000fed00400 (reserved)
+[    0.000000]  user: 00000000fed10000 - 00000000fed14000 (reserved)
+[    0.000000]  user: 00000000fed18000 - 00000000fed1a000 (reserved)
+[    0.000000]  user: 00000000fed1c000 - 00000000fed90000 (reserved)
+[    0.000000]  user: 00000000fee00000 - 00000000fee01000 (reserved)
+[    0.000000]  user: 00000000ff800000 - 0000000100000000 (reserved)
+
+So basically the BIOS is incorrectly reporting
+BIOS-e820: 0000000100000000 - 000000013c000000 (usable)
+
+right?
+
+Thanks,
+Pedro
