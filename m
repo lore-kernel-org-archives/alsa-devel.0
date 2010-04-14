@@ -1,20 +1,21 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: Re: ALSA application programming: route audio from one
- PCM to another
-Date: Wed, 14 Apr 2010 11:36:01 +0200
-Message-ID: <4BC58C81.7090001@gmail.com>
-References: <4BC48C74.5010102@gmail.com>
-	<hq25p7$8kd$1@dough.gmane.org>	<4BC58082.6090508@gmail.com>
-	<hq406t$sjk$1@dough.gmane.org>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: USB transfer_buffer allocations on 64bit systems
+Date: Wed, 14 Apr 2010 12:09:46 +0200
+Message-ID: <20100414100946.GS30807@buzzloop.caiaq.de>
+References: <20100412162947.GQ18855@one.firstfloor.org>
+	<Pine.LNX.4.44L0.1004121252310.1702-100000@iolanthe.rowland.org>
+	<20100413182233.GR30807@buzzloop.caiaq.de>
+	<k2o74fd948d1004131646k1e0e1897z7594f77a580c6b9f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 436B6103899
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B3C11038B9
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 11:36:03 +0200 (CEST)
-In-Reply-To: <hq406t$sjk$1@dough.gmane.org>
+	Wed, 14 Apr 2010 12:09:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <k2o74fd948d1004131646k1e0e1897z7594f77a580c6b9f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,80 +25,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: alsa-devel@alsa-project.org
+To: Pedro Ribeiro <pedrib@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Greg KH <gregkh@suse.de>, linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>, Alan Stern <stern@rowland.harvard.edu>, akpm@linux-foundation.org
 List-Id: alsa-devel@alsa-project.org
 
-Colin Guthrie wrote:
->> * Do you know if it is possible to use the jack functionality without
->> having to run the jack-daemon ?
-> 
-> I'm afraid not. Like PulseAudio, Jack needs the daemon to do all the
-> hard stuff.
-> 
-> I guess you'll just have to write some small app that does the
-> record/playback. I doubt it'll be that hard.
+On Wed, Apr 14, 2010 at 12:46:42AM +0100, Pedro Ribeiro wrote:
+> On 13 April 2010 19:22, Daniel Mack <daniel@caiaq.de> wrote:
+> > Some more ideas to nail this down would be to boot the machine with
+> > mem=3D4096M and mem=3D2048M to see whether this makes any difference. A=
+lso,
+> > I think it would be interesting to know whether the patch below helps.
+> >
+> > As the real reason seems entirely obfuscated, there's unfortunately need
+> > for some trial error approach. Pedro, as you're the only one who can
+> > actually reproduce the problem, do you see any chance to do that?
+> >
+> > Thanks,
+> > Daniel
+> >
+> >
+> > diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+> > index 4328cad..26013be 100644
+> > --- a/sound/usb/caiaq/audio.c
+> > +++ b/sound/usb/caiaq/audio.c
+> > @@ -560,7 +560,7 @@ static struct urb **alloc_urbs(struct snd_usb_caiaq=
+dev *dev, int dir, int *ret)
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> >
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0urbs[i]->transfer_buffer =3D
+> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kmalloc(FRAMES_PER_URB * =
+BYTES_PER_FRAME, GFP_KERNEL);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kmalloc(FRAMES_PER_URB * =
+BYTES_PER_FRAME, GFP_KERNEL | GFP_DMA);
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (!urbs[i]->transfer_buffer) {
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0log("unable to kmalloc()=
+ transfer buffer, OOM!?\n");
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*ret =3D -ENOMEM;
+> >
+> >
+> =
 
-I guess I will try that first.
-If it doesn't work I can still try jack.
+> Good news, I can't trigger the interference with either:
+> - mem=3D2048m
+> - mem=3D4096m
+> - your patch
 
-> That said, with this approach, the fact that you've got an alsa plugin
-> doing the processing in the middle seems slightly irrelevant... why not
-> have your app sample the input, do the DSP it needs to do, then play the
-> output? No need to: sample, play [process] sample, play. Rather: sample
-> [process] play.
-> 
-> Perhaps I'm not understanding the other needs/use cases of the plugin
-> tho'. Just idle thoughts :)
+Thanks! So the only thing I can do for now is submit exactly this patch.
+At least, it helps you and it shouldn't break anything. The question
+remains whether this type of memory should be used for all
+transfer_buffers.
 
-In the beginning I had a similar idea as well ;)
-However, in more detail the DSP actually does speech compression.
-The compressed speech should then be sent to a remote host where it is
-decompressed again.
+> Any idea why is mem=3D4096m different than a regular boot since I have 4G=
+B anyway?
 
-Hence one host samples speech coming from the microphone and plays it
-back via the io plugin.
-The plugin takes the samples and forwards them to the DSP so that they
-can be compressed.
-After some processing delay the DSP will output the compressed speech
-packets.
-These compressed packets are then read by the plugin and written to a
-socket.
+On Fri, Apr 09, 2010 at 04:11:52PM -0600, Robert Hancock wrote:
+> If you have 4GB of RAM then almost certainly you have memory located
+> at addresses over 4GB. If you look at the e820 memory map printed at
+> the start of dmesg on bootup and see entries with addresses of
+> 100000000 or higher reported as usable, then this is the case.
 
-The remote host eventually receives the compressed speech packets and
-the same process can be performed in reverse so that the decompressed
-speech will come out of the speakers.
+Could you post the these e820 line from your dmesg when booted with
+mem=3D4096?
 
-As this should work in both directions at the same time, each side needs
-to capture and playback at the same time as well.
-
-Of course, like you said, it would be possible to do that without the io
-plugin in between (so that the audio application would directly
-communicate with the DSP).
-
-The drawback of this solution is that only the written audio application
-could actually use the DSP.
-
-However, with the ALSA io plugin a lot of flexibility is gained as just
-about any audio application can use the speech compression DSP without
-having to change the application itself.
-Another thing is that the DSP only allows a single sampling rate and
-audio format.
-As it is possible to chain different alsa plugins together, it would
-also be easy to resample and convert just about any audio format to the
-format the DSP requires ;)
-
-Hence in the end you could fire up your favorite media player and play
-an mp3 or a movie over the plugin.
-After that speech compression would be performed and in the end you
-could hear that sound on the remote host.
-(Of course that will only work well for speech as the DSP does speech
-compression and not generic audio compression.)
-
-At least that's the plan for now ;)
-Until then there is some more work to be done.
-
-So what do think ?
-
-cheers,
-stefan
+Daniel
