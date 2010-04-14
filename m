@@ -1,29 +1,20 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
+From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
 Subject: Re: ALSA application programming: route audio from one
-	PCM to another
-Date: Wed, 14 Apr 2010 10:00:11 +0100
-Message-ID: <hq406t$sjk$1@dough.gmane.org>
-References: <4BC48C74.5010102@gmail.com> <hq25p7$8kd$1@dough.gmane.org>
-	<4BC58082.6090508@gmail.com>
+ PCM to another
+Date: Wed, 14 Apr 2010 11:36:01 +0200
+Message-ID: <4BC58C81.7090001@gmail.com>
+References: <4BC48C74.5010102@gmail.com>
+	<hq25p7$8kd$1@dough.gmane.org>	<4BC58082.6090508@gmail.com>
+	<hq406t$sjk$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 46BCF244C0
+Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id 436B6103899
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 11:00:33 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1O1ySW-0005JZ-U1
-	for alsa-devel@alsa-project.org; Wed, 14 Apr 2010 11:00:32 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2010 11:00:32 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2010 11:00:32 +0200
-In-Reply-To: <4BC58082.6090508@gmail.com>
+	Wed, 14 Apr 2010 11:36:03 +0200 (CEST)
+In-Reply-To: <hq406t$sjk$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,86 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Colin Guthrie <gmane@colin.guthr.ie>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Stefan Schoenleitner at 14/04/10 09:44 did gyre and
-gimble:
-> Colin Guthrie wrote:
->> 'Twas brillig, and Stefan Schoenleitner at 13/04/10 16:23 did gyre and
->> gimble:
->>> Hi,
->>>
->>> I finally managed to write an ALSA I/O plugin that does what I want.
->>> The plugin supports both playback and capture.
->>>
->>> Now I would like to write a simple audio application that takes audio
->>> samples
->>>
->>> 	* from the microphone and plays it back on my plugin
->>> and
->>> 	* from the plugin (capture) and plays it back on the speakers
->>>
->>
->> This sounds like something that would be more appropriate for jack
->> http://jackaudio.org/
+Colin Guthrie wrote:
+>> * Do you know if it is possible to use the jack functionality without
+>> having to run the jack-daemon ?
 > 
-> Thanks for your response, that really sounds like a job for JACK.
+> I'm afraid not. Like PulseAudio, Jack needs the daemon to do all the
+> hard stuff.
 > 
-> However, due to the nature of jack it seems that running the jack-daemon
-> is always necessary.
-> As my code is supposed to work on a very small scale embedded target, I
-> would prefer to have a small stand-alone application that does not
-> require a running jack-daemon.
+> I guess you'll just have to write some small app that does the
+> record/playback. I doubt it'll be that hard.
+
+I guess I will try that first.
+If it doesn't work I can still try jack.
+
+> That said, with this approach, the fact that you've got an alsa plugin
+> doing the processing in the middle seems slightly irrelevant... why not
+> have your app sample the input, do the DSP it needs to do, then play the
+> output? No need to: sample, play [process] sample, play. Rather: sample
+> [process] play.
 > 
-> * Do you know if it is possible to use the jack functionality without
-> having to run the jack-daemon ?
+> Perhaps I'm not understanding the other needs/use cases of the plugin
+> tho'. Just idle thoughts :)
 
-I'm afraid not. Like PulseAudio, Jack needs the daemon to do all the
-hard stuff.
+In the beginning I had a similar idea as well ;)
+However, in more detail the DSP actually does speech compression.
+The compressed speech should then be sent to a remote host where it is
+decompressed again.
 
-I guess you'll just have to write some small app that does the
-record/playback. I doubt it'll be that hard.
+Hence one host samples speech coming from the microphone and plays it
+back via the io plugin.
+The plugin takes the samples and forwards them to the DSP so that they
+can be compressed.
+After some processing delay the DSP will output the compressed speech
+packets.
+These compressed packets are then read by the plugin and written to a
+socket.
 
-That said, with this approach, the fact that you've got an alsa plugin
-doing the processing in the middle seems slightly irrelevant... why not
-have your app sample the input, do the DSP it needs to do, then play the
-output? No need to: sample, play [process] sample, play. Rather: sample
-[process] play.
+The remote host eventually receives the compressed speech packets and
+the same process can be performed in reverse so that the decompressed
+speech will come out of the speakers.
 
-Perhaps I'm not understanding the other needs/use cases of the plugin
-tho'. Just idle thoughts :)
+As this should work in both directions at the same time, each side needs
+to capture and playback at the same time as well.
 
->>> Hence as long as the application is running, it should do the above.
->>>
->>> * Is there a special ALSA way to route audio from one PCM to another ?
->>>
->>> * If not, I suppose it would just work if I open the plugin PCM and the
->>> hw PCM at the same time and copy audio frames between them ?
->>
->> Dealing with this can be quite complex, especially if the pcms are
->> clocked of different sources, you have to deal with a degree of
->> resampling to ensure that clock skew doesn't get out of control.
-> 
-> Both PCMs are on the same machine, hence they should be clocked from the
-> same source as well ?
+Of course, like you said, it would be possible to do that without the io
+plugin in between (so that the audio application would directly
+communicate with the DSP).
 
-I believe this is quite likely, but I'm not really certain that it holds
-true in all cases.
+The drawback of this solution is that only the written audio application
+could actually use the DSP.
 
-Someone more clued up than me may be able to comment.
+However, with the ALSA io plugin a lot of flexibility is gained as just
+about any audio application can use the speech compression DSP without
+having to change the application itself.
+Another thing is that the DSP only allows a single sampling rate and
+audio format.
+As it is possible to chain different alsa plugins together, it would
+also be easy to resample and convert just about any audio format to the
+format the DSP requires ;)
 
-Col
+Hence in the end you could fire up your favorite media player and play
+an mp3 or a movie over the plugin.
+After that speech compression would be performed and in the end you
+could hear that sound on the remote host.
+(Of course that will only work well for speech as the DSP does speech
+compression and not generic audio compression.)
 
--- 
+At least that's the plan for now ;)
+Until then there is some more work to be done.
 
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
+So what do think ?
 
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+cheers,
+stefan
