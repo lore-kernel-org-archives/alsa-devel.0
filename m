@@ -1,21 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] imx-ssi: do not call hrtimer_disable
- in trigger function
-Date: Wed, 14 Apr 2010 08:41:12 +0100
-Message-ID: <1271230872.3235.228.camel@odin>
-References: <1271229451-26692-1-git-send-email-s.hauer@pengutronix.de>
-	<1271229451-26692-2-git-send-email-s.hauer@pengutronix.de>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: pulseaudio eats 19% CPU power in Fedora 12
+Date: Wed, 14 Apr 2010 15:56:58 +0800
+Message-ID: <20100414075658.GA26283@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 2A1962444A
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 618C92445E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 09:41:20 +0200 (CEST)
-Received: by wyb29 with SMTP id 29so1452301wyb.38
-	for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2010 00:41:18 -0700 (PDT)
-In-Reply-To: <1271229451-26692-2-git-send-email-s.hauer@pengutronix.de>
+	Wed, 14 Apr 2010 09:57:15 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,19 +20,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Valentin Longchamp <valentin.longchamp@epfl.ch>
+To: Lennart Poettering <lennart@poettering.net>
+Cc: pulseaudio-discuss@mail.0pointer.de, "Fu, Michael" <michael.fu@intel.com>, alsa-devel@alsa-project.org, "He, Shuang" <shuang.he@intel.com>, "Bu, Long" <long.bu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-04-14 at 09:17 +0200, Sascha Hauer wrote:
-> Doing so causes a deadlock, so just signal the timer to stop
-> using an atomic variable.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+Hi Lennart,
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+We found that pulseaudio eats CPU ~19% CPU time, a little more than
+mplayer when playing video. This is horrible for laptop batteries.
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Can we make it just work -- in green CPU mode? I can find many users
+complaining about this, and it seems like some fix is available in
+this link:
+https://bugs.launchpad.net/ubuntu/+source/pulseaudio/+bug/207135
+
+Thanks,
+Fengguang
