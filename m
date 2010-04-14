@@ -1,21 +1,28 @@
-From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
-Subject: Re: [Cooker] Totem playing videos at fast-forward
-	speed ?
-Date: Wed, 14 Apr 2010 16:12:58 -0300
-Message-ID: <201004141612.58843.herton@mandriva.com.br>
-References: <4BBB9378.1080902@roadrunner.com>
-	<201004061923.18883.herton@mandriva.com.br>
-	<4BC4E8DF.10006@tudelft.nl>
+From: Gregory T Flynn <gflynn1@binghamton.edu>
+Subject: Re: no soundcards detected on MCP51 rev a
+Date: Wed, 14 Apr 2010 15:16:31 -0400
+Message-ID: <o2zb98465221004141216t9a1bd313h75f3a6f39bd4fb71@mail.gmail.com>
+References: <i2qb98465221004131406ze558772bq74e2ffac68e1f12a@mail.gmail.com>
+	<r2m604760771004131619p2ac8d6fasb387dccb325a55ae@mail.gmail.com>
+	<v2rb98465221004131834o14d1d48brba3a39da322e2011@mail.gmail.com>
+	<y2rb98465221004140547m50808d75q5a896bea789b655e@mail.gmail.com>
+	<s5hvdbuvx2n.wl%tiwai@suse.de>
+	<m2ub98465221004141044ub0cb4628zbebdc7a0a4e02524@mail.gmail.com>
+	<s5hd3y15285.wl%tiwai@suse.de>
+	<k2ib98465221004141119s4e20d1c4yff1df888940dbbc2@mail.gmail.com>
+	<s5haat551yn.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
-	[200.140.247.100])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0F2F1103832
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA632103838
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 21:13:05 +0200 (CEST)
-In-Reply-To: <4BC4E8DF.10006@tudelft.nl>
+	Wed, 14 Apr 2010 21:24:19 +0200 (CEST)
+Received: by vws15 with SMTP id 15so3631vws.38
+	for <alsa-devel@alsa-project.org>; Wed, 14 Apr 2010 12:24:17 -0700 (PDT)
+In-Reply-To: <s5haat551yn.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +32,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: =?utf-8?q?=C3=89ric_Piel?= <E.A.B.Piel@tudelft.nl>
-Cc: Frank Griffin <ftg@roadrunner.com>, alsa-devel@alsa-project.org, cooker@mandrivalinux.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-RW0gVGVyIDEzIEFiciAyMDEwLCDDoHMgMTg6NTc6NTEsIMOJcmljIFBpZWwgZXNjcmV2ZXU6Cj4g
-T3AgMDctMDQtMTAgMDA6MjMsIEhlcnRvbiBSb25hbGRvIEtyemVzaW5za2kgc2NocmVlZjoKPiA+
-IEVtIFRlciAwNiBBYnIgMjAxMCwgw6BzIDE4OjUyOjA4LCDDiXJpYyBQaWVsIGVzY3JldmV1Ogo+
-ID4+IE9wIDA2LTA0LTEwIDIyOjI5LCBGcmFuayBHcmlmZmluIHNjaHJlZWY6Cj4gPj4+IEFuc3Np
-IEhhbm51bGEgd3JvdGU6Cj4gPj4+PiBUcnkgbXBsYXllcjoKPiA+Pj4+IG1wbGF5ZXIgZmlsZQo+
-ID4+Pj4gICAKPiA+Pj4KPiA+Pj4gU2FtZSBzcGVlZHVwIHN5bXB0b20gYXMgVG90ZW0KPiA+Pj4K
-PiA+Pj4+IGFuZCBtcGxheWVyIHdpdGhvdXQgYXVkaW86Cj4gPj4+PiBtcGxheWVyIC1hbyBudWxs
-IGZpbGUKPiA+Pj4+ICAgCj4gPj4+Cj4gPj4+IEJhY2sgdG8gbm9ybWFsIHNwZWVkLgo+ID4+Pgo+
-ID4+Cj4gPj4gSGksCj4gPj4gSSdtIGV4cGVyaWVuY2luZyBhIHNpbWlsYXIgcHJvYmxlbSBvbiBh
-IG1hY2hpbmUgd2l0aCBhbiBpbnRlbCBIREEuIEl0Cj4gPj4gaGFwcGVucyBvbmx5IHdpdGggYSBr
-ZXJuZWwgMi42LjM0LXJjKi4gV2l0aCBhIHZhbmlsbGEgMi42LjMzLCBldmVyeXRoaW5nCj4gPj4g
-aXMgZmluZS4gSXMgeW91ciBrZXJuZWwgdGhlIG5vcm1hbCBjb29rZXIga2VybmVsPwo+ID4+Cj4g
-Pj4gRG9lcyBhbnlvbmUga25vdyBpZiB0aGVyZSBhcmUgc29tZSB1cGRhdGUgdG8gYWxzYSBpbiB0
-aGlzIGtlcm5lbAo+ID4+IGNvbXBhcmVkIHRvIHRoZSB2YW5pbGxhIGtlcm5lbD8KPiA+IAo+ID4g
-eWVzLCB0aGVyZSBpcyBzb21lIHBjbV9saWIgY2hhbmdlcyBhcHBsaWVkIGZyb20gMi42LjM0LXJj
-KiBiZWNhdXNlIG9mCj4gPiBwdWxzZWF1ZGlvLiBXb3VsZCBiZSBnb29kIHRvIGtub3cgaWYgcmV2
-ZXJ0aW5nIHRoZXNlIGNoYW5nZXMgb24gMi42LjM0IGZpeGVzCj4gPiB0aGUgcHJvYmxlbToKPiA+
-IEFMU0E6IHBjbV9saWIgLSBmaXggeHJ1biBmdW5jdGlvbmFsaXR5Cj4gPiBBTFNBOiBwY21fbmF0
-aXZlIC0gZml4IHJ1bnRpbWUtPmJvdW5kYXJ5IGNhbGN1bGF0aW9uCj4gPiBBTFNBOiBwY21fbGli
-IC0gcmV0dXJuIGJhY2sgaHdfcHRyX2ludGVycnVwdAo+ID4gQUxTQTogcGNtX2NvcmU6IEZpeCB3
-YWtlX3VwKCkgb3B0aW1pemF0aW9uCj4gPiBBTFNBOiBwY21fbGliIC0gZml4IHdyb25nIGRlbHRh
-IHByaW50IGZvciBqaWZmaWVzIGNoZWNrCj4gPiBBTFNBOiBwY21fbGliOiBmaXggInNvbWV0aGlu
-ZyBtdXN0IGJlIHJlYWxseSB3cm9uZyIgY29uZGl0aW9uCj4gPiBBTFNBOiBwY21fbGliIC0gb3B0
-aW1pemUgd2FrZV91cCgpIGNhbGxzIGZvciBQQ00gSS9PCj4gPiBBTFNBOiBwY21fbGliIC0gY2xl
-YW51cCAmIG1lcmdlIGh3X3B0ciB1cGRhdGUgZnVuY3Rpb25zCj4gPiBBTFNBOiBwY21fbGliIC0g
-YWRkIHBvc3NpYmlsaXR5IHRvIGxvZyBsYXN0IDEwIERNQSByaW5nIGJ1ZmZlciBwb3NpdGlvbnMK
-PiA+IEFMU0E6IHBjbV9saWIuYyAtIGNvbnZlcnQgc2Vjb25kIHhydW5fZGVidWcoKSBwYXJhbWV0
-ZXIgdG8gdXNlIGRlZmluZXMKPiBIaSwKPiBJJ3ZlIGRvbmUgYSBiaXNlY3Rpb24gb24gYSB2YW5p
-bGxhIGtlcm5lbCwgYW5kIGl0IHR1cm5lZCBvdXQgdG8gYmUKPiA3YjNhMTc3YjBkNGY5MmIzNDMx
-YjhkY2E3NzczMTNhMDc1MzNhNzEwLCBha2EgQUxTQTogcGNtX2xpYjogZml4Cj4gInNvbWV0aGlu
-ZyBtdXN0IGJlIHJlYWxseSB3cm9uZyIgY29uZGl0aW9uIC4KPiAKPiBTbyBJJ2QgcmVjb21tZW5k
-IHRvIGRyb3AgaXQgZnJvbSB0aGUgbWFuZHJpdmEga2VybmVsLCBhbmQgZ2V0IGNvbmZpcm1lZAo+
-IGl0IGlzIGZpeGVkLgoKT2sgYWRkaW5nIGFsc2EtZGV2ZWwgdG8gQ0MsIG1heSBiZSB0aGUgaXNz
-dWUgaXMga25vd24uCgpFcmljLCBmcm9tIGxhdGVyIG1lc3NhZ2VzIHlvdSBvbmx5IGV4cGVyaWVu
-Y2UgdGhlIHByb2JsZW0gd2hlbiBiZGxfcG9zX2Fkagppc24ndCBzZXQgdG8gMSByaWdodD8KCkFu
-eXdheSBGcmFuayBzYWlkIHRoYXQgaGlzIGJkbF9wb3NfYWRqIGlzIHNldCB0byAzMiBvbiB0d28g
-bWFjaGluZXMgKGhkYS1pbnRlbCksCmFuZCBvbiBvbmUgb2YgdGhlbSB0aGUgcHJvYmxlbSBoYXBw
-ZW5zLCB3aGlsZSBpbiB0aGUgb3RoZXIgbm90LiBJIGd1ZXNzIHdlCmNvdWxkIGhhdmUgYSBwcm9i
-bGVtIHRoZW4gb24gY29tbWl0CjdiM2ExNzdiMGQ0ZjkyYjM0MzFiOGRjYTc3NzMxM2EwNzUzM2E3
-MTAKCj4gCj4gU2VlIHlvdSwKPiBFcmljCj4gCgotLSAKW10ncwpIZXJ0b24KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Well here is the problem with downgrading kernels, i just tried
+booting the Arch LTS kernel package which is 2.6.27 and i have an EXT4
+root partition, therefor that kernel can't boot.  Is there any good
+way to get an ALSA build prior to 1.0.20 to compile against kernel
+2.6.33?
+
+On Wed, Apr 14, 2010 at 2:22 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Wed, 14 Apr 2010 14:19:20 -0400,
+> Gregory T Flynn wrote:
+>>
+>> after 9.04 it doesn't work, and versions of ALSA prior to 1.0.20 won't
+>> compile against the newer kernels since the source tree organization
+>> has changed
+>
+> The other-way round: you can run the old kernel that old Ubuntu was
+> based on, and compile the later alsa-driver on it.
+>
+>
+> Takashi
+>
+>> On Wed, Apr 14, 2010 at 2:16 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Wed, 14 Apr 2010 13:44:13 -0400,
+>> > Gregory T Flynn wrote:
+>> >>
+>> >> the options in the laptop's BIOS are rather sparse and nothing about
+>> >> Sound card enable/disable
+>> >>
+>> >> The soundcard works in Windows 7 and Ubuntu 8.04/8.10/9.04 Live USB i=
+mages
+>> >
+>> > Then try the version of alsa-driver of Ubuntu. =A0Check whether it
+>> > really works. =A0If works, then please bisect.
+>> >
+>> >
+>> > thanks,
+>> >
+>> > Takashi
+>> >
+>>
+>>
+>>
+>> --
+>> - Greg Flynn
+>>
+>
+
+
+
+-- =
+
+- Greg Flynn
