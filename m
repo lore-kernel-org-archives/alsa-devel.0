@@ -1,21 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/5] ALSA: info - Implement common llseek for
-	binary mode
-Date: Wed, 14 Apr 2010 10:18:01 +0200
-Message-ID: <1271233083-16310-4-git-send-email-tiwai@suse.de>
+Subject: [PATCH 1/5] ALSA: info - Use standard types for info
+	callbacks
+Date: Wed, 14 Apr 2010 10:17:59 +0200
+Message-ID: <1271233083-16310-2-git-send-email-tiwai@suse.de>
 References: <1271233083-16310-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (cantor.suse.de [195.135.220.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9D7A24483
+Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86B712447F
 	for <alsa-devel@alsa-project.org>;
 	Wed, 14 Apr 2010 10:18:41 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mx1.suse.de (Postfix) with ESMTP id 86A7390847
+	by mx2.suse.de (Postfix) with ESMTP id 6E0BE86A2E
 	for <alsa-devel@alsa-project.org>;
 	Wed, 14 Apr 2010 10:18:41 +0200 (CEST)
 In-Reply-To: <1271233083-16310-1-git-send-email-tiwai@suse.de>
@@ -32,251 +30,269 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-The llseek implementation is identical for existing driver implementations,
-so let's merge to the common layer.  The same code for the text proc file
-can be used even for the binary proc file.
-
-The driver can provide its own llseek method if needed.  Then the common
-code will be skipped.
+Use loff_t, size_t and ssize_t for arguments of info callbacks
+to follow the standard procfs.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/info.c              |   54 +++++++++++++++++++++------------------
- sound/drivers/opl4/opl4_proc.c |   24 -----------------
- sound/isa/gus/gus_mem_proc.c   |   26 -------------------
- sound/pci/mixart/mixart.c      |   51 -------------------------------------
- 4 files changed, 29 insertions(+), 126 deletions(-)
+ include/sound/info.h           |   24 ++++++++++++------------
+ sound/drivers/opl4/opl4_proc.c |   21 +++++++++++++--------
+ sound/isa/gus/gus_mem_proc.c   |   16 ++++++++--------
+ sound/pci/cs4281.c             |   16 ++++++++--------
+ sound/pci/cs46xx/cs46xx_lib.c  |    7 ++++---
+ sound/pci/emu10k1/emuproc.c    |    8 ++++----
+ sound/pci/mixart/mixart.c      |   32 ++++++++++++++++----------------
+ 7 files changed, 65 insertions(+), 59 deletions(-)
 
-diff --git a/sound/core/info.c b/sound/core/info.c
-index f90a6fd..b70564e 100644
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -164,39 +164,43 @@ static loff_t snd_info_entry_llseek(struct file *file, loff_t offset, int orig)
- {
- 	struct snd_info_private_data *data;
- 	struct snd_info_entry *entry;
--	loff_t ret;
-+	loff_t ret = -EINVAL, size;
- 
- 	data = file->private_data;
- 	entry = data->entry;
- 	mutex_lock(&entry->access);
--	switch (entry->content) {
--	case SNDRV_INFO_CONTENT_TEXT:
--		switch (orig) {
--		case SEEK_SET:
--			file->f_pos = offset;
--			ret = file->f_pos;
--			goto out;
--		case SEEK_CUR:
--			file->f_pos += offset;
--			ret = file->f_pos;
--			goto out;
--		case SEEK_END:
--		default:
--			ret = -EINVAL;
--			goto out;
--		}
-+	if (entry->content == SNDRV_INFO_CONTENT_DATA &&
-+	    entry->c.ops->llseek) {
-+		offset = entry->c.ops->llseek(entry,
-+					      data->file_private_data,
-+					      file, offset, orig);
-+		goto out;
-+	}
-+	if (entry->content == SNDRV_INFO_CONTENT_DATA)
-+		size = entry->size;
-+	else
-+		size = 0;
-+	switch (orig) {
-+	case SEEK_SET:
- 		break;
--	case SNDRV_INFO_CONTENT_DATA:
--		if (entry->c.ops->llseek) {
--			ret = entry->c.ops->llseek(entry,
--						    data->file_private_data,
--						    file, offset, orig);
-+	case SEEK_CUR:
-+		offset += file->f_pos;
-+		break;
-+	case SEEK_END:
-+		if (!size)
- 			goto out;
--		}
-+		offset += size;
- 		break;
--	}
--	ret = -ENXIO;
--out:
-+	default:
-+		goto out;
-+	}
-+	if (offset < 0)
-+		goto out;
-+	if (size && offset > size)
-+		offset = size;
-+	file->f_pos = offset;
-+	ret = offset;
-+ out:
- 	mutex_unlock(&entry->access);
- 	return ret;
- }
+diff --git a/include/sound/info.h b/include/sound/info.h
+index 112e894..4e94cf1 100644
+--- a/include/sound/info.h
++++ b/include/sound/info.h
+@@ -51,18 +51,18 @@ struct snd_info_entry_ops {
+ 		    unsigned short mode, void **file_private_data);
+ 	int (*release)(struct snd_info_entry *entry,
+ 		       unsigned short mode, void *file_private_data);
+-	long (*read)(struct snd_info_entry *entry, void *file_private_data,
+-		     struct file *file, char __user *buf,
+-		     unsigned long count, unsigned long pos);
+-	long (*write)(struct snd_info_entry *entry, void *file_private_data,
+-		      struct file *file, const char __user *buf,
+-		      unsigned long count, unsigned long pos);
+-	long long (*llseek)(struct snd_info_entry *entry,
+-			    void *file_private_data, struct file *file,
+-			    long long offset, int orig);
+-	unsigned int(*poll)(struct snd_info_entry *entry,
+-			    void *file_private_data, struct file *file,
+-			    poll_table *wait);
++	ssize_t (*read)(struct snd_info_entry *entry, void *file_private_data,
++			struct file *file, char __user *buf,
++			size_t count, loff_t pos);
++	ssize_t (*write)(struct snd_info_entry *entry, void *file_private_data,
++			 struct file *file, const char __user *buf,
++			 size_t count, loff_t pos);
++	loff_t (*llseek)(struct snd_info_entry *entry,
++			 void *file_private_data, struct file *file,
++			 loff_t offset, int orig);
++	unsigned int (*poll)(struct snd_info_entry *entry,
++			     void *file_private_data, struct file *file,
++			     poll_table *wait);
+ 	int (*ioctl)(struct snd_info_entry *entry, void *file_private_data,
+ 		     struct file *file, unsigned int cmd, unsigned long arg);
+ 	int (*mmap)(struct snd_info_entry *entry, void *file_private_data,
 diff --git a/sound/drivers/opl4/opl4_proc.c b/sound/drivers/opl4/opl4_proc.c
-index 210b89d..c5c13c4 100644
+index 1679300..eb72814 100644
 --- a/sound/drivers/opl4/opl4_proc.c
 +++ b/sound/drivers/opl4/opl4_proc.c
-@@ -90,35 +90,11 @@ static ssize_t snd_opl4_mem_proc_write(struct snd_info_entry *entry,
- 	return count;
+@@ -49,9 +49,10 @@ static int snd_opl4_mem_proc_release(struct snd_info_entry *entry,
+ 	return 0;
  }
  
--static loff_t snd_opl4_mem_proc_llseek(struct snd_info_entry *entry,
--				       void *file_private_data,
--				       struct file *file,
--				       loff_t offset, int orig)
--{
--	switch (orig) {
--	case SEEK_SET:
--		file->f_pos = offset;
--		break;
--	case SEEK_CUR:
--		file->f_pos += offset;
--		break;
--	case SEEK_END: /* offset is negative */
--		file->f_pos = entry->size + offset;
--		break;
--	default:
--		return -EINVAL;
--	}
--	if (file->f_pos > entry->size)
--		file->f_pos = entry->size;
--	return file->f_pos;
--}
--
- static struct snd_info_entry_ops snd_opl4_mem_proc_ops = {
- 	.open = snd_opl4_mem_proc_open,
- 	.release = snd_opl4_mem_proc_release,
- 	.read = snd_opl4_mem_proc_read,
- 	.write = snd_opl4_mem_proc_write,
--	.llseek = snd_opl4_mem_proc_llseek,
- };
+-static long snd_opl4_mem_proc_read(struct snd_info_entry *entry, void *file_private_data,
+-				   struct file *file, char __user *_buf,
+-				   unsigned long count, unsigned long pos)
++static ssize_t snd_opl4_mem_proc_read(struct snd_info_entry *entry,
++				      void *file_private_data,
++				      struct file *file, char __user *_buf,
++				      size_t count, loff_t pos)
+ {
+ 	struct snd_opl4 *opl4 = entry->private_data;
+ 	long size;
+@@ -75,9 +76,11 @@ static long snd_opl4_mem_proc_read(struct snd_info_entry *entry, void *file_priv
+ 	return 0;
+ }
  
- int snd_opl4_create_proc(struct snd_opl4 *opl4)
+-static long snd_opl4_mem_proc_write(struct snd_info_entry *entry, void *file_private_data,
+-				    struct file *file, const char __user *_buf,
+-				    unsigned long count, unsigned long pos)
++static ssize_t snd_opl4_mem_proc_write(struct snd_info_entry *entry,
++				       void *file_private_data,
++				       struct file *file,
++				       const char __user *_buf,
++				       size_t count, size_t pos)
+ {
+ 	struct snd_opl4 *opl4 = entry->private_data;
+ 	long size;
+@@ -101,8 +104,10 @@ static long snd_opl4_mem_proc_write(struct snd_info_entry *entry, void *file_pri
+ 	return 0;
+ }
+ 
+-static long long snd_opl4_mem_proc_llseek(struct snd_info_entry *entry, void *file_private_data,
+-					  struct file *file, long long offset, int orig)
++static loff_t snd_opl4_mem_proc_llseek(struct snd_info_entry *entry,
++				       void *file_private_data,
++				       struct file *file,
++				       loff_t offset, int orig)
+ {
+ 	switch (orig) {
+ 	case SEEK_SET:
 diff --git a/sound/isa/gus/gus_mem_proc.c b/sound/isa/gus/gus_mem_proc.c
-index faa2bec..2ccb3fa 100644
+index 2803e22..b2d2dba 100644
 --- a/sound/isa/gus/gus_mem_proc.c
 +++ b/sound/isa/gus/gus_mem_proc.c
-@@ -46,31 +46,6 @@ static ssize_t snd_gf1_mem_proc_dump(struct snd_info_entry *entry,
- 	return count;
- }			
- 
--static loff_t snd_gf1_mem_proc_llseek(struct snd_info_entry *entry,
--				      void *private_file_data,
--				      struct file *file,
--				      loff_t offset, int orig)
--{
--	struct gus_proc_private *priv = entry->private_data;
--
--	switch (orig) {
--	case SEEK_SET:
--		file->f_pos = offset;
--		break;
--	case SEEK_CUR:
--		file->f_pos += offset;
--		break;
--	case SEEK_END: /* offset is negative */
--		file->f_pos = priv->size + offset;
--		break;
--	default:
--		return -EINVAL;
--	}
--	if (file->f_pos > priv->size)
--		file->f_pos = priv->size;
--	return file->f_pos;
--}
--
- static void snd_gf1_mem_proc_free(struct snd_info_entry *entry)
- {
- 	struct gus_proc_private *priv = entry->private_data;
-@@ -79,7 +54,6 @@ static void snd_gf1_mem_proc_free(struct snd_info_entry *entry)
- 
- static struct snd_info_entry_ops snd_gf1_mem_proc_ops = {
- 	.read = snd_gf1_mem_proc_dump,
--	.llseek = snd_gf1_mem_proc_llseek,
+@@ -31,9 +31,10 @@ struct gus_proc_private {
+ 	struct snd_gus_card * gus;
  };
  
- int snd_gf1_mem_proc_init(struct snd_gus_card * gus)
+-static long snd_gf1_mem_proc_dump(struct snd_info_entry *entry, void *file_private_data,
+-			          struct file *file, char __user *buf,
+-			          unsigned long count, unsigned long pos)
++static ssize_t snd_gf1_mem_proc_dump(struct snd_info_entry *entry,
++				     void *file_private_data,
++				     struct file *file, char __user *buf,
++				     size_t count, loff_t pos)
+ {
+ 	long size;
+ 	struct gus_proc_private *priv = entry->private_data;
+@@ -51,11 +52,10 @@ static long snd_gf1_mem_proc_dump(struct snd_info_entry *entry, void *file_priva
+ 	return 0;
+ }			
+ 
+-static long long snd_gf1_mem_proc_llseek(struct snd_info_entry *entry,
+-					void *private_file_data,
+-					struct file *file,
+-					long long offset,
+-					int orig)
++static loff_t snd_gf1_mem_proc_llseek(struct snd_info_entry *entry,
++				      void *private_file_data,
++				      struct file *file,
++				      loff_t offset, int orig)
+ {
+ 	struct gus_proc_private *priv = entry->private_data;
+ 
+diff --git a/sound/pci/cs4281.c b/sound/pci/cs4281.c
+index 9edc650..b0bba2e 100644
+--- a/sound/pci/cs4281.c
++++ b/sound/pci/cs4281.c
+@@ -1139,10 +1139,10 @@ static void snd_cs4281_proc_read(struct snd_info_entry *entry,
+ 	snd_iprintf(buffer, "Spurious end IRQs    : %u\n", chip->spurious_dtc_irq);
+ }
+ 
+-static long snd_cs4281_BA0_read(struct snd_info_entry *entry,
+-				void *file_private_data,
+-				struct file *file, char __user *buf,
+-				unsigned long count, unsigned long pos)
++static ssize_t snd_cs4281_BA0_read(struct snd_info_entry *entry,
++				   void *file_private_data,
++				   struct file *file, char __user *buf,
++				   size_t count, loff_t pos)
+ {
+ 	long size;
+ 	struct cs4281 *chip = entry->private_data;
+@@ -1157,10 +1157,10 @@ static long snd_cs4281_BA0_read(struct snd_info_entry *entry,
+ 	return size;
+ }
+ 
+-static long snd_cs4281_BA1_read(struct snd_info_entry *entry,
+-				void *file_private_data,
+-				struct file *file, char __user *buf,
+-				unsigned long count, unsigned long pos)
++static ssize_t snd_cs4281_BA1_read(struct snd_info_entry *entry,
++				   void *file_private_data,
++				   struct file *file, char __user *buf,
++				   size_t count, loff_t pos)
+ {
+ 	long size;
+ 	struct cs4281 *chip = entry->private_data;
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index 3f99a5e..08117b1 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -2657,9 +2657,10 @@ static inline void snd_cs46xx_remove_gameport(struct snd_cs46xx *chip) { }
+  *  proc interface
+  */
+ 
+-static long snd_cs46xx_io_read(struct snd_info_entry *entry, void *file_private_data,
+-			       struct file *file, char __user *buf,
+-			       unsigned long count, unsigned long pos)
++static ssize_t snd_cs46xx_io_read(struct snd_info_entry *entry,
++				  void *file_private_data,
++				  struct file *file, char __user *buf,
++				  size_t count, loff_t pos)
+ {
+ 	long size;
+ 	struct snd_cs46xx_region *region = entry->private_data;
+diff --git a/sound/pci/emu10k1/emuproc.c b/sound/pci/emu10k1/emuproc.c
+index baa7cd5..347b241 100644
+--- a/sound/pci/emu10k1/emuproc.c
++++ b/sound/pci/emu10k1/emuproc.c
+@@ -341,10 +341,10 @@ static void snd_emu10k1_proc_acode_read(struct snd_info_entry *entry,
+ #define TOTAL_SIZE_CODE		(0x200*8)
+ #define A_TOTAL_SIZE_CODE	(0x400*8)
+ 
+-static long snd_emu10k1_fx8010_read(struct snd_info_entry *entry,
+-				    void *file_private_data,
+-				    struct file *file, char __user *buf,
+-				    unsigned long count, unsigned long pos)
++static ssize_t snd_emu10k1_fx8010_read(struct snd_info_entry *entry,
++				       void *file_private_data,
++				       struct file *file, char __user *buf,
++				       size_t count, loff_t pos)
+ {
+ 	long size;
+ 	struct snd_emu10k1 *emu = entry->private_data;
 diff --git a/sound/pci/mixart/mixart.c b/sound/pci/mixart/mixart.c
-index be95e00..6c3fd4d 100644
+index 3be8f97..b5df78b 100644
 --- a/sound/pci/mixart/mixart.c
 +++ b/sound/pci/mixart/mixart.c
-@@ -1102,55 +1102,6 @@ static int snd_mixart_free(struct mixart_mgr *mgr)
+@@ -1102,11 +1102,10 @@ static int snd_mixart_free(struct mixart_mgr *mgr)
  /*
   * proc interface
   */
--static loff_t snd_mixart_BA0_llseek(struct snd_info_entry *entry,
--				    void *private_file_data,
--				    struct file *file,
--				    loff_t offset, int orig)
--{
--	offset = offset & ~3; /* 4 bytes aligned */
--
--	switch(orig) {
--	case SEEK_SET:
--		file->f_pos = offset;
--		break;
--	case SEEK_CUR:
--		file->f_pos += offset;
--		break;
--	case SEEK_END: /* offset is negative */
--		file->f_pos = MIXART_BA0_SIZE + offset;
--		break;
--	default:
--		return -EINVAL;
--	}
--	if(file->f_pos > MIXART_BA0_SIZE)
--		file->f_pos = MIXART_BA0_SIZE;
--	return file->f_pos;
--}
--
--static loff_t snd_mixart_BA1_llseek(struct snd_info_entry *entry,
--				    void *private_file_data,
--				    struct file *file,
--				    loff_t offset, int orig)
--{
--	offset = offset & ~3; /* 4 bytes aligned */
--
--	switch(orig) {
--	case SEEK_SET:
--		file->f_pos = offset;
--		break;
--	case SEEK_CUR:
--		file->f_pos += offset;
--		break;
--	case SEEK_END: /* offset is negative */
--		file->f_pos = MIXART_BA1_SIZE + offset;
--		break;
--	default:
--		return -EINVAL;
--	}
--	if(file->f_pos > MIXART_BA1_SIZE)
--		file->f_pos = MIXART_BA1_SIZE;
--	return file->f_pos;
--}
+-static long long snd_mixart_BA0_llseek(struct snd_info_entry *entry,
+-				       void *private_file_data,
+-				       struct file *file,
+-				       long long offset,
+-				       int orig)
++static loff_t snd_mixart_BA0_llseek(struct snd_info_entry *entry,
++				    void *private_file_data,
++				    struct file *file,
++				    loff_t offset, int orig)
+ {
+ 	offset = offset & ~3; /* 4 bytes aligned */
  
+@@ -1128,11 +1127,10 @@ static long long snd_mixart_BA0_llseek(struct snd_info_entry *entry,
+ 	return file->f_pos;
+ }
+ 
+-static long long snd_mixart_BA1_llseek(struct snd_info_entry *entry,
+-				       void *private_file_data,
+-				       struct file *file,
+-				       long long offset,
+-				       int orig)
++static loff_t snd_mixart_BA1_llseek(struct snd_info_entry *entry,
++				    void *private_file_data,
++				    struct file *file,
++				    loff_t offset, int orig)
+ {
+ 	offset = offset & ~3; /* 4 bytes aligned */
+ 
+@@ -1157,9 +1155,10 @@ static long long snd_mixart_BA1_llseek(struct snd_info_entry *entry,
  /*
    mixart_BA0 proc interface for BAR 0 - read callback
-@@ -1186,12 +1137,10 @@ static ssize_t snd_mixart_BA1_read(struct snd_info_entry *entry,
- 
- static struct snd_info_entry_ops snd_mixart_proc_ops_BA0 = {
- 	.read   = snd_mixart_BA0_read,
--	.llseek = snd_mixart_BA0_llseek
- };
- 
- static struct snd_info_entry_ops snd_mixart_proc_ops_BA1 = {
- 	.read   = snd_mixart_BA1_read,
--	.llseek = snd_mixart_BA1_llseek
- };
- 
- 
+  */
+-static long snd_mixart_BA0_read(struct snd_info_entry *entry, void *file_private_data,
+-				struct file *file, char __user *buf,
+-				unsigned long count, unsigned long pos)
++static ssize_t snd_mixart_BA0_read(struct snd_info_entry *entry,
++				   void *file_private_data,
++				   struct file *file, char __user *buf,
++				   size_t count, loff_t pos)
+ {
+ 	struct mixart_mgr *mgr = entry->private_data;
+ 	unsigned long maxsize;
+@@ -1178,9 +1177,10 @@ static long snd_mixart_BA0_read(struct snd_info_entry *entry, void *file_private
+ /*
+   mixart_BA1 proc interface for BAR 1 - read callback
+  */
+-static long snd_mixart_BA1_read(struct snd_info_entry *entry, void *file_private_data,
+-				struct file *file, char __user *buf,
+-				unsigned long count, unsigned long pos)
++static ssize_t snd_mixart_BA1_read(struct snd_info_entry *entry,
++				   void *file_private_data,
++				   struct file *file, char __user *buf,
++				   size_t count, loff_t pos)
+ {
+ 	struct mixart_mgr *mgr = entry->private_data;
+ 	unsigned long maxsize;
 -- 
 1.7.0.4
