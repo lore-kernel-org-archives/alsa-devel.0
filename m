@@ -1,55 +1,47 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: asus xonar d1
-Date: Wed, 14 Apr 2010 16:02:05 +0200
-Message-ID: <4BC5CADD.2020700@ladisch.de>
-References: <20100413183103.64d0fa94@romy.gusto>	<20100413184304.3ffe3b3b@romy.gusto>	<4BC56891.6070909@ladisch.de>
-	<20100414154223.246e7416@romy.gusto>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: USB transfer_buffer allocations on 64bit systems
+Date: Wed, 14 Apr 2010 10:08:47 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1004141003170.1716-100000@iolanthe.rowland.org>
+References: <t2w74fd948d1004140347k3447bffapb73856eacddfde55@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 4BC681037FC
-	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 16:02:10 +0200 (CEST)
-In-Reply-To: <20100414154223.246e7416@romy.gusto>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Lars Schotte <lars.schotte@schotteweb.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <t2w74fd948d1004140347k3447bffapb73856eacddfde55-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andi Kleen <andi-Vw/NltI1exuRpAAqCnN02g@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Lars Schotte wrote:
-> > What controls are missing?
+On Wed, 14 Apr 2010, Pedro Ribeiro wrote:
+
+> On 14 April 2010 11:09, Daniel Mack <daniel-rDUAYElUppE@public.gmane.org> wrote:
 > 
-> hmm. i dont know, i thought there will be more on such a card. because
-> on creatives and hd audio usually you have tons of controls and there
-> only 5 or so.
+> > Thanks! So the only thing I can do for now is submit exactly this patch.
+> > At least, it helps you and it shouldn't break anything. The question
+> > remains whether this type of memory should be used for all
+> > transfer_buffers.
+> >
+> 
+> Is there any chance you could push this to -stable? I don't care
+> because I always use the latest kernel, but the next Debian stable and
+> Ubuntu LTS are going to use 2.6.32.
 
-The D1/DX hardware doesn't have that many controls because there
-aren't so many inputs or outputs.
+No!  Please don't do it: Don't submit the patch and _certainly_ don't
+submit it to -stable.  It doesn't fix anything; it only works around a
+bug, and at the moment we don't even know if the bug is in the kernel
+or in Pedro's hardware (and even though it affects two different
+systems of his, nobody else has reported a similar problem).  Papering
+over it will only remove the incentive to fix it properly.
 
-> and 3 of them is 7.1 output so its a bit confusing.
+In addition, you'll most likely find that lots of Linux developers will
+object vociferously to any proposed patch that uses GFP_DMA.  That flag
+is supposed to be _only_ for ISA devices, which really need it.  By 
+limiting the memory allocation to the lowest 16 MB of physical memory, 
+it greatly increases the chances that the allocation will fail.
 
-There is one "Master" control with 8 channels.  How this is displayed
-is up to the mixer application.  (alsamixer isn't ideal in this respect,
-older versions even less so.)
+Alan Stern
 
-> to fedora 13 the controls are noticably faster, to my old debian lenny
-> even w/ the 2.6.32 kernel they lag. on fedora 13 w/ 2.6.33 they are
-> fast as usual, seems like you fixed that already ;-) .
-
-Yes, the driver now doesn't write registers that have not changed.
-In theory, this shouldn't make too much of a difference unless the
-mixer tries to set the same volume repeatedly.
-
-
-Regards,
-Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
