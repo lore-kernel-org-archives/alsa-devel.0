@@ -1,47 +1,41 @@
-From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Wed, 14 Apr 2010 10:08:47 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1004141003170.1716-100000@iolanthe.rowland.org>
-References: <t2w74fd948d1004140347k3447bffapb73856eacddfde55@mail.gmail.com>
+From: =?UTF-8?B?w4lyaWMgUGllbA==?= <eric.piel@tremplin-utc.net>
+Subject: Re: [REGRESSION bisected] Sound goes too fast due to commit 7b3a177b0
+Date: Wed, 14 Apr 2010 16:36:36 +0200
+Message-ID: <4BC5D2F4.4010500@tremplin-utc.net>
+References: <4BC4E812.6050602@tremplin-utc.net>	<s5h633u5zx1.wl%tiwai@suse.de>	<4BC5A566.8060106@tremplin-utc.net>	<4BC5AD08.8040606@tremplin-utc.net> <s5hy6gqxiev.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <t2w74fd948d1004140347k3447bffapb73856eacddfde55-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andi Kleen <andi-Vw/NltI1exuRpAAqCnN02g@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hy6gqxiev.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, "Rafael J. Wysocki" <rjw@sisk.pl>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Frank Griffin <ftg@roadrunner.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Apr 2010, Pedro Ribeiro wrote:
-
-> On 14 April 2010 11:09, Daniel Mack <daniel-rDUAYElUppE@public.gmane.org> wrote:
+On 14/04/10 15:39, Takashi Iwai wrote:
+:
 > 
-> > Thanks! So the only thing I can do for now is submit exactly this patch.
-> > At least, it helps you and it shouldn't break anything. The question
-> > remains whether this type of memory should be used for all
-> > transfer_buffers.
-> >
+> bdl_pos_adj is really a workaround for devices that report wrong DMA
+> position (or at the wrong timing).  I guess position_fix=1 may fix
+> better.
 > 
-> Is there any chance you could push this to -stable? I don't care
-> because I always use the latest kernel, but the next Debian stable and
-> Ubuntu LTS are going to use 2.6.32.
+> Although the driver already has a dynamic switching of position_fix
+> method, it checks only the very first read.  If it gives a (more or
+> less) sane value, it prefers the position-buffer method (corresponding
+> to position_fix=2) rather than reading LPIB register
+> (position_fix=1).
+> 
+> It seems, however, that more devices work sanely with LPIB reg
+> nowdays.  This wasn't the case formerly.  So, it might be better to
+> use position_fix=1 as default for modern systems...
+Frank,
+Could you check that for you too adding "position_fix=1" fixes the problem?
 
-No!  Please don't do it: Don't submit the patch and _certainly_ don't
-submit it to -stable.  It doesn't fix anything; it only works around a
-bug, and at the moment we don't even know if the bug is in the kernel
-or in Pedro's hardware (and even though it affects two different
-systems of his, nobody else has reported a similar problem).  Papering
-over it will only remove the incentive to fix it properly.
+To do so, edit /etc/modprobe.conf and add this line at end:
+options snd-hda-intel position_fix=1
 
-In addition, you'll most likely find that lots of Linux developers will
-object vociferously to any proposed patch that uses GFP_DMA.  That flag
-is supposed to be _only_ for ISA devices, which really need it.  By 
-limiting the memory allocation to the lowest 16 MB of physical memory, 
-it greatly increases the chances that the allocation will fail.
+You need to reboot for this to be taken into account.
 
-Alan Stern
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Cheers,
+Eric
