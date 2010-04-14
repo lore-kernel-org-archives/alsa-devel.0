@@ -1,21 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC] ALSA: pcm_lib - read/write IO improvement
-Date: Wed, 14 Apr 2010 09:58:02 +0300
-Message-ID: <20100414095802.6f24e87f.jhnikula@gmail.com>
-References: <20100413144959.601bb9db.jhnikula@gmail.com>
-	<s5hljcrz3ps.wl%tiwai@suse.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Laggy mixer with Xonar DX snd_virtuoso
+Date: Wed, 14 Apr 2010 08:59:41 +0200
+Message-ID: <4BC567DD.2020603@ladisch.de>
+References: <x2t9374ce781004101749lede8799foaa7b92ae40034c5@mail.gmail.com>	
+	<4BC43311.3070402@ladisch.de>
+	<w2z9374ce781004131807ofee2f8efi223e6ef6773b7dbf@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
-	[209.85.219.219])
-	by alsa0.perex.cz (Postfix) with ESMTP id 864B0243FC
+Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
+	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id C2B20243FE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 14 Apr 2010 08:57:54 +0200 (CEST)
-Received: by ewy19 with SMTP id 19so2162214ewy.22
-	for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2010 23:57:54 -0700 (PDT)
-In-Reply-To: <s5hljcrz3ps.wl%tiwai@suse.de>
+	Wed, 14 Apr 2010 08:59:43 +0200 (CEST)
+In-Reply-To: <w2z9374ce781004131807ofee2f8efi223e6ef6773b7dbf@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,77 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: =?UTF-8?B?RmzDoXZpbyBNYXJ0aW5z?= <xhaker@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 13 Apr 2010 19:01:35 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> > So by not doing the padding the distance to xrun is about the same and
-> > the wake-up semantics remains the same. I understood from the thread
-> > below that not all applications like if the wake-up happens before
-> > avail >= avail_min what would happen with the second idea.
-> > 
-> > http://mailman.alsa-project.org/pipermail/alsa-devel/2009-December/023986.html
-> 
-> Well, my understanding is that it's an application thing.
-> It feeds the unaligned data while it expects the aligned wake-up.
-> 
-> Or, any other real example that doesn't work?
-> 
-Actually I noticed this by wondering why there are wake-ups happening
-only for every second period even if there are only two periods. E.g.
-
-aplay -D hw:0 -f dat --period-size=1024 --buffer-size=2048 /dev/zero
-
-Then I noticed that this situation occurs if the hw_ptr has advanced
-from the period boundary when checking for the avail in
-snd_pcm_lib_write1 and snd_pcm_lib_read1 happens.
-
-Let's image with the above command. First the both periods are filled up
-and stream started.
-
-Int 1
-- appl_ptr = 2048
-- hw_ptr >= 1024
-- avail >= avail_min
-- wake-up
-
-Process running
-- Filling up the period 1 
-- Let the hw_ptr be 1026 in next iteration of snd_pcm_lib_write1
--> padding two frames into period 2
-
-Int 2
-- appl_ptr = 3074
-- hw_ptr >= 2048
-- wake-only if hw_ptr >= 2050
-- Let the hw_ptr be 2049 -> no wake-up
-
-Int 3
-- appl_ptr = 3074
-- hw_ptr >= 3072
-- avail >= 2046
--> wake-up
-
-Process running
-- Padding rest of frames into period 2
-- Filling up period 1
-- Again if the hw_ptr has advanced, then one or more frames are padded
-into period 2 and avail can be less than 1024 when the next interrupt
-happens.
-
-Now since the hw_ptr is always greater or equal in process running time
-than wake-up time, it means that padding usually happens and most
-usually the avail < avail_min when the next interrupt happens (unless
-there is a long int latency at that time).
-
-What I'm typically seeing that the avail_max is very near to buffer
-size even under idle system. However, xruns do not occur very often
-even if there are some busy loops running so the scheduler seems to do
-good work by waking up us early enough :-)
-
-
--- 
-Jarkko
+RmzDoXZpbyBNYXJ0aW5zIHdyb3RlOgo+IDIwMTAvNC8xMyBDbGVtZW5zIExhZGlzY2ggPGNsZW1l
+bnNAbGFkaXNjaC5kZT46Cj4+IEZsw6F2aW8gTWFydGlucyB3cm90ZToKPj4+IEkgaGF2ZSBhIFhv
+bmFyIERYIHdpdGggYSBsYWdneSB2b2x1bWUgY29udHJvbCwgeW91IG1pZ2h0IGhhdmUgZ3Vlc3Nl
+ZCBhbHJlYWR5Lgo+Pj4gU291bmQgd2lsbCBpbnRlcnJ1cHQgaWYgdGhlIHZvbHVtZSBjaGFuZ2Ug
+aXMgYmlnIGxpa2UgZnJvbSAxMDAlIHRvIDUwJSwgaXQgd2lsbCBvbmx5Cj4+PiBza2lwIGEgYml0
+IGlmIHRoZSB2b2x1bWUgY2hhbmdlIGlzIHNtYWxsZXIuIFRoZSBpbnRlcnJ1cHRpb25zL3NpbGVu
+Y2UgbGFzdCBtb3JlIHRoYW4KPj4+IDUgc2Vjb25kcyBlYXNpbHkuIEkgY2FuIGFjdHVhbGx5IHNl
+ZSB0aGUgbWl4ZXIgc2xpZGVyIGdvaW5nIHVwIGFuZCBkb3duIG9uIGl0cyBvd24uCj4+Cj4+IERv
+ZXMgdGhpcyBhbHNvIGhhcHBlbiB3aXRoIGFsc2FtaXhlcj8KPiAKPiBDb250cm9sbGluZyB0aGUg
+dm9sdW1lIHdpdGggYWxzYW1peGVyIHdvcmtzIHdlbGwsIHRoZSBzb3VuZCBkb2VzIG5vdCBicmVh
+ay4KPiBJZiBpIGNoYW5nZSB0aGUgdm9sdW1lIHdpdGggdGhlIGdub21lLWFwcGxldC9wdWxzZWF1
+ZGlvIGkgY2FuIHNlZSB0aGUgc2xpZGVycwo+IGluIGFsc2FtaXhlciBnZXR0aW5nIGFmZmVjdGVk
+IGJ5IG15IGNoYW5nZXMgd2l0aCBzb21lIHN0dXR0ZXJpbmcgYW5kIHRoZSBzb3VuZAo+IGRvZXMg
+YnJlYWsgYXMgZGVzY3JpYmVkIGluaXRpYWxseS4KClZvbHVtZSBjaGFuZ2VzIG9uIHRoZSBYb25h
+ciBEMS9EWCBuZWVkIHNldmVyYWwgbWlsbGlzZWNvbmRzIGFuZCB0aHVzIGFyZQpyZWxhdGl2ZWx5
+IHNsb3csIGNvbXBhcmVkIHRvIG1vc3Qgb24tYm9hcmQgc291bmQgY2FyZHMuICBIb3dldmVyLCB0
+aGVyZQphcmUgb3RoZXIgc291bmQgY2FyZHMgdGhhdCBiZWhhdmUgdGhlIHNhbWUuCgpJdCBsb29r
+cyBhcyBpZiB0aGUgZ25vbWUtYXBwbGV0IHNhdmVzIGFsbCBtb3VzZSBtb3ZlcyBhbmQgdHJpZXMg
+dG8KZXhlY3V0ZSB0aGUgdm9sdW1lIGNoYW5nZXMgZm9yIGFsbCBpbnRlcm1lZGlhdGUgcG9zaXRp
+b25zIGV2ZW4gaWYgdGhlCm1vdXNlIGhhcyBhbHJlYWR5IG1vdmVkIHRvIHRoZSBmaW5hbCBwb3Np
+dGlvbi4gIFBsZWFzZSBmaWxlIGEgYnVnIHdpdGggCnRoYXQgbWl4ZXIuCgoKUmVnYXJkcywKQ2xl
+bWVucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
