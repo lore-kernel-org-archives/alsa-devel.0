@@ -1,253 +1,61 @@
-From: Pedro Ribeiro <pedrib@gmail.com>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Wed, 14 Apr 2010 12:02:55 +0100
-Message-ID: <g2u74fd948d1004140402ja7dcd22an17fa7aec6478b5@mail.gmail.com>
-References: <20100412162947.GQ18855@one.firstfloor.org>
-	 <Pine.LNX.4.44L0.1004121252310.1702-100000@iolanthe.rowland.org>
-	 <20100413182233.GR30807@buzzloop.caiaq.de>
-	 <k2o74fd948d1004131646k1e0e1897z7594f77a580c6b9f@mail.gmail.com>
-	 <20100414100946.GS30807@buzzloop.caiaq.de>
-	 <t2w74fd948d1004140347k3447bffapb73856eacddfde55@mail.gmail.com>
+From: =?UTF-8?B?w4lyaWMgUGllbA==?= <eric.piel@tremplin-utc.net>
+Subject: Re: [REGRESSION bisected] Sound goes too fast due to commit 7b3a177b0
+Date: Wed, 14 Apr 2010 13:22:14 +0200
+Message-ID: <4BC5A566.8060106@tremplin-utc.net>
+References: <4BC4E812.6050602@tremplin-utc.net> <s5h633u5zx1.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <t2w74fd948d1004140347k3447bffapb73856eacddfde55@mail.gmail.com>
+In-Reply-To: <s5h633u5zx1.wl%tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-usb@vger.kernel.org, Daniel Mack <daniel@caiaq.de>
-Cc: Alan Stern <stern@rowland.harvard.edu>, Andi Kleen <andi@firstfloor.org>, linux-kernel@vger.kernel.org, akpm@linux-foundation.org, Greg KH <gregkh@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, "Rafael J. Wysocki" <rjw@sisk.pl>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 14 April 2010 11:47, Pedro Ribeiro <pedrib@gmail.com> wrote:
-> On 14 April 2010 11:09, Daniel Mack <daniel@caiaq.de> wrote:
->
->> Thanks! So the only thing I can do for now is submit exactly this pa=
-tch.
->> At least, it helps you and it shouldn't break anything. The question
->> remains whether this type of memory should be used for all
->> transfer_buffers.
+On 14/04/10 08:08, Takashi Iwai wrote:
+> At Tue, 13 Apr 2010 23:54:26 +0200,
+> =C3=89ric Piel wrote:
 >>
->
-> Is there any chance you could push this to -stable? I don't care
-> because I always use the latest kernel, but the next Debian stable an=
-d
-> Ubuntu LTS are going to use 2.6.32.
->
->>> Any idea why is mem=3D4096m different than a regular boot since I h=
-ave 4GB anyway?
+>> Hello,
 >>
->> On Fri, Apr 09, 2010 at 04:11:52PM -0600, Robert Hancock wrote:
->>> If you have 4GB of RAM then almost certainly you have memory locate=
-d
->>> at addresses over 4GB. If you look at the e820 memory map printed a=
-t
->>> the start of dmesg on bootup and see entries with addresses of
->>> 100000000 or higher reported as usable, then this is the case.
+>> Since 2.6.34-rc*, I have a regression on alsa which prevents the sou=
+nd
+>> to be played correctly. When playing, the music goes too fast, skipp=
+ing
+>> some parts. Typically, it's very easy to reproduce by doing:
+>> time mplayer -endpos 30 sound-file-which-lasts-more-than-thirty-sec.=
+mp3
 >>
->> Could you post the these e820 line from your dmesg when booted with
->> mem=3D4096?
+>> If the wall clock is less than 30s, you have the bug. With my intel-=
+hda
+>> (AD1981), it's reliably reproducible: it gives ~27s, instead of the
+>> normal ~31s.
 >>
->> Daniel
->>
->>
->
-> This is the e820 WITHOUT mem=3D4096m:
->
-> [ =A0 =A00.000000] BIOS-provided physical RAM map:
-> [ =A0 =A00.000000] =A0BIOS-e820: 0000000000000000 - 000000000009ec00 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 000000000009ec00 - 00000000000a0000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000000dc000 - 0000000000100000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 0000000000100000 - 00000000bd4a1000 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd4a1000 - 00000000bd4a7000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd4a7000 - 00000000bd5b8000 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd5b8000 - 00000000bd60f000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd60f000 - 00000000bd6c6000 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6c6000 - 00000000bd6d1000 =
-(ACPI NVS)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6d1000 - 00000000bd6d4000 =
-(ACPI data)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6d4000 - 00000000bd6d8000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6d8000 - 00000000bd6dc000 =
-(ACPI NVS)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6dc000 - 00000000bd6df000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6df000 - 00000000bd706000 =
-(ACPI NVS)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd706000 - 00000000bd708000 =
-(ACPI data)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd708000 - 00000000bd90f000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd90f000 - 00000000bd99f000 =
-(ACPI NVS)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd99f000 - 00000000bd9ff000 =
-(ACPI data)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd9ff000 - 00000000bda00000 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bdc00000 - 00000000c0000000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000e0000000 - 00000000f0000000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fec00000 - 00000000fec10000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fed00000 - 00000000fed00400 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fed10000 - 00000000fed14000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fed18000 - 00000000fed1a000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fed1c000 - 00000000fed90000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fee00000 - 00000000fee01000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000ff800000 - 0000000100000000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 0000000100000000 - 000000013c000000 =
-(usable)
->
->
->
-> This is the e820 output WITH mem=3D4096m
->
-> [ =A0 =A00.000000] BIOS-provided physical RAM map:
-> [ =A0 =A00.000000] =A0BIOS-e820: 0000000000000000 - 000000000009ec00 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 000000000009ec00 - 00000000000a0000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000000dc000 - 0000000000100000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 0000000000100000 - 00000000bd4a1000 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd4a1000 - 00000000bd4a7000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd4a7000 - 00000000bd5b8000 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd5b8000 - 00000000bd60f000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd60f000 - 00000000bd6c6000 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6c6000 - 00000000bd6d1000 =
-(ACPI NVS)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6d1000 - 00000000bd6d4000 =
-(ACPI data)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6d4000 - 00000000bd6d8000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6d8000 - 00000000bd6dc000 =
-(ACPI NVS)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6dc000 - 00000000bd6df000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd6df000 - 00000000bd706000 =
-(ACPI NVS)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd706000 - 00000000bd708000 =
-(ACPI data)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd708000 - 00000000bd90f000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd90f000 - 00000000bd99f000 =
-(ACPI NVS)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd99f000 - 00000000bd9ff000 =
-(ACPI data)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bd9ff000 - 00000000bda00000 =
-(usable)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000bdc00000 - 00000000c0000000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000e0000000 - 00000000f0000000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fec00000 - 00000000fec10000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fed00000 - 00000000fed00400 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fed10000 - 00000000fed14000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fed18000 - 00000000fed1a000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fed1c000 - 00000000fed90000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000fee00000 - 00000000fee01000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 00000000ff800000 - 0000000100000000 =
-(reserved)
-> [ =A0 =A00.000000] =A0BIOS-e820: 0000000100000000 - 000000013c000000 =
-(usable)
-> [ =A0 =A00.000000] NX (Execute Disable) protection: active
-> [ =A0 =A00.000000] user-defined physical RAM map:
-> [ =A0 =A00.000000] =A0user: 0000000000000000 - 000000000009ec00 (usab=
-le)
-> [ =A0 =A00.000000] =A0user: 000000000009ec00 - 00000000000a0000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000000dc000 - 0000000000100000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 0000000000100000 - 00000000bd4a1000 (usab=
-le)
-> [ =A0 =A00.000000] =A0user: 00000000bd4a1000 - 00000000bd4a7000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000bd4a7000 - 00000000bd5b8000 (usab=
-le)
-> [ =A0 =A00.000000] =A0user: 00000000bd5b8000 - 00000000bd60f000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000bd60f000 - 00000000bd6c6000 (usab=
-le)
-> [ =A0 =A00.000000] =A0user: 00000000bd6c6000 - 00000000bd6d1000 (ACPI=
- NVS)
-> [ =A0 =A00.000000] =A0user: 00000000bd6d1000 - 00000000bd6d4000 (ACPI=
- data)
-> [ =A0 =A00.000000] =A0user: 00000000bd6d4000 - 00000000bd6d8000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000bd6d8000 - 00000000bd6dc000 (ACPI=
- NVS)
-> [ =A0 =A00.000000] =A0user: 00000000bd6dc000 - 00000000bd6df000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000bd6df000 - 00000000bd706000 (ACPI=
- NVS)
-> [ =A0 =A00.000000] =A0user: 00000000bd706000 - 00000000bd708000 (ACPI=
- data)
-> [ =A0 =A00.000000] =A0user: 00000000bd708000 - 00000000bd90f000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000bd90f000 - 00000000bd99f000 (ACPI=
- NVS)
-> [ =A0 =A00.000000] =A0user: 00000000bd99f000 - 00000000bd9ff000 (ACPI=
- data)
-> [ =A0 =A00.000000] =A0user: 00000000bd9ff000 - 00000000bda00000 (usab=
-le)
-> [ =A0 =A00.000000] =A0user: 00000000bdc00000 - 00000000c0000000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000e0000000 - 00000000f0000000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000fec00000 - 00000000fec10000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000fed00000 - 00000000fed00400 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000fed10000 - 00000000fed14000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000fed18000 - 00000000fed1a000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000fed1c000 - 00000000fed90000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000fee00000 - 00000000fee01000 (rese=
-rved)
-> [ =A0 =A00.000000] =A0user: 00000000ff800000 - 0000000100000000 (rese=
-rved)
->
-> So basically the BIOS is incorrectly reporting
-> BIOS-e820: 0000000100000000 - 000000013c000000 (usable)
->
-> right?
->
-> Thanks,
-> Pedro
->
+>> After bisection, it turns out that it is commit
+>> 7b3a177b0d4f92b3431b8dca777313a07533a710, aka "ALSA: pcm_lib: fix
+>> "something must be really wrong" condition" which caused this
+>> regression. Reverting it on top of 2.6.34-rc3+ fixes the problem.
+>=20
+> What happens if you pass position_fix=3D1 option to snd-hda-intel?
+Oh! Very good remark...
+I've just noticed that I had an option already on the module:
+bdl_pos_adj=3D0. It seems it's not needed anymore to get my card workin=
+g
+fine. If I remove every option (leaving bdl_pos_adj to the default valu=
+e
+1), it works fine. If I put bdl_pos_adj=3D0 and position_fix=3D1, it wo=
+rks
+fine again.
 
-(sorry for the spam)
+I don't fully grasp the meaning of bdl_pos_adj, so I don't know if it's
+a bug to not play correctly when forcing it to 0. Is it?
 
-Actually this can't be right, because booting with mem=3D4096m only
-gives me 3047008 kb of usable memory, versus 3949684 kb without
-mem=3D4096m.
+I'll ask to another reporter who had the same problem if bdl_pos_adj is
+also set to 0...
 
-Pedro
+> Is it via PulseAudio or other backend?
+This happens both with pulseaudio, oss and alsa (in which case it plays
+the 30s clip in 12s).
+
+Eric
