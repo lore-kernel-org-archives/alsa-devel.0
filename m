@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/3] ALSA: pcm - Remove BKL from async callback
-Date: Wed, 14 Apr 2010 10:14:20 +0200
-Message-ID: <1271232862-16183-2-git-send-email-tiwai@suse.de>
+Subject: [PATCH 2/3] ALSA: info - Remove BKL
+Date: Wed, 14 Apr 2010 10:14:21 +0200
+Message-ID: <1271232862-16183-3-git-send-email-tiwai@suse.de>
 References: <1271232862-16183-1-git-send-email-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (cantor2.suse.de [195.135.220.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FD9A24478
+	by alsa0.perex.cz (Postfix) with ESMTP id 6FF2F24479
 	for <alsa-devel@alsa-project.org>;
 	Wed, 14 Apr 2010 10:14:44 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.221.2])
-	by mx2.suse.de (Postfix) with ESMTP id F398786A2E
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.221.2])
+	by mx2.suse.de (Postfix) with ESMTP id F38D68655F
 	for <alsa-devel@alsa-project.org>;
 	Wed, 14 Apr 2010 10:14:43 +0200 (CEST)
 In-Reply-To: <1271232862-16183-1-git-send-email-tiwai@suse.de>
@@ -29,37 +29,34 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-It's simply calling fasync_helper().
+Use the fine-grained mutex for the assigned info object, instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_native.c |    9 ++-------
- 1 files changed, 2 insertions(+), 7 deletions(-)
+ sound/core/info.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 8728876..cadba30 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3303,18 +3303,13 @@ static int snd_pcm_fasync(int fd, struct file * file, int on)
- 	struct snd_pcm_file * pcm_file;
- 	struct snd_pcm_substream *substream;
- 	struct snd_pcm_runtime *runtime;
--	int err = -ENXIO;
+diff --git a/sound/core/info.c b/sound/core/info.c
+index d749a0d..fe83661 100644
+--- a/sound/core/info.c
++++ b/sound/core/info.c
+@@ -167,7 +167,7 @@ static loff_t snd_info_entry_llseek(struct file *file, loff_t offset, int orig)
  
+ 	data = file->private_data;
+ 	entry = data->entry;
 -	lock_kernel();
- 	pcm_file = file->private_data;
- 	substream = pcm_file->substream;
- 	if (PCM_RUNTIME_CHECK(substream))
--		goto out;
-+		return -ENXIO;
- 	runtime = substream->runtime;
--	err = fasync_helper(fd, file, on, &runtime->fasync);
--out:
++	mutex_lock(&entry->access);
+ 	switch (entry->content) {
+ 	case SNDRV_INFO_CONTENT_TEXT:
+ 		switch (orig) {
+@@ -196,7 +196,7 @@ static loff_t snd_info_entry_llseek(struct file *file, loff_t offset, int orig)
+ 	}
+ 	ret = -ENXIO;
+ out:
 -	unlock_kernel();
--	return err;
-+	return fasync_helper(fd, file, on, &runtime->fasync);
++	mutex_unlock(&entry->access);
+ 	return ret;
  }
  
- /*
 -- 
 1.7.0.4
