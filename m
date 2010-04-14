@@ -1,99 +1,50 @@
-From: Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Wed, 14 Apr 2010 00:46:42 +0100
-Message-ID: <k2o74fd948d1004131646k1e0e1897z7594f77a580c6b9f@mail.gmail.com>
-References: <20100412162947.GQ18855@one.firstfloor.org>
-	 <Pine.LNX.4.44L0.1004121252310.1702-100000@iolanthe.rowland.org>
-	 <20100413182233.GR30807@buzzloop.caiaq.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Wed, 14 Apr 2010 09:39:10 +0800
+Message-ID: <j2w4f3252891004131839w8066f5del6124b4634c4ef6e5@mail.gmail.com>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
+	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
+	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
+	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
+	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
+	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
+	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
+	<r2u4f3252891004090649p3f327273x3af60905a06045fe@mail.gmail.com>
+	<r2o98391a7b1004090659s3493aa86gb47819d4f2e9c742@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20100413182233.GR30807-ahpEBR4enfnCULTFXS99ULNAH6kLmebB@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>
-Cc: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Andi Kleen <andi-Vw/NltI1exuRpAAqCnN02g@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 8C4582444F
+	for <alsa-devel@alsa-project.org>;
+	Wed, 14 Apr 2010 03:39:11 +0200 (CEST)
+Received: by pvg12 with SMTP id 12so3895851pvg.38
+	for <alsa-devel@alsa-project.org>; Tue, 13 Apr 2010 18:39:10 -0700 (PDT)
+In-Reply-To: <r2o98391a7b1004090659s3493aa86gb47819d4f2e9c742@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 13 April 2010 19:22, Daniel Mack <daniel-rDUAYElUppE@public.gmane.org> wrote:
-> On Mon, Apr 12, 2010 at 12:57:16PM -0400, Alan Stern wrote:
->> On Mon, 12 Apr 2010, Andi Kleen wrote:
->> > On Mon, Apr 12, 2010 at 12:17:22PM -0400, Alan Stern wrote:
->> > > On Mon, 12 Apr 2010, Andi Kleen wrote:
->> > >
->> > > > > Well, the sound driver itself doesn't care for any of those =
-things, just
->> > > > > like any other USB driver doesn't. The USB core itself of th=
-e host
->> > > > > controller driver should do, and as far as I can see, it doe=
-s that, yes.
->> > > >
->> > > > Hmm, still things must go wrong somewhere. Perhaps need some i=
-nstrumentation
->> > > > to see if all the transfer buffers really hit the PCI mapping =
-functions.
->> > >
->> > > Such a test has already been carried out earlier in this thread:
->> > >
->> > > =A0 http://marc.info/?l=3Dlinux-usb&m=3D127074587029353&w=3D2
->> > > =A0 http://marc.info/?l=3Dlinux-usb&m=3D127076841801051&w=3D2
->> > > =A0 http://marc.info/?l=3Dlinux-usb&m=3D127082890510415&w=3D2
->> >
->> > Hmm, thanks. But things must still go wrong somewhere, otherwise
->> > the GFP_DMA32 wouldn't be needed?
->>
->> Indeed, something must go wrong somewhere. =A0Since Daniel's patch f=
-ixed
->> the problem by changing the buffer from a streaming mapping to a
->> coherent mapping, it's logical to assume that bad DMA addresses have
->> something to do with it. =A0But we don't really know for certain.
->
-> Some more ideas to nail this down would be to boot the machine with
-> mem=3D4096M and mem=3D2048M to see whether this makes any difference.=
- Also,
-> I think it would be interesting to know whether the patch below helps=
-=2E
->
-> As the real reason seems entirely obfuscated, there's unfortunately n=
-eed
-> for some trial error approach. Pedro, as you're the only one who can
-> actually reproduce the problem, do you see any chance to do that?
->
-> Thanks,
-> Daniel
->
->
-> diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
-> index 4328cad..26013be 100644
-> --- a/sound/usb/caiaq/audio.c
-> +++ b/sound/usb/caiaq/audio.c
-> @@ -560,7 +560,7 @@ static struct urb **alloc_urbs(struct snd_usb_cai=
-aqdev *dev, int dir, int *ret)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0urbs[i]->transfer_buffer =3D
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kmalloc(FRAMES_PER_URB =
-* BYTES_PER_FRAME, GFP_KERNEL);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 kmalloc(FRAMES_PER_URB =
-* BYTES_PER_FRAME, GFP_KERNEL | GFP_DMA);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (!urbs[i]->transfer_buffer) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0log("unable to kmalloc=
-() transfer buffer, OOM!?\n");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0*ret =3D -ENOMEM;
->
+2010/4/9 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
+
+> You are saying that the range for my card is 96 dB, do you mean that
+> the audio specs are wrong?
+> I mean, at 0 the volume is not audible, so I'm wondering why the -inf
+> "switch register" is not activated (inside the chip)...
 >
 
-Good news, I can't trigger the interference with either:
-- mem=3D2048m
-- mem=3D4096m
-- your patch
+Have you ever studied the 92HD71B datasheet ?
 
-Any idea why is mem=3D4096m different than a regular boot since I have =
-4GB anyway?
+In the Figure 11. 92HD71B Widget Diagram , NID 10 ( DAC) -95.25 dB to 0dB
+with 0.75 dB step
 
-Regards,
-Pedro
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+You have to ask alsa developer why the control did not return this range
