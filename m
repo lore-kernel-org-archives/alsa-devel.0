@@ -1,42 +1,55 @@
-From: =?UTF-8?B?w4lyaWMgUGllbA==?= <Eric.Piel@tremplin-utc.net>
-Subject: Re: [REGRESSION bisected] Sound goes too fast due to commit 7b3a177b0
-Date: Thu, 15 Apr 2010 23:19:33 +0200
-Message-ID: <4BC782E5.7070900@tremplin-utc.net>
-References: <4BC4E812.6050602@tremplin-utc.net>	<s5h633u5zx1.wl%tiwai@suse.de>	<4BC5A566.8060106@tremplin-utc.net> <s5hy6gqvx9n.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.34
+Date: Fri, 16 Apr 2010 11:23:05 +0900
+Message-ID: <20100416022304.GA2657@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hy6gqvx9n.wl%tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 861661037F9
+	for <alsa-devel@alsa-project.org>;
+	Fri, 16 Apr 2010 04:23:02 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, "Rafael J. Wysocki" <rjw@sisk.pl>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, Frank Griffin <ftg@roadrunner.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Op 14-04-10 18:01, Takashi Iwai schreef:
-:
->>
->> I don't fully grasp the meaning of bdl_pos_adj, so I don't know if it's
->> a bug to not play correctly when forcing it to 0. Is it?
-> 
-> It might be that this was for reducing the load by position
-> correction mechanism.  You might see the hd-audio kernel thread in a
-> high CPU usage.  This might be fixed also by position_fix=1, though. 
-Yes, I had added this option after a regression in the previous kernel
-which causes the hd-audio thread to take 50% of a CPU. Eventually, it
-was fixed and not needed anymore. So I guess in the case of my laptop,
-this is not really a regression, because everything is fine with the
-default values.
+The following changes since commit 5f712b2b73a9fc87fcc52124cfe8adefaa0c92f5:
+  Daniel Mack (1):
+        ALSA: ASoC: move dma_data from snd_soc_dai to snd_soc_pcm_stream
 
-In the case of Frank, this looks more like a regression, or at least a
-bug to solve, because this happens with the default options. However,
-this report should be taken with care, because this happens on a
-2.6.33.2 kernel made by Mandriva, containing many alsa patches of
-2.6.34. Frank, how possible would it be to test a 2.6.34-rc4 kernel from
-Linus?
+are available in the git repository at:
 
-If this bug is confirmed, Takashi, do you know any way to choose
-automatically position_fix=1 when needed?
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
 
-See you,
-Eric
+As mentioned last time I posted these the updates here are very large
+for 2.6.34 but the bulk of them are improvements to the newly added
+i.MX3x FIQ driver which make it able to play 44.1k and 48k which is
+sufficiently worthwhile that (especially in a new driver) I think it's
+worth the risk of making a fairly large change now.
+
+Huang Weiyi (1):
+      ASoC: wm2000: remove unused #include <linux/version.h>
+
+Sascha Hauer (5):
+      ASoC: imx-ssi: honor IMX_SSI_DMA flag
+      ASoC: imx-pcm-dma-mx2: restart DMA after an error
+      ASoC: imx-ssi: Use a hrtimer in FIQ mode
+      ASoC: imx-ssi: increase minimum periods to 4
+      ASoC: imx-ssi: do not call hrtimer_disable in trigger function
+
+ sound/soc/codecs/wm2000.c       |    1 -
+ sound/soc/imx/imx-pcm-dma-mx2.c |   15 ++++++++++-
+ sound/soc/imx/imx-pcm-fiq.c     |   55 ++++++++++++++++++++------------------
+ sound/soc/imx/imx-ssi.c         |    3 +-
+ 4 files changed, 45 insertions(+), 29 deletions(-)
