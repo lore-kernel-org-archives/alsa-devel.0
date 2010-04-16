@@ -1,18 +1,23 @@
-From: Daniel Koukola <koukola@upcmail.cz>
-Subject: ctxfi mixer initialization bug
-Date: Fri, 16 Apr 2010 18:55:45 +0200
-Message-ID: <4BC89691.8090705@upcmail.cz>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: ALSA packages release 1.0.23
+Date: Fri, 16 Apr 2010 19:08:38 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1004161905570.16336@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from r3aa142.net.upc.cz (r3aa142.net.upc.cz [213.220.218.142])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6FB6F244CF
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4C06A244DE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Apr 2010 18:55:48 +0200 (CEST)
-Received: from [192.168.0.7] (menegroth.twilight [192.168.0.7])
-	by r3aa142.net.upc.cz (8.13.8/8.13.8) with ESMTP id o3GGtj2k024318
-	for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2010 18:55:46 +0200
+	Fri, 16 Apr 2010 19:08:39 +0200 (CEST)
+Received: from server.perex.cz (server.perex.cz [172.16.0.20])
+	by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	42F8C149D0A for <alsa-devel@alsa-project.org>;
+	Fri, 16 Apr 2010 19:08:39 +0200 (CEST)
+Received: from eeebox2.perex-int.cz (localhost [127.0.0.1])
+	by server.perex.cz (Perex's E-mail Delivery System) with ESMTP id
+	3235784A1F for <alsa-devel@alsa-project.org>;
+	Fri, 16 Apr 2010 19:08:39 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +27,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello all,
 
-There seems to be some problem with the mixer initialization in the =
+ 	ALSA packages version 1.0.23 (except alsa-oss & alsa-python) are
+available for download. The list of changes is available at this URL:
 
-ctxfi driver. After the module is loaded, the analog capture doesn't =
+http://www.alsa-project.org/main/index.php/Changes_v1.0.22_v1.0.23
 
-work even though the =93Digit-IO=94 mixer switch is set to off. You have to =
+ 						Jaroslav
 
-set it to on and then to off again to make the capture work.
-
-This was tested with a Sound Blaster X-Fi XtremeMusic card and the =
-
-driver that comes with Fedora's 2.6.32.10-90.fc12.x86_64 kernel =
-
-(reported version: 1.0.21).
-
-Dan
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
