@@ -1,19 +1,27 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: ANISH KUMAR <anish.singh@samsung.com>
 Subject: Re: No shutdown code in soc-core.c
-Date: Fri, 16 Apr 2010 17:03:13 +0100
-Message-ID: <1271433793.3235.23.camel@odin>
-References: <17295568.74341271384961009.JavaMail.weblogic@epml11>
+Date: Fri, 16 Apr 2010 16:44:44 +0000 (GMT)
+Message-ID: <17476636.107751271436284230.JavaMail.weblogic@epml11>
+Reply-To: anish.singh@samsung.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id B04C72444E
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id B2DC1244B9
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Apr 2010 18:03:15 +0200 (CEST)
-Received: by wyb29 with SMTP id 29so1262618wyb.38
-	for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2010 09:03:15 -0700 (PDT)
-In-Reply-To: <17295568.74341271384961009.JavaMail.weblogic@epml11>
+	Fri, 16 Apr 2010 18:44:48 +0200 (CEST)
+Received: from ep_ms13_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0L0Z005D0AIK3K@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Sat, 17 Apr 2010 01:44:44 +0900 (KST)
+Received: from ep_spt03 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0L0Z00BMEAIKPN@ms13.samsung.com> for
+	alsa-devel@alsa-project.org; Sat, 17 Apr 2010 01:44:44 +0900 (KST)
+Content-return: prohibited
+MIME-version: 1.0
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +31,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: anish.singh@samsung.com
+To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: "liam.girdwood@wolfsonmicro.com" <liam.girdwood@wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-04-16 at 02:29 +0000, ANISH KUMAR wrote:
-> I have a doubt regarding this soc_driver struct which is defined 
-> in soc-core.c file.Why not soc_shutdown code is added in this 
-> struct??
 
+>What are you trying to do ?
+ 
+There was a "TAK" noise because of non-presence of this code.
+This soc_shutdown calls the respective shutdown code in codec
+for prevention of this kind of strange noise.In my code it is turning
+off the Amplifier because of which i no longer get the "TAK" sound.
 
-What are you trying to do ?
-
-Liam
-
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+So i am just wondering why this code is not present in the struct 
+i mentioned in my previous mail.
