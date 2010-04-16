@@ -1,16 +1,27 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.34
-Date: Fri, 16 Apr 2010 11:23:05 +0900
-Message-ID: <20100416022304.GA2657@opensource.wolfsonmicro.com>
+From: ANISH KUMAR <anish.singh@samsung.com>
+Subject: No shutdown code in soc-core.c
+Date: Fri, 16 Apr 2010 02:29:21 +0000 (GMT)
+Message-ID: <17295568.74341271384961009.JavaMail.weblogic@epml11>
+Reply-To: anish.singh@samsung.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 861661037F9
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id 512E2103803
 	for <alsa-devel@alsa-project.org>;
-	Fri, 16 Apr 2010 04:23:02 +0200 (CEST)
-Content-Disposition: inline
+	Fri, 16 Apr 2010 04:29:26 +0200 (CEST)
+Received: from ep_ms13_bk (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0L0Y00CEH6WXH2@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 16 Apr 2010 11:29:21 +0900 (KST)
+Received: from ep_spt04 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0L0Y00J1N6WXIR@ms13.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 16 Apr 2010 11:29:21 +0900 (KST)
+Content-return: prohibited
+MIME-version: 1.0
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,36 +31,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "liam.girdwood@wolfsonmicro.com" <liam.girdwood@wolfsonmicro.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 5f712b2b73a9fc87fcc52124cfe8adefaa0c92f5:
-  Daniel Mack (1):
-        ALSA: ASoC: move dma_data from snd_soc_dai to snd_soc_pcm_stream
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.34
-
-As mentioned last time I posted these the updates here are very large
-for 2.6.34 but the bulk of them are improvements to the newly added
-i.MX3x FIQ driver which make it able to play 44.1k and 48k which is
-sufficiently worthwhile that (especially in a new driver) I think it's
-worth the risk of making a fairly large change now.
-
-Huang Weiyi (1):
-      ASoC: wm2000: remove unused #include <linux/version.h>
-
-Sascha Hauer (5):
-      ASoC: imx-ssi: honor IMX_SSI_DMA flag
-      ASoC: imx-pcm-dma-mx2: restart DMA after an error
-      ASoC: imx-ssi: Use a hrtimer in FIQ mode
-      ASoC: imx-ssi: increase minimum periods to 4
-      ASoC: imx-ssi: do not call hrtimer_disable in trigger function
-
- sound/soc/codecs/wm2000.c       |    1 -
- sound/soc/imx/imx-pcm-dma-mx2.c |   15 ++++++++++-
- sound/soc/imx/imx-pcm-fiq.c     |   55 ++++++++++++++++++++------------------
- sound/soc/imx/imx-ssi.c         |    3 +-
- 4 files changed, 45 insertions(+), 29 deletions(-)
+I have a doubt regarding this soc_driver struct which is defined 
+in soc-core.c file.Why not soc_shutdown code is added in this 
+struct??
