@@ -1,17 +1,27 @@
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-Subject: [PATCH 4/4] ASoC: enable wm8753 in aspenite
-Date: Sat, 17 Apr 2010 13:37:01 +0800
-Message-ID: <v2r771cded01004162237ya9dbd6dbk4924981518ddc583@mail.gmail.com>
+From: ANISH KUMAR <anish.singh@samsung.com>
+Subject: Re: No shutdown code in soc-core.c
+Date: Sat, 17 Apr 2010 07:02:43 +0000 (GMT)
+Message-ID: <21125077.117201271487763642.JavaMail.weblogic@epml11>
+Reply-To: anish.singh@samsung.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3BACD24437
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7B7D424498
 	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Apr 2010 07:37:02 +0200 (CEST)
-Received: by pwj8 with SMTP id 8so2202584pwj.38
-	for <alsa-devel@alsa-project.org>; Fri, 16 Apr 2010 22:37:01 -0700 (PDT)
+	Sat, 17 Apr 2010 09:02:46 +0200 (CEST)
+Received: from ep_ms13_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0L1000IKJE8JOB@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Sat, 17 Apr 2010 16:02:43 +0900 (KST)
+Received: from ep_spt01 (ms13.samsung.com [203.254.225.109])
+	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0L100049NE8J5E@ms13.samsung.com> for
+	alsa-devel@alsa-project.org; Sat, 17 Apr 2010 16:02:43 +0900 (KST)
+Content-return: prohibited
+MIME-version: 1.0
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,259 +31,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "liam.girdwood@wolfsonmicro.com" <liam.girdwood@wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
->From 5d94b20b89185ae5a69c7ba5d1e998d568064def Mon Sep 17 00:00:00 2001
-From: Haojian Zhuang <haojian.zhuang@marvell.com>
-Date: Fri, 19 Mar 2010 18:13:32 -0400
-Subject: [PATCH] ASoC: enable wm8753 in aspenite
+Why this shutdown filed is not there in the struct shown below:
+static struct platform_driver soc_driver 
+{
+.shutdown       = soc_shutdown,                  //soc-core.c 
+}
+This shutdown call this codec_dev->shutdown function 
+In my case i am turning off the amplifier using this call.Which
+solved my problem of "TAK" sound during reset.
 
-Enable wm8753 codec in aspenite via ssp interface.
+I agree that soc_codec_close() is calling the shutdown function
+but in my case there is a call to set the path after this which is
+turning on the amplifier and suddenly if we reset the phone it is
+causing "TAK" sound.Probably because AMPLIFIER was on.
 
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
----
- sound/soc/pxa/Kconfig    |    9 ++
- sound/soc/pxa/Makefile   |    2 +
- sound/soc/pxa/aspenite.c |  190 ++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 201 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/pxa/aspenite.c
-
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 286d52a..0f10ee2 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -113,6 +113,15 @@ config SND_PXA2XX_SOC_PALM27X
- 	  Say Y if you want to add support for SoC audio on
- 	  Palm T|X, T5, E2 or LifeDrive handheld computer.
-
-+config SND_SOC_ASPENITE
-+	tristate "SoC Audio support for Marvell Aspenite"
-+	depends on SND_PXA2XX_SOC && MACH_ASPENITE
-+	select SND_PXA168_SOC_SSP
-+	select SND_SOC_WM8753
-+	help
-+	  Say Y if you want to add support for SoC audio on the
-+	  Marvell Aspenite reference platform.
-+
- config SND_SOC_ZYLONITE
- 	tristate "SoC Audio support for Marvell Zylonite"
- 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
-diff --git a/sound/soc/pxa/Makefile b/sound/soc/pxa/Makefile
-index a74e6c9..74054aa 100644
---- a/sound/soc/pxa/Makefile
-+++ b/sound/soc/pxa/Makefile
-@@ -12,6 +12,7 @@ obj-$(CONFIG_SND_PXA2XX_SOC_SSP) += snd-soc-pxa2xx-ssp.o
- obj-$(CONFIG_SND_PXA168_SOC_SSP) += snd-soc-pxa168-ssp.o
-
- # PXA Machine Support
-+snd-soc-aspenite-objs := aspenite.o
- snd-soc-corgi-objs := corgi.o
- snd-soc-poodle-objs := poodle.o
- snd-soc-tosa-objs := tosa.o
-@@ -38,6 +39,7 @@ obj-$(CONFIG_SND_PXA2XX_SOC_EM_X270) += snd-soc-em-x270.o
- obj-$(CONFIG_SND_PXA2XX_SOC_PALM27X) += snd-soc-palm27x.o
- obj-$(CONFIG_SND_PXA2XX_SOC_MAGICIAN) += snd-soc-magician.o
- obj-$(CONFIG_SND_PXA2XX_SOC_MIOA701) += snd-soc-mioa701.o
-+obj-$(CONFIG_SND_SOC_ASPENITE) += snd-soc-aspenite.o
- obj-$(CONFIG_SND_SOC_ZYLONITE) += snd-soc-zylonite.o
- obj-$(CONFIG_SND_PXA2XX_SOC_IMOTE2) += snd-soc-imote2.o
- obj-$(CONFIG_SND_SOC_RAUMFELD) += snd-soc-raumfeld.o
-diff --git a/sound/soc/pxa/aspenite.c b/sound/soc/pxa/aspenite.c
-new file mode 100644
-index 0000000..f82acdc
---- /dev/null
-+++ b/sound/soc/pxa/aspenite.c
-@@ -0,0 +1,190 @@
-+/*
-+ * aspenite.c -- SoC audio for Aspenite
-+ *
-+ * Copyright (C) 2009-2010 Marvell International Ltd.
-+ * 	Haojian Zhuang <haojian.zhuang@marvell.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <plat/ssp.h>
-+
-+#include "../codecs/wm8753.h"
-+#include "pxa2xx-pcm.h"
-+#include "pxa168-ssp.h"
-+
-+static struct snd_soc_card aspenite;
-+
-+/* aspenite machine dapm widgets */
-+static const struct snd_soc_dapm_widget aspenite_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone", NULL),
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_SPK("Headset Speaker L", NULL),
-+	SND_SOC_DAPM_SPK("Headset Speaker R", NULL),
-+	SND_SOC_DAPM_LINE("Line LIN", NULL),
-+	SND_SOC_DAPM_LINE("Line RIN", NULL),
-+};
-+
-+/* aspenite machine audio map */
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	/* Headphone connected to LOUT1/ROUT1 */
-+	{"Headphone", NULL, "LOUT1"},
-+	{"Headphone", NULL, "ROUT1"},
-+
-+	/* Speaker connected to LOUT2/OUT4 & OUT3/ROUT2 */
-+	{"Headset Speaker L", NULL, "LOUT2"},
-+	{"Headset Speaker L", NULL, "OUT4"},
-+	{"Headset Speaker R", NULL, "OUT3"},
-+	{"Headset Speaker R", NULL, "ROUT2"},
-+
-+	/* Line connected to LINE1/LINE2 */
-+	{"Line LIN", NULL, "LINE1"},
-+	{"Line RIN", NULL, "LINE2"},
-+
-+	/* Mic */
-+	{"MIC1", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Headset Mic"},
-+
-+	/* Connect the ALC pins */
-+	{"ACIN", NULL, "ACOP"},
-+};
-+
-+static const struct snd_kcontrol_new wm8753_aspenite_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headset Speaker L"),
-+	SOC_DAPM_PIN_SWITCH("Headset Speaker R"),
-+	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-+	SOC_DAPM_PIN_SWITCH("Headphone"),
-+	SOC_DAPM_PIN_SWITCH("Line LIN"),
-+	SOC_DAPM_PIN_SWITCH("Line RIN"),
-+};
-+
-+static int aspenite_hifi_hw_params(struct snd_pcm_substream *substream,
-+				   struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int mclk, ret;
-+
-+	mclk = pxa168_query_mclk(substream, params);
-+	if (mclk < 0)
-+		return mclk;
-+
-+	/* set codec DAI configuration */
-+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S
-+				  | SND_SOC_DAIFMT_NB_NF
-+				  | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu DAI configuration */
-+	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S
-+				  | SND_SOC_DAIFMT_NB_NF
-+				  | SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set the codec system clock for DAC and ADC */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, WM8753_MCLK, mclk,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* set cpu system clock */
-+	ret = snd_soc_dai_set_sysclk(cpu_dai, 0, mclk,
-+				     SND_SOC_CLOCK_OUT);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops aspenite_hifi_ops = {
-+	.hw_params	= aspenite_hifi_hw_params,
-+};
-+
-+static int aspenite_wm8753_init(struct snd_soc_codec *codec)
-+{
-+	int ret;
-+
-+	/* set up NC codec pins */
-+	snd_soc_dapm_nc_pin(codec, "MONO1");
-+	snd_soc_dapm_nc_pin(codec, "MONO2");
-+	snd_soc_dapm_nc_pin(codec, "RXP");
-+	snd_soc_dapm_nc_pin(codec, "RXN");
-+
-+	snd_soc_dapm_new_controls(codec, aspenite_dapm_widgets,
-+				  ARRAY_SIZE(aspenite_dapm_widgets));
-+	ret = snd_soc_add_controls(codec, wm8753_aspenite_controls,
-+				   ARRAY_SIZE(wm8753_aspenite_controls));
-+	if (ret < 0)
-+		return ret;
-+
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link aspenite_dai[] = {
-+	{
-+		.name		= "WM8753 HiFi",
-+		.stream_name	= "WM8753 HiFi",
-+		.cpu_dai	= &pxa168_ssp_dai[PXA168_DAI_SSP1],
-+		.codec_dai	= &wm8753_dai[0],
-+		.init		= aspenite_wm8753_init,
-+		.ops		= &aspenite_hifi_ops,
-+	},
-+};
-+
-+static struct snd_soc_card aspenite = {
-+	.name		= "Aspenite",
-+	.platform	= &pxa2xx_soc_platform,
-+	.dai_link	= aspenite_dai,
-+	.num_links	= ARRAY_SIZE(aspenite_dai),
-+};
-+
-+static struct snd_soc_device aspenite_snd_devdata = {
-+	.card		= &aspenite,
-+	.codec_dev	= &soc_codec_dev_wm8753,
-+};
-+
-+static struct platform_device *aspenite_snd_device;
-+
-+static int __init aspenite_init(void)
-+{
-+	int ret;
-+
-+	aspenite_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!aspenite_snd_device)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(aspenite_snd_device, &aspenite_snd_devdata);
-+	aspenite_snd_devdata.dev = &aspenite_snd_device->dev;
-+
-+	ret = platform_device_add(aspenite_snd_device);
-+	if (ret)
-+		platform_device_put(aspenite_snd_device);
-+	return ret;
-+}
-+module_init(aspenite_init);
-+
-+static void __exit aspenite_exit(void)
-+{
-+	platform_device_unregister(aspenite_snd_device);
-+}
-+module_exit(aspenite_exit);
-+
-+MODULE_DESCRIPTION("ALSA SoC WM8753 Aspenite");
-+MODULE_AUTHOR("Haojian Zhuang <haojian.zhuang@marvell.com>");
-+MODULE_LICENSE("GPL");
--- 
-1.5.6.5
+Anyway why this function call soc_shutdown() is there in 
+soc-core.c if no one is calling it???
+I know there will be a redundancy if we have shutdown field
+in the struct shown above as soc_codec_close call also calls
+codec shutdown code.
+But in my case it is solving my problem. 
