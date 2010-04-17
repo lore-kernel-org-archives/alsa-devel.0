@@ -1,57 +1,52 @@
-From: ANISH KUMAR <anish.singh@samsung.com>
-Subject: Re: No shutdown code in soc-core.c
-Date: Sat, 17 Apr 2010 07:02:43 +0000 (GMT)
-Message-ID: <21125077.117201271487763642.JavaMail.weblogic@epml11>
-Reply-To: anish.singh@samsung.com
+From: Frans Pop <elendil@planet.nl>
+Subject: Re: [regression] Sound not transferred to docking station after resume from StR
+Date: Sat, 17 Apr 2010 11:06:22 +0200
+Message-ID: <201004171106.23787.elendil@planet.nl>
+References: <201004162131.19171.elendil@planet.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7B7D424498
-	for <alsa-devel@alsa-project.org>;
-	Sat, 17 Apr 2010 09:02:46 +0200 (CEST)
-Received: from ep_ms13_bk (mailout3.samsung.com [203.254.224.33])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0L1000IKJE8JOB@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Sat, 17 Apr 2010 16:02:43 +0900 (KST)
-Received: from ep_spt01 (ms13.samsung.com [203.254.225.109])
-	by ms13.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0L100049NE8J5E@ms13.samsung.com> for
-	alsa-devel@alsa-project.org; Sat, 17 Apr 2010 16:02:43 +0900 (KST)
-Content-return: prohibited
-MIME-version: 1.0
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "liam.girdwood@wolfsonmicro.com" <liam.girdwood@wolfsonmicro.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <201004162131.19171.elendil@planet.nl>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: linux-pm@lists.linux-foundation.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Why this shutdown filed is not there in the struct shown below:
-static struct platform_driver soc_driver 
-{
-.shutdown       = soc_shutdown,                  //soc-core.c 
-}
-This shutdown call this codec_dev->shutdown function 
-In my case i am turning off the amplifier using this call.Which
-solved my problem of "TAK" sound during reset.
+On Friday 16 April 2010, Frans Pop wrote:
+> Scenario:
+> - suspend laptop while *un*docked, i.e. with laptop speakers in use
+> - dock laptop
+> - resume
+>
+> With 2.6.33 and earlier the sound would always come from the external
+> speakers connected to the docking station. But with 2.6.34-rc4 I get
+> sound still coming from the laptop's internal speakers, which is not
+> correct.
 
-I agree that soc_codec_close() is calling the shutdown function
-but in my case there is a call to set the path after this which is
-turning on the amplifier and suddenly if we reset the phone it is
-causing "TAK" sound.Probably because AMPLIFIER was on.
+The problem is slightly different than I thought. Turns out *both* the
+internal (laptop) and external (docking station) speakers are active after
+the resume. So the problem is that the internal speakers are not switched off.
 
-Anyway why this function call soc_shutdown() is there in 
-soc-core.c if no one is calling it???
-I know there will be a redundancy if we have shutdown field
-in the struct shown above as soc_codec_close call also calls
-codec shutdown code.
-But in my case it is solving my problem. 
+I have traced this to an ALSA merge: 524df55725217. Unfortunately I get
+boot failures when I try to bisect down into that merge.
+
+Here's the bisect log:
+# bad: [0d0fb0f9c5fddef4a10242fe3337f00f528a3099] Linux 2.6.34-rc4
+# good: [724e6d3fe8003c3f60bf404bf22e4e331327c596] Linux 2.6.33-rc8
+git bisect start 'v2.6.34-rc4' 'v2.6.33-rc8'
+# bad: [94468080220162f74dc6ce5c3e95e5fec8022902]
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty-2.6
+git bisect bad 94468080220162f74dc6ce5c3e95e5fec8022902
+# bad: [524df55725217b13d5a232fb5badb5846418ea0e] Merge branch 'for-linus'
+  of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound-2.6
+git bisect bad 524df55725217b13d5a232fb5badb5846418ea0e
+# good: [0f4533979473a456a8adb3869365e12c7a99cf65]
+  Merge branches 'futexes-for-linus', 'irq-core-for-linus' and
+  'bkl-drivers-for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/linux-2.6-tip
+git bisect good 0f4533979473a456a8adb3869365e12c7a99cf65
+
+Cheers,
+FJP
