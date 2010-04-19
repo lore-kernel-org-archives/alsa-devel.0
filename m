@@ -1,20 +1,21 @@
-From: Alex Austin <circuitsoft.alex@gmail.com>
+From: "Justin P. Mattock" <justinmattock@gmail.com>
 Subject: Re: alsaproject.org web site messd up
-Date: Sun, 18 Apr 2010 23:12:21 -0500
-Message-ID: <w2w53baa24a1004182112i73447fe6na49699fbd658bfdf@mail.gmail.com>
+Date: Sun, 18 Apr 2010 21:23:16 -0700
+Message-ID: <4BCBDAB4.80607@gmail.com>
 References: <y2mdd18b0c31004172308q91dcbd82xad56aaf17331891a@mail.gmail.com>
+	<w2w53baa24a1004182112i73447fe6na49699fbd658bfdf@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
-	[209.85.211.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18898245D6
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 47395245A1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Apr 2010 06:12:22 +0200 (CEST)
-Received: by ywh6 with SMTP id 6so2487168ywh.16
-	for <alsa-devel@alsa-project.org>; Sun, 18 Apr 2010 21:12:22 -0700 (PDT)
-In-Reply-To: <y2mdd18b0c31004172308q91dcbd82xad56aaf17331891a@mail.gmail.com>
+	Mon, 19 Apr 2010 06:23:14 +0200 (CEST)
+Received: by gyd10 with SMTP id 10so2266106gyd.38
+	for <alsa-devel@alsa-project.org>; Sun, 18 Apr 2010 21:23:12 -0700 (PDT)
+In-Reply-To: <w2w53baa24a1004182112i73447fe6na49699fbd658bfdf@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Justin Mattock <justinmattock@gmail.com>
+To: Alex Austin <circuitsoft.alex@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Unrelated, I think. The proper website is alsa-project.org
+On 04/18/2010 09:12 PM, Alex Austin wrote:
+> Unrelated, I think. The proper website is alsa-project.org
+> <http://alsa-project.org>
+>
+>>
 
-On Apr 18, 2010 11:07 PM, "Justin Mattock" <justinmattock@gmail.com> wrote:
+yeah I was recompiling the lib's
+using the cblfs tutorial(ended up using ubuntu's
+tar balls), there though
+seems to be the correct address
+which is working now.
 
-when I go to alsaproject.org,
-II get redirected to some thing saying
-that alsa has expired?
-is this real or fake?
+who knows, as long as it works.
 
-
---
 Justin P. Mattock
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
