@@ -1,21 +1,20 @@
-From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: Re: alsaproject.org web site messd up
-Date: Sun, 18 Apr 2010 21:23:16 -0700
-Message-ID: <4BCBDAB4.80607@gmail.com>
-References: <y2mdd18b0c31004172308q91dcbd82xad56aaf17331891a@mail.gmail.com>
-	<w2w53baa24a1004182112i73447fe6na49699fbd658bfdf@mail.gmail.com>
+From: Alex Austin <circuitsoft.alex@gmail.com>
+Subject: Re: alsa-info script changed to version V
+Date: Mon, 19 Apr 2010 00:01:01 -0500
+Message-ID: <o2v53baa24a1004182201k717d31c5s90ae6cedc3e174d7@mail.gmail.com>
+References: <p2jfee9dc711004180523xe037f21epdec7964baa489b50@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 47395245A1
-	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Apr 2010 06:23:14 +0200 (CEST)
-Received: by gyd10 with SMTP id 10so2266106gyd.38
-	for <alsa-devel@alsa-project.org>; Sun, 18 Apr 2010 21:23:12 -0700 (PDT)
-In-Reply-To: <w2w53baa24a1004182112i73447fe6na49699fbd658bfdf@mail.gmail.com>
+Received: from mail-iw0-f189.google.com (mail-iw0-f189.google.com
+	[209.85.223.189])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8A6A8103804
+	for <Alsa-devel@alsa-project.org>;
+	Mon, 19 Apr 2010 07:01:03 +0200 (CEST)
+Received: by iwn27 with SMTP id 27so3256262iwn.5
+	for <Alsa-devel@alsa-project.org>; Sun, 18 Apr 2010 22:01:01 -0700 (PDT)
+In-Reply-To: <p2jfee9dc711004180523xe037f21epdec7964baa489b50@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alex Austin <circuitsoft.alex@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: wirechief <silvermachineman@gmail.com>
+Cc: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/18/2010 09:12 PM, Alex Austin wrote:
-> Unrelated, I think. The proper website is alsa-project.org
-> <http://alsa-project.org>
->
->>
+Where did you get it from? That could be the beginning of a 404 error
+handler.
 
-yeah I was recompiling the lib's
-using the cblfs tutorial(ended up using ubuntu's
-tar balls), there though
-seems to be the correct address
-which is working now.
+$ head alsa-info.sh
 
-who knows, as long as it works.
+And report the output here.
 
-Justin P. Mattock
+On Apr 18, 2010 6:14 PM, "wirechief" <silvermachineman@gmail.com> wrote:
+
+The alsa-info script no longer works from the command line.
+Newer version detected:
+To view the ChangeLog, please visit
+http://www.alsa-project.org/alsa-info.sh.changelog
+ALSA-Info script has been updated to v
+Please re-run the script
+wirechief@wirechief-home:~$ bash ./alsa-info.sh
+./alsa-info.sh: line 1: !DOCTYPE: No such file or directory
+./alsa-info.sh: line 2: PUBLIC: command not found
+./alsa-info.sh: line 3: syntax error near unexpected token `newline'
+./alsa-info.sh: line 3: `"
+http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+
+
+Is this permanant ?
+
+
+
+
+
+--
+Reach out and share your life, care for others,
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
