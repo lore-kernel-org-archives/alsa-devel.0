@@ -1,22 +1,16 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ASoC - Support for multiple components
-Date: Mon, 19 Apr 2010 18:23:03 +0100
-Message-ID: <1271697783.3208.438.camel@odin>
-References: <1271686144.3208.305.camel@odin>
-	<p2nfa686aa41004190815i38a4e670v34df390ef877973c@mail.gmail.com>
-	<1271694314.3208.426.camel@odin>
-	<20100419171418.GD29819@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.35
+Date: Tue, 20 Apr 2010 09:58:40 +0900
+Message-ID: <20100420005839.GA32307@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3F55B247F5
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DD8492497E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 19 Apr 2010 19:23:31 +0200 (CEST)
-Received: by wwb22 with SMTP id 22so243400wwb.38
-	for <alsa-devel@alsa-project.org>; Mon, 19 Apr 2010 10:23:30 -0700 (PDT)
-In-Reply-To: <20100419171418.GD29819@opensource.wolfsonmicro.com>
+	Tue, 20 Apr 2010 02:58:34 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +20,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: vbarinov <vbarinov@embeddedalley.com>, alsa-devel <alsa-devel@alsa-project.org>, Joonyoung Shim <jy0922.shim@samsung.com>, Timur Tabi <timur@freescale.com>, mano@roarinelk.homelinux.net, "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, dg@emlix.com, Grant Likely <grant.likely@secretlab.ca>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, Cliff Cai <cliff.cai@analog.com>, ben-linux <ben-linux@fluff.org>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, "kyungmin.park" <kyungmin.park@samsung.com>, Sascha Hauer <s.hauer@pengutronix.de>, anemo@mba.ocn.ne.jp
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-04-20 at 02:14 +0900, Mark Brown wrote:
-> On Mon, Apr 19, 2010 at 05:25:14PM +0100, Liam Girdwood wrote:
+The following changes since commit d21e0f4cd16656f71207683ee27465600ad21625:
+  Marek Vasut (1):
+        ASoC: Zipit Z2 WM8750 ASoC driver
 
-> 
-> > ASoC doesn't fully use the driver model for components in this changeset
-> > (or at all) due to the complex relationships between the individual
-> > components for probing() and for control of PM operations (i.e. we cant
-> > have pops and clicks at suspend). 
-> 
-> > This is not to say ASoC wont use the full driver model for components in
-> > the future. This work is an important step on the way to achieving this
-> > aim. 
-> 
-> The ordering requirements here mean this is a *very* open question.
-> Linus just nacked a bunch of stuff for 2.6.34 which would have added
-> some ability to waiting for components to probe stuff that things like
-> ASoC would need to use the driver core fully.  At the minute subsystems
-> like ASoC which are built up of components that don't have much to do
-> with each other have to do something like ASoC is doing and waiting for
-> all the components to come online before bringing the subsystem level
-> devices up.
+are available in the git repository at:
 
-Heh - I wasn't volunteering to make the changes in driver core to
-support this myself, but was planning to wait for someone else to do
-something acceptable for Linus here ;)
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
 
-Liam
+Huang Weiyi (1):
+      ASoC: wm2000: remove unused #include <linux/version.h>
+
+Mark Brown (2):
+      Merge branch 'for-2.6.34' into for-2.6.35
+      ASoC: Add indirection for CODEC private data
+
+Sascha Hauer (5):
+      ASoC: imx-ssi: honor IMX_SSI_DMA flag
+      ASoC: imx-pcm-dma-mx2: restart DMA after an error
+      ASoC: imx-ssi: Use a hrtimer in FIQ mode
+      ASoC: imx-ssi: increase minimum periods to 4
+      ASoC: imx-ssi: do not call hrtimer_disable in trigger function
+
+ include/sound/soc.h             |   13 ++++++++-
+ sound/soc/codecs/ad1836.c       |    2 +-
+ sound/soc/codecs/ad193x.c       |    2 +-
+ sound/soc/codecs/ak4104.c       |    2 +-
+ sound/soc/codecs/ak4535.c       |   10 +++---
+ sound/soc/codecs/ak4642.c       |    2 +-
+ sound/soc/codecs/ak4671.c       |    2 +-
+ sound/soc/codecs/cs4270.c       |   20 +++++++-------
+ sound/soc/codecs/cx20442.c      |    2 +-
+ sound/soc/codecs/da7210.c       |    2 +-
+ sound/soc/codecs/ssm2602.c      |   12 ++++----
+ sound/soc/codecs/stac9766.c     |    2 +-
+ sound/soc/codecs/tlv320aic3x.c  |   10 +++---
+ sound/soc/codecs/tlv320dac33.c  |   36 ++++++++++++------------
+ sound/soc/codecs/twl4030.c      |   32 +++++++++++-----------
+ sound/soc/codecs/uda134x.c      |   16 +++++-----
+ sound/soc/codecs/uda1380.c      |    4 +-
+ sound/soc/codecs/wm2000.c       |    1 -
+ sound/soc/codecs/wm8350.c       |   28 ++++++++++----------
+ sound/soc/codecs/wm8400.c       |   16 +++++-----
+ sound/soc/codecs/wm8523.c       |   10 +++---
+ sound/soc/codecs/wm8580.c       |    4 +-
+ sound/soc/codecs/wm8711.c       |    6 ++--
+ sound/soc/codecs/wm8731.c       |   10 +++---
+ sound/soc/codecs/wm8750.c       |    7 ++---
+ sound/soc/codecs/wm8753.c       |    8 +++---
+ sound/soc/codecs/wm8776.c       |    6 ++--
+ sound/soc/codecs/wm8900.c       |   10 +++---
+ sound/soc/codecs/wm8903.c       |   20 +++++++-------
+ sound/soc/codecs/wm8904.c       |   42 +++++++++++++++---------------
+ sound/soc/codecs/wm8940.c       |    4 +-
+ sound/soc/codecs/wm8955.c       |   16 +++++-----
+ sound/soc/codecs/wm8960.c       |    6 ++--
+ sound/soc/codecs/wm8961.c       |    6 ++--
+ sound/soc/codecs/wm8971.c       |   12 ++++----
+ sound/soc/codecs/wm8974.c       |    2 +-
+ sound/soc/codecs/wm8978.c       |   12 ++++----
+ sound/soc/codecs/wm8988.c       |    8 +++---
+ sound/soc/codecs/wm8990.c       |    8 +++---
+ sound/soc/codecs/wm8993.c       |   24 ++++++++--------
+ sound/soc/codecs/wm8994.c       |   34 ++++++++++++------------
+ sound/soc/codecs/wm9081.c       |   18 ++++++------
+ sound/soc/codecs/wm9713.c       |   13 +++++----
+ sound/soc/codecs/wm_hubs.c      |    6 ++--
+ sound/soc/imx/imx-pcm-dma-mx2.c |   15 ++++++++++-
+ sound/soc/imx/imx-pcm-fiq.c     |   55 ++++++++++++++++++++------------------
+ sound/soc/imx/imx-ssi.c         |    3 +-
+ 47 files changed, 303 insertions(+), 276 deletions(-)
