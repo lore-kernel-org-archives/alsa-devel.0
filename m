@@ -1,34 +1,22 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: Re: "Resource temporarily unavailable" while reading
- although poll returns POLLIN event
-Date: Wed, 21 Apr 2010 18:15:40 +0200
-Message-ID: <4BCF24AC.3000301@gmail.com>
-References: <4BCEE140.5060704@gmail.com>
+From: =?UTF-8?q?R=C3=A9mi=20Denis-Courmont?= <remi@remlab.net>
+Subject: [PATCH alsa-lib 2/2] Use thread-safe locale functions
+	if available
+Date: Wed, 21 Apr 2010 19:37:48 +0300
+Message-ID: <1271867868-31501-2-git-send-email-remi@remlab.net>
+References: <1271867868-31501-1-git-send-email-remi@remlab.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 35B692451D
+Received: from yop.chewa.net (yop.chewa.net [91.121.105.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id F26E724531
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 18:15:43 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by keymachine.tbmn.org (Postfix) with ESMTP id 7BE6D8AC5C7
+	Wed, 21 Apr 2010 18:37:50 +0200 (CEST)
+Received: from basile.remlab.net (ip6-localhost [IPv6:::1])
+	by yop.chewa.net (Postfix) with SMTP id B5772678
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 18:15:41 +0200 (CEST)
-Received: from keymachine.tbmn.org ([127.0.0.1])
-	by localhost (keymachine.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id K1ktHZnN-uJM for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 18:15:41 +0200 (CEST)
-Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
-	[80.108.1.212])
-	(using SSLv3 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: mne@tbmn.org)
-	by keymachine.tbmn.org (Postfix) with ESMTPSA id 3C9AF8AC5C1
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 18:15:41 +0200 (CEST)
-In-Reply-To: <4BCEE140.5060704@gmail.com>
+	Wed, 21 Apr 2010 18:37:49 +0200 (CEST)
+In-Reply-To: <1271867868-31501-1-git-send-email-remi@remlab.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -41,26 +29,57 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Stefan Schoenleitner wrote:
-> Since a POLLIN event only occurs after at least a full period is available for
-> reading (as set up by snd_pcm_sw_params_set_avail_min() above)
-> and I only read after a POLLIN event occured on the capture device fd,
-> I really do not understand why I get the above error.
+setlocale() is not thread-safe. It can actually trigger a crash if
+another thread uses locale informations at the same time in the process.
+Library code should use POSIX newlocale/duplocale/uselocale/freelocale
+instead. Those functions only change the locale data for the calling
+thread.
+---
+ src/conf.c |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+), 0 deletions(-)
 
-By using snd_pcm_avail_update() I found out that polling on the PCMs
-*does not work at all*.
-
-Although I verified that avail_min is 160 frames, polling on the
-capture/playback PCMs returns a POLLIN/POLLOUT event even if the number
-of frames for reading/writing *is less than avail_main*.
-
-I also tried snd_pcm_wait() which should also wait until there are at
-least avail_min frames available for reading/writing.
-The result is the same: snd_pcm_avail_update() shows that it returns
-even if there are far less than avail_min frames available for processing.
-
-I suspect that this is a bug in ALSA ?
-
-
-cheers,
-stefan
+diff --git a/src/conf.c b/src/conf.c
+index 570c90f..5d8c5c9 100644
+--- a/src/conf.c
++++ b/src/conf.c
+@@ -499,22 +499,38 @@ static int safe_strtod(const char *str, double *val)
+ {
+ 	char *end;
+ 	double v;
++#ifdef HAVE_USELOCALE
++	locale_t saved_locale, c_locale;
++#else
+ 	char *saved_locale;
+ 	char locstr[64]; /* enough? */
++#endif
+ 	int err;
+ 
+ 	if (!*str)
+ 		return -EINVAL;
++#ifdef HAVE_USELOCALE
++	c_locale = newlocale(LC_NUMERIC_MASK, "C", 0);
++	saved_locale = uselocale(c_locale);
++#else
+ 	saved_locale = setlocale(LC_NUMERIC, NULL);
+ 	if (saved_locale) {
+ 		snprintf(locstr, sizeof(locstr), "%s", saved_locale);
+ 		setlocale(LC_NUMERIC, "C");
+ 	}
++#endif
+ 	errno = 0;
+ 	v = strtod(str, &end);
+ 	err = -errno;
++#ifdef HAVE_USELOCALE
++	if (c_locale != (locale_t)0) {
++		uselocale(saved_locale);
++		freelocale(c_locale);
++	}
++#else
+ 	if (saved_locale)
+ 		setlocale(LC_NUMERIC, locstr);
++#endif
+ 	if (err)
+ 		return err;
+ 	if (*end)
+-- 
+1.7.0.4
