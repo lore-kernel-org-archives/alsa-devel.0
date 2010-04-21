@@ -1,32 +1,16 @@
-From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
-Subject: "Resource temporarily unavailable" while reading
- although poll returns POLLIN event
-Date: Wed, 21 Apr 2010 13:28:00 +0200
-Message-ID: <4BCEE140.5060704@gmail.com>
+From: Hector Martin <hector@marcansoft.com>
+Subject: Re: [PATCH] alsa-python: add register_poll to alsaseq
+Date: Wed, 21 Apr 2010 16:05:29 +0200
+Message-ID: <4BCF0629.4070100@marcansoft.com>
+References: <4BCE7868.1020108@marcansoft.com> <4BCEA0BC.3060905@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------060801080008070807030804"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8EE8C1037F8
+Received: from smtp.marcansoft.com (marcansoft.com [80.68.93.119])
+	by alsa0.perex.cz (Postfix) with ESMTP id 57D2710380E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 13:28:03 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by keymachine.tbmn.org (Postfix) with ESMTP id 60F388AC5C7
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 13:28:02 +0200 (CEST)
-Received: from keymachine.tbmn.org ([127.0.0.1])
-	by localhost (keymachine.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id vSFybh-aS7uH for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 13:28:01 +0200 (CEST)
-Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
-	[80.108.1.212])
-	(using SSLv3 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: mne@tbmn.org)
-	by keymachine.tbmn.org (Postfix) with ESMTPSA id AD6338AC5C1
-	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 13:28:01 +0200 (CEST)
+	Wed, 21 Apr 2010 16:05:43 +0200 (CEST)
+In-Reply-To: <4BCEA0BC.3060905@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,72 +20,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is a multi-part message in MIME format.
+--------------060801080008070807030804
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-I wrote a small application that opens both streams (i.e. capture and playback)
-of a PCM in non blocking (i.e. SND_PCM_NONBLOCK) mode.
+On 04/21/2010 08:52 AM, Clemens Ladisch wrote:
+> Please provide a Signed-off-by tag; we use this also for non-kernel code.
 
-During device configuration I also set up the minimum number of
-frames to consider a PCM ready:
+Done.
 
----------------------------------------------------------------------------------
-// when to consider the device to be ready for the next data transfer operation
-if ((ret=snd_pcm_sw_params_set_avail_min(handle, swparams, pcm_period_size))<0)
-{
-	fprintf(stderr, "could not set avail_min: %s\n", snd_strerror(ret));
-	return NULL;
-}
----------------------------------------------------------------------------------
+> This isn't freed; better use alloca().
 
-As you can see it is set to the number of frames one period contains.
+Whoops. I see this got fixed on hcontrol with 866af7359. I based my
+patch on 1.0.21's hcontrol so I missed that fix.
 
-In other words, each time there are at least that many frames available for reading
-on the capture device, we should get a POLLIN event when using poll().
-On the other side we should get a POLLOUT event if that many frames can be written
-to the playback device.
+New patch attached.
+
+-- 
+Hector Martin (hector@marcansoft.com)
+Public Key: http://www.marcansoft.com/marcan.asc
 
 
-Then, later in my application, I use poll() on the fds of the PCM devices.
-As, according to the ALSA reference, poll events can be "mangeled", I use
-snd_pcm_poll_descriptors_revents() to "demangle" the events:
+--------------060801080008070807030804
+Content-Type: text/plain;
+ name="0001-Add-register_poll-for-alsaseq.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-Add-register_poll-for-alsaseq.patch"
 
----------------------------------------------------------------------------------
-if ((ret=snd_pcm_poll_descriptors_revents(device_handle, &poll_fds[i], 1, &revents))<0)
-{
-	fprintf(stderr, "could not snd_pcm_poll_descriptors_revents: %s\n", snd_strerror(ret));
-	exit(EXIT_FAILURE);
-}
----------------------------------------------------------------------------------
+>From f801ff2f940b24c3ee3f27271ec4b249a2c67fb8 Mon Sep 17 00:00:00 2001
+From: Hector Martin <hector@marcansoft.com>
+Date: Wed, 21 Apr 2010 05:54:49 +0200
+Subject: [PATCH] Add register_poll for alsaseq
+
+Signed-off-by: Hector Martin <hector@marcansoft.com>
+---
+ pyalsa/alsaseq.c |   51 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 51 insertions(+), 0 deletions(-)
+
+diff --git a/pyalsa/alsaseq.c b/pyalsa/alsaseq.c
+index de131a4..bbf6b2e 100644
+--- a/pyalsa/alsaseq.c
++++ b/pyalsa/alsaseq.c
+@@ -3236,6 +3236,53 @@ Sequencer_stop_queue(SequencerObject *self,
+   Py_RETURN_NONE;
+ }
+ 
++PyDoc_STRVAR(Sequencer_registerpoll__doc__,
++"register_poll(pollObj, input=False, output=False) -- Register poll file descriptors.");
++
++static PyObject *
++Sequencer_registerpoll(SequencerObject *self, PyObject *args, PyObject *kwds)
++{
++    PyObject *pollObj, *reg, *t;
++    struct pollfd *pfd;
++    int i, count;
++    int input = 0;
++    int output = 0;
++    int mode = POLLIN|POLLOUT;
++
++    static char * kwlist[] = { "pollObj", "input", "output", NULL };
++
++    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|ii", kwlist, &pollObj, &input, &output))
++        return NULL;
++
++    if (input && !output)
++        mode = POLLIN;
++    else if (!input && output)
++        mode = POLLOUT;
++
++    count = snd_seq_poll_descriptors_count(self->handle, mode);
++    if (count <= 0)
++        Py_RETURN_NONE;
++    pfd = alloca(sizeof(struct pollfd) * count);
++    count = snd_seq_poll_descriptors(self->handle, pfd, count, mode);
++    if (count <= 0)
++        Py_RETURN_NONE;
++
++    reg = PyObject_GetAttr(pollObj, PyString_InternFromString("register"));
++
++    for (i = 0; i < count; i++) {
++        t = PyTuple_New(2);
++        if (t) {
++            PyTuple_SET_ITEM(t, 0, PyInt_FromLong(pfd[i].fd));
++            PyTuple_SET_ITEM(t, 1, PyInt_FromLong(pfd[i].events));
++            Py_XDECREF(PyObject_CallObject(reg, t));
++            Py_DECREF(t);
++        }
++    }
++
++    Py_XDECREF(reg);
++
++    Py_RETURN_NONE;
++}
+ 
+ 
+ 
+@@ -3309,6 +3356,10 @@ static PyMethodDef Sequencer_methods[] = {
+    (PyCFunction) Sequencer_stop_queue,
+    METH_VARARGS | METH_KEYWORDS,
+    Sequencer_stop_queue__doc__},
++  {"register_poll",
++   (PyCFunction) Sequencer_registerpoll,
++   METH_VARARGS | METH_KEYWORDS,
++   Sequencer_registerpoll__doc__},
+   {NULL}
+ };
+ 
+-- 
+1.6.4.4
 
 
+--------------060801080008070807030804
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-After that, each time there was a POLLIN event, I am reading exactly one period from the
-capture PCM.
-On the other side, if there was a POLLOUT event, I am writing exactly one period to the
-playback PCM.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-
-While this works for a small number of periods (which is not always the same), I always end up
-with a "Resource temporarily unavailable" error when trying to read one period from the capture PCM:
-
----------------------------------------------------------------------------------
-demangled poll: POLLIN  on capture device
-could not read from capture device: Resource temporarily unavailable
----------------------------------------------------------------------------------
-
-
-Since a POLLIN event only occurs after at least a full period is available for
-reading (as set up by snd_pcm_sw_params_set_avail_min() above)
-and I only read after a POLLIN event occured on the capture device fd,
-I really do not understand why I get the above error.
-
-So why does the above happen ?
-What am I doing wrong ?
-
-If it helps, I pasted the source code here so that you can view it nicely: http://pastebin.com/fCicqctq
-
-cheers,
-stefan
+--------------060801080008070807030804--
