@@ -1,24 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Wed, 21 Apr 2010 10:32:24 +0800
-Message-ID: <g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>
-	<hp744t$5b5$1@dough.gmane.org>
-	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>
-	<hqbv5m$cmf$1@dough.gmane.org>
+From: Hector Martin <hector@marcansoft.com>
+Subject: [PATCH] alsa-python: add register_poll to alsaseq
+Date: Wed, 21 Apr 2010 06:00:40 +0200
+Message-ID: <4BCE7868.1020108@marcansoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------080100090701000909000606"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
-	[209.85.222.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96692103811
+Received: from smtp.marcansoft.com (marcansoft.com [80.68.93.119])
+	by alsa0.perex.cz (Postfix) with ESMTP id B21A91037F9
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 04:32:26 +0200 (CEST)
-Received: by pzk40 with SMTP id 40so4656453pzk.23
-	for <alsa-devel@alsa-project.org>; Tue, 20 Apr 2010 19:32:24 -0700 (PDT)
-In-Reply-To: <hqbv5m$cmf$1@dough.gmane.org>
+	Wed, 21 Apr 2010 06:00:53 +0200 (CEST)
+Received: from [IPv6:2001:470:1f09:800:2a0:d1ff:feab:c75b]
+	(raider.home.marcansoft.com
+	[IPv6:2001:470:1f09:800:2a0:d1ff:feab:c75b])
+	(using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+	(No client certificate requested)
+	by smtp.marcansoft.com (Postfix) with ESMTPSA id C16C665B38
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Apr 2010 06:00:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,80 +26,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/4/17 Colin Guthrie <gmane@colin.guthr.ie>
+This is a multi-part message in MIME format.
+--------------080100090701000909000606
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-> 'Twas brillig, and Raymond Yau at 16/04/10 14:48 did gyre and gimble:
-> > 2010/4/3 Colin Guthrie <gmane@colin.guthr.ie>
->
-> Sorry for the top post but....
->
-> Raymond. Your replies are often very disjoint. I see no relevance to my
-> message here and why you're replying here is beyond me.
->
-> It's totally unclear what point you are making and which parts of this
-> message are your comments and which are Lennart's original comments
-> that's you've just pasted in.
->
-> What are you trying to say?
->
-> Col
->
+Attached patch adds register_poll to the sequencer bindings to support
+nonblocking sequencer access with the select module.
 
-http://pulseaudio.org/ticket/580
-
->> Basically, if the signal is completely cut off, then the attenuation is
--inf dB.
-
-you have to sum the dB gain of  the SPL of the speaker/headphone when you
-want to calculate the dB ( sound pressure and the distance )
+-- 
+Hector Martin (hector@marcansoft.com)
+Public Key: http://www.marcansoft.com/marcan.asc
 
 
->> FWIW, I've got the same/similar h/w with a cutoff at 14% in PA as you
-have. I've been meaning to get this fixed for a while, but I'm
-incredibly lazy with certain things that don't bother me practically, so
-haven't followed it up yet.
+--------------080100090701000909000606
+Content-Type: text/plain;
+ name="0001-Add-register_poll-for-alsaseq.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-Add-register_poll-for-alsaseq.patch"
 
->> If any specific debug is needed here, feel free to ask.
+>From db1a07ad9e9076f258d1ff871955eedc7d34ae9c Mon Sep 17 00:00:00 2001
+From: Hector Martin <hector@marcansoft.com>
+Date: Wed, 21 Apr 2010 05:54:49 +0200
+Subject: [PATCH] Add register_poll for alsaseq
 
-Just reply since you still have similar problem , but it seem that you are
-unwilling to provide info to debug your case , at least you have to provide
-output of alsa-info.sh even when you have the same/similar h/w  ,
+---
+ pyalsa/alsaseq.c |   53 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 53 insertions(+), 0 deletions(-)
 
-do your laptop has the volume knob ?
+diff --git a/pyalsa/alsaseq.c b/pyalsa/alsaseq.c
+index de131a4..fbab6da 100644
+--- a/pyalsa/alsaseq.c
++++ b/pyalsa/alsaseq.c
+@@ -3236,6 +3236,55 @@ Sequencer_stop_queue(SequencerObject *self,
+   Py_RETURN_NONE;
+ }
+ 
++PyDoc_STRVAR(Sequencer_registerpoll__doc__,
++"register_poll(pollObj, input=False, output=False) -- Register poll file descriptors.");
++
++static PyObject *
++Sequencer_registerpoll(SequencerObject *self, PyObject *args, PyObject *kwds)
++{
++    PyObject *pollObj, *reg, *t;
++    struct pollfd *pfd;
++    int i, count;
++    int input = 0;
++    int output = 0;
++    int mode = POLLIN|POLLOUT;
++
++    static char * kwlist[] = { "pollObj", "input", "output", NULL };
++
++    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O|ii", kwlist, &pollObj, &input, &output))
++        return NULL;
++
++    if (input && !output)
++        mode = POLLIN;
++    else if (!input && output)
++        mode = POLLOUT;
++
++    count = snd_seq_poll_descriptors_count(self->handle, mode);
++    if (count <= 0)
++        Py_RETURN_NONE;
++    pfd = malloc(sizeof(struct pollfd) * count);
++    if (pfd == NULL)
++        Py_RETURN_NONE;
++    count = snd_seq_poll_descriptors(self->handle, pfd, count, mode);
++    if (count <= 0)
++        Py_RETURN_NONE;
++
++    reg = PyObject_GetAttr(pollObj, PyString_InternFromString("register"));
++
++    for (i = 0; i < count; i++) {
++        t = PyTuple_New(2);
++        if (t) {
++            PyTuple_SET_ITEM(t, 0, PyInt_FromLong(pfd[i].fd));
++            PyTuple_SET_ITEM(t, 1, PyInt_FromLong(pfd[i].events));
++            Py_XDECREF(PyObject_CallObject(reg, t));
++            Py_DECREF(t);
++        }
++    }
++
++    Py_XDECREF(reg);
++
++    Py_RETURN_NONE;
++}
+ 
+ 
+ 
+@@ -3309,6 +3358,10 @@ static PyMethodDef Sequencer_methods[] = {
+    (PyCFunction) Sequencer_stop_queue,
+    METH_VARARGS | METH_KEYWORDS,
+    Sequencer_stop_queue__doc__},
++  {"register_poll",
++   (PyCFunction) Sequencer_registerpoll,
++   METH_VARARGS | METH_KEYWORDS,
++   Sequencer_registerpoll__doc__},
+   {NULL}
+ };
+ 
+-- 
+1.6.4.4
 
-https://tango.0pointer.de/pipermail/pulseaudio-discuss/2009-May/003898.html
 
-If pulseaudio provide per-application volume control, why the PA community
-propose to throw away the volume slider of the application. (i.e. why only
-allow pavucontrol to change the per-application volume ?
+--------------080100090701000909000606
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/6521/focus=6524
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
->> Making the application volume sliders control the device volume isn't
-good either, because if an application has a volume slider, the natural
-assumption made by users is that the slider controls only that application's
-volume.
-
->> Solution: throw away volume sliders in applications, and promote centralized volume management with volume applets and hardware controls.
-
-
-I suggest PA should provide the pre-application volume control for the
-application too since from the viewpoint of PA when PA have to control all
-the volume , it is better not allow application to control alsa master
-volume control. but there is no reason to remove the volume sliders in
-application
-
-http://git.alsa-project.org/?p=alsa-tools.git;a=blob_plain;f=*hwmixvolume*/README
-<http://git.alsa-project.org/?p=alsa-tools.git;a=blob_plain;f=hwmixvolume/README>
-
-The per-application volume control is quite similar to the per voice
-volume control of those hardware mixing sound cards ,
-although there are some differences
-
- the per voice volume control of hardware mixing sound card provide digital
-gain/atten by the DSP ( not those gain/atten of  DAC )
-
-http://thread.gmane.org/gmane.linux.alsa.devel/24638/focus=24707
+--------------080100090701000909000606--
