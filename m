@@ -1,28 +1,20 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: wrong decibel data?
-Date: Wed, 21 Apr 2010 09:06:45 +0100
-Message-ID: <hqmbmm$hsj$1@dough.gmane.org>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>	<hp744t$5b5$1@dough.gmane.org>	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>	<hqbv5m$cmf$1@dough.gmane.org>
-	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: [REGRESSION] SB X-Fi Notebook stopped working in
+ 1.0.23
+Date: Wed, 21 Apr 2010 12:49:36 +0400
+Message-ID: <4BCEBC20.5080707@gmail.com>
+References: <4BCE0BC8.3020201@gmail.com> <4BCEA106.10804@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7ACEA103809
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.154])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C6B1103809
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 10:07:00 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1O4UxV-0006RU-NJ
-	for alsa-devel@alsa-project.org; Wed, 21 Apr 2010 10:06:57 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2010 10:06:57 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2010 10:06:57 +0200
-In-Reply-To: <g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>
+	Wed, 21 Apr 2010 10:49:49 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id e21so2878792fga.2
+	for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2010 01:49:47 -0700 (PDT)
+In-Reply-To: <4BCEA106.10804@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,102 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Raymond Yau at 21/04/10 03:32 did gyre and gimble:
-> 2010/4/17 Colin Guthrie <gmane@colin.guthr.ie>
-> 
->> 'Twas brillig, and Raymond Yau at 16/04/10 14:48 did gyre and gimble:
->>> 2010/4/3 Colin Guthrie <gmane@colin.guthr.ie>
->>
->> Sorry for the top post but....
->>
->> Raymond. Your replies are often very disjoint. I see no relevance to my
->> message here and why you're replying here is beyond me.
->>
->> It's totally unclear what point you are making and which parts of this
->> message are your comments and which are Lennart's original comments
->> that's you've just pasted in.
->>
->> What are you trying to say?
->>
->> Col
->>
-> 
-> http://pulseaudio.org/ticket/580
-> 
->>> Basically, if the signal is completely cut off, then the attenuation is
-> -inf dB.
-> 
-> you have to sum the dB gain of  the SPL of the speaker/headphone when you
-> want to calculate the dB ( sound pressure and the distance )
-> 
-> 
->>> FWIW, I've got the same/similar h/w with a cutoff at 14% in PA as you
-> have. I've been meaning to get this fixed for a while, but I'm
-> incredibly lazy with certain things that don't bother me practically, so
-> haven't followed it up yet.
-> 
->>> If any specific debug is needed here, feel free to ask.
-> 
-> Just reply since you still have similar problem , but it seem that you are
-> unwilling to provide info to debug your case , at least you have to provide
-> output of alsa-info.sh even when you have the same/similar h/w  ,
-
-
-What debug have you asked me for? It's impossible to tell from the
-vaguely relevant quotations (poorly formatted in email so that only half
-of the quoted text actually looks like a quote) and random specification
-sheet snippets you post that you're actually asking for anything at all!
-
-If you want information, ask for it clearly and I'll do my best to
-answer it.
-
-
-> If pulseaudio provide per-application volume control, why the PA community
-> propose to throw away the volume slider of the application. (i.e. why only
-> allow pavucontrol to change the per-application volume ?
-> 
-> http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/6521/focus=6524
-
-That is a discussion, not a statement of intent. As I stated on that
-thread, I personally disagree with Tanu's position, but if you are
-interested in this discussion, feel free to join in on that list. It's
-nothing to do with this thread at all however (it's purely a UI and user
-expectation of cause + effect), so let's not drag this thread further
-into the land of obscure tangents.
-
->>> Making the application volume sliders control the device volume isn't
-> good either, because if an application has a volume slider, the natural
-> assumption made by users is that the slider controls only that application's
-> volume.
-> 
->>> Solution: throw away volume sliders in applications, and promote centralized volume management with volume applets and hardware controls.
-> 
-> 
-> I suggest PA should provide the pre-application volume control for the
-> application too since from the viewpoint of PA when PA have to control all
-> the volume , it is better not allow application to control alsa master
-> volume control. but there is no reason to remove the volume sliders in
-> application
-
-I suggest you discuss this issue on the actual thread itself rather than
-pull it in to a completely different one. I do however think you've
-missed the point, but like I say that is something to discuss there, not
-here.
-
-Col
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+MjEuMDQuMjAxMCAxMDo1MywgQ2xlbWVucyBMYWRpc2NoINC/0LjRiNC10YI6Cj4gVGhlIFNvdXJj
+ZSB3cm90ZToKPgo+PiBUaGlzIGRldmljZSB3b3JrcyBmaW5lIHdpdGggMS4wLjIyLjEgZHJpdmVy
+LCBidXQgZG9lc24ndCB3aXRoIDEuMC4yMy4KPj4gc25kLXVzYi1hdWRpbyYgIEtvIGFyZSBsb2Fk
+ZWQgYnV0IHRvIG5vIGdvb2QuIGFsc2FtaXhlciBkb2Vzbid0IGxpc3QgdGhlCj4+IGRldmljZSBh
+bmQgbm8gZGV2aWNlIGZpbGVzIGluIC9kZXYvc25kLgo+Pgo+IFdoZW4gdGhlIGRyaXZlciBkb2Vz
+bid0IGF0dGFjaCwgaXQgc2hvdWxkIGxvZyBzb21lIGVycm9yIG1lc3NhZ2UocykgdG8KPiB0aGUg
+c3lzdGVtIGxvZy4KPgo+Cj4gUmVnYXJkcywKPiBDbGVtZW5zCj4KPgoKdXNiIDgtMjogbmV3IGZ1
+bGwgc3BlZWQgVVNCIGRldmljZSB1c2luZyB1aGNpX2hjZCBhbmQgYWRkcmVzcyAyCnVzYiA4LTI6
+IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0wNDFlLCBpZFByb2R1Y3Q9MzBkMgp1c2Ig
+OC0yOiBOZXcgVVNCIGRldmljZSBzdHJpbmdzOiBNZnI9MSwgUHJvZHVjdD0yLCBTZXJpYWxOdW1i
+ZXI9MAp1c2IgOC0yOiBQcm9kdWN0OiBTQiBYLUZpIE5vdGVib29rCnVzYiA4LTI6IE1hbnVmYWN0
+dXJlcjogQ3JlYXRpdmUgVGVjaG5vbG9neSBMdGQKdXNiIDgtMjogY29uZmlndXJhdGlvbiAjMSBj
+aG9zZW4gZnJvbSAxIGNob2ljZQppbnB1dDogQ3JlYXRpdmUgVGVjaG5vbG9neSBMdGQgU0IgWC1G
+aSBOb3RlYm9vayBhcyAKL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFkLjIvdXNiOC84LTIv
+OC0yOjEuMy9pbnB1dC9pbnB1dDExCmdlbmVyaWMtdXNiIDAwMDM6MDQxRTozMEQyLjAwMDI6IGlu
+cHV0LGhpZHJhdzE6IFVTQiBISUQgdjEuMTEgRGV2aWNlIApbQ3JlYXRpdmUgVGVjaG5vbG9neSBM
+dGQgU0IgWC1GaSBOb3RlYm9va10gb24gdXNiLTAwMDA6MDA6MWQuMi0yL2lucHV0MwppbnB1dDog
+Q3JlYXRpdmUgVGVjaG5vbG9neSBMdGQgU0IgWC1GaSBOb3RlYm9vayBhcyAKL2RldmljZXMvcGNp
+MDAwMDowMC8wMDAwOjAwOjFkLjIvdXNiOC84LTIvOC0yOjEuNC9pbnB1dC9pbnB1dDEyCmdlbmVy
+aWMtdXNiIDAwMDM6MDQxRTozMEQyLjAwMDM6IGlucHV0LGhpZHJhdzI6IFVTQiBISUQgdjEuMTEg
+S2V5Ym9hcmQgCltDcmVhdGl2ZSBUZWNobm9sb2d5IEx0ZCBTQiBYLUZpIE5vdGVib29rXSBvbiB1
+c2ItMDAwMDowMDoxZC4yLTIvaW5wdXQ0CkFMU0EgcGNtLmM6MTc0OiAyOjE6MTogZW5kcG9pbnQg
+bGFja3Mgc2FtcGxlIHJhdGUgYXR0cmlidXRlIGJpdCwgY2Fubm90IHNldC4KQUxTQSBwY20uYzox
+NzQ6IDI6MjoxOiBlbmRwb2ludCBsYWNrcyBzYW1wbGUgcmF0ZSBhdHRyaWJ1dGUgYml0LCBjYW5u
+b3Qgc2V0LgoKUC5TLiBBbm90aGVyIHN0cmFuZ2UgZ2xpdGNoIC0gd2l0aCAxLjAuMjMgc3RyYW5n
+ZSB0aGluZ3Mgc3RhcnQgdG8gCmhhcHBlbiwgZm9yIGV4YW1wbGUsIGJhc2ggaHVzdCBoYW5ncyBv
+biBleGl0IGFuZCBzeXN0ZW0gYmVjb21lcyBzbG93LgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
