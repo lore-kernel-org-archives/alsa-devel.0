@@ -1,8 +1,8 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 2/3] snd-meastro3: Document hardware volume
-	control a bit
-Date: Wed, 21 Apr 2010 08:15:27 -0400
-Message-ID: <1271852128-4638-2-git-send-email-hdegoede@redhat.com>
+Subject: [PATCH 3/3] snd-meastro3: Ignore spurious HV
+	interrupts during suspend / resume
+Date: Wed, 21 Apr 2010 08:15:28 -0400
+Message-ID: <1271852128-4638-3-git-send-email-hdegoede@redhat.com>
 References: <1271852128-4638-1-git-send-email-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,77 +22,57 @@ To: alsa-devel@alsa-project.org
 Cc: Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-While working on a fix for the volume being muted on the allegro in my
-Compaq EVO N600C after suspend, I've learned a few things about the hardware
-volume control worth documenting. The actual fix for the suspend / resume
-issue is in the next patch in this set.
+Ignore spurious HV interrupts during suspend / resume, this avoids
+mistaking them for a mute button press. This is not very pretty but
+it seems the only way to fix the master volume control gets muted
+after suspend issue I'm seeing. Note that the es1968 driver is doing
+exactly the same.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/pci/maestro3.c |   22 ++++++++++++++++++----
- 1 files changed, 18 insertions(+), 4 deletions(-)
+ sound/pci/maestro3.c |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
 diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
-index 491a2fc..c6593cf 100644
+index c6593cf..0ed634a 100644
 --- a/sound/pci/maestro3.c
 +++ b/sound/pci/maestro3.c
-@@ -1597,6 +1597,10 @@ static void snd_m3_update_ptr(struct snd_m3 *chip, struct m3_dma *s)
- 	}
- }
+@@ -849,6 +849,7 @@ struct snd_m3 {
+ 	struct snd_kcontrol *master_switch;
+ 	struct snd_kcontrol *master_volume;
+ 	struct tasklet_struct hwvol_tq;
++	unsigned int in_suspend;
  
-+/* The m3's hardware volume works by incrementing / decrementing 2 counters
-+   (without wrap around) in response to volume button presses and then
-+   generating an interrupt. The pair of counters is stored in bits 1-3 and 5-7
-+   of a byte wide register. The meaning of bits 0 and 4 is unknown. */
- static void snd_m3_update_hw_volume(unsigned long private_data)
- {
- 	struct snd_m3 *chip = (struct snd_m3 *) private_data;
-@@ -1608,7 +1612,15 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
- 	   values. */
- 	x = inb(chip->iobase + SHADOW_MIX_REG_VOICE) & 0xee;
- 
--	/* Reset the volume control registers. */
-+	/* Reset the volume counters to 4. Tests on the allegro integrated
-+	   into a Compaq N600C laptop, have revealed that:
-+	   1) Writing any value will result in the 2 counters being reset to
-+	      4 so writing 0x88 is not strictly necessary
-+	   2) Writing to any of the 4 involved registers will reset all 4
-+	      of them (and reading them always returns the same value for all
-+	      of them)
-+	   It could be that a maestro deviates from this, so leave the code
-+	   as is. */
- 	outb(0x88, chip->iobase + SHADOW_MIX_REG_VOICE);
- 	outb(0x88, chip->iobase + HW_VOL_COUNTER_VOICE);
+ #ifdef CONFIG_PM
+ 	u16 *suspend_mem;
+@@ -1626,6 +1627,11 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
  	outb(0x88, chip->iobase + SHADOW_MIX_REG_MASTER);
-@@ -1623,7 +1635,9 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
- 	val = chip->ac97->regs[AC97_MASTER_VOL];
- 	switch (x) {
- 	case 0x88:
--		/* mute */
-+		/* The counters have not changed, yet we've received a HV
-+		   interrupt. According to tests run by various people this
-+		   happens when pressing the mute button. */
- 		val ^= 0x8000;
- 		chip->ac97->regs[AC97_MASTER_VOL] = val;
- 		outw(val, chip->iobase + CODEC_DATA);
-@@ -1632,7 +1646,7 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
- 			       &chip->master_switch->id);
- 		break;
- 	case 0xaa:
--		/* volume up */
-+		/* counters increased by 1 -> volume up */
- 		if ((val & 0x7f) > 0)
- 			val--;
- 		if ((val & 0x7f00) > 0)
-@@ -1644,7 +1658,7 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
- 			       &chip->master_volume->id);
- 		break;
- 	case 0x66:
--		/* volume down */
-+		/* counters decreased by 1 -> volume down */
- 		if ((val & 0x7f) < 0x1f)
- 			val++;
- 		if ((val & 0x7f00) < 0x1f00)
+ 	outb(0x88, chip->iobase + HW_VOL_COUNTER_MASTER);
+ 
++	/* Ignore spurious HV interrupts during suspend / resume, this avoids
++	   mistaking them for a mute button press. */
++	if (chip->in_suspend)
++		return;
++
+ 	if (!chip->master_switch || !chip->master_volume)
+ 		return;
+ 
+@@ -2439,6 +2445,7 @@ static int m3_suspend(struct pci_dev *pci, pm_message_t state)
+ 	if (chip->suspend_mem == NULL)
+ 		return 0;
+ 
++	chip->in_suspend = 1;
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ 	snd_pcm_suspend_all(chip->pcm);
+ 	snd_ac97_suspend(chip->ac97);
+@@ -2512,6 +2519,7 @@ static int m3_resume(struct pci_dev *pci)
+ 	snd_m3_hv_init(chip);
+ 
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D0);
++	chip->in_suspend = 0;
+ 	return 0;
+ }
+ #endif /* CONFIG_PM */
 -- 
 1.7.0.1
 
