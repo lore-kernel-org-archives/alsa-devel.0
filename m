@@ -1,20 +1,34 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: [PATCH 4/4] snd-maestro3: Make hardware volume
- buttons an input device
-Date: Wed, 21 Apr 2010 19:05:51 +0300
-Message-ID: <20100421160551.GB6861@sci.fi>
-References: <1271862249-22612-1-git-send-email-hdegoede@redhat.com>
-	<1271862249-22612-4-git-send-email-hdegoede@redhat.com>
+From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
+Subject: Re: "Resource temporarily unavailable" while reading
+ although poll returns POLLIN event
+Date: Wed, 21 Apr 2010 18:15:40 +0200
+Message-ID: <4BCF24AC.3000301@gmail.com>
+References: <4BCEE140.5060704@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from filtteri1.pp.htv.fi (filtteri1.pp.htv.fi [213.243.153.184])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2B41924514
+Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
+	by alsa0.perex.cz (Postfix) with ESMTP id 35B692451D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 18:05:58 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1271862249-22612-4-git-send-email-hdegoede@redhat.com>
+	Wed, 21 Apr 2010 18:15:43 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by keymachine.tbmn.org (Postfix) with ESMTP id 7BE6D8AC5C7
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Apr 2010 18:15:41 +0200 (CEST)
+Received: from keymachine.tbmn.org ([127.0.0.1])
+	by localhost (keymachine.tbmn.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id K1ktHZnN-uJM for <alsa-devel@alsa-project.org>;
+	Wed, 21 Apr 2010 18:15:41 +0200 (CEST)
+Received: from [192.168.1.5] (chello080108001212.35.11.tuwien.teleweb.at
+	[80.108.1.212])
+	(using SSLv3 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: mne@tbmn.org)
+	by keymachine.tbmn.org (Postfix) with ESMTPSA id 3C9AF8AC5C1
+	for <alsa-devel@alsa-project.org>;
+	Wed, 21 Apr 2010 18:15:41 +0200 (CEST)
+In-Reply-To: <4BCEE140.5060704@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,97 +38,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 21, 2010 at 11:04:09AM -0400, Hans de Goede wrote:
-> While working on the sound suspend / resume problems with my laptop
-> I noticed that the hardware volume handling code in essence just detects
-> key presses, and then does some hardcoded modification of the master volu=
-me
-> based on which key is pressed.
-> =
+Stefan Schoenleitner wrote:
+> Since a POLLIN event only occurs after at least a full period is available for
+> reading (as set up by snd_pcm_sw_params_set_avail_min() above)
+> and I only read after a POLLIN event occured on the capture device fd,
+> I really do not understand why I get the above error.
 
-> This made me think that clearly the right thing to do here is just report
-> these keypresses to userspace as keypresses using an input device and let
-> userspace decide what to with them.
-> =
+By using snd_pcm_avail_update() I found out that polling on the PCMs
+*does not work at all*.
 
-> This patch does this, getting rid of the ugly direct ac97 writes from
-> the tasklet, the ac97lock and the need for using a tasklet in general.
-> =
+Although I verified that avail_min is 160 frames, polling on the
+capture/playback PCMs returns a POLLIN/POLLOUT event even if the number
+of frames for reading/writing *is less than avail_main*.
 
-> As an added bonus the keys now work identical to volume keys on a (usb)
-> keyboard with multimedia keys, providing visual feedback of the volume
-> level change, and a better range of the volume control (with a properly
-> configured desktop environment).
+I also tried snd_pcm_wait() which should also wait until there are at
+least avail_min frames available for reading/writing.
+The result is the same: snd_pcm_avail_update() shows that it returns
+even if there are far less than avail_min frames available for processing.
 
-I like it. The maestro2 code is nearly identical. Any chance you'd
-give it the same treatment? I should be able to dig up a few laptops to
-test both drivers if necessary.
+I suspect that this is a bug in ALSA ?
 
-<snip>
-> @@ -2524,6 +2494,42 @@ static int m3_resume(struct pci_dev *pci)
->  }
->  #endif /* CONFIG_PM */
->  =
 
-> +#ifdef CONFIG_INPUT
-> +static int __devinit snd_m3_input_register(struct snd_m3 *chip)
-> +{
-> +	struct input_dev *input_dev;
-> +	int err;
-> +
-> +	input_dev =3D input_allocate_device();
-> +	if (!input_dev)
-> +		return -ENOMEM;
-> +
-> +	snprintf(chip->phys, sizeof(chip->phys), "pci-%s/input0",
-> +		 pci_name(chip->pci));
-
-What's the proper format of phys? I see gameport stuff uses
-pci%s/gameport0, ir stuff uses pci-%s/ir0. I can't immediately find any
-other pci input things.
-
-> +
-> +	input_dev->name =3D chip->card->driver;
-> +	input_dev->phys =3D chip->phys;
-> +	input_dev->id.bustype =3D BUS_PCI;
-> +	input_dev->id.vendor  =3D chip->pci->vendor;
-> +	input_dev->id.product =3D chip->pci->device;
-> +	input_dev->dev.parent =3D &chip->pci->dev;
-> +
-> +	input_dev->evbit[0] =3D BIT_MASK(EV_KEY);
-> +	input_dev->keybit[BIT_WORD(KEY_MUTE)] |=3D BIT_MASK(KEY_MUTE);
-> +	input_dev->keybit[BIT_WORD(KEY_VOLUMEDOWN)] |=3D BIT_MASK(KEY_VOLUMEDOW=
-N);
-> +	input_dev->keybit[BIT_WORD(KEY_VOLUMEUP)] |=3D BIT_MASK(KEY_VOLUMEUP);
-
-__set_bit() perhaps
-
-> +
-> +	err =3D input_register_device(input_dev);
-> +	if (err) {
-> +		input_dev->dev.parent =3D NULL;
-
-Is this nullification needed?
-
-> +		input_free_device(input_dev);
-> +	} else {
-> +		chip->input_dev =3D input_dev;
-> +	}
-> +
-> +	return err;
-> +}
-> +#endif /* CONFIG_INPUT */
->  =
-
->  /*
->   */
-
--- =
-
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+cheers,
+stefan
