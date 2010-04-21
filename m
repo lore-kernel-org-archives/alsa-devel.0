@@ -1,18 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 2/4] snd-meastro3: Document hardware volume
-	control a bit
-Date: Wed, 21 Apr 2010 11:04:07 -0400
-Message-ID: <1271862249-22612-2-git-send-email-hdegoede@redhat.com>
-References: <1271862249-22612-1-git-send-email-hdegoede@redhat.com>
+Subject: [PATCH 1/4] snd-meastro3: Add amp_gpio quirk for
+	Compaq EVO N600C
+Date: Wed, 21 Apr 2010 11:04:06 -0400
+Message-ID: <1271862249-22612-1-git-send-email-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp3.versatel.nl (smtp4.versatel.nl [62.58.50.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC214244C1
+	by alsa0.perex.cz (Postfix) with ESMTP id 4AA2B244C1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 16:58:51 +0200 (CEST)
-In-Reply-To: <1271862249-22612-1-git-send-email-hdegoede@redhat.com>
+	Wed, 21 Apr 2010 16:58:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,76 +24,29 @@ To: alsa-devel@alsa-project.org
 Cc: Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-While working on a fix for the volume being muted on the allegro in my
-Compaq EVO N600C after suspend, I've learned a few things about the hardware
-volume control worth documenting. The actual fix for the suspend / resume
-issue is in the next patch in this set.
+Without this quirk sound stops working after suspend resume. With this quirk,
+one still needs to manually unmute the master volume control after a suspend /
+/ resume cycle. That is fixed in another patch in this set.
+
+Note that this patch was submitted to the alsa bug tracker a long time ago:
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4319
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/pci/maestro3.c |   22 ++++++++++++++++++----
- 1 files changed, 18 insertions(+), 4 deletions(-)
+ sound/pci/maestro3.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
 diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
-index 491a2fc..c6593cf 100644
+index 75283fb..491a2fc 100644
 --- a/sound/pci/maestro3.c
 +++ b/sound/pci/maestro3.c
-@@ -1597,6 +1597,10 @@ static void snd_m3_update_ptr(struct snd_m3 *chip, struct m3_dma *s)
- 	}
- }
+@@ -884,6 +884,7 @@ static struct pci_device_id snd_m3_ids[] = {
+ MODULE_DEVICE_TABLE(pci, snd_m3_ids);
  
-+/* The m3's hardware volume works by incrementing / decrementing 2 counters
-+   (without wrap around) in response to volume button presses and then
-+   generating an interrupt. The pair of counters is stored in bits 1-3 and 5-7
-+   of a byte wide register. The meaning of bits 0 and 4 is unknown. */
- static void snd_m3_update_hw_volume(unsigned long private_data)
- {
- 	struct snd_m3 *chip = (struct snd_m3 *) private_data;
-@@ -1608,7 +1612,15 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
- 	   values. */
- 	x = inb(chip->iobase + SHADOW_MIX_REG_VOICE) & 0xee;
- 
--	/* Reset the volume control registers. */
-+	/* Reset the volume counters to 4. Tests on the allegro integrated
-+	   into a Compaq N600C laptop, have revealed that:
-+	   1) Writing any value will result in the 2 counters being reset to
-+	      4 so writing 0x88 is not strictly necessary
-+	   2) Writing to any of the 4 involved registers will reset all 4
-+	      of them (and reading them always returns the same value for all
-+	      of them)
-+	   It could be that a maestro deviates from this, so leave the code
-+	   as is. */
- 	outb(0x88, chip->iobase + SHADOW_MIX_REG_VOICE);
- 	outb(0x88, chip->iobase + HW_VOL_COUNTER_VOICE);
- 	outb(0x88, chip->iobase + SHADOW_MIX_REG_MASTER);
-@@ -1623,7 +1635,9 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
- 	val = chip->ac97->regs[AC97_MASTER_VOL];
- 	switch (x) {
- 	case 0x88:
--		/* mute */
-+		/* The counters have not changed, yet we've received a HV
-+		   interrupt. According to tests run by various people this
-+		   happens when pressing the mute button. */
- 		val ^= 0x8000;
- 		chip->ac97->regs[AC97_MASTER_VOL] = val;
- 		outw(val, chip->iobase + CODEC_DATA);
-@@ -1632,7 +1646,7 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
- 			       &chip->master_switch->id);
- 		break;
- 	case 0xaa:
--		/* volume up */
-+		/* counters increased by 1 -> volume up */
- 		if ((val & 0x7f) > 0)
- 			val--;
- 		if ((val & 0x7f00) > 0)
-@@ -1644,7 +1658,7 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
- 			       &chip->master_volume->id);
- 		break;
- 	case 0x66:
--		/* volume down */
-+		/* counters decreased by 1 -> volume down */
- 		if ((val & 0x7f) < 0x1f)
- 			val++;
- 		if ((val & 0x7f00) < 0x1f00)
+ static struct snd_pci_quirk m3_amp_quirk_list[] __devinitdata = {
++	SND_PCI_QUIRK(0x0E11, 0x0094, "Compaq Evo N600c", 0x0c),
+ 	SND_PCI_QUIRK(0x10f7, 0x833e, "Panasonic CF-28", 0x0d),
+ 	SND_PCI_QUIRK(0x10f7, 0x833d, "Panasonic CF-72", 0x0d),
+ 	SND_PCI_QUIRK(0x1033, 0x80f1, "NEC LM800J/7", 0x03),
 -- 
 1.7.0.1
