@@ -1,21 +1,18 @@
-From: The Source <thesourcehim@gmail.com>
-Subject: Re: [REGRESSION] SB X-Fi Notebook stopped working in
- 1.0.23
-Date: Wed, 21 Apr 2010 13:00:32 +0400
-Message-ID: <4BCEBEB0.2080702@gmail.com>
-References: <4BCE0BC8.3020201@gmail.com> <4BCEA106.10804@ladisch.de>
-	<4BCEBC20.5080707@gmail.com> <4BCEBCDE.8030207@gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Subject: [PATCH 1/3] ad193x: add set_pll entry to support
+	different clock input
+Date: Wed, 21 Apr 2010 17:36:47 +0800
+Message-ID: <1271842609-18276-2-git-send-email-21cnbao@gmail.com>
+References: <1271842609-18276-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.152])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5F88410382E
+Received: from nwd2mail10.analog.com (nwd2mail10.analog.com [137.71.25.55])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9220010382E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 21 Apr 2010 11:00:42 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e21so2865214fga.2
-	for <alsa-devel@alsa-project.org>; Wed, 21 Apr 2010 02:00:41 -0700 (PDT)
-In-Reply-To: <4BCEBCDE.8030207@gmail.com>
+	Wed, 21 Apr 2010 11:38:14 +0200 (CEST)
+In-Reply-To: <1271842609-18276-1-git-send-email-21cnbao@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,56 +22,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-MjEuMDQuMjAxMCAxMjo1MiwgVGhlIFNvdXJjZSDQv9C40YjQtdGCOgo+IDIxLjA0LjIwMTAgMTI6
-NDksIFRoZSBTb3VyY2Ug0L/QuNGI0LXRgjoKPj4gMjEuMDQuMjAxMCAxMDo1MywgQ2xlbWVucyBM
-YWRpc2NoINC/0LjRiNC10YI6Cj4+PiBUaGUgU291cmNlIHdyb3RlOgo+Pj4KPj4+PiBUaGlzIGRl
-dmljZSB3b3JrcyBmaW5lIHdpdGggMS4wLjIyLjEgZHJpdmVyLCBidXQgZG9lc24ndCB3aXRoIDEu
-MC4yMy4KPj4+PiBzbmQtdXNiLWF1ZGlvJiAgS28gYXJlIGxvYWRlZCBidXQgdG8gbm8gZ29vZC4g
-YWxzYW1peGVyIGRvZXNuJ3QgCj4+Pj4gbGlzdCB0aGUKPj4+PiBkZXZpY2UgYW5kIG5vIGRldmlj
-ZSBmaWxlcyBpbiAvZGV2L3NuZC4KPj4+Pgo+Pj4gV2hlbiB0aGUgZHJpdmVyIGRvZXNuJ3QgYXR0
-YWNoLCBpdCBzaG91bGQgbG9nIHNvbWUgZXJyb3IgbWVzc2FnZShzKSB0bwo+Pj4gdGhlIHN5c3Rl
-bSBsb2cuCj4+Pgo+Pj4KPj4+IFJlZ2FyZHMsCj4+PiBDbGVtZW5zCj4+Pgo+Pj4KPj4KPj4gdXNi
-IDgtMjogbmV3IGZ1bGwgc3BlZWQgVVNCIGRldmljZSB1c2luZyB1aGNpX2hjZCBhbmQgYWRkcmVz
-cyAyCj4+IHVzYiA4LTI6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0wNDFlLCBpZFBy
-b2R1Y3Q9MzBkMgo+PiB1c2IgOC0yOiBOZXcgVVNCIGRldmljZSBzdHJpbmdzOiBNZnI9MSwgUHJv
-ZHVjdD0yLCBTZXJpYWxOdW1iZXI9MAo+PiB1c2IgOC0yOiBQcm9kdWN0OiBTQiBYLUZpIE5vdGVi
-b29rCj4+IHVzYiA4LTI6IE1hbnVmYWN0dXJlcjogQ3JlYXRpdmUgVGVjaG5vbG9neSBMdGQKPj4g
-dXNiIDgtMjogY29uZmlndXJhdGlvbiAjMSBjaG9zZW4gZnJvbSAxIGNob2ljZQo+PiBpbnB1dDog
-Q3JlYXRpdmUgVGVjaG5vbG9neSBMdGQgU0IgWC1GaSBOb3RlYm9vayBhcyAKPj4gL2RldmljZXMv
-cGNpMDAwMDowMC8wMDAwOjAwOjFkLjIvdXNiOC84LTIvOC0yOjEuMy9pbnB1dC9pbnB1dDExCj4+
-IGdlbmVyaWMtdXNiIDAwMDM6MDQxRTozMEQyLjAwMDI6IGlucHV0LGhpZHJhdzE6IFVTQiBISUQg
-djEuMTEgRGV2aWNlIAo+PiBbQ3JlYXRpdmUgVGVjaG5vbG9neSBMdGQgU0IgWC1GaSBOb3RlYm9v
-a10gb24gdXNiLTAwMDA6MDA6MWQuMi0yL2lucHV0Mwo+PiBpbnB1dDogQ3JlYXRpdmUgVGVjaG5v
-bG9neSBMdGQgU0IgWC1GaSBOb3RlYm9vayBhcyAKPj4gL2RldmljZXMvcGNpMDAwMDowMC8wMDAw
-OjAwOjFkLjIvdXNiOC84LTIvOC0yOjEuNC9pbnB1dC9pbnB1dDEyCj4+IGdlbmVyaWMtdXNiIDAw
-MDM6MDQxRTozMEQyLjAwMDM6IGlucHV0LGhpZHJhdzI6IFVTQiBISUQgdjEuMTEgCj4+IEtleWJv
-YXJkIFtDcmVhdGl2ZSBUZWNobm9sb2d5IEx0ZCBTQiBYLUZpIE5vdGVib29rXSBvbiAKPj4gdXNi
-LTAwMDA6MDA6MWQuMi0yL2lucHV0NAo+PiBBTFNBIHBjbS5jOjE3NDogMjoxOjE6IGVuZHBvaW50
-IGxhY2tzIHNhbXBsZSByYXRlIGF0dHJpYnV0ZSBiaXQsIAo+PiBjYW5ub3Qgc2V0Lgo+PiBBTFNB
-IHBjbS5jOjE3NDogMjoyOjE6IGVuZHBvaW50IGxhY2tzIHNhbXBsZSByYXRlIGF0dHJpYnV0ZSBi
-aXQsIAo+PiBjYW5ub3Qgc2V0Lgo+Pgo+PiBQLlMuIEFub3RoZXIgc3RyYW5nZSBnbGl0Y2ggLSB3
-aXRoIDEuMC4yMyBzdHJhbmdlIHRoaW5ncyBzdGFydCB0byAKPj4gaGFwcGVuLCBmb3IgZXhhbXBs
-ZSwgYmFzaCBodXN0IGhhbmdzIG9uIGV4aXQgYW5kIHN5c3RlbSBiZWNvbWVzIHNsb3cuCj4gT2ss
-IHRoZSBnbGl0Y2ggaGFwcGVucyBiZWNhdXNlIGFmdGVyIGluc2VydGluZyB0aGUgY2FyZCBhbmQg
-Z2V0dGluZyAKPiB0aG9zZSBkbWVzZyBtZXNzYWdlcyBtb2Rwcm9iZSBuZXZlciBleGl0cyBhbmQg
-ZWF0cyAxMDAlIENQVS4KQW5kIHRoYXQncyB3aGF0IGRtZXNnIHNheXMgd2l0aCAxLjAuMjIuMSB3
-aGVuIHRoZSBjYXJkIHdvcmtzIGZpbmU6Cgp1c2IgOC0yOiBQcm9kdWN0OiBTQiBYLUZpIE5vdGVi
-b29rCnVzYiA4LTI6IE1hbnVmYWN0dXJlcjogQ3JlYXRpdmUgVGVjaG5vbG9neSBMdGQKdXNiIDgt
-MjogY29uZmlndXJhdGlvbiAjMSBjaG9zZW4gZnJvbSAxIGNob2ljZQppbnB1dDogQ3JlYXRpdmUg
-VGVjaG5vbG9neSBMdGQgU0IgWC1GaSBOb3RlYm9vayBhcyAKL2RldmljZXMvcGNpMDAwMDowMC8w
-MDAwOjAwOjFkLjIvdXNiOC84LTIvOC0yOjEuMy9pbnB1dC9pbnB1dDExCmdlbmVyaWMtdXNiIDAw
-MDM6MDQxRTozMEQyLjAwMDI6IGlucHV0LGhpZHJhdzE6IFVTQiBISUQgdjEuMTEgRGV2aWNlIApb
-Q3JlYXRpdmUgVGVjaG5vbG9neSBMdGQgU0IgWC1GaSBOb3RlYm9va10gb24gdXNiLTAwMDA6MDA6
-MWQuMi0yL2lucHV0MwppbnB1dDogQ3JlYXRpdmUgVGVjaG5vbG9neSBMdGQgU0IgWC1GaSBOb3Rl
-Ym9vayBhcyAKL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFkLjIvdXNiOC84LTIvOC0yOjEu
-NC9pbnB1dC9pbnB1dDEyCmdlbmVyaWMtdXNiIDAwMDM6MDQxRTozMEQyLjAwMDM6IGlucHV0LGhp
-ZHJhdzI6IFVTQiBISUQgdjEuMTEgS2V5Ym9hcmQgCltDcmVhdGl2ZSBUZWNobm9sb2d5IEx0ZCBT
-QiBYLUZpIE5vdGVib29rXSBvbiB1c2ItMDAwMDowMDoxZC4yLTIvaW5wdXQ0CnVzYmNvcmU6IHJl
-Z2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIgc25kLXVzYi1hdWRpbwoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Signed-off-by: Barry Song <21cnbao@gmail.com>
+---
+ sound/soc/codecs/ad193x.c |   31 +++++++++++++++++++++++++++++++
+ sound/soc/codecs/ad193x.h |    5 +++++
+ 2 files changed, 36 insertions(+), 0 deletions(-)
+
+diff --git a/sound/soc/codecs/ad193x.c b/sound/soc/codecs/ad193x.c
+index 7ed787e..8a099ac 100644
+--- a/sound/soc/codecs/ad193x.c
++++ b/sound/soc/codecs/ad193x.c
+@@ -249,6 +249,36 @@ static int ad193x_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
++static int ad193x_set_dai_pll(struct snd_soc_dai *codec_dai,
++		int pll_id, int source, unsigned int freq_in, unsigned int freq_out)
++{
++	struct snd_soc_codec *codec = codec_dai->codec;
++	int reg;
++
++	reg = snd_soc_read(codec, AD193X_PLL_CLK_CTRL0);
++
++	switch (freq_in) {
++	case 12288000:
++		reg = (reg & AD193X_PLL_INPUT_MASK) | AD193X_PLL_INPUT_256;
++		break;
++	case 18432000:
++		reg = (reg & AD193X_PLL_INPUT_MASK) | AD193X_PLL_INPUT_384;
++		break;
++	case 24576000:
++		reg = (reg & AD193X_PLL_INPUT_MASK) | AD193X_PLL_INPUT_512;
++		break;
++	case 36864000:
++		reg = (reg & AD193X_PLL_INPUT_MASK) | AD193X_PLL_INPUT_768;
++		break;
++	default:
++		dev_err(codec->dev, "ad193x_set_dai_pll: unsupported pll input freq:%d", freq_in);
++		return -EINVAL;
++	}
++
++	snd_soc_write(codec, AD193X_PLL_CLK_CTRL0, reg);
++	return 0;
++}
++
+ static int ad193x_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params,
+ 		struct snd_soc_dai *dai)
+@@ -382,6 +412,7 @@ static struct snd_soc_dai_ops ad193x_dai_ops = {
+ 	.digital_mute = ad193x_mute,
+ 	.set_tdm_slot = ad193x_set_tdm_slot,
+ 	.set_fmt = ad193x_set_dai_fmt,
++	.set_pll = ad193x_set_dai_pll,
+ };
+ 
+ /* codec DAI instance */
+diff --git a/sound/soc/codecs/ad193x.h b/sound/soc/codecs/ad193x.h
+index a03c880..654ba64 100644
+--- a/sound/soc/codecs/ad193x.h
++++ b/sound/soc/codecs/ad193x.h
+@@ -11,6 +11,11 @@
+ 
+ #define AD193X_PLL_CLK_CTRL0    0x800
+ #define AD193X_PLL_POWERDOWN           0x01
++#define AD193X_PLL_INPUT_MASK   (~0x6)
++#define AD193X_PLL_INPUT_256    (0 << 1)
++#define AD193X_PLL_INPUT_384    (1 << 1)
++#define AD193X_PLL_INPUT_512    (2 << 1)
++#define AD193X_PLL_INPUT_768    (3 << 1)
+ #define AD193X_PLL_CLK_CTRL1    0x801
+ #define AD193X_DAC_CTRL0        0x802
+ #define AD193X_DAC_POWERDOWN           0x01
+-- 
+1.5.6.3
