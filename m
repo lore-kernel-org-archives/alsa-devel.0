@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/4] pxa: add namespace on ssp
-Date: Thu, 22 Apr 2010 09:08:18 +0900
-Message-ID: <20100422000817.GB22879@opensource.wolfsonmicro.com>
-References: <n2t771cded01004162234sb67befcfp60ba67bfe1a8117f@mail.gmail.com>
-	<q2yf17812d71004211517kf54116acxe788927a53048e26@mail.gmail.com>
+Subject: ASoC updates for 2.6.35
+Date: Thu, 22 Apr 2010 09:16:14 +0900
+Message-ID: <20100422001613.GA23286@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8D06E2439E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DAC09243AC
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 02:08:14 +0200 (CEST)
+	Thu, 22 Apr 2010 02:16:08 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <q2yf17812d71004211517kf54116acxe788927a53048e26@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +20,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric Miao <eric.y.miao@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 22, 2010 at 06:17:29AM +0800, Eric Miao wrote:
-> On Sat, Apr 17, 2010 at 1:34 PM, Haojian Zhuang
+The following changes since commit d4a8ca246146099e9068fc87cd2bc565896bc186:
+  Takashi Iwai (1):
+        ASoC: missing conversions to snd_soc_codec_*_drvdata()
 
-> > In order to prevent code ambiguous, add namespace on functions in ssp driver.
+are available in the git repository at:
 
-> Sorry I'm still not convinced that this is a necessary change, could
-> you point me to some place where there are naming conflicts?
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
 
-Oh, sorry - misread the patch that was being replied to.  The issue is
-more around consistency and the fact that ssp_ is pretty short as it is
-about specific conflicts that exist.  If the rest of the driver had been
-using ssp_ already I wouldn't have said anything but since currently
-exported symbols all use pxa2xx_ it seemed better to make newly exported
-ones match.
+Mark Brown (4):
+      ASoC: Support FLL input clock selection on WM8994
+      ASoC: Set full range of WM8994 FLL Fratio values
+      ASoC: Tone down debugging for WM8994 class W
+      ASoC: Allow unspecified source when stopping WM8994 FLLs
+
+Phil Carmody (1):
+      ASoC: da7210: Fencepost error in reg cache read
+
+ sound/soc/codecs/da7210.c |    2 +-
+ sound/soc/codecs/wm8994.c |   47 +++++++++++++++++++++++++++++++++++---------
+ sound/soc/codecs/wm8994.h |    5 ++++
+ 3 files changed, 43 insertions(+), 11 deletions(-)
