@@ -1,28 +1,30 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: pulseaudio eats 19% CPU power in Fedora 12
-Date: Thu, 22 Apr 2010 08:53:43 +0100
-Message-ID: <hqova7$jer$1@dough.gmane.org>
-References: <20100414075658.GA26283@localhost>	<20100419032856.GA13629@tango.0pointer.de>	<k2q604760771004182038n72eec9bdy77a9e4faf2152ee4@mail.gmail.com>	<u2l4f3252891004201730g94e709abs8ebf34b00d9ed505@mail.gmail.com>	<hqmb58$frb$1@dough.gmane.org>
-	<q2y4f3252891004211811g51d5de65n862193cf6c42fe73@mail.gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 4/4] snd-maestro3: Make hardware volume
+ buttons an input device
+Date: Thu, 22 Apr 2010 09:57:42 +0200
+Message-ID: <4BD00176.3000904@redhat.com>
+References: <1271862249-22612-1-git-send-email-hdegoede@redhat.com>
+	<1271862249-22612-4-git-send-email-hdegoede@redhat.com>
+	<20100421160551.GB6861@sci.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3505D10380D
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+	by alsa0.perex.cz (Postfix) with ESMTP id AED8410380E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 09:53:54 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1O4rEN-0004kc-H2
-	for alsa-devel@alsa-project.org; Thu, 22 Apr 2010 09:53:51 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 09:53:51 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 09:53:51 +0200
-In-Reply-To: <q2y4f3252891004211811g51d5de65n862193cf6c42fe73@mail.gmail.com>
+	Thu, 22 Apr 2010 09:56:10 +0200 (CEST)
+Received: from int-mx01.intmail.prod.int.phx2.redhat.com
+	(int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id o3M7u9ls020420
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 03:56:09 -0400
+Received: from localhost.localdomain (vpn1-4-140.ams2.redhat.com [10.36.4.140])
+	by int-mx01.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id o3M7u78o017739
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 03:56:08 -0400
+In-Reply-To: <20100421160551.GB6861@sci.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,43 +37,119 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Raymond Yau at 22/04/10 02:11 did gyre and gimble:
-> is it possible to provide some figure  to compare the CPU usage of PA when
-> using  pacat, paplay and aplay on your machine ?
-> 
-> the problem of Shuang He seem related to upmixing of stereo to surround71
-> 
->>>     sink: 0 <alsa_output.pci-0000_00_1b.0.
-> analog-surround-71>
->         volume: 0: 100% 1: 100%
->                 0: 0.00 dB 1: 0.00 dB
->                 balance 0.00
->         muted: no
->         current latency: 444.25 ms
->         requested latency: 31.25 ms
->         sample spec: s16le 2ch 48000Hz
->         channel map: front-left,front-right
->                      Stereo
->         resample method: speex-float-3
->         module: 8
->         client: 7 <ALSA plug-in [mplayer_2010_0414]>
+Hi,
 
+On 04/21/2010 06:05 PM, Ville Syrj=E4l=E4 wrote:
+> On Wed, Apr 21, 2010 at 11:04:09AM -0400, Hans de Goede wrote:
+>> While working on the sound suspend / resume problems with my laptop
+>> I noticed that the hardware volume handling code in essence just detects
+>> key presses, and then does some hardcoded modification of the master vol=
+ume
+>> based on which key is pressed.
+>>
+>> This made me think that clearly the right thing to do here is just report
+>> these keypresses to userspace as keypresses using an input device and let
+>> userspace decide what to with them.
+>>
+>> This patch does this, getting rid of the ugly direct ac97 writes from
+>> the tasklet, the ac97lock and the need for using a tasklet in general.
+>>
+>> As an added bonus the keys now work identical to volume keys on a (usb)
+>> keyboard with multimedia keys, providing visual feedback of the volume
+>> level change, and a better range of the volume control (with a properly
+>> configured desktop environment).
+>
+> I like it. The maestro2 code is nearly identical. Any chance you'd
+> give it the same treatment?
 
-Probably not meaninfully on this machine as it's only got stereo. I'll
-try and get one of my more elaborate machines ready for an upmixing
-comparison.
+Yes, I already noticed it was nearly identical, but I didn't work
+on it as I have no hardware to test any changes ...
 
-Col
+> I should be able to dig up a few laptops to
+> test both drivers if necessary.
 
--- 
+I'll do an identical patch for the meastro2, if you could test that that wo=
+uld
+be great.
 
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
+>
+> <snip>
+>> @@ -2524,6 +2494,42 @@ static int m3_resume(struct pci_dev *pci)
+>>   }
+>>   #endif /* CONFIG_PM */
+>>
+>> +#ifdef CONFIG_INPUT
+>> +static int __devinit snd_m3_input_register(struct snd_m3 *chip)
+>> +{
+>> +	struct input_dev *input_dev;
+>> +	int err;
+>> +
+>> +	input_dev =3D input_allocate_device();
+>> +	if (!input_dev)
+>> +		return -ENOMEM;
+>> +
+>> +	snprintf(chip->phys, sizeof(chip->phys), "pci-%s/input0",
+>> +		 pci_name(chip->pci));
+>
+> What's the proper format of phys? I see gameport stuff uses
+> pci%s/gameport0, ir stuff uses pci-%s/ir0. I can't immediately find any
+> other pci input things.
+>
 
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+I've no idea, I took the pci-%s/ part from other pci drivers registering
+input devices and the input0 part is based on doing:
+cat /sys/class/input/input?/phys
+
+On my system which yields a string ending in input0 for almost all
+input devices.
+
+>> +
+>> +	input_dev->name =3D chip->card->driver;
+>> +	input_dev->phys =3D chip->phys;
+>> +	input_dev->id.bustype =3D BUS_PCI;
+>> +	input_dev->id.vendor  =3D chip->pci->vendor;
+>> +	input_dev->id.product =3D chip->pci->device;
+>> +	input_dev->dev.parent =3D&chip->pci->dev;
+>> +
+>> +	input_dev->evbit[0] =3D BIT_MASK(EV_KEY);
+>> +	input_dev->keybit[BIT_WORD(KEY_MUTE)] |=3D BIT_MASK(KEY_MUTE);
+>> +	input_dev->keybit[BIT_WORD(KEY_VOLUMEDOWN)] |=3D BIT_MASK(KEY_VOLUMEDO=
+WN);
+>> +	input_dev->keybit[BIT_WORD(KEY_VOLUMEUP)] |=3D BIT_MASK(KEY_VOLUMEUP);
+>
+> __set_bit() perhaps
+
+Ah yes, good one.
+
+>
+>> +
+>> +	err =3D input_register_device(input_dev);
+>> +	if (err) {
+>> +		input_dev->dev.parent =3D NULL;
+>
+> Is this nullification needed?
+>
+
+I copy pasted this from gspca's input handling code, as I'm
+familiar with the gspca code, but looking at what
+input_free_device actually does: no.
+
+I'll respin the patch with these 2 issues fixed and repost it
++ an identical one for the es1968 driver.
+
+>> +		input_free_device(input_dev);
+>> +	} else {
+>> +		chip->input_dev =3D input_dev;
+>> +	}
+>> +
+>> +	return err;
+>> +}
+>> +#endif /* CONFIG_INPUT */
+>>
+>>   /*
+>>    */
+>
+
+Regards,
+
+Hans
