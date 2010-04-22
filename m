@@ -1,18 +1,22 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Use ALC880_F1734 quirk for Fujitsu
-	Siemens AMILO Xi 1526
-Date: Thu, 22 Apr 2010 07:24:58 -0400
-Message-ID: <x2u604760771004220424y86a486e8q1535a327bb2ff26c@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: ASoC - Support for multiple components
+Date: Thu, 22 Apr 2010 12:27:53 +0100
+Message-ID: <1271935673.3228.335.camel@odin>
+References: <1271686144.3208.305.camel@odin>
+	<k2ved82fe3e1004211407qae60e223of729dff1b6e34d83@mail.gmail.com>
+	<p2ned82fe3e1004211513zffc1ae64k7e12daf4a3cac648@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00504502cc9190ed660484d18f85
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 06F1510380F
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4686710388C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 13:24:59 +0200 (CEST)
-Received: by pvh11 with SMTP id 11so434549pvh.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 04:24:58 -0700 (PDT)
+	Thu, 22 Apr 2010 13:28:00 +0200 (CEST)
+Received: by wyb36 with SMTP id 36so570119wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 04:27:58 -0700 (PDT)
+In-Reply-To: <p2ned82fe3e1004211513zffc1ae64k7e12daf4a3cac648@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,67 +26,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org, Arnaud Malpeyre <amalpeyre@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Timur Tabi <timur@freescale.com>
+Cc: vbarinov <vbarinov@embeddedalley.com>, alsa-devel <alsa-devel@alsa-project.org>, Joonyoung Shim <jy0922.shim@samsung.com>, mano@roarinelk.homelinux.net, Mark Brown <broonie@opensource.wolfsonmicro.com>, Cliff Cai <cliff.cai@analog.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, dg@emlix.com, Grant Likely <grant.likely@secretlab.ca>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, "kyungmin.park" <kyungmin.park@samsung.com>, "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>, ben-linux <ben-linux@fluff.org>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Sascha Hauer <s.hauer@pengutronix.de>, anemo@mba.ocn.ne.jp
 List-Id: alsa-devel@alsa-project.org
 
---00504502cc9190ed660484d18f85
-Content-Type: text/plain; charset=UTF-8
+On Wed, 2010-04-21 at 17:13 -0500, Timur Tabi wrote:
+> On Wed, Apr 21, 2010 at 4:07 PM, Timur Tabi <timur@freescale.com> wrote:
+> 
+> > Cirrus Logic CS4270 ALSA SoC Codec Driver
+> > cs4270 0-004f: found device at i2c address 4F
+> > cs4270 0-004f: hardware revision 3
+> > cs4270 0-004f: codec register CS4270 79
+> > cs4270 0-004f: dai register cs4270 0
+> > Registered DAI 'cs4270.0'
+> > Registered codec 'CS4270.79'
+> > ...
+> >
+> > soc-audio soc-audio: CODEC CS4270 not registered
+> >
+> > Does this mean that my fabric driver should be looking for "CS4270.79"
+> > instead of just "CS4270"?
+> 
 
-Hi,
+I've appended a component ID to each instantiated ASoC component to
+distinguish similar/same component types from each other. e.g. consider
+a board with two CS4270 codecs.  The component ID used here is unique to
+the device and is either the platform_device ID, I2C address or SPI chip
+select. Although, it doesn't really matter what the ID source is as long
+as it's unique to that device.
 
-Attached is a patch (also applicable to 2.6.32.11 and 2.6.33.2)
-against sound-2.6 master HEAD that fixes the quirk used for the OR's
-hardware.
+> Ok, I figured out the solution.  I need to add this to mpc8610_hpcd_probe():
+> 
+> +       iprop = of_get_property(codec_np, "reg", NULL);
+> +       if (!iprop) {
+> +               dev_err(&ofdev->dev, "codec node is missing 'reg' property\n");
+> +               goto error;
+> +       }
+> +       machine_data->dai.codec_id = *iprop;
+> 
 
-Best,
--Dan
+Applied.
 
---00504502cc9190ed660484d18f85
-Content-Type: text/x-diff; charset=US-ASCII;
-	name="0001-ALSA-hda-Use-ALC880_F1734-quirk-for-Fujitsu-Siemens-.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Use-ALC880_F1734-quirk-for-Fujitsu-Siemens-.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g8bhgo100
+> So I have another question.  Currently, I need to do this:
+> 
+> 	machine_data->dai.codec_dai_drv = &cs4270_dai; /* The codec_dai we want */
+> 
+> In other words, I still need to have a global variable in my codec
+> driver called "cs4270_dai" that the fabric driver has to access.  This
+> is a real problem because it means that my fabric driver has to be
+> hard-coded with the information on the codec that's attached to the
+> SSI.  However, I already have that information in the device tree, I
+> can extract all the information I need from the device tree.  If I can
+> get rid of the assignment of "cs4270_dai", I can make my machine
+> driver completely codec-independent.
 
-RnJvbSBlZmU4OGM2NDUwMGEzMGE3M2EwMWM2M2ZhMmQ1MGY2OTg5YWEyNjE5IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFRodSwgMjIgQXByIDIwMTAgMDc6MTU6MjYgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGE6IFVzZSBBTEM4ODBfRjE3MzQgcXVpcmsgZm9yIEZ1aml0c3UgU2llbWVucyBBTUlMTyBY
-aSAxNTI2CgpCdWdMaW5rOiBodHRwczovL2xhdW5jaHBhZC5uZXQvYnVncy81Njc0OTQKClRoZSBP
-UiBoYXMgdmVyaWZpZWQgdGhhdCB0aGUgZXhpc3RpbmcgbW9kZWwgcXVpcmssIEFMQzg4MF9VTklX
-SUxMLAppcyBpbnN1ZmZpY2llbnQgZm9yIGF1ZGlibGUgcGxheWJhY2sgYW5kIGNhcHR1cmUgYnkg
-ZGVmYXVsdC4gSW5zdGVhZCwKdGhlIEFMQzg4MF9GMTczNCBtb2RlbCBxdWlyayBuZWVkcyB0byBi
-ZSB1c2VkLgoKVGhpcyBjaGFuZ2UgaXMgbmVjZXNzYXJ5IGZvciBib3RoIDIuNi4zMi4xMSBhbmQg
-Mi42LjMzLjIuCgpSZXBvcnRlZC1ieTogQXJuYXVkIE1hbHBleXJlIDxhbWFscGV5cmVAZ21haWwu
-Y29tPgpUZXN0ZWQtYnk6IEFybmF1ZCBNYWxwZXlyZSA8YW1hbHBleXJlQGdtYWlsLmNvbT4KQ2M6
-IDxzdGFibGVAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1
-bkB1YnVudHUuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIHwgICAgMiAr
-LQogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZm
-IC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3Bh
-dGNoX3JlYWx0ZWsuYwppbmRleCBmNDI1MzQ0Li4yMDc4YTFhIDEwMDY0NAotLS0gYS9zb3VuZC9w
-Y2kvaGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
-YwpAQCAtNDIzMSw3ICs0MjMxLDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzg4
-MF9jZmdfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDE2OTUsIDB4NDAxMiwgIkVQb3ggRVAt
-NUxEQSIsIEFMQzg4MF81U1RfRElHKSwKIAlTTkRfUENJX1FVSVJLKDB4MTczNCwgMHgxMDdjLCAi
-RlNDIEYxNzM0IiwgQUxDODgwX0YxNzM0KSwKIAlTTkRfUENJX1FVSVJLKDB4MTczNCwgMHgxMDk0
-LCAiRlNDIEFtaWxvIE0xNDUxRyIsIEFMQzg4MF9GVUpJVFNVKSwKLQlTTkRfUENJX1FVSVJLKDB4
-MTczNCwgMHgxMGFjLCAiRlNDIiwgQUxDODgwX1VOSVdJTEwpLAorCVNORF9QQ0lfUVVJUksoMHgx
-NzM0LCAweDEwYWMsICJGU0MgQU1JTE8gWGkgMTUyNiIsIEFMQzg4MF9GMTczNCksCiAJU05EX1BD
-SV9RVUlSSygweDE3MzQsIDB4MTBiMCwgIkZ1aml0c3UiLCBBTEM4ODBfRlVKSVRTVSksCiAJU05E
-X1BDSV9RVUlSSygweDE4NTQsIDB4MDAxOCwgIkxHIExXMjAiLCBBTEM4ODBfTEdfTFcpLAogCVNO
-RF9QQ0lfUVVJUksoMHgxODU0LCAweDAwM2IsICJMRyIsIEFMQzg4MF9MRyksCi0tIAoxLjcuMC40
-Cgo=
---00504502cc9190ed660484d18f85
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The use of ID here is to deprecate the passing in of the 'driver' struct
+so it can be removed in a subsequent patch. I'm trying to make the
+changes as small as possible here, but let me see how much difference
+changing this now will make to the current patch size. 
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Liam
 
---00504502cc9190ed660484d18f85--
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
