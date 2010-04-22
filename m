@@ -1,19 +1,21 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 1/2] snd-maestro3: Make hardware volume
- buttons an input device
-Date: Thu, 22 Apr 2010 17:47:41 +0200
-Message-ID: <4BD06F9D.5020809@redhat.com>
-References: <1271925425-26615-1-git-send-email-hdegoede@redhat.com>
-	<s5h4oj3edjf.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/5] ASoC: tlv320dac33: Fix for early
+ interrupt in FIFO Mode1
+Date: Thu, 22 Apr 2010 17:26:51 +0100
+Message-ID: <1271953611.3228.435.camel@odin>
+References: <1271944670-14588-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1271944670-14588-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85EFC24515
+Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
+	by alsa0.perex.cz (Postfix) with ESMTP id 575952454F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 17:46:11 +0200 (CEST)
-In-Reply-To: <s5h4oj3edjf.wl%tiwai@suse.de>
+	Thu, 22 Apr 2010 18:30:10 +0200 (CEST)
+Received: by fg-out-1718.google.com with SMTP id e21so3545619fga.2
+	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 09:30:09 -0700 (PDT)
+In-Reply-To: <1271944670-14588-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,70 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, 2010-04-22 at 16:57 +0300, Peter Ujfalusi wrote:
+> Alarm threshold interrupt is triggered right after the
+> playback start.
+> This interrupt is recieved during the first burst period,
+> and caused the state machine to write additional nSample
+> command, which has to be avoided.
+> To fix this issue move the DAC33 interrupt unmasking
+> after we configured the PREFILL register with a small
+> delay.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+>  sound/soc/codecs/tlv320dac33.c |    6 ++++--
+>  1 files changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+> index 824bb35..8a7265f 100644
+> --- a/sound/soc/codecs/tlv320dac33.c
+> +++ b/sound/soc/codecs/tlv320dac33.c
+> @@ -557,9 +557,12 @@ static inline void dac33_prefill_handler(struct tlv320dac33_priv *dac33)
+>  	switch (dac33->fifo_mode) {
+>  	case DAC33_FIFO_MODE1:
+>  		dac33_write16(codec, DAC33_NSAMPLE_MSB,
+> -				DAC33_THRREG(dac33->nsample));
+> +			DAC33_THRREG(dac33->nsample + dac33->alarm_threshold));
+>  		dac33_write16(codec, DAC33_PREFILL_MSB,
+>  				DAC33_THRREG(dac33->alarm_threshold));
+> +		/* Enable Alarm Threshold IRQ */
+> +		msleep(2);
 
-On 04/22/2010 05:02 PM, Takashi Iwai wrote:
-> At Thu, 22 Apr 2010 04:37:04 -0400,
-> Hans de Goede wrote:
->>
->> While working on the sound suspend / resume problems with my laptop
->> I noticed that the hardware volume handling code in essence just detects
->> key presses, and then does some hardcoded modification of the master volume
->> based on which key is pressed.
->>
->> This made me think that clearly the right thing to do here is just report
->> these keypresses to userspace as keypresses using an input device and let
->> userspace decide what to with them.
->>
->> This patch does this, getting rid of the ugly direct ac97 writes from
->> the tasklet, the ac97lock and the need for using a tasklet in general.
->>
->> As an added bonus the keys now work identical to volume keys on a (usb)
->> keyboard with multimedia keys, providing visual feedback of the volume
->> level change, and a better range of the volume control (with a properly
->> configured desktop environment).
->
-> I like the basic idea.  However, two points to be fixed:
->
->   - We need a kconfig to keep the old behavior.  We are not allowed to
->     give any regression in general.
->
+Does this sleep depend on rate/frame_size in any way ?
 
-Yes, I already thought about this, and sort of expected this comment, but
-I opted to start with the straight forward patch.
+Liam
 
->   - CONFIG_INPUT is tristate.  It can be a module, thus the dependency
->     is a bit messy.  Imagine you want to build snd-maestro3 into kernel
->     while CONFIG_INPUT=m is given.
->
-
-Ugh, I would say just don't do that, but I understand that that is not an
-acceptable answer, and I see you've already provided a solution, thanks.
-
-> A hack to avoid to avoid the dependency is to create a bool Kconfig to
-> specify whether input feature is added or not; this is anyway needed
-> for the first reason above.  Suppose it CONFIG_SND_MAESTRO3_INPUT.
->
-> Then it looks like:
->
-> config SND_MAESTRO3_INPUT
-> 	bool "enable input device for maestro3 volume switches"
-> 	depends on SND_MAESTRO3
-> 	depends on INPUT=y || INPUT=SND_MAESTRO3
-> 	help
-> 	  ....
->
-> Then you can use "#ifdef CONFIG_SND_MAESTRO3_INPUT" to determine
-> compile condition.  If this isn't defined, keep the old behavior,
-> i.e. controlling ac97 registers directly.
-
-Ok, I'll respin this patches taking the above comments into account,
-I'll do this either tomorrow or sometime next week.
-
-Regards,
-
-Hans
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
