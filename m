@@ -1,15 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 1/5] ASoC: tlv320dac33: Fix for early interrupt
-	in FIFO Mode1
-Date: Thu, 22 Apr 2010 16:57:46 +0300
-Message-ID: <1271944670-14588-2-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 2/5] ASoC: tlv320dac33: Skip calculations in
+	FIFO Bypass mode
+Date: Thu, 22 Apr 2010 16:57:47 +0300
+Message-ID: <1271944670-14588-3-git-send-email-peter.ujfalusi@nokia.com>
 References: <1271944670-14588-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 85EA81038A1
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 016AE1038CB
 	for <alsa-devel@alsa-project.org>;
 	Thu, 22 Apr 2010 15:58:08 +0200 (CEST)
 In-Reply-To: <1271944670-14588-1-git-send-email-peter.ujfalusi@nokia.com>
@@ -26,45 +26,37 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Alarm threshold interrupt is triggered right after the
-playback start.
-This interrupt is recieved during the first burst period,
-and caused the state machine to write additional nSample
-command, which has to be avoided.
-To fix this issue move the DAC33 interrupt unmasking
-after we configured the PREFILL register with a small
-delay.
+There is no need for calculations for FIFO bypass mode.
+Just in case set the nsample maximum limit, which
+has been done in the calculation phase.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/codecs/tlv320dac33.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tlv320dac33.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 824bb35..8a7265f 100644
+index 8a7265f..d3ea0db 100644
 --- a/sound/soc/codecs/tlv320dac33.c
 +++ b/sound/soc/codecs/tlv320dac33.c
-@@ -557,9 +557,12 @@ static inline void dac33_prefill_handler(struct tlv320dac33_priv *dac33)
- 	switch (dac33->fifo_mode) {
- 	case DAC33_FIFO_MODE1:
- 		dac33_write16(codec, DAC33_NSAMPLE_MSB,
--				DAC33_THRREG(dac33->nsample));
-+			DAC33_THRREG(dac33->nsample + dac33->alarm_threshold));
- 		dac33_write16(codec, DAC33_PREFILL_MSB,
- 				DAC33_THRREG(dac33->alarm_threshold));
-+		/* Enable Alarm Threshold IRQ */
-+		msleep(2);
-+		dac33_write(codec, DAC33_FIFO_IRQ_MASK, DAC33_MAT);
- 		break;
- 	case DAC33_FIFO_MODE7:
- 		dac33_write16(codec, DAC33_PREFILL_MSB,
-@@ -782,7 +785,6 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
- 	case DAC33_FIFO_MODE1:
- 		dac33_write(codec, DAC33_FIFO_IRQ_MODE_B,
- 			    DAC33_ATM(DAC33_FIFO_IRQ_MODE_LEVEL));
--		dac33_write(codec, DAC33_FIFO_IRQ_MASK, DAC33_MAT);
- 		break;
- 	case DAC33_FIFO_MODE7:
- 		/* Disable all interrupts */
+@@ -888,6 +888,10 @@ static void dac33_calculate_times(struct snd_pcm_substream *substream)
+ 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int nsample_limit;
+ 
++	/* In bypass mode we don't need to calculate */
++	if (!dac33->fifo_mode)
++		return;
++
+ 	/* Number of samples (16bit, stereo) in one period */
+ 	dac33->nsample_min = snd_pcm_lib_period_bytes(substream) / 4;
+ 
+@@ -1243,6 +1247,7 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
+ 	dac33->keep_bclk = pdata->keep_bclk;
+ 	dac33->irq = client->irq;
+ 	dac33->nsample = NSAMPLE_MAX;
++	dac33->nsample_max = NSAMPLE_MAX;
+ 	/* Disable FIFO use by default */
+ 	dac33->fifo_mode = DAC33_FIFO_BYPASS;
+ 
 -- 
 1.7.0.4
