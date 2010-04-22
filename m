@@ -1,69 +1,71 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/5] ASoC: tlv320dac33: Fix for early
- interrupt in FIFO Mode1
-Date: Thu, 22 Apr 2010 17:26:51 +0100
-Message-ID: <1271953611.3228.435.camel@odin>
-References: <1271944670-14588-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1271944670-14588-2-git-send-email-peter.ujfalusi@nokia.com>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [alsa-devel] [PATCH 4/4] snd-maestro3: Make hardware volume buttons an input device
+Date: Thu, 22 Apr 2010 09:59:00 -0700
+Message-ID: <201004220959.01347.dmitry.torokhov@gmail.com>
+References: <1271862249-22612-1-git-send-email-hdegoede@redhat.com> <4BD00176.3000904@redhat.com> <20100422151112.GC6861@sci.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fg-out-1718.google.com (fg-out-1718.google.com [72.14.220.156])
-	by alsa0.perex.cz (Postfix) with ESMTP id 575952454F
-	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 18:30:10 +0200 (CEST)
-Received: by fg-out-1718.google.com with SMTP id e21so3545619fga.2
-	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 09:30:09 -0700 (PDT)
-In-Reply-To: <1271944670-14588-2-git-send-email-peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20100422151112.GC6861@sci.fi>
+Sender: linux-input-owner@vger.kernel.org
+To: Ville =?iso-8859-1?q?Syrj=E4l=E4?= <syrjala@sci.fi>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-04-22 at 16:57 +0300, Peter Ujfalusi wrote:
-> Alarm threshold interrupt is triggered right after the
-> playback start.
-> This interrupt is recieved during the first burst period,
-> and caused the state machine to write additional nSample
-> command, which has to be avoided.
-> To fix this issue move the DAC33 interrupt unmasking
-> after we configured the PREFILL register with a small
-> delay.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
->  sound/soc/codecs/tlv320dac33.c |    6 ++++--
->  1 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-> index 824bb35..8a7265f 100644
-> --- a/sound/soc/codecs/tlv320dac33.c
-> +++ b/sound/soc/codecs/tlv320dac33.c
-> @@ -557,9 +557,12 @@ static inline void dac33_prefill_handler(struct tlv320dac33_priv *dac33)
->  	switch (dac33->fifo_mode) {
->  	case DAC33_FIFO_MODE1:
->  		dac33_write16(codec, DAC33_NSAMPLE_MSB,
-> -				DAC33_THRREG(dac33->nsample));
-> +			DAC33_THRREG(dac33->nsample + dac33->alarm_threshold));
->  		dac33_write16(codec, DAC33_PREFILL_MSB,
->  				DAC33_THRREG(dac33->alarm_threshold));
-> +		/* Enable Alarm Threshold IRQ */
-> +		msleep(2);
+On Thursday 22 April 2010 08:11:12 am Ville Syrj=E4l=E4 wrote:
+> On Thu, Apr 22, 2010 at 09:57:42AM +0200, Hans de Goede wrote:
+> > On 04/21/2010 06:05 PM, Ville Syrj=E4l=E4 wrote:
+> > > On Wed, Apr 21, 2010 at 11:04:09AM -0400, Hans de Goede wrote:
+> > >> @@ -2524,6 +2494,42 @@ static int m3_resume(struct pci_dev *pci)
+> > >>=20
+> > >>   }
+> > >>   #endif /* CONFIG_PM */
+> > >>=20
+> > >> +#ifdef CONFIG_INPUT
+> > >> +static int __devinit snd_m3_input_register(struct snd_m3 *chip)
+> > >> +{
+> > >> +	struct input_dev *input_dev;
+> > >> +	int err;
+> > >> +
+> > >> +	input_dev =3D input_allocate_device();
+> > >> +	if (!input_dev)
+> > >> +		return -ENOMEM;
+> > >> +
+> > >> +	snprintf(chip->phys, sizeof(chip->phys), "pci-%s/input0",
+> > >> +		 pci_name(chip->pci));
+> > >=20
+> > > What's the proper format of phys? I see gameport stuff uses
+> > > pci%s/gameport0, ir stuff uses pci-%s/ir0. I can't immediately fi=
+nd any
+> > > other pci input things.
+> >=20
+> > I've no idea, I took the pci-%s/ part from other pci drivers regist=
+ering
+> > input devices and the input0 part is based on doing:
+> > cat /sys/class/input/input?/phys
+> >=20
+> > On my system which yields a string ending in input0 for almost all
+> > input devices.
+>=20
+> Same for me. Unfortunately none start with "pci". Adding Dmitry and
+> linux-input in cc. Dmitry, any official statement about this phys
+> string?
 
-Does this sleep depend on rate/frame_size in any way ?
+Phys can be pretty much anything, it is supposed to aid in identifying
+particular device by physical connection. DVB guys like phys ending in
+"irX", everywhere else we put "inputX" (normally input0 but if there
+several input devices on the same physical device, like some USB HID
+devices, there could be xxx/input1, xxx/intput2 and so on).
 
-Liam
+The piece in the quoted patch segment seems to be just fine.
 
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Hope this helps.
+
+--=20
+Dmitry
+--
+To unsubscribe from this list: send the line "unsubscribe linux-input" =
+in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
