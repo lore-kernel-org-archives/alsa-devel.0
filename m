@@ -1,19 +1,19 @@
 From: Stefan Schoenleitner <dev.c0debabe@gmail.com>
 Subject: Re: "Resource temporarily unavailable" while reading
  although poll returns POLLIN event
-Date: Thu, 22 Apr 2010 12:09:37 +0200
-Message-ID: <4BD02061.2010204@gmail.com>
-References: <4BCEE140.5060704@gmail.com> <4BCF24AC.3000301@gmail.com>
-	<alpine.LNX.2.00.1004211917120.16336@eeebox2.perex-int.cz>
+Date: Thu, 22 Apr 2010 12:15:29 +0200
+Message-ID: <4BD021C1.5060705@gmail.com>
+References: <4BCEE140.5060704@gmail.com>
+	<v2q4f3252891004211941xcdf33e7enbda0c2a8dcfe9609@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from keymachine.tbmn.org (mail.tbmn.org [87.118.84.39])
-	by alsa0.perex.cz (Postfix) with ESMTP id 49C9010380E
+	by alsa0.perex.cz (Postfix) with ESMTP id 0BB0C10382A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 12:09:40 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.1004211917120.16336@eeebox2.perex-int.cz>
+	Thu, 22 Apr 2010 12:15:30 +0200 (CEST)
+In-Reply-To: <v2q4f3252891004211941xcdf33e7enbda0c2a8dcfe9609@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,53 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Wed, 21 Apr 2010, Stefan Schoenleitner wrote:
->> I suspect that this is a bug in ALSA ?
+Raymond Yau wrote:
+> 2010/4/21 Stefan Schoenleitner <dev.c0debabe@gmail.com>
+>> If it helps, I pasted the source code here so that you can view it nicely:
+>> http://pastebin.com/fCicqctq
+>>
+> which sound card are you using ?
 > 
-> It might be. Could you post snd_pcm_dump() when you read less frames?
+> The program did not run on my two sound card since you are using 160 frames
+> and mono
+> 
+> are you using "pulse" device for testing since only pulse device return the
+> error messages "could not read from capture device: Resource temporarily
+> unavailable" ?
 
-Sure, here's the output:
+Yes, I am using pulseaudio since my hardware sound card (an audigy 2)
+does not support the period size I'm using.
+
+
+The error message above is is from my own program (line 444):
 
 -----------------------------------------------------------------
-snd_pcm_avail_update(capture): 11
-demangled poll: POLLIN  on capture device
-could not read from capture device: Resource temporarily unavailable
-ALSA <-> PulseAudio PCM I/O Plugin
-Its setup is:
-  stream       : CAPTURE
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 8000
-  exact rate   : 8000 (8000/1)
-  msbits       : 16
-  buffer_size  : 640
-  period_size  : 160
-  period_time  : 20000
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 160
-  period_event : 0
-  start_threshold  : 160
-  stop_threshold   : 320
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 5764607523034234880
+if ((ret=snd_pcm_readi(capture_device, buffer, 160))<0)
+{
+	if (ret == -EPIPE)
+	{
+		fprintf(stderr, "XRUN while reading from capture device: %s\n",
+snd_strerror(ret));
+		snd_pcm_prepare(capture_device);
+		snd_pcm_start(capture_device);
+	}
+	else
+	{
+		fprintf(stderr, "could not read from capture device: %s\n",
+snd_strerror(ret));
+		exit(EXIT_FAILURE);
+	}
+}
 -----------------------------------------------------------------
-
-As you can see I'm using pulseaudio.
-The version I'm using is 1:0.9.14-0ubuntu20 (on ubuntu jaunty).
-
-For testing purposes I increased the period size to 320 so that the
-program works on my hardware sound card "hw".
-It turned out that the program is working fine there and the poll()
-behavior is as it should be.
 
 cheers,
 stefan
