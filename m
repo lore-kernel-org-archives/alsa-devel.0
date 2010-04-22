@@ -1,16 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 0/5] ASoC: tlv320dac33: FIFO caused delay
-	reporting and fixes
-Date: Thu, 22 Apr 2010 16:57:45 +0300
-Message-ID: <1271944670-14588-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 1/5] ASoC: tlv320dac33: Fix for early interrupt
+	in FIFO Mode1
+Date: Thu, 22 Apr 2010 16:57:46 +0300
+Message-ID: <1271944670-14588-2-git-send-email-peter.ujfalusi@nokia.com>
+References: <1271944670-14588-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id AEEF21038C8
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 85EA81038A1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 15:58:07 +0200 (CEST)
+	Thu, 22 Apr 2010 15:58:08 +0200 (CEST)
+In-Reply-To: <1271944670-14588-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,30 +26,45 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Alarm threshold interrupt is triggered right after the
+playback start.
+This interrupt is recieved during the first burst period,
+and caused the state machine to write additional nSample
+command, which has to be avoided.
+To fix this issue move the DAC33 interrupt unmasking
+after we configured the PREFILL register with a small
+delay.
 
-The main feature of this series is the FIFO caused delay reporting on the DAC33
-codec.
-The main patch is quite big, but I don't think it can be divided further.
-
-Short details of the actual implementation is in the commit message(s), and
-I will not copy it here.
-
-The values reported by the delay call has been verified by using one GPIO as a
-signal, and printout from the kernel at the same time with the delay, than
-based on the time scale on the scope several (>100) cases has been hand
-calculated and the results were compared to the kernel reported values.
-The difference were around (or less) the 10 samples, but during the bursts it
-is much harder to count, but the reported value was reasonable accurate there
-as well.
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
-Peter Ujfalusi (5):
-  ASoC: tlv320dac33: Fix for early interrupt in FIFO Mode1
-  ASoC: tlv320dac33: Skip calculations in FIFO Bypass mode
-  ASoC: tlv320dac33: Change magic numbers used in Mode7
-  ASoC: tlv320dac33: Calculate the interface speed during bursts
-  ASoC: tlv320dac33: FIFO caused delay reporting
+ sound/soc/codecs/tlv320dac33.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
- sound/soc/codecs/tlv320dac33.c |  249 ++++++++++++++++++++++++++++++++++++++--
- 1 files changed, 237 insertions(+), 12 deletions(-)
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 824bb35..8a7265f 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -557,9 +557,12 @@ static inline void dac33_prefill_handler(struct tlv320dac33_priv *dac33)
+ 	switch (dac33->fifo_mode) {
+ 	case DAC33_FIFO_MODE1:
+ 		dac33_write16(codec, DAC33_NSAMPLE_MSB,
+-				DAC33_THRREG(dac33->nsample));
++			DAC33_THRREG(dac33->nsample + dac33->alarm_threshold));
+ 		dac33_write16(codec, DAC33_PREFILL_MSB,
+ 				DAC33_THRREG(dac33->alarm_threshold));
++		/* Enable Alarm Threshold IRQ */
++		msleep(2);
++		dac33_write(codec, DAC33_FIFO_IRQ_MASK, DAC33_MAT);
+ 		break;
+ 	case DAC33_FIFO_MODE7:
+ 		dac33_write16(codec, DAC33_PREFILL_MSB,
+@@ -782,7 +785,6 @@ static int dac33_prepare_chip(struct snd_pcm_substream *substream)
+ 	case DAC33_FIFO_MODE1:
+ 		dac33_write(codec, DAC33_FIFO_IRQ_MODE_B,
+ 			    DAC33_ATM(DAC33_FIFO_IRQ_MODE_LEVEL));
+-		dac33_write(codec, DAC33_FIFO_IRQ_MASK, DAC33_MAT);
+ 		break;
+ 	case DAC33_FIFO_MODE7:
+ 		/* Disable all interrupts */
+-- 
+1.7.0.4
