@@ -1,16 +1,28 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.35
-Date: Thu, 22 Apr 2010 09:16:14 +0900
-Message-ID: <20100422001613.GA23286@opensource.wolfsonmicro.com>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: The perennial asihpi question
+Date: Thu, 22 Apr 2010 12:39:40 +1200
+Message-ID: <4BCF9ACC.90007@audioscience.com>
+References: <4BC58E62.7070007@audioscience.com> <s5hzl16vxfl.wl%tiwai@suse.de>
+	<4BC68978.3020907@audioscience.com> <s5htyrd2ofz.wl%tiwai@suse.de>
+	<4BC7AEBB.4050808@audioscience.com>
+	<4BC7DB6F.1030709@audioscience.com>
+	<s5h4ojbu3xy.wl%tiwai@suse.de> <4BCE3EF6.9020800@audioscience.com>
+	<s5hljchz7fl.wl%tiwai@suse.de> <4BCECBC9.3020108@audioscience.com>
+	<s5heii9hzgh.wl%tiwai@suse.de> <s5heii8g397.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id DAC09243AC
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14CA5243DC
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 02:16:08 +0200 (CEST)
-Content-Disposition: inline
+	Thu, 22 Apr 2010 02:39:47 +0200 (CEST)
+Received: from [192.168.1.6]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0L1900LSE5U4NX30@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Thu, 22 Apr 2010 12:39:41 +1200 (NZST)
+In-reply-to: <s5heii8g397.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,28 +32,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit d4a8ca246146099e9068fc87cd2bc565896bc186:
-  Takashi Iwai (1):
-        ASoC: missing conversions to snd_soc_codec_*_drvdata()
+Bringing the outcome of a recent off-list push to get asihpi driver (for
+AudioScience soundcards) into kernel sources back on list:
 
-are available in the git repository at:
+Takashi Iwai wrote:
+> Now merged, and finally moved to sound git tree.
+> 
+> Your driver will appear in tomorrow's linux-next tree if no merge
+> problem occurs.
+> 
+> Thanks for your efforts!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
+Thank you very much for your help and patience, and work in merging many
+patches.
 
-Mark Brown (4):
-      ASoC: Support FLL input clock selection on WM8994
-      ASoC: Set full range of WM8994 FLL Fratio values
-      ASoC: Tone down debugging for WM8994 class W
-      ASoC: Allow unspecified source when stopping WM8994 FLLs
+It has been quite a long road.  Looking back at my local history, the
+first commit of asihpi.c creating our local patches to alsa was on
+2003-05-28, and Takashi's first commit to alsa-driver git on 2005-08-26.
 
-Phil Carmody (1):
-      ASoC: da7210: Fencepost error in reg cache read
+best regards
 
- sound/soc/codecs/da7210.c |    2 +-
- sound/soc/codecs/wm8994.c |   47 +++++++++++++++++++++++++++++++++++---------
- sound/soc/codecs/wm8994.h |    5 ++++
- 3 files changed, 43 insertions(+), 11 deletions(-)
+Eliot Blennerhassett
+AudioScience Inc.
