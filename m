@@ -1,17 +1,23 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Use STAC_DELL_M6_BOTH quirk for
-	Dell Studio 1558
-Date: Thu, 22 Apr 2010 17:59:52 -0400
-Message-ID: <j2v604760771004221459xb3b3f654z1e3137a3924f27c5@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: "Resource temporarily unavailable" while reading
+	although poll returns POLLIN event
+Date: Fri, 23 Apr 2010 12:10:47 +0800
+Message-ID: <w2p4f3252891004222110k6ed35dd7x7c84860e1cd4c33b@mail.gmail.com>
+References: <4BCEE140.5060704@gmail.com> <4BCF24AC.3000301@gmail.com>
+	<alpine.LNX.2.00.1004211917120.16336@eeebox2.perex-int.cz>
+	<4BD02061.2010204@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636e0b92a1e59580484da6e2a
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 529C52443F
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C0041245A1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 22 Apr 2010 23:59:53 +0200 (CEST)
-Received: by pvh11 with SMTP id 11so933250pvh.38
-	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 14:59:52 -0700 (PDT)
+	Fri, 23 Apr 2010 06:10:52 +0200 (CEST)
+Received: by pxi13 with SMTP id 13so708573pxi.38
+	for <alsa-devel@alsa-project.org>; Thu, 22 Apr 2010 21:10:51 -0700 (PDT)
+In-Reply-To: <4BD02061.2010204@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,60 +27,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org, Andy Ross <andy@plausible.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---001636e0b92a1e59580484da6e2a
-Content-Type: text/plain; charset=UTF-8
+2010/4/22 Stefan Schoenleitner <dev.c0debabe@gmail.com>
 
-Hi,
+> Jaroslav Kysela wrote:
+> > On Wed, 21 Apr 2010, Stefan Schoenleitner wrote:
+> >> I suspect that this is a bug in ALSA ?
+> >
+> > It might be. Could you post snd_pcm_dump() when you read less frames?
+>
+> Sure, here's the output:
+>
+> -----------------------------------------------------------------
+> snd_pcm_avail_update(capture): 11
+> demangled poll: POLLIN  on capture device
+> could not read from capture device: Resource temporarily unavailable
+> ALSA <-> PulseAudio PCM I/O Plugin
+> Its setup is:
+>  stream       : CAPTURE
+>  access       : RW_INTERLEAVED
+>  format       : S16_LE
+>  subformat    : STD
+>  channels     : 1
+>  rate         : 8000
+>  exact rate   : 8000 (8000/1)
+>  msbits       : 16
+>  buffer_size  : 640
+>  period_size  : 160
+>  period_time  : 20000
+>  tstamp_mode  : NONE
+>  period_step  : 1
+>  avail_min    : 160
+>  period_event : 0
+>  start_threshold  : 160
+>  stop_threshold   : 320
+>  silence_threshold: 0
+>  silence_size : 0
+>  boundary     : 5764607523034234880
+> -----------------------------------------------------------------
+>
+> As you can see I'm using pulseaudio.
+> The version I'm using is 1:0.9.14-0ubuntu20 (on ubuntu jaunty).
+>
+> For testing purposes I increased the period size to 320 so that the
+> program works on my hardware sound card "hw".
+> It turned out that the program is working fine there and the poll()
+> behavior is as it should be.
+>
+> cheers,
+> stefan
+>
+>
+you will need to provide the full pulseaudio log if you are using pulseaudio
 
-Attached is a patch against sound-2.6 master HEAD making audio work by
-default for the OR's Dell Studio 1558.
-
-Best,
--Dan
-
---001636e0b92a1e59580484da6e2a
-Content-Type: text/x-diff; charset=US-ASCII;
-	name="0001-ALSA-hda-Use-STAC_DELL_M6_BOTH-quirk-for-Dell-Studio.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Use-STAC_DELL_M6_BOTH-quirk-for-Dell-Studio.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g8c47eia0
-
-RnJvbSAyYjFlYTQwMGYwMmQyYmJhNGVmOGFiYmYzNjYxOWZjZDI0MjA0NDA4IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFRodSwgMjIgQXByIDIwMTAgMTc6NTQ6NDUgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGE6IFVzZSBTVEFDX0RFTExfTTZfQk9USCBxdWlyayBmb3IgRGVsbCBTdHVkaW8gMTU1OAoK
-QnVnTGluazogaHR0cHM6Ly9sYXVuY2hwYWQubmV0L2J1Z3MvNTY4NjAwCgpUaGUgT1IgaGFzIHZl
-cmlmaWVkIHRoYXQgdGhlIGRlbGwtbTYgbW9kZWwgcXVpcmsgaXMgbmVjZXNzYXJ5IGZvciBhdWRp
-bwp0byBiZSBhdWRpYmxlIGJ5IGRlZmF1bHQgb24gdGhlIERlbGwgU3R1ZGlvIFhQUyAxNjQ1LgoK
-VGhpcyBjaGFuZ2UgaXMgbmVjZXNzYXJ5IGZvciAyLjYuMzIuMTEgYW5kIDIuNi4zMy4yIGFsaWtl
-LgoKUmVwb3J0ZWQtYnk6IEFuZHkgUm9zcyA8YW5keUBwbGF1c2libGUub3JnPgpUZXN0ZWQtYnk6
-IEFuZHkgUm9zcyA8YW5keUBwbGF1c2libGUub3JnPgpDYzogPHN0YWJsZUBrZXJuZWwub3JnPgpT
-aWduZWQtb2ZmLWJ5OiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+Ci0tLQogc291
-bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jIHwgICAgMiArKwogMSBmaWxlcyBjaGFuZ2VkLCAy
-IGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hk
-YS9wYXRjaF9zaWdtYXRlbC5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCmluZGV4
-IDgxZWNkOTMuLjdmYjdkMDEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfc2lnbWF0
-ZWwuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3NpZ21hdGVsLmMKQEAgLTE2MDksNiArMTYw
-OSw4IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBzdGFjOTJoZDczeHhfY2ZnX3RibFtd
-ID0gewogCQkJCSJEZWxsIFN0dWRpbyAxNTU3IiwgU1RBQ19ERUxMX002X0RNSUMpLAogCVNORF9Q
-Q0lfUVVJUksoUENJX1ZFTkRPUl9JRF9ERUxMLCAweDAyZmUsCiAJCQkJIkRlbGwgU3R1ZGlvIFhQ
-UyAxNjQ1IiwgU1RBQ19ERUxMX002X0JPVEgpLAorCVNORF9QQ0lfUVVJUksoUENJX1ZFTkRPUl9J
-RF9ERUxMLCAweDA0MTMsCisJCQkJIkRlbGwgU3R1ZGlvIDE1NTgiLCBTVEFDX0RFTExfTTZfQk9U
-SCksCiAJe30gLyogdGVybWluYXRvciAqLwogfTsKIAotLSAKMS43LjAuNAoK
---001636e0b92a1e59580484da6e2a
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---001636e0b92a1e59580484da6e2a--
+pulseaudio --kill; pulseaudio -vvvv
