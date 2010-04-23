@@ -1,16 +1,18 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 1/2] snd-maestro3: Make hardware volume buttons
+Subject: [PATCH 2/2] snd-es1968: Make hardware volume buttons
 	an input device (rev2)
-Date: Fri, 23 Apr 2010 05:26:42 -0400
-Message-ID: <1272014803-10706-1-git-send-email-hdegoede@redhat.com>
+Date: Fri, 23 Apr 2010 05:26:43 -0400
+Message-ID: <1272014803-10706-2-git-send-email-hdegoede@redhat.com>
+References: <1272014803-10706-1-git-send-email-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp3.versatel.nl (smtp4.versatel.nl [62.58.50.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E33D244BF
+	by alsa0.perex.cz (Postfix) with ESMTP id BBD12244C0
 	for <alsa-devel@alsa-project.org>;
 	Fri, 23 Apr 2010 11:21:22 +0200 (CEST)
+In-Reply-To: <1272014803-10706-1-git-send-email-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,101 +26,167 @@ To: alsa-devel@alsa-project.org
 Cc: Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-While working on the sound suspend / resume problems with my laptop
-I noticed that the hardware volume handling code in essence just detects
-key presses, and then does some hardcoded modification of the master volume
-based on which key is pressed.
+The hardware volume handling code in essence just detects key presses, and
+then does some hardcoded modification of the master volume based on which key
+is pressed.
 
-This made me think that clearly the right thing to do here is just report
-these keypresses to userspace and let userspace decide what to with them.
+Clearly the right thing to do here is just report these keypresses to
+userspace and let userspace decide what to with them.
 
 This patch adds a Kconfig option which when enabled reports the volume
 buttons as keypresses using an input device. When enabled this option
 also gets rid of the ugly direct ac97 writes from the tasklet, the ac97lock
 and the need for using a tasklet in general.
 
-As an added bonus the keys now work identical to volume keys on a (usb)
-keyboard with multimedia keys, providing visual feedback of the volume
-level change, and a better range of the volume control (with a properly
-configured desktop environment).
-
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/pci/Kconfig    |   10 ++++
- sound/pci/maestro3.c |  116 +++++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 124 insertions(+), 2 deletions(-)
+ sound/pci/Kconfig  |   10 ++++
+ sound/pci/es1968.c |  128 +++++++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 128 insertions(+), 10 deletions(-)
 
 diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
-index 351654c..2bca3d6 100644
+index 2bca3d6..ff66821 100644
 --- a/sound/pci/Kconfig
 +++ b/sound/pci/Kconfig
-@@ -655,6 +655,16 @@ config SND_MAESTRO3
+@@ -501,6 +501,16 @@ config SND_ES1968
  	  To compile this driver as a module, choose M here: the module
- 	  will be called snd-maestro3.
+ 	  will be called snd-es1968.
  
-+config SND_MAESTRO3_INPUT
-+	bool "Enable input device for maestro3 volume buttons"
-+	depends on SND_MAESTRO3
-+	depends on INPUT=y || INPUT=SND_MAESTRO3
++config SND_ES1968_INPUT
++	bool "Enable input device for es1968 volume buttons"
++	depends on SND_ES1968
++	depends on INPUT=y || INPUT=SND_ES1968
 +	help
 +	  If you say Y here, you will get an input device which reports
-+	  keypresses for the volume buttons connected to the maestro3 chip.
++	  keypresses for the volume buttons connected to the es1968 chip.
 +	  If you say N the buttons will directly control the master volume.
 +	  It is recommended to say Y.
 +
- config SND_MIXART
- 	tristate "Digigram miXart"
- 	select SND_HWDEP
-diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
-index 0ed634a..1070250 100644
---- a/sound/pci/maestro3.c
-+++ b/sound/pci/maestro3.c
-@@ -41,6 +41,7 @@
- #include <linux/vmalloc.h>
+ config SND_FM801
+ 	tristate "ForteMedia FM801"
+ 	select SND_OPL3_LIB
+diff --git a/sound/pci/es1968.c b/sound/pci/es1968.c
+index a11f453..738d92a 100644
+--- a/sound/pci/es1968.c
++++ b/sound/pci/es1968.c
+@@ -104,6 +104,7 @@
+ #include <linux/gameport.h>
  #include <linux/moduleparam.h>
- #include <linux/firmware.h>
+ #include <linux/mutex.h>
 +#include <linux/input.h>
+ 
  #include <sound/core.h>
- #include <sound/info.h>
- #include <sound/control.h>
-@@ -844,11 +845,17 @@ struct snd_m3 {
- 	struct m3_dma *substreams;
+ #include <sound/pcm.h>
+@@ -517,14 +518,9 @@ struct es1968 {
+ 
+ 	/* ALSA Stuff */
+ 	struct snd_ac97 *ac97;
+-	struct snd_kcontrol *master_switch; /* for h/w volume control */
+-	struct snd_kcontrol *master_volume;
+-
+ 	struct snd_rawmidi *rmidi;
  
  	spinlock_t reg_lock;
 -	spinlock_t ac97_lock;
+-	struct tasklet_struct hwvol_tq;
+ 	unsigned int in_suspend;
  
-+#ifdef CONFIG_SND_MAESTRO3_INPUT
+ 	/* Maestro Stuff */
+@@ -547,6 +543,16 @@ struct es1968 {
+ #ifdef SUPPORT_JOYSTICK
+ 	struct gameport *gameport;
+ #endif
++
++#ifdef CONFIG_SND_ES1968_INPUT
 +	struct input_dev *input_dev;
 +	char phys[64];			/* physical device path */
 +#else
++	struct snd_kcontrol *master_switch; /* for h/w volume control */
++	struct snd_kcontrol *master_volume;
 +	spinlock_t ac97_lock;
- 	struct snd_kcontrol *master_switch;
- 	struct snd_kcontrol *master_volume;
- 	struct tasklet_struct hwvol_tq;
++	struct tasklet_struct hwvol_tq;
 +#endif
-+
- 	unsigned int in_suspend;
+ };
  
- #ifdef CONFIG_PM
-@@ -1606,7 +1613,9 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
+ static irqreturn_t snd_es1968_interrupt(int irq, void *dev_id);
+@@ -632,28 +638,38 @@ static int snd_es1968_ac97_wait_poll(struct es1968 *chip)
+ static void snd_es1968_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val)
  {
- 	struct snd_m3 *chip = (struct snd_m3 *) private_data;
+ 	struct es1968 *chip = ac97->private_data;
++#ifndef CONFIG_SND_ES1968_INPUT
+ 	unsigned long flags;
++#endif
+ 
+ 	snd_es1968_ac97_wait(chip);
+ 
+ 	/* Write the bus */
++#ifndef CONFIG_SND_ES1968_INPUT
+ 	spin_lock_irqsave(&chip->ac97_lock, flags);
++#endif
+ 	outw(val, chip->io_port + ESM_AC97_DATA);
+ 	/*msleep(1);*/
+ 	outb(reg, chip->io_port + ESM_AC97_INDEX);
+ 	/*msleep(1);*/
++#ifndef CONFIG_SND_ES1968_INPUT
+ 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
++#endif
+ }
+ 
+ static unsigned short snd_es1968_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
+ {
+ 	u16 data = 0;
+ 	struct es1968 *chip = ac97->private_data;
++#ifndef CONFIG_SND_ES1968_INPUT
+ 	unsigned long flags;
++#endif
+ 
+ 	snd_es1968_ac97_wait(chip);
+ 
++#ifndef CONFIG_SND_ES1968_INPUT
+ 	spin_lock_irqsave(&chip->ac97_lock, flags);
++#endif
+ 	outb(reg | 0x80, chip->io_port + ESM_AC97_INDEX);
+ 	/*msleep(1);*/
+ 
+@@ -661,7 +677,9 @@ static unsigned short snd_es1968_ac97_read(struct snd_ac97 *ac97, unsigned short
+ 		data = inw(chip->io_port + ESM_AC97_DATA);
+ 		/*msleep(1);*/
+ 	}
++#ifndef CONFIG_SND_ES1968_INPUT
+ 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
++#endif
+ 
+ 	return data;
+ }
+@@ -1874,13 +1892,17 @@ static void snd_es1968_update_pcm(struct es1968 *chip, struct esschan *es)
+ 	}
+ }
+ 
+-/*
+- */
++/* The hardware volume works by incrementing / decrementing 2 counters
++   (without wrap around) in response to volume button presses and then
++   generating an interrupt. The pair of counters is stored in bits 1-3 and 5-7
++   of a byte wide register. The meaning of bits 0 and 4 is unknown. */
+ static void es1968_update_hw_volume(unsigned long private_data)
+ {
+ 	struct es1968 *chip = (struct es1968 *) private_data;
  	int x, val;
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
++#ifndef CONFIG_SND_ES1968_INPUT
  	unsigned long flags;
 +#endif
  
  	/* Figure out which volume control button was pushed,
  	   based on differences from the default register
-@@ -1632,6 +1641,7 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
+@@ -1895,6 +1917,7 @@ static void es1968_update_hw_volume(unsigned long private_data)
  	if (chip->in_suspend)
  		return;
  
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	if (!chip->master_switch || !chip->master_volume)
++#ifndef CONFIG_SND_ES1968_INPUT
+ 	if (! chip->master_switch || ! chip->master_volume)
  		return;
  
-@@ -1677,6 +1687,35 @@ static void snd_m3_update_hw_volume(unsigned long private_data)
+@@ -1937,6 +1960,35 @@ static void es1968_update_hw_volume(unsigned long private_data)
  		break;
  	}
  	spin_unlock_irqrestore(&chip->ac97_lock, flags);
@@ -153,84 +221,38 @@ index 0ed634a..1070250 100644
 +#endif
  }
  
- static irqreturn_t snd_m3_interrupt(int irq, void *dev_id)
-@@ -1691,7 +1730,11 @@ static irqreturn_t snd_m3_interrupt(int irq, void *dev_id)
- 		return IRQ_NONE;
+ /*
+@@ -1953,7 +2005,11 @@ static irqreturn_t snd_es1968_interrupt(int irq, void *dev_id)
+ 	outw(inw(chip->io_port + 4) & 1, chip->io_port + 4);
  
- 	if (status & HV_INT_PENDING)
-+#ifdef CONFIG_SND_MAESTRO3_INPUT
-+		snd_m3_update_hw_volume((unsigned long)chip);
+ 	if (event & ESM_HWVOL_IRQ)
++#ifdef CONFIG_SND_ES1968_INPUT
++		es1968_update_hw_volume((unsigned long)chip);
 +#else
- 		tasklet_schedule(&chip->hwvol_tq);
+ 		tasklet_schedule(&chip->hwvol_tq); /* we'll do this later */
 +#endif
  
- 	/*
- 	 * ack an assp int if its running
-@@ -1957,18 +2000,24 @@ static unsigned short
- snd_m3_ac97_read(struct snd_ac97 *ac97, unsigned short reg)
- {
- 	struct snd_m3 *chip = ac97->private_data;
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	unsigned long flags;
-+#endif
- 	unsigned short data = 0xffff;
- 
- 	if (snd_m3_ac97_wait(chip))
- 		goto fail;
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	spin_lock_irqsave(&chip->ac97_lock, flags);
-+#endif
- 	snd_m3_outb(chip, 0x80 | (reg & 0x7f), CODEC_COMMAND);
- 	if (snd_m3_ac97_wait(chip))
- 		goto fail_unlock;
- 	data = snd_m3_inw(chip, CODEC_DATA);
- fail_unlock:
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
-+#endif
- fail:
- 	return data;
- }
-@@ -1977,14 +2026,20 @@ static void
- snd_m3_ac97_write(struct snd_ac97 *ac97, unsigned short reg, unsigned short val)
- {
- 	struct snd_m3 *chip = ac97->private_data;
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	unsigned long flags;
-+#endif
- 
- 	if (snd_m3_ac97_wait(chip))
- 		return;
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	spin_lock_irqsave(&chip->ac97_lock, flags);
-+#endif
- 	snd_m3_outw(chip, val, CODEC_DATA);
- 	snd_m3_outb(chip, reg & 0x7f, CODEC_COMMAND);
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	spin_unlock_irqrestore(&chip->ac97_lock, flags);
-+#endif
- }
- 
- 
-@@ -2091,7 +2146,9 @@ static int __devinit snd_m3_mixer(struct snd_m3 *chip)
+ 	/* else ack 'em all, i imagine */
+ 	outb(0xFF, chip->io_port + 0x1A);
+@@ -1993,7 +2049,9 @@ snd_es1968_mixer(struct es1968 *chip)
  {
  	struct snd_ac97_bus *pbus;
  	struct snd_ac97_template ac97;
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
++#ifndef CONFIG_SND_ES1968_INPUT
  	struct snd_ctl_elem_id elem_id;
 +#endif
  	int err;
  	static struct snd_ac97_bus_ops ops = {
- 		.write = snd_m3_ac97_write,
-@@ -2111,6 +2168,7 @@ static int __devinit snd_m3_mixer(struct snd_m3 *chip)
- 	schedule_timeout_uninterruptible(msecs_to_jiffies(100));
- 	snd_ac97_write(chip->ac97, AC97_PCM, 0);
+ 		.write = snd_es1968_ac97_write,
+@@ -2009,6 +2067,7 @@ snd_es1968_mixer(struct es1968 *chip)
+ 	if ((err = snd_ac97_mixer(pbus, &ac97, &chip->ac97)) < 0)
+ 		return err;
  
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
++#ifndef CONFIG_SND_ES1968_INPUT
+ 	/* attach master switch / volumes for h/w volume control */
  	memset(&elem_id, 0, sizeof(elem_id));
  	elem_id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
- 	strcpy(elem_id.name, "Master Playback Switch");
-@@ -2119,6 +2177,7 @@ static int __devinit snd_m3_mixer(struct snd_m3 *chip)
+@@ -2018,6 +2077,7 @@ snd_es1968_mixer(struct es1968 *chip)
  	elem_id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
  	strcpy(elem_id.name, "Master Playback Volume");
  	chip->master_volume = snd_ctl_find_id(chip->card, &elem_id);
@@ -238,24 +260,12 @@ index 0ed634a..1070250 100644
  
  	return 0;
  }
-@@ -2398,6 +2457,11 @@ static int snd_m3_free(struct snd_m3 *chip)
- 	struct m3_dma *s;
- 	int i;
+@@ -2474,8 +2534,49 @@ static inline int snd_es1968_create_gameport(struct es1968 *chip, int dev) { ret
+ static inline void snd_es1968_free_gameport(struct es1968 *chip) { }
+ #endif
  
-+#ifdef CONFIG_SND_MAESTRO3_INPUT
-+	if (chip->input_dev)
-+		input_unregister_device(chip->input_dev);
-+#endif
-+
- 	if (chip->substreams) {
- 		spin_lock_irq(&chip->reg_lock);
- 		for (i = 0; i < chip->num_substreams; i++) {
-@@ -2524,6 +2588,41 @@ static int m3_resume(struct pci_dev *pci)
- }
- #endif /* CONFIG_PM */
- 
-+#ifdef CONFIG_SND_MAESTRO3_INPUT
-+static int __devinit snd_m3_input_register(struct snd_m3 *chip)
++#ifdef CONFIG_SND_ES1968_INPUT
++static int __devinit snd_es1968_input_register(struct es1968 *chip)
 +{
 +	struct input_dev *input_dev;
 +	int err;
@@ -288,47 +298,53 @@ index 0ed634a..1070250 100644
 +	chip->input_dev = input_dev;
 +	return 0;
 +}
-+#endif /* CONFIG_INPUT */
- 
- /*
-  */
-@@ -2567,7 +2666,9 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
- 	}
- 
- 	spin_lock_init(&chip->reg_lock);
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	spin_lock_init(&chip->ac97_lock);
-+#endif
- 
- 	switch (pci->device) {
- 	case PCI_DEVICE_ID_ESS_ALLEGRO:
-@@ -2650,7 +2751,9 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
- 
- 	snd_m3_hv_init(chip);
- 
-+#ifndef CONFIG_SND_MAESTRO3_INPUT
- 	tasklet_init(&chip->hwvol_tq, snd_m3_update_hw_volume, (unsigned long)chip);
-+#endif
- 
- 	if (request_irq(pci->irq, snd_m3_interrupt, IRQF_SHARED,
- 			card->driver, chip)) {
-@@ -2682,7 +2785,16 @@ snd_m3_create(struct snd_card *card, struct pci_dev *pci,
- 
- 	if ((err = snd_m3_pcm(chip, 0)) < 0)
- 		return err;
--    
++#endif /* CONFIG_SND_ES1968_INPUT */
 +
-+#ifdef CONFIG_SND_MAESTRO3_INPUT
-+	if (chip->hv_config & HV_CTRL_ENABLE) {
-+		err = snd_m3_input_register(chip);
-+		if (err)
-+			snd_printk(KERN_WARNING "Input device registration "
-+				"failed with error %i", err);
-+	}
+ static int snd_es1968_free(struct es1968 *chip)
+ {
++#ifdef CONFIG_SND_ES1968_INPUT
++	if (chip->input_dev)
++		input_unregister_device(chip->input_dev);
 +#endif
 +
- 	snd_m3_enable_ints(chip);
- 	snd_m3_assp_continue(chip);
+ 	if (chip->io_port) {
+ 		if (chip->irq >= 0)
+ 			synchronize_irq(chip->irq);
+@@ -2486,8 +2587,6 @@ static int snd_es1968_free(struct es1968 *chip)
+ 	if (chip->irq >= 0)
+ 		free_irq(chip->irq, chip);
+ 	snd_es1968_free_gameport(chip);
+-	chip->master_switch = NULL;
+-	chip->master_volume = NULL;
+ 	pci_release_regions(chip->pci);
+ 	pci_disable_device(chip->pci);
+ 	kfree(chip);
+@@ -2558,9 +2657,11 @@ static int __devinit snd_es1968_create(struct snd_card *card,
+ 	spin_lock_init(&chip->substream_lock);
+ 	INIT_LIST_HEAD(&chip->buf_list);
+ 	INIT_LIST_HEAD(&chip->substream_list);
+-	spin_lock_init(&chip->ac97_lock);
+ 	mutex_init(&chip->memory_mutex);
++#ifndef CONFIG_SND_ES1968_INPUT
++	spin_lock_init(&chip->ac97_lock);
+ 	tasklet_init(&chip->hwvol_tq, es1968_update_hw_volume, (unsigned long)chip);
++#endif
+ 	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+@@ -2713,6 +2814,13 @@ static int __devinit snd_es1968_probe(struct pci_dev *pci,
  
+ 	snd_es1968_create_gameport(chip, dev);
+ 
++#ifdef CONFIG_SND_ES1968_INPUT
++	err = snd_es1968_input_register(chip);
++	if (err)
++		snd_printk(KERN_WARNING "Input device registration "
++			"failed with error %i", err);
++#endif
++
+ 	snd_es1968_start_irq(chip);
+ 
+ 	chip->clock = clock[dev];
 -- 
 1.7.0.1
