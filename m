@@ -1,17 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCHv2 2/5] ASoC: tlv320dac33: Skip calculations in
-	FIFO Bypass mode
-Date: Fri, 23 Apr 2010 10:09:58 +0300
-Message-ID: <1272006601-24946-3-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCHv2 4/5] ASoC: tlv320dac33: Calculate the
+	interface speed during bursts
+Date: Fri, 23 Apr 2010 10:10:00 +0300
+Message-ID: <1272006601-24946-5-git-send-email-peter.ujfalusi@nokia.com>
 References: <1272006601-24946-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id A23F92439A
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 45F991038DE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Apr 2010 09:10:41 +0200 (CEST)
+	Fri, 23 Apr 2010 09:10:54 +0200 (CEST)
 In-Reply-To: <1272006601-24946-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,9 +26,10 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-There is no need for calculations for FIFO bypass mode.
-Just in case set the nsample maximum limit, which
-has been done in the calculation phase.
+When the DAC33 FIFO is in use the dai interface is running in
+much higher speed than the sampling frequency.
+Calculate the rate based on the internal base frequency and
+the bclk divider.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
@@ -36,27 +37,34 @@ Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
  1 files changed, 5 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 520377b..b101cbd 100644
+index fa19942..a8eb19b 100644
 --- a/sound/soc/codecs/tlv320dac33.c
 +++ b/sound/soc/codecs/tlv320dac33.c
-@@ -889,6 +889,10 @@ static void dac33_calculate_times(struct snd_pcm_substream *substream)
- 	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
- 	unsigned int nsample_limit;
+@@ -53,6 +53,8 @@
+ #define MODE7_LTHR		10
+ #define MODE7_UTHR		(DAC33_BUFFER_SIZE_SAMPLES - 10)
  
-+	/* In bypass mode we don't need to calculate */
-+	if (!dac33->fifo_mode)
-+		return;
++#define BURST_BASEFREQ_HZ	49152000
 +
- 	/* Number of samples (16bit, stereo) in one period */
- 	dac33->nsample_min = snd_pcm_lib_period_bytes(substream) / 4;
+ static struct snd_soc_codec *tlv320dac33_codec;
  
-@@ -1244,6 +1248,7 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
+ enum dac33_state {
+@@ -95,6 +97,7 @@ struct tlv320dac33_priv {
+ 	enum dac33_fifo_modes fifo_mode;/* FIFO mode selection */
+ 	unsigned int nsample;		/* burst read amount from host */
+ 	u8 burst_bclkdiv;		/* BCLK divider value in burst mode */
++	unsigned int burst_rate;	/* Interface speed in Burst modes */
+ 
+ 	int keep_bclk;			/* Keep the BCLK continuously running
+ 					 * in FIFO modes */
+@@ -1246,6 +1249,8 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
+ 
+ 	dac33->power_gpio = pdata->power_gpio;
+ 	dac33->burst_bclkdiv = pdata->burst_bclkdiv;
++	/* Pre calculate the burst rate */
++	dac33->burst_rate = BURST_BASEFREQ_HZ / dac33->burst_bclkdiv / 32;
  	dac33->keep_bclk = pdata->keep_bclk;
  	dac33->irq = client->irq;
  	dac33->nsample = NSAMPLE_MAX;
-+	dac33->nsample_max = NSAMPLE_MAX;
- 	/* Disable FIFO use by default */
- 	dac33->fifo_mode = DAC33_FIFO_BYPASS;
- 
 -- 
 1.7.0.4
