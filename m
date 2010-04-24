@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCHv2 0/5] *** SUBJECT HERE ***ASoC:
- tlv320dac33: FIFO caused delay reporting and fixes
-Date: Fri, 23 Apr 2010 16:29:25 +0100
-Message-ID: <20100423152925.GF27232@rakim.wolfsonmicro.main>
-References: <1272006601-24946-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: "Resource temporarily unavailable" while reading
+	although poll returns POLLIN event
+Date: Sat, 24 Apr 2010 09:32:33 +0800
+Message-ID: <k2i4f3252891004231832kcd722592hac37a667da424742@mail.gmail.com>
+References: <4BCEE140.5060704@gmail.com> <4BCF24AC.3000301@gmail.com>
+	<alpine.LNX.2.00.1004211917120.16336@eeebox2.perex-int.cz>
+	<4BD02061.2010204@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 906D624651
+Received: from mail-pz0-f193.google.com (mail-pz0-f193.google.com
+	[209.85.222.193])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F5A61037FE
 	for <alsa-devel@alsa-project.org>;
-	Fri, 23 Apr 2010 17:29:26 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1272006601-24946-1-git-send-email-peter.ujfalusi@nokia.com>
+	Sat, 24 Apr 2010 03:32:34 +0200 (CEST)
+Received: by pzk31 with SMTP id 31so1859225pzk.16
+	for <alsa-devel@alsa-project.org>; Fri, 23 Apr 2010 18:32:33 -0700 (PDT)
+In-Reply-To: <4BD02061.2010204@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,18 +27,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 23, 2010 at 10:09:56AM +0300, Peter Ujfalusi wrote:
+2010/4/22 Stefan Schoenleitner <dev.c0debabe@gmail.com>
 
-> The values reported by the delay call has been verified by using one GPIO as a
-> signal, and printout from the kernel at the same time with the delay, than
-> based on the time scale on the scope several (>100) cases has been hand
-> calculated and the results were compared to the kernel reported values.
-> The difference were around (or less) the 10 samples, but during the bursts it
-> is much harder to count, but the reported value was reasonable accurate there
-> as well.
-
-All these look good to me.
+>
+> For testing purposes I increased the period size to 320 so that the
+> program works on my hardware sound card "hw".
+> It turned out that the program is working fine there and the poll()
+> behavior is as it should be.
+>
+> cheers,
+> stefan
+>
+>
+Is it possible to post the output of your program when using your sound card
+"hw" since your program failed with XRUN (broken pipe) on my two sound cards
+?
