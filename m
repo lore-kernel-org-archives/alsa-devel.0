@@ -1,27 +1,18 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 1/2] powerpc: add platform registration for
-	ALSA SoC drivers
-Date: Wed, 28 Apr 2010 21:44:18 -0600
-Message-ID: <v2gfa686aa41004282044m48ace5feqb1507968d4b147e4@mail.gmail.com>
-References: <1272314980-23679-1-git-send-email-timur@freescale.com>
-	<1272350168.24542.6.camel@pasglop>
-	<20100427095440.GA15492@rakim.wolfsonmicro.main>
-	<1272362955.24542.24.camel@pasglop>
-	<j2qed82fe3e1004281335h4076b050jc2894d4c4d6eac65@mail.gmail.com>
-	<z2xfa686aa41004281458u3a3048feh9d762e07f8052348@mail.gmail.com>
-	<r2oed82fe3e1004281513k23b54b56v7904a4a34750c90b@mail.gmail.com>
-	<1272502322.24542.135.camel@pasglop>
+From: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+Subject: [PATCH] ASoC: UDA134X: Add UDA1345 CODEC support
+Date: Mon, 26 Apr 2010 14:56:57 +0400
+Message-ID: <1272279417-6673-1-git-send-email-vzapolskiy@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DD6E010388C
+Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
+	[209.85.218.220])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4D7CD1037F1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Apr 2010 05:44:39 +0200 (CEST)
-Received: by gwb19 with SMTP id 19so2050398gwb.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2010 20:44:38 -0700 (PDT)
-In-Reply-To: <1272502322.24542.135.camel@pasglop>
+	Mon, 26 Apr 2010 12:57:43 +0200 (CEST)
+Received: by bwz20 with SMTP id 20so4625677bwz.32
+	for <alsa-devel@alsa-project.org>; Mon, 26 Apr 2010 03:57:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,46 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: alsa-devel@alsa-project.org, kumar.gala@freescale.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, linuxppc-dev@ozlabs.org, Timur Tabi <timur.tabi@gmail.com>, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Vladimir Zapolskiy <vzapolskiy@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 28, 2010 at 6:52 PM, Benjamin Herrenschmidt
-<benh@kernel.crashing.org> wrote:
-> On Wed, 2010-04-28 at 17:13 -0500, Timur Tabi wrote:
->> On Wed, Apr 28, 2010 at 4:58 PM, Grant Likely <grant.likely@secretlab.ca> wrote:
->>
->> > The sound0 node needs a compatible value,
->>
->> I knew I was forgetting something
->>
->> > the sound-device node should
->> > probably have one too.
->>
->> The aliases, cpus, and memory node don't have a compatible property,
->> and I was modeling the design after the aliases node.
->
-> aliases is a bad choice, it's very very special and is neither a device
-> nor a virtual device, like chosen.
->
-> cpus is more of a match in your case.
->
-> In any case, I agree, you may not really need a compatible prop for the
-> virtual device. In fact, Grant, do we really need an enclosing node like
-> that ?
+This patch adds support for Philips UDA1345 CODEC. The CODEC has only
+volume control, de-emphasis, mute, DC filtering and power control features.
 
-Mostly I'm concerned about 'polluting' the root node in a way that
-we'd regret later; but perhaps I'm being overly conservative.  The
-sound node will still be uniquely identified by it's compatible
-property, so perhaps I'm fretting over nothing.
+Signed-off-by: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+---
+ include/sound/uda134x.h    |    1 +
+ sound/soc/codecs/uda134x.c |   13 +++++++++++++
+ 2 files changed, 14 insertions(+), 0 deletions(-)
 
-> In any case, it's no big deal and shouldn't have much impact on
-> the design.
-
-Right, the point has been reached of quibbling over trivialities.
-
-g.
-
+diff --git a/include/sound/uda134x.h b/include/sound/uda134x.h
+index 475ef8b..509efb0 100644
+--- a/include/sound/uda134x.h
++++ b/include/sound/uda134x.h
+@@ -21,6 +21,7 @@ struct uda134x_platform_data {
+ #define UDA134X_UDA1340 1
+ #define UDA134X_UDA1341 2
+ #define UDA134X_UDA1344 3
++#define UDA134X_UDA1345 4
+ };
+ 
+ #endif /* _UDA134X_H */
+diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+index 20deaca..2f4d728 100644
+--- a/sound/soc/codecs/uda134x.c
++++ b/sound/soc/codecs/uda134x.c
+@@ -431,6 +431,14 @@ SOC_ENUM("PCM Playback De-emphasis", uda134x_mixer_enum[1]),
+ SOC_SINGLE("DC Filter Enable Switch", UDA134X_STATUS0, 0, 1, 0),
+ };
+ 
++static const struct snd_kcontrol_new uda1345_snd_controls[] = {
++SOC_SINGLE("Master Playback Volume", UDA134X_DATA000, 0, 0x3F, 1),
++
++SOC_ENUM("PCM Playback De-emphasis", uda134x_mixer_enum[1]),
++
++SOC_SINGLE("DC Filter Enable Switch", UDA134X_STATUS0, 0, 1, 0),
++};
++
+ static struct snd_soc_dai_ops uda134x_dai_ops = {
+ 	.startup	= uda134x_startup,
+ 	.shutdown	= uda134x_shutdown,
+@@ -486,6 +494,7 @@ static int uda134x_soc_probe(struct platform_device *pdev)
+ 	case UDA134X_UDA1340:
+ 	case UDA134X_UDA1341:
+ 	case UDA134X_UDA1344:
++	case UDA134X_UDA1345:
+ 		break;
+ 	default:
+ 		printk(KERN_ERR "UDA134X SoC codec: "
+@@ -551,6 +560,10 @@ static int uda134x_soc_probe(struct platform_device *pdev)
+ 		ret = snd_soc_add_controls(codec, uda1341_snd_controls,
+ 					ARRAY_SIZE(uda1341_snd_controls));
+ 	break;
++	case UDA134X_UDA1345:
++		ret = snd_soc_add_controls(codec, uda1345_snd_controls,
++					ARRAY_SIZE(uda1345_snd_controls));
++	break;
+ 	default:
+ 		printk(KERN_ERR "%s unknown codec type: %d",
+ 			__func__, pd->model);
 -- 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+1.7.0.4
