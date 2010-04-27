@@ -1,29 +1,24 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [PATCH 1/2] powerpc: add platform registration for
- ALSA SoC drivers
-Date: Tue, 27 Apr 2010 10:28:18 -0500
-Message-ID: <4BD70292.20001@freescale.com>
-References: <1272314980-23679-1-git-send-email-timur@freescale.com>	
-	<1272350168.24542.6.camel@pasglop> <1272355624.3204.52.camel@odin>	
-	<4BD6FA39.3030400@freescale.com> <1272381611.11000.39.camel@odin>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Tue, 27 Apr 2010 19:29:52 +0400
+Message-ID: <4BD702F0.6080108@gmail.com>
+References: <1266856137-26252-1-git-send-email-daniel@caiaq.de>
+	<4B8CD6A0.40204@freemail.gr>
+	<20100302183542.GU28972@buzzloop.caiaq.de>
+	<4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
+	<20100427140735.GD30804@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id 189BB243AF
+Received: from mail-iw0-f185.google.com (mail-iw0-f185.google.com
+	[209.85.223.185])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBF5D243B4
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Apr 2010 17:28:20 +0200 (CEST)
-Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	o3RFSJLr025734
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 08:28:19 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])
-	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id o3RFSN0n014924
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 10:28:23 -0500 (CDT)
-In-Reply-To: <1272381611.11000.39.camel@odin>
+	Tue, 27 Apr 2010 17:29:59 +0200 (CEST)
+Received: by iwn15 with SMTP id 15so1958664iwn.2
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 08:29:58 -0700 (PDT)
+In-Reply-To: <20100427140735.GD30804@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,37 +28,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, broonie@opensource.wolfsonmicro.com, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
-
-> Iirc, the SSI and DMA controllers on your SoC mean that each DMA device
-> can only do one direction (either Playback or Capture). So I'm thinking
-> we create two DAI link entries for your sound card (one for playback and
-> the other for capture) and they both use the same SSI device but each
-> would have it's own DMA device.
-
-Do you mean here:
-
-	machine_data->card.probe = mpc8610_hpcd_machine_probe;
-	machine_data->card.remove = mpc8610_hpcd_machine_remove;
-	machine_data->card.name = "MPC8610 HPCD";
-	machine_data->card.num_links = 1;
-	machine_data->card.dai_link = &machine_data->dai;
-
-So that num_links would be 2 instead of 1?
-
-I would need some way for fsl_dma_open() to get a pointer to private, DMA-specific data.  I'm not sure how I can do that.
-
-> This would result in two separate pcm devices being exported to
-> userspace i.e one for playback only and the other for capture only. I
-> think this is also a more accurate representation of your hardware too
-> (since we have different DMA devices for each pcm stream direction).
-
-I can say for certain whether that will actually work.  My gut tells me that I might run into problems trying to implement that.  The only way to know for sure is to start hacking.  Unfortunately, my window of opportunity to work on this just closed, and it may not open for a while.  I know my current patch is less-than-ideal, but it does restore functionality to the 8610, and without needing any U-Boot or device-tree changes.  So unless there are any real objections, I'd like it to be merged.  Otherwise, 8610 audio will be broken in the next release.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+MjcuMDQuMjAxMCAxODowNywgRGFuaWVsIE1hY2sg0L/QuNGI0LXRgjoKPiBPbiBUdWUsIEFwciAy
+NywgMjAxMCBhdCAwNTozMTozNVBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ICAgIAo+PiBQ
+ZXJoYXBzIEkgc2hvdWxkJ3ZlIHBvc3RlZCBteSBwcm9ibGVtIGluIHRoaXMgdGhyZWFkIGVhcmxp
+ZXIuIEhlcmUncyB0aGUKPj4gc3VtbWFyeToKPj4gQ3JlYXRpdmUgWC1GaSBOb3RlYm9vayBzdG9w
+cGVkIHdvcmtpbmcgYWZ0ZXIgdXBncmFkaW5nIGZyb20gMS4wLjIyLjEgdG8KPj4gMS4wLjIzICh3
+b3JrZWQganVzdCBmaW5lIGJlZm9yZSkuCj4+IGRtZXNnIGdpdmVzIHRoZSBmb2xsb3dpbmc6Cj4+
+Cj4+IHVzYiA4LTI6IG5ldyBmdWxsIHNwZWVkIFVTQiBkZXZpY2UgdXNpbmcgdWhjaV9oY2QgYW5k
+IGFkZHJlc3MgMgo+PiB1c2IgOC0yOiBOZXcgVVNCIGRldmljZSBmb3VuZCwgaWRWZW5kb3I9MDQx
+ZSwgaWRQcm9kdWN0PTMwZDIKPj4gdXNiIDgtMjogTmV3IFVTQiBkZXZpY2Ugc3RyaW5nczogTWZy
+PTEsIFByb2R1Y3Q9MiwgU2VyaWFsTnVtYmVyPTAKPj4gdXNiIDgtMjogUHJvZHVjdDogU0IgWC1G
+aSBOb3RlYm9vawo+PiB1c2IgOC0yOiBNYW51ZmFjdHVyZXI6IENyZWF0aXZlIFRlY2hub2xvZ3kg
+THRkCj4+IHVzYiA4LTI6IGNvbmZpZ3VyYXRpb24gIzEgY2hvc2VuIGZyb20gMSBjaG9pY2UKPj4g
+aW5wdXQ6IENyZWF0aXZlIFRlY2hub2xvZ3kgTHRkIFNCIFgtRmkgTm90ZWJvb2sgYXMKPj4gL2Rl
+dmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFkLjIvdXNiOC84LTIvOC0yOjEuMy9pbnB1dC9pbnB1
+dDExCj4+IGdlbmVyaWMtdXNiIDAwMDM6MDQxRTozMEQyLjAwMDI6IGlucHV0LGhpZHJhdzE6IFVT
+QiBISUQgdjEuMTEgRGV2aWNlCj4+IFtDcmVhdGl2ZSBUZWNobm9sb2d5IEx0ZCBTQiBYLUZpIE5v
+dGVib29rXSBvbiB1c2ItMDAwMDowMDoxZC4yLTIvaW5wdXQzCj4+IGlucHV0OiBDcmVhdGl2ZSBU
+ZWNobm9sb2d5IEx0ZCBTQiBYLUZpIE5vdGVib29rIGFzCj4+IC9kZXZpY2VzL3BjaTAwMDA6MDAv
+MDAwMDowMDoxZC4yL3VzYjgvOC0yLzgtMjoxLjQvaW5wdXQvaW5wdXQxMgo+PiBnZW5lcmljLXVz
+YiAwMDAzOjA0MUU6MzBEMi4wMDAzOiBpbnB1dCxoaWRyYXcyOiBVU0IgSElEIHYxLjExIEtleWJv
+YXJkCj4+IFtDcmVhdGl2ZSBUZWNobm9sb2d5IEx0ZCBTQiBYLUZpIE5vdGVib29rXSBvbiB1c2It
+MDAwMDowMDoxZC4yLTIvaW5wdXQ0Cj4+IEFMU0EgcGNtLmM6MTc0OiAyOjE6MTogZW5kcG9pbnQg
+bGFja3Mgc2FtcGxlIHJhdGUgYXR0cmlidXRlIGJpdCwgY2Fubm90Cj4+IHNldC4KPj4gQUxTQSBw
+Y20uYzoxNzQ6IDI6MjoxOiBlbmRwb2ludCBsYWNrcyBzYW1wbGUgcmF0ZSBhdHRyaWJ1dGUgYml0
+LCBjYW5ub3QKPj4gc2V0Lgo+PiAgICAgIAo+IEFuZCB5b3Ugc2F5IHRoaXMgaXMgYSByZWdyZXNz
+aW9uIGZyb20gZWFybGllciB2ZXJzaW9ucz8gV291bGQgeW91IGJlCj4gYWJsZSB0byBiaXNlY3Qg
+dGhpcyBwcm9ibGVtPwo+Cj4gRGFuaWVsCj4KPiAgICAKR2xhZGx5LCBpZiB5b3UganVzdCB0ZWxs
+IG1lIGhvdyA6KQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
