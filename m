@@ -1,14 +1,14 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 04/11] ASoC: S3C2412: I2S: Return correct
-	source clock
-Date: Tue, 27 Apr 2010 15:56:34 +0900
-Message-ID: <1272351394-3789-1-git-send-email-jassi.brar@samsung.com>
+Subject: [PATCH 05/11] ASoC: S3C: I2Sv2: Discard redundant
+	field iis_clk
+Date: Tue, 27 Apr 2010 15:56:39 +0900
+Message-ID: <1272351399-3820-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id A1ED624833
+	by alsa0.perex.cz (Postfix) with ESMTP id 9EA6724831
 	for <alsa-devel@alsa-project.org>;
 	Tue, 27 Apr 2010 09:00:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -24,33 +24,25 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Until now, s3c2412_get_iisclk would return NULL since iis_clk was never
-initialized.
-Return appropriate pointer as per the selection made for source clock.
+No need to keep redundant field iis_clk in s3c_i2sv2_info.
+iis_cclk and iis_pclk is all we need.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/s3c2412-i2s.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ sound/soc/s3c24xx/s3c-i2s-v2.h |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index cf0c154..ce2daac 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -94,7 +94,13 @@ static int s3c2412_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/s3c24xx/s3c-i2s-v2.h
+index b094d3c..ea56467 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.h
++++ b/sound/soc/s3c24xx/s3c-i2s-v2.h
+@@ -49,7 +49,6 @@ struct s3c_i2sv2_info {
  
- struct clk *s3c2412_get_iisclk(void)
- {
--	return s3c2412_i2s.iis_clk;
-+	struct s3c_i2sv2_info *i2s = &s3c2412_i2s;
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
-+
-+	if (iismod & S3C2412_IISMOD_IMS_SYSMUX)
-+		return i2s->iis_cclk;
-+	else
-+		return i2s->iis_pclk;
- }
- EXPORT_SYMBOL_GPL(s3c2412_get_iisclk);
+ 	struct clk	*iis_pclk;
+ 	struct clk	*iis_cclk;
+-	struct clk	*iis_clk;
+ 
+ 	unsigned char	 master;
  
 -- 
 1.6.2.5
