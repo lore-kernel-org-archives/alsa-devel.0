@@ -1,24 +1,26 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 1/2] powerpc: add platform registration for
- ALSA SoC drivers
-Date: Tue, 27 Apr 2010 17:41:10 +0100
-Message-ID: <1272386470.11000.84.camel@odin>
-References: <1272314980-23679-1-git-send-email-timur@freescale.com>
-	<1272350168.24542.6.camel@pasglop> <1272355624.3204.52.camel@odin>
-	<4BD6FA39.3030400@freescale.com> <1272381611.11000.39.camel@odin>
-	<4BD70292.20001@freescale.com>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Tue, 27 Apr 2010 21:27:15 +0400
+Message-ID: <4BD71E73.5020106@gmail.com>
+References: <1266856137-26252-1-git-send-email-daniel@caiaq.de>
+	<4B8CD6A0.40204@freemail.gr>
+	<20100302183542.GU28972@buzzloop.caiaq.de>
+	<4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
+	<20100427140735.GD30804@buzzloop.caiaq.de>
+	<4BD702F0.6080108@gmail.com>
+	<20100427154346.GH30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f220.google.com (mail-bw0-f220.google.com
-	[209.85.218.220])
-	by alsa0.perex.cz (Postfix) with ESMTP id 59D732432C
+Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
+	[209.85.222.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5E25D243F2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Apr 2010 18:41:16 +0200 (CEST)
-Received: by bwz20 with SMTP id 20so7797103bwz.32
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 09:41:15 -0700 (PDT)
-In-Reply-To: <4BD70292.20001@freescale.com>
+	Tue, 27 Apr 2010 19:27:24 +0200 (CEST)
+Received: by pzk40 with SMTP id 40so9339354pzk.23
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 10:27:21 -0700 (PDT)
+In-Reply-To: <20100427154346.GH30801@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,71 +30,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, broonie@opensource.wolfsonmicro.com, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-04-27 at 10:28 -0500, Timur Tabi wrote:
-> Liam Girdwood wrote:
-> 
-> > Iirc, the SSI and DMA controllers on your SoC mean that each DMA device
-> > can only do one direction (either Playback or Capture). So I'm thinking
-> > we create two DAI link entries for your sound card (one for playback and
-> > the other for capture) and they both use the same SSI device but each
-> > would have it's own DMA device.
-> 
-> Do you mean here:
-> 
-> 	machine_data->card.probe = mpc8610_hpcd_machine_probe;
-> 	machine_data->card.remove = mpc8610_hpcd_machine_remove;
-> 	machine_data->card.name = "MPC8610 HPCD";
-> 	machine_data->card.num_links = 1;
-> 	machine_data->card.dai_link = &machine_data->dai;
-> 
-> So that num_links would be 2 instead of 1?
-> 
-
-Yes.
-
-> I would need some way for fsl_dma_open() to get a pointer to private,
-> DMA-specific data.  I'm not sure how I can do that.
-> 
-
-In multi-component we now have platform_data and device private data
-(from the regular driver model).
-
-We also have stream snd_soc_dai_set_dma_data() for runtime DMA config.
-
-So it depends on who is setting your DMA data. If it's DTS then it would
-be the of_ platform equivalent, if it's your DMA probe() then dev data
-otherwise you can use the snd_soc_dai_set_dma_data().
-
-> > This would result in two separate pcm devices being exported to
-> > userspace i.e one for playback only and the other for capture only. I
-> > think this is also a more accurate representation of your hardware too
-> > (since we have different DMA devices for each pcm stream direction).
-> 
-> I can say for certain whether that will actually work.  My gut tells
-> me that I might run into problems trying to implement that.  The only
-> way to know for sure is to start hacking.  Unfortunately, my window of
-> opportunity to work on this just closed, and it may not open for a
-> while.  I know my current patch is less-than-ideal, but it does
-> restore functionality to the 8610, and without needing any U-Boot or
-> device-tree changes.  So unless there are any real objections, I'd
-> like it to be merged.  Otherwise, 8610 audio will be broken in the
-> next release.
-
-Ok, I can live with this providing we can mark it as a TODO: and have a
-PPC Ack. It may be easier to fix in the future too as the ASoC card
-registration clean-up should be complete/in-progress (i.e. card
-platform_data and private_data will be available for passing in anything
-you like).
-
-Thanks
-
-Liam 
-
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+MjcuMDQuMjAxMCAxOTo0MywgRGFuaWVsIE1hY2sg0L/QuNGI0LXRgjoKPiBPbiBUdWUsIEFwciAy
+NywgMjAxMCBhdCAwNzoyOTo1MlBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ICAgIAo+PiAy
+Ny4wNC4yMDEwIDE4OjA3LCBEYW5pZWwgTWFjayDQv9C40YjQtdGCOgo+PiAgICAgIAo+Pj4gT24g
+VHVlLCBBcHIgMjcsIDIwMTAgYXQgMDU6MzE6MzVQTSArMDQwMCwgVGhlIFNvdXJjZSB3cm90ZToK
+Pj4+ICAgICAgICAKPj4+PiBQZXJoYXBzIEkgc2hvdWxkJ3ZlIHBvc3RlZCBteSBwcm9ibGVtIGlu
+IHRoaXMgdGhyZWFkIGVhcmxpZXIuIEhlcmUncyB0aGUKPj4+PiBzdW1tYXJ5Ogo+Pj4+IENyZWF0
+aXZlIFgtRmkgTm90ZWJvb2sgc3RvcHBlZCB3b3JraW5nIGFmdGVyIHVwZ3JhZGluZyBmcm9tIDEu
+MC4yMi4xIHRvCj4+Pj4gMS4wLjIzICh3b3JrZWQganVzdCBmaW5lIGJlZm9yZSkuCj4+Pj4gZG1l
+c2cgZ2l2ZXMgdGhlIGZvbGxvd2luZzoKPj4+Pgo+Pj4+IHVzYiA4LTI6IG5ldyBmdWxsIHNwZWVk
+IFVTQiBkZXZpY2UgdXNpbmcgdWhjaV9oY2QgYW5kIGFkZHJlc3MgMgo+Pj4+IHVzYiA4LTI6IE5l
+dyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0wNDFlLCBpZFByb2R1Y3Q9MzBkMgo+Pj4+IHVz
+YiA4LTI6IE5ldyBVU0IgZGV2aWNlIHN0cmluZ3M6IE1mcj0xLCBQcm9kdWN0PTIsIFNlcmlhbE51
+bWJlcj0wCj4+Pj4gdXNiIDgtMjogUHJvZHVjdDogU0IgWC1GaSBOb3RlYm9vawo+Pj4+IHVzYiA4
+LTI6IE1hbnVmYWN0dXJlcjogQ3JlYXRpdmUgVGVjaG5vbG9neSBMdGQKPj4+PiB1c2IgOC0yOiBj
+b25maWd1cmF0aW9uICMxIGNob3NlbiBmcm9tIDEgY2hvaWNlCj4+Pj4gaW5wdXQ6IENyZWF0aXZl
+IFRlY2hub2xvZ3kgTHRkIFNCIFgtRmkgTm90ZWJvb2sgYXMKPj4+PiAvZGV2aWNlcy9wY2kwMDAw
+OjAwLzAwMDA6MDA6MWQuMi91c2I4LzgtMi84LTI6MS4zL2lucHV0L2lucHV0MTEKPj4+PiBnZW5l
+cmljLXVzYiAwMDAzOjA0MUU6MzBEMi4wMDAyOiBpbnB1dCxoaWRyYXcxOiBVU0IgSElEIHYxLjEx
+IERldmljZQo+Pj4+IFtDcmVhdGl2ZSBUZWNobm9sb2d5IEx0ZCBTQiBYLUZpIE5vdGVib29rXSBv
+biB1c2ItMDAwMDowMDoxZC4yLTIvaW5wdXQzCj4+Pj4gaW5wdXQ6IENyZWF0aXZlIFRlY2hub2xv
+Z3kgTHRkIFNCIFgtRmkgTm90ZWJvb2sgYXMKPj4+PiAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6
+MDA6MWQuMi91c2I4LzgtMi84LTI6MS40L2lucHV0L2lucHV0MTIKPj4+PiBnZW5lcmljLXVzYiAw
+MDAzOjA0MUU6MzBEMi4wMDAzOiBpbnB1dCxoaWRyYXcyOiBVU0IgSElEIHYxLjExIEtleWJvYXJk
+Cj4+Pj4gW0NyZWF0aXZlIFRlY2hub2xvZ3kgTHRkIFNCIFgtRmkgTm90ZWJvb2tdIG9uIHVzYi0w
+MDAwOjAwOjFkLjItMi9pbnB1dDQKPj4+PiBBTFNBIHBjbS5jOjE3NDogMjoxOjE6IGVuZHBvaW50
+IGxhY2tzIHNhbXBsZSByYXRlIGF0dHJpYnV0ZSBiaXQsIGNhbm5vdAo+Pj4+IHNldC4KPj4+PiBB
+TFNBIHBjbS5jOjE3NDogMjoyOjE6IGVuZHBvaW50IGxhY2tzIHNhbXBsZSByYXRlIGF0dHJpYnV0
+ZSBiaXQsIGNhbm5vdAo+Pj4+IHNldC4KPj4+PiAgICAgICAgICAKPj4+IEFuZCB5b3Ugc2F5IHRo
+aXMgaXMgYSByZWdyZXNzaW9uIGZyb20gZWFybGllciB2ZXJzaW9ucz8gV291bGQgeW91IGJlCj4+
+PiBhYmxlIHRvIGJpc2VjdCB0aGlzIHByb2JsZW0/Cj4+Pgo+Pj4gRGFuaWVsCj4+Pgo+Pj4gICAg
+ICAgIAo+PiBHbGFkbHksIGlmIHlvdSBqdXN0IHRlbGwgbWUgaG93IDopCj4+ICAgICAgCj4gWW91
+IHdvdWxkIGNoZWNrIG91dCB0aGUgbGF0ZXN0IG1haW5saW5lIHNvdXJjZXM6Cj4KPiAgICAkIGdp
+dCBjbG9uZSBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9y
+dmFsZHMvbGludXgtMi42LmdpdAo+ICAgICQgY2QgbGludXgtMi42Cj4KPiBUaGVuIGNyZWF0ZSBh
+IGJyYW5jaCBhbmQgbWVyZ2UgdGhlIGxhdGVzdCBBTFNBIHBhdGNoZXM6Cj4KPiAgICAkIGdpdCBj
+aGVja291dCAtYiBhbHNhCj4gICAgJCBnaXQgcHVsbCBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIv
+c2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQtMi42LmdpdAo+Cj4gVGhlbiBidWlsZCBh
+bmQgaW5zdGFsbCB0aGUga2VybmVsIGFuZCB2ZXJpZnkgaXQgc3RpbGwgc2hvd3MgdGhlIGVycm9y
+Lgo+IFN0YXJ0IHRoZSBiaXNlY3QgYW5kIG1hcmsgdGhlIGN1cnJlbnQgcmV2aXNpb24gYXMgJ2Jh
+ZCc6Cj4KPiAgICAkIGdpdCBiaXNlY3Qgc3RhcnQKPiAgICAkIGdpdCBiaXNlY3QgYmFkCj4KPiBB
+c3N1bWluZyB0aGF0IHYyLjYuMzQtcmM1IChiZWZvcmUgdGhlIG1lcmdlKSBzdGlsbCB3b3Jrcywg
+eW91IHdvdWxkIG1hcmsKPiB0aGlzIGFzICdnb29kJzoKPgo+ICAgICQgZ2l0IGJpc2VjdCBnb29k
+IHYyLjYuMzQtcmM1Cj4KPiBnaXQgd2lsbCBub3cgaXRlcmF0ZSB5b3UgdGhydSB0aGUgY2hhbmdl
+cyBhbmQgZHJvcCB5b3Ugb2ZmIGF0IGNob3Nlbgo+IHBvaW50cy4gSnVzdCBjb21waWxlIHRoZSB0
+cmVlIHlvdSBnZXQsIGFuZCB0ZWxsIGdpdCB3aGV0aGVyIHRoaXMgaXMgYQo+IGdvb2Qgb3IgYmFk
+IG9uZToKPgo+ICAgICQgZ2l0IGJpc2VjdCBnb29kCj4gICAgb3IKPiAgICAkIGdpdCBiaXNlY3Qg
+YmFkCj4KPiBUaGVuIHJlY29tcGlsZSBhbmQgdGVzdCBhZ2FpbiBBZnRlciBzb21lIHN0ZXBzLCBp
+dCB3aWxsIHRlbGwgeW91IHdoaWNoCj4gY29tbWl0IHByZWNpc2VseSBicm9rZSBpdC4KPgo+IEhU
+SCwKPiBEYW5pZWwKPgo+Cj4gICAgCkknbGwgdHJ5IHRoYXQuIEJ1dCBpcyB0aGVyZSBhbnkgd2F5
+IHRvIGRvIHRoaXMganVzdCB3aXRoIGFsc2EgYW5kIG5vdCAKd2l0aCBlbnRpcmUga2VybmVsPyBD
+b21waWxpbmcga2VybmVsIGlzIGEgbG9vb29uZyBwcm9jZXNzLgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
