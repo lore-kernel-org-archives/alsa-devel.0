@@ -1,22 +1,21 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ASoC: OMAP/TI upstream route
-Date: Tue, 27 Apr 2010 08:31:05 +0100
-Message-ID: <1272353465.3204.19.camel@odin>
-References: <1272293803.3208.85.camel@odin>
-	<20100426192228.228489c7.jhnikula@gmail.com>
-	<1272302027.3208.209.camel@odin>
-	<201004270926.34345.peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 1/2] powerpc: add platform registration for
+ ALSA SoC drivers
+Date: Tue, 27 Apr 2010 09:07:04 +0100
+Message-ID: <1272355624.3204.52.camel@odin>
+References: <1272314980-23679-1-git-send-email-timur@freescale.com>
+	<1272350168.24542.6.camel@pasglop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E8012482F
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 854962485A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Apr 2010 09:31:12 +0200 (CEST)
-Received: by wwg30 with SMTP id 30so344948wwg.38
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 00:31:09 -0700 (PDT)
-In-Reply-To: <201004270926.34345.peter.ujfalusi@nokia.com>
+	Tue, 27 Apr 2010 10:07:09 +0200 (CEST)
+Received: by wya21 with SMTP id 21so1235673wya.38
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 01:07:08 -0700 (PDT)
+In-Reply-To: <1272350168.24542.6.camel@pasglop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,40 +25,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "Olaya, Margarita" <magi.olaya@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: alsa-devel@alsa-project.org, kumar.gala@freescale.com, broonie@opensource.wolfsonmicro.com, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-04-27 at 09:26 +0300, Peter Ujfalusi wrote:
-> Hi,
-> 
-> On Monday 26 April 2010 20:13:47 ext Liam Girdwood wrote:
+On Tue, 2010-04-27 at 16:36 +1000, Benjamin Herrenschmidt wrote:
+> On Mon, 2010-04-26 at 15:49 -0500, Timur Tabi wrote:
+> > An upcoming change in the architecture of ALSA SoC (ASoC) will require the
+> > MPC8610 HPCD's ASoC fabric driver to register as a standard platform driver.
+> > Therefore, we need to call platform_device_register_simple() from the board's
+> > platform code.
 > > 
-> > Everything is just carrying on as before except the upstream management
-> > effort is being divided between Mark and I. i.e. I'll manage the TI/OMAP
-> > based patches, Mark will manage the rest.
+> > Signed-off-by: Timur Tabi <timur@freescale.com>
+> > ---
 > 
-> I see, it make sense.
-> Are we continuing the practice that in case of OMAP (McBSP) patches Jarkko 
-> or/and I have to ack it in order to be accepted?
-> I'm also the maintainer for the twl4030 ASoC codec driver (see MAINTAINERS 
-> file)...
+> Gross. Loses the linkage to device-tree etc... which is useful for audio
+> especially. You should at least make sure the device node follows for
+> the target driver to be able to use it :-) I'd like you to sync with
+> Grant work on that matter if you are going to convert of_devices into
+> platform_devices.
 
+Timur, please correct my device tree understanding form our IRC
+conversation if I'm wrong here.
 
-Yes, nothing has changed here. :)
+I think one of the difficulties encountered here is that the device tree
+root for sound in this case is the SSI (Digital Audio Interface)
+controller and not the sound card as in ASoC. So maybe the problem is
+how do we represent an ASoC sound card in the device tree ?
 
-> > Patch submitters should not notice any difference as both trees are
-> > based on Takashi's ASoC branch and are regularly kept up to date.
-> 
-> Just to clarify it: You and Mark will send pull request to Takashi, 
+The sound card within ASoC is a compound device that is made up of the
+SSI, Codec and audio DMA engine components. The SSI/Codec/DMA components
+do not have to be the sound cards child devices wrt the driver model but
+do register with the ASoC core and are 'joined' with each other and the
+sound card driver to form a working audio device.
 
-yes
+Now I don't know the mechanics of adding an ASoC sound card to the
+device tree, but the device tree should be able to define an ASoC sound
+card and also represent the relationships between the sound card and the
+SSI/Codec/DMA components. The components should also be represented in
+the device tree. Parsing the device tree should probe() all the ASoC
+components and sound card. The ASoC core would then instantiated them as
+a sound device.  
 
-> or is it 
-> going to be You -> Mark -> Takashi route?
-
-and yes. Depending on workload, any merge issues, cross tree patches
-etc.
+Thanks
 
 Liam 
 
