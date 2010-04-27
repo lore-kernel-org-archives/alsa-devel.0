@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] powerpc: add platform registration for
- ALSA SoC drivers
-Date: Tue, 27 Apr 2010 11:41:40 +0100
-Message-ID: <20100427104139.GA17091@rakim.wolfsonmicro.main>
-References: <1272314980-23679-1-git-send-email-timur@freescale.com>
-	<1272350168.24542.6.camel@pasglop>
-	<20100427095440.GA15492@rakim.wolfsonmicro.main>
-	<1272362955.24542.24.camel@pasglop>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] ASoC updates for 2.6.35
+Date: Tue, 27 Apr 2010 14:21:03 +0100
+Message-ID: <1272374463.11000.18.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 593CD1037F2
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7FDEA24142
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Apr 2010 12:41:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1272362955.24542.24.camel@pasglop>
+	Tue, 27 Apr 2010 15:21:12 +0200 (CEST)
+Received: by fxm2 with SMTP id 2so229954fxm.38
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 06:21:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,38 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: alsa-devel@alsa-project.org, kumar.gala@freescale.com, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, Timur Tabi <timur@freescale.com>, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 27, 2010 at 08:09:15PM +1000, Benjamin Herrenschmidt wrote:
 
-> I think the main deal is to decide who gets to be the "master" node
-> which contains the various properties doing the linkage. My gut feeling
-> is that it could be the main transport, ie, the i2s or ac97, but people
-> with more experience dealing with that stuff might have other ideas.
+The following changes since commit f4d593280652025f797d432e90f49d49b9334689:
+  Peter Ujfalusi (1):
+        ASoC: tlv320dac33: Fix for early interrupt in FIFO Mode1
 
-You're not going to find a single master transport node on more complex
-systems - some systems have multiple audio interfaces to the CPU (to
-allow use of hardware mixing, for example), and in systems with things
-like offboard DSPs or basebands it's not always clear that the CPU Linux
-is running on is in charge of anything.
+are available in the git repository at:
 
-> Keep in mind that it's perfectly kosher to create nodes for "virtual"
-> devices. IE. We could imagine a node for the "sound subsystem" that
-> doesn't actually correspond to any physical device but contain the
-> necessary properties that binds everything together. You could even have
-> multiple of these if you have separate set of sound HW that aren't
-> directly dependant.
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.35
 
-In terms of where to shove any data this is sort of the solution I
-favour, it's pretty much exactly what's implemented on other platforms
-at the moment and it seems to adequately represent the physical board
-(it's not a million miles away from what Timur has here).
+Jarkko Nikula (4):
+      ASoC: tlv320aic3x: Remove unused version string
+      ASoC: tlv320aic3x: Remove needless power off from aic3x_set_bias_level
+      ASoC: tlv320aic3x: Change bias management semantics
+      ASoC: tlv320aic3x: Add basic regulator support
 
-The main problem is that trying to define a language which can represent
-the needs of modern mobile audio subsystems just doesn't seem worth the
-effort.  The clocking arrangements for modern mobile audio subsystems
-aren't trivial, are normally highly device and system specific, and when
-you add on more exotic things like sharing the bit and frame clocks
-between multiple audio interfaces it gets even more involved.
+Peter Ujfalusi (4):
+      ASoC: tlv320dac33: Skip calculations in FIFO Bypass mode
+      ASoC: tlv320dac33: Change magic numbers used in Mode7
+      ASoC: tlv320dac33: Calculate the interface speed during bursts
+      ASoC: tlv320dac33: FIFO caused delay reporting
+
+ sound/soc/codecs/tlv320aic3x.c |   81 +++++++-------
+ sound/soc/codecs/tlv320dac33.c |  243 ++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 272 insertions(+), 52 deletions(-)
