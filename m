@@ -1,14 +1,14 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 11/11] ASoC: SMDK64XX: Switch to IISv4 CPU
-	driver
-Date: Tue, 27 Apr 2010 15:57:17 +0900
-Message-ID: <1272351437-4015-1-git-send-email-jassi.brar@samsung.com>
+Subject: [PATCH 08/11] ASoC: S3C: I2Sv2: New field for
+	controller feature
+Date: Tue, 27 Apr 2010 15:56:56 +0900
+Message-ID: <1272351416-3914-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 900FF24821
+	by alsa0.perex.cz (Postfix) with ESMTP id 91F062482B
 	for <alsa-devel@alsa-project.org>;
 	Tue, 27 Apr 2010 09:00:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -24,67 +24,49 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Switch the MACHINE driver to use IISv4 CPU dai.
-Remove BROKEN dependency now that we have proper CPU driver available.
-Also, disable build for SMDK6400, since the S3C6400 doesn't have IISv4
-controller.
+In order to make s3c-i2s-v2.c manage controllers with minor
+quirks and variation in features, we define a per-block flag
+that indicates the availability/lack of a particular feature
+to the s3c-i2s-v2.c
+
+While adding support for new SoCs' I2S, check for the blocks
+of older SoCs that have similar feature and set the flag for
+that feature.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/Kconfig           |    7 +++----
- sound/soc/s3c24xx/smdk64xx_wm8580.c |    6 ++----
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ sound/soc/s3c24xx/s3c-i2s-v2.h |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/Kconfig b/sound/soc/s3c24xx/Kconfig
-index c0c7edf..2a7cc22 100644
---- a/sound/soc/s3c24xx/Kconfig
-+++ b/sound/soc/s3c24xx/Kconfig
-@@ -64,12 +64,11 @@ config SND_S3C24XX_SOC_JIVE_WM8750
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/s3c24xx/s3c-i2s-v2.h
+index 39a6db6..766f43a 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.h
++++ b/sound/soc/s3c24xx/s3c-i2s-v2.h
+@@ -29,10 +29,16 @@
+ #define S3C_I2SV2_CLKSRC_AUDIOBUS	1
+ #define S3C_I2SV2_CLKSRC_CDCLK		2
  
- config SND_S3C64XX_SOC_WM8580
- 	tristate "SoC I2S Audio support for WM8580 on SMDK64XX"
--	depends on SND_S3C24XX_SOC && (MACH_SMDK6400 || MACH_SMDK6410)
--	depends on BROKEN
-+	depends on SND_S3C24XX_SOC && MACH_SMDK6410
- 	select SND_SOC_WM8580
--	select SND_S3C64XX_SOC_I2S
-+	select SND_S3C64XX_SOC_I2S_V4
- 	help
--	  Sat Y if you want to add support for SoC audio on the SMDK64XX.
-+	  Say Y if you want to add support for SoC audio on the SMDK6410.
++/* Set this flag for I2S controllers that have the bit IISMOD[12]
++ * bridge/break RCLK signal and external Xi2sCDCLK pin.
++ */
++#define S3C_FEATURE_CDCLKCON	(1 << 0)
++
+ /**
+  * struct s3c_i2sv2_info - S3C I2S-V2 information
+  * @dev: The parent device passed to use from the probe.
+  * @regs: The pointer to the device registe block.
++ * @feature: Set of bit-flags indicating features of the controller.
+  * @master: True if the I2S core is the I2S bit clock master.
+  * @dma_playback: DMA information for playback channel.
+  * @dma_capture: DMA information for capture channel.
+@@ -47,6 +53,8 @@ struct s3c_i2sv2_info {
+ 	struct device	*dev;
+ 	void __iomem	*regs;
  
- config SND_S3C24XX_SOC_SMDK2443_WM9710
- 	tristate "SoC AC97 Audio support for SMDK2443 - WM9710"
-diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-index efe4901..07e8e51 100644
---- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
-+++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-@@ -22,8 +22,6 @@
- #include "s3c-dma.h"
- #include "s3c64xx-i2s.h"
++	u32		feature;
++
+ 	struct clk	*iis_pclk;
+ 	struct clk	*iis_cclk;
  
--#define S3C64XX_I2S_V4 2
--
- /* SMDK64XX has a 12MHZ crystal attached to WM8580 */
- #define SMDK64XX_WM8580_FREQ 12000000
- 
-@@ -215,7 +213,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- { /* Primary Playback i/f */
- 	.name = "WM8580 PAIF RX",
- 	.stream_name = "Playback",
--	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
-+	.cpu_dai = &s3c64xx_i2s_v4_dai,
- 	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFRX],
- 	.init = smdk64xx_wm8580_init_paifrx,
- 	.ops = &smdk64xx_ops,
-@@ -223,7 +221,7 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- { /* Primary Capture i/f */
- 	.name = "WM8580 PAIF TX",
- 	.stream_name = "Capture",
--	.cpu_dai = &s3c64xx_i2s_dai[S3C64XX_I2S_V4],
-+	.cpu_dai = &s3c64xx_i2s_v4_dai,
- 	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFTX],
- 	.init = smdk64xx_wm8580_init_paiftx,
- 	.ops = &smdk64xx_ops,
 -- 
 1.6.2.5
