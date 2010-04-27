@@ -1,28 +1,19 @@
 From: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [PATCH 10/20] ASoC: S3C: I2Sv2: Move register
-	definitions	closer to driver
-Date: Tue, 27 Apr 2010 03:55:16 +0100
-Message-ID: <20100427025516.GA24020@trinity.fluff.org>
-References: <1268207349-9979-1-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-2-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-3-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-4-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-5-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-6-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-7-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-8-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-9-git-send-email-jassi.brar@samsung.com>
-	<1268207349-9979-10-git-send-email-jassi.brar@samsung.com>
+Subject: Re: Reforming S3C I2S towards supporting I2Sv4
+Date: Tue, 27 Apr 2010 03:58:48 +0100
+Message-ID: <20100427025848.GB24020@trinity.fluff.org>
+References: <1268207335-9947-1-git-send-email-jassi.brar@samsung.com>
+	<20100310142314.GD6850@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
-	by alsa0.perex.cz (Postfix) with ESMTP id 252E9247B2
+	by alsa0.perex.cz (Postfix) with ESMTP id 752D6247B4
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Apr 2010 04:55:27 +0200 (CEST)
+	Tue, 27 Apr 2010 04:58:49 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1268207349-9979-10-git-send-email-jassi.brar@samsung.com>
+In-Reply-To: <20100310142314.GD6850@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,179 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 10, 2010 at 04:48:59PM +0900, Jassi Brar wrote:
-> The header for I2Sv2 (linux/arch/arm/plat-s3c/include/plat/regs-s3c2412-iis.h)
-> contains only controller specific definitions and nothing SoC specific. So, it
-> could be moved to sound/soc/s3c24xx/
-> That will also help avoid delays in accepting patches that touch ASOC and ARCH
-> parts.
+On Wed, Mar 10, 2010 at 02:23:15PM +0000, Mark Brown wrote:
+> On Wed, Mar 10, 2010 at 04:48:55PM +0900, Jassi Brar wrote:
 > 
-> For now, we simply copy to regs-i2s-v2.h without any material changes, and render
-> the regs-s3c2412-iis.h useless in the kernel.
-> A separate patch will be submitted to S3C ARCH tree to remove the regs-s3c2412-iis.h
-
-could you please reformat the header to wrap nicely?
-
-I'd ack a patch moving this in one go since there shouldn't be any
-updates to this file going via my tree.
-
-> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
-> ---
->  sound/soc/s3c24xx/regs-i2s-v2.h |   79 +++++++++++++++++++++++++++++++++++++++
->  sound/soc/s3c24xx/s3c-i2s-v2.c  |    3 +-
->  sound/soc/s3c24xx/s3c2412-i2s.c |    3 +-
->  sound/soc/s3c24xx/s3c64xx-i2s.c |    2 +-
->  4 files changed, 82 insertions(+), 5 deletions(-)
->  create mode 100644 sound/soc/s3c24xx/regs-i2s-v2.h
+> >  I have prepared some patches that debug and modify the behaviour of
+> > extant S3C I2S support towards managing I2Sv4 controllers as well.
 > 
-> diff --git a/sound/soc/s3c24xx/regs-i2s-v2.h b/sound/soc/s3c24xx/regs-i2s-v2.h
-> new file mode 100644
-> index 0000000..8e1a585
-> --- /dev/null
-> +++ b/sound/soc/s3c24xx/regs-i2s-v2.h
-> @@ -0,0 +1,79 @@
-> +/* linux/sound/soc/s3c24xx/regs-i2s-v2.h
-> + *
-> + * Copyright 2007 Simtec Electronics <linux@simtec.co.uk>
-> + *	http://armlinux.simtec.co.uk/
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + * Register definitions for controllers that share the I2Sv2 part
-> +*/
-> +
-> +#ifndef __REGS_IISV2_H
-> +#define __REGS_IISV2_H
-> +
-> +#define S3C2412_IISCON			(0x00)
-> +#define S3C2412_IISMOD			(0x04)
-> +#define S3C2412_IISFIC			(0x08)
-> +#define S3C2412_IISPSR			(0x0C)
-> +#define S3C2412_IISTXD			(0x10)
-> +#define S3C2412_IISRXD			(0x14)
-> +
-> +#define S3C2412_IISCON_LRINDEX		(1 << 11)
-> +#define S3C2412_IISCON_TXFIFO_EMPTY	(1 << 10)
-> +#define S3C2412_IISCON_RXFIFO_EMPTY	(1 << 9)
-> +#define S3C2412_IISCON_TXFIFO_FULL	(1 << 8)
-> +#define S3C2412_IISCON_RXFIFO_FULL	(1 << 7)
-> +#define S3C2412_IISCON_TXDMA_PAUSE	(1 << 6)
-> +#define S3C2412_IISCON_RXDMA_PAUSE	(1 << 5)
-> +#define S3C2412_IISCON_TXCH_PAUSE	(1 << 4)
-> +#define S3C2412_IISCON_RXCH_PAUSE	(1 << 3)
-> +#define S3C2412_IISCON_TXDMA_ACTIVE	(1 << 2)
-> +#define S3C2412_IISCON_RXDMA_ACTIVE	(1 << 1)
-> +#define S3C2412_IISCON_IIS_ACTIVE	(1 << 0)
-> +
-> +#define S3C64XX_IISMOD_BLC_16BIT	(0 << 13)
-> +#define S3C64XX_IISMOD_BLC_8BIT		(1 << 13)
-> +#define S3C64XX_IISMOD_BLC_24BIT	(2 << 13)
-> +#define S3C64XX_IISMOD_BLC_MASK		(3 << 13)
-> +
-> +#define S3C64XX_IISMOD_IMS_PCLK		(0 << 10)
-> +#define S3C64XX_IISMOD_IMS_SYSMUX	(1 << 10)
-> +
-> +#define S3C2412_IISMOD_MASTER_INTERNAL	(0 << 10)
-> +#define S3C2412_IISMOD_MASTER_EXTERNAL	(1 << 10)
-> +#define S3C2412_IISMOD_SLAVE		(2 << 10)
-> +#define S3C2412_IISMOD_MASTER_MASK	(3 << 10)
-> +#define S3C2412_IISMOD_MODE_TXONLY	(0 << 8)
-> +#define S3C2412_IISMOD_MODE_RXONLY	(1 << 8)
-> +#define S3C2412_IISMOD_MODE_TXRX	(2 << 8)
-> +#define S3C2412_IISMOD_MODE_MASK	(3 << 8)
-> +#define S3C2412_IISMOD_LR_LLOW		(0 << 7)
-> +#define S3C2412_IISMOD_LR_RLOW		(1 << 7)
-> +#define S3C2412_IISMOD_SDF_IIS		(0 << 5)
-> +#define S3C2412_IISMOD_SDF_MSB		(1 << 5)
-> +#define S3C2412_IISMOD_SDF_LSB		(2 << 5)
-> +#define S3C2412_IISMOD_SDF_MASK		(3 << 5)
-> +#define S3C2412_IISMOD_RCLK_256FS	(0 << 3)
-> +#define S3C2412_IISMOD_RCLK_512FS	(1 << 3)
-> +#define S3C2412_IISMOD_RCLK_384FS	(2 << 3)
-> +#define S3C2412_IISMOD_RCLK_768FS	(3 << 3)
-> +#define S3C2412_IISMOD_RCLK_MASK 	(3 << 3)
-> +#define S3C2412_IISMOD_BCLK_32FS	(0 << 1)
-> +#define S3C2412_IISMOD_BCLK_48FS	(1 << 1)
-> +#define S3C2412_IISMOD_BCLK_16FS	(2 << 1)
-> +#define S3C2412_IISMOD_BCLK_24FS	(3 << 1)
-> +#define S3C2412_IISMOD_BCLK_MASK	(3 << 1)
-> +#define S3C2412_IISMOD_8BIT		(1 << 0)
-> +
-> +#define S3C64XX_IISMOD_CDCLKCON		(1 << 12)
-> +
-> +#define S3C2412_IISPSR_PSREN		(1 << 15)
-> +
-> +#define S3C2412_IISFIC_TXFLUSH		(1 << 15)
-> +#define S3C2412_IISFIC_RXFLUSH		(1 << 7)
-> +#define S3C2412_IISFIC_TXCOUNT(x)	(((x) >>  8) & 0xf)
-> +#define S3C2412_IISFIC_RXCOUNT(x)	(((x) >>  0) & 0xf)
-> +
-> +#endif /* __REGS_IISV2_H */
-> diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-> index 0d655ab..b690078 100644
-> --- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-> +++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-> @@ -24,10 +24,9 @@
->  #include <sound/pcm_params.h>
->  #include <sound/soc.h>
->  
-> -#include <plat/regs-s3c2412-iis.h>
-> -
->  #include <mach/dma.h>
->  
-> +#include "regs-i2s-v2.h"
->  #include "s3c-i2s-v2.h"
->  #include "s3c-dma.h"
->  
-> diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-> index a5b21f6..42fb663 100644
-> --- a/sound/soc/s3c24xx/s3c2412-i2s.c
-> +++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-> @@ -32,12 +32,11 @@
->  #include <sound/soc.h>
->  #include <mach/hardware.h>
->  
-> -#include <plat/regs-s3c2412-iis.h>
-> -
->  #include <mach/regs-gpio.h>
->  #include <mach/dma.h>
->  
->  #include "s3c-dma.h"
-> +#include "regs-i2s-v2.h"
->  #include "s3c2412-i2s.h"
->  
->  #define S3C2412_I2S_DEBUG 0
-> diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-> index 6552894..9bcc99d 100644
-> --- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-> +++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
-> @@ -18,7 +18,6 @@
->  
->  #include <sound/soc.h>
->  
-> -#include <plat/regs-s3c2412-iis.h>
->  #include <plat/gpio-bank-d.h>
->  #include <plat/gpio-bank-e.h>
->  #include <plat/gpio-cfg.h>
-> @@ -27,6 +26,7 @@
->  #include <mach/dma.h>
->  
->  #include "s3c-dma.h"
-> +#include "regs-i2s-v2.h"
->  #include "s3c64xx-i2s.h"
->  
->  /* The value should be set to maximum of the total number
-> -- 
-> 1.6.2.5
-> 
+> OK, I think that's everything.  I've not applied anything after the
+> header move yet due to the need for an ack from Ben.  Any patches I
+> didn't specifically comment on are OK.  Overall it's all good, most of
+> the issues are minor.
 
--- 
+I'd like to see a bit of header reformatting to make them readable
+if they're not already merged.
+
+the header moves are ok by me, much prefer to see them git mv'd than
+copy and rm'd.
+ 
+> In future could you please use --no-chain-reply-to when sending patches
+> to avoid massively deep threads in threaded mail readers (the git
+> default is changing in 1.7.0 for this very reason).  It's also best to
+> send the cover letter first and tell git send-email that everything
+> should be sent in reply to that - this way people are likely to see the
+> cover letter before the patches.
+
+agreed on this one.
 -- 
 Ben
 
