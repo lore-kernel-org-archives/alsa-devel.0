@@ -1,17 +1,28 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [GIT PULL] ASoC updates for 2.6.35
-Date: Tue, 27 Apr 2010 14:21:03 +0100
-Message-ID: <1272374463.11000.18.camel@odin>
+From: adelias <adelias@freemail.gr>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Tue, 27 Apr 2010 16:23:48 +0300
+Message-ID: <4BD6E564.5050100@freemail.gr>
+References: <1266856137-26252-1-git-send-email-daniel@caiaq.de>	<4B8CD6A0.40204@freemail.gr>
+	<20100302183542.GU28972@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7FDEA24142
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id B79E524153
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Apr 2010 15:21:12 +0200 (CEST)
-Received: by fxm2 with SMTP id 2so229954fxm.38
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 06:21:11 -0700 (PDT)
+	Tue, 27 Apr 2010 15:26:51 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1O6koI-00021N-HB
+	for alsa-devel@alsa-project.org; Tue, 27 Apr 2010 15:26:46 +0200
+Received: from tiger.rd.forthnet.gr ([212.251.99.184])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 15:26:46 +0200
+Received: from adelias by tiger.rd.forthnet.gr with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 15:26:46 +0200
+In-Reply-To: <20100302183542.GU28972@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,31 +32,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-The following changes since commit f4d593280652025f797d432e90f49d49b9334689:
-  Peter Ujfalusi (1):
-        ASoC: tlv320dac33: Fix for early interrupt in FIFO Mode1
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.35
-
-Jarkko Nikula (4):
-      ASoC: tlv320aic3x: Remove unused version string
-      ASoC: tlv320aic3x: Remove needless power off from aic3x_set_bias_level
-      ASoC: tlv320aic3x: Change bias management semantics
-      ASoC: tlv320aic3x: Add basic regulator support
-
-Peter Ujfalusi (4):
-      ASoC: tlv320dac33: Skip calculations in FIFO Bypass mode
-      ASoC: tlv320dac33: Change magic numbers used in Mode7
-      ASoC: tlv320dac33: Calculate the interface speed during bursts
-      ASoC: tlv320dac33: FIFO caused delay reporting
-
- sound/soc/codecs/tlv320aic3x.c |   81 +++++++-------
- sound/soc/codecs/tlv320dac33.c |  243 ++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 272 insertions(+), 52 deletions(-)
+T24gMi8zLzIwMTAgODozNSDOvM68LCBEYW5pZWwgTWFjayB3cm90ZToKPiBPbiBUdWUsIE1hciAw
+MiwgMjAxMCBhdCAxMToxMzowNEFNICswMjAwLCBhZGVsaWFzIHdyb3RlOgo+PiBUaGFua3MgdG8g
+YWxsIGludm9sdmVkIGZvciB3b3JraW5nIG9uIHVzYiBhdWRpbyB2Mi4KPj4KPj4gTGFzdCBuaWdo
+dCBJIGluc3RhbGxlZCB0aGUgMjAxMDAyMjYgc25hcHNob3QuIEkgZGlkIGEgbGl0dGxlIHRlc3Rp
+bmcKPj4gd2l0aCBteSBYTU9TIGJvYXJkIHVzaW5nIHRvc2xpbmsgb3V0IGludG8gbWF5IERBQy4g
+SSB0cmllZCB2YXJpb3VzIGZpbGVzCj4+IHJhbmdpbmcgMTZiaXQvNDQxMTBrSHotMjRiaXQvMTky
+MDAwa0h6LiBUaGUgNDQxMTAgZmlsZXMgaGFkIHF1aXRlIGEgYml0Cj4+IG9mIHN0YXRpYywgdGhl
+IGhpZ2hlciBiaXRyYXRlIGZpbGVzIHdlcmUgYmV0dGVyLiBBcyB5b3Ugc3RhdGVkIHRoZQo+PiBz
+YW1wbGluZyByYXRlIGlzIG5vdCBjb3JyZWN0IGFuZCBiZSB2ZXJpZmllZCBieSBsb29raW5nIGF0
+IHRoZSBmbGFzaGluZwo+PiBMRURzIG9uIHRoZSBYTU9TIGJvYXJkLiBUaGV5IHNob3VsZCBmbGFz
+aCBmYXN0ZXIgYXMgc2FtcGxpbmcgcmF0ZQo+PiBpbmNyZWFzZS4gSW4gdGhpcyBjYXNlIG5vIGNo
+YW5nZSB3YXMgb2JzZXJ2ZWQuCj4KPiBZZXMgLSB0aGlzIGlzIGFsbCBkbyBiZSBkb25lLiBUaGUg
+c2FtcGxlIHJhdGUgc2V0dGluZyBpcyBkb25lIHdpdGggYQo+IGRpZmZlcmVudCB0eXBlIG9mIGNs
+YXNzIHJlcXVlc3QsIHdoaWNoIGFsc28gYWRkcmVzc2VzIHRoZSBpbnRlcmZhY2Ugbm93LAo+IHVu
+bGlrZSB2MSBkZXZpY2VzIHdoaWNoIHNlbmQgdGhhdCB0byB0aGUgZW5kcG9pbnQuIEJ1dCB0aGF0
+J3MganVzdCBvbmUKPiBvdXQgb2YgbWFueSBkaWZmZXJlbmNlcyB0aGF0IG5lZWQgdG8gYmUgYWRk
+cmVzc2VkLCBhbmQgaXQncyBzdGlsbCBhIGxvbmcKPiB3YXkgdG8gZ28uIEknbSBvbiBpdCA6KQo+
+Cj4gRGFuaWVsCgpJIHVwZ3JhZGVkIGFsc2EgdG8gMS4wLjIzLiBUaGUgWE1PUyBkZXZpY2UgaXMg
+d29ya2luZyBncmVhdCB3aXRoIHRoZSAKZXhjZXB0aW9uIG9mIHNvbWUgbWlsZCBjbGlja3MgaGVy
+ZSBhbmQgdGhlcmUuIElzIHRoaXMgYSBrbm93biBpc3N1ZSBvcgptaWdodCBpdCBiZSBhIHByb2Js
+ZW0gd2l0aCBteSBzcGVjaWZpYyBjb25maWd1cmF0aW9uPwoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
