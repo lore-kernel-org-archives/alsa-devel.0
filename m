@@ -1,25 +1,21 @@
 From: Grant Likely <grant.likely@secretlab.ca>
 Subject: Re: [PATCH 1/2] powerpc: add platform registration for
 	ALSA SoC drivers
-Date: Tue, 27 Apr 2010 13:15:05 -0600
-Message-ID: <s2ifa686aa41004271215tb3c992c1v8996ce5520896c6c@mail.gmail.com>
+Date: Tue, 27 Apr 2010 13:21:30 -0600
+Message-ID: <j2qfa686aa41004271221g18f04fbcla8b74861f87b8c84@mail.gmail.com>
 References: <1272314980-23679-1-git-send-email-timur@freescale.com>
-	<1272350168.24542.6.camel@pasglop> <1272355624.3204.52.camel@odin>
-	<4BD6FA39.3030400@freescale.com> <1272381611.11000.39.camel@odin>
-	<4BD70292.20001@freescale.com> <1272386470.11000.84.camel@odin>
-	<4BD72DB0.20808@freescale.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 61759103839
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09AFA10383C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Apr 2010 21:15:28 +0200 (CEST)
-Received: by pvg2 with SMTP id 2so353932pvg.38
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 12:15:26 -0700 (PDT)
-In-Reply-To: <4BD72DB0.20808@freescale.com>
+	Tue, 27 Apr 2010 21:21:52 +0200 (CEST)
+Received: by pwj8 with SMTP id 8so8513509pwj.38
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 12:21:51 -0700 (PDT)
+In-Reply-To: <1272314980-23679-1-git-send-email-timur@freescale.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,28 +26,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, broonie@opensource.wolfsonmicro.com, linuxppc-dev@ozlabs.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, kumar.gala@freescale.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 27, 2010 at 12:32 PM, Timur Tabi <timur@freescale.com> wrote:
-> Liam Girdwood wrote:
+On Mon, Apr 26, 2010 at 2:49 PM, Timur Tabi <timur@freescale.com> wrote:
+> An upcoming change in the architecture of ALSA SoC (ASoC) will require the
+> MPC8610 HPCD's ASoC fabric driver to register as a standard platform driv=
+er.
+> Therefore, we need to call platform_device_register_simple() from the boa=
+rd's
+> platform code.
 >
->>> I would need some way for fsl_dma_open() to get a pointer to private,
->>> DMA-specific data. =A0I'm not sure how I can do that.
->>
->> In multi-component we now have platform_data and device private data
->> (from the regular driver model).
+> Signed-off-by: Timur Tabi <timur@freescale.com>
+> ---
 >
-> In that case, I still have the same problem with how to generate an 'id' =
-based on a device tree node. =A0We have the idea of a 'phandle', which is a=
- unique integer for a node, but there's no way to create phandles from with=
-in Linux. =A0They have to exist in the DTS first, and I'm loathe to modify =
-the DTS.
+> Kumar, the ASoC mainters are willing to pick up this patch, but they want=
+ an
+> ACK from you first. =A0Or, you could pick it up, since by itself it's har=
+mless.
+>
+> =A0arch/powerpc/platforms/86xx/mpc8610_hpcd.c | =A0 =A03 +++
+> =A01 files changed, 3 insertions(+), 0 deletions(-)
+>
+> diff --git a/arch/powerpc/platforms/86xx/mpc8610_hpcd.c b/arch/powerpc/pl=
+atforms/86xx/mpc8610_hpcd.c
+> index 5abe137..66afff3 100644
+> --- a/arch/powerpc/platforms/86xx/mpc8610_hpcd.c
+> +++ b/arch/powerpc/platforms/86xx/mpc8610_hpcd.c
+> @@ -98,6 +98,9 @@ static int __init mpc8610_declare_of_platform_devices(v=
+oid)
+> =A0 =A0 =A0 =A0/* Without this call, the SSI device driver won't get prob=
+ed. */
+> =A0 =A0 =A0 =A0of_platform_bus_probe(NULL, mpc8610_ids, NULL);
+>
+> + =A0 =A0 =A0 /* Register the platform device for the ASoC fabric driver =
+*/
+> + =A0 =A0 =A0 platform_device_register_simple("snd-soc-mpc8610-hpcd", 0, =
+NULL, 0);
+> +
 
-Can you not dynamically assign an id?  If alsa soc needs a unique id
-number, then just create a lookup function.  Something like
-of_asoc_phandle_to_codec_id() that will either return a previously
-assigned id, or will assign a new id.  You shouldn't ever need to add
-data to the tree at runtime.
+Since this is a temporary measure, this device registration is
+probably best put into the .probe() hook of the i2s driver.  That will
+keep everything contained in the same place until we can hammer out a
+reasonable binding.
 
 g.
