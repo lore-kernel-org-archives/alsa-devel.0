@@ -1,20 +1,22 @@
-From: jassi brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 01/11] ASoC: S3C: I2Sv2: Move defines
-	closer to driver
-Date: Tue, 27 Apr 2010 16:07:38 +0900
-Message-ID: <m2z1b68c6791004270007ya60e534emd7ba724b724a3d14@mail.gmail.com>
-References: <1272351321-3688-1-git-send-email-jassi.brar@samsung.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: ASoC: OMAP/TI upstream route
+Date: Tue, 27 Apr 2010 08:31:05 +0100
+Message-ID: <1272353465.3204.19.camel@odin>
+References: <1272293803.3208.85.camel@odin>
+	<20100426192228.228489c7.jhnikula@gmail.com>
+	<1272302027.3208.209.camel@odin>
+	<201004270926.34345.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id E4DAE2482E
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0E8012482F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 27 Apr 2010 09:07:39 +0200 (CEST)
-Received: by vws19 with SMTP id 19so640664vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 00:07:39 -0700 (PDT)
-In-Reply-To: <1272351321-3688-1-git-send-email-jassi.brar@samsung.com>
+	Tue, 27 Apr 2010 09:31:12 +0200 (CEST)
+Received: by wwg30 with SMTP id 30so344948wwg.38
+	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 00:31:09 -0700 (PDT)
+In-Reply-To: <201004270926.34345.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,32 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jassi Brar <jassi.brar@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, ben-linux@fluff.org, lrg@slimlogic.co.uk
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "Olaya, Margarita" <magi.olaya@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBBcHIgMjcsIDIwMTAgYXQgMzo1NSBQTSwgSmFzc2kgQnJhciA8amFzc2kuYnJhckBz
-YW1zdW5nLmNvbT4gd3JvdGU6Cj4gVGhlIGhlYWRlciBmb3IgSTJTdjIKPiDCoCBsaW51eC9hcmNo
-L2FybS9wbGF0LXMzYy9pbmNsdWRlL3BsYXQvcmVncy1zM2MyNDEyLWlpcy5oCj4gY29udGFpbnMg
-b25seSBjb250cm9sbGVyIHNwZWNpZmljIGRlZmluaXRpb25zIGFuZCBub3RoaW5nCj4gU29DIHNw
-ZWNpZmljLiBTbywgaXQgY291bGQgYmUgbW92ZWQgdG8gc291bmQvc29jL3MzYzI0eHgvCj4KPiBT
-aWduZWQtb2ZmLWJ5OiBKYXNzaSBCcmFyIDxqYXNzaS5icmFyQHNhbXN1bmcuY29tPgo+IC0tLQo+
-IMKgLi4uL3BsYXQtc2Ftc3VuZy9pbmNsdWRlL3BsYXQvcmVncy1zM2MyNDEyLWlpcy5oIMKgIHwg
-wqAgODIgLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3JlZ3MtaTJz
-LXYyLmggwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB8IMKgIDgyICsrKysrKysrKysrKysr
-KysrKysrCj4gwqBzb3VuZC9zb2MvczNjMjR4eC9zM2MtaTJzLXYyLmMgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgfCDCoCDCoDMgKy0KPiDCoHNvdW5kL3NvYy9zM2MyNHh4L3MzYzI0MTIt
-aTJzLmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB8IMKgIMKgMyArLQo+IMKgc291bmQv
-c29jL3MzYzI0eHgvczNjNjR4eC1pMnMuYyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHwg
-wqAgwqAyICstCj4gwqA1IGZpbGVzIGNoYW5nZWQsIDg1IGluc2VydGlvbnMoKyksIDg3IGRlbGV0
-aW9ucygtKQo+IMKgZGVsZXRlIG1vZGUgMTAwNjQ0IGFyY2gvYXJtL3BsYXQtc2Ftc3VuZy9pbmNs
-dWRlL3BsYXQvcmVncy1zM2MyNDEyLWlpcy5oCj4gwqBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQv
-c29jL3MzYzI0eHgvcmVncy1pMnMtdjIuaAo+Cj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtL3BsYXQt
-c2Ftc3VuZy9pbmNsdWRlL3BsYXQvcmVncy1zM2MyNDEyLWlpcy5oIGIvYXJjaC9hcm0vcGxhdC1z
-YW1zdW5nL2luY2x1ZGUvcGxhdC9yZWdzLXMzYzI0MTItaWlzLmgKPiBkZWxldGVkIGZpbGUgbW9k
-ZSAxMDA2NDQKClRoZSBoZWFkZXIgaGFzIGJlZW4gbW92ZWQgYnkgJ2dpdCBtdicgc28gdGhlcmUg
-aXMgYWJzb2x1dGVseSBubyBjaGFuZ2UuCkkganVzdCBmb3Jnb3QgdG8gZ2l2ZSAtTSBvcHRpb24g
-dG8gZm9ybWF0LXBhdGNoLiBTb3JyeS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+On Tue, 2010-04-27 at 09:26 +0300, Peter Ujfalusi wrote:
+> Hi,
+> 
+> On Monday 26 April 2010 20:13:47 ext Liam Girdwood wrote:
+> > 
+> > Everything is just carrying on as before except the upstream management
+> > effort is being divided between Mark and I. i.e. I'll manage the TI/OMAP
+> > based patches, Mark will manage the rest.
+> 
+> I see, it make sense.
+> Are we continuing the practice that in case of OMAP (McBSP) patches Jarkko 
+> or/and I have to ack it in order to be accepted?
+> I'm also the maintainer for the twl4030 ASoC codec driver (see MAINTAINERS 
+> file)...
+
+
+Yes, nothing has changed here. :)
+
+> > Patch submitters should not notice any difference as both trees are
+> > based on Takashi's ASoC branch and are regularly kept up to date.
+> 
+> Just to clarify it: You and Mark will send pull request to Takashi, 
+
+yes
+
+> or is it 
+> going to be You -> Mark -> Takashi route?
+
+and yes. Depending on workload, any merge issues, cross tree patches
+etc.
+
+Liam 
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
