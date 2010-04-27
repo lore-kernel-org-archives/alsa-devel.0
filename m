@@ -1,13 +1,13 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 03/11] ASoC: S3C2412: I2S: Debug IMS field
-Date: Tue, 27 Apr 2010 15:56:27 +0900
-Message-ID: <1272351387-3758-1-git-send-email-jassi.brar@samsung.com>
+Subject: [Patches_v2] Reforming S3C I2S towards supporting I2Sv4
+Date: Tue, 27 Apr 2010 15:54:54 +0900
+Message-ID: <1272351294-3650-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9566F2482D
+	by alsa0.perex.cz (Postfix) with ESMTP id 9BA372482F
 	for <alsa-devel@alsa-project.org>;
 	Tue, 27 Apr 2010 09:00:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -23,100 +23,7 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-The IMS field of s3c2412/13 is essentially the same as that of s3c64xx.
-That is, the IISMOD[11] bit decides Master/Slave mode and IISMOD[10] bit
-selects source clock for signal generation.
-For that reason, remove improper defines for IISMOD[11:10] field mask
-and define two 1bit fields that can be set independent of each other.
-As a consequence, corresponding fields for PLAT_S3C64XX too get to use
-these new defines.
-
-Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
----
- sound/soc/s3c24xx/regs-i2s-v2.h |    6 ++----
- sound/soc/s3c24xx/s3c-i2s-v2.c  |   25 ++-----------------------
- sound/soc/s3c24xx/s3c2412-i2s.c |    8 ++------
- 3 files changed, 6 insertions(+), 33 deletions(-)
-
-diff --git a/sound/soc/s3c24xx/regs-i2s-v2.h b/sound/soc/s3c24xx/regs-i2s-v2.h
-index f3d9028..484858a 100644
---- a/sound/soc/s3c24xx/regs-i2s-v2.h
-+++ b/sound/soc/s3c24xx/regs-i2s-v2.h
-@@ -76,10 +76,8 @@
- #define S3C64XX_IISMOD_IMS_PCLK		(0 << 10)
- #define S3C64XX_IISMOD_IMS_SYSMUX	(1 << 10)
- 
--#define S3C2412_IISMOD_MASTER_INTERNAL	(0 << 10)
--#define S3C2412_IISMOD_MASTER_EXTERNAL	(1 << 10)
--#define S3C2412_IISMOD_SLAVE		(2 << 10)
--#define S3C2412_IISMOD_MASTER_MASK	(3 << 10)
-+#define S3C2412_IISMOD_IMS_SYSMUX	(1 << 10)
-+#define S3C2412_IISMOD_SLAVE		(1 << 11)
- #define S3C2412_IISMOD_MODE_TXONLY	(0 << 8)
- #define S3C2412_IISMOD_MODE_RXONLY	(1 << 8)
- #define S3C2412_IISMOD_MODE_TXRX	(2 << 8)
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index cb3652e..b8803a1 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -265,35 +265,14 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	iismod = readl(i2s->regs + S3C2412_IISMOD);
- 	pr_debug("hw_params r: IISMOD: %x \n", iismod);
- 
--#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413)
--#define IISMOD_MASTER_MASK S3C2412_IISMOD_MASTER_MASK
--#define IISMOD_SLAVE S3C2412_IISMOD_SLAVE
--#define IISMOD_MASTER S3C2412_IISMOD_MASTER_INTERNAL
--#endif
--
--#if defined(CONFIG_PLAT_S3C64XX)
--/* From Rev1.1 datasheet, we have two master and two slave modes:
-- * IMS[11:10]:
-- *	00 = master mode, fed from PCLK
-- *	01 = master mode, fed from CLKAUDIO
-- *	10 = slave mode, using PCLK
-- *	11 = slave mode, using I2SCLK
-- */
--#define IISMOD_MASTER_MASK (1 << 11)
--#define IISMOD_SLAVE (1 << 11)
--#define IISMOD_MASTER (0 << 11)
--#endif
--
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
- 		i2s->master = 0;
--		iismod &= ~IISMOD_MASTER_MASK;
--		iismod |= IISMOD_SLAVE;
-+		iismod |= S3C2412_IISMOD_SLAVE;
- 		break;
- 	case SND_SOC_DAIFMT_CBS_CFS:
- 		i2s->master = 1;
--		iismod &= ~IISMOD_MASTER_MASK;
--		iismod |= IISMOD_MASTER;
-+		iismod &= ~S3C2412_IISMOD_SLAVE;
- 		break;
- 	default:
- 		pr_err("unknwon master/slave format\n");
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index 7134465..cf0c154 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -78,14 +78,10 @@ static int s3c2412_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
- 
- 	switch (clk_id) {
- 	case S3C2412_CLKSRC_PCLK:
--		s3c2412_i2s.master = 1;
--		iismod &= ~S3C2412_IISMOD_MASTER_MASK;
--		iismod |= S3C2412_IISMOD_MASTER_INTERNAL;
-+		iismod &= ~S3C2412_IISMOD_IMS_SYSMUX;
- 		break;
- 	case S3C2412_CLKSRC_I2SCLK:
--		s3c2412_i2s.master = 0;
--		iismod &= ~S3C2412_IISMOD_MASTER_MASK;
--		iismod |= S3C2412_IISMOD_MASTER_EXTERNAL;
-+		iismod |= S3C2412_IISMOD_IMS_SYSMUX;
- 		break;
- 	default:
- 		return -EINVAL;
--- 
-1.6.2.5
+I am going to resubmit pending last 11 patches of the original series
+ http://mailman.alsa-project.org/pipermail/alsa-devel/2010-March/025920.html
+No changes have been made other than moving dma_data from snd_soc_dai to
+snd_soc_pcm_stream in the new I2Sv4 controller driver.
