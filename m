@@ -1,14 +1,13 @@
 From: Jassi Brar <jassi.brar@samsung.com>
-Subject: [PATCH 08/11] ASoC: S3C: I2Sv2: New field for
-	controller feature
-Date: Tue, 27 Apr 2010 15:56:56 +0900
-Message-ID: <1272351416-3914-1-git-send-email-jassi.brar@samsung.com>
+Subject: [PATCH 03/11] ASoC: S3C2412: I2S: Debug IMS field
+Date: Tue, 27 Apr 2010 15:56:27 +0900
+Message-ID: <1272351387-3758-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91F062482B
+	by alsa0.perex.cz (Postfix) with ESMTP id 9566F2482D
 	for <alsa-devel@alsa-project.org>;
 	Tue, 27 Apr 2010 09:00:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
@@ -24,49 +23,100 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-In order to make s3c-i2s-v2.c manage controllers with minor
-quirks and variation in features, we define a per-block flag
-that indicates the availability/lack of a particular feature
-to the s3c-i2s-v2.c
-
-While adding support for new SoCs' I2S, check for the blocks
-of older SoCs that have similar feature and set the flag for
-that feature.
+The IMS field of s3c2412/13 is essentially the same as that of s3c64xx.
+That is, the IISMOD[11] bit decides Master/Slave mode and IISMOD[10] bit
+selects source clock for signal generation.
+For that reason, remove improper defines for IISMOD[11:10] field mask
+and define two 1bit fields that can be set independent of each other.
+As a consequence, corresponding fields for PLAT_S3C64XX too get to use
+these new defines.
 
 Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 ---
- sound/soc/s3c24xx/s3c-i2s-v2.h |    8 ++++++++
- 1 files changed, 8 insertions(+), 0 deletions(-)
+ sound/soc/s3c24xx/regs-i2s-v2.h |    6 ++----
+ sound/soc/s3c24xx/s3c-i2s-v2.c  |   25 ++-----------------------
+ sound/soc/s3c24xx/s3c2412-i2s.c |    8 ++------
+ 3 files changed, 6 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/s3c24xx/s3c-i2s-v2.h
-index 39a6db6..766f43a 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.h
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.h
-@@ -29,10 +29,16 @@
- #define S3C_I2SV2_CLKSRC_AUDIOBUS	1
- #define S3C_I2SV2_CLKSRC_CDCLK		2
+diff --git a/sound/soc/s3c24xx/regs-i2s-v2.h b/sound/soc/s3c24xx/regs-i2s-v2.h
+index f3d9028..484858a 100644
+--- a/sound/soc/s3c24xx/regs-i2s-v2.h
++++ b/sound/soc/s3c24xx/regs-i2s-v2.h
+@@ -76,10 +76,8 @@
+ #define S3C64XX_IISMOD_IMS_PCLK		(0 << 10)
+ #define S3C64XX_IISMOD_IMS_SYSMUX	(1 << 10)
  
-+/* Set this flag for I2S controllers that have the bit IISMOD[12]
-+ * bridge/break RCLK signal and external Xi2sCDCLK pin.
-+ */
-+#define S3C_FEATURE_CDCLKCON	(1 << 0)
-+
- /**
-  * struct s3c_i2sv2_info - S3C I2S-V2 information
-  * @dev: The parent device passed to use from the probe.
-  * @regs: The pointer to the device registe block.
-+ * @feature: Set of bit-flags indicating features of the controller.
-  * @master: True if the I2S core is the I2S bit clock master.
-  * @dma_playback: DMA information for playback channel.
-  * @dma_capture: DMA information for capture channel.
-@@ -47,6 +53,8 @@ struct s3c_i2sv2_info {
- 	struct device	*dev;
- 	void __iomem	*regs;
+-#define S3C2412_IISMOD_MASTER_INTERNAL	(0 << 10)
+-#define S3C2412_IISMOD_MASTER_EXTERNAL	(1 << 10)
+-#define S3C2412_IISMOD_SLAVE		(2 << 10)
+-#define S3C2412_IISMOD_MASTER_MASK	(3 << 10)
++#define S3C2412_IISMOD_IMS_SYSMUX	(1 << 10)
++#define S3C2412_IISMOD_SLAVE		(1 << 11)
+ #define S3C2412_IISMOD_MODE_TXONLY	(0 << 8)
+ #define S3C2412_IISMOD_MODE_RXONLY	(1 << 8)
+ #define S3C2412_IISMOD_MODE_TXRX	(2 << 8)
+diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
+index cb3652e..b8803a1 100644
+--- a/sound/soc/s3c24xx/s3c-i2s-v2.c
++++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
+@@ -265,35 +265,14 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+ 	iismod = readl(i2s->regs + S3C2412_IISMOD);
+ 	pr_debug("hw_params r: IISMOD: %x \n", iismod);
  
-+	u32		feature;
-+
- 	struct clk	*iis_pclk;
- 	struct clk	*iis_cclk;
+-#if defined(CONFIG_CPU_S3C2412) || defined(CONFIG_CPU_S3C2413)
+-#define IISMOD_MASTER_MASK S3C2412_IISMOD_MASTER_MASK
+-#define IISMOD_SLAVE S3C2412_IISMOD_SLAVE
+-#define IISMOD_MASTER S3C2412_IISMOD_MASTER_INTERNAL
+-#endif
+-
+-#if defined(CONFIG_PLAT_S3C64XX)
+-/* From Rev1.1 datasheet, we have two master and two slave modes:
+- * IMS[11:10]:
+- *	00 = master mode, fed from PCLK
+- *	01 = master mode, fed from CLKAUDIO
+- *	10 = slave mode, using PCLK
+- *	11 = slave mode, using I2SCLK
+- */
+-#define IISMOD_MASTER_MASK (1 << 11)
+-#define IISMOD_SLAVE (1 << 11)
+-#define IISMOD_MASTER (0 << 11)
+-#endif
+-
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBM_CFM:
+ 		i2s->master = 0;
+-		iismod &= ~IISMOD_MASTER_MASK;
+-		iismod |= IISMOD_SLAVE;
++		iismod |= S3C2412_IISMOD_SLAVE;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 		i2s->master = 1;
+-		iismod &= ~IISMOD_MASTER_MASK;
+-		iismod |= IISMOD_MASTER;
++		iismod &= ~S3C2412_IISMOD_SLAVE;
+ 		break;
+ 	default:
+ 		pr_err("unknwon master/slave format\n");
+diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
+index 7134465..cf0c154 100644
+--- a/sound/soc/s3c24xx/s3c2412-i2s.c
++++ b/sound/soc/s3c24xx/s3c2412-i2s.c
+@@ -78,14 +78,10 @@ static int s3c2412_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
  
+ 	switch (clk_id) {
+ 	case S3C2412_CLKSRC_PCLK:
+-		s3c2412_i2s.master = 1;
+-		iismod &= ~S3C2412_IISMOD_MASTER_MASK;
+-		iismod |= S3C2412_IISMOD_MASTER_INTERNAL;
++		iismod &= ~S3C2412_IISMOD_IMS_SYSMUX;
+ 		break;
+ 	case S3C2412_CLKSRC_I2SCLK:
+-		s3c2412_i2s.master = 0;
+-		iismod &= ~S3C2412_IISMOD_MASTER_MASK;
+-		iismod |= S3C2412_IISMOD_MASTER_EXTERNAL;
++		iismod |= S3C2412_IISMOD_IMS_SYSMUX;
+ 		break;
+ 	default:
+ 		return -EINVAL;
 -- 
 1.6.2.5
