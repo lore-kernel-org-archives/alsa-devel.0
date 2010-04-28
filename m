@@ -1,17 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Subject: Re: [PATCH 1/5] ASoC: twl4030 - AIF/APLL clock fix for
 	all DAPM routes.
-Date: Wed, 28 Apr 2010 09:11:08 +0300
-Message-ID: <201004280911.08269.peter.ujfalusi@nokia.com>
+Date: Wed, 28 Apr 2010 09:46:03 +0300
+Message-ID: <201004280946.04014.peter.ujfalusi@nokia.com>
 References: <1272380060-12493-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id E050F24343
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB754243BC
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Apr 2010 08:11:09 +0200 (CEST)
+	Wed, 28 Apr 2010 08:46:15 +0200 (CEST)
 In-Reply-To: <1272380060-12493-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-One comment
+one more thing...
 
 On Tuesday 27 April 2010 17:54:16 ext Liam Girdwood wrote:
 > This allows the AIF and APLL clocks to continue running in
@@ -97,10 +97,6 @@ On Tuesday 27 April 2010 17:54:16 ext Liam Girdwood wrote:
 > +static void  twl4030_aif_enable(struct snd_soc_codec *codec, int enable)
 > +{
 > +	struct twl4030_priv *twl4030 =3D codec->private_data;
-
-Should be to due the API change:
-struct twl4030_priv *twl4030 =3D snd_soc_codec_get_drvdata(codec);
-
 > +
 > +	/* update the user count */
 > +	if (enable)
@@ -124,6 +120,41 @@ struct twl4030_priv *twl4030 =3D snd_soc_codec_get_drvdata(codec);
 > +		twl4030_apll_enable(codec, 0);
 > +	}
 >  }
+
+These lines are quite long, would it be better to introduce a variable to m=
+ake =
+
+the code look better? Something like this instead:
+
+-       twl4030->apll_enabled =3D enable;
++static void  twl4030_aif_enable(struct snd_soc_codec *codec, int enable)
++{
++       struct twl4030_priv *twl4030 =3D snd_soc_codec_get_drvdata(codec);
++       u8 audio_if;
++
++       /* update the user count */
++       if (enable)
++               twl4030->aif_enabled++;
++       else
++               twl4030->aif_enabled--;
++
++       audio_if =3D twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF);
++       if (enable && twl4030->aif_enabled =3D=3D 1) {
++               /* Enable AIF */
++               /* enable the PLL before we use it to clock the DAI */
++               twl4030_apll_enable(codec, 1);
++
++               twl4030_write(codec, TWL4030_REG_AUDIO_IF,
++                                               audio_if | TWL4030_AIF_EN);
++       } else if (!enable && twl4030->aif_enabled =3D=3D 0) {
++               /* disable the DAI before we stop it's source PLL */
++               twl4030_write(codec, TWL4030_REG_AUDIO_IF,
++                                               audio_if &  ~TWL4030_AIF_EN=
+);
++               twl4030_apll_enable(codec, 0);
++       }
+ }
+
 > =
 
 >  static void twl4030_power_up(struct snd_soc_codec *codec)
