@@ -1,23 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
 Subject: Re: [PATCH 1/2] powerpc: add platform registration for
  ALSA SoC drivers
-Date: Wed, 28 Apr 2010 13:07:19 +0100
-Message-ID: <20100428120719.GE31400@opensource.wolfsonmicro.com>
+Date: Wed, 28 Apr 2010 13:49:15 +0100
+Message-ID: <1272458955.3224.491.camel@odin>
 References: <1272314980-23679-1-git-send-email-timur@freescale.com>
-	<1272350168.24542.6.camel@pasglop> <1272355624.3204.52.camel@odin>
-	<g2mfa686aa41004271324g8ff0d67fi3df4336cb25e9acc@mail.gmail.com>
-	<20100427222913.GE15083@opensource.wolfsonmicro.com>
-	<1272427811.24542.59.camel@pasglop>
+	<1272350168.24542.6.camel@pasglop>
+	<20100427095440.GA15492@rakim.wolfsonmicro.main>
+	<1272362955.24542.24.camel@pasglop>
+	<j2pfa686aa41004271327v1658e33bgd170ecc9735f285b@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9974310386D
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id CBEFC10387F
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Apr 2010 14:07:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1272427811.24542.59.camel@pasglop>
+	Wed, 28 Apr 2010 14:49:21 +0200 (CEST)
+Received: by wwb28 with SMTP id 28so8354wwb.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2010 05:49:21 -0700 (PDT)
+In-Reply-To: <j2pfa686aa41004271327v1658e33bgd170ecc9735f285b@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,67 +28,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: alsa-devel@alsa-project.org, kumar.gala@freescale.com, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, linuxppc-dev@ozlabs.org, Graeme Gregory <gg@slimlogic.co.uk>, Timur Tabi <timur@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 28, 2010 at 02:10:11PM +1000, Benjamin Herrenschmidt wrote:
-> On Tue, 2010-04-27 at 23:29 +0100, Mark Brown wrote:
+On Tue, 2010-04-27 at 14:27 -0600, Grant Likely wrote:
 
-> > On the other hand from a pragmatic point of view it's just much less
-> > hassle to just only provide the mechanism for instantiating a machine
-> > with custom code and use that for everything.
+> 
+> Unfortunately, I'm in the same boat.  :-(  However, I'll be at UDS in
+> 2 weeks time, and I know audio is a big concern for the Ubuntu folks.
+> A bunch of the ARM vendors will be there too.  I'll schedule a session
+> to talk about audio bindings and hopefully that way make some headway
+> on defining a binding that makes sense and is actually useful.
 
-> Right, that's the balance to find. A too descriptive device-tree becomes
-> a mess, and attempting to deal with any kind of representation in SW is
-> horrible.
+It's not clear if I'm going to UDS atm, but I'll join via IRC. Graeme is
+going to UDS so he will probably pop in to the discussion if he's free.
 
-Sadly this often seems to be what the device tree folks are pushing
-for.  I really want whatever you guys come up with to explicitly say
-that it's OK to just write standard code like we have at the minute and
-not faff around defining device tree representations for everything so
-that we can just point people at that when the discussion gets too
-bogged down.
-
-> For example, one could imagine a /sound node with simply a "compatible"
-> property that matches what we call in AOA terminology a "fabric" driver.
-> IE. The one thing specific to the board that puts bits and pieces
-> together.
-
-This is the current ASoC design (someone probably ought to look at
-merging AOA into ASoC, it's approximately the same hardware and at least
-the CPU driver ought to be useful for other systems).
-
-> Now, the device-tree is still obviously useful to provide things like
-> the actual i2c IDs of codecs, GPIOs used for various actions, link to
-> from various components to their clock source devices, etc.. All these
-> things simplify the code, avoids horrid board specific code in the
-> actual drivers (codecs, busses, etc...) and overall help keeping the
-> code more maintainable. 
-
-You're preaching to the choir here.  With ASoC all this system specific
-code ends up in the machine driver (which you guys are calling the
-fabric driver).  All the design stuff you're talking about here is
-already dealt with as-is, it's just that the parameterisation is done
-with C code and data structures in the kernel (which can deal with
-multiple boards if it chooses to) rather than with device tree stuff.
-The chip specific drivers do not have any board specific code so there
-is no meaningful change that's being proposed to them.
-
-The problems with the device tree have been that people have been
-hostile to the idea of there being any board specific code at all in the
-kernel (or a board specific device tree node for the audio), and that
-people keep wanting to define some OF stuff that is supposed to cover a
-wide range of boards but makes unrealistic simplifying assumptions about
-what general hardware looks like.
-
-> The device-tree helps keep the platform .c file simple and devoid of too
-> horrible hacks, it allows to easily pass various configuration data to
-> leaf drivers such as i2c thingies, PHY devices etc... without gross
-> hooks between these and the platform, but the platform code still has
-> the upper hand for doing ad-hoc bits and pieces (or overwriting the
-> device-tree based behaviour) if necessary.
-
-Once again, if you can get the device tree guys to buy into this and
-stick with it that sounds good but my experience has been that this
-isn't where any of these discussions end up.
+Liam 
