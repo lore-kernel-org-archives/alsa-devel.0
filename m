@@ -1,25 +1,18 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 1/2] powerpc: add platform registration for
-	ALSA SoC drivers
-Date: Wed, 28 Apr 2010 15:58:34 -0600
-Message-ID: <z2xfa686aa41004281458u3a3048feh9d762e07f8052348@mail.gmail.com>
-References: <1272314980-23679-1-git-send-email-timur@freescale.com>
-	<1272350168.24542.6.camel@pasglop>
-	<20100427095440.GA15492@rakim.wolfsonmicro.main>
-	<1272362955.24542.24.camel@pasglop>
-	<j2qed82fe3e1004281335h4076b050jc2894d4c4d6eac65@mail.gmail.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: hda: Fix 0 dB for Packard Bell models
+	using Conexant CX20549 (Venice)
+Date: Wed, 28 Apr 2010 18:07:16 -0400
+Message-ID: <x2n604760771004281507x5464161frd1f09b6cd4c8a7fc@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary=001636e909e7a2dfc80485533be1
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 081D424613
+Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
+	[209.85.222.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3B7EF24621
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Apr 2010 23:58:56 +0200 (CEST)
-Received: by gyd10 with SMTP id 10so7069609gyd.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2010 14:58:55 -0700 (PDT)
-In-Reply-To: <j2qed82fe3e1004281335h4076b050jc2894d4c4d6eac65@mail.gmail.com>
+	Thu, 29 Apr 2010 00:07:18 +0200 (CEST)
+Received: by pzk40 with SMTP id 40so802170pzk.23
+	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2010 15:07:16 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,65 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur.tabi@gmail.com>
-Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, linuxppc-dev@ozlabs.org, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, lrg@slimlogic.co.uk
+To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 28, 2010 at 2:35 PM, Timur Tabi <timur.tabi@gmail.com> wrote:
-> On Tue, Apr 27, 2010 at 5:09 AM, Benjamin Herrenschmidt
-> <benh@kernel.crashing.org> wrote:
->
->> Keep in mind that it's perfectly kosher to create nodes for "virtual"
->> devices. IE. We could imagine a node for the "sound subsystem" that
->> doesn't actually correspond to any physical device but contain the
->> necessary properties that binds everything together. You could even have
->> multiple of these if you have separate set of sound HW that aren't
->> directly dependant.
->
-> First, I want to officially retract this patch. =A0I've talked with
-> Grant, and we've come up with a different approach to this problem.
->
-> Second, how about this binding for the virtual sound node? =A0It would
-> be a root-level node.
->
-> =A0 =A0 =A0 =A0sound-devices {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0sound0 {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ssi =3D &ssi0;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0playback-dma =3D &dma00;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0capture-dma =3D &dma01;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0codec =3D &cs4270;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0};
+--001636e909e7a2dfc80485533be1
+Content-Type: text/plain; charset=UTF-8
 
-The sound0 node needs a compatible value, the sound-device node should
-probably have one too.
+Hi,
 
-The sound0 node should have something board specific like
-"fsl,mpc8610hpcd-sound" to make it clear that the binding really only
-applies to this particular board.  It would also be a good idea to
-prefix all of the property names with 'fsl,' to avoid conflicting with
-any future common bindings or conventions.  Other boards can use the
-same binding, but they would get a different compatible value (the
-driver could bind on both).
+Attached is a patch against sound-2.6 master HEAD (also applicable to
+2.6.32.12 and 2.6.33.3) that fixes 0 dB for Packard Bell machines
+using Conexant CX20549. Without it, sound distorts horribly.
 
-I'm not a huge fan of the name "sound-devices" for the parent node.
-There are other sorts of things that we need 'virtual' device nodes to
-describe.  It would be nice to have a single place for collecting
-nodes for stuff like this.  Perhaps this:
+Best,
+-Dan
 
-system {
-        compatible =3D "system-devices";
-        sound0 {
-                compatible =3D "fsl,mpc8610hpcd-sound";
-                fsl,ssi =3D &ssi0;
-                fsl,playback-dma =3D &dma00;
-                fsl,capture-dma =3D &dma01;
-                fsl,codec =3D &cs4270;
-        };
-};
+--001636e909e7a2dfc80485533be1
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ALSA-hda-Fix-0-dB-for-Packard-Bell-models-using-Cone.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Fix-0-dB-for-Packard-Bell-models-using-Cone.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g8kp2yhf0
 
-But I really don't have any knowledge of what has been done previously
-in this regard or if any conventions have been established.  Ben, any
-thoughts?
+RnJvbSBlMjEwOTkyMmY0NTA1ZmUwOGVmNmUyNDY3M2I0ZTRhOTE2NDhmYTRlIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFdlZCwgMjggQXByIDIwMTAgMTg6MDA6MTEgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGE6IEZpeCAwIGRCIGZvciBQYWNrYXJkIEJlbGwgbW9kZWxzIHVzaW5nIENvbmV4YW50IENY
+MjA1NDkgKFZlbmljZSkKCkJ1Z0xpbms6IGh0dHBzOi8vbGF1bmNocGFkLm5ldC9idWdzLzU0MTgw
+MgoKVGhlIE9SJ3MgaGFyZHdhcmUgZGlzdG9ydHMgYXQgUENNIDEwMCUgYmVjYXVzZSBpdCBkb2Vz
+IG5vdCBjb3JyZXNwb25kIHRvCjAgZEIuIEZpeCB0aGlzIGluIHBhdGNoX2N4dDUwNDUoKSBmb3Ig
+YWxsIFBhY2thcmQgQmVsbCBtb2RlbHMuCgpSZXBvcnRlZC1ieTogVmFsb21icmUKQ2M6IDxzdGFi
+bGVAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1YnVu
+dHUuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyB8ICAgIDUgKysrLS0K
+IDEgZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAt
+LWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0
+Y2hfY29uZXhhbnQuYwppbmRleCA1MDlhMTA0Li5iOTY0NGU0IDEwMDY0NAotLS0gYS9zb3VuZC9w
+Y2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFu
+dC5jCkBAIC0xMTk2LDkgKzExOTYsMTAgQEAgc3RhdGljIGludCBwYXRjaF9jeHQ1MDQ1KHN0cnVj
+dCBoZGFfY29kZWMgKmNvZGVjKQogCiAJc3dpdGNoIChjb2RlYy0+c3Vic3lzdGVtX2lkID4+IDE2
+KSB7CiAJY2FzZSAweDEwM2M6CisJY2FzZSAweDE2MzE6CiAJY2FzZSAweDE3MzQ6Ci0JCS8qIEhQ
+ICYgRnVqaXRzdS1TaWVtZW5zIGxhcHRvcHMgaGF2ZSByZWFsbHkgYmFkIHNvdW5kIG92ZXIgMGRC
+Ci0JCSAqIG9uIE5JRCAweDE3LiBGaXggbWF4IFBDTSBsZXZlbCB0byAwIGRCCisJCS8qIEhQLCBQ
+YWNrYXJkIEJlbGwsICYgRnVqaXRzdS1TaWVtZW5zIGxhcHRvcHMgaGF2ZSByZWFsbHkgYmFkCisJ
+CSAqIHNvdW5kIG92ZXIgMGRCIG9uIE5JRCAweDE3LiBGaXggbWF4IFBDTSBsZXZlbCB0byAwIGRC
+CiAJCSAqIChvcmlnaW5hbGx5IGl0IGhhcyAweDJiIHN0ZXBzIHdpdGggMGRCIG9mZnNldCAweDE0
+KQogCQkgKi8KIAkJc25kX2hkYV9vdmVycmlkZV9hbXBfY2Fwcyhjb2RlYywgMHgxNywgSERBX0lO
+UFVULAotLSAKMS43LjAuNAoK
+--001636e909e7a2dfc80485533be1
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-g.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--001636e909e7a2dfc80485533be1--
