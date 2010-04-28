@@ -1,24 +1,23 @@
-From: Timur Tabi <timur@freescale.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 1/2] powerpc: add platform registration for
-	ALSA SoC drivers
-Date: Wed, 28 Apr 2010 08:35:30 -0500
-Message-ID: <u2xed82fe3e1004280635vaeb792d2xf86996cac299ba2b@mail.gmail.com>
+ ALSA SoC drivers
+Date: Wed, 28 Apr 2010 14:39:48 +0100
+Message-ID: <20100428133948.GA21221@rakim.wolfsonmicro.main>
 References: <1272314980-23679-1-git-send-email-timur@freescale.com>
 	<1272350168.24542.6.camel@pasglop> <1272355624.3204.52.camel@odin>
 	<g2mfa686aa41004271324g8ff0d67fi3df4336cb25e9acc@mail.gmail.com>
-	<4BD74D0C.40303@freescale.com>
-	<q2xfa686aa41004272237ld1ffc08fhebb55ff84b51d1c2@mail.gmail.com>
+	<20100427222913.GE15083@opensource.wolfsonmicro.com>
+	<r2oed82fe3e1004280619j29ba990fr9d0fc5b3ffa450f8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8250B2413A
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3CEAB24142
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Apr 2010 15:36:03 +0200 (CEST)
-Received: by pwj8 with SMTP id 8so8988209pwj.38
-	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2010 06:36:02 -0700 (PDT)
-In-Reply-To: <q2xfa686aa41004272237ld1ffc08fhebb55ff84b51d1c2@mail.gmail.com>
+	Wed, 28 Apr 2010 15:39:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <r2oed82fe3e1004280619j29ba990fr9d0fc5b3ffa450f8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,60 +27,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, broonie@opensource.wolfsonmicro.com, linuxppc-dev@ozlabs.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, Grant Likely <grant.likely@secretlab.ca>, linuxppc-dev@ozlabs.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 28, 2010 at 12:37 AM, Grant Likely
-<grant.likely@secretlab.ca> wrote:
+On Wed, Apr 28, 2010 at 08:19:00AM -0500, Timur Tabi wrote:
+> On Tue, Apr 27, 2010 at 5:29 PM, Mark Brown
 
-> Why not? =A0Just have the ssi driver probe routine register the fabric
-> device based on the existence of the codec-handle property. =A0It is the
-> best way to go about things with the data that you've got available,
-> and it is no big deal. =A0The relevant fabric driver can then bind
-> against that. =A0You should probably also stuff the ssi device node
-> pointer into the fabric device of_node pointer.
+> > You also want to be representing unused pins here.
 
-And then where do I put the board-specific initialization code that's
-currently in the fabric driver?  The programming information for that
-initialization is not in the device tree.
+> If they're unused, how do I represent them?  Can you give me an example?
 
-It sounds to me like you're saying I should take all the code from the
-fabric driver and shove it into the SSI driver, just so that I can
-avoid instantiating a platform driver.
-
-Keep in mind that asoc likes to have a different struct device for the
-fabric driver and the SSI nodes, so I would need to manually create a
-struct device for the fabric device anyway.
-
->> I don't know when I would ever do this. =A0The two SSI devices are compl=
-etely independent. =A0Why would I bind them together into one "device"?
->
-> If there is no use case for binding them together, then you're right.
-> The current binding is probably just fine. =A0I cannot comment on
-> whether or not it will be used that way by platform designers.
-
-Although the 8610 has two SSI devices, the reference board we ship
-only has one wired up.  I have a prototype board in the lab that has
-both wired up, but even then, I don't think I can get the two SSIs
-synchronized in any meaningful fashion.  Mark suggested a technique,
-but even if I could get that to work, the driver code would need to be
-rewritten to handle two SSI devices in concert.  In short, it might be
-theoretically possible, but I'm not going to try to make it work.
-
-> Linux struct device registrations are cheap, and every struct device
-> has a device_node pointer available. =A0It is totally fine to have both
-> the ssi device and the fabric device point to the same device node if
-> that helps solve your problem of finding references to the right
-> things in each driver. =A0(Just as long as only one of them is an
-> of_platform driver).
-
-But I already have it set up like that.  The SSI driver is an OF
-driver, and the fabric driver is a platform driver.  I might be able
-to move some code from the fabric driver into the SSI driver to make
-it the fabric driver less obnoxious about scanning the device tree.
-
--- =
-
-Timur Tabi
-Linux kernel developer at Freescale
+You should arrange for something to call snd_soc_dapm_nc_pin() on any
+unconnected pins.
