@@ -1,18 +1,26 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Fix 0 dB for Packard Bell models
-	using Conexant CX20549 (Venice)
-Date: Wed, 28 Apr 2010 18:07:16 -0400
-Message-ID: <x2n604760771004281507x5464161frd1f09b6cd4c8a7fc@mail.gmail.com>
+From: Timur Tabi <timur.tabi@gmail.com>
+Subject: Re: [PATCH 1/2] powerpc: add platform registration for
+	ALSA SoC drivers
+Date: Wed, 28 Apr 2010 17:13:35 -0500
+Message-ID: <r2oed82fe3e1004281513k23b54b56v7904a4a34750c90b@mail.gmail.com>
+References: <1272314980-23679-1-git-send-email-timur@freescale.com>
+	<1272350168.24542.6.camel@pasglop>
+	<20100427095440.GA15492@rakim.wolfsonmicro.main>
+	<1272362955.24542.24.camel@pasglop>
+	<j2qed82fe3e1004281335h4076b050jc2894d4c4d6eac65@mail.gmail.com>
+	<z2xfa686aa41004281458u3a3048feh9d762e07f8052348@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636e909e7a2dfc80485533be1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
-	[209.85.222.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3B7EF24621
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C2EE103844
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Apr 2010 00:07:18 +0200 (CEST)
-Received: by pzk40 with SMTP id 40so802170pzk.23
-	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2010 15:07:16 -0700 (PDT)
+	Thu, 29 Apr 2010 00:14:06 +0200 (CEST)
+Received: by pxi13 with SMTP id 13so2542384pxi.38
+	for <alsa-devel@alsa-project.org>; Wed, 28 Apr 2010 15:14:05 -0700 (PDT)
+In-Reply-To: <z2xfa686aa41004281458u3a3048feh9d762e07f8052348@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +30,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, Mark Brown <broonie@opensource.wolfsonmicro.com>, linuxppc-dev@ozlabs.org, devicetree-discuss <devicetree-discuss@lists.ozlabs.org>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
---001636e909e7a2dfc80485533be1
-Content-Type: text/plain; charset=UTF-8
+On Wed, Apr 28, 2010 at 4:58 PM, Grant Likely <grant.likely@secretlab.ca> w=
+rote:
 
-Hi,
+> The sound0 node needs a compatible value,
 
-Attached is a patch against sound-2.6 master HEAD (also applicable to
-2.6.32.12 and 2.6.33.3) that fixes 0 dB for Packard Bell machines
-using Conexant CX20549. Without it, sound distorts horribly.
+I knew I was forgetting something
 
-Best,
--Dan
+> the sound-device node should
+> probably have one too.
 
---001636e909e7a2dfc80485533be1
-Content-Type: text/x-diff; charset=US-ASCII;
-	name="0001-ALSA-hda-Fix-0-dB-for-Packard-Bell-models-using-Cone.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Fix-0-dB-for-Packard-Bell-models-using-Cone.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g8kp2yhf0
+The aliases, cpus, and memory node don't have a compatible property,
+and I was modeling the design after the aliases node.
 
-RnJvbSBlMjEwOTkyMmY0NTA1ZmUwOGVmNmUyNDY3M2I0ZTRhOTE2NDhmYTRlIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFdlZCwgMjggQXByIDIwMTAgMTg6MDA6MTEgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGE6IEZpeCAwIGRCIGZvciBQYWNrYXJkIEJlbGwgbW9kZWxzIHVzaW5nIENvbmV4YW50IENY
-MjA1NDkgKFZlbmljZSkKCkJ1Z0xpbms6IGh0dHBzOi8vbGF1bmNocGFkLm5ldC9idWdzLzU0MTgw
-MgoKVGhlIE9SJ3MgaGFyZHdhcmUgZGlzdG9ydHMgYXQgUENNIDEwMCUgYmVjYXVzZSBpdCBkb2Vz
-IG5vdCBjb3JyZXNwb25kIHRvCjAgZEIuIEZpeCB0aGlzIGluIHBhdGNoX2N4dDUwNDUoKSBmb3Ig
-YWxsIFBhY2thcmQgQmVsbCBtb2RlbHMuCgpSZXBvcnRlZC1ieTogVmFsb21icmUKQ2M6IDxzdGFi
-bGVAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1YnVu
-dHUuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyB8ICAgIDUgKysrLS0K
-IDEgZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAt
-LWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0
-Y2hfY29uZXhhbnQuYwppbmRleCA1MDlhMTA0Li5iOTY0NGU0IDEwMDY0NAotLS0gYS9zb3VuZC9w
-Y2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFu
-dC5jCkBAIC0xMTk2LDkgKzExOTYsMTAgQEAgc3RhdGljIGludCBwYXRjaF9jeHQ1MDQ1KHN0cnVj
-dCBoZGFfY29kZWMgKmNvZGVjKQogCiAJc3dpdGNoIChjb2RlYy0+c3Vic3lzdGVtX2lkID4+IDE2
-KSB7CiAJY2FzZSAweDEwM2M6CisJY2FzZSAweDE2MzE6CiAJY2FzZSAweDE3MzQ6Ci0JCS8qIEhQ
-ICYgRnVqaXRzdS1TaWVtZW5zIGxhcHRvcHMgaGF2ZSByZWFsbHkgYmFkIHNvdW5kIG92ZXIgMGRC
-Ci0JCSAqIG9uIE5JRCAweDE3LiBGaXggbWF4IFBDTSBsZXZlbCB0byAwIGRCCisJCS8qIEhQLCBQ
-YWNrYXJkIEJlbGwsICYgRnVqaXRzdS1TaWVtZW5zIGxhcHRvcHMgaGF2ZSByZWFsbHkgYmFkCisJ
-CSAqIHNvdW5kIG92ZXIgMGRCIG9uIE5JRCAweDE3LiBGaXggbWF4IFBDTSBsZXZlbCB0byAwIGRC
-CiAJCSAqIChvcmlnaW5hbGx5IGl0IGhhcyAweDJiIHN0ZXBzIHdpdGggMGRCIG9mZnNldCAweDE0
-KQogCQkgKi8KIAkJc25kX2hkYV9vdmVycmlkZV9hbXBfY2Fwcyhjb2RlYywgMHgxNywgSERBX0lO
-UFVULAotLSAKMS43LjAuNAoK
---001636e909e7a2dfc80485533be1
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> The sound0 node should have something board specific like
+> "fsl,mpc8610hpcd-sound" to make it clear that the binding really only
+> applies to this particular board. =A0It would also be a good idea to
+> prefix all of the property names with 'fsl,' to avoid conflicting with
+> any future common bindings or conventions. =A0Other boards can use the
+> same binding, but they would get a different compatible value (the
+> driver could bind on both).
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+The aliases node doesn't have an fsl, prefix.  I understand the need
+for the prefix, but I wonder why we don't do that for the aliases
+node.
 
---001636e909e7a2dfc80485533be1--
+> I'm not a huge fan of the name "sound-devices" for the parent node.
+> There are other sorts of things that we need 'virtual' device nodes to
+> describe. =A0It would be nice to have a single place for collecting
+> nodes for stuff like this. =A0Perhaps this:
+>
+> system {
+> =A0 =A0 =A0 =A0compatible =3D "system-devices";
+> =A0 =A0 =A0 =A0sound0 {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0compatible =3D "fsl,mpc8610hpcd-sound";
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0fsl,ssi =3D &ssi0;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0fsl,playback-dma =3D &dma00;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0fsl,capture-dma =3D &dma01;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0fsl,codec =3D &cs4270;
+> =A0 =A0 =A0 =A0};
+> };
+
+I like that.
+
+-- =
+
+Timur Tabi
+Linux kernel developer at Freescale
