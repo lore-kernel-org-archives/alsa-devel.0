@@ -1,24 +1,18 @@
-From: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH 1/2] powerpc: add platform registration for
-	ALSA SoC drivers
-Date: Tue, 27 Apr 2010 23:37:23 -0600
-Message-ID: <q2xfa686aa41004272237ld1ffc08fhebb55ff84b51d1c2@mail.gmail.com>
-References: <1272314980-23679-1-git-send-email-timur@freescale.com>
-	<1272350168.24542.6.camel@pasglop> <1272355624.3204.52.camel@odin>
-	<g2mfa686aa41004271324g8ff0d67fi3df4336cb25e9acc@mail.gmail.com>
-	<4BD74D0C.40303@freescale.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 1/5] ASoC: twl4030 - AIF/APLL clock fix for
+	all DAPM routes.
+Date: Wed, 28 Apr 2010 09:11:08 +0300
+Message-ID: <201004280911.08269.peter.ujfalusi@nokia.com>
+References: <1272380060-12493-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
-	[209.85.211.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id C458D24500
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id E050F24343
 	for <alsa-devel@alsa-project.org>;
-	Wed, 28 Apr 2010 07:37:44 +0200 (CEST)
-Received: by ywh6 with SMTP id 6so7330475ywh.16
-	for <alsa-devel@alsa-project.org>; Tue, 27 Apr 2010 22:37:43 -0700 (PDT)
-In-Reply-To: <4BD74D0C.40303@freescale.com>
+	Wed, 28 Apr 2010 08:11:09 +0200 (CEST)
+In-Reply-To: <1272380060-12493-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,140 +22,248 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, broonie@opensource.wolfsonmicro.com, linuxppc-dev@ozlabs.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ext Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 27, 2010 at 2:46 PM, Timur Tabi <timur@freescale.com> wrote:
-> Grant Likely wrote:
->
->> So, the current 86xx device tree binding assumes a simple layout with
->> a node describing an DAI controller, and another node describing the
->> codec with a single phandle (pointer) from the DAI to the codec. =A0In
->> this configuration, it is completely reasonable for the DAI node to
->> trigger both the instantiation of the ASoC DAI controller device and
->> the sound card device. =A0Linux can treat them as separate even though
->> the current device tree has a simplistic representation.
->
-> The only problem with this is that there is board-specific programming th=
-at needs to be done (look at mpc8610_hpcd_machine_probe), so we still need =
-to have a fabric driver that is independent of the SSI, codec, or DMA drive=
-rs. =A0The P1022 also has an SSI, and I'm hoping that all I need to do is c=
-reate a new fabric driver, not hack up the SSI driver to support board prog=
-ramming.
->
-> So if the fabric driver still needs to exist, then it still needs a struc=
-t device, and it still needs to register with asoc. =A0I don't see how I ca=
-n register the sound card itself in the SSI driver, because it won't know a=
-nything about the board-specific code in the fabric driver.
+Hi,
 
-Why not?  Just have the ssi driver probe routine register the fabric
-device based on the existence of the codec-handle property.  It is the
-best way to go about things with the data that you've got available,
-and it is no big deal.  The relevant fabric driver can then bind
-against that.  You should probably also stuff the ssi device node
-pointer into the fabric device of_node pointer.
+One comment
 
->> I've tried very hard to maintain a distinction between device tree
->> binding (representation) and Linux kernel internal implementation
->> details. =A0The real question is whether or not the binding provides
->> sufficient detail for the operating system to figure out what to do.
->
-> I think it does, because it's working today.
->
->> In the extreme minimalist case, the audio driver could decide how to
->> configure itself solely on the board name property of the root node.
->> There is nothing wrong with that, but it also means that no data is
->> available to dynamically select common modules or modify connections;
->> it all has to be hard coded.
->
-> Well, asoc already has several hard-coded requirements:
->
-> =A0 =A0 =A0 =A0machine_data->dai.cpu_dai_drv =3D &fsl_ssi_dai;
-> =A0 =A0 =A0 =A0machine_data->dai.codec_dai_drv =3D &cs4270_dai;
-> =A0 =A0 =A0 =A0machine_data->dai.codec_drv =3D &soc_codec_device_cs4270;
-> =A0 =A0 =A0 =A0machine_data->dai.ops =3D &mpc8610_hpcd_ops;
-> =A0 =A0 =A0 =A0machine_data->dai.platform_drv =3D &fsl_soc_platform;
->
-> So even though I probe for each device separately and register them separ=
-ately, the fabric driver still needs to have hard-coded addresses
->
-> Maybe the asoc guys can tell me why I need to register the cpu_dai_drv st=
-ructure via platform_device_add(), when it's already being registered via s=
-nd_soc_register_dai().
->
->> (I've omitted the DMA nodes and some irrelevant details) =A0This is
->> enough information for a simplistic driver registration that probably
->> makes a lot of assumptions. =A0Such as the ssi represents a single
->> logical sound device. =A0It won't handle complex representations, but in
->> a lot of cases that may be just fine.
->
-> Why would I ever represent the SSI as anything but a single logical sound=
- device? =A0Let ALSA handle synchronizing multiple streams together if it w=
-ants to.
->
->> =A0 =A0 =A0 sound {
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 compatible =3D "fsl,mpc8610-hpcd-sound";
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* maybe something like (totally off the top=
- of my head) */
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 dai-links =3D <&ssi1 0 &codec 0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0&ssi1 1 &codec 1>;
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 [...]
->> =A0 =A0 =A0 };
->
-> I don't know when I would ever do this. =A0The two SSI devices are comple=
-tely independent. =A0Why would I bind them together into one "device"?
+On Tuesday 27 April 2010 17:54:16 ext Liam Girdwood wrote:
+> This allows the AIF and APLL clocks to continue running in
+> loopback mode and when invalid DAPM routes are selected at
+> stream runtime.
+> =
 
-If there is no use case for binding them together, then you're right.
-The current binding is probably just fine.  I cannot comment on
-whether or not it will be used that way by platform designers.
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> ---
+>  sound/soc/codecs/twl4030.c |  123
+> +++++++++++++++++++++++++++++-------------- 1 files changed, 83
+> insertions(+), 40 deletions(-)
+> =
 
->> Where the 'sound' node is now the starting point for representing a
->> logical sound device instead of the ssi node. =A0This binding probably
->> makes more sense (but I'm not committing to anything like this until I
->> see a real proposal for a real device).
->
-> The only issue I have with this is all it does is turn the fabric driver =
-from a platform driver that scans the OF tree, into an OF driver that still=
- needs to query the device tree to get all the data it needs. =A0For exampl=
-e, the fabric driver still needs to know the clock frequency and direction =
-of the codec node, so that it can call snd_soc_dai_set_fmt() and snd_soc_da=
-i_set_sysclk() properly. =A0To eliminate that, we could have the fabric dri=
-ver never call these functions, and expect the SSI and codec drivers to gat=
-her this information itself. =A0But the codec driver is not an OF driver, s=
-o it has no expectation of being able to query the codec node.
->
->> I would solve the problem this way: In the ssi driver, if the
->> codec-node property is present, then call a function to instantiate a
->> simple or platform specific sound card instance that makes the
->> assumptions listed above. =A0If not, then just register the ssi and
->> exit, which leaves the ssi available for a separate driver to pick it
->> up. =A0I wouldn't do this for new platforms, but it gracefully makes use
->> of the data provided in the current 8610 device tree.
->
-> Eh, I'll have to think about that. =A0The absence of a codec pointer in t=
-he SSI node means that the SSI is not connected to a codec, so it should ju=
-st be ignored altogether. =A0An SSI is useless if it's not connected to a c=
-odec.
+> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+> index dc26b71..1a3e7f6 100644
+> --- a/sound/soc/codecs/twl4030.c
+> +++ b/sound/soc/codecs/twl4030.c
+> @@ -123,7 +123,10 @@ struct twl4030_priv {
+>  	struct snd_soc_codec codec;
+> =
 
-I'm suggesting the case where a third node describes the mappings
-between codecs and SSIs.
+>  	unsigned int codec_powered;
+> +
+> +	/* reference counts of AIF/APLL users */
+>  	unsigned int apll_enabled;
+> +	unsigned int aif_enabled;
+> =
 
->> BTW Timur, there is nothing wrong with registering multiple devices
->> that all have the of_node pointer set to the same node.
->
-> Sorry, I don't understand what you're getting at.
+>  	struct snd_pcm_substream *master_substream;
+>  	struct snd_pcm_substream *slave_substream;
+> @@ -259,22 +262,50 @@ static void twl4030_init_chip(struct snd_soc_codec
+> *codec) static void twl4030_apll_enable(struct snd_soc_codec *codec, int
+> enable) {
+>  	struct twl4030_priv *twl4030 =3D snd_soc_codec_get_drvdata(codec);
+> -	int status;
+> -
+> -	if (enable =3D=3D twl4030->apll_enabled)
+> -		return;
+> +	int status =3D -1;
+> =
 
-Linux struct device registrations are cheap, and every struct device
-has a device_node pointer available.  It is totally fine to have both
-the ssi device and the fabric device point to the same device node if
-that helps solve your problem of finding references to the right
-things in each driver.  (Just as long as only one of them is an
-of_platform driver).
+> +	/* update the user count */
+>  	if (enable)
+> +		twl4030->apll_enabled++;
+> +	else
+> +		twl4030->apll_enabled--;
+> +
+> +	if (enable && twl4030->apll_enabled =3D=3D 1)
+>  		/* Enable PLL */
+>  		status =3D twl4030_codec_enable_resource(TWL4030_CODEC_RES_APLL);
+> -	else
+> +	else if (!enable && twl4030->apll_enabled =3D=3D 0)
+>  		/* Disable PLL */
+>  		status =3D twl4030_codec_disable_resource(TWL4030_CODEC_RES_APLL);
+> =
 
-g.
+>  	if (status >=3D 0)
+>  		twl4030_write_reg_cache(codec, TWL4030_REG_APLL_CTL, status);
+> +}
+> =
+
+> -	twl4030->apll_enabled =3D enable;
+> +static void  twl4030_aif_enable(struct snd_soc_codec *codec, int enable)
+> +{
+> +	struct twl4030_priv *twl4030 =3D codec->private_data;
+
+Should be to due the API change:
+struct twl4030_priv *twl4030 =3D snd_soc_codec_get_drvdata(codec);
+
+> +
+> +	/* update the user count */
+> +	if (enable)
+> +		twl4030->aif_enabled++;
+> +	else
+> +		twl4030->aif_enabled--;
+> +
+> +	if (enable && twl4030->aif_enabled =3D=3D 1) {
+> +		/* Enable AIF */
+> +		/* enable the PLL before we use it to clock the DAI */
+> +		twl4030_apll_enable(codec, 1);
+> +
+> +		twl4030_write(codec, TWL4030_REG_AUDIO_IF,
+> +							twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF)
+> +							| TWL4030_AIF_EN);
+> +	} else if (!enable && twl4030->aif_enabled =3D=3D 0) {
+> +		/* disable the DAI before we stop it's source PLL */
+> +		twl4030_write(codec, TWL4030_REG_AUDIO_IF,
+> +							twl4030_read_reg_cache(codec, TWL4030_REG_AUDIO_IF)
+> +							& ~TWL4030_AIF_EN);
+> +		twl4030_apll_enable(codec, 0);
+> +	}
+>  }
+> =
+
+>  static void twl4030_power_up(struct snd_soc_codec *codec)
+> @@ -672,6 +703,20 @@ static int apll_event(struct snd_soc_dapm_widget *w,
+>  	return 0;
+>  }
+> =
+
+> +static int aif_event(struct snd_soc_dapm_widget *w,
+> +		struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		twl4030_aif_enable(w->codec, 1);
+> +		break;
+> +	case SND_SOC_DAPM_POST_PMD:
+> +		twl4030_aif_enable(w->codec, 0);
+> +		break;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static void headset_ramp(struct snd_soc_codec *codec, int ramp)
+>  {
+>  	struct snd_soc_device *socdev =3D codec->socdev;
+> @@ -1178,6 +1223,11 @@ static const struct snd_soc_dapm_widget
+> twl4030_dapm_widgets[] =3D { SND_SOC_DAPM_OUTPUT("HFR"),
+>  	SND_SOC_DAPM_OUTPUT("VIBRA"),
+> =
+
+> +	/* AIF and APLL clocks for running DAIs (including loopback) */
+> +	SND_SOC_DAPM_OUTPUT("AIF DAC"),
+> +	SND_SOC_DAPM_INPUT("AIF ADC"),
+> +	SND_SOC_DAPM_OUTPUT("APLL"),
+> +
+>  	/* DACs */
+>  	SND_SOC_DAPM_DAC("DAC Right1", "Right Front HiFi Playback",
+>  			SND_SOC_NOPM, 0, 0),
+> @@ -1215,16 +1265,21 @@ static const struct snd_soc_dapm_widget
+> twl4030_dapm_widgets[] =3D { &twl4030_dapm_dbypassv_control),
+> =
+
+>  	/* Digital mixers, power control for the physical DACs */
+> -	SND_SOC_DAPM_MIXER("Digital R1 Playback Mixer",
+> -			TWL4030_REG_AVDAC_CTL, 0, 0, NULL, 0),
+> -	SND_SOC_DAPM_MIXER("Digital L1 Playback Mixer",
+> -			TWL4030_REG_AVDAC_CTL, 1, 0, NULL, 0),
+> -	SND_SOC_DAPM_MIXER("Digital R2 Playback Mixer",
+> -			TWL4030_REG_AVDAC_CTL, 2, 0, NULL, 0),
+> -	SND_SOC_DAPM_MIXER("Digital L2 Playback Mixer",
+> -			TWL4030_REG_AVDAC_CTL, 3, 0, NULL, 0),
+> -	SND_SOC_DAPM_MIXER("Digital Voice Playback Mixer",
+> -			TWL4030_REG_AVDAC_CTL, 4, 0, NULL, 0),
+> +	SND_SOC_DAPM_MIXER_E("Digital R1 Playback Mixer",
+> +			TWL4030_REG_AVDAC_CTL, 0, 0, NULL, 0, aif_event,
+> +			SND_SOC_DAPM_PRE_PMU|SND_SOC_DAPM_POST_PMD),
+> +	SND_SOC_DAPM_MIXER_E("Digital L1 Playback Mixer",
+> +			TWL4030_REG_AVDAC_CTL, 1, 0, NULL, 0, aif_event,
+> +			SND_SOC_DAPM_PRE_PMU|SND_SOC_DAPM_POST_PMD),
+> +	SND_SOC_DAPM_MIXER_E("Digital R2 Playback Mixer",
+> +			TWL4030_REG_AVDAC_CTL, 2, 0, NULL, 0, aif_event,
+> +			SND_SOC_DAPM_PRE_PMU|SND_SOC_DAPM_POST_PMD),
+> +	SND_SOC_DAPM_MIXER_E("Digital L2 Playback Mixer",
+> +			TWL4030_REG_AVDAC_CTL, 3, 0, NULL, 0, aif_event,
+> +			SND_SOC_DAPM_PRE_PMU|SND_SOC_DAPM_POST_PMD),
+> +	SND_SOC_DAPM_MIXER_E("Digital Voice Playback Mixer",
+> +			TWL4030_REG_AVDAC_CTL, 4, 0, NULL, 0, apll_event,
+> +			SND_SOC_DAPM_PRE_PMU|SND_SOC_DAPM_POST_PMD),
+> =
+
+>  	/* Analog mixers, power control for the physical PGAs */
+>  	SND_SOC_DAPM_MIXER("Analog R1 Playback Mixer",
+> @@ -1238,11 +1293,6 @@ static const struct snd_soc_dapm_widget
+> twl4030_dapm_widgets[] =3D { SND_SOC_DAPM_MIXER("Analog Voice Playback
+> Mixer",
+>  			TWL4030_REG_VDL_APGA_CTL, 0, 0, NULL, 0),
+> =
+
+> -	SND_SOC_DAPM_SUPPLY("APLL Enable", SND_SOC_NOPM, 0, 0, apll_event,
+> -			    SND_SOC_DAPM_PRE_PMU|SND_SOC_DAPM_POST_PMD),
+> -
+> -	SND_SOC_DAPM_SUPPLY("AIF Enable", TWL4030_REG_AUDIO_IF, 0, 0, NULL, 0),
+> -
+>  	/* Output MIXER controls */
+>  	/* Earpiece */
+>  	SND_SOC_DAPM_MIXER("Earpiece Mixer", SND_SOC_NOPM, 0, 0,
+> @@ -1370,17 +1420,14 @@ static const struct snd_soc_dapm_route intercon[]=
+ =3D
+> { {"Digital R2 Playback Mixer", NULL, "DAC Right2"},
+>  	{"Digital Voice Playback Mixer", NULL, "DAC Voice"},
+> =
+
+> -	/* Supply for the digital part (APLL) */
+> -	{"Digital R1 Playback Mixer", NULL, "APLL Enable"},
+> -	{"Digital L1 Playback Mixer", NULL, "APLL Enable"},
+> -	{"Digital R2 Playback Mixer", NULL, "APLL Enable"},
+> -	{"Digital L2 Playback Mixer", NULL, "APLL Enable"},
+> -	{"Digital Voice Playback Mixer", NULL, "APLL Enable"},
+> +	/* Route for the digital part (APLL) */
+> +	{"APLL", NULL, "Digital Voice Playback Mixer"},
+> =
+
+> -	{"Digital R1 Playback Mixer", NULL, "AIF Enable"},
+> -	{"Digital L1 Playback Mixer", NULL, "AIF Enable"},
+> -	{"Digital R2 Playback Mixer", NULL, "AIF Enable"},
+> -	{"Digital L2 Playback Mixer", NULL, "AIF Enable"},
+> +	/* Route for digital part (AIF) */
+> +	{"AIF DAC", NULL, "Digital L1 Playback Mixer"},
+> +	{"AIF DAC", NULL, "Digital R1 Playback Mixer"},
+> +	{"AIF DAC", NULL, "Digital L2 Playback Mixer"},
+> +	{"AIF DAC", NULL, "Digital R2 Playback Mixer"},
+> =
+
+>  	{"Analog L1 Playback Mixer", NULL, "Digital L1 Playback Mixer"},
+>  	{"Analog R1 Playback Mixer", NULL, "Digital R1 Playback Mixer"},
+> @@ -1493,15 +1540,11 @@ static const struct snd_soc_dapm_route intercon[]=
+ =3D
+> { {"ADC Virtual Left2", NULL, "TX2 Capture Route"},
+>  	{"ADC Virtual Right2", NULL, "TX2 Capture Route"},
+> =
+
+> -	{"ADC Virtual Left1", NULL, "APLL Enable"},
+> -	{"ADC Virtual Right1", NULL, "APLL Enable"},
+> -	{"ADC Virtual Left2", NULL, "APLL Enable"},
+> -	{"ADC Virtual Right2", NULL, "APLL Enable"},
+> -
+> -	{"ADC Virtual Left1", NULL, "AIF Enable"},
+> -	{"ADC Virtual Right1", NULL, "AIF Enable"},
+> -	{"ADC Virtual Left2", NULL, "AIF Enable"},
+> -	{"ADC Virtual Right2", NULL, "AIF Enable"},
+> +	/* Route for digital part AIF */
+> +	{"ADC Virtual Left1", NULL, "AIF ADC"},
+> +	{"ADC Virtual Right1", NULL, "AIF ADC"},
+> +	{"ADC Virtual Left2", NULL, "AIF ADC"},
+> +	{"ADC Virtual Right2", NULL, "AIF ADC"},
+> =
+
+>  	/* Analog bypass routes */
+>  	{"Right1 Analog Loopback", "Switch", "Analog Right"},
 
 -- =
 
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+P=E9ter
