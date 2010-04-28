@@ -1,64 +1,52 @@
-From: Dan Carpenter <error27@gmail.com>
-Subject: [patch] take tu->qlock with irqs disabled
-Date: Wed, 28 Apr 2010 10:29:14 +0200
-Message-ID: <20100428082914.GA24513@bicker>
-References: <tkrat.3cb3230c2c45e983@s5r6.in-berlin.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] powerpc: add platform registration for
+ ALSA SoC drivers
+Date: Wed, 28 Apr 2010 10:16:30 +0100
+Message-ID: <20100428091629.GA31400@opensource.wolfsonmicro.com>
+References: <1272314980-23679-1-git-send-email-timur@freescale.com>
+	<1272350168.24542.6.camel@pasglop> <1272355624.3204.52.camel@odin>
+	<g2mfa686aa41004271324g8ff0d67fi3df4336cb25e9acc@mail.gmail.com>
+	<20100427222913.GE15083@opensource.wolfsonmicro.com>
+	<i2vfa686aa41004271931wc04b9c11l5f3ebda0acb14b9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9199524487
+	for <alsa-devel@alsa-project.org>;
+	Wed, 28 Apr 2010 11:16:22 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <tkrat.3cb3230c2c45e983@s5r6.in-berlin.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Cc: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+In-Reply-To: <i2vfa686aa41004271931wc04b9c11l5f3ebda0acb14b9@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: alsa-devel@alsa-project.org, Benjamin Herrenschmidt <benh@kernel.crashing.org>, kumar.gala@freescale.com, linuxppc-dev@ozlabs.org, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-We should disable irqs when we take the tu->qlock because it is used in
-the irq handler.  The only place that doesn't is
-snd_timer_user_ccallback().  Most of the time snd_timer_user_ccallback()
-is called with interrupts disabled but the the first ti->ccallback()
-call in snd_timer_notify1() has interrupts enabled.
+On Tue, Apr 27, 2010 at 08:31:18PM -0600, Grant Likely wrote:
+> On Tue, Apr 27, 2010 at 4:29 PM, Mark Brown
 
-This was caught by lockdep which generates the following message:
+> > On the other hand from a pragmatic point of view it's just much less
+> > hassle to just only provide the mechanism for instantiating a machine
+> > with custom code and use that for everything.
 
-> =================================
-> [ INFO: inconsistent lock state ]
-> 2.6.34-rc5 #5
-> ---------------------------------
-> inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
-> dolphin/4003 [HC1[1]:SC0[0]:HE0:SE1] takes:
-> (&(&tu->qlock)->rlock){?.+...}, at: [<f84ec472>] snd_timer_user_tinterrupt+0x28/0x132 [snd_timer]
-> {HARDIRQ-ON-W} state was registered at:
->   [<c1048de9>] __lock_acquire+0x654/0x1482
->   [<c1049c73>] lock_acquire+0x5c/0x73
->   [<c125ac3e>] _raw_spin_lock+0x25/0x34
->   [<f84ec370>] snd_timer_user_ccallback+0x55/0x95 [snd_timer]
->   [<f84ecc4b>] snd_timer_notify1+0x53/0xca [snd_timer]
+> Also true, but this approach carries with it an incremental cost that
+> distributions feel the pain of.  Ultimately I think we'll find a sweet
+> spot somewhere in between.
 
-Reported-by: Stefan Richter <stefanr@s5r6.in-berlin.de>
-Signed-off-by: Dan Carpenter <error27@gmail.com>
+Meh, it's not really much hassle for the distributions - it's all
+handled by the kernel, they don't need to explicitly do anything.
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 7394365..5040c7b 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -1160,6 +1160,7 @@ static void snd_timer_user_ccallback(struct snd_timer_instance *timeri,
- {
- 	struct snd_timer_user *tu = timeri->callback_data;
- 	struct snd_timer_tread r1;
-+	unsigned long flags;
- 
- 	if (event >= SNDRV_TIMER_EVENT_START &&
- 	    event <= SNDRV_TIMER_EVENT_PAUSE)
-@@ -1169,9 +1170,9 @@ static void snd_timer_user_ccallback(struct snd_timer_instance *timeri,
- 	r1.event = event;
- 	r1.tstamp = *tstamp;
- 	r1.val = resolution;
--	spin_lock(&tu->qlock);
-+	spin_lock_irqsave(&tu->qlock, flags);
- 	snd_timer_user_append_to_tqueue(tu, &r1);
--	spin_unlock(&tu->qlock);
-+	spin_unlock_irqrestore(&tu->qlock, flags);
- 	kill_fasync(&tu->fasync, SIGIO, POLL_IN);
- 	wake_up(&tu->qchange_sleep);
- }
+None of the machine-specific stuff has ever been a hassle getting stuff
+merged, problems have always been in the drivers for the devices which
+device tree isn't going to make a blind bit of difference to (other than
+the usual discussions about what exactly the device tree should look
+like).
