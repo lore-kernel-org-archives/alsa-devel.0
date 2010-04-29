@@ -1,19 +1,18 @@
-From: Yu Hang <hangy@fortemedia.com.cn>
-Subject: How to retrieve the final data being played by HW
-Date: Thu, 29 Apr 2010 17:15:38 +0800
-Message-ID: <4BD94E3A.2040301@fortemedia.com.cn>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: How to retrieve the final data being played by HW
+Date: Thu, 29 Apr 2010 10:19:58 +0100
+Message-ID: <20100429091957.GB21607@sirena.org.uk>
+References: <4BD94E3A.2040301@fortemedia.com.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxvip36.hichina.com (mxvip36.hichina.com [218.106.248.86])
-	by alsa0.perex.cz (Postfix) with ESMTP id EBB362441D
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 63A6D24422
 	for <alsa-devel@alsa-project.org>;
-	Thu, 29 Apr 2010 11:15:39 +0200 (CEST)
-Received: from 58.240.78.110 (HELO ?127.0.0.1?) (envelope-from
-	hangy@fortemedia.com.cn)
-	by mxvip36.hichina.com (quarkmail-1.2.1) with ESMTP id S4192864Ab0D2JPe
-	for alsa-devel@alsa-project.org; Thu, 29 Apr 2010 17:15:34 +0800
+	Thu, 29 Apr 2010 11:20:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4BD94E3A.2040301@fortemedia.com.cn>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,17 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Yu Hang <hangy@fortemedia.com.cn>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm studying ALSA lib and trying to write a plugin that can perform AEC 
-function. I have to retrieve the data being played and use it as reference.
-I've read pcm_dmix.c and found dmix just simply mixes data into HW mmap 
-buffer (destination buffer). My problem is, there might be several dmix 
-instances, which doesn't know if there is other dmix instance. So how 
-can I know the mixed data is exactly the data being played.
-For example, the 1st instance had mixes the data into destination 
-buffer, but 2nd instance haven't complete the mix operation. Would the 
-data in destination buffer be playing by HW?
-Or there is some mechanism to guarantee the data will be played after 
-all mix operation is done.
+On Thu, Apr 29, 2010 at 05:15:38PM +0800, Yu Hang wrote:
+
+> For example, the 1st instance had mixes the data into destination 
+> buffer, but 2nd instance haven't complete the mix operation. Would the 
+> data in destination buffer be playing by HW?
+> Or there is some mechanism to guarantee the data will be played after 
+> all mix operation is done.
+
+You need to ensure that the user configures the plugin stack
+appropriately to ensure that your plugin is the last one that's run, you
+can't do this purely from within your plugin.  Even if that's done you'd
+also need to rely on them not configuring any DSP in the hardware which
+would disrupt things.
