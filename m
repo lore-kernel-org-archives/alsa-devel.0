@@ -1,20 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Fri, 30 Apr 2010 09:09:12 +0800
-Message-ID: <i2k4f3252891004291809z5604e08chfbd8c0c000b4d517@mail.gmail.com>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: asoc: problem with snd_soc_dai_set_fmt()
+Date: Fri, 30 Apr 2010 10:28:57 +0900
+Message-ID: <r2m1b68c6791004291828p77188d3frcb7ef516823e0477@mail.gmail.com>
+References: <4BD9F889.4010106@freescale.com>
+	<20100429221808.GB23958@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 623E92444A
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id DB2142446D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Apr 2010 03:09:14 +0200 (CEST)
-Received: by pxi13 with SMTP id 13so3180953pxi.38
-	for <alsa-devel@alsa-project.org>; Thu, 29 Apr 2010 18:09:12 -0700 (PDT)
-In-Reply-To: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
+	Fri, 30 Apr 2010 03:28:59 +0200 (CEST)
+Received: by vws6 with SMTP id 6so2065533vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 29 Apr 2010 18:28:58 -0700 (PDT)
+In-Reply-To: <20100429221808.GB23958@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/4/30 pl bossart <bossart.nospam@gmail.com>
-
-> Howdy,
-> When PulseAudio is used and all PCM is routed through PulseAudio
-> (Fedora, Meego, etc), the notion of ALSA periods isn't very useful.
-> PulseAudio uses a timer to refill buffers and the period interrupts
-> are not used at all.
->
-> So why not disable them entirely to reduce the number of wakeups? This
-> is possible with a number of existing DMA controllers. The simple
-> patch attached shows a proof-of-concept on HDAudio, it's been working
-> for 5 hours on my Fedora12 laptop without any glitches and powertop
-> does show _zero_ wakeups from the HDAudio controller (except on
-> startup). I am told by my colleagues working in Windows environments
-> that this is what's done on Vista/Windows7 btw. This isn't to say
-> Windows is great but that artificial generation of not-needed
-> interrupts is avoidable.
->
-
-Do your test need the patch which you have posted to pulseaudio developer
-mailing list
-
-http://thread.gmane.org/gmane.comp.audio.pulseaudio.general/6671
-
-it seem that fix should be in driver side if it is hardware specific
+T24gRnJpLCBBcHIgMzAsIDIwMTAgYXQgNzoxOCBBTSwgTWFyayBCcm93bgo8YnJvb25pZUBvcGVu
+c291cmNlLndvbGZzb25taWNyby5jb20+IHdyb3RlOgo+IE9uIFRodSwgQXByIDI5LCAyMDEwIGF0
+IDA0OjIyOjE3UE0gLTA1MDAsIFRpbXVyIFRhYmkgd3JvdGU6Cj4+IGludCBzbmRfc29jX2RhaV9z
+ZXRfZm10KHN0cnVjdCBzbmRfc29jX2RhaSAqZGFpLCB1bnNpZ25lZCBpbnQgZm10KQo+PiB7Cj4+
+IMKgIMKgIMKgIGlmIChkYWktPmRyaXZlciAmJiBkYWktPmRyaXZlci0+b3BzLT5zZXRfZm10KQo+
+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gZGFpLT5kcml2ZXItPm9wcy0+c2V0X2ZtdChk
+YWksIGZtdCk7Cj4+IMKgIMKgIMKgIGVsc2UKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJu
+IDA7Cj4+IH0KPgo+IER1ZSB0byB0aGUgYWJvdmUgaXNzdWUgSSBkb24ndCB0aGluayB0aGlzIGlz
+IGEgZ29vZCBpZGVhIC0gd2UgcmVhbGx5Cj4gb3VnaHQgdG8gbGV0IHRoZSBtYWNoaW5lIGRyaXZl
+ciBrbm93IGlmIHRoZSByZXF1ZXN0IGl0IG1hZGUgd2FzIGlnbm9yZWQKPiBpbiBjYXNlIGl0IGlz
+IHRyeWluZyB0byBzZXQgdXAgc29tZXRoaW5nIHRoYXQgY2FuJ3QgYmUgc3VwcG9ydGVkLgo+IEFu
+b3RoZXIgc2hvcnQgdGVybSBvcHRpb24gd291bGQgYmUgdG8gY2hhbmdlIHRoZSBlcnJvciBjb2Rl
+IHRvIGJlCj4gc29tZXRoaW5nIGEgYml0IG1vcmUgZGlzdGluY3RpdmUgdGhhbiAtRUlOVkFMLiDC
+oElmIHdlIHdhbnQgdG8gc3VwcG9ydAo+IHZlcnkgZ2VuZXJpYyBtYWNoaW5lIGRyaXZlcnMgdGhh
+dCBnZW51aW5lbHkgZG9uJ3Qga25vdyB3aGF0IGhhcmR3YXJlIGlzCj4gYWJsZSB0byBkbyBJIHRo
+aW5rIHdlJ2QgYmUgYmUgYmV0dGVyIG9mZiBkb2luZyBzb21ldGhpbmcgbGlrZSBhZGRpbmcKPiBj
+YXBhYmlsaXR5IG1hc2tzIHRvIHRoZSBkcml2ZXJzIHNvIHRoZXNlIGZ1bmN0aW9ucyBjYW4gdmFs
+aWRhdGUgd2hhdAo+IHRoZXkncmUgYmVpbmcgYXNrZWQgdG8gZG8sIGF0IHdoaWNoIHBvaW50IHdl
+IGtub3cgdGhlIGFjdHVhbCBmb3JtYXQgc28KPiByZXR1cm5pbmcgMCBpc24ndCBhbiBpc3N1ZS4K
+Pgo+IFRoZSBjdXJyZW50IGV4cGVjdGF0aW9uIGlzIHRoYXQgdGhlIG1hY2hpbmUgZHJpdmVyIGtu
+b3dzIHdoYXQgdGhlCj4gaGFyZHdhcmUgaXMgY2FwYWJsZSBvZiBhbmQgd29uJ3QgdHJ5IHRvIHNl
+dCBhbnl0aGluZyBzaWxseSwgaW4gdGhlIGNhc2UKPiBvZiBmaXhlZCBmb3JtYXQgZGV2aWNlcyB0
+aGF0IGRvbid0IGltcGxlbWVudCBzZXRfZm10KCkgdGhhdCBjb25zaXN0cyBvZgo+IGp1c3Qgbm90
+IGNhbGxpbmcgc2V0X2ZtdCgpIGZvciB0aGUgREFJIGF0IGFsbC4KVGhvdWdoIEkgYW0gb2sgd2l0
+aCB0aGUgc3RhdHVzIHF1byAtLSBzbmRfc29jX2RhaV9vcHMgbWVtYmVycyBiZWluZwp0cnVseSBv
+cHRpb25hbCBhbmQgbWFjaGluZSBkcml2ZXIgd3JpdGVycyBrbm93aW5nIGJvdGggdGhlIERBSXMg
+YW5kIGNhbGxpbmcKb25seSBhcHByb3ByaWF0ZSBmdW5jdGlvbnMsIGJ1dCBpZiB3ZSBhcmUgdG8g
+bW92ZSB0byBtb3JlIGdlbmVyaWMgbWFjaGluZQpkcml2ZXJzIGhvdyBhYm91dCBoaWRpbmcgc3Vj
+aCBtZW1iZXJzIG9mIHNuZF9zb2NfZGFpX29wcyBmcm9tIG1hY2hpbmUKZHJpdmVycyBhbmQgbGV0
+IHRoZSBtYWNoaW5lIGRyaXZlcnMgc3BlY2lmeSB0aGUgZXhhY3QgcmVxdWlyZW1lbnQgdG8gQVNv
+Qwp2aWEgc29tZSBnZW5lcmljIGVub3VnaCBkYXRhIHN0cnVjdHVyZS4gUGFydCBvZiB0aGF0IGNv
+bmZpZ3VyYXRpb24gY2FuIGJlCmRvbmUgYnkgQVNvQyB3aGlsZSB0aGUgcGxhdGZvcm0gc3BlY2lm
+aWMgc3R1ZmYgcGFzc2VkIG9udG8gREFJIGRyaXZlcnMuCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
