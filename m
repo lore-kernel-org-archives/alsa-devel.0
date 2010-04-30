@@ -1,18 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 3/4] ASoC: tlv320dac33: Manage a pointer for
-	snd_pcm_substream in private structure
-Date: Fri, 30 Apr 2010 10:31:54 +0300
-Message-ID: <1272612715-13387-4-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re:
+ =?iso-8859-1?q?=5BPATCH_1/4=5D_ASoC=3A_tlv320dac33?=
+ =?iso-8859-1?q?=3A_Optimize_power_up=2C_=09and_restore?=
+Date: Fri, 30 Apr 2010 10:37:37 +0300
+Message-ID: <201004301037.37144.peter.ujfalusi@nokia.com>
 References: <1272612715-13387-1-git-send-email-peter.ujfalusi@nokia.com>
+	<1272612715-13387-2-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 501BC1038FF
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2CFD12452B
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Apr 2010 09:32:14 +0200 (CEST)
-In-Reply-To: <1272612715-13387-1-git-send-email-peter.ujfalusi@nokia.com>
+	Fri, 30 Apr 2010 09:38:11 +0200 (CEST)
+In-Reply-To: <1272612715-13387-2-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,74 +25,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-As a preparation for supporting codec to be turned off,
-when we are in BIAS_STANDBY.
+On Friday 30 April 2010 10:31:52 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+> On power up we only need to initialize the codec, and
+> restore only registers, which are not in either in DAPM
+> nor in the playback start sequence.
+> These are mostly gain related registers.
+> =
 
-The substream must be easily available in other places than
-pcm_* callbacks.
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 
-Manage a pointer in _startup, and _shutdown for this.
+...
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
----
- sound/soc/codecs/tlv320dac33.c |   28 ++++++++++++++++++++++++++++
- 1 files changed, 28 insertions(+), 0 deletions(-)
+> +
+> +	/* Restore only selected registers (gains mostly) */
+> +	dac33_write(codec, DAC33_LDAC_DIG_VOL_CTRL,
+> +		    dac33_read_reg_cache(codec, DAC33_LDAC_DIG_VOL_CTRL));
+> +	dac33_write(codec, DAC33_RDAC_DIG_VOL_CTRL,
+> +		    dac33_read_reg_cache(codec, DAC33_RDAC_DIG_VOL_CTRL));
+> +
+> +	dac33_write(codec, DAC33_LDAC_DIG_VOL_CTRL,
+> +		    dac33_read_reg_cache(codec, DAC33_LDAC_DIG_VOL_CTRL));
+> +	dac33_write(codec, DAC33_RDAC_DIG_VOL_CTRL,
+> +		    dac33_read_reg_cache(codec, DAC33_RDAC_DIG_VOL_CTRL));
 
-diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
-index 7d01759..6edad36 100644
---- a/sound/soc/codecs/tlv320dac33.c
-+++ b/sound/soc/codecs/tlv320dac33.c
-@@ -91,6 +91,7 @@ struct tlv320dac33_priv {
- 	struct work_struct work;
- 	struct snd_soc_codec codec;
- 	struct regulator_bulk_data supplies[DAC33_NUM_SUPPLIES];
-+	struct snd_pcm_substream *substream;
- 	int power_gpio;
- 	int chip_power;
- 	int irq;
-@@ -725,6 +726,31 @@ static void dac33_oscwait(struct snd_soc_codec *codec)
- 			"internal oscillator calibration failed\n");
- }
- 
-+static int dac33_startup(struct snd_pcm_substream *substream,
-+			   struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
-+
-+	/* Stream started, save the substream pointer */
-+	dac33->substream = substream;
-+
-+	return 0;
-+}
-+
-+static void dac33_shutdown(struct snd_pcm_substream *substream,
-+			     struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct tlv320dac33_priv *dac33 = snd_soc_codec_get_drvdata(codec);
-+
-+	dac33->substream = NULL;
-+}
-+
- static int dac33_hw_params(struct snd_pcm_substream *substream,
- 			   struct snd_pcm_hw_params *params,
- 			   struct snd_soc_dai *dai)
-@@ -1372,6 +1398,8 @@ EXPORT_SYMBOL_GPL(soc_codec_dev_tlv320dac33);
- #define DAC33_FORMATS	SNDRV_PCM_FMTBIT_S16_LE
- 
- static struct snd_soc_dai_ops dac33_dai_ops = {
-+	.startup	= dac33_startup,
-+	.shutdown	= dac33_shutdown,
- 	.hw_params	= dac33_hw_params,
- 	.prepare	= dac33_pcm_prepare,
- 	.trigger	= dac33_pcm_trigger,
--- 
-1.7.0.4
+Hmm, restoring the same registers twice...
+I'll remove the duplication in the v2 series (which I'm sure will come)
+
+> +
+> +	dac33_write(codec, DAC33_LINEL_TO_LLO_VOL,
+> +		    dac33_read_reg_cache(codec, DAC33_LINEL_TO_LLO_VOL));
+> +	dac33_write(codec, DAC33_LINER_TO_RLO_VOL,
+> +		    dac33_read_reg_cache(codec, DAC33_LINER_TO_RLO_VOL));
+>  }
+> =
+
+
+-- =
+
+P=E9ter
