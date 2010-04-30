@@ -1,17 +1,22 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Fri, 30 Apr 2010 13:24:13 +0200
-Message-ID: <4BDABDDD.4050502@ladisch.de>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 4/4] ASoC: tlv320dac33: Support for turning
+ off the codec in BIAS_STANDBY
+Date: Fri, 30 Apr 2010 12:42:27 +0100
+Message-ID: <20100430114227.GF28241@rakim.wolfsonmicro.main>
+References: <1272612715-13387-1-git-send-email-peter.ujfalusi@nokia.com>
+	<201004301310.14378.peter.ujfalusi@nokia.com>
+	<20100430102309.GD21607@sirena.org.uk>
+	<201004301355.25797.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 77C1624347
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 907702446D
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Apr 2010 13:24:15 +0200 (CEST)
-In-Reply-To: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
+	Fri, 30 Apr 2010 13:42:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201004301355.25797.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,35 +26,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-pl bossart wrote:
-> When PulseAudio is used and all PCM is routed through PulseAudio
-> (Fedora, Meego, etc), the notion of ALSA periods isn't very useful.
-> So why not disable them entirely to reduce the number of wakeups? ...
-> There are probably some cases where you don't want this type of
-> behavior (broken hardware, legacy code with multiple-buffering,
-> disabled timer in PulseAudio),
+On Fri, Apr 30, 2010 at 01:55:25PM +0300, Peter Ujfalusi wrote:
 
-It's interesting that all ALSA applications except PA are "legacy".  :)
+> I need to keep the dac33_pcm_prepare level of configuration for cases, when the 
+> codec is in ON and a playback is starting (and if the codec is not ON, than 
+> respond it for later, when it is switch on), right?
+> I _need_ to do the things, which is done in the dac33_prepare_chip function 
+> every time, when a stream is starting :(
 
-> so I think it would make sense to request the disabling of interrupts
-> when hw_params are set, since this is also the time when period sizes
-> are set.
+Yes, absolutely - and if we add a post-DAPM prepare callback then you
+can just do that there without worrying about power in the driver.
 
-Yes.  For compatibility with the existing ALSA API, this needs to be
-a flag that is not enabled by default.
+> I do agree, that it is not really nice to have playback related thing in the 
+> dac33_set_bias_level, but so far I think that is the only way to avoid 
+> additional hassle (which means more places to have error, problems).
 
-> I am aware that some changes would be needed in pcm_lib.c, where all
-> the error checks are done.
-
-Plus all the API changes in the ALSA kernel framework, the ALSA kernel/
-userspace interface, and the alsa-lib interface.
-
-I'll see if I can get this done over the weekend ...
-
-
-Regards,
-Clemens
+Like I say, I think the addition of a post-DAPM callback on prepare
+ought to do the job just as well.
