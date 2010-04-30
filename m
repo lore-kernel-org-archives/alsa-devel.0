@@ -1,18 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: PCM multi A/V Sync bug on SMP system
-Date: Fri, 30 Apr 2010 13:09:12 +0200
-Message-ID: <4BDABA58.3090200@ladisch.de>
-References: <n2i20f65d531004242207zde83c421gac35d243420dcaff@mail.gmail.com>	<m2z20f65d531004271228gc2ab0716na68845e9b262a839@mail.gmail.com>
-	<y2l20f65d531004281312ja49b333eha47fd0cb9c5b0e01@mail.gmail.com>
+Subject: Re: [RFC] disabling ALSA period interrupts
+Date: Fri, 30 Apr 2010 13:24:13 +0200
+Message-ID: <4BDABDDD.4050502@ladisch.de>
+References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 6441A103804
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 77C1624347
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Apr 2010 13:09:20 +0200 (CEST)
-In-Reply-To: <y2l20f65d531004281312ja49b333eha47fd0cb9c5b0e01@mail.gmail.com>
+	Fri, 30 Apr 2010 13:24:15 +0200 (CEST)
+In-Reply-To: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Keith Chew <keith.chew@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Keith Chew wrote:
-> In pcm_dmix_i386.c, we have:
-> 
-> 				if (!strncmp(line, "processor", 9))
-> 					smp++;
-> 
-> I have commented out the smp++, so that it thinks that I am on a uni
-> processor. Voila, so AV sync issues!
-> 
-> My question now is what are the implications of this change? Looking
-> at pcm_dmix_i386.h, it uses locks on an SMP system, but exclude them
-> if not SMP. Do we still need this lock, even if I am on a dual core,
-> ie 1 processor 2 cores?
+pl bossart wrote:
+> When PulseAudio is used and all PCM is routed through PulseAudio
+> (Fedora, Meego, etc), the notion of ALSA periods isn't very useful.
+> So why not disable them entirely to reduce the number of wakeups? ...
+> There are probably some cases where you don't want this type of
+> behavior (broken hardware, legacy code with multiple-buffering,
+> disabled timer in PulseAudio),
 
-Dual-core processors behave like two separate processors, i.e., they
-still have separate caches, so we still need to synchronize memory
-accesses to ensure that they happen in the correct order.
+It's interesting that all ALSA applications except PA are "legacy".  :)
 
-I'd guess that the memory bus synchronization of the three dmix devices
-makes the memory accesses too slow.  What is the CPU utilization of
-mplayer with and without SMP?
+> so I think it would make sense to request the disabling of interrupts
+> when hw_params are set, since this is also the time when period sizes
+> are set.
+
+Yes.  For compatibility with the existing ALSA API, this needs to be
+a flag that is not enabled by default.
+
+> I am aware that some changes would be needed in pcm_lib.c, where all
+> the error checks are done.
+
+Plus all the API changes in the ALSA kernel framework, the ALSA kernel/
+userspace interface, and the alsa-lib interface.
+
+I'll see if I can get this done over the weekend ...
 
 
 Regards,
