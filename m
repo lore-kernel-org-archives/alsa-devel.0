@@ -1,19 +1,21 @@
-From: Yu Hang <hangy@fortemedia.com.cn>
-Subject: My understanding of ALSA playback mechanism
-Date: Fri, 30 Apr 2010 16:53:32 +0800
-Message-ID: <4BDA9A8C.7070505@fortemedia.com.cn>
+From: Josh Lehan <alsa@krellan.com>
+Subject: Wrote MIDIcat program,
+	to connect ALSA MIDI to standard input/output
+Date: Fri, 30 Apr 2010 01:53:40 -0700
+Message-ID: <4BDA9A94.2080309@krellan.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mxvip36.hichina.com (mxvip36.hichina.com [218.106.248.86])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6841124157
+Received: from server3.hostdango.com (server3.hostdango.com [67.222.146.219])
+	by alsa0.perex.cz (Postfix) with ESMTP id 74B5624398
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Apr 2010 10:53:33 +0200 (CEST)
-Received: from 58.240.78.110 (HELO ?127.0.0.1?) (envelope-from
-	hangy@fortemedia.com.cn)
-	by mxvip36.hichina.com (quarkmail-1.2.1) with ESMTP id S4194857Ab0D3Ix1
-	for alsa-devel@alsa-project.org; Fri, 30 Apr 2010 16:53:27 +0800
+	Fri, 30 Apr 2010 10:53:46 +0200 (CEST)
+Received: from c-24-4-183-246.hsd1.ca.comcast.net ([24.4.183.246]
+	helo=[10.6.9.2])
+	by server3.hostdango.com with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <alsa@krellan.com>) id 1O7lye-0002bJ-Mo
+	for alsa-devel@alsa-project.org; Fri, 30 Apr 2010 01:53:42 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,48 +28,97 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I'm a newbie of ALSA.
+Hi!  A few months ago, I posted about a program to send untimed MIDI
+data to the ALSA sequencer.  Using amidi(1) wasn't acceptable, since it
+only talks to "RawMIDI" devices.  Using aplaymidi(1) wasn't acceptable
+either, because it required .MID files, and I simply wanted to send
+untimed MIDI data, similar to what would be produced if you hooked up a
+hardware MIDI keyboard and just started playing.
 
-I've wrote some audio applications under Windows OS with DirectSound and 
-Waveform Audio API. And I also have some knowledge about Sound 
-Architecture of Windows Vista/Windows 7. All my experience about audio 
-architecture was from Windows.
-I'm currently working on a ALSA plugin for AEC function. What I have to 
-do is to retrieve audio data being played (after mixing) as reference to 
-cancel the echo captured by MIC.
-According to my previous experience about Sound Architecture of 
-Win7/Vista, the audio data is sending from OS component to my own 
-component: no matter for capture or playback. All I have to do is just 
-simply modify the input data and put them into output buffer. If my 
-component is under OS mixer, the received audio data is after mixing.
-When I read source code of ALSA lib, I found the mechanism between 
-Windows and ALSA lib are quite different.
+I needed something more general, that would simply connect to the ALSA
+sequencer, and let me send arbitrary MIDI bytes to a sequencer
+destination of my choice.  Unfortunately, no program existed that would
+simply do this.
 
-Following was my understanding about ALSA lib mechanism during playback.
+I'm pleased to announce that I've written such a program, It's called
+MIDIcat, as it works on the same principle as "cat" and other similar
+programs (Netcat, and so on).
 
-There is a hardware buffer. ALSA driver takes data from the buffer and 
-sends it to HW. The driver also update the play position on the fly.
-dmix receive the data from application and mix them into a shared 
-memory, and then copy it into hardware buffer. Each of dmix instance 
-keep a pointer to indicate current mixing position which might different 
-from other instance.
+It hooks up standard input, and standard output, to the ALSA sequencer.
 
-[play pos]    [1st mixed data]
-      |               |
-+----------------------------+  hardware buffer
-+----------------------------+
-                           |
-                     [2nd mixed data]
+This makes it easy to pipe data around.
 
-The figure shows, the data mixed from 1st dmix instance lasts to [1st 
-mixed data] pos, and data mixed from 2nd dmix instance lasts to [2nd 
-mixed data]. The buffer between [1st mixed data] and [2nd mixed data] 
-contains only data of 2nd dmix instance, but it does not matter, ALSA 
-just guarantees the data of 1st dmix instance can be mixed up before the 
-[play pos] reaches [1st mixed data] pos.
+It's an ALSA sequencer client.  Any data that is received on standard
+input will be forwarded into ALSA.  You can choose another client as a
+destination, or you can just start the program passively and use ALSA's
+"subscription" mechanism to route the data later.
 
-Of course the hardware buffer is not unlimited (it's a ring buffer), so 
-before dmix mix data to hardware buffer, it has to check if there is 
-enough space.
+Similarly, any MIDI data that comes from ALSA, will be forwarded along,
+and provided on standard output.
 
-Is my understanding of ALSA playback mechanism correct?
+This makes it easy to make many small "one-liner" command lines that are
+useful for testing and playing around with MIDI data in general.
+
+As an example, this plays Middle C:
+
+echo "90 3C 7F" | midicat --hex --port "TiMidity"
+
+The --hex option makes things more human-readable: standard input and
+output are hex digits, separated by spaces, instead of just raw binary data.
+The --port option has the usual ALSA sequencer meaning.  Change it to
+target your synthesizer (I'm using the TiMidity softsynth).
+
+Here's another example for output (both of these commands block, so run
+them in two separate terminal windows):
+
+midicat --verbose --hex
+vkeybd --addr 129:0
+
+The --verbose option prints out some more useful information at startup,
+such as the ALSA sequencer client:port number it got.  That can later be
+passed into another program, such as vkeybd.  If you play notes with
+vkeybd, you see the corresponding MIDI data appear on standard output.
+
+Standard input and standard output can both run at the same time (it's
+multithreaded).
+
+Here's some more elaborate examples:
+
+MIDI "panic button", sends "All Sound Off" to each channel:
+
+perl -e 'use bytes;for($i=0;$i<16;$i++){print
+chr(176+$i).chr(120).chr(0);}' | midicat --port "TiMidity"
+
+Another MIDI "panic button", sends individual "Note Off" commands:
+
+perl -e 'use bytes;for($i=0;$i<16;$i++){for($j=0;$j<128;$j++){print
+chr(128+$i).chr($j).chr(127);}}' | midicat --delay 10 --port "TiMidity"
+
+The --delay option inserts a slight delay between each MIDI command, to
+avoid flooding ALSA with too much data at once.
+
+Here's a fun one, sending random data into the MIDI subsystem and seeing
+what happens.  DO NOT run this on a real synthesizer, there's the risk
+of composing a random SysEx command that could mess up your settings!
+
+It's fun to watch with aseqview(1):
+
+aseqview &
+cat /dev/urandom | midicat --delay 500 --port "MIDI Viewer"
+
+If you sent random data to a device that plays audio, you'll probably
+next want to use the "panic button" commands above...!
+
+Hope this illustrates some of the examples and possibilities.  I'm
+working on writing some more documentation.
+
+The --help option is supported, there's a help output that shows you all
+of the available options.
+
+For now, the program is available here, on my Web server:
+
+http://krellan.com/midicat
+
+If you're interested, try it, and let me know what you think!
+
+Josh Lehan
