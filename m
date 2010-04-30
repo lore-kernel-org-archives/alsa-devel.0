@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Subject: Re: [PATCH 4/4] ASoC: tlv320dac33: Support for turning
- off the codec in BIAS_STANDBY
-Date: Fri, 30 Apr 2010 12:42:27 +0100
-Message-ID: <20100430114227.GF28241@rakim.wolfsonmicro.main>
+	off the codec in BIAS_STANDBY
+Date: Fri, 30 Apr 2010 14:42:32 +0300
+Message-ID: <201004301442.32581.peter.ujfalusi@nokia.com>
 References: <1272612715-13387-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201004301310.14378.peter.ujfalusi@nokia.com>
 	<20100430102309.GD21607@sirena.org.uk>
 	<201004301355.25797.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 907702446D
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8C7A7103912
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Apr 2010 13:42:28 +0200 (CEST)
-Content-Disposition: inline
+	Fri, 30 Apr 2010 13:43:17 +0200 (CEST)
 In-Reply-To: <201004301355.25797.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,24 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 30, 2010 at 01:55:25PM +0300, Peter Ujfalusi wrote:
+On Friday 30 April 2010 13:55:25 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+> =
 
-> I need to keep the dac33_pcm_prepare level of configuration for cases, when the 
-> codec is in ON and a playback is starting (and if the codec is not ON, than 
-> respond it for later, when it is switch on), right?
-> I _need_ to do the things, which is done in the dac33_prepare_chip function 
-> every time, when a stream is starting :(
+> Now, if I use DAPM_SUPPLY attached to the DAC:
+> If the codec has been brought up because the loopback is enabled, than the
+> dac33_prepare_chip will be called twice: once from dac33_pcm_prepare, and
+> then from the SUPPLY event.
+> This might be also the case if I use the post-DAPM prepare (or pre)
 
-Yes, absolutely - and if we add a post-DAPM prepare callback then you
-can just do that there without worrying about power in the driver.
+And I admit that you are actually right (and I was wrong) :D
 
-> I do agree, that it is not really nice to have playback related thing in the 
-> dac33_set_bias_level, but so far I think that is the only way to avoid 
-> additional hassle (which means more places to have error, problems).
+By adding SND_SOC_DAPM_PRE widget to a codec, and move the former content o=
+f =
 
-Like I say, I think the addition of a post-DAPM callback on prepare
-ought to do the job just as well.
+dac33_pcm_prepare function to PRE_PMU event works like charm.
+
+It is called all the time, when the stream starts/restarts.
+So I'll get rid of the dac33_pcm_prepare, and clean up the dac33_set_bias_l=
+evel, =
+
+and resubmit the series.
+
+Thank you Mark for guiding me to the correct direction!
+
+-- =
+
+P=E9ter
