@@ -1,16 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH 0/4] ASoC: tlv320dac33: Support for turning
-	codec off
-Date: Fri, 30 Apr 2010 10:31:51 +0300
-Message-ID: <1272612715-13387-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH 2/4] ASoC: tlv320dac33: Revised module loading,
+	and DAC33 ID read
+Date: Fri, 30 Apr 2010 10:31:53 +0300
+Message-ID: <1272612715-13387-3-git-send-email-peter.ujfalusi@nokia.com>
+References: <1272612715-13387-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id BF6121037EE
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id F02E01037FB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 30 Apr 2010 09:32:02 +0200 (CEST)
+	Fri, 30 Apr 2010 09:32:04 +0200 (CEST)
+In-Reply-To: <1272612715-13387-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,46 +26,116 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Optimize the way how tlv320dac33 is powered uppon module and
+soc initialization.
+Also read the DAC33 ID registers, and update the reg_cache
+to reflect it.
 
-The following series adds support for turning the tlv320dac33 codec off in
-BIAS_STANDBY (and obviously in BIAS_OFF).
-
-Since the driver already had mechanics for supporting turned off codec in
-register writes, the needed changes are mainly in the BIAS/stream handling.
-
-As part of the series further optimization has been done to codec
-initialization, resume.
-
-The following scenarios has been tested, and verified (I think these are
-covering all cases):
-1. Analog bypass caused BIAS_STANDBY -> BIAS_ON
-   We need to power on the codec, and do the chip init, but we does not
-   need to execute the playback related configuration
-2. Playback caused  BIAS_STANDBY -> BIAS_ON
-   We need to power on the codec, and do the chip init, and also we need
-   to execute the playback related configuration.
-3. Playback start, while Analog bypass is on (BIAS_ON -> BIAS_ON)
-   We need to execute the playback related configuration. The codec is
-   already on.
-4. Analog bypass enable, while playback (BIAS_ON -> BIAS_ON)
-   Nothing need to be done.
-5. Playback start withing soc power down timeout (BIAS_ON -> BIAS_ON)
-   We need to execute the playback related configuration. The codec is
-   still on.
-6. Analog bypass enable withing soc power down timeout (BIAS_ON -> BIAS_ON)
-   Nothing need to be done.
-
-This series applies on top of Liam's:
-git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.35 branch
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
-Peter Ujfalusi (4):
-  ASoC: tlv320dac33: Optimize power up, and restore
-  ASoC: tlv320dac33: Revised module loading, and DAC33 ID read
-  ASoC: tlv320dac33: Manage a pointer for snd_pcm_substream in private
-    structure
-  ASoC: tlv320dac33: Support for turning off the codec in BIAS_STANDBY
+ sound/soc/codecs/tlv320dac33.c |   37 ++++++++++++++++++-------------------
+ 1 files changed, 18 insertions(+), 19 deletions(-)
 
- sound/soc/codecs/tlv320dac33.c |  236 +++++++++++++++++++++++-----------------
- 1 files changed, 137 insertions(+), 99 deletions(-)
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index 41cad6c..7d01759 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -334,6 +334,15 @@ static void dac33_init_chip(struct snd_soc_codec *codec)
+ 		    dac33_read_reg_cache(codec, DAC33_LINER_TO_RLO_VOL));
+ }
+ 
++static inline void dac33_read_id(struct snd_soc_codec *codec)
++{
++	u8 reg;
++
++	dac33_read(codec, DAC33_DEVICE_ID_MSB, &reg);
++	dac33_read(codec, DAC33_DEVICE_ID_LSB, &reg);
++	dac33_read(codec, DAC33_DEVICE_REV_ID, &reg);
++}
++
+ static inline void dac33_soft_power(struct snd_soc_codec *codec, int power)
+ {
+ 	u8 reg;
+@@ -1290,9 +1299,6 @@ static int dac33_soc_probe(struct platform_device *pdev)
+ 	socdev->card->codec = codec;
+ 	dac33 = snd_soc_codec_get_drvdata(codec);
+ 
+-	/* Power up the codec */
+-	dac33_hard_power(codec, 1);
+-
+ 	/* register pcms */
+ 	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+ 	if (ret < 0) {
+@@ -1312,9 +1318,6 @@ static int dac33_soc_probe(struct platform_device *pdev)
+ 	/* power on device */
+ 	dac33_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+-	/* Bias level configuration has enabled regulator an extra time */
+-	regulator_bulk_disable(ARRAY_SIZE(dac33->supplies), dac33->supplies);
+-
+ 	return 0;
+ 
+ pcm_err:
+@@ -1464,8 +1467,6 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
+ 			goto error_gpio;
+ 		}
+ 		gpio_direction_output(dac33->power_gpio, 0);
+-	} else {
+-		dac33->chip_power = 1;
+ 	}
+ 
+ 	/* Check if the IRQ number is valid and request it */
+@@ -1503,12 +1504,14 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
+ 		goto err_get;
+ 	}
+ 
+-	ret = regulator_bulk_enable(ARRAY_SIZE(dac33->supplies),
+-				    dac33->supplies);
++	/* Read the tlv320dac33 ID registers */
++	ret = dac33_hard_power(codec, 1);
+ 	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
+-		goto err_enable;
++		dev_err(codec->dev, "Failed to power up codec: %d\n", ret);
++		goto error_codec;
+ 	}
++	dac33_read_id(codec);
++	dac33_hard_power(codec, 0);
+ 
+ 	ret = snd_soc_register_codec(codec);
+ 	if (ret != 0) {
+@@ -1523,14 +1526,9 @@ static int __devinit dac33_i2c_probe(struct i2c_client *client,
+ 		goto error_codec;
+ 	}
+ 
+-	/* Shut down the codec for now */
+-	dac33_hard_power(codec, 0);
+-
+ 	return ret;
+ 
+ error_codec:
+-	regulator_bulk_disable(ARRAY_SIZE(dac33->supplies), dac33->supplies);
+-err_enable:
+ 	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
+ err_get:
+ 	if (dac33->irq >= 0) {
+@@ -1554,14 +1552,15 @@ static int __devexit dac33_i2c_remove(struct i2c_client *client)
+ 	struct tlv320dac33_priv *dac33;
+ 
+ 	dac33 = i2c_get_clientdata(client);
+-	dac33_hard_power(&dac33->codec, 0);
++
++	if (unlikely(dac33->chip_power))
++		dac33_hard_power(&dac33->codec, 0);
+ 
+ 	if (dac33->power_gpio >= 0)
+ 		gpio_free(dac33->power_gpio);
+ 	if (dac33->irq >= 0)
+ 		free_irq(dac33->irq, &dac33->codec);
+ 
+-	regulator_bulk_disable(ARRAY_SIZE(dac33->supplies), dac33->supplies);
+ 	regulator_bulk_free(ARRAY_SIZE(dac33->supplies), dac33->supplies);
+ 
+ 	destroy_workqueue(dac33->dac33_wq);
+-- 
+1.7.0.4
