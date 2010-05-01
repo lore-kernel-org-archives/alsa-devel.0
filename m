@@ -1,16 +1,18 @@
-From: Thoralf Freitag <thoralf.freitag@cactus-online.de>
-Subject: Mute LED on HP Pavilion DV7-1160eg
-Date: Sat, 01 May 2010 22:19:14 +0200
-Message-ID: <4BDC8CC2.5040507@cactus-online.de>
+From: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Subject: Re: [PATCH] Merge es1688 and es968 drivers
+Date: Sat, 1 May 2010 22:54:50 +0200
+Message-ID: <20100501225450.56143e22.krzysztof.h1@poczta.fm>
+References: <20100501155257.b7284b9b.krzysztof.h1@poczta.fm>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de
-	[212.227.126.186])
-	by alsa0.perex.cz (Postfix) with ESMTP id E2E801037F5
+Received: from smtpo.poczta.interia.pl (smtpo.poczta.interia.pl
+	[217.74.65.205])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BF451037F7
 	for <alsa-devel@alsa-project.org>;
-	Sat,  1 May 2010 22:19:20 +0200 (CEST)
+	Sat,  1 May 2010 22:54:08 +0200 (CEST)
+In-Reply-To: <20100501155257.b7284b9b.krzysztof.h1@poczta.fm>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,38 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Krzysztof Helt <krzysztof.h1@poczta.fm>
+Cc: Takashi Iwai <tiwai@suse.de>, Alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I tried to find a way for switching/control Mute LED on an HP DV 7
-notebook. I found a solution which is very ugly. According the solution
-described here
-(http://mailman.alsa-project.org/pipermail/alsa-devel/2009-April/016126.html)
-I changed the value for LED control in this manner:
+On Sat, 1 May 2010 15:52:57 +0200
+Krzysztof Helt <krzysztof.h1@poczta.fm> wrote:
 
-diff -u alsa-driver-1.0.23/sound/pci/hda/patch_sigmatel.c
-alsa-driver-1.0.23_b/sound/pci/hda/patch_sigmatel.c
---- alsa-driver-1.0.23/sound/pci/hda/patch_sigmatel.c    2010-04-16
-13:10:10.000000000 +0200
-+++ alsa-driver-1.0.23_b/sound/pci/hda/patch_sigmatel.c    2010-05-01
-21:37:36.719063655 +0200
-@@ -4952,9 +4952,9 @@
-         }
-     }
-     if (muted)
--        spec->gpio_data &= ~spec->gpio_led; /* orange */
-+        spec->gpio_data &= ~0x01; /* orange */
-     else
--        spec->gpio_data |= spec->gpio_led; /* white */
-+        spec->gpio_data |= 0x01; /* white */
- 
-     if (!spec->gpio_led_polarity) {
-         /* LED state is inverted on these systems */
+> From: Krzysztof Helt <krzysztof.h1@wp.pl>
+> 
+> The ESS ES968 chip is nothing more then a PnP companion
+> for non-PnP audio chips. It was paired with non-PnP ESS' chips:
+> ES688 and ES1688. The ESS' audio chips are handled by the es1688
+> driver in native mode. The PnP cards are handled by the ES968
+> driver in SB compatible mode.
+> 
+> Move the ES968 chip handling to the es1688 driver so the driver
+> can handle both PnP and non-PnP cards. The es968 is removed.
+> 
+> Also, a new PnP id is added for the card I acquired (the change
+> was tested on this card).
+> 
 
-I hate this solution. Maybe someone of the programming experts could
-give me a way to make it better. On which position should I make which
-changes ?
+Takashi, please drop this patch. It breaks compilation of GUS driver.
 
-Thanx for your guidance.
+I'll prepare a new set and make the change to es1688-lib a separate patch.
 
-Thoralf
+Regards,
+Krzysztof
+
+----------------------------------------------------------------------
+Szukasz pracy? Zobacz ciekawe oferty w Twoim miescie
+Sprawdz >>> http://linkint.pl/f26b2
