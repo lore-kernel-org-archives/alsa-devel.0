@@ -1,28 +1,17 @@
-From: adelias <adelias@freemail.gr>
-Subject: Re: usbaudio: Support for USB audio v2.0 devices
-Date: Mon, 03 May 2010 15:49:05 +0300
-Message-ID: <4BDEC641.2000906@freemail.gr>
-References: <1266856137-26252-1-git-send-email-daniel@caiaq.de>	<4B8CD6A0.40204@freemail.gr>	<20100302183542.GU28972@buzzloop.caiaq.de>	<4BD6E564.5050100@freemail.gr>
-	<20100427140612.GC30804@buzzloop.caiaq.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Shahin Ghazinouri <shahin.ghazinouri@pelagicore.com>
+Subject: [PATCH] hda_intel: Fixes distorted recording on US15W
+	chipset
+Date: Mon, 3 May 2010 16:46:56 +0200
+Message-ID: <399F8F37-FCF5-47E9-98A1-F1AA2972B12B@pelagicore.com>
+Mime-Version: 1.0 (Apple Message framework v1078)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6E0A0245A7
+Received: from smtp-out12.han.skanova.net (smtp-out12.han.skanova.net
+	[195.67.226.212])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0DA932460E
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 May 2010 14:52:15 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1O8v8B-0007vU-2A
-	for alsa-devel@alsa-project.org; Mon, 03 May 2010 14:52:15 +0200
-Received: from tiger.rd.forthnet.gr ([212.251.99.184])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 03 May 2010 14:52:15 +0200
-Received: from adelias by tiger.rd.forthnet.gr with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Mon, 03 May 2010 14:52:15 +0200
-In-Reply-To: <20100427140612.GC30804@buzzloop.caiaq.de>
+	Mon,  3 May 2010 16:47:01 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,37 +22,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjcvNC8yMDEwIDU6MDYgzrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4gT24gVHVlLCBBcHIg
-MjcsIDIwMTAgYXQgMDQ6MjM6NDhQTSArMDMwMCwgYWRlbGlhcyB3cm90ZToKPj4gT24gMi8zLzIw
-MTAgODozNSDOvM68LCBEYW5pZWwgTWFjayB3cm90ZToKPj4+IE9uIFR1ZSwgTWFyIDAyLCAyMDEw
-IGF0IDExOjEzOjA0QU0gKzAyMDAsIGFkZWxpYXMgd3JvdGU6Cj4+Pj4gVGhhbmtzIHRvIGFsbCBp
-bnZvbHZlZCBmb3Igd29ya2luZyBvbiB1c2IgYXVkaW8gdjIuCj4+Pj4KPj4+PiBMYXN0IG5pZ2h0
-IEkgaW5zdGFsbGVkIHRoZSAyMDEwMDIyNiBzbmFwc2hvdC4gSSBkaWQgYSBsaXR0bGUgdGVzdGlu
-Zwo+Pj4+IHdpdGggbXkgWE1PUyBib2FyZCB1c2luZyB0b3NsaW5rIG91dCBpbnRvIG1heSBEQUMu
-IEkgdHJpZWQgdmFyaW91cyBmaWxlcwo+Pj4+IHJhbmdpbmcgMTZiaXQvNDQxMTBrSHotMjRiaXQv
-MTkyMDAwa0h6LiBUaGUgNDQxMTAgZmlsZXMgaGFkIHF1aXRlIGEgYml0Cj4+Pj4gb2Ygc3RhdGlj
-LCB0aGUgaGlnaGVyIGJpdHJhdGUgZmlsZXMgd2VyZSBiZXR0ZXIuIEFzIHlvdSBzdGF0ZWQgdGhl
-Cj4+Pj4gc2FtcGxpbmcgcmF0ZSBpcyBub3QgY29ycmVjdCBhbmQgYmUgdmVyaWZpZWQgYnkgbG9v
-a2luZyBhdCB0aGUgZmxhc2hpbmcKPj4+PiBMRURzIG9uIHRoZSBYTU9TIGJvYXJkLiBUaGV5IHNo
-b3VsZCBmbGFzaCBmYXN0ZXIgYXMgc2FtcGxpbmcgcmF0ZQo+Pj4+IGluY3JlYXNlLiBJbiB0aGlz
-IGNhc2Ugbm8gY2hhbmdlIHdhcyBvYnNlcnZlZC4KPj4+Cj4+PiBZZXMgLSB0aGlzIGlzIGFsbCBk
-byBiZSBkb25lLiBUaGUgc2FtcGxlIHJhdGUgc2V0dGluZyBpcyBkb25lIHdpdGggYQo+Pj4gZGlm
-ZmVyZW50IHR5cGUgb2YgY2xhc3MgcmVxdWVzdCwgd2hpY2ggYWxzbyBhZGRyZXNzZXMgdGhlIGlu
-dGVyZmFjZSBub3csCj4+PiB1bmxpa2UgdjEgZGV2aWNlcyB3aGljaCBzZW5kIHRoYXQgdG8gdGhl
-IGVuZHBvaW50LiBCdXQgdGhhdCdzIGp1c3Qgb25lCj4+PiBvdXQgb2YgbWFueSBkaWZmZXJlbmNl
-cyB0aGF0IG5lZWQgdG8gYmUgYWRkcmVzc2VkLCBhbmQgaXQncyBzdGlsbCBhIGxvbmcKPj4+IHdh
-eSB0byBnby4gSSdtIG9uIGl0IDopCj4+Pgo+Pj4gRGFuaWVsCj4+Cj4+IEkgdXBncmFkZWQgYWxz
-YSB0byAxLjAuMjMuIFRoZSBYTU9TIGRldmljZSBpcyB3b3JraW5nIGdyZWF0IHdpdGggdGhlCj4+
-IGV4Y2VwdGlvbiBvZiBzb21lIG1pbGQgY2xpY2tzIGhlcmUgYW5kIHRoZXJlLiBJcyB0aGlzIGEg
-a25vd24gaXNzdWUgb3IKPj4gbWlnaHQgaXQgYmUgYSBwcm9ibGVtIHdpdGggbXkgc3BlY2lmaWMg
-Y29uZmlndXJhdGlvbj8KPgo+IFdoYXQgc3BlY2lmaWMgY29uZmlndXJhdGlvbiBhcmUgeW91IHRl
-c3Rpbmcgd2l0aD8gQXMgeW91IGhhdmUgc3VjaCBhbgo+IGV2YWx1YXRpb24ga2l0LCBJIGJlbGll
-dmUgeW91J3JlIGFsc28gcHJvdmlkZWQgd2l0aCB0aGUgWE1PUyBkZXZlbG9wbWVudAo+IHBsYXRm
-b3JtIC0gd2hpY2ggZmlybXdhcmUgZGlkIHlvdSBpbnN0YWxsIHRvIHRoZSBib2FyZD8KPgo+IERh
-bmllbAoKRmlybXdhcmUgaXMgb24gMXYyLiBJJ20gbm90IGdldHRpbmcgY2xpY2tzIG9uIE9TWCAx
-MC42LjIgb3IgV2luZG93cyA3IAp3aXRoIHRoZSBBU0lPIGRyaXZlci4KCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The HDA controller in US15W (Poulsbo) reports inaccurate position values for capture streams when using the LPIB read method, resulting in distorted recordings. 
+However, using the position buffer is broken for playback streams, resulting in a fallback to the LPIB method with the current driver. This patch works around the issue by independently detecting the read position method for capture and playback streams.
+The patch will not have any effect if the position fix method is explicitly set.
+Signed-off-by: Shahin Ghazinouri <shahin.ghazinouri@pelagicore.com>
+---
+--- linux-2.6.34-rc6/sound/pci/hda/hda_intel.c	2010-04-30 05:02:05.000000000 +0200
++++ linux-2.6.34-rc6_patch/sound/pci/hda/hda_intel.c	2010-04-30 11:31:57.000000000 +0200
+@@ -425,7 +425,8 @@
+	struct snd_dma_buffer posbuf;
+
+	/* flags */
+-	int position_fix;
++	int playback_position_fix;
++	int capture_position_fix;
+	int poll_count;
+	unsigned int running :1;
+	unsigned int initialized :1;
+@@ -1302,8 +1303,10 @@
+	azx_sd_writel(azx_dev, SD_BDLPU, upper_32_bits(azx_dev->bdl.addr));
+
+	/* enable the position buffer */
+-	if (chip->position_fix == POS_FIX_POSBUF ||
+-	    chip->position_fix == POS_FIX_AUTO ||
++	if (chip->capture_position_fix == POS_FIX_POSBUF ||
++	    chip->capture_position_fix == POS_FIX_AUTO ||
++	    chip->playback_position_fix == POS_FIX_POSBUF ||
++	    chip->playback_position_fix == POS_FIX_AUTO ||
+	    chip->via_dmapos_patch) {
+		if (!(azx_readl(chip, DPLBASE) & ICH6_DPLBASE_ENABLE))
+			azx_writel(chip, DPLBASE,
+@@ -1843,13 +1846,24 @@
+
+	if (chip->via_dmapos_patch)
+		pos = azx_via_get_position(chip, azx_dev);
+-	else if (chip->position_fix == POS_FIX_POSBUF ||
+-		 chip->position_fix == POS_FIX_AUTO) {
+-		/* use the position buffer */
+-		pos = le32_to_cpu(*azx_dev->posbuf);
++	else if (azx_dev->index < chip->playback_index_offset) {
++		/* Capture stream */
++		if (chip->capture_position_fix == POS_FIX_POSBUF ||
++		    chip->capture_position_fix == POS_FIX_AUTO)
++			/* use the position buffer */
++			pos = le32_to_cpu(*azx_dev->posbuf);
++		else
++			/* read LPIB */
++			pos = azx_sd_readl(azx_dev, SD_LPIB);
+	} else {
+-		/* read LPIB */
+-		pos = azx_sd_readl(azx_dev, SD_LPIB);
++		/* Playback stream */
++		if (chip->playback_position_fix == POS_FIX_POSBUF ||
++		    chip->playback_position_fix == POS_FIX_AUTO)
++			/* use the position buffer */
++			pos = le32_to_cpu(*azx_dev->posbuf);
++		else
++			/* read LPIB */
++			pos = azx_sd_readl(azx_dev, SD_LPIB);
+	}
+	if (pos >= azx_dev->bufsize)
+		pos = 0;
+@@ -1884,15 +1898,30 @@
+	azx_dev->start_flag = 0;
+
+	pos = azx_get_position(chip, azx_dev);
+-	if (chip->position_fix == POS_FIX_AUTO) {
+-		if (!pos) {
+-			printk(KERN_WARNING
+-			       "hda-intel: Invalid position buffer, "
+-			       "using LPIB read method instead.\n");
+-			chip->position_fix = POS_FIX_LPIB;
+-			pos = azx_get_position(chip, azx_dev);
+-		} else
+-			chip->position_fix = POS_FIX_POSBUF;
++	if (azx_dev->index < chip->playback_index_offset) {
++		/* Capture stream  */
++		if (chip->capture_position_fix == POS_FIX_AUTO) {
++			if (!pos) {
++				printk(KERN_WARNING
++				       "hda-intel: Invalid position buffer, "
++				       "using LPIB read method instead.\n");
++				chip->capture_position_fix = POS_FIX_LPIB;
++				pos = azx_get_position(chip, azx_dev);
++			} else
++				chip->capture_position_fix = POS_FIX_POSBUF;
++		}
++	} else {
++		/* Playback stream */
++		if (chip->playback_position_fix == POS_FIX_AUTO) {
++			if (!pos) {
++				printk(KERN_WARNING
++				       "hda-intel: Invalid position buffer, "
++				       "using LPIB read method instead.\n");
++				chip->playback_position_fix = POS_FIX_LPIB;
++				pos = azx_get_position(chip, azx_dev);
++			} else
++				chip->playback_position_fix = POS_FIX_POSBUF;
++		}
+	}
+
+	if (!bdl_pos_adj[chip->dev_index])
+@@ -2431,7 +2460,10 @@
+	chip->dev_index = dev;
+	INIT_WORK(&chip->irq_pending_work, azx_irq_pending_work);
+
+-	chip->position_fix = check_position_fix(chip, position_fix[dev]);
++	chip->capture_position_fix =
++	  check_position_fix(chip, position_fix[dev]);
++	chip->playback_position_fix =
++	  check_position_fix(chip, position_fix[dev]);
+	check_probe_mask(chip, dev);
+
+	chip->single_cmd = single_cmd;
