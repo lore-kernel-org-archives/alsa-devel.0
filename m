@@ -1,70 +1,88 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCHv2 0/4] ASoC: tlv320dac33: Support for
-	turning off codec
-Date: Mon, 03 May 2010 13:19:32 +0100
-Message-ID: <1272889172.3000.18.camel@odin>
-References: <1272628776-23185-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Tvrtko Ursulin <tvrtko@ursulin.net>
+Subject: Re: Ooops when working with USB MIDI (2.6.33.1)
+Date: Mon, 3 May 2010 13:48:35 +0100
+Message-ID: <201005031348.35582.tvrtko@ursulin.net>
+References: <201004051433.47171.tvrtko@ursulin.net> <201004091836.51023.tvrtko@ursulin.net> <s5hfx32bhbj.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id E35F724580
-	for <alsa-devel@alsa-project.org>;
-	Mon,  3 May 2010 14:19:38 +0200 (CEST)
-Received: by mail-wy0-f179.google.com with SMTP id 21so221099wya.38
-	for <alsa-devel@alsa-project.org>; Mon, 03 May 2010 05:19:38 -0700 (PDT)
-In-Reply-To: <1272628776-23185-1-git-send-email-peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hfx32bhbj.wl%tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-04-30 at 14:59 +0300, Peter Ujfalusi wrote:
-> Hello,
+On Sunday 11 Apr 2010 08:04:48 Takashi Iwai wrote:
+> At Fri, 9 Apr 2010 18:36:50 +0100,
 > 
-> Changes since v1:
-> - patch 1: Removed extra register writes
-> - patch 4:
->  - Let core to bring the codec to BIAS_OFF (set idle_bias_off)
->  - dac33_set_bias_level only takes care of power and minimum initialization
->  - PRE_DAPM widget event is replacing the dac33_pcm_pointer call to take
->    care of the initialization needed before _every_ playback.
+> Tvrtko Ursulin wrote:
+> > On Friday 09 Apr 2010 08:29:33 Takashi Iwai wrote:
+> > > At Fri, 9 Apr 2010 07:51:35 +0100,
+> > >
+> > > Tvrtko Ursulin wrote:
+> > > > On Thursday 08 Apr 2010 13:22:36 Takashi Iwai wrote:
+> > > > > > Takashi, do you remember what the original problem was?
+> > > > >
+> > > > > Well, I have only a vague memory -- it's a similar scenario that
+> > > > > some app still accessing after disconnection.  The URB can't be
+> > > > > handled after the disconnection is finished.
+> > > > >
+> > > > > I think the patch below might fix in this case.  You can try it
+> > > > > instead of reverting the commit above.
+> >
+> > A very quick test and it looks good  - did not crash in the disconnect
+> > and then exit TuxGuitar scenario. Thank you!
 > 
-> There are few scenarios, which has to be taken care::
-> 1. Analog bypass caused BIAS_OFF -> BIAS_ON
->    We need to power on the codec, and do the chip init, but we does not
->    need to execute the playback related configuration
-> 2. Playback caused  BIAS_OFF -> BIAS_ON
->    We need to power on the codec, and do the chip init, and also we need
->    to execute the playback related configuration.
-> 3. Playback start, while Analog bypass is on (BIAS_ON -> BIAS_ON)
->    We need to execute the playback related configuration. The codec is
->    already on.
-> 4. Analog bypass enable, while playback (BIAS_ON -> BIAS_ON)
->    Nothing need to be done.
-> 5. Playback start withing soc power down timeout (BIAS_ON -> BIAS_ON)
->    We need to execute the playback related configuration. The codec is
->    still on.
-> 
-> Since the power up, and the codec init is optimized, the added overhead
-> in stream start is minimal.
-> 
-> Withing this patch, the hard_power function is now only doing what it
-> supposed to: only handle the powers, and GPIO reset line.
-> The codec initialization and state restore has been moved out.
-> 
+> OK, now I merged thte patch.  Let me know if you see any regressions.
 
-Applied.
+Just saw possibly the same oops on 2.6.34-rc6, which seems to have this patch applied:
 
-Thanks !
-
-Liam
+[185589.243713] BUG: unable to handle kernel paging request at 000000000040c840
+[185589.243732] IP: [<ffffffff810685c8>] module_put+0x18/0x60
+[185589.243752] PGD c4616067 PUD b741a067 PMD c47c0067 PTE 0
+[185589.243768] Oops: 0000 [#1] PREEMPT SMP
+[185589.243779] last sysfs file: /sys/devices/platform/it87.656/temp1_input
+[185589.243790] CPU 0
+[185589.243795] Modules linked in: nls_iso8859_1 nls_cp437 vfat fat it87 hwmon_vid snd_pcm_oss snd_mixer_oss snd_seq ppp_deflate 
+zlib_deflate bsd_comp ppp_async crc_ccitt ppp_generic slhc radeon i2c_algo_bit nls_utf8 cifs cpufreq_conservative cpufreq_userspace 
+cpufreq_powersave powernow_k8 fuse sha256_generic ansi_cprng krng eseqiv rng cryptd crypto_wq aes_x86_64 aes_generic cbc cryptomgr 
+crypto_hash aead pcompress edd dm_crypt crypto_blkcipher crypto_algapi xfs exportfs loop raid0 dm_mod snd_hda_codec_atihdmi 
+snd_hda_codec_via snd_usb_audio snd_hda_intel snd_hda_codec snd_usb_lib snd_hwdep snd_pcm snd_rawmidi kvm_amd snd_timer 
+snd_seq_device kvm ipaq i2c_piix4 uvcvideo sr_mod snd psmouse snd_page_alloc usbserial pcspkr r8169 joydev videodev v4l1_compat 
+v4l2_compat_ioctl32 wmi k10temp serio_raw button sg firewire_ohci cdrom firewire_core crc_itu_t ext4 jbd2 crc16 drm_kms_helper ttm drm fan 
+processor ata_generic pata_atiixp thermal thermal_sys
+[185589.244003]
+[185589.244007] Pid: 21953, comm: java Not tainted 2.6.34-rc6 #2 M4A785TD-M EVO/System Product Name
+[185589.244007] RIP: 0010:[<ffffffff810685c8>]  [<ffffffff810685c8>] module_put+0x18/0x60
+[185589.244007] RSP: 0018:ffff8800cec7fec8  EFLAGS: 00010202
+[185589.244007] RAX: ffff8800cec7ffd8 RBX: ffff88011e0d4000 RCX: 1000000000000081
+[185589.244007] RDX: 000000000000003e RSI: ffffea00016e0248 RDI: 000000000040c668
+[185589.244007] RBP: ffff88011d99cc20 R08: dead000000100100 R09: dead000000200200
+[185589.244007] R10: dead000000100100 R11: dead000000200200 R12: 0000000000000008
+[185589.244007] R13: ffff8800c1255678 R14: ffff88011d549700 R15: 00000000023cb800
+[185589.244007] FS:  00007f1c265fa910(0000) GS:ffff880001800000(0000) knlGS:00000000f6959a80
+[185589.244007] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[185589.244007] CR2: 000000000040c840 CR3: 0000000093488000 CR4: 00000000000006f0
+[185589.244007] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[185589.244007] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+[185589.244007] Process java (pid: 21953, threadinfo ffff8800cec7e000, task ffff8800cedd3480)
+[185589.244007] Stack:
+[185589.244007]  ffff88011d549700 ffffffffa02017da ffff880058621600 ffff8800c1006f00
+[185589.244007] <0> ffff8800c1006f00 ffff8800c1006f00 ffff880058621600 ffffffff810d2071
+[185589.244007] <0> ffff8800c1006f00 ffff8800b76c6100 0000000000000000 ffff8800b76c6180
+[185589.244007] Call Trace:
+[185589.244007]  [<ffffffffa02017da>] ? snd_rawmidi_release+0x4a/0x60 [snd_rawmidi]
+[185589.244007]  [<ffffffff810d2071>] ? __fput+0xd1/0x1f0
+[185589.244007]  [<ffffffff810ce8bb>] ? filp_close+0x4b/0x80
+[185589.244007]  [<ffffffff810ce9a4>] ? sys_close+0xb4/0x110
+[185589.244007]  [<ffffffff8100256b>] ? system_call_fastpath+0x16/0x1b
+[185589.244007] Code: 89 44 24 08 e8 7a b6 31 00 48 8b 44 24 08 eb a6 0f 1f 00 48 83 ec 08 48 85 ff 74 37 65 48 8b 04 25 48 b5 00 00 ff 80 
+44 e0 ff ff <48> 8b 87 d8 01 00 00 65 ff 40 04 83 3f 02 74 1d 65 48 8b 04 25
+[185589.244007] RIP  [<ffffffff810685c8>] module_put+0x18/0x60
+[185589.244007]  RSP <ffff8800cec7fec8>
+[185589.244007] CR2: 000000000040c840
+[185589.244432] ---[ end trace 9fdd48a93090f3c0 ]---
+[185589.244442] note: java[21953] exited with preempt_count 1
+[185590.711963] hda-intel: IRQ timing workaround is activated for card #1. Suggest a bigger bdl_pos_adj.
