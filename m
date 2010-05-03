@@ -1,25 +1,26 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: asoc: fsl_dma_hw_free being called twice at end of
-	playback
-Date: Mon, 03 May 2010 15:51:04 -0500
-Message-ID: <4BDF3738.3070900@freescale.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Mon, 3 May 2010 22:55:58 +0200
+Message-ID: <20100503205558.GM30801@buzzloop.caiaq.de>
+References: <4B8CD6A0.40204@freemail.gr>
+	<20100302183542.GU28972@buzzloop.caiaq.de>
+	<4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
+	<20100427140735.GD30804@buzzloop.caiaq.de>
+	<4BD702F0.6080108@gmail.com>
+	<20100427154346.GH30801@buzzloop.caiaq.de>
+	<4BD71E73.5020106@gmail.com>
+	<20100427173329.GI30801@buzzloop.caiaq.de>
+	<4BDDAEB2.2010303@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from az33egw02.freescale.net (az33egw02.freescale.net
-	[192.88.158.103])
-	by alsa0.perex.cz (Postfix) with ESMTP id C7EB8246ED
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9AA44246F1
 	for <alsa-devel@alsa-project.org>;
-	Mon,  3 May 2010 22:51:12 +0200 (CEST)
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
-	o43Kp5mE001525
-	for <alsa-devel@alsa-project.org>; Mon, 3 May 2010 13:51:08 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])
-	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id o43L1PC4012199
-	for <alsa-devel@alsa-project.org>; Mon, 3 May 2010 16:01:26 -0500 (CDT)
+	Mon,  3 May 2010 22:56:03 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4BDDAEB2.2010303@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,28 +30,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, ALSA development <alsa-devel@alsa-project.org>
+To: The Source <thesourcehim@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In my 8610 ASoC driver, I'm seeing the DMA driver's .hw_free function being
-called twice whenever playback ends.  I've added some printk's to demonstrate:
-
-snd_pcm_common_ioctl1:2543
-snd_pcm_hw_free:543
-soc_pcm_hw_free:761 c023983c
-fsl_dma_hw_free:720 substream=df029d00 dma_private=df440000 stream=0
-snd_pcm_release_substream:2022
-soc_pcm_hw_free:761 c023983c
-fsl_dma_hw_free:720 substream=df029d00 dma_private=df440000 stream=0
-fsl_dma_close:759 substream=df029d00 dma_private=df440000
-
-So the ioctl is being called only once, but the both snd_pcm_hw_free() and
-snd_pcm_release_substream() are calling the .hw_free function.
-
-Is this normal?  I don't know how to handle this, other than to add some
-boolean to my private data structure that indicates whether the resources
-have been freed or not.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+T24gU3VuLCBNYXkgMDIsIDIwMTAgYXQgMDg6NTY6MThQTSArMDQwMCwgVGhlIFNvdXJjZSB3cm90
+ZToKPiAyNy4wNC4yMDEwIDIxOjMzLCBEYW5pZWwgTWFjayDQv9C40YjQtdGCOgo+ID5PbiBUdWUs
+IEFwciAyNywgMjAxMCBhdCAwOToyNzoxNVBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ID4+
+MjcuMDQuMjAxMCAxOTo0MywgRGFuaWVsIE1hY2sg0L/QuNGI0LXRgjoKPiA+Pj5Zb3Ugd291bGQg
+Y2hlY2sgb3V0IHRoZSBsYXRlc3QgbWFpbmxpbmUgc291cmNlczoKPiA+Pj4KPiA+Pj4gICAkIGdp
+dCBjbG9uZSBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9y
+dmFsZHMvbGludXgtMi42LmdpdAo+ID4+PiAgICQgY2QgbGludXgtMi42Cj4gPj4+Cj4gPj4+VGhl
+biBjcmVhdGUgYSBicmFuY2ggYW5kIG1lcmdlIHRoZSBsYXRlc3QgQUxTQSBwYXRjaGVzOgo+ID4+
+Pgo+ID4+PiAgICQgZ2l0IGNoZWNrb3V0IC1iIGFsc2EKPiA+Pj4gICAkIGdpdCBwdWxsIGdpdDov
+L2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90aXdhaS9zb3VuZC0yLjYu
+Z2l0Cj4gPj4+Cj4gPj4+VGhlbiBidWlsZCBhbmQgaW5zdGFsbCB0aGUga2VybmVsIGFuZCB2ZXJp
+ZnkgaXQgc3RpbGwgc2hvd3MgdGhlIGVycm9yLgo+ID4+PlN0YXJ0IHRoZSBiaXNlY3QgYW5kIG1h
+cmsgdGhlIGN1cnJlbnQgcmV2aXNpb24gYXMgJ2JhZCc6Cj4gPj4+Cj4gPj4+ICAgJCBnaXQgYmlz
+ZWN0IHN0YXJ0Cj4gPj4+ICAgJCBnaXQgYmlzZWN0IGJhZAo+ID4+Pgo+ID4+PkFzc3VtaW5nIHRo
+YXQgdjIuNi4zNC1yYzUgKGJlZm9yZSB0aGUgbWVyZ2UpIHN0aWxsIHdvcmtzLCB5b3Ugd291bGQg
+bWFyawo+ID4+PnRoaXMgYXMgJ2dvb2QnOgo+ID4+Pgo+ID4+PiAgICQgZ2l0IGJpc2VjdCBnb29k
+IHYyLjYuMzQtcmM1Cj4gPj4+Cj4gPj4+Z2l0IHdpbGwgbm93IGl0ZXJhdGUgeW91IHRocnUgdGhl
+IGNoYW5nZXMgYW5kIGRyb3AgeW91IG9mZiBhdCBjaG9zZW4KPiA+Pj5wb2ludHMuIEp1c3QgY29t
+cGlsZSB0aGUgdHJlZSB5b3UgZ2V0LCBhbmQgdGVsbCBnaXQgd2hldGhlciB0aGlzIGlzIGEKPiA+
+Pj5nb29kIG9yIGJhZCBvbmU6Cj4gPj4+Cj4gPj4+ICAgJCBnaXQgYmlzZWN0IGdvb2QKPiA+Pj4g
+ICBvcgo+ID4+PiAgICQgZ2l0IGJpc2VjdCBiYWQKPiA+Pj4KPiA+Pj5UaGVuIHJlY29tcGlsZSBh
+bmQgdGVzdCBhZ2FpbiBBZnRlciBzb21lIHN0ZXBzLCBpdCB3aWxsIHRlbGwgeW91IHdoaWNoCj4g
+Pj4+Y29tbWl0IHByZWNpc2VseSBicm9rZSBpdC4KPiA+Pj4KPiA+Pj5IVEgsCj4gPj4+RGFuaWVs
+Cj4gPj4+Cj4gPj4+Cj4gPj5JJ2xsIHRyeSB0aGF0LiBCdXQgaXMgdGhlcmUgYW55IHdheSB0byBk
+byB0aGlzIGp1c3Qgd2l0aCBhbHNhIGFuZAo+ID4+bm90IHdpdGggZW50aXJlIGtlcm5lbD8gQ29t
+cGlsaW5nIGtlcm5lbCBpcyBhIGxvb29vbmcgcHJvY2Vzcy4KPiA+VGhlIGRlc2NyaXB0aW9uIGFi
+b3ZlIHdvbid0IHRvdWNoIG11Y2ggdGhpbmdzIG91dHNpZGUgdGhlIEFMU0EgdHJlZQo+ID5kdXJp
+bmcgdGhlIGJpc2VjdCwgc28gaXQgc2hvdWxkbid0IHRha2UgbG9uZyB0byBjb21waWxlLgo+ID4K
+PiA+VGhhbmtzIGZvciBoZWxwaW5nLAo+ID5EYW5pZWwKPiA+Cj4gPgo+IEknbSBzb3JyeSwgYnV0
+IGFmdGVyIDIgb3IgMyBzdGVwcyAob2YgfjEwKSBJIGdvdCBrZXJuZWwgdGhhdCBkb2Vzbid0Cj4g
+ZXZlbiBib290IHByb3Blcmx5ICgyLjYuMzQtcmM0LCBzb21ldGhpbmcgd2l0aCBzYXRhIGlzIGJy
+b2tlbikgc28gSQo+IGNhbid0IHRlc3QgbXkgY2FyZCB3aXRoIHRoaXMga2VybmVsLiBTaG91bGQg
+SSBtYXJrIGN1cnJlbnQgdmVyc2lvbgo+IGFzIGJhZCBhbmQgY29udGludWUgb3Igc29tZXRoaW5n
+IGVsc2UgY2FuIGJlIGRvbmU/CgpIbW0sIHNvIHlvdSBzYXkgeW91IGNhbid0IGJvb3QgYSB2YW5p
+bGxhICh1bm1vZGlmaWVkKSAyLjYuMzQtcmM0PyBJcwp5b3VyIHByb2JsZW0gZml4ZWQgaW4gdGhl
+IGN1cnJlbnQgZ2l0IEhFQUQ/IFRoZSBiaXNlY3QgcHJvY2VkdXJlIEkKZGVzY3JpYmVkIHNob3Vs
+ZG4ndCB0b3VjaCBhbnl0aGluZyBlbHNlIHRoYW4gc291bmQgY29kZSwgc28gU0FUQSBzaG91bGQK
+YmUgdW5hZmZlY3RlZC4gQW55d2F5LCB5b3UgY2FuIHNraXAgdW5ib290YWJsZSBvciB1bmNvbXBp
+bGFibGUgdmVyc2lvbnMKd2l0aAoKICAkIGdpdCBiaXNlY3Qgc2tpcAoKSFRILApEYW5pZWwKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
