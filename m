@@ -1,40 +1,47 @@
-From: Kumar Gala <kumar.gala@freescale.com>
-Subject: Re: [PATCH 1/2] powerpc/8610: add probing for individual DMA channels,
-	not just DMA controllers
-Date: Tue, 4 May 2010 12:20:13 -0500
-Message-ID: <2928D88F-057B-498C-8A11-F7193429A90D@freescale.com>
-References: <1272923655-31807-1-git-send-email-timur@freescale.com>
-Mime-Version: 1.0 (Apple Message framework v1078)
+From: Kai Vehmanen <kvehmanen@eca.cx>
+Subject: Re: timestamps
+Date: Tue, 4 May 2010 21:22:16 +0300 (EEST)
+Message-ID: <alpine.DEB.1.10.1005042109290.3327@ecabase.localdomain>
+References: <4BCEDADE.4010000@axis.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <1272923655-31807-1-git-send-email-timur@freescale.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gw02.mail.saunalahti.fi (gw02.mail.saunalahti.fi
+	[195.197.172.116])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C7E2243FE
+	for <alsa-devel@alsa-project.org>;
+	Tue,  4 May 2010 20:24:37 +0200 (CEST)
+In-Reply-To: <4BCEDADE.4010000@axis.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jonas Holmberg <jonas.holmberg@axis.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-On May 3, 2010, at 4:54 PM, Timur Tabi wrote:
+On Wed, 21 Apr 2010, Jonas Holmberg wrote:
 
-> A future version of the MPC8610 HPCD's ASoC DMA driver will probe on individual
-> DMA channel nodes, so the DMA controller nodes' compatible string must be listed
-> in mpc8610_ids[] for the probe to work.
-> 
-> Also remove the "gianfar" compatible from mpc8610_ids[], since there is no
-> gianfar (or any other networking device) on the 8610.
-> 
-> Signed-off-by: Timur Tabi <timur@freescale.com>
-> ---
+> How can I get the CLOCK_MONOTONIC timestamp for the first sample in the
+> data I get from snd_pcm_readi()?
 
-Acked-by: Kumar Gala <galak@kernel.crashing.org>
+before reading the data, take the current timestamp (with clock_gettime) 
+and subtract snd_pcm_delay() for the stream (see the API docs for 
+snd_pcm_delay() for more details).
 
-- k
+The accuracy of the returned value depends on the driver/hw's ability to 
+report accurate delay values.
+
+PS Alternate strategy is to use SND_PCM_TSTAMP_MMAP mode, in which
+    you can query (with snd_pcm_htimestamp()) the timestamp of
+    last period elapsed event. See the alsa-lib PCM API docs for
+    details. With certain drivers/hw, this is the only way to get
+    accurate estimates for delay.
