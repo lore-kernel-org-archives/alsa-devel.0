@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: tpa6130a2: TLV mapping for tpa6140a2
-Date: Tue, 04 May 2010 21:09:57 +0100
-Message-ID: <1273003797.2801.83.camel@odin>
-References: <1272960498-9560-1-git-send-email-peter.ujfalusi@nokia.com>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: SPDIF out with HDA/Conexant 20561?
+Date: Tue, 4 May 2010 18:19:30 -0500
+Message-ID: <y2m6160a5131005041619wc625446dj652bc2f03c304118@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BECBC24491
+Received: from mail-iw0-f178.google.com (mail-iw0-f178.google.com
+	[209.85.223.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id DB63224532
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 May 2010 22:10:10 +0200 (CEST)
-Received: by wyb40 with SMTP id 40so831668wyb.38
-	for <alsa-devel@alsa-project.org>; Tue, 04 May 2010 13:10:08 -0700 (PDT)
-In-Reply-To: <1272960498-9560-1-git-send-email-peter.ujfalusi@nokia.com>
+	Wed,  5 May 2010 01:19:32 +0200 (CEST)
+Received: by iwn8 with SMTP id 8so5185498iwn.16
+	for <alsa-devel@alsa-project.org>; Tue, 04 May 2010 16:19:31 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,32 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, ilkka.koskinen@nokia.com, broonie@opensource.wolfsonmicro.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-05-04 at 11:08 +0300, Peter Ujfalusi wrote:
-> Both tpa6130a2, and tpa6140a2 is supported by the
-> same driver, but the gain dB scaling is different on
-> the amplifiers.
-> 
-> Provide different mixer control for the chips with correct
-> TLV mapping.
-> 
-> User space will see:
-> "TPA6130A2 Headphone Playback Volume" in case of 6130
-> "TPA6140A2 Headphone Playback Volume" in case of 6140
-> 
-> The way machine drivers are using this amplifier remained
-> the same.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
->  sound/soc/codecs/tpa6130a2.c |   31 ++++++++++++++++++++++++++++---
->  1 files changed, 28 insertions(+), 3 deletions(-)
+Has anyone had any luck enabling S/PDIF output with the Conexant 20561/ctx5051?
 
-Applied.
+On my Lenovo W500 I see a digital output device, I can play on it but
+I can't hear any sound on my receiver. There was a patch by Takashi
+earlier this year to correct a wrong nodeID
+(03b515c45e2a93331d2ac9dc1c16440f7fa313ec, ALSA: hda - Fix SPDIF
+output widget for Cxt5051 codec), so I figure some amount of testing
+has been done already?
+
+I wonder if this comes from a non-initialized pin configuration as
+reported in /proc/asound/card0/codec#0?
+Node 0x1c [Pin Complex] wcaps 0x400701: Stereo Digital
+  Pincap 0x00000010: OUT
+  Pin Default 0x40f001f0: [N/A] Other at Ext N/A
+    Conn = Unknown, Color = Unknown
+    DefAssociation = 0xf, Sequence = 0x0
+    Misc = NO_PRESENCE
+  Pin-ctls: 0x00:
+  Power states:  D0 D1 D2 D3
+  Power: setting=D0, actual=D0
+  Connection: 1
+     0x12
+
+Node 0x12 [Audio Output] wcaps 0x211: Stereo Digital
+  Control: name="IEC958 Playback Con Mask", index=0, device=0
+  Control: name="IEC958 Playback Pro Mask", index=0, device=0
+  Control: name="IEC958 Playback Default", index=0, device=0
+  Control: name="IEC958 Playback Switch", index=0, device=0
+  Control: name="IEC958 Default PCM Playback Switch", index=0, device=0
+  Device: name="Conexant Digital", type="SPDIF", device=1
+  Converter: stream=0, channel=0
+  Digital:
+  Digital category: 0x0
+  PCM:
+    rates [0x160]: 44100 48000 96000
+    bits [0xe]: 16 20 24
+    formats [0x5]: PCM AC3
+
 
 Thanks
-
-Liam
+- Pierre
