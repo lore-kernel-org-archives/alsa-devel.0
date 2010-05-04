@@ -1,21 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] powerpc/8610: add probing
-	for	individual DMA channels, not just DMA controllers
-Date: Tue, 4 May 2010 20:22:54 +0100
-Message-ID: <20100504192253.GA28622@sirena.org.uk>
-References: <1272923655-31807-1-git-send-email-timur@freescale.com>
-	<20100504145430.GC3651@opensource.wolfsonmicro.com>
-	<4BE03926.4050900@freescale.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: tpa6130a2: TLV mapping for tpa6140a2
+Date: Tue, 04 May 2010 21:09:57 +0100
+Message-ID: <1273003797.2801.83.camel@odin>
+References: <1272960498-9560-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 55BF924442
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id BECBC24491
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 May 2010 21:22:58 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4BE03926.4050900@freescale.com>
+	Tue,  4 May 2010 22:10:10 +0200 (CEST)
+Received: by wyb40 with SMTP id 40so831668wyb.38
+	for <alsa-devel@alsa-project.org>; Tue, 04 May 2010 13:10:08 -0700 (PDT)
+In-Reply-To: <1272960498-9560-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,14 +23,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, kumar.gala@freescale.com, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, ilkka.koskinen@nokia.com, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 04, 2010 at 10:11:34AM -0500, Timur Tabi wrote:
+On Tue, 2010-05-04 at 11:08 +0300, Peter Ujfalusi wrote:
+> Both tpa6130a2, and tpa6140a2 is supported by the
+> same driver, but the gain dB scaling is different on
+> the amplifiers.
+> 
+> Provide different mixer control for the chips with correct
+> TLV mapping.
+> 
+> User space will see:
+> "TPA6130A2 Headphone Playback Volume" in case of 6130
+> "TPA6140A2 Headphone Playback Volume" in case of 6140
+> 
+> The way machine drivers are using this amplifier remained
+> the same.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+>  sound/soc/codecs/tpa6130a2.c |   31 ++++++++++++++++++++++++++++---
+>  1 files changed, 28 insertions(+), 3 deletions(-)
 
-> Also remove the "gianfar" compatible from mpc8610_ids[], since there is no
-> gianfar (or any other networking device) on the 8610.
+Applied.
 
-Meh, sorry.  Though this is a very good example of why you shouldn't
-randomly mix unrelated changes into one patch :)
+Thanks
+
+Liam
