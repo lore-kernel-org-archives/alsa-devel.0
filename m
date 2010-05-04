@@ -1,18 +1,15 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Use olpc-xo-1_5 quirk for Toshiba
-	Satellite Pro T130-15F
-Date: Mon, 3 May 2010 23:36:17 -0400
-Message-ID: <t2m604760771005032036w7ecb21f8v130a3fb81342cc85@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: tpa6130a2: TLV mapping for tpa6140a2
+Date: Tue,  4 May 2010 11:08:18 +0300
+Message-ID: <1272960498-9560-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636e0a8f0815b6d0485bc69ee
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
-	[209.85.222.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4CAF52447C
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3827F24399
 	for <alsa-devel@alsa-project.org>;
-	Tue,  4 May 2010 05:36:19 +0200 (CEST)
-Received: by pzk40 with SMTP id 40so1536665pzk.23
-	for <alsa-devel@alsa-project.org>; Mon, 03 May 2010 20:36:17 -0700 (PDT)
+	Tue,  4 May 2010 10:08:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,63 +19,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org, Andy Couldrake <acouldrake@googlemail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: ilkka.koskinen@nokia.com, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
---001636e0a8f0815b6d0485bc69ee
-Content-Type: text/plain; charset=UTF-8
+Both tpa6130a2, and tpa6140a2 is supported by the
+same driver, but the gain dB scaling is different on
+the amplifiers.
 
-Hi,
+Provide different mixer control for the chips with correct
+TLV mapping.
 
-Attached is a patch against sound-2.6 master HEAD that makes the OR's
-machine have audible sound by default. Please apply.
+User space will see:
+"TPA6130A2 Headphone Playback Volume" in case of 6130
+"TPA6140A2 Headphone Playback Volume" in case of 6140
 
-Best,
--Dan
+The way machine drivers are using this amplifier remained
+the same.
 
---001636e0a8f0815b6d0485bc69ee
-Content-Type: text/x-diff; charset=US-ASCII;
-	name="0001-ALSA-hda-Use-olpc-xo-1_5-quirk-for-Toshiba-Satellite.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Use-olpc-xo-1_5-quirk-for-Toshiba-Satellite.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g8s630fr0
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ sound/soc/codecs/tpa6130a2.c |   31 ++++++++++++++++++++++++++++---
+ 1 files changed, 28 insertions(+), 3 deletions(-)
 
-RnJvbSA4MTRjMmE2NDg3MDFlNmQ2MDlkNmE3ZjE3MmRjMGRkZDA2OWVkYWUzIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IE1vbiwgMyBNYXkgMjAxMCAyMDozOTozMSAtMDQwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
-IGhkYTogVXNlIG9scGMteG8tMV81IHF1aXJrIGZvciBUb3NoaWJhIFNhdGVsbGl0ZSBQcm8gVDEz
-MC0xNUYKCkJ1Z0xpbms6IGh0dHBzOi8vbGF1bmNocGFkLm5ldC9idWdzLzU3MzI4NAoKVGhlIE9S
-IHZlcmlmaWVkIHRoYXQgdXNpbmcgdGhlIG9scGMteG8tMV81IG1vZGVsIHF1aXJrIGFsbG93cyB0
-aGUKaGVhZHBob25lcyB0byBiZSBhdWRpYmxlIHdoZW4gaW5zZXJ0ZWQgaW50byB0aGUgamFjay4g
-Q2FwdHVyZSB3YXMKYWxzbyB2ZXJpZmllZCB0byB3b3JrIGNvcnJlY3RseS4KClJlcG9ydGVkLWJ5
-OiBBbmR5IENvdWxkcmFrZSA8YWNvdWxkcmFrZUBnb29nbGVtYWlsLmNvbT4KVGVzdGVkLWJ5OiBB
-bmR5IENvdWxkcmFrZSA8YWNvdWxkcmFrZUBnb29nbGVtYWlsLmNvbT4KQ2M6IDxzdGFibGVAa2Vy
-bmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1YnVudHUuY29t
-PgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyB8ICAgIDEgKwogMSBmaWxlcyBj
-aGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291
-bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFu
-dC5jCmluZGV4IDUwOWExMDQuLmZiNDJjMmEgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0
-Y2hfY29uZXhhbnQuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMKQEAgLTI5
-NjcsNiArMjk2Nyw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBjeHQ1MDY2X2NmZ190
-YmxbXSA9IHsKIAkJICAgICAgQ1hUNTA2Nl9ERUxMX0xBUFRPUCksCiAJU05EX1BDSV9RVUlSSygw
-eDE1MmQsIDB4MDgzMywgIk9MUEMgWE8tMS41IiwgQ1hUNTA2Nl9PTFBDX1hPXzFfNSksCiAJU05E
-X1BDSV9RVUlSSygweDEwMjgsIDB4MDQwMiwgIkRlbGwgVm9zdHJvIiwgQ1hUNTA2Nl9ERUxMX1ZP
-U1RPKSwKKwlTTkRfUENJX1FVSVJLKDB4MTE3OSwgMHhmZmUwLCAiVG9zaGliYSBTYXRlbGxpdGUg
-UHJvIFQxMzAtMTVGIiwgQ1hUNTA2Nl9PTFBDX1hPXzFfNSksCiAJU05EX1BDSV9RVUlSSygweDE3
-YWEsIDB4M2EwZCwgImlkZWFwYWQiLCBDWFQ1MDY2X0lERUFQQUQpLAogCVNORF9QQ0lfUVVJUkso
-MHgxN2FhLCAweDIxNWUsICJMZW5vdm8gVGhpbmtwYWQiLCBDWFQ1MDY2X1RISU5LUEFEKSwKIAl7
-fQotLSAKMS43LjAuNAoK
---001636e0a8f0815b6d0485bc69ee
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---001636e0a8f0815b6d0485bc69ee--
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 958d49c..0cf3e38 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -53,6 +53,7 @@ struct tpa6130a2_data {
+ 	struct regulator_bulk_data supplies[TPA6130A2_NUM_SUPPLIES];
+ 	int power_gpio;
+ 	unsigned char power_state;
++	enum tpa_model id;
+ };
+ 
+ static int tpa6130a2_i2c_read(int reg)
+@@ -263,6 +264,20 @@ static const struct snd_kcontrol_new tpa6130a2_controls[] = {
+ 		       tpa6130_tlv),
+ };
+ 
++static const unsigned int tpa6140_tlv[] = {
++	TLV_DB_RANGE_HEAD(3),
++	0, 8, TLV_DB_SCALE_ITEM(-5900, 400, 0),
++	9, 16, TLV_DB_SCALE_ITEM(-2500, 200, 0),
++	17, 31, TLV_DB_SCALE_ITEM(-1000, 100, 0),
++};
++
++static const struct snd_kcontrol_new tpa6140a2_controls[] = {
++	SOC_SINGLE_EXT_TLV("TPA6140A2 Headphone Playback Volume",
++		       TPA6130A2_REG_VOL_MUTE, 1, 0x1f, 0,
++		       tpa6130a2_get_reg, tpa6130a2_set_reg,
++		       tpa6140_tlv),
++};
++
+ /*
+  * Enable or disable channel (left or right)
+  * The bit number for mute and amplifier are the same per channel:
+@@ -368,13 +383,22 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 
+ int tpa6130a2_add_controls(struct snd_soc_codec *codec)
+ {
++	struct	tpa6130a2_data *data;
++
++	BUG_ON(tpa6130a2_client == NULL);
++	data = i2c_get_clientdata(tpa6130a2_client);
++
+ 	snd_soc_dapm_new_controls(codec, tpa6130a2_dapm_widgets,
+ 				ARRAY_SIZE(tpa6130a2_dapm_widgets));
+ 
+ 	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
+ 
+-	return snd_soc_add_controls(codec, tpa6130a2_controls,
+-				ARRAY_SIZE(tpa6130a2_controls));
++	if (data->id == TPA6140A2)
++		return snd_soc_add_controls(codec, tpa6140a2_controls,
++						ARRAY_SIZE(tpa6140a2_controls));
++	else
++		return snd_soc_add_controls(codec, tpa6130a2_controls,
++						ARRAY_SIZE(tpa6130a2_controls));
+ 
+ }
+ EXPORT_SYMBOL_GPL(tpa6130a2_add_controls);
+@@ -407,6 +431,7 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
+ 
+ 	pdata = client->dev.platform_data;
+ 	data->power_gpio = pdata->power_gpio;
++	data->id = pdata->id;
+ 
+ 	mutex_init(&data->mutex);
+ 
+@@ -425,7 +450,7 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
+ 		gpio_direction_output(data->power_gpio, 0);
+ 	}
+ 
+-	switch (pdata->id) {
++	switch (data->id) {
+ 	case TPA6130A2:
+ 		for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
+ 			data->supplies[i].supply = tpa6130a2_supply_names[i];
+-- 
+1.7.1
