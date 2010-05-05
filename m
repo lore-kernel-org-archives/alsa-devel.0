@@ -1,19 +1,31 @@
-From: Jerone Young <jerone.young@canonical.com>
-Subject: Re: SPDIF out with HDA/Conexant 20561?
-Date: Wed, 05 May 2010 08:59:00 -0700
-Message-ID: <1273075140.1653.4259.camel@laptop>
-References: <y2m6160a5131005041619wc625446dj652bc2f03c304118@mail.gmail.com>
-	<1273032853.1653.1333.camel@laptop>
-	<o2l6160a5131005050529j9068c371h6caa1f19aa77adb2@mail.gmail.com>
+From: Timur Tabi <timur@freescale.com>
+Subject: Re: [PATCH 1/2] powerpc/8610: add probing for
+ individual DMA channels, not just DMA controllers
+Date: Wed, 05 May 2010 10:59:44 -0500
+Message-ID: <4BE195F0.9070400@freescale.com>
+References: <1272923655-31807-1-git-send-email-timur@freescale.com>
+	<2928D88F-057B-498C-8A11-F7193429A90D@freescale.com>
+	<20100505112208.GD5754@opensource.wolfsonmicro.com>
+	<g2ied82fe3e1005050439v70066822h7518ac53f97e97f6@mail.gmail.com>
+	<20100505123545.GA7139@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 266872476A
+Received: from az33egw02.freescale.net (az33egw02.freescale.net
+	[192.88.158.103])
+	by alsa0.perex.cz (Postfix) with ESMTP id A4D7C2476B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 May 2010 17:59:05 +0200 (CEST)
-In-Reply-To: <o2l6160a5131005050529j9068c371h6caa1f19aa77adb2@mail.gmail.com>
+	Wed,  5 May 2010 17:59:52 +0200 (CEST)
+Received: from az33smr02.freescale.net (az33smr02.freescale.net [10.64.34.200])
+	by az33egw02.freescale.net (8.14.3/az33egw02) with ESMTP id
+	o45FxjXl004274
+	for <alsa-devel@alsa-project.org>; Wed, 5 May 2010 08:59:50 -0700 (MST)
+Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
+	[10.64.32.16])
+	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP id o45FxoXc016363
+	for <alsa-devel@alsa-project.org>; Wed, 5 May 2010 10:59:50 -0500 (CDT)
+In-Reply-To: <20100505123545.GA7139@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,42 +35,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: linuxppc-dev@ozlabs.org, Kumar Gala <kumar.gala@freescale.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-05-05 at 07:29 -0500, pl bossart wrote:
-> > Are you using the Thinkpad Docking station with the S/PDIF on the side?
-> > The headphone jack on those doesn't have S/PDIF.
+Mark Brown wrote:
+> On Wed, May 05, 2010 at 06:39:01AM -0500, Timur Tabi wrote:
+>> On Wed, May 5, 2010 at 6:22 AM, Mark Brown
 > 
-> Yes I am using the side coax connector on the docking station.
-
-I know the T61 is properly wired for it. Had a chance to try it in
-person. It also had a AD codec as opposed to conexant.
-
+>>> Just looking at the scheduling here with regard to the merge window and
+>>> the fact that this doesn't seem to hurt the existing drivers perhaps it
+>>> makes sense to merge this via the PowerPC tree immediately?
 > 
-> > I have not been able to verify this so glad your email came.. but it
-> > seems like the T400, T500, & W500 do not actually work with it.
-> >
-> > Did you try under Windows & if so did it work?
-
-This has been the main issue. Can't get a total confirmation that it
-even works to begin with for these machines. Also Lenovo has removed the
-port from the recent line of docking stations. 
-
-If I can find anything useful .. I'll reply back soon.
-
-I really wanted to remove the SPDIF port being exposed as it shows up on
-my X301 .. and X200 (They all have the same codec), but don't use that
-docking station. But the use case your trying to do is the only way to
-do it and it would only be with the T400/T500 & W500 .. though no where
-can I find someone clearly saying they got it to work (even with
-Windows).
+>> Aren't we a little late in the cycle for a patch that doesn't do anything?
 > 
-> No I don't have Windows on this thing. For now I have no real way to
-> tell if the output is properly configured, if the connector works, if
-> the cable's bad...
-> Cheers
-> - Pierre
-			Thanks,
-				Jerone
+> It seems to be safe enough for -next.
+
+Sure, -next is fine.
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
