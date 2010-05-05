@@ -1,18 +1,17 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Use olpc-xo-1_5 quirk for Toshiba
-	Satellite P500-PSPGSC-01800T
-Date: Tue, 4 May 2010 22:13:27 -0400
-Message-ID: <g2p604760771005041913zb43dbbfep7b461d916f08d6c4@mail.gmail.com>
+From: Jerone Young <jerone.young@canonical.com>
+Subject: Re: SPDIF out with HDA/Conexant 20561?
+Date: Tue, 04 May 2010 21:14:13 -0700
+Message-ID: <1273032853.1653.1333.camel@laptop>
+References: <y2m6160a5131005041619wc625446dj652bc2f03c304118@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=00504502cc4827ff330485cf5f53
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C75C32444A
+Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
+	by alsa0.perex.cz (Postfix) with ESMTP id 31A1724600
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 May 2010 04:13:29 +0200 (CEST)
-Received: by pxi13 with SMTP id 13so1928821pxi.38
-	for <alsa-devel@alsa-project.org>; Tue, 04 May 2010 19:13:28 -0700 (PDT)
+	Wed,  5 May 2010 06:14:18 +0200 (CEST)
+In-Reply-To: <y2m6160a5131005041619wc625446dj652bc2f03c304118@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +21,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---00504502cc4827ff330485cf5f53
-Content-Type: text/plain; charset=UTF-8
+Are you using the Thinkpad Docking station with the S/PDIF on the side?
+The headphone jack on those doesn't have S/PDIF.
 
-Hi,
+I have not been able to verify this so glad your email came.. but it
+seems like the T400, T500, & W500 do not actually work with it.
 
-Attached is another patch against sound-2.6 master HEAD (based on the
-previous patch from yesterday) that makes the OR's
-machine have audible sound by default. Please apply.
+Did you try under Windows & if so did it work?
 
-Best,
--Dan
+				Thanks,
+					Jerone
 
---00504502cc4827ff330485cf5f53
-Content-Type: text/x-diff; charset=US-ASCII;
-	name="0002-ALSA-hda-Use-olpc-xo-1_5-quirk-for-Toshiba-Satellite.patch"
-Content-Disposition: attachment;
-	filename="0002-ALSA-hda-Use-olpc-xo-1_5-quirk-for-Toshiba-Satellite.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g8tihwqo0
-
-RnJvbSAzM2Q2M2Y3ZTY5MTE1MDNhZmEwMDgwZDU2ZTk3NDBkNDBjZjIzNjRiIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFR1ZSwgNCBNYXkgMjAxMCAyMjowNzo1OCAtMDQwMApTdWJqZWN0OiBbUEFUQ0ggMi8yXSBB
-TFNBOiBoZGE6IFVzZSBvbHBjLXhvLTFfNSBxdWlyayBmb3IgVG9zaGliYSBTYXRlbGxpdGUgUDUw
-MC1QU1BHU0MtMDE4MDBUCgpCdWdMaW5rOiBodHRwczovL2xhdW5jaHBhZC5uZXQvYnVncy81NDky
-NjcKClRoZSBPUiB2ZXJpZmllZCB0aGF0IHVzaW5nIHRoZSBvbHBjLXhvLTFfNSBtb2RlbCBxdWly
-ayBhbGxvd3MgdGhlCmhlYWRwaG9uZXMgdG8gYmUgYXVkaWJsZSB3aGVuIGluc2VydGVkIGludG8g
-dGhlIGphY2suIENhcHR1cmUgd2FzCmFsc28gdmVyaWZpZWQgdG8gd29yayBjb3JyZWN0bHkuCgpS
-ZXBvcnRlZC1ieTogUmljaGFyZCBHYWduZQpUZXN0ZWQtYnk6IFJpY2hhcmQgR2FnbmUKQ2M6IDxz
-dGFibGVAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1
-YnVudHUuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyB8ICAgIDEgKwog
-MSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0t
-Z2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIvc291bmQvcGNpL2hkYS9wYXRj
-aF9jb25leGFudC5jCmluZGV4IGZiNDJjMmEuLjNhYzk3NmIgMTAwNjQ0Ci0tLSBhL3NvdW5kL3Bj
-aS9oZGEvcGF0Y2hfY29uZXhhbnQuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX2NvbmV4YW50
-LmMKQEAgLTI5NjcsNiArMjk2Nyw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBjeHQ1
-MDY2X2NmZ190YmxbXSA9IHsKIAkJICAgICAgQ1hUNTA2Nl9ERUxMX0xBUFRPUCksCiAJU05EX1BD
-SV9RVUlSSygweDE1MmQsIDB4MDgzMywgIk9MUEMgWE8tMS41IiwgQ1hUNTA2Nl9PTFBDX1hPXzFf
-NSksCiAJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDQwMiwgIkRlbGwgVm9zdHJvIiwgQ1hUNTA2
-Nl9ERUxMX1ZPU1RPKSwKKwlTTkRfUENJX1FVSVJLKDB4MTE3OSwgMHhmZjUwLCAiVG9zaGliYSBT
-YXRlbGxpdGUgUDUwMC1QU1BHU0MtMDE4MDBUIiwgQ1hUNTA2Nl9PTFBDX1hPXzFfNSksCiAJU05E
-X1BDSV9RVUlSSygweDExNzksIDB4ZmZlMCwgIlRvc2hpYmEgU2F0ZWxsaXRlIFBybyBUMTMwLTE1
-RiIsIENYVDUwNjZfT0xQQ19YT18xXzUpLAogCVNORF9QQ0lfUVVJUksoMHgxN2FhLCAweDNhMGQs
-ICJpZGVhcGFkIiwgQ1hUNTA2Nl9JREVBUEFEKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgy
-MTVlLCAiTGVub3ZvIFRoaW5rcGFkIiwgQ1hUNTA2Nl9USElOS1BBRCksCi0tIAoxLjcuMC40Cgo=
---00504502cc4827ff330485cf5f53
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---00504502cc4827ff330485cf5f53--
+On Tue, 2010-05-04 at 18:19 -0500, pl bossart wrote:
+> Has anyone had any luck enabling S/PDIF output with the Conexant 20561/ctx5051?
+> 
+> On my Lenovo W500 I see a digital output device, I can play on it but
+> I can't hear any sound on my receiver. There was a patch by Takashi
+> earlier this year to correct a wrong nodeID
+> (03b515c45e2a93331d2ac9dc1c16440f7fa313ec, ALSA: hda - Fix SPDIF
+> output widget for Cxt5051 codec), so I figure some amount of testing
+> has been done already?
+> 
+> I wonder if this comes from a non-initialized pin configuration as
+> reported in /proc/asound/card0/codec#0?
+> Node 0x1c [Pin Complex] wcaps 0x400701: Stereo Digital
+>   Pincap 0x00000010: OUT
+>   Pin Default 0x40f001f0: [N/A] Other at Ext N/A
+>     Conn = Unknown, Color = Unknown
+>     DefAssociation = 0xf, Sequence = 0x0
+>     Misc = NO_PRESENCE
+>   Pin-ctls: 0x00:
+>   Power states:  D0 D1 D2 D3
+>   Power: setting=D0, actual=D0
+>   Connection: 1
+>      0x12
+> 
+> Node 0x12 [Audio Output] wcaps 0x211: Stereo Digital
+>   Control: name="IEC958 Playback Con Mask", index=0, device=0
+>   Control: name="IEC958 Playback Pro Mask", index=0, device=0
+>   Control: name="IEC958 Playback Default", index=0, device=0
+>   Control: name="IEC958 Playback Switch", index=0, device=0
+>   Control: name="IEC958 Default PCM Playback Switch", index=0, device=0
+>   Device: name="Conexant Digital", type="SPDIF", device=1
+>   Converter: stream=0, channel=0
+>   Digital:
+>   Digital category: 0x0
+>   PCM:
+>     rates [0x160]: 44100 48000 96000
+>     bits [0xe]: 16 20 24
+>     formats [0x5]: PCM AC3
+> 
+> 
+> Thanks
+> - Pierre
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
