@@ -1,22 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/2] powerpc/8610: add probing for
- individual DMA channels, not just DMA controllers
-Date: Wed, 5 May 2010 13:35:45 +0100
-Message-ID: <20100505123545.GA7139@rakim.wolfsonmicro.main>
-References: <1272923655-31807-1-git-send-email-timur@freescale.com>
-	<2928D88F-057B-498C-8A11-F7193429A90D@freescale.com>
-	<20100505112208.GD5754@opensource.wolfsonmicro.com>
-	<g2ied82fe3e1005050439v70066822h7518ac53f97e97f6@mail.gmail.com>
+Subject: Re: [Patches_v2] Reforming S3C I2S towards supporting
+	I2Sv4
+Date: Wed, 5 May 2010 15:00:39 +0100
+Message-ID: <20100505140039.GC7139@rakim.wolfsonmicro.main>
+References: <1272351294-3650-1-git-send-email-jassi.brar@samsung.com>
+	<20100504005319.GJ2589@trinity.fluff.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id BD1F8246DB
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 641B224723
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 May 2010 14:35:46 +0200 (CEST)
+	Wed,  5 May 2010 16:00:42 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <g2ied82fe3e1005050439v70066822h7518ac53f97e97f6@mail.gmail.com>
+In-Reply-To: <20100504005319.GJ2589@trinity.fluff.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,17 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, Kumar Gala <kumar.gala@freescale.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Ben Dooks <ben-linux@fluff.org>
+Cc: alsa-devel@alsa-project.org, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 05, 2010 at 06:39:01AM -0500, Timur Tabi wrote:
-> On Wed, May 5, 2010 at 6:22 AM, Mark Brown
+On Tue, May 04, 2010 at 01:53:19AM +0100, Ben Dooks wrote:
+> On Tue, Apr 27, 2010 at 03:54:54PM +0900, Jassi Brar wrote:
+> > I am going to resubmit pending last 11 patches of the original series
+> >  http://mailman.alsa-project.org/pipermail/alsa-devel/2010-March/025920.html
+> > No changes have been made other than moving dma_data from snd_soc_dai to
+> > snd_soc_pcm_stream in the new I2Sv4 controller driver.
 
-> > Just looking at the scheduling here with regard to the merge window and
-> > the fact that this doesn't seem to hurt the existing drivers perhaps it
-> > makes sense to merge this via the PowerPC tree immediately?
+> All these look fine.
 
-> Aren't we a little late in the cycle for a patch that doesn't do anything?
+> Acked-by: Ben Dooks <ben-linux@fluff.org>
 
-It seems to be safe enough for -next.
+Now we've got all the relevant acks I tried to apply these against my
+for-2.6.35 branch but it looks like there's been some drift somewhere
+along the line since the patches were first posted and there's problems
+applying.  Could you please rebase against for-2.6.35 and resend?
+
+> It should also be ok to merge the s3c2412 DMA updates via the same
+> tree as there's not any intention to be touching this part of the tree
+> before the next merge.
+
+If someone could submit these to me that'd be great.
