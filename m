@@ -1,20 +1,21 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCHv2] ASoC: omap: Add basic audio support for
- Nokia RX-51/N900
-Date: Wed, 5 May 2010 14:55:40 +0300
-Message-ID: <20100505115540.GC10510@besouro.research.nokia.com>
-References: <1273047262-5288-1-git-send-email-jhnikula@gmail.com>
-Reply-To: eduardo.valentin@nokia.com
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: SPDIF out with HDA/Conexant 20561?
+Date: Wed, 5 May 2010 07:29:01 -0500
+Message-ID: <o2l6160a5131005050529j9068c371h6caa1f19aa77adb2@mail.gmail.com>
+References: <y2m6160a5131005041619wc625446dj652bc2f03c304118@mail.gmail.com>
+	<1273032853.1653.1333.camel@laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id B46B0246C8
+Received: from mail-iw0-f178.google.com (mail-iw0-f178.google.com
+	[209.85.223.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id AF95824347
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 May 2010 13:53:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1273047262-5288-1-git-send-email-jhnikula@gmail.com>
+	Wed,  5 May 2010 14:29:02 +0200 (CEST)
+Received: by iwn8 with SMTP id 8so5986158iwn.16
+	for <alsa-devel@alsa-project.org>; Wed, 05 May 2010 05:29:02 -0700 (PDT)
+In-Reply-To: <1273032853.1653.1333.camel@laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,21 +25,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Jarkko Nikula <jhnikula@gmail.com>
-Cc: "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jerone Young <jerone.young@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 05, 2010 at 10:14:22AM +0200, Jarkko Nikula wrote:
-> This patch adds support for integrated stereo speakers and digital
-> microphone found on Nokia RX-51 hardware. This is a cut down version based
-> on Maemo kernel sources and earlier patchset by Eduardo Valentin et al.
-> 
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2009-October/022033.html
-> 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> Cc: Eduardo Valentin <eduardo.valentin@nokia.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> 
-> ---
+> Are you using the Thinkpad Docking station with the S/PDIF on the side?
+> The headphone jack on those doesn't have S/PDIF.
 
-Acked-by: Eduardo Valentin <eduardo.valentin@nokia.com>
+Yes I am using the side coax connector on the docking station.
+
+> I have not been able to verify this so glad your email came.. but it
+> seems like the T400, T500, & W500 do not actually work with it.
+>
+> Did you try under Windows & if so did it work?
+
+No I don't have Windows on this thing. For now I have no real way to
+tell if the output is properly configured, if the connector works, if
+the cable's bad...
+Cheers
+- Pierre
