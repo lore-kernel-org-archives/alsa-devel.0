@@ -1,22 +1,20 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Subject: Re: [PATCH] ASoC: omap: Add basic audio support for
- Nokia RX-51/N900
-Date: Wed, 5 May 2010 09:48:29 +0300
-Message-ID: <20100505094829.ffec7939.jhnikula@gmail.com>
+	Nokia RX-51/N900
+Date: Wed, 5 May 2010 10:02:18 +0300
+Message-ID: <201005051002.18529.peter.ujfalusi@nokia.com>
 References: <1273037477-20626-1-git-send-email-jhnikula@gmail.com>
 	<201005050930.22712.peter.ujfalusi@nokia.com>
+	<20100505094829.ffec7939.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f222.google.com (mail-ew0-f222.google.com
-	[209.85.219.222])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4B26E1037FF
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 45FF1103819
 	for <alsa-devel@alsa-project.org>;
-	Wed,  5 May 2010 08:47:17 +0200 (CEST)
-Received: by ewy22 with SMTP id 22so1547922ewy.17
-	for <alsa-devel@alsa-project.org>; Tue, 04 May 2010 23:47:17 -0700 (PDT)
-In-Reply-To: <201005050930.22712.peter.ujfalusi@nokia.com>
+	Wed,  5 May 2010 09:02:28 +0200 (CEST)
+In-Reply-To: <20100505094829.ffec7939.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,30 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Girdwood <lrg@slimlogic.co.uk>
+To: ext Jarkko Nikula <jhnikula@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 5 May 2010 09:30:22 +0300
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+On Wednesday 05 May 2010 09:48:29 ext Jarkko Nikula wrote:
+> Thanks! Definitely reset handling is better to move to codec driver.
+> Especially important if starting to manage digital voltages there. I'll
+> cook up updated versions.
 
-> Also, tlv320aic3x driver will try to set the defaults to the codec during the 
-> i2c probing. I'm not sure, but if the reset line is low at that point it may 
-> cause problems (reset line is low, and the reset sequence has not been 
-> followed).
-> Than later in the machine driver the chip is taken out from reset, which might 
-> means, that the chip will be in reset state, so the initial configuration done 
-> by the codec driver might be lost.
-> 
-> I think it would be better to handle the reset GPIO within the codec driver at 
-> the end for proper operation.
-> 
-> What do you think?
-> 
-Thanks! Definitely reset handling is better to move to codec driver.
-Especially important if starting to manage digital voltages there. I'll
-cook up updated versions.
+The tlv320dac33 driver handles the reset GPIO as well. Luckily it does not =
+need =
 
+any specific sequence to be followed as the tlv320aic3x series does.
 
--- 
-Jarkko
+-- =
+
+P=E9ter
