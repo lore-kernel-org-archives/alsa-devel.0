@@ -1,459 +1,126 @@
-From: Don Prince <dhprince.devel@yahoo.co.uk>
-Subject: Re: [alsa-devel] [PATCH 2.6.34-rc5] HID: Prodikeys PC-MIDI HID Driver
-Date: Thu, 06 May 2010 19:23:49 +0100
-Message-ID: <4BE30935.9040001@yahoo.co.uk>
-References: <4BE1A2E2.1040801@yahoo.co.uk> <4BE261FE.60109@ladisch.de>
-Reply-To: dhprince.devel@yahoo.co.uk
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: SPDIF out with HDA/Conexant 20561?
+Date: Thu, 6 May 2010 14:02:17 -0500
+Message-ID: <p2n6160a5131005061202u38f97418hd4d99fb1a5099012@mail.gmail.com>
+References: <y2m6160a5131005041619wc625446dj652bc2f03c304118@mail.gmail.com>
+	<1273032853.1653.1333.camel@laptop>
+	<o2l6160a5131005050529j9068c371h6caa1f19aa77adb2@mail.gmail.com>
+	<1273075140.1653.4259.camel@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <4BE261FE.60109@ladisch.de>
-Sender: linux-input-owner@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Content-Type: multipart/mixed; boundary=0050450146e3d4b8a20485f1942c
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA7B01037F3
+	for <alsa-devel@alsa-project.org>;
+	Thu,  6 May 2010 21:02:18 +0200 (CEST)
+Received: by gyd10 with SMTP id 10so174411gyd.38
+	for <alsa-devel@alsa-project.org>; Thu, 06 May 2010 12:02:17 -0700 (PDT)
+In-Reply-To: <1273075140.1653.4259.camel@laptop>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jerone Young <jerone.young@canonical.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/05/10 07:30, Clemens Ladisch wrote:
-> dhprince.devel@yahoo wrote:
->   
->> A specialised HID driver for the CreativeLabs Prodikeys PC-MIDI USB 
->> Keyboard.
->> ...
->>     
-> I cannot comment on the input stuff, but the sound stuff looks good
-> overall.
->   
+--0050450146e3d4b8a20485f1942c
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Thanks my first linux coding.
+I managed to have playback working for both PCM and AC3 in passthrough
+mode, found out there is a configuration issue in the HDAudio codec.
+By default the SPDIF pin isn't enabled, configuring it as PIN_OUT is
+required. Also for some reason there's a switch that selects a quirk
+for no good reason. I need to look into this, but here's the fix for
+now.
+The question is if SPDIF pin is never configured as out, did it ever
+work for anyone using Conexant codecs?
+Cheers
+-Pierre
 
->   
->> +What:        /sys/bus/hid/drivers/prodikeys/.../channel
->> +Date:        April 2010
->> +KernelVersion:    2.6.34
->> +Contact:    Don Prince <dhprince.devel@yahoo.co.uk>
->> +Descripts/checkpatch.plscription:
->>     
-> Huh?
+
+On Wed, May 5, 2010 at 10:59 AM, Jerone Young
+<jerone.young@canonical.com> wrote:
+> On Wed, 2010-05-05 at 07:29 -0500, pl bossart wrote:
+>> > Are you using the Thinkpad Docking station with the S/PDIF on the side=
+?
+>> > The headphone jack on those doesn't have S/PDIF.
+>>
+>> Yes I am using the side coax connector on the docking station.
 >
->   
-
-Fixed. I am being plagued by spurious button presses due to I suspect
-conflicts between
-my KVM switch and PS/2 to USB keyboard/Mouse converter.
-
->> +What:        /sys/bus/hid/drivers/prodikeys/.../sustain
->> +Description:
->> +        Allows control (via software) the sustain duration of a
->> +        note held by the pc-midi driver.
->>     
-> Why is this feature needed?  Does the device report key releases
-> incorrectly?
+> I know the T61 is properly wired for it. Had a chance to try it in
+> person. It also had a AD codec as opposed to conexant.
 >
->   
-
-The keyboard pretends to support sustain. The driver actually does it.
-
-> These three sysfs controls could also be implemented as mixer controls.
-> This would allow them to be automatically saved and restored when the
-> computer is shut down.
+>>
+>> > I have not been able to verify this so glad your email came.. but it
+>> > seems like the T400, T500, & W500 do not actually work with it.
+>> >
+>> > Did you try under Windows & if so did it work?
 >
->   
->> +    { HID_USB_DEVICE(USB_VENDOR_ID_CREATIVELABS, 
->> USB_DEVICE_ID_PRODIKEYS_PCMIDI) },
->>     
-> Your mailer wrapped long lines and killed the tabs.
-> Please see <Documentation/email-clients.txt>.
+> This has been the main issue. Can't get a total confirmation that it
+> even works to begin with for these machines. Also Lenovo has removed the
+> port from the recent line of docking stations.
 >
-> And your code looks as if it does not use eight-column tabs for
-> indention.
+> If I can find anything useful .. I'll reply back soon.
 >
->   
-
-The code is written using 8 column tabs but you are right thunderbird
-messed it up. I believe I fixed  thunderbird now.
-
->> +static void pcmidi_send_note(struct pcmidi_snd *pm,
->> ...
->> +    res = snd_rawmidi_receive(pm->in_substream, buffer, 3);
->>     
-> This return value is never used.
+> I really wanted to remove the SPDIF port being exposed as it shows up on
+> my X301 .. and X200 (They all have the same codec), but don't use that
+> docking station. But the use case your trying to do is the only way to
+> do it and it would only be with the T400/T500 & W500 .. though no where
+> can I find someone clearly saying they got it to work (even with
+> Windows).
+>>
+>> No I don't have Windows on this thing. For now I have no real way to
+>> tell if the output is properly configured, if the connector works, if
+>> the cable's bad...
+>> Cheers
+>> - Pierre
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Thanks,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Jerone
 >
->   
-
-Fixed.
-
->> +                    if (!atomic_read(&pms->in_use)) {
->> +                        pms->status = status;
->> +                        pms->note = note;
->> +                        pms->velocity = velocity;
->> +                        atomic_set(&pms->in_use, 1);
->>     
-> If you're using the atomic variable to protect against some concurrently
-> executing code, then you have a race condition in the time interval
-> between the read and the set.
 >
->   
 
-Fixed. It was me being overkill, they are actually redundant.
-
->> +static void pcmidi_out_tasklet(unsigned long data)
->> ...
->> +    while (1) {
->> +        /* just read them and drop them */
->> +        u8 b;
->> +        if (snd_rawmidi_transmit(pm->out_substream, &b, 1) != 1) {
->> +            pm->out_active = 0;
->> +            break;
->> +        }
->>     
-> This isn't quite how output ports are supposed to be implemented.  :-)
->
-> I'd guess you want to remove the OUTPUT and DUPLEX flags and to drop all
-> output-related functions.
->
->   
-I know, it was naff, but without it the I get this from "amidi"
-
-$ amidi -l
-
-Dir Device    Name
-
-cannot get rawmidi information 2:0: No such file or directory
-
-
-Is it supposed to print this?
-
-Although the midi still works.
-
-$ amidi -p hw:2,0 --dump
-
-90 2F 5C
-
-80 2F 7F
-
-90 30 52
-
-80 30 7F
-
-90 32 00
-
-80 32 7F
-
-
-The test code now looks like this
-
-/*dhp	snd_component_add(card, "MIDI");*/
-	err = snd_rawmidi_new(card, card->shortname, 0,
-			      0, 1, &rwmidi);
-	if (err < 0) {
-		pk_error("failed to create pc-midi rawmidi device: error %d\n",
-			err);
-		goto fail;
-	}
-	pm->rwmidi = rwmidi;
-	strncpy(rwmidi->name, card->shortname, sizeof(rwmidi->name));
-	rwmidi->info_flags = SNDRV_RAWMIDI_INFO_INPUT /*dhp|
-				SNDRV_RAWMIDI_INFO_OUTPUT |
-				SNDRV_RAWMIDI_INFO_DUPLEX*/;
-	rwmidi->private_data = pm;
-
-/*dhp	snd_rawmidi_set_ops(rwmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-		&pcmidi_out_ops);
-*/	snd_rawmidi_set_ops(rwmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-		&pcmidi_in_ops);
-
-
-Other command output is printed below.
-
-$ cat /proc/asound/cards
-
- 0 [NVidia         ]: HDA-Intel - HDA NVidia
-
-                      HDA NVidia at 0xdfdf8000 irq 21
-
- 1 [HDMI           ]: HDA-Intel - HDA ATI HDMI
-
-                      HDA ATI HDMI at 0xdffec000 irq 31
-
- 2 [PCMIDI         ]: PC-MIDI - PC-MIDI
-
-                      Prodikeys PC-MIDI Keyboard
-
-$ aconnect -i
-
-client 0: 'System' [type=kernel]
-
-    0 'Timer           '
-
-    1 'Announce        '
-
-client 14: 'Midi Through' [type=kernel]
-
-    0 'Midi Through Port-0'
-
-client 24: 'PC-MIDI' [type=kernel]
-
-    0 'PC-MIDI
-
-$ aconnect -o
-
-client 14: 'Midi Through' [type=kernel]
-
-    0 'Midi Through Port-0'
-
-client 128: 'FLUID Synth (Qsynth1)' [type=user]
-
-    0 'Synth input port (Qsynth1:0)'
-
-$ aconnect -iol
-
-client 0: 'System' [type=kernel]
-
-    0 'Timer           '
-
-    1 'Announce        '
-
-        Connecting To: 15:0
-
-client 14: 'Midi Through' [type=kernel]
-
-    0 'Midi Through Port-0'
-
-client 24: 'PC-MIDI' [type=kernel]
-
-    0 'PC-MIDI         '
-
-        Connecting To: 128:0
-
-client 128: 'FLUID Synth (Qsynth1)' [type=user]
-
-    0 'Synth input port (Qsynth1:0)'
-
-        Connected From: 24:0
-
-$ amidi -L
-
-RawMIDI list:
-
-default {
-
-        type hw
-
-        card {
-
-                @func getenv
-
-                vars {
-
-                        0 ALSA_RAWMIDI_CARD
-
-                        1 ALSA_CARD
-
-                }
-
-                default {
-
-                        @func refer
-
-                        name 'defaults.rawmidi.card'
-
-                }
-
-        }
-
-        device {
-
-                @func igetenv
-
-                vars {
-
-                        0 ALSA_RAWMIDI_DEVICE
-
-                }
-
-                default {
-
-                        @func refer
-
-                        name 'defaults.rawmidi.device'
-
-                }
-
-        }
-
-}
-
-hw {
-
-        @args.0 CARD
-
-        @args.1 DEV
-
-        @args.2 SUBDEV
-
-        @args.CARD {
-
-                type string
-
-                default {
-
-                        @func getenv
-
-                        vars {
-
-                                0 ALSA_RAWMIDI_CARD
-
-                                1 ALSA_CARD
-
-                        }
-
-                        default {
-
-                                @func refer
-
-                                name 'defaults.rawmidi.card'
-
-                        }
-
-                }
-
-        }
-
-        @args.DEV {
-
-                type integer
-
-                default {
-
-                        @func igetenv
-
-                        vars {
-
-                                0 ALSA_RAWMIDI_DEVICE
-
-                        }
-
-                        default {
-
-                                @func refer
-
-                                name 'defaults.rawmidi.device'
-
-                        }
-
-                }
-
-        }
-
-        @args.SUBDEV {
-
-                type integer
-
-                default -1
-
-        }
-
-        type hw
-
-        card $CARD
-
-        device $DEV
-
-        subdevice $SUBDEV
-
-        hint {
-
-                description 'Direct rawmidi driver device'
-
-                device $DEV
-
-        }
-
-}
-
-virtual {
-
-        @args.0 MERGE
-
-        @args.MERGE {
-
-                type string
-
-                default 1
-
-        }
-
-        type virtual
-
-        merge $MERGE
-
-}
-
-
-
->> +static void pcmidi_in_trigger(struct snd_rawmidi_substream *substream, 
->> int up)
->> ...
->> +    if (up)
->> +        set_bit(substream->number, &pm->in_triggered);
->> +    else
->> +        clear_bit(substream->number, &pm->in_triggered);
->>     
-> You have only one substream, a boolean variable would suffice.
->   
-
-Fixed.
-
->   
->> +int pcmidi_snd_initialise(struct pcmidi_snd *pm)
->> ...
->> +    int out_ports = 1;
->> +    int in_ports = 1;
->>     
-> These variables are not variable and therefore not needed.
->
->   
-
-Fixed.
-
->> +    snd_component_add(card, "MIDI");
->>     
-> This function is intended for sound cards that are composed of several
-> components, and the component name is usually a chip name.  I think
-> you don't need to call this function at all.
->
->   
-
-Fixed.
-
->> +    err = snd_card_register(card);
->> ...
->> +    /* create sysfs variables */
->> +    err = device_create_file(&pm->pk->hdev->dev,
->> +                 sysfs_device_attr_channel);
->> ...
->> +    spin_lock_init(&pm->rawmidi_in_lock);
->> +
->> +    init_sustain_timers(pm);
->>     
-> snd_card_register() makes all sound interfaces available to userspace.
-> Initializations for any data that might be accessed from userspace must
-> be done before that call.
->
->   
-
-Fixed.
-
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
->   
-
-
-		
-___________________________________________________________ 
-The all-new Yahoo! Mail goes wherever you go - free your email address from your Internet provider. http://uk.docs.yahoo.com/nowyoucan.html
+--0050450146e3d4b8a20485f1942c
+Content-Type: application/octet-stream; name="cxt5051.patch"
+Content-Disposition: attachment; filename="cxt5051.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g8vxx1kd0
+
+ZGlmZiAtLWdpdCBhL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3BjaS9oZGEvcGF0Y2hfY29u
+ZXhhbnQuYwppbmRleCAxMTRhZjhlLi42M2UyZmIyIDEwMDY0NAotLS0gYS9wY2kvaGRhL3BhdGNo
+X2NvbmV4YW50LmMKKysrIGIvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCkBAIC0xNzg0LDcgKzE3
+ODQsOSBAQCBzdGF0aWMgc3RydWN0IGhkYV92ZXJiIGN4dDUwNTFfaW5pdF92ZXJic1tdID0gewog
+CXsweDE0LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fVU5NVVRFKDEpIHwgMHg0
+NH0sCiAJezB4MTUsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9VTk1VVEUoMCkg
+fCAweDQ0fSwKIAkvKiBTUERJRiByb3V0ZTogUENNICovCisJezB4MWMsIEFDX1ZFUkJfU0VUX1BJ
+Tl9XSURHRVRfQ09OVFJPTCwgUElOX09VVH0sIAogCXsweDFjLCBBQ19WRVJCX1NFVF9DT05ORUNU
+X1NFTCwgMHgwfSwKKwogCS8qIEVBUEQgKi8KIAl7MHgxYSwgQUNfVkVSQl9TRVRfRUFQRF9CVExF
+TkFCTEUsIDB4Mn0sIC8qIGRlZmF1bHQgb24gKi8gCiAJezB4MTYsIEFDX1ZFUkJfU0VUX1VOU09M
+SUNJVEVEX0VOQUJMRSwgQUNfVVNSU1BfRU58Q09ORVhBTlRfSFBfRVZFTlR9LApAQCAtMTk3NSw2
+ICsxOTc3LDggQEAgc3RhdGljIGludCBwYXRjaF9jeHQ1MDUxKHN0cnVjdCBoZGFfY29kZWMgKmNv
+ZGVjKQogCQkJCQkJICBjeHQ1MDUxX21vZGVscywKIAkJCQkJCSAgY3h0NTA1MV9jZmdfdGJsKTsK
+IAlzcGVjLT5hdXRvX21pYyA9IEFVVE9fTUlDX1BPUlRCIHwgQVVUT19NSUNfUE9SVEM7CisKKyNp
+ZiAwIC8vIFBMQgogCXN3aXRjaCAoYm9hcmRfY29uZmlnKSB7CiAJY2FzZSBDWFQ1MDUxX0hQOgog
+CQlzcGVjLT5taXhlcnNbMF0gPSBjeHQ1MDUxX2hwX21peGVyczsKQEAgLTE5OTcsNyArMjAwMSw3
+IEBAIHN0YXRpYyBpbnQgcGF0Y2hfY3h0NTA1MShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAkJ
+c3BlYy0+YXV0b19taWMgPSBBVVRPX01JQ19QT1JUQjsKIAkJYnJlYWs7CiAJfQotCisjZW5kaWYK
+IAlyZXR1cm4gMDsKIH0KIAo=
+--0050450146e3d4b8a20485f1942c
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0050450146e3d4b8a20485f1942c--
