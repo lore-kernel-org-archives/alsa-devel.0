@@ -1,18 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCHv2] ASoC: tlv320aic3x: Add platform data and
-	reset gpio handling
-Date: Thu, 6 May 2010 11:09:34 +0300
-Message-ID: <201005061109.34734.peter.ujfalusi@nokia.com>
-References: <1273053723-6304-1-git-send-email-jhnikula@gmail.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: iec958 regression with alsa 1.0.22 and kernel
+ 2.6.33 on Intel DG45FC motherboard
+Date: Thu, 6 May 2010 16:15:44 +0800
+Message-ID: <20100506081544.GA4082@localhost>
+References: <20100505230516.GA4765@hardeman.nu>
+	<20100506005509.GC5335@localhost>
+	<0c7a6777d7b1bd6032e87a5955efb7cd.squirrel@www.hardeman.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 949EE245DD
+Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72ED7245E9
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 May 2010 10:09:43 +0200 (CEST)
-In-Reply-To: <1273053723-6304-1-git-send-email-jhnikula@gmail.com>
+	Thu,  6 May 2010 10:15:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <0c7a6777d7b1bd6032e87a5955efb7cd.squirrel@www.hardeman.nu>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +25,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: David =?utf-8?B?SMOkcmRlbWFu?= <david@hardeman.nu>
+Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexey Fisher <bug-track@fisher-privat.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 05 May 2010 13:02:03 ext Jarkko Nikula wrote:
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> =
-
-> ---
-> =
-
-> v2:
-> =
-
-> - Removed added regulator_bulk_disable brain fart from aic3x_i2c_probe
-> - Added comment to gpio_reset number in aic3x_pdata
-
-Would have been nice to have a commit message for this just in case.
-Something like this would do:
-Handle the reset GPIO within the codec driver in order to follow the startu=
-p =
-
-protocol for the tlv320aic3x codecs.
-
-Can you Liam add this message (if Jarkko agrees)?
-
-I can give my:
-Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Or
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-
-Whichever you feel appropriate in case of the tlv320aic3x codec driver.
-
--- =
-
-P=E9ter
+T24gVGh1LCBNYXkgMDYsIDIwMTAgYXQgMDM6NDI6MjdQTSArMDgwMCwgRGF2aWQgSMOkcmRlbWFu
+IHdyb3RlOgo+IE9uIFRodSwgTWF5IDYsIDIwMTAgMDI6NTUsIFd1IEZlbmdndWFuZyB3cm90ZToK
+PiA+IE9uIFRodSwgTWF5IDA2LCAyMDEwIGF0IDA3OjA1OjE2QU0gKzA4MDAsIERhdmlkIEjDg8Kk
+cmRlbWFuIHdyb3RlOgo+ID4+IEEgcmVjZW50IHVwZ3JhZGUgdG8ga2VybmVsIDIuNi4zMy54IGFu
+ZCBhbHNhIDEuMC4yMiBicm9rZSBzcGRpZiAoaWVjOTU4KQo+ID4KPiA+IFVwZ3JhZGVkIGZyb20g
+d2hpY2gga2VybmVsPwo+IAo+IDIuNi4zMi5zb21ldGhpbmcsIGNhbiBjaGVjayBleGFjdCB2ZXJz
+aW9uIGxhdGVyIGlmIHlvdSB3YW50LiBhbHNhCj4gdXNlcnNwYWNlIGJpdHMgd2VyZSB1cGdyYWRl
+ZCBhdCB0aGUgc2FtZSB0aW1lIChjYW4gYWxzbyBjaGVjayBmcm9tIHdoaWNoCj4gdmVyc2lvbiBs
+YXRlciBpZiBuZWNlc3NhcnkpLgoKWWVzLCBzaG91bGQgYmUgT0sgaW4gMi42LjMyLCBhbmQgYnJv
+a2VuIGJ5IHRoaXMgY29tbWl0OgoKY29tbWl0IDUyZGM0Mzg2MDZkMWVmNzhiOTZmNTZjYzA0ZGJl
+YTkyNDIwMDU3MzAKQXV0aG9yOiBBbGV4ZXkgRmlzaGVyIDxidWctdHJhY2tAZmlzaGVyLXByaXZh
+dC5uZXQ+CkRhdGU6ICAgU2F0IERlYyAxMiAxMToxNjo0MSAyMDA5ICswMjAwCgogICAgQUxTQTog
+aGRhIC0gT3ZlcndyaXRlIHBpbiBjb25maWcgb24gaW50ZWwgREc0NUlEIGJvYXJkLgogICAgCiAg
+ICBUaGUgcGluIGNvbmZpZyBwcm92aWRlZCBieSBCSU9TIGhhdmUgc29tZSBwcm9ibGVtczoKICAg
+IDB4MDIyMTQwMWY6IFtKYWNrXSBIUCBPdXQgYXQgRXh0IEZyb250ICA8LS0gb3RoZXIgYXNzb2Np
+YXRpb24gYW5kIHNlcXVlbmNlCiAgICAweDAyYTE5MDIwOiBbSmFja10gTWljIGF0IEV4dCBGcm9u
+dCAgICAgPC0tIG90aGVyIGFzc29jaWF0aW9uCiAgICAweDAxMTEzMDE0OiBbSmFja10gU3BlYWtl
+ciBhdCBFeHQgUmVhciAgPC0tIGxpbmUgb3V0IChub3Qgc3BlYWtlcikKICAgIDB4MDExMTQwMTA6
+IFtKYWNrXSBTcGVha2VyIGF0IEV4dCBSZWFyICA8LS0gbGluZSBvdXQKICAgIDB4MDFhMTkwMzA6
+IFtKYWNrXSBNaWMgYXQgRXh0IFJlYXIgICAgICA8LS0gb3RoZXIgYXNzb2NpYXRpb24KICAgIDB4
+MDExMTEwMTI6IFtKYWNrXSBTcGVha2VyIGF0IEV4dCBSZWFyICA8LS0gbGluZSBvdXQKICAgIDB4
+MDExMTYwMTE6IFtKYWNrXSBTcGVha2VyIGF0IEV4dCBSZWFyICA8LS0gbGluZSBvdXQKICAgIDB4
+NDBmMDAwZjA6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIDB4NDBmMDAwZjA6IFtOL0FdIE90
+aGVyIGF0IEV4dCBOL0EKICAgIDB4NDBmMDAwZjA6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAg
+IDB4NDBmMDAwZjA6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIDB4NDBmMDAwZjA6IFtOL0Fd
+IE90aGVyIGF0IEV4dCBOL0EKICAgIDB4MDE0NTExNDA6IFtKYWNrXSBTUERJRiBPdXQgYXQgRXh0
+IFJlYXIKICAgIDB4NDBmMDAwZjA6IFtOL0FdIE90aGVyIGF0IEV4dCBOL0EKICAgIAogICAganVz
+dCBvdmVyd3JpdGUgaXQuCiAgICAKICAgIFNpZ25lZC1vZmYtYnk6IEFsZXhleSBGaXNoZXIgPGJ1
+Zy10cmFja0BmaXNoZXItcHJpdmF0Lm5ldD4KICAgIFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdh
+aSA8dGl3YWlAc3VzZS5kZT4KCj4gCj4gPj4gb3V0cHV0IG9uIG15IEludGVsIERHNDVGQyBtb3Ro
+ZXJib2FyZCAoSURUIDkySEQ3M0UxWDUgY29kZWMsCj4gPj4gc25kLWhkYS1pbnRlbCBkcml2ZXIp
+Lgo+ID4+Cj4gPj4gQWZ0ZXIgcGxheWluZyBhcm91bmQgYSBiaXQgd2l0aCBtb2R1bGUgcGFyYW1z
+LCBpdCB0dXJucyBvdXQgdGhhdCBsb2FkaW5nCj4gPj4gc25kLWhkYS1pbnRlbCB3aXRoIG1vZGVs
+PW5vLWpkIGZpeGVzIHRoaXMgcHJvYmxlbSAocHJldmlvdXNseSB0aGUgbW9kdWxlCj4gPj4gd29y
+a2VkIHdpdGhvdXQgYW55IG1vZGVsIG9wdGlvbiBhdCBhbGwsIG5vdGUgYWxzbyB0aGF0IG1vZGVs
+PWludGVsIGRvZXMKPiA+PiBub3Qgd29yayB3aGljaCBpcyBraW5kYSB3ZWlyZCkuCj4gPgo+ID4g
+WW91IG1lYW4gbW9kZWw9aW50ZWwgbmV2ZXIgd29ya2VkPwo+IAo+IE5vLCBJIG1lYW4gdGhhdCBJ
+J3ZlIG5ldmVyIHVzZWQgYSBtb2RlbD0gcGFyYW1ldGVyIGJlZm9yZSwgYW5kIGluIHRyeWluZwo+
+IHRvIGRlYnVnIHRoaXMgbmV3IHByb2JsZW0gSSB0cmllZCBtb2RlbD1pbnRlbCB3aGljaCBkaWQg
+bm90IGZpeCBpdCBidXQKPiBtb2RlbD1uby1qZCBkb2VzLiBTbyBtb2RlbD1pbnRlbCBtaWdodCBo
+YXZlIHdvcmtlZCBiZWZvcmUuCgpZZXMsIG1vZGVsPWludGVsIHdvcmtlZCBiZWZvcmUuCiAKPiBP
+biBhIHJlbGF0ZWQgbm90ZSwgd2h5IGlzIG1vZGVsPWludGVsIGV2ZW4gdGhlcmUgKGFuZCB3aHkg
+aXMgdGhlIGVuZC11c2VyCj4gZXhwZWN0ZWQgdG8gc2V0IGl0KT8gVGhlIGRvY3Mgc2F5cyBpdCdz
+IGZvciBERzQ1RkMgYW5kIERHNDVJRAo+IG1vdGhlcmJvYXJkcywgYnV0IHNob3VsZG4ndCB0aG9z
+ZSBtb3RoZXJib2FyZHMgYmUgcG9zc2libGUgdG8gYXV0b2RldGVjdAo+IGluIHRoZSBkcml2ZXIg
+dmlhIERNSSBpbmZvPwoKSXQgaGFzIHRvIGJlIGFzc2lnbmVkIGNhc2UgYnkgY2FzZSwgc2luY2Ug
+d2UgbmV2ZXIga25vdyB3aGV0aGVyIHRoZQpjdXJyZW50IHNldHRpbmdzIHdpbGwgYXBwbHkgYXV0
+b21hdGljYWxseSB0byBmdXR1cmUgSW50ZWwgYm9hcmRzLi4KClRoYW5rcywKRmVuZ2d1YW5nCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
