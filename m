@@ -1,19 +1,16 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: [PATCH 1/2] snd-maestro3: Make hardware volume
- buttons an input device (rev2)
-Date: Fri, 7 May 2010 00:10:02 +0300
-Message-ID: <20100506211002.GG6861@sci.fi>
-References: <1272014803-10706-1-git-send-email-hdegoede@redhat.com>
+From: Ville Syrjala <syrjala@sci.fi>
+Subject: [PATCH 1/2] es1968: Clear interrupts before enabling
+	them
+Date: Fri,  7 May 2010 00:12:12 +0300
+Message-ID: <1273180333-15500-1-git-send-email-syrjala@sci.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from filtteri2.pp.htv.fi (filtteri2.pp.htv.fi [213.243.153.185])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5E0EC10380A
+Received: from filtteri5.pp.htv.fi (filtteri5.pp.htv.fi [213.243.153.188])
+	by alsa0.perex.cz (Postfix) with ESMTP id 230A8103817
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 May 2010 23:10:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1272014803-10706-1-git-send-email-hdegoede@redhat.com>
+	Thu,  6 May 2010 23:13:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +20,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 23, 2010 at 05:26:42AM -0400, Hans de Goede wrote:
-> While working on the sound suspend / resume problems with my laptop
-> I noticed that the hardware volume handling code in essence just detects
-> key presses, and then does some hardcoded modification of the master volu=
-me
-> based on which key is pressed.
-> =
-
-> This made me think that clearly the right thing to do here is just report
-> these keypresses to userspace and let userspace decide what to with them.
-> =
-
-> This patch adds a Kconfig option which when enabled reports the volume
-> buttons as keypresses using an input device. When enabled this option
-> also gets rid of the ugly direct ac97 writes from the tasklet, the ac97lo=
-ck
-> and the need for using a tasklet in general.
-> =
-
-> As an added bonus the keys now work identical to volume keys on a (usb)
-> keyboard with multimedia keys, providing visual feedback of the volume
-> level change, and a better range of the volume control (with a properly
-> configured desktop environment).
-> =
-
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-
-Tested-by: Ville Syrj=E4l=E4 <syrjala@sci.fi>
-
-Both SND_MAESTRO3_INPUT=3Dy and SND_MAESTRO3_INPUT=3Dn work fine on my HP
-OmniBook 500.
-
-There is one small issue though. I get a spurious key event when I load
-the driver. Probably the omnibook GPIO magic causes a spurious event
-which then causes the interrupt since the driver doesn't clear the
-interrupts before enabling them. I'll send a patch for that.
-
--- =
-
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+RnJvbTogVmlsbGUgU3lyasOkbMOkIDxzeXJqYWxhQHNjaS5maT4KCkF2b2lkIHNwdXJpb3VzIGlu
+dGVycnVwdHMgd2hlbiBpbml0aWFsaXppbmcgdGhlIGRldmljZS4KClNpZ25lZC1vZmYtYnk6IFZp
+bGxlIFN5cmrDpGzDpCA8c3lyamFsYUBzY2kuZmk+Ci0tLQogc291bmQvcGNpL2VzMTk2OC5jIHwg
+ICAgMSArCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkK
+CmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvZXMxOTY4LmMgYi9zb3VuZC9wY2kvZXMxOTY4LmMKaW5k
+ZXggYWE5NzNjZS4uMjNhNThmMCAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2VzMTk2OC5jCisrKyBi
+L3NvdW5kL3BjaS9lczE5NjguYwpAQCAtMjQwMSw2ICsyNDAxLDcgQEAgc3RhdGljIHZvaWQgc25k
+X2VzMTk2OF9zdGFydF9pcnEoc3RydWN0IGVzMTk2OCAqY2hpcCkKIAl3ID0gRVNNX0hJUlFfRFNJ
+RSB8IEVTTV9ISVJRX0hXX1ZPTFVNRTsKIAlpZiAoY2hpcC0+cm1pZGkpCiAJCXcgfD0gRVNNX0hJ
+UlFfTVBVNDAxOworCW91dGIodywgY2hpcC0+aW9fcG9ydCArIDB4MUEpOwogCW91dHcodywgY2hp
+cC0+aW9fcG9ydCArIEVTTV9QT1JUX0hPU1RfSVJRKTsKIH0KIAotLSAKMS42LjQuNAoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
