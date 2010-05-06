@@ -1,18 +1,18 @@
-From: Ville Syrjala <syrjala@sci.fi>
-Subject: [PATCH 2/2] maestro3: Clear interrupts before enabling
-	them
-Date: Fri,  7 May 2010 00:12:13 +0300
-Message-ID: <1273180333-15500-2-git-send-email-syrjala@sci.fi>
-References: <1273180333-15500-1-git-send-email-syrjala@sci.fi>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: [PATCH] ALSA: hda: enable SPDIF output for Conexant
+	5051/Lenovo docking stations
+Date: Thu, 6 May 2010 17:08:45 -0500
+Message-ID: <h2m6160a5131005061508y4941c42at4b9720affe7b7702@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary=0016367d6d8eb28f260485f42fd8
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from filtteri5.pp.htv.fi (filtteri5.pp.htv.fi [213.243.153.188])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE1B3103817
+Received: from mail-iw0-f178.google.com (mail-iw0-f178.google.com
+	[209.85.223.178])
+	by alsa0.perex.cz (Postfix) with ESMTP id E95ED1037F5
 	for <alsa-devel@alsa-project.org>;
-	Thu,  6 May 2010 23:13:07 +0200 (CEST)
-In-Reply-To: <1273180333-15500-1-git-send-email-syrjala@sci.fi>
+	Fri,  7 May 2010 00:08:46 +0200 (CEST)
+Received: by iwn8 with SMTP id 8so570178iwn.16
+	for <alsa-devel@alsa-project.org>; Thu, 06 May 2010 15:08:45 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Hans de Goede <hdegoede@redhat.com>
+To: Aristeu Rozanski <aris@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogVmlsbGUgU3lyasOkbMOkIDxzeXJqYWxhQHNjaS5maT4KCkF2b2lkIHNwdXJpb3VzIGlu
-dGVycnVwdHMgd2hlbiBpbml0aWFsaXppbmcgdGhlIGRldmljZS4KClNpZ25lZC1vZmYtYnk6IFZp
-bGxlIFN5cmrDpGzDpCA8c3lyamFsYUBzY2kuZmk+Ci0tLQogc291bmQvcGNpL21hZXN0cm8zLmMg
-fCAgICAxICsKIDEgZmlsZXMgY2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygt
-KQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9tYWVzdHJvMy5jIGIvc291bmQvcGNpL21hZXN0cm8z
-LmMKaW5kZXggYWRmNTU3YS4uOGY2MWZiYiAxMDA2NDQKLS0tIGEvc291bmQvcGNpL21hZXN0cm8z
-LmMKKysrIGIvc291bmQvcGNpL21hZXN0cm8zLmMKQEAgLTI0MjksNiArMjQyOSw3IEBAIHNuZF9t
-M19lbmFibGVfaW50cyhzdHJ1Y3Qgc25kX20zICpjaGlwKQogCXZhbCA9IEFTU1BfSU5UX0VOQUJM
-RSAvKnwgTVBVNDAxX0lOVF9FTkFCTEUqLzsKIAlpZiAoY2hpcC0+aHZfY29uZmlnICYgSFZfQ1RS
-TF9FTkFCTEUpCiAJCXZhbCB8PSBIVl9JTlRfRU5BQkxFOworCW91dGIodmFsLCBjaGlwLT5pb2Jh
-c2UgKyBIT1NUX0lOVF9TVEFUVVMpOwogCW91dHcodmFsLCBpbyArIEhPU1RfSU5UX0NUUkwpOwog
-CW91dGIoaW5iKGlvICsgQVNTUF9DT05UUk9MX0MpIHwgQVNTUF9IT1NUX0lOVF9FTkFCTEUsCiAJ
-ICAgICBpbyArIEFTU1BfQ09OVFJPTF9DKTsKLS0gCjEuNi40LjQKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+--0016367d6d8eb28f260485f42fd8
+Content-Type: text/plain; charset=ISO-8859-1
+
+this patch should work for all CXT5051-based Lenovo docking stations.
+Aristeu, you added a quirk for the X200 docking station (commit
+0e6e6db212b0c97c5d4f5f55b674ec2d3276c16c),
+can you check if you see any adverse effects with this patch?
+Thanks
+- Pierre
+
+--0016367d6d8eb28f260485f42fd8
+Content-Type: application/octet-stream;
+	name="0001-ALSA-hda-enable-SPDIF-output-for-Conexant-5051-Lenov.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-enable-SPDIF-output-for-Conexant-5051-Lenov.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g8w4nwcs0
+
+RnJvbSAxYTM1OTMxNjMxNGRiNGZiYWUwNTQ4ODAxMzkxMDdjMjc2Y2FhYzEyIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJv
+c3NhcnRAaW50ZWwuY29tPgpEYXRlOiBUaHUsIDYgTWF5IDIwMTAgMTY6Mzc6MDMgLTA1MDAKU3Vi
+amVjdDogW1BBVENIXSBBTFNBOiBoZGE6IGVuYWJsZSBTUERJRiBvdXRwdXQgZm9yIENvbmV4YW50
+IDUwNTEvTGVub3ZvIGRvY2tpbmcgc3RhdGlvbnMKClRoaXMgcGF0Y2ggZW5hYmxlcyB0aGUgU1BE
+SUYgb3V0cHV0IHBpbiBieSBkZWZhdWx0LiBJdCBhbHNvIGVuYWJsZXMKaXQgZm9yIHF1aXJrcyBy
+ZWxhdGVkIHRvIExldm9ubyBkb2NraW5nIHN0YXRpb25zICh4MjAwIGFuZCAyNTA0MSwKaWRlbnRp
+ZmllZCB3aXRoIHRoZSBzYW1lIDE3YWE6MjBmMiBJRCkuIEV2ZW4gdGhvdWdoIG5vdCBhbGwgTGVu
+b3ZvCmRvY2tpbmcgc3RhdGlvbnMgaGF2ZSBTUERJRiBjb25uZWN0b3JzLCBlbmFibGluZyB0aGUg
+cGluIGJ5IGRlZmF1bHQKc2hvdWxkbid0IGJlIGEgcHJvYmxlbSBmb3IgYW55b25lLgpPdGhlciBx
+dWlya3MgcmVtYWluIHVubW9kaWZpZWQuCi0tLQogcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIHwg
+ICAgNCArKystCiAxIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMo
+LSkKCmRpZmYgLS1naXQgYS9wY2kvaGRhL3BhdGNoX2NvbmV4YW50LmMgYi9wY2kvaGRhL3BhdGNo
+X2NvbmV4YW50LmMKaW5kZXggMTE0YWY4ZS4uNTk2NzMxNyAxMDA2NDQKLS0tIGEvcGNpL2hkYS9w
+YXRjaF9jb25leGFudC5jCisrKyBiL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYwpAQCAtMTc4NCw2
+ICsxNzg0LDcgQEAgc3RhdGljIHN0cnVjdCBoZGFfdmVyYiBjeHQ1MDUxX2luaXRfdmVyYnNbXSA9
+IHsKIAl7MHgxNCwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX1VOTVVURSgxKSB8
+IDB4NDR9LAogCXsweDE1LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5fVU5NVVRF
+KDApIHwgMHg0NH0sCiAJLyogU1BESUYgcm91dGU6IFBDTSAqLworCXsweDFjLCBBQ19WRVJCX1NF
+VF9QSU5fV0lER0VUX0NPTlRST0wsIFBJTl9PVVR9LCAKIAl7MHgxYywgQUNfVkVSQl9TRVRfQ09O
+TkVDVF9TRUwsIDB4MH0sCiAJLyogRUFQRCAqLwogCXsweDFhLCBBQ19WRVJCX1NFVF9FQVBEX0JU
+TEVOQUJMRSwgMHgyfSwgLyogZGVmYXVsdCBvbiAqLyAKQEAgLTE4NDAsNiArMTg0MSw3IEBAIHN0
+YXRpYyBzdHJ1Y3QgaGRhX3ZlcmIgY3h0NTA1MV9sZW5vdm9feDIwMF9pbml0X3ZlcmJzW10gPSB7
+CiAJezB4MTQsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9JTl9VTk1VVEUoMSkgfCAw
+eDQ0fSwKIAl7MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgQU1QX0lOX1VOTVVURSgw
+KSB8IDB4NDR9LAogCS8qIFNQRElGIHJvdXRlOiBQQ00gKi8KKwl7MHgxYywgQUNfVkVSQl9TRVRf
+UElOX1dJREdFVF9DT05UUk9MLCBQSU5fT1VUfSwgLyogbmVlZGVkIGZvciBXNTAwIEFkdmFuY2Vk
+IE1pbmkgRG9jayAyNTA0MTAgKi8KIAl7MHgxYywgQUNfVkVSQl9TRVRfQ09OTkVDVF9TRUwsIDB4
+MH0sCiAJLyogRUFQRCAqLwogCXsweDFhLCBBQ19WRVJCX1NFVF9FQVBEX0JUTEVOQUJMRSwgMHgy
+fSwgLyogZGVmYXVsdCBvbiAqLwpAQCAtMTkxMSw3ICsxOTEzLDcgQEAgZW51bSB7CiAJQ1hUNTA1
+MV9MQVBUT1AsCSAvKiBMYXB0b3BzIHcvIEVBUEQgc3VwcG9ydCAqLwogCUNYVDUwNTFfSFAsCS8q
+IG5vIGRvY2tpbmcgKi8KIAlDWFQ1MDUxX0hQX0RWNjczNiwJLyogSFAgd2l0aG91dCBtaWMgc3dp
+dGNoICovCi0JQ1hUNTA1MV9MRU5PVk9fWDIwMCwJLyogTGVub3ZvIFgyMDAgbGFwdG9wICovCisJ
+Q1hUNTA1MV9MRU5PVk9fWDIwMCwJLyogTGVub3ZvIFgyMDAgbGFwdG9wLCBhbHNvIHVzZWQgZm9y
+IEFkdmFuY2VkIE1pbmkgRG9jayAyNTA0MTAgKi8KIAlDWFQ1MDUxX0Y3MDAsICAgICAgIC8qIEhQ
+IENvbXBhcSBQcmVzYXJpbyBGNzAwICovCiAJQ1hUNTA1MV9UT1NISUJBLAkvKiBUb3NoaWJhIE0z
+MDAgJiBjbyAqLwogCUNYVDUwNTFfTU9ERUxTCi0tIAoxLjYuNi4xCgo=
+--0016367d6d8eb28f260485f42fd8
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--0016367d6d8eb28f260485f42fd8--
