@@ -1,77 +1,459 @@
-From: Robert Krakora <rob.krakora@messagenetsystems.com>
-Subject: Re: ALSA 1.0.23 Kernel Panic in
-	snd_hda_codec_idt:stac92xx_add_jack
-Date: Thu, 6 May 2010 13:19:59 -0400
-Message-ID: <h2zb24e53351005061019w247fd664h1e952be03fe528d3@mail.gmail.com>
-References: <i2gb24e53351005030547p5a8e5d67ya6fa14fccb6488e6@mail.gmail.com>
-	<s5hfx25uwpy.wl%tiwai@suse.de>
-	<j2sb24e53351005060849rcae4fce1re559a753f3054cb@mail.gmail.com>
-	<s5hljbx0ztf.wl%tiwai@suse.de>
+From: Don Prince <dhprince.devel@yahoo.co.uk>
+Subject: Re: [alsa-devel] [PATCH 2.6.34-rc5] HID: Prodikeys PC-MIDI HID Driver
+Date: Thu, 06 May 2010 19:23:49 +0100
+Message-ID: <4BE30935.9040001@yahoo.co.uk>
+References: <4BE1A2E2.1040801@yahoo.co.uk> <4BE261FE.60109@ladisch.de>
+Reply-To: dhprince.devel@yahoo.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f178.google.com (mail-iw0-f178.google.com
-	[209.85.223.178])
-	by alsa0.perex.cz (Postfix) with ESMTP id 965081037EA
-	for <alsa-devel@alsa-project.org>;
-	Thu,  6 May 2010 19:20:01 +0200 (CEST)
-Received: by iwn8 with SMTP id 8so222141iwn.16
-	for <alsa-devel@alsa-project.org>; Thu, 06 May 2010 10:20:00 -0700 (PDT)
-In-Reply-To: <s5hljbx0ztf.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <4BE261FE.60109@ladisch.de>
+Sender: linux-input-owner@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CentOS 5.4 with 2.6.18-164.15.1.el5 kernel
+On 06/05/10 07:30, Clemens Ladisch wrote:
+> dhprince.devel@yahoo wrote:
+>   
+>> A specialised HID driver for the CreativeLabs Prodikeys PC-MIDI USB 
+>> Keyboard.
+>> ...
+>>     
+> I cannot comment on the input stuff, but the sound stuff looks good
+> overall.
+>   
 
-I will try to get you more lines ASAP.
+Thanks my first linux coding.
 
-On Thu, May 6, 2010 at 12:17 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> At Thu, 6 May 2010 11:49:46 -0400,
-> Robert Krakora wrote:
->>
->> All:
->>
->> I am seeing a kernel panic with ALSA Drivers 1.0.23 in
->> snd_hda_codec_idt:stac92xx_add_jack on
->> my Dell Studio 1737 running stock CentOS 5.4. =A0Before I file a bug
->> report I just wanted to make sure that you did not already have a
->> patch for this problem. =A0Please see the attached .jpg for the trace.
->> I took a picture as this is a hard failure with a backtrace (keyboard
->> blinks).
+>   
+>> +What:        /sys/bus/hid/drivers/prodikeys/.../channel
+>> +Date:        April 2010
+>> +KernelVersion:    2.6.34
+>> +Contact:    Don Prince <dhprince.devel@yahoo.co.uk>
+>> +Descripts/checkpatch.plscription:
+>>     
+> Huh?
 >
-> Which kernel version is it? =A0Also, any chance to see more lines?
-> It'd be helpful if you can narrow down the position it oopses...
+>   
+
+Fixed. I am being plagued by spurious button presses due to I suspect
+conflicts between
+my KVM switch and PS/2 to USB keyboard/Mouse converter.
+
+>> +What:        /sys/bus/hid/drivers/prodikeys/.../sustain
+>> +Description:
+>> +        Allows control (via software) the sustain duration of a
+>> +        note held by the pc-midi driver.
+>>     
+> Why is this feature needed?  Does the device report key releases
+> incorrectly?
 >
+>   
+
+The keyboard pretends to support sustain. The driver actually does it.
+
+> These three sysfs controls could also be implemented as mixer controls.
+> This would allow them to be automatically saved and restored when the
+> computer is shut down.
 >
-> thanks,
+>   
+>> +    { HID_USB_DEVICE(USB_VENDOR_ID_CREATIVELABS, 
+>> USB_DEVICE_ID_PRODIKEYS_PCMIDI) },
+>>     
+> Your mailer wrapped long lines and killed the tabs.
+> Please see <Documentation/email-clients.txt>.
 >
-> Takashi
+> And your code looks as if it does not use eight-column tabs for
+> indention.
+>
+>   
+
+The code is written using 8 column tabs but you are right thunderbird
+messed it up. I believe I fixed  thunderbird now.
+
+>> +static void pcmidi_send_note(struct pcmidi_snd *pm,
+>> ...
+>> +    res = snd_rawmidi_receive(pm->in_substream, buffer, 3);
+>>     
+> This return value is never used.
+>
+>   
+
+Fixed.
+
+>> +                    if (!atomic_read(&pms->in_use)) {
+>> +                        pms->status = status;
+>> +                        pms->note = note;
+>> +                        pms->velocity = velocity;
+>> +                        atomic_set(&pms->in_use, 1);
+>>     
+> If you're using the atomic variable to protect against some concurrently
+> executing code, then you have a race condition in the time interval
+> between the read and the set.
+>
+>   
+
+Fixed. It was me being overkill, they are actually redundant.
+
+>> +static void pcmidi_out_tasklet(unsigned long data)
+>> ...
+>> +    while (1) {
+>> +        /* just read them and drop them */
+>> +        u8 b;
+>> +        if (snd_rawmidi_transmit(pm->out_substream, &b, 1) != 1) {
+>> +            pm->out_active = 0;
+>> +            break;
+>> +        }
+>>     
+> This isn't quite how output ports are supposed to be implemented.  :-)
+>
+> I'd guess you want to remove the OUTPUT and DUPLEX flags and to drop all
+> output-related functions.
+>
+>   
+I know, it was naff, but without it the I get this from "amidi"
+
+$ amidi -l
+
+Dir Device    Name
+
+cannot get rawmidi information 2:0: No such file or directory
+
+
+Is it supposed to print this?
+
+Although the midi still works.
+
+$ amidi -p hw:2,0 --dump
+
+90 2F 5C
+
+80 2F 7F
+
+90 30 52
+
+80 30 7F
+
+90 32 00
+
+80 32 7F
+
+
+The test code now looks like this
+
+/*dhp	snd_component_add(card, "MIDI");*/
+	err = snd_rawmidi_new(card, card->shortname, 0,
+			      0, 1, &rwmidi);
+	if (err < 0) {
+		pk_error("failed to create pc-midi rawmidi device: error %d\n",
+			err);
+		goto fail;
+	}
+	pm->rwmidi = rwmidi;
+	strncpy(rwmidi->name, card->shortname, sizeof(rwmidi->name));
+	rwmidi->info_flags = SNDRV_RAWMIDI_INFO_INPUT /*dhp|
+				SNDRV_RAWMIDI_INFO_OUTPUT |
+				SNDRV_RAWMIDI_INFO_DUPLEX*/;
+	rwmidi->private_data = pm;
+
+/*dhp	snd_rawmidi_set_ops(rwmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
+		&pcmidi_out_ops);
+*/	snd_rawmidi_set_ops(rwmidi, SNDRV_RAWMIDI_STREAM_INPUT,
+		&pcmidi_in_ops);
+
+
+Other command output is printed below.
+
+$ cat /proc/asound/cards
+
+ 0 [NVidia         ]: HDA-Intel - HDA NVidia
+
+                      HDA NVidia at 0xdfdf8000 irq 21
+
+ 1 [HDMI           ]: HDA-Intel - HDA ATI HDMI
+
+                      HDA ATI HDMI at 0xdffec000 irq 31
+
+ 2 [PCMIDI         ]: PC-MIDI - PC-MIDI
+
+                      Prodikeys PC-MIDI Keyboard
+
+$ aconnect -i
+
+client 0: 'System' [type=kernel]
+
+    0 'Timer           '
+
+    1 'Announce        '
+
+client 14: 'Midi Through' [type=kernel]
+
+    0 'Midi Through Port-0'
+
+client 24: 'PC-MIDI' [type=kernel]
+
+    0 'PC-MIDI
+
+$ aconnect -o
+
+client 14: 'Midi Through' [type=kernel]
+
+    0 'Midi Through Port-0'
+
+client 128: 'FLUID Synth (Qsynth1)' [type=user]
+
+    0 'Synth input port (Qsynth1:0)'
+
+$ aconnect -iol
+
+client 0: 'System' [type=kernel]
+
+    0 'Timer           '
+
+    1 'Announce        '
+
+        Connecting To: 15:0
+
+client 14: 'Midi Through' [type=kernel]
+
+    0 'Midi Through Port-0'
+
+client 24: 'PC-MIDI' [type=kernel]
+
+    0 'PC-MIDI         '
+
+        Connecting To: 128:0
+
+client 128: 'FLUID Synth (Qsynth1)' [type=user]
+
+    0 'Synth input port (Qsynth1:0)'
+
+        Connected From: 24:0
+
+$ amidi -L
+
+RawMIDI list:
+
+default {
+
+        type hw
+
+        card {
+
+                @func getenv
+
+                vars {
+
+                        0 ALSA_RAWMIDI_CARD
+
+                        1 ALSA_CARD
+
+                }
+
+                default {
+
+                        @func refer
+
+                        name 'defaults.rawmidi.card'
+
+                }
+
+        }
+
+        device {
+
+                @func igetenv
+
+                vars {
+
+                        0 ALSA_RAWMIDI_DEVICE
+
+                }
+
+                default {
+
+                        @func refer
+
+                        name 'defaults.rawmidi.device'
+
+                }
+
+        }
+
+}
+
+hw {
+
+        @args.0 CARD
+
+        @args.1 DEV
+
+        @args.2 SUBDEV
+
+        @args.CARD {
+
+                type string
+
+                default {
+
+                        @func getenv
+
+                        vars {
+
+                                0 ALSA_RAWMIDI_CARD
+
+                                1 ALSA_CARD
+
+                        }
+
+                        default {
+
+                                @func refer
+
+                                name 'defaults.rawmidi.card'
+
+                        }
+
+                }
+
+        }
+
+        @args.DEV {
+
+                type integer
+
+                default {
+
+                        @func igetenv
+
+                        vars {
+
+                                0 ALSA_RAWMIDI_DEVICE
+
+                        }
+
+                        default {
+
+                                @func refer
+
+                                name 'defaults.rawmidi.device'
+
+                        }
+
+                }
+
+        }
+
+        @args.SUBDEV {
+
+                type integer
+
+                default -1
+
+        }
+
+        type hw
+
+        card $CARD
+
+        device $DEV
+
+        subdevice $SUBDEV
+
+        hint {
+
+                description 'Direct rawmidi driver device'
+
+                device $DEV
+
+        }
+
+}
+
+virtual {
+
+        @args.0 MERGE
+
+        @args.MERGE {
+
+                type string
+
+                default 1
+
+        }
+
+        type virtual
+
+        merge $MERGE
+
+}
+
+
+
+>> +static void pcmidi_in_trigger(struct snd_rawmidi_substream *substream, 
+>> int up)
+>> ...
+>> +    if (up)
+>> +        set_bit(substream->number, &pm->in_triggered);
+>> +    else
+>> +        clear_bit(substream->number, &pm->in_triggered);
+>>     
+> You have only one substream, a boolean variable would suffice.
+>   
+
+Fixed.
+
+>   
+>> +int pcmidi_snd_initialise(struct pcmidi_snd *pm)
+>> ...
+>> +    int out_ports = 1;
+>> +    int in_ports = 1;
+>>     
+> These variables are not variable and therefore not needed.
+>
+>   
+
+Fixed.
+
+>> +    snd_component_add(card, "MIDI");
+>>     
+> This function is intended for sound cards that are composed of several
+> components, and the component name is usually a chip name.  I think
+> you don't need to call this function at all.
+>
+>   
+
+Fixed.
+
+>> +    err = snd_card_register(card);
+>> ...
+>> +    /* create sysfs variables */
+>> +    err = device_create_file(&pm->pk->hdev->dev,
+>> +                 sysfs_device_attr_channel);
+>> ...
+>> +    spin_lock_init(&pm->rawmidi_in_lock);
+>> +
+>> +    init_sustain_timers(pm);
+>>     
+> snd_card_register() makes all sound interfaces available to userspace.
+> Initializations for any data that might be accessed from userspace must
+> be done before that call.
+>
+>   
+
+Fixed.
+
+> Regards,
+> Clemens
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
 > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
->
+>   
 
 
-
--- =
-
-Rob Krakora
-Senior Software Engineer
-MessageNet Systems
-101 East Carmel Dr. Suite 105
-Carmel, IN 46032
-(317)566-1677 Ext. 206
-(317)663-0808 Fax
+		
+___________________________________________________________ 
+The all-new Yahoo! Mail goes wherever you go - free your email address from your Internet provider. http://uk.docs.yahoo.com/nowyoucan.html
