@@ -1,79 +1,123 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Thu, 6 May 2010 09:24:05 +0800
-Message-ID: <u2y4f3252891005051824vd4583966id36eec52dd016d7d@mail.gmail.com>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<4BDABDDD.4050502@ladisch.de>
-	<w2s6160a5131004300644o3aedd30bvf0d13a7f9e758575@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [alsa-devel] [PATCH 2.6.34-rc5] HID: Prodikeys PC-MIDI HID Driver
+Date: Thu, 06 May 2010 08:30:22 +0200
+Message-ID: <4BE261FE.60109@ladisch.de>
+References: <4BE1A2E2.1040801@yahoo.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id D178924383
-	for <alsa-devel@alsa-project.org>;
-	Thu,  6 May 2010 03:24:07 +0200 (CEST)
-Received: by pwj8 with SMTP id 8so2314816pwj.38
-	for <alsa-devel@alsa-project.org>; Wed, 05 May 2010 18:24:06 -0700 (PDT)
-In-Reply-To: <w2s6160a5131004300644o3aedd30bvf0d13a7f9e758575@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <4BE1A2E2.1040801@yahoo.co.uk>
+Sender: linux-input-owner@vger.kernel.org
+To: "dhprince.devel@yahoo" <dhprince.devel@yahoo.co.uk>
+Cc: linux-input@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/4/30 pl bossart <bossart.nospam@gmail.com>
+dhprince.devel@yahoo wrote:
+> A specialised HID driver for the CreativeLabs Prodikeys PC-MIDI USB 
+> Keyboard.
+> ...
 
-> Hi Clemens,
->
-> >> When PulseAudio is used and all PCM is routed through PulseAudio
-> >> (Fedora, Meego, etc), the notion of ALSA periods isn't very useful.
-> >> So why not disable them entirely to reduce the number of wakeups? ...
-> >> There are probably some cases where you don't want this type of
-> >> behavior (broken hardware, legacy code with multiple-buffering,
-> >> disabled timer in PulseAudio),
-> >
-> > It's interesting that all ALSA applications except PA are "legacy".  :)
->
-> Ha. Nice slip. I didn't mean legacy was bad... It's perfectly ok to
-> use multiple buffers and interrupts in a variety of apps.
->
-> >> so I think it would make sense to request the disabling of interrupts
-> >> when hw_params are set, since this is also the time when period sizes
-> >> are set.
-> >
-> > Yes.  For compatibility with the existing ALSA API, this needs to be
-> > a flag that is not enabled by default.
->
-> Agreed. This shouldn't even be mandatory since this option might not
-> be possible in all platforms.
->
-> >> I am aware that some changes would be needed in pcm_lib.c, where all
-> >> the error checks are done.
-> >
-> > Plus all the API changes in the ALSA kernel framework, the ALSA kernel/
-> > userspace interface, and the alsa-lib interface.
->
-> I am not following this point. If you add a simple flag to an existing
-> interface, why would we need to change the kernel/userspace inferface?
-> This change should be possible in a backwards compatible manner as an
-> additional option provided to the application developer.
-> Cheers
-> -Pierre
->
+I cannot comment on the input stuff, but the sound stuff looks good
+overall.
 
-Do your proposal allow one application use "leagcy" method and the other
-application use PA since my HDA codec seem allow multi streamming capture ?
+> +What:        /sys/bus/hid/drivers/prodikeys/.../channel
+> +Date:        April 2010
+> +KernelVersion:    2.6.34
+> +Contact:    Don Prince <dhprince.devel@yahoo.co.uk>
+> +Descripts/checkpatch.plscription:
+
+Huh?
+
+> +What:        /sys/bus/hid/drivers/prodikeys/.../sustain
+> +Description:
+> +        Allows control (via software) the sustain duration of a
+> +        note held by the pc-midi driver.
+
+Why is this feature needed?  Does the device report key releases
+incorrectly?
+
+These three sysfs controls could also be implemented as mixer controls.
+This would allow them to be automatically saved and restored when the
+computer is shut down.
+
+> +    { HID_USB_DEVICE(USB_VENDOR_ID_CREATIVELABS, 
+> USB_DEVICE_ID_PRODIKEYS_PCMIDI) },
+
+Your mailer wrapped long lines and killed the tabs.
+Please see <Documentation/email-clients.txt>.
+
+And your code looks as if it does not use eight-column tabs for
+indention.
+
+> +static void pcmidi_send_note(struct pcmidi_snd *pm,
+> ...
+> +    res = snd_rawmidi_receive(pm->in_substream, buffer, 3);
+
+This return value is never used.
+
+> +                    if (!atomic_read(&pms->in_use)) {
+> +                        pms->status = status;
+> +                        pms->note = note;
+> +                        pms->velocity = velocity;
+> +                        atomic_set(&pms->in_use, 1);
+
+If you're using the atomic variable to protect against some concurrently
+executing code, then you have a race condition in the time interval
+between the read and the set.
+
+> +static void pcmidi_out_tasklet(unsigned long data)
+> ...
+> +    while (1) {
+> +        /* just read them and drop them */
+> +        u8 b;
+> +        if (snd_rawmidi_transmit(pm->out_substream, &b, 1) != 1) {
+> +            pm->out_active = 0;
+> +            break;
+> +        }
+
+This isn't quite how output ports are supposed to be implemented.  :-)
+
+I'd guess you want to remove the OUTPUT and DUPLEX flags and to drop all
+output-related functions.
+
+> +static void pcmidi_in_trigger(struct snd_rawmidi_substream *substream, 
+> int up)
+> ...
+> +    if (up)
+> +        set_bit(substream->number, &pm->in_triggered);
+> +    else
+> +        clear_bit(substream->number, &pm->in_triggered);
+
+You have only one substream, a boolean variable would suffice.
+
+> +int pcmidi_snd_initialise(struct pcmidi_snd *pm)
+> ...
+> +    int out_ports = 1;
+> +    int in_ports = 1;
+
+These variables are not variable and therefore not needed.
+
+> +    snd_component_add(card, "MIDI");
+
+This function is intended for sound cards that are composed of several
+components, and the component name is usually a chip name.  I think
+you don't need to call this function at all.
+
+> +    err = snd_card_register(card);
+> ...
+> +    /* create sysfs variables */
+> +    err = device_create_file(&pm->pk->hdev->dev,
+> +                 sysfs_device_attr_channel);
+> ...
+> +    spin_lock_init(&pm->rawmidi_in_lock);
+> +
+> +    init_sustain_timers(pm);
+
+snd_card_register() makes all sound interfaces available to userspace.
+Initializations for any data that might be accessed from userspace must
+be done before that call.
 
 
-card 1: Intel [HDA Intel], device 0: AD198x Analog [AD198x Analog]
-  Subdevices: 3/3
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
+Regards,
+Clemens
