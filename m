@@ -1,39 +1,60 @@
-From: David =?iso-8859-1?Q?H=E4rdeman?= <david@hardeman.nu>
-Subject: Re: iec958 regression with alsa 1.0.22 and kernel
- 2.6.33 on Intel DG45FC motherboard
-Date: Thu, 6 May 2010 22:28:36 +0200
-Message-ID: <20100506202836.GA12852@hardeman.nu>
-References: <20100505230516.GA4765@hardeman.nu>
-	<20100506005509.GC5335@localhost>
-	<0c7a6777d7b1bd6032e87a5955efb7cd.squirrel@www.hardeman.nu>
-	<20100506102017.GA19051@localhost>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
+Subject: Re: [PATCH 2/2] snd-es1968: Make hardware volume
+ buttons an input device (rev2)
+Date: Fri, 7 May 2010 00:08:19 +0300
+Message-ID: <20100506210819.GF6861@sci.fi>
+References: <1272014803-10706-1-git-send-email-hdegoede@redhat.com>
+	<1272014803-10706-2-git-send-email-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-user-bounces@lists.sourceforge.net>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from filtteri1.pp.htv.fi (filtteri1.pp.htv.fi [213.243.153.184])
+	by alsa0.perex.cz (Postfix) with ESMTP id ADD3610380A
+	for <alsa-devel@alsa-project.org>;
+	Thu,  6 May 2010 23:08:23 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20100506102017.GA19051@localhost>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=alsa-user>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: alsa-user-bounces@lists.sourceforge.net
-To: Wu Fengguang <fengguang.wu@intel.com>
-Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexey Fisher <bug-track@fisher-privat.net>
+In-Reply-To: <1272014803-10706-2-git-send-email-hdegoede@redhat.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 06, 2010 at 06:20:17PM +0800, Wu Fengguang wrote:
-> The attached patch should fix your broken SPDIF output.
+On Fri, Apr 23, 2010 at 05:26:43AM -0400, Hans de Goede wrote:
+> The hardware volume handling code in essence just detects key presses, and
+> then does some hardcoded modification of the master volume based on which=
+ key
+> is pressed.
+> =
 
-Yup, it works (tried with model=3Dintel).
+> Clearly the right thing to do here is just report these keypresses to
+> userspace and let userspace decide what to with them.
+> =
 
+> This patch adds a Kconfig option which when enabled reports the volume
+> buttons as keypresses using an input device. When enabled this option
+> also gets rid of the ugly direct ac97 writes from the tasklet, the ac97lo=
+ck
+> and the need for using a tasklet in general.
+> =
+
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+
+Tested-by: Ville Syrj=E4l=E4 <syrjala@sci.fi>
+
+Both SND_ES1968_INPUT=3Dy and SND_ES1968_INPUT=3Dn work fine on my Dell
+Inspiron 7000.
 
 -- =
 
-David H=E4rdeman
-
----------------------------------------------------------------------------=
----
+Ville Syrj=E4l=E4
+syrjala@sci.fi
+http://www.sci.fi/~syrjala/
