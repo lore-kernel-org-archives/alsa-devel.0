@@ -1,7 +1,7 @@
-From: Daniel Mack <daniel@caiaq.de>
+From: The Source <thesourcehim@gmail.com>
 Subject: Re: usbaudio: Support for USB audio v2.0 devices
-Date: Fri, 7 May 2010 22:12:02 +0200
-Message-ID: <20100507201202.GC30801@buzzloop.caiaq.de>
+Date: Sat, 08 May 2010 01:32:49 +0400
+Message-ID: <4BE48701.2030700@gmail.com>
 References: <4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
 	<20100427140735.GD30804@buzzloop.caiaq.de>
 	<4BD702F0.6080108@gmail.com>
@@ -11,16 +11,19 @@ References: <4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
 	<4BDDAEB2.2010303@gmail.com>
 	<20100503205558.GM30801@buzzloop.caiaq.de>
 	<4BE4135C.80009@gmail.com>
+	<20100507201202.GC30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 145831037FC
+Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
+	[209.85.219.219])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D29D1038B7
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 May 2010 22:12:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4BE4135C.80009@gmail.com>
+	Fri,  7 May 2010 23:32:53 +0200 (CEST)
+Received: by ewy19 with SMTP id 19so383852ewy.22
+	for <alsa-devel@alsa-project.org>; Fri, 07 May 2010 14:32:51 -0700 (PDT)
+In-Reply-To: <20100507201202.GC30801@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,60 +33,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: The Source <thesourcehim@gmail.com>
+To: Daniel Mack <daniel@caiaq.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 07, 2010 at 05:19:24PM +0400, The Source wrote:
-> Bisect results:
-> 
-> 23caaf19b11eda7054348452e1618d4512a86907 is the first bad commit
-> commit 23caaf19b11eda7054348452e1618d4512a86907
-> Author: Daniel Mack <daniel@caiaq.de>
-> Date:   Thu Mar 11 21:13:25 2010 +0100
-> 
->     ALSA: usb-mixer: Add support for Audio Class v2.0
-> 
->     USB Audio Class v2.0 compliant devices have different descriptors and a
->     different way of setting/getting min/max/res/cur properties. This patch
->     adds support for them.
-> 
->     Signed-off-by: Daniel Mack <daniel@caiaq.de>
->     Cc: Clemens Ladisch <clemens@ladisch.de>
->     Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> 
-
-I've found two changes in this commit that are obviously wrong.
-Could you try the patch below please?
-
-Sorry for the trouble.
-
-Daniel
-
-
-diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
-index 905a87c..57f2055 100644
---- a/include/linux/usb/audio.h
-+++ b/include/linux/usb/audio.h
-@@ -244,7 +244,7 @@ struct uac_selector_unit_descriptor {
- static inline __u8 uac_selector_unit_iSelector(struct uac_selector_unit_descriptor *desc)
- {
- 	__u8 *raw = (__u8 *) desc;
--	return raw[desc->bLength - 1];
-+	return raw[9 + desc->bLength - 1];
- }
- 
- /* 4.3.2.5 Feature Unit Descriptor */
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 21613fe..fa0fb77 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -656,7 +656,7 @@ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_
- 		case UAC_FEATURE_UNIT: {
- 			/* the header is the same for v1 and v2 */
- 			struct uac_feature_unit_descriptor *d = p1;
--			id = d->bUnitID;
-+			id = d->bSourceID;
- 			break; /* continue to parse */
- 		}
- 		case UAC_MIXER_UNIT: {
+MDguMDUuMjAxMCAwMDoxMiwgRGFuaWVsIE1hY2sg0L/QuNGI0LXRgjoKPiBPbiBGcmksIE1heSAw
+NywgMjAxMCBhdCAwNToxOToyNFBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ICAgIAo+PiBC
+aXNlY3QgcmVzdWx0czoKPj4KPj4gMjNjYWFmMTliMTFlZGE3MDU0MzQ4NDUyZTE2MThkNDUxMmE4
+NjkwNyBpcyB0aGUgZmlyc3QgYmFkIGNvbW1pdAo+PiBjb21taXQgMjNjYWFmMTliMTFlZGE3MDU0
+MzQ4NDUyZTE2MThkNDUxMmE4NjkwNwo+PiBBdXRob3I6IERhbmllbCBNYWNrPGRhbmllbEBjYWlh
+cS5kZT4KPj4gRGF0ZTogICBUaHUgTWFyIDExIDIxOjEzOjI1IDIwMTAgKzAxMDAKPj4KPj4gICAg
+ICBBTFNBOiB1c2ItbWl4ZXI6IEFkZCBzdXBwb3J0IGZvciBBdWRpbyBDbGFzcyB2Mi4wCj4+Cj4+
+ICAgICAgVVNCIEF1ZGlvIENsYXNzIHYyLjAgY29tcGxpYW50IGRldmljZXMgaGF2ZSBkaWZmZXJl
+bnQgZGVzY3JpcHRvcnMgYW5kIGEKPj4gICAgICBkaWZmZXJlbnQgd2F5IG9mIHNldHRpbmcvZ2V0
+dGluZyBtaW4vbWF4L3Jlcy9jdXIgcHJvcGVydGllcy4gVGhpcyBwYXRjaAo+PiAgICAgIGFkZHMg
+c3VwcG9ydCBmb3IgdGhlbS4KPj4KPj4gICAgICBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTWFjazxk
+YW5pZWxAY2FpYXEuZGU+Cj4+ICAgICAgQ2M6IENsZW1lbnMgTGFkaXNjaDxjbGVtZW5zQGxhZGlz
+Y2guZGU+Cj4+ICAgICAgU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpPHRpd2FpQHN1c2UuZGU+
+Cj4+Cj4+ICAgICAgCj4gSSd2ZSBmb3VuZCB0d28gY2hhbmdlcyBpbiB0aGlzIGNvbW1pdCB0aGF0
+IGFyZSBvYnZpb3VzbHkgd3JvbmcuCj4gQ291bGQgeW91IHRyeSB0aGUgcGF0Y2ggYmVsb3cgcGxl
+YXNlPwo+Cj4gU29ycnkgZm9yIHRoZSB0cm91YmxlLgo+Cj4gRGFuaWVsCj4KPgo+IGRpZmYgLS1n
+aXQgYS9pbmNsdWRlL2xpbnV4L3VzYi9hdWRpby5oIGIvaW5jbHVkZS9saW51eC91c2IvYXVkaW8u
+aAo+IGluZGV4IDkwNWE4N2MuLjU3ZjIwNTUgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC91
+c2IvYXVkaW8uaAo+ICsrKyBiL2luY2x1ZGUvbGludXgvdXNiL2F1ZGlvLmgKPiBAQCAtMjQ0LDcg
+KzI0NCw3IEBAIHN0cnVjdCB1YWNfc2VsZWN0b3JfdW5pdF9kZXNjcmlwdG9yIHsKPiAgIHN0YXRp
+YyBpbmxpbmUgX191OCB1YWNfc2VsZWN0b3JfdW5pdF9pU2VsZWN0b3Ioc3RydWN0IHVhY19zZWxl
+Y3Rvcl91bml0X2Rlc2NyaXB0b3IgKmRlc2MpCj4gICB7Cj4gICAJX191OCAqcmF3ID0gKF9fdTgg
+KikgZGVzYzsKPiAtCXJldHVybiByYXdbZGVzYy0+Ykxlbmd0aCAtIDFdOwo+ICsJcmV0dXJuIHJh
+d1s5ICsgZGVzYy0+Ykxlbmd0aCAtIDFdOwo+ICAgfQo+Cj4gICAvKiA0LjMuMi41IEZlYXR1cmUg
+VW5pdCBEZXNjcmlwdG9yICovCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlci5jIGIvc291
+bmQvdXNiL21peGVyLmMKPiBpbmRleCAyMTYxM2ZlLi5mYTBmYjc3IDEwMDY0NAo+IC0tLSBhL3Nv
+dW5kL3VzYi9taXhlci5jCj4gKysrIGIvc291bmQvdXNiL21peGVyLmMKPiBAQCAtNjU2LDcgKzY1
+Niw3IEBAIHN0YXRpYyBpbnQgY2hlY2tfaW5wdXRfdGVybShzdHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0
+YXRlLCBpbnQgaWQsIHN0cnVjdCB1c2JfYXVkaW9fCj4gICAJCWNhc2UgVUFDX0ZFQVRVUkVfVU5J
+VDogewo+ICAgCQkJLyogdGhlIGhlYWRlciBpcyB0aGUgc2FtZSBmb3IgdjEgYW5kIHYyICovCj4g
+ICAJCQlzdHJ1Y3QgdWFjX2ZlYXR1cmVfdW5pdF9kZXNjcmlwdG9yICpkID0gcDE7Cj4gLQkJCWlk
+ID0gZC0+YlVuaXRJRDsKPiArCQkJaWQgPSBkLT5iU291cmNlSUQ7Cj4gICAJCQlicmVhazsgLyog
+Y29udGludWUgdG8gcGFyc2UgKi8KPiAgIAkJfQo+ICAgCQljYXNlIFVBQ19NSVhFUl9VTklUOiB7
+Cj4KPiAgICAKQ2FuIHlvdSBjcmVhdGUgYSBwYXRjaCBhZ2FpbnN0IDEuMC4yMyBhbHNhLWRyaXZl
+ciBwYWNrYWdlPyBJdCB3b3VsZCBiZSAKbXVjaCBlYXNpZXIgKGFuZCBmYXN0ZXIpIHRvIHRlc3Qs
+IHRoYW5rIHlvdS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
