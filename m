@@ -1,25 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.35
-Date: Fri, 7 May 2010 17:46:11 +0100
-Message-ID: <20100507164611.GF25793@rakim.wolfsonmicro.main>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Fri, 7 May 2010 22:12:02 +0200
+Message-ID: <20100507201202.GC30801@buzzloop.caiaq.de>
+References: <4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
+	<20100427140735.GD30804@buzzloop.caiaq.de>
+	<4BD702F0.6080108@gmail.com>
+	<20100427154346.GH30801@buzzloop.caiaq.de>
+	<4BD71E73.5020106@gmail.com>
+	<20100427173329.GI30801@buzzloop.caiaq.de>
+	<4BDDAEB2.2010303@gmail.com>
+	<20100503205558.GM30801@buzzloop.caiaq.de>
+	<4BE4135C.80009@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9C3421038BA
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 145831037FC
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 May 2010 18:47:57 +0200 (CEST)
-Received: from rakim.wolfsonmicro.main (lumison.wolfsonmicro.com
-	[87.246.78.27])
-	by opensource2.wolfsonmicro.com (Postfix) with ESMTPSA id 340DF11012A
-	for <alsa-devel@alsa-project.org>; Fri,  7 May 2010 17:47:57 +0100 (BST)
-Received: from broonie by rakim.wolfsonmicro.main with local (Exim 4.71)
-	(envelope-from <broonie@rakim.wolfsonmicro.main>) id 1OAQiS-0005PZ-NB
-	for alsa-devel@alsa-project.org; Fri, 07 May 2010 17:47:56 +0100
-Resent-Message-ID: <20100507164756.GG25793@rakim.wolfsonmicro.main>
-Resent-To: alsa-devel@alsa-project.org
+	Fri,  7 May 2010 22:12:22 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <4BE4135C.80009@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,64 +30,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.rog, Liam Girdwood <lrg@slimlogic.co.uk>
+To: The Source <thesourcehim@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit aeb29a82de7c80d4d0253b042f17eb1f725b08f1:
-  Takashi Iwai (1):
-        Merge branch 'for-2.6.35' of git://git.kernel.org/.../lrg/asoc-2.6 into topic/asoc
+On Fri, May 07, 2010 at 05:19:24PM +0400, The Source wrote:
+> Bisect results:
+> 
+> 23caaf19b11eda7054348452e1618d4512a86907 is the first bad commit
+> commit 23caaf19b11eda7054348452e1618d4512a86907
+> Author: Daniel Mack <daniel@caiaq.de>
+> Date:   Thu Mar 11 21:13:25 2010 +0100
+> 
+>     ALSA: usb-mixer: Add support for Audio Class v2.0
+> 
+>     USB Audio Class v2.0 compliant devices have different descriptors and a
+>     different way of setting/getting min/max/res/cur properties. This patch
+>     adds support for them.
+> 
+>     Signed-off-by: Daniel Mack <daniel@caiaq.de>
+>     Cc: Clemens Ladisch <clemens@ladisch.de>
+>     Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> 
 
-are available in the git repository at:
+I've found two changes in this commit that are obviously wrong.
+Could you try the patch below please?
 
-  git://opensource.wolfsonmicro.com/linux-2.6-asoc for-2.6.35
+Sorry for the trouble.
 
-Note the change in git server - master.kernel.org appears to be having
-issues at the minute.
+Daniel
 
-Jassi Brar (12):
-      ASoC: S3C: I2Sv2: Move defines closer to driver
-      ASoC: SAMSUNG: I2S: Add bit definitions
-      ASoC: S3C2412: I2S: Debug IMS field
-      ASoC: S3C2412: I2S: Return correct source clock
-      ASoC: S3C: I2Sv2: Discard redundant field iis_clk
-      ASoC: S3C: I2Sv2: Unify i2s_get_clock callback
-      ASoC: S3C64XX: I2S: Use s3c2412 defines
-      ASoC: S3C: I2Sv2: New field for controller feature
-      ASoC: S3C: I2S: Move set_sysclk to common code
-      ARM: S3C2412: DMA: Remove I2S FIFO address
-      ASoC: S3C64XX: IISv4: Add CPU driver
-      ASoC: SMDK64XX: Switch to IISv4 CPU driver
 
-Mark Brown (2):
-      ASoC: Add debug output tracing all cache register writes
-      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound-2.6 into for-2.6.35
-
-Peter Ujfalusi (3):
-      ASoC: core: Support for limiting the volume
-      Revert "ASoC: tpa6130a2: Support for limiting gain"
-      ASoC: tpa6130a2: Fix for the custom kcontrol functions
-
- arch/arm/mach-s3c2412/dma.c                        |    3 -
- .../plat-samsung/include/plat/regs-s3c2412-iis.h   |   82 --------
- include/sound/soc.h                                |    2 +
- include/sound/tpa6130a2-plat.h                     |    1 -
- sound/soc/codecs/tpa6130a2.c                       |   90 ++-------
- sound/soc/s3c24xx/Kconfig                          |   12 +-
- sound/soc/s3c24xx/Makefile                         |    2 +
- sound/soc/s3c24xx/jive_wm8750.c                    |    2 +-
- sound/soc/s3c24xx/regs-i2s-v2.h                    |  115 +++++++++++
- sound/soc/s3c24xx/s3c-i2s-v2.c                     |   87 ++++++---
- sound/soc/s3c24xx/s3c-i2s-v2.h                     |   11 +-
- sound/soc/s3c24xx/s3c2412-i2s.c                    |   41 +----
- sound/soc/s3c24xx/s3c2412-i2s.h                    |    2 -
- sound/soc/s3c24xx/s3c64xx-i2s-v4.c                 |  209 ++++++++++++++++++++
- sound/soc/s3c24xx/s3c64xx-i2s.c                    |   57 +-----
- sound/soc/s3c24xx/s3c64xx-i2s.h                    |    3 +-
- sound/soc/s3c24xx/smdk64xx_wm8580.c                |    6 +-
- sound/soc/soc-cache.c                              |   12 ++
- sound/soc/soc-core.c                               |   39 ++++
- 19 files changed, 484 insertions(+), 292 deletions(-)
- delete mode 100644 arch/arm/plat-samsung/include/plat/regs-s3c2412-iis.h
- create mode 100644 sound/soc/s3c24xx/regs-i2s-v2.h
- create mode 100644 sound/soc/s3c24xx/s3c64xx-i2s-v4.c
+diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
+index 905a87c..57f2055 100644
+--- a/include/linux/usb/audio.h
++++ b/include/linux/usb/audio.h
+@@ -244,7 +244,7 @@ struct uac_selector_unit_descriptor {
+ static inline __u8 uac_selector_unit_iSelector(struct uac_selector_unit_descriptor *desc)
+ {
+ 	__u8 *raw = (__u8 *) desc;
+-	return raw[desc->bLength - 1];
++	return raw[9 + desc->bLength - 1];
+ }
+ 
+ /* 4.3.2.5 Feature Unit Descriptor */
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 21613fe..fa0fb77 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -656,7 +656,7 @@ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_
+ 		case UAC_FEATURE_UNIT: {
+ 			/* the header is the same for v1 and v2 */
+ 			struct uac_feature_unit_descriptor *d = p1;
+-			id = d->bUnitID;
++			id = d->bSourceID;
+ 			break; /* continue to parse */
+ 		}
+ 		case UAC_MIXER_UNIT: {
