@@ -1,22 +1,15 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Fri, 7 May 2010 12:24:08 +0200
-Message-ID: <20100507102408.GM30801@buzzloop.caiaq.de>
-References: <g2h74fd948d1004141820ladc1941eo732d059dd678df0a@mail.gmail.com>
-	<Pine.LNX.4.44L0.1004151114490.1562-100000@iolanthe.rowland.org>
-	<t2r74fd948d1004191716l49dedc2p25a27da39bcc614a@mail.gmail.com>
-	<20100507074855.GF30801@buzzloop.caiaq.de>
-	<4BE3E1B9.5020602@ladisch.de>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH] ASoC: core: Support for limiting the volume
+Date: Fri,  7 May 2010 14:05:49 +0300
+Message-ID: <1273230349-6351-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 690AD24516
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 664EF24531
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 May 2010 12:24:12 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4BE3E1B9.5020602@ladisch.de>
+	Fri,  7 May 2010 13:06:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,37 +19,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org, USB list <linux-usb@vger.kernel.org>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, Kernel development list <linux-kernel@vger.kernel.org>, Chris Wright <chrisw@sous-sol.org>, iommu@lists.linux-foundation.org, Andi Kleen <andi@firstfloor.org>, Alan Stern <stern@rowland.harvard.edu>, Pedro Ribeiro <pedrib@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, David Woodhouse <dwmw2@infradead.org>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 07, 2010 at 11:47:37AM +0200, Clemens Ladisch wrote:
-> Daniel Mack wrote:
-> > The problem is again (summarized):
-> > 
-> > On 64bit machines, with 4GB or more, the allocated buffers for USB
-> > transfers might be beyond the 32bit boundary. In this case, the IOMMU
-> > should take care and install DMA bounce buffer to copy over the buffer
-> > before the transfer actually happens. The problem is, however, that this
-> > copy mechanism takes place when the URB with its associated buffer is
-> > submitted, not when the EHCI will actually do the transfer.
-> > 
-> > In the particular case of audio drivers, though, the contents of the
-> > buffers are likely to change after the submission. What we do here
-> > is that we map the audio stream buffers which are used by ALSA to
-> > the output URBs, so they're filled asychronously. Once the buffer is
-> > actually sent out on the bus, it is believed to contain proper audio
-> > date. If it doesn't, that's due to too tight audio timing or other
-> > problems. This breaks once buffers are magically bounced in the
-> > background.
-> 
-> At least the audio class and ua101 drivers don't do this and fill the
-> buffers before they are submitted.
+Add support for the core to limit the maximum volume on an
+existing control.
+The function will modify the soc_mixer_control.max value
+of the given control.
+The new value must be lower than the original one (chip maximum)
 
-Gnaa, you're right. I _thought_ my code does it the way I described, but
-what I wrote is how I _wanted_ to do it, not how it's currently done. I
-have a plan to change this in the future.
+If there is a need for limiting a gain on a given control,
+than machine drivers can do the following in their
+snd_soc_dai_link.init function:
 
-So unfortunately, that doesn't explain it either. Sorry for the noise.
+snd_soc_limit_volume(codec, "TPA6140A2 Headphone Playback Volume", 21);
 
-Daniel
+This will modify the original 31 (chip maximum) to 21, so user
+space will not be able to set the gain higher than this.
+
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
+ include/sound/soc.h  |    2 ++
+ sound/soc/soc-core.c |   39 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 41 insertions(+), 0 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 01e9c66..9f306f0 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -326,6 +326,8 @@ int snd_soc_get_volsw_s8(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
+ int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol);
++int snd_soc_limit_volume(struct snd_soc_codec *codec,
++	const char *name, int max);
+ 
+ /**
+  * struct snd_soc_jack_pin - Describes a pin to update based on jack detection
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index d59076e..4079223 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2238,6 +2238,45 @@ int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
+ EXPORT_SYMBOL_GPL(snd_soc_put_volsw_s8);
+ 
+ /**
++ * snd_soc_limit_volume - Set new limit to an existing volume control.
++ *
++ * @codec: where to look for the control
++ * @name: Name of the control
++ * @max: new maximum limit
++ *
++ * Return 0 for success, else error.
++ */
++int snd_soc_limit_volume(struct snd_soc_codec *codec,
++	const char *name, int max)
++{
++	struct snd_card *card = codec->card;
++	struct snd_kcontrol *kctl;
++	struct soc_mixer_control *mc;
++	int found = 0;
++	int ret = -EINVAL;
++
++	/* Sanity check for name and max */
++	if (unlikely(!name || max <= 0))
++		return -EINVAL;
++
++	list_for_each_entry(kctl, &card->controls, list) {
++		if (!strncmp(kctl->id.name, name, sizeof(kctl->id.name))) {
++			found = 1;
++			break;
++		}
++	}
++	if (found) {
++		mc = (struct soc_mixer_control *)kctl->private_value;
++		if (max <= mc->max) {
++			mc->max = max;
++			ret = 0;
++		}
++	}
++	return ret;
++}
++EXPORT_SYMBOL_GPL(snd_soc_limit_volume);
++
++/**
+  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
+  * @dai: DAI
+  * @clk_id: DAI specific clock ID
+-- 
+1.7.1
