@@ -1,17 +1,17 @@
-From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH][BUGFIX for .33 and .34] hda - fix DG45ID SPDIF
-	output
-Date: Fri, 7 May 2010 08:47:54 +0800
-Message-ID: <20100507004754.GA5666@localhost>
+From: Jassi Brar <jassi.brar@samsung.com>
+Subject: [PATCH] ARM: S3C2412: DMA: Remove I2S FIFO address
+Date: Fri,  7 May 2010 10:21:39 +0900
+Message-ID: <1273195299-12181-1-git-send-email-jassi.brar@samsung.com>
+References: <20100505140039.GC7139@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [143.182.124.37])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7381E1037F7
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id E39652414D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 May 2010 02:48:02 +0200 (CEST)
-Content-Disposition: inline
+	Fri,  7 May 2010 03:28:44 +0200 (CEST)
+In-Reply-To: <20100505140039.GC7139@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,46 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-user@lists.sourceforge.net" <alsa-user@lists.sourceforge.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexey Fisher <bug-track@fisher-privat.net>, stable@kernel.org, David =?utf-8?B?SMOkcmRlbWFu?= <david@hardeman.nu>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, Jassi Brar <jassi.brar@samsung.com>, ben-linux@fluff.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyByZXZlcnRzIHBhcnQgb2YgY29tbWl0IDUyZGM0Mzg2MDZkMWUsIGluIG9yZGVyIHRvIGZp
-eCBhIHJlZ3Jlc3Npb246CmJyb2tlbiBTUERJRiBvdXRwdXQgb24gSW50ZWwgREc0NUZDIG1vdGhl
-cmJvYXJkIChJRFQgOTJIRDczRTFYNSBjb2RlYykuCgoJLS0tIERHNDVGQy1JRFQtY29kZWMtMi42
-LjMyICAoU1BESUYgT0spCgkrKysgREc0NUZDLUlEVC1jb2RlYy0yLjYuMzMgIChTUERJRiBicm9r
-ZW4pCgoJIE5vZGUgMHgyMiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwMzAxOiBTdGVyZW8gRGln
-aXRhbAoJICAgUGluY2FwIDB4MDAwMDAwMTA6IE9VVAoJLSAgUGluIERlZmF1bHQgMHg0MGYwMDBm
-MDogW04vQV0gT3RoZXIgYXQgRXh0IE4vQQoJLSAgICBDb25uID0gVW5rbm93biwgQ29sb3IgPSBV
-bmtub3duCgktICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAoJLSAgUGlu
-LWN0bHM6IDB4MDA6CgkrICBQaW4gRGVmYXVsdCAweDAxNDUxMGEwOiBbSmFja10gU1BESUYgT3V0
-IGF0IEV4dCBSZWFyCgkrICAgIENvbm4gPSBPcHRpY2FsLCBDb2xvciA9IEJsYWNrCgkrICAgIERl
-ZkFzc29jaWF0aW9uID0gMHhhLCBTZXF1ZW5jZSA9IDB4MAoJKyAgUGluLWN0bHM6IDB4NDA6IE9V
-VAoJICAgQ29ubmVjdGlvbjogMwoJICAgICAgMHgyNSogMHgyMCAweDIxCgkgTm9kZSAweDIzIFtQ
-aW4gQ29tcGxleF0gd2NhcHMgMHg0MDAzMDE6IFN0ZXJlbyBEaWdpdGFsCgkgICBQaW5jYXAgMHgw
-MDAwMDAxMDogT1VUCgktICBQaW4gRGVmYXVsdCAweDAxNDUxMTQwOiBbSmFja10gU1BESUYgT3V0
-IGF0IEV4dCBSZWFyCgkrICBQaW4gRGVmYXVsdCAweDA3NDUxMGIwOiBbSmFja10gU1BESUYgT3V0
-IGF0IEV4dCBSZWFyIFBhbmVsCgkgICAgIENvbm4gPSBPcHRpY2FsLCBDb2xvciA9IEJsYWNrCgkt
-ICAgIERlZkFzc29jaWF0aW9uID0gMHg0LCBTZXF1ZW5jZSA9IDB4MAoJLSAgICBNaXNjID0gTk9f
-UFJFU0VOQ0UKCS0gIFBpbi1jdGxzOiAweDQwOiBPVVQKCSsgICAgRGVmQXNzb2NpYXRpb24gPSAw
-eGIsIFNlcXVlbmNlID0gMHgwCgkrICBQaW4tY3RsczogMHgwMDoKCSAgIENvbm5lY3Rpb246IDMK
-CSAgICAgIDB4MjYqIDB4MjAgMHgyMQoKQ0M6IDxzdGFibGVAa2VybmVsLm9yZz4KQ0M6IEFsZXhl
-eSBGaXNoZXIgPGJ1Zy10cmFja0BmaXNoZXItcHJpdmF0Lm5ldD4KVGVzdGVkLWJ5OiBEYXZpZCBI
-w6RyZGVtYW4gPGRhdmlkQGhhcmRlbWFuLm51PgpTaWduZWQtb2ZmLWJ5OiBXdSBGZW5nZ3Vhbmcg
-PGZlbmdndWFuZy53dUBpbnRlbC5jb20+Ci0tLQogc291bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRl
-bC5jIHwgICAgNiArKy0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDQgZGVs
-ZXRpb25zKC0pCgotLS0gc291bmQtMi42Lm9yaWcvc291bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRl
-bC5jCTIwMTAtMDUtMDYgMTg6MTA6MzAuMDAwMDAwMDAwICswODAwCisrKyBzb3VuZC0yLjYvc291
-bmQvcGNpL2hkYS9wYXRjaF9zaWdtYXRlbC5jCTIwMTAtMDUtMDYgMTk6MzQ6NDguMDAwMDAwMDAw
-ICswODAwCkBAIC0xNTQ0LDExICsxNTQ0LDkgQEAgc3RhdGljIHVuc2lnbmVkIGludCBhbGllbndh
-cmVfbTE3eF9waW5fYwogCTB4OTA0NjAxYjAsCiB9OwogCi1zdGF0aWMgdW5zaWduZWQgaW50IGlu
-dGVsX2RnNDVpZF9waW5fY29uZmlnc1sxNF0gPSB7CitzdGF0aWMgdW5zaWduZWQgaW50IGludGVs
-X2RnNDVpZF9waW5fY29uZmlnc1sxM10gPSB7CiAJMHgwMjIxNDIzMCwgMHgwMkExOTI0MCwgMHgw
-MTAxMzIxNCwgMHgwMTAxNDIxMCwKLQkweDAxQTE5MjUwLCAweDAxMDExMjEyLCAweDAxMDE2MjEx
-LCAweDQwZjAwMGYwLAotCTB4NDBmMDAwZjAsIDB4NDBmMDAwZjAsIDB4NDBmMDAwZjAsIDB4MDE0
-NTEwQTAsCi0JMHgwNzQ1MTBCMCwgMHg0MGYwMDBmMAorCTB4MDFBMTkyNTAsIDB4MDEwMTEyMTIs
-IDB4MDEwMTYyMTEKIH07CiAKIHN0YXRpYyB1bnNpZ25lZCBpbnQgKnN0YWM5MmhkNzN4eF9icmRf
-dGJsW1NUQUNfOTJIRDczWFhfTU9ERUxTXSA9IHsKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+The S3C DMA API doesn't make use of hw_addr.to/from and also
+the FIFO addresses are provided from the I2S drivers. So these
+fields are redundant.
+This patch removes the hw_addr.to/from fields for I2S and the
+inclusion of header, paving way for the header to be moved closer
+to the I2S controller drivers.
+
+Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
+---
+ arch/arm/mach-s3c2412/dma.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-s3c2412/dma.c b/arch/arm/mach-s3c2412/dma.c
+index e880524..7abecfc 100644
+--- a/arch/arm/mach-s3c2412/dma.c
++++ b/arch/arm/mach-s3c2412/dma.c
+@@ -30,7 +30,6 @@
+ #include <mach/regs-mem.h>
+ #include <mach/regs-lcd.h>
+ #include <mach/regs-sdi.h>
+-#include <plat/regs-s3c2412-iis.h>
+ #include <plat/regs-iis.h>
+ #include <plat/regs-spi.h>
+ 
+@@ -119,13 +118,11 @@ static struct s3c24xx_dma_map __initdata s3c2412_dma_mappings[] = {
+ 		.name		= "i2s-sdi",
+ 		.channels	= MAP(S3C2412_DMAREQSEL_I2SRX),
+ 		.channels_rx	= MAP(S3C2412_DMAREQSEL_I2SRX),
+-		.hw_addr.from	= S3C2410_PA_IIS + S3C2412_IISRXD,
+ 	},
+ 	[DMACH_I2S_OUT] = {
+ 		.name		= "i2s-sdo",
+ 		.channels	= MAP(S3C2412_DMAREQSEL_I2STX),
+ 		.channels_rx	= MAP(S3C2412_DMAREQSEL_I2STX),
+-		.hw_addr.to	= S3C2410_PA_IIS + S3C2412_IISTXD,
+ 	},
+ 	[DMACH_USB_EP1] = {
+ 		.name		= "usb-ep1",
+-- 
+1.6.2.5
