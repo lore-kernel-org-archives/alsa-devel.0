@@ -1,53 +1,34 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: core: Support for limiting the volume
-Date: Fri, 07 May 2010 14:56:37 +0100
-Message-ID: <1273240597.2852.200.camel@odin>
-References: <1273230349-6351-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
+Subject: Re: [alsa-devel] USB transfer_buffer allocations on 64bit systems
+Date: Fri, 7 May 2010 10:45:21 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1005071042410.1804-100000@iolanthe.rowland.org>
+References: <20100507115810.GN30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id A1230245B7
-	for <alsa-devel@alsa-project.org>;
-	Fri,  7 May 2010 15:56:39 +0200 (CEST)
-Received: by wyf23 with SMTP id 23so703545wyf.38
-	for <alsa-devel@alsa-project.org>; Fri, 07 May 2010 06:56:38 -0700 (PDT)
-In-Reply-To: <1273230349-6351-1-git-send-email-peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20100507115810.GN30801-ahpEBR4enfnCULTFXS99ULNAH6kLmebB@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>
+Cc: Oliver Neukum <oneukum-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, Konrad Rzeszutek Wilk <konrad.wilk-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Kernel development list <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Chris Wright <chrisw-69jw2NvuJkxg9hUCZPvPmw@public.gmane.org>, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, Andi Kleen <andi-Vw/NltI1exuRpAAqCnN02g@public.gmane.org>, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, David Woodhouse <dwmw2-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-05-07 at 14:05 +0300, Peter Ujfalusi wrote:
-> Add support for the core to limit the maximum volume on an
-> existing control.
-> The function will modify the soc_mixer_control.max value
-> of the given control.
-> The new value must be lower than the original one (chip maximum)
-> 
-> If there is a need for limiting a gain on a given control,
-> than machine drivers can do the following in their
-> snd_soc_dai_link.init function:
-> 
-> snd_soc_limit_volume(codec, "TPA6140A2 Headphone Playback Volume", 21);
-> 
-> This will modify the original 31 (chip maximum) to 21, so user
-> space will not be able to set the gain higher than this.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
+On Fri, 7 May 2010, Daniel Mack wrote:
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+> > Or to be precise it could be done with coherent memory, but you'd risk
+> > transfering partially updated buffers, as you cannot know when DMA will
+> > be done and we don't guarantee that DMA will be done right as we transfer.
+> 
+> If the memory is coherent, it should be possible. And if buffers are
+> only partially updated, the audio buffer scheduling is too tight. IOW,
+> the configured buffer size of audio clients in userspace is too small.
+
+Even with coherent memory, this dynamic updating of buffer contents 
+isn't a good idea.  There's no guarantee that coherent memory won't be 
+implemented using a bounce buffer during URB submission.
+
+Alan Stern
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
