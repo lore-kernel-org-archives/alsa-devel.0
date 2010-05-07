@@ -1,32 +1,40 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [alsa-devel] USB transfer_buffer allocations on 64bit systems
-Date: Fri, 7 May 2010 10:51:10 -0400 (EDT)
-Message-ID: <Pine.LNX.4.44L0.1005071048220.1804-100000@iolanthe.rowland.org>
-References: <20100507102408.GM30801@buzzloop.caiaq.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ARM: S3C2412: DMA: Remove I2S FIFO address
+Date: Fri, 7 May 2010 16:36:19 +0100
+Message-ID: <20100507153619.GA25793@rakim.wolfsonmicro.main>
+References: <20100505140039.GC7139@rakim.wolfsonmicro.main>
+	<1273195299-12181-1-git-send-email-jassi.brar@samsung.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20100507102408.GM30801@buzzloop.caiaq.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Greg KH <gregkh@suse.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, USB list <linux-usb@vger.kernel.org>, Kernel development list <linux-kernel@vger.kernel.org>, Chris Wright <chrisw@sous-sol.org>, iommu@lists.linux-foundation.org, Andi Kleen <andi@firstfloor.org>, Pedro Ribeiro <pedrib@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 447781038A4
+	for <alsa-devel@alsa-project.org>;
+	Fri,  7 May 2010 17:36:22 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1273195299-12181-1-git-send-email-jassi.brar@samsung.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jassi Brar <jassi.brar@samsung.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 7 May 2010, Daniel Mack wrote:
-
-> > At least the audio class and ua101 drivers don't do this and fill the
-> > buffers before they are submitted.
+On Fri, May 07, 2010 at 10:21:39AM +0900, Jassi Brar wrote:
+> The S3C DMA API doesn't make use of hw_addr.to/from and also
+> the FIFO addresses are provided from the I2S drivers. So these
+> fields are redundant.
+> This patch removes the hw_addr.to/from fields for I2S and the
+> inclusion of header, paving way for the header to be moved closer
+> to the I2S controller drivers.
 > 
-> Gnaa, you're right. I _thought_ my code does it the way I described, but
-> what I wrote is how I _wanted_ to do it, not how it's currently done. I
-> have a plan to change this in the future.
-> 
-> So unfortunately, that doesn't explain it either. Sorry for the noise.
+> Signed-off-by: Jassi Brar <jassi.brar@samsung.com>
 
-At one point we tried an experiment, printing out the buffer and DMA 
-addresses.  I don't recall seeing anything obviously wrong, but if an 
-IOMMU was in use then that might not mean anything.  Is it possible 
-that the IOMMU mappings sometimes get messed up for addresses above 4 
-GB?
-
-Alan Stern
+Applied, thanks.
