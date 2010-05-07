@@ -1,20 +1,29 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Fri, 7 May 2010 13:58:10 +0200
-Message-ID: <20100507115810.GN30801@buzzloop.caiaq.de>
-References: <g2h74fd948d1004141820ladc1941eo732d059dd678df0a@mail.gmail.com>
-	<4BE3E1B9.5020602@ladisch.de> <201005071342.34923.oneukum@suse.de>
-	<201005071347.56993.oneukum@suse.de>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Fri, 07 May 2010 17:19:24 +0400
+Message-ID: <4BE4135C.80009@gmail.com>
+References: <4B8CD6A0.40204@freemail.gr>
+	<20100302183542.GU28972@buzzloop.caiaq.de>
+	<4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
+	<20100427140735.GD30804@buzzloop.caiaq.de>
+	<4BD702F0.6080108@gmail.com>
+	<20100427154346.GH30801@buzzloop.caiaq.de>
+	<4BD71E73.5020106@gmail.com>
+	<20100427173329.GI30801@buzzloop.caiaq.de>
+	<4BDDAEB2.2010303@gmail.com>
+	<20100503205558.GM30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id E87982454A
+Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
+	[209.85.219.219])
+	by alsa0.perex.cz (Postfix) with ESMTP id C87C810388D
 	for <alsa-devel@alsa-project.org>;
-	Fri,  7 May 2010 13:58:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <201005071347.56993.oneukum@suse.de>
+	Fri,  7 May 2010 15:19:28 +0200 (CEST)
+Received: by ewy19 with SMTP id 19so262177ewy.22
+	for <alsa-devel@alsa-project.org>; Fri, 07 May 2010 06:19:28 -0700 (PDT)
+In-Reply-To: <20100503205558.GM30801@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +33,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Oliver Neukum <oneukum@suse.de>
-Cc: alsa-devel@alsa-project.org, USB list <linux-usb@vger.kernel.org>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Takashi Iwai <tiwai@suse.de>, Greg KH <gregkh@suse.de>, Clemens Ladisch <clemens@ladisch.de>, Kernel development list <linux-kernel@vger.kernel.org>, Chris Wright <chrisw@sous-sol.org>, iommu@lists.linux-foundation.org, Andi Kleen <andi@firstfloor.org>, Alan Stern <stern@rowland.harvard.edu>, Pedro Ribeiro <pedrib@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, David Woodhouse <dwmw2@infradead.org>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 07, 2010 at 01:47:56PM +0200, Oliver Neukum wrote:
-> Am Freitag, 7. Mai 2010 13:42:34 schrieb Oliver Neukum:
-> > Am Freitag, 7. Mai 2010 11:47:37 schrieb Clemens Ladisch:
-> > > > In the particular case of audio drivers, though, the contents of the
-> > > > buffers are likely to change after the submission. What we do here
-> > > > is that we map the audio stream buffers which are used by ALSA to
-> > > > the output URBs, so they're filled asychronously. Once the buffer is
-> > > > actually sent out on the bus, it is believed to contain proper audio
-> > > > date. If it doesn't, that's due to too tight audio timing or other
-> > > > problems. This breaks once buffers are magically bounced in the
-> > > > background.
-> > > 
-> > > At least the audio class and ua101 drivers don't do this and fill the
-> > > buffers before they are submitted.
-> > > 
-> > > > So - long story short: these audio buffers need to be DMA coherent.
-> > > 
-> > > Does the USB API actually guarantee that all controllers use DMA, i.e.,
-> > > that the buffers can be filled after submission?
-> > 
-> > No, you must not touch buffers after submission. This does not even
-> > work if we use DMA, because on some architectures this violates
-> > guarantees to the dma primitives. It cannot be done.
-
-We do such tricks on other OS where IRQ latency as high as some tens
-of milliseconds. So we queue EHCI transfers well in advance and update
-access their contents (for both input and output) from audio context.
-I considered implementing this idea to the Linux USB audio driver as
-well.
-
-> Or to be precise it could be done with coherent memory, but you'd risk
-> transfering partially updated buffers, as you cannot know when DMA will
-> be done and we don't guarantee that DMA will be done right as we transfer.
-
-If the memory is coherent, it should be possible. And if buffers are
-only partially updated, the audio buffer scheduling is too tight. IOW,
-the configured buffer size of audio clients in userspace is too small.
-
-This is OT now I believe, I will start another thread for this topic
-once I have something to show.
-
-Thanks,
-Daniel
+MDQuMDUuMjAxMCAwMDo1NSwgRGFuaWVsIE1hY2sg0L/QuNGI0LXRgjoKPiBPbiBTdW4sIE1heSAw
+MiwgMjAxMCBhdCAwODo1NjoxOFBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ICAgIAo+PiAy
+Ny4wNC4yMDEwIDIxOjMzLCBEYW5pZWwgTWFjayDQv9C40YjQtdGCOgo+PiAgICAgIAo+Pj4gT24g
+VHVlLCBBcHIgMjcsIDIwMTAgYXQgMDk6Mjc6MTVQTSArMDQwMCwgVGhlIFNvdXJjZSB3cm90ZToK
+Pj4+ICAgICAgICAKPj4+PiAyNy4wNC4yMDEwIDE5OjQzLCBEYW5pZWwgTWFjayDQv9C40YjQtdGC
+Ogo+Pj4+ICAgICAgICAgIAo+Pj4+PiBZb3Ugd291bGQgY2hlY2sgb3V0IHRoZSBsYXRlc3QgbWFp
+bmxpbmUgc291cmNlczoKPj4+Pj4KPj4+Pj4gICAgJCBnaXQgY2xvbmUgZ2l0Oi8vZ2l0Lmtlcm5l
+bC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4LTIuNi5naXQKPj4+
+Pj4gICAgJCBjZCBsaW51eC0yLjYKPj4+Pj4KPj4+Pj4gVGhlbiBjcmVhdGUgYSBicmFuY2ggYW5k
+IG1lcmdlIHRoZSBsYXRlc3QgQUxTQSBwYXRjaGVzOgo+Pj4+Pgo+Pj4+PiAgICAkIGdpdCBjaGVj
+a291dCAtYiBhbHNhCj4+Pj4+ICAgICQgZ2l0IHB1bGwgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
+L3NjbS9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLTIuNi5naXQKPj4+Pj4KPj4+Pj4gVGhl
+biBidWlsZCBhbmQgaW5zdGFsbCB0aGUga2VybmVsIGFuZCB2ZXJpZnkgaXQgc3RpbGwgc2hvd3Mg
+dGhlIGVycm9yLgo+Pj4+PiBTdGFydCB0aGUgYmlzZWN0IGFuZCBtYXJrIHRoZSBjdXJyZW50IHJl
+dmlzaW9uIGFzICdiYWQnOgo+Pj4+Pgo+Pj4+PiAgICAkIGdpdCBiaXNlY3Qgc3RhcnQKPj4+Pj4g
+ICAgJCBnaXQgYmlzZWN0IGJhZAo+Pj4+Pgo+Pj4+PiBBc3N1bWluZyB0aGF0IHYyLjYuMzQtcmM1
+IChiZWZvcmUgdGhlIG1lcmdlKSBzdGlsbCB3b3JrcywgeW91IHdvdWxkIG1hcmsKPj4+Pj4gdGhp
+cyBhcyAnZ29vZCc6Cj4+Pj4+Cj4+Pj4+ICAgICQgZ2l0IGJpc2VjdCBnb29kIHYyLjYuMzQtcmM1
+Cj4+Pj4+Cj4+Pj4+IGdpdCB3aWxsIG5vdyBpdGVyYXRlIHlvdSB0aHJ1IHRoZSBjaGFuZ2VzIGFu
+ZCBkcm9wIHlvdSBvZmYgYXQgY2hvc2VuCj4+Pj4+IHBvaW50cy4gSnVzdCBjb21waWxlIHRoZSB0
+cmVlIHlvdSBnZXQsIGFuZCB0ZWxsIGdpdCB3aGV0aGVyIHRoaXMgaXMgYQo+Pj4+PiBnb29kIG9y
+IGJhZCBvbmU6Cj4+Pj4+Cj4+Pj4+ICAgICQgZ2l0IGJpc2VjdCBnb29kCj4+Pj4+ICAgIG9yCj4+
+Pj4+ICAgICQgZ2l0IGJpc2VjdCBiYWQKPj4+Pj4KPj4+Pj4gVGhlbiByZWNvbXBpbGUgYW5kIHRl
+c3QgYWdhaW4gQWZ0ZXIgc29tZSBzdGVwcywgaXQgd2lsbCB0ZWxsIHlvdSB3aGljaAo+Pj4+PiBj
+b21taXQgcHJlY2lzZWx5IGJyb2tlIGl0Lgo+Pj4+Pgo+Pj4+PiBIVEgsCj4+Pj4+IERhbmllbAo+
+Pj4+Pgo+Pj4+Pgo+Pj4+PiAgICAgICAgICAgIAo+Pj4+IEknbGwgdHJ5IHRoYXQuIEJ1dCBpcyB0
+aGVyZSBhbnkgd2F5IHRvIGRvIHRoaXMganVzdCB3aXRoIGFsc2EgYW5kCj4+Pj4gbm90IHdpdGgg
+ZW50aXJlIGtlcm5lbD8gQ29tcGlsaW5nIGtlcm5lbCBpcyBhIGxvb29vbmcgcHJvY2Vzcy4KPj4+
+PiAgICAgICAgICAKPj4+IFRoZSBkZXNjcmlwdGlvbiBhYm92ZSB3b24ndCB0b3VjaCBtdWNoIHRo
+aW5ncyBvdXRzaWRlIHRoZSBBTFNBIHRyZWUKPj4+IGR1cmluZyB0aGUgYmlzZWN0LCBzbyBpdCBz
+aG91bGRuJ3QgdGFrZSBsb25nIHRvIGNvbXBpbGUuCj4+Pgo+Pj4gVGhhbmtzIGZvciBoZWxwaW5n
+LAo+Pj4gRGFuaWVsCj4+Pgo+Pj4KPj4+ICAgICAgICAKPj4gSSdtIHNvcnJ5LCBidXQgYWZ0ZXIg
+MiBvciAzIHN0ZXBzIChvZiB+MTApIEkgZ290IGtlcm5lbCB0aGF0IGRvZXNuJ3QKPj4gZXZlbiBi
+b290IHByb3Blcmx5ICgyLjYuMzQtcmM0LCBzb21ldGhpbmcgd2l0aCBzYXRhIGlzIGJyb2tlbikg
+c28gSQo+PiBjYW4ndCB0ZXN0IG15IGNhcmQgd2l0aCB0aGlzIGtlcm5lbC4gU2hvdWxkIEkgbWFy
+ayBjdXJyZW50IHZlcnNpb24KPj4gYXMgYmFkIGFuZCBjb250aW51ZSBvciBzb21ldGhpbmcgZWxz
+ZSBjYW4gYmUgZG9uZT8KPj4gICAgICAKPiBIbW0sIHNvIHlvdSBzYXkgeW91IGNhbid0IGJvb3Qg
+YSB2YW5pbGxhICh1bm1vZGlmaWVkKSAyLjYuMzQtcmM0PyBJcwo+IHlvdXIgcHJvYmxlbSBmaXhl
+ZCBpbiB0aGUgY3VycmVudCBnaXQgSEVBRD8gVGhlIGJpc2VjdCBwcm9jZWR1cmUgSQo+IGRlc2Ny
+aWJlZCBzaG91bGRuJ3QgdG91Y2ggYW55dGhpbmcgZWxzZSB0aGFuIHNvdW5kIGNvZGUsIHNvIFNB
+VEEgc2hvdWxkCj4gYmUgdW5hZmZlY3RlZC4gQW55d2F5LCB5b3UgY2FuIHNraXAgdW5ib290YWJs
+ZSBvciB1bmNvbXBpbGFibGUgdmVyc2lvbnMKPiB3aXRoCj4KPiAgICAkIGdpdCBiaXNlY3Qgc2tp
+cAo+Cj4gSFRILAo+IERhbmllbAo+Cj4KPiAgICAKQmlzZWN0IHJlc3VsdHM6CgoyM2NhYWYxOWIx
+MWVkYTcwNTQzNDg0NTJlMTYxOGQ0NTEyYTg2OTA3IGlzIHRoZSBmaXJzdCBiYWQgY29tbWl0CmNv
+bW1pdCAyM2NhYWYxOWIxMWVkYTcwNTQzNDg0NTJlMTYxOGQ0NTEyYTg2OTA3CkF1dGhvcjogRGFu
+aWVsIE1hY2sgPGRhbmllbEBjYWlhcS5kZT4KRGF0ZTogICBUaHUgTWFyIDExIDIxOjEzOjI1IDIw
+MTAgKzAxMDAKCiAgICAgQUxTQTogdXNiLW1peGVyOiBBZGQgc3VwcG9ydCBmb3IgQXVkaW8gQ2xh
+c3MgdjIuMAoKICAgICBVU0IgQXVkaW8gQ2xhc3MgdjIuMCBjb21wbGlhbnQgZGV2aWNlcyBoYXZl
+IGRpZmZlcmVudCBkZXNjcmlwdG9ycyBhbmQgYQogICAgIGRpZmZlcmVudCB3YXkgb2Ygc2V0dGlu
+Zy9nZXR0aW5nIG1pbi9tYXgvcmVzL2N1ciBwcm9wZXJ0aWVzLiBUaGlzIHBhdGNoCiAgICAgYWRk
+cyBzdXBwb3J0IGZvciB0aGVtLgoKICAgICBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTWFjayA8ZGFu
+aWVsQGNhaWFxLmRlPgogICAgIENjOiBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5k
+ZT4KICAgICBTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cgo6MDQw
+MDAwIDA0MDAwMCBkYjA2OTEwOTViMjBmMDg3MmM5MDQyZTY0OThjZTQwNjkzZDY5MjQxIAo3Y2Q5
+ZTI5MzUyZmQ0NWU1MDk2OGI0YTE3ODkxZDFjMzIyNWFhYmE5IE0gICAgaW5jbHVkZQo6MDQwMDAw
+IDA0MDAwMCA5ODFjN2M2OWZjODY5NTI4MTkyOTY3N2ViY2NmM2JkYWU1ZWY0MWRlIApjNWJlYzVj
+Mzk1NDI3ODYwMWVjNGIyOTIyNmY0NjcxMzMzMjYyZjA0IE0gICAgc291bmQKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
