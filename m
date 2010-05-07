@@ -1,78 +1,66 @@
-From: The Source <thesourcehim@gmail.com>
-Subject: Re: usbaudio: Support for USB audio v2.0 devices
-Date: Sat, 08 May 2010 01:32:49 +0400
-Message-ID: <4BE48701.2030700@gmail.com>
-References: <4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
-	<20100427140735.GD30804@buzzloop.caiaq.de>
-	<4BD702F0.6080108@gmail.com>
-	<20100427154346.GH30801@buzzloop.caiaq.de>
-	<4BD71E73.5020106@gmail.com>
-	<20100427173329.GI30801@buzzloop.caiaq.de>
-	<4BDDAEB2.2010303@gmail.com>
-	<20100503205558.GM30801@buzzloop.caiaq.de>
-	<4BE4135C.80009@gmail.com>
-	<20100507201202.GC30801@buzzloop.caiaq.de>
+From: Lennart Poettering <mznyfn@0pointer.de>
+Subject: Re: [alsa-devel] [RFC] disabling ALSA period
+	interrupts
+Date: Sat, 8 May 2010 01:25:16 +0200
+Message-ID: <20100507232516.GB16910@tango.0pointer.de>
+References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
+Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f219.google.com (mail-ew0-f219.google.com
-	[209.85.219.219])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D29D1038B7
-	for <alsa-devel@alsa-project.org>;
-	Fri,  7 May 2010 23:32:53 +0200 (CEST)
-Received: by ewy19 with SMTP id 19so383852ewy.22
-	for <alsa-devel@alsa-project.org>; Fri, 07 May 2010 14:32:51 -0700 (PDT)
-In-Reply-To: <20100507201202.GC30801@buzzloop.caiaq.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
+Content-Disposition: inline
+In-Reply-To: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
+List-Unsubscribe: <https://tango.0pointer.de/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
+List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
+List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
+List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@mail.0pointer.de
+Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MDguMDUuMjAxMCAwMDoxMiwgRGFuaWVsIE1hY2sg0L/QuNGI0LXRgjoKPiBPbiBGcmksIE1heSAw
-NywgMjAxMCBhdCAwNToxOToyNFBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ICAgIAo+PiBC
-aXNlY3QgcmVzdWx0czoKPj4KPj4gMjNjYWFmMTliMTFlZGE3MDU0MzQ4NDUyZTE2MThkNDUxMmE4
-NjkwNyBpcyB0aGUgZmlyc3QgYmFkIGNvbW1pdAo+PiBjb21taXQgMjNjYWFmMTliMTFlZGE3MDU0
-MzQ4NDUyZTE2MThkNDUxMmE4NjkwNwo+PiBBdXRob3I6IERhbmllbCBNYWNrPGRhbmllbEBjYWlh
-cS5kZT4KPj4gRGF0ZTogICBUaHUgTWFyIDExIDIxOjEzOjI1IDIwMTAgKzAxMDAKPj4KPj4gICAg
-ICBBTFNBOiB1c2ItbWl4ZXI6IEFkZCBzdXBwb3J0IGZvciBBdWRpbyBDbGFzcyB2Mi4wCj4+Cj4+
-ICAgICAgVVNCIEF1ZGlvIENsYXNzIHYyLjAgY29tcGxpYW50IGRldmljZXMgaGF2ZSBkaWZmZXJl
-bnQgZGVzY3JpcHRvcnMgYW5kIGEKPj4gICAgICBkaWZmZXJlbnQgd2F5IG9mIHNldHRpbmcvZ2V0
-dGluZyBtaW4vbWF4L3Jlcy9jdXIgcHJvcGVydGllcy4gVGhpcyBwYXRjaAo+PiAgICAgIGFkZHMg
-c3VwcG9ydCBmb3IgdGhlbS4KPj4KPj4gICAgICBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTWFjazxk
-YW5pZWxAY2FpYXEuZGU+Cj4+ICAgICAgQ2M6IENsZW1lbnMgTGFkaXNjaDxjbGVtZW5zQGxhZGlz
-Y2guZGU+Cj4+ICAgICAgU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpPHRpd2FpQHN1c2UuZGU+
-Cj4+Cj4+ICAgICAgCj4gSSd2ZSBmb3VuZCB0d28gY2hhbmdlcyBpbiB0aGlzIGNvbW1pdCB0aGF0
-IGFyZSBvYnZpb3VzbHkgd3JvbmcuCj4gQ291bGQgeW91IHRyeSB0aGUgcGF0Y2ggYmVsb3cgcGxl
-YXNlPwo+Cj4gU29ycnkgZm9yIHRoZSB0cm91YmxlLgo+Cj4gRGFuaWVsCj4KPgo+IGRpZmYgLS1n
-aXQgYS9pbmNsdWRlL2xpbnV4L3VzYi9hdWRpby5oIGIvaW5jbHVkZS9saW51eC91c2IvYXVkaW8u
-aAo+IGluZGV4IDkwNWE4N2MuLjU3ZjIwNTUgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC91
-c2IvYXVkaW8uaAo+ICsrKyBiL2luY2x1ZGUvbGludXgvdXNiL2F1ZGlvLmgKPiBAQCAtMjQ0LDcg
-KzI0NCw3IEBAIHN0cnVjdCB1YWNfc2VsZWN0b3JfdW5pdF9kZXNjcmlwdG9yIHsKPiAgIHN0YXRp
-YyBpbmxpbmUgX191OCB1YWNfc2VsZWN0b3JfdW5pdF9pU2VsZWN0b3Ioc3RydWN0IHVhY19zZWxl
-Y3Rvcl91bml0X2Rlc2NyaXB0b3IgKmRlc2MpCj4gICB7Cj4gICAJX191OCAqcmF3ID0gKF9fdTgg
-KikgZGVzYzsKPiAtCXJldHVybiByYXdbZGVzYy0+Ykxlbmd0aCAtIDFdOwo+ICsJcmV0dXJuIHJh
-d1s5ICsgZGVzYy0+Ykxlbmd0aCAtIDFdOwo+ICAgfQo+Cj4gICAvKiA0LjMuMi41IEZlYXR1cmUg
-VW5pdCBEZXNjcmlwdG9yICovCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlci5jIGIvc291
-bmQvdXNiL21peGVyLmMKPiBpbmRleCAyMTYxM2ZlLi5mYTBmYjc3IDEwMDY0NAo+IC0tLSBhL3Nv
-dW5kL3VzYi9taXhlci5jCj4gKysrIGIvc291bmQvdXNiL21peGVyLmMKPiBAQCAtNjU2LDcgKzY1
-Niw3IEBAIHN0YXRpYyBpbnQgY2hlY2tfaW5wdXRfdGVybShzdHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0
-YXRlLCBpbnQgaWQsIHN0cnVjdCB1c2JfYXVkaW9fCj4gICAJCWNhc2UgVUFDX0ZFQVRVUkVfVU5J
-VDogewo+ICAgCQkJLyogdGhlIGhlYWRlciBpcyB0aGUgc2FtZSBmb3IgdjEgYW5kIHYyICovCj4g
-ICAJCQlzdHJ1Y3QgdWFjX2ZlYXR1cmVfdW5pdF9kZXNjcmlwdG9yICpkID0gcDE7Cj4gLQkJCWlk
-ID0gZC0+YlVuaXRJRDsKPiArCQkJaWQgPSBkLT5iU291cmNlSUQ7Cj4gICAJCQlicmVhazsgLyog
-Y29udGludWUgdG8gcGFyc2UgKi8KPiAgIAkJfQo+ICAgCQljYXNlIFVBQ19NSVhFUl9VTklUOiB7
-Cj4KPiAgICAKQ2FuIHlvdSBjcmVhdGUgYSBwYXRjaCBhZ2FpbnN0IDEuMC4yMyBhbHNhLWRyaXZl
-ciBwYWNrYWdlPyBJdCB3b3VsZCBiZSAKbXVjaCBlYXNpZXIgKGFuZCBmYXN0ZXIpIHRvIHRlc3Qs
-IHRoYW5rIHlvdS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On Thu, 29.04.10 17:38, pl bossart (bossart.nospam@gmail.com) wrote:
+
+> Howdy,
+> When PulseAudio is used and all PCM is routed through PulseAudio
+> (Fedora, Meego, etc), the notion of ALSA periods isn't very useful.
+> PulseAudio uses a timer to refill buffers and the period interrupts
+> are not used at all.
+
+This patch looks very interesting and desirable. This is something have
+long been waiting for.
+
+I wonder how this actually relates to
+snd_pcm_sw_params_set_period_event() though.
+
+> So why not disable them entirely to reduce the number of wakeups? This
+> is possible with a number of existing DMA controllers. The simple
+> patch attached shows a proof-of-concept on HDAudio, it's been working
+> for 5 hours on my Fedora12 laptop without any glitches and powertop
+> does show _zero_ wakeups from the HDAudio controller (except on
+> startup). I am told by my colleagues working in Windows environments
+> that this is what's done on Vista/Windows7 btw. This isn't to say
+> Windows is great but that artificial generation of not-needed
+> interrupts is avoidable.
+> 
+> There are probably some cases where you don't want this type of
+> behavior (broken hardware, legacy code with multiple-buffering,
+> disabled timer in PulseAudio), so I think it would make sense to
+> request the disabling of interrupts when hw_params are set, since this
+> is also the time when period sizes are set. I am aware that some
+> changes would be needed in pcm_lib.c, where all the error checks are
+> done. Takashi, Jaroslav, Lennart, what do you think?
+
+I am sold!
+
+Lennart
+
+-- 
+Lennart Poettering                        Red Hat, Inc.
+lennart [at] poettering [dot] net
+http://0pointer.net/lennart/           GnuPG 0x1A015CC4
