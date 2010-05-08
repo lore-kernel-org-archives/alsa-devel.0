@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Problem about developing WM8974 audio driver
-	for	MX27ipcam
-Date: Sat, 8 May 2010 12:08:48 +0100
-Message-ID: <20100508110847.GA4687@sirena.org.uk>
-References: <1273287845.12672.36.camel@UT43>
+From: Bee Hock Goh <beehock@gmail.com>
+Subject: Re: using snd_usb_audio module
+Date: Sun, 9 May 2010 00:18:59 +0800
+Message-ID: <j2l6e8e83e21005080918l6e5dba24ze24ff52442964c5c@mail.gmail.com>
+References: <s2z6e8e83e21005080109s3b7be543r121ed4daaa712a3c@mail.gmail.com>
+	<20100508095407.GH30801@buzzloop.caiaq.de>
+	<v2n6e8e83e21005080336r3a861efdh3e434eed2efa5837@mail.gmail.com>
+	<20100508104521.GK30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 60CC61038F5
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8355224756
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 May 2010 13:08:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1273287845.12672.36.camel@UT43>
+	Sat,  8 May 2010 18:19:00 +0200 (CEST)
+Received: by pxi13 with SMTP id 13so880119pxi.38
+	for <alsa-devel@alsa-project.org>; Sat, 08 May 2010 09:18:59 -0700 (PDT)
+In-Reply-To: <20100508104521.GK30801@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +27,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jie Jiang <jjinfo@nudt.edu.cn>
-Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 08, 2010 at 11:04:05AM +0800, Jie Jiang wrote:
+I was thinking of redirecting the output to the actual sound card
+using sox. Anyway, will be using alsa-lib instead.
 
-> After installing all necessary driver modules, when I trying to playback
-> some wav file using "cat xx.wav > /dev/dsp" command, I got the following
-> error message:
-> "ALSA pcm_lib.c:1709: playback write error (DMA or IRQ trouble?)".
-
-> This seems to be caused by the full of the transmitting buffer since I
-> can check that "hw_ptr=0x800/buffer_size=0x4000/appl_ptr=0x4800". The
-> hw_ptw doesn't update anymore. It seems that there is something wrong
-> with the DMA operation. Actually, the DMA dest. address is the SSI1's
-> TX0 FIFO.  On the other hand, SSI1's SFCSR=0x440844, which indicates
-> that there are 8 bytes data in the TX0 FIFO, which will not generate DMA
-> request as the FIFO empty watermark is 4. It is very possible that the
-> SSI1 does not shift data from the FIFO, which causes no DMA request
-> generated and thus DMA freezes.
-
-As you've diagnosed below this normally indicates that the clocking for
-the bus isn't set up correctly and the clocks aren't reaching the bus
-and therefore DMA controller on the CPU.
-
-> Who can shed some light on the  map between mx27 AUDMUX port and GPIO
-> pins?  Any more possible reasons which will freeze DMA transfer?
-
-Bad clocking is the main one.  What I do when diagnosing similar
-problems is either try to route the data and clocks out to another
-external port on the AUDMUX (so you can see what's actually getting
-through) or write code to read back the device settings and translate
-them into human readable form (you can see some debugfs files I did for
-the i.MX3x AUDMUX in mainline) which often helps discover incorrect
-settings.
-
-Sasha Hauer, who did the mainline drivers for i.MX, may also be able to
-help - I've CCed him.
+On Sat, May 8, 2010 at 6:45 PM, Daniel Mack <daniel@caiaq.de> wrote:
+> On Sat, May 08, 2010 at 06:36:42PM +0800, Bee Hock Goh wrote:
+>> I wish to output the audio of a tv card as a usb audio interface.
+>
+> So you want your Linux box to be a USB audio peripheral? That's possible
+> using the audio gadget driver, but I've never done that, so I can't help
+> much.
+>
+> However, what you're trying to do doesn't have anything to do with
+> snd_usb_audio.
+>
+>
+> Daniel
+>
+>
+>>
+>> On Sat, May 8, 2010 at 5:54 PM, Daniel Mack <daniel@caiaq.de> wrote:
+>> > On Sat, May 08, 2010 at 04:09:18PM +0800, Bee Hock Goh wrote:
+>> >> I wish to make use of snd_usb_audio in my module. Is there a good
+>> >> document/tutorial or reference codes that I get kick-started on?
+>> >
+>> > What module are you talking about? What exactly are you trying to do?
+>> >
+>> > Daniel
+>> >
+>
