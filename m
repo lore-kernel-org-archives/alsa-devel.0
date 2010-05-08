@@ -1,18 +1,27 @@
-From: Bee Hock Goh <beehock@gmail.com>
-Subject: using snd_usb_audio module
-Date: Sat, 8 May 2010 16:09:18 +0800
-Message-ID: <s2z6e8e83e21005080109s3b7be543r121ed4daaa712a3c@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Sat, 8 May 2010 11:19:47 +0200
+Message-ID: <20100508091946.GF30801@buzzloop.caiaq.de>
+References: <20100427140735.GD30804@buzzloop.caiaq.de>
+	<4BD702F0.6080108@gmail.com>
+	<20100427154346.GH30801@buzzloop.caiaq.de>
+	<4BD71E73.5020106@gmail.com>
+	<20100427173329.GI30801@buzzloop.caiaq.de>
+	<4BDDAEB2.2010303@gmail.com>
+	<20100503205558.GM30801@buzzloop.caiaq.de>
+	<4BE4135C.80009@gmail.com>
+	<20100507201202.GC30801@buzzloop.caiaq.de>
+	<4BE5120B.4020201@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C04A01038D1
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8645F1038D4
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 May 2010 10:09:19 +0200 (CEST)
-Received: by pvg11 with SMTP id 11so231210pvg.38
-	for <alsa-devel@alsa-project.org>; Sat, 08 May 2010 01:09:18 -0700 (PDT)
+	Sat,  8 May 2010 11:20:09 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4BE5120B.4020201@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,15 +31,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: The Source <thesourcehim@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I wish to make use of snd_usb_audio in my module. Is there a good
-document/tutorial or reference codes that I get kick-started on?
-
-Googling doesnt seem to help.
-
-thanks,
- Hock.
+T24gU2F0LCBNYXkgMDgsIDIwMTAgYXQgMTE6MjY6MDNBTSArMDQwMCwgVGhlIFNvdXJjZSB3cm90
+ZToKPiAwOC4wNS4yMDEwIDAwOjEyLCBEYW5pZWwgTWFjayDQv9C40YjQtdGCOgo+ID5PbiBGcmks
+IE1heSAwNywgMjAxMCBhdCAwNToxOToyNFBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ID4+
+QmlzZWN0IHJlc3VsdHM6Cj4gPj4KPiA+PjIzY2FhZjE5YjExZWRhNzA1NDM0ODQ1MmUxNjE4ZDQ1
+MTJhODY5MDcgaXMgdGhlIGZpcnN0IGJhZCBjb21taXQKPiA+PmNvbW1pdCAyM2NhYWYxOWIxMWVk
+YTcwNTQzNDg0NTJlMTYxOGQ0NTEyYTg2OTA3Cj4gPj5BdXRob3I6IERhbmllbCBNYWNrPGRhbmll
+bEBjYWlhcS5kZT4KPiA+PkRhdGU6ICAgVGh1IE1hciAxMSAyMToxMzoyNSAyMDEwICswMTAwCj4g
+Pj4KPiA+PiAgICAgQUxTQTogdXNiLW1peGVyOiBBZGQgc3VwcG9ydCBmb3IgQXVkaW8gQ2xhc3Mg
+djIuMAo+ID4+Cj4gPj4gICAgIFVTQiBBdWRpbyBDbGFzcyB2Mi4wIGNvbXBsaWFudCBkZXZpY2Vz
+IGhhdmUgZGlmZmVyZW50IGRlc2NyaXB0b3JzIGFuZCBhCj4gPj4gICAgIGRpZmZlcmVudCB3YXkg
+b2Ygc2V0dGluZy9nZXR0aW5nIG1pbi9tYXgvcmVzL2N1ciBwcm9wZXJ0aWVzLiBUaGlzIHBhdGNo
+Cj4gPj4gICAgIGFkZHMgc3VwcG9ydCBmb3IgdGhlbS4KPiA+Pgo+ID4+ICAgICBTaWduZWQtb2Zm
+LWJ5OiBEYW5pZWwgTWFjazxkYW5pZWxAY2FpYXEuZGU+Cj4gPj4gICAgIENjOiBDbGVtZW5zIExh
+ZGlzY2g8Y2xlbWVuc0BsYWRpc2NoLmRlPgo+ID4+ICAgICBTaWduZWQtb2ZmLWJ5OiBUYWthc2hp
+IEl3YWk8dGl3YWlAc3VzZS5kZT4KPiA+Pgo+ID5JJ3ZlIGZvdW5kIHR3byBjaGFuZ2VzIGluIHRo
+aXMgY29tbWl0IHRoYXQgYXJlIG9idmlvdXNseSB3cm9uZy4KPiA+Q291bGQgeW91IHRyeSB0aGUg
+cGF0Y2ggYmVsb3cgcGxlYXNlPwo+ID4KPiA+U29ycnkgZm9yIHRoZSB0cm91YmxlLgo+ID4KPiA+
+RGFuaWVsCj4gPgo+ID4KPiA+ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvdXNiL2F1ZGlvLmgg
+Yi9pbmNsdWRlL2xpbnV4L3VzYi9hdWRpby5oCj4gPmluZGV4IDkwNWE4N2MuLjU3ZjIwNTUgMTAw
+NjQ0Cj4gPi0tLSBhL2luY2x1ZGUvbGludXgvdXNiL2F1ZGlvLmgKPiA+KysrIGIvaW5jbHVkZS9s
+aW51eC91c2IvYXVkaW8uaAo+ID5AQCAtMjQ0LDcgKzI0NCw3IEBAIHN0cnVjdCB1YWNfc2VsZWN0
+b3JfdW5pdF9kZXNjcmlwdG9yIHsKPiA+ICBzdGF0aWMgaW5saW5lIF9fdTggdWFjX3NlbGVjdG9y
+X3VuaXRfaVNlbGVjdG9yKHN0cnVjdCB1YWNfc2VsZWN0b3JfdW5pdF9kZXNjcmlwdG9yICpkZXNj
+KQo+ID4gIHsKPiA+ICAJX191OCAqcmF3ID0gKF9fdTggKikgZGVzYzsKPiA+LQlyZXR1cm4gcmF3
+W2Rlc2MtPmJMZW5ndGggLSAxXTsKPiA+KwlyZXR1cm4gcmF3WzkgKyBkZXNjLT5iTGVuZ3RoIC0g
+MV07Cj4gPiAgfQo+ID4KPiA+ICAvKiA0LjMuMi41IEZlYXR1cmUgVW5pdCBEZXNjcmlwdG9yICov
+Cj4gPmRpZmYgLS1naXQgYS9zb3VuZC91c2IvbWl4ZXIuYyBiL3NvdW5kL3VzYi9taXhlci5jCj4g
+PmluZGV4IDIxNjEzZmUuLmZhMGZiNzcgMTAwNjQ0Cj4gPi0tLSBhL3NvdW5kL3VzYi9taXhlci5j
+Cj4gPisrKyBiL3NvdW5kL3VzYi9taXhlci5jCj4gPkBAIC02NTYsNyArNjU2LDcgQEAgc3RhdGlj
+IGludCBjaGVja19pbnB1dF90ZXJtKHN0cnVjdCBtaXhlcl9idWlsZCAqc3RhdGUsIGludCBpZCwg
+c3RydWN0IHVzYl9hdWRpb18KPiA+ICAJCWNhc2UgVUFDX0ZFQVRVUkVfVU5JVDogewo+ID4gIAkJ
+CS8qIHRoZSBoZWFkZXIgaXMgdGhlIHNhbWUgZm9yIHYxIGFuZCB2MiAqLwo+ID4gIAkJCXN0cnVj
+dCB1YWNfZmVhdHVyZV91bml0X2Rlc2NyaXB0b3IgKmQgPSBwMTsKPiA+LQkJCWlkID0gZC0+YlVu
+aXRJRDsKPiA+KwkJCWlkID0gZC0+YlNvdXJjZUlEOwo+ID4gIAkJCWJyZWFrOyAvKiBjb250aW51
+ZSB0byBwYXJzZSAqLwo+ID4gIAkJfQo+ID4gIAkJY2FzZSBVQUNfTUlYRVJfVU5JVDogewo+ID4K
+PiBUaGUgcGF0Y2ggZGlkIGl0IChhcHBsaWVkIHRvIGxhdGVzdCBnaXQsIG9yIHNvIEkgdGhpbmsg
+LSBJIHVzZWQgJ2dpdAo+IGJpc2VjdCByZXNldCcgdG8gcmV0dXJuIHRvIGxhdGVzdCksIG5vdyB0
+aGUgY2FyZCB3b3JrcyBwcm9wZXJseQo+IChib3RoIHBsYXliYWNrIGFuZCByZWNvcmQpLCB0aGFu
+ayB5b3UgdmVyeSBtdWNoLgoKVGhhbmsgeW91IGZvciBoZWxwaW5nIC0gbXVjaCBhcHByZWNpYXRl
+ZCEKCkRhbmllbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
