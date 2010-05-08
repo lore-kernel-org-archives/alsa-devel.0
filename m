@@ -1,28 +1,18 @@
-From: The Source <thesourcehim@gmail.com>
-Subject: Re: usbaudio: Support for USB audio v2.0 devices
-Date: Sat, 08 May 2010 11:26:03 +0400
-Message-ID: <4BE5120B.4020201@gmail.com>
-References: <4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
-	<20100427140735.GD30804@buzzloop.caiaq.de>
-	<4BD702F0.6080108@gmail.com>
-	<20100427154346.GH30801@buzzloop.caiaq.de>
-	<4BD71E73.5020106@gmail.com>
-	<20100427173329.GI30801@buzzloop.caiaq.de>
-	<4BDDAEB2.2010303@gmail.com>
-	<20100503205558.GM30801@buzzloop.caiaq.de>
-	<4BE4135C.80009@gmail.com>
-	<20100507201202.GC30801@buzzloop.caiaq.de>
+From: Bee Hock Goh <beehock@gmail.com>
+Subject: using snd_usb_audio module
+Date: Sat, 8 May 2010 16:09:18 +0800
+Message-ID: <s2z6e8e83e21005080109s3b7be543r121ed4daaa712a3c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.146])
-	by alsa0.perex.cz (Postfix) with ESMTP id E3FA11038D0
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C04A01038D1
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 May 2010 09:26:08 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 5so234955eyb.16
-	for <alsa-devel@alsa-project.org>; Sat, 08 May 2010 00:26:06 -0700 (PDT)
-In-Reply-To: <20100507201202.GC30801@buzzloop.caiaq.de>
+	Sat,  8 May 2010 10:09:19 +0200 (CEST)
+Received: by pvg11 with SMTP id 11so231210pvg.38
+	for <alsa-devel@alsa-project.org>; Sat, 08 May 2010 01:09:18 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,47 +22,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MDguMDUuMjAxMCAwMDoxMiwgRGFuaWVsIE1hY2sg0L/QuNGI0LXRgjoKPiBPbiBGcmksIE1heSAw
-NywgMjAxMCBhdCAwNToxOToyNFBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ICAgIAo+PiBC
-aXNlY3QgcmVzdWx0czoKPj4KPj4gMjNjYWFmMTliMTFlZGE3MDU0MzQ4NDUyZTE2MThkNDUxMmE4
-NjkwNyBpcyB0aGUgZmlyc3QgYmFkIGNvbW1pdAo+PiBjb21taXQgMjNjYWFmMTliMTFlZGE3MDU0
-MzQ4NDUyZTE2MThkNDUxMmE4NjkwNwo+PiBBdXRob3I6IERhbmllbCBNYWNrPGRhbmllbEBjYWlh
-cS5kZT4KPj4gRGF0ZTogICBUaHUgTWFyIDExIDIxOjEzOjI1IDIwMTAgKzAxMDAKPj4KPj4gICAg
-ICBBTFNBOiB1c2ItbWl4ZXI6IEFkZCBzdXBwb3J0IGZvciBBdWRpbyBDbGFzcyB2Mi4wCj4+Cj4+
-ICAgICAgVVNCIEF1ZGlvIENsYXNzIHYyLjAgY29tcGxpYW50IGRldmljZXMgaGF2ZSBkaWZmZXJl
-bnQgZGVzY3JpcHRvcnMgYW5kIGEKPj4gICAgICBkaWZmZXJlbnQgd2F5IG9mIHNldHRpbmcvZ2V0
-dGluZyBtaW4vbWF4L3Jlcy9jdXIgcHJvcGVydGllcy4gVGhpcyBwYXRjaAo+PiAgICAgIGFkZHMg
-c3VwcG9ydCBmb3IgdGhlbS4KPj4KPj4gICAgICBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTWFjazxk
-YW5pZWxAY2FpYXEuZGU+Cj4+ICAgICAgQ2M6IENsZW1lbnMgTGFkaXNjaDxjbGVtZW5zQGxhZGlz
-Y2guZGU+Cj4+ICAgICAgU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpPHRpd2FpQHN1c2UuZGU+
-Cj4+Cj4+ICAgICAgCj4gSSd2ZSBmb3VuZCB0d28gY2hhbmdlcyBpbiB0aGlzIGNvbW1pdCB0aGF0
-IGFyZSBvYnZpb3VzbHkgd3JvbmcuCj4gQ291bGQgeW91IHRyeSB0aGUgcGF0Y2ggYmVsb3cgcGxl
-YXNlPwo+Cj4gU29ycnkgZm9yIHRoZSB0cm91YmxlLgo+Cj4gRGFuaWVsCj4KPgo+IGRpZmYgLS1n
-aXQgYS9pbmNsdWRlL2xpbnV4L3VzYi9hdWRpby5oIGIvaW5jbHVkZS9saW51eC91c2IvYXVkaW8u
-aAo+IGluZGV4IDkwNWE4N2MuLjU3ZjIwNTUgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC91
-c2IvYXVkaW8uaAo+ICsrKyBiL2luY2x1ZGUvbGludXgvdXNiL2F1ZGlvLmgKPiBAQCAtMjQ0LDcg
-KzI0NCw3IEBAIHN0cnVjdCB1YWNfc2VsZWN0b3JfdW5pdF9kZXNjcmlwdG9yIHsKPiAgIHN0YXRp
-YyBpbmxpbmUgX191OCB1YWNfc2VsZWN0b3JfdW5pdF9pU2VsZWN0b3Ioc3RydWN0IHVhY19zZWxl
-Y3Rvcl91bml0X2Rlc2NyaXB0b3IgKmRlc2MpCj4gICB7Cj4gICAJX191OCAqcmF3ID0gKF9fdTgg
-KikgZGVzYzsKPiAtCXJldHVybiByYXdbZGVzYy0+Ykxlbmd0aCAtIDFdOwo+ICsJcmV0dXJuIHJh
-d1s5ICsgZGVzYy0+Ykxlbmd0aCAtIDFdOwo+ICAgfQo+Cj4gICAvKiA0LjMuMi41IEZlYXR1cmUg
-VW5pdCBEZXNjcmlwdG9yICovCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlci5jIGIvc291
-bmQvdXNiL21peGVyLmMKPiBpbmRleCAyMTYxM2ZlLi5mYTBmYjc3IDEwMDY0NAo+IC0tLSBhL3Nv
-dW5kL3VzYi9taXhlci5jCj4gKysrIGIvc291bmQvdXNiL21peGVyLmMKPiBAQCAtNjU2LDcgKzY1
-Niw3IEBAIHN0YXRpYyBpbnQgY2hlY2tfaW5wdXRfdGVybShzdHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0
-YXRlLCBpbnQgaWQsIHN0cnVjdCB1c2JfYXVkaW9fCj4gICAJCWNhc2UgVUFDX0ZFQVRVUkVfVU5J
-VDogewo+ICAgCQkJLyogdGhlIGhlYWRlciBpcyB0aGUgc2FtZSBmb3IgdjEgYW5kIHYyICovCj4g
-ICAJCQlzdHJ1Y3QgdWFjX2ZlYXR1cmVfdW5pdF9kZXNjcmlwdG9yICpkID0gcDE7Cj4gLQkJCWlk
-ID0gZC0+YlVuaXRJRDsKPiArCQkJaWQgPSBkLT5iU291cmNlSUQ7Cj4gICAJCQlicmVhazsgLyog
-Y29udGludWUgdG8gcGFyc2UgKi8KPiAgIAkJfQo+ICAgCQljYXNlIFVBQ19NSVhFUl9VTklUOiB7
-Cj4KPiAgICAKVGhlIHBhdGNoIGRpZCBpdCAoYXBwbGllZCB0byBsYXRlc3QgZ2l0LCBvciBzbyBJ
-IHRoaW5rIC0gSSB1c2VkICdnaXQgCmJpc2VjdCByZXNldCcgdG8gcmV0dXJuIHRvIGxhdGVzdCks
-IG5vdyB0aGUgY2FyZCB3b3JrcyBwcm9wZXJseSAoYm90aCAKcGxheWJhY2sgYW5kIHJlY29yZCks
-IHRoYW5rIHlvdSB2ZXJ5IG11Y2guCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+Hi,
+
+I wish to make use of snd_usb_audio in my module. Is there a good
+document/tutorial or reference codes that I get kick-started on?
+
+Googling doesnt seem to help.
+
+thanks,
+ Hock.
