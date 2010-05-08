@@ -1,21 +1,28 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Fri, 7 May 2010 22:12:27 -0500
-Message-ID: <s2r6160a5131005072012o24609ce9q421ed2def04e4728@mail.gmail.com>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<20100507232516.GB16910@tango.0pointer.de>
+From: The Source <thesourcehim@gmail.com>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Sat, 08 May 2010 11:26:03 +0400
+Message-ID: <4BE5120B.4020201@gmail.com>
+References: <4BD6E564.5050100@freemail.gr> <4BD6E737.8030805@gmail.com>
+	<20100427140735.GD30804@buzzloop.caiaq.de>
+	<4BD702F0.6080108@gmail.com>
+	<20100427154346.GH30801@buzzloop.caiaq.de>
+	<4BD71E73.5020106@gmail.com>
+	<20100427173329.GI30801@buzzloop.caiaq.de>
+	<4BDDAEB2.2010303@gmail.com>
+	<20100503205558.GM30801@buzzloop.caiaq.de>
+	<4BE4135C.80009@gmail.com>
+	<20100507201202.GC30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f193.google.com (mail-yx0-f193.google.com
-	[209.85.210.193])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C9B01038D0
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.146])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3FA11038D0
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 May 2010 05:12:30 +0200 (CEST)
-Received: by yxe31 with SMTP id 31so1013648yxe.16
-	for <alsa-devel@alsa-project.org>; Fri, 07 May 2010 20:12:28 -0700 (PDT)
-In-Reply-To: <20100507232516.GB16910@tango.0pointer.de>
+	Sat,  8 May 2010 09:26:08 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 5so234955eyb.16
+	for <alsa-devel@alsa-project.org>; Sat, 08 May 2010 00:26:06 -0700 (PDT)
+In-Reply-To: <20100507201202.GC30801@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,27 +32,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> This patch looks very interesting and desirable. This is something have
-> long been waiting for.
->
-> I wonder how this actually relates to
-> snd_pcm_sw_params_set_period_event() though.
-
-snd_pcm_sw_params_set_period_event() defines whether or not you will
-have poll wakeups when a period elapses. But if you decide not to have
-poll wakeups, you still end-up with interrupts that were generated for
-no good reason. You might think that this could be extended to disable
-interrupts as well, but this would be hard since this can only be done
-when the DMA linked list is created, ie when the hw_params are set.
-Plus the sw_params may be changed on-the-fly, which isn't the case for
-hw_params/interrupts. We would really need a flag used with
-snd_pcm_open or when hw_params are set.
-
->>  Takashi, Jaroslav, Lennart, what do you think?
-> I am sold!
-Good to hear.
-Cheers
--Pierre
+MDguMDUuMjAxMCAwMDoxMiwgRGFuaWVsIE1hY2sg0L/QuNGI0LXRgjoKPiBPbiBGcmksIE1heSAw
+NywgMjAxMCBhdCAwNToxOToyNFBNICswNDAwLCBUaGUgU291cmNlIHdyb3RlOgo+ICAgIAo+PiBC
+aXNlY3QgcmVzdWx0czoKPj4KPj4gMjNjYWFmMTliMTFlZGE3MDU0MzQ4NDUyZTE2MThkNDUxMmE4
+NjkwNyBpcyB0aGUgZmlyc3QgYmFkIGNvbW1pdAo+PiBjb21taXQgMjNjYWFmMTliMTFlZGE3MDU0
+MzQ4NDUyZTE2MThkNDUxMmE4NjkwNwo+PiBBdXRob3I6IERhbmllbCBNYWNrPGRhbmllbEBjYWlh
+cS5kZT4KPj4gRGF0ZTogICBUaHUgTWFyIDExIDIxOjEzOjI1IDIwMTAgKzAxMDAKPj4KPj4gICAg
+ICBBTFNBOiB1c2ItbWl4ZXI6IEFkZCBzdXBwb3J0IGZvciBBdWRpbyBDbGFzcyB2Mi4wCj4+Cj4+
+ICAgICAgVVNCIEF1ZGlvIENsYXNzIHYyLjAgY29tcGxpYW50IGRldmljZXMgaGF2ZSBkaWZmZXJl
+bnQgZGVzY3JpcHRvcnMgYW5kIGEKPj4gICAgICBkaWZmZXJlbnQgd2F5IG9mIHNldHRpbmcvZ2V0
+dGluZyBtaW4vbWF4L3Jlcy9jdXIgcHJvcGVydGllcy4gVGhpcyBwYXRjaAo+PiAgICAgIGFkZHMg
+c3VwcG9ydCBmb3IgdGhlbS4KPj4KPj4gICAgICBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTWFjazxk
+YW5pZWxAY2FpYXEuZGU+Cj4+ICAgICAgQ2M6IENsZW1lbnMgTGFkaXNjaDxjbGVtZW5zQGxhZGlz
+Y2guZGU+Cj4+ICAgICAgU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpPHRpd2FpQHN1c2UuZGU+
+Cj4+Cj4+ICAgICAgCj4gSSd2ZSBmb3VuZCB0d28gY2hhbmdlcyBpbiB0aGlzIGNvbW1pdCB0aGF0
+IGFyZSBvYnZpb3VzbHkgd3JvbmcuCj4gQ291bGQgeW91IHRyeSB0aGUgcGF0Y2ggYmVsb3cgcGxl
+YXNlPwo+Cj4gU29ycnkgZm9yIHRoZSB0cm91YmxlLgo+Cj4gRGFuaWVsCj4KPgo+IGRpZmYgLS1n
+aXQgYS9pbmNsdWRlL2xpbnV4L3VzYi9hdWRpby5oIGIvaW5jbHVkZS9saW51eC91c2IvYXVkaW8u
+aAo+IGluZGV4IDkwNWE4N2MuLjU3ZjIwNTUgMTAwNjQ0Cj4gLS0tIGEvaW5jbHVkZS9saW51eC91
+c2IvYXVkaW8uaAo+ICsrKyBiL2luY2x1ZGUvbGludXgvdXNiL2F1ZGlvLmgKPiBAQCAtMjQ0LDcg
+KzI0NCw3IEBAIHN0cnVjdCB1YWNfc2VsZWN0b3JfdW5pdF9kZXNjcmlwdG9yIHsKPiAgIHN0YXRp
+YyBpbmxpbmUgX191OCB1YWNfc2VsZWN0b3JfdW5pdF9pU2VsZWN0b3Ioc3RydWN0IHVhY19zZWxl
+Y3Rvcl91bml0X2Rlc2NyaXB0b3IgKmRlc2MpCj4gICB7Cj4gICAJX191OCAqcmF3ID0gKF9fdTgg
+KikgZGVzYzsKPiAtCXJldHVybiByYXdbZGVzYy0+Ykxlbmd0aCAtIDFdOwo+ICsJcmV0dXJuIHJh
+d1s5ICsgZGVzYy0+Ykxlbmd0aCAtIDFdOwo+ICAgfQo+Cj4gICAvKiA0LjMuMi41IEZlYXR1cmUg
+VW5pdCBEZXNjcmlwdG9yICovCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9taXhlci5jIGIvc291
+bmQvdXNiL21peGVyLmMKPiBpbmRleCAyMTYxM2ZlLi5mYTBmYjc3IDEwMDY0NAo+IC0tLSBhL3Nv
+dW5kL3VzYi9taXhlci5jCj4gKysrIGIvc291bmQvdXNiL21peGVyLmMKPiBAQCAtNjU2LDcgKzY1
+Niw3IEBAIHN0YXRpYyBpbnQgY2hlY2tfaW5wdXRfdGVybShzdHJ1Y3QgbWl4ZXJfYnVpbGQgKnN0
+YXRlLCBpbnQgaWQsIHN0cnVjdCB1c2JfYXVkaW9fCj4gICAJCWNhc2UgVUFDX0ZFQVRVUkVfVU5J
+VDogewo+ICAgCQkJLyogdGhlIGhlYWRlciBpcyB0aGUgc2FtZSBmb3IgdjEgYW5kIHYyICovCj4g
+ICAJCQlzdHJ1Y3QgdWFjX2ZlYXR1cmVfdW5pdF9kZXNjcmlwdG9yICpkID0gcDE7Cj4gLQkJCWlk
+ID0gZC0+YlVuaXRJRDsKPiArCQkJaWQgPSBkLT5iU291cmNlSUQ7Cj4gICAJCQlicmVhazsgLyog
+Y29udGludWUgdG8gcGFyc2UgKi8KPiAgIAkJfQo+ICAgCQljYXNlIFVBQ19NSVhFUl9VTklUOiB7
+Cj4KPiAgICAKVGhlIHBhdGNoIGRpZCBpdCAoYXBwbGllZCB0byBsYXRlc3QgZ2l0LCBvciBzbyBJ
+IHRoaW5rIC0gSSB1c2VkICdnaXQgCmJpc2VjdCByZXNldCcgdG8gcmV0dXJuIHRvIGxhdGVzdCks
+IG5vdyB0aGUgY2FyZCB3b3JrcyBwcm9wZXJseSAoYm90aCAKcGxheWJhY2sgYW5kIHJlY29yZCks
+IHRoYW5rIHlvdSB2ZXJ5IG11Y2guCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
