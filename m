@@ -1,23 +1,28 @@
-From: Bee Hock Goh <beehock@gmail.com>
-Subject: Re: using snd_usb_audio module
-Date: Sun, 9 May 2010 00:18:59 +0800
-Message-ID: <j2l6e8e83e21005080918l6e5dba24ze24ff52442964c5c@mail.gmail.com>
-References: <s2z6e8e83e21005080109s3b7be543r121ed4daaa712a3c@mail.gmail.com>
-	<20100508095407.GH30801@buzzloop.caiaq.de>
-	<v2n6e8e83e21005080336r3a861efdh3e434eed2efa5837@mail.gmail.com>
-	<20100508104521.GK30801@buzzloop.caiaq.de>
+From: Peter Hercek <phercek@gmail.com>
+Subject: Re: Xonar D1 front panel microphone not working in
+	kernel 2.6.33
+Date: Sat, 08 May 2010 20:29:09 +0200
+Message-ID: <hs4ahm$6oo$1@dough.gmane.org>
+References: <hrngb8$7q6$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8355224756
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE6BA243E7
 	for <alsa-devel@alsa-project.org>;
-	Sat,  8 May 2010 18:19:00 +0200 (CEST)
-Received: by pxi13 with SMTP id 13so880119pxi.38
-	for <alsa-devel@alsa-project.org>; Sat, 08 May 2010 09:18:59 -0700 (PDT)
-In-Reply-To: <20100508104521.GK30801@buzzloop.caiaq.de>
+	Sat,  8 May 2010 20:29:19 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OAom5-0006zm-Po
+	for alsa-devel@alsa-project.org; Sat, 08 May 2010 20:29:17 +0200
+Received: from mail.hck.sk ([87.197.106.197])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 08 May 2010 20:29:17 +0200
+Received: from phercek by mail.hck.sk with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 08 May 2010 20:29:17 +0200
+In-Reply-To: <hrngb8$7q6$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,36 +32,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I was thinking of redirecting the output to the actual sound card
-using sox. Anyway, will be using alsa-lib instead.
+Ok, I posted a bug report about this here:
+https://bugzilla.kernel.org/show_bug.cgi?id=15943
 
-On Sat, May 8, 2010 at 6:45 PM, Daniel Mack <daniel@caiaq.de> wrote:
-> On Sat, May 08, 2010 at 06:36:42PM +0800, Bee Hock Goh wrote:
->> I wish to output the audio of a tv card as a usb audio interface.
->
-> So you want your Linux box to be a USB audio peripheral? That's possible
-> using the audio gadget driver, but I've never done that, so I can't help
-> much.
->
-> However, what you're trying to do doesn't have anything to do with
-> snd_usb_audio.
->
->
-> Daniel
->
->
->>
->> On Sat, May 8, 2010 at 5:54 PM, Daniel Mack <daniel@caiaq.de> wrote:
->> > On Sat, May 08, 2010 at 04:09:18PM +0800, Bee Hock Goh wrote:
->> >> I wish to make use of snd_usb_audio in my module. Is there a good
->> >> document/tutorial or reference codes that I get kick-started on?
->> >
->> > What module are you talking about? What exactly are you trying to do?
->> >
->> > Daniel
->> >
->
+There is a workaround there how to get it working without downgrading 
+full kernel. Hopefully this will be fixed in not so distant future.
+
+Peter.
