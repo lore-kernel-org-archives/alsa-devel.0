@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: [PATCH 4/5] ASoC: Support leaving paths enabled over
-	system suspend
-Date: Sun,  9 May 2010 13:08:37 +0100
-Message-ID: <1273406918-17007-4-git-send-email-broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/5] ASoC: Remove unneeded suspend bias
+	managment from CODEC drivers
+Date: Sun,  9 May 2010 13:08:34 +0100
+Message-ID: <1273406918-17007-1-git-send-email-broonie@opensource.wolfsonmicro.com>
 References: <20100509120741.GA16918@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A06E24591
+	by alsa0.perex.cz (Postfix) with ESMTP id B69E424593
 	for <alsa-devel@alsa-project.org>;
 	Sun,  9 May 2010 14:08:42 +0200 (CEST)
 In-Reply-To: <20100509120741.GA16918@sirena.org.uk>
@@ -26,148 +26,304 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Some devices can usefully run audio while the Linux system is suspended.
-One of the most common examples is smartphone systems, which are normally
-designed to allow audio to be run between the baseband and the CODEC
-without passing through the CPU and so can suspend the CPU when on a
-voice call for additional power savings.
-
-Support such systems by providing an API snd_soc_dapm_ignore_suspend().
-This can be used to mark DAPM endpoints as not being sensitive to
-system suspend. When the system is being suspended paths between
-endpoints which are marked as ignoring suspend will be kept active.
-Both source and sink must be marked, and there must already be an
-active path between the two endpoints prior to suspend.
-
-When paths are active over suspend the bias management will hold the
-device bias in the ON state. This is used to avoid suspending the
-CODEC while it is still in use.
+The core will ensure that the device is in either STANDBY or OFF bias
+before suspending, restoring the bias in the driver is unneeded. Some
+drivers doing slightly more roundabout things have been left alone
+for now.
 
 Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- include/sound/soc-dapm.h |    2 ++
- sound/soc/soc-core.c     |   32 ++++++++++++++++++++++++++++----
- sound/soc/soc-dapm.c     |   31 ++++++++++++++++++++++++++++++-
- 3 files changed, 60 insertions(+), 5 deletions(-)
+ sound/soc/codecs/ak4535.c      |    1 -
+ sound/soc/codecs/cq93vc.c      |    2 +-
+ sound/soc/codecs/ssm2602.c     |    1 -
+ sound/soc/codecs/stac9766.c    |    3 ---
+ sound/soc/codecs/tlv320aic23.c |    1 -
+ sound/soc/codecs/tlv320aic3x.c |    2 +-
+ sound/soc/codecs/tlv320dac33.c |    3 ---
+ sound/soc/codecs/twl4030.c     |    1 -
+ sound/soc/codecs/twl6040.c     |    1 -
+ sound/soc/codecs/uda1380.c     |    1 -
+ sound/soc/codecs/wm8350.c      |    3 ---
+ sound/soc/codecs/wm8510.c      |    2 +-
+ sound/soc/codecs/wm8711.c      |    2 +-
+ sound/soc/codecs/wm8728.c      |    2 +-
+ sound/soc/codecs/wm8731.c      |    1 -
+ sound/soc/codecs/wm8903.c      |    1 -
+ sound/soc/codecs/wm8940.c      |    1 -
+ sound/soc/codecs/wm8960.c      |    2 +-
+ sound/soc/codecs/wm8974.c      |    2 +-
+ sound/soc/codecs/wm9712.c      |    3 ---
+ sound/soc/codecs/wm9713.c      |    3 ---
+ 21 files changed, 7 insertions(+), 31 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index 55c6d3d..66ff4c1 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -341,6 +341,7 @@ int snd_soc_dapm_get_pin_status(struct snd_soc_codec *codec, const char *pin);
- int snd_soc_dapm_sync(struct snd_soc_codec *codec);
- int snd_soc_dapm_force_enable_pin(struct snd_soc_codec *codec,
- 				  const char *pin);
-+int snd_soc_dapm_ignore_suspend(struct snd_soc_codec *codec, const char *pin);
+diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
+index 2f6221b..b5917df 100644
+--- a/sound/soc/codecs/ak4535.c
++++ b/sound/soc/codecs/ak4535.c
+@@ -445,7 +445,6 @@ static int ak4535_resume(struct platform_device *pdev)
+ 	struct snd_soc_codec *codec = socdev->card->codec;
+ 	ak4535_sync(codec);
+ 	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	ak4535_set_bias_level(codec, codec->suspend_bias_level);
+ 	return 0;
+ }
  
- /* dapm widget types */
- enum snd_soc_dapm_type {
-@@ -428,6 +429,7 @@ struct snd_soc_dapm_widget {
- 	unsigned char new:1;			/* cnew complete */
- 	unsigned char ext:1;			/* has external widgets */
- 	unsigned char force:1;			/* force state */
-+	unsigned char ignore_suspend:1;         /* kept enabled over suspend */
+diff --git a/sound/soc/codecs/cq93vc.c b/sound/soc/codecs/cq93vc.c
+index 8f19b93..a320fb5 100644
+--- a/sound/soc/codecs/cq93vc.c
++++ b/sound/soc/codecs/cq93vc.c
+@@ -153,7 +153,7 @@ static int cq93vc_resume(struct platform_device *pdev)
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+ 	struct snd_soc_codec *codec = socdev->card->codec;
  
- 	int (*power_check)(struct snd_soc_dapm_widget *w);
+-	cq93vc_set_bias_level(codec, codec->suspend_bias_level);
++	cq93vc_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 9573976..8661e5b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -927,8 +927,19 @@ static int soc_suspend(struct device *dev)
- 				SND_SOC_DAPM_STREAM_SUSPEND);
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/ssm2602.c b/sound/soc/codecs/ssm2602.c
+index 99ddec7..f18c8b2 100644
+--- a/sound/soc/codecs/ssm2602.c
++++ b/sound/soc/codecs/ssm2602.c
+@@ -559,7 +559,6 @@ static int ssm2602_resume(struct platform_device *pdev)
+ 		codec->hw_write(codec->control_data, data, 2);
+ 	}
+ 	ssm2602_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	ssm2602_set_bias_level(codec, codec->suspend_bias_level);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/stac9766.c b/sound/soc/codecs/stac9766.c
+index a1c7ca8..e90fe29 100644
+--- a/sound/soc/codecs/stac9766.c
++++ b/sound/soc/codecs/stac9766.c
+@@ -288,9 +288,6 @@ reset:
+ 	}
+ 	stac9766_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+-	if (codec->suspend_bias_level == SND_SOC_BIAS_ON)
+-		stac9766_set_bias_level(codec, SND_SOC_BIAS_ON);
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index da589d8..40bcbba 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -633,7 +633,6 @@ static int tlv320aic23_resume(struct platform_device *pdev)
  	}
  
--	if (codec_dev->suspend)
--		codec_dev->suspend(pdev, PMSG_SUSPEND);
-+	/* If there are paths active then the CODEC will be held with
-+	 * bias _ON and should not be suspended. */
-+	if (codec_dev->suspend) {
-+		switch (codec->bias_level) {
-+		case SND_SOC_BIAS_STANDBY:
-+		case SND_SOC_BIAS_OFF:
-+			codec_dev->suspend(pdev, PMSG_SUSPEND);
-+			break;
-+		default:
-+			dev_dbg(socdev->dev, "CODEC is on over suspend\n");
-+			break;
-+		}
-+	}
+ 	tlv320aic23_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	tlv320aic23_set_bias_level(codec, codec->suspend_bias_level);
  
- 	for (i = 0; i < card->num_links; i++) {
- 		struct snd_soc_dai *cpu_dai = card->dai_link[i].cpu_dai;
-@@ -975,8 +986,21 @@ static void soc_resume_deferred(struct work_struct *work)
- 			cpu_dai->resume(cpu_dai);
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
+index d57372b..eafa164 100644
+--- a/sound/soc/codecs/tlv320aic3x.c
++++ b/sound/soc/codecs/tlv320aic3x.c
+@@ -1143,7 +1143,7 @@ static int aic3x_resume(struct platform_device *pdev)
+ 		codec->hw_write(codec->control_data, data, 2);
  	}
  
--	if (codec_dev->resume)
--		codec_dev->resume(pdev);
-+	/* If the CODEC was idle over suspend then it will have been
-+	 * left with bias OFF or STANDBY and suspended so we must now
-+	 * resume.  Otherwise the suspend was suppressed.
-+	 */
-+	if (codec_dev->resume) {
-+		switch (codec->bias_level) {
-+		case SND_SOC_BIAS_STANDBY:
-+		case SND_SOC_BIAS_OFF:
-+			codec_dev->resume(pdev);
-+			break;
-+		default:
-+			dev_dbg(socdev->dev, "CODEC was on over suspend\n");
-+			break;
-+		}
-+	}
+-	aic3x_set_bias_level(codec, codec->suspend_bias_level);
++	aic3x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
  
- 	for (i = 0; i < codec->num_dai; i++) {
- 		char *stream = codec->dai[i].playback.stream_name;
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8c8b291..fefb6c4 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -441,7 +441,9 @@ static int snd_soc_dapm_suspend_check(struct snd_soc_dapm_widget *widget)
- 	switch (snd_power_get_state(codec->card)) {
- 	case SNDRV_CTL_POWER_D3hot:
- 	case SNDRV_CTL_POWER_D3cold:
--		return 0;
-+		if (widget->ignore_suspend)
-+			pr_debug("%s ignoring suspend\n", widget->name);
-+		return widget->ignore_suspend;
- 	default:
- 		return 1;
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/tlv320dac33.c b/sound/soc/codecs/tlv320dac33.c
+index ad5e263..007fe83 100644
+--- a/sound/soc/codecs/tlv320dac33.c
++++ b/sound/soc/codecs/tlv320dac33.c
+@@ -1386,9 +1386,6 @@ static int dac33_soc_resume(struct platform_device *pdev)
+ 	struct snd_soc_codec *codec = socdev->card->codec;
+ 
+ 	dac33_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	if (codec->suspend_bias_level == SND_SOC_BIAS_ON)
+-		dac33_set_bias_level(codec, SND_SOC_BIAS_PREPARE);
+-	dac33_set_bias_level(codec, codec->suspend_bias_level);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index b717a03..0fe74d1 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -2181,7 +2181,6 @@ static int twl4030_soc_resume(struct platform_device *pdev)
+ 	struct snd_soc_codec *codec = socdev->card->codec;
+ 
+ 	twl4030_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	twl4030_set_bias_level(codec, codec->suspend_bias_level);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index ead6d4b..2ae442e 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -996,7 +996,6 @@ static int twl6040_resume(struct platform_device *pdev)
+ 	struct snd_soc_codec *codec = socdev->card->codec;
+ 
+ 	twl6040_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	twl6040_set_bias_level(codec, codec->suspend_bias_level);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+index ecba686..2f925a2 100644
+--- a/sound/soc/codecs/uda1380.c
++++ b/sound/soc/codecs/uda1380.c
+@@ -670,7 +670,6 @@ static int uda1380_resume(struct platform_device *pdev)
+ 		codec->hw_write(codec->control_data, data, 2);
  	}
-@@ -2137,6 +2139,33 @@ int snd_soc_dapm_get_pin_status(struct snd_soc_codec *codec, const char *pin)
- EXPORT_SYMBOL_GPL(snd_soc_dapm_get_pin_status);
+ 	uda1380_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	uda1380_set_bias_level(codec, codec->suspend_bias_level);
+ 	return 0;
+ }
  
- /**
-+ * snd_soc_dapm_ignore_suspend - ignore suspend status for DAPM endpoint
-+ * @codec: audio codec
-+ * @pin: audio signal pin endpoint (or start point)
-+ *
-+ * Mark the given endpoint or pin as ignoring suspend.  When the
-+ * system is disabled a path between two endpoints flagged as ignoring
-+ * suspend will not be disabled.  The path must already be enabled via
-+ * normal means at suspend time, it will not be turned on if it was not
-+ * already enabled.
-+ */
-+int snd_soc_dapm_ignore_suspend(struct snd_soc_codec *codec, const char *pin)
-+{
-+	struct snd_soc_dapm_widget *w;
+diff --git a/sound/soc/codecs/wm8350.c b/sound/soc/codecs/wm8350.c
+index 145467d..e5a48da 100644
+--- a/sound/soc/codecs/wm8350.c
++++ b/sound/soc/codecs/wm8350.c
+@@ -1336,9 +1336,6 @@ static int wm8350_resume(struct platform_device *pdev)
+ 
+ 	wm8350_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+-	if (codec->suspend_bias_level == SND_SOC_BIAS_ON)
+-		wm8350_set_bias_level(codec, SND_SOC_BIAS_ON);
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8510.c b/sound/soc/codecs/wm8510.c
+index af8cb69..d352700 100644
+--- a/sound/soc/codecs/wm8510.c
++++ b/sound/soc/codecs/wm8510.c
+@@ -556,7 +556,7 @@ static int wm8510_resume(struct platform_device *pdev)
+ 		codec->hw_write(codec->control_data, data, 2);
+ 	}
+ 	wm8510_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8510_set_bias_level(codec, codec->suspend_bias_level);
 +
-+	list_for_each_entry(w, &codec->dapm_widgets, list) {
-+		if (!strcmp(w->name, pin)) {
-+			w->ignore_suspend = 1;
-+			return 0;
-+		}
-+	}
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8711.c b/sound/soc/codecs/wm8711.c
+index f350c5e..5acd35b 100644
+--- a/sound/soc/codecs/wm8711.c
++++ b/sound/soc/codecs/wm8711.c
+@@ -375,7 +375,7 @@ static int wm8711_resume(struct platform_device *pdev)
+ 		codec->hw_write(codec->control_data, data, 2);
+ 	}
+ 	wm8711_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8711_set_bias_level(codec, codec->suspend_bias_level);
 +
-+	pr_err("Unknown DAPM pin: %s\n", pin);
-+	return -EINVAL;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dapm_ignore_suspend);
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8728.c b/sound/soc/codecs/wm8728.c
+index 3fb653b..bf56a58 100644
+--- a/sound/soc/codecs/wm8728.c
++++ b/sound/soc/codecs/wm8728.c
+@@ -237,7 +237,7 @@ static int wm8728_resume(struct platform_device *pdev)
+ 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+ 	struct snd_soc_codec *codec = socdev->card->codec;
+ 
+-	wm8728_set_bias_level(codec, codec->suspend_bias_level);
++	wm8728_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/wm8731.c b/sound/soc/codecs/wm8731.c
+index 63f90c4..c4b6353 100644
+--- a/sound/soc/codecs/wm8731.c
++++ b/sound/soc/codecs/wm8731.c
+@@ -460,7 +460,6 @@ static int wm8731_resume(struct platform_device *pdev)
+ 		codec->hw_write(codec->control_data, data, 2);
+ 	}
+ 	wm8731_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8731_set_bias_level(codec, codec->suspend_bias_level);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 5a2510c..05b28cf 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -1628,7 +1628,6 @@ static int wm8903_resume(struct platform_device *pdev)
+ 
+ 	/* Bring the codec back up to standby first to minimise pop/clicks */
+ 	wm8903_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8903_set_bias_level(codec, codec->suspend_bias_level);
+ 
+ 	/* Sync back everything else */
+ 	if (tmp_cache) {
+diff --git a/sound/soc/codecs/wm8940.c b/sound/soc/codecs/wm8940.c
+index b2f1282..e313ab5 100644
+--- a/sound/soc/codecs/wm8940.c
++++ b/sound/soc/codecs/wm8940.c
+@@ -691,7 +691,6 @@ static int wm8940_resume(struct platform_device *pdev)
+ 	ret = wm8940_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+ 	if (ret)
+ 		goto error_ret;
+-	ret = wm8940_set_bias_level(codec, codec->suspend_bias_level);
+ 
+ error_ret:
+ 	return ret;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 50b2376..518c84e 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -823,7 +823,7 @@ static int wm8960_resume(struct platform_device *pdev)
+ 	}
+ 
+ 	codec->set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	codec->set_bias_level(codec, codec->suspend_bias_level);
 +
-+/**
-  * snd_soc_dapm_free - free dapm resources
-  * @socdev: SoC device
-  *
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
+index 270eb95..44841fe 100644
+--- a/sound/soc/codecs/wm8974.c
++++ b/sound/soc/codecs/wm8974.c
+@@ -608,7 +608,7 @@ static int wm8974_resume(struct platform_device *pdev)
+ 		codec->hw_write(codec->control_data, data, 2);
+ 	}
+ 	wm8974_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
+-	wm8974_set_bias_level(codec, codec->suspend_bias_level);
++
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index e237bf6..dd4b6ce 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -631,9 +631,6 @@ static int wm9712_soc_resume(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	if (codec->suspend_bias_level == SND_SOC_BIAS_ON)
+-		wm9712_set_bias_level(codec, SND_SOC_BIAS_ON);
+-
+ 	return ret;
+ }
+ 
+diff --git a/sound/soc/codecs/wm9713.c b/sound/soc/codecs/wm9713.c
+index d2244c9..6a30b84 100644
+--- a/sound/soc/codecs/wm9713.c
++++ b/sound/soc/codecs/wm9713.c
+@@ -1200,9 +1200,6 @@ static int wm9713_soc_resume(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	if (codec->suspend_bias_level == SND_SOC_BIAS_ON)
+-		wm9713_set_bias_level(codec, SND_SOC_BIAS_ON);
+-
+ 	return ret;
+ }
+ 
 -- 
 1.7.0.5
