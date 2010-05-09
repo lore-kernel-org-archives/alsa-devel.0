@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Wan ZongShun <mcuos.com@gmail.com>
 Subject: Re: about ALC203 linux driver
-Date: Sun, 9 May 2010 15:49:41 +0100
-Message-ID: <20100509144940.GA7457@sirena.org.uk>
+Date: Sun, 9 May 2010 23:34:28 +0800
+Message-ID: <AANLkTik0GudetGLF9hF56_VV_tNci8wX0S67gAWDIayq@mail.gmail.com>
 References: <AANLkTikvaFWOlapz9_HlHc1GBlky_FX1-5ml-iFNGGQW@mail.gmail.com>
+	<20100509144940.GA7457@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0448B243AC
+Received: from mail-gx0-f222.google.com (mail-gx0-f222.google.com
+	[209.85.217.222])
+	by alsa0.perex.cz (Postfix) with ESMTP id C5066243F1
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 May 2010 16:49:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTikvaFWOlapz9_HlHc1GBlky_FX1-5ml-iFNGGQW@mail.gmail.com>
+	Sun,  9 May 2010 17:34:30 +0200 (CEST)
+Received: by gxk22 with SMTP id 22so1622022gxk.4
+	for <alsa-devel@alsa-project.org>; Sun, 09 May 2010 08:34:29 -0700 (PDT)
+In-Reply-To: <20100509144940.GA7457@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, zswan@marvell.com
 Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 09, 2010 at 10:40:07PM +0800, Wan ZongShun wrote:
-
-> At present, there is a ALC203 AC97 codec in my Winbond ARM board, and
-> I am programming
-> the audio driver based on ALSA, Who can tell me whether the current
-> ALSA is supporting
-> the ALC203 driver?how to enable it?
-
-You need a driver for the AC97 controller your system is using (for most
-ARM systems this is part of the CPU).  Since AC97 provides a standard
-register interface for CODECs Linux does not require specific support
-for individual AC97 CODECs in order to get core functionality working.
-
-You can check if there's any specific CODEC support in sound/pci/ac97.
+RGVhciBNYXJrLAoKCjIwMTAvNS85IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xm
+c29ubWljcm8uY29tPjoKPiBPbiBTdW4sIE1heSAwOSwgMjAxMCBhdCAxMDo0MDowN1BNICswODAw
+LCBXYW4gWm9uZ1NodW4gd3JvdGU6Cj4KPj4gQXQgcHJlc2VudCwgdGhlcmUgaXMgYSBBTEMyMDMg
+QUM5NyBjb2RlYyBpbiBteSBXaW5ib25kIEFSTSBib2FyZCwgYW5kCj4+IEkgYW0gcHJvZ3JhbW1p
+bmcKPj4gdGhlIGF1ZGlvIGRyaXZlciBiYXNlZCBvbiBBTFNBLCBXaG8gY2FuIHRlbGwgbWUgd2hl
+dGhlciB0aGUgY3VycmVudAo+PiBBTFNBIGlzIHN1cHBvcnRpbmcKPj4gdGhlIEFMQzIwMyBkcml2
+ZXI/aG93IHRvIGVuYWJsZSBpdD8KPgo+IFlvdSBuZWVkIGEgZHJpdmVyIGZvciB0aGUgQUM5NyBj
+b250cm9sbGVyIHlvdXIgc3lzdGVtIGlzIHVzaW5nIChmb3IgbW9zdAo+IEFSTSBzeXN0ZW1zIHRo
+aXMgaXMgcGFydCBvZiB0aGUgQ1BVKS4gwqBTaW5jZSBBQzk3IHByb3ZpZGVzIGEgc3RhbmRhcmQK
+PiByZWdpc3RlciBpbnRlcmZhY2UgZm9yIENPREVDcyBMaW51eCBkb2VzIG5vdCByZXF1aXJlIHNw
+ZWNpZmljIHN1cHBvcnQKPiBmb3IgaW5kaXZpZHVhbCBBQzk3IENPREVDcyBpbiBvcmRlciB0byBn
+ZXQgY29yZSBmdW5jdGlvbmFsaXR5IHdvcmtpbmcuCj4KClRoZXJlIGlzIEFDOTcgc3VwcG9ydCBm
+b3IgbXkgY2hpcCwgYW5kIEkgaGF2ZSBpbXBsZW1lbnRlZCB0aGUgbnVjOTAwX2FjOTcuYwosbnVj
+OTAwX3BjbS5jIGFuZCBtYWNoaW5lIGJvYXJkIGMgZmlsZSBkcml2ZXJzLlRoZSB0aHJlZSBtYWlu
+CnN0cnVjdHVyZSBkZWZpbml0aW9ucwphcyBmb2xsb3dpbmc6CgpzdGF0aWMgc3RydWN0IHNuZF9z
+b2NfZGFpX2xpbmsgbnVjOTAwZXZiX2FjOTdfZGFpID0gewoJLm5hbWUJCT0gIkFDOTciLAoJLnN0
+cmVhbV9uYW1lCT0gIkFDOTcgSGlGaSIsCgkuY3B1X2RhaQk9ICZudWM5MDBfYWM5N19kYWksCgku
+Y29kZWNfZGFpCT0gJmFjOTdfZGFpLAp9OwoKc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgbnVj
+OTAwZXZiX2F1ZGlvX21hY2hpbmUgPSB7CgkubmFtZQkJPSAiTlVDOTAwRVZCX0FDOTciLAoJLmRh
+aV9saW5rCT0gJm51YzkwMGV2Yl9hYzk3X2RhaSwKCS5udW1fbGlua3MJPSAxLAoJLnBsYXRmb3Jt
+CT0gJm51YzkwMF9zb2NfcGxhdGZvcm0sCn07CgpzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGV2aWNl
+IG51YzkwMGV2Yl9hYzk3X2RldmRhdGEgPSB7CgkuY2FyZAkJPSAmbnVjOTAwZXZiX2F1ZGlvX21h
+Y2hpbmUsCgkuY29kZWNfZGV2CT0gJnNvY19jb2RlY19kZXZfYWM5NywKfTsKCmhlcmUsIEkgdXNl
+ZCB0aGUgZmlsZSBuYW1lZCBhYzk3LmMgd2hpY2ggaXMgbG9jYXRlZCBpbgpsaW51eC0yLjZcc291
+bmRcc29jXGNvZGVjcy4KSSBhbSBzdXJlIHRoYXQgaXQgY2FuIGNhbGwgdGhlICdcc291bmRccGNp
+XGFjOTdhYzk3X2NvZGVjLmMnIGZpbGUgYW5kCmlkZW50aWZ5IHRoZQpBTEMyMDMgKGxpa2UgdGhl
+IGxvZyBmaWxlIHNob3dzICdudWM5MDAgQUMnOTcgY29kZWMgaXMgIEFMQzIwMycsYnV0IHNvbWV0
+aW1lcwp0aGUgcmV0dXJuIHZhbHVlIGJ5IHJlYWRpbmcgb25lIEFDOTcgcmVnaXN0ZXIsIHdoaWNo
+IGlzIG5vdCBzYW1lIGFzCnRoZSB3cml0aW5nIHZhbHVlIHRvIHRoZQpBQzk3IHJlZ2lzdGVyLCB0
+aGF0IGlzIG5vdCBteSBleHBlY3RlZCByZXN1bHQsIGJ1dCBzb21ldGltZXMgdGhleSBhcmUgc2Ft
+ZS4KCmFueSBzdWdnZXN0aW9ucz8KCgoKPiBZb3UgY2FuIGNoZWNrIGlmIHRoZXJlJ3MgYW55IHNw
+ZWNpZmljIENPREVDIHN1cHBvcnQgaW4gc291bmQvcGNpL2FjOTcuCj4KCgoKLS0gCipsaW51eC1h
+cm0ta2VybmVsIG1haWxpbmcgbGlzdAptYWlsIGFkZHI6bGludXgtYXJtLWtlcm5lbEBsaXN0cy5p
+bmZyYWRlYWQub3JnCnlvdSBjYW4gc3Vic2NyaWJlIGJ5OgpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwKCiogbGludXgtYXJtLU5VQzkw
+MCBtYWlsaW5nIGxpc3QKbWFpbCBhZGRyOk5VQzkwMEBnb29nbGVncm91cHMuY29tCm1haW4gd2Vi
+OiBodHRwczovL2dyb3Vwcy5nb29nbGUuY29tL2dyb3VwL05VQzkwMAp5b3UgY2FuIHN1YnNjcmli
+ZSBpdCBieSBzZW5kaW5nIG1lIG1haWw6Cm1jdW9zLmNvbUBnbWFpbC5jb20KX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
+c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
