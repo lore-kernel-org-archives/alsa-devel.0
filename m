@@ -1,21 +1,17 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: about ALC203 linux driver
-Date: Sun, 9 May 2010 23:34:28 +0800
-Message-ID: <AANLkTik0GudetGLF9hF56_VV_tNci8wX0S67gAWDIayq@mail.gmail.com>
-References: <AANLkTikvaFWOlapz9_HlHc1GBlky_FX1-5ml-iFNGGQW@mail.gmail.com>
-	<20100509144940.GA7457@sirena.org.uk>
+From: Don Prince <dhprince.devel@yahoo.co.uk>
+Subject: [PATCH 2.6.34-rc5 v2] HID: Prodikeys PC-MIDI HID Driver
+Date: Sun, 09 May 2010 17:38:18 +0100
+Message-ID: <4BE6E4FA.10204@yahoo.co.uk>
+Reply-To: dhprince.devel@yahoo.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gx0-f222.google.com (mail-gx0-f222.google.com
-	[209.85.217.222])
-	by alsa0.perex.cz (Postfix) with ESMTP id C5066243F1
+Received: from smtp101.plus.mail.re1.yahoo.com
+	(smtp101.plus.mail.re1.yahoo.com [69.147.102.64])
+	by alsa0.perex.cz (Postfix) with SMTP id D630D2443F
 	for <alsa-devel@alsa-project.org>;
-	Sun,  9 May 2010 17:34:30 +0200 (CEST)
-Received: by gxk22 with SMTP id 22so1622022gxk.4
-	for <alsa-devel@alsa-project.org>; Sun, 09 May 2010 08:34:29 -0700 (PDT)
-In-Reply-To: <20100509144940.GA7457@sirena.org.uk>
+	Sun,  9 May 2010 18:38:22 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,48 +21,1062 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, zswan@marvell.com
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: linux-input@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-RGVhciBNYXJrLAoKCjIwMTAvNS85IE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xm
-c29ubWljcm8uY29tPjoKPiBPbiBTdW4sIE1heSAwOSwgMjAxMCBhdCAxMDo0MDowN1BNICswODAw
-LCBXYW4gWm9uZ1NodW4gd3JvdGU6Cj4KPj4gQXQgcHJlc2VudCwgdGhlcmUgaXMgYSBBTEMyMDMg
-QUM5NyBjb2RlYyBpbiBteSBXaW5ib25kIEFSTSBib2FyZCwgYW5kCj4+IEkgYW0gcHJvZ3JhbW1p
-bmcKPj4gdGhlIGF1ZGlvIGRyaXZlciBiYXNlZCBvbiBBTFNBLCBXaG8gY2FuIHRlbGwgbWUgd2hl
-dGhlciB0aGUgY3VycmVudAo+PiBBTFNBIGlzIHN1cHBvcnRpbmcKPj4gdGhlIEFMQzIwMyBkcml2
-ZXI/aG93IHRvIGVuYWJsZSBpdD8KPgo+IFlvdSBuZWVkIGEgZHJpdmVyIGZvciB0aGUgQUM5NyBj
-b250cm9sbGVyIHlvdXIgc3lzdGVtIGlzIHVzaW5nIChmb3IgbW9zdAo+IEFSTSBzeXN0ZW1zIHRo
-aXMgaXMgcGFydCBvZiB0aGUgQ1BVKS4gwqBTaW5jZSBBQzk3IHByb3ZpZGVzIGEgc3RhbmRhcmQK
-PiByZWdpc3RlciBpbnRlcmZhY2UgZm9yIENPREVDcyBMaW51eCBkb2VzIG5vdCByZXF1aXJlIHNw
-ZWNpZmljIHN1cHBvcnQKPiBmb3IgaW5kaXZpZHVhbCBBQzk3IENPREVDcyBpbiBvcmRlciB0byBn
-ZXQgY29yZSBmdW5jdGlvbmFsaXR5IHdvcmtpbmcuCj4KClRoZXJlIGlzIEFDOTcgc3VwcG9ydCBm
-b3IgbXkgY2hpcCwgYW5kIEkgaGF2ZSBpbXBsZW1lbnRlZCB0aGUgbnVjOTAwX2FjOTcuYwosbnVj
-OTAwX3BjbS5jIGFuZCBtYWNoaW5lIGJvYXJkIGMgZmlsZSBkcml2ZXJzLlRoZSB0aHJlZSBtYWlu
-CnN0cnVjdHVyZSBkZWZpbml0aW9ucwphcyBmb2xsb3dpbmc6CgpzdGF0aWMgc3RydWN0IHNuZF9z
-b2NfZGFpX2xpbmsgbnVjOTAwZXZiX2FjOTdfZGFpID0gewoJLm5hbWUJCT0gIkFDOTciLAoJLnN0
-cmVhbV9uYW1lCT0gIkFDOTcgSGlGaSIsCgkuY3B1X2RhaQk9ICZudWM5MDBfYWM5N19kYWksCgku
-Y29kZWNfZGFpCT0gJmFjOTdfZGFpLAp9OwoKc3RhdGljIHN0cnVjdCBzbmRfc29jX2NhcmQgbnVj
-OTAwZXZiX2F1ZGlvX21hY2hpbmUgPSB7CgkubmFtZQkJPSAiTlVDOTAwRVZCX0FDOTciLAoJLmRh
-aV9saW5rCT0gJm51YzkwMGV2Yl9hYzk3X2RhaSwKCS5udW1fbGlua3MJPSAxLAoJLnBsYXRmb3Jt
-CT0gJm51YzkwMF9zb2NfcGxhdGZvcm0sCn07CgpzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGV2aWNl
-IG51YzkwMGV2Yl9hYzk3X2RldmRhdGEgPSB7CgkuY2FyZAkJPSAmbnVjOTAwZXZiX2F1ZGlvX21h
-Y2hpbmUsCgkuY29kZWNfZGV2CT0gJnNvY19jb2RlY19kZXZfYWM5NywKfTsKCmhlcmUsIEkgdXNl
-ZCB0aGUgZmlsZSBuYW1lZCBhYzk3LmMgd2hpY2ggaXMgbG9jYXRlZCBpbgpsaW51eC0yLjZcc291
-bmRcc29jXGNvZGVjcy4KSSBhbSBzdXJlIHRoYXQgaXQgY2FuIGNhbGwgdGhlICdcc291bmRccGNp
-XGFjOTdhYzk3X2NvZGVjLmMnIGZpbGUgYW5kCmlkZW50aWZ5IHRoZQpBTEMyMDMgKGxpa2UgdGhl
-IGxvZyBmaWxlIHNob3dzICdudWM5MDAgQUMnOTcgY29kZWMgaXMgIEFMQzIwMycsYnV0IHNvbWV0
-aW1lcwp0aGUgcmV0dXJuIHZhbHVlIGJ5IHJlYWRpbmcgb25lIEFDOTcgcmVnaXN0ZXIsIHdoaWNo
-IGlzIG5vdCBzYW1lIGFzCnRoZSB3cml0aW5nIHZhbHVlIHRvIHRoZQpBQzk3IHJlZ2lzdGVyLCB0
-aGF0IGlzIG5vdCBteSBleHBlY3RlZCByZXN1bHQsIGJ1dCBzb21ldGltZXMgdGhleSBhcmUgc2Ft
-ZS4KCmFueSBzdWdnZXN0aW9ucz8KCgoKPiBZb3UgY2FuIGNoZWNrIGlmIHRoZXJlJ3MgYW55IHNw
-ZWNpZmljIENPREVDIHN1cHBvcnQgaW4gc291bmQvcGNpL2FjOTcuCj4KCgoKLS0gCipsaW51eC1h
-cm0ta2VybmVsIG1haWxpbmcgbGlzdAptYWlsIGFkZHI6bGludXgtYXJtLWtlcm5lbEBsaXN0cy5p
-bmZyYWRlYWQub3JnCnlvdSBjYW4gc3Vic2NyaWJlIGJ5OgpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwKCiogbGludXgtYXJtLU5VQzkw
-MCBtYWlsaW5nIGxpc3QKbWFpbCBhZGRyOk5VQzkwMEBnb29nbGVncm91cHMuY29tCm1haW4gd2Vi
-OiBodHRwczovL2dyb3Vwcy5nb29nbGUuY29tL2dyb3VwL05VQzkwMAp5b3UgY2FuIHN1YnNjcmli
-ZSBpdCBieSBzZW5kaW5nIG1lIG1haWw6Cm1jdW9zLmNvbUBnbWFpbC5jb20KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+A specialised HID driver for the Creative Prodikeys PC-MIDI USB Keyboard.
+
+The Prodikeys PC-MIDI is a multifunction keyboard comprising a qwerty 
+
+keyboard, multimedia keys and a touch sensitive musical keyboard.
+
+The specialised HID driver adds full support for the musical keyboard 
+
+and extra multimedia keys which are not currently handled by the default 
+
+HID driver.
+
+The specialised HID driver interfaces with Alsa, and presents the midi 
+
+keyboard as a Rawmidi device. Sustain duration, octave shifting and the  
+
+midi output channel can be read/written form userspace  via sysfs.
+
+
+Signed-off-by: Don Prince <dhprince-devel@yahoo.co.uk>
+
+---
+
+Applied fixes to original patch submission suggested by Clemens Ladisch.
+
+
+The keyboard can be viewed here 
+
+http://www.prodikeys.com/products/Prodikeys_PC-MIDI/
+
+The driver (older version) and a simple wxWidgets based UI application is available (in 
+
+tar.gz format) at the Sourceforge project page 
+
+http://sourceforge.net/projects/pc-midi-linux/
+
+Apply patch with
+
+    patch -p1 < <path to the driver patch>
+
+---
+diff -X /opt/scripts/diff-exclude.txt -Npaur a/Documentation/ABI/testing/sysfs-driver-hid-prodikeys b/Documentation/ABI/testing/sysfs-driver-hid-prodikeys
+--- a/Documentation/ABI/testing/sysfs-driver-hid-prodikeys	1970-01-01 01:00:00.000000000 +0100
++++ b/Documentation/ABI/testing/sysfs-driver-hid-prodikeys	2010-05-09 16:14:33.948863321 +0100
+@@ -0,0 +1,29 @@
++What:		/sys/bus/hid/drivers/prodikeys/.../channel
++Date:		April 2010
++KernelVersion:	2.6.34
++Contact:	Don Prince <dhprince.devel@yahoo.co.uk>
++Description:
++		Allows control (via software) the midi channel to which
++		that the pc-midi keyboard will output.midi data.
++		Range: 0..15
++		Type:  Read/write
++What:		/sys/bus/hid/drivers/prodikeys/.../sustain
++Date:		April 2010
++KernelVersion:	2.6.34
++Contact:	Don Prince <dhprince.devel@yahoo.co.uk>
++Description:
++		Allows control (via software) the sustain duration of a
++		note held by the pc-midi driver.
++		0 means sustain mode is disabled.
++		Range: 0..5000 (milliseconds)
++		Type:  Read/write
++What:		/sys/bus/hid/drivers/prodikeys/.../octave
++Date:		April 2010
++KernelVersion:	2.6.34
++Contact:	Don Prince <dhprince.devel@yahoo.co.uk>
++Description:
++		Controls the octave shift modifier in the pc-midi driver.
++		The octave can be shifted via software up/down 2 octaves.
++		0 means the no ocatve shift.
++		Range: -2..2 (minus 2 to plus 2)
++		Type: Read/Write
+diff -X /opt/scripts/diff-exclude.txt -Npaur a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
+--- a/drivers/hid/hid-core.c	2010-04-22 18:52:46.445384754 +0100
++++ b/drivers/hid/hid-core.c	2010-04-25 19:10:31.317248975 +0100
+@@ -1297,6 +1297,7 @@ static const struct hid_device_id hid_bl
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_BELKIN, USB_DEVICE_ID_FLIP_KVM) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHERRY, USB_DEVICE_ID_CHERRY_CYMOTION) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CHICONY, USB_DEVICE_ID_CHICONY_TACTICAL_PAD) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_CREATIVELABS, USB_DEVICE_ID_PRODIKEYS_PCMIDI) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_CYPRESS_BARCODE_1) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_CYPRESS_BARCODE_2) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_CYPRESS, USB_DEVICE_ID_CYPRESS_BARCODE_3) },
+diff -X /opt/scripts/diff-exclude.txt -Npaur a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+--- a/drivers/hid/hid-ids.h	2010-04-22 18:52:46.455385039 +0100
++++ b/drivers/hid/hid-ids.h	2010-04-25 19:10:31.319248829 +0100
+@@ -147,6 +147,9 @@
+ #define USB_DEVICE_ID_CODEMERCS_IOW_FIRST	0x1500
+ #define USB_DEVICE_ID_CODEMERCS_IOW_LAST	0x15ff
+ 
++#define USB_VENDOR_ID_CREATIVELABS	0x041e
++#define USB_DEVICE_ID_PRODIKEYS_PCMIDI	0x2801
++
+ #define USB_VENDOR_ID_CYGNAL		0x10c4
+ #define USB_DEVICE_ID_CYGNAL_RADIO_SI470X	0x818a
+ 
+diff -X /opt/scripts/diff-exclude.txt -Npaur a/drivers/hid/hid-prodikeys.c b/drivers/hid/hid-prodikeys.c
+--- a/drivers/hid/hid-prodikeys.c	1970-01-01 01:00:00.000000000 +0100
++++ b/drivers/hid/hid-prodikeys.c	2010-05-09 16:20:42.569736755 +0100
+@@ -0,0 +1,910 @@
++/*
++ *  HID driver for the Prodikeys PC-MIDI Keyboard
++ *  providing midi & extra multimedia keys functionality
++ *
++ *  Copyright (c) 2009 Don Prince <dhprince.devel@yahoo.co.uk>
++ *
++ *  Controls for Octave Shift Up/Down, Channel, and
++ *  Sustain Duration available via sysfs.
++ *
++ */
++
++/*
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License as published by the Free
++ * Software Foundation; either version 2 of the License, or (at your option)
++ * any later version.
++ */
++
++#include <linux/device.h>
++#include <linux/module.h>
++#include <linux/usb.h>
++#include <linux/mutex.h>
++#include <linux/hid.h>
++#include <sound/core.h>
++#include <sound/initval.h>
++#include <sound/rawmidi.h>
++#include "usbhid/usbhid.h"
++#include "hid-ids.h"
++
++
++#define pk_debug(format, arg...) \
++	pr_debug("hid-prodikeys: " format "\n" , ## arg)
++#define pk_error(format, arg...) \
++	pr_err("hid-prodikeys: " format "\n" , ## arg)
++
++struct pcmidi_snd;
++
++struct pk_device {
++	unsigned long		quirks;
++
++	struct hid_device	*hdev;
++	struct pcmidi_snd	*pm; /* pcmidi device context */
++};
++
++struct pcmidi_snd;
++
++struct pcmidi_sustain {
++	unsigned long		in_use;
++	struct pcmidi_snd	*pm;
++	struct timer_list	timer;
++	unsigned char		status;
++	unsigned char		note;
++	unsigned char		velocity;
++};
++
++#define PCMIDI_SUSTAINED_MAX	32
++struct pcmidi_snd {
++	struct pk_device		*pk;
++	unsigned short			ifnum;
++	struct hid_report		*pcmidi_report6;
++	struct input_dev		*input_ep82;
++	unsigned short			midi_mode;
++	unsigned short			midi_sustain_mode;
++	unsigned short			midi_sustain;
++	unsigned short			midi_channel;
++	short				midi_octave;
++	struct pcmidi_sustain		sustained_notes[PCMIDI_SUSTAINED_MAX];
++	unsigned short			fn_state;
++	unsigned short			last_key[24];
++	spinlock_t			rawmidi_in_lock;
++	struct snd_card			*card;
++	struct snd_rawmidi		*rwmidi;
++	struct snd_rawmidi_substream	*in_substream;
++	struct snd_rawmidi_substream	*out_substream;
++	unsigned long			in_triggered;
++	unsigned long			out_active;
++};
++
++#define PK_QUIRK_NOGET	0x00010000
++#define PCMIDI_MIDDLE_C 60
++#define PCMIDI_CHANNEL_MIN 0
++#define PCMIDI_CHANNEL_MAX 15
++#define PCMIDI_OCTAVE_MIN (-2)
++#define PCMIDI_OCTAVE_MAX 2
++#define PCMIDI_SUSTAIN_MIN 0
++#define PCMIDI_SUSTAIN_MAX 5000
++
++static const char shortname[] = "PC-MIDI";
++static const char longname[] = "Prodikeys PC-MIDI Keyboard";
++
++static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;
++static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;
++static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;
++
++module_param_array(index, int, NULL, 0444);
++module_param_array(id, charp, NULL, 0444);
++module_param_array(enable, bool, NULL, 0444);
++MODULE_PARM_DESC(index, "Index value for the PC-MIDI virtual audio driver");
++MODULE_PARM_DESC(id, "ID string for the PC-MIDI virtual audio driver");
++MODULE_PARM_DESC(enable, "Enable for the PC-MIDI virtual audio driver");
++
++
++/* Output routine for the sysfs channel file */
++static ssize_t show_channel(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	struct hid_device *hdev = container_of(dev, struct hid_device, dev);
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++
++	dbg_hid("pcmidi sysfs read channel=%u\n", pk->pm->midi_channel);
++
++	return sprintf(buf, "%u (min:%u, max:%u)\n", pk->pm->midi_channel,
++		PCMIDI_CHANNEL_MIN, PCMIDI_CHANNEL_MAX);
++}
++
++/* Input routine for the sysfs channel file */
++static ssize_t store_channel(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct hid_device *hdev = container_of(dev, struct hid_device, dev);
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++
++	unsigned channel = 0;
++
++	if (sscanf(buf, "%u", &channel) > 0 && channel <= PCMIDI_CHANNEL_MAX) {
++		dbg_hid("pcmidi sysfs write channel=%u\n", channel);
++		pk->pm->midi_channel = channel;
++		return strlen(buf);
++	}
++	return -EINVAL;
++}
++
++static DEVICE_ATTR(channel, S_IRUGO | S_IWUGO, show_channel,
++		store_channel);
++
++static struct device_attribute *sysfs_device_attr_channel = {
++		&dev_attr_channel,
++		};
++
++/* Output routine for the sysfs sustain file */
++static ssize_t show_sustain(struct device *dev,
++ struct device_attribute *attr, char *buf)
++{
++	struct hid_device *hdev = container_of(dev, struct hid_device, dev);
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++
++	dbg_hid("pcmidi sysfs read sustain=%u\n", pk->pm->midi_sustain);
++
++	return sprintf(buf, "%u (off:%u, max:%u (ms))\n", pk->pm->midi_sustain,
++		PCMIDI_SUSTAIN_MIN, PCMIDI_SUSTAIN_MAX);
++}
++
++/* Input routine for the sysfs sustain file */
++static ssize_t store_sustain(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct hid_device *hdev = container_of(dev, struct hid_device, dev);
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++
++	unsigned sustain = 0;
++
++	if (sscanf(buf, "%u", &sustain) > 0 && sustain <= PCMIDI_SUSTAIN_MAX) {
++		dbg_hid("pcmidi sysfs write sustain=%u\n", sustain);
++		pk->pm->midi_sustain = sustain;
++		pk->pm->midi_sustain_mode =
++			(0 == sustain || !pk->pm->midi_mode) ? 0 : 1;
++		return strlen(buf);
++	}
++	return -EINVAL;
++}
++
++static DEVICE_ATTR(sustain, S_IRUGO | S_IWUGO, show_sustain,
++		store_sustain);
++
++static struct device_attribute *sysfs_device_attr_sustain = {
++		&dev_attr_sustain,
++		};
++
++/* Output routine for the sysfs octave file */
++static ssize_t show_octave(struct device *dev,
++	struct device_attribute *attr, char *buf)
++{
++	struct hid_device *hdev = container_of(dev, struct hid_device, dev);
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++
++	dbg_hid("pcmidi sysfs read octave=%d\n", pk->pm->midi_octave);
++
++	return sprintf(buf, "%d (min:%d, max:%d)\n", pk->pm->midi_octave,
++		PCMIDI_OCTAVE_MIN, PCMIDI_OCTAVE_MAX);
++}
++
++/* Input routine for the sysfs octave file */
++static ssize_t store_octave(struct device *dev,
++	struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct hid_device *hdev = container_of(dev, struct hid_device, dev);
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++
++	int octave = 0;
++
++	if (sscanf(buf, "%d", &octave) > 0 &&
++		octave >= PCMIDI_OCTAVE_MIN && octave <= PCMIDI_OCTAVE_MAX) {
++		dbg_hid("pcmidi sysfs write octave=%d\n", octave);
++		pk->pm->midi_octave = octave;
++		return strlen(buf);
++	}
++	return -EINVAL;
++}
++
++static DEVICE_ATTR(octave, S_IRUGO | S_IWUGO, show_octave,
++		store_octave);
++
++static struct device_attribute *sysfs_device_attr_octave = {
++		&dev_attr_octave,
++		};
++
++
++static void pcmidi_send_note(struct pcmidi_snd *pm,
++	unsigned char status, unsigned char note, unsigned char velocity)
++{
++	unsigned long flags;
++	unsigned char buffer[3];
++
++	buffer[0] = status;
++	buffer[1] = note;
++	buffer[2] = velocity;
++
++	spin_lock_irqsave(&pm->rawmidi_in_lock, flags);
++
++	if (!pm->in_substream)
++		goto drop_note;
++	if (!test_bit(pm->in_substream->number, &pm->in_triggered))
++		goto drop_note;
++
++	snd_rawmidi_receive(pm->in_substream, buffer, 3);
++
++drop_note:
++	spin_unlock_irqrestore(&pm->rawmidi_in_lock, flags);
++
++	return;
++}
++
++void pcmidi_sustained_note_release(unsigned long data)
++{
++	struct pcmidi_sustain *pms = (struct pcmidi_sustain *)data;
++
++	pcmidi_send_note(pms->pm, pms->status, pms->note, pms->velocity);
++	pms->in_use = 0;
++}
++
++void init_sustain_timers(struct pcmidi_snd *pm)
++{
++	struct pcmidi_sustain *pms;
++	unsigned i;
++
++	for (i = 0; i < PCMIDI_SUSTAINED_MAX; i++) {
++		pms = &pm->sustained_notes[i];
++		pms->in_use = 0;
++		pms->pm = pm;
++		setup_timer(&pms->timer, pcmidi_sustained_note_release,
++			(unsigned long)pms);
++	}
++}
++
++void stop_sustain_timers(struct pcmidi_snd *pm)
++{
++	struct pcmidi_sustain *pms;
++	unsigned i;
++
++	for (i = 0; i < PCMIDI_SUSTAINED_MAX; i++) {
++		pms = &pm->sustained_notes[i];
++		pms->in_use = 1;
++		del_timer_sync(&pms->timer);
++	}
++}
++
++static int pcmidi_get_output_report(struct pcmidi_snd *pm)
++{
++	struct hid_device *hdev = pm->pk->hdev;
++	struct hid_report *report;
++
++	list_for_each_entry(report,
++		&hdev->report_enum[HID_OUTPUT_REPORT].report_list, list) {
++		if (!(6 == report->id))
++			continue;
++
++		if (report->maxfield < 1) {
++			dev_err(&hdev->dev, "output report is empty\n");
++			break;
++		}
++		if (report->field[0]->report_count != 2) {
++			dev_err(&hdev->dev, "field count too low\n");
++			break;
++		}
++		pm->pcmidi_report6 = report;
++		return 0;
++	}
++	/* should never get here */
++	return -ENODEV;
++}
++
++static void pcmidi_submit_output_report(struct pcmidi_snd *pm, int state)
++{
++	struct hid_device *hdev = pm->pk->hdev;
++	struct hid_report *report = pm->pcmidi_report6;
++	report->field[0]->value[0] = 0x01;
++	report->field[0]->value[1] = state;
++
++	usbhid_submit_report(hdev, report, USB_DIR_OUT);
++}
++
++static int pcmidi_handle_report1(struct pcmidi_snd *pm, u8 *data)
++{
++	u32 bit_mask;
++
++	bit_mask = data[1];
++	bit_mask = (bit_mask << 8) | data[2];
++	bit_mask = (bit_mask << 8) | data[3];
++
++	dbg_hid("pcmidi mode: %d\n", pm->midi_mode);
++
++	/*KEY_MAIL or octave down*/
++	if (pm->midi_mode && bit_mask == 0x004000) {
++		/* octave down */
++		pm->midi_octave--;
++		if (pm->midi_octave < -2)
++			pm->midi_octave = -2;
++		dbg_hid("pcmidi mode: %d octave: %d\n",
++			pm->midi_mode, pm->midi_octave);
++		return 1;
++	}
++	/*KEY_WWW or sustain*/
++	else if (pm->midi_mode && bit_mask == 0x000004) {
++		/* sustain on/off*/
++		pm->midi_sustain_mode ^= 0x1;
++		return 1;
++	}
++
++	return 0; /* continue key processing */
++}
++
++static int pcmidi_handle_report3(struct pcmidi_snd *pm, u8 *data, int size)
++{
++	struct pcmidi_sustain *pms;
++	unsigned i, j;
++	unsigned char status, note, velocity;
++
++	unsigned num_notes = (size-1)/2;
++	for (j = 0; j < num_notes; j++)	{
++		note = data[j*2+1];
++		velocity = data[j*2+2];
++
++		if (note < 0x81) { /* note on */
++			status = 128 + 16 + pm->midi_channel; /* 1001nnnn */
++			note = note - 0x54 + PCMIDI_MIDDLE_C +
++				(pm->midi_octave * 12);
++			if (0 == velocity)
++				velocity = 1; /* force note on */
++		} else { /* note off */
++			status = 128 + pm->midi_channel; /* 1000nnnn */
++			note = note - 0x94 + PCMIDI_MIDDLE_C +
++				(pm->midi_octave*12);
++
++			if (pm->midi_sustain_mode) {
++				for (i = 0; i < PCMIDI_SUSTAINED_MAX; i++) {
++					pms = &pm->sustained_notes[i];
++					if (!pms->in_use) {
++						pms->status = status;
++						pms->note = note;
++						pms->velocity = velocity;
++						pms->in_use = 1;
++
++						mod_timer(&pms->timer,
++							jiffies +
++					msecs_to_jiffies(pm->midi_sustain));
++						return 1;
++					}
++				}
++			}
++		}
++		pcmidi_send_note(pm, status, note, velocity);
++	}
++
++	return 1;
++}
++
++static int pcmidi_handle_report4(struct pcmidi_snd *pm, u8 *data)
++{
++	unsigned	key;
++	u32		bit_mask;
++	u32		bit_index;
++
++	bit_mask = data[1];
++	bit_mask = (bit_mask << 8) | data[2];
++	bit_mask = (bit_mask << 8) | data[3];
++
++	/* break keys */
++	for (bit_index = 0; bit_index < 24; bit_index++) {
++		key = pm->last_key[bit_index];
++		if (!((0x01 << bit_index) & bit_mask)) {
++			input_event(pm->input_ep82, EV_KEY,
++				pm->last_key[bit_index], 0);
++				pm->last_key[bit_index] = 0;
++		}
++	}
++
++	/* make keys */
++	for (bit_index = 0; bit_index < 24; bit_index++) {
++		key = 0;
++		switch ((0x01 << bit_index) & bit_mask) {
++		case 0x000010: /* Fn lock*/
++			pm->fn_state ^= 0x000010;
++			if (pm->fn_state)
++				pcmidi_submit_output_report(pm, 0xc5);
++			else
++				pcmidi_submit_output_report(pm, 0xc6);
++			continue;
++		case 0x020000: /* midi launcher..send a key (qwerty) or not? */
++			pcmidi_submit_output_report(pm, 0xc1);
++			pm->midi_mode ^= 0x01;
++
++			dbg_hid("pcmidi mode: %d\n", pm->midi_mode);
++			continue;
++		case 0x100000: /* KEY_MESSENGER or octave up */
++			dbg_hid("pcmidi mode: %d\n", pm->midi_mode);
++			if (pm->midi_mode) {
++				pm->midi_octave++;
++				if (pm->midi_octave > 2)
++					pm->midi_octave = 2;
++				dbg_hid("pcmidi mode: %d octave: %d\n",
++					pm->midi_mode, pm->midi_octave);
++			    continue;
++			} else
++				key = KEY_MESSENGER;
++			break;
++		case 0x400000:
++			key = KEY_CALENDAR;
++			break;
++		case 0x080000:
++			key = KEY_ADDRESSBOOK;
++			break;
++		case 0x040000:
++			key = KEY_DOCUMENTS;
++			break;
++		case 0x800000:
++			key = KEY_WORDPROCESSOR;
++			break;
++		case 0x200000:
++			key = KEY_SPREADSHEET;
++			break;
++		case 0x010000:
++			key = KEY_COFFEE;
++			break;
++		case 0x000100:
++			key = KEY_HELP;
++			break;
++		case 0x000200:
++			key = KEY_SEND;
++			break;
++		case 0x000400:
++			key = KEY_REPLY;
++			break;
++		case 0x000800:
++			key = KEY_FORWARDMAIL;
++			break;
++		case 0x001000:
++			key = KEY_NEW;
++			break;
++		case 0x002000:
++			key = KEY_OPEN;
++			break;
++		case 0x004000:
++			key = KEY_CLOSE;
++			break;
++		case 0x008000:
++			key = KEY_SAVE;
++			break;
++		case 0x000001:
++			key = KEY_UNDO;
++			break;
++		case 0x000002:
++			key = KEY_REDO;
++			break;
++		case 0x000004:
++			key = KEY_SPELLCHECK;
++			break;
++		case 0x000008:
++			key = KEY_PRINT;
++			break;
++		}
++		if (key) {
++			input_event(pm->input_ep82, EV_KEY, key, 1);
++			pm->last_key[bit_index] = key;
++		}
++	}
++
++	return 1;
++}
++
++int pcmidi_handle_report(
++	struct pcmidi_snd *pm, unsigned report_id, u8 *data, int size)
++{
++	int ret = 0;
++
++	switch (report_id) {
++	case 0x01: /* midi keys (qwerty)*/
++		ret = pcmidi_handle_report1(pm, data);
++		break;
++	case 0x03: /* midi keyboard (musical)*/
++		ret = pcmidi_handle_report3(pm, data, size);
++		break;
++	case 0x04: /* multimedia/midi keys (qwerty)*/
++		ret = pcmidi_handle_report4(pm, data);
++		break;
++	}
++	return ret;
++}
++
++void pcmidi_setup_extra_keys(struct pcmidi_snd *pm, struct input_dev *input)
++{
++	/* reassigned functionality for N/A keys
++		MY PICTURES =>	KEY_WORDPROCESSOR
++		MY MUSIC=>	KEY_SPREADSHEET
++	*/
++	unsigned int keys[] = {
++		KEY_FN,
++		KEY_MESSENGER, KEY_CALENDAR,
++		KEY_ADDRESSBOOK, KEY_DOCUMENTS,
++		KEY_WORDPROCESSOR,
++		KEY_SPREADSHEET,
++		KEY_COFFEE,
++		KEY_HELP, KEY_SEND,
++		KEY_REPLY, KEY_FORWARDMAIL,
++		KEY_NEW, KEY_OPEN,
++		KEY_CLOSE, KEY_SAVE,
++		KEY_UNDO, KEY_REDO,
++		KEY_SPELLCHECK,	KEY_PRINT,
++		0
++	};
++
++	unsigned int *pkeys = &keys[0];
++	unsigned short i;
++
++	if (pm->ifnum != 1)  /* only set up ONCE for interace 1 */
++		return;
++
++	pm->input_ep82 = input;
++
++	for (i = 0; i < 24; i++)
++		pm->last_key[i] = 0;
++
++	while (*pkeys != 0) {
++		set_bit(*pkeys, pm->input_ep82->keybit);
++		++pkeys;
++	}
++}
++
++static int pcmidi_set_operational(struct pcmidi_snd *pm)
++{
++	if (pm->ifnum != 1)
++		return 0; /* only set up ONCE for interace 1 */
++
++	pcmidi_get_output_report(pm);
++	pcmidi_submit_output_report(pm, 0xc1);
++	return 0;
++}
++
++static int pcmidi_snd_free(struct snd_device *dev)
++{
++	return 0;
++}
++
++static int pcmidi_in_open(struct snd_rawmidi_substream *substream)
++{
++	struct pcmidi_snd *pm = substream->rmidi->private_data;
++
++	dbg_hid("pcmidi in open\n");
++	pm->in_substream = substream;
++	return 0;
++}
++
++static int pcmidi_in_close(struct snd_rawmidi_substream *substream)
++{
++	dbg_hid("pcmidi in close\n");
++	return 0;
++}
++
++static void pcmidi_in_trigger(struct snd_rawmidi_substream *substream, int up)
++{
++	struct pcmidi_snd *pm = substream->rmidi->private_data;
++
++	dbg_hid("pcmidi in trigger %d\n", up);
++
++	pm->in_triggered = up;
++}
++
++static struct snd_rawmidi_ops pcmidi_in_ops = {
++	.open = pcmidi_in_open,
++	.close = pcmidi_in_close,
++	.trigger = pcmidi_in_trigger
++};
++
++int pcmidi_snd_initialise(struct pcmidi_snd *pm)
++{
++	static int dev;
++	struct snd_card *card;
++	struct snd_rawmidi *rwmidi;
++	int err;
++
++	static struct snd_device_ops ops = {
++		.dev_free = pcmidi_snd_free,
++	};
++
++	if (pm->ifnum != 1)
++		return 0; /* only set up midi device ONCE for interace 1 */
++
++	if (dev >= SNDRV_CARDS)
++		return -ENODEV;
++
++	if (!enable[dev]) {
++		dev++;
++		return -ENOENT;
++	}
++
++	/* Setup sound card */
++
++	err = snd_card_create(index[dev], id[dev], THIS_MODULE, 0, &card);
++	if (err < 0) {
++		pk_error("failed to create pc-midi sound card\n");
++		err = -ENOMEM;
++		goto fail;
++	}
++	pm->card = card;
++
++	/* Setup sound device */
++	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, pm, &ops);
++	if (err < 0) {
++		pk_error("failed to create pc-midi sound device: error %d\n",
++			err);
++		goto fail;
++	}
++
++	strncpy(card->driver, shortname, sizeof(card->driver));
++	strncpy(card->shortname, shortname, sizeof(card->shortname));
++	strncpy(card->longname, longname, sizeof(card->longname));
++
++	/* Set up rawmidi */
++	err = snd_rawmidi_new(card, card->shortname, 0,
++			      0, 1, &rwmidi);
++	if (err < 0) {
++		pk_error("failed to create pc-midi rawmidi device: error %d\n",
++			err);
++		goto fail;
++	}
++	pm->rwmidi = rwmidi;
++	strncpy(rwmidi->name, card->shortname, sizeof(rwmidi->name));
++	rwmidi->info_flags = SNDRV_RAWMIDI_INFO_INPUT;
++	rwmidi->private_data = pm;
++
++	snd_rawmidi_set_ops(rwmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++		&pcmidi_in_ops);
++
++	snd_card_set_dev(card, &pm->pk->hdev->dev);
++
++	/* create sysfs variables */
++	err = device_create_file(&pm->pk->hdev->dev,
++				 sysfs_device_attr_channel);
++	if (err < 0) {
++		pk_error("failed to create sysfs attribute channel: error %d\n",
++			err);
++		goto fail;
++	}
++
++	err = device_create_file(&pm->pk->hdev->dev,
++				sysfs_device_attr_sustain);
++	if (err < 0) {
++		pk_error("failed to create sysfs attribute sustain: error %d\n",
++			err);
++		goto fail_attr_sustain;
++	}
++
++	err = device_create_file(&pm->pk->hdev->dev,
++			 sysfs_device_attr_octave);
++	if (err < 0) {
++		pk_error("failed to create sysfs attribute octave: error %d\n",
++			err);
++		goto fail_attr_octave;
++	}
++
++	spin_lock_init(&pm->rawmidi_in_lock);
++
++	init_sustain_timers(pm);
++	pcmidi_set_operational(pm);
++
++	/* register it */
++	err = snd_card_register(card);
++	if (err < 0) {
++		pk_error("failed to register pc-midi sound card: error %d\n",
++			 err);
++			 goto fail_register;
++	}
++
++	dbg_hid("pcmidi_snd_initialise finished ok\n");
++	return 0;
++
++fail_register:
++	stop_sustain_timers(pm);
++	device_remove_file(&pm->pk->hdev->dev, sysfs_device_attr_octave);
++fail_attr_octave:
++	device_remove_file(&pm->pk->hdev->dev, sysfs_device_attr_sustain);
++fail_attr_sustain:
++	device_remove_file(&pm->pk->hdev->dev, sysfs_device_attr_channel);
++fail:
++	if (pm->card) {
++		snd_card_free(pm->card);
++		pm->card = NULL;
++	}
++	return err;
++}
++
++int pcmidi_snd_terminate(struct pcmidi_snd *pm)
++{
++	if (pm->card) {
++		stop_sustain_timers(pm);
++
++		device_remove_file(&pm->pk->hdev->dev,
++			sysfs_device_attr_channel);
++		device_remove_file(&pm->pk->hdev->dev,
++			sysfs_device_attr_sustain);
++		device_remove_file(&pm->pk->hdev->dev,
++			sysfs_device_attr_octave);
++
++		snd_card_disconnect(pm->card);
++		snd_card_free_when_closed(pm->card);
++	}
++
++	return 0;
++}
++
++/*
++ * PC-MIDI report descriptor for report id is wrong.
++ */
++static void pk_report_fixup(struct hid_device *hdev, __u8 *rdesc,
++		unsigned int rsize)
++{
++	if (rsize == 178 &&
++	      rdesc[111] == 0x06 && rdesc[112] == 0x00 &&
++	      rdesc[113] == 0xff) {
++		dev_info(&hdev->dev, "fixing up pc-midi keyboard report "
++			"descriptor\n");
++
++		rdesc[144] = 0x18; /* report 4: was 0x10 report count */
++	}
++}
++
++static int pk_input_mapping(struct hid_device *hdev, struct hid_input *hi,
++		struct hid_field *field, struct hid_usage *usage,
++		unsigned long **bit, int *max)
++{
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++	struct pcmidi_snd *pm;
++
++	pm = pk->pm;
++
++	if (HID_UP_MSVENDOR == (usage->hid & HID_USAGE_PAGE) &&
++		1 == pm->ifnum) {
++		pcmidi_setup_extra_keys(pm, hi->input);
++		return 0;
++	}
++
++	return 0;
++}
++
++
++static int pk_raw_event(struct hid_device *hdev, struct hid_report *report,
++	u8 *data, int size)
++{
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++	int ret = 0;
++
++	if (1 == pk->pm->ifnum) {
++		if (report->id == data[0])
++			switch (report->id) {
++			case 0x01: /* midi keys (qwerty)*/
++			case 0x03: /* midi keyboard (musical)*/
++			case 0x04: /* extra/midi keys (qwerty)*/
++				ret = pcmidi_handle_report(pk->pm,
++						report->id, data, size);
++				break;
++			}
++	}
++
++	return ret;
++}
++
++static int pk_probe(struct hid_device *hdev, const struct hid_device_id *id)
++{
++	int ret;
++	struct usb_interface *intf = to_usb_interface(hdev->dev.parent);
++	unsigned short ifnum = intf->cur_altsetting->desc.bInterfaceNumber;
++	unsigned long quirks = id->driver_data;
++	struct pk_device *pk;
++	struct pcmidi_snd *pm = NULL;
++
++	pk = kzalloc(sizeof(*pk), GFP_KERNEL);
++	if (pk == NULL) {
++		dev_err(&hdev->dev, "prodikeys: can't alloc descriptor\n");
++		return -ENOMEM;
++	}
++
++	pk->hdev = hdev;
++
++	pm = kzalloc(sizeof(*pm), GFP_KERNEL);
++	if (pm == NULL) {
++		dev_err(&hdev->dev,
++			"prodikeys: can't alloc descriptor\n");
++		ret = -ENOMEM;
++		goto err_free;
++	}
++
++	pm->pk = pk;
++	pk->pm = pm;
++	pm->ifnum = ifnum;
++
++	hid_set_drvdata(hdev, pk);
++
++	ret = hid_parse(hdev);
++	if (ret) {
++		dev_err(&hdev->dev, "prodikeys: hid parse failed\n");
++		goto err_free;
++	}
++
++	if (quirks & PK_QUIRK_NOGET) { /* hid_parse cleared all the quirks */
++		hdev->quirks |= HID_QUIRK_NOGET;
++	}
++
++	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
++	if (ret) {
++		dev_err(&hdev->dev, "prodikeys: hw start failed\n");
++		goto err_free;
++	}
++
++	ret = pcmidi_snd_initialise(pm);
++	if (ret < 0)
++		goto err_stop;
++
++	return 0;
++err_stop:
++	hid_hw_stop(hdev);
++err_free:
++	if (pm != NULL)
++		kfree(pm);
++
++	kfree(pk);
++	return ret;
++}
++
++static void pk_remove(struct hid_device *hdev)
++{
++	struct pk_device *pk = (struct pk_device *)hid_get_drvdata(hdev);
++	struct pcmidi_snd *pm;
++
++	pm = pk->pm;
++	if (pm) {
++		pcmidi_snd_terminate(pm);
++		kfree(pm);
++	}
++
++	hid_hw_stop(hdev);
++
++	kfree(pk);
++}
++
++static const struct hid_device_id pk_devices[] = {
++	{HID_USB_DEVICE(USB_VENDOR_ID_CREATIVELABS,
++		USB_DEVICE_ID_PRODIKEYS_PCMIDI),
++	    .driver_data = PK_QUIRK_NOGET},
++	{ }
++};
++MODULE_DEVICE_TABLE(hid, pk_devices);
++
++static struct hid_driver pk_driver = {
++	.name = "prodikeys",
++	.id_table = pk_devices,
++	.report_fixup = pk_report_fixup,
++	.input_mapping = pk_input_mapping,
++	.raw_event = pk_raw_event,
++	.probe = pk_probe,
++	.remove = pk_remove,
++};
++
++static int pk_init(void)
++{
++	int ret;
++
++	ret = hid_register_driver(&pk_driver);
++	if (ret)
++		printk(KERN_ERR "can't register prodikeys driver\n");
++
++	return ret;
++}
++
++static void pk_exit(void)
++{
++	hid_unregister_driver(&pk_driver);
++}
++
++module_init(pk_init);
++module_exit(pk_exit);
++MODULE_LICENSE("GPL");
+diff -X /opt/scripts/diff-exclude.txt -Npaur a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+--- a/drivers/hid/Kconfig	2010-03-09 13:53:05.930183131 +0000
++++ b/drivers/hid/Kconfig	2010-05-06 14:00:57.880373988 +0100
+@@ -100,6 +100,22 @@ config HID_CHICONY
+ 	---help---
+ 	Support for Chicony Tactical pad.
+ 
++config HID_PRODIKEYS
++	tristate "Prodikeys PC-MIDI Keyboard support" if EMBEDDED
++	depends on USB_HID && SND
++	select SND_RAWMIDI
++	default !EMBEDDED
++	---help---
++	Support for Prodikeys PC-MIDI Keyboard device support.
++	Say Y here to enable support for this device.
++	- Prodikeys PC-MIDI keyboard.
++	  The Prodikeys PC-MIDI acts as a USB Audio device, with one MIDI
++	  input and one MIDI output. These MIDI jacks appear as
++	  a sound "card" in the ALSA sound system.
++	  Note: if you say N here, this device will still function as a basic
++	  multimedia keyboard, but will lack support for the musical keyboard
++	  and some additional multimedia keys.
++
+ config HID_CYPRESS
+ 	tristate "Cypress" if EMBEDDED
+ 	depends on USB_HID
+diff -X /opt/scripts/diff-exclude.txt -Npaur a/drivers/hid/Makefile b/drivers/hid/Makefile
+--- a/drivers/hid/Makefile	2010-03-09 13:53:06.036326844 +0000
++++ b/drivers/hid/Makefile	2010-05-05 12:57:45.986487233 +0100
+@@ -41,6 +41,7 @@ obj-$(CONFIG_HID_MONTEREY)	+= hid-monter
+ obj-$(CONFIG_HID_MOSART)	+= hid-mosart.o
+ obj-$(CONFIG_HID_NTRIG)		+= hid-ntrig.o
+ obj-$(CONFIG_HID_ORTEK)		+= hid-ortek.o
++obj-$(CONFIG_HID_PRODIKEYS)	+= hid-prodikeys.o
+ obj-$(CONFIG_HID_QUANTA)	+= hid-quanta.o
+ obj-$(CONFIG_HID_PANTHERLORD)	+= hid-pl.o
+ obj-$(CONFIG_HID_PETALYNX)	+= hid-petalynx.o
+
+
+
+		
+___________________________________________________________ 
+Copy addresses and emails from any email account to Yahoo! Mail - quick, easy and free. http://uk.docs.yahoo.com/trueswitch2.html
