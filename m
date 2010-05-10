@@ -1,18 +1,29 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: core: Support for limiting the volume
-Date: Mon, 10 May 2010 10:07:58 +0300
-Message-ID: <201005101007.58347.peter.ujfalusi@nokia.com>
-References: <1273230349-6351-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100507154120.GC25793@rakim.wolfsonmicro.main>
+From: Tim Starling <tstarling@wikimedia.org>
+Subject: Re: [PATCH] ALSA: hda: Fix 0 dB for Packard Bell
+ models using Conexant CX20549 (Venice)
+Date: Mon, 10 May 2010 17:15:51 +1000
+Message-ID: <hs8bra$53h$1@dough.gmane.org>
+References: <x2n604760771004281507x5464161frd1f09b6cd4c8a7fc@mail.gmail.com>
+	<s5hiq72vkt7.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCBD624706
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1456C2470D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 09:09:26 +0200 (CEST)
-In-Reply-To: <20100507154120.GC25793@rakim.wolfsonmicro.main>
+	Mon, 10 May 2010 09:20:08 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OBNHY-0003EF-7S
+	for alsa-devel@alsa-project.org; Mon, 10 May 2010 09:20:04 +0200
+Received: from vps2.angtim.com ([74.207.253.152])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 09:20:04 +0200
+Received: from tstarling by vps2.angtim.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 09:20:04 +0200
+In-Reply-To: <s5hiq72vkt7.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +33,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 07 May 2010 18:41:20 ext Mark Brown wrote:
-> On Fri, May 07, 2010 at 02:05:49PM +0300, Peter Ujfalusi wrote:
-> > Add support for the core to limit the maximum volume on an
-> > existing control.
-> > The function will modify the soc_mixer_control.max value
-> > of the given control.
-> > The new value must be lower than the original one (chip maximum)
-> =
+On 05/05/10 18:01, Takashi Iwai wrote:
+> At Wed, 28 Apr 2010 18:07:16 -0400,
+> Daniel Chen wrote:
+>>
+>> Hi,
+>>
+>> Attached is a patch against sound-2.6 master HEAD (also applicable to
+>> 2.6.32.12 and 2.6.33.3) that fixes 0 dB for Packard Bell machines
+>> using Conexant CX20549. Without it, sound distorts horribly.
+> 
+> Thanks, applied now.
 
-> Applied, thanks.
+Can you please also add vendor ID 0x17aa (Lenovo)? I have the same
+problem on my Thinkpad R61. I compiled my kernel with a 0x17aa case
+added where Daniel's patch indicates and tested it with dbverify, it
+seems to fix the problem.
 
-Thanks,
-however it seams that if the control has invert enabled this is going to br=
-eak.
-In case of invert we need to invert from the chip maximum, and not from the =
+I can make a patch if you like.
 
-platform dependent limit.
-The only way I can think of to solve this is to introduce new variable in =
-
-soc_mixer_control struct. It can be called platform_max.
-The snd_soc_limit_volume would modify the platform_max leaving the max as =
-
-configured by the drivers (chip maximum).
-In volsw_info calls than we return the platform_max instead of max.
-If in the _info call the platform_max is 0, than we take the max to report =
-(some =
-
-custom kcontrol macro might not aware of the change in codec drivers).
-
-What do you think?
-
--- =
-
-P=E9ter
+-- Tim Starling
