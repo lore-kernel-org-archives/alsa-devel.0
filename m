@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: core: Support for limiting the volume
-Date: Mon, 10 May 2010 10:46:10 +0100
-Message-ID: <20100510094610.GA31804@rakim.wolfsonmicro.main>
-References: <1273230349-6351-1-git-send-email-peter.ujfalusi@nokia.com>
-	<20100507154120.GC25793@rakim.wolfsonmicro.main>
-	<201005101007.58347.peter.ujfalusi@nokia.com>
+Subject: Re: WM8993: amp control, amplifying pops.
+Date: Mon, 10 May 2010 11:24:23 +0100
+Message-ID: <20100510102422.GD31804@rakim.wolfsonmicro.main>
+References: <v2jcf7b913c1005091910hf7b32843sc71b09b801b8649e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 04AE110381B
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A0D91103820
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 11:46:13 +0200 (CEST)
+	Mon, 10 May 2010 12:24:24 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <201005101007.58347.peter.ujfalusi@nokia.com>
+In-Reply-To: <v2jcf7b913c1005091910hf7b32843sc71b09b801b8649e@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,23 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Zhang JieJing <kzjeef@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 10, 2010 at 10:07:58AM +0300, Peter Ujfalusi wrote:
+On Mon, May 10, 2010 at 10:10:53AM +0800, Zhang JieJing wrote:
 
-> however it seams that if the control has invert enabled this is going to break.
-> In case of invert we need to invert from the chip maximum, and not from the 
-> platform dependent limit.
-> The only way I can think of to solve this is to introduce new variable in 
-> soc_mixer_control struct. It can be called platform_max.
-> The snd_soc_limit_volume would modify the platform_max leaving the max as 
-> configured by the drivers (chip maximum).
-> In volsw_info calls than we return the platform_max instead of max.
-> If in the _info call the platform_max is 0, than we take the max to report (some 
-> custom kcontrol macro might not aware of the change in codec drivers).
+> I have a question about WM8993 codec's amplifying pops control.
 
-> What do you think?
+Could you please be more specific about what you mean when you say
+"amplifying pops control"?  What exactly is an "amplifying pop" (do you
+mean that you hear an unwanted noise, or is there something else)?
 
-That sounds sensible enough.
+Please ensure that you are using the latest version of the WM8993 driver
+(including wm_hubs.c) to make sure that you have all the latest bug
+fixes and enhancements.  If you are not using single ended line outputs
+from the device you should also mark the line outputs as being in
+differential mode for maximum power savings.
+
+> Our board using a WM8993 codec, and I We have problem about ampifying pops,
+> when the system resume, We will heard a ampifying pop, (but it's silence on
+> the suspend processing), We also noticed that when system boot, also can
+> hear one ampifying pop.
+
+System resume and power up are identical from the point of view of the
+CODEC driver.
+
+> From I know, the WM8993's codec have a internal amplifier, I don't know how
+> to control this amplifier.
+
+The WM8993 has a large number of amplifiers, there are many audio paths
+in the device and most of them have some amplification control.  Which
+outputs are you concerned about?
