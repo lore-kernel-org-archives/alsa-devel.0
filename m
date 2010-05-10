@@ -1,64 +1,70 @@
-From: Konrad Rzeszutek Wilk <konrad.wilk-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org>
+From: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
 Subject: Re: [alsa-devel] USB transfer_buffer allocations on 64bit systems
-Date: Mon, 10 May 2010 10:31:32 -0400
-Message-ID: <20100510143132.GB29517@phenom.dumpdata.com>
-References: <g2h74fd948d1004141820ladc1941eo732d059dd678df0a@mail.gmail.com> <Pine.LNX.4.44L0.1004151114490.1562-100000@iolanthe.rowland.org> <t2r74fd948d1004191716l49dedc2p25a27da39bcc614a@mail.gmail.com> <20100507074855.GF30801@buzzloop.caiaq.de> <4BE3E1B9.5020602@ladisch.de> <20100507102408.GM30801@buzzloop.caiaq.de>
+Date: Mon, 10 May 2010 10:58:37 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1005101049100.1626-100000@iolanthe.rowland.org>
+References: <1273483265.372.3383.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20100507102408.GM30801-ahpEBR4enfnCULTFXS99ULNAH6kLmebB@public.gmane.org>
+In-Reply-To: <1273483265.372.3383.camel-uXGAPMMVk8bAQYKIod7YupZV94DADvEd@public.gmane.org>
 Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Daniel Mack <daniel-rDUAYElUppE@public.gmane.org>
-Cc: Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Greg KH <gregkh-l3A5Bk7waGM@public.gmane.org>, Kernel development list <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Chris Wright <chrisw-69jw2NvuJkxg9hUCZPvPmw@public.gmane.org>, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, Andi Kleen <andi-Vw/NltI1exuRpAAqCnN02g@public.gmane.org>, Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>, Pedro Ribeiro <pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Andrew Morton <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, David Woodhouse <dwmw2-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
+To: David Woodhouse <dwmw2-wEGCiKHe2LqWVfeAwA7xHQ@public.gmane.org>
+Cc: FUJITA Tomonori <fujita.tomonori-Zyj7fXuS5i5L9jVzuh4AOg@public.gmane.org>, daniel-rDUAYElUppE@public.gmane.org, clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, gregkh-l3A5Bk7waGM@public.gmane.org, konrad.wilk-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, chrisw-69jw2NvuJkxg9hUCZPvPmw@public.gmane.org, iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, andi-Vw/NltI1exuRpAAqCnN02g@public.gmane.org, pedrib-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 07, 2010 at 12:24:08PM +0200, Daniel Mack wrote:
-> On Fri, May 07, 2010 at 11:47:37AM +0200, Clemens Ladisch wrote:
-> > Daniel Mack wrote:
-> > > The problem is again (summarized):
-> > > 
-> > > On 64bit machines, with 4GB or more, the allocated buffers for USB
-> > > transfers might be beyond the 32bit boundary. In this case, the IOMMU
-> > > should take care and install DMA bounce buffer to copy over the buffer
-> > > before the transfer actually happens. The problem is, however, that this
-> > > copy mechanism takes place when the URB with its associated buffer is
-> > > submitted, not when the EHCI will actually do the transfer.
-> > > 
-> > > In the particular case of audio drivers, though, the contents of the
-> > > buffers are likely to change after the submission. What we do here
-> > > is that we map the audio stream buffers which are used by ALSA to
-> > > the output URBs, so they're filled asychronously. Once the buffer is
-> > > actually sent out on the bus, it is believed to contain proper audio
-> > > date. If it doesn't, that's due to too tight audio timing or other
-> > > problems. This breaks once buffers are magically bounced in the
-> > > background.
+On Mon, 10 May 2010, David Woodhouse wrote:
+
+> On Mon, 2010-05-10 at 11:50 +0900, FUJITA Tomonori wrote:
+> > On Fri, 7 May 2010 10:51:10 -0400 (EDT)
+> > Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org> wrote:
 > > 
-> > At least the audio class and ua101 drivers don't do this and fill the
-> > buffers before they are submitted.
+> > > On Fri, 7 May 2010, Daniel Mack wrote:
+> > > 
+> > > > > At least the audio class and ua101 drivers don't do this and fill the
+> > > > > buffers before they are submitted.
+> > > > 
+> > > > Gnaa, you're right. I _thought_ my code does it the way I described, but
+> > > > what I wrote is how I _wanted_ to do it, not how it's currently done. I
+> > > > have a plan to change this in the future.
+> > > > 
+> > > > So unfortunately, that doesn't explain it either. Sorry for the noise.
+> > > 
+> > > At one point we tried an experiment, printing out the buffer and DMA 
+> > > addresses.  I don't recall seeing anything obviously wrong, but if an 
+> > > IOMMU was in use then that might not mean anything.  Is it possible 
+> > > that the IOMMU mappings sometimes get messed up for addresses above 4 
+> > > GB?
+> > 
+> > You mean that an IOMMU could allocate an address above 4GB wrongly? If
+> > so, IIRC, all the IOMMU implementations use dev->dma_mask and
+> > dev->coherent_dma_mask properly. And the DMA address space of the
+> > majority of IOMMUs are limited less than 4GB.
 > 
-> Gnaa, you're right. I _thought_ my code does it the way I described, but
-> what I wrote is how I _wanted_ to do it, not how it's currently done. I
-> have a plan to change this in the future.
-> 
-> So unfortunately, that doesn't explain it either. Sorry for the noise.
+> The Intel IOMMU code will use dev->dma_mask and dev->coherent_dma_mask
+> properly. It is not limited to 4GiB, but it will tend to give virtual
+> DMA addresses below 4GiB even when a device is capable of more; it'll
+> only give out higher addresses when the address space below 4GiB is
+> exhausted.
 
-Well, you might be on the right track. You see, when you do any DMA API
-operation (say pci_map_page), you might end up with _two_ DMA addresses.
-One that you get from doing 'virt_to_phys' for your buffer (which might
-be above the 4GB mark), and another from the 'pci_map_page' (which can
-be the virt_to_phys of your buffer or it can be the DMA address of the
-SWIOTLB). If you don't submit the _right_ DMA address or sync after the
-DMA transfer (so the SWIOTLB would do its memcpy to your allocated
-buffer DMA address), you could end up having the data it the SWIOTLB buffer,
-and check data in your kzalloc buffer and notice that nothing is there
-(and if it hadn't called pci_dma_sync.. before the check).
+What I meant was: Is it possible that the IOMMU code will return a
+virtual DMA address before 4 GB but will somehow forget to actually map
+that address to the data buffer?
 
-But this obviously would not happen if you buffer is allocated with the
-GFP_DMA32.
+The problem goes away when Pedro boots with mem=4G.  And the dma_mask
+value is set properly (in fact, the ehci-hcd driver currently doesn't
+use 64-bit DMA at all).
 
-I am not familiar with the USB stack so it might be doing this correctly
-already...
+If anyone wants to see the debug log entries showing the buffer and DMA
+addresses, they are attached to this email message:
+
+	http://marc.info/?l=linux-kernel&m=127076841801054&w=2
+
+Either the data isn't getting written to the buffer correctly or else
+the buffer isn't getting sent to the device correctly.  Can anybody
+suggest a means of determining which is the case?
+
+Alan Stern
+
 --
 To unsubscribe from this list: send the line "unsubscribe linux-usb" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
