@@ -1,17 +1,20 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: MUTE broken on hda nvhdmi
-Date: Mon, 10 May 2010 10:23:37 -0700
-Message-ID: <AANLkTinq7QU6ZfMkAEzNFlu6G8jAOxqipHd9bXilZYgq@mail.gmail.com>
-Mime-Version: 1.0
+From: Shahin Ghazinouri <shahin.ghazinouri@pelagicore.com>
+Subject: Re: [PATCH] hda_intel: Fixes distorted recording on
+	US15W chipset
+Date: Mon, 10 May 2010 19:40:27 +0200
+Message-ID: <77D524C2-A0F1-4FDB-B18D-F0AE06BC8D30@pelagicore.com>
+References: <399F8F37-FCF5-47E9-98A1-F1AA2972B12B@pelagicore.com>
+	<s5hpr14xic9.wl%tiwai@suse.de>
+Mime-Version: 1.0 (Apple Message framework v1078)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id CA48D247EB
+Received: from smtp-out21.han.skanova.net (smtp-out21.han.skanova.net
+	[195.67.226.208])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5328424804
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 19:23:38 +0200 (CEST)
-Received: by vws16 with SMTP id 16so117312vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 10:23:37 -0700 (PDT)
+	Mon, 10 May 2010 19:40:30 +0200 (CEST)
+In-Reply-To: <s5hpr14xic9.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,11 +24,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.  Mute seems to be broken since the nvhdmi rewrite.  I'm currently
-using alsa-driver-1.0.23.0.g30ba4.0.g0c8e7.tar.bz2 -- anyone got plans
-to fix this on their TODO list or could please look into it?
+Hi,
 
-Thanks.
+I've now verified the patch below works and it appears functionally identical.
+
+Regards,
+Shahin
+
+On 10 maj 2010, at 10.37, Takashi Iwai wrote:
+> 
+> The changes look OK, but the code can be a bit more simplified.
+> Could you check whether the patch below works?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ---
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 236b4ca..cad9b70 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -425,7 +425,7 @@ struct azx {
+> 	struct snd_dma_buffer posbuf;
+> 
+> 	/* flags */
+> -	int position_fix;
+> +	int position_fix[2]; /* for both playback/capture streams */
+> 	int poll_count;
+> 	unsigned int running :1;
+> 	unsigned int initialized :1;
+> @@ -1306,8 +1306,10 @@ static int azx_setup_controller(struct azx *chip, struct azx_dev *azx_dev)
+> 	azx_sd_writel(azx_dev, SD_BDLPU, upper_32_bits(azx_dev->bdl.addr));
+> 
+> 	/* enable the position buffer */
+> -	if (chip->position_fix == POS_FIX_POSBUF ||
+> -	    chip->position_fix == POS_FIX_AUTO ||
+> +	if (chip->position_fix[0] == POS_FIX_POSBUF ||
+> +	    chip->position_fix[0] == POS_FIX_AUTO ||
+> +	    chip->position_fix[1] == POS_FIX_POSBUF ||
+> +	    chip->position_fix[1] == POS_FIX_AUTO ||
+> 	    chip->via_dmapos_patch) {
+> 		if (!(azx_readl(chip, DPLBASE) & ICH6_DPLBASE_ENABLE))
+> 			azx_writel(chip, DPLBASE,
+> @@ -1847,13 +1849,16 @@ static unsigned int azx_get_position(struct azx *chip,
+> 
+> 	if (chip->via_dmapos_patch)
+> 		pos = azx_via_get_position(chip, azx_dev);
+> -	else if (chip->position_fix == POS_FIX_POSBUF ||
+> -		 chip->position_fix == POS_FIX_AUTO) {
+> -		/* use the position buffer */
+> -		pos = le32_to_cpu(*azx_dev->posbuf);
+> -	} else {
+> -		/* read LPIB */
+> -		pos = azx_sd_readl(azx_dev, SD_LPIB);
+> +	else {
+> +		int stream = azx_dev->substream->stream;
+> +		if (chip->position_fix[stream] == POS_FIX_POSBUF ||
+> +		    chip->position_fix[stream] == POS_FIX_AUTO) {
+> +			/* use the position buffer */
+> +			pos = le32_to_cpu(*azx_dev->posbuf);
+> +		} else {
+> +			/* read LPIB */
+> +			pos = azx_sd_readl(azx_dev, SD_LPIB);
+> +		}
+> 	}
+> 	if (pos >= azx_dev->bufsize)
+> 		pos = 0;
+> @@ -1881,22 +1886,24 @@ static snd_pcm_uframes_t azx_pcm_pointer(struct snd_pcm_substream *substream)
+> static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
+> {
+> 	unsigned int pos;
+> +	int stream;
+> 
+> 	if (azx_dev->start_flag &&
+> 	    time_before_eq(jiffies, azx_dev->start_jiffies))
+> 		return -1;	/* bogus (too early) interrupt */
+> 	azx_dev->start_flag = 0;
+> 
+> +	stream = azx_dev->substream->stream;
+> 	pos = azx_get_position(chip, azx_dev);
+> -	if (chip->position_fix == POS_FIX_AUTO) {
+> +	if (chip->position_fix[stream] == POS_FIX_AUTO) {
+> 		if (!pos) {
+> 			printk(KERN_WARNING
+> 			       "hda-intel: Invalid position buffer, "
+> 			       "using LPIB read method instead.\n");
+> -			chip->position_fix = POS_FIX_LPIB;
+> +			chip->position_fix[stream] = POS_FIX_LPIB;
+> 			pos = azx_get_position(chip, azx_dev);
+> 		} else
+> -			chip->position_fix = POS_FIX_POSBUF;
+> +			chip->position_fix[stream] = POS_FIX_POSBUF;
+> 	}
+> 
+> 	if (!bdl_pos_adj[chip->dev_index])
+> @@ -2435,7 +2442,8 @@ static int __devinit azx_create(struct snd_card *card, struct pci_dev *pci,
+> 	chip->dev_index = dev;
+> 	INIT_WORK(&chip->irq_pending_work, azx_irq_pending_work);
+> 
+> -	chip->position_fix = check_position_fix(chip, position_fix[dev]);
+> +	chip->position_fix[0] = chip->position_fix[1] =
+> +		check_position_fix(chip, position_fix[dev]);
+> 	check_probe_mask(chip, dev);
+> 
+> 	chip->single_cmd = single_cmd;
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
