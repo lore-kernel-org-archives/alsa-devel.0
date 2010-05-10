@@ -1,19 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: USB transfer_buffer allocations on 64bit systems
-Date: Mon, 10 May 2010 10:21:05 +0100
-Message-ID: <1273483265.372.3383.camel@macbook.infradead.org>
-References: <20100507102408.GM30801@buzzloop.caiaq.de>
-	<Pine.LNX.4.44L0.1005071048220.1804-100000@iolanthe.rowland.org>
-	<20100510115048E.fujita.tomonori@lab.ntt.co.jp>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: core: Support for limiting the volume
+Date: Mon, 10 May 2010 10:46:10 +0100
+Message-ID: <20100510094610.GA31804@rakim.wolfsonmicro.main>
+References: <1273230349-6351-1-git-send-email-peter.ujfalusi@nokia.com>
+	<20100507154120.GC25793@rakim.wolfsonmicro.main>
+	<201005101007.58347.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from casper.infradead.org (casper.infradead.org [85.118.1.10])
-	by alsa0.perex.cz (Postfix) with ESMTP id 344AE103815
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 04AE110381B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 11:21:34 +0200 (CEST)
-In-Reply-To: <20100510115048E.fujita.tomonori@lab.ntt.co.jp>
+	Mon, 10 May 2010 11:46:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201005101007.58347.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,41 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, konrad.wilk@oracle.com, tiwai@suse.de, gregkh@suse.de, clemens@ladisch.de, linux-kernel@vger.kernel.org, chrisw@sous-sol.org, iommu@lists.linux-foundation.org, andi@firstfloor.org, stern@rowland.harvard.edu, pedrib@gmail.com, akpm@linux-foundation.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-05-10 at 11:50 +0900, FUJITA Tomonori wrote:
-> On Fri, 7 May 2010 10:51:10 -0400 (EDT)
-> Alan Stern <stern@rowland.harvard.edu> wrote:
-> 
-> > On Fri, 7 May 2010, Daniel Mack wrote:
-> > 
-> > > > At least the audio class and ua101 drivers don't do this and fill the
-> > > > buffers before they are submitted.
-> > > 
-> > > Gnaa, you're right. I _thought_ my code does it the way I described, but
-> > > what I wrote is how I _wanted_ to do it, not how it's currently done. I
-> > > have a plan to change this in the future.
-> > > 
-> > > So unfortunately, that doesn't explain it either. Sorry for the noise.
-> > 
-> > At one point we tried an experiment, printing out the buffer and DMA 
-> > addresses.  I don't recall seeing anything obviously wrong, but if an 
-> > IOMMU was in use then that might not mean anything.  Is it possible 
-> > that the IOMMU mappings sometimes get messed up for addresses above 4 
-> > GB?
-> 
-> You mean that an IOMMU could allocate an address above 4GB wrongly? If
-> so, IIRC, all the IOMMU implementations use dev->dma_mask and
-> dev->coherent_dma_mask properly. And the DMA address space of the
-> majority of IOMMUs are limited less than 4GB.
+On Mon, May 10, 2010 at 10:07:58AM +0300, Peter Ujfalusi wrote:
 
-The Intel IOMMU code will use dev->dma_mask and dev->coherent_dma_mask
-properly. It is not limited to 4GiB, but it will tend to give virtual
-DMA addresses below 4GiB even when a device is capable of more; it'll
-only give out higher addresses when the address space below 4GiB is
-exhausted.
+> however it seams that if the control has invert enabled this is going to break.
+> In case of invert we need to invert from the chip maximum, and not from the 
+> platform dependent limit.
+> The only way I can think of to solve this is to introduce new variable in 
+> soc_mixer_control struct. It can be called platform_max.
+> The snd_soc_limit_volume would modify the platform_max leaving the max as 
+> configured by the drivers (chip maximum).
+> In volsw_info calls than we return the platform_max instead of max.
+> If in the _info call the platform_max is 0, than we take the max to report (some 
+> custom kcontrol macro might not aware of the change in codec drivers).
 
--- 
-dwmw2
+> What do you think?
+
+That sounds sensible enough.
