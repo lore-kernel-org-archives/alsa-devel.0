@@ -1,20 +1,20 @@
-From: Shahin Ghazinouri <shahin.ghazinouri@pelagicore.com>
-Subject: Re: [PATCH] hda_intel: Fixes distorted recording on
-	US15W chipset
-Date: Mon, 10 May 2010 19:40:27 +0200
-Message-ID: <77D524C2-A0F1-4FDB-B18D-F0AE06BC8D30@pelagicore.com>
-References: <399F8F37-FCF5-47E9-98A1-F1AA2972B12B@pelagicore.com>
-	<s5hpr14xic9.wl%tiwai@suse.de>
-Mime-Version: 1.0 (Apple Message framework v1078)
+From: Ben Collins <bcollins@bluecherry.net>
+Subject: Re: [RFC] G.723-24 format patch
+Date: Mon, 10 May 2010 13:50:26 -0400
+Message-ID: <1273513826.4325.4.camel@maclara>
+References: <1272728163.4822.31.camel@maclara> <s5h632ysojc.wl%tiwai@suse.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out21.han.skanova.net (smtp-out21.han.skanova.net
-	[195.67.226.208])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5328424804
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.221.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id B56E8247A2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 19:40:30 +0200 (CEST)
-In-Reply-To: <s5hpr14xic9.wl%tiwai@suse.de>
+	Mon, 10 May 2010 19:50:33 +0200 (CEST)
+Received: by qyk9 with SMTP id 9so6207507qyk.2
+	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 10:50:30 -0700 (PDT)
+In-Reply-To: <s5h632ysojc.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,113 +28,112 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I've now verified the patch below works and it appears functionally identical.
-
-Regards,
-Shahin
-
-On 10 maj 2010, at 10.37, Takashi Iwai wrote:
+On Sat, 2010-05-08 at 11:58 +0200, Takashi Iwai wrote:
+> At Sat, 01 May 2010 11:36:03 -0400,
+> Ben Collins wrote:
+> > 
+> > I'm writing a driver for a card that only has hardware support for
+> > G.723-24 ADPCM format. I am working around the lack of support in alsa
+> > at the moment for this format, but wanted to take a crack at
+> > implementing it properly.
+> > 
+> > G.723-24 is a 3-bit signed sample at a fixed 8khz mono sample rate
+> > (24000 bit rate). Basically means you need to take in at least 3 bytes
+> > (8 samples) minimum for processing the standard packed version.
+> > 
+> > I don't have hardware that supports it, but since I was in the code, I
+> > added a G723_24_1B format for producing 1 sample per byte (3 lower bits
+> > are actual sample), but for my use I am producing the standard packed
+> > stream.
+> > 
+> > Only question I had is that since this is signed, should I expect or
+> > want the _1B version to be a 1 byte sign extended version of the 3-bit
+> > sample, or just expect the lower 3 bits of the byte to be the g723-24
+> > sample? Looking at other unpacked examples, I assume the latter rather
+> > than the former.
 > 
-> The changes look OK, but the code can be a bit more simplified.
-> Could you check whether the patch below works?
+> I suppose both are non-linear formats, so you shouldn't give
+> signed/unsigned flags for them.  Otherwise snd_pcm_format_linear()
+> will return 1.
 > 
+> Other than that, addition of these new formats look good to me.
+
+I may not be understanding the implications of setting them as
+signed/unsigned. G.723 decoder treats each sample as signed. Does
+alsa-lib do special things when it is signed even though it doesn't
+understand the actual encoding?
+
+And my understanding of sound encoding is very limited, so if you could
+explain the non-linear part too, I could answer the question better.
+
+Thanks
+
 > 
 > thanks,
 > 
 > Takashi
 > 
-> ---
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 236b4ca..cad9b70 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -425,7 +425,7 @@ struct azx {
-> 	struct snd_dma_buffer posbuf;
 > 
-> 	/* flags */
-> -	int position_fix;
-> +	int position_fix[2]; /* for both playback/capture streams */
-> 	int poll_count;
-> 	unsigned int running :1;
-> 	unsigned int initialized :1;
-> @@ -1306,8 +1306,10 @@ static int azx_setup_controller(struct azx *chip, struct azx_dev *azx_dev)
-> 	azx_sd_writel(azx_dev, SD_BDLPU, upper_32_bits(azx_dev->bdl.addr));
-> 
-> 	/* enable the position buffer */
-> -	if (chip->position_fix == POS_FIX_POSBUF ||
-> -	    chip->position_fix == POS_FIX_AUTO ||
-> +	if (chip->position_fix[0] == POS_FIX_POSBUF ||
-> +	    chip->position_fix[0] == POS_FIX_AUTO ||
-> +	    chip->position_fix[1] == POS_FIX_POSBUF ||
-> +	    chip->position_fix[1] == POS_FIX_AUTO ||
-> 	    chip->via_dmapos_patch) {
-> 		if (!(azx_readl(chip, DPLBASE) & ICH6_DPLBASE_ENABLE))
-> 			azx_writel(chip, DPLBASE,
-> @@ -1847,13 +1849,16 @@ static unsigned int azx_get_position(struct azx *chip,
-> 
-> 	if (chip->via_dmapos_patch)
-> 		pos = azx_via_get_position(chip, azx_dev);
-> -	else if (chip->position_fix == POS_FIX_POSBUF ||
-> -		 chip->position_fix == POS_FIX_AUTO) {
-> -		/* use the position buffer */
-> -		pos = le32_to_cpu(*azx_dev->posbuf);
-> -	} else {
-> -		/* read LPIB */
-> -		pos = azx_sd_readl(azx_dev, SD_LPIB);
-> +	else {
-> +		int stream = azx_dev->substream->stream;
-> +		if (chip->position_fix[stream] == POS_FIX_POSBUF ||
-> +		    chip->position_fix[stream] == POS_FIX_AUTO) {
-> +			/* use the position buffer */
-> +			pos = le32_to_cpu(*azx_dev->posbuf);
-> +		} else {
-> +			/* read LPIB */
-> +			pos = azx_sd_readl(azx_dev, SD_LPIB);
-> +		}
-> 	}
-> 	if (pos >= azx_dev->bufsize)
-> 		pos = 0;
-> @@ -1881,22 +1886,24 @@ static snd_pcm_uframes_t azx_pcm_pointer(struct snd_pcm_substream *substream)
-> static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
-> {
-> 	unsigned int pos;
-> +	int stream;
-> 
-> 	if (azx_dev->start_flag &&
-> 	    time_before_eq(jiffies, azx_dev->start_jiffies))
-> 		return -1;	/* bogus (too early) interrupt */
-> 	azx_dev->start_flag = 0;
-> 
-> +	stream = azx_dev->substream->stream;
-> 	pos = azx_get_position(chip, azx_dev);
-> -	if (chip->position_fix == POS_FIX_AUTO) {
-> +	if (chip->position_fix[stream] == POS_FIX_AUTO) {
-> 		if (!pos) {
-> 			printk(KERN_WARNING
-> 			       "hda-intel: Invalid position buffer, "
-> 			       "using LPIB read method instead.\n");
-> -			chip->position_fix = POS_FIX_LPIB;
-> +			chip->position_fix[stream] = POS_FIX_LPIB;
-> 			pos = azx_get_position(chip, azx_dev);
-> 		} else
-> -			chip->position_fix = POS_FIX_POSBUF;
-> +			chip->position_fix[stream] = POS_FIX_POSBUF;
-> 	}
-> 
-> 	if (!bdl_pos_adj[chip->dev_index])
-> @@ -2435,7 +2442,8 @@ static int __devinit azx_create(struct snd_card *card, struct pci_dev *pci,
-> 	chip->dev_index = dev;
-> 	INIT_WORK(&chip->irq_pending_work, azx_irq_pending_work);
-> 
-> -	chip->position_fix = check_position_fix(chip, position_fix[dev]);
-> +	chip->position_fix[0] = chip->position_fix[1] =
-> +		check_position_fix(chip, position_fix[dev]);
-> 	check_probe_mask(chip, dev);
-> 
-> 	chip->single_cmd = single_cmd;
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > diff --git a/include/sound/asound.h b/include/sound/asound.h
+> > index 1f57bb9..16fc633 100644
+> > --- a/include/sound/asound.h
+> > +++ b/include/sound/asound.h
+> > @@ -212,7 +212,9 @@ typedef int __bitwise snd_pcm_format_t;
+> >  #define	SNDRV_PCM_FORMAT_S18_3BE	((__force snd_pcm_format_t) 41)	/* in three bytes */
+> >  #define	SNDRV_PCM_FORMAT_U18_3LE	((__force snd_pcm_format_t) 42)	/* in three bytes */
+> >  #define	SNDRV_PCM_FORMAT_U18_3BE	((__force snd_pcm_format_t) 43)	/* in three bytes */
+> > -#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_U18_3BE
+> > +#define	SNDRV_PCM_FORMAT_G723_24	((__force snd_pcm_format_t) 44) /* 8 samples in 3 bytes */
+> > +#define	SNDRV_PCM_FORMAT_G723_24_1B	((__force snd_pcm_format_t) 45) /* 1 sample in 1 byte */
+> > +#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_G723_24_1B
+> >  
+> >  #ifdef SNDRV_LITTLE_ENDIAN
+> >  #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
+> > diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+> > index de6d981..031e2cd 100644
+> > --- a/include/sound/pcm.h
+> > +++ b/include/sound/pcm.h
+> > @@ -173,6 +173,8 @@ struct snd_pcm_ops {
+> >  #define SNDRV_PCM_FMTBIT_U18_3LE	(1ULL << SNDRV_PCM_FORMAT_U18_3LE)
+> >  #define SNDRV_PCM_FMTBIT_S18_3BE	(1ULL << SNDRV_PCM_FORMAT_S18_3BE)
+> >  #define SNDRV_PCM_FMTBIT_U18_3BE	(1ULL << SNDRV_PCM_FORMAT_U18_3BE)
+> > +#define SNDRV_PCM_FMTBIT_G723_24	(1ULL << SNDRV_PCM_FORMAT_G723_24)
+> > +#define SNDRV_PCM_FMTBIT_G723_24_1B	(1ULL << SNDRV_PCM_FORMAT_G723_24_1B)
+> >  
+> >  #ifdef SNDRV_LITTLE_ENDIAN
+> >  #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_LE
+> > diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
+> > index ea2bf82..c7f8da4 100644
+> > --- a/sound/core/pcm_misc.c
+> > +++ b/sound/core/pcm_misc.c
+> > @@ -128,6 +128,10 @@ static struct pcm_format_data pcm_formats[SNDRV_PCM_FORMAT_LAST+1] = {
+> >  		.width = 4, .phys = 4, .le = -1, .signd = -1,
+> >  		.silence = {},
+> >  	},
+> > +	[SNDRV_PCM_FORMAT_G723_24] = {
+> > +		.width = 3, .phys = 3, .le = -1, .signd = 1,
+> > +		.silence = {},
+> > +	},
+> >  	/* FIXME: the following three formats are not defined properly yet */
+> >  	[SNDRV_PCM_FORMAT_MPEG] = {
+> >  		.le = -1, .signd = -1,
+> > @@ -186,6 +190,10 @@ static struct pcm_format_data pcm_formats[SNDRV_PCM_FORMAT_LAST+1] = {
+> >  		.width = 18, .phys = 24, .le = 0, .signd = 0,
+> >  		.silence = { 0x02, 0x00, 0x00 },
+> >  	},
+> > +	[SNDRV_PCM_FORMAT_G723_24_1B] = {
+> > +		.width = 3, .phys = 8, .le = -1, .signd = 1,
+> > +		.silence = {},
+> > +	},
+> >  };
+> >  
+> > 
+> > 
+> > 
+> > 
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > 
