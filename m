@@ -1,17 +1,17 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Fix 0 dB for Lenovo models using
-	Conexant CX20549 (Venice)
-Date: Mon, 10 May 2010 21:56:36 +0200
-Message-ID: <AANLkTimww81u3UFflXTW-akNDJ5aBMXyFI6p7P4-sgSX@mail.gmail.com>
+From: Thoralf Freitag <thoralf.freitag@cactus-online.de>
+Subject: Re: Mute LED on HP Pavilion DV7-1160eg
+Date: Mon, 10 May 2010 22:10:23 +0200
+Message-ID: <4BE8682F.4010307@cactus-online.de>
+References: <4BDC8CC2.5040507@cactus-online.de> <s5h6331tpha.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636e0b9297bead8048642ce0b
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 383422485B
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.9])
+	by alsa0.perex.cz (Postfix) with ESMTP id 470BC24866
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 21:56:38 +0200 (CEST)
-Received: by pvg4 with SMTP id 4so459162pvg.38
-	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 12:56:37 -0700 (PDT)
+	Mon, 10 May 2010 22:10:30 +0200 (CEST)
+In-Reply-To: <s5h6331tpha.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,66 +21,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org, Tim Starling <tstarling@wikimedia.org>
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---001636e0b9297bead8048642ce0b
-Content-Type: text/plain; charset=UTF-8
+Takashi Iwai schrieb:
+> At Sat, 01 May 2010 22:19:14 +0200,
+> Thoralf Freitag wrote:
+>   
+>> I tried to find a way for switching/control Mute LED on an HP DV 7
+>> notebook. I found a solution which is very ugly. According the solution
+>> described here
+>> (http://mailman.alsa-project.org/pipermail/alsa-devel/2009-April/016126.html)
+>> I changed the value for LED control in this manner:
+>>
+>> diff -u alsa-driver-1.0.23/sound/pci/hda/patch_sigmatel.c
+>> alsa-driver-1.0.23_b/sound/pci/hda/patch_sigmatel.c
+>> --- alsa-driver-1.0.23/sound/pci/hda/patch_sigmatel.c    2010-04-16
+>> 13:10:10.000000000 +0200
+>> +++ alsa-driver-1.0.23_b/sound/pci/hda/patch_sigmatel.c    2010-05-01
+>> 21:37:36.719063655 +0200
+>> @@ -4952,9 +4952,9 @@
+>>          }
+>>      }
+>>      if (muted)
+>> -        spec->gpio_data &= ~spec->gpio_led; /* orange */
+>> +        spec->gpio_data &= ~0x01; /* orange */
+>>      else
+>> -        spec->gpio_data |= spec->gpio_led; /* white */
+>> +        spec->gpio_data |= 0x01; /* white */
+>>  
+>>      if (!spec->gpio_led_polarity) {
+>>          /* LED state is inverted on these systems */
+>>
+>> I hate this solution. Maybe someone of the programming experts could
+>> give me a way to make it better. On which position should I make which
+>> changes ?
+>>     
+>
+> The mute LED is set up in find_mute_led_gpio().
+> If your BIOS doesn't give the proper information, you can add the device
+> statically in hp_blike_system().
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>   
+Takashi, thanks for your advice. Maybe I found the problem. Adding my
+card to hp_blike_system() doesn't change anything. The driver identifies
+the card (laptop) successfully as a HP DV7 (because the bass speaker is
+usable and can switched on or off with tools like Alsamixergui), with or
+without an entry in hp_blike_system() like this: case 0x103c30fc: .
 
-Hi,
+As I identified, the problem is located in set_hp_led_gpio. This
+function assumes, if it counts more than 3 io's, the GPIO 3 is
+responsible for controlling of mute LED. Maybe it is right in some
+cases, but not in all. For the HP7-1160eg (and  probably not only on
+this notebook) GPIO 0 controlls the mute LED, but the counter is
 
-Attached please find a patch against sound-2.6 (also applicable to
-stable trees) that fixes the reported distortion for Lenovo models on
-CX20549.
+I could fix it by changing the value from 3 to 8 in static void
+set_hp_led_gpio(struct hda_codec *codec). I don't know, there the value
+of 3 comes from. But I afraid, it could causing a lot of side effects.
+Who knows, why the threshold value is set greater then 3 ?
 
-Best,
--Dan
+kaktus@elefant-lin:~$ diff
+alsa-driver-1.0.23_a/alsa-kernel/pci/hda/patch_sigmatel.c
+alsa-driver-1.0.23_b/alsa-kernel/pci/hda/patch_sigmatel.c
 
---001636e0b9297bead8048642ce0b
-Content-Type: text/x-diff; charset=US-ASCII;
-	name="0001-ALSA-hda-Fix-0-dB-for-Lenovo-models-using-Conexant-C.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Fix-0-dB-for-Lenovo-models-using-Conexant-C.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g91pqkr50
+4769c4769
+<     if (gpio > 3)
+---
+>     if (gpio > 8)
 
-RnJvbSAxZTdjOWY1MTg4YzhlMTEwYjkwZTQyZjgyMGIxNWY0YzNjNzAzNGIwIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IE1vbiwgMTAgTWF5IDIwMTAgMjE6NTA6MDQgKzAyMDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGE6IEZpeCAwIGRCIGZvciBMZW5vdm8gbW9kZWxzIHVzaW5nIENvbmV4YW50IENYMjA1NDkg
-KFZlbmljZSkKClJlZmVyZW5jZTogaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBl
-cm1haWwvYWxzYS1kZXZlbC8yMDEwLU1heS8wMjc1MjUuaHRtbAoKQXMgcmVwb3J0ZWQgb24gdGhl
-IG1haWxpbmcgbGlzdCwgd2UgYWxzbyBuZWVkIHRvIGNhcCB0byB0aGUgMCBkQiBvZmZzZXQKZm9y
-IExlbm92byBtb2RlbHMsIGVsc2UgdGhlIHNvdW5kIHdpbGwgYmUgZGlzdG9ydGVkLgoKUmVwb3J0
-ZWQtYW5kLVRlc3RlZC1ieTogVGltIFN0YXJsaW5nIDx0c3RhcmxpbmdAd2lraW1lZGlhLm9yZz4K
-Q2M6IDxzdGFibGVAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3Jp
-bXN1bkB1YnVudHUuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyB8ICAg
-IDcgKysrKy0tLQogMSBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25z
-KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIvc291bmQv
-cGNpL2hkYS9wYXRjaF9jb25leGFudC5jCmluZGV4IGM4ZTgzZjUuLmU4NjM2NDkgMTAwNjQ0Ci0t
-LSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYworKysgYi9zb3VuZC9wY2kvaGRhL3Bh
-dGNoX2NvbmV4YW50LmMKQEAgLTExOTgsOSArMTE5OCwxMCBAQCBzdGF0aWMgaW50IHBhdGNoX2N4
-dDUwNDUoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJY2FzZSAweDEwM2M6CiAJY2FzZSAweDE2
-MzE6CiAJY2FzZSAweDE3MzQ6Ci0JCS8qIEhQLCBQYWNrYXJkIEJlbGwsICYgRnVqaXRzdS1TaWVt
-ZW5zIGxhcHRvcHMgaGF2ZSByZWFsbHkgYmFkCi0JCSAqIHNvdW5kIG92ZXIgMGRCIG9uIE5JRCAw
-eDE3LiBGaXggbWF4IFBDTSBsZXZlbCB0byAwIGRCCi0JCSAqIChvcmlnaW5hbGx5IGl0IGhhcyAw
-eDJiIHN0ZXBzIHdpdGggMGRCIG9mZnNldCAweDE0KQorCWNhc2UgMHgxN2FhOgorCQkvKiBIUCwg
-UGFja2FyZCBCZWxsLCBGdWppdHN1LVNpZW1lbnMgJiBMZW5vdm8gbGFwdG9wcyBoYXZlCisJCSAq
-IHJlYWxseSBiYWQgc291bmQgb3ZlciAwZEIgb24gTklEIDB4MTcuIEZpeCBtYXggUENNIGxldmVs
-IHRvCisJCSAqIDAgZEIgKG9yaWdpbmFsbHkgaXQgaGFzIDB4MmIgc3RlcHMgd2l0aCAwZEIgb2Zm
-c2V0IDB4MTQpCiAJCSAqLwogCQlzbmRfaGRhX292ZXJyaWRlX2FtcF9jYXBzKGNvZGVjLCAweDE3
-LCBIREFfSU5QVVQsCiAJCQkJCSAgKDB4MTQgPDwgQUNfQU1QQ0FQX09GRlNFVF9TSElGVCkgfAot
-LSAKMS43LjAuNAoK
---001636e0b9297bead8048642ce0b
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+This is the function:
 
---001636e0b9297bead8048642ce0b--
+static void set_hp_led_gpio(struct hda_codec *codec)
+{
+        struct sigmatel_spec *spec = codec->spec;
+        unsigned int gpio;
+
+        gpio = snd_hda_param_read(codec, codec->afg, AC_PAR_GPIO_CAP);
+        gpio &= AC_GPIO_IO_COUNT;
+        if (gpio > 8)
+                spec->gpio_led = 0x08; /* GPIO 3 */
+        else
+                spec->gpio_led = 0x01; /* GPIO 0 */
+}
+
+
+Here are some information about my sound-card. hda_analyzer shows:
+
+Codec: 0x111d76b2
+Address: 0
+Function Id: 0x101
+Vendor Id: 0x111d76b2
+Subsystem Id: 0x103c30fd
+Revision Id: 0x100302
+No Modem Function Group found
+Default PCM:
+    rates [0x7e0]: 44100 48000 88200 96000 176400 192000
+    bits [0xe]: 16 20 24
+    formats [0x1]: PCM
+Default Amp-In caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+Default Amp-Out caps: ofs=0x7f, nsteps=0x7f, stepsize=0x02, mute=1
+GPIO: io=8, o=0, i=0, unsolicited=1, wake=1
+  IO[0]: enable=1, dir=1, wake=0, sticky=0, data=1, unsol=0
+  IO[1]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[2]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[3]: enable=1, dir=1, wake=0, sticky=0, data=0, unsol=0
+  IO[4]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[5]: enable=1, dir=1, wake=0, sticky=0, data=1, unsol=0
+  IO[6]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+  IO[7]: enable=0, dir=0, wake=0, sticky=0, data=0, unsol=0
+
+
+What should I do for for making a reliable patch. Any ideas ?
+
+Thanks.
+
+TF
