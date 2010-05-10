@@ -1,20 +1,17 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: core: Fix for the volume limiting
- when invert is in use
-Date: Mon, 10 May 2010 19:56:22 +0100
-Message-ID: <1273517782.3288.130.camel@odin>
-References: <1273491564-11666-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: hda: Fix 0 dB for Lenovo models using
+	Conexant CX20549 (Venice)
+Date: Mon, 10 May 2010 21:56:36 +0200
+Message-ID: <AANLkTimww81u3UFflXTW-akNDJ5aBMXyFI6p7P4-sgSX@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=001636e0b9297bead8048642ce0b
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 1672F24836
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 383422485B
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 20:56:26 +0200 (CEST)
-Received: by fxm2 with SMTP id 2so2428996fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 11:56:25 -0700 (PDT)
-In-Reply-To: <1273491564-11666-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon, 10 May 2010 21:56:38 +0200 (CEST)
+Received: by pvg4 with SMTP id 4so459162pvg.38
+	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 12:56:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org, Tim Starling <tstarling@wikimedia.org>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-05-10 at 14:39 +0300, Peter Ujfalusi wrote:
-> If the register for the volume needs invert, than the inversion
-> need to be done from the chip maximum, and not from the platform
-> dependent limit.
-> Introduce soc_mixer_control.platform_max value, which initially
-> equals to chip maximum.
-> The snd_soc_limit_volume function only modify the platform_max,
-> all volsw_info call returns this as well.
-> The .max value holds the chip default (maximum), and it is used
-> for the inversion, if it is needed.
-> 
-> Additional check in the volsw_info call has been added to check
-> the validity of the platform_max in case, when custom macros
-> used by codec drivers are not initializing it correctly.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+--001636e0b9297bead8048642ce0b
+Content-Type: text/plain; charset=UTF-8
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Hi,
+
+Attached please find a patch against sound-2.6 (also applicable to
+stable trees) that fixes the reported distortion for Lenovo models on
+CX20549.
+
+Best,
+-Dan
+
+--001636e0b9297bead8048642ce0b
+Content-Type: text/x-diff; charset=US-ASCII;
+	name="0001-ALSA-hda-Fix-0-dB-for-Lenovo-models-using-Conexant-C.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Fix-0-dB-for-Lenovo-models-using-Conexant-C.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g91pqkr50
+
+RnJvbSAxZTdjOWY1MTg4YzhlMTEwYjkwZTQyZjgyMGIxNWY0YzNjNzAzNGIwIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IE1vbiwgMTAgTWF5IDIwMTAgMjE6NTA6MDQgKzAyMDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGE6IEZpeCAwIGRCIGZvciBMZW5vdm8gbW9kZWxzIHVzaW5nIENvbmV4YW50IENYMjA1NDkg
+KFZlbmljZSkKClJlZmVyZW5jZTogaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBl
+cm1haWwvYWxzYS1kZXZlbC8yMDEwLU1heS8wMjc1MjUuaHRtbAoKQXMgcmVwb3J0ZWQgb24gdGhl
+IG1haWxpbmcgbGlzdCwgd2UgYWxzbyBuZWVkIHRvIGNhcCB0byB0aGUgMCBkQiBvZmZzZXQKZm9y
+IExlbm92byBtb2RlbHMsIGVsc2UgdGhlIHNvdW5kIHdpbGwgYmUgZGlzdG9ydGVkLgoKUmVwb3J0
+ZWQtYW5kLVRlc3RlZC1ieTogVGltIFN0YXJsaW5nIDx0c3RhcmxpbmdAd2lraW1lZGlhLm9yZz4K
+Q2M6IDxzdGFibGVAa2VybmVsLm9yZz4KU2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3Jp
+bXN1bkB1YnVudHUuY29tPgotLS0KIHNvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyB8ICAg
+IDcgKysrKy0tLQogMSBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25z
+KC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIvc291bmQv
+cGNpL2hkYS9wYXRjaF9jb25leGFudC5jCmluZGV4IGM4ZTgzZjUuLmU4NjM2NDkgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYworKysgYi9zb3VuZC9wY2kvaGRhL3Bh
+dGNoX2NvbmV4YW50LmMKQEAgLTExOTgsOSArMTE5OCwxMCBAQCBzdGF0aWMgaW50IHBhdGNoX2N4
+dDUwNDUoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJY2FzZSAweDEwM2M6CiAJY2FzZSAweDE2
+MzE6CiAJY2FzZSAweDE3MzQ6Ci0JCS8qIEhQLCBQYWNrYXJkIEJlbGwsICYgRnVqaXRzdS1TaWVt
+ZW5zIGxhcHRvcHMgaGF2ZSByZWFsbHkgYmFkCi0JCSAqIHNvdW5kIG92ZXIgMGRCIG9uIE5JRCAw
+eDE3LiBGaXggbWF4IFBDTSBsZXZlbCB0byAwIGRCCi0JCSAqIChvcmlnaW5hbGx5IGl0IGhhcyAw
+eDJiIHN0ZXBzIHdpdGggMGRCIG9mZnNldCAweDE0KQorCWNhc2UgMHgxN2FhOgorCQkvKiBIUCwg
+UGFja2FyZCBCZWxsLCBGdWppdHN1LVNpZW1lbnMgJiBMZW5vdm8gbGFwdG9wcyBoYXZlCisJCSAq
+IHJlYWxseSBiYWQgc291bmQgb3ZlciAwZEIgb24gTklEIDB4MTcuIEZpeCBtYXggUENNIGxldmVs
+IHRvCisJCSAqIDAgZEIgKG9yaWdpbmFsbHkgaXQgaGFzIDB4MmIgc3RlcHMgd2l0aCAwZEIgb2Zm
+c2V0IDB4MTQpCiAJCSAqLwogCQlzbmRfaGRhX292ZXJyaWRlX2FtcF9jYXBzKGNvZGVjLCAweDE3
+LCBIREFfSU5QVVQsCiAJCQkJCSAgKDB4MTQgPDwgQUNfQU1QQ0FQX09GRlNFVF9TSElGVCkgfAot
+LSAKMS43LjAuNAoK
+--001636e0b9297bead8048642ce0b
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--001636e0b9297bead8048642ce0b--
