@@ -1,17 +1,23 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 0/5] Enabling ASoC paths over suspend
-Date: Mon, 10 May 2010 09:19:18 +0300
-Message-ID: <201005100919.18509.peter.ujfalusi@nokia.com>
-References: <20100509120741.GA16918@sirena.org.uk>
+From: jassi brar <jassisinghbrar@gmail.com>
+Subject: Re: [PATCH 10/11] ASoC: S3C64XX: IISv4: Add CPU driver
+Date: Mon, 10 May 2010 15:29:04 +0900
+Message-ID: <z2w1b68c6791005092329x1bea2b6ej388077d459802148@mail.gmail.com>
+References: <1272351431-3981-1-git-send-email-jassi.brar@samsung.com>
+	<20100505143046.GA9530@rakim.wolfsonmicro.main>
+	<v2u1b68c6791005061833r9a98cbbbk771cce705d82a5cd@mail.gmail.com>
+	<20100507164448.GE25793@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 654FF246EA
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id C97091037F2
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 08:19:33 +0200 (CEST)
-In-Reply-To: <20100509120741.GA16918@sirena.org.uk>
+	Mon, 10 May 2010 08:29:06 +0200 (CEST)
+Received: by pxi13 with SMTP id 13so1318137pxi.38
+	for <alsa-devel@alsa-project.org>; Sun, 09 May 2010 23:29:05 -0700 (PDT)
+In-Reply-To: <20100507164448.GE25793@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,36 +27,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Laim Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, ben-linux@fluff.org, Jassi Brar <jassi.brar@samsung.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Sunday 09 May 2010 15:07:41 ext Mark Brown wrote:
-> The following patch series implements support for keeping some paths in
-> the audio codec enabled while the system is suspended.  This is
-> primarily intended for mobile phones, where the GSM modem is normally
-> capable of supporting a voice call with no intervention from the CPU so
-> power can be saved by suspending the Linux system.  This is done by
-> allowing DAPM nodes to be marked as ignoring suspend.  Any audio paths
-> between two widgets set up like this at suspend time will be kept active
-> and the CODEC device will not be suspended.
-> 
-> The existing testing is very light (especially for digital paths), the
-> intention is to do more of that get this merged into Takashi's tree
-> early next week.
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
-> suspend-enable
-> 
-> Mark Brown (5):
->       ASoC: Remove unneeded suspend bias managment from CODEC drivers
->       ASoC: Remove unused DAPM suspend flag
->       ASoC: Refactor DAPM suspend handling
->       ASoC: Support leaving paths enabled over system suspend
->       ASoC: Allow active paths from the GSM modem while the GTA02 is
-> suspended
-
-I have not tested the actual purpose of this series, but at least it is not 
-breaking the twl4030, and tlv320dac33 codec driver normal usage.
-
-Tested-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+T24gU2F0LCBNYXkgOCwgMjAxMCBhdCAxOjQ0IEFNLCBNYXJrIEJyb3duCjxicm9vbmllQG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gRnJpLCBNYXkgMDcsIDIwMTAgYXQg
+MTA6MzM6MzlBTSArMDkwMCwgamFzc2kgYnJhciB3cm90ZToKPgo+PiBUaGF0IGlzIHN0cmFuZ2Us
+IGJlY2F1c2UgSSBhbSBhYmxlIHRvIGNsZWFubHkgYXBwbHkgdGhlc2UgMTEgcGF0Y2hlcwo+PiBh
+Z2FpbnN0IGNvbW1pdCDCoGNiN2NmNDRjODgwYWViOGNhZjggb2YgZm9yLTIuNi4zNQo+PiBDb3Vs
+ZCB5b3UgcGxlYXNlIHRyeSBhZ2Fpbj8KPgo+IEkgaGFkIGFub3RoZXIgcG9rZSBhdCB0aGlzIGFu
+ZCBtYW5hZ2VkIHRvIGdldCB0aGUgbGFzdCB0d28gYXBwbGllZCwKPiB0aGFua3MuCm9rLCBpIHdh
+aXRpbmcgdG8gcmVhY2ggd29ya3BsYWNlIHRvIHJlc2VuZC4KCj4gwqBIb3dldmVyLCB0aGUgYXVk
+aW8tYnVzIGNsb2NrIGZvciB0aGUgSUlTdjQgYmxvY2sgb24gdGhlIFMzQzY0MTAKPiBpcyBzdGls
+bCBub3Qgc2V0IHVwIGluIC1uZXh0LiDCoElmIHRoYXQgZG9lc24ndCBnZXQgc29ydGVkIG91dCBp
+dCBtaWdodAo+IGJlIGFzIHdlbGwgdG8gbWFyayBpdCBCUk9LRU4gYWdhaW4gc2luY2UgaXQgY2Fu
+J3QgYWN0dWFsbHkgYmUgdXNlZC4KSSByZW1pbmRlZCB0aGUgcGF0Y2ggdG8gQmVuLCBob3BlIGl0
+J3Mgc2V0dGxlZC4KQnV0IG9mIGNvdXJzZSwgcGxlYXNlIGRvIGFzIGFwcHJvcHJpYXRlLgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
