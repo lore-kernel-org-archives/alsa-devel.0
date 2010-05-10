@@ -1,20 +1,17 @@
-From: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: about ALC203 linux driver
-Date: Mon, 10 May 2010 05:05:21 +0100
-Message-ID: <20100510040521.GF6684@trinity.fluff.org>
-References: <AANLkTikvaFWOlapz9_HlHc1GBlky_FX1-5ml-iFNGGQW@mail.gmail.com>
-	<20100509144940.GA7457@sirena.org.uk>
-	<AANLkTik0GudetGLF9hF56_VV_tNci8wX0S67gAWDIayq@mail.gmail.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 0/5] Enabling ASoC paths over suspend
+Date: Mon, 10 May 2010 09:19:18 +0300
+Message-ID: <201005100919.18509.peter.ujfalusi@nokia.com>
+References: <20100509120741.GA16918@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
-	by alsa0.perex.cz (Postfix) with ESMTP id 112D5246B7
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 654FF246EA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 06:05:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTik0GudetGLF9hF56_VV_tNci8wX0S67gAWDIayq@mail.gmail.com>
+	Mon, 10 May 2010 08:19:33 +0200 (CEST)
+In-Reply-To: <20100509120741.GA16918@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,45 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, zswan@marvell.com
+To: alsa-devel@alsa-project.org
+Cc: ext Mark Brown <broonie@opensource.wolfsonmicro.com>, Laim Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 09, 2010 at 11:34:28PM +0800, Wan ZongShun wrote:
-> Dear Mark,
-> =
+On Sunday 09 May 2010 15:07:41 ext Mark Brown wrote:
+> The following patch series implements support for keeping some paths in
+> the audio codec enabled while the system is suspended.  This is
+> primarily intended for mobile phones, where the GSM modem is normally
+> capable of supporting a voice call with no intervention from the CPU so
+> power can be saved by suspending the Linux system.  This is done by
+> allowing DAPM nodes to be marked as ignoring suspend.  Any audio paths
+> between two widgets set up like this at suspend time will be kept active
+> and the CODEC device will not be suspended.
+> 
+> The existing testing is very light (especially for digital paths), the
+> intention is to do more of that get this merged into Takashi's tree
+> early next week.
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git
+> suspend-enable
+> 
+> Mark Brown (5):
+>       ASoC: Remove unneeded suspend bias managment from CODEC drivers
+>       ASoC: Remove unused DAPM suspend flag
+>       ASoC: Refactor DAPM suspend handling
+>       ASoC: Support leaving paths enabled over system suspend
+>       ASoC: Allow active paths from the GSM modem while the GTA02 is
+> suspended
 
-> =
+I have not tested the actual purpose of this series, but at least it is not 
+breaking the twl4030, and tlv320dac33 codec driver normal usage.
 
-> 2010/5/9 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> > On Sun, May 09, 2010 at 10:40:07PM +0800, Wan ZongShun wrote:
-> >
-> >> At present, there is a ALC203 AC97 codec in my Winbond ARM board, and
-> >> I am programming
-> >> the audio driver based on ALSA, Who can tell me whether the current
-> >> ALSA is supporting
-> >> the ALC203 driver?how to enable it?
-> >
-> > You need a driver for the AC97 controller your system is using (for most
-> > ARM systems this is part of the CPU). =A0Since AC97 provides a standard
-> > register interface for CODECs Linux does not require specific support
-> > for individual AC97 CODECs in order to get core functionality working.
-> >
-> =
-
-> There is AC97 support for my chip, and I have implemented the nuc900_ac97=
-.c
-> ,nuc900_pcm.c and machine board c file drivers.The three main
-> structure definitions
-> as following:
-
-does you SoC require any other configurations in other blocks that
-may aslo affect this, such as gpio configuratioon for the ac97 pins or
-some sort of clock setup?
-
--- =
-
-Ben
-
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+Tested-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
