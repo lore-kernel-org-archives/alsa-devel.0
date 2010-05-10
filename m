@@ -1,20 +1,24 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: [PATCH] ALSA: hda: enable SPDIF output for
-	Conexant 5051/Lenovo docking stations
-Date: Mon, 10 May 2010 09:10:14 -0500
-Message-ID: <AANLkTinDIE57viNWVG1ckfTdxODj3U9PBAsGuzRxK5S0@mail.gmail.com>
-References: <h2m6160a5131005061508y4941c42at4b9720affe7b7702@mail.gmail.com>
-	<s5h8w7usowl.wl%tiwai@suse.de>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: Re: [PATCH] ALSA: hda: Fix 0 dB for Packard Bell
+	models using Conexant CX20549 (Venice)
+Date: Mon, 10 May 2010 16:17:35 +0200
+Message-ID: <AANLkTiktrHCe5P3x93UF9fi_mI_klBETqs83e-bTcykj@mail.gmail.com>
+References: <x2n604760771004281507x5464161frd1f09b6cd4c8a7fc@mail.gmail.com>
+	<s5hiq72vkt7.wl%tiwai@suse.de> <hs8bra$53h$1@dough.gmane.org>
+	<AANLkTinJUJ5t2YB85ba8AjZrJnNwNXvW8Kr4NHeFcBlJ@mail.gmail.com>
+	<hs8vah$9un$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001485e5bfacc117c504863df7ec
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id BBAFF1037FE
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2C571103821
 	for <alsa-devel@alsa-project.org>;
-	Mon, 10 May 2010 16:10:17 +0200 (CEST)
-Received: by gwj16 with SMTP id 16so869648gwj.38
-	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 07:10:14 -0700 (PDT)
-In-Reply-To: <s5h8w7usowl.wl%tiwai@suse.de>
+	Mon, 10 May 2010 16:17:36 +0200 (CEST)
+Received: by pvg4 with SMTP id 4so305130pvg.38
+	for <alsa-devel@alsa-project.org>; Mon, 10 May 2010 07:17:35 -0700 (PDT)
+In-Reply-To: <hs8vah$9un$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,72 +28,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Aristeu Rozanski <aris@redhat.com>
+To: Tim Starling <tstarling@wikimedia.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---001485e5bfacc117c504863df7ec
-Content-Type: text/plain; charset=ISO-8859-1
+On Mon, May 10, 2010 at 2:48 PM, Tim Starling <tstarling@wikimedia.org> wrote:
+> Attached as requested. Generated with patched kernel running.
 
-> Pierre, could you add your sign-off to the patch?
-
-Oops, here you go.
-
---001485e5bfacc117c504863df7ec
-Content-Type: application/octet-stream;
-	name="0001-ALSA-hda-enable-SPDIF-output-for-Conexant-5051-Lenov.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-enable-SPDIF-output-for-Conexant-5051-Lenov.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g91d9ixb0
-
-RnJvbSAxYTM1OTMxNjMxNGRiNGZiYWUwNTQ4ODAxMzkxMDdjMjc2Y2FhYzEyIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJv
-c3NhcnRAaW50ZWwuY29tPgpEYXRlOiBUaHUsIDYgTWF5IDIwMTAgMTY6Mzc6MDMgLTA1MDAKU3Vi
-amVjdDogW1BBVENIXSBBTFNBOiBoZGE6IGVuYWJsZSBTUERJRiBvdXRwdXQgZm9yIENvbmV4YW50
-IDUwNTEvTGVub3ZvIGRvY2tpbmcgc3RhdGlvbnMKClRoaXMgcGF0Y2ggZW5hYmxlcyB0aGUgU1BE
-SUYgb3V0cHV0IHBpbiBieSBkZWZhdWx0LiBJdCBhbHNvIGVuYWJsZXMKaXQgZm9yIHF1aXJrcyBy
-ZWxhdGVkIHRvIExldm9ubyBkb2NraW5nIHN0YXRpb25zICh4MjAwIGFuZCAyNTA0MSwKaWRlbnRp
-ZmllZCB3aXRoIHRoZSBzYW1lIDE3YWE6MjBmMiBJRCkuIEV2ZW4gdGhvdWdoIG5vdCBhbGwgTGVu
-b3ZvCmRvY2tpbmcgc3RhdGlvbnMgaGF2ZSBTUERJRiBjb25uZWN0b3JzLCBlbmFibGluZyB0aGUg
-cGluIGJ5IGRlZmF1bHQKc2hvdWxkbid0IGJlIGEgcHJvYmxlbSBmb3IgYW55b25lLgpPdGhlciBx
-dWlya3MgcmVtYWluIHVubW9kaWZpZWQuCgpTaWduZWQtb2ZmLWJ5OiBQaWVycmUtTG91aXMgQm9z
-c2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAaW50ZWwuY29tPgotLS0KIHBjaS9oZGEvcGF0Y2hf
-Y29uZXhhbnQuYyB8ICAgIDQgKysrLQogMSBmaWxlcyBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyks
-IDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jIGIv
-cGNpL2hkYS9wYXRjaF9jb25leGFudC5jCmluZGV4IDExNGFmOGUuLjU5NjczMTcgMTAwNjQ0Ci0t
-LSBhL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYworKysgYi9wY2kvaGRhL3BhdGNoX2NvbmV4YW50
-LmMKQEAgLTE3ODQsNiArMTc4NCw3IEBAIHN0YXRpYyBzdHJ1Y3QgaGRhX3ZlcmIgY3h0NTA1MV9p
-bml0X3ZlcmJzW10gPSB7CiAJezB4MTQsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFNUF9J
-Tl9VTk1VVEUoMSkgfCAweDQ0fSwKIAl7MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwg
-QU1QX0lOX1VOTVVURSgwKSB8IDB4NDR9LAogCS8qIFNQRElGIHJvdXRlOiBQQ00gKi8KKwl7MHgx
-YywgQUNfVkVSQl9TRVRfUElOX1dJREdFVF9DT05UUk9MLCBQSU5fT1VUfSwgCiAJezB4MWMsIEFD
-X1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAweDB9LAogCS8qIEVBUEQgKi8KIAl7MHgxYSwgQUNfVkVS
-Ql9TRVRfRUFQRF9CVExFTkFCTEUsIDB4Mn0sIC8qIGRlZmF1bHQgb24gKi8gCkBAIC0xODQwLDYg
-KzE4NDEsNyBAQCBzdGF0aWMgc3RydWN0IGhkYV92ZXJiIGN4dDUwNTFfbGVub3ZvX3gyMDBfaW5p
-dF92ZXJic1tdID0gewogCXsweDE0LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCBBTVBfSU5f
-VU5NVVRFKDEpIHwgMHg0NH0sCiAJezB4MTUsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIEFN
-UF9JTl9VTk1VVEUoMCkgfCAweDQ0fSwKIAkvKiBTUERJRiByb3V0ZTogUENNICovCisJezB4MWMs
-IEFDX1ZFUkJfU0VUX1BJTl9XSURHRVRfQ09OVFJPTCwgUElOX09VVH0sIC8qIG5lZWRlZCBmb3Ig
-VzUwMCBBZHZhbmNlZCBNaW5pIERvY2sgMjUwNDEwICovCiAJezB4MWMsIEFDX1ZFUkJfU0VUX0NP
-Tk5FQ1RfU0VMLCAweDB9LAogCS8qIEVBUEQgKi8KIAl7MHgxYSwgQUNfVkVSQl9TRVRfRUFQRF9C
-VExFTkFCTEUsIDB4Mn0sIC8qIGRlZmF1bHQgb24gKi8KQEAgLTE5MTEsNyArMTkxMyw3IEBAIGVu
-dW0gewogCUNYVDUwNTFfTEFQVE9QLAkgLyogTGFwdG9wcyB3LyBFQVBEIHN1cHBvcnQgKi8KIAlD
-WFQ1MDUxX0hQLAkvKiBubyBkb2NraW5nICovCiAJQ1hUNTA1MV9IUF9EVjY3MzYsCS8qIEhQIHdp
-dGhvdXQgbWljIHN3aXRjaCAqLwotCUNYVDUwNTFfTEVOT1ZPX1gyMDAsCS8qIExlbm92byBYMjAw
-IGxhcHRvcCAqLworCUNYVDUwNTFfTEVOT1ZPX1gyMDAsCS8qIExlbm92byBYMjAwIGxhcHRvcCwg
-YWxzbyB1c2VkIGZvciBBZHZhbmNlZCBNaW5pIERvY2sgMjUwNDEwICovCiAJQ1hUNTA1MV9GNzAw
-LCAgICAgICAvKiBIUCBDb21wYXEgUHJlc2FyaW8gRjcwMCAqLwogCUNYVDUwNTFfVE9TSElCQSwJ
-LyogVG9zaGliYSBNMzAwICYgY28gKi8KIAlDWFQ1MDUxX01PREVMUwotLSAKMS42LjYuMQoK
---001485e5bfacc117c504863df7ec
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---001485e5bfacc117c504863df7ec--
+Actually it'd be nice to have the unpatched one.
