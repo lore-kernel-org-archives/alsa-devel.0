@@ -1,23 +1,21 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: MUTE broken on hda nvhdmi
-Date: Tue, 11 May 2010 10:18:10 -0700
-Message-ID: <AANLkTilQRgpmBTzuip283VNHNQDtnMXYtVdx2w2ADecM@mail.gmail.com>
-References: <AANLkTinq7QU6ZfMkAEzNFlu6G8jAOxqipHd9bXilZYgq@mail.gmail.com>
-	<s5hsk5yq01x.wl%tiwai@suse.de>
-	<AANLkTikXqIC3Ajr6jz5h-mt9xcn50eyepVF40AHA4S1y@mail.gmail.com>
-	<s5hiq6utpq3.wl%tiwai@suse.de> <s5hfx1ytp8r.wl%tiwai@suse.de>
+From: Timur Tabi <timur.tabi@gmail.com>
+Subject: Re: [patch 4/6] cs42l51: add asoc driver
+Date: Tue, 11 May 2010 14:36:16 -0500
+Message-ID: <AANLkTimo72JDwZx7bjEQpk8iVAwTPnnuSmPBCioFsmHR@mail.gmail.com>
+References: <20100511162342.640158675@mandriva.com>
+	<20100511162602.226980713@mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 18905103860
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8790E1037EA
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 May 2010 19:18:12 +0200 (CEST)
-Received: by vws16 with SMTP id 16so283878vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 11 May 2010 10:18:11 -0700 (PDT)
-In-Reply-To: <s5hfx1ytp8r.wl%tiwai@suse.de>
+	Tue, 11 May 2010 21:36:49 +0200 (CEST)
+Received: by pvg6 with SMTP id 6so1040pvg.38
+	for <alsa-devel@alsa-project.org>; Tue, 11 May 2010 12:36:47 -0700 (PDT)
+In-Reply-To: <20100511162602.226980713@mandriva.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,14 +25,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: apatard@mandriva.com
+Cc: tbm@cyrius.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, nico@fluxnic.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 11, 2010 at 8:47 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> Also, which change are you referring to as "nvhdmi rewrite"?
-> Do you mean the commit "ALSA: hdmi - merge common code for intelhdmi
-> and nvhdmi"?
+On Tue, May 11, 2010 at 11:23 AM,  <apatard@mandriva.com> wrote:
 
-The rewritten code by Wei.  What you quoted may be it as I don't think
-it was just nvhdmi that was rewritten, but other things as well.
+> + * Copyright (c) 2010 Arnaud Patard <apatard@mandriva.com>
+> + *
+> + * Based on cs4270.c - Copyright (c) Timur Tabi <timur@freescale.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+
+The cs4270.c driver is licensed under the GPL v2 only.  Since you
+based your driver on mine, you cannot change the license to "v2 or
+later".
+
+-- 
+Timur Tabi
+Linux kernel developer at Freescale
