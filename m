@@ -1,20 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: WM8993: amp control, amplifying pops.
-Date: Tue, 11 May 2010 12:12:26 +0100
-Message-ID: <20100511111226.GB30780@rakim.wolfsonmicro.main>
-References: <v2jcf7b913c1005091910hf7b32843sc71b09b801b8649e@mail.gmail.com>
-	<20100510102422.GD31804@rakim.wolfsonmicro.main>
-	<AANLkTilrdLPRHI5_4K1C0NHDtonJQzelc6CwW97vuboM@mail.gmail.com>
+Subject: ASoC updates for 2.6.35
+Date: Tue, 11 May 2010 14:38:56 +0100
+Message-ID: <20100511133855.GA27925@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 57EC0247D6
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 888DD2484E
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 May 2010 13:12:29 +0200 (CEST)
+	Tue, 11 May 2010 15:38:59 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTilrdLPRHI5_4K1C0NHDtonJQzelc6CwW97vuboM@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,49 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Zhang JieJing <kzjeef@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 11, 2010 at 11:07:38AM +0800, Zhang JieJing wrote:
-> 2010/5/10 Mark Brown <broonie@opensource.wolfsonmicro.com>
+The following changes since commit 896060c76bdfd8a45eb33b3dd1a8307fe37f6c04:
+  Mark Brown (1):
+        ASoC: Use more idiomatic driver name for WM8731
 
-> Hi, Our kernel version is 2.6.28, but port the wm8993 driver to this
-> version's kernel.
+are available in the git repository at:
 
-Normally in these situations I would recommend backporting the entire
-ASoC subsystem - it's fairly well isolated from the rest of the kernel
-so this tends to be reasonably straightforward.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
 
-> the amplifying pop is when system resume, the speaker will hear one
-> short pop noise,
-> also, this short pop noise will hear the first time driver is opened.
+A bunch of minor WM8993/4 enhancements and Peter's invert handling.
 
-When exactly do you hear this noise?  The WM8993 driver will not power
-up the speaker outputs unless they are in use and there are no audio
-paths configured to the speakers by default.  Are you configuring an
-audio path in the CODEC at system startup?  Which mode do you have the
-WM8993 speaker drivers in - class D or class A/B?
+Mark Brown (4):
+      ASoC: Add register write logging for WM8994
+      ASoC: Add additional WM hubs DC servo trace
+      ASoC: Reorder power down sequence for WM hubs devices
+      ASoC: Don't restart unconfigured WM8994 FLLs
 
-It might be helpful to capture all the register writes done when
-bringing up the WM8993.  Also, if you are configuring an audio path from
-an analogue input you should check that there is no DC offset present in
-the input signal - if there is one then the WM8993 will reproduce it
-into the output path, which would result in an audible noise.
+Peter Ujfalusi (1):
+      ASoC: core: Fix for the volume limiting when invert is in use
 
-> In 53242c68333570631a15a69842851b458eca3d99,
-> there was a line:
-> 
-> +		ret = wm8993_set_fll(codec->dai, 0, wm8993->fll_src,
-> +				     fll_fref, fll_fout);
-> +
-
-> but in lastest version of wm8993 driver, wm8993_set_fll will do
-> nothing we the second parameter(fll_id) is 0,  so, I don't know what
-> this function want to do,
-> Cound you give me some idea ?
-
-This parameter specifies which of the FLLs/PLLs in the device to
-configure.  Since the WM8993 has only one FLL it just ignores this
-parameter, other devices with multiple FLLs such as the WM8994 need this
-to select between the FLLs.
+ include/sound/soc.h        |   23 ++++++++++++-----------
+ sound/soc/codecs/wm8994.c  |    5 +++++
+ sound/soc/codecs/wm_hubs.c |   12 ++++++++----
+ sound/soc/soc-core.c       |   30 +++++++++++++++++++++---------
+ 4 files changed, 46 insertions(+), 24 deletions(-)
