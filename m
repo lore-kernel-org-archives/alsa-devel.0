@@ -1,43 +1,66 @@
-From: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+From: Alan Stern <stern@rowland.harvard.edu>
 Subject: Re: [alsa-devel] USB transfer_buffer allocations on 64bit systems
-Date: Tue, 11 May 2010 23:38:35 +0900
-Message-ID: <20100511233852B.fujita.tomonori@lab.ntt.co.jp>
-References: <20100511100637D.fujita.tomonori@lab.ntt.co.jp>
-	<Pine.LNX.4.44L0.1005110956330.1834-100000@iolanthe.rowland.org>
-	<20100511142439.GA4898@phenom.dumpdata.com>
+Date: Tue, 11 May 2010 11:04:55 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1005111057540.1834-100000@iolanthe.rowland.org>
+References: <20100511233852B.fujita.tomonori@lab.ntt.co.jp>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20100511142439.GA4898@phenom.dumpdata.com>
+In-Reply-To: <20100511233852B.fujita.tomonori@lab.ntt.co.jp>
 Sender: linux-kernel-owner@vger.kernel.org
-To: konrad.wilk@oracle.com
-Cc: stern@rowland.harvard.edu, fujita.tomonori@lab.ntt.co.jp, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tiwai@suse.de, gregkh@suse.de, clemens@ladisch.de, linux-kernel@vger.kernel.org, chrisw@sous-sol.org, iommu@lists.linux-foundation.org, andi@firstfloor.org, daniel@caiaq.de, pedrib@gmail.com, akpm@linux-foundation.org, dwmw2@infradead.org
+To: FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+Cc: konrad.wilk@oracle.com, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tiwai@suse.de, gregkh@suse.de, clemens@ladisch.de, linux-kernel@vger.kernel.org, chrisw@sous-sol.org, iommu@lists.linux-foundation.org, andi@firstfloor.org, daniel@caiaq.de, pedrib@gmail.com, akpm@linux-foundation.org, dwmw2@infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 11 May 2010 10:24:40 -0400
-Konrad Rzeszutek Wilk <konrad.wilk@oracle.com> wrote:
+On Tue, 11 May 2010, FUJITA Tomonori wrote:
 
-> > > > Either the data isn't getting written to the buffer correctly or else
-> > > > the buffer isn't getting sent to the device correctly.  Can anybody
-> > > > suggest a means of determining which is the case?
-> > > 
-> > > I can't say anything about this log that including only DMA addresses.
-> > > I'm not familiar with how the USB core does DMA stuff. And the USB
-> > > stack design that the USB core does DMA stuff (allocating, mappings,
-> > > etc) makes debugging DMA issues really difficult.
-> > 
-> > The DMA stuff is simple enough in this case.  The urb->transfer_buffer
-> > address is passed to dma_map_single(), and the DMA address it returns
-> > is stored in urb->transfer_dma.  Those are the two values printed out
-> > by the debugging patch.
+> On Tue, 11 May 2010 10:24:40 -0400
+> Konrad Rzeszutek Wilk <konrad.wilk@oracle.com> wrote:
 > 
-> Is that address (urb->transfer_dma) the same as 'virt_to_phys(urb->transfer_buffer)'
-> (if not, then SWIOTLB is being utilized) and is the dma_sync_* done on the
-> urb->transfer_dma (to properly sync the data from the SWIOTLB to the
-> transfer_buffer) before you start using the urb->transfer_buffer?
+> > > > > Either the data isn't getting written to the buffer correctly or else
+> > > > > the buffer isn't getting sent to the device correctly.  Can anybody
+> > > > > suggest a means of determining which is the case?
+> > > > 
+> > > > I can't say anything about this log that including only DMA addresses.
+> > > > I'm not familiar with how the USB core does DMA stuff. And the USB
+> > > > stack design that the USB core does DMA stuff (allocating, mappings,
+> > > > etc) makes debugging DMA issues really difficult.
+> > > 
+> > > The DMA stuff is simple enough in this case.  The urb->transfer_buffer
+> > > address is passed to dma_map_single(), and the DMA address it returns
+> > > is stored in urb->transfer_dma.  Those are the two values printed out
+> > > by the debugging patch.
+> > 
+> > Is that address (urb->transfer_dma) the same as 'virt_to_phys(urb->transfer_buffer)'
+> > (if not, then SWIOTLB is being utilized) and is the dma_sync_* done on the
+> > urb->transfer_dma (to properly sync the data from the SWIOTLB to the
+> > transfer_buffer) before you start using the urb->transfer_buffer?
+> 
+> Or calling dma_unmap_single.
+> 
+> Can you tell me all the exact process of DMA that the usb core and the
+> driver do?
 
-Or calling dma_unmap_single.
+1. The audio driver stores data in urb->transfer_buffer.
 
-Can you tell me all the exact process of DMA that the usb core and the
-driver do?
+2. The audio driver calls usb_submit_urb(urb).
+
+3. The USB core does
+		urb->transfer_dma = dma_map_single(controller, 
+			urb->transfer_buffer,
+			urb->transfer_buffer_length,
+			DMA_TO_DEVICE);
+
+4. The host controller driver tells the hardware to carry out the data 
+   transfer.
+
+5. When the hardware says the transfer is finished, the USB core does
+		dma_unmap_single(controller,
+			urb->transfer_dma,
+			urb->transfer_buffer_length,
+			DMA_TO_DEVICE);
+
+6. The audio driver's completion handler is called:
+		(urb->complete)(urb);
+
+Alan Stern
