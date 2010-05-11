@@ -1,17 +1,18 @@
 From: apatard@mandriva.com
-Subject: [patch 3/6] asoc: Add SOC_DOUBLE_R_SX_TLV control
-Date: Tue, 11 May 2010 18:23:45 +0200
-Message-ID: <20100511162601.913930263@mandriva.com>
+Subject: [patch 6/6] kirkwood: Add audio support to openrd
+	client platforms
+Date: Tue, 11 May 2010 18:23:48 +0200
+Message-ID: <20100511162602.776313041@mandriva.com>
 References: <20100511162342.640158675@mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from jules.rtp-net.org (sat78-1-82-232-42-61.fbx.proxad.net
-	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id 7694F248EC
+	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id 1880E10384C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 May 2010 18:26:01 +0200 (CEST)
-Content-Disposition: inline; filename=add_soc_double_r_sx_tlv.patch
+	Tue, 11 May 2010 18:26:03 +0200 (CEST)
+Content-Disposition: inline; filename=openrd_audio.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,161 +26,222 @@ To: alsa-devel@alsa-project.org
 Cc: Arnaud Patard <apatard@mandriva.com>, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, nico@fluxnic.net, tbm@cyrius.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch is adding a new control which has the following capabilities:
-- tlv
-- variable data size (for instance, 7 ou 8 bit)
-- double mixer
-
+This patch is adding support for openrd client platforms. It's using
+the cs42l51 codec and has one mic and one speaker plugs.
 
 Signed-off-by: Arnaud Patard <apatard@mandriva.com>
 ---
- include/sound/soc.h  |   22 	22 +	0 -	0 !
- sound/soc/soc-core.c |   95 	95 +	0 -	0 !
- 2 files changed, 117 insertions(+)
+ sound/soc/kirkwood/Kconfig           |    9 	9 +	0 -	0 !
+ sound/soc/kirkwood/Makefile          |    3 	3 +	0 -	0 !
+ sound/soc/kirkwood/kirkwood-openrd.c |  176 	176 +	0 -	0 !
+ 3 files changed, 188 insertions(+)
 
-Index: linux-2.6.33/include/sound/soc.h
+Index: linux-2.6.33/sound/soc/kirkwood/Kconfig
 ===================================================================
---- linux-2.6.33.orig/include/sound/soc.h	2010-05-11 17:38:48.933650354 +0200
-+++ linux-2.6.33/include/sound/soc.h	2010-05-11 17:57:31.369711347 +0200
-@@ -168,6 +168,21 @@
- 	.get = xhandler_get, .put = xhandler_put, \
- 	.private_value = (unsigned long)&xenum }
+--- linux-2.6.33.orig/sound/soc/kirkwood/Kconfig	2010-05-11 18:05:14.981650112 +0200
++++ linux-2.6.33/sound/soc/kirkwood/Kconfig	2010-05-11 18:11:50.097650543 +0200
+@@ -9,3 +9,12 @@ config SND_KIRKWOOD_SOC
+ config SND_KIRKWOOD_SOC_I2S
+ 	tristate
  
-+#define SOC_DOUBLE_R_SX_TLV(xname, xreg_left, xreg_right, xshift,\
-+		xmin, xmax, tlv_array) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
-+	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
-+		  SNDRV_CTL_ELEM_ACCESS_READWRITE, \
-+	.tlv.p = (tlv_array), \
-+	.info = snd_soc_info_volsw_2r_sx, \
-+	.get = snd_soc_get_volsw_2r_sx, \
-+	.put = snd_soc_put_volsw_2r_sx, \
-+	.private_value = (unsigned long)&(struct soc_mixer_control) \
-+		{.reg = xreg_left, \
-+		 .rreg = xreg_right, .shift = xshift, \
-+		 .min = xmin, .max = xmax} }
++config SND_KIRKWOOD_SOC_OPENRD
++	tristate "SoC Audio support for Kirkwood Openrd Client"
++	depends on SND_KIRKWOOD_SOC && MACH_OPENRD_CLIENT
++	select SND_KIRKWOOD_SOC_I2S
++	select SND_SOC_CS42L51
++	help
++	  Say Y if you want to add support for SoC audio on
++	  Openrd Client.
 +
-+
- /*
-  * Simplified versions of above macros, declaring a struct and calculating
-  * ARRAY_SIZE internally
-@@ -320,6 +335,13 @@ int snd_soc_get_volsw_s8(struct snd_kcon
- 	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_put_volsw_s8(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol);
-+int snd_soc_info_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo);
-+int snd_soc_get_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol);
-+int snd_soc_put_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol);
-+
- 
- /**
-  * struct snd_soc_jack_pin - Describes a pin to update based on jack detection
-Index: linux-2.6.33/sound/soc/soc-core.c
+Index: linux-2.6.33/sound/soc/kirkwood/Makefile
 ===================================================================
---- linux-2.6.33.orig/sound/soc/soc-core.c	2010-05-11 17:38:48.873649896 +0200
-+++ linux-2.6.33/sound/soc/soc-core.c	2010-05-11 17:56:29.737650647 +0200
-@@ -2190,6 +2190,101 @@ int snd_soc_put_volsw_s8(struct snd_kcon
- EXPORT_SYMBOL_GPL(snd_soc_put_volsw_s8);
+--- linux-2.6.33.orig/sound/soc/kirkwood/Makefile	2010-05-11 18:05:14.985650562 +0200
++++ linux-2.6.33/sound/soc/kirkwood/Makefile	2010-05-11 18:11:50.097650543 +0200
+@@ -4,3 +4,6 @@ snd-soc-kirkwood-i2s-objs := kirkwood-i2
+ obj-$(CONFIG_SND_KIRKWOOD_SOC) += snd-soc-kirkwood.o
+ obj-$(CONFIG_SND_KIRKWOOD_SOC_I2S) += snd-soc-kirkwood-i2s.o
  
- /**
-+ * snd_soc_info_volsw_2r_sx - double with tlv and variable data size
-+ *  mixer info callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
++snd-soc-openrd-objs := kirkwood-openrd.o
++
++obj-$(CONFIG_SND_KIRKWOOD_SOC_OPENRD) += snd-soc-openrd.o
+Index: linux-2.6.33/sound/soc/kirkwood/kirkwood-openrd.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.33/sound/soc/kirkwood/kirkwood-openrd.c	2010-05-11 18:11:50.101650416 +0200
+@@ -0,0 +1,176 @@
++/*
++ * kirkwood-openrd.c
 + *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_info_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_info *uinfo)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	int max = mc->max;
-+	int min = mc->min;
-+
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = max-min;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_volsw_2r_sx);
-+
-+/**
-+ * snd_soc_get_volsw_2r_sx - double with tlv and variable data size
-+ *  mixer get callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
++ * (c) 2010 Arnaud Patard <apatard@mandriva.com>
 + *
-+ * Returns 0 for success.
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
 + */
-+int snd_soc_get_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int mask = (1<<mc->shift)-1;
-+	int min = mc->min;
-+	int val = snd_soc_read(codec, mc->reg) & mask;
-+	int valr = snd_soc_read(codec, mc->rreg) & mask;
 +
-+	ucontrol->value.integer.value[0] = ((val & 0xff)-min);
-+	ucontrol->value.integer.value[1] = ((valr & 0xff)-min);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_get_volsw_2r_sx);
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
++#include <linux/i2c.h>
++#include <linux/slab.h>
++#include <sound/soc.h>
++#include <mach/kirkwood.h>
++#include <mach/audio.h>
++#include <asm/mach-types.h>
++#include "kirkwood-i2s.h"
++#include "kirkwood-dma.h"
++#include "../codecs/cs42l51.h"
 +
-+/**
-+ * snd_soc_put_volsw_2r_sx - double with tlv and variable data size
-+ *  mixer put callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_put_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
++static int openrd_client_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params)
 +{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int mask = (1<<mc->shift)-1;
-+	int min = mc->min;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
 +	int ret;
-+	unsigned int val, valr, oval, ovalr;
++	unsigned int freq, fmt;
 +
-+	val = ((ucontrol->value.integer.value[0]+min) & 0xff);
-+	val &= mask;
-+	valr = ((ucontrol->value.integer.value[1]+min) & 0xff);
-+	valr &= mask;
++	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM;
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
++	if (ret < 0)
++		return ret;
 +
-+	oval = snd_soc_read(codec, mc->reg) & mask;
-+	ovalr = snd_soc_read(codec, mc->rreg) & mask;
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
++	if (ret < 0)
++		return ret;
 +
-+	ret = 0;
-+	if (oval != val) {
-+		ret = snd_soc_write(codec, mc->reg, val);
-+		if (ret < 0)
-+			return 0;
-+		ret = 1;
++	switch (params_rate(params)) {
++	default:
++	case 44100:
++		freq = 11289600;
++		break;
++	case 48000:
++		freq = 12288000;
++		break;
++	case 96000:
++		freq = 24576000;
++		break;
 +	}
-+	if (ovalr != valr) {
-+		ret = snd_soc_write(codec, mc->rreg, valr);
-+		if (ret < 0)
-+			return 0;
-+		ret = 1;
-+	}
 +
-+	return 0;
++	return snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_IN);
++
 +}
-+EXPORT_SYMBOL_GPL(snd_soc_put_volsw_2r_sx);
 +
-+/**
-  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
-  * @dai: DAI
-  * @clk_id: DAI specific clock ID
++static struct snd_soc_ops openrd_client_ops = {
++	.hw_params = openrd_client_hw_params,
++};
++
++
++static struct snd_soc_dai_link openrd_client_dai[] = {
++{
++	.name = "CS42L51",
++	.stream_name = "CS42L51 HiFi",
++	.cpu_dai = &kirkwood_i2s_dai,
++	.codec_dai = &cs42l51_dai,
++	.ops = &openrd_client_ops,
++},
++};
++
++
++static struct snd_soc_card openrd_client = {
++	.name = "OpenRD Client",
++	.platform = &kirkwood_soc_platform,
++	.dai_link = openrd_client_dai,
++	.num_links = ARRAY_SIZE(openrd_client_dai),
++};
++
++static struct snd_soc_device openrd_client_snd_devdata = {
++	.card = &openrd_client,
++	.codec_dev = &soc_codec_device_cs42l51,
++};
++
++static struct platform_device *openrd_client_snd_device;
++
++static struct resource kirkwood_audio_resources[] = {
++	[0] = {
++		.start  = AUDIO_PHYS_BASE,
++		.end    = AUDIO_PHYS_BASE + SZ_16K - 1,
++		.flags  = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start  = IRQ_KIRKWOOD_I2S,
++		.end    = IRQ_KIRKWOOD_I2S,
++		.flags  = IORESOURCE_IRQ,
++	},
++};
++
++static struct i2c_board_info i2c_board_info[] = {
++	{
++		I2C_BOARD_INFO("cs42l51", 0x4a),
++	},
++};
++
++static struct i2c_client *cs42l51_client;
++static int __init openrd_client_init(void)
++{
++	int ret;
++	struct kirkwood_soc_platform_data *data;
++	struct i2c_adapter *adapter;
++
++	if (!machine_is_openrd_client())
++		return 0;
++
++	adapter = i2c_get_adapter(0);
++	if (!adapter)
++		return -ENODEV;
++
++	cs42l51_client = i2c_new_device(i2c_get_adapter(0), i2c_board_info);
++	i2c_put_adapter(adapter);
++	if (!cs42l51_client)
++		return -ENODEV;
++
++	openrd_client_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!openrd_client_snd_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(openrd_client_snd_device,
++			&openrd_client_snd_devdata);
++	openrd_client_snd_devdata.dev = &openrd_client_snd_device->dev;
++
++	data = kzalloc(sizeof(struct kirkwood_soc_platform_data), GFP_KERNEL);
++	if (!data) {
++		printk(KERN_ERR "%s: can't alloc data\n", __func__);
++		return -ENOMEM;
++	}
++	memcpy(data, &kirkwood_soc_data,
++		sizeof(struct kirkwood_soc_platform_data));
++	openrd_client_snd_device->dev.platform_data = data;
++
++	ret = platform_device_add_resources(openrd_client_snd_device,
++					kirkwood_audio_resources,
++					ARRAY_SIZE(kirkwood_audio_resources));
++	if (ret) {
++		printk(KERN_ERR "%s: Failed to add ressources\n", __func__);
++		return ret;
++	}
++
++	ret = platform_device_add(openrd_client_snd_device);
++	if (ret) {
++		printk(KERN_ERR "%s: platform_device_add failed\n", __func__);
++		platform_device_put(openrd_client_snd_device);
++	}
++
++	return ret;
++}
++
++static void __exit openrd_client_exit(void)
++{
++	platform_device_unregister(openrd_client_snd_device);
++	i2c_unregister_device(cs42l51_client);
++}
++
++module_init(openrd_client_init);
++module_exit(openrd_client_exit);
++
++/* Module information */
++MODULE_AUTHOR("Arnaud Patard <apatard@mandriva.com>");
++MODULE_DESCRIPTION("ALSA SoC OpenRD Client");
++MODULE_LICENSE("GPL");
++
