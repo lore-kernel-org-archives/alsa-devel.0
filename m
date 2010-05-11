@@ -1,17 +1,20 @@
-From: Alex Chernyshoff <alexdsp@gmail.com>
-Subject: =?utf-8?q?ESI_Maya44_PCI_=E2=80=93_mixer_code_errors?=
-Date: Wed, 12 May 2010 00:54:12 +0400
-Message-ID: <AANLkTinE7OQYL03uPktXEXxzDwsLDewW9ylmBxt3tTUE@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 1/2] ALSA: include/linux/usb/audio.h: add
+ __attribute__((packed))
+Date: Wed, 12 May 2010 00:50:54 +0200
+Message-ID: <20100511225054.GL30801@buzzloop.caiaq.de>
+References: <1273594430-9356-1-git-send-email-daniel@caiaq.de>
+	<s5hd3x2p3ds.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.145])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E06910385C
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id B76A210380A
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 May 2010 22:54:14 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 5so57996eyb.16
-	for <alsa-devel@alsa-project.org>; Tue, 11 May 2010 13:54:13 -0700 (PDT)
+	Wed, 12 May 2010 00:51:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hd3x2p3ds.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,59 +24,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8hCgpJbiB0aGUgY3VycmVudCByZWxlYXNlIG9mIEVTSSBNYXlhNDQgUENJIEFMU0EgZHJp
-dmVyICgxLjAuMjMpIHNlbGVjdGlvbiBvZgrigJxNaWMgSW7igJ0gY2FwdHVyZSBzb3VyY2UgaXMg
-aW1wb3NzaWJsZS4g4oCcTWljcm9waG9uZeKAnSBjaGVjayBpbiB0aGUg4oCcU3dpdGNoZXMg4oCc
-Cm1peGVyIHRhYiBhY3R1YWxseSBkb2VzIG5vdCBzZWxlY3QgYW55dGhpbmcg4oCTIG5vIHJlY29y
-ZGluZyBhdWRpbyBhdCBhbGwsIGFuZAp0aGUgUGhhbnRvbSBwb3dlciBzd2l0Y2ggZG9lcyBub3Qg
-cGVyZm9ybSBjb3JyZWN0bHkgdG9vLgoKT3JpZ2luYWwsIFJhaW5lciBaaW1tZXJtYW5uIHBhdGNo
-IChmb3IgQUxTQSAxLjAuMTkpIHBlcmZvcm1zIHdlbGwsIGJ1dCBjYW5gdApiZSBjb21waWxlZCB3
-aXRoIHRoZSBjdXJyZW50IEFMU0EgYW5kIGtlcm5lbDI2LiBTYWRseS4uLgoKCiBJJ3ZlIGxvb2sg
-aW50byBjdXJyZW50LCByZXdyaXR0ZW4sIGNvZGUgaW4gdGhlIGZpbGUKLi9hbHNhLWRyaXZlci0x
-LjAuMjMvYWxzYS1rZXJuZWwvcGNpL2ljZTE3MTIvbWF5YTQ0LmMKCmFuZCBmb3VuZCBzb21lIGlu
-dGVyZXN0aW5nIGRldGFpbHMuIEZ1cnRoZXIsIEkndmUgYWRkIHNvbWUgY2hhbmdlcywgYW5kIOKA
-nE1pYwpJbuKAnSBzZWxlY3Rpb24gbm93IHdvcmtzLCBidXQgb25seSBwYXJ0aWFsbHkuIChCZWxv
-dykKCgogSW4gdGhlIG9yaWdpbmFsIG1heWE0NC5jIGZpbGUsIGZyb20gUmFpbmVyIFppbW1lcm1h
-bm4gcGF0Y2gsIHNvbWUKZGVmaW5pdGlvbnMgb2YgSS9PIGZsYWdzIHNlZW1zIGFzIGEgc2ltcGxl
-IG1hc2s6CiNkZWZpbmUgR1BJT19QSEFOVE9NX09GRiAoMTw8MikKI2RlZmluZSBHUElPX01JQ19S
-RUxBWSAoMTw8NCkKI2RlZmluZSBHUElPX1NQRElGX0lOX0lOViAoMTw8NSkgLyogQ0hFQ0shICov
-CiNkZWZpbmUgR1BJT19NVVNUX0JFXzAgKDE8PDcpCgoKIEN1cnJlbnQgYnJhbmNoIG9mIE1heWE0
-NCBjb2RlIGlzIHJld3JpdHRlbiwgYW5kIHRoZXNlIGRlZmluaXRpb25zIGxvb2sgbGlrZQp0aGUg
-aW5kZXhlcwojZGVmaW5lIEdQSU9fUEhBTlRPTV9PRkYgMgojZGVmaW5lIEdQSU9fTUlDX1JFTEFZ
-IDQKI2RlZmluZSBHUElPX1NQRElGX0lOX0lOViA1CiNkZWZpbmUgR1BJT19NVVNUX0JFXzAgNwoK
-CiBTbywgYXQgdGhlIHJvdyAzOTYgb2YgdGhlIGN1cnJlbnQgYnJhbmNoIC0gbWF5YTQ0LmMKCgog
-Y2hhbmdlZCA9IG1heWFfc2V0X2dwaW9fYml0cyhjaGlwLT5pY2UsIEdQSU9fTUlDX1JFTEFZLAoK
-c2VsID8gR1BJT19NSUNfUkVMQVkgOiAwKTsKCgogSSBjaGFuZ2UgdGhpcyBjb2RlIHRvOgoKCiBj
-aGFuZ2VkID0gbWF5YV9zZXRfZ3Bpb19iaXRzKGNoaXAtPmljZSwgKDEgPDwgR1BJT19NSUNfUkVM
-QVkpLAoKc2VsID8gKDEgPDwgR1BJT19NSUNfUkVMQVkpIDogMCk7CgoKCiBBbmQgZmluYWxseSwg
-YXQgdGhlIHJvdyAzNDggb2YgdGhlIGN1cnJlbnQgbWF5YTQ0LmMKCi8qIGtub3duIHdvcmtpbmcg
-aW5wdXQgc2xvdHMgKDAtNCkgKi8KCiNkZWZpbmUgTUFZQV9MSU5FX0lOIDEgLyogaW4tMiAqLwoK
-I2RlZmluZSBNQVlBX01JQ19JTiA0IC8qIGluLTUgKi8KCgogYnV0IHVzYWJsZSBjaGFubmVscyBh
-cmUgMiBhbmQgNCAoZnJvbSBkYXRhc2hlZXQpLCB0aGVyZWZvcmUgSSBjaGFuZ2UKZGVmaW5lcyB0
-bwoKCiAjZGVmaW5lIE1BWUFfTElORV9JTiAxIC8qIGluLTIgKi8KCiNkZWZpbmUgTUFZQV9NSUNf
-SU4gMyAvKiBpbi00ICovCgoKIEFmdGVyIHRoYXQsIHdlIGNhbiBnZXQgc29tZSB1c2FiaWxpdHkg
-ZnJvbSBtaXhlci4KCk5vdywgdGhlIOKAnE1pY3JvcGhvbmXigJ0gY2hlY2sgY2FuIHNlbGVjdCDi
-gJxNaWMgSW7igJ0sIGFuZCByZWFsIGF1ZGlvIHBhdGggZnJvbQptaWNyb3Bob25lIHRvIEFEQyB3
-b3JrcyEgQnV0IG9ubHkgb25jZS4gQWZ0ZXIgdGhhdCwgaW4gdGhlIOKAnENhcHR1cmXigJ0gdGFi
-IG9mCm1peGVyLCDigJxNdXRl4oCdIGtub2IgdmlzdWFsbHkgY2hhbmdlIHN0YXRlIHRvIG11dGVk
-LiBTb21lIGtpbmQgb2Ygc3RyYW5nZQpjcm9zcyBpbmZsdWVuY2UgYmV0d2VlbiBtaXhlciB0YWJz
-IDotKSBQcmVzc2luZyB0byB0aGlzIOKAnE11dGXigJ0ga25vYiBzd2l0Y2hlcwpiYWNrIOKAnE1p
-YyBJbuKAnSBjYXB0dXJlIHNvdXJjZSB0byDigJxMaW5l4oCdLCBhbmQgY2xlYXIgUGhhbnRvbSBQ
-b3dlciBjaGVjay4gKFZlcnkKc3RyYW5nZSkgQW5kIGZpbmFsbHksIGlmIHdlIGNoZWNrIOKAnE1p
-Y3JvcGhvbmXigJ0gYWdhaW4gLSDigJxNaWMgSW7igJ0gYmVjYW1lCnNlbGVjdGVkIGFnYWluLCBh
-bmQg4oCcTXV0ZeKAnSBlbnRlciBpbiDigJx1bnByZXNzZWTigJ0gc3RhdGUgYWdhaW4gdG9vLiBC
-dXQKbWljcm9waG9uZSBjYXB0dXJlIGJlY2FtZSBhZ2FpbiBvcGVyYWJsZS4gQ2lyY2xlIGlzIGNs
-b3NlZC4KCkV4Y3VzZSBtZSBmb3Igc29tZSBraW5kIG9mIG1lc3NlZCBzdG9yeSBhbmQgcG9vciBF
-bmdsaXNoIChteSBuYXRpdmUgaXMKUnVzc2lhbiksIGJ1dCBzdWNoIGRlc2NyaXB0aW9uIG9mIG1p
-eGVyIGJlaGF2aW9yIG1heWJlIHVzZWZ1bCBmb3IKdW5kZXJzdGFuZGluZy4uLgoKCiBJIGNhbid0
-IHJlc29sdmUgbW9yZSBtaXN0YWtlcyBpbiB0aGUgY29kZS4gUGVyaGFwcywgYXV0aG9yIGNhbiBk
-byBpdCBtb3JlCmJldHRlciB0aGFuIG1lLgoKSSBoYXZlIGEgaGFyZHdhcmUg4oCTIEVTSSBNYXlh
-NDQgUENJIGF1ZGlvIGJvYXJkIGluc3RhbGxlZCB0byB3b3JraW5nIGFuZAp1c2FibGUgQXJjaCBM
-aW51eCBpNjg2IHN5c3RlbS4gSSdtIHJlYWR5IGZvciB0ZXN0aW5nLCBhbmQgZ2xhZCB0byBkbyBp
-dCEKCgpTaW5jZXJlbHkKQWxleCBDaGVybnlzaG9mZgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Tue, May 11, 2010 at 10:52:47PM +0200, Takashi Iwai wrote:
+> At Tue, 11 May 2010 18:13:49 +0200,
+> Daniel Mack wrote:
+> > 
+> > This was missing on the definition of struct uac_iso_endpoint_descriptor
+> > 
+> > Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> > Cc: Takashi Iwai <tiwai@suse.de>
+> > Cc: Clemens Ladisch <clemens@ladisch.de>
+> 
+> Applied these fixes now.  Thanks.
+
+Thanks! One of the noted TODOs is that UAC2 offers the ability to a
+device to dynamically change the supported range of options for a given
+control. So an enum-driven control can get new values, lose some,
+whatever. What would be the best way to map that to ALSA controls?
+
+Another thing that we would need to support at some time is clock
+selectors to switch from an internal clock to some external one. And
+this can also be notfied dynamically - so for example: once an external
+S/PDIF transmitter is connected, the driver gets informed about a new
+valid clock source. I haven't found anything how this could be passed on
+to higher levels from a driver, but I might have missed something :)
+
+Daniel
