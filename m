@@ -1,18 +1,17 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 2/2] ALSA: sound/usb: add preliminary support
-	for UAC2 interrupts
-Date: Tue, 11 May 2010 18:13:50 +0200
-Message-ID: <1273594430-9356-2-git-send-email-daniel@caiaq.de>
-References: <1273594430-9356-1-git-send-email-daniel@caiaq.de>
+From: apatard@mandriva.com
+Subject: [patch 1/6] kirkwood: add audio functions.
+Date: Tue, 11 May 2010 18:23:43 +0200
+Message-ID: <20100511162601.375878707@mandriva.com>
+References: <20100511162342.640158675@mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 48E81248E0
+Received: from jules.rtp-net.org (sat78-1-82-232-42-61.fbx.proxad.net
+	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id 74D0F248EB
 	for <alsa-devel@alsa-project.org>;
-	Tue, 11 May 2010 18:14:39 +0200 (CEST)
-In-Reply-To: <1273594430-9356-1-git-send-email-daniel@caiaq.de>
+	Tue, 11 May 2010 18:26:01 +0200 (CEST)
+Content-Disposition: inline; filename=kirkwood_add_audio_dev.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,216 +22,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+Cc: Arnaud Patard <apatard@mandriva.com>, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, nico@fluxnic.net, tbm@cyrius.com
 List-Id: alsa-devel@alsa-project.org
 
-For both UAC1 and UAC2, interrupt endpoint messages are now parsed with
-structs rather that with anonymous buffer array accesses.
+This patch add audio related definitions and functions
 
-For UAC2, only CUR interrupt notifications are supported for now.
 
-snd_usb_mixer_status_complete() was renamed to
-snd_usb_mixer_interrupt().
-
-Fixed one indentation flaw on the way.
-
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>
+Signed-off-by: Arnaud Patard <apatard@mandriva.com>
 ---
- include/linux/usb/audio-v2.h |   12 +++++
- include/linux/usb/audio.h    |   15 ++++++
- sound/usb/mixer.c            |   98 ++++++++++++++++++++++++++++++++++++------
- 3 files changed, 112 insertions(+), 13 deletions(-)
+ arch/arm/mach-kirkwood/common.c                |    9 	9 +	0 -	0 !
+ arch/arm/mach-kirkwood/common.h                |    2 	2 +	0 -	0 !
+ arch/arm/mach-kirkwood/include/mach/audio.h    |   13 	13 +	0 -	0 !
+ arch/arm/mach-kirkwood/include/mach/kirkwood.h |    3 	3 +	0 -	0 !
+ 4 files changed, 27 insertions(+)
+ create mode 100644 include/linux/mv88fx_audio.h
+ create mode 100644 sound/soc/kirkwood/Kconfig
+ create mode 100644 sound/soc/kirkwood/Makefile
+ create mode 100644 sound/soc/kirkwood/cs42l51.c
+ create mode 100644 sound/soc/kirkwood/cs42l51.h
+ create mode 100644 sound/soc/kirkwood/kirkwood_audio_hal.c
+ create mode 100644 sound/soc/kirkwood/kirkwood_audio_hal.h
+ create mode 100644 sound/soc/kirkwood/kirkwood_audio_regs.h
+ create mode 100644 sound/soc/kirkwood/kirkwood_pcm.c
 
-diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
-index 0952231..2389f93 100644
---- a/include/linux/usb/audio-v2.h
-+++ b/include/linux/usb/audio-v2.h
-@@ -105,6 +105,17 @@ struct uac_as_header_descriptor_v2 {
- 	__u8 iChannelNames;
- } __attribute__((packed));
- 
-+/* 6.1 Interrupt Data Message */
-+
-+#define UAC2_INTERRUPT_DATA_MSG_VENDOR	(1 << 0)
-+#define UAC2_INTERRUPT_DATA_MSG_EP	(1 << 1)
-+
-+struct uac2_interrupt_data_msg {
-+	__u8 bInfo;
-+	__u8 bAttribute;
-+	__le16 wValue;
-+	__le16 wIndex;
-+} __attribute__((packed));
- 
- /* A.7 Audio Function Category Codes */
- #define UAC2_FUNCTION_SUBCLASS_UNDEFINED	0x00
-@@ -153,6 +164,7 @@ struct uac_as_header_descriptor_v2 {
- /* A.14 Audio Class-Specific Request Codes */
- #define UAC2_CS_CUR			0x01
- #define UAC2_CS_RANGE			0x02
-+#define UAC2_CS_MEM			0x03
- 
- /* A.15 Encoder Type Codes */
- #define UAC2_ENCODER_UNDEFINED		0x00
-diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
-index 9fae6bd..c0ef18d 100644
---- a/include/linux/usb/audio.h
-+++ b/include/linux/usb/audio.h
-@@ -488,6 +488,21 @@ struct uac_iso_endpoint_descriptor {
- #define UAC_FU_BASS_BOOST	(1 << (UAC_BASS_BOOST_CONTROL - 1))
- #define UAC_FU_LOUDNESS		(1 << (UAC_LOUDNESS_CONTROL - 1))
- 
-+/* status word format (3.7.1.1) */
-+
-+#define UAC1_STATUS_TYPE_ORIG_MASK		0x0f
-+#define UAC1_STATUS_TYPE_ORIG_AUDIO_CONTROL_IF	0x0
-+#define UAC1_STATUS_TYPE_ORIG_AUDIO_STREAM_IF	0x1
-+#define UAC1_STATUS_TYPE_ORIG_AUDIO_STREAM_EP	0x2
-+
-+#define UAC1_STATUS_TYPE_IRQ_PENDING		(1 << 7)
-+#define UAC1_STATUS_TYPE_MEM_CHANGED		(1 << 6)
-+
-+struct uac1_status_word {
-+	__u8 bStatusType;
-+	__u8 bOriginator;
-+} __attribute__((packed));
-+
- #ifdef __KERNEL__
- 
- struct usb_audio_control {
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index fa0fb77..97dd176 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1443,8 +1443,8 @@ static struct procunit_info procunits[] = {
-  * predefined data for extension units
-  */
- static struct procunit_value_info clock_rate_xu_info[] = {
--       { USB_XU_CLOCK_RATE_SELECTOR, "Selector", USB_MIXER_U8, 0 },
--       { 0 }
-+	{ USB_XU_CLOCK_RATE_SELECTOR, "Selector", USB_MIXER_U8, 0 },
-+	{ 0 }
- };
- static struct procunit_value_info clock_source_xu_info[] = {
- 	{ USB_XU_CLOCK_SOURCE_SELECTOR, "External", USB_MIXER_BOOLEAN },
-@@ -1967,26 +1967,98 @@ static void snd_usb_mixer_proc_read(struct snd_info_entry *entry,
- 	}
- }
- 
--static void snd_usb_mixer_status_complete(struct urb *urb)
-+static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
-+				       int attribute, int value, int index)
-+{
-+	struct usb_mixer_elem_info *info;
-+	__u8 unitid = (index >> 8) & 0xff;
-+	__u8 control = (value >> 8) & 0xff;
-+	__u8 channel = value & 0xff;
-+
-+	if (channel >= MAX_CHANNELS) {
-+		snd_printk(KERN_DEBUG "%s(): bogus channel number %d\n",
-+				__func__, channel);
-+		return;
-+	}
-+
-+	for (info = mixer->id_elems[unitid]; info; info = info->next_id_elem) {
-+		if (info->control != control)
-+			continue;
-+
-+		switch (attribute) {
-+		case UAC2_CS_CUR:
-+			/* invalidate cache, so the value is read from the device */
-+			if (channel)
-+				info->cached &= ~(1 << channel);
-+			else /* master channel */
-+				info->cached = 0;
-+
-+			snd_ctl_notify(mixer->chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
-+					info->elem_id);
-+			break;
-+
-+		case UAC2_CS_RANGE:
-+			/* TODO */
-+			break;
-+
-+		case UAC2_CS_MEM:
-+			/* TODO */
-+			break;
-+
-+		default:
-+			snd_printk(KERN_DEBUG "unknown attribute %d in interrupt\n",
-+						attribute);
-+			break;
-+		} /* switch */
-+	}
-+}
-+
-+static void snd_usb_mixer_interrupt(struct urb *urb)
- {
- 	struct usb_mixer_interface *mixer = urb->context;
-+	int len = urb->actual_length;
-+
-+	if (urb->status != 0)
-+		goto requeue;
- 
--	if (urb->status == 0) {
--		u8 *buf = urb->transfer_buffer;
--		int i;
-+	if (mixer->protocol == UAC_VERSION_1) {
-+		struct uac1_status_word *status;
- 
--		for (i = urb->actual_length; i >= 2; buf += 2, i -= 2) {
-+		for (status = urb->transfer_buffer;
-+		     len >= sizeof(*status);
-+		     len -= sizeof(*status), status++) {
- 			snd_printd(KERN_DEBUG "status interrupt: %02x %02x\n",
--				   buf[0], buf[1]);
-+						status->bStatusType,
-+						status->bOriginator);
-+
- 			/* ignore any notifications not from the control interface */
--			if ((buf[0] & 0x0f) != 0)
-+			if ((status->bStatusType & UAC1_STATUS_TYPE_ORIG_MASK) !=
-+				UAC1_STATUS_TYPE_ORIG_AUDIO_CONTROL_IF)
- 				continue;
--			if (!(buf[0] & 0x40))
--				snd_usb_mixer_notify_id(mixer, buf[1]);
-+
-+			if (status->bStatusType & UAC1_STATUS_TYPE_MEM_CHANGED)
-+				snd_usb_mixer_rc_memory_change(mixer, status->bOriginator);
- 			else
--				snd_usb_mixer_rc_memory_change(mixer, buf[1]);
-+				snd_usb_mixer_notify_id(mixer, status->bOriginator);
-+		}
-+	} else { /* UAC_VERSION_2 */
-+		struct uac2_interrupt_data_msg *msg;
-+
-+		for (msg = urb->transfer_buffer;
-+		     len >= sizeof(*msg);
-+		     len -= sizeof(*msg), msg++) {
-+			/* drop vendor specific and endpoint requests */
-+			if ((msg->bInfo & UAC2_INTERRUPT_DATA_MSG_VENDOR) ||
-+			    (msg->bInfo & UAC2_INTERRUPT_DATA_MSG_EP))
-+				continue;
-+
-+			snd_usb_mixer_interrupt_v2(mixer, msg->bAttribute,
-+						   le16_to_cpu(msg->wValue),
-+						   le16_to_cpu(msg->wIndex));
- 		}
- 	}
-+
-+requeue:
- 	if (urb->status != -ENOENT && urb->status != -ECONNRESET) {
- 		urb->dev = mixer->chip->dev;
- 		usb_submit_urb(urb, GFP_ATOMIC);
-@@ -2023,7 +2095,7 @@ static int snd_usb_mixer_status_create(struct usb_mixer_interface *mixer)
- 	usb_fill_int_urb(mixer->urb, mixer->chip->dev,
- 			 usb_rcvintpipe(mixer->chip->dev, epnum),
- 			 transfer_buffer, buffer_length,
--			 snd_usb_mixer_status_complete, mixer, ep->bInterval);
-+			 snd_usb_mixer_interrupt, mixer, ep->bInterval);
- 	usb_submit_urb(mixer->urb, GFP_KERNEL);
+Index: linux-2.6.33/arch/arm/mach-kirkwood/common.c
+===================================================================
+--- linux-2.6.33.orig/arch/arm/mach-kirkwood/common.c	2010-05-11 17:51:25.537649820 +0200
++++ linux-2.6.33/arch/arm/mach-kirkwood/common.c	2010-05-11 17:52:39.790150263 +0200
+@@ -25,6 +25,7 @@
+ #include <asm/mach/time.h>
+ #include <mach/kirkwood.h>
+ #include <mach/bridge-regs.h>
++#include <mach/audio.h>
+ #include <plat/cache-feroceon-l2.h>
+ #include <plat/ehci-orion.h>
+ #include <plat/mvsdio.h>
+@@ -977,3 +978,11 @@ static int __init kirkwood_clock_gate(vo
  	return 0;
  }
--- 
-1.7.1
+ late_initcall(kirkwood_clock_gate);
++
++/*****************************************************************************
++ * Audio
++ ****************************************************************************/
++void __init kirkwood_audio_init(struct kirkwood_soc_platform_data *audio_data)
++{
++	kirkwood_clk_ctrl |= CGC_AUDIO;
++}
+Index: linux-2.6.33/arch/arm/mach-kirkwood/common.h
+===================================================================
+--- linux-2.6.33.orig/arch/arm/mach-kirkwood/common.h	2010-05-11 17:51:25.641649839 +0200
++++ linux-2.6.33/arch/arm/mach-kirkwood/common.h	2010-05-11 17:52:39.790150263 +0200
+@@ -16,6 +16,7 @@ struct mv643xx_eth_platform_data;
+ struct mv_sata_platform_data;
+ struct mvsdio_platform_data;
+ struct mtd_partition;
++struct kirkwood_soc_platform_data;
+ 
+ /*
+  * Basic Kirkwood init functions used early by machine-setup.
+@@ -41,6 +42,7 @@ void kirkwood_i2c_init(void);
+ void kirkwood_uart0_init(void);
+ void kirkwood_uart1_init(void);
+ void kirkwood_nand_init(struct mtd_partition *parts, int nr_parts, int delay);
++void kirkwood_audio_init(struct kirkwood_soc_platform_data *audio_data);
+ 
+ extern int kirkwood_tclk;
+ extern struct sys_timer kirkwood_timer;
+Index: linux-2.6.33/arch/arm/mach-kirkwood/include/mach/kirkwood.h
+===================================================================
+--- linux-2.6.33.orig/arch/arm/mach-kirkwood/include/mach/kirkwood.h	2010-05-11 17:51:25.585649926 +0200
++++ linux-2.6.33/arch/arm/mach-kirkwood/include/mach/kirkwood.h	2010-05-11 17:52:39.790150263 +0200
+@@ -96,6 +96,9 @@
+ 
+ #define SDIO_PHYS_BASE		(KIRKWOOD_REGS_PHYS_BASE | 0x90000)
+ 
++#define AUDIO_PHYS_BASE		(KIRKWOOD_REGS_PHYS_BASE | 0xA0000)
++#define AUDIO_VIRT_BASE		(KIRKWOOD_REGS_VIRT_BASE | 0xA0000)
++
+ /*
+  * Supported devices and revisions.
+  */
+Index: linux-2.6.33/arch/arm/mach-kirkwood/include/mach/audio.h
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.33/arch/arm/mach-kirkwood/include/mach/audio.h	2010-05-11 17:52:39.790150263 +0200
+@@ -0,0 +1,13 @@
++#ifndef __MACH_AUDIO_H
++#define __MACH_AUDIO_H
++
++#include <linux/mbus.h>
++
++struct kirkwood_soc_platform_data {
++	u32 tclk;
++	struct mbus_dram_target_info *dram;
++};
++
++extern struct kirkwood_soc_platform_data kirkwood_soc_data;
++
++#endif
