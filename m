@@ -1,22 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Wed, 12 May 2010 20:15:22 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1005122012270.6856@eeebox2.perex-int.cz>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<20100507232516.GB16910@tango.0pointer.de>
-	<s2r6160a5131005072012o24609ce9q421ed2def04e4728@mail.gmail.com>
-	<AANLkTimUaGy7NirNI78duHwGe3V72s_1eUiby_Rb_dRq@mail.gmail.com>
-	<alpine.LNX.2.00.1005121452230.6856@eeebox2.perex-int.cz>
-	<AANLkTilFAbNRyYFCX-gjAIkUSL01OyRyqNnbhu0Bb5bC@mail.gmail.com>
+From: Thoralf Freitag <thoralf.freitag@cactus-online.de>
+Subject: Re: HP dv series mute LED problems?
+Date: Wed, 12 May 2010 21:55:50 +0200
+Message-ID: <4BEB07C6.9000906@cactus-online.de>
+References: <201005120025.07730.kunal.gangakhedkar@gmail.com>	<s5hljbqp4q9.wl%tiwai@suse.de>
+	<s5hfx1yp3x2.wl%tiwai@suse.de>	<201005121133.06375.kunal.gangakhedkar@gmail.com>
+	<s5hvdatsg7q.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id AE886244E0
+Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.17.10])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1BED924525
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 May 2010 20:15:22 +0200 (CEST)
-In-Reply-To: <AANLkTilFAbNRyYFCX-gjAIkUSL01OyRyqNnbhu0Bb5bC@mail.gmail.com>
+	Wed, 12 May 2010 21:56:09 +0200 (CEST)
+In-Reply-To: <s5hvdatsg7q.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,23 +23,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA Devel List <alsa-devel@alsa-project.org>, Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 12 May 2010, pl bossart wrote:
+Takashi Iwai schrieb:
+> At Wed, 12 May 2010 11:33:06 +0530,
+> Kunal Gangakhedkar wrote:
+>   
+>> On Wednesday 12 May 2010 2:11:13 am Takashi Iwai wrote:
+>>     
+>>> At Tue, 11 May 2010 22:23:42 +0200,
+>>> I wrote:
+>>>       
+>>>> At Wed, 12 May 2010 00:25:07 +0530,
+>>>> Kunal Gangakhedkar wrote:
+>>>>         
+>>>>> Hi Takashi,
+>>>>>
+>>>>> The commit 26ebe0a28986f4845b2c5bea43ac5cc0b9f27f0a seems to undo the mute LED
+>>>>> gpio fixes - at least on my dv6 series laptop.
+>>>>>
+>>>>> Maybe, we need to come up with a better solution to accommodate the problem 
+>>>>> reported in this thread:
+>>>>> http://mailman.alsa-project.org/pipermail/alsa-devel/2010-May/027352.html
+>>>>> I believe, that's the reason for the commit, right?
+>>>>>           
+>>>> Yes.  And as I checked the previous code, actually dv4 took GPIO 0.
+>>>> That's why I added it there back.
+>>>>
+>>>> But, hmm, then it's really depending on the dv model number.
+>>>> Which PCI / codec SSID does your device have?
+>>>>         
+>>> As a compromise, how about the additional patch below?
+>>>
+>>>
+>>>       
+>> Yes, this patch fixes the problems on my dv6 machine and 
+>> looks reasonable to me.
+>>
+>> However, we need confirmation from Thoralf - whether it works for him too.
+>> I don't know if STAC_HP_DV4 can be reused for dv7 series machines - since I
+>> don't have access to verify it.
+>>     
+>
+> The PCI SSID was already given from his alsa-info.sh output.
+> Actually, dv4 and dv7 seem to have very similar implementations and
+> almost same SSIDs.
+>
+>   
+>> Tested-by: Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com> (for dv6-1110ax)
+>> Acked-by: Kunal Gangakhedkar <kunal.gangakhedkar@gmail.com>
+>>     
+>
+> thanks,
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>   
 
-> ok. It works just fine now. Can I send a patch against alsa-kmirror or
-> do you prefer against alsa-kernel? I use the former to recompile only
-> the audio modules.
+Hi Takashi,
 
-It does not matter. I accept both forms (the diffence between trees is 
-minimal). Also, you can use alsa-driver with alsa-kernel trees too now 
-(the latest gitcompile script in alsa-driver handles this option as well).
 
- 					Jaroslav
+sorry for my delay. I've a heavy workload with my job.
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+
+
+Try applying the patch, there is one error. IMHO it isn't a problem because my alsa-driver-1.0.23 patch_sigmatel.c file doesn't contain the line
+
+-               spec->gpio_led = 0x01;
+
+at this place.
+
+
+
+
+Hunk #2 succeeded at 1690 (offset -2 lines).
+Hunk #3 succeeded at 1703 (offset -2 lines).
+Hunk #4 succeeded at 1722 (offset -2 lines).
+Hunk #5 succeeded at 5676 (offset -5 lines).
+Hunk #6 FAILED at 5687.
+Hunk #7 succeeded at 5747 (offset -7 lines).
+
+1 out of 7 hunks FAILED -- saving rejects to file
+sound/pci/hda/patch_sigmatel.c.rej
+
+
+Here the content of patch_sigmatel.c.rej
+
+
+*************** again:
+*** 5681,5687 ****
+                 * detection.
+                 */
+                spec->hp_detect = 1;
+-               spec->gpio_led = 0x01;
+                break;
+        case STAC_HP_HDX:
+                spec->num_dmics = 1;
+--- 5687,5692 ----
+                 * detection.
+                 */
+                spec->hp_detect = 1;
+                break;
+        case STAC_HP_HDX:
+                spec->num_dmics = 1;
+
+
+But the patch doesn't solve the problem. Like before, the mute led isn't switched on/off (whithe/orange). Maybe set_hp_led_gpio overwrites the value for gpio_led, which is set static before ?
+
+Thoralf
