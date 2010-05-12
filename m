@@ -1,20 +1,26 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/2] ALSA: include/linux/usb/audio.h: add
-	__attribute__((packed))
-Date: Wed, 12 May 2010 08:41:28 +0200
-Message-ID: <4BEA4D98.5010900@ladisch.de>
-References: <1273594430-9356-1-git-send-email-daniel@caiaq.de>
-	<s5hd3x2p3ds.wl%tiwai@suse.de>
-	<20100511225054.GL30801@buzzloop.caiaq.de>
+From: saeed bishara <saeed.bishara@gmail.com>
+Subject: Re: [patch 0/6] kirkwood openrd client audio support
+Date: Wed, 12 May 2010 06:47:36 +0000 (UTC)
+Message-ID: <loom.20100512T084431-320@post.gmane.org>
+References: <20100511162342.640158675@mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A796A24448
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id CF8172494A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 May 2010 08:41:35 +0200 (CEST)
-In-Reply-To: <20100511225054.GL30801@buzzloop.caiaq.de>
+	Wed, 12 May 2010 08:50:03 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OC5lb-0003LU-CZ
+	for alsa-devel@alsa-project.org; Wed, 12 May 2010 08:50:03 +0200
+Received: from galiil.marvell.com ([199.203.130.254])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 12 May 2010 08:50:03 +0200
+Received: from saeed.bishara by galiil.marvell.com with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 12 May 2010 08:50:03 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +30,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
-> ...
-> Thanks! One of the noted TODOs is that UAC2 offers the ability to a
-> device to dynamically change the supported range of options for a given
-> control. So an enum-driven control can get new values, lose some,
-> whatever. What would be the best way to map that to ALSA controls?
+ <apatard <at> mandriva.com> writes:
 
-The control callbacks accept and return the new values; userspace
-gets notified of the changed control information with
-snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_INFO, &elem_id);
+> 
+> 
+> This patchset aims at adding ASoC support to ARM kirkwood systems and
+> more precisely to openrd client boards.
+> 
+> Arnaud Patard
+> 
 
-I'm quite sure that alsamixer can cope with this, but I don't know
-about any other mixers. :)
+Hi Arnaud,
+   this i2s controller was first added into the Orion-1-90 (88F6183), and also
+it's found on dove soc. so can you please rename to orion to make more generic?
 
-I think "alsactl restore" already does the right thing for controls
-that have changed.
-
-> Another thing that we would need to support at some time is clock
-> selectors to switch from an internal clock to some external one. And
-> this can also be notfied dynamically - so for example: once an external
-> S/PDIF transmitter is connected, the driver gets informed about a new
-> valid clock source. I haven't found anything how this could be passed on
-> to higher levels from a driver, but I might have missed something :)
-
-With a mixer control "Clock Source", of course. :)
-Or are you talking about new samples rates made available?
-
-
-Regards,
-Clemens
+saeed
