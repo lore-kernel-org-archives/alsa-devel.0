@@ -1,43 +1,48 @@
-From: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Re: Use of start_frame in usbusx2yaudio.c
-Date: Wed, 12 May 2010 08:21:37 -0700
-Message-ID: <20100512152137.GA3358@xanatos>
-References: <20100512051058.GA32459@xanatos>
- <Pine.LNX.4.44L0.1005121051040.1962-100000@iolanthe.rowland.org>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: [alsa-devel] [RFC] disabling ALSA period
+	interrupts
+Date: Wed, 12 May 2010 12:10:13 -0500
+Message-ID: <AANLkTilFAbNRyYFCX-gjAIkUSL01OyRyqNnbhu0Bb5bC@mail.gmail.com>
+References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
+	<20100507232516.GB16910@tango.0pointer.de>
+	<s2r6160a5131005072012o24609ce9q421ed2def04e4728@mail.gmail.com>
+	<AANLkTimUaGy7NirNI78duHwGe3V72s_1eUiby_Rb_dRq@mail.gmail.com>
+	<alpine.LNX.2.00.1005121452230.6856@eeebox2.perex-int.cz>
+Reply-To: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44L0.1005121051040.1962-100000-IYeN2dnnYyZXsRXLowluHWD2FQJk+8+b@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Alan Stern <stern-nwvwT67g6+6dFdvTe/nMLpVzexx5G7lz@public.gmane.org>
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Tejun Heo <tj-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Christoph Lameter <cl-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>, USB list <linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Kernel development list <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <pulseaudio-discuss-bounces@mail.0pointer.de>
+In-Reply-To: <alpine.LNX.2.00.1005121452230.6856@eeebox2.perex-int.cz>
+List-Unsubscribe: <https://tango.0pointer.de/mailman/options/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=unsubscribe>
+List-Archive: <https://tango.0pointer.de/pipermail/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@mail.0pointer.de>
+List-Help: <mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=help>
+List-Subscribe: <https://tango.0pointer.de/mailman/listinfo/pulseaudio-discuss>,
+	<mailto:pulseaudio-discuss-request@mail.0pointer.de?subject=subscribe>
+Sender: pulseaudio-discuss-bounces@mail.0pointer.de
+Errors-To: pulseaudio-discuss-bounces@mail.0pointer.de
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 12, 2010 at 10:54:23AM -0400, Alan Stern wrote:
-> On Tue, 11 May 2010, Sarah Sharp wrote:
-> 
-> > Are there any drivers in the kernel that set urb->start_frame on every
-> > URB?
-> > 
-> > Could those drivers handle it if only the first URB they submitted to
-> > the host controller was scheduled for that frame ID, and all the rest of
-> > the URBs were scheduled ASAP?
-> 
-> BTW, urb->start_frame generally is ignored as an input parameter.  Many 
-> host controller drivers pay no attention to it.  Unless someone has a 
-> real reason, I think we are better off not using it.
+> Please, use tabs for block indention for alsa-lib.
 
-Oh good.  In theory, the xHCI driver is supposed to be able to set the
-starting frame ID of an isoc transfer (although the current patches for
-isoc don't do that).  The xHCI spec writers were looking at limiting
-software to only being able to set the frame ID on the very first
-transfer you enqueue to the endpoint, to limit the complexity of the
-hardware scheduler.  It looks like they won't have an issue with legacy
-drivers if they do.
+Right, I used the same .emacs style for pa and alsa-lib...Fixed now
 
-Sarah Sharp
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Are you sure that you're using new libraries? 'ldd' and 'nm' tools will help
+> you to determine what's wrong with symbols.
+
+Argh.. For some reason Fedora has a preinstalled libasound in
+/lib...So when I installed the new alsa-lib in /usr, PA knew about the
+include file but used the old lib. Thanks for the tip.
+
+
+> Ignore this. I don't know about any place where r->cond is used (!= 0) in
+> the current ALSA driver, so eating one more bit from params->flags is OK.
+> Just put the kernel asound.h in sync with library asound.h.
+
+ok. It works just fine now. Can I send a patch against alsa-kmirror or
+do you prefer against alsa-kernel? I use the former to recompile only
+the audio modules.
