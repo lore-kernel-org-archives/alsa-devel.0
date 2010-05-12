@@ -1,18 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/5] allow up to 32 PCM devices
-Date: Wed, 12 May 2010 12:20:33 +0200
-Message-ID: <4BEA80F1.7040600@ladisch.de>
-References: <20100512013015.752623810@intel.com>	<20100512015713.762299923@intel.com>	<alpine.LNX.2.00.1005120925400.6856@eeebox2.perex-int.cz>	<s5htyqdsg0w.wl%tiwai@suse.de>
-	<20100512083950.GB11001@localhost> <s5hbpclsdbu.wl%tiwai@suse.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [patch 5/6] kirkwood: Add i2s support
+Date: Wed, 12 May 2010 11:24:19 +0100
+Message-ID: <20100512102419.GF4330@rakim.wolfsonmicro.main>
+References: <20100511162342.640158675@mandriva.com>
+	<20100511162602.475198903@mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A634824153
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4DC4824333
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 May 2010 12:20:37 +0200 (CEST)
-In-Reply-To: <s5hbpclsdbu.wl%tiwai@suse.de>
+	Wed, 12 May 2010 12:24:20 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100511162602.475198903@mandriva.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,72 +23,206 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Wu Fengguang <fengguang.wu@intel.com>
+To: apatard@mandriva.com
+Cc: alsa-devel@alsa-project.org, nico@fluxnic.net, saeed@marvell.com, tbm@cyrius.com
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Wu Fengguang wrote:
-> > > Jaroslav Kysela wrote:
-> > > > I don't agree to have only 4 slots for soundcards in the static minor 
-> > > > numbering. Maybe the driver should be converted to use subdevices or we 
-> > > > might drop the static minor number allocation at all (it might have only 
-> > > > impact for old distros).
-> > 
-> > Jaroslav, will there be so many sound cards in one system?
-> 
-> In the old time, yes.  Now we have less and less PCI slots.
-> In theory, we may have lots of USB audio devices, though :)
+On Tue, May 11, 2010 at 06:23:47PM +0200, apatard@mandriva.com wrote:
+> This patch enables support for the i2s codec available on kirkwood platforms
 
-I implemented CONFIG_SND_DYNAMIC_MINORS because people had been asking
-for more than eight cards.  (And by now I have lots of cards too,
-although my computer probably isn't very typical.)
+It's not a CODEC, it's the I2S controller in the CPU.  A CODEC is a
+device with DACs and ADCs in it.
 
-Anyway, static numbering is needed only for systems without udev/devfs,
-and there we shouldn't change it for backwards compatibility.  The HDA
-driver already requires kernels >= 2.6, so I don't see a problem with
-requiring CONFIG_SND_DYNAMIC_MINORS to get all HDMI outputs.
+> +	do {
+> +		/* we've enabled only bytes interrupts ... */
 
-> Another possible solution would be to change the minor number
-> assignment to a really dynamic one.  So far, due to legacy /dev/aload
-> and co, we have some static restriction per card basis.
+You were checking for error interrupts further up the function?
 
-What restriction would that be?  With CONFIG_SND_DYNAMIC_MINORS, we
-don't allocate minors that would be used by /dev/aload*, but there are
-no restrictions on the number of cards or devices.
+> +		if (status & ~(KIRKWOOD_INT_CAUSE_PLAY_BYTES | \
+> +				KIRKWOOD_INT_CAUSE_REC_BYTES))
+> +			return IRQ_NONE;
 
+Surely it'd make sense to log the unexpected interrupts for diagnostics?
+You should never get here if there are no interrupts you've enabled.
+Unless the interrupt is shared, but that'd be a bit surprising for a
+SoC.
 
--- 
-Regards,
-Clemens
+It also looks like it'd be more sensible to either drop the do/while
+loop entirely (the IRQ core should handle the interrupt still being
+asserted and it doesn't look like any of the handling should take so
+long that interrupts reassert while it's running anyway) or move the
+handling of error interrupts and the first read into the loop so you
+don't have two slightly different paths.
 
+> +		/* ack int */
+> +		writel(status, priv->io + KIRKWOOD_INT_CAUSE);
+> +
+> +		if (status & KIRKWOOD_INT_CAUSE_PLAY_BYTES)
+> +			snd_pcm_period_elapsed(prdata->play_stream);
+> +
+> +		if (status & KIRKWOOD_INT_CAUSE_REC_BYTES)
+> +			snd_pcm_period_elapsed(prdata->rec_stream);
+> +
+> +		mask = readl(priv->io + KIRKWOOD_INT_MASK);
+> +		status = readl(priv->io + KIRKWOOD_INT_CAUSE) & mask;
 
-cat /proc/asound/cards
- 0 [SB             ]: HDA-Intel - HDA ATI SB
-                      HDA ATI SB at 0xfe7f4000 irq 16
- 1 [HDMI           ]: HDA-Intel - HDA ATI HDMI
-                      HDA ATI HDMI at 0xfe9e8000 irq 19
- 2 [D2             ]: AV200 - Xonar D2
-                      Asus Virtuoso 200 (rev 2) at 0xe800, irq 20
- 3 [YMF754         ]: YMF754 - Yamaha DS-1E (YMF754)
-                      Yamaha DS-1E (YMF754) at 0xfebf8000, irq 22
- 4 [UA1A           ]: USB-Audio - EDIROL UA-1A
-                      Roland EDIROL UA-1A at usb-0000:00:12.2-4.3, full speed
- 5 [SC8820         ]: USB-Audio - SC-8820
-                      Roland SC-8820 at usb-0000:00:13.0-2, full speed
- 6 [UM2            ]: USB-Audio - UM-2
-                      EDIROL UM-2 at usb-0000:00:12.0-2, full speed
- 7 [NX             ]: USB-Audio - SB Audigy 2 NX
-                      Creative Technology Ltd SB Audigy 2 NX at usb-0000:00:12.2-3, high speed
- 8 [UART16550A     ]: Serial - Serial MIDI (UART16550A)
-                      Serial MIDI (UART16550A) [Soundcanvas] at 0x3f8, irq 4
- 9 [VirMIDI        ]: VirMIDI - VirMIDI
-                      Virtual MIDI Card 1
-10 [Dummy          ]: Dummy - Dummy
-                      Dummy 1
-11 [Live           ]: EMU10K1 - SB Live! Value [CT4670]
-                      SB Live! Value [CT4670] (rev.5, serial:0x201102) at 0xec00, irq 21
-12 [pcsp           ]: PC-Speaker - pcsp
-                      Internal PC-Speaker at port 0x61
-13 [AudioFire2     ]: FireWorks - AudioFire2
-                      Echo Digital Audio AudioFire2 (v3.2) at fw1.0, S400
+This masking didn't happen prior to the first entry into the loop.
+
+> +       if (soc_runtime->dai->cpu_dai->private_data == NULL) {
+
+It seems a bit icky to be managing the DAI private data here...
+
+> +		err = request_irq(priv->irq, kirkwood_dma_irq, IRQF_SHARED,
+> +				  "kirkwood-dma", prdata);
+
+I'd suggest "kirkwood-i2s" as a name here.  Or take the name from the
+DAI.
+
+> +static int kirkwood_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+> +{
+> +	return 0;
+> +}
+
+Remove this if it's not implemented.
+
+> +static int kirkwood_dma_mmap(struct snd_pcm_substream *substream,
+> +		struct vm_area_struct *vma)
+> +{
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +
+> +	return dma_mmap_coherent(substream->pcm->card->dev, vma,
+> +					runtime->dma_area,
+> +					runtime->dma_addr,
+> +					runtime->dma_bytes);
+> +}
+
+Hrm, this looks like there should be a utility function to do it, it's
+not terribly driver specific.
+
+> +struct snd_soc_platform kirkwood_soc_platform = {
+> +	.name		= "kirkwood-dma",
+
+I'd also add an audio in here or something.
+
+> +#define AUDIO_WIN_BASE_REG(win)			(0xA00 + ((win)<<3))
+> +#define AUDIO_WIN_CTRL_REG(win)			(0xA04 + ((win)<<3))
+
+Namespacing.  Or move into the driver, there seems little reason for
+anything else to be peering at these.
+
+> +#define KIRKWOOD_RATES \
+> +	(SNDRV_PCM_RATE_44100 | \
+> +	 SNDRV_PCM_RATE_48000 | SNDRV_PCM_RATE_96000)
+> +#define KIRKWOOD_FORMATS \
+> +	(SNDRV_PCM_FMTBIT_S16_LE | \
+> +	 SNDRV_PCM_FMTBIT_S24_LE | \
+> +	 SNDRV_PCM_FMTBIT_S32_LE)
+
+Move these into the driver.
+
+> +static inline void kirkwood_set_dco(void __iomem *io, unsigned long rate)
+> +{
+> +	unsigned long value;
+> +
+> +	value = KIRKWOOD_DCO_CTL_OFFSET_0;
+> +	switch (rate) {
+> +	default:
+> +	case 44100:
+> +		value |= KIRKWOOD_DCO_CTL_FREQ_11;
+> +		break;
+> +	case 48000:
+> +		value |= KIRKWOOD_DCO_CTL_FREQ_12;
+> +		break;
+> +	case 96000:
+> +		value |= KIRKWOOD_DCO_CTL_FREQ_24;
+> +		break;
+> +	}
+> +	writel(value, io + KIRKWOOD_DCO_CTL);
+> +
+> +	/* wait for dco locked */
+> +	do {
+> +		cpu_relax();
+> +		value = readl(io + KIRKWOOD_DCO_SPCR_STATUS);
+> +		value &= KIRKWOOD_DCO_SPCR_STATUS;
+> +	} while (value == 0);
+> +}
+
+Why is this an inline function in the header?
+
+> +	 * Size settings in play/rec i2s control regs and play/rec control
+> +	 * regs must be the same.
+> +	 */
+
+Ideally you'd be setting up constraints for this.
+
+> +	/*
+> +	 * specs says KIRKWOOD_PLAYCTL must be read 2 times before
+> +	 * changing it. So read 1 time here and 1 later.
+> +	 */
+> +	value = readl(priv->io + KIRKWOOD_PLAYCTL);
+
+Nice...
+
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +		/* stop audio, enable interrupts */
+
+If audio is running when you're getting a start trigger something is
+wrong...
+
+> +static int kirkwood_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+> +				int clk_id, unsigned int freq, int dir)
+> +{
+> +	return 0;
+> +}
+
+Remove this.
+
+> +static void mv_audio_init(void __iomem *base)
+> +{
+> +	int timeout = 10000000;
+> +	unsigned int reg_data;
+> +
+> +	reg_data = readl(base + 0x1200);
+> +	reg_data &= (~(0x333FF8));
+> +	reg_data |= 0x111D18;
+> +	writel(reg_data, base + 0x1200);
+
+It's like magic!
+
+> +
+> +	do {
+> +		timeout--;
+> +	} while (timeout);
+
+The driver is busy waiting here but not polling anything.  Just use a
+sleep?
+
+> +	/* FIXME : should not be hardcoded */
+> +	priv->burst = 128;
+
+Platform data?
+
+> +static int kirkwood_i2s_probe(struct platform_device *pdev,
+> +                            struct snd_soc_dai *dai)
+
+This is the ASoC probe but...
+
++       mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+...it's pulling all sorts of resources out of the device which are
+specific to the I2S controller.  You should have the I2S controller have
+a normal platform device which is probed on system startup and triggers
+DAI registration, just as you're doing in the CODEC driver.  All the
+resources should be there.  Apart from anything else this means you only
+need to set up each I2S controller once in the arch/arm code for the
+CPU.
+
+> +	mv_audio_init(priv->io);
+
+Seems a bit odd ot have the separate init function in the middle of a
+bunch of other register writes.
+
+> +	dev_info(&pdev->dev, "kirkwood-i2s driver loaded\n");
+
+May as well remove this.  The core logs device registration anyway.
