@@ -1,176 +1,47 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Tue, 11 May 2010 23:00:14 -0500
-Message-ID: <AANLkTimUaGy7NirNI78duHwGe3V72s_1eUiby_Rb_dRq@mail.gmail.com>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<20100507232516.GB16910@tango.0pointer.de>
-	<s2r6160a5131005072012o24609ce9q421ed2def04e4728@mail.gmail.com>
+From: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
+Subject: Use of start_frame in usbusx2yaudio.c
+Date: Tue, 11 May 2010 22:10:58 -0700
+Message-ID: <20100512051058.GA32459@xanatos>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636284982e7293504865dadb9
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f195.google.com (mail-qy0-f195.google.com
-	[209.85.221.195])
-	by alsa0.perex.cz (Postfix) with ESMTP id 691D810386E
-	for <alsa-devel@alsa-project.org>;
-	Wed, 12 May 2010 06:00:17 +0200 (CEST)
-Received: by qyk33 with SMTP id 33so9323967qyk.24
-	for <alsa-devel@alsa-project.org>; Tue, 11 May 2010 21:00:14 -0700 (PDT)
-In-Reply-To: <s2r6160a5131005072012o24609ce9q421ed2def04e4728@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Tejun Heo <tj-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Christoph Lameter <cl-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Joe
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
---001636284982e7293504865dadb9
-Content-Type: text/plain; charset=ISO-8859-1
+Are there any drivers in the kernel that set urb->start_frame on every
+URB?
 
-Here's a proposal for an alsa-lib modification to allow applications
-to disable interrupts (if the hardware can do so).
-I used the flag field in hw_params, this looked like a good candidate
-to convey this information needed by the driver. I don't really like
-adding two new routines, but I don't think there's any other way.
-Still 2 points to be worked out:
-- I couldn't figure out how to make these two new symbols known to
-PulseAudio. Somehow there's a missing symbol that prevents PA modules
-from loading, not sure where it needs to be declare
-- I thought I could make use of the same flag on the driver side, but
-the code in pcm_native.c makes a peculiar use of hw_params->flag. It
-looks like this field is used as an internal variable.
+Could those drivers handle it if only the first URB they submitted to
+the host controller was scheduled for that frame ID, and all the rest of
+the URBs were scheduled ASAP?
 
-for (k = 0; k < constrs->rules_num; k++) {
-			struct snd_pcm_hw_rule *r = &constrs->rules[k];
-			unsigned int d;
-			int doit = 0;
-			if (r->cond && !(r->cond & params->flags))
-				continue;
-There's too much history for me to figure out what this is supposed to
-mean. Am I following a false lead and should I use the more complex
-mask array instead?
-Thanks for your feedback.
-- Pierre
+I see there are three drivers that set start_frame (while not setting
+URB_ISO_ASAP):
+ - drivers/isdn/hisax/st5481_d.c
+ - drivers/usb/core/devio.c
+ - sound/usb/usx2y/usbusx2yaudio.c
 
---001636284982e7293504865dadb9
-Content-Type: application/octet-stream;
-	name="alsa-lib-disable-interrupts.patch"
-Content-Disposition: attachment;
-	filename="alsa-lib-disable-interrupts.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g93mekw50
+I'm not really sure what usbusx2yaudio.c is doing.  I think when one URB
+completes, it sets the next URB's start_frame to the previous URB's
+start_frame plus the number of URBs (2 by default) times the number of
+packets (4 by default).  Isn't this basically like setting URB_ISO_ASAP?
+I really can't tell what fall back method is if this submission fails.
 
-ZGlmZiAtLWdpdCBhL2NvbmZpZ3VyZS5pbiBiL2NvbmZpZ3VyZS5pbgppbmRleCBhYmM0Njg3Li5l
-OTMwNjIxIDEwMDY0NAotLS0gYS9jb25maWd1cmUuaW4KKysrIGIvY29uZmlndXJlLmluCkBAIC0x
-Miw3ICsxMiw3IEBAIGRubCBhZGQgQVBJID0gYysxOjA6YSsxCiBkbmwgcmVtb3ZlIEFQSSA9IGMr
-MTowOjAKIGRubCAqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqCiBBQ19DQU5PTklDQUxfSE9TVAotQU1fSU5JVF9BVVRPTUFLRShhbHNhLWxpYiwgMS4wLjIz
-KQorQU1fSU5JVF9BVVRPTUFLRShhbHNhLWxpYiwgMS4wLjI0cmMxKQogZXZhbCBMSUJUT09MX1ZF
-UlNJT05fSU5GTz0iMjowOjAiCiBkbmwgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKgogQU1fQ09ORElUSU9OQUwoSU5TVEFMTF9NNCwgdGVzdCAtbiAiJHtB
-Q0xPQ0FMfSIpCmRpZmYgLS1naXQgYS9pbmNsdWRlL3BjbS5oIGIvaW5jbHVkZS9wY20uaAppbmRl
-eCBmMzYxOGMzLi41MTU3ODc3IDEwMDY0NAotLS0gYS9pbmNsdWRlL3BjbS5oCisrKyBiL2luY2x1
-ZGUvcGNtLmgKQEAgLTYyNiw3ICs2MjYsOCBAQCBpbnQgc25kX3BjbV9od19wYXJhbXNfc2V0X3Jh
-dGVfcmVzYW1wbGUoc25kX3BjbV90ICpwY20sIHNuZF9wY21faHdfcGFyYW1zX3QgKnBhcgogaW50
-IHNuZF9wY21faHdfcGFyYW1zX2dldF9yYXRlX3Jlc2FtcGxlKHNuZF9wY21fdCAqcGNtLCBzbmRf
-cGNtX2h3X3BhcmFtc190ICpwYXJhbXMsIHVuc2lnbmVkIGludCAqdmFsKTsKIGludCBzbmRfcGNt
-X2h3X3BhcmFtc19zZXRfZXhwb3J0X2J1ZmZlcihzbmRfcGNtX3QgKnBjbSwgc25kX3BjbV9od19w
-YXJhbXNfdCAqcGFyYW1zLCB1bnNpZ25lZCBpbnQgdmFsKTsKIGludCBzbmRfcGNtX2h3X3BhcmFt
-c19nZXRfZXhwb3J0X2J1ZmZlcihzbmRfcGNtX3QgKnBjbSwgc25kX3BjbV9od19wYXJhbXNfdCAq
-cGFyYW1zLCB1bnNpZ25lZCBpbnQgKnZhbCk7Ci0KK2ludCBzbmRfcGNtX2h3X3BhcmFtc19zZXRf
-ZGlzYWJsZV9pbnRlcnJ1cHRzKHNuZF9wY21fdCAqcGNtLCBzbmRfcGNtX2h3X3BhcmFtc190ICpw
-YXJhbXMsIHVuc2lnbmVkIGludCB2YWwpOworaW50IHNuZF9wY21faHdfcGFyYW1zX2dldF9kaXNh
-YmxlX2ludGVycnVwdHMoc25kX3BjbV90ICpwY20sIHNuZF9wY21faHdfcGFyYW1zX3QgKnBhcmFt
-cywgdW5zaWduZWQgaW50ICp2YWwpOwogaW50IHNuZF9wY21faHdfcGFyYW1zX2dldF9wZXJpb2Rf
-dGltZShjb25zdCBzbmRfcGNtX2h3X3BhcmFtc190ICpwYXJhbXMsIHVuc2lnbmVkIGludCAqdmFs
-LCBpbnQgKmRpcik7CiBpbnQgc25kX3BjbV9od19wYXJhbXNfZ2V0X3BlcmlvZF90aW1lX21pbihj
-b25zdCBzbmRfcGNtX2h3X3BhcmFtc190ICpwYXJhbXMsIHVuc2lnbmVkIGludCAqdmFsLCBpbnQg
-KmRpcik7CiBpbnQgc25kX3BjbV9od19wYXJhbXNfZ2V0X3BlcmlvZF90aW1lX21heChjb25zdCBz
-bmRfcGNtX2h3X3BhcmFtc190ICpwYXJhbXMsIHVuc2lnbmVkIGludCAqdmFsLCBpbnQgKmRpcik7
-CmRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL2Fzb3VuZC5oIGIvaW5jbHVkZS9zb3VuZC9hc291
-bmQuaAppbmRleCBmYTg4OTM4Li4zNWQzZTc1IDEwMDY0NAotLS0gYS9pbmNsdWRlL3NvdW5kL2Fz
-b3VuZC5oCisrKyBiL2luY2x1ZGUvc291bmQvYXNvdW5kLmgKQEAgLTM0Niw2ICszNDYsNyBAQCBl
-bnVtIHNuZHJ2X3BjbV9od19wYXJhbSB7CiAKICNkZWZpbmUgU05EUlZfUENNX0hXX1BBUkFNU19O
-T1JFU0FNUExFCSgxPDwwKSAgLyogYXZvaWQgcmF0ZSByZXNhbXBsaW5nICovCiAjZGVmaW5lIFNO
-RFJWX1BDTV9IV19QQVJBTVNfRVhQT1JUX0JVRkZFUgkoMTw8MSkgIC8qIGV4cG9ydCBidWZmZXIg
-Ki8KKyNkZWZpbmUgU05EUlZfUENNX0hXX1BBUkFNU19ESVNBQkxFX0lOVEVSUlVQVFMJKDE8PDIp
-CS8qIGRpc2FibGUgcGVyaW9kIGludGVycnVwdHMgKi8KIAogc3RydWN0IHNuZHJ2X2ludGVydmFs
-IHsKIAl1bnNpZ25lZCBpbnQgbWluLCBtYXg7CmRpZmYgLS1naXQgYS9zcmMvVmVyc2lvbnMuaW4g
-Yi9zcmMvVmVyc2lvbnMuaW4KaW5kZXggOGQyZGQxMS4uZmFhODA1NSAxMDA2NDQKLS0tIGEvc3Jj
-L1ZlcnNpb25zLmluCisrKyBiL3NyYy9WZXJzaW9ucy5pbgpAQCAtMTI5LDMgKzEyOSw4IEBAIEFM
-U0FfMC45LjcgewogICAgIEBTWU1CT0xfUFJFRklYQGFsc2FfbGlzcF8qOwogfSBBTFNBXzAuOS41
-OwogCitBTFNBXzEuMC4yNHJjMSB7CisgIGdsb2JhbDoKKyAgICBAU1lNQk9MX1BSRUZJWEBzbmRf
-cGNtX2h3X3BhcmFtc19zZXRfZGlzYWJsZV9pbnRlcnJ1cHRzOworICAgIEBTWU1CT0xfUFJFRklY
-QHNuZF9wY21faHdfcGFyYW1zX2dldF9kaXNhYmxlX2ludGVycnVwdHM7Cit9IEFMU0FfMC45Ljc7
-CmRpZmYgLS1naXQgYS9zcmMvcGNtL3BjbS5jIGIvc3JjL3BjbS9wY20uYwppbmRleCBmOTEwMTg5
-Li5lN2MyNTRjIDEwMDY0NAotLS0gYS9zcmMvcGNtL3BjbS5jCisrKyBiL3NyYy9wY20vcGNtLmMK
-QEAgLTQyMDQsNiArNDIwNCwzOSBAQCBpbnQgc25kX3BjbV9od19wYXJhbXNfZ2V0X2V4cG9ydF9i
-dWZmZXIoc25kX3BjbV90ICpwY20sIHNuZF9wY21faHdfcGFyYW1zX3QgKnBhcgogfQogCiAvKioK
-KyAqIFxicmllZiBSZXN0cmljdCBhIGNvbmZpZ3VyYXRpb24gc3BhY2UgdG8gZGlzYWJsZSBwZXJp
-b2QgaW50ZXJydXB0cyAKKyAqIFxwYXJhbSBwY20gUENNIGhhbmRsZQorICogXHBhcmFtIHBhcmFt
-cyBDb25maWd1cmF0aW9uIHNwYWNlCisgKiBccGFyYW0gdmFsIDEgPSBkaXNhYmxlIGludGVycnVw
-dHMsIDAgPSBlbmFibGUgKGRlZmF1bHQpIGludGVycnVwdHMKKyAqIFxyZXR1cm4gMCBvdGhlcndp
-c2UgYSBuZWdhdGl2ZSBlcnJvciBjb2RlCisgKi8KK2ludCBzbmRfcGNtX2h3X3BhcmFtc19zZXRf
-ZGlzYWJsZV9pbnRlcnJ1cHRzKHNuZF9wY21fdCAqcGNtLCBzbmRfcGNtX2h3X3BhcmFtc190ICpw
-YXJhbXMsIHVuc2lnbmVkIGludCB2YWwpCit7CisJYXNzZXJ0KHBjbSAmJiBwYXJhbXMpOworCisJ
-aWYgKHZhbCkKKyAgICAgICAgcGFyYW1zLT5mbGFncyB8PSBTTkRfUENNX0hXX1BBUkFNU19ESVNB
-QkxFX0lOVEVSUlVQVFM7CisJZWxzZQorICAgICAgICBwYXJhbXMtPmZsYWdzICY9IH5TTkRfUENN
-X0hXX1BBUkFNU19ESVNBQkxFX0lOVEVSUlVQVFM7CisJcmV0dXJuIHNuZF9wY21faHdfcmVmaW5l
-KHBjbSwgcGFyYW1zKTsKK30KKworLyoqCisgKiBcYnJpZWYgRXh0cmFjdCBpbnRlcnJ1cHQgZGlz
-YWJsZSBpbmZvIGZyb20gYSBjb25maWd1cmF0aW9uIHNwYWNlCisgKiBccGFyYW0gcGNtIFBDTSBo
-YW5kbGUKKyAqIFxwYXJhbSBwYXJhbXMgQ29uZmlndXJhdGlvbiBzcGFjZQorICogXHBhcmFtIHZh
-bCAxID0gZGlzYWJsZSwgMCA9IGVuYWJsZSBpbnRlcnJ1cHRzCisgKiBccmV0dXJuIDAKKyAqLwor
-aW50IHNuZF9wY21faHdfcGFyYW1zX2dldF9pbnRlcnJ1cHRfZGlzYWJsZShzbmRfcGNtX3QgKnBj
-bSwgc25kX3BjbV9od19wYXJhbXNfdCAqcGFyYW1zLCB1bnNpZ25lZCBpbnQgKnZhbCkKK3sKKwlh
-c3NlcnQocGNtICYmIHBhcmFtcyAmJiB2YWwpOworCSp2YWwgPSBwYXJhbXMtPmZsYWdzICYgU05E
-X1BDTV9IV19QQVJBTVNfRElTQUJMRV9JTlRFUlJVUFRTID8gMSA6IDA7CisJcmV0dXJuIDA7Cit9
-CisKKworLyoqCiAgKiBcYnJpZWYgRXh0cmFjdCBwZXJpb2QgdGltZSBmcm9tIGEgY29uZmlndXJh
-dGlvbiBzcGFjZQogICogXHBhcmFtIHBhcmFtcyBDb25maWd1cmF0aW9uIHNwYWNlCiAgKiBccGFy
-YW0gdmFsIFJldHVybmVkIGFwcHJveGltYXRlIHBlcmlvZCBkdXJhdGlvbiBpbiB1cwpkaWZmIC0t
-Z2l0IGEvc3JjL3BjbS9wY21fbG9jYWwuaCBiL3NyYy9wY20vcGNtX2xvY2FsLmgKaW5kZXggOWFh
-ODFlMS4uMzFiNWI2OSAxMDA2NDQKLS0tIGEvc3JjL3BjbS9wY21fbG9jYWwuaAorKysgYi9zcmMv
-cGNtL3BjbV9sb2NhbC5oCkBAIC05NCw2ICs5NCw3IEBAIHR5cGVkZWYgZW51bSBzbmRydl9wY21f
-aHdfcGFyYW0gc25kX3BjbV9od19wYXJhbV90OwogCiAjZGVmaW5lIFNORF9QQ01fSFdfUEFSQU1T
-X05PUkVTQU1QTEUgU05EUlZfUENNX0hXX1BBUkFNU19OT1JFU0FNUExFCiAjZGVmaW5lIFNORF9Q
-Q01fSFdfUEFSQU1TX0VYUE9SVF9CVUZGRVIgU05EUlZfUENNX0hXX1BBUkFNU19FWFBPUlRfQlVG
-RkVSCisjZGVmaW5lIFNORF9QQ01fSFdfUEFSQU1TX0RJU0FCTEVfSU5URVJSVVBUUyBTTkRSVl9Q
-Q01fSFdfUEFSQU1TX0RJU0FCTEVfSU5URVJSVVBUUwogCiAjZGVmaW5lIFNORF9QQ01fSU5GT19N
-T05PVE9OSUMJMHg4MDAwMDAwMAogCg==
---001636284982e7293504865dadb9
-Content-Type: application/octet-stream;
-	name="pulseaudio-disable-interrupts.patch"
-Content-Disposition: attachment;
-	filename="pulseaudio-disable-interrupts.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g93mf4631
+What is usbusx2yaudio.c attempting to do?  I've tried to get an overall
+picture of what it expects the isochronous scheduling to look like, but
+I'm finding the driver a bit hard to read.
 
-ZGlmZiAtLWdpdCBhL3NyYy9tb2R1bGVzL2Fsc2EvYWxzYS11dGlsLmMgYi9zcmMvbW9kdWxlcy9h
-bHNhL2Fsc2EtdXRpbC5jCmluZGV4IDFjYmIzZjMuLjNjNzAzN2EgMTAwNjQ0Ci0tLSBhL3NyYy9t
-b2R1bGVzL2Fsc2EvYWxzYS11dGlsLmMKKysrIGIvc3JjL21vZHVsZXMvYWxzYS9hbHNhLXV0aWwu
-YwpAQCAtMjUwLDYgKzI1MCwxNiBAQCBpbnQgcGFfYWxzYV9zZXRfaHdfcGFyYW1zKAogCiAgICAg
-aWYgKCFwYV9hbHNhX3BjbV9pc19odyhwY21faGFuZGxlKSkKICAgICAgICAgX3VzZV90c2NoZWQg
-PSBGQUxTRTsKKyAgICBlbHNlIHsKKyAgICAgICAgaWYoX3VzZV90c2NoZWQpIHsKKworICAgICAg
-ICAgICAgLyogdHJ5IHRvIGRpc2FibGUgcGVyaW9kIGludGVycnVwdHMgaWYgaGFyZHdhcmUgY2Fu
-IGRvIHNvICovCisgICAgICAgICAgICBpZiAoKHJldCA9IHNuZF9wY21faHdfcGFyYW1zX3NldF9k
-aXNhYmxlX2ludGVycnVwdHMocGNtX2hhbmRsZSwgaHdwYXJhbXMsIDEpKSA8IDApIHsKKyAgICAg
-ICAgICAgICAgICBwYV9sb2dfZGVidWcoInNuZF9wY21faHdfcGFyYW1zX3NldF9kaXNhYmxlX2lu
-dGVycnVwdHMoKSBmYWlsZWQ6ICVzIiwgcGFfYWxzYV9zdHJlcnJvcihyZXQpKTsKKyAgICAgICAg
-ICAgICAgICAvKiBkb24ndCBiYWlsLCBrZWVwIGdvaW5nICovCisgICAgICAgICAgICB9CisgICAg
-ICAgIH0KKyAgICB9CiAKICAgICBpZiAoKHJldCA9IHNldF9mb3JtYXQocGNtX2hhbmRsZSwgaHdw
-YXJhbXMsICZfc3MuZm9ybWF0KSkgPCAwKQogICAgICAgICBnb3RvIGZpbmlzaDsK
---001636284982e7293504865dadb9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+I'm not too worried about the other two drivers.  The code in st5481_d.c
+seems to fall back fine to URB_ISO_ASAP if the submission with the
+start_frame set failed.  devio.c is usbfs, and I can't tell what
+userspace drivers do. (It could be argued that if they needed such tight
+control over isoc, they should have written a kernel driver.)
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---001636284982e7293504865dadb9--
+Sarah Sharp
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
