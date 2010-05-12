@@ -1,47 +1,60 @@
-From: Sarah Sharp <sarah.a.sharp-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>
-Subject: Use of start_frame in usbusx2yaudio.c
-Date: Tue, 11 May 2010 22:10:58 -0700
-Message-ID: <20100512051058.GA32459@xanatos>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/2] ALSA: include/linux/usb/audio.h: add
+	__attribute__((packed))
+Date: Wed, 12 May 2010 08:41:28 +0200
+Message-ID: <4BEA4D98.5010900@ladisch.de>
+References: <1273594430-9356-1-git-send-email-daniel@caiaq.de>
+	<s5hd3x2p3ds.wl%tiwai@suse.de>
+	<20100511225054.GL30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Clemens Ladisch <clemens-P6GI/4k7KOmELgA04lAiVw@public.gmane.org>, Tejun Heo <tj-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Christoph Lameter <cl-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, Joe
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A796A24448
+	for <alsa-devel@alsa-project.org>;
+	Wed, 12 May 2010 08:41:35 +0200 (CEST)
+In-Reply-To: <20100511225054.GL30801@buzzloop.caiaq.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Are there any drivers in the kernel that set urb->start_frame on every
-URB?
+Daniel Mack wrote:
+> ...
+> Thanks! One of the noted TODOs is that UAC2 offers the ability to a
+> device to dynamically change the supported range of options for a given
+> control. So an enum-driven control can get new values, lose some,
+> whatever. What would be the best way to map that to ALSA controls?
 
-Could those drivers handle it if only the first URB they submitted to
-the host controller was scheduled for that frame ID, and all the rest of
-the URBs were scheduled ASAP?
+The control callbacks accept and return the new values; userspace
+gets notified of the changed control information with
+snd_ctl_notify(card, SNDRV_CTL_EVENT_MASK_INFO, &elem_id);
 
-I see there are three drivers that set start_frame (while not setting
-URB_ISO_ASAP):
- - drivers/isdn/hisax/st5481_d.c
- - drivers/usb/core/devio.c
- - sound/usb/usx2y/usbusx2yaudio.c
+I'm quite sure that alsamixer can cope with this, but I don't know
+about any other mixers. :)
 
-I'm not really sure what usbusx2yaudio.c is doing.  I think when one URB
-completes, it sets the next URB's start_frame to the previous URB's
-start_frame plus the number of URBs (2 by default) times the number of
-packets (4 by default).  Isn't this basically like setting URB_ISO_ASAP?
-I really can't tell what fall back method is if this submission fails.
+I think "alsactl restore" already does the right thing for controls
+that have changed.
 
-What is usbusx2yaudio.c attempting to do?  I've tried to get an overall
-picture of what it expects the isochronous scheduling to look like, but
-I'm finding the driver a bit hard to read.
+> Another thing that we would need to support at some time is clock
+> selectors to switch from an internal clock to some external one. And
+> this can also be notfied dynamically - so for example: once an external
+> S/PDIF transmitter is connected, the driver gets informed about a new
+> valid clock source. I haven't found anything how this could be passed on
+> to higher levels from a driver, but I might have missed something :)
 
-I'm not too worried about the other two drivers.  The code in st5481_d.c
-seems to fall back fine to URB_ISO_ASAP if the submission with the
-start_frame set failed.  devio.c is usbfs, and I can't tell what
-userspace drivers do. (It could be argued that if they needed such tight
-control over isoc, they should have written a kernel driver.)
+With a mixer control "Clock Source", of course. :)
+Or are you talking about new samples rates made available?
 
-Sarah Sharp
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Regards,
+Clemens
