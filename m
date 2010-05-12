@@ -1,19 +1,22 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [patch 4/6] cs42l51: add asoc driver
-Date: Wed, 12 May 2010 10:56:27 +0100
-Message-ID: <20100512095627.GE4330@rakim.wolfsonmicro.main>
-References: <20100511162342.640158675@mandriva.com>
-	<20100511162602.226980713@mandriva.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH 1/5] allow up to 32 PCM devices
+Date: Wed, 12 May 2010 18:06:32 +0800
+Message-ID: <20100512100632.GA13304@localhost>
+References: <20100512013015.752623810@intel.com>
+	<20100512015713.762299923@intel.com>
+	<alpine.LNX.2.00.1005120925400.6856@eeebox2.perex-int.cz>
+	<s5htyqdsg0w.wl%tiwai@suse.de> <20100512083950.GB11001@localhost>
+	<s5hbpclsdbu.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1AD7F2412E
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id A498E24151
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 May 2010 11:56:29 +0200 (CEST)
+	Wed, 12 May 2010 12:06:38 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20100511162602.226980713@mandriva.com>
+In-Reply-To: <s5hbpclsdbu.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,203 +26,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: apatard@mandriva.com
-Cc: alsa-devel@alsa-project.org, nico@fluxnic.net, saeed@marvell.com, tbm@cyrius.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 11, 2010 at 06:23:46PM +0200, apatard@mandriva.com wrote:
+On Wed, May 12, 2010 at 05:01:57PM +0800, Takashi Iwai wrote:
+> At Wed, 12 May 2010 16:39:50 +0800,
+> Wu Fengguang wrote:
+> > 
+> > On Wed, May 12, 2010 at 04:03:43PM +0800, Takashi Iwai wrote:
+> > > At Wed, 12 May 2010 09:29:57 +0200 (CEST),
+> > > Jaroslav Kysela wrote:
+> > > > 
+> > > > On Wed, 12 May 2010, Wu Fengguang wrote:
+> > > > 
+> > > > > Reserve 32 minor numbers for PCM playback devices.
+> > > > >
+> > > > > The Intel SandyBridge HDMI audio codec provides 3 PCM devices with
+> > > > > indices 3, 7, 8. Among which the device 8's minor number will be
+> > > > > overlapped with the first capture device's minor number in the current
+> > > > > static minor number allocation scheme.
+> > > > >
+> > > > > Also increase SNDRV_PCM_DEVICES to make pcm_dev_bits big enough to hold
+> > > > > the increasing number of PCM devices.
+> > > > 
+> > > > I don't agree to have only 4 slots for soundcards in the static minor 
+> > > > numbering. Maybe the driver should be converted to use subdevices or we 
+> > > > might drop the static minor number allocation at all (it might have only 
+> > > > impact for old distros).
+> > 
+> > Jaroslav, will there be so many sound cards in one system?
+> 
+> In the old time, yes.  Now we have less and less PCI slots.
+> In theory, we may have lots of USB audio devices, though :)
+> 
+> Another possible solution would be to change the minor number
+> assignment to a really dynamic one.  So far, due to legacy /dev/aload
+> and co, we have some static restriction per card basis.
 
-> This patch is adding a ASoC driver for the cs42l51 from Cirrus Logic.
-> Master mode and spi mode are not supported.
+Another simple option is to "borrow" 2 slots from one of
 
-This is mostly OK - there's quite a few comments below but there's no
-massive structural things in here, it's generally small, local things.
+- SNDRV_MINOR_HWDEP      :       has 4 slots 
+- SNDRV_MINOR_RAWMIDI    :       has 8 slots
+- SNDRV_MINOR_PCM_CAPTURE:       has 8 slots
 
-> + * Based on cs4270.c - Copyright (c) Timur Tabi <timur@freescale.com>
+What do you think?
 
-While we're picking up on the copyright stuff IIRC it's actually
-Freescale copyright rather than Timur's personal copyright :)
+> 
+> > > Dropping such a base feature is really no good option.  Better to give
+> > > simply an error for more than 8 PCMs in such a case, IMO.
+> > 
+> > Agreed.
+> > 
+> > > I also wonder whether having 4 individual PCMs is a way to go.  We may
+> > > have PCM substreams, if any.  OTOH, the current IEC958 stream
+> > > assignment mechanism doesn't consider multiple substreams well, e.g.
+> > > we have no proper way to match the IEC958 status bits control to a PCM
+> > > substream.
+> > 
+> > Hmm, what if there are two monitors attached, each want to play a
+> > different music track?
+> 
+> PCM substreams are really independent from each other.  So,
+> technically seen, substreams are feasible.
+> 
+> > I think the 3 HDMI devices are inherently independent. Each one can
+> > have different hw rates, bits, and speaker allocation. And if
+> > implemented as PCM substreams, how can the user space specify "please
+> > play this music on this monitor"? AFAIK the windows driver also
+> > exports 3 independent HDMI playback devices.
+> 
+> Yeah, as mentioned, SPDIF status mapping isn't provided properly as
+> is.  Thus using PCM substreams may give some confusion indeed.
 
-> +enum funct_mode {
-> +	MODE_SLAVE,
-> +	MODE_SLAVE_AUTO,
-> +	MODE_MASTER,
-> +};
+Can I ask a dumb question? Currently I select the target playback
+device with the -D option:
 
-I'd prefer a more meaningful name than "funct_mode" here - I don't
-really know what a funct is.
+        speaker-test -Dhw:0,3 
 
-> +static unsigned int cs42l51_read_reg_cache(struct snd_soc_codec *codec,
-> +	unsigned int reg)
-> +{
-> +	u8 *cache = codec->reg_cache;
-> +
-> +	if ((reg < CS42L51_FIRSTREG) || (reg > CS42L51_LASTREG))
-> +		return -EIO;
-> +
-> +	return cache[reg - CS42L51_FIRSTREG];
+How can I do the job when PCM substreams are used?
 
-Please just use the standard register cache access stuff in soc-cache.c.
-The first register is 1 so you're only burning a single byte of RAM by
-using the generic code.
-
-> +	if (ret != MK_CHIP_REV(CHIP_ID, CHIP_REV)) {
-
-Are you sure there's only one device revision in production?
-
-> +		dev_err(&i2c_client->dev, "Invalid chip id\n");
-> +		ret = -ENODEV;
-> +		goto error;
-> +	}
-
-> +	dev_info(&i2c_client->dev, "found device at I2C address %X\n",
-> +				i2c_client->addr);
-
-The dev_() will already be including the I2C address in the log message
-anyway.  I'd be inclined to just drop this, or make it log the device
-revision.
-
-> +	ret = cs42l51_fill_cache(codec);
-> +	if (ret < 0) {
-> +		dev_err(&i2c_client->dev, "failed to fill register cache\n");
-> +		goto error;
-> +	}
-
-Normal practice is to reset the chip so it's in a known sensible state
-when the driver starts trying to use it.  Is there a good reason not to
-do this here?
-
-> +	/*
-> +	 * DAC configuration (right place to do that ?)
-
-It's OK to do this for things that the user would unconditionally want.
-
-> +	 * - Use signal processor
-
-What does this mean? It sounds like something that would need to be
-power managed via DAPM?
-
-> +	 * - auto mute
-
-This is probably OK, but exposing as a user visible control would be
-better.
-
-> +	 * - vol changes immediate
-
-This is OK.
-
-> +	 * - no de-emphasize
-
-This is normally exposed as a user selectable switch.
-
-> +	/* Unmute PCM-A & PCM-B and set default vol to */
-> +	ret = cs42l51_i2c_write(codec, PCMA_VOL, 0x60);
-> +	if (ret < 0)
-> +		goto error;
-
-This should not be done in the driver, leave it up to userspace.  This
-driver will be used by all systems using this CODEC so just rely on the
-hardware defaults to provide a sane power on configuration - the
-designers will usually ensure that this is at least not harmful.
-
-> +	/* route microphone */
-> +	ret = cs42l51_i2c_write(codec, ADC_INPUT, 0xF0);
-> +	if (ret < 0)
-> +		goto error;
-
-Ditto.
-
-> +error_reg:
-> +	snd_soc_unregister_codec(codec);
-> +error:
-> +	return ret;
-
-You're missing some error handling here - there's no free of the device
-data, for example.
-
-> +static int cs42l51_get_chan_mix(struct snd_kcontrol *kcontrol,
-> +			struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-> +	unsigned long value = snd_soc_read(codec, PCM_MIXER)&3;
-> +
-> +	switch (value) {
-> +	default:
-> +	case 0:
-> +		ucontrol->value.integer.value[0] = 0;
-> +		break;
-> +	case 1:
-> +	case 2:
-> +		ucontrol->value.integer.value[0] = 1;
-> +		break;
-> +	case 3:
-> +		ucontrol->value.integer.value[0] = 2;
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +}
-
-Some comments here might be a little clearer...  Why is the difference
-between 1 and 2 not interesting?
-
-> +static const char *mic_boost[] = { "+16dB", "+32dB"};
-
-Could use TLV for this too.
-
-> +static const struct soc_enum cs42l51_mix[] = {
-> +	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(chan_mix), chan_mix),
-> +	SOC_ENUM_DOUBLE(MIC_CTL, 0, 1, 2, mic_boost),
-> +};
-
-Don't do this, declare separate variables for each.  Indexing into a
-table of mixer elements doesn't help leigibility and is asking for off
-by one errors.  Some drivers do this for historical reasons but modern
-drivers don't.
-
-> +	SOC_DOUBLE_R("PCM Playback Switch", PCMA_VOL, PCMB_VOL, 7, 1, 1),
-
-I suspect that this should be managed via the DAI mute function.
-
-> +	SOC_SINGLE("Playback Deemphasis", DAC_CTL, 3, 1, 0),
-
-Should have "Switch" at the end of the control name.
-
-> +	SOC_SINGLE("Mic Bias", MIC_POWER_CTL, 1, 1, 1),
-
-This should be a DAPM MICBIAS control.
-
-> +	SOC_DOUBLE("Mic Powerdown", MIC_POWER_CTL, 2, 3, 1, 0),
-
-What does this do?  Sounds like it should be DAPM controls.
-
-> +	default:
-> +		printk(KERN_ERR "cs4270: invalid DAI format\n");
-
-Cut'n'paste.
-
-> +/* Fill me */
-> +static struct cs42l51_ratios master_ratios[] = { {},
-> +};
-
-Just remove this stuff for master mode if it's not implemented.
-
-> +	for (i = 0; i < ARRAY_SIZE(cs42l51_snd_controls); i++) {
-> +		ret = snd_ctl_add(codec->card,
-> +				snd_soc_cnew(&cs42l51_snd_controls[i],
-> +				codec, NULL));
-> +		if (ret < 0) {
-> +			dev_err(&pdev->dev, "failed to add controls\n");
-> +			snd_soc_free_pcms(socdev);
-> +			return ret;
-> +		}
-> +	}
-
-snd_soc_add_controls() rather than open coding.
-
-> +#define BEEP_FREQ		0x12
-> +#define BEEP_VOL		0x13
-> +#define BEEP_CONF		0x14
-
-Please namespace everything in the header - things like this are asking
-for namespace clashes.
+Thanks,
+Fengguang
