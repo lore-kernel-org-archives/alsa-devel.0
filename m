@@ -1,20 +1,20 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 1/2] ALSA: include/linux/usb/audio.h: add
- __attribute__((packed))
-Date: Wed, 12 May 2010 00:50:54 +0200
-Message-ID: <20100511225054.GL30801@buzzloop.caiaq.de>
-References: <1273594430-9356-1-git-send-email-daniel@caiaq.de>
-	<s5hd3x2p3ds.wl%tiwai@suse.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: alsa-driver patches
+Date: Wed, 12 May 2010 13:05:54 +1200
+Message-ID: <4BE9FEF2.6080803@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B76A210380A
+Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
+	by alsa0.perex.cz (Postfix) with ESMTP id 270F91037F5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 12 May 2010 00:51:11 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hd3x2p3ds.wl%tiwai@suse.de>
+	Wed, 12 May 2010 03:05:58 +0200 (CEST)
+Received: from [192.168.1.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp3.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0L2A00J6P8DVOE30@smtp3.clear.net.nz> for
+	alsa-devel@alsa-project.org; Wed, 12 May 2010 13:05:56 +1200 (NZST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 11, 2010 at 10:52:47PM +0200, Takashi Iwai wrote:
-> At Tue, 11 May 2010 18:13:49 +0200,
-> Daniel Mack wrote:
-> > 
-> > This was missing on the definition of struct uac_iso_endpoint_descriptor
-> > 
-> > Signed-off-by: Daniel Mack <daniel@caiaq.de>
-> > Cc: Takashi Iwai <tiwai@suse.de>
-> > Cc: Clemens Ladisch <clemens@ladisch.de>
-> 
-> Applied these fixes now.  Thanks.
+Hi Takashi,
 
-Thanks! One of the noted TODOs is that UAC2 offers the ability to a
-device to dynamically change the supported range of options for a given
-control. So an enum-driven control can get new values, lose some,
-whatever. What would be the best way to map that to ALSA controls?
+since the acceptance of asihpi driver, and move to alsa-kernel, you
+created a couple of patch files in alsa-driver/pci/asihpi
+(that add conditional compilation for older kernels)
 
-Another thing that we would need to support at some time is clock
-selectors to switch from an internal clock to some external one. And
-this can also be notfied dynamically - so for example: once an external
-S/PDIF transmitter is connected, the driver gets informed about a new
-valid clock source. I haven't found anything how this could be passed on
-to higher levels from a driver, but I might have missed something :)
+Can you tell me how these patches are generated and maintained?
+(I guess this applies to any driver with this kind of patch).
 
-Daniel
+I think that this arrangement means that my one upstream file needs to
+be converted to two files (kernel .c + patch) when I submit updates?
+
+
+thanks
+
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
