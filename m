@@ -1,54 +1,84 @@
-From: "mutenmaster@tiscali.it" <mutenmaster@tiscali.it>
-Subject: broken microphone
-Date: Thu, 13 May 2010 11:36:45 +0200 (CEST)
-Message-ID: <5338091.177141273743405022.JavaMail.defaultUser@defaultHost>
-Reply-To: "mutenmaster@tiscali.it" <mutenmaster@tiscali.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mrqout2.tiscali.it (mrqout2a.tiscali.it [195.130.225.14])
-	by alsa0.perex.cz (Postfix) with ESMTP id 17AE424411
-	for <alsa-devel@alsa-project.org>;
-	Thu, 13 May 2010 11:36:46 +0200 (CEST)
-Received: from ps5 (10.39.75.75) by mail-8.mail.tiscali.sys (8.0.031)
-	id 4BE91CB600104DD6 for alsa-devel@alsa-project.org;
-	Thu, 13 May 2010 11:36:45 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
+From: Sergey Lapin <slapin@ossfans.org>
+Subject: [PATCH] OMAP: McBSP: Add 32-bit mode support
+Date: Thu, 13 May 2010 19:24:08 +0400
+Message-ID: <1273764248-14043-1-git-send-email-slapin@ossfans.org>
+References: <1273757957-7299-1-git-send-email-slapin@ossfans.org>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1273757957-7299-1-git-send-email-slapin@ossfans.org>
+Sender: linux-omap-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, Sergey Lapin <slapin@ossfans.org>
 List-Id: alsa-devel@alsa-project.org
 
-aGVsbG8gZXZlcnlvbmUsCiAKbWkgbWljcm9waG9uZSBpcyBicm9rZW4uIHRoZSBvcyB2ZXJzaW9u
-IGlzIHRoZSAKbGF0ZXN0LApidXQgdGhpcyBidWcgZXhpc3RzIGZyb20sIDIuNi4zMyBvciBzb21l
-dGhpbmcuIGkgbWFpbGVkCmEgCm1lc3NhZ2UgZGVzY3JpYmluZyB0aGUgYmlzZWN0aW9uIGkgZGlk
-IGJhY2sgdGhlbiB0byAKdmdlci4gSGVyZSBpdCBpcyAKYWdhaW4hCiAKJCBzdWRvIGdpdCBiaXNl
-Y3QgYmFkCmY1MjcxMTAxZmFmMTY1NWQ4NjI4NDlmNDI1MThjMmE4OGVmMzk0ZmIgCmlzIHRoZSBm
-aXJzdCBiYWQgY29tbWl0CmNvbW1pdCBmNTI3MTEwMWZhZjE2NTVkODYyODQ5ZjQyNTE4YzJhODhl
-ZjM5NGZiCgpBdXRob3I6IEx5ZGlhIFdhbmcgPGx5ZGlhd2FuZ0B2aWF0ZWNoLmNvbS5jbj4KRGF0
-ZTogICBTYXQgT2N0IDEwIDE5OjA3OgozNSAyMDA5ICswODAwCiAKICAgIEFMU0EgSERBIFZJQTog
-QWRkIFZJQV9DVExfV0lER0VUX0FOQUxPR19NVVRFIApjb250cm9sIHR5cGUKICAgIAogICAgRW50
-ZXIgbG93IHBvd2VyIHN0YXRlIGlmIEFBLVBhdGggdm9sdW1lIGlzIG11dGVkLgoKICAgIAogICAg
-U2lnbmVkLW9mZi1ieTogTHlkaWEgV2FuZyA8bHlkaWF3YW5nQHZpYXRlY2guY29tLmNuPgogICAg
-ClNpZ25lZC1vZmYtYnk6IExvZ2FuIExpIDxsb2dhbmxpQHZpYXRlY2guY29tLmNuPgogICAgU2ln
-bmVkLW9mZi1ieTogClRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KIAo6MDQwMDAwIDA0MDAw
-MCAKYWIxYWUxNGZmNjdmMGIwODg0OGZhZWIzYWQ2OGRlZjdmM2U3MjdmMCAKMGJmYmZkZTExZmUz
-MmU4N2U4ZWRiZGIzYzRkMDNjMmQzMDM3MDM5MyBNICAgICAgc291bmQKIAphZnRlciByZXZlcnRp
-bmcgCnRoaXMsIGV2ZXJ5dGhpbmcgd29ya3MgZmluZS4KCmkgYWxyZWFkeSBwb3N0ZWQgYSBtZXNz
-YWdlIHdpdGggYWxsIG9mIG15IApzeXN0ZW0gaW5mbyBhdHRhY2hlZCwKYnV0IGl0IGdvdCBtb2Rl
-cmF0ZWQuIElmIHlvdSBuZWVkIGFueSBpbmZvLCAKcGxlYXNlIGFzay4gCiAKYnllLAp2YXNpbGlz
-LgogCgoKUmlzcGFybWlhIGNvbiBUdXR0byBJbmNsdXNvIExpZ2h0OiB0ZWxlZm9ubyArIGFkc2wg
-OCBtZWdhIGEgc29saSAxNCw5NSDigqwgYWwgbWVzZS4KCkdyYXRpcyBsYSBTaW0gVGlzY2FsaSBN
-b2JpbGUgY29uIDI1IGV1cm8gZGkgdHJhZmZpY28hIAoKTCdvZmZlcnRhIMOoIHZhbGlkYSBzb2xv
-IHNlIGF0dGl2aSBlbnRybyBpbCAxMy8wNS8xMAoKaHR0cDovL2FiYm9uYXRpLnRpc2NhbGkuaXQv
-dGVsZWZvbm8tYWRzbC9wcm9kb3R0aS90Yy90dXR0b2luY2x1c29fbGlnaHQvP1dULm1jX2lkPTAx
-ZncKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patchs should allow to use 32-bit samples on e.g. TLV320AIC3x codec,
+or others.
+
+Signed-off-by: Sergey Lapin <slapin@ossfans.org>
+
+---
+ sound/soc/omap/omap-mcbsp.c |   30 ++++++++++++++++++++++++++----
+ 1 files changed, 26 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index 8ad9dc9..a875d5d 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -295,8 +295,20 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 	omap_mcbsp_dai_dma_params[id][substream->stream].dma_req = dma;
+ 	omap_mcbsp_dai_dma_params[id][substream->stream].port_addr = port;
+ 	omap_mcbsp_dai_dma_params[id][substream->stream].sync_mode = sync_mode;
+-	omap_mcbsp_dai_dma_params[id][substream->stream].data_type =
+-							OMAP_DMA_DATA_TYPE_S16;
++	switch(params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		omap_mcbsp_dai_dma_params[id][substream->stream].data_type =
++			 OMAP_DMA_DATA_TYPE_S16;
++		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		omap_mcbsp_dai_dma_params[id][substream->stream].data_type =
++			 OMAP_DMA_DATA_TYPE_S32;
++		break;
++	default:
++		omap_mcbsp_dai_dma_params[id][substream->stream].data_type =
++			 OMAP_DMA_DATA_TYPE_S16;
++		break;
++	}
+ 
+ 	snd_soc_dai_set_dma_data(cpu_dai, substream,
+ 		&omap_mcbsp_dai_dma_params[id][substream->stream]);
+@@ -330,6 +342,14 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 		regs->xcr2	|= XWDLEN2(OMAP_MCBSP_WORD_16);
+ 		regs->xcr1	|= XWDLEN1(OMAP_MCBSP_WORD_16);
+ 		break;
++	case SNDRV_PCM_FORMAT_S32_LE:
++		/* Set word lengths */
++		wlen = 32;
++		regs->rcr2	|= RWDLEN2(OMAP_MCBSP_WORD_32);
++		regs->rcr1	|= RWDLEN1(OMAP_MCBSP_WORD_32);
++		regs->xcr2	|= XWDLEN2(OMAP_MCBSP_WORD_32);
++		regs->xcr1	|= XWDLEN1(OMAP_MCBSP_WORD_32);
++		break;
+ 	default:
+ 		/* Unsupported PCM format */
+ 		return -EINVAL;
+@@ -623,13 +643,15 @@ static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
+ 		.channels_min = 1,				\
+ 		.channels_max = 16,				\
+ 		.rates = OMAP_MCBSP_RATES,			\
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | 		\
++			   SNDRV_PCM_FMTBIT_S32_LE,		\
+ 	},							\
+ 	.capture = {						\
+ 		.channels_min = 1,				\
+ 		.channels_max = 16,				\
+ 		.rates = OMAP_MCBSP_RATES,			\
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,		\
++		.formats = SNDRV_PCM_FMTBIT_S16_LE |		\
++			   SNDRV_PCM_FMTBIT_S32_LE,		\
+ 	},							\
+ 	.ops = &omap_mcbsp_dai_ops,				\
+ 	.private_data = &mcbsp_data[(link_id)].bus_id,		\
+-- 
+1.7.0.4
+
