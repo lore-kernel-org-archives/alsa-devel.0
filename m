@@ -1,23 +1,29 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Thu, 13 May 2010 08:04:46 +0800
-Message-ID: <AANLkTinldjj9GuxteZiN8DzeA-gRNao-HWwqkFxOPyYy@mail.gmail.com>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<AANLkTimF0qrCaiIk6-cjkxm1s-hA3bOgKdmsDe8PdV1a@mail.gmail.com>
-	<AANLkTimPaE9JTd8XIVcM6JQvmD73JHkSWMjKT8zsdGR2@mail.gmail.com>
-	<20100512141653.GB4312@sirena.org.uk>
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+Subject: Re: [PATCH 1/5] allow up to 32 PCM devices
+Date: Thu, 13 May 2010 12:05:19 +1200
+Message-ID: <hsffo2$7du$1@dough.gmane.org>
+References: <20100512013015.752623810@intel.com>	<20100512015713.762299923@intel.com>	<alpine.LNX.2.00.1005120925400.6856@eeebox2.perex-int.cz>	<s5htyqdsg0w.wl%tiwai@suse.de>
+	<20100512083950.GB11001@localhost>	<s5hbpclsdbu.wl%tiwai@suse.de>
+	<20100512100632.GA13304@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4DE8D245E1
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id D14EA245E1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 May 2010 02:04:47 +0200 (CEST)
-Received: by pxi13 with SMTP id 13so359052pxi.38
-	for <alsa-devel@alsa-project.org>; Wed, 12 May 2010 17:04:46 -0700 (PDT)
-In-Reply-To: <20100512141653.GB4312@sirena.org.uk>
+	Thu, 13 May 2010 02:05:35 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OCLvg-0004Wk-OO
+	for alsa-devel@alsa-project.org; Thu, 13 May 2010 02:05:32 +0200
+Received: from 121-72-250-62.cable.telstraclear.net ([121.72.250.62])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 02:05:32 +0200
+Received: from eblennerhassett by 121-72-250-62.cable.telstraclear.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 02:05:32 +0200
+In-Reply-To: <20100512100632.GA13304@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,27 +33,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/5/12 Mark Brown <broonie@opensource.wolfsonmicro.com>
+On 12/05/10 22:06, Wu Fengguang wrote:
 
-> On Wed, May 12, 2010 at 08:50:42AM -0500, pl bossart wrote:
->
-> > This might be almost equivalent to the timer approach in terms of # of
-> > wakeups, however the timer can be reprogrammed on-the-fly whereas
-> > periods can only be changed by closing and reopening the device. You
-> > can also adjust the timer shall underflows occur. And the timer slack
-> > lets the kernel group events. Not to mention that you will need
->
-> The timer is also useful for allowing PulseAudio to dynamically adjust
-> the period size as the runtime situation changes - if you're running
-> high latency streams and have a low latency application start up then
-> PulseAudio can just change the timer to get more frequent events.
->
+> Can I ask a dumb question? Currently I select the target playback
+> device with the -D option:
+> 
+>         speaker-test -Dhw:0,3 
+> 
+> How can I do the job when PCM substreams are used?
 
-how low latency can PA provide ?
-
-any tool to measure the latency ?
-
-seem alsa-lib/test/latency did not work on pulse device
+         speaker-test -Dhw:0,0,3
