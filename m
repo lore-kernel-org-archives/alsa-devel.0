@@ -1,23 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Thu, 13 May 2010 08:37:12 +0800
-Message-ID: <AANLkTinHc24MCBc0vBQB3WARiIfcYMRQ_WCKabKUtEIc@mail.gmail.com>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<20100507232516.GB16910@tango.0pointer.de>
-	<AANLkTil2wLMXsRwNGpeCfduwK-hmtbYyN4tki51m-S0X@mail.gmail.com>
-	<AANLkTimBQOoQGFoPZ8T7nRrDKhsylLNiqkeQ-HinIeyV@mail.gmail.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: Re: [PATCH 1/5] allow up to 32 PCM devices
+Date: Thu, 13 May 2010 10:21:26 +0800
+Message-ID: <20100513022126.GA13559@localhost>
+References: <20100512013015.752623810@intel.com>
+	<20100512015713.762299923@intel.com>
+	<alpine.LNX.2.00.1005120925400.6856@eeebox2.perex-int.cz>
+	<s5htyqdsg0w.wl%tiwai@suse.de> <20100512083950.GB11001@localhost>
+	<s5hbpclsdbu.wl%tiwai@suse.de> <4BEA80F1.7040600@ladisch.de>
+	<s5h7hn9s836.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB93024604
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+	by alsa0.perex.cz (Postfix) with ESMTP id E61232464F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 13 May 2010 02:37:13 +0200 (CEST)
-Received: by pxi13 with SMTP id 13so372499pxi.38
-	for <alsa-devel@alsa-project.org>; Wed, 12 May 2010 17:37:12 -0700 (PDT)
-In-Reply-To: <AANLkTimBQOoQGFoPZ8T7nRrDKhsylLNiqkeQ-HinIeyV@mail.gmail.com>
+	Thu, 13 May 2010 04:21:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h7hn9s836.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,89 +27,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-2010/5/12 pl bossart <bossart.nospam@gmail.com>
+On Wed, May 12, 2010 at 06:55:09PM +0800, Takashi Iwai wrote:
+> At Wed, 12 May 2010 12:20:33 +0200,
+> Clemens Ladisch wrote:
+> > 
+> > Takashi Iwai wrote:
+> > > Wu Fengguang wrote:
+> > > > > Jaroslav Kysela wrote:
+> > > > > > I don't agree to have only 4 slots for soundcards in the static minor 
+> > > > > > numbering. Maybe the driver should be converted to use subdevices or we 
+> > > > > > might drop the static minor number allocation at all (it might have only 
+> > > > > > impact for old distros).
+> > > > 
+> > > > Jaroslav, will there be so many sound cards in one system?
+> > > 
+> > > In the old time, yes.  Now we have less and less PCI slots.
+> > > In theory, we may have lots of USB audio devices, though :)
+> > 
+> > I implemented CONFIG_SND_DYNAMIC_MINORS because people had been asking
+> > for more than eight cards.  (And by now I have lots of cards too,
+> > although my computer probably isn't very typical.)
+> > 
+> > Anyway, static numbering is needed only for systems without udev/devfs,
+> > and there we shouldn't change it for backwards compatibility.  The HDA
+> > driver already requires kernels >= 2.6, so I don't see a problem with
+> > requiring CONFIG_SND_DYNAMIC_MINORS to get all HDMI outputs.
+> 
+> Right.  We can make it dependent.
+> 
 
-> > Some care would need to be taken with regards to detecting xruns.
-> > I think the alsa code currently uses the interrupt callback to detect
-> this.
-> > I have seen a Windows 7 machine happily loop the audio buffer
-> > uncontrollably, so I assume it has problems detecting xruns as well.
->
-> When the PulseAudio timer fires, the use of snd_pcm_avail() will force
-> a call to .pointer and will detect underflows. PulseAudio modilfies
-> its watermark when underflows occur so that more time is allocated to
-> refilling the ring buffer.
-> There are probably some cases I didn't plan for, but on paper I don't
-> really see a show-stopper here.
->
-> > Some sound card hardware only updates the hw pointer at around dma
-> > interrupt event time, so again using the interrupt is used to improve
-> > the accuracy of the hw pointer with interpolation used between
-> > interrupts.
->
-> If the hardware doesn't provide an accurate hw pointer, then the
-> timer-based scheduling should not be used I agree.
->
+Like this?
 
-How accurate do timer-based scheduling need ?
+ config SND_HDA_CODEC_INTELHDMI
+ 	bool "Build INTEL HDMI HD-audio codec support"
++	select SND_DYNAMIC_MINORS
+ 	default y
 
-e.g. accuracy up to +/- 5% of period size
+That will effectively turn on CONFIG_SND_DYNAMIC_MINORS by default
+(distribution kernels will have to enable it).
 
-or the watermark is too low for those sound card
+Another backwards compatible solution is to fall back to the two
+reserved values. This makes me a bit more comfortable :)
 
-can PA provide option to change the initial watermark ?
+--- drm-intel.orig/include/sound/minors.h	2010-05-13 10:06:52.000000000 +0800
++++ drm-intel/include/sound/minors.h	2010-05-13 10:10:06.000000000 +0800
+@@ -35,7 +35,9 @@
+ #define SNDRV_MINOR_TIMER		(SNDRV_MINOR_GLOBAL + 1 * 32)
+ 
+ #ifndef CONFIG_SND_DYNAMIC_MINORS
+-						/* 2 - 3 (reserved) */
++
++#define SNDRV_MINOR_BACKUP1		2
++#define SNDRV_MINOR_BACKUP2		3
+ #define SNDRV_MINOR_HWDEP		4	/* 4 - 7 */
+ #define SNDRV_MINOR_RAWMIDI		8	/* 8 - 15 */
+ #define SNDRV_MINOR_PCM_PLAYBACK	16	/* 16 - 23 */
+--- drm-intel.orig/sound/core/sound.c	2010-05-13 10:06:04.000000000 +0800
++++ drm-intel/sound/core/sound.c	2010-05-13 10:11:19.000000000 +0800
+@@ -269,8 +269,14 @@ int snd_register_device_for_dev(int type
+ 	minor = snd_find_free_minor();
+ #else
+ 	minor = snd_kernel_minor(type, card, dev);
+-	if (minor >= 0 && snd_minors[minor])
+-		minor = -EBUSY;
++	if (minor >= 0) {
++		if (snd_minors[minor])
++			minor = SNDRV_MINOR_BACKUP1;
++		if (snd_minors[minor])
++			minor = SNDRV_MINOR_BACKUP2;
++		if (snd_minors[minor])
++			minor = -EBUSY;
++	}
+ #endif
+ 	if (minor < 0) {
+ 		mutex_unlock(&sound_mutex);
 
-
->
-> > Some sound card hardware has very small hardware buffers, so PA will
-> > have to be waking up as often as the dma interrupts in order to keep
-> > the audio hardware buffers full enough.
-> > In how many cased would PA have to wake up less often than the DMA
-> interrupt?
->
-> This patch is mainly for music playback where you have more than 2s
-> buffered in the ring buffer.
-
-
-Do you mean that  those application require low latency will fail with
-underrun ?
-
-seem the usuage of PA is quite limited
-
-Can PA provide an option to increase the number of wake up for those desktop
-user which power consumption is not important ? ( default- fragments )
-
-it seem (disable timer option ) of new PA version is not as same as the
-Traditional mode of old PA version anymore
-
-
-> PulseAudio will wake-up after 1.9s or so,
-> as the ring buffer becomes empty, and when it does the wake-up may be
-> grouped with other system events with the timer slack. Having one or
-> more interrupts in the middle or the ring buffer will reduce the
-> efficiency of sleep modes that are being introduced with Moorestown
-> and future Atom-based SOCs.
-> So again this patch isn't for everyone. All standard disclaimers
-> apply, if you have a pre-existing conditon tell your doctor etc. If
-> there's a 4K ring buffer, this is not useful.
-
-
-au88x0 has 4 set of hardware registers each with 4 K buffers ( i.e. total 16
-K bytes)
-
-PA work quite nicely with 2 periods per buffer on PA 1.0.13 but some user
-reported cracking noise when new PA 1.0.14 or later version use 8 periods
-per buffer
-
-
-> If your hardware is
-> broken, stay the course with the current solution. If PulseAudio is
-> disabled in your distro, this is of no interest to you. In all these
-> cases, this patch doesn't change anything, the behavior is the same.
-> But if you want to optimize for power and latency isn't a concern,
-> then these interrupts can be disabled and need to.
->
->
+Thanks,
+Fengguang
