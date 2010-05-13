@@ -1,74 +1,51 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 1/20] sound/pci/asihpi: Use kzalloc
-Date: Thu, 13 May 2010 21:58:37 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1005132157400.6282@ask.diku.dk>
+From: Preston Kulaga <pkulaga@gmail.com>
+Subject: underruns over network
+Date: Thu, 13 May 2010 21:09:58 +0000 (UTC)
+Message-ID: <loom.20100513T224915-386@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 924242448A
+	for <alsa-devel@alsa-project.org>;
+	Thu, 13 May 2010 23:15:05 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OCfkF-0005g5-Pv
+	for alsa-devel@alsa-project.org; Thu, 13 May 2010 23:15:04 +0200
+Received: from 97-121-64-10.omah.qwest.net ([97.121.64.10])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 23:15:03 +0200
+Received: from pkulaga by 97-121-64-10.omah.qwest.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 23:15:03 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia@diku.dk>
+Hello,
 
-Use kzalloc rather than the combination of kmalloc and memset.
+  I am quite new to ALSA and am having a bit of trouble with underruns.  I am 
+working on a voice communication system via udp sockets and am getting underruns
+on receiving end very sporadically (capture end is fine).  Have done a great 
+deal of reading and searching on reasons for this but am not sure what approach 
+is best to limit the underruns.  I must not be transferring the data quickly 
+enough over the network before the ring buffer runs out of data, which makes 
+sense, but how would you accommodate for this?  I am able to buffer a large 
+amount of network data and then playback successfully, but obviously the delay 
+induced is so significant that it makes real-time communication impossible.  
+If I just recover/prepare the stream after an underrun the audio is horribly 
+distorted.  Is there a normal way of dealing with this issue that I am unable
+to find?
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
-
-// <smpl>
-@@
-expression x,size,flags;
-statement S;
-@@
-
--x = kmalloc(size,flags);
-+x = kzalloc(size,flags);
- if (x == NULL) S
--memset(x, 0, size);
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- sound/pci/asihpi/hpi6000.c |    3 +--
- sound/pci/asihpi/hpi6205.c |    3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
-
-diff -u -p a/sound/pci/asihpi/hpi6000.c b/sound/pci/asihpi/hpi6000.c
---- a/sound/pci/asihpi/hpi6000.c
-+++ b/sound/pci/asihpi/hpi6000.c
-@@ -448,14 +448,13 @@ static void subsys_create_adapter(struct
- 	if (phm->u.s.resource.r.pci->device_id != HPI_PCI_DEV_ID_PCI2040)
- 		return;
- 
--	ao.priv = kmalloc(sizeof(struct hpi_hw_obj), GFP_KERNEL);
-+	ao.priv = kzalloc(sizeof(struct hpi_hw_obj), GFP_KERNEL);
- 	if (!ao.priv) {
- 		HPI_DEBUG_LOG(ERROR, "cant get mem for adapter object\n");
- 		phr->error = HPI_ERROR_MEMORY_ALLOC;
- 		return;
- 	}
- 
--	memset(ao.priv, 0, sizeof(struct hpi_hw_obj));
- 	/* create the adapter object based on the resource information */
- 	/*? memcpy(&ao.Pci,&phm->u.s.Resource.r.Pci,sizeof(ao.Pci)); */
- 	ao.pci = *phm->u.s.resource.r.pci;
-diff -u -p a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
---- a/sound/pci/asihpi/hpi6205.c
-+++ b/sound/pci/asihpi/hpi6205.c
-@@ -482,13 +482,12 @@ static void subsys_create_adapter(struct
- 	if (phm->u.s.resource.r.pci->device_id != HPI_PCI_DEV_ID_DSP6205)
- 		return;
- 
--	ao.priv = kmalloc(sizeof(struct hpi_hw_obj), GFP_KERNEL);
-+	ao.priv = kzalloc(sizeof(struct hpi_hw_obj), GFP_KERNEL);
- 	if (!ao.priv) {
- 		HPI_DEBUG_LOG(ERROR, "cant get mem for adapter object\n");
- 		phr->error = HPI_ERROR_MEMORY_ALLOC;
- 		return;
- 	}
--	memset(ao.priv, 0, sizeof(struct hpi_hw_obj));
- 
- 	ao.pci = *phm->u.s.resource.r.pci;
- 	err = create_adapter_obj(&ao, &os_error_code);
+I would appreciate any insight, guidance, references for any help you can 
+give me.  Thank You.
