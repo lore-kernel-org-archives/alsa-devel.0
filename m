@@ -1,29 +1,18 @@
-From: Georg Rudolph <georg.rudolph@schwaben.de>
-Subject: [PATCH] hdspmixer buffer overflow
-Date: Sat, 15 May 2010 09:37:34 +0200
-Message-ID: <4BEE4F3E.9030900@schwaben.de>
+From: Dan Carpenter <error27@gmail.com>
+Subject: [patch -next] sound/es1688: add pedantic range checks
+Date: Fri, 14 May 2010 16:48:28 +0200
+Message-ID: <20100514144824.GB17487@bicker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.headlight.de (mail.headlight.de [192.55.84.71])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4F2BA24569
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6A1F224574
 	for <alsa-devel@alsa-project.org>;
-	Sat, 15 May 2010 09:37:44 +0200 (CEST)
-Received: from localhost (amavis.headlight.de [192.55.84.73])
-	by mail.headlight.de (Postfix) with ESMTP id EAD6A35E968
-	for <alsa-devel@alsa-project.org>;
-	Sat, 15 May 2010 09:37:43 +0200 (CEST)
-Received: from mail.headlight.de ([192.55.84.71])
-	by localhost (amavis.headlight.de [192.55.84.73]) (amavisd-new,
-	port 10024)
-	with ESMTP id FEJbxeMZtkKr for <alsa-devel@alsa-project.org>;
-	Sat, 15 May 2010 09:37:40 +0200 (CEST)
-Received: from [192.168.178.20] (p5B2018C7.dip0.t-ipconnect.de [91.32.24.199])
-	(Authenticated sender: m10009-0370)
-	by mail.headlight.de (Postfix) with ESMTPA id 1C43F2B5816
-	for <alsa-devel@alsa-project.org>;
-	Sat, 15 May 2010 09:37:39 +0200 (CEST)
+	Fri, 14 May 2010 16:48:54 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so775172wwf.38
+	for <alsa-devel@alsa-project.org>; Fri, 14 May 2010 07:48:53 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,74 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, Jean Delvare <khali@linux-fr.org>, Krzysztof Helt <krzysztof.h1@wp.pl>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Smatch complains that if (dev == SNDRV_CARDS) we're one past the end of
+the array.  That's unlikely to happen in real life, I suppose.
 
-to fix https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5006
-the attached patch for alsa-tools is proposed:
+Also smatch complains about "strcpy(card->shortname, pcm->name);"
+The "pcm->name" buffer is 80 characters and "card->shortname" is 32
+characters.  If you follow the call paths it turns out we never actually
+use more than 16 characters so it's not a problem.  But anyway, let's 
+make it easy for people auditing this in the future.
 
-Summary: Fix buffer overflow in hdspmixer
+Signed-off-by: Dan Carpenter <error27@gmail.com>
 
-A one off string buffer overflow fixed by handling it properly with
-string stream.
-
-Signed-off-by: Georg Rudolph <georg.rudolph@schwaben.de
-<mailto:foo@bar.com>>
-
-
-
+diff --git a/sound/isa/es1688/es1688.c b/sound/isa/es1688/es1688.c
+index fdcce31..0cde813 100644
+--- a/sound/isa/es1688/es1688.c
++++ b/sound/isa/es1688/es1688.c
+@@ -149,10 +149,11 @@ static int __devinit snd_es1688_probe(struct snd_card *card, unsigned int n)
+ 	if (error < 0)
+ 		return error;
  
-
---- alsa-tools-1.0.23/hdspmixer/src/HDSPMixerIOMixer.h  2010-04-16
-13:11:09.000000000 +0200
-+++ alsa-tools-1.0.23-work/hdspmixer/src/HDSPMixerIOMixer.h 2010-05-12
-22:07:49.549949993 +0200
-@@ -36,6 +36,7 @@
- #include "HDSPMixerStripData.h"
- #include "HDSPMixerMeter.h"
- #include "pixmaps.h"
-+#include <sstream>
-
- class HDSPMixerWindow;
- class HDSPMixerSelector;
-@@ -52,7 +53,7 @@
- private:
-     char **p_iomixer_xpm;
-     int channel_num, relative_num, mixer_type;
--    char channel_name[6];
-+   std::stringstream channel_name;
-     void update_child(Fl_Widget &widget);
- public:
-     HDSPMixerStripData *data[3][3][8]; /*
-data[card][mode(ss/ds/qs)][preset number] */
---- alsa-tools-1.0.23/hdspmixer/src/HDSPMixerIOMixer.cxx    2010-04-16
-13:11:09.000000000 +0200
-+++ alsa-tools-1.0.23-work/hdspmixer/src/HDSPMixerIOMixer.cxx  
-2010-05-12 22:00:26.754950707 +0200
-@@ -25,9 +25,9 @@
- {
-     mixer_type = type;
-     if (type) {
--   sprintf(channel_name, "Out %d", ch);
-+   channel_name << "Out " << ch;
-     } else {
--   sprintf(channel_name, "In %d", ch);
-+   channel_name << "In " << ch;
-     }
-     channel_num = ch;
-     if (channel_num%2) {
-@@ -73,7 +73,7 @@
-    draw_background();
-    fl_color(FL_BLACK);
-    fl_font(FL_HELVETICA, 8);
--   fl_draw(channel_name, x()+4, y()+225, 27, 9, FL_ALIGN_CENTER);
-+   fl_draw(channel_name.str().c_str(), x()+4, y()+225, 27, 9,
-FL_ALIGN_CENTER);
-    for (int i=children(); i--;) {
-        Fl_Widget& o = **a++;
-        draw_child(o);
-
-Best Regards,
-Georg Rudolph
+-	strcpy(card->driver, "ES1688");
+-	strcpy(card->shortname, pcm->name);
+-	sprintf(card->longname, "%s at 0x%lx, irq %i, dma %i", pcm->name,
+-		chip->port, chip->irq, chip->dma8);
++	strlcpy(card->driver, "ES1688", sizeof(card->driver));
++	strlcpy(card->shortname, pcm->name, sizeof(card->shortname));
++	snprintf(card->longname, sizeof(card->longname),
++		"%s at 0x%lx, irq %i, dma %i", pcm->name, chip->port,
++		 chip->irq, chip->dma8);
+ 
+ 	if (fm_port[n] == SNDRV_AUTO_PORT)
+ 		fm_port[n] = port[n];	/* share the same port */
+@@ -271,6 +272,8 @@ static int __devinit snd_es968_pnp_detect(struct pnp_card_link *pcard,
+ 		if (enable[dev] && isapnp[dev])
+ 			break;
+ 	}
++	if (dev == SNDRV_CARDS)
++		return -ENODEV;
+ 
+ 	error = snd_card_create(index[dev], id[dev], THIS_MODULE,
+ 				sizeof(struct snd_es1688), &card);
