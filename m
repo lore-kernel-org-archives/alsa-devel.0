@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Fri, 14 May 2010 10:45:24 +0800
-Message-ID: <AANLkTikJt1irjPSt1iRr9MCw53CPqRKoW3TDlT7ASCG-@mail.gmail.com>
+Date: Fri, 14 May 2010 11:09:55 +0800
+Message-ID: <AANLkTilBG98HqtiZiVCaVPwtGp1kV9NFbI291B3il6LN@mail.gmail.com>
 References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
 	<20100507232516.GB16910@tango.0pointer.de>
 	<AANLkTil2wLMXsRwNGpeCfduwK-hmtbYyN4tki51m-S0X@mail.gmail.com>
@@ -14,11 +14,11 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
 	[209.85.222.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id C2A362438C
+	by alsa0.perex.cz (Postfix) with ESMTP id 65C3A243A3
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 May 2010 04:45:26 +0200 (CEST)
-Received: by pzk40 with SMTP id 40so1189207pzk.23
-	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 19:45:24 -0700 (PDT)
+	Fri, 14 May 2010 05:09:57 +0200 (CEST)
+Received: by pzk40 with SMTP id 40so1199281pzk.23
+	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 20:09:56 -0700 (PDT)
 In-Reply-To: <AANLkTimFWD6-muOEWBD_kaDeLmMBDDPUvZ4IUQHYCYjm@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -54,6 +54,7 @@ List-Id: alsa-devel@alsa-project.org
 > this thread.
 >
 
+
 underrun is application pointer behind hardware pointer
 
 "Rewinding the ring buffer completely causes audible issues with DMAs."
@@ -61,4 +62,5 @@ underrun is application pointer behind hardware pointer
 rewinding ring buffer compleletly mean hardware pointer = application
 pointer
 
-so gltich also occur when application pointer is behind hardware pointer
+"Glitch free" can only be achieved when PA adjust the watermark before any
+unnder run occur not "until underrrun occur" since it is too late
