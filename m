@@ -1,17 +1,18 @@
 From: Wu Fengguang <fengguang.wu@intel.com>
-Subject: [PATCH 4/4] hdmi - dont fail on extra nodes
-Date: Fri, 14 May 2010 16:36:15 +0800
-Message-ID: <20100514084052.443242902@intel.com>
-References: <20100514083611.624260274@intel.com>
+Subject: Re: [RFC][PATCH] fall back to reserved minor numbers
+Date: Fri, 14 May 2010 16:55:26 +0800
+Message-ID: <20100514085526.GA7827@localhost>
+References: <20100514032827.GA10883@localhost> <s5hpr0yq4mg.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 779A0244B3
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+	by alsa0.perex.cz (Postfix) with ESMTP id 33086244BD
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 May 2010 10:41:21 +0200 (CEST)
-Content-Disposition: inline; filename=hdmi-permissive-to-extra-nodes.patch
+	Fri, 14 May 2010 10:55:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hpr0yq4mg.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,55 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Wu Fengguang <fengguang.wu@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-The number of HDMI nodes is expected to go up in future.
-So don't fail hard on seeing extra converter/pin nodes.
+On Fri, May 14, 2010 at 04:17:27PM +0800, Takashi Iwai wrote:
+> At Fri, 14 May 2010 11:28:28 +0800,
+> Wu Fengguang wrote:
+> > 
+> > When the static minor numbers collide because of too many devices,
+> > fall back to the reserved minor numbers 2 and 3.
+> > 
+> > This for example will allow Intel HDMI audio driver to create three PCM
+> > devices (index 3, 7, 8; the minor number of the last index will
+> > otherwise collide with the first record device).
+> > 
+> > The other option is to force enable CONFIG_SND_DYNAMIC_MINORS.
+> > 
+> > Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+> 
+> Well, frankly, I don't see a big merit of doing this.
+> 
+> Most (all?) 2.6-based distros are using udev, thus
+> CONFIG_SND_DYNAMIC_MINORS should be used there.  The rest is for old
+> distros or for some limited systems like embedded devices, and they
+> won't need so much PCM devices.
+> 
+> Even if we do this, it doesn't make sense unless the user-space side
+> creates the corresponding device node.
 
-We can still operate safely on the nodes within
-MAX_HDMI_CVTS/MAX_HDMI_PINS.
+I was afraid of this case: an embedded system with G45 HDMI codec.
+This codec only has 1 PCM playback device, however the driver still
+requires enabling CONFIG_SND_DYNAMIC_MINORS in order to support more
+capable HDMI codecs.
 
-Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
----
- sound/pci/hda/patch_hdmi.c |   10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
---- sound-2.6.orig/sound/pci/hda/patch_hdmi.c	2010-05-11 13:25:35.000000000 +0800
-+++ sound-2.6/sound/pci/hda/patch_hdmi.c	2010-05-11 13:53:47.000000000 +0800
-@@ -766,7 +766,7 @@ static int hdmi_add_pin(struct hda_codec
- 	if (spec->num_pins >= MAX_HDMI_PINS) {
- 		snd_printk(KERN_WARNING
- 			   "HDMI: no space for pin %d\n", pin_nid);
--		return -EINVAL;
-+		return -E2BIG;
- 	}
- 
- 	hdmi_present_sense(codec, pin_nid, &spec->sink_eld[spec->num_pins]);
-@@ -788,7 +788,7 @@ static int hdmi_add_cvt(struct hda_codec
- 	if (spec->num_cvts >= MAX_HDMI_CVTS) {
- 		snd_printk(KERN_WARNING
- 			   "HDMI: no space for converter %d\n", nid);
--		return -EINVAL;
-+		return -E2BIG;
- 	}
- 
- 	spec->cvt[spec->num_cvts] = nid;
-@@ -820,15 +820,13 @@ static int hdmi_parse_codec(struct hda_c
- 
- 		switch (type) {
- 		case AC_WID_AUD_OUT:
--			if (hdmi_add_cvt(codec, nid) < 0)
--				return -EINVAL;
-+			hdmi_add_cvt(codec, nid);
- 			break;
- 		case AC_WID_PIN:
- 			caps = snd_hda_param_read(codec, nid, AC_PAR_PIN_CAP);
- 			if (!(caps & (AC_PINCAP_HDMI | AC_PINCAP_DP)))
- 				continue;
--			if (hdmi_add_pin(codec, nid) < 0)
--				return -EINVAL;
-+			hdmi_add_pin(codec, nid);
- 			break;
- 		}
- 	}
+Thanks,
+Fengguang
