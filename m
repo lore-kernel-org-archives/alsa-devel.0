@@ -1,17 +1,17 @@
 From: Dan Carpenter <error27@gmail.com>
-Subject: [patch -next] sound/es1688: add pedantic range checks
-Date: Fri, 14 May 2010 16:48:28 +0200
-Message-ID: <20100514144824.GB17487@bicker>
+Subject: [patch -next] asihpi: testing the wrong variable
+Date: Fri, 14 May 2010 16:49:20 +0200
+Message-ID: <20100514144920.GC17487@bicker>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6A1F224574
+	by alsa0.perex.cz (Postfix) with ESMTP id 8BC3224575
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 May 2010 16:48:54 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so775172wwf.38
-	for <alsa-devel@alsa-project.org>; Fri, 14 May 2010 07:48:53 -0700 (PDT)
+	Fri, 14 May 2010 16:49:36 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so775743wwf.38
+	for <alsa-devel@alsa-project.org>; Fri, 14 May 2010 07:49:35 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,46 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Jean Delvare <khali@linux-fr.org>, Krzysztof Helt <krzysztof.h1@wp.pl>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Smatch complains that if (dev == SNDRV_CARDS) we're one past the end of
-the array.  That's unlikely to happen in real life, I suppose.
-
-Also smatch complains about "strcpy(card->shortname, pcm->name);"
-The "pcm->name" buffer is 80 characters and "card->shortname" is 32
-characters.  If you follow the call paths it turns out we never actually
-use more than 16 characters so it's not a problem.  But anyway, let's 
-make it easy for people auditing this in the future.
+There is a typo here.  We want to test "*dst" not "dst".
 
 Signed-off-by: Dan Carpenter <error27@gmail.com>
 
-diff --git a/sound/isa/es1688/es1688.c b/sound/isa/es1688/es1688.c
-index fdcce31..0cde813 100644
---- a/sound/isa/es1688/es1688.c
-+++ b/sound/isa/es1688/es1688.c
-@@ -149,10 +149,11 @@ static int __devinit snd_es1688_probe(struct snd_card *card, unsigned int n)
- 	if (error < 0)
- 		return error;
+diff --git a/sound/pci/asihpi/hpifunc.c b/sound/pci/asihpi/hpifunc.c
+index 254c580..15f0c7e 100644
+--- a/sound/pci/asihpi/hpifunc.c
++++ b/sound/pci/asihpi/hpifunc.c
+@@ -3279,7 +3279,7 @@ static u16 hpi_entity_alloc_and_copy(struct hpi_entity *src,
  
--	strcpy(card->driver, "ES1688");
--	strcpy(card->shortname, pcm->name);
--	sprintf(card->longname, "%s at 0x%lx, irq %i, dma %i", pcm->name,
--		chip->port, chip->irq, chip->dma8);
-+	strlcpy(card->driver, "ES1688", sizeof(card->driver));
-+	strlcpy(card->shortname, pcm->name, sizeof(card->shortname));
-+	snprintf(card->longname, sizeof(card->longname),
-+		"%s at 0x%lx, irq %i, dma %i", pcm->name, chip->port,
-+		 chip->irq, chip->dma8);
- 
- 	if (fm_port[n] == SNDRV_AUTO_PORT)
- 		fm_port[n] = port[n];	/* share the same port */
-@@ -271,6 +272,8 @@ static int __devinit snd_es968_pnp_detect(struct pnp_card_link *pcard,
- 		if (enable[dev] && isapnp[dev])
- 			break;
- 	}
-+	if (dev == SNDRV_CARDS)
-+		return -ENODEV;
- 
- 	error = snd_card_create(index[dev], id[dev], THIS_MODULE,
- 				sizeof(struct snd_es1688), &card);
+ 	buf_size = hpi_entity_size(src);
+ 	*dst = kmalloc(buf_size, GFP_KERNEL);
+-	if (dst == NULL)
++	if (*dst == NULL)
+ 		return HPI_ERROR_MEMORY_ALLOC;
+ 	memcpy(*dst, src, buf_size);
+ 	return 0;
