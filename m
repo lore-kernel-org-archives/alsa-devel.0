@@ -1,25 +1,16 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Fri, 14 May 2010 11:09:55 +0800
-Message-ID: <AANLkTilBG98HqtiZiVCaVPwtGp1kV9NFbI291B3il6LN@mail.gmail.com>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<20100507232516.GB16910@tango.0pointer.de>
-	<AANLkTil2wLMXsRwNGpeCfduwK-hmtbYyN4tki51m-S0X@mail.gmail.com>
-	<AANLkTimBQOoQGFoPZ8T7nRrDKhsylLNiqkeQ-HinIeyV@mail.gmail.com>
-	<AANLkTiktH0kLxDKL_zyOlxvsl5IaEQ9WP0Gr6LTO3Dye@mail.gmail.com>
-	<AANLkTimFWD6-muOEWBD_kaDeLmMBDDPUvZ4IUQHYCYjm@mail.gmail.com>
+From: Wu Fengguang <fengguang.wu@intel.com>
+Subject: [RFC][PATCH] fall back to reserved minor numbers
+Date: Fri, 14 May 2010 11:28:28 +0800
+Message-ID: <20100514032827.GA10883@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
-	[209.85.222.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id 65C3A243A3
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+	by alsa0.perex.cz (Postfix) with ESMTP id DACD9243C0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 May 2010 05:09:57 +0200 (CEST)
-Received: by pzk40 with SMTP id 40so1199281pzk.23
-	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 20:09:56 -0700 (PDT)
-In-Reply-To: <AANLkTimFWD6-muOEWBD_kaDeLmMBDDPUvZ4IUQHYCYjm@mail.gmail.com>
+	Fri, 14 May 2010 05:28:32 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,38 +20,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-2010/5/14 pl bossart <bossart.nospam@gmail.com>
+When the static minor numbers collide because of too many devices,
+fall back to the reserved minor numbers 2 and 3.
 
-> > Refer to your patch "add rewind-safeguard parameter"
-> >
-> >
-> http://git.0pointer.de/?p=pulseaudio.git;a=commit;h=4df443bbe682055a41e7c2248877dcc7682a69b8
-> >
-> > you mention glitch occur because application cannot rewind appl pointer
-> to
-> > hardware ptr.
-> >
-> > In another word, app ptr must be 128/256 bytes ahead of hardware ptr at
-> any
-> > time to prevent glitch occur. this mean that the glitch was due to DMA
-> brust
-> > size since "PulseAudio modilfies its watermark when underflows occur".
->
-> Man, you are seriously confused. You ought to do some reading, look at
-> the code, use your brain and figure things out instead of spamming
-> this thread.
->
+This for example will allow Intel HDMI audio driver to create three PCM
+devices (index 3, 7, 8; the minor number of the last index will
+otherwise collide with the first record device).
 
+The other option is to force enable CONFIG_SND_DYNAMIC_MINORS.
 
-underrun is application pointer behind hardware pointer
+Signed-off-by: Wu Fengguang <fengguang.wu@intel.com>
+---
+ include/sound/minors.h |    4 +++-
+ sound/core/sound.c     |   10 ++++++++--
+ 2 files changed, 11 insertions(+), 3 deletions(-)
 
-"Rewinding the ring buffer completely causes audible issues with DMAs."
-
-rewinding ring buffer compleletly mean hardware pointer = application
-pointer
-
-"Glitch free" can only be achieved when PA adjust the watermark before any
-unnder run occur not "until underrrun occur" since it is too late
+--- drm-intel.orig/include/sound/minors.h	2010-05-13 10:06:52.000000000 +0800
++++ drm-intel/include/sound/minors.h	2010-05-13 10:10:06.000000000 +0800
+@@ -35,7 +35,9 @@
+ #define SNDRV_MINOR_TIMER		(SNDRV_MINOR_GLOBAL + 1 * 32)
+ 
+ #ifndef CONFIG_SND_DYNAMIC_MINORS
+-						/* 2 - 3 (reserved) */
++
++#define SNDRV_MINOR_BACKUP1		2
++#define SNDRV_MINOR_BACKUP2		3
+ #define SNDRV_MINOR_HWDEP		4	/* 4 - 7 */
+ #define SNDRV_MINOR_RAWMIDI		8	/* 8 - 15 */
+ #define SNDRV_MINOR_PCM_PLAYBACK	16	/* 16 - 23 */
+--- drm-intel.orig/sound/core/sound.c	2010-05-13 10:06:04.000000000 +0800
++++ drm-intel/sound/core/sound.c	2010-05-13 10:11:19.000000000 +0800
+@@ -269,8 +269,14 @@ int snd_register_device_for_dev(int type
+ 	minor = snd_find_free_minor();
+ #else
+ 	minor = snd_kernel_minor(type, card, dev);
+-	if (minor >= 0 && snd_minors[minor])
+-		minor = -EBUSY;
++	if (minor >= 0) {
++		if (snd_minors[minor])
++			minor = SNDRV_MINOR_BACKUP1;
++		if (snd_minors[minor])
++			minor = SNDRV_MINOR_BACKUP2;
++		if (snd_minors[minor])
++			minor = -EBUSY;
++	}
+ #endif
+ 	if (minor < 0) {
+ 		mutex_unlock(&sound_mutex);
