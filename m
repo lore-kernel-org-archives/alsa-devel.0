@@ -1,25 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
 Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Fri, 14 May 2010 12:03:23 +0800
-Message-ID: <AANLkTilsgMbwSyYiO5bGXiLxTk0njm_OsX5E2Oj1gyoj@mail.gmail.com>
+Date: Fri, 14 May 2010 13:07:40 +0900
+Message-ID: <AANLkTimQ8I3NWwCuOV7M8mTpzBMwDkrmhb5wWYao_CGs@mail.gmail.com>
 References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<20100507232516.GB16910@tango.0pointer.de>
-	<AANLkTil2wLMXsRwNGpeCfduwK-hmtbYyN4tki51m-S0X@mail.gmail.com>
-	<AANLkTimBQOoQGFoPZ8T7nRrDKhsylLNiqkeQ-HinIeyV@mail.gmail.com>
-	<AANLkTiktH0kLxDKL_zyOlxvsl5IaEQ9WP0Gr6LTO3Dye@mail.gmail.com>
-	<AANLkTimFWD6-muOEWBD_kaDeLmMBDDPUvZ4IUQHYCYjm@mail.gmail.com>
+	<AANLkTimF0qrCaiIk6-cjkxm1s-hA3bOgKdmsDe8PdV1a@mail.gmail.com>
+	<AANLkTimPaE9JTd8XIVcM6JQvmD73JHkSWMjKT8zsdGR2@mail.gmail.com>
+	<20100512141653.GB4312@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15712243F8
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id E2BAE243FA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 14 May 2010 06:03:24 +0200 (CEST)
-Received: by pxi13 with SMTP id 13so1140517pxi.38
-	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 21:03:23 -0700 (PDT)
-In-Reply-To: <AANLkTimFWD6-muOEWBD_kaDeLmMBDDPUvZ4IUQHYCYjm@mail.gmail.com>
+	Fri, 14 May 2010 06:07:42 +0200 (CEST)
+Received: by pwj2 with SMTP id 2so247815pwj.38
+	for <alsa-devel@alsa-project.org>; Thu, 13 May 2010 21:07:40 -0700 (PDT)
+In-Reply-To: <20100512141653.GB4312@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,37 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, pl bossart <bossart.nospam@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/5/14 pl bossart <bossart.nospam@gmail.com>
-
-> > Refer to your patch "add rewind-safeguard parameter"
-> >
-> >
-> http://git.0pointer.de/?p=pulseaudio.git;a=commit;h=4df443bbe682055a41e7c2248877dcc7682a69b8
-> >
-> > you mention glitch occur because application cannot rewind appl pointer
-> to
-> > hardware ptr.
-> >
-> > In another word, app ptr must be 128/256 bytes ahead of hardware ptr at
-> any
-> > time to prevent glitch occur. this mean that the glitch was due to DMA
-> brust
-> > size since "PulseAudio modilfies its watermark when underflows occur".
+On Wed, May 12, 2010 at 11:16 PM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Wed, May 12, 2010 at 08:50:42AM -0500, pl bossart wrote:
 >
-> Man, you are seriously confused. You ought to do some reading, look at
-> the code, use your brain and figure things out instead of spamming
-> this thread.
+>> This might be almost equivalent to the timer approach in terms of # of
+>> wakeups, however the timer can be reprogrammed on-the-fly whereas
+>> periods can only be changed by closing and reopening the device. You
+>> can also adjust the timer shall underflows occur. And the timer slack
+>> lets the kernel group events. Not to mention that you will need
 >
+> The timer is also useful for allowing PulseAudio to dynamically adjust
+> the period size as the runtime situation changes - if you're running
+> high latency streams and have a low latency application start up then
+> PulseAudio can just change the timer to get more frequent events.
 
-your patch are adjust the watermark before unnder occur  to prevent glitch ,
-not as you said "PA adjust watermark until underrun occur"
+AFAIU, the only issue is lack of ability to fine-tune period size of
+DMA runtime.
+Otherwise, for the requirement, having period-size almost equal
+to ring-buffer serves better than disabling interrupts and using timer
+based updating, more so for VMs with inaccurate timer source.
 
-" PulseAudio modilfies its watermark when underflows occur so that more time
-is allocated to refilling the ring buffer."
-
-This model cannot be called as "Glitch free model" ,
-
-A "Glicth free model" have to prevent any underrun occur at any time
+Then I think, rather then providing a way to disable hw-intr, we'd
+better provide
+a way to modify runtime period-size at DMA Driver level, and
+snd_pcm_period_elapsed seems already capable to handle that.
+That way, disabled interrupts would just be a special case with
+period-size := ULONG_MAX.
