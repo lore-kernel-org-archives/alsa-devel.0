@@ -1,17 +1,17 @@
 From: apatard@mandriva.com
-Subject: [patch 3/6] ASoC: Add SOC_DOUBLE_R_SX_TLV control
-Date: Sat, 15 May 2010 17:30:01 +0200
-Message-ID: <20100515153130.338630785@mandriva.com>
+Subject: [patch 1/6] orion/kirkwood: add audio functions.
+Date: Sat, 15 May 2010 17:29:59 +0200
+Message-ID: <20100515153129.715456900@mandriva.com>
 References: <20100515152958.899927802@mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from jules.rtp-net.org (sat78-1-82-232-42-61.fbx.proxad.net
-	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id 11E80243A3
+	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id 0E5E42439F
 	for <alsa-devel@alsa-project.org>;
 	Sat, 15 May 2010 17:31:16 +0200 (CEST)
-Content-Disposition: inline; filename=add_soc_double_r_sx_tlv.patch
+Content-Disposition: inline; filename=kirkwood_add_audio_dev.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,156 +25,121 @@ To: alsa-devel@alsa-project.org
 Cc: nico@fluxnic.net, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, Arnaud Patard <apatard@mandriva.com>, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch is adding a new control which has the following capabilities:
-- tlv
-- variable data size (for instance, 7 ou 8 bit)
-- double mixer
-- data range centered around 0
+This patch add audio related definitions and functions
+
 
 Signed-off-by: Arnaud Patard <apatard@mandriva.com>
 
-Index: sound-2.6/include/sound/soc.h
+Index: sound-2.6/arch/arm/mach-kirkwood/common.c
 ===================================================================
---- sound-2.6.orig/include/sound/soc.h	2010-05-14 09:28:38.152498194 +0200
-+++ sound-2.6/include/sound/soc.h	2010-05-14 09:31:47.204499340 +0200
-@@ -170,6 +170,21 @@
- 	.get = xhandler_get, .put = xhandler_put, \
- 	.private_value = (unsigned long)&xenum }
+--- sound-2.6.orig/arch/arm/mach-kirkwood/common.c	2010-05-15 17:03:59.990086774 +0200
++++ sound-2.6/arch/arm/mach-kirkwood/common.c	2010-05-15 17:04:04.998087735 +0200
+@@ -25,6 +25,7 @@
+ #include <asm/mach/time.h>
+ #include <mach/kirkwood.h>
+ #include <mach/bridge-regs.h>
++#include <plat/audio.h>
+ #include <plat/cache-feroceon-l2.h>
+ #include <plat/ehci-orion.h>
+ #include <plat/mvsdio.h>
+@@ -855,6 +856,42 @@ struct sys_timer kirkwood_timer = {
+ 	.init = kirkwood_timer_init,
+ };
  
-+#define SOC_DOUBLE_R_SX_TLV(xname, xreg_left, xreg_right, xshift,\
-+		xmin, xmax, tlv_array) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
-+	.access = SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
-+		  SNDRV_CTL_ELEM_ACCESS_READWRITE, \
-+	.tlv.p = (tlv_array), \
-+	.info = snd_soc_info_volsw_2r_sx, \
-+	.get = snd_soc_get_volsw_2r_sx, \
-+	.put = snd_soc_put_volsw_2r_sx, \
-+	.private_value = (unsigned long)&(struct soc_mixer_control) \
-+		{.reg = xreg_left, \
-+		 .rreg = xreg_right, .shift = xshift, \
-+		 .min = xmin, .max = xmax} }
++/*****************************************************************************
++ * Audio
++ ****************************************************************************/
++static struct resource kirkwood_i2s_resources[] = {
++	[0] = {
++		.start  = AUDIO_PHYS_BASE,
++		.end    = AUDIO_PHYS_BASE + SZ_16K - 1,
++		.flags  = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start  = IRQ_KIRKWOOD_I2S,
++		.end    = IRQ_KIRKWOOD_I2S,
++		.flags  = IORESOURCE_IRQ,
++	},
++};
 +
++static struct orion_asoc_platform_data kirkwood_i2s_data = {
++	.dram        = &kirkwood_mbus_dram_info,
++	.burst       = 128,
++};
++
++static struct platform_device kirkwood_i2s_device = {
++	.name		= "orion-i2s",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(kirkwood_i2s_resources),
++	.resource	= kirkwood_i2s_resources,
++	.dev		= {
++		.platform_data	= &kirkwood_i2s_data,
++	},
++};
++
++void __init kirkwood_audio_init(void)
++{
++	kirkwood_clk_ctrl |= CGC_AUDIO;
++	platform_device_register(&kirkwood_i2s_device);
++}
+ 
+ /*****************************************************************************
+  * General
+@@ -914,6 +951,7 @@ void __init kirkwood_init(void)
+ 	kirkwood_spi_plat_data.tclk = kirkwood_tclk;
+ 	kirkwood_uart0_data[0].uartclk = kirkwood_tclk;
+ 	kirkwood_uart1_data[0].uartclk = kirkwood_tclk;
++	kirkwood_i2s_data.tclk = kirkwood_tclk;
+ 
+ 	/*
+ 	 * Disable propagation of mbus errors to the CPU local bus,
+Index: sound-2.6/arch/arm/mach-kirkwood/common.h
+===================================================================
+--- sound-2.6.orig/arch/arm/mach-kirkwood/common.h	2010-05-15 17:03:59.970086925 +0200
++++ sound-2.6/arch/arm/mach-kirkwood/common.h	2010-05-15 17:04:05.014086284 +0200
+@@ -16,6 +16,7 @@ struct mv643xx_eth_platform_data;
+ struct mv_sata_platform_data;
+ struct mvsdio_platform_data;
+ struct mtd_partition;
++struct orion_asoc_platform_data;
+ 
+ /*
+  * Basic Kirkwood init functions used early by machine-setup.
+@@ -41,6 +42,7 @@ void kirkwood_i2c_init(void);
+ void kirkwood_uart0_init(void);
+ void kirkwood_uart1_init(void);
+ void kirkwood_nand_init(struct mtd_partition *parts, int nr_parts, int delay);
++void kirkwood_audio_init(void);
+ 
+ extern int kirkwood_tclk;
+ extern struct sys_timer kirkwood_timer;
+Index: sound-2.6/arch/arm/mach-kirkwood/include/mach/kirkwood.h
+===================================================================
+--- sound-2.6.orig/arch/arm/mach-kirkwood/include/mach/kirkwood.h	2010-05-15 17:03:59.954086213 +0200
++++ sound-2.6/arch/arm/mach-kirkwood/include/mach/kirkwood.h	2010-05-15 17:04:05.054086065 +0200
+@@ -96,6 +96,9 @@
+ 
+ #define SDIO_PHYS_BASE		(KIRKWOOD_REGS_PHYS_BASE | 0x90000)
+ 
++#define AUDIO_PHYS_BASE		(KIRKWOOD_REGS_PHYS_BASE | 0xA0000)
++#define AUDIO_VIRT_BASE		(KIRKWOOD_REGS_VIRT_BASE | 0xA0000)
 +
  /*
-  * Simplified versions of above macros, declaring a struct and calculating
-  * ARRAY_SIZE internally
-@@ -329,6 +344,12 @@ int snd_soc_put_volsw_s8(struct snd_kcon
- 	struct snd_ctl_elem_value *ucontrol);
- int snd_soc_limit_volume(struct snd_soc_codec *codec,
- 	const char *name, int max);
-+int snd_soc_info_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_info *uinfo);
-+int snd_soc_get_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol);
-+int snd_soc_put_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+	struct snd_ctl_elem_value *ucontrol);
- 
- /**
-  * struct snd_soc_jack_pin - Describes a pin to update based on jack detection
-Index: sound-2.6/sound/soc/soc-core.c
+  * Supported devices and revisions.
+  */
+Index: sound-2.6/arch/arm/plat-orion/include/plat/audio.h
 ===================================================================
---- sound-2.6.orig/sound/soc/soc-core.c	2010-05-14 09:28:38.180548514 +0200
-+++ sound-2.6/sound/soc/soc-core.c	2010-05-14 09:31:47.264497529 +0200
-@@ -2352,6 +2352,101 @@ int snd_soc_limit_volume(struct snd_soc_
- EXPORT_SYMBOL_GPL(snd_soc_limit_volume);
- 
- /**
-+ * snd_soc_info_volsw_2r_sx - double with tlv and variable data size
-+ *  mixer info callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_info_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_info *uinfo)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	int max = mc->max;
-+	int min = mc->min;
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ sound-2.6/arch/arm/plat-orion/include/plat/audio.h	2010-05-15 17:04:05.070087019 +0200
+@@ -0,0 +1,11 @@
++#ifndef __PLAT_AUDIO_H
++#define __PLAT_AUDIO_H
 +
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 2;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = max-min;
++#include <linux/mbus.h>
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_info_volsw_2r_sx);
-+
-+/**
-+ * snd_soc_get_volsw_2r_sx - double with tlv and variable data size
-+ *  mixer get callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_get_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int mask = (1<<mc->shift)-1;
-+	int min = mc->min;
-+	int val = snd_soc_read(codec, mc->reg) & mask;
-+	int valr = snd_soc_read(codec, mc->rreg) & mask;
-+
-+	ucontrol->value.integer.value[0] = ((val & 0xff)-min);
-+	ucontrol->value.integer.value[1] = ((valr & 0xff)-min);
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_get_volsw_2r_sx);
-+
-+/**
-+ * snd_soc_put_volsw_2r_sx - double with tlv and variable data size
-+ *  mixer put callback
-+ * @kcontrol: mixer control
-+ * @uinfo: control element information
-+ *
-+ * Returns 0 for success.
-+ */
-+int snd_soc_put_volsw_2r_sx(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned int mask = (1<<mc->shift)-1;
-+	int min = mc->min;
-+	int ret;
-+	unsigned int val, valr, oval, ovalr;
-+
-+	val = ((ucontrol->value.integer.value[0]+min) & 0xff);
-+	val &= mask;
-+	valr = ((ucontrol->value.integer.value[1]+min) & 0xff);
-+	valr &= mask;
-+
-+	oval = snd_soc_read(codec, mc->reg) & mask;
-+	ovalr = snd_soc_read(codec, mc->rreg) & mask;
-+
-+	ret = 0;
-+	if (oval != val) {
-+		ret = snd_soc_write(codec, mc->reg, val);
-+		if (ret < 0)
-+			return 0;
-+		ret = 1;
-+	}
-+	if (ovalr != valr) {
-+		ret = snd_soc_write(codec, mc->rreg, valr);
-+		if (ret < 0)
-+			return 0;
-+		ret = 1;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_put_volsw_2r_sx);
-+
-+/**
-  * snd_soc_dai_set_sysclk - configure DAI system or master clock.
-  * @dai: DAI
-  * @clk_id: DAI specific clock ID
++struct orion_asoc_platform_data {
++	u32 tclk;
++	struct mbus_dram_target_info *dram;
++	int burst;
++};
++#endif
