@@ -1,61 +1,144 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: snd_pcm_period_elapsed
-Date: Sun, 16 May 2010 08:49:03 +0800
-Message-ID: <AANLkTik_-NVvkO03xaBaAHloSf9XWjgtmxHuLbByBP41@mail.gmail.com>
+From: Wan ZongShun <mcuos.com@gmail.com>
+Subject: [PATCH] NUC900/audio: Add nuc900 audio support part to arch
+Date: Sun, 16 May 2010 23:19:36 +0800
+Message-ID: <4BF00D08.1060508@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id BA0A624599
-	for <alsa-devel@alsa-project.org>;
-	Sun, 16 May 2010 02:49:05 +0200 (CEST)
-Received: by pxi13 with SMTP id 13so1983991pxi.38
-	for <alsa-devel@alsa-project.org>; Sat, 15 May 2010 17:49:03 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, alsa-devel <alsa-devel@alsa-project.org>, Russell King <linux@arm.linux.org.uk>, Wan ZongShun <mcuos.com@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
->>> do snd_pcm_period_elapsed really handle the case when more than one period
->>> are elasped ?
->>>
->>> For au88x0 , each substream have four sets of hardware registers ,  it seem
->>> that the driver can recover lost interrupt with no underrun when using very
->>> small period size
->>>
->>>
->>> http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/ch05s07.html#pcm-interface-interrupt-handler-boundary <http://www.alsa-project.org/%7Etiwai/writing-an-alsa-driver/ch05s07.html#pcm-interface-interrupt-handler-boundary>
->>>
->>> On calling snd_pcm_period_elapsed()
->>>
->>> In both cases, even if more than one period are elapsed, you don't have to
->>> call snd_pcm_period_elapsed() many times. Call only once. And the pcm layer
->>> will check the current hardware pointer and update to the latest status.
+Dear Russell,
 
->> Yes, the new code handles more alapsed periods, too. The in_interrupt
->> check is mainly for situations when period count == 1 and it compares
->> expected next hw_ptr for interrupt with hw_ptr computed from the hw_base
->> and actual position in the ring buffer.
+This patch is to add audio support part to Winbond/Nuvoton
+arm platform.
 
->> 						Jaroslav
+Thanks a lot!
 
-The value "delta" returned by vortex_adbdma_bufshift() seem to be the
-number of sub-buffer(periods) elapsed
- ( the value can be 0 , 1 , 2 or 3 )
 
-when aplay using very small period_size (e.g. 16 ) ,
-the driver write message in system log when delta > 1 (i.e. more than
-1 period have been elapsed )
-but the sound is still ok since there are two more periods in the sub-buffer
+Signed-off-by: Wan ZongShun<mcuos.com@gmail.com>
 
-But I cannot see any code in snd_pcm_period_elasped() add two period
-size to hw_ptr
+---
+ arch/arm/mach-w90x900/dev.c              |   28 ++++++++++++++++++++++++++++
+ arch/arm/mach-w90x900/include/mach/mfp.h |   24 ++++++++++++++++++++++++
+ arch/arm/mach-w90x900/mfp.c              |    6 ++++++
+ 3 files changed, 58 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-w90x900/include/mach/mfp.h
+
+diff --git a/arch/arm/mach-w90x900/dev.c b/arch/arm/mach-w90x900/dev.c
+index e2958eb..b2eda4d 100644
+--- a/arch/arm/mach-w90x900/dev.c
++++ b/arch/arm/mach-w90x900/dev.c
+@@ -423,6 +423,33 @@ void  nuc900_fb_set_platdata(struct nuc900fb_mach_info *pd)
+ }
+ #endif
+
++/* AUDIO controller*/
++static u64 nuc900_device_audio_dmamask = -1;
++static struct resource nuc900_ac97_resource[] = {
++	[0] = {
++		.start = W90X900_PA_ACTL,
++		.end   = W90X900_PA_ACTL + W90X900_SZ_ACTL - 1,
++		.flags = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start = IRQ_ACTL,
++		.end   = IRQ_ACTL,
++		.flags = IORESOURCE_IRQ,
++	}
++
++};
++
++struct platform_device nuc900_device_audio = {
++	.name		= "nuc900-audio",
++	.id		= -1,
++	.num_resources	= ARRAY_SIZE(nuc900_ac97_resource),
++	.resource	= nuc900_ac97_resource,
++	.dev              = {
++		.dma_mask               = &nuc900_device_audio_dmamask,
++		.coherent_dma_mask      = -1,
++	}
++};
++
+ /*Here should be your evb resourse,such as LCD*/
+
+ static struct platform_device *nuc900_public_dev[] __initdata = {
+@@ -434,6 +461,7 @@ static struct platform_device *nuc900_public_dev[]
+__initdata = {
+ 	&nuc900_device_emc,
+ 	&nuc900_device_spi,
+ 	&nuc900_device_wdt,
++	&nuc900_device_audio,
+ };
+
+ /* Provide adding specific CPU platform devices API */
+diff --git a/arch/arm/mach-w90x900/include/mach/mfp.h
+b/arch/arm/mach-w90x900/include/mach/mfp.h
+new file mode 100644
+index 0000000..94c0e71
+--- /dev/null
++++ b/arch/arm/mach-w90x900/include/mach/mfp.h
+@@ -0,0 +1,24 @@
++/*
++ * arch/arm/mach-w90x900/include/mach/mfp.h
++ *
++ * Copyright (c) 2010 Nuvoton technology corporation.
++ *
++ * Wan ZongShun <mcuos.com@gmail.com>
++ *
++ * Based on arch/arm/mach-s3c2410/include/mach/map.h
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation;version 2 of the License.
++ *
++ */
++
++#ifndef __ASM_ARCH_MFP_H
++#define __ASM_ARCH_MFP_H
++
++extern void mfp_set_groupf(struct device *dev);
++extern void mfp_set_groupc(struct device *dev);
++extern void mfp_set_groupi(struct device *dev);
++extern void mfp_set_groupg(struct device *dev);
++
++#endif /* __ASM_ARCH_MFP_H */
+diff --git a/arch/arm/mach-w90x900/mfp.c b/arch/arm/mach-w90x900/mfp.c
+index a47dc9a..fb7fb62 100644
+--- a/arch/arm/mach-w90x900/mfp.c
++++ b/arch/arm/mach-w90x900/mfp.c
+@@ -36,9 +36,12 @@
+
+ #define GPIOG0TO1	(0x03 << 14)
+ #define GPIOG2TO3	(0x03 << 16)
++#define GPIOG22TO23	(0x03 << 22)
++
+ #define ENSPI		(0x0a << 14)
+ #define ENI2C0		(0x01 << 14)
+ #define ENI2C1		(0x01 << 16)
++#define ENAC97		(0x02 << 22)
+
+ static DEFINE_MUTEX(mfp_mutex);
+
+@@ -146,6 +149,9 @@ void mfp_set_groupg(struct device *dev)
+ 	} else if (strcmp(dev_id, "nuc900-i2c1") == 0) {
+ 		mfpen &= ~(GPIOG2TO3);
+ 		mfpen |= ENI2C1;/*enable i2c1*/
++	} else if (strcmp(dev_id, "nuc900-audio") == 0) {
++		mfpen &= ~(GPIOG22TO23);
++		mfpen |= ENAC97;/*enable AC97*/
+ 	} else {
+ 		mfpen &= ~(GPIOG0TO1 | GPIOG2TO3);/*GPIOG[3:0]*/
+ 	}
+-- 
+1.6.3.3
