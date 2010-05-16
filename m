@@ -1,67 +1,61 @@
-From: Alexander Clouter <alex@digriz.org.uk>
-Subject: Re: [patch 6/6] kirkwood: Add audio support to openrd?client platforms
-Date: Sat, 15 May 2010 17:52:32 +0100
-Message-ID: <g303c7-3er.ln1@chipmunk.wormnet.eu>
-References: <20100515152958.899927802@mandriva.com>
-	<20100515153131.221491641@mandriva.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: snd_pcm_period_elapsed
+Date: Sun, 16 May 2010 08:49:03 +0800
+Message-ID: <AANLkTik_-NVvkO03xaBaAHloSf9XWjgtmxHuLbByBP41@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA0A624599
+	for <alsa-devel@alsa-project.org>;
+	Sun, 16 May 2010 02:49:05 +0200 (CEST)
+Received: by pxi13 with SMTP id 13so1983991pxi.38
+	for <alsa-devel@alsa-project.org>; Sat, 15 May 2010 17:49:03 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Jaroslav Kysela <perex@perex.cz>
 List-Id: alsa-devel@alsa-project.org
 
-apatard@mandriva.com wrote:
-> +
-> +static int openrd_client_hw_params(struct snd_pcm_substream *substream,
-> +               struct snd_pcm_hw_params *params)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-> +       struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-> +       int ret;
-> +       unsigned int freq, fmt;
-> +
-> +       fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBM_CFM;
-> +       ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       ret = snd_soc_dai_set_fmt(codec_dai, fmt);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       switch (params_rate(params)) {
-> +       default:
-> +       case 44100:
-> +               freq = 11289600;
-> +               break;
-> +       case 48000:
-> +               freq = 12288000;
-> +               break;
-> +       case 96000:
-> +               freq = 24576000;
-> +               break;
-> +       }
-> +
-> +       return snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_IN);
-> +
->
-The switch() could be replaced with a 'freq = params_rate(params) * 
-256'.
+>>> do snd_pcm_period_elapsed really handle the case when more than one period
+>>> are elasped ?
+>>>
+>>> For au88x0 , each substream have four sets of hardware registers ,  it seem
+>>> that the driver can recover lost interrupt with no underrun when using very
+>>> small period size
+>>>
+>>>
+>>> http://www.alsa-project.org/~tiwai/writing-an-alsa-driver/ch05s07.html#pcm-interface-interrupt-handler-boundary <http://www.alsa-project.org/%7Etiwai/writing-an-alsa-driver/ch05s07.html#pcm-interface-interrupt-handler-boundary>
+>>>
+>>> On calling snd_pcm_period_elapsed()
+>>>
+>>> In both cases, even if more than one period are elapsed, you don't have to
+>>> call snd_pcm_period_elapsed() many times. Call only once. And the pcm layer
+>>> will check the current hardware pointer and update to the latest status.
 
-Cheers
+>> Yes, the new code handles more alapsed periods, too. The in_interrupt
+>> check is mainly for situations when period count == 1 and it compares
+>> expected next hw_ptr for interrupt with hw_ptr computed from the hw_base
+>> and actual position in the ring buffer.
 
--- 
-Alexander Clouter
-.sigmonster says: NOBODY EXPECTS THE SPANISH INQUISITION!
+>> 						Jaroslav
+
+The value "delta" returned by vortex_adbdma_bufshift() seem to be the
+number of sub-buffer(periods) elapsed
+ ( the value can be 0 , 1 , 2 or 3 )
+
+when aplay using very small period_size (e.g. 16 ) ,
+the driver write message in system log when delta > 1 (i.e. more than
+1 period have been elapsed )
+but the sound is still ok since there are two more periods in the sub-buffer
+
+But I cannot see any code in snd_pcm_period_elasped() add two period
+size to hw_ptr
