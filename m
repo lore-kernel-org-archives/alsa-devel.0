@@ -1,51 +1,70 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: soc multi chip support
-Date: Mon, 17 May 2010 21:16:46 +0100
-Message-ID: <1274127406.3185.53.camel@odin>
-References: <AANLkTiniGB0A4n_Q_E54jOTnG9I5TNfykQTR1z9klYIl@mail.gmail.com>
-	<1273866350.3069.30.camel@odin>
-	<AANLkTinN_2faDOB01eaRjorFoLI6E_vVXpBBO-XZvrqH@mail.gmail.com>
+From: Wan ZongShun <mcuos.com@gmail.com>
+Subject: Re: [PATCH] NUC900/audio: add nuc900 audio driver support
+Date: Tue, 18 May 2010 05:53:12 +0800
+Message-ID: <AANLkTilE8u9MDmcJja4yJhUgAGiEOS-FYZeqHx-KUzKp@mail.gmail.com>
+References: <4BF01069.6060102@gmail.com>
+	<20100517024425.GA2485@opensource.wolfsonmicro.com>
+	<4BF0E184.204@gmail.com>
+	<20100517134622.GA5257@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3EC952476D
-	for <alsa-devel@alsa-project.org>;
-	Mon, 17 May 2010 22:16:49 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so278425fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 17 May 2010 13:16:49 -0700 (PDT)
-In-Reply-To: <AANLkTinN_2faDOB01eaRjorFoLI6E_vVXpBBO-XZvrqH@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Attila RS <avgrind911@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20100517134622.GA5257@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-05-17 at 10:29 -0700, Attila RS wrote:
-> Thanks. I pulled down the multi-component branch and am looking
-> through it. I started with TI's latest PSP, which is based on 2.6.32,
-> but as expected there are numerous changes between it and the the
-> multi-component branch.
-> 
-> 
-> Are there any devices in the multi-component branch that are using
-> multiple audio codecs? Just looking for a good example.
-> 
+Thanks! I will submit it again.
+2010/5/17, Mark Brown <broonie@opensource.wolfsonmicro.com>:
+> On Mon, May 17, 2010 at 02:26:12PM +0800, Wan ZongShun wrote:
+>> >On Sun, May 16, 2010 at 11:34:01PM +0800, Wan ZongShun wrote:
+>
+>> >>+	if (!(AUDIO_READ(nuc900_audio->mmio + ACTL_ACIS0) & CODEC_READY))
+>> >>+		dev_err(nuc900_audio->dev, "AC97 codec cold reset failed!\n");
+>
+>> >What is this actually checking in the hardware?  Not all CODECs enable
+>> >the AC97 link by default after a cold reset, the standard allows them to
+>> >power up in a low power state which will
+>
+>> The bit 'CODEC_READY' indicates the external AC97 audio CODEC is ready,
+>> I just forget to implement the warm reset operation, if need, I will do
+>> it. In addition, Can I add the checking CODEC_READY operation to
+>> warm reset function?
+>
+> That sounds fine.  For defensiveness it might be worth checking the
+> CODEC on register reads and writes too (it'd make diagnostics a bit
+> easier).
+>
+>> >>+#define	IIS_EN			0x0002
+>
+>> >Looks like there's I2S support to come?
+>
+>> Yes,nuc900 supports both IIS and AC97,but my board only enable AC97
+>> support,
+>> what's up here?
+>
+> Nothing, just curious.
+>
 
-None public atm, just create your machine driver with 2 DAI links and
-set the individual DAI link codec driver entries to different codecs. 
-
-Liam
 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+*linux-arm-kernel mailing list
+mail addr:linux-arm-kernel@lists.infradead.org
+you can subscribe by:
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+* linux-arm-NUC900 mailing list
+mail addr:NUC900@googlegroups.com
+main web: https://groups.google.com/group/NUC900
+you can subscribe it by sending me mail:
+mcuos.com@gmail.com
