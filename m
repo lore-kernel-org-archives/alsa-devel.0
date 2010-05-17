@@ -1,46 +1,53 @@
-From: Kumar Gala <kumar.gala@freescale.com>
-Subject: Re: [PATCH 1/2] powerpc/8610: add probing for individual DMA channels,
-	not just DMA controllers
-Date: Mon, 17 May 2010 10:55:58 -0500
-Message-ID: <25917C45-84C0-4E87-A4BE-0E70B82BFB0B@freescale.com>
-References: <1272923655-31807-1-git-send-email-timur@freescale.com>
-Mime-Version: 1.0 (Apple Message framework v1078)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <1272923655-31807-1-git-send-email-timur@freescale.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
-	<mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Sender: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-To: Timur Tabi <timur@freescale.com>
-Cc: linuxppc-dev@ozlabs.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: Re: [PATCH 1/3] add API to allow disabling period
+	interrupts
+Date: Mon, 17 May 2010 11:05:15 -0500
+Message-ID: <AANLkTinVjyUT6iXzGCvmwKPO0EinMzKjjdTcR7nWYl8G@mail.gmail.com>
+References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
+	<s5hsk5uq4u4.wl%tiwai@suse.de>
+	<AANLkTiljN2IuWnI1g3BsVux33VcnMeCAwBZl7kexDPvU@mail.gmail.com>
+	<AANLkTil6ftaJ_wC--Tsq4pxPDAg9zmISstHuTvCWc_pk@mail.gmail.com>
+	<4BF1086F.9070900@ladisch.de> <4BF108E9.5020705@ladisch.de>
+	<AANLkTilWrR_EQ-ma10q4DmG7ueuXuiVF25KgVEmGAocR@mail.gmail.com>
+	<4BF12593.3040001@ladisch.de>
+	<AANLkTimzbkgLopAzthKsrLPbv7IyK6fOgz8sNwZKMDU3@mail.gmail.com>
+	<alpine.LNX.2.00.1005171611250.6856@eeebox2.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
+	[209.85.211.176])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7690E246BF
+	for <alsa-devel@alsa-project.org>;
+	Mon, 17 May 2010 18:05:18 +0200 (CEST)
+Received: by ywh6 with SMTP id 6so2592186ywh.16
+	for <alsa-devel@alsa-project.org>; Mon, 17 May 2010 09:05:15 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1005171611250.6856@eeebox2.perex-int.cz>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
+> 2) The avail_min parameter in sw_params was overlooked. The lowlevel
+> =A0 drivers can use this value to compute the wake-up point and set hw
+> =A0 appropriately, to do wake-up at requested time. We can add a support
+> =A0 functions like "return how many samples are expected to be transferred
+> =A0 for next wake-up point" to linux/sound/pcm.h. In case when this value
+> =A0 is high, no interrupts (wake ups) will be processed in the driver. If
+> =A0 hardware cannot do the precise transfers, we can program a system
+> =A0 timer as the wake-up source.
 
-On May 3, 2010, at 4:54 PM, Timur Tabi wrote:
-
-> A future version of the MPC8610 HPCD's ASoC DMA driver will probe on individual
-> DMA channel nodes, so the DMA controller nodes' compatible string must be listed
-> in mpc8610_ids[] for the probe to work.
-> 
-> Also remove the "gianfar" compatible from mpc8610_ids[], since there is no
-> gianfar (or any other networking device) on the 8610.
-> 
-> Signed-off-by: Timur Tabi <timur@freescale.com>
-> ---
-> 
-> Kumar, the ASoC mainters are willing to pick up this patch, but they want an
-> ACK from you first.  Or, you could pick it up, since by itself it's harmless.
-> 
-> arch/powerpc/platforms/86xx/mpc8610_hpcd.c |    3 ++-
-> 1 files changed, 2 insertions(+), 1 deletions(-)
-
-applied to next
-
-- k
+Isn't the interrupt-related behavior defined when you setup the DMA
+linked list. i.e when hw_params are frozen? The problem with sw_params
+is that they can change at any time, and the hardware may not support
+this. I have no idea how you would modify the HDAudio controller
+behavior dynamically for example.
