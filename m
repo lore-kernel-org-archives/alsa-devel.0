@@ -1,22 +1,22 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH] NUC900/audio: add nuc900 audio driver
-	support
-Date: Mon, 17 May 2010 14:26:12 +0800
-Message-ID: <4BF0E184.204@gmail.com>
-References: <4BF01069.6060102@gmail.com>
-	<20100517024425.GA2485@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [RFC] disabling ALSA period interrupts
+Date: Mon, 17 May 2010 11:12:15 +0200
+Message-ID: <4BF1086F.9070900@ladisch.de>
+References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>	
+	<4BDABDDD.4050502@ladisch.de>	
+	<w2s6160a5131004300644o3aedd30bvf0d13a7f9e758575@mail.gmail.com>	
+	<s5hsk5uq4u4.wl%tiwai@suse.de>	
+	<AANLkTiljN2IuWnI1g3BsVux33VcnMeCAwBZl7kexDPvU@mail.gmail.com>
+	<AANLkTil6ftaJ_wC--Tsq4pxPDAg9zmISstHuTvCWc_pk@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 097AC2455C
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6E9A3245C7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 17 May 2010 08:26:43 +0200 (CEST)
-Received: by pxi13 with SMTP id 13so2421839pxi.38
-	for <alsa-devel@alsa-project.org>; Sun, 16 May 2010 23:26:43 -0700 (PDT)
-In-Reply-To: <20100517024425.GA2485@opensource.wolfsonmicro.com>
+	Mon, 17 May 2010 11:12:52 +0200 (CEST)
+In-Reply-To: <AANLkTil6ftaJ_wC--Tsq4pxPDAg9zmISstHuTvCWc_pk@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,107 +26,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Ben Dooks <ben-linux@fluff.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: pl bossart <bossart.nospam@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+pl bossart wrote:
+> Takashi Iwai wrote:
+> > The biggest problem I can foresee is the handling of PCM position.
+> > In the current implementation, the PCM position continues to go over
+> > the buffer size until the certain boundary that is close to long int
+> > max.  Without interrupts (i.e. snd_pcm_period_elapsed()), this
+> > position update won't work reliably.
 
-Dear Mark,
+Pointer updates (snd_pcm_avail or implicitly when writing samples) are
+still necessary, and the interval between them can never be more than
+the buffer time if you want to avoid xruns.
 
-Thanks a lot for your help, and I have other questions needed your help below.
+It seems to work fine with a simple test program.
 
-> On Sun, May 16, 2010 at 11:34:01PM +0800, Wan ZongShun wrote:
-> 
-> This all looks pretty good.  A few comments below but they're all fairly
-> minor and should be easy to address.
-> 
->> index b1749bc..81d4848 100644
->> --- a/sound/soc/Kconfig
->> +++ b/sound/soc/Kconfig
->> @@ -36,6 +36,7 @@ source "sound/soc/s3c24xx/Kconfig"
->>  source "sound/soc/s6000/Kconfig"
->>  source "sound/soc/sh/Kconfig"
->>  source "sound/soc/txx9/Kconfig"
->> +source "sound/soc/nuc900/Kconfig"
-> 
-> Please keep the Kconfig and Makefile sorted, this helps avoid merge
-> issues.
-> 
->> +#define NUC900_AC97_RATES (SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_11025 |\
->> +			SNDRV_PCM_RATE_16000 | SNDRV_PCM_RATE_22050 |\
->> +				SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000)
-> 
-> SNDRV_PCM_RATE_8000_48000.
-> 
->> +	if (!timeout)
->> +		dev_err(nuc900_audio->dev, "AC97 read register time out !\n");
->> +
->> +	val = AUDIO_READ(nuc900_audio->mmio + ACTL_ACOS0) ;
-> 
-> If the read timed out shouldn't we be returning rather than continuing?
-> 
->> +	val = AUDIO_READ(nuc900_audio->mmio + ACTL_ACCON);
->> +	val &= (~AC_C_RES);
->> +	AUDIO_WRITE(nuc900_audio->mmio + ACTL_ACCON, val);
-> 
->> +	udelay(1000);
-> 
->> +	if (!(AUDIO_READ(nuc900_audio->mmio + ACTL_ACIS0) & CODEC_READY))
->> +		dev_err(nuc900_audio->dev, "AC97 codec cold reset failed!\n");
-> 
-> What is this actually checking in the hardware?  Not all CODECs enable
-> the AC97 link by default after a cold reset, the standard allows them to
-> power up in a low power state which will
+> Good catch. I thought the processing was the same whether you called
+> snd_pcm_period_elapsed or snd_pcm_avail when the timer fires, since in
+> both cases you call the .pointer routine, but there's some code in
+> snd_pcm_update_hw_ptr0 that is only executed in an interrupt context.
 
-The bit 'CODEC_READY' indicates the external AC97 audio CODEC is ready,
-I just forget to implement the warm reset operation, if need, I will do
-it. In addition, Can I add the checking CODEC_READY operation to warm reset 
-function?
+When an interrupt happens, we know that the current position must be at
+least at the end of the period that was started at the last interrupt.
+This code does the following: If it looks as if the current position is
+less than that, we know that the period interrupt was delayed and that
+an entire buffer was played before the position wrapped around to the
+current position, so we have to add one buffer size to get the correct
+position.
 
-> On the other hand, given that there's no warm reset operation perhaps
-> this isn't a big deal.
-> 
->> +static void nuc900_ac97_remove(struct platform_device *pdev,
->> +						struct snd_soc_dai *dai)
->> +{
->> +	struct nuc900_audio *nuc900_audio = nuc900_ac97_data;
->> +
->> +	/* Enable unit clock */
->> +	clk_disable(nuc900_audio->clk);
-> 
-> Bit rot in the comments here.
-> 
->> +/* bit definition of REG_ACTL_CON register */
->> +#define	AUDCLK_EN		0x8000
->> +#define	PFIFO_EN		0x4000
->> +#define	RFIFO_EN		0x2000
+In practice, this implies an underrun.  Without interrupts, this
+underrun could not be detected (except by the fact your own timer
+has arrived too late).
 
-I rechecked the latest datasheet, and I find above bits has been removed,
-so I delete them here.
+> Likewise there are a bunch of fixes for hw_ptr position that make use
+> of this boundary field (which I have to admit I don't understand too
+> much).
 
-> These constants (and the rest) really should be namespaced - they're
-> likely to collide with other definitions in, for example, CODEC drivers
-> used by machines.
-> 
->> +#define	IIS_EN			0x0002
->
-> Looks like there's I2S support to come?
-> 
+The boundary is a multiple of the buffer size, so you can use
+ptr%buffer_size to get the position in the actual hardware buffer.
+The boundary is larger than the buffer size to allow computations on
+pointer values even when long xruns happen.
 
-Yes,nuc900 supports both IIS and AC97,but my board only enable AC97 support,
-what's up here?
+> Here is my latest set of patches before I forget about them.
 
->> +static irqreturn_t nuc900_dma_interrupt(int irq, void *dev_id)
->> +{
-> 
->> +
->> +	snd_pcm_period_elapsed(substream);
->> +
->> +	return IRQ_HANDLED;
-> 
-> This is done unconditionally - are you sure there can't be any spurious
-> interrupts (eg, error interrupts).  It shouldn't cause any harm, of
-> course.
-> 
+Instead of a new field in snd_pcm_hardware, you should better use a new
+flag so that userspace also knows about this capability.
 
-Wan .(Vincent)
+Following are my own patches that I wrote before I saw yours; they look
+essentially the same.
+
+> Still some work to be done on the alsa-lib one, for some reason the
+> hw_param->flags field I used gets overwritten if I don't use the
+> hw_device. I suspect this is due to some black magic with the
+> pcm->hw_flags when slave devices are used.
+
+Until now this field has been used only for flags used internally in
+alsa-lib, so this might be a bug in alsa-lib.
+
+
+Regards,
+Clemens
