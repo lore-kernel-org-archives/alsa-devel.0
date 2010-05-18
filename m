@@ -1,11 +1,18 @@
-From: Krzysztof Foltman <wdev@foltman.com>
-Subject: [PATCH 1/1] ALSA: usb-audio: add support for Akai MPD16
-Date: Tue, 18 May 2010 19:37:56 +0100
-Message-ID: <1274207876-3215-1-git-send-email-wdev@foltman.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCH] ASoC: tpa6130a2: Remove CPVSS supply
+Date: Tue, 18 May 2010 22:31:25 +0300
+Message-ID: <1274211085-20261-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f217.google.com (mail-ew0-f217.google.com
+	[209.85.219.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id EBA52249C2
+	for <alsa-devel@alsa-project.org>;
+	Tue, 18 May 2010 21:31:31 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so1970218ewy.4
+	for <alsa-devel@alsa-project.org>; Tue, 18 May 2010 12:31:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -15,138 +22,128 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Krzysztof Foltman <wdev@foltman.com>
+To: alsa-devel@alsa-project.org
+Cc: Ilkka Koskinen <ilkka.koskinen@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The decoding routine is based on own reverse-engineering. It seems to
-recognize all the messages that MPD16 sends during normal operation
-(that is, via standard MIDI messages).
+I believe there is no need for the CPVSS supply as this pin is for
+decoupling capacitor for the internal charge pump.
 
-Configuration (changing pad sensitivity, slider controller and MIDI
-notes) is not supported in this version.
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+---
+ sound/soc/codecs/tpa6130a2.c |   40 +++++++++++++++++++++-------------------
+ 1 files changed, 21 insertions(+), 19 deletions(-)
 
-Signed-off-by: Krzysztof Foltman <wdev@foltman.com>
-
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 2c1558c..cce5dbe 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -645,6 +645,33 @@ static struct usb_protocol_ops snd_usbmidi_cme_ops = {
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 221bb90..87a5b09 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -36,13 +36,14 @@
+ 
+ static struct i2c_client *tpa6130a2_client;
+ 
+-#define TPA6130A2_NUM_SUPPLIES 2
++#define TPA6130A2_NUM_SUPPLIES 1
++#define TPA6140A2_NUM_SUPPLIES 2
++#define TPA61x0A2_MAX_SUPPLIES 2
+ static const char *tpa6130a2_supply_names[TPA6130A2_NUM_SUPPLIES] = {
+-	"CPVSS",
+ 	"Vdd",
  };
  
- /*
-+ * AKAI MPD16 protocol: one or more chunks consisting of first byte of
-+ * (0x20 | msg_len) and then a MIDI message (msg_len bytes long)
-+ *
-+ * Messages sent:
-+ * 21 FE (active sense)
-+ * 23 90 xx xx (note on)
-+ * 23 Ax xx xx (polyphonic pressure)
-+ * 23 Bx xx xx (control change)
-+ */
-+static void snd_usbmidi_akai_input(struct snd_usb_midi_in_endpoint *ep,
-+				   uint8_t *buffer, int buffer_length)
-+{
-+	unsigned int pos = 0;
-+	while (pos < (unsigned)buffer_length && (buffer[pos] & 0xF8) == 0x20) {
-+		int msg_len = buffer[pos] & 0x0f;
-+		snd_usbmidi_input_data(ep, 0, &buffer[pos + 1], msg_len);
-+		pos += 1 + msg_len;
-+	}
-+}
-+
-+static struct usb_protocol_ops snd_usbmidi_akai_ops = {
-+	.input = snd_usbmidi_akai_input,
-+	.output = snd_usbmidi_standard_output,
-+	.output_packet = snd_usbmidi_output_standard_packet,
-+};
-+
-+/*
-  * Novation USB MIDI protocol: number of data bytes is in the first byte
-  * (when receiving) (+1!) or in the second byte (when sending); data begins
-  * at the third byte.
-@@ -1434,6 +1461,8 @@ static struct port_info {
- 	EXTERNAL_PORT(0x086a, 0x0001, 8, "%s Broadcast"),
- 	EXTERNAL_PORT(0x086a, 0x0002, 8, "%s Broadcast"),
- 	EXTERNAL_PORT(0x086a, 0x0003, 4, "%s Broadcast"),
-+	/* Akai MPD16 */
-+	EXTERNAL_PORT(0x09e8, 0x0062, 0, "%s MIDI"),
- 	/* Access Music Virus TI */
- 	EXTERNAL_PORT(0x133e, 0x0815, 0, "%s MIDI"),
- 	PORT_INFO(0x133e, 0x0815, 1, "%s Synth", 0,
-@@ -2035,6 +2064,13 @@ int snd_usbmidi_create(struct snd_card *card,
- 		umidi->usb_protocol_ops = &snd_usbmidi_cme_ops;
- 		err = snd_usbmidi_detect_per_port_endpoints(umidi, endpoints);
- 		break;
-+	case QUIRK_MIDI_AKAI:
-+		umidi->usb_protocol_ops = &snd_usbmidi_akai_ops;
-+		err = snd_usbmidi_detect_per_port_endpoints(umidi, endpoints);
-+		/* endpoint 0 does not carry MIDI data */
-+		endpoints[0].out_cables = 0;
-+		endpoints[0].in_cables = 0;
-+		break;
- 	default:
- 		snd_printd(KERN_ERR "invalid quirk type %d\n", quirk->type);
- 		err = -ENXIO;
-diff --git a/sound/usb/midi.h b/sound/usb/midi.h
-index 2089ec9..2fca80b 100644
---- a/sound/usb/midi.h
-+++ b/sound/usb/midi.h
-@@ -37,6 +37,8 @@ struct snd_usb_midi_endpoint_info {
+-static const char *tpa6140a2_supply_names[TPA6130A2_NUM_SUPPLIES] = {
++static const char *tpa6140a2_supply_names[TPA6140A2_NUM_SUPPLIES] = {
+ 	"HPVdd",
+ 	"AVdd",
+ };
+@@ -51,7 +52,8 @@ static const char *tpa6140a2_supply_names[TPA6130A2_NUM_SUPPLIES] = {
+ struct tpa6130a2_data {
+ 	struct mutex mutex;
+ 	unsigned char regs[TPA6130A2_CACHEREGNUM];
+-	struct regulator_bulk_data supplies[TPA6130A2_NUM_SUPPLIES];
++	struct regulator_bulk_data supplies[TPA61x0A2_MAX_SUPPLIES];
++	int num_supplies;
+ 	int power_gpio;
+ 	unsigned char power_state;
+ 	enum tpa_model id;
+@@ -136,7 +138,7 @@ static int tpa6130a2_power(int power)
+ 		if (data->power_gpio >= 0)
+ 			gpio_set_value(data->power_gpio, 1);
  
- /* for QUIRK_MIDI_CME, data is NULL */
+-		ret = regulator_bulk_enable(ARRAY_SIZE(data->supplies),
++		ret = regulator_bulk_enable(data->num_supplies,
+ 					    data->supplies);
+ 		if (ret != 0) {
+ 			dev_err(&tpa6130a2_client->dev,
+@@ -161,7 +163,7 @@ static int tpa6130a2_power(int power)
+ 		if (data->power_gpio >= 0)
+ 			gpio_set_value(data->power_gpio, 0);
  
-+/* for QUIRK_MIDI_AKAI, data is NULL */
-+
- int snd_usbmidi_create(struct snd_card *card,
- 		       struct usb_interface *iface,
- 		       struct list_head *midi_list,
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 91ddef3..7ecad05 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -1973,6 +1973,17 @@ YAMAHA_DEVICE(0x7010, "UB99"),
+-		ret = regulator_bulk_disable(ARRAY_SIZE(data->supplies),
++		ret = regulator_bulk_disable(data->num_supplies,
+ 					     data->supplies);
+ 		if (ret != 0) {
+ 			dev_err(&tpa6130a2_client->dev,
+@@ -412,6 +414,7 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
+ 	struct device *dev;
+ 	struct tpa6130a2_data *data;
+ 	struct tpa6130a2_platform_data *pdata;
++	const char **supply_names;
+ 	int i, ret;
+ 
+ 	dev = &client->dev;
+@@ -454,23 +457,22 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
  	}
- },
  
-+/* AKAI devices */
-+{
-+	USB_DEVICE(0x09e8, 0x0062),
-+	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
-+		.vendor_name = "AKAI",
-+		.product_name = "MPD16",
-+		.ifnum = 0,
-+		.type = QUIRK_MIDI_AKAI,
-+	}
-+},
-+
- /* TerraTec devices */
- {
- 	USB_DEVICE_VENDOR_SPEC(0x0ccd, 0x0012),
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 136e5b4..b45e54c 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -289,6 +289,7 @@ int snd_usb_create_quirk(struct snd_usb_audio *chip,
- 		[QUIRK_MIDI_FASTLANE] = create_any_midi_quirk,
- 		[QUIRK_MIDI_EMAGIC] = create_any_midi_quirk,
- 		[QUIRK_MIDI_CME] = create_any_midi_quirk,
-+		[QUIRK_MIDI_AKAI] = create_any_midi_quirk,
- 		[QUIRK_AUDIO_STANDARD_INTERFACE] = create_standard_audio_quirk,
- 		[QUIRK_AUDIO_FIXED_ENDPOINT] = create_fixed_stream_quirk,
- 		[QUIRK_AUDIO_EDIROL_UAXX] = create_uaxx_quirk,
-diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
-index d679e72..06ebf24 100644
---- a/sound/usb/usbaudio.h
-+++ b/sound/usb/usbaudio.h
-@@ -74,6 +74,7 @@ enum quirk_type {
- 	QUIRK_MIDI_FASTLANE,
- 	QUIRK_MIDI_EMAGIC,
- 	QUIRK_MIDI_CME,
-+	QUIRK_MIDI_AKAI,
- 	QUIRK_MIDI_US122L,
- 	QUIRK_AUDIO_STANDARD_INTERFACE,
- 	QUIRK_AUDIO_FIXED_ENDPOINT,
+ 	switch (data->id) {
++	default:
++		dev_warn(dev, "Unknown TPA model (%d). Assuming 6130A2\n",
++			 pdata->id);
+ 	case TPA6130A2:
+-		for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
+-			data->supplies[i].supply = tpa6130a2_supply_names[i];
++		data->num_supplies = TPA6130A2_NUM_SUPPLIES;
++		supply_names = tpa6130a2_supply_names;
+ 		break;
+ 	case TPA6140A2:
+-		for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
+-			data->supplies[i].supply = tpa6140a2_supply_names[i];;
++		data->num_supplies = TPA6140A2_NUM_SUPPLIES;
++		supply_names = tpa6140a2_supply_names;
+ 		break;
+-	default:
+-		dev_warn(dev, "Unknown TPA model (%d). Assuming 6130A2\n",
+-			 pdata->id);
+-		for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
+-			data->supplies[i].supply = tpa6130a2_supply_names[i];
+ 	}
++	for (i = 0; i < data->num_supplies; i++)
++		data->supplies[i].supply = supply_names[i];
+ 
+-	ret = regulator_bulk_get(dev, ARRAY_SIZE(data->supplies),
+-				 data->supplies);
++	ret = regulator_bulk_get(dev, data->num_supplies, data->supplies);
+ 	if (ret != 0) {
+ 		dev_err(dev, "Failed to request supplies: %d\n", ret);
+ 		goto err_regulator;
+@@ -495,7 +497,7 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
+ 	return 0;
+ 
+ err_power:
+-	regulator_bulk_free(ARRAY_SIZE(data->supplies), data->supplies);
++	regulator_bulk_free(data->num_supplies, data->supplies);
+ err_regulator:
+ 	if (data->power_gpio >= 0)
+ 		gpio_free(data->power_gpio);
+@@ -516,7 +518,7 @@ static int __devexit tpa6130a2_remove(struct i2c_client *client)
+ 	if (data->power_gpio >= 0)
+ 		gpio_free(data->power_gpio);
+ 
+-	regulator_bulk_free(ARRAY_SIZE(data->supplies), data->supplies);
++	regulator_bulk_free(data->num_supplies, data->supplies);
+ 
+ 	kfree(data);
+ 	tpa6130a2_client = NULL;
 -- 
-1.7.0.4
+1.7.1
