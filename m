@@ -1,28 +1,17 @@
-From: Jassi Brar <jassisinghbrar@gmail.com>
-Subject: Re: [PATCH 1/3] add API to allow disabling period
-	interrupts
-Date: Tue, 18 May 2010 18:11:07 +0900
-Message-ID: <AANLkTikDjFjXo3gmQd-Mb0UULlFDpwWTpNV4P62TFUQq@mail.gmail.com>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>
-	<s5hsk5uq4u4.wl%tiwai@suse.de>
-	<AANLkTiljN2IuWnI1g3BsVux33VcnMeCAwBZl7kexDPvU@mail.gmail.com>
-	<AANLkTil6ftaJ_wC--Tsq4pxPDAg9zmISstHuTvCWc_pk@mail.gmail.com>
-	<4BF1086F.9070900@ladisch.de> <4BF108E9.5020705@ladisch.de>
-	<AANLkTilWrR_EQ-ma10q4DmG7ueuXuiVF25KgVEmGAocR@mail.gmail.com>
-	<4BF12593.3040001@ladisch.de>
-	<AANLkTimzbkgLopAzthKsrLPbv7IyK6fOgz8sNwZKMDU3@mail.gmail.com>
-	<alpine.LNX.2.00.1005171611250.6856@eeebox2.perex-int.cz>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] ASoC updates for 2.6.35
+Date: Tue, 18 May 2010 11:19:45 +0100
+Message-ID: <1274177985.3254.8.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id DD046248D2
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 70077248F8
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 May 2010 11:11:08 +0200 (CEST)
-Received: by vws14 with SMTP id 14so3974189vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 18 May 2010 02:11:07 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1005171611250.6856@eeebox2.perex-int.cz>
+	Tue, 18 May 2010 12:19:56 +0200 (CEST)
+Received: by wyf19 with SMTP id 19so872330wyf.38
+	for <alsa-devel@alsa-project.org>; Tue, 18 May 2010 03:19:52 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,60 +21,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, pl bossart <bossart.nospam@gmail.com>, General PulseAudio Discussion <pulseaudio-discuss@mail.0pointer.de>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBNYXkgMTcsIDIwMTAgYXQgMTE6NDIgUE0sIEphcm9zbGF2IEt5c2VsYSA8cGVyZXhA
-cGVyZXguY3o+IHdyb3RlOgo+IE9uIE1vbiwgMTcgTWF5IDIwMTAsIEphc3NpIEJyYXIgd3JvdGU6
-Cj4KPj4gT24gTW9uLCBNYXkgMTcsIDIwMTAgYXQgODoxNiBQTSwgQ2xlbWVucyBMYWRpc2NoIDxj
-bGVtZW5zQGxhZGlzY2guZGU+Cj4+IHdyb3RlOgo+Pj4KPj4+IEphc3NpIEJyYXIgd3JvdGU6Cj4+
-Pj4KPj4+PiBJIGFtIGluIGZhdm9yIG9mIHN1cHBvcnQgdmFyaWFibGUgaHdfaW50ZXJydXB0IGF0
-IGxvd2VzdCBsZXZlbCwgaS5lLCBpbgo+Pj4+IHJpbmcgYnVmZmVyIGRyaXZlciwgaW5zdGVhZCBv
-ZiBkaXNhYmxpbmcgaHdfaW50ZXJydXB0IGFsdG9nZXRoZXIuCj4+Pgo+Pj4gUmVtb3ZpbmcgdGhl
-IGNvbnN0YW50LXNpemVkIHBlcmlvZHMgcmVzdHJpY3Rpb24gd291bGQgY2VydGFpbmx5IGJlCj4+
-PiB1c2VmdWwuIMKgSG93ZXZlciwgaXQgZG9lc24ndCBsb29rIGFzIGlmIGFueWJvZHkgaGFzIHRo
-ZSB0aW1lIHRvIHJlZGVzaWduCj4+PiB0aGUgQUxTQSBBUEksIHRoZSBrZXJuZWwgZnJhbWV3b3Jr
-IGFuZCBhbGwgdGhlIGRyaXZlcnMuCj4+Cj4+IE5vIG5lZWQgdG8gcmVkZXNpZ24gQUxTQSBBUEkg
-YW5kIGNlcnRhaW5seSBubyBuZWVkIHRvIGNoYW5nZSBfYW55XyBkcml2ZXIsCj4+IGp1c3QgbGlr
-ZSB0aGlzIGludGVycnVwdCBkaXNhYmxlIGNhbGwgaXMgb3B0aW9uYWwgc28gd291bGQgcGVyaW9k
-IHJlc2l6ZQo+PiBiZS4KPj4KPj4gSSBvbmx5IGFzayB0byBtYWtlIHRoaXMgbmV3bHkgYWRkZWQg
-Y2FsbCBhcyBwZXJpb2QtcmVzaXplIHJhdGhlciB0aGFuCj4+IGEgc3BlY2lhbCBjYXNlIG9mIHBl
-cmlvZC1kaXNhYmxlLgo+Cj4gVGhpcyBpcyB2ZXJ5IGdvb2QgcG9pbnQuIEJ1dCBJIGhhdmUgdHdv
-IGNvbW1lbnRzOgo+Cj4gMSkgUGVyaW9kLWRpc2FibGUgZnVuY3Rpb24gaXMgT0ssIGJ1dCBpdCBz
-aG91bGQgbm90IGhhdmUgYSBuYW1lICJubwo+IMKgIHBlcmlvZCBpcnEiOiBTTkRSVl9QQ01fSU5G
-T19QRVJJT0RfRElTQUJMRSBvciBESVNBQkxFX1BFUklPRCBsb29rcwo+IMKgIGJldHRlci4gVGhp
-cyBjaGFuZ2UgZG9lcyBpbXBseSB0byBzZXQgdGhlIHBlcmlvZCBzaXplIGF1dG9tYXRpY2FsbHkg
-aW4KPiDCoCB0aGUgZHJpdmVyIC0gcHJvYmFibHkgdG8gaGlnaGVzdCB2YWx1ZSAoYXBwbGljYXRp
-b25zIGNhbm5vdCBjaG9vc2Uvc2V0Cj4gwqAgdGhlIHBlcmlvZCBzaXplIGluIHRoaXMgb3BlcmF0
-aW9uIG1vZGUgLSBpdCdzIHVzZWxlc3MgYW55d2F5KS4KPiAyKSBUaGUgYXZhaWxfbWluIHBhcmFt
-ZXRlciBpbiBzd19wYXJhbXMgd2FzIG92ZXJsb29rZWQuIFRoZSBsb3dsZXZlbAo+IMKgIGRyaXZl
-cnMgY2FuIHVzZSB0aGlzIHZhbHVlIHRvIGNvbXB1dGUgdGhlIHdha2UtdXAgcG9pbnQgYW5kIHNl
-dCBodwo+IMKgIGFwcHJvcHJpYXRlbHksIHRvIGRvIHdha2UtdXAgYXQgcmVxdWVzdGVkIHRpbWUu
-IFdlIGNhbiBhZGQgYSBzdXBwb3J0Cj4gwqAgZnVuY3Rpb25zIGxpa2UgInJldHVybiBob3cgbWFu
-eSBzYW1wbGVzIGFyZSBleHBlY3RlZCB0byBiZSB0cmFuc2ZlcnJlZAo+IMKgIGZvciBuZXh0IHdh
-a2UtdXAgcG9pbnQiIHRvIGxpbnV4L3NvdW5kL3BjbS5oLiBJbiBjYXNlIHdoZW4gdGhpcyB2YWx1
-ZQo+IMKgIGlzIGhpZ2gsIG5vIGludGVycnVwdHMgKHdha2UgdXBzKSB3aWxsIGJlIHByb2Nlc3Nl
-ZCBpbiB0aGUgZHJpdmVyLiBJZgo+IMKgIGhhcmR3YXJlIGNhbm5vdCBkbyB0aGUgcHJlY2lzZSB0
-cmFuc2ZlcnMsIHdlIGNhbiBwcm9ncmFtIGEgc3lzdGVtCj4gwqAgdGltZXIgYXMgdGhlIHdha2Ut
-dXAgc291cmNlLgpTb3VuZHMgZ29vZCwgdGhvdWdoIEkgaGFkIGEgZGlmZmVyZW50IGltcGxlbWVu
-dGF0aW9uIGluIG1pbmQuLi4KQSBuZXcgX29wdGlvbmFsbHlfIHN1cHBvcnRlZCBjYWxsIHRvIHNl
-dCB0aGUgcmF0aW8gb2YgaC93IHBlcmlvZAp0byByaW5nIGJ1ZmZlci4KVGhlIGZpZWxkcyBhcmUg
-cmV0dXJuZWQgd2l0aCBhY3R1YWxseSBzZXQgcmF0aW8gYnkgdGhlIGxvdwpsZXZlbCBkcml2ZXIg
-dXBvbiBjYWxsIHJldHVybi4gVGhlIGJvdW5kYXJ5IGNhc2Ugb2Ygc2F5IDAvMApjYW4gYmUgaW50
-ZXJwcmV0ZWQgYXMgaW50ciBkaXNhYmxlIGFuZCBuL24gYXMgcGVyaW9kIDo9IHJpbmcKVGhlIGNh
-bGwgY2FuIGJlIHVzZWQgdG8gcXVlcnkgY3VycmVudCByYXRpbyBieSBhc2tpbmcgZm9yCmEvYiB3
-aGVyZSBhID4gYiBpLmUsIGludmFsaWQgcmF0aW8uCkRlcGVuZGluZyB1cG9uIHRoZSBjYXBhYmls
-aXR5IG9mIHRoZSBoL3cgYW5kIGl0J3MgZHJpdmVyLApmaW5lLXR1bmluZyBjYW4gYmUgYWNoaWV2
-ZWQgdG8gbWF4IHBvc3NpYmxlIGV4dGVudC4KCgpzb21ldGhpbmcgbGlrZS4uLi4KCnNuZF9wY21f
-dWZyYW1lc190IHByZCwgcmluZzsKCi8qIEdldCBjdXJyZW50IHJhdGlvICovCnByZCA9IDI1Nywg
-cmluZyA9IDI1NjsgLyogSW52YWxpZCByYXRpbyAqLwpzbmRfcGNtX3NldF9yYXRpbygmcHJkLCAm
-cmluZyk7CgovKiBJbmNyZWFzZSB0aGUgcGVyaW9kIGJ5IGRlc2lyYWJsZSBhbW91bnQgKi8KcHJk
-ICs9IGluY3I7CnNuZF9wY21fc2V0X3JhdGlvKCZwcmQsICZyaW5nKTsKCi8qIERpc2FibGUgcGVy
-aW9kIGludGVycnVwdHMgKi8KcHJkID0gMCwgcmluZyA9IDA7CnNuZF9wY21fc2V0X3JhdGlvKCZw
-cmQsICZyaW5nKTsKaWYgKCFwcmQgJiYgIXJpbmcpIHsKICAgSW50ZXJydXB0cyBhcmUgc3VjY2Vz
-c2Z1bGwgZGlzYWJsZWQ7Cn0gZWxzZSB7CiAgICBwcmQvcmluZyByYXRpbyBpcyBtYXggc3VwcG9y
-dGVkIGJ5IGgvdwp9Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+Hi Takashi,
+
+Please pull the following ASoC updates for 2.6.35. We do have Tony's Ack
+for the OMAP mcbsp stuff (as it simplifies the merging).
+
+Thanks
+
+Liam
+
+---
+
+The following changes since commit 6a2f1ee1f9bb5346644105c9355e9e06f6a847d3:
+  Mark Brown (1):
+        ASoC: Don't restart unconfigured WM8994 FLLs
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.35
+
+Felipe Balbi (1):
+      ASoC: tlv320dac33: Use dev_dbg in dac33_hard_power function
+
+Jorge Eduardo Candelaria (2):
+      ARM: McBSP: Fix request for irq in OMAP4
+      ARM: McBSP: Add support for omap4 in McBSP driver
+
+Peter Ujfalusi (2):
+      ASoC: TWL4030: Add control for digimic Left Right swap
+      ASoC: tlv320dac33: Avoid powering off while in BIAS_OFF
+
+Sergey Lapin (1):
+      OMAP: McBSP: Add 32-bit mode support
+
+ arch/arm/mach-omap2/mcbsp.c    |   12 ++++--------
+ arch/arm/plat-omap/mcbsp.c     |   34 +++++++++++++++++++---------------
+ sound/soc/codecs/tlv320dac33.c |    5 ++++-
+ sound/soc/codecs/twl4030.c     |   12 ++++++++++++
+ sound/soc/omap/omap-mcbsp.c    |   28 ++++++++++++++++++++++++----
+ 5 files changed, 63 insertions(+), 28 deletions(-)
