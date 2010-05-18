@@ -1,18 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: RFC: Volume limiting on controls with
-	SNDRV_CTL_TLVT_DB_RANGE
-Date: Tue, 18 May 2010 15:44:33 +0300
-Message-ID: <201005181544.33291.peter.ujfalusi@nokia.com>
-References: <201005181539.20802.peter.ujfalusi@nokia.com>
+From: Adish Kuvelker <adkuvi@gmail.com>
+Subject: Creating a /dev entry.
+Date: Tue, 18 May 2010 18:51:31 +0530
+Message-ID: <AANLkTiljJRpLd4koKAuELpbJc8GgiDj4_9kHlnX3eScu@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 851EA103876
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B793A103874
 	for <alsa-devel@alsa-project.org>;
-	Tue, 18 May 2010 14:44:42 +0200 (CEST)
-In-Reply-To: <201005181539.20802.peter.ujfalusi@nokia.com>
+	Tue, 18 May 2010 15:21:36 +0200 (CEST)
+Received: by vws14 with SMTP id 14so4098826vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 18 May 2010 06:21:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,204 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Oh.
+Hello,
 
-I forget to write the subject, which I have left empty, since I was not sur=
-e wht =
+I am writing a ALSA driver for the AtlasIII AC'97 Controller. The
+controller communicates with the AC'97 Codec and the necessary PCM,
+Sequencer, Control and Timer nodes are created in the /sys. Also I get
+the necessary information registered in the procfs under /proc/asound.
+However, I do not see any sound nodes created under /dev. Are these
+nodes created by the sound driver registration function which creates
+necessary files under /sys or will I have to use utilities like
+"snddevices" to create the "snd" node under /dev. I read that
+"snddevices" would create the necessary entries under /dev/snd, and I
+reckon that it does not create the entry "snd" under /dev.
+Although I am using kernel 2.6.19.2, it doesn't have the "udev"
+enabled. Will I need the "udev" to create these nodes under /dev?
 
-would be the proper summary. =
-
-Well, it could not be worst than this.
-
-I'll go and hide somewhere...
-
-Sorry.
-
--- =
-
-P=E9ter
-
-On Tuesday 18 May 2010 15:39:20 Ujfalusi Peter (Nokia-D/Tampere) wrote:
-> Hello,
-> =
-
-> I apologize for the long mail, but I feel that I need to explain this in a
-> bit longish way...
-> =
-
-> ASoC core recently gained support for limiting the volume control's range
-> (maximum), which is really useful in embedded systems.
-> The implementation for this is really simple:
-> The codec drivers are implementing the full range the HW can support.
-> Machine drivers can than override the maximum volume on a given control if
-> it is necessary.
-> This works well with most of the controls:
-> Volume controls without dB scale.
-> Volume controls with DECLARE_TLV_DB_SCALE()
-> =
-
-> Problems started to emerge, when the volume is limited on control, which
-> has SNDRV_CTL_TLVT_DB_RANGE (from the sound/soc/codecs/tpa6130a2.c):
-> =
-
-> static const unsigned int tpa6140_tlv[] =3D {
-> 	TLV_DB_RANGE_HEAD(3),
-> 	0, 8, TLV_DB_SCALE_ITEM(-5900, 400, 0),
-> 	9, 16, TLV_DB_SCALE_ITEM(-2500, 200, 0),
-> 	17, 31, TLV_DB_SCALE_ITEM(-1000, 100, 0),
-> };
-> =
-
-> static const struct snd_kcontrol_new tpa6140a2_controls[] =3D {
-> 	SOC_SINGLE_EXT_TLV("TPA6140A2 Headphone Playback Volume",
-> 		       TPA6130A2_REG_VOL_MUTE, 1, 0x1f, 0,
-> 		       tpa6130a2_get_volsw, tpa6130a2_put_volsw,
-> 		       tpa6140_tlv),
-> };
-> =
-
-> The original HW supported range is 0 .. 31 (-59 .. +4 dB).
-> When the machine driver sets the limit to 21 (-6 dB), than the volume ran=
-ge
-> is reported correctly as 0 .. 21, but
-> snd_mixer_selem_get_playback_dB_range() reports range of -59 .. +4 dB.
-> This is not correct, it should report: -59 .. -6 dB.
-> If the control has single DECLARE_TLV_DB_SCALE() after the limiting both
-> volume and dB range is reported correctly.
-> =
-
-> The explanation for this is in the alsa-lib:
-> src/control/tlv.c:
-> =
-
-> /**
->  * \brief Get the dB min/max values
->  * \param tlv the TLV source returned by #snd_tlv_parse_dB_info()
->  * \param rangemin the minimum value of the raw volume
->  * \param rangemax the maximum value of the raw volume
->  * \param min the pointer to store the minimum dB value (in 0.01dB unit)
->  * \param max the pointer to store the maximum dB value (in 0.01dB unit)
->  * \return 0 if successful, or a negative error code
->  */
-> int snd_tlv_get_dB_range(unsigned int *tlv, long rangemin, long rangemax,
->                          long *min, long *max)
-> {
->         int err;
-> =
-
->         switch (tlv[0]) {
->         case SND_CTL_TLVT_DB_RANGE: {
->                 unsigned int pos, len;
->                 len =3D int_index(tlv[1]);
->                 if (len > MAX_TLV_RANGE_SIZE)
->                         return -EINVAL;
->                 pos =3D 2;
->                 while (pos + 4 <=3D len) {
->                         long rmin, rmax;
->                         rangemin =3D (int)tlv[pos];
->                         rangemax =3D (int)tlv[pos + 1];
->                         err =3D snd_tlv_get_dB_range(tlv + pos + 2,
->                                                    rangemin, rangemax,
->                                                    &rmin, &rmax);
->                         if (err < 0)
->                                 return err;
->                         if (pos > 2) {
->                                 if (rmin < *min)
->                                         *min =3D rmin;
->                                 if (rmax > *max)
->                                         *max =3D rmax;
->                         } else {
->                                 *min =3D rmin;
->                                 *max =3D rmax;
->                         }
->                         pos +=3D int_index(tlv[pos + 3]) + 4;
->                 }
->                 return 0;
->         }
->         case SND_CTL_TLVT_DB_SCALE: {
->                 int step;
->                 *min =3D (int)tlv[2];
->                 step =3D (tlv[3] & 0xffff);
->                 *max =3D *min + (long)(step * (rangemax - rangemin));
->                 return 0;
->         }
->         case SND_CTL_TLVT_DB_MINMAX:
->         case SND_CTL_TLVT_DB_MINMAX_MUTE:
->         case SND_CTL_TLVT_DB_LINEAR:
->                 *min =3D (int)tlv[2];
->                 *max =3D (int)tlv[3];
->                 return 0;
->         }
->         return -EINVAL;
-> }
-> =
-
-> In case of DECLARE_TLV_DB_SCALE(), the SND_CTL_TLVT_DB_SCALE case is take=
-n,
-> and the control's maximum, and minimum range are used for the dB scale
-> limit calculation.
-> But, when SNDRV_CTL_TLVT_DB_RANGE is used (tpa6130a2 driver), than that
-> case will dismisses the control's maximum and minimum range, and goes
-> through the whole TLV struct, and reports the HW supported range.
-> If it would stop at the driver reported maximum, than the dB range report=
-ed
-> would be correct.
-> So a 'simple' patch to alsa-lib would solve this. But what happens, if we
-> want to limit control, which has DB_MINMAX, DB_MINMAX_MUTE, or DB_LINEAR?
-> There is no way to actually limit those in a way, that the dB scale
-> reported would be correct. We just stretch the steps bigger, like what
-> happens with the SNDRV_CTL_TLVT_DB_RANGE in the tpa6130a2 driver.
-> =
-
-> When looking for users of DB_LINEAR I have found 8 drivers, DB_MINMAX is
-> used by usbmixer only, the DB_MINMAX_MUTE has no users at all.
-> =
-
-> Since both DB_LINEAR and DB_MINMAX can be presented as DB_SCALE, and the
-> effort to convert the drivers should not be that big.
-> =
-
-> In this way, we will only have drivers using DB_SCALE in kernel, we can
-> mark the other DB_ types as deprecated (but keeping the support for out of
-> tree drivers), and the alsa-lib's tlv code can be adjusted to support
-> properly the volume limiting. If there is interest, than the ALSA core
-> could also gain support for platform/configuration dependent volume
-> limiting.
-> =
-
-> If this is too big change to ALSA (which I think it is not, since for the
-> user it makes no difference, and the volume range, dB scale not going to
-> be changed), than probably cleaning up the sound/soc/ to use _only_
-> DB_SCALE type for volume controls might be the solution, since the volume
-> limiting feature is only in ASoC AFAIK.
-> =
-
-> Either way, the alsa-lib's src/control/tlv.c:snd_tlv_get_dB_range function
-> in case of SND_CTL_TLVT_DB_RANGE needs some fix to handle the situation,
-> when the volume range is _not_ at the HW supported range.
-> =
-
-> To summarize, I'd like to do (or ask help to do) one of the following
-> [1] Replace the use of DB_LINEAR, DB_MINMAX with DB_SCALE in all drivers
-> under sound/
->     Document, that the now unused DB_ types are deprecated
->     Fix alsa-lib to support the volume limiting in regards of dB scale
-> [2] Replace the use of DB_LINEAR with DB_SCALE in all drivers under
->     sound/soc/
->     Fix alsa-lib to support the volume limiting in regards of dB scale
-> =
-
-> =
-
-> What do you think?
-> =
-
-> --
-> P=E9ter
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Regards;
+Aadish
