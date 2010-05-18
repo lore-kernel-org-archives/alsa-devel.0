@@ -1,65 +1,36 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [PATCH 4/4] OMAP: mcbsp - remove sysfs set for DMA op mode.
-Date: Tue, 18 May 2010 21:13:14 +0100
-Message-ID: <1274213594-26554-5-git-send-email-lrg@slimlogic.co.uk>
-References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Jarkko Nikula <jhnikula@gmail.com>, Tony Lindgren <tony@atomide.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Remove CPVSS supply
+Date: Tue, 18 May 2010 13:32:03 -0700
+Message-ID: <20100518203203.GA15951@opensource.wolfsonmicro.com>
+References: <1274211085-20261-1-git-send-email-jhnikula@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 52879249DB
+	for <alsa-devel@alsa-project.org>;
+	Tue, 18 May 2010 22:31:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1274211085-20261-1-git-send-email-jhnikula@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Ilkka Koskinen <ilkka.koskinen@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The mcbsp DMA op mode is tightly integrated with the
-mcbsp client driver operation and hence is unsuitable
-for userspace configuration via sysfs.
+On Tue, May 18, 2010 at 10:31:25PM +0300, Jarkko Nikula wrote:
+> I believe there is no need for the CPVSS supply as this pin is for
+> decoupling capacitor for the internal charge pump.
+> 
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: Ilkka Koskinen <ilkka.koskinen@nokia.com>
 
-Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
----
- arch/arm/plat-omap/mcbsp.c |   30 +-----------------------------
- 1 files changed, 1 insertions(+), 29 deletions(-)
-
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 7785050..b7b8b5e 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -1546,35 +1546,7 @@ static ssize_t dma_op_mode_show(struct device *dev,
- 	return len;
- }
- 
--static ssize_t dma_op_mode_store(struct device *dev,
--				struct device_attribute *attr,
--				const char *buf, size_t size)
--{
--	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
--	const char * const *s;
--	int i = 0;
--
--	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++)
--		if (sysfs_streq(buf, *s))
--			break;
--
--	if (i == ARRAY_SIZE(dma_op_modes))
--		return -EINVAL;
--
--	spin_lock_irq(&mcbsp->lock);
--	if (!mcbsp->free) {
--		size = -EBUSY;
--		goto unlock;
--	}
--	mcbsp->dma_op_mode = i;
--
--unlock:
--	spin_unlock_irq(&mcbsp->lock);
--
--	return size;
--}
--
--static DEVICE_ATTR(dma_op_mode, 0644, dma_op_mode_show, dma_op_mode_store);
-+static DEVICE_ATTR(dma_op_mode, 0644, dma_op_mode_show, NULL);
- 
- static ssize_t st_taps_show(struct device *dev,
- 			    struct device_attribute *attr, char *buf)
--- 
-1.7.0.4
-
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
