@@ -1,24 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2] NUC900/audio: add nuc900 audio driver
- support
-Date: Wed, 19 May 2010 15:59:46 +0100
-Message-ID: <1274281186.3240.162.camel@odin>
-References: <4BF2289A.9030609@gmail.com>
-	<AANLkTin0o8IgE1aGomCRdznvyndZijZT4TgWJ5eSyCiH@mail.gmail.com>
-	(sfid-20100519_090732_540282_D6DE9B44)
-	<1274280826.2698.1030.camel@finisterre.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC: Dummy codec driver?
+Date: Wed, 19 May 2010 08:02:17 -0700
+Message-ID: <1274281337.2698.1046.camel@finisterre.wolfsonmicro.main>
+References: <4BF3D7ED.8090805@samsung.com>
+	(sfid-20100519_132344_828857_043FB409)
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8AA2010394C
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id AB7D5245DE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 16:59:55 +0200 (CEST)
-Received: by wya21 with SMTP id 21so141905wya.38
-	for <alsa-devel@alsa-project.org>; Wed, 19 May 2010 07:59:54 -0700 (PDT)
-In-Reply-To: <1274280826.2698.1030.camel@finisterre.wolfsonmicro.main>
+	Wed, 19 May 2010 17:02:08 +0200 (CEST)
+In-Reply-To: <4BF3D7ED.8090805@samsung.com>
+	(sfid-20100519_132344_828857_043FB409)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,27 +23,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: zswan@marvell.com, alsa-devel <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Wan ZongShun <mcuos.com@gmail.com>
+To: Joonyoung Shim <jy0922.shim@samsung.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-05-19 at 07:53 -0700, Mark Brown wrote:
-> On Wed, 2010-05-19 at 16:07 +0800, Wan ZongShun wrote:
-> 
-> > How about this patch?
-> > Could it be merged into mainline?
-> 
-> It needs review from Liam as well. Liam?
-> 
+On Wed, 2010-05-19 at 21:22 +0900, Joonyoung Shim wrote:
 
-I just had two minor comments with the driver, however I'm fairly happy
-it can go upstream now with the comments being addressed later.
+> I have a target(The cpu is S5PC110) which doesn't have audio codec, but 
+> it needs the audio device node to play audio at the TV via HDMI. The
+> S5PC110 HDMI transmits itself to TV the audio data from I2S buffer, so i 
+> have made dummy codec driver to create audio device node and to transmit
+> audio data to I2S buffer.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> How do you think about the dummy codec driver?
 
-Liam
-
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+That seems like a good solution to your problem - there's already a few
+dummy drivers present in the tree for fixed function devices (so all
+they do is set capabilities for the DAI link). This would slot in nicely
+beside them.
