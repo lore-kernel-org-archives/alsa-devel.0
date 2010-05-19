@@ -1,19 +1,18 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: tpa6130a2: Remove CPVSS supply
-Date: Wed, 19 May 2010 09:55:52 +0300
-Message-ID: <201005190955.52499.peter.ujfalusi@nokia.com>
-References: <1274211085-20261-1-git-send-email-jhnikula@gmail.com>
-	<F80267346F10C541946CBE8909F1C39E26E7BF8C34@NOK-EUMSG-02.mgdnok.nokia.com>
-	<20100519095345.a0fdcd52.jhnikula@gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/1] ALSA: usb-audio: add support for Akai
+ MPD16
+Date: Wed, 19 May 2010 08:59:38 +0200
+Message-ID: <4BF38C5A.7040901@ladisch.de>
+References: <1274207876-3215-1-git-send-email-wdev@foltman.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id AD49724545
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 4B2022453E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 08:55:57 +0200 (CEST)
-In-Reply-To: <20100519095345.a0fdcd52.jhnikula@gmail.com>
+	Wed, 19 May 2010 08:59:44 +0200 (CEST)
+In-Reply-To: <1274207876-3215-1-git-send-email-wdev@foltman.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: Krzysztof Foltman <wdev@foltman.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 19 May 2010 09:53:45 ext Jarkko Nikula wrote:
-> On Wed, 19 May 2010 08:51:13 +0200
-> =
+Krzysztof Foltman wrote:
+> + * AKAI MPD16 protocol: one or more chunks consisting of first byte of
+> + * (0x20 | msg_len) and then a MIDI message (msg_len bytes long)
+> + *
+> + * Messages sent:
+> + * 21 FE (active sense)
+> + * 23 90 xx xx (note on)
+> + * 23 Ax xx xx (polyphonic pressure)
+> + * 23 Bx xx xx (control change)
+> + */
+> +static void snd_usbmidi_akai_input(struct snd_usb_midi_in_endpoint *ep,
+> +				   uint8_t *buffer, int buffer_length)
+> +{
+> +	unsigned int pos = 0;
+> +	while (pos < (unsigned)buffer_length && (buffer[pos] & 0xF8) == 0x20) {
+> +		int msg_len = buffer[pos] & 0x0f;
+> +		snd_usbmidi_input_data(ep, 0, &buffer[pos + 1], msg_len);
 
-> <ilkka.koskinen@nokia.com> wrote:
-> > Hi,
-> > =
+This might overflow if the buffer ends with a 2x byte.
 
-> > On Tue, 18 May 2010, Jarkko Nikila wrote:
-> > >I believe there is no need for the CPVSS supply as this pin is for
-> > >decoupling capacitor for the internal charge pump.
-> > =
+> +static struct usb_protocol_ops snd_usbmidi_akai_ops = {
+> +	.input = snd_usbmidi_akai_input,
+> +	.output = snd_usbmidi_standard_output,
+> +	.output_packet = snd_usbmidi_output_standard_packet,
 
-> > Yes, you're right. I have a vague feeling that I put it there due to
-> > some previous comments...
-> > =
+Assuming that this device doesn't have any output ports, please add a
+comment that this isn't the actual output protocol.
 
-> > Anyway, I believe tpa6140's HPVdd is similar case and, thus, not
-> > needed either. Would you like to make a patch for that or shall I do
-> > it?
-> =
+> checkpatch.pl also complains about the use of space after the
+> ampersand in quirks-table.h, where it seems to be a common practice.
 
-> I can do it and repost as it makes the patch even more simpler :-)
+I'd value consistency over some stupid script, but this issue isn't
+important enough to worry over.
 
-Thanks Jarkko.
-You can add my Acked-by to the new patch.
 
--- =
+Overall, the patch looks fine.
 
-P=E9ter
+
+Regards,
+Clemens
