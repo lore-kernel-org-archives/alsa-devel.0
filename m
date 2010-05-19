@@ -1,45 +1,83 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 1/4] OMAP: mcbsp - add omap_mcbsp_set_dma_op_mode()
-Date: Wed, 19 May 2010 09:13:28 +0300
-Message-ID: <20100519091328.2afd8a64.jhnikula@gmail.com>
-References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-	<1274213594-26554-2-git-send-email-lrg@slimlogic.co.uk>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH - alsa-lib] tlv: Check dB range only within the
+	control's volume range
+Date: Wed, 19 May 2010 09:19:26 +0300
+Message-ID: <1274249966-31030-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1274213594-26554-2-git-send-email-lrg@slimlogic.co.uk>
-Sender: linux-omap-owner@vger.kernel.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Tony Lindgren <tony@atomide.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 460392450B
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 May 2010 08:19:37 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 May 2010 21:13:11 +0100
-Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+The DB_RANGE need to be used on some HW, since the gain on
+volume control is not continuous, and has to be divided into
+several sub DB_SCALE ranges.
+ASoC has a feature to override the HW default volume range,
+and in this case when the volume range is less than the
+HW maximum we do not need to go through the whole DB_RANGE,
+but we need to stop where the kcontrol's maximum tell us.
 
-> This adds a method to set the MCBSP DMA OP mode.
-> 
-> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
-> ---
->  arch/arm/plat-omap/include/plat/mcbsp.h |    2 ++
->  arch/arm/plat-omap/mcbsp.c              |   31 +++++++++++++++++++++++++++++++
->  2 files changed, 33 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/arm/plat-omap/include/plat/mcbsp.h b/arch/arm/plat-omap/include/plat/mcbsp.h
-> index 1bd7021..f8823f4 100644
-> --- a/arch/arm/plat-omap/include/plat/mcbsp.h
-> +++ b/arch/arm/plat-omap/include/plat/mcbsp.h
-> @@ -476,6 +476,7 @@ u16 omap_mcbsp_get_max_rx_threshold(unsigned int id);
->  u16 omap_mcbsp_get_tx_delay(unsigned int id);
->  u16 omap_mcbsp_get_rx_delay(unsigned int id);
->  int omap_mcbsp_get_dma_op_mode(unsigned int id);
-> +int omap_mcbsp_set_dma_op_mode(unsigned int id, unsigned int mode);
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+---
 
-This should have been here even in private form when the get function
-was introduced. Let's wait for Peter's comment about op mode sysfs
-functionality will we go with patch 4/4 or convert it to use this
-function.
+Hello,
 
-But anyway this patch is good to have.
+this patch fixes the ASoC related problem, when the volume is limited by the
+machine driver on a given control, which happen to have DB_RANGE gain mapping.
+The DB_RANGE has to have _only_ DB_SCALE type of mapping, since with LINEAR,
+MINMAX, MINMAX_MUTE it is not possible to accurately calculate the maximum dB
+limit on the control, when the volume is limited.
 
-Acked-by: Jarkko Nikula <jhnikula@gmail.com>
+Applications like PulseAudio need to know the actual dB range, and not only the
+theoretical maximum.
+
+ src/control/tlv.c |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/src/control/tlv.c b/src/control/tlv.c
+index cfd9b97..0ff052e 100644
+--- a/src/control/tlv.c
++++ b/src/control/tlv.c
+@@ -140,10 +140,13 @@ int snd_tlv_get_dB_range(unsigned int *tlv, long rangemin, long rangemax,
+ 		pos = 2;
+ 		while (pos + 4 <= len) {
+ 			long rmin, rmax;
+-			rangemin = (int)tlv[pos];
+-			rangemax = (int)tlv[pos + 1];
++			long submin, submax;
++			submin = (int)tlv[pos];
++			submax = (int)tlv[pos + 1];
++			if (rangemax < submax)
++				submax = rangemax;
+ 			err = snd_tlv_get_dB_range(tlv + pos + 2,
+-						   rangemin, rangemax,
++						   submin, submax,
+ 						   &rmin, &rmax);
+ 			if (err < 0)
+ 				return err;
+@@ -156,6 +159,8 @@ int snd_tlv_get_dB_range(unsigned int *tlv, long rangemin, long rangemax,
+ 				*min = rmin;
+ 				*max = rmax;
+ 			}
++			if (rangemax == submax)
++				return 0;
+ 			pos += int_index(tlv[pos + 3]) + 4;
+ 		}
+ 		return 0;
+--
+1.7.1
