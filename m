@@ -1,18 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH] ASoC: tpa6130a2: Define output pins with
-	SND_SOC_DAPM_OUTPUT
-Date: Wed, 19 May 2010 15:00:14 +0300
-Message-ID: <201005191500.14607.peter.ujfalusi@nokia.com>
-References: <1274266526-29439-1-git-send-email-jhnikula@gmail.com>
+Subject: Re: [PATCH 0/4] McBSP smart idle and DMA op mode
+	updates for ASoC
+Date: Wed, 19 May 2010 15:09:06 +0300
+Message-ID: <201005191509.06739.peter.ujfalusi@nokia.com>
+References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
+	<201005191436.52149.peter.ujfalusi@nokia.com>
+	<20100519114640.GP4265@besouro.research.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 43EEF1038E3
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id 33BDB1038EA
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 14:00:31 +0200 (CEST)
-In-Reply-To: <1274266526-29439-1-git-send-email-jhnikula@gmail.com>
+	Wed, 19 May 2010 14:09:18 +0200 (CEST)
+In-Reply-To: <20100519114640.GP4265@besouro.research.nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,77 +24,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Jarkko Nikula <jhnikula@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 19 May 2010 13:55:26 ext Jarkko Nikula wrote:
-> Codec output pin should be defined with SND_SOC_DAPM_OUTPUT as otherwise
-> external widgets doesn't alter the output state.
+On Wednesday 19 May 2010 14:46:40 Valentin Eduardo (Nokia-D/Helsinki) wrote:
+> On Wed, May 19, 2010 at 01:36:51PM +0200, Ujfalusi Peter (Nokia-D/Tampere=
+) =
+
+wrote:
+> > On Wednesday 19 May 2010 13:52:27 Valentin Eduardo (Nokia-D/Helsinki) w=
+rote:
+> > > > The DMA pointer is easy, and it was know before as well, but
+> > > > according to my tests, the McBSP FIFO caused delay reporting is
+> > > > fairly accurate. I'll ask my users, if they have done some
+> > > > additional tests.
+> > > =
+
+> > > OK. fair enough. What if you really want to avoid the delay at all?
+> > =
+
+> > You can't. the McBSP FIFO can not be bypassed.
+> > The only thing one can do is to take it into consideration.
 > =
 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
-> I noticed this with a widget and audio map below where state of
-> "Headphone Jack" wasn't changing the codec output.
+> hmmm well, you can still do not use the fifo completely. Use only partial=
+ly
+> depending on latency requirement would still be possible.
 
-This is intentional.
-TPA is _not_ a codec, it is amplifier.
+Ah, you mean the idea, where in DMA completion interrupt we configure the M=
+cBSP =
 
-> SND_SOC_DAPM_HP("Headphone Jack", NULL),
-> =
+threshold to maximum, and on McBSP FIFO empty interrupt, we configurre back=
+ the =
 
-> {"Headphone Jack", NULL, "TPA6130A2 Headphone Left"},
-> {"Headphone Jack", NULL, "TPA6130A2 Headphone Right"},
-> {"TPA6130A2 Left", NULL, "LLOUT"},
-> {"TPA6130A2 Right", NULL, "RLOUT"}
+threshold to what the level we want to use from McBSP, and start the DMA?
+This all has to be done 'manually', and if there is _any_ latency in the ke=
+rnel, =
 
-And this is how you should use it in a machine driver:
-Connect the codec's outputs to TPA. The TPA code adds the HPs for you alrea=
-dy, =
-
-so you don't need to care about it...
-
- {"TPA6130A2 Left", NULL, "LLOUT"},
- {"TPA6130A2 Right", NULL, "RLOUT"}
-
-If you want to turn off the headset path, which I suppose you want to do he=
-re, =
-
-than within the same kcontrol you will have for HS mute you can do this:
-
-	if (jack_state) {
-		snd_soc_dapm_enable_pin(codec, "TPA6130A2 Headphone Left");
-		snd_soc_dapm_enable_pin(codec, "TPA6130A2 Headphone Right");
-	} else {
-		snd_soc_dapm_disable_pin(codec, "TPA6130A2 Headphone Left");
-		snd_soc_dapm_disable_pin(codec, "TPA6130A2 Headphone Right");
-	}
-
-> ---
->  sound/soc/codecs/tpa6130a2.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> =
-
-> diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
-> index 100a747..99b70e5 100644
-> --- a/sound/soc/codecs/tpa6130a2.c
-> +++ b/sound/soc/codecs/tpa6130a2.c
-> @@ -359,8 +359,8 @@ static const struct snd_soc_dapm_widget
-> tpa6130a2_dapm_widgets[] =3D { 0, 0, tpa6130a2_supply_event,
->  			SND_SOC_DAPM_POST_PMU|SND_SOC_DAPM_POST_PMD),
->  	/* Outputs */
-> -	SND_SOC_DAPM_HP("TPA6130A2 Headphone Left", NULL),
-> -	SND_SOC_DAPM_HP("TPA6130A2 Headphone Right", NULL),
-> +	SND_SOC_DAPM_OUTPUT("TPA6130A2 Headphone Left"),
-> +	SND_SOC_DAPM_OUTPUT("TPA6130A2 Headphone Right"),
->  };
-> =
-
->  static const struct snd_soc_dapm_route audio_map[] =3D {
-
-For now I'm not acking this.
+than we have channel switch, glitch, pause, and whatnot..
+I remember, we tried that, and well, did not worked that reliable.
 
 -- =
 
