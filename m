@@ -1,36 +1,67 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [alsa-devel] [PATCH 3/4] ASoC: mcbsp - add machine threshold
- callback
-Date: Wed, 19 May 2010 10:37:12 +0100
-Message-ID: <1274261832.3240.34.camel@odin>
+From: Eduardo Valentin <eduardo.valentin@nokia.com>
+Subject: Re: [PATCH 0/4] McBSP smart idle and DMA op mode
+	updates for ASoC
+Date: Wed, 19 May 2010 13:42:10 +0300
+Message-ID: <20100519104209.GI4265@besouro.research.nokia.com>
 References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-	 <1274213594-26554-4-git-send-email-lrg@slimlogic.co.uk>
-	 <2256F256009DAA4CBE661E9F41EAC84B9145EC6A@dlee01.ent.ti.com>
+Reply-To: eduardo.valentin@nokia.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <2256F256009DAA4CBE661E9F41EAC84B9145EC6A@dlee01.ent.ti.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: "Candelaria Villarreal, Jorge" <jorge.candelaria@ti.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id CEB63245DA
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 May 2010 12:36:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ext Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-05-18 at 15:56 -0500, Candelaria Villarreal, Jorge wrote:
-> > 
-> > +int omap_bcbsp_set_threshold_func(struct snd_soc_dai *cpu_dai,
-> > +             void (*mach_set_threshold)(struct
-> > snd_pcm_substream *substream))
+On Tue, May 18, 2010 at 10:13:10PM +0200, Liam Girdwood wrote:
+> This series expands the OMAP mcbsp driver to support changing it's DMA operating
+> mode and smart idle mode from client drivers. It's primarily aimed at lowering
+> the power consumption for OMAP ASoC drivers by providing methods to gate clocks
+> on the mcbsp interface at runtime.
 > 
-> I think you meant omap_mcbsp_set_threshold_func here. 
+> I've also added a patch to remove the mcbsp DMA op mode sysfs set functionality.
+> I think DMA op mode is very specific to the mcbsp client driver _only_ and
+> shouldn't really be changed by userspace. Please let me know if you use this
+> feature and I'll drop this patch.
 
-I did indeed !
+Yeah, I'm not sure if that would be strong enough argument though. Unfortunately,
+this dma op mode also couples with the usage of mcbsp internal buffer. Which in the very
+end will mean a compromise between delay vs. pm, as you are probably aware.
 
-Thanks
+So, letting userspace to toggle this mode will also mean they can choose between pm friendly
+(op mode with frame and so on) or short delay friendly (element mode).
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Of course, this might not be the best way of choosing it though.
 
+> 
+> Tony, can I get your ack to upstream via ALSA if it's ok
+> 
+> Thanks
+> 
+> Liam
+> 
+>  arch/arm/plat-omap/include/plat/mcbsp.h |   17 +++
+>  arch/arm/plat-omap/mcbsp.c              |  183 ++++++++++++++++++++++++++-----
+>  sound/soc/omap/omap-mcbsp.c             |   22 ++++-
+>  sound/soc/omap/omap-mcbsp.h             |    2 +
+>  4 files changed, 194 insertions(+), 30 deletions(-)
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
