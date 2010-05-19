@@ -1,21 +1,20 @@
-From: Eduardo Valentin <eduardo.valentin@nokia.com>
-Subject: Re: [PATCH 2/4] OMAP: mcbsp - add smart idle
-	configuration API
-Date: Wed, 19 May 2010 13:46:28 +0300
-Message-ID: <20100519104628.GJ4265@besouro.research.nokia.com>
-References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-	<1274213594-26554-3-git-send-email-lrg@slimlogic.co.uk>
-Reply-To: eduardo.valentin@nokia.com
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH - alsa-lib] tlv: Check dB range only within
+ the control's volume range
+Date: Wed, 19 May 2010 12:42:03 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1005191239530.6856@eeebox2.perex-int.cz>
+References: <1274249966-31030-1-git-send-email-peter.ujfalusi@nokia.com>
+	<alpine.LNX.2.00.1005190854200.6856@eeebox2.perex-int.cz>
+	<201005191028.55258.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4CD80245E1
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id EAF40245E2
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 12:40:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1274213594-26554-3-git-send-email-lrg@slimlogic.co.uk>
+	Wed, 19 May 2010 12:42:05 +0200 (CEST)
+In-Reply-To: <201005191028.55258.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,205 +24,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Ujfalusi Peter (Nokia-D/Tampere)" <peter.ujfalusi@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Lian,
+On Wed, 19 May 2010, Peter Ujfalusi wrote:
 
-On Tue, May 18, 2010 at 10:13:12PM +0200, Liam Girdwood wrote:
-> Add a small API to configure McBSP smart idle modes
-> to conserve power.
+> On Wednesday 19 May 2010 09:55:40 ext Jaroslav Kysela wrote:
+>> On Wed, 19 May 2010, Peter Ujfalusi wrote:
+>>> The DB_RANGE need to be used on some HW, since the gain on
+>>> volume control is not continuous, and has to be divided into
+>>> several sub DB_SCALE ranges.
+>>> ASoC has a feature to override the HW default volume range,
+>>> and in this case when the volume range is less than the
+>>> HW maximum we do not need to go through the whole DB_RANGE,
+>>> but we need to stop where the kcontrol's maximum tell us.
+>>>
+>>> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+>>
+>> Unfortunately, it does not look like a clean way in my eyes. If the driver
+>> pushes some limits to the control (volume) range, it should do it also
+>> for TLVs.
+>
+> My thinking was that the snd_tlv_get_dB_range SNDRV_CTL_TLVT_DB_RANGE case
+> should obey the control's range provided by the driver, similarly how the
+> SNDRV_CTL_TLVT_DB_SCALE is using the rangemax, rangemin.
+> In case of SNDRV_CTL_TLVT_DB_RANGE, we should not go beyond the control's
+> rangemax.
+>
+> In this way both of the following volume control is going to be handled
+> correctly:
+>
+> 1.
+> static DECLARE_TLV_DB_SCALE(dac_digivol_tlv, -6350, 50, 0);
+>
+> static const struct snd_kcontrol_new dac33_snd_controls[] = {
+> 	SOC_DOUBLE_R_TLV("DAC Digital Playback Volume",
+> 		DAC33_LDAC_DIG_VOL_CTRL, DAC33_RDAC_DIG_VOL_CTRL,
+> 		0, 0x7f, 1, dac_digivol_tlv),
+> };
+>
+> Original range (127): -63.5 .. 0 dB
+> Limited range  (100): -63.5 .. -13.5 dB
+>
+> 2.
+> static const unsigned int tpa6140_tlv[] = {
+> 	TLV_DB_RANGE_HEAD(3),
+> 	0, 8, TLV_DB_SCALE_ITEM(-5900, 400, 0),
+> 	9, 16, TLV_DB_SCALE_ITEM(-2500, 200, 0),
+> 	17, 31, TLV_DB_SCALE_ITEM(-1000, 100, 0),
+> };
+>
+> static const struct snd_kcontrol_new tpa6140a2_controls[] = {
+> 	SOC_SINGLE_EXT_TLV("TPA6140A2 Headphone Playback Volume",
+> 		       TPA6130A2_REG_VOL_MUTE, 1, 0x1f, 0,
+> 		       tpa6130a2_get_volsw, tpa6130a2_put_volsw,
+> 		       tpa6140_tlv),
+> };
+>
+> Original range (31): -59 .. 4 dB
+> Limited range  (21): -59 .. -6 dB
+> Limited range  (16): -59 .. -11 dB
+>
+> In case of DB_SCALE in theory the maximum gain depends on the maximum volume
+> possible on the control.
+> When the gain is not linear, it has to divided into sub DB_SCALE sections to get
+> accurate mapping.
+> Now, if the kernel code for the limiting has to do more than changing the
+> maximum volume, than it means that it _has_ to rewrite the TLV table in a clever
+> way, or provide a new one which fits with the limited volume.
+> Rewriting the TLV table taking into account all possible cases is not that safe,
+> and I'm sure there could be still some corners, where it would fail.
+>
+> I think the patch provides uniform, and error prone way of handling this
+> situation, while not breaking any existing parts.
 
-I'm sorry but I didn't get the point of this patch, as you didn't add any wider
-description why you need to export this feature. Why do you think mcbsp clients
-should be aware of these bit? Would it make sense to mask it behind other feature?
-like the threshold size for instance..
+I forgot that we carry the control value ranges in the DB_RANGE 
+container. I applied your patch to alsa-lib's GIT tree. Thanks for it and 
+for your detailed analysis.
 
-> 
-> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
-> ---
->  arch/arm/plat-omap/include/plat/mcbsp.h |   15 ++++
->  arch/arm/plat-omap/mcbsp.c              |  122 +++++++++++++++++++++++++++++++
->  2 files changed, 137 insertions(+), 0 deletions(-)
-> 
-> diff --git a/arch/arm/plat-omap/include/plat/mcbsp.h b/arch/arm/plat-omap/include/plat/mcbsp.h
-> index f8823f4..3f9fb71 100644
-> --- a/arch/arm/plat-omap/include/plat/mcbsp.h
-> +++ b/arch/arm/plat-omap/include/plat/mcbsp.h
-> @@ -278,6 +278,15 @@
->  #define ENAWAKEUP		0x0004
->  #define SOFTRST			0x0002
->  
-> +#define MCBSP_CLK_ACT_IOFF_POFF		0
-> +#define MCBSP_CLK_ACT_ION_POFF		1
-> +#define MCBSP_CLK_ACT_IOFF_PON		2
-> +#define MCBSP_CLK_ACT_ION_PON			3
-> +
-> +#define MCBSP_IDLE_FORCE	0
-> +#define MCBSP_IDLE_NONE		1
-> +#define MCBSP_IDLE_SMART	2
-> +
->  /********************** McBSP SSELCR bit definitions ***********************/
->  #define SIDETONEEN		0x0400
->  
-> @@ -456,6 +465,7 @@ struct omap_mcbsp {
->  #ifdef CONFIG_ARCH_OMAP3
->  	struct omap_mcbsp_st_data *st_data;
->  	int dma_op_mode;
-> +	int idle_mode;
->  	u16 max_tx_thres;
->  	u16 max_rx_thres;
->  #endif
-> @@ -477,6 +487,11 @@ u16 omap_mcbsp_get_tx_delay(unsigned int id);
->  u16 omap_mcbsp_get_rx_delay(unsigned int id);
->  int omap_mcbsp_get_dma_op_mode(unsigned int id);
->  int omap_mcbsp_set_dma_op_mode(unsigned int id, unsigned int mode);
-> +int omap_mcbsp_set_idle_smart(unsigned int id, unsigned int clk_activity,
-> +		unsigned int wake);
-> +int omap_mcbsp_set_idle_none(unsigned int id);
-> +int omap_mcbsp_set_idle_force(unsigned int id);
-> +int omap_mcbsp_get_idle_mode(unsigned int id);
->  #else
->  static inline void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
->  { }
-> diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-> index cc2b73c..7785050 100644
-> --- a/arch/arm/plat-omap/mcbsp.c
-> +++ b/arch/arm/plat-omap/mcbsp.c
-> @@ -1743,6 +1743,128 @@ static inline void __devexit omap34xx_device_exit(struct omap_mcbsp *mcbsp)
->  			omap_st_remove(mcbsp);
->  	}
->  }
-> +
-> +/* assert standby requests when idle */
-> +int omap_mcbsp_set_idle_smart(unsigned int id, unsigned int clk_activity,
-> +		u32 wakeup)
-> +{
-> +	struct omap_mcbsp *mcbsp;
-> +	u16 syscon;
-> +	int ret = 0;
-> +
-> +	if (!omap_mcbsp_check_valid_id(id)) {
-> +		printk(KERN_ERR "%s: Invalid id (%u)\n", __func__, id + 1);
-> +		return -ENODEV;
-> +	}
-> +	mcbsp = id_to_mcbsp_ptr(id);
-> +
-> +	spin_lock_irq(&mcbsp->lock);
-> +	if (!mcbsp->free) {
-> +		ret = -EBUSY;
-> +		goto unlock;
-> +	}
-> +
-> +	syscon = MCBSP_READ(mcbsp, SYSCON) &
-> +			~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
-> +	MCBSP_WRITE(mcbsp, WAKEUPEN, wakeup);
-> +	MCBSP_WRITE(mcbsp, SYSCON,
-> +			syscon | SIDLEMODE(MCBSP_IDLE_SMART) |
-> +			CLOCKACTIVITY(clk_activity) | ENAWAKEUP);
-> +	mcbsp->idle_mode = MCBSP_IDLE_SMART;
-> +
-> +unlock:
-> +	spin_unlock_irq(&mcbsp->lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(omap_mcbsp_set_idle_smart);
-> +
-> +/* never assert standby requests */
-> +int omap_mcbsp_set_idle_none(unsigned int id)
-> +{
-> +	struct omap_mcbsp *mcbsp;
-> +	u16 syscon;
-> +	int ret = 0;
-> +
-> +	if (!omap_mcbsp_check_valid_id(id)) {
-> +		printk(KERN_ERR "%s: Invalid id (%u)\n", __func__, id + 1);
-> +		return -ENODEV;
-> +	}
-> +	mcbsp = id_to_mcbsp_ptr(id);
-> +
-> +	spin_lock_irq(&mcbsp->lock);
-> +	if (!mcbsp->free) {
-> +		ret = -EBUSY;
-> +		goto unlock;
-> +	}
-> +
-> +	syscon = MCBSP_READ(mcbsp, SYSCON) &
-> +			~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
-> +
-> +	MCBSP_WRITE(mcbsp, SYSCON, syscon | SIDLEMODE(MCBSP_IDLE_NONE));
-> +	MCBSP_WRITE(mcbsp, WAKEUPEN, 0);
-> +	mcbsp->idle_mode = MCBSP_IDLE_NONE;
-> +
-> +unlock:
-> +	spin_unlock_irq(&mcbsp->lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(omap_mcbsp_set_idle_none);
-> +
-> +/* unconditionally assert standby requests */
-> +int omap_mcbsp_set_idle_force(unsigned int id)
-> +{
-> +	struct omap_mcbsp *mcbsp;
-> +	u16 syscon;
-> +	int ret = 0;
-> +
-> +	if (!omap_mcbsp_check_valid_id(id)) {
-> +		printk(KERN_ERR "%s: Invalid id (%u)\n", __func__, id + 1);
-> +		return -ENODEV;
-> +	}
-> +	mcbsp = id_to_mcbsp_ptr(id);
-> +
-> +	spin_lock_irq(&mcbsp->lock);
-> +	if (!mcbsp->free) {
-> +		ret = -EBUSY;
-> +		goto unlock;
-> +	}
-> +
-> +	syscon = MCBSP_READ(mcbsp, SYSCON) &
-> +			~(ENAWAKEUP | SIDLEMODE(0x03) | CLOCKACTIVITY(0x03));
-> +	/*
-> +	 * HW bug workaround - If no_idle mode is taken, we need to
-> +	 * go to smart_idle before going to always_idle, or the
-> +	 * device will not hit retention anymore.
-> +	 */
-> +	syscon |= SIDLEMODE(MCBSP_IDLE_SMART);
-> +	MCBSP_WRITE(mcbsp, SYSCON, syscon);
-> +	syscon &= ~(SIDLEMODE(0x03));
-> +
-> +	MCBSP_WRITE(mcbsp, SYSCON, syscon | SIDLEMODE(MCBSP_IDLE_FORCE));
-> +	MCBSP_WRITE(mcbsp, WAKEUPEN, 0);
-> +	mcbsp->idle_mode = MCBSP_IDLE_FORCE;
-> +
-> +unlock:
-> +	spin_unlock_irq(&mcbsp->lock);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(omap_mcbsp_set_idle_force);
-> +
-> +int omap_mcbsp_get_idle_mode(unsigned int id)
-> +{
-> +	struct omap_mcbsp *mcbsp;
-> +
-> +	if (!omap_mcbsp_check_valid_id(id)) {
-> +		printk(KERN_ERR "%s: Invalid id (%u)\n", __func__, id + 1);
-> +		return -ENODEV;
-> +	}
-> +	mcbsp = id_to_mcbsp_ptr(id);
-> +
-> +	return mcbsp->idle_mode;
-> +}
-> +EXPORT_SYMBOL(omap_mcbsp_get_idle_mode);
-> +
-> +
->  #else
->  static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp) {}
->  static inline void __devexit omap34xx_device_exit(struct omap_mcbsp *mcbsp) {}
-> -- 
-> 1.7.0.4
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
