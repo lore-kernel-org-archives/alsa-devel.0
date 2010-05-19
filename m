@@ -1,18 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/1] ALSA: usb-audio: add support for Akai
- MPD16
-Date: Wed, 19 May 2010 08:59:38 +0200
-Message-ID: <4BF38C5A.7040901@ladisch.de>
-References: <1274207876-3215-1-git-send-email-wdev@foltman.com>
+From: <ilkka.koskinen@nokia.com>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Remove CPVSS supply
+Date: Wed, 19 May 2010 09:09:46 +0200
+Message-ID: <F80267346F10C541946CBE8909F1C39E26E7BF8C6E@NOK-EUMSG-02.mgdnok.nokia.com>
+References: <1274211085-20261-1-git-send-email-jhnikula@gmail.com>
+	<F80267346F10C541946CBE8909F1C39E26E7BF8C34@NOK-EUMSG-02.mgdnok.nokia.com>
+	<20100519095345.a0fdcd52.jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 4B2022453E
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id B9BD824549
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 08:59:44 +0200 (CEST)
-In-Reply-To: <1274207876-3215-1-git-send-email-wdev@foltman.com>
+	Wed, 19 May 2010 09:09:51 +0200 (CEST)
+In-Reply-To: <20100519095345.a0fdcd52.jhnikula@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,47 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Foltman <wdev@foltman.com>
-Cc: alsa-devel@alsa-project.org
+To: jhnikula@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Krzysztof Foltman wrote:
-> + * AKAI MPD16 protocol: one or more chunks consisting of first byte of
-> + * (0x20 | msg_len) and then a MIDI message (msg_len bytes long)
-> + *
-> + * Messages sent:
-> + * 21 FE (active sense)
-> + * 23 90 xx xx (note on)
-> + * 23 Ax xx xx (polyphonic pressure)
-> + * 23 Bx xx xx (control change)
-> + */
-> +static void snd_usbmidi_akai_input(struct snd_usb_midi_in_endpoint *ep,
-> +				   uint8_t *buffer, int buffer_length)
-> +{
-> +	unsigned int pos = 0;
-> +	while (pos < (unsigned)buffer_length && (buffer[pos] & 0xF8) == 0x20) {
-> +		int msg_len = buffer[pos] & 0x0f;
-> +		snd_usbmidi_input_data(ep, 0, &buffer[pos + 1], msg_len);
+ 
 
-This might overflow if the buffer ends with a 2x byte.
+>From: ext Jarkko Nikula [mailto:jhnikula@gmail.com] 
+>Sent: 19 May, 2010 09:54
+>On Wed, 19 May 2010 08:51:13 +0200
+><ilkka.koskinen@nokia.com> wrote:
+>
+>> 
+>> Hi,
+>> 
+>> On Tue, 18 May 2010, Jarkko Nikila wrote:
+>> >I believe there is no need for the CPVSS supply as this pin is for
+>> >decoupling capacitor for the internal charge pump.
+>> 
+>> Yes, you're right. I have a vague feeling that I put it there due to
+>> some previous comments...
+>> 
+>> Anyway, I believe tpa6140's HPVdd is similar case and, thus, not
+>> needed either. Would you like to make a patch for that or shall I do
+>> it?
+>> 
+>I can do it and repost as it makes the patch even more simpler :-)
 
-> +static struct usb_protocol_ops snd_usbmidi_akai_ops = {
-> +	.input = snd_usbmidi_akai_input,
-> +	.output = snd_usbmidi_standard_output,
-> +	.output_packet = snd_usbmidi_output_standard_packet,
+Great, I thought so too :)
 
-Assuming that this device doesn't have any output ports, please add a
-comment that this isn't the actual output protocol.
+And if you like, feel free to add Reviewed-by tag...
 
-> checkpatch.pl also complains about the use of space after the
-> ampersand in quirks-table.h, where it seems to be a common practice.
-
-I'd value consistency over some stupid script, but this issue isn't
-important enough to worry over.
-
-
-Overall, the patch looks fine.
-
-
-Regards,
-Clemens
+Cheers, Ilkka
