@@ -1,24 +1,15 @@
-From: Kevin Hilman <khilman@deeprootsystems.com>
-Subject: Re: [PATCH 2/4] OMAP: mcbsp - add smart idle
-	configuration API
-Date: Wed, 19 May 2010 08:33:29 -0700
-Message-ID: <878w7fhpo6.fsf@deeprootsystems.com>
-References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-	<1274213594-26554-3-git-send-email-lrg@slimlogic.co.uk>
-	<87tyq4lspw.fsf@deeprootsystems.com> <1274265808.3240.101.camel@odin>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH] ALSA: usb/mixer.c: remove unused variable
+Date: Wed, 19 May 2010 17:34:45 +0200
+Message-ID: <1274283285-14250-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id AB2EC103906
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3736410395C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 17:33:33 +0200 (CEST)
-Received: by pwj9 with SMTP id 9so2617183pwj.38
-	for <alsa-devel@alsa-project.org>; Wed, 19 May 2010 08:33:31 -0700 (PDT)
-In-Reply-To: <1274265808.3240.101.camel@odin> (Liam Girdwood's message of
-	"Wed\, 19 May 2010 11\:43\:28 +0100")
+	Wed, 19 May 2010 17:35:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,40 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood <lrg@slimlogic.co.uk> writes:
+This was a development left-over.
 
-> On Tue, 2010-05-18 at 16:01 -0700, Kevin Hilman wrote:
->> Liam Girdwood <lrg@slimlogic.co.uk> writes:
->> 
->> > Add a small API to configure McBSP smart idle modes
->> > to conserve power.
->> 
->> Would be useful here to explain why client drivers need to change
->> idle modes.
->> 
->
-> I think Peter has covered this in one of his replies.
->
->> Also, this patch is telling me that it's time the McBSP is converted
->> over to the omap_hwmod/omap_device infrastructure where this type
->> of functionality would already be provided.
->> 
->> Not necesssarily a reason to prevent this patch for now, but this
->> will all need to be changed when converted to hwmod.
->
-> Ok, I think I'll actually just convert it to hwmod rather than adding a
-> soon to be deprecated API.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+---
+ sound/usb/mixer.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-Excellent, that would certainly be my preference.
-
-For reference, you can check out the pm-wip/uart and pm-wip/mmc
-branches of my tree[1] for some hwmod conversions for UART and MMC
-that are in progress.
-
-Kevin
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-omap-pm.git
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index fd3e08d..a35dd74 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1970,8 +1970,6 @@ static void snd_usb_mixer_proc_read(struct snd_info_entry *entry,
+ static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
+ 				       int attribute, int value, int index)
+ {
+-	struct usb_mixer_elem_info *info;
+-
+ 	switch (attribute) {
+ 	case UAC2_CS_CUR:
+ 		snd_usb_mixer_notify_id(mixer, index);
+-- 
+1.7.1
