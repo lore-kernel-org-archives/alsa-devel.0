@@ -1,24 +1,20 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: ASoC: Dummy codec driver?
-Date: Wed, 19 May 2010 21:22:05 +0900
-Message-ID: <4BF3D7ED.8090805@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 0/4] McBSP smart idle and DMA op mode
+	updates for ASoC
+Date: Wed, 19 May 2010 15:27:35 +0300
+Message-ID: <201005191527.35439.peter.ujfalusi@nokia.com>
+References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
+	<20100519104209.GI4265@besouro.research.nokia.com>
+	<1274267231.3240.117.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout5.samsung.com (mailout5.samsung.com [203.254.224.35])
-	by alsa0.perex.cz (Postfix) with ESMTP id C6BE31038E8
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id A448F1038FB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 14:22:14 +0200 (CEST)
-Received: from epmmp2 (mailout5.samsung.com [203.254.224.35])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0L2O007DT2CTRJ@mailout1.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 19 May 2010 21:22:06 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L2O00G232CTHO@mmp2.samsung.com> for
-	alsa-devel@alsa-project.org; Wed, 19 May 2010 21:22:05 +0900 (KST)
+	Wed, 19 May 2010 14:28:01 +0200 (CEST)
+In-Reply-To: <1274267231.3240.117.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,16 +24,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: ext Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I have a target(The cpu is S5PC110) which doesn't have audio codec, but 
-it needs the audio device node to play audio at the TV via HDMI. The
-S5PC110 HDMI transmits itself to TV the audio data from I2S buffer, so i 
-have made dummy codec driver to create audio device node and to transmit
-audio data to I2S buffer.
-
-How do you think about the dummy codec driver?
+T24gV2VkbmVzZGF5IDE5IE1heSAyMDEwIDE0OjA3OjExIGV4dCBMaWFtIEdpcmR3b29kIHdyb3Rl
+Ogo+IE9uIFdlZCwgMjAxMC0wNS0xOSBhdCAxMzo0MiArMDMwMCwgRWR1YXJkbyBWYWxlbnRpbiB3
+cm90ZToKPiA+IE9uIFR1ZSwgTWF5IDE4LCAyMDEwIGF0IDEwOjEzOjEwUE0gKzAyMDAsIExpYW0g
+R2lyZHdvb2Qgd3JvdGU6Cj4gPiA+IFRoaXMgc2VyaWVzIGV4cGFuZHMgdGhlIE9NQVAgbWNic3Ag
+ZHJpdmVyIHRvIHN1cHBvcnQgY2hhbmdpbmcgaXQncyBETUEKPiA+ID4gb3BlcmF0aW5nIG1vZGUg
+YW5kIHNtYXJ0IGlkbGUgbW9kZSBmcm9tIGNsaWVudCBkcml2ZXJzLiBJdCdzIHByaW1hcmlseQo+
+ID4gPiBhaW1lZCBhdCBsb3dlcmluZyB0aGUgcG93ZXIgY29uc3VtcHRpb24gZm9yIE9NQVAgQVNv
+QyBkcml2ZXJzIGJ5Cj4gPiA+IHByb3ZpZGluZyBtZXRob2RzIHRvIGdhdGUgY2xvY2tzIG9uIHRo
+ZSBtY2JzcCBpbnRlcmZhY2UgYXQgcnVudGltZS4KPiA+ID4gCj4gPiA+IEkndmUgYWxzbyBhZGRl
+ZCBhIHBhdGNoIHRvIHJlbW92ZSB0aGUgbWNic3AgRE1BIG9wIG1vZGUgc3lzZnMgc2V0Cj4gPiA+
+IGZ1bmN0aW9uYWxpdHkuIEkgdGhpbmsgRE1BIG9wIG1vZGUgaXMgdmVyeSBzcGVjaWZpYyB0byB0
+aGUgbWNic3AKPiA+ID4gY2xpZW50IGRyaXZlciBfb25seV8gYW5kIHNob3VsZG4ndCByZWFsbHkg
+YmUgY2hhbmdlZCBieSB1c2Vyc3BhY2UuCj4gPiA+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB5b3Ug
+dXNlIHRoaXMgZmVhdHVyZSBhbmQgSSdsbCBkcm9wIHRoaXMgcGF0Y2guCj4gPiAKPiA+IFllYWgs
+IEknbSBub3Qgc3VyZSBpZiB0aGF0IHdvdWxkIGJlIHN0cm9uZyBlbm91Z2ggYXJndW1lbnQgdGhv
+dWdoLgo+ID4gVW5mb3J0dW5hdGVseSwgdGhpcyBkbWEgb3AgbW9kZSBhbHNvIGNvdXBsZXMgd2l0
+aCB0aGUgdXNhZ2Ugb2YgbWNic3AKPiA+IGludGVybmFsIGJ1ZmZlci4gV2hpY2ggaW4gdGhlIHZl
+cnkgZW5kIHdpbGwgbWVhbiBhIGNvbXByb21pc2UgYmV0d2Vlbgo+ID4gZGVsYXkgdnMuIHBtLCBh
+cyB5b3UgYXJlIHByb2JhYmx5IGF3YXJlLgo+ID4gCj4gPiBTbywgbGV0dGluZyB1c2Vyc3BhY2Ug
+dG8gdG9nZ2xlIHRoaXMgbW9kZSB3aWxsIGFsc28gbWVhbiB0aGV5IGNhbiBjaG9vc2UKPiA+IGJl
+dHdlZW4gcG0gZnJpZW5kbHkgKG9wIG1vZGUgd2l0aCBmcmFtZSBhbmQgc28gb24pIG9yIHNob3J0
+IGRlbGF5Cj4gPiBmcmllbmRseSAoZWxlbWVudCBtb2RlKS4KPiA+IAo+ID4gT2YgY291cnNlLCB0
+aGlzIG1pZ2h0IG5vdCBiZSB0aGUgYmVzdCB3YXkgb2YgY2hvb3NpbmcgaXQgdGhvdWdoLgo+IAo+
+IFRoZSBzeXNmcyBzZXQgaW50ZXJmYWNlIGltcGxpZXMgdXNlcnNwYWNlIGhhdmluZyBrbm93bGVk
+Z2Ugb2YgZHJpdmVyCj4gY2FwYWJpbGl0aWVzIGFuZCBjb25maWd1cmF0aW9uIGluIG9yZGVyIHRv
+IHNhZmVseSB0b2dnbGUgYmV0d2VlbiB0aGUgdHdvCj4gRE1BIG1vZGVzLiBJbW8sIHRoZSBtY2Jz
+cCBjbGllbnQgZHJpdmVyIHNob3VsZCBiZSB0aGUgb25seSBlbnRpdHkKPiBjb25maWd1cmluZyBp
+dCdzIERNQSBtb2RlcyAoaW4gYSBzYWZlIG1hbm5lcikgZGVwZW5kaW5nIG9uIHRoZSB1c2UgY2Fz
+ZS4KCkZ1cnRoZXJtb3JlLCBpZiB0aGVyZSBpcyBhIG5lZWQgZm9yICdVc2UgQ2FzZXMnLCB0aGFu
+IHRoZSBtYWNoaW5lIGRyaXZlciBjYW4gCnByb3ZpZGUgdXNlciBjb250cm9sIHRvIHN3aXRjaCBi
+ZXR3ZWVuIHRoZW0uClRoZSB0aGluZyBpcyB0aGF0IGluIG1vc3QgY2FzZXMgdGhlc2UgYXJlIHRy
+aXZpYWwsIGFuZCBtb3N0bHkgdGhlIHNhbWUgc2V0dGluZ3MsIApidXQgaWYgeW91IHRocm93IGEg
+Y29kZWMgbGlrZSB0aGUgdGx2MzIwZGFjMzMgaW50byB0aGUgbWl4LCB3aGljaCBoYXMgaXQncyBv
+d24gCkZJRk8sIHRoYW4gdGhpbmdzIGdldHMgY29tcGxpY2F0ZWQuClRoZSB1c2VyICh0aGUgcmVh
+bCBvbmUsIG5vdCB0aGUgZGV2ZWxvcGVyKSBoYXMgc2V2ZXJhbCBzZXR0aW5ncyBzY2F0dGVyZWQg
+YWxsIAphcm91bmQgdGhlIHBsYWNlLCBhbmQgdGhvc2UgaGFzIHRvIGJlIGNvbmZpZ3VyZWQgaW4g
+aGFybW9ueS4KVGhlIG9ubHkgcGxhY2UgaXMgdG8gZG8gdGhpcywgaXMgaW4gdGhlIG1hY2hpbmUg
+ZHJpdmVyLCB3aGloYyB0aGFuIGNhbiBidWlsZCB1cCAKJ3NjZW5hcmlvcycsIGFuZCBjb25maWd1
+cmUgdGhlIHRoaW5ncyBpbiBzeW5jaHJvbml6ZWQgbWFubmVyLgoKPiAKPiBMaWFtCgotLSAKUMOp
+dGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
