@@ -1,20 +1,24 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 2/4] OMAP: mcbsp - add smart idle
-	configuration API
-Date: Wed, 19 May 2010 15:15:54 +0300
-Message-ID: <201005191515.54723.peter.ujfalusi@nokia.com>
-References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-	<87tyq4lspw.fsf@deeprootsystems.com>
-	<1274265808.3240.101.camel@odin>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: ASoC: Dummy codec driver?
+Date: Wed, 19 May 2010 21:22:05 +0900
+Message-ID: <4BF3D7ED.8090805@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 62B2C1038ED
+Received: from mailout5.samsung.com (mailout5.samsung.com [203.254.224.35])
+	by alsa0.perex.cz (Postfix) with ESMTP id C6BE31038E8
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 14:16:32 +0200 (CEST)
-In-Reply-To: <1274265808.3240.101.camel@odin>
+	Wed, 19 May 2010 14:22:14 +0200 (CEST)
+Received: from epmmp2 (mailout5.samsung.com [203.254.224.35])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0L2O007DT2CTRJ@mailout1.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 19 May 2010 21:22:06 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L2O00G232CTHO@mmp2.samsung.com> for
+	alsa-devel@alsa-project.org; Wed, 19 May 2010 21:22:05 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,27 +28,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Kevin Hilman <khilman@deeprootsystems.com>, Tony Lindgren <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkbmVzZGF5IDE5IE1heSAyMDEwIDEzOjQzOjI4IGV4dCBMaWFtIEdpcmR3b29kIHdyb3Rl
-Ogo+IE9uIFR1ZSwgMjAxMC0wNS0xOCBhdCAxNjowMSAtMDcwMCwgS2V2aW4gSGlsbWFuIHdyb3Rl
-Ogo+ID4gTGlhbSBHaXJkd29vZCA8bHJnQHNsaW1sb2dpYy5jby51az4gd3JpdGVzOgo+ID4gPiBB
-ZGQgYSBzbWFsbCBBUEkgdG8gY29uZmlndXJlIE1jQlNQIHNtYXJ0IGlkbGUgbW9kZXMKPiA+ID4g
-dG8gY29uc2VydmUgcG93ZXIuCj4gPiAKPiA+IFdvdWxkIGJlIHVzZWZ1bCBoZXJlIHRvIGV4cGxh
-aW4gd2h5IGNsaWVudCBkcml2ZXJzIG5lZWQgdG8gY2hhbmdlCj4gPiBpZGxlIG1vZGVzLgo+IAo+
-IEkgdGhpbmsgUGV0ZXIgaGFzIGNvdmVyZWQgdGhpcyBpbiBvbmUgb2YgaGlzIHJlcGxpZXMuCj4g
-Cj4gPiBBbHNvLCB0aGlzIHBhdGNoIGlzIHRlbGxpbmcgbWUgdGhhdCBpdCdzIHRpbWUgdGhlIE1j
-QlNQIGlzIGNvbnZlcnRlZAo+ID4gb3ZlciB0byB0aGUgb21hcF9od21vZC9vbWFwX2RldmljZSBp
-bmZyYXN0cnVjdHVyZSB3aGVyZSB0aGlzIHR5cGUKPiA+IG9mIGZ1bmN0aW9uYWxpdHkgd291bGQg
-YWxyZWFkeSBiZSBwcm92aWRlZC4KPiA+IAo+ID4gTm90IG5lY2Vzc3NhcmlseSBhIHJlYXNvbiB0
-byBwcmV2ZW50IHRoaXMgcGF0Y2ggZm9yIG5vdywgYnV0IHRoaXMKPiA+IHdpbGwgYWxsIG5lZWQg
-dG8gYmUgY2hhbmdlZCB3aGVuIGNvbnZlcnRlZCB0byBod21vZC4KPiAKPiBPaywgSSB0aGluayBJ
-J2xsIGFjdHVhbGx5IGp1c3QgY29udmVydCBpdCB0byBod21vZCByYXRoZXIgdGhhbiBhZGRpbmcg
-YQo+IHNvb24gdG8gYmUgZGVwcmVjYXRlZCBBUEkuCgpEb2VzIHRoZSBod21vbiBzdXBwb3J0ZWQg
-b24gT01BUDEsIDIsIDMsIGFuZCA0PyBEbyB3ZSBoYXZlIHRoZSBuZWVkZWQgZnJhbWV3b3JrIApj
-b3ZlcmluZyBhbGwgT01BUCB2ZXJzaW9ucz8KCj4gCj4gVGhhbmtzCj4gCj4gTGlhbQoKLS0gClDD
-qXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+I have a target(The cpu is S5PC110) which doesn't have audio codec, but 
+it needs the audio device node to play audio at the TV via HDMI. The
+S5PC110 HDMI transmits itself to TV the audio data from I2S buffer, so i 
+have made dummy codec driver to create audio device node and to transmit
+audio data to I2S buffer.
+
+How do you think about the dummy codec driver?
