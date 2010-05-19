@@ -1,20 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 0/4] McBSP smart idle and DMA op mode
-	updates for ASoC
-Date: Wed, 19 May 2010 15:27:35 +0300
-Message-ID: <201005191527.35439.peter.ujfalusi@nokia.com>
-References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-	<20100519104209.GI4265@besouro.research.nokia.com>
-	<1274267231.3240.117.camel@odin>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH 1/2] ASoC: SDP4430: Add sdp4430 machine
+	driver
+Date: Wed, 19 May 2010 14:17:03 +0100
+Message-ID: <1274275023.3240.148.camel@odin>
+References: <1274143990-314-1-git-send-email-jorge.candelaria@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id A448F1038FB
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 14FF51038FB
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 14:28:01 +0200 (CEST)
-In-Reply-To: <1274267231.3240.117.camel@odin>
+	Wed, 19 May 2010 15:17:11 +0200 (CEST)
+Received: by wwd20 with SMTP id 20so616126wwd.38
+	for <alsa-devel@alsa-project.org>; Wed, 19 May 2010 06:17:09 -0700 (PDT)
+In-Reply-To: <1274143990-314-1-git-send-email-jorge.candelaria@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,49 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Misael Lopez Cruz <x0052729@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkbmVzZGF5IDE5IE1heSAyMDEwIDE0OjA3OjExIGV4dCBMaWFtIEdpcmR3b29kIHdyb3Rl
-Ogo+IE9uIFdlZCwgMjAxMC0wNS0xOSBhdCAxMzo0MiArMDMwMCwgRWR1YXJkbyBWYWxlbnRpbiB3
-cm90ZToKPiA+IE9uIFR1ZSwgTWF5IDE4LCAyMDEwIGF0IDEwOjEzOjEwUE0gKzAyMDAsIExpYW0g
-R2lyZHdvb2Qgd3JvdGU6Cj4gPiA+IFRoaXMgc2VyaWVzIGV4cGFuZHMgdGhlIE9NQVAgbWNic3Ag
-ZHJpdmVyIHRvIHN1cHBvcnQgY2hhbmdpbmcgaXQncyBETUEKPiA+ID4gb3BlcmF0aW5nIG1vZGUg
-YW5kIHNtYXJ0IGlkbGUgbW9kZSBmcm9tIGNsaWVudCBkcml2ZXJzLiBJdCdzIHByaW1hcmlseQo+
-ID4gPiBhaW1lZCBhdCBsb3dlcmluZyB0aGUgcG93ZXIgY29uc3VtcHRpb24gZm9yIE9NQVAgQVNv
-QyBkcml2ZXJzIGJ5Cj4gPiA+IHByb3ZpZGluZyBtZXRob2RzIHRvIGdhdGUgY2xvY2tzIG9uIHRo
-ZSBtY2JzcCBpbnRlcmZhY2UgYXQgcnVudGltZS4KPiA+ID4gCj4gPiA+IEkndmUgYWxzbyBhZGRl
-ZCBhIHBhdGNoIHRvIHJlbW92ZSB0aGUgbWNic3AgRE1BIG9wIG1vZGUgc3lzZnMgc2V0Cj4gPiA+
-IGZ1bmN0aW9uYWxpdHkuIEkgdGhpbmsgRE1BIG9wIG1vZGUgaXMgdmVyeSBzcGVjaWZpYyB0byB0
-aGUgbWNic3AKPiA+ID4gY2xpZW50IGRyaXZlciBfb25seV8gYW5kIHNob3VsZG4ndCByZWFsbHkg
-YmUgY2hhbmdlZCBieSB1c2Vyc3BhY2UuCj4gPiA+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB5b3Ug
-dXNlIHRoaXMgZmVhdHVyZSBhbmQgSSdsbCBkcm9wIHRoaXMgcGF0Y2guCj4gPiAKPiA+IFllYWgs
-IEknbSBub3Qgc3VyZSBpZiB0aGF0IHdvdWxkIGJlIHN0cm9uZyBlbm91Z2ggYXJndW1lbnQgdGhv
-dWdoLgo+ID4gVW5mb3J0dW5hdGVseSwgdGhpcyBkbWEgb3AgbW9kZSBhbHNvIGNvdXBsZXMgd2l0
-aCB0aGUgdXNhZ2Ugb2YgbWNic3AKPiA+IGludGVybmFsIGJ1ZmZlci4gV2hpY2ggaW4gdGhlIHZl
-cnkgZW5kIHdpbGwgbWVhbiBhIGNvbXByb21pc2UgYmV0d2Vlbgo+ID4gZGVsYXkgdnMuIHBtLCBh
-cyB5b3UgYXJlIHByb2JhYmx5IGF3YXJlLgo+ID4gCj4gPiBTbywgbGV0dGluZyB1c2Vyc3BhY2Ug
-dG8gdG9nZ2xlIHRoaXMgbW9kZSB3aWxsIGFsc28gbWVhbiB0aGV5IGNhbiBjaG9vc2UKPiA+IGJl
-dHdlZW4gcG0gZnJpZW5kbHkgKG9wIG1vZGUgd2l0aCBmcmFtZSBhbmQgc28gb24pIG9yIHNob3J0
-IGRlbGF5Cj4gPiBmcmllbmRseSAoZWxlbWVudCBtb2RlKS4KPiA+IAo+ID4gT2YgY291cnNlLCB0
-aGlzIG1pZ2h0IG5vdCBiZSB0aGUgYmVzdCB3YXkgb2YgY2hvb3NpbmcgaXQgdGhvdWdoLgo+IAo+
-IFRoZSBzeXNmcyBzZXQgaW50ZXJmYWNlIGltcGxpZXMgdXNlcnNwYWNlIGhhdmluZyBrbm93bGVk
-Z2Ugb2YgZHJpdmVyCj4gY2FwYWJpbGl0aWVzIGFuZCBjb25maWd1cmF0aW9uIGluIG9yZGVyIHRv
-IHNhZmVseSB0b2dnbGUgYmV0d2VlbiB0aGUgdHdvCj4gRE1BIG1vZGVzLiBJbW8sIHRoZSBtY2Jz
-cCBjbGllbnQgZHJpdmVyIHNob3VsZCBiZSB0aGUgb25seSBlbnRpdHkKPiBjb25maWd1cmluZyBp
-dCdzIERNQSBtb2RlcyAoaW4gYSBzYWZlIG1hbm5lcikgZGVwZW5kaW5nIG9uIHRoZSB1c2UgY2Fz
-ZS4KCkZ1cnRoZXJtb3JlLCBpZiB0aGVyZSBpcyBhIG5lZWQgZm9yICdVc2UgQ2FzZXMnLCB0aGFu
-IHRoZSBtYWNoaW5lIGRyaXZlciBjYW4gCnByb3ZpZGUgdXNlciBjb250cm9sIHRvIHN3aXRjaCBi
-ZXR3ZWVuIHRoZW0uClRoZSB0aGluZyBpcyB0aGF0IGluIG1vc3QgY2FzZXMgdGhlc2UgYXJlIHRy
-aXZpYWwsIGFuZCBtb3N0bHkgdGhlIHNhbWUgc2V0dGluZ3MsIApidXQgaWYgeW91IHRocm93IGEg
-Y29kZWMgbGlrZSB0aGUgdGx2MzIwZGFjMzMgaW50byB0aGUgbWl4LCB3aGljaCBoYXMgaXQncyBv
-d24gCkZJRk8sIHRoYW4gdGhpbmdzIGdldHMgY29tcGxpY2F0ZWQuClRoZSB1c2VyICh0aGUgcmVh
-bCBvbmUsIG5vdCB0aGUgZGV2ZWxvcGVyKSBoYXMgc2V2ZXJhbCBzZXR0aW5ncyBzY2F0dGVyZWQg
-YWxsIAphcm91bmQgdGhlIHBsYWNlLCBhbmQgdGhvc2UgaGFzIHRvIGJlIGNvbmZpZ3VyZWQgaW4g
-aGFybW9ueS4KVGhlIG9ubHkgcGxhY2UgaXMgdG8gZG8gdGhpcywgaXMgaW4gdGhlIG1hY2hpbmUg
-ZHJpdmVyLCB3aGloYyB0aGFuIGNhbiBidWlsZCB1cCAKJ3NjZW5hcmlvcycsIGFuZCBjb25maWd1
-cmUgdGhlIHRoaW5ncyBpbiBzeW5jaHJvbml6ZWQgbWFubmVyLgoKPiAKPiBMaWFtCgotLSAKUMOp
-dGVyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, 2010-05-17 at 19:53 -0500, Jorge Eduardo Candelaria wrote:
+> From: Misael Lopez Cruz <x0052729@ti.com>
+> 
+> Add ASoC support for TI SDP4430.
+> 
+> Signed-off-by: Misael Lopez Cruz <x0052729@ti.com>
+> Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
+> Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+> ---
+>  sound/soc/omap/Kconfig   |    9 ++
+>  sound/soc/omap/Makefile  |    2 +
+>  sound/soc/omap/sdp4430.c |  228 ++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 239 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/soc/omap/sdp4430.c
+> 
+
+Applied. Btw, I had to add the following to remove a build warning.
+
+commit d8b55d2cd00df4d599985440fd75b38d153bffcb
+Author: Liam Girdwood <lrg@slimlogic.co.uk>
+Date:   Wed May 19 14:14:51 2010 +0100
+
+    ASoC: sdp4430 - add sdp4430 pcm ops to DAI.
+    
+    Fix build warning about unused ops and add ops
+    to the sdp4430 DAI link.
+    
+    Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
+index 3a0c198..4ebbde6 100644
+--- a/sound/soc/omap/sdp4430.c
++++ b/sound/soc/omap/sdp4430.c
+@@ -167,6 +167,7 @@ static struct snd_soc_dai_link sdp4430_dai = {
+        .cpu_dai = &omap_mcpdm_dai,
+        .codec_dai = &twl6040_dai,
+        .init = sdp4430_twl6040_init,
++       .ops = &sdp4430_ops,
+ };
+ 
+ /* Audio machine driver */
+
+
+Thanks
+
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
