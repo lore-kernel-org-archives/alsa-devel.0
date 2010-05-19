@@ -1,31 +1,52 @@
-From: Kevin Hilman <khilman@deeprootsystems.com>
-Subject: Re: [alsa-devel] [PATCH 2/4] OMAP: mcbsp - add smart idle configuration API
-Date: Tue, 18 May 2010 16:01:47 -0700
-Message-ID: <87tyq4lspw.fsf@deeprootsystems.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [PATCH 0/4] McBSP smart idle and DMA op mode
+	updates for ASoC
+Date: Wed, 19 May 2010 08:13:25 +0300
+Message-ID: <20100519081325.6e341075.jhnikula@gmail.com>
 References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-	<1274213594-26554-3-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1274213594-26554-3-git-send-email-lrg@slimlogic.co.uk> (Liam Girdwood's message of "Tue\, 18 May 2010 21\:13\:12 +0100")
-Sender: linux-omap-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f217.google.com (mail-ew0-f217.google.com
+	[209.85.219.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id BC531244C0
+	for <alsa-devel@alsa-project.org>;
+	Wed, 19 May 2010 07:13:27 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so2076003ewy.4
+	for <alsa-devel@alsa-project.org>; Tue, 18 May 2010 22:13:27 -0700 (PDT)
+In-Reply-To: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood <lrg@slimlogic.co.uk> writes:
+On Tue, 18 May 2010 21:13:10 +0100
+Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 
-> Add a small API to configure McBSP smart idle modes
-> to conserve power.
+> I've also added a patch to remove the mcbsp DMA op mode sysfs set functionality.
+> I think DMA op mode is very specific to the mcbsp client driver _only_ and
+> shouldn't really be changed by userspace. Please let me know if you use this
+> feature and I'll drop this patch.
+> 
+I've used to say that the DMA op mode is more like use-case not machine
+specific but I'm not sure is my point valid onemore. I've used to think
+that low-latency processing would need accurate DMA pointer (op
+mode == element) while mp3 playback would need low power consumption
+(op mode == threshold).
 
-Would be useful here to explain why client drivers need to change
-idle modes.
+Peter: what's the status today how well can we do low-latency
+processing with threshold mode? IRCC, with your FIFO delay query
+patches, can we estimate the DMA pointer position with enough accuracy?
 
-Also, this patch is telling me that it's time the McBSP is converted
-over to the omap_hwmod/omap_device infrastructure where this type
-of functionality would already be provided.
 
-Not necesssarily a reason to prevent this patch for now, but this
-will all need to be changed when converted to hwmod.
-
-Kevin
+-- 
+Jarkko
