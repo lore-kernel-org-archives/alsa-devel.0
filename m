@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH - alsa-lib] tlv: Check dB range only within
-	the control's volume range
-Date: Wed, 19 May 2010 14:33:11 +0300
-Message-ID: <201005191433.11353.peter.ujfalusi@nokia.com>
-References: <1274249966-31030-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201005191028.55258.peter.ujfalusi@nokia.com>
-	<alpine.LNX.2.00.1005191239530.6856@eeebox2.perex-int.cz>
+Subject: Re: [PATCH 0/4] McBSP smart idle and DMA op mode
+	updates for ASoC
+Date: Wed, 19 May 2010 14:36:51 +0300
+Message-ID: <201005191436.52149.peter.ujfalusi@nokia.com>
+References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
+	<201005191131.58167.peter.ujfalusi@nokia.com>
+	<20100519105227.GL4265@besouro.research.nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4C1B824641
+	by alsa0.perex.cz (Postfix) with ESMTP id ABA672464D
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 13:33:30 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.1005191239530.6856@eeebox2.perex-int.cz>
+	Wed, 19 May 2010 13:37:01 +0200 (CEST)
+In-Reply-To: <20100519105227.GL4265@besouro.research.nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 19 May 2010 13:42:03 ext Jaroslav Kysela wrote:
-> I forgot that we carry the control value ranges in the DB_RANGE
-> container. I applied your patch to alsa-lib's GIT tree. Thanks for it and
-> for your detailed analysis.
+On Wednesday 19 May 2010 13:52:27 Valentin Eduardo (Nokia-D/Helsinki) wrote:
+> > The DMA pointer is easy, and it was know before as well, but according =
+to
+> > my tests, the McBSP FIFO caused delay reporting is fairly accurate. I'll
+> > ask my users, if they have done some additional tests.
+> =
 
-Thank you!
+> OK. fair enough. What if you really want to avoid the delay at all?
 
-I already prepared a backup plan to override the original TLV container, wh=
-ich =
+You can't. the McBSP FIFO can not be bypassed.
+The only thing one can do is to take it into consideration.
 
-is a bit ugly, but could achieve identical results without change in alsa-l=
-ib.
-But with the fix in alsa-lib I don't need to convince the ASoC guys to acce=
-pt =
+-- =
 
-that workaround.
-
-Thanks again,
 P=E9ter
