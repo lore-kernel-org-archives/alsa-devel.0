@@ -1,18 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH - alsa-lib] tlv: Check dB range only within
- the control's volume range
-Date: Wed, 19 May 2010 08:55:40 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1005190854200.6856@eeebox2.perex-int.cz>
-References: <1274249966-31030-1-git-send-email-peter.ujfalusi@nokia.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Remove CPVSS supply
+Date: Wed, 19 May 2010 09:55:52 +0300
+Message-ID: <201005190955.52499.peter.ujfalusi@nokia.com>
+References: <1274211085-20261-1-git-send-email-jhnikula@gmail.com>
+	<F80267346F10C541946CBE8909F1C39E26E7BF8C34@NOK-EUMSG-02.mgdnok.nokia.com>
+	<20100519095345.a0fdcd52.jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5256824533
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id AD49724545
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 08:55:41 +0200 (CEST)
-In-Reply-To: <1274249966-31030-1-git-send-email-peter.ujfalusi@nokia.com>
+	Wed, 19 May 2010 08:55:57 +0200 (CEST)
+In-Reply-To: <20100519095345.a0fdcd52.jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "Koskinen Ilkka (Nokia-D/Tampere)" <ilkka.koskinen@nokia.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 19 May 2010, Peter Ujfalusi wrote:
+On Wednesday 19 May 2010 09:53:45 ext Jarkko Nikula wrote:
+> On Wed, 19 May 2010 08:51:13 +0200
+> =
 
-> The DB_RANGE need to be used on some HW, since the gain on
-> volume control is not continuous, and has to be divided into
-> several sub DB_SCALE ranges.
-> ASoC has a feature to override the HW default volume range,
-> and in this case when the volume range is less than the
-> HW maximum we do not need to go through the whole DB_RANGE,
-> but we need to stop where the kcontrol's maximum tell us.
->
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> <ilkka.koskinen@nokia.com> wrote:
+> > Hi,
+> > =
 
-Unfortunately, it does not look like a clean way in my eyes. If the driver 
-pushes some limits to the control (volume) range, it should do it also 
-for TLVs.
+> > On Tue, 18 May 2010, Jarkko Nikila wrote:
+> > >I believe there is no need for the CPVSS supply as this pin is for
+> > >decoupling capacitor for the internal charge pump.
+> > =
 
- 					Jaroslav
+> > Yes, you're right. I have a vague feeling that I put it there due to
+> > some previous comments...
+> > =
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+> > Anyway, I believe tpa6140's HPVdd is similar case and, thus, not
+> > needed either. Would you like to make a patch for that or shall I do
+> > it?
+> =
+
+> I can do it and repost as it makes the patch even more simpler :-)
+
+Thanks Jarkko.
+You can add my Acked-by to the new patch.
+
+-- =
+
+P=E9ter
