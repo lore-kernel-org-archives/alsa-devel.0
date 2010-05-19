@@ -1,20 +1,20 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 0/4] McBSP smart idle and DMA op mode
-	updates for ASoC
-Date: Wed, 19 May 2010 15:09:06 +0300
-Message-ID: <201005191509.06739.peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH 2/4] OMAP: mcbsp - add smart idle
+	configuration API
+Date: Wed, 19 May 2010 15:15:54 +0300
+Message-ID: <201005191515.54723.peter.ujfalusi@nokia.com>
 References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
-	<201005191436.52149.peter.ujfalusi@nokia.com>
-	<20100519114640.GP4265@besouro.research.nokia.com>
+	<87tyq4lspw.fsf@deeprootsystems.com>
+	<1274265808.3240.101.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 33BDB1038EA
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 62B2C1038ED
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 14:09:18 +0200 (CEST)
-In-Reply-To: <20100519114640.GP4265@besouro.research.nokia.com>
+	Wed, 19 May 2010 14:16:32 +0200 (CEST)
+In-Reply-To: <1274265808.3240.101.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,47 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Tony Lindgren <tony@atomide.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ext Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Kevin Hilman <khilman@deeprootsystems.com>, Tony Lindgren <tony@atomide.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 19 May 2010 14:46:40 Valentin Eduardo (Nokia-D/Helsinki) wrote:
-> On Wed, May 19, 2010 at 01:36:51PM +0200, Ujfalusi Peter (Nokia-D/Tampere=
-) =
-
-wrote:
-> > On Wednesday 19 May 2010 13:52:27 Valentin Eduardo (Nokia-D/Helsinki) w=
-rote:
-> > > > The DMA pointer is easy, and it was know before as well, but
-> > > > according to my tests, the McBSP FIFO caused delay reporting is
-> > > > fairly accurate. I'll ask my users, if they have done some
-> > > > additional tests.
-> > > =
-
-> > > OK. fair enough. What if you really want to avoid the delay at all?
-> > =
-
-> > You can't. the McBSP FIFO can not be bypassed.
-> > The only thing one can do is to take it into consideration.
-> =
-
-> hmmm well, you can still do not use the fifo completely. Use only partial=
-ly
-> depending on latency requirement would still be possible.
-
-Ah, you mean the idea, where in DMA completion interrupt we configure the M=
-cBSP =
-
-threshold to maximum, and on McBSP FIFO empty interrupt, we configurre back=
- the =
-
-threshold to what the level we want to use from McBSP, and start the DMA?
-This all has to be done 'manually', and if there is _any_ latency in the ke=
-rnel, =
-
-than we have channel switch, glitch, pause, and whatnot..
-I remember, we tried that, and well, did not worked that reliable.
-
--- =
-
-P=E9ter
+T24gV2VkbmVzZGF5IDE5IE1heSAyMDEwIDEzOjQzOjI4IGV4dCBMaWFtIEdpcmR3b29kIHdyb3Rl
+Ogo+IE9uIFR1ZSwgMjAxMC0wNS0xOCBhdCAxNjowMSAtMDcwMCwgS2V2aW4gSGlsbWFuIHdyb3Rl
+Ogo+ID4gTGlhbSBHaXJkd29vZCA8bHJnQHNsaW1sb2dpYy5jby51az4gd3JpdGVzOgo+ID4gPiBB
+ZGQgYSBzbWFsbCBBUEkgdG8gY29uZmlndXJlIE1jQlNQIHNtYXJ0IGlkbGUgbW9kZXMKPiA+ID4g
+dG8gY29uc2VydmUgcG93ZXIuCj4gPiAKPiA+IFdvdWxkIGJlIHVzZWZ1bCBoZXJlIHRvIGV4cGxh
+aW4gd2h5IGNsaWVudCBkcml2ZXJzIG5lZWQgdG8gY2hhbmdlCj4gPiBpZGxlIG1vZGVzLgo+IAo+
+IEkgdGhpbmsgUGV0ZXIgaGFzIGNvdmVyZWQgdGhpcyBpbiBvbmUgb2YgaGlzIHJlcGxpZXMuCj4g
+Cj4gPiBBbHNvLCB0aGlzIHBhdGNoIGlzIHRlbGxpbmcgbWUgdGhhdCBpdCdzIHRpbWUgdGhlIE1j
+QlNQIGlzIGNvbnZlcnRlZAo+ID4gb3ZlciB0byB0aGUgb21hcF9od21vZC9vbWFwX2RldmljZSBp
+bmZyYXN0cnVjdHVyZSB3aGVyZSB0aGlzIHR5cGUKPiA+IG9mIGZ1bmN0aW9uYWxpdHkgd291bGQg
+YWxyZWFkeSBiZSBwcm92aWRlZC4KPiA+IAo+ID4gTm90IG5lY2Vzc3NhcmlseSBhIHJlYXNvbiB0
+byBwcmV2ZW50IHRoaXMgcGF0Y2ggZm9yIG5vdywgYnV0IHRoaXMKPiA+IHdpbGwgYWxsIG5lZWQg
+dG8gYmUgY2hhbmdlZCB3aGVuIGNvbnZlcnRlZCB0byBod21vZC4KPiAKPiBPaywgSSB0aGluayBJ
+J2xsIGFjdHVhbGx5IGp1c3QgY29udmVydCBpdCB0byBod21vZCByYXRoZXIgdGhhbiBhZGRpbmcg
+YQo+IHNvb24gdG8gYmUgZGVwcmVjYXRlZCBBUEkuCgpEb2VzIHRoZSBod21vbiBzdXBwb3J0ZWQg
+b24gT01BUDEsIDIsIDMsIGFuZCA0PyBEbyB3ZSBoYXZlIHRoZSBuZWVkZWQgZnJhbWV3b3JrIApj
+b3ZlcmluZyBhbGwgT01BUCB2ZXJzaW9ucz8KCj4gCj4gVGhhbmtzCj4gCj4gTGlhbQoKLS0gClDD
+qXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
