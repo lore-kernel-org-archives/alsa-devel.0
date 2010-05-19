@@ -1,19 +1,21 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH - alsa-lib] tlv: Check dB range only within
-	the control's volume range
-Date: Wed, 19 May 2010 10:28:55 +0300
-Message-ID: <201005191028.55258.peter.ujfalusi@nokia.com>
-References: <1274249966-31030-1-git-send-email-peter.ujfalusi@nokia.com>
-	<alpine.LNX.2.00.1005190854200.6856@eeebox2.perex-int.cz>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: [PATCHv3] ASoC: tpa6130a2: Remove CPVSS and HPVdd
+	supplies
+Date: Wed, 19 May 2010 10:52:28 +0300
+Message-ID: <1274255548-4514-1-git-send-email-jhnikula@gmail.com>
+References: <1274254212-31786-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id F17B324560
+Received: from mail-ew0-f217.google.com (mail-ew0-f217.google.com
+	[209.85.219.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5D26D24579
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 09:30:18 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.1005190854200.6856@eeebox2.perex-int.cz>
+	Wed, 19 May 2010 09:52:33 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so2106102ewy.4
+	for <alsa-devel@alsa-project.org>; Wed, 19 May 2010 00:52:32 -0700 (PDT)
+In-Reply-To: <1274254212-31786-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,95 +25,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Ilkka Koskinen <ilkka.koskinen@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 19 May 2010 09:55:40 ext Jaroslav Kysela wrote:
-> On Wed, 19 May 2010, Peter Ujfalusi wrote:
-> > The DB_RANGE need to be used on some HW, since the gain on
-> > volume control is not continuous, and has to be divided into
-> > several sub DB_SCALE ranges.
-> > ASoC has a feature to override the HW default volume range,
-> > and in this case when the volume range is less than the
-> > HW maximum we do not need to go through the whole DB_RANGE,
-> > but we need to stop where the kcontrol's maximum tell us.
-> > =
+These pins are for decoupling capacitors for the internal charge pumps
+in TPA6130A2 and TPA6140A2 and not for connecting external supply.
 
-> > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> =
+Thanks to Eduardo Valentin <eduardo.valentin@nokia.com> for pointing out the
+issue with TPA6130A2 and Ilkka Koskinen <ilkka.koskinen@nokia.com> with
+TPA6140A2.
 
-> Unfortunately, it does not look like a clean way in my eyes. If the driver
-> pushes some limits to the control (volume) range, it should do it also
-> for TLVs.
+Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Reviewed-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
+---
+v3:
+- Removed unused variable i from tpa6130a2_probe
 
-My thinking was that the snd_tlv_get_dB_range SNDRV_CTL_TLVT_DB_RANGE case =
+v2:
+- I took freedom to add ack and reviewed by lines as Peter and Ilkka gave
+  those to v1
+- HPVdd for the TPA6140A2 is also removed as it's for decoupling capacitor
+  as well
+- No need to use regulator_bulk API as there s only single supply for both
+  supported chips now
+---
+ sound/soc/codecs/tpa6130a2.c |   52 ++++++++++++++---------------------------
+ 1 files changed, 18 insertions(+), 34 deletions(-)
 
-should obey the control's range provided by the driver, similarly how the =
-
-SNDRV_CTL_TLVT_DB_SCALE is using the rangemax, rangemin.
-In case of SNDRV_CTL_TLVT_DB_RANGE, we should not go beyond the control's =
-
-rangemax.
-
-In this way both of the following volume control is going to be handled =
-
-correctly:
-
-1.
-static DECLARE_TLV_DB_SCALE(dac_digivol_tlv, -6350, 50, 0);
-
-static const struct snd_kcontrol_new dac33_snd_controls[] =3D {
-	SOC_DOUBLE_R_TLV("DAC Digital Playback Volume",
-		DAC33_LDAC_DIG_VOL_CTRL, DAC33_RDAC_DIG_VOL_CTRL,
-		0, 0x7f, 1, dac_digivol_tlv),
-};
-
-Original range (127): -63.5 .. 0 dB
-Limited range  (100): -63.5 .. -13.5 dB
-
-2.
-static const unsigned int tpa6140_tlv[] =3D {
-	TLV_DB_RANGE_HEAD(3),
-	0, 8, TLV_DB_SCALE_ITEM(-5900, 400, 0),
-	9, 16, TLV_DB_SCALE_ITEM(-2500, 200, 0),
-	17, 31, TLV_DB_SCALE_ITEM(-1000, 100, 0),
-};
-
-static const struct snd_kcontrol_new tpa6140a2_controls[] =3D {
-	SOC_SINGLE_EXT_TLV("TPA6140A2 Headphone Playback Volume",
-		       TPA6130A2_REG_VOL_MUTE, 1, 0x1f, 0,
-		       tpa6130a2_get_volsw, tpa6130a2_put_volsw,
-		       tpa6140_tlv),
-};
-
-Original range (31): -59 .. 4 dB
-Limited range  (21): -59 .. -6 dB
-Limited range  (16): -59 .. -11 dB
-
-In case of DB_SCALE in theory the maximum gain depends on the maximum volum=
-e =
-
-possible on the control.
-When the gain is not linear, it has to divided into sub DB_SCALE sections t=
-o get =
-
-accurate mapping.
-Now, if the kernel code for the limiting has to do more than changing the =
-
-maximum volume, than it means that it _has_ to rewrite the TLV table in a c=
-lever =
-
-way, or provide a new one which fits with the limited volume.
-Rewriting the TLV table taking into account all possible cases is not that =
-safe, =
-
-and I'm sure there could be still some corners, where it would fail.
-
-I think the patch provides uniform, and error prone way of handling this =
-
-situation, while not breaking any existing parts.
-
--- =
-
-P=E9ter
+diff --git a/sound/soc/codecs/tpa6130a2.c b/sound/soc/codecs/tpa6130a2.c
+index 221bb90..100a747 100644
+--- a/sound/soc/codecs/tpa6130a2.c
++++ b/sound/soc/codecs/tpa6130a2.c
+@@ -36,22 +36,11 @@
+ 
+ static struct i2c_client *tpa6130a2_client;
+ 
+-#define TPA6130A2_NUM_SUPPLIES 2
+-static const char *tpa6130a2_supply_names[TPA6130A2_NUM_SUPPLIES] = {
+-	"CPVSS",
+-	"Vdd",
+-};
+-
+-static const char *tpa6140a2_supply_names[TPA6130A2_NUM_SUPPLIES] = {
+-	"HPVdd",
+-	"AVdd",
+-};
+-
+ /* This struct is used to save the context */
+ struct tpa6130a2_data {
+ 	struct mutex mutex;
+ 	unsigned char regs[TPA6130A2_CACHEREGNUM];
+-	struct regulator_bulk_data supplies[TPA6130A2_NUM_SUPPLIES];
++	struct regulator *supply;
+ 	int power_gpio;
+ 	unsigned char power_state;
+ 	enum tpa_model id;
+@@ -136,11 +125,10 @@ static int tpa6130a2_power(int power)
+ 		if (data->power_gpio >= 0)
+ 			gpio_set_value(data->power_gpio, 1);
+ 
+-		ret = regulator_bulk_enable(ARRAY_SIZE(data->supplies),
+-					    data->supplies);
++		ret = regulator_enable(data->supply);
+ 		if (ret != 0) {
+ 			dev_err(&tpa6130a2_client->dev,
+-				"Failed to enable supplies: %d\n", ret);
++				"Failed to enable supply: %d\n", ret);
+ 			goto exit;
+ 		}
+ 
+@@ -161,11 +149,10 @@ static int tpa6130a2_power(int power)
+ 		if (data->power_gpio >= 0)
+ 			gpio_set_value(data->power_gpio, 0);
+ 
+-		ret = regulator_bulk_disable(ARRAY_SIZE(data->supplies),
+-					     data->supplies);
++		ret = regulator_disable(data->supply);
+ 		if (ret != 0) {
+ 			dev_err(&tpa6130a2_client->dev,
+-				"Failed to disable supplies: %d\n", ret);
++				"Failed to disable supply: %d\n", ret);
+ 			goto exit;
+ 		}
+ 
+@@ -412,7 +399,8 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
+ 	struct device *dev;
+ 	struct tpa6130a2_data *data;
+ 	struct tpa6130a2_platform_data *pdata;
+-	int i, ret;
++	const char *regulator;
++	int ret;
+ 
+ 	dev = &client->dev;
+ 
+@@ -454,25 +442,21 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
+ 	}
+ 
+ 	switch (data->id) {
++	default:
++		dev_warn(dev, "Unknown TPA model (%d). Assuming 6130A2\n",
++			 pdata->id);
+ 	case TPA6130A2:
+-		for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
+-			data->supplies[i].supply = tpa6130a2_supply_names[i];
++		regulator = "Vdd";
+ 		break;
+ 	case TPA6140A2:
+-		for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
+-			data->supplies[i].supply = tpa6140a2_supply_names[i];;
++		regulator = "AVdd";
+ 		break;
+-	default:
+-		dev_warn(dev, "Unknown TPA model (%d). Assuming 6130A2\n",
+-			 pdata->id);
+-		for (i = 0; i < ARRAY_SIZE(data->supplies); i++)
+-			data->supplies[i].supply = tpa6130a2_supply_names[i];
+ 	}
+ 
+-	ret = regulator_bulk_get(dev, ARRAY_SIZE(data->supplies),
+-				 data->supplies);
+-	if (ret != 0) {
+-		dev_err(dev, "Failed to request supplies: %d\n", ret);
++	data->supply = regulator_get(dev, regulator);
++	if (IS_ERR(data->supply)) {
++		ret = PTR_ERR(data->supply);
++		dev_err(dev, "Failed to request supply: %d\n", ret);
+ 		goto err_regulator;
+ 	}
+ 
+@@ -495,7 +479,7 @@ static int __devinit tpa6130a2_probe(struct i2c_client *client,
+ 	return 0;
+ 
+ err_power:
+-	regulator_bulk_free(ARRAY_SIZE(data->supplies), data->supplies);
++	regulator_put(data->supply);
+ err_regulator:
+ 	if (data->power_gpio >= 0)
+ 		gpio_free(data->power_gpio);
+@@ -516,7 +500,7 @@ static int __devexit tpa6130a2_remove(struct i2c_client *client)
+ 	if (data->power_gpio >= 0)
+ 		gpio_free(data->power_gpio);
+ 
+-	regulator_bulk_free(ARRAY_SIZE(data->supplies), data->supplies);
++	regulator_put(data->supply);
+ 
+ 	kfree(data);
+ 	tpa6130a2_client = NULL;
+-- 
+1.7.1
