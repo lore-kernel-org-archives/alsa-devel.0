@@ -1,16 +1,19 @@
-From: Tyler Conant <tconant@taser.com>
-Subject: First 50 milliseconds of audio clipping with dmix
-Date: Wed, 19 May 2010 10:05:33 -0700
-Message-ID: <FB2A216B-BAA3-4E07-828A-218F9855D418@taser.com>
+From: Bernhard Walle <bernhard@bwalle.de>
+Subject: [ice1712] Word Clock with Delta1010 E
+Date: Wed, 19 May 2010 21:00:38 +0200
+Message-ID: <4BF43556.3050505@bwalle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from email1.taser.com (email1.taser.com [69.28.131.91])
-	by alsa0.perex.cz (Postfix) with ESMTP id 95EC2103969
+Received: from smtprelay03.ispgateway.de (smtprelay03.ispgateway.de
+	[80.67.18.15]) by alsa0.perex.cz (Postfix) with ESMTP id 78FB21038F5
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 19:05:36 +0200 (CEST)
-Content-Language: en-US
+	Wed, 19 May 2010 21:00:42 +0200 (CEST)
+Received: from [83.171.173.183] (helo=galilei.fritz.box)
+	by smtprelay03.ispgateway.de with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.68) (envelope-from <bernhard@bwalle.de>) id 1OEoVS-0005ms-HH
+	for alsa-devel@alsa-project.org; Wed, 19 May 2010 21:00:38 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,119 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm trying to use dmix on an OMAP processor. I'm experiencing the first 50 ms of the sample getting clipped. When I aplay directly to the hw:0 I don't get the clipping. The difference I see between the alsa configuration between dmix and hw:0 is the start_threshold, stop_threshold and silence_size. When it's direct to hw:0 the start and stop threshold are equal to the buffer size. For dmix the start threshold is 1 and the stop threshold is 1445199872. Is this dmix which is setting the start and stop or is this aplay. I'm only guessing this is the reason why the first part is clipping. The only bug which seem similar is http://bugs.gentoo.org/show_bug.cgi?id=218641 and it's already been closed out. I'm using alsa lib 1.0.23
+Hi,
+
+we have a problem with the word clock input of the Delta 1010 E. At
+first: I modified the source code of envy24control to accept the Delta
+1010 E as subdevice so that it allows to set the word clock. I'll post
+the patch after it works with the driver. However, the problem also
+exists when I use plain alsamixer or amixer.
+
+With the unmodified driver, I'm able to turn word clock on but whenever
+I record something, the arecord program (or Audacity) doesn't get any
+samples.
+
+With OSS (which we're using now but we're trying to switch to ALSA) my
+colleague Markus Prosch made a patch with lots of try & error that made
+the word clock working:
+
+http://opensound.hg.sourceforge.net/hgweb/opensound/opensound/rev/6a4bad6e7422
+
+When I try to "port" that patch to ALSA, the behaviour changes: The
+recording works, but the sample rate is too low so that it sounds quite
+strange.
+
+In any case: In the same hardware setup, it works flawlessly with OSS.
+Also, we had no problem with the older Delta 1010. It seems to be an
+incompatible change (or bug ;)) in revision E.
+
+Are there any devs here that know the hardware better and could help me
+in debugging that issue? Without any deeper sound driver knowledge and
+without any data sheet, that's quite hard for me.
+
+Thanks for your help!
 
 
-with hw:0
+Regards,
+Bernhard
 
-Audio_Prompts # aplay -v -D hw:0 Click03.wav 
-Playing WAVE 'Click03.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
-Hardware PCM card 0 'TWL4030' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 22052
-  period_size  : 5513
-  period_time  : 125011
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 5513
-  period_event : 0
-  start_threshold  : 22052
-  stop_threshold   : 22052
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1445199872
-  appl_ptr     : 0
-  hw_ptr       : 0
-/opt/axonapp/Audio_Prompts # 
-
-
-With dmix:
-
-/Audio_Prompts # aplay -v Click03.wav 
-Playing WAVE 'Click03.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
-Plug PCM: Direct Stream Mixing PCM
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 22052
-  period_size  : 5513
-  period_time  : 125011
-  tstamp_mode  : NONE
-  period_step  : 1
-  avail_min    : 5513
-  period_event : 0
-  start_threshold  : 22052
-  stop_threshold   : 22052
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1445199872
-Hardware PCM card 0 'TWL4030' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 22052
-  period_size  : 5513
-  period_time  : 125011
-  tstamp_mode  : ENABLE
-  period_step  : 1
-  avail_min    : 5513
-  period_event : 0
-  start_threshold  : 1
-  stop_threshold   : 1445199872
-  silence_threshold: 0
-  silence_size : 1445199872
-  boundary     : 1445199872
-  appl_ptr     : 0
-  hw_ptr       : 0
-/opt/axonapp/Audio_Prompts # 
-
-
-asound.conf:
-pcm.dmixer {
-  type dmix
-  ipc_key 2048
-  ipc_key_add_uid true
-  slave {
-
-      channels 1
-      pcm hw:0
-      rate 44100
-      period_time 125011
-      period_size 5513
-      buffer_size 22052
-  }
-}
-
-pcm.asymed {
-  type asym
-  playback.pcm "dmixer"
-  capture.pcm "hw:0,0"
-}
-
-pcm.!default {
-  type plug
-  slave.pcm "asymed"
-}
+PS: Please keep me in Cc since I'm not on the list.
