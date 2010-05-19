@@ -1,21 +1,22 @@
 From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [PATCH 0/4] McBSP smart idle and DMA op mode
-	updates for ASoC
-Date: Wed, 19 May 2010 08:13:25 +0300
-Message-ID: <20100519081325.6e341075.jhnikula@gmail.com>
+Subject: Re: [PATCH 2/4] OMAP: mcbsp - add smart idle
+	configuration API
+Date: Wed, 19 May 2010 08:22:45 +0300
+Message-ID: <20100519082245.b51fc5bc.jhnikula@gmail.com>
 References: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
+	<1274213594-26554-3-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ew0-f217.google.com (mail-ew0-f217.google.com
 	[209.85.219.217])
-	by alsa0.perex.cz (Postfix) with ESMTP id BC531244C0
+	by alsa0.perex.cz (Postfix) with ESMTP id 07DA6244DE
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 07:13:27 +0200 (CEST)
-Received: by ewy9 with SMTP id 9so2076003ewy.4
-	for <alsa-devel@alsa-project.org>; Tue, 18 May 2010 22:13:27 -0700 (PDT)
-In-Reply-To: <1274213594-26554-1-git-send-email-lrg@slimlogic.co.uk>
+	Wed, 19 May 2010 07:22:48 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so2077173ewy.4
+	for <alsa-devel@alsa-project.org>; Tue, 18 May 2010 22:22:48 -0700 (PDT)
+In-Reply-To: <1274213594-26554-3-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,23 +30,32 @@ To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 18 May 2010 21:13:10 +0100
+On Tue, 18 May 2010 21:13:12 +0100
 Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 
-> I've also added a patch to remove the mcbsp DMA op mode sysfs set functionality.
-> I think DMA op mode is very specific to the mcbsp client driver _only_ and
-> shouldn't really be changed by userspace. Please let me know if you use this
-> feature and I'll drop this patch.
+> Add a small API to configure McBSP smart idle modes
+> to conserve power.
 > 
-I've used to say that the DMA op mode is more like use-case not machine
-specific but I'm not sure is my point valid onemore. I've used to think
-that low-latency processing would need accurate DMA pointer (op
-mode == element) while mp3 playback would need low power consumption
-(op mode == threshold).
+> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> ---
+>  arch/arm/plat-omap/include/plat/mcbsp.h |   15 ++++
+>  arch/arm/plat-omap/mcbsp.c              |  122 +++++++++++++++++++++++++++++++
+>  2 files changed, 137 insertions(+), 0 deletions(-)
+> 
+> +#define MCBSP_IDLE_FORCE	0
+> +#define MCBSP_IDLE_NONE		1
+> +#define MCBSP_IDLE_SMART	2
+> +
+...
+> +int omap_mcbsp_set_idle_smart(unsigned int id, unsigned int clk_activity,
+> +		unsigned int wake);
+> +int omap_mcbsp_set_idle_none(unsigned int id);
+> +int omap_mcbsp_set_idle_force(unsigned int id);
+> +int omap_mcbsp_get_idle_mode(unsigned int id);
 
-Peter: what's the status today how well can we do low-latency
-processing with threshold mode? IRCC, with your FIFO delay query
-patches, can we estimate the DMA pointer position with enough accuracy?
+Only minor comment but IMO single set function looks better. E.g.
+
+omap_mcbsp_set_idle_mode(unsigned int id, int mode);
 
 
 -- 
