@@ -1,20 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tpa6130a2: Define output pins with
- SND_SOC_DAPM_OUTPUT
-Date: Wed, 19 May 2010 07:56:31 -0700
-Message-ID: <1274280991.2698.1035.camel@finisterre.wolfsonmicro.main>
-References: <1274266526-29439-1-git-send-email-jhnikula@gmail.com>
-	(sfid-20100519_115536_332265_588BA5D5)
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v2] NUC900/audio: add nuc900 audio driver
+ support
+Date: Wed, 19 May 2010 15:59:46 +0100
+Message-ID: <1274281186.3240.162.camel@odin>
+References: <4BF2289A.9030609@gmail.com>
+	<AANLkTin0o8IgE1aGomCRdznvyndZijZT4TgWJ5eSyCiH@mail.gmail.com>
+	(sfid-20100519_090732_540282_D6DE9B44)
+	<1274280826.2698.1030.camel@finisterre.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 61EE61038FA
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8AA2010394C
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 16:56:22 +0200 (CEST)
-In-Reply-To: <1274266526-29439-1-git-send-email-jhnikula@gmail.com>
-	(sfid-20100519_115536_332265_588BA5D5)
+	Wed, 19 May 2010 16:59:55 +0200 (CEST)
+Received: by wya21 with SMTP id 21so141905wya.38
+	for <alsa-devel@alsa-project.org>; Wed, 19 May 2010 07:59:54 -0700 (PDT)
+In-Reply-To: <1274280826.2698.1030.camel@finisterre.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,15 +28,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jarkko Nikula <jhnikula@gmail.com>
-Cc: alsa-devel@alsa-project.org, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: zswan@marvell.com, alsa-devel <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Wan ZongShun <mcuos.com@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-05-19 at 13:55 +0300, Jarkko Nikula wrote:
-> Codec output pin should be defined with SND_SOC_DAPM_OUTPUT as otherwise
-> external widgets doesn't alter the output state.
+On Wed, 2010-05-19 at 07:53 -0700, Mark Brown wrote:
+> On Wed, 2010-05-19 at 16:07 +0800, Wan ZongShun wrote:
 > 
-> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> > How about this patch?
+> > Could it be merged into mainline?
+> 
+> It needs review from Liam as well. Liam?
+> 
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+I just had two minor comments with the driver, however I'm fairly happy
+it can go upstream now with the comments being addressed later.
+
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+Liam
+
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
