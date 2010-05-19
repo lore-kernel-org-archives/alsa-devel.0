@@ -1,15 +1,21 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH] ALSA: usb/mixer.c: remove unused variable
-Date: Wed, 19 May 2010 17:34:45 +0200
-Message-ID: <1274283285-14250-1-git-send-email-daniel@caiaq.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Define output pins with
+ SND_SOC_DAPM_OUTPUT
+Date: Wed, 19 May 2010 16:39:21 +0100
+Message-ID: <1274283561.3240.170.camel@odin>
+References: <1274266526-29439-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3736410395C
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E3323103960
 	for <alsa-devel@alsa-project.org>;
-	Wed, 19 May 2010 17:35:07 +0200 (CEST)
+	Wed, 19 May 2010 17:39:27 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so2323574fxm.38
+	for <alsa-devel@alsa-project.org>; Wed, 19 May 2010 08:39:27 -0700 (PDT)
+In-Reply-To: <1274266526-29439-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,31 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-This was a development left-over.
+On Wed, 2010-05-19 at 13:55 +0300, Jarkko Nikula wrote:
+> Codec output pin should be defined with SND_SOC_DAPM_OUTPUT as otherwise
+> external widgets doesn't alter the output state.
+> 
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> Cc: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+Applied.
 
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>
----
- sound/usb/mixer.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+Thanks
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index fd3e08d..a35dd74 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1970,8 +1970,6 @@ static void snd_usb_mixer_proc_read(struct snd_info_entry *entry,
- static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
- 				       int attribute, int value, int index)
- {
--	struct usb_mixer_elem_info *info;
--
- 	switch (attribute) {
- 	case UAC2_CS_CUR:
- 		snd_usb_mixer_notify_id(mixer, index);
+Liam
 -- 
-1.7.1
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
