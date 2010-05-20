@@ -1,18 +1,22 @@
-From: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-Subject: [PATCH 1/2] ASoC: TWL6040: Fix playback with 19.2 Mhz
-	MCLK
-Date: Thu, 20 May 2010 17:53:07 -0500
-Message-ID: <1274395988-19801-2-git-send-email-jorge.candelaria@ti.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/2] ASoC: TWL6040: Correct widget handling
+	for drivers
+Date: Thu, 20 May 2010 16:18:33 -0700
+Message-ID: <1274397513.2698.2052.camel@finisterre.wolfsonmicro.main>
 References: <1274395988-19801-1-git-send-email-jorge.candelaria@ti.com>
+	<1274395988-19801-2-git-send-email-jorge.candelaria@ti.com>
+	<1274395988-19801-3-git-send-email-jorge.candelaria@ti.com>
+	(sfid-20100521_000534_769304_E6263784)
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1DF1B103816
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 8FE3C103815
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 May 2010 01:05:27 +0200 (CEST)
-In-Reply-To: <1274395988-19801-1-git-send-email-jorge.candelaria@ti.com>
+	Fri, 21 May 2010 01:18:24 +0200 (CEST)
+In-Reply-To: <1274395988-19801-3-git-send-email-jorge.candelaria@ti.com>
+	(sfid-20100521_000534_769304_E6263784)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,31 +26,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, Jorge Eduardo Candelaria <jorge.candelaria@ti.com>, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
+To: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
+Cc: Margarita Olaya Cabrera <magi.olaya@ti.com>, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-When using MCLK is configured for 19.2 Mhz, clock slicer should be
-enabled and HPPLL should be bypassed in clock path.
+On Thu, 2010-05-20 at 17:53 -0500, Jorge Eduardo Candelaria wrote:
 
-Signed-off-by: Jorge Eduardo Candelaria <jorge.candelaria@ti.com>
-Signed-off-by: Margarita Olaya Cabrera <magi.olaya@ti.com>
----
- sound/soc/codecs/twl6040.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+> Also, add a pop_time of 1 ms to leave time for DACs to settle before
+> continuing power up/down sequence.
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index af36346..85dd4fb 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -928,7 +928,7 @@ static int twl6040_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 		case 19200000:
- 			/* mclk input, pll disabled */
- 			hppllctl |= TWL6040_MCLK_19200KHZ |
--				    TWL6040_HPLLSQRBP |
-+				    TWL6040_HPLLSQRENA |
- 				    TWL6040_HPLLBP;
- 			break;
- 		case 26000000:
--- 
-1.6.3.3
+...
+
+> @@ -1105,6 +1092,7 @@ static int __devinit twl6040_codec_probe(struct platform_device *pdev)
+>  	priv->naudint = naudint;
+>  
+>  	codec = &priv->codec;
+> +	codec->pop_time = 1;
+>  	codec->dev = &pdev->dev;
+>  	twl6040_dai.dev = &pdev->dev;
+
+That's not something you should be doing in your CODEC driver. pop_time
+is a debugging tool which can be enabled by users but should not be used
+in production. Besides, it'll also apply to all power changes in the
+CODEC, not just the ones that need it, and so make the general operation
+of the device much slower than it needs to be.
+
+If you need to insert a delay after power up of the DAC widgets use the
+_E variant of the DAC widget and have a POST_PMU event handler which
+does the sleep.
