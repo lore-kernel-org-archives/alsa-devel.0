@@ -1,22 +1,22 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [RFC] disabling ALSA period interrupts
-Date: Thu, 20 May 2010 16:50:12 +0200
-Message-ID: <4BF54C24.8080908@ladisch.de>
-References: <h2l6160a5131004291538w6c7891fbn2db3425846aefd60@mail.gmail.com>	
-	<4BDABDDD.4050502@ladisch.de>	
-	<w2s6160a5131004300644o3aedd30bvf0d13a7f9e758575@mail.gmail.com>	
-	<s5hsk5uq4u4.wl%tiwai@suse.de>	
-	<AANLkTiljN2IuWnI1g3BsVux33VcnMeCAwBZl7kexDPvU@mail.gmail.com>
-	<AANLkTil6ftaJ_wC--Tsq4pxPDAg9zmISstHuTvCWc_pk@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: tpa6130a2: Define output pins with
+ SND_SOC_DAPM_OUTPUT
+Date: Thu, 20 May 2010 08:21:26 -0700
+Message-ID: <20100520152125.GA8357@opensource.wolfsonmicro.com>
+References: <1274266526-29439-1-git-send-email-jhnikula@gmail.com>
+	<201005191500.14607.peter.ujfalusi@nokia.com>
+	<1274281512.2698.1053.camel@finisterre.wolfsonmicro.main>
+	<201005200903.53926.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 895802444C
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 55B9D24472
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 May 2010 16:50:39 +0200 (CEST)
-In-Reply-To: <AANLkTil6ftaJ_wC--Tsq4pxPDAg9zmISstHuTvCWc_pk@mail.gmail.com>
+	Thu, 20 May 2010 17:21:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201005200903.53926.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,20 +26,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-pl bossart wrote:
-> Still some work to be done on the alsa-lib one, for some reason the
-> hw_param->flags field I used gets overwritten if I don't use the
-> hw_device.
+On Thu, May 20, 2010 at 09:03:53AM +0300, Peter Ujfalusi wrote:
+> On Wednesday 19 May 2010 18:05:12 ext Mark Brown wrote:
 
-In the plugins, the are separate hw_params structures for the slave and
-the virtual device; the *_schange and *_cchange function are responsible
-for copying parameters from one to the other.  These functions currently
-do not copy the flags field.
+> I guess my reasoning was to avoid the following DAPM route, which for me seamed 
+> weird:
+> soc codec                        |      tap6130a2        |   machine driver
+> codec_DAC -> .. -> codec_OUTPUT -> tpa_PGA -> tpa_OUTPUT -> machine_HP
 
+> It seamed wrong to have codec_OUTPUT and tpa_OUTPUT in the same DAPM route.
 
-Regards,
-Clemens
+That seems absolutely fine to me - it's something I'd expect to happen
+as we move into a multi-chip ASoC world, you'll have signals which go
+out of one chip and into another before going to the edge of the system.
+The output wigdget is the output of one chip but there's no reason you
+can't use it as an input for another chip.
+
+> > They may also wish to use the event that is available on the jack widget to
+> > perform some board specific action when the headphone is activated.
+
+> The event is _usually_ needed to toggle the power for the amp (enable/disable).
+> The power for the tpa is managed within the driver, so no additional enable is 
+> needed.
+
+Well, usually the event is completely unused and the headphone widget is
+entirely ornamental.
+
+> > There's no actual requirement to define headphone widgets if they don't
+> > have any other code associated with them - if the outputs are left
+> > unconnected the effect will be the same as if a noop and unused
+> > headphone widget were there.
+
+> That is true, but in that case why would anyone add the tpa amp to their DAPM 
+> route in the first place (when it is not connected)?
+
+They wouldn't, I'm just saying that having the extra headphone widget on
+the end is not a requirement for anything to function.
