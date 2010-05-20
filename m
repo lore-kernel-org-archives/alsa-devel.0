@@ -1,21 +1,16 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH v3] NUC900/audio: Add nuc900 audio driver
-Date: Mon, 24 May 2010 11:59:52 +0800
-Message-ID: <AANLkTilrI8K490lvXqZiwQAH0_Nf11YnD2_VOCC1FPeR@mail.gmail.com>
-References: <4BF7E037.3050307@gmail.com>
-	<20100524032713.GA24480@opensource.wolfsonmicro.com>
+From: Tobias Klauser <tklauser@distanz.ch>
+Subject: [PATCH 11/11] ALSA: hda: Storage class should be
+	before const qualifier
+Date: Thu, 20 May 2010 10:40:55 +0200
+Message-ID: <1274344855-9336-1-git-send-email-tklauser@distanz.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f199.google.com (mail-yw0-f199.google.com
-	[209.85.211.199])
-	by alsa0.perex.cz (Postfix) with ESMTP id EB8D624439
+Received: from mx1.zhaw.ch (mx1.zhaw.ch [160.85.104.50])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2D2061039A1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 May 2010 05:59:52 +0200 (CEST)
-Received: by ywh37 with SMTP id 37so2476350ywh.2
-	for <alsa-devel@alsa-project.org>; Sun, 23 May 2010 20:59:52 -0700 (PDT)
-In-Reply-To: <20100524032713.GA24480@opensource.wolfsonmicro.com>
+	Thu, 20 May 2010 10:40:57 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +20,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: perex@perex.cz, tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: Tobias Klauser <tklauser@distanz.ch>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Okay, got it, thanks!
+The C99 specification states in section 6.11.5:
 
-2010/5/24 Mark Brown <broonie@opensource.wolfsonmicro.com>:
-> On Sat, May 22, 2010 at 09:46:31PM +0800, Wan ZongShun wrote:
->> Dear Liam & Mark,
->>
->> This patch fixed some issues according to your comments.
->> Here and now, I adjusted the driver and called it v3 for resubmitting.
->
-> Since your patch has already been applied please submit incremental
-> updates rather than a revised version of the full patch.
->
+The placement of a storage-class specifier other than at the beginning
+of the declaration specifiers in a declaration is an obsolescent
+feature.
 
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+---
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 80a183f..53538b0 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -14207,7 +14207,7 @@ enum {
+ 	ALC269_FIXUP_SONY_VAIO,
+ };
+ 
+-const static struct hda_verb alc269_sony_vaio_fixup_verbs[] = {
++static const struct hda_verb alc269_sony_vaio_fixup_verbs[] = {
+ 	{0x19, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_VREFGRD},
+ 	{}
+ };
 -- 
-*linux-arm-kernel mailing list
-mail addr:linux-arm-kernel@lists.infradead.org
-you can subscribe by:
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
-* linux-arm-NUC900 mailing list
-mail addr:NUC900@googlegroups.com
-main web: https://groups.google.com/group/NUC900
-you can subscribe it by sending me mail:
-mcuos.com@gmail.com
+1.6.3.3
