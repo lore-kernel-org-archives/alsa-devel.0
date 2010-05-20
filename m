@@ -1,19 +1,17 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: Mixer volume/decibel mapping
-Date: Thu, 20 May 2010 11:41:28 +0200
-Message-ID: <201005201141.28755.vand2@gmx.de>
-References: <201005191834.57919.vand2@gmx.de>
-	<AANLkTimQtKql4p3UEs2Wh_tZ6YhzLGgl1q5G18A1y9Jk@mail.gmail.com>
-	<AANLkTilKqn_X3FUdDmCqy3YKdYeT47oIGGaqUitzruDk@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [GIT PULL] ASoC update for 2.6.35
+Date: Thu, 20 May 2010 10:48:54 +0100
+Message-ID: <1274348934.3344.19.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id A31421039BB
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9ABBB1039C3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 May 2010 11:41:49 +0200 (CEST)
-In-Reply-To: <AANLkTilKqn_X3FUdDmCqy3YKdYeT47oIGGaqUitzruDk@mail.gmail.com>
+	Thu, 20 May 2010 11:48:58 +0200 (CEST)
+Received: by wwe15 with SMTP id 15so405748wwe.38
+	for <alsa-devel@alsa-project.org>; Thu, 20 May 2010 02:48:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,37 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Am Donnerstag, 20. Mai 2010 10:53:14 schrieb Raymond Yau:
-> 2010/5/20 James Courtier-Dutton <james.dutton@gmail.com>
-> 
-> > On 19 May 2010 17:34, Sebastian H. <vand2@gmx.de> wrote:
-> > > Hello everyone
-> > >
-> > > I'm working on an ALSA-Mixer application for C++/Qt4 and stumbled over
-> > > volume and decibel mapping for sliders.
-> > > My question: Is there always an 1 to 1 mapping from volume to decibel
-> > > and
-> >
-> > vice
-> >
-> > > versa or can there be decibel values in between two volume steps?
-> >
-> > There should be a one to one mapping.
-> > If the hardware has 200 steps on the volume scale, and those 200 steps
-> > are published to the user.
-> > With the dB scale, there will still be the same 200 steps in the dB
-> > scale. The dB information simply helps the user interface convert each
-> > step into a dB value.
-> 
-> a stepping function is not continuous and this is why
-> snd_mixer_selem_set_playback_dB() cannot set decibel values in between two
-> volume steps
+Hi Takashi,
 
-That's clear.
-I imagined that maybe the dB scale could be the "real thing" and the volume 
-steps would be a convenient but possibly coarse mapping into a denser 
-stepped dB space provided by the hardware/driver.
-This was unlikely but I wanted to ask anyway ;-).
+Hope this is not too late.
+
+Thanks
+
+Liam
+
+---
+
+The following changes since commit 266d38c8e3d7f62152b1448fd9a7265f32f32d87:
+  Jarkko Nikula (1):
+        ASoC: tpa6130a2: Define output pins with SND_SOC_DAPM_OUTPUT
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.35
+
+Jarkko Nikula (1):
+      ASoC: tpa6130a2: Remove CPVSS and HPVdd supplies
+
+ sound/soc/codecs/tpa6130a2.c |   52 ++++++++++++++---------------------------
+ 1 files changed, 18 insertions(+), 34 deletions(-)
