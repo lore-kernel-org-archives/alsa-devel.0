@@ -1,18 +1,19 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: Mixer volume/decibel mapping
-Date: Thu, 20 May 2010 11:20:18 +0200
-Message-ID: <201005201120.18658.vand2@gmx.de>
-References: <201005191834.57919.vand2@gmx.de>
-	<AANLkTimQtKql4p3UEs2Wh_tZ6YhzLGgl1q5G18A1y9Jk@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH 1/1] ALSA: usb-audio: add support for Akai
+ MPD16
+Date: Thu, 20 May 2010 11:21:54 +0200
+Message-ID: <4BF4FF32.8080206@ladisch.de>
+References: <1274299579-12990-1-git-send-email-wdev@foltman.com>	<4BF4E440.9030105@ladisch.de>
+	<4BF4E97A.9020209@foltman.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id A198F103801
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id A56851039BB
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 May 2010 11:20:39 +0200 (CEST)
-In-Reply-To: <AANLkTimQtKql4p3UEs2Wh_tZ6YhzLGgl1q5G18A1y9Jk@mail.gmail.com>
+	Thu, 20 May 2010 11:21:56 +0200 (CEST)
+In-Reply-To: <4BF4E97A.9020209@foltman.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +23,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>, James Courtier-Dutton <james.dutton@gmail.com>
+To: Krzysztof Foltman <wdev@foltman.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am Donnerstag, 20. Mai 2010 10:01:37 schrieb James Courtier-Dutton:
+Krzysztof Foltman wrote:
+> What about the oversized comment block about MPD16 SysEx messages -
+> should it remain in the source file, or should I move it to a text file
+> or remove it altogether?
 
-> There should be a one to one mapping.
-> If the hardware has 200 steps on the volume scale, and those 200 steps
-> are published to the user.
-> With the dB scale, there will still be the same 200 steps in the dB scale.
-> The dB information simply helps the user interface convert each step
-> into a dB value.
+The comments in this file are usually only about the protocol itself,
+because this is what the driver needs to know.  The fact that all
+SysEx's have a known limit of 9 bytes is interesting for the driver,
+but the contents of the SysEx messages are important only to programs
+that want to control the MPD16; I'm not sure if this even belongs into
+the kernel.  (In theory, this comment belongs into that control
+application.)
 
-Dear James and Clemens
 
-Thank you for the quick response :-). 
-This is the piece of information I was looking for.
-
-Best regards,
-Sebastian H.
+Regards,
+Clemens
