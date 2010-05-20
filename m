@@ -1,19 +1,21 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/1] ALSA: usb-audio: add support for Akai
- MPD16
-Date: Thu, 20 May 2010 11:21:54 +0200
-Message-ID: <4BF4FF32.8080206@ladisch.de>
-References: <1274299579-12990-1-git-send-email-wdev@foltman.com>	<4BF4E440.9030105@ladisch.de>
-	<4BF4E97A.9020209@foltman.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCHv3] ASoC: tpa6130a2: Remove CPVSS and HPVdd
+	supplies
+Date: Thu, 20 May 2010 10:31:54 +0100
+Message-ID: <1274347914.3344.17.camel@odin>
+References: <1274254212-31786-1-git-send-email-jhnikula@gmail.com>
+	<1274255548-4514-1-git-send-email-jhnikula@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id A56851039BB
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id C537B1038F7
 	for <alsa-devel@alsa-project.org>;
-	Thu, 20 May 2010 11:21:56 +0200 (CEST)
-In-Reply-To: <4BF4E97A.9020209@foltman.com>
+	Thu, 20 May 2010 11:31:59 +0200 (CEST)
+Received: by wwe15 with SMTP id 15so396503wwe.38
+	for <alsa-devel@alsa-project.org>; Thu, 20 May 2010 02:31:58 -0700 (PDT)
+In-Reply-To: <1274255548-4514-1-git-send-email-jhnikula@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Foltman <wdev@foltman.com>
-Cc: alsa-devel@alsa-project.org
+To: Jarkko Nikula <jhnikula@gmail.com>
+Cc: Ilkka Koskinen <ilkka.koskinen@nokia.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Krzysztof Foltman wrote:
-> What about the oversized comment block about MPD16 SysEx messages -
-> should it remain in the source file, or should I move it to a text file
-> or remove it altogether?
+On Wed, 2010-05-19 at 10:52 +0300, Jarkko Nikula wrote:
+> These pins are for decoupling capacitors for the internal charge pumps
+> in TPA6130A2 and TPA6140A2 and not for connecting external supply.
+> 
+> Thanks to Eduardo Valentin <eduardo.valentin@nokia.com> for pointing out the
+> issue with TPA6130A2 and Ilkka Koskinen <ilkka.koskinen@nokia.com> with
+> TPA6140A2.
+> 
+> Signed-off-by: Jarkko Nikula <jhnikula@gmail.com>
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> Reviewed-by: Ilkka Koskinen <ilkka.koskinen@nokia.com>
 
-The comments in this file are usually only about the protocol itself,
-because this is what the driver needs to know.  The fact that all
-SysEx's have a known limit of 9 bytes is interesting for the driver,
-but the contents of the SysEx messages are important only to programs
-that want to control the MPD16; I'm not sure if this even belongs into
-the kernel.  (In theory, this comment belongs into that control
-application.)
+Sorry, missed this one yesterday.
 
+Applied.
 
-Regards,
-Clemens
+Thanks
+
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
