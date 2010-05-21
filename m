@@ -1,19 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: "Sebastian H." <vand2@gmx.de>
 Subject: Re: Mixer volume/decibel mapping
-Date: Fri, 21 May 2010 09:51:36 +0300
-Message-ID: <201005210951.36495.peter.ujfalusi@nokia.com>
+Date: Fri, 21 May 2010 10:18:41 +0200
+Message-ID: <201005211018.41802.vand2@gmx.de>
 References: <201005191834.57919.vand2@gmx.de>
 	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
-	<4BF629B3.9020904@ladisch.de>
+	<AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 680E910399C
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 273FE103821
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 May 2010 08:51:52 +0200 (CEST)
-In-Reply-To: <4BF629B3.9020904@ladisch.de>
+	Fri, 21 May 2010 10:19:05 +0200 (CEST)
+In-Reply-To: <AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,80 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: "Sebastian H." <vand2@gmx.de>, ext Clemens Ladisch <clemens@ladisch.de>, James Courtier-Dutton <james.dutton@gmail.com>
+Cc: Raymond Yau <superquad.vortex2@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Friday 21 May 2010 09:35:31 ext Clemens Ladisch wrote:
-> James Courtier-Dutton wrote:
+Am Freitag, 21. Mai 2010 03:30:20 schrieb Raymond Yau:
+> 2010/5/21 James Courtier-Dutton <james.dutton@gmail.com>
+> 
+> > On 20 May 2010 10:41, Sebastian H. <vand2@gmx.de> wrote:
+> > > That's clear.
+> > > I imagined that maybe the dB scale could be the "real thing" and the
+> >
+> > volume
+> >
+> > > steps would be a convenient but possibly coarse mapping into a denser
+> > > stepped dB space provided by the hardware/driver.
+> > > This was unlikely but I wanted to ask anyway ;-).
+> >
 > > I believe it could be extended to support a continuous range.
 > > For example, some hardware uses a 32bit value to control the gain.
 > > The mix operation is simply "the_sample" * "the_control_value".
 > > So in this case the hardware has a linear control that can be
 > > considered continuous for our purposes.
-> =
-
-> Such controls already exist:
-> =
-
-> $ grep -rl DB_LINEAR sound/
-> sound/i2c/other/ak4xxx-adda.c
-> sound/pci/oxygen/hifier.c
-> sound/pci/oxygen/oxygen.c
-> sound/pci/ymfpci/ymfpci_main.c
-> sound/soc/codecs/stac9766.c
-> sound/soc/codecs/wm8350.c
-> sound/soc/codecs/wm8400.c
-> sound/soc/codecs/wm8990.c
-
-The DB_SCALE also provides linear mapping:
-For example, if the HW volume control has a range 0 .. 100
-In HW these means:
-0 =3D=3D -10dB, 1 =3D=3D -9.8dB, 2 =3D=3D -9.6dB .. 99 =3D 9.8dB, 100 =3D 1=
-0dB
-So it is linear.
-
-#define TLV_DB_LINEAR_ITEM(min_dB, max_dB)
-#define TLV_DB_SCALE_ITEM(min, step, mute)
-
-The
-TLV_DB_LINEAR_ITEM(-1000, 1000); is essentially the same as
-TLV_DB_SCALE_ITEM(-1000, 20, 0);
-In this case
-
-In linear, you specify the min, and max dB. The control provides the range =
-
-(steps) in between the two ends.
-In scale, you specify the minimum, and the steps for each control step.
-At the end both are linear, and gives you exactly the same volume/dB pair.
-
-> =
-
 > > The conversion from the control value to a usable value would have to
 > > include a user land log operation.
 > > It was never implemented due to lack of demand.
-> =
-
-> It is implemented.
-> =
-
 > > For the cards that do have this 32bit linear value, a simple lookup
 > > table is used in the kernel code to convert it to 256 step values.
-> =
+> > If implemented, one could then introduce professional gain controls
+> > that do not produce "clicks" in the output when adjusted.
+> > gain controls with steps in them produce clicks when the gain control
+> > is adjusted.
+> 
+> I thinks Sebastian's question is whether he can use
+> snd_mixer_selem_set_playback_
+> dB() set any values in between the volume steps
+> 
+> e.g. Master volume control of ac97 is 1.5 dB per step,
+> 
+> when using snd_mixer_selem_set_playback_dB() to set -0.9dB , how can the
+> mixer application know what dB value has been set since the value is in
+> between -1.5dB and 0dB without snd_mixer_selem_get_playbackdB()
 
-> Which driver is this?  It should be changed to use the full range.
-> =
+Indeed I quite happy with what ALSA already provides (I'm just an interested 
+amateur). My main problem is that there is no documentation for the Mixer API
+and how things are related to each other. Like CTL, HCTL, Mixer and 
+SimpleMixer and of course volume and dB in the snd_mixer_selem_ functions.
 
-> =
-
-> Regards,
-> Clemens
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- =
-
-P=E9ter
+The root issue is that I wondered if the mixer application should offer a
+separate text input for decibel values besides the text input for volume 
+values. As pointed out this would not allow for finer grained volume control
+therefore for the moment I'll probably stick with a mere text label for dB.
