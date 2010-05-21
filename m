@@ -1,18 +1,20 @@
-From: Bernhard Walle <bernhard@bwalle.de>
-Subject: Re: [ice1712] Word Clock with Delta1010 E
-Date: Fri, 21 May 2010 10:49:36 +0200
-Message-ID: <20100521104936.88721rli64qamrz4@webmail.df.eu>
-References: <4BF43556.3050505@bwalle.de> <s5hbpca4lrt.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ad193x: add set_sysclk entry to support
+ different clock input
+Date: Fri, 21 May 2010 10:26:59 +0100
+Message-ID: <1274434019.3258.2.camel@odin>
+References: <1274414221-12200-1-git-send-email-21cnbao@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay03.ispgateway.de (smtprelay03.ispgateway.de
-	[80.67.29.7]) by alsa0.perex.cz (Postfix) with ESMTP id 4602D103915
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E4A6103990
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 May 2010 10:49:37 +0200 (CEST)
-In-Reply-To: <s5hbpca4lrt.wl%tiwai@suse.de>
-Content-Disposition: inline
+	Fri, 21 May 2010 11:27:05 +0200 (CEST)
+Received: by wwe15 with SMTP id 15so482727wwe.38
+	for <alsa-devel@alsa-project.org>; Fri, 21 May 2010 02:27:04 -0700 (PDT)
+In-Reply-To: <1274414221-12200-1-git-send-email-21cnbao@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Barry Song <21cnbao@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, 2010-05-21 at 11:57 +0800, Barry Song wrote:
+> Signed-off-by: Barry Song <21cnbao@gmail.com>
+> ---
+>  sound/soc/codecs/ad193x.c |   41 ++++++++++++++++++++++++++++++++++++++++-
+>  sound/soc/codecs/ad193x.h |    5 +++++
+>  2 files changed, 45 insertions(+), 1 deletions(-)
 
-Zitat von Takashi Iwai <tiwai@suse.de>:
->
-> Is register 0x01 set with bit 0x10 (aka SPDIF input-clock-master)?
-> I haven't touched this driver for a very long time, so I'm not sure
-> whether envy24control changed this bit automatically with word sync
-> setup...
-
-Yes, it's set. envy24control changes the mixer settings, but I added a
-
-	spin_lock_irq(&ice->reg_lock);
-	bval = inb(ice->profi_port + 0x01);
-	spin_unlock_irq(&ice->reg_lock);
-	snd_printk(KERN_WARNING "Register 0x01 has a value of 0x%x\n",
-                    (unsigned int)bval);
-
-to check. Any other ideas?
-
-
-Regards,
-Bernhard
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
