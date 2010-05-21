@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Mixer volume/decibel mapping
-Date: Fri, 21 May 2010 08:35:14 +0800
-Message-ID: <AANLkTinkeYwA1tt3C-9FxQ6XHjKHrXnxnZUV6hTtz9RZ@mail.gmail.com>
+Date: Fri, 21 May 2010 09:30:20 +0800
+Message-ID: <AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>
 References: <201005191834.57919.vand2@gmx.de>
 	<AANLkTimQtKql4p3UEs2Wh_tZ6YhzLGgl1q5G18A1y9Jk@mail.gmail.com>
 	<AANLkTilKqn_X3FUdDmCqy3YKdYeT47oIGGaqUitzruDk@mail.gmail.com>
@@ -11,13 +11,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f187.google.com (mail-pz0-f187.google.com
-	[209.85.222.187])
-	by alsa0.perex.cz (Postfix) with ESMTP id 287721038DD
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1F814245B7
 	for <alsa-devel@alsa-project.org>;
-	Fri, 21 May 2010 02:35:15 +0200 (CEST)
-Received: by pzk17 with SMTP id 17so199726pzk.5
-	for <alsa-devel@alsa-project.org>; Thu, 20 May 2010 17:35:15 -0700 (PDT)
+	Fri, 21 May 2010 03:30:21 +0200 (CEST)
+Received: by pxi13 with SMTP id 13so206558pxi.38
+	for <alsa-devel@alsa-project.org>; Thu, 20 May 2010 18:30:20 -0700 (PDT)
 In-Reply-To: <AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -59,23 +59,12 @@ List-Id: alsa-devel@alsa-project.org
 > is adjusted.
 >
 
-For example , the 10 band stereo graphic equalizer of au8830 has 32678 steps
-but the dB range is most likely between -6dB and +6dB
+I thinks Sebastian's question is whether he can use
+snd_mixer_selem_set_playback_
+dB() set any values in between the volume steps
 
-I have not measured the dB values but there is no clipping occur at maximum
-gain
+e.g. Master volume control of ac97 is 1.5 dB per step,
 
-just compared with the software equalizer alsaequal where you can hear
-distortion quite easily
-
-snd_vortex_eq_info(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_info
-*uinfo)
-{
-    uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-    uinfo->count = 2;
-    uinfo->value.integer.min = 0x0000;
-    uinfo->value.integer.max = 0x7fff;
-    return 0;
-}
-
-How can I implement a dB scale for those 10  EQ gain/atten controls ?
+when using snd_mixer_selem_set_playback_dB() to set -0.9dB , how can the
+mixer application know what dB value has been set since the value is in
+between -1.5dB and 0dB without snd_mixer_selem_get_playbackdB()
