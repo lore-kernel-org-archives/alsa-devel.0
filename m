@@ -1,41 +1,51 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ad193x: add set_sysclk entry to support
- different clock input
-Date: Fri, 21 May 2010 10:47:54 -0700
-Message-ID: <20100521174753.GA19298@opensource.wolfsonmicro.com>
-References: <1274414221-12200-1-git-send-email-21cnbao@gmail.com>
-	<1274434019.3258.2.camel@odin>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: [PATCH] aw2-alsa.c: use pci_ids.h defines and fix checkpatch.pl
+ noise
+Date: Fri, 21 May 2010 17:35:03 -0500
+Message-ID: <0D753D10438DA54287A00B0270842697636F323864@AUSP01VMBX24.collaborationhost.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 022812414B
-	for <alsa-devel@alsa-project.org>;
-	Fri, 21 May 2010 19:47:45 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1274434019.3258.2.camel@odin>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: uclinux-dist-devel@blackfin.uclinux.org, alsa-devel@alsa-project.org, Barry Song <21cnbao@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 21, 2010 at 10:26:59AM +0100, Liam Girdwood wrote:
-> On Fri, 2010-05-21 at 11:57 +0800, Barry Song wrote:
-> > Signed-off-by: Barry Song <21cnbao@gmail.com>
-> > ---
-> >  sound/soc/codecs/ad193x.c |   41 ++++++++++++++++++++++++++++++++++++++++-
-> >  sound/soc/codecs/ad193x.h |    5 +++++
-> >  2 files changed, 45 insertions(+), 1 deletions(-)
-> 
-> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
-Applied, thanks.
+VXNlIHRoZSBWRU5ET1IvREVWSUNFIGlkcyBwcm92aWRlZCBpbiBwY2lfaWRzLmggaW5zdGVhZCBv
+ZiBjcmVhdGluZw0KbG9jYWwgaWRzIG9mIHRoZSBzYW1lIHZhbHVlcy4NCg0KQWxzbywgZml4IHRo
+ZSBmb2xsb3dpbmcgY2hlY2twYXRjaC5wbCB3YXJuaW5nczoNCg0KV0FSTklORzogVXNlICNpbmNs
+dWRlIDxsaW51eC9pby5oPiBpbnN0ZWFkIG9mIDxhc20vaW8uaD4NCldBUk5JTkc6IHVubmVjZXNz
+YXJ5IHdoaXRlc3BhY2UgYmVmb3JlIGEgcXVvdGVkIG5ld2xpbmUNCg0KU2lnbmVkLW9mZi1ieTog
+SCBIYXJ0bGV5IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3JhdmVycy5jb20+DQpDYzogSmFy
+b3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4NCkNjOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1
+c2UuZGU+DQoNCi0tLQ0KDQpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2F3Mi9hdzItYWxzYS5jIGIv
+c291bmQvcGNpL2F3Mi9hdzItYWxzYS5jDQppbmRleCA2NzkyMWY5Li5jMTUwMDIyIDEwMDY0NA0K
+LS0tIGEvc291bmQvcGNpL2F3Mi9hdzItYWxzYS5jDQorKysgYi9zb3VuZC9wY2kvYXcyL2F3Mi1h
+bHNhLmMNCkBAIC0yNiw3ICsyNiw3IEBADQogI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4NCiAjaW5j
+bHVkZSA8bGludXgvaW50ZXJydXB0Lmg+DQogI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+DQotI2lu
+Y2x1ZGUgPGFzbS9pby5oPg0KKyNpbmNsdWRlIDxsaW51eC9pby5oPg0KICNpbmNsdWRlIDxzb3Vu
+ZC9jb3JlLmg+DQogI2luY2x1ZGUgPHNvdW5kL2luaXR2YWwuaD4NCiAjaW5jbHVkZSA8c291bmQv
+cGNtLmg+DQpAQCAtNDQsOSArNDQsNiBAQCBNT0RVTEVfTElDRU5TRSgiR1BMIik7DQogLyoqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKg0KICAqIERFRklORVMNCiAgKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKiovDQotI2RlZmluZSBQQ0lfVkVORE9SX0lEX1NBQTcxNDYJCSAg
+MHgxMTMxDQotI2RlZmluZSBQQ0lfREVWSUNFX0lEX1NBQTcxNDYJCSAgMHg3MTQ2DQotDQogI2Rl
+ZmluZSBDVExfUk9VVEVfQU5BTE9HIDANCiAjZGVmaW5lIENUTF9ST1VURV9ESUdJVEFMIDENCiAN
+CkBAIC0xNjUsNyArMTYyLDcgQEAgbW9kdWxlX3BhcmFtX2FycmF5KGVuYWJsZSwgYm9vbCwgTlVM
+TCwgMDQ0NCk7DQogTU9EVUxFX1BBUk1fREVTQyhlbmFibGUsICJFbmFibGUgQXVkaW93ZXJrMiBz
+b3VuZGNhcmQuIik7DQogDQogc3RhdGljIERFRklORV9QQ0lfREVWSUNFX1RBQkxFKHNuZF9hdzJf
+aWRzKSA9IHsNCi0Je1BDSV9WRU5ET1JfSURfU0FBNzE0NiwgUENJX0RFVklDRV9JRF9TQUE3MTQ2
+LCAwLCAwLA0KKwl7UENJX1ZFTkRPUl9JRF9QSElMSVBTLCBQQ0lfREVWSUNFX0lEX1BISUxJUFNf
+U0FBNzE0NiwgMCwgMCwNCiAJIDAsIDAsIDB9LA0KIAl7MH0NCiB9Ow0KQEAgLTQxOSw3ICs0MTYs
+NyBAQCBzdGF0aWMgaW50IHNuZF9hdzJfcGNtX3BsYXliYWNrX29wZW4oc3RydWN0IHNuZF9wY21f
+c3Vic3RyZWFtICpzdWJzdHJlYW0pDQogew0KIAlzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50
+aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOw0KIA0KLQlzbmRfcHJpbnRkZChLRVJOX0RFQlVHICJh
+dzI6IFBsYXliYWNrX29wZW4gXG4iKTsNCisJc25kX3ByaW50ZGQoS0VSTl9ERUJVRyAiYXcyOiBQ
+bGF5YmFja19vcGVuXG4iKTsNCiAJcnVudGltZS0+aHcgPSBzbmRfYXcyX3BsYXliYWNrX2h3Ow0K
+IAlyZXR1cm4gMDsNCiB9DQpAQCAtNDM1LDcgKzQzMiw3IEBAIHN0YXRpYyBpbnQgc25kX2F3Ml9w
+Y21fY2FwdHVyZV9vcGVuKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQ0KIHsN
+CiAJc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsN
+CiANCi0Jc25kX3ByaW50ZGQoS0VSTl9ERUJVRyAiYXcyOiBDYXB0dXJlX29wZW4gXG4iKTsNCisJ
+c25kX3ByaW50ZGQoS0VSTl9ERUJVRyAiYXcyOiBDYXB0dXJlX29wZW5cbiIpOw0KIAlydW50aW1l
+LT5odyA9IHNuZF9hdzJfY2FwdHVyZV9odzsNCiAJcmV0dXJuIDA7DQogfQ0K
