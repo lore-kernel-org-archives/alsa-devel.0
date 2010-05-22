@@ -1,51 +1,63 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: [PATCH] aw2-alsa.c: use pci_ids.h defines and fix checkpatch.pl
- noise
-Date: Fri, 21 May 2010 17:35:03 -0500
-Message-ID: <0D753D10438DA54287A00B0270842697636F323864@AUSP01VMBX24.collaborationhost.net>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Mixer volume/decibel mapping
+Date: Sat, 22 May 2010 17:24:58 +0800
+Message-ID: <AANLkTinHXfjSzLVb1kugdGN1NdmHL_XhqnkVmfvNqL74@mail.gmail.com>
+References: <201005191834.57919.vand2@gmx.de>
+	<AANLkTimQtKql4p3UEs2Wh_tZ6YhzLGgl1q5G18A1y9Jk@mail.gmail.com>
+	<AANLkTilKqn_X3FUdDmCqy3YKdYeT47oIGGaqUitzruDk@mail.gmail.com>
+	<201005201141.28755.vand2@gmx.de>
+	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
+	<4BF629B3.9020904@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.de" <tiwai@suse.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 0FE8524820
+	for <alsa-devel@alsa-project.org>;
+	Sat, 22 May 2010 11:24:59 +0200 (CEST)
+Received: by pvc22 with SMTP id 22so834011pvc.38
+	for <alsa-devel@alsa-project.org>; Sat, 22 May 2010 02:24:58 -0700 (PDT)
+In-Reply-To: <4BF629B3.9020904@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VXNlIHRoZSBWRU5ET1IvREVWSUNFIGlkcyBwcm92aWRlZCBpbiBwY2lfaWRzLmggaW5zdGVhZCBv
-ZiBjcmVhdGluZw0KbG9jYWwgaWRzIG9mIHRoZSBzYW1lIHZhbHVlcy4NCg0KQWxzbywgZml4IHRo
-ZSBmb2xsb3dpbmcgY2hlY2twYXRjaC5wbCB3YXJuaW5nczoNCg0KV0FSTklORzogVXNlICNpbmNs
-dWRlIDxsaW51eC9pby5oPiBpbnN0ZWFkIG9mIDxhc20vaW8uaD4NCldBUk5JTkc6IHVubmVjZXNz
-YXJ5IHdoaXRlc3BhY2UgYmVmb3JlIGEgcXVvdGVkIG5ld2xpbmUNCg0KU2lnbmVkLW9mZi1ieTog
-SCBIYXJ0bGV5IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3JhdmVycy5jb20+DQpDYzogSmFy
-b3NsYXYgS3lzZWxhIDxwZXJleEBwZXJleC5jej4NCkNjOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1
-c2UuZGU+DQoNCi0tLQ0KDQpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2F3Mi9hdzItYWxzYS5jIGIv
-c291bmQvcGNpL2F3Mi9hdzItYWxzYS5jDQppbmRleCA2NzkyMWY5Li5jMTUwMDIyIDEwMDY0NA0K
-LS0tIGEvc291bmQvcGNpL2F3Mi9hdzItYWxzYS5jDQorKysgYi9zb3VuZC9wY2kvYXcyL2F3Mi1h
-bHNhLmMNCkBAIC0yNiw3ICsyNiw3IEBADQogI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4NCiAjaW5j
-bHVkZSA8bGludXgvaW50ZXJydXB0Lmg+DQogI2luY2x1ZGUgPGxpbnV4L2RlbGF5Lmg+DQotI2lu
-Y2x1ZGUgPGFzbS9pby5oPg0KKyNpbmNsdWRlIDxsaW51eC9pby5oPg0KICNpbmNsdWRlIDxzb3Vu
-ZC9jb3JlLmg+DQogI2luY2x1ZGUgPHNvdW5kL2luaXR2YWwuaD4NCiAjaW5jbHVkZSA8c291bmQv
-cGNtLmg+DQpAQCAtNDQsOSArNDQsNiBAQCBNT0RVTEVfTElDRU5TRSgiR1BMIik7DQogLyoqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKioqKg0KICAqIERFRklORVMNCiAgKioqKioqKioqKioq
-KioqKioqKioqKioqKioqKioqKiovDQotI2RlZmluZSBQQ0lfVkVORE9SX0lEX1NBQTcxNDYJCSAg
-MHgxMTMxDQotI2RlZmluZSBQQ0lfREVWSUNFX0lEX1NBQTcxNDYJCSAgMHg3MTQ2DQotDQogI2Rl
-ZmluZSBDVExfUk9VVEVfQU5BTE9HIDANCiAjZGVmaW5lIENUTF9ST1VURV9ESUdJVEFMIDENCiAN
-CkBAIC0xNjUsNyArMTYyLDcgQEAgbW9kdWxlX3BhcmFtX2FycmF5KGVuYWJsZSwgYm9vbCwgTlVM
-TCwgMDQ0NCk7DQogTU9EVUxFX1BBUk1fREVTQyhlbmFibGUsICJFbmFibGUgQXVkaW93ZXJrMiBz
-b3VuZGNhcmQuIik7DQogDQogc3RhdGljIERFRklORV9QQ0lfREVWSUNFX1RBQkxFKHNuZF9hdzJf
-aWRzKSA9IHsNCi0Je1BDSV9WRU5ET1JfSURfU0FBNzE0NiwgUENJX0RFVklDRV9JRF9TQUE3MTQ2
-LCAwLCAwLA0KKwl7UENJX1ZFTkRPUl9JRF9QSElMSVBTLCBQQ0lfREVWSUNFX0lEX1BISUxJUFNf
-U0FBNzE0NiwgMCwgMCwNCiAJIDAsIDAsIDB9LA0KIAl7MH0NCiB9Ow0KQEAgLTQxOSw3ICs0MTYs
-NyBAQCBzdGF0aWMgaW50IHNuZF9hdzJfcGNtX3BsYXliYWNrX29wZW4oc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpzdWJzdHJlYW0pDQogew0KIAlzdHJ1Y3Qgc25kX3BjbV9ydW50aW1lICpydW50
-aW1lID0gc3Vic3RyZWFtLT5ydW50aW1lOw0KIA0KLQlzbmRfcHJpbnRkZChLRVJOX0RFQlVHICJh
-dzI6IFBsYXliYWNrX29wZW4gXG4iKTsNCisJc25kX3ByaW50ZGQoS0VSTl9ERUJVRyAiYXcyOiBQ
-bGF5YmFja19vcGVuXG4iKTsNCiAJcnVudGltZS0+aHcgPSBzbmRfYXcyX3BsYXliYWNrX2h3Ow0K
-IAlyZXR1cm4gMDsNCiB9DQpAQCAtNDM1LDcgKzQzMiw3IEBAIHN0YXRpYyBpbnQgc25kX2F3Ml9w
-Y21fY2FwdHVyZV9vcGVuKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQ0KIHsN
-CiAJc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsN
-CiANCi0Jc25kX3ByaW50ZGQoS0VSTl9ERUJVRyAiYXcyOiBDYXB0dXJlX29wZW4gXG4iKTsNCisJ
-c25kX3ByaW50ZGQoS0VSTl9ERUJVRyAiYXcyOiBDYXB0dXJlX29wZW5cbiIpOw0KIAlydW50aW1l
-LT5odyA9IHNuZF9hdzJfY2FwdHVyZV9odzsNCiAJcmV0dXJuIDA7DQogfQ0K
+2010/5/21 Clemens Ladisch <clemens@ladisch.de>
+
+> James Courtier-Dutton wrote:
+> > I believe it could be extended to support a continuous range.
+> > For example, some hardware uses a 32bit value to control the gain.
+> > The mix operation is simply "the_sample" * "the_control_value".
+> > So in this case the hardware has a linear control that can be
+> > considered continuous for our purposes.
+>
+> Such controls already exist:
+>
+> $ grep -rl DB_LINEAR sound/
+> sound/i2c/other/ak4xxx-adda.c
+> sound/pci/oxygen/hifier.c
+> sound/pci/oxygen/oxygen.c
+> sound/pci/ymfpci/ymfpci_main.c
+> sound/soc/codecs/stac9766.c
+> sound/soc/codecs/wm8350.c
+> sound/soc/codecs/wm8400.c
+> sound/soc/codecs/wm8990.c
+>
+
+why is STAC9766 different from other AC97 2.3 codec ?
+
+static const DECLARE_TLV_DB_LINEAR(master_tlv, -4600, 0);
+static const DECLARE_TLV_DB_LINEAR(record_tlv, 0, 2250);
+static const DECLARE_TLV_DB_LINEAR(beep_tlv, -4500, 0);
+static const DECLARE_TLV_DB_LINEAR(mix_tlv, -3450, 1200);
+
+static const struct snd_kcontrol_new stac9766_snd_ac97_controls[] = {
