@@ -1,7 +1,7 @@
 From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 096/199] Documentation/sound/oss/Opti: Checkpatch cleanup
-Date: Sun, 23 May 2010 21:52:46 +0200
-Message-ID: <1274644376-24176-4-git-send-email-andrea.gelmini@gelma.net>
+Subject: [PATCH 101/199] Documentation/sound/oss/README.modules: Checkpatch cleanup
+Date: Sun, 23 May 2010 21:52:51 +0200
+Message-ID: <1274644376-24176-9-git-send-email-andrea.gelmini@gelma.net>
 References: <1274644376-24176-1-git-send-email-andrea.gelmini@gelma.net>
 Return-path: <linux-doc-owner@vger.kernel.org>
 In-Reply-To: <1274644376-24176-1-git-send-email-andrea.gelmini@gelma.net>
@@ -10,26 +10,39 @@ To: andrea.gelmini@gelma.net
 Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Randy Dunlap <rdunlap@xenotime.net>, alsa-devel@alsa-project.org, linux-doc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Documentation/sound/oss/Opti:86: ERROR: trailing whitespace
+Documentation/sound/oss/README.modules:11: ERROR: trailing whitespace
+Documentation/sound/oss/README.modules:13: ERROR: trailing whitespace
+Documentation/sound/oss/README.modules:17: ERROR: trailing whitespace
+Documentation/sound/oss/README.modules:18: ERROR: trailing whitespace
 
 Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
 ---
- Documentation/sound/oss/Opti |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ Documentation/sound/oss/README.modules |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/sound/oss/Opti b/Documentation/sound/oss/Opti
-index c15af3c..d5cb3e9 100644
---- a/Documentation/sound/oss/Opti
-+++ b/Documentation/sound/oss/Opti
-@@ -83,7 +83,7 @@ options opl3 io=0x388
- install mad16 /sbin/modprobe -i mad16 && /sbin/ad1848_mixer_reroute 14 8 15 3 16 6
+diff --git a/Documentation/sound/oss/README.modules b/Documentation/sound/oss/README.modules
+index e691d74..a7cbf8a 100644
+--- a/Documentation/sound/oss/README.modules
++++ b/Documentation/sound/oss/README.modules
+@@ -8,14 +8,14 @@ making sound modular.
+   First, configure your kernel. This is an idea of what you should be
+ setting in the sound section:
  
- If you have an MPU daughtercard or onboard MPU you will want to add to the
--"options mad16" line - eg 
-+"options mad16" line - eg
+-<M> Sound card support 
++<M> Sound card support
  
- options mad16 irq=5 dma=0 dma16=3 io=0x530 mpu_io=0x330 mpu_irq=9
+-<M> 100% Sound Blaster compatibles (SB16/32/64, ESS, Jazz16) support 
++<M> 100% Sound Blaster compatibles (SB16/32/64, ESS, Jazz16) support
  
+   I have SoundBlaster. Select your card from the list.
+ 
+-<M> Generic OPL2/OPL3 FM synthesizer support 
+-<M> FM synthesizer (YM3812/OPL-3) support 
++<M> Generic OPL2/OPL3 FM synthesizer support
++<M> FM synthesizer (YM3812/OPL-3) support
+ 
+   If you don't set these, you will probably find you can play .wav files
+ but not .midi. As the help for them says, set them unless you know your
 -- 
 1.7.1.251.gf80a2
 
