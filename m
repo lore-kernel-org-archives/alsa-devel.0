@@ -1,15 +1,19 @@
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: [PATCH] ASoC: fix uninitialised variable in siu_dai.c
-Date: Mon, 24 May 2010 10:55:16 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1005241051190.2611@axis700.grange>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Update Freescale i.MX SSI driver
+Date: Mon, 24 May 2010 11:34:03 +0100
+Message-ID: <1274697243.3064.85.camel@odin>
+References: <20100522120124.GD18017@www.longlandclan.yi.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 9E0C12457A
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 810DE245DA
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 May 2010 10:55:06 +0200 (CEST)
+	Mon, 24 May 2010 12:34:07 +0200 (CEST)
+Received: by wyj26 with SMTP id 26so1472269wyj.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 May 2010 03:34:07 -0700 (PDT)
+In-Reply-To: <20100522120124.GD18017@www.longlandclan.yi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,31 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stuart Longland <redhatter@gentoo.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
----
-
-Strangely, the compiler doesn't warn about this one, but I really don't 
-see how this can be correct. Am I being blind?
-
- sound/soc/sh/siu_dai.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/sound/soc/sh/siu_dai.c b/sound/soc/sh/siu_dai.c
-index d86ee1b..eeed5ed 100644
---- a/sound/soc/sh/siu_dai.c
-+++ b/sound/soc/sh/siu_dai.c
-@@ -588,6 +588,8 @@ static int siu_dai_prepare(struct snd_pcm_substream *substream,
- 		ret = siu_dai_spbstart(port_info);
- 		if (ret < 0)
- 			goto fail;
-+	} else {
-+		ret = 0;
- 	}
- 
- 	port_info->play_cap |= self;
--- 
-1.6.2.4
+T24gU2F0LCAyMDEwLTA1LTIyIGF0IDIyOjAxICsxMDAwLCBTdHVhcnQgTG9uZ2xhbmQgd3JvdGU6
+Cj4gSGkgYWxsLAo+IAlBdHRhY2hlZCBpcyBhIHBhdGNoIHRoYXQgY29ycmVjdHMgdGhlIGkuTVgg
+U1NJIGRyaXZlciBzbyB0aGF0IGl0Cj4gY29tcGlsZXMgYWdhaW5zdCB0aGUgbGF0ZXN0IEFTb0Mg
+dHJlZS4gIEknbSBhYmxlIHRvIGNvbXBpbGUgdGhlIGRyaXZlcgo+IHdpdGggdGhpcyBwYXRjaCwg
+YnV0IGhhdmVuJ3QgZG9uZSBhbnkgdGVzdGluZyBiZXlvbmQgdGhpcyBwb2ludC4uLiB0aGUKPiB1
+cGRhdGUgaXMgcXVpdGUgbmHDr3ZlLCBiYXNlZCBvbiBjaGFuZ2VzIEkgaGFkIHNlZW4gdG8gb3Ro
+ZXIgZHJpdmVycy4KPiAKPiAJSSBob3BlIHRvIGdpdmUgaXQgYSB0cnkgb24gTW9uZGF5LCBidXQg
+aW4gdGhlIG1lYW50aW1lLCBoZXJlJ3MKPiB0aGUgcGF0Y2ggZm9yIG90aGVycyB0byB0cnkuCgpU
+aGFua3MsIHRoaXMgbG9va3MgbGlrZSBpdCB3YXMgbWlzc2VkIGZyb20gYW4gZWFybGllciBzZXJp
+ZXMuCgpBY2tlZC1ieTogTGlhbSBHaXJkd29vZCA8bHJnQHNsaW1sb2dpYy5jby51az4KLS0gCkZy
+ZWVsYW5jZSBEZXZlbG9wZXIsIFNsaW1Mb2dpYyBMdGQKQVNvQyBhbmQgVm9sdGFnZSBSZWd1bGF0
+b3IgTWFpbnRhaW5lci4KaHR0cDovL3d3dy5zbGltbG9naWMuY28udWsKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
