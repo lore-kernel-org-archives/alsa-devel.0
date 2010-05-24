@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: ASoC: Hooking a TI CODEC to a i.MX27 MCU
-Date: Mon, 24 May 2010 11:49:16 +0100
-Message-ID: <1274698156.3064.93.camel@odin>
-References: <20100524074946.GC16346@www.longlandclan.yi.org>
+From: Pedro Ferreira <ilzogoiby@gmail.com>
+Subject: USB midi support for KAOSS pad
+Date: Mon, 24 May 2010 17:07:22 +0200
+Message-ID: <AANLkTimUYbWSqsahW9m8AbIjZuT-yVvnkGpnfCrLyi8u@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id CAD6D245DE
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.221.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 940C62465A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 24 May 2010 12:49:21 +0200 (CEST)
-Received: by wyj26 with SMTP id 26so1481386wyj.38
-	for <alsa-devel@alsa-project.org>; Mon, 24 May 2010 03:49:20 -0700 (PDT)
-In-Reply-To: <20100524074946.GC16346@www.longlandclan.yi.org>
+	Mon, 24 May 2010 17:07:26 +0200 (CEST)
+Received: by qyk9 with SMTP id 9so5539281qyk.2
+	for <alsa-devel@alsa-project.org>; Mon, 24 May 2010 08:07:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,22 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stuart Longland <redhatter@gentoo.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-05-24 at 17:49 +1000, Stuart Longland wrote:
-> Now this compiles... but when I go to load it; one of two things
-> happens... either practically nothing (at this stage; no modules are
-> loaded prior to calling modprobe):
-> 
+Hello all,
 
-It does sound like you have some memory corruption somewhere. Can you
-rule out your new CODEC driver by replacing it with another CODEC driver
-(ads117x.c is a very simple example).
+I tried connecting my KAOSS PAD 3 to a linux laptop, and apparently
+ALSA MIDI detects the device.
+However, dmesg shows several messages, all similar to:
 
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+{{{
+[ 7088.722283] ALSA midi.c:1597: MIDIStreaming version 01.00
+[ 7088.722290] ALSA midi.c:1632: EP 02: 1 jack(s)
+[ 7088.722295] ALSA midi.c:1647: EP 82: 1 jack(s)
+[ 7088.722315] ALSA midi.c:1567: created 1 output and 1 input ports
+[ 7088.806326] usb 2-1.1: reset full speed USB device using ehci_hcd
+and address 15
+}}}
+
+If i open qjackctl, i can see the device being added and removed successively.
+
+Does anyone know what can be going wrong? I would be more than happy
+to contribute with usbmon logs, etc... or even try to research a bit
+if someone points me in the right direction.
+
+Thanks in advance,
+
+Pedro
