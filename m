@@ -1,18 +1,23 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Query about code organization for kernel driver.
-Date: Mon, 24 May 2010 23:19:01 +0100
-Message-ID: <20100524221900.GA13604@sirena.org.uk>
-References: <AANLkTin91dBbESP2i_LyZKoL0KdBWFKzqKPIpuQyIIGY@mail.gmail.com>
+From: Pedro Ferreira <ilzogoiby@gmail.com>
+Subject: Re: USB midi support for KAOSS pad
+Date: Tue, 25 May 2010 00:34:03 +0200
+Message-ID: <AANLkTik4fUbdlrhDZWEVxckWgpiSDPvo2snpU-5cHWBd@mail.gmail.com>
+References: <AANLkTimUYbWSqsahW9m8AbIjZuT-yVvnkGpnfCrLyi8u@mail.gmail.com>
+	<20100524153324.GL30801@buzzloop.caiaq.de>
+	<AANLkTil4vczJ2ymOEAUCRQBfZroxxtRpWpC6Wl3TgcUq@mail.gmail.com>
+	<20100524205319.GP30801@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 810BF103830
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1B1EE103830
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 00:19:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTin91dBbESP2i_LyZKoL0KdBWFKzqKPIpuQyIIGY@mail.gmail.com>
+	Tue, 25 May 2010 00:34:06 +0200 (CEST)
+Received: by vws6 with SMTP id 6so1482736vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 24 May 2010 15:34:04 -0700 (PDT)
+In-Reply-To: <20100524205319.GP30801@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,23 +27,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Anksh Agarwal <anksh.agarwal@gmail.com>
+To: Daniel Mack <daniel@caiaq.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 25, 2010 at 01:17:39AM +0530, Anksh Agarwal wrote:
+Hello,
 
-> i am not aware how to split the audio path enable/disable code from the soc
-> driver
-> and which would be ideal directory to place them, since there is hardly any
-> interaction
-> between playback and device enable/disable routines? I think the device
-> enable/disable code outside sound/ directory wont be a good idea as its
-> to be specifically used by alsa playback/record only.
+> And here, the device is disconnected from USB, but I doubt that is
+> related to the driver stack. The only thing I can currently think of is
+> that the device draws too much power at this point, and a voltage
+> brown-out causes the device to reset. Can you try a powered hub, or is
+> this device powered by an external supply anyway?
 
-Could you be more specific about what you mean by "enable/disable
-rountines" and a "list of devices"?  What are you actually trying to
-control or enable and disable here?  Your description of having a sysfs
-file for changing devices at runtime sounds like something that would
-normally be done via the ALSA APIs but it's very hard to understand what
-exactly you're controlling here.
+It's got its own power supply :)
+
+> Did you successfully
+> use it on the _same_ hardware under Windows?
+
+Haven't tried... I don't have windows on this machine :/
+
+Thanks,
+
+Pedro
