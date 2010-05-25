@@ -1,22 +1,16 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: USB midi support for KAOSS pad
-Date: Tue, 25 May 2010 00:54:12 +0200
-Message-ID: <20100524225412.GR30801@buzzloop.caiaq.de>
-References: <AANLkTimUYbWSqsahW9m8AbIjZuT-yVvnkGpnfCrLyi8u@mail.gmail.com>
-	<20100524153324.GL30801@buzzloop.caiaq.de>
-	<AANLkTil4vczJ2ymOEAUCRQBfZroxxtRpWpC6Wl3TgcUq@mail.gmail.com>
-	<20100524205319.GP30801@buzzloop.caiaq.de>
-	<AANLkTik4fUbdlrhDZWEVxckWgpiSDPvo2snpU-5cHWBd@mail.gmail.com>
+From: "Varadarajan, Srikanth" <srikanth.varadarajan@intel.com>
+Subject: MMAP in ALSA
+Date: Mon, 24 May 2010 17:16:25 -0700
+Message-ID: <BCF80163639E9F4296FC4B208F99BA47013899D48F@orsmsx504.amr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 649D310385C
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+	by alsa0.perex.cz (Postfix) with ESMTP id 275DF2473C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 00:54:42 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTik4fUbdlrhDZWEVxckWgpiSDPvo2snpU-5cHWBd@mail.gmail.com>
+	Tue, 25 May 2010 02:16:28 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,29 +20,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Pedro Ferreira <ilzogoiby@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 25, 2010 at 12:34:03AM +0200, Pedro Ferreira wrote:
-> > And here, the device is disconnected from USB, but I doubt that is
-> > related to the driver stack. The only thing I can currently think of is
-> > that the device draws too much power at this point, and a voltage
-> > brown-out causes the device to reset. Can you try a powered hub, or is
-> > this device powered by an external supply anyway?
-> 
-> It's got its own power supply :)
-> 
-> > Did you successfully
-> > use it on the _same_ hardware under Windows?
-> 
-> Haven't tried... I don't have windows on this machine :/
+Hi All,
+I am new to the list and ALSA.
 
-Could you try to temporarily disable the snd-usb-audio driver (move the
-module away or build a kernel without support for it) and then see
-whether the mass storage function works stable? And then the other way
-around - disable USB mass storage and try the audio function only.
+For the hardware I am working with, we expose it to ALSA as one card capable of playing one PCM stream.
 
-Maybe that can give some hint.
+If we have one application using the hardware through ALSA, other applications are unable to get access to it. So, we want to have PulseAudio on top and use the pulse virtual device to render audio through ALSA. Is this a recommended way of having multiple applications access one audio HW simultaneously? Is there any other way of handling multiple applications get access to the same hardware?
 
-Daniel
+Also, why are mmap and munmap operations required in ALSA?
+Right now, we do not have mmap and munmap operations exposed. Though the hardware constraints have "SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_MMAP_VALID" defined. Looks like, if we have to PulseAudio on top, mmap operations are required in ALSA.
+
+If there is a close enough ALSA implementation in the current Linux kernel that I can lookup, please point me to that.
+
+Any help/suggestions are welcome.
+
+Thanks,
+Srikanth
