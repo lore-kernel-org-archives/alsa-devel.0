@@ -1,19 +1,26 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [patch 0/5] kirkwood openrd client audio support -
-	v3
-Date: Wed, 26 May 2010 00:18:32 +0100
-Message-ID: <20100525231831.GA11785@sirena.org.uk>
-References: <20100525122236.841941526@mandriva.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Mixer volume/decibel mapping
+Date: Wed, 26 May 2010 07:24:51 +0800
+Message-ID: <AANLkTim4sq_jBHYvxnLk2Pw5bdUDEMJahHPBJGIXH8ds@mail.gmail.com>
+References: <201005191834.57919.vand2@gmx.de>
+	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
+	<4BF629B3.9020904@ladisch.de>
+	<201005210951.36495.peter.ujfalusi@nokia.com>
+	<4BF658C6.4030404@ladisch.de>
+	<AANLkTikXWtp87B0Gq_B-vQZXZlBl_MEBqbuHt6N5cTbi@mail.gmail.com>
+	<4BFB8C89.3010207@ladisch.de>
+	<AANLkTimNj_7k_l7nKLk87towdjtN5j0CSdmws02gpg8v@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2D26C245A2
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3AF9A245A8
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 01:18:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100525122236.841941526@mandriva.com>
+	Wed, 26 May 2010 01:24:52 +0200 (CEST)
+Received: by pwj9 with SMTP id 9so3456729pwj.38
+	for <alsa-devel@alsa-project.org>; Tue, 25 May 2010 16:24:51 -0700 (PDT)
+In-Reply-To: <AANLkTimNj_7k_l7nKLk87towdjtN5j0CSdmws02gpg8v@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,20 +30,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: apatard@mandriva.com
-Cc: alsa-devel@alsa-project.org, nico@fluxnic.net, saeed@marvell.com, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 25, 2010 at 02:22:36PM +0200, apatard@mandriva.com wrote:
+2010/5/25 James Courtier-Dutton <james.dutton@gmail.com>
 
-> It's a new try to get merged kirkwood openrd client support.
+>
+>
+> Could this maybe explain why pulseaudio was having such problems with
+> alsa with regards to gain controls????
+>
 
-> The changes are :
-> - set window configuration according to dma address
-> - namespaced all cs42l51 #define
-> - modified cs42l51_dac_names array according to what proposed Mark Brown
-> - use SOC_DOUBLE_TLV for mic boost
+I don't think so since no soc user report wrong dB range
 
-This looks mostly OK to me - I had a few comments on the CODEC driver
-but they're fairly minor.  It'd be good to get some input from the
-Kirkwood guys, particularly with regard to the merge path here.
+http://www.pulseaudio.org/wiki/WritingVolumeControlUIs
+
+If the flat volume model of PA is  0% to 150% , this mean that alsa-lib does
+not provide any DB scale suitable for PA to implement dB info for the pulse
+device as DB_LINEAR require max is 0dB ( at least capture stream must have
+gain )
+
+only one of the PA developer complain about his HDA codec has incorrect dB
+range but not willing to provide alsa-info.sh
+
+There is a patch which may affect the dB scale
+
+http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=7c7767ebe2fa847c91a0dd5551ca422aba359473;hp=29fdbec2dcb1ce364812778271056aa9516ff3ed
