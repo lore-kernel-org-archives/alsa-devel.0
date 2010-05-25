@@ -1,21 +1,16 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 1/1] ALSA: usb-audio: add support for Akai
- MPD16
-Date: Tue, 25 May 2010 11:39:57 +0200
-Message-ID: <20100525093957.GC30801@buzzloop.caiaq.de>
-References: <1274299579-12990-1-git-send-email-wdev@foltman.com>
-	<4BF4E440.9030105@ladisch.de> <4BF4E97A.9020209@foltman.com>
-	<4BF4FF32.8080206@ladisch.de> <4BFB9346.4050701@foltman.com>
+From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Subject: [PATCH 0/7] ASoC: TWL4030: put the codec to off when
+	not active
+Date: Tue, 25 May 2010 14:34:01 +0300
+Message-ID: <1274787248-18583-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 523AC2439E
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 414FA24476
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 11:40:30 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4BFB9346.4050701@foltman.com>
+	Tue, 25 May 2010 13:34:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,23 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Foltman <wdev@foltman.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
+Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 25, 2010 at 10:07:18AM +0100, Krzysztof Foltman wrote:
-> On 20/05/10 10:21, Clemens Ladisch wrote:
-> 
-> > The comments in this file are usually only about the protocol itself,
-> > because this is what the driver needs to know.
-> 
-> Okay. Any comments about the 20 May version of the patch? It has the 
-> output routine almost completely rewritten, and the comments are limited 
-> to essential stuff (anyone can now find the previous version with 
-> protocol description by googling mpd16 protocol, so it should be OK).
+Hello,
 
-It's commited already, see
+The following series at the end will let the twl4030 codec to use BIAS_OFF
+instead of BIAS_STANDBY.
+The difference in power consumption is about 0.5mA.
 
-  http://git.kernel.org/?p=linux/kernel/git/tiwai/sound-2.6.git;a=summary
+To achieve this:
+- The regcache has been reseted to codec default
+- The codec initialization has been optimized, it is no longer writes all 73
+  registers at startup, but only modifies few selected one.
+- The power related code has been cleaned up, and optimized
+- Support added for machine drivers to select the offset cancellation path
+- debug support for checking the codec default registers (machine drivers can
+  ask for checking, but shall be disabled in production).
 
-Daniel
+I guess that's it.
+The driver has been tested on a custom board with twl5031. It passed all of our
+internal test cases covering much of the codec features.
+
+---
+Peter Ujfalusi (7):
+  ASoC: TWL4030: Revisit codec defaults
+  ASoC: TWL4030: Remove wrapper for power down
+  ASoC: TWL4030: Make offset cancellation path configurable
+  ASoC: TWL4030: Optimize the power up sequence
+  ASoC: TWL4030: Helper to check chip default registers
+  ASoC: TWL4030: Correct the ARXR2_APGA_CTL chip default
+  ASoC: TWL4030: Use BIAS_OFF instead of BIAS_STANDBY, when not in use
+
+ sound/soc/codecs/twl4030.c |  286 ++++++++++++++++++++++++--------------------
+ sound/soc/codecs/twl4030.h |    2 +
+ 2 files changed, 157 insertions(+), 131 deletions(-)
