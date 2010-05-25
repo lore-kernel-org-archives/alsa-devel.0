@@ -1,28 +1,24 @@
-From: Henning Thielemann <alsa@henning-thielemann.de>
-Subject: Type safe Haskell interface to ALSA sequencer
-Date: Tue, 25 May 2010 16:11:17 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1005251520410.6065@anubis.informatik.uni-halle.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Mixer volume/decibel mapping
+Date: Tue, 25 May 2010 16:36:06 +0200
+Message-ID: <4BFBE056.9000706@ladisch.de>
+References: <201005191834.57919.vand2@gmx.de>	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	<4BF629B3.9020904@ladisch.de>	<201005210951.36495.peter.ujfalusi@nokia.com>	<4BF658C6.4030404@ladisch.de>	<AANLkTik7mD1DAVWkOwM7sNu0EfgGApvzX9WRXWBOO4PI@mail.gmail.com>	<4BFB8E3E.3010209@ladisch.de>
+	<AANLkTin7CGFuW_fhHEbhaDB77DLbKoTvck7YvuzVzGUw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mlucom15.urz.uni-halle.de (mlucom15.urz.uni-halle.de
-	[141.48.3.10]) by alsa0.perex.cz (Postfix) with ESMTP id 01348245A8
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8157D245CD
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 16:11:30 +0200 (CEST)
-Received: from mserv3.urz.uni-halle.de ([141.48.3.161])
-	by mlucom15.urz.uni-halle.de with esmtp  (Exim 4.71)
-	id 1OGuqv-0000cH-SU for <alsa-devel@alsa-project.org>
-	; Tue, 25 May 2010 16:11:30 +0200
-Received: from janus.informatik.uni-halle.de ([141.48.9.42])
-	by mail.uni-halle.de
-	(Sun Java(tm) System Messaging Server 6.3-11.01 (built Feb 12 2010;
-	32bit)) with ESMTP id <0L2Z00E9SBET9R00@mail.uni-halle.de> for
-	alsa-devel@alsa-project.org; Tue, 25 May 2010 16:11:17 +0200 (CEST)
-Received: from anubis.informatik.uni-halle.de
-	(anubis.informatik.uni-halle.de [141.48.165.107])
-	by janus.informatik.uni-halle.de (Postfix) with SMTP id AE12CC6D73	for
-	<alsa-devel@alsa-project.org>; Tue, 25 May 2010 16:11:17 +0200 (CEST)
+	Tue, 25 May 2010 16:36:53 +0200 (CEST)
+Received: from compute2.internal (compute2.internal [10.202.2.42])
+	by gateway1.messagingengine.com (Postfix) with ESMTP id DC7D9F85E3
+	for <alsa-devel@alsa-project.org>; Tue, 25 May 2010 10:36:08 -0400 (EDT)
+Received: from [10.1.2.19] (srv004.schk01.int.dmc-one.com [85.232.8.141])
+	by mail.messagingengine.com (Postfix) with ESMTPSA id 9B3D5592EE
+	for <alsa-devel@alsa-project.org>; Tue, 25 May 2010 10:36:07 -0400 (EDT)
+In-Reply-To: <AANLkTin7CGFuW_fhHEbhaDB77DLbKoTvck7YvuzVzGUw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,48 +31,31 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Raymond Yau wrote:
+> I have doubt about DECLARE_TLV_DB_LINEAR(ak4396_db_scale, TLV_DB_GAIN_MUTE, 0);
+> 
+> since the datasheet mention that dB range is only -48dB to 0dB
+> 
+> ATT = 20 log10 (ATT_DATA / 255) [dB]
+> 
+> How can AK4396 has scale of -inf DB to 0dB in the driver code  ?
 
-Dear ALSA developers,
+When ATT_DATA = 0, there is no output, which is an attenuation of -inf.
+The next value, ATT_DATA = 1, results in ATT = -48 dB.
 
-  I read the ALSA-Sequencer-API-Doxygen documentation, various 
-ALSA-MIDI-How-Tos and their examples and succeeded to work with ALSA 
-sequencers in Haskell. However, I'm still uncertain about the meaning of 
-the system components and how they interact. It is extensively documented, 
-what works, but not, what does not work. Whenever I do a mistake, ALSA 
-leaves me with an unspecific "operation not permitted" or "invalid 
-argument" error code. Thus I try to encode conditions in Haskell types.
+> BTW , if ymf7xx (DSP) only accept 16 bit digital PCM data and output to
+> 18-20 bit AC97 codec ,
 
-  For instance once I got an "Invalid argument" error code and only after 
-some investigation, I found that I opened the sequencer in Output mode but 
-later called event_input. (Actually I only wanted to output something, but 
-used event_input for synchronization using Echo events. Unfortunately the 
-intention of Echo messages is even not explained in the Doxygen stuff.) In 
-order to prevent another occurrence of this problem, I defined distinct 
-Haskell types for sequencers depending on the input mode. Now, event_input 
-is only allowed on sequencers that were opened in Output or Duplex mode.
+The DSP uses more precise values internally.
 
-  However I wondered, why I could create writeable ports in a output-only 
-sequencer. Does this make sense? Would it be reasonable to forbid 
-writeable ports in output sequencers and readable ports in input 
-sequencers by Haskell types? Is there a difference between 
-cap_read|cap_write and cap_duplex?
+> how can the per stream volume control has a scale -inf dB to 0dB ?
 
-  I also wondered why there can be several ports in one sequencer, since 
-multiple clients can connect to one port, and event_input and event_output 
-have no port argument. Further I wondered why queues are not bound to a 
-specific port. Can queues be shared amongst ports? Is it sensible to have 
-multiple queues in one sequencer? Why has sync_output_queue no queue 
-argument? The more I think about it, it seems to me that a port is more an 
-identifier, a part of an address, than a mailbox. I could use ports as 
-tags, that tell which part of an application to control. A queue looks 
-like a mail company and I can use the same sender and receiver addresses 
-across different companies. If this is true, then I think it would be 
-worth to mention this in the API documentation.
+multiplication factor 0:  dB = 20 log10(0) = -inf
+multiplication factor 1:  dB = 20 log10(1) = 0
 
-  In another example I called sync_output_queue in order to wait for all 
-events being sent, but it aborted with "Operation not permitted", whereas 
-I have seen example code where it works. What are the preconditions to 
-calling sync_output_queue?
+This is true regardless of the precision of the multiplier.  Even a one-
+bit factor behaves like this; in fact, this would describe a mute switch.
 
-  I really like to see a picture of how sequencers, clients, ports, 
-port_infos, queues, timers, events are related.
+
+HTH
+Clemens
