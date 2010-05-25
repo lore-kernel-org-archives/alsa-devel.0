@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: MMAP in ALSA
-Date: Tue, 25 May 2010 10:55:18 +0200
-Message-ID: <4BFB9076.7030709@ladisch.de>
-References: <BCF80163639E9F4296FC4B208F99BA47013899D48F@orsmsx504.amr.corp.intel.com>
+From: Krzysztof Foltman <wdev@foltman.com>
+Subject: Re: [PATCH 1/1] ALSA: usb-audio: add support for Akai
+ MPD16
+Date: Tue, 25 May 2010 10:07:18 +0100
+Message-ID: <4BFB9346.4050701@foltman.com>
+References: <1274299579-12990-1-git-send-email-wdev@foltman.com>	<4BF4E440.9030105@ladisch.de>	<4BF4E97A.9020209@foltman.com>
+	<4BF4FF32.8080206@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6A73324157
+Received: from outbound-mail-01.bluehost.com (cpoproxy1-pub.bluehost.com
+	[69.89.21.11]) by alsa0.perex.cz (Postfix) with SMTP id 0DBA724368
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 10:55:33 +0200 (CEST)
-In-Reply-To: <BCF80163639E9F4296FC4B208F99BA47013899D48F@orsmsx504.amr.corp.intel.com>
+	Tue, 25 May 2010 11:06:35 +0200 (CEST)
+In-Reply-To: <4BF4FF32.8080206@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,42 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "Varadarajan, Srikanth" <srikanth.varadarajan@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Varadarajan, Srikanth wrote:
-> If we have one application using the hardware through ALSA, other
-> applications are unable to get access to it. So, we want to have
-> PulseAudio on top and use the pulse virtual device to render audio
-> through ALSA. Is this a recommended way of having multiple applications
-> access one audio HW simultaneously?
+On 20/05/10 10:21, Clemens Ladisch wrote:
 
-Usually yes.
+> The comments in this file are usually only about the protocol itself,
+> because this is what the driver needs to know.
 
-> Is there any other way of handling multiple applications get access to
-> the same hardware?
+Okay. Any comments about the 20 May version of the patch? It has the 
+output routine almost completely rewritten, and the comments are limited 
+to essential stuff (anyone can now find the previous version with 
+protocol description by googling mpd16 protocol, so it should be OK).
 
-With ALSA's dmix plugin, but this requires that the hardware supports
-mmap, i.e., DMA to/from the main memory.
-
-> Also, why are mmap and munmap operations required in ALSA?
-
-They aren't, except for dmix.
-
-> Right now, we do not have mmap and munmap operations exposed.
-> Though the hardware constraints have "SNDRV_PCM_INFO_MMAP |
-> SNDRV_PCM_INFO_MMAP_VALID" defined.
-
-In most drivers, the buffer management, including mmap, is automatically
-handled by the ALSA framework.
-
-> If there is a close enough ALSA implementation in the current Linux
-> kernel that I can lookup, please point me to that.
-
-Close to what?  What kind of buffer does your device use, DMA in main
-memory, memory-mapped device memory, or PIO?
-
-
-Regards,
-Clemens
+Thanks,
+Krzysztof
