@@ -1,24 +1,20 @@
-From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
-Subject: Routing irq throw a gpio using the wm9713
-Date: Tue, 25 May 2010 18:01:19 +0200
-Message-ID: <4BFBF44F.1010000@gandalf.sssup.it>
+From: gnutoo <GNUtoo@no-log.org>
+Subject: Re: ASoC: Hooking a TI CODEC to a i.MX27 MCU
+Date: Tue, 25 May 2010 18:46:47 +0200
+Message-ID: <1274806007.4728.3.camel@gnutoo-desktop>
+References: <20100524074946.GC16346@www.longlandclan.yi.org>
+	<1274698156.3064.93.camel@odin>
+	<20100525004126.GA10968@www.longlandclan.yi.org>
+	<20100525022646.GA18030@www.longlandclan.yi.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from sssup.it (ms01.sssup.it [193.205.80.99])
-	by alsa0.perex.cz (Postfix) with ESMTP id B7CB824621
+Received: from smtp-out12.alice.it (smtp-out12.alice.it [85.37.17.107])
+	by alsa0.perex.cz (Postfix) with ESMTP id 664F324659
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 18:02:09 +0200 (CEST)
-Received: from [10.30.3.4] (HELO granpasso.retis)
-	by sssup.it (CommuniGate Pro SMTP 5.3.2)
-	with ESMTPS id 60456236 for alsa-devel@alsa-project.org;
-	Tue, 25 May 2010 17:59:15 +0200
-Received: from [192.168.74.18] ([193.205.82.13])
-	by granpasso.retis (8.14.4/8.14.4) with ESMTP id o4PG22p6082139
-	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 18:02:03 +0200 (CEST)
-	(envelope-from trimarchi@gandalf.sssup.it)
+	Tue, 25 May 2010 18:46:48 +0200 (CEST)
+In-Reply-To: <20100525022646.GA18030@www.longlandclan.yi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,34 +24,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Stuart Longland <redhatter@gentoo.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Tue, 2010-05-25 at 12:26 +1000, Stuart Longland wrote:
+> If there's any interest, I can format that as a patch and submit it...
+I'm very interested...
+I've an I.MX31 and a tlv320aic3x
 
-I'm trying to rise an irq using irq2 of the wm9713 so I have configured
-the codec like this:
+I've tried to import your driver in our 2.6.30 tree
+( http://gitorious.org/bug/bug-1x-linux-2-6-30/commits/bug1x-2.6.30 )
+and I have now the following issue:
 
-#define GPIO2 (1 << 2)
-#define GPIO6 (1 << 6)
+# modprobe bugsound
+No device for DAI tlv320aic3x
+bug1x_soc_init: hello...
+bug1x_soc_init: bug1x_snd_device = c79240c0
+bug1x_soc_init: calling platform_set_drvdata( c79240c0, bf07b66c)
+bug1x_soc_init: calling platform_device_add(c79240c0)
+bug1x_soc_init: platform_device_add(c79240c0) = 0
+bug1x_soc_init = 0 (success)
 
-/* Enable Interrupt Output enable on GPIO02 */
-reg = codec->read(codec, AC97_MISC_AFE);
-codec->write(codec, AC97_MISC_AFE, reg & ~GPIO02);
+I'll re-read the mails and try harder...
+Thanks a lot!!!!
 
-reg = codec->read(codec, AC97_GPIO_CFG);
-codec->write(codec, AC97_GPIO_CFG, reg & ~GPIO02);
-
-reg = codec->read(codec, AC97_GPIO_STICKY);
-codec->write(codec, AC97_GPIO_STICKY, reg | GPIO06);
-
-reg = codec->read(codec, AC97_GPIO_WAKEUP);
-codec->write(codec, AC97_GPIO_WAKEUP, reg | GPIO06);
-
-
-Then create a soc-jack on a gpio that is wired with the gpio6
-of the codec.
-
-I don't received any interrupt
-
-Michael Trimarchi
+Denis.
