@@ -1,24 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Mixer volume/decibel mapping
-Date: Tue, 25 May 2010 10:49:13 +0200
-Message-ID: <4BFB8F09.9010302@ladisch.de>
-References: <201005191834.57919.vand2@gmx.de>	
-	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	
-	<4BF629B3.9020904@ladisch.de>	
-	<201005210951.36495.peter.ujfalusi@nokia.com>	
-	<4BF658C6.4030404@ladisch.de>	
-	<AANLkTikXWtp87B0Gq_B-vQZXZlBl_MEBqbuHt6N5cTbi@mail.gmail.com>	
-	<4BFB8C89.3010207@ladisch.de>
-	<AANLkTimNj_7k_l7nKLk87towdjtN5j0CSdmws02gpg8v@mail.gmail.com>
+Subject: Re: MMAP in ALSA
+Date: Tue, 25 May 2010 10:55:18 +0200
+Message-ID: <4BFB9076.7030709@ladisch.de>
+References: <BCF80163639E9F4296FC4B208F99BA47013899D48F@orsmsx504.amr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 4A7F52413A
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 6A73324157
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 10:49:16 +0200 (CEST)
-In-Reply-To: <AANLkTimNj_7k_l7nKLk87towdjtN5j0CSdmws02gpg8v@mail.gmail.com>
+	Tue, 25 May 2010 10:55:33 +0200 (CEST)
+In-Reply-To: <BCF80163639E9F4296FC4B208F99BA47013899D48F@orsmsx504.amr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,24 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Lennart Poettering <lennart@poettering.net>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "Varadarajan, Srikanth" <srikanth.varadarajan@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> On 25 May 2010 09:38, Clemens Ladisch <clemens@ladisch.de> wrote:
-> > All the others seem to be mistakes:
-> >
-> > > soc/codecs/stac9766.c:...
-> > > soc/codecs/wm8350.c:...
-> > > soc/codecs/wm8400.c:...
-> > > soc/codecs/wm8990.c:...
-> 
-> Could this maybe explain why pulseaudio was having such problems with
-> alsa with regards to gain controls????
+Varadarajan, Srikanth wrote:
+> If we have one application using the hardware through ALSA, other
+> applications are unable to get access to it. So, we want to have
+> PulseAudio on top and use the pulse virtual device to render audio
+> through ALSA. Is this a recommended way of having multiple applications
+> access one audio HW simultaneously?
 
-Only if it happens on embedded hardware that uses these particular
-codecs.
+Usually yes.
+
+> Is there any other way of handling multiple applications get access to
+> the same hardware?
+
+With ALSA's dmix plugin, but this requires that the hardware supports
+mmap, i.e., DMA to/from the main memory.
+
+> Also, why are mmap and munmap operations required in ALSA?
+
+They aren't, except for dmix.
+
+> Right now, we do not have mmap and munmap operations exposed.
+> Though the hardware constraints have "SNDRV_PCM_INFO_MMAP |
+> SNDRV_PCM_INFO_MMAP_VALID" defined.
+
+In most drivers, the buffer management, including mmap, is automatically
+handled by the ALSA framework.
+
+> If there is a close enough ALSA implementation in the current Linux
+> kernel that I can lookup, please point me to that.
+
+Close to what?  What kind of buffer does your device use, DMA in main
+memory, memory-mapped device memory, or PIO?
 
 
 Regards,
