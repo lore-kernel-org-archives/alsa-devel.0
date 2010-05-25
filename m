@@ -1,24 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Mixer volume/decibel mapping
-Date: Tue, 25 May 2010 16:36:06 +0200
-Message-ID: <4BFBE056.9000706@ladisch.de>
-References: <201005191834.57919.vand2@gmx.de>	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	<4BF629B3.9020904@ladisch.de>	<201005210951.36495.peter.ujfalusi@nokia.com>	<4BF658C6.4030404@ladisch.de>	<AANLkTik7mD1DAVWkOwM7sNu0EfgGApvzX9WRXWBOO4PI@mail.gmail.com>	<4BFB8E3E.3010209@ladisch.de>
-	<AANLkTin7CGFuW_fhHEbhaDB77DLbKoTvck7YvuzVzGUw@mail.gmail.com>
+Subject: Re: Type safe Haskell interface to ALSA sequencer
+Date: Tue, 25 May 2010 17:27:30 +0200
+Message-ID: <4BFBEC62.7030101@ladisch.de>
+References: <alpine.DEB.2.00.1005251520410.6065@anubis.informatik.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 8157D245CD
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id CE914245F6
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 16:36:53 +0200 (CEST)
-Received: from compute2.internal (compute2.internal [10.202.2.42])
-	by gateway1.messagingengine.com (Postfix) with ESMTP id DC7D9F85E3
-	for <alsa-devel@alsa-project.org>; Tue, 25 May 2010 10:36:08 -0400 (EDT)
-Received: from [10.1.2.19] (srv004.schk01.int.dmc-one.com [85.232.8.141])
-	by mail.messagingengine.com (Postfix) with ESMTPSA id 9B3D5592EE
-	for <alsa-devel@alsa-project.org>; Tue, 25 May 2010 10:36:07 -0400 (EDT)
-In-Reply-To: <AANLkTin7CGFuW_fhHEbhaDB77DLbKoTvck7YvuzVzGUw@mail.gmail.com>
+	Tue, 25 May 2010 17:27:36 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.00.1005251520410.6065@anubis.informatik.uni-halle.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,34 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Henning Thielemann <alsa@henning-thielemann.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote:
-> I have doubt about DECLARE_TLV_DB_LINEAR(ak4396_db_scale, TLV_DB_GAIN_MUTE, 0);
-> 
-> since the datasheet mention that dB range is only -48dB to 0dB
-> 
-> ATT = 20 log10 (ATT_DATA / 255) [dB]
-> 
-> How can AK4396 has scale of -inf DB to 0dB in the driver code  ?
+Henning Thielemann wrote:
+> ...
+>   However I wondered, why I could create writeable ports in a output-only
+> sequencer. Does this make sense? Would it be reasonable to forbid
+> writeable ports in output sequencers and readable ports in input
+> sequencers by Haskell types?
 
-When ATT_DATA = 0, there is no output, which is an attenuation of -inf.
-The next value, ATT_DATA = 1, results in ATT = -48 dB.
+The PORT_CAP flags say what _other_ clients are allowed to do with the
+port, but they do not enforce restrictions for the port's client itself.
 
-> BTW , if ymf7xx (DSP) only accept 16 bit digital PCM data and output to
-> 18-20 bit AC97 codec ,
+For example, aplaymidi needs a source port for the events it sends, but
+this port isn't of interest to any other application, so it doesn't set
+_any_ CAP flag.
 
-The DSP uses more precise values internally.
+Whether an application can read/write events is determined only by the
+INPUT/OUTPUT flags given to snd_seq_open.
 
-> how can the per stream volume control has a scale -inf dB to 0dB ?
+> Is there a difference between cap_read|cap_write and cap_duplex?
 
-multiplication factor 0:  dB = 20 log10(0) = -inf
-multiplication factor 1:  dB = 20 log10(1) = 0
+In theory, the latter indicates that input and output are allowed at the
+same time.  (In practice, nobody cares.)
 
-This is true regardless of the precision of the multiplier.  Even a one-
-bit factor behaves like this; in fact, this would describe a mute switch.
+>   I also wondered why there can be several ports in one sequencer, since
+> multiple clients can connect to one port,
+
+MIDI has a limit of 16 channels per port, so it is often necessary to
+have multiple ports per device.
+
+> and event_input and event_output have no port argument.
+
+Events are sent between clients; their source and destination ports are
+more like labels.
+
+> Further I wondered why queues are not bound to a specific port. Can
+> queues be shared amongst ports?
+
+Queues are about _timing_; they allow events sent through them to be
+timestamped and/or to be delivered at a specific time.
+
+Queues do not have a direct relationship with ports, the events sent
+through them have.
+
+> Is it sensible to have multiple queues in one sequencer?
+
+If you want to use multiple timers.
+
+> Why has sync_output_queue no queue argument?
+
+Because it does not actually apply to a sequencer queue.  Events that
+are scheduled to be sent later remain in the sending client's output
+buffer until they are actually delivered.  This output buffer is called
+"queue" here.
+
+> ... it would be worth to mention this in the API documentation.
+
+I've added an entry to my TODO list to move the "documentation" TODO
+entry further up.
+
+>   In another example I called sync_output_queue in order to wait for all
+> events being sent, but it aborted with "Operation not permitted", whereas
+> I have seen example code where it works. What are the preconditions to
+> calling sync_output_queue?
+
+In theory, none except having the client opened for output, and I don't
+see any code that could return -EPERM for this.
 
 
-HTH
+Regards,
 Clemens
