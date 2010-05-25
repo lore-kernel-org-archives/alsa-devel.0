@@ -1,20 +1,17 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [PATCH 5/7] ASoC: TWL4030: Helper to check chip
-	default registers
-Date: Tue, 25 May 2010 15:20:40 +0300
-Message-ID: <201005251520.40206.peter.ujfalusi@nokia.com>
-References: <1274787248-18583-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1274787248-18583-6-git-send-email-peter.ujfalusi@nokia.com>
-	<1274788644.3000.151.camel@odin>
+From: apatard@mandriva.com
+Subject: [patch 2/5] openrd-client: initialise audio
+Date: Tue, 25 May 2010 14:22:38 +0200
+Message-ID: <20100525122340.832019972@mandriva.com>
+References: <20100525122236.841941526@mandriva.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 715DE244E3
+Received: from jules.rtp-net.org (sat78-1-82-232-42-61.fbx.proxad.net
+	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id 0197A244FF
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 14:20:46 +0200 (CEST)
-In-Reply-To: <1274788644.3000.151.camel@odin>
+	Tue, 25 May 2010 14:22:55 +0200 (CEST)
+Content-Disposition: inline; filename=openrd_init_audio_dev.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
+Cc: nico@fluxnic.net, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, Arnaud Patard <apatard@mandriva.com>, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-PiAKPiBJcyB0aGlzIHB1cmVseSBmb3IgaW5mb3JtYXRpb24vZGVidWcgcHVycG9zZXMgPwoKWWVz
-LCB0aGUgZHJpdmVyIHN1cHBvcnQgdHdsNDAzMCwgdHdsNTAzMCwgdHdsNTAzMSwgdHBzKnNvbWV0
-aGluZyogY2hpcHMuCklmIHNvbWVvbmUsIHdobyBoYXZlIGFjY2VzcyB0byB0aG9zZSBjaGlwcywg
-YW5kIGluIGRvdWJ0LCBjYW4gY2hlY2sgaXQuCiAKPiBXaHkgZG8gd2UgbmVlZCB0byBjaGVjayBk
-ZWZhdWx0IHZhbGVzIGF0IGluaXQoKS4gSXMgdGhlcmUgYW5vdGhlciBkcml2ZXIKPiBjaGFuZ2lu
-ZyB0aGUgYXVkaW8gY29kZWMgcmVnaXN0ZXJzID8KClRoaXMgZHJpdmVyIGlzIGdvaW5nIHRvIGNo
-YW5nZSBpdC4KSXQgaXMgYWxzbyBwb3NzaWJsZSB0aGF0IHRoZSBib290bG9hZGVyIGNoYW5nZWQg
-dGhlbSAoc3RhcnR1cCB0b25lPykuClNvIGl0IGlzIG5vdCByZWFsbHkgYnVsbGV0cHJvb2YsIGJ1
-dCBhdCBsZWFzdCBpdCBoZWxwZWQgbWUgdG8gZmluZCBvdXQgdGhlIHRoZSAKQVJYUjJfQVBHQV9D
-VEwgcmVnaXN0ZXIgZG9lcyBub3QgaGF2ZSB0aGUgcmVzZXQgdmFsdWUsIHdoaWNoIGl0IHN1cHBv
-c2VkIHRvIApoYXZlLgoKV2VsbCwgSSBjYW4gcmVtb3ZlIGl0LCBidXQgSSB0aG91Z2h0IHRoYXQg
-aXQgaXMgYSBuaWNlIHRvdWNoIDspCgo+IAo+IFRoYW5rcwo+IAo+IExpYW0KCi0tIApQw6l0ZXIK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This patch is reponsible for enabling audio on the openrd client board
+
+Signed-off-by: Arnaud Patard <apatard@mandriva.com>
+
+Index: sound-2.6/arch/arm/mach-kirkwood/openrd-setup.c
+===================================================================
+--- sound-2.6.orig/arch/arm/mach-kirkwood/openrd-setup.c	2010-05-15 17:03:48.962586499 +0200
++++ sound-2.6/arch/arm/mach-kirkwood/openrd-setup.c	2010-05-15 17:04:50.818586283 +0200
+@@ -15,6 +15,7 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/ata_platform.h>
+ #include <linux/mv643xx_eth.h>
++#include <linux/i2c.h>
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+ #include <mach/kirkwood.h>
+@@ -60,6 +61,12 @@ static unsigned int openrd_mpp_config[]
+ 	0
+ };
+ 
++static struct i2c_board_info i2c_board_info[] __initdata = {
++	{
++		I2C_BOARD_INFO("cs42l51", 0x4a),
++	},
++};
++
+ static void __init openrd_init(void)
+ {
+ 	/*
+@@ -80,6 +87,12 @@ static void __init openrd_init(void)
+ 	kirkwood_sdio_init(&openrd_mvsdio_data);
+ 
+ 	kirkwood_i2c_init();
++
++	if (machine_is_openrd_client()) {
++		i2c_register_board_info(0, i2c_board_info,
++			ARRAY_SIZE(i2c_board_info));
++		kirkwood_audio_init();
++	}
+ }
+ 
+ static int __init openrd_pci_init(void)
