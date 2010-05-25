@@ -1,20 +1,19 @@
-From: gnutoo <GNUtoo@no-log.org>
-Subject: Re: ASoC: Hooking a TI CODEC to a i.MX27 MCU
-Date: Tue, 25 May 2010 18:46:47 +0200
-Message-ID: <1274806007.4728.3.camel@gnutoo-desktop>
-References: <20100524074946.GC16346@www.longlandclan.yi.org>
-	<1274698156.3064.93.camel@odin>
-	<20100525004126.GA10968@www.longlandclan.yi.org>
-	<20100525022646.GA18030@www.longlandclan.yi.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/7] ASoC: TWL4030: put the codec to off
+	when not active
+Date: Tue, 25 May 2010 10:35:59 -0700
+Message-ID: <20100525173558.GA22538@opensource.wolfsonmicro.com>
+References: <1274787248-18583-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out12.alice.it (smtp-out12.alice.it [85.37.17.107])
-	by alsa0.perex.cz (Postfix) with ESMTP id 664F324659
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 22640246A2
 	for <alsa-devel@alsa-project.org>;
-	Tue, 25 May 2010 18:46:48 +0200 (CEST)
-In-Reply-To: <20100525022646.GA18030@www.longlandclan.yi.org>
+	Tue, 25 May 2010 19:35:51 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1274787248-18583-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,29 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stuart Longland <redhatter@gentoo.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-05-25 at 12:26 +1000, Stuart Longland wrote:
-> If there's any interest, I can format that as a patch and submit it...
-I'm very interested...
-I've an I.MX31 and a tlv320aic3x
+On Tue, May 25, 2010 at 02:34:01PM +0300, Peter Ujfalusi wrote:
 
-I've tried to import your driver in our 2.6.30 tree
-( http://gitorious.org/bug/bug-1x-linux-2-6-30/commits/bug1x-2.6.30 )
-and I have now the following issue:
+> The following series at the end will let the twl4030 codec to use BIAS_OFF
+> instead of BIAS_STANDBY.
 
-# modprobe bugsound
-No device for DAI tlv320aic3x
-bug1x_soc_init: hello...
-bug1x_soc_init: bug1x_snd_device = c79240c0
-bug1x_soc_init: calling platform_set_drvdata( c79240c0, bf07b66c)
-bug1x_soc_init: calling platform_device_add(c79240c0)
-bug1x_soc_init: platform_device_add(c79240c0) = 0
-bug1x_soc_init = 0 (success)
+All
 
-I'll re-read the mails and try harder...
-Thanks a lot!!!!
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 
-Denis.
+but I do agree with Liam's comment about forcing the register values
+into the expected state rather than just warning at startup.
+
+> The difference in power consumption is about 0.5mA.
+
+Nice.
