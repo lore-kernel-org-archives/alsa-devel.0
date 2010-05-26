@@ -1,58 +1,48 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Mixer volume/decibel mapping
-Date: Wed, 26 May 2010 07:24:51 +0800
-Message-ID: <AANLkTim4sq_jBHYvxnLk2Pw5bdUDEMJahHPBJGIXH8ds@mail.gmail.com>
-References: <201005191834.57919.vand2@gmx.de>
-	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
-	<4BF629B3.9020904@ladisch.de>
-	<201005210951.36495.peter.ujfalusi@nokia.com>
-	<4BF658C6.4030404@ladisch.de>
-	<AANLkTikXWtp87B0Gq_B-vQZXZlBl_MEBqbuHt6N5cTbi@mail.gmail.com>
-	<4BFB8C89.3010207@ladisch.de>
-	<AANLkTimNj_7k_l7nKLk87towdjtN5j0CSdmws02gpg8v@mail.gmail.com>
+From: Nicolas Pitre <nico@fluxnic.net>
+Subject: Re: [patch 4/5] orion/kirkwood: Add i2s support
+Date: Tue, 25 May 2010 20:31:00 -0400 (EDT)
+Message-ID: <alpine.LFD.2.00.1005252025210.24526@xanadu.home>
+References: <20100525122236.841941526@mandriva.com>
+	<20100525122341.443140710@mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3AF9A245A8
-	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 01:24:52 +0200 (CEST)
-Received: by pwj9 with SMTP id 9so3456729pwj.38
-	for <alsa-devel@alsa-project.org>; Tue, 25 May 2010 16:24:51 -0700 (PDT)
-In-Reply-To: <AANLkTimNj_7k_l7nKLk87towdjtN5j0CSdmws02gpg8v@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-reply-to: <20100525122341.443140710@mandriva.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Arnaud Patard <apatard@mandriva.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-2010/5/25 James Courtier-Dutton <james.dutton@gmail.com>
+On Tue, 25 May 2010, apatard@mandriva.com wrote:
 
->
->
-> Could this maybe explain why pulseaudio was having such problems with
-> alsa with regards to gain controls????
->
+> This patch enables support for the i2s controller available on orion/kirkwood platforms
+> 
+> Signed-off-by: Arnaud Patard <apatard@mandriva.com>
 
-I don't think so since no soc user report wrong dB range
+The actual Orion processor family has no I2S/audio support.  It would be 
+better if all the audio related stuff was renamed to "kirkwood" and 
+"KIRKWOOD_*" instead.
 
-http://www.pulseaudio.org/wiki/WritingVolumeControlUIs
+> Index: sound-2.6/sound/soc/orion/Kconfig
+> ===================================================================
+> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+> +++ sound-2.6/sound/soc/orion/Kconfig	2010-05-25 10:31:24.601080937 +0200
+> @@ -0,0 +1,11 @@
+> +config SND_ORION_SOC
+> +	tristate "SoC Audio for the Marvell Orion/Kirkwood chip"
+> +	depends on ARCH_KIRKWOOD || ARCH_ARCH_ORION5X
 
-If the flat volume model of PA is  0% to 150% , this mean that alsa-lib does
-not provide any DB scale suitable for PA to implement dB info for the pulse
-device as DB_LINEAR require max is 0dB ( at least capture stream must have
-gain )
+ARCH_ARCH_ORION5X should probably be ARCH_ORION5X.  But again, this is 
+wrong to add ARCH_ORION5X anyway.
 
-only one of the PA developer complain about his HDA codec has incorrect dB
-range but not willing to provide alsa-info.sh
 
-There is a patch which may affect the dB scale
-
-http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=7c7767ebe2fa847c91a0dd5551ca422aba359473;hp=29fdbec2dcb1ce364812778271056aa9516ff3ed
+Nicolas
