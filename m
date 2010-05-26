@@ -1,17 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH v2 8/8] ASoC: TWL4030: Add functionalty to
-	reset the registers
-Date: Wed, 26 May 2010 11:38:21 +0300
-Message-ID: <1274863101-18514-9-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH v2 5/8] ASoC: TWL4030: Helper to check chip
+	default registers
+Date: Wed, 26 May 2010 11:38:18 +0300
+Message-ID: <1274863101-18514-6-git-send-email-peter.ujfalusi@nokia.com>
 References: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 727F9103940
+Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
+	by alsa0.perex.cz (Postfix) with ESMTP id 09E9C103955
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 10:38:44 +0200 (CEST)
+	Wed, 26 May 2010 10:38:46 +0200 (CEST)
 In-Reply-To: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,78 +26,69 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Machine driver can instruct the codec driver to reset the
-chip registers to their default values at probe time.
-
-If machine driver does not provide setup data, then the
-registers are going to be reseted to their defaults, to
-be safe.
-
-If the developer on the platform confirms that the register
-reset is not needed, than it can be skipped, saving ~20ms
-time in probe.
-
-As safety measure do the register reset at remove time also.
+Since the twl4030 codec driver supports different version
+of the PM chip, a helper function can come handy, which
+can check the driver's default versus the chip values.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl4030.c |   17 +++++++++++++++++
+ sound/soc/codecs/twl4030.c |   23 +++++++++++++++++++++++
  sound/soc/codecs/twl4030.h |    1 +
- 2 files changed, 18 insertions(+), 0 deletions(-)
+ 2 files changed, 24 insertions(+), 0 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 7bd5f33..7bede64 100644
+index 08f24de..cd913ef 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -262,6 +262,17 @@ static inline void twl4030_check_defaults(struct snd_soc_codec *codec)
- 		 difference, difference ? "Not OK" : "OK");
+@@ -243,6 +243,25 @@ static void twl4030_codec_enable(struct snd_soc_codec *codec, int enable)
+ 	udelay(10);
  }
- 
-+static inline void twl4030_reset_registers(struct snd_soc_codec *codec)
+
++static inline void twl4030_check_defaults(struct snd_soc_codec *codec)
 +{
-+	int i;
++	int i, difference = 0;
++	u8 val;
 +
-+	/* set all audio section registers to reasonable defaults */
-+	for (i = TWL4030_REG_OPTION; i <= TWL4030_REG_MISC_SET_2; i++)
-+		if (i != TWL4030_REG_APLL_CTL)
-+			twl4030_write(codec, i, twl4030_reg[i]);
-+
++	dev_dbg(codec->dev, "Checking TWL audio default configuration\n");
++	for (i = 1; i <= TWL4030_REG_MISC_SET_2; i++) {
++		twl4030_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &val, i);
++		if (val != twl4030_reg[i]) {
++			difference++;
++			dev_dbg(codec->dev,
++				 "Reg 0x%02x: chip: 0x%02x driver: 0x%02x\n",
++				 i, val, twl4030_reg[i]);
++		}
++	}
++	dev_dbg(codec->dev, "Found %d non maching registers. %s\n",
++		 difference, difference ? "Not OK" : "OK");
 +}
 +
  static void twl4030_init_chip(struct platform_device *pdev)
  {
  	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-@@ -275,6 +286,10 @@ static void twl4030_init_chip(struct platform_device *pdev)
- 	if (setup && setup->check_defaults)
- 		twl4030_check_defaults(codec);
- 
-+	/* Reset registers, if no setup data or if instructed to do so */
-+	if (!setup || (setup && setup->reset_registers))
-+		twl4030_reset_registers(codec);
+@@ -252,6 +271,10 @@ static void twl4030_init_chip(struct platform_device *pdev)
+ 	u8 reg, byte;
+ 	int i = 0;
+
++	/* Check defaults, if instructed before anything else */
++	if (setup && setup->check_defaults)
++		twl4030_check_defaults(codec);
 +
  	/* Refresh APLL_CTL register from HW */
  	twl4030_i2c_read_u8(TWL4030_MODULE_AUDIO_VOICE, &byte,
  			    TWL4030_REG_APLL_CTL);
-@@ -2271,6 +2286,8 @@ static int twl4030_soc_remove(struct platform_device *pdev)
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct snd_soc_codec *codec = socdev->card->codec;
- 
-+	/* Reset registers to their chip default before leaving */
-+	twl4030_reset_registers(codec);
- 	twl4030_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	snd_soc_free_pcms(socdev);
- 	snd_soc_dapm_free(socdev);
 diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
-index c22542c..788e3d1 100644
+index c98e303..c22542c 100644
 --- a/sound/soc/codecs/twl4030.h
 +++ b/sound/soc/codecs/twl4030.h
-@@ -44,6 +44,7 @@ struct twl4030_setup_data {
+@@ -43,6 +43,7 @@ struct twl4030_setup_data {
+ 	unsigned int ramp_delay_value;
  	unsigned int sysclk;
  	unsigned int offset_cncl_path;
- 	unsigned int check_defaults:1;
-+	unsigned int reset_registers:1;
++	unsigned int check_defaults:1;
  	unsigned int hs_extmute:1;
  	void (*set_hs_extmute)(int mute);
  };
--- 
+--
 1.7.1
