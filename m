@@ -1,16 +1,18 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH v2 0/8] ASoC: TWL4030: put the codec to off
-	when not active
-Date: Wed, 26 May 2010 11:38:13 +0300
-Message-ID: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH v2 3/8] ASoC: TWL4030: Make offset cancellation
+	path configurable
+Date: Wed, 26 May 2010 11:38:16 +0300
+Message-ID: <1274863101-18514-4-git-send-email-peter.ujfalusi@nokia.com>
+References: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 373C510392A
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3AD6A103935
 	for <alsa-devel@alsa-project.org>;
 	Wed, 26 May 2010 10:38:34 +0200 (CEST)
+In-Reply-To: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,49 +26,66 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Add means for machine drivers to select the path for offset
+cancellation.
+Reset the reg cache value to the chip reset value at the
+same time.
 
-Changes since v1:
-- Patch 3: removed the shifting of offset cancellation value
-- Added register content reset functionality as suggested by Liam and Mark
+Machine drivers can specify which path need to be used for
+offset cancellation via the twl4030_setup.offset_cncl_path.
+For paths use the defines from
+include/linux/mfd/twl4030-codec.h:
+TWL4030_OFFSET_CNCL_SEL_*
 
-I have added Mark's Acked-by to patch 1-7, patch 8 is a new one, which shall
-address the comments regarding to the register content reset.
-
-To-do after this series:
-Revisit the register reset functionality to use burst write.
-
-Intro mail from the original series:
-
-The following series at the end will let the twl4030 codec to use BIAS_OFF
-instead of BIAS_STANDBY.
-The difference in power consumption is about 0.5mA.
-
-To achieve this:
-- The regcache has been reseted to codec default
-- The codec initialization has been optimized, it is no longer writes all 73
-  registers at startup, but only modifies few selected one.
-- The power related code has been cleaned up, and optimized
-- Support added for machine drivers to select the offset cancellation path
-- debug support for checking the codec default registers (machine drivers can
-  ask for checking, but shall be disabled in production).
-- Added codec register reset functionality
-
-I guess that's it.
-The driver has been tested on a custom board with twl5031. It passed all of our
-internal test cases covering much of the codec features.
-
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
-Peter Ujfalusi (8):
-  ASoC: TWL4030: Revisit codec defaults
-  ASoC: TWL4030: Remove wrapper for power down
-  ASoC: TWL4030: Make offset cancellation path configurable
-  ASoC: TWL4030: Optimize the power up sequence
-  ASoC: TWL4030: Helper to check chip default registers
-  ASoC: TWL4030: Correct the ARXR2_APGA_CTL chip default
-  ASoC: TWL4030: Use BIAS_OFF instead of BIAS_STANDBY, when not in use
-  ASoC: TWL4030: Add functionalty to reset the registers
+ sound/soc/codecs/twl4030.c |    6 +++++-
+ sound/soc/codecs/twl4030.h |    1 +
+ 2 files changed, 6 insertions(+), 1 deletions(-)
 
- sound/soc/codecs/twl4030.c |  291 +++++++++++++++++++++++++-------------------
- sound/soc/codecs/twl4030.h |    3 +
- 2 files changed, 169 insertions(+), 125 deletions(-)
+diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+index 1e0aba5..a6cbaf3 100644
+--- a/sound/soc/codecs/twl4030.c
++++ b/sound/soc/codecs/twl4030.c
+@@ -46,7 +46,7 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
+ 	0xc3, /* REG_OPTION		(0x2)	*/
+ 	0x00, /* REG_UNKNOWN		(0x3)	*/
+ 	0x00, /* REG_MICBIAS_CTL	(0x4)	*/
+-	0x20, /* REG_ANAMICL		(0x5)	*/
++	0x00, /* REG_ANAMICL		(0x5)	*/
+ 	0x00, /* REG_ANAMICR		(0x6)	*/
+ 	0x00, /* REG_AVADC_CTL		(0x7)	*/
+ 	0x00, /* REG_ADCMICSEL		(0x8)	*/
+@@ -281,6 +281,8 @@ static void twl4030_apll_enable(struct snd_soc_codec *codec, int enable)
+
+ static void twl4030_power_up(struct snd_soc_codec *codec)
+ {
++	struct snd_soc_device *socdev = codec->socdev;
++	struct twl4030_setup_data *setup = socdev->codec_data;
+ 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
+ 	u8 anamicl, regmisc1, byte;
+ 	int i = 0;
+@@ -293,6 +295,8 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
+
+ 	/* initiate offset cancellation */
+ 	anamicl = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICL);
++	anamicl &= ~TWL4030_OFFSET_CNCL_SEL;
++	anamicl |= setup->offset_cncl_path;
+ 	twl4030_write(codec, TWL4030_REG_ANAMICL,
+ 		anamicl | TWL4030_CNCL_OFFSET_START);
+
+diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
+index f206d24..c98e303 100644
+--- a/sound/soc/codecs/twl4030.h
++++ b/sound/soc/codecs/twl4030.h
+@@ -42,6 +42,7 @@ extern struct snd_soc_codec_device soc_codec_dev_twl4030;
+ struct twl4030_setup_data {
+ 	unsigned int ramp_delay_value;
+ 	unsigned int sysclk;
++	unsigned int offset_cncl_path;
+ 	unsigned int hs_extmute:1;
+ 	void (*set_hs_extmute)(int mute);
+ };
+--
+1.7.1
