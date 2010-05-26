@@ -1,56 +1,65 @@
-From: =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
-Subject: [PATCH] imx-ssi.c: fix I2S slave setup
-Date: Wed, 26 May 2010 18:37:53 +0200
-Message-ID: <1274891873-3704-1-git-send-email-eric@eukrea.com>
+From: Nicolas Pitre <nico@fluxnic.net>
+Subject: Re: [patch 4/5] orion/kirkwood: Add i2s support
+Date: Wed, 26 May 2010 12:55:43 -0400 (EDT)
+Message-ID: <alpine.LFD.2.00.1005261253470.24526@xanadu.home>
+References: <20100525122236.841941526@mandriva.com>
+	<20100525122341.443140710@mandriva.com>
+	<alpine.LFD.2.00.1005252025210.24526@xanadu.home>
+	<AANLkTim0m_zJ0J_9FMmXgKfS8ovQZpV-qxtHyOS2D3ZL@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FBA6103965
-	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 18:37:58 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: s.hauer@pengutronix.de
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="Boundary_(ID_kzEteNOHH60E11KkDgpvhA)"
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-reply-to: <AANLkTim0m_zJ0J_9FMmXgKfS8ovQZpV-qxtHyOS2D3ZL@mail.gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: saeed bishara <saeed.bishara@gmail.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, Arnaud Patard <apatard@mandriva.com>, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-KiB3aXRob3V0IHRoaXMgZml4LCB0aGUgd2F2ZWZvcm0gb24gdGhlIFNTSSBwb3J0IGFyZSBub3Qg
-cmVhbApJMlMgc2lnbmFsIChhdCBsZWFzdCBvbiBpLk1YMjcncyBTU0k0KQoKKiBvcmlnaW5hbCBG
-cmVlc2NhbGUncyBkcml2ZXIgaGFzCglpZiAoKChmbXQgJiBTTkRfU09DX0RBSUZNVF9GT1JNQVRf
-TUFTSykgPT0gU05EX1NPQ19EQUlGTVRfSTJTKQoJICAgICYmIHNzaV9tb2RlLT5uZXR3b3JrX21v
-ZGUpIHsKCQlzY3IgJj0gflNTSV9TQ1JfSTJTX01PREVfTUFTSzsKCQlzY3IgfD0gU1NJX1NDUl9J
-MlNfTU9ERV9TTEFWRTsKCX0KU28gYXMgbm93IHRoZSBTU0kgaXMgc2V0IGluIG5ldHdvcmsgbW9k
-ZSBhcyBhIGRlZmF1bHQgd2hlbiBydW5uaW5nIGluCkkyUyBmb3JtYXQsIGl0IHNlZW1zIHJlYXNv
-bmFibGUgdG8gYWxzbyBzZXQgSTJTX01PREVfU0xBVkUKClNpZ25lZC1vZmYtYnk6IEVyaWMgQsOp
-bmFyZCA8ZXJpY0BldWtyZWEuY29tPgotLS0KIHNvdW5kL3NvYy9pbXgvaW14LXNzaS5jIHwgICAg
-NCArLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW14L2lteC1zc2kuYyBiL3NvdW5kL3NvYy9pbXgvaW14
-LXNzaS5jCmluZGV4IDgwYjRmZWUuLmM1ZTE2MjYgMTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9pbXgv
-aW14LXNzaS5jCisrKyBiL3NvdW5kL3NvYy9pbXgvaW14LXNzaS5jCkBAIC04Myw4ICs4Myw2IEBA
-IHN0YXRpYyBpbnQgaW14X3NzaV9zZXRfZGFpX3RkbV9zbG90KHN0cnVjdCBzbmRfc29jX2RhaSAq
-Y3B1X2RhaSwKIC8qCiAgKiBTU0kgREFJIGZvcm1hdCBjb25maWd1cmF0aW9uLgogICogU2hvdWxk
-IG9ubHkgYmUgY2FsbGVkIHdoZW4gcG9ydCBpcyBpbmFjdGl2ZSAoaS5lLiBTU0lFTiA9IDApLgot
-ICogTm90ZTogV2UgZG9uJ3QgdXNlIHRoZSBJMlMgbW9kZXMgYnV0IGluc3RlYWQgbWFudWFsbHkg
-Y29uZmlndXJlIHRoZQotICogU1NJIGZvciBJMlMgYmVjYXVzZSB0aGUgSTJTIG1vZGUgaXMgb25s
-eSBhIHJlZ2lzdGVyIHByZXNldC4KICAqLwogc3RhdGljIGludCBpbXhfc3NpX3NldF9kYWlfZm10
-KHN0cnVjdCBzbmRfc29jX2RhaSAqY3B1X2RhaSwgdW5zaWduZWQgaW50IGZtdCkKIHsKQEAgLTk4
-LDcgKzk2LDcgQEAgc3RhdGljIGludCBpbXhfc3NpX3NldF9kYWlfZm10KHN0cnVjdCBzbmRfc29j
-X2RhaSAqY3B1X2RhaSwgdW5zaWduZWQgaW50IGZtdCkKIAljYXNlIFNORF9TT0NfREFJRk1UX0ky
-UzoKIAkJLyogZGF0YSBvbiByaXNpbmcgZWRnZSBvZiBiY2xrLCBmcmFtZSBsb3cgMWNsayBiZWZv
-cmUgZGF0YSAqLwogCQlzdHJjciB8PSBTU0lfU1RDUl9URlNJIHwgU1NJX1NUQ1JfVEVGUyB8IFNT
-SV9TVENSX1RYQklUMDsKLQkJc2NyIHw9IFNTSV9TQ1JfTkVUOworCQlzY3IgfD0gU1NJX1NDUl9O
-RVQgfCBTU0lfU0NSX0kyU19NT0RFX1NMQVZFOwogCQlicmVhazsKIAljYXNlIFNORF9TT0NfREFJ
-Rk1UX0xFRlRfSjoKIAkJLyogZGF0YSBvbiByaXNpbmcgZWRnZSBvZiBiY2xrLCBmcmFtZSBoaWdo
-IHdpdGggZGF0YSAqLwotLSAKMS42LjMuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--Boundary_(ID_kzEteNOHH60E11KkDgpvhA)
+Content-type: TEXT/PLAIN; charset=UTF-8
+Content-transfer-encoding: 8BIT
+
+On Wed, 26 May 2010, saeed bishara wrote:
+
+> On Wed, May 26, 2010 at 3:31 AM, Nicolas Pitre <nico@fluxnic.net> wrote:
+> > On Tue, 25 May 2010, apatard@mandriva.com wrote:
+> >
+> >> This patch enables support for the i2s controller available on orion/kirkwood platforms
+> >>
+> >> Signed-off-by: Arnaud Patard <apatard@mandriva.com>
+> >
+> > The actual Orion processor family has no I2S/audio support.  It would be
+> > better if all the audio related stuff was renamed to "kirkwood" and
+> > "KIRKWOOD_*" instead.
+> This i2s was first included in orion90L (6183).
+
+This has no presence in the mainline source tree, nor any hardware that 
+people may care about at this point.  So it is probably best to refer to 
+it as being kirkwood related more than orion related.
+
+
+Nicolas
+
+--Boundary_(ID_kzEteNOHH60E11KkDgpvhA)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--Boundary_(ID_kzEteNOHH60E11KkDgpvhA)--
