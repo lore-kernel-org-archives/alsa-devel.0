@@ -1,17 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [PATCH v2 3/8] ASoC: TWL4030: Make offset cancellation
-	path configurable
-Date: Wed, 26 May 2010 11:38:16 +0300
-Message-ID: <1274863101-18514-4-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [PATCH v2 2/8] ASoC: TWL4030: Remove wrapper for power
+	down
+Date: Wed, 26 May 2010 11:38:15 +0300
+Message-ID: <1274863101-18514-3-git-send-email-peter.ujfalusi@nokia.com>
 References: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3AD6A103935
+Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
+	by alsa0.perex.cz (Postfix) with ESMTP id BC200103943
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 10:38:34 +0200 (CEST)
+	Wed, 26 May 2010 10:38:42 +0200 (CEST)
 In-Reply-To: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,66 +26,51 @@ To: alsa-devel@alsa-project.org
 Cc: broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Add means for machine drivers to select the path for offset
-cancellation.
-Reset the reg cache value to the chip reset value at the
-same time.
-
-Machine drivers can specify which path need to be used for
-offset cancellation via the twl4030_setup.offset_cncl_path.
-For paths use the defines from
-include/linux/mfd/twl4030-codec.h:
-TWL4030_OFFSET_CNCL_SEL_*
+There is no need for the power down wrapper.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/twl4030.c |    6 +++++-
- sound/soc/codecs/twl4030.h |    1 +
- 2 files changed, 6 insertions(+), 1 deletions(-)
+ sound/soc/codecs/twl4030.c |   13 ++-----------
+ 1 files changed, 2 insertions(+), 11 deletions(-)
 
 diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index 1e0aba5..a6cbaf3 100644
+index 9a3e999..1e0aba5 100644
 --- a/sound/soc/codecs/twl4030.c
 +++ b/sound/soc/codecs/twl4030.c
-@@ -46,7 +46,7 @@ static const u8 twl4030_reg[TWL4030_CACHEREGNUM] = {
- 	0xc3, /* REG_OPTION		(0x2)	*/
- 	0x00, /* REG_UNKNOWN		(0x3)	*/
- 	0x00, /* REG_MICBIAS_CTL	(0x4)	*/
--	0x20, /* REG_ANAMICL		(0x5)	*/
-+	0x00, /* REG_ANAMICL		(0x5)	*/
- 	0x00, /* REG_ANAMICR		(0x6)	*/
- 	0x00, /* REG_AVADC_CTL		(0x7)	*/
- 	0x00, /* REG_ADCMICSEL		(0x8)	*/
-@@ -281,6 +281,8 @@ static void twl4030_apll_enable(struct snd_soc_codec *codec, int enable)
+@@ -319,15 +319,6 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
+ 	twl4030_codec_enable(codec, 1);
+ }
 
- static void twl4030_power_up(struct snd_soc_codec *codec)
- {
-+	struct snd_soc_device *socdev = codec->socdev;
-+	struct twl4030_setup_data *setup = socdev->codec_data;
- 	struct twl4030_priv *twl4030 = snd_soc_codec_get_drvdata(codec);
- 	u8 anamicl, regmisc1, byte;
- 	int i = 0;
-@@ -293,6 +295,8 @@ static void twl4030_power_up(struct snd_soc_codec *codec)
+-/*
+- * Unconditional power down
+- */
+-static void twl4030_power_down(struct snd_soc_codec *codec)
+-{
+-	/* power down */
+-	twl4030_codec_enable(codec, 0);
+-}
+-
+ /* Earpiece */
+ static const struct snd_kcontrol_new twl4030_dapm_earpiece_controls[] = {
+ 	SOC_DAPM_SINGLE("Voice", TWL4030_REG_EAR_CTL, 0, 1, 0),
+@@ -1607,7 +1598,7 @@ static int twl4030_set_bias_level(struct snd_soc_codec *codec,
+ 			twl4030_power_up(codec);
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		twl4030_power_down(codec);
++		twl4030_codec_enable(codec, 0);
+ 		break;
+ 	}
+ 	codec->bias_level = level;
+@@ -2321,7 +2312,7 @@ static int __devinit twl4030_codec_probe(struct platform_device *pdev)
+ 	return 0;
 
- 	/* initiate offset cancellation */
- 	anamicl = twl4030_read_reg_cache(codec, TWL4030_REG_ANAMICL);
-+	anamicl &= ~TWL4030_OFFSET_CNCL_SEL;
-+	anamicl |= setup->offset_cncl_path;
- 	twl4030_write(codec, TWL4030_REG_ANAMICL,
- 		anamicl | TWL4030_CNCL_OFFSET_START);
-
-diff --git a/sound/soc/codecs/twl4030.h b/sound/soc/codecs/twl4030.h
-index f206d24..c98e303 100644
---- a/sound/soc/codecs/twl4030.h
-+++ b/sound/soc/codecs/twl4030.h
-@@ -42,6 +42,7 @@ extern struct snd_soc_codec_device soc_codec_dev_twl4030;
- struct twl4030_setup_data {
- 	unsigned int ramp_delay_value;
- 	unsigned int sysclk;
-+	unsigned int offset_cncl_path;
- 	unsigned int hs_extmute:1;
- 	void (*set_hs_extmute)(int mute);
- };
+ error_codec:
+-	twl4030_power_down(codec);
++	twl4030_codec_enable(codec, 0);
+ 	kfree(codec->reg_cache);
+ error_cache:
+ 	kfree(twl4030);
 --
 1.7.1
