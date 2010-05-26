@@ -1,60 +1,42 @@
-From: Nicolas Pitre <nico@fluxnic.net>
-Subject: Re: [patch 4/5] orion/kirkwood: Add i2s support
-Date: Wed, 26 May 2010 13:02:32 -0400 (EDT)
-Message-ID: <alpine.LFD.2.00.1005261257260.24526@xanadu.home>
-References: <20100525122236.841941526@mandriva.com>
-	<20100525122341.443140710@mandriva.com>
-	<alpine.LFD.2.00.1005252025210.24526@xanadu.home>
-	<m34ohvgjcx.fsf@anduin.mandriva.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Problem with snd_hda_intel from 05-27-2010 snapshot
+Date: Wed, 26 May 2010 16:40:05 -0700
+Message-ID: <AANLkTilIX_UnMYcg8LAqkndS80nFppblW6erTm2e7o5X@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-reply-to: <m34ohvgjcx.fsf@anduin.mandriva.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnaud Patard <apatard@mandriva.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 04B1124421
+	for <alsa-devel@alsa-project.org>;
+	Thu, 27 May 2010 01:40:07 +0200 (CEST)
+Received: by vws8 with SMTP id 8so263305vws.38
+	for <alsa-devel@alsa-project.org>; Wed, 26 May 2010 16:40:06 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 26 May 2010, Arnaud Patard wrote:
+Hi.  I had been mostly successfully using the snd_hda_intel driver
+from the stable kernel 2.6.34 for HDMI audio with my Nvidia GT220
+video card.  In an attempt to see if any recent changes to
+snd_hda_intel would fix a problem I've been having with "pcm_hw.c:
+snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed" I decided to download
+the latest snapshot.  Unfortunately with these drivers I have no
+audio.  All my settings, and everything have remained the same.  The
+only noticable difference I've found is
+/sys/module/snd_hda_intel/parameters/probe_only is 0,0,0,0,0,0,0,0 in
+the snapshot drivers, and N,N,N,N,N,N,N,N in the 2.6.34 kernel drivers
+(which are compiled into the kernel).
 
-> Nicolas Pitre <nico@fluxnic.net> writes:
-> 
-> Hi,
-> 
-> > On Tue, 25 May 2010, apatard@mandriva.com wrote:
-> >
-> >> This patch enables support for the i2s controller available on orion/kirkwood platforms
-> >> 
-> >> Signed-off-by: Arnaud Patard <apatard@mandriva.com>
-> >
-> > The actual Orion processor family has no I2S/audio support.  It would be 
-> > better if all the audio related stuff was renamed to "kirkwood" and 
-> > "KIRKWOOD_*" instead.
-> 
-> I've been told there was some orion with audio. As I've never looked at
-> the orion family in details, I assumed this is right and I've changed the
-> naming accordingly.
+Any help?
 
-Most Orion flavours don't.  And the one that does is not supported in 
-mainline (most probably because hardware is not widely 
-available/interesting).
-
-> I can change again but it would be nice to have an
-> agreement here. Who's/what's right ? orion can or can not have i2s audio ?
-
-Given that Kirkwood is the first (and perhaps the only one) SOC to make 
-use of this in mainline Linux, I think it is less confusing to name it 
-"kirkwood".  That won't prevent the Orion90L from using Kirkwood I2S if 
-that ever happens.
-
-
-Nicolas
+Thanks,
+Derek
