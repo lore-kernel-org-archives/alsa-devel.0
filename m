@@ -1,18 +1,21 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: imx-ssi.c & SND_SOC_DAIFMT_I2S
-Date: Wed, 26 May 2010 12:37:53 +0200
-Message-ID: <20100526103753.GQ17272@pengutronix.de>
-References: <4BFCEB10.6000205@eukrea.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [RFC PATCH v2 1/3] ep93xx i2s audio driver
+Date: Wed, 26 May 2010 12:07:21 +0100
+Message-ID: <1274872041.3240.158.camel@odin>
+References: <1274850588-30460-1-git-send-email-ryan@bluewatersys.com>
+	<1274850588-30460-2-git-send-email-ryan@bluewatersys.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id DDD80103918
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 455A910381A
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 12:37:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4BFCEB10.6000205@eukrea.com>
+	Wed, 26 May 2010 13:07:25 +0200 (CEST)
+Received: by wyb33 with SMTP id 33so1022848wyb.38
+	for <alsa-devel@alsa-project.org>; Wed, 26 May 2010 04:07:24 -0700 (PDT)
+In-Reply-To: <1274850588-30460-2-git-send-email-ryan@bluewatersys.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,57 +25,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric =?iso-8859-15?Q?B=E9nard?= <eric@eukrea.com>
-Cc: alsa-devel@alsa-project.org
+To: Ryan Mallon <ryan@bluewatersys.com>
+Cc: john.cooper@third-harmonic.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, chasedouglas@gmail.com, buytenh@wantstofly.org, r&d4@dave-tech.it, hartleys@visionengravers.com, linux-arm-kernel@lists.infradead.org, dhuggins@cs.cmu.edu
 List-Id: alsa-devel@alsa-project.org
 
-Hi Eric,
+On Wed, 2010-05-26 at 17:09 +1200, Ryan Mallon wrote:
+> Add ep93xx i2s audio driver
+> 
+> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
+> ---
+>  sound/soc/Kconfig             |    1 +
+>  sound/soc/Makefile            |    1 +
+>  sound/soc/ep93xx/Kconfig      |    9 +
+>  sound/soc/ep93xx/Makefile     |    8 +
+>  sound/soc/ep93xx/ep93xx-i2s.c |  489 +++++++++++++++++++++++++++++++++++++++++
+>  sound/soc/ep93xx/ep93xx-i2s.h |   25 ++
+>  sound/soc/ep93xx/ep93xx-pcm.c |  323 +++++++++++++++++++++++++++
+>  sound/soc/ep93xx/ep93xx-pcm.h |   22 ++
+>  8 files changed, 878 insertions(+), 0 deletions(-)
+>  create mode 100644 sound/soc/ep93xx/Kconfig
+>  create mode 100644 sound/soc/ep93xx/Makefile
+>  create mode 100644 sound/soc/ep93xx/ep93xx-i2s.c
+>  create mode 100644 sound/soc/ep93xx/ep93xx-i2s.h
+>  create mode 100644 sound/soc/ep93xx/ep93xx-pcm.c
+>  create mode 100644 sound/soc/ep93xx/ep93xx-pcm.h
+> 
 
-On Wed, May 26, 2010 at 11:34:08AM +0200, Eric B=E9nard wrote:
-> Hi Sascha,
->
-> while trying to get a TI TLV320AIC23B codec configured as I2S master to  =
+Overall looks OK, just some comments below.
 
-> work with an i.MX27 using the latest git kernel, I noticed there may be  =
+> +static void ep93xx_i2s_enable(struct ep93xx_i2s_info *info)
+> +{
+> +	int i;
+> +
+> +	/* Enable clocks */
+> +	clk_enable(info->mclk);
+> +	clk_enable(info->sclk);
+> +	clk_enable(info->lrclk);
+> +
+> +	/* Enable i2s */
+> +	ep93xx_i2s_write_reg(info, EP93XX_I2S_GLCTRL, 1);
+> +
+> +	/* Enable fifos */
+> +	for (i = 0; i < 3; i++) {
+> +		ep93xx_i2s_write_reg(info, EP93XX_I2S_RX0EN + (i * 4), 1);
+> +		ep93xx_i2s_write_reg(info, EP93XX_I2S_TX0EN + (i * 4), 1);
 
-> a problem in the slave I2S setting in imx-ssi.c
->
-> Please find two captures of the I2S bus signals :
-> - http://eukrea.com/tmp/initial_i2s.png : this is not an I2S signal,  =
+Just curious, do we always need to enable both the RX and TX FIFOs ? Is
+there unnecessary system overhead here when we have playback only or
+capture only use cases ?
 
-> both left & right are sent while Frame Sync is high (so I only get mono  =
 
-> output)
-> - http://eukrea.com/tmp/i2s_slave.png : when I set I2S_MODE to 0x2 in  =
+> +static void ep93xx_pcm_buffer_started(void *cookie,
+> +				      struct ep93xx_dma_buffer *buf)
+> +{
+> +}
 
-> SCR register (scr |=3D SSI_SCR_NET | 0x40; at line 101 of imx-ssi.c), thu=
-s  =
+Do we need this ?
 
-> setting the SSI in "I2S slave mode", I get a real I2S signal as shown on  =
 
-> this capture.
->
-> I understand the actual I2S configuration may work with the Freescale's  =
 
-> PMIC but this chipset may not be fully I2S compliant and I think that  =
+> +
+> +static int ep93xx_pcm_prepare(struct snd_pcm_substream *substream)
+> +{
+> +	return 0;
+> +}
 
-> the actual setting prevent real I2S codecs from being used with the i.MX.
->
-> Am I wrong here ?
-> Shouldn't we use the I2S slave mode of the SSI instead of what is done  =
+This can be removed
 
-> actually ?
+Thanks
 
-I just had a look at the oscilloscope. For me it seems to make no
-difference whether I use I2S mode or what is done in current driver.
-Both look like your second picture.
-So we can change it if there are no other objections.
+Liam
 
-Sascha
-
--- =
-
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
