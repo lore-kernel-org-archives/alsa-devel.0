@@ -1,82 +1,156 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 17/17] sound: Add missing spin_unlock
-Date: Wed, 26 May 2010 17:59:27 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1005261759110.23743@ask.diku.dk>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH 1/4] ALSA: usb-audio: parse more format
+	descriptors with structs
+Date: Wed, 26 May 2010 18:11:36 +0200
+Message-ID: <1274890299-8972-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id CCCDB10398D
+	for <alsa-devel@alsa-project.org>;
+	Wed, 26 May 2010 18:11:52 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, gregkh@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Julia Lawall <julia@diku.dk>
-
-Add a spin_unlock missing on the error path.
-
-The semantic match that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
-
-// <smpl>
-@@
-expression E1;
-@@
-
-* spin_lock(E1,...);
-  <+... when != E1
-  if (...) {
-    ... when != E1
-*   return ...;
-  }
-  ...+>
-* spin_unlock(E1,...);
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
 ---
- sound/mips/au1x00.c                 |    1 +
- sound/oss/dmasound/dmasound_atari.c |    5 +++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ sound/usb/endpoint.c |   11 +++++++----
+ sound/usb/format.c   |   20 ++++++++++----------
+ sound/usb/format.h   |    7 ++++---
+ 3 files changed, 21 insertions(+), 17 deletions(-)
 
-diff --git a/sound/mips/au1x00.c b/sound/mips/au1x00.c
-index 3e763d6..446cf97 100644
---- a/sound/mips/au1x00.c
-+++ b/sound/mips/au1x00.c
-@@ -516,6 +516,7 @@ get the interrupt driven case to work efficiently */
- 			break;
- 	if (i == 0x5000) {
- 		printk(KERN_ERR "au1000 AC97: AC97 command read timeout\n");
-+		spin_unlock(&au1000->ac97_lock);
- 		return 0;
- 	}
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index ef07a6d..4887342 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -158,8 +158,9 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 	int i, altno, err, stream;
+ 	int format = 0, num_channels = 0;
+ 	struct audioformat *fp = NULL;
+-	unsigned char *fmt, *csep;
++	unsigned char *csep;
+ 	int num, protocol;
++	struct uac_format_type_i_continuous_descriptor *fmt;
  
-diff --git a/sound/oss/dmasound/dmasound_atari.c b/sound/oss/dmasound/dmasound_atari.c
-index 1f47741..13c2144 100644
---- a/sound/oss/dmasound/dmasound_atari.c
-+++ b/sound/oss/dmasound/dmasound_atari.c
-@@ -1277,7 +1277,7 @@ static irqreturn_t AtaInterrupt(int irq, void *dummy)
- 		 * (almost) like on the TT.
+ 	dev = chip->dev;
+ 
+@@ -256,8 +257,8 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 				   dev->devnum, iface_no, altno);
+ 			continue;
+ 		}
+-		if (((protocol == UAC_VERSION_1) && (fmt[0] < 8)) ||
+-		    ((protocol == UAC_VERSION_2) && (fmt[0] != 6))) {
++		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
++		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
+ 			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc\n",
+ 				   dev->devnum, iface_no, altno);
+ 			continue;
+@@ -268,7 +269,9 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 		 * with the previous one, except for a larger packet size, but
+ 		 * is actually a mislabeled two-channel setting; ignore it.
  		 */
- 		write_sq_ignore_int = 0;
--		return IRQ_HANDLED;
-+		goto out;
- 	}
+-		if (fmt[4] == 1 && fmt[5] == 2 && altno == 2 && num == 3 &&
++		if (fmt->bNrChannels == 1 &&
++		    fmt->bSubframeSize == 2 &&
++		    altno == 2 && num == 3 &&
+ 		    fp && fp->altsetting == 1 && fp->channels == 1 &&
+ 		    fp->formats == SNDRV_PCM_FMTBIT_S16_LE &&
+ 		    protocol == UAC_VERSION_1 &&
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index b87cf87..caaa3ef 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -278,12 +278,11 @@ err:
+  * parse the format type I and III descriptors
+  */
+ static int parse_audio_format_i(struct snd_usb_audio *chip,
+-				struct audioformat *fp,
+-				int format, void *_fmt,
++				struct audioformat *fp, int format,
++				struct uac_format_type_i_continuous_descriptor *fmt,
+ 				struct usb_host_interface *iface)
+ {
+ 	struct usb_interface_descriptor *altsd = get_iface_desc(iface);
+-	struct uac_format_type_i_discrete_descriptor *fmt = _fmt;
+ 	int protocol = altsd->bInterfaceProtocol;
+ 	int pcm_format, ret;
  
- 	if (!write_sq.active) {
-@@ -1285,7 +1285,7 @@ static irqreturn_t AtaInterrupt(int irq, void *dummy)
- 		 * the sq variables, so better don't do anything here.
- 		 */
- 		WAKE_UP(write_sq.sync_queue);
--		return IRQ_HANDLED;
-+		goto out;
- 	}
- 
- 	/* Probably ;) one frame is finished. Well, in fact it may be that a
-@@ -1322,6 +1322,7 @@ static irqreturn_t AtaInterrupt(int irq, void *dummy)
- 	/* We are not playing after AtaPlay(), so there
- 	   is nothing to play any more. Wake up a process
- 	   waiting for audio output to drain. */
-+out:
- 	spin_unlock(&dmasound.lock);
- 	return IRQ_HANDLED;
+@@ -320,7 +319,7 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
+ 	switch (protocol) {
+ 	case UAC_VERSION_1:
+ 		fp->channels = fmt->bNrChannels;
+-		ret = parse_audio_format_rates_v1(chip, fp, _fmt, 7);
++		ret = parse_audio_format_rates_v1(chip, fp, (unsigned char *) fmt, 7);
+ 		break;
+ 	case UAC_VERSION_2:
+ 		/* fp->channels is already set in this case */
+@@ -392,12 +391,12 @@ static int parse_audio_format_ii(struct snd_usb_audio *chip,
  }
+ 
+ int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *fp,
+-		       int format, unsigned char *fmt, int stream,
+-		       struct usb_host_interface *iface)
++			       int format, struct uac_format_type_i_continuous_descriptor *fmt,
++			       int stream, struct usb_host_interface *iface)
+ {
+ 	int err;
+ 
+-	switch (fmt[3]) {
++	switch (fmt->bFormatType) {
+ 	case UAC_FORMAT_TYPE_I:
+ 	case UAC_FORMAT_TYPE_III:
+ 		err = parse_audio_format_i(chip, fp, format, fmt, iface);
+@@ -407,10 +406,11 @@ int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *f
+ 		break;
+ 	default:
+ 		snd_printd(KERN_INFO "%d:%u:%d : format type %d is not supported yet\n",
+-			   chip->dev->devnum, fp->iface, fp->altsetting, fmt[3]);
++			   chip->dev->devnum, fp->iface, fp->altsetting,
++			   fmt->bFormatType);
+ 		return -1;
+ 	}
+-	fp->fmt_type = fmt[3];
++	fp->fmt_type = fmt->bFormatType;
+ 	if (err < 0)
+ 		return err;
+ #if 1
+@@ -421,7 +421,7 @@ int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *f
+ 	if (chip->usb_id == USB_ID(0x041e, 0x3000) ||
+ 	    chip->usb_id == USB_ID(0x041e, 0x3020) ||
+ 	    chip->usb_id == USB_ID(0x041e, 0x3061)) {
+-		if (fmt[3] == UAC_FORMAT_TYPE_I &&
++		if (fmt->bFormatType == UAC_FORMAT_TYPE_I &&
+ 		    fp->rates != SNDRV_PCM_RATE_48000 &&
+ 		    fp->rates != SNDRV_PCM_RATE_96000)
+ 			return -1;
+diff --git a/sound/usb/format.h b/sound/usb/format.h
+index 8298c4e..387924f 100644
+--- a/sound/usb/format.h
++++ b/sound/usb/format.h
+@@ -1,8 +1,9 @@
+ #ifndef __USBAUDIO_FORMAT_H
+ #define __USBAUDIO_FORMAT_H
+ 
+-int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *fp,
+-			       int format, unsigned char *fmt, int stream,
+-			       struct usb_host_interface *iface);
++int snd_usb_parse_audio_format(struct snd_usb_audio *chip,
++			       struct audioformat *fp, int format,
++			       struct uac_format_type_i_continuous_descriptor *fmt,
++			       int stream, struct usb_host_interface *iface);
+ 
+ #endif /*  __USBAUDIO_FORMAT_H */
+-- 
+1.7.1
