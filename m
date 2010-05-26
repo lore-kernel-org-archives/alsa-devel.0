@@ -1,20 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH 5/7] ASoC: TWL4030: Helper to check chip
-	default registers
-Date: Wed, 26 May 2010 09:28:49 +0300
-Message-ID: <201005260928.50075.peter.ujfalusi@nokia.com>
+ default registers
+Date: Tue, 25 May 2010 23:35:00 -0700
+Message-ID: <20100526063459.GA16085@opensource.wolfsonmicro.com>
 References: <1274787248-18583-1-git-send-email-peter.ujfalusi@nokia.com>
 	<1274792996.3000.233.camel@odin>
 	<201005260900.35587.peter.ujfalusi@nokia.com>
+	<201005260928.50075.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7ABCF1038F0
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4F1FE24679
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 08:29:09 +0200 (CEST)
-In-Reply-To: <201005260900.35587.peter.ujfalusi@nokia.com>
+	Wed, 26 May 2010 08:34:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201005260928.50075.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,57 +26,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, ext Liam Girdwood <lrg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, ext Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 26 May 2010 09:00:35 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+On Wed, May 26, 2010 at 09:28:49AM +0300, Peter Ujfalusi wrote:
 
-...
+> Better thing to do is:
+> restore the registers in these cases:
+> if (!setup || (setup && setup->reset_registers))
 
-> I did run some tests.
-> The codec registers are in reset state whenever the device boots (either
-> power on, or reboot). In our setup the codec is built in the kernel.
-> I have measured the time needed to execute the twl4030_init_chip with and
-> without rewriting the codec registers (71 register writes):
-> No reset_registers: ~51ms
-> reset registers:    ~71ms
-> =
-
-> I need to optimize for module loading time, and ~20ms extra is quite big.
-> =
-
-> Can we make a compromise?
-> I propose to have twl4030_setup_data.reset_registers, if it is set by the
-> machine driver, than we are going to reset the registers, if it is not se=
-t,
-> than we skip the restore part (not writing the 71 registers).
-> So during development, or if one have the codec as module, the machine can
-> set this, so the registers will be restored, but if the testing shows that
-> there is no need to do that, than we can speed up the module probe.
-> =
+> So if the machine does not provide setup data, than we can assume, than no one 
+> taken a time to tune the platform, so we need to restore to be on the safe side.
 
 > What do you think?
 
-Better thing to do is:
-restore the registers in these cases:
-if (!setup || (setup && setup->reset_registers))
+This sounds like a sensible optimisation.  May also be an idea to
+explicitly do a reset of the registers on unload - I guess nobody will
+ever do that if they're not developing, and that'd probably mean that
+many of the people who might actually need to reset the registers purely
+for development will get the benefit of it without the risk of leaving
+the option on in production by mistake.
 
-So if the machine does not provide setup data, than we can assume, than no =
-one =
-
-taken a time to tune the platform, so we need to restore to be on the safe =
-side.
-
-What do you think?
-
-> =
-
-> > Thanks
-> > =
-
-> > Liam
-
--- =
-
-P=E9ter
+I can't remember if you're doing this already (and don't even know if
+it's possible with the hardware) but if you can do a bulk read of the
+registers rather than reading register by register then the overhead
+from the I/O should be noticably reduced if you do do the reset.
