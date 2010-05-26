@@ -1,18 +1,16 @@
-From: Jerone Young <jerone.young@canonical.com>
-Subject: Re: CX20582 (Pebble) and Thinkpad x100e...
-Date: Wed, 26 May 2010 10:30:46 -0500
-Message-ID: <1274887846.26152.3578.camel@laptop>
-References: <AANLkTilv-9WJCOwM1HSA_HgMtKb8S0YR3JMIw8fbUdUg@mail.gmail.com>
-	<1274741798.3464.64.camel@razman.gruetest.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: ASoC updates for 2.6.35
+Date: Wed, 26 May 2010 08:50:14 -0700
+Message-ID: <20100526155013.GB17973@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B92E246B2
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4D9E7103941
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 17:30:57 +0200 (CEST)
-In-Reply-To: <1274741798.3464.64.camel@razman.gruetest.com>
+	Wed, 26 May 2010 17:50:06 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +20,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Tobin Davis <tdavis@dsl-only.net>
-Cc: tiwai@suse.de, ALSA Developers <alsa-devel@alsa-project.org>, alex.pototskiy@gmail.com, Hakan =?UTF-8?Q?K=C4=B1z=C4=B1lhan?= <hkizilhan@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Support for the x100e is already in alsa upstream. I also submitted a
-fix for Thinkpad Edge today as well. 
+The following changes since commit ad8332c1302bcb4f80d593fd3eb477be9d7f5604:
 
-These are not in Ubuntu 10.04 yet. But should be coming in through
-backports package.
+  ASoC: tpa6130a2: Remove CPVSS and HPVdd supplies (2010-05-20 10:28:39 +0100)
 
-				Thanks,
-					Jerone
+are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
 
-On Mon, 2010-05-24 at 15:56 -0700, Tobin Davis wrote:
-> I'm forwarding this on to the alsa-devel mailing list as I am not
-> personally maintaining this driver at this time. 
-> 
-> If you could also download alsa-info.sh from http://alsa-project.org,
-> run it, and post the results to the mailing list that would be great.
-> 
-> 
+This fixes up the build of the i.MX SSI driver, a minor warning fix for
+SH and fix the dB scales for a bunch of Wolfson CODECs.
+
+Guennadi Liakhovetski (1):
+      ASoC: fix uninitialised variable in siu_dai.c
+
+Mark Brown (3):
+      ASoC: Fix dB scales for WM835x
+      ASoC: Fix dB scales for WM8400
+      ASoC: Fix dB scales for WM8990
+
+Stuart Longland (1):
+      ASoC: Update Freescale i.MX SSI driver DMA parameter handling
+
+ sound/soc/codecs/wm8350.c       |    4 ++--
+ sound/soc/codecs/wm8400.c       |   18 +++++++++---------
+ sound/soc/codecs/wm8990.c       |   18 +++++++++---------
+ sound/soc/imx/imx-pcm-dma-mx2.c |    7 ++++---
+ sound/soc/sh/siu_dai.c          |    2 ++
+ 5 files changed, 26 insertions(+), 23 deletions(-)
