@@ -1,16 +1,18 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 1/4] ALSA: usb-audio: parse more format
-	descriptors with structs
-Date: Wed, 26 May 2010 18:11:36 +0200
-Message-ID: <1274890299-8972-1-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 3/4] ALSA: usb-audio: parse UAC2 endpoint
+	descriptors correctly
+Date: Wed, 26 May 2010 18:11:38 +0200
+Message-ID: <1274890299-8972-3-git-send-email-daniel@caiaq.de>
+References: <1274890299-8972-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id CCCDB10398D
+	by alsa0.perex.cz (Postfix) with ESMTP id C9D37103997
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 18:11:52 +0200 (CEST)
+	Wed, 26 May 2010 18:11:55 +0200 (CEST)
+In-Reply-To: <1274890299-8972-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,133 +26,130 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, gregkh@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
+UAC2 devices have their information about pitch control stored in a
+different field. Parse it, and emulate the bits for a v1 device.
+
+A new struct uac2_iso_endpoint_descriptor is added.
+
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 ---
- sound/usb/endpoint.c |   11 +++++++----
- sound/usb/format.c   |   20 ++++++++++----------
- sound/usb/format.h   |    7 ++++---
- 3 files changed, 21 insertions(+), 17 deletions(-)
+ include/linux/usb/audio-v2.h |   16 ++++++++++++
+ sound/usb/endpoint.c         |   55 ++++++++++++++++++++++++++++++++----------
+ 2 files changed, 58 insertions(+), 13 deletions(-)
 
+diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
+index 2389f93..92f1d99 100644
+--- a/include/linux/usb/audio-v2.h
++++ b/include/linux/usb/audio-v2.h
+@@ -105,6 +105,22 @@ struct uac_as_header_descriptor_v2 {
+ 	__u8 iChannelNames;
+ } __attribute__((packed));
+ 
++/* 4.10.1.2 Class-Specific AS Isochronous Audio Data Endpoint Descriptor */
++
++struct uac2_iso_endpoint_descriptor {
++	__u8  bLength;			/* in bytes: 8 */
++	__u8  bDescriptorType;		/* USB_DT_CS_ENDPOINT */
++	__u8  bDescriptorSubtype;	/* EP_GENERAL */
++	__u8  bmAttributes;
++	__u8  bmControls;
++	__u8  bLockDelayUnits;
++	__le16 wLockDelay;
++} __attribute__((packed));
++
++#define UAC2_CONTROL_PITCH		(3 << 0)
++#define UAC2_CONTROL_DATA_OVERRUN	(3 << 2)
++#define UAC2_CONTROL_DATA_UNDERRUN	(3 << 4)
++
+ /* 6.1 Interrupt Data Message */
+ 
+ #define UAC2_INTERRUPT_DATA_MSG_VENDOR	(1 << 0)
 diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index ef07a6d..4887342 100644
+index 4887342..28ee1ce 100644
 --- a/sound/usb/endpoint.c
 +++ b/sound/usb/endpoint.c
-@@ -158,8 +158,9 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+@@ -149,6 +149,47 @@ int snd_usb_add_audio_endpoint(struct snd_usb_audio *chip, int stream, struct au
+ 	return 0;
+ }
+ 
++static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
++					 struct usb_host_interface *alts,
++					 int protocol, int iface_no)
++{
++	/* parsed with a v1 header here. that's ok as we only look at the
++	 * header first which is the same for both versions */
++	struct uac_iso_endpoint_descriptor *csep;
++	struct usb_interface_descriptor *altsd = get_iface_desc(alts);
++	int attributes = 0;
++
++	csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
++
++	/* Creamware Noah has this descriptor after the 2nd endpoint */
++	if (!csep && altsd->bNumEndpoints >= 2)
++		csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
++
++	if (!csep || csep->bLength < 7 ||
++	    csep->bDescriptorSubtype != UAC_EP_GENERAL) {
++		snd_printk(KERN_WARNING "%d:%u:%d : no or invalid"
++			   " class specific endpoint descriptor\n",
++			   chip->dev->devnum, iface_no,
++			   altsd->bAlternateSetting);
++		return 0;
++	}
++
++	if (protocol == UAC_VERSION_1) {
++		attributes = csep->bmAttributes;
++	} else {
++		struct uac2_iso_endpoint_descriptor *csep2 =
++			(struct uac2_iso_endpoint_descriptor *) csep;
++
++		attributes = csep->bmAttributes & UAC_EP_CS_ATTR_FILL_MAX;
++
++		/* emulate the endpoint attributes of a v1 device */
++		if (csep2->bmControls & UAC2_CONTROL_PITCH)
++			attributes |= UAC_EP_CS_ATTR_PITCH_CONTROL;
++	}
++
++	return attributes;
++}
++
+ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ {
+ 	struct usb_device *dev;
+@@ -158,7 +199,6 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
  	int i, altno, err, stream;
  	int format = 0, num_channels = 0;
  	struct audioformat *fp = NULL;
--	unsigned char *fmt, *csep;
-+	unsigned char *csep;
+-	unsigned char *csep;
  	int num, protocol;
-+	struct uac_format_type_i_continuous_descriptor *fmt;
+ 	struct uac_format_type_i_continuous_descriptor *fmt;
  
- 	dev = chip->dev;
- 
-@@ -256,8 +257,8 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
- 				   dev->devnum, iface_no, altno);
+@@ -279,17 +319,6 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 							fp->maxpacksize * 2)
  			continue;
- 		}
--		if (((protocol == UAC_VERSION_1) && (fmt[0] < 8)) ||
--		    ((protocol == UAC_VERSION_2) && (fmt[0] != 6))) {
-+		if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8)) ||
-+		    ((protocol == UAC_VERSION_2) && (fmt->bLength != 6))) {
- 			snd_printk(KERN_ERR "%d:%u:%d : invalid UAC_FORMAT_TYPE desc\n",
- 				   dev->devnum, iface_no, altno);
- 			continue;
-@@ -268,7 +269,9 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
- 		 * with the previous one, except for a larger packet size, but
- 		 * is actually a mislabeled two-channel setting; ignore it.
- 		 */
--		if (fmt[4] == 1 && fmt[5] == 2 && altno == 2 && num == 3 &&
-+		if (fmt->bNrChannels == 1 &&
-+		    fmt->bSubframeSize == 2 &&
-+		    altno == 2 && num == 3 &&
- 		    fp && fp->altsetting == 1 && fp->channels == 1 &&
- 		    fp->formats == SNDRV_PCM_FMTBIT_S16_LE &&
- 		    protocol == UAC_VERSION_1 &&
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index b87cf87..caaa3ef 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -278,12 +278,11 @@ err:
-  * parse the format type I and III descriptors
-  */
- static int parse_audio_format_i(struct snd_usb_audio *chip,
--				struct audioformat *fp,
--				int format, void *_fmt,
-+				struct audioformat *fp, int format,
-+				struct uac_format_type_i_continuous_descriptor *fmt,
- 				struct usb_host_interface *iface)
- {
- 	struct usb_interface_descriptor *altsd = get_iface_desc(iface);
--	struct uac_format_type_i_discrete_descriptor *fmt = _fmt;
- 	int protocol = altsd->bInterfaceProtocol;
- 	int pcm_format, ret;
  
-@@ -320,7 +319,7 @@ static int parse_audio_format_i(struct snd_usb_audio *chip,
- 	switch (protocol) {
- 	case UAC_VERSION_1:
- 		fp->channels = fmt->bNrChannels;
--		ret = parse_audio_format_rates_v1(chip, fp, _fmt, 7);
-+		ret = parse_audio_format_rates_v1(chip, fp, (unsigned char *) fmt, 7);
- 		break;
- 	case UAC_VERSION_2:
- 		/* fp->channels is already set in this case */
-@@ -392,12 +391,12 @@ static int parse_audio_format_ii(struct snd_usb_audio *chip,
- }
+-		csep = snd_usb_find_desc(alts->endpoint[0].extra, alts->endpoint[0].extralen, NULL, USB_DT_CS_ENDPOINT);
+-		/* Creamware Noah has this descriptor after the 2nd endpoint */
+-		if (!csep && altsd->bNumEndpoints >= 2)
+-			csep = snd_usb_find_desc(alts->endpoint[1].extra, alts->endpoint[1].extralen, NULL, USB_DT_CS_ENDPOINT);
+-		if (!csep || csep[0] < 7 || csep[2] != UAC_EP_GENERAL) {
+-			snd_printk(KERN_WARNING "%d:%u:%d : no or invalid"
+-				   " class specific endpoint descriptor\n",
+-				   dev->devnum, iface_no, altno);
+-			csep = NULL;
+-		}
+-
+ 		fp = kzalloc(sizeof(*fp), GFP_KERNEL);
+ 		if (! fp) {
+ 			snd_printk(KERN_ERR "cannot malloc\n");
+@@ -308,7 +337,7 @@ int snd_usb_parse_audio_endpoints(struct snd_usb_audio *chip, int iface_no)
+ 		if (snd_usb_get_speed(dev) == USB_SPEED_HIGH)
+ 			fp->maxpacksize = (((fp->maxpacksize >> 11) & 3) + 1)
+ 					* (fp->maxpacksize & 0x7ff);
+-		fp->attributes = csep ? csep[3] : 0;
++		fp->attributes = parse_uac_endpoint_attributes(chip, alts, protocol, iface_no);
  
- int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *fp,
--		       int format, unsigned char *fmt, int stream,
--		       struct usb_host_interface *iface)
-+			       int format, struct uac_format_type_i_continuous_descriptor *fmt,
-+			       int stream, struct usb_host_interface *iface)
- {
- 	int err;
+ 		/* some quirks for attributes here */
  
--	switch (fmt[3]) {
-+	switch (fmt->bFormatType) {
- 	case UAC_FORMAT_TYPE_I:
- 	case UAC_FORMAT_TYPE_III:
- 		err = parse_audio_format_i(chip, fp, format, fmt, iface);
-@@ -407,10 +406,11 @@ int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *f
- 		break;
- 	default:
- 		snd_printd(KERN_INFO "%d:%u:%d : format type %d is not supported yet\n",
--			   chip->dev->devnum, fp->iface, fp->altsetting, fmt[3]);
-+			   chip->dev->devnum, fp->iface, fp->altsetting,
-+			   fmt->bFormatType);
- 		return -1;
- 	}
--	fp->fmt_type = fmt[3];
-+	fp->fmt_type = fmt->bFormatType;
- 	if (err < 0)
- 		return err;
- #if 1
-@@ -421,7 +421,7 @@ int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *f
- 	if (chip->usb_id == USB_ID(0x041e, 0x3000) ||
- 	    chip->usb_id == USB_ID(0x041e, 0x3020) ||
- 	    chip->usb_id == USB_ID(0x041e, 0x3061)) {
--		if (fmt[3] == UAC_FORMAT_TYPE_I &&
-+		if (fmt->bFormatType == UAC_FORMAT_TYPE_I &&
- 		    fp->rates != SNDRV_PCM_RATE_48000 &&
- 		    fp->rates != SNDRV_PCM_RATE_96000)
- 			return -1;
-diff --git a/sound/usb/format.h b/sound/usb/format.h
-index 8298c4e..387924f 100644
---- a/sound/usb/format.h
-+++ b/sound/usb/format.h
-@@ -1,8 +1,9 @@
- #ifndef __USBAUDIO_FORMAT_H
- #define __USBAUDIO_FORMAT_H
- 
--int snd_usb_parse_audio_format(struct snd_usb_audio *chip, struct audioformat *fp,
--			       int format, unsigned char *fmt, int stream,
--			       struct usb_host_interface *iface);
-+int snd_usb_parse_audio_format(struct snd_usb_audio *chip,
-+			       struct audioformat *fp, int format,
-+			       struct uac_format_type_i_continuous_descriptor *fmt,
-+			       int stream, struct usb_host_interface *iface);
- 
- #endif /*  __USBAUDIO_FORMAT_H */
 -- 
 1.7.1
