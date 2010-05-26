@@ -1,18 +1,21 @@
-From: Ryan Mallon <ryan@bluewatersys.com>
-Subject: [RFC PATCH v2 3/3] ep93xx i2s audio snapper cl15
-	support
-Date: Wed, 26 May 2010 17:09:48 +1200
-Message-ID: <1274850588-30460-4-git-send-email-ryan@bluewatersys.com>
-References: <1274850588-30460-1-git-send-email-ryan@bluewatersys.com>
+From: saeed bishara <saeed.bishara@gmail.com>
+Subject: Re: [patch 4/5] orion/kirkwood: Add i2s support
+Date: Wed, 26 May 2010 08:15:25 +0300
+Message-ID: <AANLkTim0m_zJ0J_9FMmXgKfS8ovQZpV-qxtHyOS2D3ZL@mail.gmail.com>
+References: <20100525122236.841941526@mandriva.com>
+	<20100525122341.443140710@mandriva.com>
+	<alpine.LFD.2.00.1005252025210.24526@xanadu.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 890E12434D
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22EDF244B2
 	for <alsa-devel@alsa-project.org>;
-	Wed, 26 May 2010 07:10:02 +0200 (CEST)
-In-Reply-To: <1274850588-30460-1-git-send-email-ryan@bluewatersys.com>
+	Wed, 26 May 2010 07:15:27 +0200 (CEST)
+Received: by wwb18 with SMTP id 18so1451867wwb.38
+	for <alsa-devel@alsa-project.org>; Tue, 25 May 2010 22:15:25 -0700 (PDT)
+In-Reply-To: <alpine.LFD.2.00.1005252025210.24526@xanadu.home>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,209 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: john.cooper@third-harmonic.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, chasedouglas@gmail.com, Ryan Mallon <ryan@bluewatersys.com>, r&d4@dave-tech.it, hartleys@visionengravers.com, dhuggins@cs.cmu.edu, buytenh@wantstofly.org, lrg@slimlogic.co.uk
+To: Nicolas Pitre <nico@fluxnic.net>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, Arnaud Patard <apatard@mandriva.com>, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Add support for i2s audio on Bluewater Systems Snapper CL15 module
-
-Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
----
- arch/arm/mach-ep93xx/snappercl15.c |    1 +
- sound/soc/ep93xx/Kconfig           |    9 ++
- sound/soc/ep93xx/Makefile          |    3 +
- sound/soc/ep93xx/snappercl15.c     |  143 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 156 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/ep93xx/snappercl15.c
-
-diff --git a/arch/arm/mach-ep93xx/snappercl15.c b/arch/arm/mach-ep93xx/snappercl15.c
-index 51134b0..d4ca5cc 100644
---- a/arch/arm/mach-ep93xx/snappercl15.c
-+++ b/arch/arm/mach-ep93xx/snappercl15.c
-@@ -157,6 +157,7 @@ static void __init snappercl15_init_machine(void)
- 	ep93xx_register_i2c(&snappercl15_i2c_gpio_data, snappercl15_i2c_data,
- 			    ARRAY_SIZE(snappercl15_i2c_data));
- 	ep93xx_register_fb(&snappercl15_fb_info);
-+	ep93xx_register_i2s(EP93XX_SYSCON_DEVCFG_I2SONAC97);
- 	platform_device_register(&snappercl15_nand_device);
- }
- 
-diff --git a/sound/soc/ep93xx/Kconfig b/sound/soc/ep93xx/Kconfig
-index ba66ac8..f617f56 100644
---- a/sound/soc/ep93xx/Kconfig
-+++ b/sound/soc/ep93xx/Kconfig
-@@ -7,3 +7,12 @@ config SND_EP93XX_SOC
- 
- config SND_EP93XX_SOC_I2S
- 	tristate
-+
-+config SND_EP93XX_SOC_SNAPPERCL15
-+        tristate "SoC Audio support for Bluewater Systems Snapper CL15 module"
-+        depends on SND_EP93XX_SOC && MACH_SNAPPER_CL15
-+        select SND_EP93XX_SOC_I2S
-+        select SND_SOC_TLV320AIC23
-+        help
-+          Say Y or M here if you want to add support for I2S audio on the
-+          Bluewater Systems Snapper CL15 module.
-diff --git a/sound/soc/ep93xx/Makefile b/sound/soc/ep93xx/Makefile
-index 0239da3..272e60f 100644
---- a/sound/soc/ep93xx/Makefile
-+++ b/sound/soc/ep93xx/Makefile
-@@ -6,3 +6,6 @@ obj-$(CONFIG_SND_EP93XX_SOC)			+= snd-soc-ep93xx.o
- obj-$(CONFIG_SND_EP93XX_SOC_I2S)		+= snd-soc-ep93xx-i2s.o
- 
- # EP93XX Machine Support
-+snd-soc-snappercl15-objs			:= snappercl15.o
-+
-+obj-$(CONFIG_SND_EP93XX_SOC_SNAPPERCL15)	+= snd-soc-snappercl15.o
-diff --git a/sound/soc/ep93xx/snappercl15.c b/sound/soc/ep93xx/snappercl15.c
-new file mode 100644
-index 0000000..645a7fb
---- /dev/null
-+++ b/sound/soc/ep93xx/snappercl15.c
-@@ -0,0 +1,143 @@
-+/*
-+ * snappercl15.c -- SoC audio for Bluewater Systems Snapper CL15 module
-+ *
-+ * Copyright (C) 2008 Bluewater Systems Ltd
-+ * Author: Ryan Mallon <ryan@bluewatersys.com>
-+ *
-+ *  This program is free software; you can redistribute  it and/or modify it
-+ *  under  the terms of  the GNU General  Public License as published by the
-+ *  Free Software Foundation;  either version 2 of the  License, or (at your
-+ *  option) any later version.
-+ *
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+
-+#include <asm/mach-types.h>
-+#include <mach/hardware.h>
-+
-+#include "../codecs/tlv320aic23.h"
-+#include "ep93xx-pcm.h"
-+#include "ep93xx-i2s.h"
-+
-+#define CODEC_CLOCK 5644800
-+
-+static int snappercl15_hw_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int err;
-+
-+	err = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-+				  SND_SOC_DAIFMT_NB_IF |
-+				  SND_SOC_DAIFMT_CBS_CFS);
-+
-+	err = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S | 
-+				  SND_SOC_DAIFMT_NB_IF |		  
-+				  SND_SOC_DAIFMT_CBS_CFS);
-+	if (err)
-+		return err;
-+
-+	err = snd_soc_dai_set_sysclk(codec_dai, 0, CODEC_CLOCK, 
-+				     SND_SOC_CLOCK_IN);
-+	if (err)
-+		return err;
-+
-+	err = snd_soc_dai_set_sysclk(cpu_dai, 0, CODEC_CLOCK, 
-+				     SND_SOC_CLOCK_OUT);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_ops snappercl15_ops = {
-+	.hw_params	= snappercl15_hw_params,
-+};
-+
-+static const struct snd_soc_dapm_widget tlv320aic23_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_LINE("Line In", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route audio_map[] = {
-+	{"Headphone Jack", NULL, "LHPOUT"},
-+	{"Headphone Jack", NULL, "RHPOUT"},
-+
-+	{"LLINEIN", NULL, "Line In"},
-+	{"RLINEIN", NULL, "Line In"},
-+
-+	{"MICIN", NULL, "Mic Jack"},
-+};
-+
-+static int snappercl15_tlv320aic23_init(struct snd_soc_codec *codec)
-+{
-+	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
-+				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
-+
-+	snd_soc_dapm_add_routes(codec, audio_map, ARRAY_SIZE(audio_map));
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link snappercl15_dai = {
-+	.name		= "tlv320aic23",
-+	.stream_name	= "AIC23",
-+	.cpu_dai	= &ep93xx_i2s_dai,
-+	.codec_dai	= &tlv320aic23_dai,
-+	.init		= snappercl15_tlv320aic23_init,
-+	.ops		= &snappercl15_ops,
-+};
-+
-+static struct snd_soc_card snd_soc_snappercl15 = {
-+	.name		= "Snapper CL15",
-+	.platform	= &ep93xx_soc_platform,
-+	.dai_link	= &snappercl15_dai,
-+	.num_links	= 1,
-+};
-+
-+static struct snd_soc_device snappercl15_snd_devdata = {
-+	.card		= &snd_soc_snappercl15,
-+	.codec_dev	= &soc_codec_dev_tlv320aic23,
-+};
-+
-+static struct platform_device *snappercl15_snd_device;
-+
-+static int __init snappercl15_init(void)
-+{
-+	int ret;
-+
-+	if (!machine_is_snapper_cl15())
-+		return -ENODEV;
-+
-+	snappercl15_snd_device = platform_device_alloc("soc-audio", -1);
-+	if (!snappercl15_snd_device)
-+		return -ENOMEM;
-+	
-+	platform_set_drvdata(snappercl15_snd_device, &snappercl15_snd_devdata);
-+	snappercl15_snd_devdata.dev = &snappercl15_snd_device->dev;
-+	ret = platform_device_add(snappercl15_snd_device);
-+	if (ret)
-+		platform_device_put(snappercl15_snd_device);
-+
-+	return ret;
-+}
-+
-+static void __exit snappercl15_exit(void)
-+{
-+	platform_device_unregister(snappercl15_snd_device);
-+}
-+
-+module_init(snappercl15_init);
-+module_exit(snappercl15_exit);
-+
-+MODULE_AUTHOR("Ryan Mallon <ryan@bluewatersys.com>");
-+MODULE_DESCRIPTION("ALSA SoC Snapper CL15");
-+MODULE_LICENSE("GPL");
-+
--- 
-1.5.5.1
+T24gV2VkLCBNYXkgMjYsIDIwMTAgYXQgMzozMSBBTSwgTmljb2xhcyBQaXRyZSA8bmljb0BmbHV4
+bmljLm5ldD4gd3JvdGU6Cj4gT24gVHVlLCAyNSBNYXkgMjAxMCwgYXBhdGFyZEBtYW5kcml2YS5j
+b20gd3JvdGU6Cj4KPj4gVGhpcyBwYXRjaCBlbmFibGVzIHN1cHBvcnQgZm9yIHRoZSBpMnMgY29u
+dHJvbGxlciBhdmFpbGFibGUgb24gb3Jpb24va2lya3dvb2QgcGxhdGZvcm1zCj4+Cj4+IFNpZ25l
+ZC1vZmYtYnk6IEFybmF1ZCBQYXRhcmQgPGFwYXRhcmRAbWFuZHJpdmEuY29tPgo+Cj4gVGhlIGFj
+dHVhbCBPcmlvbiBwcm9jZXNzb3IgZmFtaWx5IGhhcyBubyBJMlMvYXVkaW8gc3VwcG9ydC4gwqBJ
+dCB3b3VsZCBiZQo+IGJldHRlciBpZiBhbGwgdGhlIGF1ZGlvIHJlbGF0ZWQgc3R1ZmYgd2FzIHJl
+bmFtZWQgdG8gImtpcmt3b29kIiBhbmQKPiAiS0lSS1dPT0RfKiIgaW5zdGVhZC4KVGhpcyBpMnMg
+d2FzIGZpcnN0IGluY2x1ZGVkIGluIG9yaW9uOTBMICg2MTgzKS4KCnNhZWVkCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
+aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
+Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
