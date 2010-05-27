@@ -1,25 +1,16 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: usbaudio: Support for USB audio v2.0 devices
-Date: Thu, 27 May 2010 20:21:00 +0200
-Message-ID: <20100527182100.GM2695@buzzloop.caiaq.de>
-References: <1266856137-26252-1-git-send-email-daniel@caiaq.de>
-	<4B8CD6A0.40204@freemail.gr>
-	<20100302183542.GU28972@buzzloop.caiaq.de>
-	<4BD6E564.5050100@freemail.gr>
-	<20100427140612.GC30804@buzzloop.caiaq.de>
-	<4BDEC641.2000906@freemail.gr>
-	<20100504104854.GU30801@buzzloop.caiaq.de>
-	<4BF23CCD.9010509@freemail.gr>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: hda: Use LPIB for Sony VPCS11V9E
+Date: Thu, 27 May 2010 18:41:34 -0400
+Message-ID: <AANLkTind0hRHajyIaoYozMOLJvfnUB-4go6DrI3TD6Wu@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary=000e0cd1471ec07fae04879b1762
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4A3E41037F5
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id A0D8124141
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 20:21:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4BF23CCD.9010509@freemail.gr>
+	Fri, 28 May 2010 00:41:36 +0200 (CEST)
+Received: by pvc22 with SMTP id 22so272600pvc.38
+	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 15:41:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,55 +20,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: adelias <adelias@freemail.gr>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org, Lauri Kainulainen <lauri@sokkelo.net>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBNYXkgMTgsIDIwMTAgYXQgMTA6MDc6NTdBTSArMDMwMCwgYWRlbGlhcyB3cm90ZToK
-PiBPbiA0LzUvMjAxMCAxOjQ4IM68zrwsIERhbmllbCBNYWNrIHdyb3RlOgo+ID5PbiBNb24sIE1h
-eSAwMywgMjAxMCBhdCAwMzo0OTowNVBNICswMzAwLCBhZGVsaWFzIHdyb3RlOgo+ID4+T24gMjcv
-NC8yMDEwIDU6MDYgzrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4gPj4+V2hhdCBzcGVjaWZpYyBj
-b25maWd1cmF0aW9uIGFyZSB5b3UgdGVzdGluZyB3aXRoPyBBcyB5b3UgaGF2ZSBzdWNoIGFuCj4g
-Pj4+ZXZhbHVhdGlvbiBraXQsIEkgYmVsaWV2ZSB5b3UncmUgYWxzbyBwcm92aWRlZCB3aXRoIHRo
-ZSBYTU9TIGRldmVsb3BtZW50Cj4gPj4+cGxhdGZvcm0gLSB3aGljaCBmaXJtd2FyZSBkaWQgeW91
-IGluc3RhbGwgdG8gdGhlIGJvYXJkPwo+ID4+Pgo+ID4+PkRhbmllbAo+ID4+Cj4gPj5GaXJtd2Fy
-ZSBpcyBvbiAxdjIuIEknbSBub3QgZ2V0dGluZyBjbGlja3Mgb24gT1NYIDEwLjYuMiBvciBXaW5k
-b3dzCj4gPj43IHdpdGggdGhlIEFTSU8gZHJpdmVyLgo+ID4KPiA+V2VsbCwgYXQgbGVhc3QgZm9y
-IE9TIFggMTAuNi4yLCB0aGVyZSBhcmUgcHJvYmxlbXMgaW4gdGhlIGNsYXNzIGRyaXZlci4KPiA+
-RG8gc29tZSBsb25nLXRpbWUgbWVhc3VyZW1lbnRzIHdpdGggaW5wdXRzIGFuZCBvdXRwdXRzIHRv
-IG1lZXQgdGhlbS4KPiA+Cj4gPkkgd291bGQgYWxzbyBzdWdnZXN0IHRvIHRyeSBhIG5ld2VyIGZp
-cm13YXJlLCAxdjIgaXMgcmF0aGVyIG9sZC4gSWYgeW91Cj4gPnN0aWxsIGhhcHBlbiB0byBoYXZl
-IHByb2JsZW1zLCBsZXQgbWUga25vdyBhbmQgSSdsbCBoYXZlIGFub3RoZXIgbG9vay4KPiA+Cj4g
-Pklyb25pY2FsbHksIHRoaW5ncyBkb24ndCB3b3JrIGZvciBtZSBhbnltb3JlIGN1cnJlbnRseSB3
-aXRoIHRoZSBMaW51eAo+ID5tYXN0ZXIgZ2l0ICsgc291bmQtMi42LiBJJ20gZ2V0dGluZyBYQWN0
-RXJyb3JzIGFsbCBvdmVyIHRoZSBwbGFjZSwgYnV0Cj4gPnRoYXQncyBtb3N0IHByb2JhYmx5IG5v
-dCByZWxhdGVkIHRvIHRoZSBkcml2ZXIgaXRzZWxmIGJ1dCBzb21lCj4gPnJlZ3Jlc3Npb24gaW4g
-dGhlIExpbnV4IFVTQiBzdGFjayBJIGJlbGlldmUuIENvdWxkIHlvdSB0cnkgdGhhdCBhcyB3ZWxs
-Pwo+ID4KPiA+VGhhbmtzLAo+ID5EYW5pZWwKPiA+Cj4gCj4gQWZ0ZXIgdXBncmFkaW5nIFhNT1Mg
-ZmlybXdhcmUgdG8gMXY1LCBhbHRob3VnaCB0aGUgYm9hcmQgaXMKPiByZWNvZ25pemVkLCBpdCBu
-byBsb25nZXIgZnVuY3Rpb25zIHdpdGggYWxzYS4gQWxzbyBuZWVkcyB0byBiZSByZXNldAo+IGJl
-Zm9yZSBpdCBpcwo+IHJlY29nbml6ZWQgaW4gV2luZG93cy4KCkkgZml4ZWQgdGhpcyBwcm9ibGVt
-IG5vdyAtIHNlZSBteSBsYXRlc3QgZW1haWwgdG8gVGFrYXNoaS4gVGhlIHBhdGNoCndpbGwgbGlr
-ZWx5IGJlIG1lcmdlZCBpbiBhIGZldyBkYXlzLCBidXQgeW91IGNvdWxkIGFsc28gZ2l2ZSBpdCBh
-IHRyeSBieQphcHBseWluZyBpdCBtYW51YWxseSAoc2VlIGJlbG93KS4KCkFuZCBJIHdvdWxkIHN0
-aWxsIGFwcHJlY2lhdGUgc29tZSB0ZXN0aW5nIGZlZWRiYWNrIDopCgoKRGFuaWVsCgoKRnJvbSAz
-YmVlZTQwOTgyYjk4MzE0ZjhkNThjNzc1Y2M4YjQwYThlMjVjZTE4IE1vbiBTZXAgMTcgMDA6MDA6
-MDAgMjAwMQpGcm9tOiBEYW5pZWwgTWFjayA8ZGFuaWVsQGNhaWFxLmRlPgpEYXRlOiBUaHUsIDI3
-IE1heSAyMDEwIDE4OjI4OjI1ICswMjAwClN1YmplY3Q6IFtQQVRDSF0gQUxTQTogdXNiLWF1ZGlv
-OiBmaXggZmVhdHVyZSB1bml0IHBhcnNlciBmb3IgVUFDMgoKRml4IGEgc21hbGwgb2ZmLWJ5LW9u
-ZSBidWcgd2hpY2ggY2F1c2VzIHRoZSBmZWF0dXJlIHVuaXQgdG8gYW5ub3VuY2UgYQp3cm9uZyBu
-dW1iZXIgb2YgY2hhbm5lbHMuIFRoaXMgbGVhZHMgdG8gaWxsZWdhbCByZXF1ZXN0cyBzZW50IHRv
-IHRoZQpmaXJtd2FyZSBldmVudHVhbGx5LgoKU2lnbmVkLW9mZi1ieTogRGFuaWVsIE1hY2sgPGRh
-bmllbEBjYWlhcS5kZT4KLS0tCiBzb3VuZC91c2IvbWl4ZXIuYyB8ICAgIDIgKy0KIDEgZmlsZXMg
-Y2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Nv
-dW5kL3VzYi9taXhlci5jIGIvc291bmQvdXNiL21peGVyLmMKaW5kZXggOTdkZDE3Ni4uMDNjZTk3
-MSAxMDA2NDQKLS0tIGEvc291bmQvdXNiL21peGVyLmMKKysrIGIvc291bmQvdXNiL21peGVyLmMK
-QEAgLTExMjYsNyArMTEyNiw3IEBAIHN0YXRpYyBpbnQgcGFyc2VfYXVkaW9fZmVhdHVyZV91bml0
-KHN0cnVjdCBtaXhlcl9idWlsZCAqc3RhdGUsIGludCB1bml0aWQsIHZvaWQKIAl9IGVsc2Ugewog
-CQlzdHJ1Y3QgdWFjMl9mZWF0dXJlX3VuaXRfZGVzY3JpcHRvciAqZnRyID0gX2Z0cjsKIAkJY3Np
-emUgPSA0OwotCQljaGFubmVscyA9IChoZHItPmJMZW5ndGggLSA2KSAvIDQ7CisJCWNoYW5uZWxz
-ID0gKGhkci0+Ykxlbmd0aCAtIDYpIC8gNCAtIDE7CiAJCWJtYUNvbnRyb2xzID0gZnRyLT5ibWFD
-b250cm9sczsKIAl9CiAKLS0gCjEuNy4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+--000e0cd1471ec07fae04879b1762
+Content-Type: text/plain; charset=UTF-8
+
+Hi,
+
+Attached is a patch against sound-2.6 master HEAD that resolves
+stuttering audio on the original reporter's hardware. Please apply.
+
+This patch is applicable to all stable trees of 2.6.3x.
+
+Best,
+-Dan
+
+--000e0cd1471ec07fae04879b1762
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ALSA-hda-Use-LPIB-for-Sony-VPCS11V9E.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Use-LPIB-for-Sony-VPCS11V9E.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g9q638f10
+
+RnJvbSA3MGZiNThiNDRjNzk3MGU5MmU4ZThlMzNlNWFjYzg3ZDJjZjc3YThlIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFRodSwgMjcgTWF5IDIwMTAgMTg6MzI6MTggLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGE6IFVzZSBMUElCIGZvciBTb255IFZQQ1MxMVY5RQoKQnVnTGluazogaHR0cHM6Ly9sYXVu
+Y2hwYWQubmV0L2J1Z3MvNTg2MzQ3CgpTeW1wdG9tOiBPbiB0aGUgU29ueSBWUENTMTFWOUUsIHVz
+aW5nIEdTdHJlYW1lci1iYXNlZCBhcHBsaWNhdGlvbnMgd2l0aApQdWxzZUF1ZGlvIGluIFVidW50
+dSAxMC4wNCBMVFMgcmVzdWx0cyBpbiBzdHV0dGVyaW5nIGF1ZGlvLiBJdCBhcHBlYXJzCnRvIHdv
+cnNlbiB3aXRoIGluY3JlYXNlZCBJL08uCgpUZXN0IGNhc2U6IHVzZSBSaHl0aG1ib3ggdW5kZXIg
+aW5jcmVhc2VkIEkvTyBwcmVzc3VyZS4gVGhpcyBzeW1wdG9tIGlzCnJlcHJvZHVjaWJsZSBpbiB0
+aGUgY3VycmVudCBkYWlseSBzdGFibGUgYWxzYS1kcml2ZXIgc25hcHNob3RzIChhdCBsZWFzdAp1
+cCB1bnRpbCAyMSBNYXkgMjAxMDsgbGF0ZXIgc25hcHNob3RzIGZhaWwgdG8gYnVpbGQgZnJvbSBz
+b3VyY2UgZHVlIHRvCm1pc3NpbmcgcHJlcHJvY2Vzc29yIGRpcmVjdGl2ZXMgd2hlbiBjb21waWxl
+ZCBhZ2FpbnN0IDIuNi4zMikuCgpSZXNvbHV0aW9uOiBhZGQgU1NJRCBmb3IgdGhpcyBtYWNoaW5l
+IHRvIHRoZSBwb3NpdGlvbl9maXggcXVpcmsgdGFibGUsCmV4cGxpY2l0bHkgc3BlY2lmeWluZyB0
+aGUgTFBJQiBtZXRob2QuCgpSZXBvcnRlZC1hbmQtVGVzdGVkLUJ5OiBMYXVyaSBLYWludWxhaW5l
+biA8bGF1cmlAc29ra2Vsby5uZXQ+CkNjOiA8c3RhYmxlQGtlcm5lbC5vcmc+ClNpZ25lZC1vZmYt
+Ynk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5AdWJ1bnR1LmNvbT4KLS0tCiBzb3VuZC9wY2kvaGRh
+L2hkYV9pbnRlbC5jIHwgICAgMSArCiAxIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwg
+MCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jIGIv
+c291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwppbmRleCA3N2UyMmMyLi5lMWZmMmI4IDEwMDY0NAot
+LS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCisrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2lu
+dGVsLmMKQEAgLTIyODgsNiArMjI4OCw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBw
+b3NpdGlvbl9maXhfbGlzdFtdIF9fZGV2aW5pdGRhdGEgPSB7CiAJU05EX1BDSV9RVUlSSygweDEw
+MjgsIDB4MDFmNiwgIkRlbGwgTGF0aXR1ZGUgMTMxTCIsIFBPU19GSVhfTFBJQiksCiAJU05EX1BD
+SV9RVUlSSygweDEwM2MsIDB4MzA2ZCwgIkhQIGR2MyIsIFBPU19GSVhfTFBJQiksCiAJU05EX1BD
+SV9RVUlSSygweDEwNDMsIDB4ODEzZCwgIkFTVVMgUDVBRDIiLCBQT1NfRklYX0xQSUIpLAorCVNO
+RF9QQ0lfUVVJUksoMHgxMDRkLCAweDkwNjksICJTb255IFZQQ1MxMVY5RSIsIFBPU19GSVhfTFBJ
+QiksCiAJU05EX1BDSV9RVUlSSygweDExMDYsIDB4MzI4OCwgIkFTVVMgTTJWLU1YIFNFIiwgUE9T
+X0ZJWF9MUElCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTE3OSwgMHhmZjEwLCAiVG9zaGliYSBBMTAw
+LTI1OSIsIFBPU19GSVhfTFBJQiksCiAJU05EX1BDSV9RVUlSSygweDE0NTgsIDB4YTAyMiwgImdh
+LW1hNzcwLXVkMyIsIFBPU19GSVhfTFBJQiksCi0tIAoxLjcuMC40Cgo=
+--000e0cd1471ec07fae04879b1762
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--000e0cd1471ec07fae04879b1762--
