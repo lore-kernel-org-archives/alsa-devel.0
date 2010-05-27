@@ -1,17 +1,27 @@
-From: apatard@mandriva.com
-Subject: [patch 4/6] cs42l51: add asoc driver
-Date: Thu, 27 May 2010 14:57:41 +0200
-Message-ID: <20100527130338.737142664@mandriva.com>
-References: <20100527125737.524554667@mandriva.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: wrong decibel data?
+Date: Thu, 27 May 2010 14:30:06 +0100
+Message-ID: <htls4d$phr$1@dough.gmane.org>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>	<hp744t$5b5$1@dough.gmane.org>	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>	<hqbv5m$cmf$1@dough.gmane.org>	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>	<hqmbmm$hsj$1@dough.gmane.org>
+	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------090407030203030508080400"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from jules.rtp-net.org (sat78-1-82-232-42-61.fbx.proxad.net
-	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id BF842103A5C
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id AED27103A53
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 15:03:44 +0200 (CEST)
-Content-Disposition: inline; filename=cs42l51_support.patch
+	Thu, 27 May 2010 15:30:00 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OHd9s-0008EW-3m
+	for alsa-devel@alsa-project.org; Thu, 27 May 2010 15:30:00 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 15:30:00 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 15:30:00 +0200
+In-Reply-To: <i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,989 +32,442 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: nico@fluxnic.net, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, Arnaud Patard <apatard@mandriva.com>, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch is adding a ASoC driver for the cs42l51 from Cirrus Logic.
-Master mode and spi mode are not supported.
+This is a multi-part message in MIME format.
+--------------090407030203030508080400
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Arnaud Patard <apatard@mandriva.com>
+'Twas brillig, and Raymond Yau at 22/04/10 02:16 did gyre and gimble:
+> Just output of alsa-info.sh as stated in my previous email
 
-Index: sound-2.6/sound/soc/codecs/cs42l51.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ sound-2.6/sound/soc/codecs/cs42l51.c	2010-05-27 14:09:52.079674615 +0200
-@@ -0,0 +1,763 @@
-+/*
-+ * cs42l51.c
-+ *
-+ * ASoC Driver for Cirrus Logic CS42L51 codecs
-+ *
-+ * Copyright (c) 2010 Arnaud Patard <apatard@mandriva.com>
-+ *
-+ * Based on cs4270.c - Copyright (c) Freescale Semiconductor
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * For now:
-+ *  - Only I2C is support. Not SPI
-+ *  - master mode *NOT* supported
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <sound/core.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <sound/tlv.h>
-+#include <sound/initval.h>
-+#include <sound/pcm_params.h>
-+#include <sound/pcm.h>
-+#include <linux/i2c.h>
-+
-+#include "cs42l51.h"
-+
-+enum master_slave_mode {
-+	MODE_SLAVE,
-+	MODE_SLAVE_AUTO,
-+	MODE_MASTER,
-+};
-+
-+struct cs42l51_private {
-+	unsigned int mclk;
-+	unsigned int audio_mode;	/* The mode (I2S or left-justified) */
-+	enum master_slave_mode func;
-+	struct snd_soc_codec codec;
-+	u8 reg_cache[CS42L51_NUMREGS];
-+};
-+
-+static struct snd_soc_codec *cs42l51_codec;
-+
-+#define CS42L51_FORMATS ( \
-+		SNDRV_PCM_FMTBIT_S16_LE  | SNDRV_PCM_FMTBIT_S16_BE  | \
-+		SNDRV_PCM_FMTBIT_S18_3LE | SNDRV_PCM_FMTBIT_S18_3BE | \
-+		SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S20_3BE | \
-+		SNDRV_PCM_FMTBIT_S24_LE  | SNDRV_PCM_FMTBIT_S24_BE)
-+
-+static int cs42l51_fill_cache(struct snd_soc_codec *codec)
-+{
-+	u8 *cache = codec->reg_cache + 1;
-+	struct i2c_client *i2c_client = codec->control_data;
-+	s32 length;
-+
-+	length = i2c_smbus_read_i2c_block_data(i2c_client,
-+			CS42L51_FIRSTREG | 0x80, CS42L51_NUMREGS, cache);
-+	if (length != CS42L51_NUMREGS) {
-+		dev_err(&i2c_client->dev,
-+				"I2C read failure, addr=0x%x (ret=%d vs %d)\n",
-+				i2c_client->addr, length, CS42L51_NUMREGS);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
-+	const struct i2c_device_id *id)
-+{
-+	struct snd_soc_codec *codec;
-+	struct cs42l51_private *cs42l51;
-+	int ret = 0;
-+	int reg;
-+
-+	if (cs42l51_codec)
-+		return -EBUSY;
-+
-+	/* Verify that we have a CS42L51 */
-+	ret = i2c_smbus_read_byte_data(i2c_client, CS42L51_CHIP_REV_ID);
-+	if (ret < 0) {
-+		dev_err(&i2c_client->dev, "failed to read I2C\n");
-+		goto error;
-+	}
-+
-+	if ((ret != CS42L51_MK_CHIP_REV(CS42L51_CHIP_ID, CS42L51_CHIP_REV_A)) &&
-+	    (ret != CS42L51_MK_CHIP_REV(CS42L51_CHIP_ID, CS42L51_CHIP_REV_B))) {
-+		dev_err(&i2c_client->dev, "Invalid chip id\n");
-+		ret = -ENODEV;
-+		goto error;
-+	}
-+
-+	dev_info(&i2c_client->dev, "found device cs42l51 rev %d\n",
-+				ret & 7);
-+
-+	cs42l51 = kzalloc(sizeof(struct cs42l51_private), GFP_KERNEL);
-+	if (!cs42l51) {
-+		dev_err(&i2c_client->dev, "could not allocate codec\n");
-+		return -ENOMEM;
-+	}
-+	codec = &cs42l51->codec;
-+
-+	mutex_init(&codec->mutex);
-+	INIT_LIST_HEAD(&codec->dapm_widgets);
-+	INIT_LIST_HEAD(&codec->dapm_paths);
-+
-+	codec->dev = &i2c_client->dev;
-+	codec->name = "CS42L51";
-+	codec->owner = THIS_MODULE;
-+	codec->dai = &cs42l51_dai;
-+	codec->num_dai = 1;
-+	snd_soc_codec_set_drvdata(codec, cs42l51);
-+
-+	codec->control_data = i2c_client;
-+	codec->reg_cache = cs42l51->reg_cache;
-+	codec->reg_cache_size = CS42L51_NUMREGS;
-+	i2c_set_clientdata(i2c_client, codec);
-+
-+	ret = cs42l51_fill_cache(codec);
-+	if (ret < 0) {
-+		dev_err(&i2c_client->dev, "failed to fill register cache\n");
-+		goto error_alloc;
-+	}
-+
-+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
-+	if (ret < 0) {
-+		dev_err(&i2c_client->dev, "Failed to set cache I/O: %d\n", ret);
-+		goto error_alloc;
-+	}
-+
-+	/*
-+	 * DAC configuration
-+	 * - Use signal processor
-+	 * - auto mute
-+	 * - vol changes immediate
-+	 * - no de-emphasize
-+	 */
-+	reg = CS42L51_DAC_CTL_DATA_SEL(1)
-+		| CS42L51_DAC_CTL_AMUTE | CS42L51_DAC_CTL_DACSZ(0);
-+	ret = snd_soc_write(codec, CS42L51_DAC_CTL, reg);
-+	if (ret < 0)
-+		goto error_alloc;
-+
-+	cs42l51_dai.dev = codec->dev;
-+	cs42l51_codec = codec;
-+
-+	ret = snd_soc_register_codec(codec);
-+	if (ret != 0) {
-+		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
-+		goto error_alloc;
-+	}
-+
-+	ret = snd_soc_register_dai(&cs42l51_dai);
-+	if (ret < 0) {
-+		dev_err(&i2c_client->dev, "failed to register DAIe\n");
-+		goto error_reg;
-+	}
-+
-+	return 0;
-+
-+error_reg:
-+	snd_soc_unregister_codec(codec);
-+error_alloc:
-+	kfree(cs42l51);
-+error:
-+	return ret;
-+}
-+
-+static int cs42l51_i2c_remove(struct i2c_client *client)
-+{
-+	struct cs42l51_private *cs42l51 = i2c_get_clientdata(client);
-+	snd_soc_unregister_dai(&cs42l51_dai);
-+	snd_soc_unregister_codec(cs42l51_codec);
-+	cs42l51_codec = NULL;
-+	kfree(cs42l51);
-+	return 0;
-+}
-+
-+
-+static const struct i2c_device_id cs42l51_id[] = {
-+	{"cs42l51", 0},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, cs42l51_id);
-+
-+static struct i2c_driver cs42l51_i2c_driver = {
-+	.driver = {
-+		.name = "CS42L51 I2C",
-+		.owner = THIS_MODULE,
-+	},
-+	.id_table = cs42l51_id,
-+	.probe = cs42l51_i2c_probe,
-+	.remove = cs42l51_i2c_remove,
-+};
-+
-+static int cs42l51_get_chan_mix(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned long value = snd_soc_read(codec, CS42L51_PCM_MIXER)&3;
-+
-+	switch (value) {
-+	default:
-+	case 0:
-+		ucontrol->value.integer.value[0] = 0;
-+		break;
-+	/* same value : (L+R)/2 and (R+L)/2 */
-+	case 1:
-+	case 2:
-+		ucontrol->value.integer.value[0] = 1;
-+		break;
-+	case 3:
-+		ucontrol->value.integer.value[0] = 2;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+#define CHAN_MIX_NORMAL	0x00
-+#define CHAN_MIX_BOTH	0x55
-+#define CHAN_MIX_SWAP	0xFF
-+
-+static int cs42l51_set_chan_mix(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	unsigned char val;
-+
-+	switch (ucontrol->value.integer.value[0]) {
-+	default:
-+	case 0:
-+		val = CHAN_MIX_NORMAL;
-+		break;
-+	case 1:
-+		val = CHAN_MIX_BOTH;
-+		break;
-+	case 2:
-+		val = CHAN_MIX_SWAP;
-+		break;
-+	}
-+
-+	snd_soc_write(codec, CS42L51_PCM_MIXER, val);
-+
-+	return 1;
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(adc_pcm_tlv, -5150, 50, 0);
-+static const DECLARE_TLV_DB_SCALE(tone_tlv, -1050, 150, 0);
-+/* This is a lie. after -102 db, it stays at -102 */
-+/* maybe a range would be better */
-+static const DECLARE_TLV_DB_SCALE(aout_tlv, -11550, 50, 0);
-+
-+static const DECLARE_TLV_DB_SCALE(boost_tlv, 1600, 1600, 0);
-+static const char *chan_mix[] = {
-+	"L R",
-+	"L+R",
-+	"R L",
-+};
-+
-+static const struct soc_enum cs42l51_chan_mix =
-+	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(chan_mix), chan_mix);
-+
-+static const struct snd_kcontrol_new cs42l51_snd_controls[] = {
-+	SOC_DOUBLE_R_SX_TLV("PCM Playback Volume",
-+			CS42L51_PCMA_VOL, CS42L51_PCMB_VOL,
-+			7, 0xffffff99, 0x18, adc_pcm_tlv),
-+	SOC_DOUBLE_R("PCM Playback Switch",
-+			CS42L51_PCMA_VOL, CS42L51_PCMB_VOL, 7, 1, 1),
-+	SOC_DOUBLE_R_SX_TLV("Analog Playback Volume",
-+			CS42L51_AOUTA_VOL, CS42L51_AOUTB_VOL,
-+			8, 0xffffff19, 0x18, aout_tlv),
-+	SOC_DOUBLE_R_SX_TLV("ADC Mixer Volume",
-+			CS42L51_ADCA_VOL, CS42L51_ADCB_VOL,
-+			7, 0xffffff99, 0x18, adc_pcm_tlv),
-+	SOC_DOUBLE_R("ADC Mixer Switch",
-+			CS42L51_ADCA_VOL, CS42L51_ADCB_VOL, 7, 1, 1),
-+	SOC_SINGLE("Playback Deemphasis Switch", CS42L51_DAC_CTL, 3, 1, 0),
-+	SOC_SINGLE("Auto-Mute Switch", CS42L51_DAC_CTL, 2, 1, 0),
-+	SOC_SINGLE("Soft Ramp Switch", CS42L51_DAC_CTL, 1, 1, 0),
-+	SOC_SINGLE("Zero Cross Switch", CS42L51_DAC_CTL, 0, 0, 0),
-+	SOC_DOUBLE_TLV("Mic Boost Volume",
-+			CS42L51_MIC_CTL, 0, 1, 1, 0, boost_tlv),
-+	SOC_SINGLE_TLV("Bass Volume", CS42L51_TONE_CTL, 0, 0xf, 1, tone_tlv),
-+	SOC_SINGLE_TLV("Treble Volume", CS42L51_TONE_CTL, 4, 0xf, 1, tone_tlv),
-+	SOC_ENUM_EXT("PCM channel mixer",
-+			cs42l51_chan_mix,
-+			cs42l51_get_chan_mix, cs42l51_set_chan_mix),
-+};
-+
-+/*
-+ * to power down, one must:
-+ * 1.) Enable the PDN bit
-+ * 2.) enable power-down for the select channels
-+ * 3.) disable the PDN bit.
-+ */
-+static int cs42l51_pdn_event(struct snd_soc_dapm_widget *w,
-+		struct snd_kcontrol *kcontrol, int event)
-+{
-+	unsigned long value;
-+
-+	value = snd_soc_read(w->codec, CS42L51_POWER_CTL1);
-+	value &= ~CS42L51_POWER_CTL1_PDN;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMD:
-+		value |= CS42L51_POWER_CTL1_PDN;
-+		break;
-+	default:
-+	case SND_SOC_DAPM_POST_PMD:
-+		break;
-+	}
-+	snd_soc_update_bits(w->codec, CS42L51_POWER_CTL1,
-+		CS42L51_POWER_CTL1_PDN, value);
-+
-+	return 0;
-+}
-+
-+static const char *cs42l51_dac_names[] = {"Direct PCM",
-+	"DSP PCM", "ADC"};
-+static const struct soc_enum cs42l51_dac_mux_enum =
-+	SOC_ENUM_SINGLE(CS42L51_DAC_CTL, 6, 3, cs42l51_dac_names);
-+static const struct snd_kcontrol_new cs42l51_dac_mux_controls =
-+	SOC_DAPM_ENUM("Route", cs42l51_dac_mux_enum);
-+
-+static const char *cs42l51_adcl_names[] = {"AIN1 Left", "AIN2 Left",
-+	"MIC Left", "MIC+preamp Left"};
-+static const struct soc_enum cs42l51_adcl_mux_enum =
-+	SOC_ENUM_SINGLE(CS42L51_ADC_INPUT, 4, 4, cs42l51_adcl_names);
-+static const struct snd_kcontrol_new cs42l51_adcl_mux_controls =
-+	SOC_DAPM_ENUM("Route", cs42l51_adcl_mux_enum);
-+
-+static const char *cs42l51_adcr_names[] = {"AIN1 Right", "AIN2 Right",
-+	"MIC Right", "MIC+preamp Right"};
-+static const struct soc_enum cs42l51_adcr_mux_enum =
-+	SOC_ENUM_SINGLE(CS42L51_ADC_INPUT, 6, 4, cs42l51_adcr_names);
-+static const struct snd_kcontrol_new cs42l51_adcr_mux_controls =
-+	SOC_DAPM_ENUM("Route", cs42l51_adcr_mux_enum);
-+
-+static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
-+	SND_SOC_DAPM_MICBIAS("Mic Bias", CS42L51_MIC_POWER_CTL, 1, 1),
-+	SND_SOC_DAPM_PGA_E("Left PGA", CS42L51_POWER_CTL1, 3, 1, NULL, 0,
-+		cs42l51_pdn_event, SND_SOC_DAPM_PRE_POST_PMD),
-+	SND_SOC_DAPM_PGA_E("Right PGA", CS42L51_POWER_CTL1, 4, 1, NULL, 0,
-+		cs42l51_pdn_event, SND_SOC_DAPM_PRE_POST_PMD),
-+	SND_SOC_DAPM_ADC_E("Left ADC", "Left HiFi Capture",
-+		CS42L51_POWER_CTL1, 1, 1,
-+		cs42l51_pdn_event, SND_SOC_DAPM_PRE_POST_PMD),
-+	SND_SOC_DAPM_ADC_E("Right ADC", "Right HiFi Capture",
-+		CS42L51_POWER_CTL1, 2, 1,
-+		cs42l51_pdn_event, SND_SOC_DAPM_PRE_POST_PMD),
-+	SND_SOC_DAPM_DAC_E("Left DAC", "Left HiFi Playback",
-+		CS42L51_POWER_CTL1, 5, 1,
-+		cs42l51_pdn_event, SND_SOC_DAPM_PRE_POST_PMD),
-+	SND_SOC_DAPM_DAC_E("Right DAC", "Right HiFi Playback",
-+		CS42L51_POWER_CTL1, 6, 1,
-+		cs42l51_pdn_event, SND_SOC_DAPM_PRE_POST_PMD),
-+
-+	/* analog/mic */
-+	SND_SOC_DAPM_INPUT("AIN1L"),
-+	SND_SOC_DAPM_INPUT("AIN1R"),
-+	SND_SOC_DAPM_INPUT("AIN2L"),
-+	SND_SOC_DAPM_INPUT("AIN2R"),
-+	SND_SOC_DAPM_INPUT("MICL"),
-+	SND_SOC_DAPM_INPUT("MICR"),
-+
-+	SND_SOC_DAPM_MIXER("Mic Preamp Left",
-+		CS42L51_MIC_POWER_CTL, 2, 1, NULL, 0),
-+	SND_SOC_DAPM_MIXER("Mic Preamp Right",
-+		CS42L51_MIC_POWER_CTL, 3, 1, NULL, 0),
-+
-+	/* HP */
-+	SND_SOC_DAPM_OUTPUT("HPL"),
-+	SND_SOC_DAPM_OUTPUT("HPR"),
-+
-+	/* mux */
-+	SND_SOC_DAPM_MUX("DAC Mux", SND_SOC_NOPM, 0, 0,
-+		&cs42l51_dac_mux_controls),
-+	SND_SOC_DAPM_MUX("PGA-ADC Mux Left", SND_SOC_NOPM, 0, 0,
-+		&cs42l51_adcl_mux_controls),
-+	SND_SOC_DAPM_MUX("PGA-ADC Mux Right", SND_SOC_NOPM, 0, 0,
-+		&cs42l51_adcr_mux_controls),
-+};
-+
-+static const struct snd_soc_dapm_route cs42l51_routes[] = {
-+	{"HPL", NULL, "Left DAC"},
-+	{"HPR", NULL, "Right DAC"},
-+
-+	{"Left ADC", NULL, "Left PGA"},
-+	{"Right ADC", NULL, "Right PGA"},
-+
-+	{"Mic Preamp Left",  NULL,  "MICL"},
-+	{"Mic Preamp Right", NULL,  "MICR"},
-+
-+	{"PGA-ADC Mux Left",  "AIN1 Left",        "AIN1L" },
-+	{"PGA-ADC Mux Left",  "AIN2 Left",        "AIN2L" },
-+	{"PGA-ADC Mux Left",  "MIC Left",         "MICL"  },
-+	{"PGA-ADC Mux Left",  "MIC+preamp Left",  "Mic Preamp Left" },
-+	{"PGA-ADC Mux Right", "AIN1 Right",       "AIN1R" },
-+	{"PGA-ADC Mux Right", "AIN2 Right",       "AIN2R" },
-+	{"PGA-ADC Mux Right", "MIC Right",        "MICR" },
-+	{"PGA-ADC Mux Right", "MIC+preamp Right", "Mic Preamp Right" },
-+
-+	{"Left PGA", NULL, "PGA-ADC Mux Left"},
-+	{"Right PGA", NULL, "PGA-ADC Mux Right"},
-+};
-+
-+static int cs42l51_set_dai_fmt(struct snd_soc_dai *codec_dai,
-+		unsigned int format)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
-+	int ret = 0;
-+
-+	switch (format & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_I2S:
-+	case SND_SOC_DAIFMT_LEFT_J:
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		cs42l51->audio_mode = format & SND_SOC_DAIFMT_FORMAT_MASK;
-+		break;
-+	default:
-+		dev_err(codec->dev, "invalid DAI format\n");
-+		ret = -EINVAL;
-+	}
-+
-+	switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		cs42l51->func = MODE_MASTER;
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		cs42l51->func = MODE_SLAVE_AUTO;
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
-+	return ret;
-+}
-+
-+struct cs42l51_ratios {
-+	unsigned int ratio;
-+	unsigned char speed_mode;
-+	unsigned char mclk;
-+};
-+
-+static struct cs42l51_ratios slave_ratios[] = {
-+	{  512, CS42L51_QSM_MODE, 0 }, {  768, CS42L51_QSM_MODE, 0 },
-+	{ 1024, CS42L51_QSM_MODE, 0 }, { 1536, CS42L51_QSM_MODE, 0 },
-+	{ 2048, CS42L51_QSM_MODE, 0 }, { 3072, CS42L51_QSM_MODE, 0 },
-+	{  256, CS42L51_HSM_MODE, 0 }, {  384, CS42L51_HSM_MODE, 0 },
-+	{  512, CS42L51_HSM_MODE, 0 }, {  768, CS42L51_HSM_MODE, 0 },
-+	{ 1024, CS42L51_HSM_MODE, 0 }, { 1536, CS42L51_HSM_MODE, 0 },
-+	{  128, CS42L51_SSM_MODE, 0 }, {  192, CS42L51_SSM_MODE, 0 },
-+	{  256, CS42L51_SSM_MODE, 0 }, {  384, CS42L51_SSM_MODE, 0 },
-+	{  512, CS42L51_SSM_MODE, 0 }, {  768, CS42L51_SSM_MODE, 0 },
-+	{  128, CS42L51_DSM_MODE, 0 }, {  192, CS42L51_DSM_MODE, 0 },
-+	{  256, CS42L51_DSM_MODE, 0 }, {  384, CS42L51_DSM_MODE, 0 },
-+};
-+
-+static struct cs42l51_ratios slave_auto_ratios[] = {
-+	{ 1024, CS42L51_QSM_MODE, 0 }, { 1536, CS42L51_QSM_MODE, 0 },
-+	{ 2048, CS42L51_QSM_MODE, 1 }, { 3072, CS42L51_QSM_MODE, 1 },
-+	{  512, CS42L51_HSM_MODE, 0 }, {  768, CS42L51_HSM_MODE, 0 },
-+	{ 1024, CS42L51_HSM_MODE, 1 }, { 1536, CS42L51_HSM_MODE, 1 },
-+	{  256, CS42L51_SSM_MODE, 0 }, {  384, CS42L51_SSM_MODE, 0 },
-+	{  512, CS42L51_SSM_MODE, 1 }, {  768, CS42L51_SSM_MODE, 1 },
-+	{  128, CS42L51_DSM_MODE, 0 }, {  192, CS42L51_DSM_MODE, 0 },
-+	{  256, CS42L51_DSM_MODE, 1 }, {  384, CS42L51_DSM_MODE, 1 },
-+};
-+
-+static int cs42l51_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-+		int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
-+	struct cs42l51_ratios *ratios = NULL;
-+	int nr_ratios = 0;
-+	unsigned int rates = 0;
-+	unsigned int rate_min = -1;
-+	unsigned int rate_max = 0;
-+	int i;
-+
-+	cs42l51->mclk = freq;
-+
-+	switch (cs42l51->func) {
-+	case MODE_MASTER:
-+		return -EINVAL;
-+	case MODE_SLAVE:
-+		ratios = slave_ratios;
-+		nr_ratios = ARRAY_SIZE(slave_ratios);
-+		break;
-+	case MODE_SLAVE_AUTO:
-+		ratios = slave_auto_ratios;
-+		nr_ratios = ARRAY_SIZE(slave_auto_ratios);
-+		break;
-+	}
-+
-+	for (i = 0; i < nr_ratios; i++) {
-+		unsigned int rate = freq / ratios[i].ratio;
-+		rates |= snd_pcm_rate_to_rate_bit(rate);
-+		if (rate < rate_min)
-+			rate_min = rate;
-+		if (rate > rate_max)
-+			rate_max = rate;
-+	}
-+	rates &= ~SNDRV_PCM_RATE_KNOT;
-+
-+	if (!rates) {
-+		dev_err(codec->dev, "could not find a valid sample rate\n");
-+		return -EINVAL;
-+	}
-+
-+	codec_dai->playback.rates = rates;
-+	codec_dai->playback.rate_min = rate_min;
-+	codec_dai->playback.rate_max = rate_max;
-+
-+	codec_dai->capture.rates = rates;
-+	codec_dai->capture.rate_min = rate_min;
-+	codec_dai->capture.rate_max = rate_max;
-+
-+	return 0;
-+}
-+
-+static int cs42l51_hw_params(struct snd_pcm_substream *substream,
-+		struct snd_pcm_hw_params *params,
-+		struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_device *socdev = rtd->socdev;
-+	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
-+	unsigned int i;
-+	unsigned int rate;
-+	unsigned int ratio;
-+	struct cs42l51_ratios *ratios = NULL;
-+	int nr_ratios = 0;
-+	int intf_ctl, power_ctl, fmt;
-+
-+	switch (cs42l51->func) {
-+	case MODE_MASTER:
-+		return -EINVAL;
-+	case MODE_SLAVE:
-+		ratios = slave_ratios;
-+		nr_ratios = ARRAY_SIZE(slave_ratios);
-+		break;
-+	case MODE_SLAVE_AUTO:
-+		ratios = slave_auto_ratios;
-+		nr_ratios = ARRAY_SIZE(slave_auto_ratios);
-+		break;
-+	}
-+
-+	/* Figure out which MCLK/LRCK ratio to use */
-+	rate = params_rate(params);     /* Sampling rate, in Hz */
-+	ratio = cs42l51->mclk / rate;    /* MCLK/LRCK ratio */
-+	for (i = 0; i < nr_ratios; i++) {
-+		if (ratios[i].ratio == ratio)
-+			break;
-+	}
-+
-+	if (i == nr_ratios) {
-+		/* We did not find a matching ratio */
-+		dev_err(codec->dev, "could not find matching ratio\n");
-+		return -EINVAL;
-+	}
-+
-+	intf_ctl = snd_soc_read(codec, CS42L51_INTF_CTL);
-+	power_ctl = snd_soc_read(codec, CS42L51_MIC_POWER_CTL);
-+
-+	intf_ctl &= ~(CS42L51_INTF_CTL_MASTER | CS42L51_INTF_CTL_ADC_I2S
-+			| CS42L51_INTF_CTL_DAC_FORMAT(7));
-+	power_ctl &= ~(CS42L51_MIC_POWER_CTL_SPEED(3)
-+			| CS42L51_MIC_POWER_CTL_MCLK_DIV2);
-+
-+	switch (cs42l51->func) {
-+	case MODE_MASTER:
-+		intf_ctl |= CS42L51_INTF_CTL_MASTER;
-+		power_ctl |= CS42L51_MIC_POWER_CTL_SPEED(ratios[i].speed_mode);
-+		break;
-+	case MODE_SLAVE:
-+		power_ctl |= CS42L51_MIC_POWER_CTL_SPEED(ratios[i].speed_mode);
-+		break;
-+	case MODE_SLAVE_AUTO:
-+		power_ctl |= CS42L51_MIC_POWER_CTL_AUTO;
-+		break;
-+	}
-+
-+	switch (cs42l51->audio_mode) {
-+	case SND_SOC_DAIFMT_I2S:
-+		intf_ctl |= CS42L51_INTF_CTL_ADC_I2S;
-+		intf_ctl |= CS42L51_INTF_CTL_DAC_FORMAT(CS42L51_DAC_DIF_I2S);
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		intf_ctl |= CS42L51_INTF_CTL_DAC_FORMAT(CS42L51_DAC_DIF_LJ24);
-+		break;
-+	case SND_SOC_DAIFMT_RIGHT_J:
-+		switch (params_format(params)) {
-+		case SNDRV_PCM_FORMAT_S16_LE:
-+		case SNDRV_PCM_FORMAT_S16_BE:
-+			fmt = CS42L51_DAC_DIF_RJ16;
-+			break;
-+		case SNDRV_PCM_FORMAT_S18_3LE:
-+		case SNDRV_PCM_FORMAT_S18_3BE:
-+			fmt = CS42L51_DAC_DIF_RJ18;
-+			break;
-+		case SNDRV_PCM_FORMAT_S20_3LE:
-+		case SNDRV_PCM_FORMAT_S20_3BE:
-+			fmt = CS42L51_DAC_DIF_RJ20;
-+			break;
-+		case SNDRV_PCM_FORMAT_S24_LE:
-+		case SNDRV_PCM_FORMAT_S24_BE:
-+			fmt = CS42L51_DAC_DIF_RJ24;
-+			break;
-+		default:
-+			dev_err(codec->dev, "unknown format\n");
-+			return -EINVAL;
-+		}
-+		intf_ctl |= CS42L51_INTF_CTL_DAC_FORMAT(fmt);
-+		break;
-+	default:
-+		dev_err(codec->dev, "unknown format\n");
-+		return -EINVAL;
-+	}
-+
-+	if (ratios[i].mclk)
-+		power_ctl |= CS42L51_MIC_POWER_CTL_MCLK_DIV2;
-+
-+	ret = snd_soc_write(codec, CS42L51_INTF_CTL, intf_ctl);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_write(codec, CS42L51_MIC_POWER_CTL, power_ctl);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int cs42l51_dai_mute(struct snd_soc_dai *dai, int mute)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	int reg;
-+	int mask = CS42L51_DAC_OUT_CTL_DACA_MUTE|CS42L51_DAC_OUT_CTL_DACB_MUTE;
-+
-+	reg = snd_soc_read(codec, CS42L51_DAC_OUT_CTL);
-+
-+	if (mute)
-+		reg |= mask;
-+	else
-+		reg &= ~mask;
-+
-+	return snd_soc_write(codec, CS42L51_DAC_OUT_CTL, reg);
-+}
-+
-+static struct snd_soc_dai_ops cs42l51_dai_ops = {
-+	.hw_params      = cs42l51_hw_params,
-+	.set_sysclk     = cs42l51_set_dai_sysclk,
-+	.set_fmt        = cs42l51_set_dai_fmt,
-+	.digital_mute   = cs42l51_dai_mute,
-+};
-+
-+struct snd_soc_dai cs42l51_dai = {
-+	.name = "CS42L51 HiFi",
-+	.playback = {
-+		.stream_name = "Playback",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.formats = CS42L51_FORMATS,
-+	},
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_96000,
-+		.formats = CS42L51_FORMATS,
-+	},
-+	.ops = &cs42l51_dai_ops,
-+};
-+EXPORT_SYMBOL_GPL(cs42l51_dai);
-+
-+
-+static int cs42l51_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec;
-+	int ret = 0;
-+
-+	if (!cs42l51_codec) {
-+		dev_err(&pdev->dev, "CS42L51 codec not yet registered\n");
-+		return -EINVAL;
-+	}
-+
-+	socdev->card->codec = cs42l51_codec;
-+	codec = socdev->card->codec;
-+
-+	/* Register PCMs */
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "failed to create PCMs\n");
-+		return ret;
-+	}
-+
-+	snd_soc_add_controls(codec, cs42l51_snd_controls,
-+		ARRAY_SIZE(cs42l51_snd_controls));
-+	snd_soc_dapm_new_controls(codec, cs42l51_dapm_widgets,
-+		ARRAY_SIZE(cs42l51_dapm_widgets));
-+	snd_soc_dapm_add_routes(codec, cs42l51_routes,
-+		ARRAY_SIZE(cs42l51_routes));
-+
-+	return 0;
-+}
-+
-+
-+static int cs42l51_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+
-+	snd_soc_free_pcms(socdev);
-+	snd_soc_dapm_free(socdev);
-+
-+	return 0;
-+}
-+
-+struct snd_soc_codec_device soc_codec_device_cs42l51 = {
-+	.probe =	cs42l51_probe,
-+	.remove =	cs42l51_remove
-+};
-+EXPORT_SYMBOL_GPL(soc_codec_device_cs42l51);
-+
-+static int __init cs42l51_init(void)
-+{
-+	int ret;
-+
-+	ret = i2c_add_driver(&cs42l51_i2c_driver);
-+	if (ret != 0) {
-+		printk(KERN_ERR "%s: can't add i2c driver\n", __func__);
-+		return ret;
-+	}
-+	return 0;
-+}
-+module_init(cs42l51_init);
-+
-+static void __exit cs42l51_exit(void)
-+{
-+	i2c_del_driver(&cs42l51_i2c_driver);
-+}
-+module_exit(cs42l51_exit);
-+
-+MODULE_AUTHOR("Arnaud Patard <apatard@mandriva.com>");
-+MODULE_DESCRIPTION("Cirrus Logic CS42L51 ALSA SoC Codec Driver");
-+MODULE_LICENSE("GPL");
-Index: sound-2.6/sound/soc/codecs/cs42l51.h
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ sound-2.6/sound/soc/codecs/cs42l51.h	2010-05-27 14:09:52.103694289 +0200
-@@ -0,0 +1,163 @@
-+/*
-+ * cs42l51.h
-+ *
-+ * ASoC Driver for Cirrus Logic CS42L51 codecs
-+ *
-+ * Copyright (c) 2010 Arnaud Patard <apatard@mandriva.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+#ifndef _CS42L51_H
-+#define _CS42L51_H
-+
-+#define CS42L51_CHIP_ID			0x1B
-+#define CS42L51_CHIP_REV_A		0x00
-+#define CS42L51_CHIP_REV_B		0x01
-+
-+#define CS42L51_CHIP_REV_ID		0x01
-+#define CS42L51_MK_CHIP_REV(a, b)	((a)<<3|(b))
-+
-+#define CS42L51_POWER_CTL1		0x02
-+#define CS42L51_POWER_CTL1_PDN_DACB	(1<<6)
-+#define CS42L51_POWER_CTL1_PDN_DACA	(1<<5)
-+#define CS42L51_POWER_CTL1_PDN_PGAB	(1<<4)
-+#define CS42L51_POWER_CTL1_PDN_PGAA	(1<<3)
-+#define CS42L51_POWER_CTL1_PDN_ADCB	(1<<2)
-+#define CS42L51_POWER_CTL1_PDN_ADCA	(1<<1)
-+#define CS42L51_POWER_CTL1_PDN		(1<<0)
-+
-+#define CS42L51_MIC_POWER_CTL		0x03
-+#define CS42L51_MIC_POWER_CTL_AUTO	(1<<7)
-+#define CS42L51_MIC_POWER_CTL_SPEED(x)	(((x)&3)<<5)
-+#define CS42L51_QSM_MODE		3
-+#define CS42L51_HSM_MODE		2
-+#define	CS42L51_SSM_MODE		1
-+#define CS42L51_DSM_MODE		0
-+#define CS42L51_MIC_POWER_CTL_3ST_SP	(1<<4)
-+#define CS42L51_MIC_POWER_CTL_PDN_MICB	(1<<3)
-+#define CS42L51_MIC_POWER_CTL_PDN_MICA	(1<<2)
-+#define CS42L51_MIC_POWER_CTL_PDN_BIAS	(1<<1)
-+#define CS42L51_MIC_POWER_CTL_MCLK_DIV2	(1<<0)
-+
-+#define CS42L51_INTF_CTL		0x04
-+#define CS42L51_INTF_CTL_LOOPBACK	(1<<7)
-+#define CS42L51_INTF_CTL_MASTER		(1<<6)
-+#define CS42L51_INTF_CTL_DAC_FORMAT(x)	(((x)&7)<<3)
-+#define CS42L51_DAC_DIF_LJ24		0x00
-+#define CS42L51_DAC_DIF_I2S		0x01
-+#define CS42L51_DAC_DIF_RJ24		0x02
-+#define CS42L51_DAC_DIF_RJ20		0x03
-+#define CS42L51_DAC_DIF_RJ18		0x04
-+#define CS42L51_DAC_DIF_RJ16		0x05
-+#define CS42L51_INTF_CTL_ADC_I2S	(1<<2)
-+#define CS42L51_INTF_CTL_DIGMIX		(1<<1)
-+#define CS42L51_INTF_CTL_MICMIX		(1<<0)
-+
-+#define CS42L51_MIC_CTL			0x05
-+#define CS42L51_MIC_CTL_ADC_SNGVOL	(1<<7)
-+#define CS42L51_MIC_CTL_ADCD_DBOOST	(1<<6)
-+#define CS42L51_MIC_CTL_ADCA_DBOOST	(1<<5)
-+#define CS42L51_MIC_CTL_MICBIAS_SEL	(1<<4)
-+#define CS42L51_MIC_CTL_MICBIAS_LVL(x)	(((x)&3)<<2)
-+#define CS42L51_MIC_CTL_MICB_BOOST	(1<<1)
-+#define CS42L51_MIC_CTL_MICA_BOOST	(1<<0)
-+
-+#define CS42L51_ADC_CTL			0x06
-+#define CS42L51_ADC_CTL_ADCB_HPFEN	(1<<7)
-+#define CS42L51_ADC_CTL_ADCB_HPFRZ	(1<<6)
-+#define CS42L51_ADC_CTL_ADCA_HPFEN	(1<<5)
-+#define CS42L51_ADC_CTL_ADCA_HPFRZ	(1<<4)
-+#define CS42L51_ADC_CTL_SOFTB		(1<<3)
-+#define CS42L51_ADC_CTL_ZCROSSB		(1<<2)
-+#define CS42L51_ADC_CTL_SOFTA		(1<<1)
-+#define CS42L51_ADC_CTL_ZCROSSA		(1<<0)
-+
-+#define CS42L51_ADC_INPUT		0x07
-+#define CS42L51_ADC_INPUT_AINB_MUX(x)	(((x)&3)<<6)
-+#define CS42L51_ADC_INPUT_AINA_MUX(x)	(((x)&3)<<4)
-+#define CS42L51_ADC_INPUT_INV_ADCB	(1<<3)
-+#define CS42L51_ADC_INPUT_INV_ADCA	(1<<2)
-+#define CS42L51_ADC_INPUT_ADCB_MUTE	(1<<1)
-+#define CS42L51_ADC_INPUT_ADCA_MUTE	(1<<0)
-+
-+#define CS42L51_DAC_OUT_CTL		0x08
-+#define CS42L51_DAC_OUT_CTL_HP_GAIN(x)	(((x)&7)<<5)
-+#define CS42L51_DAC_OUT_CTL_DAC_SNGVOL	(1<<4)
-+#define CS42L51_DAC_OUT_CTL_INV_PCMB	(1<<3)
-+#define CS42L51_DAC_OUT_CTL_INV_PCMA	(1<<2)
-+#define CS42L51_DAC_OUT_CTL_DACB_MUTE	(1<<1)
-+#define CS42L51_DAC_OUT_CTL_DACA_MUTE	(1<<0)
-+
-+#define CS42L51_DAC_CTL			0x09
-+#define CS42L51_DAC_CTL_DATA_SEL(x)	(((x)&3)<<6)
-+#define CS42L51_DAC_CTL_FREEZE		(1<<5)
-+#define CS42L51_DAC_CTL_DEEMPH		(1<<3)
-+#define CS42L51_DAC_CTL_AMUTE		(1<<2)
-+#define CS42L51_DAC_CTL_DACSZ(x)	(((x)&3)<<0)
-+
-+#define CS42L51_ALC_PGA_CTL		0x0A
-+#define CS42L51_ALC_PGB_CTL		0x0B
-+#define CS42L51_ALC_PGX_ALCX_SRDIS	(1<<7)
-+#define CS42L51_ALC_PGX_ALCX_ZCDIS	(1<<6)
-+#define CS42L51_ALC_PGX_PGX_VOL(x)	(((x)&0x1f)<<0)
-+
-+#define CS42L51_ADCA_ATT		0x0C
-+#define CS42L51_ADCB_ATT		0x0D
-+
-+#define CS42L51_ADCA_VOL		0x0E
-+#define CS42L51_ADCB_VOL		0x0F
-+#define CS42L51_PCMA_VOL		0x10
-+#define CS42L51_PCMB_VOL		0x11
-+#define CS42L51_MIX_MUTE_ADCMIX		(1<<7)
-+#define CS42L51_MIX_VOLUME(x)		(((x)&0x7f)<<0)
-+
-+#define CS42L51_BEEP_FREQ		0x12
-+#define CS42L51_BEEP_VOL		0x13
-+#define CS42L51_BEEP_CONF		0x14
-+
-+#define CS42L51_TONE_CTL		0x15
-+#define CS42L51_TONE_CTL_TREB(x)	(((x)&0xf)<<4)
-+#define CS42L51_TONE_CTL_BASS(x)	(((x)&0xf)<<0)
-+
-+#define CS42L51_AOUTA_VOL		0x16
-+#define CS42L51_AOUTB_VOL		0x17
-+#define CS42L51_PCM_MIXER		0x18
-+#define CS42L51_LIMIT_THRES_DIS		0x19
-+#define CS42L51_LIMIT_REL		0x1A
-+#define CS42L51_LIMIT_ATT		0x1B
-+#define CS42L51_ALC_EN			0x1C
-+#define CS42L51_ALC_REL			0x1D
-+#define CS42L51_ALC_THRES		0x1E
-+#define CS42L51_NOISE_CONF		0x1F
-+
-+#define CS42L51_STATUS			0x20
-+#define CS42L51_STATUS_SP_CLKERR	(1<<6)
-+#define CS42L51_STATUS_SPEA_OVFL	(1<<5)
-+#define CS42L51_STATUS_SPEB_OVFL	(1<<4)
-+#define CS42L51_STATUS_PCMA_OVFL	(1<<3)
-+#define CS42L51_STATUS_PCMB_OVFL	(1<<2)
-+#define CS42L51_STATUS_ADCA_OVFL	(1<<1)
-+#define CS42L51_STATUS_ADCB_OVFL	(1<<0)
-+
-+#define CS42L51_CHARGE_FREQ		0x21
-+
-+#define CS42L51_FIRSTREG	0x01
-+/*
-+ * Hack: with register 0x21, it makes 33 registers. Looks like someone in the
-+ * i2c layer doesn't like i2c smbus block read of 33 regs. Workaround by using
-+ * 32 regs
-+ */
-+#define CS42L51_LASTREG		0x20
-+#define CS42L51_NUMREGS		(CS42L51_LASTREG - CS42L51_FIRSTREG + 1)
-+
-+extern struct snd_soc_dai cs42l51_dai;
-+extern struct snd_soc_codec_device soc_codec_device_cs42l51;
-+#endif
-Index: sound-2.6/sound/soc/codecs/Kconfig
-===================================================================
---- sound-2.6.orig/sound/soc/codecs/Kconfig	2010-05-27 14:09:32.812174230 +0200
-+++ sound-2.6/sound/soc/codecs/Kconfig	2010-05-27 14:09:52.107735223 +0200
-@@ -22,6 +22,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_AK4642 if I2C
- 	select SND_SOC_AK4671 if I2C
- 	select SND_SOC_CQ0093VC if MFD_DAVINCI_VOICECODEC
-+	select SND_SOC_CS42L51 if I2C
- 	select SND_SOC_CS4270 if I2C
- 	select SND_SOC_MAX9877 if I2C
- 	select SND_SOC_DA7210 if I2C
-@@ -120,6 +121,9 @@ config SND_SOC_AK4671
- config SND_SOC_CQ0093VC
- 	tristate
- 
-+config SND_SOC_CS42L51
-+	tristate
-+
- # Cirrus Logic CS4270 Codec
- config SND_SOC_CS4270
- 	tristate
-Index: sound-2.6/sound/soc/codecs/Makefile
-===================================================================
---- sound-2.6.orig/sound/soc/codecs/Makefile	2010-05-27 14:09:32.836174105 +0200
-+++ sound-2.6/sound/soc/codecs/Makefile	2010-05-27 14:09:52.107735223 +0200
-@@ -9,6 +9,7 @@ snd-soc-ak4535-objs := ak4535.o
- snd-soc-ak4642-objs := ak4642.o
- snd-soc-ak4671-objs := ak4671.o
- snd-soc-cq93vc-objs := cq93vc.o
-+snd-soc-cs42l51-objs := cs42l51.o
- snd-soc-cs4270-objs := cs4270.o
- snd-soc-cx20442-objs := cx20442.o
- snd-soc-da7210-objs := da7210.o
-@@ -74,6 +75,7 @@ obj-$(CONFIG_SND_SOC_AK4535)	+= snd-soc-
- obj-$(CONFIG_SND_SOC_AK4642)	+= snd-soc-ak4642.o
- obj-$(CONFIG_SND_SOC_AK4671)	+= snd-soc-ak4671.o
- obj-$(CONFIG_SND_SOC_CQ0093VC) += snd-soc-cq93vc.o
-+obj-$(CONFIG_SND_SOC_CS42L51)	+= snd-soc-cs42l51.o
- obj-$(CONFIG_SND_SOC_CS4270)	+= snd-soc-cs4270.o
- obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
- obj-$(CONFIG_SND_SOC_DA7210)	+= snd-soc-da7210.o
+Oh I've only just noticed this reply (prompted by a comment on another
+related thread).
+
+Apologies, but I'd not seen this request until now.
+
+I attach my alsa-info.sh output.
+
+
+> and please confirm that PA provide software gain
+
+Not sure precisely what you mean by this in this context.
+
+
+Col
+
+
+-- 
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
+
+--------------090407030203030508080400
+Content-Type: text/plain;
+ name="alsa-info.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="alsa-info.txt"
+
+dXBsb2FkPXRydWUmc2NyaXB0PXRydWUmY2FyZGluZm89CiEhIyMjIyMjIyMjIyMjIyMjIyMj
+IyMjIyMjIyMjIyMjIyMKISFBTFNBIEluZm9ybWF0aW9uIFNjcmlwdCB2IDAuNC41OQohISMj
+IyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgohIVNjcmlwdCByYW4gb246IFdlZCBN
+YXkgMjYgMjI6MTU6MDkgVVRDIDIwMTAKCgohIUxpbnV4IERpc3RyaWJ1dGlvbgohIS0tLS0t
+LS0tLS0tLS0tLS0tLQoKTWFuZHJpdmEgTGludXggcmVsZWFzZSAyMDEwLjEgKENvb2tlcikg
+Zm9yIHg4Nl82NCBLZXJuZWwgMi42LjMzLjQtZGVza3RvcC0ybW5iIG9uIGEgRHVhbC1wcm9j
+ZXNzb3IgeDg2XzY0IC8gXGwgTFNCX1ZFUlNJT049bHNiLTQuMC1hbWQ2NDpsc2ItNC4wLW5v
+YXJjaCBESVNUUklCX0lEPU1hbmRyaXZhTGludXggRElTVFJJQl9ERVNDUklQVElPTj0iTWFu
+ZHJpdmEgTGludXggMjAxMC4xIiBNYW5kcml2YSBMaW51eCByZWxlYXNlIDIwMTAuMSAoT2Zm
+aWNpYWwpIGZvciB4ODZfNjQgTWFuZHJpdmEgTGludXggcmVsZWFzZSAyMDEwLjEgKE9mZmlj
+aWFsKSBmb3IgeDg2XzY0IE1hbmRyaXZhIExpbnV4IHJlbGVhc2UgMjAxMC4xIChPZmZpY2lh
+bCkgZm9yIHg4Nl82NCBNYW5kcml2YSBMaW51eCByZWxlYXNlIDIwMTAuMSAoT2ZmaWNpYWwp
+IGZvciB4ODZfNjQgTWFuZHJpdmEgTGludXggcmVsZWFzZSAyMDEwLjEgKE9mZmljaWFsKSBm
+b3IgeDg2XzY0CgoKISFETUkgSW5mb3JtYXRpb24KISEtLS0tLS0tLS0tLS0tLS0KCk1hbnVm
+YWN0dXJlcjogICAgICBEZWxsIEluYy4KUHJvZHVjdCBOYW1lOiAgICAgIE1NMDYxICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgCgoKISFLZXJuZWwgSW5mb3JtYXRpb24KISEtLS0tLS0t
+LS0tLS0tLS0tLS0KCktlcm5lbCByZWxlYXNlOiAgICAyLjYuMzMuNC1kZXNrdG9wLTJtbmIK
+T3BlcmF0aW5nIFN5c3RlbTogIEdOVS9MaW51eApBcmNoaXRlY3R1cmU6ICAgICAgeDg2XzY0
+ClByb2Nlc3NvcjogICAgICAgICB4ODZfNjQKU01QIEVuYWJsZWQ6ICAgICAgIFllcwoKCiEh
+QUxTQSBWZXJzaW9uCiEhLS0tLS0tLS0tLS0tCgpEcml2ZXIgdmVyc2lvbjogICAgIDEuMC4y
+MQpMaWJyYXJ5IHZlcnNpb246ICAgIDEuMC4yMwpVdGlsaXRpZXMgdmVyc2lvbjogIDEuMC4y
+MwoKCiEhTG9hZGVkIEFMU0EgbW9kdWxlcwohIS0tLS0tLS0tLS0tLS0tLS0tLS0KCnNuZF9o
+ZGFfaW50ZWwKCgohIVNvdW5kIFNlcnZlcnMgb24gdGhpcyBzeXN0ZW0KISEtLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCgpQdWxzZWF1ZGlvOgogICAgICBJbnN0YWxsZWQgLSBZZXMg
+KC91c3IvYmluL3B1bHNlYXVkaW8pCiAgICAgIFJ1bm5pbmcgLSBZZXMKCkVTb3VuZCBEYWVt
+b246CiAgICAgIEluc3RhbGxlZCAtIFllcyAoL3Vzci9iaW4vZXNkKQogICAgICBSdW5uaW5n
+IC0gTm8KCkphY2s6CiAgICAgIEluc3RhbGxlZCAtIFllcyAoL3Vzci9iaW4vamFja2QpCiAg
+ICAgIFJ1bm5pbmcgLSBObwoKCiEhU291bmRjYXJkcyByZWNvZ25pc2VkIGJ5IEFMU0EKISEt
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKIDAgW0ludGVsICAgICAgICAgIF06IEhE
+QS1JbnRlbCAtIEhEQSBJbnRlbAogICAgICAgICAgICAgICAgICAgICAgSERBIEludGVsIGF0
+IDB4ZWZlYmMwMDAgaXJxIDI3CgoKISFQQ0kgU291bmRjYXJkcyBpbnN0YWxsZWQgaW4gdGhl
+IHN5c3RlbQohIS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgowMDox
+Yi4wIEF1ZGlvIGRldmljZTogSW50ZWwgQ29ycG9yYXRpb24gODI4MDFHIChJQ0g3IEZhbWls
+eSkgSGlnaCBEZWZpbml0aW9uIEF1ZGlvIENvbnRyb2xsZXIgKHJldiAwMSkKCgohIUFkdmFu
+Y2VkIGluZm9ybWF0aW9uIC0gUENJIFZlbmRvci9EZXZpY2UvU3VzYnN5c3RlbSBJRCdzCiEh
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KCjAwOjFiLjAgMDQwMzogODA4NjoyN2Q4IChyZXYgMDEpCglTdWJzeXN0ZW06IDEwMjg6
+MDFiZAoKCiEhTW9kcHJvYmUgb3B0aW9ucyAoU291bmQgcmVsYXRlZCkKISEtLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKc25kLWFjOTctY29kZWM6IHBvd2VyX3NhdmU9MQoK
+CiEhSERBLUludGVsIENvZGVjIGluZm9ybWF0aW9uCiEhLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCi0tc3RhcnRjb2xsYXBzZS0tCgpDb2RlYzogU2lnbWFUZWwgU1RBQzkyMDAKQWRk
+cmVzczogMApGdW5jdGlvbiBJZDogMHgxClZlbmRvciBJZDogMHg4Mzg0NzY5MApTdWJzeXN0
+ZW0gSWQ6IDB4MTAyODAxYmQKUmV2aXNpb24gSWQ6IDB4MTAyMjAxCk5vIE1vZGVtIEZ1bmN0
+aW9uIEdyb3VwIGZvdW5kCkRlZmF1bHQgUENNOgogICAgcmF0ZXMgWzB4N2UwXTogNDQxMDAg
+NDgwMDAgODgyMDAgOTYwMDAgMTc2NDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAg
+MjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQpEZWZhdWx0IEFtcC1JbiBjYXBzOiBOL0EKRGVm
+YXVsdCBBbXAtT3V0IGNhcHM6IG9mcz0weDFmLCBuc3RlcHM9MHgxZiwgc3RlcHNpemU9MHgw
+NSwgbXV0ZT0xCkdQSU86IGlvPTQsIG89MCwgaT0wLCB1bnNvbGljaXRlZD0xLCB3YWtlPTEK
+ICBJT1swXTogZW5hYmxlPTAsIGRpcj0wLCB3YWtlPTAsIHN0aWNreT0wLCBkYXRhPTAsIHVu
+c29sPTAKICBJT1sxXTogZW5hYmxlPTAsIGRpcj0wLCB3YWtlPTAsIHN0aWNreT0wLCBkYXRh
+PTAsIHVuc29sPTAKICBJT1syXTogZW5hYmxlPTAsIGRpcj0wLCB3YWtlPTAsIHN0aWNreT0w
+LCBkYXRhPTAsIHVuc29sPTAKICBJT1szXTogZW5hYmxlPTAsIGRpcj0wLCB3YWtlPTAsIHN0
+aWNreT0wLCBkYXRhPTAsIHVuc29sPTAKTm9kZSAweDAyIFtBdWRpbyBPdXRwdXRdIHdjYXBz
+IDB4ZDA0MDE6IFN0ZXJlbwogIERldmljZTogbmFtZT0iU1RBQzkyeHggQW5hbG9nIiwgdHlw
+ZT0iQXVkaW8iLCBkZXZpY2U9MAogIENvbnZlcnRlcjogc3RyZWFtPTUsIGNoYW5uZWw9MAog
+IFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBEZWxheTogMTMgc2FtcGxlcwpOb2Rl
+IDB4MDMgW0F1ZGlvIElucHV0XSB3Y2FwcyAweDFkMDU0MTogU3RlcmVvCiAgRGV2aWNlOiBu
+YW1lPSJTVEFDOTJ4eCBBbmFsb2ciLCB0eXBlPSJBdWRpbyIsIGRldmljZT0wCiAgQ29udmVy
+dGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDogMAogIFBvd2VyOiBzZXR0
+aW5nPUQwLCBhY3R1YWw9RDAKICBEZWxheTogMTMgc2FtcGxlcwogIENvbm5lY3Rpb246IDEK
+ICAgICAweDBhCiAgUHJvY2Vzc2luZyBjYXBzOiBiZW5pZ249MCwgbmNvZWZmPTAKTm9kZSAw
+eDA0IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxNDAzMTE6IFN0ZXJlbyBEaWdpdGFsCiAgQ29u
+dmVydGVyOiBzdHJlYW09MCwgY2hhbm5lbD0wCiAgU0RJLVNlbGVjdDogMAogIERpZ2l0YWw6
+CiAgRGlnaXRhbCBjYXRlZ29yeTogMHgwCiAgUENNOgogICAgcmF0ZXMgWzB4MTYwXTogNDQx
+MDAgNDgwMDAgOTYwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsw
+eDVdOiBQQ00gQUMzCiAgRGVsYXk6IDQgc2FtcGxlcwogIENvbm5lY3Rpb246IDEKICAgICAw
+eDA4Ck5vZGUgMHgwNSBbQXVkaW8gT3V0cHV0XSB3Y2FwcyAweDQwMjExOiBTdGVyZW8gRGln
+aXRhbAogIENvbnRyb2w6IG5hbWU9IklFQzk1OCBQbGF5YmFjayBDb24gTWFzayIsIGluZGV4
+PTAsIGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIFBybyBNYXNr
+IiwgaW5kZXg9MCwgZGV2aWNlPTAKICBDb250cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sg
+RGVmYXVsdCIsIGluZGV4PTAsIGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0iSUVDOTU4IFBs
+YXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgQ29udHJvbDogbmFtZT0iSUVD
+OTU4IERlZmF1bHQgUENNIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAg
+RGV2aWNlOiBuYW1lPSJTVEFDOTJ4eCBEaWdpdGFsIiwgdHlwZT0iU1BESUYiLCBkZXZpY2U9
+MQogIENvbnZlcnRlcjogc3RyZWFtPTUsIGNoYW5uZWw9MAogIERpZ2l0YWw6CiAgRGlnaXRh
+bCBjYXRlZ29yeTogMHgwCiAgUENNOgogICAgcmF0ZXMgWzB4MWUwXTogNDQxMDAgNDgwMDAg
+ODgyMDAgOTYwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDVd
+OiBQQ00gQUMzCiAgRGVsYXk6IDQgc2FtcGxlcwpOb2RlIDB4MDYgW1ZlbmRvciBEZWZpbmVk
+IFdpZGdldF0gd2NhcHMgMHhmMzAyMDE6IFN0ZXJlbyBEaWdpdGFsCiAgRGVsYXk6IDMgc2Ft
+cGxlcwpOb2RlIDB4MDcgW0F1ZGlvIFNlbGVjdG9yXSB3Y2FwcyAweDMwMDkwMTogU3RlcmVv
+IFIvTAogIENvbm5lY3Rpb246IDMKICAgICAweDAyKiAweDA4IDB4MGEKTm9kZSAweDA4IFtQ
+aW4gQ29tcGxleF0gd2NhcHMgMHg0MzA2ODE6IFN0ZXJlbyBEaWdpdGFsCiAgUGluY2FwIDB4
+MDAwMTAwMjQ6IElOIEVBUEQgRGV0ZWN0CiAgRUFQRCAweDA6CiAgUGluIERlZmF1bHQgMHg0
+MGMwMDNmYTogW04vQV0gU1BESUYgSW4gYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24s
+IENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0g
+MHhhCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgwMDoKICBVbnNvbGlj
+aXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQw
+CiAgRGVsYXk6IDMgc2FtcGxlcwpOb2RlIDB4MDkgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQw
+MDMwMTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAxMDogT1VUCiAgUGluIERl
+ZmF1bHQgMHgwMTQ0MTM0MDogW0phY2tdIFNQRElGIE91dCBhdCBFeHQgUmVhcgogICAgQ29u
+biA9IFJDQSwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAweDQsIFNlcXVl
+bmNlID0gMHgwCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHg0MDogT1VU
+CiAgQ29ubmVjdGlvbjogMgogICAgIDB4MDUqIDB4MGEKTm9kZSAweDBhIFtBdWRpbyBTZWxl
+Y3Rvcl0gd2NhcHMgMHgzMDA5MGQ6IFN0ZXJlbyBBbXAtT3V0IFIvTAogIENvbnRyb2w6IG5h
+bWU9IkNhcHR1cmUgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICBDb250cm9sOiBuYW1l
+PSJDYXB0dXJlIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgQW1wLU91dCBjYXBzOiBv
+ZnM9MHgwMCwgbnN0ZXBzPTB4MGYsIHN0ZXBzaXplPTB4MDUsIG11dGU9MQogIEFtcC1PdXQg
+dmFsczogIFsweDAwIDB4MDBdCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MGMKTm9kZSAweDBi
+IFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDAxMDU6IFN0ZXJlbyBBbXAtT3V0CiAgQ29u
+dHJvbDogbmFtZT0iTWFzdGVyIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0w
+CiAgQ29udHJvbDogbmFtZT0iTWFzdGVyIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRl
+dmljZT0wCiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6ICBbMHgxZSAweDFl
+XQogIENvbm5lY3Rpb246IDEKICAgICAweDA3Ck5vZGUgMHgwYyBbQXVkaW8gU2VsZWN0b3Jd
+IHdjYXBzIDB4MzAwMTBkOiBTdGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9Ik11eCBD
+YXB0dXJlIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgQW1wLU91dCBjYXBzOiBvZnM9
+MHgwMCwgbnN0ZXBzPTB4MDQsIHN0ZXBzaXplPTB4MjcsIG11dGU9MAogIEFtcC1PdXQgdmFs
+czogIFsweDAzIDB4MDNdCiAgQ29ubmVjdGlvbjogNQogICAgIDB4MTAqIDB4MGYgMHgwZSAw
+eDBkIDB4MTIKTm9kZSAweDBkIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxODE6IFN0ZXJl
+bwogIFBpbmNhcCAweDAwMDAwMDNmOiBJTiBPVVQgSFAgRGV0ZWN0IFRyaWdnZXIgSW1wU2Vu
+c2UKICBQaW4gRGVmYXVsdCAweDA0MjExMjFmOiBbSmFja10gSFAgT3V0IGF0IEV4dCBSaWdo
+dAogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNzb2NpYXRpb24gPSAw
+eDEsIFNlcXVlbmNlID0gMHhmCiAgUGluLWN0bHM6IDB4MDA6CiAgVW5zb2xpY2l0ZWQ6IHRh
+Zz0wMSwgZW5hYmxlZD0xCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MGIKTm9kZSAweDBlIFtQ
+aW4gQ29tcGxleF0gd2NhcHMgMHg0MDAxODE6IFN0ZXJlbwogIFBpbmNhcCAweDAwMDAwMDNm
+OiBJTiBPVVQgSFAgRGV0ZWN0IFRyaWdnZXIgSW1wU2Vuc2UKICBQaW4gRGVmYXVsdCAweDkw
+MTcwMzEwOiBbRml4ZWRdIFNwZWFrZXIgYXQgSW50IE4vQQogICAgQ29ubiA9IEFuYWxvZywg
+Q29sb3IgPSBVbmtub3duCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MSwgU2VxdWVuY2UgPSAw
+eDAKICAgIE1pc2MgPSBOT19QUkVTRU5DRQogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBVbnNv
+bGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwYgpO
+b2RlIDB4MGYgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAgUGluY2Fw
+IDB4MDAwMDAwMzc6IElOIE9VVCBEZXRlY3QgVHJpZ2dlciBJbXBTZW5zZQogIFBpbiBEZWZh
+dWx0IDB4NDA4MDAzZmI6IFtOL0FdIExpbmUgSW4gYXQgRXh0IE4vQQogICAgQ29ubiA9IFVu
+a25vd24sIENvbG9yID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVl
+bmNlID0gMHhiCiAgICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgyMDogSU4K
+ICBVbnNvbGljaXRlZDogdGFnPTAwLCBlbmFibGVkPTAKICBDb25uZWN0aW9uOiAxCiAgICAg
+MHgwYgpOb2RlIDB4MTAgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVvCiAg
+UGluY2FwIDB4MDAwMDE3Mzc6IElOIE9VVCBEZXRlY3QgVHJpZ2dlciBJbXBTZW5zZQogICAg
+VnJlZiBjYXBzOiBISVogNTAgR1JEIDgwCiAgUGluIERlZmF1bHQgMHgwNGExMTAyMDogW0ph
+Y2tdIE1pYyBhdCBFeHQgUmlnaHQKICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmxhY2sKICAg
+IERlZkFzc29jaWF0aW9uID0gMHgyLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDI0
+OiBJTiBWUkVGXzgwCiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMiwgZW5hYmxlZD0xCiAgQ29ubmVj
+dGlvbjogMQogICAgIDB4MGIKTm9kZSAweDExIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDAx
+MDQ6IE1vbm8gQW1wLU91dAogIEFtcC1PdXQgY2FwczogTi9BCiAgQW1wLU91dCB2YWxzOiAg
+WzB4MDBdCiAgUGluY2FwIDB4MDAwMDAwMTA6IE9VVAogIFBpbiBEZWZhdWx0IDB4NDAxMDAz
+ZmM6IFtOL0FdIFNwZWFrZXIgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9y
+ID0gVW5rbm93bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHhjCiAg
+ICBNaXNjID0gTk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgwMDoKICBDb25uZWN0aW9uOiAx
+CiAgICAgMHgxMwpOb2RlIDB4MTIgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDAwMTogU3Rl
+cmVvCiAgUGluY2FwIDB4MDAwMDAwMjA6IElOCiAgUGluIERlZmF1bHQgMHg0MDMwMDNmZDog
+W04vQV0gQ0QgYXQgRXh0IE4vQQogICAgQ29ubiA9IFVua25vd24sIENvbG9yID0gVW5rbm93
+bgogICAgRGVmQXNzb2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHhkCiAgICBNaXNjID0g
+Tk9fUFJFU0VOQ0UKICBQaW4tY3RsczogMHgyMDogSU4KTm9kZSAweDEzIFtBdWRpbyBNaXhl
+cl0gd2NhcHMgMHgyMDAxMDA6IE1vbm8KICBDb25uZWN0aW9uOiAxCiAgICAgMHgwNwpOb2Rl
+IDB4MTQgW0JlZXAgR2VuZXJhdG9yIFdpZGdldF0gd2NhcHMgMHg3MDAwMGM6IE1vbm8gQW1w
+LU91dAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDMsIG5zdGVwcz0weDAzLCBzdGVwc2l6ZT0w
+eDE3LCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHgwMF0KQ29kZWM6IENvbmV4YW50IElE
+IDJiZmEKQWRkcmVzczogMQpGdW5jdGlvbiBJZDogMHgyClZlbmRvciBJZDogMHgxNGYxMmJm
+YQpTdWJzeXN0ZW0gSWQ6IDB4MTRmMTAwYzMKUmV2aXNpb24gSWQ6IDB4OTAwMDAKTW9kZW0g
+RnVuY3Rpb24gR3JvdXA6IDB4MgotLWVuZGNvbGxhcHNlLS0KCgohIUFMU0EgRGV2aWNlIG5v
+ZGVzCiEhLS0tLS0tLS0tLS0tLS0tLS0KCmNydy1ydy0tLS0rIDEgcm9vdCBhdWRpbyAxMTYs
+ICAwIE1heSAyNiAxNTowOCAvZGV2L3NuZC9jb250cm9sQzAKY3J3LXJ3LS0tLSsgMSByb290
+IGF1ZGlvIDExNiwgIDQgTWF5IDI2IDE1OjA4IC9kZXYvc25kL2h3QzBEMApjcnctcnctLS0t
+KyAxIHJvb3QgYXVkaW8gMTE2LCAgNSBNYXkgMjYgMTU6MDggL2Rldi9zbmQvaHdDMEQxCmNy
+dy1ydy0tLS0rIDEgcm9vdCBhdWRpbyAxMTYsIDI0IE1heSAyNiAxNTowOCAvZGV2L3NuZC9w
+Y21DMEQwYwpjcnctcnctLS0tKyAxIHJvb3QgYXVkaW8gMTE2LCAxNiBNYXkgMjYgMjI6MDMg
+L2Rldi9zbmQvcGNtQzBEMHAKY3J3LXJ3LS0tLSsgMSByb290IGF1ZGlvIDExNiwgMTcgTWF5
+IDI2IDE1OjA4IC9kZXYvc25kL3BjbUMwRDFwCmNydy1ydy0tLS0rIDEgcm9vdCBhdWRpbyAx
+MTYsICAxIE1heSAyNiAxNTowOCAvZGV2L3NuZC9zZXEKY3J3LXJ3LS0tLSsgMSByb290IGF1
+ZGlvIDExNiwgMzMgTWF5IDI2IDE1OjA4IC9kZXYvc25kL3RpbWVyCgovZGV2L3NuZC9ieS1w
+YXRoOgp0b3RhbCAwCmRyd3hyLXhyLXggMiByb290IHJvb3QgIDYwIE1heSAyNiAxNTowOCAu
+CmRyd3hyLXhyLXggMyByb290IHJvb3QgMjIwIE1heSAyNiAxNTowOCAuLgpscnd4cnd4cnd4
+IDEgcm9vdCByb290ICAxMiBNYXkgMjYgMTU6MDggcGNpLTAwMDA6MDA6MWIuMCAtPiAuLi9j
+b250cm9sQzAKCgohIUFMU0EgY29uZmlndXJhdGlvbiBmaWxlcwohIS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQoKISFVc2VyIHNwZWNpZmljIGNvbmZpZyBmaWxlICh+Ly5hc291bmRyYykK
+CnBjbS5hNTJ4IHsKICAgIEBhcmdzIFsgQ0FSRCBdCiAgICBAYXJncy5DQVJEIHsKICAgICAg
+ICB0eXBlIGludGVnZXIKICAgICAgICBkZWZhdWx0IDAKICAgIH0KICAgIHR5cGUgYTUyCiAg
+ICBjYXJkICRDQVJECiMgICAgY2hhbm5lbHMgMgogICAgYml0cmF0ZSA2NDAKICAgIHNsYXZl
+cGNtICJpZWM5NTgiCn0KCnBjbS4heHN1cnJvdW5kNTEgewogICAgICAgIHR5cGUgYTUyCiAg
+ICAgICAgY2hhbm5lbHMgNgogICAgICAgIGJpdHJhdGUgNjQwCiAgICAgICAgc2xhdmVwY20g
+ImllYzk1OCIKfQoKCgoKISFBcGxheS9BcmVjb3JkIG91dHB1dAohIS0tLS0tLS0tLS0tLQoK
+QVBMQVkKCioqKiogTGlzdCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBEZXZpY2VzICoqKioKY2Fy
+ZCAwOiBJbnRlbCBbSERBIEludGVsXSwgZGV2aWNlIDA6IFNUQUM5Mnh4IEFuYWxvZyBbU1RB
+QzkyeHggQW5hbG9nXQogIFN1YmRldmljZXM6IDAvMQogIFN1YmRldmljZSAjMDogc3ViZGV2
+aWNlICMwCmNhcmQgMDogSW50ZWwgW0hEQSBJbnRlbF0sIGRldmljZSAxOiBTVEFDOTJ4eCBE
+aWdpdGFsIFtTVEFDOTJ4eCBEaWdpdGFsXQogIFN1YmRldmljZXM6IDEvMQogIFN1YmRldmlj
+ZSAjMDogc3ViZGV2aWNlICMwCgpBUkVDT1JECgoqKioqIExpc3Qgb2YgQ0FQVFVSRSBIYXJk
+d2FyZSBEZXZpY2VzICoqKioKY2FyZCAwOiBJbnRlbCBbSERBIEludGVsXSwgZGV2aWNlIDA6
+IFNUQUM5Mnh4IEFuYWxvZyBbU1RBQzkyeHggQW5hbG9nXQogIFN1YmRldmljZXM6IDEvMQog
+IFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCgohIUFtaXhlciBvdXRwdXQKISEtLS0tLS0t
+LS0tLS0tCgohIS0tLS0tLS1NaXhlciBjb250cm9scyBmb3IgY2FyZCAwIFtJbnRlbF0KCkNh
+cmQgaHc6MCAnSW50ZWwnLydIREEgSW50ZWwgYXQgMHhlZmViYzAwMCBpcnEgMjcnCiAgTWl4
+ZXIgbmFtZQk6ICdTaWdtYVRlbCBTVEFDOTIwMCcKICBDb21wb25lbnRzCTogJ0hEQTo4Mzg0
+NzY5MCwxMDI4MDFiZCwwMDEwMjIwMSBIREE6MTRmMTJiZmEsMTRmMTAwYzMsMDAwOTAwMDAn
+CiAgQ29udHJvbHMgICAgICA6IDExCiAgU2ltcGxlIGN0cmxzICA6IDYKU2ltcGxlIG1peGVy
+IGNvbnRyb2wgJ01hc3RlcicsMAogIENhcGFiaWxpdGllczogcHZvbHVtZSBwc3dpdGNoIHBl
+bnVtCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQgLSBGcm9udCBSaWdodAogIExp
+bWl0czogUGxheWJhY2sgMCAtIDMxCiAgTW9ubzoKICBGcm9udCBMZWZ0OiBQbGF5YmFjayAz
+MCBbOTclXSBbLTEuNTBkQl0gW29uXQogIEZyb250IFJpZ2h0OiBQbGF5YmFjayAzMCBbOTcl
+XSBbLTEuNTBkQl0gW29uXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnUENNJywwCiAgQ2FwYWJp
+bGl0aWVzOiBwdm9sdW1lIHBlbnVtCiAgUGxheWJhY2sgY2hhbm5lbHM6IEZyb250IExlZnQg
+LSBGcm9udCBSaWdodAogIExpbWl0czogUGxheWJhY2sgMCAtIDI1NQogIE1vbm86CiAgRnJv
+bnQgTGVmdDogUGxheWJhY2sgMjUzIFs5OSVdIFswLjQwZEJdCiAgRnJvbnQgUmlnaHQ6IFBs
+YXliYWNrIDI1MyBbOTklXSBbMC40MGRCXQpTaW1wbGUgbWl4ZXIgY29udHJvbCAnSUVDOTU4
+JywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dpdGNoIHBzd2l0Y2gtam9pbmVkIHBlbnVtCiAgUGxh
+eWJhY2sgY2hhbm5lbHM6IE1vbm8KICBNb25vOiBQbGF5YmFjayBbb2ZmXQpTaW1wbGUgbWl4
+ZXIgY29udHJvbCAnSUVDOTU4IERlZmF1bHQgUENNJywwCiAgQ2FwYWJpbGl0aWVzOiBwc3dp
+dGNoIHBzd2l0Y2gtam9pbmVkIHBlbnVtCiAgUGxheWJhY2sgY2hhbm5lbHM6IE1vbm8KICBN
+b25vOiBQbGF5YmFjayBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdDYXB0dXJlJywwCiAg
+Q2FwYWJpbGl0aWVzOiBjdm9sdW1lIGNzd2l0Y2ggcGVudW0KICBDYXB0dXJlIGNoYW5uZWxz
+OiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDE1CiAg
+RnJvbnQgTGVmdDogQ2FwdHVyZSAwIFswJV0gWzAuMDBkQl0gW29uXQogIEZyb250IFJpZ2h0
+OiBDYXB0dXJlIDAgWzAlXSBbMC4wMGRCXSBbb25dClNpbXBsZSBtaXhlciBjb250cm9sICdN
+dXgnLDAKICBDYXBhYmlsaXRpZXM6IGN2b2x1bWUgcGVudW0KICBDYXB0dXJlIGNoYW5uZWxz
+OiBGcm9udCBMZWZ0IC0gRnJvbnQgUmlnaHQKICBMaW1pdHM6IENhcHR1cmUgMCAtIDQKICBG
+cm9udCBMZWZ0OiBDYXB0dXJlIDMgWzc1JV0gWzMwLjAwZEJdCiAgRnJvbnQgUmlnaHQ6IENh
+cHR1cmUgMyBbNzUlXSBbMzAuMDBkQl0KCgohIUFsc2FjdGwgb3V0cHV0CiEhLS0tLS0tLS0t
+LS0tLQoKLS1zdGFydGNvbGxhcHNlLS0Kc3RhdGUuSW50ZWwgewoJY29udHJvbC4xIHsKCQlj
+b21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgSU5URUdFUgoJCWNv
+bW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAzMScKCQljb21tZW50LmRibWlu
+IC00NjUwCgkJY29tbWVudC5kYm1heCAwCgkJaWZhY2UgTUlYRVIKCQluYW1lICdNYXN0ZXIg
+UGxheWJhY2sgVm9sdW1lJwoJCXZhbHVlLjAgMzAKCQl2YWx1ZS4xIDMwCgl9Cgljb250cm9s
+LjIgewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBCT09M
+RUFOCgkJY29tbWVudC5jb3VudCAyCgkJaWZhY2UgTUlYRVIKCQluYW1lICdNYXN0ZXIgUGxh
+eWJhY2sgU3dpdGNoJwoJCXZhbHVlLjAgdHJ1ZQoJCXZhbHVlLjEgdHJ1ZQoJfQoJY29udHJv
+bC4zIHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgSU5U
+RUdFUgoJCWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAxNScKCQljb21t
+ZW50LmRibWluIDAKCQljb21tZW50LmRibWF4IDIyNTAKCQlpZmFjZSBNSVhFUgoJCW5hbWUg
+J0NhcHR1cmUgVm9sdW1lJwoJCXZhbHVlLjAgMAoJCXZhbHVlLjEgMAoJfQoJY29udHJvbC40
+IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5cGUgQk9PTEVB
+TgoJCWNvbW1lbnQuY291bnQgMgoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnQ2FwdHVyZSBTd2l0
+Y2gnCgkJdmFsdWUuMCB0cnVlCgkJdmFsdWUuMSB0cnVlCgl9Cgljb250cm9sLjUgewoJCWNv
+bW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJTlRFR0VSCgkJY29t
+bWVudC5jb3VudCAyCgkJY29tbWVudC5yYW5nZSAnMCAtIDQnCgkJY29tbWVudC5kYm1pbiAw
+CgkJY29tbWVudC5kYm1heCA0MDAwCgkJaWZhY2UgTUlYRVIKCQluYW1lICdNdXggQ2FwdHVy
+ZSBWb2x1bWUnCgkJdmFsdWUuMCAzCgkJdmFsdWUuMSAzCgl9Cgljb250cm9sLjYgewoJCWNv
+bW1lbnQuYWNjZXNzIHJlYWQKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJY29tbWVudC5jb3Vu
+dCAxCgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgQ29uIE1hc2snCgkJ
+dmFsdWUgJzBmZmYwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgl9Cgljb250cm9sLjcgewoJ
+CWNvbW1lbnQuYWNjZXNzIHJlYWQKCQljb21tZW50LnR5cGUgSUVDOTU4CgkJY29tbWVudC5j
+b3VudCAxCgkJaWZhY2UgTUlYRVIKCQluYW1lICdJRUM5NTggUGxheWJhY2sgUHJvIE1hc2sn
+CgkJdmFsdWUgJzBmMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAnCgl9Cgljb250cm9sLjgg
+ewoJCWNvbW1lbnQuYWNjZXNzICdyZWFkIHdyaXRlJwoJCWNvbW1lbnQudHlwZSBJRUM5NTgK
+CQljb21tZW50LmNvdW50IDEKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBQbGF5YmFj
+ayBEZWZhdWx0JwoJCXZhbHVlICcwNDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwJwoJfQoJ
+Y29udHJvbC45IHsKCQljb21tZW50LmFjY2VzcyAncmVhZCB3cml0ZScKCQljb21tZW50LnR5
+cGUgQk9PTEVBTgoJCWNvbW1lbnQuY291bnQgMQoJCWlmYWNlIE1JWEVSCgkJbmFtZSAnSUVD
+OTU4IFBsYXliYWNrIFN3aXRjaCcKCQl2YWx1ZSBmYWxzZQoJfQoJY29udHJvbC4xMCB7CgkJ
+Y29tbWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUnCgkJY29tbWVudC50eXBlIEJPT0xFQU4KCQlj
+b21tZW50LmNvdW50IDEKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ0lFQzk1OCBEZWZhdWx0IFBD
+TSBQbGF5YmFjayBTd2l0Y2gnCgkJdmFsdWUgdHJ1ZQoJfQoJY29udHJvbC4xMSB7CgkJY29t
+bWVudC5hY2Nlc3MgJ3JlYWQgd3JpdGUgdXNlcicKCQljb21tZW50LnR5cGUgSU5URUdFUgoJ
+CWNvbW1lbnQuY291bnQgMgoJCWNvbW1lbnQucmFuZ2UgJzAgLSAyNTUnCgkJY29tbWVudC50
+bHYgJzAwMDAwMDAxMDAwMDAwMDhmZmZmZWMxNDAwMDAwMDE0JwoJCWNvbW1lbnQuZGJtaW4g
+LTUxMDAKCQljb21tZW50LmRibWF4IDAKCQlpZmFjZSBNSVhFUgoJCW5hbWUgJ1BDTSBQbGF5
+YmFjayBWb2x1bWUnCgkJdmFsdWUuMCAyNTMKCQl2YWx1ZS4xIDI1MwoJfQp9Ci0tZW5kY29s
+bGFwc2UtLQoKCiEhQWxsIExvYWRlZCBNb2R1bGVzCiEhLS0tLS0tLS0tLS0tLS0tLS0tCgpN
+b2R1bGUKc2l0CnR1bm5lbDQKY3J5cHRkCmFlc194ODZfNjQKYWVzX2dlbmVyaWMKYWZfcGFj
+a2V0CmZ1c2UKaXB0X0lGV0xPRwppcHRfcHNkCmNsc19mbG93CmNsc19mdwpjbHNfdTMyCnNj
+aF9odGIKc2NoX2hmc2MKc2NoX2luZ3Jlc3MKc2NoX3NmcQp4dF90aW1lCnh0X2Nvbm5saW1p
+dAp4dF9yZWFsbQppcHRhYmxlX3Jhdwp4dF9jb21tZW50Cnh0X3JlY2VudAp4dF9wb2xpY3kK
+aXB0X1VMT0cKaXB0X1JFSkVDVAppcHRfUkVESVJFQ1QKaXB0X05FVE1BUAppcHRfTUFTUVVF
+UkFERQppcHRfRUNOCmlwdF9lY24KaXB0X0NMVVNURVJJUAppcHRfYWgKaXB0X2FkZHJ0eXBl
+Cm5mX25hdF90ZnRwCm5mX25hdF9zbm1wX2Jhc2ljCm5mX25hdF9zaXAKbmZfbmF0X3BwdHAK
+bmZfbmF0X3Byb3RvX2dyZQpuZl9uYXRfaXJjCm5mX25hdF9oMzIzCm5mX25hdF9mdHAKbmZf
+bmF0X2FtYW5kYQp0c19rbXAKbmZfY29ubnRyYWNrX2FtYW5kYQpuZl9jb25udHJhY2tfc2Fu
+ZQpuZl9jb25udHJhY2tfdGZ0cApuZl9jb25udHJhY2tfc2lwCm5mX2Nvbm50cmFja19wcm90
+b19zY3RwCm5mX2Nvbm50cmFja19wcHRwCm5mX2Nvbm50cmFja19wcm90b19ncmUKbmZfY29u
+bnRyYWNrX25ldGxpbmsKbmZfY29ubnRyYWNrX25ldGJpb3NfbnMKbmZfY29ubnRyYWNrX2ly
+YwpuZl9jb25udHJhY2tfaDMyMwpuZl9jb25udHJhY2tfZnRwCmlwdF9zZXQKaXB0X1NFVApp
+cF9zZXRfbmV0aGFzaAppcF9zZXRfaXB0cmVlbWFwCmlwX3NldF9pcHRyZWUKaXBfc2V0X2lw
+cG9ydGhhc2gKaXBfc2V0X3BvcnRtYXAKaXBfc2V0X21hY2lwbWFwCmlwX3NldF9pcG1hcApp
+cF9zZXRfaXBoYXNoCmlwX3NldAp4dF9UUFJPWFkKbmZfdHByb3h5X2NvcmUKeHRfdGNwbXNz
+Cnh0X3BrdHR5cGUKeHRfcGh5c2Rldgp4dF9vd25lcgp4dF9ORlFVRVVFCnh0X05GTE9HCm5m
+bmV0bGlua19sb2cKeHRfbXVsdGlwb3J0Cnh0X01BUksKeHRfbWFyawp4dF9tYWMKeHRfbGlt
+aXQKeHRfbGVuZ3RoCnh0X2lwcmFuZ2UKeHRfaGVscGVyCnh0X2hhc2hsaW1pdAp4dF9EU0NQ
+Cnh0X2RzY3AKeHRfZGNjcAp4dF9jb25udHJhY2sKeHRfQ09OTk1BUksKeHRfY29ubm1hcmsK
+eHRfQ0xBU1NJRlkKaXB0X0xPRwp4dF90Y3B1ZHAKeHRfc3RhdGUKaXB0YWJsZV9uYXQKbmZf
+bmF0Cm5mX2Nvbm50cmFja19pcHY0Cm5mX2RlZnJhZ19pcHY0Cm5mX2Nvbm50cmFjawppcHRh
+YmxlX21hbmdsZQpuZm5ldGxpbmsKaXB0YWJsZV9maWx0ZXIKaXBfdGFibGVzCnhfdGFibGVz
+Cm5mc2QKZXhwb3J0ZnMKbmZzCmxvY2tkCmZzY2FjaGUKbmZzX2FjbAphdXRoX3JwY2dzcwpz
+dW5ycGMKaXB2Ngp2Ym94bmV0YWRwCnZib3huZXRmbHQKdmJveGRydgpzbmRfaGRhX2NvZGVj
+X2lkdApyZmNvbW0Kc25kX2hkYV9pbnRlbApzbmRfaGRhX2NvZGVjCnNuZF9od2RlcApzbmRf
+c2VxX2R1bW15CmFyYzQKc25kX3NlcV9vc3MKaVRDT193ZHQKaVRDT192ZW5kb3Jfc3VwcG9y
+dApzbmRfc2VxX21pZGlfZXZlbnQKc25kX3NlcQpiNDQKc25kX3NlcV9kZXZpY2UKc3NiCnNu
+ZF9wY21fb3NzCnJuZ19jb3JlCmVjYgpzZGhjaV9wY2kKcGNtY2lhCnNuZF9wY20Kc2NvCnNk
+aGNpCml3bGFnbgpwY21jaWFfY29yZQpzbmRfdGltZXIKb2hjaTEzOTQKc25kX21peGVyX29z
+cwppd2xjb3JlCmJyaWRnZQptbWNfY29yZQpzcl9tb2QKc2cKbWlpCnN0cApsZWRfY2xhc3MK
+c25kCmllZWUxMzk0Cm1hYzgwMjExCnNvdW5kY29yZQpzbmRfcGFnZV9hbGxvYwpibmVwCmRl
+bGxfbGFwdG9wCmwyY2FwCmkyY19pODAxCmRjZGJhcwpjZmc4MDIxMQppOTE1CmRybV9rbXNf
+aGVscGVyCmRybQppMmNfYWxnb19iaXQKaTJjX2NvcmUKYnR1c2IKYmx1ZXRvb3RoCnJma2ls
+bApiaW5mbXRfbWlzYwpjcHVmcmVxX29uZGVtYW5kCmNwdWZyZXFfY29uc2VydmF0aXZlCmxv
+b3AKY3B1ZnJlcV9wb3dlcnNhdmUKYWNwaV9jcHVmcmVxCmZyZXFfdGFibGUKbnZyYW0KZGVs
+bF93bWkKYWMKdmlkZW8KYmF0dGVyeQp3bWkKb3V0cHV0CmJ1dHRvbgplaGNpX2hjZAp1aGNp
+X2hjZApqb3lkZXYKZXZkZXYKcHJvY2Vzc29yCnRoZXJtYWwKdXNiY29yZQpkbV9zbmFwc2hv
+dApkbV96ZXJvCmRtX21pcnJvcgpkbV9yZWdpb25faGFzaApkbV9sb2cKZG1fbW9kCmF0YV9n
+ZW5lcmljCmlkZV9wY2lfZ2VuZXJpYwppZGVfZ2RfbW9kCmlkZV9jb3JlCnBhdGFfYWNwaQph
+aGNpCmF0YV9waWl4CmxpYmF0YQpzZF9tb2QKc2NzaV9tb2QKY3JjX3QxMGRpZgpleHQ0Cmpi
+ZDIKY3JjMTYKCgohIVN5c2ZzIEZpbGVzCiEhLS0tLS0tLS0tLS0KCi9zeXMvY2xhc3Mvc291
+bmQvaHdDMEQwL2luaXRfcGluX2NvbmZpZ3M6CjB4MDggMHg0MGYwMDBmMAoweDA5IDB4NDBm
+MDAwZjEKMHgwZCAweDA0MjExMDFmCjB4MGUgMHg5MDE3MDExMAoweDBmIDB4NDBmMDAwZjIK
+MHgxMCAweDA0YTExMDIwCjB4MTEgMHg0MGYwMDBmMwoweDEyIDB4NDBmMDAwZjQKCi9zeXMv
+Y2xhc3Mvc291bmQvaHdDMEQwL2RyaXZlcl9waW5fY29uZmlnczoKMHgwOCAweDQwYzAwM2Zh
+CjB4MDkgMHgwMTQ0MTM0MAoweDBkIDB4MDQyMTEyMWYKMHgwZSAweDkwMTcwMzEwCjB4MGYg
+MHg0MDgwMDNmYgoweDEwIDB4MDRhMTEwMjAKMHgxMSAweDQwMTAwM2ZjCjB4MTIgMHg0MDMw
+MDNmZAoKL3N5cy9jbGFzcy9zb3VuZC9od0MwRDAvdXNlcl9waW5fY29uZmlnczoKCi9zeXMv
+Y2xhc3Mvc291bmQvaHdDMEQwL2luaXRfdmVyYnM6Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBE
+MS9pbml0X3Bpbl9jb25maWdzOgoweDczIDB4MDE2YTAwMDAKCi9zeXMvY2xhc3Mvc291bmQv
+aHdDMEQxL2RyaXZlcl9waW5fY29uZmlnczoKCi9zeXMvY2xhc3Mvc291bmQvaHdDMEQxL3Vz
+ZXJfcGluX2NvbmZpZ3M6Cgovc3lzL2NsYXNzL3NvdW5kL2h3QzBEMS9pbml0X3ZlcmJzOgoK
+CiEhQUxTQS9IREEgZG1lc2cKISEtLS0tLS0tLS0tLS0tLS0tLS0KCmNvbXBvc2l0ZSBzeW5j
+IG5vdCBzdXBwb3J0ZWQKSERBIEludGVsIDAwMDA6MDA6MWIuMDogUENJIElOVCBBIC0+IEdT
+SSAyMSAobGV2ZWwsIGxvdykgLT4gSVJRIDIxCkhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IGly
+cSAyNyBmb3IgTVNJL01TSS1YCkhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IHNldHRpbmcgbGF0
+ZW5jeSB0aW1lciB0byA2NApCbHVldG9vdGg6IFJGQ09NTSBUVFkgbGF5ZXIgaW5pdGlhbGl6
+ZWQKLS0KICAgaW5wdXRzOiBtaWM9MHgxMCwgZm1pYz0weDAsIGxpbmU9MHgwLCBmbGluZT0w
+eDAsIGNkPTB4MCwgYXV4PTB4MAppbnB1dDogSERBIEludGVsIE1pYyBhdCBFeHQgUmlnaHQg
+SmFjayBhcyAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MWIuMC9zb3VuZC9jYXJkMC9p
+bnB1dDgKaW5wdXQ6IEhEQSBJbnRlbCBIUCBPdXQgYXQgRXh0IFJpZ2h0IEphY2sgYXMgL2Rl
+dmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjFiLjAvc291bmQvY2FyZDAvaW5wdXQ5CmllZWUx
+Mzk0OiBIb3N0IGFkZGVkOiBJRDpCVVNbMC0wMDoxMDIzXSAgR1VJRFszMzRmYzAwMDFlNjRj
+NDUwXQotLQp1aGNpX2hjZCAwMDAwOjAwOjFkLjA6IFBDSSBJTlQgQSBkaXNhYmxlZApIREEg
+SW50ZWwgMDAwMDowMDoxYi4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKaTkxNSAwMDAwOjAwOjAy
+LjA6IFBDSSBJTlQgQSBkaXNhYmxlZAotLQppOTE1IDAwMDA6MDA6MDIuMDogcmVzdG9yaW5n
+IGNvbmZpZyBzcGFjZSBhdCBvZmZzZXQgMHhmICh3YXMgMHgxMDAsIHdyaXRpbmcgMHgxMGIp
+CkhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IHJlc3RvcmluZyBjb25maWcgc3BhY2UgYXQgb2Zm
+c2V0IDB4ZiAod2FzIDB4MTAwLCB3cml0aW5nIDB4MTBhKQpIREEgSW50ZWwgMDAwMDowMDox
+Yi4wOiByZXN0b3JpbmcgY29uZmlnIHNwYWNlIGF0IG9mZnNldCAweDQgKHdhcyAweGZmYTdj
+MDA0LCB3cml0aW5nIDB4ZWZlYmMwMDQpCkhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IHJlc3Rv
+cmluZyBjb25maWcgc3BhY2UgYXQgb2Zmc2V0IDB4MyAod2FzIDB4MCwgd3JpdGluZyAweDEw
+KQpIREEgSW50ZWwgMDAwMDowMDoxYi4wOiByZXN0b3JpbmcgY29uZmlnIHNwYWNlIGF0IG9m
+ZnNldCAweDEgKHdhcyAweDEwMDAwMCwgd3JpdGluZyAweDEwMDEwMikKcGNpZXBvcnQgMDAw
+MDowMDoxYy4wOiByZXN0b3JpbmcgY29uZmlnIHNwYWNlIGF0IG9mZnNldCAweGYgKHdhcyAw
+eDEwMCwgd3JpdGluZyAweDIwMTAwKQotLQppOTE1IDAwMDA6MDA6MDIuMDogc2V0dGluZyBs
+YXRlbmN5IHRpbWVyIHRvIDY0CkhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IFBDSSBJTlQgQSAt
+PiBHU0kgMjEgKGxldmVsLCBsb3cpIC0+IElSUSAyMQpIREEgSW50ZWwgMDAwMDowMDoxYi4w
+OiBzZXR0aW5nIGxhdGVuY3kgdGltZXIgdG8gNjQKSERBIEludGVsIDAwMDA6MDA6MWIuMDog
+aXJxIDI3IGZvciBNU0kvTVNJLVgKdWhjaV9oY2QgMDAwMDowMDoxZC4wOiBQQ0kgSU5UIEEg
+LT4gR1NJIDIwIChsZXZlbCwgbG93KSAtPiBJUlEgMjAKLS0KdWhjaV9oY2QgMDAwMDowMDox
+ZC4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKSERBIEludGVsIDAwMDA6MDA6MWIuMDogUENJIElO
+VCBBIGRpc2FibGVkCmk5MTUgMDAwMDowMDowMi4wOiBQQ0kgSU5UIEEgZGlzYWJsZWQKLS0K
+aTkxNSAwMDAwOjAwOjAyLjA6IHJlc3RvcmluZyBjb25maWcgc3BhY2UgYXQgb2Zmc2V0IDB4
+ZiAod2FzIDB4MTAwLCB3cml0aW5nIDB4MTBiKQpIREEgSW50ZWwgMDAwMDowMDoxYi4wOiBy
+ZXN0b3JpbmcgY29uZmlnIHNwYWNlIGF0IG9mZnNldCAweGYgKHdhcyAweDEwMCwgd3JpdGlu
+ZyAweDEwYSkKSERBIEludGVsIDAwMDA6MDA6MWIuMDogcmVzdG9yaW5nIGNvbmZpZyBzcGFj
+ZSBhdCBvZmZzZXQgMHg0ICh3YXMgMHhmZmE3YzAwNCwgd3JpdGluZyAweGVmZWJjMDA0KQpI
+REEgSW50ZWwgMDAwMDowMDoxYi4wOiByZXN0b3JpbmcgY29uZmlnIHNwYWNlIGF0IG9mZnNl
+dCAweDMgKHdhcyAweDAsIHdyaXRpbmcgMHgxMCkKSERBIEludGVsIDAwMDA6MDA6MWIuMDog
+cmVzdG9yaW5nIGNvbmZpZyBzcGFjZSBhdCBvZmZzZXQgMHgxICh3YXMgMHgxMDAwMDAsIHdy
+aXRpbmcgMHgxMDAxMDIpCnBjaWVwb3J0IDAwMDA6MDA6MWMuMDogcmVzdG9yaW5nIGNvbmZp
+ZyBzcGFjZSBhdCBvZmZzZXQgMHhmICh3YXMgMHgxMDAsIHdyaXRpbmcgMHgyMDEwMCkKLS0K
+aTkxNSAwMDAwOjAwOjAyLjA6IHNldHRpbmcgbGF0ZW5jeSB0aW1lciB0byA2NApIREEgSW50
+ZWwgMDAwMDowMDoxYi4wOiBQQ0kgSU5UIEEgLT4gR1NJIDIxIChsZXZlbCwgbG93KSAtPiBJ
+UlEgMjEKSERBIEludGVsIDAwMDA6MDA6MWIuMDogc2V0dGluZyBsYXRlbmN5IHRpbWVyIHRv
+IDY0CkhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IGlycSAyNyBmb3IgTVNJL01TSS1YCnVoY2lf
+aGNkIDAwMDA6MDA6MWQuMDogUENJIElOVCBBIC0+IEdTSSAyMCAobGV2ZWwsIGxvdykgLT4g
+SVJRIDIwCi0tCnVoY2lfaGNkIDAwMDA6MDA6MWQuMDogUENJIElOVCBBIGRpc2FibGVkCkhE
+QSBJbnRlbCAwMDAwOjAwOjFiLjA6IFBDSSBJTlQgQSBkaXNhYmxlZAppOTE1IDAwMDA6MDA6
+MDIuMDogUENJIElOVCBBIGRpc2FibGVkCi0tCmk5MTUgMDAwMDowMDowMi4wOiByZXN0b3Jp
+bmcgY29uZmlnIHNwYWNlIGF0IG9mZnNldCAweGYgKHdhcyAweDEwMCwgd3JpdGluZyAweDEw
+YikKSERBIEludGVsIDAwMDA6MDA6MWIuMDogcmVzdG9yaW5nIGNvbmZpZyBzcGFjZSBhdCBv
+ZmZzZXQgMHhmICh3YXMgMHgxMDAsIHdyaXRpbmcgMHgxMGEpCkhEQSBJbnRlbCAwMDAwOjAw
+OjFiLjA6IHJlc3RvcmluZyBjb25maWcgc3BhY2UgYXQgb2Zmc2V0IDB4NCAod2FzIDB4ZmZh
+N2MwMDQsIHdyaXRpbmcgMHhlZmViYzAwNCkKSERBIEludGVsIDAwMDA6MDA6MWIuMDogcmVz
+dG9yaW5nIGNvbmZpZyBzcGFjZSBhdCBvZmZzZXQgMHgzICh3YXMgMHgwLCB3cml0aW5nIDB4
+MTApCkhEQSBJbnRlbCAwMDAwOjAwOjFiLjA6IHJlc3RvcmluZyBjb25maWcgc3BhY2UgYXQg
+b2Zmc2V0IDB4MSAod2FzIDB4MTAwMDAwLCB3cml0aW5nIDB4MTAwMTAyKQpwY2llcG9ydCAw
+MDAwOjAwOjFjLjA6IHJlc3RvcmluZyBjb25maWcgc3BhY2UgYXQgb2Zmc2V0IDB4ZiAod2Fz
+IDB4MTAwLCB3cml0aW5nIDB4MjAxMDApCi0tCmk5MTUgMDAwMDowMDowMi4wOiBzZXR0aW5n
+IGxhdGVuY3kgdGltZXIgdG8gNjQKSERBIEludGVsIDAwMDA6MDA6MWIuMDogUENJIElOVCBB
+IC0+IEdTSSAyMSAobGV2ZWwsIGxvdykgLT4gSVJRIDIxCkhEQSBJbnRlbCAwMDAwOjAwOjFi
+LjA6IHNldHRpbmcgbGF0ZW5jeSB0aW1lciB0byA2NApIREEgSW50ZWwgMDAwMDowMDoxYi4w
+OiBpcnEgMjcgZm9yIE1TSS9NU0ktWAp1aGNpX2hjZCAwMDAwOjAwOjFkLjA6IFBDSSBJTlQg
+QSAtPiBHU0kgMjAgKGxldmVsLCBsb3cpIC0+IElSUSAyMAoKCg==
+--------------090407030203030508080400
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------090407030203030508080400--
