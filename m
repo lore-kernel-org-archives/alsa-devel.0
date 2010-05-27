@@ -1,18 +1,16 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH] imx-ssi.c: fix I2S slave setup
-Date: Thu, 27 May 2010 10:24:17 +0200
-Message-ID: <20100527082417.GB23664@pengutronix.de>
-References: <1274891873-3704-1-git-send-email-eric@eukrea.com>
+From: =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
+Subject: [PATCH v2 1/4] imx-ssi.c: add new choices to platform
+	configuration
+Date: Thu, 27 May 2010 10:58:54 +0200
+Message-ID: <1274950737-26498-1-git-send-email-eric@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 456821039F1
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 722BF103A16
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 10:24:20 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1274891873-3704-1-git-send-email-eric@eukrea.com>
+	Thu, 27 May 2010 10:59:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eric =?iso-8859-15?Q?B=E9nard?= <eric@eukrea.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 26, 2010 at 06:37:53PM +0200, Eric B=E9nard wrote:
-> * without this fix, the waveform on the SSI port are not real
-> I2S signal (at least on i.MX27's SSI4)
-> =
-
-> * original Freescale's driver has
-> 	if (((fmt & SND_SOC_DAIFMT_FORMAT_MASK) =3D=3D SND_SOC_DAIFMT_I2S)
-> 	    && ssi_mode->network_mode) {
-> 		scr &=3D ~SSI_SCR_I2S_MODE_MASK;
-> 		scr |=3D SSI_SCR_I2S_MODE_SLAVE;
-> 	}
-> So as now the SSI is set in network mode as a default when running in
-> I2S format, it seems reasonable to also set I2S_MODE_SLAVE
-> =
-
-> Signed-off-by: Eric B=E9nard <eric@eukrea.com>
-> ---
->  sound/soc/imx/imx-ssi.c |    4 +---
->  1 files changed, 1 insertions(+), 3 deletions(-)
-> =
-
-> diff --git a/sound/soc/imx/imx-ssi.c b/sound/soc/imx/imx-ssi.c
-> index 80b4fee..c5e1626 100644
-> --- a/sound/soc/imx/imx-ssi.c
-> +++ b/sound/soc/imx/imx-ssi.c
-> @@ -83,8 +83,6 @@ static int imx_ssi_set_dai_tdm_slot(struct snd_soc_dai =
-*cpu_dai,
->  /*
->   * SSI DAI format configuration.
->   * Should only be called when port is inactive (i.e. SSIEN =3D 0).
-> - * Note: We don't use the I2S modes but instead manually configure the
-> - * SSI for I2S because the I2S mode is only a register preset.
->   */
->  static int imx_ssi_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int=
- fmt)
->  {
-> @@ -98,7 +96,7 @@ static int imx_ssi_set_dai_fmt(struct snd_soc_dai *cpu_=
-dai, unsigned int fmt)
->  	case SND_SOC_DAIFMT_I2S:
->  		/* data on rising edge of bclk, frame low 1clk before data */
->  		strcr |=3D SSI_STCR_TFSI | SSI_STCR_TEFS | SSI_STCR_TXBIT0;
-> -		scr |=3D SSI_SCR_NET;
-> +		scr |=3D SSI_SCR_NET | SSI_SCR_I2S_MODE_SLAVE;
-
-You should also zero out the SSI_I2S_MODE_MASK in the scr =3D readl()...
-above.
-Otherwise I'm ok with this patch.
-
-Sascha
-
-
--- =
-
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+KiBpbnRyb2R1Y2UgMyBuZXcgZmxhZ3MgdG8gYWxsb3cgYSBtb3JlIGRldGFpbGVkIGNvbmZpZ3Vy
+YXRpb24Kb2YgdGhlIFNTSSBsaW5rIDoKCUlNWF9TU0lfTkVUIDogZW5hYmxlIE5ldHdvcmsgTW9k
+ZQoJSU1YX1NTSV9TWU4gOiBlbmFibGUgU3luY2hyb25vdXMgTW9kZQoJSU1YX1NTSV9VU0VfSTJT
+X1NMQVZFIDogZW5hYmxlIEkyUyBTbGF2ZSBNb2RlCiogbmV3IHBsYXRmb3JtIGNhbiB1c2UgdGhl
+c2Ugc2V0dGluZ3Mgd2l0aG91dCBicmVha2luZyBhY3R1YWwKcGxhdGZvcm1zLgoKU2lnbmVkLW9m
+Zi1ieTogRXJpYyBCw6luYXJkIDxlcmljQGV1a3JlYS5jb20+CkNjOiBTYXNjaGEgSGF1ZXIgPHMu
+aGF1ZXJAcGVuZ3V0cm9uaXguZGU+CkNjOiBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uu
+d29sZnNvbm1pY3JvLmNvbT4KQ2M6IExpYW0gR2lyZHdvb2QgPGxyZ0BzbGltbG9naWMuY28udWs+
+Ci0tLQogYXJjaC9hcm0vcGxhdC1teGMvaW5jbHVkZS9tYWNoL3NzaS5oIHwgICAgMyArKysKIHNv
+dW5kL3NvYy9pbXgvaW14LXNzaS5jICAgICAgICAgICAgICB8ICAgMTEgKysrKysrKysrLS0KIDIg
+ZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
+aXQgYS9hcmNoL2FybS9wbGF0LW14Yy9pbmNsdWRlL21hY2gvc3NpLmggYi9hcmNoL2FybS9wbGF0
+LW14Yy9pbmNsdWRlL21hY2gvc3NpLmgKaW5kZXggYzM0ZGVkNS4uNjNmM2MyOCAxMDA2NDQKLS0t
+IGEvYXJjaC9hcm0vcGxhdC1teGMvaW5jbHVkZS9tYWNoL3NzaS5oCisrKyBiL2FyY2gvYXJtL3Bs
+YXQtbXhjL2luY2x1ZGUvbWFjaC9zc2kuaApAQCAtMTAsNiArMTAsOSBAQCBzdHJ1Y3QgaW14X3Nz
+aV9wbGF0Zm9ybV9kYXRhIHsKIAl1bnNpZ25lZCBpbnQgZmxhZ3M7CiAjZGVmaW5lIElNWF9TU0lf
+RE1BICAgICAgICAgICAgKDEgPDwgMCkKICNkZWZpbmUgSU1YX1NTSV9VU0VfQUM5NyAgICAgICAo
+MSA8PCAxKQorI2RlZmluZSBJTVhfU1NJX05FVCAgICAgICAgICAgICgxIDw8IDIpCisjZGVmaW5l
+IElNWF9TU0lfU1lOICAgICAgICAgICAgKDEgPDwgMykKKyNkZWZpbmUgSU1YX1NTSV9VU0VfSTJT
+X1NMQVZFICAoMSA8PCA0KQogCXZvaWQgKCphYzk3X3Jlc2V0KSAoc3RydWN0IHNuZF9hYzk3ICph
+Yzk3KTsKIAl2b2lkICgqYWM5N193YXJtX3Jlc2V0KShzdHJ1Y3Qgc25kX2FjOTcgKmFjOTcpOwog
+fTsKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbXgvaW14LXNzaS5jIGIvc291bmQvc29jL2lteC9p
+bXgtc3NpLmMKaW5kZXggODBiNGZlZS4uNTBmNTE2MiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2lt
+eC9pbXgtc3NpLmMKKysrIGIvc291bmQvc29jL2lteC9pbXgtc3NpLmMKQEAgLTgzLDggKzgzLDYg
+QEAgc3RhdGljIGludCBpbXhfc3NpX3NldF9kYWlfdGRtX3Nsb3Qoc3RydWN0IHNuZF9zb2NfZGFp
+ICpjcHVfZGFpLAogLyoKICAqIFNTSSBEQUkgZm9ybWF0IGNvbmZpZ3VyYXRpb24uCiAgKiBTaG91
+bGQgb25seSBiZSBjYWxsZWQgd2hlbiBwb3J0IGlzIGluYWN0aXZlIChpLmUuIFNTSUVOID0gMCku
+Ci0gKiBOb3RlOiBXZSBkb24ndCB1c2UgdGhlIEkyUyBtb2RlcyBidXQgaW5zdGVhZCBtYW51YWxs
+eSBjb25maWd1cmUgdGhlCi0gKiBTU0kgZm9yIEkyUyBiZWNhdXNlIHRoZSBJMlMgbW9kZSBpcyBv
+bmx5IGEgcmVnaXN0ZXIgcHJlc2V0LgogICovCiBzdGF0aWMgaW50IGlteF9zc2lfc2V0X2RhaV9m
+bXQoc3RydWN0IHNuZF9zb2NfZGFpICpjcHVfZGFpLCB1bnNpZ25lZCBpbnQgZm10KQogewpAQCAt
+OTksNiArOTcsMTAgQEAgc3RhdGljIGludCBpbXhfc3NpX3NldF9kYWlfZm10KHN0cnVjdCBzbmRf
+c29jX2RhaSAqY3B1X2RhaSwgdW5zaWduZWQgaW50IGZtdCkKIAkJLyogZGF0YSBvbiByaXNpbmcg
+ZWRnZSBvZiBiY2xrLCBmcmFtZSBsb3cgMWNsayBiZWZvcmUgZGF0YSAqLwogCQlzdHJjciB8PSBT
+U0lfU1RDUl9URlNJIHwgU1NJX1NUQ1JfVEVGUyB8IFNTSV9TVENSX1RYQklUMDsKIAkJc2NyIHw9
+IFNTSV9TQ1JfTkVUOworCQlpZiAoc3NpLT5mbGFncyAmIElNWF9TU0lfVVNFX0kyU19TTEFWRSkg
+eworCQkJc2NyICY9IH5TU0lfSTJTX01PREVfTUFTSzsKKwkJCXNjciB8PSBTU0lfU0NSX0kyU19N
+T0RFX1NMQVZFOworCQl9CiAJCWJyZWFrOwogCWNhc2UgU05EX1NPQ19EQUlGTVRfTEVGVF9KOgog
+CQkvKiBkYXRhIG9uIHJpc2luZyBlZGdlIG9mIGJjbGssIGZyYW1lIGhpZ2ggd2l0aCBkYXRhICov
+CkBAIC0xNDMsNiArMTQ1LDExIEBAIHN0YXRpYyBpbnQgaW14X3NzaV9zZXRfZGFpX2ZtdChzdHJ1
+Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWksIHVuc2lnbmVkIGludCBmbXQpCiAKIAlzdHJjciB8PSBT
+U0lfU1RDUl9URkVOMDsKIAorCWlmIChzc2ktPmZsYWdzICYgSU1YX1NTSV9ORVQpCisJCXNjciB8
+PSBTU0lfU0NSX05FVDsKKwlpZiAoc3NpLT5mbGFncyAmIElNWF9TU0lfU1lOKQorCQlzY3IgfD0g
+U1NJX1NDUl9TWU47CisKIAl3cml0ZWwoc3RyY3IsIHNzaS0+YmFzZSArIFNTSV9TVENSKTsKIAl3
+cml0ZWwoc3RyY3IsIHNzaS0+YmFzZSArIFNTSV9TUkNSKTsKIAl3cml0ZWwoc2NyLCBzc2ktPmJh
+c2UgKyBTU0lfU0NSKTsKLS0gCjEuNi4zLjMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
+YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
+dGluZm8vYWxzYS1kZXZlbAo=
