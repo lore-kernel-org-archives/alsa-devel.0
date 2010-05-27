@@ -1,18 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: wrong decibel data?
-Date: Thu, 27 May 2010 15:48:48 +0200
-Message-ID: <4BFE7840.4070004@ladisch.de>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>	<hp744t$5b5$1@dough.gmane.org>	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>	<hqbv5m$cmf$1@dough.gmane.org>	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>	<hqmbmm$hsj$1@dough.gmane.org>	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>
-	<htls4d$phr$1@dough.gmane.org>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v2 1/4] imx-ssi.c: add new choices to
+ platform configuration
+Date: Thu, 27 May 2010 14:49:07 +0100
+Message-ID: <1274968147.3542.282.camel@odin>
+References: <1274950737-26498-1-git-send-email-eric@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 150EE103A6C
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 521C0103A73
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 15:48:52 +0200 (CEST)
-In-Reply-To: <htls4d$phr$1@dough.gmane.org>
+	Thu, 27 May 2010 15:49:15 +0200 (CEST)
+Received: by wwg30 with SMTP id 30so116190wwg.38
+	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 06:49:13 -0700 (PDT)
+In-Reply-To: <1274950737-26498-1-git-send-email-eric@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,49 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Colin Guthrie <gmane@colin.guthr.ie>
-Cc: alsa-devel@alsa-project.org
+To: Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Colin Guthrie wrote:
-> state.Intel {
-> 	control.1 {
-> 		comment.access 'read write'
-> 		comment.type INTEGER
-> 		comment.count 2
-> 		comment.range '0 - 31'
-> 		comment.dbmin -4650
-> 		comment.dbmax 0
-> 		iface MIXER
-> 		name 'Master Playback Volume'
-> 		value.0 30
-> 		value.1 30
-> 	}
-
-This is the hardware volume control.
-
-> 	control.11 {
-> 		comment.access 'read write user'
-> 		comment.type INTEGER
-> 		comment.count 2
-> 		comment.range '0 - 255'
-> 		comment.tlv '0000000100000008ffffec1400000014'
-> 		comment.dbmin -5100
-> 		comment.dbmax 0
-> 		iface MIXER
-> 		name 'PCM Playback Volume'
-> 		value.0 253
-> 		value.1 253
-> 	}
-
-This is the emulated software volume control that is created by the
-softvol plugin.  This control gets recreated by "alsactl restore" even
-when the plugin is not running.
-
-Might it be possible that PA is trying to use this, but that it doesn't
-have any effect because PA is using PCM device hw:0?  (Try unloading
-snd-hda-intel and then deleting that entry from /etc/asound.state.)
-
-
-Regards,
-Clemens
+T24gVGh1LCAyMDEwLTA1LTI3IGF0IDEwOjU4ICswMjAwLCBFcmljIELDqW5hcmQgd3JvdGU6Cj4g
+KiBpbnRyb2R1Y2UgMyBuZXcgZmxhZ3MgdG8gYWxsb3cgYSBtb3JlIGRldGFpbGVkIGNvbmZpZ3Vy
+YXRpb24KPiBvZiB0aGUgU1NJIGxpbmsgOgo+IAlJTVhfU1NJX05FVCA6IGVuYWJsZSBOZXR3b3Jr
+IE1vZGUKPiAJSU1YX1NTSV9TWU4gOiBlbmFibGUgU3luY2hyb25vdXMgTW9kZQo+IAlJTVhfU1NJ
+X1VTRV9JMlNfU0xBVkUgOiBlbmFibGUgSTJTIFNsYXZlIE1vZGUKPiAqIG5ldyBwbGF0Zm9ybSBj
+YW4gdXNlIHRoZXNlIHNldHRpbmdzIHdpdGhvdXQgYnJlYWtpbmcgYWN0dWFsCj4gcGxhdGZvcm1z
+Lgo+IAo+IFNpZ25lZC1vZmYtYnk6IEVyaWMgQsOpbmFyZCA8ZXJpY0BldWtyZWEuY29tPgo+IENj
+OiBTYXNjaGEgSGF1ZXIgPHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGU+Cj4gQ2M6IE1hcmsgQnJvd24g
+PGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tPgo+IENjOiBMaWFtIEdpcmR3b29k
+IDxscmdAc2xpbWxvZ2ljLmNvLnVrPgo+IC0tLQoKQWNrZWQtYnk6IExpYW0gR2lyZHdvb2QgPGxy
+Z0BzbGltbG9naWMuY28udWs+Ci0tIApGcmVlbGFuY2UgRGV2ZWxvcGVyLCBTbGltTG9naWMgTHRk
+CkFTb0MgYW5kIFZvbHRhZ2UgUmVndWxhdG9yIE1haW50YWluZXIuCmh0dHA6Ly93d3cuc2xpbWxv
+Z2ljLmNvLnVrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
