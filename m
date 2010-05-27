@@ -1,28 +1,18 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: Mixer volume/decibel mapping
-Date: Thu, 27 May 2010 14:32:31 +0100
-Message-ID: <htls8t$phr$2@dough.gmane.org>
-References: <201005191834.57919.vand2@gmx.de>	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	<4BF629B3.9020904@ladisch.de>	<201005210951.36495.peter.ujfalusi@nokia.com>	<4BF658C6.4030404@ladisch.de>	<AANLkTikXWtp87B0Gq_B-vQZXZlBl_MEBqbuHt6N5cTbi@mail.gmail.com>	<4BFB8C89.3010207@ladisch.de>	<AANLkTimNj_7k_l7nKLk87towdjtN5j0CSdmws02gpg8v@mail.gmail.com>
-	<AANLkTim4sq_jBHYvxnLk2Pw5bdUDEMJahHPBJGIXH8ds@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: wrong decibel data?
+Date: Thu, 27 May 2010 15:48:48 +0200
+Message-ID: <4BFE7840.4070004@ladisch.de>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>	<hp744t$5b5$1@dough.gmane.org>	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>	<hqbv5m$cmf$1@dough.gmane.org>	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>	<hqmbmm$hsj$1@dough.gmane.org>	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>
+	<htls4d$phr$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id F3247103A53
+Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 150EE103A6C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 15:35:05 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OHdEl-00031D-Su
-	for alsa-devel@alsa-project.org; Thu, 27 May 2010 15:35:03 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 15:35:03 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 15:35:03 +0200
-In-Reply-To: <AANLkTim4sq_jBHYvxnLk2Pw5bdUDEMJahHPBJGIXH8ds@mail.gmail.com>
+	Thu, 27 May 2010 15:48:52 +0200 (CEST)
+In-Reply-To: <htls4d$phr$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,38 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Colin Guthrie <gmane@colin.guthr.ie>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Raymond Yau at 26/05/10 00:24 did gyre and gimble:
-> only one of the PA developer complain about his HDA codec has incorrect dB
-> range but not willing to provide alsa-info.sh
+Colin Guthrie wrote:
+> state.Intel {
+> 	control.1 {
+> 		comment.access 'read write'
+> 		comment.type INTEGER
+> 		comment.count 2
+> 		comment.range '0 - 31'
+> 		comment.dbmin -4650
+> 		comment.dbmax 0
+> 		iface MIXER
+> 		name 'Master Playback Volume'
+> 		value.0 30
+> 		value.1 30
+> 	}
 
-I presume you mean me :) I had a hunt through the many mails you sent on
-the previous thread and found such a request I'd obviously missed the
-first time round. Sorry about that. Not unwilling, just unaware.
+This is the hardware volume control.
 
-I've attached the output to a reply in the other thread.
+> 	control.11 {
+> 		comment.access 'read write user'
+> 		comment.type INTEGER
+> 		comment.count 2
+> 		comment.range '0 - 255'
+> 		comment.tlv '0000000100000008ffffec1400000014'
+> 		comment.dbmin -5100
+> 		comment.dbmax 0
+> 		iface MIXER
+> 		name 'PCM Playback Volume'
+> 		value.0 253
+> 		value.1 253
+> 	}
 
-> There is a patch which may affect the dB scale
-> 
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=7c7767ebe2fa847c91a0dd5551ca422aba359473;hp=29fdbec2dcb1ce364812778271056aa9516ff3ed
+This is the emulated software volume control that is created by the
+softvol plugin.  This control gets recreated by "alsactl restore" even
+when the plugin is not running.
 
-Interesting. I wonder if this ties in time wise of when I noticed this
-working..... If I find time to play, I'll maybe try reverting this to
-see if it helps.
+Might it be possible that PA is trying to use this, but that it doesn't
+have any effect because PA is using PCM device hw:0?  (Try unloading
+snd-hda-intel and then deleting that entry from /etc/asound.state.)
 
-Col
 
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Regards,
+Clemens
