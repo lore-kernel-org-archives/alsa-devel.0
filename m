@@ -1,21 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: spdif: Add codec driver to use spdif
- stand-alone
-Date: Thu, 27 May 2010 14:54:23 +0100
-Message-ID: <1274968463.3542.287.camel@odin>
-References: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
+From: =?UTF-8?B?RXJpYyBCw6luYXJk?= <eric@eukrea.com>
+Subject: Re: [PATCH v2 2/4] soc/imx: add eukrea-tlv320
+Date: Thu, 27 May 2010 16:04:47 +0200
+Message-ID: <4BFE7BFF.7010400@eukrea.com>
+References: <1274950737-26498-1-git-send-email-eric@eukrea.com>	
+	<1274950737-26498-2-git-send-email-eric@eukrea.com>
+	<1274968205.3542.283.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f177.google.com (mail-wy0-f177.google.com
-	[74.125.82.177])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8A499103A85
+Received: from 30.mail-out.ovh.net (30.mail-out.ovh.net [213.186.62.213])
+	by alsa0.perex.cz (Postfix) with SMTP id 922F0103A82
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 15:54:29 +0200 (CEST)
-Received: by wyb33 with SMTP id 33so637242wyb.8
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 06:54:28 -0700 (PDT)
-In-Reply-To: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
+	Thu, 27 May 2010 16:04:50 +0200 (CEST)
+In-Reply-To: <1274968205.3542.283.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <sw.youn@samsung.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, schen@mvista.com
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-05-27 at 18:13 +0900, Seungwhan Youn wrote:
-> This patch adds spdif dummy codec driver for using spdif-dit as
-> a stand-alone. Until this, spdif-dit can be used only with other
-> codecs like tlv320aci3x in davinci platform.
-> 
-> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
-> ---
->  sound/soc/codecs/spdif_transciever.c |   93 +++++++++++++++++++++++++++++++++-
->  1 files changed, 92 insertions(+), 1 deletions(-)
-
-
-> +	spdif_dit_codec = NULL;
-
-This isn't really necessary as the module is being removed at this
-point.
-
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+SGkgTGlhbSwKCkxlIDI3LzA1LzIwMTAgMTU6NTAsIExpYW0gR2lyZHdvb2QgYSDDqWNyaXQgOgo+
+PiArCj4+ICsJZXVrcmVhX3RsdjMyMF9kYWkuY3B1X2RhaSA9JmlteF9zc2lfcGNtX2RhaVswXTsK
+Pgo+IEFueSByZWFzb24gd2h5IHRoaXMgaXMgbm90IGRlZmluZWQgYWJvdmUgPwo+CkkgcGxhbiB0
+byByZXVzZSB0aGlzIGRyaXZlciBmb3IgaU1YMjUsIDM1ICYgNTEgYmFzZWQgYm9hcmRzIHNvIHRo
+aXMgCnBhcmFtZXRlciBtYXkgY2hhbmdlIGRlcGVuZGluZyBvbiBtYWNoaW5lX2lzX3h4eCBtYWNy
+by4KCkVyaWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
