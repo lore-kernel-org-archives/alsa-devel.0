@@ -1,13 +1,17 @@
-From: linux@audioscience.com
-Subject: [PATCH 5/5] Minor code cleanup.
-Date: Thu, 27 May 2010 17:53:55 +1200
-Message-ID: <1274939635-1370-5-git-send-email-linux@audioscience.com>
-References: <1274939635-1370-1-git-send-email-linux@audioscience.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Problem with snd_hda_intel from 05-27-2010 snapshot
+Date: Thu, 27 May 2010 09:37:25 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1005270931570.6856@eeebox2.perex-int.cz>
+References: <AANLkTilIX_UnMYcg8LAqkndS80nFppblW6erTm2e7o5X@mail.gmail.com>
+	<AANLkTinLbTMrYBhg6KO826slsugfEcU0_wYqukSQpQw2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1907091131-1274945845=:6856"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-reply-to: <1274939635-1370-1-git-send-email-linux@audioscience.com>
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id DA53E1039E1
+	for <alsa-devel@alsa-project.org>;
+	Thu, 27 May 2010 09:37:25 +0200 (CEST)
+In-Reply-To: <AANLkTinLbTMrYBhg6KO826slsugfEcU0_wYqukSQpQw2@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -17,108 +21,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: tiwai@suse.de, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
+To: VDR User <user.vdr@gmail.com>
+Cc: "mailing list: alsa-dev" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
----
- sound/pci/asihpi/hpicmn.c |   38 +++++++++++++-------------------------
- 1 files changed, 13 insertions(+), 25 deletions(-)
+--8323584-1907091131-1274945845=:6856
+Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-diff --git a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
-index 565102c..fcd6453 100644
---- a/sound/pci/asihpi/hpicmn.c
-+++ b/sound/pci/asihpi/hpicmn.c
-@@ -347,20 +347,15 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
- 			found = 0;
- 		break;
- 	case HPI_CONTROL_TUNER:
--		{
--			struct hpi_control_cache_single *pCT =
--				(struct hpi_control_cache_single *)pI;
--			if (phm->u.c.attribute == HPI_TUNER_FREQ)
--				phr->u.c.param1 = pCT->u.t.freq_ink_hz;
--			else if (phm->u.c.attribute == HPI_TUNER_BAND)
--				phr->u.c.param1 = pCT->u.t.band;
--			else if ((phm->u.c.attribute == HPI_TUNER_LEVEL)
--				&& (phm->u.c.param1 ==
--					HPI_TUNER_LEVEL_AVERAGE))
--				phr->u.c.param1 = pCT->u.t.level;
--			else
--				found = 0;
--		}
-+		if (phm->u.c.attribute == HPI_TUNER_FREQ)
-+			phr->u.c.param1 = pC->u.t.freq_ink_hz;
-+		else if (phm->u.c.attribute == HPI_TUNER_BAND)
-+			phr->u.c.param1 = pC->u.t.band;
-+		else if ((phm->u.c.attribute == HPI_TUNER_LEVEL)
-+			&& (phm->u.c.param1 == HPI_TUNER_LEVEL_AVERAGE))
-+			phr->u.c.param1 = pC->u.t.level;
-+		else
-+			found = 0;
- 		break;
- 	case HPI_CONTROL_AESEBU_RECEIVER:
- 		if (phm->u.c.attribute == HPI_AESEBURX_ERRORSTATUS)
-@@ -503,6 +498,9 @@ void hpi_sync_control_cache(struct hpi_control_cache *p_cache,
- 	struct hpi_control_cache_single *pC;
- 	struct hpi_control_cache_info *pI;
- 
-+	if (phr->error)
-+		return;
-+
- 	if (!find_control(phm, p_cache, &pI, &control_index))
- 		return;
- 
-@@ -520,8 +518,6 @@ void hpi_sync_control_cache(struct hpi_control_cache *p_cache,
- 		break;
- 	case HPI_CONTROL_MULTIPLEXER:
- 		/* mux does not return its setting on Set command. */
--		if (phr->error)
--			return;
- 		if (phm->u.c.attribute == HPI_MULTIPLEXER_SOURCE) {
- 			pC->u.x.source_node_type = (u16)phm->u.c.param1;
- 			pC->u.x.source_node_index = (u16)phm->u.c.param2;
-@@ -529,8 +525,6 @@ void hpi_sync_control_cache(struct hpi_control_cache *p_cache,
- 		break;
- 	case HPI_CONTROL_CHANNEL_MODE:
- 		/* mode does not return its setting on Set command. */
--		if (phr->error)
--			return;
- 		if (phm->u.c.attribute == HPI_CHANNEL_MODE_MODE)
- 			pC->u.m.mode = (u16)phm->u.c.param1;
- 		break;
-@@ -545,20 +539,14 @@ void hpi_sync_control_cache(struct hpi_control_cache *p_cache,
- 			pC->u.phantom_power.state = (u16)phm->u.c.param1;
- 		break;
- 	case HPI_CONTROL_AESEBU_TRANSMITTER:
--		if (phr->error)
--			return;
- 		if (phm->u.c.attribute == HPI_AESEBUTX_FORMAT)
- 			pC->u.aes3tx.format = phm->u.c.param1;
- 		break;
- 	case HPI_CONTROL_AESEBU_RECEIVER:
--		if (phr->error)
--			return;
- 		if (phm->u.c.attribute == HPI_AESEBURX_FORMAT)
- 			pC->u.aes3rx.source = phm->u.c.param1;
- 		break;
- 	case HPI_CONTROL_SAMPLECLOCK:
--		if (phr->error)
--			return;
- 		if (phm->u.c.attribute == HPI_SAMPLECLOCK_SOURCE)
- 			pC->u.clk.source = (u16)phm->u.c.param1;
- 		else if (phm->u.c.attribute == HPI_SAMPLECLOCK_SOURCE_INDEX)
-@@ -590,7 +578,7 @@ struct hpi_control_cache *hpi_alloc_control_cache(const u32
- 
- void hpi_free_control_cache(struct hpi_control_cache *p_cache)
- {
--	if ((p_cache->init) && (p_cache->p_info)) {
-+	if (p_cache->init) {
- 		kfree(p_cache->p_info);
- 		p_cache->p_info = NULL;
- 		p_cache->init = 0;
--- 
-1.7.0.4
+On Wed, 26 May 2010, VDR User wrote:
+
+>> Hi. =C2=A0I had been mostly successfully using the snd_hda_intel driver
+>> from the stable kernel 2.6.34 for HDMI audio with my Nvidia GT220
+>> video card. =C2=A0In an attempt to see if any recent changes to
+>> snd_hda_intel would fix a problem I've been having with "pcm_hw.c:
+>> snd_pcm_hw_delay() SNDRV_PCM_IOCTL_DELAY failed" I decided to download
+>> the latest snapshot. =C2=A0Unfortunately with these drivers I have no
+>> audio. =C2=A0All my settings, and everything have remained the same. =C2=
+=A0The
+>> only noticable difference I've found is
+>> /sys/module/snd_hda_intel/parameters/probe_only is 0,0,0,0,0,0,0,0 in
+>> the snapshot drivers, and N,N,N,N,N,N,N,N in the 2.6.34 kernel drivers
+>> (which are compiled into the kernel).
+>
+> As a followup, I tried each snapshot going backwards from 05-27-2010
+> to discover where the breakage occured.  The last working snapshot is
+> 05-11-2010, it breaks at 05-12-2010.  After making a diff of the
+> sound/pci/hda/ dir, I've discovered that the offending patch is:
+>
+> author=09Jaroslav Kysela <perex@perex.cz>
+> =09 Tue, 11 May 2010 08:21:46 +0000 (10:21 +0200)
+> committer=09Jaroslav Kysela <perex@perex.cz>
+> =09 Tue, 11 May 2010 08:25:50 +0000 (10:25 +0200)
+> commit=09432f57d106e6d5c69fce74c888de32c6df347494
+> tree=09536120322429edb82d672547595d8dba7ac10b5e=09tree | snapshot
+> parent=09533538fe6243d87b68db6942b1c7a1acb9fe504d=09commit | diff
+>
+> [ALSA] snd-hda-intel: use WALLCLK register to check for early irqs
+>
+> Use 24Mhz WALLCLK register to ignore too early interrupts and
+> wrong interrupt status. The bad timing confuses the higher ALSA
+> layer and causes audio skipping. More information about behaviour
+> and debugging can be found in kernel bz#15912.
+>
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D15912
+
+Check any suspicious lines in /var/log/messages and follow proc xrun_debug=
+=20
+settings noted in bug above. I need at least 20 first lines after the=20
+playback is started.
+
+Also, use 'aplay -Dplughw:0' from the alsa-utils package to trigger=20
+the playback.
+
+ =09=09=09=09=09Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
+
+--8323584-1907091131-1274945845=:6856
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--8323584-1907091131-1274945845=:6856--
