@@ -1,22 +1,25 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 3/4] ALSA: usb-audio: parse UAC2 endpoint
- descriptors correctly
-Date: Thu, 27 May 2010 20:15:14 +0200
-Message-ID: <20100527181514.GL2695@buzzloop.caiaq.de>
-References: <1274890299-8972-1-git-send-email-daniel@caiaq.de>
-	<1274890299-8972-3-git-send-email-daniel@caiaq.de>
-	<20100526161746.GE2695@buzzloop.caiaq.de>
-	<20100526204657.GB7343@suse.de> <s5hfx1d4vff.wl%tiwai@suse.de>
+Subject: Re: usbaudio: Support for USB audio v2.0 devices
+Date: Thu, 27 May 2010 20:21:00 +0200
+Message-ID: <20100527182100.GM2695@buzzloop.caiaq.de>
+References: <1266856137-26252-1-git-send-email-daniel@caiaq.de>
+	<4B8CD6A0.40204@freemail.gr>
+	<20100302183542.GU28972@buzzloop.caiaq.de>
+	<4BD6E564.5050100@freemail.gr>
+	<20100427140612.GC30804@buzzloop.caiaq.de>
+	<4BDEC641.2000906@freemail.gr>
+	<20100504104854.GU30801@buzzloop.caiaq.de>
+	<4BF23CCD.9010509@freemail.gr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 40FC21037F1
+	by alsa0.perex.cz (Postfix) with ESMTP id 4A3E41037F5
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 20:15:19 +0200 (CEST)
+	Thu, 27 May 2010 20:21:04 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hfx1d4vff.wl%tiwai@suse.de>
+In-Reply-To: <4BF23CCD.9010509@freemail.gr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,70 +29,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Greg KH <gregkh@suse.de>, clemens@ladisch.de
+To: adelias <adelias@freemail.gr>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 27, 2010 at 10:10:12AM +0200, Takashi Iwai wrote:
-> At Wed, 26 May 2010 13:46:57 -0700,
-> Greg KH wrote:
-> > 
-> > On Wed, May 26, 2010 at 06:17:46PM +0200, Daniel Mack wrote:
-> > > On Wed, May 26, 2010 at 06:11:38PM +0200, Daniel Mack wrote:
-> > > > UAC2 devices have their information about pitch control stored in a
-> > > > different field. Parse it, and emulate the bits for a v1 device.
-> > > > 
-> > > > A new struct uac2_iso_endpoint_descriptor is added.
-> > > 
-> > > > 
-> > > > Signed-off-by: Daniel Mack <daniel@caiaq.de>
-> > > > ---
-> > > >  include/linux/usb/audio-v2.h |   16 ++++++++++++
-> > > 
-> > > Greg, I copied you because of this patch, just to let you know we're
-> > > having fun in your area of responsibility again :)
-> > 
-> > Heh, no problem at all.
-> > 
-> > Takashi, feel free to add an:
-> > 	Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
-> > to this patch when you take it.
-> 
-> OK, I put this to my tree.  Will be included in the next pull request
-> in this week.
-
-Thanks Takashi!
-
-Here's another small one that needs attention.
-
-Daniel
-
->From 3beee40982b98314f8d58c775cc8b40a8e25ce18 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@caiaq.de>
-Date: Thu, 27 May 2010 18:28:25 +0200
-Subject: [PATCH] ALSA: usb-audio: fix feature unit parser for UAC2
-
-Fix a small off-by-one bug which causes the feature unit to announce a
-wrong number of channels. This leads to illegal requests sent to the
-firmware eventually.
-
-Signed-off-by: Daniel Mack <daniel@caiaq.de>
----
- sound/usb/mixer.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 97dd176..03ce971 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1126,7 +1126,7 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
- 	} else {
- 		struct uac2_feature_unit_descriptor *ftr = _ftr;
- 		csize = 4;
--		channels = (hdr->bLength - 6) / 4;
-+		channels = (hdr->bLength - 6) / 4 - 1;
- 		bmaControls = ftr->bmaControls;
- 	}
- 
--- 
-1.7.1
+T24gVHVlLCBNYXkgMTgsIDIwMTAgYXQgMTA6MDc6NTdBTSArMDMwMCwgYWRlbGlhcyB3cm90ZToK
+PiBPbiA0LzUvMjAxMCAxOjQ4IM68zrwsIERhbmllbCBNYWNrIHdyb3RlOgo+ID5PbiBNb24sIE1h
+eSAwMywgMjAxMCBhdCAwMzo0OTowNVBNICswMzAwLCBhZGVsaWFzIHdyb3RlOgo+ID4+T24gMjcv
+NC8yMDEwIDU6MDYgzrzOvCwgRGFuaWVsIE1hY2sgd3JvdGU6Cj4gPj4+V2hhdCBzcGVjaWZpYyBj
+b25maWd1cmF0aW9uIGFyZSB5b3UgdGVzdGluZyB3aXRoPyBBcyB5b3UgaGF2ZSBzdWNoIGFuCj4g
+Pj4+ZXZhbHVhdGlvbiBraXQsIEkgYmVsaWV2ZSB5b3UncmUgYWxzbyBwcm92aWRlZCB3aXRoIHRo
+ZSBYTU9TIGRldmVsb3BtZW50Cj4gPj4+cGxhdGZvcm0gLSB3aGljaCBmaXJtd2FyZSBkaWQgeW91
+IGluc3RhbGwgdG8gdGhlIGJvYXJkPwo+ID4+Pgo+ID4+PkRhbmllbAo+ID4+Cj4gPj5GaXJtd2Fy
+ZSBpcyBvbiAxdjIuIEknbSBub3QgZ2V0dGluZyBjbGlja3Mgb24gT1NYIDEwLjYuMiBvciBXaW5k
+b3dzCj4gPj43IHdpdGggdGhlIEFTSU8gZHJpdmVyLgo+ID4KPiA+V2VsbCwgYXQgbGVhc3QgZm9y
+IE9TIFggMTAuNi4yLCB0aGVyZSBhcmUgcHJvYmxlbXMgaW4gdGhlIGNsYXNzIGRyaXZlci4KPiA+
+RG8gc29tZSBsb25nLXRpbWUgbWVhc3VyZW1lbnRzIHdpdGggaW5wdXRzIGFuZCBvdXRwdXRzIHRv
+IG1lZXQgdGhlbS4KPiA+Cj4gPkkgd291bGQgYWxzbyBzdWdnZXN0IHRvIHRyeSBhIG5ld2VyIGZp
+cm13YXJlLCAxdjIgaXMgcmF0aGVyIG9sZC4gSWYgeW91Cj4gPnN0aWxsIGhhcHBlbiB0byBoYXZl
+IHByb2JsZW1zLCBsZXQgbWUga25vdyBhbmQgSSdsbCBoYXZlIGFub3RoZXIgbG9vay4KPiA+Cj4g
+Pklyb25pY2FsbHksIHRoaW5ncyBkb24ndCB3b3JrIGZvciBtZSBhbnltb3JlIGN1cnJlbnRseSB3
+aXRoIHRoZSBMaW51eAo+ID5tYXN0ZXIgZ2l0ICsgc291bmQtMi42LiBJJ20gZ2V0dGluZyBYQWN0
+RXJyb3JzIGFsbCBvdmVyIHRoZSBwbGFjZSwgYnV0Cj4gPnRoYXQncyBtb3N0IHByb2JhYmx5IG5v
+dCByZWxhdGVkIHRvIHRoZSBkcml2ZXIgaXRzZWxmIGJ1dCBzb21lCj4gPnJlZ3Jlc3Npb24gaW4g
+dGhlIExpbnV4IFVTQiBzdGFjayBJIGJlbGlldmUuIENvdWxkIHlvdSB0cnkgdGhhdCBhcyB3ZWxs
+Pwo+ID4KPiA+VGhhbmtzLAo+ID5EYW5pZWwKPiA+Cj4gCj4gQWZ0ZXIgdXBncmFkaW5nIFhNT1Mg
+ZmlybXdhcmUgdG8gMXY1LCBhbHRob3VnaCB0aGUgYm9hcmQgaXMKPiByZWNvZ25pemVkLCBpdCBu
+byBsb25nZXIgZnVuY3Rpb25zIHdpdGggYWxzYS4gQWxzbyBuZWVkcyB0byBiZSByZXNldAo+IGJl
+Zm9yZSBpdCBpcwo+IHJlY29nbml6ZWQgaW4gV2luZG93cy4KCkkgZml4ZWQgdGhpcyBwcm9ibGVt
+IG5vdyAtIHNlZSBteSBsYXRlc3QgZW1haWwgdG8gVGFrYXNoaS4gVGhlIHBhdGNoCndpbGwgbGlr
+ZWx5IGJlIG1lcmdlZCBpbiBhIGZldyBkYXlzLCBidXQgeW91IGNvdWxkIGFsc28gZ2l2ZSBpdCBh
+IHRyeSBieQphcHBseWluZyBpdCBtYW51YWxseSAoc2VlIGJlbG93KS4KCkFuZCBJIHdvdWxkIHN0
+aWxsIGFwcHJlY2lhdGUgc29tZSB0ZXN0aW5nIGZlZWRiYWNrIDopCgoKRGFuaWVsCgoKRnJvbSAz
+YmVlZTQwOTgyYjk4MzE0ZjhkNThjNzc1Y2M4YjQwYThlMjVjZTE4IE1vbiBTZXAgMTcgMDA6MDA6
+MDAgMjAwMQpGcm9tOiBEYW5pZWwgTWFjayA8ZGFuaWVsQGNhaWFxLmRlPgpEYXRlOiBUaHUsIDI3
+IE1heSAyMDEwIDE4OjI4OjI1ICswMjAwClN1YmplY3Q6IFtQQVRDSF0gQUxTQTogdXNiLWF1ZGlv
+OiBmaXggZmVhdHVyZSB1bml0IHBhcnNlciBmb3IgVUFDMgoKRml4IGEgc21hbGwgb2ZmLWJ5LW9u
+ZSBidWcgd2hpY2ggY2F1c2VzIHRoZSBmZWF0dXJlIHVuaXQgdG8gYW5ub3VuY2UgYQp3cm9uZyBu
+dW1iZXIgb2YgY2hhbm5lbHMuIFRoaXMgbGVhZHMgdG8gaWxsZWdhbCByZXF1ZXN0cyBzZW50IHRv
+IHRoZQpmaXJtd2FyZSBldmVudHVhbGx5LgoKU2lnbmVkLW9mZi1ieTogRGFuaWVsIE1hY2sgPGRh
+bmllbEBjYWlhcS5kZT4KLS0tCiBzb3VuZC91c2IvbWl4ZXIuYyB8ICAgIDIgKy0KIDEgZmlsZXMg
+Y2hhbmdlZCwgMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Nv
+dW5kL3VzYi9taXhlci5jIGIvc291bmQvdXNiL21peGVyLmMKaW5kZXggOTdkZDE3Ni4uMDNjZTk3
+MSAxMDA2NDQKLS0tIGEvc291bmQvdXNiL21peGVyLmMKKysrIGIvc291bmQvdXNiL21peGVyLmMK
+QEAgLTExMjYsNyArMTEyNiw3IEBAIHN0YXRpYyBpbnQgcGFyc2VfYXVkaW9fZmVhdHVyZV91bml0
+KHN0cnVjdCBtaXhlcl9idWlsZCAqc3RhdGUsIGludCB1bml0aWQsIHZvaWQKIAl9IGVsc2Ugewog
+CQlzdHJ1Y3QgdWFjMl9mZWF0dXJlX3VuaXRfZGVzY3JpcHRvciAqZnRyID0gX2Z0cjsKIAkJY3Np
+emUgPSA0OwotCQljaGFubmVscyA9IChoZHItPmJMZW5ndGggLSA2KSAvIDQ7CisJCWNoYW5uZWxz
+ID0gKGhkci0+Ykxlbmd0aCAtIDYpIC8gNCAtIDE7CiAJCWJtYUNvbnRyb2xzID0gZnRyLT5ibWFD
+b250cm9sczsKIAl9CiAKLS0gCjEuNy4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
