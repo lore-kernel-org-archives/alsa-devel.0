@@ -1,81 +1,161 @@
-From: =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
-Subject: [PATCH v2 4/4] mx27_defconfig: add audio support for eukrea_mbimx27
-Date: Thu, 27 May 2010 10:58:57 +0200
-Message-ID: <1274950737-26498-4-git-send-email-eric@eukrea.com>
-References: <1274950737-26498-1-git-send-email-eric@eukrea.com>
-	<1274950737-26498-2-git-send-email-eric@eukrea.com>
-	<1274950737-26498-3-git-send-email-eric@eukrea.com>
+From: Seungwhan Youn <sw.youn@samsung.com>
+Subject: [PATCH] ASoC: spdif: Add codec driver to use spdif
+	stand-alone
+Date: Thu, 27 May 2010 18:13:48 +0900
+Message-ID: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1274950737-26498-3-git-send-email-eric@eukrea.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
-	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: linux-arm-kernel-bounces@lists.infradead.org
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	by alsa0.perex.cz (Postfix) with ESMTP id F2095103A16
+	for <alsa-devel@alsa-project.org>;
+	Thu, 27 May 2010 11:20:17 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Seungwhan Youn <sw.youn@samsung.com>, broonie@opensource.wolfsonmicro.com, schen@mvista.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogRXJpYyBCw6luYXJkIDxlcmljQGV1a3JlYS5jb20+Ci0tLQogYXJjaC9h
-cm0vY29uZmlncy9teDI3X2RlZmNvbmZpZyB8ICAgNDkgKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKy0KIDEgZmlsZXMgY2hhbmdlZCwgNDcgaW5zZXJ0aW9ucygrKSwgMiBkZWxl
-dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL2FybS9jb25maWdzL214MjdfZGVmY29uZmlnIGIv
-YXJjaC9hcm0vY29uZmlncy9teDI3X2RlZmNvbmZpZwppbmRleCBlNmIxMzEwLi44YzMzMzFkIDEw
-MDY0NAotLS0gYS9hcmNoL2FybS9jb25maWdzL214MjdfZGVmY29uZmlnCisrKyBiL2FyY2gvYXJt
-L2NvbmZpZ3MvbXgyN19kZWZjb25maWcKQEAgLTEsNyArMSw3IEBACiAjCiAjIEF1dG9tYXRpY2Fs
-bHkgZ2VuZXJhdGVkIG1ha2UgY29uZmlnOiBkb24ndCBlZGl0CiAjIExpbnV4IGtlcm5lbCB2ZXJz
-aW9uOiAyLjYuMzQKLSMgV2VkIE1heSAxOSAxODozNjo1NSAyMDEwCisjIFdlZCBNYXkgMjYgMjE6
-NDU6NDIgMjAxMAogIwogQ09ORklHX0FSTT15CiBDT05GSUdfSEFWRV9QV009eQpAQCAtMjEsNiAr
-MjEsNyBAQCBDT05GSUdfUldTRU1fR0VORVJJQ19TUElOTE9DSz15CiBDT05GSUdfR0VORVJJQ19I
-V0VJR0hUPXkKIENPTkZJR19HRU5FUklDX0NBTElCUkFURV9ERUxBWT15CiBDT05GSUdfTkVFRF9E
-TUFfTUFQX1NUQVRFPXkKK0NPTkZJR19GSVE9eQogQ09ORklHX0dFTkVSSUNfSEFSRElSUVNfTk9f
-X0RPX0lSUT15CiBDT05GSUdfVkVDVE9SU19CQVNFPTB4ZmZmZjAwMDAKIENPTkZJR19ERUZDT05G
-SUdfTElTVD0iL2xpYi9tb2R1bGVzLyRVTkFNRV9SRUxFQVNFLy5jb25maWciCkBAIC03OTAsNiAr
-NzkxLDcgQEAgQ09ORklHX1RPVUNIU0NSRUVOX0FEUzc4NDY9eQogIyBDT05GSUdfVE9VQ0hTQ1JF
-RU5fUEVOTU9VTlQgaXMgbm90IHNldAogIyBDT05GSUdfVE9VQ0hTQ1JFRU5fVE9VQ0hSSUdIVCBp
-cyBub3Qgc2V0CiAjIENPTkZJR19UT1VDSFNDUkVFTl9UT1VDSFdJTiBpcyBub3Qgc2V0CisjIENP
-TkZJR19UT1VDSFNDUkVFTl9XTTk3WFggaXMgbm90IHNldAogIyBDT05GSUdfVE9VQ0hTQ1JFRU5f
-VVNCX0NPTVBPU0lURSBpcyBub3Qgc2V0CiAjIENPTkZJR19UT1VDSFNDUkVFTl9UT1VDSElUMjEz
-IGlzIG5vdCBzZXQKICMgQ09ORklHX1RPVUNIU0NSRUVOX1RTQzIwMDcgaXMgbm90IHNldApAQCAt
-OTY5LDYgKzk3MSw3IEBAIENPTkZJR19TU0JfUE9TU0lCTEU9eQogIyBDT05GSUdfSFRDX0VHUElP
-IGlzIG5vdCBzZXQKICMgQ09ORklHX0hUQ19QQVNJQzMgaXMgbm90IHNldAogIyBDT05GSUdfSFRD
-X0kyQ1BMRCBpcyBub3Qgc2V0CisjIENPTkZJR19VQ0IxNDAwX0NPUkUgaXMgbm90IHNldAogIyBD
-T05GSUdfVFBTNjUwMTAgaXMgbm90IHNldAogIyBDT05GSUdfVFdMNDAzMF9DT1JFIGlzIG5vdCBz
-ZXQKICMgQ09ORklHX01GRF9UTUlPIGlzIG5vdCBzZXQKQEAgLTEwNjQsNyArMTA2Nyw0OSBAQCBD
-T05GSUdfTE9HTz15CiAjIENPTkZJR19MT0dPX0xJTlVYX01PTk8gaXMgbm90IHNldAogIyBDT05G
-SUdfTE9HT19MSU5VWF9WR0ExNiBpcyBub3Qgc2V0CiBDT05GSUdfTE9HT19MSU5VWF9DTFVUMjI0
-PXkKLSMgQ09ORklHX1NPVU5EIGlzIG5vdCBzZXQKK0NPTkZJR19TT1VORD15CitDT05GSUdfU09V
-TkRfT1NTX0NPUkU9eQorQ09ORklHX1NPVU5EX09TU19DT1JFX1BSRUNMQUlNPXkKK0NPTkZJR19T
-TkQ9eQorQ09ORklHX1NORF9USU1FUj15CitDT05GSUdfU05EX1BDTT15CitDT05GSUdfU05EX0pB
-Q0s9eQorQ09ORklHX1NORF9TRVFVRU5DRVI9eQorIyBDT05GSUdfU05EX1NFUV9EVU1NWSBpcyBu
-b3Qgc2V0CitDT05GSUdfU05EX09TU0VNVUw9eQorQ09ORklHX1NORF9NSVhFUl9PU1M9eQorQ09O
-RklHX1NORF9QQ01fT1NTPXkKK0NPTkZJR19TTkRfUENNX09TU19QTFVHSU5TPXkKKyMgQ09ORklH
-X1NORF9TRVFVRU5DRVJfT1NTIGlzIG5vdCBzZXQKKyMgQ09ORklHX1NORF9IUlRJTUVSIGlzIG5v
-dCBzZXQKKyMgQ09ORklHX1NORF9EWU5BTUlDX01JTk9SUyBpcyBub3Qgc2V0CitDT05GSUdfU05E
-X1NVUFBPUlRfT0xEX0FQST15CitDT05GSUdfU05EX1ZFUkJPU0VfUFJPQ0ZTPXkKKyMgQ09ORklH
-X1NORF9WRVJCT1NFX1BSSU5USyBpcyBub3Qgc2V0CisjIENPTkZJR19TTkRfREVCVUcgaXMgbm90
-IHNldAorIyBDT05GSUdfU05EX1JBV01JRElfU0VRIGlzIG5vdCBzZXQKKyMgQ09ORklHX1NORF9P
-UEwzX0xJQl9TRVEgaXMgbm90IHNldAorIyBDT05GSUdfU05EX09QTDRfTElCX1NFUSBpcyBub3Qg
-c2V0CisjIENPTkZJR19TTkRfU0JBV0VfU0VRIGlzIG5vdCBzZXQKKyMgQ09ORklHX1NORF9FTVUx
-MEsxX1NFUSBpcyBub3Qgc2V0CitDT05GSUdfU05EX0RSSVZFUlM9eQorIyBDT05GSUdfU05EX0RV
-TU1ZIGlzIG5vdCBzZXQKKyMgQ09ORklHX1NORF9WSVJNSURJIGlzIG5vdCBzZXQKKyMgQ09ORklH
-X1NORF9NVFBBViBpcyBub3Qgc2V0CisjIENPTkZJR19TTkRfU0VSSUFMX1UxNjU1MCBpcyBub3Qg
-c2V0CisjIENPTkZJR19TTkRfTVBVNDAxIGlzIG5vdCBzZXQKKyMgQ09ORklHX1NORF9BUk0gaXMg
-bm90IHNldAorIyBDT05GSUdfU05EX1NQSSBpcyBub3Qgc2V0CisjIENPTkZJR19TTkRfVVNCIGlz
-IG5vdCBzZXQKK0NPTkZJR19TTkRfU09DPXkKK0NPTkZJR19TTkRfU09DX0FDOTdfQlVTPXkKK0NP
-TkZJR19TTkRfSU1YX1NPQz15CitDT05GSUdfU05EX1NPQ19FVUtSRUFfVExWMzIwPXkKK0NPTkZJ
-R19TTkRfU09DX0kyQ19BTkRfU1BJPXkKKyMgQ09ORklHX1NORF9TT0NfQUxMX0NPREVDUyBpcyBu
-b3Qgc2V0CitDT05GSUdfU05EX1NPQ19UTFYzMjBBSUMyMz15CisjIENPTkZJR19TT1VORF9QUklN
-RSBpcyBub3Qgc2V0CitDT05GSUdfQUM5N19CVVM9eQogIyBDT05GSUdfSElEX1NVUFBPUlQgaXMg
-bm90IHNldAogQ09ORklHX1VTQl9TVVBQT1JUPXkKIENPTkZJR19VU0JfQVJDSF9IQVNfSENEPXkK
-LS0gCjEuNi4zLjMKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0ta2VybmVsQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1hcm0ta2VybmVsCg==
+This patch adds spdif dummy codec driver for using spdif-dit as
+a stand-alone. Until this, spdif-dit can be used only with other
+codecs like tlv320aci3x in davinci platform.
+
+Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+---
+ sound/soc/codecs/spdif_transciever.c |   93 +++++++++++++++++++++++++++++++++-
+ 1 files changed, 92 insertions(+), 1 deletions(-)
+
+diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transciever.c
+index a631911..f0945ab 100644
+--- a/sound/soc/codecs/spdif_transciever.c
++++ b/sound/soc/codecs/spdif_transciever.c
+@@ -18,6 +18,7 @@
+ #include <linux/moduleparam.h>
+ #include <sound/soc.h>
+ #include <sound/pcm.h>
++#include <sound/initval.h>
+ 
+ #include "spdif_transciever.h"
+ 
+@@ -26,6 +27,48 @@ MODULE_LICENSE("GPL");
+ #define STUB_RATES	SNDRV_PCM_RATE_8000_96000
+ #define STUB_FORMATS	SNDRV_PCM_FMTBIT_S16_LE
+ 
++static struct snd_soc_codec *spdif_dit_codec;
++
++static int spdif_dit_codec_probe(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct snd_soc_codec *codec;
++	int ret;
++
++	if (spdif_dit_codec == NULL) {
++		dev_err(&pdev->dev, "Codec device not registered\n");
++		return -ENODEV;
++	}
++
++	socdev->card->codec = spdif_dit_codec;
++	codec = spdif_dit_codec;
++
++	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	if (ret < 0) {
++		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
++		goto err_create_pcms;
++	}
++
++	return 0;
++
++err_create_pcms:
++	return ret;
++}
++
++static int spdif_dit_codec_remove(struct platform_device *pdev)
++{
++	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++
++	snd_soc_free_pcms(socdev);
++
++	return 0;
++}
++
++struct snd_soc_codec_device soc_codec_dev_spdif_dit = {
++	.probe		= spdif_dit_codec_probe,
++	.remove		= spdif_dit_codec_remove,
++}; EXPORT_SYMBOL_GPL(soc_codec_dev_spdif_dit);
++
+ struct snd_soc_dai dit_stub_dai = {
+ 	.name		= "DIT",
+ 	.playback 	= {
+@@ -40,13 +83,61 @@ EXPORT_SYMBOL_GPL(dit_stub_dai);
+ 
+ static int spdif_dit_probe(struct platform_device *pdev)
+ {
++	struct snd_soc_codec *codec;
++	int ret;
++
++	if (spdif_dit_codec) {
++		dev_err(&pdev->dev, "Another Codec is registered\n");
++		ret = -EINVAL;
++		goto err_reg_codec;
++	}
++
++	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
++	if (codec == NULL)
++		return -ENOMEM;
++
++	codec->dev = &pdev->dev;
++
++	mutex_init(&codec->mutex);
++
++	INIT_LIST_HEAD(&codec->dapm_widgets);
++	INIT_LIST_HEAD(&codec->dapm_paths);
++
++	codec->name = "spdif-dit";
++	codec->owner = THIS_MODULE;
++	codec->dai = &dit_stub_dai;
++	codec->num_dai = 1;
++
++	spdif_dit_codec = codec;
++
++	ret = snd_soc_register_codec(codec);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
++		goto err_reg_codec;
++	}
++
+ 	dit_stub_dai.dev = &pdev->dev;
+-	return snd_soc_register_dai(&dit_stub_dai);
++	ret = snd_soc_register_dai(&dit_stub_dai);
++	if (ret < 0) {
++		dev_err(codec->dev, "Failed to register dai: %d\n", ret);
++		goto err_reg_dai;
++	}
++
++	return 0;
++
++err_reg_dai:
++	snd_soc_unregister_codec(codec);
++err_reg_codec:
++	kfree(spdif_dit_codec);
++	return ret;
+ }
+ 
+ static int spdif_dit_remove(struct platform_device *pdev)
+ {
+ 	snd_soc_unregister_dai(&dit_stub_dai);
++	snd_soc_unregister_codec(spdif_dit_codec);
++	kfree(spdif_dit_codec);
++	spdif_dit_codec = NULL;
+ 	return 0;
+ }
+ 
+-- 
+1.6.2.5
