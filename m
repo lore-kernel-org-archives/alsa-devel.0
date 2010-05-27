@@ -1,16 +1,20 @@
-From: Seungwhan Youn <sw.youn@samsung.com>
-Subject: [PATCH] ASoC: spdif: Add codec driver to use spdif
-	stand-alone
-Date: Thu, 27 May 2010 18:13:48 +0900
-Message-ID: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: No mixers on ATI RS780 Azalia
+Date: Thu, 27 May 2010 12:32:22 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1005271230340.18087@obet.zrqbmnf.qr>
+References: <alpine.LSU.2.01.1005261303170.19406@obet.zrqbmnf.qr>
+	<s5hmxvmzwwd.wl%tiwai@suse.de>
+	<alpine.LSU.2.01.1005261413040.23865@obet.zrqbmnf.qr>
+	<4BFD2901.20800@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id F2095103A16
+Received: from borg.medozas.de (borg.medozas.de [188.40.89.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id 73D43103A16
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 11:20:17 +0200 (CEST)
+	Thu, 27 May 2010 12:32:24 +0200 (CEST)
+In-Reply-To: <4BFD2901.20800@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,142 +24,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Seungwhan Youn <sw.youn@samsung.com>, broonie@opensource.wolfsonmicro.com, schen@mvista.com, lrg@slimlogic.co.uk
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds spdif dummy codec driver for using spdif-dit as
-a stand-alone. Until this, spdif-dit can be used only with other
-codecs like tlv320aci3x in davinci platform.
 
-Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
----
- sound/soc/codecs/spdif_transciever.c |   93 +++++++++++++++++++++++++++++++++-
- 1 files changed, 92 insertions(+), 1 deletions(-)
+On Wednesday 2010-05-26 15:58, Clemens Ladisch wrote:
+>Jan Engelhardt wrote:
+>> On Wednesday 2010-05-26 14:10, Takashi Iwai wrote:
+>>>> /proc/asound/cards:
+>>>>  0 [SB  ]: HDA-Intel - HDA ATI SB
+>>>>            HDA ATI SB at 0xf0500000 irq 16
+>>>>  1 [HDMI]: HDA-Intel - HDA ATI HDMI
+>>>>            HDA ATI HDMI at 0xf0110000 irq 19
+>>>> 
+>>>> The soundcard responsible for the internal speaker is the 01:05.1/"HDMI" 
+>>>> one.
+>>>
+>>>Hmm?  HDMI output as the "internal" speaker is abnormal.
+>> 
+>> The "SB" card has many more mixers (counting  10) and Windows XP also
+>> shows about that many for SB. But neither in Linux nor Windows does
+>> the SB card have any effect; I do have to turn the bars of the "HDMI"
+>> one.
+>> 
+>> Abnormal, well. It's (semi-)embedded, what did you expect.
+>
+>It is extremely unlike that your embedded device has separate chips to
+>decode the HDMI sound signal and then convert it to analog, when the
+>same is already available with the normal HDA device.
+>
+>Your alsa-info output shows that there is an ALC262 codec connected
+>to the "SB" device; this chip wouldn't have been put there if it didn't
+>have a function.
+>
+>Try unmuting and raising both the Master and Beep controls.
 
-diff --git a/sound/soc/codecs/spdif_transciever.c b/sound/soc/codecs/spdif_transciever.c
-index a631911..f0945ab 100644
---- a/sound/soc/codecs/spdif_transciever.c
-+++ b/sound/soc/codecs/spdif_transciever.c
-@@ -18,6 +18,7 @@
- #include <linux/moduleparam.h>
- #include <sound/soc.h>
- #include <sound/pcm.h>
-+#include <sound/initval.h>
- 
- #include "spdif_transciever.h"
- 
-@@ -26,6 +27,48 @@ MODULE_LICENSE("GPL");
- #define STUB_RATES	SNDRV_PCM_RATE_8000_96000
- #define STUB_FORMATS	SNDRV_PCM_FMTBIT_S16_LE
- 
-+static struct snd_soc_codec *spdif_dit_codec;
-+
-+static int spdif_dit_codec_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+	struct snd_soc_codec *codec;
-+	int ret;
-+
-+	if (spdif_dit_codec == NULL) {
-+		dev_err(&pdev->dev, "Codec device not registered\n");
-+		return -ENODEV;
-+	}
-+
-+	socdev->card->codec = spdif_dit_codec;
-+	codec = spdif_dit_codec;
-+
-+	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
-+		goto err_create_pcms;
-+	}
-+
-+	return 0;
-+
-+err_create_pcms:
-+	return ret;
-+}
-+
-+static int spdif_dit_codec_remove(struct platform_device *pdev)
-+{
-+	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-+
-+	snd_soc_free_pcms(socdev);
-+
-+	return 0;
-+}
-+
-+struct snd_soc_codec_device soc_codec_dev_spdif_dit = {
-+	.probe		= spdif_dit_codec_probe,
-+	.remove		= spdif_dit_codec_remove,
-+}; EXPORT_SYMBOL_GPL(soc_codec_dev_spdif_dit);
-+
- struct snd_soc_dai dit_stub_dai = {
- 	.name		= "DIT",
- 	.playback 	= {
-@@ -40,13 +83,61 @@ EXPORT_SYMBOL_GPL(dit_stub_dai);
- 
- static int spdif_dit_probe(struct platform_device *pdev)
- {
-+	struct snd_soc_codec *codec;
-+	int ret;
-+
-+	if (spdif_dit_codec) {
-+		dev_err(&pdev->dev, "Another Codec is registered\n");
-+		ret = -EINVAL;
-+		goto err_reg_codec;
-+	}
-+
-+	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
-+	if (codec == NULL)
-+		return -ENOMEM;
-+
-+	codec->dev = &pdev->dev;
-+
-+	mutex_init(&codec->mutex);
-+
-+	INIT_LIST_HEAD(&codec->dapm_widgets);
-+	INIT_LIST_HEAD(&codec->dapm_paths);
-+
-+	codec->name = "spdif-dit";
-+	codec->owner = THIS_MODULE;
-+	codec->dai = &dit_stub_dai;
-+	codec->num_dai = 1;
-+
-+	spdif_dit_codec = codec;
-+
-+	ret = snd_soc_register_codec(codec);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
-+		goto err_reg_codec;
-+	}
-+
- 	dit_stub_dai.dev = &pdev->dev;
--	return snd_soc_register_dai(&dit_stub_dai);
-+	ret = snd_soc_register_dai(&dit_stub_dai);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to register dai: %d\n", ret);
-+		goto err_reg_dai;
-+	}
-+
-+	return 0;
-+
-+err_reg_dai:
-+	snd_soc_unregister_codec(codec);
-+err_reg_codec:
-+	kfree(spdif_dit_codec);
-+	return ret;
- }
- 
- static int spdif_dit_remove(struct platform_device *pdev)
- {
- 	snd_soc_unregister_dai(&dit_stub_dai);
-+	snd_soc_unregister_codec(spdif_dit_codec);
-+	kfree(spdif_dit_codec);
-+	spdif_dit_codec = NULL;
- 	return 0;
- }
- 
--- 
-1.6.2.5
+I unmuted everything and bumped the sliders to 100% but that does not
+change a thing unfortunately; opening the right device (C1D3p) using
+the suggested `aplay -vv -Dhdmi:1` or `mplayer -ao
+alsa:device=hw=1.3` does not make any noise either.
