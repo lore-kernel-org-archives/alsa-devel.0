@@ -1,115 +1,123 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: wrong decibel data?
-Date: Thu, 27 May 2010 15:43:59 +0100
-Message-ID: <htm0et$eb4$1@dough.gmane.org>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>	<hp744t$5b5$1@dough.gmane.org>	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>	<hqbv5m$cmf$1@dough.gmane.org>	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>	<hqmbmm$hsj$1@dough.gmane.org>	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>	<htls4d$phr$1@dough.gmane.org>
-	<4BFE7840.4070004@ladisch.de>
+From: Robert Hancock <hancockrwd@gmail.com>
+Subject: Re: No mixers on ATI RS780 Azalia
+Date: Thu, 27 May 2010 08:39:00 -0600
+Message-ID: <4BFE8404.2000005@gmail.com>
+References: <alpine.LSU.2.01.1005261303170.19406@obet.zrqbmnf.qr>	<s5hmxvmzwwd.wl%tiwai@suse.de>	<alpine.LSU.2.01.1005261413040.23865@obet.zrqbmnf.qr>	<4BFD2901.20800@ladisch.de>	<alpine.LSU.2.01.1005271230340.18087@obet.zrqbmnf.qr>	<4BFE5AA1.7070103@ladisch.de> <alpine.LSU.2.01.1005271420320.29122@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6CFC7103A7E
-	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 16:43:54 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OHeJM-0001ja-Rq
-	for alsa-devel@alsa-project.org; Thu, 27 May 2010 16:43:52 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 16:43:52 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 16:43:52 +0200
-In-Reply-To: <4BFE7840.4070004@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.01.1005271420320.29122@obet.zrqbmnf.qr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Clemens Ladisch at 27/05/10 14:48 did gyre and gimble:
-> Colin Guthrie wrote:
->> state.Intel {
->> 	control.1 {
->> 		comment.access 'read write'
->> 		comment.type INTEGER
->> 		comment.count 2
->> 		comment.range '0 - 31'
->> 		comment.dbmin -4650
->> 		comment.dbmax 0
->> 		iface MIXER
->> 		name 'Master Playback Volume'
->> 		value.0 30
->> 		value.1 30
->> 	}
-> 
-> This is the hardware volume control.
-> 
->> 	control.11 {
->> 		comment.access 'read write user'
->> 		comment.type INTEGER
->> 		comment.count 2
->> 		comment.range '0 - 255'
->> 		comment.tlv '0000000100000008ffffec1400000014'
->> 		comment.dbmin -5100
->> 		comment.dbmax 0
->> 		iface MIXER
->> 		name 'PCM Playback Volume'
->> 		value.0 253
->> 		value.1 253
->> 	}
-> 
-> This is the emulated software volume control that is created by the
-> softvol plugin.  This control gets recreated by "alsactl restore" even
-> when the plugin is not running.
-> 
-> Might it be possible that PA is trying to use this, but that it doesn't
-> have any effect because PA is using PCM device hw:0?  (Try unloading
-> snd-hda-intel and then deleting that entry from /etc/asound.state.)
+On 05/27/2010 06:34 AM, Jan Engelhardt wrote:
+>
+> On Thursday 2010-05-27 13:42, Clemens Ladisch wrote:
+>>>> Try unmuting and raising both the Master and Beep controls.
+>>>
+>>> I unmuted everything and bumped the sliders to 100% but that does not
+>>> change a thing unfortunately; opening the right device (C1D3p) ...
+>>
+>> Please do not assume that the "HDMI" device is the right one, since you
+>> never got either one to work in Linux.  You did try playing through
+>> the "SB" card, didn't you?
+>
+> Through all of them.
+>
+>> It is possible that an embedded device like this requires some custom
+>> initialization.  Can you find out if the Windows driver is the standard
+>> Microsoft driver or Samsung's?
+>
+> Looks like the Microsoft one:
 
-PA should play nice with the softvol plugin so I don't think this is the
-bit that is at fault.
+Well, not Samsung, but it's not the Microsoft HDA driver either, it's 
+using a Realtek driver.
 
-I strongly suspect that the reason has already been correctly identified
-a while ago, which is that this card considers -48dB silent where as PA
-assumes this level is -200dB. I believe it was Raymond who pointed out
-the -48dB level in the HDA spec before on this list.
-
-I'm not sure of the internals, but things do indeed go silent when the
-volume reaches the magic -48dB mark (which is around the 14% mark with
-the current cubic mapping).
-
-I suspect that if I were to define infinity to be 48.0 in PA, everything
-would work nicely.
-
-What I think is then ultimately needed is a way to ensure that everyone
-sings from the same hymn sheet regarding the real world value of -inf dB.
-
-
-I was hoping Lennart would have commented on this thread by now, so I'll
-try and prod him to get some proper input as I'm very much flailing
-around wildly in the dark!
-
-
-Col
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+>
+>
+>
+> System: Windows XP Embedded Version 2002 Service Pack 2
+>
+> Devices in Device Manager:
+>
+> == "ATI HDMI Audio" ==
+> Driver Provider: Realtek Semiconductor Corp.
+> Driver Date: 4/14/2008
+> Driver Version: 5.10.0.5602
+> not digitally signed
+>
+> Matching Device Id:
+> hdaudio\func_01&ven_1002&dev_791a
+>
+> consisting of:
+> C:\WINDOWS\RtkUpd.exe
+> 	Provider: Realtek Semiconductor Corp
+> 	File version: 2,7,0,9
+> C:\WINDOWS\system32\drivers\drmk.sys
+> 	Provider: Microsoft
+> 	Version: 5.1.2600.2180 (xpsp_sp2_rtm.040803-2158)
+> C:\WINDOWS\system32\drivers\ks.sys
+> 	Microsoft, 5.3.2600.2180 (xpsp..)
+> C:\WINDOWS\system32\drivers\portcls.sys
+> 	Microsoft, 5.1.2600.2180
+> C:\WINDOWS\system32\drivers\RtHDMI.sys
+> 	Realtek, 5.10.0.5602 built by WinDDK
+> C:\WINDOWS\system32\drivers\stream.sys
+> 	Microsoft,  5.3.2600.2180
+> C:\WINDOWS\system32\ksproxy.ax
+> 	Microsoft, 5.3.2600.2180
+> C:\WINDOWS\system32\ksuser.dll
+> 	Microsoft, 5.3.2600.2180
+> C:\WINDOWS\system32\wdmaud.drv
+> 	Microsoft, 5.1.2600.2180
+>
+> == "Realtek High Definition Audio" ==
+> Device Type: Sound, video and game controllers
+> Manufacturer: Realtek
+> Location: Location 65535 (Internal High Definition Audio
+>
+> Driver ProvideR: Realtek Semiconductor Corp.
+> Driver Date: 4/17/2008
+> Driver Version: 5.10.0.5605
+> not digitally signed
+>
+> Matching Device Id:
+> hdaudio\func_01&ven_10ec&dev_0262
+>
+> consisting of:
+> C:\WINDOWS\ALCMTR.EXE
+> 	Realtek, 1.6.0.2
+> C:\WINDOWS\ALCWZRD.EXE
+> 	Realtek, 1.1.0.36
+> C:\WINDOWS\MiCcal.exe
+> 	Realtek, 1.1.1.8
+> C:\WINDOWS\RTHDCPL.EXE
+> 	Realtek, 2.2.0.2
+> C:\WINDOWS\RTLCPL.EXE
+> 	Realtek, 1.0.1.65
+> C:\WINDOWS\RtlUpd.exe
+> 	Realtek, 2,7,0,9
+> C:\WINDOWS\SkyTel.exe
+> 	Realtek, 2.0.2.0
+> C:\WINDOWS\SOUNDMAN.EXE
+> 	Realtek, 1,0,0,30
+> C:\WINDOWS\system32\ALSNDMGR.CPL
+> 	Realtek, 1,0,0,10
+> C:\WINDOWS\system32\drivers\drmk.sys as above
+> C:\WINDOWS\system32\drivers\ks.sys
+> C:\WINDOWS\system32\drivers\portcls.sys
+> C:\WINDOWS\system32\drivers\RtkHDAud.sys
+> 	Realtek, 5.10.0.5605 built by WinDDK
+> C:\WINDOWS\system32\drivers\stream.sys
+> C:\WINDOWS\system32\ksproxy.ax
+> C:\WINDOWS\system32\ksuser.dll
+> C:\WINDOWS\system32\RTCOM\RTCOMDLL.dll
+> 	Provider: N/A, Version: 1,0,0,96
+> C:\WINDOWS\system32\RTCOM\RTLCPAPI.dll
+> 	N/A, 1,0,1,9
+> C:\WINDOWS\system32\RTSngMgr.CPL
+> 	Realtek, 1,0,1,0
+> C:\WINDOWS\system32\wdmaud.drv
