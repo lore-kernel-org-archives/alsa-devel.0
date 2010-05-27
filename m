@@ -1,20 +1,23 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 8/8] ASoC: TWL4030: Add functionalty to
- reset the registers
-Date: Wed, 26 May 2010 13:09:54 -0700
-Message-ID: <20100526200954.GA19188@opensource.wolfsonmicro.com>
-References: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1274863101-18514-9-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: ASoC: Hooking a TI CODEC to a i.MX27 MCU
+Date: Thu, 27 May 2010 01:47:03 +0100
+Message-ID: <20100527004702.GA22091@sirena.org.uk>
+References: <20100524074946.GC16346@www.longlandclan.yi.org>
+	<1274698156.3064.93.camel@odin>
+	<20100525004126.GA10968@www.longlandclan.yi.org>
+	<20100525022646.GA18030@www.longlandclan.yi.org>
+	<1274806007.4728.3.camel@gnutoo-desktop>
+	<20100526132129.GA13644@www.longlandclan.yi.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 558132434C
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1973B2436E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 02:35:04 +0200 (CEST)
+	Thu, 27 May 2010 02:47:05 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1274863101-18514-9-git-send-email-peter.ujfalusi@nokia.com>
+In-Reply-To: <20100526132129.GA13644@www.longlandclan.yi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +27,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Stuart Longland <redhatter@gentoo.org>
+Cc: alsa-devel@alsa-project.org, gnutoo <GNUtoo@no-log.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 26, 2010 at 11:38:21AM +0300, Peter Ujfalusi wrote:
-> Machine driver can instruct the codec driver to reset the
-> chip registers to their default values at probe time.
-> 
-> If machine driver does not provide setup data, then the
-> registers are going to be reseted to their defaults, to
-> be safe.
-> 
-> If the developer on the platform confirms that the register
-> reset is not needed, than it can be skipped, saving ~20ms
-> time in probe.
-> 
-> As safety measure do the register reset at remove time also.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+On Wed, May 26, 2010 at 11:21:36PM +1000, Stuart Longland wrote:
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> At the moment, when I go to play audio; I see the CODEC being set up ...
+> but despite the clocks being present -- I see no audio data, and the DMA
+> transfer eventually times out with the message "playback write error
+> (DMA or IRQ trouble?)" after 10 seconds.  Would anyone know where I'd
+> look for that?  Is there something else needed in the configuration of
+> the SSI driver for this to work?
+
+This most likely means your CPU side configuration is broken and clocks
+aren't being routed through.  Try looking at the AUDMUX debugfs files to
+verify your configuration, and also try routing out to another external
+SSI port so you can probe signals.  Make sure the relevant pins on the
+i.MX are configured into the appropriate mode for use by the i.MX too.
+
+Note also that the current driver only supports CODEC as clock master.
