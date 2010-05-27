@@ -1,19 +1,11 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH v2 1/3] ep93xx i2s audio driver
-Date: Wed, 26 May 2010 22:13:10 -0400
-Message-ID: <20100527021306.GA21697@opensource.wolfsonmicro.com>
-References: <1274850588-30460-1-git-send-email-ryan@bluewatersys.com>
-	<1274850588-30460-2-git-send-email-ryan@bluewatersys.com>
+From: linux@audioscience.com
+Subject: [PATCH 1/5] Remove unused io map functions.
+Date: Thu, 27 May 2010 17:53:51 +1200
+Message-ID: <1274939635-1370-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C1941039D4
-	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 04:13:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1274850588-30460-2-git-send-email-ryan@bluewatersys.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,79 +15,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Mallon <ryan@bluewatersys.com>
-Cc: john.cooper@third-harmonic.com, alsa-devel@alsa-project.org, chasedouglas@gmail.com, buytenh@wantstofly.org, r&d4@dave-tech.it, hartleys@visionengravers.com, dhuggins@cs.cmu.edu, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: patch@alsa-project.org
+Cc: tiwai@suse.de, Eliot Blennerhassett <eblennerhassett@audioscience.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 26, 2010 at 05:09:46PM +1200, Ryan Mallon wrote:
+From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
-> +	/* 
-> +	 * Calculate the sdiv (bit clock) and lrdiv (left/right clock) values. 
-> +	 * If the lrclk is pulse length is larger than the word size, then the
-> +	 * bit clock will be gated for the unused bits.
-> +	 */
-> +	div = (clk_get_rate(info->mclk) / params_rate(params)) * 
-> +		params_channels(params);
-> +	for (sdiv = 2; !found && sdiv <= 4; sdiv += 2)
-> +		for (lrdiv = 32; !found && lrdiv <= 128; lrdiv <<= 1)
-> +			if (sdiv * lrdiv == div)
-> +				found = 1;
-> +	if (!found)
-> +		return -EINVAL;
+Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+---
+ sound/pci/asihpi/hpios.c |   23 -----------------------
+ sound/pci/asihpi/hpios.h |    9 ---------
+ 2 files changed, 0 insertions(+), 32 deletions(-)
 
-This suggests that the device has a single LRCLK for both TX and RX and
-therefore the DAI should have symmetric_rates set so that applications
-are told about this restriction and the upper layers prevent them from
-setting asymmetric rates (which would result in the first direction
-ending up running at the wrong rate when the second direction starts).
-
-> +	err = snd_soc_register_dai(&ep93xx_i2s_dai);
-> +	if (err)
-> +		goto fail_free_info;
-
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		err = -ENODEV;
-> +		goto fail_unregister_dai;
-> +	}
-> +		
-
-The DAI registration is happening at the wrong place - you're telling
-ASoC the DAI is ready before you've finished acquiring the resources it
-needs to run, meaning that there's a race condition where something may
-try to start audio up while the probe is still running.  Generally DAI
-registration should be the last thing your driver does.
-
-> +static int __devexit ep93xx_i2s_remove(struct platform_device *pdev)
-> +{
-> +	struct ep93xx_i2s_info *info = ep93xx_i2s_dai.private_data;
-> +	
-> +	clk_put(info->lrclk);
-> +	clk_put(info->sclk);
-> +	clk_put(info->mclk);
-> +	iounmap(info->regs);
-> +	release_mem_region(info->mem->start, resource_size(info->mem));
-> +	snd_soc_unregister_dai(&ep93xx_i2s_dai);
-> +	kfree(info);
-> +	return 0;
-> +}
-
-Here you should free the DAI before anything else for the same reason as
-above.
-
-> +/*
-> + * These are the offsets for the LRDIV and SDIV fields in the syscon i2sclkdiv
-> + * register.
-> + */
-> +#define EP93XX_I2S_LRDIV	17
-> +#define EP93XX_I2S_SDIV		16
-
-Most of the other defines are in the driver - should these be there (or
-removed)?
-
-> +static int ep93xx_pcm_prepare(struct snd_pcm_substream *substream)
-> +{
-> +	return 0;
-> +}
-
-Remove this if no code is needed.
+diff --git a/sound/pci/asihpi/hpios.c b/sound/pci/asihpi/hpios.c
+index de615cf..742ee12 100644
+--- a/sound/pci/asihpi/hpios.c
++++ b/sound/pci/asihpi/hpios.c
+@@ -89,26 +89,3 @@ u16 hpios_locked_mem_free(struct consistent_dma_area *p_mem_area)
+ void hpios_locked_mem_free_all(void)
+ {
+ }
+-
+-void __iomem *hpios_map_io(struct pci_dev *pci_dev, int idx,
+-	unsigned int length)
+-{
+-	HPI_DEBUG_LOG(DEBUG, "mapping %d %s %08llx-%08llx %04llx len 0x%x\n",
+-		idx, pci_dev->resource[idx].name,
+-		(unsigned long long)pci_resource_start(pci_dev, idx),
+-		(unsigned long long)pci_resource_end(pci_dev, idx),
+-		(unsigned long long)pci_resource_flags(pci_dev, idx), length);
+-
+-	if (!(pci_resource_flags(pci_dev, idx) & IORESOURCE_MEM)) {
+-		HPI_DEBUG_LOG(ERROR, "not an io memory resource\n");
+-		return NULL;
+-	}
+-
+-	if (length > pci_resource_len(pci_dev, idx)) {
+-		HPI_DEBUG_LOG(ERROR, "resource too small for requested %d \n",
+-			length);
+-		return NULL;
+-	}
+-
+-	return ioremap(pci_resource_start(pci_dev, idx), length);
+-}
+diff --git a/sound/pci/asihpi/hpios.h b/sound/pci/asihpi/hpios.h
+index a62c3f1..370f39b 100644
+--- a/sound/pci/asihpi/hpios.h
++++ b/sound/pci/asihpi/hpios.h
+@@ -166,13 +166,4 @@ struct hpi_adapter {
+ 	void __iomem *ap_remapped_mem_base[HPI_MAX_ADAPTER_MEM_SPACES];
+ };
+ 
+-static inline void hpios_unmap_io(void __iomem *addr,
+-	unsigned long size)
+-{
+-	iounmap(addr);
+-}
+-
+-void __iomem *hpios_map_io(struct pci_dev *pci_dev, int idx,
+-	unsigned int length);
+-
+ #endif
+-- 
+1.7.0.4
