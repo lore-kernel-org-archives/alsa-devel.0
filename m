@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 4/5] Fix bug preventing outstream_write preload
- from happening. Add support for new ASI8800 family.
-Date: Thu, 27 May 2010 17:53:54 +1200
-Message-ID: <1274939635-1370-4-git-send-email-linux@audioscience.com>
+Subject: [PATCH 5/5] Minor code cleanup.
+Date: Thu, 27 May 2010 17:53:55 +1200
+Message-ID: <1274939635-1370-5-git-send-email-linux@audioscience.com>
 References: <1274939635-1370-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -26,59 +25,100 @@ From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- sound/pci/asihpi/hpi6205.c |   21 ++++++++-------------
- 1 files changed, 8 insertions(+), 13 deletions(-)
+ sound/pci/asihpi/hpicmn.c |   38 +++++++++++++-------------------------
+ 1 files changed, 13 insertions(+), 25 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
-index 5e88c1f..e89991e 100644
---- a/sound/pci/asihpi/hpi6205.c
-+++ b/sound/pci/asihpi/hpi6205.c
-@@ -966,23 +966,16 @@ static void outstream_write(struct hpi_adapter_obj *pao,
- 	status = &interface->outstream_host_buffer_status[phm->obj_index];
+diff --git a/sound/pci/asihpi/hpicmn.c b/sound/pci/asihpi/hpicmn.c
+index 565102c..fcd6453 100644
+--- a/sound/pci/asihpi/hpicmn.c
++++ b/sound/pci/asihpi/hpicmn.c
+@@ -347,20 +347,15 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
+ 			found = 0;
+ 		break;
+ 	case HPI_CONTROL_TUNER:
+-		{
+-			struct hpi_control_cache_single *pCT =
+-				(struct hpi_control_cache_single *)pI;
+-			if (phm->u.c.attribute == HPI_TUNER_FREQ)
+-				phr->u.c.param1 = pCT->u.t.freq_ink_hz;
+-			else if (phm->u.c.attribute == HPI_TUNER_BAND)
+-				phr->u.c.param1 = pCT->u.t.band;
+-			else if ((phm->u.c.attribute == HPI_TUNER_LEVEL)
+-				&& (phm->u.c.param1 ==
+-					HPI_TUNER_LEVEL_AVERAGE))
+-				phr->u.c.param1 = pCT->u.t.level;
+-			else
+-				found = 0;
+-		}
++		if (phm->u.c.attribute == HPI_TUNER_FREQ)
++			phr->u.c.param1 = pC->u.t.freq_ink_hz;
++		else if (phm->u.c.attribute == HPI_TUNER_BAND)
++			phr->u.c.param1 = pC->u.t.band;
++		else if ((phm->u.c.attribute == HPI_TUNER_LEVEL)
++			&& (phm->u.c.param1 == HPI_TUNER_LEVEL_AVERAGE))
++			phr->u.c.param1 = pC->u.t.level;
++		else
++			found = 0;
+ 		break;
+ 	case HPI_CONTROL_AESEBU_RECEIVER:
+ 		if (phm->u.c.attribute == HPI_AESEBURX_ERRORSTATUS)
+@@ -503,6 +498,9 @@ void hpi_sync_control_cache(struct hpi_control_cache *p_cache,
+ 	struct hpi_control_cache_single *pC;
+ 	struct hpi_control_cache_info *pI;
  
- 	if (phw->flag_outstream_just_reset[phm->obj_index]) {
--		/* Format can only change after reset. Must tell DSP. */
--		u16 function = phm->function;
--		phw->flag_outstream_just_reset[phm->obj_index] = 0;
--		phm->function = HPI_OSTREAM_SET_FORMAT;
--		hw_message(pao, phm, phr);	/* send the format to the DSP */
--		phm->function = function;
++	if (phr->error)
++		return;
++
+ 	if (!find_control(phm, p_cache, &pI, &control_index))
+ 		return;
+ 
+@@ -520,8 +518,6 @@ void hpi_sync_control_cache(struct hpi_control_cache *p_cache,
+ 		break;
+ 	case HPI_CONTROL_MULTIPLEXER:
+ 		/* mux does not return its setting on Set command. */
 -		if (phr->error)
 -			return;
--	}
--#if 1
--	if (phw->flag_outstream_just_reset[phm->obj_index]) {
- 		/* First OutStremWrite() call following reset will write data to the
--		   adapter's buffers, reducing delay before stream can start
-+		   adapter's buffers, reducing delay before stream can start. The DSP
-+		   takes care of setting the stream data format using format information
-+		   embedded in phm.
- 		 */
- 		int partial_write = 0;
- 		unsigned int original_size = 0;
- 
-+		phw->flag_outstream_just_reset[phm->obj_index] = 0;
-+
- 		/* Send the first buffer to the DSP the old way. */
- 		/* Limit size of first transfer - */
- 		/* expect that this will not usually be triggered. */
-@@ -1012,7 +1005,6 @@ static void outstream_write(struct hpi_adapter_obj *pao,
- 			original_size - HPI6205_SIZEOF_DATA;
- 		phm->u.d.u.data.pb_data += HPI6205_SIZEOF_DATA;
- 	}
--#endif
- 
- 	space_available = outstream_get_space_available(status);
- 	if (space_available < (long)phm->u.d.u.data.data_size) {
-@@ -1369,6 +1361,9 @@ static u16 adapter_boot_load_dsp(struct hpi_adapter_obj *pao,
- 	case HPI_ADAPTER_FAMILY_ASI(0x6500):
- 		firmware_id = HPI_ADAPTER_FAMILY_ASI(0x6600);
+ 		if (phm->u.c.attribute == HPI_MULTIPLEXER_SOURCE) {
+ 			pC->u.x.source_node_type = (u16)phm->u.c.param1;
+ 			pC->u.x.source_node_index = (u16)phm->u.c.param2;
+@@ -529,8 +525,6 @@ void hpi_sync_control_cache(struct hpi_control_cache *p_cache,
  		break;
-+	case HPI_ADAPTER_FAMILY_ASI(0x8800):
-+		firmware_id = HPI_ADAPTER_FAMILY_ASI(0x8900);
-+		break;
- 	}
- 	boot_code_id[1] = firmware_id;
+ 	case HPI_CONTROL_CHANNEL_MODE:
+ 		/* mode does not return its setting on Set command. */
+-		if (phr->error)
+-			return;
+ 		if (phm->u.c.attribute == HPI_CHANNEL_MODE_MODE)
+ 			pC->u.m.mode = (u16)phm->u.c.param1;
+ 		break;
+@@ -545,20 +539,14 @@ void hpi_sync_control_cache(struct hpi_control_cache *p_cache,
+ 			pC->u.phantom_power.state = (u16)phm->u.c.param1;
+ 		break;
+ 	case HPI_CONTROL_AESEBU_TRANSMITTER:
+-		if (phr->error)
+-			return;
+ 		if (phm->u.c.attribute == HPI_AESEBUTX_FORMAT)
+ 			pC->u.aes3tx.format = phm->u.c.param1;
+ 		break;
+ 	case HPI_CONTROL_AESEBU_RECEIVER:
+-		if (phr->error)
+-			return;
+ 		if (phm->u.c.attribute == HPI_AESEBURX_FORMAT)
+ 			pC->u.aes3rx.source = phm->u.c.param1;
+ 		break;
+ 	case HPI_CONTROL_SAMPLECLOCK:
+-		if (phr->error)
+-			return;
+ 		if (phm->u.c.attribute == HPI_SAMPLECLOCK_SOURCE)
+ 			pC->u.clk.source = (u16)phm->u.c.param1;
+ 		else if (phm->u.c.attribute == HPI_SAMPLECLOCK_SOURCE_INDEX)
+@@ -590,7 +578,7 @@ struct hpi_control_cache *hpi_alloc_control_cache(const u32
  
+ void hpi_free_control_cache(struct hpi_control_cache *p_cache)
+ {
+-	if ((p_cache->init) && (p_cache->p_info)) {
++	if (p_cache->init) {
+ 		kfree(p_cache->p_info);
+ 		p_cache->p_info = NULL;
+ 		p_cache->init = 0;
 -- 
 1.7.0.4
