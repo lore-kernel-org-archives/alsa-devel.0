@@ -1,28 +1,22 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: wrong decibel data?
-Date: Thu, 27 May 2010 18:21:45 +0100
-Message-ID: <htm9mn$n1c$1@dough.gmane.org>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>	<hp744t$5b5$1@dough.gmane.org>	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>	<hqbv5m$cmf$1@dough.gmane.org>	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>	<hqmbmm$hsj$1@dough.gmane.org>	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>	<htls4d$phr$1@dough.gmane.org>	<4BFE7840.4070004@ladisch.de>
-	<htm0et$eb4$1@dough.gmane.org>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 3/4] ALSA: usb-audio: parse UAC2 endpoint
+ descriptors correctly
+Date: Thu, 27 May 2010 20:15:14 +0200
+Message-ID: <20100527181514.GL2695@buzzloop.caiaq.de>
+References: <1274890299-8972-1-git-send-email-daniel@caiaq.de>
+	<1274890299-8972-3-git-send-email-daniel@caiaq.de>
+	<20100526161746.GE2695@buzzloop.caiaq.de>
+	<20100526204657.GB7343@suse.de> <s5hfx1d4vff.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 94E3A103A82
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 40FC21037F1
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 19:21:41 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OHgm3-0007PG-9y
-	for alsa-devel@alsa-project.org; Thu, 27 May 2010 19:21:39 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 19:21:39 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 19:21:39 +0200
-In-Reply-To: <htm0et$eb4$1@dough.gmane.org>
+	Thu, 27 May 2010 20:15:19 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hfx1d4vff.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,67 +26,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Greg KH <gregkh@suse.de>, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Colin Guthrie at 27/05/10 15:43 did gyre and gimble:
-> PA should play nice with the softvol plugin so I don't think this is the
-> bit that is at fault.
+On Thu, May 27, 2010 at 10:10:12AM +0200, Takashi Iwai wrote:
+> At Wed, 26 May 2010 13:46:57 -0700,
+> Greg KH wrote:
+> > 
+> > On Wed, May 26, 2010 at 06:17:46PM +0200, Daniel Mack wrote:
+> > > On Wed, May 26, 2010 at 06:11:38PM +0200, Daniel Mack wrote:
+> > > > UAC2 devices have their information about pitch control stored in a
+> > > > different field. Parse it, and emulate the bits for a v1 device.
+> > > > 
+> > > > A new struct uac2_iso_endpoint_descriptor is added.
+> > > 
+> > > > 
+> > > > Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> > > > ---
+> > > >  include/linux/usb/audio-v2.h |   16 ++++++++++++
+> > > 
+> > > Greg, I copied you because of this patch, just to let you know we're
+> > > having fun in your area of responsibility again :)
+> > 
+> > Heh, no problem at all.
+> > 
+> > Takashi, feel free to add an:
+> > 	Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
+> > to this patch when you take it.
 > 
-> I strongly suspect that the reason has already been correctly identified
-> a while ago, which is that this card considers -48dB silent where as PA
-> assumes this level is -200dB. I believe it was Raymond who pointed out
-> the -48dB level in the HDA spec before on this list.
-> 
-> I'm not sure of the internals, but things do indeed go silent when the
-> volume reaches the magic -48dB mark (which is around the 14% mark with
-> the current cubic mapping).
-> 
-> I suspect that if I were to define infinity to be 48.0 in PA, everything
-> would work nicely.
+> OK, I put this to my tree.  Will be included in the next pull request
+> in this week.
 
-I'm wrong (surprise, surprise!). Changing this value makes very little
-difference.
+Thanks Takashi!
 
-FWIW, the -200dB thing is just a work around for systems that do not
-define INFINITY. On my system this is defined. in bits/inf.h
+Here's another small one that needs attention.
 
-So the value of 200dB mentioned by Raymond is not actually used
-generally speaking.
+Daniel
 
-Even if I undef and define INFINITY to be 48, the actual shut down at
--48 seems to happen regardless.
+>From 3beee40982b98314f8d58c775cc8b40a8e25ce18 Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@caiaq.de>
+Date: Thu, 27 May 2010 18:28:25 +0200
+Subject: [PATCH] ALSA: usb-audio: fix feature unit parser for UAC2
 
-Looking at this in more depth, it seems that the problem is such that
-the Master control of my card controls things down to -46.5dB. Once that
-has hit 0, the PCM control takes over and goes down to -51dB
+Fix a small off-by-one bug which causes the feature unit to announce a
+wrong number of channels. This leads to illegal requests sent to the
+firmware eventually.
 
-It seems that PA's full scale is determined as the multiplication of
-thse two elements; therefore: -97.5dB.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
+ sound/usb/mixer.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-However as things basically go silent at -48dB, the inclusion of Master
-and PCM controls represent too large a range.
-
-So either the 48dB of the HDA spec should be split between Master and
-PCM more evenly, (e.g. 24dB each) or PCM should be removed and Master
-should just have the full 48dB range. I don't really understand the
-Master<->PCM relationship, but this is certainly and issue.
-
-
-So my second guess (having now abandoned the idea of a problem in PA's
--inf definition) is that fixing the above, should fix things :)
-
-Col
-
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 97dd176..03ce971 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1126,7 +1126,7 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 	} else {
+ 		struct uac2_feature_unit_descriptor *ftr = _ftr;
+ 		csize = 4;
+-		channels = (hdr->bLength - 6) / 4;
++		channels = (hdr->bLength - 6) / 4 - 1;
+ 		bmaControls = ftr->bmaControls;
+ 	}
+ 
 -- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+1.7.1
