@@ -1,21 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: No mixers on ATI RS780 Azalia
-Date: Thu, 27 May 2010 13:42:25 +0200
-Message-ID: <4BFE5AA1.7070103@ladisch.de>
-References: <alpine.LSU.2.01.1005261303170.19406@obet.zrqbmnf.qr>
-	<s5hmxvmzwwd.wl%tiwai@suse.de>
-	<alpine.LSU.2.01.1005261413040.23865@obet.zrqbmnf.qr>
-	<4BFD2901.20800@ladisch.de>
-	<alpine.LSU.2.01.1005271230340.18087@obet.zrqbmnf.qr>
+Date: Thu, 27 May 2010 14:34:18 +0200
+Message-ID: <4BFE66CA.5070400@ladisch.de>
+References: <alpine.LSU.2.01.1005261303170.19406@obet.zrqbmnf.qr>	<s5hmxvmzwwd.wl%tiwai@suse.de>	<alpine.LSU.2.01.1005261413040.23865@obet.zrqbmnf.qr>	<4BFD2901.20800@ladisch.de>	<alpine.LSU.2.01.1005271230340.18087@obet.zrqbmnf.qr>
+	<4BFE5AA1.7070103@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 0CEBE24444
+	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id D88D6103A40
 	for <alsa-devel@alsa-project.org>;
-	Thu, 27 May 2010 13:42:32 +0200 (CEST)
-In-Reply-To: <alpine.LSU.2.01.1005271230340.18087@obet.zrqbmnf.qr>
+	Thu, 27 May 2010 14:34:21 +0200 (CEST)
+In-Reply-To: <4BFE5AA1.7070103@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,21 +26,18 @@ To: Jan Engelhardt <jengelh@medozas.de>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jan Engelhardt wrote:
-> On Wednesday 2010-05-26 15:58, Clemens Ladisch wrote:
-> > Try unmuting and raising both the Master and Beep controls.
-> 
-> I unmuted everything and bumped the sliders to 100% but that does not
-> change a thing unfortunately; opening the right device (C1D3p) ...
+Clemens Ladisch wrote:
+> Please do not assume that the "HDMI" device is the right one, since you
+> never got either one to work in Linux.
 
-Please do not assume that the "HDMI" device is the right one, since you
-never got either one to work in Linux.  You did try playing through
-the "SB" card, didn't you?
+Hmm, that computer is separate from the actual LCD, which has an HDMI
+input, so it's possible that the HDMI output would be correct.
 
-It is possible that an embedded device like this requires some custom
-initialization.  Can you find out if the Windows driver is the standard
-Microsoft driver or Samsung's?
+In that case, it's likely that you've run into this bug:
+https://bugs.freedesktop.org/show_bug.cgi?id=28030
+
+You might try the patch mentioned there, or radeonhd, or fglrx.
 
 
-Regards,
+HTH
 Clemens
