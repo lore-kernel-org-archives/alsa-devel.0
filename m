@@ -1,19 +1,21 @@
-From: Jerone Young <jerone.young@canonical.com>
-Subject: Re: [PATCH] ALSA,
- hda: Add support for Lenovo ThinkPad Edge 13 in conexant codec
-Date: Fri, 28 May 2010 01:02:09 -0500
-Message-ID: <1275026529.2945.1701.camel@laptop>
-References: <20100527160656.GE10254@alberich.amd.com>
-	<s5htyps3788.wl%tiwai@suse.de>
+From: Wan ZongShun <mcuos.com@gmail.com>
+Subject: Re: [PATCH v2] alsa/Au1xxx-PSC: use resource_size
+Date: Fri, 28 May 2010 14:31:23 +0800
+Message-ID: <4BFF633B.7030101@gmail.com>
+References: <4BFF33B3.1040506@gmail.com>	<AANLkTil1hKb8QdsKEfHseOyPdw8uIY6d5mVEUwZ68T-p@mail.gmail.com>	<AANLkTimQD4TihG2yGsPLGmCmWV968fdoDtZ1nDcW5A-h@mail.gmail.com>	<4BFF5838.8050403@gmail.com>
+	<AANLkTikn3BHn1D3uVQWO6Xuiv4vkk8pMe96F7uUUSAmM@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3151C103AD1
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6168E103AC5
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 May 2010 08:02:16 +0200 (CEST)
-In-Reply-To: <s5htyps3788.wl%tiwai@suse.de>
+	Fri, 28 May 2010 08:31:38 +0200 (CEST)
+Received: by pwj9 with SMTP id 9so454783pwj.38
+	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 23:31:37 -0700 (PDT)
+In-Reply-To: <AANLkTikn3BHn1D3uVQWO6Xuiv4vkk8pMe96F7uUUSAmM@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,73 +25,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Andreas Herrmann <herrmann.der.user@googlemail.com>, Borislav Petkov <borislav.petkov@amd.com>
+To: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: manuel.lauss@gmail.com, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-@Andreas
-	can you grab Alsa git tree and install it on the system you are using.
-It has a patch already taking care of the issue.
+Dear Manuel,
 
-The issue Takashi is most likely folks using the older kernel version.
-model=ideapad was just recently introduced so they where unable to try
-that out. But olpc-xo-1_5 has been there for a while. Though for Lenovo
-products model=ideapad is much better.
+For insteading of using the 'platform_get_resource' in remove function,
+I think it better to put 'struct resource *r' into 'wd' structure.
 
+I have re-organized the patch and submit to you.
 
-	
-			Thanks,
-				Jerone
-On Fri, 2010-05-28 at 07:50 +0200, Takashi Iwai wrote:
-> At Thu, 27 May 2010 18:06:56 +0200,
-> Andreas Herrmann wrote:
-> > 
-> > From: Andreas Herrmann <andreas.herrmann3@amd.com>
-> > 
-> > On a Thinkpad Edge 13 I had the problem that speakers played sound
-> > although headphones were plugged.
-> > 
-> > Using "model=olpc-xo-1_5" solved this problem. So it seems sensible to
-> > add this quirk. (Using other models, like ideabad did not fix it.)
-> > 
-> > Signed-off-by: Andreas Herrmann <andreas.herrmann3@amd.com>
-> > ---
-> >  sound/pci/hda/patch_conexant.c |    1 +
-> >  1 files changed, 1 insertions(+), 0 deletions(-)
-> > 
-> > I don't know whether adding this quirk is the right/complete solution
-> > to support sound on Thinkpad Edge. But at least it solves this
-> > annoying problem.
-> 
-> Well, Jerone Young already sent a quirk patch but he took
-> model=ideapd.  Could you guys check which one is really better?
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> 
-> > 
-> > Please apply.
-> > 
-> > 
-> > Thanks,
-> > 
-> > Andreas
-> > 
-> > diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-> > index feabb44..f85f072 100644
-> > --- a/sound/pci/hda/patch_conexant.c
-> > +++ b/sound/pci/hda/patch_conexant.c
-> > @@ -2848,6 +2848,7 @@ static struct snd_pci_quirk cxt5066_cfg_tbl[] = {
-> >  	SND_PCI_QUIRK(0x1179, 0xff50, "Toshiba Satellite P500-PSPGSC-01800T", CXT5066_OLPC_XO_1_5),
-> >  	SND_PCI_QUIRK(0x1179, 0xffe0, "Toshiba Satellite Pro T130-15F", CXT5066_OLPC_XO_1_5),
-> >  	SND_PCI_QUIRK(0x17aa, 0x21b2, "Thinkpad X100e", CXT5066_IDEAPAD),
-> > +	SND_PCI_QUIRK(0x17aa, 0x21b3, "Thnkpad Edge 13", CXT5066_OLPC_XO_1_5),
-> >  	SND_PCI_QUIRK(0x17aa, 0x3a0d, "ideapad", CXT5066_IDEAPAD),
-> >  	{}
-> >  };
-> > -- 
-> > 1.6.4.4
-> > 
+Of course, I must get your approval if I do above. :)
+
+Signed-off-by:Wan ZongShun<mcuos.com@gmail.com>
+
+---
+  sound/soc/au1x/psc-ac97.c |   17 ++++++-----------
+  sound/soc/au1x/psc-i2s.c  |   17 ++++++-----------
+  sound/soc/au1x/psc.h      |    2 +-
+  3 files changed, 13 insertions(+), 23 deletions(-)
+
+diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
+index a61ccd2..6bd7376 100644
+--- a/sound/soc/au1x/psc-ac97.c
++++ b/sound/soc/au1x/psc-ac97.c
+@@ -355,7 +355,6 @@ EXPORT_SYMBOL_GPL(au1xpsc_ac97_dai);
+  static int __devinit au1xpsc_ac97_drvprobe(struct platform_device *pdev)
+  {
+  	int ret;
+-	struct resource *r;
+  	unsigned long sel;
+  	struct au1xpsc_audio_data *wd;
+
+@@ -368,19 +367,17 @@ static int __devinit au1xpsc_ac97_drvprobe(struct 
+platform_device *pdev)
+
+  	mutex_init(&wd->lock);
+
+-	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!r) {
++	wd->r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!wd->r) {
+  		ret = -ENODEV;
+  		goto out0;
+  	}
+
+  	ret = -EBUSY;
+-	wd->ioarea = request_mem_region(r->start, r->end - r->start + 1,
+-					"au1xpsc_ac97");
+-	if (!wd->ioarea)
++	if (!request_mem_region(wd->r->start, resource_size(wd->r), pdev->name))
+  		goto out0;
+
+-	wd->mmio = ioremap(r->start, 0xffff);
++	wd->mmio = ioremap(wd->r->start, resource_size(wd->r));
+  	if (!wd->mmio)
+  		goto out1;
+
+@@ -410,8 +407,7 @@ static int __devinit au1xpsc_ac97_drvprobe(struct 
+platform_device *pdev)
+
+  	snd_soc_unregister_dai(&au1xpsc_ac97_dai);
+  out1:
+-	release_resource(wd->ioarea);
+-	kfree(wd->ioarea);
++	release_mem_region(wd->r->start, resource_size(wd->r));
+  out0:
+  	kfree(wd);
+  	return ret;
+@@ -433,8 +429,7 @@ static int __devexit au1xpsc_ac97_drvremove(struct 
+platform_device *pdev)
+  	au_sync();
+
+  	iounmap(wd->mmio);
+-	release_resource(wd->ioarea);
+-	kfree(wd->ioarea);
++	release_mem_region(wd->r->start, resource_size(wd->r));
+  	kfree(wd);
+
+  	au1xpsc_ac97_workdata = NULL;	/* MDEV */
+diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
+index 495be6e..9fb3eed 100644
+--- a/sound/soc/au1x/psc-i2s.c
++++ b/sound/soc/au1x/psc-i2s.c
+@@ -302,7 +302,6 @@ EXPORT_SYMBOL(au1xpsc_i2s_dai);
+
+  static int __init au1xpsc_i2s_drvprobe(struct platform_device *pdev)
+  {
+-	struct resource *r;
+  	unsigned long sel;
+  	int ret;
+  	struct au1xpsc_audio_data *wd;
+@@ -314,19 +313,17 @@ static int __init au1xpsc_i2s_drvprobe(struct 
+platform_device *pdev)
+  	if (!wd)
+  		return -ENOMEM;
+
+-	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!r) {
++	wd->r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!wd->r) {
+  		ret = -ENODEV;
+  		goto out0;
+  	}
+
+  	ret = -EBUSY;
+-	wd->ioarea = request_mem_region(r->start, r->end - r->start + 1,
+-					"au1xpsc_i2s");
+-	if (!wd->ioarea)
++	if (!request_mem_region(wd->r->start, resource_size(wd->r), pdev->name))
+  		goto out0;
+
+-	wd->mmio = ioremap(r->start, 0xffff);
++	wd->mmio = ioremap(wd->r->start, resource_size(wd->r));
+  	if (!wd->mmio)
+  		goto out1;
+
+@@ -362,8 +359,7 @@ static int __init au1xpsc_i2s_drvprobe(struct 
+platform_device *pdev)
+
+  	snd_soc_unregister_dai(&au1xpsc_i2s_dai);
+  out1:
+-	release_resource(wd->ioarea);
+-	kfree(wd->ioarea);
++	release_mem_region(wd->r->start, resource_size(wd->r));
+  out0:
+  	kfree(wd);
+  	return ret;
+@@ -384,8 +380,7 @@ static int __devexit au1xpsc_i2s_drvremove(struct 
+platform_device *pdev)
+  	au_sync();
+
+  	iounmap(wd->mmio);
+-	release_resource(wd->ioarea);
+-	kfree(wd->ioarea);
++	release_mem_region(wd->r->start, resource_size(wd->r));
+  	kfree(wd);
+
+  	au1xpsc_i2s_workdata = NULL;	/* MDEV */
+diff --git a/sound/soc/au1x/psc.h b/sound/soc/au1x/psc.h
+index 32d3807..4680a53 100644
+--- a/sound/soc/au1x/psc.h
++++ b/sound/soc/au1x/psc.h
+@@ -32,7 +32,7 @@ struct au1xpsc_audio_data {
+  	unsigned long rate;
+
+  	unsigned long pm[2];
+-	struct resource *ioarea;
++	struct resource *r;
+  	struct mutex lock;
+  	struct platform_device *dmapd;
+  };
+-- 
+1.6.3.3
