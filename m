@@ -1,65 +1,153 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: Hooking a TI CODEC to a i.MX27 MCU
-Date: Fri, 28 May 2010 13:27:12 +0100
-Message-ID: <20100528122711.GA2486@opensource.wolfsonmicro.com>
-References: <20100524074946.GC16346@www.longlandclan.yi.org>
-	<1274698156.3064.93.camel@odin>
-	<20100525004126.GA10968@www.longlandclan.yi.org>
-	<20100525022646.GA18030@www.longlandclan.yi.org>
-	<1274806007.4728.3.camel@gnutoo-desktop>
-	<20100526132129.GA13644@www.longlandclan.yi.org>
-	<20100527004702.GA22091@sirena.org.uk>
-	<20100528020621.GA12531@www.longlandclan.yi.org>
+From: Wan ZongShun <mcuos.com-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [PATCH] ALSA/davinci: Use the resource_size , __devinit and __devexit.
+Date: Fri, 28 May 2010 13:26:55 +0800
+Message-ID: <4BFF541F.2080209@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0DACE24402
-	for <alsa-devel@alsa-project.org>;
-	Fri, 28 May 2010 14:27:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100528020621.GA12531@www.longlandclan.yi.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stuart Longland <redhatter@gentoo.org>
-Cc: alsa-devel@alsa-project.org, gnutoo <GNUtoo@no-log.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
+List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
+List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
+List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
+	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
+Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
+To: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, alsa-devel <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 28, 2010 at 12:06:25PM +1000, Stuart Longland wrote:
+Dear all,
 
-> I have a userspace application that mmaps the registers for SSI2 and
-> AUDMUX, and sets this up, so no big deal ... the clock it receives is
-> about 12.1MHz (12.093MHz according to the frequency counter here).
+Use the resource_size function instead of manually calculating the
+resource size.  This reduces the chance of introducing off-by-one
+errors.
 
-In production this should be done in-kernel.
+In addition, to use __devinit and __devexit is good too.
 
-> When I try to play audio; the AUDMUX configuration is as follows:
+Signed-off-by:Wan ZongShun<mcuos.com-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-> Port:   imx-ssi.0
-> Raw:    cb205000
-> TxFS output from SSI4, TxClk output from SSI4
-> Port is symmetric
-> Data received from SSI4
+>From 6e492675606a92bcf9e1719c37219dfc5d11e6ca Mon Sep 17 00:00:00 2001
+From: zswan <zswan@zswan-marvell.(none)>
+Date: Fri, 28 May 2010 13:18:40 +0800
+Subject: [PATCH 5/5] fix davinci resource size
 
-> Port:   SSI4
-> Raw:    00001000
-> TxFS input, TxClk input
-> Port is symmetric
-> Data received from imx-ssi.0
+---
+ sound/soc/davinci/davinci-i2s.c   |   12 ++++++------
+ sound/soc/davinci/davinci-mcasp.c |   12 ++++++------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
-This appears reasonable at first glance.
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index adadcd3..763ba73 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -521,7 +521,7 @@ struct snd_soc_dai davinci_i2s_dai = {
+ };
+ EXPORT_SYMBOL_GPL(davinci_i2s_dai);
 
-> I'll have a look at the Eukrea CPUIMX27 and baseboard SoC support in a
-> moment, since it looks very similar to what we're doing (in that it's a
-> TI I=B2S CODEC hooked to an i.MX27 on SSI4) ... this might reveal clues
-> as to what I'm doing wrong.
+-static int davinci_i2s_probe(struct platform_device *pdev)
++static int __devinit davinci_i2s_probe(struct platform_device *pdev)
+ {
+ 	struct snd_platform_data *pdata = pdev->dev.platform_data;
+ 	struct davinci_mcbsp_dev *dev;
+@@ -534,7 +534,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
 
-Have you also checked the pin mux configuration for the i.MX?
+-	ioarea = request_mem_region(mem->start, (mem->end - mem->start) + 1,
++	ioarea = request_mem_region(mem->start, resource_size(mem),
+ 				    pdev->name);
+ 	if (!ioarea) {
+ 		dev_err(&pdev->dev, "McBSP region already claimed\n");
+@@ -597,12 +597,12 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ err_free_mem:
+ 	kfree(dev);
+ err_release_region:
+-	release_mem_region(mem->start, (mem->end - mem->start) + 1);
++	release_mem_region(mem->start, resource_size(mem));
+
+ 	return ret;
+ }
+
+-static int davinci_i2s_remove(struct platform_device *pdev)
++static int __devexit davinci_i2s_remove(struct platform_device *pdev)
+ {
+ 	struct davinci_mcbsp_dev *dev = davinci_i2s_dai.private_data;
+ 	struct resource *mem;
+@@ -613,14 +613,14 @@ static int davinci_i2s_remove(struct platform_device *pdev)
+ 	dev->clk = NULL;
+ 	kfree(dev);
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	release_mem_region(mem->start, (mem->end - mem->start) + 1);
++	release_mem_region(mem->start, resource_size(mem));
+
+ 	return 0;
+ }
+
+ static struct platform_driver davinci_mcbsp_driver = {
+ 	.probe		= davinci_i2s_probe,
+-	.remove		= davinci_i2s_remove,
++	.remove		= __devexit_p(davinci_i2s_remove),
+ 	.driver		= {
+ 		.name	= "davinci-asp",
+ 		.owner	= THIS_MODULE,
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 79f0f4a..bd328d6 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -844,7 +844,7 @@ struct snd_soc_dai davinci_mcasp_dai[] = {
+ };
+ EXPORT_SYMBOL_GPL(davinci_mcasp_dai);
+
+-static int davinci_mcasp_probe(struct platform_device *pdev)
++static int __devinit davinci_mcasp_probe(struct platform_device *pdev)
+ {
+ 	struct davinci_pcm_dma_params *dma_data;
+ 	struct resource *mem, *ioarea, *res;
+@@ -864,7 +864,7 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	}
+
+ 	ioarea = request_mem_region(mem->start,
+-			(mem->end - mem->start) + 1, pdev->name);
++			resource_size(mem), pdev->name);
+ 	if (!ioarea) {
+ 		dev_err(&pdev->dev, "Audio region already claimed\n");
+ 		ret = -EBUSY;
+@@ -928,14 +928,14 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	return 0;
+
+ err_release_region:
+-	release_mem_region(mem->start, (mem->end - mem->start) + 1);
++	release_mem_region(mem->start, resource_size(mem));
+ err_release_data:
+ 	kfree(dev);
+
+ 	return ret;
+ }
+
+-static int davinci_mcasp_remove(struct platform_device *pdev)
++static int __devexit davinci_mcasp_remove(struct platform_device *pdev)
+ {
+ 	struct snd_platform_data *pdata = pdev->dev.platform_data;
+ 	struct davinci_audio_dev *dev;
+@@ -948,7 +948,7 @@ static int davinci_mcasp_remove(struct platform_device *pdev)
+ 	dev->clk = NULL;
+
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	release_mem_region(mem->start, (mem->end - mem->start) + 1);
++	release_mem_region(mem->start, resource_size(mem));
+
+ 	kfree(dev);
+
+@@ -957,7 +957,7 @@ static int davinci_mcasp_remove(struct platform_device *pdev)
+
+ static struct platform_driver davinci_mcasp_driver = {
+ 	.probe		= davinci_mcasp_probe,
+-	.remove		= davinci_mcasp_remove,
++	.remove		= __devexit_p(davinci_mcasp_remove),
+ 	.driver		= {
+ 		.name	= "davinci-mcasp",
+ 		.owner	= THIS_MODULE,
+-- 
+1.6.3.3
