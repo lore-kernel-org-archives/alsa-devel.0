@@ -1,25 +1,20 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [PATCH v2] alsa/Au1xxx-PSC: use resource_size
-Date: Fri, 28 May 2010 08:53:32 +0200
-Message-ID: <AANLkTim9C08G5iOuKE9XOtFRlS616c6yk-7LNLddbVCl@mail.gmail.com>
-References: <4BFF33B3.1040506@gmail.com>
-	<AANLkTil1hKb8QdsKEfHseOyPdw8uIY6d5mVEUwZ68T-p@mail.gmail.com>
-	<AANLkTimQD4TihG2yGsPLGmCmWV968fdoDtZ1nDcW5A-h@mail.gmail.com>
-	<4BFF5838.8050403@gmail.com>
-	<AANLkTikn3BHn1D3uVQWO6Xuiv4vkk8pMe96F7uUUSAmM@mail.gmail.com>
-	<4BFF633B.7030101@gmail.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2 3/4] eukrea_mbimx27: add audio codec
+Date: Fri, 28 May 2010 08:58:40 +0200
+Message-ID: <20100528065840.GF23664@pengutronix.de>
+References: <1274950737-26498-1-git-send-email-eric@eukrea.com>
+	<1274950737-26498-2-git-send-email-eric@eukrea.com>
+	<1274950737-26498-3-git-send-email-eric@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 574D6103AD5
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 91485103AEB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 May 2010 08:53:34 +0200 (CEST)
-Received: by yxd5 with SMTP id 5so54615yxd.38
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 23:53:33 -0700 (PDT)
-In-Reply-To: <4BFF633B.7030101@gmail.com>
+	Fri, 28 May 2010 08:58:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1274950737-26498-3-git-send-email-eric@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,53 +24,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
-Cc: manuel.lauss@gmail.com, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Andrew Morton <akpm@linux-foundation.org>
+To: Eric =?iso-8859-15?Q?B=E9nard?= <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 28, 2010 at 8:31 AM, Wan ZongShun <mcuos.com@gmail.com> wrote:
-> Dear Manuel,
->
-> For insteading of using the 'platform_get_resource' in remove function,
-> I think it better to put 'struct resource *r' into 'wd' structure.
->
-> I have re-organized the patch and submit to you.
->
-> Of course, I must get your approval if I do above. :)
->
-> Signed-off-by:Wan ZongShun<mcuos.com@gmail.com>
+Hi Eric,
 
-The patch doesn't apply at all to latest linus-git.
+The patch does not apply on current master. Can you please rebase it?
+It's better we delay the defconfig patch until the code is merged, so
+give me a ping when it's done.
 
-How about something much simpler, like this for example:
+Two comments inline.
 
-diff --git a/sound/soc/au1x/psc-ac97.c b/sound/soc/au1x/psc-ac97.c
-index a61ccd2..a18e924 100644
---- a/sound/soc/au1x/psc-ac97.c
-+++ b/sound/soc/au1x/psc-ac97.c
-@@ -375,7 +375,7 @@ static int __devinit au1xpsc_ac97_drvprobe(struct
-platform_device *pdev)
-        }
+Sascha
 
-        ret = -EBUSY;
--       wd->ioarea = request_mem_region(r->start, r->end - r->start + 1,
-+       wd->ioarea = request_mem_region(r->start, resource_size(r),
-                                        "au1xpsc_ac97");
-        if (!wd->ioarea)
-                goto out0;
-diff --git a/sound/soc/au1x/psc-i2s.c b/sound/soc/au1x/psc-i2s.c
-index 495be6e..76e848f 100644
---- a/sound/soc/au1x/psc-i2s.c
-+++ b/sound/soc/au1x/psc-i2s.c
-@@ -321,7 +321,7 @@ static int __init au1xpsc_i2s_drvprobe(struct
-platform_device *pdev)
-        }
+On Thu, May 27, 2010 at 10:58:56AM +0200, Eric B=E9nard wrote:
+> Signed-off-by: Eric B=E9nard <eric@eukrea.com>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+> ---
+>  arch/arm/mach-mx2/eukrea_mbimx27-baseboard.c |   44 ++++++++++++++++++++=
++++++-
+>  1 files changed, 43 insertions(+), 1 deletions(-)
+> =
 
-        ret = -EBUSY;
--       wd->ioarea = request_mem_region(r->start, r->end - r->start + 1,
-+       wd->ioarea = request_mem_region(r->start, resource_size(r),
-                                        "au1xpsc_i2s");
-        if (!wd->ioarea)
-                goto out0;
+> diff --git a/arch/arm/mach-mx2/eukrea_mbimx27-baseboard.c b/arch/arm/mach=
+-mx2/eukrea_mbimx27-baseboard.c
+> index 9038e1f..e7fd65a 100644
+> --- a/arch/arm/mach-mx2/eukrea_mbimx27-baseboard.c
+> +++ b/arch/arm/mach-mx2/eukrea_mbimx27-baseboard.c
+> @@ -1,5 +1,5 @@
+>  /*
+> - * Copyright (C) 2009 Eric Benard - eric@eukrea.com
+> + * Copyright (C) 2009-2010 Eric Benard - eric@eukrea.com
+>   *
+>   * Based on pcm970-baseboard.c which is :
+>   * Copyright (C) 2008 Juergen Beisert (kernel@pengutronix.de)
+> @@ -37,6 +37,8 @@
+>  #include <mach/mmc.h>
+>  #include <mach/imx-uart.h>
+>  #include <mach/spi.h>
+> +#include <mach/ssi.h>
+> +#include <mach/audmux.h>
+>  =
 
-Manuel
+>  #include "devices.h"
+>  =
+
+> @@ -93,6 +95,13 @@ static int eukrea_mbimx27_pins[] =3D {
+>  	PD29_PF_CSPI1_SCLK,
+>  	PD30_PF_CSPI1_MISO,
+>  	PD31_PF_CSPI1_MOSI,
+> +	/* SSI4 */
+> +#if defined(CONFIG_SND_SOC_EUKREA_TLV320)
+> +	PC16_PF_SSI4_FS,
+> +	PC17_PF_SSI4_RXD | GPIO_PUEN,
+> +	PC18_PF_SSI4_TXD | GPIO_PUEN,
+> +	PC19_PF_SSI4_CLK,
+> +#endif
+
+You should remove the ifdefs. The pin muxer should not depend on compile
+time options.
+
+>  };
+>  =
+
+>  static const uint32_t eukrea_mbimx27_keymap[] =3D {
+> @@ -292,6 +301,12 @@ static struct spi_board_info eukrea_mbimx27_spi_boar=
+d_info[] __initdata =3D {
+>  	},
+>  };
+>  =
+
+> +static struct i2c_board_info eukrea_mbimx27_i2c_devices[] =3D {
+> +	{
+> +		I2C_BOARD_INFO("tlv320aic23", 0x1a),
+> +	},
+> +};
+> +
+>  static int eukrea_mbimx27_spi_cs[] =3D {GPIO_PORTD | 28};
+>  =
+
+>  static struct spi_imx_master eukrea_mbimx27_spi_0_data =3D {
+> @@ -308,6 +323,10 @@ static struct imxmmc_platform_data sdhc_pdata =3D {
+>  	.dat3_card_detect =3D 1,
+>  };
+>  =
+
+> +struct imx_ssi_platform_data eukrea_mbimx27_ssi_pdata =3D {
+> +	.flags =3D IMX_SSI_DMA | IMX_SSI_USE_I2S_SLAVE,
+> +};
+> +
+>  /*
+>   * system init for baseboard usage. Will be called by cpuimx27 init.
+>   *
+> @@ -319,6 +338,24 @@ void __init eukrea_mbimx27_baseboard_init(void)
+>  	mxc_gpio_setup_multiple_pins(eukrea_mbimx27_pins,
+>  		ARRAY_SIZE(eukrea_mbimx27_pins), "MBIMX27");
+>  =
+
+> +#if defined(CONFIG_SND_SOC_EUKREA_TLV320)
+> +	/* SSI unit master I2S codec connected to SSI_PINS_4*/
+> +	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR1_SSI0,
+> +			MXC_AUDMUX_V1_PCR_SYN |
+> +			MXC_AUDMUX_V1_PCR_TFSDIR |
+> +			MXC_AUDMUX_V1_PCR_TCLKDIR |
+> +			MXC_AUDMUX_V1_PCR_RFSDIR |
+> +			MXC_AUDMUX_V1_PCR_RCLKDIR |
+> +			MXC_AUDMUX_V1_PCR_TFCSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4) |
+> +			MXC_AUDMUX_V1_PCR_RFCSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4) |
+> +			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR3_SSI_PINS_4)
+> +	);
+> +	mxc_audmux_v1_configure_port(MX27_AUDMUX_HPCR3_SSI_PINS_4,
+> +			MXC_AUDMUX_V1_PCR_SYN |
+> +			MXC_AUDMUX_V1_PCR_RXDSEL(MX27_AUDMUX_HPCR1_SSI0)
+> +	);
+> +#endif
+
+Does it hurt to go without the ifdefs?
+
+> +
+>  	mxc_register_device(&mxc_uart_device1, &uart_pdata[0]);
+>  	mxc_register_device(&mxc_uart_device2, &uart_pdata[1]);
+>  #if !defined(MACH_EUKREA_CPUIMX27_USEUART4)
+> @@ -328,6 +365,11 @@ void __init eukrea_mbimx27_baseboard_init(void)
+>  	mxc_register_device(&mxc_fb_device, &eukrea_mbimx27_fb_data);
+>  	mxc_register_device(&mxc_sdhc_device0, &sdhc_pdata);
+>  =
+
+> +	i2c_register_board_info(0, eukrea_mbimx27_i2c_devices,
+> +				ARRAY_SIZE(eukrea_mbimx27_i2c_devices));
+> +
+> +	mxc_register_device(&imx_ssi_device0, &eukrea_mbimx27_ssi_pdata);
+> +
+>  #if defined(CONFIG_TOUCHSCREEN_ADS7846) \
+>  	|| defined(CONFIG_TOUCHSCREEN_ADS7846_MODULE)
+>  	/* ADS7846 Touchscreen controller init */
+> -- =
+
+> 1.6.3.3
+> =
+
+> =
+
+
+-- =
+
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
