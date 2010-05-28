@@ -1,28 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Mixer volume/decibel mapping
-Date: Fri, 28 May 2010 21:04:34 +0800
-Message-ID: <AANLkTinxF-OdPg_mZabDfupb_knV0uh2bslOQeBXyDgp@mail.gmail.com>
-References: <201005191834.57919.vand2@gmx.de>
-	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
-	<4BF629B3.9020904@ladisch.de>
-	<201005210951.36495.peter.ujfalusi@nokia.com>
-	<4BF658C6.4030404@ladisch.de>
-	<AANLkTik7mD1DAVWkOwM7sNu0EfgGApvzX9WRXWBOO4PI@mail.gmail.com>
-	<4BFB8E3E.3010209@ladisch.de>
-	<AANLkTin7CGFuW_fhHEbhaDB77DLbKoTvck7YvuzVzGUw@mail.gmail.com>
-	<4BFBE056.9000706@ladisch.de>
+From: =?ISO-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>
+Subject: Re: ASoC: Hooking a TI CODEC to a i.MX27 MCU
+Date: Fri, 28 May 2010 15:10:18 +0200
+Message-ID: <4BFFC0BA.80409@eukrea.com>
+References: <20100524074946.GC16346@www.longlandclan.yi.org>
+	<1274698156.3064.93.camel@odin>
+	<20100525004126.GA10968@www.longlandclan.yi.org>
+	<20100525022646.GA18030@www.longlandclan.yi.org>
+	<1274806007.4728.3.camel@gnutoo-desktop>
+	<20100526132129.GA13644@www.longlandclan.yi.org>
+	<20100527004702.GA22091@sirena.org.uk>
+	<20100528020621.GA12531@www.longlandclan.yi.org>
+	<4BFF5AC7.3060409@eukrea.com> <20100528110805.GA9917@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 528AB103AD9
+Received: from 63.mail-out.ovh.net (63.mail-out.ovh.net [91.121.185.56])
+	by alsa0.perex.cz (Postfix) with SMTP id A9675103AFC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 May 2010 15:04:37 +0200 (CEST)
-Received: by pwj9 with SMTP id 9so579399pwj.38
-	for <alsa-devel@alsa-project.org>; Fri, 28 May 2010 06:04:35 -0700 (PDT)
-In-Reply-To: <4BFBE056.9000706@ladisch.de>
+	Fri, 28 May 2010 15:10:21 +0200 (CEST)
+In-Reply-To: <20100528110805.GA9917@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,56 +29,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/5/25 Clemens Ladisch <clemens@ladisch.de>
-
-> Raymond Yau wrote:
-> > I have doubt about DECLARE_TLV_DB_LINEAR(ak4396_db_scale,
-> TLV_DB_GAIN_MUTE, 0);
-> >
-> > since the datasheet mention that dB range is only -48dB to 0dB
-> >
-> > ATT = 20 log10 (ATT_DATA / 255) [dB]
-> >
-> > How can AK4396 has scale of -inf DB to 0dB in the driver code  ?
+Le 28/05/2010 13:08, Mark Brown a =E9crit :
+> On Fri, May 28, 2010 at 07:55:19AM +0200, Eric B??nard wrote:
+>> Hi Stuart,
 >
-> When ATT_DATA = 0, there is no output, which is an attenuation of -inf.
-> The next value, ATT_DATA = 1, results in ATT = -48 dB.
+> Don't drop CCs from mailing list postings, you should always maintain
+> CCs for kernel related lists.
 >
+sorry, wrong button pushed.
 
-
-
-refer to ice1712/prodigy_hifi.c , why the comment is -64dB to 0dB  ?
-
-
-/*
- * ak4396 mixers
-*/
-
-
-/*
- * DAC volume attenuation mixer control (-64dB to 0dB)
-*/
-
-
-static int ak4396_dac_vol_info(struct snd_kcontrol *kcontrol, struct
-snd_ctl_elem_info *uinfo)
-{
-        uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-        uinfo->count = 2;
-        uinfo->value.integer.min = 0;   /* mute */
-        uinfo->value.integer.max = 0xFF; /* linear */
-       return 0;
-}
-
-
-
-This is true regardless of the precision of the multiplier.  Even a one-
-> bit factor behaves like this; in fact, this would describe a mute switch.
+>> I'll try to find our I2C init sequence and send it to you as this was
+>> the hardest part of the thing to get the codec running.
 >
+> Under Linux you'd normally not be using just a hard coded sequence of
+> I2C writes...
 >
->
-This mean that the dB range should be calculated from the next step above
-the min_dB and max_dB when min_dB regarded as a mute switch
+I agree with you, but this can be useful for board bring up and hardware =
+
+debug.
+
+Eric
