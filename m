@@ -1,22 +1,25 @@
 From: Andreas Herrmann <herrmann.der.user@googlemail.com>
 Subject: Re: [PATCH] ALSA,
  hda: Add support for Lenovo ThinkPad Edge 13 in conexant codec
-Date: Fri, 28 May 2010 08:21:02 +0200
-Message-ID: <20100528062102.GF10254@alberich.amd.com>
+Date: Fri, 28 May 2010 08:45:08 +0200
+Message-ID: <20100528064508.GG10254@alberich.amd.com>
 References: <20100527160656.GE10254@alberich.amd.com>
 	<s5htyps3788.wl%tiwai@suse.de>
+	<20100528062102.GF10254@alberich.amd.com>
+	<1275028527.2945.1812.camel@laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.148])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1EDBD103AC5
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 37BA1103AEF
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 May 2010 08:21:06 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 5so70862eyb.16
-	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 23:21:05 -0700 (PDT)
+	Fri, 28 May 2010 08:45:13 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so636847fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 27 May 2010 23:45:12 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <s5htyps3788.wl%tiwai@suse.de>
+In-Reply-To: <1275028527.2945.1812.camel@laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,54 +33,42 @@ To: Jerone Young <jerone.young@canonical.com>
 Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Borislav Petkov <borislav.petkov@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 28, 2010 at 07:50:31AM +0200, Takashi Iwai wrote:
-> At Thu, 27 May 2010 18:06:56 +0200,
-> Andreas Herrmann wrote:
-> > 
-> > From: Andreas Herrmann <andreas.herrmann3@amd.com>
-> > 
-> > On a Thinkpad Edge 13 I had the problem that speakers played sound
-> > although headphones were plugged.
-> > 
-> > Using "model=olpc-xo-1_5" solved this problem. So it seems sensible to
-> > add this quirk. (Using other models, like ideabad did not fix it.)
-> > 
-> > Signed-off-by: Andreas Herrmann <andreas.herrmann3@amd.com>
-> > ---
-> >  sound/pci/hda/patch_conexant.c |    1 +
-> >  1 files changed, 1 insertions(+), 0 deletions(-)
-> > 
-> > I don't know whether adding this quirk is the right/complete solution
-> > to support sound on Thinkpad Edge. But at least it solves this
-> > annoying problem.
+On Fri, May 28, 2010 at 01:35:27AM -0500, Jerone Young wrote:
+> Are you sure? The pci id I have is for 0x21b4 based on information from
+> that bug. What you point out is 0x21b3. Please retest with 
 > 
-> Well, Jerone Young already sent a quirk patch but he took
-> model=ideapd.  Could you guys check which one is really better?
+> SND_PCI_QUIRK(0x17aa, 0x21b4, "Thinkpad Edge", CXT5066_IDEAPAD)
+> 
+> Can you post lspci -vvnn output for your Thinkpad Edge?
 
-Hi Jerone,
+The PCI audio device is:
 
-there are two different models of Thinkpad Edge (one with Intel CPU/chipset,
-one with AMD CPU/chipset). I tested on the AMD version but from
+00:14.2 Audio device [0403]: ATI Technologies Inc SBx00 Azalia (Intel HDA) [1002:4383]
+        Subsystem: Lenovo Device [17aa:21b3]
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+        Latency: 64, Cache Line Size: 32 bytes
+        Interrupt: pin ? routed to IRQ 16
+        Region 0: Memory at d0600000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: <access denied>
+        Kernel driver in use: HDA Intel
+        Kernel modules: snd-hda-intel
 
-https://bugs.launchpad.net/ubuntu/+source/linux-backports-modules-2.6.32/+bug/549289
+So maybe yours is the Intel version of Thinkpad Edge 13?
 
-it seems that using  model=olpc-xo-1_5 works for both versions of that Thinkpad.
+What does dmidecode say for your system? Here is my information:
 
-I also tried ideapad -- because looking at the quirk table
-for cxt5066 there is this entry
+Handle 0x0001, DMI type 1, 27 bytes
+System Information
+        Manufacturer: LENOVO
+        Product Name: 01972NG
+        Version: ThinkPad Edge 13"IAL#
 
-        SND_PCI_QUIRK(0x17aa, 0x21b2, "Thinkpad X100e", CXT5066_IDEAPAD),
+Other types of that notebook family are 0196 and 0492 each having a
+huge bunch of differnet models (2NG in my case).
 
-and adding 
-
-        SND_PCI_QUIRK(0x17aa, 0x21b3, "Thinkpad Edge", CXT5066_IDEAPAD),
-
-seems to be conclusive.
-
-But as I said that did not solve the problem of speakers still playing
-audio if headphones are plugged in for me. Have you explicitely tested
-this?  Maybe I have to retest with some newer code from the alsa tree?
+However I try to retest with latest alsa tree (using model=ideapad)
+maybe that changes something.
 
 
-Regards,
 Andreas
