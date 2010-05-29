@@ -1,18 +1,30 @@
-From: Ben Collins <bcollins@bluecherry.net>
-Subject: [PATCH] pcm: Define G723 3-bit and 5-bit formats
-Date: Fri, 28 May 2010 11:43:45 -0400
-Message-ID: <1275061425.3987.34.camel@maclara>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: Mixer volume/decibel mapping
+Date: Sat, 29 May 2010 09:31:17 +0800
+Message-ID: <AANLkTinOlPwLDEY8hVHnzLDk_nJ9UNs6qepuoyxoe1SK@mail.gmail.com>
+References: <201005191834.57919.vand2@gmx.de>
+	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
+	<4BF629B3.9020904@ladisch.de>
+	<201005210951.36495.peter.ujfalusi@nokia.com>
+	<4BF658C6.4030404@ladisch.de>
+	<AANLkTik7mD1DAVWkOwM7sNu0EfgGApvzX9WRXWBOO4PI@mail.gmail.com>
+	<4BFB8E3E.3010209@ladisch.de>
+	<AANLkTin7CGFuW_fhHEbhaDB77DLbKoTvck7YvuzVzGUw@mail.gmail.com>
+	<4BFBE056.9000706@ladisch.de>
+	<AANLkTinxF-OdPg_mZabDfupb_knV0uh2bslOQeBXyDgp@mail.gmail.com>
+	<4BFFCEF3.9060309@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
-	[209.85.160.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 550541037EE
+Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
+	[209.85.222.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7BE50243F0
 	for <alsa-devel@alsa-project.org>;
-	Fri, 28 May 2010 17:43:50 +0200 (CEST)
-Received: by gyd10 with SMTP id 10so1049148gyd.38
-	for <alsa-devel@alsa-project.org>; Fri, 28 May 2010 08:43:49 -0700 (PDT)
+	Sat, 29 May 2010 03:31:18 +0200 (CEST)
+Received: by pzk40 with SMTP id 40so922761pzk.23
+	for <alsa-devel@alsa-project.org>; Fri, 28 May 2010 18:31:17 -0700 (PDT)
+In-Reply-To: <4BFFCEF3.9060309@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,91 +34,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-pcm: Define G723 3-bit and 5-bit formats
+2010/5/28 Clemens Ladisch <clemens@ladisch.de>
 
-This defines the 24bps and 40bps (8khz sample rate) G.723 codec
-formats. They are going to be used once I submit the driver for
-an mpeg4/g723 compression card.
+> Raymond Yau wrote:
+> > 2010/5/25 Clemens Ladisch <clemens@ladisch.de>
+> > > Raymond Yau wrote:
+> > > > I have doubt about DECLARE_TLV_DB_LINEAR(ak4396_db_scale,
+> TLV_DB_GAIN_MUTE, 0);
+> > > >
+> > > > since the datasheet mention that dB range is only -48dB to 0dB
+> > > >
+> > > > ATT =3D 20 log10 (ATT_DATA / 255) [dB]
+> > > >
+> > > > How can AK4396 has scale of -inf DB to 0dB in the driver code  ?
+> > >
+> > > When ATT_DATA =3D 0, there is no output, which is an attenuation of -=
+inf.
+> > > The next value, ATT_DATA =3D 1, results in ATT =3D -48 dB.
+> >
+> > refer to ice1712/prodigy_hifi.c , why the comment is -64dB to 0dB  ?
+> >
+> > /*
+> >  * DAC volume attenuation mixer control (-64dB to 0dB)
+> > */
+>
+> Apparently just copied from pontis.c.
+>
+> > static int ak4396_dac_vol_info(struct snd_kcontrol *kcontrol, struct
+> snd_ctl_elem_info *uinfo)
+> > {
+> >         uinfo->type =3D SNDRV_CTL_ELEM_TYPE_INTEGER;
+> >         uinfo->count =3D 2;
+> >         uinfo->value.integer.min =3D 0;   /* mute */
+> >         uinfo->value.integer.max =3D 0xFF; /* linear */
+> >        return 0;
+> > }
+> > ...
+> > static const DECLARE_TLV_DB_SCALE(db_scale_wm_dac, -12700, 100, 1);
+>
+> And this defines a dB scale from -127 dB to +128 dB, which will break
+> PulseAudio's volume calculations.
+>
+> > > This is true regardless of the precision of the multiplier.  Even a
+> one-
+> > > bit factor behaves like this; in fact, this would describe a mute
+> switch.
+> >
+> > This mean that the dB range should be calculated from the next step abo=
+ve
+> > the min_dB and max_dB when min_dB regarded as a mute switch
+>
+> No; the AK4396 datasheet mentions -48 dB only because this is the minimum
+> attenuation that isn't completely mute.  The minimum of the ATT_DATA
+> registers _is_ zero, i.e. -inf dB, and therefore TLV_DB_GAIN_MUTE is the
+> correct minimum for the dB range.
+>
+>
+The AK4396 includes channel independent digital output volumes (ATT) with
+256 levels at linear step including MUTE.
+These volumes are in front of the DAC and can attenuate the input data from
+0dB to =9648dB and mute.
 
-I've updated the signed value to -1 as per Takashi's comments
-since these are non-linear formats.
+It only mention the volume can be attenuate to -48dB and MUTE
 
-Signed-off-by: Ben Collins <bcollins@bluecherry.net>
-Acked-by: Takashi Iwai <tiwai@suse.de>
+some driver are using SMUTE (soft mute) and soft mute enable : default is
+OFF
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 0985955..62e0857 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -212,7 +212,11 @@ typedef int __bitwise snd_pcm_format_t;
- #define	SNDRV_PCM_FORMAT_S18_3BE	((__force snd_pcm_format_t) 41)	/* in three bytes */
- #define	SNDRV_PCM_FORMAT_U18_3LE	((__force snd_pcm_format_t) 42)	/* in three bytes */
- #define	SNDRV_PCM_FORMAT_U18_3BE	((__force snd_pcm_format_t) 43)	/* in three bytes */
--#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_U18_3BE
-+#define	SNDRV_PCM_FORMAT_G723_24	((__force snd_pcm_format_t) 44) /* 8 samples in 3 bytes */
-+#define	SNDRV_PCM_FORMAT_G723_24_1B	((__force snd_pcm_format_t) 45) /* 1 sample in 1 byte */
-+#define	SNDRV_PCM_FORMAT_G723_40	((__force snd_pcm_format_t) 46) /* 8 Samples in 5 bytes */
-+#define	SNDRV_PCM_FORMAT_G723_40_1B	((__force snd_pcm_format_t) 47) /* 1 sample in 1 byte */
-+#define	SNDRV_PCM_FORMAT_LAST		SNDRV_PCM_FORMAT_G723_40_1B
- 
- #ifdef SNDRV_LITTLE_ENDIAN
- #define	SNDRV_PCM_FORMAT_S16		SNDRV_PCM_FORMAT_S16_LE
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 8b611a5..37b5c3c 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -173,6 +173,10 @@ struct snd_pcm_ops {
- #define SNDRV_PCM_FMTBIT_U18_3LE	(1ULL << SNDRV_PCM_FORMAT_U18_3LE)
- #define SNDRV_PCM_FMTBIT_S18_3BE	(1ULL << SNDRV_PCM_FORMAT_S18_3BE)
- #define SNDRV_PCM_FMTBIT_U18_3BE	(1ULL << SNDRV_PCM_FORMAT_U18_3BE)
-+#define SNDRV_PCM_FMTBIT_G723_24	(1ULL << SNDRV_PCM_FORMAT_G723_24)
-+#define SNDRV_PCM_FMTBIT_G723_24_1B	(1ULL << SNDRV_PCM_FORMAT_G723_24_1B)
-+#define SNDRV_PCM_FMTBIT_G723_40	(1ULL << SNDRV_PCM_FORMAT_G723_40)
-+#define SNDRV_PCM_FMTBIT_G723_40_1B	(1ULL << SNDRV_PCM_FORMAT_G723_40_1B)
- 
- #ifdef SNDRV_LITTLE_ENDIAN
- #define SNDRV_PCM_FMTBIT_S16		SNDRV_PCM_FMTBIT_S16_LE
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index ea2bf82..434af3c 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -128,6 +128,14 @@ static struct pcm_format_data pcm_formats[SNDRV_PCM_FORMAT_LAST+1] = {
- 		.width = 4, .phys = 4, .le = -1, .signd = -1,
- 		.silence = {},
- 	},
-+	[SNDRV_PCM_FORMAT_G723_24] = {
-+		.width = 3, .phys = 3, .le = -1, .signd = -1,
-+		.silence = {},
-+	},
-+	[SNDRV_PCM_FORMAT_G723_40] = {
-+		.width = 5, .phys = 5, .le = -1, .signd = -1,
-+		.silence = {},
-+	},
- 	/* FIXME: the following three formats are not defined properly yet */
- 	[SNDRV_PCM_FORMAT_MPEG] = {
- 		.le = -1, .signd = -1,
-@@ -186,6 +194,14 @@ static struct pcm_format_data pcm_formats[SNDRV_PCM_FORMAT_LAST+1] = {
- 		.width = 18, .phys = 24, .le = 0, .signd = 0,
- 		.silence = { 0x02, 0x00, 0x00 },
- 	},
-+	[SNDRV_PCM_FORMAT_G723_24_1B] = {
-+		.width = 3, .phys = 8, .le = -1, .signd = -1,
-+		.silence = {},
-+	},
-+	[SNDRV_PCM_FORMAT_G723_40_1B] = {
-+		.width = 5, .phys = 8, .le = -1, .signd = -1,
-+		.silence = {},
-+	},
- };
- 
- 
-
--- 
-Bluecherry: http://www.bluecherrydvr.com/
-SwissDisk : http://www.swissdisk.com/
-Ubuntu    : http://www.ubuntu.com/
-My Blog   : http://ben-collins.blogspot.com/
+As James said , DB_LINEAR is limited to 0dB as Max , how can you provide a
+dB scale for the capture volume control of pulseaudio
