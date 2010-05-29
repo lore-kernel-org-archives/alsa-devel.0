@@ -1,20 +1,42 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Problem with snd_hda_intel from 05-27-2010 snapshot
-Date: Sat, 29 May 2010 08:25:11 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1005290822040.6856@eeebox2.perex-int.cz>
-References: <AANLkTilIX_UnMYcg8LAqkndS80nFppblW6erTm2e7o5X@mail.gmail.com>
-	<AANLkTinLbTMrYBhg6KO826slsugfEcU0_wYqukSQpQw2@mail.gmail.com>
-	<alpine.LNX.2.00.1005270931570.6856@eeebox2.perex-int.cz>
-	<AANLkTinvfYyOHzQrEfcBrDvDMW3Fc93oYrUHOcABm0Oa@mail.gmail.com>
+From: Stuart Longland <redhatter@gentoo.org>
+Subject: Re: ASoC: Hooking a TI CODEC to a i.MX27 MCU
+Date: Sat, 29 May 2010 18:59:27 +1000
+Message-ID: <20100529085927.GB657@www.longlandclan.yi.org>
+References: <20100524074946.GC16346@www.longlandclan.yi.org>
+	<1274698156.3064.93.camel@odin>
+	<20100525004126.GA10968@www.longlandclan.yi.org>
+	<20100525022646.GA18030@www.longlandclan.yi.org>
+	<1274806007.4728.3.camel@gnutoo-desktop>
+	<20100526132129.GA13644@www.longlandclan.yi.org>
+	<20100527004702.GA22091@sirena.org.uk>
+	<20100528020621.GA12531@www.longlandclan.yi.org>
+	<20100528122711.GA2486@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id A48E62452D
+Received: from helicon.mas.viperplatform.net.au
+	(helicon.mas.viperplatform.net.au [202.147.75.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 92B5B24533
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 May 2010 08:25:12 +0200 (CEST)
-In-Reply-To: <AANLkTinvfYyOHzQrEfcBrDvDMW3Fc93oYrUHOcABm0Oa@mail.gmail.com>
+	Sat, 29 May 2010 10:59:34 +0200 (CEST)
+Received: from eryx.mas.viperplatform.net.au ([172.16.5.11])
+	by helicon.mas.viperplatform.net.au with esmtp (Exim 4.43)
+	id 1OIHtC-0004cr-43
+	for alsa-devel@alsa-project.org; Sat, 29 May 2010 18:59:30 +1000
+Received: from mail by eryx.mas.viperplatform.net.au with spam-scanned (Exim
+	4.43) id 1OIHtB-0002bw-UO
+	for alsa-devel@alsa-project.org; Sat, 29 May 2010 18:59:30 +1000
+Received: from [172.16.100.13] (helo=helicon.mas.viperplatform.net.au)
+	by eryx.mas.viperplatform.net.au with esmtp (Exim 4.43)
+	id 1OIHtB-0002bs-T8
+	for alsa-devel@alsa-project.org; Sat, 29 May 2010 18:59:29 +1000
+Received: from [203.94.56.252] (helo=longlandclan.yi.org)
+	by helicon.mas.viperplatform.net.au with esmtp (Exim 4.43)
+	id 1OIHtA-0004c7-Kc
+	for alsa-devel@alsa-project.org; Sat, 29 May 2010 18:59:29 +1000
+Content-Disposition: inline
+In-Reply-To: <20100528122711.GA2486@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,72 +46,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: VDR User <user.vdr@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, gnutoo <GNUtoo@no-log.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 27 May 2010, VDR User wrote:
+On Fri, May 28, 2010 at 01:27:12PM +0100, Mark Brown wrote:
+> On Fri, May 28, 2010 at 12:06:25PM +1000, Stuart Longland wrote:
+> =
 
-> On Thu, May 27, 2010 at 12:37 AM, Jaroslav Kysela <perex@perex.cz> wrote:
->> Check any suspicious lines in /var/log/messages and follow proc xrun_debug
->> settings noted in bug above. I need at least 20 first lines after the
->> playback is started.
->
-> By this do you mean compile the drivers with pcm-xrun-debug
-> --with-debug=verbose --enable-verbose-procfs options?  Also, is there
-> a way to disable all the debug logging in maybe
-> /etc/modprobe.d/alsa-base.conf?  My system is installed on a CF and I
-> can't have alsa hammering it with writes is they're not needed but the
-> only way I know to turn the debug logging off is to not compile it in
-> the first place.
+> > I have a userspace application that mmaps the registers for SSI2 and
+> > AUDMUX, and sets this up, so no big deal ... the clock it receives is
+> > about 12.1MHz (12.093MHz according to the frequency counter here).
+> =
 
-I asked for one run, so you can recompile ALSA driver without debugging 
-support after test. I think that the problem might be that the WALLCLK 
-register gives wrong values for your hardware (but the Intel specification 
-says that implementation of this register is MANDATORY).
+> In production this should be done in-kernel.
 
-Here is a patch which might show the bug:
+Indeed... I spent some of yesterday afternoon doing exactly this...
+which involved some hacking in arch/arm/mach-mx2/clocks_imx27.c... and a
+_very_ ugly hack to get at the SSI2 registers in my machine driver.  It
+works, but with a few bugs, and will need a big cleanup before I can
+even consider putting it in mainline.
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 170610e..a1e7c97 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1891,6 +1891,7 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
-  	int stream;
+> > When I try to play audio; the AUDMUX configuration is as follows:
+> =
 
-  	wallclk = azx_readl(chip, WALLCLK) - azx_dev->start_wallclk;
-+	printk("wallclk: %u, %u\n", wallclk, azx_readl(chip, WALLCLK));
-  	if (wallclk < (azx_dev->period_wallclk * 2) / 3)
-  		return -1;	/* bogus (too early) interrupt */
+> > Port:   imx-ssi.0
+> > Raw:    cb205000
+> > TxFS output from SSI4, TxClk output from SSI4
+> > Port is symmetric
+> > Data received from SSI4
+> =
 
+> > Port:   SSI4
+> > Raw:    00001000
+> > TxFS input, TxClk input
+> > Port is symmetric
+> > Data received from imx-ssi.0
+> =
 
->> Also, use 'aplay -Dplughw:0' from the alsa-utils package to trigger the
->> playback.
->
-> The hdmi device I'm using is 1,3:
->
-> test:~$ aplay -l
-> **** List of PLAYBACK Hardware Devices ****
-> card 0: NVidia [HDA NVidia], device 0: ALC883 Analog [ALC883 Analog]
->  Subdevices: 1/1
->  Subdevice #0: subdevice #0
-> card 0: NVidia [HDA NVidia], device 1: ALC883 Digital [ALC883 Digital]
->  Subdevices: 1/1
->  Subdevice #0: subdevice #0
-> card 1: NVidia_1 [HDA NVidia], device 3: NVIDIA HDMI [NVIDIA HDMI]
->  Subdevices: 0/1
->  Subdevice #0: subdevice #0
->
-> So what exactly do I need to do then with aplay?  Do I need some file
-> to play?  Sorry, I've never used Linux as a desktop so I'm only
-> familiar with running VDR from command line.
+> This appears reasonable at first glance.
+> =
 
-If you use HDMI device, use 'aplay plughw:1,0 <some_wav_file>'. 
-Some_wav_file means a .wav type audio file.
+> > I'll have a look at the Eukrea CPUIMX27 and baseboard SoC support in a
+> > moment, since it looks very similar to what we're doing (in that it's a
+> > TI I=B2S CODEC hooked to an i.MX27 on SSI4) ... this might reveal clues
+> > as to what I'm doing wrong.
+> =
 
- 					Jaroslav
+> Have you also checked the pin mux configuration for the i.MX?
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+I'm not confident on how this is configured; but I have in an array;
+tx27_pins[] (defined in arch/arm/mach-mx2/mach-tx27.c):
+
+	/* SSI3 */
+	PC28_PF_SSI3_FS,
+	PC29_PF_SSI3_RXD,
+	PC30_PF_SSI3_TXD,
+	PC31_PF_SSI3_CLK,
+	/* SSI4 */
+	PC16_PF_SSI4_FS,
+	PC17_PF_SSI4_RXD,
+	PC18_PF_SSI4_TXD,
+	PC19_PF_SSI4_CLK,
+
+... which is later set up in tx27_board_init():
+	mxc_gpio_setup_multiple_pins(tx27_pins, ARRAY_SIZE(tx27_pins),
+			"tx27");
+
+This is what I've seen done on other boards (my mach-tx27.c is based on
+mach-mx27ads.c).
+Regards,
+-- =
+
+Stuart Longland (aka Redhatter, VK4MSL)      .'''.
+Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
+. . . . . . . . . . . . . . . . . . . . . .   .'.'
+http://dev.gentoo.org/~redhatter             :.'
+
+I haven't lost my mind...
+  ...it's backed up on a tape somewhere.
