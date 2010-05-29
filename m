@@ -1,29 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Mixer volume/decibel mapping
-Date: Sat, 29 May 2010 11:54:27 +0800
-Message-ID: <AANLkTilAwpOpYll92uUEqbEdCRtvv0a7So5LVxgUFReV@mail.gmail.com>
-References: <201005191834.57919.vand2@gmx.de>
-	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
-	<4BF629B3.9020904@ladisch.de>
-	<201005210951.36495.peter.ujfalusi@nokia.com>
-	<4BF658C6.4030404@ladisch.de>
-	<AANLkTikXWtp87B0Gq_B-vQZXZlBl_MEBqbuHt6N5cTbi@mail.gmail.com>
-	<4BFB8C89.3010207@ladisch.de>
-	<AANLkTimNj_7k_l7nKLk87towdjtN5j0CSdmws02gpg8v@mail.gmail.com>
-	<AANLkTim4sq_jBHYvxnLk2Pw5bdUDEMJahHPBJGIXH8ds@mail.gmail.com>
-	<htls8t$phr$2@dough.gmane.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Problem with snd_hda_intel from 05-27-2010 snapshot
+Date: Sat, 29 May 2010 08:25:11 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1005290822040.6856@eeebox2.perex-int.cz>
+References: <AANLkTilIX_UnMYcg8LAqkndS80nFppblW6erTm2e7o5X@mail.gmail.com>
+	<AANLkTinLbTMrYBhg6KO826slsugfEcU0_wYqukSQpQw2@mail.gmail.com>
+	<alpine.LNX.2.00.1005270931570.6856@eeebox2.perex-int.cz>
+	<AANLkTinvfYyOHzQrEfcBrDvDMW3Fc93oYrUHOcABm0Oa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id C17632446A
+Received: from mail1.perex.cz (unknown [212.20.107.53])
+	by alsa0.perex.cz (Postfix) with ESMTP id A48E62452D
 	for <alsa-devel@alsa-project.org>;
-	Sat, 29 May 2010 05:54:28 +0200 (CEST)
-Received: by pxi3 with SMTP id 3so871805pxi.38
-	for <alsa-devel@alsa-project.org>; Fri, 28 May 2010 20:54:27 -0700 (PDT)
-In-Reply-To: <htls8t$phr$2@dough.gmane.org>
+	Sat, 29 May 2010 08:25:12 +0200 (CEST)
+In-Reply-To: <AANLkTinvfYyOHzQrEfcBrDvDMW3Fc93oYrUHOcABm0Oa@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,39 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: VDR User <user.vdr@gmail.com>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/5/27 Colin Guthrie <gmane@colin.guthr.ie>
+On Thu, 27 May 2010, VDR User wrote:
 
-> 'Twas brillig, and Raymond Yau at 26/05/10 00:24 did gyre and gimble:
-> > only one of the PA developer complain about his HDA codec has incorrect
-> dB
-> > range but not willing to provide alsa-info.sh
+> On Thu, May 27, 2010 at 12:37 AM, Jaroslav Kysela <perex@perex.cz> wrote:
+>> Check any suspicious lines in /var/log/messages and follow proc xrun_debug
+>> settings noted in bug above. I need at least 20 first lines after the
+>> playback is started.
 >
-> I presume you mean me :) I had a hunt through the many mails you sent on
-> the previous thread and found such a request I'd obviously missed the
-> first time round. Sorry about that. Not unwilling, just unaware.
->
-> I've attached the output to a reply in the other thread.
->
-> > There is a patch which may affect the dB scale
-> >
-> >
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commitdiff;h=7c7767ebe2fa847c91a0dd5551ca422aba359473;hp=29fdbec2dcb1ce364812778271056aa9516ff3ed
->
-> Interesting. I wonder if this ties in time wise of when I noticed this
-> working..... If I find time to play, I'll maybe try reverting this to
-> see if it helps.
->
-> Col
->
-> --
->
+> By this do you mean compile the drivers with pcm-xrun-debug
+> --with-debug=verbose --enable-verbose-procfs options?  Also, is there
+> a way to disable all the debug logging in maybe
+> /etc/modprobe.d/alsa-base.conf?  My system is installed on a CF and I
+> can't have alsa hammering it with writes is they're not needed but the
+> only way I know to turn the debug logging off is to not compile it in
+> the first place.
 
-seem not related to your problem
+I asked for one run, so you can recompile ALSA driver without debugging 
+support after test. I think that the problem might be that the WALLCLK 
+register gives wrong values for your hardware (but the Intel specification 
+says that implementation of this register is MANDATORY).
 
-But anyone know why expose -96dB large volume scale can result in  in too
-large scale in percentage representation. ?
+Here is a patch which might show the bug:
 
-since 96dB is the theortical dynamic range of CD audio
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 170610e..a1e7c97 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1891,6 +1891,7 @@ static int azx_position_ok(struct azx *chip, struct azx_dev *azx_dev)
+  	int stream;
+
+  	wallclk = azx_readl(chip, WALLCLK) - azx_dev->start_wallclk;
++	printk("wallclk: %u, %u\n", wallclk, azx_readl(chip, WALLCLK));
+  	if (wallclk < (azx_dev->period_wallclk * 2) / 3)
+  		return -1;	/* bogus (too early) interrupt */
+
+
+>> Also, use 'aplay -Dplughw:0' from the alsa-utils package to trigger the
+>> playback.
+>
+> The hdmi device I'm using is 1,3:
+>
+> test:~$ aplay -l
+> **** List of PLAYBACK Hardware Devices ****
+> card 0: NVidia [HDA NVidia], device 0: ALC883 Analog [ALC883 Analog]
+>  Subdevices: 1/1
+>  Subdevice #0: subdevice #0
+> card 0: NVidia [HDA NVidia], device 1: ALC883 Digital [ALC883 Digital]
+>  Subdevices: 1/1
+>  Subdevice #0: subdevice #0
+> card 1: NVidia_1 [HDA NVidia], device 3: NVIDIA HDMI [NVIDIA HDMI]
+>  Subdevices: 0/1
+>  Subdevice #0: subdevice #0
+>
+> So what exactly do I need to do then with aplay?  Do I need some file
+> to play?  Sorry, I've never used Linux as a desktop so I'm only
+> familiar with running VDR from command line.
+
+If you use HDMI device, use 'aplay plughw:1,0 <some_wav_file>'. 
+Some_wav_file means a .wav type audio file.
+
+ 					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, Red Hat, Inc.
