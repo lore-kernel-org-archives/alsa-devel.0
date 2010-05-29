@@ -1,18 +1,18 @@
-From: Mark Hills <mark@pogo.org.uk>
-Subject: [PATCH 3/4] Revert "ALSA: snd-usb-caiaq: Set default
-	input mode of A4DJ"
-Date: Sat, 29 May 2010 16:53:25 +0100
-Message-ID: <1275148406-24596-3-git-send-email-mark@pogo.org.uk>
-References: <1275148406-24596-1-git-send-email-mark@pogo.org.uk>
+From: Berg <bergtian@gmail.com>
+Subject: How to support software mixing on QUALCOMM 72XX
+	without mmap?
+Date: Sun, 30 May 2010 00:54:17 +0800
+Message-ID: <AANLkTinNq7FzySM5mmW8eEImcdcBUiZ4Z3RZNb359Gd6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from wes.ijneb.com (mx.ij.cx [212.13.201.15])
-	by alsa0.perex.cz (Postfix) with ESMTP id 354982441A
-	for <alsa-devel@alsa-project.org>;
-	Sat, 29 May 2010 17:53:29 +0200 (CEST)
-In-Reply-To: <1275148406-24596-1-git-send-email-mark@pogo.org.uk>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id B3E8124153
+	for <Alsa-devel@alsa-project.org>;
+	Sat, 29 May 2010 18:54:19 +0200 (CEST)
+Received: by vws16 with SMTP id 16so1913739vws.38
+	for <Alsa-devel@alsa-project.org>; Sat, 29 May 2010 09:54:18 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,37 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Do not explicity set the default input mode. Use the hardware default
-of mode 0 ('Control vinyl'), which is now available.
+Hello,guys.
+    I'm porting ASLA1.0.23 to qualcomm 72xx base on ARM11.
+    The first instance,"aplay test.wav", works now, but the second
+instance should fail with "device busy" error message.
+    I have tried plug dmix and dshare "aply -D plug:mycard
+test.wav", but met a fail again for the soc chip doesn't support mmap.
+Of course,pcm_mycard is defined in /etc/asound.conf.
+    In my pc ,both above cmds work well .
 
-This reverts commit e3ca4c9.
+    Though,the document shows that:
+       NOTE: For ALSA 1.0.9rc2 and higher you don't need to setup
+dmix for analogue output. Dmix is enabled by default for soundcards
+which don't support hardware mixing. You still need to set it up for
+digital outputs.
+    My questions are:
+        1)Is  software mixing  implemented in ALSA Driver,or in ALSA LIB?
+        2)What could I do to make the software mixing work? Is there
+any special configure which need to adjust?
 
-Acked-by: Daniel Mack <daniel@caiaq.de>
-Signed-off-by: Mark Hills <mark@pogo.org.uk>
----
- sound/usb/caiaq/device.c |    6 ------
- 1 files changed, 0 insertions(+), 6 deletions(-)
+    And when testing on pc whth HD audio, I noticed that
+     A)when aplay instances runs WITHOUT dmix, the result of"cat
+/etc/one_of_my_aplay_pid/maps" should like:
+                    ...
+                    b331d000-b731e000 rw-s 00000000 00:15 862346
+/dev/shm/pulse-shm-2882420837
+                    ...
+    B)when aplay instances runs  WITH dmix,the result is:
+                 ...
+                 b7511000-b7519000 rw-s 00000000 00:0f 4560
+/dev/snd/pcmC0D0p
+                 b7519000-b751a000 rw-s 81000000 00:0f 4560
+/dev/snd/pcmC0D0p
+                 b751a000-b751b000 r--s 80000000 00:0f 4560
+/dev/snd/pcmC0D0p
+                 ...
+    So,the third question:
+        3) From A) and B),can I make a result that the mmap feacture
+is not necessary for the buildin software mixing ?
 
-diff --git a/sound/usb/caiaq/device.c b/sound/usb/caiaq/device.c
-index 8052718..bf71048 100644
---- a/sound/usb/caiaq/device.c
-+++ b/sound/usb/caiaq/device.c
-@@ -320,12 +320,6 @@ static void __devinit setup_card(struct snd_usb_caiaqdev *dev)
- 		}
- 
- 		break;
--	case USB_ID(USB_VID_NATIVEINSTRUMENTS, USB_PID_AUDIO4DJ):
--		/* Audio 4 DJ - default input mode to phono */
--		dev->control_state[0] = 2;
--		snd_usb_caiaq_send_command(dev, EP1_CMD_WRITE_IO,
--			dev->control_state, 1);
--		break;
- 	}
- 
- 	if (dev->spec.num_analog_audio_out +
--- 
-1.7.1
+    Expect your help,please
+
+   berg
