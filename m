@@ -1,17 +1,19 @@
 From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Use mbp31 quirk for an iMac model
-Date: Sun, 30 May 2010 10:02:57 -0400
-Message-ID: <AANLkTilBxctBVkkyQd1vexXn3JzLWofHPUL5a4IOjOx4@mail.gmail.com>
+Subject: Re: [PATCH] ALSA: hda: Use mbp31 quirk for an iMac
+	model
+Date: Sun, 30 May 2010 10:11:50 -0400
+Message-ID: <AANLkTinGRbUdPAg7J097lpVt2pAmu6eAGOOsrnZI3uES@mail.gmail.com>
+References: <AANLkTilBxctBVkkyQd1vexXn3JzLWofHPUL5a4IOjOx4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636e90a21822f750487d0320a
+Content-Type: multipart/mixed; boundary=001636e0ba034f3b3f0487d05284
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
-	[209.85.222.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id 713EA24565
+Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
+	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id C42C82456D
 	for <alsa-devel@alsa-project.org>;
-	Sun, 30 May 2010 16:02:58 +0200 (CEST)
-Received: by pzk40 with SMTP id 40so1572285pzk.23
-	for <alsa-devel@alsa-project.org>; Sun, 30 May 2010 07:02:57 -0700 (PDT)
+	Sun, 30 May 2010 16:11:51 +0200 (CEST)
+Received: by pwj9 with SMTP id 9so1316620pwj.38
+	for <alsa-devel@alsa-project.org>; Sun, 30 May 2010 07:11:50 -0700 (PDT)
+In-Reply-To: <AANLkTilBxctBVkkyQd1vexXn3JzLWofHPUL5a4IOjOx4@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,54 +27,56 @@ To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
 Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---001636e90a21822f750487d0320a
+--001636e0ba034f3b3f0487d05284
 Content-Type: text/plain; charset=UTF-8
 
-Hi,
+On Sun, May 30, 2010 at 10:02 AM, Daniel Chen <seven.steps@gmail.com> wrote:
+> Attached is a patch against sound-2.6 master enabling audible playback
+> and capture for the original reporter's iMac. Please apply.
 
-Attached is a patch against sound-2.6 master enabling audible playback
-and capture for the original reporter's iMac. Please apply.
-
-This patch is applicable to all 2.6.3x stable series.
+Oops, I just noticed that the description is imprecise. Please use
+this patch instead, which correctly lists the model quirk used in the
+description as mb31 (not mbp31). While the driver change is not
+affected, I'd like the description to match the actual change.
 
 Best,
 -Dan
 
---001636e90a21822f750487d0320a
+--001636e0ba034f3b3f0487d05284
 Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-ALSA-hda-Use-mbp31-quirk-for-an-iMac-model.patch"
+	name="0001-ALSA-hda-Use-mb31-quirk-for-an-iMac-model.patch"
 Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Use-mbp31-quirk-for-an-iMac-model.patch"
+	filename="0001-ALSA-hda-Use-mb31-quirk-for-an-iMac-model.patch"
 Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g9txw9580
+X-Attachment-Id: f_g9ty85d11
 
-RnJvbSA2ZTAyNjFkNWZiMDY0ODI5OTc4OTc2YjYzOWU5NGVjZjFmOTYzNzZkIE1vbiBTZXAgMTcg
+RnJvbSBmNmViZDA2ZThmZWY0MWFkYjk0YTZkZWI2ZDAyODRkMDI2MWNhYzY1IE1vbiBTZXAgMTcg
 MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
 dGU6IFN1biwgMzAgTWF5IDIwMTAgMDk6NTU6MjMgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGE6IFVzZSBtYnAzMSBxdWlyayBmb3IgYW4gaU1hYyBtb2RlbAoKQnVnTGluazogaHR0cHM6
-Ly9sYXVuY2hwYWQubmV0L2J1Z3MvNTQyNTUwCgpTeW1wdG9tOiBPbiB0aGUgcmVwb3J0ZXIncyBp
-TWFjLCBpbiBVYnVudHUgMTAuMDQgTFRTIG5laXRoZXIgcGxheWJhY2sKbm9yIGNhcHR1cmUgYXBw
-ZWFyIGF1ZGlibGUgb3V0LW9mLXRoZS1ib3guCgpUZXN0IGNhc2U6IEJvb3QgZnJvbSBhbiBVYnVu
-dHUgMTAuMDQgTFRTIGxpdmUgY2Qgb3IgZnJvbSBhbiBpbnN0YWxsZWQKY29uZmlndXJhdGlvbiBh
-bmQgYXR0ZW1wdCB0byBwbGF5IG9yIGNhcHR1cmUgYXVkaW8uCgpSZXNvbHV0aW9uOiBTcGVjaWZ5
-IHRoZSBtYnAzMSBxdWlyayBmb3IgdGhpcyBtYWNoaW5lIGluIHRoZSBjb2RlYyBTU0lECnRhYmxl
-LgoKUmVwb3J0ZWQtYW5kLVRlc3RlZC1CeTogZjNhOTcKQ2M6IDxzdGFibGVAa2VybmVsLm9yZz4K
-U2lnbmVkLW9mZi1ieTogRGFuaWVsIFQgQ2hlbiA8Y3JpbXN1bkB1YnVudHUuY29tPgotLS0KIHNv
-dW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIHwgICAgMSArCiAxIGZpbGVzIGNoYW5nZWQsIDEg
-aW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRh
-L3BhdGNoX3JlYWx0ZWsuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IDE3
-ZDQ1NDguLmQ3OTJjZGQgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5j
-CisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC05NDc2LDYgKzk0NzYsNyBA
-QCBzdGF0aWMgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjODgyX3NzaWRfY2ZnX3RibFtdID0gewog
-CVNORF9QQ0lfUVVJUksoMHgxMDZiLCAweDEwMDAsICJpTWFjIDI0IiwgQUxDODg1X0lNQUMyNCks
-CiAJU05EX1BDSV9RVUlSSygweDEwNmIsIDB4MjgwMCwgIkFwcGxlVFYiLCBBTEM4ODVfSU1BQzI0
-KSwKIAlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHgyYzAwLCAiTWFjYm9va1BybyByZXYzIiwgQUxD
-ODg1X01CUDMpLAorCVNORF9QQ0lfUVVJUksoMHgxMDZiLCAweDMwMDAsICJpTWFjIiwgQUxDODg5
-QV9NQjMxKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHgzNjAwLCAiTWFjYm9vayAzLDEiLCBB
-TEM4ODlBX01CMzEpLAogCVNORF9QQ0lfUVVJUksoMHgxMDZiLCAweDM4MDAsICJNYWNib29rUHJv
-IDQsMSIsIEFMQzg4NV9NQlAzKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHgzZTAwLCAiaU1h
-YyAyNCBBbHVtaW51bSIsIEFMQzg4NV9JTUFDMjQpLAotLSAKMS43LjAuNAoK
---001636e90a21822f750487d0320a
+OiBoZGE6IFVzZSBtYjMxIHF1aXJrIGZvciBhbiBpTWFjIG1vZGVsCgpCdWdMaW5rOiBodHRwczov
+L2xhdW5jaHBhZC5uZXQvYnVncy81NDI1NTAKClN5bXB0b206IE9uIHRoZSByZXBvcnRlcidzIGlN
+YWMsIGluIFVidW50dSAxMC4wNCBMVFMgbmVpdGhlciBwbGF5YmFjawpub3IgY2FwdHVyZSBhcHBl
+YXIgYXVkaWJsZSBvdXQtb2YtdGhlLWJveC4KClRlc3QgY2FzZTogQm9vdCBmcm9tIGFuIFVidW50
+dSAxMC4wNCBMVFMgbGl2ZSBjZCBvciBmcm9tIGFuIGluc3RhbGxlZApjb25maWd1cmF0aW9uIGFu
+ZCBhdHRlbXB0IHRvIHBsYXkgb3IgY2FwdHVyZSBhdWRpby4KClJlc29sdXRpb246IFNwZWNpZnkg
+dGhlIG1iMzEgcXVpcmsgZm9yIHRoaXMgbWFjaGluZSBpbiB0aGUgY29kZWMgU1NJRAp0YWJsZS4K
+ClJlcG9ydGVkLWFuZC1UZXN0ZWQtQnk6IGYzYTk3CkNjOiA8c3RhYmxlQGtlcm5lbC5vcmc+ClNp
+Z25lZC1vZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5AdWJ1bnR1LmNvbT4KLS0tCiBzb3Vu
+ZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYyB8ICAgIDEgKwogMSBmaWxlcyBjaGFuZ2VkLCAxIGlu
+c2VydGlvbnMoKyksIDAgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9w
+YXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwppbmRleCAxN2Q0
+NTQ4Li5kNzkyY2RkIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwor
+KysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwpAQCAtOTQ3Niw2ICs5NDc2LDcgQEAg
+c3RhdGljIHN0cnVjdCBzbmRfcGNpX3F1aXJrIGFsYzg4Ml9zc2lkX2NmZ190YmxbXSA9IHsKIAlT
+TkRfUENJX1FVSVJLKDB4MTA2YiwgMHgxMDAwLCAiaU1hYyAyNCIsIEFMQzg4NV9JTUFDMjQpLAog
+CVNORF9QQ0lfUVVJUksoMHgxMDZiLCAweDI4MDAsICJBcHBsZVRWIiwgQUxDODg1X0lNQUMyNCks
+CiAJU05EX1BDSV9RVUlSSygweDEwNmIsIDB4MmMwMCwgIk1hY2Jvb2tQcm8gcmV2MyIsIEFMQzg4
+NV9NQlAzKSwKKwlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHgzMDAwLCAiaU1hYyIsIEFMQzg4OUFf
+TUIzMSksCiAJU05EX1BDSV9RVUlSSygweDEwNmIsIDB4MzYwMCwgIk1hY2Jvb2sgMywxIiwgQUxD
+ODg5QV9NQjMxKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA2YiwgMHgzODAwLCAiTWFjYm9va1BybyA0
+LDEiLCBBTEM4ODVfTUJQMyksCiAJU05EX1BDSV9RVUlSSygweDEwNmIsIDB4M2UwMCwgImlNYWMg
+MjQgQWx1bWludW0iLCBBTEM4ODVfSU1BQzI0KSwKLS0gCjEuNy4wLjQKCg==
+--001636e0ba034f3b3f0487d05284
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -83,4 +87,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---001636e90a21822f750487d0320a--
+--001636e0ba034f3b3f0487d05284--
