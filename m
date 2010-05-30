@@ -1,18 +1,17 @@
-From: GNUtoo <GNUtoo@no-log.org>
-Subject: Re: How to support software mixing on QUALCOMM 72XX
- without mmap?
-Date: Sat, 29 May 2010 23:40:10 +0200
-Message-ID: <1275169210.4749.6.camel@gnutoo-desktop>
-References: <AANLkTinNq7FzySM5mmW8eEImcdcBUiZ4Z3RZNb359Gd6@mail.gmail.com>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: [PATCH] ALSA: hda: Use LPIB for an ASUS device
+Date: Sun, 30 May 2010 01:24:23 -0400
+Message-ID: <AANLkTikHAgZHU-1SVCXDSfYk7A7o2fnjISIz8_Rr-pxn@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary=00504502cc48fd4a770487c8f30b
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-OUT09A.alice.it (smtp-OUT09A.alice.it [85.33.3.9])
-	by alsa0.perex.cz (Postfix) with ESMTP id C940D1037FB
-	for <Alsa-devel@alsa-project.org>;
-	Sat, 29 May 2010 23:40:19 +0200 (CEST)
-In-Reply-To: <AANLkTinNq7FzySM5mmW8eEImcdcBUiZ4Z3RZNb359Gd6@mail.gmail.com>
+Received: from mail-pz0-f202.google.com (mail-pz0-f202.google.com
+	[209.85.222.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2ADE4103807
+	for <alsa-devel@alsa-project.org>;
+	Sun, 30 May 2010 07:24:24 +0200 (CEST)
+Received: by pzk40 with SMTP id 40so1393360pzk.23
+	for <alsa-devel@alsa-project.org>; Sat, 29 May 2010 22:24:23 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,61 +21,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Berg <bergtian@gmail.com>
-Cc: Alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2010-05-30 at 00:54 +0800, Berg wrote:
-> Hello,guys.
->     I'm porting ASLA1.0.23 to qualcomm 72xx base on ARM11.
->     The first instance,"aplay test.wav", works now, but the second
-> instance should fail with "device busy" error message.
->     I have tried plug dmix and dshare "aply -D plug:mycard
-> test.wav", but met a fail again for the soc chip doesn't support mmap.
-> Of course,pcm_mycard is defined in /etc/asound.conf.
->     In my pc ,both above cmds work well .
-> 
->     Though,the document shows that:
->        NOTE: For ALSA 1.0.9rc2 and higher you don't need to setup
-> dmix for analogue output. Dmix is enabled by default for soundcards
-> which don't support hardware mixing. You still need to set it up for
-> digital outputs.
->     My questions are:
->         1)Is  software mixing  implemented in ALSA Driver,or in ALSA LIB?
->         2)What could I do to make the software mixing work? Is there
-> any special configure which need to adjust?
-> 
->     And when testing on pc whth HD audio, I noticed that
->      A)when aplay instances runs WITHOUT dmix, the result of"cat
-> /etc/one_of_my_aplay_pid/maps" should like:
->                     ...
->                     b331d000-b731e000 rw-s 00000000 00:15 862346
-> /dev/shm/pulse-shm-2882420837
->                     ...
->     B)when aplay instances runs  WITH dmix,the result is:
->                  ...
->                  b7511000-b7519000 rw-s 00000000 00:0f 4560
-> /dev/snd/pcmC0D0p
->                  b7519000-b751a000 rw-s 81000000 00:0f 4560
-> /dev/snd/pcmC0D0p
->                  b751a000-b751b000 r--s 80000000 00:0f 4560
-> /dev/snd/pcmC0D0p
->                  ...
->     So,the third question:
->         3) From A) and B),can I make a result that the mmap feacture
-> is not necessary for the buildin software mixing ?
-> 
->     Expect your help,please
-> 
->    berg
-hi, on which driver do you base your work? codeaurora?
-I've a driver that works with aplay and mplayer but that has some minor
-buffer underrun(I need some time to fix that),it works fine for music
-but not for videos.
-look inside http://gitorious.org/htc-msm-2-6-32/leviathan-incoming
-basically the fix for making mplayer work(the fix was suggested by by
-Thingol on IRC,and the debugging/explaining of the problem was done by
-me) is in  the following commit:
-deabc32225429b3c0db44f7e62d95d0d2525290b
+--00504502cc48fd4a770487c8f30b
+Content-Type: text/plain; charset=UTF-8
 
-Denis.
+Hi,
+
+Attached is a patch against sound-2.6 master that enables the original
+reporter to adjust capture volume through PulseAudio without the
+daemon crashing.
+
+This patch is applicable to all 2.6.3x stable series.
+
+Best,
+-Dan
+
+--00504502cc48fd4a770487c8f30b
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-ALSA-hda-Use-LPIB-for-an-ASUS-device.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-Use-LPIB-for-an-ASUS-device.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g9tfctfp0
+
+RnJvbSBiNWViZDQyNWRhOTc2Zjc4NDhlY2Y2YzNmN2M2NWYwNWVkYjI5N2U3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
+dGU6IFN1biwgMzAgTWF5IDIwMTAgMDE6MTc6MDMgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGE6IFVzZSBMUElCIGZvciBhbiBBU1VTIGRldmljZQoKQnVnTGluazogaHR0cHM6Ly9sYXVu
+Y2hwYWQubmV0L2J1Z3MvNDY1OTQyCgpTeW1wdG9tOiBPbiB0aGUgcmVwb3J0ZXIncyBBU1VTIGRl
+dmljZSwgdXNpbmcgUHVsc2VBdWRpbyBpbiBVYnVudHUgMTAuMDQKTFRTIHJlc3VsdHMgaW4gdGhl
+IFBBIGRhZW1vbiBjcmFzaGluZyBzaG9ydGx5IGFmdGVyIGF0dGVtcHRpbmcgdG8gc2VsZWN0CmNh
+cHR1cmUgb3IgdG8gY29uZmlndXJlIHRoZSBhdWRpbyBoYXJkd2FyZSBwcm9maWxlLgoKVGVzdCBj
+YXNlOiBVc2luZyBVYnVudHUgMTAuMDQgTFRTIChMaW51eCAyLjYuMzIuMTIpLCBMaW51eCAyLjYu
+MzMsIG9yCkxpbnV4IDIuNi4zNCwgYWRqdXN0IHRoZSBIREEgZGV2aWNlJ3MgY2FwdHVyZSB2b2x1
+bWUgd2l0aCBQdWxzZUF1ZGlvLgoKUmVzb2x1dGlvbjogYWRkIFNTSUQgZm9yIHRoaXMgbWFjaGlu
+ZSB0byB0aGUgcG9zaXRpb25fZml4IHF1aXJrIHRhYmxlLApleHBsaWNpdGx5IHNwZWNpZnlpbmcg
+dGhlIExQSUIgbWV0aG9kLgoKUmVwb3J0ZWQtYW5kLVRlc3RlZC1CeTogSXJpaGFwZXRpCkNjOiA8
+c3RhYmxlQGtlcm5lbC5vcmc+ClNpZ25lZC1vZmYtYnk6IERhbmllbCBUIENoZW4gPGNyaW1zdW5A
+dWJ1bnR1LmNvbT4KLS0tCiBzb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jIHwgICAgMSArCiAxIGZp
+bGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQg
+YS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jIGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwpp
+bmRleCBkYzc5NTY0Li43YzU0YTQwIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRl
+bC5jCisrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKQEAgLTIyODgsNiArMjI4OCw3IEBA
+IHN0YXRpYyBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBwb3NpdGlvbl9maXhfbGlzdFtdIF9fZGV2aW5p
+dGRhdGEgPSB7CiAJU05EX1BDSV9RVUlSSygweDEwMjgsIDB4MDFmNiwgIkRlbGwgTGF0aXR1ZGUg
+MTMxTCIsIFBPU19GSVhfTFBJQiksCiAJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4MzA2ZCwgIkhQ
+IGR2MyIsIFBPU19GSVhfTFBJQiksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4ODEzZCwgIkFT
+VVMgUDVBRDIiLCBQT1NfRklYX0xQSUIpLAorCVNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDgxYjMs
+ICJBU1VTIiwgUE9TX0ZJWF9MUElCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA0ZCwgMHg5MDY5LCAi
+U29ueSBWUENTMTFWOUUiLCBQT1NfRklYX0xQSUIpLAogCVNORF9QQ0lfUVVJUksoMHgxMTA2LCAw
+eDMyODgsICJBU1VTIE0yVi1NWCBTRSIsIFBPU19GSVhfTFBJQiksCiAJU05EX1BDSV9RVUlSSygw
+eDExNzksIDB4ZmYxMCwgIlRvc2hpYmEgQTEwMC0yNTkiLCBQT1NfRklYX0xQSUIpLAotLSAKMS43
+LjAuNAoK
+--00504502cc48fd4a770487c8f30b
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--00504502cc48fd4a770487c8f30b--
