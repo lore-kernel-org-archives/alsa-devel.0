@@ -1,109 +1,40 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [alsa-devel] [RFC PATCH 5/5] ASoC: omap-mcbsp: Place correct
- constraints for streams
-Date: Mon, 31 May 2010 11:00:21 +0100
-Message-ID: <1275300021.3174.5.camel@odin>
-References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com>
-	 <1275293810-31984-6-git-send-email-peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/2] i.MX ssi: MX31ads sound support should
+ depend on MACH_MX31ADS
+Date: Mon, 31 May 2010 11:12:01 +0100
+Message-ID: <20100531101200.GA3489@rakim.wolfsonmicro.main>
+References: <1275295794-3168-1-git-send-email-s.hauer@pengutronix.de>
+	<1275295794-3168-2-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1275293810-31984-6-git-send-email-peter.ujfalusi@nokia.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com, ext-eero.nurkkala@nokia.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 93965103821
+	for <alsa-devel@alsa-project.org>;
+	Mon, 31 May 2010 12:12:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1275295794-3168-2-git-send-email-s.hauer@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-05-31 at 11:16 +0300, Peter Ujfalusi wrote:
-> OMAP McBSP FIFO is word structured:
-> McBSP2 has 1024 + 256 = 1280 word long buffer,
-> McBSP1,3,4,5 has 128 word long buffer
-> 
-> This means, that the size of the FIFO
-> depends on the McBSP word size configuration.
-> For example on McBSP3:
-> 16bit samples: size is 128 * 2 = 256 bytes
-> 32bit samples: size is 128 * 4 = 512 bytes
-> It is simpler to place constraint for buffer and period based on channels.
-> McBSP3 as example again (16 or 32 bit samples):
-> 1 channel (mono): size is 128 frames (128 words)
-> 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
-> 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
-> 
-> Use the second method to place hw_rule on buffer size, and in threshold
-> mode to period size.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
->  sound/soc/omap/omap-mcbsp.c |   98 +++++++++++++++++++++++++++++++++---------
->  1 files changed, 77 insertions(+), 21 deletions(-)
-> 
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index b06d8f1..d6ed761 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-> @@ -173,6 +173,52 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
->  		omap_mcbsp_set_rx_threshold(mcbsp_data->bus_id, words);
->  }
->  
-> +static int hw_rule_bsize_by_channels(struct snd_pcm_hw_params *params,
-> +				    struct snd_pcm_hw_rule *rule)
-> +{
-> +	struct snd_interval *bs = hw_param_interval(params,
-> +					SNDRV_PCM_HW_PARAM_BUFFER_SIZE);
-> +	struct snd_interval *c = hw_param_interval(params,
-> +					SNDRV_PCM_HW_PARAM_CHANNELS);
+On Mon, May 31, 2010 at 10:49:53AM +0200, Sascha Hauer wrote:
 
-Best to make these variable names more meaningful.
+>  config SND_MXC_SOC_WM1133_EV1
+>  	tristate "Audio on the the i.MX31ADS with WM1133-EV1 fitted"
+> -	depends on SND_IMX_SOC && EXPERIMENTAL
+> +	depends on SND_IMX_SOC && MACH_MX31ADS && EXPERIMENTAL
 
-> +	struct omap_mcbsp_data *mcbsp_data = rule->private;
-> +	struct snd_interval frames;
-> +	int size;
-> +
-> +	snd_interval_any(&frames);
-> +	size = omap_mcbsp_get_fifo_size(mcbsp_data->bus_id);
-> +
-> +	frames.min = size / c->min;
-> +	frames.integer = 1;
-> +	return snd_interval_refine(bs, &frames);
-> +
-> +}
-> +
-> +static int hw_rule_psize_by_channels(struct snd_pcm_hw_params *params,
-> +				    struct snd_pcm_hw_rule *rule)
-> +{
-> +	struct snd_interval *ps = hw_param_interval(params,
-> +					SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
-> +	struct snd_interval *c = hw_param_interval(params,
-> +					SNDRV_PCM_HW_PARAM_CHANNELS);
-
-ditto
-
-> +	struct snd_pcm_substream *substream = rule->private;
-> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-> +	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-> +	struct snd_interval frames;
-> +	int size;
-> +
-> +	snd_interval_any(&frames);
-> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +		size = omap_mcbsp_get_max_tx_threshold(mcbsp_data->bus_id);
-> +	else
-> +		size = omap_mcbsp_get_max_rx_threshold(mcbsp_data->bus_id);
-> +
-> +	frames.min = 8;
-> +	frames.max = size / c->min;
-> +	frames.integer = 1;
-> +	return snd_interval_refine(ps, &frames);
-> +}
-
-Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
-
+This should depend on the 1133-EV1, not the core machine.  The module
+has a dependency on the core machine already and is required to use the
+drivers.
