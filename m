@@ -1,58 +1,109 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: i.MX SSI Kconfig fixes
-Date: Mon, 31 May 2010 10:40:00 +0100
-Message-ID: <1275298800.3174.1.camel@odin>
-References: <1275295794-3168-1-git-send-email-s.hauer@pengutronix.de>
+Subject: Re: [alsa-devel] [RFC PATCH 5/5] ASoC: omap-mcbsp: Place correct
+ constraints for streams
+Date: Mon, 31 May 2010 11:00:21 +0100
+Message-ID: <1275300021.3174.5.camel@odin>
+References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com>
+	 <1275293810-31984-6-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9EFF0103853
-	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 11:40:04 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so283784wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 02:40:04 -0700 (PDT)
-In-Reply-To: <1275295794-3168-1-git-send-email-s.hauer@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1275293810-31984-6-git-send-email-peter.ujfalusi@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com, ext-eero.nurkkala@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-05-31 at 10:49 +0200, Sascha Hauer wrote:
-> Hi,
+On Mon, 2010-05-31 at 11:16 +0300, Peter Ujfalusi wrote:
+> OMAP McBSP FIFO is word structured:
+> McBSP2 has 1024 + 256 = 1280 word long buffer,
+> McBSP1,3,4,5 has 128 word long buffer
 > 
-> Two small fixes for i.MX SSI.
+> This means, that the size of the FIFO
+> depends on the McBSP word size configuration.
+> For example on McBSP3:
+> 16bit samples: size is 128 * 2 = 256 bytes
+> 32bit samples: size is 128 * 4 = 512 bytes
+> It is simpler to place constraint for buffer and period based on channels.
+> McBSP3 as example again (16 or 32 bit samples):
+> 1 channel (mono): size is 128 frames (128 words)
+> 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
+> 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
 > 
-> Sascha
+> Use the second method to place hw_rule on buffer size, and in threshold
+> mode to period size.
 > 
-> The following changes since commit 67a3e12b05e055c0415c556a315a3d3eb637e29e:
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+>  sound/soc/omap/omap-mcbsp.c |   98 +++++++++++++++++++++++++++++++++---------
+>  1 files changed, 77 insertions(+), 21 deletions(-)
 > 
->   Linux 2.6.35-rc1 (2010-05-30 13:21:02 -0700)
-> 
-> are available in the git repository at:
->   git://git.pengutronix.de/git/imx/linux-2.6.git imx-ssi-fixes
-> 
-> Sascha Hauer (2):
->       i.MX ssi: MX31ads sound support should depend on MACH_MX31ADS
->       i.MX ssi: Add missing Kconfig entry for Phytec boards
-> 
->  sound/soc/imx/Kconfig |   11 ++++++++++-
->  1 files changed, 10 insertions(+), 1 deletions(-)
+> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+> index b06d8f1..d6ed761 100644
+> --- a/sound/soc/omap/omap-mcbsp.c
+> +++ b/sound/soc/omap/omap-mcbsp.c
+> @@ -173,6 +173,52 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
+>  		omap_mcbsp_set_rx_threshold(mcbsp_data->bus_id, words);
+>  }
+>  
+> +static int hw_rule_bsize_by_channels(struct snd_pcm_hw_params *params,
+> +				    struct snd_pcm_hw_rule *rule)
+> +{
+> +	struct snd_interval *bs = hw_param_interval(params,
+> +					SNDRV_PCM_HW_PARAM_BUFFER_SIZE);
+> +	struct snd_interval *c = hw_param_interval(params,
+> +					SNDRV_PCM_HW_PARAM_CHANNELS);
 
-Both
+Best to make these variable names more meaningful.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> +	struct omap_mcbsp_data *mcbsp_data = rule->private;
+> +	struct snd_interval frames;
+> +	int size;
+> +
+> +	snd_interval_any(&frames);
+> +	size = omap_mcbsp_get_fifo_size(mcbsp_data->bus_id);
+> +
+> +	frames.min = size / c->min;
+> +	frames.integer = 1;
+> +	return snd_interval_refine(bs, &frames);
+> +
+> +}
+> +
+> +static int hw_rule_psize_by_channels(struct snd_pcm_hw_params *params,
+> +				    struct snd_pcm_hw_rule *rule)
+> +{
+> +	struct snd_interval *ps = hw_param_interval(params,
+> +					SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
+> +	struct snd_interval *c = hw_param_interval(params,
+> +					SNDRV_PCM_HW_PARAM_CHANNELS);
+
+ditto
+
+> +	struct snd_pcm_substream *substream = rule->private;
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+> +	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
+> +	struct snd_interval frames;
+> +	int size;
+> +
+> +	snd_interval_any(&frames);
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +		size = omap_mcbsp_get_max_tx_threshold(mcbsp_data->bus_id);
+> +	else
+> +		size = omap_mcbsp_get_max_rx_threshold(mcbsp_data->bus_id);
+> +
+> +	frames.min = 8;
+> +	frames.max = size / c->min;
+> +	frames.integer = 1;
+> +	return snd_interval_refine(ps, &frames);
+> +}
+
+Thanks
+
+Liam
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
 http://www.slimlogic.co.uk
+
