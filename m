@@ -1,7 +1,8 @@
 From: apatard@mandriva.com
-Subject: [patch 1/4] orion/kirkwood: add audio functions.
-Date: Mon, 31 May 2010 13:49:12 +0200
-Message-ID: <20100531115003.236348260@mandriva.com>
+Subject: [patch 4/4] kirkwood: Add audio support to openrd
+	client platforms
+Date: Mon, 31 May 2010 13:49:15 +0200
+Message-ID: <20100531115004.101767088@mandriva.com>
 References: <20100527125737.524554667@mandriva.com>
 	<20100527130337.925751129@mandriva.com>
 	<20100531111422.GF3489@rakim.wolfsonmicro.main>
@@ -11,10 +12,10 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from jules.rtp-net.org (sat78-1-82-232-42-61.fbx.proxad.net
-	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id EE63524151
+	[82.232.42.61]) by alsa0.perex.cz (Postfix) with ESMTP id 02F4724337
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 13:50:19 +0200 (CEST)
-Content-Disposition: inline; filename=kirkwood_add_audio_dev.patch
+	Mon, 31 May 2010 13:50:20 +0200 (CEST)
+Content-Disposition: inline; filename=openrd_audio.patch
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,121 +29,167 @@ To: alsa-devel@alsa-project.org
 Cc: nico@fluxnic.net, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, Arnaud Patard <apatard@mandriva.com>, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch add audio related definitions and functions
-
+This patch is adding support for openrd client platforms. It's using
+the cs42l51 codec and has one mic and one speaker plugs.
 
 Signed-off-by: Arnaud Patard <apatard@mandriva.com>
 
-Index: sound-2.6/arch/arm/mach-kirkwood/common.c
+Index: sound-2.6/sound/soc/kirkwood/Kconfig
 ===================================================================
---- sound-2.6.orig/arch/arm/mach-kirkwood/common.c	2010-05-31 13:30:24.000000000 +0200
-+++ sound-2.6/arch/arm/mach-kirkwood/common.c	2010-05-31 13:35:21.567036892 +0200
-@@ -25,6 +25,7 @@
- #include <asm/mach/time.h>
- #include <mach/kirkwood.h>
- #include <mach/bridge-regs.h>
-+#include <plat/audio.h>
- #include <plat/cache-feroceon-l2.h>
- #include <plat/ehci-orion.h>
- #include <plat/mvsdio.h>
-@@ -864,6 +865,42 @@ struct sys_timer kirkwood_timer = {
- 	.init = kirkwood_timer_init,
- };
+--- sound-2.6.orig/sound/soc/kirkwood/Kconfig	2010-05-27 14:09:55.807674540 +0200
++++ sound-2.6/sound/soc/kirkwood/Kconfig	2010-05-27 14:10:03.887694459 +0200
+@@ -9,3 +9,12 @@ config SND_KIRKWOOD_SOC
+ config SND_KIRKWOOD_SOC_I2S
+ 	tristate
  
-+/*****************************************************************************
-+ * Audio
-+ ****************************************************************************/
-+static struct resource kirkwood_i2s_resources[] = {
-+	[0] = {
-+		.start  = AUDIO_PHYS_BASE,
-+		.end    = AUDIO_PHYS_BASE + SZ_16K - 1,
-+		.flags  = IORESOURCE_MEM,
-+	},
-+	[1] = {
-+		.start  = IRQ_KIRKWOOD_I2S,
-+		.end    = IRQ_KIRKWOOD_I2S,
-+		.flags  = IORESOURCE_IRQ,
-+	},
-+};
++config SND_KIRKWOOD_SOC_OPENRD
++	tristate "SoC Audio support for Kirkwood Openrd Client"
++	depends on SND_KIRKWOOD_SOC && MACH_OPENRD_CLIENT
++	select SND_KIRKWOOD_SOC_I2S
++	select SND_SOC_CS42L51
++	help
++	  Say Y if you want to add support for SoC audio on
++	  Openrd Client.
 +
-+static struct kirkwood_asoc_platform_data kirkwood_i2s_data = {
-+	.dram        = &kirkwood_mbus_dram_info,
-+	.burst       = 128,
-+};
-+
-+static struct platform_device kirkwood_i2s_device = {
-+	.name		= "kirkwood-i2s",
-+	.id		= -1,
-+	.num_resources	= ARRAY_SIZE(kirkwood_i2s_resources),
-+	.resource	= kirkwood_i2s_resources,
-+	.dev		= {
-+		.platform_data	= &kirkwood_i2s_data,
-+	},
-+};
-+
-+void __init kirkwood_audio_init(void)
-+{
-+	kirkwood_clk_ctrl |= CGC_AUDIO;
-+	platform_device_register(&kirkwood_i2s_device);
-+}
- 
- /*****************************************************************************
-  * General
-@@ -923,6 +960,7 @@ void __init kirkwood_init(void)
- 	kirkwood_spi_plat_data.tclk = kirkwood_tclk;
- 	kirkwood_uart0_data[0].uartclk = kirkwood_tclk;
- 	kirkwood_uart1_data[0].uartclk = kirkwood_tclk;
-+	kirkwood_i2s_data.tclk = kirkwood_tclk;
- 
- 	/*
- 	 * Disable propagation of mbus errors to the CPU local bus,
-Index: sound-2.6/arch/arm/mach-kirkwood/common.h
+Index: sound-2.6/sound/soc/kirkwood/Makefile
 ===================================================================
---- sound-2.6.orig/arch/arm/mach-kirkwood/common.h	2010-05-31 13:30:24.000000000 +0200
-+++ sound-2.6/arch/arm/mach-kirkwood/common.h	2010-05-31 13:35:21.579077473 +0200
-@@ -17,6 +17,7 @@ struct mv_sata_platform_data;
- struct mvsdio_platform_data;
- struct mtd_partition;
- struct mtd_info;
-+struct kirkwood_asoc_platform_data;
+--- sound-2.6.orig/sound/soc/kirkwood/Makefile	2010-05-27 14:09:55.867694480 +0200
++++ sound-2.6/sound/soc/kirkwood/Makefile	2010-05-27 14:10:03.953137222 +0200
+@@ -4,3 +4,6 @@ snd-soc-kirkwood-i2s-objs := kirkwood-i2
+ obj-$(CONFIG_SND_KIRKWOOD_SOC) += snd-soc-kirkwood.o
+ obj-$(CONFIG_SND_KIRKWOOD_SOC_I2S) += snd-soc-kirkwood-i2s.o
  
- /*
-  * Basic Kirkwood init functions used early by machine-setup.
-@@ -43,6 +44,7 @@ void kirkwood_uart0_init(void);
- void kirkwood_uart1_init(void);
- void kirkwood_nand_init(struct mtd_partition *parts, int nr_parts, int delay);
- void kirkwood_nand_init_rnb(struct mtd_partition *parts, int nr_parts, int (*dev_ready)(struct mtd_info *));
-+void kirkwood_audio_init(void);
- 
- extern int kirkwood_tclk;
- extern struct sys_timer kirkwood_timer;
-Index: sound-2.6/arch/arm/mach-kirkwood/include/mach/kirkwood.h
-===================================================================
---- sound-2.6.orig/arch/arm/mach-kirkwood/include/mach/kirkwood.h	2010-05-31 13:25:39.000000000 +0200
-+++ sound-2.6/arch/arm/mach-kirkwood/include/mach/kirkwood.h	2010-05-31 13:35:21.611577218 +0200
-@@ -96,6 +96,9 @@
- 
- #define SDIO_PHYS_BASE		(KIRKWOOD_REGS_PHYS_BASE | 0x90000)
- 
-+#define AUDIO_PHYS_BASE		(KIRKWOOD_REGS_PHYS_BASE | 0xA0000)
-+#define AUDIO_VIRT_BASE		(KIRKWOOD_REGS_VIRT_BASE | 0xA0000)
++snd-soc-openrd-objs := kirkwood-openrd.o
 +
- /*
-  * Supported devices and revisions.
-  */
-Index: sound-2.6/arch/arm/plat-orion/include/plat/audio.h
++obj-$(CONFIG_SND_KIRKWOOD_SOC_OPENRD) += snd-soc-openrd.o
+Index: sound-2.6/sound/soc/kirkwood/kirkwood-openrd.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ sound-2.6/arch/arm/plat-orion/include/plat/audio.h	2010-05-31 13:35:21.623077514 +0200
-@@ -0,0 +1,11 @@
-+#ifndef __PLAT_AUDIO_H
-+#define __PLAT_AUDIO_H
++++ sound-2.6/sound/soc/kirkwood/kirkwood-openrd.c	2010-05-27 14:10:03.987735275 +0200
+@@ -0,0 +1,126 @@
++/*
++ * kirkwood-openrd.c
++ *
++ * (c) 2010 Arnaud Patard <apatard@mandriva.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ */
 +
-+#include <linux/mbus.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/interrupt.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <sound/soc.h>
++#include <mach/kirkwood.h>
++#include <plat/audio.h>
++#include <asm/mach-types.h>
++#include "kirkwood-i2s.h"
++#include "kirkwood-dma.h"
++#include "../codecs/cs42l51.h"
 +
-+struct kirkwood_asoc_platform_data {
-+	u32 tclk;
-+	struct mbus_dram_target_info *dram;
-+	int burst;
++static int openrd_client_hw_params(struct snd_pcm_substream *substream,
++		struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	int ret;
++	unsigned int freq, fmt;
++
++	fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS;
++	ret = snd_soc_dai_set_fmt(cpu_dai, fmt);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_soc_dai_set_fmt(codec_dai, fmt);
++	if (ret < 0)
++		return ret;
++
++	switch (params_rate(params)) {
++	default:
++	case 44100:
++		freq = 11289600;
++		break;
++	case 48000:
++		freq = 12288000;
++		break;
++	case 96000:
++		freq = 24576000;
++		break;
++	}
++
++	return snd_soc_dai_set_sysclk(codec_dai, 0, freq, SND_SOC_CLOCK_IN);
++
++}
++
++static struct snd_soc_ops openrd_client_ops = {
++	.hw_params = openrd_client_hw_params,
 +};
-+#endif
++
++
++static struct snd_soc_dai_link openrd_client_dai[] = {
++{
++	.name = "CS42L51",
++	.stream_name = "CS42L51 HiFi",
++	.cpu_dai = &kirkwood_i2s_dai,
++	.codec_dai = &cs42l51_dai,
++	.ops = &openrd_client_ops,
++},
++};
++
++
++static struct snd_soc_card openrd_client = {
++	.name = "OpenRD Client",
++	.platform = &kirkwood_soc_platform,
++	.dai_link = openrd_client_dai,
++	.num_links = ARRAY_SIZE(openrd_client_dai),
++};
++
++static struct snd_soc_device openrd_client_snd_devdata = {
++	.card = &openrd_client,
++	.codec_dev = &soc_codec_device_cs42l51,
++};
++
++static struct platform_device *openrd_client_snd_device;
++
++static int __init openrd_client_init(void)
++{
++	int ret;
++
++	if (!machine_is_openrd_client())
++		return 0;
++
++	openrd_client_snd_device = platform_device_alloc("soc-audio", -1);
++	if (!openrd_client_snd_device)
++		return -ENOMEM;
++
++	platform_set_drvdata(openrd_client_snd_device,
++			&openrd_client_snd_devdata);
++	openrd_client_snd_devdata.dev = &openrd_client_snd_device->dev;
++
++	ret = platform_device_add(openrd_client_snd_device);
++	if (ret) {
++		printk(KERN_ERR "%s: platform_device_add failed\n", __func__);
++		platform_device_put(openrd_client_snd_device);
++	}
++
++	return ret;
++}
++
++static void __exit openrd_client_exit(void)
++{
++	platform_device_unregister(openrd_client_snd_device);
++}
++
++module_init(openrd_client_init);
++module_exit(openrd_client_exit);
++
++/* Module information */
++MODULE_AUTHOR("Arnaud Patard <apatard@mandriva.com>");
++MODULE_DESCRIPTION("ALSA SoC OpenRD Client");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:soc-audio");
