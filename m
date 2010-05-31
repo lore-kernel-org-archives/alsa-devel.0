@@ -1,41 +1,120 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] i.MX ssi: Add missing Kconfig entry
- for Phytec boards
-Date: Mon, 31 May 2010 18:17:46 +0100
-Message-ID: <20100531171746.GA27088@rakim.wolfsonmicro.main>
-References: <20100531101200.GA3489@rakim.wolfsonmicro.main>
-	<1275301701-17599-1-git-send-email-s.hauer@pengutronix.de>
-	<20100531103045.GB3489@rakim.wolfsonmicro.main>
-	<20100531121950.GG26820@pengutronix.de>
+From: Nishanth Menon <menon.nishanth@gmail.com>
+Subject: Re: [RFC PATCH 2/5] OMAP3: McBSP: Change the way how the FIFO is
+ handled
+Date: Mon, 31 May 2010 20:41:12 +0300
+Message-ID: <4C03F4B8.9090306@gmail.com>
+References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com> <1275293810-31984-3-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 875A82450D
-	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 19:17:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100531121950.GG26820@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-omap-owner@vger.kernel.org>
+In-Reply-To: <1275293810-31984-3-git-send-email-peter.ujfalusi@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, broonie@opensource.wolfsonmicro.com, lrg@slimlogic.co.uk, jhnikula@gmail.com, tony@atomide.com, ext-eero.nurkkala@nokia.com, eduardo.valentin@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 31, 2010 at 02:19:50PM +0200, Sascha Hauer wrote:
+On 05/31/2010 11:16 AM, Peter Ujfalusi wrote:
+> Use the actual FIFO size in words as buffer_size on OMAP2.
+> Change the threshold configuration to use 1 based numbering, when
+> specifying the allowed threshold maximum or the McBSP threshold value.
+> Set the default maximum threshold to (buffer_size - 0x10) intialy.
+>> From users of McBSP, now it is expected to use this method.
+> Asking for threshold 1 means that the value written to threshold registers
+> are going to be 0, which means 1 word threshold.
 
-> Sorry, wrong patch. I wanted to update the other patch according to your
-> comment. Here's the right one.
+just a 2cent minor comment: maybe omap_mcbsp_platform_data needs 
+structure documentation.. it might be difficult for folks to figure that 
+out from commit ID itself..
+>
+> Signed-off-by: Peter Ujfalusi<peter.ujfalusi@nokia.com>
+> ---
+>   arch/arm/mach-omap2/mcbsp.c |   10 +++++-----
+>   arch/arm/plat-omap/mcbsp.c  |   10 ++++++----
+>   2 files changed, 11 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
+> index 016fe60..9139958 100644
+> --- a/arch/arm/mach-omap2/mcbsp.c
+> +++ b/arch/arm/mach-omap2/mcbsp.c
+> @@ -132,7 +132,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+>   		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
+>   		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
+>   		.ops		=&omap2_mcbsp_ops,
+> -		.buffer_size	= 0x6F,
+> +		.buffer_size	= 0x80,
+>   	},
+>   	{
+>   		.phys_base	= OMAP34XX_MCBSP2_BASE,
+> @@ -142,7 +142,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+>   		.rx_irq		= INT_24XX_MCBSP2_IRQ_RX,
+>   		.tx_irq		= INT_24XX_MCBSP2_IRQ_TX,
+>   		.ops		=&omap2_mcbsp_ops,
+> -		.buffer_size	= 0x3FF,
+> +		.buffer_size	= 0x500,
+>   	},
+>   	{
+>   		.phys_base	= OMAP34XX_MCBSP3_BASE,
+> @@ -152,7 +152,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+>   		.rx_irq		= INT_24XX_MCBSP3_IRQ_RX,
+>   		.tx_irq		= INT_24XX_MCBSP3_IRQ_TX,
+>   		.ops		=&omap2_mcbsp_ops,
+> -		.buffer_size	= 0x6F,
+> +		.buffer_size	= 0x80,
+>   	},
+>   	{
+>   		.phys_base	= OMAP34XX_MCBSP4_BASE,
+> @@ -161,7 +161,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+>   		.rx_irq		= INT_24XX_MCBSP4_IRQ_RX,
+>   		.tx_irq		= INT_24XX_MCBSP4_IRQ_TX,
+>   		.ops		=&omap2_mcbsp_ops,
+> -		.buffer_size	= 0x6F,
+> +		.buffer_size	= 0x80,
+>   	},
+>   	{
+>   		.phys_base	= OMAP34XX_MCBSP5_BASE,
+> @@ -170,7 +170,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+>   		.rx_irq		= INT_24XX_MCBSP5_IRQ_RX,
+>   		.tx_irq		= INT_24XX_MCBSP5_IRQ_TX,
+>   		.ops		=&omap2_mcbsp_ops,
+> -		.buffer_size	= 0x6F,
+> +		.buffer_size	= 0x80,
+>   	},
+>   };
+>   #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
+> diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+> index 51d8abf..6462968 100644
+> --- a/arch/arm/plat-omap/mcbsp.c
+> +++ b/arch/arm/plat-omap/mcbsp.c
+> @@ -497,7 +497,8 @@ void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
+>   	}
+>   	mcbsp = id_to_mcbsp_ptr(id);
+>
+> -	MCBSP_WRITE(mcbsp, THRSH2, threshold);
+> +	if (threshold&&  threshold<= mcbsp->max_tx_thres)
+> +		MCBSP_WRITE(mcbsp, THRSH2, threshold - 1);
+>   }
+>   EXPORT_SYMBOL(omap_mcbsp_set_tx_threshold);
+>
+> @@ -519,7 +520,8 @@ void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
+>   	}
+>   	mcbsp = id_to_mcbsp_ptr(id);
+>
+> -	MCBSP_WRITE(mcbsp, THRSH1, threshold);
+> +	if (threshold&&  threshold<= mcbsp->max_rx_thres)
+> +		MCBSP_WRITE(mcbsp, THRSH1, threshold - 1);
+>   }
+>   EXPORT_SYMBOL(omap_mcbsp_set_rx_threshold);
+>
+> @@ -1696,8 +1698,8 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
+>   {
+>   	mcbsp->dma_op_mode = MCBSP_DMA_MODE_ELEMENT;
+>   	if (cpu_is_omap34xx()) {
+> -		mcbsp->max_tx_thres = max_thres(mcbsp);
+> -		mcbsp->max_rx_thres = max_thres(mcbsp);
+> +		mcbsp->max_tx_thres = max_thres(mcbsp) - 0x10;
+> +		mcbsp->max_rx_thres = max_thres(mcbsp) - 0x10;
+>   		/*
+>   		 * REVISIT: Set dmap_op_mode to THRESHOLD as default
+>   		 * for mcbsp2 instances.
 
-Applied both, but please do remember to submit patches in a form which
-can be directly applied.  For both patches I had to edit the subject
-line and for this patch you'd just appeneded it to the body of a mail
-message.
