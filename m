@@ -1,17 +1,17 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [RFC PATCH 5/5] ASoC: omap-mcbsp: Place correct
-	constraints for streams
-Date: Mon, 31 May 2010 11:03:26 +0300
-Message-ID: <1275293006-31594-6-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [RFC PATCH 2/5] OMAP3: McBSP: Change the way how the
+	FIFO is handled
+Date: Mon, 31 May 2010 11:03:23 +0300
+Message-ID: <1275293006-31594-3-git-send-email-peter.ujfalusi@nokia.com>
 References: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1E5CE2432C
+Received: from mgw-mx06.nokia.com (smtp.nokia.com [192.100.122.233])
+	by alsa0.perex.cz (Postfix) with ESMTP id A520D24335
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 10:03:48 +0200 (CEST)
+	Mon, 31 May 2010 10:03:50 +0200 (CEST)
 In-Reply-To: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,150 +26,103 @@ To: alsa-devel@alsa-project.org, linux-oamp@vger.kernel.org
 Cc: tony@atomide.com, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com, ext-eero.nurkkala@nokia.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-OMAP McBSP FIFO is word structured:
-McBSP2 has 1024 + 256 = 1280 word long buffer,
-McBSP1,3,4,5 has 128 word long buffer
-
-This means, that the size of the FIFO
-depends on the McBSP word size configuration.
-For example on McBSP3:
-16bit samples: size is 128 * 2 = 256 bytes
-32bit samples: size is 128 * 4 = 512 bytes
-It is simpler to place constraint for buffer and period based on channels.
-McBSP3 as example again (16 or 32 bit samples):
-1 channel (mono): size is 128 frames (128 words)
-2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
-4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
-
-Use the former method to place hw_rule on buffer size, and in threshold
-mode to period size.
+Use the actual FIFO size in words as buffer_size on OMAP2.
+Change the threshold configuration to use 1 based numbering, when
+specifying the allowed threshold maximum or the McBSP threshold value.
+Set the default maximum threshold to (buffer_size - 0x10) intialy.
+>From users of McBSP, now it is expected to use this method.
+Asking for threshold 1 means that the value written to threshold registers
+are going to be 0, which means 1 word threshold.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
 ---
- sound/soc/omap/omap-mcbsp.c |   98 +++++++++++++++++++++++++++++++++---------
- 1 files changed, 77 insertions(+), 21 deletions(-)
+ arch/arm/mach-omap2/mcbsp.c |   10 +++++-----
+ arch/arm/plat-omap/mcbsp.c  |   10 ++++++----
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index b06d8f1..d6ed761 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -173,6 +173,52 @@ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
- 		omap_mcbsp_set_rx_threshold(mcbsp_data->bus_id, words);
- }
- 
-+static int hw_rule_bsize_by_channels(struct snd_pcm_hw_params *params,
-+				    struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *bs = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_BUFFER_SIZE);
-+	struct snd_interval *c = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct omap_mcbsp_data *mcbsp_data = rule->private;
-+	struct snd_interval frames;
-+	int size;
-+
-+	snd_interval_any(&frames);
-+	size = omap_mcbsp_get_fifo_size(mcbsp_data->bus_id);
-+
-+	frames.min = size / c->min;
-+	frames.integer = 1;
-+	return snd_interval_refine(bs, &frames);
-+
-+}
-+
-+static int hw_rule_psize_by_channels(struct snd_pcm_hw_params *params,
-+				    struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_interval *ps = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
-+	struct snd_interval *c = hw_param_interval(params,
-+					SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_pcm_substream *substream = rule->private;
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct snd_interval frames;
-+	int size;
-+
-+	snd_interval_any(&frames);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		size = omap_mcbsp_get_max_tx_threshold(mcbsp_data->bus_id);
-+	else
-+		size = omap_mcbsp_get_max_rx_threshold(mcbsp_data->bus_id);
-+
-+	frames.min = 8;
-+	frames.max = size / c->min;
-+	frames.integer = 1;
-+	return snd_interval_refine(ps, &frames);
-+}
-+
- static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
-@@ -185,33 +231,43 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- 	if (!cpu_dai->active)
- 		err = omap_mcbsp_request(bus_id);
- 
-+	/*
-+	 * OMAP McBSP FIFO is word structured.
-+	 * McBSP2 has 1024 + 256 = 1280 word long buffer,
-+	 * McBSP1,3,4,5 has 128 word long buffer
-+	 * This means that the size of the FIFO depends on the sample format.
-+	 * For example on McBSP3:
-+	 * 16bit samples: size is 128 * 2 = 256 bytes
-+	 * 32bit samples: size is 128 * 4 = 512 bytes
-+	 * It is simpler to place constraint for buffer and period based on
-+	 * channels.
-+	 * McBSP3 as example again (16 or 32 bit samples):
-+	 * 1 channel (mono): size is 128 frames (128 words)
-+	 * 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
-+	 * 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
-+	 */
-+
-+	/*
-+	 * The first rule is for the buffer size, we should not allow smaller
-+	 * buffer than the FIFO size to avoid underruns
-+	 */
-+	snd_pcm_hw_rule_add(substream->runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				    hw_rule_bsize_by_channels, mcbsp_data,
-+				    SNDRV_PCM_HW_PARAM_BUFFER_SIZE, -1);
-+
- 	if (cpu_is_omap343x()) {
- 		int dma_op_mode = omap_mcbsp_get_dma_op_mode(bus_id);
--		int max_period;
- 
- 		/*
--		 * McBSP2 in OMAP3 has 1024 * 32-bit internal audio buffer.
--		 * Set constraint for minimum buffer size to the same than FIFO
--		 * size in order to avoid underruns in playback startup because
--		 * HW is keeping the DMA request active until FIFO is filled.
-+		 * In case os threshold mode, the rule will ensure, that the
-+		 * period size is not bigger than the maximum allowed threshold
-+		 * value.
- 		 */
--		if (bus_id == 1)
--			snd_pcm_hw_constraint_minmax(substream->runtime,
--					SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
--					4096, UINT_MAX);
--
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--			max_period = omap_mcbsp_get_max_tx_threshold(bus_id);
--		else
--			max_period = omap_mcbsp_get_max_rx_threshold(bus_id);
--
--		max_period++;
--		max_period <<= 1;
--
- 		if (dma_op_mode == MCBSP_DMA_MODE_THRESHOLD)
--			snd_pcm_hw_constraint_minmax(substream->runtime,
--						SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
--						32, max_period);
-+			snd_pcm_hw_rule_add(substream->runtime, 0,
-+					SNDRV_PCM_HW_PARAM_CHANNELS,
-+					hw_rule_psize_by_channels, substream,
-+					SNDRV_PCM_HW_PARAM_PERIOD_SIZE, -1);
+diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
+index 016fe60..9139958 100644
+--- a/arch/arm/mach-omap2/mcbsp.c
++++ b/arch/arm/mach-omap2/mcbsp.c
+@@ -132,7 +132,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x6F,
++		.buffer_size	= 0x80,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP2_BASE,
+@@ -142,7 +142,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP2_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP2_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x3FF,
++		.buffer_size	= 0x500,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP3_BASE,
+@@ -152,7 +152,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP3_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP3_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x6F,
++		.buffer_size	= 0x80,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP4_BASE,
+@@ -161,7 +161,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP4_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP4_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x6F,
++		.buffer_size	= 0x80,
+ 	},
+ 	{
+ 		.phys_base	= OMAP34XX_MCBSP5_BASE,
+@@ -170,7 +170,7 @@ static struct omap_mcbsp_platform_data omap34xx_mcbsp_pdata[] = {
+ 		.rx_irq		= INT_24XX_MCBSP5_IRQ_RX,
+ 		.tx_irq		= INT_24XX_MCBSP5_IRQ_TX,
+ 		.ops		= &omap2_mcbsp_ops,
+-		.buffer_size	= 0x6F,
++		.buffer_size	= 0x80,
+ 	},
+ };
+ #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
+diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
+index 51d8abf..6462968 100644
+--- a/arch/arm/plat-omap/mcbsp.c
++++ b/arch/arm/plat-omap/mcbsp.c
+@@ -497,7 +497,8 @@ void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold)
  	}
+ 	mcbsp = id_to_mcbsp_ptr(id);
  
- 	return err;
+-	MCBSP_WRITE(mcbsp, THRSH2, threshold);
++	if (threshold && threshold <= mcbsp->max_tx_thres)
++		MCBSP_WRITE(mcbsp, THRSH2, threshold - 1);
+ }
+ EXPORT_SYMBOL(omap_mcbsp_set_tx_threshold);
+ 
+@@ -519,7 +520,8 @@ void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
+ 	}
+ 	mcbsp = id_to_mcbsp_ptr(id);
+ 
+-	MCBSP_WRITE(mcbsp, THRSH1, threshold);
++	if (threshold && threshold <= mcbsp->max_rx_thres)
++		MCBSP_WRITE(mcbsp, THRSH1, threshold - 1);
+ }
+ EXPORT_SYMBOL(omap_mcbsp_set_rx_threshold);
+ 
+@@ -1696,8 +1698,8 @@ static inline void __devinit omap34xx_device_init(struct omap_mcbsp *mcbsp)
+ {
+ 	mcbsp->dma_op_mode = MCBSP_DMA_MODE_ELEMENT;
+ 	if (cpu_is_omap34xx()) {
+-		mcbsp->max_tx_thres = max_thres(mcbsp);
+-		mcbsp->max_rx_thres = max_thres(mcbsp);
++		mcbsp->max_tx_thres = max_thres(mcbsp) - 0x10;
++		mcbsp->max_rx_thres = max_thres(mcbsp) - 0x10;
+ 		/*
+ 		 * REVISIT: Set dmap_op_mode to THRESHOLD as default
+ 		 * for mcbsp2 instances.
 -- 
 1.7.1
