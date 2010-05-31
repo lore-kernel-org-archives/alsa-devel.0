@@ -1,28 +1,17 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH v2] alsa/Au1xxx-PSC: use resource_size
-Date: Mon, 31 May 2010 20:36:09 +0800
-Message-ID: <AANLkTimMrLX-u6GTqX_r6-2j6-ZeEFjoaTBnriPTUkrD@mail.gmail.com>
-References: <4BFF33B3.1040506@gmail.com>
-	<AANLkTil1hKb8QdsKEfHseOyPdw8uIY6d5mVEUwZ68T-p@mail.gmail.com>
-	<AANLkTimQD4TihG2yGsPLGmCmWV968fdoDtZ1nDcW5A-h@mail.gmail.com>
-	<4BFF5838.8050403@gmail.com>
-	<AANLkTikn3BHn1D3uVQWO6Xuiv4vkk8pMe96F7uUUSAmM@mail.gmail.com>
-	<4BFF633B.7030101@gmail.com>
-	<AANLkTim9C08G5iOuKE9XOtFRlS616c6yk-7LNLddbVCl@mail.gmail.com>
-	<4BFF87DC.4010300@gmail.com>
-	<20100531110805.GE3489@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: spdif: Add codec driver to use	spdif
+	stand-alone
+Date: Mon, 31 May 2010 13:42:29 +0100
+Message-ID: <20100531124228.GA14195@sirena.org.uk>
+References: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0728900987634986489=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 46E9F1038B3
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1A88F1038C5
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 14:36:11 +0200 (CEST)
-Received: by vws5 with SMTP id 5so1889610vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 05:36:10 -0700 (PDT)
-In-Reply-To: <20100531110805.GE3489@rakim.wolfsonmicro.main>
+	Mon, 31 May 2010 14:42:31 +0200 (CEST)
+In-Reply-To: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,28 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Manuel Lauss <manuel.lauss@googlemail.com>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Seungwhan Youn <sw.youn@samsung.com>
+Cc: alsa-devel@alsa-project.org, schen@mvista.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKClRoYW5rcyBmb3IgeW91ciBjb21tZW50cy4KUmVnYXJkaW5nIHRoZSBwYXRjaCBy
-ZWxhdGVkIHRvIEF1MXh4eC1QU0MsCkkgd2lsbCBtb2RpZnkgdGhlIHBhdGNoIGFuZCByZXNlbmQg
-aXQgdG9tb3Jyb3csIHBsZWFzZSBkcm9wIGFsbCB0aGUKcHJldmlvdXMgb25lcy4KCjIwMTAvNS8z
-MSBNYXJrIEJyb3duIDxicm9vbmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT46Cj4gT24g
-RnJpLCBNYXkgMjgsIDIwMTAgYXQgMDU6MDc6NDBQTSArMDgwMCwgV2FuIFpvbmdTaHVuIHdyb3Rl
-Ogo+PiBEZWFyIE1hcmsgJiBMaWFtLAo+Pgo+PiBhbHNhIEF1MXh4eC1QU0MgdXNlIHJlc291cmNl
-X3NpemUuCj4+Cj4+IE1hbnVlbCBoYXMgYWdyZWVkIHRoaXMgZm9sbG93aW5nIHZlcnNpb24gcGF0
-Y2gsIG5vdywgY2FuIGl0IGJlIG1lcmdlZD8KPgo+IFRoaXMgaGFzIHdvcmR3cmFwIGlzc3VlcyBh
-bmQgd29uJ3QgYXBwbHksIHBsZWFzZSByZXNlbmQuIMKgQXMgSSBzYWlkCj4gcHJldmlvdXNseSBw
-bGVhc2UgYWxzbyB0cnkgdG8gZm9sbG93IERvY3VtZW50YXRpb24vU3VibWl0dGluZ1BhdGNoZXMK
-PiAoZWcsIGRvbid0IGhhdmUgbm9uLWNoYW5nZWxvZyB0ZXh0IGFib3ZlIHRoZSAtLS0gaW4gdGhl
-IG1haWwgYW5kIHVzZSBhCj4gc3RhbmRhcmQgcHJlZml4IGZvciB0aGUgc3ViamVjdCBsaW5lKS4K
-PgoKCgotLSAKKmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0Cm1haWwgYWRkcjpsaW51eC1h
-cm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKeW91IGNhbiBzdWJzY3JpYmUgYnk6Cmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAoK
-KiBsaW51eC1hcm0tTlVDOTAwIG1haWxpbmcgbGlzdAptYWlsIGFkZHI6TlVDOTAwQGdvb2dsZWdy
-b3Vwcy5jb20KbWFpbiB3ZWI6IGh0dHBzOi8vZ3JvdXBzLmdvb2dsZS5jb20vZ3JvdXAvTlVDOTAw
-CnlvdSBjYW4gc3Vic2NyaWJlIGl0IGJ5IHNlbmRpbmcgbWUgbWFpbDoKbWN1b3MuY29tQGdtYWls
-LmNvbQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+--===============0728900987634986489==
+Content-Type: text/plain; charset=unknown-8bit
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, May 27, 2010 at 06:13:48PM +0900, Seungwhan Youn wrote:
+> This patch adds spdif dummy codec driver for using spdif-dit as
+> a stand-alone. Until this, spdif-dit can be used only with other
+> codecs like tlv320aci3x in davinci platform.
+>=20
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+
+*sigh*
+
+sound/soc/codecs/spdif_transciever.c:67:29: warning: symbol 'soc_codec_de=
+v_spdif_dit' was not declared. Should it be static?
+sound/soc/codecs/spdif_transciever.c:95:17: error: undefined identifier '=
+kzalloc'
+sound/soc/codecs/spdif_transciever.c:131:9: error: undefined identifier '=
+kfree'
+sound/soc/codecs/spdif_transciever.c:139:9: error: undefined identifier '=
+kfree'
+  CC [M]  sound/soc/codecs/spdif_transciever.o
+sound/soc/codecs/spdif_transciever.c: In function =E2=80=98spdif_dit_prob=
+e=E2=80=99:
+sound/soc/codecs/spdif_transciever.c:95: error: implicit declaration of f=
+unction =E2=80=98kzalloc=E2=80=99
+sound/soc/codecs/spdif_transciever.c:95: warning: assignment makes pointe=
+r from integer without a cast
+sound/soc/codecs/spdif_transciever.c:131: error: implicit declaration of =
+function =E2=80=98kfree=E2=80=99
+
+I've fixed these up.
+
+--===============0728900987634986489==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============0728900987634986489==--
