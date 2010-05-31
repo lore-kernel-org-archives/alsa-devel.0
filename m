@@ -1,20 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2 0/8] ASoC: TWL4030: put the codec to off
- when not active
-Date: Mon, 31 May 2010 10:39:09 +0100
-Message-ID: <1275298749.3174.0.camel@odin>
-References: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: Re: i.MX SSI Kconfig fixes
+Date: Mon, 31 May 2010 10:40:00 +0100
+Message-ID: <1275298800.3174.1.camel@odin>
+References: <1275295794-3168-1-git-send-email-s.hauer@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6C180103845
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9EFF0103853
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 11:39:16 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so652916wwf.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 02:39:13 -0700 (PDT)
-In-Reply-To: <1274863101-18514-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon, 31 May 2010 11:40:04 +0200 (CEST)
+Received: by wyb32 with SMTP id 32so283784wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 02:40:04 -0700 (PDT)
+In-Reply-To: <1275295794-3168-1-git-send-email-s.hauer@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,64 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-05-26 at 11:38 +0300, Peter Ujfalusi wrote:
-> Hello,
+On Mon, 2010-05-31 at 10:49 +0200, Sascha Hauer wrote:
+> Hi,
 > 
-> Changes since v1:
-> - Patch 3: removed the shifting of offset cancellation value
-> - Added register content reset functionality as suggested by Liam and Mark
+> Two small fixes for i.MX SSI.
 > 
-> I have added Mark's Acked-by to patch 1-7, patch 8 is a new one, which shall
-> address the comments regarding to the register content reset.
+> Sascha
 > 
-> To-do after this series:
-> Revisit the register reset functionality to use burst write.
+> The following changes since commit 67a3e12b05e055c0415c556a315a3d3eb637e29e:
 > 
-> Intro mail from the original series:
+>   Linux 2.6.35-rc1 (2010-05-30 13:21:02 -0700)
 > 
-> The following series at the end will let the twl4030 codec to use BIAS_OFF
-> instead of BIAS_STANDBY.
-> The difference in power consumption is about 0.5mA.
+> are available in the git repository at:
+>   git://git.pengutronix.de/git/imx/linux-2.6.git imx-ssi-fixes
 > 
-> To achieve this:
-> - The regcache has been reseted to codec default
-> - The codec initialization has been optimized, it is no longer writes all 73
->   registers at startup, but only modifies few selected one.
-> - The power related code has been cleaned up, and optimized
-> - Support added for machine drivers to select the offset cancellation path
-> - debug support for checking the codec default registers (machine drivers can
->   ask for checking, but shall be disabled in production).
-> - Added codec register reset functionality
+> Sascha Hauer (2):
+>       i.MX ssi: MX31ads sound support should depend on MACH_MX31ADS
+>       i.MX ssi: Add missing Kconfig entry for Phytec boards
 > 
-> I guess that's it.
-> The driver has been tested on a custom board with twl5031. It passed all of our
-> internal test cases covering much of the codec features.
-> 
-> ---
-> Peter Ujfalusi (8):
->   ASoC: TWL4030: Revisit codec defaults
->   ASoC: TWL4030: Remove wrapper for power down
->   ASoC: TWL4030: Make offset cancellation path configurable
->   ASoC: TWL4030: Optimize the power up sequence
->   ASoC: TWL4030: Helper to check chip default registers
->   ASoC: TWL4030: Correct the ARXR2_APGA_CTL chip default
->   ASoC: TWL4030: Use BIAS_OFF instead of BIAS_STANDBY, when not in use
->   ASoC: TWL4030: Add functionalty to reset the registers
-> 
->  sound/soc/codecs/twl4030.c |  291 +++++++++++++++++++++++++-------------------
->  sound/soc/codecs/twl4030.h |    3 +
->  2 files changed, 169 insertions(+), 125 deletions(-)
-> 
+>  sound/soc/imx/Kconfig |   11 ++++++++++-
+>  1 files changed, 10 insertions(+), 1 deletions(-)
 
-Applied.
+Both
 
-Thanks
-
-Liam
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
