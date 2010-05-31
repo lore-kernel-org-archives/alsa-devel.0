@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: arecord and DMA misaligned error with device
-Date: Mon, 31 May 2010 11:18:27 +0100
-Message-ID: <1275301107.3174.9.camel@odin>
-References: <AANLkTilGJrApaQ2N9vQLVLKQWq_tkv7qMVKzYHUlBdpl@mail.gmail.com>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 2/2] i.MX ssi: Add missing Kconfig entry for
+	Phytec boards
+Date: Mon, 31 May 2010 12:28:21 +0200
+Message-ID: <1275301701-17599-1-git-send-email-s.hauer@pengutronix.de>
+References: <20100531101200.GA3489@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8CA16103860
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 6CE46243F1
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 12:18:31 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so674361wwf.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 03:18:31 -0700 (PDT)
-In-Reply-To: <AANLkTilGJrApaQ2N9vQLVLKQWq_tkv7qMVKzYHUlBdpl@mail.gmail.com>
+	Mon, 31 May 2010 12:28:45 +0200 (CEST)
+In-Reply-To: <20100531101200.GA3489@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ruchi Sirauthiya <sirauthiya.ruchi@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2010-05-29 at 23:43 +0530, Ruchi Sirauthiya wrote:
-> Hi all,
-> 
-> I am working on an OMAP board with Linux kernel 2.6.22.18-omap3 and ALSA. I
-> got the
-> following stack trace when running 'arecord' continuously for a long time
-> (~30 minutes).
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ sound/soc/imx/Kconfig |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
-This kernel is rather ancient, please upgrade. Fwiw, I know that some
-people can capture audio using recent kernels on OMAP3 for days.
-
-Liam
+diff --git a/sound/soc/imx/Kconfig b/sound/soc/imx/Kconfig
+index 10acbe9..252defe 100644
+--- a/sound/soc/imx/Kconfig
++++ b/sound/soc/imx/Kconfig
+@@ -19,3 +19,12 @@ config SND_MXC_SOC_WM1133_EV1
+ 	help
+ 	  Enable support for audio on the i.MX31ADS with the WM1133-EV1
+ 	  PMIC board with WM8835x fitted.
++
++config SND_SOC_PHYCORE_AC97
++	tristate "SoC Audio support for Phytec phyCORE (and phyCARD) boards"
++	depends on MACH_PCM043 || MACH_PCA100
++	select SND_MXC_SOC_SSI
++	select SND_SOC_WM9712
++	help
++	  Say Y if you want to add support for SoC audio on Phytec phyCORE
++	  and phyCARD boards in AC97 mode
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+1.7.1
