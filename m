@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: spdif: Add codec driver to use spdif
-	stand-alone
-Date: Mon, 31 May 2010 12:23:42 +0100
-Message-ID: <20100531112342.GJ3489@rakim.wolfsonmicro.main>
-References: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: [PATCH 1/9] ALSA: usb-audio: UAC2: clean up parsing of
+	bmaControls
+Date: Mon, 31 May 2010 13:35:36 +0200
+Message-ID: <1275305744-6590-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ADC4D10389F
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3325A103899
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 13:23:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
+	Mon, 31 May 2010 13:35:58 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,15 +20,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Seungwhan Youn <sw.youn@samsung.com>
-Cc: alsa-devel@alsa-project.org, schen@mvista.com, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, gregkh@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 27, 2010 at 06:13:48PM +0900, Seungwhan Youn wrote:
-> This patch adds spdif dummy codec driver for using spdif-dit as
-> a stand-alone. Until this, spdif-dit can be used only with other
-> codecs like tlv320aci3x in davinci platform.
-> 
-> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
+Introduce two new static inline functions for a more readable parsing
+of UAC2 bmaControls.
 
-Applied, thanks.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
+ include/linux/usb/audio-v2.h |   10 ++++++++++
+ sound/usb/mixer.c            |    8 ++++----
+ 2 files changed, 14 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
+index 92f1d99..8f91be3 100644
+--- a/include/linux/usb/audio-v2.h
++++ b/include/linux/usb/audio-v2.h
+@@ -18,6 +18,16 @@
+ /* v1.0 and v2.0 of this standard have many things in common. For the rest
+  * of the definitions, please refer to audio.h */
+ 
++static inline bool uac2_control_is_readable(u32 bmControls, u8 control)
++{
++	return (bmControls >> (control * 2)) & 0x1;
++}
++
++static inline bool uac2_control_is_writeable(u32 bmControls, u8 control)
++{
++	return (bmControls >> (control * 2)) & 0x2;
++}
++
+ /* 4.7.2.1 Clock Source Descriptor */
+ 
+ struct uac_clock_source_descriptor {
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 03ce971..43d6417 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1188,9 +1188,9 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 
+ 			for (j = 0; j < channels; j++) {
+ 				unsigned int mask = snd_usb_combine_bytes(bmaControls + csize * (j+1), csize);
+-				if (mask & (1 << (i * 2))) {
++				if (uac2_control_is_readable(mask, i)) {
+ 					ch_bits |= (1 << j);
+-					if (~mask & (1 << ((i * 2) + 1)))
++					if (!uac2_control_is_writeable(mask, i))
+ 						ch_read_only |= (1 << j);
+ 				}
+ 			}
+@@ -1198,9 +1198,9 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid, void
+ 			/* FIXME: the whole unit is read-only if any of the channels is marked read-only */
+ 			if (ch_bits & 1) /* the first channel must be set (for ease of programming) */
+ 				build_feature_ctl(state, _ftr, ch_bits, i, &iterm, unitid, !!ch_read_only);
+-			if (master_bits & (1 << i * 2))
++			if (uac2_control_is_readable(master_bits, i))
+ 				build_feature_ctl(state, _ftr, 0, i, &iterm, unitid,
+-						  ~master_bits & (1 << ((i * 2) + 1)));
++						  !uac2_control_is_writeable(master_bits, i));
+ 		}
+ 	}
+ 
+-- 
+1.7.1
