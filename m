@@ -1,25 +1,19 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Problem with snd_hda_intel from 05-27-2010 snapshot
-Date: Mon, 31 May 2010 22:43:40 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1005312241260.5693@eeebox2.perex-int.cz>
-References: <AANLkTilIX_UnMYcg8LAqkndS80nFppblW6erTm2e7o5X@mail.gmail.com>
-	<AANLkTinLbTMrYBhg6KO826slsugfEcU0_wYqukSQpQw2@mail.gmail.com>
-	<alpine.LNX.2.00.1005270931570.6856@eeebox2.perex-int.cz>
-	<AANLkTinvfYyOHzQrEfcBrDvDMW3Fc93oYrUHOcABm0Oa@mail.gmail.com>
-	<alpine.LNX.2.00.1005290822040.6856@eeebox2.perex-int.cz>
-	<AANLkTin1b34S7HeeHTppZkomIZ0Ka-xkC6viZt2Jfr1o@mail.gmail.com>
-	<alpine.LNX.2.00.1005301733300.6856@eeebox2.perex-int.cz>
-	<AANLkTim5L_klj1g-8hwnsftuR4x_GwESH_AOdeb4_XzT@mail.gmail.com>
-	<alpine.LNX.2.00.1005312028520.5693@eeebox2.perex-int.cz>
-	<AANLkTinOXLzkeqjLfrRXKxOp4jSBf3FMVcNanHa0ya0k@mail.gmail.com>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Crash 2.6.32.x, Echo 3G, Alsa, SCSI
+Date: Mon, 31 May 2010 22:59:36 +0200
+Message-ID: <20100531225936.4a9344df@Jay>
+References: <73211.74714.qm@web180714.mail.sp1.yahoo.com>
+	<4B684513.8090201@ladisch.de> <20100202230911.71e8b600@Jay>
+	<4C040864.8010205@ameritech.net>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-2133176555-1275338620=:5693"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 15AD6245C1
+Received: from smtp-out29.alice.it (smtp-out29.alice.it [85.33.2.29])
+	by alsa0.perex.cz (Postfix) with ESMTP id DFB63245E9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 22:43:41 +0200 (CEST)
-In-Reply-To: <AANLkTinOXLzkeqjLfrRXKxOp4jSBf3FMVcNanHa0ya0k@mail.gmail.com>
+	Mon, 31 May 2010 23:00:34 +0200 (CEST)
+In-Reply-To: <4C040864.8010205@ameritech.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,74 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: VDR User <user.vdr@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: "F. Heitkamp" <heitkamp@ameritech.net>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-audio-user@lists.linuxaudio.org, Clemens Ladisch <clemens@ladisch.de>, linux-kernel@vger.kernel.org, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, 31 May 2010 15:05:08 -0400
+"F. Heitkamp" <heitkamp@ameritech.net> wrote:
 
---8323584-2133176555-1275338620=:5693
-Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+> On 02/02/10 17:09, Giuliano Pochini wrote:
+> > On Tue, 02 Feb 2010 16:30:27 +0100
+> > Clemens Ladisch<clemens@ladisch.de>  wrote:
+> >
+> >    
+> >> Frederick V Heitkamp wrote:
+> >>      
+> >>> Repeatable Hard Crash.
+> >>> What else do I need to provide?
+[...]
+> > Signed-off-by: Giuliano Pochini<pochini@shiny.it>
+> >
+> > --- alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c__orig	2010-02-02 22:37:33.000000000 +0100
+> > +++ alsa-driver-1.0.22.1/alsa-kernel/pci/echoaudio/echoaudio.c	2010-02-02 22:44:03.000000000 +0100
+> > @@ -1821,7 +1821,9 @@ static irqreturn_t snd_echo_interrupt(in
+> >   	/* The hardware doesn't tell us which substream caused the irq,
+> >   	thus we have to check all running substreams. */
+> >   	for (ss = 0; ss<  DSP_MAXPIPES; ss++) {
+> > -		if ((substream = chip->substream[ss])) {
+> > +		substream = chip->substream[ss];
+> > +		if (substream&&  ((struct audiopipe *)substream->runtime->
+> > +				private_data)->state == PIPE_STATE_STARTED) {
+> >   			period = pcm_pointer(substream) /
+> >   				substream->runtime->period_size;
+> >   			if (period != chip->last_period[ss]) {
+> >
+> >
+> >    
+> I've tried some newer kernels.  Still having problems with the echo 3G.  
+> This is kernel version:
+> 2.6.32.13.  The above patches posted to the linux kernel list seemed to 
+> get rid of the crashes, but evidently did not go into the main kernel tree.
 
-On Mon, 31 May 2010, VDR User wrote:
+Indeed. I've just checked 2.6.33 and the patch isn't there. It's in 2.6.34.
 
-> On Mon, May 31, 2010 at 11:30 AM, Jaroslav Kysela <perex@perex.cz> wrote:
->> Thanks. Could you try this patch?
->>
->> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
->> index 170610e..ac3dbab 100644
->> --- a/sound/pci/hda/hda_intel.c
->> +++ b/sound/pci/hda/hda_intel.c
->> @@ -1910,7 +1910,7 @@ static int azx_position_ok(struct azx *chip, struc=
-t
->> azx_dev *azx_dev)
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (WARN_ONCE(!azx_dev->period_bytes,
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0"hda-intel: zero azx_dev->period_bytes"))
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return -1; /* thi=
-s shouldn't happen! */
->> - =C2=A0 =C2=A0 =C2=A0 if (wallclk <=3D azx_dev->period_wallclk &&
->> + =C2=A0 =C2=A0 =C2=A0 if (wallclk < (azx_dev->period_wallclk * 3) / 2 &=
-&
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0pos % azx_dev->period_bytes > a=
-zx_dev->period_bytes / 2)
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/* NG - it's belo=
-w the first next period boundary */
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return bdl_pos_ad=
-j[chip->dev_index] ? 0 : -1;
->>
->> -----
->
-> I've got a bit of a strange result.  With the above patch (and the
-> wallclk logging patch from your previous email), sound does not work.
-> However, it _does_ start working only if I `echo 29 >
-> /proc/asound/card1/pcm3p/xrun_debug`.  I tested these results with a
-> reboot in between each attempt just to make sure I'm working with a
-> clean boot.  I can't imagine what's causing this weird condition.  Any
-> ideas?
+If you need 2.6.32.13 you can apply the above patch to the kernel tree or
+download ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.23.tar.bz2,
+otherwise just use the latest kernel.
 
-Try to disable jiffies check (value 25 for xrun_debug). Please, post your=
-=20
-log for value 29 for inspection. Thanks.
 
- =09=09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
-
---8323584-2133176555-1275338620=:5693
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---8323584-2133176555-1275338620=:5693--
+-- 
+Giuliano.
