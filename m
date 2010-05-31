@@ -1,17 +1,21 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [GIT PULL] ASoC updates for 2.6.36
-Date: Mon, 31 May 2010 11:29:08 +0100
-Message-ID: <1275301748.3174.13.camel@odin>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] alsa/Au1xxx-PSC: use resource_size
+Date: Mon, 31 May 2010 11:47:47 +0100
+Message-ID: <20100531104747.GC3489@rakim.wolfsonmicro.main>
+References: <4BFF33B3.1040506@gmail.com>
+	<AANLkTil1hKb8QdsKEfHseOyPdw8uIY6d5mVEUwZ68T-p@mail.gmail.com>
+	<AANLkTimQD4TihG2yGsPLGmCmWV968fdoDtZ1nDcW5A-h@mail.gmail.com>
+	<4BFF5838.8050403@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 4EC9B24401
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6462A24416
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 12:36:47 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so314719wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 03:36:46 -0700 (PDT)
+	Mon, 31 May 2010 12:47:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4BFF5838.8050403@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,42 +25,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Wan ZongShun <mcuos.com@gmail.com>
+Cc: manuel.lauss@gmail.com, Manuel Lauss <manuel.lauss@googlemail.com>, alsa-devel <alsa-devel@alsa-project.org>, Andrew Morton <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Fri, May 28, 2010 at 01:44:24PM +0800, Wan ZongShun wrote:
+> Dear Manuel & Mark,
+> 
+> Fix it again.
+> 
+> Signed-off-by:Wan ZongShun<mcuos.com@gmail.com>
+> 
+> From 389d787f06d2ac0b4c8cac2705385295b0d7c112 Mon Sep 17 00:00:00 2001
+> From: zswan <zswan@zswan-marvell.(none)>
+> Date: Fri, 28 May 2010 13:39:12 +0800
+> Subject: [PATCH 4/4] -fix-some-issues-of-aux01 v1
 
-Please pull the following ASoC updates for 2.6.36.
+This looks a bit mangled, could you please confirm what's going on with
+this stuff.  It would also be very helpful if you could submit patches
+in the format documented in Documentation/SubmittingPatches.
 
-Thanks
-
-Liam
-
----
-
-The following changes since commit ad8332c1302bcb4f80d593fd3eb477be9d7f5604:
-  Jarkko Nikula (1):
-        ASoC: tpa6130a2: Remove CPVSS and HPVdd supplies
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.36
-
-Jorge Eduardo Candelaria (1):
-      ASoC: TWL6040: Fix playback with 19.2 Mhz MCLK
-
-Peter Ujfalusi (8):
-      ASoC: TWL4030: Revisit codec defaults
-      ASoC: TWL4030: Remove wrapper for power down
-      ASoC: TWL4030: Make offset cancellation path configurable
-      ASoC: TWL4030: Optimize the power up sequence
-      ASoC: TWL4030: Helper to check chip default registers
-      ASoC: TWL4030: Correct the ARXR2_APGA_CTL chip default
-      ASoC: TWL4030: Use BIAS_OFF instead of BIAS_STANDBY, when not in use
-      ASoC: TWL4030: Add functionalty to reset the registers
-
- sound/soc/codecs/twl4030.c |  291 +++++++++++++++++++++++++-------------------
- sound/soc/codecs/twl4030.h |    3 +
- sound/soc/codecs/twl6040.c |    2 +-
- 3 files changed, 170 insertions(+), 126 deletions(-)
+The patch itself looks OK.
