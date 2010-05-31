@@ -1,15 +1,15 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 4/9] ALSA: usb-audio: fix selector unit string
-	index accessor
-Date: Mon, 31 May 2010 13:35:39 +0200
-Message-ID: <1275305744-6590-4-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 3/9] include/linux/usb/audio-v2.h: add more
+	UAC2 details
+Date: Mon, 31 May 2010 13:35:38 +0200
+Message-ID: <1275305744-6590-3-git-send-email-daniel@caiaq.de>
 References: <1275305744-6590-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id A63691038A0
+	by alsa0.perex.cz (Postfix) with ESMTP id EA1091038A1
 	for <alsa-devel@alsa-project.org>;
 	Mon, 31 May 2010 13:36:01 +0200 (CEST)
 In-Reply-To: <1275305744-6590-1-git-send-email-daniel@caiaq.de>
@@ -26,25 +26,53 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, gregkh@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-This is another regression from the UAC2 code refactoring.
+Also, remove the 'bmControl' field from uac_clock_selector_descriptor,
+which was at the wrong offset. This struct is currently unused.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 ---
- include/linux/usb/audio.h |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ include/linux/usb/audio-v2.h |   21 ++++++++++++++++++++-
+ 1 files changed, 20 insertions(+), 1 deletions(-)
 
-diff --git a/include/linux/usb/audio.h b/include/linux/usb/audio.h
-index 5d646c3..ed5cf92 100644
---- a/include/linux/usb/audio.h
-+++ b/include/linux/usb/audio.h
-@@ -244,7 +244,7 @@ struct uac_selector_unit_descriptor {
- static inline __u8 uac_selector_unit_iSelector(struct uac_selector_unit_descriptor *desc)
- {
- 	__u8 *raw = (__u8 *) desc;
--	return raw[9 + desc->bLength - 1];
-+	return raw[desc->bLength - 1];
- }
+diff --git a/include/linux/usb/audio-v2.h b/include/linux/usb/audio-v2.h
+index 8f91be3..383b94b 100644
+--- a/include/linux/usb/audio-v2.h
++++ b/include/linux/usb/audio-v2.h
+@@ -41,6 +41,13 @@ struct uac_clock_source_descriptor {
+ 	__u8 iClockSource;
+ } __attribute__((packed));
  
- /* 4.3.2.5 Feature Unit Descriptor */
++/* bmAttribute fields */
++#define UAC_CLOCK_SOURCE_TYPE_EXT	0x0
++#define UAC_CLOCK_SOURCE_TYPE_INT_FIXED	0x1
++#define UAC_CLOCK_SOURCE_TYPE_INT_VAR	0x2
++#define UAC_CLOCK_SOURCE_TYPE_INT_PROG	0x3
++#define UAC_CLOCK_SOURCE_SYNCED_TO_SOF	(1 << 2)
++
+ /* 4.7.2.2 Clock Source Descriptor */
+ 
+ struct uac_clock_selector_descriptor {
+@@ -49,8 +56,20 @@ struct uac_clock_selector_descriptor {
+ 	__u8 bDescriptorSubtype;
+ 	__u8 bClockID;
+ 	__u8 bNrInPins;
+-	__u8 bmControls;
+ 	__u8 baCSourceID[];
++	/* bmControls, bAssocTerminal and iClockSource omitted */
++} __attribute__((packed));
++
++/* 4.7.2.3 Clock Multiplier Descriptor */
++
++struct uac_clock_multiplier_descriptor {
++	__u8 bLength;
++	__u8 bDescriptorType;
++	__u8 bDescriptorSubtype;
++	__u8 bClockID;
++	__u8 bCSourceID;
++	__u8 bmControls;
++	__u8 iClockMultiplier;
+ } __attribute__((packed));
+ 
+ /* 4.7.2.4 Input terminal descriptor */
 -- 
 1.7.1
