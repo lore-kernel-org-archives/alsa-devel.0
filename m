@@ -1,25 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] alsa/Au1xxx-PSC: use resource_size
-Date: Mon, 31 May 2010 12:08:05 +0100
-Message-ID: <20100531110805.GE3489@rakim.wolfsonmicro.main>
-References: <4BFF33B3.1040506@gmail.com>
-	<AANLkTil1hKb8QdsKEfHseOyPdw8uIY6d5mVEUwZ68T-p@mail.gmail.com>
-	<AANLkTimQD4TihG2yGsPLGmCmWV968fdoDtZ1nDcW5A-h@mail.gmail.com>
-	<4BFF5838.8050403@gmail.com>
-	<AANLkTikn3BHn1D3uVQWO6Xuiv4vkk8pMe96F7uUUSAmM@mail.gmail.com>
-	<4BFF633B.7030101@gmail.com>
-	<AANLkTim9C08G5iOuKE9XOtFRlS616c6yk-7LNLddbVCl@mail.gmail.com>
-	<4BFF87DC.4010300@gmail.com>
+Subject: Re: [patch 1/6] orion/kirkwood: add audio functions.
+Date: Mon, 31 May 2010 12:14:22 +0100
+Message-ID: <20100531111422.GF3489@rakim.wolfsonmicro.main>
+References: <20100527125737.524554667@mandriva.com>
+	<20100527130337.925751129@mandriva.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7BE272442F
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 464D32412E
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 13:08:06 +0200 (CEST)
+	Mon, 31 May 2010 13:14:24 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4BFF87DC.4010300@gmail.com>
+In-Reply-To: <20100527130337.925751129@mandriva.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,18 +23,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
-Cc: Manuel Lauss <manuel.lauss@googlemail.com>, alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: apatard@mandriva.com
+Cc: alsa-devel@alsa-project.org, nico@fluxnic.net, saeed@marvell.com, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 28, 2010 at 05:07:40PM +0800, Wan ZongShun wrote:
-> Dear Mark & Liam,
+On Thu, May 27, 2010 at 02:57:38PM +0200, apatard@mandriva.com wrote:
+> This patch add audio related definitions and functions
 > 
-> alsa Au1xxx-PSC use resource_size.
 > 
-> Manuel has agreed this following version patch, now, can it be merged?
+> Signed-off-by: Arnaud Patard <apatard@mandriva.com>
 
-This has wordwrap issues and won't apply, please resend.  As I said
-previously please also try to follow Documentation/SubmittingPatches
-(eg, don't have non-changelog text above the --- in the mail and use a
-standard prefix for the subject line).
+I'm not sure which tree this patch was generated against but it won't
+apply to either 2.6.35-rc1 or my old for-2.6.35 branch.  Please
+regenerate against my for-2.6.36 branch.  The patches look fine but I'm
+not able to apply them.
