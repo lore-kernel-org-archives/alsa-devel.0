@@ -1,17 +1,17 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 8/9] ALSA: usb-audio: clean up
-	find_audio_control_unit()
-Date: Mon, 31 May 2010 13:35:43 +0200
-Message-ID: <1275305744-6590-8-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 9/9] ALSA: usb-audio: export UAC2 clock
+	selectors as mixer controls
+Date: Mon, 31 May 2010 13:35:44 +0200
+Message-ID: <1275305744-6590-9-git-send-email-daniel@caiaq.de>
 References: <1275305744-6590-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D5521038BF
+	by alsa0.perex.cz (Postfix) with ESMTP id B19631038C4
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 13:36:12 +0200 (CEST)
+	Mon, 31 May 2010 13:36:14 +0200 (CEST)
 In-Reply-To: <1275305744-6590-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,51 +26,150 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, gregkh@suse.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Use a struct to parse the audio units, and return usable descriptors
-for all types. There's no need to limit the result set, except for some
-kind of sanity check.
+The UAC2 clock selectors are fortunately compatible with UAC1 audio
+selector units, so we can simply reuse the same approach to get all the
+linked units.
+
+Requests to this control need a different CS value though.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 ---
- sound/usb/mixer.c |   20 +++++++++++---------
- 1 files changed, 11 insertions(+), 9 deletions(-)
+ sound/usb/mixer.c |   42 +++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 35 insertions(+), 7 deletions(-)
 
 diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 8be6bf2..cb34536 100644
+index cb34536..a060d00 100644
 --- a/sound/usb/mixer.c
 +++ b/sound/usb/mixer.c
-@@ -165,22 +165,24 @@ static int check_mapped_selector_name(struct mixer_build *state, int unitid,
+@@ -313,8 +313,8 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int v
+ 			      buf, sizeof(buf), 1000);
  
- /*
-  * find an audio control unit with the given unit id
-- * this doesn't return any clock related units, so they need to be handled elsewhere
-  */
- static void *find_audio_control_unit(struct mixer_build *state, unsigned char unit)
- {
--	unsigned char *p;
-+	/* we just parse the header */
-+	struct uac_feature_unit_descriptor *hdr = NULL;
- 
--	p = NULL;
--	while ((p = snd_usb_find_desc(state->buffer, state->buflen, p,
--				      USB_DT_CS_INTERFACE)) != NULL) {
--		if (p[0] >= 4 && p[2] >= UAC_INPUT_TERMINAL && p[2] <= UAC2_EXTENSION_UNIT_V2 && p[3] == unit)
--			return p;
-+	while ((hdr = snd_usb_find_desc(state->buffer, state->buflen, hdr,
-+					USB_DT_CS_INTERFACE)) != NULL) {
-+		if (hdr->bLength >= 4 &&
-+		    hdr->bDescriptorSubtype >= UAC_INPUT_TERMINAL &&
-+		    hdr->bDescriptorSubtype <= UAC2_SAMPLE_RATE_CONVERTER &&
-+		    hdr->bUnitID == unit)
-+			return hdr;
+ 	if (ret < 0) {
+-		snd_printdd(KERN_ERR "cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
+-			    request, validx, cval->mixer->ctrlif | (cval->id << 8), cval->val_type);
++		snd_printk(KERN_ERR "cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
++			   request, validx, cval->mixer->ctrlif | (cval->id << 8), cval->val_type);
+ 		return ret;
  	}
-+
- 	return NULL;
- }
  
--
- /*
-  * copy a string with the given id
+@@ -610,6 +610,7 @@ static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm
   */
+ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_term *term)
+ {
++	int err;
+ 	void *p1;
+ 
+ 	memset(term, 0, sizeof(*term));
+@@ -630,6 +631,11 @@ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_
+ 				term->channels = d->bNrChannels;
+ 				term->chconfig = le32_to_cpu(d->bmChannelConfig);
+ 				term->name = d->iTerminal;
++
++				/* call recursively to get the clock selectors */
++				err = check_input_term(state, d->bCSourceID, term);
++				if (err < 0)
++					return err;
+ 			}
+ 			return 0;
+ 		case UAC_FEATURE_UNIT: {
+@@ -646,7 +652,8 @@ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_
+ 			term->name = uac_mixer_unit_iMixer(d);
+ 			return 0;
+ 		}
+-		case UAC_SELECTOR_UNIT: {
++		case UAC_SELECTOR_UNIT:
++		case UAC2_CLOCK_SELECTOR: {
+ 			struct uac_selector_unit_descriptor *d = p1;
+ 			/* call recursively to retrieve the channel info */
+ 			if (check_input_term(state, d->baSourceID[0], term) < 0)
+@@ -669,6 +676,13 @@ static int check_input_term(struct mixer_build *state, int id, struct usb_audio_
+ 			term->name = uac_processing_unit_iProcessing(d, state->mixer->protocol);
+ 			return 0;
+ 		}
++		case UAC2_CLOCK_SOURCE: {
++			struct uac_clock_source_descriptor *d = p1;
++			term->type = d->bDescriptorSubtype << 16; /* virtual type */
++			term->id = id;
++			term->name = d->iClockSource;
++			return 0;
++		}
+ 		default:
+ 			return -ENODEV;
+ 		}
+@@ -1610,7 +1624,7 @@ static int mixer_ctl_selector_get(struct snd_kcontrol *kcontrol, struct snd_ctl_
+ 	struct usb_mixer_elem_info *cval = kcontrol->private_data;
+ 	int val, err;
+ 
+-	err = get_cur_ctl_value(cval, 0, &val);
++	err = get_cur_ctl_value(cval, cval->control << 8, &val);
+ 	if (err < 0) {
+ 		if (cval->mixer->ignore_ctl_error) {
+ 			ucontrol->value.enumerated.item[0] = 0;
+@@ -1629,7 +1643,7 @@ static int mixer_ctl_selector_put(struct snd_kcontrol *kcontrol, struct snd_ctl_
+ 	struct usb_mixer_elem_info *cval = kcontrol->private_data;
+ 	int val, oval, err;
+ 
+-	err = get_cur_ctl_value(cval, 0, &oval);
++	err = get_cur_ctl_value(cval, cval->control << 8, &oval);
+ 	if (err < 0) {
+ 		if (cval->mixer->ignore_ctl_error)
+ 			return 0;
+@@ -1638,7 +1652,7 @@ static int mixer_ctl_selector_put(struct snd_kcontrol *kcontrol, struct snd_ctl_
+ 	val = ucontrol->value.enumerated.item[0];
+ 	val = get_abs_value(cval, val);
+ 	if (val != oval) {
+-		set_cur_ctl_value(cval, 0, val);
++		set_cur_ctl_value(cval, cval->control << 8, val);
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -1720,6 +1734,11 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 	cval->res = 1;
+ 	cval->initialized = 1;
+ 
++	if (desc->bDescriptorSubtype == UAC2_CLOCK_SELECTOR)
++		cval->control = UAC2_CX_CLOCK_SELECTOR;
++	else
++		cval->control = 0;
++
+ 	namelist = kmalloc(sizeof(char *) * desc->bNrInPins, GFP_KERNEL);
+ 	if (! namelist) {
+ 		snd_printk(KERN_ERR "cannot malloc\n");
+@@ -1769,7 +1788,9 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid, void
+ 		if (! len)
+ 			strlcpy(kctl->id.name, "USB", sizeof(kctl->id.name));
+ 
+-		if ((state->oterm.type & 0xff00) == 0x0100)
++		if (desc->bDescriptorSubtype == UAC2_CLOCK_SELECTOR)
++			append_ctl_name(kctl, " Clock Source");
++		else if ((state->oterm.type & 0xff00) == 0x0100)
+ 			append_ctl_name(kctl, " Capture Source");
+ 		else
+ 			append_ctl_name(kctl, " Playback Source");
+@@ -1803,10 +1824,12 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
+ 
+ 	switch (p1[2]) {
+ 	case UAC_INPUT_TERMINAL:
++	case UAC2_CLOCK_SOURCE:
+ 		return 0; /* NOP */
+ 	case UAC_MIXER_UNIT:
+ 		return parse_audio_mixer_unit(state, unitid, p1);
+ 	case UAC_SELECTOR_UNIT:
++	case UAC2_CLOCK_SELECTOR:
+ 		return parse_audio_selector_unit(state, unitid, p1);
+ 	case UAC_FEATURE_UNIT:
+ 		return parse_audio_feature_unit(state, unitid, p1);
+@@ -1903,6 +1926,11 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
+ 			err = parse_audio_unit(&state, desc->bSourceID);
+ 			if (err < 0)
+ 				return err;
++
++			/* for UAC2, use the same approach to also add the clock selectors */
++			err = parse_audio_unit(&state, desc->bCSourceID);
++			if (err < 0)
++				return err;
+ 		}
+ 	}
+ 
 -- 
 1.7.1
