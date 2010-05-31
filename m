@@ -1,21 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [patch 0/6] kirkwood openrd client audio support -
- v4
-Date: Mon, 31 May 2010 11:15:39 +0100
-Message-ID: <1275300939.3174.6.camel@odin>
-References: <20100527125737.524554667@mandriva.com>
+Subject: Re: arecord and DMA misaligned error with device
+Date: Mon, 31 May 2010 11:18:27 +0100
+Message-ID: <1275301107.3174.9.camel@odin>
+References: <AANLkTilGJrApaQ2N9vQLVLKQWq_tkv7qMVKzYHUlBdpl@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2A6CF10385E
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8CA16103860
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 12:15:45 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so303026wyb.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 03:15:44 -0700 (PDT)
-In-Reply-To: <20100527125737.524554667@mandriva.com>
+	Mon, 31 May 2010 12:18:31 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so674361wwf.38
+	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 03:18:31 -0700 (PDT)
+In-Reply-To: <AANLkTilGJrApaQ2N9vQLVLKQWq_tkv7qMVKzYHUlBdpl@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,29 +23,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: apatard@mandriva.com
-Cc: alsa-devel@alsa-project.org, nico@fluxnic.net, broonie@opensource.wolfsonmicro.com, saeed@marvell.com, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org
+To: Ruchi Sirauthiya <sirauthiya.ruchi@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-05-27 at 14:57 +0200, apatard@mandriva.com wrote:
-> Hi,
+On Sat, 2010-05-29 at 23:43 +0530, Ruchi Sirauthiya wrote:
+> Hi all,
 > 
-> This patchset is an other try to get merged openrd audio support mainline.
-> The main change is going back to using kirkwood instead of orion, as the 
-> only orion having i2s is not merged mainline (if I got it right).
-> I've also fixed the lastests comments on the cs42l51 codec patch.
-> 
-> Arnaud
-> 
-> Changes :
-> - changed back from orion to kirkwood
-> - removed cs42l51 adc input register initialisation
-> - moved the DAPM event macro to soc-dapm
-> - fixed cs42l51_set_dai_fmt() master/slave check
-> - removed cs42l51 startup message
-> - use snd_soc_update_bits() in cs42l51_pdn_event()
+> I am working on an OMAP board with Linux kernel 2.6.22.18-omap3 and ALSA. I
+> got the
+> following stack trace when running 'arecord' continuously for a long time
+> (~30 minutes).
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+This kernel is rather ancient, please upgrade. Fwiw, I know that some
+people can capture audio using recent kernels on OMAP3 for days.
+
+Liam
 -- 
 Freelance Developer, SlimLogic Ltd
 ASoC and Voltage Regulator Maintainer.
