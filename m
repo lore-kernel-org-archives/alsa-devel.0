@@ -1,18 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: [RFC PATCH 1/5] OMAP: McBSP: Function to query the
-	FIFO size
-Date: Mon, 31 May 2010 11:03:22 +0300
-Message-ID: <1275293006-31594-2-git-send-email-peter.ujfalusi@nokia.com>
-References: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [RFC PATCH 0/5] OMAP/ASoC: McBSP: FIFO handling
+	related fixes
+Date: Mon, 31 May 2010 11:03:21 +0300
+Message-ID: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5066E24156
+	by alsa0.perex.cz (Postfix) with ESMTP id 7510324156
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 10:03:48 +0200 (CEST)
-In-Reply-To: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon, 31 May 2010 10:03:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,60 +24,63 @@ To: alsa-devel@alsa-project.org, linux-oamp@vger.kernel.org
 Cc: tony@atomide.com, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com, ext-eero.nurkkala@nokia.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Users of McBSP can use the omap_mcbsp_get_fifo_size function to query
-the size of the McBSP FIFO.
-The function will return the FIFO size in words (the HW maximum).
+Hello,
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+This series aims to correct how the McBSP FIFO is viewed, and handled.
+
+Introduction of the problem:
+OMAP McBSP FIFO is word structured:
+McBSP2 has 1024 + 256 = 1280 word long buffer,
+McBSP1,3,4,5 has 128 word long buffer
+
+This means, that the size of the FIFO
+depends on the McBSP word size configuration.
+For example on McBSP3:
+16bit samples: size is 128 * 2 = 256 bytes
+32bit samples: size is 128 * 4 = 512 bytes
+It is simpler to place constraint for buffer and period based on channels.
+McBSP3 as example again (16 or 32 bit samples):
+1 channel (mono): size is 128 frames (128 words)
+2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
+4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
+
+Since now the McBSP codec supports not only 16bit samples (32biut has been
+recently added), the FIFO size handling is no longer correct, since it has
+been hard wired for 16bit word length.
+
+The series changes how the users of McBSP are configuring the FIFO:
+It used to be 0 based (0 meant 1 word threshold). After this series users can
+configure the threshold in 1 base mode (1 means 1 word threshold).
+The platform code now provides the _full_ size of the FIFO in words, instead of
+the already limited value used in the past.
+
+In ASoC omap-mcbsp code hw_rule based constraint refinement is going to be used
+instead of the hardwired static constraint, which was correct only in case of
+16bit word length.
+
+The hw_rule is refining the minimum buffer size based on the channel number
+going to be used by the coming stream.
+In case of threshold mode additional hw_rule refines the maximum allowed period
+size.
+
+The series are generated agains Takashi's sound-2.6: topic/asoc branch.
+
+CCing also Eduardo, and Eero since they have worked on the original
+FIFO/threshold implementation.
+
+All commetns and testers are welcome!
+Peter
+
 ---
- arch/arm/plat-omap/include/plat/mcbsp.h |    2 ++
- arch/arm/plat-omap/mcbsp.c              |   14 ++++++++++++++
- 2 files changed, 16 insertions(+), 0 deletions(-)
+Peter Ujfalusi (5):
+  OMAP: McBSP: Function to query the FIFO size
+  OMAP3: McBSP: Change the way how the FIFO is handled
+  OMAP3: McBSP: Use the port's buffer_size when calculating tx delay
+  ASoC: omap-mcbsp: Save, and use wlen for threshold configuration
+  ASoC: omap-mcbsp: Place correct constraints for streams
 
-diff --git a/arch/arm/plat-omap/include/plat/mcbsp.h b/arch/arm/plat-omap/include/plat/mcbsp.h
-index 1bd7021..e126951 100644
---- a/arch/arm/plat-omap/include/plat/mcbsp.h
-+++ b/arch/arm/plat-omap/include/plat/mcbsp.h
-@@ -473,6 +473,7 @@ void omap_mcbsp_set_tx_threshold(unsigned int id, u16 threshold);
- void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold);
- u16 omap_mcbsp_get_max_tx_threshold(unsigned int id);
- u16 omap_mcbsp_get_max_rx_threshold(unsigned int id);
-+u16 omap_mcbsp_get_fifo_size(unsigned int id);
- u16 omap_mcbsp_get_tx_delay(unsigned int id);
- u16 omap_mcbsp_get_rx_delay(unsigned int id);
- int omap_mcbsp_get_dma_op_mode(unsigned int id);
-@@ -483,6 +484,7 @@ static inline void omap_mcbsp_set_rx_threshold(unsigned int id, u16 threshold)
- { }
- static inline u16 omap_mcbsp_get_max_tx_threshold(unsigned int id) { return 0; }
- static inline u16 omap_mcbsp_get_max_rx_threshold(unsigned int id) { return 0; }
-+static inline u16 omap_mcbsp_get_fifo_size(unsigned int id) { return 0; }
- static inline u16 omap_mcbsp_get_tx_delay(unsigned int id) { return 0; }
- static inline u16 omap_mcbsp_get_rx_delay(unsigned int id) { return 0; }
- static inline int omap_mcbsp_get_dma_op_mode(unsigned int id) { return 0; }
-diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-index 4820cab..51d8abf 100644
---- a/arch/arm/plat-omap/mcbsp.c
-+++ b/arch/arm/plat-omap/mcbsp.c
-@@ -559,6 +559,20 @@ u16 omap_mcbsp_get_max_rx_threshold(unsigned int id)
- }
- EXPORT_SYMBOL(omap_mcbsp_get_max_rx_threshold);
- 
-+u16 omap_mcbsp_get_fifo_size(unsigned int id)
-+{
-+	struct omap_mcbsp *mcbsp;
-+
-+	if (!omap_mcbsp_check_valid_id(id)) {
-+		printk(KERN_ERR "%s: Invalid id (%d)\n", __func__, id + 1);
-+		return -ENODEV;
-+	}
-+	mcbsp = id_to_mcbsp_ptr(id);
-+
-+	return mcbsp->pdata->buffer_size;
-+}
-+EXPORT_SYMBOL(omap_mcbsp_get_fifo_size);
-+
- #define MCBSP2_FIFO_SIZE	0x500 /* 1024 + 256 locations */
- #define MCBSP1345_FIFO_SIZE	0x80  /* 128 locations */
- /*
--- 
-1.7.1
+ arch/arm/mach-omap2/mcbsp.c             |   10 ++--
+ arch/arm/plat-omap/include/plat/mcbsp.h |    2 +
+ arch/arm/plat-omap/mcbsp.c              |   31 ++++++---
+ sound/soc/omap/omap-mcbsp.c             |  112 +++++++++++++++++++++++-------
+ 4 files changed, 114 insertions(+), 41 deletions(-)
