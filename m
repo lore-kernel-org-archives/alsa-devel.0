@@ -1,19 +1,19 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [patch 4/6] cs42l51: add asoc driver
-Date: Mon, 31 May 2010 12:20:52 +0100
-Message-ID: <20100531112052.GH3489@rakim.wolfsonmicro.main>
-References: <20100527125737.524554667@mandriva.com>
-	<20100527130338.737142664@mandriva.com>
+Subject: Re: [PATCH] ASoC: spdif: Add codec driver to use spdif
+	stand-alone
+Date: Mon, 31 May 2010 12:23:42 +0100
+Message-ID: <20100531112342.GJ3489@rakim.wolfsonmicro.main>
+References: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0B51A2414A
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ADC4D10389F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 13:20:54 +0200 (CEST)
+	Mon, 31 May 2010 13:23:43 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20100527130338.737142664@mandriva.com>
+In-Reply-To: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,14 +23,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: apatard@mandriva.com
-Cc: alsa-devel@alsa-project.org, nico@fluxnic.net, saeed@marvell.com, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
+To: Seungwhan Youn <sw.youn@samsung.com>
+Cc: alsa-devel@alsa-project.org, schen@mvista.com, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 27, 2010 at 02:57:41PM +0200, apatard@mandriva.com wrote:
-> This patch is adding a ASoC driver for the cs42l51 from Cirrus Logic.
-> Master mode and spi mode are not supported.
+On Thu, May 27, 2010 at 06:13:48PM +0900, Seungwhan Youn wrote:
+> This patch adds spdif dummy codec driver for using spdif-dit as
+> a stand-alone. Until this, spdif-dit can be used only with other
+> codecs like tlv320aci3x in davinci platform.
 > 
-> Signed-off-by: Arnaud Patard <apatard@mandriva.com>
+> Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
 
 Applied, thanks.
