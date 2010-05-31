@@ -1,15 +1,19 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: i.MX SSI Kconfig fixes
-Date: Mon, 31 May 2010 10:49:52 +0200
-Message-ID: <1275295794-3168-1-git-send-email-s.hauer@pengutronix.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: How to support software mixing on QUALCOMM
+	72XX	without mmap?
+Date: Mon, 31 May 2010 10:38:32 +0100
+Message-ID: <20100531093832.GA7799@sirena.org.uk>
+References: <AANLkTinNq7FzySM5mmW8eEImcdcBUiZ4Z3RZNb359Gd6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id C97AB243DC
-	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 10:49:56 +0200 (CEST)
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07D6F103814
+	for <Alsa-devel@alsa-project.org>;
+	Mon, 31 May 2010 11:38:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTinNq7FzySM5mmW8eEImcdcBUiZ4Z3RZNb359Gd6@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,26 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Berg <bergtian@gmail.com>
+Cc: swetland@google.com, Alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, May 30, 2010 at 12:54:17AM +0800, Berg wrote:
 
-Two small fixes for i.MX SSI.
+>     I'm porting ASLA1.0.23 to qualcomm 72xx base on ARM11.
 
-Sascha
+You might want to coordinate your efforts with the other people working
+on Qualcomm chipsets.  I've CCed in Brian Swetland who I know is one
+such person but there were a few others.
 
-The following changes since commit 67a3e12b05e055c0415c556a315a3d3eb637e29e:
+>     The first instance,"aplay test.wav", works now, but the second
+> instance should fail with "device busy" error message.
+>     I have tried plug dmix and dshare "aply -D plug:mycard
+> test.wav", but met a fail again for the soc chip doesn't support mmap.
+> Of course,pcm_mycard is defined in /etc/asound.conf.
 
-  Linux 2.6.35-rc1 (2010-05-30 13:21:02 -0700)
+I'd generally suggest PulseAudio over dmix for software mixing.
 
-are available in the git repository at:
-  git://git.pengutronix.de/git/imx/linux-2.6.git imx-ssi-fixes
+>     My questions are:
+>         1)Is  software mixing  implemented in ALSA Driver,or in ALSA LIB?
 
-Sascha Hauer (2):
-      i.MX ssi: MX31ads sound support should depend on MACH_MX31ADS
-      i.MX ssi: Add missing Kconfig entry for Phytec boards
-
- sound/soc/imx/Kconfig |   11 ++++++++++-
- 1 files changed, 10 insertions(+), 1 deletions(-)
+It's implemented in user space, via an ALSA library plugin.
