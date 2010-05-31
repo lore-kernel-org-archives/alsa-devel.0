@@ -1,16 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.36
-Date: Mon, 31 May 2010 14:03:20 +0100
-Message-ID: <20100531130320.GB10507@rakim.wolfsonmicro.main>
+From: Elimar Riesebieter <riesebie@lxtec.de>
+Subject: Re: alsa-driver-1.0.23 fails to build on ppc
+Date: Mon, 31 May 2010 15:13:00 +0200
+Message-ID: <20100531131300.GA8279@aragorn.home.lxtec.de>
+References: <20100529101637.GA17139@aragorn.home.lxtec.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 4AFA910381A
+Received: from smtpout0.hostsharing.net (smtpout0.hostsharing.net
+	[83.223.95.250])
+	by alsa0.perex.cz (Postfix) with ESMTP id 923841038E9
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 15:03:21 +0200 (CEST)
+	Mon, 31 May 2010 15:13:14 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <20100529101637.GA17139@aragorn.home.lxtec.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,100 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel <alsa-devel@alsa-project.org>, pkg-alsa-devel <pkg-alsa-devel@lists.alioth.debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 67a3e12b05e055c0415c556a315a3d3eb637e29e:
+* Elimar Riesebieter [100529 12:16 +0200]
+> Hi,
+> 
+> preparing alsa-driver-1.0.23 for Debian upload I found while building modules all:
+> 
+>   LD [M]  /usr/src/modass/usr_src/modules/alsa-driver/aoa/core/snd-aoa.o
+>   CC [M]  /usr/src/modass/usr_src/modules/alsa-driver/aoa/fabrics/layout.o
+> In file included from /usr/src/modass/usr_src/modules/alsa-driver/aoa/fabrics/layout.c:2:
+> /usr/src/modass/usr_src/modules/alsa-driver/aoa/fabrics/../../alsa-kernel/aoa/fabrics/layout.c: In function 'check_codec':
+> /usr/src/modass/usr_src/modules/alsa-driver/aoa/fabrics/../../alsa-kernel/aoa/fabrics/layout.c:772: error: 'struct device_node' has no member named 'phandle'
 
-  Linux 2.6.35-rc1 (2010-05-30 13:21:02 -0700)
+Hmm, on 2.6.32|3 linux_phandle works. On 2.6.34 phandle.
 
-are available in the git repository at:
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.36
+Any hint?
 
-This includes a merge up of 2.6.35-rc1, plus the commits below.
+Elimar
 
-Barry Song (1):
-      ASoC: ad193x: add set_sysclk entry to support different clock input
-
-Jassi Brar (2):
-      ASOC: S5PC100: Enable AC97 support
-      ASOC: S5PV210: Enable AC97 support
-
-Mark Brown (7):
-      Merge branch 'topic/asoc' of git://git.kernel.org/.../tiwai/sound-2.6 into for-2.6.36
-      ASoC: Remove version display from WM8990
-      ASoC: Fix dB scales for WM835x
-      ASoC: Fix dB scales for WM8400
-      ASoC: Fix dB scales for WM8990
-      Merge commit 'v2.6.35-rc1' into for-2.6.36
-      ASoC: Fix S/PDIF build
-
-Seungwhan Youn (1):
-      ASoC: spdif: Add codec driver to use spdif stand-alone
-
-Wan ZongShun (1):
-      ASoC: NUC900/audio: add nuc900 audio driver support
-
-apatard@mandriva.com (7):
-      ASoC: Add SOC_DOUBLE_R_SX_TLV control
-      ASoC: Add SND_SOC_DAPM_PRE_POST_PMD event
-      ASoC: Add driver for cs42l51
-      orion/kirkwood: add audio functions.
-      openrd-client: initialise audio
-      ASoC: kirkwood: Add i2s support
-      ASoC: kirkwood: Add audio support to openrd client platforms
-
- arch/arm/mach-kirkwood/common.c                |   38 ++
- arch/arm/mach-kirkwood/common.h                |    2 +
- arch/arm/mach-kirkwood/include/mach/kirkwood.h |    3 +
- arch/arm/mach-kirkwood/openrd-setup.c          |   13 +
- arch/arm/plat-orion/include/plat/audio.h       |   11 +
- include/sound/soc-dapm.h                       |    2 +
- include/sound/soc.h                            |   21 +
- sound/soc/Kconfig                              |    2 +
- sound/soc/Makefile                             |    2 +
- sound/soc/codecs/Kconfig                       |    4 +
- sound/soc/codecs/Makefile                      |    2 +
- sound/soc/codecs/ad193x.c                      |   41 ++-
- sound/soc/codecs/ad193x.h                      |    5 +
- sound/soc/codecs/cs42l51.c                     |  763 ++++++++++++++++++++++++
- sound/soc/codecs/cs42l51.h                     |  163 +++++
- sound/soc/codecs/spdif_transciever.c           |   94 +++-
- sound/soc/codecs/spdif_transciever.h           |    1 +
- sound/soc/codecs/wm8990.c                      |    4 -
- sound/soc/kirkwood/Kconfig                     |   20 +
- sound/soc/kirkwood/Makefile                    |    9 +
- sound/soc/kirkwood/kirkwood-dma.c              |  383 ++++++++++++
- sound/soc/kirkwood/kirkwood-dma.h              |   17 +
- sound/soc/kirkwood/kirkwood-i2s.c              |  485 +++++++++++++++
- sound/soc/kirkwood/kirkwood-i2s.h              |   17 +
- sound/soc/kirkwood/kirkwood-openrd.c           |  126 ++++
- sound/soc/kirkwood/kirkwood.h                  |  126 ++++
- sound/soc/nuc900/Kconfig                       |   27 +
- sound/soc/nuc900/Makefile                      |   11 +
- sound/soc/nuc900/nuc900-ac97.c                 |  442 ++++++++++++++
- sound/soc/nuc900/nuc900-audio.c                |   81 +++
- sound/soc/nuc900/nuc900-auido.h                |  121 ++++
- sound/soc/nuc900/nuc900-pcm.c                  |  352 +++++++++++
- sound/soc/s3c24xx/Kconfig                      |    4 +-
- sound/soc/s3c24xx/smdk_wm9713.c                |    3 +
- sound/soc/soc-core.c                           |   95 +++
- 35 files changed, 3482 insertions(+), 8 deletions(-)
- create mode 100644 arch/arm/plat-orion/include/plat/audio.h
- create mode 100644 sound/soc/codecs/cs42l51.c
- create mode 100644 sound/soc/codecs/cs42l51.h
- create mode 100644 sound/soc/kirkwood/Kconfig
- create mode 100644 sound/soc/kirkwood/Makefile
- create mode 100644 sound/soc/kirkwood/kirkwood-dma.c
- create mode 100644 sound/soc/kirkwood/kirkwood-dma.h
- create mode 100644 sound/soc/kirkwood/kirkwood-i2s.c
- create mode 100644 sound/soc/kirkwood/kirkwood-i2s.h
- create mode 100644 sound/soc/kirkwood/kirkwood-openrd.c
- create mode 100644 sound/soc/kirkwood/kirkwood.h
- create mode 100644 sound/soc/nuc900/Kconfig
- create mode 100644 sound/soc/nuc900/Makefile
- create mode 100644 sound/soc/nuc900/nuc900-ac97.c
- create mode 100644 sound/soc/nuc900/nuc900-audio.c
- create mode 100644 sound/soc/nuc900/nuc900-auido.h
- create mode 100644 sound/soc/nuc900/nuc900-pcm.c
+-- 
+  On the keyboard of life you have always
+  to keep a finger at the escape key;-)
