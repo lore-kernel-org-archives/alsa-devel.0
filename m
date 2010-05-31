@@ -1,21 +1,27 @@
-From: Seungwhan Youn <claude.youn@gmail.com>
-Subject: Re: [PATCH] ASoC: spdif: Add codec driver to use spdif
-	stand-alone
-Date: Tue, 1 Jun 2010 04:27:12 +0900
-Message-ID: <AANLkTil7HORYjETZrvF9foVm3zxYLRf9bm5Y9tkVFpSM@mail.gmail.com>
-References: <1274951628-10572-1-git-send-email-sw.youn@samsung.com>
-	<20100531124228.GA14195@sirena.org.uk>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Problem with snd_hda_intel from 05-27-2010 snapshot
+Date: Mon, 31 May 2010 13:17:53 -0700
+Message-ID: <AANLkTinOXLzkeqjLfrRXKxOp4jSBf3FMVcNanHa0ya0k@mail.gmail.com>
+References: <AANLkTilIX_UnMYcg8LAqkndS80nFppblW6erTm2e7o5X@mail.gmail.com>
+	<AANLkTinLbTMrYBhg6KO826slsugfEcU0_wYqukSQpQw2@mail.gmail.com>
+	<alpine.LNX.2.00.1005270931570.6856@eeebox2.perex-int.cz>
+	<AANLkTinvfYyOHzQrEfcBrDvDMW3Fc93oYrUHOcABm0Oa@mail.gmail.com>
+	<alpine.LNX.2.00.1005290822040.6856@eeebox2.perex-int.cz>
+	<AANLkTin1b34S7HeeHTppZkomIZ0Ka-xkC6viZt2Jfr1o@mail.gmail.com>
+	<alpine.LNX.2.00.1005301733300.6856@eeebox2.perex-int.cz>
+	<AANLkTim5L_klj1g-8hwnsftuR4x_GwESH_AOdeb4_XzT@mail.gmail.com>
+	<alpine.LNX.2.00.1005312028520.5693@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 543F424514
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 65CA5245C7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 21:27:14 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so1010355wwf.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 12:27:13 -0700 (PDT)
-In-Reply-To: <20100531124228.GA14195@sirena.org.uk>
+	Mon, 31 May 2010 22:17:56 +0200 (CEST)
+Received: by vws5 with SMTP id 5so2382566vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 13:17:54 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1005312028520.5693@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,51 +31,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk, schen@mvista.com, Seungwhan Youn <sw.youn@samsung.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Mark,
+On Mon, May 31, 2010 at 11:30 AM, Jaroslav Kysela <perex@perex.cz> wrote:
+> Thanks. Could you try this patch?
+>
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 170610e..ac3dbab 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1910,7 +1910,7 @@ static int azx_position_ok(struct azx *chip, struct
+> azx_dev *azx_dev)
+> =A0 =A0 =A0 =A0if (WARN_ONCE(!azx_dev->period_bytes,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"hda-intel: zero azx_dev->peri=
+od_bytes"))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -1; /* this shouldn't happen! */
+> - =A0 =A0 =A0 if (wallclk <=3D azx_dev->period_wallclk &&
+> + =A0 =A0 =A0 if (wallclk < (azx_dev->period_wallclk * 3) / 2 &&
+> =A0 =A0 =A0 =A0 =A0 =A0pos % azx_dev->period_bytes > azx_dev->period_byte=
+s / 2)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* NG - it's below the first next period b=
+oundary */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return bdl_pos_adj[chip->dev_index] ? 0 : =
+-1;
+>
+> -----
 
-2010/5/31 Mark Brown <broonie@opensource.wolfsonmicro.com>
->
-> On Thu, May 27, 2010 at 06:13:48PM +0900, Seungwhan Youn wrote:
-> > This patch adds spdif dummy codec driver for using spdif-dit as
-> > a stand-alone. Until this, spdif-dit can be used only with other
-> > codecs like tlv320aci3x in davinci platform.
-> >
-> > Signed-off-by: Seungwhan Youn <sw.youn@samsung.com>
->
-> *sigh*
->
-> sound/soc/codecs/spdif_transciever.c:67:29: warning: symbol 'soc_codec_de=
-v_spdif_dit' was not declared. Should it be static?
-> sound/soc/codecs/spdif_transciever.c:95:17: error: undefined identifier '=
-kzalloc'
-> sound/soc/codecs/spdif_transciever.c:131:9: error: undefined identifier '=
-kfree'
-> sound/soc/codecs/spdif_transciever.c:139:9: error: undefined identifier '=
-kfree'
-> =A0CC [M] =A0sound/soc/codecs/spdif_transciever.o
-> sound/soc/codecs/spdif_transciever.c: In function =91spdif_dit_probe=92:
-> sound/soc/codecs/spdif_transciever.c:95: error: implicit declaration of f=
-unction =91kzalloc=92
-> sound/soc/codecs/spdif_transciever.c:95: warning: assignment makes pointe=
-r from integer without a cast
-> sound/soc/codecs/spdif_transciever.c:131: error: implicit declaration of =
-function =91kfree=92
->
-> I've fixed these up.
->
+I've got a bit of a strange result.  With the above patch (and the
+wallclk logging patch from your previous email), sound does not work.
+However, it _does_ start working only if I `echo 29 >
+/proc/asound/card1/pcm3p/xrun_debug`.  I tested these results with a
+reboot in between each attempt just to make sure I'm working with a
+clean boot.  I can't imagine what's causing this weird condition.  Any
+ideas?
 
-I'm sorry for missing these. :(
-Thank you.
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-
-BestRegards,
-claude
+Best regards,
+Derek
