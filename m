@@ -1,20 +1,22 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [RFC PATCH 5/5] ASoC: omap-mcbsp: Place correct
-	constraints for streams
-Date: Mon, 31 May 2010 14:57:22 +0300
-Message-ID: <201005311457.22699.peter.ujfalusi@nokia.com>
-References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1275293810-31984-6-git-send-email-peter.ujfalusi@nokia.com>
-	<1275300021.3174.5.camel@odin>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [patch 1/4] orion/kirkwood: add audio functions.
+Date: Mon, 31 May 2010 13:17:02 +0100
+Message-ID: <20100531121702.GK3489@rakim.wolfsonmicro.main>
+References: <20100527125737.524554667@mandriva.com>
+	<20100527130337.925751129@mandriva.com>
+	<20100531111422.GF3489@rakim.wolfsonmicro.main>
+	<20100531114911.487732770@mandriva.com>
+	<20100531115003.236348260@mandriva.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx09.nokia.com (smtp.nokia.com [192.100.105.134])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7E96C24340
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 69CB924397
 	for <alsa-devel@alsa-project.org>;
-	Mon, 31 May 2010 13:57:39 +0200 (CEST)
-In-Reply-To: <1275300021.3174.5.camel@odin>
+	Mon, 31 May 2010 14:17:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100531115003.236348260@mandriva.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,73 +26,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, ext Liam Girdwood <lrg@slimlogic.co.uk>
+To: apatard@mandriva.com
+Cc: alsa-devel@alsa-project.org, nico@fluxnic.net, saeed@marvell.com, tbm@cyrius.com, linux-arm-kernel@lists.infradead.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 31 May 2010 13:00:21 ext Liam Girdwood wrote:
+On Mon, May 31, 2010 at 01:49:12PM +0200, apatard@mandriva.com wrote:
+> This patch add audio related definitions and functions
 
-...
-
-> > +static int hw_rule_bsize_by_channels(struct snd_pcm_hw_params *params,
-> > +				    struct snd_pcm_hw_rule *rule)
-> > +{
-> > +	struct snd_interval *bs =3D hw_param_interval(params,
-> > +					SNDRV_PCM_HW_PARAM_BUFFER_SIZE);
-> > +	struct snd_interval *c =3D hw_param_interval(params,
-> > +					SNDRV_PCM_HW_PARAM_CHANNELS);
-> =
-
-> Best to make these variable names more meaningful.
-
-Sure, I can change that. I have picked these, since all code, which adds hw=
-_rule =
-
-(and the writing an ALSA driver manual) are using variables like this.
-In Here I mean:
-bs =3D=3D Buffer Size
-c =3D=3D Channels
-
-> =
-
-> > +	struct omap_mcbsp_data *mcbsp_data =3D rule->private;
-> > +	struct snd_interval frames;
-> > +	int size;
-> > +
-> > +	snd_interval_any(&frames);
-> > +	size =3D omap_mcbsp_get_fifo_size(mcbsp_data->bus_id);
-> > +
-> > +	frames.min =3D size / c->min;
-> > +	frames.integer =3D 1;
-> > +	return snd_interval_refine(bs, &frames);
-> > +
-> > +}
-> > +
-> > +static int hw_rule_psize_by_channels(struct snd_pcm_hw_params *params,
-> > +				    struct snd_pcm_hw_rule *rule)
-> > +{
-> > +	struct snd_interval *ps =3D hw_param_interval(params,
-> > +					SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
-> > +	struct snd_interval *c =3D hw_param_interval(params,
-> > +					SNDRV_PCM_HW_PARAM_CHANNELS);
-> =
-
-> ditto
-
-Same here:
-I mean:
-ps =3D=3D Period Size
-c =3D=3D Channels
-
-> =
-
-> Thanks
-> =
-
-> Liam
-
-Never the less, I can change them, =
-
-
-Thanks,
-P=E9ter
+Applied, thanks.
