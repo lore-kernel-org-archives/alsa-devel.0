@@ -1,20 +1,23 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 3/3] ASoC/NUC900: Fix a typo for nuc900
-	alsa driver.
-Date: Tue, 01 Jun 2010 10:08:14 +0100
-Message-ID: <1275383294.3060.11.camel@odin>
-References: <4C0475F6.7070005@gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [RFC PATCH 5/5] ASoC: omap-mcbsp: Place correct
+ constraints for streams
+Date: Tue, 1 Jun 2010 12:29:21 +0300
+Message-ID: <20100601122921.6d842ae8.jhnikula@gmail.com>
+References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com>
+	<201006010947.09640.peter.ujfalusi@nokia.com>
+	<20100601103828.55e7b394.jhnikula@gmail.com>
+	<201006011119.30651.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D258B1039D8
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.148])
+	by alsa0.perex.cz (Postfix) with ESMTP id 69ED01039ED
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jun 2010 11:08:25 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so1321421wwf.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 02:08:18 -0700 (PDT)
-In-Reply-To: <4C0475F6.7070005@gmail.com>
+	Tue,  1 Jun 2010 11:26:57 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 5so364661eyb.16
+	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 02:26:56 -0700 (PDT)
+In-Reply-To: <201006011119.30651.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,24 +27,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-06-01 at 10:52 +0800, Wan ZongShun wrote:
-> Dear all,
+On Tue, 1 Jun 2010 11:19:30 +0300
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+
+> If threshold is configured to 100 (99 in register), than McBSP will asserts the 
+> DMA request line, when 100 locations are free. Than DMA has to send 100 words 
+> per DMA request.
 > 
-> This patch is to fix a typo for nuc900 alsa driver.
+> So we need to limit the period size (which is used to configure the DMA's elem 
+> count - number of words per DMA request) that it shall never be bigger than the 
+> threshold.
 > 
+Now I get it with some get hands dirty testing :-)
 
-The changes look fine here, just the commit message and subject is
-missing information about renaming the file.
+So this is a feature of SDMA that in threshold mode the transfer size
+must equal or smaller than threshold (as says the TRM). Still don't
+understand why the transfer size is dependent on peripheral FIFO
+threshold size but that's the fact and we must obey it as Eduardo's
+original patch and your's are doing.
 
-Thanks
+> If there is interest, I might look at this.
+> I guess this could be useful on McBSP1,3,4, and 5, which has small FIFO...
+> 
+Yes, have a packet based DMA transfer saving power and then we have
+bunch of interrupts coming :-)
 
-Liam
 
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Jarkko
