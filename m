@@ -1,17 +1,19 @@
-From: Uros Bizjak <ubizjak@gmail.com>
-Subject: Trouble compiling alsa-driver-1.0.23 on Fedora 13
-Date: Tue, 1 Jun 2010 18:47:36 +0200
-Message-ID: <AANLkTikkHZto-FJv268ZnB_WI4kLoMXopSCgKFijfv8Q@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/4] imx-ssi.c: add new choices
+	to	platform configuration
+Date: Tue, 1 Jun 2010 19:05:28 +0100
+Message-ID: <20100601180527.GC10031@sirena.org.uk>
+References: <1274950737-26498-1-git-send-email-eric@eukrea.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1FB4B1037E3
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3CC9024159
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jun 2010 18:47:45 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so1699987wwf.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 09:47:36 -0700 (PDT)
+	Tue,  1 Jun 2010 20:05:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1274950737-26498-1-git-send-email-eric@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,26 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Eric B??nard <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org, Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+On Thu, May 27, 2010 at 10:58:54AM +0200, Eric B??nard wrote:
+> * introduce 3 new flags to allow a more detailed configuration
+> of the SSI link :
+> 	IMX_SSI_NET : enable Network Mode
+> 	IMX_SSI_SYN : enable Synchronous Mode
+> 	IMX_SSI_USE_I2S_SLAVE : enable I2S Slave Mode
+> * new platform can use these settings without breaking actual
+> platforms.
+> 
+> Signed-off-by: Eric B??nard <eric@eukrea.com>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
 
-Trying to compile alsa-driver-1.0.23 on Fedora 13, I got following failure:
-
-gmake -C /lib/modules/2.6.33.5-112.fc13.x86_64/source
-SUBDIRS=/home/uros/alsa-driver-1.0.23  CPP="gcc -E" CC="gcc" modules
-gmake[1]: Entering directory `/usr/src/kernels/2.6.33.5-112.fc13.x86_64'
-Makefile:535: /usr/src/kernels/2.6.33.5-112.fc13.x86_64/arch//Makefile:
-No such file or directory
-gmake[1]: *** No rule to make target
-`/usr/src/kernels/2.6.33.5-112.fc13.x86_64/arch//Makefile'.  Stop.
-gmake[1]: Leaving directory `/usr/src/kernels/2.6.33.5-112.fc13.x86_64'
-gmake: *** [compile] Error 2
-
-I have installed required kernel-devel package.
-
-Am I missing something else to successfully compile alsa-kernel drivers?
-
-Thanks,
-Uros.
+Sascha, any comments on the first couple of patches here?
