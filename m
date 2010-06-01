@@ -1,16 +1,33 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: [PATCH] ALSA: hda: Use LPIB for ASUS M2V
-Date: Mon, 31 May 2010 23:20:45 -0400
-Message-ID: <AANLkTiloy_Xa4Hi7aRpMTVL9aAPTFt1raao8HC7o7v04@mail.gmail.com>
+From: Stuart Longland <redhatter@gentoo.org>
+Subject: Re: ASoC: Hooking a TI CODEC to a i.MX27 MCU
+Date: Tue, 1 Jun 2010 13:30:27 +1000
+Message-ID: <20100601033023.GA24820@www.longlandclan.yi.org>
+References: <20100524074946.GC16346@www.longlandclan.yi.org>
+	<1274698156.3064.93.camel@odin>
+	<20100525004126.GA10968@www.longlandclan.yi.org>
+	<20100525022646.GA18030@www.longlandclan.yi.org>
+	<1274806007.4728.3.camel@gnutoo-desktop>
+	<20100526132129.GA13644@www.longlandclan.yi.org>
+	<20100527004702.GA22091@sirena.org.uk>
+	<20100528020621.GA12531@www.longlandclan.yi.org>
+	<4BFF5AC7.3060409@eukrea.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=001636ed62f88ab9260487ef7548
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51]) by alsa0.perex.cz (Postfix) with ESMTP id EE7BD24682
+Received: from ossa.mas.viperplatform.net.au (ossa.mas.viperplatform.net.au
+	[202.147.75.25]) by alsa0.perex.cz (Postfix) with ESMTP id 29DD824689
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jun 2010 05:20:47 +0200 (CEST)
-Received: by pwj9 with SMTP id 9so1943130pwj.38
-	for <alsa-devel@alsa-project.org>; Mon, 31 May 2010 20:20:45 -0700 (PDT)
+	Tue,  1 Jun 2010 05:30:33 +0200 (CEST)
+Received: from mail by ossa.mas.viperplatform.net.au with spam-scanned (Exim
+	4.43) id 1OJIBR-0003aX-Ec
+	for alsa-devel@alsa-project.org; Tue, 01 Jun 2010 13:30:29 +1000
+Received: from [203.94.56.252] (helo=longlandclan.yi.org)
+	by ossa.mas.viperplatform.net.au with esmtp (Exim 4.43)
+	id 1OJIBQ-0003aI-CI
+	for alsa-devel@alsa-project.org; Tue, 01 Jun 2010 13:30:29 +1000
+Content-Disposition: inline
+In-Reply-To: <4BFF5AC7.3060409@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,69 +37,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, stable@kernel.org
-Cc: alsa-devel <alsa-devel@alsa-project.org>
+To: Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---001636ed62f88ab9260487ef7548
-Content-Type: text/plain; charset=UTF-8
+Hi Eric,
+On Fri, May 28, 2010 at 07:55:19AM +0200, Eric B=E9nard wrote:
+> Hi Stuart,
+> =
 
-Hi,
+> Le 28/05/2010 04:06, Stuart Longland a =E9crit :
+> > I'll have a look at the Eukrea CPUIMX27 and baseboard SoC support in a
+> > moment, since it looks very similar to what we're doing (in that it's a
+> > TI I=B2S CODEC hooked to an i.MX27 on SSI4) ... this might reveal clues
+> > as to what I'm doing wrong.
+> =
 
-Attached is a patch against sound-2.6 master that resolves the
-original reporter's symptom of the PulseAudio daemon crashing during
-playback. Please apply.
+> we are using the TLV320AIC23B codec in master mode on the =
 
-This patch is applicable to all 2.6.3x stable series.
+> CPUIMX27/MBIMX27 (and did the same on an other board using a TLV3204 as =
 
-Best,
--Dan
+> a master with a 12MHz oscillator on its MCLK: for this one, it's =
 
---001636ed62f88ab9260487ef7548
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-ALSA-hda-Use-LPIB-for-ASUS-M2V.patch"
-Content-Disposition: attachment;
-	filename="0001-ALSA-hda-Use-LPIB-for-ASUS-M2V.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g9w5uf8p0
+> necessary to configure several dozens of registers through I2C to get it =
 
-RnJvbSAyMzI0NjNhNGFjZGRlYzQ5NzJhNGQ4YWU0MDVlNmNkMjU3YThjZTM4IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBEYW5pZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+CkRh
-dGU6IFN1biwgMzAgTWF5IDIwMTAgMTM6MDg6NDEgLTA0MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGE6IFVzZSBMUElCIGZvciBBU1VTIE0yVgoKQnVnTGluazogaHR0cHM6Ly9sYXVuY2hwYWQu
-bmV0L2J1Z3MvNTg3NTQ2CgpTeW1wdG9tOiBPbiB0aGUgcmVwb3J0ZXIncyBBU1VTIE0yViwgdXNp
-bmcgUHVsc2VBdWRpbyBpbiBVYnVudHUgMTAuMDQgTFRTCnJlc3VsdHMgaW4gdGhlIFBBIGRhZW1v
-biBjcmFzaGluZyBzaG9ydGx5IGFmdGVyIGF0dGVtcHRpbmcgcGxheWJhY2sgb2YgYW4KYXVkaW8g
-ZmlsZS4KClRlc3QgY2FzZTogVXNpbmcgVWJ1bnR1IDEwLjA0IExUUyAoTGludXggMi42LjMyLjEy
-KSwgTGludXggMi42LjMzLCBvcgpMaW51eCAyLjYuMzQsIGF0dGVtcHQgcGxheWJhY2sgb2YgYW4g
-YXVkaW8gZmlsZSB3aGlsZSBQdWxzZUF1ZGlvIGlzCmFjdGl2ZS4KClJlc29sdXRpb246IGFkZCBT
-U0lEIGZvciB0aGlzIG1hY2hpbmUgdG8gdGhlIHBvc2l0aW9uX2ZpeCBxdWlyayB0YWJsZSwKZXhw
-bGljaXRseSBzcGVjaWZ5aW5nIHRoZSBMUElCIG1ldGhvZC4KClJlcG9ydGVkLWFuZC1UZXN0ZWQt
-Qnk6IEQgVGFuZ21hbgpDYzogPHN0YWJsZUBrZXJuZWwub3JnPgpTaWduZWQtb2ZmLWJ5OiBEYW5p
-ZWwgVCBDaGVuIDxjcmltc3VuQHVidW50dS5jb20+Ci0tLQogc291bmQvcGNpL2hkYS9oZGFfaW50
-ZWwuYyB8ICAgIDEgKwogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDAgZGVsZXRp
-b25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYyBiL3NvdW5kL3Bj
-aS9oZGEvaGRhX2ludGVsLmMKaW5kZXggMTY0MDAwNS4uZTQyYWI5OSAxMDA2NDQKLS0tIGEvc291
-bmQvcGNpL2hkYS9oZGFfaW50ZWwuYworKysgYi9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5jCkBA
-IC0yMjg5LDYgKzIyODksNyBAQCBzdGF0aWMgc3RydWN0IHNuZF9wY2lfcXVpcmsgcG9zaXRpb25f
-Zml4X2xpc3RbXSBfX2RldmluaXRkYXRhID0gewogCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDMw
-NmQsICJIUCBkdjMiLCBQT1NfRklYX0xQSUIpLAogCVNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDgx
-M2QsICJBU1VTIFA1QUQyIiwgUE9TX0ZJWF9MUElCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA0Mywg
-MHg4MWIzLCAiQVNVUyIsIFBPU19GSVhfTFBJQiksCisJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4
-ODFlNywgIkFTVVMgTTJWIiwgUE9TX0ZJWF9MUElCKSwKIAlTTkRfUENJX1FVSVJLKDB4MTA0ZCwg
-MHg5MDY5LCAiU29ueSBWUENTMTFWOUUiLCBQT1NfRklYX0xQSUIpLAogCVNORF9QQ0lfUVVJUkso
-MHgxMTA2LCAweDMyODgsICJBU1VTIE0yVi1NWCBTRSIsIFBPU19GSVhfTFBJQiksCiAJU05EX1BD
-SV9RVUlSSygweDExNzksIDB4ZmYxMCwgIlRvc2hpYmEgQTEwMC0yNTkiLCBQT1NfRklYX0xQSUIp
-LAotLSAKMS43LjAuNAoK
---001636ed62f88ab9260487ef7548
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> running)
+> =
 
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> The TLV3204 is wired this way :
+> - MCK =3D 12MHz ocillator
+> - BCLK (pin2) =3D PC19 (SSI4_CLK) (TLV output / IMX in)
+> - WCLK (pin3) =3D PC16 (SSI4_FS) (TLV output / IMX in)
+> - DIN/MFP1 (pin4) =3D PC18 (SSI4_TXDAT) (TLV input / IMX out)
+> - DOUT/MFP2 (pin5) =3D PC17 (SSI4_RXDAT) (TLV output / IMX in)
+> - SPI_SELECT (pin12) =3D pull down to select I2C mode
+> - SCL & SDA (pins 9 & 10) =3D I2C2
+> all the interface between i.MX & TLV is powered in 1.8V.
+> =
 
---001636ed62f88ab9260487ef7548--
+> I'll try to find our I2C init sequence and send it to you as this was =
+
+> the hardest part of the thing to get the codec running.
+
+Well, over the last few days I've been looking closely at the signals
+generated.  Especially this morning... yesterday, I managed to get some
+sound out of the CODEC when operating in I=B2S master mode (yes, I have a
+patch that I need to clean up first).
+
+What I observed is that despite being configured for I=B2S master, what I
+infact saw, was more like DSP mode, with a 1-bit frame sync pulse.  The
+remainder of my experimentation has been using the DSP modes of both MCU
+and CODEC.
+
+I'm using the following script to generate audio data for testing:
+
+while true; do printf "\x55\xff\xaa\x00"; done > test.raw
+
+This is then played to the CODEC; using aplay:
+aplay -D hw:0,0 -f S16_LE -r 48000 -c 2 test.raw
+
+I'm now using the SSI port in DSP SSI Slave mode; so single bit frame
+pulse.  I'm not sure what format the CODEC expects its data to be in,
+but what I observe is two things:
+
+(1) Each sample is sign-extended to 32-bits.
+(2) The data is then sent, least significant 16-bits first.
+(3) The frame sync pulses are sent just before the start of each
+(sign-extended) sample.
+
+On the CRO; (again, appologies for ASCII art) it looks like this:
+(Frame sync is top trace)
+ .-.                                                            .-,
+ | |                                                            | |
+-' '------------------------------------------------------------' '->
+----.              .-. .-. .-. .-.                                .->
+    |              | | | | | | | |                                |
+    '--------------' '-' '-' '-' '--------------------------------'
+    |<---- MSB ----><---- LSB ----><----- Sign Extension??? ----->|
+    |<------------------------ Channel 1 ------------------------>|
+
+... diagram continues; second sync pulse is shown again...
+  .-.                                                           .-.
+  | |                                                           | |
+<-' '-----------------------------------------------------------' '->
+    .--------------. .-. .-. .-. .--------------------------------.
+    |              | | | | | | | |                                |
+<---'              '-' '-' '-' '-'                                '->
+    |<---- MSB ----><---- LSB ----><----- Sign Extension??? ----->|
+    |<------------------------ Channel 2 ------------------------>|
+
+Now, my understanding is that the frame sync pulse indicates the start
+of the frame, and that the frame consists of (in this case) 32 bits;
+which is the concatenation of the two 16-bit samples.  In addition, the
+documentation I see, AFAIK, suggests that this data should be
+transmitted in big-endian (MSB first) order.  However, what I see here
+is that each sample is being sent, followed by what appears to be a
+sign-extend ... or what would be sign extend IFF we were using 32-bit
+LSB.  I'm not sure that this looks right, and could explain why I just
+get semi-random noise rather than the audio I'm expecting.
+
+I'm happy to share with others the CODEC driver I've written thus far
+... but a query, how is the best way to share this for collaborative
+work?  It's not a finished driver, but it does at least initialise the
+CODEC and get the bus working... it then allows manipulation of
+registers from the I=B2C interface via two files in sysfs -- since loading
+it prevents i2c-tools from working.  Otherwise, the driver does load,
+and at least does some setup.
+
+Regards,
+-- =
+
+Stuart Longland (aka Redhatter, VK4MSL)      .'''.
+Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
+. . . . . . . . . . . . . . . . . . . . . .   .'.'
+http://dev.gentoo.org/~redhatter             :.'
+
+I haven't lost my mind...
+  ...it's backed up on a tape somewhere.
