@@ -1,23 +1,19 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC PATCH 5/5] ASoC: omap-mcbsp: Place correct
- constraints for streams
-Date: Tue, 1 Jun 2010 12:29:21 +0300
-Message-ID: <20100601122921.6d842ae8.jhnikula@gmail.com>
-References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201006010947.09640.peter.ujfalusi@nokia.com>
-	<20100601103828.55e7b394.jhnikula@gmail.com>
-	<201006011119.30651.peter.ujfalusi@nokia.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ALSA/NUC900: Fix some codes according
+ to Liam for nuc900 alsa driver.
+Date: Tue, 1 Jun 2010 11:20:05 +0100
+Message-ID: <20100601102005.GA863@rakim.wolfsonmicro.main>
+References: <4C0474F3.3050503@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.148])
-	by alsa0.perex.cz (Postfix) with ESMTP id 69ED01039ED
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 44E441039F1
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jun 2010 11:26:57 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 5so364661eyb.16
-	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 02:26:56 -0700 (PDT)
-In-Reply-To: <201006011119.30651.peter.ujfalusi@nokia.com>
+	Tue,  1 Jun 2010 12:20:07 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4C0474F3.3050503@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,35 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Girdwood <lrg@slimlogic.co.uk>
+To: Wan ZongShun <mcuos.com@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 1 Jun 2010 11:19:30 +0300
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
-
-> If threshold is configured to 100 (99 in register), than McBSP will asserts the 
-> DMA request line, when 100 locations are free. Than DMA has to send 100 words 
-> per DMA request.
+On Tue, Jun 01, 2010 at 10:48:19AM +0800, Wan ZongShun wrote:
+> Dear Liam & Mark,
 > 
-> So we need to limit the period size (which is used to configure the DMA's elem 
-> count - number of words per DMA request) that it shall never be bigger than the 
-> threshold.
-> 
-Now I get it with some get hands dirty testing :-)
+> This patch is to fix some codes according to
+> Liam for nuc900 alsa driver.
 
-So this is a feature of SDMA that in threshold mode the transfer size
-must equal or smaller than threshold (as says the TRM). Still don't
-understand why the transfer size is dependent on peripheral FIFO
-threshold size but that's the fact and we must obey it as Eduardo's
-original patch and your's are doing.
+So, these changes look like they're fine but since you've not provided a
+changelog it's hard to tell for sure.  It also looks like you've got two
+different changes in here, some of the code is adjusting the delays used
+between register writes in reset while other bits change the code over
+to using the standard method for checking for substream type.
 
-> If there is interest, I might look at this.
-> I guess this could be useful on McBSP1,3,4, and 5, which has small FIFO...
-> 
-Yes, have a packet based DMA transfer saving power and then we have
-bunch of interrupts coming :-)
+As I said to you yesterday please do read and follow the instructions in
+Documentation/SubmittingPatches - in particular, you need to include a
+proper changelog in your mail and you shouldn't have any "Dear X" or
+similar.
 
+> Signed-off-by: Wan ZongShun<mcuos.com@gmail.com>
 
--- 
-Jarkko
+You're missing a space between your name and the e-mail address too.
