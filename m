@@ -1,32 +1,24 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: Problem with snd_hda_intel from 05-27-2010 snapshot
-Date: Tue, 1 Jun 2010 00:15:13 -0700
-Message-ID: <AANLkTikVEROV4o8uZzSPIZO7nGZq7r1HUoFOsFw7llfm@mail.gmail.com>
-References: <AANLkTilIX_UnMYcg8LAqkndS80nFppblW6erTm2e7o5X@mail.gmail.com>
-	<AANLkTinLbTMrYBhg6KO826slsugfEcU0_wYqukSQpQw2@mail.gmail.com>
-	<alpine.LNX.2.00.1005270931570.6856@eeebox2.perex-int.cz>
-	<AANLkTinvfYyOHzQrEfcBrDvDMW3Fc93oYrUHOcABm0Oa@mail.gmail.com>
-	<alpine.LNX.2.00.1005290822040.6856@eeebox2.perex-int.cz>
-	<AANLkTin1b34S7HeeHTppZkomIZ0Ka-xkC6viZt2Jfr1o@mail.gmail.com>
-	<alpine.LNX.2.00.1005301733300.6856@eeebox2.perex-int.cz>
-	<AANLkTim5L_klj1g-8hwnsftuR4x_GwESH_AOdeb4_XzT@mail.gmail.com>
-	<alpine.LNX.2.00.1005312028520.5693@eeebox2.perex-int.cz>
-	<AANLkTinOXLzkeqjLfrRXKxOp4jSBf3FMVcNanHa0ya0k@mail.gmail.com>
-	<alpine.LNX.2.00.1005312241260.5693@eeebox2.perex-int.cz>
-	<AANLkTimNhaaJZjWvv2t68BsF7Z3hcj4GB5PYaO2OS8is@mail.gmail.com>
-	<alpine.LNX.2.00.1006010738380.5693@eeebox2.perex-int.cz>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [RFC PATCH 5/5] ASoC: omap-mcbsp: Place correct
+ constraints for streams
+Date: Tue, 1 Jun 2010 10:38:28 +0300
+Message-ID: <20100601103828.55e7b394.jhnikula@gmail.com>
+References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com>
+	<201005311457.22699.peter.ujfalusi@nokia.com>
+	<20100601093807.f4a9ec27.jhnikula@gmail.com>
+	<201006010947.09640.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D599A10397C
+Received: from mail-ew0-f217.google.com (mail-ew0-f217.google.com
+	[209.85.219.217])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07C85103981
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jun 2010 09:15:14 +0200 (CEST)
-Received: by vws5 with SMTP id 5so3046642vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 00:15:14 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1006010738380.5693@eeebox2.perex-int.cz>
+	Tue,  1 Jun 2010 09:36:04 +0200 (CEST)
+Received: by ewy9 with SMTP id 9so1213081ewy.4
+	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 00:36:03 -0700 (PDT)
+In-Reply-To: <201006010947.09640.peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,41 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, ext@alsa-project.org, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 31, 2010 at 10:39 PM, Jaroslav Kysela <perex@perex.cz> wrote:
-> Thanks. Here is next correction:
->
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 170610e..b6ba210 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -1910,11 +1910,11 @@ static int azx_position_ok(struct azx *chip, stru=
-ct
-> azx_dev *azx_dev)
-> =A0 =A0 =A0 =A0if (WARN_ONCE(!azx_dev->period_bytes,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"hda-intel: zero azx_dev->peri=
-od_bytes"))
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -1; /* this shouldn't happen! */
-> - =A0 =A0 =A0 if (wallclk <=3D azx_dev->period_wallclk &&
-> + =A0 =A0 =A0 if (wallclk < (azx_dev->period_wallclk * 3) / 2 &&
-> =A0 =A0 =A0 =A0 =A0 =A0pos % azx_dev->period_bytes > azx_dev->period_byte=
-s / 2)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* NG - it's below the first next period b=
-oundary */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return bdl_pos_adj[chip->dev_index] ? 0 : =
--1;
-> - =A0 =A0 =A0 azx_dev->start_wallclk =3D wallclk;
-> + =A0 =A0 =A0 azx_dev->start_wallclk +=3D wallclk;
-> =A0 =A0 =A0 =A0return 1; /* OK, it's fine */
-> =A0}
->
+On Tue, 1 Jun 2010 09:47:09 +0300
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-Great news!  With the previous patch and the one quoted above, sound
-is now working without setting xrun_debug.  Now that the bug has been
-fixed, what exactly was going wrong in the first place?
+> I like the following naming:
+> omap_mcbsp_hwrule_min_buffersize()
+> omap_mcbsp_hwrule_max_periodsize()
+> 
+Looks clear to me.
 
-Thanks for your help Jaroslav!
--Derek
+> Also, I think there is no point to limit the lower period size in threshold mode 
+> to 32, so I will remove that as well I think.
+> 
+What was the reason why period size cannot be bigger than threshold?
+This constraint was there before your patch but I don't remember reason
+for it.
+
+Should it be opposite that period size cannot be smaller than threshold?
+
+
+-- 
+Jarkko
