@@ -1,20 +1,20 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [RFC PATCH 2/5] OMAP3: McBSP: Change the way how
-	the FIFO is handled
-Date: Tue, 1 Jun 2010 09:59:20 +0300
-Message-ID: <201006010959.20610.peter.ujfalusi@nokia.com>
-References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com>
-	<1275293810-31984-3-git-send-email-peter.ujfalusi@nokia.com>
-	<4C03F4B8.9090306@gmail.com>
+From: Jarkko Nikula <jhnikula@gmail.com>
+Subject: Re: [RFC PATCH 0/5] OMAP/ASoC: McBSP: FIFO handling
+	related fixes
+Date: Tue, 1 Jun 2010 10:09:14 +0300
+Message-ID: <20100601100914.d03781a7.jhnikula@gmail.com>
+References: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mgw-mx03.nokia.com (smtp.nokia.com [192.100.122.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3C3FF103971
+Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.150])
+	by alsa0.perex.cz (Postfix) with ESMTP id D597E103968
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jun 2010 08:59:32 +0200 (CEST)
-In-Reply-To: <4C03F4B8.9090306@gmail.com>
+	Tue,  1 Jun 2010 09:06:52 +0200 (CEST)
+Received: by ey-out-1920.google.com with SMTP id 5so357325eyb.16
+	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 00:06:52 -0700 (PDT)
+In-Reply-To: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,220 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ext Nishanth Menon <menon.nishanth@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com, ext-eero.nurkkala@nokia.com, linux-oamp@vger.kernel.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 31 May 2010 20:41:12 ext Nishanth Menon wrote:
-> On 05/31/2010 11:16 AM, Peter Ujfalusi wrote:
-> > Use the actual FIFO size in words as buffer_size on OMAP2.
-> > Change the threshold configuration to use 1 based numbering, when
-> > specifying the allowed threshold maximum or the McBSP threshold value.
-> > Set the default maximum threshold to (buffer_size - 0x10) intialy.
-> > =
+On Mon, 31 May 2010 11:03:21 +0300
+Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
 
-> >> From users of McBSP, now it is expected to use this method.
-> > =
+Looks good move forward with the notes by you and others. Few questions
+below.
 
-> > Asking for threshold 1 means that the value written to threshold
-> > registers are going to be 0, which means 1 word threshold.
-> =
+> This means, that the size of the FIFO
+> depends on the McBSP word size configuration.
+> For example on McBSP3:
+> 16bit samples: size is 128 * 2 = 256 bytes
+> 32bit samples: size is 128 * 4 = 512 bytes
+> It is simpler to place constraint for buffer and period based on channels.
+> McBSP3 as example again (16 or 32 bit samples):
+> 1 channel (mono): size is 128 frames (128 words)
+> 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
+> 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
+> 
+So McBSP FIFO holds always samples independently of number of channels
+or sample size? That makes sense why I see DMA pointer advancing at 512
+frame steps when max_tx_thres is 1024 (aplay -f dat /dev/zero).
 
-> just a 2cent minor comment: maybe omap_mcbsp_platform_data needs
-> structure documentation.. it might be difficult for folks to figure that
-> out from commit ID itself..
+> The series changes how the users of McBSP are configuring the FIFO:
+> It used to be 0 based (0 meant 1 word threshold). After this series users can
+> configure the threshold in 1 base mode (1 means 1 word threshold).
+> The platform code now provides the _full_ size of the FIFO in words, instead of
+> the already limited value used in the past.
+> 
+Definitely good. It's much more easier to remember and define real
+threshold size than some -1 what's ends up to threshold register
+value :-)
 
-I can add comments in the mach-omap2/mcbsp.c like this:
+Btw, I don't remember what was the reason why maximum threshold value
+must be -0x10 from FIFO size?
 
-> =
 
-> > Signed-off-by: Peter Ujfalusi<peter.ujfalusi@nokia.com>
-> > ---
-> > =
-
-> >   arch/arm/mach-omap2/mcbsp.c |   10 +++++-----
-> >   arch/arm/plat-omap/mcbsp.c  |   10 ++++++----
-> >   2 files changed, 11 insertions(+), 9 deletions(-)
-> > =
-
-> > diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
-> > index 016fe60..9139958 100644
-> > --- a/arch/arm/mach-omap2/mcbsp.c
-> > +++ b/arch/arm/mach-omap2/mcbsp.c
-> > @@ -132,7 +132,7 @@ static struct omap_mcbsp_platform_data
-> > omap34xx_mcbsp_pdata[] =3D {
-> > =
-
-> >   		.rx_irq		=3D INT_24XX_MCBSP1_IRQ_RX,
-> >   		.tx_irq		=3D INT_24XX_MCBSP1_IRQ_TX,
-> >   		.ops		=3D&omap2_mcbsp_ops,
-> > =
-
-> > -		.buffer_size	=3D 0x6F,
-> > +		.buffer_size	=3D 0x80,
-
- +		.buffer_size	=3D 0x80, /* The FIFO has 128 locations */
-
-> > =
-
-> >   	},
-> >   	{
-> >   	=
-
-> >   		.phys_base	=3D OMAP34XX_MCBSP2_BASE,
-> > =
-
-> > @@ -142,7 +142,7 @@ static struct omap_mcbsp_platform_data
-> > omap34xx_mcbsp_pdata[] =3D {
-> > =
-
-> >   		.rx_irq		=3D INT_24XX_MCBSP2_IRQ_RX,
-> >   		.tx_irq		=3D INT_24XX_MCBSP2_IRQ_TX,
-> >   		.ops		=3D&omap2_mcbsp_ops,
-> > =
-
-> > -		.buffer_size	=3D 0x3FF,
-> > +		.buffer_size	=3D 0x500,
-
- +		.buffer_size	=3D 0x500, /* The FIFO has 1024 + 256 locations */
-
-> > =
-
-> >   	},
-> >   	{
-> >   	=
-
-> >   		.phys_base	=3D OMAP34XX_MCBSP3_BASE,
-> > =
-
-> > @@ -152,7 +152,7 @@ static struct omap_mcbsp_platform_data
-> > omap34xx_mcbsp_pdata[] =3D {
-> > =
-
-> >   		.rx_irq		=3D INT_24XX_MCBSP3_IRQ_RX,
-> >   		.tx_irq		=3D INT_24XX_MCBSP3_IRQ_TX,
-> >   		.ops		=3D&omap2_mcbsp_ops,
-> > =
-
-> > -		.buffer_size	=3D 0x6F,
-> > +		.buffer_size	=3D 0x80,
-
- +		.buffer_size	=3D 0x80, /* The FIFO has 128 locations */
-
-> > =
-
-> >   	},
-> >   	{
-> >   	=
-
-> >   		.phys_base	=3D OMAP34XX_MCBSP4_BASE,
-> > =
-
-> > @@ -161,7 +161,7 @@ static struct omap_mcbsp_platform_data
-> > omap34xx_mcbsp_pdata[] =3D {
-> > =
-
-> >   		.rx_irq		=3D INT_24XX_MCBSP4_IRQ_RX,
-> >   		.tx_irq		=3D INT_24XX_MCBSP4_IRQ_TX,
-> >   		.ops		=3D&omap2_mcbsp_ops,
-> > =
-
-> > -		.buffer_size	=3D 0x6F,
-> > +		.buffer_size	=3D 0x80,
-> > =
-
-> >   	},
-> >   	{
-> >   	=
-
-> >   		.phys_base	=3D OMAP34XX_MCBSP5_BASE,
-> > =
-
-> > @@ -170,7 +170,7 @@ static struct omap_mcbsp_platform_data
-> > omap34xx_mcbsp_pdata[] =3D {
-> > =
-
-> >   		.rx_irq		=3D INT_24XX_MCBSP5_IRQ_RX,
-> >   		.tx_irq		=3D INT_24XX_MCBSP5_IRQ_TX,
-> >   		.ops		=3D&omap2_mcbsp_ops,
-> > =
-
-> > -		.buffer_size	=3D 0x6F,
-> > +		.buffer_size	=3D 0x80,
-> > =
-
-> >   	},
-> >   =
-
-> >   };
-> >   #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
-> > =
-
-> > diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
-> > index 51d8abf..6462968 100644
-> > --- a/arch/arm/plat-omap/mcbsp.c
-> > +++ b/arch/arm/plat-omap/mcbsp.c
-> > @@ -497,7 +497,8 @@ void omap_mcbsp_set_tx_threshold(unsigned int id, u=
-16
-> > threshold)
-> > =
-
-> >   	}
-> >   	mcbsp =3D id_to_mcbsp_ptr(id);
-> > =
-
-> > -	MCBSP_WRITE(mcbsp, THRSH2, threshold);
-> > +	if (threshold&&  threshold<=3D mcbsp->max_tx_thres)
-> > +		MCBSP_WRITE(mcbsp, THRSH2, threshold - 1);
-> > =
-
-> >   }
-> >   EXPORT_SYMBOL(omap_mcbsp_set_tx_threshold);
-> > =
-
-> > @@ -519,7 +520,8 @@ void omap_mcbsp_set_rx_threshold(unsigned int id, u=
-16
-> > threshold)
-> > =
-
-> >   	}
-> >   	mcbsp =3D id_to_mcbsp_ptr(id);
-> > =
-
-> > -	MCBSP_WRITE(mcbsp, THRSH1, threshold);
-> > +	if (threshold&&  threshold<=3D mcbsp->max_rx_thres)
-> > +		MCBSP_WRITE(mcbsp, THRSH1, threshold - 1);
-> > =
-
-> >   }
-> >   EXPORT_SYMBOL(omap_mcbsp_set_rx_threshold);
-> > =
-
-> > @@ -1696,8 +1698,8 @@ static inline void __devinit
-> > omap34xx_device_init(struct omap_mcbsp *mcbsp)
-> > =
-
-> >   {
-> >   =
-
-> >   	mcbsp->dma_op_mode =3D MCBSP_DMA_MODE_ELEMENT;
-> >   	if (cpu_is_omap34xx()) {
-> > =
-
-> > -		mcbsp->max_tx_thres =3D max_thres(mcbsp);
-> > -		mcbsp->max_rx_thres =3D max_thres(mcbsp);
-> > +		mcbsp->max_tx_thres =3D max_thres(mcbsp) - 0x10;
-> > +		mcbsp->max_rx_thres =3D max_thres(mcbsp) - 0x10;
-> > =
-
-> >   		/*
-> >   		=
-
-> >   		 * REVISIT: Set dmap_op_mode to THRESHOLD as default
-> >   		 * for mcbsp2 instances.
-
-Is this sufficient?
-
--- =
-
-P=E9ter
+-- 
+Jarkko
