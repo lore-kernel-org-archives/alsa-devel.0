@@ -1,20 +1,32 @@
-From: Jarkko Nikula <jhnikula@gmail.com>
-Subject: Re: [RFC PATCH 0/5] OMAP/ASoC: McBSP: FIFO handling
-	related fixes
-Date: Tue, 1 Jun 2010 10:09:14 +0300
-Message-ID: <20100601100914.d03781a7.jhnikula@gmail.com>
-References: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
+From: VDR User <user.vdr@gmail.com>
+Subject: Re: Problem with snd_hda_intel from 05-27-2010 snapshot
+Date: Tue, 1 Jun 2010 00:15:13 -0700
+Message-ID: <AANLkTikVEROV4o8uZzSPIZO7nGZq7r1HUoFOsFw7llfm@mail.gmail.com>
+References: <AANLkTilIX_UnMYcg8LAqkndS80nFppblW6erTm2e7o5X@mail.gmail.com>
+	<AANLkTinLbTMrYBhg6KO826slsugfEcU0_wYqukSQpQw2@mail.gmail.com>
+	<alpine.LNX.2.00.1005270931570.6856@eeebox2.perex-int.cz>
+	<AANLkTinvfYyOHzQrEfcBrDvDMW3Fc93oYrUHOcABm0Oa@mail.gmail.com>
+	<alpine.LNX.2.00.1005290822040.6856@eeebox2.perex-int.cz>
+	<AANLkTin1b34S7HeeHTppZkomIZ0Ka-xkC6viZt2Jfr1o@mail.gmail.com>
+	<alpine.LNX.2.00.1005301733300.6856@eeebox2.perex-int.cz>
+	<AANLkTim5L_klj1g-8hwnsftuR4x_GwESH_AOdeb4_XzT@mail.gmail.com>
+	<alpine.LNX.2.00.1005312028520.5693@eeebox2.perex-int.cz>
+	<AANLkTinOXLzkeqjLfrRXKxOp4jSBf3FMVcNanHa0ya0k@mail.gmail.com>
+	<alpine.LNX.2.00.1005312241260.5693@eeebox2.perex-int.cz>
+	<AANLkTimNhaaJZjWvv2t68BsF7Z3hcj4GB5PYaO2OS8is@mail.gmail.com>
+	<alpine.LNX.2.00.1006010738380.5693@eeebox2.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ey-out-1920.google.com (ey-out-1920.google.com [74.125.78.150])
-	by alsa0.perex.cz (Postfix) with ESMTP id D597E103968
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id D599A10397C
 	for <alsa-devel@alsa-project.org>;
-	Tue,  1 Jun 2010 09:06:52 +0200 (CEST)
-Received: by ey-out-1920.google.com with SMTP id 5so357325eyb.16
-	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 00:06:52 -0700 (PDT)
-In-Reply-To: <1275293006-31594-1-git-send-email-peter.ujfalusi@nokia.com>
+	Tue,  1 Jun 2010 09:15:14 +0200 (CEST)
+Received: by vws5 with SMTP id 5so3046642vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 00:15:14 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1006010738380.5693@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +36,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com, ext-eero.nurkkala@nokia.com, linux-oamp@vger.kernel.org, lrg@slimlogic.co.uk
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 May 2010 11:03:21 +0300
-Peter Ujfalusi <peter.ujfalusi@nokia.com> wrote:
+On Mon, May 31, 2010 at 10:39 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+> Thanks. Here is next correction:
+>
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 170610e..b6ba210 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -1910,11 +1910,11 @@ static int azx_position_ok(struct azx *chip, stru=
+ct
+> azx_dev *azx_dev)
+> =A0 =A0 =A0 =A0if (WARN_ONCE(!azx_dev->period_bytes,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"hda-intel: zero azx_dev->peri=
+od_bytes"))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -1; /* this shouldn't happen! */
+> - =A0 =A0 =A0 if (wallclk <=3D azx_dev->period_wallclk &&
+> + =A0 =A0 =A0 if (wallclk < (azx_dev->period_wallclk * 3) / 2 &&
+> =A0 =A0 =A0 =A0 =A0 =A0pos % azx_dev->period_bytes > azx_dev->period_byte=
+s / 2)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* NG - it's below the first next period b=
+oundary */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return bdl_pos_adj[chip->dev_index] ? 0 : =
+-1;
+> - =A0 =A0 =A0 azx_dev->start_wallclk =3D wallclk;
+> + =A0 =A0 =A0 azx_dev->start_wallclk +=3D wallclk;
+> =A0 =A0 =A0 =A0return 1; /* OK, it's fine */
+> =A0}
+>
 
-Looks good move forward with the notes by you and others. Few questions
-below.
+Great news!  With the previous patch and the one quoted above, sound
+is now working without setting xrun_debug.  Now that the bug has been
+fixed, what exactly was going wrong in the first place?
 
-> This means, that the size of the FIFO
-> depends on the McBSP word size configuration.
-> For example on McBSP3:
-> 16bit samples: size is 128 * 2 = 256 bytes
-> 32bit samples: size is 128 * 4 = 512 bytes
-> It is simpler to place constraint for buffer and period based on channels.
-> McBSP3 as example again (16 or 32 bit samples):
-> 1 channel (mono): size is 128 frames (128 words)
-> 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
-> 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
-> 
-So McBSP FIFO holds always samples independently of number of channels
-or sample size? That makes sense why I see DMA pointer advancing at 512
-frame steps when max_tx_thres is 1024 (aplay -f dat /dev/zero).
-
-> The series changes how the users of McBSP are configuring the FIFO:
-> It used to be 0 based (0 meant 1 word threshold). After this series users can
-> configure the threshold in 1 base mode (1 means 1 word threshold).
-> The platform code now provides the _full_ size of the FIFO in words, instead of
-> the already limited value used in the past.
-> 
-Definitely good. It's much more easier to remember and define real
-threshold size than some -1 what's ends up to threshold register
-value :-)
-
-Btw, I don't remember what was the reason why maximum threshold value
-must be -0x10 from FIFO size?
-
-
--- 
-Jarkko
+Thanks for your help Jaroslav!
+-Derek
