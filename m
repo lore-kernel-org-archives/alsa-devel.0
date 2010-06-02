@@ -1,21 +1,19 @@
-From: Daniel Chen <seven.steps@gmail.com>
-Subject: Re: [PATCH] Ensure codec patch files are checked for
-	the correct codec ID
-Date: Wed, 2 Jun 2010 12:03:07 -0400
-Message-ID: <AANLkTinCaQtPG81MkTA2zE0AnYn7fdKN-Q6VsYX9sUBB@mail.gmail.com>
-References: <4C06729B.6050201@epost.diwic.se>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH V4] ASoC/au1x: use resource_size for au1x
+Date: Wed, 2 Jun 2010 17:31:57 +0100
+Message-ID: <20100602163157.GA26606@rakim.wolfsonmicro.main>
+References: <4C04B3C4.7030802@gmail.com>
+	<AANLkTikjNywbqsgKQmrJUeTzymUM3RP3qkYTT0WsE2mo@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 10ABB10380B
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 136B210380B
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jun 2010 18:03:08 +0200 (CEST)
-Received: by pva4 with SMTP id 4so406967pva.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 09:03:08 -0700 (PDT)
-In-Reply-To: <4C06729B.6050201@epost.diwic.se>
+	Wed,  2 Jun 2010 18:31:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTikjNywbqsgKQmrJUeTzymUM3RP3qkYTT0WsE2mo@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,18 +23,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Henningsson <launchpad.web@epost.diwic.se>
-Cc: alsa-devel@alsa-project.org
+To: Wan ZongShun <mcuos.com@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 2, 2010 at 11:02 AM, David Henningsson
-<launchpad.web@epost.diwic.se> wrote:
-> This one just popped out when I read the source code - or is there a
-> reason for parsing vendorid and subid without caring about the result?
+On Wed, Jun 02, 2010 at 10:48:27PM +0800, Wan ZongShun wrote:
 
-Technically it matters little if the codec vendor_id and subsystem_id
-have valid values, because you can override them anyway. Codec address
-is the vital one.
+> How about this patch?
+> Applied?
 
-Best,
--Dan
+I was waiting for review from Manuel.
