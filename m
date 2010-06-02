@@ -1,20 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v2 1/3]AsoC/nuc900: patch for
- SUBSTREAM_TYPE', 'PCM_TX' and 'PCM_RX' removal
-Date: Wed, 02 Jun 2010 10:43:07 +0100
-Message-ID: <1275471787.3037.28.camel@odin>
-References: <4C05F211.7070308@gmail.com>
+Subject: Re: [PATCH v2 2/4]AsoC/nuc900: patch for modifing the
+ ac97 delays to minimum
+Date: Wed, 02 Jun 2010 10:46:06 +0100
+Message-ID: <1275471966.3037.32.camel@odin>
+References: <4C05F2AD.8030700@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5356F245F4
+	by alsa0.perex.cz (Postfix) with ESMTP id 575CB245FB
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jun 2010 11:43:12 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so2251274wwf.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 02:43:11 -0700 (PDT)
-In-Reply-To: <4C05F211.7070308@gmail.com>
+	Wed,  2 Jun 2010 11:46:11 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so2253019wwf.38
+	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 02:46:10 -0700 (PDT)
+In-Reply-To: <4C05F2AD.8030700@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,20 +28,15 @@ To: Wan ZongShun <mcuos.com@gmail.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-06-02 at 13:54 +0800, Wan ZongShun wrote:
-> This patch is to remove the 'SUBSTREAM_TYPE','PCM_TX' and 'PCM_RX' definition.
-> 
-> There is no need to redefine SNDRV_PCM_STREAM_PLAYBACK as PCM_TX,
-> the SUBSTREAM_TYPE(substream) can be deleted too, the playback or record can be
-> judged by 'if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)' directly rather
-> than 'if (PCM_TX == stype)', which makes the codes easy to read.
-> 
-> Signed-off-by: Wan ZongShun<mcuos.com@gmail.com>
-
-All 
-
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+T24gV2VkLCAyMDEwLTA2LTAyIGF0IDEzOjU3ICswODAwLCBXYW4gWm9uZ1NodW4gd3JvdGU6Cj4g
+VGhpcyBwYXRjaCBpcyB0byBtb2RpZnkgdGhlIGFjOTcgZGVsYXlzIHRvIG1pbmltdW0sIGFsbCB0
+aGVzZSAxMDAwIG1pY3JvCj4gc2Vjb25kcyBkZWxheXMgc2VlbSBvdmVyIHNwZWMgZm9yIHRoZSBB
+Qzk3IGludGVyZmFjZS4KPiAKPiBJIGRlbGV0ZWQgc29tZSB1bm5lY2Vzc2FyeSBkZWxheXMgaGVy
+ZSBhbmQgY2hhbmdlZCB0aGUgQUM5NyBjb2xkIGFuZCB3YXJtIHJlc2V0Cj4gZGVsYXlzIGZyb20g
+MTAwMG1zIHRvIDEwMG1zLgo+IAoKSSB0aGluayB5b3UgbWVhbiAiZnJvbSAxMDAwwrVzIHRvIDEw
+MMK1cyIgaGVyZSBhcyBtcyBpcyBtaWxsaXNlY29uZHMuCgpMaWFtCi0tIApGcmVlbGFuY2UgRGV2
+ZWxvcGVyLCBTbGltTG9naWMgTHRkCkFTb0MgYW5kIFZvbHRhZ2UgUmVndWxhdG9yIE1haW50YWlu
+ZXIuCmh0dHA6Ly93d3cuc2xpbWxvZ2ljLmNvLnVrCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
