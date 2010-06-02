@@ -1,22 +1,23 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [PATCH V4] ASoC/au1x: use resource_size for au1x
-Date: Wed, 2 Jun 2010 18:41:18 +0200
-Message-ID: <AANLkTinONhJCJCocd7HU0Umzg_shv97tJU0oOafiy52r@mail.gmail.com>
-References: <4C04B3C4.7030802@gmail.com>
-	<AANLkTikjNywbqsgKQmrJUeTzymUM3RP3qkYTT0WsE2mo@mail.gmail.com>
-	<20100602163157.GA26606@rakim.wolfsonmicro.main>
+From: Daniel Chen <seven.steps@gmail.com>
+Subject: Re: [PATCH] Ensure codec patch files are checked for
+	the correct codec ID
+Date: Wed, 2 Jun 2010 13:30:26 -0400
+Message-ID: <AANLkTimXyy6ymauuzFiEKGiDdmQ-7y0liCT1dTIpf6eQ@mail.gmail.com>
+References: <4C06729B.6050201@epost.diwic.se>
+	<AANLkTinCaQtPG81MkTA2zE0AnYn7fdKN-Q6VsYX9sUBB@mail.gmail.com>
+	<4C06896F.7040202@epost.diwic.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pw0-f51.google.com (mail-pw0-f51.google.com
-	[209.85.160.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E89451039EC
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 154FA1037EE
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jun 2010 18:41:21 +0200 (CEST)
-Received: by pwj9 with SMTP id 9so2910983pwj.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 09:41:19 -0700 (PDT)
-In-Reply-To: <20100602163157.GA26606@rakim.wolfsonmicro.main>
+	Wed,  2 Jun 2010 19:30:28 +0200 (CEST)
+Received: by pva4 with SMTP id 4so459271pva.38
+	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 10:30:27 -0700 (PDT)
+In-Reply-To: <4C06896F.7040202@epost.diwic.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,19 +27,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Wan ZongShun <mcuos.com@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: David Henningsson <launchpad.web@epost.diwic.se>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 2, 2010 at 6:31 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Wed, Jun 02, 2010 at 10:48:27PM +0800, Wan ZongShun wrote:
->
->> How about this patch?
->> Applied?
->
-> I was waiting for review from Manuel.
+On Wed, Jun 2, 2010 at 12:40 PM, David Henningsson
+<launchpad.web@epost.diwic.se> wrote:
+> In the individual case, maybe. However, assuming codec vendor and
+> subsystem are correctly matched, a distro could make a long list of
+> Codec SSID to model mappings, write down that in the patch file format,
+> and supply that patch file. One could then add mappings as a minor
+> distro update without having to recompile the kernel.
 
-Oh, sorry.
+Excellent point, although the idea of maintaining a massive "firmware"
+file is somewhat scary.
 
-Acked-by: Manuel Lauss <manuel.lauss@googlemail.com>
+Best,
+-Dan
