@@ -1,190 +1,80 @@
-From: Nishanth Menon <menon.nishanth@gmail.com>
-Subject: Re: [RFC PATCH 2/5] OMAP3: McBSP: Change the way how the FIFO is
- handled
-Date: Wed, 02 Jun 2010 07:24:50 +0300
-Message-ID: <4C05DD12.9010903@gmail.com>
-References: <1275293810-31984-1-git-send-email-peter.ujfalusi@nokia.com> <1275293810-31984-3-git-send-email-peter.ujfalusi@nokia.com> <4C03F4B8.9090306@gmail.com> <201006010959.20610.peter.ujfalusi@nokia.com>
+From: David Fries <david@fries.net>
+Subject: [PATCH] regression 2.6.35-rc1+ hda realtek missing
+	beep 10ec0883
+Date: Tue, 1 Jun 2010 23:31:31 -0500
+Message-ID: <20100602043129.GE22327@spacedout.fries.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <201006010959.20610.peter.ujfalusi@nokia.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "jhnikula@gmail.com" <jhnikula@gmail.com>, "tony@atomide.com" <tony@atomide.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from SpacedOut.fries.net (SpacedOut.fries.net [67.64.210.234])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4F59924458
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 Jun 2010 06:31:50 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Kailang Yang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/01/2010 09:59 AM, Peter Ujfalusi wrote:
-> On Monday 31 May 2010 20:41:12 ext Nishanth Menon wrote:
->> On 05/31/2010 11:16 AM, Peter Ujfalusi wrote:
->>> Use the actual FIFO size in words as buffer_size on OMAP2.
->>> Change the threshold configuration to use 1 based numbering, when
->>> specifying the allowed threshold maximum or the McBSP threshold value.
->>> Set the default maximum threshold to (buffer_size - 0x10) intialy.
->>>
->>>>  From users of McBSP, now it is expected to use this method.
->>>
->>> Asking for threshold 1 means that the value written to threshold
->>> registers are going to be 0, which means 1 word threshold.
->>
->> just a 2cent minor comment: maybe omap_mcbsp_platform_data needs
->> structure documentation.. it might be difficult for folks to figure that
->> out from commit ID itself..
->
-> I can add comments in the mach-omap2/mcbsp.c like this:
->
+From: David Fries <david@fries.net>
 
-I had meant more of
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=blob;f=Documentation/kernel-doc-nano-HOWTO.txt;h=27a52b35d55bf1b6009551c97f400da5c14f59bc;hb=HEAD#l84
+The PC-Spekaer Beep control worked in 2.6.34, but not 2.6.35-rc1, this
+is the patch that modified that behavior.
+"ALSA: hda - Add parse customize define function for Realtek codecs"
+regression in commit da00c24493bf6ae3772dfe7343dca033ebc75955.
 
-but i suspect that it is out of the scope of this patch at least.. and 
-the comments below might be helpful at the least.
->>
->>> Signed-off-by: Peter Ujfalusi<peter.ujfalusi@nokia.com>
->>> ---
->>>
->>>    arch/arm/mach-omap2/mcbsp.c |   10 +++++-----
->>>    arch/arm/plat-omap/mcbsp.c  |   10 ++++++----
->>>    2 files changed, 11 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/arch/arm/mach-omap2/mcbsp.c b/arch/arm/mach-omap2/mcbsp.c
->>> index 016fe60..9139958 100644
->>> --- a/arch/arm/mach-omap2/mcbsp.c
->>> +++ b/arch/arm/mach-omap2/mcbsp.c
->>> @@ -132,7 +132,7 @@ static struct omap_mcbsp_platform_data
->>> omap34xx_mcbsp_pdata[] = {
->>>
->>>    		.rx_irq		= INT_24XX_MCBSP1_IRQ_RX,
->>>    		.tx_irq		= INT_24XX_MCBSP1_IRQ_TX,
->>>    		.ops		=&omap2_mcbsp_ops,
->>>
->>> -		.buffer_size	= 0x6F,
->>> +		.buffer_size	= 0x80,
->
->   +		.buffer_size	= 0x80, /* The FIFO has 128 locations */
->
->>>
->>>    	},
->>>    	{
->>>    	
->>>    		.phys_base	= OMAP34XX_MCBSP2_BASE,
->>>
->>> @@ -142,7 +142,7 @@ static struct omap_mcbsp_platform_data
->>> omap34xx_mcbsp_pdata[] = {
->>>
->>>    		.rx_irq		= INT_24XX_MCBSP2_IRQ_RX,
->>>    		.tx_irq		= INT_24XX_MCBSP2_IRQ_TX,
->>>    		.ops		=&omap2_mcbsp_ops,
->>>
->>> -		.buffer_size	= 0x3FF,
->>> +		.buffer_size	= 0x500,
->
->   +		.buffer_size	= 0x500, /* The FIFO has 1024 + 256 locations */
->
->>>
->>>    	},
->>>    	{
->>>    	
->>>    		.phys_base	= OMAP34XX_MCBSP3_BASE,
->>>
->>> @@ -152,7 +152,7 @@ static struct omap_mcbsp_platform_data
->>> omap34xx_mcbsp_pdata[] = {
->>>
->>>    		.rx_irq		= INT_24XX_MCBSP3_IRQ_RX,
->>>    		.tx_irq		= INT_24XX_MCBSP3_IRQ_TX,
->>>    		.ops		=&omap2_mcbsp_ops,
->>>
->>> -		.buffer_size	= 0x6F,
->>> +		.buffer_size	= 0x80,
->
->   +		.buffer_size	= 0x80, /* The FIFO has 128 locations */
->
->>>
->>>    	},
->>>    	{
->>>    	
->>>    		.phys_base	= OMAP34XX_MCBSP4_BASE,
->>>
->>> @@ -161,7 +161,7 @@ static struct omap_mcbsp_platform_data
->>> omap34xx_mcbsp_pdata[] = {
->>>
->>>    		.rx_irq		= INT_24XX_MCBSP4_IRQ_RX,
->>>    		.tx_irq		= INT_24XX_MCBSP4_IRQ_TX,
->>>    		.ops		=&omap2_mcbsp_ops,
->>>
->>> -		.buffer_size	= 0x6F,
->>> +		.buffer_size	= 0x80,
->>>
->>>    	},
->>>    	{
->>>    	
->>>    		.phys_base	= OMAP34XX_MCBSP5_BASE,
->>>
->>> @@ -170,7 +170,7 @@ static struct omap_mcbsp_platform_data
->>> omap34xx_mcbsp_pdata[] = {
->>>
->>>    		.rx_irq		= INT_24XX_MCBSP5_IRQ_RX,
->>>    		.tx_irq		= INT_24XX_MCBSP5_IRQ_TX,
->>>    		.ops		=&omap2_mcbsp_ops,
->>>
->>> -		.buffer_size	= 0x6F,
->>> +		.buffer_size	= 0x80,
->>>
->>>    	},
->>>
->>>    };
->>>    #define OMAP34XX_MCBSP_PDATA_SZ		ARRAY_SIZE(omap34xx_mcbsp_pdata)
->>>
->>> diff --git a/arch/arm/plat-omap/mcbsp.c b/arch/arm/plat-omap/mcbsp.c
->>> index 51d8abf..6462968 100644
->>> --- a/arch/arm/plat-omap/mcbsp.c
->>> +++ b/arch/arm/plat-omap/mcbsp.c
->>> @@ -497,7 +497,8 @@ void omap_mcbsp_set_tx_threshold(unsigned int id, u16
->>> threshold)
->>>
->>>    	}
->>>    	mcbsp = id_to_mcbsp_ptr(id);
->>>
->>> -	MCBSP_WRITE(mcbsp, THRSH2, threshold);
->>> +	if (threshold&&   threshold<= mcbsp->max_tx_thres)
->>> +		MCBSP_WRITE(mcbsp, THRSH2, threshold - 1);
->>>
->>>    }
->>>    EXPORT_SYMBOL(omap_mcbsp_set_tx_threshold);
->>>
->>> @@ -519,7 +520,8 @@ void omap_mcbsp_set_rx_threshold(unsigned int id, u16
->>> threshold)
->>>
->>>    	}
->>>    	mcbsp = id_to_mcbsp_ptr(id);
->>>
->>> -	MCBSP_WRITE(mcbsp, THRSH1, threshold);
->>> +	if (threshold&&   threshold<= mcbsp->max_rx_thres)
->>> +		MCBSP_WRITE(mcbsp, THRSH1, threshold - 1);
->>>
->>>    }
->>>    EXPORT_SYMBOL(omap_mcbsp_set_rx_threshold);
->>>
->>> @@ -1696,8 +1698,8 @@ static inline void __devinit
->>> omap34xx_device_init(struct omap_mcbsp *mcbsp)
->>>
->>>    {
->>>
->>>    	mcbsp->dma_op_mode = MCBSP_DMA_MODE_ELEMENT;
->>>    	if (cpu_is_omap34xx()) {
->>>
->>> -		mcbsp->max_tx_thres = max_thres(mcbsp);
->>> -		mcbsp->max_rx_thres = max_thres(mcbsp);
->>> +		mcbsp->max_tx_thres = max_thres(mcbsp) - 0x10;
->>> +		mcbsp->max_rx_thres = max_thres(mcbsp) - 0x10;
->>>
->>>    		/*
->>>    		
->>>    		 * REVISIT: Set dmap_op_mode to THRESHOLD as default
->>>    		 * for mcbsp2 instances.
->
-> Is this sufficient?
->
+Debug output (after this patch),
+HDA Intel 0000:00:14.2: PCI INT A -> GSI 16 (level, low) -> IRQ 16
+SKU: Nid=0x0 sku_cfg=0x0000140d
+SKU: port_connectivity=0x0
+SKU: enable_pcbeep=0x0
+SKU: check_sum=0x00000000
+SKU: customization=0x00000000
+SKU: external_amp=0x1
+SKU: platform_type=0x1
+SKU: swap=0x0
+SKU: override=0x1
+hda_codec: ALC883: BIOS auto-probing.
+autoconfig: line_outs=1 (0x14/0x0/0x0/0x0/0x0)
+   speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+   hp_outs=0 (0x0/0x0/0x0/0x0/0x0)
+   mono: mono_out=0x0
+   dig-out=0x1e/0x0
+   inputs: mic=0x18, fmic=0x0, line=0x1a, fline=0x0, cd=0x1c, aux=0x0
+realtek: Enabling init ASM_ID=0x140d CODEC_ID=10ec0883
+input: HDA Digital PCBeep as /devices/pci0000:00/0000:00:14.2/input/input16
 
-Regards,
-Nishanth Menon
+Signed-off-by: David Fries <david@fries.net>
+Cc: Kailang Yang <kailang@realtek.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+---
+My patch restores both the Beep volume and mute.  I'll let someone
+else determine if this is the correct solution or not.
+
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 17d4548..c31c8b9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -10611,7 +10611,7 @@ static int patch_alc882(struct hda_codec *codec)
+ 
+ 	set_capture_mixer(codec);
+ 
+-	if (spec->cdefine.enable_pcbeep)
++	if (spec->cdefine.enable_pcbeep || codec->vendor_id == 0x10ec0883)
+ 		set_beep_amp(spec, 0x0b, 0x05, HDA_INPUT);
+ 
+ 	if (board_config == ALC882_AUTO)
+-- 
+1.7.1
