@@ -1,21 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH v3 0/5] OMAP/ASoC: McBSP: FIFO handling
- related fixes
-Date: Wed, 02 Jun 2010 10:15:22 +0100
-Message-ID: <1275470122.3037.3.camel@odin>
-References: <1275391104-26387-1-git-send-email-peter.ujfalusi@nokia.com>
-	<201006021205.41455.peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH v2 1/3]AsoC/nuc900: patch for
+ SUBSTREAM_TYPE', 'PCM_TX' and 'PCM_RX' removal
+Date: Wed, 02 Jun 2010 10:43:07 +0100
+Message-ID: <1275471787.3037.28.camel@odin>
+References: <4C05F211.7070308@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id A3228245DA
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5356F245F4
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jun 2010 11:15:29 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so684589wyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 02:15:27 -0700 (PDT)
-In-Reply-To: <201006021205.41455.peter.ujfalusi@nokia.com>
+	Wed,  2 Jun 2010 11:43:12 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so2251274wwf.38
+	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 02:43:11 -0700 (PDT)
+In-Reply-To: <4C05F211.7070308@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Wan ZongShun <mcuos.com@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-06-02 at 12:05 +0300, Peter Ujfalusi wrote:
-> Hi,
+On Wed, 2010-06-02 at 13:54 +0800, Wan ZongShun wrote:
+> This patch is to remove the 'SUBSTREAM_TYPE','PCM_TX' and 'PCM_RX' definition.
 > 
-> On Tuesday 01 June 2010 14:18:19 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+> There is no need to redefine SNDRV_PCM_STREAM_PLAYBACK as PCM_TX,
+> the SUBSTREAM_TYPE(substream) can be deleted too, the playback or record can be
+> judged by 'if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)' directly rather
+> than 'if (PCM_TX == stype)', which makes the codes easy to read.
 > 
-> ..
-> 
-> Liam if you are going to take the series, could you fix the patch names?
-> I can also resend them if it is easier for you.
-> 
+> Signed-off-by: Wan ZongShun<mcuos.com@gmail.com>
 
-Peter, I think it's probably better if you can resend. Can you also
-append the Acks too.
+All 
 
-Tony, do we have your ack too ?
-
-Thanks
-
-Liam
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
