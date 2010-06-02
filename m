@@ -1,19 +1,21 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH V4] ASoC/au1x: use resource_size for au1x
-Date: Wed, 2 Jun 2010 22:48:27 +0800
-Message-ID: <AANLkTikjNywbqsgKQmrJUeTzymUM3RP3qkYTT0WsE2mo@mail.gmail.com>
-References: <4C04B3C4.7030802@gmail.com>
+From: David Henningsson <launchpad.web@epost.diwic.se>
+Subject: [PATCH] Ensure codec patch files are checked for the
+ correct codec ID
+Date: Wed, 02 Jun 2010 17:02:51 +0200
+Message-ID: <4C06729B.6050201@epost.diwic.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="------------000400040903050100030008"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5B718243EF
+Received: from ch-smtp03.sth.basefarm.net (ch-smtp03.sth.basefarm.net
+	[80.76.149.214])
+	by alsa0.perex.cz (Postfix) with ESMTP id B10BC103974
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jun 2010 16:48:28 +0200 (CEST)
-Received: by vws8 with SMTP id 8so1433781vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 07:48:27 -0700 (PDT)
-In-Reply-To: <4C04B3C4.7030802@gmail.com>
+	Wed,  2 Jun 2010 17:03:43 +0200 (CEST)
+Received: from c83-254-137-216.bredband.comhem.se ([83.254.137.216]:55272
+	helo=[192.168.8.103])
+	by ch-smtp03.sth.basefarm.net with esmtp (Exim 4.68)
+	(envelope-from <launchpad.web@epost.diwic.se>) id 1OJpT2-0005cj-Bc
+	for alsa-devel@alsa-project.org; Wed, 02 Jun 2010 17:02:54 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,98 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Manuel Lauss <manuel.lauss@googlemail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgbWFyaywKCkhvdyBhYm91dCB0aGlzIHBhdGNoPwpBcHBsaWVkPwoK5ZyoIDIwMTDlubQ25pyI
-MeaXpSDkuIvljYgzOjE277yMV2FuIFpvbmdTaHVuIDxtY3Vvcy5jb21AZ21haWwuY29tPiDlhpnp
-gZPvvJoKPiBEZWFyIGFsbCwKPgo+IFVzZSB0aGUgcmVzb3VyY2Vfc2l6ZSBmdW5jdGlvbiBpbnN0
-ZWFkIG9mIG1hbnVhbGx5IGNhbGN1bGF0aW5nIHRoZQo+IHJlc291cmNlIHNpemUuVGhpcyBwYXRj
-aCBjYW4gcmVkdWNlIHRoZSBjaGFuY2Ugb2YgaW50cm9kdWNpbmcgb2ZmLWJ5LW9uZQo+IGVycm9y
-cy4KPgo+IFRoYW5rcyEKPgo+IFNpZ25lZC1vZmYtYnk6IFdhbiBab25nU2h1bjxtY3Vvcy5jb21A
-Z21haWwuY29tPgo+IC0tLQo+IMKgc291bmQvc29jL2F1MXgvcHNjLWFjOTcuYyB8IMKgIDEzICsr
-KysrLS0tLS0tLS0KPiDCoHNvdW5kL3NvYy9hdTF4L3BzYy1pMnMuYyDCoHwgwqAgMTMgKysrKyst
-LS0tLS0tLQo+IMKgc291bmQvc29jL2F1MXgvcHNjLmggwqAgwqAgwqB8IMKgIMKgMSAtCj4gwqAz
-IGZpbGVzIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDE3IGRlbGV0aW9ucygtKQo+Cj4gZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9hdTF4L3BzYy1hYzk3LmMgYi9zb3VuZC9zb2MvYXUxeC9wc2Mt
-YWM5Ny5jCj4gaW5kZXggYTYxY2NkMi4uZDE0YTVhOSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2Mv
-YXUxeC9wc2MtYWM5Ny5jCj4gKysrIGIvc291bmQvc29jL2F1MXgvcHNjLWFjOTcuYwo+IEBAIC0z
-NzUsMTIgKzM3NSwxMCBAQCBzdGF0aWMgaW50IF9fZGV2aW5pdCBhdTF4cHNjX2FjOTdfZHJ2cHJv
-YmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiDCoCDCoCDCoCDCoH0KPgo+IMKgIMKg
-IMKgIMKgcmV0ID0gLUVCVVNZOwo+IC0gwqAgwqAgwqAgd2QtPmlvYXJlYSA9IHJlcXVlc3RfbWVt
-X3JlZ2lvbihyLT5zdGFydCwgci0+ZW5kIC0gci0+c3RhcnQgKyAxLAo+IC0gwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgImF1MXhwc2NfYWM5
-NyIpOwo+IC0gwqAgwqAgwqAgaWYgKCF3ZC0+aW9hcmVhKQo+ICsgwqAgwqAgwqAgaWYgKCFyZXF1
-ZXN0X21lbV9yZWdpb24oci0+c3RhcnQsIHJlc291cmNlX3NpemUociksIHBkZXYtPm5hbWUpKQo+
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZ290byBvdXQwOwo+Cj4gLSDCoCDCoCDCoCB3ZC0+bW1p
-byA9IGlvcmVtYXAoci0+c3RhcnQsIDB4ZmZmZik7Cj4gKyDCoCDCoCDCoCB3ZC0+bW1pbyA9IGlv
-cmVtYXAoci0+c3RhcnQsIHJlc291cmNlX3NpemUocikpOwo+IMKgIMKgIMKgIMKgaWYgKCF3ZC0+
-bW1pbykKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGdvdG8gb3V0MTsKPgo+IEBAIC00MTAsOCAr
-NDA4LDcgQEAgc3RhdGljIGludCBfX2RldmluaXQgYXUxeHBzY19hYzk3X2RydnByb2JlKHN0cnVj
-dCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4KPiDCoCDCoCDCoCDCoHNuZF9zb2NfdW5yZWdpc3Rl
-cl9kYWkoJmF1MXhwc2NfYWM5N19kYWkpOwo+IMKgb3V0MToKPiAtIMKgIMKgIMKgIHJlbGVhc2Vf
-cmVzb3VyY2Uod2QtPmlvYXJlYSk7Cj4gLSDCoCDCoCDCoCBrZnJlZSh3ZC0+aW9hcmVhKTsKPiAr
-IMKgIMKgIMKgIHJlbGVhc2VfbWVtX3JlZ2lvbihyLT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShyKSk7
-Cj4gwqBvdXQwOgo+IMKgIMKgIMKgIMKga2ZyZWUod2QpOwo+IMKgIMKgIMKgIMKgcmV0dXJuIHJl
-dDsKPiBAQCAtNDIwLDYgKzQxNyw3IEBAIG91dDA6Cj4gwqBzdGF0aWMgaW50IF9fZGV2ZXhpdCBh
-dTF4cHNjX2FjOTdfZHJ2cmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gwqB7
-Cj4gwqAgwqAgwqAgwqBzdHJ1Y3QgYXUxeHBzY19hdWRpb19kYXRhICp3ZCA9IHBsYXRmb3JtX2dl
-dF9kcnZkYXRhKHBkZXYpOwo+ICsgwqAgwqAgwqAgc3RydWN0IHJlc291cmNlICpyID0gcGxhdGZv
-cm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAwKTsKPgo+IMKgIMKgIMKgIMKg
-aWYgKHdkLT5kbWFwZCkKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGF1MXhwc2NfcGNtX2Rlc3Ry
-b3kod2QtPmRtYXBkKTsKPiBAQCAtNDMzLDggKzQzMSw3IEBAIHN0YXRpYyBpbnQgX19kZXZleGl0
-IGF1MXhwc2NfYWM5N19kcnZyZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKPiDC
-oCDCoCDCoCDCoGF1X3N5bmMoKTsKPgo+IMKgIMKgIMKgIMKgaW91bm1hcCh3ZC0+bW1pbyk7Cj4g
-LSDCoCDCoCDCoCByZWxlYXNlX3Jlc291cmNlKHdkLT5pb2FyZWEpOwo+IC0gwqAgwqAgwqAga2Zy
-ZWUod2QtPmlvYXJlYSk7Cj4gKyDCoCDCoCDCoCByZWxlYXNlX21lbV9yZWdpb24oci0+c3RhcnQs
-IHJlc291cmNlX3NpemUocikpOwo+IMKgIMKgIMKgIMKga2ZyZWUod2QpOwo+Cj4gwqAgwqAgwqAg
-wqBhdTF4cHNjX2FjOTdfd29ya2RhdGEgPSBOVUxMOyDCoCAvKiBNREVWICovCj4gZGlmZiAtLWdp
-dCBhL3NvdW5kL3NvYy9hdTF4L3BzYy1pMnMuYyBiL3NvdW5kL3NvYy9hdTF4L3BzYy1pMnMuYwo+
-IGluZGV4IDQ5NWJlNmUuLjczN2IyMzggMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2F1MXgvcHNj
-LWkycy5jCj4gKysrIGIvc291bmQvc29jL2F1MXgvcHNjLWkycy5jCj4gQEAgLTMyMSwxMiArMzIx
-LDEwIEBAIHN0YXRpYyBpbnQgX19pbml0IGF1MXhwc2NfaTJzX2RydnByb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCj4gwqAgwqAgwqAgwqB9Cj4KPiDCoCDCoCDCoCDCoHJldCA9IC1F
-QlVTWTsKPiAtIMKgIMKgIMKgIHdkLT5pb2FyZWEgPSByZXF1ZXN0X21lbV9yZWdpb24oci0+c3Rh
-cnQsIHItPmVuZCAtIHItPnN0YXJ0ICsgMSwKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgICJhdTF4cHNjX2kycyIpOwo+IC0gwqAgwqAg
-wqAgaWYgKCF3ZC0+aW9hcmVhKQo+ICsgwqAgwqAgwqAgaWYgKCFyZXF1ZXN0X21lbV9yZWdpb24o
-ci0+c3RhcnQsIHJlc291cmNlX3NpemUociksIHBkZXYtPm5hbWUpKQo+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgZ290byBvdXQwOwo+Cj4gLSDCoCDCoCDCoCB3ZC0+bW1pbyA9IGlvcmVtYXAoci0+
-c3RhcnQsIDB4ZmZmZik7Cj4gKyDCoCDCoCDCoCB3ZC0+bW1pbyA9IGlvcmVtYXAoci0+c3RhcnQs
-IHJlc291cmNlX3NpemUocikpOwo+IMKgIMKgIMKgIMKgaWYgKCF3ZC0+bW1pbykKPiDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoGdvdG8gb3V0MTsKPgo+IEBAIC0zNjIsOCArMzYwLDcgQEAgc3RhdGlj
-IGludCBfX2luaXQgYXUxeHBzY19pMnNfZHJ2cHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
-cGRldikKPgo+IMKgIMKgIMKgIMKgc25kX3NvY191bnJlZ2lzdGVyX2RhaSgmYXUxeHBzY19pMnNf
-ZGFpKTsKPiDCoG91dDE6Cj4gLSDCoCDCoCDCoCByZWxlYXNlX3Jlc291cmNlKHdkLT5pb2FyZWEp
-Owo+IC0gwqAgwqAgwqAga2ZyZWUod2QtPmlvYXJlYSk7Cj4gKyDCoCDCoCDCoCByZWxlYXNlX21l
-bV9yZWdpb24oci0+c3RhcnQsIHJlc291cmNlX3NpemUocikpOwo+IMKgb3V0MDoKPiDCoCDCoCDC
-oCDCoGtmcmVlKHdkKTsKPiDCoCDCoCDCoCDCoHJldHVybiByZXQ7Cj4gQEAgLTM3Miw2ICszNjks
-NyBAQCBvdXQwOgo+IMKgc3RhdGljIGludCBfX2RldmV4aXQgYXUxeHBzY19pMnNfZHJ2cmVtb3Zl
-KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gwqB7Cj4gwqAgwqAgwqAgwqBzdHJ1Y3Qg
-YXUxeHBzY19hdWRpb19kYXRhICp3ZCA9IHBsYXRmb3JtX2dldF9kcnZkYXRhKHBkZXYpOwo+ICsg
-wqAgwqAgwqAgc3RydWN0IHJlc291cmNlICpyID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYs
-IElPUkVTT1VSQ0VfTUVNLCAwKTsKPgo+IMKgIMKgIMKgIMKgaWYgKHdkLT5kbWFwZCkKPiDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoGF1MXhwc2NfcGNtX2Rlc3Ryb3kod2QtPmRtYXBkKTsKPiBAQCAt
-Mzg0LDggKzM4Miw3IEBAIHN0YXRpYyBpbnQgX19kZXZleGl0IGF1MXhwc2NfaTJzX2RydnJlbW92
-ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+IMKgIMKgIMKgIMKgYXVfc3luYygpOwo+
-Cj4gwqAgwqAgwqAgwqBpb3VubWFwKHdkLT5tbWlvKTsKPiAtIMKgIMKgIMKgIHJlbGVhc2VfcmVz
-b3VyY2Uod2QtPmlvYXJlYSk7Cj4gLSDCoCDCoCDCoCBrZnJlZSh3ZC0+aW9hcmVhKTsKPiArIMKg
-IMKgIMKgIHJlbGVhc2VfbWVtX3JlZ2lvbihyLT5zdGFydCwgcmVzb3VyY2Vfc2l6ZShyKSk7Cj4g
-wqAgwqAgwqAgwqBrZnJlZSh3ZCk7Cj4KPiDCoCDCoCDCoCDCoGF1MXhwc2NfaTJzX3dvcmtkYXRh
-ID0gTlVMTDsgwqAgwqAvKiBNREVWICovCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hdTF4L3Bz
-Yy5oIGIvc291bmQvc29jL2F1MXgvcHNjLmgKPiBpbmRleCAzMmQzODA3Li4wOTM3NzVkIDEwMDY0
-NAo+IC0tLSBhL3NvdW5kL3NvYy9hdTF4L3BzYy5oCj4gKysrIGIvc291bmQvc29jL2F1MXgvcHNj
-LmgKPiBAQCAtMzIsNyArMzIsNiBAQCBzdHJ1Y3QgYXUxeHBzY19hdWRpb19kYXRhIHsKPiDCoCDC
-oCDCoCDCoHVuc2lnbmVkIGxvbmcgcmF0ZTsKPgo+IMKgIMKgIMKgIMKgdW5zaWduZWQgbG9uZyBw
-bVsyXTsKPiAtIMKgIMKgIMKgIHN0cnVjdCByZXNvdXJjZSAqaW9hcmVhOwo+IMKgIMKgIMKgIMKg
-c3RydWN0IG11dGV4IGxvY2s7Cj4gwqAgwqAgwqAgwqBzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpk
-bWFwZDsKPiDCoH07Cj4gLS0KPiAxLjYuMy4zCj4KCgoKLS0gCipsaW51eC1hcm0ta2VybmVsIG1h
-aWxpbmcgbGlzdAptYWlsIGFkZHI6bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
-CnlvdSBjYW4gc3Vic2NyaWJlIGJ5OgpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwKCiogbGludXgtYXJtLU5VQzkwMCBtYWlsaW5nIGxp
-c3QKbWFpbCBhZGRyOk5VQzkwMEBnb29nbGVncm91cHMuY29tCm1haW4gd2ViOiBodHRwczovL2dy
-b3Vwcy5nb29nbGUuY29tL2dyb3VwL05VQzkwMAp5b3UgY2FuIHN1YnNjcmliZSBpdCBieSBzZW5k
-aW5nIG1lIG1haWw6Cm1jdW9zLmNvbUBnbWFpbC5jb20KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+This is a multi-part message in MIME format.
+--------------000400040903050100030008
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+This one just popped out when I read the source code - or is there a
+reason for parsing vendorid and subid without caring about the result?
+
+// David
+
+--------------000400040903050100030008
+Content-Type: text/x-patch;
+ name="0001-Ensure-codec-patch-files-are-checked-for-the-correct.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-Ensure-codec-patch-files-are-checked-for-the-correct.pa";
+ filename*1="tch"
+
+>From ae4e9f41cf404d879b14be56591c4d5c6b403b71 Mon Sep 17 00:00:00 2001
+From: David Henningsson <diwic@ubuntu.com>
+Date: Wed, 2 Jun 2010 16:56:41 +0200
+Subject: [PATCH] Ensure codec patch files are checked for the correct codec ID
+ Signed-off-by: David Henningsson <diwic@ubuntu.com>
+
+---
+ sound/pci/hda/hda_hwdep.c |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/sound/pci/hda/hda_hwdep.c b/sound/pci/hda/hda_hwdep.c
+index a1fc837..0e2cb27 100644
+--- a/sound/pci/hda/hda_hwdep.c
++++ b/sound/pci/hda/hda_hwdep.c
+@@ -649,7 +649,9 @@ static void parse_codec_mode(char *buf, struct hda_bus *bus,
+ 	*codecp = NULL;
+ 	if (sscanf(buf, "%i %i %i", &vendorid, &subid, &caddr) == 3) {
+ 		list_for_each_entry(codec, &bus->codec_list, list) {
+-			if (codec->addr == caddr) {
++			if (codec->vendor_id == vendorid && 
++					codec->subsystem_id == subid && 
++					codec->addr == caddr) {
+ 				*codecp = codec;
+ 				break;
+ 			}
+-- 
+1.7.0.4
+
+
+--------------000400040903050100030008
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--------------000400040903050100030008--
