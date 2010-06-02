@@ -1,56 +1,50 @@
-From: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Subject: Re: [alsa-devel] [PATCH v3 0/5] OMAP/ASoC: McBSP: FIFO handling related fixes
-Date: Wed, 2 Jun 2010 12:05:41 +0300
-Message-ID: <201006021205.41455.peter.ujfalusi@nokia.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v3 0/5] OMAP/ASoC: McBSP: FIFO handling
+ related fixes
+Date: Wed, 02 Jun 2010 10:15:22 +0100
+Message-ID: <1275470122.3037.3.camel@odin>
 References: <1275391104-26387-1-git-send-email-peter.ujfalusi@nokia.com>
+	<201006021205.41455.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-omap-owner@vger.kernel.org>
-In-Reply-To: <1275391104-26387-1-git-send-email-peter.ujfalusi@nokia.com>
-Sender: linux-omap-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id A3228245DA
+	for <alsa-devel@alsa-project.org>;
+	Wed,  2 Jun 2010 11:15:29 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so684589wyg.38
+	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 02:15:27 -0700 (PDT)
+In-Reply-To: <201006021205.41455.peter.ujfalusi@nokia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, "tony@atomide.com" <tony@atomide.com>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 2010-06-02 at 12:05 +0300, Peter Ujfalusi wrote:
+> Hi,
+> 
+> On Tuesday 01 June 2010 14:18:19 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+> 
+> ..
+> 
+> Liam if you are going to take the series, could you fix the patch names?
+> I can also resend them if it is easier for you.
+> 
 
-On Tuesday 01 June 2010 14:18:19 Ujfalusi Peter (Nokia-D/Tampere) wrote=
-:
+Peter, I think it's probably better if you can resend. Can you also
+append the Acks too.
 
-=2E.
+Tony, do we have your ack too ?
 
-Liam if you are going to take the series, could you fix the patch names=
-?
-I can also resend them if it is easier for you.
+Thanks
 
-> ---
-> Peter Ujfalusi (5):
->   OMAP: McBSP: Function to query the FIFO size
->   OMAP2: McBSP: Change the way how the FIFO is handled
->   OMAP2: McBSP: Use the port's buffer_size when calculating tx delay
-
-These two are not for OMAP2, but OMAP3
-I really don't know how it happened, that I left the OMAP2 there, since=
- I have=20
-noticed it in the first RFC series..
-
-
->   ASoC: omap-mcbsp: Save, and use wlen for threshold configuration
->   ASoC: omap-mcbsp: Place correct constraints for streams
->=20
->  arch/arm/mach-omap2/mcbsp.c             |   10 ++--
->  arch/arm/plat-omap/include/plat/mcbsp.h |    2 +
->  arch/arm/plat-omap/mcbsp.c              |   51 ++++++++++-----
->  sound/soc/omap/omap-mcbsp.c             |  113
-> ++++++++++++++++++++++++------- 4 files changed, 129 insertions(+), 4=
-7
-> deletions(-)
-
-Thank you,
-P=E9ter
---
-To unsubscribe from this list: send the line "unsubscribe linux-omap" i=
-n
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Liam
