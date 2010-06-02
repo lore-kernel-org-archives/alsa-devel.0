@@ -1,21 +1,21 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] MAINTAINERS: add entry for s6000 sound
  driver
-Date: Wed, 02 Jun 2010 15:45:02 +0100
-Message-ID: <1275489902.3037.48.camel@odin>
+Date: Wed, 2 Jun 2010 15:46:12 +0100
+Message-ID: <20100602144612.GA5211@opensource.wolfsonmicro.com>
 References: <20100602124556.GD10031@sirena.org.uk>
 	<1275485755-21573-1-git-send-email-dg@emlix.com>
+	<1275489902.3037.48.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1B5E6243EA
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0A390243EF
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jun 2010 16:45:16 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so2472004wwf.38
-	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 07:45:04 -0700 (PDT)
-In-Reply-To: <1275485755-21573-1-git-send-email-dg@emlix.com>
+	Wed,  2 Jun 2010 16:46:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1275489902.3037.48.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,26 +25,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel =?ISO-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Daniel =?iso-8859-1?Q?Gl=F6ckner?= <dg@emlix.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDEwLTA2LTAyIGF0IDE1OjM1ICswMjAwLCBEYW5pZWwgR2zDtmNrbmVyIHdyb3Rl
-Ogo+IFNpZ25lZC1vZmYtYnk6IERhbmllbCBHbMO2Y2tuZXIgPGRnQGVtbGl4LmNvbT4KPiAtLS0K
-PiAgTUFJTlRBSU5FUlMgfCAgICA2ICsrKysrKwo+ICAxIGZpbGVzIGNoYW5nZWQsIDYgaW5zZXJ0
-aW9ucygrKSwgMCBkZWxldGlvbnMoLSkKPiAKPiBkaWZmIC0tZ2l0IGEvTUFJTlRBSU5FUlMgYi9N
-QUlOVEFJTkVSUwo+IGluZGV4IDI2NTJlYmMuLmM2NTBkNDggMTAwNjQ0Cj4gLS0tIGEvTUFJTlRB
-SU5FUlMKPiArKysgYi9NQUlOVEFJTkVSUwo+IEBAIC00ODkzLDYgKzQ4OTMsMTIgQEAgTDoJbGlu
-dXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnIChtb2RlcmF0ZWQgZm9yIG5vbi1zdWJz
-Y3JpYmVycykKPiAgUzoJU3VwcG9ydGVkCj4gIEY6CWRyaXZlcnMvbW1jL2hvc3QvczNjbWNpLioK
-PiAgCj4gK1M2MDAwIFNPVU5EIERSSVZFUgo+ICtNOglEYW5pZWwgR2zDtmNrbmVyIDxkZ0BlbWxp
-eC5jb20+Cj4gK0w6CWFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZyAobW9kZXJhdGVkIGZvciBu
-b24tc3Vic2NyaWJlcnMpCj4gK1M6CU9kZCBGaXhlcwo+ICtGOglzb3VuZC9zb2MvczYwMDAvCj4g
-Kwo+ICBTQUE3MTQ2IFZJREVPNExJTlVYLTIgRFJJVkVSCj4gIE06CU1pY2hhZWwgSHVub2xkIDxt
-aWNoYWVsQG1paHUuZGU+Cj4gIEw6CWxpbnV4LW1lZGlhQHZnZXIua2VybmVsLm9yZwoKQWNrZWQt
-Ynk6IExpYW0gR2lyZHdvb2QgPGxyZ0BzbGltbG9naWMuY28udWs+Ci0tIApGcmVlbGFuY2UgRGV2
-ZWxvcGVyLCBTbGltTG9naWMgTHRkCkFTb0MgYW5kIFZvbHRhZ2UgUmVndWxhdG9yIE1haW50YWlu
-ZXIuCmh0dHA6Ly93d3cuc2xpbWxvZ2ljLmNvLnVrCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wed, Jun 02, 2010 at 03:45:02PM +0100, Liam Girdwood wrote:
+
+> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+
+Applied, thanks.
