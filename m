@@ -1,20 +1,20 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH v2 1/3]AsoC/nuc900: patch for
-	SUBSTREAM_TYPE', 'PCM_TX' 	and 'PCM_RX' removal
-Date: Wed, 2 Jun 2010 14:07:29 +0800
-Message-ID: <AANLkTimXnh5C5Yz0Xd7BtOCx3MVucSU2POtJNiM9AOLr@mail.gmail.com>
-References: <4C05F211.7070308@gmail.com>
+From: Uros Bizjak <ubizjak@gmail.com>
+Subject: Re: Trouble compiling alsa-driver-1.0.23 on Fedora 13
+Date: Wed, 2 Jun 2010 10:22:39 +0200
+Message-ID: <AANLkTinfCJApFmaXHYFOIX179WVYBYo9fp3a_P97e0W9@mail.gmail.com>
+References: <AANLkTikkHZto-FJv268ZnB_WI4kLoMXopSCgKFijfv8Q@mail.gmail.com>
+	<4C055FEA.8000402@kiilerich.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 80239244CD
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 2029D245A3
 	for <alsa-devel@alsa-project.org>;
-	Wed,  2 Jun 2010 08:07:31 +0200 (CEST)
-Received: by vws8 with SMTP id 8so875330vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 01 Jun 2010 23:07:29 -0700 (PDT)
-In-Reply-To: <4C05F211.7070308@gmail.com>
+	Wed,  2 Jun 2010 10:22:45 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so653996wyg.38
+	for <alsa-devel@alsa-project.org>; Wed, 02 Jun 2010 01:22:44 -0700 (PDT)
+In-Reply-To: <4C055FEA.8000402@kiilerich.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Mads Kiilerich <mads@kiilerich.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBhbSBzb3JyeSBmb3Igd3Jvbmcgc3ViamVjdC4KSXQgc2hvdWxkIGJlIFtQQVRDSCB2MiAxLzRd
-LgoKCgo+IFRoaXMgcGF0Y2ggaXMgdG8gcmVtb3ZlIHRoZSAnU1VCU1RSRUFNX1RZUEUnLCdQQ01f
-VFgnIGFuZCAnUENNX1JYJyBkZWZpbml0aW9uLgo+Cj4gVGhlcmUgaXMgbm8gbmVlZCB0byByZWRl
-ZmluZSBTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLIGFzIFBDTV9UWCwKPiB0aGUgU1VCU1RSRUFN
-X1RZUEUoc3Vic3RyZWFtKSBjYW4gYmUgZGVsZXRlZCB0b28sIHRoZSBwbGF5YmFjayBvciByZWNv
-cmQgY2FuIGJlCj4ganVkZ2VkIGJ5ICdpZiAoc3Vic3RyZWFtLT5zdHJlYW0gPT0gU05EUlZfUENN
-X1NUUkVBTV9QTEFZQkFDSyknIGRpcmVjdGx5IHJhdGhlcgo+IHRoYW4gJ2lmIChQQ01fVFggPT0g
-c3R5cGUpJywgd2hpY2ggbWFrZXMgdGhlIGNvZGVzIGVhc3kgdG8gcmVhZC4KPgo+IFNpZ25lZC1v
-ZmYtYnk6IFdhbiBab25nU2h1bjxtY3Vvcy5jb21AZ21haWwuY29tPgo+Cj4gLS0tCj4gwqBzb3Vu
-ZC9zb2MvbnVjOTAwL251YzkwMC1hYzk3LmMgwqB8IMKgIMKgNiArKystLS0KPiDCoHNvdW5kL3Nv
-Yy9udWM5MDAvbnVjOTAwLWF1aWRvLmggfCDCoCDCoDQgLS0tLQo+IMKgc291bmQvc29jL251Yzkw
-MC9udWM5MDAtcGNtLmMgwqAgfCDCoCAxOCArKysrKysrKysrLS0tLS0tLS0KPiDCoDMgZmlsZXMg
-Y2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgMTUgZGVsZXRpb25zKC0pCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Jun 1, 2010 at 9:30 PM, Mads Kiilerich <mads@kiilerich.com> wrote:
+
+>> Trying to compile alsa-driver-1.0.23 on Fedora 13, I got following
+>> failure:
+>>
+>> gmake -C /lib/modules/2.6.33.5-112.fc13.x86_64/source
+>> SUBDIRS=3D/home/uros/alsa-driver-1.0.23 =A0CPP=3D"gcc -E" CC=3D"gcc" mod=
+ules
+>> gmake[1]: Entering directory `/usr/src/kernels/2.6.33.5-112.fc13.x86_64'
+>> Makefile:535: /usr/src/kernels/2.6.33.5-112.fc13.x86_64/arch//Makefile:
+>> No such file or directory
+>> gmake[1]: *** No rule to make target
+>> `/usr/src/kernels/2.6.33.5-112.fc13.x86_64/arch//Makefile'. =A0Stop.
+>> gmake[1]: Leaving directory `/usr/src/kernels/2.6.33.5-112.fc13.x86_64'
+>> gmake: *** [compile] Error 2
+>>
+>> I have installed required kernel-devel package.
+>>
+>> Am I missing something else to successfully compile alsa-kernel drivers?
+>>
+>
+> Uros, I don't think you are missing anything - it seems like there is a r=
+eal
+> problem with the Fedora kernels and the latest alsa drivers.
+>
+> alsa-compile.sh as described on
+> http://www.alsa-project.org/main/index.php/Driver_Compilation used to work
+> for me on Fedora 12 and check for all dependencies, but now I get the same
+> error.
+>
+> The Makefile fails in line 535 because SRCARCH (and ARCH) is empty even
+> though SUBARCH is correctly (on my machine) set to i386. I don't know why=
+ or
+> how it usually works.
+
+Thanks!
+
+I have to note, that adding ARCH=3Dx86 to make command also doesn't fly.
+Also, I have found [1], where the same problem is reported.
+
+So, I guess I'll just lean back and wait for things to get resolved...
+ I can provide further information on request, though.
+
+[1] https://bugzilla.redhat.com/show_bug.cgi?id=3D588350#c4
+
+Uros.
