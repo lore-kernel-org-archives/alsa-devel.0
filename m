@@ -1,21 +1,21 @@
-From: John Lindgren <john.lindgren@tds.net>
+From: James Courtier-Dutton <james.dutton@gmail.com>
 Subject: Re: [PATCH] alsa-lib: snd_pcm_delay and friends do not
- account for a write being currently in progress
-Date: Thu, 03 Jun 2010 10:00:48 -0400
-Message-ID: <1275573648.1415.6.camel@satellite>
-References: <1275514176.8032.42.camel@satellite> <4C074E63.90508@ladisch.de>
+	account for a write being currently in progress
+Date: Thu, 3 Jun 2010 15:40:48 +0100
+Message-ID: <AANLkTind6KbV7bpBhG1WK716EsTVCYrjIso3nuuOuBdo@mail.gmail.com>
+References: <1275514176.8032.42.camel@satellite>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 1A320103AAB
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8341A103AB5
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 16:00:56 +0200 (CEST)
-Received: by iwn35 with SMTP id 35so88517iwn.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 07:00:55 -0700 (PDT)
-In-Reply-To: <4C074E63.90508@ladisch.de>
+	Thu,  3 Jun 2010 16:40:49 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so151629fxm.38
+	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 07:40:48 -0700 (PDT)
+In-Reply-To: <1275514176.8032.42.camel@satellite>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,43 +25,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
+To: John Lindgren <john.lindgren@tds.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your reply.
-
-On Thu, 2010-06-03 at 08:40 +0200, Clemens Ladisch wrote:
-> John Lindgren wrote:
-> > In a multi-threaded application it is possible for snd_pcm_delay or an
-> > equivalent function to be called by one thread while another is sitting
-> > in snd_pcm_writei.
-> 
-> Alsa-lib is not thread safe.  In theory, you are not even allowed to
-> call snd_pcm_delay while another function on the same PCM device has not
-> yet returned.
-
->From http://alsa-project.org/main/index.php/Main_Page:
-
-        ALSA has the following significant features:
-        ...
-        SMP and thread-safe design.
-
-So, that's a big lie?
-
-> ...
-> > On the application side, the playback time counter will be calculated
-> > during this time as 0.5 seconds written to ALSA
-> 
-> This is wrong; as long as the write call has not returned, you do not
-> know how much has been written (and when an error occurs, writing can
-> stop before).
-> 
-> To keep track of the actual amount of data written, use non-blocking
-> mode and in a loop, write as much as possible in one call, then update
-> your write counter, then wait for some more free space in the buffer
-> with poll().
-
-Would it work to simply call snd_pcm_wait?
-
-John Lindgren
+T24gMiBKdW5lIDIwMTAgMjI6MjksIEpvaG4gTGluZGdyZW4gPGpvaG4ubGluZGdyZW5AdGRzLm5l
+dD4gd3JvdGU6Cj4gSGksCj4KPiBJbiBhIG11bHRpLXRocmVhZGVkIGFwcGxpY2F0aW9uIGl0IGlz
+IHBvc3NpYmxlIGZvciBzbmRfcGNtX2RlbGF5IG9yIGFuCj4gZXF1aXZhbGVudCBmdW5jdGlvbiB0
+byBiZSBjYWxsZWQgYnkgb25lIHRocmVhZCB3aGlsZSBhbm90aGVyIGlzIHNpdHRpbmcKPiBpbiBz
+bmRfcGNtX3dyaXRlaS4gwqBJbiB0aGlzIGNhc2UsIHNuZF9wY21fZGVsYXkgZG9lcyBub3QgdGFr
+ZSBpbnRvCj4gYWNjb3VudCB0aGF0IHRoZXJlIG1heSBub3QgYmUgZW5vdWdoIHNwYWNlIGZvciBh
+bGwgdGhlIGRhdGEgcGFzc2VkIHRvCj4gc25kX3BjbV93cml0ZWkgdG8gYmUgd3JpdHRlbiB0byB0
+aGUgcmluZyBidWZmZXIgYXQgb25jZSwgYW5kIHdpbGwgcmV0dXJuCj4gaW5jb3JyZWN0IHZhbHVl
+cy4KPgoKSSBiZWxpZXZlIHRoZSBkZWZpbml0aW9uIG9mIHNuZF9wY21fZGVsYXkoKSBpcyBpdCBy
+ZXR1cm5zIGEgdmFsdWUgdGhhdAp3b3VsZCBiZSBmYWlybHkgYWNjdXJhdGUgYXQgdGhpcyBpbnN0
+YW5jZSBvZiB0aW1lLiBJZiB5b3UgZm9sbG93ZWQgdGhlCnNuZF9wY21fZGVsYXkoKSB3aXRoIGEg
+c25kX3BjbV93cml0ZWkoKSwgdGhlIHNhbXBsZXMgd291bGQgcmVhY2ggdGhlCnNwZWFrZXIgImRl
+bGF5IiB0aW1lIGxhdGVyLgoKSSB0aGluayBpdCB3b3VsZCBiZSBmYWlyIHRvIHNheSB0aGF0IHRo
+ZSB2YWx1ZSBvZiBzbmRfcGNtX2RlbGF5KCkgaXMKdW5kZWZpbmVkIGlmIGNhbGxlZCBkdXJpbmcg
+YSBzbmRfcGNtX3dyaXRlaSgpIGNhbGwsIGJlY2F1c2UgeW91IHdpbGwKZ2V0IGEgcmV0dXJuIHZh
+bHVlIGZyb20gc25kX3BjbV9kZWxheSgpIGJ1dCB5b3Ugd2lsbCBoYXZlIG5vIGlkZWEgaG93Cm1h
+bnkgc2FtcGxlcyBvZiB0aGUgY3VycmVudCBzbmRfcGNtX3dyaXRlaSgpIGhhdmUgYmVlbiB3cml0
+dGVuIGFuZAp0aHVzIG5vIGlkZWEgd2hhdCB0aGUgZGVsYXkgd2lsbCBiZSBvbiB0aGUgbmV4dCBz
+bmRfcGNtX3dyaXRlaSgpLgoKRXZlbiBpbiBtdWx0aS10aHJlYWRlZCBhcHBsaWNhdGlvbnMgY2Fs
+bGluZyB0d28gZnVuY3Rpb25zIGF0IHRoZSBzYW1lCnRpbWUgdGhhdCBpbnRlcmZlcmUgd2l0aCBl
+YWNoIG90aGVyIGl0IG5vdCBnb29kLgpJZiBhIGZ1bmN0aW9uIGlzIHJlLWVudHJhbnQgaXQgaXMg
+Z2VuZXJhbGx5IGNvbnNpZGVyZWQgdG8gYmUgdGhyZWFkCnNhZmUuIEl0IGRvZXMgbm90IG5lY2Vz
+c2FyaWx5IG1lYW4gdGhhdCBpdCBpcyBzZW5zaWJsZSB0byBjYWxsIHR3bwpkaWZmZXJlbnQgZnVu
+Y3Rpb25zIGF0IHRoZSBzYW1lIHRpbWUuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
