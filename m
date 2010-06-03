@@ -1,21 +1,21 @@
 From: John Lindgren <john.lindgren@tds.net>
-Subject: Re: [PATCH] alsa-lib: snd_pcm_delay and friends do not
- account for a write being currently in progress
-Date: Thu, 03 Jun 2010 12:10:13 -0400
-Message-ID: <1275581413.15555.2.camel@satellite>
-References: <1275514176.8032.42.camel@satellite>
-	<AANLkTind6KbV7bpBhG1WK716EsTVCYrjIso3nuuOuBdo@mail.gmail.com>
+Subject: Re: alsa-lib: snd_pcm_delay and friends do not account
+ for a write being currently in progress
+Date: Thu, 03 Jun 2010 12:16:03 -0400
+Message-ID: <1275581763.15555.8.camel@satellite>
+References: <1275514176.8032.42.camel@satellite> <4C074E63.90508@ladisch.de>
+	<1275573648.1415.6.camel@satellite>  <4C07C0BD.8000009@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5711B24133
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id BDF5A2413F
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 18:10:27 +0200 (CEST)
-Received: by gwj15 with SMTP id 15so194895gwj.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 09:10:25 -0700 (PDT)
-In-Reply-To: <AANLkTind6KbV7bpBhG1WK716EsTVCYrjIso3nuuOuBdo@mail.gmail.com>
+	Thu,  3 Jun 2010 18:16:12 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so213757wwf.38
+	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 09:16:08 -0700 (PDT)
+In-Reply-To: <4C07C0BD.8000009@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,41 +25,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-06-03 at 15:40 +0100, James Courtier-Dutton wrote:
-> On 2 June 2010 22:29, John Lindgren <john.lindgren@tds.net> wrote:
-> > Hi,
-> >
-> > In a multi-threaded application it is possible for snd_pcm_delay or an
-> > equivalent function to be called by one thread while another is sitting
-> > in snd_pcm_writei.  In this case, snd_pcm_delay does not take into
-> > account that there may not be enough space for all the data passed to
-> > snd_pcm_writei to be written to the ring buffer at once, and will return
-> > incorrect values.
+On Thu, 2010-06-03 at 16:48 +0200, Clemens Ladisch wrote:
+> That applies to the kernel code.
 > 
-> I believe the definition of snd_pcm_delay() is it returns a value that
-> would be fairly accurate at this instance of time. If you followed the
-> snd_pcm_delay() with a snd_pcm_writei(), the samples would reach the
-> speaker "delay" time later.
-> 
-> I think it would be fair to say that the value of snd_pcm_delay() is
-> undefined if called during a snd_pcm_writei() call, because you will
-> get a return value from snd_pcm_delay() but you will have no idea how
-> many samples of the current snd_pcm_writei() have been written and
-> thus no idea what the delay will be on the next snd_pcm_writei().
-> 
-> Even in multi-threaded applications calling two functions at the same
-> time that interfere with each other it not good.
-> If a function is re-entrant it is generally considered to be thread
-> safe. It does not necessarily mean that it is sensible to call two
-> different functions at the same time.
+> Most functions in alsa-lib must not be called at the same time on the
+> same device handle.  (Don't ask me where this is documented.)
 
-I understand that snd_pcm_delay and snd_pcm_writei currently "interfere
-with each other" in that snd_pcm_delay returns wrong values if called
-during snd_pcm_writei.  That is the problem my patch tries to correct.
-Do you disagree with this improvement?  If so, why?
+Do you have a problem with patches that improve the current situation?
+
+> > Would it work to simply call snd_pcm_wait?
+> 
+> Yes.  (I usually suggest poll because the code that writes audio data
+> often wants to be informed of some other event.  If your writing loop
+> doesn't need to be interrupted, snd_pcm_wait works just fine.)
+
+It is permissible, then, to call snd_pcm_delay during a snd_pcm_wait
+call?
+
+What would be the cleanest way to interrupt snd_pcm_wait when we need to
+stop the stream?  Will snd_pcm_drop work?
 
 John Lindgren
