@@ -1,20 +1,17 @@
-From: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH v2 1/4] imx-ssi.c: add new choices
-	to	platform configuration
-Date: Thu, 3 Jun 2010 10:19:26 +0200
-Message-ID: <20100603081926.GT26820@pengutronix.de>
-References: <1274950737-26498-1-git-send-email-eric@eukrea.com>
-	<20100601180527.GC10031@sirena.org.uk>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ASoC: Defining "signed integer" mixer controls?
+Date: Thu, 03 Jun 2010 10:25:16 +0200
+Message-ID: <4C0766EC.3090708@ladisch.de>
+References: <hu6v9i$v43$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
-	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id E62DF103A70
+Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
+	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id A82EF103A75
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 10:19:28 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100601180527.GC10031@sirena.org.uk>
+	Thu,  3 Jun 2010 10:25:19 +0200 (CEST)
+In-Reply-To: <hu6v9i$v43$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,31 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Eric B??nard <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stuart Longland <redhatter@gentoo.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 01, 2010 at 07:05:28PM +0100, Mark Brown wrote:
-> On Thu, May 27, 2010 at 10:58:54AM +0200, Eric B??nard wrote:
-> > * introduce 3 new flags to allow a more detailed configuration
-> > of the SSI link :
-> > 	IMX_SSI_NET : enable Network Mode
-> > 	IMX_SSI_SYN : enable Synchronous Mode
-> > 	IMX_SSI_USE_I2S_SLAVE : enable I2S Slave Mode
-> > * new platform can use these settings without breaking actual
-> > platforms.
-> > 
-> > Signed-off-by: Eric B??nard <eric@eukrea.com>
-> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Stuart Longland wrote:
+> /* ADC PGA gain volumes. From 0 to 59.5 dB in 0.5 dB steps */
+> static DECLARE_TLV_DB_MINMAX(adc_tlv, 0, 0);
+
+The comment is wrong, this control goes from 0 to 0 dB.
+
+> 	SOC_DOUBLE_R_TLV("PCM Playback Volume",
+> 			 AIC3204_LDACVOL, AIC3204_RDACVOL,
+> 			 0, 127, 0, dac_tlv),
 > 
-> Sascha, any comments on the first couple of patches here?
+> However; it treats the bitfield as unsigned, which is wrong in this
+> case.  The bitfield is a signed integer in two's complement format.  How
+> do I convince ALSA that these integers have a sign bit?
 
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+ALSA's controls use signed values, it's the SOC_ macros that assume
+bitfields.  You should be able to define a control with your own
+callbacks like in a non-ASoC driver.
 
 
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Regards,
+Clemens
