@@ -1,82 +1,142 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [RFC][PATCH 21/26] alsa: ASoC: Add JZ4740 ASoC support
-Date: Thu, 03 Jun 2010 21:27:44 +0200
-Message-ID: <4C080230.1070909@metafoo.de>
-References: <1275505397-16758-1-git-send-email-lars@metafoo.de> <1275505950-17334-5-git-send-email-lars@metafoo.de> <20100603175511.GI2762@rakim.wolfsonmicro.main>
+Subject: Re: [RFC][PATCH 20/26] alsa: ASoC: Add JZ4740 codec
+	driver
+Date: Fri, 04 Jun 2010 01:57:09 +0200
+Message-ID: <4C084155.5010503@metafoo.de>
+References: <1275505397-16758-1-git-send-email-lars@metafoo.de>
+	<1275505950-17334-4-git-send-email-lars@metafoo.de>
+	<20100603174953.GH2762@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20100603175511.GI2762@rakim.wolfsonmicro.main>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0B7E92447A
+	for <alsa-devel@alsa-project.org>;
+	Fri,  4 Jun 2010 01:57:52 +0200 (CEST)
+In-Reply-To: <20100603174953.GH2762@rakim.wolfsonmicro.main>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
+Hi
+
 Mark Brown wrote:
-> On Wed, Jun 02, 2010 at 09:12:27PM +0200, Lars-Peter Clausen wrote:
->
-> Again, overall very good.
+> On Wed, Jun 02, 2010 at 09:12:26PM +0200, Lars-Peter Clausen wrote:
 >
 >   
->> +static int jz4740_i2s_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
+>> This patch adds support for the JZ4740 internal codec.
+>>     
+>
+> This looks very good, there are some issues but nothing too major.  I
+> may be repeating some things others have said but hopefully not too
+> much.
+>
+>   
+>>  snd-soc-wm9712-objs := wm9712.o
+>>  snd-soc-wm9713-objs := wm9713.o
+>>  snd-soc-wm-hubs-objs := wm_hubs.o
+>> +snd-soc-jz4740-codec-objs := jz4740-codec.o
+>>     
+>
+> Keep the devices sorted in both Makefile and Kconfig.
+>
+>   
+>> +static int jz4740_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
 >> +{
->> +	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
->> +
->> +	switch (div_id) {
->> +	case JZ4740_I2S_BIT_CLK:
->> +		if (div & 1 || div > 16)
->> +			return -EINVAL;
->> +		jz4740_i2s_write(i2s, JZ_REG_AIC_CLK_DIV, div - 1);
+>> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+>> +	case SND_SOC_DAIFMT_CBM_CFM:
 >> +		break;
 >> +	default:
 >> +		return -EINVAL;
 >> +	}
->> +
->> +	return 0;
->> +}
 >>     
 >
-> You can probably figure out the bit clock automatically by default...
+> This does nothing except validate some parameters.  Is there actually an
+> externally visible DAI for this CODEC?  If it's just integrated into the
+> SoC and there's nothing to configure then just omit the DAI
+> configuration since it's not even useful to document the signal format.
 >   
-Hm, yes, you are right.
->   
->> +	if (dai->active) {
->> +		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
->> +		conf &= ~JZ_AIC_CONF_ENABLE;
->> +		jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
->> +
->> +		clk_disable(i2s->clk_i2s);
->> +	}
->> +
->> +	clk_disable(i2s->clk_aic);
+Nope, there is no externally visible DAI for the codec, but internally
+it is connected through the i2s controller of the JZ4740 which supports
+different operating modes. And if you'll do
+"snd_soc_dai_set_fmt(codec_dai, BOARD_DAIFMT);
+snd_soc_dai_set_fmt(cpu_dai, BOARD_DAIFMT);" with a wrong dai format it
+will be noticed.
+>> +	.capture = {
+>> +		.stream_name = "Capture",
+>> +		.channels_min = 2,
+>> +		.channels_max = 2,
+>> +		.rates = SNDRV_PCM_RATE_8000_48000,
+>> +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8,
 >>     
 >
-> Might make sense to manage this clock dynamically at runtime too for a
-> little extra power saving?
+> You listed an 18 bit format in hw_params - one or other of this and
+> hw_params is presumably out of date.
 >   
-I think I tried it once and the power savings were marginal. On the
-other hand each callback would have to make sure the clock is enabled
-before accessing registers and disabling it again if it was disabled.
->   
->> +	i2s->clk_aic = clk_get(&pdev->dev, "aic");
->> +	if (IS_ERR(i2s->clk_aic)) {
->> +		ret = PTR_ERR(i2s->clk_aic);
->> +		goto err_iounmap;
->> +	}
+In theory the codec supports 18 bit for playback, but the i2s controller
+requires it to be 32 bit aligned, while alsa appears to have only
+support for a 24 bit aligned 18 bit format(Correct me if I'm wrong). So
+I dropped it, I'll remove the whole format check in hw_params as Liam
+suggested.
+>> +static int jz4740_codec_set_bias_level(struct snd_soc_codec *codec,
+>> +	enum snd_soc_bias_level level)
+>> +{
 >> +
->> +	i2s->clk_i2s = clk_get(&pdev->dev, "i2s");
->> +	if (IS_ERR(i2s->clk_i2s)) {
->> +		ret = PTR_ERR(i2s->clk_i2s);
->> +		goto err_iounmap;
->> +	}
+>> +	if (codec->bias_level == SND_SOC_BIAS_OFF && level != SND_SOC_BIAS_OFF) {
+>> +		snd_soc_update_bits(codec, JZ4740_REG_CODEC_1,
+>> +			JZ4740_CODEC_1_RESET, JZ4740_CODEC_1_RESET);
+>> +		udelay(2);
 >>     
 >
-> Ideally you'd free the AIC clock when unwinding (and later stop it after
-> it was enabled).  Though since you don't do any error checking after
-> this point it's kind of academic :)
->
+> I'd expect to see this as part of the _OFF in the main switch
+> statement.
 >   
-It should at least freed if the i2s clock is not found.
+Uhm, actually this code path is taken when switching from _OFF to
+another state. If it is guaranteed that _OFF is always followed by a
+certain other state I could put the reset code in its part of the switch
+statement.
+>   
+>> +	switch (level) {
+>> +	case SND_SOC_BIAS_ON:
+>> +		snd_soc_update_bits(codec, JZ4740_REG_CODEC_1,
+>> +			JZ4740_CODEC_1_VREF_DISABLE |
+>> +			JZ4740_CODEC_1_VREF_AMP_DISABLE |
+>> +			JZ4740_CODEC_1_HEADPHONE_POWER_DOWN_M |
+>> +			JZ4740_CODEC_1_VREF_LOW_CURRENT |
+>> +			JZ4740_CODEC_1_VREF_HIGH_CURRENT,
+>> +			0);
+>>     
+>
+> This looks suspiciously like you should be using DAPM for the headphone
+> at least, though if there's only headphone out that's possibly not worth
+> it.  Also, are you sure that you want both low and high current VREF
+> configuring here?  I'm not clear what these settings do but the way
+> they're being managed both here and in _PREPARE seems odd.
+>   
+Hm, I'll take a look.
+>   
+>> +	codec = &jz4740_codec->codec;
+>> +
+>> +	codec->dev		= &pdev->dev;
+>> +	codec->name		= "jz-codec";
+>>     
+>
+> Seems a bit odd to use the part number in some places and not others.
+>   
+I renamed the driver from jz-codec to jz4740-codec shortly before
+submitting it after I realized that the codec component on other jz47xx
+chips is completely different. Seems like I missed the codec name.
 
+Thanks for reviewing the patch
 - Lars
