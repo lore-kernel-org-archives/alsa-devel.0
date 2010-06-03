@@ -1,35 +1,21 @@
-From: Stuart Longland <redhatter@gentoo.org>
-Subject: Re: ASoC: Defining "signed integer" mixer controls?
-Date: Thu, 3 Jun 2010 20:33:22 +1000
-Message-ID: <20100603103322.GB3662@www.longlandclan.yi.org>
-References: <hu6v9i$v43$1@dough.gmane.org>
- <4C0766EC.3090708@ladisch.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH v5 0/5] OMAP/ASoC: McBSP: FIFO handling
+ related fixes
+Date: Thu, 03 Jun 2010 16:17:30 +0100
+Message-ID: <1275578250.3593.131.camel@odin>
+References: <1275539976-2075-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from helicon.mas.viperplatform.net.au
-	(helicon.mas.viperplatform.net.au [202.147.75.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4916F103ACD
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2BE19103ACF
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 17:11:25 +0200 (CEST)
-Received: from eryx.mas.viperplatform.net.au ([172.16.5.11])
-	by helicon.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OKC4n-0007bq-DW
-	for alsa-devel@alsa-project.org; Fri, 04 Jun 2010 01:11:21 +1000
-Received: from mail by eryx.mas.viperplatform.net.au with spam-scanned (Exim
-	4.43) id 1OKC4n-0001AZ-5Q
-	for alsa-devel@alsa-project.org; Fri, 04 Jun 2010 01:11:21 +1000
-Received: from [172.16.100.13] (helo=helicon.mas.viperplatform.net.au)
-	by eryx.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OKB8H-0001GN-Qs
-	for alsa-devel@alsa-project.org; Fri, 04 Jun 2010 00:10:53 +1000
-Received: from [203.94.56.252] (helo=longlandclan.yi.org)
-	by helicon.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OK7jn-0004Bv-BZ
-	for alsa-devel@alsa-project.org; Thu, 03 Jun 2010 20:33:23 +1000
-Content-Disposition: inline
-In-Reply-To: <4C0766EC.3090708@ladisch.de>
+	Thu,  3 Jun 2010 17:17:32 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so137535wyg.38
+	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 08:17:30 -0700 (PDT)
+In-Reply-To: <1275539976-2075-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -39,38 +25,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, tony@atomide.com, broonie@opensource.wolfsonmicro.com, eduardo.valentin@nokia.com, ext-eero.nurkkala@nokia.com, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 03, 2010 at 10:25:16AM +0200, Clemens Ladisch wrote:
-> Stuart Longland wrote:
-> > /* ADC PGA gain volumes. From 0 to 59.5 dB in 0.5 dB steps */
-> > static DECLARE_TLV_DB_MINMAX(adc_tlv, 0, 0);
+On Thu, 2010-06-03 at 07:39 +0300, Peter Ujfalusi wrote:
+> Hello,
 > 
-> The comment is wrong, this control goes from 0 to 0 dB.
+> Tony: Could you take a look at the arch/arm patches in this series?
+> Thanks!
 > 
-> > 	SOC_DOUBLE_R_TLV("PCM Playback Volume",
-> > 			 AIC3204_LDACVOL, AIC3204_RDACVOL,
-> > 			 0, 127, 0, dac_tlv),
-> > 
-> > However; it treats the bitfield as unsigned, which is wrong in this
-> > case.  The bitfield is a signed integer in two's complement format.  How
-> > do I convince ALSA that these integers have a sign bit?
+> Changes since v3/4:
+> - Fixed commit subjects and messages for OMAP3 related patches
+> - Added Acked-by from Mark, and Jarkko
 > 
-> ALSA's controls use signed values, it's the SOC_ macros that assume
-> bitfields.  You should be able to define a control with your own
-> callbacks like in a non-ASoC driver.
+> Intro message from the original series:
+> 
+> This series aims to correct how the McBSP FIFO is viewed, and handled.
+> 
+> Introduction of the problem:
+> OMAP McBSP FIFO is word structured:
+> McBSP2 has 1024 + 256 = 1280 word long buffer,
+> McBSP1,3,4,5 has 128 word long buffer
+> 
+> This means, that the size of the FIFO
+> depends on the McBSP word size configuration.
+> For example on McBSP3:
+> 16bit samples: size is 128 * 2 = 256 bytes
+> 32bit samples: size is 128 * 4 = 512 bytes
+> It is simpler to place constraint for buffer and period based on channels.
+> McBSP3 as example again (16 or 32 bit samples):
+> 1 channel (mono): size is 128 frames (128 words)
+> 2 channels (stereo): size is 128 / 2 = 64 frames (2 * 64 words)
+> 4 channels: size is 128 / 4 = 32 frames (4 * 32 words)
+> 
+> Since now the McBSP codec supports not only 16bit samples (32biut has been
+> recently added), the FIFO size handling is no longer correct, since it has
+> been hard wired for 16bit word length.
+> 
+> The series changes how the users of McBSP are configuring the FIFO:
+> It used to be 0 based (0 meant 1 word threshold). After this series users can
+> configure the threshold in 1 base mode (1 means 1 word threshold).
+> The platform code now provides the full size of the FIFO in words, instead of
+> the already limited value used in the past.
+> 
+> In ASoC omap-mcbsp code hw_rule based constraint refinement is going to be used
+> instead of the hardwired static constraint, which was correct only in case of
+> 16bit word length.
+> 
+> The hw_rule is refining the minimum buffer size based on the channel number
+> going to be used by the coming stream.
+> In case of threshold mode additional hw_rule refines the maximum allowed period
+> size.
+> 
+> The series are generated agains Takashi's sound-2.6: topic/asoc branch.
+> 
+> CCing also Eduardo, and Eero since they have worked on the original
+> FIFO/threshold implementation.
+> 
+> All commetns and testers are welcome!
+> Peter
+> 
+> ---
+> Peter Ujfalusi (5):
+>   OMAP: McBSP: Function to query the FIFO size
+>   OMAP3: McBSP: Change the way how the FIFO is handled
+>   OMAP3: McBSP: Use the port's buffer_size when calculating tx delay
+>   ASoC: omap-mcbsp: Save, and use wlen for threshold configuration
+>   ASoC: omap-mcbsp: Place correct constraints for streams
+> 
+>  arch/arm/mach-omap2/mcbsp.c             |   10 ++--
+>  arch/arm/plat-omap/include/plat/mcbsp.h |    2 +
+>  arch/arm/plat-omap/mcbsp.c              |   51 ++++++++++-----
+>  sound/soc/omap/omap-mcbsp.c             |  112 +++++++++++++++++++++++-------
+>  4 files changed, 128 insertions(+), 47 deletions(-)
+> 
 
-Ahh okay... makes sense... I'll have a closer look; perhaps some
-additional macros could be written to allow use of signed integer
-bitfields as well.  I'm sure the TLV320AIC3204 is not the only CODEC
-that uses such beasts.
+Applied all.
+
+Thanks
+
+Liam
 -- 
-Stuart Longland (aka Redhatter, VK4MSL)      .'''.
-Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
-. . . . . . . . . . . . . . . . . . . . . .   .'.'
-http://dev.gentoo.org/~redhatter             :.'
-
-I haven't lost my mind...
-  ...it's backed up on a tape somewhere.
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
