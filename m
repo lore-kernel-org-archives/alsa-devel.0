@@ -1,22 +1,20 @@
-From: John Lindgren <john.lindgren@tds.net>
-Subject: Re: alsa-lib: snd_pcm_delay and friends do not account
- for a write being currently in progress
-Date: Thu, 03 Jun 2010 13:51:41 -0400
-Message-ID: <1275587501.20342.3.camel@satellite>
-References: <1275514176.8032.42.camel@satellite> <4C074E63.90508@ladisch.de>
-	<1275573648.1415.6.camel@satellite>  <4C07C0BD.8000009@ladisch.de>
-	<1275581763.15555.8.camel@satellite>  <4C07E060.9070206@ladisch.de>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC][PATCH 21/26] alsa: ASoC: Add JZ4740 ASoC
+	support
+Date: Thu, 3 Jun 2010 18:55:11 +0100
+Message-ID: <20100603175511.GI2762@rakim.wolfsonmicro.main>
+References: <1275505397-16758-1-git-send-email-lars@metafoo.de>
+	<1275505950-17334-5-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id CA42E24383
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B036D103AE9
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 19:51:52 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so261923wyg.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 10:51:51 -0700 (PDT)
-In-Reply-To: <4C07E060.9070206@ladisch.de>
+	Thu,  3 Jun 2010 19:55:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1275505950-17334-5-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,34 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-06-03 at 19:03 +0200, Clemens Ladisch wrote:
-> John Lindgren wrote:
-> > I understand that snd_pcm_delay and snd_pcm_writei currently "interfere
-> > with each other" in that snd_pcm_delay returns wrong values if called
-> > during snd_pcm_writei.  That is the problem my patch tries to correct.
-> 
-> These values are not wrong; the problem is that your program does not
-> have enough information to interpret it correctly.
+On Wed, Jun 02, 2010 at 09:12:27PM +0200, Lars-Peter Clausen wrote:
 
-Same thing.
+Again, overall very good.
 
-> > What would be the cleanest way to interrupt snd_pcm_wait when we need to
-> > stop the stream?  Will snd_pcm_drop work?
-> 
-> *sigh*
-> This will _not_ work.
-> 
-> You have to use poll so that you can send your loop a message (through
-> a pipe/eventfd/whatever) that tells it to stop.
+> +static int jz4740_i2s_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
+> +{
+> +	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
+> +
+> +	switch (div_id) {
+> +	case JZ4740_I2S_BIT_CLK:
+> +		if (div & 1 || div > 16)
+> +			return -EINVAL;
+> +		jz4740_i2s_write(i2s, JZ_REG_AIC_CLK_DIV, div - 1);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
 
-Ugh.  It seems you are determined to avoid complexity in ALSA at the
-expense of complexity in programs that use it.
+You can probably figure out the bit clock automatically by default...
 
-At any rate, at least I know what needs to be done now, so thanks for
-that.
+> +	if (dai->active) {
+> +		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
+> +		conf &= ~JZ_AIC_CONF_ENABLE;
+> +		jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
+> +
+> +		clk_disable(i2s->clk_i2s);
+> +	}
+> +
+> +	clk_disable(i2s->clk_aic);
 
-John Lindgren
+Might make sense to manage this clock dynamically at runtime too for a
+little extra power saving?
+
+> +	i2s->clk_aic = clk_get(&pdev->dev, "aic");
+> +	if (IS_ERR(i2s->clk_aic)) {
+> +		ret = PTR_ERR(i2s->clk_aic);
+> +		goto err_iounmap;
+> +	}
+> +
+> +	i2s->clk_i2s = clk_get(&pdev->dev, "i2s");
+> +	if (IS_ERR(i2s->clk_i2s)) {
+> +		ret = PTR_ERR(i2s->clk_i2s);
+> +		goto err_iounmap;
+> +	}
+
+Ideally you'd free the AIC clock when unwinding (and later stop it after
+it was enabled).  Though since you don't do any error checking after
+this point it's kind of academic :)
