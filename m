@@ -1,20 +1,20 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: ASoC: Defining "signed integer" mixer controls?
-Date: Thu, 3 Jun 2010 08:09:36 +0100
-Message-ID: <AANLkTinxNwLVdaB9yR508esg-gwQJv2bMHkrUqhtVYwe@mail.gmail.com>
-References: <hu6v9i$v43$1@dough.gmane.org>
+From: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH v2 1/4] imx-ssi.c: add new choices
+	to	platform configuration
+Date: Thu, 3 Jun 2010 10:19:26 +0200
+Message-ID: <20100603081926.GT26820@pengutronix.de>
+References: <1274950737-26498-1-git-send-email-eric@eukrea.com>
+	<20100601180527.GC10031@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96984103A6F
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+	[92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id E62DF103A70
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 09:09:36 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so5000240fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 00:09:36 -0700 (PDT)
-In-Reply-To: <hu6v9i$v43$1@dough.gmane.org>
+	Thu,  3 Jun 2010 10:19:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100601180527.GC10031@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,44 +24,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stuart Longland <redhatter@gentoo.org>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Eric B??nard <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMyBKdW5lIDIwMTAgMDI6MDcsIFN0dWFydCBMb25nbGFuZCA8cmVkaGF0dGVyQGdlbnRvby5v
-cmc+IHdyb3RlOgo+IEhpIGFsbC4uLgo+Cj4gSSdtIHBvc3RpbmcgdGhpcyB2aWEgR01hbmUgc2lu
-Y2UgbXkgc2VydmVyIGF0IGhvbWUgc2VlbXMgdG8gYmUgZG93biwKPiBob3BlZnVsbHkgaXQgZ2V0
-cyB0aHJvdWdoLiDCoEkgaG9wZSB0byBwdXQgYSB2ZXJzaW9uIG9mIHRoZSBUTFYzMjBBSUMzMjA0
-Cj4gZHJpdmVyIHRoYXQgSSd2ZSBiZWVuIHdvcmtpbmcgb24gdXAgdGhlcmUgLS0gSSBkaWQgdHJ5
-IHBvc3RpbmcgaXQgdG8gdGhlCj4gbGlzdCwgYnV0IEkgc3VzcGVjdCBpdCdzIGVpdGhlciBiZWVu
-IGxlZnQgaW4gdGhlIG1vZGVyYXRpb24gcXVldWUgb3IKPiBzaWxlbnRseSBkcm9wcGVkLiDCoElu
-IHNob3J0LCBJIGdvdCB0aGUgc291bmQgd29ya2luZzsganVzdCB0ZXN0aW5nCj4gcGxheWJhY2sg
-Zm9yIG5vdy4uLiBSZWNvcmRpbmcgc2hvdWxkIHdvcmssIG9uY2UgSSBnZXQgdGhlIG1peGVyIHNl
-dCB1cC4KPgo+IE15IHF1ZXJ5IHRob3VnaDsgdGhlIG1peGVyIG9uIHRoaXMgQ09ERUMgcHJvdmlk
-ZXMgZ2FpbiBzZXR0aW5ncywKPiBoZWxwZnVsbHkgc2NhbGVkIGluIGRCLCBhcyBzaWduZWQgaW50
-ZWdlcnMuIMKgRm9yIGluc3RhbmNlOyB0aGUgZm91ciBsaW5lCj4gbGV2ZWwgb3V0cHV0IGRyaXZl
-cnM6IEhlYWRwaG9uZSBsZWZ0L3JpZ2h0LGFuZCBMaW5lIE91dCBsZWZ0L3JpZ2h0LCBjYW4KPiBh
-bGwgYmUgYWRqdXN0ZWQgaW4gZ2FpbiBmcm9tIC02ZEIgdGhyb3VnaCB0byArMjlkQi4KPgo+IFRo
-ZXNlIGFyZSBzZXQgaW4gaW5kaXZpZHVhbCByZWdpc3RlcnMgYXMgdGhlIGxvd2VyIDYgYml0czsg
-c286Cj4gwqAgwqAgwqAgwqAtNiBkQiBpcyByZXByZXNlbnRlZCBhcyAxMTEwMTAgKDB4M2EpCj4g
-wqAgwqAgwqAgwqAyOSBkQiBpcyByZXByZXNlbnRlZCBhcyAwMTExMDEgKDB4MWQpCj4KPgo+IEhv
-d2V2ZXI7IGl0IHRyZWF0cyB0aGUgYml0ZmllbGQgYXMgdW5zaWduZWQsIHdoaWNoIGlzIHdyb25n
-IGluIHRoaXMKPiBjYXNlLiDCoFRoZSBiaXRmaWVsZCBpcyBhIHNpZ25lZCBpbnRlZ2VyIGluIHR3
-bydzIGNvbXBsZW1lbnQgZm9ybWF0LiDCoEhvdwo+IGRvIEkgY29udmluY2UgQUxTQSB0aGF0IHRo
-ZXNlIGludGVnZXJzIGhhdmUgYSBzaWduIGJpdD8KPgoKQUxTQSBpcyBub3Qgc2V0IHVwIHRvIGNv
-bnZlcnQgYml0ZmllbGRzIHRvIGRCIHZhbHVlcy4KSXQgY2FuIG9ubHkgY29udmVydCBpbnRlZ2Vy
-cyB0byBkQiB2YWx1ZXMuClRoZXNlIGludGVnZXJzIG5vcm1hbGx5IGJlaW5nIDMyYml0LgpTbywg
-SSB0aGluayB5b3Ugd2lsbCBoYXZlIHRvIHdyaXRlIHNvbWUgY29kZSBpbiB5b3VyIGRyaXZlciB0
-byBjb252ZXJ0CnRoZXNlIDZiaXQgc2lnbmVkIGludGVnZXJzIHRvIDMyYml0IHVuc2lnbmVkIGlu
-dGVnZXJzIGFuZCB0aGVuIHBhc3MKdGhlIDMyYml0IHVuc2lnbmVkIGludGVnZXIgdG8gdXNlciBs
-YW5kLgpTb21ldGhpbmcgbGlrZToKdTMyIHZhbHVlOyAgICAvKiBNYWtlIHRoZSB2YWx1ZSBhbiB1
-bnNpZ25lZCBpbnQgZXZlbiB0aG91Z2ggd2UgdGhpbmsKaXQgaXMgYSA2Yml0IHNpZ25lZCBpbi4g
-Ki8KCi8qIHNpZ24gZXh0ZW5kIHRtcCBmcm9tIDYgYml0IHNpZ25lZCB0byAzMmJpdCBzaWduZWQg
-Ki8KaWYgKHZhbHVlICYgMHgyMCkgdmFsdWUgPSB2YWx1ZSB8IDB4ZmZmZmZmZTA7Ci8qIG1vdmVk
-IHRoZSB2YWx1ZSBmcm9tIHRoZSBzaWduZWQgcmFuZ2UgdG8gdGhlIHVuc2lnbmVkIHJhbmdlLiAq
-Lwp2YWx1ZSA9IHZhbHVlICsgNjsKCk90aGVyIHdheToKLyogcmVkdWNlIHZhbHVlIHRvIDYgYml0
-IHNpZ25lZCB2YWx1ZS4KdmFsdWUgPSB2YWx1ZSAtIDY7CnZhbHVlID0gdmFsdWUgJiAweDNmOwoK
-CktpbmQgUmVnYXJkcwoKSmFtZXMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+On Tue, Jun 01, 2010 at 07:05:28PM +0100, Mark Brown wrote:
+> On Thu, May 27, 2010 at 10:58:54AM +0200, Eric B??nard wrote:
+> > * introduce 3 new flags to allow a more detailed configuration
+> > of the SSI link :
+> > 	IMX_SSI_NET : enable Network Mode
+> > 	IMX_SSI_SYN : enable Synchronous Mode
+> > 	IMX_SSI_USE_I2S_SLAVE : enable I2S Slave Mode
+> > * new platform can use these settings without breaking actual
+> > platforms.
+> > 
+> > Signed-off-by: Eric B??nard <eric@eukrea.com>
+> > Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> 
+> Sascha, any comments on the first couple of patches here?
+
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
+
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
