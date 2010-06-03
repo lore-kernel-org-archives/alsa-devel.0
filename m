@@ -1,21 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH V4] ASoC/au1x: use resource_size for au1x
-Date: Thu, 3 Jun 2010 12:58:47 +0100
-Message-ID: <20100603115846.GB2762@rakim.wolfsonmicro.main>
-References: <4C04B3C4.7030802@gmail.com>
-	<AANLkTikjNywbqsgKQmrJUeTzymUM3RP3qkYTT0WsE2mo@mail.gmail.com>
-	<20100602163157.GA26606@rakim.wolfsonmicro.main>
-	<AANLkTinONhJCJCocd7HU0Umzg_shv97tJU0oOafiy52r@mail.gmail.com>
+Subject: Re: [RFC][PATCH 20/26] alsa: ASoC: Add JZ4740 codec
+ driver
+Date: Thu, 3 Jun 2010 13:03:51 +0100
+Message-ID: <20100603120350.GC2762@rakim.wolfsonmicro.main>
+References: <1275505397-16758-1-git-send-email-lars@metafoo.de>
+	<1275505950-17334-4-git-send-email-lars@metafoo.de>
+	<4C074171.2080106@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 20E882440E
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2B1D924413
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 13:58:48 +0200 (CEST)
+	Thu,  3 Jun 2010 14:03:52 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTinONhJCJCocd7HU0Umzg_shv97tJU0oOafiy52r@mail.gmail.com>
+In-Reply-To: <4C074171.2080106@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +25,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Manuel Lauss <manuel.lauss@googlemail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Wan ZongShun <mcuos.com@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Wan ZongShun <mcuos.com@gmail.com>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 02, 2010 at 06:41:18PM +0200, Manuel Lauss wrote:
-> On Wed, Jun 2, 2010 at 6:31 PM, Mark Brown
-> <broonie@opensource.wolfsonmicro.com> wrote:
-> > On Wed, Jun 02, 2010 at 10:48:27PM +0800, Wan ZongShun wrote:
-> >
-> >> How about this patch?
-> >> Applied?
-> >
-> > I was waiting for review from Manuel.
-> 
-> Oh, sorry.
-> 
-> Acked-by: Manuel Lauss <manuel.lauss@googlemail.com>
+On Thu, Jun 03, 2010 at 01:45:21PM +0800, Wan ZongShun wrote:
 
-Applied, thanks.
+> Your all the patches have two kinds of 'WARNING:',as following:
+
+> (1)'WARNING: line over 80 characters' and
+
+> Please make a line less than 80 characters.
+
+You need to apply a certain degree of taste when looking at checkpatch
+warnings, particularly things like line length.  Sometimes fixing the
+warning for the sake of fixing the warning makes the code uglier than it
+would be with whatever the style issue that's been identified is.
