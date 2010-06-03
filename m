@@ -1,20 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC][PATCH 21/26] alsa: ASoC: Add JZ4740 ASoC
-	support
-Date: Thu, 3 Jun 2010 18:55:11 +0100
-Message-ID: <20100603175511.GI2762@rakim.wolfsonmicro.main>
+Subject: Re: [RFC][PATCH 26/26] alsa: ASoC: JZ4740: Add qi_lb60
+	board driver
+Date: Thu, 3 Jun 2010 18:57:15 +0100
+Message-ID: <20100603175714.GJ2762@rakim.wolfsonmicro.main>
 References: <1275505397-16758-1-git-send-email-lars@metafoo.de>
-	<1275505950-17334-5-git-send-email-lars@metafoo.de>
+	<1275506132-17519-2-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B036D103AE9
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 399B0103B0C
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 19:55:12 +0200 (CEST)
+	Thu,  3 Jun 2010 19:57:16 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1275505950-17334-5-git-send-email-lars@metafoo.de>
+In-Reply-To: <1275506132-17519-2-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,54 +28,25 @@ To: Lars-Peter Clausen <lars@metafoo.de>
 Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 02, 2010 at 09:12:27PM +0200, Lars-Peter Clausen wrote:
+On Wed, Jun 02, 2010 at 09:15:32PM +0200, Lars-Peter Clausen wrote:
 
-Again, overall very good.
-
-> +static int jz4740_i2s_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
-> +{
-> +	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
-> +
-> +	switch (div_id) {
-> +	case JZ4740_I2S_BIT_CLK:
-> +		if (div & 1 || div > 16)
-> +			return -EINVAL;
-> +		jz4740_i2s_write(i2s, JZ_REG_AIC_CLK_DIV, div - 1);
-> +		break;
-> +	default:
-> +		return -EINVAL;
+> +	ret = gpio_request(QI_LB60_SND_GPIO, "SND");
+> +	if (ret) {
+> +		pr_err("qi_lb60 snd: Failed to request SND GPIO(%d): %d\n",
+> +				QI_LB60_SND_GPIO, ret);
+> +		goto err_device_put;
 > +	}
 > +
-> +	return 0;
-> +}
-
-You can probably figure out the bit clock automatically by default...
-
-> +	if (dai->active) {
-> +		conf = jz4740_i2s_read(i2s, JZ_REG_AIC_CONF);
-> +		conf &= ~JZ_AIC_CONF_ENABLE;
-> +		jz4740_i2s_write(i2s, JZ_REG_AIC_CONF, conf);
-> +
-> +		clk_disable(i2s->clk_i2s);
+> +	ret = gpio_request(QI_LB60_AMP_GPIO, "AMP");
+> +	if (ret) {
+> +		pr_err("qi_lb60 snd: Failed to request AMP GPIO(%d): %d\n",
+> +				QI_LB60_AMP_GPIO, ret);
+> +		goto err_gpio_free_snd;
 > +	}
 > +
-> +	clk_disable(i2s->clk_aic);
+> +	gpio_direction_output(JZ_GPIO_PORTB(29), 0);
+> +	gpio_direction_output(JZ_GPIO_PORTD(4), 0);
 
-Might make sense to manage this clock dynamically at runtime too for a
-little extra power saving?
-
-> +	i2s->clk_aic = clk_get(&pdev->dev, "aic");
-> +	if (IS_ERR(i2s->clk_aic)) {
-> +		ret = PTR_ERR(i2s->clk_aic);
-> +		goto err_iounmap;
-> +	}
-> +
-> +	i2s->clk_i2s = clk_get(&pdev->dev, "i2s");
-> +	if (IS_ERR(i2s->clk_i2s)) {
-> +		ret = PTR_ERR(i2s->clk_i2s);
-> +		goto err_iounmap;
-> +	}
-
-Ideally you'd free the AIC clock when unwinding (and later stop it after
-it was enabled).  Though since you don't do any error checking after
-this point it's kind of academic :)
+You're referring to the GPIOs by multiple different names - it'd be more
+robust to pick one way of naming them and use it consistently (probably
+the #define).
