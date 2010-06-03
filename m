@@ -1,21 +1,20 @@
-From: VDR User <user.vdr@gmail.com>
-Subject: Re: [PATCH] alsa-lib: snd_pcm_delay and friends do not
-	account for a write being currently in progress
-Date: Thu, 3 Jun 2010 10:40:02 -0700
-Message-ID: <AANLkTil3VZiQe5wSezaDRXtekheR6d_hs7wKK6Ku7puX@mail.gmail.com>
-References: <1275514176.8032.42.camel@satellite>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [RFC][PATCH 20/26] alsa: ASoC: Add JZ4740 codec
+	driver
+Date: Thu, 3 Jun 2010 18:49:53 +0100
+Message-ID: <20100603174953.GH2762@rakim.wolfsonmicro.main>
+References: <1275505397-16758-1-git-send-email-lars@metafoo.de>
+	<1275505950-17334-4-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 602CD10382A
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87AD2103AE4
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 19:40:05 +0200 (CEST)
-Received: by vws8 with SMTP id 8so423133vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 10:40:03 -0700 (PDT)
-In-Reply-To: <1275514176.8032.42.camel@satellite>
+	Thu,  3 Jun 2010 19:49:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1275505950-17334-4-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,24 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Lindgren <john.lindgren@tds.net>
-Cc: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 2, 2010 at 2:29 PM, John Lindgren <john.lindgren@tds.net> wrote:
-> In a multi-threaded application it is possible for snd_pcm_delay or an
-> equivalent function to be called by one thread while another is sitting
-> in snd_pcm_writei. =A0In this case, snd_pcm_delay does not take into
-> account that there may not be enough space for all the data passed to
-> snd_pcm_writei to be written to the ring buffer at once, and will return
-> incorrect values.
+On Wed, Jun 02, 2010 at 09:12:26PM +0200, Lars-Peter Clausen wrote:
 
-Hi.  I've been getting "pcm_hw.c: snd_pcm_hw_delay()
-SNDRV_PCM_IOCTL_DELAY failed." in my xine log and after some talks
-with one of the devs, he suggested that alsa was not getting data fast
-enough in some cases (iirc).  Could you please email me a copy of your
-patch (so I don't have to hand-patch) to try?  Hopefully it will fix
-this damn problem once and for all.
+> This patch adds support for the JZ4740 internal codec.
 
-Thanks,
-Derek
+This looks very good, there are some issues but nothing too major.  I
+may be repeating some things others have said but hopefully not too
+much.
+
+>  snd-soc-wm9712-objs := wm9712.o
+>  snd-soc-wm9713-objs := wm9713.o
+>  snd-soc-wm-hubs-objs := wm_hubs.o
+> +snd-soc-jz4740-codec-objs := jz4740-codec.o
+
+Keep the devices sorted in both Makefile and Kconfig.
+
+> +static int jz4740_codec_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBM_CFM:
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+
+This does nothing except validate some parameters.  Is there actually an
+externally visible DAI for this CODEC?  If it's just integrated into the
+SoC and there's nothing to configure then just omit the DAI
+configuration since it's not even useful to document the signal format.
+
+> +	.capture = {
+> +		.stream_name = "Capture",
+> +		.channels_min = 2,
+> +		.channels_max = 2,
+> +		.rates = SNDRV_PCM_RATE_8000_48000,
+> +		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S8,
+
+You listed an 18 bit format in hw_params - one or other of this and
+hw_params is presumably out of date.
+
+> +static int jz4740_codec_set_bias_level(struct snd_soc_codec *codec,
+> +	enum snd_soc_bias_level level)
+> +{
+> +
+> +	if (codec->bias_level == SND_SOC_BIAS_OFF && level != SND_SOC_BIAS_OFF) {
+> +		snd_soc_update_bits(codec, JZ4740_REG_CODEC_1,
+> +			JZ4740_CODEC_1_RESET, JZ4740_CODEC_1_RESET);
+> +		udelay(2);
+
+I'd expect to see this as part of the _OFF in the main switch
+statement.
+
+> +	switch (level) {
+> +	case SND_SOC_BIAS_ON:
+> +		snd_soc_update_bits(codec, JZ4740_REG_CODEC_1,
+> +			JZ4740_CODEC_1_VREF_DISABLE |
+> +			JZ4740_CODEC_1_VREF_AMP_DISABLE |
+> +			JZ4740_CODEC_1_HEADPHONE_POWER_DOWN_M |
+> +			JZ4740_CODEC_1_VREF_LOW_CURRENT |
+> +			JZ4740_CODEC_1_VREF_HIGH_CURRENT,
+> +			0);
+
+This looks suspiciously like you should be using DAPM for the headphone
+at least, though if there's only headphone out that's possibly not worth
+it.  Also, are you sure that you want both low and high current VREF
+configuring here?  I'm not clear what these settings do but the way
+they're being managed both here and in _PREPARE seems odd.
+
+> +	codec = &jz4740_codec->codec;
+> +
+> +	codec->dev		= &pdev->dev;
+> +	codec->name		= "jz-codec";
+
+Seems a bit odd to use the part number in some places and not others.
