@@ -1,23 +1,21 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: [PATCH] alsa-lib: snd_pcm_delay and friends do not
-	account for a write being currently in progress
-Date: Thu, 3 Jun 2010 17:34:30 +0100
-Message-ID: <AANLkTilcRfntO-8vmOCIlFdlLSeyNxd3fJR_8RgfmWNa@mail.gmail.com>
-References: <1275514176.8032.42.camel@satellite>
-	<AANLkTind6KbV7bpBhG1WK716EsTVCYrjIso3nuuOuBdo@mail.gmail.com>
-	<1275581413.15555.2.camel@satellite>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC][PATCH 21/26] alsa: ASoC: Add JZ4740 ASoC
+	support
+Date: Thu, 03 Jun 2010 18:50:16 +0200
+Message-ID: <4C07DD48.2050503@metafoo.de>
+References: <1275505397-16758-1-git-send-email-lars@metafoo.de>
+	<1275505950-17334-5-git-send-email-lars@metafoo.de>
+	<1275569309.3593.106.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id CC2A1103809
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id D113C2437C
 	for <alsa-devel@alsa-project.org>;
-	Thu,  3 Jun 2010 18:34:30 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so246409fxm.38
-	for <alsa-devel@alsa-project.org>; Thu, 03 Jun 2010 09:34:30 -0700 (PDT)
-In-Reply-To: <1275581413.15555.2.camel@satellite>
+	Thu,  3 Jun 2010 18:51:00 +0200 (CEST)
+In-Reply-To: <1275569309.3593.106.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,27 +25,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: John Lindgren <john.lindgren@tds.net>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMyBKdW5lIDIwMTAgMTc6MTAsIEpvaG4gTGluZGdyZW4gPGpvaG4ubGluZGdyZW5AdGRzLm5l
-dD4gd3JvdGU6Cj4KPiBJIHVuZGVyc3RhbmQgdGhhdCBzbmRfcGNtX2RlbGF5IGFuZCBzbmRfcGNt
-X3dyaXRlaSBjdXJyZW50bHkgImludGVyZmVyZQo+IHdpdGggZWFjaCBvdGhlciIgaW4gdGhhdCBz
-bmRfcGNtX2RlbGF5IHJldHVybnMgd3JvbmcgdmFsdWVzIGlmIGNhbGxlZAo+IGR1cmluZyBzbmRf
-cGNtX3dyaXRlaS4gwqBUaGF0IGlzIHRoZSBwcm9ibGVtIG15IHBhdGNoIHRyaWVzIHRvIGNvcnJl
-Y3QuCj4gRG8geW91IGRpc2FncmVlIHdpdGggdGhpcyBpbXByb3ZlbWVudD8gwqBJZiBzbywgd2h5
-Pwo+CgpJIGRpc2FncmVlIGJlY2F1c2UgSSBiZWxpZXZlIHRoZSBjaGFuZ2VzIGFyZSB1bm5lY2Vz
-c2FyeS4KVGhlIGFsc2EgYXBpIGlzIGJpZyBlbm91Z2ggYWxyZWFkeSwgc28gYWRkaW5nIGFueXRo
-aW5nIGV4dHJhIG11c3QgaGF2ZQphbiBleHRyZW1lbHkgZ29vZCByZWFzb24gZm9yIGl0LgpzbmRf
-cGNtX3dyaXRlaSBhbmQgc25kX3BjbV9kZWxheSB3ZXJlIGFsd2F5cyBpbnRlbmRlZCB0byBiZSB1
-c2VkIGluCnRoZSBzYW1lIHRocmVhZC4KQ2FsbGluZyBzbmRfcGNtX3dyaXRlaSBhbmQgc25kX3Bj
-bV9kZWxheSBhdCB0aGUgc2FtZSB0aW1lIGlzCm5vbi1kZXRlcm1pbmlzdGljIHNvIGZhaXJseSBw
-b2ludGxlc3MgdG8gZG8uCkFkZGluZyBtb3JlIGxvY2tzIGp1c3QgbWFrZXMgYW5vdGhlciBoaXQg
-b24gcGVyZm9ybWFuY2VzIHNvIHNob3VsZCBiZSBhdm9pZGVkLgpMb2NrcyByZWFsbHkga2lsbCBw
-ZXJmb3JtYW5jZSBvbiBhIG11bHRpIHByb2Nlc3NvciBTTVAgbWFjaGluZS4KCkkgd291bGQgYXJn
-dWUgdGhhdCBtb2RpZnlpbmcgeW91ciBwcm9ncmFtIHRvIGZpdCBpbiB0aGUgdGhlIGFib3ZlCmNv
-bnRyYWludHMgaXMgdGhlIHdheSB0byBnby4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+Liam Girdwood wrote:
+> On Wed, 2010-06-02 at 21:12 +0200, Lars-Peter Clausen wrote:
+>   
+>> This patch adds ASoC support for JZ4740 SoCs I2S module.
+>>
+>> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+>> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>> Cc: Liam Girdwood <lrg@slimlogic.co.uk>
+>> Cc: alsa-devel@alsa-project.org
+>> ---
+>>  sound/soc/Kconfig             |    1 +
+>>  sound/soc/Makefile            |    1 +
+>>  sound/soc/jz4740/Kconfig      |   13 +
+>>  sound/soc/jz4740/Makefile     |    9 +
+>>  sound/soc/jz4740/jz4740-i2s.c |  568 +++++++++++++++++++++++++++++++++++++++++
+>>  sound/soc/jz4740/jz4740-i2s.h |   18 ++
+>>  sound/soc/jz4740/jz4740-pcm.c |  350 +++++++++++++++++++++++++
+>>  sound/soc/jz4740/jz4740-pcm.h |   22 ++
+>>  8 files changed, 982 insertions(+), 0 deletions(-)
+>>  create mode 100644 sound/soc/jz4740/Kconfig
+>>  create mode 100644 sound/soc/jz4740/Makefile
+>>  create mode 100644 sound/soc/jz4740/jz4740-i2s.c
+>>  create mode 100644 sound/soc/jz4740/jz4740-i2s.h
+>>  create mode 100644 sound/soc/jz4740/jz4740-pcm.c
+>>  create mode 100644 sound/soc/jz4740/jz4740-pcm.h
+>>
+>> diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+>> index b1749bc..5a7a724 100644
+>> --- a/sound/soc/Kconfig
+>> +++ b/sound/soc/Kconfig
+>> @@ -36,6 +36,7 @@ source "sound/soc/s3c24xx/Kconfig"
+>>  source "sound/soc/s6000/Kconfig"
+>>  source "sound/soc/sh/Kconfig"
+>>  source "sound/soc/txx9/Kconfig"
+>> +source "sound/soc/jz4740/Kconfig"
+>>  
+>>  # Supported codecs
+>>  source "sound/soc/codecs/Kconfig"
+>> diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+>> index 1470141..fdbe74d 100644
+>> --- a/sound/soc/Makefile
+>> +++ b/sound/soc/Makefile
+>> @@ -14,3 +14,4 @@ obj-$(CONFIG_SND_SOC)	+= s3c24xx/
+>>  obj-$(CONFIG_SND_SOC)	+= s6000/
+>>  obj-$(CONFIG_SND_SOC)	+= sh/
+>>  obj-$(CONFIG_SND_SOC)	+= txx9/
+>> +obj-$(CONFIG_SND_SOC)	+= jz4740/
+>> diff --git a/sound/soc/jz4740/Kconfig b/sound/soc/jz4740/Kconfig
+>> new file mode 100644
+>> index 0000000..39df949
+>> --- /dev/null
+>> +++ b/sound/soc/jz4740/Kconfig
+>> @@ -0,0 +1,13 @@
+>> +config SND_JZ4740_SOC
+>> +	tristate "SoC Audio for Ingenic JZ4740 SoC"
+>> +	depends on SOC_JZ4740 && SND_SOC
+>> +	help
+>> +	  Say Y or M if you want to add support for codecs attached to
+>> +	  the Jz4740 AC97, I2S or SSP interface. You will also need
+>>     
+>
+> Do you have an AC97 or SSP interface ?
+>
+>   
+Whoops. Copy-paste leftover...
+>> +	[....]
+>> +
+>> +
+>> +static int jz4740_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+>> +	struct snd_soc_dai *dai)
+>> +{
+>> +	struct jz4740_i2s *i2s = jz4740_dai_to_i2s(dai);
+>> +	bool playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+>> +
+>> +	uint32_t ctrl;
+>> +	uint32_t mask;
+>> +
+>> +	if (playback)
+>>     
+>
+> It's best to use (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) here.
+>
+>   
+hm, ok
+>> +	[...]
+>> --- /dev/null
+>> +++ b/sound/soc/jz4740/jz4740-pcm.c
+>> @@ -0,0 +1,350 @@
+>> + [...] 
+>> +static int jz4740_pcm_hw_params(struct snd_pcm_substream *substream,
+>> +	struct snd_pcm_hw_params *params)
+>> +{
+>> +	struct snd_pcm_runtime *runtime = substream->runtime;
+>> +	struct jz4740_runtime_data *prtd = runtime->private_data;
+>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>> +	struct jz4740_pcm_config *config;
+>> +
+>> +	config = snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
+>> +	if (!prtd->dma) {
+>> +		const char *dma_channel_name;
+>> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>> +			dma_channel_name = "PCM Playback";
+>> +		else
+>> +			dma_channel_name = "PCM Capture";
+>> +
+>> +		prtd->dma = jz4740_dma_request(substream, dma_channel_name);
+>>     
+>
+> dma_channel_name variable is not required here. Just use the const char
+> * directly.
+>
+>   
+I actually had it like that before, but I think it is much more readable
+in its current form. Considering that stream value will either be 0 or 1
+it might work to put the channel names into a static array.
+>> +	[...]
+>> +
+>> +static snd_pcm_uframes_t jz4740_pcm_pointer(struct snd_pcm_substream *substream)
+>> +{
+>> +	struct snd_pcm_runtime *runtime = substream->runtime;
+>> +	struct jz4740_runtime_data *prtd = runtime->private_data;
+>> +	unsigned long count, pos;
+>> +	snd_pcm_uframes_t offset;
+>> +	struct jz4740_dma_chan *dma = prtd->dma;
+>> +
+>> +	count = jz4740_dma_get_residue(dma);
+>> +	if (prtd->dma_pos == prtd->dma_start)
+>> +		pos = prtd->dma_end - prtd->dma_start - count;
+>> +	else
+>> +		pos = prtd->dma_pos - prtd->dma_start - count;
+>> +
+>> +	offset = bytes_to_frames(runtime, pos);
+>> +	if (offset >= runtime->buffer_size)
+>> +		offset = 0;
+>> +
+>>     
+>
+> Could you comment your calculation a little more.
+>   
+Will do.
+>
+> Thanks
+>
+> Liam
+>   
+Thanks for the review
+- Lars
