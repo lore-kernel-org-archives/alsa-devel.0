@@ -1,21 +1,24 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ASoC: Defining "signed integer" mixer controls?
-Date: Fri, 4 Jun 2010 12:28:31 +0100
-Message-ID: <D191C2D2-E7E8-4258-BEF3-6D8D9EEA752F@opensource.wolfsonmicro.com>
-References: <hu6v9i$v43$1@dough.gmane.org>
-	<20100603112022.GA24589@sirena.org.uk>
-	<20100604092700.GD3662@www.longlandclan.yi.org>
-	(sfid-20100604_102713_439084_FABBE4AD)
-Mime-Version: 1.0 (Apple Message framework v1078)
+From: Daniel Mack <daniel@caiaq.de>
+Subject: External samplerate changes, UAC2 clock topologies
+Date: Fri, 4 Jun 2010 14:46:35 +0200
+Message-ID: <20100604124635.GL2698@buzzloop.caiaq.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2E597243EF
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 72C70103834
 	for <alsa-devel@alsa-project.org>;
-	Fri,  4 Jun 2010 13:28:35 +0200 (CEST)
-In-Reply-To: <20100604092700.GD3662@www.longlandclan.yi.org>
-	(sfid-20100604_102713_439084_FABBE4AD)
+	Fri,  4 Jun 2010 14:46:40 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by buzzloop.caiaq.de (Postfix) with ESMTP id 467AD7F403B
+	for <alsa-devel@alsa-project.org>;
+	Fri,  4 Jun 2010 14:46:39 +0200 (CEST)
+Received: from buzzloop.caiaq.de ([127.0.0.1])
+	by localhost (buzzloop.caiaq.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id wKlCVbRHPx+F for <alsa-devel@alsa-project.org>;
+	Fri,  4 Jun 2010 14:46:36 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +28,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stuart Longland <redhatter@gentoo.org>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 4 Jun 2010, at 10:27, Stuart Longland wrote:
+Hi,
 
-> On Thu, Jun 03, 2010 at 12:20:24PM +0100, Mark Brown wrote:
->> Please do remember to CC maintainers on posts to mailing lists.  I've
->> had to remind you previously about dropping CCs (and see that you were
->> doing that again this morning)...
+when I implemented the basics for parsing the UAC2 clock functions, I
+came across some principal questions I would like to discuss.
 
-> Well no, this was a separate query to the other thread, and one of a
-> more general nature (not specific to the 'AIC3204... and not necessarily
-> ASoC specific either).
+As I wrote in the commit log, UAC2 supports a number of clock units
+which can be combined to complex topologies. The single unit types are
 
-You're replying in the middle of the existing thread (which tends to indicate a continuation of the same discussion) and hadn't CCed anyone at all - Takashi and Jaroslav are also much more likely to notice your post if you CC them.
+ - clock sources (can be fixed, variable, programmable and synced to the
+   USB clock)
+ - clock switches, which let the host decide which one out of many input
+   pins appears on its output pin
+ - clock multipliers, which have a numerator and a denominator, and both
+   can be read-only or read-write, respectively
 
->> Are you looking for SOC_DOUBLE_R_SX_TLV and variants thereof by any
->> chance?  If you need variants you'd need to add them but that's
->> straightforward.
+A clock source has controls for its frequency and its validity,
+a clock selector has a control to control its current state, and
+a clock multiplier has controls for its numerator and denominator
 
-> Is this something that has been added since kernel 2.6.34?  I'll have a
-> hunt around for it, but I haven't spotted that in the kernel tree I'm
-> using.
+The driver is currently able to walk the graph of connected units in
+order to find CLOCK_SOURCE descriptors as end-leafs. This is mandatory
+as all requests for sample rate queries have to be sent to this unit
+type.
 
-Yes.
+This raises the first question, as the driver can only know which sample
+rates are supported in the currently selected combination of selectors.
+Once the user changes any of them (which is currently already possible
+as clock selectors are exported as mixer controls), everything can
+change. And this can even happen while the stream is active, because
+there's currently no check about whether the clock selector is part of
+the actively used path.
 
-> I'm running slightly-behind bleeding edge here, since I hit a few
-> regressions[1] with the latest code (ARM-wise), and rather than battle
-> those in this early phase of development, I decided to move back to
-> something stable, get it working, then bring it forward.  It's for this
-> reason that my driver currently uses the older driver registration
-> model.
+The second issue I see is that a clock can lose its validity. A
+real-life example is an external S/PDIF connected device which provides
+a clock and which is suddenly disconnected. Firmwares are expected to
+notify the host about such cases, and these messages are trivial to
+dispatch. However, I wonder how the driver should react on this. From
+a user's perspective, it would be best to just make the driver find
+another clock path which reports a valid clock source endpoint, changes
+the sample rate accordingly and continues streaming. There would be
+a gap in the stream of course, but at least it would not kill the
+applications or require major exception handling in userspace.
 
-The device model registration has been supported in mainline for over a year now, it's certainly there in 2.6.34.
+I wonder which approaches are actually possible to implement, which
+details in the ALSA core would need to be extended, and so on.
 
-> Once I get it working; there will likely be two forks of it -- one
-> brought up to mainline to go into the tree... and one to be backported
-> to kernel 2.6.28 which is what we're using in our product (as everything
-> else we have works with that kernel).
+Any oppinions? Has this been done before for any other audio hardware
+supported by ALSA?
 
-For 2.6.28 you'll be as well just backporting ASoC en masse.
+Thanks,
+Daniel
