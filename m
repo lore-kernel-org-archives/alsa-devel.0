@@ -1,22 +1,26 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH v2 1/3]AsoC/nuc900: patch for
-	SUBSTREAM_TYPE', 'PCM_TX' and 'PCM_RX' removal
-Date: Sat, 5 Jun 2010 15:08:42 +0800
-Message-ID: <AANLkTin_BgTdvaZ8ElKl5ljGuOw9i_CS1mchU6lYeIeS@mail.gmail.com>
-References: <4C05F211.7070308@gmail.com> <1275471787.3037.28.camel@odin>
-	<20100602104056.GC2457@opensource.wolfsonmicro.com>
+From: Alex Lee <alexlee188@gmail.com>
+Subject: Re: External samplerate changes, UAC2 clock topologies
+Date: Sat, 5 Jun 2010 07:21:15 +0000 (UTC)
+Message-ID: <loom.20100605T092038-9@post.gmane.org>
+References: <20100604124635.GL2698@buzzloop.caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E04E103B4A
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id CA8C5244BE
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Jun 2010 09:08:44 +0200 (CEST)
-Received: by vws8 with SMTP id 8so2329232vws.38
-	for <alsa-devel@alsa-project.org>; Sat, 05 Jun 2010 00:08:42 -0700 (PDT)
-In-Reply-To: <20100602104056.GC2457@opensource.wolfsonmicro.com>
+	Sat,  5 Jun 2010 09:25:04 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OKnkd-0007K6-Pn
+	for alsa-devel@alsa-project.org; Sat, 05 Jun 2010 09:25:03 +0200
+Received: from 220.255.7.246 ([220.255.7.246])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 05 Jun 2010 09:25:03 +0200
+Received: from alexlee188 by 220.255.7.246 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 05 Jun 2010 09:25:03 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,37 +30,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCjIwMTAvNi8yIE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29u
-bWljcm8uY29tPjoKPiBPbiBXZWQsIEp1biAwMiwgMjAxMCBhdCAxMDo0MzowN0FNICswMTAwLCBM
-aWFtIEdpcmR3b29kIHdyb3RlOgo+PiBPbiBXZWQsIDIwMTAtMDYtMDIgYXQgMTM6NTQgKzA4MDAs
-IFdhbiBab25nU2h1biB3cm90ZToKPj4gPiBUaGlzIHBhdGNoIGlzIHRvIHJlbW92ZSB0aGUgJ1NV
-QlNUUkVBTV9UWVBFJywnUENNX1RYJyBhbmQgJ1BDTV9SWCcgZGVmaW5pdGlvbi4KPj4gPgo+PiA+
-IFRoZXJlIGlzIG5vIG5lZWQgdG8gcmVkZWZpbmUgU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSyBh
-cyBQQ01fVFgsCj4+ID4gdGhlIFNVQlNUUkVBTV9UWVBFKHN1YnN0cmVhbSkgY2FuIGJlIGRlbGV0
-ZWQgdG9vLCB0aGUgcGxheWJhY2sgb3IgcmVjb3JkIGNhbiBiZQo+PiA+IGp1ZGdlZCBieSAnaWYg
-KHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spJyBkaXJlY3Rs
-eSByYXRoZXIKPj4gPiB0aGFuICdpZiAoUENNX1RYID09IHN0eXBlKScsIHdoaWNoIG1ha2VzIHRo
-ZSBjb2RlcyBlYXN5IHRvIHJlYWQuCj4+ID4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBXYW4gWm9uZ1No
-dW48bWN1b3MuY29tQGdtYWlsLmNvbT4KPgo+IE5vdGUgaGVyZSB0aGF0IHlvdSdyZSBzdGlsbCBt
-aXNzaW5nIGEgc3BhY2UgYmV0d2VuIHlvdXIgbmFtZSBhbmQgZS1tYWlsCj4gYWRkcmVzcy4KPgoK
-RG8gSSBuZWVkIHJlLXNlbnQgdGhpcyBwYXRjaCB3aXRoIHRoZSBtaXNzaW5nIHNwYWNlIGZpeD8K
-Cj4+IEFsbAo+Cj4+IEFja2VkLWJ5OiBMaWFtIEdpcmR3b29kIDxscmdAc2xpbWxvZ2ljLmNvLnVr
-Pgo+Cj4gSSd2ZSBhcHBsaWVkIGFsbCB0aGUgcGF0Y2hlcywgc2luY2UgSSBoYWQgdG8gZml4IHVw
-IHRoZSBjaGFuZ2Vsb2dzCj4gYW55d2F5IEkgdXBkYXRlZCB0aGUgbXMgdG8gdXMgaW4gdGhlIGNo
-YW5nZWxvZyBmb3IgcGF0Y2ggMi4gwqBUaGFua3MuCj4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KCgoKLS0gCipsaW51eC1hcm0ta2VybmVsIG1h
-aWxpbmcgbGlzdAptYWlsIGFkZHI6bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
-CnlvdSBjYW4gc3Vic2NyaWJlIGJ5OgpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwKCiogbGludXgtYXJtLU5VQzkwMCBtYWlsaW5nIGxp
-c3QKbWFpbCBhZGRyOk5VQzkwMEBnb29nbGVncm91cHMuY29tCm1haW4gd2ViOiBodHRwczovL2dy
-b3Vwcy5nb29nbGUuY29tL2dyb3VwL05VQzkwMAp5b3UgY2FuIHN1YnNjcmliZSBpdCBieSBzZW5k
-aW5nIG1lIG1haWw6Cm1jdW9zLmNvbUBnbWFpbC5jb20KX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Daniel Mack <daniel <at> caiaq.de> writes:
+
+> 
+> Hi,
+> 
+> when I implemented the basics for parsing the UAC2 clock functions, I
+> came across some principal questions I would like to discuss.
+> 
+> As I wrote in the commit log, UAC2 supports a number of clock units
+> which can be combined to complex topologies. The single unit types are
+> 
+>  - clock sources (can be fixed, variable, programmable and synced to the
+>    USB clock)
+>  - clock switches, which let the host decide which one out of many input
+>    pins appears on its output pin
+>  - clock multipliers, which have a numerator and a denominator, and both
+>    can be read-only or read-write, respectively
+> 
+> A clock source has controls for its frequency and its validity,
+> a clock selector has a control to control its current state, and
+> a clock multiplier has controls for its numerator and denominator
+> 
+> The driver is currently able to walk the graph of connected units in
+> order to find CLOCK_SOURCE descriptors as end-leafs. This is mandatory
+> as all requests for sample rate queries have to be sent to this unit
+> type.
+> 
+> This raises the first question, as the driver can only know which sample
+> rates are supported in the currently selected combination of selectors.
+> Once the user changes any of them (which is currently already possible
+> as clock selectors are exported as mixer controls), everything can
+> change. And this can even happen while the stream is active, because
+> there's currently no check about whether the clock selector is part of
+> the actively used path.
+> 
+> The second issue I see is that a clock can lose its validity. A
+> real-life example is an external S/PDIF connected device which provides
+> a clock and which is suddenly disconnected. Firmwares are expected to
+> notify the host about such cases, and these messages are trivial to
+> dispatch. However, I wonder how the driver should react on this. From
+> a user's perspective, it would be best to just make the driver find
+> another clock path which reports a valid clock source endpoint, changes
+> the sample rate accordingly and continues streaming. There would be
+> a gap in the stream of course, but at least it would not kill the
+> applications or require major exception handling in userspace.
+> 
+> I wonder which approaches are actually possible to implement, which
+> details in the ALSA core would need to be extended, and so on.
+> 
+> Any oppinions? Has this been done before for any other audio hardware
+> supported by ALSA?
+> 
+> Thanks,
+> Daniel
+> 
+
+Hi Daniel et al,
+
+In Software Defined Radio (SDR) applications, the user and user programs expect
+the audio stream to continue after a samplerate change.  The samplerate change
+can be initiated by hardware (ie button pressed, SPDIF cable unplugged/plugged
+etc.) or by another user program - eg mixer.
+
+When the driver is notified of an external samplerate change, ideally it should
+go through the UAC2 clock topology and figure out what has changed and what is
+the current clock source, clock selector position, and clock multiplier being
+used.  It may have to trace from the USB output terminal backwards.
+
+I wonder whether there is a converse scenario, whereby a user program wants to
+change the samplerate, and passes that request to the driver.  The driver then
+have to go through the topology and figure out the 1st valid or the "best" way
+to effect the new samplerate.  It can get quite involved as the same samplerate
+can be implemented by different settings of the clock source(s), clock
+selector(s) and clock multiplier(s) :-)  I suspect this happens when we do a 
+
+> arecord -r 96000 ...
+
+and the UAC2 driver will have to figure out how this should be supported.
+
+Alex
