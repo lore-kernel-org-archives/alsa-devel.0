@@ -1,21 +1,22 @@
 From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH] ASoC/kirkwood: patch for the useless
-	'break' removal.
-Date: Sat, 5 Jun 2010 15:04:40 +0800
-Message-ID: <AANLkTimHsGoR4aonANTBFaTgZmXA2jZlYJ5q5WA_3gab@mail.gmail.com>
-References: <4C06105B.2060702@gmail.com>
+Subject: Re: [PATCH v2 1/3]AsoC/nuc900: patch for
+	SUBSTREAM_TYPE', 'PCM_TX' and 'PCM_RX' removal
+Date: Sat, 5 Jun 2010 15:08:42 +0800
+Message-ID: <AANLkTin_BgTdvaZ8ElKl5ljGuOw9i_CS1mchU6lYeIeS@mail.gmail.com>
+References: <4C05F211.7070308@gmail.com> <1275471787.3037.28.camel@odin>
+	<20100602104056.GC2457@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
 	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id F148B103B43
+	by alsa0.perex.cz (Postfix) with ESMTP id 4E04E103B4A
 	for <alsa-devel@alsa-project.org>;
-	Sat,  5 Jun 2010 09:04:46 +0200 (CEST)
-Received: by vws8 with SMTP id 8so2325762vws.38
-	for <alsa-devel@alsa-project.org>; Sat, 05 Jun 2010 00:04:44 -0700 (PDT)
-In-Reply-To: <4C06105B.2060702@gmail.com>
+	Sat,  5 Jun 2010 09:08:44 +0200 (CEST)
+Received: by vws8 with SMTP id 8so2329232vws.38
+	for <alsa-devel@alsa-project.org>; Sat, 05 Jun 2010 00:08:42 -0700 (PDT)
+In-Reply-To: <20100602104056.GC2457@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,33 +26,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, zswan@marvell.com
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCkhvdyBhYm91dCB0aGlzIHBhdGNoPwpNeSBvdGhlciBwYXRjaCBzZWVtIHRvIGJl
-IGFwcGxpZWQsIGJ1dCB0aGlzIG9uZSBzdGlsbCBiZSBodW5nLgoK5ZyoIDIwMTDlubQ25pyIMuaX
-pSDkuIvljYg0OjAz77yMV2FuIFpvbmdTaHVuIDxtY3Vvcy5jb21AZ21haWwuY29tPiDlhpnpgZPv
-vJoKPiBUaGlzIHBhdGNoIHRvIHJlbW92ZSB0aGUgJ2JyZWFrOycsIHdoZW4gdGhlICdzd2l0Y2gn
-IGp1bXBzIHRvCj4gdGhlICdkZWZhdWx0JyBicmFuY2gsIHRoZSAncmV0dXJuIC1FSU5WQUwnIHdp
-bGwgYmUgcmV0dXJuIHdpdGgKPiBhIGVycm9yIG51bWJlciwgc28gdGhlICdicmVhazsnIGNvZGUg
-bmV2ZXIgYmUgcnVuLCBpdCBpcyB1bnVzZWZ1bAo+IGFuZCBzaG91bGQgYmUgcmVtb3ZlZCBoZXJl
-Lgo+Cj4KPiBTaWduZWQtb2ZmLWJ5OiBXYW4gWm9uZ1NodW48bWN1b3MuY29tQGdtYWlsLmNvbT4K
-PiAtLS0KPiDCoHNvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYyB8IMKgIMKgMSAtCj4g
-wqAxIGZpbGVzIGNoYW5nZWQsIDAgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbnMoLSkKPgo+IGRp
-ZmYgLS1naXQgYS9zb3VuZC9zb2Mva2lya3dvb2Qva2lya3dvb2QtaTJzLmMgYi9zb3VuZC9zb2Mv
-a2lya3dvb2Qva2lya3dvb2QtaTJzLmMKPiBpbmRleCAwYWRjNTk3Li4wZmRjN2RiIDEwMDY0NAo+
-IC0tLSBhL3NvdW5kL3NvYy9raXJrd29vZC9raXJrd29vZC1pMnMuYwo+ICsrKyBiL3NvdW5kL3Nv
-Yy9raXJrd29vZC9raXJrd29vZC1pMnMuYwo+IEBAIC0yOTYsNyArMjk2LDYgQEAgc3RhdGljIGlu
-dCBraXJrd29vZF9pMnNfcmVjX3RyaWdnZXIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
-dHJlYW0sCj4KPiDCoCDCoCDCoCDCoGRlZmF1bHQ6Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBy
-ZXR1cm4gLUVJTlZBTDsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+IMKgIMKgIMKg
-IMKgfQo+Cj4gwqAgwqAgwqAgwqByZXR1cm4gMDsKPiAtLQo+IDEuNi4zLjMKPgoKCgotLSAKKmxp
-bnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0Cm1haWwgYWRkcjpsaW51eC1hcm0ta2VybmVsQGxp
-c3RzLmluZnJhZGVhZC5vcmcKeW91IGNhbiBzdWJzY3JpYmUgYnk6Cmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAoKKiBsaW51eC1hcm0t
-TlVDOTAwIG1haWxpbmcgbGlzdAptYWlsIGFkZHI6TlVDOTAwQGdvb2dsZWdyb3Vwcy5jb20KbWFp
-biB3ZWI6IGh0dHBzOi8vZ3JvdXBzLmdvb2dsZS5jb20vZ3JvdXAvTlVDOTAwCnlvdSBjYW4gc3Vi
-c2NyaWJlIGl0IGJ5IHNlbmRpbmcgbWUgbWFpbDoKbWN1b3MuY29tQGdtYWlsLmNvbQpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+SGkgTWFyaywKCjIwMTAvNi8yIE1hcmsgQnJvd24gPGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29u
+bWljcm8uY29tPjoKPiBPbiBXZWQsIEp1biAwMiwgMjAxMCBhdCAxMDo0MzowN0FNICswMTAwLCBM
+aWFtIEdpcmR3b29kIHdyb3RlOgo+PiBPbiBXZWQsIDIwMTAtMDYtMDIgYXQgMTM6NTQgKzA4MDAs
+IFdhbiBab25nU2h1biB3cm90ZToKPj4gPiBUaGlzIHBhdGNoIGlzIHRvIHJlbW92ZSB0aGUgJ1NV
+QlNUUkVBTV9UWVBFJywnUENNX1RYJyBhbmQgJ1BDTV9SWCcgZGVmaW5pdGlvbi4KPj4gPgo+PiA+
+IFRoZXJlIGlzIG5vIG5lZWQgdG8gcmVkZWZpbmUgU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSyBh
+cyBQQ01fVFgsCj4+ID4gdGhlIFNVQlNUUkVBTV9UWVBFKHN1YnN0cmVhbSkgY2FuIGJlIGRlbGV0
+ZWQgdG9vLCB0aGUgcGxheWJhY2sgb3IgcmVjb3JkIGNhbiBiZQo+PiA+IGp1ZGdlZCBieSAnaWYg
+KHN1YnN0cmVhbS0+c3RyZWFtID09IFNORFJWX1BDTV9TVFJFQU1fUExBWUJBQ0spJyBkaXJlY3Rs
+eSByYXRoZXIKPj4gPiB0aGFuICdpZiAoUENNX1RYID09IHN0eXBlKScsIHdoaWNoIG1ha2VzIHRo
+ZSBjb2RlcyBlYXN5IHRvIHJlYWQuCj4+ID4KPj4gPiBTaWduZWQtb2ZmLWJ5OiBXYW4gWm9uZ1No
+dW48bWN1b3MuY29tQGdtYWlsLmNvbT4KPgo+IE5vdGUgaGVyZSB0aGF0IHlvdSdyZSBzdGlsbCBt
+aXNzaW5nIGEgc3BhY2UgYmV0d2VuIHlvdXIgbmFtZSBhbmQgZS1tYWlsCj4gYWRkcmVzcy4KPgoK
+RG8gSSBuZWVkIHJlLXNlbnQgdGhpcyBwYXRjaCB3aXRoIHRoZSBtaXNzaW5nIHNwYWNlIGZpeD8K
+Cj4+IEFsbAo+Cj4+IEFja2VkLWJ5OiBMaWFtIEdpcmR3b29kIDxscmdAc2xpbWxvZ2ljLmNvLnVr
+Pgo+Cj4gSSd2ZSBhcHBsaWVkIGFsbCB0aGUgcGF0Y2hlcywgc2luY2UgSSBoYWQgdG8gZml4IHVw
+IHRoZSBjaGFuZ2Vsb2dzCj4gYW55d2F5IEkgdXBkYXRlZCB0aGUgbXMgdG8gdXMgaW4gdGhlIGNo
+YW5nZWxvZyBmb3IgcGF0Y2ggMi4gwqBUaGFua3MuCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KCgoKLS0gCipsaW51eC1hcm0ta2VybmVsIG1h
+aWxpbmcgbGlzdAptYWlsIGFkZHI6bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3Jn
+CnlvdSBjYW4gc3Vic2NyaWJlIGJ5OgpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwKCiogbGludXgtYXJtLU5VQzkwMCBtYWlsaW5nIGxp
+c3QKbWFpbCBhZGRyOk5VQzkwMEBnb29nbGVncm91cHMuY29tCm1haW4gd2ViOiBodHRwczovL2dy
+b3Vwcy5nb29nbGUuY29tL2dyb3VwL05VQzkwMAp5b3UgY2FuIHN1YnNjcmliZSBpdCBieSBzZW5k
+aW5nIG1lIG1haWw6Cm1jdW9zLmNvbUBnbWFpbC5jb20KX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
