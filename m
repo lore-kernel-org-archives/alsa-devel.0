@@ -1,29 +1,22 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Sun, 6 Jun 2010 08:12:50 +0800
-Message-ID: <AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>
-	<hp744t$5b5$1@dough.gmane.org>
-	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>
-	<hqbv5m$cmf$1@dough.gmane.org>
-	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>
-	<hqmbmm$hsj$1@dough.gmane.org>
-	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>
-	<htls4d$phr$1@dough.gmane.org> <4BFE7840.4070004@ladisch.de>
-	<htm0et$eb4$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
+From: Alexander Beregalov <a.beregalov@gmail.com>
+Subject: Re: 2.6.34-rc: sound hungs (ice1724)
+Date: Sun, 6 Jun 2010 23:02:33 +0400
+Message-ID: <AANLkTil48vz-co3uaq4AnqZr3woQJ69GJeVh7Ha2myfD@mail.gmail.com>
+References: <x2ra4423d671004131323s58d606c4i33101f32f366568c@mail.gmail.com>
+	<s5h39yy5z45.wl%tiwai@suse.de>
+	<l2oa4423d671004140146za643dfcfkb3d35d25c20d9cf0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 310F724678
+Received: from mail-ew0-f218.google.com (mail-ew0-f218.google.com
+	[209.85.219.218])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4FA4A244AD
 	for <alsa-devel@alsa-project.org>;
-	Sun,  6 Jun 2010 02:12:52 +0200 (CEST)
-Received: by pxi3 with SMTP id 3so869599pxi.38
-	for <alsa-devel@alsa-project.org>; Sat, 05 Jun 2010 17:12:51 -0700 (PDT)
-In-Reply-To: <htm9mn$n1c$1@dough.gmane.org>
+	Sun,  6 Jun 2010 21:02:34 +0200 (CEST)
+Received: by ewy10 with SMTP id 10so578710ewy.22
+	for <alsa-devel@alsa-project.org>; Sun, 06 Jun 2010 12:02:33 -0700 (PDT)
+In-Reply-To: <l2oa4423d671004140146za643dfcfkb3d35d25c20d9cf0@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,27 +26,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/5/28 Colin Guthrie <gmane@colin.guthr.ie>
-
-> 'Twas brillig, and Colin Guthrie at 27/05/10 15:43 did gyre and gimble:
-> > PA should play nice with the softvol plugin so I don't think this is the
-> > bit that is at fault.
-> >
-> > I strongly suspect that the reason has already been correctly identified
-> > a while ago, which is that this card considers -48dB silent where as PA
-> > assumes this level is -200dB. I believe it was Raymond who pointed out
-> > the -48dB level in the HDA spec before on this list.
-> >
->
-
-if  floating point 0.0 is -inf dB , and 1.0 is 0dB ,
-
-0.5 is -6dB , 0.25 is -12 dB , 0.125 is -24dB and 0.0625 is -48dB
-
-how can PA master volume control at 10~15% equivalent to HDA 's -48dB ?
-
-Can you provide the pulseaudio log when you change the volume from 100% to
-0% ?
+T24gMTQgQXByaWwgMjAxMCAxMjo0NiwgQWxleGFuZGVyIEJlcmVnYWxvdiA8YS5iZXJlZ2Fsb3ZA
+Z21haWwuY29tPiB3cm90ZToKPj4gVGhpcyBpcyBvZGQuIMKgRG9uJ3QgeW91IHNlZSBhbnkgb3Ro
+ZXIgbWVzc2FnZXMgYmVmb3JlIHRoYXQ/Cj4gTm8gbWVzc2FnZXMuIEkgY2FuIHRyeSB0byBib290
+IHdpdGggaWdub3JlX2xvZ2xldmVsIHBhcmFtZXRlci4KPj4KPj4gVGhlcmUgYXJlIGFsbW9zdCBu
+byBjaGFuZ2UgaW4gaWNlMTcyeC4gwqBUaHVzLCBpZiBhbnksIHRoZSByZWdyZXNzaW9uCj4+IG11
+c3QgYmUgaW4gQUxTQSBjb3JlLiDCoFRoZXJlIGhhdmUgYmVlbiBtYW55IGNoYW5nZXMgb2YgUENN
+IGh3LXVwZGF0ZXIsCj4+IGF0IGxlYXN0Lgo+IEl0IHNlZW1zIHRoZSBidWcgaXMgaW4gdGhlIGNv
+cmUsIGJ1dCBpbiB0aGlzIGNhc2UgSSBzaG91bGQgbm90IGJlIHRoZQo+IG9ubHkgcmVwb3J0ZXIu
+CgpIaSBUYWthc2hpCgpJIGRpZCBzb21lIGJpc2VjdGlvbi4KVGhlIG9sZGVzdCBiYWQga2VybmVs
+IGlzIDYxMjM2MzdmYSwgd2l0aCBrZXJuZWxzIGZyb20gdjIuNi4zMyB0bwo2MTIzNjM3ZmEgSSB3
+YXMgbm90IGFibGUgdG8gcmVwcm9kdWNlIHRoZSBidWcsIGl0J3MgdW5kZXJzdGFuZGFibGUgLQp0
+aGUgYnVnIGlzIHZlcnkgaGFyZCB0byByZXByb2R1Y2UsIEkgY2Fubm90IGJlIHN1cmUgaWYgdGhl
+IGtlcm5lbCBpcwpyZWFsbHkgZ29vZCBhZnRlciBydW5uaW5nIGV2ZW4gZm9yIGEgd2Vlay4KUGVy
+aGFwcyBjb3VsZCB5b3UgbG9vayBhdCAiZ2l0IGxvZyB2Mi42LjMzLi42MTIzNjM3ZmEgc291bmQv
+Y29yZS8iIHRvCnNlZSBzb21ldGhpbmcgc3VzcGljaW91cz8KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
