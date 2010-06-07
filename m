@@ -1,18 +1,19 @@
 From: Ryan Mallon <ryan@bluewatersys.com>
-Subject: Re: [RFC PATCH v3 0/3] ep93xx i2s audio
-Date: Tue, 08 Jun 2010 08:38:19 +1200
-Message-ID: <4C0D58BB.5030505@bluewatersys.com>
+Subject: Re: [RFC PATCH v3 1/3] ep93xx i2s core support
+Date: Tue, 08 Jun 2010 10:21:53 +1200
+Message-ID: <4C0D7101.6030506@bluewatersys.com>
 References: <1275628285-12642-1-git-send-email-ryan@bluewatersys.com>
-	<1275914732.3045.105.camel@odin>
+	<1275628285-12642-2-git-send-email-ryan@bluewatersys.com>
+	<0D753D10438DA54287A00B0270842697636F83B425@AUSP01VMBX24.collaborationhost.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id B3F471037EE
+	by alsa0.perex.cz (Postfix) with ESMTP id 630AC10380B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 22:38:21 +0200 (CEST)
-In-Reply-To: <1275914732.3045.105.camel@odin>
+	Tue,  8 Jun 2010 00:21:57 +0200 (CEST)
+In-Reply-To: <0D753D10438DA54287A00B0270842697636F83B425@AUSP01VMBX24.collaborationhost.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,43 +23,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>, Russell King <rmk@arm.linux.org.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: john.cooper@third-harmonic.com, alsa-devel@alsa-project.org, chasedouglas@gmail.com, buytenh@wantstofly.org, r&d4@dave-tech.it, hartleys@visionengravers.com, marshall@coolbananas.co.nz, linux-arm-kernel@lists.infradead.org, dhuggins@cs.cmu.edu
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+Cc: "john.cooper@third-harmonic.com" <john.cooper@third-harmonic.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "chasedouglas@gmail.com" <chasedouglas@gmail.com>, "buytenh@wantstofly.org" <buytenh@wantstofly.org>, "r&d4@dave-tech.it" <r&d4@dave-tech.it>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "marshall@coolbananas.co.nz" <marshall@coolbananas.co.nz>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "dhuggins@cs.cmu.edu" <dhuggins@cs.cmu.edu>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
-> On Fri, 2010-06-04 at 17:11 +1200, Ryan Mallon wrote:
->> The following patch series adds support for i2s audio on the ep93xx,
->> with the Snapper CL15 used as an example implementation.
+H Hartley Sweeten wrote:
+> On Thursday, June 03, 2010 10:11 PM, Ryan Mallon wrote:
+>> Add ep93xx core support for i2s audio
 >>
->> This version fixes a number of things from the previous round:
->>  - Removed unused #defines
->>  - Set symmetric rates for the cpu dai
->>  - Fixed the sdiv/lrdiv calculation loop
->>  - Moved the cpu dai registration
->>  - Removed empty ep93xx_pcm_prepare callback
->>  - Fixed enable/disable when both capture and playback are running
+>> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
+>> ---
+>>  arch/arm/mach-ep93xx/clock.c                    |   69 ++++++++++++++++++++++-
+>>  arch/arm/mach-ep93xx/core.c                     |   31 ++++++++++
+>>  arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |   10 +++
+>>  arch/arm/mach-ep93xx/include/mach/platform.h    |    1 +
+>>  4 files changed, 110 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/arch/arm/mach-ep93xx/clock.c b/arch/arm/mach-ep93xx/clock.c
+>> index 5f80092..503d430 100644
+>> --- a/arch/arm/mach-ep93xx/clock.c
+>> +++ b/arch/arm/mach-ep93xx/clock.c
+>> @@ -43,7 +43,8 @@ static unsigned long get_uart_rate(struct clk *clk);
 >>  
->> Capture still does not work. The dma is running, but the captured data
->> is all zeros (tested used arecord and loopback). I have a 2.6.20
->> kernel with ep93xx i2s audio working an capture works there on the
->> same hardware. I have spent sometime looking into this, but can't see
->> the problem. Would appreciate if someone can lend some insight as to
->> what I have done wrong.
->>
->> Ryan Mallon (3):
->>   ep93xx i2s core support
->>   ep93xx i2s audio driver
->>   Snapper cl15 audio support
+>>  static int set_keytchclk_rate(struct clk *clk, unsigned long rate);
+>>  static int set_div_rate(struct clk *clk, unsigned long rate);
+>> -
+>> +static int set_i2s_sclk_rate(struct clk *clk, unsigned long rate);
+>> +static int set_i2s_lrclk_rate(struct clk *clk, unsigned long rate);
+>>  
+>>  static struct clk clk_xtali = {
+>>  	.rate		= EP93XX_EXT_CLK_RATE,
+>> @@ -108,6 +109,31 @@ static struct clk clk_video = {
+>>  	.set_rate	= set_div_rate,
+>>  };
+>>  
+>> +static struct clk clk_i2s_mclk = {
+>> +	.sw_locked	= 1,
+>> +	.enable_reg	= EP93XX_SYSCON_I2SCLKDIV,
+>> +	.enable_mask	= (EP93XX_SYSCON_CLKDIV_ENABLE  |
+>> +			   EP93XX_SYSCON_I2SCLKDIV_SPOL |
+>> +			   EP93XX_SYSCON_I2SCLKDIV_ORIDE),
 > 
-> All
+> Setting the SPOL and ORIDE bits here might cause problems in the future.
+> Granted, your i2s driver is currently the only user so its probably ok
+> for now.
 > 
-> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> But, you might want to move the setting of those two bits along with the
+> SLAVE and DROP bits to the core registration function.  The clock support
+> should only be enabling/disabling and setting the rates for the clocks.
 
-Russell, Mark has picked up patch 2/3 via the alsa tree. Should I submit
-1/3 and 3/3 via the arm patch system with Liam's ack?
+Okay, sounds sensible. Possibly I should add acquire/release functions
+in addition to the register, something like:
 
-Thanks,
+void __init ep93xx_register_i2s(void)
+{
+	platform_device_register(&ep93xx_i2s_device);
+}
+
+int ep93xx_i2s_acquire(unsigned pins, int override, int sclk_falling)
+{
+	unsigned set_bits = pins,
+		 clear_bits = EP93XX_SYSCON_DEVCFG_I2SONSSP |
+			      EP93XX_SYSCON_DEVCFG_I2SONAC97;
+
+	if (pins != EP93XX_SYSCON_DEVCFG_I2SONSSP &&
+	    pins != EP93XX_SYSCON_DEVCFG_I2SONAC97)
+		return -EINVAL;
+
+	if (override)
+		set_bits |= EP93XX_SYSCON_I2SCLKDIV_ORIDE;
+	else
+		clear_bits |= EP93XX_SYSCON_I2SCLKDIV_ORIDE;
+
+	if (sclk_falling)
+		set_bits |= EP93XX_SYSCON_I2SCLKDIV_SPOL;
+	else
+		clear_bits |= EP93XX_SYSCON_I2SCLKDIV_SPOL;
+
+	ep93xx_devcfg_clear_bits(clear_bits);
+	ep93xx_devcfg_set_bits(set_bits);
+	return 0;
+}
+
+>> +	.set_rate	= set_div_rate,
+> 
+> By calling the set_div_rate routine your only updating the master clock
+> rate.  Should the new rate be pushed down to the children?  Actually the
+> new rates for the children will be established automatically when the
+> master clock rate is changed.  But a clk_get_rate for the children will
+> return an incorrect value.  Maybe just add a get_rate method for the
+> children?
+
+The code basically assumes that the clocks will always be set in the
+order: mclk, sclk, lrclk. Since the i2s driver is the only user, this
+should be a valid assumption. Possibly a comment should be put in to
+state that this assumption is made.
+
 ~Ryan
 
 -- 
