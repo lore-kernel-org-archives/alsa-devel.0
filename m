@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: tlv320dac33: Add support for
- changing upper threshold
-Date: Mon, 7 Jun 2010 10:16:55 +0100
-Message-ID: <20100607091655.GA23093@rakim.wolfsonmicro.main>
-References: <1275897039-7577-1-git-send-email-peter.ujfalusi@nokia.com>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Re: Mixer volume/decibel mapping
+Date: Mon, 07 Jun 2010 11:19:18 +0200
+Message-ID: <4C0CB996.5010202@gmx.de>
+References: <201005191834.57919.vand2@gmx.de>	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	<AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>	<201005211018.41802.vand2@gmx.de>
+	<AANLkTikylA_oo6GBKuLHewVX9oMCNjQMeS90HThDR47K@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 89B721037F1
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 7EE741037F1
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 11:16:57 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1275897039-7577-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon,  7 Jun 2010 11:18:59 +0200 (CEST)
+In-Reply-To: <AANLkTikylA_oo6GBKuLHewVX9oMCNjQMeS90HThDR47K@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 07, 2010 at 10:50:39AM +0300, Peter Ujfalusi wrote:
-> Upper threshold is used in mode7 of DAC33.
-> Instead of hard wired UTHR, add control to change the upper threshold
-> value.
-> Changing upper threshold is not allowed when the playback is already
-> running, since wrongly timed change in the UTHR can cause problems
-> with the codec.
-> With this control the length of the burst in mode7 can be changed.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Am 07.06.2010 05:37, schrieb Raymond Yau:
+>>> I thinks Sebastian's question is whether he can use
+>>> snd_mixer_selem_set_playback_
+>>> dB() set any values in between the volume steps
+>>>
+>>> e.g. Master volume control of ac97 is 1.5 dB per step,
+>>>
+>>> when using snd_mixer_selem_set_playback_dB() to set -0.9dB , how can the
+>>> mixer application know what dB value has been set since the value is in
+>>> between -1.5dB and 0dB without snd_mixer_selem_get_playbackdB()
+>>
+>> Indeed I quite happy with what ALSA already provides (I'm just an
+>> interested
+>> amateur). My main problem is that there is no documentation for the Mixer
+>> API
+>> and how things are related to each other. Like CTL, HCTL, Mixer and
+>> SimpleMixer and of course volume and dB in the snd_mixer_selem_ functions.
+>>
+>> The root issue is that I wondered if the mixer application should offer a
+>> separate text input for decibel values besides the text input for volume
+>> values. As pointed out this would not allow for finer grained volume
+>> control
+>> therefore for the moment I'll probably stick with a mere text label for dB.
+>>
+>>
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> The main difference between those volume controls using TLV_DB_SCALE and
+> TLV_DB_LINEAR is -6dB is at the middle of TLV_DB_LINEAR and TLV_DB_SCALE has
+> fixed dB value between any two steps.
+
+What's TLV_DB_SCALE and TLV_DB_LINEAR for?
+A grep in the alsa-lib sources did not return anything.
+
+> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/332631
+> 
+> if the user has both hda onboard sound and emu10k1, he may notice that there
+> is big difference if he set volume at percentage instead of dB
+
+Interesting, that's my setup. I have an onboard HDA Intel and a
+pci SBLive! Card and some el cheapo USB sound cards to experiment
+with. Thanks I'll give the volume listening test a try at some point.
+
+> so it is mainly depend on the scaling of the slider in your mixer
+> application
+
+At the moment the sliders are simply sliding linearly from vol. min.
+to vol. max. and there is a label which shows the current dB value.
+
+(This made me realize that the neutral (0dB) position of some HDA-Intel
+record sliders is somwhere in the middle and not at the ends.)
+
+Lately I've been mostly wrestling with the QT4 part of the application
+and not the ALSA part but I followed this thread loosely.
+
+To say I encoutered some (maybe) bugs with jumping sliders and missing
+enum values but most of them disappeared after and update from Debian
+lenny to Debian squeeze. And still the ALSA version of squeeze is
+probably no the latest. Therefore I did not want to comment on these yet.
+
+Regards,
+Sebastian
