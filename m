@@ -1,21 +1,18 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: tlv320dac33: Add support for
- changing upper threshold
-Date: Mon, 07 Jun 2010 10:48:37 +0100
-Message-ID: <1275904117.3045.0.camel@odin>
-References: <1275897039-7577-1-git-send-email-peter.ujfalusi@nokia.com>
+Subject: [GIT PULL] ASoC updates for 2.6.36
+Date: Mon, 07 Jun 2010 11:14:58 +0100
+Message-ID: <1275905698.3045.32.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 54D581037FF
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 88D201037F7
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 11:48:41 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so2245487wyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 02:48:40 -0700 (PDT)
-In-Reply-To: <1275897039-7577-1-git-send-email-peter.ujfalusi@nokia.com>
+	Mon,  7 Jun 2010 12:15:03 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so1990298fxm.38
+	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 03:15:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,31 +22,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-06-07 at 10:50 +0300, Peter Ujfalusi wrote:
-> Upper threshold is used in mode7 of DAC33.
-> Instead of hard wired UTHR, add control to change the upper threshold
-> value.
-> Changing upper threshold is not allowed when the playback is already
-> running, since wrongly timed change in the UTHR can cause problems
-> with the codec.
-> With this control the length of the burst in mode7 can be changed.
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-> ---
->  sound/soc/codecs/tlv320dac33.c |   57 +++++++++++++++++++++++++++++++++------
->  1 files changed, 48 insertions(+), 9 deletions(-)
-> 
+Hi Takashi,
 
-Applied.
+Some mainly OMAP McBSP specific patches to reduce power from Peter. We
+have Tony's Ack on all the arch/arm/omap stuff.
 
 Thanks
 
 Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+
+The following changes since commit 1fab79b8a1bf0d46a7c7e6a1c06dbed1803f403c:
+  Takashi Iwai (1):
+        Merge branch 'for-2.6.36' of git://git.kernel.org/.../broonie/sound-2.6 into topic/asoc
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.36
+
+Peter Ujfalusi (6):
+      OMAP: McBSP: Function to query the FIFO size
+      OMAP3: McBSP: Change the way how the FIFO is handled
+      OMAP3: McBSP: Use the port's buffer_size when calculating tx delay
+      ASoC: omap-mcbsp: Save, and use wlen for threshold configuration
+      ASoC: omap-mcbsp: Place correct constraints for streams
+      ASoC: tlv320dac33: Add support for changing upper threshold
+
+ arch/arm/mach-omap2/mcbsp.c             |   10 ++--
+ arch/arm/plat-omap/include/plat/mcbsp.h |    2 +
+ arch/arm/plat-omap/mcbsp.c              |   51 ++++++++++-----
+ sound/soc/codecs/tlv320dac33.c          |   57 +++++++++++++---
+ sound/soc/omap/omap-mcbsp.c             |  112 +++++++++++++++++++++++-------
+ 5 files changed, 176 insertions(+), 56 deletions(-)
