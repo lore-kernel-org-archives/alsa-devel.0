@@ -1,22 +1,22 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: No mixers on ATI RS780 Azalia
-Date: Mon, 7 Jun 2010 14:49:16 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1006071404210.11780@obet.zrqbmnf.qr>
-References: <alpine.LSU.2.01.1005261303170.19406@obet.zrqbmnf.qr>
-	<s5hmxvmzwwd.wl%tiwai@suse.de>
-	<alpine.LSU.2.01.1005261413040.23865@obet.zrqbmnf.qr>
-	<4BFD2901.20800@ladisch.de>
-	<alpine.LSU.2.01.1005271230340.18087@obet.zrqbmnf.qr>
-	<4BFE5AA1.7070103@ladisch.de> <4BFE66CA.5070400@ladisch.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC/kirkwood: patch for the useless
+	'break' removal.
+Date: Mon, 07 Jun 2010 13:53:21 +0100
+Message-ID: <1275915201.3045.107.camel@odin>
+References: <4C06105B.2060702@gmail.com>
+	<AANLkTimHsGoR4aonANTBFaTgZmXA2jZlYJ5q5WA_3gab@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from borg.medozas.de (borg.medozas.de [188.40.89.202])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF8D71037F7
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D2D29103818
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 14:49:17 +0200 (CEST)
-In-Reply-To: <4BFE66CA.5070400@ladisch.de>
+	Mon,  7 Jun 2010 14:53:23 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so2368354wyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 05:53:23 -0700 (PDT)
+In-Reply-To: <AANLkTimHsGoR4aonANTBFaTgZmXA2jZlYJ5q5WA_3gab@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,52 +26,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Dave Airlie <airlied@redhat.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dri-devel@lists.freedesktop.org
+To: Wan ZongShun <mcuos.com@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, zswan@marvell.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 2010-05-27 14:34, Clemens Ladisch wrote:
->Clemens Ladisch wrote:
->> Please do not assume that the "HDMI" device is the right one, since you
->> never got either one to work in Linux.
->
->Hmm, that computer is separate from the actual LCD, which has an HDMI
->input, so it's possible that the HDMI output would be correct.
->
->In that case, it's likely that you've run into this bug:
->https://bugs.freedesktop.org/show_bug.cgi?id=28030
->
->You might try the patch mentioned there, or radeonhd, or fglrx.
-
-Cc'ing drm.
-
-I conclude further tests.
-
-* Linux 2.6.35-rc2
-- fbcon:radeondrmfb using "modprobe radeon modeset=1"
-  - sound ok
-- Xorg (7.4) with 'radeonhd'
-  - fbcon ok, no sound in Xorg - I figure radeonhd is obsolete
-- Xorg with 'radeon'
-  - fbcon ok, xorg ok.
-    There is a small breakdown when switching between fbcon and xorg
-
-* Linux 2.6.33.5
-- like 2.6.35-rc2, but had a bug that prevented radeon.ko to go into 
-  graphics mode when initially loaded; workaround: modprobe fglrx;
-  rmmod fglrx; modprobe radeon modeset=1
-- or fglrx, also makes sound work
-
-- fglrx bug aside: switching from Xorg to console (either 80x25 or
-  radeondrmfb) makes a fugly "pop" noise, and if the target is
-  radeomdrmfb, display is garbled.
-
-
-So I'm happy.
-Conclusive questions however:
-
-* Why is it that I am only allowed to have sound in graphics mode?
-
-* The radeon.ko module does not have any PCI IDs defined, thus does not 
-get autoloaded like i915.ko. Is this intentional? It also seems
-to default to modeset=0.
+T24gU2F0LCAyMDEwLTA2LTA1IGF0IDE1OjA0ICswODAwLCBXYW4gWm9uZ1NodW4gd3JvdGU6Cj4g
+SGkgTWFyaywKPiAKPiBIb3cgYWJvdXQgdGhpcyBwYXRjaD8KPiBNeSBvdGhlciBwYXRjaCBzZWVt
+IHRvIGJlIGFwcGxpZWQsIGJ1dCB0aGlzIG9uZSBzdGlsbCBiZSBodW5nLgo+IAo+IOWcqCAyMDEw
+5bm0NuaciDLml6Ug5LiL5Y2INDowM++8jFdhbiBab25nU2h1biA8bWN1b3MuY29tQGdtYWlsLmNv
+bT4g5YaZ6YGT77yaCj4gPiBUaGlzIHBhdGNoIHRvIHJlbW92ZSB0aGUgJ2JyZWFrOycsIHdoZW4g
+dGhlICdzd2l0Y2gnIGp1bXBzIHRvCj4gPiB0aGUgJ2RlZmF1bHQnIGJyYW5jaCwgdGhlICdyZXR1
+cm4gLUVJTlZBTCcgd2lsbCBiZSByZXR1cm4gd2l0aAo+ID4gYSBlcnJvciBudW1iZXIsIHNvIHRo
+ZSAnYnJlYWs7JyBjb2RlIG5ldmVyIGJlIHJ1biwgaXQgaXMgdW51c2VmdWwKPiA+IGFuZCBzaG91
+bGQgYmUgcmVtb3ZlZCBoZXJlLgo+ID4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBXYW4gWm9uZ1No
+dW48bWN1b3MuY29tQGdtYWlsLmNvbT4KCkFja2VkLWJ5OiBMaWFtIEdpcmR3b29kIDxscmdAc2xp
+bWxvZ2ljLmNvLnVrPgotLSAKRnJlZWxhbmNlIERldmVsb3BlciwgU2xpbUxvZ2ljIEx0ZApBU29D
+IGFuZCBWb2x0YWdlIFJlZ3VsYXRvciBNYWludGFpbmVyLgpodHRwOi8vd3d3LnNsaW1sb2dpYy5j
+by51awoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxz
+YS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9t
+YWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
