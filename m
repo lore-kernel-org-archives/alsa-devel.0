@@ -1,19 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] sound/spi: patch for the unuseful variable
-	removal
-Date: Mon, 7 Jun 2010 14:01:13 +0100
-Message-ID: <20100607130113.GC13287@rakim.wolfsonmicro.main>
-References: <4C08B9A0.5000408@gmail.com>
+Subject: Re: [PATCH v2 1/3]AsoC/nuc900: patch for
+ SUBSTREAM_TYPE', 'PCM_TX' and 'PCM_RX' removal
+Date: Mon, 7 Jun 2010 14:01:47 +0100
+Message-ID: <20100607130147.GD13287@rakim.wolfsonmicro.main>
+References: <4C05F211.7070308@gmail.com> <1275471787.3037.28.camel@odin>
+	<20100602104056.GC2457@opensource.wolfsonmicro.com>
+	<AANLkTin_BgTdvaZ8ElKl5ljGuOw9i_CS1mchU6lYeIeS@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 3C947103819
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id ED0F810385B
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 15:01:15 +0200 (CEST)
+	Mon,  7 Jun 2010 15:01:48 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4C08B9A0.5000408@gmail.com>
+In-Reply-To: <AANLkTin_BgTdvaZ8ElKl5ljGuOw9i_CS1mchU6lYeIeS@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,11 +29,11 @@ To: Wan ZongShun <mcuos.com@gmail.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 04, 2010 at 04:30:24PM +0800, Wan ZongShun wrote:
-> The '*bitclk' of structure 'snd_at73c213' seems no use
-> ,so I make a patch to remove the unnecessary variable.
-> 
-> Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
+On Sat, Jun 05, 2010 at 03:08:42PM +0800, Wan ZongShun wrote:
 
-We should probably just remove this driver, it should be done within
-ASoC rather than like this.
+> Do I need re-sent this patch with the missing space fix?
+
+No.  Like I said:
+
+> > I've applied all the patches, since I had to fix up the changelogs
+> > anyway I updated the ms to us in the changelog for patch 2. =A0Thanks.
