@@ -1,18 +1,21 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [GIT PULL] ASoC updates for 2.6.36
-Date: Mon, 07 Jun 2010 11:14:58 +0100
-Message-ID: <1275905698.3045.32.camel@odin>
+From: Wan ZongShun <mcuos.com@gmail.com>
+Subject: Re: [PATCH] Atmel/alsa: fix some code issues
+Date: Mon, 7 Jun 2010 18:47:53 +0800
+Message-ID: <AANLkTikXHk_E8-F4OGsuAF6JFhgxjs3genWsY_ko2ohZ@mail.gmail.com>
+References: <4BFF2A19.1050002@gmail.com>
+	<4C0CCCD6.9000809@atmel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88D201037F7
+Received: from mail-ew0-f218.google.com (mail-ew0-f218.google.com
+	[209.85.219.218])
+	by alsa0.perex.cz (Postfix) with ESMTP id 17E4724584
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 12:15:03 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so1990298fxm.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 03:15:02 -0700 (PDT)
+	Mon,  7 Jun 2010 12:47:55 +0200 (CEST)
+Received: by ewy10 with SMTP id 10so690587ewy.22
+	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 03:47:53 -0700 (PDT)
+In-Reply-To: <4C0CCCD6.9000809@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,38 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-Some mainly OMAP McBSP specific patches to reduce power from Peter. We
-have Tony's Ack on all the arch/arm/omap stuff.
-
-Thanks
-
-Liam
-
-The following changes since commit 1fab79b8a1bf0d46a7c7e6a1c06dbed1803f403c:
-  Takashi Iwai (1):
-        Merge branch 'for-2.6.36' of git://git.kernel.org/.../broonie/sound-2.6 into topic/asoc
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git for-2.6.36
-
-Peter Ujfalusi (6):
-      OMAP: McBSP: Function to query the FIFO size
-      OMAP3: McBSP: Change the way how the FIFO is handled
-      OMAP3: McBSP: Use the port's buffer_size when calculating tx delay
-      ASoC: omap-mcbsp: Save, and use wlen for threshold configuration
-      ASoC: omap-mcbsp: Place correct constraints for streams
-      ASoC: tlv320dac33: Add support for changing upper threshold
-
- arch/arm/mach-omap2/mcbsp.c             |   10 ++--
- arch/arm/plat-omap/include/plat/mcbsp.h |    2 +
- arch/arm/plat-omap/mcbsp.c              |   51 ++++++++++-----
- sound/soc/codecs/tlv320dac33.c          |   57 +++++++++++++---
- sound/soc/omap/omap-mcbsp.c             |  112 +++++++++++++++++++++++-------
- 5 files changed, 176 insertions(+), 56 deletions(-)
+5ZyoIDIwMTDlubQ25pyIN+aXpSDkuIvljYg2OjQx77yMTmljb2xhcyBGZXJyZSA8bmljb2xhcy5m
+ZXJyZUBhdG1lbC5jb20+IOWGmemBk++8mgo+IExlIDI4LzA1LzIwMTAgMDQ6MjcsIFdhbiBab25n
+U2h1biA6Cj4+IERlYXIgTmljb2xhcywKPj4KPj4gSSBhbSBzZWVpbmcgdGhlIGF0bWVsIGNvZGVz
+IGFzIHJlZmVyZW5jZSBvZiBteSBhbHNhIGRyaXZlciBwcm9ncmFtbWluZy4KPj4gRmluZGluZyBh
+IGZldyBjb2RlIGlzc3VlcywgSSBtYWtlIGEgcGF0Y2ggdG8gZml4LCB0aGFua3MhCj4KPiBBZnRl
+ciBhIGJyaWVmIHJldmlldywgSSBjb21lIGJhY2sgdG8gdGhpcwo+Cj4+IFNpZ25lZC1vZmYtYnk6
+IFdhbiBab25nU2h1bjxtY3Vvcy5jb21AZ21haWwuY29tPgo+Pgo+PiAtLS0KPj4gwqBzb3VuZC9z
+b2MvYXRtZWwvYXRtZWwtcGNtLmMgwqAgwqAgfCDCoCDCoDIgKy0KPj4gwqBzb3VuZC9zb2MvYXRt
+ZWwvYXRtZWxfc3NjX2RhaS5jIHwgwqAgwqAzICstLQo+PiDCoDIgZmlsZXMgY2hhbmdlZCwgMiBp
+bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29j
+L2F0bWVsL2F0bWVsLXBjbS5jIGIvc291bmQvc29jL2F0bWVsL2F0bWVsLXBjbS5jCj4+IGluZGV4
+IGY2YjNjYzAuLmM2OWE4ZmIgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9hdG1lbC9hdG1lbC1w
+Y20uYwo+PiArKysgYi9zb3VuZC9zb2MvYXRtZWwvYXRtZWwtcGNtLmMKPj4gQEAgLTQ3OCw3ICs0
+NzgsNyBAQCBzdHJ1Y3Qgc25kX3NvY19wbGF0Zm9ybSBhdG1lbF9zb2NfcGxhdGZvcm0gPSB7Cj4+
+IMKgIMKgIMKgIC5wY21fZnJlZSDCoCDCoCDCoCA9IGF0bWVsX3BjbV9mcmVlX2RtYV9idWZmZXJz
+LAo+PiDCoCDCoCDCoCAuc3VzcGVuZCDCoCDCoCDCoCDCoD0gYXRtZWxfcGNtX3N1c3BlbmQsCj4+
+IMKgIMKgIMKgIC5yZXN1bWUgwqAgwqAgwqAgwqAgPSBhdG1lbF9wY21fcmVzdW1lLAo+PiAtfTsK
+Pj4gK30KPgo+IE5vdCBvayBmb3IgdGhpcy4gSXQgaXMgYSBzdHJ1Y3R1cmUgZGVjbGFyYXRpb246
+IHdlIHNob3VsZCBrZWVwIHRoZSAiOyIuCj4KCk9rYXksIHRoYW5rcyEKCj4+IMKgRVhQT1JUX1NZ
+TUJPTF9HUEwoYXRtZWxfc29jX3BsYXRmb3JtKTsKPj4KPj4gwqBzdGF0aWMgaW50IF9faW5pdCBh
+dG1lbF9wY21fbW9kaW5pdCh2b2lkKQo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2F0bWVsL2F0
+bWVsX3NzY19kYWkuYyBiL3NvdW5kL3NvYy9hdG1lbC9hdG1lbF9zc2NfZGFpLmMKPj4gaW5kZXgg
+MGI1OTgwNi4uNGM0NGQxMyAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2F0bWVsL2F0bWVsX3Nz
+Y19kYWkuYwo+PiArKysgYi9zb3VuZC9zb2MvYXRtZWwvYXRtZWxfc3NjX2RhaS5jCj4+IEBAIC01
+NDksNyArNTQ5LDYgQEAgc3RhdGljIGludCBhdG1lbF9zc2NfaHdfcGFyYW1zKHN0cnVjdCBzbmRf
+cGNtX3N1YnN0cmVhbQo+PiAqc3Vic3RyZWFtLAo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCBwcmlu
+dGsoS0VSTl9XQVJOSU5HICJhdG1lbF9zc2NfZGFpOiB1bnN1cHBvcnRlZCBEQUkgZm9ybWF0IDB4
+JXhcbiIsCj4+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHNzY19wLT5kYWlmbXQp
+Owo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gLUVJTlZBTDsKPj4gLSDCoCDCoCDCoCDC
+oCDCoCDCoCBicmVhazsKPgo+IE9rLgo+Cj4+IMKgIMKgIMKgIH0KPj4gwqAgwqAgwqAgcHJfZGVi
+dWcoImF0bWVsX3NzY19od19wYXJhbXM6ICIKPj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgIlJDTVI9JTA4eCBSRk1SPSUwOHggVENNUj0lMDh4IFRGTVI9JTA4eFxuIiwKPj4gQEAg
+LTc2MCw3ICs3NTksNyBAQCBzdHJ1Y3Qgc25kX3NvY19kYWkgYXRtZWxfc3NjX2RhaVtOVU1fU1ND
+X0RFVklDRVNdID0gewo+PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCAucHJpdmF0ZV9kYXRhID0gJnNz
+Y19pbmZvWzJdLAo+PiDCoCDCoCDCoCB9LAo+PiDCoCNlbmRpZgo+PiAtfTsKPj4gK30KPgo+IE5v
+dCBvayBmb3IgdGhpcyBlaXRoZXIuIGRpdHRvLgo+Cj4+IMKgRVhQT1JUX1NZTUJPTF9HUEwoYXRt
+ZWxfc3NjX2RhaSk7Cj4+Cj4+IMKgc3RhdGljIGludCBfX2luaXQgYXRtZWxfc3NjX21vZGluaXQo
+dm9pZCkKPgo+Cj4gLS0KPiBOaWNvbGFzIEZlcnJlCj4KPgoKCgotLSAKKmxpbnV4LWFybS1rZXJu
+ZWwgbWFpbGluZyBsaXN0Cm1haWwgYWRkcjpsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKeW91IGNhbiBzdWJzY3JpYmUgYnk6Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAoKKiBsaW51eC1hcm0tTlVDOTAwIG1haWxp
+bmcgbGlzdAptYWlsIGFkZHI6TlVDOTAwQGdvb2dsZWdyb3Vwcy5jb20KbWFpbiB3ZWI6IGh0dHBz
+Oi8vZ3JvdXBzLmdvb2dsZS5jb20vZ3JvdXAvTlVDOTAwCnlvdSBjYW4gc3Vic2NyaWJlIGl0IGJ5
+IHNlbmRpbmcgbWUgbWFpbDoKbWN1b3MuY29tQGdtYWlsLmNvbQpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
