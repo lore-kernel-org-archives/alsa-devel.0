@@ -1,97 +1,80 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.36
-Date: Mon, 7 Jun 2010 14:41:58 +0100
-Message-ID: <20100607134158.GG13287@rakim.wolfsonmicro.main>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: Re: [alsa-devel] No mixers on ATI RS780 Azalia
+Date: Mon, 7 Jun 2010 11:03:56 -0400
+Message-ID: <AANLkTilqmEK7R26DmLg0_LZ4al4F0_bX4asCl1DVA6GH@mail.gmail.com>
+References: <alpine.LSU.2.01.1005261303170.19406@obet.zrqbmnf.qr>
+	<s5hmxvmzwwd.wl%tiwai@suse.de>
+	<alpine.LSU.2.01.1005261413040.23865@obet.zrqbmnf.qr>
+	<4BFD2901.20800@ladisch.de>
+	<alpine.LSU.2.01.1005271230340.18087@obet.zrqbmnf.qr>
+	<4BFE5AA1.7070103@ladisch.de>
+	<4BFE66CA.5070400@ladisch.de>
+	<alpine.LSU.2.01.1006071404210.11780@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CCAE0245AA
-	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 15:41:59 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.01.1006071404210.11780@obet.zrqbmnf.qr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>, Dave Airlie <airlied@redhat.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit 1fab79b8a1bf0d46a7c7e6a1c06dbed1803f403c:
+On Mon, Jun 7, 2010 at 8:49 AM, Jan Engelhardt <jengelh@medozas.de> wro=
+te:
+> On Thursday 2010-05-27 14:34, Clemens Ladisch wrote:
+>>Clemens Ladisch wrote:
+>>> Please do not assume that the "HDMI" device is the right one, since=
+ you
+>>> never got either one to work in Linux.
+>>
+>>Hmm, that computer is separate from the actual LCD, which has an HDMI
+>>input, so it's possible that the HDMI output would be correct.
+>>
+>>In that case, it's likely that you've run into this bug:
+>>https://bugs.freedesktop.org/show_bug.cgi?id=3D28030
+>>
+>>You might try the patch mentioned there, or radeonhd, or fglrx.
+>
+> Cc'ing drm.
+>
+> I conclude further tests.
+>
+> * Linux 2.6.35-rc2
+> - fbcon:radeondrmfb using "modprobe radeon modeset=3D1"
+> =A0- sound ok
+> - Xorg (7.4) with 'radeonhd'
+> =A0- fbcon ok, no sound in Xorg - I figure radeonhd is obsolete
+> - Xorg with 'radeon'
+> =A0- fbcon ok, xorg ok.
+> =A0 =A0There is a small breakdown when switching between fbcon and xo=
+rg
+>
+> * Linux 2.6.33.5
+> - like 2.6.35-rc2, but had a bug that prevented radeon.ko to go into
+> =A0graphics mode when initially loaded; workaround: modprobe fglrx;
+> =A0rmmod fglrx; modprobe radeon modeset=3D1
+> - or fglrx, also makes sound work
+>
+> - fglrx bug aside: switching from Xorg to console (either 80x25 or
+> =A0radeondrmfb) makes a fugly "pop" noise, and if the target is
+> =A0radeomdrmfb, display is garbled.
+>
+>
+> So I'm happy.
+> Conclusive questions however:
+>
+> * Why is it that I am only allowed to have sound in graphics mode?
 
-  Merge branch 'for-2.6.36' of git://git.kernel.org/pub/scm/linux/kernel/gi=
-t/broonie/sound-2.6 into topic/asoc (2010-05-31 18:13:20 +0200)
+HDMI audio is only enabled on active outputs during modeset.
 
-are available in the git repository at:
+>
+> * The radeon.ko module does not have any PCI IDs defined, thus does n=
+ot
+> get autoloaded like i915.ko. Is this intentional? It also seems
+> to default to modeset=3D0.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
-.6.36
+What kernel are you using?  It definitely has pci ids and autoloads jus=
+t fine.
 
-Eric B=E9nard (2):
-      ASoC: imx-ssi.c: add new choices to platform configuration
-      ASoC: imx: add eukrea-tlv320
-
-Mark Brown (1):
-      Merge branch 'for-2.6.35' into for-2.6.36
-
-Ryan Mallon (1):
-      ASoC: ep93xx i2s audio driver
-
-Sascha Hauer (2):
-      ASoC: Add missing Kconfig entry for Phytec boards
-      ASoC: MX31ads sound support should depend on MACH_MX31ADS_WM1133_EV1
-
-Wan ZongShun (10):
-      ASoC: nuc900: patch for SUBSTREAM_TYPE', 'PCM_TX' and 'PCM_RX' removal
-      ASoC: nuc900: fix a wait loop bug
-      ASoC: nuc900: fix a typo and rename the header file
-      ASoC: nuc900: patch for modifing the ac97 delays to minimum
-      ASoC: s6000: use resource_size for {request/release}_mem_region and i=
-oremap
-      ASoC: use resource_size for au1x
-      ASoC: atmel: patch for the unnecessary variable removal
-      ASoC: s3c: patch for the unnecessary variable 'state' removal
-      ASoC: atmel: trivial code cleanup
-      ASoC: patch for the useless 'break' removal in kirkwood
-
- arch/arm/plat-mxc/include/mach/ssi.h               |    3 +
- sound/soc/Kconfig                                  |    1 +
- sound/soc/Makefile                                 |    1 +
- sound/soc/atmel/atmel-pcm.c                        |    1 -
- sound/soc/atmel/atmel_ssc_dai.c                    |    1 -
- sound/soc/au1x/psc-ac97.c                          |   13 +-
- sound/soc/au1x/psc-i2s.c                           |   13 +-
- sound/soc/au1x/psc.h                               |    1 -
- sound/soc/ep93xx/Kconfig                           |    9 +
- sound/soc/ep93xx/Makefile                          |    8 +
- sound/soc/ep93xx/ep93xx-i2s.c                      |  487 ++++++++++++++++=
-++++
- sound/soc/ep93xx/ep93xx-i2s.h                      |   18 +
- sound/soc/ep93xx/ep93xx-pcm.c                      |  319 +++++++++++++
- sound/soc/ep93xx/ep93xx-pcm.h                      |   22 +
- sound/soc/imx/Kconfig                              |   20 +-
- sound/soc/imx/Makefile                             |    2 +
- sound/soc/imx/eukrea-tlv320.c                      |  135 ++++++
- sound/soc/imx/imx-ssi.c                            |   11 +-
- sound/soc/kirkwood/kirkwood-i2s.c                  |    1 -
- sound/soc/nuc900/nuc900-ac97.c                     |   32 +-
- .../soc/nuc900/{nuc900-auido.h =3D> nuc900-audio.h}  |    4 -
- sound/soc/nuc900/nuc900-pcm.c                      |   18 +-
- sound/soc/s3c24xx/s3c-ac97.c                       |    1 -
- sound/soc/s6000/s6000-i2s.c                        |   38 +-
- 24 files changed, 1080 insertions(+), 79 deletions(-)
- create mode 100644 sound/soc/ep93xx/Kconfig
- create mode 100644 sound/soc/ep93xx/Makefile
- create mode 100644 sound/soc/ep93xx/ep93xx-i2s.c
- create mode 100644 sound/soc/ep93xx/ep93xx-i2s.h
- create mode 100644 sound/soc/ep93xx/ep93xx-pcm.c
- create mode 100644 sound/soc/ep93xx/ep93xx-pcm.h
- create mode 100644 sound/soc/imx/eukrea-tlv320.c
- rename sound/soc/nuc900/{nuc900-auido.h =3D> nuc900-audio.h} (95%)
+Alex
