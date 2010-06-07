@@ -1,37 +1,240 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH v3 0/3] ep93xx i2s audio
-Date: Tue, 8 Jun 2010 00:52:16 +0100
-Message-ID: <F302D76F-8D7D-4F4B-ACC5-D7F76998AA4A@opensource.wolfsonmicro.com>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: RE: [RFC PATCH v3 1/3] ep93xx i2s core support
+Date: Mon, 7 Jun 2010 16:55:30 -0500
+Message-ID: <0D753D10438DA54287A00B0270842697636F83B425@AUSP01VMBX24.collaborationhost.net>
 References: <1275628285-12642-1-git-send-email-ryan@bluewatersys.com>
-	<1275914732.3045.105.camel@odin>
-	<4C0D58BB.5030505@bluewatersys.com>
-	(sfid-20100607_213827_729716_0AEBDFD1)
-Mime-Version: 1.0 (Apple Message framework v1078)
+	<1275628285-12642-2-git-send-email-ryan@bluewatersys.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E37BE103879
-	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jun 2010 01:52:24 +0200 (CEST)
-In-Reply-To: <4C0D58BB.5030505@bluewatersys.com>
-	(sfid-20100607_213827_729716_0AEBDFD1)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Mallon <ryan@bluewatersys.com>
-Cc: john.cooper@third-harmonic.com, chasedouglas@gmail.com, dhuggins@cs.cmu.edu, alsa-devel@alsa-project.org, Russell King <rmk@arm.linux.org.uk>, r&d4@dave-tech.it, hartleys@visionengravers.com, buytenh@wantstofly.org, marshall@coolbananas.co.nz, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1275628285-12642-2-git-send-email-ryan@bluewatersys.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Ryan Mallon <ryan@bluewatersys.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: "john.cooper@third-harmonic.com" <john.cooper@third-harmonic.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "chasedouglas@gmail.com" <chasedouglas@gmail.com>, "r&d4@dave-tech.it" <r&d4@dave-tech.it>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>, "marshall@coolbananas.co.nz" <marshall@coolbananas.co.nz>, "buytenh@wantstofly.org" <buytenh@wantstofly.org>, "dhuggins@cs.cmu.edu" <dhuggins@cs.cmu.edu>
 List-Id: alsa-devel@alsa-project.org
 
-On 7 Jun 2010, at 21:38, Ryan Mallon wrote:
+On Thursday, June 03, 2010 10:11 PM, Ryan Mallon wrote:
+> Add ep93xx core support for i2s audio
+> 
+> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
+> ---
+>  arch/arm/mach-ep93xx/clock.c                    |   69 ++++++++++++++++++++++-
+>  arch/arm/mach-ep93xx/core.c                     |   31 ++++++++++
+>  arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |   10 +++
+>  arch/arm/mach-ep93xx/include/mach/platform.h    |    1 +
+>  4 files changed, 110 insertions(+), 1 deletions(-)
+> 
+> diff --git a/arch/arm/mach-ep93xx/clock.c b/arch/arm/mach-ep93xx/clock.c
+> index 5f80092..503d430 100644
+> --- a/arch/arm/mach-ep93xx/clock.c
+> +++ b/arch/arm/mach-ep93xx/clock.c
+> @@ -43,7 +43,8 @@ static unsigned long get_uart_rate(struct clk *clk);
+>  
+>  static int set_keytchclk_rate(struct clk *clk, unsigned long rate);
+>  static int set_div_rate(struct clk *clk, unsigned long rate);
+> -
+> +static int set_i2s_sclk_rate(struct clk *clk, unsigned long rate);
+> +static int set_i2s_lrclk_rate(struct clk *clk, unsigned long rate);
+>  
+>  static struct clk clk_xtali = {
+>  	.rate		= EP93XX_EXT_CLK_RATE,
+> @@ -108,6 +109,31 @@ static struct clk clk_video = {
+>  	.set_rate	= set_div_rate,
+>  };
+>  
+> +static struct clk clk_i2s_mclk = {
+> +	.sw_locked	= 1,
+> +	.enable_reg	= EP93XX_SYSCON_I2SCLKDIV,
+> +	.enable_mask	= (EP93XX_SYSCON_CLKDIV_ENABLE  |
+> +			   EP93XX_SYSCON_I2SCLKDIV_SPOL |
+> +			   EP93XX_SYSCON_I2SCLKDIV_ORIDE),
 
-> Russell, Mark has picked up patch 2/3 via the alsa tree. Should I submit
-> 1/3 and 3/3 via the arm patch system with Liam's ack?
+Setting the SPOL and ORIDE bits here might cause problems in the future.
+Granted, your i2s driver is currently the only user so its probably ok
+for now.
 
-At least 3/3 needs to go via the ASoC tree since it depends on 2/3. It may make sense for all of them to go that way, or perhaps 1/3 could go separately via the ARM tree (in which case I'd ack it too).
+But, you might want to move the setting of those two bits along with the
+SLAVE and DROP bits to the core registration function.  The clock support
+should only be enabling/disabling and setting the rates for the clocks.
+
+> +	.set_rate	= set_div_rate,
+
+By calling the set_div_rate routine your only updating the master clock
+rate.  Should the new rate be pushed down to the children?  Actually the
+new rates for the children will be established automatically when the
+master clock rate is changed.  But a clk_get_rate for the children will
+return an incorrect value.  Maybe just add a get_rate method for the
+children?
+
+> +};
+> +
+> +static struct clk clk_i2s_sclk = {
+> +	.sw_locked	= 1,
+> +	.parent		= &clk_i2s_mclk,
+> +	.enable_reg	= EP93XX_SYSCON_I2SCLKDIV,
+> +	.enable_mask	= EP93XX_SYSCON_I2SCLKDIV_SENA,
+> +	.set_rate	= set_i2s_sclk_rate,
+> +};
+> +
+> +static struct clk clk_i2s_lrclk = {
+> +	.sw_locked	= 1,
+> +	.parent		= &clk_i2s_sclk,
+> +	.enable_reg	= EP93XX_SYSCON_I2SCLKDIV,
+> +	.enable_mask	= EP93XX_SYSCON_I2SCLKDIV_SENA,
+> +	.set_rate	= set_i2s_lrclk_rate,
+> +};
+> +
+>  /* DMA Clocks */
+>  static struct clk clk_m2p0 = {
+>  	.parent		= &clk_h,
+> @@ -186,6 +212,9 @@ static struct clk_lookup clocks[] = {
+>  	INIT_CK("ep93xx-ohci",		NULL,		&clk_usb_host),
+>  	INIT_CK("ep93xx-keypad",	NULL,		&clk_keypad),
+>  	INIT_CK("ep93xx-fb",		NULL,		&clk_video),
+> +	INIT_CK("ep93xx-i2s",		"mclk",		&clk_i2s_mclk),
+> +	INIT_CK("ep93xx-i2s",		"sclk",		&clk_i2s_sclk),
+> +	INIT_CK("ep93xx-i2s",		"lrclk",	&clk_i2s_lrclk),
+>  	INIT_CK(NULL,			"pwm_clk",	&clk_pwm),
+>  	INIT_CK(NULL,			"m2p0",		&clk_m2p0),
+>  	INIT_CK(NULL,			"m2p1",		&clk_m2p1),
+> @@ -396,6 +425,44 @@ static int set_div_rate(struct clk *clk, unsigned long rate)
+>  	return 0;
+>  }
+>  
+> +static int set_i2s_sclk_rate(struct clk *clk, unsigned long rate)
+> +{
+> +	unsigned val = __raw_readl(clk->enable_reg);
+> +
+> +	if (rate == clk_i2s_mclk.rate / 2)
+> +		ep93xx_syscon_swlocked_write(val & ~EP93XX_I2SCLKDIV_SDIV, 
+> +					     clk->enable_reg);
+> +	else if (rate == clk_i2s_mclk.rate / 4)
+> +		ep93xx_syscon_swlocked_write(val | EP93XX_I2SCLKDIV_SDIV, 
+> +					     clk->enable_reg);
+> +	else
+> +		return -EINVAL;
+> +
+> +	clk_i2s_sclk.rate = rate;
+> +	return 0;
+> +}
+> +
+> +static int set_i2s_lrclk_rate(struct clk *clk, unsigned long rate)
+> +{
+> +	unsigned val = __raw_readl(clk->enable_reg) & 
+> +		~EP93XX_I2SCLKDIV_LRDIV_MASK;
+> +	
+> +	if (rate == clk_i2s_sclk.rate / 32)
+> +		ep93xx_syscon_swlocked_write(val | EP93XX_I2SCLKDIV_LRDIV32,
+> +					     clk->enable_reg);
+> +	else if (rate == clk_i2s_sclk.rate / 64)
+> +		ep93xx_syscon_swlocked_write(val | EP93XX_I2SCLKDIV_LRDIV64,
+> +					     clk->enable_reg);
+> +	else if (rate == clk_i2s_sclk.rate / 128)
+> +		ep93xx_syscon_swlocked_write(val | EP93XX_I2SCLKDIV_LRDIV128,
+> +					     clk->enable_reg);
+> +	else
+> +		return -EINVAL;
+> +
+> +	clk_i2s_lrclk.rate = rate;
+> +	return 0;
+> +}
+> +
+>  int clk_set_rate(struct clk *clk, unsigned long rate)
+>  {
+>  	if (clk->set_rate)
+> diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+> index 90fb591..c04fd6f 100644
+> --- a/arch/arm/mach-ep93xx/core.c
+> +++ b/arch/arm/mach-ep93xx/core.c
+> @@ -617,6 +617,37 @@ void ep93xx_keypad_release_gpio(struct platform_device *pdev)
+>  }
+>  EXPORT_SYMBOL(ep93xx_keypad_release_gpio);
+>  
+> +/*************************************************************************
+> + * EP93xx I2S audio peripheral handling
+> + *************************************************************************/
+> +static struct resource ep93xx_i2s_resource[] = {
+> +	{
+> +		.start	= EP93XX_I2S_PHYS_BASE,
+> +		.end	= EP93XX_I2S_PHYS_BASE + 0x100 - 1,
+> +		.flags	= IORESOURCE_MEM,
+> +	},
+> +};
+> +
+> +static struct platform_device ep93xx_i2s_device = {
+> +	.name		= "ep93xx-i2s",
+> +	.id		= -1,
+> +	.num_resources	= ARRAY_SIZE(ep93xx_i2s_resource),
+> +	.resource	= ep93xx_i2s_resource,
+> +};
+> +
+> +void __init ep93xx_register_i2s(unsigned pins)
+> +{
+> +	if (pins != EP93XX_SYSCON_DEVCFG_I2SONSSP &&
+> +	    pins != EP93XX_SYSCON_DEVCFG_I2SONAC97) {
+> +		pr_err("Invalid I2S pin configuration - not registering\n");
+> +		return;
+> +	}
+> +
+> +	ep93xx_devcfg_clear_bits(EP93XX_SYSCON_DEVCFG_I2SONSSP |
+> +				 EP93XX_SYSCON_DEVCFG_I2SONAC97);
+> +	ep93xx_devcfg_set_bits(pins);
+> +	platform_device_register(&ep93xx_i2s_device);
+> +}
+>  
+>  extern void ep93xx_gpio_init(void);
+>  
+> diff --git a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> index 93e2ecc..3fbb095 100644
+> --- a/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> +++ b/arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h
+> @@ -93,6 +93,7 @@
+>  /* APB peripherals */
+>  #define EP93XX_TIMER_BASE		EP93XX_APB_IOMEM(0x00010000)
+>  
+> +#define EP93XX_I2S_PHYS_BASE		EP93XX_APB_PHYS(0x00020000)
+>  #define EP93XX_I2S_BASE			EP93XX_APB_IOMEM(0x00020000)
+>  
+>  #define EP93XX_SECURITY_BASE		EP93XX_APB_IOMEM(0x00030000)
+> @@ -193,6 +194,15 @@
+>  #define EP93XX_SYSCON_CLKDIV_ESEL	(1<<14)
+>  #define EP93XX_SYSCON_CLKDIV_PSEL	(1<<13)
+>  #define EP93XX_SYSCON_CLKDIV_PDIV_SHIFT	8
+> +#define EP93XX_SYSCON_I2SCLKDIV		EP93XX_SYSCON_REG(0x8c)
+> +#define EP93XX_SYSCON_I2SCLKDIV_SENA	(1<<31)
+> +#define EP93XX_SYSCON_I2SCLKDIV_ORIDE   (1<<29)
+> +#define EP93XX_SYSCON_I2SCLKDIV_SPOL	(1<<19)
+> +#define EP93XX_I2SCLKDIV_SDIV		(1 << 16)
+> +#define EP93XX_I2SCLKDIV_LRDIV32	(0 << 17)
+> +#define EP93XX_I2SCLKDIV_LRDIV64	(1 << 17)
+> +#define EP93XX_I2SCLKDIV_LRDIV128 	(2 << 17)
+> +#define EP93XX_I2SCLKDIV_LRDIV_MASK 	(3 << 17)
+>  #define EP93XX_SYSCON_KEYTCHCLKDIV	EP93XX_SYSCON_REG(0x90)
+>  #define EP93XX_SYSCON_KEYTCHCLKDIV_TSEN	(1<<31)
+>  #define EP93XX_SYSCON_KEYTCHCLKDIV_ADIV	(1<<16)
+> diff --git a/arch/arm/mach-ep93xx/include/mach/platform.h b/arch/arm/mach-ep93xx/include/mach/platform.h
+> index c6dc14d..9252adf 100644
+> --- a/arch/arm/mach-ep93xx/include/mach/platform.h
+> +++ b/arch/arm/mach-ep93xx/include/mach/platform.h
+> @@ -43,6 +43,7 @@ void ep93xx_pwm_release_gpio(struct platform_device *pdev);
+>  void ep93xx_register_keypad(struct ep93xx_keypad_platform_data *data);
+>  int ep93xx_keypad_acquire_gpio(struct platform_device *pdev);
+>  void ep93xx_keypad_release_gpio(struct platform_device *pdev);
+> +void ep93xx_register_i2s(unsigned pins);
+>  
+>  void ep93xx_init_devices(void);
+>  extern struct sys_timer ep93xx_timer;
+
+Other than the comments above I'm ok with this.
+
+Acked-by: H Hartley Sweeten <hsweeten@visionengravers.com>
