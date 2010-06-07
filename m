@@ -1,20 +1,22 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [RFC PATCH v3 0/3] ep93xx i2s audio
-Date: Mon, 07 Jun 2010 13:45:32 +0100
-Message-ID: <1275914732.3045.105.camel@odin>
-References: <1275628285-12642-1-git-send-email-ryan@bluewatersys.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: No mixers on ATI RS780 Azalia
+Date: Mon, 7 Jun 2010 14:49:16 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1006071404210.11780@obet.zrqbmnf.qr>
+References: <alpine.LSU.2.01.1005261303170.19406@obet.zrqbmnf.qr>
+	<s5hmxvmzwwd.wl%tiwai@suse.de>
+	<alpine.LSU.2.01.1005261413040.23865@obet.zrqbmnf.qr>
+	<4BFD2901.20800@ladisch.de>
+	<alpine.LSU.2.01.1005271230340.18087@obet.zrqbmnf.qr>
+	<4BFE5AA1.7070103@ladisch.de> <4BFE66CA.5070400@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9C7A71037F5
+Received: from borg.medozas.de (borg.medozas.de [188.40.89.202])
+	by alsa0.perex.cz (Postfix) with ESMTP id EF8D71037F7
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 14:45:37 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so2362517wyg.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 05:45:37 -0700 (PDT)
-In-Reply-To: <1275628285-12642-1-git-send-email-ryan@bluewatersys.com>
+	Mon,  7 Jun 2010 14:49:17 +0200 (CEST)
+In-Reply-To: <4BFE66CA.5070400@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,38 +26,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Mallon <ryan@bluewatersys.com>
-Cc: john.cooper@third-harmonic.com, alsa-devel@alsa-project.org, chasedouglas@gmail.com, buytenh@wantstofly.org, r&d4@dave-tech.it, hartleys@visionengravers.com, marshall@coolbananas.co.nz, linux-arm-kernel@lists.infradead.org, dhuggins@cs.cmu.edu
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, Dave Airlie <airlied@redhat.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-06-04 at 17:11 +1200, Ryan Mallon wrote:
-> The following patch series adds support for i2s audio on the ep93xx,
-> with the Snapper CL15 used as an example implementation.
-> 
-> This version fixes a number of things from the previous round:
->  - Removed unused #defines
->  - Set symmetric rates for the cpu dai
->  - Fixed the sdiv/lrdiv calculation loop
->  - Moved the cpu dai registration
->  - Removed empty ep93xx_pcm_prepare callback
->  - Fixed enable/disable when both capture and playback are running
->  
-> Capture still does not work. The dma is running, but the captured data
-> is all zeros (tested used arecord and loopback). I have a 2.6.20
-> kernel with ep93xx i2s audio working an capture works there on the
-> same hardware. I have spent sometime looking into this, but can't see
-> the problem. Would appreciate if someone can lend some insight as to
-> what I have done wrong.
-> 
-> Ryan Mallon (3):
->   ep93xx i2s core support
->   ep93xx i2s audio driver
->   Snapper cl15 audio support
+On Thursday 2010-05-27 14:34, Clemens Ladisch wrote:
+>Clemens Ladisch wrote:
+>> Please do not assume that the "HDMI" device is the right one, since you
+>> never got either one to work in Linux.
+>
+>Hmm, that computer is separate from the actual LCD, which has an HDMI
+>input, so it's possible that the HDMI output would be correct.
+>
+>In that case, it's likely that you've run into this bug:
+>https://bugs.freedesktop.org/show_bug.cgi?id=28030
+>
+>You might try the patch mentioned there, or radeonhd, or fglrx.
 
-All
+Cc'ing drm.
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+I conclude further tests.
+
+* Linux 2.6.35-rc2
+- fbcon:radeondrmfb using "modprobe radeon modeset=1"
+  - sound ok
+- Xorg (7.4) with 'radeonhd'
+  - fbcon ok, no sound in Xorg - I figure radeonhd is obsolete
+- Xorg with 'radeon'
+  - fbcon ok, xorg ok.
+    There is a small breakdown when switching between fbcon and xorg
+
+* Linux 2.6.33.5
+- like 2.6.35-rc2, but had a bug that prevented radeon.ko to go into 
+  graphics mode when initially loaded; workaround: modprobe fglrx;
+  rmmod fglrx; modprobe radeon modeset=1
+- or fglrx, also makes sound work
+
+- fglrx bug aside: switching from Xorg to console (either 80x25 or
+  radeondrmfb) makes a fugly "pop" noise, and if the target is
+  radeomdrmfb, display is garbled.
+
+
+So I'm happy.
+Conclusive questions however:
+
+* Why is it that I am only allowed to have sound in graphics mode?
+
+* The radeon.ko module does not have any PCI IDs defined, thus does not 
+get autoloaded like i915.ko. Is this intentional? It also seems
+to default to modeset=0.
