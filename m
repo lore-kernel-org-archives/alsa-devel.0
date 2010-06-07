@@ -1,18 +1,18 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: Mixer volume/decibel mapping
-Date: Mon, 07 Jun 2010 11:19:18 +0200
-Message-ID: <4C0CB996.5010202@gmx.de>
-References: <201005191834.57919.vand2@gmx.de>	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	<AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>	<201005211018.41802.vand2@gmx.de>
-	<AANLkTikylA_oo6GBKuLHewVX9oMCNjQMeS90HThDR47K@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: External samplerate changes, UAC2 clock topologies
+Date: Mon, 7 Jun 2010 10:45:23 +0100
+Message-ID: <20100607094522.GA5993@sirena.org.uk>
+References: <20100604124635.GL2698@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 7EE741037F1
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id CE6BE1037EC
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 11:18:59 +0200 (CEST)
-In-Reply-To: <AANLkTikylA_oo6GBKuLHewVX9oMCNjQMeS90HThDR47K@mail.gmail.com>
+	Mon,  7 Jun 2010 11:45:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100604124635.GL2698@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,68 +22,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Daniel Mack <daniel@caiaq.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 07.06.2010 05:37, schrieb Raymond Yau:
->>> I thinks Sebastian's question is whether he can use
->>> snd_mixer_selem_set_playback_
->>> dB() set any values in between the volume steps
->>>
->>> e.g. Master volume control of ac97 is 1.5 dB per step,
->>>
->>> when using snd_mixer_selem_set_playback_dB() to set -0.9dB , how can the
->>> mixer application know what dB value has been set since the value is in
->>> between -1.5dB and 0dB without snd_mixer_selem_get_playbackdB()
->>
->> Indeed I quite happy with what ALSA already provides (I'm just an
->> interested
->> amateur). My main problem is that there is no documentation for the Mixer
->> API
->> and how things are related to each other. Like CTL, HCTL, Mixer and
->> SimpleMixer and of course volume and dB in the snd_mixer_selem_ functions.
->>
->> The root issue is that I wondered if the mixer application should offer a
->> separate text input for decibel values besides the text input for volume
->> values. As pointed out this would not allow for finer grained volume
->> control
->> therefore for the moment I'll probably stick with a mere text label for dB.
->>
->>
+On Fri, Jun 04, 2010 at 02:46:35PM +0200, Daniel Mack wrote:
 
-> The main difference between those volume controls using TLV_DB_SCALE and
-> TLV_DB_LINEAR is -6dB is at the middle of TLV_DB_LINEAR and TLV_DB_SCALE has
-> fixed dB value between any two steps.
+> Any oppinions? Has this been done before for any other audio hardware
+> supported by ALSA?
 
-What's TLV_DB_SCALE and TLV_DB_LINEAR for?
-A grep in the alsa-lib sources did not return anything.
-
-> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/332631
-> 
-> if the user has both hda onboard sound and emu10k1, he may notice that there
-> is big difference if he set volume at percentage instead of dB
-
-Interesting, that's my setup. I have an onboard HDA Intel and a
-pci SBLive! Card and some el cheapo USB sound cards to experiment
-with. Thanks I'll give the volume listening test a try at some point.
-
-> so it is mainly depend on the scaling of the slider in your mixer
-> application
-
-At the moment the sliders are simply sliding linearly from vol. min.
-to vol. max. and there is a label which shows the current dB value.
-
-(This made me realize that the neutral (0dB) position of some HDA-Intel
-record sliders is somwhere in the middle and not at the ends.)
-
-Lately I've been mostly wrestling with the QT4 part of the application
-and not the ALSA part but I followed this thread loosely.
-
-To say I encoutered some (maybe) bugs with jumping sliders and missing
-enum values but most of them disappeared after and update from Debian
-lenny to Debian squeeze. And still the ALSA version of squeeze is
-probably no the latest. Therefore I did not want to comment on these yet.
-
-Regards,
-Sebastian
+ASoC has similar clocking schemes supported, though it relies on the
+board for a lot of the decision making since there's an element of
+policy about the use cases which may need to be handled that ASoC type
+systems can be used.  The ideal thing is pretty much what you describe
+where the driver handles things as transparently as possible to the
+applications.
