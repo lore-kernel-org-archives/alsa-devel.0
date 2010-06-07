@@ -1,20 +1,19 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] sound/spi: patch for the unuseful variable
-	removal
-Date: Mon, 07 Jun 2010 13:52:40 +0100
-Message-ID: <1275915160.3045.106.camel@odin>
-References: <4C08B9A0.5000408@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] sound: atmel: trivial code cleanup
+Date: Mon, 7 Jun 2010 14:26:45 +0100
+Message-ID: <20100607132645.GE13287@rakim.wolfsonmicro.main>
+References: <AANLkTikXHk_E8-F4OGsuAF6JFhgxjs3genWsY_ko2ohZ@mail.gmail.com>
+	<1275915820-17798-1-git-send-email-nicolas.ferre@atmel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id A9272103872
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E0434103818
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 15:19:28 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so2420272wwf.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 06:19:23 -0700 (PDT)
-In-Reply-To: <4C08B9A0.5000408@gmail.com>
+	Mon,  7 Jun 2010 15:26:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1275915820-17798-1-git-send-email-nicolas.ferre@atmel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,34 +23,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Cc: alsa-devel@alsa-project.org, mcuos.com@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-06-04 at 16:30 +0800, Wan ZongShun wrote:
-> The '*bitclk' of structure 'snd_at73c213' seems no use
-> ,so I make a patch to remove the unnecessary variable.
+On Mon, Jun 07, 2010 at 03:03:40PM +0200, Nicolas Ferre wrote:
+> From: Wan ZongShun <mcuos.com@gmail.com>
+> 
+> Remove break after return, it is not needed.
 > 
 > Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
-> ---
->  sound/spi/at73c213.c |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
-> 
-> diff --git a/sound/spi/at73c213.c b/sound/spi/at73c213.c
-> index 4c7b051..1bc56b2 100644
-> --- a/sound/spi/at73c213.c
-> +++ b/sound/spi/at73c213.c
-> @@ -69,7 +69,6 @@ struct snd_at73c213 {
->  	int				irq;
->  	int				period;
->  	unsigned long			bitrate;
-> -	struct clk			*bitclk;
->  	struct ssc_device		*ssc;
->  	struct spi_device		*spi;
->  	u8				spi_wbuffer[2];
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Applied, thanks.
