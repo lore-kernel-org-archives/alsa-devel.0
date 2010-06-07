@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: External samplerate changes, UAC2 clock topologies
-Date: Mon, 7 Jun 2010 10:45:23 +0100
-Message-ID: <20100607094522.GA5993@sirena.org.uk>
-References: <20100604124635.GL2698@buzzloop.caiaq.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: tlv320dac33: Add support for
+ changing upper threshold
+Date: Mon, 07 Jun 2010 10:48:37 +0100
+Message-ID: <1275904117.3045.0.camel@odin>
+References: <1275897039-7577-1-git-send-email-peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id CE6BE1037EC
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54D581037FF
 	for <alsa-devel@alsa-project.org>;
-	Mon,  7 Jun 2010 11:45:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100604124635.GL2698@buzzloop.caiaq.de>
+	Mon,  7 Jun 2010 11:48:41 +0200 (CEST)
+Received: by wyg36 with SMTP id 36so2245487wyg.38
+	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 02:48:40 -0700 (PDT)
+In-Reply-To: <1275897039-7577-1-git-send-email-peter.ujfalusi@nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +25,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 04, 2010 at 02:46:35PM +0200, Daniel Mack wrote:
+On Mon, 2010-06-07 at 10:50 +0300, Peter Ujfalusi wrote:
+> Upper threshold is used in mode7 of DAC33.
+> Instead of hard wired UTHR, add control to change the upper threshold
+> value.
+> Changing upper threshold is not allowed when the playback is already
+> running, since wrongly timed change in the UTHR can cause problems
+> with the codec.
+> With this control the length of the burst in mode7 can be changed.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+> ---
+>  sound/soc/codecs/tlv320dac33.c |   57 +++++++++++++++++++++++++++++++++------
+>  1 files changed, 48 insertions(+), 9 deletions(-)
+> 
 
-> Any oppinions? Has this been done before for any other audio hardware
-> supported by ALSA?
+Applied.
 
-ASoC has similar clocking schemes supported, though it relies on the
-board for a lot of the decision making since there's an element of
-policy about the use cases which may need to be handled that ASoC type
-systems can be used.  The ideal thing is pretty much what you describe
-where the driver handles things as transparently as possible to the
-applications.
+Thanks
+
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
