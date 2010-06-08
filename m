@@ -1,31 +1,18 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Tue, 8 Jun 2010 12:01:52 +0800
-Message-ID: <AANLkTil4q611GLiV-k1vO2Svepg_kioyUypp2rWNslxR@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>
-	<hp744t$5b5$1@dough.gmane.org>
-	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>
-	<hqbv5m$cmf$1@dough.gmane.org>
-	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>
-	<hqmbmm$hsj$1@dough.gmane.org>
-	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>
-	<htls4d$phr$1@dough.gmane.org> <4BFE7840.4070004@ladisch.de>
-	<htm0et$eb4$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
-	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
-	<huicj9$t30$1@dough.gmane.org>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Re: Mixer volume/decibel mapping
+Date: Tue, 08 Jun 2010 08:08:13 +0200
+Message-ID: <4C0DDE4D.9070201@gmx.de>
+References: <201005191834.57919.vand2@gmx.de>	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	<AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>	<201005211018.41802.vand2@gmx.de>	<AANLkTikylA_oo6GBKuLHewVX9oMCNjQMeS90HThDR47K@mail.gmail.com>	<4C0CB996.5010202@gmx.de>
+	<AANLkTinTV_MnU-rBOrLc66YhGFbP9SJVZ2p5DFlcS16T@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 08B8A1037FC
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id 90145103805
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jun 2010 06:08:29 +0200 (CEST)
-Received: by pxi3 with SMTP id 3so1671410pxi.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 21:08:28 -0700 (PDT)
-In-Reply-To: <huicj9$t30$1@dough.gmane.org>
+	Tue,  8 Jun 2010 08:09:30 +0200 (CEST)
+In-Reply-To: <AANLkTinTV_MnU-rBOrLc66YhGFbP9SJVZ2p5DFlcS16T@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -35,54 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/7 Colin Guthrie <gmane@colin.guthr.ie>
 
-> 'Twas brillig, and Raymond Yau at 06/06/10 01:12 did gyre and gimble:
-> > 2010/5/28 Colin Guthrie <gmane@colin.guthr.ie>
-> >
-> >> 'Twas brillig, and Colin Guthrie at 27/05/10 15:43 did gyre and gimble:
-> >>> PA should play nice with the softvol plugin so I don't think this is
-> the
-> >>> bit that is at fault.
-> >>>
-> >>> I strongly suspect that the reason has already been correctly
-> identified
-> >>> a while ago, which is that this card considers -48dB silent where as PA
-> >>> assumes this level is -200dB. I believe it was Raymond who pointed out
-> >>> the -48dB level in the HDA spec before on this list.
-> >>>
-> >>
-> >
-> > if  floating point 0.0 is -inf dB , and 1.0 is 0dB ,
-> >
-> > 0.5 is -6dB , 0.25 is -12 dB , 0.125 is -24dB and 0.0625 is -48dB
->
-> This is just a pure mapping from dB->linear, but as this linear mapping
-> is generally not "natural" there are several different approaches to
-> presenting this to users. In PA, a cubic mapping is used on top of this
-> basic conversion, to map to the percentage scale (0.0 to 1.0 if you like).
->
-> So I'm not sure what point you're making by providing these numbers. Can
-> you explain?
->
-> > how can PA master volume control at 10~15% equivalent to HDA 's -48dB ?
->
-> Not sure what you mean here, but I suspect it's the cubic mapping that
-> is confusing you.
->
+>>>>> I thinks Sebastian's question is whether he can use
+>>>>> snd_mixer_selem_set_playback_
+>>>>> dB() set any values in between the volume steps
+>>>>>
+>>>>> e.g. Master volume control of ac97 is 1.5 dB per step,
+>>>>>
+>>>>> when using snd_mixer_selem_set_playback_dB() to set -0.9dB , how can
+>> the
+>>>>> mixer application know what dB value has been set since the value is in
+>>>>> between -1.5dB and 0dB without snd_mixer_selem_get_playbackdB()
+>>>>
+>>>> Indeed I quite happy with what ALSA already provides (I'm just an
+>>>> interested
+>>>> amateur). My main problem is that there is no documentation for the
+>> Mixer
+>>>> API
+>>>> and how things are related to each other. Like CTL, HCTL, Mixer and
+>>>> SimpleMixer and of course volume and dB in the snd_mixer_selem_
+>> functions.
+>>>>
+>>>> The root issue is that I wondered if the mixer application should offer
+>> a
+>>>> separate text input for decibel values besides the text input for volume
+>>>> values. As pointed out this would not allow for finer grained volume
+>>>> control
+>>>> therefore for the moment I'll probably stick with a mere text label for
+>> dB.
+>>>>
+>>>>
+>>
+>>> The main difference between those volume controls using TLV_DB_SCALE and
+>>> TLV_DB_LINEAR is -6dB is at the middle of TLV_DB_LINEAR and TLV_DB_SCALE
+>> has
+>>> fixed dB value between any two steps.
+>>
+>> What's TLV_DB_SCALE and TLV_DB_LINEAR for?
+>> A grep in the alsa-lib sources did not return anything.
+>>
+>>> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/332631
+>>>
+>>> if the user has both hda onboard sound and emu10k1, he may notice that
+>> there
+>>> is big difference if he set volume at percentage instead of dB
+>>
+>> Interesting, that's my setup. I have an onboard HDA Intel and a
+>> pci SBLive! Card and some el cheapo USB sound cards to experiment
+>> with. Thanks I'll give the volume listening test a try at some point.
+>>
+> 
+> 
+> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4883
+> 
+> Pekka Lampila reported that when he set -40dB and only get back -9999999 by
+> his program alsa_mixer_test.c
+> 
+> I don't have emu10k1 so don't know whether this is a bug of alsa-lib or not
 
->> FWIW, I've got the same/similar h/w with a cutoff at 14% in PA as you
-have.
+I also get a big jump from -39.60dB to -99999.99 dB for some emu10k1
+sliders when I move them to the minimum although their advertised
+minimum is -40dB. This looks like a way to express log ( 0 ).
 
-According to your email , you mention than your hardware has a cutoff at 14%
-in PA
-
-the mixer application programmer  can select any kind of scaling in the
-slider
-
-do you mean 14% in pavucontrol or Master volume control of "pulse" device ?
-
-but pavucontrol did not provide any dB value at any point
+(Sorry, I wrote this before with the wrong email address...)
