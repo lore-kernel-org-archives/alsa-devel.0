@@ -1,62 +1,34 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH 2/2] pxa: modify the pxa2xx-ac97 file for
-	pxa168
-Date: Tue, 08 Jun 2010 16:01:55 +0100
-Message-ID: <1276009315.3003.346.camel@odin>
-References: <4C0E21A1.4000909@gmail.com>
-	<AANLkTimNwtScfKYVc4qPZFEP6GYklPoHLgr2AE7yquQL@mail.gmail.com>
-	<AANLkTimZjKvAAcK9xiXng7wJ0tVBJrmTIvMgyzrS7HqH@mail.gmail.com>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: RE: [PATCH 1/3] EP93xx: Add i2s core support
+Date: Tue, 8 Jun 2010 10:01:44 -0500
+Message-ID: <0D753D10438DA54287A00B027084269763708AFD76@AUSP01VMBX24.collaborationhost.net>
+References: <1275991272-30122-1-git-send-email-ryan@bluewatersys.com>
+	<1275991272-30122-2-git-send-email-ryan@bluewatersys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 278FB103902
-	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jun 2010 17:02:02 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so3368029wwf.38
-	for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2010 08:02:01 -0700 (PDT)
-In-Reply-To: <AANLkTimZjKvAAcK9xiXng7wJ0tVBJrmTIvMgyzrS7HqH@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Eric Miao <eric.y.miao@gmail.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1275991272-30122-2-git-send-email-ryan@bluewatersys.com>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Ryan Mallon <ryan@bluewatersys.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Cc: "john.cooper@third-harmonic.com" <john.cooper@third-harmonic.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "chasedouglas@gmail.com" <chasedouglas@gmail.com>, "r&d4@dave-tech.it" <r&d4@dave-tech.it>, "dhuggins@cs.cmu.edu" <dhuggins@cs.cmu.edu>, "marshall@coolbananas.co.nz" <marshall@coolbananas.co.nz>, "buytenh@wantstofly.org" <buytenh@wantstofly.org>, "lrg@slimlogic.co.uk" <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2010-06-08 at 22:49 +0800, Wan ZongShun wrote:
-> 2010/6/8 Eric Miao <eric.y.miao@gmail.com>:
-> > 2010/6/8 Wan ZongShun <mcuos.com@gmail.com>:
-> >> In order to allow the sharing of the pxa2xx-ac97 driver file with pxa168,
-> >> we have to do a little change to pxa2xx-ac97 file.
-> >>
-> >> All private register addresses were located in mach/include/ac97.h.
-> >
-> > This is not the right way to go, as suggested already. I hope the ac97
-> > driver is more self-contained. i.e. having a platform device for:
-> >
-> >  - where the registers are mapped from
-> >  - drcmr channel numbers can be encoded within dma resource
-> >  - ac97 register definitions are not exposed everywhere
-> >
-> 
-> Got it, so I should put above to platform_device and remove regs-ac97.h,
-> any private bit definition should be removed to driver directory as
-> driver _only_.
-> 
+On Tuesday, June 08, 2010 3:01 AM, Ryan Mallon wrote:
+>
+> Add core support for EP93xx i2s audio
+>
+> Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
 
-...and could you also CC Mark on any ASoC related changes too.
+Looks good.
 
-Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+Acked-by: H Hartley Sweeten <hsweeten@visionengravers.com>
