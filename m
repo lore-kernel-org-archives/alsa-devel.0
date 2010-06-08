@@ -1,39 +1,87 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] EP93xx: Add i2s audio driver
-Date: Tue, 8 Jun 2010 11:24:44 +0100
-Message-ID: <20100608102443.GB7129@sirena.org.uk>
-References: <1275991272-30122-1-git-send-email-ryan@bluewatersys.com>
-	<1275991272-30122-3-git-send-email-ryan@bluewatersys.com>
-	<20100608100514.GA7624@rakim.wolfsonmicro.main>
-	<4C0E16D7.5070506@bluewatersys.com>
+From: Wan ZongShun <mcuos.com@gmail.com>
+Subject: [PATCH 1/2] pxa: Move 'regs-ac97.h' from /mach-pxa/inlude/ to
+	/plat-pxa/include
+Date: Tue, 08 Jun 2010 18:44:58 +0800
+Message-ID: <4C0E1F2A.1060306@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 42D2124380
-	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jun 2010 12:24:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4C0E16D7.5070506@bluewatersys.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Mallon <ryan@bluewatersys.com>
-Cc: john.cooper@third-harmonic.com, chasedouglas@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, r&d4@dave-tech.it, hartleys@visionengravers.com, dhuggins@cs.cmu.edu, marshall@coolbananas.co.nz, buytenh@wantstofly.org, lrg@slimlogic.co.uk
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+	<mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: linux-arm-kernel-bounces@lists.infradead.org
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel <alsa-devel@alsa-project.org>, Eric Miao <eric.y.miao@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Mark
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 08, 2010 at 10:09:27PM +1200, Ryan Mallon wrote:
+There is two kinds of changes:
+(1) Move 'regs-ac97.h' from /mach-pxa/inlude/ to /plat-pxa/include.
 
-> There are no changes to the patch which you have picked up, only the
-> other two. I reposted the whole series for completeness. Will post
-> incremental patches if there are changes to patch 2/3.
+It will be the public header file If pxa168 ac97 driver was submitted.
 
-OK, please add something to that effect to the changelog when reposting
-without change so I know what's going on.
+(2) Modify the path of including header file.
+
+Apply to (1).
+
+Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
+
+---
+ .../mach => plat-pxa/include/plat}/regs-ac97.h     |    0
+ sound/arm/pxa2xx-ac97-lib.c                        |    2 +-
+ sound/arm/pxa2xx-ac97.c                            |    2 +-
+ sound/soc/pxa/pxa2xx-ac97.c                        |    2 +-
+ 4 files changed, 3 insertions(+), 3 deletions(-)
+ rename arch/arm/{mach-pxa/include/mach => plat-pxa/include/plat}/regs-ac97.h (100%)
+
+diff --git a/arch/arm/mach-pxa/include/mach/regs-ac97.h b/arch/arm/plat-pxa/include/plat/regs-ac97.h
+similarity index 100%
+rename from arch/arm/mach-pxa/include/mach/regs-ac97.h
+rename to arch/arm/plat-pxa/include/plat/regs-ac97.h
+diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
+index 88eec38..e40093c 100644
+--- a/sound/arm/pxa2xx-ac97-lib.c
++++ b/sound/arm/pxa2xx-ac97-lib.c
+@@ -21,7 +21,7 @@
+ #include <sound/pxa2xx-lib.h>
+
+ #include <asm/irq.h>
+-#include <mach/regs-ac97.h>
++#include <plat/regs-ac97.h>
+ #include <mach/audio.h>
+
+ static DEFINE_MUTEX(car_mutex);
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index 5d94118..246d0a1 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -20,7 +20,7 @@
+ #include <sound/initval.h>
+ #include <sound/pxa2xx-lib.h>
+
+-#include <mach/regs-ac97.h>
++#include <plat/regs-ac97.h>
+ #include <mach/audio.h>
+
+ #include "pxa2xx-pcm.h"
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index d314115..173c476 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -20,9 +20,9 @@
+ #include <sound/pxa2xx-lib.h>
+
+ #include <mach/hardware.h>
+-#include <mach/regs-ac97.h>
+ #include <mach/dma.h>
+ #include <mach/audio.h>
++#include <plat/regs-ac97.h>
+
+ #include "pxa2xx-pcm.h"
+ #include "pxa2xx-ac97.h"
+-- 
+1.6.3.3
