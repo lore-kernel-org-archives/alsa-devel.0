@@ -1,22 +1,18 @@
 From: "Justin P. Mattock" <justinmattock@gmail.com>
-Subject: Re: [PATCH 1/5]alsa:patch_realtek.c Add SSID table for
-	MacBookAir2, 1
-Date: Tue, 08 Jun 2010 09:11:13 -0700
-Message-ID: <4C0E6BA1.3080200@gmail.com>
-References: <1275865793-7357-1-git-send-email-justinmattock@gmail.com>
-	<s5h39wxk1p6.wl%tiwai@suse.de>
+Subject: [PATCH]alsa:patch_realtek.c Add support for the
+	MacBookAir1, 1
+Date: Tue,  8 Jun 2010 10:45:40 -0700
+Message-ID: <1276019140-12376-1-git-send-email-justinmattock@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id B948C103813
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4D8C22449A
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jun 2010 18:11:13 +0200 (CEST)
-Received: by fxm18 with SMTP id 18so3102285fxm.38
-	for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2010 09:11:13 -0700 (PDT)
-In-Reply-To: <s5h39wxk1p6.wl%tiwai@suse.de>
+	Tue,  8 Jun 2010 19:45:51 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so3173249fxm.38
+	for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2010 10:45:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,63 +22,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, linux-kernel@vger.kernel, "Justin P. Mattock" <justinmattock@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/08/2010 08:01 AM, Takashi Iwai wrote:
-> At Sun,  6 Jun 2010 16:09:49 -0700,
-> Justin P. Mattock wrote:
->>
->> This adds the SSID number to snd_pci_quirk for the
->> MacBookAir2,1 taken from codec#0 at:
->> http://launchpadlibrarian.net/49455483/Card0.Codecs.codec.0.txt
->> keep in mind I do not have one of these machines on hand
->> so please if you do have this machine please test for me..
->>
->>   Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
->
-> I applied this one (after rearranging the quirk list order).
->
-> Also the patch 3 and 5, both one-liner additions of a quirk, are
-> applied, too, since they got tested somehow in bug reports.
->
-> Could you rebase your changes for the proper MBA 1,1 and imac 7,1
-> against the latest sound tree so that anyone can test them?  If they
-> work better, then we can apply later your changes in addition.
->
->
-> Thanks!
->
-> Takashi
->
+This patch adds support for the MacBookAir1,1 
+Note:I do not have this machine on hand only the
+codec#0 file for the machine.. located at
+https://bugs.launchpad.net/mactel-support/+bug/268301
+So please test if you have the appropriate equipment,
+and report any issues to the alsa devel list
+(alsa-devel@alsa-project.org).
 
-o.k. cool..
-I'll rebase those two patches and send them out
-(hopefully people test)..
+ Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
->> ---
->>   sound/pci/hda/patch_realtek.c |    1 +
->>   1 files changed, 1 insertions(+), 0 deletions(-)
->>
->> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
->> index 17d4548..9b82d28 100644
->> --- a/sound/pci/hda/patch_realtek.c
->> +++ b/sound/pci/hda/patch_realtek.c
->> @@ -9487,6 +9487,7 @@ static struct snd_pci_quirk alc882_ssid_cfg_tbl[] = {
->>   	SND_PCI_QUIRK(0x106b, 0x4000, "MacbookPro 5,1", ALC885_MB5),
->>   	SND_PCI_QUIRK(0x106b, 0x4600, "MacbookPro 5,2", ALC885_MB5),
->>   	SND_PCI_QUIRK(0x106b, 0x4100, "Macmini 3,1", ALC885_MACMINI3),
->> +	SND_PCI_QUIRK(0x106b, 0x3500, "MacBookAir 2,1", ALC885_MBA21),
->>   	{} /* terminator */
->>   };
->>
->> --
->> 1.6.5.2.180.gc5b3e
->>
->
+---
+ Documentation/sound/alsa/HD-Audio-Models.txt |    1 +
+ sound/pci/hda/patch_realtek.c                |   59 +++++++++++++++++++++++++-
+ 2 files changed, 58 insertions(+), 2 deletions(-)
 
-
-cheers,
-
-Justin P. Mattock
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt b/Documentation/sound/alsa/HD-Audio-Models.txt
+index 1d38b0d..d3838b5 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -125,6 +125,7 @@ ALC882/883/885/888/889
+   macpro	MacPro support
+   mb5		Macbook 5,1
+   macmini3	Macmini 3,1
++  mba11		MacBook Air 1,1
+   mba21		Macbook Air 2,1
+   mbp3		Macbook Pro rev3
+   imac24	iMac 24'' with jack detection
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index fc767b6..1dcf78c 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -209,6 +209,7 @@ enum {
+ 	ALC882_ASUS_A7J,
+ 	ALC882_ASUS_A7M,
+ 	ALC885_MACPRO,
++	ALC885_MBA11,
+ 	ALC885_MBA21,
+ 	ALC885_MBP3,
+ 	ALC885_MB5,
+@@ -7444,6 +7445,13 @@ static struct snd_kcontrol_new alc885_mba21_mixer[] = {
+      { }
+ };
+ 
++/* MacBookAir1,1 not sure what/where things are(dont have the machine). */
++
++static struct snd_kcontrol_new alc885_mba11_mixer[] = {
++      HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
++      HDA_BIND_MUTE("Speaker Playback Switch", 0x0c, 0x02, HDA_OUTPUT),
++     { }
++};
+ 
+ static struct snd_kcontrol_new alc885_mbp3_mixer[] = {
+ 	HDA_CODEC_VOLUME("Speaker Playback Volume", 0x0c, 0x00, HDA_OUTPUT),
+@@ -7929,6 +7937,40 @@ static struct hda_verb alc885_mba21_init_verbs[] = {
+ 	{ }
+  };
+ 
++static struct hda_verb alc885_mba11_init_verbs[] = {
++	/*Internal and HP Speaker Mixer*/
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_ZERO},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x0c, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(1)},
++	/* Main Speaker */	
++	{0x14, AC_VERB_SET_PIN_WIDGET_CONTROL, (PIN_OUT | AC_PINCTL_VREF_50) },
++	{0x14, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x14, AC_VERB_SET_CONNECT_SEL, 0x00},
++	/* HP jack */
++	{0x15, AC_VERB_SET_PIN_WIDGET_CONTROL, 0xc4},
++	{0x15, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE},
++	{0x15, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{0x15, AC_VERB_SET_UNSOLICITED_ENABLE, (ALC880_HP_EVENT | AC_USRSP_EN)},
++	/* FIXME: Line in? (as well as  the mic). */
++	{0x17, AC_VERB_SET_PIN_WIDGET_CONTROL, AC_PINCTL_VREF_50},
++	{0x17, AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE},
++	/* 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In */
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
++	{0x22, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
++	/* 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In */
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
++	{0x23, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
++	/* 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In */
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_UNMUTE(0)},
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(3)},
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(2)},
++	{0x24, AC_VERB_SET_AMP_GAIN_MUTE, AMP_IN_MUTE(4)},
++	{ }
++};
+ 
+ /* Macbook Pro rev3 */
+ static struct hda_verb alc885_mbp3_init_verbs[] = {
+@@ -9298,6 +9340,7 @@ static const char *alc882_models[ALC882_MODEL_LAST] = {
+ 	[ALC885_MACPRO]		= "macpro",
+ 	[ALC885_MB5]		= "mb5",
+ 	[ALC885_MACMINI3]	= "macmini3",
++	[ALC885_MBA11]		= "mba11",
+ 	[ALC885_MBA21]		= "mba21",
+ 	[ALC885_MBP3]		= "mbp3",
+ 	[ALC885_IMAC24]		= "imac24",
+@@ -9478,7 +9521,7 @@ static struct snd_pci_quirk alc882_ssid_cfg_tbl[] = {
+ 	SND_PCI_QUIRK(0x106b, 0x2c00, "MacbookPro rev3", ALC885_MBP3),
+ 	SND_PCI_QUIRK(0x106b, 0x3000, "iMac", ALC889A_MB31),
+ 	SND_PCI_QUIRK(0x106b, 0x3200, "iMac 7,1 Aluminum", ALC882_ASUS_A7M),
+-	SND_PCI_QUIRK(0x106b, 0x3400, "MacBookAir 1,1", ALC885_MBP3),
++	SND_PCI_QUIRK(0x106b, 0x3400, "MacBookAir 1,1", ALC885_MBA11),
+ 	SND_PCI_QUIRK(0x106b, 0x3500, "MacBookAir 2,1", ALC885_MBA21),
+ 	SND_PCI_QUIRK(0x106b, 0x3600, "Macbook 3,1", ALC889A_MB31),
+ 	SND_PCI_QUIRK(0x106b, 0x3800, "MacbookPro 4,1", ALC885_MBP3),
+@@ -9542,7 +9585,19 @@ static struct alc_config_preset alc882_presets[] = {
+ 		.input_mux = &alc882_capture_source,
+ 		.dig_out_nid = ALC882_DIGOUT_NID,
+ 	},
+-	   [ALC885_MBA21] = {
++	[ALC885_MBA11] = {
++		.mixers = { alc885_mba11_mixer },
++		.init_verbs = { alc885_mba11_init_verbs, alc880_gpio1_init_verbs },
++		.num_dacs = 2,
++		.dac_nids = alc882_dac_nids,
++		.channel_mode = alc885_mba21_ch_modes,
++		.num_channel_mode = ARRAY_SIZE(alc885_mba21_ch_modes),
++		.input_mux = &alc882_capture_source,
++		.unsol_event = alc_automute_amp_unsol_event,
++		.setup = alc885_mbp3_setup,
++		.init_hook = alc_automute_amp,
++	},
++	[ALC885_MBA21] = {
+ 			.mixers = { alc885_mba21_mixer },
+ 			.init_verbs = { alc885_mba21_init_verbs, alc880_gpio1_init_verbs },
+ 			.num_dacs = 2,
+-- 
+1.7.1.rc1.21.gf3bd6
