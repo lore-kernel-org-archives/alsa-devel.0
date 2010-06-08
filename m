@@ -1,30 +1,22 @@
-From: Colin Guthrie <gmane@colin.guthr.ie>
-Subject: Re: wrong decibel data?
-Date: Tue, 08 Jun 2010 16:40:22 +0100
-Message-ID: <hulo7u$oe7$1@dough.gmane.org>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>	<hp744t$5b5$1@dough.gmane.org>	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>	<hqbv5m$cmf$1@dough.gmane.org>	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>	<hqmbmm$hsj$1@dough.gmane.org>	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>	<htls4d$phr$1@dough.gmane.org>
-	<4BFE7840.4070004@ladisch.de>	<htm0et$eb4$1@dough.gmane.org>
-	<htm9mn$n1c$1@dough.gmane.org>	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>	<huicj9$t30$1@dough.gmane.org>
-	<AANLkTil4q611GLiV-k1vO2Svepg_kioyUypp2rWNslxR@mail.gmail.com>
+From: "Justin P. Mattock" <justinmattock@gmail.com>
+Subject: Re: [PATCH 1/5]alsa:patch_realtek.c Add SSID table for
+	MacBookAir2, 1
+Date: Tue, 08 Jun 2010 09:11:13 -0700
+Message-ID: <4C0E6BA1.3080200@gmail.com>
+References: <1275865793-7357-1-git-send-email-justinmattock@gmail.com>
+	<s5h39wxk1p6.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 86567103912
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id B948C103813
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jun 2010 17:39:52 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OM0u7-0004mL-6O
-	for alsa-devel@alsa-project.org; Tue, 08 Jun 2010 17:39:51 +0200
-Received: from brent.tribalogic.net ([78.86.109.144])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2010 17:39:51 +0200
-Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2010 17:39:51 +0200
-In-Reply-To: <AANLkTil4q611GLiV-k1vO2Svepg_kioyUypp2rWNslxR@mail.gmail.com>
+	Tue,  8 Jun 2010 18:11:13 +0200 (CEST)
+Received: by fxm18 with SMTP id 18so3102285fxm.38
+	for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2010 09:11:13 -0700 (PDT)
+In-Reply-To: <s5h39wxk1p6.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,70 +26,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-'Twas brillig, and Raymond Yau at 08/06/10 05:01 did gyre and gimble:
-> According to your email , you mention than your hardware has a cutoff at 14%
-> in PA
+On 06/08/2010 08:01 AM, Takashi Iwai wrote:
+> At Sun,  6 Jun 2010 16:09:49 -0700,
+> Justin P. Mattock wrote:
+>>
+>> This adds the SSID number to snd_pci_quirk for the
+>> MacBookAir2,1 taken from codec#0 at:
+>> http://launchpadlibrarian.net/49455483/Card0.Codecs.codec.0.txt
+>> keep in mind I do not have one of these machines on hand
+>> so please if you do have this machine please test for me..
+>>
+>>   Signed-off-by: Justin P. Mattock<justinmattock@gmail.com>
+>
+> I applied this one (after rearranging the quirk list order).
+>
+> Also the patch 3 and 5, both one-liner additions of a quirk, are
+> applied, too, since they got tested somehow in bug reports.
+>
+> Could you rebase your changes for the proper MBA 1,1 and imac 7,1
+> against the latest sound tree so that anyone can test them?  If they
+> work better, then we can apply later your changes in addition.
+>
+>
+> Thanks!
+>
+> Takashi
+>
 
-It's actually closer to about 16%... but in that area yes.
+o.k. cool..
+I'll rebase those two patches and send them out
+(hopefully people test)..
 
-> the mixer application programmer  can select any kind of scaling in the
-> slider
-
-Indeed, but pulseaudio exposes a pa_volume_t which is basically a linear
-scale. This upper bound is exposed via a constant: PA_VOLUME_MAX
-
-pulse/volume.h:113:#define PA_VOLUME_MAX ((pa_volume_t) UINT32_MAX-1)
-
-And the "100%" aka 0dB point is represented by another constant,
-PA_VOLUME_NORM:
-
-pulse/volume.h:107:#define PA_VOLUME_NORM ((pa_volume_t) 0x10000U)
-
-The scale between 0 and PA_VOLUME_NORM is linear via pa_volume_t but
-this is mapped via the cubic mapping internally when controling the
-volume of the alsa device.
-
-So volume control GUIs and the ALSA plugin use this scale in a linear
-fashon to represent the rand 0% (pa_volume_t = 0) to 100% (pa_volume_t =
-PA_VOLUME_NORM).
-
-> do you mean 14% in pavucontrol or Master volume control of "pulse" device ?
-
-Both. They both use the range 0 ... PA_VOLUME_NORM to represent 0% -
-100% and thus they correspond with each other fine[1]
-
-> but pavucontrol did not provide any dB value at any point
-
-It doesn't display the dB value, but perhaps it should? It's more of a
-developer tool anyway (tho' used by a lot of users until desktop
-provided tools catch up) so exposing dB here would make sense IMO. I'll
-cook up a patch.
+>> ---
+>>   sound/pci/hda/patch_realtek.c |    1 +
+>>   1 files changed, 1 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+>> index 17d4548..9b82d28 100644
+>> --- a/sound/pci/hda/patch_realtek.c
+>> +++ b/sound/pci/hda/patch_realtek.c
+>> @@ -9487,6 +9487,7 @@ static struct snd_pci_quirk alc882_ssid_cfg_tbl[] = {
+>>   	SND_PCI_QUIRK(0x106b, 0x4000, "MacbookPro 5,1", ALC885_MB5),
+>>   	SND_PCI_QUIRK(0x106b, 0x4600, "MacbookPro 5,2", ALC885_MB5),
+>>   	SND_PCI_QUIRK(0x106b, 0x4100, "Macmini 3,1", ALC885_MACMINI3),
+>> +	SND_PCI_QUIRK(0x106b, 0x3500, "MacBookAir 2,1", ALC885_MBA21),
+>>   	{} /* terminator */
+>>   };
+>>
+>> --
+>> 1.6.5.2.180.gc5b3e
+>>
+>
 
 
+cheers,
 
-Col
-
-
-1. Note that this may change at some point in the future as we define
-how much to show the user as an "overdrive" of volume. As you may know,
-gnome-volume-control allows a setting up to 150%, but this isn't
-refelected in the alsa plugin. Ultimately we decided to define a new
-constant "PA_VOLUME_OVERDRIVE" (or similar, I can't remember the exact
-name) and set this to be +11dB (via the current cubic mapping function).
-This approximates to the 150% offered in g-v-c.
-
--- 
-
-Colin Guthrie
-gmane(at)colin.guthr.ie
-http://colin.guthr.ie/
-
-Day Job:
-  Tribalogic Limited [http://www.tribalogic.net/]
-Open Source:
-  Mandriva Linux Contributor [http://www.mandriva.com/]
-  PulseAudio Hacker [http://www.pulseaudio.org/]
-  Trac Hacker [http://trac.edgewall.org/]
+Justin P. Mattock
