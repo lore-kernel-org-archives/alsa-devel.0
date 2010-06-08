@@ -1,19 +1,22 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: New release of amidicat program,
- connecting MIDI to stdin/out
-Date: Tue, 8 Jun 2010 10:02:51 +0200
-Message-ID: <20100608080251.GD2695@buzzloop.caiaq.de>
-References: <4C0DF2A8.8000305@krellan.com>
+Subject: Re: [PATCH 1/4] dump_audiostreaming_interface(): fix
+	ac-3 decoder
+Date: Tue, 8 Jun 2010 10:10:19 +0200
+Message-ID: <20100608081019.GE2695@buzzloop.caiaq.de>
+References: <1275403951-16253-1-git-send-email-daniel@caiaq.de>
+	<1275403951-16253-2-git-send-email-daniel@caiaq.de>
+	<20100601165211.GR2695@buzzloop.caiaq.de>
+	<20100601170658.GA24055@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B188110380C
+	by alsa0.perex.cz (Postfix) with ESMTP id 5539F10380C
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jun 2010 10:02:55 +0200 (CEST)
+	Tue,  8 Jun 2010 10:10:24 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <4C0DF2A8.8000305@krellan.com>
+In-Reply-To: <20100601170658.GA24055@kroah.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,31 +26,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Josh Lehan <alsa@krellan.com>
-Cc: alsa-devel@alsa-project.org
+To: Greg KH <greg@kroah.com>
+Cc: dbrownell@users.sourceforge.net, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, gregkh@suse.de, t.sailer@alumni.ethz.ch
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 08, 2010 at 12:35:04AM -0700, Josh Lehan wrote:
-> Hello.  On the mailing list a few months ago, mentioned a program I had
-> written, then called "midicat".  Found out there's another product by
-> that name.  So, the new name of the program is "amidicat".  The "a"
-> prefix also clarifies that it's an ALSA program.
-> 
-> It's a program that connects the ALSA MIDI sequencer to standard input
-> and output.  Among other things, this is fun for prototyping quick MIDI
-> one-liners on the command line, such as "echo 903C7F | amidicat" to play
-> Middle C.
-> 
-> I have made a new release of the program, which is basically unchanged,
-> except for a few bug fixes (thanks to Valgrind for discovering a minor
-> memory leak).  The biggest improvement is that there's now a manual page
-> and a DocBook documentation page.
-> 
-> Here's the webpage for amidicat, if interested:
-> 
-> http://www.krellan.com/amidicat/
+Hi Greg,
 
-Again, thanks. Any chance that any Debian maintainer reading this can
-take care for bringing this useful tool to the repositories?
+On Tue, Jun 01, 2010 at 10:06:58AM -0700, Greg KH wrote:
+> On Tue, Jun 01, 2010 at 06:52:12PM +0200, Daniel Mack wrote:
+> > Greg,
+> > 
+> > I believe you're maintaining usb-utils now, right? At least it was
+> > you posting an announcement for a new release the other day.
+> 
+> Yes I am.
+> 
+> > Let me know if I should do anything else to get these patches merged :)
+> 
+> Let me wake up and get a chance to get around to these patches?  :)
+> 
+> I'll get to them in a day or so, they look great to me.
 
+Just a reminder - could you have a look at them already?
+For easier access, the six patches I sent can now also be pulled from
+
+  git://github.com/zonque/usbutils.git
+
+FWIW, I got positive feedback from people developing USB audio class 2
+devices - my patches seem to display the right things for them :)
+
+Thanks,
 Daniel
