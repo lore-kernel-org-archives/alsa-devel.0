@@ -1,17 +1,21 @@
-From: Yegor Yefremov <yegorslists@googlemail.com>
-Subject: [PATCH] atmel: set "channel A event" output to debug
-Date: Tue, 8 Jun 2010 08:57:13 +0200
-Message-ID: <AANLkTiktFx3HpskOEwcCLbH_8COD8-wXkXL1Suvy9SuR@mail.gmail.com>
+From: Josh Lehan <alsa@krellan.com>
+Subject: New release of amidicat program,
+	connecting MIDI to stdin/out
+Date: Tue, 08 Jun 2010 00:35:04 -0700
+Message-ID: <4C0DF2A8.8000305@krellan.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id CDA2510380F
+Received: from server3.hostdango.com (server3.hostdango.com [67.222.146.219])
+	by alsa0.perex.cz (Postfix) with ESMTP id B8C2910380A
 	for <alsa-devel@alsa-project.org>;
-	Tue,  8 Jun 2010 08:57:15 +0200 (CEST)
-Received: by gwaa18 with SMTP id a18so78646gwa.38
-	for <alsa-devel@alsa-project.org>; Mon, 07 Jun 2010 23:57:14 -0700 (PDT)
+	Tue,  8 Jun 2010 09:35:07 +0200 (CEST)
+Received: from c-24-4-183-246.hsd1.ca.comcast.net ([24.4.183.246]
+	helo=[10.6.9.2])
+	by server3.hostdango.com with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <alsa@krellan.com>) id 1OLtKy-0007EF-Oi
+	for alsa-devel@alsa-project.org; Tue, 08 Jun 2010 00:35:04 -0700
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, sedji.gaouaou@atmel.com, nicolas.ferre@atmel.com
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Yegor Yefremov <yegorslists@googlemail.com>
+Hello.  On the mailing list a few months ago, mentioned a program I had
+written, then called "midicat".  Found out there's another product by
+that name.  So, the new name of the program is "amidicat".  The "a"
+prefix also clarifies that it's an ALSA program.
 
-Index: b/sound/atmel/ac97c.c
-===================================================================
---- a/sound/atmel/ac97c.c	2010-06-01 15:28:23.000000000 +0200
-+++ b/sound/atmel/ac97c.c	2010-06-03 15:20:43.000000000 +0200
-@@ -657,7 +657,7 @@
- 	if (sr & AC97C_SR_CAEVT) {
- 		struct snd_pcm_runtime *runtime;
- 		int offset, next_period, block_size;
--		dev_info(&chip->pdev->dev, "channel A event%s%s%s%s%s%s\n",
-+		dev_dbg(&chip->pdev->dev, "channel A event%s%s%s%s%s%s\n",
- 				casr & AC97C_CSR_OVRUN   ? " OVRUN"   : "",
- 				casr & AC97C_CSR_RXRDY   ? " RXRDY"   : "",
- 				casr & AC97C_CSR_UNRUN   ? " UNRUN"   : "",
+It's a program that connects the ALSA MIDI sequencer to standard input
+and output.  Among other things, this is fun for prototyping quick MIDI
+one-liners on the command line, such as "echo 903C7F | amidicat" to play
+Middle C.
+
+I have made a new release of the program, which is basically unchanged,
+except for a few bug fixes (thanks to Valgrind for discovering a minor
+memory leak).  The biggest improvement is that there's now a manual page
+and a DocBook documentation page.
+
+Here's the webpage for amidicat, if interested:
+
+http://www.krellan.com/amidicat/
+
+The download is there.  Have fun, and thanks for reading this.
+
+Josh Lehan
