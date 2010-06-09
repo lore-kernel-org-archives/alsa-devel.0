@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 0/3] EP93xx: Add i2s audio support
-Date: Wed, 9 Jun 2010 11:17:43 +0100
-Message-ID: <20100609101742.GA5618@opensource.wolfsonmicro.com>
-References: <1275991272-30122-1-git-send-email-ryan@bluewatersys.com>
+From: "Sebastian H." <vand2@gmx.de>
+Subject: Re: Mixer volume/decibel mapping
+Date: Wed, 09 Jun 2010 12:26:01 +0200
+Message-ID: <4C0F6C39.1080009@gmx.de>
+References: <201005191834.57919.vand2@gmx.de>	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	<AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>	<201005211018.41802.vand2@gmx.de>	<AANLkTikylA_oo6GBKuLHewVX9oMCNjQMeS90HThDR47K@mail.gmail.com>	<4C0CB996.5010202@gmx.de>	<AANLkTinTV_MnU-rBOrLc66YhGFbP9SJVZ2p5DFlcS16T@mail.gmail.com>	<4C0DDCF2.90308@web.de>
+	<AANLkTilEz8pdtx0yHSLAu7e1m4zHEV9mzGv-4_abzdKz@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 55C092457D
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id D333B103927
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Jun 2010 12:17:32 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1275991272-30122-1-git-send-email-ryan@bluewatersys.com>
+	Wed,  9 Jun 2010 12:25:44 +0200 (CEST)
+In-Reply-To: <AANLkTilEz8pdtx0yHSLAu7e1m4zHEV9mzGv-4_abzdKz@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,17 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ryan Mallon <ryan@bluewatersys.com>
-Cc: john.cooper@third-harmonic.com, chasedouglas@gmail.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, r&d4@dave-tech.it, hartleys@visionengravers.com, dhuggins@cs.cmu.edu, marshall@coolbananas.co.nz, buytenh@wantstofly.org, lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 08, 2010 at 10:01:09PM +1200, Ryan Mallon wrote:
-> Repost of the i2s audio series for ep93xx. Patch 2/3 is unchanged. The
-> core support has been modified to move setting of the SPOL and ORIDE
-> bits of the i2sclkdiv register, as well as the i2s pin strapping
-> configuration, to a new function called ep93xx_i2s_acquire which is
-> called from the audio board drivers.
+Am 08.06.2010 17:31, schrieb Raymond Yau:
+> 2010/6/8 Sebastian Holtermann <sebholt@web.de>
+> 
+>> -----BEGIN PGP SIGNED MESSAGE-----
+>> Hash: SHA1
+>>
+>> Am 08.06.2010 03:03, schrieb Raymond Yau:
+>>
+>>>
+>>>
+>>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4883
+>>>
+>>> Pekka Lampila reported that when he set -40dB and only get back -9999999
+>> by
+>>> his program alsa_mixer_test.c
+>>>
+>>> I don't have emu10k1 so don't know whether this is a bug of alsa-lib or
+>> not
+>>
+>> I also get a big jump from -39.60dB to -99999.99 dB for some emu10k1
+>> sliders when I move them to the minimum although their advertised
+>> minimum is -40dB. This looks like a way to express log ( 0 ).
+>>
+>>
+> it seem that only "Wave Master" has mute switch , the other "Wave Rear" ,
+> "Wave Center/Lfe" and "Wave side" only have volume control
+> 
+> Have you try the patch : emu10k1: allow high-resolution mixer controls
+> 
+> 
+> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=4daf7a0c0b3dd3c2e2ec829ecee8608d04d67773
 
-I've now applied both patches.  There was a trivial fixup required for
-the clocks due to an add/add overlap with the SPI clock - I think it's
-OK but please check.
+alsa-compile.sh did not work out of the box because of
+"Cannot install kernel sources for unsupported distribution Debian"
+and I don't have the time to dig deeper into kernel module compiling
+right now.
