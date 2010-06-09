@@ -1,18 +1,20 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: Re: Mixer volume/decibel mapping
-Date: Wed, 09 Jun 2010 12:26:01 +0200
-Message-ID: <4C0F6C39.1080009@gmx.de>
-References: <201005191834.57919.vand2@gmx.de>	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>	<AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>	<201005211018.41802.vand2@gmx.de>	<AANLkTikylA_oo6GBKuLHewVX9oMCNjQMeS90HThDR47K@mail.gmail.com>	<4C0CB996.5010202@gmx.de>	<AANLkTinTV_MnU-rBOrLc66YhGFbP9SJVZ2p5DFlcS16T@mail.gmail.com>	<4C0DDCF2.90308@web.de>
-	<AANLkTilEz8pdtx0yHSLAu7e1m4zHEV9mzGv-4_abzdKz@mail.gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: External samplerate changes, UAC2 clock topologies
+Date: Wed, 9 Jun 2010 13:30:00 +0200
+Message-ID: <20100609113000.GE25445@buzzloop.caiaq.de>
+References: <20100604124635.GL2698@buzzloop.caiaq.de>
+	<alpine.LNX.2.00.1006042130390.5693@eeebox2.perex-int.cz>
+	<20100609091628.GP2695@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id D333B103927
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5A52410383C
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Jun 2010 12:25:44 +0200 (CEST)
-In-Reply-To: <AANLkTilEz8pdtx0yHSLAu7e1m4zHEV9mzGv-4_abzdKz@mail.gmail.com>
+	Wed,  9 Jun 2010 13:30:04 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100609091628.GP2695@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,42 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Am 08.06.2010 17:31, schrieb Raymond Yau:
-> 2010/6/8 Sebastian Holtermann <sebholt@web.de>
+On Wed, Jun 09, 2010 at 11:16:28AM +0200, Daniel Mack wrote:
+> On Fri, Jun 04, 2010 at 09:49:36PM +0200, Jaroslav Kysela wrote:
+> > If a stream parameter changes, the driver should interrupt streaming
+> > immediatelly. The check should be in the trigger() callback (-EIO
+> > error code) and if the stream is already running - it should be put
+> > to the
+> > SNDRV_PCM_STATE_DRAINING (capture) to let the application obtain the
+> > captured samples until the parameter change. Just call
+> > snd_pcm_stop() with the new state for the substream. For playback,
+> > the stream should be put to the SNDRV_PCM_STATE_OPEN state to wait
+> > to settle new parameters from an application (it means that all I/O
+> > ops will return -EBADFD).
 > 
->> -----BEGIN PGP SIGNED MESSAGE-----
->> Hash: SHA1
->>
->> Am 08.06.2010 03:03, schrieb Raymond Yau:
->>
->>>
->>>
->>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4883
->>>
->>> Pekka Lampila reported that when he set -40dB and only get back -9999999
->> by
->>> his program alsa_mixer_test.c
->>>
->>> I don't have emu10k1 so don't know whether this is a bug of alsa-lib or
->> not
->>
->> I also get a big jump from -39.60dB to -99999.99 dB for some emu10k1
->> sliders when I move them to the minimum although their advertised
->> minimum is -40dB. This looks like a way to express log ( 0 ).
->>
->>
-> it seem that only "Wave Master" has mute switch , the other "Wave Rear" ,
-> "Wave Center/Lfe" and "Wave side" only have volume control
-> 
-> Have you try the patch : emu10k1: allow high-resolution mixer controls
-> 
-> 
-> http://git.alsa-project.org/?p=alsa-kernel.git;a=commit;h=4daf7a0c0b3dd3c2e2ec829ecee8608d04d67773
+> Hmm. I implemented this now, but at least aplay won't stop when this
+> code path is triggered. Is there anything else I should do, except for
+> calling snd_pcm_stop()?
 
-alsa-compile.sh did not work out of the box because of
-"Cannot install kernel sources for unsupported distribution Debian"
-and I don't have the time to dig deeper into kernel module compiling
-right now.
+Strange enough, aplay doesn't even quit when the device is unplugged.
+Can anyone confirm this with an UAC1 device?
+
+Daniel
