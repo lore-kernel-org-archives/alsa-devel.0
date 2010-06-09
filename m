@@ -1,21 +1,22 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
+From: Wan ZongShun <mcuos.com@gmail.com>
 Subject: Re: [PATCH v2 4/4]AsoC/nuc900: fix a typo and rename
- the header file
-Date: Wed, 09 Jun 2010 14:33:49 +0100
-Message-ID: <1276090429.3067.15.camel@odin>
+	the header file
+Date: Wed, 9 Jun 2010 21:47:30 +0800
+Message-ID: <AANLkTinif7wBs_eL8H1U6jBLijO3xr3ISvvhVAPW4yQS@mail.gmail.com>
 References: <4C05F49A.8070309@gmail.com>
+	<1276090429.3067.15.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6F7C2103824
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5EED4103927
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Jun 2010 15:34:20 +0200 (CEST)
-Received: by wyg36 with SMTP id 36so894467wyg.38
-	for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2010 06:34:20 -0700 (PDT)
-In-Reply-To: <4C05F49A.8070309@gmail.com>
+	Wed,  9 Jun 2010 15:47:32 +0200 (CEST)
+Received: by yxd5 with SMTP id 5so1145747yxd.38
+	for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2010 06:47:31 -0700 (PDT)
+In-Reply-To: <1276090429.3067.15.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,50 +26,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-06-02 at 14:05 +0800, Wan ZongShun wrote:
-> Fix a '#include "nuc900-audio.h' typo, I think it should be 'audio'.
-> At the same time, this patch renames the 'nuc900-auido.h' file to
-> 'nuc900-audio.h'.
-> 
-> Signed-off-by: Wan ZongShun<mcuos.com@gmail.com>
-> ---
->  sound/soc/nuc900/nuc900-ac97.c                     |    2 +-
->  .../soc/nuc900/{nuc900-auido.h => nuc900-audio.h}  |    0
->  2 files changed, 1 insertions(+), 1 deletions(-)
->  rename sound/soc/nuc900/{nuc900-auido.h => nuc900-audio.h} (100%)
-> 
-> diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
-> index db7fc13..caa7c90 100644
-> --- a/sound/soc/nuc900/nuc900-ac97.c
-> +++ b/sound/soc/nuc900/nuc900-ac97.c
-> @@ -25,7 +25,7 @@
-> 
->  #include <mach/mfp.h>
-> 
-> -#include "nuc900-auido.h"
-> +#include "nuc900-audio.h"
-> 
->  static DEFINE_MUTEX(ac97_mutex);
->  struct nuc900_audio *nuc900_ac97_data;
-> diff --git a/sound/soc/nuc900/nuc900-auido.h b/sound/soc/nuc900/nuc900-audio.h
-> similarity index 100%
-> rename from sound/soc/nuc900/nuc900-auido.h
-> rename to sound/soc/nuc900/nuc900-audio.h
-
-I've just tried to build NUC900 as part of the ASoC multi-component work
-and it looks like you didn't build this patch before sending it. The old
-header name is still used in nuc900-audio.c and nuc900-pcm.c.
-
-Can you send an incremental patch to fix this.
-
-Thanks
-
-Liam
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+MjAxMC82LzkgTGlhbSBHaXJkd29vZCA8bHJnQHNsaW1sb2dpYy5jby51az46Cj4gT24gV2VkLCAy
+MDEwLTA2LTAyIGF0IDE0OjA1ICswODAwLCBXYW4gWm9uZ1NodW4gd3JvdGU6Cj4+IEZpeCBhICcj
+aW5jbHVkZSAibnVjOTAwLWF1ZGlvLmgnIHR5cG8sIEkgdGhpbmsgaXQgc2hvdWxkIGJlICdhdWRp
+bycuCj4+IEF0IHRoZSBzYW1lIHRpbWUsIHRoaXMgcGF0Y2ggcmVuYW1lcyB0aGUgJ251YzkwMC1h
+dWlkby5oJyBmaWxlIHRvCj4+ICdudWM5MDAtYXVkaW8uaCcuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
+IFdhbiBab25nU2h1bjxtY3Vvcy5jb21AZ21haWwuY29tPgo+PiAtLS0KPj4gwqBzb3VuZC9zb2Mv
+bnVjOTAwL251YzkwMC1hYzk3LmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoCDC
+oDIgKy0KPj4gwqAuLi4vc29jL251YzkwMC97bnVjOTAwLWF1aWRvLmggPT4gbnVjOTAwLWF1ZGlv
+Lmh9IMKgfCDCoCDCoDAKPj4gwqAyIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMSBk
+ZWxldGlvbnMoLSkKPj4gwqByZW5hbWUgc291bmQvc29jL251YzkwMC97bnVjOTAwLWF1aWRvLmgg
+PT4gbnVjOTAwLWF1ZGlvLmh9ICgxMDAlKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL251
+YzkwMC9udWM5MDAtYWM5Ny5jIGIvc291bmQvc29jL251YzkwMC9udWM5MDAtYWM5Ny5jCj4+IGlu
+ZGV4IGRiN2ZjMTMuLmNhYTdjOTAgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9udWM5MDAvbnVj
+OTAwLWFjOTcuYwo+PiArKysgYi9zb3VuZC9zb2MvbnVjOTAwL251YzkwMC1hYzk3LmMKPj4gQEAg
+LTI1LDcgKzI1LDcgQEAKPj4KPj4gwqAjaW5jbHVkZSA8bWFjaC9tZnAuaD4KPj4KPj4gLSNpbmNs
+dWRlICJudWM5MDAtYXVpZG8uaCIKPj4gKyNpbmNsdWRlICJudWM5MDAtYXVkaW8uaCIKPj4KPj4g
+wqBzdGF0aWMgREVGSU5FX01VVEVYKGFjOTdfbXV0ZXgpOwo+PiDCoHN0cnVjdCBudWM5MDBfYXVk
+aW8gKm51YzkwMF9hYzk3X2RhdGE7Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvbnVjOTAwL251
+YzkwMC1hdWlkby5oIGIvc291bmQvc29jL251YzkwMC9udWM5MDAtYXVkaW8uaAo+PiBzaW1pbGFy
+aXR5IGluZGV4IDEwMCUKPj4gcmVuYW1lIGZyb20gc291bmQvc29jL251YzkwMC9udWM5MDAtYXVp
+ZG8uaAo+PiByZW5hbWUgdG8gc291bmQvc29jL251YzkwMC9udWM5MDAtYXVkaW8uaAo+Cj4gSSd2
+ZSBqdXN0IHRyaWVkIHRvIGJ1aWxkIE5VQzkwMCBhcyBwYXJ0IG9mIHRoZSBBU29DIG11bHRpLWNv
+bXBvbmVudCB3b3JrCj4gYW5kIGl0IGxvb2tzIGxpa2UgeW91IGRpZG4ndCBidWlsZCB0aGlzIHBh
+dGNoIGJlZm9yZSBzZW5kaW5nIGl0LiBUaGUgb2xkCj4gaGVhZGVyIG5hbWUgaXMgc3RpbGwgdXNl
+ZCBpbiBudWM5MDAtYXVkaW8uYyBhbmQgbnVjOTAwLXBjbS5jLgo+CgpHb2QuCgpJIGFtIHNvIHNv
+cnJ5IGZvciB0aGlzIHdyb25nLCBJIGp1c3QgdGhpbmsgaXQgaXMgb25seSBhIGxpdHRsZSBhbmQK
+b2J2aW91cyBwYXRjaCwgc28gSSByZWFsbHkgZG8gbm90IHJlLWJ1aWxkIGl0LgoKPiBDYW4geW91
+IHNlbmQgYW4gaW5jcmVtZW50YWwgcGF0Y2ggdG8gZml4IHRoaXMuCj4KCk9rYXksIEkgd2lsbCBm
+aXggaXQgdG9tb3Jyb3cuCgo+IFRoYW5rcwo+Cj4gTGlhbQo+IC0tCj4gRnJlZWxhbmNlIERldmVs
+b3BlciwgU2xpbUxvZ2ljIEx0ZAo+IEFTb0MgYW5kIFZvbHRhZ2UgUmVndWxhdG9yIE1haW50YWlu
+ZXIuCj4gaHR0cDovL3d3dy5zbGltbG9naWMuY28udWsKPgo+CgoKCi0tIAoqbGludXgtYXJtLWtl
+cm5lbCBtYWlsaW5nIGxpc3QKbWFpbCBhZGRyOmxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwp5b3UgY2FuIHN1YnNjcmliZSBieToKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCgoqIGxpbnV4LWFybS1OVUM5MDAgbWFp
+bGluZyBsaXN0Cm1haWwgYWRkcjpOVUM5MDBAZ29vZ2xlZ3JvdXBzLmNvbQptYWluIHdlYjogaHR0
+cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9ncm91cC9OVUM5MDAKeW91IGNhbiBzdWJzY3JpYmUgaXQg
+Ynkgc2VuZGluZyBtZSBtYWlsOgptY3Vvcy5jb21AZ21haWwuY29tCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
