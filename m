@@ -1,22 +1,25 @@
-From: Wan ZongShun <mcuos.com@gmail.com>
-Subject: Re: [PATCH v2 4/4]AsoC/nuc900: fix a typo and rename
-	the header file
-Date: Wed, 9 Jun 2010 21:47:30 +0800
-Message-ID: <AANLkTinif7wBs_eL8H1U6jBLijO3xr3ISvvhVAPW4yQS@mail.gmail.com>
-References: <4C05F49A.8070309@gmail.com>
-	<1276090429.3067.15.camel@odin>
+From: Alex Lee <lee188@singnet.com.sg>
+Subject: Open source UAC2 sound card for UAC2 driver testing
+Date: Wed, 9 Jun 2010 14:00:24 +0000 (UTC)
+Message-ID: <loom.20100609T154158-159@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
-	[209.85.213.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5EED4103927
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 347ED103946
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Jun 2010 15:47:32 +0200 (CEST)
-Received: by yxd5 with SMTP id 5so1145747yxd.38
-	for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2010 06:47:31 -0700 (PDT)
-In-Reply-To: <1276090429.3067.15.camel@odin>
+	Wed,  9 Jun 2010 16:05:05 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OMLtw-0006R9-IX
+	for alsa-devel@alsa-project.org; Wed, 09 Jun 2010 16:05:04 +0200
+Received: from S01060016762af236.vc.shawcable.net ([24.80.177.198])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2010 16:05:04 +0200
+Received: from lee188 by S01060016762af236.vc.shawcable.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2010 16:05:04 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,47 +29,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MjAxMC82LzkgTGlhbSBHaXJkd29vZCA8bHJnQHNsaW1sb2dpYy5jby51az46Cj4gT24gV2VkLCAy
-MDEwLTA2LTAyIGF0IDE0OjA1ICswODAwLCBXYW4gWm9uZ1NodW4gd3JvdGU6Cj4+IEZpeCBhICcj
-aW5jbHVkZSAibnVjOTAwLWF1ZGlvLmgnIHR5cG8sIEkgdGhpbmsgaXQgc2hvdWxkIGJlICdhdWRp
-bycuCj4+IEF0IHRoZSBzYW1lIHRpbWUsIHRoaXMgcGF0Y2ggcmVuYW1lcyB0aGUgJ251YzkwMC1h
-dWlkby5oJyBmaWxlIHRvCj4+ICdudWM5MDAtYXVkaW8uaCcuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
-IFdhbiBab25nU2h1bjxtY3Vvcy5jb21AZ21haWwuY29tPgo+PiAtLS0KPj4gwqBzb3VuZC9zb2Mv
-bnVjOTAwL251YzkwMC1hYzk3LmMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfCDCoCDC
-oDIgKy0KPj4gwqAuLi4vc29jL251YzkwMC97bnVjOTAwLWF1aWRvLmggPT4gbnVjOTAwLWF1ZGlv
-Lmh9IMKgfCDCoCDCoDAKPj4gwqAyIGZpbGVzIGNoYW5nZWQsIDEgaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbnMoLSkKPj4gwqByZW5hbWUgc291bmQvc29jL251YzkwMC97bnVjOTAwLWF1aWRvLmgg
-PT4gbnVjOTAwLWF1ZGlvLmh9ICgxMDAlKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL251
-YzkwMC9udWM5MDAtYWM5Ny5jIGIvc291bmQvc29jL251YzkwMC9udWM5MDAtYWM5Ny5jCj4+IGlu
-ZGV4IGRiN2ZjMTMuLmNhYTdjOTAgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9udWM5MDAvbnVj
-OTAwLWFjOTcuYwo+PiArKysgYi9zb3VuZC9zb2MvbnVjOTAwL251YzkwMC1hYzk3LmMKPj4gQEAg
-LTI1LDcgKzI1LDcgQEAKPj4KPj4gwqAjaW5jbHVkZSA8bWFjaC9tZnAuaD4KPj4KPj4gLSNpbmNs
-dWRlICJudWM5MDAtYXVpZG8uaCIKPj4gKyNpbmNsdWRlICJudWM5MDAtYXVkaW8uaCIKPj4KPj4g
-wqBzdGF0aWMgREVGSU5FX01VVEVYKGFjOTdfbXV0ZXgpOwo+PiDCoHN0cnVjdCBudWM5MDBfYXVk
-aW8gKm51YzkwMF9hYzk3X2RhdGE7Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvbnVjOTAwL251
-YzkwMC1hdWlkby5oIGIvc291bmQvc29jL251YzkwMC9udWM5MDAtYXVkaW8uaAo+PiBzaW1pbGFy
-aXR5IGluZGV4IDEwMCUKPj4gcmVuYW1lIGZyb20gc291bmQvc29jL251YzkwMC9udWM5MDAtYXVp
-ZG8uaAo+PiByZW5hbWUgdG8gc291bmQvc29jL251YzkwMC9udWM5MDAtYXVkaW8uaAo+Cj4gSSd2
-ZSBqdXN0IHRyaWVkIHRvIGJ1aWxkIE5VQzkwMCBhcyBwYXJ0IG9mIHRoZSBBU29DIG11bHRpLWNv
-bXBvbmVudCB3b3JrCj4gYW5kIGl0IGxvb2tzIGxpa2UgeW91IGRpZG4ndCBidWlsZCB0aGlzIHBh
-dGNoIGJlZm9yZSBzZW5kaW5nIGl0LiBUaGUgb2xkCj4gaGVhZGVyIG5hbWUgaXMgc3RpbGwgdXNl
-ZCBpbiBudWM5MDAtYXVkaW8uYyBhbmQgbnVjOTAwLXBjbS5jLgo+CgpHb2QuCgpJIGFtIHNvIHNv
-cnJ5IGZvciB0aGlzIHdyb25nLCBJIGp1c3QgdGhpbmsgaXQgaXMgb25seSBhIGxpdHRsZSBhbmQK
-b2J2aW91cyBwYXRjaCwgc28gSSByZWFsbHkgZG8gbm90IHJlLWJ1aWxkIGl0LgoKPiBDYW4geW91
-IHNlbmQgYW4gaW5jcmVtZW50YWwgcGF0Y2ggdG8gZml4IHRoaXMuCj4KCk9rYXksIEkgd2lsbCBm
-aXggaXQgdG9tb3Jyb3cuCgo+IFRoYW5rcwo+Cj4gTGlhbQo+IC0tCj4gRnJlZWxhbmNlIERldmVs
-b3BlciwgU2xpbUxvZ2ljIEx0ZAo+IEFTb0MgYW5kIFZvbHRhZ2UgUmVndWxhdG9yIE1haW50YWlu
-ZXIuCj4gaHR0cDovL3d3dy5zbGltbG9naWMuY28udWsKPgo+CgoKCi0tIAoqbGludXgtYXJtLWtl
-cm5lbCBtYWlsaW5nIGxpc3QKbWFpbCBhZGRyOmxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwp5b3UgY2FuIHN1YnNjcmliZSBieToKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCgoqIGxpbnV4LWFybS1OVUM5MDAgbWFp
-bGluZyBsaXN0Cm1haWwgYWRkcjpOVUM5MDBAZ29vZ2xlZ3JvdXBzLmNvbQptYWluIHdlYjogaHR0
-cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9ncm91cC9OVUM5MDAKeW91IGNhbiBzdWJzY3JpYmUgaXQg
-Ynkgc2VuZGluZyBtZSBtYWlsOgptY3Vvcy5jb21AZ21haWwuY29tCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi all,
+
+We are developing an open source high speed USB sound card.  Please see:
+
+http://code.google.com/p/sdr-widget/
+
+for details.
+
+With the alpha-1 hardware, we are doing development and testing of the UAC2
+firmware against the latest alsa driver here.  We have already demonstrated
+96khz 24bit stereo capture with UAC2 and we will proceed to 192khz soon.
+
+Alpha-1 has an ENOB of at least 20 and we hope alpha-2 will have an ENOB of 22
+or better.  Alpha-2 kits are available for order now.  (Note that these are
+prototype kits for experimenters only.)
+
+With both the UAC2 driver and the sound card firmware being open source, we hope
+to expedite full UAC2 spec compliance.  We are already working closely with
+Daniel Mack on the testing.
+
+Alex 
