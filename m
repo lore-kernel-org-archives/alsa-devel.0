@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: Mixer volume/decibel mapping
-Date: Wed, 9 Jun 2010 13:39:58 +0800
-Message-ID: <AANLkTimP9WxU1Ho4TsM6u4tCTYpkDyBBrx6W-9z92V2E@mail.gmail.com>
+Date: Wed, 9 Jun 2010 13:55:31 +0800
+Message-ID: <AANLkTimb9jbrjltY8FCI4Ocn8SJUka279fGPq5fZEpyo@mail.gmail.com>
 References: <201005191834.57919.vand2@gmx.de>
 	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
 	<AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>
@@ -14,12 +14,13 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
-	[74.125.83.179]) by alsa0.perex.cz (Postfix) with ESMTP id 3AC7D24333
+Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
+	[209.85.212.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1742B24393
 	for <alsa-devel@alsa-project.org>;
-	Wed,  9 Jun 2010 07:40:00 +0200 (CEST)
-Received: by pvg13 with SMTP id 13so962718pvg.38
-	for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2010 22:39:59 -0700 (PDT)
+	Wed,  9 Jun 2010 07:55:33 +0200 (CEST)
+Received: by pxi3 with SMTP id 3so2398721pxi.38
+	for <alsa-devel@alsa-project.org>; Tue, 08 Jun 2010 22:55:32 -0700 (PDT)
 In-Reply-To: <4C0DDE4D.9070201@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -105,6 +106,10 @@ List-Id: alsa-devel@alsa-project.org
 > sliders when I move them to the minimum although their advertised
 > minimum is -40dB. This looks like a way to express log ( 0 ).
 >
+> the emu10k1 driver had removed the "Master" volume control of ac97 codec
 
-Do you ream snd_mixer_selem_get_Playback_dB_range() return 40dB but max_dB -
-min_dB = 99999.99 dB ?
+"Wave Master" has 100 steps , so the next step above the mute is
+20log(1/100)dB = -40dB
+
+i.e the lowest non mute volume of ."Wave Master" volume control of GFR  is
+actually greater than -46.5dB of the "Master Volume control" of ac97
