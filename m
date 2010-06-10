@@ -1,59 +1,42 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: External samplerate changes, UAC2 clock topologies
-Date: Thu, 10 Jun 2010 08:19:41 +0200
-Message-ID: <4C1083FD.9040906@ladisch.de>
-References: <20100604124635.GL2698@buzzloop.caiaq.de>	<alpine.LNX.2.00.1006042130390.5693@eeebox2.perex-int.cz>	<20100609091628.GP2695@buzzloop.caiaq.de>
-	<20100609113000.GE25445@buzzloop.caiaq.de>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [alsa-devel] [PATCH v3 0/5] OMAP/ASoC: McBSP: FIFO handling
+ related fixes
+Date: Thu, 10 Jun 2010 09:27:45 +0300
+Message-ID: <20100610062744.GN32208@atomide.com>
+References: <1275391104-26387-1-git-send-email-peter.ujfalusi@nokia.com>
+ <201006021205.41455.peter.ujfalusi@nokia.com>
+ <1275470122.3037.3.camel@odin>
+ <201006021514.33519.peter.ujfalusi@nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out5.smtp.messagingengine.com (out5.smtp.messagingengine.com
-	[66.111.4.29]) by alsa0.perex.cz (Postfix) with ESMTP id C383D103977
-	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Jun 2010 08:19:47 +0200 (CEST)
-In-Reply-To: <20100609113000.GE25445@buzzloop.caiaq.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-omap-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <201006021514.33519.peter.ujfalusi@nokia.com>
+Sender: linux-omap-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
+Cc: ext Liam Girdwood <lrg@slimlogic.co.uk>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@opensource.wolfsonmicro.com" <broonie@opensource.wolfsonmicro.com>, "Valentin Eduardo (Nokia-D/Helsinki)" <eduardo.valentin@nokia.com>, "Nurkkala Eero.An (EXT-Offcode/Oulu)" <ext-Eero.Nurkkala@nokia.com>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Mack wrote:
-> On Wed, Jun 09, 2010 at 11:16:28AM +0200, Daniel Mack wrote:
-> > On Fri, Jun 04, 2010 at 09:49:36PM +0200, Jaroslav Kysela wrote:
-> > > If a stream parameter changes, the driver should interrupt streaming
-> > > immediatelly. The check should be in the trigger() callback (-EIO
-> > > error code) and if the stream is already running - it should be put
-> > > to the
-> > > SNDRV_PCM_STATE_DRAINING (capture) to let the application obtain the
-> > > captured samples until the parameter change. Just call
-> > > snd_pcm_stop() with the new state for the substream. For playback,
-> > > the stream should be put to the SNDRV_PCM_STATE_OPEN state to wait
-> > > to settle new parameters from an application (it means that all I/O
-> > > ops will return -EBADFD).
+* Peter Ujfalusi <peter.ujfalusi@nokia.com> [100602 15:09]:
+> On Wednesday 02 June 2010 12:15:22 ext Liam Girdwood wrote:
+> > On Wed, 2010-06-02 at 12:05 +0300, Peter Ujfalusi wrote:
+> > > Hi,
+> > > 
+> > > On Tuesday 01 June 2010 14:18:19 Ujfalusi Peter (Nokia-D/Tampere) wrote:
+> > > 
+> > > ..
+> > > 
+> > > Liam if you are going to take the series, could you fix the patch names?
+> > > I can also resend them if it is easier for you.
 > > 
-> > Hmm. I implemented this now, but at least aplay won't stop when this
-> > code path is triggered. Is there anything else I should do, except for
-> > calling snd_pcm_stop()?
+> > Peter, I think it's probably better if you can resend. Can you also
+> > append the Acks too.
+> > 
+> > Tony, do we have your ack too ?
 > 
-> Strange enough, aplay doesn't even quit when the device is unplugged.
-> Can anyone confirm this with an UAC1 device?
+> No problem, I'll wait for Tony's ack, and resend the series.
 
-Unplugging works just fine (i.e., stops).
+Hmm, I thought I already acked these.. Anyways, the whole series
+looks good to me:
 
-When unpluggin, the stream should go into XRUN state.
-
-I doublt if it is allowed to go from RUNNING to OPEN, because then the
-driver's hw_free callback might not be called.
-
-
-Regards,
-Clemens
+Acked-by: Tony Lindgren <tony@atomide.com>
