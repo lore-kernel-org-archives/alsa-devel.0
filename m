@@ -1,29 +1,33 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Mixer volume/decibel mapping
-Date: Thu, 10 Jun 2010 08:08:37 +0800
-Message-ID: <AANLkTink38d7BlCxenX9HI7Ujz0v9Qr4xO_BEGRQ9ChB@mail.gmail.com>
-References: <201005191834.57919.vand2@gmx.de>
-	<AANLkTimRTIwmzU2Dq4lgBSSwtcmSxfMcBfcll9YDC_l5@mail.gmail.com>
-	<AANLkTikWaBVuo-Vo8LIN6jS19cuPv4nDZbgYKzzZeLWg@mail.gmail.com>
-	<201005211018.41802.vand2@gmx.de>
-	<AANLkTikylA_oo6GBKuLHewVX9oMCNjQMeS90HThDR47K@mail.gmail.com>
-	<4C0CB996.5010202@gmx.de>
-	<AANLkTinTV_MnU-rBOrLc66YhGFbP9SJVZ2p5DFlcS16T@mail.gmail.com>
-	<4C0DDE4D.9070201@gmx.de>
-	<AANLkTimP9WxU1Ho4TsM6u4tCTYpkDyBBrx6W-9z92V2E@mail.gmail.com>
-	<4C0F4418.20805@gmx.de>
+Subject: Re: wrong decibel data?
+Date: Thu, 10 Jun 2010 11:16:37 +0800
+Message-ID: <AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
+	<q2t98391a7b1004021325jbc9e7ddal26063e490fe69254@mail.gmail.com>
+	<hp744t$5b5$1@dough.gmane.org>
+	<r2y4f3252891004160648xa8590219i359286b5a9dece4f@mail.gmail.com>
+	<hqbv5m$cmf$1@dough.gmane.org>
+	<g2t4f3252891004201932k53dae8a1me8f7e968f8a28b5b@mail.gmail.com>
+	<hqmbmm$hsj$1@dough.gmane.org>
+	<i2r4f3252891004211816ldfedff21nfe61537043c9b22f@mail.gmail.com>
+	<htls4d$phr$1@dough.gmane.org> <4BFE7840.4070004@ladisch.de>
+	<htm0et$eb4$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
+	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
+	<huicj9$t30$1@dough.gmane.org>
+	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
+	<hulnlp$m00$1@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-px0-f179.google.com (mail-px0-f179.google.com
-	[209.85.212.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0A544103968
+Received: from mail-pv0-f179.google.com (mail-pv0-f179.google.com
+	[74.125.83.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id BA75710396C
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Jun 2010 02:08:39 +0200 (CEST)
-Received: by pxi3 with SMTP id 3so2879906pxi.38
-	for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2010 17:08:38 -0700 (PDT)
-In-Reply-To: <4C0F4418.20805@gmx.de>
+	Thu, 10 Jun 2010 05:16:38 +0200 (CEST)
+Received: by pvg13 with SMTP id 13so1505006pvg.38
+	for <alsa-devel@alsa-project.org>; Wed, 09 Jun 2010 20:16:37 -0700 (PDT)
+In-Reply-To: <hulnlp$m00$1@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,72 +40,86 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/9 Sebastian H. <vand2@gmx.de>
+2010/6/8 Colin Guthrie <gmane@colin.guthr.ie>
 
-> Am 09.06.2010 07:39, schrieb Raymond Yau:
-> > 2010/6/8 Sebastian H. <vand2@gmx.de>
-> >>>>
-> >>>
-> >>> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4883
-> >>>
-> >>> Pekka Lampila reported that when he set -40dB and only get back
-> -9999999
-> >> by
-> >>> his program alsa_mixer_test.c
-> >>>
-> >>> I don't have emu10k1 so don't know whether this is a bug of alsa-lib or
-> >> not
+> 'Twas brillig, and Raymond Yau at 08/06/10 01:47 did gyre and gimble:
+> >> Here is the function in PA's pulse/volume.c:
 > >>
-> >> I also get a big jump from -39.60dB to -99999.99 dB for some emu10k1
-> >> sliders when I move them to the minimum although their advertised
-> >> minimum is -40dB. This looks like a way to express log ( 0 ).
+> >>  pa_volume_t pa_sw_volume_from_linear(double v) {
 > >>
+> >>    if (v <= 0.0)
+> >>        return PA_VOLUME_MUTED;
+> >>
+> >>    /*
+> >>     * We use a cubic mapping here, as suggested and discussed here:
+> >>     *
+> >>     * http://www.robotplanet.dk/audio/audio_gui_design/
+> >>     *
+> >>
+> >>
+> http://lists.linuxaudio.org/pipermail/linux-audio-dev/2009-May/thread.html#23151
+> >>     *
+> >>     * We make sure that the conversion to linear and back yields the
+> >>     * same volume value! That's why we need the lround() below!
+> >>     */
+> >>
+> >>    return (pa_volume_t) lround(cbrt(v) * PA_VOLUME_NORM);
+> >>  }
+> >>
+> >>
+> > can you provide the forumla for the "Master" volume control of pulse
+> device
+> > ? ctl.pulse
 > >
-> > Do you ream snd_mixer_selem_get_Playback_dB_range() return 40dB but
-> max_dB -
-> > min_dB = 99999.99 dB ?
+> > there are 65536 steps ,
+> > where are  0dB  , -6dB  and -inf dB on this cubic mapping ?
 >
-> e.g. snd_mixer_selem_get_playback_dB_range() for
-> "Wave Surround" returns -40.00 to 0.00 dB and the dB values returned by
+> Well 0 dB and -inf dB are obvious: 100% and 0% respectively.
 >
-> snd_mixer_selem_get_playback_dB (
->         elem, SND_MIXER_SCHN_MONO, &_db_value );
+> -6dB is about 80%:
 >
-> are all in this range except for when the volume ist set to 0.
-> At this and only this volume the returned dB value is out of range with
-> -99999.99 dB. For vol=1 the dB value is -39.60.
+> 1. Convert to Linear:
+>        10 ^ (-6 / 20.0) = 10 ^ -0.3 = 0.501187
+> 2. Cube Root:
+>         0.7943
+>
+> Here is the code from volume.c that does this (combined with the
+> function already pasted above). It's probably easier just to follow the
+> code rather than have me describe it (no doubt poorly!):
+>
+> static double dB_to_linear(double v) {
+>    return pow(10.0, v / 20.0);
+> }
+>
+> pa_volume_t pa_sw_volume_from_dB(double dB) {
+>    if (isinf(dB) < 0 || dB <= PA_DECIBEL_MININFTY)
+>        return PA_VOLUME_MUTED;
+>
+>    return pa_sw_volume_from_linear(dB_to_linear(dB));
+> }
 >
 >
-accoding to the forumla ,  1/100 is -40dB but 0x1571f82/0x8000000 is not 1%
-so this is driver bug
+>
+> The final stage in pa_sw_volume_from_linear() (the * by PA_VOLUME_NORM
+> and the lround()) is just converting to PA's own internal representation.
+>
+> HTHs
+>
+> Just for clarity, the reverse of for my approximate cut off at 16% would
+> be:
+>  16% = 0.16
+>  0.16 ^ 3 = 0.004096
+>  20 * log(0.004096) = -47.75dB
+>
+>
+Can you explain how PA handle the volume controls of ac97 codec ?
 
- /* EMU10k1/EMU10k2 DSP control db gain */
- static const DECLARE_TLV_DB_SCALE(snd_emu10k1_db_scale1, -4000, 40, 1);
- static const DECLARE_TLV_DB_LINEAR(snd_emu10k1_db_linear, TLV_DB_GAIN_MUTE,
-0);
+PCM -34.5dB to +*12* dB
+Master -46.5dB to 0dB
+
+The total dB range (PCM + MASTER) is -81dB to +*12*dB
 
 
- 277 /* dB gain = (float) 20 * log10( float(db_table_value) / 0x8000000 ) */
-
-static const u32 db_table[101] = {
-      0x00000000, 0x01571f82, 0x01674b41, 0x01783a1b, 0x0189f540,
-      0x019c8651, 0x01aff763, 0x01c45306, 0x01d9a446, 0x01eff6b8,
-      0x0207567a, 0x021fd03d, 0x0239714c, 0x02544792, 0x027061a1,
-      0x028dcebb, 0x02ac9edc, 0x02cce2bf, 0x02eeabe8, 0x03120cb0,
-      0x0337184e, 0x035de2df, 0x03868173, 0x03b10a18, 0x03dd93e9,
-      0x040c3713, 0x043d0cea, 0x04702ff3, 0x04a5bbf2, 0x04ddcdfb,
-      0x0518847f, 0x0555ff62, 0x05966005, 0x05d9c95d, 0x06206005,
-      0x066a4a52, 0x06b7b067, 0x0708bc4c, 0x075d9a01, 0x07b6779d,
-      0x08138561, 0x0874f5d5, 0x08dafde1, 0x0945d4ed, 0x09b5b4fd,
-      0x0a2adad1, 0x0aa58605, 0x0b25f936, 0x0bac7a24, 0x0c3951d8,
-      0x0ccccccc, 0x0d673b17, 0x0e08f093, 0x0eb24510, 0x0f639481,
-      0x101d3f2d, 0x10dfa9e6, 0x11ab3e3f, 0x12806ac3, 0x135fa333,
-      0x144960c5, 0x153e2266, 0x163e6cfe, 0x174acbb7, 0x1863d04d,
-      0x198a1357, 0x1abe349f, 0x1c00db77, 0x1d52b712, 0x1eb47ee6,
-      0x2026f30f, 0x21aadcb6, 0x23410e7e, 0x24ea64f9, 0x26a7c71d,
-      0x287a26c4, 0x2a62812c, 0x2c61df84, 0x2e795779, 0x30aa0bcf,
-      0x32f52cfe, 0x355bf9d8, 0x37dfc033, 0x3a81dda4, 0x3d43c038,
-      0x4026e73c, 0x432ce40f, 0x46575af8, 0x49a8040f, 0x4d20ac2a,
-      0x50c335d3, 0x54919a57, 0x588dead1, 0x5cba514a, 0x611911ea,
-      0x65ac8c2f, 0x6a773c39, 0x6f7bbc23, 0x74bcc56c, 0x7a3d3272,
-       0x7fffffff, };
+Most user concern about recording without distrotion. (i.e. best result when
+Capture Volume at 0dB , PCM and Master Volume at 0dB ) and they need where
+are 0dB points
