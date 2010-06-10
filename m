@@ -1,19 +1,18 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] NUC900: patch for fix build error
-Date: Thu, 10 Jun 2010 09:47:31 +0100
-Message-ID: <1276159651.3261.0.camel@odin>
-References: <4C1050A8.8000404@gmail.com>
+From: David Song <tingustar@gmail.com>
+Subject: Speaker auto-mute doesn't work on ALC269
+Date: Thu, 10 Jun 2010 21:36:07 +0800
+Message-ID: <AANLkTinmfa0Cbp0xWk84SAHqy8g12rhqTySlpJ5zsSaB@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E00A6103980
+Received: from mail-yw0-f194.google.com (mail-yw0-f194.google.com
+	[209.85.211.194])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9980F103981
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Jun 2010 11:54:17 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so4899100wwf.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2010 02:54:17 -0700 (PDT)
-In-Reply-To: <4C1050A8.8000404@gmail.com>
+	Thu, 10 Jun 2010 15:36:10 +0200 (CEST)
+Received: by ywh32 with SMTP id 32so6310863ywh.5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2010 06:36:09 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,19 +22,9 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2010-06-10 at 10:40 +0800, Wan ZongShun wrote:
-> This patch is to change 'auido.h' to 'audio.h' for
-> fixing nuc900 alsa driver build error.
-> 
-> 
-> Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
-
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+When a headphone is plugged, I can hear sound from both speaker and headphone.
+This issue exists on ASUS EeePC S101 and EeePC 1005PE which both have ALC269.
+I'm testing with the latest kernel. Any regression here?
