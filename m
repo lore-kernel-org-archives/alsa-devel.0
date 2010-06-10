@@ -1,19 +1,19 @@
-From: Josh Lehan <alsa@krellan.com>
-Subject: Re: New release of amidicat program,
- connecting MIDI to stdin/out
-Date: Thu, 10 Jun 2010 00:14:47 -0700
-Message-ID: <4C1090E7.9050602@krellan.com>
-References: <4C0DF2A8.8000305@krellan.com>
-	<20100608080251.GD2695@buzzloop.caiaq.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] NUC900: patch for fix build error
+Date: Thu, 10 Jun 2010 09:47:31 +0100
+Message-ID: <1276159651.3261.0.camel@odin>
+References: <4C1050A8.8000404@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from server3.hostdango.com (server3.hostdango.com [67.222.146.219])
-	by alsa0.perex.cz (Postfix) with ESMTP id B468310397F
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E00A6103980
 	for <alsa-devel@alsa-project.org>;
-	Thu, 10 Jun 2010 09:14:53 +0200 (CEST)
-In-Reply-To: <20100608080251.GD2695@buzzloop.caiaq.de>
+	Thu, 10 Jun 2010 11:54:17 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so4899100wwf.38
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2010 02:54:17 -0700 (PDT)
+In-Reply-To: <4C1050A8.8000404@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,44 +23,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org, Josh Lehan <alsa@krellan.com>
+To: Wan ZongShun <mcuos.com@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/08/2010 01:02 AM, Daniel Mack wrote:
-> On Tue, Jun 08, 2010 at 12:35:04AM -0700, Josh Lehan wrote:
->> Hello.  On the mailing list a few months ago, mentioned a program I had
->> written, then called "midicat".  Found out there's another product by
->> that name.  So, the new name of the program is "amidicat".  The "a"
->> prefix also clarifies that it's an ALSA program.
->>
->> It's a program that connects the ALSA MIDI sequencer to standard input
->> and output.  Among other things, this is fun for prototyping quick MIDI
->> one-liners on the command line, such as "echo 903C7F | amidicat" to play
->> Middle C.
->>
->> I have made a new release of the program, which is basically unchanged,
->> except for a few bug fixes (thanks to Valgrind for discovering a minor
->> memory leak).  The biggest improvement is that there's now a manual page
->> and a DocBook documentation page.
->>
->> Here's the webpage for amidicat, if interested:
->>
->> http://www.krellan.com/amidicat/
+On Thu, 2010-06-10 at 10:40 +0800, Wan ZongShun wrote:
+> This patch is to change 'auido.h' to 'audio.h' for
+> fixing nuc900 alsa driver build error.
 > 
-> Again, thanks. Any chance that any Debian maintainer reading this can
-> take care for bringing this useful tool to the repositories?
 > 
-> Daniel
+> Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
 
-You're welcome!
-
-On the mailing list a while ago, Takashi Iwai mentioned it would be nice
-to have in alsa-utils.
-
-That would be a great place for it, and it would fit in well with the
-other "a" tools there.
-
-Then, all repositories would get it, not just Debian :)
-
-Josh Lehan
+Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
