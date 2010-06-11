@@ -1,17 +1,17 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 2/4] ALSA: usb-audio: fix control messages for
-	USB_RECIP_INTERFACE
-Date: Fri, 11 Jun 2010 17:34:20 +0200
-Message-ID: <1276270462-12901-2-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 3/4] ALSA: usb-audio: parse UAC2 sample rate
+	ranges correctly
+Date: Fri, 11 Jun 2010 17:34:21 +0200
+Message-ID: <1276270462-12901-3-git-send-email-daniel@caiaq.de>
 References: <20100611151829.GE17833@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id B09C7244F4
+	by alsa0.perex.cz (Postfix) with ESMTP id 77B8124500
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Jun 2010 17:34:34 +0200 (CEST)
+	Fri, 11 Jun 2010 17:34:36 +0200 (CEST)
 In-Reply-To: <20100611151829.GE17833@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,99 +26,144 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, alexlee188@gmail.com, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Control messages directed to an interface must have the interface number
-set in the lower 8 bits of wIndex. This wasn't done correctly for some
-clock and mixer messages.
+A device may report its supported sample rates in ranges rather than in
+discrete triplets. The code used to only parse the MIN field instead of
+properly paying attention to the MAX and RES values.
+
+Also, handle RES values of 1 corrently and announce a continous sample
+rate range in this case.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Reported-by: Alex Lee <alexlee188@gmail.com>
 ---
- sound/usb/clock.c  |   12 ++++++++----
- sound/usb/format.c |    6 ++++--
- sound/usb/helper.h |    4 ++++
- 3 files changed, 16 insertions(+), 6 deletions(-)
+ sound/usb/format.c |   89 +++++++++++++++++++++++++++++++++++++++++----------
+ 1 files changed, 71 insertions(+), 18 deletions(-)
 
-diff --git a/sound/usb/clock.c b/sound/usb/clock.c
-index b7aadd6..b585511 100644
---- a/sound/usb/clock.c
-+++ b/sound/usb/clock.c
-@@ -103,7 +103,8 @@ static int uac_clock_selector_get_val(struct snd_usb_audio *chip, int selector_i
- 	ret = snd_usb_ctl_msg(chip->dev, usb_rcvctrlpipe(chip->dev, 0),
- 			      UAC2_CS_CUR,
- 			      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
--			      UAC2_CX_CLOCK_SELECTOR << 8, selector_id << 8,
-+			      UAC2_CX_CLOCK_SELECTOR << 8,
-+			      snd_usb_ctrl_intf(chip) | (selector_id << 8),
- 			      &buf, sizeof(buf), 1000);
- 
- 	if (ret < 0)
-@@ -120,7 +121,8 @@ static bool uac_clock_source_is_valid(struct snd_usb_audio *chip, int source_id)
- 
- 	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
- 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
--			      UAC2_CS_CONTROL_CLOCK_VALID << 8, source_id << 8,
-+			      UAC2_CS_CONTROL_CLOCK_VALID << 8,
-+			      snd_usb_ctrl_intf(chip) | (source_id << 8),
- 			      &data, sizeof(data), 1000);
- 
- 	if (err < 0) {
-@@ -269,7 +271,8 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
- 	data[3] = rate >> 24;
- 	if ((err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
- 				   USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_OUT,
--				   UAC2_CS_CONTROL_SAM_FREQ << 8, clock << 8,
-+				   UAC2_CS_CONTROL_SAM_FREQ << 8,
-+				   snd_usb_ctrl_intf(chip) | (clock << 8),
- 				   data, sizeof(data), 1000)) < 0) {
- 		snd_printk(KERN_ERR "%d:%d:%d: cannot set freq %d (v2)\n",
- 			   dev->devnum, iface, fmt->altsetting, rate);
-@@ -278,7 +281,8 @@ static int set_sample_rate_v2(struct snd_usb_audio *chip, int iface,
- 
- 	if ((err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
- 				   USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
--				   UAC2_CS_CONTROL_SAM_FREQ << 8, clock << 8,
-+				   UAC2_CS_CONTROL_SAM_FREQ << 8,
-+				   snd_usb_ctrl_intf(chip) | (clock << 8),
- 				   data, sizeof(data), 1000)) < 0) {
- 		snd_printk(KERN_WARNING "%d:%d:%d: cannot get freq (v2)\n",
- 			   dev->devnum, iface, fmt->altsetting);
 diff --git a/sound/usb/format.c b/sound/usb/format.c
-index df5b29f..8eccf17 100644
+index 8eccf17..7a54a0a 100644
 --- a/sound/usb/format.c
 +++ b/sound/usb/format.c
-@@ -227,7 +227,8 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
- 	/* get the number of sample rates first by only fetching 2 bytes */
- 	ret = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_RANGE,
- 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
--			      UAC2_CS_CONTROL_SAM_FREQ << 8, clock << 8,
-+			      UAC2_CS_CONTROL_SAM_FREQ << 8,
-+			      snd_usb_ctrl_intf(chip) | (clock << 8),
- 			      tmp, sizeof(tmp), 1000);
+@@ -206,6 +206,57 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
+ }
  
- 	if (ret < 0) {
-@@ -247,7 +248,8 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
- 	/* now get the full information */
- 	ret = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_RANGE,
- 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
--			      UAC2_CS_CONTROL_SAM_FREQ << 8, clock << 8,
-+			      UAC2_CS_CONTROL_SAM_FREQ << 8,
-+			      snd_usb_ctrl_intf(chip) | (clock << 8),
- 			      data, data_size, 1000);
- 
- 	if (ret < 0) {
-diff --git a/sound/usb/helper.h b/sound/usb/helper.h
-index a6b0e51..09bd943 100644
---- a/sound/usb/helper.h
-+++ b/sound/usb/helper.h
-@@ -28,5 +28,9 @@ unsigned char snd_usb_parse_datainterval(struct snd_usb_audio *chip,
- #define snd_usb_get_speed(dev) ((dev)->speed)
- #endif
- 
-+static inline int snd_usb_ctrl_intf(struct snd_usb_audio *chip)
+ /*
++ * Helper function to walk the array of sample rate triplets reported by
++ * the device. The problem is that we need to parse whole array first to
++ * get to know how many sample rates we have to expect.
++ * Then fp->rate_table can be allocated and filled.
++ */
++static int parse_uac2_sample_rate_range(struct audioformat *fp, int nr_triplets,
++					const unsigned char *data)
 +{
-+	return get_iface_desc(chip->ctrl_intf)->bInterfaceNumber;
++	int i, nr_rates = 0;
++
++	fp->rates = fp->rate_min = fp->rate_max = 0;
++
++	for (i = 0; i < nr_triplets; i++) {
++		int min = combine_quad(&data[2 + 12 * i]);
++		int max = combine_quad(&data[6 + 12 * i]);
++		int res = combine_quad(&data[10 + 12 * i]);
++		int rate;
++
++		if ((max < 0) || (min < 0) || (res < 0) || (max < min))
++			continue;
++
++		/*
++		 * for ranges with res == 1, we want a continuous sample
++		 * rate range, so this function should return 0.
++		 */
++		if (res == 1) {
++			fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
++			return 0;
++		}
++
++		for (rate = min; rate <= max; rate += res) {
++			if (fp->rate_table)
++				fp->rate_table[nr_rates] = rate;
++			if (!fp->rate_min || rate < fp->rate_min)
++				fp->rate_min = rate;
++			if (!fp->rate_max || rate > fp->rate_max)
++				fp->rate_max = rate;
++			fp->rates |= snd_pcm_rate_to_rate_bit(rate);
++
++			nr_rates++;
++
++			/* avoid endless loop */
++			if (res == 0)
++				break;
++		}
++	}
++
++	return nr_rates;
 +}
++
++/*
+  * parse the format descriptor and stores the possible sample rates
+  * on the audioformat table (audio class v2).
+  */
+@@ -215,7 +266,7 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ {
+ 	struct usb_device *dev = chip->dev;
+ 	unsigned char tmp[2], *data;
+-	int i, nr_rates, data_size, ret = 0;
++	int nr_triplets, data_size, ret = 0;
+ 	int clock = snd_usb_clock_find_source(chip, chip->ctrl_intf, fp->clock);
  
- #endif /* __USBAUDIO_HELPER_H */
+ 	if (clock < 0) {
+@@ -237,8 +288,8 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 		goto err;
+ 	}
+ 
+-	nr_rates = (tmp[1] << 8) | tmp[0];
+-	data_size = 2 + 12 * nr_rates;
++	nr_triplets = (tmp[1] << 8) | tmp[0];
++	data_size = 2 + 12 * nr_triplets;
+ 	data = kzalloc(data_size, GFP_KERNEL);
+ 	if (!data) {
+ 		ret = -ENOMEM;
+@@ -259,26 +310,28 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 		goto err_free;
+ 	}
+ 
+-	fp->rate_table = kmalloc(sizeof(int) * nr_rates, GFP_KERNEL);
++	/* Call the triplet parser, and make sure fp->rate_table is NULL.
++	 * We just use the return value to know how many sample rates we
++	 * will have to deal with. */
++	kfree(fp->rate_table);
++	fp->rate_table = NULL;
++	fp->nr_rates = parse_uac2_sample_rate_range(fp, nr_triplets, data);
++
++	if (fp->nr_rates == 0) {
++		/* SNDRV_PCM_RATE_CONTINUOUS */
++		err = 0;
++		goto err_free;
++	}
++
++	fp->rate_table = kmalloc(sizeof(int) * fp->nr_rates, GFP_KERNEL);
+ 	if (!fp->rate_table) {
+ 		ret = -ENOMEM;
+ 		goto err_free;
+ 	}
+ 
+-	fp->nr_rates = 0;
+-	fp->rate_min = fp->rate_max = 0;
+-
+-	for (i = 0; i < nr_rates; i++) {
+-		int rate = combine_quad(&data[2 + 12 * i]);
+-
+-		fp->rate_table[fp->nr_rates] = rate;
+-		if (!fp->rate_min || rate < fp->rate_min)
+-			fp->rate_min = rate;
+-		if (!fp->rate_max || rate > fp->rate_max)
+-			fp->rate_max = rate;
+-		fp->rates |= snd_pcm_rate_to_rate_bit(rate);
+-		fp->nr_rates++;
+-	}
++	/* Call the triplet parser again, but this time, fp->rate_table is
++	 * allocated, so the rates will be stored */
++	parse_uac2_sample_rate_range(fp, nr_triplets, data);
+ 
+ err_free:
+ 	kfree(data);
 -- 
 1.7.1
