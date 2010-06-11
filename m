@@ -1,18 +1,18 @@
-From: Jakub Schmidtke <sjakub@gmail.com>
-Subject: HDMI audio with NVIDIA NVS 3100M
-Date: Fri, 11 Jun 2010 01:58:13 -0400
-Message-ID: <201006110158.13869.sjakub@gmail.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [sdr-widget] UAC2 sampling freq setting
+Date: Fri, 11 Jun 2010 09:02:11 +0200
+Message-ID: <20100611070211.GT17833@buzzloop.caiaq.de>
+References: <a3ec17f9-b3a9-42f1-86b9-081b6f234faa@6g2000prg.googlegroups.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5DAD71039A6
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 943191039A6
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Jun 2010 07:55:33 +0200 (CEST)
-Received: by iwn6 with SMTP id 6so123747iwn.38
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2010 22:55:32 -0700 (PDT)
+	Fri, 11 Jun 2010 09:02:20 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <a3ec17f9-b3a9-42f1-86b9-081b6f234faa@6g2000prg.googlegroups.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,41 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Alex Lee <alexlee188@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi.
+(Moving this discussion from sdr-widget to alsa-devel. Can't Cc: the
+ original mailing list as it forbids cross-posting)
 
-I am having problems getting the HDMI audio working with NVIDIA NVS 3100M card 
-(this is a card in Lenovo T410 laptop).
-When I'm not using any options for the snd-hda-intel module, I have 
-4 controls in alsamixer: S/PDIF >S/PDIF 1 S/PDIF 2 S/PDIF 3.
-Playing to any of the 4 available devices doesn't produce any sound through 
-TV.
+On Thu, Jun 10, 2010 at 09:36:48PM -0700, Alex Lee wrote:
+> I studied the driver source again and it becomes apparent that the
+> driver only looks at the MIN value of the triplet (MIN, MAX, RES).  It
+> does not take into consideration of the MAX and the RES in each
+> triplet.
 
-In a thread about GT2XX cards
-( http://forum.xbmc.org/showthread.php?p=527386 )
-there was a solution - adding "options snd-hda-intel enable_msi=0 
-probe_mask=0xffff,0xfff2" to modprobe's config.
-When I am using this option I have only one S/PDIF output, but I am still not 
-getting any sound through TV.
+For samplerates it does that, yes.
 
-I have run alsa-info.sh script and uploaded the results (this is without any 
-options for the modprobe):
-http://www.alsa-project.org/db/?f=7514a673a73aca75d58c3e426c59d0bf6ca3dfc8
+> The driver calculates its own MIN and MAX values by going through all
+> the triplets in the clock source.  In the present firmware, we only
+> have ONE triplet in each clock source, with:
+> 
+> # of triplets = 1 (2 byte value)
+> MIN  48000
+> MAX 96000
+> RES 48000
 
-This is info from lspci about this card:
+Ah, that's a corner case I didn't see. I'll fix this.
 
-01:00.0 VGA compatible controller: nVidia Corporation NVIDIA NVS 3100M (rev 
-a2)
-01:00.0 0300: 10de:0a6c (rev a2)
+> in accordance with the UAC2 specs.  The present driver code expects:
+> 
+> # of triplets = 2  (2 byte value)
+> triplet 1:
+> 
+> MIN  48000   MAX 48000 RES 00000
+> 
+> triplet 2:
+> 
+> MIN 96000 MAX 96000 RES 00000
 
-01:00.1 Audio device: nVidia Corporation High Definition Audio Controller (rev 
-a1)
-01:00.1 0403: 10de:0be3 (rev a1)
+Yes, that's right. All firmware code I've seen so far also has a triplet
+for each discrete sample rate.
 
-Any hints? Maybe I can debug or check something else? I am ok with modifying 
-and building kernel modules, I just have no idea where to start...
+> Thus the present driver cannot decode the 1st case above correctly,
+> and only get the 48khz value.
+> 
+> I will update the firmware to cater to the 2nd case above and we
+> should have the 96khz back :-)
 
+Ok, fair fix. I'll make sure future versions of the driver also support
+the other approach.
 
-Thanks!
+Thanks,
+Daniel
