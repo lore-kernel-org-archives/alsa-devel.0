@@ -1,77 +1,183 @@
-From: Sudhakar Rajashekhara <sudhakar.raj-l0cyMroinI0@public.gmane.org>
-Subject: [PATCH] ASoC: DaVinci: Fix McASP hardware FIFO configuration
-Date: Fri, 11 Jun 2010 19:24:51 +0530
-Message-ID: <1276264491-4942-1-git-send-email-sudhakar.raj@ti.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 3/4] ALSA: usb-audio: parse UAC2 sample
+ rate ranges correctly
+Date: Fri, 11 Jun 2010 17:04:35 +0200
+Message-ID: <20100611150435.GS2698@buzzloop.caiaq.de>
+References: <1276263191-8652-1-git-send-email-daniel@caiaq.de>
+	<1276263191-8652-4-git-send-email-daniel@caiaq.de>
+	<AANLkTin3LMCu_f2emsh6kAT8H6G3zKF8Ud-ZUMpZjbmg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Unsubscribe: <http://linux.davincidsp.com/mailman/options/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://linux.davincidsp.com/pipermail/davinci-linux-open-source>
-List-Post: <mailto:davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org>
-List-Help: <mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=help>
-List-Subscribe: <http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source>,
-	<mailto:davinci-linux-open-source-request-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org?subject=subscribe>
-Sender: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-Errors-To: davinci-linux-open-source-bounces-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 44EF1244DE
+	for <alsa-devel@alsa-project.org>;
+	Fri, 11 Jun 2010 17:04:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTin3LMCu_f2emsh6kAT8H6G3zKF8Ud-ZUMpZjbmg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Alex Lee <alexlee188@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On DA830/OMAP-L137 and DA850/OMAP-L138 SoCs, the McASP peripheral
-has FIFO support. This FIFO provides additional data buffering. It
-also provides tolerance to variation in host/DMA controller response
-times. More details of the FIFO operation can be found at
+On Fri, Jun 11, 2010 at 10:59:44PM +0800, Alex Lee wrote:
+> If the device has a variable clock, it may report a RES of only 1.  So you
+> may end up with thousands (and even millions) of sample rates.  It might be
+> better to have separate code to cater to discrete clocks vs variable clocks.
 
-http://focus.ti.com/general/docs/lit/getliterature.tsp?literatureNumber=sprufm1&fileType=pdf
+AFAIK, ALSA cannot cope with that yet. Am I right?
 
-Existing sequence of steps for audio playback/capture are:
-a. DMA configuration
-b. McASP configuration (configures and enables FIFO)
-c. Start DMA
-d. Start McASP (enables FIFO)
+Daniel
 
-During McASP configuration, while FIFO was being configured, FIFO
-was being enabled in davinci_hw_common_param() function of
-sound/soc/davinci/davinci-mcasp.c file. This generated a transmit
-DMA event, which gets serviced when DMA is started.
 
-https://patchwork.kernel.org/patch/84611/ patch clears the DMA
-events before starting DMA, which is the right thing to do. But
-this resulted in a state where DMA was waiting for an event from
-McASP (after step c above), but the event which was already there,
-has got cleared (because of step b above).
 
-The fix is not to enable the FIFO during McASP configuration as
-FIFO was being enabled as part of McASP start.
-
-Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj-l0cyMroinI0@public.gmane.org>
----
-Applies to latest of Linus's tree.
-
- sound/soc/davinci/davinci-mcasp.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 79f0f4a..d395509 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -612,7 +612,6 @@ static void davinci_hw_common_param(struct davinci_audio_dev *dev, int stream)
- 								NUMDMA_MASK);
- 		mcasp_mod_bits(dev->base + DAVINCI_MCASP_WFIFOCTL,
- 				((dev->txnumevt * tx_ser) << 8), NUMEVT_MASK);
--		mcasp_set_bits(dev->base + DAVINCI_MCASP_WFIFOCTL, FIFO_ENABLE);
- 	}
- 
- 	if (dev->rxnumevt && stream == SNDRV_PCM_STREAM_CAPTURE) {
-@@ -623,7 +622,6 @@ static void davinci_hw_common_param(struct davinci_audio_dev *dev, int stream)
- 								NUMDMA_MASK);
- 		mcasp_mod_bits(dev->base + DAVINCI_MCASP_RFIFOCTL,
- 				((dev->rxnumevt * rx_ser) << 8), NUMEVT_MASK);
--		mcasp_set_bits(dev->base + DAVINCI_MCASP_RFIFOCTL, FIFO_ENABLE);
- 	}
- }
- 
--- 
-1.5.6
+> On Fri, Jun 11, 2010 at 9:33 PM, Daniel Mack <daniel@caiaq.de> wrote:
+> 
+> > A device may report its supported sample rates in ranges rather than in
+> > discrete triplets. The code used to only parse the MIN field instead of
+> > properly paying attention to the MAX and RES values.
+> >
+> > Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> > Reported-by: Alex Lee <alexlee188@gmail.com>
+> > ---
+> >  sound/usb/format.c |   80
+> > ++++++++++++++++++++++++++++++++++++++++-----------
+> >  1 files changed, 62 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/sound/usb/format.c b/sound/usb/format.c
+> > index 8eccf17..e946db7 100644
+> > --- a/sound/usb/format.c
+> > +++ b/sound/usb/format.c
+> > @@ -206,6 +206,47 @@ static int parse_audio_format_rates_v1(struct
+> > snd_usb_audio *chip, struct audiof
+> >  }
+> >
+> >  /*
+> > + * Helper function to walk the array of sample rate triplets reported by
+> > + * the device. The problem is that we need to parse whole array first to
+> > + * get to know how many sample rates we have to expect.
+> > + * Then fp->rate_table can be allocated and filled.
+> > + */
+> > +static int parse_uac2_sample_rate_range(struct audioformat *fp, int
+> > nr_triplets,
+> > +                                       const unsigned char *data)
+> > +{
+> > +       int i, nr_rates = 0;
+> > +
+> > +       fp->rates = fp->rate_min = fp->rate_max = 0;
+> > +
+> > +       for (i = 0; i < nr_triplets; i++) {
+> > +               int min = combine_quad(&data[2 + 12 * i]);
+> > +               int max = combine_quad(&data[6 + 12 * i]);
+> > +               int res = combine_quad(&data[10 + 12 * i]);
+> > +               int rate;
+> > +
+> > +               if ((max < 0) || (min < 0) || (res < 0) || (max < min))
+> > +                       continue;
+> > +
+> > +               for (rate = min; rate <= max; rate += res) {
+> > +                       if (fp->rate_table)
+> > +                               fp->rate_table[nr_rates] = rate;
+> > +                       if (!fp->rate_min || rate < fp->rate_min)
+> > +                               fp->rate_min = rate;
+> > +                       if (!fp->rate_max || rate > fp->rate_max)
+> > +                               fp->rate_max = rate;
+> > +                       fp->rates |= snd_pcm_rate_to_rate_bit(rate);
+> > +                       nr_rates++;
+> > +
+> > +                       /* avoid endless loop */
+> > +                       if (res == 0)
+> > +                               break;
+> > +               }
+> > +       }
+> > +
+> > +       return nr_rates;
+> > +}
+> > +
+> > +/*
+> >  * parse the format descriptor and stores the possible sample rates
+> >  * on the audioformat table (audio class v2).
+> >  */
+> > @@ -215,7 +256,7 @@ static int parse_audio_format_rates_v2(struct
+> > snd_usb_audio *chip,
+> >  {
+> >        struct usb_device *dev = chip->dev;
+> >        unsigned char tmp[2], *data;
+> > -       int i, nr_rates, data_size, ret = 0;
+> > +       int nr_triplets, data_size, ret = 0;
+> >        int clock = snd_usb_clock_find_source(chip, chip->ctrl_intf,
+> > fp->clock);
+> >
+> >        if (clock < 0) {
+> > @@ -237,8 +278,8 @@ static int parse_audio_format_rates_v2(struct
+> > snd_usb_audio *chip,
+> >                goto err;
+> >        }
+> >
+> > -       nr_rates = (tmp[1] << 8) | tmp[0];
+> > -       data_size = 2 + 12 * nr_rates;
+> > +       nr_triplets = (tmp[1] << 8) | tmp[0];
+> > +       data_size = 2 + 12 * nr_triplets;
+> >        data = kzalloc(data_size, GFP_KERNEL);
+> >        if (!data) {
+> >                ret = -ENOMEM;
+> > @@ -259,26 +300,29 @@ static int parse_audio_format_rates_v2(struct
+> > snd_usb_audio *chip,
+> >                goto err_free;
+> >        }
+> >
+> > -       fp->rate_table = kmalloc(sizeof(int) * nr_rates, GFP_KERNEL);
+> > +       /* Call the triplet parser, and make sure fp->rate_table is NULL.
+> > +        * We just use the return value to know how many sample rates we
+> > +        * will have to deal with. */
+> > +       kfree(fp->rate_table);
+> > +       fp->rate_table = NULL;
+> > +       fp->nr_rates = parse_uac2_sample_rate_range(fp, nr_triplets, data);
+> > +
+> > +       if (fp->nr_rates == 0) {
+> > +               snd_printk(KERN_ERR "%s(): unable to parse sample rate
+> > triplets\n",
+> > +                               __func__);
+> > +               ret = -EINVAL;
+> > +               goto err_free;
+> > +       }
+> > +
+> > +       fp->rate_table = kmalloc(sizeof(int) * fp->nr_rates, GFP_KERNEL);
+> >        if (!fp->rate_table) {
+> >                ret = -ENOMEM;
+> >                goto err_free;
+> >        }
+> >
+> > -       fp->nr_rates = 0;
+> > -       fp->rate_min = fp->rate_max = 0;
+> > -
+> > -       for (i = 0; i < nr_rates; i++) {
+> > -               int rate = combine_quad(&data[2 + 12 * i]);
+> > -
+> > -               fp->rate_table[fp->nr_rates] = rate;
+> > -               if (!fp->rate_min || rate < fp->rate_min)
+> > -                       fp->rate_min = rate;
+> > -               if (!fp->rate_max || rate > fp->rate_max)
+> > -                       fp->rate_max = rate;
+> > -               fp->rates |= snd_pcm_rate_to_rate_bit(rate);
+> > -               fp->nr_rates++;
+> > -       }
+> > +       /* Call the triplet parser again, but this time, fp->rate_table is
+> > +        * allocated, so the rates will be stored */
+> > +       parse_uac2_sample_rate_range(fp, nr_triplets, data);
+> >
+> >  err_free:
+> >        kfree(data);
+> > --
+> > 1.7.1
+> >
+> >
