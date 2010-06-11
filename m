@@ -1,18 +1,20 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 4/4] ALSA: usb-audio: fix UAC2 control value
-	queries
-Date: Fri, 11 Jun 2010 15:33:11 +0200
-Message-ID: <1276263191-8652-5-git-send-email-daniel@caiaq.de>
+Subject: Re: [PATCH 4/4] ALSA: usb-audio: fix UAC2 control
+	value queries
+Date: Fri, 11 Jun 2010 15:51:21 +0200
+Message-ID: <20100611135121.GB17833@buzzloop.caiaq.de>
 References: <1276263191-8652-1-git-send-email-daniel@caiaq.de>
+	<1276263191-8652-5-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 086AD1039D1
+	by alsa0.perex.cz (Postfix) with ESMTP id 6223E1039BC
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Jun 2010 15:33:48 +0200 (CEST)
-In-Reply-To: <1276263191-8652-1-git-send-email-daniel@caiaq.de>
+	Fri, 11 Jun 2010 15:51:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1276263191-8652-5-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,11 +28,36 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, alexlee188@gmail.com, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-UAC2 controls can be queried in 1-byte, 2-byte or 4-byte request blocks.
-The size is actually determined by the number of bytes requested, and as
-everything is little-endian, we can always go for the 4-byte variant.
+On Fri, Jun 11, 2010 at 03:33:11PM +0200, Daniel Mack wrote:
+> UAC2 controls can be queried in 1-byte, 2-byte or 4-byte request blocks.
+> The size is actually determined by the number of bytes requested, and as
+> everything is little-endian, we can always go for the 4-byte variant.
+> 
+> Also, the MIN, MAX and RES value computations were using a wrong offset.
+> 
+> Signed-off-by: Daniel Mack <daniel@caiaq.de>
+> Reported-by: Alex Lee <alexlee188@gmail.com>
 
-Also, the MIN, MAX and RES value computations were using a wrong offset.
+Damn, I forgot to pick the right commit message for this patch. Below is
+a new version. Sorry.
+
+Daniel
+
+>From 9a8be646c65df2960bda3588cbd2cea4834c7750 Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@caiaq.de>
+Date: Fri, 11 Jun 2010 13:49:56 +0200
+Subject: [PATCH] ALSA: usb-audio: fix UAC2 control value queries
+
+For RANGE requests, we should only query as much bytes as we're in face
+interested in.
+
+For CUR requests, we shouldn't confuse the firmware with an overlong
+request but just ask for 2 bytes.
+
+This might need fixing in the future as it's not entirely clear when to
+dispatch 1-byte, 2-byte and 4-byte request blocks. For now, we assume
+everything is coded in 16bit - this works for all firmware
+implementations I've seen.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Reported-by: Alex Lee <alexlee188@gmail.com>
