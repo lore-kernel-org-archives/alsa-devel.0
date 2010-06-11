@@ -1,16 +1,17 @@
-From: "Timothy E. Krantz" <tkrantz@stahurabrenner.com>
-Subject: BUG: cx88 can't find device struct
-Date: Fri, 11 Jun 2010 16:52:15 -0400
-Message-ID: <!&!AAAAAAAAAAAYAAAAAAAAACQaAAE2cqNLuI5vSe3nryTCgAAAEAAAAPuor1woocFMmbldYCOiqTQBAAAAAA==@stahurabrenner.com>
+From: Paul Dugas <paul@dugasenterprises.com>
+Subject: Timing Info
+Date: Fri, 11 Jun 2010 18:00:54 -0400
+Message-ID: <AANLkTil1tGrkCdRt1s9AZ8eWYG55hYrPOCq6TRaEhpRK@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cdptpa-omtalb.mail.rr.com (cdptpa-omtalb.mail.rr.com
-	[75.180.132.120])
-	by alsa0.perex.cz (Postfix) with ESMTP id 03A811037E3
+Received: from na3sys009aog106.obsmtp.com (na3sys009aog106.obsmtp.com
+	[74.125.149.77]) by alsa0.perex.cz (Postfix) with SMTP id E385E1039DA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Jun 2010 22:52:22 +0200 (CEST)
+	Sat, 12 Jun 2010 00:01:00 +0200 (CEST)
+Received: by wyb40 with SMTP id 40so1454161wyb.33
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2010 15:00:54 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,35 +24,14 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I started looking into this problem a while back and gave up.  Now I decided
-to try again.
- 
-I am running MythDora 12.23 and would like to update the alsa driver to
-1.0.23 so that I can use HDMI audio out on my nvidia GT220 card.
- 
-So I download the alsa-driver-1.0.23.tar.bz file, unpack it, ./configure and
-make and make install.
- 
-When I reboot I can verify the new alsa driver by cat/proc/asound/version
-and it is indeed 1.0.23.
- 
-If I then try to record an analog station I get:
- 
-Jun  9 14:40:19 mythdora kernel: BUG: cx88 can't find device struct. Can't
-proceed with open
-Jun  9 14:40:19 mythdora kernel: cx88[1]: Calling XC5000 callback
-Jun  9 14:40:19 mythdora kernel: BUG: cx88 can't find device struct. Can't
-proceed with open
- 
-Hmmm, ok the alsa driver implementation updated some kernel header file
-perhaps, so I download the latest v4l-dvb tree and compile it and install it
-and reboot.
- 
-Same thing.  No sound on analog recordings.
- 
-I am sure I am missing some important step or something.
- 
-Any help would be greatly appreciated!
- 
-Tim
+I'm using snd_pcm_readi() to collect samples and am wondering if/how I
+can get accurate timestamps for them.  Seems like the snd_pcm_status()
+gives me this info but I'm unclear on the specifics.  Can someone
+point me toward the correct field in the status structure that I
+should be using and what sample that timestamp corresponds to?
+
+Does snd_pcm_status_get_tstamp() get me the timestamp for the first
+frame returned by the next snd_pcm_readi() call?
+
+
+P
