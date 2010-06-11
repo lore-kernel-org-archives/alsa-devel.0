@@ -1,17 +1,17 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: [PATCH 3/4] ALSA: usb-audio: parse UAC2 sample rate
-	ranges correctly
-Date: Fri, 11 Jun 2010 15:33:10 +0200
-Message-ID: <1276263191-8652-4-git-send-email-daniel@caiaq.de>
+Subject: [PATCH 4/4] ALSA: usb-audio: fix UAC2 control value
+	queries
+Date: Fri, 11 Jun 2010 15:33:11 +0200
+Message-ID: <1276263191-8652-5-git-send-email-daniel@caiaq.de>
 References: <1276263191-8652-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id A3CBC1039CC
+	by alsa0.perex.cz (Postfix) with ESMTP id 086AD1039D1
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Jun 2010 15:33:46 +0200 (CEST)
+	Fri, 11 Jun 2010 15:33:48 +0200 (CEST)
 In-Reply-To: <1276263191-8652-1-git-send-email-daniel@caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,132 +26,63 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, alexlee188@gmail.com, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-A device may report its supported sample rates in ranges rather than in
-discrete triplets. The code used to only parse the MIN field instead of
-properly paying attention to the MAX and RES values.
+UAC2 controls can be queried in 1-byte, 2-byte or 4-byte request blocks.
+The size is actually determined by the number of bytes requested, and as
+everything is little-endian, we can always go for the 4-byte variant.
+
+Also, the MIN, MAX and RES value computations were using a wrong offset.
 
 Signed-off-by: Daniel Mack <daniel@caiaq.de>
 Reported-by: Alex Lee <alexlee188@gmail.com>
 ---
- sound/usb/format.c |   80 ++++++++++++++++++++++++++++++++++++++++-----------
- 1 files changed, 62 insertions(+), 18 deletions(-)
+ sound/usb/mixer.c |   19 ++++++++++++++-----
+ 1 files changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index 8eccf17..e946db7 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -206,6 +206,47 @@ static int parse_audio_format_rates_v1(struct snd_usb_audio *chip, struct audiof
- }
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index a060d00..6939d0f 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -297,20 +297,27 @@ static int get_ctl_value_v1(struct usb_mixer_elem_info *cval, int request, int v
  
- /*
-+ * Helper function to walk the array of sample rate triplets reported by
-+ * the device. The problem is that we need to parse whole array first to
-+ * get to know how many sample rates we have to expect.
-+ * Then fp->rate_table can be allocated and filled.
-+ */
-+static int parse_uac2_sample_rate_range(struct audioformat *fp, int nr_triplets,
-+					const unsigned char *data)
-+{
-+	int i, nr_rates = 0;
-+
-+	fp->rates = fp->rate_min = fp->rate_max = 0;
-+
-+	for (i = 0; i < nr_triplets; i++) {
-+		int min = combine_quad(&data[2 + 12 * i]);
-+		int max = combine_quad(&data[6 + 12 * i]);
-+		int res = combine_quad(&data[10 + 12 * i]);
-+		int rate;
-+
-+		if ((max < 0) || (min < 0) || (res < 0) || (max < min))
-+			continue;
-+
-+		for (rate = min; rate <= max; rate += res) {
-+			if (fp->rate_table)
-+				fp->rate_table[nr_rates] = rate;
-+			if (!fp->rate_min || rate < fp->rate_min)
-+				fp->rate_min = rate;
-+			if (!fp->rate_max || rate > fp->rate_max)
-+				fp->rate_max = rate;
-+			fp->rates |= snd_pcm_rate_to_rate_bit(rate);
-+			nr_rates++;
-+
-+			/* avoid endless loop */
-+			if (res == 0)
-+				break;
-+		}
-+	}
-+
-+	return nr_rates;
-+}
-+
-+/*
-  * parse the format descriptor and stores the possible sample rates
-  * on the audioformat table (audio class v2).
-  */
-@@ -215,7 +256,7 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int validx, int *value_ret)
  {
- 	struct usb_device *dev = chip->dev;
- 	unsigned char tmp[2], *data;
--	int i, nr_rates, data_size, ret = 0;
-+	int nr_triplets, data_size, ret = 0;
- 	int clock = snd_usb_clock_find_source(chip, chip->ctrl_intf, fp->clock);
+-	unsigned char buf[14]; /* enough space for one range of 4 bytes */
++	unsigned char buf[2 + 3*sizeof(__u16)]; /* enough space for one range */
+ 	unsigned char *val;
+-	int ret;
++	int ret, size;
+ 	__u8 bRequest;
  
- 	if (clock < 0) {
-@@ -237,8 +278,8 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
- 		goto err;
- 	}
- 
--	nr_rates = (tmp[1] << 8) | tmp[0];
--	data_size = 2 + 12 * nr_rates;
-+	nr_triplets = (tmp[1] << 8) | tmp[0];
-+	data_size = 2 + 12 * nr_triplets;
- 	data = kzalloc(data_size, GFP_KERNEL);
- 	if (!data) {
- 		ret = -ENOMEM;
-@@ -259,26 +300,29 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
- 		goto err_free;
- 	}
- 
--	fp->rate_table = kmalloc(sizeof(int) * nr_rates, GFP_KERNEL);
-+	/* Call the triplet parser, and make sure fp->rate_table is NULL.
-+	 * We just use the return value to know how many sample rates we
-+	 * will have to deal with. */
-+	kfree(fp->rate_table);
-+	fp->rate_table = NULL;
-+	fp->nr_rates = parse_uac2_sample_rate_range(fp, nr_triplets, data);
-+
-+	if (fp->nr_rates == 0) {
-+		snd_printk(KERN_ERR "%s(): unable to parse sample rate triplets\n",
-+				__func__);
-+		ret = -EINVAL;
-+		goto err_free;
+-	bRequest = (request == UAC_GET_CUR) ?
+-		UAC2_CS_CUR : UAC2_CS_RANGE;
++	if (request == UAC_GET_CUR) {
++		bRequest = UAC2_CS_CUR;
++		size = sizeof(__u16);
++	} else {
++		bRequest = UAC2_CS_RANGE;
++		size = sizeof(buf);
 +	}
 +
-+	fp->rate_table = kmalloc(sizeof(int) * fp->nr_rates, GFP_KERNEL);
- 	if (!fp->rate_table) {
- 		ret = -ENOMEM;
- 		goto err_free;
++	memset(buf, 0, sizeof(buf));
+ 
+ 	ret = snd_usb_ctl_msg(cval->mixer->chip->dev,
+ 			      usb_rcvctrlpipe(cval->mixer->chip->dev, 0),
+ 			      bRequest,
+ 			      USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+ 			      validx, cval->mixer->ctrlif | (cval->id << 8),
+-			      buf, sizeof(buf), 1000);
++			      buf, size, 1000);
+ 
+ 	if (ret < 0) {
+ 		snd_printk(KERN_ERR "cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
+@@ -318,6 +325,8 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request, int v
+ 		return ret;
  	}
  
--	fp->nr_rates = 0;
--	fp->rate_min = fp->rate_max = 0;
--
--	for (i = 0; i < nr_rates; i++) {
--		int rate = combine_quad(&data[2 + 12 * i]);
--
--		fp->rate_table[fp->nr_rates] = rate;
--		if (!fp->rate_min || rate < fp->rate_min)
--			fp->rate_min = rate;
--		if (!fp->rate_max || rate > fp->rate_max)
--			fp->rate_max = rate;
--		fp->rates |= snd_pcm_rate_to_rate_bit(rate);
--		fp->nr_rates++;
--	}
-+	/* Call the triplet parser again, but this time, fp->rate_table is
-+	 * allocated, so the rates will be stored */
-+	parse_uac2_sample_rate_range(fp, nr_triplets, data);
- 
- err_free:
- 	kfree(data);
++	/* FIXME: how should we handle multiple triplets here? */
++
+ 	switch (request) {
+ 	case UAC_GET_CUR:
+ 		val = buf;
 -- 
 1.7.1
