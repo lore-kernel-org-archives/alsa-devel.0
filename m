@@ -1,23 +1,18 @@
 From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 3/4] ALSA: usb-audio: parse UAC2 sample
- rate ranges correctly
-Date: Fri, 11 Jun 2010 17:18:29 +0200
-Message-ID: <20100611151829.GE17833@buzzloop.caiaq.de>
-References: <1276263191-8652-1-git-send-email-daniel@caiaq.de>
-	<1276263191-8652-4-git-send-email-daniel@caiaq.de>
-	<AANLkTin3LMCu_f2emsh6kAT8H6G3zKF8Ud-ZUMpZjbmg@mail.gmail.com>
-	<20100611150435.GS2698@buzzloop.caiaq.de>
-	<4C1252F1.20809@ladisch.de>
+Subject: [PATCH 1/4] ALSA: usb-audio: add check for faulty
+	clock in parse_audio_format_rates_v2()
+Date: Fri, 11 Jun 2010 17:34:19 +0200
+Message-ID: <1276270462-12901-1-git-send-email-daniel@caiaq.de>
+References: <20100611151829.GE17833@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 71B4C244F0
+	by alsa0.perex.cz (Postfix) with ESMTP id 6565F244F4
 	for <alsa-devel@alsa-project.org>;
-	Fri, 11 Jun 2010 17:18:33 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4C1252F1.20809@ladisch.de>
+	Fri, 11 Jun 2010 17:34:33 +0200 (CEST)
+In-Reply-To: <20100611151829.GE17833@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,23 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Alex Lee <alexlee188@gmail.com>, tiwai@suse.de, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, alexlee188@gmail.com, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 11, 2010 at 05:14:57PM +0200, Clemens Ladisch wrote:
-> Daniel Mack wrote:
-> > On Fri, Jun 11, 2010 at 10:59:44PM +0800, Alex Lee wrote:
-> > > If the device has a variable clock, it may report a RES of only 1.  So you
-> > > may end up with thousands (and even millions) of sample rates.  It might be
-> > > better to have separate code to cater to discrete clocks vs variable clocks.
-> > 
-> > AFAIK, ALSA can[...] cope with that [...]. Am I right?
-> 
-> Yes; set fp->rates to SNDRV_PCM_RATE_CONTINUOUS to allow all rates between
-> fp->rate_min and fp->rate_max.  See, for example, parse_audio_format_rates_v1.
+Signed-off-by: Daniel Mack <daniel@caiaq.de>
+---
+ sound/usb/format.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
 
-Ah, ok. So we should we do this for all USB devices that report a RES
-value of 1. I'll respin this series then. Thanks!
-
-Daniel
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 5367cd1..df5b29f 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -218,6 +218,12 @@ static int parse_audio_format_rates_v2(struct snd_usb_audio *chip,
+ 	int i, nr_rates, data_size, ret = 0;
+ 	int clock = snd_usb_clock_find_source(chip, chip->ctrl_intf, fp->clock);
+ 
++	if (clock < 0) {
++		snd_printk(KERN_ERR "%s(): unable to find clock source (clock %d)\n",
++				__func__, clock);
++		goto err;
++	}
++
+ 	/* get the number of sample rates first by only fetching 2 bytes */
+ 	ret = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_RANGE,
+ 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
+-- 
+1.7.1
