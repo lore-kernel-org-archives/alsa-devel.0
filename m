@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Remove unused header
-Date: Sat, 12 Jun 2010 18:07:15 +0100
-Message-ID: <20100612170715.GB3110@sirena.org.uk>
-References: <20100610235348.29652.91350.stgit@angua>
-	<1276249840.3242.0.camel@odin>
+From: Paul Dugas <paul@dugasenterprises.com>
+Subject: Re: Timing Info
+Date: Sat, 12 Jun 2010 17:59:27 -0400
+Message-ID: <AANLkTik3ycq3POxHRG_bc0jO-KByZVvirVJ-X9-bySY_@mail.gmail.com>
+References: <AANLkTil1tGrkCdRt1s9AZ8eWYG55hYrPOCq6TRaEhpRK@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E3EE1037EA
+Received: from na3sys009aog104.obsmtp.com (na3sys009aog104.obsmtp.com
+	[74.125.149.73]) by alsa0.perex.cz (Postfix) with SMTP id DDB7B244C2
 	for <alsa-devel@alsa-project.org>;
-	Sat, 12 Jun 2010 19:07:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1276249840.3242.0.camel@odin>
+	Sat, 12 Jun 2010 23:59:30 +0200 (CEST)
+Received: by wyf28 with SMTP id 28so2544438wyf.0
+	for <alsa-devel@alsa-project.org>; Sat, 12 Jun 2010 14:59:28 -0700 (PDT)
+In-Reply-To: <AANLkTil1tGrkCdRt1s9AZ8eWYG55hYrPOCq6TRaEhpRK@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,16 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Grant Likely <grant.likely@secretlab.ca>, Herb Peyerl <hpeyerl@beer.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 11, 2010 at 10:50:40AM +0100, Liam Girdwood wrote:
-> On Thu, 2010-06-10 at 17:54 -0600, Grant Likely wrote:
-> > The header contains an extern that isn't used by anything.  Remove.
-
-> > Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
-
-> Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
-
-Applied, thanks.
+T24gRnJpLCBKdW4gMTEsIDIwMTAgYXQgNjowMCBQTSwgUGF1bCBEdWdhcyA8cGF1bEBkdWdhc2Vu
+dGVycHJpc2VzLmNvbT4gd3JvdGU6Cj4gSSdtIHVzaW5nIHNuZF9wY21fcmVhZGkoKSB0byBjb2xs
+ZWN0IHNhbXBsZXMgYW5kIGFtIHdvbmRlcmluZyBpZi9ob3cgSQo+IGNhbiBnZXQgYWNjdXJhdGUg
+dGltZXN0YW1wcyBmb3IgdGhlbS4gwqBTZWVtcyBsaWtlIHRoZSBzbmRfcGNtX3N0YXR1cygpCj4g
+Z2l2ZXMgbWUgdGhpcyBpbmZvIGJ1dCBJJ20gdW5jbGVhciBvbiB0aGUgc3BlY2lmaWNzLiDCoENh
+biBzb21lb25lCj4gcG9pbnQgbWUgdG93YXJkIHRoZSBjb3JyZWN0IGZpZWxkIGluIHRoZSBzdGF0
+dXMgc3RydWN0dXJlIHRoYXQgSQo+IHNob3VsZCBiZSB1c2luZyBhbmQgd2hhdCBzYW1wbGUgdGhh
+dCB0aW1lc3RhbXAgY29ycmVzcG9uZHMgdG8/Cj4KPiBEb2VzIHNuZF9wY21fc3RhdHVzX2dldF90
+c3RhbXAoKSBnZXQgbWUgdGhlIHRpbWVzdGFtcCBmb3IgdGhlIGZpcnN0Cj4gZnJhbWUgcmV0dXJu
+ZWQgYnkgdGhlIG5leHQgc25kX3BjbV9yZWFkaSgpIGNhbGw/CgpJIGtub3cgbm93IGdldF90c3Rh
+bXAoKSBpc24ndCB3aGF0IEknbSBsb29raW5nIGZvciBhZnRlciByZWFkaW5nIHNvbWUKcHJpb3Ig
+cG9zdGluZ3MgYW5kIG90aGVyIHdlYiBzaXRlcy4gIENhbid0IHNlZW0gdG8gZmluZCBhIGRpc2N1
+c3Npb24Kb2YgdGltaW5nIGluIHRoZSBBTFNBIGRvY3MgdGhlbXNlbHZlcy4gIE1heWJlIEknbSBi
+ZWluZyBkZW5zZS4KCkxvb2tzIGxpa2Ugc29tZSBwcm9jZXNzaW5nIG9mIHRoZSB0cmlnZ2VyIHRp
+bWVzdGFtcCBpcyB3aGF0IEkgbmVlZCBidXQKSSdtIG5vdCBmb2xsb3dpbmcgdGhlIGxvZ2ljIG9m
+ICJ0cmlnZ2VycyIgaW4gdGhlIHNpbXBsZSB1c2Ugb2YKc25kX3BjbV9yZWFkaSgpIHRoYXQgSSd2
+ZSBnb3QuICBCZWZvcmUgdGhlIGZpcnN0IHJlYWRpKCkgY2FsbCwgdGhlCnRyaWdnZXIgdGltZSBp
+cyAwLiAgVGhlIHNlY29uZCB0aW1lLCBpdCdzIHByZXR0eSBjbG9zZSB0byB0aGUgd2FsbAp0aW1l
+IGZvciB0aGUgZmlyc3QgY2FsbC4gIFBlcmhhcHMgdGhhdCdzIHRoZSB0aW1lc3RhbXAgb2YgdGhl
+IGZpcnN0CnNhbXBsZSBvZiB0aGUgZmlyc3QgcGVyaW9kIEkgcmVhZCBhbmQgSSBuZWVkIHRvIGFk
+ZCB0aGUgcGVyaW9kX3RpbWUKZWFjaCB0aW1lPyAgU2VlbXMgbGlrZSB0aGF0J2QgYWNjcnVlIGVy
+cm9yIHdoZW4gcmVjb3JkaW5nIG92ZXIgbG9uZ2VyCnBlcmlvZHMgb2YgdGltZSAod2hpY2ggbXkg
+YXBwbGljYXRpb24gZG9lcykuCgpXaGF0J3MgdGhlICJ0aW1lc3RhbXAgbW9kZSIuICBEb2VzIGl0
+IGdlbmVyYXRlIGEgdGltZXN0YW1wIGVhY2gKcGVyaW9kPyAgSG93IHdvdWxkIEkgYWNjZXNzIHRo
+YXQgdGltZXN0YW1wPwoKVGhhbmtzIGluIGFkdmFuY2UgZm9yIGFueSBhc3Npc3RhbmNlLAoKUGF1
+bApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
