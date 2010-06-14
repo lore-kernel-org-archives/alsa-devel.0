@@ -1,24 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Verifying mixer dB data/Invalid dB data from USB
-	cards, especially Aureon 5.1 MkII
-Date: Mon, 14 Jun 2010 11:30:48 +0800
-Message-ID: <AANLkTil4eNjr5GuVw40VESMR5sqwScKr9BNvk4mkyW_9@mail.gmail.com>
-References: <20100215192451.GA17938@tango.0pointer.de>
-	<4B7A5268.5050704@ladisch.de>
-	<alpine.LNX.2.00.1002160912140.28127@eeebox2.perex-int.cz>
-	<20100216143200.GB25489@tango.0pointer.de>
-	<20100216144047.GB10586@sirena.org.uk>
+From: "Harsha, Priya" <priya.harsha@intel.com>
+Subject: Re: ALSA's jack reporting framework map to Android
+ framework
+Date: Mon, 14 Jun 2010 11:30:44 +0530
+Message-ID: <98769532B4BB14429434178695419EAE042709C6EE@bgsmsx501.gar.corp.intel.com>
+References: <98769532B4BB14429434178695419EAE0426FF84AD@bgsmsx501.gar.corp.intel.com>
+	<20100612170552.GA3110@sirena.org.uk>
+	<AANLkTimTyqgo1Y5mDkUmnkaJEJr7HQfUjc43RJcXHxtm@mail.gmail.com>
+	(sfid-20100612_233659_338867_1D688BB9)
+	<DF126421-EAD3-4234-8E5E-7383FA1212CC@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id C221D24547
+Received: from mga03.intel.com (mga03.intel.com [143.182.124.21])
+	by alsa0.perex.cz (Postfix) with ESMTP id 265A124643
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jun 2010 05:30:49 +0200 (CEST)
-Received: by vws8 with SMTP id 8so101196vws.38
-	for <alsa-devel@alsa-project.org>; Sun, 13 Jun 2010 20:30:48 -0700 (PDT)
-In-Reply-To: <20100216144047.GB10586@sirena.org.uk>
+	Mon, 14 Jun 2010 08:00:50 +0200 (CEST)
+In-Reply-To: <DF126421-EAD3-4234-8E5E-7383FA1212CC@opensource.wolfsonmicro.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,37 +27,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Mike Lockwood <lockwood@android.com>, "swetland@android.com" <swetland@android.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/2/16 Mark Brown <broonie@opensource.wolfsonmicro.com>
+Hi Mike,
 
-> On Tue, Feb 16, 2010 at 03:32:01PM +0100, Lennart Poettering wrote:
-> > On Tue, 16.02.10 09:24, Jaroslav Kysela (perex@perex.cz) wrote:
->
-> > > Line: 0dB..47.81dB          # seems correct -47.81dB..0dB
-> > > Line Capture: -0.18dB..23.81dB      # seems correct
-> > > -17.81dB..6.18dB
->
-> > Hmm, how did you choose where to put 0dB?
->
-> The Line one looks like someone got attenuation and gain confused, which
-> is a fairly common mistake for people to make when copying information
-> from one place to another.  Possibly a similar thing going on with the
-> Line Capture control, plus a fixed 6dB gain (which may well be a
-> separate amp...).
->
+Can you please CC your media team and so that we can discuss what is the right thing to do? 
+Can we do a Android patch on the Android Framework to support ALSA's jack sensing? 
+Is there any such effort already in progress from your media team?
+Looks like modifying our audio drivers to support Android Framework is not recommended by the community. 
 
-Correct me if I am wrong
+Thanks,
+Harsha
 
-0dB point is needed when you recording from line-in by connected loopback
-cable to line out.
 
-The captured signal is supposed to be the same as the playback signal when
-you set both playback volume and capture volume to 0dB ,
-
-if you set playback volume over 0dB , clipping occur in the captured signal
-,
-
-if the playback volume is less than 0dB , captured signal will be less than
-the playback signal.
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@opensource.wolfsonmicro.com]
+> Sent: Sunday, June 13, 2010 3:47 PM
+> To: Mike Lockwood; swetland@android.com
+> Cc: Harsha, Priya; alsa-devel@alsa-project.org
+> Subject: Re: [alsa-devel] ALSA's jack reporting framework map to Android
+> framework
+> 
+> On 12 Jun 2010, at 23:36, Mike Lockwood wrote:
+> 
+> > There is no requirement to use the switch driver for the headset
+> > detect.  At the time we did this we couldn't find an existing standard
+> > and we had already written the switch driver for something else, so it
+> > was an easy solution at the time.  But if there is something better
+> > available now I don't see any reason not to use it.
+> 
+> In situations like this I'd always recommend discussing upstream - there
+> may be something you've missed, or if there isn't then it means
+> whatever you come up with can be adopted as a standard by everyone.
+> 
+> > I don't know what the current thinking is about ALSA and android -
+> > someone on our media team would need to address that part of the
+> > thread.  But if using ALSA requires GPL/LGPL code in userspace that
+> > would probably be a deal breaker right there.
+> 
+> 
+> Obviously there's already the option of using ALSA with the regular
+> libraries (which are LGPLed) in Android which a bunch of vendors are
+> using already - there's existing drivers for a range of CPUs and CODECs
+> and many vendors are already shipping other Linux based OSs on their
+> devices outside of Android which use things like the standard audio
+> stack and so don't have a problem with LGPL in userspace.
+> 
+> Discussions with Brian Swetland (CCed in so he can correct me if I'm
+> off base here) suggested that a direct to kernel option bypassing the
+> standard libraries might be developed under a MITish license to provide
+> as a default. This is obviously much less work than developing an entirely
+> new audio stack would be, and unless plugins are in use the userspace
+> portion is very thin.
