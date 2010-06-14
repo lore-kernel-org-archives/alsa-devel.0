@@ -1,22 +1,29 @@
-From: Paul Dugas <paul@dugasenterprises.com>
-Subject: Re: Timing Info
-Date: Mon, 14 Jun 2010 18:54:16 -0400
-Message-ID: <AANLkTim9ZZTr4enGt2X4qNbFxtEePi0CreA5XjuyNDHA@mail.gmail.com>
-References: <AANLkTil1tGrkCdRt1s9AZ8eWYG55hYrPOCq6TRaEhpRK@mail.gmail.com>
-	<AANLkTik3ycq3POxHRG_bc0jO-KByZVvirVJ-X9-bySY_@mail.gmail.com>
-	<4C14E6CB.2030909@ladisch.de>
-	<AANLkTimlrYCb53D_43C0btg53xOjiAzmRXZ28Rg5opL7@mail.gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Tue, 15 Jun 2010 07:43:48 +0800
+Message-ID: <AANLkTim2xGO3nS8DQAsVDFUZBcr4HVebEaGCuAFJJWNJ@mail.gmail.com>
+References: <huicj9$t30$1@dough.gmane.org>
+	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
+	<hulnlp$m00$1@dough.gmane.org>
+	<AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>
+	<hur2pt$uaa$1@dough.gmane.org>
+	<20100613135349.GB5818@tango.0pointer.de>
+	<AANLkTimwvTxPe66fk4hq2-eiky-8Yqd12vN6WYkh9qdQ@mail.gmail.com>
+	<hv4pfi$gqr$3@dough.gmane.org>
+	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
+	<hv4vs6$a6q$1@dough.gmane.org>
+	<20100614184922.GE14916@tango.0pointer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
-	[74.125.149.71]) by alsa0.perex.cz (Postfix) with SMTP id B6794243BF
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 00B56243F6
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 00:54:20 +0200 (CEST)
-Received: by mail-px0-f171.google.com with SMTP id 19so3306052pxi.16
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 15:54:18 -0700 (PDT)
-In-Reply-To: <AANLkTimlrYCb53D_43C0btg53xOjiAzmRXZ28Rg5opL7@mail.gmail.com>
+	Tue, 15 Jun 2010 01:43:49 +0200 (CEST)
+Received: by vws8 with SMTP id 8so1373720vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 16:43:48 -0700 (PDT)
+In-Reply-To: <20100614184922.GE14916@tango.0pointer.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,71 +33,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBKdW4gMTMsIDIwMTAgYXQgMzo0NyBQTSwgUGF1bCBEdWdhcyA8cGF1bEBkdWdhc2Vu
-dGVycHJpc2VzLmNvbT4gd3JvdGU6Cj4gT24gU3VuLCBKdW4gMTMsIDIwMTAgYXQgMTA6MTAgQU0s
-IENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2NoLmRlPgo+IHdyb3RlOgo+Pgo+PiBQYXVs
-IER1Z2FzIHdyb3RlOgo+PiA+IFdoYXQncyB0aGUgInRpbWVzdGFtcCBtb2RlIi4gwqBEb2VzIGl0
-IGdlbmVyYXRlIGEgdGltZXN0YW1wIGVhY2gKPj4gPiBwZXJpb2Q/IMKgSG93IHdvdWxkIEkgYWNj
-ZXNzIHRoYXQgdGltZXN0YW1wPwo+Pgo+PiBTZXQgU05EX1BDTV9UU1RBTVBfRU5BQkxFIHRvIGdl
-bmVyYXRlIGEgdGltZXN0YW1wIHdoZW5ldmVyIHRoZSBoYXJkd2FyZQo+PiBwb3NpdGlvbiBpcyB1
-cGRhdGVkLiDCoENhbGwgc25kX3BjbV9zdGF0dXMgdG8gcmVhZCB0aGUgcG9zaXRpb24gYW5kIHRo
-ZQo+PiBjb3JyZXNwb25kaW5nIHRpbWVzdGFtcC4KPgo+IFNvLCBkb2VzIHNldHRpbmcgU05EX1BD
-TV9UU1RBTVBfRU5BQkxFIGNoYW5nZSB0aGUgbWVhbmluZyBvZiB0aGUgdHN0YW1wCj4gZmllbGQg
-aW4gdGhlIHN0YXR1cz8gwqBJIGJlbGlldmUgSSByZWFkIHNvbWV3aGVyZSB0aGF0IHdpdGggVFNU
-QU1QX05PTkUsCj4gdHN0YW1wIHdhcyBzZXQgdG8gIm5vdyIgd2hlbiByZWFkaSgpIHdhcyBjYWxs
-ZWQuIMKgRG9lcyBpdCBjaGFuZ2UgdG8gbWVhbmluZwo+ICIgdGhlIHRpbWVzdGFtcCBvZCB0aGUg
-Zmlyc3QgZnJhbWUgcmV0dXJuZWQiPyDCoElmIG5vdCwgd2hlcmUgZG8gSSBsb29rPwoKSSBzcHVu
-IHVwIGEgdGVzdCBwcm9ncmFtIGJ1dCBJJ20gbm90IHNlZWluZyB3aGF0IEkgZXhwZWN0LiAgSSdt
-IHN0aWxsCm1pc3Npbmcgc29tZXRoaW5nLgoKSSdtIGNhbGxpbmcgc25kX3BjbV9zdGF0dXMoKSBh
-bmQgc25kX3BjbV9zdGF0dXNfZHVtcCgpIGJlZm9yZSBlYWNoCnNuZF9wY21fcmVhZGkoKSBjYWxs
-LiAgSSBzZWUgdGhlICJ0cmlnZ2VyX3RpbWUiIG5vdCBjaGFuZ2luZyAoYWZ0ZXIKdGhlIGZpcnN0
-IHJlYWRpIGNhbGwpLiAgVGhlICJ0c2FtcCIgaXNuJ3QgaW5jcmVhc2luZyBpbiBjb25zaXN0ZW50
-CnN0ZXBzLiAgSSBleHBlY3QgaXQgdG8gYmUgY29uc2lzdGVudGx5IDEwLDY2NiB1c2VjcyBwZXIg
-dGhlCiJwZXJpb2RfdGltZSIgdmFsdWUgYmVsb3cuCgpUaGUgUENNIGRldmljZSBpcyBjb25maWd1
-cmVkIGxpa2Ugc286CiAgPiAgUGx1ZyBQQ006IExpbmVhciBJbnRlZ2VyIDwtPiBMaW5lYXIgRmxv
-YXQgY29udmVyc2lvbiBQQ00gKFMzMl9MRSkKICA+ICBJdHMgc2V0dXAgaXM6CiAgPiAgICBzdHJl
-YW0gICAgICAgOiBDQVBUVVJFCiAgPiAgICBhY2Nlc3MgICAgICAgOiBSV19JTlRFUkxFQVZFRAog
-ID4gICAgZm9ybWF0ICAgICAgIDogRkxPQVQ2NF9MRQogID4gICAgc3ViZm9ybWF0ICAgIDogU1RE
-CiAgPiAgICBjaGFubmVscyAgICAgOiA4CiAgPiAgICByYXRlICAgICAgICAgOiA5NjAwMAogID4g
-ICAgZXhhY3QgcmF0ZSAgIDogOTYwMDAgKDk2MDAwLzEpCiAgPiAgICBtc2JpdHMgICAgICAgOiA2
-NAogID4gICAgYnVmZmVyX3NpemUgIDogMzI3NjgKICA+ICAgIHBlcmlvZF9zaXplICA6IDEwMjQK
-ICA+ICAgIHBlcmlvZF90aW1lICA6IDEwNjY2CiAgPiAgICB0c3RhbXBfbW9kZSAgOiBFTkFCTEUK
-ICA+ICAgIHBlcmlvZF9zdGVwICA6IDEKICA+ICAgIGF2YWlsX21pbiAgICA6IDEwMjQKICA+ICAg
-IHBlcmlvZF9ldmVudCA6IDAKICA+ICAgIHN0YXJ0X3RocmVzaG9sZCAgOiAxCiAgPiAgICBzdG9w
-X3RocmVzaG9sZCAgIDogMzI3NjgKICA+ICAgIHNpbGVuY2VfdGhyZXNob2xkOiAwCiAgPiAgICBz
-aWxlbmNlX3NpemUgOiAwCiAgPiAgICBib3VuZGFyeSAgICAgOiA0NjExNjg2MDE4NDI3Mzg3OTA0
-CiAgPiAgU2xhdmU6IFJvdXRlIGNvbnZlcnNpb24gUENNIChzZm9ybWF0PVMzMl9MRSkKICA+ICAg
-IFRyYW5zZm9ybWF0aW9uIHRhYmxlOgogID4gICAgICAwIDwtIDAKICA+ICAgICAgMSA8LSAxCiAg
-PiAgICAgIDIgPC0gbm9uZQogID4gICAgICAzIDwtIG5vbmUKICA+ICAgICAgNCA8LSBub25lCiAg
-PiAgICAgIDUgPC0gbm9uZQogID4gICAgICA2IDwtIG5vbmUKICA+ICAgICAgNyA8LSBub25lCiAg
-PiAgSXRzIHNldHVwIGlzOgogID4gICAgc3RyZWFtICAgICAgIDogQ0FQVFVSRQogID4gICAgYWNj
-ZXNzICAgICAgIDogTU1BUF9JTlRFUkxFQVZFRAogID4gICAgZm9ybWF0ICAgICAgIDogUzMyX0xF
-CiAgPiAgICBzdWJmb3JtYXQgICAgOiBTVEQKICA+ICAgIGNoYW5uZWxzICAgICA6IDgKICA+ICAg
-IHJhdGUgICAgICAgICA6IDk2MDAwCiAgPiAgICBleGFjdCByYXRlICAgOiA5NjAwMCAoOTYwMDAv
-MSkKICA+ICAgIG1zYml0cyAgICAgICA6IDMyCiAgPiAgICBidWZmZXJfc2l6ZSAgOiAzMjc2OAog
-ID4gICAgcGVyaW9kX3NpemUgIDogMTAyNAogID4gICAgcGVyaW9kX3RpbWUgIDogMTA2NjYKICA+
-ICAgIHRzdGFtcF9tb2RlICA6IEVOQUJMRQogID4gICAgcGVyaW9kX3N0ZXAgIDogMQogID4gICAg
-YXZhaWxfbWluICAgIDogMTAyNAogID4gICAgcGVyaW9kX2V2ZW50IDogMAogID4gICAgc3RhcnRf
-dGhyZXNob2xkICA6IDEKICA+ICAgIHN0b3BfdGhyZXNob2xkICAgOiAzMjc2OAogID4gICAgc2ls
-ZW5jZV90aHJlc2hvbGQ6IDAKICA+ICAgIHNpbGVuY2Vfc2l6ZSA6IDAKICA+ICAgIGJvdW5kYXJ5
-ICAgICA6IDQ2MTE2ODYwMTg0MjczODc5MDQKICA+ICBTbGF2ZTogSGFyZHdhcmUgUENNIGNhcmQg
-MCAnSERBIEludGVsJyBkZXZpY2UgMCBzdWJkZXZpY2UgMAogID4gIEl0cyBzZXR1cCBpczoKICA+
-ICAgIHN0cmVhbSAgICAgICA6IENBUFRVUkUKICA+ICAgIGFjY2VzcyAgICAgICA6IE1NQVBfSU5U
-RVJMRUFWRUQKICA+ICAgIGZvcm1hdCAgICAgICA6IFMzMl9MRQogID4gICAgc3ViZm9ybWF0ICAg
-IDogU1RECiAgPiAgICBjaGFubmVscyAgICAgOiAyCiAgPiAgICByYXRlICAgICAgICAgOiA5NjAw
-MAogID4gICAgZXhhY3QgcmF0ZSAgIDogOTYwMDAgKDk2MDAwLzEpCiAgPiAgICBtc2JpdHMgICAg
-ICAgOiAzMgogID4gICAgYnVmZmVyX3NpemUgIDogMzI3NjgKICA+ICAgIHBlcmlvZF9zaXplICA6
-IDEwMjQKICA+ICAgIHBlcmlvZF90aW1lICA6IDEwNjY2CiAgPiAgICB0c3RhbXBfbW9kZSAgOiBF
-TkFCTEUKICA+ICAgIHBlcmlvZF9zdGVwICA6IDEKICA+ICAgIGF2YWlsX21pbiAgICA6IDEwMjQK
-ICA+ICAgIHBlcmlvZF9ldmVudCA6IDAKICA+ICAgIHN0YXJ0X3RocmVzaG9sZCAgOiAxCiAgPiAg
-ICBzdG9wX3RocmVzaG9sZCAgIDogMzI3NjgKICA+ICAgIHNpbGVuY2VfdGhyZXNob2xkOiAwCiAg
-PiAgICBzaWxlbmNlX3NpemUgOiAwCiAgPiAgICBib3VuZGFyeSAgICAgOiA0NjExNjg2MDE4NDI3
-Mzg3OTA0CiAgPiAgICBhcHBsX3B0ciAgICAgOiAwCiAgPiAgICBod19wdHIgICAgICAgOiAwCgpI
-bW1tLi4uLiAgIE5vdCBzdXJlIHdoYXQgdG8gdHJ5IG5leHQuCgpQYXVsCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+2010/6/15 Lennart Poettering <mznyfn@0pointer.de>
+
+> On Mon, 14.06.10 11:22, Colin Guthrie (gmane@colin.guthr.ie) wrote:
+>
+> >
+> > 'Twas brillig, and James Courtier-Dutton at 14/06/10 09:56 did gyre and
+> > gimble:
+> > > On 14 June 2010 09:33, Colin Guthrie <gmane@colin.guthr.ie> wrote:
+> > >> 'Twas brillig, and Raymond Yau at 14/06/10 01:25 did gyre and gimble:
+> > >>> if your sound card have ac97 codec ., you can use audacity to record
+> the
+> > >>> output from hw:0,0 and you will see clipping occur when you set "PCM"
+> volume
+> > >>> above 0dB
+> > >>
+> > >> So the standard response is "don't do that then" :)
+> > >>
+> > >> That's why the base volume is shown to the user via GUIs so that they
+> > >> can gauge the best point on the slider to use. Currently there is no
+> > >> indication with alsa sliders at which point the 0dB "sweet spot" lies.
+> > >>
+> > >
+> > > What do you mean.
+> > > If you use "alsamixer", dB values are shown so it is easy to find the
+> > > 0dB "sweet spot".
+> > > I think it is pulse audio that hides this information when it combines
+> > > two alsa mixer controls into one pulseaudio control.
+> >
+> > But it doesn't hide it. It's shown very clearly in the volume control
+> > GUIs as the Base Volume.
+>
+> Let me also stress that "dB" is not at all understandable to most
+> people. It is a very technical unit, and showing 0dB in the UI just like
+> that won't be very helpful for most people.
+>
+> That's why we thought about this, and are recommending a color coded
+> slider to be exposed in the UI which encodes the range information in a
+> sane way that is intuitively understandable by users. In green, in
+> yellow and in red. (meaning hw attenuated, hw amplified, sw amplified
+> ranges)
+>
+> http://pulseaudio.org/wiki/WritingVolumeControlUIs#Colouredvolumesliders
+>
+> Lennart
+>
+>
+Clipping may occur at recording if there is gain above hardware 0dB point  ,
+the region should be coloured as red ,
+
+What is the meaning of  the yellow region ?
+
+For HDA base volume seem to be at the same point as the norm volume since
+max_db of playback is 0dB
+
++12dB(400%) is even larger than the software gain 150% of PA
