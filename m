@@ -1,7 +1,7 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: wrong decibel data?
-Date: Mon, 14 Jun 2010 16:38:00 +0800
-Message-ID: <AANLkTinsZ8RqxYpOrGBBOAFlyP86OdIvJK-Lle5BZv5G@mail.gmail.com>
+Date: Mon, 14 Jun 2010 16:45:52 +0800
+Message-ID: <AANLkTikknwiaVOWUwtWsiNOc0j3VtG3YMEMkRO1o2w2f@mail.gmail.com>
 References: <htls4d$phr$1@dough.gmane.org> <4BFE7840.4070004@ladisch.de>
 	<htm0et$eb4$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
 	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
@@ -19,11 +19,11 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
 	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id ED635103811
+	by alsa0.perex.cz (Postfix) with ESMTP id CBAFC103817
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jun 2010 10:38:01 +0200 (CEST)
-Received: by vws8 with SMTP id 8so420056vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 01:38:01 -0700 (PDT)
+	Mon, 14 Jun 2010 10:45:54 +0200 (CEST)
+Received: by vws8 with SMTP id 8so428290vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 01:45:53 -0700 (PDT)
 In-Reply-To: <hv4pfi$gqr$3@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -55,8 +55,8 @@ List-Id: alsa-devel@alsa-project.org
 >
 > Col
 >
->
-This is bug in pulseaudio in dB calculation because it shift the ALSA 's dB
-value to PA 's own dB value
 
-I guess none of PA developers has AC97 sound card
+
+The correct way is to provide the real ALSA 's 0dB point (Playback volume)
+for the user of AC97 sound card so that they can record without any
+distortion using line in with the loopback cable connected to line out.
