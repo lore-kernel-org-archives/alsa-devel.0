@@ -1,27 +1,22 @@
-From: Lennart Poettering <mznyfn@0pointer.de>
-Subject: Re: wrong decibel data?
-Date: Mon, 14 Jun 2010 20:54:17 +0200
-Message-ID: <20100614185417.GF14916@tango.0pointer.de>
-References: <AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
-	<hulnlp$m00$1@dough.gmane.org>
-	<AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>
-	<hur2pt$uaa$1@dough.gmane.org>
-	<20100613135349.GB5818@tango.0pointer.de>
-	<AANLkTimwvTxPe66fk4hq2-eiky-8Yqd12vN6WYkh9qdQ@mail.gmail.com>
-	<hv4pfi$gqr$3@dough.gmane.org>
-	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
-	<hv4vs6$a6q$1@dough.gmane.org>
-	<AANLkTilbaa94Vlc266FBzDyRkL_G2VSiOdZoLS4vG8Tw@mail.gmail.com>
+From: Paul Dugas <paul@dugasenterprises.com>
+Subject: Re: Timing Info
+Date: Mon, 14 Jun 2010 18:54:16 -0400
+Message-ID: <AANLkTim9ZZTr4enGt2X4qNbFxtEePi0CreA5XjuyNDHA@mail.gmail.com>
+References: <AANLkTil1tGrkCdRt1s9AZ8eWYG55hYrPOCq6TRaEhpRK@mail.gmail.com>
+	<AANLkTik3ycq3POxHRG_bc0jO-KByZVvirVJ-X9-bySY_@mail.gmail.com>
+	<4C14E6CB.2030909@ladisch.de>
+	<AANLkTimlrYCb53D_43C0btg53xOjiAzmRXZ28Rg5opL7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id C803D103866
+Received: from na3sys009aog103.obsmtp.com (na3sys009aog103.obsmtp.com
+	[74.125.149.71]) by alsa0.perex.cz (Postfix) with SMTP id B6794243BF
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jun 2010 20:54:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTilbaa94Vlc266FBzDyRkL_G2VSiOdZoLS4vG8Tw@mail.gmail.com>
+	Tue, 15 Jun 2010 00:54:20 +0200 (CEST)
+Received: by mail-px0-f171.google.com with SMTP id 19so3306052pxi.16
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 15:54:18 -0700 (PDT)
+In-Reply-To: <AANLkTimlrYCb53D_43C0btg53xOjiAzmRXZ28Rg5opL7@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -31,46 +26,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14.06.10 11:46, James Courtier-Dutton (james.dutton@gmail.com) wrote:
-
-> One has very different problems with capture than one does with playback.
-> With capture it is important to identify which are analog controls
-> (applied to the analog part of the circuit) and which are digital
-> controls (applied to the digital part of the circuit)
-> So, for capture one might wish to adjust the analog control so that
-> the signal going into the ADC is a suitable level, but once the signal
-> is digital, one should really not adjust it further, and just record
-> what you have.
-> If one was to combine these two capture controls in one PA control, it
-> would just be wrong.
-
-Well, we apply volumes going from the "outer end" to the "inner end" of
-the pipeline. That should have the affect that the biggest part is done
-on the analog elements (i.e. "outer") and only minimal attenuation on the
-digital elements (i.e. "inner").
-
-In short: this should be covered nicely by PA already, at least if the
-ALSA mixer used somewhat standard names for things.
-
-> I think there is some indication with the name of the control. It
-> sometimes has "Analog" or "Digital" attached to it.
-> I think this would be better if alsa reported the "Analog" or
-> "Digital" as meta data, like the dB Scales.
-> PA could then make more informed decisions for capture. I.e. only
-> display the "Analog" controls, and hide the digital ones, setting them
-> to 0dB.
-
-I think it is advisable to to attenuation in hw if possible, simply to
-minimize CPU load. Hence we try to do the biggest volume adjustment in
-analog hw, and everything we cannot apply there we do in digital hw, and
-finally everything else in sw.
-
-Lennart
-
--- 
-Lennart Poettering                        Red Hat, Inc.
-lennart [at] poettering [dot] net
-http://0pointer.net/lennart/           GnuPG 0x1A015CC4
+T24gU3VuLCBKdW4gMTMsIDIwMTAgYXQgMzo0NyBQTSwgUGF1bCBEdWdhcyA8cGF1bEBkdWdhc2Vu
+dGVycHJpc2VzLmNvbT4gd3JvdGU6Cj4gT24gU3VuLCBKdW4gMTMsIDIwMTAgYXQgMTA6MTAgQU0s
+IENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2NoLmRlPgo+IHdyb3RlOgo+Pgo+PiBQYXVs
+IER1Z2FzIHdyb3RlOgo+PiA+IFdoYXQncyB0aGUgInRpbWVzdGFtcCBtb2RlIi4gwqBEb2VzIGl0
+IGdlbmVyYXRlIGEgdGltZXN0YW1wIGVhY2gKPj4gPiBwZXJpb2Q/IMKgSG93IHdvdWxkIEkgYWNj
+ZXNzIHRoYXQgdGltZXN0YW1wPwo+Pgo+PiBTZXQgU05EX1BDTV9UU1RBTVBfRU5BQkxFIHRvIGdl
+bmVyYXRlIGEgdGltZXN0YW1wIHdoZW5ldmVyIHRoZSBoYXJkd2FyZQo+PiBwb3NpdGlvbiBpcyB1
+cGRhdGVkLiDCoENhbGwgc25kX3BjbV9zdGF0dXMgdG8gcmVhZCB0aGUgcG9zaXRpb24gYW5kIHRo
+ZQo+PiBjb3JyZXNwb25kaW5nIHRpbWVzdGFtcC4KPgo+IFNvLCBkb2VzIHNldHRpbmcgU05EX1BD
+TV9UU1RBTVBfRU5BQkxFIGNoYW5nZSB0aGUgbWVhbmluZyBvZiB0aGUgdHN0YW1wCj4gZmllbGQg
+aW4gdGhlIHN0YXR1cz8gwqBJIGJlbGlldmUgSSByZWFkIHNvbWV3aGVyZSB0aGF0IHdpdGggVFNU
+QU1QX05PTkUsCj4gdHN0YW1wIHdhcyBzZXQgdG8gIm5vdyIgd2hlbiByZWFkaSgpIHdhcyBjYWxs
+ZWQuIMKgRG9lcyBpdCBjaGFuZ2UgdG8gbWVhbmluZwo+ICIgdGhlIHRpbWVzdGFtcCBvZCB0aGUg
+Zmlyc3QgZnJhbWUgcmV0dXJuZWQiPyDCoElmIG5vdCwgd2hlcmUgZG8gSSBsb29rPwoKSSBzcHVu
+IHVwIGEgdGVzdCBwcm9ncmFtIGJ1dCBJJ20gbm90IHNlZWluZyB3aGF0IEkgZXhwZWN0LiAgSSdt
+IHN0aWxsCm1pc3Npbmcgc29tZXRoaW5nLgoKSSdtIGNhbGxpbmcgc25kX3BjbV9zdGF0dXMoKSBh
+bmQgc25kX3BjbV9zdGF0dXNfZHVtcCgpIGJlZm9yZSBlYWNoCnNuZF9wY21fcmVhZGkoKSBjYWxs
+LiAgSSBzZWUgdGhlICJ0cmlnZ2VyX3RpbWUiIG5vdCBjaGFuZ2luZyAoYWZ0ZXIKdGhlIGZpcnN0
+IHJlYWRpIGNhbGwpLiAgVGhlICJ0c2FtcCIgaXNuJ3QgaW5jcmVhc2luZyBpbiBjb25zaXN0ZW50
+CnN0ZXBzLiAgSSBleHBlY3QgaXQgdG8gYmUgY29uc2lzdGVudGx5IDEwLDY2NiB1c2VjcyBwZXIg
+dGhlCiJwZXJpb2RfdGltZSIgdmFsdWUgYmVsb3cuCgpUaGUgUENNIGRldmljZSBpcyBjb25maWd1
+cmVkIGxpa2Ugc286CiAgPiAgUGx1ZyBQQ006IExpbmVhciBJbnRlZ2VyIDwtPiBMaW5lYXIgRmxv
+YXQgY29udmVyc2lvbiBQQ00gKFMzMl9MRSkKICA+ICBJdHMgc2V0dXAgaXM6CiAgPiAgICBzdHJl
+YW0gICAgICAgOiBDQVBUVVJFCiAgPiAgICBhY2Nlc3MgICAgICAgOiBSV19JTlRFUkxFQVZFRAog
+ID4gICAgZm9ybWF0ICAgICAgIDogRkxPQVQ2NF9MRQogID4gICAgc3ViZm9ybWF0ICAgIDogU1RE
+CiAgPiAgICBjaGFubmVscyAgICAgOiA4CiAgPiAgICByYXRlICAgICAgICAgOiA5NjAwMAogID4g
+ICAgZXhhY3QgcmF0ZSAgIDogOTYwMDAgKDk2MDAwLzEpCiAgPiAgICBtc2JpdHMgICAgICAgOiA2
+NAogID4gICAgYnVmZmVyX3NpemUgIDogMzI3NjgKICA+ICAgIHBlcmlvZF9zaXplICA6IDEwMjQK
+ICA+ICAgIHBlcmlvZF90aW1lICA6IDEwNjY2CiAgPiAgICB0c3RhbXBfbW9kZSAgOiBFTkFCTEUK
+ICA+ICAgIHBlcmlvZF9zdGVwICA6IDEKICA+ICAgIGF2YWlsX21pbiAgICA6IDEwMjQKICA+ICAg
+IHBlcmlvZF9ldmVudCA6IDAKICA+ICAgIHN0YXJ0X3RocmVzaG9sZCAgOiAxCiAgPiAgICBzdG9w
+X3RocmVzaG9sZCAgIDogMzI3NjgKICA+ICAgIHNpbGVuY2VfdGhyZXNob2xkOiAwCiAgPiAgICBz
+aWxlbmNlX3NpemUgOiAwCiAgPiAgICBib3VuZGFyeSAgICAgOiA0NjExNjg2MDE4NDI3Mzg3OTA0
+CiAgPiAgU2xhdmU6IFJvdXRlIGNvbnZlcnNpb24gUENNIChzZm9ybWF0PVMzMl9MRSkKICA+ICAg
+IFRyYW5zZm9ybWF0aW9uIHRhYmxlOgogID4gICAgICAwIDwtIDAKICA+ICAgICAgMSA8LSAxCiAg
+PiAgICAgIDIgPC0gbm9uZQogID4gICAgICAzIDwtIG5vbmUKICA+ICAgICAgNCA8LSBub25lCiAg
+PiAgICAgIDUgPC0gbm9uZQogID4gICAgICA2IDwtIG5vbmUKICA+ICAgICAgNyA8LSBub25lCiAg
+PiAgSXRzIHNldHVwIGlzOgogID4gICAgc3RyZWFtICAgICAgIDogQ0FQVFVSRQogID4gICAgYWNj
+ZXNzICAgICAgIDogTU1BUF9JTlRFUkxFQVZFRAogID4gICAgZm9ybWF0ICAgICAgIDogUzMyX0xF
+CiAgPiAgICBzdWJmb3JtYXQgICAgOiBTVEQKICA+ICAgIGNoYW5uZWxzICAgICA6IDgKICA+ICAg
+IHJhdGUgICAgICAgICA6IDk2MDAwCiAgPiAgICBleGFjdCByYXRlICAgOiA5NjAwMCAoOTYwMDAv
+MSkKICA+ICAgIG1zYml0cyAgICAgICA6IDMyCiAgPiAgICBidWZmZXJfc2l6ZSAgOiAzMjc2OAog
+ID4gICAgcGVyaW9kX3NpemUgIDogMTAyNAogID4gICAgcGVyaW9kX3RpbWUgIDogMTA2NjYKICA+
+ICAgIHRzdGFtcF9tb2RlICA6IEVOQUJMRQogID4gICAgcGVyaW9kX3N0ZXAgIDogMQogID4gICAg
+YXZhaWxfbWluICAgIDogMTAyNAogID4gICAgcGVyaW9kX2V2ZW50IDogMAogID4gICAgc3RhcnRf
+dGhyZXNob2xkICA6IDEKICA+ICAgIHN0b3BfdGhyZXNob2xkICAgOiAzMjc2OAogID4gICAgc2ls
+ZW5jZV90aHJlc2hvbGQ6IDAKICA+ICAgIHNpbGVuY2Vfc2l6ZSA6IDAKICA+ICAgIGJvdW5kYXJ5
+ICAgICA6IDQ2MTE2ODYwMTg0MjczODc5MDQKICA+ICBTbGF2ZTogSGFyZHdhcmUgUENNIGNhcmQg
+MCAnSERBIEludGVsJyBkZXZpY2UgMCBzdWJkZXZpY2UgMAogID4gIEl0cyBzZXR1cCBpczoKICA+
+ICAgIHN0cmVhbSAgICAgICA6IENBUFRVUkUKICA+ICAgIGFjY2VzcyAgICAgICA6IE1NQVBfSU5U
+RVJMRUFWRUQKICA+ICAgIGZvcm1hdCAgICAgICA6IFMzMl9MRQogID4gICAgc3ViZm9ybWF0ICAg
+IDogU1RECiAgPiAgICBjaGFubmVscyAgICAgOiAyCiAgPiAgICByYXRlICAgICAgICAgOiA5NjAw
+MAogID4gICAgZXhhY3QgcmF0ZSAgIDogOTYwMDAgKDk2MDAwLzEpCiAgPiAgICBtc2JpdHMgICAg
+ICAgOiAzMgogID4gICAgYnVmZmVyX3NpemUgIDogMzI3NjgKICA+ICAgIHBlcmlvZF9zaXplICA6
+IDEwMjQKICA+ICAgIHBlcmlvZF90aW1lICA6IDEwNjY2CiAgPiAgICB0c3RhbXBfbW9kZSAgOiBF
+TkFCTEUKICA+ICAgIHBlcmlvZF9zdGVwICA6IDEKICA+ICAgIGF2YWlsX21pbiAgICA6IDEwMjQK
+ICA+ICAgIHBlcmlvZF9ldmVudCA6IDAKICA+ICAgIHN0YXJ0X3RocmVzaG9sZCAgOiAxCiAgPiAg
+ICBzdG9wX3RocmVzaG9sZCAgIDogMzI3NjgKICA+ICAgIHNpbGVuY2VfdGhyZXNob2xkOiAwCiAg
+PiAgICBzaWxlbmNlX3NpemUgOiAwCiAgPiAgICBib3VuZGFyeSAgICAgOiA0NjExNjg2MDE4NDI3
+Mzg3OTA0CiAgPiAgICBhcHBsX3B0ciAgICAgOiAwCiAgPiAgICBod19wdHIgICAgICAgOiAwCgpI
+bW1tLi4uLiAgIE5vdCBzdXJlIHdoYXQgdG8gdHJ5IG5leHQuCgpQYXVsCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
