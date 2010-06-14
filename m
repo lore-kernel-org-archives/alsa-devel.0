@@ -1,7 +1,7 @@
 From: Lennart Poettering <mznyfn@0pointer.de>
 Subject: Re: wrong decibel data?
-Date: Mon, 14 Jun 2010 20:38:23 +0200
-Message-ID: <20100614183823.GB14916@tango.0pointer.de>
+Date: Mon, 14 Jun 2010 20:41:07 +0200
+Message-ID: <20100614184107.GC14916@tango.0pointer.de>
 References: <AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
 	<huicj9$t30$1@dough.gmane.org>
 	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
@@ -11,17 +11,17 @@ References: <AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
 	<20100613135349.GB5818@tango.0pointer.de>
 	<AANLkTimwvTxPe66fk4hq2-eiky-8Yqd12vN6WYkh9qdQ@mail.gmail.com>
 	<hv4pfi$gqr$3@dough.gmane.org>
-	<AANLkTikknwiaVOWUwtWsiNOc0j3VtG3YMEMkRO1o2w2f@mail.gmail.com>
+	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from tango.0pointer.de (tango.0pointer.de [85.214.72.216])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7F78D2474A
+	by alsa0.perex.cz (Postfix) with ESMTP id 97D7D2474D
 	for <alsa-devel@alsa-project.org>;
-	Mon, 14 Jun 2010 20:38:53 +0200 (CEST)
+	Mon, 14 Jun 2010 20:41:33 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTikknwiaVOWUwtWsiNOc0j3VtG3YMEMkRO1o2w2f@mail.gmail.com>
+In-Reply-To: <AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -34,28 +34,37 @@ Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14.06.10 16:45, Raymond Yau (superquad.vortex2@gmail.com) wrote:
+On Mon, 14.06.10 09:56, James Courtier-Dutton (james.dutton@gmail.com) wrote:
 
-> The correct way is to provide the real ALSA 's 0dB point (Playback volume)
-> for the user of AC97 sound card so that they can record without any
-> distortion using line in with the loopback cable connected to line out.
+> 
+> On 14 June 2010 09:33, Colin Guthrie <gmane@colin.guthr.ie> wrote:
+> > 'Twas brillig, and Raymond Yau at 14/06/10 01:25 did gyre and gimble:
+> >> if your sound card have ac97 codec ., you can use audacity to record the
+> >> output from hw:0,0 and you will see clipping occur when you set "PCM" volume
+> >> above 0dB
+> >
+> > So the standard response is "don't do that then" :)
+> >
+> > That's why the base volume is shown to the user via GUIs so that they
+> > can gauge the best point on the slider to use. Currently there is no
+> > indication with alsa sliders at which point the 0dB "sweet spot" lies.
+> >
+> 
+> What do you mean.
+> If you use "alsamixer", dB values are shown so it is easy to find the
+> 0dB "sweet spot".
 
-Jeez, man, I explained that in my original reply.
+Whether dB is shown or not has nothing to do with PA. Some UIs show it,
+others don't. And most UIs do show the "base volume" too, which refers
+to the ALSA 0dB "comfort" point. There is nothing lost here. We just
+simplified things a littl and made the volume range infinite, as well as
+we unified what things look like on various hardware.
 
-If I may quote myself:
+> I think it is pulse audio that hides this information when it combines
+> two alsa mixer controls into one pulseaudio control.
 
-   'On top of that most volume controls should then mark the ALSA 0dB
-   point as "base" volume on the slider, at what PA then calls -y dB.
-
-   That way we will expose 0dB as maximum hw amplitude uniformly on all
-   sound cards and have a special point on the slider that is hinted to be
-   the "comfort" point.
-
-   This is all explained on
-   http://pulseaudio.org/wiki/WritingVolumeControlUIs#BaseVolumes'
-
-See? It's all explained there. We still show the ALSA 0dB point on our
-sliders, we just don't call it "0dB" but "base volume".
+No, we don't. The final "base volume" will be put where all sliders that
+are merged are at 0dB.
 
 Lennart
 
