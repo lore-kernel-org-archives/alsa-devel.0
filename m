@@ -1,33 +1,21 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Tue, 15 Jun 2010 14:57:28 +0800
-Message-ID: <AANLkTilQ2M37xeJYnvPWmjUGmDpaX3p3luuEmUota2D4@mail.gmail.com>
-References: <htls4d$phr$1@dough.gmane.org> <4BFE7840.4070004@ladisch.de>
-	<htm0et$eb4$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
-	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
-	<huicj9$t30$1@dough.gmane.org>
-	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
-	<hulnlp$m00$1@dough.gmane.org>
-	<AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>
-	<hur2pt$uaa$1@dough.gmane.org>
-	<20100613135349.GB5818@tango.0pointer.de>
-	<AANLkTimwvTxPe66fk4hq2-eiky-8Yqd12vN6WYkh9qdQ@mail.gmail.com>
-	<hv4pfi$gqr$3@dough.gmane.org>
-	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
-	<AANLkTinilBSWTBkBjoGK5CgDm-9cXJvMLwB-952FINle@mail.gmail.com>
-	<AANLkTinisr6COsfY0-gYvGkYhi4SYwLOFF5kPAn8shP8@mail.gmail.com>
-Mime-Version: 1.0
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Update on TLV320AIC3204 Driver
+Date: Tue, 15 Jun 2010 08:21:30 +0100
+Message-ID: <B4119F19-C56C-4606-9677-489AF5872423@opensource.wolfsonmicro.com>
+References: <20100611055512.GG23431@www.longlandclan.yi.org>
+	<20100611101803.GB12436@sirena.org.uk>
+	<20100615002734.GB7759@www.longlandclan.yi.org>
+	(sfid-20100615_012756_605627_D0E729CC)
+Mime-Version: 1.0 (Apple Message framework v1078)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id D8807103867
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2F932103886
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 08:57:29 +0200 (CEST)
-Received: by vws1 with SMTP id 1so290705vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 23:57:28 -0700 (PDT)
-In-Reply-To: <AANLkTinisr6COsfY0-gYvGkYhi4SYwLOFF5kPAn8shP8@mail.gmail.com>
+	Tue, 15 Jun 2010 09:21:33 +0200 (CEST)
+In-Reply-To: <20100615002734.GB7759@www.longlandclan.yi.org>
+	(sfid-20100615_012756_605627_D0E729CC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -37,43 +25,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Stuart Longland <redhatter@gentoo.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Eric B??nard <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/14 James Courtier-Dutton <james.dutton@gmail.com>
+On 15 Jun 2010, at 01:27, Stuart Longland wrote:
 
-> On 14 June 2010 10:54, Raymond Yau <superquad.vortex2@gmail.com> wrote:
-> > 2010/6/14 James Courtier-Dutton <james.dutton@gmail.com>
-> >> If you use "alsamixer", dB values are shown so it is easy to find the
-> >> 0dB "sweet spot".
-> >> I think it is pulse audio that hides this information when it combines
-> >> two alsa mixer controls into one pulseaudio control.
-> >>
-> >
-> >
-> > The base volume seem to be the software 0dB point , (no software
-> > gain/atten), but the user want the hardware 0dB point (no hardware
-> > gain/atten if the hardware can provide hardware gain
-> >
-> > This hardware 0dB point is extremely important when you want to record
-> using
-> > line in and line out
->
-> alsamixer gives the hardware 0dB point.
->
+> I've started documenting some of this stuff on the ALSA Wiki at
+> <http://www.alsa-project.org/main/index.php/DAPM>.  I'm hoping this
+> might be a useful resource for others.  Was about to do it on an
+> intranet wiki here, but figured it'd be of benefit to others too.
 
-you are right ,
+If you're doing this it would be a bit nicer if you could contribute the
+documentation to the kernel. The APIs do change over time and the
+in tree documentation has a much better chance of being in sync with
+what people are actually working with than online documentation
+(which may be for a later kernel version with features they can't use),
+though it's not been so great recently.
 
-For ac97 Base volume is the real hardware  0dB point of PCM volume, and
-Volume NORM is just the max_dB of +12dB which PA labeled it as 100% aka 0dB
-aka Volume NORM
+>> SND_SOC_DAPM_SUPPLY can help you here - you can have a conditional
+>> supply.
 
-For HDA , there is no yellow region because max_dB is 0dB , Base Volume and
-NORM is at the same point
+> Is there an example of the supply doing something like this?  I'm
+> thinking a mux might be the way to represent it, but it's then a matter
+> of getting DAPM to switch the MUX over to the other source when the
+> current source gets shut down.
 
-http://en.wikipedia.org/wiki/Line_level
+WM8994 does this for the AIF clocks. You can't use a mux since you're not
+routing an audio path.
 
-How can I get distortion free recording by line in of ac97 sound connected
-to line out of HDA onborad and vice versa ?
+>> Provide a display_register() callback which filters out the undefined
+>> registers or otherwise improve the standard functionality.
 
-http://pulseaudio.org/wiki/WritingVolumeControlUIs#Colouredvolumesliders
+> I shall look into this... but a thought, is there any merrit in the
+> two-file (register select" and "register data") interface to the CODEC
+> registers?  The current interface looks great if you want to quickly get
+> a register dump, but the solution I have is easily used in scripts.
+
+It's fairly easy to use the existing solution in scripts with a little bit of
+filtering (even grep can do a good job) and I have to say I'm concerned
+about the idea of production use of this stuff. It's supposed to give the
+impression that you're not meant to be using it in production for anything
+except pulling diagnostics out.
+
+>> 
+>> If the registers are mostly clustered at the starts of pages then an
+>> array of pointers to per-page arrays might do the trick.
+> 
+> As in this?
+> 
+> 	static u8 aic3204_reg_page0[128];
+
+Yes.
+
+> I wasn't sure how compatible that would be with the rest of ALSA, but I
+> might give that a try shortly.
+
+The rest of ALSA shouldn't be able to tell what you're doing, all the
+operations which interact with the register cache are provided by your
+driver. If it can see what's going on we've got a problem anyway.
+
+>> Please post to the mailing list if you want review - the standard
+>> workflow is to provide comments by replying to the patch.
+
+> No problems, I'll post the code to the list in a moment.  Last time I
+> tried this it got held for moderation because the email was too big.
+> Hence my posting it to a website and linking to it.  I'll post the files
+> up in my next email.  When things are a little more mature, I'll post
+> the patch for the driver.
+
+This is one of the things that the requirement to CC the maintainers
+and other relevant people helps with - it means that they get a copy 
+as soon as their mail server takes the message rather than having
+to wait for the list.
