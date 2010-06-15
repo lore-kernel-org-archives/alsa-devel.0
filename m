@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RFC 2/3] input: wm97xx: set GPIOs with AC97
- GPIO busops if implemented
-Date: Tue, 15 Jun 2010 17:27:55 +0100
-Message-ID: <20100615162755.GM14510__18784.8274982118$1276619292$gmane$org@rakim.wolfsonmicro.main>
-References: <1276617347-3522-1-git-send-email-manuel.lauss@googlemail.com>
-	<1276617347-3522-3-git-send-email-manuel.lauss@googlemail.com>
-	<20100615160802.GL14510@rakim.wolfsonmicro.main>
-	<AANLkTil-WxjFdE5oGEJklu_cA2o-23TCLjqD8sz-iMLm@mail.gmail.com>
+From: Paul Dugas <paul@dugasenterprises.com>
+Subject: Re: Timing Info
+Date: Tue, 15 Jun 2010 13:00:55 -0400
+Message-ID: <AANLkTinrDq0Mx-5uf00vOqHt5YAXZ7N3BNQz5NlJB7UB@mail.gmail.com>
+References: <AANLkTil1tGrkCdRt1s9AZ8eWYG55hYrPOCq6TRaEhpRK@mail.gmail.com>
+	<AANLkTik3ycq3POxHRG_bc0jO-KByZVvirVJ-X9-bySY_@mail.gmail.com>
+	<4C14E6CB.2030909@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <AANLkTil-WxjFdE5oGEJklu_cA2o-23TCLjqD8sz-iMLm@mail.gmail.com>
+Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
+	[74.125.149.207]) by alsa0.perex.cz (Postfix) with SMTP id DB14C24581
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 Jun 2010 19:00:59 +0200 (CEST)
+Received: by mail-gw0-f51.google.com with SMTP id 19so2995089gwj.38
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2010 10:00:58 -0700 (PDT)
+In-Reply-To: <4C14E6CB.2030909@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,21 +25,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@vger.kernel.org, linux-input@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 15, 2010 at 06:17:18PM +0200, Manuel Lauss wrote:
-> On Tue, Jun 15, 2010 at 6:08 PM, Mark Brown
-
-> > It seems like it'd be easier to just do this as a generic AC'97 thing
-> > rather than adding it to the WM97xx driver - that way any CODEC that has
-> > GPIO support can use it, we don't have to add custom per-CODEC GPIO APIs.
-> > If you're using the WM97xx-specific code you're already doing something
-> > custom so it's not much loss to use a generic thing.
-
-> Oh, now I get it.  Hmm, what about setting pin direction?  That
-> certainly is per-codec, no?
-
-IIRC, yes - I'd need to check.  I'd guess a lot of devices will be fixed
-function and only support one direction.
+T24gU3VuLCBKdW4gMTMsIDIwMTAgYXQgMTA6MTAgQU0sIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVu
+c0BsYWRpc2NoLmRlPiB3cm90ZToKPiBTZXQgU05EX1BDTV9UU1RBTVBfRU5BQkxFIHRvIGdlbmVy
+YXRlIGEgdGltZXN0YW1wIHdoZW5ldmVyIHRoZSBoYXJkd2FyZQo+IHBvc2l0aW9uIGlzIHVwZGF0
+ZWQuIMKgQ2FsbCBzbmRfcGNtX3N0YXR1cyB0byByZWFkIHRoZSBwb3NpdGlvbiBhbmQgdGhlCj4g
+Y29ycmVzcG9uZGluZyB0aW1lc3RhbXAuCgpJJ3ZlIHJlLXJlYWQgdGhpcyBhIG51bWJlciBvZiB0
+aW1lcyBhbmQgaGF2ZSBiZWVuIGZpZGRsaW5nIHdpdGggY29kZQp0aGF0IGR1bXBzIHRoZSBzdGF0
+dXMgYXQgdmFyaW91cyBwb2ludHMgYnV0IEknbSBzdGlsbCBub3QgZ3Jhc3BpbmcgdGhlCmNvbmNl
+cHQgaGVyZS4gIENhbiBjb21lb25lIHBvaW50IG1lIHRvIGFuIGV4cGxhbmF0aW9uIG9mIHRoZSBk
+ZWxheSwKYXZhaWwsIGFuZCBhdmFpbF9tYXggdmFsdWVzPyAgTWF5YmUgSSBjYW4gZmlndXJlIHRo
+aXMgb3V0IHdpdGggdGhhdC4KClBhdWwKClBTOiBJcyB0aGVyZSBhIGJldHRlciBwbGFjZSB0byBh
+c2sgcXVlc3Rpb25zIGxpa2UgdGhlc2U/ICBQZW9wbGUgb24KI2Fsc2EgYXQgRnJlZW5vZGUgc2Vu
+dCBtZSBoZXJlLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
