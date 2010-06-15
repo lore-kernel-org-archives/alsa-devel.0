@@ -1,64 +1,43 @@
-From: Peter Huewe <PeterHuewe@gmx.de>
-Subject: [PATCH v2] soc/sh: Fix I2C dependency for SND_FSI_AK4642 and SND_FSI_DA7210
-Date: Tue, 15 Jun 2010 17:38:55 +0200
-Message-ID: <201006151738.56143.PeterHuewe@gmx.de>
-References: <201006141739.42346.PeterHuewe@gmx.de> <201006151649.07554.PeterHuewe@gmx.de> <20100615151913.GJ14510@rakim.wolfsonmicro.main>
+From: Manuel Lauss <manuel.lauss@googlemail.com>
+Subject: [PATCH RFC 0/3] WM97xx AC97 GPIO support
+Date: Tue, 15 Jun 2010 17:55:44 +0200
+Message-ID: <1276617347-3522-1-git-send-email-manuel.lauss__13021.1256830536$1276617369$gmane$org@googlemail.com>
 Mime-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sh-owner@vger.kernel.org>
-In-Reply-To: <20100615151913.GJ14510@rakim.wolfsonmicro.main>
-Sender: linux-sh-owner@vger.kernel.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Huewe <peterhuewe@gmx.de>
+Here's 3 patches which implement simple AC97 GPIO support to the WM97xx touch
+drivers and the Alchemy (au1x) AC97 ASoC implementation.
 
-The config option SND_FSI_AK4642 selects SND_SOC_AK4642 which in turn
-enables the compilation of ak4642.c - however this codec uses I2C to
-communicate with the HW.
-Same applies to DA7210.
+Tested on Au1200 hardware with a WM9712 codec:  According to Mark Brown the
+WM9712 only sets GPIOs when data is sent through slot 12, which prompted me
+to implement this.
 
-Consequently when I2C is not set, the compilation fails [1]
+Thanks,
+       Manuel Lauss
 
-This patch fixes this issues, by adding a depencdency on the related HW-
-controller.
 
-Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
----
-How about this one?
+Manuel Lauss (3):
+  sound: ac97: Add GPIO manipulation hooks
+  input: wm97xx: set GPIOs with AC97 GPIO busops if implemented
+  sound: asoc: au1x: implement AC97 GPIO access
 
-References:
-[1] http://kisskb.ellerman.id.au/kisskb/buildresult/2709408/
-KernelVersion: linux-next 20100615
-
- sound/soc/sh/Kconfig |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index a1d14bc..52d7e8e 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -48,7 +48,7 @@ config SND_SH7760_AC97
- 
- config SND_FSI_AK4642
- 	bool "FSI-AK4642 sound support"
--	depends on SND_SOC_SH4_FSI
-+	depends on SND_SOC_SH4_FSI && I2C_SH_MOBILE
- 	select SND_SOC_AK4642
- 	help
- 	  This option enables generic sound support for the
-@@ -56,7 +56,7 @@ config SND_FSI_AK4642
- 
- config SND_FSI_DA7210
- 	bool "FSI-DA7210 sound support"
--	depends on SND_SOC_SH4_FSI
-+	depends on SND_SOC_SH4_FSI && I2C_SH_MOBILE
- 	select SND_SOC_DA7210
- 	help
- 	  This option enables generic sound support for the
--- 
-1.6.4.4
+ drivers/input/touchscreen/wm97xx-core.c |    5 +++-
+ include/sound/ac97_codec.h              |    2 +
+ sound/soc/au1x/psc-ac97.c               |   39 +++++++++++++++++++++++++++++-
+ sound/soc/au1x/psc.h                    |    2 +
+ 4 files changed, 45 insertions(+), 3 deletions(-)
 
