@@ -1,72 +1,45 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH] alsa: riptide: don't use own hex_to_bin()
-	method
-Date: Tue, 15 Jun 2010 17:26:28 +0300
-Message-ID: <1276611988-28658-1-git-send-email-andy.shevchenko@gmail.com>
+From: Peter =?iso-8859-1?q?H=FCwe?= <PeterHuewe@gmx.de>
+Subject: Re: [PATCH] soc/sh: Fix I2C dependency for SND_FSI_AK4642
+Date: Tue, 15 Jun 2010 16:49:07 +0200
+Message-ID: <201006151649.07554.PeterHuewe@gmx.de>
+References: <201006141739.42346.PeterHuewe@gmx.de> <20100614161034.GF14604@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 3E72D1038C0
-	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 16:26:37 +0200 (CEST)
-Received: by fxm20 with SMTP id 20so257855fxm.38
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2010 07:26:36 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20100614161034.GF14604@rakim.wolfsonmicro.main>
+Sender: linux-sh-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+Am Montag 14 Juni 2010 18:10:34 schrieb Mark Brown:
+> On Mon, Jun 14, 2010 at 05:39:41PM +0200, Peter Huewe wrote:
+> >  	bool "FSI-AK4642 sound support"
+> >  	depends on SND_SOC_SH4_FSI
+> >  	select SND_SOC_AK4642
+> > +	select I2C
+> 
+> I'd have thought a depends was more appropriate.  Arguably you want to
+> depend on the SH I2C driver since the driver is useless without the
+> relevant I2C controller.
+> 
 
-Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
----
- sound/pci/riptide/riptide.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+Thanks for pointing this out - I had also a closer look at the codecs and the 
+other FSI related codec (da7210.c) depends on I2C too.
 
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index ad44626..59d7996 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -97,6 +97,7 @@
- #include <linux/gameport.h>
- #include <linux/device.h>
- #include <linux/firmware.h>
-+#include <linux/kernel.h>
- #include <asm/io.h>
- #include <sound/core.h>
- #include <sound/info.h>
-@@ -667,13 +668,12 @@ static u32 atoh(const unsigned char *in, unsigned int len)
- 	unsigned char c;
- 
- 	while (len) {
-+		int value;
-+
- 		c = in[len - 1];
--		if ((c >= '0') && (c <= '9'))
--			sum += mult * (c - '0');
--		else if ((c >= 'A') && (c <= 'F'))
--			sum += mult * (c - ('A' - 10));
--		else if ((c >= 'a') && (c <= 'f'))
--			sum += mult * (c - ('a' - 10));
-+		value = hex_to_bin(c);
-+		if (value >= 0)
-+			sum += mult * value;
- 		mult *= 16;
- 		--len;
- 	}
--- 
-1.6.6.1
+So maybe even move the dependency up to SND_SOC_SH4_FSI 
+since both codecs rely on I2C?
+
+So something like this would be more appropriate?
+ config SND_SOC_SH4_FSI
+ 	tristate "SH4 FSI support"
++	depends on CONFIG_I2C_SH_MOBILE
+ 	help
+ 	  This option enables FSI sound support
+
+If you think this patch sounds correct, I can create a new 'official' patch.
+
+Peter
+
