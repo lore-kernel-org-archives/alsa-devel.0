@@ -1,16 +1,22 @@
-From: Manuel Lauss <manuel.lauss@googlemail.com>
-Subject: Re: [PATCH RFC 1/3] sound: ac97: Add GPIO manipulation
-	hooks
-Date: Tue, 15 Jun 2010 18:13:49 +0200
-Message-ID: <AANLkTikWxbCu69QOk7f5wtJTLouCA1vCwA3htfEcs503__26249.6797754013$1276618444$gmane$org@mail.gmail.com>
-References: <1276617347-3522-1-git-send-email-manuel.lauss@googlemail.com>
-	<1276617347-3522-2-git-send-email-manuel.lauss@googlemail.com>
-	<20100615160253.GK14510@rakim.wolfsonmicro.main>
+From: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: multiple definitions of 'to_psc_dma_stream' in
+	kernel-2.6.34
+Date: Tue, 15 Jun 2010 10:14:14 -0600
+Message-ID: <AANLkTim8wF4y_Dqhk7DuBr1FhjOIHTI-WWm9kGAf_1KM@mail.gmail.com>
+References: <fbb4cc272573e.4c140aa0@rwth-aachen.de>
+	<AANLkTikk-G6xFvZ71ybmHJS3u4jUSid78mSUCzEn45ua@mail.gmail.com>
+	<AANLkTiml3FaTkoCG2e7RFkHNotXKV2YwwHIKiSMGVN3R@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20100615160253.GK14510@rakim.wolfsonmicro.main>
+Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7DD792455F
+	for <alsa-devel@alsa-project.org>;
+	Tue, 15 Jun 2010 18:14:35 +0200 (CEST)
+Received: by gwj19 with SMTP id 19so2947114gwj.38
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2010 09:14:34 -0700 (PDT)
+In-Reply-To: <AANLkTiml3FaTkoCG2e7RFkHNotXKV2YwwHIKiSMGVN3R@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,47 +26,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takasi Iwai <tiwai@suse.de>, alsa-devel@vger.kernel.org, linux-input@vger.kernel.org
+To: Jon Smirl <jonsmirl@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, John Linkhorst <John.Linkhorst@rwth-aachen.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 15, 2010 at 6:02 PM, Mark Brown
-<broonie@opensource.wolfsonmicro.com> wrote:
-> On Tue, Jun 15, 2010 at 05:55:45PM +0200, Manuel Lauss wrote:
->> Add callbacks to struct snd_ac97 to set and retrieve ac97 codec
->> GPIO status.
+On Mon, Jun 14, 2010 at 12:08 AM, Grant Likely
+<grant.likely@secretlab.ca> wrote:
+> On Sat, Jun 12, 2010 at 2:56 PM, Jon Smirl <jonsmirl@gmail.com> wrote:
+>> Grant, is this something you did?
 >
->> Signed-off-by: Manuel Lauss <manuel.lauss@googlemail.com>
+> Please try the attached fix.
+
+Mark, I just got an okay on this one from John Linkhorst.  It's such a
+trivial fix that I'm just going to merge it via my tree.
+
+g.
+
 >
-> CCing in Takashi since this is generic AC'97 stuff.
+> g.
 >
->> ---
->> =A0include/sound/ac97_codec.h | =A0 =A02 ++
->> =A01 files changed, 2 insertions(+), 0 deletions(-)
 >>
->> diff --git a/include/sound/ac97_codec.h b/include/sound/ac97_codec.h
->> index 4940045..db3aee1 100644
->> --- a/include/sound/ac97_codec.h
->> +++ b/include/sound/ac97_codec.h
->> @@ -437,6 +437,8 @@ struct snd_ac97_bus_ops {
->> =A0 =A0 =A0 unsigned short (*read) (struct snd_ac97 *ac97, unsigned shor=
-t reg);
->> =A0 =A0 =A0 void (*wait) (struct snd_ac97 *ac97);
->> =A0 =A0 =A0 void (*init) (struct snd_ac97 *ac97);
->> + =A0 =A0 void (*setgpio) (struct snd_ac97 *ac97, unsigned short gpio);
->> + =A0 =A0 unsigned short (*getgpio) (struct snd_ac97 *ac97);
->> =A0};
+>> commit 1d8222e8df07ce4f86fb7fa80b02bdee03b57985
+>> Author: Grant Likely <grant.likely@secretlab.ca>
+>> Date: =A0 Sat Nov 7 01:34:31 2009 -0700
 >>
->> =A0struct snd_ac97_bus {
+>> =A0 =A0ASoC/mpc5200: add to_psc_dma_stream() helper
+>>
+>> =A0 =A0Move the resolving of the psc_dma_stream pointer to a helper func=
+tion
+>> =A0 =A0to reduce duplicate code
+>>
+>> =A0 =A0Signed-off-by: Grant Likely <grant.likely@secretlab.ca>
+>> =A0 =A0Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+>> =A0 =A0Signed-off-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+>>
+>>
+>> On Sat, Jun 12, 2010 at 4:30 PM, John Hilmar Linkhorst
+>> <John.Linkhorst@rwth-aachen.de> wrote:
+>>> Dear Jon,
+>>>
+>>> while compiling the kernel for my efika machine I ran into the followin=
+g error:
+>>>
+>>> LD =A0 =A0 =A0sound/soc/fsl/built-in.o
+>>> sound/soc/fsl/mpc5200_psc_ac97.o: In function `to_psc_dma_stream':
+>>> mpc5200_psc_ac97.c:(.text+0x0): multiple definition of `to_psc_dma_stre=
+am'
+>>> sound/soc/fsl/mpc5200_dma.o:mpc5200_dma.c:(.text+0x0): first defined he=
+re
+>>> sound/soc/fsl/efika-audio-fabric.o: In function `to_psc_dma_stream':
+>>> efika-audio-fabric.c:(.text+0x0): multiple definition of `to_psc_dma_st=
+ream'
+>>> sound/soc/fsl/mpc5200_dma.o:mpc5200_dma.c:(.text+0x0): first defined he=
+re
+>>> make[3]: *** [sound/soc/fsl/built-in.o] Error 1
+>>> make[2]: *** [sound/soc/fsl] Error 2
+>>> make[1]: *** [sound/soc] Error 2
+>>> make: *** [sound] Error 2
+>>>
+>>> could you help me solving this problem?
+>>>
+>>> best regards
+>>> John Linkhorst
+>>>
+>>
+>>
+>>
 >> --
->> 1.7.1
+>> Jon Smirl
+>> jonsmirl@gmail.com
 >>
 >
-> So, I'd kind of expect some sort of interaction with gpiolib somewhere
-> if we do support GPIOs (I know the WM97xx custom stuff doesn't currently
-> use GPIOs but...).
+>
+>
+> --
+> Grant Likely, B.Sc., P.Eng.
+> Secret Lab Technologies Ltd.
+>
 
-If I ever get access to the testhardware again, I'll implement it in
-the wm97xx core.
 
-        Manuel
+
+-- =
+
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
