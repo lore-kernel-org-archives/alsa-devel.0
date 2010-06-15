@@ -1,21 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Update on TLV320AIC3204 Driver
-Date: Tue, 15 Jun 2010 14:53:23 +0100
-Message-ID: <20100615135322.GG14510@rakim.wolfsonmicro.main>
+Subject: Re: Update on TLV320AIC3204 Driver [File 1/3]
+Date: Tue, 15 Jun 2010 15:20:50 +0100
+Message-ID: <20100615142050.GH14510@rakim.wolfsonmicro.main>
 References: <20100611055512.GG23431@www.longlandclan.yi.org>
-	<20100615002734.GB7759@www.longlandclan.yi.org>
-	<20100615051110.GG7759@www.longlandclan.yi.org>
-	<201006151642.32385.peter.ujfalusi@nokia.com>
+	<20100611101803.GB12436@sirena.org.uk>
+	<20100615002913.GC7759@www.longlandclan.yi.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 57C731038B1
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 63C131038B3
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 15:53:24 +0200 (CEST)
+	Tue, 15 Jun 2010 16:20:52 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <201006151642.32385.peter.ujfalusi@nokia.com>
+In-Reply-To: <20100615002913.GC7759@www.longlandclan.yi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,55 +24,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, ext Stuart Longland <redhatter@gentoo.org>, Eric B??nard <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Stuart Longland <redhatter@gentoo.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Eric B??nard <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 15, 2010 at 04:42:32PM +0300, Peter Ujfalusi wrote:
-> On Tuesday 15 June 2010 08:11:10 ext Stuart Longland wrote:
-> > Okay, I've had a close inspection of how the SOC_DOUBLE_R_SX_TLV widgets
-> > are implemented.  I couldn't find where in the git trees the control had
-> > been added, I wound up applying this patch myself in my tree... it
-> > apparently got applied in the official trees, but I cannot find it.
+On Tue, Jun 15, 2010 at 10:29:14AM +1000, Stuart Longland wrote:
 
-> I'm not really sure what the SOC_DOUBLE_R_SX_TLV is for... 
+> > Please post to the mailing list if you want review - the standard
+> > workflow is to provide comments by replying to the patch.
 
-It's for value ranges which have normal unsigned integer mapping but
-where the zero point is not at the lowest value so you need to wrap
-around.  Which isn't actually what Stuart is looking for...
+> Attached :- sound/soc/codecs/tlv320aic3204.c
 
-> But would a simple SOC_DOUBLE_R_TLV enough for the aic3204 codec?
-> I have not looked at the datasheet (if it is available), but I'll try to find 
-> it.
-> Well looking at the _2r_sx functions in soc-core.c does not really clears the 
-> intention, but at least I can see several things in the snd_soc_put_volsw_2r_sx 
+Please post patches in the normal fashion, it's really much easier.
 
-...and this won't work since Stuart is looking for something that does
-signed values which I don't think we have already, the standard stuff
-all wants unsigned quantities.
+This looks mostly good, but a few comments below.
 
-> function, which can cause problems:
-> - in error case it returns 0,
+> #ifndef DEBUG
+> #define DEBUG
+> #endif
 
-Yup, will fix that just now.
+Hrm.
 
-> - instead of updating the bits, it rewrites the register, which I think will 
-> erase bits, which it should not touch.
+> 	if ( reg ) {
+> 		/* Refresh cache */
 
-It's just open coding the update bits so there's no actual problem here.
+scripts/checkpatch.pl is your friend.
 
-> - it has the ret variable, but it is not really used, and when it got assigned, 
-> than it gets 1 in the success case. But luckily the return at the end of the 
-> function is not using the ret, but 0.
+> #if 0
+> 	dev_dbg( &codec->dev, "%s: pg %d reg %d[%04x] => %02x\n",
+> 			__func__, reg >> 7, reg & 0xff, reg, value[0] );
+> #endif
 
-Yeah, ret is a waste of time.
+Can probably just leave dev_dbg() unconditionally, it won't display in
+production builds.
 
-> - I'm not really sure if the 0xff masking is needed at all in the _sx functions, 
-> since the values are masked with the mask anyways.
+> static inline int aic3204_mod( struct snd_soc_codec *codec, unsigned int reg,
+> 			u8 and_mask, u8 or_mask )
 
-It's not really needed due to mask, yes.
+snd_soc_update_bits().
 
-> So I do not really follow what these suppose to do... Can someone give an 
-> example of HW register, and the SX combination with the tlv struct? 
+> 	 * This is a bit misleading; xshift refers to the bit one bit *past*
+> 	 * the most significant bit.  Or at least that's what it appears to be
+> 	 * doing the math.  Mask needs to select the last 6 bits; which is the
+> 	 * signed bitfield specifiying the gain in dB.
 
-The only user is cs42l451.
+If that's the case it's buggy and should be fixed.
+
+> static const struct snd_soc_dapm_route intercon[] = {
+> 	/* Data Connections */
+> 	{"Left Data Out", NULL, "Left ADC"},
+> 	{"Right Data Out", NULL, "Right ADC"},
+> 	{"Left DAC", NULL, "Left Data In"},
+> 	{"Right DAC", NULL, "Right Data In"},
+> 	/* Line Output */
+
+Some blanks in this table might not hurt.
+
+> #ifndef ENABLE_PLL
+> 	/* If PLL is disabled; always bypass the PLL */
+> 	bypass_pll = 1;
+> #endif
+
+If you've got the PLL working just drop the #defines, there shouldn't be
+build time configuration for things like this.  If configuration is
+needed make it an API call or platform data.
+
+
+> static int aic3204_set_bias_level(struct snd_soc_codec *codec,
+> 				enum snd_soc_bias_level level)
+> {
+> #if 0
+> 	switch (level) {
+> 		case SND_SOC_BIAS_ON:
+
+If there's really nothing needed then no need to supply the function.
+
+> 	/* Reset the CODEC */
+> 	aic3204_write(codec, AIC3204_RESET, AIC3204_RESET_SOFT);
+> 
+> 	/* Read in the cache */
+> 	for( reg=0; reg < AIC3204_CACHEREGNUM; reg++ ) {
+> 		u8 temp;
+> 		aic3204_read( codec, reg, &temp );
+> 	}
+
+You should be able to have a table of defaults.
+
+> 	return aic3204_register(codec);
+> 
+> err_enable:
+> 	regulator_bulk_free(ARRAY_SIZE(aic3204->supplies), aic3204->supplies);
+
+The split between the registration function and things like the
+regulators is a bit odd here - probably as well to just have one
+function unless you have both I2C and SPI options (in which case merge
+the GPIO and regulator stuff into register()).
+
+> #else
+> static inline void aic3204_i2c_init(void) { }
+> static inline void aic3204_i2c_exit(void) { }
+> #endif
+
+Not needed unless you have multiple buses.
+
+> 	if (setup) {
+> 		struct aic3204_priv *aic3204 = snd_soc_codec_get_drvdata(codec);
+> 
+> 		/* Run setup script; if any */
+> 		if ( setup->init_reg_list ) {
+
+This shouldn't be needed - if it were needed it should be part of the
+core.
+
+> 		/* Copy over channel information */
+> 		aic3204->channels = setup->channels;
+
+Platform data?
