@@ -1,40 +1,33 @@
-From: Stuart Longland <redhatter@gentoo.org>
-Subject: Re: Update on TLV320AIC3204 Driver
-Date: Tue, 15 Jun 2010 15:23:51 +1000
-Message-ID: <20100615052351.GH7759@www.longlandclan.yi.org>
-References: <20100611055512.GG23431@www.longlandclan.yi.org>
-	<20100611101803.GB12436@sirena.org.uk>
-	<20100615002734.GB7759@www.longlandclan.yi.org>
-	<20100615051110.GG7759@www.longlandclan.yi.org>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Tue, 15 Jun 2010 14:57:28 +0800
+Message-ID: <AANLkTilQ2M37xeJYnvPWmjUGmDpaX3p3luuEmUota2D4@mail.gmail.com>
+References: <htls4d$phr$1@dough.gmane.org> <4BFE7840.4070004@ladisch.de>
+	<htm0et$eb4$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
+	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
+	<huicj9$t30$1@dough.gmane.org>
+	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
+	<hulnlp$m00$1@dough.gmane.org>
+	<AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>
+	<hur2pt$uaa$1@dough.gmane.org>
+	<20100613135349.GB5818@tango.0pointer.de>
+	<AANLkTimwvTxPe66fk4hq2-eiky-8Yqd12vN6WYkh9qdQ@mail.gmail.com>
+	<hv4pfi$gqr$3@dough.gmane.org>
+	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
+	<AANLkTinilBSWTBkBjoGK5CgDm-9cXJvMLwB-952FINle@mail.gmail.com>
+	<AANLkTinisr6COsfY0-gYvGkYhi4SYwLOFF5kPAn8shP8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ossa.mas.viperplatform.net.au (ossa.mas.viperplatform.net.au
-	[202.147.75.25])
-	by alsa0.perex.cz (Postfix) with ESMTP id F27A1103867
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id D8807103867
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 07:23:56 +0200 (CEST)
-Received: from mail by ossa.mas.viperplatform.net.au with spam-scanned (Exim
-	4.43) id 1OOOct-00088T-1U
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 15:23:55 +1000
-Received: from eryx.mas.viperplatform.net.au ([172.16.5.11])
-	by ossa.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OOOcs-00088J-VW
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 15:23:54 +1000
-Received: from mail by eryx.mas.viperplatform.net.au with spam-scanned (Exim
-	4.43) id 1OOOcs-00025y-MK
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 15:23:54 +1000
-Received: from [172.16.100.13] (helo=helicon.mas.viperplatform.net.au)
-	by eryx.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OOOcs-00025v-LN
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 15:23:54 +1000
-Received: from [203.94.56.252] (helo=longlandclan.yi.org)
-	by helicon.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OOOcq-00023s-OZ
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 15:23:54 +1000
-Content-Disposition: inline
-In-Reply-To: <20100615051110.GG7759@www.longlandclan.yi.org>
+	Tue, 15 Jun 2010 08:57:29 +0200 (CEST)
+Received: by vws1 with SMTP id 1so290705vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 23:57:28 -0700 (PDT)
+In-Reply-To: <AANLkTinisr6COsfY0-gYvGkYhi4SYwLOFF5kPAn8shP8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -44,44 +37,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Eric B??nard <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 15, 2010 at 03:11:10PM +1000, Stuart Longland wrote:
-> On Tue, Jun 15, 2010 at 10:27:34AM +1000, Stuart Longland wrote:
-> > On Fri, Jun 11, 2010 at 11:18:04AM +0100, Mark Brown wrote:
-> > > On Fri, Jun 11, 2010 at 03:55:12PM +1000, Stuart Longland wrote:
-> > > 
-> > > > (1)	When using the SOC_DOUBLE_R_SX_TLV controls, I notice there's an
-> > > > 	odd interaction between the mute switch associated with the
-> > > > 	control, and its corresponding gain setting.
-> > > 
-> > > > 	Nothing changes in the actual registers (except the mute bit of
-> > > > 	course) but the displayed gain shoots up to infinity if the mute
-> > > > 	is toggled when the gain associated with that mute control is
-> > > > 	set below 0dB.  When the gain is at 0dB or above, toggling the
-> > > > 	mute has no effect on the displayed gain setting.
-> > > 
-> > > This is almost always due to having an overlap between the bitfield for
-> > > the volume and the mute bit.
-> > 
-> > I'll have a closer look, perhaps there's some misunderstanding on my
-> > part as to how the macros work.
-> 
-> Okay, I've had a close inspection of how the SOC_DOUBLE_R_SX_TLV widgets
-> are implemented.  I couldn't find where in the git trees the control had
-> been added, I wound up applying this patch myself in my tree... it
-> apparently got applied in the official trees, but I cannot find it.
-Okay... further digging, found it at
-<http://git.kernel.org/?p=linux/kernel/git/lrg/asoc-2.6.git;a=patch;h=b6f4bb383d69cac46f17e2305720f9a3d426c5ed>
+2010/6/14 James Courtier-Dutton <james.dutton@gmail.com>
 
-Looks like what I got is pretty much identical.
--- 
-Stuart Longland (aka Redhatter, VK4MSL)      .'''.
-Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
-. . . . . . . . . . . . . . . . . . . . . .   .'.'
-http://dev.gentoo.org/~redhatter             :.'
+> On 14 June 2010 10:54, Raymond Yau <superquad.vortex2@gmail.com> wrote:
+> > 2010/6/14 James Courtier-Dutton <james.dutton@gmail.com>
+> >> If you use "alsamixer", dB values are shown so it is easy to find the
+> >> 0dB "sweet spot".
+> >> I think it is pulse audio that hides this information when it combines
+> >> two alsa mixer controls into one pulseaudio control.
+> >>
+> >
+> >
+> > The base volume seem to be the software 0dB point , (no software
+> > gain/atten), but the user want the hardware 0dB point (no hardware
+> > gain/atten if the hardware can provide hardware gain
+> >
+> > This hardware 0dB point is extremely important when you want to record
+> using
+> > line in and line out
+>
+> alsamixer gives the hardware 0dB point.
+>
 
-I haven't lost my mind...
-  ...it's backed up on a tape somewhere.
+you are right ,
+
+For ac97 Base volume is the real hardware  0dB point of PCM volume, and
+Volume NORM is just the max_dB of +12dB which PA labeled it as 100% aka 0dB
+aka Volume NORM
+
+For HDA , there is no yellow region because max_dB is 0dB , Base Volume and
+NORM is at the same point
+
+http://en.wikipedia.org/wiki/Line_level
+
+How can I get distortion free recording by line in of ac97 sound connected
+to line out of HDA onborad and vice versa ?
+
+http://pulseaudio.org/wiki/WritingVolumeControlUIs#Colouredvolumesliders
