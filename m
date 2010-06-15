@@ -1,15 +1,15 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC update for 2.6.35
-Date: Tue, 15 Jun 2010 12:31:58 +0100
-Message-ID: <20100615113158.GC14510@rakim.wolfsonmicro.main>
+Subject: ASoC updates for 2.6.36
+Date: Tue, 15 Jun 2010 12:34:31 +0100
+Message-ID: <20100615113431.GD14510@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6F8E4103898
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 574821038A1
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 13:32:00 +0200 (CEST)
+	Tue, 15 Jun 2010 13:34:32 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,23 +20,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: Takshi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit e854df613fe934c94a0b39eccb4104e72ccbbded:
+The following changes since commit 9eb34302681d3f6cf0b186aae31ba08cbd5f22fb:
 
-  Merge branch 'for-2.6.35' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6 into fix/asoc (2010-06-02 14:17:44 +0200)
+  Merge branch 'for-2.6.36' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6 into topic/asoc (2010-06-07 18:38:56 +0200)
 
 are available in the git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.35
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.36
+
+Mostly minor cleanups plus the fix from 2.6.35.
+
+Grant Likely (1):
+      ASoC: Remove unused header from MPC5200 PSC driver
+
+Kuninori Morimoto (5):
+      ASoC: header cleanup for FSI
+      ASoC: header cleanup for FSI-AK4642
+      ASoC: header cleanup for FSI-DA7210
+      ASoC: header cleanup for ak4642
+      ASoC: header cleanup for da7210
+
+Mark Brown (2):
+      Merge branch 'ep93xx' into for-2.6.36
+      Merge branch 'for-2.6.35' into for-2.6.36
+
+Ryan Mallon (2):
+      EP93xx: Add i2s core support
+      ASoC: EP93xx: Add Snapper CL15 i2s audio support
 
 Sudhakar Rajashekhara (1):
       ASoC: DaVinci: Fix McASP hardware FIFO configuration
 
-There is a fix for duplicate enables of the DMA, the changelog is
-detailed.
+Takashi Iwai (1):
+      Merge branch 'for-2.6.35' of git://git.kernel.org/.../broonie/sound-2.6 into fix/asoc
 
- sound/soc/davinci/davinci-mcasp.c |    2 --
- 1 files changed, 0 insertions(+), 2 deletions(-)
+Wan ZongShun (1):
+      ASoC: NUC900: patch for fix build error
+
+ arch/arm/mach-ep93xx/clock.c                    |   67 ++++++++++-
+ arch/arm/mach-ep93xx/core.c                     |   67 ++++++++++
+ arch/arm/mach-ep93xx/include/mach/ep93xx-regs.h |   10 ++
+ arch/arm/mach-ep93xx/include/mach/platform.h    |    3 +
+ arch/arm/mach-ep93xx/snappercl15.c              |    1 +
+ sound/soc/codecs/ak4642.c                       |    8 --
+ sound/soc/codecs/da7210.c                       |    9 --
+ sound/soc/davinci/davinci-mcasp.c               |    2 -
+ sound/soc/ep93xx/Kconfig                        |    9 ++
+ sound/soc/ep93xx/Makefile                       |    3 +
+ sound/soc/ep93xx/snappercl15.c                  |  150 +++++++++++++++++++++++
+ sound/soc/fsl/mpc5200_psc_i2s.c                 |    1 -
+ sound/soc/fsl/mpc5200_psc_i2s.h                 |   12 --
+ sound/soc/nuc900/nuc900-audio.c                 |    2 +-
+ sound/soc/nuc900/nuc900-pcm.c                   |    2 +-
+ sound/soc/sh/fsi-ak4642.c                       |    9 --
+ sound/soc/sh/fsi-da7210.c                       |    9 --
+ sound/soc/sh/fsi.c                              |    9 --
+ 18 files changed, 311 insertions(+), 62 deletions(-)
+ create mode 100644 sound/soc/ep93xx/snappercl15.c
+ delete mode 100644 sound/soc/fsl/mpc5200_psc_i2s.h
