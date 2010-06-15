@@ -1,34 +1,37 @@
 From: Stuart Longland <redhatter@gentoo.org>
-Subject: Re: Update on TLV320AIC3204 Driver [File 1/3]
-Date: Tue, 15 Jun 2010 10:29:14 +1000
-Message-ID: <20100615002913.GC7759@www.longlandclan.yi.org>
+Subject: Re: Update on TLV320AIC3204 Driver [File 2/3]
+Date: Tue, 15 Jun 2010 10:33:40 +1000
+Message-ID: <20100615003339.GD7759@www.longlandclan.yi.org>
 References: <20100611055512.GG23431@www.longlandclan.yi.org>
 	<20100611101803.GB12436@sirena.org.uk>
+	<20100615002913.GC7759@www.longlandclan.yi.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="J/dobhs11T7y2rNN"
+Content-Type: multipart/mixed; boundary="eAbsdosE1cNLO4uF"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from helicon.mas.viperplatform.net.au
-	(helicon.mas.viperplatform.net.au [202.147.75.21])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9230624432
+Received: from ossa.mas.viperplatform.net.au (ossa.mas.viperplatform.net.au
+	[202.147.75.25]) by alsa0.perex.cz (Postfix) with ESMTP id 9032A2442F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 02:29:57 +0200 (CEST)
+	Tue, 15 Jun 2010 02:33:58 +0200 (CEST)
+Received: from mail by ossa.mas.viperplatform.net.au with spam-scanned (Exim
+	4.43) id 1OOK6F-00028f-4a
+	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:33:57 +1000
 Received: from eryx.mas.viperplatform.net.au ([172.16.5.11])
-	by helicon.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OOK2N-0007iQ-BD
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:29:55 +1000
+	by ossa.mas.viperplatform.net.au with esmtp (Exim 4.43)
+	id 1OOK6F-00028c-2x
+	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:33:55 +1000
 Received: from mail by eryx.mas.viperplatform.net.au with spam-scanned (Exim
-	4.43) id 1OOK2M-00023F-5k
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:29:55 +1000
+	4.43) id 1OOK6D-0002vh-B8
+	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:33:55 +1000
 Received: from [172.16.100.13] (helo=helicon.mas.viperplatform.net.au)
 	by eryx.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OOK2M-00023C-4N
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:29:54 +1000
+	id 1OOK6D-0002ve-9s
+	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:33:53 +1000
 Received: from [203.94.56.252] (helo=longlandclan.yi.org)
 	by helicon.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OOK1j-0007YY-K3
-	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:29:54 +1000
+	id 1OOK61-0000EJ-8h
+	for alsa-devel@alsa-project.org; Tue, 15 Jun 2010 10:33:53 +1000
 Content-Disposition: inline
-In-Reply-To: <20100611101803.GB12436@sirena.org.uk>
+In-Reply-To: <20100615002913.GC7759@www.longlandclan.yi.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -43,7 +46,7 @@ Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Eric B??nard <eri
 List-Id: alsa-devel@alsa-project.org
 
 
---J/dobhs11T7y2rNN
+--eAbsdosE1cNLO4uF
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -57,7 +60,7 @@ On Fri, Jun 11, 2010 at 11:18:04AM +0100, Mark Brown wrote:
 > Please post to the mailing list if you want review - the standard
 > workflow is to provide comments by replying to the patch.
 
-Attached :- sound/soc/codecs/tlv320aic3204.c
+Attached :- sound/soc/codecs/tlv320aic3204.h
 -- 
 Stuart Longland (aka Redhatter, VK4MSL)      .'''.
 Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
@@ -67,17 +70,16 @@ http://dev.gentoo.org/~redhatter             :.'
 I haven't lost my mind...
   ...it's backed up on a tape somewhere.
 
---J/dobhs11T7y2rNN
+--eAbsdosE1cNLO4uF
 Content-Type: text/x-c; charset=us-ascii
-Content-Disposition: attachment; filename="tlv320aic3204.c"
+Content-Disposition: attachment; filename="tlv320aic3204.h"
 
 /*
  * ALSA SoC TLV320AIC3204 codec driver
  *
  * Author:	Stuart Longland, <redhatter@gentoo.org>
- * Copyright:	(C) 2010 Jacques Electronics Pty. Ltd.
+ * Copyright:	(C) 2010 Jacques Electronics, Pty, Ltd.
  *
- * Based upon the TLV320AIC3X driver:
  * Author:      Vladimir Barinov, <vbarinov@embeddedalley.com>
  * Copyright:   (C) 2007 MontaVista Software, Inc., <source@mvista.com>
  *
@@ -86,1491 +88,1397 @@ Content-Disposition: attachment; filename="tlv320aic3204.c"
  * published by the Free Software Foundation.
  */
 
-#ifndef DEBUG
-#define DEBUG
-#endif
+#ifndef _AIC3204_H
+#define _AIC3204_H
 
-#include <linux/device.h>
-#include <linux/module.h>
-#include <linux/moduleparam.h>
-#include <linux/init.h>
-#include <linux/delay.h>
-#include <linux/pm.h>
-#include <linux/i2c.h>
-#include <linux/gpio.h>
-#include <linux/regulator/consumer.h>
-#include <linux/platform_device.h>
-#include <linux/slab.h>
-#include <sound/core.h>
-#include <sound/pcm.h>
-#include <sound/pcm_params.h>
-#include <sound/soc.h>
-#include <sound/soc-dapm.h>
-#include <sound/initval.h>
-#include <sound/tlv.h>
-#include <sound/tlv320aic3204.h>
+/*
+ * The AIC3204's registers are divided into separate pages, the first page of
+ * every register is a "page select", which sets the current page being
+ * accessed.  For the purposes of simplicity; we shall consider all registers
+ * as being addressed by a 16-bit value, consisting of the page number as
+ * most-significant 9 bits, followed by the register number as given in the
+ * datasheet.
+ *
+ * The register access functions will look after page flipping from here.
+ */
 
-#include "tlv320aic3204.h"
+/* 
+ * AIC3204 register space; 128 registers each page, we pages 0..127.  It's not
+ * clear from the datasheet exactly how many pages are in use... and it's a
+ * sparse register map!  Ideally, I'd like to just cache the pages that are
+ * needed, but the ALSA framework doesn't allow this easily.
+ *
+ * It does look as if up to and including page 70 is needed.  For now, we will
+ * cache up to page 128 however; as this ensures we get *everything*.
+ */
+#define AIC3204_CACHEREGNUM		(128*128)
 
-/* TODO: PLL */
-#define ENABLE_PLL
+/* Page select register */
+#define AIC3204_PAGE_SELECT		0
 
-/* TODO: Make this configurable */
-#define AIC3204_OSR		128
+/* Register Page/Number => Address Mapping Macro */
+#define AIC3204_PGREG(page,reg)		(((page) << 7) | ((reg) & 0x7f))
 
-static int aic3204_read(struct snd_soc_codec *codec, unsigned int reg,
-		      u8 *value);
+/* Software reset register */
+#define AIC3204_RESET			AIC3204_PGREG(0, 1)
+/* Perform software reset */
+#define AIC3204_RESET_SOFT		1
 
-/* SYSFS Interface -- we should move this to debugfs */
-static ssize_t aic3204_show_regsel(struct device *dev,
-		struct device_attribute *attr, char *buf);
-static ssize_t aic3204_store_regsel(struct device *dev,
-		struct device_attribute *attr, const char *buf, size_t count);
-static ssize_t aic3204_show_regdata(struct device *dev,
-		struct device_attribute *attr, char *buf);
-static ssize_t aic3204_store_regdata(struct device *dev,
-		struct device_attribute *attr, const char *buf, size_t count);
-static DEVICE_ATTR(regsel, S_IWUSR | S_IRUGO,
-		aic3204_show_regsel, aic3204_store_regsel);
-static DEVICE_ATTR(regdata, S_IWUSR | S_IRUGO,
-		aic3204_show_regdata, aic3204_store_regdata);
+/* Clock Setting Register 1, Multiplexers */
+#define AIC3204_CLK1			AIC3204_PGREG(0, 4)
+/* PLL Range Select: Low Range */
+#define AIC3204_CLK1_PLLRANGE_LOW	(0 << 6)
+/* PLL Range Select: High Range */
+#define AIC3204_CLK1_PLLRANGE_HIGH	(1 << 6)
+/* PLL Range Select Mask */
+#define AIC3204_CLK1_PLLRANGE		(1 << 6)
+/* PLL Input Clock Select: MCLK */
+#define AIC3204_CLK1_PLLSRC_MCLK	(0 << 2)
+/* PLL Input Clock Select: BCLK */
+#define AIC3204_CLK1_PLLSRC_BCLK	(1 << 2)
+/* PLL Input Clock Select: GPIO */
+#define AIC3204_CLK1_PLLSRC_GPIO	(2 << 2)
+/* PLL Input Clock Select: Data In */
+#define AIC3204_CLK1_PLLSRC_DIN		(3 << 2)
+/* PLL Input Clock Select Mask */
+#define AIC3204_CLK1_PLLSRC		(3 << 2)
+/* CODEC Clock Source Select: MCLK */
+#define AIC3204_CLK1_CODECCLK_MCLK	(0)
+/* CODEC Clock Source Select: BCLK */
+#define AIC3204_CLK1_CODECCLK_BCLK	(1)
+/* CODEC Clock Source Select: GPIO */
+#define AIC3204_CLK1_CODECCLK_GPIO	(2)
+/* CODEC Clock Source Select: PLL */
+#define AIC3204_CLK1_CODECCLK_PLL	(3)
+/* CODEC Clock Source Select Mask */
+#define AIC3204_CLK1_CODECCLK		(3)
 
-#define AIC3204_NUM_SUPPLIES	4
-static const char *aic3204_supply_names[AIC3204_NUM_SUPPLIES] = {
-	"IOVDD",	/* I/O Voltage */
-	"DVDD",		/* Digital Core Voltage */
-	"AVDD",		/* Analog DAC Voltage */
-	"LDOin",	/* Supply for internal LDOs and output amplifiers */
+/* Clock Setting Register 2, PLL P & R Values */
+#define AIC3204_CLK2			AIC3204_PGREG(0, 5)
+/* PLL State: Powered Down */
+#define AIC3204_CLK2_PLL_OFF		(0 << 7)
+/* PLL State: Powered Up */
+#define AIC3204_CLK2_PLL_ON		(1 << 7)
+/* PLL State Mask */
+#define AIC3204_CLK2_PLL		(1 << 7)
+/* PLL P Divider value bitfield location */
+#define AIC3204_CLK2_PLL_P_SHIFT	(4)
+/* PLL P Divider value bitfield mask */
+#define AIC3204_CLK2_PLL_P		(7 << 4)
+/* PLL R Divider value bitfield location */
+#define AIC3204_CLK2_PLL_R_SHIFT	(0)
+/* PLL R Divider value bitfield mask */
+#define AIC3204_CLK2_PLL_R		(0xf)
+
+/* Clock Setting Register 3, PLL J Values */
+#define AIC3204_CLK3			AIC3204_PGREG(0, 6)
+/* PLL J Divider value bitfield location */
+#define AIC3204_CLK3_PLL_J_SHIFT	(0)
+/* PLL J Divider value bitfield mask */
+#define AIC3204_CLK3_PLL_J		(0x3f)
+
+/* Clock Setting Register 4, PLL D MSB */
+#define AIC3204_CLK4			AIC3204_PGREG(0, 7)
+/* PLL D most significant portion bitfield location */
+#define AIC3204_CLK4_PLL_D_SHIFT	(0)
+/* PLL D most significant portion bitfield mask */
+#define AIC3204_CLK4_PLL_D		(0x3f)
+/* PLL D most significant portion value shift */
+#define AIC3204_CLK4_PLL_D_VSHIFT	(8)
+
+/* Clock Setting Register 5, PLL D LSB */
+#define AIC3204_CLK5			AIC3204_PGREG(0, 8)
+/* PLL D least significant portion bitfield location */
+#define AIC3204_CLK5_PLL_D_SHIFT	(0)
+/* PLL D least significant portion bitfield mask */
+#define AIC3204_CLK5_PLL_D		(0xff)
+/* PLL D least significant portion value shift */
+#define AIC3204_CLK5_PLL_D_VSHIFT	(0)
+
+/* Clock Setting Register 6, NDAC Values */
+#define AIC3204_CLK6			AIC3204_PGREG(0, 11)
+/* NDAC State: Powered Down */
+#define AIC3204_CLK6_NDAC_STATE_OFF	(0 << 7)
+/* NDAC State: Powered Up */
+#define AIC3204_CLK6_NDAC_STATE_ON	(1 << 7)
+/* NDAC State Mask */
+#define AIC3204_CLK6_NDAC_STATE		(1 << 7)
+/* NDAC value bitfield location */
+#define AIC3204_CLK6_NDAC_SHIFT		(0)
+/* NDAC value bitfield mask */
+#define AIC3204_CLK6_NDAC		(0x7f)
+
+/* Clock Setting Register 7, MDAC Values */
+#define AIC3204_CLK7			AIC3204_PGREG(0, 12)
+/* MDAC State: Powered Down */
+#define AIC3204_CLK7_MDAC_STATE_OFF	(0 << 7)
+/* MDAC State: Powered Up */
+#define AIC3204_CLK7_MDAC_STATE_ON	(1 << 7)
+/* MDAC State Mask */
+#define AIC3204_CLK7_MDAC_STATE		(1 << 7)
+/* MDAC value bitfield location */
+#define AIC3204_CLK7_MDAC_SHIFT		(0)
+/* MDAC value bitfield mask */
+#define AIC3204_CLK7_MDAC		(0x7f)
+
+/* DAC OSR Setting Register 1, MSB */
+#define AIC3204_DOSR1			AIC3204_PGREG(0, 13)
+/* DOSR most significant portion bitfield location */
+#define AIC3204_DOSR1_MSB_SHIFT		(0)
+/* DOSR most significant portion bitfield mask */
+#define AIC3204_DOSR1_MSB		(3)
+/* DOSR most significant portion value shift */
+#define AIC3204_DOSR1_MSB_VSHIFT	(8)
+
+/* DAC OSR Setting Register 2, LSB */
+#define AIC3204_DOSR2			AIC3204_PGREG(0, 14)
+/* DOSR least significant portion bitfield location */
+#define AIC3204_DOSR2_LSB_SHIFT		(0)
+/* DOSR least significant portion bitfield mask */
+#define AIC3204_DOSR2_LSB		(0xff)
+/* DOSR least significant portion value shift */
+#define AIC3204_DOSR2_LSB_VSHIFT	(0)
+
+/* Clock Setting Register 8, NADC Values */
+#define AIC3204_CLK8			AIC3204_PGREG(0, 18)
+/* NADC State: Powered Down */
+#define AIC3204_CLK8_NADC_STATE_OFF	(0 << 7)
+/* NADC State: Powered Up */
+#define AIC3204_CLK8_NADC_STATE_ON	(1 << 7)
+/* NADC State Mask */
+#define AIC3204_CLK8_NADC_STATE		(1 << 7)
+/* NADC value bitfield location */
+#define AIC3204_CLK8_NADC_SHIFT		(0)
+/* NADC value bitfield mask */
+#define AIC3204_CLK8_NADC		(0x7f)
+
+/* Clock Setting Register 9, MADC Values */
+#define AIC3204_CLK9			AIC3204_PGREG(0, 19)
+/* MADC State: Powered Down */
+#define AIC3204_CLK9_MADC_STATE_OFF	(0 << 7)
+/* MADC State: Powered Up */
+#define AIC3204_CLK9_MADC_STATE_ON	(1 << 7)
+/* MADC State Mask */
+#define AIC3204_CLK9_MADC_STATE		(1 << 7)
+/* MADC value bitfield location */
+#define AIC3204_CLK9_MADC_SHIFT		(0)
+/* MADC value bitfield mask */
+#define AIC3204_CLK9_MADC		(0x7f)
+
+/* ADC OSR Setting Register */
+#define AIC3204_AOSR			AIC3204_PGREG(0, 20)
+
+/* 
+ * Clock Register setting 10, Multiplexers
+ *
+ * XXX: Note that the datasheet goofs up here, calling this register 9, but we
+ * already had a register 9 just before AOSR.  Therefore, we will call this
+ * register 10, and will increment all following by one to correct TI's
+ * mistake.
+ */
+#define AIC3204_CLK10			AIC3204_PGREG(0, 25)
+/* CDIV Clock Source: MCLK */
+#define AIC3204_CLK10_CDIV_MCLK		(0)
+/* CDIV Clock Source: BCLK */
+#define AIC3204_CLK10_CDIV_BCLK		(1)
+/* CDIV Clock Source: Data IN */
+#define AIC3204_CLK10_CDIV_DIN		(2)
+/* CDIV Clock Source: PLL */
+#define AIC3204_CLK10_CDIV_PLL		(3)
+/* CDIV Clock Source: DAC */
+#define AIC3204_CLK10_CDIV_DAC		(4)
+/* CDIV Clock Source: DAC Modulation */
+#define AIC3204_CLK10_CDIV_DAC_MOD	(5)
+/* CDIV Clock Source: ADC */
+#define AIC3204_CLK10_CDIV_ADC		(6)
+/* CDIV Clock Source: ADC Modulation */
+#define AIC3204_CLK10_CDIV_ADC_MOD	(7)
+/* CDIV Clock Source Mask */
+#define AIC3204_CLK10_CDIV		(7)
+
+/* Clock Register setting 11, CLKOUT M divider value */
+#define AIC3204_CLK11			AIC3204_PGREG(0, 26)
+/* CLKOUT Divider State: Off */
+#define AIC3204_CLK11_CLKOUT_OFF	(0 << 7)
+/* CLKOUT Divider State: On */
+#define AIC3204_CLK11_CLKOUT_ON		(1 << 7)
+/* CLKOUT Divider State Mask */
+#define AIC3204_CLK11_CLKOUT		(1 << 7)
+/* CLKOUT Divider M value bitfield location */
+#define AIC3204_CLK11_CLKOUTM_SHIFT	(0)
+/* CLKOUT Divider M value bitfield mask */
+#define AIC3204_CLK11_CLKOUTM		(0x7f)
+
+/* Audio Interface Setting Register 1 */
+#define AIC3204_AISR1			AIC3204_PGREG(0, 27)
+/* Audio Interface Select: I2S */
+#define AIC3204_AISR1_INT_I2S		(0 << 6)
+/* Audio Interface Select: DSP */
+#define AIC3204_AISR1_INT_DSP		(1 << 6)
+/* Audio Interface Select: Right-Justified Format */
+#define AIC3204_AISR1_INT_RJF		(2 << 6)
+/* Audio Interface Select: Left-Justified Format */
+#define AIC3204_AISR1_INT_LJF		(3 << 6)
+/* Audio Interface Select Mask */
+#define AIC3204_AISR1_INT		(3 << 6)
+/* Audio Data Word Length: 16 bits */
+#define AIC3204_AISR1_WL_16BITS		(0 << 4)
+/* Audio Data Word Length: 20 bits */
+#define AIC3204_AISR1_WL_20BITS		(1 << 4)
+/* Audio Data Word Length: 24 bits */
+#define AIC3204_AISR1_WL_24BITS		(2 << 4)
+/* Audio Data Word Length: 32 bits */
+#define AIC3204_AISR1_WL_32BITS		(3 << 4)
+/* Audio Data Word Length Mask */
+#define AIC3204_AISR1_WL		(3 << 4)
+/* BCLK Direction Control: Input */
+#define AIC3204_AISR1_BCLK_IN		(0 << 3)
+/* BCLK Direction Control: Output */
+#define AIC3204_AISR1_BCLK_OUT		(1 << 3)
+/* BCLK Direction Control: Mask */
+#define AIC3204_AISR1_BCLK		(1 << 3)
+/* WCLK Direction Control: Input */
+#define AIC3204_AISR1_WCLK_IN		(0 << 2)
+/* WCLK Direction Control: Output */
+#define AIC3204_AISR1_WCLK_OUT		(1 << 2)
+/* WCLK Direction Control: Mask */
+#define AIC3204_AISR1_WCLK		(1 << 2)
+/* DOUT High Impedance Output Control: Never high impedance */
+#define AIC3204_AISR1_HIZ_NEVER		(0 << 0)
+/* DOUT High Impedance Output Control: High impedance when idle */
+#define AIC3204_AISR1_HIZ_IDLE		(1 << 0)
+/* DOUT High Impedance Output Control Mask */
+#define AIC3204_AISR1_HIZ		(1 << 0)
+
+/* Audio Interface Register 2, Data offset setting */
+#define AIC3204_AISR2			AIC3204_PGREG(0, 28)
+
+/* Audio Interface Register 3 */
+#define AIC3204_AISR3			AIC3204_PGREG(0, 29)
+/* Audio Data Loopback Control: Disabled */
+#define AIC3204_AISR3_ADLO_OFF		(0 << 5)
+/* Audio Data Loopback Control: Enabled */
+#define AIC3204_AISR3_ADLO_ON		(1 << 5)
+/* Audio Data Loopback Control Mask */
+#define AIC3204_AISR3_ADLO		(1 << 5)
+/* ADC->DAC Loopback Control: Disabled */
+#define AIC3204_AISR3_ADDALO_OFF	(0 << 4)
+/* ADC->DAC Loopback Control: Enabled */
+#define AIC3204_AISR3_ADDALO_ON		(1 << 4)
+/* ADC->DAC Loopback Control Mask */
+#define AIC3204_AISR3_ADDALO		(1 << 4)
+/* Audio Bit Clock Polarity: Normal */
+#define AIC3204_AISR3_BCLKPOL_NOR	(0 << 3)
+/* Audio Bit Clock Polarity: Inverted */
+#define AIC3204_AISR3_BCLKPOL_INV	(1 << 3)
+/* Audio Bit Clock Polarity Mask */
+#define AIC3204_AISR3_BCLKPOL		(1 << 3)
+/* Audio Data Interface Clock Buffers: Always powered */
+#define AIC3204_AISR3_ADICLK_ALWAYS	(0 << 2)
+/* Audio Data Interface Clock Buffers: Powered with CODEC only */
+#define AIC3204_AISR3_ADICLK_CODEC	(1 << 2)
+/* Audio Data Interface Clock Buffers' State */
+#define AIC3204_AISR3_ADICLK		(1 << 2)
+/* Audio Bit Clock Divider Source: DAC */
+#define AIC3204_AISR3_BDIV_DAC		(0 << 0)
+/* Audio Bit Clock Divider Source: DAC Modulation */
+#define AIC3204_AISR3_BDIV_DAC_MOD	(1 << 0)
+/* Audio Bit Clock Divider Source: ADC */
+#define AIC3204_AISR3_BDIV_ADC		(2 << 0)
+/* Audio Bit Clock Divider Source: ADC Modulation */
+#define AIC3204_AISR3_BDIV_ADC_MOD	(3 << 0)
+/* Audio Bit Clock Divider Source Mask */
+#define AIC3204_AISR3_BDIV		(3 << 0)
+
+/* Clock Setting Register 12, BCLK N Divider */
+#define AIC3204_CLK12			AIC3204_PGREG(0, 30)
+/* BCLK N State: Powered Down */
+#define AIC3204_PG0_CLK12_BCLK_STATE_OFF (0 << 7)
+/* BCLK N State: Powered Up */
+#define AIC3204_CLK12_BCLK_STATE_ON	(1 << 7)
+/* BCLK N State Mask */
+#define AIC3204_CLK12_BCLK_STATE	(1 << 7)
+/* BCLK N value bitfield location */
+#define AIC3204_CLK12_BCLK_SHIFT	(0)
+/* BCLK N value bitfield mask */
+#define AIC3204_CLK12_BCLK		(0x7f)
+
+/* Audio Interface Setting Register 4, Secondary Audio Interface */
+#define AIC3204_AISR4			AIC3204_PGREG(0, 31)
+/* Secondary Bit Clock: GPIO */
+#define AIC3204_AISR4_SECBCLK_GPIO	(0 << 5)
+/* Secondary Bit Clock: SCLK */
+#define AIC3204_AISR4_SECBCLK_SCLK	(1 << 5)
+/* Secondary Bit Clock: MISO */
+#define AIC3204_AISR4_SECBCLK_MISO	(2 << 5)
+/* Secondary Bit Clock: DOUT */
+#define AIC3204_AISR4_SECBCLK_DOUT	(3 << 5)
+/* Secondary Bit Clock Mask */
+#define AIC3204_AISR4_SECBCLK		(3 << 5)
+/* Secondary Word Clock: GPIO */
+#define AIC3204_AISR4_SECWCLK_GPIO	(0 << 3)
+/* Secondary Word Clock: SCLK */
+#define AIC3204_AISR4_SECWCLK_SCLK	(1 << 3)
+/* Secondary Word Clock: MISO */
+#define AIC3204_AISR4_SECWCLK_MISO	(2 << 3)
+/* Secondary Word Clock: DOUT */
+#define AIC3204_AISR4_SECWCLK_DOUT	(3 << 3)
+/* Secondary Word Clock Mask */
+#define AIC3204_AISR4_SECWCLK		(3 << 3)
+/* ADC Word Clock: GPIO */
+#define AIC3204_AISR4_ADCWCLK_GPIO	(0 << 3)
+/* ADC Word Clock: SCLK */
+#define AIC3204_AISR4_ADCWCLK_SCLK	(1 << 3)
+/* ADC Word Clock: MISO */
+#define AIC3204_AISR4_ADCWCLK_MISO	(2 << 3)
+/* ADC Word Clock Mask */
+#define AIC3204_AISR4_ADCWCLK		(3 << 3)
+/* Secondary Data Input: GPIO */
+#define AIC3204_AISR4_SECDIN_GPIO	(0 << 0)
+/* Secondary Data Input: SCLK */
+#define AIC3204_AISR4_SECDIN_SCLK	(1 << 0)
+/* Secondary Data Input Mask */
+#define AIC3204_AISR4_SECDIN		(1 << 0)
+
+/* Audio Interface Setting Register 5 */
+#define AIC3204_AISR5			AIC3204_PGREG(0, 32)
+/* Audio Interface Bit Clock: Primary (BCLK) */
+#define AIC3204_AISR5_BCLKIN_PRI	(0 << 3)
+/* Audio Interface Bit Clock: Secondary */
+#define AIC3204_AISR5_BCLKIN_SEC	(1 << 3)
+/* Audio Interface Bit Clock Mask */
+#define AIC3204_AISR5_WCLKIN		(1 << 2)
+/* Audio Interface Word Clock: Primary (BCLK) */
+#define AIC3204_AISR5_WCLKIN_PRI	(0 << 2)
+/* Audio Interface Word Clock: Secondary */
+#define AIC3204_AISR5_WCLKIN_SEC	(1 << 2)
+/* Audio Interface Word Clock Mask */
+#define AIC3204_AISR5_WCLKIN		(1 << 2)
+/* ADC Word Clock Control: ADC WCLK = DAC WCLK */
+#define ADC3204_PG0_AISR5_ADCWCLK_DAC	(0 << 1)
+/* ADC Word Clock Control: ADC WCLK = Secondary ADC WCLK */
+#define ADC3204_PG0_AISR5_ADCWCLK_SEC	(1 << 1)
+/* ADC Word Clock Control Mask */
+#define ADC3204_PG0_AISR5_ADCWCLK	(1 << 1)
+/* Audio Data In: Primary Data In */
+#define ADC3204_PG0_AISR5_DIN_PRI	(0 << 0)
+/* Audio Data In: Secondary Data In */
+#define ADC3204_PG0_AISR5_DIN_SEC	(1 << 0)
+/* Audio Data In Mask */
+#define ADC3204_PG0_AISR5_DIN		(1 << 0)
+
+/* Audio Interface Setting Register 6 */
+#define AIC3204_AISR6			AIC3204_PGREG(0, 33)
+/* BCLK Output Control: Generated Primary Bit Clock */
+#define AIC3204_AISR6_BCLKOUT_GEN	(0 << 7)
+/* BCLK Output Control: Secondary Bit Clock */
+#define AIC3204_AISR6_BCLKOUT_SEC	(1 << 7)
+/* BCLK Output Control Mask */
+#define AIC3204_AISR6_BCLKOUT		(1 << 7)
+/* Secondary BCLK Output Control: Primary Bit Clock Input */
+#define AIC3204_AISR6_SBCLKOUT_BCLK	(0 << 6)
+/* Secondary BCLK Output Control: Generated Primary Bit Clock */
+#define AIC3204_AISR6_SBCLKOUT_GEN	(1 << 6)
+/* Secondary BCLK Output Control Mask */
+#define AIC3204_AISR6_SBCLKOUT		(1 << 6)
+/* WCLK Output Control: Generated DAC_FS */
+#define AIC3204_AISR6_WCLKOUT_DAC	(0 << 4)
+/* WCLK Output Control: Generated ADC_FS */
+#define AIC3204_AISR6_WCLKOUT_ADC	(1 << 4)
+/* WCLK Output Control: Secondary WCLK Input */
+#define AIC3204_AISR6_WCLKOUT_SWCLK	(2 << 4)
+/* WCLK Output Control Mask */
+#define AIC3204_AISR6_WCLKOUT		(3 << 4)
+/* Secondary WCLK Output Control: WCLK Input */
+#define AIC3204_AISR6_SWCLKOUT_WCLK	(0 << 2)
+/* Secondary WCLK Output Control: Generated DAC_FS */
+#define AIC3204_AISR6_SWCLKOUT_DAC	(1 << 2)
+/* Secondary WCLK Output Control: Generated ADC_FS */
+#define AIC3204_AISR6_SWCLKOUT_ADC	(2 << 2)
+/* Secondary WCLK Output Control Mask */
+#define AIC3204_AISR6_SWCLKOUT		(3 << 2)
+/* Primary Data Output Control: Serial Interface */
+#define AIC3204_AISR6_DOUT_INT		(0 << 1)
+/* Primary Data Output Control: Secondary Data Input */
+#define AIC3204_AISR6_DOUT_SDIN		(1 << 1)
+/* Primary Data Output Control Mask */
+#define AIC3204_AISR6_DOUT		(1 << 1)
+/* Secondary Data Output Control: Primary Data In */
+#define AIC3204_AISR6_SDOUT_DIN		(0 << 0)
+/* Secondary Data Output Control: Serial Interface */
+#define AIC3204_AISR6_SDOUT_INT		(1 << 0)
+/* Secondary Data Output Control Mask */
+#define AIC3204_AISR6_SDOUT		(1 << 0)
+
+/* Digital Interface Misc. Setting Register */
+#define AIC3204_DIMISC			AIC3204_PGREG(0, 34)
+/* I2C General Call Address Configuration: Ignore */
+#define AIC3204_DIMISC_I2CGC_IGNORE	(0 << 5)
+/* I2C General Call Address Configuration: Accept */
+#define AIC3204_DIMISC_I2CGC_ACCEPT	(1 << 5)
+
+/* ADC Flag Register */
+#define AIC3204_ADCF			AIC3204_PGREG(0, 36)
+/* Left ADC PGA Status: Gain is set */
+#define AIC3204_ADCF_LEFT_PGASET	(1 << 7)
+/* Left ADC Power Status: Powered Up */
+#define AIC3204_ADCF_LEFT_UP		(1 << 6)
+/* Left ADC AGC Status: Gain is saturated */
+#define AIC3204_ADCF_LEFT_AGCSAT	(1 << 5)
+/* Right ADC PGA Status: Gain is set */
+#define AIC3204_ADCF_RIGHT_PGASET	(1 << 3)
+/* Right ADC Power Status: Powered Up */
+#define AIC3204_ADCF_RIGHT_UP		(1 << 2)
+/* Right ADC AGC Status: Gain is saturated */
+#define AIC3204_ADCF_RIGHT_AGCSAT	(1 << 1)
+
+/* DAC Flag Register 1 */
+#define AIC3204_DACF1			AIC3204_PGREG(0, 37)
+/* Left DAC powered up */
+#define AIC3204_DACF1_LEFT_UP		(1 << 7)
+/* Left Line Output Driver powered up */
+#define AIC3204_DACF1_LOL_UP		(1 << 6)
+/* Left Headphone Output Driver powered up */
+#define AIC3204_DACF1_HPL_UP		(1 << 5)
+/* Right DAC powered up */
+#define AIC3204_DACF1_RIGHT_UP		(1 << 7)
+/* Right Line Output Driver powered up */
+#define AIC3204_DACF1_LOR_UP		(1 << 6)
+/* Right Headphone Output Driver powered up */
+#define AIC3204_DACF1_HPR_UP		(1 << 5)
+
+/* DAC Flag Register 2 */
+#define AIC3204_DACF2			AIC3204_PGREG(0, 38)
+/* Left DAC PGA Status: Gain is set */
+#define AIC3204_DACF2_LEFT_PGASET	(1 << 4)
+/* Right DAC PGA Status: Gain is set */
+#define AIC3204_DACF2_RIGHT_PGASET	(1 << 0)
+
+/* Sticky Flag Register 1 */
+#define AIC3204_STICK1			AIC3204_PGREG(0, 42)
+/* Left DAC Overflow */
+#define AIC3204_STICK1_LDAC_OVER	(1 << 7)
+/* Right DAC Overflow */
+#define AIC3204_STICK1_RDAC_OVER	(1 << 6)
+/* Left ADC Overflow */
+#define AIC3204_STICK1_LADC_OVER	(1 << 3)
+/* Right ADC Overflow */
+#define AIC3204_STICK1_RADC_OVER	(1 << 2)
+
+/* Interrupt Flag Register 1 */
+#define AIC3204_INTF1			AIC3204_PGREG(0, 43)
+/* Left DAC Overflow */
+#define AIC3204_INTF1_LDAC_OVER		(1 << 7)
+/* Right DAC Overflow */
+#define AIC3204_INTF1_RDAC_OVER		(1 << 6)
+/* Left ADC Overflow */
+#define AIC3204_INTF1_LADC_OVER		(1 << 3)
+/* Right ADC Overflow */
+#define AIC3204_INTF1_RADC_OVER		(1 << 2)
+
+/* Sticky Flag Register 2 */
+#define AIC3204_STICK2			AIC3204_PGREG(0, 44)
+/* Left Headphone Driver Over Current */
+#define AIC3204_STICK2_HPL_OVER		(1 << 7)
+/* Right Headphone Driver Over Current */
+#define AIC3204_STICK2_HPR_OVER		(1 << 6)
+/* Headset button pressed */
+#define AIC3204_STICK2_HS_BUTTON	(1 << 5)
+/* Headset plug inserted/removed */
+#define AIC3204_STICK2_HS_PLUGGED	(1 << 4)
+/* Left Channel DRC: Over threshold */
+#define AIC3204_STICK2_LDRC_OVER	(1 << 3)
+/* Right Channel DRC: Over threshold */
+#define AIC3204_STICK2_RDRC_OVER	(1 << 2)
+
+/* Sticky Flag Register 3 */
+#define AIC3204_STICK3			AIC3204_PGREG(0, 45)
+/* Left AGC Noise Threshold Flag: Over threshold */
+#define AIC3204_STICK3_LAGC_OVER	(1 << 6)
+/* Right AGC Noise Threshold Flag: Over threshold */
+#define AIC3204_STICK3_RAGC_OVER	(1 << 5)
+/* Left ADC DC Measurement Available */
+#define AIC3204_STICK3_LADC_DC		(1 << 2)
+/* Right ADC DC Measurement Available */
+#define AIC3204_STICK3_RADC_DC		(1 << 1)
+
+/* Interrupt Flag Register 2 */
+#define AIC3204_INTF2			AIC3204_PGREG(0, 46)
+/* Left Headphone Driver Over Current */
+#define AIC3204_INTF2_HPL_OVER		(1 << 7)
+/* Right Headphone Driver Over Current */
+#define AIC3204_INTF2_HPR_OVER		(1 << 6)
+/* Headset button pressed */
+#define AIC3204_INTF2_HS_BUTTON		(1 << 5)
+/* Headset plug inserted/removed */
+#define AIC3204_INTF2_HS_PLUGGED	(1 << 4)
+/* Left Channel DRC: Over threshold */
+#define AIC3204_INTF2_LDRC_OVER		(1 << 3)
+/* Right Channel DRC: Over threshold */
+#define AIC3204_INTF2_RDRC_OVER		(1 << 2)
+
+/* Interrupt Flag Register 3 */
+#define AIC3204_INTF3			AIC3204_PGREG(0, 47)
+/* Left AGC Noise Threshold Flag: Over threshold */
+#define AIC3204_INTF3_LAGC_OVER		(1 << 6)
+/* Right AGC Noise Threshold Flag: Over threshold */
+#define AIC3204_INTF3_RAGC_OVER		(1 << 5)
+/* Left ADC DC Measurement Available */
+#define AIC3204_INTF3_LADC_DC		(1 << 2)
+/* Right ADC DC Measurement Available */
+#define AIC3204_INTF3_RADC_DC		(1 << 1)
+
+/* INT1 Interrupt Control Register */
+#define AIC3204_INT1			AIC3204_PGREG(0, 48)
+/* INT1 Generated on Headset insertion */
+#define AIC3204_INT1_HS_PLUG		(1 << 7)
+/* INT1 Generated on Headset Button press */
+#define AIC3204_INT1_HS_BUTTON		(1 << 6)
+/* INT1 Generated on DAC DRC Signal Threshold */
+#define AIC3204_INT1_DAC_DRC		(1 << 5)
+/* INT1 Generated on AGC Noise Interrupt */
+#define AIC3204_INT1_ADC_NOISE		(1 << 4)
+/* INT1 Generated on Over Current */
+#define AIC3204_INT1_HP_OVERCURRENT	(1 << 3)
+/* INT1 Generated on overflow event */
+#define AIC3204_INT1_OVERFLOW		(1 << 2)
+/* INT1 Generated on DC measurement */
+#define AIC3204_INT1_DC			(1 << 1)
+/* INT1 pulse control: Continuous pulse train */
+#define AIC3204_INT1_CONT_PULSE		(1 << 0)
+
+/* INT2 Interrupt Control Register */
+#define AIC3204_INT2			AIC3204_PGREG(0, 49)
+/* INT2 Generated on Headset insertion */
+#define AIC3204_INT2_HS_PLUG		(1 << 7)
+/* INT2 Generated on Headset Button press */
+#define AIC3204_INT2_HS_BUTTON		(1 << 6)
+/* INT2 Generated on DAC DRC Signal Threshold */
+#define AIC3204_INT2_DAC_DRC		(1 << 5)
+/* INT2 Generated on AGC Noise Interrupt */
+#define AIC3204_INT2_ADC_NOISE		(1 << 4)
+/* INT2 Generated on Over Current */
+#define AIC3204_INT2_HP_OVERCURRENT	(1 << 3)
+/* INT2 Generated on overflow event */
+#define AIC3204_INT2_OVERFLOW		(1 << 2)
+/* INT2 Generated on DC measurement */
+#define AIC3204_INT2_DC			(1 << 1)
+/* INT2 pulse control: Continuous pulse train */
+#define AIC3204_INT2_CONT_PULSE		(1 << 0)
+
+/* GPIO/MFP5 Control Register */
+#define AIC3204_MFP5			AIC3204_PGREG(0, 52)
+/* GPIO Control: Disabled */
+#define AIC3204_MFP5_FUNC_DISABLED	(0 << 2)
+/* GPIO Control: Secondary audio interface/digital microphone/clock input */
+#define AIC3204_MFP5_FUNC_SAI_DM_CI	(1 << 2)
+/* GPIO Control: General Purpose Input */
+#define AIC3204_MFP5_FUNC_INPUT		(2 << 2)
+/* GPIO Control: General Purpose Output */
+#define AIC3204_MFP5_FUNC_OUTPUT	(3 << 2)
+/* GPIO Control: CLKOUT Output */
+#define AIC3204_MFP5_FUNC_CLKOUT	(4 << 2)
+/* GPIO Control: INT1 Output */
+#define AIC3204_MFP5_FUNC_INT1		(4 << 2)
+/* GPIO Control: INT2 Output */
+#define AIC3204_MFP5_FUNC_INT2		(4 << 2)
+/* GPIO Control: ADC_WCLK */
+#define AIC3204_MFP5_FUNC_ADC_WCLK	(4 << 2)
+/* GPIO Control: Secondary Bit Clock */
+#define AIC3204_MFP5_FUNC_SEC_BCLK	(4 << 2)
+/* GPIO Control: Secondary Word Clock */
+#define AIC3204_MFP5_FUNC_SEC_WCLK	(4 << 2)
+/* GPIO Control: Digital Microphone Clock */
+#define AIC3204_MFP5_FUNC_DMIC_CLK	(4 << 2)
+/* GPIO Control Mask */
+#define AIC3204_MFP5_FUNC		(15 << 2)
+/* GPIO Input State */
+#define AIC3204_MFP5_IN			(1 << 1)
+/* GPIO Output State */
+#define AIC3204_MFP5_OUT		(1 << 0)
+
+/* DOUT/MFP2 Function Control Register */
+#define AIC3204_MFP2			AIC3204_PGREG(0, 53)
+/* DOUT Bus Keeper Enabled */
+#define AIC3204_MFP2_BK			(1 << 4)
+/* DOUT MUX Control: Disabled */
+#define AIC3204_MFP2_FUNC_DISABLED	(0 << 1)
+/* DOUT MUX Control: Primary DOUT */
+#define AIC3204_MFP2_FUNC_PRI_DOUT	(1 << 1)
+/* DOUT MUX Control: General Purpose Output */
+#define AIC3204_MFP2_FUNC_OUTPUT	(2 << 1)
+/* DOUT MUX Control: CLKOUT Clock Output */
+#define AIC3204_MFP2_FUNC_CLKOUT	(3 << 1)
+/* DOUT MUX Control: INT1 Output */
+#define AIC3204_MFP2_FUNC_INT1		(4 << 1)
+/* DOUT MUX Control: INT2 Output */
+#define AIC3204_MFP2_FUNC_INT2		(5 << 1)
+/* DOUT MUX Control: Secondary Bit Clock */
+#define AIC3204_MFP2_FUNC_SEC_BCLK	(6 << 1)
+/* DOUT MUX Control: Secondary Word Clock */
+#define AIC3204_MFP2_FUNC_SEC_WCLK	(7 << 1)
+/* DOUT MUX Control Mask */
+#define AIC3204_MFP2_FUNC		(7 << 1)
+/* DOUT General Purpose Output State */
+#define AIC3204_MFP2_OUT		(1 << 0)
+
+/* DIN/MFP1 Function Control Register */
+#define AIC3204_MFP1			AIC3204_PGREG(0, 54)
+/* DIN Function Control: Disabled */
+#define AIC3204_MFP1_FUNC_DISABLED	(0 << 1)
+/* DIN Function Control: Primary Data Input/Digital Microphone/Clock Input */
+#define AIC3204_MFP1_FUNC_DIN_DM_CI	(1 << 1)
+/* DIN Function Control: General Purpose Input */
+#define AIC3204_MFP1_FUNC_INPUT		(2 << 1)
+/* DIN Function Control Mask */
+#define AIC3204_MFP1_FUNC		(3 << 1)
+/* DIN Input State */
+#define AIC3204_MFP1_IN			(1 << 0)
+
+/* MISO/MFP4 Function Control Register */
+#define AIC3204_MFP4			AIC3204_PGREG(0, 55)
+/* MISO Function Control: Disabled */
+#define AIC3204_MFP4_FUNC_DISABLED	(0 << 1)
+/* MISO Function Control: SPI Data Output (disabled in I2C mode) */
+#define AIC3204_MFP4_FUNC_SPI_OUT	(1 << 1)
+/* MISO Function Control: General Purpose Output */
+#define AIC3204_MFP4_FUNC_OUTPUT	(2 << 1)
+/* MISO Function Control: CLKOUT Clock Output */
+#define AIC3204_MFP4_FUNC_CLKOUT	(3 << 1)
+/* MISO Function Control: INT1 Output */
+#define AIC3204_MFP4_FUNC_INT1		(4 << 1)
+/* MISO Function Control: INT2 Output */
+#define AIC3204_MFP4_FUNC_INT2		(5 << 1)
+/* MISO Function Control: ADC Word Clock Output */
+#define AIC3204_MFP4_FUNC_ADC_WCLK	(6 << 1)
+/* MISO Function Control: Digital Microphone Clock Output */
+#define AIC3204_MFP4_FUNC_DMIC_CLK	(7 << 1)
+/* MISO Function Control: Secondary Data Output */
+#define AIC3204_MFP4_FUNC_SEC_DOUT	(8 << 1)
+/* MISO Function Control: Secondary Bit Clock */
+#define AIC3204_MFP4_FUNC_SEC_BCLK	(9 << 1)
+/* MISO Function Control: Secondary Word Clock */
+#define AIC3204_MFP4_FUNC_SEC_WCLK	(10 << 1)
+/* MISO Function Control Mask */
+#define AIC3204_MFP4_FUNC		(15 << 1)
+/* MISO Output State */
+#define AIC3204_MFP4_OUT		(1 << 0)
+
+/* SCLK/MFP3 Function Control Register */
+#define AIC3204_MFP3			AIC3204_PGREG(0, 56)
+/* SCLK Function Control: Disabled */
+#define AIC3204_MFP3_FUNC_DISABLED	(0 << 1)
+/* SCLK Function Control: SPI Clock / Secondary Interface / Digital Mic Input */
+#define AIC3204_MFP3_FUNC_SPI_SI_DM	(1 << 1)
+/* SCLK Function Control: General Purpose Input */
+#define AIC3204_MFP3_FUNC_INPUT		(2 << 1)
+/* SCLK Function Control Mask */
+#define AIC3204_MFP3_FUNC		(3 << 1)
+/* SCLK Input State */
+#define AIC3204_MFP3_IN			(1 << 0)
+
+/* DAC Signal Processing Block Control Register */
+#define AIC3204_DACSPB			AIC3204_PGREG(0, 60)
+/* DAC Signal Processing Block Mask */
+#define AIC3204_DACSPB_MASK		0x1f
+
+/* ADC Signal Processing Block Control Register */
+#define AIC3204_ADCSPB			AIC3204_PGREG(0, 61)
+/* ADC Signal Processing Block Mask */
+#define AIC3204_ADCSPB_MASK		0x1f
+
+/* DAC Channel Setup Register 1 */
+#define AIC3204_DACS1			AIC3204_PGREG(0, 63)
+/* Left DAC Powered Up */
+#define AIC3204_DACS1_LDAC_UP_SHIFT	(7)
+/* Right DAC Powered Up */
+#define AIC3204_DACS1_RDAC_UP_SHIFT	(6)
+/* Left DAC Data Path Control: Disabled */
+#define AIC3204_DACS1_LDACD_DIS		(0 << 4)
+/* Left DAC Data Path Control: Left Data */
+#define AIC3204_DACS1_LDACD_LEFT	(1 << 4)
+/* Left DAC Data Path Control: Right Data */
+#define AIC3204_DACS1_LDACD_RIGHT	(2 << 4)
+/* Left DAC Data Path Control: Left + Right */
+#define AIC3204_DACS1_LDACD_MIX		(3 << 4)
+/* Left DAC Data Path Control Mask */
+#define AIC3204_DACS1_LDACD		(3 << 4)
+/* Right DAC Data Path Control: Disabled */
+#define AIC3204_DACS1_RDACD_DIS		(0 << 2)
+/* Right DAC Data Path Control: Right Data */
+#define AIC3204_DACS1_RDACD_RIGHT	(1 << 2)
+/* Right DAC Data Path Control: Left Data */
+#define AIC3204_DACS1_RDACD_LEFT	(2 << 2)
+/* Right DAC Data Path Control: Left + Right */
+#define AIC3204_DACS1_RDACD_MIX		(3 << 2)
+/* Right DAC Data Path Control Mask */
+#define AIC3204_DACS1_RDACD		(3 << 2)
+/* DAC Soft-Step: Disabled */
+#define AIC3204_DACS1_SOFT_DIS		(0 << 0)
+/* DAC Soft-Step: 1 step every clock */
+#define AIC3204_DACS1_SOFT_1SEC		(1 << 0)
+/* DAC Soft-Step: 1 step every 2 clocks */
+#define AIC3204_DACS1_SOFT_1SE2C	(2 << 0)
+/* DAC Soft-Step Mask */
+#define AIC3204_DACS1_SOFT		(3 << 0)
+
+/* DAC Channel Setup Register 2 */
+#define AIC3204_DACS2			AIC3204_PGREG(0, 64)
+/* Right Modulator Output Control: Output is inverted left output */
+#define AIC3204_DACS2_RMOD_INV		(1 << 7)
+/* DAC Auto Mute: Disabled */
+#define AIC3204_DACS2_AMUTE_DIS		(0 << 4)
+/* DAC Auto Mute: After 100 samples of DC */
+#define AIC3204_DACS2_AMUTE_100		(1 << 4)
+/* DAC Auto Mute: After 200 samples of DC */
+#define AIC3204_DACS2_AMUTE_200		(2 << 4)
+/* DAC Auto Mute: After 400 samples of DC */
+#define AIC3204_DACS2_AMUTE_400		(3 << 4)
+/* DAC Auto Mute: After 800 samples of DC */
+#define AIC3204_DACS2_AMUTE_800		(4 << 4)
+/* DAC Auto Mute: After 1600 samples of DC */
+#define AIC3204_DACS2_AMUTE_1600	(5 << 4)
+/* DAC Auto Mute: After 3200 samples of DC */
+#define AIC3204_DACS2_AMUTE_3200	(6 << 4)
+/* DAC Auto Mute: After 6400 samples of DC */
+#define AIC3204_DACS2_AMUTE_6400	(7 << 4)
+/* DAC Auto Mute Mask */
+#define AIC3204_DACS2_AMUTE		(7 << 4)
+/* Left DAC Muted */
+#define AIC3204_DACS2_LEFT_MUTE_SHIFT	(3)
+/* Right DAC Muted */
+#define AIC3204_DACS2_RIGHT_MUTE_SHIFT	(2)
+/* DAC Master Volume Control: Independant */
+#define AIC3204_DACS2_VOL_IND		(0 << 0)
+/* DAC Master Volume Control: Left controls right */
+#define AIC3204_DACS2_VOL_LEFT		(1 << 0)
+/* DAC Master Volume Control: Right controls left */
+#define AIC3204_DACS2_VOL_RIGHT		(2 << 0)
+/* DAC Master Volume Control Mask */
+#define AIC3204_DACS2_VOL			(3 << 0)
+
+/* Left DAC Digital Volume Control */
+#define AIC3204_LDACVOL			AIC3204_PGREG(0, 65)
+
+/* Right DAC Digital Volume Control */
+#define AIC3204_RDACVOL			AIC3204_PGREG(0, 66)
+
+/* Headset Detection Configuration Register */
+#define AIC3204_HSDET			AIC3204_PGREG(0, 67)
+/* Enable Headset Detection */
+#define AIC3204_HSDET_ENABLE		(1 << 7)
+/* Headset Type: No Headset */
+#define AIC3204_HSDET_NONE		(0 << 5)
+/* Headset Type: Stereo Headset */
+#define AIC3204_HSDET_STEREO		(1 << 5)
+/* Headset Type: Cellular Stereo Headset */
+#define AIC3204_HSDET_CELLSTEREO	(3 << 5)
+/* Headset Detection Debounce Time: 16ms */
+#define AIC3204_HSDET_PLUGDT_16		(0 << 2)
+/* Headset Detection Debounce Time: 32ms */
+#define AIC3204_HSDET_PLUGDT_32		(1 << 2)
+/* Headset Detection Debounce Time: 64ms */
+#define AIC3204_HSDET_PLUGDT_64		(2 << 2)
+/* Headset Detection Debounce Time: 128ms */
+#define AIC3204_HSDET_PLUGDT_128	(3 << 2)
+/* Headset Detection Debounce Time: 256ms */
+#define AIC3204_HSDET_PLUGDT_256	(4 << 2)
+/* Headset Detection Debounce Time: 512ms */
+#define AIC3204_HSDET_PLUGDT_512	(5 << 2)
+/* Headset Detection Debounce Time Mask */
+#define AIC3204_HSDET_PLUGDT		(7 << 2)
+/* Headset Button Debounce Time: 8ms */
+#define AIC3204_HSDET_BTNDT_8		(0 << 0)
+/* Headset Button Debounce Time: 16ms */
+#define AIC3204_HSDET_BTNDT_16		(1 << 0)
+/* Headset Button Debounce Time: 32ms */
+#define AIC3204_HSDET_BTNDT_32		(2 << 0)
+/* Headset Button Debounce Time Mask */
+#define AIC3204_HSDET_BTNDT		(3 << 0)
+
+/* DRC Control Register 1 */
+#define AIC3204_DRC1			AIC3204_PGREG(0, 68)
+/* Left Channel DRC Enable */
+#define AIC3204_DRC1_LEFT_EN		(1 << 6)
+/* Right Channel DRC Enable */
+#define AIC3204_DRC1_RIGHT_EN		(1 << 5)
+/* DRC Threshold: -3dBFS */
+#define AIC3204_DRC1_THOLD_3DBFS	(0 << 2)
+/* DRC Threshold: -6dBFS */
+#define AIC3204_DRC1_THOLD_6DBFS	(1 << 2)
+/* DRC Threshold: -9dBFS */
+#define AIC3204_DRC1_THOLD_9DBFS	(2 << 2)
+/* DRC Threshold: -12dBFS */
+#define AIC3204_DRC1_THOLD_12DBFS	(3 << 2)
+/* DRC Threshold: -15dBFS */
+#define AIC3204_DRC1_THOLD_15DBFS	(4 << 2)
+/* DRC Threshold: -18dBFS */
+#define AIC3204_DRC1_THOLD_18DBFS	(5 << 2)
+/* DRC Threshold: -21dBFS */
+#define AIC3204_DRC1_THOLD_21DBFS	(6 << 2)
+/* DRC Threshold: -24dBFS */
+#define AIC3204_DRC1_THOLD_24DBFS	(7 << 2)
+/* DRC Threshold Mask */
+#define AIC3204_DRC1_THOLD		(7 << 2)
+/* DRC Hysteresis: 0dB */
+#define AIC3204_DRC1_HYST_0DB		(0 << 0)
+/* DRC Hysteresis: 1dB */
+#define AIC3204_DRC1_HYST_1DB		(1 << 0)
+/* DRC Hysteresis: 2dB */
+#define AIC3204_DRC1_HYST_2DB		(2 << 0)
+/* DRC Hysteresis: 3dB */
+#define AIC3204_DRC1_HYST_3DB		(3 << 0)
+/* DRC Hysteresis Mask */
+#define AIC3204_DRC1_HYST		(3 << 0)
+
+/* DRC Control Register 2 */
+#define AIC3204_DRC2			AIC3204_PGREG(0, 69)
+/* DRC Hold: Disabled */
+#define AIC3204_DRC2_HOLD_DISABLED	(0 << 3)
+/* DRC Hold: 32 Word Clocks */
+#define AIC3204_DRC2_HOLD_32WC		(1 << 3)
+/* DRC Hold: 64 Word Clocks */
+#define AIC3204_DRC2_HOLD_64WC		(2 << 3)
+/* DRC Hold: 128 Word Clocks */
+#define AIC3204_DRC2_HOLD_128WC		(3 << 3)
+/* DRC Hold: 256 Word Clocks */
+#define AIC3204_DRC2_HOLD_256WC		(4 << 3)
+/* DRC Hold: 512 Word Clocks */
+#define AIC3204_DRC2_HOLD_512WC		(5 << 3)
+/* DRC Hold: 1024 Word Clocks */
+#define AIC3204_DRC2_HOLD_1024WC	(6 << 3)
+/* DRC Hold: 2048 Word Clocks */
+#define AIC3204_DRC2_HOLD_2048WC	(7 << 3)
+/* DRC Hold: 4096 Word Clocks */
+#define AIC3204_DRC2_HOLD_4096WC	(8 << 3)
+/* DRC Hold: 8192 Word Clocks */
+#define AIC3204_DRC2_HOLD_8192WC	(9 << 3)
+/* DRC Hold: 16384 Word Clocks */
+#define AIC3204_DRC2_HOLD_16384WC	(10 << 3)
+/* DRC Hold: 32768 Word Clocks */
+#define AIC3204_DRC2_HOLD_32768WC	(11 << 3)
+/* DRC Hold: 65536 Word Clocks */
+#define AIC3204_DRC2_HOLD_65536WC	(12 << 3)
+/* DRC Hold: 98304 Word Clocks */
+#define AIC3204_DRC2_HOLD_98304WC	(13 << 3)
+/* DRC Hold: 131072 Word Clocks */
+#define AIC3204_DRC2_HOLD_131072WC	(14 << 3)
+/* DRC Hold: 163840 Word Clocks */
+#define AIC3204_DRC2_HOLD_163840WC	(15 << 3)
+/* DRC Hold Mask */
+#define AIC3204_DRC2_HOLD		(15 << 3)
+
+/* DRC Control Register 3 */
+#define AIC3204_DRC3			AIC3204_PGREG(0, 70)
+/* DRC Attack Rate Shift */
+#define AIC3204_DRC3_ATTACK_SHIFT	4
+/* DRC Attack Rate Mask */
+#define AIC3204_DRC3_ATTACK		(15 << AIC3204_DRC3_ATTACK_SHIFT)
+/* DRC Decay Rate Shift */
+#define AIC3204_DRC3_DECAY_SHIFT	0
+/* DRC Decay Rate Mask */
+#define AIC3204_DRC3_DECAY		(15 << AIC3204_DRC3_DECAY_SHIFT)
+
+/* Beep Generator Register 1 */
+#define AIC3204_BEEP1			AIC3204_PGREG(0, 71)
+/* Enable Beep Generator */
+#define AIC3204_BEEP1_EN		(1 << 7)
+/* Left Channel Beep Volume Shift */
+#define AIC3204_BEEP1_VOL_SHIFT		0
+/* Left Channel Beep Volume Mask */
+#define AIC3204_BEEP1_VOL		(0x3f)
+
+/* Beep Generator Register 2 */
+#define AIC3204_BEEP2			AIC3204_PGREG(0, 72)
+/* Beep Generator Master Volume: Independant Left/Right Channels */
+#define AIC3204_BEEP2_MVOL_IND		(0 << 6)
+/* Beep Generator Master Volume: Left Channel controls Right */
+#define AIC3204_BEEP2_MVOL_LEFT		(1 << 6)
+/* Beep Generator Master Volume: Right Channel controls Left */
+#define AIC3204_BEEP2_MVOL_RIGHT	(2 << 6)
+/* Beep Generator Master Volume Mask */
+#define AIC3204_BEEP2_MVOL		(3 << 6)
+
+/* Beep Generator Register 3 */
+#define AIC3204_BEEP3			AIC3204_PGREG(0, 73)
+/* Sample Length Value Shift */
+#define AIC3204_BEEP3_LENGTH_VSHIFT	16
+/* Sample Length Shift */
+#define AIC3204_BEEP3_LENGTH_SHIFT	0
+/* Sample Length Mask */
+#define AIC3204_BEEP3_LENGTH		(0xff)
+
+/* Beep Generator Register 4 */
+#define AIC3204_BEEP4			AIC3204_PGREG(0, 74)
+/* Sample Length Value Shift */
+#define AIC3204_BEEP4_LENGTH_VSHIFT	8
+/* Sample Length Shift */
+#define AIC3204_BEEP4_LENGTH_SHIFT	0
+/* Sample Length Mask */
+#define AIC3204_BEEP4_LENGTH		(0xff)
+
+/* Beep Generator Register 5 */
+#define AIC3204_BEEP5			AIC3204_PGREG(0, 75)
+/* Sample Length Value Shift */
+#define AIC3204_BEEP5_LENGTH_VSHIFT	0
+/* Sample Length Shift */
+#define AIC3204_BEEP5_LENGTH_SHIFT	0
+/* Sample Length Mask */
+#define AIC3204_BEEP5_LENGTH		(0xff)
+
+/* Beep Generator Register 6 */
+#define AIC3204_BEEP6			AIC3204_PGREG(0, 76)
+/* Relative Sine Frequency Value Shift */
+#define AIC3204_BEEP6_SINFREQ_VSHIFT	8
+/* Relative Sine Frequency Shift */
+#define AIC3204_BEEP6_SINFREQ_SHIFT	0
+/* Relative Sine Frequency Mask */
+#define AIC3204_BEEP6_SINFREQ		(0xff)
+
+/* Beep Generator Register 7 */
+#define AIC3204_BEEP7			AIC3204_PGREG(0, 77)
+/* Relative Sine Frequency Value Shift */
+#define AIC3204_BEEP7_SINFREQ_VSHIFT	0
+/* Relative Sine Frequency Shift */
+#define AIC3204_BEEP7_SINFREQ_SHIFT	0
+/* Relative Sine Frequency Mask */
+#define AIC3204_BEEP7_SINFREQ		(0xff)
+
+/* Beep Generator Register 8 */
+#define AIC3204_BEEP8			AIC3204_PGREG(0, 78)
+/* Relative Cosine Frequency Value Shift */
+#define AIC3204_BEEP8_COSFREQ_VSHIFT	8
+/* Relative Cosine Frequency Shift */
+#define AIC3204_BEEP8_COSFREQ_SHIFT	0
+/* Relative Cosine Frequency Mask */
+#define AIC3204_BEEP8_COSFREQ		(0xff)
+
+/* Beep Generator Register 9 */
+#define AIC3204_BEEP9			AIC3204_PGREG(0, 79)
+/* Relative Cosine Frequency Value Shift */
+#define AIC3204_BEEP9_COSFREQ_VSHIFT	0
+/* Relative Cosine Frequency Shift */
+#define AIC3204_BEEP9_COSFREQ_SHIFT	0
+/* Relative Cosine Frequency Mask */
+#define AIC3204_BEEP9_COSFREQ		(0xff)
+
+/* ADC Channel Setup Register */
+#define AIC3204_ADCS			AIC3204_PGREG(0, 81)
+/* Left Channel ADC Powered Up */
+#define AIC3204_ADCS_LADC_UP_SHIFT	(7)
+/* Right Channel ADC Powered Up */
+#define AIC3204_ADCS_RADC_UP_SHIFT	(6)
+/* Digital Microphone Input: GPIO */
+#define AIC3204_ADC5_DMICIN_GPIO	(0 << 4)
+/* Digital Microphone Input: SCLK */
+#define AIC3204_ADC5_DMICIN_SCLK	(1 << 4)
+/* Digital Microphone Input: DIN */
+#define AIC3204_ADC5_DMICIN_DIN		(2 << 4)
+/* Digital Microphone Input Mask */
+#define AIC3204_ADC5_DMICIN		(3 << 4)
+/* Left ADC Source: Digital Microphone */
+#define AIC3204_ADC5_LADC_DMIC		(1 << 3)
+/* Right ADC Source: Digital Microphone */
+#define AIC3204_ADC5_RADC_DMIC		(1 << 2)
+/* ADC Volume Soft Step: 1 step / word clock */
+#define AIC3204_ADC5_VOLSS_1SPWC	(0 << 0)
+/* ADC Volume Soft Step: 1 step / 2 word clocks */
+#define AIC3204_ADC5_VOLSS_1SP2WC	(1 << 0)
+/* ADC Volume Soft Step: Disabled */
+#define AIC3204_ADC5_VOLSS_DISABLED	(2 << 0)
+/* ADC Volume Soft Step Mask */
+#define AIC3204_ADC5_VOLSS		(3 << 0)
+
+/* ADC Fine Gain Adjust Register */
+#define AIC3204_ADCFINE			AIC3204_PGREG(0, 82)
+/* Left ADC Mute */
+#define AIC3204_ADCFINE_LEFT_MUTE	(1 << 7)
+/* Left ADC Gain: 0dB */
+#define AIC3204_ADCFINE_LEFT_0DB	(0 << 4)
+/* Left ADC Gain: -0.1dB */
+#define AIC3204_ADCFINE_LEFT_0DB1	(1 << 4)
+/* Left ADC Gain: -0.2dB */
+#define AIC3204_ADCFINE_LEFT_0DB2	(2 << 4)
+/* Left ADC Gain: -0.3dB */
+#define AIC3204_ADCFINE_LEFT_0DB3	(2 << 4)
+/* Left ADC Gain: -0.4dB */
+#define AIC3204_ADCFINE_LEFT_0DB4	(3 << 4)
+/* Left ADC Gain Mask */
+#define AIC3204_ADCFINE_LEFT		(7 << 4)
+/* Right ADC Mute */
+#define AIC3204_ADCFINE_RIGHT_MUTE	(1 << 3)
+/* Right ADC Gain: 0dB */
+#define AIC3204_ADCFINE_RIGHT_0DB	(0 << 0)
+/* Right ADC Gain: -0.1dB */
+#define AIC3204_ADCFINE_RIGHT_0DB1	(1 << 0)
+/* Right ADC Gain: -0.2dB */
+#define AIC3204_ADCFINE_RIGHT_0DB2	(2 << 0)
+/* Right ADC Gain: -0.3dB */
+#define AIC3204_ADCFINE_RIGHT_0DB3	(2 << 0)
+/* Right ADC Gain: -0.4dB */
+#define AIC3204_ADCFINE_RIGHT_0DB4	(3 << 0)
+/* Right ADC Gain Mask */
+#define AIC3204_ADCFINE_RIGHT		(7 << 0)
+
+/* Left ADC Channel Volume Register */
+#define AIC3204_LADCVOL			AIC3204_PGREG(0, 83)
+/* Left ADC Channel Volume Mask */
+#define AIC3204_LADCVOL_MASK		0x7f
+
+/* Right ADC Channel Volume Register */
+#define AIC3204_RADCVOL			AIC3204_PGREG(0, 84)
+/* Right ADC Channel Volume Mask */
+#define AIC3204_RADCVOL_MASK		0x7f
+
+/* ADC Phase Adjust Register */
+#define AIC3204_ADCPHASE		AIC3204_PGREG(0, 85)
+
+/* Left Channel AGC Control Register 1 */
+#define AIC3204_LAGC1			AIC3204_PGREG(0, 86)
+/* Left Channel AGC Enabled */
+#define AIC3204_LAGC1_ENABLE		(1 << 7)
+/* Left Channel Target Level: -5.5dBFS */
+#define AIC3204_LAGC1_LEVEL_5DBFS5	(0 << 4)
+/* Left Channel Target Level: -8.0dBFS */
+#define AIC3204_LAGC1_LEVEL_8DBFS	(1 << 4)
+/* Left Channel Target Level: -10dBFS */
+#define AIC3204_LAGC1_LEVEL_10DBFS	(2 << 4)
+/* Left Channel Target Level: -12dBFS */
+#define AIC3204_LAGC1_LEVEL_12DBFS	(3 << 4)
+/* Left Channel Target Level: -14dBFS */
+#define AIC3204_LAGC1_LEVEL_14DBFS	(4 << 4)
+/* Left Channel Target Level: -17dBFS */
+#define AIC3204_LAGC1_LEVEL_17DBFS	(5 << 4)
+/* Left Channel Target Level: -20dBFS */
+#define AIC3204_LAGC1_LEVEL_20DBFS	(6 << 4)
+/* Left Channel Target Level: -24dBFS */
+#define AIC3204_LAGC1_LEVEL_24DBFS	(7 << 4)
+/* Left Channel Target Level Mask */
+#define AIC3204_LAGC1_LEVEL		(7 << 4)
+/* Left Channel Gain Hysteresis: Disabled */
+#define AIC3204_LAGC1_GAINHYST_DISABLED	(0 << 0)
+/* Left Channel Gain Hysteresis: 0.5dB */
+#define AIC3204_LAGC1_GAINHYST_0DB5	(1 << 0)
+/* Left Channel Gain Hysteresis: 1dB */
+#define AIC3204_LAGC1_GAINHYST_1DB	(2 << 0)
+/* Left Channel Gain Hysteresis: 1.5dB */
+#define AIC3204_LAGC1_GAINHYST_1DB5	(3 << 0)
+/* Left Channel Gain Hysteresis Mask */
+#define AIC3204_LAGC1_GAINHYST		(3 << 0)
+
+/* Left Channel AGC Control Register 2 */
+#define AIC3204_LAGC2			AIC3204_PGREG(0, 87)
+/* Left Channel AGC Hysteresis: 1dB */
+#define AIC3204_LAGC2_HYST_1DB		(0 << 6)
+/* Left Channel AGC Hysteresis: 2dB */
+#define AIC3204_LAGC2_HYST_2DB		(1 << 6)
+/* Left Channel AGC Hysteresis: 4dB */
+#define AIC3204_LAGC2_HYST_4DB		(2 << 6)
+/* Left Channel AGC Hysteresis: Disabled */
+#define AIC3204_LAGC2_HYST_DISABLED	(3 << 6)
+/* Left Channel AGC Hysteresis Mask */
+#define AIC3204_LAGC2_HYST		(3 << 6)
+/* Left Channel AGC Noise Gate Threshold Mask */
+#define AIC3204_LAGC2_NGATE		(0x1f)
+/* Left Channel AGC Noise Gate Threshold Shift */
+#define AIC3204_LAGC2_NGATE_SHIFT	1
+
+/* TODO: Remaining AGC registers, DC measurement registers */
+
+/* Power Configuration Register */
+#define AIC3204_POWER			AIC3204_PGREG(1, 1)
+/* Disable AVDD -> DVDD Link */
+#define AIC3204_POWER_AVDD_DVDD_UNLINK	(1 << 3)
+
+/* LDO Control Register */
+#define AIC3204_LDO			AIC3204_PGREG(1, 2)
+/* DVDD LDO: 1.72V */
+#define AIC3204_LDO_DVDD_1V72		(0 << 6)
+/* DVDD LDO: 1.67V */
+#define AIC3204_LDO_DVDD_1V67		(1 << 6)
+/* DVDD LDO: 1.77V */
+#define AIC3204_LDO_DVDD_1V77		(2 << 6)
+/* DVDD LDO Mask */
+#define AIC3204_LDO_DVDD		(3 << 6)
+/* AVDD LDO: 1.72V */
+#define AIC3204_LDO_AVDD_1V72		(0 << 4)
+/* AVDD LDO: 1.67V */
+#define AIC3204_LDO_AVDD_1V67		(1 << 4)
+/* AVDD LDO: 1.77V */
+#define AIC3204_LDO_AVDD_1V77		(2 << 4)
+/* AVDD LDO Mask */
+#define AIC3204_LDO_AVDD		(3 << 4)
+/* Analog Blocks Enabled */
+#define AIC3204_LDO_ANALOG_ENABLED	(0 << 3)
+/* Analog Blocks Disabled */
+#define AIC3204_LDO_ANALOG_DISABLED	(1 << 3)
+/* Analog Block Status */
+#define AIC3204_LDO_ANALOG		(1 << 3)
+/* DVDD Over Current Detect */
+#define AIC3204_LDO_DVDD_OVERCURRENT	(1 << 2)
+/* AVDD Over Current Detect */
+#define AIC3204_LDO_AVDD_OVERCURRENT	(1 << 1)
+/* AVDD Powered Up */
+#define AIC3204_LDO_AVDD_UP		(1 << 0)
+
+/* TODO: Playback Configuration Registers */
+
+/* Output Driver Power Control Register */
+#define AIC3204_OUTDRV			AIC3204_PGREG(1, 9)
+/* Left Headphone Driver Up */
+#define AIC3204_OUTDRV_HPL_UP_SHIFT	(5)
+/* Right Headphone Driver Up */
+#define AIC3204_OUTDRV_HPR_UP_SHIFT	(4)
+/* Left Line Output Driver Up */
+#define AIC3204_OUTDRV_LOL_UP_SHIFT	(3)
+/* Right Line Output Driver Up */
+#define AIC3204_OUTDRV_LOR_UP_SHIFT	(2)
+/* Left Mixer Amplifier Up */
+#define AIC3204_OUTDRV_MAL_UP_SHIFT	(1)
+/* Right Mixer Amplifier Up */
+#define AIC3204_OUTDRV_MAR_UP_SHIFT	(0)
+
+/* Common Mode Control Register */
+#define AIC3204_CMCTL			AIC3204_PGREG(1, 10)
+/* Full Chip Common Mode = 0.9V */
+#define AIC3204_CMCTL_FCCM_0V9		(0 << 6)
+/* Full Chip Common Mode = 0.75V */
+#define AIC3204_CMCTL_FCCM_0V75		(1 << 6)
+/* Full Chip Common Mode Mask */
+#define AIC3204_CMCTL_FCCM		(1 << 6)
+/* Headphone Output Common Mode = Full Chip Common Mode */
+#define AIC3204_CMCTL_HPCM_FCCM		(0 << 4)
+/* Headphone Output Common Mode = 1.25V */
+#define AIC3204_CMCTL_HPCM_1V25		(1 << 4)
+/* Headphone Output Common Mode = 1.5V */
+#define AIC3204_CMCTL_HPCM_1V5		(2 << 4)
+/* Headphone Output Common Mode = 1.65V */
+#define AIC3204_CMCTL_HPCM_1V65		(3 << 4)
+/* Headphone Output Common Mode Mask */
+#define AIC3204_CMCTL_HPCM		(3 << 4)
+/* Line Output Common Mode = Full Chip Common Mode */
+#define AIC3204_CMCTL_LOCM_FCCM		(0 << 3)
+/* Line Output Common Mode = 1.65V from LDOin */
+#define AIC3204_CMCTL_LOCM_1V65LDOIN	(1 << 3)
+/* Line Output Common Mode Mask */
+#define AIC3204_CMCTL_LOCM		(1 << 3)
+/* Headphone Output Common Mode Source = AVDD */
+#define AIC3204_CMCTL_HPCMSRC_AVDD	(0 << 1)
+/* Headphone Output Common Mode Source = LDOin */
+#define AIC3204_CMCTL_HPCMSRC_LDOIN	(1 << 1)
+/* Headphone Output Common Mode Source Mask */
+#define AIC3204_CMCTL_HPCMSRC		(1 << 1)
+/* LDO Input Range = 1.5~1.95V */
+#define AIC3204_CMCTL_LDORANGE_1V5_1V95	(0 << 0)
+/* LDO Input Range = 1.8~3.6V */
+#define AIC3204_CMCTL_LDORANGE_1V8_3V6	(1 << 0)
+/* LDO Input Range Mask (effective when HPCMSRC = LDOIN) */
+#define AIC3204_CMCTL_LDORANGE		(1 << 0)
+
+/* Over Current Protection Configuration Register TODO */
+#define AIC3204_OCP			AIC3204_PGREG(1, 11)
+
+/* Left Headphone Driver Routing Register */
+#define AIC3204_HPLROUTE		AIC3204_PGREG(1, 12)
+/* Left Headphone Driver connects to LDAC+ */
+#define AIC3204_HPLROUTE_LDACP_SHIFT	(3)
+/* Left Headphone Driver connects to IN1L */
+#define AIC3204_HPLROUTE_IN1L_SHIFT	(2)
+/* Left Headphone Driver connects to MAL */
+#define AIC3204_HPLROUTE_MAL_SHIFT	(1)
+/* Left Headphone Driver connects to MAR */
+#define AIC3204_HPLROUTE_MAR_SHIFT	(0)
+
+/* Right Headphone Driver Routing Register */
+#define AIC3204_HPRROUTE		AIC3204_PGREG(1, 13)
+/* Right Headphone Driver connects to LDAC- */
+#define AIC3204_HPRROUTE_LDACN_SHIFT	(4)
+/* Right Headphone Driver connects to RDAC+ */
+#define AIC3204_HPRROUTE_RDACP_SHIFT	(3)
+/* Right Headphone Driver connects to IN1L */
+#define AIC3204_HPRROUTE_IN1R_SHIFT	(2)
+/* Right Headphone Driver connects to MAL */
+#define AIC3204_HPRROUTE_MAR_SHIFT	(1)
+/* Right Headphone Driver connects to HPL */
+#define AIC3204_HPRROUTE_HPL_SHIFT	(0)
+
+/* Left Line Output Routing Register */
+#define AIC3204_LOLROUTE		AIC3204_PGREG(1, 14)
+/* Left Line Output Driver connects to RDAC- */
+#define AIC3204_LOLROUTE_RDACN_SHIFT	(4)
+/* Left Line Output Driver connects to LDAC+ */
+#define AIC3204_LOLROUTE_LDACP_SHIFT	(3)
+/* Left Line Output Driver connects to MAL */
+#define AIC3204_LOLROUTE_MAL_SHIFT	(1)
+/* Left Line Output Driver connects to LOR */
+#define AIC3204_LOLROUTE_LOR_SHIFT	(0)
+
+/* Right Line Output Routing Register */
+#define AIC3204_LORROUTE		AIC3204_PGREG(1, 15)
+/* Right Line Output Driver connects to RDAC+ */
+#define AIC3204_LORROUTE_RDACP_SHIFT	(3)
+/* Right Line Output Driver connects to MAR */
+#define AIC3204_LORROUTE_MAR_SHIFT	(1)
+
+/* Left Headphone Gain Setting Register */
+#define AIC3204_HPLGAIN			AIC3204_PGREG(1, 16)
+/* Left Headphone Mute */
+#define AIC3204_HPLGAIN_MUTE_SHIFT	(6)
+/* Left Headphone Gain Mask */
+#define AIC3204_HPLGAIN_MASK		(0x3f)
+
+/* Right Headphone Gain Setting Register */
+#define AIC3204_HPRGAIN			AIC3204_PGREG(1, 17)
+/* Right Headphone Mute */
+#define AIC3204_HPRGAIN_MUTE_SHIFT	(6)
+/* Right Headphone Gain Mask */
+#define AIC3204_HPRGAIN_MASK		(0x3f)
+
+/* Left Line Output Gain Setting Register */
+#define AIC3204_LOLGAIN			AIC3204_PGREG(1, 18)
+/* Left Line Output Mute */
+#define AIC3204_LOLGAIN_MUTE_SHIFT	(6)
+/* Left Line Output Gain Mask */
+#define AIC3204_LOLGAIN_MASK		(0x3f)
+
+/* Right Line Output Gain Setting Register */
+#define AIC3204_LORGAIN			AIC3204_PGREG(1, 19)
+/* Right Line Output Mute */
+#define AIC3204_LORGAIN_MUTE_SHIFT	(6)
+/* Right Line Output Gain Mask */
+#define AIC3204_LORGAIN_MASK		(0x3f)
+
+/* Left Mixer Amplifier Gain Setting Register */
+#define AIC3204_MALGAIN			AIC3204_PGREG(1, 24)
+/* Left Mixer Amplifier Gain Mask */
+#define AIC3204_MALGAIN_MASK		(0x3f)
+
+/* Right Mixer Amplifier Gain Setting Register */
+#define AIC3204_MARGAIN			AIC3204_PGREG(1, 25)
+/* Right Mixer Amplifier Gain Mask */
+#define AIC3204_MARGAIN_MASK		(0x3f)
+
+#define AIC3204_MICBIAS			AIC3204_PGREG(1, 51)
+
+#define AIC3204_LMICPGAPROUTE		AIC3204_PGREG(1, 52)
+#define AIC3204_LMICPGANROUTE		AIC3204_PGREG(1, 54)
+
+#define AIC3204_RMICPGAPROUTE		AIC3204_PGREG(1, 55)
+#define AIC3204_RMICPGANROUTE		AIC3204_PGREG(1, 57)
+
+#define AIC3204_LMICPGAVOL		AIC3204_PGREG(1, 59)
+#define AIC3204_RMICPGAVOL		AIC3204_PGREG(1, 60)
+
+/* ADC Power Tune Mode Register */
+#define AIC3204_ADCPTM			AIC3204_PGREG(1, 61)
+/* ADC Power Tune Mode: PTM_R4 */
+#define AIC3204_ADCPTM_R4		(0x00)
+/* ADC Power Tune Mode: PTM_R3 */
+#define AIC3204_ADCPTM_R3		(0x64)
+/* ADC Power Tune Mode: PTM_R2 */
+#define AIC3204_ADCPTM_R2		(0xb6)
+/* ADC Power Tune Mode: PTM_R1 */
+#define AIC3204_ADCPTM_R1		(0xff)
+
+/* Analogue Input Quick Charging Configuration Register */
+#define AIC3204_AIQC			AIC3204_PGREG(1, 71)
+/* Power up time: Default Value (whatever that is) */
+#define AIC3204_AIQC_PWRUP_DEFAULT	(0x00)
+/* Power up time: 3.1ms */
+#define AIC3204_AIQC_PWRUP_3M1S		(0x31)
+/* Power up time: 6.4ms */
+#define AIC3204_AIQC_PWRUP_6M4S		(0x32)
+/* Power up time: 1.6ms */
+#define AIC3204_AIQC_PWRUP_1M6S		(0x33)
+/* Power up time mask */
+#define AIC3204_AIQC_PWRUP		(0x3f)
+
+/* Reference Power-Up Configuration Register */
+#define AIC3204_REFPU			AIC3204_PGREG(1, 123)
+/* Reference Power-Up delay: Slow */
+#define AIC3204_REFPU_DELAY_SLOW	(0 << 0)
+/* Reference Power-Up delay: 40ms */
+#define AIC3204_REFPU_DELAY_40MS	(1 << 0)
+/* Reference Power-Up delay: 80ms */
+#define AIC3204_REFPU_DELAY_80MS	(2 << 0)
+/* Reference Power-Up delay: 120ms */
+#define AIC3204_REFPU_DELAY_120MS	(3 << 0)
+/* Force power-up */
+#define AIC3204_REFPU_FORCE		(1 << 2)
+
+/* TODO: Define the remaining registers ... this will do for now */
+
+/*
+ * Since the AIC3204 has a great variety of settings to configure, rather than
+ * provide individual module parameters for each of them, instead the machine
+ * driver may pass in a const array of structs like this.
+ *
+ * This script of register modifications is run at initialisation, and is
+ * intended to configure the AIC3204 for use with the particular hardware
+ * surrounding it, e.g. GPIOs, filter coefficients, etc.
+ */
+struct aic3204_init_reg {
+	/*
+	 * The register to manipulate.  This register address contains the
+	 * page number in the upper 8 bits -- use the AIC3204_PGREG macro
+	 * to generate such a number.
+	 */
+	u16	reg;
+	/*
+	 * Flags: See the flags below; but this basically allows for the 
+	 * value field to be ANDed or ORed with the register value, rather
+	 * than setting it explicitly.
+	 */
+	u8	flags;
+	/*
+	 * The value to use in the operation
+	 */
+	u8	value;
 };
 
-/* codec private data */
-struct aic3204_priv {
-	struct snd_soc_codec codec;
-	struct regulator_bulk_data supplies[AIC3204_NUM_SUPPLIES];
-	unsigned int sysclk;
-	int gpio_reset;
+/* Set Register = Value */
+#define AIC3204_INITFLAG_SET		(0 << 0)
+/* Set Register = Register & Value */
+#define AIC3204_INITFLAG_AND		(1 << 0)
+/* Set Register = Register | Value */
+#define AIC3204_INITFLAG_OR		(2 << 0)
+/* Set Register = Register ^ Value */
+#define AIC3204_INITFLAG_XOR		(3 << 0)
+/* Fail on Register != Value */
+#define AIC3204_INITFLAG_FAILNEQ	(4 << 0)
+/* Fail on Register == Value */
+#define AIC3204_INITFLAG_FAILEQ		(5 << 0)
+/* Fail on (Register & Value) == 0 */
+#define AIC3204_INITFLAG_FAILNSET	(6 << 0)
+/* Fail on (Register & Value) != 0 */
+#define AIC3204_INITFLAG_FAILSET	(7 << 0)
+/* Fail on (Register | Value) == 0xff */
+#define AIC3204_INITFLAG_FAILCLR	(8 << 0)
+/* Fail on (Register | Value) != 0xff */
+#define AIC3204_INITFLAG_FAILNCLR	(9 << 0)
+/* Register operation mask */
+#define AIC3204_INITFLAG_OPMASK		(15 << 0)
 
-	/* ADC/DAC Channels enabled for use */
+struct aic3204_setup_data {
+	/* List of initialisation settings to perform at startup */
+	const struct aic3204_init_reg *init_reg_list;
+	/* Length of initialisation register list */
+	int init_reg_length;
+	/* ADC/DAC channel mask */
 	u8 channels;
-
-	/* For SYSFS; register selection */
-	u16 sysfs_reg;
 };
 
-static int aic3204_read(struct snd_soc_codec *codec, unsigned int reg,
-		      u8 *value);
-/*
- * read aic3204 register cache
- */
-static inline unsigned int aic3204_read_reg_cache(struct snd_soc_codec *codec,
-						unsigned int reg)
-{
-	u8 *cache = codec->reg_cache;
-	if (reg >= AIC3204_CACHEREGNUM) {
-		dev_err( codec->dev, "%s: reg 0x%08x out of range!\n",
-				__func__, reg );
-		return -EINVAL;
-	}
+#define AIC3204_LDAC_EN			(1 << 3)
+#define AIC3204_RDAC_EN			(1 << 2)
+#define AIC3204_LADC_EN			(1 << 1)
+#define AIC3204_RADC_EN			(1 << 0)
 
-	if ( reg ) {
-		/* Refresh cache */
-		u8 val;
-		int ret = aic3204_read( codec, reg, &val );
-		if ( ret >= 0 )
-			cache[reg] = val;
-	}
+extern struct snd_soc_dai aic3204_dai;
+extern struct snd_soc_codec_device soc_codec_dev_aic3204;
 
-	return cache[reg];
-}
+#endif /* _AIC3204_H */
 
-/*
- * write aic3204 register cache
- */
-static inline void aic3204_write_reg_cache(struct snd_soc_codec *codec,
-					 u16 reg, u8 value)
-{
-	u8 *cache = codec->reg_cache;
-
-	if (reg >= AIC3204_CACHEREGNUM)
-		return;
-	cache[reg] = value;
-}
-
-/*
- * write to the aic3204 register space
- */
-static int aic3204_write(struct snd_soc_codec *codec, unsigned int reg,
-		       unsigned int value)
-{
-	/* data is
-	 *   D15..D8 aic3204 register offset
-	 *   D7...D0 register data
-	 */
-	u8 data[2];
-
-	/*
-	 * Register number; upper 8 bits indicate page
-	 */
-	if ( reg && (aic3204_read_reg_cache( codec, AIC3204_PAGE_SELECT ) 
-			!= ( reg >> 7 )) ) {
-		/* Select the required page */
-		data[0] = 0;
-		data[1] = reg >> 7;
-		if (codec->hw_write(codec->control_data, data, 2) != 2)
-			return -EIO;
-		aic3204_write_reg_cache(codec, AIC3204_PAGE_SELECT, reg >> 7);
-		dev_dbg( codec->dev, "%s: Page %d selected\n", 
-				__func__, reg >> 7 );
-	}
-
-	data[0] = reg & 0x7f;
-	data[1] = value & 0xff;
-
-	if (codec->hw_write(codec->control_data, data, 2) != 2)
-		return -EIO;
-
-	dev_dbg( codec->dev, "%s: pg %d reg %d[%04x] <= %02x\n",
-			__func__, reg >> 7, reg & 0x7f, reg, value);
-	aic3204_write_reg_cache(codec, reg, value);
-	return 0;
-}
-
-/*
- * read from the aic3204 register space
- */
-static int aic3204_read(struct snd_soc_codec *codec, unsigned int reg,
-		      u8 *value)
-{
-	*value = reg & 0x7f;
-
-	/*
-	 * Register number; upper 8 bits indicate page
-	 */
-	if ( reg && (aic3204_read_reg_cache( codec, AIC3204_PAGE_SELECT ) 
-			!= ( reg >> 7 )) )
-		/* Select the required page */
-		aic3204_write( codec, AIC3204_PAGE_SELECT, (reg >> 7) );
-
-	value[0] = i2c_smbus_read_byte_data(codec->control_data, value[0]);
-
-#if 0
-	dev_dbg( &codec->dev, "%s: pg %d reg %d[%04x] => %02x\n",
-			__func__, reg >> 7, reg & 0xff, reg, value[0] );
-#endif
-	aic3204_write_reg_cache(codec, reg, *value);
-	return 0;
-}
-
-/*
- * Perform a read/modify/write cycle on a register.
- *
- * This is a shorthand function, it reads the specified register, masks out the
- * bits in and_mask, applies bits in or_mask, then writes out the result to the
- * register.
- *
- * It returns the modified value; or a negative error code.
- */
-static inline int aic3204_mod( struct snd_soc_codec *codec, unsigned int reg,
-			u8 and_mask, u8 or_mask )
-{
-	int result;
-	u8 value = aic3204_read_reg_cache( codec, reg );
-	value &= and_mask;
-	value |= or_mask;
-
-	result = aic3204_write( codec, reg, value );
-	if ( !result )
-		result = value;
-	return result;
-}
-
-static ssize_t aic3204_show_regsel(struct device *dev,
-		struct device_attribute *attr, char *buf) {
-	struct i2c_client *client = to_i2c_client(dev);
-	struct aic3204_priv *aic3204 = i2c_get_clientdata(client);
-
-	if ( aic3204 == NULL )
-		return snprintf(buf, PAGE_SIZE, "no codec privdata!\n");
-
-	return snprintf(buf, PAGE_SIZE, "0x%04x\n", aic3204->sysfs_reg );
-}
-
-static ssize_t aic3204_store_regsel(struct device *dev,
-		struct device_attribute *attr, const char *buf, size_t count) {
-	u16 reg = simple_strtoul( buf, NULL, 16 ) & 0xffff;
-	struct i2c_client *client = to_i2c_client(dev);
-	struct aic3204_priv *aic3204 = i2c_get_clientdata(client);
-
-	if ( aic3204 == NULL )
-		return 0;
-
-	aic3204->sysfs_reg = reg;
-
-	return strnlen(buf, PAGE_SIZE);
-}
-
-static ssize_t aic3204_show_regdata(struct device *dev,
-		struct device_attribute *attr, char *buf) {
-	u8 value;
-	struct i2c_client *client = to_i2c_client(dev);
-	struct aic3204_priv *aic3204 = i2c_get_clientdata(client);
-
-	if ( aic3204 == NULL )
-		return snprintf(buf, PAGE_SIZE, "no codec privdata!\n");
-
-	/* Read the register */
-	aic3204_read( &aic3204->codec, aic3204->sysfs_reg, &value);
-
-	return snprintf(buf, PAGE_SIZE, "0x%02x\n", value );
-}
-
-static ssize_t aic3204_store_regdata(struct device *dev,
-		struct device_attribute *attr, const char *buf, size_t count) {
-	u8 value = simple_strtoul( buf, NULL, 16 ) & 0xff;
-	struct i2c_client *client = to_i2c_client(dev);
-	struct aic3204_priv *aic3204 = i2c_get_clientdata(client);
-
-	if ( aic3204 == NULL )
-		return 0;
-
-	/* Write the register */
-	aic3204_write( &aic3204->codec, aic3204->sysfs_reg, value);
-
-	return strnlen(buf, PAGE_SIZE);
-}
-
-/* 
- * For MICPGA inputs; inputs may either be disconnected, or connected via one
- * of three resistances. 
- */
-static const char *aic3204_micpga_input_mux[] = {
-	"not-connected", "10k", "20k", "40k"
-};
-
-static struct soc_enum aic3204_enum_in1l_lmicpgap =
-			SOC_ENUM_SINGLE(AIC3204_LMICPGAPROUTE,
-				6, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in2l_lmicpgap =
-			SOC_ENUM_SINGLE(AIC3204_LMICPGAPROUTE,
-				4, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in3l_lmicpgap =
-			SOC_ENUM_SINGLE(AIC3204_LMICPGAPROUTE,
-				2, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in1r_lmicpgap =
-			SOC_ENUM_SINGLE(AIC3204_LMICPGAPROUTE,
-				0, 4, aic3204_micpga_input_mux);
-
-static struct soc_enum aic3204_enum_cm1l_lmicpgan =
-			SOC_ENUM_SINGLE(AIC3204_LMICPGANROUTE,
-				6, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in2r_lmicpgan =
-			SOC_ENUM_SINGLE(AIC3204_LMICPGANROUTE,
-				4, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in3r_lmicpgan =
-			SOC_ENUM_SINGLE(AIC3204_LMICPGANROUTE,
-				2, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_cm2l_lmicpgan =
-			SOC_ENUM_SINGLE(AIC3204_LMICPGANROUTE,
-				0, 4, aic3204_micpga_input_mux);
-
-static struct soc_enum aic3204_enum_in1r_rmicpgap =
-			SOC_ENUM_SINGLE(AIC3204_RMICPGAPROUTE,
-				6, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in2r_rmicpgap =
-			SOC_ENUM_SINGLE(AIC3204_RMICPGAPROUTE,
-				4, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in3r_rmicpgap =
-			SOC_ENUM_SINGLE(AIC3204_RMICPGAPROUTE,
-				2, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in2l_rmicpgap =
-			SOC_ENUM_SINGLE(AIC3204_RMICPGAPROUTE,
-				0, 4, aic3204_micpga_input_mux);
-
-static struct soc_enum aic3204_enum_cm1r_rmicpgan =
-			SOC_ENUM_SINGLE(AIC3204_RMICPGANROUTE,
-				6, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in1l_rmicpgan =
-			SOC_ENUM_SINGLE(AIC3204_RMICPGANROUTE,
-				4, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_in3l_rmicpgan =
-			SOC_ENUM_SINGLE(AIC3204_RMICPGANROUTE,
-				2, 4, aic3204_micpga_input_mux);
-static struct soc_enum aic3204_enum_cm2r_rmicpgan =
-			SOC_ENUM_SINGLE(AIC3204_RMICPGANROUTE,
-				0, 4, aic3204_micpga_input_mux);
-
-/*
- * MICBIAS Voltages; The exact voltage depends on the common mode voltage
- * setting...
- *
- * 		CM=0.75V	CM=0.9V
- * 	Low	1.04V		1.25V
- * 	Medium	1.425V		1.7V
- * 	High	2.075V		2.5V
- * 	V+	Connects to power supply directly in both cases.
- */
-static const char *aic3204_micbias_voltages[] = {
-	"Low", "Med", "High", "V+"
-};
-static struct soc_enum aic3204_enum_micbias_voltage =
-			SOC_ENUM_SINGLE(AIC3204_MICBIAS,
-				4, 4, aic3204_micbias_voltages);
-
-/*
- * MICBIAS Voltage Source
- */
-static const char *aic3204_micbias_srcs[] = {
-	"AVDD", "LDOIN"
-};
-static struct soc_enum aic3204_enum_micbias_src =
-			SOC_ENUM_SINGLE(AIC3204_MICBIAS,
-				3, 2, aic3204_micbias_srcs);
-
-/*
- * DAC digital volumes. From -63.5 to +24 dB in 0.5 dB steps.
- * Does not mute control.
- */
-static DECLARE_TLV_DB_SCALE(dac_tlv, -6350, 50, 0);
-/* 
- * ADC gain volumes. From -12dB to 20 dB in 0.5dB steps.
- * Does not mute control.
- */
-static DECLARE_TLV_DB_SCALE(adc_tlv, -1200, 50, 0);
-#if 0
-/*
- * ADC Fine gain volumes. From -0.4 to 0 dB in 0.1dB steps
- * Does not mute control.
- */
-static DECLARE_TLV_DB_SCALE(adc_fine_tlv, -40, 10, 0);
-#endif
-/*
- * Output driver stage volumes; -6dB through to +29dB in 1dB steps
- * Does not mute control.
- */
-static DECLARE_TLV_DB_SCALE(output_stage_tlv, -600, 100, 0);
-/* 
- * MICPGA volumes; 0dB through to +47.5dB in 0.5dB steps.
- * Does not mute control
- */
-static DECLARE_TLV_DB_SCALE(micpga_tlv, 0, 50, 0);
-
-static const struct snd_kcontrol_new aic3204_snd_controls[] = {
-	/* Output */
-
-	/*
-	 * Note regarding SOC_DOUBLE_R_SX_TLV...
-	 *
-	 * This is a bit misleading; xshift refers to the bit one bit *past*
-	 * the most significant bit.  Or at least that's what it appears to be
-	 * doing the math.  Mask needs to select the last 6 bits; which is the
-	 * signed bitfield specifiying the gain in dB.
-	 */
-	SOC_DOUBLE_R_SX_TLV("Headphone Output Volume",
-			 AIC3204_HPLGAIN, AIC3204_HPRGAIN,
-			 6, -6, 29, output_stage_tlv),
-	SOC_DOUBLE_R("Headphone Output Playback Switch",
-		AIC3204_HPLGAIN, AIC3204_HPRGAIN,
-		AIC3204_HPLGAIN_MUTE_SHIFT, 0x01, 1),
-	SOC_DOUBLE_R_SX_TLV("Line Output Playback Volume",
-			 AIC3204_LOLGAIN, AIC3204_LORGAIN,
-			 6, -6, 29, output_stage_tlv),
-	SOC_DOUBLE_R("Line Output Playback Switch", AIC3204_LOLGAIN, 
-			AIC3204_LORGAIN, AIC3204_LOLGAIN_MUTE_SHIFT, 0x01, 1),
-	SOC_DOUBLE_R_SX_TLV("PCM Playback Volume",
-			 AIC3204_LDACVOL, AIC3204_RDACVOL,
-			 8, -127, 48, dac_tlv),
-	SOC_DOUBLE("PCM Playback Switch", AIC3204_DACS2, 
-			AIC3204_DACS2_LEFT_MUTE_SHIFT,
-			AIC3204_DACS2_RIGHT_MUTE_SHIFT, 0x01, 1),
-	SOC_DOUBLE_R_SX_TLV("Mixer Amplifier Volume",
-			 AIC3204_MALGAIN, AIC3204_MARGAIN,
-			 6, -6, 29, output_stage_tlv),
-
-	/* MICPGA Options */
-	SOC_DOUBLE_R_TLV("MICPGA Capture Volume",
-			 AIC3204_LMICPGAVOL, AIC3204_RMICPGAVOL,
-			 0, 95, 0, micpga_tlv),
-	SOC_DOUBLE_R("MICPGA Capture Switch", 
-			AIC3204_LMICPGAVOL, AIC3204_RMICPGAVOL, 7, 0x1, 1 ),
-
-	/* MICBIAS Options */
-	SOC_SINGLE("MICBIAS Enable", AIC3204_MICBIAS, 6, 0x1, 0 ),
-	SOC_ENUM("MICBIAS Level", aic3204_enum_micbias_voltage ),
-	SOC_ENUM("MICBIAS Source", aic3204_enum_micbias_src ),
-
-	/* ADC */
-	SOC_DOUBLE_R_SX_TLV("PCM Capture Volume",
-			 AIC3204_LADCVOL, AIC3204_RADCVOL,
-			 7, -24, 40, adc_tlv),
-	SOC_DOUBLE("PCM Capture Switch", AIC3204_ADCFINE, 7, 3, 0x01, 1 ),
-
-	/* Driver/Amplifier Selection -- DAPM should handle this! */
-	SOC_DOUBLE("HP Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_HPL_UP_SHIFT,
-			AIC3204_OUTDRV_HPR_UP_SHIFT, 0x1, 0 ),
-	SOC_DOUBLE("LO Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_LOL_UP_SHIFT,
-			AIC3204_OUTDRV_LOR_UP_SHIFT, 0x1, 0 ),
-	SOC_DOUBLE("MA Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_MAL_UP_SHIFT,
-			AIC3204_OUTDRV_MAR_UP_SHIFT, 0x1, 0 ),
-};
-
-/* Driver/Amplifier Selection */
-static const struct snd_kcontrol_new aic3204_hpl_switch =
-	SOC_DAPM_SINGLE("Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_HPL_UP_SHIFT, 0x1, 0 );
-static const struct snd_kcontrol_new aic3204_hpr_switch =
-	SOC_DAPM_SINGLE("Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_HPR_UP_SHIFT, 0x1, 0 );
-static const struct snd_kcontrol_new aic3204_lol_switch =
-	SOC_DAPM_SINGLE("Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_LOL_UP_SHIFT, 0x1, 0 );
-static const struct snd_kcontrol_new aic3204_lor_switch =
-	SOC_DAPM_SINGLE("Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_LOR_UP_SHIFT, 0x1, 0 );
-static const struct snd_kcontrol_new aic3204_mal_switch =
-	SOC_DAPM_SINGLE("Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_MAL_UP_SHIFT, 0x1, 0 );
-static const struct snd_kcontrol_new aic3204_mar_switch =
-	SOC_DAPM_SINGLE("Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_MAR_UP_SHIFT, 0x1, 0 );
-
-/* Line Output Left Driver Inputs */
-static const struct snd_kcontrol_new aic3204_lol_in_controls[] = {
-	SOC_DAPM_SINGLE("LOR Switch", AIC3204_LOLROUTE,
-			AIC3204_LOLROUTE_LOR_SHIFT, 1, 0 ),
-	SOC_DAPM_SINGLE("MAL Switch", AIC3204_LOLROUTE,
-			AIC3204_LOLROUTE_MAL_SHIFT, 1, 0 ),
-	SOC_DAPM_SINGLE("LDAC+ Switch", AIC3204_LOLROUTE,
-			AIC3204_LOLROUTE_LDACP_SHIFT, 1, 0 ),
-	SOC_DAPM_SINGLE("RDAC- Switch", AIC3204_LOLROUTE,
-			AIC3204_LOLROUTE_RDACN_SHIFT, 1, 0 ),
-};
-
-/* Line Output Right Driver Inputs */
-static const struct snd_kcontrol_new aic3204_lor_in_controls[] = {
-	SOC_DAPM_SINGLE("MAR Switch", AIC3204_LORROUTE,
-			AIC3204_LORROUTE_MAR_SHIFT, 1, 0 ),
-	SOC_DAPM_SINGLE("RDAC+ Switch", AIC3204_LORROUTE,
-			AIC3204_LORROUTE_RDACP_SHIFT, 1, 0 ),
-};
-
-/* Headphone Output Left Driver Inputs */
-static const struct snd_kcontrol_new aic3204_hpl_in_controls[] = {
-	SOC_DAPM_SINGLE("MAR Switch", AIC3204_HPLROUTE,
-			AIC3204_HPLROUTE_MAR_SHIFT, 0x1, 0 ),
-	SOC_DAPM_SINGLE("MAL Switch", AIC3204_HPLROUTE, 
-			AIC3204_HPLROUTE_MAL_SHIFT, 0x1, 0 ),
-	SOC_DAPM_SINGLE("IN1L Switch", AIC3204_HPLROUTE, 
-			AIC3204_HPLROUTE_IN1L_SHIFT, 0x1, 0 ),
-	SOC_DAPM_SINGLE("LDAC+ Switch", AIC3204_HPLROUTE, 
-			AIC3204_HPLROUTE_LDACP_SHIFT, 0x1, 0 ),
-};
-
-/* Headphone Output Right Driver Inputs */
-static const struct snd_kcontrol_new aic3204_hpr_in_controls[] = {
-	SOC_DAPM_SINGLE("HPL Switch", AIC3204_HPRROUTE,
-			AIC3204_HPRROUTE_HPL_SHIFT, 0x1, 0 ),
-	SOC_DAPM_SINGLE("MAR Switch", AIC3204_HPRROUTE,
-			AIC3204_HPRROUTE_MAR_SHIFT, 0x1, 0 ),
-	SOC_DAPM_SINGLE("IN1R Switch", AIC3204_HPRROUTE,
-			AIC3204_HPRROUTE_IN1R_SHIFT, 0x1, 0 ),
-	SOC_DAPM_SINGLE("RDAC+ Switch", AIC3204_HPRROUTE,
-			AIC3204_HPRROUTE_RDACP_SHIFT, 0x1, 0 ),
-	SOC_DAPM_SINGLE("LDAC- Switch", AIC3204_HPRROUTE,
-			AIC3204_HPRROUTE_LDACN_SHIFT, 0x1, 0 ),
-};
-
-static const struct snd_kcontrol_new aic3204_lmicpgap_in_controls[] = {
-	SOC_DAPM_ENUM("IN1L Switch", aic3204_enum_in1l_lmicpgap ),
-	SOC_DAPM_ENUM("IN2L Switch", aic3204_enum_in2l_lmicpgap ),
-	SOC_DAPM_ENUM("IN3L Switch", aic3204_enum_in3l_lmicpgap ),
-	SOC_DAPM_ENUM("IN1R Switch", aic3204_enum_in1r_lmicpgap ),
-};
-
-static const struct snd_kcontrol_new aic3204_lmicpgan_in_controls[] = {
-	SOC_DAPM_ENUM("CM1L Switch", aic3204_enum_cm1l_lmicpgan ),
-	SOC_DAPM_ENUM("IN2R Switch", aic3204_enum_in2r_lmicpgan ),
-	SOC_DAPM_ENUM("IN3R Switch", aic3204_enum_in3r_lmicpgan ),
-	SOC_DAPM_ENUM("CM2L Switch", aic3204_enum_cm2l_lmicpgan ),
-};
-
-static const struct snd_kcontrol_new aic3204_rmicpgap_in_controls[] = {
-	SOC_DAPM_ENUM("IN1R Switch", aic3204_enum_in1r_rmicpgap ),
-	SOC_DAPM_ENUM("IN2R Switch", aic3204_enum_in2r_rmicpgap ),
-	SOC_DAPM_ENUM("IN3R Switch", aic3204_enum_in3r_rmicpgap ),
-	SOC_DAPM_ENUM("IN2L Switch", aic3204_enum_in2l_rmicpgap ),
-};
-
-static const struct snd_kcontrol_new aic3204_rmicpgan_in_controls[] = {
-	SOC_DAPM_ENUM("CM1R Switch", aic3204_enum_cm1r_rmicpgan ),
-	SOC_DAPM_ENUM("IN1L Switch", aic3204_enum_in1l_rmicpgan ),
-	SOC_DAPM_ENUM("IN3L Switch", aic3204_enum_in3l_rmicpgan ),
-	SOC_DAPM_ENUM("CM2R Switch", aic3204_enum_cm2r_rmicpgan ),
-};
-
-static const struct snd_soc_dapm_widget aic3204_dapm_widgets[] = {
-	/* Driver/Amplifier Selection */
-	SND_SOC_DAPM_SWITCH("HPL Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_HPL_UP_SHIFT, 0,
-			&aic3204_hpl_switch ),
-	SND_SOC_DAPM_SWITCH("HPR Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_HPR_UP_SHIFT, 0,
-			&aic3204_hpr_switch ),
-	SND_SOC_DAPM_SWITCH("LOL Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_LOL_UP_SHIFT, 0,
-			&aic3204_lol_switch ),
-	SND_SOC_DAPM_SWITCH("LOR Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_LOR_UP_SHIFT, 0,
-			&aic3204_lor_switch ),
-	SND_SOC_DAPM_SWITCH("MAL Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_MAL_UP_SHIFT, 0,
-			&aic3204_mal_switch ),
-	SND_SOC_DAPM_SWITCH("MAR Playback Switch", AIC3204_OUTDRV,
-			AIC3204_OUTDRV_MAR_UP_SHIFT, 0,
-			&aic3204_mar_switch ),
-	/* Line Output Driver Inputs */
-	SND_SOC_DAPM_MIXER("Left Line Output Mixer", SND_SOC_NOPM, 0, 0,
-			aic3204_lol_in_controls,
-			ARRAY_SIZE(aic3204_lol_in_controls)),
-	SND_SOC_DAPM_MIXER("Right Line Output Mixer", SND_SOC_NOPM, 0, 0,
-			aic3204_lor_in_controls,
-			ARRAY_SIZE(aic3204_lor_in_controls)),
-	/* Headphone Output Driver Inputs */
-	SND_SOC_DAPM_MIXER("Left Headphone Output Mixer", SND_SOC_NOPM, 0, 0,
-			aic3204_hpl_in_controls,
-			ARRAY_SIZE(aic3204_hpl_in_controls)),
-	SND_SOC_DAPM_MIXER("Right Headphone Output Mixer", SND_SOC_NOPM, 0, 0,
-			aic3204_hpr_in_controls,
-			ARRAY_SIZE(aic3204_hpr_in_controls)),
-	/* DACs, ADCs and audio interfaces */
-	SND_SOC_DAPM_DAC("Left DAC", "Left Playback", AIC3204_DACS1,
-			AIC3204_DACS1_LDAC_UP_SHIFT, 0),
-	SND_SOC_DAPM_DAC("Right DAC", "Right Playback", AIC3204_DACS1,
-			AIC3204_DACS1_RDAC_UP_SHIFT, 0),
-	SND_SOC_DAPM_ADC("Left ADC", "Left Capture", AIC3204_ADCS,
-			AIC3204_ADCS_RADC_UP_SHIFT, 0),
-	SND_SOC_DAPM_ADC("Right ADC", "Right Capture", AIC3204_ADCS,
-			AIC3204_ADCS_RADC_UP_SHIFT, 0),
-	SND_SOC_DAPM_AIF_IN("Left Data In", "Left Playback", 0, SND_SOC_NOPM, 0, 0),
-	SND_SOC_DAPM_AIF_IN("Right Data In", "Right Playback", 1, SND_SOC_NOPM, 0, 0),
-	SND_SOC_DAPM_AIF_OUT("Left Data Out", "Left Capture", 0, SND_SOC_NOPM, 0, 0),
-	SND_SOC_DAPM_AIF_OUT("Right Data Out", "Right Capture", 1, SND_SOC_NOPM, 0, 0),
-	/* MICPGA Input Sources */
-	SND_SOC_DAPM_MIXER("Left MICPGA+ Output Mixer", SND_SOC_NOPM, 0, 0,
-			aic3204_lmicpgap_in_controls,
-			ARRAY_SIZE(aic3204_lmicpgap_in_controls)),
-	SND_SOC_DAPM_MIXER("Left MICPGA- Output Mixer", SND_SOC_NOPM, 0, 0,
-			aic3204_lmicpgan_in_controls,
-			ARRAY_SIZE(aic3204_lmicpgan_in_controls)),
-	SND_SOC_DAPM_MIXER("Right MICPGA+ Output Mixer", SND_SOC_NOPM, 0, 0,
-			aic3204_rmicpgap_in_controls,
-			ARRAY_SIZE(aic3204_rmicpgap_in_controls)),
-	SND_SOC_DAPM_MIXER("Right MICPGA- Output Mixer", SND_SOC_NOPM, 0, 0,
-			aic3204_rmicpgan_in_controls,
-			ARRAY_SIZE(aic3204_rmicpgan_in_controls)),
-	SND_SOC_DAPM_PGA("Left MICPGA", SND_SOC_NOPM, 0, 0, NULL, 0 ),
-	SND_SOC_DAPM_PGA("Right MICPGA", SND_SOC_NOPM, 0, 0, NULL, 0 ),
-	SND_SOC_DAPM_MICBIAS("Mic Bias", AIC3204_MICBIAS, 6, 0),
-	/* Bypass PGAs */
-	SND_SOC_DAPM_PGA("IN1L Bypass PGA", SND_SOC_NOPM, 0, 0, NULL, 0 ),
-	SND_SOC_DAPM_PGA("IN1R Bypass PGA", SND_SOC_NOPM, 0, 0, NULL, 0 ),
-	/* Input Pins */
-	SND_SOC_DAPM_INPUT("IN1L"),
-	SND_SOC_DAPM_INPUT("IN1R"),
-	SND_SOC_DAPM_INPUT("IN2L"),
-	SND_SOC_DAPM_INPUT("IN2R"),
-	SND_SOC_DAPM_INPUT("IN3L"),
-	SND_SOC_DAPM_INPUT("IN3R"),
-	/* Output Pins */
-	SND_SOC_DAPM_OUTPUT("LOL"),
-	SND_SOC_DAPM_OUTPUT("LOR"),
-	SND_SOC_DAPM_OUTPUT("HPL"),
-	SND_SOC_DAPM_OUTPUT("HPR"),
-	/* Common-mode pins */
-	SND_SOC_DAPM_VMID("CM1L"),
-	SND_SOC_DAPM_VMID("CM1R"),
-	SND_SOC_DAPM_VMID("CM2L"),
-	SND_SOC_DAPM_VMID("CM2R"),
-};
-
-static const struct snd_soc_dapm_route intercon[] = {
-	/* Data Connections */
-	{"Left Data Out", NULL, "Left ADC"},
-	{"Right Data Out", NULL, "Right ADC"},
-	{"Left DAC", NULL, "Left Data In"},
-	{"Right DAC", NULL, "Right Data In"},
-	/* Line Output */
-	{"Left Line Output Mixer", "LOR Switch", "Right Line Output Mixer"},
-	{"Left Line Output Mixer", "MAL Switch", "Left MICPGA"},
-	{"Left Line Output Mixer", "LDAC+ Switch", "Left DAC"},
-	{"Left Line Output Mixer", "RDAC- Switch", "Right DAC"},
-	{"Right Line Output Mixer", "MAR Switch", "Right MICPGA"},
-	{"Right Line Output Mixer", "RDAC+ Switch", "Right DAC"},
-	{"LOL", "LOL Playback Switch", "Left Line Output Mixer"},
-	{"LOR", "LOR Playback Switch", "Right Line Output Mixer"},
-	/* Headphone Output */
-	{"Left Headphone Output Mixer", "MAR Switch", "Right MICPGA"},
-	{"Left Headphone Output Mixer", "MAL Switch", "Left MICPGA"},
-	{"Left Headphone Output Mixer", "IN1L Switch", "IN1L Bypass PGA"},
-	{"Left Headphone Output Mixer", "LDAC+ Switch", "Left DAC"},
-	{"Right Headphone Output Mixer", "HPL Switch", "Left Headphone Output Mixer"},
-	{"Right Headphone Output Mixer", "MAR Switch", "Right MICPGA"},
-	{"Right Headphone Output Mixer", "IN1R Switch", "IN1R Bypass PGA"},
-	{"Right Headphone Output Mixer", "RDAC+ Switch", "Right DAC"},
-	{"Right Headphone Output Mixer", "LDAC- Switch", "Left DAC"},
-	{"HPL", "HPL Playback Switch", "Left Headphone Output Mixer"},
-	{"HPR", "HPR Playback Switch", "Right Headphone Output Mixer"},
-	/* MICPGA Input */
-	{"Left MICPGA+ Output Mixer", "IN1L Switch", "IN1L"},
-	{"Left MICPGA+ Output Mixer", "IN2L Switch", "IN2L"},
-	{"Left MICPGA+ Output Mixer", "IN3L Switch", "IN3L"},
-	{"Left MICPGA+ Output Mixer", "IN1R Switch", "IN1R"},
-	{"Left MICPGA- Output Mixer", "CM1L Switch", "CM1L"},
-	{"Left MICPGA- Output Mixer", "IN2R Switch", "IN2R"},
-	{"Left MICPGA- Output Mixer", "IN3R Switch", "IN3R"},
-	{"Left MICPGA- Output Mixer", "CM2L Switch", "CM2L"},
-	{"Right MICPGA+ Output Mixer", "IN1R Switch", "IN1R"},
-	{"Right MICPGA+ Output Mixer", "IN2R Switch", "IN2R"},
-	{"Right MICPGA+ Output Mixer", "IN3R Switch", "IN3R"},
-	{"Right MICPGA+ Output Mixer", "IN2L Switch", "IN2L"},
-	{"Right MICPGA- Output Mixer", "CM1R Switch", "CM1R"},
-	{"Right MICPGA- Output Mixer", "IN1L Switch", "IN1L"},
-	{"Right MICPGA- Output Mixer", "IN3L Switch", "IN3L"},
-	{"Right MICPGA- Output Mixer", "CM2R Switch", "CM2R"},
-	{"Left MICPGA", "MAL Playback Switch", "Left MICPGA+ Output Mixer"},
-	{"Right MICPGA", "MAR Playback Switch", "Right MICPGA+ Output Mixer"},
-	{"Left MICPGA", "MAL Playback Switch", "Left MICPGA- Output Mixer"},
-	{"Right MICPGA", "MAR Playback Switch", "Right MICPGA- Output Mixer"},
-	{"Left ADC", NULL, "Left MICPGA"},
-	{"Right ADC", NULL, "Right MICPGA"},
-};
-
-static int aic3204_add_widgets(struct snd_soc_codec *codec)
-{
-	snd_soc_dapm_new_controls(codec, aic3204_dapm_widgets,
-				  ARRAY_SIZE(aic3204_dapm_widgets));
-
-	/* set up audio path interconnects */
-	snd_soc_dapm_add_routes(codec, intercon, ARRAY_SIZE(intercon));
-	return 0;
-}
-
-static int aic3204_hw_params(struct snd_pcm_substream *substream,
-			   struct snd_pcm_hw_params *params,
-			   struct snd_soc_dai *dai)
-{
-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-	struct snd_soc_device *socdev = rtd->socdev;
-	struct snd_soc_codec *codec = socdev->card->codec;
-	struct aic3204_priv *aic3204 = snd_soc_codec_get_drvdata(codec);
-	int dac_clk = 0, bit_clk = 0;
-	int codec_clk = 0, bypass_pll = 0, last_clk = 0, last_error = 0;
-	u8 data = 0, ndac = 0, mdac = 0, pll_p = 1, pll_r = 1, pll_j = 1, bdiv = 1;
-	u16 pll_d = 0;
-
-	int this_clk = 0, this_error = 0;
-	unsigned int this_abs_error;
-	u8 j, this_ndac;
-	u16 d;
-
-	/* Determine the DAC clock and bit clock needed */
-	dac_clk = AIC3204_OSR * params_rate(params);
-	bit_clk = params_rate(params) * params_channels(params);
-
-	/* 
-	 * Select data word length.
-	 * Note that the number of bits per frame used
-	 * to determine BDIV is double the number of bits per sample, as there
-	 * are two samples per frame.
-	 */
-	switch (params_format(params)) {
-		case SNDRV_PCM_FORMAT_S16_LE:
-			pr_debug("%s: Sample format 16 bits\n", __func__);
-			bit_clk *= 16;
-			data = AIC3204_AISR1_WL_16BITS;
-			break;
-		case SNDRV_PCM_FORMAT_S20_3LE:
-			pr_debug("%s: Sample format 20 bits\n", __func__);
-			bit_clk *= 32;
-			data = AIC3204_AISR1_WL_20BITS;
-			break;
-		case SNDRV_PCM_FORMAT_S24_LE:
-			pr_debug("%s: Sample format 24 bits\n", __func__);
-			bit_clk *= 40;
-			data = AIC3204_AISR1_WL_24BITS;
-			break;
-		case SNDRV_PCM_FORMAT_S32_LE:
-			pr_debug("%s: Sample format 32 bits\n", __func__);
-			bit_clk *= 48;
-			data = AIC3204_AISR1_WL_32BITS;
-			break;
-	}
-	aic3204_mod(codec, AIC3204_AISR1, ~AIC3204_AISR1_WL, data);
-
-	pr_debug("%s: DAC Clock = %d Hz, Bit clock = %d Hz\n", __func__,
-			dac_clk, bit_clk );
-
-#ifndef ENABLE_PLL
-	/* If PLL is disabled; always bypass the PLL */
-	bypass_pll = 1;
-#endif
-
-	/* Try to find a value for div which allows us to bypass the PLL and
-	 * generate CODEC_CLK directly. */
-	for (this_ndac = 128; this_ndac >= 1; this_ndac--) {
-		this_clk = aic3204->sysclk / this_ndac;
-		
-		if (this_clk == dac_clk) {
-			pr_debug("%s: Scored exact match.  NDAC=%d; DAC_CLK=%d\n", 
-					__func__, this_ndac, this_clk );
-			bypass_pll = 1;
-			ndac =  this_ndac;
-			break;
-#ifndef ENABLE_PLL
-		} else {
-			this_error = this_clk - dac_clk;
-			this_abs_error = abs(this_error);
-			pr_debug("%s: NDAC=%d; DAC_CLK=%d Error=%d\n", 
-						__func__, this_ndac, 
-						this_clk, this_error );
-			if ( !last_clk || (this_abs_error < last_error) ) {
-				last_clk = this_clk;
-				last_error = this_abs_error;
-				ndac = this_ndac;
-			}
-#endif
-		}
-	}
-
-#ifdef ENABLE_PLL
-	if (bypass_pll) {
-#endif
-		/* Select MCLK as CODEC_CLKIN */
-		aic3204_write(codec, AIC3204_CLK1, AIC3204_CLK1_CODECCLK_MCLK );
-		codec_clk = aic3204->sysclk;
-#ifdef ENABLE_PLL
-		goto setup_codec;
-	}
-
-	/*
-	 * Determine PLL Parameters... the input/output frequency ratio
-	 * of the PLL is given in the datasheet:
-	 *
-	 *   out   R * J * (D/10000)       J      D
-	 *   --- = ----------------- = R * - * -------
-	 *   in	          P                P    10000
-	 *
-	 * Limitations:
-	 * - R range: 1..4
-	 * - J range: 4..63
-	 * - D range: 0..9999
-	 * - P range: 1..8
-	 * - If D == 0;
-	 *   	512 kHz <= in / P <= 20 MHz
-	 *   else
-	 *   	10 MHz <= in / P <= 20 MHz
-	 *
-	 * We will try for 8* the target frequency; then use NDAC/NADC to divide
-	 * that down.  If we set P = 1, and R = 1; we simplify the solution.
-	 */
-	pll_p = 1;
-	pll_r = 1;
-	for ( this_ndac = 1; this_ndac <= 128; this_ndac++ ) {
-		int ratio, init_ratio;
-
-		codec_clk = dac_clk * this_ndac;
-
-		/* Ensure maximum CODEC frequency is not exceeded */
-		if ( codec_clk > 137000000 ) continue;
-		if ( ( this_ndac % 2 ) && ( codec_clk > 110000000 ) ) continue;
-
-		/* Initial Fixed-point ratio ... this will be slightly lower */
-		init_ratio = codec_clk / ( aic3204->sysclk / 10000 );
-
-		pr_debug("%s: NDAC = %d, PLL J.D * 10000 = %d\n", 
-				__func__, this_ndac, init_ratio );
-		if ( init_ratio < 40000 ) continue;
-		if ( init_ratio > 639999 ) continue;
-
-		for( ratio = init_ratio; (ratio < init_ratio + 10000) 
-				&& (ratio < 639999); ratio++ ) {
-			j = ratio / 10000;
-			d = ratio % 10000;
-
-			this_clk = aic3204->sysclk / 10000;
-			this_clk *= (10000 * j) + d;
-			this_error = this_clk - codec_clk;
-			this_abs_error = abs(this_error);
-
-			if ( this_abs_error > 1000 ) continue;
-
-			pr_debug("%s: Fractional PLL search; "
-					"P=%d R=%d J=%d D=%04d => "
-					"(%d * %d) / 10000 => %d "
-					"(%d error) [NDAC=%d]\n",
-					__func__, pll_p, pll_r, j, d, aic3204->sysclk,
-					ratio, this_clk, this_error, this_ndac);
-			if ( !last_clk || (this_abs_error < last_error) ) {
-				last_clk = this_clk;
-				last_error = this_abs_error;
-				ndac = this_ndac;
-				pll_j = j;
-				pll_d = d;
-				/* Early finish for exact match */
-				if ( ! this_abs_error )
-					break;
-			}
-		}
-	}
-
-	/* If we still haven't found anything; bail out here! */
-	if ( !last_clk ) goto fail;
-
-	pr_debug("%s: Best Output: %d (%d Hz Error)\n",
-			__func__, last_clk, last_error );
-	pr_debug( "%s: setting up PLL: P=%d R=%d J.D=%d.%04d\n",
-			__func__, pll_p, pll_r, pll_j, pll_d );
-
-	codec_clk = last_clk;
-
-	aic3204_write(codec, AIC3204_CLK4, (pll_d >> AIC3204_CLK4_PLL_D_VSHIFT) 
-			& AIC3204_CLK4_PLL_D); 		/* PLL D[14:8] */
-	aic3204_write(codec, AIC3204_CLK5, pll_d & AIC3204_CLK5_PLL_D);
-							/* PLL D[7:0] */
-	aic3204_write(codec, AIC3204_CLK3, pll_j & AIC3204_CLK3_PLL_J);
-							/* PLL J */
-	aic3204_write(codec, AIC3204_CLK2,	
-			( pll_r & AIC3204_CLK2_PLL_R )	/* PLL R */
-			| ( ( pll_p << AIC3204_CLK2_PLL_P_SHIFT ) 
-				& AIC3204_CLK2_PLL_P )
-							/* PLL P */
-			| AIC3204_CLK2_PLL_ON );	/* PLL on */
-
-	/* Select PLL as CODEC_CLKIN */
-	aic3204_write(codec, AIC3204_CLK1, AIC3204_CLK1_CODECCLK_PLL );
-
-setup_codec:
-#endif
-	pr_debug("%s: CODEC CLK = %d => DAC CLK = %d\n",
-		__func__, codec_clk, codec_clk / ndac );
-	/* Calculate BDIV and NDAC */
-	mdac = codec_clk / (ndac * dac_clk);
-	if ( !mdac ) mdac = 1;
-
-	bdiv = dac_clk / bit_clk;
-	if ( !bdiv ) bdiv = 1;
-
-	/* Set AOSR and DOSR */
-	aic3204_write(codec, AIC3204_DOSR1, 
-			(AIC3204_OSR >> AIC3204_DOSR1_MSB_VSHIFT) 
-			& AIC3204_DOSR1_MSB );			/* DOSR[9:8] */
-	aic3204_write(codec, AIC3204_DOSR2, AIC3204_OSR 
-			& AIC3204_DOSR2_LSB );			/* DOSR[7:0] */
-	aic3204_write(codec, AIC3204_AOSR, AIC3204_OSR);	/* AOSR */
-
-	pr_debug("%s: NDAC = %d\n", __func__, ndac);
-	/* Set NDAC to divider value */
-	aic3204_write(codec, AIC3204_CLK6, AIC3204_CLK6_NDAC_STATE_ON | ndac );
-	/* Set NADC to match NDAC */
-	aic3204_write(codec, AIC3204_CLK8, AIC3204_CLK8_NADC_STATE_ON | ndac );
-	/* Set MDAC and turn on */
-	aic3204_write(codec, AIC3204_CLK7, AIC3204_CLK7_MDAC_STATE_ON | mdac );
-	/* Use MDAC for MADC */
-	aic3204_write(codec, AIC3204_CLK9, AIC3204_CLK7_MDAC_STATE_ON | mdac );
-
-	/* Set BCLK and WCLK */
-	pr_debug("%s: Bit clock divider = %d\n", __func__, bdiv);
-	/* Turn on and set BCLK N divider */
-	aic3204_write(codec, AIC3204_CLK12, bdiv
-			| AIC3204_CLK12_BCLK_STATE_ON );
-	
-	/* Set BCLK and WCLK sources */
-	aic3204_mod(codec, AIC3204_AISR3, ~AIC3204_AISR3_BDIV,
-			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-				? AIC3204_AISR3_BDIV_DAC
-				: AIC3204_AISR3_BDIV_ADC );
-	aic3204_mod(codec, AIC3204_AISR6, ~AIC3204_AISR6_WCLKOUT,
-			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-				? AIC3204_AISR6_WCLKOUT_DAC
-				: AIC3204_AISR6_WCLKOUT_ADC );
-	return 0;
-fail:
-	printk(KERN_ERR "%s(): unable to setup PLL\n", __func__);
-	return -EINVAL;
-}
-
-static int aic3204_mute(struct snd_soc_dai *dai, int mute)
-{
-	struct snd_soc_codec *codec = dai->codec;
-	u8 dacs2;
-
-	dacs2 = aic3204_read_reg_cache(codec, AIC3204_DACS2);
-
-	if (mute) {
-		dacs2 	|= (1 << AIC3204_DACS2_LEFT_MUTE_SHIFT)
-			| (1 << AIC3204_DACS2_RIGHT_MUTE_SHIFT);
-	} else {
-		dacs2 	&= ~((1 << AIC3204_DACS2_LEFT_MUTE_SHIFT)
-			| (1 << AIC3204_DACS2_RIGHT_MUTE_SHIFT));
-	}
-
-	aic3204_write(codec, AIC3204_DACS2, dacs2 );	/* Unmute DAC */
-	return 0;
-}
-
-static int aic3204_set_dai_sysclk(struct snd_soc_dai *codec_dai,
-				int clk_id, unsigned int freq, int dir)
-{
-	struct snd_soc_codec *codec = codec_dai->codec;
-	struct aic3204_priv *aic3204 = snd_soc_codec_get_drvdata(codec);
-
-	aic3204->sysclk = freq;
-	return 0;
-}
-
-static int aic3204_set_dai_fmt(struct snd_soc_dai *codec_dai,
-			     unsigned int fmt)
-{
-	struct snd_soc_codec *codec = codec_dai->codec;
-	u8 aisr1 = 0, aisr2 = 0, aisr3 = 0;
-
-	/* set master/slave audio interface */
-	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-		case SND_SOC_DAIFMT_CBM_CFM:
-			aisr1	|= AIC3204_AISR1_BCLK_OUT
-				| AIC3204_AISR1_WCLK_OUT;
-			break;
-		case SND_SOC_DAIFMT_CBM_CFS:
-			aisr1	|= AIC3204_AISR1_BCLK_OUT
-				| AIC3204_AISR1_WCLK_IN;
-			break;
-		case SND_SOC_DAIFMT_CBS_CFM:
-			aisr1	|= AIC3204_AISR1_BCLK_IN
-				| AIC3204_AISR1_WCLK_OUT;
-			break;
-		case SND_SOC_DAIFMT_CBS_CFS:
-			aisr1	|= AIC3204_AISR1_BCLK_IN
-				| AIC3204_AISR1_WCLK_IN;
-			break;
-		default:
-			printk( KERN_ERR "%s: Clock mode not supported "
-				"(fmt=0x%08x)\n", __func__, fmt );
-			return -EINVAL;
-	}
-
-	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-		case SND_SOC_DAIFMT_I2S:
-			aisr1	|= AIC3204_AISR1_INT_I2S;
-			break;
-		case SND_SOC_DAIFMT_DSP_A:
-			aisr2 = 1;
-		case SND_SOC_DAIFMT_DSP_B:
-			aisr1	|= AIC3204_AISR1_INT_DSP;
-			break;
-		case SND_SOC_DAIFMT_RIGHT_J:
-			aisr1 |= AIC3204_AISR1_INT_RJF;
-			break;
-		case SND_SOC_DAIFMT_LEFT_J:
-			aisr1 |= AIC3204_AISR1_INT_LJF;
-			break;
-		default:
-			printk( KERN_ERR "%s: SSI mode not supported "
-				"(fmt=0x%08x)\n", __func__, fmt );
-			return -EINVAL;
-	}
-
-	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-		case SND_SOC_DAIFMT_NB_NF:
-			aisr3	|= AIC3204_AISR3_BCLKPOL_NOR;
-			break;
-		case SND_SOC_DAIFMT_IB_NF:
-			aisr3	|= AIC3204_AISR3_BCLKPOL_INV;
-			break;
-		default:
-			printk( KERN_ERR "%s: Clock inversion mode not "
-				"supported (fmt=0x%08x)\n", __func__, fmt );
-			return -EINVAL;
-	}
-
-	/* set iface */
-	aic3204_write(codec, AIC3204_AISR1, aisr1);
-	aic3204_write(codec, AIC3204_AISR2, aisr2);
-	aic3204_write(codec, AIC3204_AISR3, aisr3);
-
-	return 0;
-}
-
-static int aic3204_set_bias_level(struct snd_soc_codec *codec,
-				enum snd_soc_bias_level level)
-{
-#if 0
-	switch (level) {
-		case SND_SOC_BIAS_ON:
-		case SND_SOC_BIAS_PREPARE:
-			printk("%s: Powering up ADC/DAC\n", __func__);
-			/* Turn on ADC and DAC */
-			aic3204_write(codec, AIC3204_DACS1,
-					AIC3204_DACS1_LDAC_UP |
-					AIC3204_DACS1_RDAC_UP |
-					AIC3204_DACS1_LDACD_LEFT |
-					AIC3204_DACS1_RDACD_RIGHT |
-					AIC3204_DACS1_SOFT_DIS );
-
-			/* TODO; put these registers into the header */
-			aic3204_write(codec, AIC3204_PGREG(0, 81), 0xc0 );
-			break;
-		case SND_SOC_BIAS_STANDBY:
-		case SND_SOC_BIAS_OFF:
-			printk("%s: Powering down ADC/DAC\n", __func__);
-			/* Turn off ADC and DAC */
-			aic3204_write(codec, AIC3204_DACS1, 0 );
-			/* TODO; put these registers into the header */
-			aic3204_write(codec, AIC3204_PGREG(0, 81), 0 );
-			break;
-	}
-#endif
-	codec->bias_level = level;
-	return 0;
-}
-
-#define AIC3204_RATES	SNDRV_PCM_RATE_8000_96000
-#define AIC3204_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-			 SNDRV_PCM_FMTBIT_S24_3LE | SNDRV_PCM_FMTBIT_S32_LE)
-
-static struct snd_soc_dai_ops aic3204_dai_ops = {
-	.hw_params	= aic3204_hw_params,
-	.digital_mute	= aic3204_mute,
-	.set_sysclk	= aic3204_set_dai_sysclk,
-	.set_fmt	= aic3204_set_dai_fmt,
-};
-
-struct snd_soc_dai aic3204_dai = {
-	.name = "tlv320aic3204",
-	.playback = {
-		.stream_name = "Playback",
-		.channels_min = 1,
-		.channels_max = 2,
-		.rates = AIC3204_RATES,
-		.formats = AIC3204_FORMATS,},
-	.capture = {
-		.stream_name = "Capture",
-		.channels_min = 1,
-		.channels_max = 2,
-		.rates = AIC3204_RATES,
-		.formats = AIC3204_FORMATS,},
-	.ops = &aic3204_dai_ops,
-};
-EXPORT_SYMBOL_GPL(aic3204_dai);
-
-static int aic3204_suspend(struct platform_device *pdev, pm_message_t state)
-{
-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-	struct snd_soc_codec *codec = socdev->card->codec;
-
-	aic3204_set_bias_level(codec, SND_SOC_BIAS_OFF);
-
-	return 0;
-}
-
-static int aic3204_resume(struct platform_device *pdev)
-{
-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-	struct snd_soc_codec *codec = socdev->card->codec;
-	int i;
-	u8 data[2];
-	u8 *cache = codec->reg_cache;
-
-	/* Sync reg_cache with the hardware */
-	for (i = 0; i < AIC3204_CACHEREGNUM; i++) {
-		data[0] = i;
-		data[1] = cache[i];
-		codec->hw_write(codec->control_data, data, 2);
-	}
-
-	aic3204_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-
-	return 0;
-}
-
-/*
- * initialise the AIC3204 driver
- * register the mixer and dsp interfaces with the kernel
- */
-static int aic3204_init(struct snd_soc_codec *codec)
-{
-	int reg;
-
-	mutex_init(&codec->mutex);
-	INIT_LIST_HEAD(&codec->dapm_widgets);
-	INIT_LIST_HEAD(&codec->dapm_paths);
-
-	codec->name = "tlv320aic3204";
-	codec->owner = THIS_MODULE;
-	codec->read = aic3204_read_reg_cache;
-	codec->write = aic3204_write;
-	codec->set_bias_level = aic3204_set_bias_level;
-	codec->dai = &aic3204_dai;
-	codec->num_dai = 1;
-	codec->reg_cache_size = AIC3204_CACHEREGNUM;
-	codec->reg_cache = kmalloc(AIC3204_CACHEREGNUM, GFP_KERNEL);
-	if (codec->reg_cache == NULL)
-		return -ENOMEM;
-
-	/* Reset the CODEC */
-	aic3204_write(codec, AIC3204_RESET, AIC3204_RESET_SOFT);
-
-	/* Read in the cache */
-	for( reg=0; reg < AIC3204_CACHEREGNUM; reg++ ) {
-		u8 temp;
-		aic3204_read( codec, reg, &temp );
-	}
-
-	return 0;
-}
-
-static struct snd_soc_codec *aic3204_codec;
-
-static int aic3204_register(struct snd_soc_codec *codec)
-{
-	int ret;
-
-	ret = aic3204_init(codec);
-	if (ret < 0) {
-		dev_err(codec->dev, "Failed to initialise device\n");
-		return ret;
-	}
-
-	aic3204_codec = codec;
-
-	ret = snd_soc_register_codec(codec);
-	if (ret) {
-		dev_err(codec->dev, "Failed to register codec\n");
-		return ret;
-	}
-
-	ret = snd_soc_register_dai(&aic3204_dai);
-	if (ret) {
-		dev_err(codec->dev, "Failed to register dai\n");
-		snd_soc_unregister_codec(codec);
-		return ret;
-	}
-
-	return 0;
-}
-
-static int aic3204_unregister(struct aic3204_priv *aic3204)
-{
-	aic3204_set_bias_level(&aic3204->codec, SND_SOC_BIAS_OFF);
-
-	snd_soc_unregister_dai(&aic3204_dai);
-	snd_soc_unregister_codec(&aic3204->codec);
-
-	if (aic3204->gpio_reset >= 0) {
-		gpio_set_value(aic3204->gpio_reset, 0);
-		gpio_free(aic3204->gpio_reset);
-	}
-	regulator_bulk_disable(ARRAY_SIZE(aic3204->supplies), aic3204->supplies);
-	regulator_bulk_free(ARRAY_SIZE(aic3204->supplies), aic3204->supplies);
-
-	kfree(aic3204);
-	aic3204_codec = NULL;
-
-	return 0;
-}
-
-#if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
-/*
- * If the i2c layer weren't so broken, we could pass this kind of data
- * around
- */
-static int aic3204_i2c_probe(struct i2c_client *i2c,
-			   const struct i2c_device_id *id)
-{
-	struct snd_soc_codec *codec;
-	struct aic3204_priv *aic3204;
-	struct aic3204_pdata *pdata = i2c->dev.platform_data;
-	int ret, i;
-
-	aic3204 = kzalloc(sizeof(struct aic3204_priv), GFP_KERNEL);
-	if (aic3204 == NULL) {
-		dev_err(&i2c->dev, "failed to create private data\n");
-		return -ENOMEM;
-	}
-
-	codec = &aic3204->codec;
-	codec->dev = &i2c->dev;
-	snd_soc_codec_set_drvdata(codec, aic3204);
-	codec->control_data = i2c;
-	codec->hw_write = (hw_write_t) i2c_master_send;
-
-	i2c_set_clientdata(i2c, aic3204);
-
-	aic3204->gpio_reset = -1;
-	if (pdata && pdata->gpio_reset >= 0) {
-		ret = gpio_request(pdata->gpio_reset, "tlv320aic3204 reset");
-		if (ret != 0)
-			goto err_gpio;
-		aic3204->gpio_reset = pdata->gpio_reset;
-		gpio_direction_output(aic3204->gpio_reset, 0);
-	}
-	/* Initialise the channel configuration ; enable all channels */
-	aic3204->channels = AIC3204_LDAC_EN | AIC3204_RDAC_EN
-		| AIC3204_LADC_EN | AIC3204_RADC_EN;
-
-	for (i = 0; i < ARRAY_SIZE(aic3204->supplies); i++)
-		aic3204->supplies[i].supply = aic3204_supply_names[i];
-
-	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(aic3204->supplies),
-				 aic3204->supplies);
-	if (ret != 0) {
-		dev_err(codec->dev, "Failed to request supplies: %d\n", ret);
-		goto err_get;
-	}
-
-	ret = regulator_bulk_enable(ARRAY_SIZE(aic3204->supplies),
-				    aic3204->supplies);
-	if (ret != 0) {
-		dev_err(codec->dev, "Failed to enable supplies: %d\n", ret);
-		goto err_enable;
-	}
-
-	if (aic3204->gpio_reset >= 0) {
-		udelay(1);
-		gpio_set_value(aic3204->gpio_reset, 1);
-	}
-
-	if ( device_create_file( &i2c->dev, &dev_attr_regsel ) )
-		dev_dbg( &i2c->dev, "%s: failed to register sysfs"
-				"file for I2C register selection\n",
-				__func__);
-
-	if ( device_create_file( &i2c->dev, &dev_attr_regdata ) )
-		dev_dbg( &i2c->dev, "%s: failed to register sysfs"
-				"file for I2C register data\n",
-				__func__);
-	return aic3204_register(codec);
-
-err_enable:
-	regulator_bulk_free(ARRAY_SIZE(aic3204->supplies), aic3204->supplies);
-err_get:
-	if (aic3204->gpio_reset >= 0)
-		gpio_free(aic3204->gpio_reset);
-err_gpio:
-	kfree(aic3204);
-	return ret;
-}
-
-static int aic3204_i2c_remove(struct i2c_client *client)
-{
-	struct aic3204_priv *aic3204 = i2c_get_clientdata(client);
-
-	return aic3204_unregister(aic3204);
-}
-
-static const struct i2c_device_id aic3204_i2c_id[] = {
-	{ "tlv320aic3204", 0 },
-	{ }
-};
-MODULE_DEVICE_TABLE(i2c, aic3204_i2c_id);
-
-/* machine i2c codec control layer */
-static struct i2c_driver aic3204_i2c_driver = {
-	.driver = {
-		.name = "tlv320aic3204-i2c",
-		.owner = THIS_MODULE,
-	},
-	.probe	= aic3204_i2c_probe,
-	.remove = aic3204_i2c_remove,
-	.id_table = aic3204_i2c_id,
-};
-
-static inline void aic3204_i2c_init(void)
-{
-	int ret;
-
-	ret = i2c_add_driver(&aic3204_i2c_driver);
-	if (ret)
-		printk(KERN_ERR "%s: error regsitering i2c driver, %d\n",
-		       __func__, ret);
-}
-
-static inline void aic3204_i2c_exit(void)
-{
-	i2c_del_driver(&aic3204_i2c_driver);
-}
-#else
-static inline void aic3204_i2c_init(void) { }
-static inline void aic3204_i2c_exit(void) { }
-#endif
-
-static int aic3204_probe(struct platform_device *pdev)
-{
-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-	struct aic3204_setup_data *setup;
-	struct snd_soc_codec *codec;
-	int ret = 0;
-
-	codec = aic3204_codec;
-	if (!codec) {
-		dev_err(&pdev->dev, "Codec not registered\n");
-		return -ENODEV;
-	}
-
-	socdev->card->codec = codec;
-	setup = socdev->codec_data;
-
-	if (setup) {
-		struct aic3204_priv *aic3204 = snd_soc_codec_get_drvdata(codec);
-
-		/* Run setup script; if any */
-		if ( setup->init_reg_list ) {
-			int length = setup->init_reg_length;
-			const struct aic3204_init_reg *init_reg = 
-				setup->init_reg_list;
-			while( length-- ) {
-				int ret = 0;
-				u8 regval = aic3204_read_reg_cache( codec, init_reg->reg );
-				switch ( init_reg->flags & 
-						AIC3204_INITFLAG_OPMASK ) {
-					case AIC3204_INITFLAG_SET:
-						regval = init_reg->value;
-						break;
-					case AIC3204_INITFLAG_AND:
-						regval &= init_reg->value;
-						break;
-					case AIC3204_INITFLAG_OR:
-						regval |= init_reg->value;
-						break;
-					case AIC3204_INITFLAG_XOR:
-						regval ^= init_reg->value;
-						break;
-					case AIC3204_INITFLAG_FAILNEQ:
-						if ( regval != init_reg->value )
-							ret = -EIO;
-						else
-							ret = 1;
-						break;
-					case AIC3204_INITFLAG_FAILEQ:
-						if ( regval == init_reg->value )
-							ret = -EIO;
-						else
-							ret = 1;
-						break;
-					case AIC3204_INITFLAG_FAILNSET:
-						if ( !( regval & init_reg->value ) )
-							ret = -EIO;
-						else
-							ret = 1;
-						break;
-					case AIC3204_INITFLAG_FAILSET:
-						if ( regval & init_reg->value )
-							ret = -EIO;
-						else
-							ret = 1;
-						break;
-					case AIC3204_INITFLAG_FAILNCLR:
-						if ( ( regval | init_reg->value ) != 0xff )
-							ret = -EIO;
-						else
-							ret = 1;
-						break;
-					case AIC3204_INITFLAG_FAILCLR:
-						if ( ( regval & init_reg->value ) == 0xff )
-							ret = -EIO;
-						else
-							ret = 1;
-						break;
-					default:
-						printk( KERN_ERR "%s: Instruction "
-							"not understood\n", __func__ );
-						ret = -EINVAL;
-				}
-				if ( !ret )
-					ret = aic3204_write(codec,
-							init_reg->reg,
-							regval );
-				if ( ret < 0 ) {
-					printk( KERN_ERR "%s: Initialisation operation "
-							"reg=0x%04x flags=0x%02x value=0x%02x "
-							"returns %d\n", __func__,
-							init_reg->reg, init_reg->flags,
-							init_reg->value, ret );
-					return ret;
-				}
-				/* Move to next instruction */
-				init_reg++;
-			}
-		}
-
-		/* Copy over channel information */
-		aic3204->channels = setup->channels;
-	}
-
-	/* register pcms */
-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-	if (ret < 0) {
-		printk(KERN_ERR "aic3204: failed to create pcms\n");
-		goto pcm_err;
-	}
-
-	snd_soc_add_controls(codec, aic3204_snd_controls,
-			     ARRAY_SIZE(aic3204_snd_controls));
-
-	aic3204_add_widgets(codec);
-
-	return ret;
-
-pcm_err:
-	kfree(codec->reg_cache);
-	return ret;
-}
-
-static int aic3204_remove(struct platform_device *pdev)
-{
-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-	struct snd_soc_codec *codec = socdev->card->codec;
-
-	/* power down chip */
-	if (codec->control_data)
-		aic3204_set_bias_level(codec, SND_SOC_BIAS_OFF);
-
-	snd_soc_free_pcms(socdev);
-	snd_soc_dapm_free(socdev);
-
-	kfree(codec->reg_cache);
-
-	return 0;
-}
-
-struct snd_soc_codec_device soc_codec_dev_aic3204 = {
-	.probe = aic3204_probe,
-	.remove = aic3204_remove,
-	.suspend = aic3204_suspend,
-	.resume = aic3204_resume,
-};
-EXPORT_SYMBOL_GPL(soc_codec_dev_aic3204);
-
-static int __init aic3204_modinit(void)
-{
-	aic3204_i2c_init();
-
-	return 0;
-}
-module_init(aic3204_modinit);
-
-static void __exit aic3204_exit(void)
-{
-	aic3204_i2c_exit();
-}
-module_exit(aic3204_exit);
-
-MODULE_DESCRIPTION("ASoC TLV320AIC3204 codec driver");
-MODULE_AUTHOR("Jacques Electronics");
-MODULE_LICENSE("GPL");
-
---J/dobhs11T7y2rNN
+--eAbsdosE1cNLO4uF
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -1581,4 +1489,4 @@ Alsa-devel mailing list
 Alsa-devel@alsa-project.org
 http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
---J/dobhs11T7y2rNN--
+--eAbsdosE1cNLO4uF--
