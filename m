@@ -1,21 +1,18 @@
-From: Paul Dugas <paul@dugasenterprises.com>
-Subject: Re: Timing Info
-Date: Tue, 15 Jun 2010 13:00:55 -0400
-Message-ID: <AANLkTinrDq0Mx-5uf00vOqHt5YAXZ7N3BNQz5NlJB7UB@mail.gmail.com>
-References: <AANLkTil1tGrkCdRt1s9AZ8eWYG55hYrPOCq6TRaEhpRK@mail.gmail.com>
-	<AANLkTik3ycq3POxHRG_bc0jO-KByZVvirVJ-X9-bySY_@mail.gmail.com>
-	<4C14E6CB.2030909@ladisch.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Bug in alsa-lib or alsamixer and amixer
+Date: Wed, 16 Jun 2010 06:29:36 +0800
+Message-ID: <AANLkTikawWMIPuuahzJuqnqHTW0MsRZWaP1c3O4pY8N7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from na3sys009aog112.obsmtp.com (na3sys009aog112.obsmtp.com
-	[74.125.149.207]) by alsa0.perex.cz (Postfix) with SMTP id DB14C24581
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 15329103853
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 19:00:59 +0200 (CEST)
-Received: by mail-gw0-f51.google.com with SMTP id 19so2995089gwj.38
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2010 10:00:58 -0700 (PDT)
-In-Reply-To: <4C14E6CB.2030909@ladisch.de>
+	Wed, 16 Jun 2010 00:29:37 +0200 (CEST)
+Received: by vws1 with SMTP id 1so1271292vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2010 15:29:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCBKdW4gMTMsIDIwMTAgYXQgMTA6MTAgQU0sIENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVu
-c0BsYWRpc2NoLmRlPiB3cm90ZToKPiBTZXQgU05EX1BDTV9UU1RBTVBfRU5BQkxFIHRvIGdlbmVy
-YXRlIGEgdGltZXN0YW1wIHdoZW5ldmVyIHRoZSBoYXJkd2FyZQo+IHBvc2l0aW9uIGlzIHVwZGF0
-ZWQuIMKgQ2FsbCBzbmRfcGNtX3N0YXR1cyB0byByZWFkIHRoZSBwb3NpdGlvbiBhbmQgdGhlCj4g
-Y29ycmVzcG9uZGluZyB0aW1lc3RhbXAuCgpJJ3ZlIHJlLXJlYWQgdGhpcyBhIG51bWJlciBvZiB0
-aW1lcyBhbmQgaGF2ZSBiZWVuIGZpZGRsaW5nIHdpdGggY29kZQp0aGF0IGR1bXBzIHRoZSBzdGF0
-dXMgYXQgdmFyaW91cyBwb2ludHMgYnV0IEknbSBzdGlsbCBub3QgZ3Jhc3BpbmcgdGhlCmNvbmNl
-cHQgaGVyZS4gIENhbiBjb21lb25lIHBvaW50IG1lIHRvIGFuIGV4cGxhbmF0aW9uIG9mIHRoZSBk
-ZWxheSwKYXZhaWwsIGFuZCBhdmFpbF9tYXggdmFsdWVzPyAgTWF5YmUgSSBjYW4gZmlndXJlIHRo
-aXMgb3V0IHdpdGggdGhhdC4KClBhdWwKClBTOiBJcyB0aGVyZSBhIGJldHRlciBwbGFjZSB0byBh
-c2sgcXVlc3Rpb25zIGxpa2UgdGhlc2U/ICBQZW9wbGUgb24KI2Fsc2EgYXQgRnJlZW5vZGUgc2Vu
-dCBtZSBoZXJlLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+2010/6/16 Colin Guthrie <gmane@colin.guthr.ie>
+
+> 'Twas brillig, and Raymond Yau at 15/06/10 00:43 did gyre and gimble:
+> > +12dB(400%) is even larger than the software gain 150% of PA
+>
+> Software gain of PA 150% = ~+11dB, so not as different as you imply.
+>
+> I've explained the cubic mapping already, so please don't use arbitrary,
+> differently calculated percentages when comparing things. It's like
+> comparing apples to oranges.
+>
+> Col
+>
+>
+When I changed the volume slider of the gnome sound applet ( select
+perference ) in Fedora 13 to maximum (i.e. PA 150% )
+
+Seem to be bug in amixer and alsamixer
+
+alsamixer also change to 150% but press any key change back to 100%
+
+The volume range is only from 0 to  65536
+
+why did alsa-lib allow alsa-pulse plugin to set it outside the range ,
+alsamixer and amixer also display 150% ?
+
+amixer -D pulse
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 65536
+  Mono:
+  Front Left: Playback 98304 [150%] [on]
+  Front Right: Playback 98304 [150%] [on]
