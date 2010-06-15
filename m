@@ -1,8 +1,11 @@
 From: Raymond Yau <superquad.vortex2@gmail.com>
 Subject: Re: wrong decibel data?
-Date: Tue, 15 Jun 2010 07:43:48 +0800
-Message-ID: <AANLkTim2xGO3nS8DQAsVDFUZBcr4HVebEaGCuAFJJWNJ@mail.gmail.com>
-References: <huicj9$t30$1@dough.gmane.org>
+Date: Tue, 15 Jun 2010 08:11:55 +0800
+Message-ID: <AANLkTinaXz267Lrg_kRXpi5aYnbpBH-IbDC4tkJghqZj@mail.gmail.com>
+References: <htls4d$phr$1@dough.gmane.org> <4BFE7840.4070004@ladisch.de>
+	<htm0et$eb4$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
+	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
+	<huicj9$t30$1@dough.gmane.org>
 	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
 	<hulnlp$m00$1@dough.gmane.org>
 	<AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>
@@ -12,18 +15,21 @@ References: <huicj9$t30$1@dough.gmane.org>
 	<hv4pfi$gqr$3@dough.gmane.org>
 	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
 	<hv4vs6$a6q$1@dough.gmane.org>
-	<20100614184922.GE14916@tango.0pointer.de>
+	<AANLkTilbaa94Vlc266FBzDyRkL_G2VSiOdZoLS4vG8Tw@mail.gmail.com>
+	<AANLkTimxTM73el7iCE6nwUJMPFpYa0dY2R9SYxa3_j6N@mail.gmail.com>
+	<hv5dkf$tv8$1@dough.gmane.org>
+	<AANLkTinJgLgznquX5nITzHDuAe-5e_lhk5owBhCN7wqO@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 00B56243F6
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4FA6F2441C
 	for <alsa-devel@alsa-project.org>;
-	Tue, 15 Jun 2010 01:43:49 +0200 (CEST)
-Received: by vws8 with SMTP id 8so1373720vws.38
-	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 16:43:48 -0700 (PDT)
-In-Reply-To: <20100614184922.GE14916@tango.0pointer.de>
+	Tue, 15 Jun 2010 02:11:57 +0200 (CEST)
+Received: by vws8 with SMTP id 8so1403097vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2010 17:11:56 -0700 (PDT)
+In-Reply-To: <AANLkTinJgLgznquX5nITzHDuAe-5e_lhk5owBhCN7wqO@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -33,61 +39,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/15 Lennart Poettering <mznyfn@0pointer.de>
+2010/6/14 James Courtier-Dutton <james.dutton@gmail.com>
 
-> On Mon, 14.06.10 11:22, Colin Guthrie (gmane@colin.guthr.ie) wrote:
->
+> On 14 June 2010 15:17, Colin Guthrie <gmane@colin.guthr.ie> wrote:
 > >
-> > 'Twas brillig, and James Courtier-Dutton at 14/06/10 09:56 did gyre and
-> > gimble:
-> > > On 14 June 2010 09:33, Colin Guthrie <gmane@colin.guthr.ie> wrote:
-> > >> 'Twas brillig, and Raymond Yau at 14/06/10 01:25 did gyre and gimble:
-> > >>> if your sound card have ac97 codec ., you can use audacity to record
-> the
-> > >>> output from hw:0,0 and you will see clipping occur when you set "PCM"
-> volume
-> > >>> above 0dB
-> > >>
-> > >> So the standard response is "don't do that then" :)
-> > >>
-> > >> That's why the base volume is shown to the user via GUIs so that they
-> > >> can gauge the best point on the slider to use. Currently there is no
-> > >> indication with alsa sliders at which point the 0dB "sweet spot" lies.
-> > >>
-> > >
-> > > What do you mean.
-> > > If you use "alsamixer", dB values are shown so it is easy to find the
-> > > 0dB "sweet spot".
-> > > I think it is pulse audio that hides this information when it combines
-> > > two alsa mixer controls into one pulseaudio control.
+> > I've made this change on my system and while previously my UI had no
+> > "Base Volume" displayed (because all my "h/w" (I include softvol in
+> > that) controls had their dB value >0.
 > >
-> > But it doesn't hide it. It's shown very clearly in the volume control
-> > GUIs as the Base Volume.
+> > Now that this change is live, I have a base volume present in my GUI (at
+> > around the 64% mark with the cubic scale we've already discussed). When
+> > I set my volume ot the base volume, the h/w controls are all set to 0dB
+> > which is exactly as expected.
+> >
+> > I fail to see the point here? The base volume is clearly exposed to the
+> > as the recommended point on the scale at which no clipping occurs.
+> >
+> > I really don't get where your complaint is.
+> >
 >
-> Let me also stress that "dB" is not at all understandable to most
-> people. It is a very technical unit, and showing 0dB in the UI just like
-> that won't be very helpful for most people.
->
-> That's why we thought about this, and are recommending a color coded
-> slider to be exposed in the UI which encodes the range information in a
-> sane way that is intuitively understandable by users. In green, in
-> yellow and in red. (meaning hw attenuated, hw amplified, sw amplified
-> ranges)
->
-> http://pulseaudio.org/wiki/WritingVolumeControlUIs#Colouredvolumesliders
->
-> Lennart
->
->
-Clipping may occur at recording if there is gain above hardware 0dB point  ,
-the region should be coloured as red ,
 
-What is the meaning of  the yellow region ?
+alsamixer -D pulse does not show that sweet spot to the user
 
-For HDA base volume seem to be at the same point as the norm volume since
-max_db of playback is 0dB
 
-+12dB(400%) is even larger than the software gain 150% of PA
+
+>
+> Well, if you can define "Volume" in a way that lets you understand
+> this then fine.
+> For me, all these controls are not adjusting "Volume", they are
+> adjusting "Gain", so why are they even called "Base Volume".
+>
+
+If you play music using aplay or mplayer with modified front device , you
+should notice that the playback signal after passing the softvol plugin is
+already clipped when you set the softvol to 12dB (software gain is the cause
+of this clipping )
