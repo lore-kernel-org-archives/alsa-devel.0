@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RFC 1/3] sound: ac97: Add GPIO manipulation
-	hooks
-Date: Wed, 16 Jun 2010 13:52:13 +0100
-Message-ID: <20100616125213.GA24491__46372.3247209147$1276692750$gmane$org@rakim.wolfsonmicro.main>
-References: <1276617347-3522-1-git-send-email-manuel.lauss@googlemail.com>
-	<1276617347-3522-2-git-send-email-manuel.lauss@googlemail.com>
-	<20100615160253.GK14510@rakim.wolfsonmicro.main>
-	<s5h1vc7o1i3.wl%tiwai@suse.de>
-	<AANLkTik3PHoo-1Is-yrzzTRjeH9G7v8LUgqxBzgVRQDi@mail.gmail.com>
+Subject: ASoC updates for 2.6.36
+Date: Wed, 16 Jun 2010 15:23:35 +0100
+Message-ID: <20100616142335.GB24491@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 53D4E103868
+	for <alsa-devel@alsa-project.org>;
+	Wed, 16 Jun 2010 16:23:38 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTik3PHoo-1Is-yrzzTRjeH9G7v8LUgqxBzgVRQDi@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,23 +20,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@vger.kernel.org, linux-input@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 16, 2010 at 10:00:19AM +0200, Manuel Lauss wrote:
-> On Wed, Jun 16, 2010 at 9:55 AM, Takashi Iwai <tiwai@suse.de> wrote:
+The following changes since commit 67884e215bf24ad9c244cc8b9eb3c243e85385a1:
 
-> >> > + =A0 void (*setgpio) (struct snd_ac97 *ac97, unsigned short gpio);
-> >> > + =A0 unsigned short (*getgpio) (struct snd_ac97 *ac97);
+  Merge branch 'for-2.6.35' into for-2.6.36 (2010-06-15 11:55:35 +0100)
 
-> > Can this be handled simply in read/write callbacks in the controller
-> > side? =A0In callbacks, you can check whether reg =3D=3D AC97_GPIO_STATU=
-S and
-> > handle differently for such an access.
+are available in the git repository at:
 
-> Interesting Idea, and as a bonus requires no changes to the wm97xx code.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2.6.36
 
-The only thing that worries me there is any non-standard behavior the
-chip may implement - it may actually want a write to that register for
-some extended functionality.
+Tweak to the WM2000 driver and a fix for the error reporting issues with
+volsw_2r_sx.
+
+Mark Brown (2):
+      ASoC: Default WM2000 ANC and speaker to enabled
+      ASoC: Pay attention to write errors in volsw_2r_sx
+
+ sound/soc/codecs/wm2000.c |    2 ++
+ sound/soc/soc-core.c      |    6 ++----
+ 2 files changed, 4 insertions(+), 4 deletions(-)
