@@ -1,38 +1,28 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Update on TLV320AIC3204 Driver
-Date: Wed, 16 Jun 2010 15:51:53 +0100
-Message-ID: <20100616145153.GD24491@rakim.wolfsonmicro.main>
-References: <20100611055512.GG23431@www.longlandclan.yi.org>
-	<201006151642.32385.peter.ujfalusi@nokia.com>
-	<20100615135322.GG14510@rakim.wolfsonmicro.main>
-	<201006160833.12197.peter.ujfalusi@nokia.com>
+Subject: Re: [PATCH v2] soc/sh: Fix I2C dependency for SND_FSI_AK4642 and
+ SND_FSI_DA7210
+Date: Wed, 16 Jun 2010 16:43:58 +0100
+Message-ID: <20100616154358.GE24491@rakim.wolfsonmicro.main>
+References: <201006141739.42346.PeterHuewe@gmx.de>
+ <201006151649.07554.PeterHuewe@gmx.de>
+ <20100615151913.GJ14510@rakim.wolfsonmicro.main>
+ <201006151738.56143.PeterHuewe@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 5B9201038E5
-	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Jun 2010 16:51:54 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-sh-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <201006160833.12197.peter.ujfalusi@nokia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@nokia.com>
-Cc: alsa-devel@alsa-project.org, ext Stuart Longland <redhatter@gentoo.org>, Eric B??nard <eric@eukrea.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+In-Reply-To: <201006151738.56143.PeterHuewe@gmx.de>
+Sender: linux-sh-owner@vger.kernel.org
+To: Peter Huewe <PeterHuewe@gmx.de>
+Cc: Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 16, 2010 at 08:33:12AM +0300, Peter Ujfalusi wrote:
+On Tue, Jun 15, 2010 at 05:38:55PM +0200, Peter Huewe wrote:
+> From: Peter Huewe <peterhuewe@gmx.de>
+> 
+> The config option SND_FSI_AK4642 selects SND_SOC_AK4642 which in turn
+> enables the compilation of ak4642.c - however this codec uses I2C to
+> communicate with the HW.
+> Same applies to DA7210.
 
-> Have I missed something?
-
-No, it's failing to do the shifts.  Looking at the cs42l51 driver it
-looks like all the registers on that chip are fully occupied by the
-volume controls so it's not an issue for the only current user.
+Applied, thanks.
