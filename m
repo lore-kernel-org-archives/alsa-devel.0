@@ -1,28 +1,38 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] soc/sh: Fix I2C dependency for SND_FSI_AK4642 and
- SND_FSI_DA7210
-Date: Wed, 16 Jun 2010 16:43:58 +0100
-Message-ID: <20100616154358.GE24491@rakim.wolfsonmicro.main>
-References: <201006141739.42346.PeterHuewe@gmx.de>
- <201006151649.07554.PeterHuewe@gmx.de>
- <20100615151913.GJ14510@rakim.wolfsonmicro.main>
- <201006151738.56143.PeterHuewe@gmx.de>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: usb-audio: some cleanup patches for 2.6.36
+Date: Wed, 16 Jun 2010 17:57:26 +0200
+Message-ID: <1276703851-22199-1-git-send-email-daniel@caiaq.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-sh-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201006151738.56143.PeterHuewe@gmx.de>
-Sender: linux-sh-owner@vger.kernel.org
-To: Peter Huewe <PeterHuewe@gmx.de>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id A78C22413A
+	for <alsa-devel@alsa-project.org>;
+	Wed, 16 Jun 2010 17:57:42 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, alexlee188@gmail.com, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 15, 2010 at 05:38:55PM +0200, Peter Huewe wrote:
-> From: Peter Huewe <peterhuewe@gmx.de>
-> 
-> The config option SND_FSI_AK4642 selects SND_SOC_AK4642 which in turn
-> enables the compilation of ak4642.c - however this codec uses I2C to
-> communicate with the HW.
-> Same applies to DA7210.
+Here are five patches that mostly do some basic cleanups. They're
+unurgent and should be queued for 2.6.36.
 
-Applied, thanks.
+I'm still pondering about the clock topology and how to fully support
+all corner cases. That might take awhile to sort out.
+
+Daniel
+
+[PATCH 1/5] ALSA: usb-audio: clean up includes in clock.c
+[PATCH 2/5] ALSA: usb-audio: unify UAC macros and struct names
+[PATCH 3/5] ALSA: usb-midi: whitespace fixes
+[PATCH 4/5] ALSA: usb-audio: move and add some comments
+[PATCH 5/5] ALSA: usb-audio: simplify control interface access
