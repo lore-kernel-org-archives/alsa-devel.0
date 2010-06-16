@@ -1,54 +1,29 @@
-From: Dennis Borgmann <dennis.borgmann@googlemail.com>
-Subject: snd_pcm_wait won't return
-Date: Wed, 16 Jun 2010 08:42:31 +0200
-Message-ID: <4C187257.6060105@googlemail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id E9E6924154
-	for <alsa-devel@alsa-project.org>;
-	Wed, 16 Jun 2010 08:42:34 +0200 (CEST)
-Received: by fxm20 with SMTP id 20so585735fxm.38
-	for <alsa-devel@alsa-project.org>; Tue, 15 Jun 2010 23:42:34 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] soc/sh: Fix I2C dependency for SND_FSI_AK4642 and SND_FSI_DA7210
+Date: Wed, 16 Jun 2010 08:43:33 +0100
+Message-ID: <250A6DE6-BB14-42F7-9500-A479C8FCA9B3@opensource.wolfsonmicro.com>
+References: <201006141739.42346.PeterHuewe@gmx.de> <201006151649.07554.PeterHuewe@gmx.de> <20100615151913.GJ14510@rakim.wolfsonmicro.main> <201006151738.56143.PeterHuewe@gmx.de> <20100616035440.GA29614@linux-sh.org> (sfid-20100616_045500_015014_5B5A79AE)
+Mime-Version: 1.0 (Apple Message framework v1078)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-sh-owner@vger.kernel.org>
+In-Reply-To: <20100616035440.GA29614@linux-sh.org> (sfid-20100616_045500_015014_5B5A79AE)
+Sender: linux-sh-owner@vger.kernel.org
+To: Paul Mundt <lethal@linux-sh.org>
+Cc: Peter Huewe <PeterHuewe@gmx.de>, Liam Girdwood <lrg@slimlogic.co.uk>, linux-sh@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Guennadi Liakhovetski <g.liakhovetski@gmx.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear alsa-devel list!
+On 16 Jun 2010, at 04:54, Paul Mundt wrote:
 
-I already posted this on alsa-users, but this list doesn't seem to be
-that crowded so I will give it a try in here...
+> On Tue, Jun 15, 2010 at 05:38:55PM +0200, Peter Huewe wrote:
+>> The config option SND_FSI_AK4642 selects SND_SOC_AK4642 which in turn
+>> enables the compilation of ak4642.c - however this codec uses I2C to
+>> communicate with the HW.
+>> Same applies to DA7210.
 
-I am using the alsa-lib in one of my projects and within this project,
-there is a call for snd_pcm_wait() on a machine, that plays sound. The
-call itself looks like this:
+> It uses I2C, but it doesn't matter which I2C master it's interfaced with.
+> A simple depends on I2C will suffice for this purpose just fine.
 
-snd_pcm_wait( pcm_handle, 1000 );
-
-A few steps before, I had the timeout set to unlimited (-1), which
-sometimes did not return at all. Now, it sometimes returns after the
-timeout, but in result I cannot write anything to the soundcard anymore.
-This error is reproducable if there are many underruns in a row. Since
-this program runs in a network environment and receives its data from a
-datastream, I sometimes cannot avoid those underruns.
-
-So, what could be the error, that leads to alsa not responding anymore?
-I can only revitalize the system after such an error by rebooting the
-whole system (well, at least I did not find another solution like
-snd_pcm_prepare or snd_pcm_recover).
-
-Which additional informations do you need? What is there, that I can
-provide in addition? Could this be an alsa-bug?
-
-Kind regards,
-Dennis
+Since these are board specific drivers they know which I2C controller they are
+hooked up to and so can usefully depend on a specific controller - without the
+correct controller driver they will not function.
