@@ -1,26 +1,18 @@
-From: Daniel Mack <daniel@caiaq.de>
-Subject: Re: [PATCH 2/5] ALSA: usb-audio: unify UAC macros and
-	struct names
-Date: Thu, 17 Jun 2010 17:26:26 +0200
-Message-ID: <20100617152626.GL17833@buzzloop.caiaq.de>
-References: <1276703851-22199-1-git-send-email-daniel@caiaq.de>
-	<1276703851-22199-3-git-send-email-daniel@caiaq.de>
-	<s5hr5k6nao6.wl%tiwai@suse.de>
-	<20100616174044.GA17833@buzzloop.caiaq.de>
-	<s5hljaen2yq.wl%tiwai@suse.de>
-	<6E4AF70D-1E90-48FF-9EBB-0882C6ABAF34@gmail.com>
-	<20100617120752.GH17833@buzzloop.caiaq.de>
-	<AANLkTimtpdMFSDTEiDNLI0HzMPdRwJmsvyG0AuWGKv1r@mail.gmail.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Timing Info
+Date: Thu, 17 Jun 2010 17:36:59 +0200
+Message-ID: <4C1A411B.2060301@ladisch.de>
+References: <AANLkTil1tGrkCdRt1s9AZ8eWYG55hYrPOCq6TRaEhpRK@mail.gmail.com>	<AANLkTik3ycq3POxHRG_bc0jO-KByZVvirVJ-X9-bySY_@mail.gmail.com>	<4C14E6CB.2030909@ladisch.de>
+	<AANLkTinrDq0Mx-5uf00vOqHt5YAXZ7N3BNQz5NlJB7UB@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2432B24494
+Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
+	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 9C24F2449A
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jun 2010 17:26:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <AANLkTimtpdMFSDTEiDNLI0HzMPdRwJmsvyG0AuWGKv1r@mail.gmail.com>
+	Thu, 17 Jun 2010 17:37:11 +0200 (CEST)
+In-Reply-To: <AANLkTinrDq0Mx-5uf00vOqHt5YAXZ7N3BNQz5NlJB7UB@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,23 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Alex Lee <alexlee188@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "clemens@ladisch.de" <clemens@ladisch.de>
+To: Paul Dugas <paul@dugasenterprises.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-(hint, hint: don't top-post :))
+Paul Dugas wrote:
+> On Sun, Jun 13, 2010 at 10:10 AM, Clemens Ladisch <clemens@ladisch.de> wrote:
+> > Set SND_PCM_TSTAMP_ENABLE to generate a timestamp whenever the hardware
+> > position is updated.  Call snd_pcm_status to read the position and the
+> > corresponding timestamp.
+> 
+> I've re-read this a number of times and have been fiddling with code
+> that dumps the status at various points but I'm still not grasping the
+> concept here.  Can comeone point me to an explanation of the delay,
+> avail, and avail_max values?
 
-On Thu, Jun 17, 2010 at 08:21:22AM -0700, Alex Lee wrote:
-> It will not help existing codes, I agree.  But it may make writing new UAC2
-> specific code easier?
+The avail value tells you how many frames are available, i.e., can be
+written, in the output buffer.  The largest value that this had since
+the last snd_pcm_status call is avail_max.
 
-Not as long as most of the code stays hybrid for both versions. If there
-were versions of these enum values for both UAC1 and UAC2, you would
-need to choose one of them in the parser codes. Which one you go for
-doesn't actually make any difference as they're both the same, but the
-code would read as if it was specific to any version.
-
-I'd say this would add more to the confusion, and not ease any.
+The delay value is the time that will elapse before the next frame that
+you write into the buffer will actually be output by the hardware.  This
+is not only the time until the hardware reads this frame out of the
+buffer (which could be computed from avail) but also any processing
+after that.
 
 
-Daniel
+HTH
+Clemens
