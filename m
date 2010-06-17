@@ -1,15 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: pandora: fix CLKX polarity
-Date: Thu, 17 Jun 2010 16:50:01 +0100
-Message-ID: <u6g5khs6pbrq63fngu2ncjvv.1276789801383@email.android.com>
+From: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+Subject: [PATCH] ALSA: hda - add ideapad model for Conexant
+	5051 codec
+Date: Thu, 17 Jun 2010 14:15:06 -0300
+Message-ID: <201006171415.07101.herton@mandriva.com.br>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 2C12C244A8
+Received: from perninha.conectiva.com.br (perninha.conectiva.com.br
+	[200.140.247.100])
+	by alsa0.perex.cz (Postfix) with ESMTP id 41F0D10394E
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jun 2010 17:50:32 +0200 (CEST)
+	Thu, 17 Jun 2010 19:18:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,108 +21,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Grazvydas Ignotas <notasas@gmail.com>, alsa-devel@alsa-project.org
-Cc: lrg@slimlogic.co.uk
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Acked-by: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Lenovo IdeaPad Y430 has an additional subwoofer connected at pin 0x1b,
+which isn't muted when headphone is plugged in. This adds additional
+support to the extra subwoofer via new ideapad model.
 
-Probably best to add a CC to stable too. Sorry about the rubbish formatting, on my phone and it can't do any better.
+Signed-off-by: Herton Ronaldo Krzesinski <herton@mandriva.com.br>
+---
+ Documentation/sound/alsa/HD-Audio-Models.txt |    1 +
+ sound/pci/hda/patch_conexant.c               |   20 ++++++++++++++++++++
+ 2 files changed, 21 insertions(+), 0 deletions(-)
 
-Grazvydas Ignotas <notasas@gmail.com> wrote:
-
->After mass production started it was found that several boards exhibit
->noise problems during sound playback. After some investigation it was
->determined that CLKX polarity is set incorrectly, and even if most boards
->can tolerate the wrong setting, there are some that don't.
->
->Fix polarity setup in the board file. As the clock settings for input and
->output now match, merge in and out functions and structures to simplify
->code.
->
->Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
->---
-> sound/soc/omap/omap3pandora.c |   36 ++++++++----------------------------
-> 1 files changed, 8 insertions(+), 28 deletions(-)
->
->diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
->index 87ce842..9eecac1 100644
->--- a/sound/soc/omap/omap3pandora.c
->+++ b/sound/soc/omap/omap3pandora.c
->@@ -43,12 +43,14 @@
-> 
-> static struct regulator *omap3pandora_dac_reg;
-> 
->-static int omap3pandora_cmn_hw_params(struct snd_pcm_substream *substream,
->-	struct snd_pcm_hw_params *params, unsigned int fmt)
->+static int omap3pandora_hw_params(struct snd_pcm_substream *substream,
->+	struct snd_pcm_hw_params *params)
-> {
-> 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> 	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-> 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
->+	int fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
->+		  SND_SOC_DAIFMT_CBS_CFS;
-> 	int ret;
-> 
-> 	/* Set codec DAI configuration */
->@@ -91,24 +93,6 @@ static int omap3pandora_cmn_hw_params(struct snd_pcm_substream *substream,
-> 	return 0;
-> }
-> 
->-static int omap3pandora_out_hw_params(struct snd_pcm_substream *substream,
->-	struct snd_pcm_hw_params *params)
->-{
->-	return omap3pandora_cmn_hw_params(substream, params,
->-					  SND_SOC_DAIFMT_I2S |
->-					  SND_SOC_DAIFMT_IB_NF |
->-					  SND_SOC_DAIFMT_CBS_CFS);
->-}
->-
->-static int omap3pandora_in_hw_params(struct snd_pcm_substream *substream,
->-	struct snd_pcm_hw_params *params)
->-{
->-	return omap3pandora_cmn_hw_params(substream, params,
->-					  SND_SOC_DAIFMT_I2S |
->-					  SND_SOC_DAIFMT_NB_NF |
->-					  SND_SOC_DAIFMT_CBS_CFS);
->-}
->-
-> static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
-> 	struct snd_kcontrol *k, int event)
-> {
->@@ -231,12 +215,8 @@ static int omap3pandora_in_init(struct snd_soc_codec *codec)
-> 	return snd_soc_dapm_sync(codec);
-> }
-> 
->-static struct snd_soc_ops omap3pandora_out_ops = {
->-	.hw_params = omap3pandora_out_hw_params,
->-};
->-
->-static struct snd_soc_ops omap3pandora_in_ops = {
->-	.hw_params = omap3pandora_in_hw_params,
->+static struct snd_soc_ops omap3pandora_ops = {
->+	.hw_params = omap3pandora_hw_params,
-> };
-> 
-> /* Digital audio interface glue - connects codec <--> CPU */
->@@ -246,14 +226,14 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
-> 		.stream_name = "HiFi Out",
-> 		.cpu_dai = &omap_mcbsp_dai[0],
-> 		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
->-		.ops = &omap3pandora_out_ops,
->+		.ops = &omap3pandora_ops,
-> 		.init = omap3pandora_out_init,
-> 	}, {
-> 		.name = "TWL4030",
-> 		.stream_name = "Line/Mic In",
-> 		.cpu_dai = &omap_mcbsp_dai[1],
-> 		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
->-		.ops = &omap3pandora_in_ops,
->+		.ops = &omap3pandora_ops,
-> 		.init = omap3pandora_in_init,
-> 	}
-> };
->-- 
->1.6.3.3
->
+diff --git a/Documentation/sound/alsa/HD-Audio-Models.txt 
+b/Documentation/sound/alsa/HD-Audio-Models.txt
+index 1d38b0d..84e81ad 100644
+--- a/Documentation/sound/alsa/HD-Audio-Models.txt
++++ b/Documentation/sound/alsa/HD-Audio-Models.txt
+@@ -282,6 +282,7 @@ Conexant 5051
+   hp		HP Spartan laptop
+   hp-dv6736	HP dv6736
+   hp-f700	HP Compaq Presario F700
++  ideapad	Lenovo IdeaPad laptop
+   lenovo-x200	Lenovo X200 laptop
+   toshiba	Toshiba Satellite M300
+ 
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 2bf2cb5..54f7419 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -1632,6 +1632,11 @@ static void cxt5051_update_speaker(struct hda_codec 
+*codec)
+ 	pinctl = (!spec->hp_present && spec->cur_eapd) ? PIN_OUT : 0;
+ 	snd_hda_codec_write(codec, 0x1a, 0, AC_VERB_SET_PIN_WIDGET_CONTROL,
+ 			    pinctl);
++	/* on ideapad there is an aditional speaker (subwoofer) to mute */
++	if (spec->ideapad)
++		snd_hda_codec_write(codec, 0x1b, 0,
++				    AC_VERB_SET_PIN_WIDGET_CONTROL,
++				    pinctl);
+ }
+ 
+ /* turn on/off EAPD (+ mute HP) as a master switch */
+@@ -1888,6 +1893,13 @@ static void cxt5051_init_mic_port(struct hda_codec 
+*codec, hda_nid_t nid,
+ #endif
+ }
+ 
++static struct hda_verb cxt5051_ideapad_init_verbs[] = {
++	/* Subwoofer */
++	{0x1b, AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT},
++	{0x1b, AC_VERB_SET_CONNECT_SEL, 0x00},
++	{ } /* end */
++};
++
+ /* initialize jack-sensing, too */
+ static int cxt5051_init(struct hda_codec *codec)
+ {
+@@ -1917,6 +1929,7 @@ enum {
+ 	CXT5051_LENOVO_X200,	/* Lenovo X200 laptop, also used for Advanced Mini 
+Dock 250410 */
+ 	CXT5051_F700,       /* HP Compaq Presario F700 */
+ 	CXT5051_TOSHIBA,	/* Toshiba M300 & co */
++	CXT5051_IDEAPAD,	/* Lenovo IdeaPad Y430 */
+ 	CXT5051_MODELS
+ };
+ 
+@@ -1927,6 +1940,7 @@ static const char *cxt5051_models[CXT5051_MODELS] = {
+ 	[CXT5051_LENOVO_X200]	= "lenovo-x200",
+ 	[CXT5051_F700]          = "hp-700",
+ 	[CXT5051_TOSHIBA]	= "toshiba",
++	[CXT5051_IDEAPAD]	= "ideapad",
+ };
+ 
+ static struct snd_pci_quirk cxt5051_cfg_tbl[] = {
+@@ -1938,6 +1952,7 @@ static struct snd_pci_quirk cxt5051_cfg_tbl[] = {
+ 		      CXT5051_LAPTOP),
+ 	SND_PCI_QUIRK(0x14f1, 0x5051, "HP Spartan 1.1", CXT5051_HP),
+ 	SND_PCI_QUIRK(0x17aa, 0x20f2, "Lenovo X200", CXT5051_LENOVO_X200),
++	SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo IdeaPad", CXT5051_IDEAPAD),
+ 	{}
+ };
+ 
+@@ -1999,6 +2014,11 @@ static int patch_cxt5051(struct hda_codec *codec)
+ 		spec->mixers[0] = cxt5051_toshiba_mixers;
+ 		spec->auto_mic = AUTO_MIC_PORTB;
+ 		break;
++	case CXT5051_IDEAPAD:
++		spec->init_verbs[spec->num_init_verbs++] =
++			cxt5051_ideapad_init_verbs;
++		spec->ideapad = 1;
++		break;
+ 	}
+ 
+ 	return 0;
+-- 
+1.7.1
