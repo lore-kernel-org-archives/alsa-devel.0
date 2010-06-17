@@ -1,18 +1,22 @@
-From: Grazvydas Ignotas <notasas@gmail.com>
-Subject: [PATCH] ASoC: pandora: fix CLKX polarity
-Date: Thu, 17 Jun 2010 16:45:28 +0300
-Message-ID: <1276782328-3219-1-git-send-email-notasas@gmail.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_mixer_selem_get_playback_volume return value
+	outside allowed range
+Date: Thu, 17 Jun 2010 21:53:19 +0800
+Message-ID: <AANLkTin-r468ZsZtJnsQsLJ0ANYQ1Df_-R8bosxsQaR2@mail.gmail.com>
+References: <AANLkTikQ5cUjiAtVWhLaR348-eF3xzPFoBkfmEdefJU8@mail.gmail.com>
+	<s5haaqum9ml.wl%tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 91579103938
+Received: from mail-yx0-f179.google.com (mail-yx0-f179.google.com
+	[209.85.213.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3C7822443D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jun 2010 15:45:52 +0200 (CEST)
-Received: by wyb32 with SMTP id 32so6591206wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2010 06:45:52 -0700 (PDT)
+	Thu, 17 Jun 2010 15:53:27 +0200 (CEST)
+Received: by yxs7 with SMTP id 7so14878yxs.38
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2010 06:53:19 -0700 (PDT)
+In-Reply-To: <s5haaqum9ml.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,101 +26,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: broonie@opensource.wolfsonmicro.com, Grazvydas Ignotas <notasas@gmail.com>, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-After mass production started it was found that several boards exhibit
-noise problems during sound playback. After some investigation it was
-determined that CLKX polarity is set incorrectly, and even if most boards
-can tolerate the wrong setting, there are some that don't.
+2010/6/17 Takashi Iwai <tiwai@suse.de>
 
-Fix polarity setup in the board file. As the clock settings for input and
-output now match, merge in and out functions and structures to simplify
-code.
+> At Thu, 17 Jun 2010 08:35:54 +0800,
+> Raymond Yau wrote:
+> >
+> > 2010/5/25 Clemens Ladisch <clemens@ladisch.de>
+> >
+> > > James Courtier-Dutton wrote:
+> > > > On 25 May 2010 09:38, Clemens Ladisch <clemens@ladisch.de> wrote:
+> > > > > All the others seem to be mistakes:
+> > > > >
+> > > > > > soc/codecs/stac9766.c:...
+> > > > > > soc/codecs/wm8350.c:...
+> > > > > > soc/codecs/wm8400.c:...
+> > > > > > soc/codecs/wm8990.c:...
+> > > >
+> > > > Could this maybe explain why pulseaudio was having such problems with
+> > > > alsa with regards to gain controls????
+> > >
+> > > Only if it happens on embedded hardware that uses these particular
+> > > codecs.
+> > >
+> > >
+> > > Regards,
+> > > Clemens
+> > >
+> >
+> >
+> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=c9b86f49a8a1a8c337bf0c1b7f12749e8be781ed
+> >
+> > your patch did not fix the buggy driver (e.g. alsa-pulse plugin) which
+> > return volume outside the alllowed range
+> >
+> >
+> > amixer -D pulse
+> > Simple mixer control 'Master',0
+> >   Capabilities: pvolume pswitch pswitch-joined
+> >   Playback channels: Front Left - Front Right
+> >   Limits: Playback 0 - 65536
+> >   Mono:
+> >   Front Left: Playback 98304 [150%] [on]
+> >   Front Right: Playback 98304 [150%] [on]
+> >
+> >
+> >
+> >
+> > Should snd_mixer_selem_get_playback_volume() perform range check ?
+> >
+> > tatic int get_volume_ops(snd_mixer_elem_t *elem, int dir,
+> >               snd_mixer_selem_channel_id_t channel, long *value)
+> > {
+> >     selem_none_t *s = snd_mixer_elem_get_private(elem);
+> >     if (s->selem.caps & SM_CAP_GVOLUME)
+> >         dir = SM_PLAY;
+> >     if ((unsigned int) channel >= s->str[dir].channels)
+> >         return -EINVAL;
+> >     *value = s->str[dir].vol[channel];
+> > +       if (*value > s->str[dir].max)
+> > +                return -EINVAL;
+> > +       if (*value < s->str[dir].min)
+> > +                return -EINVAL;
+> >     return 0;
+>
+> Some sanity check would be nice, but returning -EINVAL here isn't
+> correct, at least.  -EINVAL should be returned when the caller gives a
+> wrong value (e.g. a wrong channel value).
+>
+>
+-ERANGE "result too large" seem to be the correct error code when value >
+max
 
-Signed-off-by: Grazvydas Ignotas <notasas@gmail.com>
----
- sound/soc/omap/omap3pandora.c |   36 ++++++++----------------------------
- 1 files changed, 8 insertions(+), 28 deletions(-)
+amixer like the other mixer application assume
+snd_mixer_selem_get_playback_volume() won't fail so it is still cannot solve
+the problem
 
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index 87ce842..9eecac1 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -43,12 +43,14 @@
- 
- static struct regulator *omap3pandora_dac_reg;
- 
--static int omap3pandora_cmn_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params, unsigned int fmt)
-+static int omap3pandora_hw_params(struct snd_pcm_substream *substream,
-+	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	int fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-+		  SND_SOC_DAIFMT_CBS_CFS;
- 	int ret;
- 
- 	/* Set codec DAI configuration */
-@@ -91,24 +93,6 @@ static int omap3pandora_cmn_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int omap3pandora_out_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	return omap3pandora_cmn_hw_params(substream, params,
--					  SND_SOC_DAIFMT_I2S |
--					  SND_SOC_DAIFMT_IB_NF |
--					  SND_SOC_DAIFMT_CBS_CFS);
--}
--
--static int omap3pandora_in_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params)
--{
--	return omap3pandora_cmn_hw_params(substream, params,
--					  SND_SOC_DAIFMT_I2S |
--					  SND_SOC_DAIFMT_NB_NF |
--					  SND_SOC_DAIFMT_CBS_CFS);
--}
--
- static int omap3pandora_dac_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *k, int event)
- {
-@@ -231,12 +215,8 @@ static int omap3pandora_in_init(struct snd_soc_codec *codec)
- 	return snd_soc_dapm_sync(codec);
- }
- 
--static struct snd_soc_ops omap3pandora_out_ops = {
--	.hw_params = omap3pandora_out_hw_params,
--};
--
--static struct snd_soc_ops omap3pandora_in_ops = {
--	.hw_params = omap3pandora_in_hw_params,
-+static struct snd_soc_ops omap3pandora_ops = {
-+	.hw_params = omap3pandora_hw_params,
- };
- 
- /* Digital audio interface glue - connects codec <--> CPU */
-@@ -246,14 +226,14 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
- 		.stream_name = "HiFi Out",
- 		.cpu_dai = &omap_mcbsp_dai[0],
- 		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
--		.ops = &omap3pandora_out_ops,
-+		.ops = &omap3pandora_ops,
- 		.init = omap3pandora_out_init,
- 	}, {
- 		.name = "TWL4030",
- 		.stream_name = "Line/Mic In",
- 		.cpu_dai = &omap_mcbsp_dai[1],
- 		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
--		.ops = &omap3pandora_in_ops,
-+		.ops = &omap3pandora_ops,
- 		.init = omap3pandora_in_init,
- 	}
- };
--- 
-1.6.3.3
+since the bug is PA server return a value which is outside the range
+declared by ctl_pulse.c
