@@ -1,18 +1,26 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: error code 130: io_open - ALSA open error
-Date: Thu, 17 Jun 2010 17:09:12 +0200
-Message-ID: <4C1A3A98.7050808@ladisch.de>
-References: <mailman.1.1276768801.25333.alsa-devel@alsa-project.org>
-	<706067.39604.qm@web65605.mail.ac4.yahoo.com>
+From: Daniel Mack <daniel@caiaq.de>
+Subject: Re: [PATCH 2/5] ALSA: usb-audio: unify UAC macros and
+	struct names
+Date: Thu, 17 Jun 2010 17:26:26 +0200
+Message-ID: <20100617152626.GL17833@buzzloop.caiaq.de>
+References: <1276703851-22199-1-git-send-email-daniel@caiaq.de>
+	<1276703851-22199-3-git-send-email-daniel@caiaq.de>
+	<s5hr5k6nao6.wl%tiwai@suse.de>
+	<20100616174044.GA17833@buzzloop.caiaq.de>
+	<s5hljaen2yq.wl%tiwai@suse.de>
+	<6E4AF70D-1E90-48FF-9EBB-0882C6ABAF34@gmail.com>
+	<20100617120752.GH17833@buzzloop.caiaq.de>
+	<AANLkTimtpdMFSDTEiDNLI0HzMPdRwJmsvyG0AuWGKv1r@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 9B1E62447A
+Received: from buzzloop.caiaq.de (buzzloop.caiaq.de [212.112.241.133])
+	by alsa0.perex.cz (Postfix) with ESMTP id 2432B24494
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jun 2010 17:09:31 +0200 (CEST)
-In-Reply-To: <706067.39604.qm@web65605.mail.ac4.yahoo.com>
+	Thu, 17 Jun 2010 17:26:31 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <AANLkTimtpdMFSDTEiDNLI0HzMPdRwJmsvyG0AuWGKv1r@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,18 +30,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "S. Aguinaga" <sa_jr@yahoo.com>
-Cc: alsa-devel@alsa-project.org
+To: Alex Lee <alexlee188@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "clemens@ladisch.de" <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-S. Aguinaga wrote:
-> I tried finding what this error code means, but my searches come up empty.
+(hint, hint: don't top-post :))
 
-"io_open" is not an ALSA function, and ALSA uses negative error codes
-(and -130 would mean "Owner died", which is not an error that ALSA
-checks for).  This error code is specific to the software that you're
-using.
+On Thu, Jun 17, 2010 at 08:21:22AM -0700, Alex Lee wrote:
+> It will not help existing codes, I agree.  But it may make writing new UAC2
+> specific code easier?
+
+Not as long as most of the code stays hybrid for both versions. If there
+were versions of these enum values for both UAC1 and UAC2, you would
+need to choose one of them in the parser codes. Which one you go for
+doesn't actually make any difference as they're both the same, but the
+code would read as if it was specific to any version.
+
+I'd say this would add more to the confusion, and not ease any.
 
 
-Regards,
-Clemens
+Daniel
