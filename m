@@ -1,24 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_mixer_selem_get_playback_volume return value
- outside allowed range
-Date: Thu, 17 Jun 2010 16:01:00 +0200
-Message-ID: <4C1A2A9C.3000902@ladisch.de>
-References: <AANLkTikQ5cUjiAtVWhLaR348-eF3xzPFoBkfmEdefJU8@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] eukrea-tlv320: add support for our i.MX25
+ board
+Date: Thu, 17 Jun 2010 15:06:06 +0100
+Message-ID: <1276783566.3070.211.camel@odin>
+References: <1276782241-9407-1-git-send-email-eric@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out1.smtp.messagingengine.com (out1.smtp.messagingengine.com
-	[66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id 61A2C24441
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8B89110393F
 	for <alsa-devel@alsa-project.org>;
-	Thu, 17 Jun 2010 16:01:03 +0200 (CEST)
-Received: from compute1.internal (compute1.internal [10.202.2.41])
-	by gateway1.messagingengine.com (Postfix) with ESMTP id E8D97F8A8B
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2010 10:01:01 -0400 (EDT)
-Received: from [10.1.2.19] (srv004.schk01.int.dmc-one.com [85.232.8.141])
-	by mail.messagingengine.com (Postfix) with ESMTPSA id 731C94D032B
-	for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2010 10:01:01 -0400 (EDT)
-In-Reply-To: <AANLkTikQ5cUjiAtVWhLaR348-eF3xzPFoBkfmEdefJU8@mail.gmail.com>
+	Thu, 17 Jun 2010 16:06:08 +0200 (CEST)
+Received: by wwb17 with SMTP id 17so737871wwb.38
+	for <alsa-devel@alsa-project.org>; Thu, 17 Jun 2010 07:06:07 -0700 (PDT)
+In-Reply-To: <1276782241-9407-1-git-send-email-eric@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,15 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, s.hauer@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Raymond Yau wrote:
-> Should snd_mixer_selem_get_playback_volume() perform range check ?
-
-No, it's the responsibility of the control implementation to return
-valid values (and to check that values that are being set are valid).
-
-
-Regards,
-Clemens
+T24gVGh1LCAyMDEwLTA2LTE3IGF0IDE1OjQ0ICswMjAwLCBFcmljIELDqW5hcmQgd3JvdGU6Cj4g
+KiB0ZG0gc2xvdCBoYXMgdG8gYmUgY29uZmlndXJlZCB0byBnZXQgc291bmQgd29ya2luZyBvbiBp
+Lk1YMjUKPiAKPiBTaWduZWQtb2ZmLWJ5OiBFcmljIELDqW5hcmQgPGVyaWNAZXVrcmVhLmNvbT4K
+PiAtLS0KPiAgc291bmQvc29jL2lteC9LY29uZmlnICAgICAgICAgfCAgICAyICstCj4gIHNvdW5k
+L3NvYy9pbXgvZXVrcmVhLXRsdjMyMC5jIHwgICAgMyArKy0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAz
+IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3Nv
+Yy9pbXgvS2NvbmZpZyBiL3NvdW5kL3NvYy9pbXgvS2NvbmZpZwo+IGluZGV4IGZkMjkyZjEuLmZk
+NjE2YWUgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2lteC9LY29uZmlnCj4gKysrIGIvc291bmQv
+c29jL2lteC9LY29uZmlnCj4gQEAgLTMxLDcgKzMxLDcgQEAgY29uZmlnIFNORF9TT0NfUEhZQ09S
+RV9BQzk3Cj4gIAo+ICBjb25maWcgU05EX1NPQ19FVUtSRUFfVExWMzIwCj4gIAlib29sICJFdWty
+ZWEgVExWMzIwIgo+IC0JZGVwZW5kcyBvbiBNQUNIX0VVS1JFQV9NQklNWDI3X0JBU0VCT0FSRAo+
+ICsJZGVwZW5kcyBvbiBNQUNIX0VVS1JFQV9NQklNWDI3X0JBU0VCT0FSRCB8fCBNQUNIX0VVS1JF
+QV9NQklNWFNEX0JBU0VCT0FSRAo+ICAJc2VsZWN0IFNORF9NWENfU09DX1NTSQo+ICAJc2VsZWN0
+IFNORF9TT0NfVExWMzIwQUlDMjMKPiAgCWhlbHAKPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2lt
+eC9ldWtyZWEtdGx2MzIwLmMgYi9zb3VuZC9zb2MvaW14L2V1a3JlYS10bHYzMjAuYwo+IGluZGV4
+IDk2ODM4MGEuLjQ1ZjVlNGIgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2lteC9ldWtyZWEtdGx2
+MzIwLmMKPiArKysgYi9zb3VuZC9zb2MvaW14L2V1a3JlYS10bHYzMjAuYwo+IEBAIC02MCw2ICs2
+MCw3IEBAIHN0YXRpYyBpbnQgZXVrcmVhX3RsdjMyMF9od19wYXJhbXMoc3RydWN0IHNuZF9wY21f
+c3Vic3RyZWFtICpzdWJzdHJlYW0sCj4gIAkJcHJfZXJyKCIlczogZmFpbGVkIHNldHRpbmcgY29k
+ZWMgc3lzY2xrXG4iLCBfX2Z1bmNfXyk7Cj4gIAkJcmV0dXJuIHJldDsKPiAgCX0KPiArCXNuZF9z
+b2NfZGFpX3NldF90ZG1fc2xvdChjcHVfZGFpLCAweGZmZmZmZmMsIDB4ZmZmZmZmYywgMiwgMCk7
+Cj4gIAo+ICAJcmV0ID0gc25kX3NvY19kYWlfc2V0X3N5c2NsayhjcHVfZGFpLCBJTVhfU1NQX1NZ
+U19DTEssIDAsCj4gIAkJCQlTTkRfU09DX0NMT0NLX0lOKTsKPiBAQCAtMTAwLDcgKzEwMSw3IEBA
+IHN0YXRpYyBpbnQgX19pbml0IGV1a3JlYV90bHYzMjBfaW5pdCh2b2lkKQo+ICB7Cj4gIAlpbnQg
+cmV0Owo+ICAKPiAtCWlmICghbWFjaGluZV9pc19ldWtyZWFfY3B1aW14MjcoKSkKPiArCWlmICgh
+bWFjaGluZV9pc19ldWtyZWFfY3B1aW14MjcoKSAmJiAhbWFjaGluZV9pc19ldWtyZWFfY3B1aW14
+MjVzZCgpKQo+ICAJCS8qIHJldHVybiBoYXBweS4gV2UgbWlnaHQgcnVuIG9uIGEgdG90YWxseSBk
+aWZmZXJlbnQgbWFjaGluZSAqLwo+ICAJCXJldHVybiAwOwo+ICAKQWNrZWQtYnk6IExpYW0gR2ly
+ZHdvb2QgPGxyZ0BzbGltbG9naWMuY28udWs+Ci0tIApGcmVlbGFuY2UgRGV2ZWxvcGVyLCBTbGlt
+TG9naWMgTHRkCkFTb0MgYW5kIFZvbHRhZ2UgUmVndWxhdG9yIE1haW50YWluZXIuCmh0dHA6Ly93
+d3cuc2xpbWxvZ2ljLmNvLnVrCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
