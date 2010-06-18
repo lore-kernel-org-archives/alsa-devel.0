@@ -1,63 +1,69 @@
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: Re: Cannot find
-Date: Fri, 18 Jun 2010 19:33:12 +0900
-Message-ID: <4C1B4B68.3040508@samsung.com>
-References: <AANLkTimoL84XqLSBwWbIs8Krzp-HpHmIU45GRGv4CyIr@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: Add new TI TLV320AIC3204 CODEC driver
+Date: Fri, 18 Jun 2010 12:01:02 +0100
+Message-ID: <1276858862.3054.28.camel@odin>
+References: <1276833465-31702-1-git-send-email-redhatter@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA51F103963
-	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Jun 2010 12:33:14 +0200 (CEST)
-Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L4700GP6HBBCD30@mailout4.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 18 Jun 2010 19:33:11 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L4700BDIHBBTE@mmp1.samsung.com> for
-	alsa-devel@alsa-project.org; Fri, 18 Jun 2010 19:33:11 +0900 (KST)
-In-reply-to: <AANLkTimoL84XqLSBwWbIs8Krzp-HpHmIU45GRGv4CyIr@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: subapriya sakthivel <subapriya.sakthi@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1276833465-31702-1-git-send-email-redhatter@gentoo.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stuart Longland <redhatter@gentoo.org>
+Cc: ALSA Development List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/18/2010 7:23 PM, subapriya sakthivel wrote:
-> Hay guys,
-> 
-> I have download eclair branch code using below commands.
-> 
-> repo init -u git://android.git.kernel.org/platform/manifest.git -b eclair
-> repo sync
-> 
-> But inside Hardware folder, i cannot find alsa_sound folder.
-> 
-> Can anyone help me on this?
-> 
+On Fri, 2010-06-18 at 13:57 +1000, Stuart Longland wrote:
+> The TLV320AIC3204 is a low-power stereo audio CODEC capable of sample
+> rates of up to 192kHz.  This driver implements basic functionality,
+> using I=C2=B2C for the control channel.
+>=20
+> The audio interface supports many data bus formats, including I=C2=B2=
+S
+> master/slave, DSP, left/right justified and TDM.
+>=20
+> What works:
+> 	- Playback at various bitrates up to 96kHz
+> 	- Recording at various bitrates up to 96kHz
+> 	- Mixer interface
+> 	- PLL generation of CODEC clocks from MCLK
+>=20
+> What could work better:
+> 	- DAPM
+>=20
+> What isn't tested:
+> 	- Audio interfaces other than I=C2=B2S
+> 	- PLL with clocks other than ~12MHz
+> 	- Mono recording/playback
+> 	- 192kHz recording/playback
+>=20
+> What isn't implemented:
+> 	- SPI interface support
+> 	- PLL without fractional divider (would allow <10MHz clocks)
+> 	- Clock sources other than MCLK
+> 	- Adaptive filtering
+> 	- AGC
+> 	- Headset detection, JACK framework
+>=20
+> Signed-off-by: Stuart Longland <redhatter@gentoo.org>
 
-The alsa_sound isn't the default repository of android repo init.
-You should do directly 'git clone' it.
+Just had a quick check and the register caching needs addressed.
 
-> Am i chekout from correct branch?
-> If so, where can i get this folder.
-> 
-> Thanks for your help in advance.
-> 
-> -Priya
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+I agree with your comments, I don't think we really want to cache all
+16K of codec registers here as we will probably only ever use a handful
+of them. I think a smaller lookup table containing only the registers
+that we care about will do.
+
+=46wiw, a generic ASoC lookup table would be best as this could be used=
+ by
+other codecs with large register maps too. The table should be ordered
+(for quick lookup) and also contain a readable/writeable/volatile flag
+for each register.
+
+Thanks
+
+Liam
+--=20
+=46reelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
