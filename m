@@ -1,21 +1,26 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: Fix overflow bug in
-	SOC_DOUBLE_R_SX_TLV
-Date: Fri, 18 Jun 2010 11:29:24 +0100
-Message-ID: <1276856964.3054.1.camel@odin>
-References: <20100618023810.GS7759@www.longlandclan.yi.org>
-	<1276829770-31557-1-git-send-email-redhatter@gentoo.org>
+From: Joonyoung Shim <jy0922.shim@samsung.com>
+Subject: Re: Cannot find
+Date: Fri, 18 Jun 2010 19:33:12 +0900
+Message-ID: <4C1B4B68.3040508@samsung.com>
+References: <AANLkTimoL84XqLSBwWbIs8Krzp-HpHmIU45GRGv4CyIr@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 4E3E524534
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA51F103963
 	for <alsa-devel@alsa-project.org>;
-	Fri, 18 Jun 2010 12:29:29 +0200 (CEST)
-Received: by wwf26 with SMTP id 26so324399wwf.38
-	for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2010 03:29:26 -0700 (PDT)
-In-Reply-To: <1276829770-31557-1-git-send-email-redhatter@gentoo.org>
+	Fri, 18 Jun 2010 12:33:14 +0200 (CEST)
+Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L4700GP6HBBCD30@mailout4.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 18 Jun 2010 19:33:11 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L4700BDIHBBTE@mmp1.samsung.com> for
+	alsa-devel@alsa-project.org; Fri, 18 Jun 2010 19:33:11 +0900 (KST)
+In-reply-to: <AANLkTimoL84XqLSBwWbIs8Krzp-HpHmIU45GRGv4CyIr@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,45 +30,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Stuart Longland <redhatter@gentoo.org>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development List <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Linux Kernel <linux-kernel@vger.kernel.org>, Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>
+To: subapriya sakthivel <subapriya.sakthi@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-06-18 at 12:56 +1000, Stuart Longland wrote:
-> When SX_TLV widgets are read, if the gain is set to a value below 0dB,
-> the mixer control is erroniously read as being at maximum volume.
+On 6/18/2010 7:23 PM, subapriya sakthivel wrote:
+> Hay guys,
 > 
-> The value read out of the CODEC register is never sign-extended, and
-> when the minimum value is subtracted (read; added, since the minimum is
-> negative) the result is a number greater than the maximum allowed value
-> for the control, and hence it saturates.
+> I have download eclair branch code using below commands.
 > 
-> Solution: Mask the result so that it "wraps around", emulating
-> sign-extension.
+> repo init -u git://android.git.kernel.org/platform/manifest.git -b eclair
+> repo sync
 > 
-> Signed-off-by: Stuart Longland <redhatter@gentoo.org>
-> ---
->  sound/soc/soc-core.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
+> But inside Hardware folder, i cannot find alsa_sound folder.
 > 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index a82a797..0470288 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -2400,8 +2400,8 @@ int snd_soc_get_volsw_2r_sx(struct snd_kcontrol *kcontrol,
->  	int val = snd_soc_read(codec, mc->reg) & mask;
->  	int valr = snd_soc_read(codec, mc->rreg) & mask;
->  
-> -	ucontrol->value.integer.value[0] = ((val & 0xff)-min);
-> -	ucontrol->value.integer.value[1] = ((valr & 0xff)-min);
-> +	ucontrol->value.integer.value[0] = ((val & 0xff)-min) & mask;
-> +	ucontrol->value.integer.value[1] = ((valr & 0xff)-min) & mask;
->  	return 0;
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_get_volsw_2r_sx);
+> Can anyone help me on this?
+> 
 
-Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
--- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+The alsa_sound isn't the default repository of android repo init.
+You should do directly 'git clone' it.
+
+> Am i chekout from correct branch?
+> If so, where can i get this folder.
+> 
+> Thanks for your help in advance.
+> 
+> -Priya
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
