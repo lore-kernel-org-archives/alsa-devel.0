@@ -1,26 +1,19 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: Bug in alsa-lib or alsamixer and amixer
-Date: Sat, 19 Jun 2010 08:39:35 +0800
-Message-ID: <AANLkTinZFz6NyImuanu7guAg1fiP2hynu55NqeN4apyH@mail.gmail.com>
-References: <AANLkTikawWMIPuuahzJuqnqHTW0MsRZWaP1c3O4pY8N7@mail.gmail.com>
-	<hv912l$j53$1@dough.gmane.org>
-	<AANLkTimeqs9dKkCemPzmrdYCboH-uxW5FkfLgiWFZEPl@mail.gmail.com>
-	<hvbgo6$3fg$1@dough.gmane.org>
-	<AANLkTinYBKzxiITOnspsn2QOh_Rdv8FHu_PC7K7cGCXm@mail.gmail.com>
-	<4C1951F1.4000504@colin.guthr.ie>
-	<AANLkTim8q8dbV5-jyeHev1lh1b8HQOzhEETKBSa4o1Ol@mail.gmail.com>
-	<AANLkTimjd_PDBv9agMxqCeMr_Kd1lTuwo2TIwLVRp00U@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Add new TI TLV320AIC3204 CODEC driver
+Date: Sat, 19 Jun 2010 02:12:21 +0100
+Message-ID: <20100619011221.GC2463@opensource.wolfsonmicro.com>
+References: <1276833465-31702-1-git-send-email-redhatter@gentoo.org>
+	<1276899876-19001-1-git-send-email-redhatter@gentoo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 15279244A1
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7486F244BA
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Jun 2010 02:39:36 +0200 (CEST)
-Received: by vws6 with SMTP id 6so174342vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 18 Jun 2010 17:39:36 -0700 (PDT)
-In-Reply-To: <AANLkTimjd_PDBv9agMxqCeMr_Kd1lTuwo2TIwLVRp00U@mail.gmail.com>
+	Sat, 19 Jun 2010 03:12:08 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1276899876-19001-1-git-send-email-redhatter@gentoo.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -30,62 +23,203 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Stuart Longland <redhatter@gentoo.org>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development List <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/17 James Courtier-Dutton <james.dutton@gmail.com>
+On Sat, Jun 19, 2010 at 08:24:36AM +1000, Stuart Longland wrote:
 
-> On 17 June 2010 00:34, Raymond Yau <superquad.vortex2@gmail.com> wrote:
-> > 2010/6/17 Colin Guthrie <gmane@colin.guthr.ie>
-> >
-> >
-> >>> But this sucks as
-> >>> the percentage shown in alsa is not the same as the percentage shown in
-> >>> other GUIs.
-> >
-> > alsamixer and amixer 's percentage were not designed as your purpose
-> >
-> > Have you studied the source code of alsamixer and amixer
-> >
-> > the alsa developers have already posted a lot of time in the mailist list
-> ,
-> > they prefer to use dB scale instead of percentage
-> >
->
-> That is exactly why percentages are bad. One cannot relate one control
-> to another if one used percentages.
-> Say that an  audio card had two controls that adjust the gain of the
-> audio one after the other.
-> If I set to to 5% above base_volume and the second 5% below
-> base_volume, would the output be base_volume???
-> the first 5% might be +5dB, and the second might be -4dB, one does not
-> know.
->
-> Whereas, in dB, if one was set to -5dB, and the other set to +5dB, we
-> would be sure that the accumulative output would have a gain of 0dB.
-> Percentages are not nor real units at all, dB are.
->
-> Kind Regards
->
-> James
->
+This all looks pretty good, the comments below are fairly minor.
 
-It is because alsamixer and amixer only need to display the "Master" volume
-control of one card at a time while pavucontrol and the new version of gnome
-volume control have to handle the "Master" volume control when PA switch
-sound cards
+> +	/* AVDD <->DVDD Link enable */
+> +	u8	avdd_link_en;
 
-Different sound cards have different dB rangle for Playback and Capture.
+What's this?  It looks like a boolean which makes u8 an odd choice.
 
-If PA really use decibel range defined in those codec/DAC specification , it
-has to resize the slider of the Master Volume control or rescaling the
-sliders
+> +	/* LDO Enable */
+> +	u8	ldo_en;
 
-To simpify the implementation of the slider ,  a new "PA dB scale" is used
-by shift those +12dB(base volume) to 0dB and insist that every sound card 's
-minimum_dB is -inf dB ,
+Similarly here.
 
-This mean that all sound cards will now have same "PA  dB range" , the
-volume slider does not need resize or rescaling any more. This is why they
-prefer to use percentage to make you believe their calculation of dB is
-correct
+> +
+> +	/* Oversampling rate (both ADC and DAC) */
+> +	u8	osr;
+
+Why is this platform data rather than a runtime configurable option?
+
+> +config SND_SOC_TLV320AIC3204
+> +	tristate
+> +	depends on I2C
+> +
+
+Drop the depends, it doesn't actually do anything for selected items.
+
+> +	/* Page 1 */
+> +	if (page == 1) {
+> +		if (reg <= 4)
+> +			return 1;
+
+I can't help but think that this'd be more legible with switch ()
+statements (GCC has an extension for ranges in switch statements which
+you could use).
+
+> +/*
+> + * Pretty-print the value of a register
+> + */
+> +static int aic3204_show_reg(struct snd_soc_codec *codec, char *buf,
+> +		int buf_sz, unsigned int reg)
+> +{
+> +	return snprintf(buf, buf_sz, "%02x",
+> +			aic3204_read_reg_cache(codec, reg));
+> +}
+
+This looks suspiciously close to the standard show_reg() - it seems
+wrong that you should need it.
+
+> +	/*
+> +	 * These registers are not manipulated by us, so we must read them from
+> +	 * the CODEC directly.
+> +	 */
+
+Hrm?  Also, it strikes me that this code is also used in the WCLK
+function and might benefit from being factored out - it's moderately
+verbose.
+
+> +static const char *aic3204_micbias_voltages[] = {
+> +	"Low", "Med", "High", "V+"
+> +};
+
+I'd be inclined to spell medium out and write "V+" as "Supply" or
+similar unless there's a strong reason to do otherwise - it seems more
+legible.
+
+> +static const char *aic3204_ldac_srcs[] = {
+> +	"disabled", "left channel", "right channel", "mix"
+> +};
+
+Capital letters are more idiomatic for enumerations.
+
+> +/*
+> + * DAC digital volumes. From -63.5 to +24 dB in 0.5 dB steps.
+> + * Does not mute control.
+> + */
+
+I'm finding these comments a little too verbose but that's just me -
+I stop and read them only to find there's nothing odd going on here.
+
+> +	/*
+> +	 * Note regarding SOC_DOUBLE_R_SX_TLV...
+> +	 *
+> +	 * This is a bit misleading; xshift refers to the bit one bit *past*
+> +	 * the most significant bit.  Or at least that's what it appears to be
+> +	 * doing the math.  Mask needs to select the last 6 bits; which is the
+> +	 * signed bitfield specifiying the gain in dB.
+> +	 */
+
+I suspect that fixing the control may break what you're doing here?  It
+would certainly bitrot the comment.
+
+> +	SOC_SINGLE("Differential Output Switch", AIC3204_DACS2,
+> +			AIC3204_DACS2_RMOD_INV_SHIFT, 1, 0),
+
+This feels like platform data - the use of differential outputs is
+normally a property of the physical wiring of the board, it's very rare
+to be able to vary this usefully at runtime.
+
+> +	/* MICBIAS Options */
+> +	SOC_SINGLE("MICBIAS Enable", AIC3204_MICBIAS, 6, 0x1, 0),
+
+MICBIAS Enable should definitely be DAPM.
+
+> +	SOC_ENUM("MICBIAS Level", aic3204_enum_micbias_voltage),
+> +	SOC_ENUM("MICBIAS Source", aic3204_enum_micbias_src),
+
+These I would expect to be managed in kernel - they're normally either a
+property of the board or need to be managed in conjunction with jack
+detection code which tends to live in kernel.
+
+> +static const struct snd_soc_dapm_widget aic3204_dapm_widgets[] = {
+> +	/* Driver/Amplifier Selection */
+> +	SND_SOC_DAPM_SWITCH("HPL Playback Switch", AIC3204_OUTDRV,
+> +			AIC3204_OUTDRV_HPL_UP_SHIFT, 0,
+> +			&aic3204_hpl_switch),
+> +	SND_SOC_DAPM_SWITCH("HPR Playback Switch", AIC3204_OUTDRV,
+> +			AIC3204_OUTDRV_HPR_UP_SHIFT, 0,
+> +			&aic3204_hpr_switch),
+
+A lot of these SWITCH controls feel like they ought to be PGAs and the
+switch controls mutes on those.  When muting an output you normally
+don't want to power up and down the path since that is slow and tends to
+trigger audible issues, you'd normally control the power for path
+endpoints and elements that affect routing only.
+
+> +	SND_SOC_DAPM_AIF_IN("Left Data In", "Left Playback",
+> +			0, SND_SOC_NOPM, 0, 0),
+> +	SND_SOC_DAPM_AIF_IN("Right Data In", "Right Playback",
+> +			1, SND_SOC_NOPM, 0, 0),
+> +	SND_SOC_DAPM_AIF_OUT("Left Data Out", "Left Capture",
+> +			0, SND_SOC_NOPM, 0, 0),
+> +	SND_SOC_DAPM_AIF_OUT("Right Data Out", "Right Capture",
+> +			1, SND_SOC_NOPM, 0, 0),
+
+You have these AIF widgets but at least the DAC input selection was
+being done in the regular controls rather than in the DAPM routing.
+
+> +	/*
+> +	 * Set BCLK and WCLK sources...
+> +	 *
+> +	 * Despite DAPM; this is still needed, as DAPM doesn't yet set the
+> +	 * source at the right time.
+> +	 *
+> +	 * TODO: See if we can change the order of initialisation so this
+> +	 * selection is made after bringing up the ADCs/DACs.  Alternative:
+> +	 * see if we can find out ahead of time which one to use.
+
+It surprises me that the ordering matters too much here; worst case you
+leave the interface declocked a little longer when you need to switch
+sources but that doesn't seem like the end of the world?
+
+> +	snd_soc_update_bits(codec, AIC3204_AISR3, AIC3204_AISR3_BDIV,
+> +			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +				? AIC3204_AISR3_BDIV_DAC
+> +				: AIC3204_AISR3_BDIV_ADC);
+
+I have to say that I'm really not a fan of the ternery operator for
+legibility.
+
+> +static int aic3204_mute(struct snd_soc_dai *dai, int mute)
+> +{
+
+...
+
+> +	aic3204_write(codec, AIC3204_DACS2, dacs2);	/* Unmute DAC */
+
+...or possibly mute it :)
+
+> +static int aic3204_resume(struct platform_device *pdev)
+> +{
+> +	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+> +	struct snd_soc_codec *codec = socdev->card->codec;
+> +	int i;
+> +	u8 data[2];
+> +	u8 *cache = codec->reg_cache;
+> +
+> +	/* Sync reg_cache with the hardware */
+> +	for (i = 0; i < AIC3204_CACHEREGNUM; i++) {
+> +		data[0] = i;
+> +		data[1] = cache[i];
+> +		codec->hw_write(codec->control_data, data, 2);
+
+Since you've got a register defaults table you could skip rewriting
+registers which have their default value.
+
+> +	/* LDO enable, analogue blocks enable */
+> +	snd_soc_update_bits(codec, AIC3204_LDO,
+> +			AIC3204_LDO_ANALOG | AIC3204_LDO_AVDD_UP,
+> +			AIC3204_LDO_ANALOG_ENABLED |
+> +			(aic3204->pdata.ldo_en
+> +			  ? AIC3204_LDO_AVDD_UP : 0));
+
+This looks a bit fishy since the mask covers more bits than can ever be
+enabled - it reads like the other two bits should be unconditionally
+cleared.
