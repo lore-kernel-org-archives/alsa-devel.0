@@ -1,15 +1,29 @@
-From: 1276924111-11158-27-git-send-email-lars@metafoo.de
-Subject: [PATCH v3] alsa: ASoC: JZ4740: Add qi_lb60 board driver
-Date: Sat, 19 Jun 2010 16:51:22 +0200
-Message-ID: <1276959082-9184-1-git-send-email-1276924111-11158-27-git-send-email-lars@metafoo.de>
-Return-path: <linux-mips-bounce@linux-mips.org>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>, alsa-devel@alsa-project.org
-List-Id: alsa-devel@alsa-project.org
-
 From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v3] alsa: ASoC: JZ4740: Add qi_lb60 board driver
+Date: Sat, 19 Jun 2010 16:52:51 +0200
+Message-ID: <1276959171-9261-1-git-send-email-lars@metafoo.de>
+References: <1276924111-11158-27-git-send-email-lars@metafoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-out-047.synserver.de (smtp-out-047.synserver.de
+	[212.40.180.47]) by alsa0.perex.cz (Postfix) with SMTP id BE85B103824
+	for <alsa-devel@alsa-project.org>;
+	Sat, 19 Jun 2010 16:53:24 +0200 (CEST)
+In-Reply-To: <1276924111-11158-27-git-send-email-lars@metafoo.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Ralf Baechle <ralf@linux-mips.org>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+List-Id: alsa-devel@alsa-project.org
 
 This patch adds ASoC support for the qi_lb60 board.
 
