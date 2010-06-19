@@ -1,18 +1,18 @@
-From: =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
-Subject: [PATCH v2] codecs/tlv320aic23: fix bias management for
-	suspend/resume
-Date: Sat, 19 Jun 2010 19:33:39 +0200
-Message-ID: <1276968819-17285-1-git-send-email-eric@eukrea.com>
-References: <20100619105929.GB2409@opensource.wolfsonmicro.com>
+From: jordan johnston <triplesquarednine@gmail.com>
+Subject: Status of the Tascam US-122mkII???
+Date: Sat, 19 Jun 2010 13:35:32 -0400
+Message-ID: <AANLkTimaehZwC-e1pmbQl-pLNb7gVp2Rt5Ujz4BfduR_@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
-	by alsa0.perex.cz (Postfix) with ESMTP id 997DC245FE
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id D782924600
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Jun 2010 19:33:52 +0200 (CEST)
-In-Reply-To: <20100619105929.GB2409@opensource.wolfsonmicro.com>
+	Sat, 19 Jun 2010 19:35:33 +0200 (CEST)
+Received: by gyd10 with SMTP id 10so1661162gyd.38
+	for <alsa-devel@alsa-project.org>; Sat, 19 Jun 2010 10:35:32 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,47 +23,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: anuj.aggarwal@ti.com, broonie@opensource.wolfsonmicro.com, =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-aW4gdGx2MzIwYWljMjNfc2V0X2JpYXNfbGV2ZWwsIGZvciB0aGUgY2FzZSBTTkRfU09DX0JJQVNf
-T04sIHRoZQpjb21tZW50IHNheXMgInZyZWYvbWlkLCBvc2Mgb24sIGRhYyB1bm11dGUiIGJ1dCB0
-aGUgY29kZSBkb2Vzbid0CmNsZWFyIHRoZSBjb3JyZXNwb25kaW5nIGJpdHMsIHRodXMgd2hlbiBy
-ZXN1bWluZywgc2V2ZXJhbCBiaXRzIGFyZQpub3QgY2xlYXJlZCBwcmV2ZW50aW5nIHRoZSBjb2Rl
-YyBmcm9tIHdvcmtpbmcuCgppbiB0bHYzMjBhaWMyM19zdXNwZW5kLCBjbGVhcmluZyB0aGUgYWN0
-aXZlIHJlZ2lzdGVyIGlzIG5vdCBuZWVkZWQKYXMgaXQgd2lsbCBiZSBkb25lIGJ5IHRsdjMyMGFp
-YzIzX3NldF9iaWFzX2xldmVsLCB3aGVuIHNldHRpbmcKYmlhcyB0byBTTkRfU09DX0JJQVNfT0ZG
-CgpTaWduZWQtb2ZmLWJ5OiBFcmljIELDqW5hcmQgPGVyaWNAZXVrcmVhLmNvbT4KQ2M6IGJyb29u
-aWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tCkNjOiBhbnVqLmFnZ2Fyd2FsQHRpLmNvbQpD
-YzogbHJnQHNsaW1sb2dpYy5jby51awotLS0KdjI6CglmaXggdGhlIHByb2JsZW0gaW4gdGx2MzIw
-YWljMjNfc2V0X2JpYXNfbGV2ZWwgaW5zdGVhZCBvZiB0aGUKCXByZXZpb3VzIGJhZCB3b3JrYXJv
-dW5kIGluIHN1c3BlbmQuCgogc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMyMy5jIHwgICAgNyAr
-KysrLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
-CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzIzLmMgYi9zb3VuZC9zb2Mv
-Y29kZWNzL3RsdjMyMGFpYzIzLmMKaW5kZXggYjBiYWUzNS4uMGE0YjBmZSAxMDA2NDQKLS0tIGEv
-c291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMyMy5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2
-MzIwYWljMjMuYwpAQCAtNTYwLDEzICs1NjAsMTYgQEAgc3RhdGljIGludCB0bHYzMjBhaWMyM19z
-ZXRfYmlhc19sZXZlbChzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsCiAJc3dpdGNoIChsZXZl
-bCkgewogCWNhc2UgU05EX1NPQ19CSUFTX09OOgogCQkvKiB2cmVmL21pZCwgb3NjIG9uLCBkYWMg
-dW5tdXRlICovCisJCXJlZyAmPSB+KFRMVjMyMEFJQzIzX0RFVklDRV9QV1JfT0ZGIHwgVExWMzIw
-QUlDMjNfT1NDX09GRiB8IFwKKwkJCVRMVjMyMEFJQzIzX0RBQ19PRkYpOwogCQl0bHYzMjBhaWMy
-M193cml0ZShjb2RlYywgVExWMzIwQUlDMjNfUFdSLCByZWcpOwogCQlicmVhazsKIAljYXNlIFNO
-RF9TT0NfQklBU19QUkVQQVJFOgogCQlicmVhazsKIAljYXNlIFNORF9TT0NfQklBU19TVEFOREJZ
-OgogCQkvKiBldmVyeXRoaW5nIG9mZiBleGNlcHQgdnJlZi92bWlkLCAqLwotCQl0bHYzMjBhaWMy
-M193cml0ZShjb2RlYywgVExWMzIwQUlDMjNfUFdSLCByZWcgfCAweDAwNDApOworCQl0bHYzMjBh
-aWMyM193cml0ZShjb2RlYywgVExWMzIwQUlDMjNfUFdSLCByZWcgfCBcCisJCQlUTFYzMjBBSUMy
-M19DTEtfT0ZGKTsKIAkJYnJlYWs7CiAJY2FzZSBTTkRfU09DX0JJQVNfT0ZGOgogCQkvKiBldmVy
-eXRoaW5nIG9mZiwgZGFjIG11dGUsIGluYWN0aXZlICovCkBAIC02MTUsNyArNjE4LDYgQEAgc3Rh
-dGljIGludCB0bHYzMjBhaWMyM19zdXNwZW5kKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYs
-CiAJc3RydWN0IHNuZF9zb2NfZGV2aWNlICpzb2NkZXYgPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShw
-ZGV2KTsKIAlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBzb2NkZXYtPmNhcmQtPmNvZGVj
-OwogCi0JdGx2MzIwYWljMjNfd3JpdGUoY29kZWMsIFRMVjMyMEFJQzIzX0FDVElWRSwgMHgwKTsK
-IAl0bHYzMjBhaWMyM19zZXRfYmlhc19sZXZlbChjb2RlYywgU05EX1NPQ19CSUFTX09GRik7CiAK
-IAlyZXR1cm4gMDsKQEAgLTYzMiw3ICs2MzQsNiBAQCBzdGF0aWMgaW50IHRsdjMyMGFpYzIzX3Jl
-c3VtZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCQl1MTYgdmFsID0gdGx2MzIwYWlj
-MjNfcmVhZF9yZWdfY2FjaGUoY29kZWMsIHJlZyk7CiAJCXRsdjMyMGFpYzIzX3dyaXRlKGNvZGVj
-LCByZWcsIHZhbCk7CiAJfQotCiAJdGx2MzIwYWljMjNfc2V0X2JpYXNfbGV2ZWwoY29kZWMsIFNO
-RF9TT0NfQklBU19TVEFOREJZKTsKIAogCXJldHVybiAwOwotLSAKMS42LjMuMwoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+hello,
+
+Recently, i have gotten my hands on a Tascam US-122mkII.  i have done
+a lot of reading/googling and i can see that the device has been added
+to the snd-usb-us122l  and even-cross referenced my own device to make
+sure the Id and such were there.
+Currently, i am unable to get sound out of the Unit.   it does
+however, power up on boot.
+I have tried many things to get it working, and i have even gotten
+Jack to give me the option of picking this Device, however it shows
+errors
+and does not work :(
+
+**** I am curious about the status of these drivers??
+
+**** does anyone have this unit working at all?
+
+**** and the steps they used to get it working. ( as much of the info
+i have read doesn't seem quite uptodate )
+
+is there possibly firmware for this unit or do i use the -US122L
+firmware instead?
+
+for Just a bit of background, I am using Fedora 12 with Planet CCRMA.
+however, i do not using the CCRMA kernel, as it doesn't cut it for me.
+A: it doesn't support a lot of newer hardware, B: it doesn't use MSI-X
+on my machine(shared USB/soundcard) C: It's  bloated... D: no BFS
+scheduler.
+Instead i am using Zen-kernel  which tends to be a lot more up to
+date, and i have gotten much better performance from Zen than any
+other
+kernel on any distro i have ever used.
+
+now, I am more than willing to provide any information that might
+help....  this is what i know so far.
+
+dmesg:
+
+ALSA sound/usb/usx2y/usb_stream.c:603: status=-2
+ALSA sound/usb/usx2y/usb_stream.c:603: status=-2
+ALSA sound/usb/usx2y/us122l.c:365: us122l_start error -14
+snd-usb-us122l: probe of 1-5:1.1 failed with error -22
+
+
+i have tried googling these messages to no avail. i poked around
+through the driver, i've tried some of the trouble-shooting tips
+provided by the guy who originally
+got the older models to work, removing echi-hcd, or unbinding it,
+unplugging it, etc. but nothing seems to be making a difference.
+Then my thought was that i need a proper asound.conf or .asoundrc.
+because the soundcard seems to be available, when i unbind it and
+unplug/plug the unit back in.
+ i even tried removing them to see if on reboot, that they might be
+reconfigured, but no luck.
+
+if anyone can provide help, that would be greatly appreciated.   I
+have a 30-day return, so if i can't figure it out, i will be returning
+it
+for a FFADO approved/fully-supported device. however that being said,
+wouldn't it be nice to still take the opportunity to have this
+device better supported or help debug some issues??
+
+while i am not a really good programmer, i think i could be useful, as
+i have this device in front of me
+and can provide useful information to developers, just let me know
+what you need!
+
+Jordan
