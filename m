@@ -1,17 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v3] alsa: ASoC: JZ4740: Add qi_lb60 board driver
-Date: Sat, 19 Jun 2010 16:52:51 +0200
-Message-ID: <1276959171-9261-1-git-send-email-lars@metafoo.de>
-References: <1276924111-11158-27-git-send-email-lars@metafoo.de>
+From: =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
+Subject: [PATCH v2] codecs/tlv320aic23: fix bias management for
+	suspend/resume
+Date: Sat, 19 Jun 2010 19:33:39 +0200
+Message-ID: <1276968819-17285-1-git-send-email-eric@eukrea.com>
+References: <20100619105929.GB2409@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-047.synserver.de (smtp-out-047.synserver.de
-	[212.40.180.47]) by alsa0.perex.cz (Postfix) with SMTP id BE85B103824
+Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
+	by alsa0.perex.cz (Postfix) with ESMTP id 997DC245FE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Jun 2010 16:53:24 +0200 (CEST)
-In-Reply-To: <1276924111-11158-27-git-send-email-lars@metafoo.de>
+	Sat, 19 Jun 2010 19:33:52 +0200 (CEST)
+In-Reply-To: <20100619105929.GB2409@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,234 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: anuj.aggarwal@ti.com, broonie@opensource.wolfsonmicro.com, =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds ASoC support for the qi_lb60 board.
-
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org
-
---
-Changes since v1
-- Refer to AMP gpios always by their define
-- Do not try to set codecs format, since the set_fmt callback for the codec was
-  dropped.
-
-Changes since v2
-- The codec prefix was removed from jz4740 codec include file
-- This patch accidentally contained a few bits meant for ASoC JZ4740 platform
-  support patch. Removed them.
----
- sound/soc/jz4740/Kconfig   |    9 +++
- sound/soc/jz4740/Makefile  |    4 +
- sound/soc/jz4740/qi_lb60.c |  166 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 179 insertions(+), 0 deletions(-)
- create mode 100644 sound/soc/jz4740/qi_lb60.c
-
-diff --git a/sound/soc/jz4740/Kconfig b/sound/soc/jz4740/Kconfig
-index 27480f2..5351cba 100644
---- a/sound/soc/jz4740/Kconfig
-+++ b/sound/soc/jz4740/Kconfig
-@@ -12,3 +12,12 @@ config SND_JZ4740_SOC_I2S
- 	help
- 	  Say Y if you want to use I2S protocol and I2S codec on Ingenic JZ4740
- 	  based boards.
-+
-+config SND_JZ4740_SOC_QI_LB60
-+	tristate "SoC Audio support for Qi LB60"
-+	depends on SND_JZ4740_SOC && JZ4740_QI_LB60
-+	select SND_JZ4740_SOC_I2S
-+    select SND_SOC_JZ4740_CODEC
-+	help
-+	  Say Y if you want to add support for ASoC audio on the Qi LB60 board
-+	  a.k.a Qi Ben NanoNote.
-diff --git a/sound/soc/jz4740/Makefile b/sound/soc/jz4740/Makefile
-index 1be8d19..be873c1 100644
---- a/sound/soc/jz4740/Makefile
-+++ b/sound/soc/jz4740/Makefile
-@@ -7,3 +7,7 @@ snd-soc-jz4740-i2s-objs := jz4740-i2s.o
- obj-$(CONFIG_SND_JZ4740_SOC) += snd-soc-jz4740.o
- obj-$(CONFIG_SND_JZ4740_SOC_I2S) += snd-soc-jz4740-i2s.o
- 
-+# Jz4740 Machine Support
-+snd-soc-qi-lb60-objs := qi_lb60.o
-+
-+obj-$(CONFIG_SND_JZ4740_SOC_QI_LB60) += snd-soc-qi-lb60.o
-diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
-new file mode 100644
-index 0000000..f15f491
---- /dev/null
-+++ b/sound/soc/jz4740/qi_lb60.c
-@@ -0,0 +1,166 @@
-+/*
-+ * Copyright (C) 2009, Lars-Peter Clausen <lars@metafoo.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *  You should have received a copy of the  GNU General Public License along
-+ *  with this program; if not, write  to the Free Software Foundation, Inc.,
-+ *  675 Mass Ave, Cambridge, MA 02139, USA.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <linux/gpio.h>
-+
-+#include "../codecs/jz4740.h"
-+#include "jz4740-pcm.h"
-+#include "jz4740-i2s.h"
-+
-+
-+#define QI_LB60_SND_GPIO JZ_GPIO_PORTB(29)
-+#define QI_LB60_AMP_GPIO JZ_GPIO_PORTD(4)
-+
-+static int qi_lb60_spk_event(struct snd_soc_dapm_widget *widget,
-+			     struct snd_kcontrol *ctrl, int event)
-+{
-+	int on = 0;
-+	if (event & SND_SOC_DAPM_POST_PMU)
-+		on = 1;
-+	else if (event & SND_SOC_DAPM_PRE_PMD)
-+		on = 0;
-+
-+	gpio_set_value(QI_LB60_SND_GPIO, on);
-+	gpio_set_value(QI_LB60_AMP_GPIO, on);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget qi_lb60_widgets[] = {
-+	SND_SOC_DAPM_SPK("Speaker", qi_lb60_spk_event),
-+	SND_SOC_DAPM_MIC("Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route qi_lb60_routes[] = {
-+	{"Mic", NULL, "MIC"},
-+	{"Speaker", NULL, "LOUT"},
-+	{"Speaker", NULL, "ROUT"},
-+};
-+
-+#define QI_LB60_DAIFMT (SND_SOC_DAIFMT_I2S | \
-+			SND_SOC_DAIFMT_NB_NF | \
-+			SND_SOC_DAIFMT_CBM_CFM)
-+
-+static int qi_lb60_codec_init(struct snd_soc_codec *codec)
-+{
-+	int ret;
-+	struct snd_soc_dai *cpu_dai = codec->socdev->card->dai_link->cpu_dai;
-+
-+	snd_soc_dapm_nc_pin(codec, "LIN");
-+	snd_soc_dapm_nc_pin(codec, "RIN");
-+
-+	ret = snd_soc_dai_set_fmt(cpu_dai, QI_LB60_DAIFMT);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set cpu dai format: %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_soc_dapm_new_controls(codec, qi_lb60_widgets, ARRAY_SIZE(qi_lb60_widgets));
-+	snd_soc_dapm_add_routes(codec, qi_lb60_routes, ARRAY_SIZE(qi_lb60_routes));
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link qi_lb60_dai = {
-+	.name = "jz4740",
-+	.stream_name = "jz4740",
-+	.cpu_dai = &jz4740_i2s_dai,
-+	.codec_dai = &jz4740_codec_dai,
-+	.init = qi_lb60_codec_init,
-+};
-+
-+static struct snd_soc_card qi_lb60 = {
-+	.name = "QI LB60",
-+	.dai_link = &qi_lb60_dai,
-+	.num_links = 1,
-+	.platform = &jz4740_soc_platform,
-+};
-+
-+static struct snd_soc_device qi_lb60_snd_devdata = {
-+	.card = &qi_lb60,
-+	.codec_dev = &soc_codec_dev_jz4740_codec,
-+};
-+
-+static struct platform_device *qi_lb60_snd_device;
-+
-+static int __init qi_lb60_init(void)
-+{
-+	int ret;
-+
-+	qi_lb60_snd_device = platform_device_alloc("soc-audio", -1);
-+
-+	if (!qi_lb60_snd_device)
-+		return -ENOMEM;
-+
-+	ret = gpio_request(QI_LB60_SND_GPIO, "SND");
-+	if (ret) {
-+		pr_err("qi_lb60 snd: Failed to request SND GPIO(%d): %d\n",
-+				QI_LB60_SND_GPIO, ret);
-+		goto err_device_put;
-+	}
-+
-+	ret = gpio_request(QI_LB60_AMP_GPIO, "AMP");
-+	if (ret) {
-+		pr_err("qi_lb60 snd: Failed to request AMP GPIO(%d): %d\n",
-+				QI_LB60_AMP_GPIO, ret);
-+		goto err_gpio_free_snd;
-+	}
-+
-+	gpio_direction_output(QI_LB60_SND_GPIO, 0);
-+	gpio_direction_output(QI_LB60_AMP_GPIO, 0);
-+
-+	platform_set_drvdata(qi_lb60_snd_device, &qi_lb60_snd_devdata);
-+	qi_lb60_snd_devdata.dev = &qi_lb60_snd_device->dev;
-+
-+	ret = platform_device_add(qi_lb60_snd_device);
-+	if (ret) {
-+		pr_err("qi_lb60 snd: Failed to add snd soc device: %d\n", ret);
-+		goto err_unset_pdata;
-+	}
-+
-+	 return 0;
-+
-+err_unset_pdata:
-+	platform_set_drvdata(qi_lb60_snd_device, NULL);
-+/*err_gpio_free_amp:*/
-+	gpio_free(QI_LB60_AMP_GPIO);
-+err_gpio_free_snd:
-+	gpio_free(QI_LB60_SND_GPIO);
-+err_device_put:
-+	platform_device_put(qi_lb60_snd_device);
-+
-+	return ret;
-+}
-+module_init(qi_lb60_init);
-+
-+static void __exit qi_lb60_exit(void)
-+{
-+	gpio_free(QI_LB60_AMP_GPIO);
-+	gpio_free(QI_LB60_SND_GPIO);
-+	platform_device_unregister(qi_lb60_snd_device);
-+}
-+module_exit(qi_lb60_exit);
-+
-+MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
-+MODULE_DESCRIPTION("ALSA SoC QI LB60 Audio support");
-+MODULE_LICENSE("GPL v2");
--- 
-1.5.6.5
+aW4gdGx2MzIwYWljMjNfc2V0X2JpYXNfbGV2ZWwsIGZvciB0aGUgY2FzZSBTTkRfU09DX0JJQVNf
+T04sIHRoZQpjb21tZW50IHNheXMgInZyZWYvbWlkLCBvc2Mgb24sIGRhYyB1bm11dGUiIGJ1dCB0
+aGUgY29kZSBkb2Vzbid0CmNsZWFyIHRoZSBjb3JyZXNwb25kaW5nIGJpdHMsIHRodXMgd2hlbiBy
+ZXN1bWluZywgc2V2ZXJhbCBiaXRzIGFyZQpub3QgY2xlYXJlZCBwcmV2ZW50aW5nIHRoZSBjb2Rl
+YyBmcm9tIHdvcmtpbmcuCgppbiB0bHYzMjBhaWMyM19zdXNwZW5kLCBjbGVhcmluZyB0aGUgYWN0
+aXZlIHJlZ2lzdGVyIGlzIG5vdCBuZWVkZWQKYXMgaXQgd2lsbCBiZSBkb25lIGJ5IHRsdjMyMGFp
+YzIzX3NldF9iaWFzX2xldmVsLCB3aGVuIHNldHRpbmcKYmlhcyB0byBTTkRfU09DX0JJQVNfT0ZG
+CgpTaWduZWQtb2ZmLWJ5OiBFcmljIELDqW5hcmQgPGVyaWNAZXVrcmVhLmNvbT4KQ2M6IGJyb29u
+aWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29tCkNjOiBhbnVqLmFnZ2Fyd2FsQHRpLmNvbQpD
+YzogbHJnQHNsaW1sb2dpYy5jby51awotLS0KdjI6CglmaXggdGhlIHByb2JsZW0gaW4gdGx2MzIw
+YWljMjNfc2V0X2JpYXNfbGV2ZWwgaW5zdGVhZCBvZiB0aGUKCXByZXZpb3VzIGJhZCB3b3JrYXJv
+dW5kIGluIHN1c3BlbmQuCgogc291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMyMy5jIHwgICAgNyAr
+KysrLS0tCiAxIGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
+CmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RsdjMyMGFpYzIzLmMgYi9zb3VuZC9zb2Mv
+Y29kZWNzL3RsdjMyMGFpYzIzLmMKaW5kZXggYjBiYWUzNS4uMGE0YjBmZSAxMDA2NDQKLS0tIGEv
+c291bmQvc29jL2NvZGVjcy90bHYzMjBhaWMyMy5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvdGx2
+MzIwYWljMjMuYwpAQCAtNTYwLDEzICs1NjAsMTYgQEAgc3RhdGljIGludCB0bHYzMjBhaWMyM19z
+ZXRfYmlhc19sZXZlbChzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsCiAJc3dpdGNoIChsZXZl
+bCkgewogCWNhc2UgU05EX1NPQ19CSUFTX09OOgogCQkvKiB2cmVmL21pZCwgb3NjIG9uLCBkYWMg
+dW5tdXRlICovCisJCXJlZyAmPSB+KFRMVjMyMEFJQzIzX0RFVklDRV9QV1JfT0ZGIHwgVExWMzIw
+QUlDMjNfT1NDX09GRiB8IFwKKwkJCVRMVjMyMEFJQzIzX0RBQ19PRkYpOwogCQl0bHYzMjBhaWMy
+M193cml0ZShjb2RlYywgVExWMzIwQUlDMjNfUFdSLCByZWcpOwogCQlicmVhazsKIAljYXNlIFNO
+RF9TT0NfQklBU19QUkVQQVJFOgogCQlicmVhazsKIAljYXNlIFNORF9TT0NfQklBU19TVEFOREJZ
+OgogCQkvKiBldmVyeXRoaW5nIG9mZiBleGNlcHQgdnJlZi92bWlkLCAqLwotCQl0bHYzMjBhaWMy
+M193cml0ZShjb2RlYywgVExWMzIwQUlDMjNfUFdSLCByZWcgfCAweDAwNDApOworCQl0bHYzMjBh
+aWMyM193cml0ZShjb2RlYywgVExWMzIwQUlDMjNfUFdSLCByZWcgfCBcCisJCQlUTFYzMjBBSUMy
+M19DTEtfT0ZGKTsKIAkJYnJlYWs7CiAJY2FzZSBTTkRfU09DX0JJQVNfT0ZGOgogCQkvKiBldmVy
+eXRoaW5nIG9mZiwgZGFjIG11dGUsIGluYWN0aXZlICovCkBAIC02MTUsNyArNjE4LDYgQEAgc3Rh
+dGljIGludCB0bHYzMjBhaWMyM19zdXNwZW5kKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYs
+CiAJc3RydWN0IHNuZF9zb2NfZGV2aWNlICpzb2NkZXYgPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShw
+ZGV2KTsKIAlzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMgPSBzb2NkZXYtPmNhcmQtPmNvZGVj
+OwogCi0JdGx2MzIwYWljMjNfd3JpdGUoY29kZWMsIFRMVjMyMEFJQzIzX0FDVElWRSwgMHgwKTsK
+IAl0bHYzMjBhaWMyM19zZXRfYmlhc19sZXZlbChjb2RlYywgU05EX1NPQ19CSUFTX09GRik7CiAK
+IAlyZXR1cm4gMDsKQEAgLTYzMiw3ICs2MzQsNiBAQCBzdGF0aWMgaW50IHRsdjMyMGFpYzIzX3Jl
+c3VtZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCQl1MTYgdmFsID0gdGx2MzIwYWlj
+MjNfcmVhZF9yZWdfY2FjaGUoY29kZWMsIHJlZyk7CiAJCXRsdjMyMGFpYzIzX3dyaXRlKGNvZGVj
+LCByZWcsIHZhbCk7CiAJfQotCiAJdGx2MzIwYWljMjNfc2V0X2JpYXNfbGV2ZWwoY29kZWMsIFNO
+RF9TT0NfQklBU19TVEFOREJZKTsKIAogCXJldHVybiAwOwotLSAKMS42LjMuMwoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
+amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
