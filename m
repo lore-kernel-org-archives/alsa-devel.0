@@ -1,18 +1,29 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: [PATCH v2 26/26] alsa: ASoC: JZ4740: Add qi_lb60 board
-	driver
-Date: Sat, 19 Jun 2010 07:08:31 +0200
-Message-ID: <1276924111-11158-27-git-send-email-lars@metafoo.de>
-References: <1276924111-11158-1-git-send-email-lars@metafoo.de>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: snd_mixer_selem_get_playback_volume return value
+ outside allowed range
+Date: Sat, 19 Jun 2010 09:11:08 +0100
+Message-ID: <hvhu14$cov$2@dough.gmane.org>
+References: <AANLkTikQ5cUjiAtVWhLaR348-eF3xzPFoBkfmEdefJU8@mail.gmail.com>	<4C1A2A9C.3000902@ladisch.de>
+	<AANLkTimF2iotSHsjFQFtHYo89yuXZRcYvHNvJm79g4Dw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out-036.synserver.de (smtp-out-037.synserver.de
-	[212.40.180.37]) by alsa0.perex.cz (Postfix) with SMTP id B0B871039A3
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id B10161037FE
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Jun 2010 07:11:37 +0200 (CEST)
-In-Reply-To: <1276924111-11158-1-git-send-email-lars@metafoo.de>
+	Sat, 19 Jun 2010 10:10:23 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OPt8A-0003g6-2n
+	for alsa-devel@alsa-project.org; Sat, 19 Jun 2010 10:10:22 +0200
+Received: from cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	([94.173.13.3]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 19 Jun 2010 10:10:22 +0200
+Received: from gmane by cpc1-sgyl30-2-0-cust258.sgyl.cable.virginmedia.com
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sat, 19 Jun 2010 10:10:22 +0200
+In-Reply-To: <AANLkTimF2iotSHsjFQFtHYo89yuXZRcYvHNvJm79g4Dw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,281 +33,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Ralf Baechle <ralf@linux-mips.org>
-Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds ASoC support for the qi_lb60 board.
+'Twas brillig, and Raymond Yau at 19/06/10 03:39 did gyre and gimble:
+> 2010/6/17 Clemens Ladisch <clemens@ladisch.de>
+> 
+>> Raymond Yau wrote:
+>>> Should snd_mixer_selem_get_playback_volume() perform range check ?
+>>
+>> No, it's the responsibility of the control implementation to return
+>> valid values (and to check that values that are being set are valid).
+>>
+>>
+>> Regards,
+>> Clemens
+>> _
+>>
+> 
+> The root cause of the bug is gnome-volume-control allow user to set
+> PA_VOLUME to 150% and PA return the value outside the allowed range of the
+> "master" volume control of the pulse device
+> 
+> http://git.gnome.org/browse/gnome-media/commit/?id=cfe5cf8d6826f2eacf0d2b109381ec61dda50185
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org
+This is not the root cause of the bug Raymond. I have explained this
+several times now.
 
----
-Changes since v1
-- Refer to AMP gpios always by their define
-- Do not try to set codecs format, since the set_fmt callback for the codec was
-  dropped.
----
- sound/soc/jz4740/Kconfig      |    9 ++
- sound/soc/jz4740/Makefile     |    4 +
- sound/soc/jz4740/jz4740-pcm.c |   25 ++++++-
- sound/soc/jz4740/qi_lb60.c    |  167 +++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 203 insertions(+), 2 deletions(-)
- create mode 100644 sound/soc/jz4740/qi_lb60.c
+This is perfectly acceptable behaviour in PA.
 
-diff --git a/sound/soc/jz4740/Kconfig b/sound/soc/jz4740/Kconfig
-index 27480f2..5351cba 100644
---- a/sound/soc/jz4740/Kconfig
-+++ b/sound/soc/jz4740/Kconfig
-@@ -12,3 +12,12 @@ config SND_JZ4740_SOC_I2S
- 	help
- 	  Say Y if you want to use I2S protocol and I2S codec on Ingenic JZ4740
- 	  based boards.
-+
-+config SND_JZ4740_SOC_QI_LB60
-+	tristate "SoC Audio support for Qi LB60"
-+	depends on SND_JZ4740_SOC && JZ4740_QI_LB60
-+	select SND_JZ4740_SOC_I2S
-+    select SND_SOC_JZ4740_CODEC
-+	help
-+	  Say Y if you want to add support for ASoC audio on the Qi LB60 board
-+	  a.k.a Qi Ben NanoNote.
-diff --git a/sound/soc/jz4740/Makefile b/sound/soc/jz4740/Makefile
-index 1be8d19..be873c1 100644
---- a/sound/soc/jz4740/Makefile
-+++ b/sound/soc/jz4740/Makefile
-@@ -7,3 +7,7 @@ snd-soc-jz4740-i2s-objs := jz4740-i2s.o
- obj-$(CONFIG_SND_JZ4740_SOC) += snd-soc-jz4740.o
- obj-$(CONFIG_SND_JZ4740_SOC_I2S) += snd-soc-jz4740-i2s.o
- 
-+# Jz4740 Machine Support
-+snd-soc-qi-lb60-objs := qi_lb60.o
-+
-+obj-$(CONFIG_SND_JZ4740_SOC_QI_LB60) += snd-soc-qi-lb60.o
-diff --git a/sound/soc/jz4740/jz4740-pcm.c b/sound/soc/jz4740/jz4740-pcm.c
-index 67b6cf2..ee68d85 100644
---- a/sound/soc/jz4740/jz4740-pcm.c
-+++ b/sound/soc/jz4740/jz4740-pcm.c
-@@ -16,6 +16,7 @@
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- #include <linux/slab.h>
- 
- #include <linux/dma-mapping.h>
-@@ -335,15 +336,35 @@ struct snd_soc_platform jz4740_soc_platform = {
- };
- EXPORT_SYMBOL_GPL(jz4740_soc_platform);
- 
--static int __init jz4740_soc_platform_init(void)
-+static int __devinit jz4740_pcm_probe(struct platform_device *pdev)
- {
- 	return snd_soc_register_platform(&jz4740_soc_platform);
- }
-+
-+static int __devexit jz4740_pcm_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_platform(&jz4740_soc_platform);
-+	return 0;
-+}
-+
-+static struct platform_driver jz4740_pcm_driver = {
-+	.probe = jz4740_pcm_probe,
-+	.remove = __devexit_p(jz4740_pcm_remove),
-+	.driver = {
-+		.name = "jz4740-pcm",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+static int __init jz4740_soc_platform_init(void)
-+{
-+	return platform_driver_register(&jz4740_pcm_driver);
-+}
- module_init(jz4740_soc_platform_init);
- 
- static void __exit jz4740_soc_platform_exit(void)
- {
--	snd_soc_unregister_platform(&jz4740_soc_platform);
-+	return platform_driver_unregister(&jz4740_pcm_driver);
- }
- module_exit(jz4740_soc_platform_exit);
- 
-diff --git a/sound/soc/jz4740/qi_lb60.c b/sound/soc/jz4740/qi_lb60.c
-new file mode 100644
-index 0000000..829bc45
---- /dev/null
-+++ b/sound/soc/jz4740/qi_lb60.c
-@@ -0,0 +1,167 @@
-+/*
-+ * Copyright (C) 2009, Lars-Peter Clausen <lars@metafoo.de>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *  You should have received a copy of the  GNU General Public License along
-+ *  with this program; if not, write  to the Free Software Foundation, Inc.,
-+ *  675 Mass Ave, Cambridge, MA 02139, USA.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+#include <linux/timer.h>
-+#include <linux/interrupt.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dapm.h>
-+#include <linux/gpio.h>
-+
-+#include "../codecs/jz4740-codec.h"
-+#include "jz4740-pcm.h"
-+#include "jz4740-i2s.h"
-+
-+
-+#define QI_LB60_SND_GPIO JZ_GPIO_PORTB(29)
-+#define QI_LB60_AMP_GPIO JZ_GPIO_PORTD(4)
-+
-+static int qi_lb60_spk_event(struct snd_soc_dapm_widget *widget,
-+			     struct snd_kcontrol *ctrl, int event)
-+{
-+	int on = 0;
-+	if (event & SND_SOC_DAPM_POST_PMU)
-+		on = 1;
-+	else if (event & SND_SOC_DAPM_PRE_PMD)
-+		on = 0;
-+
-+	gpio_set_value(QI_LB60_SND_GPIO, on);
-+	gpio_set_value(QI_LB60_AMP_GPIO, on);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget qi_lb60_widgets[] = {
-+	SND_SOC_DAPM_SPK("Speaker", qi_lb60_spk_event),
-+	SND_SOC_DAPM_MIC("Mic", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route qi_lb60_routes[] = {
-+	{"Mic", NULL, "MIC"},
-+	{"Speaker", NULL, "LOUT"},
-+	{"Speaker", NULL, "ROUT"},
-+};
-+
-+#define QI_LB60_DAIFMT (SND_SOC_DAIFMT_I2S | \
-+			SND_SOC_DAIFMT_NB_NF | \
-+			SND_SOC_DAIFMT_CBM_CFM)
-+
-+static int qi_lb60_codec_init(struct snd_soc_codec *codec)
-+{
-+	int ret;
-+	struct snd_soc_dai *cpu_dai = codec->socdev->card->dai_link->cpu_dai;
-+	struct snd_soc_dai *codec_dai = codec->socdev->card->dai_link->codec_dai;
-+
-+	snd_soc_dapm_nc_pin(codec, "LIN");
-+	snd_soc_dapm_nc_pin(codec, "RIN");
-+
-+	ret = snd_soc_dai_set_fmt(cpu_dai, QI_LB60_DAIFMT);
-+	if (ret < 0) {
-+		dev_err(codec->dev, "Failed to set cpu dai format: %d\n", ret);
-+		return ret;
-+	}
-+
-+	snd_soc_dapm_new_controls(codec, qi_lb60_widgets, ARRAY_SIZE(qi_lb60_widgets));
-+	snd_soc_dapm_add_routes(codec, qi_lb60_routes, ARRAY_SIZE(qi_lb60_routes));
-+	snd_soc_dapm_sync(codec);
-+
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_link qi_lb60_dai = {
-+	.name = "jz4740",
-+	.stream_name = "jz4740",
-+	.cpu_dai = &jz4740_i2s_dai,
-+	.codec_dai = &jz4740_codec_dai,
-+	.init = qi_lb60_codec_init,
-+};
-+
-+static struct snd_soc_card qi_lb60 = {
-+	.name = "QI LB60",
-+	.dai_link = &qi_lb60_dai,
-+	.num_links = 1,
-+	.platform = &jz4740_soc_platform,
-+};
-+
-+static struct snd_soc_device qi_lb60_snd_devdata = {
-+	.card = &qi_lb60,
-+	.codec_dev = &soc_codec_dev_jz4740_codec,
-+};
-+
-+static struct platform_device *qi_lb60_snd_device;
-+
-+static int __init qi_lb60_init(void)
-+{
-+	int ret;
-+
-+	qi_lb60_snd_device = platform_device_alloc("soc-audio", -1);
-+
-+	if (!qi_lb60_snd_device)
-+		return -ENOMEM;
-+
-+	ret = gpio_request(QI_LB60_SND_GPIO, "SND");
-+	if (ret) {
-+		pr_err("qi_lb60 snd: Failed to request SND GPIO(%d): %d\n",
-+				QI_LB60_SND_GPIO, ret);
-+		goto err_device_put;
-+	}
-+
-+	ret = gpio_request(QI_LB60_AMP_GPIO, "AMP");
-+	if (ret) {
-+		pr_err("qi_lb60 snd: Failed to request AMP GPIO(%d): %d\n",
-+				QI_LB60_AMP_GPIO, ret);
-+		goto err_gpio_free_snd;
-+	}
-+
-+	gpio_direction_output(QI_LB60_SND_GPIO, 0);
-+	gpio_direction_output(QI_LB60_AMP_GPIO, 0);
-+
-+	platform_set_drvdata(qi_lb60_snd_device, &qi_lb60_snd_devdata);
-+	qi_lb60_snd_devdata.dev = &qi_lb60_snd_device->dev;
-+
-+	ret = platform_device_add(qi_lb60_snd_device);
-+	if (ret) {
-+		pr_err("qi_lb60 snd: Failed to add snd soc device: %d\n", ret);
-+		goto err_unset_pdata;
-+	}
-+
-+	 return 0;
-+
-+err_unset_pdata:
-+	platform_set_drvdata(qi_lb60_snd_device, NULL);
-+/*err_gpio_free_amp:*/
-+	gpio_free(QI_LB60_AMP_GPIO);
-+err_gpio_free_snd:
-+	gpio_free(QI_LB60_SND_GPIO);
-+err_device_put:
-+	platform_device_put(qi_lb60_snd_device);
-+
-+	return ret;
-+}
-+module_init(qi_lb60_init);
-+
-+static void __exit qi_lb60_exit(void)
-+{
-+	gpio_free(QI_LB60_AMP_GPIO);
-+	gpio_free(QI_LB60_SND_GPIO);
-+	platform_device_unregister(qi_lb60_snd_device);
-+}
-+module_exit(qi_lb60_exit);
-+
-+MODULE_AUTHOR("Lars-Peter Clausen <lars@metafoo.de>");
-+MODULE_DESCRIPTION("ALSA SoC QI LB60 Audio support");
-+MODULE_LICENSE("GPL v2");
+I have stated the two possible solutions quite clearly (twice!) in one
+of the three threads you've managed to create on this topic.
+
+Please stop going on about the issue and please reply just once to each
+email, it's incredibly annoying trying to follow any discussion you
+comment on due to this deluge of responses.
+
+Col
+
 -- 
-1.5.6.5
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
