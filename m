@@ -1,28 +1,21 @@
-From: Stuart Longland <redhatter@gentoo.org>
-Subject: Re: [PATCH] ASoC: Add new TI TLV320AIC3204 CODEC driver
-Date: Sat, 19 Jun 2010 08:43:14 +1000
-Message-ID: <20100618224313.GC30868@www.longlandclan.yi.org>
-References: <1276833465-31702-1-git-send-email-redhatter@gentoo.org>
-	<1276858862.3054.28.camel@odin>
-	<20100618113335.GB30868@www.longlandclan.yi.org>
-	<20100618155322.GB16941@rakim.wolfsonmicro.main>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] eukrea-tlv320: add support for our i.MX25
+	board
+Date: Sat, 19 Jun 2010 01:29:38 +0100
+Message-ID: <20100619002937.GB2463@opensource.wolfsonmicro.com>
+References: <1276782241-9407-1-git-send-email-eric@eukrea.com>
+	<20100618005637.GA3333@opensource.wolfsonmicro.com>
+	<4C1B1BE9.9040802@eukrea.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ossa.mas.viperplatform.net.au (ossa.mas.viperplatform.net.au
-	[202.147.75.25]) by alsa0.perex.cz (Postfix) with ESMTP id C79B824425
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id B542224494
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Jun 2010 00:43:21 +0200 (CEST)
-Received: from mail by ossa.mas.viperplatform.net.au with spam-scanned (Exim
-	4.43) id 1OPkHP-0000CN-7g
-	for alsa-devel@alsa-project.org; Sat, 19 Jun 2010 08:43:20 +1000
-Received: from [203.94.56.252] (helo=longlandclan.yi.org)
-	by ossa.mas.viperplatform.net.au with esmtp (Exim 4.43)
-	id 1OPkHL-0000BF-5G
-	for alsa-devel@alsa-project.org; Sat, 19 Jun 2010 08:43:19 +1000
+	Sat, 19 Jun 2010 02:29:25 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20100618155322.GB16941@rakim.wolfsonmicro.main>
+In-Reply-To: <4C1B1BE9.9040802@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,128 +25,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development List <alsa-devel@alsa-project.org>, Linux Kernel <linux-kernel@vger.kernel.org>, Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 18, 2010 at 04:53:23PM +0100, Mark Brown wrote:
-> On Fri, Jun 18, 2010 at 09:33:35PM +1000, Stuart Longland wrote:
-> > On Fri, Jun 18, 2010 at 12:01:02PM +0100, Liam Girdwood wrote:
-> > > On Fri, 2010-06-18 at 13:57 +1000, Stuart Longland wrote:
-> 
-> > > > The audio interface supports many data bus formats, including I??S
-> > > > master/slave, DSP, left/right justified and TDM.
-> 
-> > > Just had a quick check and the register caching needs addressed.
-> 
-> > > I agree with your comments, I don't think we really want to cache all
-> > > 16K of codec registers here as we will probably only ever use a handful
-> > > of them. I think a smaller lookup table containing only the registers
-> > > that we care about will do.
-> 
-> > Yeah, I wasn't sure how to go about it.  It's inefficient, but it's
-> > simple, and works.  Other options I've considered;
-> 
-> > (1) Mark's suggestion of using per-page arrays
-> > (2) Using address translation. that is:
-> > 	- Page 0 registers 0-127 stored in cache array elements 0-127
-> > 	- Page 1 registers 0-127 stored in cache array elements 128-255
-> > 	- Page 2..7 are skipped
-> > 	- Page 8 registers 0-127 stored in cache array elements 256-383
-> > 	... etc.
-> 
-> Option 2 is what others have used here.  I do think that anything we do
-> here really ought to have some sort of page mapping support whatever the
-> actual implementation it uses - TI in particular have a bunch of chips
-> which do this so there's a general call for something that can handle
-> them.
-> 
-> If you are going to do a lookup table one way of doing this would be to
-> have the lookup table be a table of range mappings (I've not looked at
-> the patch, perhaps that's what you've done already) - just so long as
-> it's got the concept of pages covered somehow.
+On Fri, Jun 18, 2010 at 09:10:33AM +0200, Eric B=E9nard wrote:
 
-Yeah... for now I've re-sent a new patch... it's on its way... with the
-register cache in its present form.  It's huge and unsightly, but won't
-otherwise cause a problem.
+> This Kconfig seems to have unecessary things into it :
+> - config SND_MXC_SOC_SSI :
+> 	not used in the kernel
 
-I'd sooner get the driver out there in its known working form, then come
-up with a solution to fix the problem in a scalable fashion, then
-quickly try to hack something up here (I'm at home presently) where I
-have no test hardware to check I haven't broken something... and where
-the implementation and design will likely be an appauling mess. ;-)
+That's supposed to be being used to build the SSI driver as a separate
+module.
 
-> > Another thought regarding register cache, rather than hard-coding it the
-> > way we presently do, we could also build up the cache on demand... that
-> > is, we maintain a table of previously read registers; if a register
-> > value is read for the first time, an actual read is done from the CODEC
-> > (or the value is copied from a static table).  All subsequent reads then
-> > come from cache.  On suspend; if a register has not been touched, it is
-> > deemed to be left at default settings, and skipped on resume.
-> 
-> The only problem with this is that for a number of reasons a lot of
-> devices have no read functionality at all.  These need us to supply the
-> defaults from outside the device, though other devices could use what
-> you suggest.  I'd not be so bothered about the performance here - this
-> has to be high performance in comparison with doing I/O on a slow bus
-> such as I2C.  If we do run into performance issues we can always work on
-> substituting in a higher performance algorithm later, if everything is
-> well encapsulated this should be doable without much disruption.
-> 
-> It's also useful to have the actual defaults available for allowing
-> writes to be skipped when powering up the device (eg, on resume) - these
-> could be cached on first write so it's not insurmountable but it does
-> need to be considered.
+> - 1st board :
 
-Indeed... I don't check if a register has been modified; I just copy it
-across anyway.  I'm aware some devices do not implement reads, that was
-a comment made about the TLV320AIC3X device driver that I based my
-driver on... in this situation you'd have no choice but to do it the way
-it's presently done now.
+It'd be helpful to use actual names to make your mails legible,
+otherwise it's like Outlook style mail.
 
-I'll think about this over the next few days... but I'm thinking the
-basic structure of such a register cache would possibly take the form of
-something like this:
+> 	depends on SND_IMX_SOC
+> 	select SND_MXC_SOC_SSI
+> - 2nd board :
+> 	select SND_MXC_SOC_SSI
+> 	but doesn't depends on SND_IMX_SOC
+> - 3rd board :
+> 	select SND_IMX_SOC
+> =
 
-struct soc_reg_cache_pg {
-	/* Page index; for single-page registers, this would be zero */
-	int index;
-	/* Number of registers cached */
-	int size;
-	/* Register offset cached */
-	int offset;
-	/* Pointer to register flags */
-	const int *flags_data[];
-	/* Pointer to default values */
-	const int *default_data[];
-	/* Pointer to cached values */
-	int *cached_data[];
-	/* Pointer to next block of page registers (for sparse maps) */
-	struct soc_reg_cache_pg *next_block;
-};
+> Do you have any idea what SND_MXC_SOC_SSI is used for ?
+> =
 
-... then you'd use several of these in an array... one for each block of
-registers in a page.  If your device uses sparse registers, you can use
-the next_block pointer to point to the next such struct that has the
-next bank of registers, to save you scanning through *every* struct.
+> Please find attached a patch which should clean this Kconfig. If
+> it's ok for you, I'll submit it the right way.
 
-The register cache could be an array of pointers, size equal to the
-total number of pages, if a page is not used; it is set to NULL.  If a
-page is sparse, the other blocks would be accessed using the next_block
-pointer.
-
-The flags_data array would be optional; and could be used to indicate
-the read/write status, volatile bits, and other information.  It'd be a
-bitfield.
-
-Thoughts?
-
-Regards,
--- 
-Stuart Longland (aka Redhatter, VK4MSL)      .'''.
-Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
-. . . . . . . . . . . . . . . . . . . . . .   .'.'
-http://dev.gentoo.org/~redhatter             :.'
-
-I haven't lost my mind...
-  ...it's backed up on a tape somewhere.
+This isn't the best approach, converting things so SND_IMX_SOC is a menu
+and we don't need to reference that at all from the individual items
+would be nicer since it saves having to do per-board handling.
