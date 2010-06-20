@@ -1,128 +1,58 @@
-From: Hans Schou <linux@schou.dk>
-Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
-Date: Sun, 20 Jun 2010 08:20:17 +0200
-Message-ID: <AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
-References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
-	<1276972298.22889.16.camel@obelisk.thedillows.org>
-Reply-To: linux@schou.dk
+From: mirix <miromoman@gmail.com>
+Subject: Re:
+	=?utf-8?q?no_audio_output_with_TYAN_S7025_motherboar?=
+	=?utf-8?q?d_and=09Realtek_ALC262?=
+Date: Sun, 20 Jun 2010 09:09:14 +0000 (UTC)
+Message-ID: <loom.20100620T105830-722@post.gmane.org>
+References: <20100303185454.4D36231781@vis06.nas.nasa.gov>
+	<1267694159.9133.7.camel@mattotaupa>
+	<loom.20100310T201304-875@post.gmane.org>
+	<loom.20100324T191745-418@post.gmane.org>
+	<loom.20100620T013653-544@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1276972298.22889.16.camel@obelisk.thedillows.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 07FD824380
+	for <alsa-devel@alsa-project.org>;
+	Sun, 20 Jun 2010 11:09:27 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OQGWq-0007B2-OA
+	for alsa-devel@alsa-project.org; Sun, 20 Jun 2010 11:09:24 +0200
+Received: from cable-83.217.150.252.coditel.net ([83.217.150.252])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 20 Jun 2010 11:09:24 +0200
+Received: from miromoman by cable-83.217.150.252.coditel.net with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Sun, 20 Jun 2010 11:09:24 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/19 David Dillow <dave@thedillows.org>:
-> Not trimming for the benefit of alsa-devel, cc'd. Please trim replies=
-=2E
+> Finally, I have even upgraded the BIOS to version 1.05 (it was 1.03 before). 
+> 
 
-ok
+It works now! I did not do anything else. Maybe it just needed to be
+unplugged... This would maybe indicate that it was the BIOS upgrade and not the
+Realtek drivers what did the trick.
 
-> On Sat, 2010-06-19 at 16:13 +0200, Hans Schou wrote:
->> Hi
->>
->> I have a problem with recording sound when using the sound chip
->> SIS7019 with both kernel 2.6.26 and 2.6.34. After recording about 42
->> minutes it kind a stops recording, more precisely it is taking a pau=
-se
->> of exactly 10 seconds between each reading.
->>
->> As recorder I have tried several programs and all of them fails afte=
-r
->> 42 minutes. Some programs uses Alsa and some uses the old deprecated
->> method. In this example I have logged sox rec.
->>
->> Recording method in a script:
->> =A0 strace -tt -o strace.log rec -c 1 -r 44100 -2 sox.wav &
->> =A0 sleep 3000
->> =A0 kill $?
->
-> I think the answer is no, but to be sure -- are you talking directly =
-to
-> the hardware device, or are you going through pulseaudio?
+I have model=hp-bpc now, but I tried this before and it did not work. For the
+first time, the there is a headphone switch and sound is working. 
 
-Eh? No to what? Alsa? I am not really sure. In strace I can see 'rec'
-uses ioclt which could implies that it is talking directly to
-hardware.
+Provided that the  headphone socket is currently the only interface between the
+graphics card and the outside world, my guess is that possibly the sound card
+was working before, only the headphone switch was not...
 
-> While rec is running, can you capture the configuration using
-> head -1000 /proc/asound/card0/pcm0c/sub0/*
+Kind regards,
 
-Below was captured while running:
-   arecord -c 1 -r 44100 -f S16 arec01.wav
-
-=3D=3D> /proc/asound/card0/pcm0c/sub0/hw_params <=3D=3D
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 1
-rate: 44100 (44100/1)
-period_size: 5513
-buffer_size: 22050
-
-=3D=3D> /proc/asound/card0/pcm0c/sub0/info <=3D=3D
-card: 0
-device: 0
-subdevice: 0
-stream: CAPTURE
-id: SiS7019
-name: SiS7019
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-
-=3D=3D> /proc/asound/card0/pcm0c/sub0/prealloc <=3D=3D
-64
-
-=3D=3D> /proc/asound/card0/pcm0c/sub0/prealloc_max <=3D=3D
-128
-
-=3D=3D> /proc/asound/card0/pcm0c/sub0/status <=3D=3D
-state: RUNNING
-owner_pid   : 3112
-trigger_time: 1277013037.939382815
-tstamp      : 1277013038.809174469
-delay       : 10640
-avail       : 10640
-avail_max   : 10920
------
-hw_ptr      : 38368
-appl_ptr    : 27728
-
-=3D=3D> /proc/asound/card0/pcm0c/sub0/sw_params <=3D=3D
-tstamp_mode: NONE
-period_step: 1
-avail_min: 5513
-start_threshold: 1
-stop_threshold: 22050
-silence_threshold: 0
-silence_size: 0
-boundary: 1944986400
-
-I got a strange error message from arecord while recording at rate 4410=
-0:
-overrun!!! (at least 0.188 ms long)
-overrun!!! (at least 0.190 ms long)
-overrun!!! (at least 0.191 ms long)
-
-Could this be a clue?
-
-The error does occur with rate 8000 8bit (the default).
-
-> Can you try using arecord? You can use options to tell it how to
-> configure the PCM. Especially interesting will be to configure 2 peri=
-ods
-> per buffer vs whatever rec uses. 2 periods per buffer uses the hardwa=
-re
-> interrupts to clock out periods, where as 3+ uses a more complex
-> mechanism. You can also use -M to use mmap vs not.
-
-Options like this?
-strace -tt -o arec.log arecord -c 1 -r 44100 -f S16 -M arec.wav
-
-
-best regards/hans
+Miro
