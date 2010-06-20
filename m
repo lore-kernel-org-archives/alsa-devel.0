@@ -1,77 +1,128 @@
-From: jordan johnston <triplesquarednine@gmail.com>
-Subject: Re: Status of the Tascam US-122mkII???
-Date: Sat, 19 Jun 2010 19:53:01 -0400
-Message-ID: <AANLkTimL-hvnbRdnk1JOMwyrbeGxYZnLAXN0zGcg5g3G@mail.gmail.com>
-References: <AANLkTikfeTzrOttiyI9BqqD3zHI7NXY8ScyXoY8Ruq8N@mail.gmail.com>
-	<20100619185753.GN17833@buzzloop.caiaq.de>
-	<4C1D149B.7000802@physik.uni-hamburg.de>
-	<AANLkTimJ17dGo6K3Gy8_tlhIezFFY0XDRyj53i8tj1pi@mail.gmail.com>
-	<4C1D2662.3060106@physik.uni-hamburg.de>
-	<AANLkTil_QpNxgpXEaisHx1Xh-DG7Mi9rCtKjtAmcW_KO@mail.gmail.com>
-	<20100619224102.GO17833@buzzloop.caiaq.de>
-	<AANLkTikUAdL-tQ4CslnBRUP5dFFvKofvFRZn5gOiWRrD@mail.gmail.com>
-	<20100619230147.GP17833@buzzloop.caiaq.de>
-	<AANLkTimMpFrOzMctNCYcohyT-btYpUornvYGk2Tz1WFu@mail.gmail.com>
-	<20100619232244.GR17833@buzzloop.caiaq.de>
+From: Hans Schou <linux@schou.dk>
+Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
+Date: Sun, 20 Jun 2010 08:20:17 +0200
+Message-ID: <AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
+References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
+	<1276972298.22889.16.camel@obelisk.thedillows.org>
+Reply-To: linux@schou.dk
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-gw0-f51.google.com (mail-gw0-f51.google.com [74.125.83.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id DC3B2243BA
-	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Jun 2010 01:53:02 +0200 (CEST)
-Received: by gwb20 with SMTP id 20so1605069gwb.38
-	for <alsa-devel@alsa-project.org>; Sat, 19 Jun 2010 16:53:02 -0700 (PDT)
-In-Reply-To: <20100619232244.GR17833@buzzloop.caiaq.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1276972298.22889.16.camel@obelisk.thedillows.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-hey sorry,
+2010/6/19 David Dillow <dave@thedillows.org>:
+> Not trimming for the benefit of alsa-devel, cc'd. Please trim replies=
+=2E
 
-gmail defaults to only you when i reply, EVEN when i am selecting "reply all".
-i just have to add the Cc:  manually  :|    ( i wasn't taking anyone
-out of Cc: )
+ok
 
-sorry, i wasn't trying "violate" the rules or anything else, okay?
+> On Sat, 2010-06-19 at 16:13 +0200, Hans Schou wrote:
+>> Hi
+>>
+>> I have a problem with recording sound when using the sound chip
+>> SIS7019 with both kernel 2.6.26 and 2.6.34. After recording about 42
+>> minutes it kind a stops recording, more precisely it is taking a pau=
+se
+>> of exactly 10 seconds between each reading.
+>>
+>> As recorder I have tried several programs and all of them fails afte=
+r
+>> 42 minutes. Some programs uses Alsa and some uses the old deprecated
+>> method. In this example I have logged sox rec.
+>>
+>> Recording method in a script:
+>> =A0 strace -tt -o strace.log rec -c 1 -r 44100 -2 sox.wav &
+>> =A0 sleep 3000
+>> =A0 kill $?
+>
+> I think the answer is no, but to be sure -- are you talking directly =
+to
+> the hardware device, or are you going through pulseaudio?
 
-1. i understand that Zen-kernel has nothing to do with alsa, other
-than sometimes alsa drivers for certain devices are available
-in Zen before they are in my distro and many others i have used. i was
-only explaining what Zen-kernel is and why i use it.
-because you asked... makes sense?
+Eh? No to what? Alsa? I am not really sure. In strace I can see 'rec'
+uses ioclt which could implies that it is talking directly to
+hardware.
 
-2. I am glad that you were able to give me an update on the status of
-these devices, as the documentation around the interweb,
-is out-dated, and thus very often misleading.
+> While rec is running, can you capture the configuration using
+> head -1000 /proc/asound/card0/pcm0c/sub0/*
 
-3. I am going to go ahead and read all of the documentation you posted
-links to, and i will see if i can figure out how it works.
+Below was captured while running:
+   arecord -c 1 -r 44100 -f S16 arec01.wav
 
-4. I am also going to contact Tascam/Teac, as i am a paying customer -
-why not :)    obviously they are unlikely to give a lot
-of information away, but maybe i can get someone who knows just how
-different(or similar) the implementation of
-the Us-122L vs. mkII  really is.   either way, i don't mind sitting on
-the phone for an hour or so  / or through  email  to let them
-know they should support linux or at the very least work with ALSA a little.
+=3D=3D> /proc/asound/card0/pcm0c/sub0/hw_params <=3D=3D
+access: RW_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 1
+rate: 44100 (44100/1)
+period_size: 5513
+buffer_size: 22050
 
-it sounds like a lot of these companies could have really good support
-under linux by A: providing info on the implementation
-and B:  by handing a device or two, into the hands of the right
-people(developers/hackers)...what a shame!
+=3D=3D> /proc/asound/card0/pcm0c/sub0/info <=3D=3D
+card: 0
+device: 0
+subdevice: 0
+stream: CAPTURE
+id: SiS7019
+name: SiS7019
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 0
 
-thanks again for all of your help.
-It has been a slice!
+=3D=3D> /proc/asound/card0/pcm0c/sub0/prealloc <=3D=3D
+64
 
-jordan
+=3D=3D> /proc/asound/card0/pcm0c/sub0/prealloc_max <=3D=3D
+128
+
+=3D=3D> /proc/asound/card0/pcm0c/sub0/status <=3D=3D
+state: RUNNING
+owner_pid   : 3112
+trigger_time: 1277013037.939382815
+tstamp      : 1277013038.809174469
+delay       : 10640
+avail       : 10640
+avail_max   : 10920
+-----
+hw_ptr      : 38368
+appl_ptr    : 27728
+
+=3D=3D> /proc/asound/card0/pcm0c/sub0/sw_params <=3D=3D
+tstamp_mode: NONE
+period_step: 1
+avail_min: 5513
+start_threshold: 1
+stop_threshold: 22050
+silence_threshold: 0
+silence_size: 0
+boundary: 1944986400
+
+I got a strange error message from arecord while recording at rate 4410=
+0:
+overrun!!! (at least 0.188 ms long)
+overrun!!! (at least 0.190 ms long)
+overrun!!! (at least 0.191 ms long)
+
+Could this be a clue?
+
+The error does occur with rate 8000 8bit (the default).
+
+> Can you try using arecord? You can use options to tell it how to
+> configure the PCM. Especially interesting will be to configure 2 peri=
+ods
+> per buffer vs whatever rec uses. 2 periods per buffer uses the hardwa=
+re
+> interrupts to clock out periods, where as 3+ uses a more complex
+> mechanism. You can also use -M to use mmap vs not.
+
+Options like this?
+strace -tt -o arec.log arecord -c 1 -r 44100 -f S16 -M arec.wav
+
+
+best regards/hans
