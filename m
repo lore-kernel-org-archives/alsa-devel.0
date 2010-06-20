@@ -1,32 +1,19 @@
-From: mirix <miromoman@gmail.com>
-Subject: Re:
-	=?utf-8?q?no_audio_output_with_TYAN_S7025_motherboar?=
-	=?utf-8?q?d_and=09Realtek_ALC262?=
-Date: Sun, 20 Jun 2010 09:09:14 +0000 (UTC)
-Message-ID: <loom.20100620T105830-722@post.gmane.org>
-References: <20100303185454.4D36231781@vis06.nas.nasa.gov>
-	<1267694159.9133.7.camel@mattotaupa>
-	<loom.20100310T201304-875@post.gmane.org>
-	<loom.20100324T191745-418@post.gmane.org>
-	<loom.20100620T013653-544@post.gmane.org>
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: [PATCH v2 00/26] Add support for the Ingenic
+	JZ4740	System-on-a-Chip
+Date: Sun, 20 Jun 2010 11:26:10 +0200
+Message-ID: <20100620092610.GA4950@alpha.franken.de>
+References: <1276924111-11158-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
-	by alsa0.perex.cz (Postfix) with ESMTP id 07FD824380
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by alsa0.perex.cz (Postfix) with ESMTP id ACC4B2438E
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Jun 2010 11:09:27 +0200 (CEST)
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OQGWq-0007B2-OA
-	for alsa-devel@alsa-project.org; Sun, 20 Jun 2010 11:09:24 +0200
-Received: from cable-83.217.150.252.coditel.net ([83.217.150.252])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 20 Jun 2010 11:09:24 +0200
-Received: from miromoman by cable-83.217.150.252.coditel.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <alsa-devel@alsa-project.org>; Sun, 20 Jun 2010 11:09:24 +0200
+	Sun, 20 Jun 2010 11:26:47 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1276924111-11158-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,23 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-mips@linux-mips.org, Paul Gortmaker <p_gortmaker@yahoo.com>, David Brownell <dbrownell@users.sourceforge.net>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, Alessandro Zummo <a.zummo@towertech.it>, Greg Kroah-Hartman <gregkh@suse.de>, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, lm-sensors@lm-sensors.org, linux-usb@vger.kernel.org, linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org, Anton Vorontsov <cbouatmailru@gmail.com>, rtc-linux@googlegroups.com, Andrew Morton <akpm@linux-foundation.org>, David Woodhouse <dwmw2@infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-> Finally, I have even upgraded the BIOS to version 1.05 (it was 1.03 before). 
-> 
+On Sat, Jun 19, 2010 at 07:08:05AM +0200, Lars-Peter Clausen wrote:
+> This patch series adds support for the Ingenic JZ4740 System-on-a-Chip.
 
-It works now! I did not do anything else. Maybe it just needed to be
-unplugged... This would maybe indicate that it was the BIOS upgrade and not the
-Realtek drivers what did the trick.
+great stuff. I have a JZ4730 based netbook, for which I started magling
+the provided sources quite some time ago, but I didn't reach the
+point of submitting patches... there are a lot of common stuff between
+JZ4730 and JZ4740 so IMHO it would be a good thing not to nail
+everthing to JZ4740 namewise. It might also a good idea to select
+something like arch/mips/jzrisc as base directory, put the
+factored out code there and add JZ4730/JZ4740 in either seperate
+files or directories.
 
-I have model=hp-bpc now, but I tried this before and it did not work. For the
-first time, the there is a headphone switch and sound is working. 
+Thomas.
 
-Provided that the  headphone socket is currently the only interface between the
-graphics card and the outside world, my guess is that possibly the sound card
-was working before, only the headphone switch was not...
-
-Kind regards,
-
-Miro
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessary a
+good idea.                                                [ RFC1925, 2.3 ]
