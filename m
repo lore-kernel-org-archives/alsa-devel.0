@@ -1,21 +1,27 @@
-From: folkert <folkert@vanheusden.com>
-Subject: reading 1 second of audio at a time
-Date: Mon, 21 Jun 2010 21:26:00 +0200
-Message-ID: <20100621192559.GP15838@belle.intranet.vanheusden.com>
+From: Hans Schou <linux@schou.dk>
+Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
+Date: Mon, 21 Jun 2010 22:10:20 +0200
+Message-ID: <AANLkTikPW9j4H15gq7nl0Tb213R15uIQAnSDi_cTOJre@mail.gmail.com>
+References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
+	<1276972298.22889.16.camel@obelisk.thedillows.org>
+	<AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
+	<1277043970.22889.45.camel@obelisk.thedillows.org>
+	<AANLkTikBTMq3d-Ov65wYLJ_Vw-7Jde4AOwfXcEPB0wLr@mail.gmail.com>
+	<1277129180.22889.64.camel@obelisk.thedillows.org>
+	<AANLkTikW71h7ABVXY21pLL9AeOlmRTfVaSTjJ_6Ma0_R@mail.gmail.com>
+	<AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
+Reply-To: linux@schou.dk
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from keetweej.vanheusden.com (keetweej.vanheusden.com
-	[83.163.219.98]) by alsa0.perex.cz (Postfix) with ESMTP id 58876243A7
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E79AB2444F
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jun 2010 21:25:59 +0200 (CEST)
-Received: from belle.intranet.vanheusden.com (belle.intranet.vanheusden.com
-	[192.168.64.100])
-	by keetweej.vanheusden.com (Postfix) with ESMTP id 0F3EC8646
-	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jun 2010 21:25:59 +0200 (CEST)
-Content-Disposition: inline
+	Mon, 21 Jun 2010 22:10:41 +0200 (CEST)
+Received: by wwb13 with SMTP id 13so514017wwb.38
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2010 13:10:40 -0700 (PDT)
+In-Reply-To: <AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,84 +31,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: David Dillow <dave@thedillows.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+2010/6/21 Hans Schou <linux@schou.dk>:
 
-Am trying to achieve something trivial: reading 1 second of audio at a
-time, but something goes wrong:
+> I have just started:
+> =A0arecord -B 1000000 -F 500000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec=
+.wav
 
-Sound 1277148008.835094
-Sound 1277148008.838224
-Sound 1277148010.834839
-Sound 1277148010.838001
-Sound 1277148012.834523
-Sound 1277148012.837580
-Sound 1277148014.835240
-Sound 1277148014.838333
+It gave a file size of 258822944 bytes. Almost 50 min:
+  echo "258822944/(2*60*44100)" | bc -ql
+48.90
 
-As you can see; audio is returned for 2 seconds, then it sleeps 2
-secondsn, then 2 seconds of audio, etc.
+This is the longest recording I have made on this hardware.
 
-What I do is:
+I have this running now:
++ arecord -B 200000 -F 100000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec.wav
+Recording WAVE 'arec.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
+Hardware PCM card 0 'SiS7019' device 0 subdevice 0
+Its setup is:
+  stream       : CAPTURE
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 1
+  rate         : 44100
+  exact rate   : 44100 (44100/1)
+  msbits       : 16
+  buffer_size  : 8820
+  period_size  : 4410
+  period_time  : 100000
+  tick_time    : 0
+  tstamp_mode  : NONE
+  period_step  : 1
+  sleep_min    : 0
+  avail_min    : 4410
+  xfer_align   : 4410
+  start_threshold  : 1
+  stop_threshold   : 8820
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 1244678400
 
-        if (snd_pcm_hw_params_set_access(pcm_handle, hwparams, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-        }
+and no overrun within 2 min.
 
-        if (snd_pcm_hw_params_set_format(pcm_handle, hwparams, SND_PCM_FORMAT_S16_LE) < 0) {
-        }
-
-        exact_rate = 44100;
-        if (snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, &exact_rate, 0) < 0) {
-                error_exit("Error setting rate.\n");
-        }
-        if (*rate != exact_rate) {
-                fprintf(stderr, "The rate %d Hz is not supported by your hardware.\n ==> Using %d Hz instead.\n", *rate, exact_rate);
-                *rate = exact_rate;
-        }
-
-        if (snd_pcm_hw_params_set_channels(pcm_handle, hwparams, 2) < 0) { }
-
-	int periods = 2;
-        if (snd_pcm_hw_params_set_periods(pcm_handle, hwparams, periods, 0) < 0) {
-        }
-
-        if (snd_pcm_hw_params_set_buffer_size(pcm_handle, hwparams, exact_rate * 2 * n_channels) < 0) {
-        }
-
-        if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
-        }
-
-        return pcm_handle;
-}
-
-void get_audio_1s(snd_pcm_t *pcm_handle, short *buffer, int rate, int channels)
-{
-        int samples = channels * rate, index = 0;
-
-        while(samples > 0)
-        {
-                int cur = samples, pcmreturn;
-
-                while ((pcmreturn = snd_pcm_readi(pcm_handle, &buffer[index], cur)) < 0) {
-                        snd_pcm_prepare(pcm_handle);
-			printf("                                 underrun\n");
-                }
-
-                index += pcmreturn;
-                samples -= pcmreturn;
-        }
-}
-
-So I call this get_audio_1s() with the samplerate (44100) and the number of channels (2).
-Then it seems to return the first second at once, then the second second of audio too, then sleeps for 2 seconds(!) and then repeats.
-
-
-Folkert van Heusden
-
--- 
-Ever wonder what is out there? Any alien races? Then please support
-the seti@home project: setiathome.ssl.berkeley.edu
-----------------------------------------------------------------------
-Phone: +31-6-41278122, PGP-key: 1F28D8AE, www.vanheusden.com
+/hans
