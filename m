@@ -1,96 +1,37 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: snd_mixer_selem_get_playback_volume return value
-	outside allowed range
-Date: Mon, 21 Jun 2010 08:56:19 +0800
-Message-ID: <AANLkTimKWqxpLS5l8QPLGLh1z6I714SyYEWwn3K01Cyu@mail.gmail.com>
-References: <AANLkTikQ5cUjiAtVWhLaR348-eF3xzPFoBkfmEdefJU8@mail.gmail.com>
-	<s5haaqum9ml.wl%tiwai@suse.de>
+From: Xiangfu Liu <xiangfu.z@gmail.com>
+Subject: Re: [PATCH v2 00/26] Add support for the Ingenic JZ4740 System-on-a-Chip
+Date: Mon, 21 Jun 2010 10:56:10 +0800
+Message-ID: <4C1ED4CA.9030906@gmail.com>
+References: <1276924111-11158-1-git-send-email-lars@metafoo.de> <20100620092610.GA4950@alpha.franken.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0637710383A
-	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jun 2010 02:56:20 +0200 (CEST)
-Received: by vws18 with SMTP id 18so357722vws.38
-	for <alsa-devel@alsa-project.org>; Sun, 20 Jun 2010 17:56:19 -0700 (PDT)
-In-Reply-To: <s5haaqum9ml.wl%tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <20100620092610.GA4950@alpha.franken.de>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>, Andrew Morton <akpm@linux-foundation.org>, Anton Vorontsov <cbouatmailru@gmail.com>, David Brownell <dbrownell@users.sourceforge.net>, David Woodhouse <dwmw2@infradead.org>, Greg Kroah-Hartman <gregkh@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Paul Gortmaker <p_gortmaker@yahoo.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-usb@vger.kernel.org, lm-sensors@lm-sensors.org, rtc-linux@googlegroups.com
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/17 Takashi Iwai <tiwai@suse.de>
+On 06/20/2010 05:26 PM, Thomas Bogendoerfer wrote:
+> great stuff. I have a JZ4730 based netbook, for which I started magling
+> the provided sources quite some time ago, but I didn't reach the
+> point of submitting patches... there are a lot of common stuff between
+> JZ4730 and JZ4740 so IMHO it would be a good thing not to nail
+> everthing to JZ4740 namewise. It might also a good idea to select
+> something like arch/mips/jzrisc as base directory, put the
 
-> At Thu, 17 Jun 2010 08:35:54 +0800,
-> Raymond Yau wrote:
-> >
->
-> >
-> http://git.alsa-project.org/?p=alsa-utils.git;a=commit;h=c9b86f49a8a1a8c337bf0c1b7f12749e8be781ed
-> >
-> > your patch did not fix the buggy driver (e.g. alsa-pulse plugin) which
-> > return volume outside the alllowed range
-> >
-> >
-> > amixer -D pulse
-> > Simple mixer control 'Master',0
-> >   Capabilities: pvolume pswitch pswitch-joined
-> >   Playback channels: Front Left - Front Right
-> >   Limits: Playback 0 - 65536
-> >   Mono:
-> >   Front Left: Playback 98304 [150%] [on]
-> >   Front Right: Playback 98304 [150%] [on]
-> >
-> >
-> >
-> >
-> > Should snd_mixer_selem_get_playback_volume() perform range check ?
-> >
-> > tatic int get_volume_ops(snd_mixer_elem_t *elem, int dir,
-> >               snd_mixer_selem_channel_id_t channel, long *value)
-> > {
-> >     selem_none_t *s = snd_mixer_elem_get_private(elem);
-> >     if (s->selem.caps & SM_CAP_GVOLUME)
-> >         dir = SM_PLAY;
-> >     if ((unsigned int) channel >= s->str[dir].channels)
-> >         return -EINVAL;
-> >     *value = s->str[dir].vol[channel];
-> > +       if (*value > s->str[dir].max)
-> > +                return -EINVAL;
-> > +       if (*value < s->str[dir].min)
-> > +                return -EINVAL;
-> >     return 0;
->
-> Some sanity check would be nice, but returning -EINVAL here isn't
-> correct, at least.  -EINVAL should be returned when the caller gives a
-> wrong value (e.g. a wrong channel value).
->
->
-> Takashi
->
+Hi Thomas
 
-But  the application can use snd_mixer_selem_set_playback_volume_range() to
-set min and max of the control ,
+I would advice "xburst" instead jzrisc. because the Ingenic call
+their cpu "XBurst" series. like: XBurst JZ4740, XBurst JZ4750 ...
 
-is there any reason allow the application to set this range ?
 
-it seem that snd_mixer_selem_set_playback_volume did not performe any range
-check
+> factored out code there and add JZ4730/JZ4740 in either seperate
+> files or directories.
 
-correct me if I am wrong, I seem able to use
-snd_mixer_selem_set_playback_volume to -1 for the pulse device and there is
-no error return , but I get  another value when use
-snd_mixer_selem_get_playback_volume
 
-BTW, amixer has -nocheck option to bypass the range check but this option
-seem unable to set the value of "Master playback volume" toabove max
+-- 
+Best Regards
+Xiangfu Liu
+http://www.openmobilefree.net
