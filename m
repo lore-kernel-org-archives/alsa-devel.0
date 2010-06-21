@@ -1,37 +1,56 @@
-From: Xiangfu Liu <xiangfu.z@gmail.com>
-Subject: Re: [PATCH v2 00/26] Add support for the Ingenic JZ4740 System-on-a-Chip
-Date: Mon, 21 Jun 2010 10:56:10 +0800
-Message-ID: <4C1ED4CA.9030906@gmail.com>
-References: <1276924111-11158-1-git-send-email-lars@metafoo.de> <20100620092610.GA4950@alpha.franken.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
+Date: Mon, 21 Jun 2010 13:27:00 +0800
+Message-ID: <AANLkTin2DtVQR_XBat8T_aCrf2_PgIm0KNgXkZfHfnUn@mail.gmail.com>
+References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
+	<1276972298.22889.16.camel@obelisk.thedillows.org>
+	<AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
+	<1277043970.22889.45.camel@obelisk.thedillows.org>
+	<AANLkTikz9pqSvylmKfUPVHRvZtFx4pwzFeRbDWjO9Z8w@mail.gmail.com>
+	<1277083535.22889.51.camel@obelisk.thedillows.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mmc-owner@vger.kernel.org>
-In-Reply-To: <20100620092610.GA4950@alpha.franken.de>
-Sender: linux-mmc-owner@vger.kernel.org
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>, Andrew Morton <akpm@linux-foundation.org>, Anton Vorontsov <cbouatmailru@gmail.com>, David Brownell <dbrownell@users.sourceforge.net>, David Woodhouse <dwmw2@infradead.org>, Greg Kroah-Hartman <gregkh@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Paul Gortmaker <p_gortmaker@yahoo.com>, Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, linux-usb@vger.kernel.org, lm-sensors@lm-sensors.org, rtc-linux@googlegroups.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 95F88243FA
+	for <alsa-devel@alsa-project.org>;
+	Mon, 21 Jun 2010 07:27:02 +0200 (CEST)
+Received: by vws20 with SMTP id 20so187903vws.38
+	for <alsa-devel@alsa-project.org>; Sun, 20 Jun 2010 22:27:00 -0700 (PDT)
+In-Reply-To: <1277083535.22889.51.camel@obelisk.thedillows.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: David Dillow <dave@thedillows.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06/20/2010 05:26 PM, Thomas Bogendoerfer wrote:
-> great stuff. I have a JZ4730 based netbook, for which I started magling
-> the provided sources quite some time ago, but I didn't reach the
-> point of submitting patches... there are a lot of common stuff between
-> JZ4730 and JZ4740 so IMHO it would be a good thing not to nail
-> everthing to JZ4740 namewise. It might also a good idea to select
-> something like arch/mips/jzrisc as base directory, put the
+2010/6/21 David Dillow <dave@thedillows.org>
 
-Hi Thomas
+> On Mon, 2010-06-21 at 08:47 +0800, Raymond Yau wrote:
+> > 2010/6/20 David Dillow <dave@thedillows.org>
+> >
+> > > Please keep me on the cc list, I'll see your message sooner in my Inbox
+> > > than my mailing list folders.
+>
+> Please don't trim the cc list when replying. If you inadvertently hit
+> reply instead of reply-to-all, my apologies.
+>
+> > AFAIK , pulse device did not support MMAP
+>
+> Thanks, that's a pretty good clue he's using the hardware device.
+> Unfortunately, that means either I have bug in my driver or he's got too
+> much system noise and hitting overruns.
+>
+>
 
-I would advice "xburst" instead jzrisc. because the Ingenic call
-their cpu "XBurst" series. like: XBurst JZ4740, XBurst JZ4750 ...
+17:41:30.646532 access("/usr/share/alsa/cards/SiS7019.conf", R_OK) = -1
+ENOENT (No such file or directory)
 
-
-> factored out code there and add JZ4730/JZ4740 in either seperate
-> files or directories.
-
-
--- 
-Best Regards
-Xiangfu Liu
-http://www.openmobilefree.net
+There is no aliase for SiS7019 entry in /usr/share/alsa/cards/aliases.conf
