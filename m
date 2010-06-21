@@ -1,23 +1,23 @@
-From: =?ISO-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>
-Subject: Re: [PATCH] eukrea-tlv320: add support for our i.MX25
- board
-Date: Sun, 20 Jun 2010 21:17:11 +0200
-Message-ID: <4C1E6937.6050903@eukrea.com>
-References: <1276782241-9407-1-git-send-email-eric@eukrea.com>
-	<20100618005637.GA3333@opensource.wolfsonmicro.com>
-	<4C1B1BE9.9040802@eukrea.com>
-	<20100619002937.GB2463@opensource.wolfsonmicro.com>
-	<4C1C8390.8000302@eukrea.com>
-	<20100619110604.GC2409@opensource.wolfsonmicro.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
+Date: Mon, 21 Jun 2010 08:47:06 +0800
+Message-ID: <AANLkTikz9pqSvylmKfUPVHRvZtFx4pwzFeRbDWjO9Z8w@mail.gmail.com>
+References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
+	<1276972298.22889.16.camel@obelisk.thedillows.org>
+	<AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
+	<1277043970.22889.45.camel@obelisk.thedillows.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 29.mail-out.ovh.net (29.mail-out.ovh.net [87.98.216.213])
-	by alsa0.perex.cz (Postfix) with SMTP id D932210383C
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 8327610382F
 	for <alsa-devel@alsa-project.org>;
-	Sun, 20 Jun 2010 21:17:13 +0200 (CEST)
-In-Reply-To: <20100619110604.GC2409@opensource.wolfsonmicro.com>
+	Mon, 21 Jun 2010 02:47:08 +0200 (CEST)
+Received: by vws18 with SMTP id 18so350584vws.38
+	for <alsa-devel@alsa-project.org>; Sun, 20 Jun 2010 17:47:06 -0700 (PDT)
+In-Reply-To: <1277043970.22889.45.camel@obelisk.thedillows.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,42 +27,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, lrg@slimlogic.co.uk
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+2010/6/20 David Dillow <dave@thedillows.org>
 
-Le 19/06/2010 13:06, Mark Brown a =E9crit :
-> On Sat, Jun 19, 2010 at 10:45:04AM +0200, Eric B=E9nard wrote:
->> ok, we can suppose that if someone introduce the possibility to
->> build the SSI driver as a separate module, he will add the right
->> Kconfig option.
+> Please keep me on the cc list, I'll see your message sooner in my Inbox
+> than my mailing list folders.
 >
-> This should just be a matter of a simple Makefile edit.
+> On Sun, 2010-06-20 at 08:20 +0200, Hans Schou wrote:
+> > > On Sat, 2010-06-19 at 16:13 +0200, Hans Schou wrote:
+> > >> Hi
+> > >>
+> > >> I have a problem with recording sound when using the sound chip
+> > >> SIS7019 with both kernel 2.6.26 and 2.6.34. After recording about 42
+> > >> minutes it kind a stops recording, more precisely it is taking a pause
+> > >> of exactly 10 seconds between each reading.
+> > >>
+> > >> As recorder I have tried several programs and all of them fails after
+> > >> 42 minutes. Some programs uses Alsa and some uses the old deprecated
+> > >> method. In this example I have logged sox rec.
+> > >>
+> > >> Recording method in a script:
+> > >>   strace -tt -o strace.log rec -c 1 -r 44100 -2 sox.wav &
+> > >>   sleep 3000
+> > >>   kill $?
+> > >
+> > > I think the answer is no, but to be sure -- are you talking directly to
+> > > the hardware device, or are you going through pulseaudio?
+> >
+> > Eh? No to what? Alsa?
 >
-OK, I gave this a quick try and it doesn't seem actually possible to =
+> Pulseaudio.
+>
 
-compile imx-ssi.c as a module without changing some code to separate ssi =
+what is the default device ?  dsnoop, hw or pulse
 
-and pcm parts which are actually mixed in imx-ssi.c.
-So actually, selecting SND_IMX_SOC as a module produces snd-soc.imx.ko =
+Please use alsa "hw" device first , and then pulseaudio
 
-which integrates the SSI driver + the PCM drivers.
+if you are using pulseaudio , you need to provide a full pulseaudio.log (
+pulseaudio -vvvvv ) and cc PA developer with your result
 
-So actually the 3 following configurations are possible (and tested on =
 
-my i.MX27 board)  with the patch I sent for Kconfig :
-- imx soc driver in kernel, board driver in kernel
-- imx soc driver in kernel, board driver (snd-soc-eukrea-tlv320.ko) as a =
+>
+> >  I am not really sure. In strace I can see 'rec'
+> > uses ioclt which could implies that it is talking directly to
+> > hardware.
+>
+> Probably, but I'm not familiar enough with the library/user-space side
+> of alsa to know how it talks to plugins. I expect you are correct,
+> though.
+>
+> > > While rec is running, can you capture the configuration using
+> > > head -1000 /proc/asound/card0/pcm0c/sub0/*
+> >
+> > Below was captured while running:
+> >    arecord -c 1 -r 44100 -f S16 arec01.wav
+>
 
-module
-- imx soc driver (snd-soc-imx.ko) and board driver =
+Please specify  -D hw:0,0 and -v to get output of snd_pcm_dump()
 
-(snd-soc-eukrea-tlv320.ko) as 2 modules.
 
-Also thanks for suggesting this Makefile edit, this allowed me to fix =
+>
+> You caught the correct files, yes. Did that command produce 10 second
+> pauses? If not, then I need to see the same information from the rec
+> command you were using to reproduce the issue before. It may be easier
+> to just run the rec command for a moment to collect the data rather than
+> wait the 40+ minutes to see if arecord also demonstrates the issue.
+>
+> > I got a strange error message from arecord while recording at rate 44100:
+> > overrun!!! (at least 0.188 ms long)
+> > overrun!!! (at least 0.190 ms long)
+> > overrun!!! (at least 0.191 ms long)
+> >
+> > Could this be a clue?
+>
 
-sound support for my board when soc is compiled as a module ;-)
+Are you getting this result when using "hw" device or "pulse" device ?
 
-Eric
+what buffer size and period size are arecord using ?
+
+
+
+>
+> Perhaps; I'm guessing that rec (sox) is using the mmap interface, and
+> I've not done much with that -- though perhaps there is a bug in sox's
+> overrun handling. You could enable SND_PCM_XRUN_DEBUG to see if overruns
+> are happening when sox starts taking 10 seconds.
+>
+> Getting overruns on SiS 550 based devices isn't entirely surprising, as
+> it doesn't have a huge amount of horsepower or memory. If you have too
+> much going on in the background, it is very easy to not have enough time
+> to processes all of the captured data, especially if you are running
+> short period/buffer sizes.
+>
+> > The error does occur with rate 8000 8bit (the default).
+>
+> Do you mean 'does not occur'? That may be more expected -- 8khz/8bit has
+> approximately 9% of the data as 44.1khz/16bit.
+>
+> > > Can you try using arecord? You can use options to tell it how to
+> > > configure the PCM. Especially interesting will be to configure 2
+> periods
+> > > per buffer vs whatever rec uses. 2 periods per buffer uses the hardware
+> > > interrupts to clock out periods, where as 3+ uses a more complex
+> > > mechanism. You can also use -M to use mmap vs not.
+> >
+> > Options like this?
+> > strace -tt -o arec.log arecord -c 1 -r 44100 -f S16 -M arec.wav
+>
+> AFAIK , pulse device did not support MMAP
+
+
+> Yes, for testing if the mmap interface is the problem. You can also use
+> -v to have it print more information, including the source of the data
+> (hw vs Pulseaudio). To check 1 period vs 2, you can use the
+> --period-size/--buffer-size options. I seem to recall that there is a
+> bug lurking around there somewhere, so you should check that you got 1
+> period using -v or the proc files. You may have to fallback to the -F/-B
+> options and convert samples to microseconds.
+>
+> Dave
+>
+>
