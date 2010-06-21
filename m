@@ -1,19 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: Question about snd_soc_add_controls
-Date: Mon, 21 Jun 2010 10:41:31 +0100
-Message-ID: <B0E1ACA6-F554-4C10-A21A-EDB9F15ED324@opensource.wolfsonmicro.com>
-References: <w3pfx0gn3p3.wl%kuninori.morimoto.gx@renesas.com>
-	(sfid-20100621_101934_757691_406BA2F7)
-Mime-Version: 1.0 (Apple Message framework v1081)
+From: Hans-Kristian Arntzen <maister@archlinux.us>
+Subject: Re: redirecting audio to another desktop machine
+Date: Mon, 21 Jun 2010 12:51:12 +0200
+Message-ID: <4C1F4420.3060904@archlinux.us>
+References: <mailman.1.1277114401.21597.alsa-devel@alsa-project.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 40AE224542
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 1B7F424570
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jun 2010 11:41:33 +0200 (CEST)
-In-Reply-To: <w3pfx0gn3p3.wl%kuninori.morimoto.gx@renesas.com>
-	(sfid-20100621_101934_757691_406BA2F7)
+	Mon, 21 Jun 2010 12:51:19 +0200 (CEST)
+Received: by wyb40 with SMTP id 40so2175305wyb.38
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2010 03:51:17 -0700 (PDT)
+In-Reply-To: <mailman.1.1277114401.21597.alsa-devel@alsa-project.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,34 +23,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21 Jun 2010, at 10:19, Kuninori Morimoto wrote:
+On 06/21/2010 12:00 PM, alsa-devel-request@alsa-project.org wrote:
+> Date: Mon, 21 Jun 2010 14:57:00 +0530
+> From: Viral Mehta<Viral.Mehta@lntinfotech.com>
+> Subject: [alsa-devel] redirecting audio to another desktop machine
+> To: "alsa-devel@alsa-project.org"<alsa-devel@alsa-project.org>
+> Message-ID:
+> 	<70376CA23424B34D86F1C7DE6B9973430254343B3E@VSHINMSMBX01.vshodc.lntinfotech.com>
+> 	
+> Content-Type: text/plain; charset="us-ascii"
+>
+> Hi list,
+>
+> I have an embedded device running linux kernel and a minimal filesystem.
+>
+> I want to access this device remotely which means I should be able to connect to the device just like we do Remote Desktop over ethernet.
+> I am able to do this. I am able to send key-event and framebuffer data whenever my desktop machine connects to the device.
+>
+> But, I am not able to send audio data on remote side.
+> I am really not sure which device file (/dev/snd/ ???) I should read and capture the data and should send across....
+> Or can I read the playback device ? I think NO.
+> Do I need to create some kind of virtual sound device ?
+>
+> Any pointers/suggestions are appreciated.
+>
+> Thanks,
+> Viral
+>
+>
+>    
+If you want to reroute an ALSA application over the network, you can use 
+output plugins. Afaik, both PulseAudio and RSound provides plugins for 
+this. You generally want to set up a virtual device in .asoundrc or 
+similar.
 
-> But I wonder
-> #define DECLARE_TLV_DB_SCALE(name, min, step, mute)
-> 
-> Does this "mute" mean that it can use mute ?
-> But how to ?
-
-In many chips the lowest gain setting is defined as mute rather than
-a dB value. Setting the mute flag indicates that this is the case for
-this gain control.
-
-> #define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert, tlv_array)
-
-> What is this "xinvert" ?
-
-It means that instead of the lowest register value being the lowest
-volume the highest register value is the lowest volume. This is used
-to ensure the control is mapped properly in userspace so sliders
-raise the volume when moved upwards. 
-
-> Can you please teach me about above ?
-> And where is these code used ?
-> It seems very complex for me...
-
-See the functions that are specified in the macro - these values are
-used to generate ALSA controls for the specified bitfields.
+-- Hans-Kristian Arntzen
