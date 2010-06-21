@@ -1,20 +1,19 @@
-From: Viral Mehta <Viral.Mehta@lntinfotech.com>
-Subject: redirecting audio to another desktop machine
-Date: Mon, 21 Jun 2010 14:57:00 +0530
-Message-ID: <70376CA23424B34D86F1C7DE6B9973430254343B3E@VSHINMSMBX01.vshodc.lntinfotech.com>
-References: <70376CA23424B34D86F1C7DE6B9973430254343B29@VSHINMSMBX01.vshodc.lntinfotech.com>,
-	<70376CA23424B34D86F1C7DE6B9973430254343B2B@VSHINMSMBX01.vshodc.lntinfotech.com>
-Mime-Version: 1.0
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: Question about snd_soc_add_controls
+Date: Mon, 21 Jun 2010 10:41:31 +0100
+Message-ID: <B0E1ACA6-F554-4C10-A21A-EDB9F15ED324@opensource.wolfsonmicro.com>
+References: <w3pfx0gn3p3.wl%kuninori.morimoto.gx@renesas.com>
+	(sfid-20100621_101934_757691_406BA2F7)
+Mime-Version: 1.0 (Apple Message framework v1081)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail192.messagelabs.com (mail192.messagelabs.com
-	[216.82.241.243])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2FFCF24527
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 40AE224542
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jun 2010 11:27:20 +0200 (CEST)
-In-Reply-To: <70376CA23424B34D86F1C7DE6B9973430254343B2B@VSHINMSMBX01.vshodc.lntinfotech.com>
-Content-Language: en-US
+	Mon, 21 Jun 2010 11:41:33 +0200 (CEST)
+In-Reply-To: <w3pfx0gn3p3.wl%kuninori.morimoto.gx@renesas.com>
+	(sfid-20100621_101934_757691_406BA2F7)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +23,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi list,
+On 21 Jun 2010, at 10:19, Kuninori Morimoto wrote:
 
-I have an embedded device running linux kernel and a minimal filesystem.
+> But I wonder
+> #define DECLARE_TLV_DB_SCALE(name, min, step, mute)
+> 
+> Does this "mute" mean that it can use mute ?
+> But how to ?
 
-I want to access this device remotely which means I should be able to connect to the device just like we do Remote Desktop over ethernet.
-I am able to do this. I am able to send key-event and framebuffer data whenever my desktop machine connects to the device.
+In many chips the lowest gain setting is defined as mute rather than
+a dB value. Setting the mute flag indicates that this is the case for
+this gain control.
 
-But, I am not able to send audio data on remote side.
-I am really not sure which device file (/dev/snd/ ???) I should read and capture the data and should send across....
-Or can I read the playback device ? I think NO.
-Do I need to create some kind of virtual sound device ?
+> #define SOC_DOUBLE_R_TLV(xname, reg_left, reg_right, xshift, xmax, xinvert, tlv_array)
 
-Any pointers/suggestions are appreciated.
+> What is this "xinvert" ?
 
-Thanks,
-Viral
+It means that instead of the lowest register value being the lowest
+volume the highest register value is the lowest volume. This is used
+to ensure the control is mapped properly in userspace so sliders
+raise the volume when moved upwards. 
 
-This Email may contain confidential or privileged information for the intended recipient (s) If you are not the intended recipient, please do not use or disseminate the information, notify the sender and delete it from your system.
+> Can you please teach me about above ?
+> And where is these code used ?
+> It seems very complex for me...
 
-______________________________________________________________________
+See the functions that are specified in the macro - these values are
+used to generate ALSA controls for the specified bitfields.
