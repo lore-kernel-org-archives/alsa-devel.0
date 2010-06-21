@@ -1,28 +1,21 @@
-From: David Dillow <dave@thedillows.org>
-Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
-Date: Mon, 21 Jun 2010 15:06:57 -0400
-Message-ID: <1277147217.2501.52.camel@lap75545.ornl.gov>
-References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
-	<1276972298.22889.16.camel@obelisk.thedillows.org>
-	<AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
-	<1277043970.22889.45.camel@obelisk.thedillows.org>
-	<AANLkTikBTMq3d-Ov65wYLJ_Vw-7Jde4AOwfXcEPB0wLr@mail.gmail.com>
-	<1277129180.22889.64.camel@obelisk.thedillows.org>
-	<AANLkTikW71h7ABVXY21pLL9AeOlmRTfVaSTjJ_6Ma0_R@mail.gmail.com>
-	<AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
+From: folkert <folkert@vanheusden.com>
+Subject: reading 1 second of audio at a time
+Date: Mon, 21 Jun 2010 21:26:00 +0200
+Message-ID: <20100621192559.GP15838@belle.intranet.vanheusden.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from emroute2.ornl.gov (emroute2.ornl.gov [160.91.86.17])
-	by alsa0.perex.cz (Postfix) with ESMTP id A8F132440A
+Received: from keetweej.vanheusden.com (keetweej.vanheusden.com
+	[83.163.219.98]) by alsa0.perex.cz (Postfix) with ESMTP id 58876243A7
 	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jun 2010 21:06:59 +0200 (CEST)
-Received: from emroute2.ornl.gov ([127.0.0.1])
-	by emroute2.ornl.gov (PMDF V6.5 #31823)
-	with ESMTP id <0L4D005C0P3MJI@emroute2.ornl.gov> for
-	alsa-devel@alsa-project.org; Mon, 21 Jun 2010 15:06:58 -0400 (EDT)
-In-reply-to: <AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
+	Mon, 21 Jun 2010 21:25:59 +0200 (CEST)
+Received: from belle.intranet.vanheusden.com (belle.intranet.vanheusden.com
+	[192.168.64.100])
+	by keetweej.vanheusden.com (Postfix) with ESMTP id 0F3EC8646
+	for <alsa-devel@alsa-project.org>;
+	Mon, 21 Jun 2010 21:25:59 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,65 +25,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux@schou.dk
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-06-21 at 20:49 +0200, Hans Schou wrote:
-> 2010/6/21 Hans Schou <linux@schou.dk>:
-> > 2010/6/21 David Dillow <dave@thedillows.org>:
-> >> An overrun means that arecord didn't run for 500ms, and the load average
-> >> won't really tell you much about that -- latency can happen with low
-> >
-> > Well, I did not see that with sox. It was running fine for 42 min.
+Hi,
 
-My thought is that you may have been somewhat fortunate and did not see
-an overrun for 42 minutes. I am trying to narrow down if this is an
-issue with sox's overrun handling, if there is a big with handing
-anything other than two periods per buffer, or some other generic bug in
-the driver.
+Am trying to achieve something trivial: reading 1 second of audio at a
+time, but something goes wrong:
 
-> >> I don't know the options available on sox, but if you can use arecord to
-> >> reproduce, then that is probably the best tool for the job. Can you set
-> >> it up to use two periods per buffer and see if you still can reproduce?
-> >> Options would look like -B 250000 -F 125000. A second test with -B
-> >> 1000000 -F 500000 would be interesting, if the hw can handle buffers of
-> >> that size -- I don't recall offhand.
-> >
-> > I have just started it with  -B 250000 -F 125000 and get a lot of overrun.
-> > I skipped using strace to make less stress.
-> >
-> > cmdline is now:
-> > arecord -B 250000 -F 125000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec.wav
-> 
-> This gave a 191069598 bytes long file. What does this test actually
-> show regarding the original problem with stopping after 42 min?
+Sound 1277148008.835094
+Sound 1277148008.838224
+Sound 1277148010.834839
+Sound 1277148010.838001
+Sound 1277148012.834523
+Sound 1277148012.837580
+Sound 1277148014.835240
+Sound 1277148014.838333
 
-I'm trying to have you reproduce the original problem using 2 periods
-per buffer so that I can localize the likely location of a driver bug.
-If it only happens when there is not 2 periods per buffer, then that
-points to one set of timing code. If it also happens with 2 periods per
-buffer, then that points to a more generic bug.
+As you can see; audio is returned for 2 seconds, then it sleeps 2
+secondsn, then 2 seconds of audio, etc.
 
-> I have just started:
->  arecord -B 1000000 -F 500000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec.wav
-> and I only got one overrun. What I did was that logged in on another
-> ssh console and executed "ls".
+What I do is:
 
-That sounds like a scheduling latency issue, yes.
+        if (snd_pcm_hw_params_set_access(pcm_handle, hwparams, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
+        }
 
-> Here is a complete screen dump after running 2 minutes:
-> + arecord -B 1000000 -F 500000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec.wav
-> Recording WAVE 'arec.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
-> Hardware PCM card 0 'SiS7019' device 0 subdevice 0
-> Its setup is:
+        if (snd_pcm_hw_params_set_format(pcm_handle, hwparams, SND_PCM_FORMAT_S16_LE) < 0) {
+        }
 
->   buffer_size  : 32768
->   period_size  : 22050
+        exact_rate = 44100;
+        if (snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, &exact_rate, 0) < 0) {
+                error_exit("Error setting rate.\n");
+        }
+        if (*rate != exact_rate) {
+                fprintf(stderr, "The rate %d Hz is not supported by your hardware.\n ==> Using %d Hz instead.\n", *rate, exact_rate);
+                *rate = exact_rate;
+        }
 
-Ok, please play with the options until you can get buffer_size = 2 *
-period_size. That will eliminate the alternate timing code from the
-path. I expected that options you gave to do that, but apparently there
-is something else keeping that from happening.
+        if (snd_pcm_hw_params_set_channels(pcm_handle, hwparams, 2) < 0) { }
 
-Dave
+	int periods = 2;
+        if (snd_pcm_hw_params_set_periods(pcm_handle, hwparams, periods, 0) < 0) {
+        }
+
+        if (snd_pcm_hw_params_set_buffer_size(pcm_handle, hwparams, exact_rate * 2 * n_channels) < 0) {
+        }
+
+        if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
+        }
+
+        return pcm_handle;
+}
+
+void get_audio_1s(snd_pcm_t *pcm_handle, short *buffer, int rate, int channels)
+{
+        int samples = channels * rate, index = 0;
+
+        while(samples > 0)
+        {
+                int cur = samples, pcmreturn;
+
+                while ((pcmreturn = snd_pcm_readi(pcm_handle, &buffer[index], cur)) < 0) {
+                        snd_pcm_prepare(pcm_handle);
+			printf("                                 underrun\n");
+                }
+
+                index += pcmreturn;
+                samples -= pcmreturn;
+        }
+}
+
+So I call this get_audio_1s() with the samplerate (44100) and the number of channels (2).
+Then it seems to return the first second at once, then the second second of audio too, then sleeps for 2 seconds(!) and then repeats.
+
+
+Folkert van Heusden
+
+-- 
+Ever wonder what is out there? Any alien races? Then please support
+the seti@home project: setiathome.ssl.berkeley.edu
+----------------------------------------------------------------------
+Phone: +31-6-41278122, PGP-key: 1F28D8AE, www.vanheusden.com
