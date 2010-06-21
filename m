@@ -1,80 +1,84 @@
-From: Hans Schou <linux@schou.dk>
-Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
-Date: Mon, 21 Jun 2010 22:10:20 +0200
-Message-ID: <AANLkTikPW9j4H15gq7nl0Tb213R15uIQAnSDi_cTOJre@mail.gmail.com>
-References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
-	<1276972298.22889.16.camel@obelisk.thedillows.org>
-	<AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
-	<1277043970.22889.45.camel@obelisk.thedillows.org>
-	<AANLkTikBTMq3d-Ov65wYLJ_Vw-7Jde4AOwfXcEPB0wLr@mail.gmail.com>
-	<1277129180.22889.64.camel@obelisk.thedillows.org>
-	<AANLkTikW71h7ABVXY21pLL9AeOlmRTfVaSTjJ_6Ma0_R@mail.gmail.com>
-	<AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
-Reply-To: linux@schou.dk
+From: Stuart Longland <redhatter@gentoo.org>
+Subject: Re: [PATCH] ASoC: Add new TI TLV320AIC3204 CODEC driver
+Date: Tue, 22 Jun 2010 09:43:14 +1000
+Message-ID: <20100621234314.GZ7759@www.longlandclan.yi.org>
+References: <1276833465-31702-1-git-send-email-redhatter@gentoo.org>
+ <1276899876-19001-1-git-send-email-redhatter@gentoo.org>
+ <20100619011221.GC2463@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id E79AB2444F
-	for <alsa-devel@alsa-project.org>;
-	Mon, 21 Jun 2010 22:10:41 +0200 (CEST)
-Received: by wwb13 with SMTP id 13so514017wwb.38
-	for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2010 13:10:40 -0700 (PDT)
-In-Reply-To: <AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Dillow <dave@thedillows.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20100619011221.GC2463@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: ALSA Development List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Linux Kernel <linux-kernel@vger.kernel.org>, Linux ARM Kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/21 Hans Schou <linux@schou.dk>:
+On Sat, Jun 19, 2010 at 02:12:21AM +0100, Mark Brown wrote:
+> On Sat, Jun 19, 2010 at 08:24:36AM +1000, Stuart Longland wrote:
+> > +	/* Page 1 */
+> > +	if (page =3D=3D 1) {
+> > +		if (reg <=3D 4)
+> > +			return 1;
+>=20
+> I can't help but think that this'd be more legible with switch ()
+> statements (GCC has an extension for ranges in switch statements whic=
+h
+> you could use).
 
-> I have just started:
-> =A0arecord -B 1000000 -F 500000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec=
-.wav
+I gave this some further thought... I'm not certain that a switch
+statement is going to be much clearer.  There are two ways I can tackle
+this.
 
-It gave a file size of 258822944 bytes. Almost 50 min:
-  echo "258822944/(2*60*44100)" | bc -ql
-48.90
+One is to go on a page-by-page basis, which is how I do it using the if
+statements.  Here; I define my ranges so that I start from the very
+end... anything beyond page 70 is invalid ... voila, I eliminate those
+early on.  A number of pages have a similar register pattern, and so I
+make use of nested if statements to explain this.  The if block for
+pages following always use the block before to define the upper,
+non-inclusive bound.
 
-This is the longest recording I have made on this hardware.
+The register tests start from register 0.  I could perhaps reverse the
+outer ifs to start at page 0 and work forwards too... but I instead wor=
+k
+backwards from page 70.
 
-I have this running now:
-+ arecord -B 200000 -F 100000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec.wav
-Recording WAVE 'arec.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
-Hardware PCM card 0 'SiS7019' device 0 subdevice 0
-Its setup is:
-  stream       : CAPTURE
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 44100
-  exact rate   : 44100 (44100/1)
-  msbits       : 16
-  buffer_size  : 8820
-  period_size  : 4410
-  period_time  : 100000
-  tick_time    : 0
-  tstamp_mode  : NONE
-  period_step  : 1
-  sleep_min    : 0
-  avail_min    : 4410
-  xfer_align   : 4410
-  start_threshold  : 1
-  stop_threshold   : 8820
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1244678400
+I exit the function as early as possible to skip unneeded checks, as
+soon as I know a range is valid or not, I return 1 or 0.  Perhaps the 1
+or 0 could be made clearer (a couple of #defines maybe?) but to me, it
+looks fairly clear.
 
-and no overrun within 2 min.
+I could use switch statements to replace some or all of the if
+statements.  There'd be a small benefit I suppose in making the outer i=
+f
+statements a switch, but little anywhere else from what I can see.
 
-/hans
+The other way is that I ignore pages completely; and use the
+AIC3204_PGREG macro to define ranges of absolute register addresses.
+This may have a small benefit in speed since these are compiled in... a=
+s
+opposed to runtime masking/shifting, but I don't see that being much
+clearer either.  I'd still come to a case statement, then return.
+
+This is a function largely intended for debugging, in fact, I'm thinkin=
+g
+I should probably wrap it in #ifdef CONFIG_DEBUG_FS, since the function
+isn't called unless debugfs is enabled.  So I'm not certain that
+performance is worth chasing here given the intended purpose -- it's no=
+t
+something that's called all the time, nor something that will be used i=
+n
+a production environment.
+
+That's my thoughts on the issue, perhaps na=C3=AFve, but I'm not sure
+there's any real gain in refactoring this.
+--=20
+Stuart Longland (aka Redhatter, VK4MSL)      .'''.
+Gentoo Linux/MIPS Cobalt and Docs Developer  '.'` :
+=2E . . . . . . . . . . . . . . . . . . . . .   .'.'
+http://dev.gentoo.org/~redhatter             :.'
+
+I haven't lost my mind...
+  ...it's backed up on a tape somewhere.
