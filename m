@@ -1,15 +1,24 @@
-From: Luke Yelavich <themuso@ubuntu.com>
-Subject: [PATCH] ALSA: hda - Add Macbook 5,2 quirk
-Date: Tue, 22 Jun 2010 11:04:19 +1000
-Message-ID: <1277168659-8894-1-git-send-email-themuso@ubuntu.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: snd_mixer_selem_get_playback_volume return value
+	outside allowed range
+Date: Tue, 22 Jun 2010 09:41:17 +0800
+Message-ID: <AANLkTinnNh_oU3jQ5PqDoHDMICTLKdJw05hPddJKrAiY@mail.gmail.com>
+References: <AANLkTikQ5cUjiAtVWhLaR348-eF3xzPFoBkfmEdefJU8@mail.gmail.com>
+	<4C1A2A9C.3000902@ladisch.de>
+	<AANLkTimF2iotSHsjFQFtHYo89yuXZRcYvHNvJm79g4Dw@mail.gmail.com>
+	<hvhu14$cov$2@dough.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nschwmtas05p.mx.bigpond.com (nschwmtas05p.mx.bigpond.com
-	[61.9.189.149]) by alsa0.perex.cz (Postfix) with ESMTP id 506CD24552
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 1658B103885
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Jun 2010 03:04:21 +0200 (CEST)
+	Tue, 22 Jun 2010 03:41:19 +0200 (CEST)
+Received: by vws20 with SMTP id 20so1423838vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 21 Jun 2010 18:41:17 -0700 (PDT)
+In-Reply-To: <hvhu14$cov$2@dough.gmane.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,33 +28,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Luke Yelavich <luke.yelavich@canonical.com>, stable@kernel.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Luke Yelavich <luke.yelavich@canonical.com>
+2010/6/19 Colin Guthrie <gmane@colin.guthr.ie>
 
-BugLink: https://bugs.launchpad.net/bugs/463178
+> 'Twas brillig, and Raymond Yau at 19/06/10 03:39 did gyre and gimble:
+> > 2010/6/17 Clemens Ladisch <clemens@ladisch.de>
+> >
+> >> Raymond Yau wrote:
+> >>> Should snd_mixer_selem_get_playback_volume() perform range check ?
+> >>
+> >> No, it's the responsibility of the control implementation to return
+> >> valid values (and to check that values that are being set are valid).
+> >>
+> >>
+> >> Regards,
+> >> Clemens
+> >> _
+>
 
-Set Macbook 5,2 (106b:4a00) hardware to use ALC885_MB5
 
-Cc: <stable@kernel.org>
-Signed-off-by: Luke Yelavich <luke.yelavich@canonical.com>
----
- sound/pci/hda/patch_realtek.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+It is OK to clamp the volume so that the volume bar would not distort the
+layout
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f1ce7d7..b145306 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9486,6 +9486,7 @@ static struct snd_pci_quirk alc882_ssid_cfg_tbl[] = {
- 	SND_PCI_QUIRK(0x106b, 0x3e00, "iMac 24 Aluminum", ALC885_IMAC24),
- 	SND_PCI_QUIRK(0x106b, 0x4900, "iMac 9,1 Aluminum", ALC885_IMAC91),
- 	SND_PCI_QUIRK(0x106b, 0x3f00, "Macbook 5,1", ALC885_MB5),
-+	SND_PCI_QUIRK(0x106b, 0x4a00, "Macbook 5,2", ALC885_MB5),
- 	/* FIXME: HP jack sense seems not working for MBP 5,1 or 5,2,
- 	 * so apparently no perfect solution yet
- 	 */
--- 
-1.7.0.4
+but the display percentage under the volume bar is clamp to 100% and this
+will mislead the user that alsamixer hangs since pressing up and down arrow
+cannot change 100% to 101% or 100% to 90% ( displayed percentage remain at
+100% for a very long time)
+
+        value = ((volumes[0] - min) * 100 + (max - min) / 2) / (max - min);
+        if (!(control->flags & HAS_VOLUME_1)) {
+            sprintf(buf, "%d", value);
+            display_string_in_field(values_y, frame_left - 2, buf, 8,
+ALIGN_CENTER);
+        } else {
+            mvwprintw(mixer_widget.window, values_y, frame_left - 2, "%3d",
+value);
+            if (control->flags & IS_ACTIVE)
+                wattrset(mixer_widget.window, attr_ctl_frame);
+            waddstr(mixer_widget.window, "<>");
+            if (control->flags & IS_ACTIVE)
+                wattrset(mixer_widget.window, attr_mixer_active);
+            value = ((volumes[1] - min) * 100 + (max - min) / 2) / (max -
+min);
+            wprintw(mixer_widget.window, "%-3d", value);
+        }
