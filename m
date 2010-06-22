@@ -1,19 +1,20 @@
-From: Tobias Hansen <Tobias.Hansen@physik.uni-hamburg.de>
-Subject: Re: Status of the Tascam US-122mkII???
-Date: Sat, 19 Jun 2010 22:58:44 +0200
-Message-ID: <4C1D2F84.6050307@physik.uni-hamburg.de>
-References: <AANLkTimaehZwC-e1pmbQl-pLNb7gVp2Rt5Ujz4BfduR_@mail.gmail.com>	<20100619174259.GJ17833@buzzloop.caiaq.de>	<AANLkTilfDBFqGH41TGF0H855CfCm8fOjGMW7lwH1tXi_@mail.gmail.com>	<20100619180956.GL17833@buzzloop.caiaq.de>	<AANLkTikfeTzrOttiyI9BqqD3zHI7NXY8ScyXoY8Ruq8N@mail.gmail.com>	<20100619185753.GN17833@buzzloop.caiaq.de>	<4C1D149B.7000802@physik.uni-hamburg.de>	<AANLkTimJ17dGo6K3Gy8_tlhIezFFY0XDRyj53i8tj1pi@mail.gmail.com>	<4C1D2662.3060106@physik.uni-hamburg.de>
-	<AANLkTil_QpNxgpXEaisHx1Xh-DG7Mi9rCtKjtAmcW_KO@mail.gmail.com>
+From: Jassi Brar <jassisinghbrar@gmail.com>
+Subject: Re: reading 1 second of audio at a time
+Date: Tue, 22 Jun 2010 16:57:41 +0900
+Message-ID: <AANLkTimnYRA4_-JIhWLvxgSc9mrqDy1HkQUfzcsq1rSM@mail.gmail.com>
+References: <20100621192559.GP15838@belle.intranet.vanheusden.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.physnet.uni-hamburg.de (MAIL.PHYSnet.uni-hamburg.de
-	[134.100.106.230])
-	by alsa0.perex.cz (Postfix) with ESMTP id 597A3103817
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0AA0210381A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 19 Jun 2010 22:58:49 +0200 (CEST)
-In-Reply-To: <AANLkTil_QpNxgpXEaisHx1Xh-DG7Mi9rCtKjtAmcW_KO@mail.gmail.com>
+	Tue, 22 Jun 2010 09:57:42 +0200 (CEST)
+Received: by vws20 with SMTP id 20so1812975vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2010 00:57:41 -0700 (PDT)
+In-Reply-To: <20100621192559.GP15838@belle.intranet.vanheusden.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,21 +24,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: jordan johnston <triplesquarednine@gmail.com>
+To: folkert <folkert@vanheusden.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-jordan johnston wrote:
-> Oops, sorry Tobias, i forgot to check it off. I did this time so
-> anyone can see. :)
+On Tue, Jun 22, 2010 at 4:26 AM, folkert <folkert@vanheusden.com> wrote:
+> Hi,
 >
-> So basically, many people have tried to get this working and
-> failed????  no one was able to get it working?
+> Am trying to achieve something trivial: reading 1 second of audio at a
+> time, but something goes wrong:
 >
->   
-I know of two people who tried the US122MKII and two who tried the 
-US144MKII and they didn't get it to work. Maybe the changes are not that 
-big, but it needs someone who figures out what to change. (And maybe the 
-protocol is completely different. - Like the US144 when it's on ehci-hcd.)
+> Sound 1277148008.835094
+> Sound 1277148008.838224
+> Sound 1277148010.834839
+> Sound 1277148010.838001
+> Sound 1277148012.834523
+> Sound 1277148012.837580
+> Sound 1277148014.835240
+> Sound 1277148014.838333
+>
+> As you can see; audio is returned for 2 seconds, then it sleeps 2
+> secondsn, then 2 seconds of audio, etc.
+That is 'normal' behavior, even though a bit odd (described in the changelog
+of the attempted patches)
 
-Greetings, Tobias
+I submitted patches to make such blocking read/write calls return
+as expected, but since they change the semantics of read/write they
+were not accepted
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-December/023986.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2009-December/023985.html
+
+So, you have to write your application around this behavior.
