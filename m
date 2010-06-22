@@ -1,18 +1,19 @@
-From: pl bossart <bossart.nospam@gmail.com>
-Subject: IEC switch issues
-Date: Tue, 22 Jun 2010 16:22:24 -0500
-Message-ID: <AANLkTinpl5hs7NRAm38uF7FbGCOuIOxCvohD70jOQxam@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4] alsa: ASoC: Add JZ4740 codec driver
+Date: Wed, 23 Jun 2010 00:12:40 +0100
+Message-ID: <20100622231239.GB2453@opensource.wolfsonmicro.com>
+References: <1276958993-9012-1-git-send-email-lars@metafoo.de>
+	<1277160391-14737-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
-	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 34F8F2443F
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 42F971037EC
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Jun 2010 23:22:28 +0200 (CEST)
-Received: by iwn8 with SMTP id 8so5081451iwn.38
-	for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2010 14:22:25 -0700 (PDT)
+	Wed, 23 Jun 2010 01:12:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1277160391-14737-1-git-send-email-lars@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,29 +23,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-If I play my AC3 data on my HDAudio/SPDIF output using the hw:0,1
-device, I can use alsamixer/amixer to mute/unmute.
+On Tue, Jun 22, 2010 at 12:46:31AM +0200, Lars-Peter Clausen wrote:
+> This patch adds support for the JZ4740 internal codec.
 
-[ume@plb PassThough]$ amixer cset numid=12 on
-numid=12,iface=MIXER,name='IEC958 Playback Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=on
-[ume@plb PassThough]$ amixer cset numid=12 off
-numid=12,iface=MIXER,name='IEC958 Playback Switch'
-  ; type=BOOLEAN,access=rw------,values=1
-  : values=off
-
-Now if I use the iec958: plugin, I can't control the mute switch any longer:
-[ume@plb PassThough]$ amixer cset numid=12 off
-amixer: Control default element write error: Operation not permitted
-
-[ume@plb PassThough]$ amixer cset numid=12 on
-amixer: Control default element write error: Operation not permitted
-
-What could possibly cause this issue? the IEC plugin relies on the
-device 1, am I missing something here?
-Thanks for your help
-- Pierre
+Applied all three, thanks.
