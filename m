@@ -1,15 +1,18 @@
-From: "Sebastian H." <vand2@gmx.de>
-Subject: alsamixer-qt4 release
-Date: Tue, 22 Jun 2010 22:15:19 +0200
-Message-ID: <4C2119D7.8040100@gmx.de>
+From: pl bossart <bossart.nospam@gmail.com>
+Subject: IEC switch issues
+Date: Tue, 22 Jun 2010 16:22:24 -0500
+Message-ID: <AANLkTinpl5hs7NRAm38uF7FbGCOuIOxCvohD70jOQxam@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id C8055243EC
+Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
+	[209.85.214.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 34F8F2443F
 	for <alsa-devel@alsa-project.org>;
-	Tue, 22 Jun 2010 22:17:10 +0200 (CEST)
+	Tue, 22 Jun 2010 23:22:28 +0200 (CEST)
+Received: by iwn8 with SMTP id 8so5081451iwn.38
+	for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2010 14:22:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,26 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello list
+If I play my AC3 data on my HDAudio/SPDIF output using the hw:0,1
+device, I can use alsamixer/amixer to mute/unmute.
 
-Here is (yet another) mixer application for ALSA: alsamixer-qt4
-It took a bit longer that expected but today I've erased the last items
-from the TODO list for the first release version 0.1.0.
+[ume@plb PassThough]$ amixer cset numid=12 on
+numid=12,iface=MIXER,name='IEC958 Playback Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=on
+[ume@plb PassThough]$ amixer cset numid=12 off
+numid=12,iface=MIXER,name='IEC958 Playback Switch'
+  ; type=BOOLEAN,access=rw------,values=1
+  : values=off
 
-All files are hosted at sourceforge
-http://sourceforge.net/projects/alsamixer-qt4/files/
+Now if I use the iec958: plugin, I can't control the mute switch any longer:
+[ume@plb PassThough]$ amixer cset numid=12 off
+amixer: Control default element write error: Operation not permitted
 
-And here's a small web page
-http://xwmw.org/alsamixer-qt4
+[ume@plb PassThough]$ amixer cset numid=12 on
+amixer: Control default element write error: Operation not permitted
 
-At the moment it is a volume only mixer and the dB value is
-only displayed but the scaling sliders are worth a look
-(The style is homebrewn ;).
-
-So far.
-
-Regards,
-Sebastian H.
+What could possibly cause this issue? the IEC plugin relies on the
+device 1, am I missing something here?
+Thanks for your help
+- Pierre
