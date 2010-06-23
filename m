@@ -1,17 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: IEC switch issues
-Date: Wed, 23 Jun 2010 14:05:32 +0200
-Message-ID: <4C21F88C.6000200@ladisch.de>
-References: <AANLkTinpl5hs7NRAm38uF7FbGCOuIOxCvohD70jOQxam@mail.gmail.com>
+From: Alexey Fisher <bug-track@fisher-privat.net>
+Subject: Re: [PATCH] Add volume resolution quirk for some
+ logitech webcams
+Date: Wed, 23 Jun 2010 14:08:32 +0200
+Message-ID: <1277294912.22499.0.camel@zwerg>
+References: <1277285687-10897-1-git-send-email-bug-track@fisher-privat.net>
+	<20100623114603.GA2698@buzzloop.caiaq.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out2.smtp.messagingengine.com (out2.smtp.messagingengine.com
-	[66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id AD07F2444C
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa0.perex.cz (Postfix) with SMTP id E53D52446E
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jun 2010 14:05:35 +0200 (CEST)
-In-Reply-To: <AANLkTinpl5hs7NRAm38uF7FbGCOuIOxCvohD70jOQxam@mail.gmail.com>
+	Wed, 23 Jun 2010 14:08:43 +0200 (CEST)
+In-Reply-To: <20100623114603.GA2698@buzzloop.caiaq.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,20 +23,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@caiaq.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-pl bossart wrote:
-> If I play my AC3 data on my HDAudio/SPDIF output using the hw:0,1
-> device, I can use alsamixer/amixer to mute/unmute.
+Am Mittwoch, den 23.06.2010, 13:46 +0200 schrieb Daniel Mack:
+> On Wed, Jun 23, 2010 at 11:34:47AM +0200, Alexey Fisher wrote:
+> > Some programs like Skype trying to set capture volume automatically.
+> > Normally it will tray carefully, step by step lover or higher the volume.
+> > In real word it work not really well, because devises and vendors lie
+> > about real audio settings. For example most Logitech webcams
+> > have 6400 or 3500 steps for capture volume. They do not tell that
+> > actual resolution is 384. So we have only 7 or 18 real steps.
+> > In this patch I set real resolution only for tested devices.
+> > 
+> > Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
+> > ---
+> >  sound/usb/mixer.c |   12 ++++++++++++
+> >  1 files changed, 12 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+> > index 6939d0f..fd9f377 100644
+> > --- a/sound/usb/mixer.c
+> > +++ b/sound/usb/mixer.c
+> > @@ -1107,6 +1107,18 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+> >  		}
+> >  		break;
+> >  
+> > +	case USB_ID(0x046d, 0x0809):
+> > +	case USB_ID(0x046d, 0x0991):
+> > +	/* most audio usb divise lighe about volume resolution.
+> > +	 * most of them have res = 384. Proboly there is some magick behind
+> > +	 * this number. */
 > 
-> Now if I use the iec958: plugin, I can't control the mute switch any longer:
+> While the change itself is acceptable, there are too many typos in this
+> comment ;) Can you please fix them up, please?
 
-Muting an AC-3 stream would require encoding a stream of silent PCM
-samples (no data is not the same as silence); therefore, the iec958
-plugin disallows muting.
-
-
-Regards,
-Clemens
+shame on me.
