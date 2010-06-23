@@ -1,48 +1,45 @@
-From: Jeremy Kerr <jeremy.kerr-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Subject: ALSA SoC device tree bindings
-Date: Wed, 23 Jun 2010 20:30:13 +0800
-Message-ID: <201006232030.14138.jeremy.kerr@canonical.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: 2.6.35-rc3 E-MU 0404 USB problem
+Date: Wed, 23 Jun 2010 14:45:19 +0200
+Message-ID: <4C2201DF.9050500@ladisch.de>
+References: <4C20B364.9060405@blueyonder.co.uk>
+	<20100622131102.GA18432@kroah.com>
+	<20100622133434.GZ2698@buzzloop.caiaq.de>
+	<4C21E875.20200@blueyonder.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
-List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
-List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
-	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
-Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
-To: kernel-team-nLRlyDuq1AZFpShjVBNYrg@public.gmane.org, linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtprelay04.ispgateway.de (smtprelay04.ispgateway.de
+	[80.67.31.42]) by alsa0.perex.cz (Postfix) with ESMTP id 88DC11037F5
+	for <alsa-devel@alsa-project.org>;
+	Wed, 23 Jun 2010 14:45:24 +0200 (CEST)
+In-Reply-To: <4C21E875.20200@blueyonder.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: sboyce@blueyonder.co.uk, Daniel Mack <daniel@caiaq.de>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+>>> Sid Boyce wrote:
+>>>> Transmit fails,
 
->From some discussions at the previous Ubuntu Developer Summit, I've put up a 
-page on the devicetree.org wiki with the ultimate goal of describing device 
-tree bindings for ALSA System on Chip devices.
+What exactly fails?
 
-At this stage, we're just looking at how to structure device in the device 
-tree. The bindings for specific devices will come as required (ie, as we add 
-device tree support for them).
+>>>> dmesg output with 48K sample rate set is:-
+>>>> ALSA sound/usb/clock.c:214: 6:2:3: endpoint lacks sample rate attribute bit, cannot set.
 
-So - if you're interested in the ALSA and/or device tree areas, please take a 
-look at the notes from UDS:
-
- http://devicetree.org/SoC_Audio
-
-- if you have any comments or suggestions, please let me know, or add to the 
-page (or the discussion for the page). I intend for this document to become a 
-more formal specification, but we still have a way to go before that happens.
-
-If you'd like an introduction to device trees, Grant has a good walkthrough-
-style document at:
-
- http://devicetree.org/Device_Tree_Usage
-
-Cheers,
+There are many devices that have only one sample rate or that have one
+sample rate per alternate setting.  This doesn't deserve a message, much
+less a warning.
 
 
-Jeremy
+Regards,
+Clemens
