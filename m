@@ -1,17 +1,30 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: IEC switch issues
-Date: Wed, 23 Jun 2010 10:55:52 +0200
-Message-ID: <4C21CC18.3030200@ivitera.com>
-References: <AANLkTinpl5hs7NRAm38uF7FbGCOuIOxCvohD70jOQxam@mail.gmail.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: wrong decibel data?
+Date: Wed, 23 Jun 2010 10:12:00 +0100
+Message-ID: <hvsj32$6cm$1@dough.gmane.org>
+References: <htls4d$phr$1@dough.gmane.org>
+	<htm9mn$n1c$1@dough.gmane.org>	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>	<huicj9$t30$1@dough.gmane.org>	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>	<hulnlp$m00$1@dough.gmane.org>	<AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>	<hur2pt$uaa$1@dough.gmane.org>	<20100613135349.GB5818@tango.0pointer.de>	<AANLkTimwvTxPe66fk4hq2-eiky-8Yqd12vN6WYkh9qdQ@mail.gmail.com>	<hv4pfi$gqr$3@dough.gmane.org>	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>	<hv4vs6$a6q$1@dough.gmane.org>	<AANLkTilbaa94Vlc266FBzDyRkL_G2VSiOdZoLS4vG8Tw@mail.gmail.com>	<AANLkTimxTM73el7iCE6nwUJMPFpYa0dY2R9SYxa3_j6N@mail.gmail.com>	<hv5dkf$tv8$1@dough.gmane.org>	<AANLkTim5rmjxS6YV7j3QEXSW-EyUv2rsT3k2ZzOz-o9o@mail.gmail.com>	<hvput5$a6o$1@dough.gmane.org>	<AANL
+ kTilwbCSM7rPLUlAKtTUv1UepbHzvyZTh4CsElOJm@mail.gmail.com>	<hvqqf9$p3j$1@dough.gmane.org>
+	<AANLkTim8KsRcWcg3lkqb8RZqhPT_Bp53dwwlQ3ccay1L@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (upc-plzen.insite.cz [84.242.100.8])
-	by alsa0.perex.cz (Postfix) with ESMTP id 68A7C243AE
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 86037243C1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jun 2010 10:55:54 +0200 (CEST)
-In-Reply-To: <AANLkTinpl5hs7NRAm38uF7FbGCOuIOxCvohD70jOQxam@mail.gmail.com>
+	Wed, 23 Jun 2010 11:11:08 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1ORLz9-0007mL-S3
+	for alsa-devel@alsa-project.org; Wed, 23 Jun 2010 11:11:07 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2010 11:11:07 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2010 11:11:07 +0200
+In-Reply-To: <AANLkTim8KsRcWcg3lkqb8RZqhPT_Bp53dwwlQ3ccay1L@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,64 +34,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: pl bossart <bossart.nospam@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+'Twas brillig, and Raymond Yau at 23/06/10 02:15 did gyre and gimble:
+> why PA server still insist to open front device for capturing ?
 
+Couldn't tell you. Perhaps Lennart is unaware that it is considered
+invalid? I'll ask him.
 
-pl bossart napsal(a):
-> If I play my AC3 data on my HDAudio/SPDIF output using the hw:0,1
-> device, I can use alsamixer/amixer to mute/unmute.
+> http://thread.gmane.org/gmane.linux.alsa.devel/67912/focus=68248
 > 
-> [ume@plb PassThough]$ amixer cset numid=12 on
-> numid=12,iface=MIXER,name='IEC958 Playback Switch'
->   ; type=BOOLEAN,access=rw------,values=1
->   : values=on
-> [ume@plb PassThough]$ amixer cset numid=12 off
-> numid=12,iface=MIXER,name='IEC958 Playback Switch'
->   ; type=BOOLEAN,access=rw------,values=1
->   : values=off
+> As Takashi had already mention that
 > 
-> Now if I use the iec958: plugin, I can't control the mute switch any longer:
-> [ume@plb PassThough]$ amixer cset numid=12 off
-> amixer: Control default element write error: Operation not permitted
+> "I agree that the capture from "front" PCM isn't considered as valid.
+> The "front", "rear", "center_lfe" definitions are rather for multi-channel
+> playbacks. The capture on these channels aren't useful in most cases."
 > 
-> [ume@plb PassThough]$ amixer cset numid=12 on
-> amixer: Control default element write error: Operation not permitted
+> you can perform an experiement
 > 
-> What could possibly cause this issue? the IEC plugin relies on the
-> device 1, am I missing something here?
-> Thanks for your help
-> - Pierre
+> pcm.test {
+>     type softvol
+>     slave.pcm "hw:0,0"
+>     control {
+>         name "PA Playback Volume"
+>         card 0
+>     }
+> 
+> arecord -D test -f CD -d 10 -v test.wav
+> 
+> you will find "PA Playback Volume" in playback screen of alsamixer
+> 
+> I am not sure the softvol control created when PA open front device
+> for playback and capture is used for playback or capture
+> 
+> BTW , PA still using "front" to open CTL device too
 
-Hi Pierre,
+You'll have to ask Lennart directly about that bit.
 
-Check the config files in /usr/share/alsa/cards, probably HDA-Intel.conf
-in your case, specifically the hooks section of its iec958 device
-definition. It reads:
+I can't speak for him with regards to the full setup of the mixer path
+probing stuff, so perhaps "front" should be edited out of this for
+paths. It would likely be a fairly trivial change to configuration files
+rather than any code changes.
 
-hooks.0 {
-                        type ctl_elems
-                        hook_args [
-                        {
-                                name "IEC958 Playback Default"
-                                lock true
-                                preserve true
-                                value [ $AES0 $AES1 $AES2 $AES3 ]
-                        }
-                        {
-                                name "IEC958 Playback Switch"
-                                lock true
-                                preserve true
-                                value true
-                        }
-                        ]
-                }
+Col
 
+-- 
 
-You can play with the "lock" directive.
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
 
-Best regards,
-
-Pavel.
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
