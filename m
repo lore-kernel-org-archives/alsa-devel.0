@@ -1,21 +1,15 @@
-From: Ryan Mallon <ryan@bluewatersys.com>
-Subject: Re: [RFC 0/5] ASoC multi-component support : core
-Date: Fri, 25 Jun 2010 16:51:40 +1200
-Message-ID: <4C2435DC.5080509@bluewatersys.com>
-References: <1277407467.3100.579.camel@odin>
-	<4C23CFC0.6080700@bluewatersys.com>
-	(sfid-20100624_223607_408551_609C17DE)
-	<661928F7-0509-4E84-A296-0949E2D76EE3@opensource.wolfsonmicro.com>
-	<4C23EC65.9080601@bluewatersys.com>
+From: rmfc <rmfc@l2f.inesc-id.pt>
+Subject: AndreaElectronics PureAudio USB-SA
+Date: Wed, 23 Jun 2010 17:40:19 +0100
+Message-ID: <4C2238F3.101@l2f.inesc-id.pt>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id 75AB810384B
+Received: from smtp.inesc-id.pt (smtp.inesc-id.pt [146.193.32.2])
+	by alsa0.perex.cz (Postfix) with ESMTP id 905A51037EA
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Jun 2010 06:51:42 +0200 (CEST)
-In-Reply-To: <4C23EC65.9080601@bluewatersys.com>
+	Wed, 23 Jun 2010 18:40:35 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,174 +19,364 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: vbarinov <vbarinov@embeddedalley.com>, alsa-devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Wan ZongShun <mcuos.com@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, jassisinghbrar <jassisinghbrar@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Cliff Cai <cliff.cai@analog.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, "timur.tabi@gmail.com" <timur.tabi@gmail.com>, "Candelaria Villareal, Jorge" <jorge.candelaria@ti.com>, "vaibhav.bedia" <vaibhav.bedia@ti.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/25/2010 11:38 AM, Ryan Mallon wrote:
-> On 06/25/2010 11:12 AM, Mark Brown wrote:
->   
->> Do you actually see sound cards appearing? The log message at boot
->> is purely informational, cards can probe at any time.
->>
->> Define DEBUG at the top of soc-audio.c if the card never appears at all
->> then look at the log messages - they will say why the card is not being
->> instantiated.
->>   
->>     
-> Hmm. If I define DEBUG at the top of sound/soc/soc-core.c I get this
-> (boots fine without DEBUG, but have no sound cards):
->   
+Hello,
+I'm looking for a sound card that can be used to speech recognition in 
+noisy environments. The best device that I found so far is 
+AndreaElectronics PureAudio USB-SA but unfortunately it isn't properly 
+supported in Linux. The device is recognized as an USB Audio device 
+(module used is snd_usb_audio) and I can record audio in Audacity. The 
+problem is that none of advanced DSP features is enabled.
+I tried then Asus Xonar U1 but the problem is the same, no configuration 
+is done in devices, so they record audio without quality to be used in a 
+speech recognizer (not enough energy, audio DC components when software 
+gain is applied in Sound Preferences...).
 
-The crash was caused because I wasn't setting codec_drv in the
-snd_soc_dai_link for the Snapper CL15 (updated patch below). I still
-have no sound cards. I get the following in dmesg:
+Is there any way known way to configure a USB Audio device? If I have to 
+implement some code, where should I start?
+I send you output of  "lsusb" of AndreaElectronics USB-SA sound card.
 
-tlv320aic23 0-001a: probe
-tlv320aic23 0-001a: codec register tlv320aic23 26
-tlv320aic23 0-001a: dai register tlv320aic23 0
-Registered DAI 'tlv320aic23.0'
-Registered codec 'tlv320aic23.26'
-i2c-core: driver [tlv320aic23] registered
-ep93xx-pcm-audio ep93xx-pcm-audio: platform register ep93xx-audio -1
-Registered platform 'ep93xx-audio'
-ep93xx-i2s ep93xx-i2s: dai register ep93xx-i2s -1
-Registered DAI 'ep93xx-i2s.-1'
-soc-audio soc-audio: CODEC tlv320aic23 not registered
-soc-audio soc-audio: Registered card 'Snapper CL15'
-ALSA device list:
-  No soundcards found.
+------------------------------------------------------------
+Bus 003 Device 002: ID 08a8:000c Andrea Electronics
+Device Descriptor:
+   bLength                18
+   bDescriptorType         1
+   bcdUSB               1.10
+   bDeviceClass            0 (Defined at Interface level)
+   bDeviceSubClass         0
+   bDeviceProtocol         0
+   bMaxPacketSize0        64
+   idVendor           0x08a8 Andrea Electronics
+   idProduct          0x000c
+   bcdDevice            1.00
+   iManufacturer           3 Andrea Electronics
+   iProduct                1 Andrea PureAudio USB-SA
+   iSerial                 0
+   bNumConfigurations      1
+   Configuration Descriptor:
+     bLength                 9
+     bDescriptorType         2
+     wTotalLength          293
+     bNumInterfaces          4
+     bConfigurationValue     1
+     iConfiguration          0
+     bmAttributes         0x80
+       (Bus Powered)
+     MaxPower              500mA
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        0
+       bAlternateSetting       0
+       bNumEndpoints           0
+       bInterfaceClass         1 Audio
+       bInterfaceSubClass      1 Control Device
+       bInterfaceProtocol      0
+       iInterface              0
+       AudioControl Interface Descriptor:
+         bLength                10
+         bDescriptorType        36
+         bDescriptorSubtype      1 (HEADER)
+         bcdADC               1.00
+         wTotalLength          128
+         bInCollection           2
+         baInterfaceNr( 0)       1
+         baInterfaceNr( 1)       2
+       AudioControl Interface Descriptor:
+         bLength                12
+         bDescriptorType        36
+         bDescriptorSubtype      2 (INPUT_TERMINAL)
+         bTerminalID             1
+         wTerminalType      0x0101 USB Streaming
+         bAssocTerminal          0
+         bNrChannels             2
+         wChannelConfig     0x0003
+           Left Front (L)
+           Right Front (R)
+         iChannelNames           0
+         iTerminal               0
+       AudioControl Interface Descriptor:
+         bLength                12
+         bDescriptorType        36
+         bDescriptorSubtype      2 (INPUT_TERMINAL)
+         bTerminalID             2
+         wTerminalType      0x0201 Microphone
+         bAssocTerminal          0
+         bNrChannels             2
+         wChannelConfig     0x0003
+           Left Front (L)
+           Right Front (R)
+         iChannelNames           0
+         iTerminal               0
+       AudioControl Interface Descriptor:
+         bLength                12
+         bDescriptorType        36
+         bDescriptorSubtype      2 (INPUT_TERMINAL)
+         bTerminalID             3
+         wTerminalType      0x0603 Line Connector
+         bAssocTerminal          0
+         bNrChannels             2
+         wChannelConfig     0x0003
+           Left Front (L)
+           Right Front (R)
+         iChannelNames           0
+         iTerminal               0
+       AudioControl Interface Descriptor:
+         bLength                12
+         bDescriptorType        36
+         bDescriptorSubtype      2 (INPUT_TERMINAL)
+         bTerminalID             4
+         wTerminalType      0x0605 SPDIF interface
+         bAssocTerminal          0
+         bNrChannels             2
+         wChannelConfig     0x0003
+           Left Front (L)
+           Right Front (R)
+         iChannelNames           0
+         iTerminal               0
+       AudioControl Interface Descriptor:
+         bLength                 9
+         bDescriptorType        36
+         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+         bTerminalID             6
+         wTerminalType      0x0301 Speaker
+         bAssocTerminal          0
+         bSourceID               9
+         iTerminal               0
+       AudioControl Interface Descriptor:
+         bLength                 9
+         bDescriptorType        36
+         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
+         bTerminalID             7
+         wTerminalType      0x0101 USB Streaming
+         bAssocTerminal          0
+         bSourceID               8
+         iTerminal               0
+       AudioControl Interface Descriptor:
+         bLength                 9
+         bDescriptorType        36
+         bDescriptorSubtype      5 (SELECTOR_UNIT)
+         bUnitID                 8
+         bNrInPins               3
+         baSource( 0)           10
+         baSource( 1)           11
+         baSource( 2)           12
+         iSelector               0
+       AudioControl Interface Descriptor:
+         bLength                13
+         bDescriptorType        36
+         bDescriptorSubtype      6 (FEATURE_UNIT)
+         bUnitID                 9
+         bSourceID               1
+         bControlSize            2
+         bmaControls( 0)      0x01
+         bmaControls( 0)      0x02
+           Mute
+           Loudness
+         bmaControls( 1)      0x02
+         bmaControls( 1)      0x00
+           Volume
+         bmaControls( 2)      0x02
+         bmaControls( 2)      0x00
+           Volume
+         iFeature                0
+       AudioControl Interface Descriptor:
+         bLength                10
+         bDescriptorType        36
+         bDescriptorSubtype      6 (FEATURE_UNIT)
+         bUnitID                10
+         bSourceID               2
+         bControlSize            1
+         bmaControls( 0)      0x01
+           Mute
+         bmaControls( 1)      0x02
+           Volume
+         bmaControls( 2)      0x02
+           Volume
+         iFeature                0
+       AudioControl Interface Descriptor:
+         bLength                10
+         bDescriptorType        36
+         bDescriptorSubtype      6 (FEATURE_UNIT)
+         bUnitID                11
+         bSourceID               3
+         bControlSize            1
+         bmaControls( 0)      0x01
+           Mute
+         bmaControls( 1)      0x02
+           Volume
+         bmaControls( 2)      0x02
+           Volume
+         iFeature                0
+       AudioControl Interface Descriptor:
+         bLength                10
+         bDescriptorType        36
+         bDescriptorSubtype      6 (FEATURE_UNIT)
+         bUnitID                12
+         bSourceID               4
+         bControlSize            1
+         bmaControls( 0)      0x01
+           Mute
+         bmaControls( 1)      0x00
+         bmaControls( 2)      0x00
+         iFeature                0
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        1
+       bAlternateSetting       0
+       bNumEndpoints           0
+       bInterfaceClass         1 Audio
+       bInterfaceSubClass      2 Streaming
+       bInterfaceProtocol      0
+       iInterface              0
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        1
+       bAlternateSetting       1
+       bNumEndpoints           1
+       bInterfaceClass         1 Audio
+       bInterfaceSubClass      2 Streaming
+       bInterfaceProtocol      0
+       iInterface              0
+       AudioStreaming Interface Descriptor:
+         bLength                 7
+         bDescriptorType        36
+         bDescriptorSubtype      1 (AS_GENERAL)
+         bTerminalLink           1
+         bDelay                  1 frames
+         wFormatTag              1 PCM
+       AudioStreaming Interface Descriptor:
+         bLength                20
+         bDescriptorType        36
+         bDescriptorSubtype      2 (FORMAT_TYPE)
+         bFormatType             1 (FORMAT_TYPE_I)
+         bNrChannels             2
+         bSubframeSize           2
+         bBitResolution         16
+         bSamFreqType            4 Discrete
+         tSamFreq[ 0]         8000
+         tSamFreq[ 1]        16000
+         tSamFreq[ 2]        44100
+         tSamFreq[ 3]        48000
+       Endpoint Descriptor:
+         bLength                 9
+         bDescriptorType         5
+         bEndpointAddress     0x01  EP 1 OUT
+         bmAttributes            9
+           Transfer Type            Isochronous
+           Synch Type               Adaptive
+           Usage Type               Data
+         wMaxPacketSize     0x00c8  1x 200 bytes
+         bInterval               1
+         bRefresh                0
+         bSynchAddress           0
+         AudioControl Endpoint Descriptor:
+           bLength                 7
+           bDescriptorType        37
+           bDescriptorSubtype      1 (EP_GENERAL)
+           bmAttributes         0x01
+             Sampling Frequency
+           bLockDelayUnits         1 Milliseconds
+           wLockDelay              1 Milliseconds
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        2
+       bAlternateSetting       0
+       bNumEndpoints           0
+       bInterfaceClass         1 Audio
+       bInterfaceSubClass      2 Streaming
+       bInterfaceProtocol      0
+       iInterface              0
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        2
+       bAlternateSetting       1
+       bNumEndpoints           1
+       bInterfaceClass         1 Audio
+       bInterfaceSubClass      2 Streaming
+       bInterfaceProtocol      0
+       iInterface              0
+       AudioStreaming Interface Descriptor:
+         bLength                 7
+         bDescriptorType        36
+         bDescriptorSubtype      1 (AS_GENERAL)
+         bTerminalLink           7
+         bDelay                  1 frames
+         wFormatTag              1 PCM
+       AudioStreaming Interface Descriptor:
+         bLength                20
+         bDescriptorType        36
+         bDescriptorSubtype      2 (FORMAT_TYPE)
+         bFormatType             1 (FORMAT_TYPE_I)
+         bNrChannels             2
+         bSubframeSize           2
+         bBitResolution         16
+         bSamFreqType            4 Discrete
+         tSamFreq[ 0]         8000
+         tSamFreq[ 1]        16000
+         tSamFreq[ 2]        44100
+         tSamFreq[ 3]        48000
+       Endpoint Descriptor:
+         bLength                 9
+         bDescriptorType         5
+         bEndpointAddress     0x82  EP 2 IN
+         bmAttributes            5
+           Transfer Type            Isochronous
+           Synch Type               Asynchronous
+           Usage Type               Data
+         wMaxPacketSize     0x00c8  1x 200 bytes
+         bInterval               1
+         bRefresh                0
+         bSynchAddress           0
+         AudioControl Endpoint Descriptor:
+           bLength                 7
+           bDescriptorType        37
+           bDescriptorSubtype      1 (EP_GENERAL)
+           bmAttributes         0x01
+             Sampling Frequency
+           bLockDelayUnits         0 Undefined
+           wLockDelay              0 Undefined
+     Interface Descriptor:
+       bLength                 9
+       bDescriptorType         4
+       bInterfaceNumber        3
+       bAlternateSetting       0
+       bNumEndpoints           1
+       bInterfaceClass         3 Human Interface Device
+       bInterfaceSubClass      0 No Subclass
+       bInterfaceProtocol      0 None
+       iInterface              0
+         HID Device Descriptor:
+           bLength                 9
+           bDescriptorType        33
+           bcdHID               1.00
+           bCountryCode            0 Not supported
+           bNumDescriptors         1
+           bDescriptorType        34 Report
+           wDescriptorLength      50
+          Report Descriptors:
+            ** UNAVAILABLE **
+       Endpoint Descriptor:
+         bLength                 7
+         bDescriptorType         5
+         bEndpointAddress     0x87  EP 7 IN
+         bmAttributes            3
+           Transfer Type            Interrupt
+           Synch Type               None
+           Usage Type               Data
+         wMaxPacketSize     0x0010  1x 16 bytes
+         bInterval               1
+Device Status:     0x0000
+   (Bus Powered)
+------------------------------------------------------------
 
 
-I don't understand why the tlv320 codec is not being registered. Any ideas?
-
-~Ryan
-
----
-Fix build errors and warnings for ep93xx/snapper cl15 asoc
-multi-component support
-
-Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
----
-
-diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
-index 67dc876..b5261d4 100644
---- a/arch/arm/mach-ep93xx/core.c
-+++ b/arch/arm/mach-ep93xx/core.c
-@@ -732,9 +732,15 @@ static struct platform_device ep93xx_i2s_device = {
- 	.resource	= ep93xx_i2s_resource,
- };
- 
-+static struct platform_device ep93xx_pcm_device = {
-+	.name		= "ep93xx-pcm-audio",
-+	.id		= -1,
-+};
-+
- void __init ep93xx_register_i2s(void)
- {
- 	platform_device_register(&ep93xx_i2s_device);
-+	platform_device_register(&ep93xx_pcm_device);
- }
- 
- #define EP93XX_SYSCON_DEVCFG_I2S_MASK	(EP93XX_SYSCON_DEVCFG_I2SONSSP | \
-@@ -798,6 +804,4 @@ void __init ep93xx_init_devices(void)
- 	platform_device_register(&ep93xx_rtc_device);
- 	platform_device_register(&ep93xx_ohci_device);
- 	platform_device_register(&ep93xx_leds);
--	platform_device_register(&ep93xx_i2s_device);
--	platform_device_register(&ep93xx_pcm_device);
- }
-diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
-index b40201f..6e0fa03 100644
---- a/sound/soc/ep93xx/ep93xx-i2s.c
-+++ b/sound/soc/ep93xx/ep93xx-i2s.c
-@@ -146,6 +146,7 @@ static int ep93xx_i2s_startup(struct snd_pcm_substream *substream,
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 
- 	snd_soc_dai_set_dma_data(cpu_dai, substream,
- 				 &info->dma_params[substream->stream]);
-@@ -155,7 +156,6 @@ static int ep93xx_i2s_startup(struct snd_pcm_substream *substream,
- static void ep93xx_i2s_shutdown(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
- 
- 	ep93xx_i2s_disable(info, substream->stream);
-@@ -241,7 +241,6 @@ static int ep93xx_i2s_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params,
- 				struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
- 	unsigned word_len, div, sdiv, lrdiv;
- 	int found = 0, err;
-diff --git a/sound/soc/ep93xx/snappercl15.c b/sound/soc/ep93xx/snappercl15.c
-index 6495534..aeb822d 100644
---- a/sound/soc/ep93xx/snappercl15.c
-+++ b/sound/soc/ep93xx/snappercl15.c
-@@ -30,8 +30,8 @@ static int snappercl15_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int err;
- 
- 	err = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-@@ -77,8 +77,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"MICIN", NULL, "Mic Jack"},
- };
- 
--static int snappercl15_tlv320aic23_init(struct snd_soc_codec *codec)
-+static int snappercl15_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
-+
- 	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
- 				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
- 
-@@ -89,24 +91,20 @@ static int snappercl15_tlv320aic23_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link snappercl15_dai = {
- 	.name		= "tlv320aic23",
- 	.stream_name	= "AIC23",
--	.cpu_dai	= &ep93xx_i2s_dai,
--	.codec_dai	= &tlv320aic23_dai,
-+	.cpu_dai_drv	= &ep93xx_i2s_dai,
-+	.codec_dai_drv	= &tlv320aic23_dai,
-+	.codec_drv	= &soc_codec_dev_tlv320aic23,
-+	.platform_drv	= &ep93xx_soc_platform,
- 	.init		= snappercl15_tlv320aic23_init,
- 	.ops		= &snappercl15_ops,
- };
- 
- static struct snd_soc_card snd_soc_snappercl15 = {
- 	.name		= "Snapper CL15",
--	.platform	= &ep93xx_soc_platform,
- 	.dai_link	= &snappercl15_dai,
- 	.num_links	= 1,
- };
- 
--static struct snd_soc_device snappercl15_snd_devdata = {
--	.card		= &snd_soc_snappercl15,
--	.codec_dev	= &soc_codec_dev_tlv320aic23,
--};
--
- static struct platform_device *snappercl15_snd_device;
- 
- static int __init snappercl15_init(void)
-@@ -126,8 +124,7 @@ static int __init snappercl15_init(void)
- 	if (!snappercl15_snd_device)
- 		return -ENOMEM;
- 	
--	platform_set_drvdata(snappercl15_snd_device, &snappercl15_snd_devdata);
--	snappercl15_snd_devdata.dev = &snappercl15_snd_device->dev;
-+	platform_set_drvdata(snappercl15_snd_device, &snd_soc_snappercl15);
- 	ret = platform_device_add(snappercl15_snd_device);
- 	if (ret)
- 		platform_device_put(snappercl15_snd_device);
+Thanks for any help that you can give me.
+Renato
