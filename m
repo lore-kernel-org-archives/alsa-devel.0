@@ -1,38 +1,25 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Wed, 23 Jun 2010 09:15:31 +0800
-Message-ID: <AANLkTim8KsRcWcg3lkqb8RZqhPT_Bp53dwwlQ3ccay1L@mail.gmail.com>
-References: <htls4d$phr$1@dough.gmane.org> <4BFE7840.4070004@ladisch.de>
-	<htm0et$eb4$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
-	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
-	<huicj9$t30$1@dough.gmane.org>
-	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
-	<hulnlp$m00$1@dough.gmane.org>
-	<AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>
-	<hur2pt$uaa$1@dough.gmane.org>
-	<20100613135349.GB5818@tango.0pointer.de>
-	<AANLkTimwvTxPe66fk4hq2-eiky-8Yqd12vN6WYkh9qdQ@mail.gmail.com>
-	<hv4pfi$gqr$3@dough.gmane.org>
-	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
-	<hv4vs6$a6q$1@dough.gmane.org>
-	<AANLkTilbaa94Vlc266FBzDyRkL_G2VSiOdZoLS4vG8Tw@mail.gmail.com>
-	<AANLkTimxTM73el7iCE6nwUJMPFpYa0dY2R9SYxa3_j6N@mail.gmail.com>
-	<hv5dkf$tv8$1@dough.gmane.org>
-	<AANLkTim5rmjxS6YV7j3QEXSW-EyUv2rsT3k2ZzOz-o9o@mail.gmail.com>
-	<hvput5$a6o$1@dough.gmane.org>
-	<AANLkTilwbCSM7rPLUlAKtTUv1UepbHzvyZTh4CsElOJm@mail.gmail.com>
-	<hvqqf9$p3j$1@dough.gmane.org>
+From: David Dillow <dave@thedillows.org>
+Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
+Date: Tue, 22 Jun 2010 23:00:47 -0400
+Message-ID: <1277262047.10818.9.camel@obelisk.thedillows.org>
+References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
+	<1276972298.22889.16.camel@obelisk.thedillows.org>
+	<AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
+	<1277043970.22889.45.camel@obelisk.thedillows.org>
+	<AANLkTikBTMq3d-Ov65wYLJ_Vw-7Jde4AOwfXcEPB0wLr@mail.gmail.com>
+	<1277129180.22889.64.camel@obelisk.thedillows.org>
+	<AANLkTikW71h7ABVXY21pLL9AeOlmRTfVaSTjJ_6Ma0_R@mail.gmail.com>
+	<AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
+	<AANLkTikPW9j4H15gq7nl0Tb213R15uIQAnSDi_cTOJre@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 8472E244E8
+Received: from amavis-smtp.knology.net (amavis-smtp.knology.net [75.76.199.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 762CB24504
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jun 2010 03:15:34 +0200 (CEST)
-Received: by vws20 with SMTP id 20so166210vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 22 Jun 2010 18:15:32 -0700 (PDT)
-In-Reply-To: <hvqqf9$p3j$1@dough.gmane.org>
+	Wed, 23 Jun 2010 05:01:02 +0200 (CEST)
+In-Reply-To: <AANLkTikPW9j4H15gq7nl0Tb213R15uIQAnSDi_cTOJre@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -42,105 +29,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: linux@schou.dk
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/23 Colin Guthrie <gmane@colin.guthr.ie>
+On Mon, 2010-06-21 at 22:10 +0200, Hans Schou wrote:
+> 2010/6/21 Hans Schou <linux@schou.dk>:
+> 
+> > I have just started:
+> >  arecord -B 1000000 -F 500000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec.wav
+> 
+> It gave a file size of 258822944 bytes. Almost 50 min:
+>   echo "258822944/(2*60*44100)" | bc -ql
+> 48.90
+> 
+> This is the longest recording I have made on this hardware.
+> 
+> I have this running now:
+> + arecord -B 200000 -F 100000 -c 1 -r 44100 -f S16 -M -D hw:0,0 -v arec.wav
 
-> 'Twas brillig, and Raymond Yau at 22/06/10 16:29 did gyre and gimble:
-> > 2010/6/22 Colin Guthrie <gmane@colin.guthr.ie>
-> >> As I said above, anything that comes from alsa is considered h/w
-> >> amplification for the purposes of PA's volume scale. It's not practical
-> >> to differentiate them
-> >
-> >
-> > Software gain is different from hardware gain.
->
-> Really? Wow, thanks for that :p
->
-> > Clipping due to software gain +12dB cannot compensated by -12dB by
-> hardware
-> > atten
->
-> Another obvious statement, but not really anything to do with the
-> discussion.
->
-> This only becomes a problem if the softvol plugin is configured to go
-> >0dB. And if it is, then I've got to ask why....
->
-> You can configure all sorts of crazy and weird shit in alsa if you care
-> to, but it's totally impractical for something higher in the stack to
-> deal with all the nuances of the ultimate results of that configuration.
-> As far as anything further up the stack is concerned, if it's
-> represented in alsa, it's "hardware".
->
-> Just like softmodems, I don't care further up the stack whether or not
-> the functionality is implemented in firmware or software, I just care
-> that I have an interface to use a modem.
->
-> So, yes, of course you could configure softvol plugin to do nuts things
-> in ALSA if you're that way inclined. I don't think anyone who is not
-> trying to do weird things will do that, however, and I don't know of any
-> particular h/w that is setup in a weird way by default either.
->
-> >> Does any card actually configure softvol, by default, to provide any
-> >> gain, > 0dB for outputs? If so, then this is IMO a bad idea.
-> >>
-> >
-> > -51dB to 0dB is also software atten of softvol plugin
->
-> So that's not > 0dB then is it?
->
-> Col
->
->
->
->
-As you have modified /usr/share/alsa/cards/HDA-Intel.conf
+Ok, it seems something is definately funky with the driver in general,
+and gets worse when we're using more than 2 periods per buffer.
 
-HDA-Intel.pcm.front.0 {
-    @args [ CARD ]
-    @args.CARD {
-        type string
-    }
-    type softvol
-    slave.pcm {
-        type hw
-        card $CARD
-    }
-    control {
-        name "PCM Playback Volume"
-        card $CARD
-    }
+If I use:
 
-you should notice that the front device has a softvol plugin with name "PCM
-Playback Volume"
+strace -tt -T -o record.log arecord -f S16 -r 44100 -c 1 -d 3600 \
+	--buffer-size=32768 --period-size=16384 -v -t raw - > /dev/null
 
-why PA server still insist to open front device for capturing ?
+I don't have any overruns, nor does it go into the 10-second pause mode.
+I do see an odd alternating pattern of one period taking 1.4ms to
+capture, and the next taking 732ms. The period should be about 371ms, so
+the lumpyness of the timing is likely making it easier to hit overruns.
 
-http://thread.gmane.org/gmane.linux.alsa.devel/67912/focus=68248
+Then, using:
 
-As Takashi had already mention that
+strace -tt -T -o record.log arecord -f S16 -r 44100 -c 1 -d 3600 \
+	--buffer-size=32768 --period-size=8192 -v -t raw - > /dev/null
 
-"I agree that the capture from "front" PCM isn't considered as valid.
-The "front", "rear", "center_lfe" definitions are rather for multi-channel
-playbacks. The capture on these channels aren't useful in most cases."
+I was able to push it into the 10-second pause failure mode, without
+hitting any overruns. Initially it has a similar alternating pattern of
+0.6ms then 363ms capture times until it drops into a 10 second pause
+just after 42 minutes.
 
-you can perform an experiement
+Now that I finally got my hardware going and can reproduce this, I'll
+dig into it over the next few evenings.
 
-pcm.test {
-    type softvol
-    slave.pcm "hw:0,0"
-    control {
-        name "PA Playback Volume"
-        card 0
-    }
-
-arecord -D test -f CD -d 10 -v test.wav
-
-you will find "PA Playback Volume" in playback screen of alsamixer
-
-I am not sure the softvol control created when PA open front device
-for playback and capture is used for playback or capture
-
-BTW , PA still using "front" to open CTL device too
+Thanks for the report and help narrowing down the focus area,
+Dave
