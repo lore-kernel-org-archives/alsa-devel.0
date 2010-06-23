@@ -1,65 +1,48 @@
-From: Alexey Fisher <bug-track@fisher-privat.net>
-Subject: [PATCH] Add volume resolution quirk for some Logitech
-	webcams.
-Date: Wed, 23 Jun 2010 14:17:09 +0200
-Message-ID: <1277295429-23662-1-git-send-email-bug-track@fisher-privat.net>
+From: Jeremy Kerr <jeremy.kerr-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
+Subject: ALSA SoC device tree bindings
+Date: Wed, 23 Jun 2010 20:30:13 +0800
+Message-ID: <201006232030.14138.jeremy.kerr@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa0.perex.cz (Postfix) with SMTP id 4009A1038DB
-	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jun 2010 14:17:16 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
-Cc: Alexey Fisher <bug-track@fisher-privat.net>
+Return-path: <devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/devicetree-discuss>,
+	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/devicetree-discuss>
+List-Post: <mailto:devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org>
+List-Help: <mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/devicetree-discuss>,
+	<mailto:devicetree-discuss-request-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org?subject=subscribe>
+Sender: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+Errors-To: devicetree-discuss-bounces+gldd-devicetree-discuss=m.gmane.org-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
+To: kernel-team-nLRlyDuq1AZFpShjVBNYrg@public.gmane.org, linaro-dev-cunTk1MwBs8s++Sfvej+rw@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Some programs like Skype trying to set capture volume automatically.
-Normally it will tray, carefully step by step lover or higher, set the volume.
-In real word it work not really well, because devises and vendors lie about
-real audio settings.
-For example most Logitech webcams have 6400 or 3500 steps for capture volume.
-They do not tell that actual resolution is 384. So we have only 7 or 18 real
-steps. In this patch I set real resolution only for tested devices.
+Hi all,
 
-Signed-off-by: Alexey Fisher <bug-track@fisher-privat.net>
----
- sound/usb/mixer.c |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+>From some discussions at the previous Ubuntu Developer Summit, I've put up a 
+page on the devicetree.org wiki with the ultimate goal of describing device 
+tree bindings for ALSA System on Chip devices.
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 6939d0f..736d134 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1107,6 +1107,19 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 		}
- 		break;
- 
-+	case USB_ID(0x046d, 0x0809):
-+	case USB_ID(0x046d, 0x0991):
-+	/* Most audio usb devices lie about volume resolution.
-+	 * Most Logitech webcams have res = 384.
-+	 * Proboly there is some logitech magic behind this number --fishor
-+	 */
-+		if (!strcmp(kctl->id.name, "Mic Capture Volume")) {
-+			snd_printk(KERN_INFO
-+				"set resolution quirk: cval->res = 384\n");
-+			cval->res = 384;
-+		}
-+		break;
-+
- 	}
- 
- 	snd_printdd(KERN_INFO "[%d] FU [%s] ch = %d, val = %d/%d/%d\n",
--- 
-1.7.0.4
+At this stage, we're just looking at how to structure device in the device 
+tree. The bindings for specific devices will come as required (ie, as we add 
+device tree support for them).
+
+So - if you're interested in the ALSA and/or device tree areas, please take a 
+look at the notes from UDS:
+
+ http://devicetree.org/SoC_Audio
+
+- if you have any comments or suggestions, please let me know, or add to the 
+page (or the discussion for the page). I intend for this document to become a 
+more formal specification, but we still have a way to go before that happens.
+
+If you'd like an introduction to device trees, Grant has a good walkthrough-
+style document at:
+
+ http://devicetree.org/Device_Tree_Usage
+
+Cheers,
+
+
+Jeremy
