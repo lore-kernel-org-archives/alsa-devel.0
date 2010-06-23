@@ -1,23 +1,32 @@
-From: Adish Kuvelker <adkuvi@gmail.com>
-Subject: Re: snd_pcm_hardware structure
-Date: Thu, 24 Jun 2010 02:11:50 +0530
-Message-ID: <AANLkTikYHtPFWXNMSk4-H5LvbOY7OAT7-DEFMlfl8FXO@mail.gmail.com>
-References: <AANLkTilJuFy_Iysklk-nsE_BzPzgHvQpGW0T3uGhulZt@mail.gmail.com>
-	<AANLkTin-BgH2HWLIf1gs8Qcfp11F04J-kL1bH7lpkREe@mail.gmail.com>
-	<AANLkTikMXLL8D8f-t2Bok_8Hxi9WGwWfrHJA1VN7Pvsk@mail.gmail.com>
-	<AANLkTikKqdUo4oUrOKRhoXX4eVySduRElaSb-My0cAcc@mail.gmail.com>
-	<AANLkTimPGZniWasarAH17BRuVZ_8_PYPYp9FtZ8LCvhG@mail.gmail.com>
+From: David Dillow <dave@thedillows.org>
+Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
+Date: Wed, 23 Jun 2010 16:42:12 -0400
+Message-ID: <1277325732.2521.55.camel@lap75545.ornl.gov>
+References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
+	<1276972298.22889.16.camel@obelisk.thedillows.org>
+	<AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
+	<1277043970.22889.45.camel@obelisk.thedillows.org>
+	<AANLkTikBTMq3d-Ov65wYLJ_Vw-7Jde4AOwfXcEPB0wLr@mail.gmail.com>
+	<1277129180.22889.64.camel@obelisk.thedillows.org>
+	<AANLkTikW71h7ABVXY21pLL9AeOlmRTfVaSTjJ_6Ma0_R@mail.gmail.com>
+	<AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
+	<AANLkTikPW9j4H15gq7nl0Tb213R15uIQAnSDi_cTOJre@mail.gmail.com>
+	<1277262047.10818.9.camel@obelisk.thedillows.org>
+	<1277271419.10818.22.camel@obelisk.thedillows.org>
+	<AANLkTiln40Xo3fHbMSkEvdBUtFq8ZWrF57wgRWdU2Juc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2E0F1243AA
+Received: from emroute3.ornl.gov (emroute3.ornl.gov [160.91.4.110])
+	by alsa0.perex.cz (Postfix) with ESMTP id DCC4B243B1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jun 2010 22:41:51 +0200 (CEST)
-Received: by vws20 with SMTP id 20so1382066vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2010 13:41:50 -0700 (PDT)
-In-Reply-To: <AANLkTimPGZniWasarAH17BRuVZ_8_PYPYp9FtZ8LCvhG@mail.gmail.com>
+	Wed, 23 Jun 2010 22:42:18 +0200 (CEST)
+Received: from emroute3.ornl.gov ([127.0.0.1])
+	by emroute3.ornl.gov (PMDF V6.5 #31823)
+	with ESMTP id <0L4H00CHWIUFF0@emroute3.ornl.gov> for
+	alsa-devel@alsa-project.org; Wed, 23 Jun 2010 16:42:16 -0400 (EDT)
+In-reply-to: <AANLkTiln40Xo3fHbMSkEvdBUtFq8ZWrF57wgRWdU2Juc@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,39 +36,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: James Courtier-Dutton <james.dutton@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: linux@schou.dk
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-so I am thinking of sound hardware generating an interrupt at the FIFO
-having 32-bytes.
-In your first reply did you mean that periods_min = periods_max =1
-would be the setting correponding to my hardware initializations to
-generate an interrupt after 16 16-bit samples having been transferred?
-So considering that the FIFO bank is of 64 bytes, what do you think
-would be the setting for periods_min and periods_max?
+On Wed, 2010-06-23 at 20:22 +0200, Hans Schou wrote:
+> 2010/6/23 David Dillow <dave@thedillows.org>:
+> 
+> > I can reproduce the alternating pattern of periods using a different
+> > device, so this may be something in the core code of ALSA.
+> 
+> Strange? The program I am actually using is one I have written myself.
+> I was sure I was using the old method as I open(2). In my program I
+> use
+>    int fd = open("/dev/dsp",  O_RDWR);
+> 
+> This should not go through ALSA (I think). I gues one should use
+> something with "snd_pcm_open()" to use ALSA.
 
-Regards;
-Aadish
+To use ALSA directly, yes. However, there is no OSS SIS7019 driver in
+the kernel, only the ALSA one I wrote. There is an OSS emulation layer,
+so you can use the OSS API to talk to the ALSA core. Unless you are
+using a vendor (SIS/MicroJr/etc.) supplied driver, you are using ALSA in
+some capacity.
 
-On Thu, Jun 24, 2010 at 1:56 AM, Adish Kuvelker <adkuvi@gmail.com> wrote:
-> yes...I know that my hardware will generate the interrupt and it will
-> be at FIFO being half empty.
->
-> On Thu, Jun 24, 2010 at 12:17 AM, James Courtier-Dutton
-> <james.dutton@gmail.com> wrote:
->> On 23 June 2010 18:57, Adish Kuvelker <adkuvi@gmail.com> wrote:
->>> Hello James,
->>> Thanks a lot....Just a typo error for the period_bytes_min and
->>> period_bytes_max in my mail.....
->>>
->>> Now that my FIFO is 64 bytes and if I need an interrupt to the CPU for
->>> FIFO being half-empty (i.e 32 bytes = 16 16-bit samples), would it be
->>> right to set the periods_min = periods_max = 32?
->>>
->>
->> No. The periods do not create the interrupt.
->> Your sound hardware has to do the interrupt.
->> When does you hardware do the interrupt?
->>
->
+> > Since this problem is not related to the SiS7019 driver, I'll leave it
+> > to later -- or for others to investigate. Using three periods per buffer
+> > sees a similar pattern, but one has an extra period time to work
+> > within.
+> 
+> I really don't understand why I do not see this problem on other
+> hardware using the same compiled code.
+
+You mean the 10 second pauses during recording after 42 minutes? That is
+a driver bug, so it is specific to this card.
+
+If you mean the alternating long/sort period times, then it is present
+on other hardware, but you likely don't see it either due to the
+defaults giving you more periods to work in so you don't see overruns,
+faster hardware than the SIS550 CPU, or a combination of the two. The
+bug that gives rise to the 10 second pauses can also shorten the periods
+I think, making overruns more likely to occur.
+
+Dave
