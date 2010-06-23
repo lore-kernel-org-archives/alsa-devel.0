@@ -1,20 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: 2.6.35-rc3 E-MU 0404 USB problem
-Date: Wed, 23 Jun 2010 14:45:19 +0200
-Message-ID: <4C2201DF.9050500@ladisch.de>
-References: <4C20B364.9060405@blueyonder.co.uk>
-	<20100622131102.GA18432@kroah.com>
-	<20100622133434.GZ2698@buzzloop.caiaq.de>
-	<4C21E875.20200@blueyonder.co.uk>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: IEC switch issues
+Date: Wed, 23 Jun 2010 21:21:12 +0800
+Message-ID: <AANLkTinR9JTLJwG0ti7STn-lHkqiChpBZxLkc0-rftdU@mail.gmail.com>
+References: <AANLkTinpl5hs7NRAm38uF7FbGCOuIOxCvohD70jOQxam@mail.gmail.com>
+	<4C21F88C.6000200@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay04.ispgateway.de (smtprelay04.ispgateway.de
-	[80.67.31.42]) by alsa0.perex.cz (Postfix) with ESMTP id 88DC11037F5
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 0572124492
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jun 2010 14:45:24 +0200 (CEST)
-In-Reply-To: <4C21E875.20200@blueyonder.co.uk>
+	Wed, 23 Jun 2010 15:21:14 +0200 (CEST)
+Received: by vws20 with SMTP id 20so914997vws.38
+	for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2010 06:21:13 -0700 (PDT)
+In-Reply-To: <4C21F88C.6000200@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +24,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: sboyce@blueyonder.co.uk, Daniel Mack <daniel@caiaq.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->>> Sid Boyce wrote:
->>>> Transmit fails,
+2010/6/23 Clemens Ladisch <clemens@ladisch.de>
 
-What exactly fails?
-
->>>> dmesg output with 48K sample rate set is:-
->>>> ALSA sound/usb/clock.c:214: 6:2:3: endpoint lacks sample rate attribute bit, cannot set.
-
-There are many devices that have only one sample rate or that have one
-sample rate per alternate setting.  This doesn't deserve a message, much
-less a warning.
-
-
-Regards,
-Clemens
+> pl bossart wrote:
+> > If I play my AC3 data on my HDAudio/SPDIF output using the hw:0,1
+> > device, I can use alsamixer/amixer to mute/unmute.
+> >
+> > Now if I use the iec958: plugin, I can't control the mute switch any
+> longer:
+>
+> Muting an AC-3 stream would require encoding a stream of silent PCM
+> samples (no data is not the same as silence); therefore, the iec958
+> plugin disallows muting.
+>
+>
+> Regards,
+> Clemens
+>
+>
+Does it mean that rewind is not allowed too ?
