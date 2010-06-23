@@ -1,32 +1,19 @@
-From: David Dillow <dave@thedillows.org>
-Subject: Re: PROBLEM: SIS7019 stops recording after 42 min
-Date: Wed, 23 Jun 2010 16:42:12 -0400
-Message-ID: <1277325732.2521.55.camel@lap75545.ornl.gov>
-References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
-	<1276972298.22889.16.camel@obelisk.thedillows.org>
-	<AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
-	<1277043970.22889.45.camel@obelisk.thedillows.org>
-	<AANLkTikBTMq3d-Ov65wYLJ_Vw-7Jde4AOwfXcEPB0wLr@mail.gmail.com>
-	<1277129180.22889.64.camel@obelisk.thedillows.org>
-	<AANLkTikW71h7ABVXY21pLL9AeOlmRTfVaSTjJ_6Ma0_R@mail.gmail.com>
-	<AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
-	<AANLkTikPW9j4H15gq7nl0Tb213R15uIQAnSDi_cTOJre@mail.gmail.com>
-	<1277262047.10818.9.camel@obelisk.thedillows.org>
-	<1277271419.10818.22.camel@obelisk.thedillows.org>
-	<AANLkTiln40Xo3fHbMSkEvdBUtFq8ZWrF57wgRWdU2Juc@mail.gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: Re: [PATCH] ASoC: DaVinci: Added support for stereo I2S
+Date: Wed, 23 Jun 2010 21:50:59 +0100
+Message-ID: <1277326259.31686.57.camel@vega>
+References: <1277303635-5675-1-git-send-email-lamiaposta71@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from emroute3.ornl.gov (emroute3.ornl.gov [160.91.4.110])
-	by alsa0.perex.cz (Postfix) with ESMTP id DCC4B243B1
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 58A95243B1
 	for <alsa-devel@alsa-project.org>;
-	Wed, 23 Jun 2010 22:42:18 +0200 (CEST)
-Received: from emroute3.ornl.gov ([127.0.0.1])
-	by emroute3.ornl.gov (PMDF V6.5 #31823)
-	with ESMTP id <0L4H00CHWIUFF0@emroute3.ornl.gov> for
-	alsa-devel@alsa-project.org; Wed, 23 Jun 2010 16:42:16 -0400 (EDT)
-In-reply-to: <AANLkTiln40Xo3fHbMSkEvdBUtFq8ZWrF57wgRWdU2Juc@mail.gmail.com>
+	Wed, 23 Jun 2010 22:51:03 +0200 (CEST)
+Received: by wwf26 with SMTP id 26so560691wwf.38
+	for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2010 13:51:03 -0700 (PDT)
+In-Reply-To: <1277303635-5675-1-git-send-email-lamiaposta71@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -36,46 +23,335 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: linux@schou.dk
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Raffaele Recalcati <lamiaposta71@gmail.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, linux-kernel@vger.kernel.org, Troy Kisky <troy.kisky@boundarydevices.com>, Davide Bonfanti <davide.bonfanti@bticino.it>, Raffaele Recalcati <raffaele.recalcati@bticino.it>, Chaithrika U S <chaithrika@ti.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2010-06-23 at 20:22 +0200, Hans Schou wrote:
-> 2010/6/23 David Dillow <dave@thedillows.org>:
+On Wed, 2010-06-23 at 16:33 +0200, Raffaele Recalcati wrote:
+> From: Raffaele Recalcati <raffaele.recalcati@bticino.it>
 > 
-> > I can reproduce the alternating pattern of periods using a different
-> > device, so this may be something in the core code of ALSA.
+> 	Added audio playback support with [frame sync master - clock master] mode
+> 	and with [frame sync master - clock slave].
+> 	Clock slave can be important when the external codec need system clock
+> 	and bit clock synchronized.
+> 	In the clock master case there is a FIXME message in the source code, because we
+> 	(Davide and myself) have guessed a frequency of 122000000 that seems the base
+> 	to be divided.
+> 	This patch has been developed against the
+> 		http://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-davinci.git
+> 	git tree and has been tested on bmx board (similar to dm365 evm, but using
+> 	uda1345 as external audio codec).
 > 
-> Strange? The program I am actually using is one I have written myself.
-> I was sure I was using the old method as I open(2). In my program I
-> use
->    int fd = open("/dev/dsp",  O_RDWR);
+> Signed-off-by: Raffaele Recalcati <raffaele.recalcati@bticino.it>
+> Signed-off-by: Davide Bonfanti <davide.bonfanti@bticino.it>
+
+Had a quick check, it looks like you have made some unintended
+formatting changes that make the patch look more complex than necessary.
+
+> ---
+>  arch/arm/mach-davinci/include/mach/asp.h |    7 ++
+>  sound/soc/davinci/davinci-i2s.c          |  141 ++++++++++++++++++++++++++----
+>  2 files changed, 129 insertions(+), 19 deletions(-)
 > 
-> This should not go through ALSA (I think). I gues one should use
-> something with "snd_pcm_open()" to use ALSA.
+> diff --git a/arch/arm/mach-davinci/include/mach/asp.h b/arch/arm/mach-davinci/include/mach/asp.h
+> index 834725f..b1faeb9 100644
+> --- a/arch/arm/mach-davinci/include/mach/asp.h
+> +++ b/arch/arm/mach-davinci/include/mach/asp.h
+> @@ -63,6 +63,13 @@ struct snd_platform_data {
+>  	unsigned sram_size_playback;
+>  	unsigned sram_size_capture;
+>  
+> +	/*
+> +	 * This define works when both clock and FS are output for the cpu
+> +	 * and makes clock very fast (FS is not simmetrical, but sampling
+> +	 * frequency is better approximated
+> +	 */
+> +	int i2s_fast_clock;
+> +
+>  	/* McASP specific fields */
+>  	int tdm_slots;
+>  	u8 op_mode;
+> diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+> index adadcd3..8811d25 100644
+> --- a/sound/soc/davinci/davinci-i2s.c
+> +++ b/sound/soc/davinci/davinci-i2s.c
+> @@ -68,16 +68,23 @@
+>  #define DAVINCI_MCBSP_RCR_RDATDLY(v)	((v) << 16)
+>  #define DAVINCI_MCBSP_RCR_RFIG		(1 << 18)
+>  #define DAVINCI_MCBSP_RCR_RWDLEN2(v)	((v) << 21)
+> +#define DAVINCI_MCBSP_RCR_RFRLEN2(v)	((v) << 24)
+> +#define DAVINCI_MCBSP_RCR_RPHASE		(1 << 31)
+>  
+>  #define DAVINCI_MCBSP_XCR_XWDLEN1(v)	((v) << 5)
+>  #define DAVINCI_MCBSP_XCR_XFRLEN1(v)	((v) << 8)
+>  #define DAVINCI_MCBSP_XCR_XDATDLY(v)	((v) << 16)
+>  #define DAVINCI_MCBSP_XCR_XFIG		(1 << 18)
+>  #define DAVINCI_MCBSP_XCR_XWDLEN2(v)	((v) << 21)
+> +#define DAVINCI_MCBSP_XCR_XFRLEN2(v)	((v) << 24)
+> +#define DAVINCI_MCBSP_XCR_XPHASE	(1 << 31)
+>  
+> +
+> +#define CLKGDV(v)				(v)     /* Bits 0:7 */
 
-To use ALSA directly, yes. However, there is no OSS SIS7019 driver in
-the kernel, only the ALSA one I wrote. There is an OSS emulation layer,
-so you can use the OSS API to talk to the ALSA core. Unless you are
-using a vendor (SIS/MicroJr/etc.) supplied driver, you are using ALSA in
-some capacity.
+Should you not have a DAVINCI prefix here too ?
 
-> > Since this problem is not related to the SiS7019 driver, I'll leave it
-> > to later -- or for others to investigate. Using three periods per buffer
-> > sees a similar pattern, but one has an extra period time to work
-> > within.
-> 
-> I really don't understand why I do not see this problem on other
-> hardware using the same compiled code.
+>  #define DAVINCI_MCBSP_SRGR_FWID(v)	((v) << 8)
+>  #define DAVINCI_MCBSP_SRGR_FPER(v)	((v) << 16)
+>  #define DAVINCI_MCBSP_SRGR_FSGM		(1 << 28)
+> +#define DAVINCI_MCBSP_SRGR_CLKSM	(1 << 29)
+>  
+>  #define DAVINCI_MCBSP_PCR_CLKRP		(1 << 0)
+>  #define DAVINCI_MCBSP_PCR_CLKXP		(1 << 1)
+> @@ -144,8 +151,17 @@ struct davinci_mcbsp_dev {
+>  	 * won't end up being swapped because of the underrun.
+>  	 */
+>  	unsigned enable_channel_combine:1;
+> +
+> +	int i2s_fast_clock;
+> +};
+> +
+> +struct davinci_mcbsp_data {
+> +	unsigned int	fmt;
+> +	int             clk_div;
+>  };
+>  
+> +static struct davinci_mcbsp_data mcbsp_data;
+> +
 
-You mean the 10 second pauses during recording after 42 minutes? That is
-a driver bug, so it is specific to this card.
+This struct should be part of the dai private data.
 
-If you mean the alternating long/sort period times, then it is present
-on other hardware, but you likely don't see it either due to the
-defaults giving you more periods to work in so you don't see overruns,
-faster hardware than the SIS550 CPU, or a combination of the two. The
-bug that gives rise to the 10 second pauses can also shorten the periods
-I think, making overruns more likely to occur.
+>  static inline void davinci_mcbsp_write_reg(struct davinci_mcbsp_dev *dev,
+>  					   int reg, u32 val)
+>  {
+> @@ -255,24 +271,27 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+>  	unsigned int pcr;
+>  	unsigned int srgr;
+>  	srgr = DAVINCI_MCBSP_SRGR_FSGM |
+> -		DAVINCI_MCBSP_SRGR_FPER(DEFAULT_BITPERSAMPLE * 2 - 1) |
+> -		DAVINCI_MCBSP_SRGR_FWID(DEFAULT_BITPERSAMPLE - 1);
+> +	       DAVINCI_MCBSP_SRGR_FPER(DEFAULT_BITPERSAMPLE * 2 - 1) |
+> +	       DAVINCI_MCBSP_SRGR_FWID(DEFAULT_BITPERSAMPLE - 1);
+> +	/* Attention srgr is updated by hw_params! */
+>  
+> +	mcbsp_data.fmt = fmt;
+>  	/* set master/slave audio interface */
+>  	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBS_CFM:
+>  	case SND_SOC_DAIFMT_CBS_CFS:
+>  		/* cpu is master */
+>  		pcr = DAVINCI_MCBSP_PCR_FSXM |
+> -			DAVINCI_MCBSP_PCR_FSRM |
+> -			DAVINCI_MCBSP_PCR_CLKXM |
+> -			DAVINCI_MCBSP_PCR_CLKRM;
+> +		      DAVINCI_MCBSP_PCR_FSRM |
+> +		      DAVINCI_MCBSP_PCR_CLKXM |
+> +		      DAVINCI_MCBSP_PCR_CLKRM;
+>  		break;
+>  	case SND_SOC_DAIFMT_CBM_CFS:
+>  		/* McBSP CLKR pin is the input for the Sample Rate Generator.
+>  		 * McBSP FSR and FSX are driven by the Sample Rate Generator. */
+>  		pcr = DAVINCI_MCBSP_PCR_SCLKME |
+> -			DAVINCI_MCBSP_PCR_FSXM |
+> -			DAVINCI_MCBSP_PCR_FSRM;
+> +		      DAVINCI_MCBSP_PCR_FSXM |
+> +		      DAVINCI_MCBSP_PCR_FSRM;
 
-Dave
+These two just look like unintended formatting changes.
+
+>  		break;
+>  	case SND_SOC_DAIFMT_CBM_CFM:
+>  		/* codec is master */
+> @@ -372,6 +391,17 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+>  	return 0;
+>  }
+>  
+> +static int davinci_i2s_dai_set_clkdiv(struct snd_soc_dai *cpu_dai,
+> +				int div_id, int div)
+> +{
+> +	struct davinci_mcbsp_dev *dev = cpu_dai->private_data;
+> +	int srgr;
+> +
+> +	mcbsp_data.clk_div = div;
+> +	return 0;
+> +}
+> +
+> +
+>  static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+>  				 struct snd_pcm_hw_params *params,
+>  				 struct snd_soc_dai *dai)
+> @@ -380,11 +410,12 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+>  	struct davinci_pcm_dma_params *dma_params =
+>  					&dev->dma_params[substream->stream];
+>  	struct snd_interval *i = NULL;
+> -	int mcbsp_word_length;
+> -	unsigned int rcr, xcr, srgr;
+> +	int mcbsp_word_length, master;
+> +	unsigned int rcr, xcr, srgr, clk_div, freq, framesize;
+>  	u32 spcr;
+>  	snd_pcm_format_t fmt;
+>  	unsigned element_cnt = 1;
+> +	struct clk *clk;
+>  
+>  	/* general line settings */
+>  	spcr = davinci_mcbsp_read_reg(dev, DAVINCI_MCBSP_SPCR_REG);
+> @@ -396,12 +427,60 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+>  		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SPCR_REG, spcr);
+>  	}
+>  
+> -	i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
+> -	srgr = DAVINCI_MCBSP_SRGR_FSGM;
+> -	srgr |= DAVINCI_MCBSP_SRGR_FWID(snd_interval_value(i) - 1);
+> +	master = mcbsp_data.fmt & SND_SOC_DAIFMT_MASTER_MASK;
+> +	fmt = params_format(params);
+> +	mcbsp_word_length = asp_word_length[fmt];
+>  
+> -	i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_FRAME_BITS);
+> -	srgr |= DAVINCI_MCBSP_SRGR_FPER(snd_interval_value(i) - 1);
+> +	if (master == SND_SOC_DAIFMT_CBS_CFS) {
+> +		clk = clk_get(NULL, "pll1_sysclk6");
+> +		if (clk)
+> +			freq = clk_get_rate(clk);
+> +		freq = 122000000; /* FIXME ask to Texas */
+
+This frequency should either be passed in as platform data or by your
+machine driver calling snd_soc_dai_set_sysclk(). 
+
+> +		if (dev->i2s_fast_clock) {
+> +			clk_div = 256;
+> +			do {
+> +				framesize = (freq / (--clk_div)) /
+> +					    params->rate_num *
+> +					    params->rate_den;
+> +			} while (((framesize < 33) || (framesize > 4095)) &&
+> +				 (clk_div));
+> +			clk_div--;
+> +			srgr = DAVINCI_MCBSP_SRGR_FSGM |
+> +			       DAVINCI_MCBSP_SRGR_CLKSM;
+> +			srgr |= DAVINCI_MCBSP_SRGR_FWID(mcbsp_word_length *
+> +							8 - 1);
+> +			srgr |= DAVINCI_MCBSP_SRGR_FPER(framesize - 1);
+> +		} else {
+> +			/* simmetric waveforms */
+
+symmetric
+
+> +			srgr = DAVINCI_MCBSP_SRGR_FSGM |
+> +			       DAVINCI_MCBSP_SRGR_CLKSM;
+> +			srgr |= DAVINCI_MCBSP_SRGR_FWID(mcbsp_word_length *
+> +							8 - 1);
+> +			srgr |= DAVINCI_MCBSP_SRGR_FPER(mcbsp_word_length *
+> +							16 - 1);
+> +			clk_div = freq / (mcbsp_word_length * 16) /
+> +				  params->rate_num * params->rate_den;
+> +		}
+> +		clk_div &= 0xFF;
+> +		srgr |= clk_div;
+> +	} else if (master == SND_SOC_DAIFMT_CBS_CFM) {
+> +		/* Clock given on CLKS */
+> +		srgr = DAVINCI_MCBSP_SRGR_FSGM;
+> +		clk_div = mcbsp_data.clk_div - 1;
+> +		srgr |= DAVINCI_MCBSP_SRGR_FWID(mcbsp_word_length * 8 - 1);
+> +		srgr |= DAVINCI_MCBSP_SRGR_FPER(mcbsp_word_length * 16 - 1);
+> +		clk_div &= 0xFF;
+> +		srgr |= clk_div;
+> +	} else {
+> +		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
+> +		srgr = DAVINCI_MCBSP_SRGR_FSGM;
+> +		srgr |= DAVINCI_MCBSP_SRGR_FWID(snd_interval_value(i) - 1);
+> +		pr_debug("%s - %d  FWID set: re-read srgr = %X\n",
+> +			__func__, __LINE__, snd_interval_value(i) - 1);
+> +
+> +		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_FRAME_BITS);
+> +		srgr |= DAVINCI_MCBSP_SRGR_FPER(snd_interval_value(i) - 1);
+> +	}
+>  	davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_SRGR_REG, srgr);
+>  
+>  	rcr = DAVINCI_MCBSP_RCR_RFIG;
+> @@ -426,22 +505,45 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+>  			element_cnt = 1;
+>  			fmt = double_fmt[fmt];
+>  		}
+> +		if (master == SND_SOC_DAIFMT_CBS_CFS ||
+> +				master == SND_SOC_DAIFMT_CBS_CFM) {
+> +			rcr |= DAVINCI_MCBSP_RCR_RFRLEN2(0);
+> +			xcr |= DAVINCI_MCBSP_XCR_XFRLEN2(0);
+> +			rcr |= DAVINCI_MCBSP_RCR_RPHASE;
+> +			xcr |= DAVINCI_MCBSP_XCR_XPHASE;
+> +		} else {
+> +			/* FIXME ask to Texas */
+> +			rcr |= DAVINCI_MCBSP_RCR_RFRLEN2(element_cnt - 1);
+> +			xcr |= DAVINCI_MCBSP_XCR_XFRLEN2(element_cnt - 1);
+> +		}
+>  	}
+>  	dma_params->acnt = dma_params->data_type = data_type[fmt];
+>  	dma_params->fifo_level = 0;
+>  	mcbsp_word_length = asp_word_length[fmt];
+> -	rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(element_cnt - 1);
+> -	xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(element_cnt - 1);
+> +
+> +	if (master == SND_SOC_DAIFMT_CBS_CFS ||
+> +			master == SND_SOC_DAIFMT_CBS_CFM) {
+> +		rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(0);
+> +		xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(0);
+> +	} else {
+> +		/* FIXME ask to Texas */
+> +		rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(element_cnt - 1);
+> +		xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(element_cnt - 1);
+> +	}
+>  
+>  	rcr |= DAVINCI_MCBSP_RCR_RWDLEN1(mcbsp_word_length) |
+> -		DAVINCI_MCBSP_RCR_RWDLEN2(mcbsp_word_length);
+> +	       DAVINCI_MCBSP_RCR_RWDLEN2(mcbsp_word_length);
+
+more unintended formatting ?
+
+>  	xcr |= DAVINCI_MCBSP_XCR_XWDLEN1(mcbsp_word_length) |
+> -		DAVINCI_MCBSP_XCR_XWDLEN2(mcbsp_word_length);
+> +	       DAVINCI_MCBSP_XCR_XWDLEN2(mcbsp_word_length);
+
+ditto
+
+>  
+>  	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+>  		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_XCR_REG, xcr);
+>  	else
+>  		davinci_mcbsp_write_reg(dev, DAVINCI_MCBSP_RCR_REG, rcr);
+> +
+> +	pr_debug("%s - %d  srgr=%X\n", __func__, __LINE__, srgr);
+> +	pr_debug("%s - %d  xcr=%X\n", __func__, __LINE__, xcr);
+> +	pr_debug("%s - %d  rcr=%X\n", __func__, __LINE__, rcr);
+>  	return 0;
+>  }
+>  
+> @@ -500,7 +602,7 @@ static struct snd_soc_dai_ops davinci_i2s_dai_ops = {
+>  	.trigger	= davinci_i2s_trigger,
+>  	.hw_params	= davinci_i2s_hw_params,
+>  	.set_fmt	= davinci_i2s_set_dai_fmt,
+> -
+> +	.set_clkdiv = davinci_i2s_dai_set_clkdiv,
+
+the formatting is different to rest of struct here.
+
+>  };
+>  
+>  struct snd_soc_dai davinci_i2s_dai = {
+> @@ -548,6 +650,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+>  	}
+>  	if (pdata) {
+>  		dev->enable_channel_combine = pdata->enable_channel_combine;
+> +		dev->i2s_fast_clock = pdata->i2s_fast_clock;
+>  		dev->dma_params[SNDRV_PCM_STREAM_PLAYBACK].sram_size =
+>  			pdata->sram_size_playback;
+>  		dev->dma_params[SNDRV_PCM_STREAM_CAPTURE].sram_size =
+
+The subject of the patch looks wrong as I can't really see where you are
+adding stereo support to  the DAI. This patch looks likes it adds more
+clocking options only,
+
+Thanks
+
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
