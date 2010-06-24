@@ -1,21 +1,17 @@
-From: Vladimir Zapolskiy <vzapolskiy@gmail.com>
-Subject: Re: [PATCH 2/2 v2] ASoC: uda134x: correct bias level
-	setup for codecs family
-Date: Thu, 24 Jun 2010 23:44:24 +0400
-Message-ID: <AANLkTim5e09iw01K28npUmM0Rofmiqx_DLqQwUb0zVGn@mail.gmail.com>
-References: <1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
-	<1277385565-30727-1-git-send-email-vzapolskiy@gmail.com>
+From: Ryan Mallon <ryan@bluewatersys.com>
+Subject: Re: [RFC 0/5] ASoC multi-component support : core
+Date: Fri, 25 Jun 2010 09:36:00 +1200
+Message-ID: <4C23CFC0.6080700@bluewatersys.com>
+References: <1277407467.3100.579.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 6682824471
+Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3836C10384B
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 21:44:25 +0200 (CEST)
-Received: by wyb38 with SMTP id 38so2333472wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 12:44:25 -0700 (PDT)
-In-Reply-To: <1277385565-30727-1-git-send-email-vzapolskiy@gmail.com>
+	Thu, 24 Jun 2010 23:36:04 +0200 (CEST)
+In-Reply-To: <1277407467.3100.579.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,72 +21,144 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Vladimir Zapolskiy <vzapolskiy@gmail.com>
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: vbarinov <vbarinov@embeddedalley.com>, alsa-devel <alsa-devel@alsa-project.org>, jassisinghbrar <jassisinghbrar@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Cliff Cai <cliff.cai@analog.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, "timur.tabi@gmail.com" <timur.tabi@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, "Candelaria Villareal,
+	Jorge" <jorge.candelaria@ti.com>, "vaibhav.bedia" <vaibhav.bedia@ti.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-TWFyaywgTGlhbSwKCmRvIHlvdSBoYXZlIG1vcmUgY29tbWVudHMgYWJvdXQgdGhpcyBmaXg/CgpP
-biBUaHUsIEp1biAyNCwgMjAxMCBhdCA1OjE5IFBNLCBWbGFkaW1pciBaYXBvbHNraXkKPHZ6YXBv
-bHNraXlAZ21haWwuY29tPiB3cm90ZToKPiBGb3IgVURBMTM0MSBjb2RlYyBwb3dlciBjb250cm9s
-IGlzIG1hbmFnZWQgaW4gU1RBVFVTMSByZWdpc3RlciwgYW5kCj4gZm9yIGFsbCBvdGhlciBjb2Rl
-Y3MgaW4gREFUQTAxMSByZWdpc3Rlci4KPgo+IFNpZ25lZC1vZmYtYnk6IFZsYWRpbWlyIFphcG9s
-c2tpeSA8dnphcG9sc2tpeUBnbWFpbC5jb20+Cj4gLS0tCj4gwqBzb3VuZC9zb2MvY29kZWNzL3Vk
-YTEzNHguYyB8IMKgIDM2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQo+IMKg
-MSBmaWxlcyBjaGFuZ2VkLCAzMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Cj4gZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvdWRhMTM0eC5jIGIvc291bmQvc29jL2NvZGVjcy91
-ZGExMzR4LmMKPiBpbmRleCBlNzcwMDI5Li5lODA2NmI2IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Nv
-Yy9jb2RlY3MvdWRhMTM0eC5jCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy91ZGExMzR4LmMKPiBA
-QCAtMzUzLDggKzM1MywyMiBAQCBzdGF0aWMgaW50IHVkYTEzNHhfc2V0X2JpYXNfbGV2ZWwoc3Ry
-dWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjLAo+IMKgIMKgIMKgIMKgc3dpdGNoIChsZXZlbCkgewo+
-IMKgIMKgIMKgIMKgY2FzZSBTTkRfU09DX0JJQVNfT046Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAvKiBBREMsIERBQyBvbiAqLwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gdWRhMTM0
-eF9yZWFkX3JlZ19jYWNoZShjb2RlYywgVURBMTM0WF9TVEFUVVMxKTsKPiAtIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwgcmVnIHwgMHgw
-Myk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzd2l0Y2ggKHBkLT5tb2RlbCkgewo+ICsgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgY2FzZSBVREExMzRYX1VEQTEzNDA6Cj4gKyDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCBjYXNlIFVEQTEzNFhfVURBMTM0NDoKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNh
-c2UgVURBMTM0WF9VREExMzQ1Ogo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-cmVnID0gdWRhMTM0eF9yZWFkX3JlZ19jYWNoZShjb2RlYywgVURBMTM0WF9EQVRBMDExKTsKPiAr
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVE
-QTEzNFhfREFUQTAxMSwgcmVnIHwgMHgwMyk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCBicmVhazsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNhc2UgVURBMTM0WF9VREEx
-MzQxOgo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gdWRhMTM0eF9y
-ZWFkX3JlZ19jYWNoZShjb2RlYywgVURBMTM0WF9TVEFUVVMxKTsKPiArIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwg
-cmVnIHwgMHgwMyk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsK
-PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGRlZmF1bHQ6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCBwcmludGsoS0VSTl9FUlIgIlVEQTEzNFggU29DIGNvZGVjOiAiCj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCJ1bnN1cHBvcnRlZCBt
-b2RlbCAlZFxuIiwgcGQtPm1vZGVsKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIHJldHVybiAtRUlOVkFMOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+IMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgYnJlYWs7Cj4gwqAgwqAgwqAgwqBjYXNlIFNORF9TT0NfQklBU19QUkVQ
-QVJFOgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLyogcG93ZXIgb24gKi8KPiBAQCAtMzY3LDgg
-KzM4MSwyMiBAQCBzdGF0aWMgaW50IHVkYTEzNHhfc2V0X2JpYXNfbGV2ZWwoc3RydWN0IHNuZF9z
-b2NfY29kZWMgKmNvZGVjLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgYnJlYWs7Cj4gwqAgwqAg
-wqAgwqBjYXNlIFNORF9TT0NfQklBU19TVEFOREJZOgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-LyogQURDLCBEQUMgcG93ZXIgb2ZmICovCj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgPSB1
-ZGExMzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEpOwo+IC0gwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgdWRhMTM0eF93cml0ZShjb2RlYywgVURBMTM0WF9TVEFUVVMxLCByZWcg
-JiB+KDB4MDMpKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHN3aXRjaCAocGQtPm1vZGVsKSB7
-Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIFVEQTEzNFhfVURBMTM0MDoKPiArIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIGNhc2UgVURBMTM0WF9VREExMzQ0Ogo+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgY2FzZSBVREExMzRYX1VEQTEzNDU6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCByZWcgPSB1ZGExMzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX0RBVEEw
-MTEpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdWRhMTM0eF93cml0ZShj
-b2RlYywgVURBMTM0WF9EQVRBMDExLCByZWcgJiB+KDB4MDMpKTsKPiArIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FzZSBV
-REExMzRYX1VEQTEzNDE6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcg
-PSB1ZGExMzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEpOwo+ICsgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdWRhMTM0eF93cml0ZShjb2RlYywgVURBMTM0
-WF9TVEFUVVMxLCByZWcgJiB+KDB4MDMpKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZGVmYXVsdDoKPiArIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ayhLRVJOX0VSUiAiVURBMTM0WCBTb0Mg
-Y29kZWM6ICIKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-InVuc3VwcG9ydGVkIG1vZGVsICVkXG4iLCBwZC0+bW9kZWwpOwo+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIC1FSU5WQUw7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCB9Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBicmVhazsKPiDCoCDCoCDCoCDCoGNhc2UgU05E
-X1NPQ19CSUFTX09GRjoKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC8qIHBvd2VyIG9mZiAqLwo+
-IC0tCj4gMS43LjAuNAo+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
-LWRldmVsCg==
+On 06/25/2010 07:24 AM, Liam Girdwood wrote:
+> If you find your platform does not work then the most likely reason is
+> that I'm missing a platform_device registration for your CODEC, DAI,
+> etc. device in your arch board.c or device.c files. Please let me know
+> or send a patch :)
+>   
+Hi Liam,
+
+The following patch fixes the build errors and warnings for the
+ep93xx/Snapper CL15. However, I still get 'No soundcards found' during
+boot. The ep3xx-pcm-audio, ep93xx-i2s and soc-audio devices are all
+present under /sys/bus/platform/devices. Any ideas?
+
+Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
+---
+
+diff --git a/arch/arm/mach-ep93xx/core.c b/arch/arm/mach-ep93xx/core.c
+index 67dc876..b5261d4 100644
+--- a/arch/arm/mach-ep93xx/core.c
++++ b/arch/arm/mach-ep93xx/core.c
+@@ -732,9 +732,15 @@ static struct platform_device ep93xx_i2s_device = {
+ 	.resource	= ep93xx_i2s_resource,
+ };
+ 
++static struct platform_device ep93xx_pcm_device = {
++	.name		= "ep93xx-pcm-audio",
++	.id		= -1,
++};
++
+ void __init ep93xx_register_i2s(void)
+ {
+ 	platform_device_register(&ep93xx_i2s_device);
++	platform_device_register(&ep93xx_pcm_device);
+ }
+ 
+ #define EP93XX_SYSCON_DEVCFG_I2S_MASK	(EP93XX_SYSCON_DEVCFG_I2SONSSP | \
+@@ -798,6 +804,4 @@ void __init ep93xx_init_devices(void)
+ 	platform_device_register(&ep93xx_rtc_device);
+ 	platform_device_register(&ep93xx_ohci_device);
+ 	platform_device_register(&ep93xx_leds);
+-	platform_device_register(&ep93xx_i2s_device);
+-	platform_device_register(&ep93xx_pcm_device);
+ }
+diff --git a/sound/soc/ep93xx/ep93xx-i2s.c b/sound/soc/ep93xx/ep93xx-i2s.c
+index b40201f..6e0fa03 100644
+--- a/sound/soc/ep93xx/ep93xx-i2s.c
++++ b/sound/soc/ep93xx/ep93xx-i2s.c
+@@ -146,6 +146,7 @@ static int ep93xx_i2s_startup(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 
+ 	snd_soc_dai_set_dma_data(cpu_dai, substream,
+ 				 &info->dma_params[substream->stream]);
+@@ -155,7 +156,6 @@ static int ep93xx_i2s_startup(struct snd_pcm_substream *substream,
+ static void ep93xx_i2s_shutdown(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
+ 
+ 	ep93xx_i2s_disable(info, substream->stream);
+@@ -241,7 +241,6 @@ static int ep93xx_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params,
+ 				struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(dai);
+ 	unsigned word_len, div, sdiv, lrdiv;
+ 	int found = 0, err;
+diff --git a/sound/soc/ep93xx/snappercl15.c b/sound/soc/ep93xx/snappercl15.c
+index 6495534..c34aa1f 100644
+--- a/sound/soc/ep93xx/snappercl15.c
++++ b/sound/soc/ep93xx/snappercl15.c
+@@ -30,8 +30,8 @@ static int snappercl15_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int err;
+ 
+ 	err = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
+@@ -77,8 +77,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"MICIN", NULL, "Mic Jack"},
+ };
+ 
+-static int snappercl15_tlv320aic23_init(struct snd_soc_codec *codec)
++static int snappercl15_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
++
+ 	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
+ 				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
+ 
+@@ -89,24 +91,19 @@ static int snappercl15_tlv320aic23_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link snappercl15_dai = {
+ 	.name		= "tlv320aic23",
+ 	.stream_name	= "AIC23",
+-	.cpu_dai	= &ep93xx_i2s_dai,
+-	.codec_dai	= &tlv320aic23_dai,
++	.cpu_dai_drv	= &ep93xx_i2s_dai,
++	.codec_dai_drv	= &tlv320aic23_dai,
++	.platform_drv	= &ep93xx_soc_platform,
+ 	.init		= snappercl15_tlv320aic23_init,
+ 	.ops		= &snappercl15_ops,
+ };
+ 
+ static struct snd_soc_card snd_soc_snappercl15 = {
+ 	.name		= "Snapper CL15",
+-	.platform	= &ep93xx_soc_platform,
+ 	.dai_link	= &snappercl15_dai,
+ 	.num_links	= 1,
+ };
+ 
+-static struct snd_soc_device snappercl15_snd_devdata = {
+-	.card		= &snd_soc_snappercl15,
+-	.codec_dev	= &soc_codec_dev_tlv320aic23,
+-};
+-
+ static struct platform_device *snappercl15_snd_device;
+ 
+ static int __init snappercl15_init(void)
+@@ -126,8 +123,7 @@ static int __init snappercl15_init(void)
+ 	if (!snappercl15_snd_device)
+ 		return -ENOMEM;
+ 	
+-	platform_set_drvdata(snappercl15_snd_device, &snappercl15_snd_devdata);
+-	snappercl15_snd_devdata.dev = &snappercl15_snd_device->dev;
++	platform_set_drvdata(snappercl15_snd_device, &snd_soc_snappercl15);
+ 	ret = platform_device_add(snappercl15_snd_device);
+ 	if (ret)
+ 		platform_device_put(snappercl15_snd_device);
