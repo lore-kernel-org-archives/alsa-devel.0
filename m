@@ -1,23 +1,21 @@
 From: Vladimir Zapolskiy <vzapolskiy@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: uda134x: fix bias level setup on
-	initialization and runtime
-Date: Thu, 24 Jun 2010 17:21:26 +0400
-Message-ID: <AANLkTin185ThdvqLO71VmcufxjkpUkgAw_i55Vltwvgk@mail.gmail.com>
-References: <1277378228-29658-1-git-send-email-vzapolskiy@gmail.com>
-	<1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
-	<363D67C2-D730-4665-B88A-EC92CC1A19D1@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] ASoC: uda134x: fix bias level setup on
+	initialization
+Date: Thu, 24 Jun 2010 17:38:51 +0400
+Message-ID: <1277386731-31160-2-git-send-email-vzapolskiy@gmail.com>
+References: <1277386731-31160-1-git-send-email-vzapolskiy@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0D97110381D
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6077E10381D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 15:21:28 +0200 (CEST)
-Received: by wyb38 with SMTP id 38so1996776wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 06:21:26 -0700 (PDT)
-In-Reply-To: <363D67C2-D730-4665-B88A-EC92CC1A19D1@opensource.wolfsonmicro.com>
+	Thu, 24 Jun 2010 15:39:23 +0200 (CEST)
+Received: by mail-bw0-f51.google.com with SMTP id 11so141592bwz.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 06:39:23 -0700 (PDT)
+In-Reply-To: <1277386731-31160-1-git-send-email-vzapolskiy@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,42 +25,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Vladimir Zapolskiy <vzapolskiy@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpPbiBUaHUsIEp1biAyNCwgMjAxMCBhdCAzOjM0IFBNLCBNYXJrIEJyb3duCjxicm9v
-bmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gMjQgSnVuIDIwMTAs
-IGF0IDEyOjE3LCBWbGFkaW1pciBaYXBvbHNraXkgd3JvdGU6Cj4KPj4gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgLyogQURDLCBEQUMgb24gKi8KPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZWcgPSB1ZGEx
-MzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEpOwo+PiAtIMKgIMKgIMKg
-IMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwgcmVnIHwgMHgw
-Myk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKHBkLT5tb2RlbCA9PSBVREExMzRYX1VEQTEz
-NDEpIHsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgPSB1ZGExMzR4X3Jl
-YWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEpOwo+PiArIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwgcmVn
-IHwgMHgwMyk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgfSBlbHNlIHsKPj4gKyDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgPSB1ZGExMzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBV
-REExMzRYX0RBVEEwMTEpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHVkYTEz
-NHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfREFUQTAxMSwgcmVnIHwgMHgwMyk7Cj4+ICsgwqAgwqAg
-wqAgwqAgwqAgwqAgfQo+Cj4gSSdkIGJlIG1vcmUgY29tZm9ydGFibGUgaWYgdGhlc2UgdXNlZCBz
-d2l0Y2ggc3RhdGVtZW50cy4gVGhhdCB3YXkgYW55IGZ1cnRoZXIKPiBkZXZpY2Ugc3BlY2lmaWNz
-IHdpbGwgc2xvdCBpbiBtb3JlIGVhc2lseS4KPgpBZ3JlZSB3aXRoIHRoZSBjb21tZW50LgoKPiBP
-ZiBjb3Vyc2UsIHRoaXMgc2hvdWxkIHJlYWxseSBiZSB1c2luZyBEQVBNLi4uCj4KPj4KPj4gQEAg
-LTUzMSw5ICs1NDEsNyBAQCBzdGF0aWMgaW50IHVkYTEzNHhfc29jX3Byb2JlKHN0cnVjdCBwbGF0
-Zm9ybV9kZXZpY2UgKnBkZXYpCj4+IMKgIMKgIMKgIGNvZGVjLT5udW1fZGFpID0gMTsKPj4gwqAg
-wqAgwqAgY29kZWMtPnJlYWQgPSB1ZGExMzR4X3JlYWRfcmVnX2NhY2hlOwo+PiDCoCDCoCDCoCBj
-b2RlYy0+d3JpdGUgPSB1ZGExMzR4X3dyaXRlOwo+PiAtI2lmZGVmIFBPV0VSX09GRl9PTl9TVEFO
-REJZCj4+IC0gwqAgwqAgY29kZWMtPnNldF9iaWFzX2xldmVsID0gdWRhMTM0eF9zZXRfYmlhc19s
-ZXZlbDsKPj4gLSNlbmRpZgo+PiArCj4KPiBUaGVzZSBjaGFuZ2VzIGZvciB0aGUgYmlhcyBsZXZl
-bCBjb25maWd1cmF0aW9uIGxvb2sgdG8gYmUgdW5yZWxhdGVkIHRvIHRoZSBhZGRpdGlvbiBvZgo+
-IHRoZSBuZXcgQ09ERUMgYW5kIHNob3VsZCBiZSBzcGxpdCBpbnRvIGEgc2VwYXJhdGUgcGF0Y2gu
-IEl0J2QgYWxzbyBiZSBtdWNoIGJldHRlciB0bwo+IHJlbW92ZSB0aGlzIGlmZGVmZXJ5LCBpdCBz
-aG91bGQgYmUgaGFuZGxlZCB2aWEgcGxhdGZvcm0gZGF0YSBvciBqdXN0IGRvbmUgdW5jb25kaXRp
-b25hbGx5Lgo+Cj4KSSBjb25maXJtIHRoYXQncyBhY3R1YWxseSB1bnJlbGF0ZWQsIHNvIGl0IHNo
-b3VsZCBiZSBkb25lIGluIGEgc2VwYXJhdGUgcGF0Y2guCgpJICBkaXNsaWtlIHRoZSBtYWNybyBo
-ZXJlIHRvbywgSSdsbCByZXBsYWNlIGl0IHdpdGggYSBwbGF0Zm9ybSBkYXRhIHNvbHV0aW9uLgoK
-QmVzdCB3aXNoZXMsClZsYWRpbWlyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+On initialization ADC/DAC are enabled only for UDA1341, that's why
+bias_level shall be set to off explicitly, otherwise dapm is
+misinformed about bias_level on startup.
+
+Signed-off-by: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+---
+ sound/soc/codecs/uda134x.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
+index 5c7b054..ed13515 100644
+--- a/sound/soc/codecs/uda134x.c
++++ b/sound/soc/codecs/uda134x.c
+@@ -547,10 +547,6 @@ static int uda134x_soc_probe(struct platform_device *pdev)
+ 	codec->read = uda134x_read_reg_cache;
+ 	codec->write = uda134x_write;
+ 
+-	if (!pd->is_powered_on_standby) {
+-		codec->set_bias_level = uda134x_set_bias_level;
+-	}
+-
+ 	INIT_LIST_HEAD(&codec->dapm_widgets);
+ 	INIT_LIST_HEAD(&codec->dapm_paths);
+ 
+@@ -561,6 +557,14 @@ static int uda134x_soc_probe(struct platform_device *pdev)
+ 
+ 	uda134x_reset(codec);
+ 
++	if (pd->is_powered_on_standby) {
++		codec->set_bias_level = NULL;
++		uda134x_set_bias_level(codec, SND_SOC_BIAS_ON);
++	} else {
++		codec->set_bias_level = uda134x_set_bias_level;
++		uda134x_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
++	}
++
+ 	/* register pcms */
+ 	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
+ 	if (ret < 0) {
+-- 
+1.7.0.4
