@@ -1,17 +1,28 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [GIT PULL] ASoC updates for 2.6.36
-Date: Thu, 24 Jun 2010 10:09:22 +0100
-Message-ID: <1277370563.3100.75.camel@odin>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: wrong decibel data?
+Date: Thu, 24 Jun 2010 17:53:10 +0800
+Message-ID: <AANLkTikM4wCkh9UKj8NI5WMPxBkLC9SwV0vWdqVIsAnY@mail.gmail.com>
+References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
+	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
+	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
+	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
+	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
+	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
+	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
+	<x2q4f3252891004090440h78a3c187p1f3b51be7be1e858@mail.gmail.com>
+	<s2l98391a7b1004090527je4458c3m143b5c129424751c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 36940243DB
+Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
+	[209.85.216.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 28AF3243F3
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 11:09:26 +0200 (CEST)
-Received: by wyb38 with SMTP id 38so1803147wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 02:09:25 -0700 (PDT)
+	Thu, 24 Jun 2010 11:53:12 +0200 (CEST)
+Received: by qyk36 with SMTP id 36so110601qyk.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 02:53:10 -0700 (PDT)
+In-Reply-To: <s2l98391a7b1004090527je4458c3m143b5c129424751c@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,24 +32,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGZvbGxvd2luZyBjaGFuZ2VzIHNpbmNlIGNvbW1pdCA2NjUxNzkxNWUwOTU0ZWUwMjdiODg5
-ZjQ1MjUxMTk0NWY3YTlmM2VjOgogIFBldGVyIEh1ZXdlICgxKToKICAgICAgICBBU29DOiBGaXgg
-STJDIGRlcGVuZGVuY3kgZm9yIFNORF9GU0lfQUs0NjQyIGFuZCBTTkRfRlNJX0RBNzIxMAoKYXJl
-IGF2YWlsYWJsZSBpbiB0aGUgZ2l0IHJlcG9zaXRvcnkgYXQ6CgogIGdpdDovL2dpdC5rZXJuZWwu
-b3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9scmcvYXNvYy0yLjYuZ2l0IGZvci0yLjYuMzYK
-CkVyaWMgQsOpbmFyZCAoMSk6CiAgICAgIGNvZGVjcy90bHYzMjBhaWMyMzogZml4IGJpYXMgbWFu
-YWdlbWVudCBmb3Igc3VzcGVuZC9yZXN1bWUKCkdyYXp2eWRhcyBJZ25vdGFzICgxKToKICAgICAg
-QVNvQzogcGFuZG9yYTogZml4IENMS1ggcG9sYXJpdHkKCkphcmtrbyBOaWt1bGEgKDIpOgogICAg
-ICBBU29DOiBSWC01MTogQWRkIEphY2sgRnVuY3Rpb24ga2NvbnRyb2wKICAgICAgQVNvQzogUlgt
-NTE6IEFkZCBiYXNpYyBqYWNrIGRldGVjdGlvbgoKIHNvdW5kL3NvYy9jb2RlY3MvdGx2MzIwYWlj
-MjMuYyB8ICAgIDcgKystLQogc291bmQvc29jL29tYXAvb21hcDNwYW5kb3JhLmMgIHwgICAzNiAr
-KysrLS0tLS0tLS0tLS0tLS0tCiBzb3VuZC9zb2Mvb21hcC9yeDUxLmMgICAgICAgICAgfCAgIDcz
-ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0KIDMgZmlsZXMgY2hhbmdl
-ZCwgODQgaW5zZXJ0aW9ucygrKSwgMzIgZGVsZXRpb25zKC0pCgoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+2010/4/9 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
+
+> As I've already told you, I'm not able to run dbmeasure because it
+> says it can't detect any audio.
+> I will investigate...
+>
+
+I cannot run dbmeasure on my au8830 or HDA sound card too.
+
+you have to ask the author of dbmeasure.c
+
+First glance at the source code , it seem the program expect the driver
+support exactly one second buffer but neither au8830 or HDA driver can offer
+a buffer size of exactly one second
+
+May be just only work on his USB audio only
