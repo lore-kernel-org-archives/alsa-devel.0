@@ -1,18 +1,18 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [RFC 1/5] ASoC multi-component support : core API
-Date: Thu, 24 Jun 2010 20:24:32 +0100
-Message-ID: <1277407472.3100.580.camel@odin>
+Subject: [RFC 2/5] ASoC multi-component support : DAPM
+Date: Thu, 24 Jun 2010 20:24:38 +0100
+Message-ID: <1277407478.3100.581.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
 	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 38AA6103856
+	by alsa0.perex.cz (Postfix) with ESMTP id 637D9103988
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 21:24:31 +0200 (CEST)
+	Thu, 24 Jun 2010 21:24:35 +0200 (CEST)
 Received: by mail-wy0-f179.google.com with SMTP id 38so2318604wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 12:24:31 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 12:24:35 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,614 +26,253 @@ To: alsa-devel <alsa-devel@alsa-project.org>
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This patch extends the ASoC API to allow sound cards to have more than one
-CODEC and more than one platform DMA controller. This is achieved by dividing
-some current ASoC structures that contain both driver data and device data into
-structures that only either contain device data or driver data. i.e.
+This patch adds DAPM support for ASoC multi-component and removes struct
+snd_soc_socdev from DAPM core. All DAPM calls are now made on a card, codec
+or runtime PCM level basis rather than using snd_soc_socdev.
 
- struct snd_soc_codec    --->  struct snd_soc_codec (device data)
-                          +->  struct snd_soc_codec_driver (driver data)
-
- struct snd_soc_platform --->  struct snd_soc_platform (device data)
-                          +->  struct snd_soc_platform_driver (driver data)
-
- struct snd_soc_dai      --->  struct snd_soc_dai (device data)
-                          +->  struct snd_soc_dai_driver (driver data)
-
- struct snd_soc_device   --->  deleted
-
-This now allows ASoC to be more tightly aligned with the Linux driver model and
-also means that every ASoC codec, platform and (platform) DAI is a kernel
-device. ASoC component private data is now stored as device private data.
-
-The ASoC sound card struct snd_soc_card has also been updated to store lists
-of it's components rather than a pointer to a codec and platform. The PCM
-runtime struct soc_pcm_runtime now has pointers to all its components.
+Also added void snd_soc_dapm_shutdown() to shutdown all CODECs in a card.
 
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- include/sound/soc-dai.h |   99 ++++++++++++-------
- include/sound/soc.h     |  246 +++++++++++++++++++++++++++++------------------
- sound/soc/soc-core.c    |    2 +
- 3 files changed, 218 insertions(+), 129 deletions(-)
+ include/sound/soc-dapm.h |    8 ++--
+ sound/soc/soc-dapm.c     |   82 +++++++++++++++++++++++-----------------------
+ 2 files changed, 45 insertions(+), 45 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 377693a..495f0aa 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -91,15 +91,17 @@ struct snd_pcm_substream;
-                                SNDRV_PCM_FMTBIT_S32_LE |\
-                                SNDRV_PCM_FMTBIT_S32_BE)
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index c5d9987..c4a4456 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -322,14 +322,14 @@ int snd_soc_dapm_new_controls(struct snd_soc_codec *codec,
  
--struct snd_soc_dai_ops;
-+struct snd_soc_dai_driver;
- struct snd_soc_dai;
- struct snd_ac97_bus_ops;
+ /* dapm path setup */
+ int snd_soc_dapm_new_widgets(struct snd_soc_codec *codec);
+-void snd_soc_dapm_free(struct snd_soc_device *socdev);
++void snd_soc_dapm_free(struct snd_soc_codec *codec);
+ int snd_soc_dapm_add_routes(struct snd_soc_codec *codec,
+ 			    const struct snd_soc_dapm_route *route, int num);
  
- /* Digital Audio Interface registration */
--int snd_soc_register_dai(struct snd_soc_dai *dai);
--void snd_soc_unregister_dai(struct snd_soc_dai *dai);
--int snd_soc_register_dais(struct snd_soc_dai *dai, size_t count);
--void snd_soc_unregister_dais(struct snd_soc_dai *dai, size_t count);
-+int snd_soc_register_dai(struct device *dev, int id,
-+		struct snd_soc_dai_driver *dai_drv);
-+void snd_soc_unregister_dai(struct device *dev, int id);
-+int snd_soc_register_dais(struct device *dev,
-+		struct snd_soc_dai_driver *dai_drv, size_t count);
-+void snd_soc_unregister_dais(struct device *dev, size_t count);
+ /* dapm events */
+-int snd_soc_dapm_stream_event(struct snd_soc_codec *codec, char *stream,
+-	int event);
+-void snd_soc_dapm_shutdown(struct snd_soc_device *socdev);
++int snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd,
++	const char *stream, int event);
++void snd_soc_dapm_shutdown(struct snd_soc_card *card);
  
- /* Digital Audio Interface clocking API.*/
- int snd_soc_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
-@@ -126,16 +128,6 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
- /* Digital Audio Interface mute */
- int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute);
+ /* dapm sys fs - used by the core */
+ int snd_soc_dapm_sys_add(struct device *dev);
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 03cb7c0..a0d143d 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -112,43 +112,41 @@ static inline struct snd_soc_dapm_widget *dapm_cnew_widget(
+ 
+ /**
+  * snd_soc_dapm_set_bias_level - set the bias level for the system
+- * @socdev: audio device
++ * @card: audio device
+  * @level: level to configure
+  *
+  * Configure the bias (power) levels for the SoC audio device.
+  *
+  * Returns 0 for success else error.
+  */
+-static int snd_soc_dapm_set_bias_level(struct snd_soc_device *socdev,
+-				       enum snd_soc_bias_level level)
++static int snd_soc_dapm_set_bias_level(struct snd_soc_card *card,
++		struct snd_soc_codec *codec, enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_card *card = socdev->card;
+-	struct snd_soc_codec *codec = socdev->card->codec;
+ 	int ret = 0;
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+-		dev_dbg(socdev->dev, "Setting full bias\n");
++		dev_dbg(codec->dev, "Setting full bias\n");
+ 		break;
+ 	case SND_SOC_BIAS_PREPARE:
+-		dev_dbg(socdev->dev, "Setting bias prepare\n");
++		dev_dbg(codec->dev, "Setting bias prepare\n");
+ 		break;
+ 	case SND_SOC_BIAS_STANDBY:
+-		dev_dbg(socdev->dev, "Setting standby bias\n");
++		dev_dbg(codec->dev, "Setting standby bias\n");
+ 		break;
+ 	case SND_SOC_BIAS_OFF:
+-		dev_dbg(socdev->dev, "Setting bias off\n");
++		dev_dbg(codec->dev, "Setting bias off\n");
+ 		break;
+ 	default:
+-		dev_err(socdev->dev, "Setting invalid bias %d\n", level);
++		dev_err(codec->dev, "Setting invalid bias %d\n", level);
+ 		return -EINVAL;
+ 	}
+ 
+-	if (card->set_bias_level)
++	if (card && card->set_bias_level)
+ 		ret = card->set_bias_level(card, level);
+ 	if (ret == 0) {
+-		if (codec->set_bias_level)
+-			ret = codec->set_bias_level(codec, level);
++		if (codec->driver->set_bias_level)
++			ret = codec->driver->set_bias_level(codec, level);
+ 		else
+ 			codec->bias_level = level;
+ 	}
+@@ -370,7 +368,7 @@ static int dapm_new_mixer(struct snd_soc_codec *codec,
+ 
+ 			path->kcontrol = snd_soc_cnew(&w->kcontrols[i], w,
+ 				path->long_name);
+-			ret = snd_ctl_add(codec->card, path->kcontrol);
++			ret = snd_ctl_add(codec->snd_card, path->kcontrol);
+ 			if (ret < 0) {
+ 				printk(KERN_ERR "asoc: failed to add dapm kcontrol %s: %d\n",
+ 				       path->long_name,
+@@ -398,7 +396,7 @@ static int dapm_new_mux(struct snd_soc_codec *codec,
+ 	}
+ 
+ 	kcontrol = snd_soc_cnew(&w->kcontrols[0], w, w->name);
+-	ret = snd_ctl_add(codec->card, kcontrol);
++	ret = snd_ctl_add(codec->snd_card, kcontrol);
+ 	if (ret < 0)
+ 		goto err;
+ 
+@@ -893,7 +891,7 @@ static void dapm_seq_run(struct snd_soc_codec *codec, struct list_head *list,
+  */
+ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ {
+-	struct snd_soc_device *socdev = codec->socdev;
++	struct snd_soc_card *card = codec->card;
+ 	struct snd_soc_dapm_widget *w;
+ 	LIST_HEAD(up_list);
+ 	LIST_HEAD(down_list);
+@@ -966,7 +964,7 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ 	}
+ 
+ 	if (sys_power && codec->bias_level == SND_SOC_BIAS_OFF) {
+-		ret = snd_soc_dapm_set_bias_level(socdev,
++		ret = snd_soc_dapm_set_bias_level(card, codec,
+ 						  SND_SOC_BIAS_STANDBY);
+ 		if (ret != 0)
+ 			pr_err("Failed to turn on bias: %d\n", ret);
+@@ -975,8 +973,7 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ 	/* If we're changing to all on or all off then prepare */
+ 	if ((sys_power && codec->bias_level == SND_SOC_BIAS_STANDBY) ||
+ 	    (!sys_power && codec->bias_level == SND_SOC_BIAS_ON)) {
+-		ret = snd_soc_dapm_set_bias_level(socdev,
+-						  SND_SOC_BIAS_PREPARE);
++		ret = snd_soc_dapm_set_bias_level(card, codec, SND_SOC_BIAS_PREPARE);
+ 		if (ret != 0)
+ 			pr_err("Failed to prepare bias: %d\n", ret);
+ 	}
+@@ -989,8 +986,7 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ 
+ 	/* If we just powered the last thing off drop to standby bias */
+ 	if (codec->bias_level == SND_SOC_BIAS_PREPARE && !sys_power) {
+-		ret = snd_soc_dapm_set_bias_level(socdev,
+-						  SND_SOC_BIAS_STANDBY);
++		ret = snd_soc_dapm_set_bias_level(card, codec, SND_SOC_BIAS_STANDBY);
+ 		if (ret != 0)
+ 			pr_err("Failed to apply standby bias: %d\n", ret);
+ 	}
+@@ -998,15 +994,14 @@ static int dapm_power_widgets(struct snd_soc_codec *codec, int event)
+ 	/* If we're in standby and can support bias off then do that */
+ 	if (codec->bias_level == SND_SOC_BIAS_STANDBY &&
+ 	    codec->idle_bias_off) {
+-		ret = snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_OFF);
++		ret = snd_soc_dapm_set_bias_level(card, codec, SND_SOC_BIAS_OFF);
+ 		if (ret != 0)
+ 			pr_err("Failed to turn off bias: %d\n", ret);
+ 	}
+ 
+ 	/* If we just powered up then move to active bias */
+ 	if (codec->bias_level == SND_SOC_BIAS_PREPARE && sys_power) {
+-		ret = snd_soc_dapm_set_bias_level(socdev,
+-						  SND_SOC_BIAS_ON);
++		ret = snd_soc_dapm_set_bias_level(card, codec, SND_SOC_BIAS_ON);
+ 		if (ret != 0)
+ 			pr_err("Failed to apply active bias: %d\n", ret);
+ 	}
+@@ -1188,8 +1183,7 @@ static int dapm_mixer_update_power(struct snd_soc_dapm_widget *widget,
+ static ssize_t dapm_widget_show(struct device *dev,
+ 	struct device_attribute *attr, char *buf)
+ {
+-	struct snd_soc_device *devdata = dev_get_drvdata(dev);
+-	struct snd_soc_codec *codec = devdata->card->codec;
++	struct snd_soc_codec *codec = dev_get_drvdata(dev);
+ 	struct snd_soc_dapm_widget *w;
+ 	int count = 0;
+ 	char *state = "not set";
+@@ -1998,9 +1992,10 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_new_controls);
+  *
+  * Returns 0 for success else error.
+  */
+-int snd_soc_dapm_stream_event(struct snd_soc_codec *codec,
+-	char *stream, int event)
++int snd_soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd,
++	const char *stream, int event)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	struct snd_soc_dapm_widget *w;
+ 
+ 	if (stream == NULL)
+@@ -2168,25 +2163,19 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_ignore_suspend);
+ 
+ /**
+  * snd_soc_dapm_free - free dapm resources
+- * @socdev: SoC device
++ * @card: SoC device
+  *
+  * Free all dapm widgets and resources.
+  */
+-void snd_soc_dapm_free(struct snd_soc_device *socdev)
++void snd_soc_dapm_free(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_codec *codec = socdev->card->codec;
+-
+-	snd_soc_dapm_sys_remove(socdev->dev);
++	snd_soc_dapm_sys_remove(codec->dev);
+ 	dapm_free_widgets(codec);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_free);
  
 -/*
-- * Digital Audio Interface.
-- *
-- * Describes the Digital Audio Interface in terms of its ALSA, DAI and AC97
-- * operations and capabilities. Codec and platform drivers will register this
-- * structure for every DAI they have.
-- *
-- * This structure covers the clocking, formating and ALSA operations for each
-- * interface.
+- * snd_soc_dapm_shutdown - callback for system shutdown
 - */
- struct snd_soc_dai_ops {
- 	/*
- 	 * DAI clocking configuration, all optional.
-@@ -191,24 +183,24 @@ struct snd_soc_dai_ops {
- };
- 
- /*
-- * Digital Audio Interface runtime data.
-+ * Digital Audio Interface Driver.
-  *
-- * Holds runtime data for a DAI.
-+ * Describes the Digital Audio Interface in terms of its ALSA, DAI and AC97
-+ * operations and capabilities. Codec and platform drivers will register this
-+ * structure for every DAI they have.
-+ *
-+ * This structure covers the clocking, formating and ALSA operations for each
-+ * interface.
-  */
--struct snd_soc_dai {
-+struct snd_soc_dai_driver {
- 	/* DAI description */
--	char *name;
--	unsigned int id;
-+	const char *name;
-+	struct module *owner;
- 	int ac97_control;
- 
--	struct device *dev;
--	void *ac97_pdata;	/* platform_data for the ac97 codec */
--
--	/* DAI callbacks */
--	int (*probe)(struct platform_device *pdev,
--		     struct snd_soc_dai *dai);
--	void (*remove)(struct platform_device *pdev,
--		       struct snd_soc_dai *dai);
-+	/* DAI driver callbacks */
-+	int (*probe)(struct snd_soc_dai *dai);
-+	int (*remove)(struct snd_soc_dai *dai);
- 	int (*suspend)(struct snd_soc_dai *dai);
- 	int (*resume)(struct snd_soc_dai *dai);
- 
-@@ -219,26 +211,50 @@ struct snd_soc_dai {
- 	struct snd_soc_pcm_stream capture;
- 	struct snd_soc_pcm_stream playback;
- 	unsigned int symmetric_rates:1;
-+};
+-void snd_soc_dapm_shutdown(struct snd_soc_device *socdev)
++static void soc_dapm_shutdown_codec(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_codec *codec = socdev->card->codec;
+ 	struct snd_soc_dapm_widget *w;
+ 	LIST_HEAD(down_list);
+ 	int powerdown = 0;
+@@ -2203,12 +2192,23 @@ void snd_soc_dapm_shutdown(struct snd_soc_device *socdev)
+ 	 * standby.
+ 	 */
+ 	if (powerdown) {
+-		snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_PREPARE);
++		snd_soc_dapm_set_bias_level(NULL, codec, SND_SOC_BIAS_PREPARE);
+ 		dapm_seq_run(codec, &down_list, 0, dapm_down_seq);
+-		snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_STANDBY);
++		snd_soc_dapm_set_bias_level(NULL, codec, SND_SOC_BIAS_STANDBY);
+ 	}
++}
 +
 +/*
-+ * Digital Audio Interface runtime data.
-+ *
-+ * Holds runtime data for a DAI.
++ * snd_soc_dapm_shutdown - callback for system shutdown
 + */
-+struct snd_soc_dai {
-+	const char *name;
-+	int id;
-+	struct device *dev;
-+	void *ac97_pdata;	/* platform_data for the ac97 codec */
-+
-+	/* driver ops */
-+	struct snd_soc_dai_driver *driver;
- 
- 	/* DAI runtime info */
--	struct snd_soc_codec *codec;
-+	unsigned int capture_active:1;		/* stream is in use */
-+	unsigned int playback_active:1;		/* stream is in use */
-+	unsigned int symmetric_rates:1;
-+	struct snd_pcm_runtime *runtime;
- 	unsigned int active;
- 	unsigned char pop_wait:1;
-+	unsigned char probed:1;
- 
--	/* DAI private data */
--	void *private_data;
-+	/* DAI DMA data */
-+	void *playback_dma_data;
-+	void *capture_dma_data;
- 
--	/* parent platform */
--	struct snd_soc_platform *platform;
-+	/* parent platform/codec */
-+	union {
-+		struct snd_soc_platform *platform;
-+		struct snd_soc_codec *codec;
-+	};
- 
- 	struct list_head list;
-+	struct list_head card_list;
- };
- 
- static inline void *snd_soc_dai_get_dma_data(const struct snd_soc_dai *dai,
- 					     const struct snd_pcm_substream *ss)
- {
- 	return (ss->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
--		dai->playback.dma_data : dai->capture.dma_data;
-+		dai->playback_dma_data : dai->capture_dma_data;
- }
- 
- static inline void snd_soc_dai_set_dma_data(struct snd_soc_dai *dai,
-@@ -246,9 +262,20 @@ static inline void snd_soc_dai_set_dma_data(struct snd_soc_dai *dai,
- 					    void *data)
- {
- 	if (ss->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dai->playback.dma_data = data;
-+		dai->playback_dma_data = data;
- 	else
--		dai->capture.dma_data = data;
-+		dai->capture_dma_data = data;
-+}
-+
-+static inline void snd_soc_dai_set_drvdata(struct snd_soc_dai *dai,
-+		void *data)
++void snd_soc_dapm_shutdown(struct snd_soc_card *card)
 +{
-+	dev_set_drvdata(dai->dev, data);
-+}
-+
-+static inline void *snd_soc_dai_get_drvdata(struct snd_soc_dai *dai)
-+{
-+	return dev_get_drvdata(dai->dev);
- }
- 
- #endif
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 65e9d03..b3fe7a8 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -228,13 +228,17 @@ struct snd_soc_ops;
- struct snd_soc_dai_mode;
- struct snd_soc_pcm_runtime;
- struct snd_soc_dai;
-+struct snd_soc_dai_driver;
- struct snd_soc_platform;
- struct snd_soc_dai_link;
-+struct snd_soc_platform_driver;
- struct snd_soc_codec;
-+struct snd_soc_codec_driver;
- struct soc_enum;
- struct snd_soc_ac97_ops;
- struct snd_soc_jack;
- struct snd_soc_jack_pin;
-+
- #ifdef CONFIG_GPIOLIB
- struct snd_soc_jack_gpio;
- #endif
-@@ -249,19 +253,18 @@ enum snd_soc_control_type {
- 	SND_SOC_SPI,
- };
- 
--int snd_soc_register_platform(struct snd_soc_platform *platform);
--void snd_soc_unregister_platform(struct snd_soc_platform *platform);
--int snd_soc_register_codec(struct snd_soc_codec *codec);
--void snd_soc_unregister_codec(struct snd_soc_codec *codec);
-+int snd_soc_register_platform(struct device *dev, int id,
-+		struct snd_soc_platform_driver *platform_drv);
-+void snd_soc_unregister_platform(struct device *dev, int id);
-+int snd_soc_register_codec(struct device *dev, int id,
-+		struct snd_soc_codec_driver *codec_drv,
-+		struct snd_soc_dai_driver *dai_drv, int num_dai);
-+void snd_soc_unregister_codec(struct device *dev, int id);
- int snd_soc_codec_volatile_register(struct snd_soc_codec *codec, int reg);
- int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 			       int addr_bits, int data_bits,
- 			       enum snd_soc_control_type control);
- 
--/* pcm <-> DAI connect */
--void snd_soc_free_pcms(struct snd_soc_device *socdev);
--int snd_soc_new_pcms(struct snd_soc_device *socdev, int idx, const char *xid);
--
- /* Utility functions to get clock rates from various things */
- int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
- int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
-@@ -273,7 +276,7 @@ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
- 	const struct snd_pcm_hardware *hw);
- 
- /* Jack reporting */
--int snd_soc_jack_new(struct snd_soc_card *card, const char *id, int type,
-+int snd_soc_jack_new(struct snd_soc_codec *codec, const char *id, int type,
- 		     struct snd_soc_jack *jack);
- void snd_soc_jack_report(struct snd_soc_jack *jack, int status, int mask);
- int snd_soc_jack_add_pins(struct snd_soc_jack *jack, int count,
-@@ -390,7 +393,7 @@ struct snd_soc_jack_gpio {
- 
- struct snd_soc_jack {
- 	struct snd_jack *jack;
--	struct snd_soc_card *card;
 +	struct snd_soc_codec *codec;
- 	struct list_head pins;
- 	int status;
- 	struct blocking_notifier_head notifier;
-@@ -398,15 +401,13 @@ struct snd_soc_jack {
- 
- /* SoC PCM stream information */
- struct snd_soc_pcm_stream {
--	char *stream_name;
-+	const char *stream_name;
- 	u64 formats;			/* SNDRV_PCM_FMTBIT_* */
- 	unsigned int rates;		/* SNDRV_PCM_RATE_* */
- 	unsigned int rate_min;		/* min rate */
- 	unsigned int rate_max;		/* max rate */
- 	unsigned int channels_min;	/* min channels */
- 	unsigned int channels_max;	/* max channels */
--	unsigned int active;		/* stream is in use */
--	void *dma_data;			/* used by platform code */
- };
- 
- /* SoC audio ops */
-@@ -419,44 +420,37 @@ struct snd_soc_ops {
- 	int (*trigger)(struct snd_pcm_substream *, int);
- };
- 
--/* SoC Audio Codec */
-+/* SoC Audio Codec device */
- struct snd_soc_codec {
--	char *name;
--	struct module *owner;
--	struct mutex mutex;
-+	const char *name;
-+	int id;
 +
- 	struct device *dev;
--	struct snd_soc_device *socdev;
-+	struct snd_soc_codec_driver *driver;
++	list_for_each_entry(codec, &card->codec_dev_list, list)
++		soc_dapm_shutdown_codec(codec);
  
-+	struct mutex mutex;
-+	struct snd_card *snd_card;
-+	struct snd_soc_card *card;
- 	struct list_head list;
--
--	/* callbacks */
--	int (*set_bias_level)(struct snd_soc_codec *,
--			      enum snd_soc_bias_level level);
-+	struct list_head card_list;
-+	int num_dai;
- 
- 	/* runtime */
--	struct snd_card *card;
- 	struct snd_ac97 *ac97;  /* for ad-hoc ac97 devices */
- 	unsigned int active;
--	unsigned int pcm_devs;
--	void *drvdata;
-+	unsigned int idle_bias_off:1; /* Use BIAS_OFF instead of STANDBY */
-+	unsigned int cache_only:1;  /* Suppress writes to hardware */
-+	unsigned int cache_sync:1; /* Cache needs to be synced to hardware */
-+	unsigned int suspended:1; /* Codec is in suspend PM state */
-+	unsigned int probed:1; /* Codec has been probed */
-+	unsigned int ac97_registered:1; /* Codec has been AC97 registered */
-+	unsigned int sysfs_registered:1; /* codec has been sysfs registered */
- 
- 	/* codec IO */
- 	void *control_data; /* codec control (i2c/3wire) data */
--	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
--	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
--	int (*display_register)(struct snd_soc_codec *, char *,
--				size_t, unsigned int);
--	int (*volatile_register)(unsigned int);
--	int (*readable_register)(unsigned int);
- 	hw_write_t hw_write;
- 	unsigned int (*hw_read)(struct snd_soc_codec *, unsigned int);
- 	void *reg_cache;
--	short reg_cache_size;
--	short reg_cache_step;
--
--	unsigned int idle_bias_off:1; /* Use BIAS_OFF instead of STANDBY */
--	unsigned int cache_only:1;  /* Suppress writes to hardware */
--	unsigned int cache_sync:1; /* Cache needs to be synced to hardware */
- 
- 	/* dapm */
- 	u32 pop_time;
-@@ -466,10 +460,6 @@ struct snd_soc_codec {
- 	enum snd_soc_bias_level suspend_bias_level;
- 	struct delayed_work delayed_work;
- 
--	/* codec DAI's */
--	struct snd_soc_dai *dai;
--	unsigned int num_dai;
--
- #ifdef CONFIG_DEBUG_FS
- 	struct dentry *debugfs_codec_root;
- 	struct dentry *debugfs_reg;
-@@ -478,23 +468,44 @@ struct snd_soc_codec {
- #endif
- };
- 
--/* codec device */
--struct snd_soc_codec_device {
--	int (*probe)(struct platform_device *pdev);
--	int (*remove)(struct platform_device *pdev);
--	int (*suspend)(struct platform_device *pdev, pm_message_t state);
--	int (*resume)(struct platform_device *pdev);
-+/* codec driver */
-+struct snd_soc_codec_driver {
-+	const char *name;
-+	struct module *owner;
-+
-+	/* driver ops */
-+	int (*probe)(struct snd_soc_codec *);
-+	int (*remove)(struct snd_soc_codec *);
-+	int (*suspend)(struct snd_soc_codec *,
-+			pm_message_t state);
-+	int (*resume)(struct snd_soc_codec *);
-+
-+	/* codec IO */
-+	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
-+	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
-+	int (*display_register)(struct snd_soc_codec *, char *,
-+				size_t, unsigned int);
-+	int (*volatile_register)(unsigned int);
-+	int (*readable_register)(unsigned int);
-+	short reg_cache_size;
-+	short reg_cache_step;
-+	short reg_word_size;
-+	const void *reg_cache_default;
-+
-+	/* codec bias level */
-+	int (*set_bias_level)(struct snd_soc_codec *,
-+			      enum snd_soc_bias_level level);
- };
- 
- /* SoC platform interface */
--struct snd_soc_platform {
--	char *name;
--	struct list_head list;
-+struct snd_soc_platform_driver {
-+	const char *name;
-+	struct module *owner;
- 
--	int (*probe)(struct platform_device *pdev);
--	int (*remove)(struct platform_device *pdev);
--	int (*suspend)(struct snd_soc_dai_link *dai_link);
--	int (*resume)(struct snd_soc_dai_link *dai_link);
-+	int (*probe)(struct snd_soc_platform *);
-+	int (*remove)(struct snd_soc_platform *);
-+	int (*suspend)(struct snd_soc_dai *dai);
-+	int (*resume)(struct snd_soc_dai *dai);
- 
- 	/* pcm creation and destruction */
- 	int (*pcm_new)(struct snd_card *, struct snd_soc_dai *,
-@@ -509,23 +520,35 @@ struct snd_soc_platform {
- 		struct snd_soc_dai *);
- 
- 	/* platform stream ops */
--	struct snd_pcm_ops *pcm_ops;
-+	struct snd_pcm_ops *ops;
- };
- 
--/* SoC machine DAI configuration, glues a codec and cpu DAI together */
--struct snd_soc_dai_link  {
--	char *name;			/* Codec name */
--	char *stream_name;		/* Stream name */
-+struct snd_soc_platform {
-+	const char *name;
-+	int id;
- 
--	/* DAI */
--	struct snd_soc_dai *codec_dai;
--	struct snd_soc_dai *cpu_dai;
-+	struct device *dev;
-+	struct snd_soc_platform_driver *driver;
- 
--	/* machine stream operations */
--	struct snd_soc_ops *ops;
-+	unsigned int suspended:1; /* platform is suspended */
-+	unsigned int probed:1;
- 
--	/* codec/machine specific init - e.g. add machine controls */
--	int (*init)(struct snd_soc_codec *codec);
-+	struct list_head list;
-+	struct list_head card_list;
-+};
-+
-+struct snd_soc_dai_link {
-+	/* config - must be set by machine driver */
-+	const char *name;			/* Codec name */
-+	const char *stream_name;		/* Stream name */
-+	int codec_id;		/* for multi-codec */
-+	int platform_id;	/* for multi-platform */
-+	int cpu_dai_id;
-+	int codec_dai_id;
-+	struct snd_soc_dai_driver *codec_dai_drv;
-+	struct snd_soc_dai_driver *cpu_dai_drv;
-+	struct snd_soc_platform_driver *platform_drv;
-+	struct snd_soc_codec_driver *codec_drv;
- 
- 	/* Keep DAI active over suspend */
- 	unsigned int ignore_suspend:1;
-@@ -533,21 +556,24 @@ struct snd_soc_dai_link  {
- 	/* Symmetry requirements */
- 	unsigned int symmetric_rates:1;
- 
--	/* Symmetry data - only valid if symmetry is being enforced */
--	unsigned int rate;
-+	/* codec/machine specific init - e.g. add machine controls */
-+	int (*init)(struct snd_soc_pcm_runtime *rtd);
- 
--	/* DAI pcm */
--	struct snd_pcm *pcm;
-+	/* machine stream operations */
-+	struct snd_soc_ops *ops;
- };
- 
- /* SoC card */
- struct snd_soc_card {
--	char *name;
-+	const char *name;
- 	struct device *dev;
-+	struct snd_card *snd_card;
-+	struct module *owner;
- 
- 	struct list_head list;
-+	struct mutex mutex;
- 
--	int instantiated;
-+	int instantiated:1;
- 
- 	int (*probe)(struct platform_device *pdev);
- 	int (*remove)(struct platform_device *pdev);
-@@ -568,28 +594,38 @@ struct snd_soc_card {
- 	/* CPU <--> Codec DAI links  */
- 	struct snd_soc_dai_link *dai_link;
- 	int num_links;
-+	struct snd_soc_pcm_runtime *rtd;
-+	int num_rtd;
- 
--	struct snd_soc_device *socdev;
--
--	struct snd_soc_codec *codec;
--
--	struct snd_soc_platform *platform;
--	struct delayed_work delayed_work;
- 	struct work_struct deferred_resume_work;
-+
-+	/* lists of probed devices belonging to this card */
-+	struct list_head codec_dev_list;
-+	struct list_head platform_dev_list;
-+	struct list_head dai_dev_list;
- };
- 
--/* SoC Device - the audio subsystem */
--struct snd_soc_device {
--	struct device *dev;
-+/* SoC machine DAI configuration, glues a codec and cpu DAI together */
-+struct snd_soc_pcm_runtime  {
-+	struct device dev;
- 	struct snd_soc_card *card;
--	struct snd_soc_codec_device *codec_dev;
--	void *codec_data;
--};
-+	struct snd_soc_dai_link *dai_link;
-+
-+	unsigned int complete:1;
-+	unsigned int dev_registered:1;
-+
-+	/* Symmetry data - only valid if symmetry is being enforced */
-+	unsigned int rate;
-+	long pmdown_time;
- 
--/* runtime channel data */
--struct snd_soc_pcm_runtime {
--	struct snd_soc_dai_link *dai;
--	struct snd_soc_device *socdev;
-+	/* runtime devices */
-+	struct snd_pcm *pcm;
-+	struct snd_soc_codec *codec;
-+	struct snd_soc_platform *platform;
-+	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_dai *cpu_dai;
-+
-+	struct delayed_work delayed_work;
- };
- 
- /* mixer control */
-@@ -615,24 +651,48 @@ struct soc_enum {
- static inline unsigned int snd_soc_read(struct snd_soc_codec *codec,
- 					unsigned int reg)
- {
--	return codec->read(codec, reg);
-+	return codec->driver->read(codec, reg);
+-	snd_soc_dapm_set_bias_level(socdev, SND_SOC_BIAS_OFF);
++	snd_soc_dapm_set_bias_level(card, codec, SND_SOC_BIAS_OFF);
  }
  
- static inline unsigned int snd_soc_write(struct snd_soc_codec *codec,
- 					 unsigned int reg, unsigned int val)
- {
--	return codec->write(codec, reg, val);
-+	return codec->driver->write(codec, reg, val);
- }
- 
-+/* device driver data */
-+
- static inline void snd_soc_codec_set_drvdata(struct snd_soc_codec *codec,
--					     void *data)
-+		void *data)
- {
--	codec->drvdata = data;
-+	dev_set_drvdata(codec->dev, data);
- }
- 
- static inline void *snd_soc_codec_get_drvdata(struct snd_soc_codec *codec)
- {
--	return codec->drvdata;
-+	return dev_get_drvdata(codec->dev);
-+}
-+
-+static inline void snd_soc_platform_set_drvdata(struct snd_soc_platform *platform,
-+		void *data)
-+{
-+	dev_set_drvdata(platform->dev, data);
-+}
-+
-+static inline void *snd_soc_platform_get_drvdata(struct snd_soc_platform *platform)
-+{
-+	return dev_get_drvdata(platform->dev);
-+}
-+
-+static inline void snd_soc_pcm_set_drvdata(struct snd_soc_pcm_runtime *rtd,
-+		void *data)
-+{
-+	dev_set_drvdata(&rtd->dev, data);
-+}
-+
-+static inline void *snd_soc_pcm_get_drvdata(struct snd_soc_pcm_runtime *rtd)
-+{
-+	return dev_get_drvdata(&rtd->dev);
- }
- 
- #include <sound/soc-dai.h>
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 8b79d90..3deb226 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3,6 +3,8 @@
-  *
-  * Copyright 2005 Wolfson Microelectronics PLC.
-  * Copyright 2005 Openedhand Ltd.
-+ * Copyright (C) 2010 Slimlogic Ltd.
-+ * Copyright (C) 2010 Texas Instruments Inc.
-  *
-  * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-  *         with code, comments and ideas from :-
+ /* Module information */
 -- 
 1.7.0.4
