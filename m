@@ -1,18 +1,21 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [RFC 5/5] ASoC multi-component support : jack
-Date: Thu, 24 Jun 2010 20:24:51 +0100
-Message-ID: <1277407491.3100.584.camel@odin>
+From: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+Subject: Re: [PATCH 2/2 v2] ASoC: uda134x: correct bias level
+	setup for codecs family
+Date: Thu, 24 Jun 2010 23:44:24 +0400
+Message-ID: <AANLkTim5e09iw01K28npUmM0Rofmiqx_DLqQwUb0zVGn@mail.gmail.com>
+References: <1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
+	<1277385565-30727-1-git-send-email-vzapolskiy@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 88D971039A6
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 6682824471
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 21:24:48 +0200 (CEST)
-Received: by mail-wy0-f179.google.com with SMTP id 38so2318604wyb.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 12:24:48 -0700 (PDT)
+	Thu, 24 Jun 2010 21:44:25 +0200 (CEST)
+Received: by wyb38 with SMTP id 38so2333472wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 12:44:25 -0700 (PDT)
+In-Reply-To: <1277385565-30727-1-git-send-email-vzapolskiy@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,157 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel@alsa-project.org, Vladimir Zapolskiy <vzapolskiy@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Cache configuration is now stored as part of the codec driver structure.
-
-Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
----
- sound/soc/soc-cache.c |   34 +++++++++++++++++-----------------
- 1 files changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-index 472af38..83cd8ed 100644
---- a/sound/soc/soc-cache.c
-+++ b/sound/soc/soc-cache.c
-@@ -19,7 +19,7 @@ static unsigned int snd_soc_4_12_read(struct snd_soc_codec *codec,
- 				     unsigned int reg)
- {
- 	u16 *cache = codec->reg_cache;
--	if (reg >= codec->reg_cache_size)
-+	if (reg >= codec->driver->reg_cache_size)
- 		return -1;
- 	return cache[reg];
- }
-@@ -31,12 +31,12 @@ static int snd_soc_4_12_write(struct snd_soc_codec *codec, unsigned int reg,
- 	u8 data[2];
- 	int ret;
- 
--	BUG_ON(codec->volatile_register);
-+	BUG_ON(codec->driver->volatile_register);
- 
- 	data[0] = (reg << 4) | ((value >> 8) & 0x000f);
- 	data[1] = value & 0x00ff;
- 
--	if (reg < codec->reg_cache_size)
-+	if (reg < codec->driver->reg_cache_size)
- 		cache[reg] = value;
- 
- 	if (codec->cache_only) {
-@@ -89,7 +89,7 @@ static unsigned int snd_soc_7_9_read(struct snd_soc_codec *codec,
- 				     unsigned int reg)
- {
- 	u16 *cache = codec->reg_cache;
--	if (reg >= codec->reg_cache_size)
-+	if (reg >= codec->driver->reg_cache_size)
- 		return -1;
- 	return cache[reg];
- }
-@@ -101,12 +101,12 @@ static int snd_soc_7_9_write(struct snd_soc_codec *codec, unsigned int reg,
- 	u8 data[2];
- 	int ret;
- 
--	BUG_ON(codec->volatile_register);
-+	BUG_ON(codec->driver->volatile_register);
- 
- 	data[0] = (reg << 1) | ((value >> 8) & 0x0001);
- 	data[1] = value & 0x00ff;
- 
--	if (reg < codec->reg_cache_size)
-+	if (reg < codec->driver->reg_cache_size)
- 		cache[reg] = value;
- 
- 	if (codec->cache_only) {
-@@ -161,13 +161,13 @@ static int snd_soc_8_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 	u8 *cache = codec->reg_cache;
- 	u8 data[2];
- 
--	BUG_ON(codec->volatile_register);
-+	BUG_ON(codec->driver->volatile_register);
- 
- 	reg &= 0xff;
- 	data[0] = reg;
- 	data[1] = value & 0xff;
- 
--	if (reg < codec->reg_cache_size)
-+	if (reg < codec->driver->reg_cache_size)
- 		cache[reg] = value;
- 
- 	if (codec->cache_only) {
-@@ -188,7 +188,7 @@ static unsigned int snd_soc_8_8_read(struct snd_soc_codec *codec,
- {
- 	u8 *cache = codec->reg_cache;
- 	reg &= 0xff;
--	if (reg >= codec->reg_cache_size)
-+	if (reg >= codec->driver->reg_cache_size)
- 		return -1;
- 	return cache[reg];
- }
-@@ -224,7 +224,7 @@ static unsigned int snd_soc_8_16_read(struct snd_soc_codec *codec,
- {
- 	u16 *cache = codec->reg_cache;
- 
--	if (reg >= codec->reg_cache_size ||
-+	if (reg >= codec->driver->reg_cache_size ||
- 	    snd_soc_codec_volatile_register(codec, reg)) {
- 		if (codec->cache_only)
- 			return -EINVAL;
-@@ -343,7 +343,7 @@ static unsigned int snd_soc_16_8_read(struct snd_soc_codec *codec,
- 	u16 *cache = codec->reg_cache;
- 
- 	reg &= 0xff;
--	if (reg >= codec->reg_cache_size)
-+	if (reg >= codec->driver->reg_cache_size)
- 		return -1;
- 	return cache[reg];
- }
-@@ -355,14 +355,14 @@ static int snd_soc_16_8_write(struct snd_soc_codec *codec, unsigned int reg,
- 	u8 data[3];
- 	int ret;
- 
--	BUG_ON(codec->volatile_register);
-+	BUG_ON(codec->driver->volatile_register);
- 
- 	data[0] = (reg >> 8) & 0xff;
- 	data[1] = reg & 0xff;
- 	data[2] = value;
- 
- 	reg &= 0xff;
--	if (reg < codec->reg_cache_size)
-+	if (reg < codec->driver->reg_cache_size)
- 		cache[reg] = value;
- 
- 	if (codec->cache_only) {
-@@ -451,7 +451,7 @@ static unsigned int snd_soc_16_16_read(struct snd_soc_codec *codec,
- {
- 	u16 *cache = codec->reg_cache;
- 
--	if (reg >= codec->reg_cache_size ||
-+	if (reg >= codec->driver->reg_cache_size ||
- 	    snd_soc_codec_volatile_register(codec, reg)) {
- 		if (codec->cache_only)
- 			return -EINVAL;
-@@ -474,7 +474,7 @@ static int snd_soc_16_16_write(struct snd_soc_codec *codec, unsigned int reg,
- 	data[2] = (value >> 8) & 0xff;
- 	data[3] = value & 0xff;
- 
--	if (reg < codec->reg_cache_size)
-+	if (reg < codec->driver->reg_cache_size)
- 		cache[reg] = value;
- 
- 	if (codec->cache_only) {
-@@ -571,8 +571,8 @@ int snd_soc_codec_set_cache_io(struct snd_soc_codec *codec,
- 		return -EINVAL;
- 	}
- 
--	codec->write = io_types[i].write;
--	codec->read = io_types[i].read;
-+	codec->driver->write = io_types[i].write;
-+	codec->driver->read = io_types[i].read;
- 
- 	switch (control) {
- 	case SND_SOC_CUSTOM:
--- 
-1.7.0.4
+TWFyaywgTGlhbSwKCmRvIHlvdSBoYXZlIG1vcmUgY29tbWVudHMgYWJvdXQgdGhpcyBmaXg/CgpP
+biBUaHUsIEp1biAyNCwgMjAxMCBhdCA1OjE5IFBNLCBWbGFkaW1pciBaYXBvbHNraXkKPHZ6YXBv
+bHNraXlAZ21haWwuY29tPiB3cm90ZToKPiBGb3IgVURBMTM0MSBjb2RlYyBwb3dlciBjb250cm9s
+IGlzIG1hbmFnZWQgaW4gU1RBVFVTMSByZWdpc3RlciwgYW5kCj4gZm9yIGFsbCBvdGhlciBjb2Rl
+Y3MgaW4gREFUQTAxMSByZWdpc3Rlci4KPgo+IFNpZ25lZC1vZmYtYnk6IFZsYWRpbWlyIFphcG9s
+c2tpeSA8dnphcG9sc2tpeUBnbWFpbC5jb20+Cj4gLS0tCj4gwqBzb3VuZC9zb2MvY29kZWNzL3Vk
+YTEzNHguYyB8IMKgIDM2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQo+IMKg
+MSBmaWxlcyBjaGFuZ2VkLCAzMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Cj4gZGlm
+ZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvdWRhMTM0eC5jIGIvc291bmQvc29jL2NvZGVjcy91
+ZGExMzR4LmMKPiBpbmRleCBlNzcwMDI5Li5lODA2NmI2IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3Nv
+Yy9jb2RlY3MvdWRhMTM0eC5jCj4gKysrIGIvc291bmQvc29jL2NvZGVjcy91ZGExMzR4LmMKPiBA
+QCAtMzUzLDggKzM1MywyMiBAQCBzdGF0aWMgaW50IHVkYTEzNHhfc2V0X2JpYXNfbGV2ZWwoc3Ry
+dWN0IHNuZF9zb2NfY29kZWMgKmNvZGVjLAo+IMKgIMKgIMKgIMKgc3dpdGNoIChsZXZlbCkgewo+
+IMKgIMKgIMKgIMKgY2FzZSBTTkRfU09DX0JJQVNfT046Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAvKiBBREMsIERBQyBvbiAqLwo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gdWRhMTM0
+eF9yZWFkX3JlZ19jYWNoZShjb2RlYywgVURBMTM0WF9TVEFUVVMxKTsKPiAtIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwgcmVnIHwgMHgw
+Myk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBzd2l0Y2ggKHBkLT5tb2RlbCkgewo+ICsgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgY2FzZSBVREExMzRYX1VEQTEzNDA6Cj4gKyDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCBjYXNlIFVEQTEzNFhfVURBMTM0NDoKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNh
+c2UgVURBMTM0WF9VREExMzQ1Ogo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+cmVnID0gdWRhMTM0eF9yZWFkX3JlZ19jYWNoZShjb2RlYywgVURBMTM0WF9EQVRBMDExKTsKPiAr
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVE
+QTEzNFhfREFUQTAxMSwgcmVnIHwgMHgwMyk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCBicmVhazsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNhc2UgVURBMTM0WF9VREEx
+MzQxOgo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gdWRhMTM0eF9y
+ZWFkX3JlZ19jYWNoZShjb2RlYywgVURBMTM0WF9TVEFUVVMxKTsKPiArIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwg
+cmVnIHwgMHgwMyk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGRlZmF1bHQ6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBwcmludGsoS0VSTl9FUlIgIlVEQTEzNFggU29DIGNvZGVjOiAiCj4gKyDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCJ1bnN1cHBvcnRlZCBt
+b2RlbCAlZFxuIiwgcGQtPm1vZGVsKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIHJldHVybiAtRUlOVkFMOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgYnJlYWs7Cj4gwqAgwqAgwqAgwqBjYXNlIFNORF9TT0NfQklBU19QUkVQ
+QVJFOgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLyogcG93ZXIgb24gKi8KPiBAQCAtMzY3LDgg
+KzM4MSwyMiBAQCBzdGF0aWMgaW50IHVkYTEzNHhfc2V0X2JpYXNfbGV2ZWwoc3RydWN0IHNuZF9z
+b2NfY29kZWMgKmNvZGVjLAo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgYnJlYWs7Cj4gwqAgwqAg
+wqAgwqBjYXNlIFNORF9TT0NfQklBU19TVEFOREJZOgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+LyogQURDLCBEQUMgcG93ZXIgb2ZmICovCj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgPSB1
+ZGExMzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEpOwo+IC0gwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgdWRhMTM0eF93cml0ZShjb2RlYywgVURBMTM0WF9TVEFUVVMxLCByZWcg
+JiB+KDB4MDMpKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHN3aXRjaCAocGQtPm1vZGVsKSB7
+Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIFVEQTEzNFhfVURBMTM0MDoKPiArIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIGNhc2UgVURBMTM0WF9VREExMzQ0Ogo+ICsgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgY2FzZSBVREExMzRYX1VEQTEzNDU6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCByZWcgPSB1ZGExMzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX0RBVEEw
+MTEpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdWRhMTM0eF93cml0ZShj
+b2RlYywgVURBMTM0WF9EQVRBMDExLCByZWcgJiB+KDB4MDMpKTsKPiArIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FzZSBV
+REExMzRYX1VEQTEzNDE6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcg
+PSB1ZGExMzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEpOwo+ICsgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgdWRhMTM0eF93cml0ZShjb2RlYywgVURBMTM0
+WF9TVEFUVVMxLCByZWcgJiB+KDB4MDMpKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgZGVmYXVsdDoKPiArIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ayhLRVJOX0VSUiAiVURBMTM0WCBTb0Mg
+Y29kZWM6ICIKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+InVuc3VwcG9ydGVkIG1vZGVsICVkXG4iLCBwZC0+bW9kZWwpOwo+ICsgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgcmV0dXJuIC1FSU5WQUw7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCB9Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBicmVhazsKPiDCoCDCoCDCoCDCoGNhc2UgU05E
+X1NPQ19CSUFTX09GRjoKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC8qIHBvd2VyIG9mZiAqLwo+
+IC0tCj4gMS43LjAuNAo+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
