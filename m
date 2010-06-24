@@ -1,28 +1,27 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Thu, 24 Jun 2010 17:53:10 +0800
-Message-ID: <AANLkTikM4wCkh9UKj8NI5WMPxBkLC9SwV0vWdqVIsAnY@mail.gmail.com>
-References: <q2s98391a7b1004021121sde36d074m8a70acc142f95d93@mail.gmail.com>
-	<r2i4f3252891004051846xc6ef1834habaf4f9db3bdd384@mail.gmail.com>
-	<q2z98391a7b1004060101kd5ffef92tf4d98faa62a3ad5b@mail.gmail.com>
-	<q2l4f3252891004071905l553da6a0he8b53448524fc94d@mail.gmail.com>
-	<z2s98391a7b1004080542ud4af307l992ac9636d9aa508@mail.gmail.com>
-	<u2w4f3252891004081611tc0293e7fzb6312ca188eacdc1@mail.gmail.com>
-	<s2l98391a7b1004090030vd55faadew6ae97c85a7a4b379@mail.gmail.com>
-	<x2q4f3252891004090440h78a3c187p1f3b51be7be1e858@mail.gmail.com>
-	<s2l98391a7b1004090527je4458c3m143b5c129424751c@mail.gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: force snd-usb-audio to use "Vendor Specific Class"
+Date: Thu, 24 Jun 2010 12:36:38 +0200
+Message-ID: <4C233536.1040205@redhat.com>
+References: <1277299765.22499.42.camel@zwerg>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qy0-f179.google.com (mail-qy0-f179.google.com
-	[209.85.216.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 28AF3243F3
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+	by alsa0.perex.cz (Postfix) with ESMTP id 229A61037FF
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 11:53:12 +0200 (CEST)
-Received: by qyk36 with SMTP id 36so110601qyk.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 02:53:10 -0700 (PDT)
-In-Reply-To: <s2l98391a7b1004090527je4458c3m143b5c129424751c@mail.gmail.com>
+	Thu, 24 Jun 2010 12:34:06 +0200 (CEST)
+Received: from int-mx05.intmail.prod.int.phx2.redhat.com
+	(int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.18])
+	by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id o5OAY56C032294
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 06:34:05 -0400
+Received: from localhost.localdomain (vpn1-6-220.ams2.redhat.com [10.36.6.220])
+	by int-mx05.intmail.prod.int.phx2.redhat.com (8.13.8/8.13.8) with ESMTP
+	id o5OAY2vk024328
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 06:34:04 -0400
+In-Reply-To: <1277299765.22499.42.camel@zwerg>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -32,22 +31,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/4/9 Nicolo' Chieffo <nicolo.chieffo@gmail.com>
+Hi,
 
-> As I've already told you, I'm not able to run dbmeasure because it
-> says it can't detect any audio.
-> I will investigate...
+On 06/23/2010 03:29 PM, Alexey Fisher wrote:
+> Hallo all,
+> is there any way to force snd-usb-audio to use some "Vendor Specific
+> Class" device?
+> i currently got two webcams from my friends to take a look on. They are
+> cheep gspca based webcams with Mic. I wont to test if snd-usb-audio can
+> use it if i force it. Devices it self do not provide any hints for the
+> driver.
+>
+> lsusb -vd 093a:2468 | grep -i class
+>    bDeviceClass          255 Vendor Specific Class
+>    bDeviceSubClass       255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>        bInterfaceClass       255 Vendor Specific Class
+>        bInterfaceSubClass    255 Vendor Specific Subclass
+>
+> regards,
+> Alexey
 >
 
-I cannot run dbmeasure on my au8830 or HDA sound card too.
 
-you have to ask the author of dbmeasure.c
+Don't bother, AFAIK these devices which are pixart pac207bca
+based do not contain any microphone at all. If they do they usually
+have 2 plugs at the end of their cable a usb plug and an analog
+one for the mic.
 
-First glance at the source code , it seem the program expect the driver
-support exactly one second buffer but neither au8830 or HDA driver can offer
-a buffer size of exactly one second
+Google for pac207bca datasheet to find a useless datasheet, note
+that it does contain a listing of the physical pins of the device,
+and notice the lack of any pins to connect a microphone too.
 
-May be just only work on his USB audio only
+If the pac207 supports a microphone (which I strongly believe
+it does not) the mic on these cameras is not a usb audio class
+compatible device. The pac207 declares only one interface so
+audio data ihas to be handled over the same interface
+as the video data. So in order to support the MIC you first need to
+find out how it works and then glew an alsa driver onto the
+gspca pac207 driver (as only one driver can be bound to a single
+usb interface).
+
+Regards,
+
+Hans, the pac207 driver maintainer
+
+
+p.s.
+
+It would have been helpful if you had contacted me about this, I just
+happen to be subscribed to the alsa-devel list too.
