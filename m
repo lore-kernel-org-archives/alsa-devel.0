@@ -1,21 +1,18 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: uda134x: fix bias level setup on
-	initialization and runtime
-Date: Thu, 24 Jun 2010 12:34:16 +0100
-Message-ID: <363D67C2-D730-4665-B88A-EC92CC1A19D1@opensource.wolfsonmicro.com>
-References: <1277378228-29658-1-git-send-email-vzapolskiy@gmail.com>
-	<1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
-	(sfid-20100624_121757_556521_CC32F796)
-Mime-Version: 1.0 (Apple Message framework v1081)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: =?UTF-8?B?RXJpYyBCw6luYXJk?= <eric@eukrea.com>
+Subject: Re: [PATCH] soc/imx: clean Kconfig
+Date: Thu, 24 Jun 2010 13:46:24 +0200
+Message-ID: <4C234590.7040505@eukrea.com>
+References: <20100619002937.GB2463@opensource.wolfsonmicro.com>
+	<1276937276-10207-1-git-send-email-eric@eukrea.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D1F4310380D
+Received: from 27.mail-out.ovh.net (27.mail-out.ovh.net [91.121.30.210])
+	by alsa0.perex.cz (Postfix) with SMTP id 101CC103811
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 13:34:19 +0200 (CEST)
-In-Reply-To: <1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
-	(sfid-20100624_121757_556521_CC32F796)
+	Thu, 24 Jun 2010 13:46:29 +0200 (CEST)
+In-Reply-To: <1276937276-10207-1-git-send-email-eric@eukrea.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,38 +22,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vladimir Zapolskiy <vzapolskiy@gmail.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: broonie@opensource.wolfsonmicro.com
+Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-On 24 Jun 2010, at 12:17, Vladimir Zapolskiy wrote:
-
-> 		/* ADC, DAC on */
-> -		reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
-> -		uda134x_write(codec, UDA134X_STATUS1, reg | 0x03);
-> +		if (pd->model == UDA134X_UDA1341) {
-> +			reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
-> +			uda134x_write(codec, UDA134X_STATUS1, reg | 0x03);
-> +		} else {
-> +			reg = uda134x_read_reg_cache(codec, UDA134X_DATA011);
-> +			uda134x_write(codec, UDA134X_DATA011, reg | 0x03);
-> +		}
-
-I'd be more comfortable if these used switch statements. That way any further
-device specifics will slot in more easily.
-
-Of course, this should really be using DAPM...
-
-> 
-> @@ -531,9 +541,7 @@ static int uda134x_soc_probe(struct platform_device *pdev)
-> 	codec->num_dai = 1;
-> 	codec->read = uda134x_read_reg_cache;
-> 	codec->write = uda134x_write;
-> -#ifdef POWER_OFF_ON_STANDBY
-> -	codec->set_bias_level = uda134x_set_bias_level;
-> -#endif
-> +
-
-These changes for the bias level configuration look to be unrelated to the addition of
-the new CODEC and should be split into a separate patch. It'd also be much better to
-remove this ifdefery, it should be handled via platform data or just done unconditionally.
+SGkgTWFyaywKCkxlIDE5LzA2LzIwMTAgMTA6NDcsIEVyaWMgQsOpbmFyZCBhIMOpY3JpdCA6Cj4g
+U2lnbmVkLW9mZi1ieTogRXJpYyBCw6luYXJkPGVyaWNAZXVrcmVhLmNvbT4KPgo+IENjOiBscmdA
+c2xpbWxvZ2ljLmNvLnVrCj4gQ2M6IGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29t
+Cj4gQ2M6IHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGUKPiAtLS0KPiAgIHNvdW5kL3NvYy9pbXgvS2Nv
+bmZpZyB8ICAgMTQgKysrKysrLS0tLS0tLS0KPiAgIDEgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRp
+b25zKCspLCA4IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbXgvS2Nv
+bmZpZyBiL3NvdW5kL3NvYy9pbXgvS2NvbmZpZwo+IGluZGV4IDZlZjU3ZTAuLjJmMGQ2ZDMgMTAw
+NjQ0Cj4gLS0tIGEvc291bmQvc29jL2lteC9LY29uZmlnCj4gKysrIGIvc291bmQvc29jL2lteC9L
+Y29uZmlnCj4gQEAgLTEsNCArMSw0IEBACj4gLWNvbmZpZyBTTkRfSU1YX1NPQwo+ICttZW51Y29u
+ZmlnIFNORF9JTVhfU09DCj4gICAJdHJpc3RhdGUgIlNvQyBBdWRpbyBmb3IgRnJlZXNjYWxlIGku
+TVggQ1BVcyIKPiAgIAlkZXBlbmRzIG9uIEFSQ0hfTVhDCj4gICAJc2VsZWN0IFNORF9QQ00KPiBA
+QCAtOCwxNCArOCwxMiBAQCBjb25maWcgU05EX0lNWF9TT0MKPiAgIAkgIFNheSBZIG9yIE0gaWYg
+eW91IHdhbnQgdG8gYWRkIHN1cHBvcnQgZm9yIGNvZGVjcyBhdHRhY2hlZCB0bwo+ICAgCSAgdGhl
+IGkuTVggU1NJIGludGVyZmFjZS4KPgo+IC1jb25maWcgU05EX01YQ19TT0NfU1NJCj4gLQl0cmlz
+dGF0ZQo+ICtpZiBTTkRfSU1YX1NPQwo+Cj4gICBjb25maWcgU05EX01YQ19TT0NfV00xMTMzX0VW
+MQo+ICAgCXRyaXN0YXRlICJBdWRpbyBvbiB0aGUgdGhlIGkuTVgzMUFEUyB3aXRoIFdNMTEzMy1F
+VjEgZml0dGVkIgo+IC0JZGVwZW5kcyBvbiBTTkRfSU1YX1NPQyYmICBNQUNIX01YMzFBRFNfV00x
+MTMzX0VWMSYmICBFWFBFUklNRU5UQUwKPiArCWRlcGVuZHMgb24gTUFDSF9NWDMxQURTX1dNMTEz
+M19FVjEmJiAgRVhQRVJJTUVOVEFMCj4gICAJc2VsZWN0IFNORF9TT0NfV004MzUwCj4gLQlzZWxl
+Y3QgU05EX01YQ19TT0NfU1NJCj4gICAJaGVscAo+ICAgCSAgRW5hYmxlIHN1cHBvcnQgZm9yIGF1
+ZGlvIG9uIHRoZSBpLk1YMzFBRFMgd2l0aCB0aGUgV00xMTMzLUVWMQo+ICAgCSAgUE1JQyBib2Fy
+ZCB3aXRoIFdNODgzNXggZml0dGVkLgo+IEBAIC0yMywxNyArMjEsMTcgQEAgY29uZmlnIFNORF9N
+WENfU09DX1dNMTEzM19FVjEKPiAgIGNvbmZpZyBTTkRfU09DX1BIWUNPUkVfQUM5Nwo+ICAgCXRy
+aXN0YXRlICJTb0MgQXVkaW8gc3VwcG9ydCBmb3IgUGh5dGVjIHBoeUNPUkUgKGFuZCBwaHlDQVJE
+KSBib2FyZHMiCj4gICAJZGVwZW5kcyBvbiBNQUNIX1BDTTA0MyB8fCBNQUNIX1BDQTEwMAo+IC0J
+c2VsZWN0IFNORF9NWENfU09DX1NTSQo+ICAgCXNlbGVjdCBTTkRfU09DX1dNOTcxMgo+ICAgCWhl
+bHAKPiAgIAkgIFNheSBZIGlmIHlvdSB3YW50IHRvIGFkZCBzdXBwb3J0IGZvciBTb0MgYXVkaW8g
+b24gUGh5dGVjIHBoeUNPUkUKPiAgIAkgIGFuZCBwaHlDQVJEIGJvYXJkcyBpbiBBQzk3IG1vZGUK
+Pgo+ICAgY29uZmlnIFNORF9TT0NfRVVLUkVBX1RMVjMyMAo+IC0JYm9vbCAiRXVrcmVhIFRMVjMy
+MCIKPiArCXRyaXN0YXRlICJFdWtyZWEgVExWMzIwIgo+ICAgCWRlcGVuZHMgb24gTUFDSF9FVUtS
+RUFfTUJJTVgyN19CQVNFQk9BUkQgfHwgTUFDSF9FVUtSRUFfTUJJTVhTRF9CQVNFQk9BUkQKPiAt
+CXNlbGVjdCBTTkRfSU1YX1NPQwo+ICAgCXNlbGVjdCBTTkRfU09DX1RMVjMyMEFJQzIzCj4gICAJ
+aGVscAo+ICAgCSAgRW5hYmxlIEkyUyBiYXNlZCBhY2Nlc3MgdG8gdGhlIFRMVjMyMEFJQzIzQiBj
+b2RlYyBhdHRhY2hlZAo+ICAgCSAgdG8gdGhlIFNTSTQgaW50ZXJmYWNlCj4gKwo+ICtlbmRpZgkj
+IFNORF9JTVhfU09DCgppcyB0aGlzIHBhdGNoIE9LIG9yIHNob3VsZCBJIHJld29yayBpdCA/CgpU
+aGFua3MsCkVyaWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
