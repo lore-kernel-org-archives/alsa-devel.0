@@ -1,21 +1,23 @@
 From: Vladimir Zapolskiy <vzapolskiy@gmail.com>
-Subject: [PATCH 2/2 v2] ASoC: uda134x: correct bias level setup
-	for codecs family
-Date: Thu, 24 Jun 2010 17:19:25 +0400
-Message-ID: <1277385565-30727-1-git-send-email-vzapolskiy@gmail.com>
-References: <1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
+Subject: Re: [PATCH 2/2] ASoC: uda134x: fix bias level setup on
+	initialization and runtime
+Date: Thu, 24 Jun 2010 17:21:26 +0400
+Message-ID: <AANLkTin185ThdvqLO71VmcufxjkpUkgAw_i55Vltwvgk@mail.gmail.com>
+References: <1277378228-29658-1-git-send-email-vzapolskiy@gmail.com>
+	<1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
+	<363D67C2-D730-4665-B88A-EC92CC1A19D1@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6B2AF10381B
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0D97110381D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 15:19:59 +0200 (CEST)
-Received: by bwz11 with SMTP id 11so132262bwz.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 06:19:59 -0700 (PDT)
-In-Reply-To: <1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
+	Thu, 24 Jun 2010 15:21:28 +0200 (CEST)
+Received: by wyb38 with SMTP id 38so1996776wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 06:21:26 -0700 (PDT)
+In-Reply-To: <363D67C2-D730-4665-B88A-EC92CC1A19D1@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,71 +27,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Vladimir Zapolskiy <vzapolskiy@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-For UDA1341 codec power control is managed in STATUS1 register, and
-for all other codecs in DATA011 register.
-
-Signed-off-by: Vladimir Zapolskiy <vzapolskiy@gmail.com>
----
- sound/soc/codecs/uda134x.c |   36 ++++++++++++++++++++++++++++++++----
- 1 files changed, 32 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/uda134x.c b/sound/soc/codecs/uda134x.c
-index e770029..e8066b6 100644
---- a/sound/soc/codecs/uda134x.c
-+++ b/sound/soc/codecs/uda134x.c
-@@ -353,8 +353,22 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 		/* ADC, DAC on */
--		reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
--		uda134x_write(codec, UDA134X_STATUS1, reg | 0x03);
-+		switch (pd->model) {
-+		case UDA134X_UDA1340:
-+		case UDA134X_UDA1344:
-+		case UDA134X_UDA1345:
-+			reg = uda134x_read_reg_cache(codec, UDA134X_DATA011);
-+			uda134x_write(codec, UDA134X_DATA011, reg | 0x03);
-+			break;
-+		case UDA134X_UDA1341:
-+			reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
-+			uda134x_write(codec, UDA134X_STATUS1, reg | 0x03);
-+			break;
-+		default:
-+			printk(KERN_ERR "UDA134X SoC codec: "
-+			       "unsupported model %d\n", pd->model);
-+			return -EINVAL;
-+		}
- 		break;
- 	case SND_SOC_BIAS_PREPARE:
- 		/* power on */
-@@ -367,8 +381,22 @@ static int uda134x_set_bias_level(struct snd_soc_codec *codec,
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
- 		/* ADC, DAC power off */
--		reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
--		uda134x_write(codec, UDA134X_STATUS1, reg & ~(0x03));
-+		switch (pd->model) {
-+		case UDA134X_UDA1340:
-+		case UDA134X_UDA1344:
-+		case UDA134X_UDA1345:
-+			reg = uda134x_read_reg_cache(codec, UDA134X_DATA011);
-+			uda134x_write(codec, UDA134X_DATA011, reg & ~(0x03));
-+			break;
-+		case UDA134X_UDA1341:
-+			reg = uda134x_read_reg_cache(codec, UDA134X_STATUS1);
-+			uda134x_write(codec, UDA134X_STATUS1, reg & ~(0x03));
-+			break;
-+		default:
-+			printk(KERN_ERR "UDA134X SoC codec: "
-+			       "unsupported model %d\n", pd->model);
-+			return -EINVAL;
-+		}
- 		break;
- 	case SND_SOC_BIAS_OFF:
- 		/* power off */
--- 
-1.7.0.4
+SGVsbG8sCgpPbiBUaHUsIEp1biAyNCwgMjAxMCBhdCAzOjM0IFBNLCBNYXJrIEJyb3duCjxicm9v
+bmllQG9wZW5zb3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6Cj4gT24gMjQgSnVuIDIwMTAs
+IGF0IDEyOjE3LCBWbGFkaW1pciBaYXBvbHNraXkgd3JvdGU6Cj4KPj4gwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgLyogQURDLCBEQUMgb24gKi8KPj4gLSDCoCDCoCDCoCDCoCDCoCDCoCByZWcgPSB1ZGEx
+MzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEpOwo+PiAtIMKgIMKgIMKg
+IMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwgcmVnIHwgMHgw
+Myk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKHBkLT5tb2RlbCA9PSBVREExMzRYX1VEQTEz
+NDEpIHsKPj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgPSB1ZGExMzR4X3Jl
+YWRfcmVnX2NhY2hlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEpOwo+PiArIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwgcmVn
+IHwgMHgwMyk7Cj4+ICsgwqAgwqAgwqAgwqAgwqAgwqAgfSBlbHNlIHsKPj4gKyDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCByZWcgPSB1ZGExMzR4X3JlYWRfcmVnX2NhY2hlKGNvZGVjLCBV
+REExMzRYX0RBVEEwMTEpOwo+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHVkYTEz
+NHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfREFUQTAxMSwgcmVnIHwgMHgwMyk7Cj4+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgfQo+Cj4gSSdkIGJlIG1vcmUgY29tZm9ydGFibGUgaWYgdGhlc2UgdXNlZCBz
+d2l0Y2ggc3RhdGVtZW50cy4gVGhhdCB3YXkgYW55IGZ1cnRoZXIKPiBkZXZpY2Ugc3BlY2lmaWNz
+IHdpbGwgc2xvdCBpbiBtb3JlIGVhc2lseS4KPgpBZ3JlZSB3aXRoIHRoZSBjb21tZW50LgoKPiBP
+ZiBjb3Vyc2UsIHRoaXMgc2hvdWxkIHJlYWxseSBiZSB1c2luZyBEQVBNLi4uCj4KPj4KPj4gQEAg
+LTUzMSw5ICs1NDEsNyBAQCBzdGF0aWMgaW50IHVkYTEzNHhfc29jX3Byb2JlKHN0cnVjdCBwbGF0
+Zm9ybV9kZXZpY2UgKnBkZXYpCj4+IMKgIMKgIMKgIGNvZGVjLT5udW1fZGFpID0gMTsKPj4gwqAg
+wqAgwqAgY29kZWMtPnJlYWQgPSB1ZGExMzR4X3JlYWRfcmVnX2NhY2hlOwo+PiDCoCDCoCDCoCBj
+b2RlYy0+d3JpdGUgPSB1ZGExMzR4X3dyaXRlOwo+PiAtI2lmZGVmIFBPV0VSX09GRl9PTl9TVEFO
+REJZCj4+IC0gwqAgwqAgY29kZWMtPnNldF9iaWFzX2xldmVsID0gdWRhMTM0eF9zZXRfYmlhc19s
+ZXZlbDsKPj4gLSNlbmRpZgo+PiArCj4KPiBUaGVzZSBjaGFuZ2VzIGZvciB0aGUgYmlhcyBsZXZl
+bCBjb25maWd1cmF0aW9uIGxvb2sgdG8gYmUgdW5yZWxhdGVkIHRvIHRoZSBhZGRpdGlvbiBvZgo+
+IHRoZSBuZXcgQ09ERUMgYW5kIHNob3VsZCBiZSBzcGxpdCBpbnRvIGEgc2VwYXJhdGUgcGF0Y2gu
+IEl0J2QgYWxzbyBiZSBtdWNoIGJldHRlciB0bwo+IHJlbW92ZSB0aGlzIGlmZGVmZXJ5LCBpdCBz
+aG91bGQgYmUgaGFuZGxlZCB2aWEgcGxhdGZvcm0gZGF0YSBvciBqdXN0IGRvbmUgdW5jb25kaXRp
+b25hbGx5Lgo+Cj4KSSBjb25maXJtIHRoYXQncyBhY3R1YWxseSB1bnJlbGF0ZWQsIHNvIGl0IHNo
+b3VsZCBiZSBkb25lIGluIGEgc2VwYXJhdGUgcGF0Y2guCgpJICBkaXNsaWtlIHRoZSBtYWNybyBo
+ZXJlIHRvbywgSSdsbCByZXBsYWNlIGl0IHdpdGggYSBwbGF0Zm9ybSBkYXRhIHNvbHV0aW9uLgoK
+QmVzdCB3aXNoZXMsClZsYWRpbWlyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
