@@ -1,67 +1,99 @@
-From: Hans Schou <linux@schou.dk>
-Subject: Re: [alsa-devel] PROBLEM: SIS7019 stops recording after 42 min
-Date: Thu, 24 Jun 2010 10:08:17 +0200
-Message-ID: <AANLkTinlo1B3LtdMuxOYwU8hhcYV69g0JeODfdTVy6if@mail.gmail.com>
-References: <AANLkTimO5PXmJiIPDw82MTA53mLSl-OC0e1SOEh7v8pH@mail.gmail.com>
-	<1276972298.22889.16.camel@obelisk.thedillows.org> <AANLkTimwZFNLBNJWODyzKXwx9CbIorg3OCA53XZchkeN@mail.gmail.com>
-	<1277043970.22889.45.camel@obelisk.thedillows.org> <AANLkTikBTMq3d-Ov65wYLJ_Vw-7Jde4AOwfXcEPB0wLr@mail.gmail.com>
-	<1277129180.22889.64.camel@obelisk.thedillows.org> <AANLkTikW71h7ABVXY21pLL9AeOlmRTfVaSTjJ_6Ma0_R@mail.gmail.com>
-	<AANLkTikCGzUKe9Fy1d0xhberqGFe71lvrQbg5gkQzgf1@mail.gmail.com>
-	<AANLkTikPW9j4H15gq7nl0Tb213R15uIQAnSDi_cTOJre@mail.gmail.com>
-	<1277262047.10818.9.camel@obelisk.thedillows.org> <1277271419.10818.22.camel@obelisk.thedillows.org>
-	<AANLkTiln40Xo3fHbMSkEvdBUtFq8ZWrF57wgRWdU2Juc@mail.gmail.com>
-	<1277325732.2521.55.camel@lap75545.ornl.gov>
-Reply-To: linux@schou.dk
+From: Adish Kuvelker <adkuvi@gmail.com>
+Subject: Re: DMA Physical Address through
+	"snd_pcm_lib_malloc_pages"
+Date: Thu, 24 Jun 2010 13:57:26 +0530
+Message-ID: <AANLkTin2E2BSeAoHYoyd6mwukcLMxLjP6qg005DbAK8I@mail.gmail.com>
+References: <AANLkTik4I2g_DCdJFgNpKrp4vp08UbpKQUtz9YLAVM8K@mail.gmail.com>
+	<s5h7hlpdjhs.wl%tiwai@suse.de>
+	<AANLkTimTVqxnYmtTd1gObMd0L98Mf7nGFqjmM37w1d_3@mail.gmail.com>
+	<s5hzkykdhpr.wl%tiwai@suse.de>
+	<AANLkTim-Cx9N9M64-15let2tNpOqFU9x8EaYl_HHvqb0@mail.gmail.com>
+	<s5hvd98dge6.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1277325732.2521.55.camel@lap75545.ornl.gov>
-Sender: linux-kernel-owner@vger.kernel.org
-To: David Dillow <dave@thedillows.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id F193A24391
+	for <alsa-devel@alsa-project.org>;
+	Thu, 24 Jun 2010 10:27:29 +0200 (CEST)
+Received: by vws20 with SMTP id 20so2081637vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 01:27:27 -0700 (PDT)
+In-Reply-To: <s5hvd98dge6.wl%tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/23 David Dillow <dave@thedillows.org>:
-> On Wed, 2010-06-23 at 20:22 +0200, Hans Schou wrote:
+Hello Takashi,
 
->> =A0 =A0int fd =3D open("/dev/dsp", =A0O_RDWR);
+I'm sorry as this is getting bit confusing for me. Playing the PCM
+data I would want to pass the starting physical address of this
+location to the DMA start address. Now can I access "dma_addr"
+directly for this purpose?
+Do I still have to allocate DMA memory or will just passing of this
+dma_addr as source address suffice?
+
+I am new to ALSA framework and it's getting a bit confusing to me.
+
+Regards;
+Aadish
+
+On Thu, Jun 24, 2010 at 1:14 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> At Thu, 24 Jun 2010 12:52:47 +0530,
+> Adish Kuvelker wrote:
 >>
->> This should not go through ALSA (I think). I gues one should use
->> something with "snd_pcm_open()" to use ALSA.
+>> Hello,
+>>
+>> If I use "SNDRV_DMA_TYPE_CONTINUOUS" as a parameter to pre-allocate
+>> function to get contiguous locations of memory and use the function
+>> snd_dma_continuous_data() would that be correct setting for my case?
 >
-> To use ALSA directly, yes. However, there is no OSS SIS7019 driver in
-> the kernel, only the ALSA one I wrote. There is an OSS emulation laye=
-r,
-> so you can use the OSS API to talk to the ALSA core. Unless you are
-> using a vendor (SIS/MicroJr/etc.) supplied driver, you are using ALSA=
- in
-> some capacity.
-
-OK. Thanks for clearing it out.
-
-I guess I should have programmed against ALSA when I started.
-
->> I really don't understand why I do not see this problem on other
->> hardware using the same compiled code.
+> I guess no. =A0As mentioned, it's no DMA memory, i.e. simple pages
+> allocated via __get_free_pages() and co.
 >
-> You mean the 10 second pauses during recording after 42 minutes? That=
- is
-> a driver bug, so it is specific to this card.
-
-OK. And 42 min is also the only problem I see. I have no problems with
-the recorded sounds.
-
-> If you mean the alternating long/sort period times, then it is presen=
-t
-> on other hardware, but you likely don't see it either due to the
-> defaults giving you more periods to work in so you don't see overruns=
-,
-> faster hardware than the SIS550 CPU, or a combination of the two. The
-> bug that gives rise to the 10 second pauses can also shorten the peri=
-ods
-> I think, making overruns more likely to occur.
-
-OK.
-
-/hans
+>> Where are the parameters of dma_addr and dma_area written to the
+>> runtime structure?
+>
+> These are available only for pages properly allocated for DMA.
+>
+>
+> Takashi
+>
+>>
+>> Regards;
+>> Aadish
+>>
+>> On Thu, Jun 24, 2010 at 12:45 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>> > At Thu, 24 Jun 2010 12:38:35 +0530,
+>> > Adish Kuvelker wrote:
+>> >>
+>> >> Hello Takashi,
+>> >>
+>> >> I am developing a DMA Controller driver to service the PCM out data to
+>> >> the Audio controller on the arm-based ATLASIII procesor. In case you
+>> >> need any more information on the architecture I can pass.
+>> >>
+>> >> Since the DMA isn't on PCI bus I am pre-allocation continuous memero
+>> >> using the "snd_pcm_lib_preallocate_pages_for_all" passing
+>> >> SNDDRV_DMA_TYPE_DEV and "snd_dma_continuous_data" as appropriate
+>> >> parameters.
+>> >
+>> > snd_dma_continuous_data() is only for SNDRV_DMA_TYPE_CONTINUOUS.
+>> > In this case, the pages aren't for DMA.
+>> >
+>> > For SNDRV_DMA_TYPE_DEV, simply pass the device pointer you use.
+>> >
+>> >
+>> > Takashi
+>> >
+>>
+>
