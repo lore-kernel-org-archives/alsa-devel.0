@@ -1,21 +1,23 @@
-From: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
 Subject: Re: [PATCH 1/2] ASoC: uda134x: replace a macro with a
-	value in platform struct.
-Date: Thu, 24 Jun 2010 19:54:07 +0400
-Message-ID: <AANLkTikquGAdo2gnKeIjF-KqJGoaLWTVEcG0peGiTZh3@mail.gmail.com>
+ value in platform struct.
+Date: Thu, 24 Jun 2010 17:05:58 +0100
+Message-ID: <1277395558.3100.224.camel@odin>
 References: <1277386731-31160-1-git-send-email-vzapolskiy@gmail.com>
 	<1277387370.3100.214.camel@odin>
+	<AANLkTikquGAdo2gnKeIjF-KqJGoaLWTVEcG0peGiTZh3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 9033710382D
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id E2CA8103965
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 17:54:09 +0200 (CEST)
-Received: by wwb39 with SMTP id 39so279275wwb.38
-	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 08:54:08 -0700 (PDT)
-In-Reply-To: <1277387370.3100.214.camel@odin>
+	Thu, 24 Jun 2010 18:05:57 +0200 (CEST)
+Received: by wyb38 with SMTP id 38so2152439wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 09:05:56 -0700 (PDT)
+In-Reply-To: <AANLkTikquGAdo2gnKeIjF-KqJGoaLWTVEcG0peGiTZh3@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,74 +27,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
+To: Vladimir Zapolskiy <vzapolskiy@gmail.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBUaHUsIEp1biAyNCwgMjAxMCBhdCA1OjQ5IFBNLCBMaWFtIEdpcmR3b29kIDxscmdA
-c2xpbWxvZ2ljLmNvLnVrPiB3cm90ZToKPiBPbiBUaHUsIDIwMTAtMDYtMjQgYXQgMTc6MzggKzA0
-MDAsIFZsYWRpbWlyIFphcG9sc2tpeSB3cm90ZToKPj4gVGhpcyBjaGFuZ2Ugd2lwZXMgb3V0IGEg
-aGFyZGNvZGVkIG1hY3JvLCB3aGljaCBlbmFibGVzIGNvZGVjIGJpYXMKPj4gbGV2ZWwgY29udHJv
-bC4gTm93IGlzX3Bvd2VyZWRfb25fc3RhbmRieSB2YWx1ZSBzaGFsbCBiZSB1c2VkIGluc3RlYWQu
-Cj4+Cj4+IFNpZ25lZC1vZmYtYnk6IFZsYWRpbWlyIFphcG9sc2tpeSA8dnphcG9sc2tpeUBnbWFp
-bC5jb20+Cj4+IC0tLQo+PiDCoGluY2x1ZGUvc291bmQvdWRhMTM0eC5oIMKgIMKgfCDCoCAxMiAr
-KysrKysrKysrKysKPj4gwqBzb3VuZC9zb2MvY29kZWNzL3VkYTEzNHguYyB8IMKgIDIxICsrKysr
-LS0tLS0tLS0tLS0tLS0tLQo+PiDCoDIgZmlsZXMgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwg
-MTYgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3VkYTEzNHgu
-aCBiL2luY2x1ZGUvc291bmQvdWRhMTM0eC5oCj4+IGluZGV4IDUwOWVmYjAuLmU0NzU2NTkgMTAw
-NjQ0Cj4+IC0tLSBhL2luY2x1ZGUvc291bmQvdWRhMTM0eC5oCj4+ICsrKyBiL2luY2x1ZGUvc291
-bmQvdWRhMTM0eC5oCj4+IEBAIC0xOCw2ICsxOCwxOCBAQCBzdHJ1Y3QgdWRhMTM0eF9wbGF0Zm9y
-bV9kYXRhIHsKPj4gwqAgwqAgwqAgc3RydWN0IGwzX3BpbnMgbDM7Cj4+IMKgIMKgIMKgIHZvaWQg
-KCpwb3dlcikgKGludCk7Cj4+IMKgIMKgIMKgIGludCBtb2RlbDsKPj4gKyDCoCDCoCAvKgo+PiAr
-IMKgIMKgIMKgIEFMU0EgU09DIHVzdWFsbHkgcHV0cyB0aGUgZGV2aWNlIGluIHN0YW5kYnkgbW9k
-ZSB3aGVuIGl0J3Mgbm90IHVzZWQKPj4gKyDCoCDCoCDCoCBmb3Igc29tZXRpbWUuIElmIHlvdSB1
-bnNldCBpc19wb3dlcmVkX29uX3N0YW5kYnkgdGhlIGRyaXZlciB3aWxsCj4+ICsgwqAgwqAgwqAg
-dHVybiBvZmYgdGhlIEFEQy9EQUMgd2hlbiB0aGlzIGNhbGxiYWNrIGlzIGludm9rZWQgYW5kIHR1
-cm4gaXQgYmFjawo+PiArIMKgIMKgIMKgIG9uIHdoZW4gbmVlZGVkLiBVbmZvcnR1bmF0ZWx5IHRo
-aXMgd2lsbCByZXN1bHQgaW4gYSB2ZXJ5IGxpZ2h0IGJ1bXAKPj4gKyDCoCDCoCDCoCAoaXQgY2Fu
-IGJlIGF1ZGlibGUgb25seSB3aXRoIGdvb2QgZWFycGhvbmVzKS4gSWYgdGhpcyBib3RoZXJzIHlv
-dQo+PiArIMKgIMKgIMKgIHNldCBpc19wb3dlcmVkX29uX3N0YW5kYnksIHlvdSB3aWxsIGhhdmUg
-c2xpZ2h0bHkgaGlnaGVyIHBvd2VyCj4+ICsgwqAgwqAgwqAgY29uc3VtcHRpb24uIFBsZWFzZSBu
-b3RlIHRoYXQgc2VuZGluZyB0aGUgTDMgY29tbWFuZCBmb3IgQURDIGlzCj4+ICsgwqAgwqAgwqAg
-ZW5vdWdoIHRvIG1ha2UgdGhlIGJ1bXAsIHNvIGl0IGRvZXNuJ3QgbWFrZSBkaWZmZXJlbmNlIGlm
-IHlvdQo+PiArIMKgIMKgIMKgIGNvbXBsZXRlbHkgdGFrZSBvZmYgcG93ZXIgZnJvbSB0aGUgY29k
-ZWMuCj4+ICsgwqAgwqAgKi8KPj4gKyDCoCDCoCBpbnQgaXNfcG93ZXJlZF9vbl9zdGFuZGJ5Owo+
-PiDCoCNkZWZpbmUgVURBMTM0WF9VREExMzQwIDEKPj4gwqAjZGVmaW5lIFVEQTEzNFhfVURBMTM0
-MSAyCj4+IMKgI2RlZmluZSBVREExMzRYX1VEQTEzNDQgMwo+PiBkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2NvZGVjcy91ZGExMzR4LmMgYi9zb3VuZC9zb2MvY29kZWNzL3VkYTEzNHguYwo+PiBpbmRl
-eCBlODA2NmI2Li41YzdiMDU0IDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3VkYTEz
-NHguYwo+PiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3VkYTEzNHguYwo+PiBAQCAtMjcsMTkgKzI3
-LDYgQEAKPj4gwqAjaW5jbHVkZSAidWRhMTM0eC5oIgo+Pgo+Pgo+PiAtI2RlZmluZSBQT1dFUl9P
-RkZfT05fU1RBTkRCWSAxCj4+IC0vKgo+PiAtIMKgQUxTQSBTT0MgdXN1YWxseSBwdXRzIHRoZSBk
-ZXZpY2UgaW4gc3RhbmRieSBtb2RlIHdoZW4gaXQncyBub3QgdXNlZAo+PiAtIMKgZm9yIHNvbWV0
-aW1lLiBJZiB5b3UgZGVmaW5lIFBPV0VSX09GRl9PTl9TVEFOREJZIHRoZSBkcml2ZXIgd2lsbAo+
-PiAtIMKgdHVybiBvZmYgdGhlIEFEQy9EQUMgd2hlbiB0aGlzIGNhbGxiYWNrIGlzIGludm9rZWQg
-YW5kIHR1cm4gaXQgYmFjawo+PiAtIMKgb24gd2hlbiBuZWVkZWQuIFVuZm9ydHVuYXRlbHkgdGhp
-cyB3aWxsIHJlc3VsdCBpbiBhIHZlcnkgbGlnaHQgYnVtcAo+PiAtIMKgKGl0IGNhbiBiZSBhdWRp
-YmxlIG9ubHkgd2l0aCBnb29kIGVhcnBob25lcykuIElmIHRoaXMgYm90aGVycyB5b3UKPj4gLSDC
-oGp1c3QgY29tbWVudCB0aGlzIGxpbmUsIHlvdSB3aWxsIGhhdmUgc2xpZ2h0bHkgaGlnaGVyIHBv
-d2VyCj4+IC0gwqBjb25zdW1wdGlvbiAuIFBsZWFzZSBub3RlIHRoYXQgc2VuZGluZyB0aGUgTDMg
-Y29tbWFuZCBmb3IgQURDIGlzCj4+IC0gwqBlbm91Z2ggdG8gbWFrZSB0aGUgYnVtcCwgc28gaXQg
-ZG9lc24ndCBtYWtlIGRpZmZlcmVuY2UgaWYgeW91Cj4+IC0gwqBjb21wbGV0ZWx5IHRha2Ugb2Zm
-IHBvd2VyIGZyb20gdGhlIGNvZGVjLgo+PiAtICovCj4+IC0KPj4gwqAjZGVmaW5lIFVEQTEzNFhf
-UkFURVMgU05EUlZfUENNX1JBVEVfODAwMF80ODAwMAo+PiDCoCNkZWZpbmUgVURBMTM0WF9GT1JN
-QVRTIChTTkRSVl9QQ01fRk1UQklUX1M4IHwgU05EUlZfUENNX0ZNVEJJVF9TMTZfTEUgfCBcCj4+
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIFNORFJWX1BDTV9GTVRCSVRfUzE4XzNMRSB8IFNORFJWX1BD
-TV9GTVRCSVRfUzIwXzNMRSkKPj4gQEAgLTU1OSw5ICs1NDYsMTEgQEAgc3RhdGljIGludCB1ZGEx
-MzR4X3NvY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiDCoCDCoCDCoCBj
-b2RlYy0+bnVtX2RhaSA9IDE7Cj4+IMKgIMKgIMKgIGNvZGVjLT5yZWFkID0gdWRhMTM0eF9yZWFk
-X3JlZ19jYWNoZTsKPj4gwqAgwqAgwqAgY29kZWMtPndyaXRlID0gdWRhMTM0eF93cml0ZTsKPj4g
-LSNpZmRlZiBQT1dFUl9PRkZfT05fU1RBTkRCWQo+PiAtIMKgIMKgIGNvZGVjLT5zZXRfYmlhc19s
-ZXZlbCA9IHVkYTEzNHhfc2V0X2JpYXNfbGV2ZWw7Cj4+IC0jZW5kaWYKPj4gKwo+PiArIMKgIMKg
-IGlmICghcGQtPmlzX3Bvd2VyZWRfb25fc3RhbmRieSkgewo+PiArIMKgIMKgIMKgIMKgIMKgIMKg
-IGNvZGVjLT5zZXRfYmlhc19sZXZlbCA9IHVkYTEzNHhfc2V0X2JpYXNfbGV2ZWw7Cj4KPiBUaGUg
-Y29kZWMgb3BzIHBvaW50ZXJzIGhhdmUgbW92ZWQgaW4gbXVsdGktY29tcG9uZW50LiBDYW4geW91
-IHB1dCB0aGlzCj4gY2hlY2sgaW4geW91ciB1ZGExMzR4X3NldF9iaWFzX2xldmVsKCkgaW5zdGVh
-ZC4KPgpOb3Qgc3VyZSBJIHVuZGVyc3RhbmQgdGhlIHByb2JsZW0sIGFuZCBJIGRvIG5vdCBzZWUg
-YSBzaW1wbGUgc29sdXRpb24KZm9yIGFjdHVhbCBidWdmaXggaW4gcGF0Y2ggMi8yLCBpZiB0aGlz
-IGNoZWNrIGlzIHBsYWNlZCBpbgp1ZGExMzR4X3NldF9iaWFzX2xldmVsKCkuIFBsZWFzZSBjb3Vs
-ZCB5b3UgcHJvdmlkZSBtZSB3aXRoIGEgaGludCBvcgpsaW5rIHRvIHNvbWUgY29kZWMgc291cmNl
-IGZpbGU/CgpUaGFuayB5b3UsClZsYWRpbWlyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+On Thu, 2010-06-24 at 19:54 +0400, Vladimir Zapolskiy wrote:
+> Hi,
+> 
+> On Thu, Jun 24, 2010 at 5:49 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+> > On Thu, 2010-06-24 at 17:38 +0400, Vladimir Zapolskiy wrote:
+
+> >> @@ -559,9 +546,11 @@ static int uda134x_soc_probe(struct platform_device *pdev)
+> >>       codec->num_dai = 1;
+> >>       codec->read = uda134x_read_reg_cache;
+> >>       codec->write = uda134x_write;
+> >> -#ifdef POWER_OFF_ON_STANDBY
+> >> -     codec->set_bias_level = uda134x_set_bias_level;
+> >> -#endif
+> >> +
+> >> +     if (!pd->is_powered_on_standby) {
+> >> +             codec->set_bias_level = uda134x_set_bias_level;
+> >
+> > The codec ops pointers have moved in multi-component. Can you put this
+> > check in your uda134x_set_bias_level() instead.
+> >
+> Not sure I understand the problem, and I do not see a simple solution
+> for actual bugfix in patch 2/2, if this check is placed in
+> uda134x_set_bias_level(). Please could you provide me with a hint or
+> link to some codec source file?
+
+I was meaning something like :-
+
+uda134x_set_bias_level()
+{
+	if (pd->is_powered_on_standby)
+		return
+
+	/* rest of func */
+
+}
+
+The multi-component branch makes codec->set_bias_level a driver level
+operation (that can be shared amongst other uda134x codec devices so we
+cant change this at runtime)
+
+Thanks
+
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
