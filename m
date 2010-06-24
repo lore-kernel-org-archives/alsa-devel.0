@@ -1,18 +1,21 @@
-From: =?UTF-8?B?RXJpYyBCw6luYXJk?= <eric@eukrea.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
 Subject: Re: [PATCH] soc/imx: clean Kconfig
-Date: Thu, 24 Jun 2010 13:46:24 +0200
-Message-ID: <4C234590.7040505@eukrea.com>
+Date: Thu, 24 Jun 2010 12:47:15 +0100
+Message-ID: <B10C2809-6AE6-44DA-BD6D-FB5EBD958689@opensource.wolfsonmicro.com>
 References: <20100619002937.GB2463@opensource.wolfsonmicro.com>
 	<1276937276-10207-1-git-send-email-eric@eukrea.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	<4C234590.7040505@eukrea.com>
+	(sfid-20100624_124630_796301_568AD6D6)
+Mime-Version: 1.0 (Apple Message framework v1081)
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from 27.mail-out.ovh.net (27.mail-out.ovh.net [91.121.30.210])
-	by alsa0.perex.cz (Postfix) with SMTP id 101CC103811
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 1FF9C10380D
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 13:46:29 +0200 (CEST)
-In-Reply-To: <1276937276-10207-1-git-send-email-eric@eukrea.com>
+	Thu, 24 Jun 2010 13:47:17 +0200 (CEST)
+In-Reply-To: <4C234590.7040505@eukrea.com>
+	(sfid-20100624_124630_796301_568AD6D6)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,46 +25,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: broonie@opensource.wolfsonmicro.com
+To: =?iso-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>
 Cc: alsa-devel@alsa-project.org, s.hauer@pengutronix.de, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCkxlIDE5LzA2LzIwMTAgMTA6NDcsIEVyaWMgQsOpbmFyZCBhIMOpY3JpdCA6Cj4g
-U2lnbmVkLW9mZi1ieTogRXJpYyBCw6luYXJkPGVyaWNAZXVrcmVhLmNvbT4KPgo+IENjOiBscmdA
-c2xpbWxvZ2ljLmNvLnVrCj4gQ2M6IGJyb29uaWVAb3BlbnNvdXJjZS53b2xmc29ubWljcm8uY29t
-Cj4gQ2M6IHMuaGF1ZXJAcGVuZ3V0cm9uaXguZGUKPiAtLS0KPiAgIHNvdW5kL3NvYy9pbXgvS2Nv
-bmZpZyB8ICAgMTQgKysrKysrLS0tLS0tLS0KPiAgIDEgZmlsZXMgY2hhbmdlZCwgNiBpbnNlcnRp
-b25zKCspLCA4IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbXgvS2Nv
-bmZpZyBiL3NvdW5kL3NvYy9pbXgvS2NvbmZpZwo+IGluZGV4IDZlZjU3ZTAuLjJmMGQ2ZDMgMTAw
-NjQ0Cj4gLS0tIGEvc291bmQvc29jL2lteC9LY29uZmlnCj4gKysrIGIvc291bmQvc29jL2lteC9L
-Y29uZmlnCj4gQEAgLTEsNCArMSw0IEBACj4gLWNvbmZpZyBTTkRfSU1YX1NPQwo+ICttZW51Y29u
-ZmlnIFNORF9JTVhfU09DCj4gICAJdHJpc3RhdGUgIlNvQyBBdWRpbyBmb3IgRnJlZXNjYWxlIGku
-TVggQ1BVcyIKPiAgIAlkZXBlbmRzIG9uIEFSQ0hfTVhDCj4gICAJc2VsZWN0IFNORF9QQ00KPiBA
-QCAtOCwxNCArOCwxMiBAQCBjb25maWcgU05EX0lNWF9TT0MKPiAgIAkgIFNheSBZIG9yIE0gaWYg
-eW91IHdhbnQgdG8gYWRkIHN1cHBvcnQgZm9yIGNvZGVjcyBhdHRhY2hlZCB0bwo+ICAgCSAgdGhl
-IGkuTVggU1NJIGludGVyZmFjZS4KPgo+IC1jb25maWcgU05EX01YQ19TT0NfU1NJCj4gLQl0cmlz
-dGF0ZQo+ICtpZiBTTkRfSU1YX1NPQwo+Cj4gICBjb25maWcgU05EX01YQ19TT0NfV00xMTMzX0VW
-MQo+ICAgCXRyaXN0YXRlICJBdWRpbyBvbiB0aGUgdGhlIGkuTVgzMUFEUyB3aXRoIFdNMTEzMy1F
-VjEgZml0dGVkIgo+IC0JZGVwZW5kcyBvbiBTTkRfSU1YX1NPQyYmICBNQUNIX01YMzFBRFNfV00x
-MTMzX0VWMSYmICBFWFBFUklNRU5UQUwKPiArCWRlcGVuZHMgb24gTUFDSF9NWDMxQURTX1dNMTEz
-M19FVjEmJiAgRVhQRVJJTUVOVEFMCj4gICAJc2VsZWN0IFNORF9TT0NfV004MzUwCj4gLQlzZWxl
-Y3QgU05EX01YQ19TT0NfU1NJCj4gICAJaGVscAo+ICAgCSAgRW5hYmxlIHN1cHBvcnQgZm9yIGF1
-ZGlvIG9uIHRoZSBpLk1YMzFBRFMgd2l0aCB0aGUgV00xMTMzLUVWMQo+ICAgCSAgUE1JQyBib2Fy
-ZCB3aXRoIFdNODgzNXggZml0dGVkLgo+IEBAIC0yMywxNyArMjEsMTcgQEAgY29uZmlnIFNORF9N
-WENfU09DX1dNMTEzM19FVjEKPiAgIGNvbmZpZyBTTkRfU09DX1BIWUNPUkVfQUM5Nwo+ICAgCXRy
-aXN0YXRlICJTb0MgQXVkaW8gc3VwcG9ydCBmb3IgUGh5dGVjIHBoeUNPUkUgKGFuZCBwaHlDQVJE
-KSBib2FyZHMiCj4gICAJZGVwZW5kcyBvbiBNQUNIX1BDTTA0MyB8fCBNQUNIX1BDQTEwMAo+IC0J
-c2VsZWN0IFNORF9NWENfU09DX1NTSQo+ICAgCXNlbGVjdCBTTkRfU09DX1dNOTcxMgo+ICAgCWhl
-bHAKPiAgIAkgIFNheSBZIGlmIHlvdSB3YW50IHRvIGFkZCBzdXBwb3J0IGZvciBTb0MgYXVkaW8g
-b24gUGh5dGVjIHBoeUNPUkUKPiAgIAkgIGFuZCBwaHlDQVJEIGJvYXJkcyBpbiBBQzk3IG1vZGUK
-Pgo+ICAgY29uZmlnIFNORF9TT0NfRVVLUkVBX1RMVjMyMAo+IC0JYm9vbCAiRXVrcmVhIFRMVjMy
-MCIKPiArCXRyaXN0YXRlICJFdWtyZWEgVExWMzIwIgo+ICAgCWRlcGVuZHMgb24gTUFDSF9FVUtS
-RUFfTUJJTVgyN19CQVNFQk9BUkQgfHwgTUFDSF9FVUtSRUFfTUJJTVhTRF9CQVNFQk9BUkQKPiAt
-CXNlbGVjdCBTTkRfSU1YX1NPQwo+ICAgCXNlbGVjdCBTTkRfU09DX1RMVjMyMEFJQzIzCj4gICAJ
-aGVscAo+ICAgCSAgRW5hYmxlIEkyUyBiYXNlZCBhY2Nlc3MgdG8gdGhlIFRMVjMyMEFJQzIzQiBj
-b2RlYyBhdHRhY2hlZAo+ICAgCSAgdG8gdGhlIFNTSTQgaW50ZXJmYWNlCj4gKwo+ICtlbmRpZgkj
-IFNORF9JTVhfU09DCgppcyB0aGlzIHBhdGNoIE9LIG9yIHNob3VsZCBJIHJld29yayBpdCA/CgpU
-aGFua3MsCkVyaWMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+On 24 Jun 2010, at 12:46, Eric B=E9nard wrote:
+
+> is this patch OK or should I rework it ?
+
+Liam needs to review it.
