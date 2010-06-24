@@ -1,65 +1,56 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] Two patches for Alsa-plugins (pulse)
-Date: Thu, 24 Jun 2010 07:44:26 +0800
-Message-ID: <AANLkTikRPPlq_3_m37I6wctz4-5OPdnIqNU8v6wcx5bB@mail.gmail.com>
-References: <4C22670D.8010104@epost.diwic.se>
+From: Sid Boyce <sboyce@blueyonder.co.uk>
+Subject: Re: 2.6.35-rc3 E-MU 0404 USB problem
+Date: Thu, 24 Jun 2010 03:17:47 +0100
+Message-ID: <4C22C04B.5070407@blueyonder.co.uk>
+References: <4C20B364.9060405@blueyonder.co.uk> <20100622131102.GA18432@kroah.com> <20100622133434.GZ2698@buzzloop.caiaq.de> <4C21E875.20200@blueyonder.co.uk> <4C2201DF.9050500@ladisch.de>
+Reply-To: sboyce@blueyonder.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 19DFE2444A
-	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 01:44:28 +0200 (CEST)
-Received: by vws20 with SMTP id 20so1572867vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 23 Jun 2010 16:44:26 -0700 (PDT)
-In-Reply-To: <4C22670D.8010104@epost.diwic.se>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4C2201DF.9050500@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: alsa-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/24 David Henningsson <launchpad.web@epost.diwic.se>
+On 23/06/10 13:45, Clemens Ladisch wrote:
+>>>> Sid Boyce wrote:
+>>>>> Transmit fails,
+>
+> What exactly fails?
+>
+The application uses the on-board HDA Intel sound card for Mic and 
+Speaker output.
+For receive, data from the receiver goes to the E-MU 0404 USB at ~10 
+KHz where it is digitized then processed by the application and comes 
+out the speaker as audio - that works at 48K, 96K and 192K sample rate.
 
-> These two patches are being used in Ubuntu Lucid (released this April)
-> and are working well enough to have people asking us to backport them to
-> Karmic. Today I got an email, asking for the upstream status of one of
-> these patches, since he wanted them in Fedora. If posting them here
-> isn't the correct way to upstream them, please tell me so.
+For transmission you speak into the mic and it's processed by the 
+application, digitized and sent to the E-MU 0404 USB where it's 
+converted to audio that is used to modulate the transmitter and out to 
+the antenna - that doesn't work even at 48K sample rate, i.e there is no 
+output from the E-MU 0404 USB.
+.
+>>>>> dmesg output with 48K sample rate set is:-
+>>>>> ALSA sound/usb/clock.c:214: 6:2:3: endpoint lacks sample rate attribute bit, cannot set.
 >
-> The first one (Fix invalid buffer pointer return value) fixes broken logic:
->
-> This patch improves recovering from underruns, and prevents hangs inside
-> snd_pcm_write* and snd_pcm_read* due to snd_pcm_avail* returning too
-> low values. It especially helps low latency situations.
->
-> The second one (Do not report underruns to the ALSA layer) is more a
-> change of behavior, which could be questioned. The arguments for
-> removing that code are these:
->
->  * If pulseaudio gets an underrun, the normal way to end that underrun
-> is to feed it with more buffers. This is different from the ALSA way of
-> dealing with underruns, which requires hardware buffer pointers to be
-> reset.
->  * In addition, underrun signals are delivered asynchronously from
-> pulseaudio. This means that there might be more buffers on the way to
-> pulseaudio when the underrun is reported, making the underrun obsolete.
-> Unfortunately, there is currently no known way to determine whether this
-> is the case or not.
->
-> // David
+> There are many devices that have only one sample rate or that have one
+> sample rate per alternate setting.  This doesn't deserve a message, much
+> less a warning.
 >
 >
+> Regards,
+> Clemens
 >
-Are there any test program which can reproduce this condition ?
 
-any program similar to alsa-time-test.c which PA developer use to test the
-alsa-driver but alsa-time-test.c aborted when I specify to use the pulse
-device
+On another box with the Terratec Aureon 5.1 USB card, it works both ways 
+at 48K sample rate though the audio going to the transmitter is 
+insufficient to drive the transmitter to the expected output.
+Regards
+Sid.
+-- 
+Sid Boyce ... Hamradio License G3VBV, Licensed Private Pilot
+Emeritus IBM/Amdahl Mainframes and Sun/Fujitsu Servers Tech Support
+Specialist, Cricket Coach
+Microsoft Windows Free Zone - Linux used for all Computing Tasks
