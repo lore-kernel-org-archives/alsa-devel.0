@@ -1,18 +1,17 @@
-From: Brad Figg <brad.figg@canonical.com>
-Subject: Re: [PATCH 1/1] Daily snapshot not building on 2.6.32
-Date: Thu, 24 Jun 2010 11:47:56 -0700
-Message-ID: <4C23A85C.5090109@canonical.com>
-References: <4C22545C.2060101@canonical.com>	<s5h8w65djy1.wl%tiwai@suse.de>	<4C237223.6060606@canonical.com>	<s5hbpb079ua.wl%tiwai@suse.de>	<4C237969.2090109@canonical.com>	<s5h1vbw78ba.wl%tiwai@suse.de>	<4C237BC4.6020304@canonical.com>	<s5hwrto5tie.wl%tiwai@suse.de>	<4C239EDF.1040006@canonical.com>
-	<s5hfx0cclv4.wl%tiwai@suse.de>
+From: Liam Girdwood <lrg@slimlogic.co.uk>
+Subject: [RFC 0/5] ASoC multi-component support : core
+Date: Thu, 24 Jun 2010 20:24:27 +0100
+Message-ID: <1277407467.3100.579.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from adelie.canonical.com (adelie.canonical.com [91.189.90.139])
-	by alsa0.perex.cz (Postfix) with ESMTP id 99456103834
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id 6ECD124466
 	for <alsa-devel@alsa-project.org>;
-	Thu, 24 Jun 2010 20:48:14 +0200 (CEST)
-In-Reply-To: <s5hfx0cclv4.wl%tiwai@suse.de>
+	Thu, 24 Jun 2010 21:24:26 +0200 (CEST)
+Received: by wyb38 with SMTP id 38so2318604wyb.38
+	for <alsa-devel@alsa-project.org>; Thu, 24 Jun 2010 12:24:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,64 +21,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
+Cc: vbarinov <vbarinov@embeddedalley.com>, Cliff Cai <cliff.cai@analog.com>, jassisinghbrar <jassisinghbrar@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, "Candelaria Villareal,
+	Jorge" <jorge.candelaria@ti.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, "timur.tabi@gmail.com" <timur.tabi@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, "vaibhav.bedia" <vaibhav.bedia@ti.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Ryan Mallon <ryan@bluewatersys.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDYvMjQvMjAxMCAxMTo0MyBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IEF0IFRodSwgMjQg
-SnVuIDIwMTAgMTE6MDc6MjcgLTA3MDAsCj4gQnJhZCBGaWdnIHdyb3RlOgo+Pgo+PiBPbiAwNi8y
-NC8yMDEwIDA4OjQwIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+PiBBdCBUaHUsIDI0IEp1biAy
-MDEwIDA4OjM3OjQwIC0wNzAwLAo+Pj4gQnJhZCBGaWdnIHdyb3RlOgo+Pj4+Cj4+Pj4gT24gMDYv
-MjQvMjAxMCAwODozNSBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+PiBBdCBUaHUsIDI0IEp1
-biAyMDEwIDA4OjI3OjM3IC0wNzAwLAo+Pj4+PiBCcmFkIEZpZ2cgd3JvdGU6Cj4+Pj4+Pgo+Pj4+
-Pj4gT24gMDYvMjQvMjAxMCAwODowMiBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+Pj4+IEF0
-IFRodSwgMjQgSnVuIDIwMTAgMDc6NTY6MzUgLTA3MDAsCj4+Pj4+Pj4gQnJhZCBGaWdnIHdyb3Rl
-Ogo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBPbiAwNi8yMy8yMDEwIDExOjI3IFBNLCBUYWthc2hpIEl3YWkg
-d3JvdGU6Cj4+Pj4+Pj4+PiBBdCBXZWQsIDIzIEp1biAyMDEwIDExOjM3OjE2IC0wNzAwLAo+Pj4+
-Pj4+Pj4gQnJhZCBGaWdnIHdyb3RlOgo+Pj4+Pj4+Pj4+Cj4+Pj4+Pj4+Pj4gSSd2ZSBoYWQgdG8g
-YXBwbHkgdGhlIGZvbGxvd2luZyBwYXRjaCB0byBzdWNjZXNzZnVsbHkgYnVpbGQKPj4+Pj4+Pj4+
-PiB0aGUgZGFpbHkgc25hcHNob3Qgb24gMi42LjMyLiBXaXRob3V0IHRoaXMgcGF0Y2ggSSBnZXQ6
-Cj4+Pj4+Pj4+Pgo+Pj4+Pj4+Pj4gV2hpY2ggdGFyYmFsbD8gIFRoZSBsYXRlc3Qgb25lIHdvcmtz
-IGZpbmUgZm9yIG1lLgo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+Cj4+Pj4+Pj4+PiBUYWthc2hpCj4+Pj4+
-Pj4+Cj4+Pj4+Pj4+IFRvZGF5J3Mgc25hcHNob3QgaXMgZ2l2aW5nIG1lIHRoZSBleGFjdCBzYW1l
-IGVycm9yLgo+Pj4+Pj4+Cj4+Pj4+Pj4gRGlkIHlvdSBnZXQgZnJvbSB0aGUgVVJMIGJlbG93LCBy
-aWdodD8KPj4+Pj4+Pgo+Pj4+Pj4+ICAgICAgIGZ0cDovL2Z0cC5rZXJuZWwub3JnL3B1Yi9saW51
-eC9rZXJuZWwvcGVvcGxlL3Rpd2FpL3NuYXBzaG90L2Fsc2EtZHJpdmVyLXNuYXBzaG90LnRhci5n
-ego+Pj4+Pj4+Cj4+Pj4+Pj4gVGhlbiBjaGVjayBjb25maWcubG9nIHdoZXRoZXIgdXNiX2FsbG9j
-X2NvaGVyZW50KCkgY2hlY2sgd29ya2VkLgo+Pj4+Pj4+Cj4+Pj4+Pj4KPj4+Pj4+PiBUYWthc2hp
-Cj4+Pj4+Pj4KPj4+Pj4+Cj4+Pj4+PiBJJ20gcHVsbGluZyB0aGUgc25hcHNob3QgZnJvbSB0aGUg
-Y29ycmVjdCBsb2NhdGlvbi4gSG93ZXZlcjoKPj4+Pj4+ICAgICAgICAgIGNoZWNraW5nIHVzYl9h
-bGxvY19jb2hlcmVudC4uLiBubwo+Pj4+Pgo+Pj4+PiBUaGF0J3MgY29ycmVjdC4gIFRoZW4gaXQg
-bXVzdCBoYXZlCj4+Pj4+IAkjdW5kZWYgQ09ORklHX1NORF9IQVZFX1VTQl9BTExPQ19DT0hFUkVO
-VAo+Pj4+PiBpbiBpbmNsdWRlL2NvbmZpZy5oLCBhbmQgaW5jbGR1ZS9hZHJpdmVyLmggc2hvdWxk
-IGRlZmluZSBhIHdyYXBwZXIgZm9yCj4+Pj4+IHRoZSBmdW5jdGlvbi4gIFBsZWFzZSBjaGVjayBp
-dC4KPj4+Pj4KPj4+Pj4KPj4+Pj4gVGFrYXNoaQo+Pj4+Cj4+Pj4gaW5jbHVkZS9jb25maWcuaDoK
-Pj4+Pgo+Pj4+IC8qICN1bmRlZiBDT05GSUdfU05EX0hBVkVfVVNCX0FMTE9DX0NPSEVSRU5UICov
-Cj4+Pj4KPj4+Pgo+Pj4+Cj4+Pj4gaW5jbHVkZS9hZHJpdmVyLmg6Cj4+Pj4KPj4+PiAjaWZuZGVm
-IENPTkZJR19TTkRfSEFWRV9VU0JfQUxMT0NfQ09IRVJFTlQKPj4+PiAjZGVmaW5lIHVzYl9hbGxv
-Y19jb2hlcmVudCAgICAgIHVzYl9idWZmZXJfYWxsb2MKPj4+PiAjZGVmaW5lIHVzYl9mcmVlX2Nv
-aGVyZW50ICAgICAgIHVzYl9idWZmZXJfZnJlZQo+Pj4+ICNlbmRpZgo+Pj4KPj4+IENoZWNrIHdo
-ZXRoZXIgdGhlIGNvZGUgcGF0Y2ggdGhlcmUgcmVhY2hlcyB3aGlsZSBjb21waWxpbmcgdWExMDEu
-Yy4KPj4+Cj4+Pgo+Pj4gVGFrYXNoaQo+Pgo+PiBBbmQsIGJ5IHRoZSB3YXksIEknbSBnZXR0aW5n
-IHRoaXMgZXJyb3Igd2hlbiB0cnlpbmcgdG8gYnVpbGQgdG9kYXkncyBzbmFwc2hvdAo+PiBvbiAy
-LjYuMzUuCj4+Cj4+ICAgICBDQyBbTV0gIC9ob21lL3dvcmsvYWxzYS9hbHNhLWRyaXZlci9hY29y
-ZS9wY21fbmF0aXZlLm8KPj4gL2hvbWUvd29yay9hbHNhL2Fsc2EtZHJpdmVyL2Fjb3JlL3BjbV9u
-YXRpdmUuYzogSW4gZnVuY3Rpb24g4oCYc25kX3BjbV9od19wYXJhbXPigJk6Cj4+IC9ob21lL3dv
-cmsvYWxzYS9hbHNhLWRyaXZlci9hY29yZS9wY21fbmF0aXZlLmM6NDY4OiBlcnJvcjogaW1wbGlj
-aXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24g4oCYcG1fcW9zX3JlbW92ZV9yZXF1aXJlbWVudOKA
-mQo+PiAvaG9tZS93b3JrL2Fsc2EvYWxzYS1kcml2ZXIvYWNvcmUvcGNtX25hdGl2ZS5jOjQ3MTog
-ZXJyb3I6IGltcGxpY2l0IGRlY2xhcmF0aW9uIG9mIGZ1bmN0aW9uIOKAmHBtX3Fvc19hZGRfcmVx
-dWlyZW1lbnTigJkKPj4gbWFrZVszXTogKioqIFsvaG9tZS93b3JrL2Fsc2EvYWxzYS1kcml2ZXIv
-YWNvcmUvcGNtX25hdGl2ZS5vXSBFcnJvciAxCj4+IG1ha2VbMl06ICoqKiBbL2hvbWUvd29yay9h
-bHNhL2Fsc2EtZHJpdmVyL2Fjb3JlXSBFcnJvciAyCj4+IG1ha2VbMV06ICoqKiBbX21vZHVsZV8v
-aG9tZS93b3JrL2Fsc2EvYWxzYS1kcml2ZXJdIEVycm9yIDIKPj4KPj4gV2hpY2ggSSd2ZSBub3Qg
-YmVlbiBhYmxlIHRvIGZpZ3VyZSBvdXQgYW55IHdvcmsgYXJvdW5kIGFmdGVyIGFuIGhvdXIgb3IK
-Pj4gbW9yZSBvZiB3b3JraW5nIG9uIGl0Lgo+Cj4gTGlrZWx5IHRoZSBwbS1xb3MgQVBJIHdhcyBj
-aGFuZ2VkIG9uY2UgYWdhaW4uCj4gSW4gZ2VuZXJhbCwgdGhlIGxhdGVzdCBrZXJuZWwgaXMgbm90
-IHRhcmdldGVkIGZvciBhbHNhLWRyaXZlciBleHRlcm5hbAo+IGJ1aWxkcy4gIFVzZSBzb3VuZCBn
-aXQgdHJlZSBpbnN0ZWFkLgo+Cj4gSSdsbCBmaXggaXQgYWZ0ZXIgSSBiYWNrIGZyb20gbXkgdmFj
-YXRpb24gKGFib3V0IGEgd2VlaykuCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKClRoYW5rcy4K
-Ci0tIApCcmFkIEZpZ2cgYnJhZC5maWdnQGNhbm9uaWNhbC5jb20gaHR0cDovL3d3dy5jYW5vbmlj
-YWwuY29tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+ASoC is now coming up to it's 5th birthday and is beginning to show it's
+age a little when it comes to supporting the next generation of smart
+phones and multimedia devices with it's current single CODEC and single
+DMA platform design.
+
+Historically, ASoC is designed around an embedded sound card with a
+single CODEC and a single platform DMA driver (with multiple DAIs). This
+design works great for most of the current audio hardware in production,
+however we are now seeing hardware designs for the next generation of
+devices that can have many CODECs, DMAs, DSPs and a host of other audio
+peripherals connected to the audio subsystem.
+
+So we now need ASoC to support new audio hardware architectures with
+multiple audio CODECs, DMA engines, DSPs, DAIs etc.
+ 
+
+
+This patch series allows an ASoC sound card to support multiple
+components (CODECs, DAI and DMA) and is the first part in a series of
+work (other parts coming later in the year from Mark and I) designed to
+enhance ASoC for modern mobile audio hardware.
+
+This patch series provides the following important features:-
+
+ 1) Allow sound cards to have multiple CODECs and platform DMA controllers.
+ 2) Allow CODEC drivers to support more than one CODEC device.
+ 3) Allow all CODEC, platform DMA and DAI drivers to have platform data.
+
+This is achieved by: -
+
+ 1) Separating the component struct driver data from the component struct device data.
+ 2) Making all components kernel devices.
+
+(A side effect of this change is that we can now store all our component
+private data in struct device private data (like everyone else) and
+there is also now less pointer indirection for components.)
+
+The change mainly affects only the probe() and remove() sections of
+component drivers and the component enumeration section of the core. The
+core also now handles setting up the CODEC data structs too (meaning
+CODEC drivers dont have to do this). All component PCM, DAPM and
+Kcontrol operations remain unchanged.
+
+
+
+I've so far tested the new multi-component enumeration on the TI OMAP
+and Marvell PXA platforms with AC97, MFD and I2C based CODECs. I do
+however need ASoC platform maintainers to test on their systems (as I
+only have a subset of the hardware). Some ASOC platforms do need a
+little extra checking/fixups too :- 
+
+ o Samsung platform: required the most work to untangle the components.
+ o i.MX platform: required work to de-couple components.
+ o Injenic J4740 platform: I do not have a toolchain to even build this
+arch so it will also need someone to build it too.
+
+If you find your platform does not work then the most likely reason is
+that I'm missing a platform_device registration for your CODEC, DAI,
+etc. device in your arch board.c or device.c files. Please let me know
+or send a patch :)
+
+All the multi-component code is in my multi-component branch here :-
+
+git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
+
+This RFC post contains the changes to ASoC core only. I'll post the
+multi-component CODEC and platform changes as separate RFCs in order not
+to flood the list (as there are 38 patches in all). This patch series
+will eventually be rebased into a single patch for upstream so we dont
+break bisect. The subsequent patches for CODECs and platforms in this
+series can be found in the git branch above.
+
+The intention is to upstream this for 2.6.36
+
+Thanks
+
+Liam
+-- 
+Freelance Developer, SlimLogic Ltd
+ASoC and Voltage Regulator Maintainer.
+http://www.slimlogic.co.uk
