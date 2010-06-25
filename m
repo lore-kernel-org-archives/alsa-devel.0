@@ -1,22 +1,22 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: [RFC 02/16] ASoC: multi-component - cs4720,
-	cs42l51 	and da7210 CODECs
-Date: Fri, 25 Jun 2010 13:29:00 -0500
-Message-ID: <AANLkTinmu4myhe1dGuG_fEdQUpYKQ4bbN1xDCSWzmNWC@mail.gmail.com>
-References: <1277488383-31287-1-git-send-email-lrg@slimlogic.co.uk>
-	<1277488383-31287-3-git-send-email-lrg@slimlogic.co.uk>
+From: Ryan Mallon <ryan@bluewatersys.com>
+Subject: Re: [RFC 0/5] ASoC multi-component support : core
+Date: Sat, 26 Jun 2010 10:38:39 +1200
+Message-ID: <4C252FEF.5060302@bluewatersys.com>
+References: <1277407467.3100.579.camel@odin>	
+	<4C23CFC0.6080700@bluewatersys.com>	
+	(sfid-20100624_223607_408551_609C17DE)
+	<661928F7-0509-4E84-A296-0949E2D76EE3@opensource.wolfsonmicro.com>	
+	<4C23EC65.9080601@bluewatersys.com>
+	<4C2435DC.5080509@bluewatersys.com> <1277455066.3123.10.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6D3E2103820
+Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id DDE18103820
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Jun 2010 20:29:31 +0200 (CEST)
-Received: by vws11 with SMTP id 11so945018vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 11:29:30 -0700 (PDT)
-In-Reply-To: <1277488383-31287-3-git-send-email-lrg@slimlogic.co.uk>
+	Sat, 26 Jun 2010 00:38:47 +0200 (CEST)
+In-Reply-To: <1277455066.3123.10.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,34 +27,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: vbarinov <vbarinov@embeddedalley.com>, alsa-devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "timur.tabi@gmail.com" <timur.tabi@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, jassisinghbrar <jassisinghbrar@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, Cliff Cai <cliff.cai@analog.com>, "Candelaria Villareal,
+	Jorge" <jorge.candelaria@ti.com>, "vaibhav.bedia" <vaibhav.bedia@ti.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 25, 2010 at 12:52 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
+Liam Girdwood wrote:
+> On Fri, 2010-06-25 at 16:51 +1200, Ryan Mallon wrote:
+>> On 06/25/2010 11:38 AM, Ryan Mallon wrote:
+>>> On 06/25/2010 11:12 AM, Mark Brown wrote:
+>>>   
+>>>> Do you actually see sound cards appearing? The log message at boot
+>>>> is purely informational, cards can probe at any time.
+>>>>
+>>>> Define DEBUG at the top of soc-audio.c if the card never appears at all
+>>>> then look at the log messages - they will say why the card is not being
+>>>> instantiated.
+>>>>   
+>>>>     
+>>> Hmm. If I define DEBUG at the top of sound/soc/soc-core.c I get this
+>>> (boots fine without DEBUG, but have no sound cards):
+>>>   
+>> The crash was caused because I wasn't setting codec_drv in the
+>> snd_soc_dai_link for the Snapper CL15 (updated patch below). I still
+>> have no sound cards. I get the following in dmesg:
+>>
+>> tlv320aic23 0-001a: probe
+>> tlv320aic23 0-001a: codec register tlv320aic23 26
+>> tlv320aic23 0-001a: dai register tlv320aic23 0
+>> Registered DAI 'tlv320aic23.0'
+>> Registered codec 'tlv320aic23.26'
+>> i2c-core: driver [tlv320aic23] registered
+>> ep93xx-pcm-audio ep93xx-pcm-audio: platform register ep93xx-audio -1
+>> Registered platform 'ep93xx-audio'
+>> ep93xx-i2s ep93xx-i2s: dai register ep93xx-i2s -1
+>> Registered DAI 'ep93xx-i2s.-1'
+>> soc-audio soc-audio: CODEC tlv320aic23 not registered
+>> soc-audio soc-audio: Registered card 'Snapper CL15'
+>> ALSA device list:
+>>   No soundcards found.
+>>
+>>
+>> I don't understand why the tlv320 codec is not being registered. Any ideas?
+>>
+> 
+> Since we now support N codecs, some codecs will now require an ID field
+> to distinguish them from others. e.g. a board with two WM8750 codecs
+> would have codecs at I2C addresses 0x1a and 0x1b, hence will require
+> each codec to be identified on the DAI link.
+> 
+> Can you try this patch below. From the output it looks like your
+> tlv320aic23 is at I2C address 26. 
+> 
+> 
+> diff --git a/sound/soc/ep93xx/snappercl15.c b/sound/soc/ep93xx/snappercl15.c
+> index aeb822d..72b7913 100644
+> --- a/sound/soc/ep93xx/snappercl15.c
+> +++ b/sound/soc/ep93xx/snappercl15.c
+> @@ -94,6 +94,7 @@ static struct snd_soc_dai_link snappercl15_dai = {
+>         .cpu_dai_drv    = &ep93xx_i2s_dai,
+>         .codec_dai_drv  = &tlv320aic23_dai,
+>         .codec_drv      = &soc_codec_dev_tlv320aic23,
+> +       .codec_id       = 26,
+>         .platform_drv   = &ep93xx_soc_platform,
+>         .init           = snappercl15_tlv320aic23_init,
+>         .ops            = &snappercl15_ops,
+> 
 
-> =A0/* Private data for the CS4270 */
-> =A0struct cs4270_private {
-> - =A0 =A0 =A0 struct snd_soc_codec codec;
-> + =A0 =A0 =A0 enum snd_soc_control_type control_type;
-> + =A0 =A0 =A0 void *control_data;
+Ah, that makes sense. I will try the patch on Monday. One thing to note
+is that in arch/arm/mach-ep93xx/snappercl15.c there is  already:
 
-Because of this change, there is a comment later in the file that is
-no longer valid:
+static struct i2c_board_info __initdata snappercl15_i2c_data[] = {
+        {
+                /* Audio codec */
+                I2C_BOARD_INFO("tlv320aic23", 0x1a),
+        },
+};
 
-	/* Allocate enough space for the snd_soc_codec structure
-	   and our private data together. */
-	cs4270 =3D kzalloc(sizeof(struct cs4270_private), GFP_KERNEL);
-	if (!cs4270) {
-		dev_err(&i2c_client->dev, "could not allocate codec\n");
-		return -ENOMEM;
-	}
+Is there a clean way to avoid hard-coding the i2c address of the tlv320
+codec twice? Can I pass -1 to find any available codec? If not, can you
+change the patch to 0x1a rather than 26, since i2c addresses tend to be
+written in hex.
 
-Other than that ...
-
-CS4270 portions:
-Acked-by: Timur Tabi <timur@freescale.com>
-
--- =
-
-Timur Tabi
-Linux kernel developer at Freescale
+~Ryan
