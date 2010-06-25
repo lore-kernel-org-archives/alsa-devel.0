@@ -1,20 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: ak4642: Add ak4642_fill_cache
- function
-Date: Fri, 25 Jun 2010 11:47:33 +0100
-Message-ID: <1277462853.3123.13.camel@odin>
-References: <w3pvd97k0nb.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC: ak4642: Add Playback Volume control
+Date: Fri, 25 Jun 2010 11:50:24 +0100
+Message-ID: <1277463024.3123.16.camel@odin>
+References: <w3ptyork0j5.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 349BD2455F
+	by alsa0.perex.cz (Postfix) with ESMTP id 96F411037FB
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Jun 2010 12:47:36 +0200 (CEST)
-Received: by wwb39 with SMTP id 39so219375wwb.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 03:47:35 -0700 (PDT)
-In-Reply-To: <w3pvd97k0nb.wl%kuninori.morimoto.gx@renesas.com>
+	Fri, 25 Jun 2010 12:56:46 +0200 (CEST)
+Received: by wwb39 with SMTP id 39so225606wwb.38
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 03:56:46 -0700 (PDT)
+In-Reply-To: <w3ptyork0j5.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -28,16 +27,100 @@ To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-06-25 at 16:54 +0900, Kuninori Morimoto wrote:
-> ak4642 driver is used for ak4642/ak4643.
-> So, reading real register value is better than using constant value.
+On Fri, 2010-06-25 at 16:57 +0900, Kuninori Morimoto wrote:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> This patch works for me.
+> But I'm not sure it is correct settings.
+> Please check it carefully
 > 
+>  sound/soc/codecs/ak4642.c |   28 +++++++++++++++++++++++++---
+>  1 files changed, 25 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
+> index 9a6157f..ce4e6ec 100644
+> --- a/sound/soc/codecs/ak4642.c
+> +++ b/sound/soc/codecs/ak4642.c
+> @@ -28,6 +28,7 @@
+>  #include <linux/slab.h>
+>  #include <sound/soc-dapm.h>
+>  #include <sound/initval.h>
+> +#include <sound/tlv.h>
+>  
+>  #include "ak4642.h"
+>  
+> @@ -103,6 +104,23 @@
+>  
+>  struct snd_soc_codec_device soc_codec_dev_ak4642;
+>  
+> +/*
+> + * Playback Volume (table 39)
+> + *
+> + * max : 0x00 : +12.0 dB
+> + *       ( 0.5 dB step )
+> + * min : 0xFE : -115.0 dB
+> + * mute: 0xFF
+> + */
+> +static const DECLARE_TLV_DB_SCALE(out_tlv, -11500, 50, 1);
+> +
+> +static const struct snd_kcontrol_new ak4642_snd_controls[] = {
+> +
+> +	SOC_DOUBLE_R_TLV("Playback Volume", L_DVC, R_DVC,
+> +			 0, 0xFF, 1, out_tlv),
 
-To be honest, this is only really useful when the codec has some
-volatile registers.  Forcing I2C reads for all IO will just slow down
-the driver. 
+Is this for the "Master Playback Volume" ? If so, It should be "Master
+Playback Volume"
 
-Does this codec have volatile registers ?
+> +};
+> +
+> +
+>  /* codec private data */
+>  struct ak4642_priv {
+>  	struct snd_soc_codec codec;
+> @@ -190,7 +208,6 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
+>  		 *
+>  		 * PLL, Master Mode
+>  		 * Audio I/F Format :MSB justified (ADC & DAC)
+> -		 * Digital Volume: -8dB
+
+Any reason for this ?
+
+>  		 * Bass Boost Level : Middle
+>  		 *
+>  		 * This operation came from example code of
+> @@ -200,8 +217,6 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
+>  		ak4642_write(codec, 0x0e, 0x19);
+>  		ak4642_write(codec, 0x09, 0x91);
+>  		ak4642_write(codec, 0x0c, 0x91);
+> -		ak4642_write(codec, 0x0a, 0x28);
+> -		ak4642_write(codec, 0x0d, 0x28);
+
+and this. Both are not mentioned in the commit message.
+
+>  		ak4642_write(codec, 0x00, 0x64);
+>  		snd_soc_update_bits(codec, PW_MGMT2, PMHP_MASK,	PMHP);
+>  		snd_soc_update_bits(codec, PW_MGMT2, HPMTN,	HPMTN);
+> @@ -446,6 +461,10 @@ static int ak4642_init(struct ak4642_priv *ak4642)
+>  		return ret;
+>  	}
+>  
+> +	/* default volume */
+> +	ak4642_write(codec, L_DVC, 0x28);
+> +	ak4642_write(codec, R_DVC, 0x28);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -524,6 +543,9 @@ static int ak4642_probe(struct platform_device *pdev)
+>  		goto pcm_err;
+>  	}
+>  
+> +	snd_soc_add_controls(ak4642_codec, ak4642_snd_controls,
+> +			     ARRAY_SIZE(ak4642_snd_controls));
+> +
+>  	dev_info(&pdev->dev, "AK4642 Audio Codec %s", AK4642_VERSION);
+>  	return ret;
+>  
 
 Thanks
 
