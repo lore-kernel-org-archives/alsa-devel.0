@@ -1,18 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [RFC 01/16] ASoC: multi-component - AKM CODECs
-Date: Fri, 25 Jun 2010 18:52:48 +0100
-Message-ID: <1277488383-31287-2-git-send-email-lrg@slimlogic.co.uk>
+Subject: [RFC 02/16] ASoC: multi-component - cs4720,
+	cs42l51 and da7210 CODECs
+Date: Fri, 25 Jun 2010 18:52:49 +0100
+Message-ID: <1277488383-31287-3-git-send-email-lrg@slimlogic.co.uk>
 References: <1277488383-31287-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id EF431103826
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 5730D103840
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Jun 2010 19:53:17 +0200 (CEST)
-Received: by wwb13 with SMTP id 13so187440wwb.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 10:53:17 -0700 (PDT)
+	Fri, 25 Jun 2010 19:53:21 +0200 (CEST)
+Received: by wyf23 with SMTP id 23so166789wyf.38
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 10:53:19 -0700 (PDT)
 In-Reply-To: <1277488383-31287-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +29,7 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Move AKM CODECs to multi-component model.
+Move codecs to multi-component model.
 
 This patch changes the probe() and remove() of the CODEC drivers as follows:-
 
@@ -40,855 +42,1167 @@ This patch changes the probe() and remove() of the CODEC drivers as follows:-
 
 Other required changes due to multi-component model :-
 
- o ak4535: set_bias_level() has to perform mute IO directly rather than via
- ak4535 mute since struct codec no longer contains dai.
+ o cs42151 and cs4270: set_dai_sysclk() - we no longer change static _driver_
+ rates on clock changes (as the driver can be used by other cs24xx codec
+ devices). The codec device rate is checked at hw_params() time.
 
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- sound/soc/codecs/ak4104.c |  146 +++++++++++------------------
- sound/soc/codecs/ak4104.h |    4 +-
- sound/soc/codecs/ak4535.c |  234 ++++++++++++---------------------------------
- sound/soc/codecs/ak4535.h |    9 +--
- sound/soc/codecs/ak4642.c |  166 +++++++------------------------
- sound/soc/codecs/ak4642.h |    4 +-
- sound/soc/codecs/ak4671.c |  137 ++++++---------------------
- sound/soc/codecs/ak4671.h |    4 +-
- 8 files changed, 192 insertions(+), 512 deletions(-)
+ sound/soc/codecs/cs4270.c  |  390 ++++++++++++++++----------------------------
+ sound/soc/codecs/cs4270.h  |    4 +-
+ sound/soc/codecs/cs42l51.c |  292 +++++++++++----------------------
+ sound/soc/codecs/cs42l51.h |    4 +-
+ sound/soc/codecs/da7210.c  |  145 ++++-------------
+ sound/soc/codecs/da7210.h  |    4 +-
+ 6 files changed, 270 insertions(+), 569 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4104.c b/sound/soc/codecs/ak4104.c
-index 192aebd..890122d 100644
---- a/sound/soc/codecs/ak4104.c
-+++ b/sound/soc/codecs/ak4104.c
-@@ -48,8 +48,8 @@
- #define DRV_NAME "ak4104"
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 30d9492..8d3a3af 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -114,7 +114,8 @@ static const char *supply_names[] = {
  
- struct ak4104_private {
+ /* Private data for the CS4270 */
+ struct cs4270_private {
 -	struct snd_soc_codec codec;
--	u8 reg_cache[AK4104_NUM_REGS];
 +	enum snd_soc_control_type control_type;
 +	void *control_data;
- };
- 
- static int ak4104_fill_cache(struct snd_soc_codec *codec)
-@@ -58,7 +58,7 @@ static int ak4104_fill_cache(struct snd_soc_codec *codec)
- 	u8 *reg_cache = codec->reg_cache;
- 	struct spi_device *spi = codec->control_data;
- 
--	for (i = 0; i < codec->reg_cache_size; i++) {
-+	for (i = 0; i < codec->driver->reg_cache_size; i++) {
- 		int ret = spi_w8r8(spi, i | AK4104_READ);
- 		if (ret < 0) {
- 			dev_err(&spi->dev, "SPI write failure\n");
-@@ -76,7 +76,7 @@ static unsigned int ak4104_read_reg_cache(struct snd_soc_codec *codec,
+ 	u8 reg_cache[CS4270_NUMREGS];
+ 	unsigned int mclk; /* Input frequency of the MCLK pin */
+ 	unsigned int mode; /* The mode (I2S or left-justified) */
+@@ -212,44 +213,8 @@ static int cs4270_set_dai_sysclk(struct snd_soc_dai *codec_dai,
  {
- 	u8 *reg_cache = codec->reg_cache;
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
+-	unsigned int rates = 0;
+-	unsigned int rate_min = -1;
+-	unsigned int rate_max = 0;
+-	unsigned int i;
  
--	if (reg >= codec->reg_cache_size)
-+	if (reg >= codec->driver->reg_cache_size)
- 		return -EINVAL;
+ 	cs4270->mclk = freq;
+-
+-	if (cs4270->mclk) {
+-		for (i = 0; i < NUM_MCLK_RATIOS; i++) {
+-			unsigned int rate = freq / cs4270_mode_ratios[i].ratio;
+-			rates |= snd_pcm_rate_to_rate_bit(rate);
+-			if (rate < rate_min)
+-				rate_min = rate;
+-			if (rate > rate_max)
+-				rate_max = rate;
+-		}
+-		/* FIXME: soc should support a rate list */
+-		rates &= ~SNDRV_PCM_RATE_KNOT;
+-
+-		if (!rates) {
+-			dev_err(codec->dev, "could not find a valid sample rate\n");
+-			return -EINVAL;
+-		}
+-	} else {
+-		/* enable all possible rates */
+-		rates = SNDRV_PCM_RATE_8000_192000;
+-		rate_min = 8000;
+-		rate_max = 192000;
+-	}
+-
+-	codec_dai->playback.rates = rates;
+-	codec_dai->playback.rate_min = rate_min;
+-	codec_dai->playback.rate_max = rate_max;
+-
+-	codec_dai->capture.rates = rates;
+-	codec_dai->capture.rate_min = rate_min;
+-	codec_dai->capture.rate_max = rate_max;
+-
+ 	return 0;
+ }
  
- 	return reg_cache[reg];
-@@ -88,7 +88,7 @@ static int ak4104_spi_write(struct snd_soc_codec *codec, unsigned int reg,
- 	u8 *cache = codec->reg_cache;
- 	struct spi_device *spi = codec->control_data;
- 
--	if (reg >= codec->reg_cache_size)
-+	if (reg >= codec->driver->reg_cache_size)
- 		return -EINVAL;
- 
- 	/* only write to the hardware if value has changed */
-@@ -145,8 +145,7 @@ static int ak4104_hw_params(struct snd_pcm_substream *substream,
+@@ -410,8 +375,7 @@ static int cs4270_hw_params(struct snd_pcm_substream *substream,
  			    struct snd_soc_dai *dai)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_device *socdev = rtd->socdev;
 -	struct snd_soc_codec *codec = socdev->card->codec;
 +	struct snd_soc_codec *codec = rtd->codec;
- 	int val = 0;
- 
- 	/* set the IEC958 bits: consumer mode, no copyright bit */
-@@ -178,7 +177,7 @@ static struct snd_soc_dai_ops ak4101_dai_ops = {
- 	.set_fmt = ak4104_set_dai_fmt,
+ 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 	unsigned int i;
+@@ -549,19 +513,6 @@ static const struct snd_kcontrol_new cs4270_snd_controls[] = {
+ 		snd_soc_get_volsw, cs4270_soc_put_mute),
  };
  
--struct snd_soc_dai ak4104_dai = {
-+struct snd_soc_dai_driver ak4104_dai = {
- 	.name = DRV_NAME,
+-/*
+- * cs4270_codec - global variable to store codec for the ASoC probe function
+- *
+- * If struct i2c_driver had a private_data field, we wouldn't need to use
+- * cs4270_codec.  This is the only way to pass the codec structure from
+- * cs4270_i2c_probe() to cs4270_probe().  Unfortunately, there is no good
+- * way to synchronize these two functions.  cs4270_i2c_probe() can be called
+- * multiple times before cs4270_probe() is called even once.  So for now, we
+- * also only allow cs4270_i2c_probe() to be run once.  That means that we do
+- * not support more than one cs4270 device in the system, at least for now.
+- */
+-static struct snd_soc_codec *cs4270_codec;
+-
+ static struct snd_soc_dai_ops cs4270_dai_ops = {
+ 	.hw_params	= cs4270_hw_params,
+ 	.set_sysclk	= cs4270_set_dai_sysclk,
+@@ -569,20 +520,24 @@ static struct snd_soc_dai_ops cs4270_dai_ops = {
+ 	.digital_mute	= cs4270_dai_mute,
+ };
+ 
+-struct snd_soc_dai cs4270_dai = {
++struct snd_soc_dai_driver cs4270_dai = {
+ 	.name = "cs4270",
  	.playback = {
  		.stream_name = "Playback",
-@@ -192,45 +191,17 @@ struct snd_soc_dai ak4104_dai = {
- 	.ops = &ak4101_dai_ops,
- };
- 
--static struct snd_soc_codec *ak4104_codec;
--
--static int ak4104_spi_probe(struct spi_device *spi)
-+static int ak4104_probe(struct snd_soc_codec *codec)
- {
--	struct snd_soc_codec *codec;
--	struct ak4104_private *ak4104;
-+	struct ak4104_private *ak4104 = snd_soc_codec_get_drvdata(codec);
- 	int ret, val;
- 
--	spi->bits_per_word = 8;
--	spi->mode = SPI_MODE_0;
--	ret = spi_setup(spi);
--	if (ret < 0)
--		return ret;
--
--	ak4104 = kzalloc(sizeof(struct ak4104_private), GFP_KERNEL);
--	if (!ak4104) {
--		dev_err(&spi->dev, "could not allocate codec\n");
--		return -ENOMEM;
--	}
--
--	codec = &ak4104->codec;
--	mutex_init(&codec->mutex);
--	INIT_LIST_HEAD(&codec->dapm_widgets);
--	INIT_LIST_HEAD(&codec->dapm_paths);
--
--	codec->dev = &spi->dev;
--	codec->name = DRV_NAME;
--	codec->owner = THIS_MODULE;
--	codec->dai = &ak4104_dai;
--	codec->num_dai = 1;
--	snd_soc_codec_set_drvdata(codec, ak4104);
--	codec->control_data = spi;
--	codec->reg_cache = ak4104->reg_cache;
--	codec->reg_cache_size = AK4104_NUM_REGS;
-+	codec->control_data = ak4104->control_data;
- 
- 	/* read all regs and fill the cache */
- 	ret = ak4104_fill_cache(codec);
- 	if (ret < 0) {
--		dev_err(&spi->dev, "failed to fill register cache\n");
-+		dev_err(codec->dev, "failed to fill register cache\n");
- 		return ret;
- 	}
- 
-@@ -238,93 +209,84 @@ static int ak4104_spi_probe(struct spi_device *spi)
- 	 * should contain 0x5b. Not a good way to verify the presence of
- 	 * the device, but there is no hardware ID register. */
- 	if (ak4104_read_reg_cache(codec, AK4104_REG_RESERVED) !=
--					 AK4104_RESERVED_VAL) {
--		ret = -ENODEV;
--		goto error_free_codec;
--	}
-+					 AK4104_RESERVED_VAL)
-+		return -ENODEV;
- 
- 	/* set power-up and non-reset bits */
- 	val = ak4104_read_reg_cache(codec, AK4104_REG_CONTROL1);
- 	val |= AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN;
- 	ret = ak4104_spi_write(codec, AK4104_REG_CONTROL1, val);
- 	if (ret < 0)
--		goto error_free_codec;
-+		return ret;
- 
- 	/* enable transmitter */
- 	val = ak4104_read_reg_cache(codec, AK4104_REG_TX);
- 	val |= AK4104_TX_TXE;
- 	ret = ak4104_spi_write(codec, AK4104_REG_TX, val);
- 	if (ret < 0)
--		goto error_free_codec;
--
--	ak4104_codec = codec;
--	ret = snd_soc_register_dai(&ak4104_dai);
--	if (ret < 0) {
--		dev_err(&spi->dev, "failed to register DAI\n");
--		goto error_free_codec;
--	}
-+		return ret;
- 
--	spi_set_drvdata(spi, ak4104);
--	dev_info(&spi->dev, "SPI device initialized\n");
-+	dev_info(codec->dev, "SPI device initialized\n");
- 	return 0;
--
--error_free_codec:
--	kfree(ak4104);
--	ak4104_dai.dev = NULL;
--	return ret;
- }
- 
--static int __devexit ak4104_spi_remove(struct spi_device *spi)
-+static int ak4104_remove(struct snd_soc_codec *codec)
- {
--	int ret, val;
--	struct ak4104_private *ak4104 = spi_get_drvdata(spi);
-+	int val, ret;
- 
--	val = ak4104_read_reg_cache(&ak4104->codec, AK4104_REG_CONTROL1);
-+	val = ak4104_read_reg_cache(codec, AK4104_REG_CONTROL1);
- 	if (val < 0)
- 		return val;
- 
- 	/* clear power-up and non-reset bits */
- 	val &= ~(AK4104_CONTROL1_PW | AK4104_CONTROL1_RSTN);
--	ret = ak4104_spi_write(&ak4104->codec, AK4104_REG_CONTROL1, val);
--	if (ret < 0)
--		return ret;
-+	ret = ak4104_spi_write(codec, AK4104_REG_CONTROL1, val);
- 
--	ak4104_codec = NULL;
--	kfree(ak4104);
--	return 0;
-+	return ret;
- }
- 
--static int ak4104_probe(struct platform_device *pdev)
-+struct snd_soc_codec_driver soc_codec_device_ak4104 = {
-+	.name = DRV_NAME,
-+	.owner = THIS_MODULE,
-+	.probe = 	ak4104_probe,
-+	.remove = 	ak4104_remove,
-+	.reg_cache_size = AK4104_NUM_REGS,
-+	.reg_word_size = sizeof(u16),
-+};
-+EXPORT_SYMBOL_GPL(soc_codec_device_ak4104);
-+
-+static int ak4104_spi_probe(struct spi_device *spi)
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+-		.rates = 0,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++		.rate_min = 4000,
++		.rate_max = 216000,
+ 		.formats = CS4270_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name = "Capture",
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+-		.rates = 0,
++		.rates = SNDRV_PCM_RATE_CONTINUOUS,
++		.rate_min = 4000,
++		.rate_max = 216000,
+ 		.formats = CS4270_FORMATS,
+ 	},
+ 	.ops = &cs4270_dai_ops,
+@@ -596,20 +551,46 @@ EXPORT_SYMBOL_GPL(cs4270_dai);
+  * This function is called when ASoC has all the pieces it needs to
+  * instantiate a sound driver.
+  */
+-static int cs4270_probe(struct platform_device *pdev)
++static int cs4270_probe(struct snd_soc_codec *codec)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = ak4104_codec;
-+	struct ak4104_private *ak4104;
- 	int ret;
+-	struct snd_soc_codec *codec = cs4270_codec;
+ 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
+-	int i, ret;
++	int i, ret, reg;
++
++	codec->control_data = cs4270->control_data;
++
++	/* The I2C interface is set up, so pre-fill our register cache */
++
++	ret = cs4270_fill_cache(codec);
++	if (ret < 0) {
++		dev_err(codec->dev, "failed to fill register cache\n");
++		return ret;
++	}
++
++	/* Disable auto-mute.  This feature appears to be buggy.  In some
++	 * situations, auto-mute will not deactivate when it should, so we want
++	 * this feature disabled by default.  An application (e.g. alsactl) can
++	 * re-enabled it by using the controls.
++	 */
++
++	reg = cs4270_read_reg_cache(codec, CS4270_MUTE);
++	reg &= ~CS4270_MUTE_AUTO;
++	ret = cs4270_i2c_write(codec, CS4270_MUTE, reg);
++	if (ret < 0) {
++		dev_err(codec->dev, "i2c write failed\n");
++		return ret;
++	}
  
 -	/* Connect the codec to the socdev.  snd_soc_new_pcms() needs this. */
 -	socdev->card->codec = codec;
--
++	/* Disable automatic volume control.  The hardware enables, and it
++	 * causes volume change commands to be delayed, sometimes until after
++	 * playback has started.  An application (e.g. alsactl) can
++	 * re-enabled it by using the controls.
++	 */
+ 
 -	/* Register PCMs */
 -	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
--	if (ret < 0) {
++	reg = cs4270_read_reg_cache(codec, CS4270_TRANS);
++	reg &= ~(CS4270_TRANS_SOFT | CS4270_TRANS_ZERO);
++	ret = cs4270_i2c_write(codec, CS4270_TRANS, reg);
+ 	if (ret < 0) {
 -		dev_err(codec->dev, "failed to create pcms\n");
-+	spi->bits_per_word = 8;
-+	spi->mode = SPI_MODE_0;
-+	ret = spi_setup(spi);
-+	if (ret < 0)
++		dev_err(codec->dev, "i2c write failed\n");
  		return ret;
--	}
+ 	}
  
--	return 0;
-+	ak4104 = kzalloc(sizeof(struct ak4104_private), GFP_KERNEL);
-+	if (ak4104 == NULL)
-+		return -ENOMEM;
-+
-+	ak4104->control_data = spi;
-+	ak4104->control_type = SND_SOC_SPI;
-+	spi_set_drvdata(spi, ak4104);
-+
-+	ret = snd_soc_register_codec(&spi->dev, spi->chip_select,
-+			&soc_codec_device_ak4104, &ak4104_dai, 1);
-+	if (ret < 0)
-+		kfree(ak4104);
-+	return ret;
+@@ -618,7 +599,7 @@ static int cs4270_probe(struct platform_device *pdev)
+ 				ARRAY_SIZE(cs4270_snd_controls));
+ 	if (ret < 0) {
+ 		dev_err(codec->dev, "failed to add controls\n");
+-		goto error_free_pcms;
++		return ret;
+ 	}
+ 
+ 	/* get the power supply regulators */
+@@ -628,7 +609,7 @@ static int cs4270_probe(struct platform_device *pdev)
+ 	ret = regulator_bulk_get(codec->dev, ARRAY_SIZE(cs4270->supplies),
+ 				 cs4270->supplies);
+ 	if (ret < 0)
+-		goto error_free_pcms;
++		return ret;
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
+ 				    cs4270->supplies);
+@@ -641,9 +622,6 @@ error_free_regulators:
+ 	regulator_bulk_free(ARRAY_SIZE(cs4270->supplies),
+ 			    cs4270->supplies);
+ 
+-error_free_pcms:
+-	snd_soc_free_pcms(socdev);
+-
+ 	return ret;
  }
  
--static int ak4104_remove(struct platform_device *pdev)
-+static int __devexit ak4104_spi_remove(struct spi_device *spi)
+@@ -653,19 +631,100 @@ error_free_pcms:
+  *
+  * This function is the counterpart to cs4270_probe().
+  */
+-static int cs4270_remove(struct platform_device *pdev)
++static int cs4270_remove(struct snd_soc_codec *codec)
  {
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec = cs4270_codec;
+ 	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
+ 
 -	snd_soc_free_pcms(socdev);
-+	snd_soc_unregister_codec(&spi->dev, spi->chip_select);
-+	kfree(spi_get_drvdata(spi));
+ 	regulator_bulk_disable(ARRAY_SIZE(cs4270->supplies), cs4270->supplies);
+ 	regulator_bulk_free(ARRAY_SIZE(cs4270->supplies), cs4270->supplies);
+ 
  	return 0;
--};
--
--struct snd_soc_codec_device soc_codec_device_ak4104 = {
--	.probe = 	ak4104_probe,
--	.remove = 	ak4104_remove
--};
--EXPORT_SYMBOL_GPL(soc_codec_device_ak4104);
+ };
+ 
++#ifdef CONFIG_PM
++
++/* This suspend/resume implementation can handle both - a simple standby
++ * where the codec remains powered, and a full suspend, where the voltage
++ * domain the codec is connected to is teared down and/or any other hardware
++ * reset condition is asserted.
++ *
++ * The codec's own power saving features are enabled in the suspend callback,
++ * and all registers are written back to the hardware when resuming.
++ */
++
++static int cs4270_soc_suspend(struct snd_soc_codec *codec, pm_message_t mesg)
++{
++	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
++	int reg, ret;
++
++	reg = snd_soc_read(codec, CS4270_PWRCTL) | CS4270_PWRCTL_PDN_ALL;
++	if (reg < 0)
++		return reg;
++
++	ret = snd_soc_write(codec, CS4270_PWRCTL, reg);
++	if (ret < 0)
++		return ret;
++
++	regulator_bulk_disable(ARRAY_SIZE(cs4270->supplies),
++			       cs4270->supplies);
++
++	return 0;
 +}
++
++static int cs4270_soc_resume(struct snd_soc_codec *codec)
++{
++	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
++	struct i2c_client *i2c_client = codec->control_data;
++	int reg;
++
++	regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
++			      cs4270->supplies);
++
++	/* In case the device was put to hard reset during sleep, we need to
++	 * wait 500ns here before any I2C communication. */
++	ndelay(500);
++
++	/* first restore the entire register cache ... */
++	for (reg = CS4270_FIRSTREG; reg <= CS4270_LASTREG; reg++) {
++		u8 val = snd_soc_read(codec, reg);
++
++		if (i2c_smbus_write_byte_data(i2c_client, reg, val)) {
++			dev_err(codec->dev, "i2c write failed\n");
++			return -EIO;
++		}
++	}
++
++	/* ... then disable the power-down bits */
++	reg = snd_soc_read(codec, CS4270_PWRCTL);
++	reg &= ~CS4270_PWRCTL_PDN_ALL;
++
++	return snd_soc_write(codec, CS4270_PWRCTL, reg);
++}
++#else
++#define cs4270_soc_suspend	NULL
++#define cs4270_soc_resume	NULL
++#endif /* CONFIG_PM */
++
++/*
++ * ASoC codec device structure
++ *
++ * Assign this variable to the codec_dev field of the machine driver's
++ * snd_soc_device structure.
++ */
++struct snd_soc_codec_driver soc_codec_device_cs4270 = {
++	.name = "CS4270",
++	.owner = THIS_MODULE,
++	.probe = 	cs4270_probe,
++	.remove = 	cs4270_remove,
++	.suspend =	cs4270_soc_suspend,
++	.resume =	cs4270_soc_resume,
++	.read = cs4270_read_reg_cache,
++	.write = cs4270_i2c_write,
++	.reg_cache_size = CS4270_NUMREGS,
++	.reg_word_size = sizeof(u8),
++};
++EXPORT_SYMBOL_GPL(soc_codec_device_cs4270);
++
+ /**
+  * cs4270_i2c_probe - initialize the I2C interface of the CS4270
+  * @i2c_client: the I2C client object
+@@ -677,22 +736,9 @@ static int cs4270_remove(struct platform_device *pdev)
+ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
+ 	const struct i2c_device_id *id)
+ {
+-	struct snd_soc_codec *codec;
+ 	struct cs4270_private *cs4270;
+-	unsigned int reg;
+ 	int ret;
  
- static struct spi_driver ak4104_spi_driver = {
- 	.driver  = {
-diff --git a/sound/soc/codecs/ak4104.h b/sound/soc/codecs/ak4104.h
-index eb88fe7..51e8922 100644
---- a/sound/soc/codecs/ak4104.h
-+++ b/sound/soc/codecs/ak4104.h
-@@ -1,7 +1,7 @@
- #ifndef _AK4104_H
- #define _AK4104_H
+-	/* For now, we only support one cs4270 device in the system.  See the
+-	 * comment for cs4270_codec.
+-	 */
+-	if (cs4270_codec) {
+-		dev_err(&i2c_client->dev, "ignoring CS4270 at addr %X\n",
+-		       i2c_client->addr);
+-		dev_err(&i2c_client->dev, "only one per board allowed\n");
+-		/* Should we return something other than ENODEV here? */
+-		return -ENODEV;
+-	}
+-
+ 	/* Verify that we have a CS4270 */
  
--extern struct snd_soc_dai ak4104_dai;
--extern struct snd_soc_codec_device soc_codec_device_ak4104;
-+extern struct snd_soc_dai_driver ak4104_dai;
-+extern struct snd_soc_codec_driver soc_codec_device_ak4104;
+ 	ret = i2c_smbus_read_byte_data(i2c_client, CS4270_CHIPID);
+@@ -719,87 +765,15 @@ static int cs4270_i2c_probe(struct i2c_client *i2c_client,
+ 		dev_err(&i2c_client->dev, "could not allocate codec\n");
+ 		return -ENOMEM;
+ 	}
+-	codec = &cs4270->codec;
+-
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
+-
+-	codec->dev = &i2c_client->dev;
+-	codec->name = "CS4270";
+-	codec->owner = THIS_MODULE;
+-	codec->dai = &cs4270_dai;
+-	codec->num_dai = 1;
+-	snd_soc_codec_set_drvdata(codec, cs4270);
+-	codec->control_data = i2c_client;
+-	codec->read = cs4270_read_reg_cache;
+-	codec->write = cs4270_i2c_write;
+-	codec->reg_cache = cs4270->reg_cache;
+-	codec->reg_cache_size = CS4270_NUMREGS;
+-
+-	/* The I2C interface is set up, so pre-fill our register cache */
+-
+-	ret = cs4270_fill_cache(codec);
+-	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "failed to fill register cache\n");
+-		goto error_free_codec;
+-	}
+-
+-	/* Disable auto-mute.  This feature appears to be buggy.  In some
+-	 * situations, auto-mute will not deactivate when it should, so we want
+-	 * this feature disabled by default.  An application (e.g. alsactl) can
+-	 * re-enabled it by using the controls.
+-	 */
+-
+-	reg = cs4270_read_reg_cache(codec, CS4270_MUTE);
+-	reg &= ~CS4270_MUTE_AUTO;
+-	ret = cs4270_i2c_write(codec, CS4270_MUTE, reg);
+-	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "i2c write failed\n");
+-		return ret;
+-	}
+-
+-	/* Disable automatic volume control.  The hardware enables, and it
+-	 * causes volume change commands to be delayed, sometimes until after
+-	 * playback has started.  An application (e.g. alsactl) can
+-	 * re-enabled it by using the controls.
+-	 */
+-
+-	reg = cs4270_read_reg_cache(codec, CS4270_TRANS);
+-	reg &= ~(CS4270_TRANS_SOFT | CS4270_TRANS_ZERO);
+-	ret = cs4270_i2c_write(codec, CS4270_TRANS, reg);
+-	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "i2c write failed\n");
+-		return ret;
+-	}
+-
+-	/* Initialize the DAI. Normally, we'd prefer to have a kmalloc'd DAI
+-	 * structure for each CS4270 device, but the machine driver needs to
+-	 * have a pointer to the DAI structure, so for now it must be a global
+-	 * variable.
+-	 */
+-	cs4270_dai.dev = &i2c_client->dev;
+-
+-	/* Register the DAI.  If all the other ASoC driver have already
+-	 * registered, then this will call our probe function, so
+-	 * cs4270_codec needs to be ready.
+-	 */
+-	cs4270_codec = codec;
+-	ret = snd_soc_register_dai(&cs4270_dai);
+-	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "failed to register DAIe\n");
+-		goto error_free_codec;
+-	}
+ 
+ 	i2c_set_clientdata(i2c_client, cs4270);
++	cs4270->control_data = i2c_client;
++	cs4270->control_type = SND_SOC_I2C;
+ 
+-	return 0;
+-
+-error_free_codec:
+-	kfree(cs4270);
+-	cs4270_codec = NULL;
+-	cs4270_dai.dev = NULL;
+-
++	ret = snd_soc_register_codec(&i2c_client->dev, i2c_client->addr,
++			&soc_codec_device_cs4270, &cs4270_dai, 1);
++	if (ret < 0)
++		kfree(cs4270);
+ 	return ret;
+ }
+ 
+@@ -811,12 +785,8 @@ error_free_codec:
+  */
+ static int cs4270_i2c_remove(struct i2c_client *i2c_client)
+ {
+-	struct cs4270_private *cs4270 = i2c_get_clientdata(i2c_client);
+-
+-	kfree(cs4270);
+-	cs4270_codec = NULL;
+-	cs4270_dai.dev = NULL;
+-
++	snd_soc_unregister_codec(&i2c_client->dev, i2c_client->addr);
++	kfree(i2c_get_clientdata(i2c_client));
+ 	return 0;
+ }
+ 
+@@ -829,72 +799,6 @@ static struct i2c_device_id cs4270_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, cs4270_id);
+ 
+-#ifdef CONFIG_PM
+-
+-/* This suspend/resume implementation can handle both - a simple standby
+- * where the codec remains powered, and a full suspend, where the voltage
+- * domain the codec is connected to is teared down and/or any other hardware
+- * reset condition is asserted.
+- *
+- * The codec's own power saving features are enabled in the suspend callback,
+- * and all registers are written back to the hardware when resuming.
+- */
+-
+-static int cs4270_soc_suspend(struct platform_device *pdev, pm_message_t mesg)
+-{
+-	struct snd_soc_codec *codec = cs4270_codec;
+-	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
+-	int reg, ret;
+-
+-	reg = snd_soc_read(codec, CS4270_PWRCTL) | CS4270_PWRCTL_PDN_ALL;
+-	if (reg < 0)
+-		return reg;
+-
+-	ret = snd_soc_write(codec, CS4270_PWRCTL, reg);
+-	if (ret < 0)
+-		return ret;
+-
+-	regulator_bulk_disable(ARRAY_SIZE(cs4270->supplies),
+-			       cs4270->supplies);
+-
+-	return 0;
+-}
+-
+-static int cs4270_soc_resume(struct platform_device *pdev)
+-{
+-	struct snd_soc_codec *codec = cs4270_codec;
+-	struct cs4270_private *cs4270 = snd_soc_codec_get_drvdata(codec);
+-	struct i2c_client *i2c_client = codec->control_data;
+-	int reg;
+-
+-	regulator_bulk_enable(ARRAY_SIZE(cs4270->supplies),
+-			      cs4270->supplies);
+-
+-	/* In case the device was put to hard reset during sleep, we need to
+-	 * wait 500ns here before any I2C communication. */
+-	ndelay(500);
+-
+-	/* first restore the entire register cache ... */
+-	for (reg = CS4270_FIRSTREG; reg <= CS4270_LASTREG; reg++) {
+-		u8 val = snd_soc_read(codec, reg);
+-
+-		if (i2c_smbus_write_byte_data(i2c_client, reg, val)) {
+-			dev_err(codec->dev, "i2c write failed\n");
+-			return -EIO;
+-		}
+-	}
+-
+-	/* ... then disable the power-down bits */
+-	reg = snd_soc_read(codec, CS4270_PWRCTL);
+-	reg &= ~CS4270_PWRCTL_PDN_ALL;
+-
+-	return snd_soc_write(codec, CS4270_PWRCTL, reg);
+-}
+-#else
+-#define cs4270_soc_suspend	NULL
+-#define cs4270_soc_resume	NULL
+-#endif /* CONFIG_PM */
+-
+ /*
+  * cs4270_i2c_driver - I2C device identification
+  *
+@@ -911,20 +815,6 @@ static struct i2c_driver cs4270_i2c_driver = {
+ 	.remove = cs4270_i2c_remove,
+ };
+ 
+-/*
+- * ASoC codec device structure
+- *
+- * Assign this variable to the codec_dev field of the machine driver's
+- * snd_soc_device structure.
+- */
+-struct snd_soc_codec_device soc_codec_device_cs4270 = {
+-	.probe = 	cs4270_probe,
+-	.remove = 	cs4270_remove,
+-	.suspend =	cs4270_soc_suspend,
+-	.resume =	cs4270_soc_resume,
+-};
+-EXPORT_SYMBOL_GPL(soc_codec_device_cs4270);
+-
+ static int __init cs4270_init(void)
+ {
+ 	pr_info("Cirrus Logic CS4270 ALSA SoC Codec Driver\n");
+diff --git a/sound/soc/codecs/cs4270.h b/sound/soc/codecs/cs4270.h
+index adc6cd9..19d3009 100644
+--- a/sound/soc/codecs/cs4270.h
++++ b/sound/soc/codecs/cs4270.h
+@@ -16,13 +16,13 @@
+  * The ASoC codec DAI structure for the CS4270.  Assign this structure to
+  * the .codec_dai field of your machine driver's snd_soc_dai_link structure.
+  */
+-extern struct snd_soc_dai cs4270_dai;
++extern struct snd_soc_dai_driver cs4270_dai;
+ 
+ /*
+  * The ASoC codec device structure for the CS4270.  Assign this structure
+  * to the .codec_dev field of your machine driver's snd_soc_device
+  * structure.
+  */
+-extern struct snd_soc_codec_device soc_codec_device_cs4270;
++extern struct snd_soc_codec_driver soc_codec_device_cs4270;
  
  #endif
-diff --git a/sound/soc/codecs/ak4535.c b/sound/soc/codecs/ak4535.c
-index d425367..a4b3d39 100644
---- a/sound/soc/codecs/ak4535.c
-+++ b/sound/soc/codecs/ak4535.c
-@@ -31,11 +31,11 @@
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index dd9b855..db26f51 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -42,15 +42,14 @@ enum master_slave_mode {
+ };
  
- #define AK4535_VERSION "0.3"
+ struct cs42l51_private {
++	enum snd_soc_control_type control_type;
++	void *control_data;
+ 	unsigned int mclk;
+ 	unsigned int audio_mode;	/* The mode (I2S or left-justified) */
+ 	enum master_slave_mode func;
+-	struct snd_soc_codec codec;
+ 	u8 reg_cache[CS42L51_NUMREGS];
+ };
  
--struct snd_soc_codec_device soc_codec_dev_ak4535;
+-static struct snd_soc_codec *cs42l51_codec;
 -
- /* codec private data */
- struct ak4535_priv {
- 	unsigned int sysclk;
+ #define CS42L51_FORMATS ( \
+ 		SNDRV_PCM_FMTBIT_S16_LE  | SNDRV_PCM_FMTBIT_S16_BE  | \
+ 		SNDRV_PCM_FMTBIT_S18_3LE | SNDRV_PCM_FMTBIT_S18_3BE | \
+@@ -75,134 +74,6 @@ static int cs42l51_fill_cache(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
+-static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
+-	const struct i2c_device_id *id)
+-{
+-	struct snd_soc_codec *codec;
+-	struct cs42l51_private *cs42l51;
+-	int ret = 0;
+-	int reg;
+-
+-	if (cs42l51_codec)
+-		return -EBUSY;
+-
+-	/* Verify that we have a CS42L51 */
+-	ret = i2c_smbus_read_byte_data(i2c_client, CS42L51_CHIP_REV_ID);
+-	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "failed to read I2C\n");
+-		goto error;
+-	}
+-
+-	if ((ret != CS42L51_MK_CHIP_REV(CS42L51_CHIP_ID, CS42L51_CHIP_REV_A)) &&
+-	    (ret != CS42L51_MK_CHIP_REV(CS42L51_CHIP_ID, CS42L51_CHIP_REV_B))) {
+-		dev_err(&i2c_client->dev, "Invalid chip id\n");
+-		ret = -ENODEV;
+-		goto error;
+-	}
+-
+-	dev_info(&i2c_client->dev, "found device cs42l51 rev %d\n",
+-				ret & 7);
+-
+-	cs42l51 = kzalloc(sizeof(struct cs42l51_private), GFP_KERNEL);
+-	if (!cs42l51) {
+-		dev_err(&i2c_client->dev, "could not allocate codec\n");
+-		return -ENOMEM;
+-	}
+-	codec = &cs42l51->codec;
+-
+-	mutex_init(&codec->mutex);
+-	INIT_LIST_HEAD(&codec->dapm_widgets);
+-	INIT_LIST_HEAD(&codec->dapm_paths);
+-
+-	codec->dev = &i2c_client->dev;
+-	codec->name = "CS42L51";
+-	codec->owner = THIS_MODULE;
+-	codec->dai = &cs42l51_dai;
+-	codec->num_dai = 1;
+-	snd_soc_codec_set_drvdata(codec, cs42l51);
+-
+-	codec->control_data = i2c_client;
+-	codec->reg_cache = cs42l51->reg_cache;
+-	codec->reg_cache_size = CS42L51_NUMREGS;
+-	i2c_set_clientdata(i2c_client, codec);
+-
+-	ret = cs42l51_fill_cache(codec);
+-	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "failed to fill register cache\n");
+-		goto error_alloc;
+-	}
+-
+-	ret = snd_soc_codec_set_cache_io(codec, 8, 8, SND_SOC_I2C);
+-	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "Failed to set cache I/O: %d\n", ret);
+-		goto error_alloc;
+-	}
+-
+-	/*
+-	 * DAC configuration
+-	 * - Use signal processor
+-	 * - auto mute
+-	 * - vol changes immediate
+-	 * - no de-emphasize
+-	 */
+-	reg = CS42L51_DAC_CTL_DATA_SEL(1)
+-		| CS42L51_DAC_CTL_AMUTE | CS42L51_DAC_CTL_DACSZ(0);
+-	ret = snd_soc_write(codec, CS42L51_DAC_CTL, reg);
+-	if (ret < 0)
+-		goto error_alloc;
+-
+-	cs42l51_dai.dev = codec->dev;
+-	cs42l51_codec = codec;
+-
+-	ret = snd_soc_register_codec(codec);
+-	if (ret != 0) {
+-		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
+-		goto error_alloc;
+-	}
+-
+-	ret = snd_soc_register_dai(&cs42l51_dai);
+-	if (ret < 0) {
+-		dev_err(&i2c_client->dev, "failed to register DAIe\n");
+-		goto error_reg;
+-	}
+-
+-	return 0;
+-
+-error_reg:
+-	snd_soc_unregister_codec(codec);
+-error_alloc:
+-	kfree(cs42l51);
+-error:
+-	return ret;
+-}
+-
+-static int cs42l51_i2c_remove(struct i2c_client *client)
+-{
+-	struct cs42l51_private *cs42l51 = i2c_get_clientdata(client);
+-	snd_soc_unregister_dai(&cs42l51_dai);
+-	snd_soc_unregister_codec(cs42l51_codec);
+-	cs42l51_codec = NULL;
+-	kfree(cs42l51);
+-	return 0;
+-}
+-
+-
+-static const struct i2c_device_id cs42l51_id[] = {
+-	{"cs42l51", 0},
+-	{}
+-};
+-MODULE_DEVICE_TABLE(i2c, cs42l51_id);
+-
+-static struct i2c_driver cs42l51_i2c_driver = {
+-	.driver = {
+-		.name = "CS42L51 I2C",
+-		.owner = THIS_MODULE,
+-	},
+-	.id_table = cs42l51_id,
+-	.probe = cs42l51_i2c_probe,
+-	.remove = cs42l51_i2c_remove,
+-};
+-
+ static int cs42l51_get_chan_mix(struct snd_kcontrol *kcontrol,
+ 			struct snd_ctl_elem_value *ucontrol)
+ {
+@@ -484,51 +355,8 @@ static int cs42l51_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ {
+ 	struct snd_soc_codec *codec = codec_dai->codec;
+ 	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
+-	struct cs42l51_ratios *ratios = NULL;
+-	int nr_ratios = 0;
+-	unsigned int rates = 0;
+-	unsigned int rate_min = -1;
+-	unsigned int rate_max = 0;
+-	int i;
+ 
+ 	cs42l51->mclk = freq;
+-
+-	switch (cs42l51->func) {
+-	case MODE_MASTER:
+-		return -EINVAL;
+-	case MODE_SLAVE:
+-		ratios = slave_ratios;
+-		nr_ratios = ARRAY_SIZE(slave_ratios);
+-		break;
+-	case MODE_SLAVE_AUTO:
+-		ratios = slave_auto_ratios;
+-		nr_ratios = ARRAY_SIZE(slave_auto_ratios);
+-		break;
+-	}
+-
+-	for (i = 0; i < nr_ratios; i++) {
+-		unsigned int rate = freq / ratios[i].ratio;
+-		rates |= snd_pcm_rate_to_rate_bit(rate);
+-		if (rate < rate_min)
+-			rate_min = rate;
+-		if (rate > rate_max)
+-			rate_max = rate;
+-	}
+-	rates &= ~SNDRV_PCM_RATE_KNOT;
+-
+-	if (!rates) {
+-		dev_err(codec->dev, "could not find a valid sample rate\n");
+-		return -EINVAL;
+-	}
+-
+-	codec_dai->playback.rates = rates;
+-	codec_dai->playback.rate_min = rate_min;
+-	codec_dai->playback.rate_max = rate_max;
+-
+-	codec_dai->capture.rates = rates;
+-	codec_dai->capture.rate_min = rate_min;
+-	codec_dai->capture.rate_max = rate_max;
+-
+ 	return 0;
+ }
+ 
+@@ -537,8 +365,7 @@ static int cs42l51_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_device *socdev = rtd->socdev;
+-	struct snd_soc_codec *codec = socdev->card->codec;
++	struct snd_soc_codec *codec = rtd->codec;
+ 	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
+ 	int ret;
+ 	unsigned int i;
+@@ -670,7 +497,7 @@ static struct snd_soc_dai_ops cs42l51_dai_ops = {
+ 	.digital_mute   = cs42l51_dai_mute,
+ };
+ 
+-struct snd_soc_dai cs42l51_dai = {
++struct snd_soc_dai_driver cs42l51_dai = {
+ 	.name = "CS42L51 HiFi",
+ 	.playback = {
+ 		.stream_name = "Playback",
+@@ -691,27 +518,38 @@ struct snd_soc_dai cs42l51_dai = {
+ EXPORT_SYMBOL_GPL(cs42l51_dai);
+ 
+ 
+-static int cs42l51_probe(struct platform_device *pdev)
++static int cs42l51_probe(struct snd_soc_codec *codec)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec;
+-	int ret = 0;
++	struct cs42l51_private *cs42l51 = snd_soc_codec_get_drvdata(codec);
++	int ret, reg;
+ 
+-	if (!cs42l51_codec) {
+-		dev_err(&pdev->dev, "CS42L51 codec not yet registered\n");
+-		return -EINVAL;
+-	}
++	codec->control_data = cs42l51->control_data;
+ 
+-	socdev->card->codec = cs42l51_codec;
+-	codec = socdev->card->codec;
++	ret = cs42l51_fill_cache(codec);
++	if (ret < 0) {
++		dev_err(codec->dev, "failed to fill register cache\n");
++		return ret;
++	}
+ 
+-	/* Register PCMs */
+-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
++	ret = snd_soc_codec_set_cache_io(codec, 8, 8, cs42l51->control_type);
+ 	if (ret < 0) {
+-		dev_err(&pdev->dev, "failed to create PCMs\n");
++		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
+ 		return ret;
+ 	}
+ 
++	/*
++	 * DAC configuration
++	 * - Use signal processor
++	 * - auto mute
++	 * - vol changes immediate
++	 * - no de-emphasize
++	 */
++	reg = CS42L51_DAC_CTL_DATA_SEL(1)
++		| CS42L51_DAC_CTL_AMUTE | CS42L51_DAC_CTL_DACSZ(0);
++	ret = snd_soc_write(codec, CS42L51_DAC_CTL, reg);
++	if (ret < 0)
++		return ret;
++
+ 	snd_soc_add_controls(codec, cs42l51_snd_controls,
+ 		ARRAY_SIZE(cs42l51_snd_controls));
+ 	snd_soc_dapm_new_controls(codec, cs42l51_dapm_widgets,
+@@ -722,22 +560,80 @@ static int cs42l51_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++struct snd_soc_codec_driver soc_codec_device_cs42l51 = {
++	.name = "CS42L51",
++	.owner = THIS_MODULE,
++	.probe =	cs42l51_probe,
++	.reg_cache_size = CS42L51_NUMREGS,
++	.reg_word_size = sizeof(u8),
++};
++EXPORT_SYMBOL_GPL(soc_codec_device_cs42l51);
+ 
+-static int cs42l51_remove(struct platform_device *pdev)
++static int cs42l51_i2c_probe(struct i2c_client *i2c_client,
++	const struct i2c_device_id *id)
+ {
+-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
++	struct cs42l51_private *cs42l51;
++	int ret;
++
++	/* Verify that we have a CS42L51 */
++	ret = i2c_smbus_read_byte_data(i2c_client, CS42L51_CHIP_REV_ID);
++	if (ret < 0) {
++		dev_err(&i2c_client->dev, "failed to read I2C\n");
++		goto error;
++	}
++
++	if ((ret != CS42L51_MK_CHIP_REV(CS42L51_CHIP_ID, CS42L51_CHIP_REV_A)) &&
++	    (ret != CS42L51_MK_CHIP_REV(CS42L51_CHIP_ID, CS42L51_CHIP_REV_B))) {
++		dev_err(&i2c_client->dev, "Invalid chip id\n");
++		ret = -ENODEV;
++		goto error;
++	}
++
++	dev_info(&i2c_client->dev, "found device cs42l51 rev %d\n",
++				ret & 7);
++
++	cs42l51 = kzalloc(sizeof(struct cs42l51_private), GFP_KERNEL);
++	if (!cs42l51) {
++		dev_err(&i2c_client->dev, "could not allocate codec\n");
++		return -ENOMEM;
++	}
++
++	i2c_set_clientdata(i2c_client, cs42l51);
++	cs42l51->control_data = i2c_client;
++	cs42l51->control_type = SND_SOC_I2C;
++
++	ret =  snd_soc_register_codec(&i2c_client->dev, i2c_client->addr,
++			&soc_codec_device_cs42l51, &cs42l51_dai, 1);
++	if (ret < 0)
++		kfree(cs42l51);
++error:
++	return ret;
++}
+ 
+-	snd_soc_free_pcms(socdev);
+-	snd_soc_dapm_free(socdev);
++static int cs42l51_i2c_remove(struct i2c_client *client)
++{
++	struct cs42l51_private *cs42l51 = i2c_get_clientdata(client);
+ 
++	snd_soc_unregister_codec(&client->dev, client->addr);
++	kfree(cs42l51);
+ 	return 0;
+ }
+ 
+-struct snd_soc_codec_device soc_codec_device_cs42l51 = {
+-	.probe =	cs42l51_probe,
+-	.remove =	cs42l51_remove
++static const struct i2c_device_id cs42l51_id[] = {
++	{"cs42l51", 0},
++	{}
++};
++MODULE_DEVICE_TABLE(i2c, cs42l51_id);
++
++static struct i2c_driver cs42l51_i2c_driver = {
++	.driver = {
++		.name = "CS42L51 I2C",
++		.owner = THIS_MODULE,
++	},
++	.id_table = cs42l51_id,
++	.probe = cs42l51_i2c_probe,
++	.remove = cs42l51_i2c_remove,
+ };
+-EXPORT_SYMBOL_GPL(soc_codec_device_cs42l51);
+ 
+ static int __init cs42l51_init(void)
+ {
+diff --git a/sound/soc/codecs/cs42l51.h b/sound/soc/codecs/cs42l51.h
+index 8f0bd97..2144b90 100644
+--- a/sound/soc/codecs/cs42l51.h
++++ b/sound/soc/codecs/cs42l51.h
+@@ -158,6 +158,6 @@
+ #define CS42L51_LASTREG		0x20
+ #define CS42L51_NUMREGS		(CS42L51_LASTREG - CS42L51_FIRSTREG + 1)
+ 
+-extern struct snd_soc_dai cs42l51_dai;
+-extern struct snd_soc_codec_device soc_codec_device_cs42l51;
++extern struct snd_soc_dai_driver cs42l51_dai;
++extern struct snd_soc_codec_driver soc_codec_device_cs42l51;
+ #endif
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index a83aa18..9c50db1 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -138,11 +138,10 @@
+ 
+ /* Codec private data */
+ struct da7210_priv {
+-	struct snd_soc_codec codec;
 +	enum snd_soc_control_type control_type;
 +	void *control_data;
  };
  
+-static struct snd_soc_codec *da7210_codec;
+-
  /*
-@@ -313,8 +313,7 @@ static int ak4535_hw_params(struct snd_pcm_substream *substream,
+  * Register cache
+  */
+@@ -185,12 +184,12 @@ static int da7210_write(struct snd_soc_codec *codec, u32 reg, u32 value)
+ 	u8 *cache = codec->reg_cache;
+ 	u8 data[2];
+ 
+-	BUG_ON(codec->volatile_register);
++	BUG_ON(codec->driver->volatile_register);
+ 
+ 	data[0] = reg & 0xff;
+ 	data[1] = value & 0xff;
+ 
+-	if (reg >= codec->reg_cache_size)
++	if (reg >= codec->driver->reg_cache_size)
+ 		return -EIO;
+ 
+ 	if (2 != codec->hw_write(codec->control_data, data, 2))
+@@ -247,8 +246,7 @@ static int da7210_hw_params(struct snd_pcm_substream *substream,
  			    struct snd_soc_dai *dai)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_device *socdev = rtd->socdev;
 -	struct snd_soc_codec *codec = socdev->card->codec;
 +	struct snd_soc_codec *codec = rtd->codec;
- 	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
- 	u8 mode2 = ak4535_read_reg_cache(codec, AK4535_MODE2) & ~(0x3 << 5);
- 	int rate = params_rate(params), fs = 256;
-@@ -378,14 +377,16 @@ static int ak4535_mute(struct snd_soc_dai *dai, int mute)
- static int ak4535_set_bias_level(struct snd_soc_codec *codec,
- 	enum snd_soc_bias_level level)
- {
--	u16 i;
-+	u16 i, mute_reg;
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
--		ak4535_mute(codec->dai, 0);
-+		mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC) & 0xffdf;
-+		ak4535_write(codec, AK4535_DAC, mute_reg);
- 		break;
- 	case SND_SOC_BIAS_PREPARE:
--		ak4535_mute(codec->dai, 1);
-+		mute_reg = ak4535_read_reg_cache(codec, AK4535_DAC) & 0xffdf;
-+		ak4535_write(codec, AK4535_DAC, mute_reg | 0x20);
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
- 		i = ak4535_read_reg_cache(codec, AK4535_PM1);
-@@ -413,7 +414,7 @@ static struct snd_soc_dai_ops ak4535_dai_ops = {
- 	.set_sysclk	= ak4535_set_dai_sysclk,
+ 	u32 dai_cfg1;
+ 	u32 hpf_reg, hpf_mask, hpf_value;
+ 	u32 fs, bypass;
+@@ -410,9 +408,8 @@ static struct snd_soc_dai_ops da7210_dai_ops = {
+ 	.set_fmt	= da7210_set_dai_fmt,
  };
  
--struct snd_soc_dai ak4535_dai = {
-+struct snd_soc_dai_driver ak4535_dai = {
- 	.name = "AK4535",
+-struct snd_soc_dai da7210_dai = {
++struct snd_soc_dai_driver da7210_dai = {
+ 	.name = "DA7210 IIS",
+-	.id = 0,
+ 	/* playback capabilities */
  	.playback = {
  		.stream_name = "Playback",
-@@ -431,52 +432,26 @@ struct snd_soc_dai ak4535_dai = {
+@@ -434,53 +431,14 @@ struct snd_soc_dai da7210_dai = {
  };
- EXPORT_SYMBOL_GPL(ak4535_dai);
- 
--static int ak4535_suspend(struct platform_device *pdev, pm_message_t state)
-+static int ak4535_suspend(struct snd_soc_codec *codec, pm_message_t state)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
--
- 	ak4535_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	return 0;
- }
- 
--static int ak4535_resume(struct platform_device *pdev)
-+static int ak4535_resume(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
- 	ak4535_sync(codec);
- 	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	return 0;
- }
+ EXPORT_SYMBOL_GPL(da7210_dai);
  
 -/*
-- * initialise the AK4535 driver
+- * Initialize the DA7210 driver
 - * register the mixer and dsp interfaces with the kernel
 - */
--static int ak4535_init(struct snd_soc_device *socdev)
-+static int ak4535_probe(struct snd_soc_codec *codec)
+-static int da7210_init(struct da7210_priv *da7210)
++static int da7210_probe(struct snd_soc_codec *codec)
  {
--	struct snd_soc_codec *codec = socdev->card->codec;
+-	struct snd_soc_codec *codec = &da7210->codec;
 -	int ret = 0;
-+	struct ak4535_priv *ak4535 = snd_soc_codec_get_drvdata(codec);
++	struct da7210_priv *da7210 = snd_soc_codec_get_drvdata(codec);
  
--	codec->name = "AK4535";
--	codec->owner = THIS_MODULE;
--	codec->read = ak4535_read_reg_cache;
--	codec->write = ak4535_write;
--	codec->set_bias_level = ak4535_set_bias_level;
--	codec->dai = &ak4535_dai;
--	codec->num_dai = 1;
--	codec->reg_cache_size = ARRAY_SIZE(ak4535_reg);
--	codec->reg_cache = kmemdup(ak4535_reg, sizeof(ak4535_reg), GFP_KERNEL);
--
--	if (codec->reg_cache == NULL)
--		return -ENOMEM;
-+	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
- 
--	/* register pcms */
--	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
--	if (ret < 0) {
--		printk(KERN_ERR "ak4535: failed to create pcms\n");
--		goto pcm_err;
--	}
-+	codec->control_data = ak4535->control_data;
- 
- 	/* power on device */
- 	ak4535_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
-@@ -485,39 +460,58 @@ static int ak4535_init(struct snd_soc_device *socdev)
- 				ARRAY_SIZE(ak4535_snd_controls));
- 	ak4535_add_widgets(codec);
- 
--	return ret;
--
--pcm_err:
--	kfree(codec->reg_cache);
-+	return 0;
-+}
- 
--	return ret;
-+/* power down chip */
-+static int ak4535_remove(struct snd_soc_codec *codec)
-+{
-+	ak4535_set_bias_level(codec, SND_SOC_BIAS_OFF);
-+	return 0;
- }
- 
--static struct snd_soc_device *ak4535_socdev;
-+struct snd_soc_codec_driver soc_codec_dev_ak4535 = {
-+	.name = "AK4535",
-+	.owner = THIS_MODULE,
-+	.probe = 	ak4535_probe,
-+	.remove = 	ak4535_remove,
-+	.suspend = 	ak4535_suspend,
-+	.resume =	ak4535_resume,
-+	.read = ak4535_read_reg_cache,
-+	.write = ak4535_write,
-+	.set_bias_level = ak4535_set_bias_level,
-+	.reg_cache_size = ARRAY_SIZE(ak4535_reg),
-+	.reg_word_size = sizeof(u8),
-+	.reg_cache_default = ak4535_reg,
-+};
-+EXPORT_SYMBOL_GPL(soc_codec_dev_ak4535);
- 
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--
--static int ak4535_i2c_probe(struct i2c_client *i2c,
--			    const struct i2c_device_id *id)
-+static __devinit int ak4535_i2c_probe(struct i2c_client *i2c,
-+				      const struct i2c_device_id *id)
- {
--	struct snd_soc_device *socdev = ak4535_socdev;
--	struct snd_soc_codec *codec = socdev->card->codec;
-+	struct ak4535_priv *ak4535;
- 	int ret;
- 
--	i2c_set_clientdata(i2c, codec);
--	codec->control_data = i2c;
-+	ak4535 = kzalloc(sizeof(struct ak4535_priv), GFP_KERNEL);
-+	if (ak4535 == NULL)
-+		return -ENOMEM;
-+
-+	i2c_set_clientdata(i2c, ak4535);
-+	ak4535->control_data = i2c;
-+	ak4535->control_type = SND_SOC_I2C;
- 
--	ret = ak4535_init(socdev);
-+	ret = snd_soc_register_codec(&i2c->dev, i2c->addr,
-+			&soc_codec_dev_ak4535, &ak4535_dai, 1);
- 	if (ret < 0)
--		printk(KERN_ERR "failed to initialise AK4535\n");
--
-+		kfree(ak4535);
- 	return ret;
- }
- 
--static int ak4535_i2c_remove(struct i2c_client *client)
-+static __devexit int ak4535_i2c_remove(struct i2c_client *client)
- {
--	struct snd_soc_codec *codec = i2c_get_clientdata(client);
--	kfree(codec->reg_cache);
-+	snd_soc_unregister_codec(&client->dev, client->addr);
-+	kfree(i2c_get_clientdata(client));
- 	return 0;
- }
- 
-@@ -533,134 +527,30 @@ static struct i2c_driver ak4535_i2c_driver = {
- 		.owner = THIS_MODULE,
- 	},
- 	.probe =    ak4535_i2c_probe,
--	.remove =   ak4535_i2c_remove,
-+	.remove =   __devexit_p(ak4535_i2c_remove),
- 	.id_table = ak4535_i2c_id,
- };
--
--static int ak4535_add_i2c_device(struct platform_device *pdev,
--				 const struct ak4535_setup_data *setup)
--{
--	struct i2c_board_info info;
--	struct i2c_adapter *adapter;
--	struct i2c_client *client;
--	int ret;
--
--	ret = i2c_add_driver(&ak4535_i2c_driver);
--	if (ret != 0) {
--		dev_err(&pdev->dev, "can't add i2c driver\n");
--		return ret;
--	}
--
--	memset(&info, 0, sizeof(struct i2c_board_info));
--	info.addr = setup->i2c_address;
--	strlcpy(info.type, "ak4535", I2C_NAME_SIZE);
--
--	adapter = i2c_get_adapter(setup->i2c_bus);
--	if (!adapter) {
--		dev_err(&pdev->dev, "can't get i2c adapter %d\n",
--			setup->i2c_bus);
--		goto err_driver;
--	}
--
--	client = i2c_new_device(adapter, &info);
--	i2c_put_adapter(adapter);
--	if (!client) {
--		dev_err(&pdev->dev, "can't add i2c device at 0x%x\n",
--			(unsigned int)info.addr);
--		goto err_driver;
--	}
--
--	return 0;
--
--err_driver:
--	i2c_del_driver(&ak4535_i2c_driver);
--	return -ENODEV;
--}
- #endif
- 
--static int ak4535_probe(struct platform_device *pdev)
-+static int __init ak4535_modinit(void)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct ak4535_setup_data *setup;
--	struct snd_soc_codec *codec;
--	struct ak4535_priv *ak4535;
--	int ret;
--
--	printk(KERN_INFO "AK4535 Audio Codec %s", AK4535_VERSION);
--
--	setup = socdev->codec_data;
--	codec = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
--	if (codec == NULL)
--		return -ENOMEM;
--
--	ak4535 = kzalloc(sizeof(struct ak4535_priv), GFP_KERNEL);
--	if (ak4535 == NULL) {
--		kfree(codec);
--		return -ENOMEM;
--	}
--
--	snd_soc_codec_set_drvdata(codec, ak4535);
--	socdev->card->codec = codec;
--	mutex_init(&codec->mutex);
--	INIT_LIST_HEAD(&codec->dapm_widgets);
--	INIT_LIST_HEAD(&codec->dapm_paths);
--
--	ak4535_socdev = socdev;
--	ret = -ENODEV;
--
-+	int ret = 0;
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--	if (setup->i2c_address) {
--		codec->hw_write = (hw_write_t)i2c_master_send;
--		ret = ak4535_add_i2c_device(pdev, setup);
--	}
--#endif
--
-+	ret = i2c_add_driver(&ak4535_i2c_driver);
- 	if (ret != 0) {
--		kfree(snd_soc_codec_get_drvdata(codec));
--		kfree(codec);
-+		printk(KERN_ERR "Failed to register AK4535 I2C driver: %d\n",
-+		       ret);
- 	}
-+#endif
- 	return ret;
- }
-+module_init(ak4535_modinit);
- 
--/* power down chip */
--static int ak4535_remove(struct platform_device *pdev)
-+static void __exit ak4535_exit(void)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
--
--	if (codec->control_data)
--		ak4535_set_bias_level(codec, SND_SOC_BIAS_OFF);
--
--	snd_soc_free_pcms(socdev);
--	snd_soc_dapm_free(socdev);
- #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--	if (codec->control_data)
--		i2c_unregister_device(codec->control_data);
- 	i2c_del_driver(&ak4535_i2c_driver);
- #endif
--	kfree(snd_soc_codec_get_drvdata(codec));
--	kfree(codec);
--
--	return 0;
--}
--
--struct snd_soc_codec_device soc_codec_dev_ak4535 = {
--	.probe = 	ak4535_probe,
--	.remove = 	ak4535_remove,
--	.suspend = 	ak4535_suspend,
--	.resume =	ak4535_resume,
--};
--EXPORT_SYMBOL_GPL(soc_codec_dev_ak4535);
--
--static int __init ak4535_modinit(void)
--{
--	return snd_soc_register_dai(&ak4535_dai);
--}
--module_init(ak4535_modinit);
--
--static void __exit ak4535_exit(void)
--{
--	snd_soc_unregister_dai(&ak4535_dai);
- }
- module_exit(ak4535_exit);
- 
-diff --git a/sound/soc/codecs/ak4535.h b/sound/soc/codecs/ak4535.h
-index c7a5870..0358f48 100644
---- a/sound/soc/codecs/ak4535.h
-+++ b/sound/soc/codecs/ak4535.h
-@@ -36,12 +36,7 @@
- 
- #define AK4535_CACHEREGNUM 	0x10
- 
--struct ak4535_setup_data {
--	int            i2c_bus;
--	unsigned short i2c_address;
--};
--
--extern struct snd_soc_dai ak4535_dai;
--extern struct snd_soc_codec_device soc_codec_dev_ak4535;
-+extern struct snd_soc_dai_driver ak4535_dai;
-+extern struct snd_soc_codec_driver soc_codec_dev_ak4535;
- 
- #endif
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index 8d56811..1f1a955 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -101,15 +101,14 @@
- #define FS3		(1 << 5)
- #define FS_MASK		(FS0 | FS1 | FS2 | FS3)
- 
--struct snd_soc_codec_device soc_codec_dev_ak4642;
- 
- /* codec private data */
- struct ak4642_priv {
--	struct snd_soc_codec codec;
-+	unsigned int sysclk;
-+	enum snd_soc_control_type control_type;
-+	void *control_data;
- };
- 
--static struct snd_soc_codec *ak4642_codec;
--
- /*
-  * ak4642 register cache
-  */
-@@ -378,7 +377,7 @@ static struct snd_soc_dai_ops ak4642_dai_ops = {
- 	.hw_params	= ak4642_dai_hw_params,
- };
- 
--struct snd_soc_dai ak4642_dai = {
-+struct snd_soc_dai_driver ak4642_dai = {
- 	.name = "AK4642",
- 	.playback = {
- 		.stream_name = "Playback",
-@@ -397,108 +396,65 @@ struct snd_soc_dai ak4642_dai = {
- };
- EXPORT_SYMBOL_GPL(ak4642_dai);
- 
--static int ak4642_resume(struct platform_device *pdev)
-+static int ak4642_resume(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec = socdev->card->codec;
--
- 	ak4642_sync(codec);
- 	return 0;
- }
- 
--/*
-- * initialise the AK4642 driver
-- * register the mixer and dsp interfaces with the kernel
-- */
--static int ak4642_init(struct ak4642_priv *ak4642)
-+
-+static int ak4642_probe(struct snd_soc_codec *codec)
- {
--	struct snd_soc_codec *codec = &ak4642->codec;
--	int ret = 0;
-+	struct ak4642_priv *ak4642 = snd_soc_codec_get_drvdata(codec);
- 
--	if (ak4642_codec) {
--		dev_err(codec->dev, "Another ak4642 is registered\n");
+-	if (da7210_codec) {
+-		dev_err(codec->dev, "Another da7210 is registered\n");
 -		return -EINVAL;
 -	}
-+	dev_info(codec->dev, "AK4642 Audio Codec %s", AK4642_VERSION);
++	dev_info(codec->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
  
 -	mutex_init(&codec->mutex);
 -	INIT_LIST_HEAD(&codec->dapm_widgets);
 -	INIT_LIST_HEAD(&codec->dapm_paths);
 -
--	snd_soc_codec_set_drvdata(codec, ak4642);
--	codec->name		= "AK4642";
+-	snd_soc_codec_set_drvdata(codec, da7210);
+-	codec->name		= "DA7210";
 -	codec->owner		= THIS_MODULE;
--	codec->read		= ak4642_read_reg_cache;
--	codec->write		= ak4642_write;
--	codec->dai		= &ak4642_dai;
+-	codec->read		= da7210_read;
+-	codec->write		= da7210_write;
+-	codec->dai		= &da7210_dai;
 -	codec->num_dai		= 1;
++	codec->control_data = da7210->control_data;
  	codec->hw_write		= (hw_write_t)i2c_master_send;
--	codec->reg_cache_size	= ARRAY_SIZE(ak4642_reg);
--	codec->reg_cache	= kmemdup(ak4642_reg,
--					  sizeof(ak4642_reg), GFP_KERNEL);
+-	codec->reg_cache_size	= ARRAY_SIZE(da7210_reg);
+-	codec->reg_cache	= kmemdup(da7210_reg,
+-					  sizeof(da7210_reg), GFP_KERNEL);
 -
 -	if (!codec->reg_cache)
 -		return -ENOMEM;
 -
--	ak4642_dai.dev = codec->dev;
--	ak4642_codec = codec;
-+	codec->control_data = ak4642->control_data;
- 
+-	da7210_dai.dev = codec->dev;
+-	da7210_codec = codec;
+-
 -	ret = snd_soc_register_codec(codec);
 -	if (ret) {
--		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
--		goto reg_cache_err;
+-		dev_err(codec->dev, "Failed to register CODEC: %d\n", ret);
+-		goto init_err;
 -	}
 -
--	ret = snd_soc_register_dai(&ak4642_dai);
+-	ret = snd_soc_register_dai(&da7210_dai);
 -	if (ret) {
 -		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
--		snd_soc_unregister_codec(codec);
--		goto reg_cache_err;
+-		goto init_err;
 -	}
+ 
+ 	/* FIXME
+ 	 *
+@@ -563,50 +521,48 @@ static int da7210_init(struct da7210_priv *da7210)
+ 	/* Activate all enabled subsystem */
+ 	da7210_write(codec, DA7210_STARTUP1, DA7210_SC_MST_EN);
  
 -	return ret;
 -
--reg_cache_err:
+-init_err:
 -	kfree(codec->reg_cache);
 -	codec->reg_cache = NULL;
 -
 -	return ret;
+-
 +	return 0;
  }
  
-+struct snd_soc_codec_driver soc_codec_dev_ak4642 = {
-+	.name		= "AK4642",
-+	.probe =	ak4642_probe,
-+	.resume =	ak4642_resume,
++struct snd_soc_codec_driver soc_codec_dev_da7210 = {
++	.name		= "DA7210",
 +	.owner		= THIS_MODULE,
-+	.read		= ak4642_read_reg_cache,
-+	.write		= ak4642_write,
-+	.reg_cache_size	= ARRAY_SIZE(ak4642_reg),
++	.probe =	da7210_probe,
++	.read		= da7210_read,
++	.write		= da7210_write,
++	.reg_cache_size	= ARRAY_SIZE(da7210_reg),
 +	.reg_word_size = sizeof(u8),
-+	.reg_cache_default	= ak4642_reg,
++	.reg_cache_default	= da7210_reg,
 +};
-+EXPORT_SYMBOL_GPL(soc_codec_dev_ak4642);
++EXPORT_SYMBOL_GPL(soc_codec_dev_da7210);
 +
  #if defined(CONFIG_I2C) || defined(CONFIG_I2C_MODULE)
--static int ak4642_i2c_probe(struct i2c_client *i2c,
--			    const struct i2c_device_id *id)
-+static __devinit int ak4642_i2c_probe(struct i2c_client *i2c,
-+				      const struct i2c_device_id *id)
+ static int __devinit da7210_i2c_probe(struct i2c_client *i2c,
+ 			   	      const struct i2c_device_id *id)
  {
- 	struct ak4642_priv *ak4642;
+ 	struct da7210_priv *da7210;
 -	struct snd_soc_codec *codec;
  	int ret;
  
- 	ak4642 = kzalloc(sizeof(struct ak4642_priv), GFP_KERNEL);
--	if (!ak4642)
-+	if (ak4642 == NULL)
+ 	da7210 = kzalloc(sizeof(struct da7210_priv), GFP_KERNEL);
+ 	if (!da7210)
  		return -ENOMEM;
  
--	codec = &ak4642->codec;
+-	codec = &da7210->codec;
 -	codec->dev = &i2c->dev;
 -
- 	i2c_set_clientdata(i2c, ak4642);
+ 	i2c_set_clientdata(i2c, da7210);
 -	codec->control_data = i2c;
-+	ak4642->control_data = i2c;
-+	ak4642->control_type = SND_SOC_I2C;
++	da7210->control_data = i2c;
++	da7210->control_type = SND_SOC_I2C;
  
--	ret = ak4642_init(ak4642);
+-	ret = da7210_init(da7210);
 +	ret =  snd_soc_register_codec(&i2c->dev, i2c->addr,
-+			&soc_codec_dev_ak4642, &ak4642_dai, 1);
++			&soc_codec_dev_da7210, &da7210_dai, 1);
  	if (ret < 0)
--		printk(KERN_ERR "failed to initialise AK4642\n");
--
-+		kfree(ak4642);
+-		pr_err("Failed to initialise da7210 audio codec\n");
++		kfree(da7210);
+ 
  	return ret;
  }
  
--static int ak4642_i2c_remove(struct i2c_client *client)
-+static __devexit int ak4642_i2c_remove(struct i2c_client *client)
+ static int __devexit da7210_i2c_remove(struct i2c_client *client)
  {
--	struct ak4642_priv *ak4642 = i2c_get_clientdata(client);
+-	struct da7210_priv *da7210 = i2c_get_clientdata(client);
 -
--	snd_soc_unregister_dai(&ak4642_dai);
--	snd_soc_unregister_codec(&ak4642->codec);
--	kfree(ak4642->codec.reg_cache);
--	kfree(ak4642);
--	ak4642_codec = NULL;
+-	snd_soc_unregister_dai(&da7210_dai);
+-	kfree(da7210->codec.reg_cache);
+-	kfree(da7210);
+-	da7210_codec = NULL;
 -
 +	snd_soc_unregister_codec(&client->dev, client->addr);
 +	kfree(i2c_get_clientdata(client));
  	return 0;
  }
  
-@@ -514,58 +470,12 @@ static struct i2c_driver ak4642_i2c_driver = {
- 		.name = "AK4642 I2C Codec",
- 		.owner = THIS_MODULE,
- 	},
--	.probe		= ak4642_i2c_probe,
--	.remove		= ak4642_i2c_remove,
--	.id_table	= ak4642_i2c_id,
-+	.probe =    ak4642_i2c_probe,
-+	.remove =   __devexit_p(ak4642_i2c_remove),
-+	.id_table = ak4642_i2c_id,
+@@ -628,47 +584,6 @@ static struct i2c_driver da7210_i2c_driver = {
  };
--
  #endif
  
--static int ak4642_probe(struct platform_device *pdev)
+-static int da7210_probe(struct platform_device *pdev)
 -{
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
+-	struct snd_soc_codec *codec;
 -	int ret;
 -
--	if (!ak4642_codec) {
+-	if (!da7210_codec) {
 -		dev_err(&pdev->dev, "Codec device not registered\n");
 -		return -ENODEV;
 -	}
 -
--	socdev->card->codec = ak4642_codec;
+-	socdev->card->codec = da7210_codec;
+-	codec = da7210_codec;
 -
--	/* register pcms */
+-	/* Register pcms */
 -	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
--	if (ret < 0) {
--		printk(KERN_ERR "ak4642: failed to create pcms\n");
+-	if (ret < 0)
 -		goto pcm_err;
--	}
 -
--	dev_info(&pdev->dev, "AK4642 Audio Codec %s", AK4642_VERSION);
--	return ret;
+-	dev_info(&pdev->dev, "DA7210 Audio Codec %s\n", DA7210_VERSION);
 -
 -pcm_err:
 -	return ret;
--
 -}
 -
--/* power down chip */
--static int ak4642_remove(struct platform_device *pdev)
+-static int da7210_remove(struct platform_device *pdev)
 -{
 -	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
 -
@@ -898,245 +1212,29 @@ index 8d56811..1f1a955 100644
 -	return 0;
 -}
 -
--struct snd_soc_codec_device soc_codec_dev_ak4642 = {
--	.probe =	ak4642_probe,
--	.remove =	ak4642_remove,
--	.resume =	ak4642_resume,
+-struct snd_soc_codec_device soc_codec_dev_da7210 = {
+-	.probe =	da7210_probe,
+-	.remove =	da7210_remove,
 -};
--EXPORT_SYMBOL_GPL(soc_codec_dev_ak4642);
+-EXPORT_SYMBOL_GPL(soc_codec_dev_da7210);
 -
- static int __init ak4642_modinit(void)
+ static int __init da7210_modinit(void)
  {
  	int ret = 0;
-diff --git a/sound/soc/codecs/ak4642.h b/sound/soc/codecs/ak4642.h
-index e476833..d5a9e43 100644
---- a/sound/soc/codecs/ak4642.h
-+++ b/sound/soc/codecs/ak4642.h
-@@ -14,7 +14,7 @@
- #ifndef _AK4642_H
- #define _AK4642_H
+diff --git a/sound/soc/codecs/da7210.h b/sound/soc/codecs/da7210.h
+index 390d621..c530692 100644
+--- a/sound/soc/codecs/da7210.h
++++ b/sound/soc/codecs/da7210.h
+@@ -17,8 +17,8 @@
+ #ifndef _DA7210_H
+ #define _DA7210_H
  
--extern struct snd_soc_dai ak4642_dai;
--extern struct snd_soc_codec_device soc_codec_dev_ak4642;
-+extern struct snd_soc_dai_driver ak4642_dai;
-+extern struct snd_soc_codec_driver soc_codec_dev_ak4642;
- 
- #endif
-diff --git a/sound/soc/codecs/ak4671.c b/sound/soc/codecs/ak4671.c
-index 8756693..1921fc4 100644
---- a/sound/soc/codecs/ak4671.c
-+++ b/sound/soc/codecs/ak4671.c
-@@ -23,11 +23,11 @@
- 
- #include "ak4671.h"
- 
--static struct snd_soc_codec *ak4671_codec;
- 
- /* codec private data */
- struct ak4671_priv {
--	struct snd_soc_codec codec;
-+	enum snd_soc_control_type control_type;
-+	void *control_data;
- 	u8 reg_cache[AK4671_CACHEREGNUM];
- };
- 
-@@ -619,7 +619,7 @@ static struct snd_soc_dai_ops ak4671_dai_ops = {
- 	.set_fmt	= ak4671_set_dai_fmt,
- };
- 
--struct snd_soc_dai ak4671_dai = {
-+struct snd_soc_dai_driver ak4671_dai = {
- 	.name = "AK4671",
- 	.playback = {
- 		.stream_name = "Playback",
-@@ -637,25 +637,18 @@ struct snd_soc_dai ak4671_dai = {
- };
- EXPORT_SYMBOL_GPL(ak4671_dai);
- 
--static int ak4671_probe(struct platform_device *pdev)
-+static int ak4671_probe(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--	struct snd_soc_codec *codec;
--	int ret = 0;
--
--	if (ak4671_codec == NULL) {
--		dev_err(&pdev->dev, "Codec device not registered\n");
--		return -ENODEV;
--	}
-+	struct ak4671_priv *ak4671 = snd_soc_codec_get_drvdata(codec);
-+	int ret;
- 
--	socdev->card->codec = ak4671_codec;
--	codec = ak4671_codec;
-+	codec->hw_write = (hw_write_t)i2c_master_send;
-+	codec->bias_level = SND_SOC_BIAS_OFF;
- 
--	/* register pcms */
--	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-+	ret = snd_soc_codec_set_cache_io(codec, 8, 8, ak4671->control_type);
- 	if (ret < 0) {
--		dev_err(codec->dev, "failed to create pcms: %d\n", ret);
--		goto pcm_err;
-+		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
-+		return ret;
- 	}
- 
- 	snd_soc_add_controls(codec, ak4671_snd_controls,
-@@ -665,121 +658,51 @@ static int ak4671_probe(struct platform_device *pdev)
- 	ak4671_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 
- 	return ret;
--
--pcm_err:
--	return ret;
- }
- 
--static int ak4671_remove(struct platform_device *pdev)
-+static int ak4671_remove(struct snd_soc_codec *codec)
- {
--	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
--
--	snd_soc_free_pcms(socdev);
--	snd_soc_dapm_free(socdev);
--
-+	ak4671_set_bias_level(codec, SND_SOC_BIAS_OFF);
- 	return 0;
- }
- 
--struct snd_soc_codec_device soc_codec_dev_ak4671 = {
-+struct snd_soc_codec_driver soc_codec_dev_ak4671 = {
-+	.name = "AK4671",
-+	.owner = THIS_MODULE,
- 	.probe = ak4671_probe,
- 	.remove = ak4671_remove,
-+	.set_bias_level = ak4671_set_bias_level,
-+	.reg_cache_size = AK4671_CACHEREGNUM,
-+	.reg_word_size = sizeof(u8),
-+	.reg_cache_default = ak4671_reg,
- };
- EXPORT_SYMBOL_GPL(soc_codec_dev_ak4671);
- 
--static int ak4671_register(struct ak4671_priv *ak4671,
--		enum snd_soc_control_type control)
--{
--	int ret;
--	struct snd_soc_codec *codec = &ak4671->codec;
--
--	if (ak4671_codec) {
--		dev_err(codec->dev, "Another AK4671 is registered\n");
--		ret = -EINVAL;
--		goto err;
--	}
--
--	mutex_init(&codec->mutex);
--	INIT_LIST_HEAD(&codec->dapm_widgets);
--	INIT_LIST_HEAD(&codec->dapm_paths);
--
--	snd_soc_codec_set_drvdata(codec,  ak4671);
--	codec->name = "AK4671";
--	codec->owner = THIS_MODULE;
--	codec->bias_level = SND_SOC_BIAS_OFF;
--	codec->set_bias_level = ak4671_set_bias_level;
--	codec->dai = &ak4671_dai;
--	codec->num_dai = 1;
--	codec->reg_cache_size = AK4671_CACHEREGNUM;
--	codec->reg_cache = &ak4671->reg_cache;
--
--	memcpy(codec->reg_cache, ak4671_reg, sizeof(ak4671_reg));
--
--	ret = snd_soc_codec_set_cache_io(codec, 8, 8, control);
--	if (ret < 0) {
--		dev_err(codec->dev, "Failed to set cache I/O: %d\n", ret);
--		goto err;
--	}
--
--	ak4671_dai.dev = codec->dev;
--	ak4671_codec = codec;
--
--	ret = snd_soc_register_codec(codec);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to register codec: %d\n", ret);
--		goto err;
--	}
--
--	ret = snd_soc_register_dai(&ak4671_dai);
--	if (ret != 0) {
--		dev_err(codec->dev, "Failed to register DAI: %d\n", ret);
--		goto err_codec;
--	}
--
--	return 0;
--
--err_codec:
--	snd_soc_unregister_codec(codec);
--err:
--	kfree(ak4671);
--	return ret;
--}
--
--static void ak4671_unregister(struct ak4671_priv *ak4671)
--{
--	ak4671_set_bias_level(&ak4671->codec, SND_SOC_BIAS_OFF);
--	snd_soc_unregister_dai(&ak4671_dai);
--	snd_soc_unregister_codec(&ak4671->codec);
--	kfree(ak4671);
--	ak4671_codec = NULL;
--}
--
- static int __devinit ak4671_i2c_probe(struct i2c_client *client,
- 		const struct i2c_device_id *id)
- {
- 	struct ak4671_priv *ak4671;
--	struct snd_soc_codec *codec;
-+	int ret;
- 
- 	ak4671 = kzalloc(sizeof(struct ak4671_priv), GFP_KERNEL);
- 	if (ak4671 == NULL)
- 		return -ENOMEM;
- 
--	codec = &ak4671->codec;
--	codec->hw_write = (hw_write_t)i2c_master_send;
--
- 	i2c_set_clientdata(client, ak4671);
--	codec->control_data = client;
--
--	codec->dev = &client->dev;
-+	ak4671->control_data = client;
-+	ak4671->control_type = SND_SOC_I2C;
- 
--	return ak4671_register(ak4671, SND_SOC_I2C);
-+	ret = snd_soc_register_codec(&client->dev, client->addr,
-+			&soc_codec_dev_ak4671, &ak4671_dai, 1);
-+	if (ret < 0)
-+		kfree(ak4671);
-+	return ret;
- }
- 
- static __devexit int ak4671_i2c_remove(struct i2c_client *client)
- {
--	struct ak4671_priv *ak4671 = i2c_get_clientdata(client);
--
--	ak4671_unregister(ak4671);
--
-+	snd_soc_unregister_codec(&client->dev, client->addr);
-+	kfree(i2c_get_clientdata(client));
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/ak4671.h b/sound/soc/codecs/ak4671.h
-index e2fad96..73f862c 100644
---- a/sound/soc/codecs/ak4671.h
-+++ b/sound/soc/codecs/ak4671.h
-@@ -150,7 +150,7 @@
- /* AK4671_LOUT2_POWER_MANAGEMENT (0x10) Fields */
- #define AK4671_MUTEN				0x04
- 
--extern struct snd_soc_dai ak4671_dai;
--extern struct snd_soc_codec_device soc_codec_dev_ak4671;
-+extern struct snd_soc_dai_driver ak4671_dai;
-+extern struct snd_soc_codec_driver soc_codec_dev_ak4671;
+-extern struct snd_soc_dai da7210_dai;
+-extern struct snd_soc_codec_device soc_codec_dev_da7210;
++extern struct snd_soc_dai_driver da7210_dai;
++extern struct snd_soc_codec_driver soc_codec_dev_da7210;
  
  #endif
+ 
 -- 
 1.7.0.4
