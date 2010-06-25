@@ -1,20 +1,22 @@
-From: Timur Tabi <timur@freescale.com>
-Subject: Re: ALSA SoC device tree bindings
-Date: Fri, 25 Jun 2010 08:21:45 -0500
-Message-ID: <AANLkTimb38wmXv6yOp46cdwe6LcZdDOpHl_xLPxnAXYo@mail.gmail.com>
-References: <201006232030.14138.jeremy.kerr@canonical.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: Detecting if a pcm device is a digital or analog
+	one
+Date: Fri, 25 Jun 2010 17:55:12 +0100
+Message-ID: <AANLkTimFzE-tmB3enZhFD7wmTwEq5zNG1lp5DMwC5mey@mail.gmail.com>
+References: <AANLkTinFnfXXikPmn1vGmt2WHQQnhGAzav9nYOvB4Vda@mail.gmail.com>
+	<4C24670D.4010501@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 32C93103821
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id E68CA103807
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Jun 2010 15:22:18 +0200 (CEST)
-Received: by vws11 with SMTP id 11so615096vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 06:22:15 -0700 (PDT)
-In-Reply-To: <201006232030.14138.jeremy.kerr@canonical.com>
+	Fri, 25 Jun 2010 18:55:13 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so749340bwz.38
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 09:55:12 -0700 (PDT)
+In-Reply-To: <4C24670D.4010501@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,22 +26,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jeremy Kerr <jeremy.kerr@canonical.com>
-Cc: devicetree-discuss@lists.ozlabs.org, kernel-team@lists.ubuntu.com, linaro-dev@lists.linaro.org, alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Jean-Yves Avenard <jyavenard@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 23, 2010 at 7:30 AM, Jeremy Kerr <jeremy.kerr@canonical.com> wrote:
-
-> - if you have any comments or suggestions, please let me know, or add to the
-> page (or the discussion for the page). I intend for this document to become a
-> more formal specification, but we still have a way to go before that happens.
-
-Please consider using the MPC8610 HPCD board as a reference
-implementation, instead of i.MX boards.  This is a PowerPC board that
-has long since support OF bindings for ASoC drivers, so the code is
-more robust.  ARM only recently got basic OF support, and AFAIK, none
-of the audio drivers support it.
-
--- 
-Timur Tabi
-Linux kernel developer at Freescale
+T24gMjUgSnVuZSAyMDEwIDA5OjIxLCBDbGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5k
+ZT4gd3JvdGU6Cj4gSmVhbi1ZdmVzIEF2ZW5hcmQgd3JvdGU6Cj4+IEkgd2FzIHdvbmRlcmluZyBp
+ZiB0aGVyZSB3YXMgYW55IHdheSB0byBhY2N1cmF0ZWx5IGRpc3Rpbmd1aXNoIGJldHdlZW4KPj4g
+YXVkaW8gZGV2aWNlLCBpZiBpdCBoYXMgYW4gYW5hbG9nIG9yIGEgZGlnaXRhbCBvdXRwdXQuCj4K
+PiBOb3QgcmVhbGx5LiDCoFRoZXJlIGFyZSBkZXZpY2VzIHdoZXJlIHRoZSBzYW1lIHN0cmVhbSBp
+cyByb3V0ZWQgdG8gYm90aAo+IGFuYWxvZyBhbmQgZGlnaXRhbCBvdXRwdXRzLCBhbmQgc29tZXRp
+bWVzIHRoZSBkcml2ZXIgY2Fubm90IGtub3cgaWYKPiB0aGVyZSBpcyBhIERBQyBmdXJ0aGVyIGRv
+d24gdGhlIGxpbmUuIMKgSW4gYW55IGNhc2UsIHRoaXMgd291bGQgYmUgdmVyeQo+IGhhcmR3YXJl
+IHNwZWNpZmljLgo+Cj4gV2hhdCBkbyB5b3UgbmVlZCB0aGlzIGZvcj8KPgpNeSBndWVzcyBpcyB0
+aGF0IGlmIG9uZSBrbmV3LCBvbmUgY291bGQgZGVjaWRlIGlmIGl0IHdhcyBzZW5zaWJsZSB0bwpz
+ZW5kIEFDMyBlbmNvZGVkIGRhdGEgdG8gdGhlIFBDTSBvciBub3QuCldpdGhvdXQga25vd2luZyB3
+aGljaCBQQ00gaXMgc2VuZGluZyBkYXRhIHRvIHdoaWNoIG91dHB1dHMsIGl0IHdvdWxkCmJlIHZl
+cnkgZGlmZmljdWx0IHRvIGFjY3VyYXRlbHkgZGlzdGluZ3Vpc2ggdGhlbS4KQWxzYSBkb2VzIGhh
+dmUgYSBkZXZpY2UgbmFtZSAiaWVjOTU4IiB0aGF0IG9uZSBjYW4gdXNlIGluc3RlYWQgb2YKImZy
+b250IiBvciAiZGVmYXVsdCIgdGhhdCB3aWxsIGVuc3VyZSB0aGUgb3V0cHV0IGdvZXMgdG8gYSBk
+aWdpdGFsCm91dHB1dCBpZiBvbmUgZXhpc3RzLgoKSmFtZXMKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
