@@ -1,19 +1,28 @@
-From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [PATCH] ASoC: ak4642: Add Playback Volume control
-Date: Fri, 25 Jun 2010 11:50:24 +0100
-Message-ID: <1277463024.3123.16.camel@odin>
-References: <w3ptyork0j5.wl%kuninori.morimoto.gx@renesas.com>
+From: Colin Guthrie <gmane@colin.guthr.ie>
+Subject: Re: [PATCH] Two patches for Alsa-plugins (pulse)
+Date: Fri, 25 Jun 2010 11:57:33 +0100
+Message-ID: <i0222t$htk$1@dough.gmane.org>
+References: <4C22670D.8010104@epost.diwic.se> <s5h6319dj90.wl%tiwai@suse.de>
+	<4C2487EA.3090605@epost.diwic.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 96F411037FB
+Received: from lo.gmane.org (lo.gmane.org [80.91.229.12])
+	by alsa0.perex.cz (Postfix) with ESMTP id 735EB24561
 	for <alsa-devel@alsa-project.org>;
-	Fri, 25 Jun 2010 12:56:46 +0200 (CEST)
-Received: by wwb39 with SMTP id 39so225606wwb.38
-	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 03:56:46 -0700 (PDT)
-In-Reply-To: <w3ptyork0j5.wl%kuninori.morimoto.gx@renesas.com>
+	Fri, 25 Jun 2010 12:57:45 +0200 (CEST)
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <glad-alsa-devel-2@m.gmane.org>) id 1OS6bO-0007GQ-NF
+	for alsa-devel@alsa-project.org; Fri, 25 Jun 2010 12:57:42 +0200
+Received: from brent.tribalogic.net ([78.86.109.144])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 12:57:42 +0200
+Received: from gmane by brent.tribalogic.net with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 12:57:42 +0200
+In-Reply-To: <4C2487EA.3090605@epost.diwic.se>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,109 +32,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2010-06-25 at 16:57 +0900, Kuninori Morimoto wrote:
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> This patch works for me.
-> But I'm not sure it is correct settings.
-> Please check it carefully
-> 
->  sound/soc/codecs/ak4642.c |   28 +++++++++++++++++++++++++---
->  1 files changed, 25 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-> index 9a6157f..ce4e6ec 100644
-> --- a/sound/soc/codecs/ak4642.c
-> +++ b/sound/soc/codecs/ak4642.c
-> @@ -28,6 +28,7 @@
->  #include <linux/slab.h>
->  #include <sound/soc-dapm.h>
->  #include <sound/initval.h>
-> +#include <sound/tlv.h>
->  
->  #include "ak4642.h"
->  
-> @@ -103,6 +104,23 @@
->  
->  struct snd_soc_codec_device soc_codec_dev_ak4642;
->  
-> +/*
-> + * Playback Volume (table 39)
-> + *
-> + * max : 0x00 : +12.0 dB
-> + *       ( 0.5 dB step )
-> + * min : 0xFE : -115.0 dB
-> + * mute: 0xFF
-> + */
-> +static const DECLARE_TLV_DB_SCALE(out_tlv, -11500, 50, 1);
-> +
-> +static const struct snd_kcontrol_new ak4642_snd_controls[] = {
-> +
-> +	SOC_DOUBLE_R_TLV("Playback Volume", L_DVC, R_DVC,
-> +			 0, 0xFF, 1, out_tlv),
+'Twas brillig, and David Henningsson at 25/06/10 11:41 did gyre and gimble:
+> Sure, I can do that - it sounds like a good idea to have it configurable.
+> Just so I understand you right, exactly how do you expect the user /
+> application to configure it?
 
-Is this for the "Master Playback Volume" ? If so, It should be "Master
-Playback Volume"
+At a guess I'd say some option in the ~/.asoundrc when using the pulse
+plugin... I've never looked at how this is done tho', so could be off
+base :D
 
-> +};
-> +
-> +
->  /* codec private data */
->  struct ak4642_priv {
->  	struct snd_soc_codec codec;
-> @@ -190,7 +208,6 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
->  		 *
->  		 * PLL, Master Mode
->  		 * Audio I/F Format :MSB justified (ADC & DAC)
-> -		 * Digital Volume: -8dB
+Col
 
-Any reason for this ?
 
->  		 * Bass Boost Level : Middle
->  		 *
->  		 * This operation came from example code of
-> @@ -200,8 +217,6 @@ static int ak4642_dai_startup(struct snd_pcm_substream *substream,
->  		ak4642_write(codec, 0x0e, 0x19);
->  		ak4642_write(codec, 0x09, 0x91);
->  		ak4642_write(codec, 0x0c, 0x91);
-> -		ak4642_write(codec, 0x0a, 0x28);
-> -		ak4642_write(codec, 0x0d, 0x28);
-
-and this. Both are not mentioned in the commit message.
-
->  		ak4642_write(codec, 0x00, 0x64);
->  		snd_soc_update_bits(codec, PW_MGMT2, PMHP_MASK,	PMHP);
->  		snd_soc_update_bits(codec, PW_MGMT2, HPMTN,	HPMTN);
-> @@ -446,6 +461,10 @@ static int ak4642_init(struct ak4642_priv *ak4642)
->  		return ret;
->  	}
->  
-> +	/* default volume */
-> +	ak4642_write(codec, L_DVC, 0x28);
-> +	ak4642_write(codec, R_DVC, 0x28);
-> +
->  	return ret;
->  }
->  
-> @@ -524,6 +543,9 @@ static int ak4642_probe(struct platform_device *pdev)
->  		goto pcm_err;
->  	}
->  
-> +	snd_soc_add_controls(ak4642_codec, ak4642_snd_controls,
-> +			     ARRAY_SIZE(ak4642_snd_controls));
-> +
->  	dev_info(&pdev->dev, "AK4642 Audio Codec %s", AK4642_VERSION);
->  	return ret;
->  
-
-Thanks
-
-Liam
 -- 
-Freelance Developer, SlimLogic Ltd
-ASoC and Voltage Regulator Maintainer.
-http://www.slimlogic.co.uk
+
+Colin Guthrie
+gmane(at)colin.guthr.ie
+http://colin.guthr.ie/
+
+Day Job:
+  Tribalogic Limited [http://www.tribalogic.net/]
+Open Source:
+  Mandriva Linux Contributor [http://www.mandriva.com/]
+  PulseAudio Hacker [http://www.pulseaudio.org/]
+  Trac Hacker [http://trac.edgewall.org/]
