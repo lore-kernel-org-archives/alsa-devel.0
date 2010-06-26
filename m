@@ -1,20 +1,22 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: Re: [RFC 0/5] ASoC multi-component support : core
-Date: Sat, 26 Jun 2010 18:29:27 +0100
-Message-ID: <1277573367.3110.17.camel@odin>
-References: <1277407467.3100.579.camel@odin>
-	<AANLkTimfC5rdr8r0Ll4GM7d_8WapNR3Tkk9_r-Vo3aeB@mail.gmail.com>
+Subject: Re: [RFC 02/16] ASoC: multi-component - cs4720,
+ cs42l51 	and da7210 CODECs
+Date: Sat, 26 Jun 2010 18:36:15 +0100
+Message-ID: <1277573775.3110.18.camel@odin>
+References: <1277488383-31287-1-git-send-email-lrg@slimlogic.co.uk>
+	<1277488383-31287-3-git-send-email-lrg@slimlogic.co.uk>
+	<AANLkTinmu4myhe1dGuG_fEdQUpYKQ4bbN1xDCSWzmNWC@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id A9E1724386
+	[74.125.82.179]) by alsa0.perex.cz (Postfix) with ESMTP id B380D2438A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Jun 2010 19:29:35 +0200 (CEST)
-Received: by wyf23 with SMTP id 23so656446wyf.38
-	for <alsa-devel@alsa-project.org>; Sat, 26 Jun 2010 10:29:35 -0700 (PDT)
-In-Reply-To: <AANLkTimfC5rdr8r0Ll4GM7d_8WapNR3Tkk9_r-Vo3aeB@mail.gmail.com>
+	Sat, 26 Jun 2010 19:36:22 +0200 (CEST)
+Received: by wyf23 with SMTP id 23so658729wyf.38
+	for <alsa-devel@alsa-project.org>; Sat, 26 Jun 2010 10:36:22 -0700 (PDT)
+In-Reply-To: <AANLkTinmu4myhe1dGuG_fEdQUpYKQ4bbN1xDCSWzmNWC@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,26 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Wan ZongShun <mcuos.com@gmail.com>
-Cc: vbarinov <vbarinov@embeddedalley.com>, alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Sascha Hauer <s.hauer@pengutronix.de>, jassisinghbrar <jassisinghbrar@gmail.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Cliff Cai <cliff.cai@analog.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, "timur.tabi@gmail.com" <timur.tabi@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, "Candelaria Villareal,
-	Jorge" <jorge.candelaria@ti.com>, "vaibhav.bedia" <vaibhav.bedia@ti.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Ryan Mallon <ryan@bluewatersys.com>
+To: Timur Tabi <timur@freescale.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2010-06-26 at 10:25 +0800, Wan ZongShun wrote:
-> 2010/6/25 Liam Girdwood <lrg@slimlogic.co.uk>:
-
-> > All the multi-component code is in my multi-component branch here :-
-> >
-> > git://git.kernel.org/pub/scm/linux/kernel/git/lrg/asoc-2.6.git
-> >
+On Fri, 2010-06-25 at 13:29 -0500, Timur Tabi wrote:
+> On Fri, Jun 25, 2010 at 12:52 PM, Liam Girdwood <lrg@slimlogic.co.uk> wrote:
 > 
-> I really want to test my nuc900 platform, but the git tree seems to
-> base linux-2.6.31,
-> where nuc900 most platform files not be merged. so I have to wait for
-> 2.6.36 to update and test my driver?
+> >  /* Private data for the CS4270 */
+> >  struct cs4270_private {
+> > -       struct snd_soc_codec codec;
+> > +       enum snd_soc_control_type control_type;
+> > +       void *control_data;
+> 
+> Because of this change, there is a comment later in the file that is
+> no longer valid:
+> 
+> 	/* Allocate enough space for the snd_soc_codec structure
+> 	   and our private data together. */
+> 	cs4270 = kzalloc(sizeof(struct cs4270_private), GFP_KERNEL);
+> 	if (!cs4270) {
+> 		dev_err(&i2c_client->dev, "could not allocate codec\n");
+> 		return -ENOMEM;
+> 	}
+> 
+> Other than that ...
+> 
+> CS4270 portions:
+> Acked-by: Timur Tabi <timur@freescale.com>
+> 
 
-The multi-component branch is up to date, it's just that the master
-branch on this tree is at an older version.
+
+Thanks, fixed.
 
 Liam
 -- 
