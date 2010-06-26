@@ -1,16 +1,15 @@
 From: David Dillow <dave@thedillows.org>
-Subject: [PATCH] sis7019: fix capture issues with multiple
- periods per buffer
-Date: Sat, 26 Jun 2010 18:04:32 -0400
-Message-ID: <1277589872.2438.5.camel@obelisk.thedillows.org>
+Subject: [PATCH] sis7019: increase reset delays
+Date: Sat, 26 Jun 2010 18:07:57 -0400
+Message-ID: <1277590077.2438.9.camel@obelisk.thedillows.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from amavis-smtp.knology.net (amavis-smtp.knology.net [75.76.199.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id BE47C2453F
+	by alsa0.perex.cz (Postfix) with ESMTP id 4566924547
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 00:04:45 +0200 (CEST)
+	Sun, 27 Jun 2010 00:08:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,71 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, linux@schou.dk
+Cc: tiwai@suse.de, michael.goeke@icachip.de
 List-Id: alsa-devel@alsa-project.org
 
-When using a timing voice to clock out periods during capture, the
-driver would slowly loose synchronization and never catch up, eventually
-reaching a point where it no longer generated interrupts. To avoid
-this situation, the virtual period clocking was changed to shorten the
-next timing period when our timing voice falls too far behind the
-capture voice. In addition, the first virtual period for the timing
-voice was slightly too short, causing the timing voice to initially be
-ahead of the capture voice.
+A few boards using this controller are reported to need a little extra
+time during their reset cycle.
     
-While tracking down this problem, I noticed that the expected sample
-offset was being incorrectly initialized, causing an overrun to be
-incorrectly reported when the timing voice happened to be perfectly
-synchronized.
-    
-Reported-by: Hans Schou <linux@schou.dk>
+Reported-by: Michael Goeke <michael.goeke@icachip.de>
 Signed-off-by: Dave Dillow <dave@thedillows.org>
 ---
-This has survived overnight testing at 44.1 kHz/16 bit/mono without issue.
+
+Wow, a horrible maintainer am I. Working on the virtual timing period
+reminded me of of another timing issue from two years back that I forgot
+to push upstream. This applies on top of the vperiod fixes, but should
+not conflict if the ordering is changed.
 
 diff --git a/sound/pci/sis7019.c b/sound/pci/sis7019.c
-index 9cc1b5a..614ff6e 100644
+index 614ff6e..1b8f674 100644
 --- a/sound/pci/sis7019.c
 +++ b/sound/pci/sis7019.c
-@@ -264,11 +264,13 @@ static void sis_update_voice(struct voice *voice)
- 		 * if using small periods.
- 		 *
- 		 * If we're less than 9 samples behind, we're on target.
-+		 * Otherwise, shorten the next vperiod by the amount we've
-+		 * been delayed.
- 		 */
- 		if (sync > -9)
- 			voice->vperiod = voice->sync_period_size + 1;
- 		else
--			voice->vperiod = voice->sync_period_size - 4;
-+			voice->vperiod = voice->sync_period_size + sync + 10;
- 
- 		if (voice->vperiod < voice->buffer_size) {
- 			sis_update_sso(voice, voice->vperiod);
-@@ -736,7 +738,7 @@ static void sis_prepare_timing_voice(struct voice *voice,
- 	period_size = buffer_size;
- 
- 	/* Initially, we want to interrupt just a bit behind the end of
--	 * the period we're clocking out. 10 samples seems to give a good
-+	 * the period we're clocking out. 12 samples seems to give a good
- 	 * delay.
- 	 *
- 	 * We want to spread our interrupts throughout the virtual period,
-@@ -747,7 +749,7 @@ static void sis_prepare_timing_voice(struct voice *voice,
- 	 *
- 	 * This is all moot if we don't need to use virtual periods.
+@@ -1049,7 +1049,7 @@ static int sis_chip_free(struct sis7019 *sis)
+ 	/* Reset the chip, and disable all interrputs.
  	 */
--	vperiod = runtime->period_size + 10;
-+	vperiod = runtime->period_size + 12;
- 	if (vperiod > period_size) {
- 		u16 tail = vperiod % period_size;
- 		u16 quarter_period = period_size / 4;
-@@ -776,7 +778,7 @@ static void sis_prepare_timing_voice(struct voice *voice,
+ 	outl(SIS_GCR_SOFTWARE_RESET, sis->ioport + SIS_GCR);
+-	udelay(10);
++	udelay(25);
+ 	outl(0, sis->ioport + SIS_GCR);
+ 	outl(0, sis->ioport + SIS_GIER);
+ 
+@@ -1085,7 +1085,7 @@ static int sis_chip_init(struct sis7019 *sis)
+ 	/* Reset the audio controller
  	 */
- 	timing->flags |= VOICE_SYNC_TIMING;
- 	timing->sync_base = voice->ctrl_base;
--	timing->sync_cso = runtime->period_size - 1;
-+	timing->sync_cso = runtime->period_size;
- 	timing->sync_period_size = runtime->period_size;
- 	timing->sync_buffer_size = runtime->buffer_size;
- 	timing->period_size = period_size;
+ 	outl(SIS_GCR_SOFTWARE_RESET, io + SIS_GCR);
+-	udelay(10);
++	udelay(25);
+ 	outl(0, io + SIS_GCR);
+ 
+ 	/* Get the AC-link semaphore, and reset the codecs
+@@ -1098,7 +1098,7 @@ static int sis_chip_init(struct sis7019 *sis)
+ 		return -EIO;
+ 
+ 	outl(SIS_AC97_CMD_CODEC_COLD_RESET, io + SIS_AC97_CMD);
+-	udelay(10);
++	udelay(250);
+ 
+ 	count = 0xffff;
+ 	while ((inw(io + SIS_AC97_STATUS) & SIS_AC97_STATUS_BUSY) && --count)
