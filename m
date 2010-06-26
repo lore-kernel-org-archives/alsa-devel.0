@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
 Subject: Re: [PATCH RFC 1/3] ASoC: uda1380: use callbacks
 	instead of gpiolib
-Date: Sat, 26 Jun 2010 17:40:37 +0100
-Message-ID: <F58F893B-1539-4999-817E-8B2C4E871FB7@opensource.wolfsonmicro.com>
+Date: Sat, 26 Jun 2010 19:53:15 +0300
+Message-ID: <201006261953.43884.anarsoul@gmail.com>
 References: <1277565285-11563-1-git-send-email-anarsoul@gmail.com>
 	<1277565285-11563-2-git-send-email-anarsoul@gmail.com>
-	(sfid-20100626_161525_840574_69230E3F)
-Mime-Version: 1.0 (iPad Mail 7B367)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	<F58F893B-1539-4999-817E-8B2C4E871FB7@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============8917566215627895144=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 89CAF2413F
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id D475E2432C
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Jun 2010 18:40:11 +0200 (CEST)
-In-Reply-To: <1277565285-11563-2-git-send-email-anarsoul@gmail.com>
-	(sfid-20100626_161525_840574_69230E3F)
+	Sat, 26 Jun 2010 18:53:49 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so1071464bwz.38
+	for <alsa-devel@alsa-project.org>; Sat, 26 Jun 2010 09:53:48 -0700 (PDT)
+In-Reply-To: <F58F893B-1539-4999-817E-8B2C4E871FB7@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,107 +25,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 26 Jun 2010, at 16:14, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+--===============8917566215627895144==
+Content-Type: multipart/signed;
+  boundary="nextPart5350449.Zl8IajSslh";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-> Some machines require some tricks to enable/disable
-> codec, i.e. disable or enable i2s clock before enabling/disabling
-> codec, and just configuring gpio is not enough; some machines
-> have no reset pin (reset is performed on codec power on automatically).
-> Fix that issue by using machine-specific callback to enable codec power.
-> 
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+--nextPart5350449.Zl8IajSslh
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is fine but it'd be really nice to preserve the use of GPIOs since
-that will cover the majority of machines - for example, by providing a
-default callback if none is provided and GPIOs are. This will also
-avoid the need to update existing machine drivers (which needs to be
-done otherwise).
+=D0=92 =D1=81=D0=BE=D0=BE=D0=B1=D1=89=D0=B5=D0=BD=D0=B8=D0=B8 =D0=BE=D1=82 =
+26 =D0=B8=D1=8E=D0=BD=D1=8F 2010 19:40:37 =D0=B0=D0=B2=D1=82=D0=BE=D1=80 Ma=
+rk Brown =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB:
+> On 26 Jun 2010, at 16:14, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+> > Some machines require some tricks to enable/disable
+> > codec, i.e. disable or enable i2s clock before enabling/disabling
+> > codec, and just configuring gpio is not enough; some machines
+> > have no reset pin (reset is performed on codec power on automatically).
+> > Fix that issue by using machine-specific callback to enable codec power.
+> >=20
+> > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+>=20
+> This is fine but it'd be really nice to preserve the use of GPIOs since
+> that will cover the majority of machines - for example, by providing a
+> default callback if none is provided and GPIOs are. This will also
+> avoid the need to update existing machine drivers (which needs to be
+> done otherwise).
 
-However, I do wonder if the more complex set_power() callbacks might
-not just end up as regulator API consumers? 
+The only machine that uses uda1380 and supported by mainline kernel is=20
+magician, rx1950 and h1940 sound support is not merged yet, so that's not a=
+=20
+problem to perform that change.
+=20
+> However, I do wonder if the more complex set_power() callbacks might
+> not just end up as regulator API consumers?
 
-> ---
-> include/sound/uda1380.h    |    3 +--
-> sound/soc/codecs/uda1380.c |   25 +++---------------------
-> 2 files changed, 4 insertions(+), 24 deletions(-)
-> 
-> diff --git a/include/sound/uda1380.h b/include/sound/uda1380.h
-> index 381319c..d2171dc 100644
-> --- a/include/sound/uda1380.h
-> +++ b/include/sound/uda1380.h
-> @@ -12,8 +12,7 @@
-> #define __UDA1380_H
-> 
-> struct uda1380_platform_data {
-> -	int gpio_power;
-> -	int gpio_reset;
-> +	void (*set_power)(int);
->  	int dac_clk;
-> #define UDA1380_DAC_CLK_SYSCLK 0
-> #define UDA1380_DAC_CLK_WSPLL  1
-> diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-> index 2f925a2..2b7f200 100644
-> --- a/sound/soc/codecs/uda1380.c
-> +++ b/sound/soc/codecs/uda1380.c
-> @@ -19,7 +19,6 @@
-> #include <linux/types.h>
-> #include <linux/slab.h>
-> #include <linux/errno.h>
-> -#include <linux/gpio.h>
-> #include <linux/delay.h>
-> #include <linux/i2c.h>
-> #include <linux/workqueue.h>
-> @@ -752,22 +751,11 @@ static int uda1380_register(struct uda1380_priv *uda1380)
->  		return -EINVAL;
->  	}
-> 
-> -	if (!pdata || !pdata->gpio_power || !pdata->gpio_reset)
-> +	if (!pdata || !pdata->set_power)
->  		return -EINVAL;
-> 
-> -	ret = gpio_request(pdata->gpio_power, "uda1380 power");
-> -	if (ret)
-> -		goto err_out;
-> -	ret = gpio_request(pdata->gpio_reset, "uda1380 reset");
-> -	if (ret)
-> -		goto err_gpio;
-> -
-> -	gpio_direction_output(pdata->gpio_power, 1);
-> -
->  	/* we may need to have the clock running here - pH5 */
-> -	gpio_direction_output(pdata->gpio_reset, 1);
-> -	udelay(5);
-> -	gpio_set_value(pdata->gpio_reset, 0);
-> +	pdata->set_power(1);
-> 
->  	mutex_init(&codec->mutex);
->  	INIT_LIST_HEAD(&codec->dapm_widgets);
-> @@ -818,11 +806,6 @@ static int uda1380_register(struct uda1380_priv *uda1380)
-> err_dai:
->  	snd_soc_unregister_codec(codec);
-> err_reset:
-> -	gpio_set_value(pdata->gpio_power, 0);
-> -	gpio_free(pdata->gpio_reset);
-> -err_gpio:
-> -	gpio_free(pdata->gpio_power);
-> -err_out:
->  	return ret;
-> }
-> 
-> @@ -834,9 +817,7 @@ static void uda1380_unregister(struct uda1380_priv *uda1380)
->  	snd_soc_unregister_dais(uda1380_dai, ARRAY_SIZE(uda1380_dai));
->  	snd_soc_unregister_codec(&uda1380->codec);
-> 
-> -	gpio_set_value(pdata->gpio_power, 0);
-> -	gpio_free(pdata->gpio_reset);
-> -	gpio_free(pdata->gpio_power);
-> +	pdata->set_power(0);
-> 
->  	kfree(uda1380);
->  	uda1380_codec = NULL;
-> -- 
-> 1.7.1
-> 
+Is it really necessary? Plain callback perfectly fits here, and same approa=
+ch=20
+is used for s3cmci driver. For example, rx1950_uda1380_set_power is not=20
+complex and looks like this:
+
+static void rx1950_uda1380_set_power(int enable)
+{
+	clk_disable(i2c_clk);
+	gpio_direction_output(S3C2410_GPD(0), 0);
+	gpio_direction_output(S3C2410_GPJ(0), enable);
+	if (enable) {
+		gpio_set_value(S3C2410_GPD(0), 1);
+		mdelay(1);
+		gpio_set_value(S3C2410_GPD(0), 0);
+	}
+	clk_enable(i2c_clk);
+}
+
+Regards
+Vasily
+
+--nextPart5350449.Zl8IajSslh
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
+
+iEYEABECAAYFAkwmMJcACgkQRM6pQpltKE6z1QCgwoiVVvcYr9dXYU+YY0rm0XiA
+M0IAoMEtZhfUDVzkXs3V4f+fhp5IoMxN
+=olsi
+-----END PGP SIGNATURE-----
+
+--nextPart5350449.Zl8IajSslh--
+
+--===============8917566215627895144==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+--===============8917566215627895144==--
