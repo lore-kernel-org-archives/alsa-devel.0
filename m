@@ -1,22 +1,20 @@
-From: Ryan Mallon <ryan@bluewatersys.com>
+From: Wan ZongShun <mcuos.com@gmail.com>
 Subject: Re: [RFC 0/5] ASoC multi-component support : core
-Date: Sat, 26 Jun 2010 10:38:39 +1200
-Message-ID: <4C252FEF.5060302@bluewatersys.com>
-References: <1277407467.3100.579.camel@odin>	
-	<4C23CFC0.6080700@bluewatersys.com>	
-	(sfid-20100624_223607_408551_609C17DE)
-	<661928F7-0509-4E84-A296-0949E2D76EE3@opensource.wolfsonmicro.com>	
-	<4C23EC65.9080601@bluewatersys.com>
-	<4C2435DC.5080509@bluewatersys.com> <1277455066.3123.10.camel@odin>
+Date: Sat, 26 Jun 2010 10:25:50 +0800
+Message-ID: <AANLkTimfC5rdr8r0Ll4GM7d_8WapNR3Tkk9_r-Vo3aeB@mail.gmail.com>
+References: <1277407467.3100.579.camel@odin>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
-	by alsa0.perex.cz (Postfix) with ESMTP id DDE18103820
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 55D8F10382A
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Jun 2010 00:38:47 +0200 (CEST)
-In-Reply-To: <1277455066.3123.10.camel@odin>
+	Sat, 26 Jun 2010 04:25:52 +0200 (CEST)
+Received: by vws11 with SMTP id 11so1400997vws.38
+	for <alsa-devel@alsa-project.org>; Fri, 25 Jun 2010 19:25:51 -0700 (PDT)
+In-Reply-To: <1277407467.3100.579.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,85 +25,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: vbarinov <vbarinov@embeddedalley.com>, alsa-devel <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, "timur.tabi@gmail.com" <timur.tabi@gmail.com>, Wan ZongShun <mcuos.com@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, jassisinghbrar <jassisinghbrar@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, Cliff Cai <cliff.cai@analog.com>, "Candelaria Villareal,
-	Jorge" <jorge.candelaria@ti.com>, "vaibhav.bedia" <vaibhav.bedia@ti.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>
+Cc: vbarinov <vbarinov@embeddedalley.com>, alsa-devel <alsa-devel@alsa-project.org>, jassisinghbrar <jassisinghbrar@gmail.com>, Sascha Hauer <s.hauer@pengutronix.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Peter Ujfalusi <peter.ujfalusi@nokia.com>, Cliff Cai <cliff.cai@analog.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Sedji Gaouaou <sedji.gaouaou@atmel.com>, "timur.tabi@gmail.com" <timur.tabi@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, "Candelaria Villareal,
+	Jorge" <jorge.candelaria@ti.com>, "vaibhav.bedia" <vaibhav.bedia@ti.com>, Kuninori Morimoto <morimoto.kuninori@renesas.com>, Ryan Mallon <ryan@bluewatersys.com>
 List-Id: alsa-devel@alsa-project.org
 
-Liam Girdwood wrote:
-> On Fri, 2010-06-25 at 16:51 +1200, Ryan Mallon wrote:
->> On 06/25/2010 11:38 AM, Ryan Mallon wrote:
->>> On 06/25/2010 11:12 AM, Mark Brown wrote:
->>>   
->>>> Do you actually see sound cards appearing? The log message at boot
->>>> is purely informational, cards can probe at any time.
->>>>
->>>> Define DEBUG at the top of soc-audio.c if the card never appears at all
->>>> then look at the log messages - they will say why the card is not being
->>>> instantiated.
->>>>   
->>>>     
->>> Hmm. If I define DEBUG at the top of sound/soc/soc-core.c I get this
->>> (boots fine without DEBUG, but have no sound cards):
->>>   
->> The crash was caused because I wasn't setting codec_drv in the
->> snd_soc_dai_link for the Snapper CL15 (updated patch below). I still
->> have no sound cards. I get the following in dmesg:
->>
->> tlv320aic23 0-001a: probe
->> tlv320aic23 0-001a: codec register tlv320aic23 26
->> tlv320aic23 0-001a: dai register tlv320aic23 0
->> Registered DAI 'tlv320aic23.0'
->> Registered codec 'tlv320aic23.26'
->> i2c-core: driver [tlv320aic23] registered
->> ep93xx-pcm-audio ep93xx-pcm-audio: platform register ep93xx-audio -1
->> Registered platform 'ep93xx-audio'
->> ep93xx-i2s ep93xx-i2s: dai register ep93xx-i2s -1
->> Registered DAI 'ep93xx-i2s.-1'
->> soc-audio soc-audio: CODEC tlv320aic23 not registered
->> soc-audio soc-audio: Registered card 'Snapper CL15'
->> ALSA device list:
->>   No soundcards found.
->>
->>
->> I don't understand why the tlv320 codec is not being registered. Any ideas?
->>
-> 
-> Since we now support N codecs, some codecs will now require an ID field
-> to distinguish them from others. e.g. a board with two WM8750 codecs
-> would have codecs at I2C addresses 0x1a and 0x1b, hence will require
-> each codec to be identified on the DAI link.
-> 
-> Can you try this patch below. From the output it looks like your
-> tlv320aic23 is at I2C address 26. 
-> 
-> 
-> diff --git a/sound/soc/ep93xx/snappercl15.c b/sound/soc/ep93xx/snappercl15.c
-> index aeb822d..72b7913 100644
-> --- a/sound/soc/ep93xx/snappercl15.c
-> +++ b/sound/soc/ep93xx/snappercl15.c
-> @@ -94,6 +94,7 @@ static struct snd_soc_dai_link snappercl15_dai = {
->         .cpu_dai_drv    = &ep93xx_i2s_dai,
->         .codec_dai_drv  = &tlv320aic23_dai,
->         .codec_drv      = &soc_codec_dev_tlv320aic23,
-> +       .codec_id       = 26,
->         .platform_drv   = &ep93xx_soc_platform,
->         .init           = snappercl15_tlv320aic23_init,
->         .ops            = &snappercl15_ops,
-> 
-
-Ah, that makes sense. I will try the patch on Monday. One thing to note
-is that in arch/arm/mach-ep93xx/snappercl15.c there is  already:
-
-static struct i2c_board_info __initdata snappercl15_i2c_data[] = {
-        {
-                /* Audio codec */
-                I2C_BOARD_INFO("tlv320aic23", 0x1a),
-        },
-};
-
-Is there a clean way to avoid hard-coding the i2c address of the tlv320
-codec twice? Can I pass -1 to find any available codec? If not, can you
-change the patch to 0x1a rather than 26, since i2c addresses tend to be
-written in hex.
-
-~Ryan
+MjAxMC82LzI1IExpYW0gR2lyZHdvb2QgPGxyZ0BzbGltbG9naWMuY28udWs+Ogo+IEFTb0MgaXMg
+bm93IGNvbWluZyB1cCB0byBpdCdzIDV0aCBiaXJ0aGRheSBhbmQgaXMgYmVnaW5uaW5nIHRvIHNo
+b3cgaXQncwo+IGFnZSBhIGxpdHRsZSB3aGVuIGl0IGNvbWVzIHRvIHN1cHBvcnRpbmcgdGhlIG5l
+eHQgZ2VuZXJhdGlvbiBvZiBzbWFydAo+IHBob25lcyBhbmQgbXVsdGltZWRpYSBkZXZpY2VzIHdp
+dGggaXQncyBjdXJyZW50IHNpbmdsZSBDT0RFQyBhbmQgc2luZ2xlCj4gRE1BIHBsYXRmb3JtIGRl
+c2lnbi4KPgo+IEhpc3RvcmljYWxseSwgQVNvQyBpcyBkZXNpZ25lZCBhcm91bmQgYW4gZW1iZWRk
+ZWQgc291bmQgY2FyZCB3aXRoIGEKPiBzaW5nbGUgQ09ERUMgYW5kIGEgc2luZ2xlIHBsYXRmb3Jt
+IERNQSBkcml2ZXIgKHdpdGggbXVsdGlwbGUgREFJcykuIFRoaXMKPiBkZXNpZ24gd29ya3MgZ3Jl
+YXQgZm9yIG1vc3Qgb2YgdGhlIGN1cnJlbnQgYXVkaW8gaGFyZHdhcmUgaW4gcHJvZHVjdGlvbiwK
+PiBob3dldmVyIHdlIGFyZSBub3cgc2VlaW5nIGhhcmR3YXJlIGRlc2lnbnMgZm9yIHRoZSBuZXh0
+IGdlbmVyYXRpb24gb2YKPiBkZXZpY2VzIHRoYXQgY2FuIGhhdmUgbWFueSBDT0RFQ3MsIERNQXMs
+IERTUHMgYW5kIGEgaG9zdCBvZiBvdGhlciBhdWRpbwo+IHBlcmlwaGVyYWxzIGNvbm5lY3RlZCB0
+byB0aGUgYXVkaW8gc3Vic3lzdGVtLgo+Cj4gU28gd2Ugbm93IG5lZWQgQVNvQyB0byBzdXBwb3J0
+IG5ldyBhdWRpbyBoYXJkd2FyZSBhcmNoaXRlY3R1cmVzIHdpdGgKPiBtdWx0aXBsZSBhdWRpbyBD
+T0RFQ3MsIERNQSBlbmdpbmVzLCBEU1BzLCBEQUlzIGV0Yy4KPgo+Cj4KPiBUaGlzIHBhdGNoIHNl
+cmllcyBhbGxvd3MgYW4gQVNvQyBzb3VuZCBjYXJkIHRvIHN1cHBvcnQgbXVsdGlwbGUKPiBjb21w
+b25lbnRzIChDT0RFQ3MsIERBSSBhbmQgRE1BKSBhbmQgaXMgdGhlIGZpcnN0IHBhcnQgaW4gYSBz
+ZXJpZXMgb2YKPiB3b3JrIChvdGhlciBwYXJ0cyBjb21pbmcgbGF0ZXIgaW4gdGhlIHllYXIgZnJv
+bSBNYXJrIGFuZCBJKSBkZXNpZ25lZCB0bwo+IGVuaGFuY2UgQVNvQyBmb3IgbW9kZXJuIG1vYmls
+ZSBhdWRpbyBoYXJkd2FyZS4KPgo+IFRoaXMgcGF0Y2ggc2VyaWVzIHByb3ZpZGVzIHRoZSBmb2xs
+b3dpbmcgaW1wb3J0YW50IGZlYXR1cmVzOi0KPgo+IMKgMSkgQWxsb3cgc291bmQgY2FyZHMgdG8g
+aGF2ZSBtdWx0aXBsZSBDT0RFQ3MgYW5kIHBsYXRmb3JtIERNQSBjb250cm9sbGVycy4KPiDCoDIp
+IEFsbG93IENPREVDIGRyaXZlcnMgdG8gc3VwcG9ydCBtb3JlIHRoYW4gb25lIENPREVDIGRldmlj
+ZS4KPiDCoDMpIEFsbG93IGFsbCBDT0RFQywgcGxhdGZvcm0gRE1BIGFuZCBEQUkgZHJpdmVycyB0
+byBoYXZlIHBsYXRmb3JtIGRhdGEuCj4KPiBUaGlzIGlzIGFjaGlldmVkIGJ5OiAtCj4KPiDCoDEp
+IFNlcGFyYXRpbmcgdGhlIGNvbXBvbmVudCBzdHJ1Y3QgZHJpdmVyIGRhdGEgZnJvbSB0aGUgY29t
+cG9uZW50IHN0cnVjdCBkZXZpY2UgZGF0YS4KPiDCoDIpIE1ha2luZyBhbGwgY29tcG9uZW50cyBr
+ZXJuZWwgZGV2aWNlcy4KPgo+IChBIHNpZGUgZWZmZWN0IG9mIHRoaXMgY2hhbmdlIGlzIHRoYXQg
+d2UgY2FuIG5vdyBzdG9yZSBhbGwgb3VyIGNvbXBvbmVudAo+IHByaXZhdGUgZGF0YSBpbiBzdHJ1
+Y3QgZGV2aWNlIHByaXZhdGUgZGF0YSAobGlrZSBldmVyeW9uZSBlbHNlKSBhbmQKPiB0aGVyZSBp
+cyBhbHNvIG5vdyBsZXNzIHBvaW50ZXIgaW5kaXJlY3Rpb24gZm9yIGNvbXBvbmVudHMuKQo+Cj4g
+VGhlIGNoYW5nZSBtYWlubHkgYWZmZWN0cyBvbmx5IHRoZSBwcm9iZSgpIGFuZCByZW1vdmUoKSBz
+ZWN0aW9ucyBvZgo+IGNvbXBvbmVudCBkcml2ZXJzIGFuZCB0aGUgY29tcG9uZW50IGVudW1lcmF0
+aW9uIHNlY3Rpb24gb2YgdGhlIGNvcmUuIFRoZQo+IGNvcmUgYWxzbyBub3cgaGFuZGxlcyBzZXR0
+aW5nIHVwIHRoZSBDT0RFQyBkYXRhIHN0cnVjdHMgdG9vIChtZWFuaW5nCj4gQ09ERUMgZHJpdmVy
+cyBkb250IGhhdmUgdG8gZG8gdGhpcykuIEFsbCBjb21wb25lbnQgUENNLCBEQVBNIGFuZAo+IEtj
+b250cm9sIG9wZXJhdGlvbnMgcmVtYWluIHVuY2hhbmdlZC4KPgo+Cj4KPiBJJ3ZlIHNvIGZhciB0
+ZXN0ZWQgdGhlIG5ldyBtdWx0aS1jb21wb25lbnQgZW51bWVyYXRpb24gb24gdGhlIFRJIE9NQVAK
+PiBhbmQgTWFydmVsbCBQWEEgcGxhdGZvcm1zIHdpdGggQUM5NywgTUZEIGFuZCBJMkMgYmFzZWQg
+Q09ERUNzLiBJIGRvCj4gaG93ZXZlciBuZWVkIEFTb0MgcGxhdGZvcm0gbWFpbnRhaW5lcnMgdG8g
+dGVzdCBvbiB0aGVpciBzeXN0ZW1zIChhcyBJCj4gb25seSBoYXZlIGEgc3Vic2V0IG9mIHRoZSBo
+YXJkd2FyZSkuIFNvbWUgQVNPQyBwbGF0Zm9ybXMgZG8gbmVlZCBhCj4gbGl0dGxlIGV4dHJhIGNo
+ZWNraW5nL2ZpeHVwcyB0b28gOi0KPgo+IMKgbyBTYW1zdW5nIHBsYXRmb3JtOiByZXF1aXJlZCB0
+aGUgbW9zdCB3b3JrIHRvIHVudGFuZ2xlIHRoZSBjb21wb25lbnRzLgo+IMKgbyBpLk1YIHBsYXRm
+b3JtOiByZXF1aXJlZCB3b3JrIHRvIGRlLWNvdXBsZSBjb21wb25lbnRzLgo+IMKgbyBJbmplbmlj
+IEo0NzQwIHBsYXRmb3JtOiBJIGRvIG5vdCBoYXZlIGEgdG9vbGNoYWluIHRvIGV2ZW4gYnVpbGQg
+dGhpcwo+IGFyY2ggc28gaXQgd2lsbCBhbHNvIG5lZWQgc29tZW9uZSB0byBidWlsZCBpdCB0b28u
+Cj4KPiBJZiB5b3UgZmluZCB5b3VyIHBsYXRmb3JtIGRvZXMgbm90IHdvcmsgdGhlbiB0aGUgbW9z
+dCBsaWtlbHkgcmVhc29uIGlzCj4gdGhhdCBJJ20gbWlzc2luZyBhIHBsYXRmb3JtX2RldmljZSBy
+ZWdpc3RyYXRpb24gZm9yIHlvdXIgQ09ERUMsIERBSSwKPiBldGMuIGRldmljZSBpbiB5b3VyIGFy
+Y2ggYm9hcmQuYyBvciBkZXZpY2UuYyBmaWxlcy4gUGxlYXNlIGxldCBtZSBrbm93Cj4gb3Igc2Vu
+ZCBhIHBhdGNoIDopCj4KPiBBbGwgdGhlIG11bHRpLWNvbXBvbmVudCBjb2RlIGlzIGluIG15IG11
+bHRpLWNvbXBvbmVudCBicmFuY2ggaGVyZSA6LQo+Cj4gZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHVi
+L3NjbS9saW51eC9rZXJuZWwvZ2l0L2xyZy9hc29jLTIuNi5naXQKPgoKSSByZWFsbHkgd2FudCB0
+byB0ZXN0IG15IG51YzkwMCBwbGF0Zm9ybSwgYnV0IHRoZSBnaXQgdHJlZSBzZWVtcyB0bwpiYXNl
+IGxpbnV4LTIuNi4zMSwKd2hlcmUgbnVjOTAwIG1vc3QgcGxhdGZvcm0gZmlsZXMgbm90IGJlIG1l
+cmdlZC4gc28gSSBoYXZlIHRvIHdhaXQgZm9yCjIuNi4zNiB0byB1cGRhdGUgYW5kIHRlc3QgbXkg
+ZHJpdmVyPwoKPiBUaGlzIFJGQyBwb3N0IGNvbnRhaW5zIHRoZSBjaGFuZ2VzIHRvIEFTb0MgY29y
+ZSBvbmx5LiBJJ2xsIHBvc3QgdGhlCj4gbXVsdGktY29tcG9uZW50IENPREVDIGFuZCBwbGF0Zm9y
+bSBjaGFuZ2VzIGFzIHNlcGFyYXRlIFJGQ3MgaW4gb3JkZXIgbm90Cj4gdG8gZmxvb2QgdGhlIGxp
+c3QgKGFzIHRoZXJlIGFyZSAzOCBwYXRjaGVzIGluIGFsbCkuIFRoaXMgcGF0Y2ggc2VyaWVzCj4g
+d2lsbCBldmVudHVhbGx5IGJlIHJlYmFzZWQgaW50byBhIHNpbmdsZSBwYXRjaCBmb3IgdXBzdHJl
+YW0gc28gd2UgZG9udAo+IGJyZWFrIGJpc2VjdC4gVGhlIHN1YnNlcXVlbnQgcGF0Y2hlcyBmb3Ig
+Q09ERUNzIGFuZCBwbGF0Zm9ybXMgaW4gdGhpcwo+IHNlcmllcyBjYW4gYmUgZm91bmQgaW4gdGhl
+IGdpdCBicmFuY2ggYWJvdmUuCj4KPiBUaGUgaW50ZW50aW9uIGlzIHRvIHVwc3RyZWFtIHRoaXMg
+Zm9yIDIuNi4zNgo+Cj4gVGhhbmtzCj4KPiBMaWFtCj4gLS0KPiBGcmVlbGFuY2UgRGV2ZWxvcGVy
+LCBTbGltTG9naWMgTHRkCj4gQVNvQyBhbmQgVm9sdGFnZSBSZWd1bGF0b3IgTWFpbnRhaW5lci4K
+PiBodHRwOi8vd3d3LnNsaW1sb2dpYy5jby51awo+Cj4KCgoKLS0gCipsaW51eC1hcm0ta2VybmVs
+IG1haWxpbmcgbGlzdAptYWlsIGFkZHI6bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQu
+b3JnCnlvdSBjYW4gc3Vic2NyaWJlIGJ5OgpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwKCiogbGludXgtYXJtLU5VQzkwMCBtYWlsaW5n
+IGxpc3QKbWFpbCBhZGRyOk5VQzkwMEBnb29nbGVncm91cHMuY29tCm1haW4gd2ViOiBodHRwczov
+L2dyb3Vwcy5nb29nbGUuY29tL2dyb3VwL05VQzkwMAp5b3UgY2FuIHN1YnNjcmliZSBpdCBieSBz
+ZW5kaW5nIG1lIG1haWw6Cm1jdW9zLmNvbUBnbWFpbC5jb20KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
