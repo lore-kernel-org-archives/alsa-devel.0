@@ -1,21 +1,21 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH RFC 3/3] uda1380: make driver more
-	powersave-friendly
-Date: Sat, 26 Jun 2010 18:14:45 +0300
-Message-ID: <1277565285-11563-4-git-send-email-anarsoul@gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH RFC 1/3] ASoC: uda1380: use callbacks
+	instead of gpiolib
+Date: Sat, 26 Jun 2010 17:40:37 +0100
+Message-ID: <F58F893B-1539-4999-817E-8B2C4E871FB7@opensource.wolfsonmicro.com>
 References: <1277565285-11563-1-git-send-email-anarsoul@gmail.com>
-Mime-Version: 1.0
+	<1277565285-11563-2-git-send-email-anarsoul@gmail.com>
+	(sfid-20100626_161525_840574_69230E3F)
+Mime-Version: 1.0 (iPad Mail 7B367)
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5D80910383E
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 89CAF2413F
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Jun 2010 17:15:31 +0200 (CEST)
-Received: by mail-bw0-f51.google.com with SMTP id 11so1046443bwz.38
-	for <alsa-devel@alsa-project.org>; Sat, 26 Jun 2010 08:15:31 -0700 (PDT)
-In-Reply-To: <1277565285-11563-1-git-send-email-anarsoul@gmail.com>
+	Sat, 26 Jun 2010 18:40:11 +0200 (CEST)
+In-Reply-To: <1277565285-11563-2-git-send-email-anarsoul@gmail.com>
+	(sfid-20100626_161525_840574_69230E3F)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,180 +25,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>, alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Disable some codec modules in standby mode, completely disable
-codec in off mode to save some power.
-Fix suspend/resume: mark mixer regs as dirty on resume to
-restore mixer values, otherwise driver produces no sound
-(master is muted by default).
+On 26 Jun 2010, at 16:14, Vasily Khoruzhick <anarsoul@gmail.com> wrote:
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
----
- sound/soc/codecs/uda1380.c |   92 ++++++++++++++++++++++++++++---------------
- 1 files changed, 60 insertions(+), 32 deletions(-)
+> Some machines require some tricks to enable/disable
+> codec, i.e. disable or enable i2s clock before enabling/disabling
+> codec, and just configuring gpio is not enough; some machines
+> have no reset pin (reset is performed on codec power on automatically).
+> Fix that issue by using machine-specific callback to enable codec power.
+> 
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 
-diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
-index 2b7f200..a30f809 100644
---- a/sound/soc/codecs/uda1380.c
-+++ b/sound/soc/codecs/uda1380.c
-@@ -130,7 +130,41 @@ static int uda1380_write(struct snd_soc_codec *codec, unsigned int reg,
- 		return -EIO;
- }
- 
--#define uda1380_reset(c)	uda1380_write(c, UDA1380_RESET, 0)
-+static void uda1380_sync_cache(struct snd_soc_codec *codec)
-+{
-+	int reg;
-+	u8 data[3];
-+	u16 *cache = codec->reg_cache;
-+
-+	/* Sync reg_cache with the hardware */
-+	for (reg = 0; reg < UDA1380_MVOL; reg++) {
-+		data[0] = reg;
-+		data[1] = (cache[reg] & 0xff00) >> 8;
-+		data[2] = cache[reg] & 0x00ff;
-+		if (codec->hw_write(codec->control_data, data, 3) != 3)
-+			dev_err(codec->dev, "%s: write to reg 0x%x failed\n",
-+				__func__, reg);
-+	}
-+
-+	for (reg = UDA1380_MVOL; reg < UDA1380_CACHEREGNUM; reg++)
-+		set_bit(reg - 0x10, &uda1380_cache_dirty);
-+}
-+
-+static int uda1380_reset(struct snd_soc_codec *codec)
-+{
-+	u8 data[3];
-+
-+	data[0] = UDA1380_RESET;
-+	data[1] = 0;
-+	data[2] = 0;
-+
-+	if (codec->hw_write(codec->control_data, data, 3) != 3) {
-+		dev_err(codec->dev, "%s: failed\n", __func__);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
- 
- static void uda1380_flush_work(struct work_struct *work)
- {
-@@ -481,13 +515,13 @@ static int uda1380_trigger(struct snd_pcm_substream *substream, int cmd,
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		uda1380_write_reg_cache(codec, UDA1380_MIXER,
-+		uda1380_write(codec, UDA1380_MIXER,
- 					mixer & ~R14_SILENCE);
- 		schedule_work(&uda1380->work);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
--		uda1380_write_reg_cache(codec, UDA1380_MIXER,
-+		uda1380_write(codec, UDA1380_MIXER,
- 					mixer | R14_SILENCE);
- 		schedule_work(&uda1380->work);
- 		break;
-@@ -561,17 +595,38 @@ static int uda1380_set_bias_level(struct snd_soc_codec *codec,
- 	enum snd_soc_bias_level level)
- {
- 	int pm = uda1380_read_reg_cache(codec, UDA1380_PM);
-+	struct uda1380_platform_data *pdata = codec->dev->platform_data;
-+
-+	if (codec->bias_level == level)
-+		return 0;
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
- 	case SND_SOC_BIAS_PREPARE:
-+		/* ADC, DAC on */
- 		uda1380_write(codec, UDA1380_PM, R02_PON_BIAS | pm);
- 		break;
- 	case SND_SOC_BIAS_STANDBY:
--		uda1380_write(codec, UDA1380_PM, R02_PON_BIAS);
-+		if (codec->bias_level == SND_SOC_BIAS_OFF) {
-+			pdata->set_power(1);
-+			uda1380_reset(codec);
-+
-+			switch (pdata->dac_clk) {
-+			case UDA1380_DAC_CLK_SYSCLK:
-+				uda1380_write_reg_cache(codec, UDA1380_CLK, 0);
-+				break;
-+			case UDA1380_DAC_CLK_WSPLL:
-+				uda1380_write_reg_cache(codec, UDA1380_CLK,
-+					R00_DAC_CLK);
-+				break;
-+			}
-+
-+			uda1380_sync_cache(codec);
-+		}
-+		uda1380_write(codec, UDA1380_PM, 0x0);
- 		break;
- 	case SND_SOC_BIAS_OFF:
--		uda1380_write(codec, UDA1380_PM, 0x0);
-+		pdata->set_power(0);
- 		break;
- 	}
- 	codec->bias_level = level;
-@@ -658,16 +713,7 @@ static int uda1380_resume(struct platform_device *pdev)
- {
- 	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
- 	struct snd_soc_codec *codec = socdev->card->codec;
--	int i;
--	u8 data[2];
--	u16 *cache = codec->reg_cache;
- 
--	/* Sync reg_cache with the hardware */
--	for (i = 0; i < ARRAY_SIZE(uda1380_reg); i++) {
--		data[0] = (i << 1) | ((cache[i] >> 8) & 0x0001);
--		data[1] = cache[i] & 0x00ff;
--		codec->hw_write(codec->control_data, data, 2);
--	}
- 	uda1380_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
- 	return 0;
- }
-@@ -697,15 +743,6 @@ static int uda1380_probe(struct platform_device *pdev)
- 
- 	/* power on device */
- 	uda1380_set_bias_level(codec, SND_SOC_BIAS_STANDBY);
--	/* set clock input */
--	switch (pdata->dac_clk) {
--	case UDA1380_DAC_CLK_SYSCLK:
--		uda1380_write(codec, UDA1380_CLK, 0);
--		break;
--	case UDA1380_DAC_CLK_WSPLL:
--		uda1380_write(codec, UDA1380_CLK, R00_DAC_CLK);
--		break;
--	}
- 
- 	snd_soc_add_controls(codec, uda1380_snd_controls,
- 				ARRAY_SIZE(uda1380_snd_controls));
-@@ -754,9 +791,6 @@ static int uda1380_register(struct uda1380_priv *uda1380)
- 	if (!pdata || !pdata->set_power)
- 		return -EINVAL;
- 
--	/* we may need to have the clock running here - pH5 */
--	pdata->set_power(1);
--
- 	mutex_init(&codec->mutex);
- 	INIT_LIST_HEAD(&codec->dapm_widgets);
- 	INIT_LIST_HEAD(&codec->dapm_paths);
-@@ -776,12 +810,6 @@ static int uda1380_register(struct uda1380_priv *uda1380)
- 
- 	memcpy(codec->reg_cache, uda1380_reg, sizeof(uda1380_reg));
- 
--	ret = uda1380_reset(codec);
--	if (ret < 0) {
--		dev_err(codec->dev, "Failed to issue reset\n");
--		goto err_reset;
--	}
--
- 	INIT_WORK(&uda1380->work, uda1380_flush_work);
- 
- 	for (i = 0; i < ARRAY_SIZE(uda1380_dai); i++)
--- 
-1.7.1
+This is fine but it'd be really nice to preserve the use of GPIOs since
+that will cover the majority of machines - for example, by providing a
+default callback if none is provided and GPIOs are. This will also
+avoid the need to update existing machine drivers (which needs to be
+done otherwise).
+
+However, I do wonder if the more complex set_power() callbacks might
+not just end up as regulator API consumers? 
+
+> ---
+> include/sound/uda1380.h    |    3 +--
+> sound/soc/codecs/uda1380.c |   25 +++---------------------
+> 2 files changed, 4 insertions(+), 24 deletions(-)
+> 
+> diff --git a/include/sound/uda1380.h b/include/sound/uda1380.h
+> index 381319c..d2171dc 100644
+> --- a/include/sound/uda1380.h
+> +++ b/include/sound/uda1380.h
+> @@ -12,8 +12,7 @@
+> #define __UDA1380_H
+> 
+> struct uda1380_platform_data {
+> -	int gpio_power;
+> -	int gpio_reset;
+> +	void (*set_power)(int);
+>  	int dac_clk;
+> #define UDA1380_DAC_CLK_SYSCLK 0
+> #define UDA1380_DAC_CLK_WSPLL  1
+> diff --git a/sound/soc/codecs/uda1380.c b/sound/soc/codecs/uda1380.c
+> index 2f925a2..2b7f200 100644
+> --- a/sound/soc/codecs/uda1380.c
+> +++ b/sound/soc/codecs/uda1380.c
+> @@ -19,7 +19,6 @@
+> #include <linux/types.h>
+> #include <linux/slab.h>
+> #include <linux/errno.h>
+> -#include <linux/gpio.h>
+> #include <linux/delay.h>
+> #include <linux/i2c.h>
+> #include <linux/workqueue.h>
+> @@ -752,22 +751,11 @@ static int uda1380_register(struct uda1380_priv *uda1380)
+>  		return -EINVAL;
+>  	}
+> 
+> -	if (!pdata || !pdata->gpio_power || !pdata->gpio_reset)
+> +	if (!pdata || !pdata->set_power)
+>  		return -EINVAL;
+> 
+> -	ret = gpio_request(pdata->gpio_power, "uda1380 power");
+> -	if (ret)
+> -		goto err_out;
+> -	ret = gpio_request(pdata->gpio_reset, "uda1380 reset");
+> -	if (ret)
+> -		goto err_gpio;
+> -
+> -	gpio_direction_output(pdata->gpio_power, 1);
+> -
+>  	/* we may need to have the clock running here - pH5 */
+> -	gpio_direction_output(pdata->gpio_reset, 1);
+> -	udelay(5);
+> -	gpio_set_value(pdata->gpio_reset, 0);
+> +	pdata->set_power(1);
+> 
+>  	mutex_init(&codec->mutex);
+>  	INIT_LIST_HEAD(&codec->dapm_widgets);
+> @@ -818,11 +806,6 @@ static int uda1380_register(struct uda1380_priv *uda1380)
+> err_dai:
+>  	snd_soc_unregister_codec(codec);
+> err_reset:
+> -	gpio_set_value(pdata->gpio_power, 0);
+> -	gpio_free(pdata->gpio_reset);
+> -err_gpio:
+> -	gpio_free(pdata->gpio_power);
+> -err_out:
+>  	return ret;
+> }
+> 
+> @@ -834,9 +817,7 @@ static void uda1380_unregister(struct uda1380_priv *uda1380)
+>  	snd_soc_unregister_dais(uda1380_dai, ARRAY_SIZE(uda1380_dai));
+>  	snd_soc_unregister_codec(&uda1380->codec);
+> 
+> -	gpio_set_value(pdata->gpio_power, 0);
+> -	gpio_free(pdata->gpio_reset);
+> -	gpio_free(pdata->gpio_power);
+> +	pdata->set_power(0);
+> 
+>  	kfree(uda1380);
+>  	uda1380_codec = NULL;
+> -- 
+> 1.7.1
+> 
