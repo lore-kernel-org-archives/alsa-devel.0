@@ -1,21 +1,21 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH RFC 3/3] uda1380: make driver more
-	powersave-friendly
-Date: Sat, 26 Jun 2010 21:45:12 +0100
-Message-ID: <0FF1255A-5069-426F-9521-A8E0787081D8@opensource.wolfsonmicro.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH RFC 1/3] ASoC: uda1380: use callbacks
+	instead of gpiolib
+Date: Sat, 26 Jun 2010 23:53:50 +0300
+Message-ID: <201006262353.58897.anarsoul@gmail.com>
 References: <1277565285-11563-1-git-send-email-anarsoul@gmail.com>
-	<1277565285-11563-4-git-send-email-anarsoul@gmail.com>
-	(sfid-20100626_161536_132759_73FF1EF7)
-Mime-Version: 1.0 (Apple Message framework v1081)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	<201006261953.43884.anarsoul@gmail.com>
+	<877258B5-0752-473E-920C-CFD529858C4B@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============2253492986615351979=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id D5471244C7
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5BFBD24450
 	for <alsa-devel@alsa-project.org>;
-	Sat, 26 Jun 2010 22:45:13 +0200 (CEST)
-In-Reply-To: <1277565285-11563-4-git-send-email-anarsoul@gmail.com>
-	(sfid-20100626_161536_132759_73FF1EF7)
+	Sat, 26 Jun 2010 22:54:03 +0200 (CEST)
+Received: by bwz11 with SMTP id 11so1129476bwz.38
+	for <alsa-devel@alsa-project.org>; Sat, 26 Jun 2010 13:54:03 -0700 (PDT)
+In-Reply-To: <877258B5-0752-473E-920C-CFD529858C4B@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,78 +25,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 26 Jun 2010, at 16:14, Vasily Khoruzhick wrote:
+--===============2253492986615351979==
+Content-Type: multipart/signed;
+  boundary="nextPart2935205.HerYBHnBgt";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
 
-> Disable some codec modules in standby mode, completely disable
-> codec in off mode to save some power.
-> Fix suspend/resume: mark mixer regs as dirty on resume to
-> restore mixer values, otherwise driver produces no sound
-> (master is muted by default).
+--nextPart2935205.HerYBHnBgt
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-Please remember to CC Liam on ASoC patches.
+=D0=92 =D1=81=D0=BE=D0=BE=D0=B1=D1=89=D0=B5=D0=BD=D0=B8=D0=B8 =D0=BE=D1=82 =
+26 =D0=B8=D1=8E=D0=BD=D1=8F 2010 23:09:39 =D0=B0=D0=B2=D1=82=D0=BE=D1=80 Ma=
+rk Brown =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB:
 
-> +	for (reg = UDA1380_MVOL; reg < UDA1380_CACHEREGNUM; reg++)
-> +		set_bit(reg - 0x10, &uda1380_cache_dirty);
+> The regulator API isn't massively complex either and it does provide a
+> standard abstraction for controlling power which seems like it might be
+> useful here, though given the (frankly rather odd) fiddling with clocks
+> your callback does perhaps it won't help.
 
-This seems odd, I'd expect the cache to be being marked as clean immediately
-after sync?
+Ok, but I still don't like idea about keeping both regulator and gpio stuff=
+=2E=20
+Btw, this weird clock stuff can be merged to i2c driver, i.e. keep i2c modu=
+le=20
+clock enabled only on i2c transfer (it's not scl line, it's module clock)=20
+(I've sent patch for i2c-s3c2410 ~month ago, can resend it), and we can avo=
+id=20
+modyfing power/reset controlling part of uda1380 driver. What do you think=
+=20
+about that?
 
-> @@ -561,17 +595,38 @@ static int uda1380_set_bias_level(struct snd_soc_codec *codec,
-> 	enum snd_soc_bias_level level)
-> {
-> 	int pm = uda1380_read_reg_cache(codec, UDA1380_PM);
-> +	struct uda1380_platform_data *pdata = codec->dev->platform_data;
-> +
-> +	if (codec->bias_level == level)
-> +		return 0;
-> 
-> 	switch (level) {
-> 	case SND_SOC_BIAS_ON:
-> 	case SND_SOC_BIAS_PREPARE:
-> +		/* ADC, DAC on */
-> 		uda1380_write(codec, UDA1380_PM, R02_PON_BIAS | pm);
+Regards
+Vasily
 
-Like I said previously you really should look at using DAPM here, this should
-make the code simpler and will let you 
+--nextPart2935205.HerYBHnBgt
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-You might also want to consider snd_soc_update_bits().
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.15 (GNU/Linux)
 
-> 		break;
-> 	case SND_SOC_BIAS_STANDBY:
-> -		uda1380_write(codec, UDA1380_PM, R02_PON_BIAS);
-> +		if (codec->bias_level == SND_SOC_BIAS_OFF) {
-> +			pdata->set_power(1);
-> +			uda1380_reset(codec);
+iEYEABECAAYFAkwmaOYACgkQRM6pQpltKE7suACg44LemnZzRkXhHTi+Dj81zj5x
+YwIAoJ/hWlFZQGfPVAzENVuSE+vOL/Cn
+=YEfN
+-----END PGP SIGNATURE-----
 
-The reset here seems unneeded and possibly wasteful if there is no power
-control on the system. It'd seem better to do something like just power up,
-flagging the cache as dirty if there was a callback. I'd strongly expect that
-if you are actually controlling power the device will be in the default state
-anyway.
+--nextPart2935205.HerYBHnBgt--
 
-> +			switch (pdata->dac_clk) {
-> +			case UDA1380_DAC_CLK_SYSCLK:
-> +				uda1380_write_reg_cache(codec, UDA1380_CLK, 0);
-> +				break;
-> +			case UDA1380_DAC_CLK_WSPLL:
-> +				uda1380_write_reg_cache(codec, UDA1380_CLK,
-> +					R00_DAC_CLK);
-> +				break;
-> +			}
+--===============2253492986615351979==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Why is this being managed every time the device is enabled? Surely the
-setting can be done once at startup.
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
-> -	ret = uda1380_reset(codec);
-> -	if (ret < 0) {
-> -		dev_err(codec->dev, "Failed to issue reset\n");
-> -		goto err_reset;
-> -	}
-> -
-
-The reason for the reset at startup is that we don't know what state the device
-is in when Linux gets control.
+--===============2253492986615351979==--
