@@ -1,18 +1,19 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [RFC 08/15] ASoC: multi-component - S6000 Platform
-Date: Sun, 27 Jun 2010 12:52:07 +0100
-Message-ID: <1277639534-5104-9-git-send-email-lrg@slimlogic.co.uk>
+Subject: [RFC 07/15] ASoC: multi-component - Renasas SuperH
+	Platform
+Date: Sun, 27 Jun 2010 12:52:06 +0100
+Message-ID: <1277639534-5104-8-git-send-email-lrg@slimlogic.co.uk>
 References: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 22BA41038A2
+	by alsa0.perex.cz (Postfix) with ESMTP id B4BA3103891
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 13:52:42 +0200 (CEST)
+	Sun, 27 Jun 2010 13:52:40 +0200 (CEST)
 Received: by mail-ww0-f51.google.com with SMTP id 13so934011wwb.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 04:52:42 -0700 (PDT)
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 04:52:40 -0700 (PDT)
 In-Reply-To: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +28,7 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Update the S6000 platform and machines to new multi-component model.
+Update the Renasas SuperH platform and machines to new multi-component model.
 
 This patch changes the machine drivers for multi-component as follows :-
 
@@ -43,519 +44,1117 @@ This patch also changes the DAI and platform DAM drivers as follows :-
 
 Other notable changes required for multi-component support:-
 
- o Fix DMA params private data for playback and capture .
- o Removed empty s6105 audio private data. This must be platform data now.
+ o Decoupled platform DMA and DAI drivers.
+ o Added extern struct siu_info *siu_i2s_data (ideally this should be passed
+   around the sui_dai_ops rather than being a global).
 
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- sound/soc/s6000/s6000-i2s.c   |   54 ++++++++++------------
- sound/soc/s6000/s6000-i2s.h   |    2 +-
- sound/soc/s6000/s6000-pcm.c   |   98 +++++++++++++++++++++++++---------------
- sound/soc/s6000/s6000-pcm.h   |    2 +-
- sound/soc/s6000/s6105-ipcam.c |   31 +++++--------
- 5 files changed, 99 insertions(+), 88 deletions(-)
+ include/sound/sh_fsi.h     |    4 +-
+ sound/soc/sh/dma-sh7760.c  |   49 +++++++++++++++++++++++++----------
+ sound/soc/sh/fsi-ak4642.c  |   23 ++++++----------
+ sound/soc/sh/fsi-da7210.c  |   21 ++++++---------
+ sound/soc/sh/fsi.c         |   38 +++++++++++-----------------
+ sound/soc/sh/hac.c         |   41 ++++++++++++++++++++++--------
+ sound/soc/sh/migor.c       |   29 +++++++++------------
+ sound/soc/sh/sh7760-ac97.c |   23 ++++++----------
+ sound/soc/sh/siu.h         |    5 ++-
+ sound/soc/sh/siu_dai.c     |   60 ++++++++++++++++++++++---------------------
+ sound/soc/sh/siu_pcm.c     |   32 ++++++++++++-----------
+ sound/soc/sh/ssi.c         |   50 ++++++++++++++++++++++++------------
+ 12 files changed, 205 insertions(+), 170 deletions(-)
 
-diff --git a/sound/soc/s6000/s6000-i2s.c b/sound/soc/s6000/s6000-i2s.c
-index 59e3fa7..b60b62f 100644
---- a/sound/soc/s6000/s6000-i2s.c
-+++ b/sound/soc/s6000/s6000-i2s.c
-@@ -140,7 +140,7 @@ static void s6000_i2s_stop_channel(struct s6000_i2s_dev *dev, int channel)
- static void s6000_i2s_start(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s6000_i2s_dev *dev = rtd->dai->cpu_dai->private_data;
-+	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(rtd->cpu_dai);
- 	int channel;
- 
- 	channel = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
-@@ -152,7 +152,7 @@ static void s6000_i2s_start(struct snd_pcm_substream *substream)
- static void s6000_i2s_stop(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s6000_i2s_dev *dev = rtd->dai->cpu_dai->private_data;
-+	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(rtd->cpu_dai);
- 	int channel;
- 
- 	channel = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
-@@ -194,7 +194,7 @@ static unsigned int s6000_i2s_int_sources(struct s6000_i2s_dev *dev)
- 
- static unsigned int s6000_i2s_check_xrun(struct snd_soc_dai *cpu_dai)
- {
--	struct s6000_i2s_dev *dev = cpu_dai->private_data;
-+	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
- 	unsigned int errors;
- 	unsigned int ret;
- 
-@@ -232,7 +232,7 @@ static void s6000_i2s_wait_disabled(struct s6000_i2s_dev *dev)
- static int s6000_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 				   unsigned int fmt)
- {
--	struct s6000_i2s_dev *dev = cpu_dai->private_data;
-+	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
- 	u32 w;
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-@@ -273,7 +273,7 @@ static int s6000_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 
- static int s6000_i2s_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
- {
--	struct s6000_i2s_dev *dev = dai->private_data;
-+	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
- 
- 	if (!div || (div & 1) || div > (S6_I2S_DIV_MASK + 1) * 2)
- 		return -EINVAL;
-@@ -287,7 +287,7 @@ static int s6000_i2s_hw_params(struct snd_pcm_substream *substream,
- 			       struct snd_pcm_hw_params *params,
- 			       struct snd_soc_dai *dai)
- {
--	struct s6000_i2s_dev *dev = dai->private_data;
-+	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	int interf;
- 	u32 w = 0;
- 
-@@ -326,15 +326,17 @@ static int s6000_i2s_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int s6000_i2s_dai_probe(struct platform_device *pdev,
--			       struct snd_soc_dai *dai)
-+static int s6000_i2s_dai_probe(struct snd_soc_dai *dai)
- {
--	struct s6000_i2s_dev *dev = dai->private_data;
--	struct s6000_snd_platform_data *pdata = pdev->dev.platform_data;
-+	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
-+	struct s6000_snd_platform_data *pdata = dai->dev->platform_data;
- 
- 	if (!pdata)
- 		return -EINVAL;
- 
-+	dai->capture_dma_data = &dev->dma_params;
-+	dai->playback_dma_data = &dev->dma_params;
-+
- 	dev->wide = pdata->wide;
- 	dev->channel_in = pdata->channel_in;
- 	dev->channel_out = pdata->channel_out;
-@@ -352,10 +354,10 @@ static int s6000_i2s_dai_probe(struct platform_device *pdev,
- 
- 		dev->channel_in = 0;
- 		dev->channel_out = 1;
--		dai->capture.channels_min = 2 * dev->lines_in;
--		dai->capture.channels_max = dai->capture.channels_min;
--		dai->playback.channels_min = 2 * dev->lines_out;
--		dai->playback.channels_max = dai->playback.channels_min;
-+		dai->driver->capture.channels_min = 2 * dev->lines_in;
-+		dai->driver->capture.channels_max = dai->driver->capture.channels_min;
-+		dai->driver->playback.channels_min = 2 * dev->lines_out;
-+		dai->driver->playback.channels_max = dai->driver->playback.channels_min;
- 
- 		for (i = 0; i < dev->lines_out; i++)
- 			s6_i2s_write_reg(dev, S6_I2S_DATA_CFG(i), S6_I2S_OUT);
-@@ -372,10 +374,10 @@ static int s6000_i2s_dai_probe(struct platform_device *pdev,
- 		if (dev->lines_in > 1 || dev->lines_out > 1)
- 			return -EINVAL;
- 
--		dai->capture.channels_min = 2 * dev->lines_in;
--		dai->capture.channels_max = 8 * dev->lines_in;
--		dai->playback.channels_min = 2 * dev->lines_out;
--		dai->playback.channels_max = 8 * dev->lines_out;
-+		dai->driver->capture.channels_min = 2 * dev->lines_in;
-+		dai->driver->capture.channels_max = 8 * dev->lines_in;
-+		dai->driver->playback.channels_min = 2 * dev->lines_out;
-+		dai->driver->playback.channels_max = 8 * dev->lines_out;
- 
- 		if (dev->lines_in)
- 			cfg[dev->channel_in] = S6_I2S_IN;
-@@ -413,9 +415,8 @@ static struct snd_soc_dai_ops s6000_i2s_dai_ops = {
- 	.hw_params = s6000_i2s_hw_params,
+diff --git a/include/sound/sh_fsi.h b/include/sound/sh_fsi.h
+index c022736..7395f46 100644
+--- a/include/sound/sh_fsi.h
++++ b/include/sound/sh_fsi.h
+@@ -77,7 +77,7 @@ struct sh_fsi_platform_info {
+ 	unsigned long portb_flags;
  };
  
--struct snd_soc_dai s6000_i2s_dai = {
-+struct snd_soc_dai_driver s6000_i2s_dai = {
- 	.name = "s6000-i2s",
--	.id = 0,
- 	.probe = s6000_i2s_dai_probe,
- 	.playback = {
- 		.channels_min = 2,
-@@ -513,11 +514,7 @@ static int __devinit s6000_i2s_probe(struct platform_device *pdev)
- 		ret = -ENOMEM;
- 		goto err_release_dma2;
- 	}
--
--	s6000_i2s_dai.dev = &pdev->dev;
--	s6000_i2s_dai.private_data = dev;
--	s6000_i2s_dai.capture.dma_data = &dev->dma_params;
--	s6000_i2s_dai.playback.dma_data = &dev->dma_params;
-+	dev_set_drvdata(&pdev->dev, dev);
+-extern struct snd_soc_dai fsi_soc_dai[2];
+-extern struct snd_soc_platform fsi_soc_platform;
++extern struct snd_soc_dai_driver fsi_soc_dai[2];
++extern struct snd_soc_platform_driver fsi_soc_platform;
  
- 	dev->sifbase = sifmem->start;
- 	dev->scbbase = mmio;
-@@ -548,7 +545,7 @@ static int __devinit s6000_i2s_probe(struct platform_device *pdev)
- 			 S6_I2S_INT_UNDERRUN |
- 			 S6_I2S_INT_OVERRUN);
- 
--	ret = snd_soc_register_dai(&s6000_i2s_dai);
-+	ret = snd_soc_register_dai(&pdev->dev, -1, &s6000_i2s_dai);
- 	if (ret)
- 		goto err_release_dev;
- 
-@@ -573,17 +570,16 @@ err_release_none:
- 
- static void __devexit s6000_i2s_remove(struct platform_device *pdev)
+ #endif /* __SOUND_FSI_H */
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index 0d8bdf0..57028f2 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -137,7 +137,7 @@ static void camelot_rxdma(void *data)
+ static int camelot_pcm_open(struct snd_pcm_substream *substream)
  {
--	struct s6000_i2s_dev *dev = s6000_i2s_dai.private_data;
-+	struct s6000_i2s_dev *dev = dev_get_drvdata(&pdev->dev);
- 	struct resource *region;
- 	void __iomem *mmio = dev->scbbase;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct camelot_pcm *cam = &cam_pcm_data[rtd->dai->cpu_dai->id];
++	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
+ 	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
+ 	int ret, dmairq;
  
--	snd_soc_unregister_dai(&s6000_i2s_dai);
-+	snd_soc_unregister_dai(&pdev->dev, -1);
- 
- 	s6000_i2s_stop_channel(dev, 0);
- 	s6000_i2s_stop_channel(dev, 1);
- 
- 	s6_i2s_write_reg(dev, S6_I2S_INTERRUPT_ENABLE, 0);
--	s6000_i2s_dai.private_data = 0;
- 	kfree(dev);
- 
- 	region = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-diff --git a/sound/soc/s6000/s6000-i2s.h b/sound/soc/s6000/s6000-i2s.h
-index 2375fdf..3650241 100644
---- a/sound/soc/s6000/s6000-i2s.h
-+++ b/sound/soc/s6000/s6000-i2s.h
-@@ -12,7 +12,7 @@
- #ifndef _S6000_I2S_H
- #define _S6000_I2S_H
- 
--extern struct snd_soc_dai s6000_i2s_dai;
-+extern struct snd_soc_dai_driver s6000_i2s_dai;
- 
- struct s6000_snd_platform_data {
- 	int lines_in;
-diff --git a/sound/soc/s6000/s6000-pcm.c b/sound/soc/s6000/s6000-pcm.c
-index 9c7f7f0..3dda283 100644
---- a/sound/soc/s6000/s6000-pcm.c
-+++ b/sound/soc/s6000/s6000-pcm.c
-@@ -65,7 +65,7 @@ static void s6000_pcm_enqueue_dma(struct snd_pcm_substream *substream)
- 	dma_addr_t dma_pos;
- 	dma_addr_t src, dst;
- 
--	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
- 
- 	period_size = snd_pcm_lib_period_bytes(substream);
- 	dma_offset = prtd->period * period_size;
-@@ -103,23 +103,25 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
+@@ -150,7 +150,7 @@ static int camelot_pcm_open(struct snd_pcm_substream *substream)
+ 		ret = dmabrg_request_irq(dmairq, camelot_rxdma, cam);
+ 		if (unlikely(ret)) {
+ 			pr_debug("audio unit %d irqs already taken!\n",
+-			     rtd->dai->cpu_dai->id);
++			     rtd->cpu_dai->id);
+ 			return -EBUSY;
+ 		}
+ 		(void)dmabrg_request_irq(dmairq + 1,camelot_rxdma, cam);
+@@ -159,7 +159,7 @@ static int camelot_pcm_open(struct snd_pcm_substream *substream)
+ 		ret = dmabrg_request_irq(dmairq, camelot_txdma, cam);
+ 		if (unlikely(ret)) {
+ 			pr_debug("audio unit %d irqs already taken!\n",
+-			     rtd->dai->cpu_dai->id);
++			     rtd->cpu_dai->id);
+ 			return -EBUSY;
+ 		}
+ 		(void)dmabrg_request_irq(dmairq + 1, camelot_txdma, cam);
+@@ -170,7 +170,7 @@ static int camelot_pcm_open(struct snd_pcm_substream *substream)
+ static int camelot_pcm_close(struct snd_pcm_substream *substream)
  {
- 	struct snd_pcm *pcm = data;
- 	struct snd_soc_pcm_runtime *runtime = pcm->private_data;
--	struct s6000_pcm_dma_params *params =
--		snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
- 	struct s6000_runtime_data *prtd;
- 	unsigned int has_xrun;
- 	int i, ret = IRQ_NONE;
--	u32 channel[2] = {
--		[SNDRV_PCM_STREAM_PLAYBACK] = params->dma_out,
--		[SNDRV_PCM_STREAM_CAPTURE] = params->dma_in
--	};
--
--	has_xrun = params->check_xrun(runtime->dai->cpu_dai);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct camelot_pcm *cam = &cam_pcm_data[rtd->dai->cpu_dai->id];
++	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
+ 	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
+ 	int dmairq;
  
--	for (i = 0; i < ARRAY_SIZE(channel); ++i) {
-+	for (i = 0; i < 2; ++i) {
- 		struct snd_pcm_substream *substream = pcm->streams[i].substream;
-+		struct s6000_pcm_dma_params *params =
-+					snd_soc_dai_get_dma_data(runtime->cpu_dai, substream);
-+		u32 channel;
- 		unsigned int pending;
- 
--		if (!channel[i])
-+		if (substream == SNDRV_PCM_STREAM_PLAYBACK)
-+			channel = params->dma_out;
-+		else
-+			channel = params->dma_in;
-+
-+		has_xrun = params->check_xrun(runtime->cpu_dai);
-+
-+		if (!channel)
- 			continue;
- 
- 		if (unlikely(has_xrun & (1 << i)) &&
-@@ -130,8 +132,8 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
- 			ret = IRQ_HANDLED;
- 		}
- 
--		pending = s6dmac_int_sources(DMA_MASK_DMAC(channel[i]),
--					     DMA_INDEX_CHNL(channel[i]));
-+		pending = s6dmac_int_sources(DMA_MASK_DMAC(channel),
-+					     DMA_INDEX_CHNL(channel));
- 
- 		if (pending & 1) {
- 			ret = IRQ_HANDLED;
-@@ -139,10 +141,10 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
- 				   snd_pcm_running(substream))) {
- 				snd_pcm_period_elapsed(substream);
- 				dev_dbg(pcm->dev, "period elapsed %x %x\n",
--				       s6dmac_cur_src(DMA_MASK_DMAC(channel[i]),
--						   DMA_INDEX_CHNL(channel[i])),
--				       s6dmac_cur_dst(DMA_MASK_DMAC(channel[i]),
--						   DMA_INDEX_CHNL(channel[i])));
-+				       s6dmac_cur_src(DMA_MASK_DMAC(channel),
-+						   DMA_INDEX_CHNL(channel)),
-+				       s6dmac_cur_dst(DMA_MASK_DMAC(channel),
-+						   DMA_INDEX_CHNL(channel)));
- 				prtd = substream->runtime->private_data;
- 				spin_lock(&prtd->lock);
- 				s6000_pcm_enqueue_dma(substream);
-@@ -154,16 +156,16 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
- 			if (pending & (1 << 3))
- 				printk(KERN_WARNING
- 				       "s6000-pcm: DMA %x Underflow\n",
--				       channel[i]);
-+				       channel);
- 			if (pending & (1 << 4))
- 				printk(KERN_WARNING
- 				       "s6000-pcm: DMA %x Overflow\n",
--				       channel[i]);
-+				       channel);
- 			if (pending & 0x1e0)
- 				printk(KERN_WARNING
- 				       "s6000-pcm: DMA %x Master Error "
- 				       "(mask %x)\n",
--				       channel[i], pending >> 5);
-+				       channel, pending >> 5);
- 
- 		}
- 	}
-@@ -180,7 +182,7 @@ static int s6000_pcm_start(struct snd_pcm_substream *substream)
- 	int srcinc;
- 	u32 dma;
- 
--	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
- 
- 	spin_lock_irqsave(&prtd->lock, flags);
- 
-@@ -221,7 +223,7 @@ static int s6000_pcm_stop(struct snd_pcm_substream *substream)
- 	unsigned long flags;
- 	u32 channel;
- 
--	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		channel = par->dma_out;
-@@ -246,7 +248,7 @@ static int s6000_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- 	struct s6000_pcm_dma_params *par;
+@@ -191,7 +191,7 @@ static int camelot_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *hw_params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct camelot_pcm *cam = &cam_pcm_data[rtd->dai->cpu_dai->id];
++	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
+ 	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
  	int ret;
  
--	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
- 
- 	ret = par->trigger(substream, cmd, 0);
- 	if (ret < 0)
-@@ -291,7 +293,7 @@ static snd_pcm_uframes_t s6000_pcm_pointer(struct snd_pcm_substream *substream)
- 	unsigned int offset;
- 	dma_addr_t count;
- 
--	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
- 
- 	spin_lock_irqsave(&prtd->lock, flags);
- 
-@@ -321,7 +323,7 @@ static int s6000_pcm_open(struct snd_pcm_substream *substream)
- 	struct s6000_runtime_data *prtd;
- 	int ret;
- 
--	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
- 	snd_soc_set_runtime_hwparams(substream, &s6000_pcm_hardware);
- 
- 	ret = snd_pcm_hw_constraint_step(runtime, 0,
-@@ -385,7 +387,7 @@ static int s6000_pcm_hw_params(struct snd_pcm_substream *substream,
- 		return ret;
- 	}
- 
--	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
- 
- 	if (par->same_rate) {
- 		spin_lock(&par->lock);
-@@ -407,7 +409,7 @@ static int s6000_pcm_hw_free(struct snd_pcm_substream *substream)
+@@ -219,7 +219,7 @@ static int camelot_prepare(struct snd_pcm_substream *substream)
  {
- 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
- 	struct s6000_pcm_dma_params *par =
--		snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+		snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct camelot_pcm *cam = &cam_pcm_data[rtd->dai->cpu_dai->id];
++	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
  
- 	spin_lock(&par->lock);
- 	par->in_use &= ~(1 << substream->stream);
-@@ -433,7 +435,7 @@ static void s6000_pcm_free(struct snd_pcm *pcm)
+ 	pr_debug("PCM data: addr 0x%08ulx len %d\n",
+ 		 (u32)runtime->dma_addr, runtime->dma_bytes);
+@@ -266,7 +266,7 @@ static inline void dmabrg_rec_dma_stop(struct camelot_pcm *cam)
+ static int camelot_trigger(struct snd_pcm_substream *substream, int cmd)
  {
- 	struct snd_soc_pcm_runtime *runtime = pcm->private_data;
- 	struct s6000_pcm_dma_params *params =
--		snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+		snd_soc_dai_get_dma_data(runtime->cpu_dai, pcm->streams[0].substream);
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct camelot_pcm *cam = &cam_pcm_data[rtd->dai->cpu_dai->id];
++	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
+ 	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
  
- 	free_irq(params->irq, pcm);
- 	snd_pcm_lib_preallocate_free_for_all(pcm);
-@@ -448,7 +450,8 @@ static int s6000_pcm_new(struct snd_card *card,
- 	struct s6000_pcm_dma_params *params;
- 	int res;
+ 	switch (cmd) {
+@@ -293,7 +293,7 @@ static snd_pcm_uframes_t camelot_pos(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct camelot_pcm *cam = &cam_pcm_data[rtd->dai->cpu_dai->id];
++	struct camelot_pcm *cam = &cam_pcm_data[rtd->cpu_dai->id];
+ 	int recv = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0:1;
+ 	unsigned long pos;
  
--	params = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
-+	params = snd_soc_dai_get_dma_data(runtime->cpu_dai,
-+			pcm->streams[0].substream);
- 
- 	if (!card->dev->dma_mask)
- 		card->dev->dma_mask = &s6000_pcm_dmamask;
-@@ -490,25 +493,46 @@ static int s6000_pcm_new(struct snd_card *card,
- 	return 0;
- }
- 
--struct snd_soc_platform s6000_soc_platform = {
-+struct snd_soc_platform_driver s6000_soc_platform = {
- 	.name = 	"s6000-audio",
--	.pcm_ops = 	&s6000_pcm_ops,
-+	.ops =		&s6000_pcm_ops,
- 	.pcm_new = 	s6000_pcm_new,
- 	.pcm_free = 	s6000_pcm_free,
+@@ -350,17 +350,38 @@ struct snd_soc_platform sh7760_soc_platform = {
  };
- EXPORT_SYMBOL_GPL(s6000_soc_platform);
+ EXPORT_SYMBOL_GPL(sh7760_soc_platform);
  
--static int __init s6000_pcm_init(void)
-+static int __devinit s6000_soc_platform_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_platform(&pdev->dev, -1, &s6000_soc_platform);
-+}
-+
-+static int __devexit s6000_soc_platform_remove(struct platform_device *pdev)
-+{
+-static int __init sh7760_soc_platform_init(void)
++static int __devinit sh7760_soc_platform_probe(struct platform_device *pdev)
+ {
+-	return snd_soc_register_platform(&sh7760_soc_platform);
++	return snd_soc_register_platform(&pdev->dev, -1, &sh7760_soc_platform);
+ }
+-module_init(sh7760_soc_platform_init);
+ 
+-static void __exit sh7760_soc_platform_exit(void)
++static int __devexit sh7760_soc_platform_remove(struct platform_device *pdev)
+ {
+-	snd_soc_unregister_platform(&sh7760_soc_platform);
 +	snd_soc_unregister_platform(&pdev->dev, -1);
 +	return 0;
 +}
 +
-+static struct platform_driver s6000_pcm_driver = {
++static struct platform_driver sh7760_pcm_driver = {
 +	.driver = {
-+			.name = "s6000-pcm-audio",
++			.name = "sh7760-pcm-audio",
 +			.owner = THIS_MODULE,
 +	},
 +
-+	.probe = s6000_soc_platform_probe,
-+	.remove = __devexit_p(s6000_soc_platform_remove),
++	.probe = sh7760_soc_platform_probe,
++	.remove = __devexit_p(sh7760_soc_platform_remove),
 +};
 +
-+static int __init snd_s6000_pcm_init(void)
- {
--	return snd_soc_register_platform(&s6000_soc_platform);
-+	return platform_driver_register(&s6000_pcm_driver);
++static int __init snd_sh7760_pcm_init(void)
++{
++	return platform_driver_register(&sh7760_pcm_driver);
++}
++module_init(snd_sh7760_pcm_init);
++
++static void __exit snd_sh7760_pcm_exit(void)
++{
++	platform_driver_unregister(&sh7760_pcm_driver);
  }
--module_init(s6000_pcm_init);
-+module_init(snd_s6000_pcm_init);
+-module_exit(sh7760_soc_platform_exit);
++module_exit(snd_sh7760_pcm_exit);
  
--static void __exit s6000_pcm_exit(void)
-+static void __exit snd_s6000_pcm_exit(void)
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("SH7760 Audio DMA (DMABRG) driver");
+diff --git a/sound/soc/sh/fsi-ak4642.c b/sound/soc/sh/fsi-ak4642.c
+index 2871a20..c426193 100644
+--- a/sound/soc/sh/fsi-ak4642.c
++++ b/sound/soc/sh/fsi-ak4642.c
+@@ -13,15 +13,16 @@
+ #include <sound/sh_fsi.h>
+ #include <../sound/soc/codecs/ak4642.h>
+ 
+-static int fsi_ak4642_dai_init(struct snd_soc_codec *codec)
++static int fsi_ak4642_dai_init(struct snd_soc_pcm_runtime *rtd)
  {
--	snd_soc_unregister_platform(&s6000_soc_platform);
-+	platform_driver_unregister(&s6000_pcm_driver);
- }
--module_exit(s6000_pcm_exit);
-+module_exit(snd_s6000_pcm_exit);
++	struct snd_soc_dai *dai = rtd->codec_dai;
+ 	int ret;
  
- MODULE_AUTHOR("Daniel Gloeckner");
- MODULE_DESCRIPTION("Stretch s6000 family PCM DMA module");
-diff --git a/sound/soc/s6000/s6000-pcm.h b/sound/soc/s6000/s6000-pcm.h
-index 96f23f6..4e251f4 100644
---- a/sound/soc/s6000/s6000-pcm.h
-+++ b/sound/soc/s6000/s6000-pcm.h
-@@ -30,6 +30,6 @@ struct s6000_pcm_dma_params {
- 	int rate;
+-	ret = snd_soc_dai_set_fmt(&ak4642_dai, SND_SOC_DAIFMT_CBM_CFM);
++	ret = snd_soc_dai_set_fmt(dai, SND_SOC_DAIFMT_CBM_CFM);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = snd_soc_dai_set_sysclk(&ak4642_dai, 0, 11289600, 0);
++	ret = snd_soc_dai_set_sysclk(dai, 0, 11289600, 0);
+ 
+ 	return ret;
+ }
+@@ -29,24 +30,20 @@ static int fsi_ak4642_dai_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link fsi_dai_link = {
+ 	.name		= "AK4642",
+ 	.stream_name	= "AK4642",
+-	.cpu_dai	= &fsi_soc_dai[0], /* fsi */
+-	.codec_dai	= &ak4642_dai,
++	.cpu_dai_drv	= &fsi_soc_dai[0], /* fsi */
++	.codec_dai_drv	= &ak4642_dai,
++	.platform_drv	= &fsi_soc_platform,
++	.codec_drv	= &soc_codec_dev_ak4642,
+ 	.init		= fsi_ak4642_dai_init,
+ 	.ops		= NULL,
  };
  
--extern struct snd_soc_platform s6000_soc_platform;
-+extern struct snd_soc_platform_driver s6000_soc_platform;
+ static struct snd_soc_card fsi_soc_card  = {
+ 	.name		= "FSI",
+-	.platform	= &fsi_soc_platform,
+ 	.dai_link	= &fsi_dai_link,
+ 	.num_links	= 1,
+ };
  
- #endif
-diff --git a/sound/soc/s6000/s6105-ipcam.c b/sound/soc/s6000/s6105-ipcam.c
-index c1b40ac..e2299c1 100644
---- a/sound/soc/s6000/s6105-ipcam.c
-+++ b/sound/soc/s6000/s6105-ipcam.c
-@@ -32,8 +32,8 @@ static int s6105_hw_params(struct snd_pcm_substream *substream,
+-static struct snd_soc_device fsi_snd_devdata = {
+-	.card		= &fsi_soc_card,
+-	.codec_dev	= &soc_codec_dev_ak4642,
+-};
+-
+ static struct platform_device *fsi_snd_device;
+ 
+ static int __init fsi_ak4642_init(void)
+@@ -57,9 +54,7 @@ static int __init fsi_ak4642_init(void)
+ 	if (!fsi_snd_device)
+ 		goto out;
+ 
+-	platform_set_drvdata(fsi_snd_device,
+-			     &fsi_snd_devdata);
+-	fsi_snd_devdata.dev = &fsi_snd_device->dev;
++	platform_set_drvdata(fsi_snd_device, &fsi_soc_card);
+ 	ret = platform_device_add(fsi_snd_device);
+ 
+ 	if (ret)
+diff --git a/sound/soc/sh/fsi-da7210.c b/sound/soc/sh/fsi-da7210.c
+index 4d4fd77..c6c5e47 100644
+--- a/sound/soc/sh/fsi-da7210.c
++++ b/sound/soc/sh/fsi-da7210.c
+@@ -14,9 +14,11 @@
+ #include <sound/sh_fsi.h>
+ #include "../codecs/da7210.h"
+ 
+-static int fsi_da7210_init(struct snd_soc_codec *codec)
++static int fsi_da7210_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	return snd_soc_dai_set_fmt(&da7210_dai,
++	struct snd_soc_dai *dai = rtd->codec_dai;
++
++	return snd_soc_dai_set_fmt(dai,
+ 				   SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 				   SND_SOC_DAIFMT_CBM_CFM);
+ }
+@@ -24,23 +26,19 @@ static int fsi_da7210_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link fsi_da7210_dai = {
+ 	.name		= "DA7210",
+ 	.stream_name	= "DA7210",
+-	.cpu_dai	= &fsi_soc_dai[1], /* FSI B */
+-	.codec_dai	= &da7210_dai,
++	.cpu_dai_drv	= &fsi_soc_dai[1], /* FSI B */
++	.codec_dai_drv	= &da7210_dai,
++	.platform_drv	= &fsi_soc_platform,
++	.codec_drv	= &soc_codec_dev_da7210,
+ 	.init		= fsi_da7210_init,
+ };
+ 
+ static struct snd_soc_card fsi_soc_card = {
+ 	.name		= "FSI",
+-	.platform	= &fsi_soc_platform,
+ 	.dai_link	= &fsi_da7210_dai,
+ 	.num_links	= 1,
+ };
+ 
+-static struct snd_soc_device fsi_da7210_snd_devdata = {
+-	.card		= &fsi_soc_card,
+-	.codec_dev	= &soc_codec_dev_da7210,
+-};
+-
+ static struct platform_device *fsi_da7210_snd_device;
+ 
+ static int __init fsi_da7210_sound_init(void)
+@@ -51,8 +49,7 @@ static int __init fsi_da7210_sound_init(void)
+ 	if (!fsi_da7210_snd_device)
+ 		return -ENOMEM;
+ 
+-	platform_set_drvdata(fsi_da7210_snd_device, &fsi_da7210_snd_devdata);
+-	fsi_da7210_snd_devdata.dev = &fsi_da7210_snd_device->dev;
++	platform_set_drvdata(fsi_da7210_snd_device, &fsi_soc_card);
+ 	ret = platform_device_add(fsi_da7210_snd_device);
+ 	if (ret)
+ 		platform_device_put(fsi_da7210_snd_device);
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 30765ab..20c7fc1 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -245,16 +245,19 @@ static int fsi_is_port_a(struct fsi_priv *fsi)
+ static struct snd_soc_dai *fsi_get_dai(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai_link *machine = rtd->dai;
+ 
+-	return  machine->cpu_dai;
++	return  rtd->cpu_dai;
+ }
+ 
+ static struct fsi_priv *fsi_get_priv(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_dai *dai = fsi_get_dai(substream);
++	struct fsi_master *master = snd_soc_dai_get_drvdata(dai);
+ 
+-	return dai->private_data;
++	if (dai->id == 0)
++		return &master->fsia;
++	else
++		return &master->fsib;
+ }
+ 
+ static u32 fsi_get_info_flags(struct fsi_priv *fsi)
+@@ -900,10 +903,9 @@ static int fsi_pcm_new(struct snd_card *card,
+ 
+ 
+ ************************************************************************/
+-struct snd_soc_dai fsi_soc_dai[] = {
++struct snd_soc_dai_driver fsi_soc_dai[] = {
+ 	{
+ 		.name			= "FSIA",
+-		.id			= 0,
+ 		.playback = {
+ 			.rates		= FSI_RATES,
+ 			.formats	= FSI_FMTS,
+@@ -920,7 +922,6 @@ struct snd_soc_dai fsi_soc_dai[] = {
+ 	},
+ 	{
+ 		.name			= "FSIB",
+-		.id			= 1,
+ 		.playback = {
+ 			.rates		= FSI_RATES,
+ 			.formats	= FSI_FMTS,
+@@ -938,9 +939,9 @@ struct snd_soc_dai fsi_soc_dai[] = {
+ };
+ EXPORT_SYMBOL_GPL(fsi_soc_dai);
+ 
+-struct snd_soc_platform fsi_soc_platform = {
++struct snd_soc_platform_driver fsi_soc_platform = {
+ 	.name		= "fsi-pcm",
+-	.pcm_ops 	= &fsi_pcm_ops,
++	.ops		= &fsi_pcm_ops,
+ 	.pcm_new	= fsi_pcm_new,
+ 	.pcm_free	= fsi_pcm_free,
+ };
+@@ -1005,11 +1006,7 @@ static int fsi_probe(struct platform_device *pdev)
+ 
+ 	pm_runtime_enable(&pdev->dev);
+ 	pm_runtime_resume(&pdev->dev);
+-
+-	fsi_soc_dai[0].dev		= &pdev->dev;
+-	fsi_soc_dai[0].private_data	= &master->fsia;
+-	fsi_soc_dai[1].dev		= &pdev->dev;
+-	fsi_soc_dai[1].private_data	= &master->fsib;
++	dev_set_drvdata(&pdev->dev, master);
+ 
+ 	fsi_soft_all_reset(master);
+ 
+@@ -1020,13 +1017,13 @@ static int fsi_probe(struct platform_device *pdev)
+ 		goto exit_iounmap;
+ 	}
+ 
+-	ret = snd_soc_register_platform(&fsi_soc_platform);
++	ret = snd_soc_register_platform(&pdev->dev, -1, &fsi_soc_platform);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "cannot snd soc register\n");
+ 		goto exit_free_irq;
+ 	}
+ 
+-	return snd_soc_register_dais(fsi_soc_dai, ARRAY_SIZE(fsi_soc_dai));
++	return snd_soc_register_dais(&pdev->dev, fsi_soc_dai, ARRAY_SIZE(fsi_soc_dai));
+ 
+ exit_free_irq:
+ 	free_irq(irq, master);
+@@ -1044,10 +1041,10 @@ static int fsi_remove(struct platform_device *pdev)
+ {
+ 	struct fsi_master *master;
+ 
+-	master = fsi_get_master(fsi_soc_dai[0].private_data);
++	master = dev_get_drvdata(&pdev->dev);
+ 
+-	snd_soc_unregister_dais(fsi_soc_dai, ARRAY_SIZE(fsi_soc_dai));
+-	snd_soc_unregister_platform(&fsi_soc_platform);
++	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(fsi_soc_dai));
++	snd_soc_unregister_platform(&pdev->dev, -1);
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 
+@@ -1056,11 +1053,6 @@ static int fsi_remove(struct platform_device *pdev)
+ 	iounmap(master->base);
+ 	kfree(master);
+ 
+-	fsi_soc_dai[0].dev		= NULL;
+-	fsi_soc_dai[0].private_data	= NULL;
+-	fsi_soc_dai[1].dev		= NULL;
+-	fsi_soc_dai[1].private_data	= NULL;
+-
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
+index 41db75a..43812f6 100644
+--- a/sound/soc/sh/hac.c
++++ b/sound/soc/sh/hac.c
+@@ -239,8 +239,7 @@ static int hac_hw_params(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_hw_params *params,
+ 			 struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct hac_priv *hac = &hac_cpu_data[rtd->dai->cpu_dai->id];
++	struct hac_priv *hac = &hac_cpu_data[dai->id];
+ 	int d = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
+ 
+ 	switch (params->msbits) {
+@@ -271,10 +270,9 @@ static struct snd_soc_dai_ops hac_dai_ops = {
+ 	.hw_params	= hac_hw_params,
+ };
+ 
+-struct snd_soc_dai sh4_hac_dai[] = {
++struct snd_soc_dai_driver sh4_hac_dai[] = {
+ {
+ 	.name			= "HAC0",
+-	.id			= 0,
+ 	.ac97_control		= 1,
+ 	.playback = {
+ 		.rates		= AC97_RATES,
+@@ -293,7 +291,6 @@ struct snd_soc_dai sh4_hac_dai[] = {
+ #ifdef CONFIG_CPU_SUBTYPE_SH7760
+ {
+ 	.name			= "HAC1",
+-	.ac97_control		= 1,
+ 	.id			= 1,
+ 	.playback = {
+ 		.rates		= AC97_RATES,
+@@ -314,17 +311,39 @@ struct snd_soc_dai sh4_hac_dai[] = {
+ };
+ EXPORT_SYMBOL_GPL(sh4_hac_dai);
+ 
+-static int __init sh4_hac_init(void)
++static int __devinit hac_soc_platform_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_dais(&pdev->dev, sh4_hac_dai,
++			ARRAY_SIZE(sh4_hac_dai));
++}
++
++static int __devexit hac_soc_platform_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(sh4_hac_dai));
++	return 0;
++}
++
++static struct platform_driver hac_pcm_driver = {
++	.driver = {
++			.name = "hac-pcm-audio",
++			.owner = THIS_MODULE,
++	},
++
++	.probe = hac_soc_platform_probe,
++	.remove = __devexit_p(hac_soc_platform_remove),
++};
++
++static int __init sh4_hac_pcm_init(void)
+ {
+-	return snd_soc_register_dais(sh4_hac_dai, ARRAY_SIZE(sh4_hac_dai));
++	return platform_driver_register(&hac_pcm_driver);
+ }
+-module_init(sh4_hac_init);
++module_init(sh4_hac_pcm_init);
+ 
+-static void __exit sh4_hac_exit(void)
++static void __exit sh4_hac_pcm_exit(void)
+ {
+-	snd_soc_unregister_dais(sh4_hac_dai, ARRAY_SIZE(sh4_hac_dai));
++	platform_driver_unregister(&hac_pcm_driver);
+ }
+-module_exit(sh4_hac_exit);
++module_exit(sh4_hac_pcm_exit);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("SuperH onchip HAC (AC97) audio driver");
+diff --git a/sound/soc/sh/migor.c b/sound/soc/sh/migor.c
+index b823a5c..eaa1d6f 100644
+--- a/sound/soc/sh/migor.c
++++ b/sound/soc/sh/migor.c
+@@ -50,7 +50,7 @@ static int migor_hw_params(struct snd_pcm_substream *substream,
  			   struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret = 0;
+ 	int ret;
+ 	unsigned int rate = params_rate(params);
  
- 	/* set codec DAI configuration */
-@@ -134,8 +134,10 @@ static const struct snd_kcontrol_new audio_out_mux = {
+@@ -68,7 +68,7 @@ static int migor_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = snd_soc_dai_set_fmt(rtd->dai->cpu_dai, SND_SOC_DAIFMT_NB_IF |
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai, SND_SOC_DAIFMT_NB_IF |
+ 				  SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_CBS_CFS);
+ 	if (ret < 0)
+ 		return ret;
+@@ -81,7 +81,7 @@ static int migor_hw_params(struct snd_pcm_substream *substream,
+ 	clk_set_rate(&siumckb_clk, codec_freq);
+ 	dev_dbg(codec_dai->dev, "%s: configure %luHz\n", __func__, codec_freq);
+ 
+-	ret = snd_soc_dai_set_sysclk(rtd->dai->cpu_dai, SIU_CLKB_EXT,
++	ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, SIU_CLKB_EXT,
+ 				     codec_freq / 2, SND_SOC_CLOCK_IN);
+ 
+ 	if (!ret)
+@@ -93,7 +93,7 @@ static int migor_hw_params(struct snd_pcm_substream *substream,
+ static int migor_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 
+ 	if (use_count) {
+ 		use_count--;
+@@ -136,8 +136,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{ "Mic Bias", NULL, "External Microphone" },
  };
  
- /* Logic for a aic3x as connected on the s6105 ip camera ref design */
--static int s6105_aic3x_init(struct snd_soc_codec *codec)
-+static int s6105_aic3x_init(struct snd_soc_pcm_runtime *rtd)
+-static int migor_dai_init(struct snd_soc_codec *codec)
++static int migor_dai_init(struct snd_soc_pcm_runtime *rtd)
  {
 +	struct snd_soc_codec *codec = rtd->codec;
 +
- 	/* Add s6105 specific widgets */
- 	snd_soc_dapm_new_controls(codec, aic3x_dapm_widgets,
- 				  ARRAY_SIZE(aic3x_dapm_widgets));
-@@ -165,7 +167,7 @@ static int s6105_aic3x_init(struct snd_soc_codec *codec)
+ 	snd_soc_dapm_new_controls(codec, migor_dapm_widgets,
+ 				  ARRAY_SIZE(migor_dapm_widgets));
  
- 	snd_soc_dapm_sync(codec);
- 
--	snd_ctl_add(codec->card, snd_ctl_new1(&audio_out_mux, codec));
-+	snd_ctl_add(codec->snd_card, snd_ctl_new1(&audio_out_mux, codec));
- 
- 	return 0;
- }
-@@ -174,8 +176,10 @@ static int s6105_aic3x_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link s6105_dai = {
- 	.name = "TLV320AIC31",
- 	.stream_name = "AIC31",
--	.cpu_dai = &s6000_i2s_dai,
--	.codec_dai = &aic3x_dai,
-+	.cpu_dai_drv = &s6000_i2s_dai,
-+	.codec_dai_drv = &aic3x_dai,
-+	.platform_drv = &s6000_soc_platform,
-+	.codec_drv = &soc_codec_dev_aic3x,
- 	.init = s6105_aic3x_init,
- 	.ops = &s6105_ops,
+@@ -150,8 +152,10 @@ static int migor_dai_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link migor_dai = {
+ 	.name = "wm8978",
+ 	.stream_name = "WM8978",
+-	.cpu_dai = &siu_i2s_dai,
+-	.codec_dai = &wm8978_dai,
++	.cpu_dai_drv = &siu_i2s_dai,
++	.codec_dai_drv = &wm8978_dai,
++	.platform_drv = &siu_platform,
++	.codec_drv = &soc_codec_dev_wm8978,
+ 	.ops = &migor_dai_ops,
+ 	.init = migor_dai_init,
  };
-@@ -183,22 +187,10 @@ static struct snd_soc_dai_link s6105_dai = {
- /* s6105 audio machine driver */
- static struct snd_soc_card snd_soc_card_s6105 = {
- 	.name = "Stretch IP Camera",
--	.platform = &s6000_soc_platform,
- 	.dai_link = &s6105_dai,
+@@ -159,17 +163,10 @@ static struct snd_soc_dai_link migor_dai = {
+ /* migor audio machine driver */
+ static struct snd_soc_card snd_soc_migor = {
+ 	.name = "Migo-R",
+-	.platform = &siu_platform,
+ 	.dai_link = &migor_dai,
  	.num_links = 1,
  };
  
--/* s6105 audio private data */
--static struct aic3x_setup_data s6105_aic3x_setup = {
+-/* migor audio subsystem */
+-static struct snd_soc_device migor_snd_devdata = {
+-	.card = &snd_soc_migor,
+-	.codec_dev = &soc_codec_dev_wm8978,
 -};
 -
--/* s6105 audio subsystem */
--static struct snd_soc_device s6105_snd_devdata = {
--	.card = &snd_soc_card_s6105,
--	.codec_dev = &soc_codec_dev_aic3x,
--	.codec_data = &s6105_aic3x_setup,
+ static struct platform_device *migor_snd_device;
+ 
+ static int __init migor_init(void)
+@@ -187,9 +184,7 @@ static int __init migor_init(void)
+ 		goto epdevalloc;
+ 	}
+ 
+-	platform_set_drvdata(migor_snd_device, &migor_snd_devdata);
+-
+-	migor_snd_devdata.dev = &migor_snd_device->dev;
++	platform_set_drvdata(migor_snd_device, &snd_soc_migor);
+ 
+ 	ret = platform_device_add(migor_snd_device);
+ 	if (ret)
+diff --git a/sound/soc/sh/sh7760-ac97.c b/sound/soc/sh/sh7760-ac97.c
+index ce7f95b..e28099c 100644
+--- a/sound/soc/sh/sh7760-ac97.c
++++ b/sound/soc/sh/sh7760-ac97.c
+@@ -20,36 +20,32 @@
+ #define IPSEL 0xFE400034
+ 
+ /* platform specific structs can be declared here */
+-extern struct snd_soc_dai sh4_hac_dai[2];
+-extern struct snd_soc_platform sh7760_soc_platform;
++extern struct snd_soc_dai_driver sh4_hac_dai[2];
++extern struct snd_soc_platform_driver sh7760_soc_platform;
+ 
+-static int machine_init(struct snd_soc_codec *codec)
++static int machine_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	snd_soc_dapm_sync(codec);
++	snd_soc_dapm_sync(rtd->codec);
+ 	return 0;
+ }
+ 
+ static struct snd_soc_dai_link sh7760_ac97_dai = {
+ 	.name = "AC97",
+ 	.stream_name = "AC97 HiFi",
+-	.cpu_dai = &sh4_hac_dai[0],	/* HAC0 */
+-	.codec_dai = &ac97_dai,
++	.cpu_dai_drv = &sh4_hac_dai[0],	/* HAC0 */
++	.codec_dai_drv = &ac97_dai,
++	.platform_drv = &sh7760_soc_platform,
++	.codec_drv = &soc_codec_dev_ac97,
+ 	.init = machine_init,
+ 	.ops = NULL,
+ };
+ 
+ static struct snd_soc_card sh7760_ac97_soc_machine  = {
+ 	.name = "SH7760 AC97",
+-	.platform = &sh7760_soc_platform,
+ 	.dai_link = &sh7760_ac97_dai,
+ 	.num_links = 1,
+ };
+ 
+-static struct snd_soc_device sh7760_ac97_snd_devdata = {
+-	.card = &sh7760_ac97_soc_machine,
+-	.codec_dev = &soc_codec_dev_ac97,
 -};
 -
- static struct s6000_snd_platform_data __initdata s6105_snd_data = {
- 	.wide		= 0,
- 	.channel_in	= 0,
-@@ -227,8 +219,7 @@ static int __init s6105_init(void)
- 	if (!s6105_snd_device)
+ static struct platform_device *sh7760_ac97_snd_device;
+ 
+ static int __init sh7760_ac97_init(void)
+@@ -67,8 +63,7 @@ static int __init sh7760_ac97_init(void)
+ 		goto out;
+ 
+ 	platform_set_drvdata(sh7760_ac97_snd_device,
+-			     &sh7760_ac97_snd_devdata);
+-	sh7760_ac97_snd_devdata.dev = &sh7760_ac97_snd_device->dev;
++			     &sh7760_ac97_soc_machine);
+ 	ret = platform_device_add(sh7760_ac97_snd_device);
+ 
+ 	if (ret)
+diff --git a/sound/soc/sh/siu.h b/sound/soc/sh/siu.h
+index 492b1ca..aa239ff 100644
+--- a/sound/soc/sh/siu.h
++++ b/sound/soc/sh/siu.h
+@@ -181,8 +181,9 @@ static inline u32 siu_read32(u32 __iomem *addr)
+ #define SIU_BRGBSEL	(0x108 / sizeof(u32))
+ #define SIU_BRRB	(0x10c / sizeof(u32))
+ 
+-extern struct snd_soc_platform siu_platform;
+-extern struct snd_soc_dai siu_i2s_dai;
++extern struct snd_soc_platform_driver siu_platform;
++extern struct snd_soc_dai_driver siu_i2s_dai;
++extern struct siu_info *siu_i2s_data;
+ 
+ int siu_init_port(int port, struct siu_port **port_info, struct snd_card *card);
+ void siu_free_port(struct siu_port *port_info);
+diff --git a/sound/soc/sh/siu_dai.c b/sound/soc/sh/siu_dai.c
+index eeed5ed..06ca580 100644
+--- a/sound/soc/sh/siu_dai.c
++++ b/sound/soc/sh/siu_dai.c
+@@ -71,6 +71,9 @@ struct port_flag {
+ 	struct format_flag	capture;
+ };
+ 
++struct siu_info *siu_i2s_data = NULL;
++EXPORT_SYMBOL_GPL(siu_i2s_data);
++
+ static struct port_flag siu_flags[SIU_PORT_NUM] = {
+ 	[SIU_PORT_A] = {
+ 		.playback = {
+@@ -104,13 +107,13 @@ static struct port_flag siu_flags[SIU_PORT_NUM] = {
+ 
+ static void siu_dai_start(struct siu_port *port_info)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 
+ 	dev_dbg(port_info->pcm->card->dev, "%s\n", __func__);
+ 
+ 	/* Turn on SIU clock */
+-	pm_runtime_get_sync(siu_i2s_dai.dev);
++	pm_runtime_get_sync(port_info->pcm->card->dev);
+ 
+ 	/* Issue software reset to siu */
+ 	siu_write32(base + SIU_SRCTL, 0);
+@@ -148,21 +151,21 @@ static void siu_dai_start(struct siu_port *port_info)
+ 	siu_write32(base + SIU_SBDVCB, port_info->capture.volume);
+ }
+ 
+-static void siu_dai_stop(void)
++static void siu_dai_stop(struct siu_port *port_info)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 
+ 	/* SIU software reset */
+ 	siu_write32(base + SIU_SRCTL, 0);
+ 
+ 	/* Turn off SIU clock */
+-	pm_runtime_put_sync(siu_i2s_dai.dev);
++	pm_runtime_put_sync(port_info->pcm->card->dev);
+ }
+ 
+ static void siu_dai_spbAselect(struct siu_port *port_info)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	struct siu_firmware *fw = &info->fw;
+ 	u32 *ydef = fw->yram0;
+ 	u32 idx;
+@@ -187,7 +190,7 @@ static void siu_dai_spbAselect(struct siu_port *port_info)
+ 
+ static void siu_dai_spbBselect(struct siu_port *port_info)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	struct siu_firmware *fw = &info->fw;
+ 	u32 *ydef = fw->yram0;
+ 	u32 idx;
+@@ -207,7 +210,7 @@ static void siu_dai_spbBselect(struct siu_port *port_info)
+ 
+ static void siu_dai_open(struct siu_stream *siu_stream)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	u32 srctl, ifctl;
+ 
+@@ -238,7 +241,7 @@ static void siu_dai_open(struct siu_stream *siu_stream)
+  */
+ static void siu_dai_pcmdatapack(struct siu_stream *siu_stream)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	u32 dpak;
+ 
+@@ -258,7 +261,7 @@ static void siu_dai_pcmdatapack(struct siu_stream *siu_stream)
+ 
+ static int siu_dai_spbstart(struct siu_port *port_info)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	struct siu_firmware *fw = &info->fw;
+ 	u32 *ydef = fw->yram0;
+@@ -323,7 +326,7 @@ static int siu_dai_spbstart(struct siu_port *port_info)
+ 
+ static void siu_dai_spbstop(struct siu_port *port_info)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 
+ 	siu_write32(base + SIU_SBACTIV, 0);
+@@ -402,7 +405,7 @@ static int siu_dai_put_volume(struct snd_kcontrol *kctrl,
+ {
+ 	struct siu_port *port_info = snd_kcontrol_chip(kctrl);
+ 	struct device *dev = port_info->pcm->card->dev;
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	u32 new_vol;
+ 	u32 cur_vol;
+@@ -510,7 +513,7 @@ void siu_free_port(struct siu_port *port_info)
+ static int siu_dai_startup(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = snd_soc_dai_get_drvdata(dai);
+ 	struct snd_pcm_runtime *rt = substream->runtime;
+ 	struct siu_port	*port_info = siu_port_info(substream);
+ 	int ret;
+@@ -532,7 +535,7 @@ static int siu_dai_startup(struct snd_pcm_substream *substream,
+ static void siu_dai_shutdown(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = snd_soc_dai_get_drvdata(dai);
+ 	struct siu_port	*port_info = siu_port_info(substream);
+ 
+ 	dev_dbg(substream->pcm->card->dev, "%s: port=%d@%p\n", __func__,
+@@ -548,7 +551,7 @@ static void siu_dai_shutdown(struct snd_pcm_substream *substream,
+ 		/* during stmread or stmwrite ? */
+ 		BUG_ON(port_info->playback.rw_flg || port_info->capture.rw_flg);
+ 		siu_dai_spbstop(port_info);
+-		siu_dai_stop();
++		siu_dai_stop(port_info);
+ 	}
+ }
+ 
+@@ -556,7 +559,7 @@ static void siu_dai_shutdown(struct snd_pcm_substream *substream,
+ static int siu_dai_prepare(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = snd_soc_dai_get_drvdata(dai);
+ 	struct snd_pcm_runtime *rt = substream->runtime;
+ 	struct siu_port *port_info = siu_port_info(substream);
+ 	struct siu_stream *siu_stream;
+@@ -605,7 +608,7 @@ fail:
+ static int siu_dai_set_fmt(struct snd_soc_dai *dai,
+ 			   unsigned int fmt)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = snd_soc_dai_get_drvdata(dai);
+ 	u32 __iomem *base = info->reg;
+ 	u32 ifctl;
+ 
+@@ -671,11 +674,11 @@ static int siu_dai_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 		return -EINVAL;
+ 	}
+ 
+-	siu_clk = clk_get(siu_i2s_dai.dev, siu_name);
++	siu_clk = clk_get(dai->dev, siu_name);
+ 	if (IS_ERR(siu_clk))
+ 		return PTR_ERR(siu_clk);
+ 
+-	parent_clk = clk_get(siu_i2s_dai.dev, parent_name);
++	parent_clk = clk_get(dai->dev, parent_name);
+ 	if (!IS_ERR(parent_clk)) {
+ 		ret = clk_set_parent(siu_clk, parent_clk);
+ 		if (!ret)
+@@ -696,9 +699,8 @@ static struct snd_soc_dai_ops siu_dai_ops = {
+ 	.set_fmt	= siu_dai_set_fmt,
+ };
+ 
+-struct snd_soc_dai siu_i2s_dai = {
++struct snd_soc_dai_driver siu_i2s_dai = {
+ 	.name = "sh-siu",
+-	.id = 0,
+ 	.playback = {
+ 		.channels_min = 2,
+ 		.channels_max = 2,
+@@ -725,6 +727,7 @@ static int __devinit siu_probe(struct platform_device *pdev)
+ 	info = kmalloc(sizeof(*info), GFP_KERNEL);
+ 	if (!info)
  		return -ENOMEM;
++	siu_i2s_data = info;
  
--	platform_set_drvdata(s6105_snd_device, &s6105_snd_devdata);
--	s6105_snd_devdata.dev = &s6105_snd_device->dev;
-+	platform_set_drvdata(s6105_snd_device, &snd_soc_card_s6105);
- 	platform_device_add_data(s6105_snd_device, &s6105_snd_data,
- 				 sizeof(s6105_snd_data));
+ 	ret = request_firmware(&fw_entry, "siu_spb.bin", &pdev->dev);
+ 	if (ret)
+@@ -767,14 +770,13 @@ static int __devinit siu_probe(struct platform_device *pdev)
+ 	if (!info->reg)
+ 		goto emapreg;
  
+-	siu_i2s_dai.dev = &pdev->dev;
+-	siu_i2s_dai.private_data = info;
++	dev_set_drvdata(&pdev->dev, info);
+ 
+-	ret = snd_soc_register_dais(&siu_i2s_dai, 1);
++	ret = snd_soc_register_dai(&pdev->dev, -1, &siu_i2s_dai);
+ 	if (ret < 0)
+ 		goto edaiinit;
+ 
+-	ret = snd_soc_register_platform(&siu_platform);
++	ret = snd_soc_register_platform(&pdev->dev, -1, &siu_platform);
+ 	if (ret < 0)
+ 		goto esocregp;
+ 
+@@ -783,7 +785,7 @@ static int __devinit siu_probe(struct platform_device *pdev)
+ 	return ret;
+ 
+ esocregp:
+-	snd_soc_unregister_dais(&siu_i2s_dai, 1);
++	snd_soc_unregister_dai(&pdev->dev, -1);
+ edaiinit:
+ 	iounmap(info->reg);
+ emapreg:
+@@ -804,13 +806,13 @@ ereqfw:
+ 
+ static int __devexit siu_remove(struct platform_device *pdev)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = dev_get_drvdata(&pdev->dev);
+ 	struct resource *res;
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 
+-	snd_soc_unregister_platform(&siu_platform);
+-	snd_soc_unregister_dais(&siu_i2s_dai, 1);
++	snd_soc_unregister_platform(&pdev->dev, -1);
++	snd_soc_unregister_dai(&pdev->dev, -1);
+ 
+ 	iounmap(info->reg);
+ 	iounmap(info->yram);
+diff --git a/sound/soc/sh/siu_pcm.c b/sound/soc/sh/siu_pcm.c
+index 36170be..f2a1b10 100644
+--- a/sound/soc/sh/siu_pcm.c
++++ b/sound/soc/sh/siu_pcm.c
+@@ -48,7 +48,7 @@ struct siu_port *siu_ports[SIU_PORT_NUM];
+ /* transfersize is number of u32 dma transfers per period */
+ static int siu_pcm_stmwrite_stop(struct siu_port *port_info)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	struct siu_stream *siu_stream = &port_info->playback;
+ 	u32 stfifo;
+@@ -114,7 +114,7 @@ static void siu_dma_tx_complete(void *arg)
+ static int siu_pcm_wr_set(struct siu_port *port_info,
+ 			  dma_addr_t buff, u32 size)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	struct siu_stream *siu_stream = &port_info->playback;
+ 	struct snd_pcm_substream *substream = siu_stream->substream;
+@@ -161,7 +161,7 @@ static int siu_pcm_wr_set(struct siu_port *port_info,
+ static int siu_pcm_rd_set(struct siu_port *port_info,
+ 			  dma_addr_t buff, size_t size)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	struct siu_stream *siu_stream = &port_info->capture;
+ 	struct snd_pcm_substream *substream = siu_stream->substream;
+@@ -270,7 +270,7 @@ static int siu_pcm_stmread_start(struct siu_port *port_info)
+ 
+ static int siu_pcm_stmread_stop(struct siu_port *port_info)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	struct siu_stream *siu_stream = &port_info->capture;
+ 	struct device *dev = siu_stream->substream->pcm->card->dev;
+@@ -294,7 +294,7 @@ static int siu_pcm_stmread_stop(struct siu_port *port_info)
+ static int siu_pcm_hw_params(struct snd_pcm_substream *ss,
+ 			     struct snd_pcm_hw_params *hw_params)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	struct device *dev = ss->pcm->card->dev;
+ 	int ret;
+ 
+@@ -309,7 +309,7 @@ static int siu_pcm_hw_params(struct snd_pcm_substream *ss,
+ 
+ static int siu_pcm_hw_free(struct snd_pcm_substream *ss)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	struct siu_port	*port_info = siu_port_info(ss);
+ 	struct device *dev = ss->pcm->card->dev;
+ 	struct siu_stream *siu_stream;
+@@ -340,11 +340,12 @@ static bool filter(struct dma_chan *chan, void *slave)
+ static int siu_pcm_open(struct snd_pcm_substream *ss)
+ {
+ 	/* Playback / Capture */
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct snd_soc_pcm_runtime *rtd = ss->private_data;
++	struct siu_platform *pdata = snd_soc_platform_get_drvdata(rtd->platform);
++	struct siu_info *info = siu_i2s_data;
+ 	struct siu_port *port_info = siu_port_info(ss);
+ 	struct siu_stream *siu_stream;
+ 	u32 port = info->port_id;
+-	struct siu_platform *pdata = siu_i2s_dai.dev->platform_data;
+ 	struct device *dev = ss->pcm->card->dev;
+ 	dma_cap_mask_t mask;
+ 	struct sh_dmae_slave *param;
+@@ -381,7 +382,7 @@ static int siu_pcm_open(struct snd_pcm_substream *ss)
+ 
+ static int siu_pcm_close(struct snd_pcm_substream *ss)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	struct device *dev = ss->pcm->card->dev;
+ 	struct siu_port *port_info = siu_port_info(ss);
+ 	struct siu_stream *siu_stream;
+@@ -403,7 +404,7 @@ static int siu_pcm_close(struct snd_pcm_substream *ss)
+ 
+ static int siu_pcm_prepare(struct snd_pcm_substream *ss)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	struct siu_port *port_info = siu_port_info(ss);
+ 	struct device *dev = ss->pcm->card->dev;
+ 	struct snd_pcm_runtime 	*rt = ss->runtime;
+@@ -449,7 +450,7 @@ static int siu_pcm_prepare(struct snd_pcm_substream *ss)
+ 
+ static int siu_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
+ {
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	struct device *dev = ss->pcm->card->dev;
+ 	struct siu_port *port_info = siu_port_info(ss);
+ 	int ret;
+@@ -492,7 +493,7 @@ static int siu_pcm_trigger(struct snd_pcm_substream *ss, int cmd)
+ static snd_pcm_uframes_t siu_pcm_pointer_dma(struct snd_pcm_substream *ss)
+ {
+ 	struct device *dev = ss->pcm->card->dev;
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	u32 __iomem *base = info->reg;
+ 	struct siu_port *port_info = siu_port_info(ss);
+ 	struct snd_pcm_runtime *rt = ss->runtime;
+@@ -528,7 +529,7 @@ static int siu_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 		       struct snd_pcm *pcm)
+ {
+ 	/* card->dev == socdev->dev, see snd_soc_new_pcms() */
+-	struct siu_info *info = siu_i2s_dai.private_data;
++	struct siu_info *info = siu_i2s_data;
+ 	struct platform_device *pdev = to_platform_device(card->dev);
+ 	int ret;
+ 	int i;
+@@ -605,10 +606,11 @@ static struct snd_pcm_ops siu_pcm_ops = {
+ 	.pointer	= siu_pcm_pointer_dma,
+ };
+ 
+-struct snd_soc_platform siu_platform = {
++struct snd_soc_platform_driver siu_platform = {
+ 	.name		= "siu-audio",
+-	.pcm_ops 	= &siu_pcm_ops,
++	.ops			= &siu_pcm_ops,
+ 	.pcm_new	= siu_pcm_new,
+ 	.pcm_free	= siu_pcm_free,
+ };
+ EXPORT_SYMBOL_GPL(siu_platform);
++
+diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
+index b378096..7af8012 100644
+--- a/sound/soc/sh/ssi.c
++++ b/sound/soc/sh/ssi.c
+@@ -92,8 +92,7 @@ struct ssi_priv {
+ static int ssi_startup(struct snd_pcm_substream *substream,
+ 		       struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct ssi_priv *ssi = &ssi_cpu_data[rtd->dai->cpu_dai->id];
++	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
+ 	if (ssi->inuse) {
+ 		pr_debug("ssi: already in use!\n");
+ 		return -EBUSY;
+@@ -105,8 +104,7 @@ static int ssi_startup(struct snd_pcm_substream *substream,
+ static void ssi_shutdown(struct snd_pcm_substream *substream,
+ 			 struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct ssi_priv *ssi = &ssi_cpu_data[rtd->dai->cpu_dai->id];
++	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
+ 
+ 	ssi->inuse = 0;
+ }
+@@ -114,8 +112,7 @@ static void ssi_shutdown(struct snd_pcm_substream *substream,
+ static int ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		       struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct ssi_priv *ssi = &ssi_cpu_data[rtd->dai->cpu_dai->id];
++	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
+ 
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+@@ -135,8 +132,7 @@ static int ssi_hw_params(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_hw_params *params,
+ 			 struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct ssi_priv *ssi = &ssi_cpu_data[rtd->dai->cpu_dai->id];
++	struct ssi_priv *ssi = &ssi_cpu_data[dai->id];
+ 	unsigned long ssicr = SSIREG(SSICR);
+ 	unsigned int bits, channels, swl, recv, i;
+ 
+@@ -346,10 +342,9 @@ static struct snd_soc_dai_ops ssi_dai_ops = {
+ 	.set_fmt	= ssi_set_fmt,
+ };
+ 
+-struct snd_soc_dai sh4_ssi_dai[] = {
++struct snd_soc_dai_driver sh4_ssi_dai[] = {
+ {
+ 	.name			= "SSI0",
+-	.id			= 0,
+ 	.playback = {
+ 		.rates		= SSI_RATES,
+ 		.formats	= SSI_FMTS,
+@@ -367,7 +362,6 @@ struct snd_soc_dai sh4_ssi_dai[] = {
+ #ifdef CONFIG_CPU_SUBTYPE_SH7760
+ {
+ 	.name			= "SSI1",
+-	.id			= 1,
+ 	.playback = {
+ 		.rates		= SSI_RATES,
+ 		.formats	= SSI_FMTS,
+@@ -386,17 +380,39 @@ struct snd_soc_dai sh4_ssi_dai[] = {
+ };
+ EXPORT_SYMBOL_GPL(sh4_ssi_dai);
+ 
+-static int __init sh4_ssi_init(void)
++static int __devinit sh4_soc_dai_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_dais(&pdev->dev, sh4_ssi_dai,
++			ARRAY_SIZE(sh4_ssi_dai));
++}
++
++static int __devexit sh4_soc_dai_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_dai(&pdev->dev, ARRAY_SIZE(sh4_ssi_dai));
++	return 0;
++}
++
++static struct platform_driver sh4_ssi_driver = {
++	.driver = {
++			.name = "sh4-ssi-audio",
++			.owner = THIS_MODULE,
++	},
++
++	.probe = sh4_soc_dai_probe,
++	.remove = __devexit_p(sh4_soc_dai_remove),
++};
++
++static int __init snd_sh4_ssi_init(void)
+ {
+-	return snd_soc_register_dais(sh4_ssi_dai, ARRAY_SIZE(sh4_ssi_dai));
++	return platform_driver_register(&sh4_ssi_driver);
+ }
+-module_init(sh4_ssi_init);
++module_init(snd_sh4_ssi_init);
+ 
+-static void __exit sh4_ssi_exit(void)
++static void __exit snd_sh4_ssi_exit(void)
+ {
+-	snd_soc_unregister_dais(sh4_ssi_dai, ARRAY_SIZE(sh4_ssi_dai));
++	platform_driver_unregister(&sh4_ssi_driver);
+ }
+-module_exit(sh4_ssi_exit);
++module_exit(snd_sh4_ssi_exit);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("SuperH onchip SSI (I2S) audio driver");
 -- 
 1.7.0.4
