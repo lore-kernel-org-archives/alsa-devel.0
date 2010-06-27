@@ -1,21 +1,16 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH RFC 3/3] uda1380: make driver more
-	powersave-friendly
-Date: Mon, 28 Jun 2010 00:15:12 +0300
-Message-ID: <201006280015.27486.anarsoul@gmail.com>
-References: <1277565285-11563-1-git-send-email-anarsoul@gmail.com>
-	<201006271343.36646.anarsoul@gmail.com>
-	<047B7693-6E49-4FB6-99C4-9C9DE53E0486@opensource.wolfsonmicro.com>
+From: Ryan Mallon <ryan@bluewatersys.com>
+Subject: [PATCH] ASoC: Multi-component - Fix tlv320aic23
+ hw_write/hw_read functions
+Date: Mon, 28 Jun 2010 09:20:59 +1200
+Message-ID: <4C27C0BB.5020600@bluewatersys.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1260883528140388114=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
-	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id DD955244E0
+Received: from hayes.bluewaternz.com (mail.bluewatersys.com [202.124.120.130])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9FCD6243EC
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 23:15:34 +0200 (CEST)
-Received: by bwz4 with SMTP id 4so10048bwz.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 14:15:34 -0700 (PDT)
-In-Reply-To: <047B7693-6E49-4FB6-99C4-9C9DE53E0486@opensource.wolfsonmicro.com>
+	Sun, 27 Jun 2010 23:20:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,52 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
---===============1260883528140388114==
-Content-Type: multipart/signed;
-  boundary="nextPart2582105.a8KBmmgJEl";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Commit 5ce5888769c4a453bb5a852e156ab4ac72822c40 removed the
+initialisations of the codec->hw_write/read functions for the
+tlv320aic23. Fix this by adding the initialisations in tlv320aic23_probe.
 
---nextPart2582105.a8KBmmgJEl
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: base64
+Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
+---
 
-0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMjcg0LjRjtC90Y8gMjAxMCAyMzo1NToyOSDQsNCy
-0YLQvtGAIE1hcmsgQnJvd24g0L3QsNC/0LjRgdCw0Ls6Cgo+IEFmdGVyIHBvd2VyIG9uIGl0J3Mg
-bm90IG5lZWRlZCwgdGhlIGRldmljZSBzaG91bGQgYmUgaW4gdGhlIGRlZmF1bHQgc3RhdGUKPiBh
-bHJlYWR5LiBJdCdzIG9ubHkgcmVxdWlyZWQgb24gc3RhcnR1cCB3aGVuIHRoZXJlJ3Mgbm8gcG93
-ZXIgY29udHJvbCBmb3IKPiB0aGUgZGV2aWNlLgoKQnV0IHRoYXQncyBub3QgcG9zc2libGUgdG8g
-cmVzZXQgY29kZWMgaWYgaXQgaXMgbm90IHBvd2VyZWQgb24gOigK
-
---nextPart2582105.a8KBmmgJEl
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.15 (GNU/Linux)
-
-iEYEABECAAYFAkwnv28ACgkQRM6pQpltKE6k1gCfRZyDHXtZn5R5jTPXBsCrN5SU
-4u4AnAyRJt5ZsMKKlzzAKFqRkqZHEDK4
-=cH+r
------END PGP SIGNATURE-----
-
---nextPart2582105.a8KBmmgJEl--
-
---===============1260883528140388114==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---===============1260883528140388114==--
+diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
+index fbc95c5..fe89521 100644
+--- a/sound/soc/codecs/tlv320aic23.c
++++ b/sound/soc/codecs/tlv320aic23.c
+@@ -637,6 +637,8 @@ static int tlv320aic23_probe(struct snd_soc_codec *codec)
+ 
+ 	printk(KERN_INFO "AIC23 Audio Codec %s\n", AIC23_VERSION);
+ 	codec->control_data = aic23->control_data;
++	codec->hw_write = (hw_write_t)i2c_master_send;
++	codec->hw_read = NULL;
+ 
+ 	/* Reset codec */
+ 	tlv320aic23_write(codec, TLV320AIC23_RESET, 0);
