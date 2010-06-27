@@ -1,18 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: ALSA SoC device tree bindings
-Date: Sun, 27 Jun 2010 10:42:47 +0100
-Message-ID: <20100627094246.GA2845@sirena.org.uk>
-References: <201006232030.14138.jeremy.kerr@canonical.com>
+Subject: Re: [PATCH RFC 3/3] uda1380: make driver more
+	powersave-friendly
+Date: Sun, 27 Jun 2010 11:10:54 +0100
+Message-ID: <20100627101053.GA26394@opensource.wolfsonmicro.com>
+References: <1277565285-11563-1-git-send-email-anarsoul@gmail.com>
+	<1277565285-11563-4-git-send-email-anarsoul@gmail.com>
+	<0FF1255A-5069-426F-9521-A8E0787081D8@opensource.wolfsonmicro.com>
+	<201006270007.34271.anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id D4347103830
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 0AD93103832
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 11:42:50 +0200 (CEST)
+	Sun, 27 Jun 2010 12:10:55 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <201006232030.14138.jeremy.kerr@canonical.com>
+In-Reply-To: <201006270007.34271.anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,24 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jeremy Kerr <jeremy.kerr@canonical.com>
-Cc: devicetree-discuss@lists.ozlabs.org, kernel-team@lists.ubuntu.com, linaro-dev@lists.linaro.org, alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 23, 2010 at 08:30:13PM +0800, Jeremy Kerr wrote:
-
-> At this stage, we're just looking at how to structure device in the device 
-> tree. The bindings for specific devices will come as required (ie, as we add 
-> device tree support for them).
-
-Actually, re-reading the page I'm not sure it really captures my
-understanding of the discussion (and all the previous discussions we've
-had on the lists and so on) at all.  Reading the page the idea that a
-machine specific driver is normal and expected doesn't come over at all
-well, especially in the design section which doesn't make any mention at
-all of machine specific drivers.
-
-As I keep saying the main thing I'm looking for from any device tree
-binding is something that I can point people at so we don't need to go
-through the rehashings of this subject which come up every time someone
-decides they want to use device trees.
+T24gU3VuLCBKdW4gMjcsIDIwMTAgYXQgMTI6MDc6MjZBTSArMDMwMCwgVmFzaWx5IEtob3J1emhp
+Y2sgd3JvdGU6Cj4g0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMjYg0LjRjtC90Y8gMjAxMCAy
+Mzo0NToxMiDQsNCy0YLQvtGAIE1hcmsgQnJvd24g0L3QsNC/0LjRgdCw0Ls6Cgo+ID4gVGhpcyBz
+ZWVtcyBvZGQsIEknZCBleHBlY3QgdGhlIGNhY2hlIHRvIGJlIGJlaW5nIG1hcmtlZCBhcyBjbGVh
+bgo+ID4gaW1tZWRpYXRlbHkgYWZ0ZXIgc3luYz8KCj4gTm9wZSwgaXQgaXMgbm90LiBPbmx5IGky
+YyBhbmQgY2xvY2sgcmVsYXRlZCByZWdzIG9mIHVkYTEzODAgY2FuIGJlIG1vZGlmaWVkIAo+IHdo
+ZW4gdGhlcmUncyBubyBpMnMgY2xvY2ssIGkuZS4gbWl4ZXIgcmVncyBzaG91bGQgYmUgdXBkYXRl
+ZCByaWdodCBhZnRlciBpMnMgCj4gY2xvY2sgd2FzIGVuYWJsZWQsIHNvIHdlIG1hcmtpbmcgbWl4
+ZXItcmVsYXRlZCByZWdzIGNhY2hlIGFzIGRpcnR5LCB0byBtYWtlIAo+IHN1cmUgdGhleSdsbCBi
+ZSB1cGRhdGVkIHdoZW4gcG9zc2libGUuCgpUaGlzIGlzIHZlcnkgbXVjaCBub24tb2J2aW91cyBm
+cm9tIHlvdXIgY29kZSAtIGl0IHJlYWxseSBuZWVkcyBjb21tZW50cwpleHBsYWluaW5nIHdoeSB0
+aGUgY2FjaGUgc3luYyBmdW5jdGlvbiBkaWRuJ3QgYWN0dWFsbHkgbWFuYWdlIHRvIHN5bmMKdGhl
+IGNhY2hlLiAgSSdkIGFsc28gcmVhbGx5IGV4cGVjdCB0aGF0IHRoZSBkaXJ0eWluZyBvZiB0aGUg
+Y2FjaGUgd291bGQKYmUgZG9uZSB3aGVuIHRoZSBvcGVyYXRpb24gdGhhdCBpbnZhbGlkYXRlcyBp
+dCBoYXBwZW5zLCBub3QgbGF0ZXIgb24Kd2hlbiByZXN0b3JpbmcgdGhlIGNhY2hlLiAgT3RoZXJ3
+aXNlIHRoZXJlJ3MgYSB3aW5kb3cgd2hlcmUgdGhlIGNhY2hlIGlzCmZsYWdnZWQgYXMgdmFsaWQg
+YnV0IGlzIG5vdCBhY3R1YWxseSBzbyB3aGljaCBkb2Vzbid0IHNlZW0gcm9idXN0LgoKPiA+ID4g
+CQl1ZGExMzgwX3dyaXRlKGNvZGVjLCBVREExMzgwX1BNLCBSMDJfUE9OX0JJQVMgfCBwbSk7Cgo+
+ID4gTGlrZSBJIHNhaWQgcHJldmlvdXNseSB5b3UgcmVhbGx5IHNob3VsZCBsb29rIGF0IHVzaW5n
+IERBUE0gaGVyZSwgdGhpcwo+ID4gc2hvdWxkIG1ha2UgdGhlIGNvZGUgc2ltcGxlciBhbmQgd2ls
+bCBsZXQgeW91Cgo+IEhtbSwgdWRhMTM0eCBkcml2ZXIgZG9lcyBwcmV0dHkgc2FtZSB0aGluZ3Mg
+YXMgaW4gbXkgcGF0Y2guLi4gQW5kIGl0IHNlZW1zIAo+IHBhcnQgb2YgeW91ciBzZW50ZW5jZSBp
+cyBsb3N0IDooCgpPbGQgZHJpdmVycyBmb3IgZmFpcmx5IG9ic2N1cmUgY2hpcHMgYXJlbid0IGFs
+d2F5cyBhIGdvb2QgZ3VpZGUgdG8gYmVzdApwcmFjdGljZXMgZm9yIHRoaW5ncy4KCj4gPiA+IC0J
+cmV0ID0gdWRhMTM4MF9yZXNldChjb2RlYyk7Cj4gPiA+IC0JaWYgKHJldCA8IDApIHsKPiA+ID4g
+LQkJZGV2X2Vycihjb2RlYy0+ZGV2LCAiRmFpbGVkIHRvIGlzc3VlIHJlc2V0XG4iKTsKPiA+ID4g
+LQkJZ290byBlcnJfcmVzZXQ7Cj4gPiA+IC0JfQoKPiA+IFRoZSByZWFzb24gZm9yIHRoZSByZXNl
+dCBhdCBzdGFydHVwIGlzIHRoYXQgd2UgZG9uJ3Qga25vdyB3aGF0IHN0YXRlIHRoZQo+ID4gZGV2
+aWNlIGlzIGluIHdoZW4gTGludXggZ2V0cyBjb250cm9sLgoKPiBJdCdzIHNvZnRyZXNldCBhbmQg
+aXQncyBwZXJmb3JtZWQgYnkgd3JpdGluZyBzb21lIHZhbHVlIHRvIHNvbWUgcmVnLiBpMmMgeGZl
+cnMgCj4gaXMgbm90IHBvc3NpYmxlIHdoZW4gY29kZWMgaXMgbm90IGVuYWJsZWQgKGl0IGlzIG5v
+dCBhdCB0aGlzIHBvaW50KQoKSXQgbmVlZHMgdG8gaGFwcGVuIGF0IHNvbWUgcG9pbnQuCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
