@@ -1,20 +1,18 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [RFC 01/15] ASoC: multi-component - Samsung S3C
-	Platform
-Date: Sun, 27 Jun 2010 12:52:00 +0100
-Message-ID: <1277639534-5104-2-git-send-email-lrg@slimlogic.co.uk>
+Subject: [RFC 02/15] ASoC: multi-component - TI OMAP Platform
+Date: Sun, 27 Jun 2010 12:52:01 +0100
+Message-ID: <1277639534-5104-3-git-send-email-lrg@slimlogic.co.uk>
 References: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 5449110388D
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id AA14B10389B
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 13:52:31 +0200 (CEST)
-Received: by wyf23 with SMTP id 23so919297wyf.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 04:52:30 -0700 (PDT)
+	Sun, 27 Jun 2010 13:52:34 +0200 (CEST)
+Received: by mail-ww0-f51.google.com with SMTP id 13so934011wwb.38
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 04:52:34 -0700 (PDT)
 In-Reply-To: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,7 +27,7 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Update the Samsung platform and machines to new multi-component model.
+Update the TI OMAP platform and machines to new multi-component model.
 
 This patch changes the machine drivers for multi-component as follows :-
 
@@ -45,374 +43,280 @@ This patch also changes the DAI and platform DAM drivers as follows :-
 
 Other notable changes required for multi-component support:-
 
- o Added I2S DAI platform devices.
- o s3c_i2sv2_probe(), s3c_i2sv2_register_dai() and s3c2412_i2s_probe() now
-   modified to use DAI platform devices passed in by DAI probe.
- o Added s3c2412_i2s_remove()
-
-FIXME:
- o s3c24xx_uda134x has codec platform data defined in machine driver. This must
-   be moved to a board file (but which one ??)
+ o Moved zoom2 audio platform data to board-zoom2.c
+ o Moved n810 audio platform data to board-n810.c
+ o Moved RX51 audio platform data to board-rx51-peripherals.c
+ o Added ASoC DAI and DMA platform devices.
+ o Misc fixes from Jarkko Nikula
 
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- arch/arm/plat-s3c24xx/devs.c                   |   30 ++++-
- sound/soc/s3c24xx/jive_wm8750.c                |   23 +--
- sound/soc/s3c24xx/ln2440sbc_alc650.c           |   16 +--
- sound/soc/s3c24xx/neo1973_gta02_wm8753.c       |   58 ++++----
- sound/soc/s3c24xx/neo1973_wm8753.c             |   37 ++---
- sound/soc/s3c24xx/s3c-ac97.c                   |   20 +--
- sound/soc/s3c24xx/s3c-ac97.h                   |    2 +-
- sound/soc/s3c24xx/s3c-dma.c                    |   43 ++++--
- sound/soc/s3c24xx/s3c-dma.h                    |    2 +-
- sound/soc/s3c24xx/s3c-i2s-v2.c                 |   50 ++----
- sound/soc/s3c24xx/s3c-i2s-v2.h                 |   11 +-
- sound/soc/s3c24xx/s3c-pcm.c                    |   37 ++---
- sound/soc/s3c24xx/s3c2412-i2s.c                |   51 +++++--
- sound/soc/s3c24xx/s3c2412-i2s.h                |    2 +-
- sound/soc/s3c24xx/s3c24xx-i2s.c                |   37 +++--
- sound/soc/s3c24xx/s3c24xx-i2s.h                |    2 +-
- sound/soc/s3c24xx/s3c24xx_simtec.c             |   15 +-
- sound/soc/s3c24xx/s3c24xx_simtec.h             |    4 +-
- sound/soc/s3c24xx/s3c24xx_simtec_hermes.c      |   25 +--
- sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c |   21 +--
- sound/soc/s3c24xx/s3c24xx_uda134x.c            |   21 +--
- sound/soc/s3c24xx/s3c64xx-i2s-v4.c             |   66 +++-----
- sound/soc/s3c24xx/s3c64xx-i2s.c                |  204 ++++++++++++++++--------
- sound/soc/s3c24xx/s3c64xx-i2s.h                |    6 +-
- sound/soc/s3c24xx/smdk2443_wm9710.c            |   17 +--
- sound/soc/s3c24xx/smdk64xx_wm8580.c            |   35 +++--
- sound/soc/s3c24xx/smdk_wm9713.c                |   18 +--
- 27 files changed, 463 insertions(+), 390 deletions(-)
+ arch/arm/mach-omap2/board-n8x0.c              |   15 +++
+ arch/arm/mach-omap2/board-rx51-peripherals.c  |    9 ++-
+ arch/arm/mach-omap2/board-zoom2.c             |   31 ++++++-
+ arch/arm/mach-omap2/devices.c                 |   49 ++++++++++
+ arch/arm/mach-omap2/include/mach/board-zoom.h |    2 +
+ sound/soc/omap/am3517evm.c                    |   26 ++---
+ sound/soc/omap/ams-delta.c                    |   54 ++++-------
+ sound/soc/omap/igep0020.c                     |   22 ++---
+ sound/soc/omap/mcpdm.c                        |   19 +----
+ sound/soc/omap/mcpdm.h                        |    2 +
+ sound/soc/omap/n810.c                         |   44 +++------
+ sound/soc/omap/omap-mcbsp.c                   |  126 +++++++++++++------------
+ sound/soc/omap/omap-mcbsp.h                   |    2 +-
+ sound/soc/omap/omap-mcpdm.c                   |   68 +++++++++-----
+ sound/soc/omap/omap-mcpdm.h                   |    2 +-
+ sound/soc/omap/omap-pcm.c                     |   45 +++++++--
+ sound/soc/omap/omap-pcm.h                     |    2 +-
+ sound/soc/omap/omap2evm.c                     |   26 ++---
+ sound/soc/omap/omap3beagle.c                  |   24 ++---
+ sound/soc/omap/omap3evm.c                     |   31 ++-----
+ sound/soc/omap/omap3pandora.c                 |   39 ++++----
+ sound/soc/omap/osk5912.c                      |   25 ++---
+ sound/soc/omap/overo.c                        |   23 ++---
+ sound/soc/omap/rx51.c                         |   35 +++-----
+ sound/soc/omap/sdp3430.c                      |   56 +++++------
+ sound/soc/omap/sdp4430.c                      |   22 ++---
+ sound/soc/omap/zoom2.c                        |   62 +++++--------
+ 27 files changed, 437 insertions(+), 424 deletions(-)
 
-diff --git a/arch/arm/plat-s3c24xx/devs.c b/arch/arm/plat-s3c24xx/devs.c
-index 452e184..9f8ee5e 100644
---- a/arch/arm/plat-s3c24xx/devs.c
-+++ b/arch/arm/plat-s3c24xx/devs.c
-@@ -481,7 +481,7 @@ static struct resource s3c_ac97_resource[] = {
- 	},
- };
+diff --git a/arch/arm/mach-omap2/board-n8x0.c b/arch/arm/mach-omap2/board-n8x0.c
+index 3ccc34e..04df912 100644
+--- a/arch/arm/mach-omap2/board-n8x0.c
++++ b/arch/arm/mach-omap2/board-n8x0.c
+@@ -20,6 +20,7 @@
+ #include <linux/i2c.h>
+ #include <linux/spi/spi.h>
+ #include <linux/usb/musb.h>
++#include <sound/tlv320aic3x.h>
  
--static u64 s3c_device_ac97_dmamask = 0xffffffffUL;
-+static u64 s3c_device_audio_dmamask = 0xffffffffUL;
- 
- struct platform_device s3c_device_ac97 = {
- 	.name		  = "s3c-ac97",
-@@ -489,11 +489,37 @@ struct platform_device s3c_device_ac97 = {
- 	.num_resources	  = ARRAY_SIZE(s3c_ac97_resource),
- 	.resource	  = s3c_ac97_resource,
- 	.dev              = {
--		.dma_mask = &s3c_device_ac97_dmamask,
-+		.dma_mask = &s3c_device_audio_dmamask,
- 		.coherent_dma_mask = 0xffffffffUL
- 	}
- };
- 
- EXPORT_SYMBOL(s3c_device_ac97);
- 
-+/* ASoC PCM DMA */
-+
-+struct platform_device s3c_device_pcm = {
-+	.name		  = "s3c24xx-pcm-audio",
-+	.id		  = -1,
-+	.dev              = {
-+		.dma_mask = &s3c_device_audio_dmamask,
-+		.coherent_dma_mask = 0xffffffffUL
-+	}
-+};
-+
-+EXPORT_SYMBOL(s3c_device_pcm);
-+
-+/* ASoC I2S */
-+
-+struct platform_device s3c2412_device_iis = {
-+	.name		  = "s3c2412-iis",
-+	.id		  = -1,
-+	.dev              = {
-+		.dma_mask = &s3c_device_audio_dmamask,
-+		.coherent_dma_mask = 0xffffffffUL
-+	}
-+};
-+
-+EXPORT_SYMBOL(s3c2412_device_iis);
-+
- #endif // CONFIG_CPU_S32440
-diff --git a/sound/soc/s3c24xx/jive_wm8750.c b/sound/soc/s3c24xx/jive_wm8750.c
-index 8c108b1..c8f8c4c 100644
---- a/sound/soc/s3c24xx/jive_wm8750.c
-+++ b/sound/soc/s3c24xx/jive_wm8750.c
-@@ -49,8 +49,8 @@ static int jive_hw_params(struct snd_pcm_substream *substream,
- 			  struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct s3c_i2sv2_rate_calc div;
- 	unsigned int clk = 0;
- 	int ret = 0;
-@@ -108,8 +108,9 @@ static struct snd_soc_ops jive_ops = {
- 	.hw_params	= jive_hw_params,
- };
- 
--static int jive_wm8750_init(struct snd_soc_codec *codec)
-+static int jive_wm8750_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int err;
- 
- 	/* These endpoints are not being used. */
-@@ -138,8 +139,10 @@ static int jive_wm8750_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link jive_dai = {
- 	.name		= "wm8750",
- 	.stream_name	= "WM8750",
--	.cpu_dai	= &s3c2412_i2s_dai,
--	.codec_dai	= &wm8750_dai,
-+	.cpu_dai_drv 	= &s3c2412_i2s_dai,
-+	.codec_dai_drv 	= &wm8750_dai,
-+	.platform_drv	= &s3c24xx_soc_platform,
-+	.codec_drv 	= &soc_codec_dev_wm8750,
- 	.init		= jive_wm8750_init,
- 	.ops		= &jive_ops,
- };
-@@ -147,17 +150,10 @@ static struct snd_soc_dai_link jive_dai = {
- /* jive audio machine driver */
- static struct snd_soc_card snd_soc_machine_jive = {
- 	.name		= "Jive",
--	.platform	= &s3c24xx_soc_platform,
- 	.dai_link	= &jive_dai,
- 	.num_links	= 1,
- };
- 
--/* jive audio subsystem */
--static struct snd_soc_device jive_snd_devdata = {
--	.card		= &snd_soc_machine_jive,
--	.codec_dev	= &soc_codec_dev_wm8750,
--};
--
- static struct platform_device *jive_snd_device;
- 
- static int __init jive_init(void)
-@@ -173,8 +169,7 @@ static int __init jive_init(void)
- 	if (!jive_snd_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(jive_snd_device, &jive_snd_devdata);
--	jive_snd_devdata.dev = &jive_snd_device->dev;
-+	platform_set_drvdata(jive_snd_device, &snd_soc_machine_jive);
- 	ret = platform_device_add(jive_snd_device);
- 
- 	if (ret)
-diff --git a/sound/soc/s3c24xx/ln2440sbc_alc650.c b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-index ffa954f..97e3c11 100644
---- a/sound/soc/s3c24xx/ln2440sbc_alc650.c
-+++ b/sound/soc/s3c24xx/ln2440sbc_alc650.c
-@@ -33,23 +33,19 @@ static struct snd_soc_dai_link ln2440sbc_dai[] = {
- {
- 	.name = "AC97",
- 	.stream_name = "AC97 HiFi",
--	.cpu_dai = &s3c_ac97_dai[S3C_AC97_DAI_PCM],
--	.codec_dai = &ac97_dai,
-+	.cpu_dai_drv = &s3c_ac97_dai[S3C_AC97_DAI_PCM],
-+	.codec_dai_drv = &ac97_dai,
-+	.codec_drv = &soc_codec_dev_ac97,
-+	.platform_drv = &s3c24xx_soc_platform,
- },
- };
- 
- static struct snd_soc_card ln2440sbc = {
- 	.name = "LN2440SBC",
--	.platform = &s3c24xx_soc_platform,
- 	.dai_link = ln2440sbc_dai,
- 	.num_links = ARRAY_SIZE(ln2440sbc_dai),
- };
- 
--static struct snd_soc_device ln2440sbc_snd_ac97_devdata = {
--	.card = &ln2440sbc,
--	.codec_dev = &soc_codec_dev_ac97,
--};
--
- static struct platform_device *ln2440sbc_snd_ac97_device;
- 
- static int __init ln2440sbc_init(void)
-@@ -60,9 +56,7 @@ static int __init ln2440sbc_init(void)
- 	if (!ln2440sbc_snd_ac97_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(ln2440sbc_snd_ac97_device,
--				&ln2440sbc_snd_ac97_devdata);
--	ln2440sbc_snd_ac97_devdata.dev = &ln2440sbc_snd_ac97_device->dev;
-+	platform_set_drvdata(ln2440sbc_snd_ac97_device, &ln2440sbc);
- 	ret = platform_device_add(ln2440sbc_snd_ac97_device);
- 
- 	if (ret)
-diff --git a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
-index 209c259..6082fd6 100644
---- a/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
-+++ b/sound/soc/s3c24xx/neo1973_gta02_wm8753.c
-@@ -41,8 +41,8 @@ static int neo1973_gta02_hifi_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	unsigned int pll_out = 0, bclk = 0;
- 	int ret = 0;
- 	unsigned long iis_clkrate;
-@@ -130,7 +130,7 @@ static int neo1973_gta02_hifi_hw_params(struct snd_pcm_substream *substream,
- static int neo1973_gta02_hifi_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 
- 	/* disable the PLL */
- 	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL1, 0, 0, 0);
-@@ -149,7 +149,7 @@ static int neo1973_gta02_voice_hw_params(
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	unsigned int pcmdiv = 0;
- 	int ret = 0;
- 	unsigned long iis_clkrate;
-@@ -194,7 +194,7 @@ static int neo1973_gta02_voice_hw_params(
- static int neo1973_gta02_voice_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 
- 	/* disable the PLL */
- 	return snd_soc_dai_set_pll(codec_dai, WM8753_PLL2, 0, 0, 0);
-@@ -262,7 +262,7 @@ static int lm4853_event(struct snd_soc_dapm_widget *w,
- 			struct snd_kcontrol *k,
- 			int event)
- {
--	gpio_set_value(GTA02_GPIO_AMP_SHUT, SND_SOC_DAPM_EVENT_OFF(value));
-+	gpio_set_value(GTA02_GPIO_AMP_SHUT, SND_SOC_DAPM_EVENT_OFF(event));
- 
+ #include <asm/mach/arch.h>
+ #include <asm/mach-types.h>
+@@ -612,11 +613,25 @@ static int n8x0_menelaus_late_init(struct device *dev)
  	return 0;
  }
-@@ -330,8 +330,9 @@ static const struct snd_kcontrol_new wm8753_neo1973_gta02_controls[] = {
-  * This is an example machine initialisation for a wm8753 connected to a
-  * neo1973 GTA02.
-  */
--static int neo1973_gta02_wm8753_init(struct snd_soc_codec *codec)
-+static int neo1973_gta02_wm8753_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int err;
  
- 	/* set up NC codec pins */
-@@ -378,9 +379,8 @@ static int neo1973_gta02_wm8753_init(struct snd_soc_codec *codec)
- /*
-  * BT Codec DAI
-  */
--static struct snd_soc_dai bt_dai = {
-+static struct snd_soc_dai_driver bt_dai = {
- 	.name = "Bluetooth",
--	.id = 0,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 1,
-@@ -397,32 +397,32 @@ static struct snd_soc_dai_link neo1973_gta02_dai[] = {
- { /* Hifi Playback - for similatious use with voice below */
- 	.name = "WM8753",
- 	.stream_name = "WM8753 HiFi",
--	.cpu_dai = &s3c24xx_i2s_dai,
--	.codec_dai = &wm8753_dai[WM8753_DAI_HIFI],
-+	.cpu_dai_drv = &s3c24xx_i2s_dai,
-+	.codec_dai_drv = &wm8753_dai[WM8753_DAI_HIFI],
-+	.codec_dai_id = WM8753_DAI_HIFI,
- 	.init = neo1973_gta02_wm8753_init,
-+	.platform_drv = &s3c24xx_soc_platform,
-+	.codec_drv = &soc_codec_dev_wm8753,
- 	.ops = &neo1973_gta02_hifi_ops,
- },
- { /* Voice via BT */
- 	.name = "Bluetooth",
- 	.stream_name = "Voice",
--	.cpu_dai = &bt_dai,
--	.codec_dai = &wm8753_dai[WM8753_DAI_VOICE],
-+	.cpu_dai_drv = &bt_dai,
-+	.codec_dai_drv = &wm8753_dai[WM8753_DAI_VOICE],
-+	.codec_dai_id = WM8753_DAI_VOICE,
- 	.ops = &neo1973_gta02_voice_ops,
-+	.codec_drv = &soc_codec_dev_wm8753,
-+	.platform_drv = &s3c24xx_soc_platform,
- },
- };
- 
- static struct snd_soc_card neo1973_gta02 = {
- 	.name = "neo1973-gta02",
--	.platform = &s3c24xx_soc_platform,
- 	.dai_link = neo1973_gta02_dai,
- 	.num_links = ARRAY_SIZE(neo1973_gta02_dai),
- };
- 
--static struct snd_soc_device neo1973_gta02_snd_devdata = {
--	.card = &neo1973_gta02,
--	.codec_dev = &soc_codec_dev_wm8753,
--};
--
- static struct platform_device *neo1973_gta02_snd_device;
- 
- static int __init neo1973_gta02_init(void)
-@@ -435,18 +435,18 @@ static int __init neo1973_gta02_init(void)
- 		return -ENODEV;
- 	}
- 
--	/* register bluetooth DAI here */
--	ret = snd_soc_register_dai(&bt_dai);
--	if (ret)
--		return ret;
--
- 	neo1973_gta02_snd_device = platform_device_alloc("soc-audio", -1);
- 	if (!neo1973_gta02_snd_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(neo1973_gta02_snd_device,
--			&neo1973_gta02_snd_devdata);
--	neo1973_gta02_snd_devdata.dev = &neo1973_gta02_snd_device->dev;
-+	/* register bluetooth DAI here */
-+	ret = snd_soc_register_dai(&neo1973_gta02_snd_device->dev, -1, &bt_dai);
-+	if (ret) {
-+		platform_device_put(neo1973_gta02_snd_device);
-+		return ret;
-+	}
++static struct aic3x_setup_data n810_aic33_setup = {
++	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
++	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
++};
 +
-+	platform_set_drvdata(neo1973_gta02_snd_device, &neo1973_gta02);
- 	ret = platform_device_add(neo1973_gta02_snd_device);
++static struct aic3x_pdata n810_aic33_data = {
++	.setup = &n810_aic33_setup,
++	.gpio_reset = -1,
++};
++
+ static struct i2c_board_info __initdata n8x0_i2c_board_info_1[] = {
+ 	{
+ 		I2C_BOARD_INFO("menelaus", 0x72),
+ 		.irq = INT_24XX_SYS_NIRQ,
+ 	},
++	{
++		I2C_BOARD_INFO("tlv320aic3x", 0x1b),
++		.platform_data = &n810_aic33_data,
++	},
+ };
  
- 	if (ret) {
-@@ -461,7 +461,7 @@ static int __init neo1973_gta02_init(void)
- 		goto err_unregister_device;
- 	}
+ static struct menelaus_platform_data n8x0_menelaus_platform_data = {
+diff --git a/arch/arm/mach-omap2/board-rx51-peripherals.c b/arch/arm/mach-omap2/board-rx51-peripherals.c
+index abdf321..ab65bb0 100644
+--- a/arch/arm/mach-omap2/board-rx51-peripherals.c
++++ b/arch/arm/mach-omap2/board-rx51-peripherals.c
+@@ -23,6 +23,7 @@
+ #include <linux/gpio.h>
+ #include <linux/gpio_keys.h>
+ #include <linux/mmc/host.h>
++#include <sound/tlv320aic3x.h>
  
--	ret = gpio_direction_output(GTA02_GPIO_AMP_HP_IN, 1);
-+	ret = gpio_direction_output(GTA02_GPIO_HP_IN, 1);
- 	if (ret) {
- 		pr_err("gta02_wm8753: Failed to configure GPIO %d\n", GTA02_GPIO_HP_IN);
- 		goto err_free_gpio_hp_in;
-@@ -493,7 +493,7 @@ module_init(neo1973_gta02_init);
+ #include <plat/mcspi.h>
+ #include <plat/mux.h>
+@@ -686,7 +687,6 @@ static struct twl4030_power_data rx51_t2scripts_data __initdata = {
+ };
  
- static void __exit neo1973_gta02_exit(void)
+ 
+-
+ static struct twl4030_platform_data rx51_twldata __initdata = {
+ 	.irq_base		= TWL4030_IRQ_BASE,
+ 	.irq_end		= TWL4030_IRQ_END,
+@@ -716,9 +716,16 @@ static struct i2c_board_info __initdata rx51_peripherals_i2c_board_info_1[] = {
+ 	},
+ };
+ 
++/* Audio setup data */
++static struct aic3x_setup_data rx51_aic34_setup = {
++	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
++	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
++};
++
+ static struct i2c_board_info __initdata rx51_peripherals_i2c_board_info_2[] = {
+ 	{
+ 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
++		.platform_data = &rx51_aic34_setup,
+ 	},
+ };
+ 
+diff --git a/arch/arm/mach-omap2/board-zoom2.c b/arch/arm/mach-omap2/board-zoom2.c
+index 803ef14..f39a785 100644
+--- a/arch/arm/mach-omap2/board-zoom2.c
++++ b/arch/arm/mach-omap2/board-zoom2.c
+@@ -14,6 +14,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/input.h>
+ #include <linux/gpio.h>
++#include <linux/i2c/twl.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -34,8 +35,11 @@ static void __init omap_zoom2_init_irq(void)
+ 	omap_gpio_init();
+ }
+ 
+-/* REVISIT: These audio entries can be removed once MFD code is merged */
+-#if 0
++/* EXTMUTE callback function */
++void zoom2_set_hs_extmute(int mute)
++{
++	gpio_set_value(ZOOM2_HEADSET_EXTMUTE_GPIO, mute);
++}
+ 
+ static struct twl4030_madc_platform_data zoom2_madc_data = {
+ 	.irq_line	= 1,
+@@ -43,6 +47,9 @@ static struct twl4030_madc_platform_data zoom2_madc_data = {
+ 
+ static struct twl4030_codec_audio_data zoom2_audio_data = {
+ 	.audio_mclk = 26000000,
++	.ramp_delay_value = 3,	/* 161 ms */
++	.hs_extmute = 1,
++	.set_hs_extmute = zoom2_set_hs_extmute,
+ };
+ 
+ static struct twl4030_codec_data zoom2_codec_data = {
+@@ -64,10 +71,27 @@ static struct twl4030_platform_data zoom2_twldata = {
+ 	.vmmc1          = &zoom2_vmmc1,
+ 	.vmmc2          = &zoom2_vmmc2,
+ 	.vsim           = &zoom2_vsim,
++};
+ 
++static struct i2c_board_info __initdata zoom2_i2c_boardinfo[] = {
++	{
++		I2C_BOARD_INFO("twl4030", 0x48),
++		.flags = I2C_CLIENT_WAKE,
++		.irq = INT_34XX_SYS_NIRQ,
++		.platform_data = &zoom2_twldata,
++	},
+ };
+ 
+-#endif
++static int __init omap3_zoom2_i2c_init(void)
++{
++	omap_register_i2c_bus(1, 2600, zoom2_i2c_boardinfo,
++			ARRAY_SIZE(zoom2_i2c_boardinfo));
++	/* Bus 3 is attached to the DVI port where devices like the pico DLP
++	 * projector don't work reliably with 400kHz */
++	omap_register_i2c_bus(3, 100, NULL, 0);
++	return 0;
++}
++
+ 
+ #ifdef CONFIG_OMAP_MUX
+ static struct omap_board_mux board_mux[] __initdata = {
+@@ -81,6 +105,7 @@ static void __init omap_zoom2_init(void)
  {
--	snd_soc_unregister_dai(&bt_dai);
-+	snd_soc_unregister_dai(&neo1973_gta02_snd_device->dev, -1);
- 	platform_device_unregister(neo1973_gta02_snd_device);
- 	gpio_free(GTA02_GPIO_HP_IN);
- 	gpio_free(GTA02_GPIO_AMP_SHUT);
-diff --git a/sound/soc/s3c24xx/neo1973_wm8753.c b/sound/soc/s3c24xx/neo1973_wm8753.c
-index 0cb4f86..2df3d06 100644
---- a/sound/soc/s3c24xx/neo1973_wm8753.c
-+++ b/sound/soc/s3c24xx/neo1973_wm8753.c
-@@ -57,8 +57,8 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
+ 	zoom_peripherals_init();
++	omap3_zoom2_i2c_init();
+ 	zoom_debugboard_init();
+ }
+ 
+diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
+index 03e6c9e..e5a1519 100644
+--- a/arch/arm/mach-omap2/devices.c
++++ b/arch/arm/mach-omap2/devices.c
+@@ -29,6 +29,7 @@
+ #include <mach/gpio.h>
+ #include <plat/mmc.h>
+ #include <plat/dma.h>
++#include <plat/mcbsp.h>
+ 
+ #include "mux.h"
+ 
+@@ -289,6 +290,53 @@ static inline void omap_init_sti(void)
+ static inline void omap_init_sti(void) {}
+ #endif
+ 
++#if defined(CONFIG_SND_SOC)
++
++static struct platform_device omap_pcm = {
++	.name	= "omap_pcm",
++	.id	= -1,
++};
++
++static struct platform_device omap_mcbsp1 = {
++	.name	= "omap_mcbsp",
++	.id	= OMAP_MCBSP1,
++};
++
++static struct platform_device omap_mcbsp2 = {
++	.name	= "omap_mcbsp",
++	.id	= OMAP_MCBSP2,
++};
++
++static struct platform_device omap_mcbsp3 = {
++	.name	= "omap_mcbsp",
++	.id	= OMAP_MCBSP3,
++};
++
++static struct platform_device omap_mcbsp4 = {
++	.name	= "omap_mcbsp",
++	.id	= OMAP_MCBSP4,
++};
++
++static struct platform_device omap_mcbsp5 = {
++	.name	= "omap_mcbsp",
++	.id	= OMAP_MCBSP5,
++};
++
++static void omap_init_audio(void)
++{
++	platform_device_register(&omap_mcbsp1);
++	platform_device_register(&omap_mcbsp2);
++	platform_device_register(&omap_mcbsp3);
++	platform_device_register(&omap_mcbsp4);
++	platform_device_register(&omap_mcbsp5);
++	platform_device_register(&omap_pcm);
++}
++
++#else
++static inline void omap_init_audio(void) {}
++#endif
++
++
+ #if defined(CONFIG_SPI_OMAP24XX) || defined(CONFIG_SPI_OMAP24XX_MODULE)
+ 
+ #include <plat/mcspi.h>
+@@ -901,6 +949,7 @@ static int __init omap2_init_devices(void)
+ 	 * in alphabetical order so they're easier to sort through.
+ 	 */
+ 	omap_hsmmc_reset();
++	omap_init_audio();
+ 	omap_init_camera();
+ 	omap_init_mbox();
+ 	omap_init_mcspi();
+diff --git a/arch/arm/mach-omap2/include/mach/board-zoom.h b/arch/arm/mach-omap2/include/mach/board-zoom.h
+index c93b29e..b6a010f 100644
+--- a/arch/arm/mach-omap2/include/mach/board-zoom.h
++++ b/arch/arm/mach-omap2/include/mach/board-zoom.h
+@@ -3,3 +3,5 @@
+  */
+ extern int __init zoom_debugboard_init(void);
+ extern void __init zoom_peripherals_init(void);
++
++#define ZOOM2_HEADSET_EXTMUTE_GPIO	153
+diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
+index 135901b..099b363 100644
+--- a/sound/soc/omap/am3517evm.c
++++ b/sound/soc/omap/am3517evm.c
+@@ -40,8 +40,8 @@ static int am3517evm_hw_params(struct snd_pcm_substream *substream,
  	struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
@@ -420,222 +324,833 @@ index 0cb4f86..2df3d06 100644
 -	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	unsigned int pll_out = 0, bclk = 0;
- 	int ret = 0;
- 	unsigned long iis_clkrate;
-@@ -147,7 +147,7 @@ static int neo1973_hifi_hw_params(struct snd_pcm_substream *substream,
- static int neo1973_hifi_hw_free(struct snd_pcm_substream *substream)
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -111,8 +111,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"MICIN", NULL, "Mic In"},
+ };
+ 
+-static int am3517evm_aic23_init(struct snd_soc_codec *codec)
++static int am3517evm_aic23_init(struct snd_soc_pcm_runtime *rtd)
  {
++	struct snd_soc_codec *codec = rtd->codec;
++
+ 	/* Add am3517-evm specific widgets */
+ 	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
+ 				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
+@@ -134,8 +136,11 @@ static int am3517evm_aic23_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link am3517evm_dai = {
+ 	.name = "TLV320AIC23",
+ 	.stream_name = "AIC23",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &tlv320aic23_dai,
++	.cpu_dai_drv = &omap_mcbsp_dai,
++	.cpu_dai_id = 0, /* McBSP 1 */
++	.codec_dai_drv = &tlv320aic23_dai,
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &soc_codec_dev_tlv320aic23,
+ 	.init = am3517evm_aic23_init,
+ 	.ops = &am3517evm_ops,
+ };
+@@ -143,17 +148,10 @@ static struct snd_soc_dai_link am3517evm_dai = {
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_am3517evm = {
+ 	.name = "am3517evm",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &am3517evm_dai,
+ 	.num_links = 1,
+ };
+ 
+-/* Audio subsystem */
+-static struct snd_soc_device am3517evm_snd_devdata = {
+-	.card = &snd_soc_am3517evm,
+-	.codec_dev = &soc_codec_dev_tlv320aic23,
+-};
+-
+ static struct platform_device *am3517evm_snd_device;
+ 
+ static int __init am3517evm_soc_init(void)
+@@ -172,9 +170,7 @@ static int __init am3517evm_soc_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(am3517evm_snd_device, &am3517evm_snd_devdata);
+-	am3517evm_snd_devdata.dev = &am3517evm_snd_device->dev;
+-	*(unsigned int *)am3517evm_dai.cpu_dai->private_data = 0; /* McBSP1 */
++	platform_set_drvdata(am3517evm_snd_device, &snd_soc_am3517evm);
+ 
+ 	ret = platform_device_add(am3517evm_snd_device);
+ 	if (ret)
+diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
+index b0f618e..1a0665f 100644
+--- a/sound/soc/omap/ams-delta.c
++++ b/sound/soc/omap/ams-delta.c
+@@ -323,7 +323,7 @@ static void cx81801_receive(struct tty_struct *tty,
+ 					ARRAY_SIZE(ams_delta_hook_switch_pins),
+ 					ams_delta_hook_switch_pins);
+ 		if (ret)
+-			dev_warn(codec->socdev->card->dev,
++			dev_warn(codec->dev,
+ 				"Failed to link hook switch to DAPM pins, "
+ 				"will continue with hook switch unlinked.\n");
+ 
+@@ -383,7 +383,7 @@ static int ams_delta_hw_params(struct snd_pcm_substream *substream,
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+ 
+ 	/* Set cpu DAI configuration */
+-	return snd_soc_dai_set_fmt(rtd->dai->cpu_dai,
++	return snd_soc_dai_set_fmt(rtd->cpu_dai,
+ 				   SND_SOC_DAIFMT_DSP_A |
+ 				   SND_SOC_DAIFMT_NB_NF |
+ 				   SND_SOC_DAIFMT_CBM_CFM);
+@@ -398,7 +398,7 @@ static struct snd_soc_ops ams_delta_ops = {
+ static int ams_delta_set_bias_level(struct snd_soc_card *card,
+ 					enum snd_soc_bias_level level)
+ {
+-	struct snd_soc_codec *codec = card->codec;
++	struct snd_soc_codec *codec = card->rtd->codec;
+ 
+ 	switch (level) {
+ 	case SND_SOC_BIAS_ON:
+@@ -461,18 +461,19 @@ static void ams_delta_shutdown(struct snd_pcm_substream *substream)
+  * Card initialization
+  */
+ 
+-static int ams_delta_cx20442_init(struct snd_soc_codec *codec)
++static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
+ {
+-	struct snd_soc_dai *codec_dai = codec->dai;
+-	struct snd_soc_card *card = codec->socdev->card;
++	struct snd_soc_codec *codec = rtd->codec;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_card *card = rtd->card;
+ 	int ret;
+ 	/* Codec is ready, now add/activate board specific controls */
  
- 	pr_debug("Entered %s\n", __func__);
+ 	/* Set up digital mute if not provided by the codec */
+-	if (!codec_dai->ops) {
+-		codec_dai->ops = &ams_delta_dai_ops;
+-	} else if (!codec_dai->ops->digital_mute) {
+-		codec_dai->ops->digital_mute = ams_delta_digital_mute;
++	if (!codec_dai->driver->ops) {
++		codec_dai->driver->ops = &ams_delta_dai_ops;
++	} else if (!codec_dai->driver->ops->digital_mute) {
++		codec_dai->driver->ops->digital_mute = ams_delta_digital_mute;
+ 	} else {
+ 		ams_delta_ops.startup = ams_delta_startup;
+ 		ams_delta_ops.shutdown = ams_delta_shutdown;
+@@ -483,7 +484,7 @@ static int ams_delta_cx20442_init(struct snd_soc_codec *codec)
  
-@@ -167,7 +167,7 @@ static int neo1973_voice_hw_params(struct snd_pcm_substream *substream,
+ 	/* Add hook switch - can be used to control the codec from userspace
+ 	 * even if line discipline fails */
+-	ret = snd_soc_jack_new(card, "hook_switch",
++	ret = snd_soc_jack_new(rtd->codec, "hook_switch",
+ 				SND_JACK_HEADSET, &ams_delta_hook_switch);
+ 	if (ret)
+ 		dev_warn(card->dev,
+@@ -551,27 +552,23 @@ static int ams_delta_cx20442_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link ams_delta_dai_link = {
+ 	.name = "CX20442",
+ 	.stream_name = "CX20442",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &cx20442_dai,
++	.cpu_dai_drv = &omap_mcbsp_dai,
++	.cpu_dai_id = OMAP_MCBSP1,
++	.codec_dai_drv = &cx20442_dai,
+ 	.init = ams_delta_cx20442_init,
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &cx20442_codec_dev,
+ 	.ops = &ams_delta_ops,
+ };
+ 
+ /* Audio card driver */
+ static struct snd_soc_card ams_delta_audio_card = {
+ 	.name = "AMS_DELTA",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &ams_delta_dai_link,
+ 	.num_links = 1,
+ 	.set_bias_level = ams_delta_set_bias_level,
+ };
+ 
+-/* Audio subsystem */
+-static struct snd_soc_device ams_delta_snd_soc_device = {
+-	.card = &ams_delta_audio_card,
+-	.codec_dev = &cx20442_codec_dev,
+-};
+-
+ /* Module init/exit */
+ static struct platform_device *ams_delta_audio_platform_device;
+ static struct platform_device *cx20442_platform_device;
+@@ -589,9 +586,7 @@ static int __init ams_delta_module_init(void)
+ 		return -ENOMEM;
+ 
+ 	platform_set_drvdata(ams_delta_audio_platform_device,
+-				&ams_delta_snd_soc_device);
+-	ams_delta_snd_soc_device.dev = &ams_delta_audio_platform_device->dev;
+-	*(unsigned int *)ams_delta_dai_link.cpu_dai->private_data = OMAP_MCBSP1;
++				&ams_delta_audio_card);
+ 
+ 	ret = platform_device_add(ams_delta_audio_platform_device);
+ 	if (ret)
+@@ -612,19 +607,6 @@ module_init(ams_delta_module_init);
+ 
+ static void __exit ams_delta_module_exit(void)
+ {
+-	struct snd_soc_codec *codec;
+-	struct tty_struct *tty;
+-
+-	if (ams_delta_audio_card.codec) {
+-		codec = ams_delta_audio_card.codec;
+-
+-		if (codec->control_data) {
+-			tty = codec->control_data;
+-
+-			tty_hangup(tty);
+-		}
+-	}
+-
+ 	if (tty_unregister_ldisc(N_V253) != 0)
+ 		dev_warn(&ams_delta_audio_platform_device->dev,
+ 			"failed to unregister V253 line discipline\n");
+diff --git a/sound/soc/omap/igep0020.c b/sound/soc/omap/igep0020.c
+index 3583c42..5c10148 100644
+--- a/sound/soc/omap/igep0020.c
++++ b/sound/soc/omap/igep0020.c
+@@ -39,8 +39,8 @@ static int igep2_hw_params(struct snd_pcm_substream *substream,
  	struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	unsigned int pcmdiv = 0;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -82,25 +82,21 @@ static struct snd_soc_ops igep2_ops = {
+ static struct snd_soc_dai_link igep2_dai = {
+ 	.name = "TWL4030",
+ 	.stream_name = "TWL4030",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++	.cpu_dai_drv = &omap_mcbsp_dai,
++	.cpu_dai_id = OMAP_MCBSP2,
++	.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &soc_codec_dev_twl4030,
+ 	.ops = &igep2_ops,
+ };
+ 
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_card_igep2 = {
+ 	.name = "igep2",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &igep2_dai,
+ 	.num_links = 1,
+ };
+ 
+-/* Audio subsystem */
+-static struct snd_soc_device igep2_snd_devdata = {
+-	.card = &snd_soc_card_igep2,
+-	.codec_dev = &soc_codec_dev_twl4030,
+-};
+-
+ static struct platform_device *igep2_snd_device;
+ 
+ static int __init igep2_soc_init(void)
+@@ -119,9 +115,7 @@ static int __init igep2_soc_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(igep2_snd_device, &igep2_snd_devdata);
+-	igep2_snd_devdata.dev = &igep2_snd_device->dev;
+-	*(unsigned int *)igep2_dai.cpu_dai->private_data = 1; /* McBSP2 */
++	platform_set_drvdata(igep2_snd_device, &snd_soc_card_igep2);
+ 
+ 	ret = platform_device_add(igep2_snd_device);
+ 	if (ret)
+diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
+index 90b8bf7..928f037 100644
+--- a/sound/soc/omap/mcpdm.c
++++ b/sound/soc/omap/mcpdm.c
+@@ -402,7 +402,7 @@ int omap_mcpdm_set_offset(int offset1, int offset2)
+ 	return 0;
+ }
+ 
+-static int __devinit omap_mcpdm_probe(struct platform_device *pdev)
++int __devinit omap_mcpdm_probe(struct platform_device *pdev)
+ {
+ 	struct resource *res;
  	int ret = 0;
- 	unsigned long iis_clkrate;
-@@ -213,7 +213,7 @@ static int neo1973_voice_hw_params(struct snd_pcm_substream *substream,
- static int neo1973_voice_hw_free(struct snd_pcm_substream *substream)
+@@ -449,7 +449,7 @@ exit:
+ 	return ret;
+ }
+ 
+-static int __devexit omap_mcpdm_remove(struct platform_device *pdev)
++int __devexit omap_mcpdm_remove(struct platform_device *pdev)
+ {
+ 	struct omap_mcpdm *mcpdm_ptr = platform_get_drvdata(pdev);
+ 
+@@ -468,18 +468,3 @@ static int __devexit omap_mcpdm_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static struct platform_driver omap_mcpdm_driver = {
+-	.probe = omap_mcpdm_probe,
+-	.remove = __devexit_p(omap_mcpdm_remove),
+-	.driver = {
+-		.name = "omap-mcpdm",
+-	},
+-};
+-
+-static struct platform_device *omap_mcpdm_device;
+-
+-static int __init omap_mcpdm_init(void)
+-{
+-	return platform_driver_register(&omap_mcpdm_driver);
+-}
+-arch_initcall(omap_mcpdm_init);
+diff --git a/sound/soc/omap/mcpdm.h b/sound/soc/omap/mcpdm.h
+index 7bb326e..df3e16f 100644
+--- a/sound/soc/omap/mcpdm.h
++++ b/sound/soc/omap/mcpdm.h
+@@ -149,3 +149,5 @@ extern int omap_mcpdm_playback_close(struct omap_mcpdm_link *downlink);
+ extern int omap_mcpdm_request(void);
+ extern void omap_mcpdm_free(void);
+ extern int omap_mcpdm_set_offset(int offset1, int offset2);
++int __devinit omap_mcpdm_probe(struct platform_device *pdev);
++int __devexit omap_mcpdm_remove(struct platform_device *pdev);
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index 08e09d7..2c3504e 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -97,7 +97,7 @@ static int n810_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec *codec = rtd->socdev->card->codec;
++	struct snd_soc_codec *codec = rtd->codec;
+ 
+ 	snd_pcm_hw_constraint_minmax(runtime,
+ 				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
+@@ -115,8 +115,8 @@ static int n810_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int err;
  
- 	pr_debug("Entered %s\n", __func__);
+ 	/* Set codec DAI configuration */
+@@ -271,8 +271,9 @@ static const struct snd_kcontrol_new aic33_n810_controls[] = {
+ 		     n810_get_input, n810_set_input),
+ };
  
-@@ -499,8 +499,9 @@ static const struct snd_kcontrol_new wm8753_neo1973_controls[] = {
-  * neo1973 II. It is missing logic to detect hp/mic insertions and logic
-  * to re-route the audio in such an event.
-  */
--static int neo1973_wm8753_init(struct snd_soc_codec *codec)
-+static int neo1973_wm8753_init(struct snd_soc_pcm_runtime *rtd)
+-static int n810_aic33_init(struct snd_soc_codec *codec)
++static int n810_aic33_init(struct snd_soc_pcm_runtime *rtd)
  {
 +	struct snd_soc_codec *codec = rtd->codec;
  	int err;
  
- 	pr_debug("Entered %s\n", __func__);
-@@ -539,7 +540,6 @@ static int neo1973_wm8753_init(struct snd_soc_codec *codec)
-  */
- static struct snd_soc_dai bt_dai = {
- 	.name = "Bluetooth",
--	.id = 0,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 1,
-@@ -556,32 +556,32 @@ static struct snd_soc_dai_link neo1973_dai[] = {
- { /* Hifi Playback - for similatious use with voice below */
- 	.name = "WM8753",
- 	.stream_name = "WM8753 HiFi",
--	.cpu_dai = &s3c24xx_i2s_dai,
--	.codec_dai = &wm8753_dai[WM8753_DAI_HIFI],
-+	.platform_drv = &s3c24xx_soc_platform,
-+	.cpu_dai_drv = &s3c24xx_i2s_dai,
-+	.codec_dai_drv = &wm8753_dai[WM8753_DAI_HIFI],
-+	.codec_dai_id = WM8753_DAI_HIFI,
-+	.codec_drv = &soc_codec_dev_wm8753,
- 	.init = neo1973_wm8753_init,
- 	.ops = &neo1973_hifi_ops,
- },
- { /* Voice via BT */
- 	.name = "Bluetooth",
- 	.stream_name = "Voice",
--	.cpu_dai = &bt_dai,
--	.codec_dai = &wm8753_dai[WM8753_DAI_VOICE],
-+	.platform_drv = &s3c24xx_soc_platform,
-+	.cpu_dai_drv = &bt_dai,
-+	.codec_dai_drv = &wm8753_dai[WM8753_DAI_VOICE],
-+	.codec_dai_id = WM8753_DAI_VOICE,
-+	.codec_drv = &soc_codec_dev_wm8753,
- 	.ops = &neo1973_voice_ops,
- },
+ 	/* Not connected */
+@@ -307,8 +308,12 @@ static int n810_aic33_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link n810_dai = {
+ 	.name = "TLV320AIC33",
+ 	.stream_name = "AIC33",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &aic3x_dai,
++	.cpu_dai_drv = &omap_mcbsp_dai,
++	.cpu_dai_id = OMAP_MCBSP2,
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &soc_codec_dev_aic3x,
++	.codec_dai_drv = &aic3x_dai,
++	.codec_id = 0x1b,
+ 	.init = n810_aic33_init,
+ 	.ops = &n810_ops,
+ };
+@@ -316,33 +321,12 @@ static struct snd_soc_dai_link n810_dai = {
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_n810 = {
+ 	.name = "N810",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &n810_dai,
+ 	.num_links = 1,
  };
  
- static struct snd_soc_card neo1973 = {
- 	.name = "neo1973",
--	.platform = &s3c24xx_soc_platform,
- 	.dai_link = neo1973_dai,
- 	.num_links = ARRAY_SIZE(neo1973_dai),
- };
- 
--static struct snd_soc_device neo1973_snd_devdata = {
--	.card = &neo1973,
--	.codec_dev = &soc_codec_dev_wm8753,
+-/* Audio private data */
+-static struct aic3x_setup_data n810_aic33_setup = {
+-	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
+-	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
 -};
 -
- static int lm4857_i2c_probe(struct i2c_client *client,
- 			    const struct i2c_device_id *id)
+-/* Audio subsystem */
+-static struct snd_soc_device n810_snd_devdata = {
+-	.card = &snd_soc_n810,
+-	.codec_dev = &soc_codec_dev_aic3x,
+-	.codec_data = &n810_aic33_setup,
+-};
+-
+ static struct platform_device *n810_snd_device;
+ 
+-/* temporary i2c device creation until this can be moved into the machine
+- * support file.
+-*/
+-static struct i2c_board_info i2c_device[] = {
+-	{ I2C_BOARD_INFO("tlv320aic3x", 0x1b), }
+-};
+-
+ static int __init n810_soc_init(void)
  {
-@@ -673,8 +673,7 @@ static int __init neo1973_init(void)
- 	if (!neo1973_snd_device)
+ 	int err;
+@@ -351,15 +335,11 @@ static int __init n810_soc_init(void)
+ 	if (!(machine_is_nokia_n810() || machine_is_nokia_n810_wimax()))
+ 		return -ENODEV;
+ 
+-	i2c_register_board_info(1, i2c_device, ARRAY_SIZE(i2c_device));
+-
+ 	n810_snd_device = platform_device_alloc("soc-audio", -1);
+ 	if (!n810_snd_device)
  		return -ENOMEM;
  
--	platform_set_drvdata(neo1973_snd_device, &neo1973_snd_devdata);
--	neo1973_snd_devdata.dev = &neo1973_snd_device->dev;
-+	platform_set_drvdata(neo1973_snd_device, &neo1973);
- 	ret = platform_device_add(neo1973_snd_device);
+-	platform_set_drvdata(n810_snd_device, &n810_snd_devdata);
+-	n810_snd_devdata.dev = &n810_snd_device->dev;
+-	*(unsigned int *)n810_dai.cpu_dai->private_data = 1; /* McBSP2 */
++	platform_set_drvdata(n810_snd_device, &snd_soc_n810);
+ 	err = platform_device_add(n810_snd_device);
+ 	if (err)
+ 		goto err1;
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index aebd3af..68d0a88 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -62,8 +62,6 @@ struct omap_mcbsp_data {
+ 	int				wlen;
+ };
  
- 	if (ret) {
-diff --git a/sound/soc/s3c24xx/s3c-ac97.c b/sound/soc/s3c24xx/s3c-ac97.c
-index 31f6d45..86ff977 100644
---- a/sound/soc/s3c24xx/s3c-ac97.c
-+++ b/sound/soc/s3c24xx/s3c-ac97.c
-@@ -222,7 +222,7 @@ static int s3c_ac97_hw_params(struct snd_pcm_substream *substream,
+-#define to_mcbsp(priv)	container_of((priv), struct omap_mcbsp_data, bus_id)
+-
+ static struct omap_mcbsp_data mcbsp_data[NUM_LINKS];
+ 
+ /*
+@@ -153,8 +151,8 @@ static const unsigned long omap34xx_mcbsp_port[][2] = {};
+ static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct snd_soc_dai *cpu_dai =rtd->cpu_dai;
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
+ 	int words;
+ 
+@@ -201,8 +199,8 @@ static int omap_mcbsp_hwrule_max_periodsize(struct snd_pcm_hw_params *params,
+ 					SNDRV_PCM_HW_PARAM_CHANNELS);
+ 	struct snd_pcm_substream *substream = rule->private;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct snd_interval frames;
+ 	int size;
+ 
+@@ -218,11 +216,9 @@ static int omap_mcbsp_hwrule_max_periodsize(struct snd_pcm_hw_params *params,
+ }
+ 
+ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+-				  struct snd_soc_dai *dai)
++				  struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int bus_id = mcbsp_data->bus_id;
+ 	int err = 0;
+ 
+@@ -274,11 +270,9 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
+ }
+ 
+ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
+-				    struct snd_soc_dai *dai)
++				    struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 
+ 	if (!cpu_dai->active) {
+ 		omap_mcbsp_free(mcbsp_data->bus_id);
+@@ -287,11 +281,9 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
+ }
+ 
+ static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+-				  struct snd_soc_dai *dai)
++				  struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int err = 0, play = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 
+ 	switch (cmd) {
+@@ -320,8 +312,8 @@ static snd_pcm_sframes_t omap_mcbsp_dai_delay(
+ 			struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	u16 fifo_use;
+ 	snd_pcm_sframes_t delay;
+ 
+@@ -342,11 +334,9 @@ static snd_pcm_sframes_t omap_mcbsp_dai_delay(
+ 
+ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 				    struct snd_pcm_hw_params *params,
+-				    struct snd_soc_dai *dai)
++				    struct snd_soc_dai *cpu_dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
+ 	int dma, bus_id = mcbsp_data->bus_id, id = cpu_dai->id;
+ 	int wlen, channels, wpf, sync_mode = OMAP_DMA_SYNC_ELEMENT;
+@@ -481,7 +471,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 				      unsigned int fmt)
+ {
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
+ 	unsigned int temp_fmt = fmt;
+ 
+@@ -581,7 +571,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ static int omap_mcbsp_dai_set_clkdiv(struct snd_soc_dai *cpu_dai,
+ 				     int div_id, int div)
+ {
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
+ 
+ 	if (div_id != OMAP_MCBSP_CLKGDV)
+@@ -684,7 +674,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 					 int clk_id, unsigned int freq,
+ 					 int dir)
+ {
+-	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
++	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
+ 	int err = 0;
+ 
+@@ -718,7 +708,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	return err;
+ }
+ 
+-static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
++static struct snd_soc_dai_ops mcbsp_dai_ops = {
+ 	.startup	= omap_mcbsp_dai_startup,
+ 	.shutdown	= omap_mcbsp_dai_shutdown,
+ 	.trigger	= omap_mcbsp_dai_trigger,
+@@ -729,42 +719,34 @@ static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
+ 	.set_sysclk	= omap_mcbsp_dai_set_dai_sysclk,
+ };
+ 
+-#define OMAP_MCBSP_DAI_BUILDER(link_id)				\
+-{								\
+-	.name = "omap-mcbsp-dai-"#link_id,			\
+-	.id = (link_id),					\
+-	.playback = {						\
+-		.channels_min = 1,				\
+-		.channels_max = 16,				\
+-		.rates = OMAP_MCBSP_RATES,			\
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE |		\
+-			   SNDRV_PCM_FMTBIT_S32_LE,		\
+-	},							\
+-	.capture = {						\
+-		.channels_min = 1,				\
+-		.channels_max = 16,				\
+-		.rates = OMAP_MCBSP_RATES,			\
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE |		\
+-			   SNDRV_PCM_FMTBIT_S32_LE,		\
+-	},							\
+-	.ops = &omap_mcbsp_dai_ops,				\
+-	.private_data = &mcbsp_data[(link_id)].bus_id,		\
++static int mcbsp_dai_probe(struct snd_soc_dai *dai)
++{
++	mcbsp_data[dai->id].bus_id = dai->id;
++	snd_soc_dai_set_drvdata(dai, &mcbsp_data[dai->id].bus_id);
++	return 0;
+ }
+ 
+-struct snd_soc_dai omap_mcbsp_dai[] = {
+-	OMAP_MCBSP_DAI_BUILDER(0),
+-	OMAP_MCBSP_DAI_BUILDER(1),
+-#if NUM_LINKS >= 3
+-	OMAP_MCBSP_DAI_BUILDER(2),
+-#endif
+-#if NUM_LINKS == 5
+-	OMAP_MCBSP_DAI_BUILDER(3),
+-	OMAP_MCBSP_DAI_BUILDER(4),
+-#endif
++struct snd_soc_dai_driver omap_mcbsp_dai =
++{
++	.name = "omap-mcbsp-dai",
++	.probe = mcbsp_dai_probe,
++	.playback = {
++		.channels_min = 1,
++		.channels_max = 16,
++		.rates = OMAP_MCBSP_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 16,
++		.rates = OMAP_MCBSP_RATES,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.ops = &mcbsp_dai_ops,
+ };
+-
+ EXPORT_SYMBOL_GPL(omap_mcbsp_dai);
+ 
++
+ int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
+ 			struct snd_ctl_elem_info *uinfo)
+ {
+@@ -895,16 +877,36 @@ int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, int mcbsp_id)
+ }
+ EXPORT_SYMBOL_GPL(omap_mcbsp_st_add_controls);
+ 
++static __devinit int asoc_mcbsp_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_dai(&pdev->dev, pdev->id, &omap_mcbsp_dai);
++}
++
++static int __devexit asoc_mcbsp_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_dai(&pdev->dev, pdev->id);
++	return 0;
++}
++
++static struct platform_driver asoc_mcbsp_driver = {
++	.driver = {
++			.name = "omap_mcbsp",
++			.owner = THIS_MODULE,
++	},
++
++	.probe = asoc_mcbsp_probe,
++	.remove = __devexit_p(asoc_mcbsp_remove),
++};
++
+ static int __init snd_omap_mcbsp_init(void)
+ {
+-	return snd_soc_register_dais(omap_mcbsp_dai,
+-				     ARRAY_SIZE(omap_mcbsp_dai));
++	return platform_driver_register(&asoc_mcbsp_driver);
+ }
+ module_init(snd_omap_mcbsp_init);
+ 
+ static void __exit snd_omap_mcbsp_exit(void)
+ {
+-	snd_soc_unregister_dais(omap_mcbsp_dai, ARRAY_SIZE(omap_mcbsp_dai));
++	platform_driver_unregister(&asoc_mcbsp_driver);
+ }
+ module_exit(snd_omap_mcbsp_exit);
+ 
+diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
+index 6c363e5..9d8d42d 100644
+--- a/sound/soc/omap/omap-mcbsp.h
++++ b/sound/soc/omap/omap-mcbsp.h
+@@ -55,7 +55,7 @@ enum omap_mcbsp_div {
+ #define NUM_LINKS	5
+ #endif
+ 
+-extern struct snd_soc_dai omap_mcbsp_dai[NUM_LINKS];
++extern struct snd_soc_dai_driver omap_mcbsp_dai;
+ 
+ int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, int mcbsp_id);
+ 
+diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
+index b7f4f7e..63aa449 100644
+--- a/sound/soc/omap/omap-mcpdm.c
++++ b/sound/soc/omap/omap-mcpdm.c
+@@ -89,11 +89,9 @@ static struct omap_pcm_dma_data omap_mcpdm_dai_dma_params[] = {
+ static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
  				  struct snd_soc_dai *dai)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct s3c_dma_params *dma_data;
+ 	int err = 0;
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-@@ -241,7 +241,7 @@ static int s3c_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
- 	u32 ac_glbctrl;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct s3c_dma_params *dma_data =
--		snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+-	if (!cpu_dai->active)
++	if (!dai->active)
+ 		err = omap_mcpdm_request();
  
- 	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-@@ -277,7 +277,7 @@ static int s3c_ac97_hw_mic_params(struct snd_pcm_substream *substream,
- 				      struct snd_soc_dai *dai)
+ 	return err;
+@@ -102,19 +100,14 @@ static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
+ static void omap_mcpdm_dai_shutdown(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_dai *dai)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		return -ENODEV;
-@@ -293,7 +293,7 @@ static int s3c_ac97_mic_trigger(struct snd_pcm_substream *substream,
- 	u32 ac_glbctrl;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct s3c_dma_params *dma_data =
--		snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
- 	ac_glbctrl = readl(s3c_ac97.regs + S3C_AC97_GLBCTRL);
- 	ac_glbctrl &= ~S3C_AC97_GLBCTRL_MICINTM_MASK;
-@@ -328,10 +328,9 @@ static struct snd_soc_dai_ops s3c_ac97_mic_dai_ops = {
- 	.trigger	= s3c_ac97_mic_trigger,
- };
- 
--struct snd_soc_dai s3c_ac97_dai[] = {
-+struct snd_soc_dai_driver s3c_ac97_dai[] = {
- 	[S3C_AC97_DAI_PCM] = {
- 		.name =	"s3c-ac97",
--		.id = S3C_AC97_DAI_PCM,
- 		.ac97_control = 1,
- 		.playback = {
- 			.stream_name = "AC97 Playback",
-@@ -349,7 +348,6 @@ struct snd_soc_dai s3c_ac97_dai[] = {
- 	},
- 	[S3C_AC97_DAI_MIC] = {
- 		.name = "s3c-ac97-mic",
--		.id = S3C_AC97_DAI_MIC,
- 		.ac97_control = 1,
- 		.capture = {
- 			.stream_name = "AC97 Mic Capture",
-@@ -449,10 +447,8 @@ static __devinit int s3c_ac97_probe(struct platform_device *pdev)
- 		goto err4;
- 	}
- 
--	s3c_ac97_dai[S3C_AC97_DAI_PCM].dev = &pdev->dev;
--	s3c_ac97_dai[S3C_AC97_DAI_MIC].dev = &pdev->dev;
 -
--	ret = snd_soc_register_dais(s3c_ac97_dai, ARRAY_SIZE(s3c_ac97_dai));
-+	ret = snd_soc_register_dais(&pdev->dev, s3c_ac97_dai,
-+			ARRAY_SIZE(s3c_ac97_dai));
- 	if (ret)
- 		goto err5;
+-	if (!cpu_dai->active)
++	if (!dai->active)
+ 		omap_mcpdm_free();
+ }
  
-@@ -476,7 +472,7 @@ static __devexit int s3c_ac97_remove(struct platform_device *pdev)
+ static int omap_mcpdm_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 				  struct snd_soc_dai *dai)
  {
- 	struct resource *mem_res, *irq_res;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcpdm_data *mcpdm_priv = cpu_dai->private_data;
++	struct omap_mcpdm_data *mcpdm_priv = snd_soc_dai_get_drvdata(dai);
+ 	int stream = substream->stream;
+ 	int err = 0;
  
--	snd_soc_unregister_dais(s3c_ac97_dai, ARRAY_SIZE(s3c_ac97_dai));
-+	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(s3c_ac97_dai));
+@@ -143,14 +136,12 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
+ 				    struct snd_pcm_hw_params *params,
+ 				    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcpdm_data *mcpdm_priv = cpu_dai->private_data;
++	struct omap_mcpdm_data *mcpdm_priv = snd_soc_dai_get_drvdata(dai);
+ 	struct omap_mcpdm_link *mcpdm_links = mcpdm_priv->links;
+ 	int stream = substream->stream;
+ 	int channels, err, link_mask = 0;
  
- 	irq_res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
- 	if (irq_res)
-diff --git a/sound/soc/s3c24xx/s3c-ac97.h b/sound/soc/s3c24xx/s3c-ac97.h
-index 2781983..376e7c5 100644
---- a/sound/soc/s3c24xx/s3c-ac97.h
-+++ b/sound/soc/s3c24xx/s3c-ac97.h
-@@ -18,6 +18,6 @@
- #define S3C_AC97_DAI_PCM 0
- #define S3C_AC97_DAI_MIC 1
+-	snd_soc_dai_set_dma_data(cpu_dai, substream,
++	snd_soc_dai_set_dma_data(dai, substream,
+ 				 &omap_mcpdm_dai_dma_params[stream]);
  
--extern struct snd_soc_dai s3c_ac97_dai[];
-+extern struct snd_soc_dai_driver s3c_ac97_dai[];
+ 	channels = params_channels(params);
+@@ -189,9 +180,7 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
+ static int omap_mcpdm_dai_hw_free(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+-	struct omap_mcpdm_data *mcpdm_priv = cpu_dai->private_data;
++	struct omap_mcpdm_data *mcpdm_priv = snd_soc_dai_get_drvdata(dai);
+ 	struct omap_mcpdm_link *mcpdm_links = mcpdm_priv->links;
+ 	int stream = substream->stream;
+ 	int err;
+@@ -215,9 +204,15 @@ static struct snd_soc_dai_ops omap_mcpdm_dai_ops = {
+ #define OMAP_MCPDM_RATES	(SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
+ #define OMAP_MCPDM_FORMATS	(SNDRV_PCM_FMTBIT_S32_LE)
  
- #endif /* __S3C_AC97_H_ */
-diff --git a/sound/soc/s3c24xx/s3c-dma.c b/sound/soc/s3c24xx/s3c-dma.c
-index 1b61c23..3d1a685 100644
---- a/sound/soc/s3c24xx/s3c-dma.c
-+++ b/sound/soc/s3c24xx/s3c-dma.c
-@@ -147,7 +147,7 @@ static int s3c_dma_hw_params(struct snd_pcm_substream *substream,
+-struct snd_soc_dai omap_mcpdm_dai = {
++static int omap_mcpdm_dai_probe(struct snd_soc_dai *dai)
++{
++	snd_soc_dai_set_drvdata(dai, &mcpdm_data);
++	return 0;
++}
++
++struct snd_soc_dai_driver omap_mcpdm_dai = {
+ 	.name = "omap-mcpdm",
+-	.id = -1,
++	.probe = omap_mcpdm_dai_probe,
+ 	.playback = {
+ 		.channels_min = 1,
+ 		.channels_max = 4,
+@@ -231,19 +226,48 @@ struct snd_soc_dai omap_mcpdm_dai = {
+ 		.formats = OMAP_MCPDM_FORMATS,
+ 	},
+ 	.ops = &omap_mcpdm_dai_ops,
+-	.private_data = &mcpdm_data,
+ };
+ EXPORT_SYMBOL_GPL(omap_mcpdm_dai);
+ 
++static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
++{
++	int ret;
++
++	ret = omap_mcpdm_probe(pdev);
++	if (ret < 0)
++		return ret;
++	ret = snd_soc_register_dai(&pdev->dev, pdev->id, &omap_mcpdm_dai);
++	if (ret < 0)
++		omap_mcpdm_remove(pdev);
++	return ret;
++}
++
++static int __devexit asoc_mcpdm_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_dai(&pdev->dev, pdev->id);
++	omap_mcpdm_remove(pdev);
++	return 0;
++}
++
++static struct platform_driver asoc_mcpdm_driver = {
++	.driver = {
++			.name = "omap-mcpdm",
++			.owner = THIS_MODULE,
++	},
++
++	.probe = asoc_mcpdm_probe,
++	.remove = __devexit_p(asoc_mcpdm_remove),
++};
++
+ static int __init snd_omap_mcpdm_init(void)
+ {
+-	return snd_soc_register_dai(&omap_mcpdm_dai);
++	return platform_driver_register(&asoc_mcpdm_driver);
+ }
+ module_init(snd_omap_mcpdm_init);
+ 
+ static void __exit snd_omap_mcpdm_exit(void)
+ {
+-	snd_soc_unregister_dai(&omap_mcpdm_dai);
++	platform_driver_unregister(&asoc_mcpdm_driver);
+ }
+ module_exit(snd_omap_mcpdm_exit);
+ 
+diff --git a/sound/soc/omap/omap-mcpdm.h b/sound/soc/omap/omap-mcpdm.h
+index 73b80d5..68b1ced 100644
+--- a/sound/soc/omap/omap-mcpdm.h
++++ b/sound/soc/omap/omap-mcpdm.h
+@@ -24,6 +24,6 @@
+ #ifndef __OMAP_MCPDM_H__
+ #define __OMAP_MCPDM_H__
+ 
+-extern struct snd_soc_dai omap_mcpdm_dai;
++extern struct snd_soc_dai_driver omap_mcpdm_dai;
+ 
+ #endif	/* End of __OMAP_MCPDM_H__ */
+diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
+index 1e52190..de9fda3 100644
+--- a/sound/soc/omap/omap-pcm.c
++++ b/sound/soc/omap/omap-pcm.c
+@@ -101,9 +101,10 @@ static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	unsigned long totbytes = params_buffer_bytes(params);
- 	struct s3c_dma_params *dma =
--		snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 	int ret = 0;
+ 	struct omap_runtime_data *prtd = runtime->private_data;
+ 	struct omap_pcm_dma_data *dma_data;
++
+ 	int err = 0;
  
+-	dma_data = snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
++	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
  
-@@ -441,14 +441,14 @@ static int s3c_dma_new(struct snd_card *card,
+ 	/* return if this is a bufferless transfer e.g.
+ 	 * codec <--> BT codec or GSM modem -- lg FIXME */
+@@ -374,14 +375,14 @@ static int omap_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
  	if (!card->dev->coherent_dma_mask)
- 		card->dev->coherent_dma_mask = 0xffffffff;
+ 		card->dev->coherent_dma_mask = DMA_BIT_MASK(64);
  
 -	if (dai->playback.channels_min) {
 +	if (dai->driver->playback.channels_min) {
- 		ret = s3c_preallocate_dma_buffer(pcm,
+ 		ret = omap_pcm_preallocate_dma_buffer(pcm,
  			SNDRV_PCM_STREAM_PLAYBACK);
  		if (ret)
  			goto out;
@@ -643,610 +1158,88 @@ index 1b61c23..3d1a685 100644
  
 -	if (dai->capture.channels_min) {
 +	if (dai->driver->capture.channels_min) {
- 		ret = s3c_preallocate_dma_buffer(pcm,
+ 		ret = omap_pcm_preallocate_dma_buffer(pcm,
  			SNDRV_PCM_STREAM_CAPTURE);
  		if (ret)
-@@ -458,25 +458,46 @@ static int s3c_dma_new(struct snd_card *card,
+@@ -392,25 +393,47 @@ out:
  	return ret;
  }
  
--struct snd_soc_platform s3c24xx_soc_platform = {
-+struct snd_soc_platform_driver s3c24xx_soc_platform = {
- 	.name		= "s3c24xx-audio",
--	.pcm_ops 	= &s3c_dma_ops,
-+	.ops 		= &s3c_dma_ops,
- 	.pcm_new	= s3c_dma_new,
- 	.pcm_free	= s3c_dma_free_dma_buffers,
+-struct snd_soc_platform omap_soc_platform = {
++struct snd_soc_platform_driver omap_soc_platform = {
+ 	.name		= "omap-pcm-audio",
+-	.pcm_ops 	= &omap_pcm_ops,
++	.ops 		= &omap_pcm_ops,
+ 	.pcm_new	= omap_pcm_new,
+ 	.pcm_free	= omap_pcm_free_dma_buffers,
  };
- EXPORT_SYMBOL_GPL(s3c24xx_soc_platform);
+ EXPORT_SYMBOL_GPL(omap_soc_platform);
  
--static int __init s3c24xx_soc_platform_init(void)
-+static int __devinit s3c24xx_soc_platform_probe(struct platform_device *pdev)
- {
--	return snd_soc_register_platform(&s3c24xx_soc_platform);
-+	return snd_soc_register_platform(&pdev->dev, -1, &s3c24xx_soc_platform);
- }
--module_init(s3c24xx_soc_platform_init);
- 
--static void __exit s3c24xx_soc_platform_exit(void)
-+static int __devexit s3c24xx_soc_platform_remove(struct platform_device *pdev)
- {
--	snd_soc_unregister_platform(&s3c24xx_soc_platform);
-+	snd_soc_unregister_platform(&pdev->dev, -1);
+-static int __init omap_soc_platform_init(void)
++static __devinit int omap_pcm_probe(struct platform_device *pdev)
++{
++	return snd_soc_register_platform(&pdev->dev, pdev->id,
++			&omap_soc_platform);
++}
++
++static int __devexit omap_pcm_remove(struct platform_device *pdev)
++{
++	snd_soc_unregister_platform(&pdev->dev, pdev->id);
 +	return 0;
 +}
 +
-+static struct platform_driver s3c24xx_pcm_driver = {
++static struct platform_driver omap_pcm_driver = {
 +	.driver = {
-+			.name = "s3c24xx-pcm-audio",
++			.name = "omap_pcm",
 +			.owner = THIS_MODULE,
 +	},
 +
-+	.probe = s3c24xx_soc_platform_probe,
-+	.remove = __devexit_p(s3c24xx_soc_platform_remove),
++	.probe = omap_pcm_probe,
++	.remove = __devexit_p(omap_pcm_remove),
 +};
 +
-+static int __init snd_s3c24xx_pcm_init(void)
-+{
-+	return platform_driver_register(&s3c24xx_pcm_driver);
-+}
-+module_init(snd_s3c24xx_pcm_init);
-+
-+static void __exit snd_s3c24xx_pcm_exit(void)
-+{
-+	platform_driver_unregister(&s3c24xx_pcm_driver);
++static int __init snd_omap_pcm_init(void)
+ {
+-	return snd_soc_register_platform(&omap_soc_platform);
++	return platform_driver_register(&omap_pcm_driver);
  }
--module_exit(s3c24xx_soc_platform_exit);
-+module_exit(snd_s3c24xx_pcm_exit);
+-module_init(omap_soc_platform_init);
++module_init(snd_omap_pcm_init);
  
- MODULE_AUTHOR("Ben Dooks, <ben@simtec.co.uk>");
- MODULE_DESCRIPTION("Samsung S3C Audio DMA module");
-diff --git a/sound/soc/s3c24xx/s3c-dma.h b/sound/soc/s3c24xx/s3c-dma.h
-index 69bb6bf..3bf4985 100644
---- a/sound/soc/s3c24xx/s3c-dma.h
-+++ b/sound/soc/s3c24xx/s3c-dma.h
-@@ -25,7 +25,7 @@ struct s3c_dma_params {
- #define S3C24XX_DAI_I2S			0
+-static void __exit omap_soc_platform_exit(void)
++static void __exit snd_omap_pcm_exit(void)
+ {
+-	snd_soc_unregister_platform(&omap_soc_platform);
++	platform_driver_unregister(&omap_pcm_driver);
+ }
+-module_exit(omap_soc_platform_exit);
++module_exit(snd_omap_pcm_exit);
  
- /* platform data */
--extern struct snd_soc_platform s3c24xx_soc_platform;
-+extern struct snd_soc_platform_driver s3c24xx_soc_platform;
- extern struct snd_ac97_bus_ops s3c24xx_ac97_ops;
+ MODULE_AUTHOR("Jarkko Nikula <jhnikula@gmail.com>");
+ MODULE_DESCRIPTION("OMAP PCM DMA module");
+diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
+index b19975d..44cf661 100644
+--- a/sound/soc/omap/omap-pcm.h
++++ b/sound/soc/omap/omap-pcm.h
+@@ -35,6 +35,6 @@ struct omap_pcm_dma_data {
+ 	int		packet_size;	/* packet size only in PACKET mode */
+ };
+ 
+-extern struct snd_soc_platform omap_soc_platform;
++extern struct snd_soc_platform_driver omap_soc_platform;
  
  #endif
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.c b/sound/soc/s3c24xx/s3c-i2s-v2.c
-index 13311c8..6575410 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.c
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.c
-@@ -48,7 +48,7 @@
- 
- static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
- {
--	return cpu_dai->private_data;
-+	return snd_soc_dai_get_drvdata(cpu_dai);
- }
- 
- #define bit_set(v, b) (((v) & (b)) ? 1 : 0)
-@@ -306,11 +306,9 @@ static int s3c2412_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 
- static int s3c_i2sv2_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
--				 struct snd_soc_dai *socdai)
-+				 struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai_link *dai = rtd->dai;
--	struct s3c_i2sv2_info *i2s = to_info(dai->cpu_dai);
-+	struct s3c_i2sv2_info *i2s = to_info(dai);
- 	struct s3c_dma_params *dma_data;
- 	u32 iismod;
- 
-@@ -321,7 +319,7 @@ static int s3c_i2sv2_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		dma_data = i2s->dma_capture;
- 
--	snd_soc_dai_set_dma_data(dai->cpu_dai, substream, dma_data);
-+	snd_soc_dai_set_dma_data(dai, substream, dma_data);
- 
- 	/* Working copies of register */
- 	iismod = readl(i2s->regs + S3C2412_IISMOD);
-@@ -395,12 +393,12 @@ static int s3c2412_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			       struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s3c_i2sv2_info *i2s = to_info(rtd->dai->cpu_dai);
-+	struct s3c_i2sv2_info *i2s = to_info(rtd->cpu_dai);
- 	int capture = (substream->stream == SNDRV_PCM_STREAM_CAPTURE);
- 	unsigned long irqs;
- 	int ret = 0;
- 	struct s3c_dma_params *dma_data =
--		snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+		snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
- 	pr_debug("Entered %s\n", __func__);
- 
-@@ -639,36 +637,17 @@ int s3c_i2sv2_iis_calc_rate(struct s3c_i2sv2_rate_calc *info,
- }
- EXPORT_SYMBOL_GPL(s3c_i2sv2_iis_calc_rate);
- 
--int s3c_i2sv2_probe(struct platform_device *pdev,
--		    struct snd_soc_dai *dai,
-+int s3c_i2sv2_probe(struct snd_soc_dai *dai,
- 		    struct s3c_i2sv2_info *i2s,
- 		    unsigned long base)
- {
--	struct device *dev = &pdev->dev;
-+	struct device *dev = dai->dev;
- 	unsigned int iismod;
- 
- 	i2s->dev = dev;
- 
- 	/* record our i2s structure for later use in the callbacks */
--	dai->private_data = i2s;
--
--	if (!base) {
--		struct resource *res = platform_get_resource(pdev,
--							     IORESOURCE_MEM,
--							     0);
--		if (!res) {
--			dev_err(dev, "Unable to get register resource\n");
--			return -ENXIO;
--		}
--
--		if (!request_mem_region(res->start, resource_size(res),
--					"s3c64xx-i2s-v4")) {
--			dev_err(dev, "Unable to request register region\n");
--			return -EBUSY;
--		}
--
--		base = res->start;
--	}
-+	snd_soc_dai_set_drvdata(dai, i2s);
- 
- 	i2s->regs = ioremap(base, 0x100);
- 	if (i2s->regs == NULL) {
-@@ -751,9 +730,10 @@ static int s3c2412_i2s_resume(struct snd_soc_dai *dai)
- #define s3c2412_i2s_resume  NULL
- #endif
- 
--int s3c_i2sv2_register_dai(struct snd_soc_dai *dai)
-+int s3c_i2sv2_register_dai(struct device *dev, int id,
-+		struct snd_soc_dai_driver *drv)
- {
--	struct snd_soc_dai_ops *ops = dai->ops;
-+	struct snd_soc_dai_ops *ops = drv->ops;
- 
- 	ops->trigger = s3c2412_i2s_trigger;
- 	if (!ops->hw_params)
-@@ -766,10 +746,10 @@ int s3c_i2sv2_register_dai(struct snd_soc_dai *dai)
- 	if (!ops->delay)
- 		ops->delay = s3c2412_i2s_delay;
- 
--	dai->suspend = s3c2412_i2s_suspend;
--	dai->resume = s3c2412_i2s_resume;
-+	drv->suspend = s3c2412_i2s_suspend;
-+	drv->resume = s3c2412_i2s_resume;
- 
--	return snd_soc_register_dai(dai);
-+	return snd_soc_register_dai(dev, id, drv);
- }
- EXPORT_SYMBOL_GPL(s3c_i2sv2_register_dai);
- 
-diff --git a/sound/soc/s3c24xx/s3c-i2s-v2.h b/sound/soc/s3c24xx/s3c-i2s-v2.h
-index 766f43a..c2a4bad 100644
---- a/sound/soc/s3c24xx/s3c-i2s-v2.h
-+++ b/sound/soc/s3c24xx/s3c-i2s-v2.h
-@@ -81,23 +81,24 @@ extern int s3c_i2sv2_iis_calc_rate(struct s3c_i2sv2_rate_calc *info,
- 
- /**
-  * s3c_i2sv2_probe - probe for i2s device helper
-- * @pdev: The platform device supplied to the original probe.
-  * @dai: The ASoC DAI structure supplied to the original probe.
-  * @i2s: Our local i2s structure to fill in.
-  * @base: The base address for the registers.
-  */
--extern int s3c_i2sv2_probe(struct platform_device *pdev,
--			   struct snd_soc_dai *dai,
-+extern int s3c_i2sv2_probe(struct snd_soc_dai *dai,
- 			   struct s3c_i2sv2_info *i2s,
- 			   unsigned long base);
- 
- /**
-  * s3c_i2sv2_register_dai - register dai with soc core
-- * @dai: The snd_soc_dai structure to register
-+ * @dev: DAI device
-+ * @id: DAI ID
-+ * @drv: The driver structure to register
-  *
-  * Fill in any missing fields and then register the given dai with the
-  * soc core.
-  */
--extern int s3c_i2sv2_register_dai(struct snd_soc_dai *dai);
-+extern int s3c_i2sv2_register_dai(struct device *dev, int id,
-+		struct snd_soc_dai_driver *drv);
- 
- #endif /* __SND_SOC_S3C24XX_S3C_I2SV2_I2S_H */
-diff --git a/sound/soc/s3c24xx/s3c-pcm.c b/sound/soc/s3c24xx/s3c-pcm.c
-index 326f0a9..218b60a 100644
---- a/sound/soc/s3c24xx/s3c-pcm.c
-+++ b/sound/soc/s3c24xx/s3c-pcm.c
-@@ -64,11 +64,6 @@ static struct s3c_dma_params s3c_pcm_stereo_in[] = {
- 
- static struct s3c_pcm_info s3c_pcm[2];
- 
--static inline struct s3c_pcm_info *to_info(struct snd_soc_dai *cpu_dai)
--{
--	return cpu_dai->private_data;
--}
--
- static void s3c_pcm_snd_txctrl(struct s3c_pcm_info *pcm, int on)
- {
- 	void __iomem *regs = pcm->regs;
-@@ -132,7 +127,7 @@ static int s3c_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 			       struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct s3c_pcm_info *pcm = to_info(rtd->dai->cpu_dai);
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(rtd->cpu_dai);
- 	unsigned long flags;
- 
- 	dev_dbg(pcm->dev, "Entered %s\n", __func__);
-@@ -176,8 +171,7 @@ static int s3c_pcm_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_soc_dai *socdai)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai_link *dai = rtd->dai;
--	struct s3c_pcm_info *pcm = to_info(dai->cpu_dai);
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(rtd->cpu_dai);
- 	struct s3c_dma_params *dma_data;
- 	void __iomem *regs = pcm->regs;
- 	struct clk *clk;
-@@ -192,7 +186,7 @@ static int s3c_pcm_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		dma_data = pcm->dma_capture;
- 
--	snd_soc_dai_set_dma_data(dai->cpu_dai, substream, dma_data);
-+	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
- 
- 	/* Strictly check for sample size */
- 	switch (params_format(params)) {
-@@ -242,7 +236,7 @@ static int s3c_pcm_hw_params(struct snd_pcm_substream *substream,
- static int s3c_pcm_set_fmt(struct snd_soc_dai *cpu_dai,
- 			       unsigned int fmt)
- {
--	struct s3c_pcm_info *pcm = to_info(cpu_dai);
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
- 	void __iomem *regs = pcm->regs;
- 	unsigned long flags;
- 	int ret = 0;
-@@ -313,7 +307,7 @@ exit:
- static int s3c_pcm_set_clkdiv(struct snd_soc_dai *cpu_dai,
- 						int div_id, int div)
- {
--	struct s3c_pcm_info *pcm = to_info(cpu_dai);
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
- 
- 	switch (div_id) {
- 	case S3C_PCM_SCLK_PER_FS:
-@@ -330,7 +324,7 @@ static int s3c_pcm_set_clkdiv(struct snd_soc_dai *cpu_dai,
- static int s3c_pcm_set_sysclk(struct snd_soc_dai *cpu_dai,
- 				  int clk_id, unsigned int freq, int dir)
- {
--	struct s3c_pcm_info *pcm = to_info(cpu_dai);
-+	struct s3c_pcm_info *pcm = snd_soc_dai_get_drvdata(cpu_dai);
- 	void __iomem *regs = pcm->regs;
- 	u32 clkctl = readl(regs + S3C_PCM_CLKCTL);
- 
-@@ -366,10 +360,9 @@ static struct snd_soc_dai_ops s3c_pcm_dai_ops = {
- 
- #define S3C_PCM_RATES  SNDRV_PCM_RATE_8000_96000
- 
--#define S3C_PCM_DECLARE(n)			\
-+#define S3C_PCM_DECLARE			\
- {								\
- 	.name		 = "samsung-pcm",			\
--	.id		 = (n),				\
- 	.symmetric_rates = 1,					\
- 	.ops = &s3c_pcm_dai_ops,				\
- 	.playback = {						\
-@@ -386,16 +379,15 @@ static struct snd_soc_dai_ops s3c_pcm_dai_ops = {
- 	},							\
- }
- 
--struct snd_soc_dai s3c_pcm_dai[] = {
--	S3C_PCM_DECLARE(0),
--	S3C_PCM_DECLARE(1),
-+struct snd_soc_dai_driver s3c_pcm_dai[] = {
-+	S3C_PCM_DECLARE,
-+	S3C_PCM_DECLARE,
- };
- EXPORT_SYMBOL_GPL(s3c_pcm_dai);
- 
- static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
- {
- 	struct s3c_pcm_info *pcm;
--	struct snd_soc_dai *dai;
- 	struct resource *mem_res, *dmatx_res, *dmarx_res;
- 	struct s3c_audio_pdata *pcm_pdata;
- 	int ret;
-@@ -437,9 +429,6 @@ static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
- 
- 	spin_lock_init(&pcm->lock);
- 
--	dai = &s3c_pcm_dai[pdev->id];
--	dai->dev = &pdev->dev;
--
- 	/* Default is 128fs */
- 	pcm->sclk_per_fs = 128;
- 
-@@ -452,7 +441,7 @@ static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
- 	clk_enable(pcm->cclk);
- 
- 	/* record our pcm structure for later use in the callbacks */
--	dai->private_data = pcm;
-+	dev_set_drvdata(&pdev->dev, pcm);
- 
- 	if (!request_mem_region(mem_res->start,
- 				resource_size(mem_res), "samsung-pcm")) {
-@@ -476,7 +465,7 @@ static __devinit int s3c_pcm_dev_probe(struct platform_device *pdev)
- 	}
- 	clk_enable(pcm->pclk);
- 
--	ret = snd_soc_register_dai(dai);
-+	ret = snd_soc_register_dai(&pdev->dev, pdev->id, s3c_pcm_dai);
- 	if (ret != 0) {
- 		dev_err(&pdev->dev, "failed to get pcm_clock\n");
- 		goto err5;
-@@ -514,6 +503,8 @@ static __devexit int s3c_pcm_dev_remove(struct platform_device *pdev)
- 	struct s3c_pcm_info *pcm = &s3c_pcm[pdev->id];
- 	struct resource *mem_res;
- 
-+	snd_soc_unregister_dai(&pdev->dev, pdev->id);
-+
- 	iounmap(pcm->regs);
- 
- 	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.c b/sound/soc/s3c24xx/s3c2412-i2s.c
-index 709adef..b67277a 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.c
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.c
-@@ -65,26 +65,20 @@ static struct s3c_dma_params s3c2412_i2s_pcm_stereo_in = {
- 
- static struct s3c_i2sv2_info s3c2412_i2s;
- 
--static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
--{
--	return cpu_dai->private_data;
--}
--
--static int s3c2412_i2s_probe(struct platform_device *pdev,
--			     struct snd_soc_dai *dai)
-+static int s3c2412_i2s_probe(struct snd_soc_dai *dai)
- {
- 	int ret;
- 
- 	pr_debug("Entered %s\n", __func__);
- 
--	ret = s3c_i2sv2_probe(pdev, dai, &s3c2412_i2s, S3C2410_PA_IIS);
-+	ret = s3c_i2sv2_probe(dai, &s3c2412_i2s, S3C2410_PA_IIS);
- 	if (ret)
- 		return ret;
- 
- 	s3c2412_i2s.dma_capture = &s3c2412_i2s_pcm_stereo_in;
- 	s3c2412_i2s.dma_playback = &s3c2412_i2s_pcm_stereo_out;
- 
--	s3c2412_i2s.iis_cclk = clk_get(&pdev->dev, "i2sclk");
-+	s3c2412_i2s.iis_cclk = clk_get(dai->dev, "i2sclk");
- 	if (s3c2412_i2s.iis_cclk == NULL) {
- 		pr_err("failed to get i2sclk clock\n");
- 		iounmap(s3c2412_i2s.regs);
-@@ -108,11 +102,20 @@ static int s3c2412_i2s_probe(struct platform_device *pdev,
- 	return 0;
- }
- 
-+static int s3c2412_i2s_remove(struct snd_soc_dai *dai)
-+{
-+	clk_disable(s3c2412_i2s.iis_cclk);
-+	clk_put(s3c2412_i2s.iis_cclk);
-+	iounmap(s3c2412_i2s.regs);
-+
-+	return 0;
-+}
-+
- static int s3c2412_i2s_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
- 				 struct snd_soc_dai *cpu_dai)
- {
--	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct s3c_dma_params *dma_data;
- 	u32 iismod;
- 
-@@ -152,10 +155,10 @@ static struct snd_soc_dai_ops s3c2412_i2s_dai_ops = {
- 	.hw_params	= s3c2412_i2s_hw_params,
- };
- 
--struct snd_soc_dai s3c2412_i2s_dai = {
-+struct snd_soc_dai_driver s3c2412_i2s_dai = {
- 	.name		= "s3c2412-i2s",
--	.id		= 0,
- 	.probe		= s3c2412_i2s_probe,
-+	.remove	= s3c2412_i2s_remove,
- 	.playback = {
- 		.channels_min	= 2,
- 		.channels_max	= 2,
-@@ -172,15 +175,35 @@ struct snd_soc_dai s3c2412_i2s_dai = {
- };
- EXPORT_SYMBOL_GPL(s3c2412_i2s_dai);
- 
-+static __devinit int s3c2412_iis_dev_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_dai(&pdev->dev, -1, &s3c2412_i2s_dai);
-+}
-+
-+static __devexit int s3c2412_iis_dev_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_dai(&pdev->dev, -1);
-+	return 0;
-+}
-+
-+static struct platform_driver s3c2412_iis_driver = {
-+	.probe  = s3c2412_iis_dev_probe,
-+	.remove = s3c2412_iis_dev_remove,
-+	.driver = {
-+		.name = "s3c2412-iis",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
- static int __init s3c2412_i2s_init(void)
- {
--	return  s3c_i2sv2_register_dai(&s3c2412_i2s_dai);
-+	return platform_driver_register(&s3c2412_iis_driver);
- }
- module_init(s3c2412_i2s_init);
- 
- static void __exit s3c2412_i2s_exit(void)
- {
--	snd_soc_unregister_dai(&s3c2412_i2s_dai);
-+	platform_driver_unregister(&s3c2412_iis_driver);
- }
- module_exit(s3c2412_i2s_exit);
- 
-diff --git a/sound/soc/s3c24xx/s3c2412-i2s.h b/sound/soc/s3c24xx/s3c2412-i2s.h
-index 0b5686b..f2ae80a 100644
---- a/sound/soc/s3c24xx/s3c2412-i2s.h
-+++ b/sound/soc/s3c24xx/s3c2412-i2s.h
-@@ -24,6 +24,6 @@
- #define S3C2412_CLKSRC_PCLK	S3C_I2SV2_CLKSRC_PCLK
- #define S3C2412_CLKSRC_I2SCLK	S3C_I2SV2_CLKSRC_AUDIOBUS
- 
--extern struct snd_soc_dai s3c2412_i2s_dai;
-+extern struct snd_soc_dai_driver s3c2412_i2s_dai;
- 
- #endif /* __SND_SOC_S3C24XX_S3C2412_I2S_H */
-diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.c b/sound/soc/s3c24xx/s3c24xx-i2s.c
-index c3ac890..0ada400 100644
---- a/sound/soc/s3c24xx/s3c24xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c24xx-i2s.c
-@@ -252,7 +252,7 @@ static int s3c24xx_i2s_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		dma_data = &s3c24xx_i2s_pcm_stereo_in;
- 
--	snd_soc_dai_set_dma_data(rtd->dai->cpu_dai, substream, dma_data);
-+	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
- 
- 	/* Working copies of register */
- 	iismod = readl(s3c24xx_i2s.regs + S3C2410_IISMOD);
-@@ -280,9 +280,8 @@ static int s3c24xx_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			       struct snd_soc_dai *dai)
- {
- 	int ret = 0;
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct s3c_dma_params *dma_data =
--		snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+		snd_soc_dai_get_dma_data(dai, substream);
- 
- 	pr_debug("Entered %s\n", __func__);
- 
-@@ -387,8 +386,7 @@ u32 s3c24xx_i2s_get_clockrate(void)
- }
- EXPORT_SYMBOL_GPL(s3c24xx_i2s_get_clockrate);
- 
--static int s3c24xx_i2s_probe(struct platform_device *pdev,
--			     struct snd_soc_dai *dai)
-+static int s3c24xx_i2s_probe(struct snd_soc_dai *dai)
- {
- 	pr_debug("Entered %s\n", __func__);
- 
-@@ -396,7 +394,7 @@ static int s3c24xx_i2s_probe(struct platform_device *pdev,
- 	if (s3c24xx_i2s.regs == NULL)
- 		return -ENXIO;
- 
--	s3c24xx_i2s.iis_clk = clk_get(&pdev->dev, "iis");
-+	s3c24xx_i2s.iis_clk = clk_get(dai->dev, "iis");
- 	if (s3c24xx_i2s.iis_clk == NULL) {
- 		pr_err("failed to get iis_clock\n");
- 		iounmap(s3c24xx_i2s.regs);
-@@ -465,9 +463,8 @@ static struct snd_soc_dai_ops s3c24xx_i2s_dai_ops = {
- 	.set_sysclk	= s3c24xx_i2s_set_sysclk,
- };
- 
--struct snd_soc_dai s3c24xx_i2s_dai = {
-+struct snd_soc_dai_driver s3c24xx_i2s_dai = {
- 	.name = "s3c24xx-i2s",
--	.id = 0,
- 	.probe = s3c24xx_i2s_probe,
- 	.suspend = s3c24xx_i2s_suspend,
- 	.resume = s3c24xx_i2s_resume,
-@@ -485,15 +482,35 @@ struct snd_soc_dai s3c24xx_i2s_dai = {
- };
- EXPORT_SYMBOL_GPL(s3c24xx_i2s_dai);
- 
-+static __devinit int s3c24xx_iis_dev_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_dai(&pdev->dev, -1, &s3c24xx_i2s_dai);
-+}
-+
-+static __devexit int s3c24xx_iis_dev_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_dai(&pdev->dev, -1);
-+	return 0;
-+}
-+
-+static struct platform_driver s3c24xx_iis_driver = {
-+	.probe  = s3c24xx_iis_dev_probe,
-+	.remove = s3c24xx_iis_dev_remove,
-+	.driver = {
-+		.name = "s3c24xx-iis",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
- static int __init s3c24xx_i2s_init(void)
- {
--	return snd_soc_register_dai(&s3c24xx_i2s_dai);
-+	return platform_driver_register(&s3c24xx_iis_driver);
- }
- module_init(s3c24xx_i2s_init);
- 
- static void __exit s3c24xx_i2s_exit(void)
- {
--	snd_soc_unregister_dai(&s3c24xx_i2s_dai);
-+	platform_driver_unregister(&s3c24xx_iis_driver);
- }
- module_exit(s3c24xx_i2s_exit);
- 
-diff --git a/sound/soc/s3c24xx/s3c24xx-i2s.h b/sound/soc/s3c24xx/s3c24xx-i2s.h
-index 726d91c..118388b 100644
---- a/sound/soc/s3c24xx/s3c24xx-i2s.h
-+++ b/sound/soc/s3c24xx/s3c24xx-i2s.h
-@@ -32,6 +32,6 @@
- 
- u32 s3c24xx_i2s_get_clockrate(void);
- 
--extern struct snd_soc_dai s3c24xx_i2s_dai;
-+extern struct snd_soc_dai_driver s3c24xx_i2s_dai;
- 
- #endif /*S3C24XXI2S_H_*/
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.c b/sound/soc/s3c24xx/s3c24xx_simtec.c
-index 4984754..c4c1114 100644
---- a/sound/soc/s3c24xx/s3c24xx_simtec.c
-+++ b/sound/soc/s3c24xx/s3c24xx_simtec.c
-@@ -139,8 +139,10 @@ static const struct snd_kcontrol_new amp_unmute_controls[] = {
- 		       speaker_unmute_get, speaker_unmute_put),
- };
- 
--void simtec_audio_init(struct snd_soc_codec *codec)
-+void simtec_audio_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
-+
- 	if (pdata->amp_gpio > 0) {
- 		pr_debug("%s: adding amp routes\n", __func__);
- 
-@@ -170,8 +172,8 @@ static int simtec_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/omap/omap2evm.c b/sound/soc/omap/omap2evm.c
+index c7adea3..db86d49 100644
+--- a/sound/soc/omap/omap2evm.c
++++ b/sound/soc/omap/omap2evm.c
+@@ -38,12 +38,11 @@
+ #include "../codecs/twl4030.h"
+ 
+ static int omap2evm_hw_params(struct snd_pcm_substream *substream,
+-	struct snd_pcm_hw_params *params,
+-	struct snd_soc_dai *dai)
++	struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
@@ -1255,829 +1248,844 @@ index 4984754..c4c1114 100644
 +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
  	int ret;
  
- 	/* Set the CODEC as the bus clock master, I2S */
-@@ -319,12 +321,12 @@ EXPORT_SYMBOL_GPL(simtec_audio_pmops);
- #endif
- 
- int __devinit simtec_audio_core_probe(struct platform_device *pdev,
--				      struct snd_soc_device *socdev)
-+				      struct snd_soc_card *card)
- {
- 	struct platform_device *snd_dev;
- 	int ret;
- 
--	socdev->card->dai_link->ops = &simtec_snd_ops;
-+	card->dai_link->ops = &simtec_snd_ops;
- 
- 	pdata = pdev->dev.platform_data;
- 	if (!pdata) {
-@@ -353,8 +355,7 @@ int __devinit simtec_audio_core_probe(struct platform_device *pdev,
- 		goto err_gpio;
- 	}
- 
--	platform_set_drvdata(snd_dev, socdev);
--	socdev->dev = &snd_dev->dev;
-+	platform_set_drvdata(snd_dev, card);
- 
- 	ret = platform_device_add(snd_dev);
- 	if (ret) {
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec.h b/sound/soc/s3c24xx/s3c24xx_simtec.h
-index e18faee..e63d5ff 100644
---- a/sound/soc/s3c24xx/s3c24xx_simtec.h
-+++ b/sound/soc/s3c24xx/s3c24xx_simtec.h
-@@ -7,10 +7,10 @@
-  * published by the Free Software Foundation.
- */
- 
--extern void simtec_audio_init(struct snd_soc_codec *codec);
-+extern void simtec_audio_init(struct snd_soc_pcm_runtime *rtd);
- 
- extern int simtec_audio_core_probe(struct platform_device *pdev,
--				   struct snd_soc_device *socdev);
-+				   struct snd_soc_card *card);
- 
- extern int simtec_audio_remove(struct platform_device *pdev);
- 
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-index bdf8951..02be124 100644
---- a/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-+++ b/sound/soc/s3c24xx/s3c24xx_simtec_hermes.c
-@@ -73,8 +73,10 @@ static const struct snd_soc_dapm_route base_map[] = {
-  * Attach our controls and configure the necessary codec
-  * mappings for our sound card instance.
- */
--static int simtec_hermes_init(struct snd_soc_codec *codec)
-+static int simtec_hermes_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
-+
- 	snd_soc_dapm_new_controls(codec, dapm_widgets,
- 				  ARRAY_SIZE(dapm_widgets));
- 
-@@ -85,42 +87,33 @@ static int simtec_hermes_init(struct snd_soc_codec *codec)
- 	snd_soc_dapm_enable_pin(codec, "Line Out");
- 	snd_soc_dapm_enable_pin(codec, "Mic Jack");
- 
--	simtec_audio_init(codec);
-+	simtec_audio_init(rtd);
- 	snd_soc_dapm_sync(codec);
- 
- 	return 0;
- }
- 
--static struct aic3x_setup_data codec_setup = {
--};
--
- static struct snd_soc_dai_link simtec_dai_aic33 = {
- 	.name		= "tlv320aic33",
- 	.stream_name	= "TLV320AIC33",
--	.cpu_dai	= &s3c24xx_i2s_dai,
--	.codec_dai	= &aic3x_dai,
-+	.codec_drv	= &soc_codec_dev_aic3x,
-+	.cpu_dai_drv 	= &s3c24xx_i2s_dai,
-+	.codec_dai_drv 	= &aic3x_dai,
-+	.platform_drv	= &s3c24xx_soc_platform,
- 	.init		= simtec_hermes_init,
+ 	/* Set codec DAI configuration */
+@@ -85,25 +84,22 @@ static struct snd_soc_ops omap2evm_ops = {
+ static struct snd_soc_dai_link omap2evm_dai = {
+ 	.name = "TWL4030",
+ 	.stream_name = "TWL4030",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++	.cpu_dai_drv = &omap_mcbsp_dai,
++	.cpu_dai_id = OMAP_MCBSP2,
++	.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
++	.codec_dai_id = TWL4030_DAI_HIFI,
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &soc_codec_dev_twl4030,
+ 	.ops = &omap2evm_ops,
  };
  
- /* simtec audio machine driver */
- static struct snd_soc_card snd_soc_machine_simtec_aic33 = {
- 	.name		= "Simtec-Hermes",
--	.platform	= &s3c24xx_soc_platform,
- 	.dai_link	= &simtec_dai_aic33,
- 	.num_links	= 1,
- };
- 
--/* simtec audio subsystem */
--static struct snd_soc_device simtec_snd_devdata_aic33 = {
--	.card		= &snd_soc_machine_simtec_aic33,
--	.codec_dev	= &soc_codec_dev_aic3x,
--	.codec_data	= &codec_setup,
--};
--
- static int __devinit simtec_audio_hermes_probe(struct platform_device *pd)
- {
- 	dev_info(&pd->dev, "probing....\n");
--	return simtec_audio_core_probe(pd, &simtec_snd_devdata_aic33);
-+	return simtec_audio_core_probe(pd, &snd_soc_machine_simtec_aic33);
- }
- 
- static struct platform_driver simtec_audio_hermes_platdrv = {
-diff --git a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-index 185c0ac..1dab2f5 100644
---- a/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-+++ b/sound/soc/s3c24xx/s3c24xx_simtec_tlv320aic23.c
-@@ -62,8 +62,10 @@ static const struct snd_soc_dapm_route base_map[] = {
-  * Attach our controls and configure the necessary codec
-  * mappings for our sound card instance.
- */
--static int simtec_tlv320aic23_init(struct snd_soc_codec *codec)
-+static int simtec_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
-+
- 	snd_soc_dapm_new_controls(codec, dapm_widgets,
- 				  ARRAY_SIZE(dapm_widgets));
- 
-@@ -74,7 +76,7 @@ static int simtec_tlv320aic23_init(struct snd_soc_codec *codec)
- 	snd_soc_dapm_enable_pin(codec, "Line Out");
- 	snd_soc_dapm_enable_pin(codec, "Mic Jack");
- 
--	simtec_audio_init(codec);
-+	simtec_audio_init(rtd);
- 	snd_soc_dapm_sync(codec);
- 
- 	return 0;
-@@ -83,28 +85,23 @@ static int simtec_tlv320aic23_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link simtec_dai_aic23 = {
- 	.name		= "tlv320aic23",
- 	.stream_name	= "TLV320AIC23",
--	.cpu_dai	= &s3c24xx_i2s_dai,
--	.codec_dai	= &tlv320aic23_dai,
-+	.cpu_dai_drv 	= &s3c24xx_i2s_dai,
-+	.codec_dai_drv 	= &tlv320aic23_dai,
-+	.platform_drv	= &s3c24xx_soc_platform,
-+	.codec_drv	= &soc_codec_dev_tlv320aic23,
- 	.init		= simtec_tlv320aic23_init,
- };
- 
- /* simtec audio machine driver */
- static struct snd_soc_card snd_soc_machine_simtec_aic23 = {
- 	.name		= "Simtec",
--	.platform	= &s3c24xx_soc_platform,
- 	.dai_link	= &simtec_dai_aic23,
- 	.num_links	= 1,
- };
- 
--/* simtec audio subsystem */
--static struct snd_soc_device simtec_snd_devdata_aic23 = {
--	.card		= &snd_soc_machine_simtec_aic23,
--	.codec_dev	= &soc_codec_dev_tlv320aic23,
--};
--
- static int __devinit simtec_audio_tlv320aic23_probe(struct platform_device *pd)
- {
--	return simtec_audio_core_probe(pd, &simtec_snd_devdata_aic23);
-+	return simtec_audio_core_probe(pd, &snd_soc_machine_simtec_aic23);
- }
- 
- static struct platform_driver simtec_audio_tlv320aic23_platdrv = {
-diff --git a/sound/soc/s3c24xx/s3c24xx_uda134x.c b/sound/soc/s3c24xx/s3c24xx_uda134x.c
-index 052d596..5625b3f 100644
---- a/sound/soc/s3c24xx/s3c24xx_uda134x.c
-+++ b/sound/soc/s3c24xx/s3c24xx_uda134x.c
-@@ -133,8 +133,8 @@ static int s3c24xx_uda134x_hw_params(struct snd_pcm_substream *substream,
- 					struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	unsigned int clk = 0;
- 	int ret = 0;
- 	int clk_source, fs_mode;
-@@ -227,14 +227,15 @@ static struct snd_soc_ops s3c24xx_uda134x_ops = {
- static struct snd_soc_dai_link s3c24xx_uda134x_dai_link = {
- 	.name = "UDA134X",
- 	.stream_name = "UDA134X",
--	.codec_dai = &uda134x_dai,
--	.cpu_dai = &s3c24xx_i2s_dai,
-+	.codec_drv = &soc_codec_dev_uda134x,
-+	.codec_dai_drv = &uda134x_dai,
-+	.cpu_dai_drv = &s3c24xx_i2s_dai,
- 	.ops = &s3c24xx_uda134x_ops,
-+	.platform_drv = &s3c24xx_soc_platform,
- };
- 
- static struct snd_soc_card snd_soc_s3c24xx_uda134x = {
- 	.name = "S3C24XX_UDA134X",
--	.platform = &s3c24xx_soc_platform,
- 	.dai_link = &s3c24xx_uda134x_dai_link,
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_omap2evm = {
+ 	.name = "omap2evm",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &omap2evm_dai,
  	.num_links = 1,
  };
-@@ -256,6 +257,7 @@ static void setmode(int v)
- 	gpio_set_value(s3c24xx_uda134x_l3_pins->l3_mode, v > 0);
- }
  
-+/* FIXME - This must be codec platform data but in which board file ?? */
- static struct uda134x_platform_data s3c24xx_uda134x = {
- 	.l3 = {
- 		.setdat = setdat,
-@@ -270,12 +272,6 @@ static struct uda134x_platform_data s3c24xx_uda134x = {
- 	},
- };
- 
--static struct snd_soc_device s3c24xx_uda134x_snd_devdata = {
--	.card = &snd_soc_s3c24xx_uda134x,
--	.codec_dev = &soc_codec_dev_uda134x,
--	.codec_data = &s3c24xx_uda134x,
+-/* Audio subsystem */
+-static struct snd_soc_device omap2evm_snd_devdata = {
+-	.card = &snd_soc_omap2evm,
+-	.codec_dev = &soc_codec_dev_twl4030,
 -};
 -
- static int s3c24xx_uda134x_setup_pin(int pin, char *fun)
- {
- 	if (gpio_request(pin, "s3c24xx_uda134x") < 0) {
-@@ -325,8 +321,7 @@ static int s3c24xx_uda134x_probe(struct platform_device *pdev)
- 	}
+ static struct platform_device *omap2evm_snd_device;
  
- 	platform_set_drvdata(s3c24xx_uda134x_snd_device,
--			     &s3c24xx_uda134x_snd_devdata);
--	s3c24xx_uda134x_snd_devdata.dev = &s3c24xx_uda134x_snd_device->dev;
-+			     &snd_soc_s3c24xx_uda134x);
- 	ret = platform_device_add(s3c24xx_uda134x_snd_device);
- 	if (ret) {
- 		printk(KERN_ERR "S3C24XX_UDA134X SoC Audio: Unable to add\n");
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-index 06db130..72708af 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s-v4.c
-@@ -39,16 +39,7 @@ static struct s3c_dma_params s3c64xx_i2sv4_pcm_stereo_out;
- static struct s3c_dma_params s3c64xx_i2sv4_pcm_stereo_in;
- static struct s3c_i2sv2_info s3c64xx_i2sv4;
- 
--struct snd_soc_dai s3c64xx_i2s_v4_dai;
--EXPORT_SYMBOL_GPL(s3c64xx_i2s_v4_dai);
--
--static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
--{
--	return cpu_dai->private_data;
--}
--
--static int s3c64xx_i2sv4_probe(struct platform_device *pdev,
--			     struct snd_soc_dai *dai)
-+static int s3c64xx_i2sv4_probe(struct snd_soc_dai *dai)
- {
- 	/* configure GPIO for i2s port */
- 	s3c_gpio_cfgpin(S3C64XX_GPC(4), S3C64XX_GPC4_I2S_V40_DO0);
-@@ -66,7 +57,7 @@ static int s3c_i2sv4_hw_params(struct snd_pcm_substream *substream,
- 				 struct snd_pcm_hw_params *params,
- 				 struct snd_soc_dai *cpu_dai)
- {
--	struct s3c_i2sv2_info *i2s = to_info(cpu_dai);
-+	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct s3c_dma_params *dma_data;
- 	u32 iismod;
- 
-@@ -104,35 +95,32 @@ static struct snd_soc_dai_ops s3c64xx_i2sv4_dai_ops = {
- 	.hw_params	= s3c_i2sv4_hw_params,
- };
- 
-+struct snd_soc_dai_driver s3c64xx_i2s_v4_dai = {
-+	.name = "s3c64xx-i2s-v4",
-+	.symmetric_rates = 1,
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = S3C64XX_I2S_RATES,
-+		.formats = S3C64XX_I2S_FMTS,
-+	},
-+	.capture = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = S3C64XX_I2S_RATES,
-+		.formats = S3C64XX_I2S_FMTS,
-+	},
-+	.probe = s3c64xx_i2sv4_probe,
-+	.ops = &s3c64xx_i2sv4_dai_ops,
-+};
-+EXPORT_SYMBOL_GPL(s3c64xx_i2s_v4_dai);
-+
- static __devinit int s3c64xx_i2sv4_dev_probe(struct platform_device *pdev)
- {
- 	struct s3c_i2sv2_info *i2s;
--	struct snd_soc_dai *dai;
- 	int ret;
- 
- 	i2s = &s3c64xx_i2sv4;
--	dai = &s3c64xx_i2s_v4_dai;
--
--	if (dai->dev) {
--		dev_dbg(dai->dev, "%s: \
--			I2Sv4 instance already registered!\n", __func__);
--		return -EBUSY;
--	}
--
--	dai->dev = &pdev->dev;
--	dai->name = "s3c64xx-i2s-v4";
--	dai->id = 0;
--	dai->symmetric_rates = 1;
--	dai->playback.channels_min = 2;
--	dai->playback.channels_max = 2;
--	dai->playback.rates = S3C64XX_I2S_RATES;
--	dai->playback.formats = S3C64XX_I2S_FMTS;
--	dai->capture.channels_min = 2;
--	dai->capture.channels_max = 2;
--	dai->capture.rates = S3C64XX_I2S_RATES;
--	dai->capture.formats = S3C64XX_I2S_FMTS;
--	dai->probe = s3c64xx_i2sv4_probe;
--	dai->ops = &s3c64xx_i2sv4_dai_ops;
- 
- 	i2s->feature |= S3C_FEATURE_CDCLKCON;
- 
-@@ -158,19 +146,13 @@ static __devinit int s3c64xx_i2sv4_dev_probe(struct platform_device *pdev)
- 
- 	clk_enable(i2s->iis_cclk);
- 
--	ret = s3c_i2sv2_probe(pdev, dai, i2s, 0);
--	if (ret)
--		goto err_clk;
--
--	ret = s3c_i2sv2_register_dai(dai);
-+	ret = snd_soc_register_dai(&pdev->dev, pdev->id, &s3c64xx_i2s_v4_dai);
- 	if (ret != 0)
- 		goto err_i2sv2;
- 
- 	return 0;
- 
- err_i2sv2:
--	/* Not implemented for I2Sv2 core yet */
--err_clk:
- 	clk_put(i2s->iis_cclk);
- err:
- 	return ret;
-@@ -178,7 +160,7 @@ err:
- 
- static __devexit int s3c64xx_i2sv4_dev_remove(struct platform_device *pdev)
- {
--	dev_err(&pdev->dev, "Device removal not yet supported\n");
-+	snd_soc_unregister_dai(&pdev->dev, pdev->id);
- 	return 0;
- }
- 
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.c b/sound/soc/s3c24xx/s3c64xx-i2s.c
-index 1d85cb8..ad92e10 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.c
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.c
-@@ -12,15 +12,18 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <linux/module.h>
- #include <linux/clk.h>
- #include <linux/gpio.h>
- #include <linux/io.h>
-+#include <linux/slab.h>
- 
- #include <sound/soc.h>
- 
- #include <mach/gpio-bank-d.h>
- #include <mach/gpio-bank-e.h>
- #include <plat/gpio-cfg.h>
-+#include <plat/audio.h>
- 
- #include <mach/map.h>
- #include <mach/dma.h>
-@@ -44,85 +47,82 @@ static struct s3c2410_dma_client s3c64xx_dma_client_in = {
- 
- static struct s3c_dma_params s3c64xx_i2s_pcm_stereo_out[MAX_I2SV3];
- static struct s3c_dma_params s3c64xx_i2s_pcm_stereo_in[MAX_I2SV3];
--static struct s3c_i2sv2_info s3c64xx_i2s[MAX_I2SV3];
- 
--struct snd_soc_dai s3c64xx_i2s_dai[MAX_I2SV3];
--EXPORT_SYMBOL_GPL(s3c64xx_i2s_dai);
--
--static inline struct s3c_i2sv2_info *to_info(struct snd_soc_dai *cpu_dai)
-+static int s3c64xx_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
-+				  int clk_id, unsigned int freq, int dir)
- {
--	return cpu_dai->private_data;
--}
-+	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(cpu_dai);
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
- 
--static int s3c64xx_i2s_probe(struct platform_device *pdev,
--			     struct snd_soc_dai *dai)
--{
--	/* configure GPIO for i2s port */
--	switch (dai->id) {
--	case 0:
--		s3c_gpio_cfgpin(S3C64XX_GPD(0), S3C64XX_GPD0_I2S0_CLK);
--		s3c_gpio_cfgpin(S3C64XX_GPD(1), S3C64XX_GPD1_I2S0_CDCLK);
--		s3c_gpio_cfgpin(S3C64XX_GPD(2), S3C64XX_GPD2_I2S0_LRCLK);
--		s3c_gpio_cfgpin(S3C64XX_GPD(3), S3C64XX_GPD3_I2S0_DI);
--		s3c_gpio_cfgpin(S3C64XX_GPD(4), S3C64XX_GPD4_I2S0_D0);
-+	switch (clk_id) {
-+	case S3C64XX_CLKSRC_PCLK:
-+		iismod &= ~S3C64XX_IISMOD_IMS_SYSMUX;
- 		break;
--	case 1:
--		s3c_gpio_cfgpin(S3C64XX_GPE(0), S3C64XX_GPE0_I2S1_CLK);
--		s3c_gpio_cfgpin(S3C64XX_GPE(1), S3C64XX_GPE1_I2S1_CDCLK);
--		s3c_gpio_cfgpin(S3C64XX_GPE(2), S3C64XX_GPE2_I2S1_LRCLK);
--		s3c_gpio_cfgpin(S3C64XX_GPE(3), S3C64XX_GPE3_I2S1_DI);
--		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_I2S1_D0);
-+
-+	case S3C64XX_CLKSRC_MUX:
-+		iismod |= S3C64XX_IISMOD_IMS_SYSMUX;
-+		break;
-+
-+	case S3C64XX_CLKSRC_CDCLK:
-+		switch (dir) {
-+		case SND_SOC_CLOCK_IN:
-+			iismod |= S3C64XX_IISMOD_CDCLKCON;
-+			break;
-+		case SND_SOC_CLOCK_OUT:
-+			iismod &= ~S3C64XX_IISMOD_CDCLKCON;
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
-+		break;
-+
-+	default:
-+		return -EINVAL;
- 	}
- 
-+	writel(iismod, i2s->regs + S3C2412_IISMOD);
-+
- 	return 0;
- }
- 
-+struct clk *s3c64xx_i2s_get_clock(struct snd_soc_dai *dai)
-+{
-+	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(dai);
-+	u32 iismod = readl(i2s->regs + S3C2412_IISMOD);
- 
--static struct snd_soc_dai_ops s3c64xx_i2s_dai_ops;
-+	if (iismod & S3C64XX_IISMOD_IMS_SYSMUX)
-+		return i2s->iis_cclk;
-+	else
-+		return i2s->iis_pclk;
-+}
-+EXPORT_SYMBOL_GPL(s3c64xx_i2s_get_clock);
- 
--static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
-+static int s3c64xx_i2s_probe(struct snd_soc_dai *dai)
- {
- 	struct s3c_i2sv2_info *i2s;
--	struct snd_soc_dai *dai;
- 	int ret;
- 
--	if (pdev->id >= MAX_I2SV3) {
--		dev_err(&pdev->dev, "id %d out of range\n", pdev->id);
--		return -EINVAL;
--	}
-+	i2s = kzalloc(sizeof(struct s3c_i2sv2_info), GFP_KERNEL);
-+	if (i2s == NULL)
-+		return -ENOMEM;
-+	snd_soc_dai_set_drvdata(dai, i2s);
- 
--	i2s = &s3c64xx_i2s[pdev->id];
--	dai = &s3c64xx_i2s_dai[pdev->id];
--	dai->dev = &pdev->dev;
--	dai->name = "s3c64xx-i2s";
--	dai->id = pdev->id;
--	dai->symmetric_rates = 1;
--	dai->playback.channels_min = 2;
--	dai->playback.channels_max = 2;
--	dai->playback.rates = S3C64XX_I2S_RATES;
--	dai->playback.formats = S3C64XX_I2S_FMTS;
--	dai->capture.channels_min = 2;
--	dai->capture.channels_max = 2;
--	dai->capture.rates = S3C64XX_I2S_RATES;
--	dai->capture.formats = S3C64XX_I2S_FMTS;
--	dai->probe = s3c64xx_i2s_probe;
--	dai->ops = &s3c64xx_i2s_dai_ops;
--
--	i2s->feature |= S3C_FEATURE_CDCLKCON;
--
--	i2s->dma_capture = &s3c64xx_i2s_pcm_stereo_in[pdev->id];
--	i2s->dma_playback = &s3c64xx_i2s_pcm_stereo_out[pdev->id];
--
--	if (pdev->id == 0) {
-+	i2s->dma_capture = &s3c64xx_i2s_pcm_stereo_in[dai->id];
-+	i2s->dma_playback = &s3c64xx_i2s_pcm_stereo_out[dai->id];
-+
-+	switch (dai->id) {
-+	case 0:
- 		i2s->dma_capture->channel = DMACH_I2S0_IN;
- 		i2s->dma_capture->dma_addr = S3C64XX_PA_IIS0 + S3C2412_IISRXD;
- 		i2s->dma_playback->channel = DMACH_I2S0_OUT;
- 		i2s->dma_playback->dma_addr = S3C64XX_PA_IIS0 + S3C2412_IISTXD;
--	} else {
-+		break;
-+	case 1:
- 		i2s->dma_capture->channel = DMACH_I2S1_IN;
- 		i2s->dma_capture->dma_addr = S3C64XX_PA_IIS1 + S3C2412_IISRXD;
- 		i2s->dma_playback->channel = DMACH_I2S1_OUT;
- 		i2s->dma_playback->dma_addr = S3C64XX_PA_IIS1 + S3C2412_IISTXD;
-+		break;
- 	}
- 
- 	i2s->dma_capture->client = &s3c64xx_dma_client_in;
-@@ -130,36 +130,102 @@ static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
- 	i2s->dma_playback->client = &s3c64xx_dma_client_out;
- 	i2s->dma_playback->dma_size = 4;
- 
--	i2s->iis_cclk = clk_get(&pdev->dev, "audio-bus");
-+	i2s->iis_cclk = clk_get(dai->dev, "audio-bus");
- 	if (IS_ERR(i2s->iis_cclk)) {
--		dev_err(&pdev->dev, "failed to get audio-bus\n");
-+		dev_err(dai->dev, "failed to get audio-bus\n");
- 		ret = PTR_ERR(i2s->iis_cclk);
- 		goto err;
- 	}
- 
- 	clk_enable(i2s->iis_cclk);
- 
--	ret = s3c_i2sv2_probe(pdev, dai, i2s, 0);
--	if (ret)
--		goto err_clk;
--
--	ret = s3c_i2sv2_register_dai(dai);
--	if (ret != 0)
--		goto err_i2sv2;
-+	/* configure GPIO for i2s port */
-+	switch (dai->id) {
-+	case 0:
-+		s3c_gpio_cfgpin(S3C64XX_GPD(0), S3C64XX_GPD0_I2S0_CLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(1), S3C64XX_GPD1_I2S0_CDCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(2), S3C64XX_GPD2_I2S0_LRCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(3), S3C64XX_GPD3_I2S0_DI);
-+		s3c_gpio_cfgpin(S3C64XX_GPD(4), S3C64XX_GPD4_I2S0_D0);
-+		break;
-+	case 1:
-+		s3c_gpio_cfgpin(S3C64XX_GPE(0), S3C64XX_GPE0_I2S1_CLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(1), S3C64XX_GPE1_I2S1_CDCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(2), S3C64XX_GPE2_I2S1_LRCLK);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(3), S3C64XX_GPE3_I2S1_DI);
-+		s3c_gpio_cfgpin(S3C64XX_GPE(4), S3C64XX_GPE4_I2S1_D0);
-+	}
- 
- 	return 0;
- 
--err_i2sv2:
--	/* Not implemented for I2Sv2 core yet */
--err_clk:
--	clk_put(i2s->iis_cclk);
- err:
-+	kfree(i2s);
- 	return ret;
- }
- 
-+static int s3c64xx_i2s_remove(struct snd_soc_dai *dai)
-+{
-+	struct s3c_i2sv2_info *i2s = snd_soc_dai_get_drvdata(dai);
-+
-+	clk_disable(i2s->iis_cclk);
-+	clk_put(i2s->iis_cclk);
-+	kfree(i2s);
-+	return 0;
-+}
-+
-+static struct snd_soc_dai_ops s3c64xx_i2s_dai_ops;
-+
-+struct snd_soc_dai_driver s3c64xx_i2s_dai[MAX_I2SV3] = {
-+{
-+	.name = "s3c64xx-i2s-0",
-+	.probe = s3c64xx_i2s_probe,
-+	.remove = s3c64xx_i2s_remove,
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = S3C64XX_I2S_RATES,
-+		.formats = S3C64XX_I2S_FMTS,},
-+	.capture = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = S3C64XX_I2S_RATES,
-+		.formats = S3C64XX_I2S_FMTS,},
-+	.ops = &s3c64xx_i2s_dai_ops,
-+	.symmetric_rates = 1,
-+}, {
-+	.name = "s3c64xx-i2s-1",
-+	.probe = s3c64xx_i2s_probe,
-+	.remove = s3c64xx_i2s_remove,
-+	.playback = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = S3C64XX_I2S_RATES,
-+		.formats = S3C64XX_I2S_FMTS,},
-+	.capture = {
-+		.channels_min = 2,
-+		.channels_max = 2,
-+		.rates = S3C64XX_I2S_RATES,
-+		.formats = S3C64XX_I2S_FMTS,},
-+	.ops = &s3c64xx_i2s_dai_ops,
-+	.symmetric_rates = 1,
-+},};
-+EXPORT_SYMBOL_GPL(s3c64xx_i2s_dai);
-+
-+static __devinit int s3c64xx_iis_dev_probe(struct platform_device *pdev)
-+{
-+
-+	if (pdev->id >= MAX_I2SV3) {
-+		dev_err(&pdev->dev, "id %d out of range\n", pdev->id);
-+		return -EINVAL;
-+	}
-+
-+	return snd_soc_register_dais(&pdev->dev, s3c64xx_i2s_dai,
-+			ARRAY_SIZE(s3c64xx_i2s_dai));
-+}
-+
- static __devexit int s3c64xx_iis_dev_remove(struct platform_device *pdev)
- {
--	dev_err(&pdev->dev, "Device removal not yet supported\n");
-+	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(s3c64xx_i2s_dai));
- 	return 0;
- }
- 
-diff --git a/sound/soc/s3c24xx/s3c64xx-i2s.h b/sound/soc/s3c24xx/s3c64xx-i2s.h
-index 7a40f43..5e3d36c 100644
---- a/sound/soc/s3c24xx/s3c64xx-i2s.h
-+++ b/sound/soc/s3c24xx/s3c64xx-i2s.h
-@@ -36,7 +36,9 @@ struct clk;
- 	(SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_S16_LE |\
- 	 SNDRV_PCM_FMTBIT_S24_LE)
- 
--extern struct snd_soc_dai s3c64xx_i2s_dai[];
--extern struct snd_soc_dai s3c64xx_i2s_v4_dai;
-+
-+extern struct snd_soc_dai_driver s3c64xx_i2s_v4_dai;
-+extern struct snd_soc_dai_driver s3c64xx_i2s_dai[];
-+
- 
- #endif /* __SND_SOC_S3C24XX_S3C64XX_I2S_H */
-diff --git a/sound/soc/s3c24xx/smdk2443_wm9710.c b/sound/soc/s3c24xx/smdk2443_wm9710.c
-index 3622588..eee03d2 100644
---- a/sound/soc/s3c24xx/smdk2443_wm9710.c
-+++ b/sound/soc/s3c24xx/smdk2443_wm9710.c
-@@ -29,23 +29,20 @@ static struct snd_soc_dai_link smdk2443_dai[] = {
- {
- 	.name = "AC97",
- 	.stream_name = "AC97 HiFi",
--	.cpu_dai = &s3c_ac97_dai[S3C_AC97_DAI_PCM],
--	.codec_dai = &ac97_dai,
-+	.cpu_dai_drv = &s3c_ac97_dai[S3C_AC97_DAI_PCM],
-+	.cpu_dai_id = S3C_AC97_DAI_PCM,
-+	.codec_dai_drv = &ac97_dai,
-+	.codec_drv = &soc_codec_dev_ac97,
-+	.platform_drv = &s3c24xx_soc_platform,
- },
- };
- 
- static struct snd_soc_card smdk2443 = {
- 	.name = "SMDK2443",
--	.platform = &s3c24xx_soc_platform,
- 	.dai_link = smdk2443_dai,
- 	.num_links = ARRAY_SIZE(smdk2443_dai),
- };
- 
--static struct snd_soc_device smdk2443_snd_ac97_devdata = {
--	.card = &smdk2443,
--	.codec_dev = &soc_codec_dev_ac97,
--};
--
- static struct platform_device *smdk2443_snd_ac97_device;
- 
- static int __init smdk2443_init(void)
-@@ -56,9 +53,7 @@ static int __init smdk2443_init(void)
- 	if (!smdk2443_snd_ac97_device)
+ static int __init omap2evm_soc_init(void)
+@@ -122,9 +118,7 @@ static int __init omap2evm_soc_init(void)
  		return -ENOMEM;
+ 	}
  
--	platform_set_drvdata(smdk2443_snd_ac97_device,
--				&smdk2443_snd_ac97_devdata);
--	smdk2443_snd_ac97_devdata.dev = &smdk2443_snd_ac97_device->dev;
-+	platform_set_drvdata(smdk2443_snd_ac97_device, &smdk2443);
- 	ret = platform_device_add(smdk2443_snd_ac97_device);
+-	platform_set_drvdata(omap2evm_snd_device, &omap2evm_snd_devdata);
+-	omap2evm_snd_devdata.dev = &omap2evm_snd_device->dev;
+-	*(unsigned int *)omap2evm_dai.cpu_dai->private_data = 1; /* McBSP2 */
++	platform_set_drvdata(omap2evm_snd_device, &snd_soc_omap2evm);
  
+ 	ret = platform_device_add(omap2evm_snd_device);
  	if (ret)
-diff --git a/sound/soc/s3c24xx/smdk64xx_wm8580.c b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-index 07e8e51..0b4b996 100644
---- a/sound/soc/s3c24xx/smdk64xx_wm8580.c
-+++ b/sound/soc/s3c24xx/smdk64xx_wm8580.c
-@@ -29,8 +29,8 @@ static int smdk64xx_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
+index 240e097..5214813 100644
+--- a/sound/soc/omap/omap3beagle.c
++++ b/sound/soc/omap/omap3beagle.c
+@@ -39,8 +39,8 @@ static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
  	struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
 -	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	unsigned int pll_out;
- 	int bfs, rfs, ret;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	unsigned int fmt;
+ 	int ret;
  
-@@ -174,8 +174,10 @@ static const struct snd_soc_dapm_route audio_map_rx[] = {
- 	{"Rear-L/R", NULL, "VOUT3R"},
+@@ -92,25 +92,23 @@ static struct snd_soc_ops omap3beagle_ops = {
+ static struct snd_soc_dai_link omap3beagle_dai = {
+ 	.name = "TWL4030",
+ 	.stream_name = "TWL4030",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++	.cpu_dai_id = OMAP_MCBSP2,
++	.platform_drv = &omap_soc_platform,
++	.cpu_dai_drv = &omap_mcbsp_dai,
++	.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
++	.codec_dai_id = TWL4030_DAI_HIFI,
++	.codec_drv = &soc_codec_dev_twl4030,
+ 	.ops = &omap3beagle_ops,
  };
  
--static int smdk64xx_wm8580_init_paiftx(struct snd_soc_codec *codec)
-+static int smdk64xx_wm8580_init_paiftx(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
-+
- 	/* Add smdk64xx specific Capture widgets */
- 	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_cpt,
- 				  ARRAY_SIZE(wm8580_dapm_widgets_cpt));
-@@ -194,8 +196,10 @@ static int smdk64xx_wm8580_init_paiftx(struct snd_soc_codec *codec)
- 	return 0;
- }
- 
--static int smdk64xx_wm8580_init_paifrx(struct snd_soc_codec *codec)
-+static int smdk64xx_wm8580_init_paifrx(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
-+
- 	/* Add smdk64xx specific Playback widgets */
- 	snd_soc_dapm_new_controls(codec, wm8580_dapm_widgets_pbk,
- 				  ARRAY_SIZE(wm8580_dapm_widgets_pbk));
-@@ -213,16 +217,22 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- { /* Primary Playback i/f */
- 	.name = "WM8580 PAIF RX",
- 	.stream_name = "Playback",
--	.cpu_dai = &s3c64xx_i2s_v4_dai,
--	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFRX],
-+	.cpu_dai_drv = &s3c64xx_i2s_v4_dai,
-+	.codec_dai_drv = &wm8580_dai[WM8580_DAI_PAIFRX],
-+	.codec_dai_id = WM8580_DAI_PAIFRX,
-+	.platform_drv = &s3c24xx_soc_platform,
-+	.codec_drv = &soc_codec_dev_wm8580,
- 	.init = smdk64xx_wm8580_init_paifrx,
- 	.ops = &smdk64xx_ops,
- },
- { /* Primary Capture i/f */
- 	.name = "WM8580 PAIF TX",
- 	.stream_name = "Capture",
--	.cpu_dai = &s3c64xx_i2s_v4_dai,
--	.codec_dai = &wm8580_dai[WM8580_DAI_PAIFTX],
-+	.cpu_dai_drv = &s3c64xx_i2s_v4_dai,
-+	.codec_dai_drv = &wm8580_dai[WM8580_DAI_PAIFTX],
-+	.codec_dai_id = WM8580_DAI_PAIFTX,
-+	.platform_drv = &s3c24xx_soc_platform,
-+	.codec_drv = &soc_codec_dev_wm8580,
- 	.init = smdk64xx_wm8580_init_paiftx,
- 	.ops = &smdk64xx_ops,
- },
-@@ -230,16 +240,10 @@ static struct snd_soc_dai_link smdk64xx_dai[] = {
- 
- static struct snd_soc_card smdk64xx = {
- 	.name = "smdk64xx",
--	.platform = &s3c24xx_soc_platform,
- 	.dai_link = smdk64xx_dai,
- 	.num_links = ARRAY_SIZE(smdk64xx_dai),
- };
- 
--static struct snd_soc_device smdk64xx_snd_devdata = {
--	.card = &smdk64xx,
--	.codec_dev = &soc_codec_dev_wm8580,
--};
--
- static struct platform_device *smdk64xx_snd_device;
- 
- static int __init smdk64xx_audio_init(void)
-@@ -250,8 +254,7 @@ static int __init smdk64xx_audio_init(void)
- 	if (!smdk64xx_snd_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(smdk64xx_snd_device, &smdk64xx_snd_devdata);
--	smdk64xx_snd_devdata.dev = &smdk64xx_snd_device->dev;
-+	platform_set_drvdata(smdk64xx_snd_device, &smdk64xx);
- 	ret = platform_device_add(smdk64xx_snd_device);
- 
- 	if (ret)
-diff --git a/sound/soc/s3c24xx/smdk_wm9713.c b/sound/soc/s3c24xx/smdk_wm9713.c
-index 5527b9e..001c2dd 100644
---- a/sound/soc/s3c24xx/smdk_wm9713.c
-+++ b/sound/soc/s3c24xx/smdk_wm9713.c
-@@ -46,22 +46,20 @@ static struct snd_soc_card smdk;
- static struct snd_soc_dai_link smdk_dai = {
- 	.name = "AC97",
- 	.stream_name = "AC97 PCM",
--	.cpu_dai = &s3c_ac97_dai[S3C_AC97_DAI_PCM],
--	.codec_dai = &wm9713_dai[WM9713_DAI_AC97_HIFI],
-+	.platform_drv = &s3c24xx_soc_platform,
-+	.cpu_dai_drv = &s3c_ac97_dai[S3C_AC97_DAI_PCM],
-+	.cpu_dai_id = S3C_AC97_DAI_PCM,
-+	.codec_dai_drv = &wm9713_dai[WM9713_DAI_AC97_HIFI],
-+	.codec_dai_id = WM9713_DAI_AC97_HIFI,
-+	.codec_drv = &soc_codec_dev_wm9713,
- };
- 
- static struct snd_soc_card smdk = {
- 	.name = "SMDK",
--	.platform = &s3c24xx_soc_platform,
- 	.dai_link = &smdk_dai,
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_omap3beagle = {
+ 	.name = "omap3beagle",
+-	.platform = &omap_soc_platform,
++	.owner = THIS_MODULE,
+ 	.dai_link = &omap3beagle_dai,
  	.num_links = 1,
  };
  
--static struct snd_soc_device smdk_snd_ac97_devdata = {
--	.card = &smdk,
--	.codec_dev = &soc_codec_dev_wm9713,
+-/* Audio subsystem */
+-static struct snd_soc_device omap3beagle_snd_devdata = {
+-	.card = &snd_soc_omap3beagle,
+-	.codec_dev = &soc_codec_dev_twl4030,
 -};
 -
- static struct platform_device *smdk_snd_ac97_device;
+ static struct platform_device *omap3beagle_snd_device;
  
- static int __init smdk_init(void)
-@@ -72,9 +70,7 @@ static int __init smdk_init(void)
- 	if (!smdk_snd_ac97_device)
+ static int __init omap3beagle_soc_init(void)
+@@ -129,9 +127,7 @@ static int __init omap3beagle_soc_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(omap3beagle_snd_device, &omap3beagle_snd_devdata);
+-	omap3beagle_snd_devdata.dev = &omap3beagle_snd_device->dev;
+-	*(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 1; /* McBSP2 */
++	platform_set_drvdata(omap3beagle_snd_device, &snd_soc_omap3beagle);
+ 
+ 	ret = platform_device_add(omap3beagle_snd_device);
+ 	if (ret)
+diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
+index dfcb344..a5a8813 100644
+--- a/sound/soc/omap/omap3evm.c
++++ b/sound/soc/omap/omap3evm.c
+@@ -37,8 +37,8 @@ static int omap3evm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -80,32 +80,22 @@ static struct snd_soc_ops omap3evm_ops = {
+ static struct snd_soc_dai_link omap3evm_dai = {
+ 	.name 		= "TWL4030",
+ 	.stream_name 	= "TWL4030",
+-	.cpu_dai 	= &omap_mcbsp_dai[0],
+-	.codec_dai 	= &twl4030_dai[TWL4030_DAI_HIFI],
++	.cpu_dai_drv 	= &omap_mcbsp_dai,
++	.cpu_dai_id = OMAP_MCBSP2,
++	.codec_dai_drv 	= &twl4030_dai[TWL4030_DAI_HIFI],
++	.codec_dai_id = TWL4030_DAI_HIFI,
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &soc_codec_dev_twl4030,
+ 	.ops 		= &omap3evm_ops,
+ };
+ 
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_omap3evm = {
+ 	.name = "omap3evm",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &omap3evm_dai,
+ 	.num_links = 1,
+ };
+ 
+-/* twl4030 setup */
+-static struct twl4030_setup_data twl4030_setup = {
+-	.ramp_delay_value = 4,
+-	.sysclk = 26000,
+-};
+-
+-/* Audio subsystem */
+-static struct snd_soc_device omap3evm_snd_devdata = {
+-	.card = &snd_soc_omap3evm,
+-	.codec_dev = &soc_codec_dev_twl4030,
+-	.codec_data = &twl4030_setup,
+-};
+-
+ static struct platform_device *omap3evm_snd_device;
+ 
+ static int __init omap3evm_soc_init(void)
+@@ -124,10 +114,7 @@ static int __init omap3evm_soc_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(omap3evm_snd_device, &omap3evm_snd_devdata);
+-	omap3evm_snd_devdata.dev = &omap3evm_snd_device->dev;
+-	*(unsigned int *)omap3evm_dai.cpu_dai->private_data = 1;
+-
++	platform_set_drvdata(omap3evm_snd_device, &snd_soc_omap3evm);
+ 	ret = platform_device_add(omap3evm_snd_device);
+ 	if (ret)
+ 		goto err1;
+diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
+index 87ce842..128d71c 100644
+--- a/sound/soc/omap/omap3pandora.c
++++ b/sound/soc/omap/omap3pandora.c
+@@ -31,6 +31,7 @@
+ #include <sound/soc-dapm.h>
+ 
+ #include <asm/mach-types.h>
++#include <plat/mcbsp.h>
+ 
+ #include "omap-mcbsp.h"
+ #include "omap-pcm.h"
+@@ -47,8 +48,8 @@ static int omap3pandora_cmn_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, unsigned int fmt)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -183,8 +184,9 @@ static const struct snd_soc_dapm_route omap3pandora_in_map[] = {
+ 	{"Mic Bias 2", NULL, "Mic (external)"},
+ };
+ 
+-static int omap3pandora_out_init(struct snd_soc_codec *codec)
++static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	int ret;
+ 
+ 	/* All TWL4030 output pins are floating */
+@@ -210,8 +212,9 @@ static int omap3pandora_out_init(struct snd_soc_codec *codec)
+ 	return snd_soc_dapm_sync(codec);
+ }
+ 
+-static int omap3pandora_in_init(struct snd_soc_codec *codec)
++static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	int ret;
+ 
+ 	/* Not comnnected */
+@@ -244,15 +247,23 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
+ 	{
+ 		.name = "PCM1773",
+ 		.stream_name = "HiFi Out",
+-		.cpu_dai = &omap_mcbsp_dai[0],
+-		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++		.cpu_dai_drv = &omap_mcbsp_dai,
++		.cpu_dai_id = OMAP_MCBSP2,
++		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
++		.codec_dai_id = TWL4030_DAI_HIFI,
++		.platform_drv = &omap_soc_platform,
++		.codec_drv = &soc_codec_dev_twl4030,
+ 		.ops = &omap3pandora_out_ops,
+ 		.init = omap3pandora_out_init,
+ 	}, {
+ 		.name = "TWL4030",
+ 		.stream_name = "Line/Mic In",
+-		.cpu_dai = &omap_mcbsp_dai[1],
+-		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++		.cpu_dai_drv = &omap_mcbsp_dai,
++		.cpu_dai_id = OMAP_MCBSP4,
++		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
++		.codec_dai_id = TWL4030_DAI_HIFI,
++		.platform_drv = &omap_soc_platform,
++		.codec_drv = &soc_codec_dev_twl4030,
+ 		.ops = &omap3pandora_in_ops,
+ 		.init = omap3pandora_in_init,
+ 	}
+@@ -261,17 +272,10 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
+ /* SoC card */
+ static struct snd_soc_card snd_soc_card_omap3pandora = {
+ 	.name = "omap3pandora",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = omap3pandora_dai,
+ 	.num_links = ARRAY_SIZE(omap3pandora_dai),
+ };
+ 
+-/* Audio subsystem */
+-static struct snd_soc_device omap3pandora_snd_data = {
+-	.card = &snd_soc_card_omap3pandora,
+-	.codec_dev = &soc_codec_dev_twl4030,
+-};
+-
+ static struct platform_device *omap3pandora_snd_device;
+ 
+ static int __init omap3pandora_soc_init(void)
+@@ -314,10 +318,7 @@ static int __init omap3pandora_soc_init(void)
+ 		goto fail1;
+ 	}
+ 
+-	platform_set_drvdata(omap3pandora_snd_device, &omap3pandora_snd_data);
+-	omap3pandora_snd_data.dev = &omap3pandora_snd_device->dev;
+-	*(unsigned int *)omap_mcbsp_dai[0].private_data = 1; /* McBSP2 */
+-	*(unsigned int *)omap_mcbsp_dai[1].private_data = 3; /* McBSP4 */
++	platform_set_drvdata(omap3pandora_snd_device, &snd_soc_card_omap3pandora);
+ 
+ 	ret = platform_device_add(omap3pandora_snd_device);
+ 	if (ret) {
+diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
+index 498ca2e..5c4a2d8 100644
+--- a/sound/soc/omap/osk5912.c
++++ b/sound/soc/omap/osk5912.c
+@@ -55,8 +55,8 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int err;
+ 
+ 	/* Set codec DAI configuration */
+@@ -113,8 +113,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"MICIN", NULL, "Mic Jack"},
+ };
+ 
+-static int osk_tlv320aic23_init(struct snd_soc_codec *codec)
++static int osk_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 
+ 	/* Add osk5912 specific widgets */
+ 	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
+@@ -136,8 +137,11 @@ static int osk_tlv320aic23_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link osk_dai = {
+ 	.name = "TLV320AIC23",
+ 	.stream_name = "AIC23",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &tlv320aic23_dai,
++	.cpu_dai_drv = &omap_mcbsp_dai,
++	.cpu_dai_id = OMAP_MCBSP1,
++	.codec_dai_drv = &tlv320aic23_dai,
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &soc_codec_dev_tlv320aic23,
+ 	.init = osk_tlv320aic23_init,
+ 	.ops = &osk_ops,
+ };
+@@ -145,17 +149,10 @@ static struct snd_soc_dai_link osk_dai = {
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_card_osk = {
+ 	.name = "OSK5912",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &osk_dai,
+ 	.num_links = 1,
+ };
+ 
+-/* Audio subsystem */
+-static struct snd_soc_device osk_snd_devdata = {
+-	.card = &snd_soc_card_osk,
+-	.codec_dev = &soc_codec_dev_tlv320aic23,
+-};
+-
+ static struct platform_device *osk_snd_device;
+ 
+ static int __init osk_soc_init(void)
+@@ -171,9 +168,7 @@ static int __init osk_soc_init(void)
+ 	if (!osk_snd_device)
  		return -ENOMEM;
  
--	platform_set_drvdata(smdk_snd_ac97_device,
--			     &smdk_snd_ac97_devdata);
--	smdk_snd_ac97_devdata.dev = &smdk_snd_ac97_device->dev;
-+	platform_set_drvdata(smdk_snd_ac97_device, &smdk);
+-	platform_set_drvdata(osk_snd_device, &osk_snd_devdata);
+-	osk_snd_devdata.dev = &osk_snd_device->dev;
+-	*(unsigned int *)osk_dai.cpu_dai->private_data = 0;	/* McBSP1 */
++	platform_set_drvdata(osk_snd_device, &snd_soc_card_osk);
+ 	err = platform_device_add(osk_snd_device);
+ 	if (err)
+ 		goto err1;
+diff --git a/sound/soc/omap/overo.c b/sound/soc/omap/overo.c
+index c25f527..c12419d 100644
+--- a/sound/soc/omap/overo.c
++++ b/sound/soc/omap/overo.c
+@@ -39,8 +39,8 @@ static int overo_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int ret;
  
- 	ret = platform_device_add(smdk_snd_ac97_device);
+ 	/* Set codec DAI configuration */
+@@ -82,25 +82,22 @@ static struct snd_soc_ops overo_ops = {
+ static struct snd_soc_dai_link overo_dai = {
+ 	.name = "TWL4030",
+ 	.stream_name = "TWL4030",
+-	.cpu_dai = &omap_mcbsp_dai[0],
+-	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++	.cpu_dai_drv = &omap_mcbsp_dai,
++	.cpu_dai_id = OMAP_MCBSP2,
++	.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
++	.codec_dai_id = TWL4030_DAI_HIFI,
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &soc_codec_dev_twl4030,
+ 	.ops = &overo_ops,
+ };
+ 
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_card_overo = {
+ 	.name = "overo",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &overo_dai,
+ 	.num_links = 1,
+ };
+ 
+-/* Audio subsystem */
+-static struct snd_soc_device overo_snd_devdata = {
+-	.card = &snd_soc_card_overo,
+-	.codec_dev = &soc_codec_dev_twl4030,
+-};
+-
+ static struct platform_device *overo_snd_device;
+ 
+ static int __init overo_soc_init(void)
+@@ -119,9 +116,7 @@ static int __init overo_soc_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(overo_snd_device, &overo_snd_devdata);
+-	overo_snd_devdata.dev = &overo_snd_device->dev;
+-	*(unsigned int *)overo_dai.cpu_dai->private_data = 1; /* McBSP2 */
++	platform_set_drvdata(overo_snd_device, &snd_soc_card_overo);
+ 
+ 	ret = platform_device_add(overo_snd_device);
  	if (ret)
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index 47d831e..354adda 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -30,6 +30,7 @@
+ #include <sound/pcm.h>
+ #include <sound/soc.h>
+ #include <sound/soc-dapm.h>
++#include <plat/mcbsp.h>
+ 
+ #include <asm/mach-types.h>
+ 
+@@ -64,7 +65,7 @@ static int rx51_startup(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_codec *codec = rtd->socdev->card->codec;
++	struct snd_soc_codec *codec = rtd->codec;
+ 
+ 	snd_pcm_hw_constraint_minmax(runtime,
+ 				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
+@@ -77,8 +78,8 @@ static int rx51_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int err;
+ 
+ 	/* Set codec DAI configuration */
+@@ -190,8 +191,9 @@ static const struct snd_kcontrol_new aic34_rx51_controls[] = {
+ 		     rx51_get_input, rx51_set_input),
+ };
+ 
+-static int rx51_aic34_init(struct snd_soc_codec *codec)
++static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	int err;
+ 
+ 	/* Set up NC codec pins */
+@@ -222,32 +224,21 @@ static struct snd_soc_dai_link rx51_dai[] = {
+ 	{
+ 		.name = "TLV320AIC34",
+ 		.stream_name = "AIC34",
+-		.cpu_dai = &omap_mcbsp_dai[0],
+-		.codec_dai = &aic3x_dai,
++		.cpu_dai_drv = &omap_mcbsp_dai,
++		.cpu_dai_id = OMAP_MCBSP2,
++		.codec_dai_drv = &aic3x_dai,
++		.platform_drv = &omap_soc_platform,
++		.codec_drv = &soc_codec_dev_aic3x,
+ 		.init = rx51_aic34_init,
+ 		.ops = &rx51_ops,
+ 	},
+ };
+ 
+-/* Audio private data */
+-static struct aic3x_setup_data rx51_aic34_setup = {
+-	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
+-	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
+-};
+-
+ /* Audio card */
+ static struct snd_soc_card rx51_sound_card = {
+ 	.name = "RX-51",
+ 	.dai_link = rx51_dai,
+ 	.num_links = ARRAY_SIZE(rx51_dai),
+-	.platform = &omap_soc_platform,
+-};
+-
+-/* Audio subsystem */
+-static struct snd_soc_device rx51_snd_devdata = {
+-	.card = &rx51_sound_card,
+-	.codec_dev = &soc_codec_dev_aic3x,
+-	.codec_data = &rx51_aic34_setup,
+ };
+ 
+ static struct platform_device *rx51_snd_device;
+@@ -265,9 +256,7 @@ static int __init rx51_soc_init(void)
+ 		goto err1;
+ 	}
+ 
+-	platform_set_drvdata(rx51_snd_device, &rx51_snd_devdata);
+-	rx51_snd_devdata.dev = &rx51_snd_device->dev;
+-	*(unsigned int *)rx51_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
++	platform_set_drvdata(rx51_snd_device, &rx51_sound_card);
+ 
+ 	err = platform_device_add(rx51_snd_device);
+ 	if (err)
+diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
+index 3c85c0f..f120039 100644
+--- a/sound/soc/omap/sdp3430.c
++++ b/sound/soc/omap/sdp3430.c
+@@ -51,8 +51,8 @@ static int sdp3430_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -94,8 +94,8 @@ static int sdp3430_hw_voice_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -186,8 +186,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"Headset Stereophone", NULL, "HSOR"},
+ };
+ 
+-static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
++static int sdp3430_twl4030_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	int ret;
+ 
+ 	/* Add SDP3430 specific widgets */
+@@ -225,7 +226,7 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
+ 		return ret;
+ 
+ 	/* Headset jack detection */
+-	ret = snd_soc_jack_new(&snd_soc_sdp3430, "Headset Jack",
++	ret = snd_soc_jack_new(codec, "Headset Jack",
+ 				SND_JACK_HEADSET, &hs_jack);
+ 	if (ret)
+ 		return ret;
+@@ -241,14 +242,15 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
+ 	return ret;
+ }
+ 
+-static int sdp3430_twl4030_voice_init(struct snd_soc_codec *codec)
++static int sdp3430_twl4030_voice_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	unsigned short reg;
+ 
+ 	/* Enable voice interface */
+-	reg = codec->read(codec, TWL4030_REG_VOICE_IF);
++	reg = codec->driver->read(codec, TWL4030_REG_VOICE_IF);
+ 	reg |= TWL4030_VIF_DIN_EN | TWL4030_VIF_DOUT_EN | TWL4030_VIF_EN;
+-	codec->write(codec, TWL4030_REG_VOICE_IF, reg);
++	codec->driver->write(codec, TWL4030_REG_VOICE_IF, reg);
+ 
+ 	return 0;
+ }
+@@ -259,16 +261,24 @@ static struct snd_soc_dai_link sdp3430_dai[] = {
+ 	{
+ 		.name = "TWL4030 I2S",
+ 		.stream_name = "TWL4030 Audio",
+-		.cpu_dai = &omap_mcbsp_dai[0],
+-		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++		.cpu_dai_drv = &omap_mcbsp_dai,
++		.cpu_dai_id = OMAP_MCBSP2,
++		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
++		.codec_dai_id = TWL4030_DAI_HIFI,
++		.platform_drv = &omap_soc_platform,
++		.codec_drv = &soc_codec_dev_twl4030,
+ 		.init = sdp3430_twl4030_init,
+ 		.ops = &sdp3430_ops,
+ 	},
+ 	{
+ 		.name = "TWL4030 PCM",
+ 		.stream_name = "TWL4030 Voice",
+-		.cpu_dai = &omap_mcbsp_dai[1],
+-		.codec_dai = &twl4030_dai[TWL4030_DAI_VOICE],
++		.cpu_dai_drv = &omap_mcbsp_dai,
++		.cpu_dai_id = OMAP_MCBSP3,
++		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_VOICE],
++		.codec_dai_id = TWL4030_DAI_VOICE,
++		.platform_drv = &omap_soc_platform,
++		.codec_drv = &soc_codec_dev_twl4030,
+ 		.init = sdp3430_twl4030_voice_init,
+ 		.ops = &sdp3430_voice_ops,
+ 	},
+@@ -277,25 +287,10 @@ static struct snd_soc_dai_link sdp3430_dai[] = {
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_sdp3430 = {
+ 	.name = "SDP3430",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = sdp3430_dai,
+ 	.num_links = ARRAY_SIZE(sdp3430_dai),
+ };
+ 
+-/* twl4030 setup */
+-static struct twl4030_setup_data twl4030_setup = {
+-	.ramp_delay_value = 3,
+-	.sysclk = 26000,
+-	.hs_extmute = 1,
+-};
+-
+-/* Audio subsystem */
+-static struct snd_soc_device sdp3430_snd_devdata = {
+-	.card = &snd_soc_sdp3430,
+-	.codec_dev = &soc_codec_dev_twl4030,
+-	.codec_data = &twl4030_setup,
+-};
+-
+ static struct platform_device *sdp3430_snd_device;
+ 
+ static int __init sdp3430_soc_init(void)
+@@ -315,10 +310,7 @@ static int __init sdp3430_soc_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(sdp3430_snd_device, &sdp3430_snd_devdata);
+-	sdp3430_snd_devdata.dev = &sdp3430_snd_device->dev;
+-	*(unsigned int *)sdp3430_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
+-	*(unsigned int *)sdp3430_dai[1].cpu_dai->private_data = 2; /* McBSP3 */
++	platform_set_drvdata(sdp3430_snd_device, &snd_soc_sdp3430);
+ 
+ 	/* Set TWL4030 GPIO6 as EXTMUTE signal */
+ 	twl_i2c_read_u8(TWL4030_MODULE_INTBR, &pin_mux,
+diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
+index 4ebbde6..fac0dd7 100644
+--- a/sound/soc/omap/sdp4430.c
++++ b/sound/soc/omap/sdp4430.c
+@@ -41,7 +41,7 @@ static int sdp4430_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	int clk_id, freq;
+ 	int ret;
+ 
+@@ -60,6 +60,7 @@ static int sdp4430_hw_params(struct snd_pcm_substream *substream,
+ 		printk(KERN_ERR "can't set codec system clock\n");
+ 		return ret;
+ 	}
++	return ret;
+ }
+ 
+ static struct snd_soc_ops sdp4430_ops = {
+@@ -126,8 +127,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"Earphone Spk", NULL, "EP"},
+ };
+ 
+-static int sdp4430_twl6040_init(struct snd_soc_codec *codec)
++static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	int ret;
+ 
+ 	/* Add SDP4430 specific controls */
+@@ -164,8 +166,10 @@ static int sdp4430_twl6040_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link sdp4430_dai = {
+ 	.name = "TWL6040",
+ 	.stream_name = "TWL6040",
+-	.cpu_dai = &omap_mcpdm_dai,
+-	.codec_dai = &twl6040_dai,
++	.cpu_dai_drv = &omap_mcpdm_dai,
++	.codec_dai_drv = &twl6040_dai,
++	.platform_drv = &omap_soc_platform,
++	.codec_drv = &soc_codec_dev_twl6040,
+ 	.init = sdp4430_twl6040_init,
+ 	.ops = &sdp4430_ops,
+ };
+@@ -173,17 +177,10 @@ static struct snd_soc_dai_link sdp4430_dai = {
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_sdp4430 = {
+ 	.name = "SDP4430",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = &sdp4430_dai,
+ 	.num_links = 1,
+ };
+ 
+-/* Audio subsystem */
+-static struct snd_soc_device sdp4430_snd_devdata = {
+-	.card = &snd_soc_sdp4430,
+-	.codec_dev = &soc_codec_dev_twl6040,
+-};
+-
+ static struct platform_device *sdp4430_snd_device;
+ 
+ static int __init sdp4430_soc_init(void)
+@@ -202,8 +199,7 @@ static int __init sdp4430_soc_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(sdp4430_snd_device, &sdp4430_snd_devdata);
+-	sdp4430_snd_devdata.dev = &sdp4430_snd_device->dev;
++	platform_set_drvdata(sdp4430_snd_device, &snd_soc_sdp4430);
+ 
+ 	ret = platform_device_add(sdp4430_snd_device);
+ 	if (ret)
+diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
+index 50a94ee..ae93f48 100644
+--- a/sound/soc/omap/zoom2.c
++++ b/sound/soc/omap/zoom2.c
+@@ -29,6 +29,7 @@
+ #include <asm/mach-types.h>
+ #include <mach/hardware.h>
+ #include <mach/gpio.h>
++#include <mach/board-zoom.h>
+ #include <plat/mcbsp.h>
+ 
+ #include "omap-mcbsp.h"
+@@ -36,14 +37,13 @@
+ #include "../codecs/twl4030.h"
+ 
+ #define ZOOM2_HEADSET_MUX_GPIO		(OMAP_MAX_GPIO_LINES + 15)
+-#define ZOOM2_HEADSET_EXTMUTE_GPIO	153
+ 
+ static int zoom2_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -85,8 +85,8 @@ static int zoom2_hw_voice_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
+-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	int ret;
+ 
+ 	/* Set codec DAI configuration */
+@@ -157,8 +157,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 	{"Aux In", NULL, "AUXR"},
+ };
+ 
+-static int zoom2_twl4030_init(struct snd_soc_codec *codec)
++static int zoom2_twl4030_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	int ret;
+ 
+ 	/* Add Zoom2 specific widgets */
+@@ -192,14 +193,15 @@ static int zoom2_twl4030_init(struct snd_soc_codec *codec)
+ 	return ret;
+ }
+ 
+-static int zoom2_twl4030_voice_init(struct snd_soc_codec *codec)
++static int zoom2_twl4030_voice_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct snd_soc_codec *codec = rtd->codec;
+ 	unsigned short reg;
+ 
+ 	/* Enable voice interface */
+-	reg = codec->read(codec, TWL4030_REG_VOICE_IF);
++	reg = codec->driver->read(codec, TWL4030_REG_VOICE_IF);
+ 	reg |= TWL4030_VIF_DIN_EN | TWL4030_VIF_DOUT_EN | TWL4030_VIF_EN;
+-	codec->write(codec, TWL4030_REG_VOICE_IF, reg);
++	codec->driver->write(codec, TWL4030_REG_VOICE_IF, reg);
+ 
+ 	return 0;
+ }
+@@ -209,16 +211,22 @@ static struct snd_soc_dai_link zoom2_dai[] = {
+ 	{
+ 		.name = "TWL4030 I2S",
+ 		.stream_name = "TWL4030 Audio",
+-		.cpu_dai = &omap_mcbsp_dai[0],
+-		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
++		.cpu_dai_drv = &omap_mcbsp_dai,
++		.cpu_dai_id = OMAP_MCBSP2,
++		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
++		.codec_dai_id = TWL4030_DAI_HIFI,
++		.platform_drv = &omap_soc_platform,
+ 		.init = zoom2_twl4030_init,
+ 		.ops = &zoom2_ops,
+ 	},
+ 	{
+ 		.name = "TWL4030 PCM",
+ 		.stream_name = "TWL4030 Voice",
+-		.cpu_dai = &omap_mcbsp_dai[1],
+-		.codec_dai = &twl4030_dai[TWL4030_DAI_VOICE],
++		.cpu_dai_drv = &omap_mcbsp_dai,
++		.cpu_dai_id = OMAP_MCBSP3,
++		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_VOICE],
++		.codec_dai_id = TWL4030_DAI_VOICE,
++		.platform_drv = &omap_soc_platform,
+ 		.init = zoom2_twl4030_voice_init,
+ 		.ops = &zoom2_voice_ops,
+ 	},
+@@ -227,32 +235,10 @@ static struct snd_soc_dai_link zoom2_dai[] = {
+ /* Audio machine driver */
+ static struct snd_soc_card snd_soc_zoom2 = {
+ 	.name = "Zoom2",
+-	.platform = &omap_soc_platform,
+ 	.dai_link = zoom2_dai,
+ 	.num_links = ARRAY_SIZE(zoom2_dai),
+ };
+ 
+-/* EXTMUTE callback function */
+-void zoom2_set_hs_extmute(int mute)
+-{
+-	gpio_set_value(ZOOM2_HEADSET_EXTMUTE_GPIO, mute);
+-}
+-
+-/* twl4030 setup */
+-static struct twl4030_setup_data twl4030_setup = {
+-	.ramp_delay_value = 3,	/* 161 ms */
+-	.sysclk = 26000,
+-	.hs_extmute = 1,
+-	.set_hs_extmute = zoom2_set_hs_extmute,
+-};
+-
+-/* Audio subsystem */
+-static struct snd_soc_device zoom2_snd_devdata = {
+-	.card = &snd_soc_zoom2,
+-	.codec_dev = &soc_codec_dev_twl4030,
+-	.codec_data = &twl4030_setup,
+-};
+-
+ static struct platform_device *zoom2_snd_device;
+ 
+ static int __init zoom2_soc_init(void)
+@@ -271,11 +257,7 @@ static int __init zoom2_soc_init(void)
+ 		return -ENOMEM;
+ 	}
+ 
+-	platform_set_drvdata(zoom2_snd_device, &zoom2_snd_devdata);
+-	zoom2_snd_devdata.dev = &zoom2_snd_device->dev;
+-	*(unsigned int *)zoom2_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
+-	*(unsigned int *)zoom2_dai[1].cpu_dai->private_data = 2; /* McBSP3 */
+-
++	platform_set_drvdata(zoom2_snd_device, &snd_soc_zoom2);
+ 	ret = platform_device_add(zoom2_snd_device);
+ 	if (ret)
+ 		goto err1;
 -- 
 1.7.0.4
