@@ -1,19 +1,18 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [RFC 03/15] ASoC: multi-component - Atmel Platform
-Date: Sun, 27 Jun 2010 12:52:02 +0100
-Message-ID: <1277639534-5104-4-git-send-email-lrg@slimlogic.co.uk>
+Subject: [RFC 08/15] ASoC: multi-component - S6000 Platform
+Date: Sun, 27 Jun 2010 12:52:07 +0100
+Message-ID: <1277639534-5104-9-git-send-email-lrg@slimlogic.co.uk>
 References: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
-	[74.125.82.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 59782103897
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 22BA41038A2
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 13:52:34 +0200 (CEST)
-Received: by mail-wy0-f179.google.com with SMTP id 23so919297wyf.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 04:52:34 -0700 (PDT)
+	Sun, 27 Jun 2010 13:52:42 +0200 (CEST)
+Received: by mail-ww0-f51.google.com with SMTP id 13so934011wwb.38
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 04:52:42 -0700 (PDT)
 In-Reply-To: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,7 +27,7 @@ To: alsa-devel@alsa-project.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Update the Atmel platform and machines to new multi-component model.
+Update the S6000 platform and machines to new multi-component model.
 
 This patch changes the machine drivers for multi-component as follows :-
 
@@ -44,697 +43,519 @@ This patch also changes the DAI and platform DAM drivers as follows :-
 
 Other notable changes required for multi-component support:-
 
- o Moved ssc_request() from mach drivers.
- o WM8510 codec data must now passed in via platform data.
+ o Fix DMA params private data for playback and capture .
+ o Removed empty s6105 audio private data. This must be platform data now.
 
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- sound/soc/atmel/atmel-pcm.c        |   57 +++++++++++++++---------
- sound/soc/atmel/atmel-pcm.h        |    2 +-
- sound/soc/atmel/atmel_ssc_dai.c    |   87 +++++++++++++++++++++++++++---------
- sound/soc/atmel/atmel_ssc_dai.h    |    2 +-
- sound/soc/atmel/playpaq_wm8510.c   |   65 +++++----------------------
- sound/soc/atmel/sam9g20_wm8731.c   |   51 ++++-----------------
- sound/soc/atmel/snd-soc-afeb9260.c |   35 ++++-----------
- 7 files changed, 135 insertions(+), 164 deletions(-)
+ sound/soc/s6000/s6000-i2s.c   |   54 ++++++++++------------
+ sound/soc/s6000/s6000-i2s.h   |    2 +-
+ sound/soc/s6000/s6000-pcm.c   |   98 +++++++++++++++++++++++++---------------
+ sound/soc/s6000/s6000-pcm.h   |    2 +-
+ sound/soc/s6000/s6105-ipcam.c |   31 +++++--------
+ 5 files changed, 99 insertions(+), 88 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-pcm.c b/sound/soc/atmel/atmel-pcm.c
-index dc5249f..3c58432 100644
---- a/sound/soc/atmel/atmel-pcm.c
-+++ b/sound/soc/atmel/atmel-pcm.c
-@@ -179,7 +179,7 @@ static int atmel_pcm_hw_params(struct snd_pcm_substream *substream,
- 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
- 	runtime->dma_bytes = params_buffer_bytes(params);
- 
--	prtd->params = snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+	prtd->params = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 	prtd->params->dma_intr_handler = atmel_pcm_dma_irq;
- 
- 	prtd->dma_buffer = runtime->dma_addr;
-@@ -374,14 +374,14 @@ static int atmel_pcm_new(struct snd_card *card,
- 	if (!card->dev->coherent_dma_mask)
- 		card->dev->coherent_dma_mask = 0xffffffff;
- 
--	if (dai->playback.channels_min) {
-+	if (dai->driver->playback.channels_min) {
- 		ret = atmel_pcm_preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_PLAYBACK);
- 		if (ret)
- 			goto out;
- 	}
- 
--	if (dai->capture.channels_min) {
-+	if (dai->driver->capture.channels_min) {
- 		pr_debug("at32-pcm:"
- 				"Allocating PCM capture DMA buffer\n");
- 		ret = atmel_pcm_preallocate_dma_buffer(pcm,
-@@ -414,12 +414,9 @@ static void atmel_pcm_free_dma_buffers(struct snd_pcm *pcm)
- }
- 
- #ifdef CONFIG_PM
--static int atmel_pcm_suspend(struct snd_soc_dai_link *dai_link)
-+static int atmel_pcm_suspend(struct snd_soc_dai *dai)
+diff --git a/sound/soc/s6000/s6000-i2s.c b/sound/soc/s6000/s6000-i2s.c
+index 59e3fa7..b60b62f 100644
+--- a/sound/soc/s6000/s6000-i2s.c
++++ b/sound/soc/s6000/s6000-i2s.c
+@@ -140,7 +140,7 @@ static void s6000_i2s_stop_channel(struct s6000_i2s_dev *dev, int channel)
+ static void s6000_i2s_start(struct snd_pcm_substream *substream)
  {
--	struct snd_pcm *pcm = dai_link->pcm;
--	struct snd_pcm_str *stream = &pcm->streams[0];
--	struct snd_pcm_substream *substream = stream->substream;
--	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_pcm_runtime *runtime = dai->runtime;
- 	struct atmel_runtime_data *prtd;
- 	struct atmel_pcm_dma_params *params;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct s6000_i2s_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	int channel;
  
-@@ -441,12 +438,9 @@ static int atmel_pcm_suspend(struct snd_soc_dai_link *dai_link)
+ 	channel = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+@@ -152,7 +152,7 @@ static void s6000_i2s_start(struct snd_pcm_substream *substream)
+ static void s6000_i2s_stop(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct s6000_i2s_dev *dev = rtd->dai->cpu_dai->private_data;
++	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	int channel;
+ 
+ 	channel = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
+@@ -194,7 +194,7 @@ static unsigned int s6000_i2s_int_sources(struct s6000_i2s_dev *dev)
+ 
+ static unsigned int s6000_i2s_check_xrun(struct snd_soc_dai *cpu_dai)
+ {
+-	struct s6000_i2s_dev *dev = cpu_dai->private_data;
++	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+ 	unsigned int errors;
+ 	unsigned int ret;
+ 
+@@ -232,7 +232,7 @@ static void s6000_i2s_wait_disabled(struct s6000_i2s_dev *dev)
+ static int s6000_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 				   unsigned int fmt)
+ {
+-	struct s6000_i2s_dev *dev = cpu_dai->private_data;
++	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(cpu_dai);
+ 	u32 w;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+@@ -273,7 +273,7 @@ static int s6000_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 
+ static int s6000_i2s_set_clkdiv(struct snd_soc_dai *dai, int div_id, int div)
+ {
+-	struct s6000_i2s_dev *dev = dai->private_data;
++	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 
+ 	if (!div || (div & 1) || div > (S6_I2S_DIV_MASK + 1) * 2)
+ 		return -EINVAL;
+@@ -287,7 +287,7 @@ static int s6000_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_pcm_hw_params *params,
+ 			       struct snd_soc_dai *dai)
+ {
+-	struct s6000_i2s_dev *dev = dai->private_data;
++	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	int interf;
+ 	u32 w = 0;
+ 
+@@ -326,15 +326,17 @@ static int s6000_i2s_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
--static int atmel_pcm_resume(struct snd_soc_dai_link *dai_link)
-+static int atmel_pcm_resume(struct snd_soc_dai *dai)
+-static int s6000_i2s_dai_probe(struct platform_device *pdev,
+-			       struct snd_soc_dai *dai)
++static int s6000_i2s_dai_probe(struct snd_soc_dai *dai)
  {
--	struct snd_pcm *pcm = dai_link->pcm;
--	struct snd_pcm_str *stream = &pcm->streams[0];
--	struct snd_pcm_substream *substream = stream->substream;
--	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_pcm_runtime *runtime = dai->runtime;
- 	struct atmel_runtime_data *prtd;
- 	struct atmel_pcm_dma_params *params;
+-	struct s6000_i2s_dev *dev = dai->private_data;
+-	struct s6000_snd_platform_data *pdata = pdev->dev.platform_data;
++	struct s6000_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
++	struct s6000_snd_platform_data *pdata = dai->dev->platform_data;
  
-@@ -470,9 +464,9 @@ static int atmel_pcm_resume(struct snd_soc_dai_link *dai_link)
- #define atmel_pcm_resume	NULL
- #endif
+ 	if (!pdata)
+ 		return -EINVAL;
  
--struct snd_soc_platform atmel_soc_platform = {
-+struct snd_soc_platform_driver atmel_soc_platform = {
- 	.name		= "atmel-audio",
--	.pcm_ops 	= &atmel_pcm_ops,
-+	.ops 		= &atmel_pcm_ops,
- 	.pcm_new	= atmel_pcm_new,
- 	.pcm_free	= atmel_pcm_free_dma_buffers,
- 	.suspend	= atmel_pcm_suspend,
-@@ -480,17 +474,38 @@ struct snd_soc_platform atmel_soc_platform = {
++	dai->capture_dma_data = &dev->dma_params;
++	dai->playback_dma_data = &dev->dma_params;
++
+ 	dev->wide = pdata->wide;
+ 	dev->channel_in = pdata->channel_in;
+ 	dev->channel_out = pdata->channel_out;
+@@ -352,10 +354,10 @@ static int s6000_i2s_dai_probe(struct platform_device *pdev,
+ 
+ 		dev->channel_in = 0;
+ 		dev->channel_out = 1;
+-		dai->capture.channels_min = 2 * dev->lines_in;
+-		dai->capture.channels_max = dai->capture.channels_min;
+-		dai->playback.channels_min = 2 * dev->lines_out;
+-		dai->playback.channels_max = dai->playback.channels_min;
++		dai->driver->capture.channels_min = 2 * dev->lines_in;
++		dai->driver->capture.channels_max = dai->driver->capture.channels_min;
++		dai->driver->playback.channels_min = 2 * dev->lines_out;
++		dai->driver->playback.channels_max = dai->driver->playback.channels_min;
+ 
+ 		for (i = 0; i < dev->lines_out; i++)
+ 			s6_i2s_write_reg(dev, S6_I2S_DATA_CFG(i), S6_I2S_OUT);
+@@ -372,10 +374,10 @@ static int s6000_i2s_dai_probe(struct platform_device *pdev,
+ 		if (dev->lines_in > 1 || dev->lines_out > 1)
+ 			return -EINVAL;
+ 
+-		dai->capture.channels_min = 2 * dev->lines_in;
+-		dai->capture.channels_max = 8 * dev->lines_in;
+-		dai->playback.channels_min = 2 * dev->lines_out;
+-		dai->playback.channels_max = 8 * dev->lines_out;
++		dai->driver->capture.channels_min = 2 * dev->lines_in;
++		dai->driver->capture.channels_max = 8 * dev->lines_in;
++		dai->driver->playback.channels_min = 2 * dev->lines_out;
++		dai->driver->playback.channels_max = 8 * dev->lines_out;
+ 
+ 		if (dev->lines_in)
+ 			cfg[dev->channel_in] = S6_I2S_IN;
+@@ -413,9 +415,8 @@ static struct snd_soc_dai_ops s6000_i2s_dai_ops = {
+ 	.hw_params = s6000_i2s_hw_params,
  };
- EXPORT_SYMBOL_GPL(atmel_soc_platform);
  
--static int __init atmel_pcm_modinit(void)
-+static int __devinit atmel_soc_platform_probe(struct platform_device *pdev)
+-struct snd_soc_dai s6000_i2s_dai = {
++struct snd_soc_dai_driver s6000_i2s_dai = {
+ 	.name = "s6000-i2s",
+-	.id = 0,
+ 	.probe = s6000_i2s_dai_probe,
+ 	.playback = {
+ 		.channels_min = 2,
+@@ -513,11 +514,7 @@ static int __devinit s6000_i2s_probe(struct platform_device *pdev)
+ 		ret = -ENOMEM;
+ 		goto err_release_dma2;
+ 	}
+-
+-	s6000_i2s_dai.dev = &pdev->dev;
+-	s6000_i2s_dai.private_data = dev;
+-	s6000_i2s_dai.capture.dma_data = &dev->dma_params;
+-	s6000_i2s_dai.playback.dma_data = &dev->dma_params;
++	dev_set_drvdata(&pdev->dev, dev);
+ 
+ 	dev->sifbase = sifmem->start;
+ 	dev->scbbase = mmio;
+@@ -548,7 +545,7 @@ static int __devinit s6000_i2s_probe(struct platform_device *pdev)
+ 			 S6_I2S_INT_UNDERRUN |
+ 			 S6_I2S_INT_OVERRUN);
+ 
+-	ret = snd_soc_register_dai(&s6000_i2s_dai);
++	ret = snd_soc_register_dai(&pdev->dev, -1, &s6000_i2s_dai);
+ 	if (ret)
+ 		goto err_release_dev;
+ 
+@@ -573,17 +570,16 @@ err_release_none:
+ 
+ static void __devexit s6000_i2s_remove(struct platform_device *pdev)
+ {
+-	struct s6000_i2s_dev *dev = s6000_i2s_dai.private_data;
++	struct s6000_i2s_dev *dev = dev_get_drvdata(&pdev->dev);
+ 	struct resource *region;
+ 	void __iomem *mmio = dev->scbbase;
+ 
+-	snd_soc_unregister_dai(&s6000_i2s_dai);
++	snd_soc_unregister_dai(&pdev->dev, -1);
+ 
+ 	s6000_i2s_stop_channel(dev, 0);
+ 	s6000_i2s_stop_channel(dev, 1);
+ 
+ 	s6_i2s_write_reg(dev, S6_I2S_INTERRUPT_ENABLE, 0);
+-	s6000_i2s_dai.private_data = 0;
+ 	kfree(dev);
+ 
+ 	region = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+diff --git a/sound/soc/s6000/s6000-i2s.h b/sound/soc/s6000/s6000-i2s.h
+index 2375fdf..3650241 100644
+--- a/sound/soc/s6000/s6000-i2s.h
++++ b/sound/soc/s6000/s6000-i2s.h
+@@ -12,7 +12,7 @@
+ #ifndef _S6000_I2S_H
+ #define _S6000_I2S_H
+ 
+-extern struct snd_soc_dai s6000_i2s_dai;
++extern struct snd_soc_dai_driver s6000_i2s_dai;
+ 
+ struct s6000_snd_platform_data {
+ 	int lines_in;
+diff --git a/sound/soc/s6000/s6000-pcm.c b/sound/soc/s6000/s6000-pcm.c
+index 9c7f7f0..3dda283 100644
+--- a/sound/soc/s6000/s6000-pcm.c
++++ b/sound/soc/s6000/s6000-pcm.c
+@@ -65,7 +65,7 @@ static void s6000_pcm_enqueue_dma(struct snd_pcm_substream *substream)
+ 	dma_addr_t dma_pos;
+ 	dma_addr_t src, dst;
+ 
+-	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 
+ 	period_size = snd_pcm_lib_period_bytes(substream);
+ 	dma_offset = prtd->period * period_size;
+@@ -103,23 +103,25 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
+ {
+ 	struct snd_pcm *pcm = data;
+ 	struct snd_soc_pcm_runtime *runtime = pcm->private_data;
+-	struct s6000_pcm_dma_params *params =
+-		snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
+ 	struct s6000_runtime_data *prtd;
+ 	unsigned int has_xrun;
+ 	int i, ret = IRQ_NONE;
+-	u32 channel[2] = {
+-		[SNDRV_PCM_STREAM_PLAYBACK] = params->dma_out,
+-		[SNDRV_PCM_STREAM_CAPTURE] = params->dma_in
+-	};
+-
+-	has_xrun = params->check_xrun(runtime->dai->cpu_dai);
+ 
+-	for (i = 0; i < ARRAY_SIZE(channel); ++i) {
++	for (i = 0; i < 2; ++i) {
+ 		struct snd_pcm_substream *substream = pcm->streams[i].substream;
++		struct s6000_pcm_dma_params *params =
++					snd_soc_dai_get_dma_data(runtime->cpu_dai, substream);
++		u32 channel;
+ 		unsigned int pending;
+ 
+-		if (!channel[i])
++		if (substream == SNDRV_PCM_STREAM_PLAYBACK)
++			channel = params->dma_out;
++		else
++			channel = params->dma_in;
++
++		has_xrun = params->check_xrun(runtime->cpu_dai);
++
++		if (!channel)
+ 			continue;
+ 
+ 		if (unlikely(has_xrun & (1 << i)) &&
+@@ -130,8 +132,8 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
+ 			ret = IRQ_HANDLED;
+ 		}
+ 
+-		pending = s6dmac_int_sources(DMA_MASK_DMAC(channel[i]),
+-					     DMA_INDEX_CHNL(channel[i]));
++		pending = s6dmac_int_sources(DMA_MASK_DMAC(channel),
++					     DMA_INDEX_CHNL(channel));
+ 
+ 		if (pending & 1) {
+ 			ret = IRQ_HANDLED;
+@@ -139,10 +141,10 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
+ 				   snd_pcm_running(substream))) {
+ 				snd_pcm_period_elapsed(substream);
+ 				dev_dbg(pcm->dev, "period elapsed %x %x\n",
+-				       s6dmac_cur_src(DMA_MASK_DMAC(channel[i]),
+-						   DMA_INDEX_CHNL(channel[i])),
+-				       s6dmac_cur_dst(DMA_MASK_DMAC(channel[i]),
+-						   DMA_INDEX_CHNL(channel[i])));
++				       s6dmac_cur_src(DMA_MASK_DMAC(channel),
++						   DMA_INDEX_CHNL(channel)),
++				       s6dmac_cur_dst(DMA_MASK_DMAC(channel),
++						   DMA_INDEX_CHNL(channel)));
+ 				prtd = substream->runtime->private_data;
+ 				spin_lock(&prtd->lock);
+ 				s6000_pcm_enqueue_dma(substream);
+@@ -154,16 +156,16 @@ static irqreturn_t s6000_pcm_irq(int irq, void *data)
+ 			if (pending & (1 << 3))
+ 				printk(KERN_WARNING
+ 				       "s6000-pcm: DMA %x Underflow\n",
+-				       channel[i]);
++				       channel);
+ 			if (pending & (1 << 4))
+ 				printk(KERN_WARNING
+ 				       "s6000-pcm: DMA %x Overflow\n",
+-				       channel[i]);
++				       channel);
+ 			if (pending & 0x1e0)
+ 				printk(KERN_WARNING
+ 				       "s6000-pcm: DMA %x Master Error "
+ 				       "(mask %x)\n",
+-				       channel[i], pending >> 5);
++				       channel, pending >> 5);
+ 
+ 		}
+ 	}
+@@ -180,7 +182,7 @@ static int s6000_pcm_start(struct snd_pcm_substream *substream)
+ 	int srcinc;
+ 	u32 dma;
+ 
+-	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 
+ 	spin_lock_irqsave(&prtd->lock, flags);
+ 
+@@ -221,7 +223,7 @@ static int s6000_pcm_stop(struct snd_pcm_substream *substream)
+ 	unsigned long flags;
+ 	u32 channel;
+ 
+-	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		channel = par->dma_out;
+@@ -246,7 +248,7 @@ static int s6000_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	struct s6000_pcm_dma_params *par;
+ 	int ret;
+ 
+-	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 
+ 	ret = par->trigger(substream, cmd, 0);
+ 	if (ret < 0)
+@@ -291,7 +293,7 @@ static snd_pcm_uframes_t s6000_pcm_pointer(struct snd_pcm_substream *substream)
+ 	unsigned int offset;
+ 	dma_addr_t count;
+ 
+-	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 
+ 	spin_lock_irqsave(&prtd->lock, flags);
+ 
+@@ -321,7 +323,7 @@ static int s6000_pcm_open(struct snd_pcm_substream *substream)
+ 	struct s6000_runtime_data *prtd;
+ 	int ret;
+ 
+-	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 	snd_soc_set_runtime_hwparams(substream, &s6000_pcm_hardware);
+ 
+ 	ret = snd_pcm_hw_constraint_step(runtime, 0,
+@@ -385,7 +387,7 @@ static int s6000_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+ 	}
+ 
+-	par = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++	par = snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 
+ 	if (par->same_rate) {
+ 		spin_lock(&par->lock);
+@@ -407,7 +409,7 @@ static int s6000_pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *soc_runtime = substream->private_data;
+ 	struct s6000_pcm_dma_params *par =
+-		snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++		snd_soc_dai_get_dma_data(soc_runtime->cpu_dai, substream);
+ 
+ 	spin_lock(&par->lock);
+ 	par->in_use &= ~(1 << substream->stream);
+@@ -433,7 +435,7 @@ static void s6000_pcm_free(struct snd_pcm *pcm)
+ {
+ 	struct snd_soc_pcm_runtime *runtime = pcm->private_data;
+ 	struct s6000_pcm_dma_params *params =
+-		snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++		snd_soc_dai_get_dma_data(runtime->cpu_dai, pcm->streams[0].substream);
+ 
+ 	free_irq(params->irq, pcm);
+ 	snd_pcm_lib_preallocate_free_for_all(pcm);
+@@ -448,7 +450,8 @@ static int s6000_pcm_new(struct snd_card *card,
+ 	struct s6000_pcm_dma_params *params;
+ 	int res;
+ 
+-	params = snd_soc_dai_get_dma_data(soc_runtime->dai->cpu_dai, substream);
++	params = snd_soc_dai_get_dma_data(runtime->cpu_dai,
++			pcm->streams[0].substream);
+ 
+ 	if (!card->dev->dma_mask)
+ 		card->dev->dma_mask = &s6000_pcm_dmamask;
+@@ -490,25 +493,46 @@ static int s6000_pcm_new(struct snd_card *card,
+ 	return 0;
+ }
+ 
+-struct snd_soc_platform s6000_soc_platform = {
++struct snd_soc_platform_driver s6000_soc_platform = {
+ 	.name = 	"s6000-audio",
+-	.pcm_ops = 	&s6000_pcm_ops,
++	.ops =		&s6000_pcm_ops,
+ 	.pcm_new = 	s6000_pcm_new,
+ 	.pcm_free = 	s6000_pcm_free,
+ };
+ EXPORT_SYMBOL_GPL(s6000_soc_platform);
+ 
+-static int __init s6000_pcm_init(void)
++static int __devinit s6000_soc_platform_probe(struct platform_device *pdev)
 +{
-+	return snd_soc_register_platform(&pdev->dev, -1, &atmel_soc_platform);
++	return snd_soc_register_platform(&pdev->dev, -1, &s6000_soc_platform);
 +}
 +
-+static int __devexit atmel_soc_platform_remove(struct platform_device *pdev)
++static int __devexit s6000_soc_platform_remove(struct platform_device *pdev)
 +{
 +	snd_soc_unregister_platform(&pdev->dev, -1);
 +	return 0;
 +}
 +
-+static struct platform_driver atmel_pcm_driver = {
++static struct platform_driver s6000_pcm_driver = {
 +	.driver = {
-+			.name = "atmel-pcm-audio",
++			.name = "s6000-pcm-audio",
 +			.owner = THIS_MODULE,
 +	},
 +
-+	.probe = atmel_soc_platform_probe,
-+	.remove = __devexit_p(atmel_soc_platform_remove),
++	.probe = s6000_soc_platform_probe,
++	.remove = __devexit_p(s6000_soc_platform_remove),
 +};
 +
-+static int __init snd_atmel_pcm_init(void)
++static int __init snd_s6000_pcm_init(void)
  {
--	return snd_soc_register_platform(&atmel_soc_platform);
-+	return platform_driver_register(&atmel_pcm_driver);
+-	return snd_soc_register_platform(&s6000_soc_platform);
++	return platform_driver_register(&s6000_pcm_driver);
  }
--module_init(atmel_pcm_modinit);
-+module_init(snd_atmel_pcm_init);
+-module_init(s6000_pcm_init);
++module_init(snd_s6000_pcm_init);
  
--static void __exit atmel_pcm_modexit(void)
-+static void __exit snd_atmel_pcm_exit(void)
+-static void __exit s6000_pcm_exit(void)
++static void __exit snd_s6000_pcm_exit(void)
  {
--	snd_soc_unregister_platform(&atmel_soc_platform);
-+	platform_driver_unregister(&atmel_pcm_driver);
+-	snd_soc_unregister_platform(&s6000_soc_platform);
++	platform_driver_unregister(&s6000_pcm_driver);
  }
--module_exit(atmel_pcm_modexit);
-+module_exit(snd_atmel_pcm_exit);
+-module_exit(s6000_pcm_exit);
++module_exit(snd_s6000_pcm_exit);
  
- MODULE_AUTHOR("Sedji Gaouaou <sedji.gaouaou@atmel.com>");
- MODULE_DESCRIPTION("Atmel PCM module");
-diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
-index ec9b282..e9e3853 100644
---- a/sound/soc/atmel/atmel-pcm.h
-+++ b/sound/soc/atmel/atmel-pcm.h
-@@ -74,7 +74,7 @@ struct atmel_pcm_dma_params {
- 	void (*dma_intr_handler)(u32, struct snd_pcm_substream *);
+ MODULE_AUTHOR("Daniel Gloeckner");
+ MODULE_DESCRIPTION("Stretch s6000 family PCM DMA module");
+diff --git a/sound/soc/s6000/s6000-pcm.h b/sound/soc/s6000/s6000-pcm.h
+index 96f23f6..4e251f4 100644
+--- a/sound/soc/s6000/s6000-pcm.h
++++ b/sound/soc/s6000/s6000-pcm.h
+@@ -30,6 +30,6 @@ struct s6000_pcm_dma_params {
+ 	int rate;
  };
  
--extern struct snd_soc_platform atmel_soc_platform;
-+extern struct snd_soc_platform_driver atmel_soc_platform;
+-extern struct snd_soc_platform s6000_soc_platform;
++extern struct snd_soc_platform_driver s6000_soc_platform;
  
- 
- /*
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index c85844d..949bc44 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -205,8 +205,7 @@ static irqreturn_t atmel_ssc_interrupt(int irq, void *dev_id)
- static int atmel_ssc_startup(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct atmel_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
-+	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
- 	int dir_mask;
- 
- 	pr_debug("atmel_ssc_startup: SSC_SR=0x%u\n",
-@@ -235,8 +234,7 @@ static int atmel_ssc_startup(struct snd_pcm_substream *substream,
- static void atmel_ssc_shutdown(struct snd_pcm_substream *substream,
- 			       struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct atmel_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
-+	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
- 	struct atmel_pcm_dma_params *dma_params;
- 	int dir, dir_mask;
- 
-@@ -338,7 +336,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_dai *dai)
- {
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	int id = rtd->dai->cpu_dai->id;
-+	int id = dai->id;
- 	struct atmel_ssc_info *ssc_p = &ssc_info[id];
- 	struct atmel_pcm_dma_params *dma_params;
- 	int dir, channels, bits;
-@@ -368,7 +366,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- 	 * function.  It should not be used for other purposes
- 	 * as it is common to all substreams.
- 	 */
--	snd_soc_dai_set_dma_data(rtd->dai->cpu_dai, substream, dma_params);
-+	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_params);
- 
- 	channels = params_channels(params);
- 
-@@ -605,8 +603,7 @@ static int atmel_ssc_hw_params(struct snd_pcm_substream *substream,
- static int atmel_ssc_prepare(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct atmel_ssc_info *ssc_p = &ssc_info[rtd->dai->cpu_dai->id];
-+	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
- 	struct atmel_pcm_dma_params *dma_params;
- 	int dir;
- 
-@@ -690,6 +687,32 @@ static int atmel_ssc_resume(struct snd_soc_dai *cpu_dai)
- #  define atmel_ssc_resume	NULL
- #endif /* CONFIG_PM */
- 
-+static int atmel_ssc_probe(struct snd_soc_dai *dai)
-+{
-+	struct atmel_ssc_info *ssc_p = &ssc_info[dai->id];
-+	int ret = 0;
-+
-+	snd_soc_dai_set_drvdata(dai, ssc_p);
-+
-+	/*
-+	 * Request SSC device
-+	 */
-+	ssc_p->ssc = ssc_request(dai->id);
-+	if (IS_ERR(ssc_p->ssc)) {
-+		printk(KERN_ERR "ASoC: Failed to request SSC %d\n", dai->id);
-+		ret = PTR_ERR(ssc_p->ssc);
-+	}
-+
-+	return ret;
-+}
-+
-+static int atmel_ssc_remove(struct snd_soc_dai *dai)
-+{
-+	struct atmel_ssc_info *ssc_p = snd_soc_dai_get_drvdata(dai);
-+
-+	ssc_free(ssc_p->ssc);
-+	return 0;
-+}
- 
- #define ATMEL_SSC_RATES (SNDRV_PCM_RATE_8000_96000)
- 
-@@ -705,9 +728,10 @@ static struct snd_soc_dai_ops atmel_ssc_dai_ops = {
- 	.set_clkdiv	= atmel_ssc_set_dai_clkdiv,
- };
- 
--struct snd_soc_dai atmel_ssc_dai[NUM_SSC_DEVICES] = {
-+struct snd_soc_dai_driver atmel_ssc_dai[NUM_SSC_DEVICES] = {
- 	{	.name = "atmel-ssc0",
--		.id = 0,
-+		.probe = atmel_ssc_probe,
-+		.remove = atmel_ssc_remove,
- 		.suspend = atmel_ssc_suspend,
- 		.resume = atmel_ssc_resume,
- 		.playback = {
-@@ -721,11 +745,11 @@ struct snd_soc_dai atmel_ssc_dai[NUM_SSC_DEVICES] = {
- 			.rates = ATMEL_SSC_RATES,
- 			.formats = ATMEL_SSC_FORMATS,},
- 		.ops = &atmel_ssc_dai_ops,
--		.private_data = &ssc_info[0],
- 	},
- #if NUM_SSC_DEVICES == 3
- 	{	.name = "atmel-ssc1",
--		.id = 1,
-+		.probe = atmel_ssc_probe,
-+		.remove = atmel_ssc_remove,
- 		.suspend = atmel_ssc_suspend,
- 		.resume = atmel_ssc_resume,
- 		.playback = {
-@@ -739,10 +763,10 @@ struct snd_soc_dai atmel_ssc_dai[NUM_SSC_DEVICES] = {
- 			.rates = ATMEL_SSC_RATES,
- 			.formats = ATMEL_SSC_FORMATS,},
- 		.ops = &atmel_ssc_dai_ops,
--		.private_data = &ssc_info[1],
- 	},
- 	{	.name = "atmel-ssc2",
--		.id = 2,
-+		.probe = atmel_ssc_probe,
-+		.remove = atmel_ssc_remove,
- 		.suspend = atmel_ssc_suspend,
- 		.resume = atmel_ssc_resume,
- 		.playback = {
-@@ -756,23 +780,44 @@ struct snd_soc_dai atmel_ssc_dai[NUM_SSC_DEVICES] = {
- 			.rates = ATMEL_SSC_RATES,
- 			.formats = ATMEL_SSC_FORMATS,},
- 		.ops = &atmel_ssc_dai_ops,
--		.private_data = &ssc_info[2],
- 	},
  #endif
- };
- EXPORT_SYMBOL_GPL(atmel_ssc_dai);
- 
--static int __init atmel_ssc_modinit(void)
-+static __devinit int asoc_ssc_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_dais(&pdev->dev, atmel_ssc_dai,
-+			ARRAY_SIZE(atmel_ssc_dai));
-+}
-+
-+static int __devexit asoc_ssc_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_dais(&pdev->dev, ARRAY_SIZE(atmel_ssc_dai));
-+	return 0;
-+}
-+
-+static struct platform_driver asoc_ssc_driver = {
-+	.driver = {
-+			.name = "atmel_ssc",
-+			.owner = THIS_MODULE,
-+	},
-+
-+	.probe = asoc_ssc_probe,
-+	.remove = __devexit_p(asoc_ssc_remove),
-+};
-+
-+static int __init snd_atmel_ssc_init(void)
- {
--	return snd_soc_register_dais(atmel_ssc_dai, ARRAY_SIZE(atmel_ssc_dai));
-+	return platform_driver_register(&asoc_ssc_driver);
- }
--module_init(atmel_ssc_modinit);
-+module_init(snd_atmel_ssc_init);
- 
--static void __exit atmel_ssc_modexit(void)
-+static void __exit snd_atmel_ssc_exit(void)
- {
--	snd_soc_unregister_dais(atmel_ssc_dai, ARRAY_SIZE(atmel_ssc_dai));
-+	platform_driver_unregister(&asoc_ssc_driver);
- }
--module_exit(atmel_ssc_modexit);
-+module_exit(snd_atmel_ssc_exit);
- 
- /* Module information */
- MODULE_AUTHOR("Sedji Gaouaou, sedji.gaouaou@atmel.com, www.atmel.com");
-diff --git a/sound/soc/atmel/atmel_ssc_dai.h b/sound/soc/atmel/atmel_ssc_dai.h
-index 391135f..cd9da2e 100644
---- a/sound/soc/atmel/atmel_ssc_dai.h
-+++ b/sound/soc/atmel/atmel_ssc_dai.h
-@@ -116,6 +116,6 @@ struct atmel_ssc_info {
- 	struct atmel_pcm_dma_params *dma_params[2];
- 	struct atmel_ssc_state ssc_state;
- };
--extern struct snd_soc_dai atmel_ssc_dai[];
-+extern struct snd_soc_dai_driver atmel_ssc_dai[];
- 
- #endif /* _AT91_SSC_DAI_H */
-diff --git a/sound/soc/atmel/playpaq_wm8510.c b/sound/soc/atmel/playpaq_wm8510.c
-index 9df4c68..9299b3f 100644
---- a/sound/soc/atmel/playpaq_wm8510.c
-+++ b/sound/soc/atmel/playpaq_wm8510.c
-@@ -83,7 +83,7 @@ static struct ssc_clock_data playpaq_wm8510_calc_ssc_clock(
- 	struct snd_pcm_hw_params *params,
- 	struct snd_soc_dai *cpu_dai)
- {
--	struct at32_ssc_info *ssc_p = cpu_dai->private_data;
-+	struct at32_ssc_info *ssc_p = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ssc_device *ssc = ssc_p->ssc;
- 	struct ssc_clock_data cd;
- 	unsigned int rate, width_bits, channels;
-@@ -131,9 +131,9 @@ static int playpaq_wm8510_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *params)
+diff --git a/sound/soc/s6000/s6105-ipcam.c b/sound/soc/s6000/s6105-ipcam.c
+index c1b40ac..e2299c1 100644
+--- a/sound/soc/s6000/s6105-ipcam.c
++++ b/sound/soc/s6000/s6105-ipcam.c
+@@ -32,8 +32,8 @@ static int s6105_hw_params(struct snd_pcm_substream *substream,
+ 			   struct snd_pcm_hw_params *params)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
 -	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct at32_ssc_info *ssc_p = cpu_dai->private_data;
 +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct at32_ssc_info *ssc_p = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct ssc_device *ssc = ssc_p->ssc;
- 	unsigned int pll_out = 0, bclk = 0, mclk_div = 0;
- 	int ret;
-@@ -315,8 +315,9 @@ static const struct snd_soc_dapm_route intercon[] = {
- 
- 
- 
--static int playpaq_wm8510_init(struct snd_soc_codec *codec)
-+static int playpaq_wm8510_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int i;
- 
- 	/*
-@@ -342,7 +343,7 @@ static int playpaq_wm8510_init(struct snd_soc_codec *codec)
- 
- 
- 	/* Make CSB show PLL rate */
--	snd_soc_dai_set_clkdiv(codec->dai, WM8510_OPCLKDIV,
-+	snd_soc_dai_set_clkdiv(rtd->codec_dai, WM8510_OPCLKDIV,
- 				       WM8510_OPCLKDIV_1 | 4);
- 
- 	return 0;
-@@ -353,8 +354,10 @@ static int playpaq_wm8510_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link playpaq_wm8510_dai = {
- 	.name = "WM8510",
- 	.stream_name = "WM8510 PCM",
--	.cpu_dai = &at32_ssc_dai[0],
--	.codec_dai = &wm8510_dai,
-+	.cpu_dai_drv = &atmel_ssc_dai[0],
-+	.platform_drv = &atmel_soc_platform,
-+	.codec_drv = &soc_codec_dev_wm8510,
-+	.codec_dai_drv = &wm8510_dai,
- 	.init = playpaq_wm8510_init,
- 	.ops = &playpaq_wm8510_ops,
- };
-@@ -363,46 +366,16 @@ static struct snd_soc_dai_link playpaq_wm8510_dai = {
- 
- static struct snd_soc_card snd_soc_playpaq = {
- 	.name = "LRS_PlayPaq_WM8510",
--	.platform = &at32_soc_platform,
- 	.dai_link = &playpaq_wm8510_dai,
- 	.num_links = 1,
- };
- 
--
--
--static struct wm8510_setup_data playpaq_wm8510_setup = {
--	.i2c_bus = 0,
--	.i2c_address = 0x1a,
--};
--
--
--
--static struct snd_soc_device playpaq_wm8510_snd_devdata = {
--	.card = &snd_soc_playpaq,
--	.codec_dev = &soc_codec_dev_wm8510,
--	.codec_data = &playpaq_wm8510_setup,
--};
--
- static struct platform_device *playpaq_snd_device;
- 
- 
- static int __init playpaq_asoc_init(void)
- {
  	int ret = 0;
--	struct at32_ssc_info *ssc_p = playpaq_wm8510_dai.cpu_dai->private_data;
--	struct ssc_device *ssc = NULL;
--
--
--	/*
--	 * Request SSC device
--	 */
--	ssc = ssc_request(0);
--	if (IS_ERR(ssc)) {
--		ret = PTR_ERR(ssc);
--		goto err_ssc;
--	}
--	ssc_p->ssc = ssc;
--
- 
- 	/*
- 	 * Configure MCLK for WM8510
-@@ -439,8 +412,7 @@ static int __init playpaq_asoc_init(void)
- 		goto err_device_alloc;
- 	}
- 
--	platform_set_drvdata(playpaq_snd_device, &playpaq_wm8510_snd_devdata);
--	playpaq_wm8510_snd_devdata.dev = &playpaq_snd_device->dev;
-+	platform_set_drvdata(playpaq_snd_device, &snd_soc_playpaq);
- 
- 	ret = platform_device_add(playpaq_snd_device);
- 	if (ret) {
-@@ -468,25 +440,12 @@ err_pll0:
- 		clk_put(_gclk0);
- 		_gclk0 = NULL;
- 	}
--err_gclk0:
--	ssc_free(ssc);
--err_ssc:
- 	return ret;
- }
- 
- 
- static void __exit playpaq_asoc_exit(void)
- {
--	struct at32_ssc_info *ssc_p = playpaq_wm8510_dai.cpu_dai->private_data;
--	struct ssc_device *ssc;
--
--	if (ssc_p != NULL) {
--		ssc = ssc_p->ssc;
--		if (ssc != NULL)
--			ssc_free(ssc);
--		ssc_p->ssc = NULL;
--	}
--
- 	if (_gclk0 != NULL) {
- 		clk_put(_gclk0);
- 		_gclk0 = NULL;
-diff --git a/sound/soc/atmel/sam9g20_wm8731.c b/sound/soc/atmel/sam9g20_wm8731.c
-index e028744..b30d457 100644
---- a/sound/soc/atmel/sam9g20_wm8731.c
-+++ b/sound/soc/atmel/sam9g20_wm8731.c
-@@ -69,8 +69,8 @@ static int at91sam9g20ek_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
  
  	/* set codec DAI configuration */
-@@ -136,9 +136,10 @@ static const struct snd_soc_dapm_route intercon[] = {
- /*
-  * Logic for a wm8731 as connected on a at91sam9g20ek board.
-  */
--static int at91sam9g20ek_wm8731_init(struct snd_soc_codec *codec)
-+static int at91sam9g20ek_wm8731_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_dai *codec_dai = &codec->dai[0];
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int ret;
- 
- 	printk(KERN_DEBUG
-@@ -179,31 +180,25 @@ static int at91sam9g20ek_wm8731_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link at91sam9g20ek_dai = {
- 	.name = "WM8731",
- 	.stream_name = "WM8731 PCM",
--	.cpu_dai = &atmel_ssc_dai[0],
--	.codec_dai = &wm8731_dai,
-+	.cpu_dai_drv = &atmel_ssc_dai[0],
-+	.codec_dai_drv = &wm8731_dai,
- 	.init = at91sam9g20ek_wm8731_init,
-+	.platform_drv = &atmel_soc_platform,
-+	.codec_drv = &soc_codec_dev_wm8731,
- 	.ops = &at91sam9g20ek_ops,
+@@ -134,8 +134,10 @@ static const struct snd_kcontrol_new audio_out_mux = {
  };
  
- static struct snd_soc_card snd_soc_at91sam9g20ek = {
- 	.name = "AT91SAMG20-EK",
--	.platform = &atmel_soc_platform,
- 	.dai_link = &at91sam9g20ek_dai,
- 	.num_links = 1,
- 	.set_bias_level = at91sam9g20ek_set_bias_level,
- };
- 
--static struct snd_soc_device at91sam9g20ek_snd_devdata = {
--	.card = &snd_soc_at91sam9g20ek,
--	.codec_dev = &soc_codec_dev_wm8731,
--};
--
- static struct platform_device *at91sam9g20ek_snd_device;
- 
- static int __init at91sam9g20ek_init(void)
- {
--	struct atmel_ssc_info *ssc_p = at91sam9g20ek_dai.cpu_dai->private_data;
--	struct ssc_device *ssc = NULL;
- 	struct clk *pllb;
- 	int ret;
- 
-@@ -235,18 +230,6 @@ static int __init at91sam9g20ek_init(void)
- 
- 	clk_set_rate(mclk, MCLK_RATE);
- 
--	/*
--	 * Request SSC device
--	 */
--	ssc = ssc_request(0);
--	if (IS_ERR(ssc)) {
--		printk(KERN_ERR "ASoC: Failed to request SSC 0\n");
--		ret = PTR_ERR(ssc);
--		ssc = NULL;
--		goto err_ssc;
--	}
--	ssc_p->ssc = ssc;
--
- 	at91sam9g20ek_snd_device = platform_device_alloc("soc-audio", -1);
- 	if (!at91sam9g20ek_snd_device) {
- 		printk(KERN_ERR "ASoC: Platform device allocation failed\n");
-@@ -254,8 +237,7 @@ static int __init at91sam9g20ek_init(void)
- 	}
- 
- 	platform_set_drvdata(at91sam9g20ek_snd_device,
--			&at91sam9g20ek_snd_devdata);
--	at91sam9g20ek_snd_devdata.dev = &at91sam9g20ek_snd_device->dev;
-+			&snd_soc_at91sam9g20ek);
- 
- 	ret = platform_device_add(at91sam9g20ek_snd_device);
- 	if (ret) {
-@@ -265,9 +247,6 @@ static int __init at91sam9g20ek_init(void)
- 
- 	return ret;
- 
--err_ssc:
--	ssc_free(ssc);
--	ssc_p->ssc = NULL;
- err_mclk:
- 	clk_put(mclk);
- 	mclk = NULL;
-@@ -277,16 +256,6 @@ err:
- 
- static void __exit at91sam9g20ek_exit(void)
- {
--	struct atmel_ssc_info *ssc_p = at91sam9g20ek_dai.cpu_dai->private_data;
--	struct ssc_device *ssc;
--
--	if (ssc_p != NULL) {
--		ssc = ssc_p->ssc;
--		if (ssc != NULL)
--			ssc_free(ssc);
--		ssc_p->ssc = NULL;
--	}
--
- 	platform_device_unregister(at91sam9g20ek_snd_device);
- 	at91sam9g20ek_snd_device = NULL;
- 	clk_put(mclk);
-diff --git a/sound/soc/atmel/snd-soc-afeb9260.c b/sound/soc/atmel/snd-soc-afeb9260.c
-index 23349de..33b117b 100644
---- a/sound/soc/atmel/snd-soc-afeb9260.c
-+++ b/sound/soc/atmel/snd-soc-afeb9260.c
-@@ -46,8 +46,8 @@ static int afeb9260_hw_params(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int err;
- 
- 	/* Set codec DAI configuration */
-@@ -102,8 +102,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"MICIN", NULL, "Mic Jack"},
- };
- 
--static int afeb9260_tlv320aic23_init(struct snd_soc_codec *codec)
-+static int afeb9260_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
+ /* Logic for a aic3x as connected on the s6105 ip camera ref design */
+-static int s6105_aic3x_init(struct snd_soc_codec *codec)
++static int s6105_aic3x_init(struct snd_soc_pcm_runtime *rtd)
  {
 +	struct snd_soc_codec *codec = rtd->codec;
++
+ 	/* Add s6105 specific widgets */
+ 	snd_soc_dapm_new_controls(codec, aic3x_dapm_widgets,
+ 				  ARRAY_SIZE(aic3x_dapm_widgets));
+@@ -165,7 +167,7 @@ static int s6105_aic3x_init(struct snd_soc_codec *codec)
  
- 	/* Add afeb9260 specific widgets */
- 	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
-@@ -125,8 +126,10 @@ static int afeb9260_tlv320aic23_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link afeb9260_dai = {
- 	.name = "TLV320AIC23",
- 	.stream_name = "AIC23",
--	.cpu_dai = &atmel_ssc_dai[0],
--	.codec_dai = &tlv320aic23_dai,
-+	.cpu_dai_drv = &atmel_ssc_dai[0],
-+	.codec_dai_drv = &tlv320aic23_dai,
-+	.platform_drv = &atmel_soc_platform,
-+	.codec_drv = &soc_codec_dev_tlv320aic23,
- 	.init = afeb9260_tlv320aic23_init,
- 	.ops = &afeb9260_ops,
- };
-@@ -134,37 +137,20 @@ static struct snd_soc_dai_link afeb9260_dai = {
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_machine_afeb9260 = {
- 	.name = "AFEB9260",
--	.platform = &atmel_soc_platform,
- 	.dai_link = &afeb9260_dai,
- 	.num_links = 1,
- };
+ 	snd_soc_dapm_sync(codec);
  
--/* Audio subsystem */
--static struct snd_soc_device afeb9260_snd_devdata = {
--	.card = &snd_soc_machine_afeb9260,
--	.codec_dev = &soc_codec_dev_tlv320aic23,
--};
--
- static struct platform_device *afeb9260_snd_device;
+-	snd_ctl_add(codec->card, snd_ctl_new1(&audio_out_mux, codec));
++	snd_ctl_add(codec->snd_card, snd_ctl_new1(&audio_out_mux, codec));
  
- static int __init afeb9260_soc_init(void)
- {
- 	int err;
- 	struct device *dev;
--	struct atmel_ssc_info *ssc_p = afeb9260_dai.cpu_dai->private_data;
--	struct ssc_device *ssc = NULL;
- 
- 	if (!(machine_is_afeb9260()))
- 		return -ENODEV;
- 
--	ssc = ssc_request(0);
--	if (IS_ERR(ssc)) {
--		printk(KERN_ERR "ASoC: Failed to request SSC 0\n");
--		err = PTR_ERR(ssc);
--		ssc = NULL;
--		goto err_ssc;
--	}
--	ssc_p->ssc = ssc;
- 
- 	afeb9260_snd_device = platform_device_alloc("soc-audio", -1);
- 	if (!afeb9260_snd_device) {
-@@ -172,8 +158,7 @@ static int __init afeb9260_soc_init(void)
- 		return -ENOMEM;
- 	}
- 
--	platform_set_drvdata(afeb9260_snd_device, &afeb9260_snd_devdata);
--	afeb9260_snd_devdata.dev = &afeb9260_snd_device->dev;
-+	platform_set_drvdata(afeb9260_snd_device, &snd_soc_machine_afeb9260);
- 	err = platform_device_add(afeb9260_snd_device);
- 	if (err)
- 		goto err1;
-@@ -184,9 +169,7 @@ static int __init afeb9260_soc_init(void)
- err1:
- 	platform_device_del(afeb9260_snd_device);
- 	platform_device_put(afeb9260_snd_device);
--err_ssc:
- 	return err;
--
+ 	return 0;
  }
+@@ -174,8 +176,10 @@ static int s6105_aic3x_init(struct snd_soc_codec *codec)
+ static struct snd_soc_dai_link s6105_dai = {
+ 	.name = "TLV320AIC31",
+ 	.stream_name = "AIC31",
+-	.cpu_dai = &s6000_i2s_dai,
+-	.codec_dai = &aic3x_dai,
++	.cpu_dai_drv = &s6000_i2s_dai,
++	.codec_dai_drv = &aic3x_dai,
++	.platform_drv = &s6000_soc_platform,
++	.codec_drv = &soc_codec_dev_aic3x,
+ 	.init = s6105_aic3x_init,
+ 	.ops = &s6105_ops,
+ };
+@@ -183,22 +187,10 @@ static struct snd_soc_dai_link s6105_dai = {
+ /* s6105 audio machine driver */
+ static struct snd_soc_card snd_soc_card_s6105 = {
+ 	.name = "Stretch IP Camera",
+-	.platform = &s6000_soc_platform,
+ 	.dai_link = &s6105_dai,
+ 	.num_links = 1,
+ };
  
- static void __exit afeb9260_soc_exit(void)
+-/* s6105 audio private data */
+-static struct aic3x_setup_data s6105_aic3x_setup = {
+-};
+-
+-/* s6105 audio subsystem */
+-static struct snd_soc_device s6105_snd_devdata = {
+-	.card = &snd_soc_card_s6105,
+-	.codec_dev = &soc_codec_dev_aic3x,
+-	.codec_data = &s6105_aic3x_setup,
+-};
+-
+ static struct s6000_snd_platform_data __initdata s6105_snd_data = {
+ 	.wide		= 0,
+ 	.channel_in	= 0,
+@@ -227,8 +219,7 @@ static int __init s6105_init(void)
+ 	if (!s6105_snd_device)
+ 		return -ENOMEM;
+ 
+-	platform_set_drvdata(s6105_snd_device, &s6105_snd_devdata);
+-	s6105_snd_devdata.dev = &s6105_snd_device->dev;
++	platform_set_drvdata(s6105_snd_device, &snd_soc_card_s6105);
+ 	platform_device_add_data(s6105_snd_device, &s6105_snd_data,
+ 				 sizeof(s6105_snd_data));
+ 
 -- 
 1.7.0.4
