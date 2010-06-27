@@ -1,19 +1,19 @@
-From: Adam Rosenberg <adam@alcorn.com>
-Subject: Modifying the AD193X driver and integrating with the
-	Blackfin platform
-Date: Sun, 27 Jun 2010 09:34:16 -0400
-Message-ID: <AANLkTimmzCY6rTrrV7aCBgznfekeIQxwY8kUDUGLDY_9@mail.gmail.com>
+From: David Dillow <dave@thedillows.org>
+Subject: Re: [PATCH] ALSA: pcm_lib: avoid timing jitter in
+ snd_pcm_read/write()
+Date: Sun, 27 Jun 2010 10:29:27 -0400
+Message-ID: <1277648967.2438.32.camel@obelisk.thedillows.org>
+References: <1277590400.2438.15.camel@obelisk.thedillows.org>
+	<AANLkTil91moJgRh51QFgvSFd47MzQxzxty1H2RzKK5nF@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id 51BA5103891
+Received: from amavis-smtp.knology.net (amavis-smtp.knology.net [75.76.199.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id ED00D103891
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 15:34:20 +0200 (CEST)
-Received: by vws11 with SMTP id 11so2242422vws.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 06:34:17 -0700 (PDT)
+	Sun, 27 Jun 2010 16:29:36 +0200 (CEST)
+In-Reply-To: <AANLkTil91moJgRh51QFgvSFd47MzQxzxty1H2RzKK5nF@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,46 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Jassi Brar <jassisinghbrar@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, linux@schou.dk
 List-Id: alsa-devel@alsa-project.org
 
-I see that Liam just modified the code (bf5xx-ad193x.c) that I was
-looking at modifying to add support for the CS42448 CODEC.=A0 I would
-like to understand the architecture of the ASoC and Blackfin TDM PCM
-driver that it uses because I need to enable the secondary data lines
-to support multiple chips.=A0 Where can I find the documentation for
-this code?
+On Sun, 2010-06-27 at 12:29 +0900, Jassi Brar wrote:
+> On Sun, Jun 27, 2010 at 7:13 AM, David Dillow <dave@thedillows.org> wrote:
+> > This is solved by using runtime->twake as the number of samples needed
+> > for a wakeup in addition to selecting the proper wait queue to wake in
+> > snd_pcm_update_state(). This requires twake to be non-zero when used
+> > by snd_pcm_lib_{read,write}1() even if avail_min is zero.
+> 
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2010-June/028786.html
 
-If I want to integrate this code into the uClinux-dist-2009R1.1-RC4
-distribution, is it simply a matter of copying the files in
-"[linux-2.6-asoc.git]/sound/" to the linux-2.6/sound directory for
-uClinux?=A0 Or is it better if I git clone linux-2.6-asoc and move my
-custom board development files there?=A0 Is there a driver installation
-guide somewhere that I can read about this?
+Hmm, yes, I should have search the archives a bit. I originally tuned
+out the thread you listed as a request for parameter help, and missed
+your original postings.
 
-I am concerned that the official Blackfin distribution
-(http://blackfin.uclinux.org/gf/download/frsrelease/473/7285/uClinux-dist-2=
-009R1.1-RC4.tar.bz2)
-will not be compatible with the ASoC distribution
-(git://opensource.wolfsonmicro.com/linux-2.6-asoc).=A0 Can you tell me
-if there are any differences between these?
+I think my patch is pretty close to preserving the existing semantics as
+it doesn't change poll() at all, but I do see a case where the user
+could get a read/write back prior to avail_min samples being ready. I
+think that's fixable -- if the user is requesting a read/write of less
+than avail_min samples, then we have to wait for avail_min regardless.
 
-To sum up:
-1.  Where can I find the ASoC documentation?
-2.  Is there an installation guide to use ASoC with an existing Kernel?
-3.  What are the differences between the wolfsonmicro.com
-linux-2.6-asoc and blackfin.uclinux.org uClinux-dist-2009R1.1-RC4?
+Takashi, is your concern about semantics the proper honoring of
+avail_min in all cases, or preserving the current behavior of waiting
+for two periods when avail_min is set to the size of one period?
 
-Thank you,
-Adam
-
-Adam Rosenberg
-Software Engineer
-
-Alcorn McBride Inc.
-3300 South Hiawassee
-Building 105
-Orlando, FL 32835
-
-(407) 296 - 5800 ext. 5490
+Dave
