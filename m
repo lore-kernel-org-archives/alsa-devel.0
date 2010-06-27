@@ -1,18 +1,20 @@
 From: Liam Girdwood <lrg@slimlogic.co.uk>
-Subject: [RFC 02/15] ASoC: multi-component - TI OMAP Platform
-Date: Sun, 27 Jun 2010 12:52:01 +0100
-Message-ID: <1277639534-5104-3-git-send-email-lrg@slimlogic.co.uk>
+Subject: [RFC 09/15] ASoC: multi-component - Freescale PPC
+	Platform
+Date: Sun, 27 Jun 2010 12:52:08 +0100
+Message-ID: <1277639534-5104-10-git-send-email-lrg@slimlogic.co.uk>
 References: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
-	by alsa0.perex.cz (Postfix) with ESMTP id AA14B10389B
+Received: from mail-wy0-f179.google.com (mail-wy0-f179.google.com
+	[74.125.82.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 3FAF11038AD
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 13:52:34 +0200 (CEST)
-Received: by mail-ww0-f51.google.com with SMTP id 13so934011wwb.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 04:52:34 -0700 (PDT)
+	Sun, 27 Jun 2010 13:52:45 +0200 (CEST)
+Received: by mail-wy0-f179.google.com with SMTP id 23so919297wyf.38
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 04:52:45 -0700 (PDT)
 In-Reply-To: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,10 +26,10 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Timur Tabi <timur@freescale.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Update the TI OMAP platform and machines to new multi-component model.
+Update the Freescale PPC platform and machines to new multi-component model.
 
 This patch changes the machine drivers for multi-component as follows :-
 
@@ -43,2049 +45,2320 @@ This patch also changes the DAI and platform DAM drivers as follows :-
 
 Other notable changes required for multi-component support:-
 
- o Moved zoom2 audio platform data to board-zoom2.c
- o Moved n810 audio platform data to board-n810.c
- o Moved RX51 audio platform data to board-rx51-peripherals.c
- o Added ASoC DAI and DMA platform devices.
- o Misc fixes from Jarkko Nikula
+ o fsl_ssi_create_dai() and fsl_ssi_destroy_dai() no longer required.
+ o Added mpc5200_hpcd_of_driver of_driver.
+ o Multi-component support for fsl_ssi, fsl_pcm and mpc8610 by Timur Tabi
 
+Signed-off-by: Timur Tabi <timur@freescale.com>
 Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
 ---
- arch/arm/mach-omap2/board-n8x0.c              |   15 +++
- arch/arm/mach-omap2/board-rx51-peripherals.c  |    9 ++-
- arch/arm/mach-omap2/board-zoom2.c             |   31 ++++++-
- arch/arm/mach-omap2/devices.c                 |   49 ++++++++++
- arch/arm/mach-omap2/include/mach/board-zoom.h |    2 +
- sound/soc/omap/am3517evm.c                    |   26 ++---
- sound/soc/omap/ams-delta.c                    |   54 ++++-------
- sound/soc/omap/igep0020.c                     |   22 ++---
- sound/soc/omap/mcpdm.c                        |   19 +----
- sound/soc/omap/mcpdm.h                        |    2 +
- sound/soc/omap/n810.c                         |   44 +++------
- sound/soc/omap/omap-mcbsp.c                   |  126 +++++++++++++------------
- sound/soc/omap/omap-mcbsp.h                   |    2 +-
- sound/soc/omap/omap-mcpdm.c                   |   68 +++++++++-----
- sound/soc/omap/omap-mcpdm.h                   |    2 +-
- sound/soc/omap/omap-pcm.c                     |   45 +++++++--
- sound/soc/omap/omap-pcm.h                     |    2 +-
- sound/soc/omap/omap2evm.c                     |   26 ++---
- sound/soc/omap/omap3beagle.c                  |   24 ++---
- sound/soc/omap/omap3evm.c                     |   31 ++-----
- sound/soc/omap/omap3pandora.c                 |   39 ++++----
- sound/soc/omap/osk5912.c                      |   25 ++---
- sound/soc/omap/overo.c                        |   23 ++---
- sound/soc/omap/rx51.c                         |   35 +++-----
- sound/soc/omap/sdp3430.c                      |   56 +++++------
- sound/soc/omap/sdp4430.c                      |   22 ++---
- sound/soc/omap/zoom2.c                        |   62 +++++--------
- 27 files changed, 437 insertions(+), 424 deletions(-)
+ sound/soc/fsl/efika-audio-fabric.c  |   23 +-
+ sound/soc/fsl/fsl_dma.c             |  293 ++++++++++-------
+ sound/soc/fsl/fsl_dma.h             |   21 +-
+ sound/soc/fsl/fsl_ssi.c             |  246 ++++++++------
+ sound/soc/fsl/fsl_ssi.h             |   26 --
+ sound/soc/fsl/mpc5200_dma.c         |   64 +++-
+ sound/soc/fsl/mpc5200_dma.h         |    5 +-
+ sound/soc/fsl/mpc5200_psc_ac97.c    |   31 +--
+ sound/soc/fsl/mpc5200_psc_ac97.h    |    2 +-
+ sound/soc/fsl/mpc5200_psc_i2s.c     |   17 +-
+ sound/soc/fsl/mpc8610_hpcd.c        |  609 ++++++++++++++++-------------------
+ sound/soc/fsl/pcm030-audio-fabric.c |   25 +-
+ 12 files changed, 679 insertions(+), 683 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/board-n8x0.c b/arch/arm/mach-omap2/board-n8x0.c
-index 3ccc34e..04df912 100644
---- a/arch/arm/mach-omap2/board-n8x0.c
-+++ b/arch/arm/mach-omap2/board-n8x0.c
-@@ -20,6 +20,7 @@
- #include <linux/i2c.h>
- #include <linux/spi/spi.h>
- #include <linux/usb/musb.h>
-+#include <sound/tlv320aic3x.h>
+diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
+index 1a5b8e0..11289f8 100644
+--- a/sound/soc/fsl/efika-audio-fabric.c
++++ b/sound/soc/fsl/efika-audio-fabric.c
+@@ -32,21 +32,28 @@
  
- #include <asm/mach/arch.h>
- #include <asm/mach-types.h>
-@@ -612,11 +613,25 @@ static int n8x0_menelaus_late_init(struct device *dev)
- 	return 0;
- }
+ #define DRV_NAME "efika-audio-fabric"
  
-+static struct aic3x_setup_data n810_aic33_setup = {
-+	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
-+	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
-+};
-+
-+static struct aic3x_pdata n810_aic33_data = {
-+	.setup = &n810_aic33_setup,
-+	.gpio_reset = -1,
-+};
-+
- static struct i2c_board_info __initdata n8x0_i2c_board_info_1[] = {
- 	{
- 		I2C_BOARD_INFO("menelaus", 0x72),
- 		.irq = INT_24XX_SYS_NIRQ,
- 	},
-+	{
-+		I2C_BOARD_INFO("tlv320aic3x", 0x1b),
-+		.platform_data = &n810_aic33_data,
-+	},
- };
+-static struct snd_soc_device device;
+ static struct snd_soc_card card;
  
- static struct menelaus_platform_data n8x0_menelaus_platform_data = {
-diff --git a/arch/arm/mach-omap2/board-rx51-peripherals.c b/arch/arm/mach-omap2/board-rx51-peripherals.c
-index abdf321..ab65bb0 100644
---- a/arch/arm/mach-omap2/board-rx51-peripherals.c
-+++ b/arch/arm/mach-omap2/board-rx51-peripherals.c
-@@ -23,6 +23,7 @@
- #include <linux/gpio.h>
- #include <linux/gpio_keys.h>
- #include <linux/mmc/host.h>
-+#include <sound/tlv320aic3x.h>
- 
- #include <plat/mcspi.h>
- #include <plat/mux.h>
-@@ -686,7 +687,6 @@ static struct twl4030_power_data rx51_t2scripts_data __initdata = {
- };
- 
- 
--
- static struct twl4030_platform_data rx51_twldata __initdata = {
- 	.irq_base		= TWL4030_IRQ_BASE,
- 	.irq_end		= TWL4030_IRQ_END,
-@@ -716,9 +716,16 @@ static struct i2c_board_info __initdata rx51_peripherals_i2c_board_info_1[] = {
- 	},
- };
- 
-+/* Audio setup data */
-+static struct aic3x_setup_data rx51_aic34_setup = {
-+	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
-+	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
-+};
-+
- static struct i2c_board_info __initdata rx51_peripherals_i2c_board_info_2[] = {
- 	{
- 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
-+		.platform_data = &rx51_aic34_setup,
- 	},
- };
- 
-diff --git a/arch/arm/mach-omap2/board-zoom2.c b/arch/arm/mach-omap2/board-zoom2.c
-index 803ef14..f39a785 100644
---- a/arch/arm/mach-omap2/board-zoom2.c
-+++ b/arch/arm/mach-omap2/board-zoom2.c
-@@ -14,6 +14,7 @@
- #include <linux/platform_device.h>
- #include <linux/input.h>
- #include <linux/gpio.h>
-+#include <linux/i2c/twl.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -34,8 +35,11 @@ static void __init omap_zoom2_init_irq(void)
- 	omap_gpio_init();
- }
- 
--/* REVISIT: These audio entries can be removed once MFD code is merged */
--#if 0
-+/* EXTMUTE callback function */
-+void zoom2_set_hs_extmute(int mute)
-+{
-+	gpio_set_value(ZOOM2_HEADSET_EXTMUTE_GPIO, mute);
-+}
- 
- static struct twl4030_madc_platform_data zoom2_madc_data = {
- 	.irq_line	= 1,
-@@ -43,6 +47,9 @@ static struct twl4030_madc_platform_data zoom2_madc_data = {
- 
- static struct twl4030_codec_audio_data zoom2_audio_data = {
- 	.audio_mclk = 26000000,
-+	.ramp_delay_value = 3,	/* 161 ms */
-+	.hs_extmute = 1,
-+	.set_hs_extmute = zoom2_set_hs_extmute,
- };
- 
- static struct twl4030_codec_data zoom2_codec_data = {
-@@ -64,10 +71,27 @@ static struct twl4030_platform_data zoom2_twldata = {
- 	.vmmc1          = &zoom2_vmmc1,
- 	.vmmc2          = &zoom2_vmmc2,
- 	.vsim           = &zoom2_vsim,
-+};
- 
-+static struct i2c_board_info __initdata zoom2_i2c_boardinfo[] = {
-+	{
-+		I2C_BOARD_INFO("twl4030", 0x48),
-+		.flags = I2C_CLIENT_WAKE,
-+		.irq = INT_34XX_SYS_NIRQ,
-+		.platform_data = &zoom2_twldata,
-+	},
- };
- 
--#endif
-+static int __init omap3_zoom2_i2c_init(void)
-+{
-+	omap_register_i2c_bus(1, 2600, zoom2_i2c_boardinfo,
-+			ARRAY_SIZE(zoom2_i2c_boardinfo));
-+	/* Bus 3 is attached to the DVI port where devices like the pico DLP
-+	 * projector don't work reliably with 400kHz */
-+	omap_register_i2c_bus(3, 100, NULL, 0);
-+	return 0;
-+}
-+
- 
- #ifdef CONFIG_OMAP_MUX
- static struct omap_board_mux board_mux[] __initdata = {
-@@ -81,6 +105,7 @@ static void __init omap_zoom2_init(void)
+ static struct snd_soc_dai_link efika_fabric_dai[] = {
  {
- 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
- 	zoom_peripherals_init();
-+	omap3_zoom2_i2c_init();
- 	zoom_debugboard_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/devices.c b/arch/arm/mach-omap2/devices.c
-index 03e6c9e..e5a1519 100644
---- a/arch/arm/mach-omap2/devices.c
-+++ b/arch/arm/mach-omap2/devices.c
-@@ -29,6 +29,7 @@
- #include <mach/gpio.h>
- #include <plat/mmc.h>
- #include <plat/dma.h>
-+#include <plat/mcbsp.h>
- 
- #include "mux.h"
- 
-@@ -289,6 +290,53 @@ static inline void omap_init_sti(void)
- static inline void omap_init_sti(void) {}
- #endif
- 
-+#if defined(CONFIG_SND_SOC)
-+
-+static struct platform_device omap_pcm = {
-+	.name	= "omap_pcm",
-+	.id	= -1,
-+};
-+
-+static struct platform_device omap_mcbsp1 = {
-+	.name	= "omap_mcbsp",
-+	.id	= OMAP_MCBSP1,
-+};
-+
-+static struct platform_device omap_mcbsp2 = {
-+	.name	= "omap_mcbsp",
-+	.id	= OMAP_MCBSP2,
-+};
-+
-+static struct platform_device omap_mcbsp3 = {
-+	.name	= "omap_mcbsp",
-+	.id	= OMAP_MCBSP3,
-+};
-+
-+static struct platform_device omap_mcbsp4 = {
-+	.name	= "omap_mcbsp",
-+	.id	= OMAP_MCBSP4,
-+};
-+
-+static struct platform_device omap_mcbsp5 = {
-+	.name	= "omap_mcbsp",
-+	.id	= OMAP_MCBSP5,
-+};
-+
-+static void omap_init_audio(void)
-+{
-+	platform_device_register(&omap_mcbsp1);
-+	platform_device_register(&omap_mcbsp2);
-+	platform_device_register(&omap_mcbsp3);
-+	platform_device_register(&omap_mcbsp4);
-+	platform_device_register(&omap_mcbsp5);
-+	platform_device_register(&omap_pcm);
-+}
-+
-+#else
-+static inline void omap_init_audio(void) {}
-+#endif
-+
-+
- #if defined(CONFIG_SPI_OMAP24XX) || defined(CONFIG_SPI_OMAP24XX_MODULE)
- 
- #include <plat/mcspi.h>
-@@ -901,6 +949,7 @@ static int __init omap2_init_devices(void)
- 	 * in alphabetical order so they're easier to sort through.
- 	 */
- 	omap_hsmmc_reset();
-+	omap_init_audio();
- 	omap_init_camera();
- 	omap_init_mbox();
- 	omap_init_mcspi();
-diff --git a/arch/arm/mach-omap2/include/mach/board-zoom.h b/arch/arm/mach-omap2/include/mach/board-zoom.h
-index c93b29e..b6a010f 100644
---- a/arch/arm/mach-omap2/include/mach/board-zoom.h
-+++ b/arch/arm/mach-omap2/include/mach/board-zoom.h
-@@ -3,3 +3,5 @@
-  */
- extern int __init zoom_debugboard_init(void);
- extern void __init zoom_peripherals_init(void);
-+
-+#define ZOOM2_HEADSET_EXTMUTE_GPIO	153
-diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
-index 135901b..099b363 100644
---- a/sound/soc/omap/am3517evm.c
-+++ b/sound/soc/omap/am3517evm.c
-@@ -40,8 +40,8 @@ static int am3517evm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
+ 	.name = "AC97",
+ 	.stream_name = "AC97 Analog",
+-	.codec_dai = &stac9766_dai[STAC9766_DAI_AC97_ANALOG],
+-	.cpu_dai = &psc_ac97_dai[MPC5200_AC97_NORMAL],
++	.codec_dai_drv = &stac9766_dai[STAC9766_DAI_AC97_ANALOG],
++	.codec_dai_id = STAC9766_DAI_AC97_ANALOG,
++	.cpu_dai_drv = &psc_ac97_dai[MPC5200_AC97_NORMAL],
++	.cpu_dai_id = MPC5200_AC97_NORMAL,
++	.platform_drv = &mpc5200_audio_dma_platform,
++	.codec_drv = &soc_codec_dev_stac9766,
+ },
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
- 	/* Set codec DAI configuration */
-@@ -111,8 +111,10 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"MICIN", NULL, "Mic In"},
+ 	.name = "AC97",
+ 	.stream_name = "AC97 IEC958",
+-	.codec_dai = &stac9766_dai[STAC9766_DAI_AC97_DIGITAL],
+-	.cpu_dai = &psc_ac97_dai[MPC5200_AC97_SPDIF],
++	.codec_dai_drv = &stac9766_dai[STAC9766_DAI_AC97_DIGITAL],
++	.codec_dai_id = STAC9766_DAI_AC97_DIGITAL,
++	.cpu_dai_drv = &psc_ac97_dai[MPC5200_AC97_SPDIF],
++	.cpu_dai_id = MPC5200_AC97_SPDIF,
++	.platform_drv = &mpc5200_audio_dma_platform,
++	.codec_drv = &soc_codec_dev_stac9766,
+ },
  };
  
--static int am3517evm_aic23_init(struct snd_soc_codec *codec)
-+static int am3517evm_aic23_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
-+
- 	/* Add am3517-evm specific widgets */
- 	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
- 				  ARRAY_SIZE(tlv320aic23_dapm_widgets));
-@@ -134,8 +136,11 @@ static int am3517evm_aic23_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link am3517evm_dai = {
- 	.name = "TLV320AIC23",
- 	.stream_name = "AIC23",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &tlv320aic23_dai,
-+	.cpu_dai_drv = &omap_mcbsp_dai,
-+	.cpu_dai_id = 0, /* McBSP 1 */
-+	.codec_dai_drv = &tlv320aic23_dai,
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &soc_codec_dev_tlv320aic23,
- 	.init = am3517evm_aic23_init,
- 	.ops = &am3517evm_ops,
- };
-@@ -143,17 +148,10 @@ static struct snd_soc_dai_link am3517evm_dai = {
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_am3517evm = {
- 	.name = "am3517evm",
--	.platform = &omap_soc_platform,
- 	.dai_link = &am3517evm_dai,
- 	.num_links = 1,
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device am3517evm_snd_devdata = {
--	.card = &snd_soc_am3517evm,
--	.codec_dev = &soc_codec_dev_tlv320aic23,
--};
--
- static struct platform_device *am3517evm_snd_device;
- 
- static int __init am3517evm_soc_init(void)
-@@ -172,9 +170,7 @@ static int __init am3517evm_soc_init(void)
- 		return -ENOMEM;
- 	}
- 
--	platform_set_drvdata(am3517evm_snd_device, &am3517evm_snd_devdata);
--	am3517evm_snd_devdata.dev = &am3517evm_snd_device->dev;
--	*(unsigned int *)am3517evm_dai.cpu_dai->private_data = 0; /* McBSP1 */
-+	platform_set_drvdata(am3517evm_snd_device, &snd_soc_am3517evm);
- 
- 	ret = platform_device_add(am3517evm_snd_device);
- 	if (ret)
-diff --git a/sound/soc/omap/ams-delta.c b/sound/soc/omap/ams-delta.c
-index b0f618e..1a0665f 100644
---- a/sound/soc/omap/ams-delta.c
-+++ b/sound/soc/omap/ams-delta.c
-@@ -323,7 +323,7 @@ static void cx81801_receive(struct tty_struct *tty,
- 					ARRAY_SIZE(ams_delta_hook_switch_pins),
- 					ams_delta_hook_switch_pins);
- 		if (ret)
--			dev_warn(codec->socdev->card->dev,
-+			dev_warn(codec->dev,
- 				"Failed to link hook switch to DAPM pins, "
- 				"will continue with hook switch unlinked.\n");
- 
-@@ -383,7 +383,7 @@ static int ams_delta_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 
- 	/* Set cpu DAI configuration */
--	return snd_soc_dai_set_fmt(rtd->dai->cpu_dai,
-+	return snd_soc_dai_set_fmt(rtd->cpu_dai,
- 				   SND_SOC_DAIFMT_DSP_A |
- 				   SND_SOC_DAIFMT_NB_NF |
- 				   SND_SOC_DAIFMT_CBM_CFM);
-@@ -398,7 +398,7 @@ static struct snd_soc_ops ams_delta_ops = {
- static int ams_delta_set_bias_level(struct snd_soc_card *card,
- 					enum snd_soc_bias_level level)
- {
--	struct snd_soc_codec *codec = card->codec;
-+	struct snd_soc_codec *codec = card->rtd->codec;
- 
- 	switch (level) {
- 	case SND_SOC_BIAS_ON:
-@@ -461,18 +461,19 @@ static void ams_delta_shutdown(struct snd_pcm_substream *substream)
-  * Card initialization
-  */
- 
--static int ams_delta_cx20442_init(struct snd_soc_codec *codec)
-+static int ams_delta_cx20442_init(struct snd_soc_pcm_runtime *rtd)
- {
--	struct snd_soc_dai *codec_dai = codec->dai;
--	struct snd_soc_card *card = codec->socdev->card;
-+	struct snd_soc_codec *codec = rtd->codec;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_card *card = rtd->card;
- 	int ret;
- 	/* Codec is ready, now add/activate board specific controls */
- 
- 	/* Set up digital mute if not provided by the codec */
--	if (!codec_dai->ops) {
--		codec_dai->ops = &ams_delta_dai_ops;
--	} else if (!codec_dai->ops->digital_mute) {
--		codec_dai->ops->digital_mute = ams_delta_digital_mute;
-+	if (!codec_dai->driver->ops) {
-+		codec_dai->driver->ops = &ams_delta_dai_ops;
-+	} else if (!codec_dai->driver->ops->digital_mute) {
-+		codec_dai->driver->ops->digital_mute = ams_delta_digital_mute;
- 	} else {
- 		ams_delta_ops.startup = ams_delta_startup;
- 		ams_delta_ops.shutdown = ams_delta_shutdown;
-@@ -483,7 +484,7 @@ static int ams_delta_cx20442_init(struct snd_soc_codec *codec)
- 
- 	/* Add hook switch - can be used to control the codec from userspace
- 	 * even if line discipline fails */
--	ret = snd_soc_jack_new(card, "hook_switch",
-+	ret = snd_soc_jack_new(rtd->codec, "hook_switch",
- 				SND_JACK_HEADSET, &ams_delta_hook_switch);
- 	if (ret)
- 		dev_warn(card->dev,
-@@ -551,27 +552,23 @@ static int ams_delta_cx20442_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link ams_delta_dai_link = {
- 	.name = "CX20442",
- 	.stream_name = "CX20442",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &cx20442_dai,
-+	.cpu_dai_drv = &omap_mcbsp_dai,
-+	.cpu_dai_id = OMAP_MCBSP1,
-+	.codec_dai_drv = &cx20442_dai,
- 	.init = ams_delta_cx20442_init,
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &cx20442_codec_dev,
- 	.ops = &ams_delta_ops,
- };
- 
- /* Audio card driver */
- static struct snd_soc_card ams_delta_audio_card = {
- 	.name = "AMS_DELTA",
--	.platform = &omap_soc_platform,
- 	.dai_link = &ams_delta_dai_link,
- 	.num_links = 1,
- 	.set_bias_level = ams_delta_set_bias_level,
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device ams_delta_snd_soc_device = {
--	.card = &ams_delta_audio_card,
--	.codec_dev = &cx20442_codec_dev,
--};
--
- /* Module init/exit */
- static struct platform_device *ams_delta_audio_platform_device;
- static struct platform_device *cx20442_platform_device;
-@@ -589,9 +586,7 @@ static int __init ams_delta_module_init(void)
- 		return -ENOMEM;
- 
- 	platform_set_drvdata(ams_delta_audio_platform_device,
--				&ams_delta_snd_soc_device);
--	ams_delta_snd_soc_device.dev = &ams_delta_audio_platform_device->dev;
--	*(unsigned int *)ams_delta_dai_link.cpu_dai->private_data = OMAP_MCBSP1;
-+				&ams_delta_audio_card);
- 
- 	ret = platform_device_add(ams_delta_audio_platform_device);
- 	if (ret)
-@@ -612,19 +607,6 @@ module_init(ams_delta_module_init);
- 
- static void __exit ams_delta_module_exit(void)
- {
--	struct snd_soc_codec *codec;
--	struct tty_struct *tty;
--
--	if (ams_delta_audio_card.codec) {
--		codec = ams_delta_audio_card.codec;
--
--		if (codec->control_data) {
--			tty = codec->control_data;
--
--			tty_hangup(tty);
--		}
--	}
--
- 	if (tty_unregister_ldisc(N_V253) != 0)
- 		dev_warn(&ams_delta_audio_platform_device->dev,
- 			"failed to unregister V253 line discipline\n");
-diff --git a/sound/soc/omap/igep0020.c b/sound/soc/omap/igep0020.c
-index 3583c42..5c10148 100644
---- a/sound/soc/omap/igep0020.c
-+++ b/sound/soc/omap/igep0020.c
-@@ -39,8 +39,8 @@ static int igep2_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
- 	/* Set codec DAI configuration */
-@@ -82,25 +82,21 @@ static struct snd_soc_ops igep2_ops = {
- static struct snd_soc_dai_link igep2_dai = {
- 	.name = "TWL4030",
- 	.stream_name = "TWL4030",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+	.cpu_dai_drv = &omap_mcbsp_dai,
-+	.cpu_dai_id = OMAP_MCBSP2,
-+	.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &soc_codec_dev_twl4030,
- 	.ops = &igep2_ops,
- };
- 
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_card_igep2 = {
- 	.name = "igep2",
--	.platform = &omap_soc_platform,
- 	.dai_link = &igep2_dai,
- 	.num_links = 1,
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device igep2_snd_devdata = {
--	.card = &snd_soc_card_igep2,
--	.codec_dev = &soc_codec_dev_twl4030,
--};
--
- static struct platform_device *igep2_snd_device;
- 
- static int __init igep2_soc_init(void)
-@@ -119,9 +115,7 @@ static int __init igep2_soc_init(void)
- 		return -ENOMEM;
- 	}
- 
--	platform_set_drvdata(igep2_snd_device, &igep2_snd_devdata);
--	igep2_snd_devdata.dev = &igep2_snd_device->dev;
--	*(unsigned int *)igep2_dai.cpu_dai->private_data = 1; /* McBSP2 */
-+	platform_set_drvdata(igep2_snd_device, &snd_soc_card_igep2);
- 
- 	ret = platform_device_add(igep2_snd_device);
- 	if (ret)
-diff --git a/sound/soc/omap/mcpdm.c b/sound/soc/omap/mcpdm.c
-index 90b8bf7..928f037 100644
---- a/sound/soc/omap/mcpdm.c
-+++ b/sound/soc/omap/mcpdm.c
-@@ -402,7 +402,7 @@ int omap_mcpdm_set_offset(int offset1, int offset2)
- 	return 0;
- }
- 
--static int __devinit omap_mcpdm_probe(struct platform_device *pdev)
-+int __devinit omap_mcpdm_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
- 	int ret = 0;
-@@ -449,7 +449,7 @@ exit:
- 	return ret;
- }
- 
--static int __devexit omap_mcpdm_remove(struct platform_device *pdev)
-+int __devexit omap_mcpdm_remove(struct platform_device *pdev)
- {
- 	struct omap_mcpdm *mcpdm_ptr = platform_get_drvdata(pdev);
- 
-@@ -468,18 +468,3 @@ static int __devexit omap_mcpdm_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static struct platform_driver omap_mcpdm_driver = {
--	.probe = omap_mcpdm_probe,
--	.remove = __devexit_p(omap_mcpdm_remove),
--	.driver = {
--		.name = "omap-mcpdm",
--	},
--};
--
--static struct platform_device *omap_mcpdm_device;
--
--static int __init omap_mcpdm_init(void)
--{
--	return platform_driver_register(&omap_mcpdm_driver);
--}
--arch_initcall(omap_mcpdm_init);
-diff --git a/sound/soc/omap/mcpdm.h b/sound/soc/omap/mcpdm.h
-index 7bb326e..df3e16f 100644
---- a/sound/soc/omap/mcpdm.h
-+++ b/sound/soc/omap/mcpdm.h
-@@ -149,3 +149,5 @@ extern int omap_mcpdm_playback_close(struct omap_mcpdm_link *downlink);
- extern int omap_mcpdm_request(void);
- extern void omap_mcpdm_free(void);
- extern int omap_mcpdm_set_offset(int offset1, int offset2);
-+int __devinit omap_mcpdm_probe(struct platform_device *pdev);
-+int __devexit omap_mcpdm_remove(struct platform_device *pdev);
-diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-index 08e09d7..2c3504e 100644
---- a/sound/soc/omap/n810.c
-+++ b/sound/soc/omap/n810.c
-@@ -97,7 +97,7 @@ static int n810_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
- 
- 	snd_pcm_hw_constraint_minmax(runtime,
- 				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
-@@ -115,8 +115,8 @@ static int n810_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int err;
- 
- 	/* Set codec DAI configuration */
-@@ -271,8 +271,9 @@ static const struct snd_kcontrol_new aic33_n810_controls[] = {
- 		     n810_get_input, n810_set_input),
- };
- 
--static int n810_aic33_init(struct snd_soc_codec *codec)
-+static int n810_aic33_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int err;
- 
- 	/* Not connected */
-@@ -307,8 +308,12 @@ static int n810_aic33_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link n810_dai = {
- 	.name = "TLV320AIC33",
- 	.stream_name = "AIC33",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &aic3x_dai,
-+	.cpu_dai_drv = &omap_mcbsp_dai,
-+	.cpu_dai_id = OMAP_MCBSP2,
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &soc_codec_dev_aic3x,
-+	.codec_dai_drv = &aic3x_dai,
-+	.codec_id = 0x1b,
- 	.init = n810_aic33_init,
- 	.ops = &n810_ops,
- };
-@@ -316,33 +321,12 @@ static struct snd_soc_dai_link n810_dai = {
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_n810 = {
- 	.name = "N810",
--	.platform = &omap_soc_platform,
- 	.dai_link = &n810_dai,
- 	.num_links = 1,
- };
- 
--/* Audio private data */
--static struct aic3x_setup_data n810_aic33_setup = {
--	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
--	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
--};
--
--/* Audio subsystem */
--static struct snd_soc_device n810_snd_devdata = {
--	.card = &snd_soc_n810,
--	.codec_dev = &soc_codec_dev_aic3x,
--	.codec_data = &n810_aic33_setup,
--};
--
- static struct platform_device *n810_snd_device;
- 
--/* temporary i2c device creation until this can be moved into the machine
-- * support file.
--*/
--static struct i2c_board_info i2c_device[] = {
--	{ I2C_BOARD_INFO("tlv320aic3x", 0x1b), }
--};
--
- static int __init n810_soc_init(void)
- {
- 	int err;
-@@ -351,15 +335,11 @@ static int __init n810_soc_init(void)
- 	if (!(machine_is_nokia_n810() || machine_is_nokia_n810_wimax()))
+@@ -58,13 +65,10 @@ static __init int efika_fabric_init(void)
+ 	if (!of_machine_is_compatible("bplan,efika"))
  		return -ENODEV;
  
--	i2c_register_board_info(1, i2c_device, ARRAY_SIZE(i2c_device));
--
- 	n810_snd_device = platform_device_alloc("soc-audio", -1);
- 	if (!n810_snd_device)
- 		return -ENOMEM;
+-	card.platform = &mpc5200_audio_dma_platform;
+ 	card.name = "Efika";
+ 	card.dai_link = efika_fabric_dai;
+ 	card.num_links = ARRAY_SIZE(efika_fabric_dai);
  
--	platform_set_drvdata(n810_snd_device, &n810_snd_devdata);
--	n810_snd_devdata.dev = &n810_snd_device->dev;
--	*(unsigned int *)n810_dai.cpu_dai->private_data = 1; /* McBSP2 */
-+	platform_set_drvdata(n810_snd_device, &snd_soc_n810);
- 	err = platform_device_add(n810_snd_device);
- 	if (err)
- 		goto err1;
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index aebd3af..68d0a88 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -62,8 +62,6 @@ struct omap_mcbsp_data {
- 	int				wlen;
- };
+-	device.card = &card;
+-	device.codec_dev = &soc_codec_dev_stac9766;
  
--#define to_mcbsp(priv)	container_of((priv), struct omap_mcbsp_data, bus_id)
--
- static struct omap_mcbsp_data mcbsp_data[NUM_LINKS];
+ 	pdev = platform_device_alloc("soc-audio", 1);
+ 	if (!pdev) {
+@@ -72,8 +76,7 @@ static __init int efika_fabric_init(void)
+ 		return -ENODEV;
+ 	}
+ 
+-	platform_set_drvdata(pdev, &device);
+-	device.dev = &pdev->dev;
++	platform_set_drvdata(pdev, &card);
+ 
+ 	rc = platform_device_add(pdev);
+ 	if (rc) {
+diff --git a/sound/soc/fsl/fsl_dma.c b/sound/soc/fsl/fsl_dma.c
+index 410c749..54f9111 100644
+--- a/sound/soc/fsl/fsl_dma.c
++++ b/sound/soc/fsl/fsl_dma.c
+@@ -3,10 +3,11 @@
+  *
+  * Author: Timur Tabi <timur@freescale.com>
+  *
+- * Copyright 2007-2008 Freescale Semiconductor, Inc.  This file is licensed
+- * under the terms of the GNU General Public License version 2.  This
+- * program is licensed "as is" without any warranty of any kind, whether
+- * express or implied.
++ * Copyright 2007-2010 Freescale Semiconductor, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
+  *
+  * This driver implements ASoC support for the Elo DMA controller, which is
+  * the DMA controller on Freescale 83xx, 85xx, and 86xx SOCs. In ALSA terms,
+@@ -20,6 +21,8 @@
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
+ #include <linux/gfp.h>
++#include <linux/of_platform.h>
++#include <linux/list.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -52,26 +55,16 @@
+ #define FSLDMA_PCM_RATES (SNDRV_PCM_RATE_5512 | SNDRV_PCM_RATE_8000_192000 | \
+ 			  SNDRV_PCM_RATE_CONTINUOUS)
+ 
+-/* DMA global data.  This structure is used by fsl_dma_open() to determine
+- * which DMA channels to assign to a substream.  Unfortunately, ASoC V1 does
+- * not allow the machine driver to provide this information to the PCM
+- * driver in advance, and there's no way to differentiate between the two
+- * DMA controllers.  So for now, this driver only supports one SSI device
+- * using two DMA channels.  We cannot support multiple DMA devices.
+- *
+- * ssi_stx_phys: bus address of SSI STX register
+- * ssi_srx_phys: bus address of SSI SRX register
+- * dma_channel: pointer to the DMA channel's registers
+- * irq: IRQ for this DMA channel
+- * assigned: set to 1 if that DMA channel is assigned to a substream
+- */
+-static struct {
++struct dma_object {
++	struct list_head list;
++	struct snd_soc_platform_driver dai;
+ 	dma_addr_t ssi_stx_phys;
+ 	dma_addr_t ssi_srx_phys;
+-	struct ccsr_dma_channel __iomem *dma_channel[2];
+-	unsigned int irq[2];
+-	unsigned int assigned[2];
+-} dma_global_data;
++	struct ccsr_dma_channel __iomem *channel;
++	unsigned int irq;
++	bool assigned;
++	char path[1];
++};
  
  /*
-@@ -153,8 +151,8 @@ static const unsigned long omap34xx_mcbsp_port[][2] = {};
- static void omap_mcbsp_set_threshold(struct snd_pcm_substream *substream)
+  * The number of DMA links to use.  Two is the bare minimum, but if you
+@@ -88,8 +81,6 @@ static struct {
+  * structure.
+  *
+  * @link[]: array of link descriptors
+- * @controller_id: which DMA controller (0, 1, ...)
+- * @channel_id: which DMA channel on the controller (0, 1, 2, ...)
+  * @dma_channel: pointer to the DMA channel's registers
+  * @irq: IRQ for this DMA channel
+  * @substream: pointer to the substream object, needed by the ISR
+@@ -104,8 +95,6 @@ static struct {
+  */
+ struct fsl_dma_private {
+ 	struct fsl_dma_link_descriptor link[NUM_DMA_LINKS];
+-	unsigned int controller_id;
+-	unsigned int channel_id;
+ 	struct ccsr_dma_channel __iomem *dma_channel;
+ 	unsigned int irq;
+ 	struct snd_pcm_substream *substream;
+@@ -212,6 +201,9 @@ static void fsl_dma_update_pointers(struct fsl_dma_private *dma_private)
+ static irqreturn_t fsl_dma_isr(int irq, void *dev_id)
+ {
+ 	struct fsl_dma_private *dma_private = dev_id;
++	struct snd_pcm_substream *substream = dma_private->substream;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = rtd->platform->dev;
+ 	struct ccsr_dma_channel __iomem *dma_channel = dma_private->dma_channel;
+ 	irqreturn_t ret = IRQ_NONE;
+ 	u32 sr, sr2 = 0;
+@@ -222,11 +214,8 @@ static irqreturn_t fsl_dma_isr(int irq, void *dev_id)
+ 	sr = in_be32(&dma_channel->sr);
+ 
+ 	if (sr & CCSR_DMA_SR_TE) {
+-		dev_err(dma_private->substream->pcm->card->dev,
+-			"DMA transmit error (controller=%u channel=%u irq=%u\n",
+-			dma_private->controller_id,
+-			dma_private->channel_id, irq);
+-		fsl_dma_abort_stream(dma_private->substream);
++		dev_err(dev, "dma transmit error\n");
++		fsl_dma_abort_stream(substream);
+ 		sr2 |= CCSR_DMA_SR_TE;
+ 		ret = IRQ_HANDLED;
+ 	}
+@@ -235,11 +224,8 @@ static irqreturn_t fsl_dma_isr(int irq, void *dev_id)
+ 		ret = IRQ_HANDLED;
+ 
+ 	if (sr & CCSR_DMA_SR_PE) {
+-		dev_err(dma_private->substream->pcm->card->dev,
+-			"DMA%u programming error (channel=%u irq=%u)\n",
+-			dma_private->controller_id,
+-			dma_private->channel_id, irq);
+-		fsl_dma_abort_stream(dma_private->substream);
++		dev_err(dev, "dma programming error\n");
++		fsl_dma_abort_stream(substream);
+ 		sr2 |= CCSR_DMA_SR_PE;
+ 		ret = IRQ_HANDLED;
+ 	}
+@@ -253,8 +239,6 @@ static irqreturn_t fsl_dma_isr(int irq, void *dev_id)
+ 		ret = IRQ_HANDLED;
+ 
+ 	if (sr & CCSR_DMA_SR_EOSI) {
+-		struct snd_pcm_substream *substream = dma_private->substream;
+-
+ 		/* Tell ALSA we completed a period. */
+ 		snd_pcm_period_elapsed(substream);
+ 
+@@ -305,10 +289,8 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 		fsl_dma_hardware.buffer_bytes_max,
+ 		&pcm->streams[0].substream->dma_buffer);
+ 	if (ret) {
+-		dev_err(card->dev,
+-			"Can't allocate playback DMA buffer (size=%u)\n",
+-			fsl_dma_hardware.buffer_bytes_max);
+-		return -ENOMEM;
++		dev_err(card->dev, "can't allocate playback dma buffer\n");
++		return ret;
+ 	}
+ 
+ 	ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, card->dev,
+@@ -316,10 +298,8 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 		&pcm->streams[1].substream->dma_buffer);
+ 	if (ret) {
+ 		snd_dma_free_pages(&pcm->streams[0].substream->dma_buffer);
+-		dev_err(card->dev,
+-			"Can't allocate capture DMA buffer (size=%u)\n",
+-			fsl_dma_hardware.buffer_bytes_max);
+-		return -ENOMEM;
++		dev_err(card->dev, "can't allocate capture dma buffer\n");
++		return ret;
+ 	}
+ 
+ 	return 0;
+@@ -390,6 +370,10 @@ static int fsl_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
+ static int fsl_dma_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = rtd->platform->dev;
++	struct dma_object *dma =
++		container_of(rtd->platform->driver, struct dma_object, dai);
+ 	struct fsl_dma_private *dma_private;
+ 	struct ccsr_dma_channel __iomem *dma_channel;
+ 	dma_addr_t ld_buf_phys;
+@@ -407,52 +391,44 @@ static int fsl_dma_open(struct snd_pcm_substream *substream)
+ 	ret = snd_pcm_hw_constraint_integer(runtime,
+ 		SNDRV_PCM_HW_PARAM_PERIODS);
+ 	if (ret < 0) {
+-		dev_err(substream->pcm->card->dev, "invalid buffer size\n");
++		dev_err(dev, "invalid buffer size\n");
+ 		return ret;
+ 	}
+ 
+ 	channel = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
+ 
+-	if (dma_global_data.assigned[channel]) {
+-		dev_err(substream->pcm->card->dev,
+-			"DMA channel already assigned\n");
++	if (dma->assigned) {
++		dev_err(dev, "dma channel already assigned\n");
+ 		return -EBUSY;
+ 	}
+ 
+-	dma_private = dma_alloc_coherent(substream->pcm->card->dev,
+-		sizeof(struct fsl_dma_private), &ld_buf_phys, GFP_KERNEL);
++	dma_private = dma_alloc_coherent(dev, sizeof(struct fsl_dma_private),
++					 &ld_buf_phys, GFP_KERNEL);
+ 	if (!dma_private) {
+-		dev_err(substream->pcm->card->dev,
+-			"can't allocate DMA private data\n");
++		dev_err(dev, "can't allocate dma private data\n");
+ 		return -ENOMEM;
+ 	}
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		dma_private->ssi_sxx_phys = dma_global_data.ssi_stx_phys;
++		dma_private->ssi_sxx_phys = dma->ssi_stx_phys;
+ 	else
+-		dma_private->ssi_sxx_phys = dma_global_data.ssi_srx_phys;
++		dma_private->ssi_sxx_phys = dma->ssi_srx_phys;
+ 
+-	dma_private->dma_channel = dma_global_data.dma_channel[channel];
+-	dma_private->irq = dma_global_data.irq[channel];
++	dma_private->dma_channel = dma->channel;
++	dma_private->irq = dma->irq;
+ 	dma_private->substream = substream;
+ 	dma_private->ld_buf_phys = ld_buf_phys;
+ 	dma_private->dma_buf_phys = substream->dma_buffer.addr;
+ 
+-	/* We only support one DMA controller for now */
+-	dma_private->controller_id = 0;
+-	dma_private->channel_id = channel;
+-
+ 	ret = request_irq(dma_private->irq, fsl_dma_isr, 0, "DMA", dma_private);
+ 	if (ret) {
+-		dev_err(substream->pcm->card->dev,
+-			"can't register ISR for IRQ %u (ret=%i)\n",
++		dev_err(dev, "can't register ISR for IRQ %u (ret=%i)\n",
+ 			dma_private->irq, ret);
+-		dma_free_coherent(substream->pcm->card->dev,
+-			sizeof(struct fsl_dma_private),
++		dma_free_coherent(dev, sizeof(struct fsl_dma_private),
+ 			dma_private, dma_private->ld_buf_phys);
+ 		return ret;
+ 	}
+ 
+-	dma_global_data.assigned[channel] = 1;
++	dma->assigned = 1;
+ 
+ 	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
+ 	snd_soc_set_runtime_hwparams(substream, &fsl_dma_hardware);
+@@ -546,6 +522,8 @@ static int fsl_dma_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_dma_private *dma_private = runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = rtd->platform->dev;
+ 
+ 	/* Number of bits per sample */
+ 	unsigned int sample_size =
+@@ -606,8 +584,7 @@ static int fsl_dma_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	default:
+ 		/* We should never get here */
+-		dev_err(substream->pcm->card->dev,
+-			"unsupported sample size %u\n", sample_size);
++		dev_err(dev, "unsupported sample size %u\n", sample_size);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -689,6 +666,8 @@ static snd_pcm_uframes_t fsl_dma_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_dma_private *dma_private = runtime->private_data;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = rtd->platform->dev;
+ 	struct ccsr_dma_channel __iomem *dma_channel = dma_private->dma_channel;
+ 	dma_addr_t position;
+ 	snd_pcm_uframes_t frames;
+@@ -710,8 +689,7 @@ static snd_pcm_uframes_t fsl_dma_pointer(struct snd_pcm_substream *substream)
+ 
+ 	if ((position < dma_private->dma_buf_phys) ||
+ 	    (position > dma_private->dma_buf_end)) {
+-		dev_err(substream->pcm->card->dev,
+-			"dma pointer is out of range, halting stream\n");
++		dev_err(dev, "dma pointer is out of range, halting stream\n");
+ 		return SNDRV_PCM_POS_XRUN;
+ 	}
+ 
+@@ -772,26 +750,28 @@ static int fsl_dma_close(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct fsl_dma_private *dma_private = runtime->private_data;
+-	int dir = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ? 0 : 1;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = rtd->platform->dev;
++	struct dma_object *dma =
++		container_of(rtd->platform->driver, struct dma_object, dai);
+ 
+ 	if (dma_private) {
+ 		if (dma_private->irq)
+ 			free_irq(dma_private->irq, dma_private);
+ 
+ 		if (dma_private->ld_buf_phys) {
+-			dma_unmap_single(substream->pcm->card->dev,
+-				dma_private->ld_buf_phys,
+-				sizeof(dma_private->link), DMA_TO_DEVICE);
++			dma_unmap_single(dev, dma_private->ld_buf_phys,
++					 sizeof(dma_private->link),
++					 DMA_TO_DEVICE);
+ 		}
+ 
+ 		/* Deallocate the fsl_dma_private structure */
+-		dma_free_coherent(substream->pcm->card->dev,
+-			sizeof(struct fsl_dma_private),
+-			dma_private, dma_private->ld_buf_phys);
++		dma_free_coherent(dev, sizeof(struct fsl_dma_private),
++				  dma_private, dma_private->ld_buf_phys);
+ 		substream->runtime->private_data = NULL;
+ 	}
+ 
+-	dma_global_data.assigned[dir] = 0;
++	dma->assigned = 0;
+ 
+ 	return 0;
+ }
+@@ -814,6 +794,41 @@ static void fsl_dma_free_dma_buffers(struct snd_pcm *pcm)
+ 	}
+ }
+ 
++/* List of DMA nodes that we've probed */
++static LIST_HEAD(dma_list);
++
++/**
++ * fsl_soc_dma_to_dai - returning the DAI struct for a given DMA node
++ *
++ * When a machine driver registers itself with ASoC, it must provide the
++ * address of the DAI structures that it wants to connect.  Most drivers simply
++ * reference global data structures in the various drivers, but we PowerPC
++ * developers are better than that.  This driver keeps a list of every DMA
++ * node that it probes, and when the machine driver wants to reference a
++ * DMA DAI, this function provides that service.
++ *
++ * Hopefully one day, ASoC will just want the name of the DMA device, not
++ * some obscure pointer, and this function will go away.
++ */
++struct snd_soc_platform_driver *fsl_soc_dma_to_dai(const char *path,
++	dma_addr_t ssi_stx_phys, dma_addr_t ssi_srx_phys)
++{
++	struct list_head *ptr;
++	struct dma_object *dma;
++
++	list_for_each(ptr, &dma_list) {
++		dma = list_entry(ptr, struct dma_object, list);
++		if (strcmp(path, dma->path) == 0) {
++			dma->ssi_stx_phys = ssi_stx_phys;
++			dma->ssi_srx_phys = ssi_srx_phys;
++			return &dma->dai;
++		}
++	}
++
++	return NULL;
++}
++EXPORT_SYMBOL(fsl_soc_dma_to_dai);
++
+ static struct snd_pcm_ops fsl_dma_ops = {
+ 	.open   	= fsl_dma_open,
+ 	.close  	= fsl_dma_close,
+@@ -823,59 +838,93 @@ static struct snd_pcm_ops fsl_dma_ops = {
+ 	.pointer	= fsl_dma_pointer,
+ };
+ 
+-struct snd_soc_platform fsl_soc_platform = {
+-	.name   	= "fsl-dma",
+-	.pcm_ops	= &fsl_dma_ops,
+-	.pcm_new	= fsl_dma_new,
+-	.pcm_free       = fsl_dma_free_dma_buffers,
+-};
+-EXPORT_SYMBOL_GPL(fsl_soc_platform);
++static int __devinit fsl_soc_dma_probe(struct of_device *of_dev,
++				       const struct of_device_id *match)
++ {
++	struct dma_object *dma;
++	struct device_node *np = of_dev->dev.of_node;
++	int ret;
+ 
+-/**
+- * fsl_dma_configure: store the DMA parameters from the fabric driver.
+- *
+- * This function is called by the ASoC fabric driver to give us the DMA and
+- * SSI channel information.
+- *
+- * Unfortunately, ASoC V1 does make it possible to determine the DMA/SSI
+- * data when a substream is created, so for now we need to store this data
+- * into a global variable.  This means that we can only support one DMA
+- * controller, and hence only one SSI.
+- */
+-int fsl_dma_configure(struct fsl_dma_info *dma_info)
++	dma = kzalloc(sizeof(*dma) + strlen(np->full_name), GFP_KERNEL);
++	if (!dma) {
++		dev_err(&of_dev->dev, "could not allocate dma object\n");
++		return -ENOMEM;
++	}
++
++	strcpy(dma->path, np->full_name);
++	dma->dai.name = dma->path;
++	dma->dai.ops = &fsl_dma_ops;
++	dma->dai.pcm_new = fsl_dma_new;
++	dma->dai.pcm_free = fsl_dma_free_dma_buffers;
++
++	ret = snd_soc_register_platform(&of_dev->dev, 0, &dma->dai);
++	if (ret) {
++		dev_err(&of_dev->dev, "could not register platform\n");
++		kfree(dma);
++		return ret;
++	}
++
++	dma->channel = of_iomap(np, 0);
++	dma->irq = irq_of_parse_and_map(np, 0);
++	list_add(&dma->list, &dma_list);
++
++	return 0;
++}
++
++static int __devexit fsl_soc_dma_remove(struct of_device *of_dev)
+ {
+-	static int initialized;
++	struct list_head *n, *ptr;
++	struct dma_object *dma;
+ 
+-	/* We only support one DMA controller for now */
+-	if (initialized)
+-		return 0;
++	list_for_each_safe(ptr, n, &dma_list) {
++		dma = list_entry(ptr, struct dma_object, list);
++		list_del_init(ptr);
+ 
+-	dma_global_data.ssi_stx_phys = dma_info->ssi_stx_phys;
+-	dma_global_data.ssi_srx_phys = dma_info->ssi_srx_phys;
+-	dma_global_data.dma_channel[0] = dma_info->dma_channel[0];
+-	dma_global_data.dma_channel[1] = dma_info->dma_channel[1];
+-	dma_global_data.irq[0] = dma_info->dma_irq[0];
+-	dma_global_data.irq[1] = dma_info->dma_irq[1];
+-	dma_global_data.assigned[0] = 0;
+-	dma_global_data.assigned[1] = 0;
+-
+-	initialized = 1;
+-	return 1;
++		snd_soc_unregister_platform(&of_dev->dev, 0);
++		iounmap(dma->channel);
++		irq_dispose_mapping(dma->irq);
++		kfree(dma);
++	}
++
++	return 0;
+ }
+-EXPORT_SYMBOL_GPL(fsl_dma_configure);
+ 
+-static int __init fsl_soc_platform_init(void)
++static const struct of_device_id fsl_soc_dma_ids[] = {
++	{ .compatible = "fsl,ssi-dma-channel", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, fsl_soc_dma_ids);
++
++static struct of_platform_driver fsl_soc_dma_driver = {
++	.driver = {
++		.name = "fsl-soc-dma-dai",
++		.owner = THIS_MODULE,
++		.of_match_table = fsl_soc_dma_ids,
++	},
++	.probe = fsl_soc_dma_probe,
++	.remove = __devexit_p(fsl_soc_dma_remove),
++};
++
++static int __init fsl_soc_dma_init(void)
+ {
+-	return snd_soc_register_platform(&fsl_soc_platform);
++	pr_info("Freescale Elo DMA ASoC PCM Driver\n");
++
++	return of_register_platform_driver(&fsl_soc_dma_driver);
+ }
+-module_init(fsl_soc_platform_init);
+ 
+-static void __exit fsl_soc_platform_exit(void)
++static void __exit fsl_soc_dma_exit(void)
+ {
+-	snd_soc_unregister_platform(&fsl_soc_platform);
++	of_unregister_platform_driver(&fsl_soc_dma_driver);
+ }
+-module_exit(fsl_soc_platform_exit);
++
++/* We want the DMA driver to be initialized before the SSI driver, so that
++ * when the SSI driver calls fsl_soc_dma_dai_from_node(), the DMA driver
++ * will already have been probed.  The easiest way to do that is to make the
++ * __init function called via arch_initcall().
++ */
++arch_initcall(fsl_soc_dma_init);
++module_exit(fsl_soc_dma_exit);
+ 
+ MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
+-MODULE_DESCRIPTION("Freescale Elo DMA ASoC PCM module");
+-MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Freescale Elo DMA ASoC PCM Driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/fsl/fsl_dma.h b/sound/soc/fsl/fsl_dma.h
+index 385d4a4..88c686d 100644
+--- a/sound/soc/fsl/fsl_dma.h
++++ b/sound/soc/fsl/fsl_dma.h
+@@ -126,24 +126,9 @@ struct fsl_dma_link_descriptor {
+ 	u8 res[4];      /* Reserved */
+ } __attribute__ ((aligned(32), packed));
+ 
+-/* DMA information needed to create a snd_soc_dai object
+- *
+- * ssi_stx_phys: bus address of SSI STX register to use
+- * ssi_srx_phys: bus address of SSI SRX register to use
+- * dma[0]: points to the DMA channel to use for playback
+- * dma[1]: points to the DMA channel to use for capture
+- * dma_irq[0]: IRQ of the DMA channel to use for playback
+- * dma_irq[1]: IRQ of the DMA channel to use for capture
+- */
+-struct fsl_dma_info {
+-	dma_addr_t ssi_stx_phys;
+-	dma_addr_t ssi_srx_phys;
+-	struct ccsr_dma_channel __iomem *dma_channel[2];
+-	unsigned int dma_irq[2];
+-};
+-
+-extern struct snd_soc_platform fsl_soc_platform;
++extern struct snd_soc_platform_driver fsl_soc_platform;
+ 
+-int fsl_dma_configure(struct fsl_dma_info *dma_info);
++struct snd_soc_platform_driver *fsl_soc_dma_to_dai(const char *path,
++	dma_addr_t ssi_stx_phys, dma_addr_t ssi_srx_phys);
+ 
+ #endif
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 762c1b8..31e8e5c 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -3,10 +3,11 @@
+  *
+  * Author: Timur Tabi <timur@freescale.com>
+  *
+- * Copyright 2007-2008 Freescale Semiconductor, Inc.  This file is licensed
+- * under the terms of the GNU General Public License version 2.  This
+- * program is licensed "as is" without any warranty of any kind, whether
+- * express or implied.
++ * Copyright 2007-2010 Freescale Semiconductor, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
+  */
+ 
+ #include <linux/init.h>
+@@ -15,6 +16,7 @@
+ #include <linux/device.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
++#include <linux/of_platform.h>
+ 
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -71,33 +73,31 @@
+ /**
+  * fsl_ssi_private: per-SSI private data
+  *
+- * @name: short name for this device ("SSI0", "SSI1", etc)
+  * @ssi: pointer to the SSI's registers
+  * @ssi_phys: physical address of the SSI registers
+  * @irq: IRQ of this SSI
+  * @first_stream: pointer to the stream that was opened first
+  * @second_stream: pointer to second stream
+- * @dev: struct device pointer
+  * @playback: the number of playback streams opened
+  * @capture: the number of capture streams opened
+  * @asynchronous: 0=synchronous mode, 1=asynchronous mode
+  * @cpu_dai: the CPU DAI for this device
+  * @dev_attr: the sysfs device attribute structure
+  * @stats: SSI statistics
++ * @name: name for this device
+  */
+ struct fsl_ssi_private {
+-	char name[8];
+ 	struct ccsr_ssi __iomem *ssi;
+ 	dma_addr_t ssi_phys;
+ 	unsigned int irq;
+ 	struct snd_pcm_substream *first_stream;
+ 	struct snd_pcm_substream *second_stream;
+-	struct device *dev;
+ 	unsigned int playback;
+ 	unsigned int capture;
+ 	int asynchronous;
+-	struct snd_soc_dai cpu_dai;
++	struct snd_soc_dai_driver cpu_dai_drv;
+ 	struct device_attribute dev_attr;
++	struct platform_device *pdev;
+ 
+ 	struct {
+ 		unsigned int rfrc;
+@@ -122,6 +122,8 @@ struct fsl_ssi_private {
+ 		unsigned int tfe1;
+ 		unsigned int tfe0;
+ 	} stats;
++
++	char name[1];
+ };
+ 
+ /**
+@@ -280,7 +282,7 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ 			   struct snd_soc_dai *dai)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct snd_soc_dai *cpu_dai =rtd->cpu_dai;
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	int dma_op_mode = omap_mcbsp_get_dma_op_mode(mcbsp_data->bus_id);
- 	int words;
+-	struct fsl_ssi_private *ssi_private = rtd->dai->cpu_dai->private_data;
++	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
  
-@@ -201,8 +199,8 @@ static int omap_mcbsp_hwrule_max_periodsize(struct snd_pcm_hw_params *params,
- 					SNDRV_PCM_HW_PARAM_CHANNELS);
- 	struct snd_pcm_substream *substream = rule->private;
+ 	/*
+ 	 * If this is the first stream opened, then request the IRQ
+@@ -290,8 +292,10 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ 		struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+ 		int ret;
+ 
++		/* The 'name' should not have any slashes in it. */
+ 		ret = request_irq(ssi_private->irq, fsl_ssi_isr, 0,
+-				  ssi_private->name, ssi_private);
++				  strrchr(ssi_private->name, '/') + 1,
++				  ssi_private);
+ 		if (ret < 0) {
+ 			dev_err(substream->pcm->card->dev,
+ 				"could not claim irq %u\n", ssi_private->irq);
+@@ -422,7 +426,7 @@ static int fsl_ssi_startup(struct snd_pcm_substream *substream,
+ static int fsl_ssi_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *hw_params, struct snd_soc_dai *cpu_dai)
+ {
+-	struct fsl_ssi_private *ssi_private = cpu_dai->private_data;
++	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(cpu_dai);
+ 
+ 	if (substream == ssi_private->first_stream) {
+ 		struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
+@@ -458,7 +462,7 @@ static int fsl_ssi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			   struct snd_soc_dai *dai)
+ {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct snd_interval frames;
- 	int size;
- 
-@@ -218,11 +216,9 @@ static int omap_mcbsp_hwrule_max_periodsize(struct snd_pcm_hw_params *params,
- }
- 
- static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
--				  struct snd_soc_dai *dai)
-+				  struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	int bus_id = mcbsp_data->bus_id;
- 	int err = 0;
- 
-@@ -274,11 +270,9 @@ static int omap_mcbsp_dai_startup(struct snd_pcm_substream *substream,
- }
- 
- static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
--				    struct snd_soc_dai *dai)
-+				    struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 
- 	if (!cpu_dai->active) {
- 		omap_mcbsp_free(mcbsp_data->bus_id);
-@@ -287,11 +281,9 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
- }
- 
- static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
--				  struct snd_soc_dai *dai)
-+				  struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	int err = 0, play = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+-	struct fsl_ssi_private *ssi_private = rtd->dai->cpu_dai->private_data;
++	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	struct ccsr_ssi __iomem *ssi = ssi_private->ssi;
  
  	switch (cmd) {
-@@ -320,8 +312,8 @@ static snd_pcm_sframes_t omap_mcbsp_dai_delay(
- 			struct snd_soc_dai *dai)
+@@ -497,7 +501,7 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *dai)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	u16 fifo_use;
- 	snd_pcm_sframes_t delay;
+-	struct fsl_ssi_private *ssi_private = rtd->dai->cpu_dai->private_data;
++	struct fsl_ssi_private *ssi_private = snd_soc_dai_get_drvdata(rtd->cpu_dai);
  
-@@ -342,11 +334,9 @@ static snd_pcm_sframes_t omap_mcbsp_dai_delay(
- 
- static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *params,
--				    struct snd_soc_dai *dai)
-+				    struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
- 	int dma, bus_id = mcbsp_data->bus_id, id = cpu_dai->id;
- 	int wlen, channels, wpf, sync_mode = OMAP_DMA_SYNC_ELEMENT;
-@@ -481,7 +471,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 				      unsigned int fmt)
- {
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
- 	unsigned int temp_fmt = fmt;
- 
-@@ -581,7 +571,7 @@ static int omap_mcbsp_dai_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- static int omap_mcbsp_dai_set_clkdiv(struct snd_soc_dai *cpu_dai,
- 				     int div_id, int div)
- {
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
- 
- 	if (div_id != OMAP_MCBSP_CLKGDV)
-@@ -684,7 +674,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 					 int clk_id, unsigned int freq,
- 					 int dir)
- {
--	struct omap_mcbsp_data *mcbsp_data = to_mcbsp(cpu_dai->private_data);
-+	struct omap_mcbsp_data *mcbsp_data = snd_soc_dai_get_drvdata(cpu_dai);
- 	struct omap_mcbsp_reg_cfg *regs = &mcbsp_data->regs;
- 	int err = 0;
- 
-@@ -718,7 +708,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	return err;
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		ssi_private->playback--;
+@@ -523,56 +527,15 @@ static void fsl_ssi_shutdown(struct snd_pcm_substream *substream,
+ 	}
  }
  
--static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
-+static struct snd_soc_dai_ops mcbsp_dai_ops = {
- 	.startup	= omap_mcbsp_dai_startup,
- 	.shutdown	= omap_mcbsp_dai_shutdown,
- 	.trigger	= omap_mcbsp_dai_trigger,
-@@ -729,42 +719,34 @@ static struct snd_soc_dai_ops omap_mcbsp_dai_ops = {
- 	.set_sysclk	= omap_mcbsp_dai_set_dai_sysclk,
+-/**
+- * fsl_ssi_set_sysclk: set the clock frequency and direction
+- *
+- * This function is called by the machine driver to tell us what the clock
+- * frequency and direction are.
+- *
+- * Currently, we only support operating as a clock slave (SND_SOC_CLOCK_IN),
+- * and we don't care about the frequency.  Return an error if the direction
+- * is not SND_SOC_CLOCK_IN.
+- *
+- * @clk_id: reserved, should be zero
+- * @freq: the frequency of the given clock ID, currently ignored
+- * @dir: SND_SOC_CLOCK_IN (clock slave) or SND_SOC_CLOCK_OUT (clock master)
+- */
+-static int fsl_ssi_set_sysclk(struct snd_soc_dai *cpu_dai,
+-			      int clk_id, unsigned int freq, int dir)
+-{
+-
+-	return (dir == SND_SOC_CLOCK_IN) ? 0 : -EINVAL;
+-}
+-
+-/**
+- * fsl_ssi_set_fmt: set the serial format.
+- *
+- * This function is called by the machine driver to tell us what serial
+- * format to use.
+- *
+- * Currently, we only support I2S mode.  Return an error if the format is
+- * not SND_SOC_DAIFMT_I2S.
+- *
+- * @format: one of SND_SOC_DAIFMT_xxx
+- */
+-static int fsl_ssi_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int format)
+-{
+-	return (format == SND_SOC_DAIFMT_I2S) ? 0 : -EINVAL;
+-}
+-
+-/**
+- * fsl_ssi_dai_template: template CPU DAI for the SSI
+- */
+ static struct snd_soc_dai_ops fsl_ssi_dai_ops = {
+ 	.startup	= fsl_ssi_startup,
+ 	.hw_params	= fsl_ssi_hw_params,
+ 	.shutdown	= fsl_ssi_shutdown,
+ 	.trigger	= fsl_ssi_trigger,
+-	.set_sysclk	= fsl_ssi_set_sysclk,
+-	.set_fmt	= fsl_ssi_set_fmt,
  };
  
--#define OMAP_MCBSP_DAI_BUILDER(link_id)				\
--{								\
--	.name = "omap-mcbsp-dai-"#link_id,			\
--	.id = (link_id),					\
--	.playback = {						\
--		.channels_min = 1,				\
--		.channels_max = 16,				\
--		.rates = OMAP_MCBSP_RATES,			\
--		.formats = SNDRV_PCM_FMTBIT_S16_LE |		\
--			   SNDRV_PCM_FMTBIT_S32_LE,		\
--	},							\
--	.capture = {						\
--		.channels_min = 1,				\
--		.channels_max = 16,				\
--		.rates = OMAP_MCBSP_RATES,			\
--		.formats = SNDRV_PCM_FMTBIT_S16_LE |		\
--			   SNDRV_PCM_FMTBIT_S32_LE,		\
--	},							\
--	.ops = &omap_mcbsp_dai_ops,				\
--	.private_data = &mcbsp_data[(link_id)].bus_id,		\
-+static int mcbsp_dai_probe(struct snd_soc_dai *dai)
-+{
-+	mcbsp_data[dai->id].bus_id = dai->id;
-+	snd_soc_dai_set_drvdata(dai, &mcbsp_data[dai->id].bus_id);
-+	return 0;
- }
- 
--struct snd_soc_dai omap_mcbsp_dai[] = {
--	OMAP_MCBSP_DAI_BUILDER(0),
--	OMAP_MCBSP_DAI_BUILDER(1),
--#if NUM_LINKS >= 3
--	OMAP_MCBSP_DAI_BUILDER(2),
--#endif
--#if NUM_LINKS == 5
--	OMAP_MCBSP_DAI_BUILDER(3),
--	OMAP_MCBSP_DAI_BUILDER(4),
--#endif
-+struct snd_soc_dai_driver omap_mcbsp_dai =
-+{
-+	.name = "omap-mcbsp-dai",
-+	.probe = mcbsp_dai_probe,
-+	.playback = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+		.rates = OMAP_MCBSP_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+	.capture = {
-+		.channels_min = 1,
-+		.channels_max = 16,
-+		.rates = OMAP_MCBSP_RATES,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+	.ops = &mcbsp_dai_ops,
- };
--
- EXPORT_SYMBOL_GPL(omap_mcbsp_dai);
- 
-+
- int omap_mcbsp_st_info_volsw(struct snd_kcontrol *kcontrol,
- 			struct snd_ctl_elem_info *uinfo)
- {
-@@ -895,16 +877,36 @@ int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, int mcbsp_id)
- }
- EXPORT_SYMBOL_GPL(omap_mcbsp_st_add_controls);
- 
-+static __devinit int asoc_mcbsp_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_dai(&pdev->dev, pdev->id, &omap_mcbsp_dai);
-+}
-+
-+static int __devexit asoc_mcbsp_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_dai(&pdev->dev, pdev->id);
-+	return 0;
-+}
-+
-+static struct platform_driver asoc_mcbsp_driver = {
-+	.driver = {
-+			.name = "omap_mcbsp",
-+			.owner = THIS_MODULE,
-+	},
-+
-+	.probe = asoc_mcbsp_probe,
-+	.remove = __devexit_p(asoc_mcbsp_remove),
-+};
-+
- static int __init snd_omap_mcbsp_init(void)
- {
--	return snd_soc_register_dais(omap_mcbsp_dai,
--				     ARRAY_SIZE(omap_mcbsp_dai));
-+	return platform_driver_register(&asoc_mcbsp_driver);
- }
- module_init(snd_omap_mcbsp_init);
- 
- static void __exit snd_omap_mcbsp_exit(void)
- {
--	snd_soc_unregister_dais(omap_mcbsp_dai, ARRAY_SIZE(omap_mcbsp_dai));
-+	platform_driver_unregister(&asoc_mcbsp_driver);
- }
- module_exit(snd_omap_mcbsp_exit);
- 
-diff --git a/sound/soc/omap/omap-mcbsp.h b/sound/soc/omap/omap-mcbsp.h
-index 6c363e5..9d8d42d 100644
---- a/sound/soc/omap/omap-mcbsp.h
-+++ b/sound/soc/omap/omap-mcbsp.h
-@@ -55,7 +55,7 @@ enum omap_mcbsp_div {
- #define NUM_LINKS	5
- #endif
- 
--extern struct snd_soc_dai omap_mcbsp_dai[NUM_LINKS];
-+extern struct snd_soc_dai_driver omap_mcbsp_dai;
- 
- int omap_mcbsp_st_add_controls(struct snd_soc_codec *codec, int mcbsp_id);
- 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index b7f4f7e..63aa449 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -89,11 +89,9 @@ static struct omap_pcm_dma_data omap_mcpdm_dai_dma_params[] = {
- static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
- 	int err = 0;
- 
--	if (!cpu_dai->active)
-+	if (!dai->active)
- 		err = omap_mcpdm_request();
- 
- 	return err;
-@@ -102,19 +100,14 @@ static int omap_mcpdm_dai_startup(struct snd_pcm_substream *substream,
- static void omap_mcpdm_dai_shutdown(struct snd_pcm_substream *substream,
- 				    struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--
--	if (!cpu_dai->active)
-+	if (!dai->active)
- 		omap_mcpdm_free();
- }
- 
- static int omap_mcpdm_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 				  struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcpdm_data *mcpdm_priv = cpu_dai->private_data;
-+	struct omap_mcpdm_data *mcpdm_priv = snd_soc_dai_get_drvdata(dai);
- 	int stream = substream->stream;
- 	int err = 0;
- 
-@@ -143,14 +136,12 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
- 				    struct snd_pcm_hw_params *params,
- 				    struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcpdm_data *mcpdm_priv = cpu_dai->private_data;
-+	struct omap_mcpdm_data *mcpdm_priv = snd_soc_dai_get_drvdata(dai);
- 	struct omap_mcpdm_link *mcpdm_links = mcpdm_priv->links;
- 	int stream = substream->stream;
- 	int channels, err, link_mask = 0;
- 
--	snd_soc_dai_set_dma_data(cpu_dai, substream,
-+	snd_soc_dai_set_dma_data(dai, substream,
- 				 &omap_mcpdm_dai_dma_params[stream]);
- 
- 	channels = params_channels(params);
-@@ -189,9 +180,7 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
- static int omap_mcpdm_dai_hw_free(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
--	struct omap_mcpdm_data *mcpdm_priv = cpu_dai->private_data;
-+	struct omap_mcpdm_data *mcpdm_priv = snd_soc_dai_get_drvdata(dai);
- 	struct omap_mcpdm_link *mcpdm_links = mcpdm_priv->links;
- 	int stream = substream->stream;
- 	int err;
-@@ -215,9 +204,15 @@ static struct snd_soc_dai_ops omap_mcpdm_dai_ops = {
- #define OMAP_MCPDM_RATES	(SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
- #define OMAP_MCPDM_FORMATS	(SNDRV_PCM_FMTBIT_S32_LE)
- 
--struct snd_soc_dai omap_mcpdm_dai = {
-+static int omap_mcpdm_dai_probe(struct snd_soc_dai *dai)
-+{
-+	snd_soc_dai_set_drvdata(dai, &mcpdm_data);
-+	return 0;
-+}
-+
-+struct snd_soc_dai_driver omap_mcpdm_dai = {
- 	.name = "omap-mcpdm",
--	.id = -1,
-+	.probe = omap_mcpdm_dai_probe,
+-static struct snd_soc_dai fsl_ssi_dai_template = {
++/* Template for the CPU dai driver structure */
++static struct snd_soc_dai_driver fsl_ssi_dai_template = {
  	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 4,
-@@ -231,19 +226,48 @@ struct snd_soc_dai omap_mcpdm_dai = {
- 		.formats = OMAP_MCPDM_FORMATS,
- 	},
- 	.ops = &omap_mcpdm_dai_ops,
--	.private_data = &mcpdm_data,
- };
- EXPORT_SYMBOL_GPL(omap_mcpdm_dai);
+ 		/* The SSI does not support monaural audio. */
+ 		.channels_min = 2,
+@@ -640,95 +603,170 @@ static ssize_t fsl_sysfs_ssi_show(struct device *dev,
+ }
  
-+static __devinit int asoc_mcpdm_probe(struct platform_device *pdev)
+ /**
+- * fsl_ssi_create_dai: create a snd_soc_dai structure
+- *
+- * This function is called by the machine driver to create a snd_soc_dai
+- * structure.  The function creates an ssi_private object, which contains
+- * the snd_soc_dai.  It also creates the sysfs statistics device.
++ * Make every character in a string lower-case
+  */
+-struct snd_soc_dai *fsl_ssi_create_dai(struct fsl_ssi_info *ssi_info)
++static void make_lowercase(char *s)
 +{
-+	int ret;
++	char *p = s;
++	char c;
 +
-+	ret = omap_mcpdm_probe(pdev);
-+	if (ret < 0)
++	while ((c = *p)) {
++		if ((c >= 'A') && (c <= 'Z'))
++			*p = c + ('a' - 'A');
++		p++;
++	}
++}
++
++static int __devinit fsl_ssi_probe(struct of_device *of_dev,
++				   const struct of_device_id *match)
+ {
+-	struct snd_soc_dai *fsl_ssi_dai;
+ 	struct fsl_ssi_private *ssi_private;
+ 	int ret = 0;
+ 	struct device_attribute *dev_attr;
++	struct device_node *np = of_dev->dev.of_node;
++	const char *sprop;
++	struct resource res;
++	char name[64];
++	struct platform_device *pdev;
++	void *platform_data;
++
++	/* We are only interested in SSIs with a codec phandle in them, so let's
++	 * make sure this SSI has one.
++	 */
++	if (!of_get_property(np, "codec-handle", NULL))
++		return -ENODEV;
++
++	/* We only support the SSI in "I2S Slave" mode */
++	sprop = of_get_property(np, "fsl,mode", NULL);
++	if (!sprop || strcmp(sprop, "i2s-slave")) {
++		dev_notice(&of_dev->dev, "mode %s is unsupported\n", sprop);
++		return -ENODEV;
++	}
+ 
+-	ssi_private = kzalloc(sizeof(struct fsl_ssi_private), GFP_KERNEL);
++	ssi_private = kzalloc(sizeof(struct fsl_ssi_private) +
++			      strlen(np->full_name), GFP_KERNEL);
+ 	if (!ssi_private) {
+-		dev_err(ssi_info->dev, "could not allocate DAI object\n");
+-		return NULL;
++		dev_err(&of_dev->dev, "could not allocate DAI object\n");
++		return -ENOMEM;
+ 	}
+-	memcpy(&ssi_private->cpu_dai, &fsl_ssi_dai_template,
+-	       sizeof(struct snd_soc_dai));
+ 
+-	fsl_ssi_dai = &ssi_private->cpu_dai;
+-	dev_attr = &ssi_private->dev_attr;
++	/* Initialize this copy of the CPU DAI driver structure */
++	memcpy(&ssi_private->cpu_dai_drv, &fsl_ssi_dai_template,
++	       sizeof(fsl_ssi_dai_template));
++	ssi_private->cpu_dai_drv.name = ssi_private->name;
+ 
+-	sprintf(ssi_private->name, "ssi%u", (u8) ssi_info->id);
+-	ssi_private->ssi = ssi_info->ssi;
+-	ssi_private->ssi_phys = ssi_info->ssi_phys;
+-	ssi_private->irq = ssi_info->irq;
+-	ssi_private->dev = ssi_info->dev;
+-	ssi_private->asynchronous = ssi_info->asynchronous;
++	/* The name we register with ASoC is the full node name */
++	strlcpy(ssi_private->name, np->full_name, sizeof(ssi_private->name));
+ 
+-	dev_set_drvdata(ssi_private->dev, fsl_ssi_dai);
++	/* Get the addresses and IRQ */
++	ret = of_address_to_resource(np, 0, &res);
++	if (ret) {
++		dev_err(&of_dev->dev, "could not determine device resources\n");
++		kfree(ssi_private);
 +		return ret;
-+	ret = snd_soc_register_dai(&pdev->dev, pdev->id, &omap_mcpdm_dai);
-+	if (ret < 0)
-+		omap_mcpdm_remove(pdev);
-+	return ret;
-+}
++	}
++	ssi_private->ssi = ioremap(res.start, 1 + res.end - res.start);
++	ssi_private->ssi_phys = res.start;
++	ssi_private->irq = irq_of_parse_and_map(np, 0);
 +
-+static int __devexit asoc_mcpdm_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_dai(&pdev->dev, pdev->id);
-+	omap_mcpdm_remove(pdev);
-+	return 0;
-+}
-+
-+static struct platform_driver asoc_mcpdm_driver = {
-+	.driver = {
-+			.name = "omap-mcpdm",
-+			.owner = THIS_MODULE,
-+	},
-+
-+	.probe = asoc_mcpdm_probe,
-+	.remove = __devexit_p(asoc_mcpdm_remove),
-+};
-+
- static int __init snd_omap_mcpdm_init(void)
- {
--	return snd_soc_register_dai(&omap_mcpdm_dai);
-+	return platform_driver_register(&asoc_mcpdm_driver);
- }
- module_init(snd_omap_mcpdm_init);
++	/* Are the RX and the TX clocks locked? */
++	if (of_find_property(np, "fsl,ssi-asynchronous", NULL))
++		ssi_private->asynchronous = 1;
++	else
++		ssi_private->cpu_dai_drv.symmetric_rates = 1;
  
- static void __exit snd_omap_mcpdm_exit(void)
- {
--	snd_soc_unregister_dai(&omap_mcpdm_dai);
-+	platform_driver_unregister(&asoc_mcpdm_driver);
- }
- module_exit(snd_omap_mcpdm_exit);
+ 	/* Initialize the the device_attribute structure */
+-	dev_attr->attr.name = "ssi-stats";
++	dev_attr = &ssi_private->dev_attr;
++	dev_attr->attr.name = "statistics";
+ 	dev_attr->attr.mode = S_IRUGO;
+ 	dev_attr->show = fsl_sysfs_ssi_show;
  
-diff --git a/sound/soc/omap/omap-mcpdm.h b/sound/soc/omap/omap-mcpdm.h
-index 73b80d5..68b1ced 100644
---- a/sound/soc/omap/omap-mcpdm.h
-+++ b/sound/soc/omap/omap-mcpdm.h
-@@ -24,6 +24,6 @@
- #ifndef __OMAP_MCPDM_H__
- #define __OMAP_MCPDM_H__
- 
--extern struct snd_soc_dai omap_mcpdm_dai;
-+extern struct snd_soc_dai_driver omap_mcpdm_dai;
- 
- #endif	/* End of __OMAP_MCPDM_H__ */
-diff --git a/sound/soc/omap/omap-pcm.c b/sound/soc/omap/omap-pcm.c
-index 1e52190..de9fda3 100644
---- a/sound/soc/omap/omap-pcm.c
-+++ b/sound/soc/omap/omap-pcm.c
-@@ -101,9 +101,10 @@ static int omap_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct omap_runtime_data *prtd = runtime->private_data;
- 	struct omap_pcm_dma_data *dma_data;
-+
- 	int err = 0;
- 
--	dma_data = snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
-+	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
- 	/* return if this is a bufferless transfer e.g.
- 	 * codec <--> BT codec or GSM modem -- lg FIXME */
-@@ -374,14 +375,14 @@ static int omap_pcm_new(struct snd_card *card, struct snd_soc_dai *dai,
- 	if (!card->dev->coherent_dma_mask)
- 		card->dev->coherent_dma_mask = DMA_BIT_MASK(64);
- 
--	if (dai->playback.channels_min) {
-+	if (dai->driver->playback.channels_min) {
- 		ret = omap_pcm_preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_PLAYBACK);
- 		if (ret)
- 			goto out;
- 	}
- 
--	if (dai->capture.channels_min) {
-+	if (dai->driver->capture.channels_min) {
- 		ret = omap_pcm_preallocate_dma_buffer(pcm,
- 			SNDRV_PCM_STREAM_CAPTURE);
- 		if (ret)
-@@ -392,25 +393,47 @@ out:
- 	return ret;
- }
- 
--struct snd_soc_platform omap_soc_platform = {
-+struct snd_soc_platform_driver omap_soc_platform = {
- 	.name		= "omap-pcm-audio",
--	.pcm_ops 	= &omap_pcm_ops,
-+	.ops 		= &omap_pcm_ops,
- 	.pcm_new	= omap_pcm_new,
- 	.pcm_free	= omap_pcm_free_dma_buffers,
- };
- EXPORT_SYMBOL_GPL(omap_soc_platform);
- 
--static int __init omap_soc_platform_init(void)
-+static __devinit int omap_pcm_probe(struct platform_device *pdev)
-+{
-+	return snd_soc_register_platform(&pdev->dev, pdev->id,
-+			&omap_soc_platform);
-+}
-+
-+static int __devexit omap_pcm_remove(struct platform_device *pdev)
-+{
-+	snd_soc_unregister_platform(&pdev->dev, pdev->id);
-+	return 0;
-+}
-+
-+static struct platform_driver omap_pcm_driver = {
-+	.driver = {
-+			.name = "omap_pcm",
-+			.owner = THIS_MODULE,
-+	},
-+
-+	.probe = omap_pcm_probe,
-+	.remove = __devexit_p(omap_pcm_remove),
-+};
-+
-+static int __init snd_omap_pcm_init(void)
- {
--	return snd_soc_register_platform(&omap_soc_platform);
-+	return platform_driver_register(&omap_pcm_driver);
- }
--module_init(omap_soc_platform_init);
-+module_init(snd_omap_pcm_init);
- 
--static void __exit omap_soc_platform_exit(void)
-+static void __exit snd_omap_pcm_exit(void)
- {
--	snd_soc_unregister_platform(&omap_soc_platform);
-+	platform_driver_unregister(&omap_pcm_driver);
- }
--module_exit(omap_soc_platform_exit);
-+module_exit(snd_omap_pcm_exit);
- 
- MODULE_AUTHOR("Jarkko Nikula <jhnikula@gmail.com>");
- MODULE_DESCRIPTION("OMAP PCM DMA module");
-diff --git a/sound/soc/omap/omap-pcm.h b/sound/soc/omap/omap-pcm.h
-index b19975d..44cf661 100644
---- a/sound/soc/omap/omap-pcm.h
-+++ b/sound/soc/omap/omap-pcm.h
-@@ -35,6 +35,6 @@ struct omap_pcm_dma_data {
- 	int		packet_size;	/* packet size only in PACKET mode */
- };
- 
--extern struct snd_soc_platform omap_soc_platform;
-+extern struct snd_soc_platform_driver omap_soc_platform;
- 
- #endif
-diff --git a/sound/soc/omap/omap2evm.c b/sound/soc/omap/omap2evm.c
-index c7adea3..db86d49 100644
---- a/sound/soc/omap/omap2evm.c
-+++ b/sound/soc/omap/omap2evm.c
-@@ -38,12 +38,11 @@
- #include "../codecs/twl4030.h"
- 
- static int omap2evm_hw_params(struct snd_pcm_substream *substream,
--	struct snd_pcm_hw_params *params,
--	struct snd_soc_dai *dai)
-+	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
- 	/* Set codec DAI configuration */
-@@ -85,25 +84,22 @@ static struct snd_soc_ops omap2evm_ops = {
- static struct snd_soc_dai_link omap2evm_dai = {
- 	.name = "TWL4030",
- 	.stream_name = "TWL4030",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+	.cpu_dai_drv = &omap_mcbsp_dai,
-+	.cpu_dai_id = OMAP_MCBSP2,
-+	.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
-+	.codec_dai_id = TWL4030_DAI_HIFI,
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &soc_codec_dev_twl4030,
- 	.ops = &omap2evm_ops,
- };
- 
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_omap2evm = {
- 	.name = "omap2evm",
--	.platform = &omap_soc_platform,
- 	.dai_link = &omap2evm_dai,
- 	.num_links = 1,
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device omap2evm_snd_devdata = {
--	.card = &snd_soc_omap2evm,
--	.codec_dev = &soc_codec_dev_twl4030,
--};
--
- static struct platform_device *omap2evm_snd_device;
- 
- static int __init omap2evm_soc_init(void)
-@@ -122,9 +118,7 @@ static int __init omap2evm_soc_init(void)
- 		return -ENOMEM;
- 	}
- 
--	platform_set_drvdata(omap2evm_snd_device, &omap2evm_snd_devdata);
--	omap2evm_snd_devdata.dev = &omap2evm_snd_device->dev;
--	*(unsigned int *)omap2evm_dai.cpu_dai->private_data = 1; /* McBSP2 */
-+	platform_set_drvdata(omap2evm_snd_device, &snd_soc_omap2evm);
- 
- 	ret = platform_device_add(omap2evm_snd_device);
- 	if (ret)
-diff --git a/sound/soc/omap/omap3beagle.c b/sound/soc/omap/omap3beagle.c
-index 240e097..5214813 100644
---- a/sound/soc/omap/omap3beagle.c
-+++ b/sound/soc/omap/omap3beagle.c
-@@ -39,8 +39,8 @@ static int omap3beagle_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	unsigned int fmt;
- 	int ret;
- 
-@@ -92,25 +92,23 @@ static struct snd_soc_ops omap3beagle_ops = {
- static struct snd_soc_dai_link omap3beagle_dai = {
- 	.name = "TWL4030",
- 	.stream_name = "TWL4030",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+	.cpu_dai_id = OMAP_MCBSP2,
-+	.platform_drv = &omap_soc_platform,
-+	.cpu_dai_drv = &omap_mcbsp_dai,
-+	.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
-+	.codec_dai_id = TWL4030_DAI_HIFI,
-+	.codec_drv = &soc_codec_dev_twl4030,
- 	.ops = &omap3beagle_ops,
- };
- 
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_omap3beagle = {
- 	.name = "omap3beagle",
--	.platform = &omap_soc_platform,
-+	.owner = THIS_MODULE,
- 	.dai_link = &omap3beagle_dai,
- 	.num_links = 1,
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device omap3beagle_snd_devdata = {
--	.card = &snd_soc_omap3beagle,
--	.codec_dev = &soc_codec_dev_twl4030,
--};
--
- static struct platform_device *omap3beagle_snd_device;
- 
- static int __init omap3beagle_soc_init(void)
-@@ -129,9 +127,7 @@ static int __init omap3beagle_soc_init(void)
- 		return -ENOMEM;
- 	}
- 
--	platform_set_drvdata(omap3beagle_snd_device, &omap3beagle_snd_devdata);
--	omap3beagle_snd_devdata.dev = &omap3beagle_snd_device->dev;
--	*(unsigned int *)omap3beagle_dai.cpu_dai->private_data = 1; /* McBSP2 */
-+	platform_set_drvdata(omap3beagle_snd_device, &snd_soc_omap3beagle);
- 
- 	ret = platform_device_add(omap3beagle_snd_device);
- 	if (ret)
-diff --git a/sound/soc/omap/omap3evm.c b/sound/soc/omap/omap3evm.c
-index dfcb344..a5a8813 100644
---- a/sound/soc/omap/omap3evm.c
-+++ b/sound/soc/omap/omap3evm.c
-@@ -37,8 +37,8 @@ static int omap3evm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
- 	/* Set codec DAI configuration */
-@@ -80,32 +80,22 @@ static struct snd_soc_ops omap3evm_ops = {
- static struct snd_soc_dai_link omap3evm_dai = {
- 	.name 		= "TWL4030",
- 	.stream_name 	= "TWL4030",
--	.cpu_dai 	= &omap_mcbsp_dai[0],
--	.codec_dai 	= &twl4030_dai[TWL4030_DAI_HIFI],
-+	.cpu_dai_drv 	= &omap_mcbsp_dai,
-+	.cpu_dai_id = OMAP_MCBSP2,
-+	.codec_dai_drv 	= &twl4030_dai[TWL4030_DAI_HIFI],
-+	.codec_dai_id = TWL4030_DAI_HIFI,
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &soc_codec_dev_twl4030,
- 	.ops 		= &omap3evm_ops,
- };
- 
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_omap3evm = {
- 	.name = "omap3evm",
--	.platform = &omap_soc_platform,
- 	.dai_link = &omap3evm_dai,
- 	.num_links = 1,
- };
- 
--/* twl4030 setup */
--static struct twl4030_setup_data twl4030_setup = {
--	.ramp_delay_value = 4,
--	.sysclk = 26000,
--};
--
--/* Audio subsystem */
--static struct snd_soc_device omap3evm_snd_devdata = {
--	.card = &snd_soc_omap3evm,
--	.codec_dev = &soc_codec_dev_twl4030,
--	.codec_data = &twl4030_setup,
--};
--
- static struct platform_device *omap3evm_snd_device;
- 
- static int __init omap3evm_soc_init(void)
-@@ -124,10 +114,7 @@ static int __init omap3evm_soc_init(void)
- 		return -ENOMEM;
- 	}
- 
--	platform_set_drvdata(omap3evm_snd_device, &omap3evm_snd_devdata);
--	omap3evm_snd_devdata.dev = &omap3evm_snd_device->dev;
--	*(unsigned int *)omap3evm_dai.cpu_dai->private_data = 1;
--
-+	platform_set_drvdata(omap3evm_snd_device, &snd_soc_omap3evm);
- 	ret = platform_device_add(omap3evm_snd_device);
- 	if (ret)
- 		goto err1;
-diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-index 87ce842..128d71c 100644
---- a/sound/soc/omap/omap3pandora.c
-+++ b/sound/soc/omap/omap3pandora.c
-@@ -31,6 +31,7 @@
- #include <sound/soc-dapm.h>
- 
- #include <asm/mach-types.h>
-+#include <plat/mcbsp.h>
- 
- #include "omap-mcbsp.h"
- #include "omap-pcm.h"
-@@ -47,8 +48,8 @@ static int omap3pandora_cmn_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, unsigned int fmt)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
- 	/* Set codec DAI configuration */
-@@ -183,8 +184,9 @@ static const struct snd_soc_dapm_route omap3pandora_in_map[] = {
- 	{"Mic Bias 2", NULL, "Mic (external)"},
- };
- 
--static int omap3pandora_out_init(struct snd_soc_codec *codec)
-+static int omap3pandora_out_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int ret;
- 
- 	/* All TWL4030 output pins are floating */
-@@ -210,8 +212,9 @@ static int omap3pandora_out_init(struct snd_soc_codec *codec)
- 	return snd_soc_dapm_sync(codec);
- }
- 
--static int omap3pandora_in_init(struct snd_soc_codec *codec)
-+static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int ret;
- 
- 	/* Not comnnected */
-@@ -244,15 +247,23 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
- 	{
- 		.name = "PCM1773",
- 		.stream_name = "HiFi Out",
--		.cpu_dai = &omap_mcbsp_dai[0],
--		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.cpu_dai_drv = &omap_mcbsp_dai,
-+		.cpu_dai_id = OMAP_MCBSP2,
-+		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.codec_dai_id = TWL4030_DAI_HIFI,
-+		.platform_drv = &omap_soc_platform,
-+		.codec_drv = &soc_codec_dev_twl4030,
- 		.ops = &omap3pandora_out_ops,
- 		.init = omap3pandora_out_init,
- 	}, {
- 		.name = "TWL4030",
- 		.stream_name = "Line/Mic In",
--		.cpu_dai = &omap_mcbsp_dai[1],
--		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.cpu_dai_drv = &omap_mcbsp_dai,
-+		.cpu_dai_id = OMAP_MCBSP4,
-+		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.codec_dai_id = TWL4030_DAI_HIFI,
-+		.platform_drv = &omap_soc_platform,
-+		.codec_drv = &soc_codec_dev_twl4030,
- 		.ops = &omap3pandora_in_ops,
- 		.init = omap3pandora_in_init,
- 	}
-@@ -261,17 +272,10 @@ static struct snd_soc_dai_link omap3pandora_dai[] = {
- /* SoC card */
- static struct snd_soc_card snd_soc_card_omap3pandora = {
- 	.name = "omap3pandora",
--	.platform = &omap_soc_platform,
- 	.dai_link = omap3pandora_dai,
- 	.num_links = ARRAY_SIZE(omap3pandora_dai),
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device omap3pandora_snd_data = {
--	.card = &snd_soc_card_omap3pandora,
--	.codec_dev = &soc_codec_dev_twl4030,
--};
--
- static struct platform_device *omap3pandora_snd_device;
- 
- static int __init omap3pandora_soc_init(void)
-@@ -314,10 +318,7 @@ static int __init omap3pandora_soc_init(void)
- 		goto fail1;
- 	}
- 
--	platform_set_drvdata(omap3pandora_snd_device, &omap3pandora_snd_data);
--	omap3pandora_snd_data.dev = &omap3pandora_snd_device->dev;
--	*(unsigned int *)omap_mcbsp_dai[0].private_data = 1; /* McBSP2 */
--	*(unsigned int *)omap_mcbsp_dai[1].private_data = 3; /* McBSP4 */
-+	platform_set_drvdata(omap3pandora_snd_device, &snd_soc_card_omap3pandora);
- 
- 	ret = platform_device_add(omap3pandora_snd_device);
+-	ret = device_create_file(ssi_private->dev, dev_attr);
++	ret = device_create_file(&of_dev->dev, dev_attr);
  	if (ret) {
-diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
-index 498ca2e..5c4a2d8 100644
---- a/sound/soc/omap/osk5912.c
-+++ b/sound/soc/omap/osk5912.c
-@@ -55,8 +55,8 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int err;
- 
- 	/* Set codec DAI configuration */
-@@ -113,8 +113,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"MICIN", NULL, "Mic Jack"},
- };
- 
--static int osk_tlv320aic23_init(struct snd_soc_codec *codec)
-+static int osk_tlv320aic23_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 
- 	/* Add osk5912 specific widgets */
- 	snd_soc_dapm_new_controls(codec, tlv320aic23_dapm_widgets,
-@@ -136,8 +137,11 @@ static int osk_tlv320aic23_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link osk_dai = {
- 	.name = "TLV320AIC23",
- 	.stream_name = "AIC23",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &tlv320aic23_dai,
-+	.cpu_dai_drv = &omap_mcbsp_dai,
-+	.cpu_dai_id = OMAP_MCBSP1,
-+	.codec_dai_drv = &tlv320aic23_dai,
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &soc_codec_dev_tlv320aic23,
- 	.init = osk_tlv320aic23_init,
- 	.ops = &osk_ops,
- };
-@@ -145,17 +149,10 @@ static struct snd_soc_dai_link osk_dai = {
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_card_osk = {
- 	.name = "OSK5912",
--	.platform = &omap_soc_platform,
- 	.dai_link = &osk_dai,
- 	.num_links = 1,
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device osk_snd_devdata = {
--	.card = &snd_soc_card_osk,
--	.codec_dev = &soc_codec_dev_tlv320aic23,
--};
--
- static struct platform_device *osk_snd_device;
- 
- static int __init osk_soc_init(void)
-@@ -171,9 +168,7 @@ static int __init osk_soc_init(void)
- 	if (!osk_snd_device)
- 		return -ENOMEM;
- 
--	platform_set_drvdata(osk_snd_device, &osk_snd_devdata);
--	osk_snd_devdata.dev = &osk_snd_device->dev;
--	*(unsigned int *)osk_dai.cpu_dai->private_data = 0;	/* McBSP1 */
-+	platform_set_drvdata(osk_snd_device, &snd_soc_card_osk);
- 	err = platform_device_add(osk_snd_device);
- 	if (err)
- 		goto err1;
-diff --git a/sound/soc/omap/overo.c b/sound/soc/omap/overo.c
-index c25f527..c12419d 100644
---- a/sound/soc/omap/overo.c
-+++ b/sound/soc/omap/overo.c
-@@ -39,8 +39,8 @@ static int overo_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
- 	/* Set codec DAI configuration */
-@@ -82,25 +82,22 @@ static struct snd_soc_ops overo_ops = {
- static struct snd_soc_dai_link overo_dai = {
- 	.name = "TWL4030",
- 	.stream_name = "TWL4030",
--	.cpu_dai = &omap_mcbsp_dai[0],
--	.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+	.cpu_dai_drv = &omap_mcbsp_dai,
-+	.cpu_dai_id = OMAP_MCBSP2,
-+	.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
-+	.codec_dai_id = TWL4030_DAI_HIFI,
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &soc_codec_dev_twl4030,
- 	.ops = &overo_ops,
- };
- 
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_card_overo = {
- 	.name = "overo",
--	.platform = &omap_soc_platform,
- 	.dai_link = &overo_dai,
- 	.num_links = 1,
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device overo_snd_devdata = {
--	.card = &snd_soc_card_overo,
--	.codec_dev = &soc_codec_dev_twl4030,
--};
--
- static struct platform_device *overo_snd_device;
- 
- static int __init overo_soc_init(void)
-@@ -119,9 +116,7 @@ static int __init overo_soc_init(void)
- 		return -ENOMEM;
+-		dev_err(ssi_info->dev, "could not create sysfs %s file\n",
++		dev_err(&of_dev->dev, "could not create sysfs %s file\n",
+ 			ssi_private->dev_attr.attr.name);
+-		kfree(fsl_ssi_dai);
+-		return NULL;
++		kfree(ssi_private);
++		return ret;
  	}
  
--	platform_set_drvdata(overo_snd_device, &overo_snd_devdata);
--	overo_snd_devdata.dev = &overo_snd_device->dev;
--	*(unsigned int *)overo_dai.cpu_dai->private_data = 1; /* McBSP2 */
-+	platform_set_drvdata(overo_snd_device, &snd_soc_card_overo);
+-	fsl_ssi_dai->private_data = ssi_private;
+-	fsl_ssi_dai->name = ssi_private->name;
+-	fsl_ssi_dai->id = ssi_info->id;
+-	fsl_ssi_dai->dev = ssi_info->dev;
+-	fsl_ssi_dai->symmetric_rates = 1;
++	/* Register with ASoC */
++	dev_set_drvdata(&of_dev->dev, ssi_private);
  
- 	ret = platform_device_add(overo_snd_device);
- 	if (ret)
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index 47d831e..354adda 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -30,6 +30,7 @@
- #include <sound/pcm.h>
+-	ret = snd_soc_register_dai(fsl_ssi_dai);
++	ret = snd_soc_register_dai(&of_dev->dev, 0, &ssi_private->cpu_dai_drv);
+ 	if (ret != 0) {
+-		dev_err(ssi_info->dev, "failed to register DAI: %d\n", ret);
+-		kfree(fsl_ssi_dai);
+-		return NULL;
++		dev_err(&of_dev->dev, "failed to register DAI: %d\n", ret);
++		kfree(ssi_private);
++		return ret;
+ 	}
+ 
+-	return fsl_ssi_dai;
++	/* Trigger the machine driver's probe function.  The platform driver
++	 * name of the machine driver is taken from the /model node of the
++	 * device tree.  We also pass the address of the CPU DAI driver
++	 * structure.
++	 */
++	sprop = of_get_property(of_find_node_by_path("/"), "model", NULL);
++	snprintf(name, sizeof(name), "snd-soc-%s", sprop);
++	make_lowercase(name);
++
++	platform_data = &ssi_private->cpu_dai_drv;
++	pdev = platform_device_register_data(&of_dev->dev, name, -1,
++		&platform_data, sizeof(void *));
++
++	ssi_private->pdev = pdev;
++
++	return 0;
+ }
+-EXPORT_SYMBOL_GPL(fsl_ssi_create_dai);
+ 
+ /**
+  * fsl_ssi_destroy_dai: destroy the snd_soc_dai object
+  *
+- * This function undoes the operations of fsl_ssi_create_dai()
++ * This function undoes the operations of fsl_ssi_probe()
+  */
+-void fsl_ssi_destroy_dai(struct snd_soc_dai *fsl_ssi_dai)
++static int fsl_ssi_remove(struct of_device *of_dev)
+ {
+-	struct fsl_ssi_private *ssi_private =
+-	container_of(fsl_ssi_dai, struct fsl_ssi_private, cpu_dai);
++	struct fsl_ssi_private *ssi_private = dev_get_drvdata(&of_dev->dev);
+ 
+-	device_remove_file(ssi_private->dev, &ssi_private->dev_attr);
+-
+-	snd_soc_unregister_dai(&ssi_private->cpu_dai);
++	platform_device_unregister(ssi_private->pdev);
++	snd_soc_unregister_dai(&of_dev->dev, 0);
++	device_remove_file(&of_dev->dev, &ssi_private->dev_attr);
+ 
+ 	kfree(ssi_private);
++	dev_set_drvdata(&of_dev->dev, NULL);
++
++	return 0;
+ }
+-EXPORT_SYMBOL_GPL(fsl_ssi_destroy_dai);
++
++static const struct of_device_id fsl_ssi_ids[] = {
++	{ .compatible = "fsl,mpc8610-ssi", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, fsl_ssi_ids);
++
++static struct of_platform_driver fsl_ssi_driver = {
++	.driver = {
++		.name = "fsl-ssi-dai",
++		.owner = THIS_MODULE,
++		.of_match_table = fsl_ssi_ids,
++	},
++	.probe = fsl_ssi_probe,
++	.remove = fsl_ssi_remove,
++};
+ 
+ static int __init fsl_ssi_init(void)
+ {
+ 	printk(KERN_INFO "Freescale Synchronous Serial Interface (SSI) ASoC Driver\n");
+ 
+-	return 0;
++	return of_register_platform_driver(&fsl_ssi_driver);
++}
++
++static void __exit fsl_ssi_exit(void)
++{
++	of_unregister_platform_driver(&fsl_ssi_driver);
+ }
++
+ module_init(fsl_ssi_init);
++module_exit(fsl_ssi_exit);
+ 
+ MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
+ MODULE_DESCRIPTION("Freescale Synchronous Serial Interface (SSI) ASoC Driver");
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index eade01f..2173000 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -196,31 +196,5 @@ struct ccsr_ssi {
+ #define CCSR_SSI_SOR_WAIT(x) (((x) & 3) << CCSR_SSI_SOR_WAIT_SHIFT)
+ #define CCSR_SSI_SOR_SYNRST 		0x00000001
+ 
+-/* Instantiation data for an SSI interface
+- *
+- * This structure contains all the information that the the SSI driver needs
+- * to instantiate an SSI interface with ALSA.  The machine driver should
+- * create this structure, fill it in, call fsl_ssi_create_dai(), and then
+- * delete the structure.
+- *
+- * id: which SSI this is (0, 1, etc. )
+- * ssi: pointer to the SSI's registers
+- * ssi_phys: physical address of the SSI registers
+- * irq: IRQ of this SSI
+- * dev: struct device, used to create the sysfs statistics file
+- * asynchronous: 0=synchronous mode, 1=asynchronous mode
+-*/
+-struct fsl_ssi_info {
+-	unsigned int id;
+-	struct ccsr_ssi __iomem *ssi;
+-	dma_addr_t ssi_phys;
+-	unsigned int irq;
+-	struct device *dev;
+-	int asynchronous;
+-};
+-
+-struct snd_soc_dai *fsl_ssi_create_dai(struct fsl_ssi_info *ssi_info);
+-void fsl_ssi_destroy_dai(struct snd_soc_dai *fsl_ssi_dai);
+-
+ #endif
+ 
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index 1d4e716..ddebde8 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
+@@ -9,6 +9,8 @@
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/slab.h>
++#include <linux/of_device.h>
++#include <linux/of_platform.h>
+ 
  #include <sound/soc.h>
- #include <sound/soc-dapm.h>
-+#include <plat/mcbsp.h>
  
- #include <asm/mach-types.h>
- 
-@@ -64,7 +65,7 @@ static int rx51_startup(struct snd_pcm_substream *substream)
+@@ -107,7 +109,7 @@ static int psc_dma_hw_free(struct snd_pcm_substream *substream)
+ static int psc_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct psc_dma_stream *s = to_psc_dma_stream(substream, psc_dma);
+ 	struct mpc52xx_psc __iomem *regs = psc_dma->psc_regs;
+@@ -212,7 +214,7 @@ static int psc_dma_open(struct snd_pcm_substream *substream)
  {
  	struct snd_pcm_runtime *runtime = substream->runtime;
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_codec *codec = rtd->socdev->card->codec;
-+	struct snd_soc_codec *codec = rtd->codec;
+-	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	struct psc_dma_stream *s;
+ 	int rc;
  
- 	snd_pcm_hw_constraint_minmax(runtime,
- 				     SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
-@@ -77,8 +78,8 @@ static int rx51_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
+@@ -239,7 +241,7 @@ static int psc_dma_open(struct snd_pcm_substream *substream)
+ static int psc_dma_close(struct snd_pcm_substream *substream)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int err;
+-	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	struct psc_dma_stream *s;
  
- 	/* Set codec DAI configuration */
-@@ -190,8 +191,9 @@ static const struct snd_kcontrol_new aic34_rx51_controls[] = {
- 		     rx51_get_input, rx51_set_input),
- };
- 
--static int rx51_aic34_init(struct snd_soc_codec *codec)
-+static int rx51_aic34_init(struct snd_soc_pcm_runtime *rtd)
+ 	dev_dbg(psc_dma->dev, "psc_dma_close(substream=%p)\n", substream);
+@@ -264,7 +266,7 @@ static snd_pcm_uframes_t
+ psc_dma_pointer(struct snd_pcm_substream *substream)
  {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int err;
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	struct psc_dma_stream *s;
+ 	dma_addr_t count;
  
- 	/* Set up NC codec pins */
-@@ -222,32 +224,21 @@ static struct snd_soc_dai_link rx51_dai[] = {
- 	{
- 		.name = "TLV320AIC34",
- 		.stream_name = "AIC34",
--		.cpu_dai = &omap_mcbsp_dai[0],
--		.codec_dai = &aic3x_dai,
-+		.cpu_dai_drv = &omap_mcbsp_dai,
-+		.cpu_dai_id = OMAP_MCBSP2,
-+		.codec_dai_drv = &aic3x_dai,
-+		.platform_drv = &omap_soc_platform,
-+		.codec_drv = &soc_codec_dev_aic3x,
- 		.init = rx51_aic34_init,
- 		.ops = &rx51_ops,
- 	},
- };
+@@ -302,11 +304,11 @@ static int psc_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 			   struct snd_pcm *pcm)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
+-	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	size_t size = psc_dma_hardware.buffer_bytes_max;
+ 	int rc = 0;
  
--/* Audio private data */
--static struct aic3x_setup_data rx51_aic34_setup = {
--	.gpio_func[0] = AIC3X_GPIO1_FUNC_DISABLED,
--	.gpio_func[1] = AIC3X_GPIO2_FUNC_DIGITAL_MIC_INPUT,
--};
--
- /* Audio card */
- static struct snd_soc_card rx51_sound_card = {
- 	.name = "RX-51",
- 	.dai_link = rx51_dai,
- 	.num_links = ARRAY_SIZE(rx51_dai),
--	.platform = &omap_soc_platform,
--};
--
--/* Audio subsystem */
--static struct snd_soc_device rx51_snd_devdata = {
--	.card = &rx51_sound_card,
--	.codec_dev = &soc_codec_dev_aic3x,
--	.codec_data = &rx51_aic34_setup,
- };
+-	dev_dbg(rtd->socdev->dev, "psc_dma_new(card=%p, dai=%p, pcm=%p)\n",
++	dev_dbg(rtd->platform->dev, "psc_dma_new(card=%p, dai=%p, pcm=%p)\n",
+ 		card, dai, pcm);
  
- static struct platform_device *rx51_snd_device;
-@@ -265,9 +256,7 @@ static int __init rx51_soc_init(void)
- 		goto err1;
+ 	if (!card->dev->dma_mask)
+@@ -328,8 +330,8 @@ static int psc_dma_new(struct snd_card *card, struct snd_soc_dai *dai,
+ 			goto capture_alloc_err;
  	}
  
--	platform_set_drvdata(rx51_snd_device, &rx51_snd_devdata);
--	rx51_snd_devdata.dev = &rx51_snd_device->dev;
--	*(unsigned int *)rx51_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
-+	platform_set_drvdata(rx51_snd_device, &rx51_sound_card);
+-	if (rtd->socdev->card->codec->ac97)
+-		rtd->socdev->card->codec->ac97->private_data = psc_dma;
++	if (rtd->codec->ac97)
++		rtd->codec->ac97->private_data = psc_dma;
  
- 	err = platform_device_add(rx51_snd_device);
- 	if (err)
-diff --git a/sound/soc/omap/sdp3430.c b/sound/soc/omap/sdp3430.c
-index 3c85c0f..f120039 100644
---- a/sound/soc/omap/sdp3430.c
-+++ b/sound/soc/omap/sdp3430.c
-@@ -51,8 +51,8 @@ static int sdp3430_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
+ 	return 0;
  
- 	/* Set codec DAI configuration */
-@@ -94,8 +94,8 @@ static int sdp3430_hw_voice_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
+@@ -349,7 +351,7 @@ static void psc_dma_free(struct snd_pcm *pcm)
+ 	struct snd_pcm_substream *substream;
+ 	int stream;
  
- 	/* Set codec DAI configuration */
-@@ -186,8 +186,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"Headset Stereophone", NULL, "HSOR"},
- };
+-	dev_dbg(rtd->socdev->dev, "psc_dma_free(pcm=%p)\n", pcm);
++	dev_dbg(rtd->platform->dev, "psc_dma_free(pcm=%p)\n", pcm);
  
--static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
-+static int sdp3430_twl4030_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int ret;
- 
- 	/* Add SDP3430 specific widgets */
-@@ -225,7 +226,7 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 		return ret;
- 
- 	/* Headset jack detection */
--	ret = snd_soc_jack_new(&snd_soc_sdp3430, "Headset Jack",
-+	ret = snd_soc_jack_new(codec, "Headset Jack",
- 				SND_JACK_HEADSET, &hs_jack);
- 	if (ret)
- 		return ret;
-@@ -241,14 +242,15 @@ static int sdp3430_twl4030_init(struct snd_soc_codec *codec)
- 	return ret;
+ 	for (stream = 0; stream < 2; stream++) {
+ 		substream = pcm->streams[stream].substream;
+@@ -361,15 +363,16 @@ static void psc_dma_free(struct snd_pcm *pcm)
+ 	}
  }
  
--static int sdp3430_twl4030_voice_init(struct snd_soc_codec *codec)
-+static int sdp3430_twl4030_voice_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	unsigned short reg;
+-struct snd_soc_platform mpc5200_audio_dma_platform = {
++struct snd_soc_platform_driver mpc5200_audio_dma_platform = {
+ 	.name		= "mpc5200-psc-audio",
+-	.pcm_ops	= &psc_dma_ops,
++	.ops		= &psc_dma_ops,
+ 	.pcm_new	= &psc_dma_new,
+ 	.pcm_free	= &psc_dma_free,
+ };
+ EXPORT_SYMBOL_GPL(mpc5200_audio_dma_platform);
  
- 	/* Enable voice interface */
--	reg = codec->read(codec, TWL4030_REG_VOICE_IF);
-+	reg = codec->driver->read(codec, TWL4030_REG_VOICE_IF);
- 	reg |= TWL4030_VIF_DIN_EN | TWL4030_VIF_DOUT_EN | TWL4030_VIF_EN;
--	codec->write(codec, TWL4030_REG_VOICE_IF, reg);
-+	codec->driver->write(codec, TWL4030_REG_VOICE_IF, reg);
+-int mpc5200_audio_dma_create(struct of_device *op)
++static int mpc5200_hpcd_probe(struct of_device *op,
++		const struct of_device_id *match)
+ {
+ 	phys_addr_t fifo;
+ 	struct psc_dma *psc_dma;
+@@ -475,7 +478,7 @@ int mpc5200_audio_dma_create(struct of_device *op)
+ 	dev_set_drvdata(&op->dev, psc_dma);
+ 
+ 	/* Tell the ASoC OF helpers about it */
+-	return snd_soc_register_platform(&mpc5200_audio_dma_platform);
++	return snd_soc_register_platform(&op->dev, -1, &mpc5200_audio_dma_platform);
+ out_irq:
+ 	free_irq(psc_dma->irq, psc_dma);
+ 	free_irq(psc_dma->capture.irq, &psc_dma->capture);
+@@ -486,15 +489,14 @@ out_unmap:
+ 	iounmap(regs);
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(mpc5200_audio_dma_create);
+ 
+-int mpc5200_audio_dma_destroy(struct of_device *op)
++static int mpc5200_hpcd_remove(struct of_device *op)
+ {
+ 	struct psc_dma *psc_dma = dev_get_drvdata(&op->dev);
+ 
+ 	dev_dbg(&op->dev, "mpc5200_audio_dma_destroy()\n");
+ 
+-	snd_soc_unregister_platform(&mpc5200_audio_dma_platform);
++	snd_soc_unregister_platform(&op->dev, -1);
+ 
+ 	bcom_gen_bd_rx_release(psc_dma->capture.bcom_task);
+ 	bcom_gen_bd_tx_release(psc_dma->playback.bcom_task);
+@@ -510,7 +512,35 @@ int mpc5200_audio_dma_destroy(struct of_device *op)
  
  	return 0;
  }
-@@ -259,16 +261,24 @@ static struct snd_soc_dai_link sdp3430_dai[] = {
- 	{
- 		.name = "TWL4030 I2S",
- 		.stream_name = "TWL4030 Audio",
--		.cpu_dai = &omap_mcbsp_dai[0],
--		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.cpu_dai_drv = &omap_mcbsp_dai,
-+		.cpu_dai_id = OMAP_MCBSP2,
-+		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.codec_dai_id = TWL4030_DAI_HIFI,
-+		.platform_drv = &omap_soc_platform,
-+		.codec_drv = &soc_codec_dev_twl4030,
- 		.init = sdp3430_twl4030_init,
- 		.ops = &sdp3430_ops,
- 	},
- 	{
- 		.name = "TWL4030 PCM",
- 		.stream_name = "TWL4030 Voice",
--		.cpu_dai = &omap_mcbsp_dai[1],
--		.codec_dai = &twl4030_dai[TWL4030_DAI_VOICE],
-+		.cpu_dai_drv = &omap_mcbsp_dai,
-+		.cpu_dai_id = OMAP_MCBSP3,
-+		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_VOICE],
-+		.codec_dai_id = TWL4030_DAI_VOICE,
-+		.platform_drv = &omap_soc_platform,
-+		.codec_drv = &soc_codec_dev_twl4030,
- 		.init = sdp3430_twl4030_voice_init,
- 		.ops = &sdp3430_voice_ops,
- 	},
-@@ -277,25 +287,10 @@ static struct snd_soc_dai_link sdp3430_dai[] = {
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_sdp3430 = {
- 	.name = "SDP3430",
--	.platform = &omap_soc_platform,
- 	.dai_link = sdp3430_dai,
- 	.num_links = ARRAY_SIZE(sdp3430_dai),
- };
+-EXPORT_SYMBOL_GPL(mpc5200_audio_dma_destroy);
++
++static struct of_device_id mpc5200_hpcd_match[] = {
++	{
++		.compatible = "fsl,mpc5200-pcm",
++	},
++	{}
++};
++MODULE_DEVICE_TABLE(of, mpc5200_hpcd_match);
++
++static struct of_platform_driver mpc5200_hpcd_of_driver = {
++	.owner  	= THIS_MODULE,
++	.name   	= "mpc5200_hpcd",
++	.match_table    = mpc5200_hpcd_match,
++	.probe  	= mpc5200_hpcd_probe,
++	.remove 	= mpc5200_hpcd_remove,
++};
++
++static int __init mpc5200_hpcd_init(void)
++{
++	return of_register_platform_driver(&mpc5200_hpcd_of_driver);
++}
++
++static void __exit mpc5200_hpcd_exit(void)
++{
++	of_unregister_platform_driver(&mpc5200_hpcd_of_driver);
++}
++
++module_init(mpc5200_hpcd_init);
++module_exit(mpc5200_hpcd_exit);
  
--/* twl4030 setup */
--static struct twl4030_setup_data twl4030_setup = {
--	.ramp_delay_value = 3,
--	.sysclk = 26000,
--	.hs_extmute = 1,
--};
--
--/* Audio subsystem */
--static struct snd_soc_device sdp3430_snd_devdata = {
--	.card = &snd_soc_sdp3430,
--	.codec_dev = &soc_codec_dev_twl4030,
--	.codec_data = &twl4030_setup,
--};
--
- static struct platform_device *sdp3430_snd_device;
- 
- static int __init sdp3430_soc_init(void)
-@@ -315,10 +310,7 @@ static int __init sdp3430_soc_init(void)
- 		return -ENOMEM;
- 	}
- 
--	platform_set_drvdata(sdp3430_snd_device, &sdp3430_snd_devdata);
--	sdp3430_snd_devdata.dev = &sdp3430_snd_device->dev;
--	*(unsigned int *)sdp3430_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
--	*(unsigned int *)sdp3430_dai[1].cpu_dai->private_data = 2; /* McBSP3 */
-+	platform_set_drvdata(sdp3430_snd_device, &snd_soc_sdp3430);
- 
- 	/* Set TWL4030 GPIO6 as EXTMUTE signal */
- 	twl_i2c_read_u8(TWL4030_MODULE_INTBR, &pin_mux,
-diff --git a/sound/soc/omap/sdp4430.c b/sound/soc/omap/sdp4430.c
-index 4ebbde6..fac0dd7 100644
---- a/sound/soc/omap/sdp4430.c
-+++ b/sound/soc/omap/sdp4430.c
-@@ -41,7 +41,7 @@ static int sdp4430_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	int clk_id, freq;
- 	int ret;
- 
-@@ -60,6 +60,7 @@ static int sdp4430_hw_params(struct snd_pcm_substream *substream,
- 		printk(KERN_ERR "can't set codec system clock\n");
- 		return ret;
- 	}
-+	return ret;
+ MODULE_AUTHOR("Grant Likely <grant.likely@secretlab.ca>");
+ MODULE_DESCRIPTION("Freescale MPC5200 PSC in DMA mode ASoC Driver");
+diff --git a/sound/soc/fsl/mpc5200_dma.h b/sound/soc/fsl/mpc5200_dma.h
+index 22208b3..4b42969 100644
+--- a/sound/soc/fsl/mpc5200_dma.h
++++ b/sound/soc/fsl/mpc5200_dma.h
+@@ -81,9 +81,6 @@ to_psc_dma_stream(struct snd_pcm_substream *substream, struct psc_dma *psc_dma)
+ 	return &psc_dma->playback;
  }
  
- static struct snd_soc_ops sdp4430_ops = {
-@@ -126,8 +127,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"Earphone Spk", NULL, "EP"},
- };
- 
--static int sdp4430_twl6040_init(struct snd_soc_codec *codec)
-+static int sdp4430_twl6040_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int ret;
- 
- 	/* Add SDP4430 specific controls */
-@@ -164,8 +166,10 @@ static int sdp4430_twl6040_init(struct snd_soc_codec *codec)
- static struct snd_soc_dai_link sdp4430_dai = {
- 	.name = "TWL6040",
- 	.stream_name = "TWL6040",
--	.cpu_dai = &omap_mcpdm_dai,
--	.codec_dai = &twl6040_dai,
-+	.cpu_dai_drv = &omap_mcpdm_dai,
-+	.codec_dai_drv = &twl6040_dai,
-+	.platform_drv = &omap_soc_platform,
-+	.codec_drv = &soc_codec_dev_twl6040,
- 	.init = sdp4430_twl6040_init,
- 	.ops = &sdp4430_ops,
- };
-@@ -173,17 +177,10 @@ static struct snd_soc_dai_link sdp4430_dai = {
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_sdp4430 = {
- 	.name = "SDP4430",
--	.platform = &omap_soc_platform,
- 	.dai_link = &sdp4430_dai,
- 	.num_links = 1,
- };
- 
--/* Audio subsystem */
--static struct snd_soc_device sdp4430_snd_devdata = {
--	.card = &snd_soc_sdp4430,
--	.codec_dev = &soc_codec_dev_twl6040,
--};
+-int mpc5200_audio_dma_create(struct of_device *op);
+-int mpc5200_audio_dma_destroy(struct of_device *op);
 -
- static struct platform_device *sdp4430_snd_device;
+-extern struct snd_soc_platform mpc5200_audio_dma_platform;
++extern struct snd_soc_platform_driver mpc5200_audio_dma_platform;
  
- static int __init sdp4430_soc_init(void)
-@@ -202,8 +199,7 @@ static int __init sdp4430_soc_init(void)
- 		return -ENOMEM;
+ #endif /* __SOUND_SOC_FSL_MPC5200_DMA_H__ */
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+index e2ee220..8e754ef 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.c
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -129,7 +129,7 @@ static int psc_ac97_hw_analog_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *cpu_dai)
+ {
+-	struct psc_dma *psc_dma = cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct psc_dma_stream *s = to_psc_dma_stream(substream, psc_dma);
+ 
+ 	dev_dbg(psc_dma->dev, "%s(substream=%p) p_size=%i p_bytes=%i"
+@@ -152,7 +152,7 @@ static int psc_ac97_hw_digital_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *cpu_dai)
+ {
+-	struct psc_dma *psc_dma = cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(cpu_dai);
+ 
+ 	dev_dbg(psc_dma->dev, "%s(substream=%p)\n", __func__, substream);
+ 
+@@ -167,8 +167,7 @@ static int psc_ac97_hw_digital_params(struct snd_pcm_substream *substream,
+ static int psc_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
+ 							struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(dai);
+ 	struct psc_dma_stream *s = to_psc_dma_stream(substream, psc_dma);
+ 
+ 	switch (cmd) {
+@@ -193,10 +192,9 @@ static int psc_ac97_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	return 0;
+ }
+ 
+-static int psc_ac97_probe(struct platform_device *pdev,
+-					struct snd_soc_dai *cpu_dai)
++static int psc_ac97_probe(struct snd_soc_dai *cpu_dai)
+ {
+-	struct psc_dma *psc_dma = cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct mpc52xx_psc __iomem *regs = psc_dma->psc_regs;
+ 
+ 	/* Go */
+@@ -223,7 +221,7 @@ static struct snd_soc_dai_ops psc_ac97_digital_ops = {
+ 	.hw_params	= psc_ac97_hw_digital_params,
+ };
+ 
+-struct snd_soc_dai psc_ac97_dai[] = {
++struct snd_soc_dai_driver psc_ac97_dai[] = {
+ {
+ 	.name   = "AC97",
+ 	.ac97_control = 1,
+@@ -266,18 +264,11 @@ EXPORT_SYMBOL_GPL(psc_ac97_dai);
+ static int __devinit psc_ac97_of_probe(struct of_device *op,
+ 				      const struct of_device_id *match)
+ {
+-	int rc, i;
++	int rc;
+ 	struct snd_ac97 ac97;
+ 	struct mpc52xx_psc __iomem *regs;
+ 
+-	rc = mpc5200_audio_dma_create(op);
+-	if (rc != 0)
+-		return rc;
+-
+-	for (i = 0; i < ARRAY_SIZE(psc_ac97_dai); i++)
+-		psc_ac97_dai[i].dev = &op->dev;
+-
+-	rc = snd_soc_register_dais(psc_ac97_dai, ARRAY_SIZE(psc_ac97_dai));
++	rc = snd_soc_register_dais(&op->dev, psc_ac97_dai, ARRAY_SIZE(psc_ac97_dai));
+ 	if (rc != 0) {
+ 		dev_err(&op->dev, "Failed to register DAI\n");
+ 		return rc;
+@@ -287,9 +278,6 @@ static int __devinit psc_ac97_of_probe(struct of_device *op,
+ 	regs = psc_dma->psc_regs;
+ 	ac97.private_data = psc_dma;
+ 
+-	for (i = 0; i < ARRAY_SIZE(psc_ac97_dai); i++)
+-		psc_ac97_dai[i].private_data = psc_dma;
+-
+ 	psc_dma->imr = 0;
+ 	out_be16(&psc_dma->psc_regs->isr_imr.imr, psc_dma->imr);
+ 
+@@ -305,7 +293,8 @@ static int __devinit psc_ac97_of_probe(struct of_device *op,
+ 
+ static int __devexit psc_ac97_of_remove(struct of_device *op)
+ {
+-	return mpc5200_audio_dma_destroy(op);
++	snd_soc_unregister_dais(&op->dev, ARRAY_SIZE(psc_ac97_dai));
++	return 0;
+ }
+ 
+ /* Match table for of_platform binding */
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.h b/sound/soc/fsl/mpc5200_psc_ac97.h
+index 4bc18c3..89f2dff 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.h
++++ b/sound/soc/fsl/mpc5200_psc_ac97.h
+@@ -7,7 +7,7 @@
+ #ifndef __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__
+ #define __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__
+ 
+-extern struct snd_soc_dai psc_ac97_dai[];
++extern struct snd_soc_dai_driver psc_ac97_dai[];
+ 
+ #define MPC5200_AC97_NORMAL 0
+ #define MPC5200_AC97_SPDIF 1
+diff --git a/sound/soc/fsl/mpc5200_psc_i2s.c b/sound/soc/fsl/mpc5200_psc_i2s.c
+index 676841c..16eee4c 100644
+--- a/sound/soc/fsl/mpc5200_psc_i2s.c
++++ b/sound/soc/fsl/mpc5200_psc_i2s.c
+@@ -40,7 +40,7 @@ static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct psc_dma *psc_dma = rtd->dai->cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	u32 mode;
+ 
+ 	dev_dbg(psc_dma->dev, "%s(substream=%p) p_size=%i p_bytes=%i"
+@@ -88,7 +88,7 @@ static int psc_i2s_hw_params(struct snd_pcm_substream *substream,
+ static int psc_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 			      int clk_id, unsigned int freq, int dir)
+ {
+-	struct psc_dma *psc_dma = cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(cpu_dai);
+ 	dev_dbg(psc_dma->dev, "psc_i2s_set_sysclk(cpu_dai=%p, dir=%i)\n",
+ 				cpu_dai, dir);
+ 	return (dir == SND_SOC_CLOCK_IN) ? 0 : -EINVAL;
+@@ -107,7 +107,7 @@ static int psc_i2s_set_sysclk(struct snd_soc_dai *cpu_dai,
+  */
+ static int psc_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int format)
+ {
+-	struct psc_dma *psc_dma = cpu_dai->private_data;
++	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(cpu_dai);
+ 	dev_dbg(psc_dma->dev, "psc_i2s_set_fmt(cpu_dai=%p, format=%i)\n",
+ 				cpu_dai, format);
+ 	return (format == SND_SOC_DAIFMT_I2S) ? 0 : -EINVAL;
+@@ -129,7 +129,7 @@ static struct snd_soc_dai_ops psc_i2s_dai_ops = {
+ 	.set_fmt	= psc_i2s_set_fmt,
+ };
+ 
+-struct snd_soc_dai psc_i2s_dai[] = {{
++struct snd_soc_dai_driver psc_i2s_dai[] = {{
+ 	.name   = "I2S",
+ 	.playback = {
+ 		.channels_min = 2,
+@@ -159,11 +159,7 @@ static int __devinit psc_i2s_of_probe(struct of_device *op,
+ 	struct psc_dma *psc_dma;
+ 	struct mpc52xx_psc __iomem *regs;
+ 
+-	rc = mpc5200_audio_dma_create(op);
+-	if (rc != 0)
+-		return rc;
+-
+-	rc = snd_soc_register_dais(psc_i2s_dai, ARRAY_SIZE(psc_i2s_dai));
++	rc = snd_soc_register_dais(&op->dev, psc_i2s_dai, ARRAY_SIZE(psc_i2s_dai));
+ 	if (rc != 0) {
+ 		pr_err("Failed to register DAI\n");
+ 		return 0;
+@@ -207,7 +203,8 @@ static int __devinit psc_i2s_of_probe(struct of_device *op,
+ 
+ static int __devexit psc_i2s_of_remove(struct of_device *op)
+ {
+-	return mpc5200_audio_dma_destroy(op);
++	snd_soc_unregister_dais(&op->dev, ARRAY_SIZE(psc_i2s_dai));
++	return 0;
+ }
+ 
+ /* Match table for of_platform binding */
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index 6a2764e..81ab639 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -1,19 +1,18 @@
+ /**
+- * Freescale MPC8610HPCD ALSA SoC Fabric driver
++ * Freescale MPC8610HPCD ALSA SoC Machine driver
+  *
+  * Author: Timur Tabi <timur@freescale.com>
+  *
+- * Copyright 2007-2008 Freescale Semiconductor, Inc.  This file is licensed
+- * under the terms of the GNU General Public License version 2.  This
+- * program is licensed "as is" without any warranty of any kind, whether
+- * express or implied.
++ * Copyright 2007-2010 Freescale Semiconductor, Inc.
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2.  This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
+  */
+ 
+-#include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/of_device.h>
+-#include <linux/of_platform.h>
+ #include <sound/soc.h>
+ #include <asm/immap_86xx.h>
+ 
+@@ -21,65 +20,74 @@
+ #include "fsl_dma.h"
+ #include "fsl_ssi.h"
+ 
++/* There's only one global utilities register */
++static phys_addr_t guts_phys;
++
+ /**
+- * mpc8610_hpcd_data: fabric-specific ASoC device data
++ * mpc8610_hpcd_data: machine-specific ASoC device data
+  *
+  * This structure contains data for a single sound platform device on an
+  * MPC8610 HPCD.  Some of the data is taken from the device tree.
+  */
+ struct mpc8610_hpcd_data {
+-	struct snd_soc_device sound_devdata;
+-	struct snd_soc_dai_link dai;
+-	struct snd_soc_card machine;
++	struct snd_soc_dai_link dai[2];
++	struct snd_soc_card card;
+ 	unsigned int dai_format;
+ 	unsigned int codec_clk_direction;
+ 	unsigned int cpu_clk_direction;
+ 	unsigned int clk_frequency;
+-	struct ccsr_guts __iomem *guts;
+-	struct ccsr_ssi __iomem *ssi;
+-	unsigned int ssi_id;    	/* 0 = SSI1, 1 = SSI2, etc */
+-	unsigned int ssi_irq;
+-	unsigned int dma_id;    	/* 0 = DMA1, 1 = DMA2, etc */
+-	unsigned int dma_irq[2];
+-	struct ccsr_dma_channel __iomem *dma[2];
++	unsigned int ssi_id;		/* 0 = SSI1, 1 = SSI2, etc */
++	unsigned int dma_id[0];		/* 0 = DMA1, 1 = DMA2, etc */
+ 	unsigned int dma_channel_id[2]; /* 0 = ch 0, 1 = ch 1, etc*/
++	char dai_name[32];
+ };
+ 
+ /**
+- * mpc8610_hpcd_machine_probe: initalize the board
++ * mpc8610_hpcd_machine_probe: initialize the board
+  *
+- * This function is called when platform_device_add() is called.  It is used
+- * to initialize the board-specific hardware.
++ * This function is used to initialize the board-specific hardware.
+  *
+  * Here we program the DMACR and PMUXCR registers.
+  */
+ static int mpc8610_hpcd_machine_probe(struct platform_device *sound_device)
+ {
++	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct mpc8610_hpcd_data *machine_data =
+-		sound_device->dev.platform_data;
++		container_of(card, struct mpc8610_hpcd_data, card);
++	struct ccsr_guts __iomem *guts;
+ 
+-	/* Program the signal routing between the SSI and the DMA */
+-	guts_set_dmacr(machine_data->guts, machine_data->dma_id,
+-		machine_data->dma_channel_id[0], CCSR_GUTS_DMACR_DEV_SSI);
+-	guts_set_dmacr(machine_data->guts, machine_data->dma_id,
+-		machine_data->dma_channel_id[1], CCSR_GUTS_DMACR_DEV_SSI);
++	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
++	if (!guts) {
++		dev_err(card->dev, "could not map global utilities\n");
++		return -ENOMEM;
++	}
+ 
+-	guts_set_pmuxcr_dma(machine_data->guts, machine_data->dma_id,
+-		machine_data->dma_channel_id[0], 0);
+-	guts_set_pmuxcr_dma(machine_data->guts, machine_data->dma_id,
+-		machine_data->dma_channel_id[1], 0);
++	/* Program the signal routing between the SSI and the DMA */
++	guts_set_dmacr(guts, machine_data->dma_id[0],
++		       machine_data->dma_channel_id[0],
++		       CCSR_GUTS_DMACR_DEV_SSI);
++	guts_set_dmacr(guts, machine_data->dma_id[1],
++		       machine_data->dma_channel_id[1],
++		       CCSR_GUTS_DMACR_DEV_SSI);
++
++	guts_set_pmuxcr_dma(guts, machine_data->dma_id[0],
++			    machine_data->dma_channel_id[0], 0);
++	guts_set_pmuxcr_dma(guts, machine_data->dma_id[1],
++			    machine_data->dma_channel_id[1], 0);
+ 
+ 	switch (machine_data->ssi_id) {
+ 	case 0:
+-		clrsetbits_be32(&machine_data->guts->pmuxcr,
++		clrsetbits_be32(&guts->pmuxcr,
+ 			CCSR_GUTS_PMUXCR_SSI1_MASK, CCSR_GUTS_PMUXCR_SSI1_SSI);
+ 		break;
+ 	case 1:
+-		clrsetbits_be32(&machine_data->guts->pmuxcr,
++		clrsetbits_be32(&guts->pmuxcr,
+ 			CCSR_GUTS_PMUXCR_SSI2_MASK, CCSR_GUTS_PMUXCR_SSI2_SSI);
+ 		break;
  	}
  
--	platform_set_drvdata(sdp4430_snd_device, &sdp4430_snd_devdata);
--	sdp4430_snd_devdata.dev = &sdp4430_snd_device->dev;
-+	platform_set_drvdata(sdp4430_snd_device, &snd_soc_sdp4430);
++	iounmap(guts);
++
+ 	return 0;
+ }
  
- 	ret = platform_device_add(sdp4430_snd_device);
- 	if (ret)
-diff --git a/sound/soc/omap/zoom2.c b/sound/soc/omap/zoom2.c
-index 50a94ee..ae93f48 100644
---- a/sound/soc/omap/zoom2.c
-+++ b/sound/soc/omap/zoom2.c
-@@ -29,6 +29,7 @@
- #include <asm/mach-types.h>
- #include <mach/hardware.h>
- #include <mach/gpio.h>
-+#include <mach/board-zoom.h>
- #include <plat/mcbsp.h>
- 
- #include "omap-mcbsp.h"
-@@ -36,14 +37,13 @@
- #include "../codecs/twl4030.h"
- 
- #define ZOOM2_HEADSET_MUX_GPIO		(OMAP_MAX_GPIO_LINES + 15)
--#define ZOOM2_HEADSET_EXTMUTE_GPIO	153
- 
- static int zoom2_hw_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
+@@ -93,38 +101,15 @@ static int mpc8610_hpcd_machine_probe(struct platform_device *sound_device)
+ static int mpc8610_hpcd_startup(struct snd_pcm_substream *substream)
  {
  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 -	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
 -	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
+ 	struct mpc8610_hpcd_data *machine_data =
+-		rtd->socdev->dev->platform_data;
++		container_of(rtd->card, struct mpc8610_hpcd_data, card);
++	struct device *dev = rtd->card->dev;
+ 	int ret = 0;
  
- 	/* Set codec DAI configuration */
-@@ -85,8 +85,8 @@ static int zoom2_hw_voice_params(struct snd_pcm_substream *substream,
- 				struct snd_pcm_hw_params *params)
+-	/* Tell the CPU driver what the serial protocol is. */
+-	ret = snd_soc_dai_set_fmt(cpu_dai, machine_data->dai_format);
+-	if (ret < 0) {
+-		dev_err(substream->pcm->card->dev,
+-			"could not set CPU driver audio format\n");
+-		return ret;
+-	}
+-
+ 	/* Tell the codec driver what the serial protocol is. */
+-	ret = snd_soc_dai_set_fmt(codec_dai, machine_data->dai_format);
+-	if (ret < 0) {
+-		dev_err(substream->pcm->card->dev,
+-			"could not set codec driver audio format\n");
+-		return ret;
+-	}
+-
+-	/*
+-	 * Tell the CPU driver what the clock frequency is, and whether it's a
+-	 * slave or master.
+-	 */
+-	ret = snd_soc_dai_set_sysclk(cpu_dai, 0,
+-					machine_data->clk_frequency,
+-					machine_data->cpu_clk_direction);
++	ret = snd_soc_dai_set_fmt(rtd->codec_dai, machine_data->dai_format);
+ 	if (ret < 0) {
+-		dev_err(substream->pcm->card->dev,
+-			"could not set CPU driver clock parameters\n");
++		dev_err(dev, "could not set codec driver audio format\n");
+ 		return ret;
+ 	}
+ 
+@@ -132,12 +117,11 @@ static int mpc8610_hpcd_startup(struct snd_pcm_substream *substream)
+ 	 * Tell the codec driver what the MCLK frequency is, and whether it's
+ 	 * a slave or master.
+ 	 */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, 0,
+-					machine_data->clk_frequency,
+-					machine_data->codec_clk_direction);
++	ret = snd_soc_dai_set_sysclk(rtd->codec_dai, 0,
++				     machine_data->clk_frequency,
++				     machine_data->codec_clk_direction);
+ 	if (ret < 0) {
+-		dev_err(substream->pcm->card->dev,
+-			"could not set codec driver clock params\n");
++		dev_err(dev, "could not set codec driver clock params\n");
+ 		return ret;
+ 	}
+ 
+@@ -150,116 +134,211 @@ static int mpc8610_hpcd_startup(struct snd_pcm_substream *substream)
+  * This function is called to remove the sound device for one SSI.  We
+  * de-program the DMACR and PMUXCR register.
+  */
+-int mpc8610_hpcd_machine_remove(struct platform_device *sound_device)
++static int mpc8610_hpcd_machine_remove(struct platform_device *sound_device)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
++	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct mpc8610_hpcd_data *machine_data =
+-		sound_device->dev.platform_data;
++		container_of(card, struct mpc8610_hpcd_data, card);
++	struct ccsr_guts __iomem *guts;
++
++	guts = ioremap(guts_phys, sizeof(struct ccsr_guts));
++	if (!guts) {
++		dev_err(card->dev, "could not map global utilities\n");
++		return -ENOMEM;
++	}
  
- 	/* Set codec DAI configuration */
-@@ -157,8 +157,9 @@ static const struct snd_soc_dapm_route audio_map[] = {
- 	{"Aux In", NULL, "AUXR"},
+ 	/* Restore the signal routing */
+ 
+-	guts_set_dmacr(machine_data->guts, machine_data->dma_id,
+-		machine_data->dma_channel_id[0], 0);
+-	guts_set_dmacr(machine_data->guts, machine_data->dma_id,
+-		machine_data->dma_channel_id[1], 0);
++	guts_set_dmacr(guts, machine_data->dma_id[0],
++		       machine_data->dma_channel_id[0], 0);
++	guts_set_dmacr(guts, machine_data->dma_id[1],
++		       machine_data->dma_channel_id[1], 0);
+ 
+ 	switch (machine_data->ssi_id) {
+ 	case 0:
+-		clrsetbits_be32(&machine_data->guts->pmuxcr,
++		clrsetbits_be32(&guts->pmuxcr,
+ 			CCSR_GUTS_PMUXCR_SSI1_MASK, CCSR_GUTS_PMUXCR_SSI1_LA);
+ 		break;
+ 	case 1:
+-		clrsetbits_be32(&machine_data->guts->pmuxcr,
++		clrsetbits_be32(&guts->pmuxcr,
+ 			CCSR_GUTS_PMUXCR_SSI2_MASK, CCSR_GUTS_PMUXCR_SSI2_LA);
+ 		break;
+ 	}
+ 
++	iounmap(guts);
++
+ 	return 0;
+ }
+ 
+ /**
+- * mpc8610_hpcd_ops: ASoC fabric driver operations
++ * mpc8610_hpcd_ops: ASoC machine driver operations
+  */
+ static struct snd_soc_ops mpc8610_hpcd_ops = {
+ 	.startup = mpc8610_hpcd_startup,
  };
  
--static int zoom2_twl4030_init(struct snd_soc_codec *codec)
-+static int zoom2_twl4030_init(struct snd_soc_pcm_runtime *rtd)
+ /**
+- * mpc8610_hpcd_probe: OF probe function for the fabric driver
++ * get_node_by_phandle_name - get a node by its phandle name
+  *
+- * This function gets called when an SSI node is found in the device tree.
++ * This function takes a node, the name of a property in that node, and a
++ * compatible string.  Assuming the property is a phandle to another node,
++ * it returns that node, (optionally) if that node is compatible.
+  *
+- * Although this is a fabric driver, the SSI node is the "master" node with
+- * respect to audio hardware connections.  Therefore, we create a new ASoC
+- * device for each new SSI node that has a codec attached.
++ * If the property is not a phandle, or the node it points to is not compatible
++ * with the specific string, then NULL is returned.
++ */
++static struct device_node *get_node_by_phandle_name(struct device_node *np,
++					       const char *name,
++					       const char *compatible)
++{
++	const phandle *ph;
++	int len;
++
++	ph = of_get_property(np, name, &len);
++	if (!ph || (len != sizeof(phandle)))
++		return NULL;
++
++	np = of_find_node_by_phandle(*ph);
++	if (!np)
++		return NULL;
++
++	if (compatible && !of_device_is_compatible(np, compatible)) {
++		of_node_put(np);
++		return NULL;
++	}
++
++	return np;
++}
++
++/**
++ * get_parent_cell_index -- return the cell-index of the parent of a node
+  *
+- * FIXME: Currently, we only support one DMA controller, so if there are
+- * multiple SSI nodes with codecs, only the first will be supported.
++ * Return the value of the cell-index property of the parent of the given
++ * node.  This is used for DMA channel nodes that need to know the DMA ID
++ * of the controller they are on.
++ */
++static int get_parent_cell_index(struct device_node *np)
++{
++	struct device_node *parent = of_get_parent(np);
++	const u32 *iprop;
++
++	if (!parent)
++		return -1;
++
++	iprop = of_get_property(parent, "cell-index", NULL);
++	of_node_put(parent);
++
++	if (!iprop)
++		return -1;
++
++	return *iprop;
++}
++
++static int get_dma_channel(struct device_node *ssi_np,
++			   const char *compatible,
++			   dma_addr_t ssi_stx_phys,
++			   dma_addr_t ssi_srx_phys,
++			   struct snd_soc_dai_link *dai,
++			   unsigned int *dma_channel_id,
++			   unsigned int *dma_id)
++{
++	struct device_node *dma_channel_np;
++	const u32 *iprop;
++
++	dma_channel_np = get_node_by_phandle_name(ssi_np, compatible,
++						  "fsl,ssi-dma-channel");
++	if (!dma_channel_np)
++		return -EINVAL;
++
++	dai->platform_drv = fsl_soc_dma_to_dai(dma_channel_np->full_name,
++					       ssi_stx_phys, ssi_srx_phys);
++
++	iprop = of_get_property(dma_channel_np, "cell-index", NULL);
++	if (!iprop) {
++		of_node_put(dma_channel_np);
++		return -EINVAL;
++	}
++
++	*dma_channel_id = *iprop;
++	*dma_id = get_parent_cell_index(dma_channel_np);
++	of_node_put(dma_channel_np);
++
++	return 0;
++}
++/**
++ * mpc8610_hpcd_probe: platform probe function for the machine driver
+  *
+- * FIXME: Even if we did support multiple DMA controllers, we have no
+- * mechanism for assigning DMA controllers and channels to the individual
+- * SSI devices.  We also probably aren't compatible with the generic Elo DMA
+- * device driver.
++ * Although this is a machine driver, the SSI node is the "master" node with
++ * respect to audio hardware connections.  Therefore, we create a new ASoC
++ * device for each new SSI node that has a codec attached.
+  */
+-static int mpc8610_hpcd_probe(struct of_device *ofdev,
+-	const struct of_device_id *match)
++static int mpc8610_hpcd_probe(struct platform_device *pdev)
  {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	int ret;
+-	struct device_node *np = ofdev->dev.of_node;
++	struct snd_soc_dai_driver **platform_data = pdev->dev.platform_data;
++	struct snd_soc_dai_driver *cpu_dai_drv = *platform_data;
++	struct device *dev = pdev->dev.parent;
++	struct of_device *of_dev = container_of(dev, struct of_device, dev);
++	struct device_node *np = of_dev->dev.of_node;
+ 	struct device_node *codec_np = NULL;
+-	struct device_node *guts_np = NULL;
+ 	struct device_node *dma_np = NULL;
+ 	struct device_node *dma_channel_np = NULL;
+-	const phandle *codec_ph;
+-	const char *sprop;
+-	const u32 *iprop;
+-	struct resource res;
+ 	struct platform_device *sound_device = NULL;
+ 	struct mpc8610_hpcd_data *machine_data;
+-	struct fsl_ssi_info ssi_info;
+-	struct fsl_dma_info dma_info;
++	int id;
++	dma_addr_t ssi_stx_phys;
++	dma_addr_t ssi_srx_phys;
+ 	int ret = -ENODEV;
+-	unsigned int playback_dma_channel;
+-	unsigned int capture_dma_channel;
++	const char *sprop;
++	const u32 *iprop;
++	struct resource res;
++
++	/* We are only interested in SSIs with a codec phandle in them,
++	 * so let's make sure this SSI has one. The MPC8610 HPCD only
++	 * knows about the CS4270 codec, so reject anything else.
++	 */
++	codec_np = get_node_by_phandle_name(np, "codec-handle",
++					    "cirrus,cs4270");
++	if (!codec_np) {
++		dev_err(dev, "invalid codec node\n");
++		return -EINVAL;
++	}
  
- 	/* Add Zoom2 specific widgets */
-@@ -192,14 +193,15 @@ static int zoom2_twl4030_init(struct snd_soc_codec *codec)
+ 	machine_data = kzalloc(sizeof(struct mpc8610_hpcd_data), GFP_KERNEL);
+ 	if (!machine_data)
+ 		return -ENOMEM;
+ 
+-	memset(&ssi_info, 0, sizeof(ssi_info));
+-	memset(&dma_info, 0, sizeof(dma_info));
++	machine_data->dai[0].cpu_dai_id = 0;
++	machine_data->dai[0].codec_dai_id = 0;
++	machine_data->dai[0].platform_id = 0;
+ 
+-	ssi_info.dev = &ofdev->dev;
++	machine_data->dai[0].name = machine_data->dai_name;
+ 
+-	/*
+-	 * We are only interested in SSIs with a codec phandle in them, so let's
+-	 * make sure this SSI has one.
+-	 */
+-	codec_ph = of_get_property(np, "codec-handle", NULL);
+-	if (!codec_ph)
+-		goto error;
++	machine_data->dai[0].cpu_dai_drv = cpu_dai_drv;
++	machine_data->dai[0].codec_dai_drv = &cs4270_dai;
++	machine_data->dai[0].codec_drv = &soc_codec_device_cs4270;
++	machine_data->dai[0].ops = &mpc8610_hpcd_ops;
+ 
+-	codec_np = of_find_node_by_phandle(*codec_ph);
+-	if (!codec_np)
+-		goto error;
++	/* Store the codec name, it will be used as the codec DAI name */
++	of_modalias_node(codec_np, machine_data->dai_name,
++			 sizeof(machine_data->dai_name));
+ 
+-	/* The MPC8610 HPCD only knows about the CS4270 codec, so reject
+-	   anything else. */
+-	if (!of_device_is_compatible(codec_np, "cirrus,cs4270"))
+-		goto error;
++	memcpy(&machine_data->dai[1], &machine_data->dai[0],
++	       sizeof(struct snd_soc_dai_link));
+ 
+ 	/* Get the device ID */
+ 	iprop = of_get_property(np, "cell-index", NULL);
+ 	if (!iprop) {
+-		dev_err(&ofdev->dev, "cell-index property not found\n");
++		dev_err(&pdev->dev, "cell-index property not found\n");
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
+ 	machine_data->ssi_id = *iprop;
+-	ssi_info.id = *iprop;
++	id = *iprop;
+ 
+ 	/* Get the serial format and clock direction. */
+ 	sprop = of_get_property(np, "fsl,mode", NULL);
+ 	if (!sprop) {
+-		dev_err(&ofdev->dev, "fsl,mode property not found\n");
++		dev_err(&pdev->dev, "fsl,mode property not found\n");
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
+@@ -269,15 +348,14 @@ static int mpc8610_hpcd_probe(struct of_device *ofdev,
+ 		machine_data->codec_clk_direction = SND_SOC_CLOCK_OUT;
+ 		machine_data->cpu_clk_direction = SND_SOC_CLOCK_IN;
+ 
+-		/*
+-		 * In i2s-slave mode, the codec has its own clock source, so we
++		/* In i2s-slave mode, the codec has its own clock source, so we
+ 		 * need to get the frequency from the device tree and pass it to
+ 		 * the codec driver.
+ 		 */
+ 		iprop = of_get_property(codec_np, "clock-frequency", NULL);
+ 		if (!iprop || !*iprop) {
+-			dev_err(&ofdev->dev, "codec bus-frequency property "
+-				"is missing or invalid\n");
++			dev_err(&pdev->dev, "codec bus-frequency "
++				"property is missing or invalid\n");
+ 			ret = -EINVAL;
+ 			goto error;
+ 		}
+@@ -311,317 +389,170 @@ static int mpc8610_hpcd_probe(struct of_device *ofdev,
+ 		machine_data->codec_clk_direction = SND_SOC_CLOCK_IN;
+ 		machine_data->cpu_clk_direction = SND_SOC_CLOCK_OUT;
+ 	} else {
+-		dev_err(&ofdev->dev,
+-			"unrecognized fsl,mode property \"%s\"\n", sprop);
++		dev_err(&pdev->dev,
++			"unrecognized fsl,mode property '%s'\n", sprop);
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
+ 
+ 	if (!machine_data->clk_frequency) {
+-		dev_err(&ofdev->dev, "unknown clock frequency\n");
++		dev_err(&pdev->dev, "unknown clock frequency\n");
+ 		ret = -EINVAL;
+ 		goto error;
+ 	}
+ 
+ 	/* Read the SSI information from the device tree */
+ 	ret = of_address_to_resource(np, 0, &res);
+-	if (ret) {
+-		dev_err(&ofdev->dev, "could not obtain SSI address\n");
+-		goto error;
+-	}
+-	if (!res.start) {
+-		dev_err(&ofdev->dev, "invalid SSI address\n");
+-		goto error;
+-	}
+-	ssi_info.ssi_phys = res.start;
+-
+-	machine_data->ssi = ioremap(ssi_info.ssi_phys, sizeof(struct ccsr_ssi));
+-	if (!machine_data->ssi) {
+-		dev_err(&ofdev->dev, "could not map SSI address %x\n",
+-			ssi_info.ssi_phys);
+-		ret = -EINVAL;
+-		goto error;
+-	}
+-	ssi_info.ssi = machine_data->ssi;
+-
+-
+-	/* Get the IRQ of the SSI */
+-	machine_data->ssi_irq = irq_of_parse_and_map(np, 0);
+-	if (!machine_data->ssi_irq) {
+-		dev_err(&ofdev->dev, "could not get SSI IRQ\n");
+-		ret = -EINVAL;
+-		goto error;
+-	}
+-	ssi_info.irq = machine_data->ssi_irq;
+-
+-	/* Do we want to use asynchronous mode? */
+-	ssi_info.asynchronous =
+-		of_find_property(np, "fsl,ssi-asynchronous", NULL) ? 1 : 0;
+-	if (ssi_info.asynchronous)
+-		dev_info(&ofdev->dev, "using asynchronous mode\n");
+-
+-	/* Map the global utilities registers. */
+-	guts_np = of_find_compatible_node(NULL, NULL, "fsl,mpc8610-guts");
+-	if (!guts_np) {
+-		dev_err(&ofdev->dev, "could not obtain address of GUTS\n");
+-		ret = -EINVAL;
++	if (ret || !res.start) {
++		dev_err(&pdev->dev, "could not obtain SSI address\n");
+ 		goto error;
+ 	}
+-	machine_data->guts = of_iomap(guts_np, 0);
+-	of_node_put(guts_np);
+-	if (!machine_data->guts) {
+-		dev_err(&ofdev->dev, "could not map GUTS\n");
+-		ret = -EINVAL;
+-		goto error;
+-	}
+-
+-	/* Find the DMA channels to use.  Both SSIs need to use the same DMA
+-	 * controller, so let's use DMA#1.
+-	 */
+-	for_each_compatible_node(dma_np, NULL, "fsl,mpc8610-dma") {
+-		iprop = of_get_property(dma_np, "cell-index", NULL);
+-		if (iprop && (*iprop == 0)) {
+-			of_node_put(dma_np);
+-			break;
+-		}
+-	}
+-	if (!dma_np) {
+-		dev_err(&ofdev->dev, "could not find DMA node\n");
+-		ret = -EINVAL;
++	ssi_stx_phys = res.start + offsetof(struct ccsr_ssi, stx0);
++	ssi_srx_phys = res.start + offsetof(struct ccsr_ssi, srx0);
++
++	/* Find the playback DMA channel to use. */
++	ret = get_dma_channel(np, "fsl,playback-dma", ssi_stx_phys,
++			      ssi_srx_phys, &machine_data->dai[0],
++			      &machine_data->dma_channel_id[0],
++			      &machine_data->dma_id[0]);
++	if (ret) {
++		dev_err(&pdev->dev, "missing/invalid playback DMA phandle\n");
+ 		goto error;
+ 	}
+-	machine_data->dma_id = *iprop;
+ 
+-	/* SSI1 needs to use DMA Channels 0 and 1, and SSI2 needs to use DMA
+-	 * channels 2 and 3.  This is just how the MPC8610 is wired
+-	 * internally.
+-	 */
+-	playback_dma_channel = (machine_data->ssi_id == 0) ? 0 : 2;
+-	capture_dma_channel = (machine_data->ssi_id == 0) ? 1 : 3;
+-
+-	/*
+-	 * Find the DMA channels to use.
+-	 */
+-	while ((dma_channel_np = of_get_next_child(dma_np, dma_channel_np))) {
+-		iprop = of_get_property(dma_channel_np, "cell-index", NULL);
+-		if (iprop && (*iprop == playback_dma_channel)) {
+-			/* dma_channel[0] and dma_irq[0] are for playback */
+-			dma_info.dma_channel[0] = of_iomap(dma_channel_np, 0);
+-			dma_info.dma_irq[0] =
+-				irq_of_parse_and_map(dma_channel_np, 0);
+-			machine_data->dma_channel_id[0] = *iprop;
+-			continue;
+-		}
+-		if (iprop && (*iprop == capture_dma_channel)) {
+-			/* dma_channel[1] and dma_irq[1] are for capture */
+-			dma_info.dma_channel[1] = of_iomap(dma_channel_np, 0);
+-			dma_info.dma_irq[1] =
+-				irq_of_parse_and_map(dma_channel_np, 0);
+-			machine_data->dma_channel_id[1] = *iprop;
+-			continue;
+-		}
+-	}
+-	if (!dma_info.dma_channel[0] || !dma_info.dma_channel[1] ||
+-	    !dma_info.dma_irq[0] || !dma_info.dma_irq[1]) {
+-		dev_err(&ofdev->dev, "could not find DMA channels\n");
+-		ret = -EINVAL;
++	/* Find the capture DMA channel to use. */
++	ret = get_dma_channel(np, "fsl,capture-dma", ssi_stx_phys,
++			      ssi_srx_phys, &machine_data->dai[1],
++			      &machine_data->dma_channel_id[1],
++			      &machine_data->dma_id[1]);
++	if (ret) {
++		dev_err(&pdev->dev, "missing/invalid capture DMA phandle\n");
+ 		goto error;
+ 	}
+ 
+-	dma_info.ssi_stx_phys = ssi_info.ssi_phys +
+-		offsetof(struct ccsr_ssi, stx0);
+-	dma_info.ssi_srx_phys = ssi_info.ssi_phys +
+-		offsetof(struct ccsr_ssi, srx0);
+-
+-	/* We have the DMA information, so tell the DMA driver what it is */
+-	if (!fsl_dma_configure(&dma_info)) {
+-		dev_err(&ofdev->dev, "could not instantiate DMA device\n");
+-		ret = -EBUSY;
++	/* Initialize our DAI data structure.  */
++	iprop = of_get_property(codec_np, "reg", NULL);
++	if (!iprop) {
++		dev_err(&pdev->dev, "codec node is missing 'reg' property\n");
+ 		goto error;
+ 	}
++	machine_data->dai[0].codec_id = *iprop;
++	machine_data->dai[1].codec_id = *iprop;
+ 
+-	/*
+-	 * Initialize our DAI data structure.  We should probably get this
+-	 * information from the device tree.
+-	 */
+-	machine_data->dai.name = "CS4270";
+-	machine_data->dai.stream_name = "CS4270";
+-
+-	machine_data->dai.cpu_dai = fsl_ssi_create_dai(&ssi_info);
+-	machine_data->dai.codec_dai = &cs4270_dai; /* The codec_dai we want */
+-	machine_data->dai.ops = &mpc8610_hpcd_ops;
++	machine_data->dai[0].stream_name = "playback";
++	machine_data->dai[1].stream_name = "capture";
+ 
+-	machine_data->machine.probe = mpc8610_hpcd_machine_probe;
+-	machine_data->machine.remove = mpc8610_hpcd_machine_remove;
+-	machine_data->machine.name = "MPC8610 HPCD";
+-	machine_data->machine.num_links = 1;
+-	machine_data->machine.dai_link = &machine_data->dai;
++	machine_data->card.probe = mpc8610_hpcd_machine_probe;
++	machine_data->card.remove = mpc8610_hpcd_machine_remove;
++	machine_data->card.name = "MPC8610 HPCD";
++	machine_data->card.num_links = 2;
++	machine_data->card.dai_link = machine_data->dai;
+ 
+ 	/* Allocate a new audio platform device structure */
+ 	sound_device = platform_device_alloc("soc-audio", -1);
+ 	if (!sound_device) {
+-		dev_err(&ofdev->dev, "platform device allocation failed\n");
++		dev_err(&pdev->dev, "platform device alloc failed\n");
+ 		ret = -ENOMEM;
+ 		goto error;
+ 	}
+ 
+-	machine_data->sound_devdata.card = &machine_data->machine;
+-	machine_data->sound_devdata.codec_dev = &soc_codec_device_cs4270;
+-	machine_data->machine.platform = &fsl_soc_platform;
+-
+-	sound_device->dev.platform_data = machine_data;
+-
+-
+-	/* Set the platform device and ASoC device to point to each other */
+-	platform_set_drvdata(sound_device, &machine_data->sound_devdata);
+-
+-	machine_data->sound_devdata.dev = &sound_device->dev;
++	/* Associate the card data with the sound device */
++	platform_set_drvdata(sound_device, &machine_data->card);
+ 
+-
+-	/* Tell ASoC to probe us.  This will call mpc8610_hpcd_machine.probe(),
+-	   if it exists. */
++	/* Register with ASoC */
+ 	ret = platform_device_add(sound_device);
+-
+ 	if (ret) {
+-		dev_err(&ofdev->dev, "platform device add failed\n");
++		dev_err(&pdev->dev, "platform device add failed\n");
+ 		goto error;
+ 	}
+ 
+-	dev_set_drvdata(&ofdev->dev, sound_device);
++	of_node_put(codec_np);
+ 
+ 	return 0;
+ 
+ error:
+ 	of_node_put(codec_np);
+-	of_node_put(guts_np);
+ 	of_node_put(dma_np);
+ 	of_node_put(dma_channel_np);
+ 
+ 	if (sound_device)
+ 		platform_device_unregister(sound_device);
+ 
+-	if (machine_data->dai.cpu_dai)
+-		fsl_ssi_destroy_dai(machine_data->dai.cpu_dai);
+-
+-	if (ssi_info.ssi)
+-		iounmap(ssi_info.ssi);
+-
+-	if (ssi_info.irq)
+-		irq_dispose_mapping(ssi_info.irq);
+-
+-	if (dma_info.dma_channel[0])
+-		iounmap(dma_info.dma_channel[0]);
+-
+-	if (dma_info.dma_channel[1])
+-		iounmap(dma_info.dma_channel[1]);
+-
+-	if (dma_info.dma_irq[0])
+-		irq_dispose_mapping(dma_info.dma_irq[0]);
+-
+-	if (dma_info.dma_irq[1])
+-		irq_dispose_mapping(dma_info.dma_irq[1]);
+-
+-	if (machine_data->guts)
+-		iounmap(machine_data->guts);
+-
+ 	kfree(machine_data);
+ 
  	return ret;
  }
  
--static int zoom2_twl4030_voice_init(struct snd_soc_codec *codec)
-+static int zoom2_twl4030_voice_init(struct snd_soc_pcm_runtime *rtd)
+ /**
+- * mpc8610_hpcd_remove: remove the OF device
++ * mpc8610_hpcd_remove: remove the platform device
+  *
+- * This function is called when the OF device is removed.
++ * This function is called when the platform device is removed.
+  */
+-static int mpc8610_hpcd_remove(struct of_device *ofdev)
++static int __devexit mpc8610_hpcd_remove(struct platform_device *pdev)
  {
-+	struct snd_soc_codec *codec = rtd->codec;
- 	unsigned short reg;
+-	struct platform_device *sound_device = dev_get_drvdata(&ofdev->dev);
++	struct platform_device *sound_device = dev_get_drvdata(&pdev->dev);
++	struct snd_soc_card *card = platform_get_drvdata(sound_device);
+ 	struct mpc8610_hpcd_data *machine_data =
+-		sound_device->dev.platform_data;
++		container_of(card, struct mpc8610_hpcd_data, card);
  
- 	/* Enable voice interface */
--	reg = codec->read(codec, TWL4030_REG_VOICE_IF);
-+	reg = codec->driver->read(codec, TWL4030_REG_VOICE_IF);
- 	reg |= TWL4030_VIF_DIN_EN | TWL4030_VIF_DOUT_EN | TWL4030_VIF_EN;
--	codec->write(codec, TWL4030_REG_VOICE_IF, reg);
-+	codec->driver->write(codec, TWL4030_REG_VOICE_IF, reg);
+ 	platform_device_unregister(sound_device);
+ 
+-	if (machine_data->dai.cpu_dai)
+-		fsl_ssi_destroy_dai(machine_data->dai.cpu_dai);
+-
+-	if (machine_data->ssi)
+-		iounmap(machine_data->ssi);
+-
+-	if (machine_data->dma[0])
+-		iounmap(machine_data->dma[0]);
+-
+-	if (machine_data->dma[1])
+-		iounmap(machine_data->dma[1]);
+-
+-	if (machine_data->dma_irq[0])
+-		irq_dispose_mapping(machine_data->dma_irq[0]);
+-
+-	if (machine_data->dma_irq[1])
+-		irq_dispose_mapping(machine_data->dma_irq[1]);
+-
+-	if (machine_data->guts)
+-		iounmap(machine_data->guts);
+-
+ 	kfree(machine_data);
+ 	sound_device->dev.platform_data = NULL;
+ 
+-	dev_set_drvdata(&ofdev->dev, NULL);
++	dev_set_drvdata(&pdev->dev, NULL);
  
  	return 0;
  }
-@@ -209,16 +211,22 @@ static struct snd_soc_dai_link zoom2_dai[] = {
- 	{
- 		.name = "TWL4030 I2S",
- 		.stream_name = "TWL4030 Audio",
--		.cpu_dai = &omap_mcbsp_dai[0],
--		.codec_dai = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.cpu_dai_drv = &omap_mcbsp_dai,
-+		.cpu_dai_id = OMAP_MCBSP2,
-+		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_HIFI],
-+		.codec_dai_id = TWL4030_DAI_HIFI,
-+		.platform_drv = &omap_soc_platform,
- 		.init = zoom2_twl4030_init,
- 		.ops = &zoom2_ops,
+ 
+-static struct of_device_id mpc8610_hpcd_match[] = {
+-	{
+-		.compatible = "fsl,mpc8610-ssi",
+-	},
+-	{}
+-};
+-MODULE_DEVICE_TABLE(of, mpc8610_hpcd_match);
+-
+-static struct of_platform_driver mpc8610_hpcd_of_driver = {
++static struct platform_driver mpc8610_hpcd_driver = {
++	.probe = mpc8610_hpcd_probe,
++	.remove = __devexit_p(mpc8610_hpcd_remove),
+ 	.driver = {
+-		.name = "mpc8610_hpcd",
++		/* The name must match the 'model' property in the device tree,
++		 * in lowercase letters.
++		 */
++		.name = "snd-soc-mpc8610hpcd",
+ 		.owner = THIS_MODULE,
+-		.of_match_table = mpc8610_hpcd_match,
  	},
- 	{
- 		.name = "TWL4030 PCM",
- 		.stream_name = "TWL4030 Voice",
--		.cpu_dai = &omap_mcbsp_dai[1],
--		.codec_dai = &twl4030_dai[TWL4030_DAI_VOICE],
-+		.cpu_dai_drv = &omap_mcbsp_dai,
-+		.cpu_dai_id = OMAP_MCBSP3,
-+		.codec_dai_drv = &twl4030_dai[TWL4030_DAI_VOICE],
-+		.codec_dai_id = TWL4030_DAI_VOICE,
-+		.platform_drv = &omap_soc_platform,
- 		.init = zoom2_twl4030_voice_init,
- 		.ops = &zoom2_voice_ops,
- 	},
-@@ -227,32 +235,10 @@ static struct snd_soc_dai_link zoom2_dai[] = {
- /* Audio machine driver */
- static struct snd_soc_card snd_soc_zoom2 = {
- 	.name = "Zoom2",
--	.platform = &omap_soc_platform,
- 	.dai_link = zoom2_dai,
- 	.num_links = ARRAY_SIZE(zoom2_dai),
+-	.probe  	= mpc8610_hpcd_probe,
+-	.remove 	= mpc8610_hpcd_remove,
  };
  
--/* EXTMUTE callback function */
--void zoom2_set_hs_extmute(int mute)
--{
--	gpio_set_value(ZOOM2_HEADSET_EXTMUTE_GPIO, mute);
--}
+ /**
+- * mpc8610_hpcd_init: fabric driver initialization.
++ * mpc8610_hpcd_init: machine driver initialization.
+  *
+  * This function is called when this module is loaded.
+  */
+ static int __init mpc8610_hpcd_init(void)
+ {
+-	int ret;
 -
--/* twl4030 setup */
--static struct twl4030_setup_data twl4030_setup = {
--	.ramp_delay_value = 3,	/* 161 ms */
--	.sysclk = 26000,
--	.hs_extmute = 1,
--	.set_hs_extmute = zoom2_set_hs_extmute,
--};
--
--/* Audio subsystem */
--static struct snd_soc_device zoom2_snd_devdata = {
--	.card = &snd_soc_zoom2,
--	.codec_dev = &soc_codec_dev_twl4030,
--	.codec_data = &twl4030_setup,
--};
--
- static struct platform_device *zoom2_snd_device;
+-	printk(KERN_INFO "Freescale MPC8610 HPCD ALSA SoC fabric driver\n");
++	struct device_node *guts_np;
++	struct resource res;
  
- static int __init zoom2_soc_init(void)
-@@ -271,11 +257,7 @@ static int __init zoom2_soc_init(void)
- 		return -ENOMEM;
+-	ret = of_register_platform_driver(&mpc8610_hpcd_of_driver);
++	pr_info("Freescale MPC8610 HPCD ALSA SoC machine driver\n");
+ 
+-	if (ret)
+-		printk(KERN_ERR
+-			"mpc8610-hpcd: failed to register platform driver\n");
++	/* Get the physical address of the global utilities registers */
++	guts_np = of_find_compatible_node(NULL, NULL, "fsl,mpc8610-guts");
++	if (of_address_to_resource(guts_np, 0, &res)) {
++		pr_err("mpc8610-hpcd: missing/invalid global utilities node\n");
++		return -EINVAL;
++	}
++	guts_phys = res.start;
+ 
+-	return ret;
++	return platform_driver_register(&mpc8610_hpcd_driver);
+ }
+ 
+ /**
+- * mpc8610_hpcd_exit: fabric driver exit
++ * mpc8610_hpcd_exit: machine driver exit
+  *
+  * This function is called when this driver is unloaded.
+  */
+ static void __exit mpc8610_hpcd_exit(void)
+ {
+-	of_unregister_platform_driver(&mpc8610_hpcd_of_driver);
++	platform_driver_unregister(&mpc8610_hpcd_driver);
+ }
+ 
+ module_init(mpc8610_hpcd_init);
+ module_exit(mpc8610_hpcd_exit);
+ 
+ MODULE_AUTHOR("Timur Tabi <timur@freescale.com>");
+-MODULE_DESCRIPTION("Freescale MPC8610 HPCD ALSA SoC fabric driver");
+-MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Freescale MPC8610 HPCD ALSA SoC machine driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/fsl/pcm030-audio-fabric.c b/sound/soc/fsl/pcm030-audio-fabric.c
+index 6644cba..1309996 100644
+--- a/sound/soc/fsl/pcm030-audio-fabric.c
++++ b/sound/soc/fsl/pcm030-audio-fabric.c
+@@ -32,21 +32,28 @@
+ 
+ #define DRV_NAME "pcm030-audio-fabric"
+ 
+-static struct snd_soc_device device;
+ static struct snd_soc_card card;
+ 
+ static struct snd_soc_dai_link pcm030_fabric_dai[] = {
+ {
+ 	.name = "AC97",
+ 	.stream_name = "AC97 Analog",
+-	.codec_dai = &wm9712_dai[WM9712_DAI_AC97_HIFI],
+-	.cpu_dai = &psc_ac97_dai[MPC5200_AC97_NORMAL],
++	.codec_dai_drv = &wm9712_dai[WM9712_DAI_AC97_HIFI],
++	.codec_dai_id = WM9712_DAI_AC97_HIFI,
++	.cpu_dai_drv = &psc_ac97_dai[MPC5200_AC97_NORMAL],
++	.cpu_dai_id = MPC5200_AC97_NORMAL,
++	.platform_drv = &mpc5200_audio_dma_platform,
++	.codec_drv = &soc_codec_dev_wm9712,
+ },
+ {
+ 	.name = "AC97",
+ 	.stream_name = "AC97 IEC958",
+-	.codec_dai = &wm9712_dai[WM9712_DAI_AC97_AUX],
+-	.cpu_dai = &psc_ac97_dai[MPC5200_AC97_SPDIF],
++	.codec_dai_drv = &wm9712_dai[WM9712_DAI_AC97_AUX],
++	.codec_dai_id = WM9712_DAI_AC97_AUX,
++	.cpu_dai_drv = &psc_ac97_dai[MPC5200_AC97_SPDIF],
++	.cpu_dai_id = MPC5200_AC97_SPDIF,
++	.platform_drv = &mpc5200_audio_dma_platform,
++	.codec_drv = &soc_codec_dev_wm9712,
+ },
+ };
+ 
+@@ -58,22 +65,18 @@ static __init int pcm030_fabric_init(void)
+ 	if (!of_machine_is_compatible("phytec,pcm030"))
+ 		return -ENODEV;
+ 
+-	card.platform = &mpc5200_audio_dma_platform;
++
+ 	card.name = "pcm030";
+ 	card.dai_link = pcm030_fabric_dai;
+ 	card.num_links = ARRAY_SIZE(pcm030_fabric_dai);
+ 
+-	device.card = &card;
+-	device.codec_dev = &soc_codec_dev_wm9712;
+-
+ 	pdev = platform_device_alloc("soc-audio", 1);
+ 	if (!pdev) {
+ 		pr_err("pcm030_fabric_init: platform_device_alloc() failed\n");
+ 		return -ENODEV;
  	}
  
--	platform_set_drvdata(zoom2_snd_device, &zoom2_snd_devdata);
--	zoom2_snd_devdata.dev = &zoom2_snd_device->dev;
--	*(unsigned int *)zoom2_dai[0].cpu_dai->private_data = 1; /* McBSP2 */
--	*(unsigned int *)zoom2_dai[1].cpu_dai->private_data = 2; /* McBSP3 */
--
-+	platform_set_drvdata(zoom2_snd_device, &snd_soc_zoom2);
- 	ret = platform_device_add(zoom2_snd_device);
- 	if (ret)
- 		goto err1;
+-	platform_set_drvdata(pdev, &device);
+-	device.dev = &pdev->dev;
++	platform_set_drvdata(pdev, &card);
+ 
+ 	rc = platform_device_add(pdev);
+ 	if (rc) {
 -- 
 1.7.0.4
