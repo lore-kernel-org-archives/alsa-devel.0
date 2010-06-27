@@ -1,20 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: pcm_lib: avoid timing jitter in
- snd_pcm_read/write()
-Date: Sun, 27 Jun 2010 20:01:16 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1006271942500.15497@eeebox2.perex-int.cz>
-References: <1277590400.2438.15.camel@obelisk.thedillows.org>
-	<AANLkTil91moJgRh51QFgvSFd47MzQxzxty1H2RzKK5nF@mail.gmail.com>
-	<1277648967.2438.32.camel@obelisk.thedillows.org>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [RFC 3/5] ASoC multi-component support : core
+Date: Sun, 27 Jun 2010 21:25:49 +0200
+Message-ID: <4C27A5BD.8000302@metafoo.de>
+References: <1277407482.3100.582.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6BBA4243BC
+Received: from mailhost.informatik.uni-hamburg.de
+	(mailhost.informatik.uni-hamburg.de [134.100.9.70])
+	by alsa0.perex.cz (Postfix) with ESMTP id AC05E24457
 	for <alsa-devel@alsa-project.org>;
-	Sun, 27 Jun 2010 20:01:17 +0200 (CEST)
-In-Reply-To: <1277648967.2438.32.camel@obelisk.thedillows.org>
+	Sun, 27 Jun 2010 21:26:20 +0200 (CEST)
+In-Reply-To: <1277407482.3100.582.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,50 +22,152 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Dillow <dave@thedillows.org>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Jassi Brar <jassisinghbrar@gmail.com>, linux@schou.dk
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 27 Jun 2010, David Dillow wrote:
+Hi
 
-> On Sun, 2010-06-27 at 12:29 +0900, Jassi Brar wrote:
->> On Sun, Jun 27, 2010 at 7:13 AM, David Dillow <dave@thedillows.org> wrote:
->>> This is solved by using runtime->twake as the number of samples needed
->>> for a wakeup in addition to selecting the proper wait queue to wake in
->>> snd_pcm_update_state(). This requires twake to be non-zero when used
->>> by snd_pcm_lib_{read,write}1() even if avail_min is zero.
->>
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2010-June/028786.html
->
-> Hmm, yes, I should have search the archives a bit. I originally tuned
-> out the thread you listed as a request for parameter help, and missed
-> your original postings.
->
-> I think my patch is pretty close to preserving the existing semantics as
-> it doesn't change poll() at all, but I do see a case where the user
-> could get a read/write back prior to avail_min samples being ready. I
-> think that's fixable -- if the user is requesting a read/write of less
-> than avail_min samples, then we have to wait for avail_min regardless.
->
-> Takashi, is your concern about semantics the proper honoring of
-> avail_min in all cases, or preserving the current behavior of waiting
-> for two periods when avail_min is set to the size of one period?
+Liam Girdwood wrote:
+> This patch adds multi-component support to the ASoC core and
+> reflects the new ASoC driver/device structure model defined in soc.h
+> and soc-dai.h. i.e.
+> 
+>  struct snd_soc_codec    --->  struct snd_soc_codec (device data)
+>                           +->  struct snd_soc_codec_driver (driver data)
+> 
+>  struct snd_soc_platform --->  struct snd_soc_platform (device data)
+>                           +->  struct snd_soc_platform_driver (driver data)
+> 
+>  struct snd_soc_dai      --->  struct snd_soc_dai (device data)
+>                           +->  struct snd_soc_dai_driver (driver data)
+> 
+>  struct snd_soc_device   --->  deleted
+> 
+> Other notable multi-component changes:-
+> 
+>  * Stream operations now de-reference less structures.
+>  * close_delayed work() now runs on a DAI basis rather than looping all DAIs
+>    in a card.
+>  * PM suspend()/resume() operations can now handle N CODECs and Platforms
+>    per sound card.
+>  * Added soc_bind_dai_link() to bind the component devices to the sound card.
+>  * Added soc_dai_link_probe() and soc_dai_link_remove() to probe and remove
+>    DAI link components.
+>  * sysfs entries can now be registered per component per card.
+>  * snd_soc_new_pcms() functionailty rolled into dai_link_probe().
+>  * snd_soc_register_codec() now does all the codec list and mutex init.
+> 
+> Signed-off-by: Liam Girdwood <lrg@slimlogic.co.uk>
+> ---
+>  sound/soc/soc-core.c | 1595 +++++++++++++++++++++++++++++---------------------
+>  1 files changed, 914 insertions(+), 681 deletions(-)
+> 
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 3deb226..280c2f0 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> [...]
+> +static int soc_probe_dai_link(struct snd_soc_card *card, int num)
+> +{
+> [...]
+> +	/* probe the CODEC */
+> +	if (!codec->probed) {
+> +		if (codec->driver->probe) {
+> +			ret = codec->driver->probe(codec);
+> +			if (ret < 0)
+> +				return ret;
+> +		}
+> +		/* Make sure all DAPM widgets are instantiated */
+> +		snd_soc_dapm_new_widgets(codec);
+> +
+> +		/* mark codec as probed and add to card codec list */
+> +		codec->probed = 1;
+> +		list_add(&codec->card_list, &card->codec_dev_list);
+> +
+> +		/* add DAPM sysfs entries for this codec */
+> +		ret = snd_soc_dapm_sys_add(codec->dev);
+>  		if (ret < 0)
+> -			goto cpu_dai_err;
+> -	}
+> -	codec = card->codec;
+> +			printk(KERN_WARNING "asoc: failed to add codec dapm sysfs entries\n");
+>  
+> -	if (platform->probe) {
+> -		ret = platform->probe(pdev);
+> +		/* add codec sysfs entries */
+> +		ret = device_create_file(codec->dev, &dev_attr_codec_reg);
+>  		if (ret < 0)
+> -			goto platform_err;
+> +			printk(KERN_WARNING "asoc: failed to add codec sysfs files\n");
+> +
+> +		soc_init_codec_debugfs(codec);
+>  	}
+>  
+> -	/* DAPM stream work */
+> -	INIT_DELAYED_WORK(&card->delayed_work, close_delayed_work);
+> -#ifdef CONFIG_PM
+> -	/* deferred resume work */
+> -	INIT_WORK(&card->deferred_resume_work, soc_resume_deferred);
+> -#endif
+> +	/* probe the platform */
+> +	if (!platform->probed) {
+> +		if (platform->driver->probe) {
+> +			ret = platform->driver->probe(platform);
+> +			if (ret < 0)
+> +				return ret;
+> +		}
+> +		/* mark platform as probed and add to card platform list */
+> +		platform->probed = 1;
+> +		list_add(&platform->card_list, &card->platform_dev_list);
+> +	}
+>  
+> -	for (i = 0; i < card->num_links; i++) {
+> -		if (card->dai_link[i].init) {
+> -			ret = card->dai_link[i].init(codec);
+> -			if (ret < 0) {
+> -				printk(KERN_ERR "asoc: failed to init %s\n",
+> -					card->dai_link[i].stream_name);
+> -				continue;
+> -			}
+> +	/* probe the CODEC DAI */
+> +	if (!codec_dai->probed) {
+> +		if (codec_dai->driver->probe) {
+> +			ret = codec_dai->driver->probe(codec_dai);
+> +			if (ret < 0)
+> +				return ret;
+>  		}
+> -		if (card->dai_link[i].codec_dai->ac97_control)
+> -			ac97 = 1;
+> +
+> +		/* mark cpu_dai as probed and add to card cpu_dai list */
+> +		codec_dai->probed = 1;
+> +		list_add(&codec_dai->card_list, &card->dai_dev_list);
+>  	}
+>  
+> -	snprintf(codec->card->shortname, sizeof(codec->card->shortname),
+> -		 "%s",  card->name);
+> -	snprintf(codec->card->longname, sizeof(codec->card->longname),
+> -		 "%s (%s)", card->name, codec->name);
+> +	/* DAPM dai link stream work */
+> +	INIT_DELAYED_WORK(&rtd->delayed_work, close_delayed_work);
+>  
+> -	/* Make sure all DAPM widgets are instantiated */
+> -	snd_soc_dapm_new_widgets(codec);
+> +	/* now that all clients have probed, initialise the DAI link */
+> +	if (dai_link->init) {
+> +		ret = dai_link->init(rtd);
+> +		if (ret < 0) {
+> +			printk(KERN_ERR "asoc: failed to init %s\n", dai_link->stream_name);
+> +			return ret;
+> +		}
+> +	}
+>  
+> [...]
 
-I think that the avail_min semantics is quite clear. The problem is 
-caused by the hw transfer acknowledge interrupt jitter. It seems that
-the only good solution is to postpone the wake_up() call to time when the 
-avail_min condition becomes true - using an extra timing source (system 
-timer for example).
+Boards usually add board specific widgets and routes in their dai_link init callback.
+In the multi-component branch those widgets don't have a debugfs entry nor are they
+properly initialized. Thats because snd_soc_dapm_new_widgets used to get called after
+the dai_link init callback had been called, now it is before.
 
-Another possibility is to keep thing asis and keep to applications to 
-handle this situation - use a different timing source than interrupts 
-from soundcard for scheduling of I/O operations. But it's right that most 
-of simple applications and use cases expect that I/O transfers will work 
-even with 2 periods.
-
- 					Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+- Lars
