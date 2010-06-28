@@ -1,20 +1,22 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ALSA: pcm_lib: avoid timing jitter in
- snd_pcm_read/write()
-Date: Mon, 28 Jun 2010 16:11:21 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1006281545370.15497@eeebox2.perex-int.cz>
-References: <1277590400.2438.15.camel@obelisk.thedillows.org>
-	<alpine.LNX.2.00.1006280946260.15497@eeebox2.perex-int.cz>
-	<1277732488.2438.190.camel@obelisk.thedillows.org>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH RFC 1/3] ASoC: uda1380: use callbacks
+	instead of gpiolib
+Date: Mon, 28 Jun 2010 15:15:40 +0100
+Message-ID: <20100628141539.GC7403@rakim.wolfsonmicro.main>
+References: <1277565285-11563-1-git-send-email-anarsoul@gmail.com>
+	<201006281649.39572.anarsoul@gmail.com>
+	<20100628135046.GB7403@rakim.wolfsonmicro.main>
+	<201006281705.57779.anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id F0383244C0
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 87C75244C5
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Jun 2010 16:11:21 +0200 (CEST)
-In-Reply-To: <1277732488.2438.190.camel@obelisk.thedillows.org>
+	Mon, 28 Jun 2010 16:15:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201006281705.57779.anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,54 +26,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: David Dillow <dave@thedillows.org>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, linux@schou.dk
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 28 Jun 2010, David Dillow wrote:
-
-> On Mon, 2010-06-28 at 09:47 +0200, Jaroslav Kysela wrote:
->> On Sat, 26 Jun 2010, David Dillow wrote:
->>
->>> When using poll() to wait for the next period -- or avail_min samples --
->>> one gets a consistent delay for each system call that is usually just a
->>> little short of the selected period time. However, When using
->>> snd_pcm_read/write(), one gets a jittery delay that alternates between
->>> less than a millisecond and approximately two period times. This is
->>> caused by snd_pcm_lib_{read,write}1() transferring any available samples
->>> to the user's buffer and adjusting the application pointer prior to
->>> sleeping to the end of the current period. When the next period
->>> interrupt occurs, there is then less than avail_min samples remaining to
->>> be transferred in the period, so we end up sleeping until a second
->>> period occurs.
->>>
->>> This is solved by using runtime->twake as the number of samples needed
->>> for a wakeup in addition to selecting the proper wait queue to wake in
->>> snd_pcm_update_state(). This requires twake to be non-zero when used
->>> by snd_pcm_lib_{read,write}1() even if avail_min is zero.
->>>
->>> Signed-off-by: Dave Dillow <dave@thedillows.org>
->>
->> Thanks. It looks like another way to get things right. I applied your
->> patch to my tree.
->
-> I think we should probably better define the semantics of read/write for
-> sizes < avail_min, == avail_min, and > avail_min. As it is, I fear that
-> this patch makes things worse as I hadn't thought through all of the
-> cases when I posted it. If you've not pushed, please revert. If you
-> have, then it improves one case, but let's makes sure we get the others
-> correct before it hits the mainline.
-
-I don't see any drawbacks in your solution. When I/O size is greater than 
-avail_min, the behaviour is same as in previous code (avail_min is used 
-for wake_up). For smaller I/O sizes (requests are not aligned to period 
-size), each period interrupt will cause a wake up for the application 
-task. In this case, the application may do own optimization of I/O 
-transfers (sizes).
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+T24gTW9uLCBKdW4gMjgsIDIwMTAgYXQgMDU6MDU6NTFQTSArMDMwMCwgVmFzaWx5IEtob3J1emhp
+Y2sgd3JvdGU6Cj4g0JIg0YHQvtC+0LHRidC10L3QuNC4INC+0YIgMjgg0LjRjtC90Y8gMjAxMCAx
+Njo1MDo0NiDQsNCy0YLQvtGAIE1hcmsgQnJvd24g0L3QsNC/0LjRgdCw0Ls6Cj4gPiBTbyB0aGlz
+IGlzIGFuIG9uLWJvYXJkIHBvd2VyIHNvdXJjZSB0aGF0J3MgYmVpbmcgY29udHJvbGxlZCBieSB0
+aGUgR1BJTwo+ID4gcmF0aGVyIHRoYW4gYW4gZXh0ZXJuYWwgZGV2aWNlPwoKPiBUaGF0J3MganVz
+dCBncGlvLWJhc2VkIHBvd2VyIGNvbnRyb2wgZm9yIHVkYTEzODAgKG5vdCBzdXJlIGFib3V0IHNj
+aGVtYXRpY3MsIAo+IGl0J3Mgbm90IGF2YWlsYWJsZSkuIFNhbWUgYXBwcm9hY2ggaXMgdXNlZCBp
+biBoMTk0MCBhbmQgbWFnaWNpYW4uCgpXaGF0IEknbSB0cnlpbmcgdG8gZmlndXJlIG91dCBpcyBp
+ZiB0aGUgR1BJTyBpcyB3aXJlZCBkaXJlY3RseSB0byB0aGUKVURBMTM4MCBvciBpZiB0aGlzIGlz
+IGNvbnRyb2xsaW5nIHNvbWV0aGluZyBleHRlcm5hbCB0byB0aGUgVURBMTM4MAp3aGljaCB0aGVz
+ZSBkZXNpZ25zIGp1c3QgaGFwcGVuIHRvIGhhdmUgY29waWVkLiAgSWYgaXQncyBhIGRpcmVjdApj
+b25uZWN0aW9uIHRvIHRoZSBVREExMzgwIHRoZW4gdXNpbmcgR1BJT3MgZGlyZWN0bHkgaXMgcGVy
+ZmVjdGx5CnNlbnNpYmxlLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
