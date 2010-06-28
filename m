@@ -1,19 +1,21 @@
-From: David Dillow <dave@thedillows.org>
-Subject: Re: [PATCH] sis7019: fix capture issues with multiple
- periods per buffer
-Date: Mon, 28 Jun 2010 01:33:42 -0400
-Message-ID: <1277703222.2438.184.camel@obelisk.thedillows.org>
-References: <1277589872.2438.5.camel@obelisk.thedillows.org>
-	<1277649968.2438.34.camel@obelisk.thedillows.org>
+From: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+Subject: Re: [PATCH 2/2 v2] ASoC: uda134x: correct bias level
+	setup for codecs family
+Date: Mon, 28 Jun 2010 09:38:55 +0400
+Message-ID: <AANLkTikWQx-QESPlazyT_t-4sWFkjfnD3J-Wbz1g-hI2@mail.gmail.com>
+References: <1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
+	<1277385565-30727-1-git-send-email-vzapolskiy@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from amavis-smtp.knology.net (amavis-smtp.knology.net [75.76.199.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id CFE9524675
+Received: from mail-ww0-f51.google.com (mail-ww0-f51.google.com [74.125.82.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 4857424677
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Jun 2010 07:33:49 +0200 (CEST)
-In-Reply-To: <1277649968.2438.34.camel@obelisk.thedillows.org>
+	Mon, 28 Jun 2010 07:38:56 +0200 (CEST)
+Received: by wwb13 with SMTP id 13so1253851wwb.38
+	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 22:38:56 -0700 (PDT)
+In-Reply-To: <1277385565-30727-1-git-send-email-vzapolskiy@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,27 +25,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, linux@schou.dk
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Vladimir Zapolskiy <vzapolskiy@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2010-06-27 at 10:46 -0400, David Dillow wrote:
-> On Sat, 2010-06-26 at 18:04 -0400, David Dillow wrote:
-> > When using a timing voice to clock out periods during capture, the
-> > driver would slowly loose synchronization and never catch up, eventually
-> > reaching a point where it no longer generated interrupts.
-> 
-> > ---
-> > This has survived overnight testing at 44.1 kHz/16 bit/mono without issue.
-> 
-> Only to die at 12 hours and ~15 minutes. It did not trip any of the
-> instrumentation I was using to verify operation, so this may be a
-> different problem. I'm looking into it.
-
-Ok, definitely different problem, as it dies 12:15 into a run using 2
-periods per buffer, so the virtual timing code does not come into it.
-Interestingly enough, it died after ~44092 seconds while recording at
-44100 Hz.
-
-The patch should be applied. If and when I find the source of this new
-bug, I'll submit a separate patch.
+SGkgYWxsLAoKd291bGQgeW91IGxpa2UgdG8gcmV2aWV3IHRoZXNlIHR3byBwYXRjaGVzIHdpdGgg
+Zml4IGZvciB1ZGExMzR7MCw0LDV9CmNvZGVjcyBjb3JlIHBvd2VyIGNvbnRyb2wgc3VwcG9ydD8K
+ClRoYW5rcyBpbiBhZHZhbmNlLApWbGFkaW1pcgoKT24gVGh1LCBKdW4gMjQsIDIwMTAgYXQgNTox
+OSBQTSwgVmxhZGltaXIgWmFwb2xza2l5Cjx2emFwb2xza2l5QGdtYWlsLmNvbT4gd3JvdGU6Cj4g
+Rm9yIFVEQTEzNDEgY29kZWMgcG93ZXIgY29udHJvbCBpcyBtYW5hZ2VkIGluIFNUQVRVUzEgcmVn
+aXN0ZXIsIGFuZAo+IGZvciBhbGwgb3RoZXIgY29kZWNzIGluIERBVEEwMTEgcmVnaXN0ZXIuCj4K
+PiBTaWduZWQtb2ZmLWJ5OiBWbGFkaW1pciBaYXBvbHNraXkgPHZ6YXBvbHNraXlAZ21haWwuY29t
+Pgo+IC0tLQo+IMKgc291bmQvc29jL2NvZGVjcy91ZGExMzR4LmMgfCDCoCAzNiArKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0tLS0KPiDCoDEgZmlsZXMgY2hhbmdlZCwgMzIgaW5zZXJ0
+aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNz
+L3VkYTEzNHguYyBiL3NvdW5kL3NvYy9jb2RlY3MvdWRhMTM0eC5jCj4gaW5kZXggZTc3MDAyOS4u
+ZTgwNjZiNiAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvY29kZWNzL3VkYTEzNHguYwo+ICsrKyBi
+L3NvdW5kL3NvYy9jb2RlY3MvdWRhMTM0eC5jCj4gQEAgLTM1Myw4ICszNTMsMjIgQEAgc3RhdGlj
+IGludCB1ZGExMzR4X3NldF9iaWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywK
+PiDCoCDCoCDCoCDCoHN3aXRjaCAobGV2ZWwpIHsKPiDCoCDCoCDCoCDCoGNhc2UgU05EX1NPQ19C
+SUFTX09OOgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgLyogQURDLCBEQUMgb24gKi8KPiAtIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IHVkYTEzNHhfcmVhZF9yZWdfY2FjaGUoY29kZWMsIFVE
+QTEzNFhfU1RBVFVTMSk7Cj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCB1ZGExMzR4X3dyaXRlKGNv
+ZGVjLCBVREExMzRYX1NUQVRVUzEsIHJlZyB8IDB4MDMpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgc3dpdGNoIChwZC0+bW9kZWwpIHsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNhc2UgVURB
+MTM0WF9VREExMzQwOgo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY2FzZSBVREExMzRYX1VEQTEz
+NDQ6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIFVEQTEzNFhfVURBMTM0NToKPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJlZyA9IHVkYTEzNHhfcmVhZF9yZWdfY2Fj
+aGUoY29kZWMsIFVEQTEzNFhfREFUQTAxMSk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCB1ZGExMzR4X3dyaXRlKGNvZGVjLCBVREExMzRYX0RBVEEwMTEsIHJlZyB8IDB4MDMp
+Owo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKyDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCBjYXNlIFVEQTEzNFhfVURBMTM0MToKPiArIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIHJlZyA9IHVkYTEzNHhfcmVhZF9yZWdfY2FjaGUoY29kZWMsIFVEQTEz
+NFhfU1RBVFVTMSk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB1ZGExMzR4
+X3dyaXRlKGNvZGVjLCBVREExMzRYX1NUQVRVUzEsIHJlZyB8IDB4MDMpOwo+ICsgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBk
+ZWZhdWx0Ogo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJpbnRrKEtFUk5f
+RVJSICJVREExMzRYIFNvQyBjb2RlYzogIgo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAidW5zdXBwb3J0ZWQgbW9kZWwgJWRcbiIsIHBkLT5tb2RlbCk7Cj4g
+KyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCByZXR1cm4gLUVJTlZBTDsKPiArIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIH0KPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGJyZWFrOwo+IMKg
+IMKgIMKgIMKgY2FzZSBTTkRfU09DX0JJQVNfUFJFUEFSRToKPiDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoC8qIHBvd2VyIG9uICovCj4gQEAgLTM2Nyw4ICszODEsMjIgQEAgc3RhdGljIGludCB1ZGEx
+MzR4X3NldF9iaWFzX2xldmVsKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywKPiDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoGJyZWFrOwo+IMKgIMKgIMKgIMKgY2FzZSBTTkRfU09DX0JJQVNfU1RB
+TkRCWToKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC8qIEFEQywgREFDIHBvd2VyIG9mZiAqLwo+
+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gdWRhMTM0eF9yZWFkX3JlZ19jYWNoZShjb2Rl
+YywgVURBMTM0WF9TVEFUVVMxKTsKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHVkYTEzNHhfd3Jp
+dGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwgcmVnICYgfigweDAzKSk7Cj4gKyDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCBzd2l0Y2ggKHBkLT5tb2RlbCkgewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+Y2FzZSBVREExMzRYX1VEQTEzNDA6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCBjYXNlIFVEQTEz
+NFhfVURBMTM0NDoKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNhc2UgVURBMTM0WF9VREExMzQ1
+Ogo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gdWRhMTM0eF9yZWFk
+X3JlZ19jYWNoZShjb2RlYywgVURBMTM0WF9EQVRBMDExKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfREFUQTAxMSwgcmVn
+ICYgfigweDAzKSk7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGNhc2UgVURBMTM0WF9VREExMzQxOgo+ICsgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcmVnID0gdWRhMTM0eF9yZWFkX3JlZ19jYWNoZShj
+b2RlYywgVURBMTM0WF9TVEFUVVMxKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIHVkYTEzNHhfd3JpdGUoY29kZWMsIFVEQTEzNFhfU1RBVFVTMSwgcmVnICYgfigweDAzKSk7
+Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBicmVhazsKPiArIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIGRlZmF1bHQ6Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCBwcmludGsoS0VSTl9FUlIgIlVEQTEzNFggU29DIGNvZGVjOiAiCj4gKyDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCJ1bnN1cHBvcnRlZCBtb2RlbCAlZFxuIiwg
+cGQtPm1vZGVsKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHJldHVybiAt
+RUlOVkFMOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgYnJlYWs7Cj4gwqAgwqAgwqAgwqBjYXNlIFNORF9TT0NfQklBU19PRkY6Cj4gwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAvKiBwb3dlciBvZmYgKi8KPiAtLQo+IDEuNy4wLjQKPgo+Cl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
