@@ -1,39 +1,23 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: wrong decibel data?
-Date: Mon, 28 Jun 2010 09:47:20 +0800
-Message-ID: <AANLkTikj8_3oYu4ERIGHVhlbFKCVQW4P6PCENqblLWgh@mail.gmail.com>
-References: <htls4d$phr$1@dough.gmane.org> <htm9mn$n1c$1@dough.gmane.org>
-	<AANLkTinK1xWFSpudCrdHwfgnaGyMEn41DY0VGakJlHX6@mail.gmail.com>
-	<huicj9$t30$1@dough.gmane.org>
-	<AANLkTimts4qRRneVmfY1Qw55OJ4ZwMqpVjp-wM3PTd2s@mail.gmail.com>
-	<hulnlp$m00$1@dough.gmane.org>
-	<AANLkTikqAJFo7kIjeJ2O1ulg9GUPZniF1NQNu6PAv0cH@mail.gmail.com>
-	<hur2pt$uaa$1@dough.gmane.org>
-	<20100613135349.GB5818@tango.0pointer.de>
-	<AANLkTimwvTxPe66fk4hq2-eiky-8Yqd12vN6WYkh9qdQ@mail.gmail.com>
-	<hv4pfi$gqr$3@dough.gmane.org>
-	<AANLkTilTZ-QMAZPTx78J8-DPIozFO2G6s5VtX9f83-3X@mail.gmail.com>
-	<hv4vs6$a6q$1@dough.gmane.org>
-	<AANLkTilbaa94Vlc266FBzDyRkL_G2VSiOdZoLS4vG8Tw@mail.gmail.com>
-	<AANLkTimxTM73el7iCE6nwUJMPFpYa0dY2R9SYxa3_j6N@mail.gmail.com>
-	<hv5dkf$tv8$1@dough.gmane.org>
-	<AANLkTim5rmjxS6YV7j3QEXSW-EyUv2rsT3k2ZzOz-o9o@mail.gmail.com>
-	<hvput5$a6o$1@dough.gmane.org>
-	<AANLkTilwbCSM7rPLUlAKtTUv1UepbHzvyZTh4CsElOJm@mail.gmail.com>
-	<hvqqf9$p3j$1@dough.gmane.org>
-	<AANLkTim8KsRcWcg3lkqb8RZqhPT_Bp53dwwlQ3ccay1L@mail.gmail.com>
-	<hvsj32$6cm$1@dough.gmane.org>
+From: David Dillow <dave@thedillows.org>
+Subject: Re: [PATCH] ALSA: pcm_lib: avoid timing jitter in
+ snd_pcm_read/write()
+Date: Sun, 27 Jun 2010 22:03:50 -0400
+Message-ID: <1277690630.2438.149.camel@obelisk.thedillows.org>
+References: <1277590400.2438.15.camel@obelisk.thedillows.org>
+	<AANLkTil91moJgRh51QFgvSFd47MzQxzxty1H2RzKK5nF@mail.gmail.com>
+	<1277648967.2438.32.camel@obelisk.thedillows.org>
+	<alpine.LNX.2.00.1006271942500.15497@eeebox2.perex-int.cz>
+	<1277678773.2438.103.camel@obelisk.thedillows.org>
+	<AANLkTimO0L-JL3zVg_ZzU7kWK6ez0CwwlR839K_X7MGz@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id A58FF245E7
+Received: from amavis-smtp.knology.net (amavis-smtp.knology.net [75.76.199.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6BA5C245F3
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Jun 2010 03:47:22 +0200 (CEST)
-Received: by vws11 with SMTP id 11so2704648vws.38
-	for <alsa-devel@alsa-project.org>; Sun, 27 Jun 2010 18:47:20 -0700 (PDT)
-In-Reply-To: <hvsj32$6cm$1@dough.gmane.org>
+	Mon, 28 Jun 2010 04:03:58 +0200 (CEST)
+In-Reply-To: <AANLkTimO0L-JL3zVg_ZzU7kWK6ez0CwwlR839K_X7MGz@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -43,95 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Raymond Yau <superquad.vortex2@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-2010/6/23 Colin Guthrie <gmane@colin.guthr.ie>
+Raymond, I've asked you before to not trim cc lists. Believe it or not,
+people may be involved in a conversation even if they are not on the
+mailing list. In this case, Hans probably doesn't care, but you cannot
+make that assumption.
 
-> 'Twas brillig, and Raymond Yau at 23/06/10 02:15 did gyre and gimble:
-> > why PA server still insist to open front device for capturing ?
->
-> Couldn't tell you. Perhaps Lennart is unaware that it is considered
-> invalid? I'll ask him.
->
-> > http://thread.gmane.org/gmane.linux.alsa.devel/67912/focus=68248
+On Mon, 2010-06-28 at 08:37 +0800, Raymond Yau wrote:
+> 2010/6/28 David Dillow <dave@thedillows.org>
+> > Perhaps documentation that recommends setting avail_min to 1 when using
+> > read/write to avoid this issue would be helpful, in lieu of changing the
+> > ALSA code or giving concrete guarantees.
 > >
-> > As Takashi had already mention that
+> > Dave
 > >
-> > "I agree that the capture from "front" PCM isn't considered as valid.
-> > The "front", "rear", "center_lfe" definitions are rather for
-> multi-channel
-> > playbacks. The capture on these channels aren't useful in most cases."
 > >
-> > you can perform an experiement
-> >
-> > pcm.test {
-> >     type softvol
-> >     slave.pcm "hw:0,0"
-> >     control {
-> >         name "PA Playback Volume"
-> >         card 0
-> >     }
-> >
-> > arecord -D test -f CD -d 10 -v test.wav
-> >
-> > you will find "PA Playback Volume" in playback screen of alsamixer
-> >
-> > I am not sure the softvol control created when PA open front device
-> > for playback and capture is used for playback or capture
-> >
-> > BTW , PA still using "front" to open CTL device too
+> Refer to
+> http://article.gmane.org/gmane.linux.alsa.devel/69333/match=avail_min
 >
-> You'll have to ask Lennart directly about that bit.
->
+> avail_min cannot be less than period size , however set_avail_min() did not
+> return any error when the value is less than period size and this mislead
+> the programmers to believe that they can set avail_min to 1
 
-arecord -Dfront:0 -v -f cd | aplay -Dfront:0 -v -f cd
+They used to be able to, and it would work. You likely cannot get
+latency that low, but anyone that was expecting for that to magically
+change the way hardware works is fooling themselves. avail_min is like
+the timeout argument to poll() -- you're guaranteed at least that value,
+but you may get something much larger.
 
-the softvol control was seem to used by arecord and aplay concurrently
+I understand the rationale given for patch b0b7d0 to alsa-lib, but
+limiting avail_min in this way removed a workaround for the muddled
+snd_pcm_read/write() semantics. I suppose it is still possible, if
+someone wants to color outside libasound -- the kernel still allows it.
 
-Using front device for capture
-1)  HDA, the problem is softvol plugin,
-2)  emu10k1 , the problem is the hook controls in front playback device
-which change the route of volume of the DSP hardware mixer
-3)
+> if you want low latency, you need to use small period size
 
+Small period sizes are often needed for low latency -- 10ms is common
+for VoIP -- but if you are stuck with a device that can only do two
+periods per buffer, the current read/write code will cause unstable
+audio with frequent overruns. You can add another round trip to the
+kernel with snd_pcm_wait(), but that's suboptimal and should not be
+required.
 
+You can get reasonably good stability on limited devices with avail_min
+== 1, or with a read/write that doesn't force you to wait two periods
+when trying to work with one.
 
->
-> I can't speak for him with regards to the full setup of the mixer path
-> probing stuff, so perhaps "front" should be edited out of this for
-> paths. It would likely be a fairly trivial change to configuration files
-> rather than any code changes.
->
-> Col
->
->
-Well , He had already hardcoded to use "hw:card_number" in dbverify.c , it
-is only PA server still try to open mixer device "front"
-
-The tooltip of gnome volume control in Fedora 13 clearly indiacte that 100%
-is 0dB for intel8x0 which use ac97 codec  when you put the cursor on top of
-the speaker icon at the system bar
-
-https://bugzilla.gnome.org/show_bug.cgi?id=618551
-
-according to gnome-media-developer  Bastien Nocera
-
-In any case, we only display what PulseAudio tells us, so you should poke the
-PulseAudio devs about this.
-
-This is the code in question:
-gdouble
-gvc_mixer_stream_get_decibel (GvcMixerStream *stream)
-{
-        g_return_val_if_fail (GVC_IS_MIXER_STREAM (stream), 0);
-
-        return pa_sw_volume_to_dB(
-                        (pa_volume_t)
-gvc_channel_map_get_volume(stream->priv->channel_map)[VOLUME]);
-}
-
-
-
-if you don't have any ac97 sound card , you can user virtualbox which has an
-emulated intel8x0 sound card
+Dave
