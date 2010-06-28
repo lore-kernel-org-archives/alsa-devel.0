@@ -1,19 +1,22 @@
-From: David Dillow <dave@thedillows.org>
-Subject: Re: [PATCH] ALSA: pcm_lib: avoid timing jitter in
- snd_pcm_read/write()
-Date: Mon, 28 Jun 2010 09:41:28 -0400
-Message-ID: <1277732488.2438.190.camel@obelisk.thedillows.org>
-References: <1277590400.2438.15.camel@obelisk.thedillows.org>
-	<alpine.LNX.2.00.1006280946260.15497@eeebox2.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH RFC 1/3] ASoC: uda1380: use callbacks
+	instead of gpiolib
+Date: Mon, 28 Jun 2010 14:41:45 +0100
+Message-ID: <20100628134145.GA7403@rakim.wolfsonmicro.main>
+References: <1277565285-11563-1-git-send-email-anarsoul@gmail.com>
+	<201006262353.58897.anarsoul@gmail.com>
+	<8308AEB2-F7DB-4C48-AAED-719311AF7A42@opensource.wolfsonmicro.com>
+	<201006281500.21327.anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from amavis-smtp.knology.net (amavis-smtp.knology.net [75.76.199.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 01D202448A
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 50A852448A
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Jun 2010 15:41:44 +0200 (CEST)
-In-Reply-To: <alpine.LNX.2.00.1006280946260.15497@eeebox2.perex-int.cz>
+	Mon, 28 Jun 2010 15:41:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201006281500.21327.anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,40 +26,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, linux@schou.dk
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Philipp Zabel <philipp.zabel@gmail.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-06-28 at 09:47 +0200, Jaroslav Kysela wrote:
-> On Sat, 26 Jun 2010, David Dillow wrote:
-> 
-> > When using poll() to wait for the next period -- or avail_min samples --
-> > one gets a consistent delay for each system call that is usually just a
-> > little short of the selected period time. However, When using
-> > snd_pcm_read/write(), one gets a jittery delay that alternates between
-> > less than a millisecond and approximately two period times. This is
-> > caused by snd_pcm_lib_{read,write}1() transferring any available samples
-> > to the user's buffer and adjusting the application pointer prior to
-> > sleeping to the end of the current period. When the next period
-> > interrupt occurs, there is then less than avail_min samples remaining to
-> > be transferred in the period, so we end up sleeping until a second
-> > period occurs.
-> >
-> > This is solved by using runtime->twake as the number of samples needed
-> > for a wakeup in addition to selecting the proper wait queue to wake in
-> > snd_pcm_update_state(). This requires twake to be non-zero when used
-> > by snd_pcm_lib_{read,write}1() even if avail_min is zero.
-> >
-> > Signed-off-by: Dave Dillow <dave@thedillows.org>
-> 
-> Thanks. It looks like another way to get things right. I applied your 
-> patch to my tree.
+On Mon, Jun 28, 2010 at 03:00:13PM +0300, Vasily Khoruzhick wrote:
 
-I think we should probably better define the semantics of read/write for
-sizes < avail_min, == avail_min, and > avail_min. As it is, I fear that
-this patch makes things worse as I hadn't thought through all of the
-cases when I posted it. If you've not pushed, please revert. If you
-have, then it improves one case, but let's makes sure we get the others
-correct before it hits the mainline.
+> Actually, power on sequence on rx1950 (and on magician) looks like following:
 
-Dave
+> 1. set power pin to 1
+
+Is this a feature of the chip or an external power control?
