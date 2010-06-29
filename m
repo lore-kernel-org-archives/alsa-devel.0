@@ -1,20 +1,20 @@
-From: Adish Kuvelker <adkuvi@gmail.com>
-Subject: Re: snddevices issue
-Date: Tue, 29 Jun 2010 22:19:33 +0530
-Message-ID: <AANLkTilOUTWDlMPr7Mp7obI-vtR7cUTQ0g-Oc-BvWnLk@mail.gmail.com>
-References: <AANLkTikzjyDqClZopaTvVmT7wwazRHE4K3XbH2m48rgg@mail.gmail.com>
-	<4C2A1234.2030001@ladisch.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: alsamixer-qt4 release
+Date: Wed, 30 Jun 2010 07:17:56 +0800
+Message-ID: <AANLkTinFWqtgK4HiByHbgTFP6WKn8cnf13fL4xIDTRa2@mail.gmail.com>
+References: <4C2119D7.8040100@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 9AA9F24740
+	[209.85.212.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 0C8E31037F9
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jun 2010 18:49:35 +0200 (CEST)
-Received: by vws11 with SMTP id 11so4970332vws.38
-	for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2010 09:49:33 -0700 (PDT)
-In-Reply-To: <4C2A1234.2030001@ladisch.de>
+	Wed, 30 Jun 2010 01:17:58 +0200 (CEST)
+Received: by vws11 with SMTP id 11so202406vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2010 16:17:57 -0700 (PDT)
+In-Reply-To: <4C2119D7.8040100@gmx.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +24,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The question is whether alsa utilities will run on nodes like pcmC0D0p
-in such a situation?...The device nodes created under /dev and in proc
-file system show different device numbers (minor numbers are
-different).
+2010/6/23 Sebastian H. <vand2@gmx.de>
 
-Regards;
-Aadish
-
-On Tue, Jun 29, 2010 at 9:03 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
-> Adish Kuvelker wrote:
->> I find that the device nodes created in the /dev/snd for Control,
->> Timer and pcmC0D0 have different minor numbers from the class devices
->> created by the ALSA core.
+> Hello list
 >
-> The help text for the --enable-dynamic-minors option (when using the
-> alsa-driver package) or the CONFIG_SND_DYNAMIC_MINORS option (when
-> using the in-kernel ALSA) says that this can be used only when the
-> machine is running udev. =A0(If you are actually running udev, you don't
-> need the snddevices script).
+> Here is (yet another) mixer application for ALSA: alsamixer-qt4
+> It took a bit longer that expected but today I've erased the last items
+> from the TODO list for the first release version 0.1.0.
 >
->> I just did kernel prints to capture the minor numbers
+> All files are hosted at sourceforge
+> http://sourceforge.net/projects/alsamixer-qt4/files/
 >
-> These numbers are also available in /proc/asound/devices.
+> And here's a small web page
+> http://xwmw.org/alsamixer-qt4
 >
+> At the moment it is a volume only mixer and the dB value is
+> only displayed but the scaling sliders are worth a look
+> (The style is homebrewn ;).
+>
+> So far.
 >
 > Regards,
-> Clemens
+> Sebastian H.
 >
+
+Some of the controls may be better represented by a progress bar instead of
+slider since they don't have write access (i.e. the mixer application cannot
+update the value ) , for example, those status ,
+
+vumeter peak and equalizer peak  which has volatile access and this mean
+that you need to a timer to read the values periodically
