@@ -1,21 +1,17 @@
-From: Manuel Lauss <mano@roarinelk.homelinux.net>
-Subject: Re: [RFC 10/15] ASoC: multi-component - RMI Alchemy
- AU1x Platform
-Date: Tue, 29 Jun 2010 14:30:15 +0200
-Message-ID: <20100629123015.GA20441@wormhole>
-References: <1277639534-5104-1-git-send-email-lrg@slimlogic.co.uk>
-	<1277639534-5104-11-git-send-email-lrg@slimlogic.co.uk>
+From: Adish Kuvelker <adkuvi@gmail.com>
+Subject: alsa-utils configuration query
+Date: Tue, 29 Jun 2010 19:28:36 +0530
+Message-ID: <AANLkTikIgwy6cRlcQrbBLAy0wiyOfvskyf7oPyxippQp@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from roarinelk.homelinux.net (fnoeppeil48.netpark.at
-	[217.175.205.176])
-	by alsa0.perex.cz (Postfix) with ESMTP id B939C24610
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 5944724680
 	for <alsa-devel@alsa-project.org>;
-	Tue, 29 Jun 2010 14:30:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1277639534-5104-11-git-send-email-lrg@slimlogic.co.uk>
+	Tue, 29 Jun 2010 15:58:39 +0200 (CEST)
+Received: by vws11 with SMTP id 11so4792303vws.38
+	for <alsa-devel@alsa-project.org>; Tue, 29 Jun 2010 06:58:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,30 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Liam,
+Hello,
 
-On Sun, Jun 27, 2010 at 12:52:09PM +0100, Liam Girdwood wrote:
-> Update the RMI Alchemy platform and machines to new multi-component model.
-> 
-> This patch changes the machine drivers for multi-component as follows :-
-> 
->  o Removed socdev
->  o Each DAI link entry now contains platform and codec fields.
->  o DAI link init() now passed snd_soc_pcm_runtime instread of snd_soc_codec.
-> 
-> This patch also changes the DAI and platform DAM drivers as follows :-
-> 
->  o Each platform DAI and platform DMA driver is a kernel device and can
->    have platform data.
->  o DAI and Platform DMA drivers have private data accessors.
+I am cross-compiling alsa-utils for my ARM target. I have successfully
+configured and installed the alsa-lib (alsa-lib-1.0.16). Now to
+configure the alsa-utils(alsa-utils-1.0.16) i pass the following
+command
 
-Forgive the probably stupid question, but does that mean I can have
-2 or more independent ASoC devices?  (A board I have has independent
-AC97 and I2S systems).
+LD=arm-linux-ld ./configure --with-alsa-prefix=/usr/lib
+--build=i686-linux --disable-nls
 
-Thank you,
-        Manuel Lauss
+The libasound.la & libasound.a are present in the /usr/lib but the
+above command gives an error
+
+checking for snd_ctl_open in -lasound... no
+configure: error: No linkable libasound was found
+
+Can anyone give me a pointer of how to tackle this?
+
+Regards;
+Aadish
