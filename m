@@ -1,25 +1,18 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH 1/4] dump_audiostreaming_interface(): fix
-	ac-3 decoder
-Date: Mon, 28 Jun 2010 13:40:13 -0700
-Message-ID: <20100628204013.GD18443@kroah.com>
-References: <1275403951-16253-1-git-send-email-daniel@caiaq.de>
-	<1275403951-16253-2-git-send-email-daniel@caiaq.de>
-	<20100601165211.GR2695@buzzloop.caiaq.de>
-	<20100601170658.GA24055@kroah.com>
-	<20100608081019.GE2695@buzzloop.caiaq.de>
-	<20100616214023.GB312@kroah.com>
-	<20100628184320.GE17530@buzzloop.caiaq.de>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: [PATCH] - remove "front" , "surround" , "rear" ,
+	"surround40" , "surround51" from output of arecord -L
+Date: Tue, 29 Jun 2010 12:05:06 +0800
+Message-ID: <AANLkTilsG6Wlg7t5KJOi-RAk9K5VUXjgIlOmE3sY5yO7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from coco.kroah.org (kroah.org [198.145.64.141])
-	by alsa0.perex.cz (Postfix) with ESMTP id 0E1542447D
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 7F47224782
 	for <alsa-devel@alsa-project.org>;
-	Mon, 28 Jun 2010 22:41:03 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20100628184320.GE17530@buzzloop.caiaq.de>
+	Tue, 29 Jun 2010 06:05:09 +0200 (CEST)
+Received: by vws11 with SMTP id 11so4246014vws.38
+	for <alsa-devel@alsa-project.org>; Mon, 28 Jun 2010 21:05:06 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -29,40 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@caiaq.de>
-Cc: dbrownell@users.sourceforge.net, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, gregkh@suse.de, t.sailer@alumni.ethz.ch
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 28, 2010 at 08:43:20PM +0200, Daniel Mack wrote:
-> On Wed, Jun 16, 2010 at 02:40:23PM -0700, Greg KH wrote:
-> > On Tue, Jun 08, 2010 at 10:10:19AM +0200, Daniel Mack wrote:
-> > > On Tue, Jun 01, 2010 at 10:06:58AM -0700, Greg KH wrote:
-> > > > On Tue, Jun 01, 2010 at 06:52:12PM +0200, Daniel Mack wrote:
-> > > > > Greg,
-> > > > > 
-> > > > > I believe you're maintaining usb-utils now, right? At least it was
-> > > > > you posting an announcement for a new release the other day.
-> > > > 
-> > > > Yes I am.
-> > > > 
-> > > > > Let me know if I should do anything else to get these patches merged :)
-> > > > 
-> > > > Let me wake up and get a chance to get around to these patches?  :)
-> > > > 
-> > > > I'll get to them in a day or so, they look great to me.
-> > > 
-> > > Just a reminder - could you have a look at them already?
-> > > For easier access, the six patches I sent can now also be pulled from
-> > > 
-> > >   git://github.com/zonque/usbutils.git
-> > 
-> > I've pulled from this branch now and pushed it all out.  I'll go pick up
-> > some other pending patches and cut a new release.
-> 
-> Just curious - I can't find these patches in the official usbutils.git
-> at git.kernel.org. Forgot to push?
+Since arecord -L will list "front", .....  devices which are not suitable
+for recording (e.g. HDA has softvol plugin in front device , emu10k1 and
+other drivers has hook ctl and lock )
 
-Sorry about that, yes, I only had updated the github.com tree.  I now
-pushed it out.
 
-greg k-h
+
+
+    while (*n != NULL) {
+        name = snd_device_name_get_hint(*n, "NAME");
+        descr = snd_device_name_get_hint(*n, "DESC");
+        io = snd_device_name_get_hint(*n, "IOID");
++        if ( stream == SND_PCM_STREAM_CAPTURE )
++               if (( strstr(descr,"speaker") > 0 ) || (
+strstr(descr,"Output") > 0 ))
++                        goto __end;
+        if (io != NULL && strcmp(io, filter) != 0)
+            goto __end;
+        printf("%s\n", name);
+        if ((descr1 = descr) != NULL) {
