@@ -1,23 +1,22 @@
 From: Raffaele Recalcati <lamiaposta71@gmail.com>
 Subject: Re: [PATCH] ASoC: DaVinci: Added support for cpu
 	clocking I2S
-Date: Wed, 30 Jun 2010 12:00:45 +0200
-Message-ID: <AANLkTilqE9E2lFwCKu5hx0EYZajIWubM7Qzf_n3vQfLq@mail.gmail.com>
+Date: Wed, 30 Jun 2010 10:52:30 +0200
+Message-ID: <AANLkTikhqZRWYoNnZ2PSnVVpV0rUqQQyRxfz99a25EMU@mail.gmail.com>
 References: <1277707487-3371-1-git-send-email-lamiaposta71@gmail.com>
-	<20100628103030.GB14247@rakim.wolfsonmicro.main>
-	<AANLkTimedG3X-rQbZvS6QfxUGkPIAtCgliI0xWknmNA9@mail.gmail.com>
+	<4C28F3D1.5060806@boundarydevices.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-iw0-f179.google.com (mail-iw0-f179.google.com
 	[209.85.214.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 6076E103809
+	by alsa0.perex.cz (Postfix) with ESMTP id E74B3103809
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Jun 2010 12:00:47 +0200 (CEST)
-Received: by iwn5 with SMTP id 5so707554iwn.38
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jun 2010 03:00:46 -0700 (PDT)
-In-Reply-To: <AANLkTimedG3X-rQbZvS6QfxUGkPIAtCgliI0xWknmNA9@mail.gmail.com>
+	Wed, 30 Jun 2010 10:52:30 +0200 (CEST)
+Received: by iwn5 with SMTP id 5so657469iwn.38
+	for <alsa-devel@alsa-project.org>; Wed, 30 Jun 2010 01:52:30 -0700 (PDT)
+In-Reply-To: <4C28F3D1.5060806@boundarydevices.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,47 +26,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, Russell King <linux@arm.linux.org.uk>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Troy Kisky <troy.kisky@boundarydevices.com>, Davide Bonfanti <davide.bonfanti@bticino.it>, Raffaele Recalcati <raffaele.recalcati@bticino.it>, Chaithrika U S <chaithrika@ti.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Troy Kisky <troy.kisky@boundarydevices.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, Russell King <linux@arm.linux.org.uk>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Davide Bonfanti <davide.bonfanti@bticino.it>, Raffaele Recalcati <raffaele.recalcati@bticino.it>, Chaithrika U S <chaithrika@ti.com>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-> The freq problem is describe here below, but it is not clear to me:
+2010/6/28 Troy Kisky <troy.kisky@boundarydevices.com>
+
+> Raffaele Recalcati wrote:
+> > +             if (dev->i2s_fast_clock) {
+> > +                     clk_div = 256;
+> can you have
+>   f = (freq / params->rate_num) * params->rate_den;
+> > +                     do {
+> > +                             framesize = (freq / (--clk_div)) /
+> > +                                         params->rate_num *
+> > +                                         params->rate_den;
+> and
+>                                framesize = f / (--clk_div);
+> > +                     } while (((framesize < 33) || (framesize > 4095))
+> &&
+> > +                              (clk_div));
+> > +                     clk_div--;
+> looks like clk_div can go negative here, should the above while say
+> (clk_div > 1)
 >
-> From *TMS320DM36x DMSoC Multichannel Buffered Serial Port User's Guide
-> (Rev. A) <http://www.ti.com/litv/pdf/sprufi3a>*
-> 2.5.3 Data Clock Generation
-> When the receive/transmit clock mode is set to 1 (CLK(R/X)M =3D 1 in the =
-pin
-> control register (PCR)), the
-> data clocks (CLK(R/X)) are driven by the internal sample rate generator
-> output clock, CLKG. You can
-> select for the receiver and transmitter from a variety of data bit clocks
-> including:
-> =95 The input clock to the sample rate generator, which can be either the
-> internal clock source or a
-> dedicated external clock source via the MCBSP_CLKX, MCBSP_CLKR, or
-> MCBSP_CLKS pins. The
-> McBSP internal clock is the CPU/6 clock. See Section 2.5.3.1 for details =
-on
-> the source of the McBSP
-> internal clock.
-> =95 The input clock source (internal clock source or external clock
-> MCBSP_CLKX/MCBSP_CLKR/MCBSP_CLKS) to the sample rate generator can be
-> divided-down by a
-> programmable value (CLKGDV bit in the sample rate generator register
-> (SRGR)) to drive CLKG.
-> Regardless of the source to the sample rate generator, the rising edge of
-> CLKSRG (see Figure 5)
-> generates CLKG and FSG.
->
-> CPU/6 is not clear.
+
+> +                     } while (((framesize < 33) || (framesize > 4095)) &&
+> +                              (clk_div));
+
+only if clk_div not null stay inside the while.
+
+> +                     clk_div--;
+
+and here can at minumum be 0, not negative.
+
+
+
+> > +                     srgr |= DAVINCI_MCBSP_SRGR_FPER(framesize - 1);
+> > +             } else {
+> > +                     /* symmetric waveforms */
+> > +                     clk_div = freq / (mcbsp_word_length * 16) /
+> > +                               params->rate_num * params->rate_den;
+> > +                     srgr |= DAVINCI_MCBSP_SRGR_FPER(mcbsp_word_length *
+> > +                                                     16 - 1);
+> > +             }
+> > +             clk_div &= 0xFF;
+> > +             srgr |= clk_div;
 >
 
 
-Reading better the documentation the point seems now clear.
-We have pllc1 sysclk4 that is the clock of McBSP peripheral.
-And so it was abviously this frequency to be used when McBSP has to generate
-the clock.
-Sorry..
+so, dividing for (CLKGDV + 1) it is ok.
 
 Raffaele
