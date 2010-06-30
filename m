@@ -1,20 +1,21 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [RFC 04/16] ASoC: multi-component - TI CODECs
-Date: Wed, 30 Jun 2010 13:53:43 +0100
-Message-ID: <20100630125342.GA3634@rakim.wolfsonmicro.main>
-References: <1277488383-31287-1-git-send-email-lrg@slimlogic.co.uk>
-	<1277488383-31287-5-git-send-email-lrg@slimlogic.co.uk>
-	<C358A26273CF2948B8BCDBA661A581782A6FBF945E@NOK-EUMSG-03.mgdnok.nokia.com>
+Subject: Re: [PATCH 2/2 v2] ASoC: uda134x: correct bias level
+ setup for codecs family
+Date: Wed, 30 Jun 2010 13:58:17 +0100
+Message-ID: <20100630125817.GB3634@rakim.wolfsonmicro.main>
+References: <1277378228-29658-2-git-send-email-vzapolskiy@gmail.com>
+	<1277385565-30727-1-git-send-email-vzapolskiy@gmail.com>
+	<AANLkTikWQx-QESPlazyT_t-4sWFkjfnD3J-Wbz1g-hI2@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id A9FD92414C
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id CF86324159
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Jun 2010 14:53:44 +0200 (CEST)
+	Wed, 30 Jun 2010 14:58:18 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <C358A26273CF2948B8BCDBA661A581782A6FBF945E@NOK-EUMSG-03.mgdnok.nokia.com>
+In-Reply-To: <AANLkTikWQx-QESPlazyT_t-4sWFkjfnD3J-Wbz1g-hI2@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,13 +25,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: peter.ujfalusi@nokia.com
-Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
+To: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 30, 2010 at 02:08:11PM +0200, peter.ujfalusi@nokia.com wrote:
-> Is the support for the former codec->idle_bias_off is gone? This patch removes it from the
-> tlv320dac33, and t2l4030 codec drivers.
+On Mon, Jun 28, 2010 at 09:38:55AM +0400, Vladimir Zapolskiy wrote:
+> Hi all,
+> 
+> would you like to review these two patches with fix for uda134{0,4,5}
+> codecs core power control support?
 
-No, that is still present - it's an error in the conversion (probably
-caused by forward porting changes from prior to the update I guess).
+Applied both, sorry about the delay - it was due to Liam having poor net
+access unexpectedly and not being able to review stuff.
