@@ -1,18 +1,18 @@
-From: Adam Rosenberg <adam@alcorn.com>
-Subject: How does struct snd_pcm_hardware relate to the actual
-	hardware
-Date: Wed, 30 Jun 2010 17:32:41 -0400
-Message-ID: <AANLkTimiH0xvYIM-gmxx95W3N4PmFKqa1skknvsxluY8@mail.gmail.com>
+From: "Viliam Kubis" <viliam.kubis@gmail.com>
+Subject: Smart 5.1 function not working on VIA VT1708S with
+ *three* jacks on mainboard
+Date: Thu, 01 Jul 2010 00:02:30 +0200
+Message-ID: <op.ve4vig0ny9cctd@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id A182624472
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 2C87E2448B
 	for <alsa-devel@alsa-project.org>;
-	Wed, 30 Jun 2010 23:32:42 +0200 (CEST)
-Received: by vws11 with SMTP id 11so1490861vws.38
-	for <alsa-devel@alsa-project.org>; Wed, 30 Jun 2010 14:32:41 -0700 (PDT)
+	Thu,  1 Jul 2010 00:02:34 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so664671bwz.38
+	for <alsa-devel@alsa-project.org>; Wed, 30 Jun 2010 15:02:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,49 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: tiwai@suse.de, loganli@viatech.com.cn, lydiawang@viatech.com.cn
 List-Id: alsa-devel@alsa-project.org
 
-I am using DMA to transfer data to SPORT1 on my Blackfin BF537.  I am
-using a CS42448 CODEC that has 8 DACs.  I am using TDM mode and have
-set the following:
+Hello, for quite some time the "Smart 5.1" function in alsa is not working  
+properly when motherboard has only 3 audio jacks.
 
-DMA Buffer Size For Each SPORT Data Line (Rx or Tx) = 131072 bytes
-DMA Periods = 8
+Me and Raymond on alsa-bugtracker have been trying to solve the issue for  
+a long time but were unsuccessful.
 
-static struct snd_pcm_hardware snd_pcm_hw =
-{
-	.info = (SNDRV_PCM_INFO_INTERLEAVED | SNDRV_PCM_INFO_BLOCK_TRANSFER |
-SNDRV_PCM_INFO_RESUME),
-	.formats = SNDRV_PCM_FMTBIT_S32_LE,
-	.rates = SNDRV_PCM_RATE_48000,
-	.rate_min = 48000,
-	.rate_max = 48000,
-	.buffer_bytes_max = 32768,
-	.channels_min = 2,
-	.channels_max = 2,
-	.period_bytes_min = 8,
-	.period_bytes_max = 4096,
-	.periods_min = 8,
-	.periods_max = 8,
-};
+Please take a look at this alsa bug ticket:  
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4895
 
-Everytime I receive a DMA interrupt from the SPORT driver I call
-snd_pcm_period_elapsed for all of the substreams that are currently
-active.  In the PCM Copy callback I calculate the position within the
-DMA buffer to write to based on the TDM slot for the channel and the
-position passed into the function.
+It contains A LOT of info on the problem + steps that we tried, which  
+included patching the code.
 
-The audio is not being placed into the DMA buffer properly.  The audio
-plays faster than it should and has a constant stutter.  I have read
-the "writing an ALSA driver" guide multiple times but it does not
-explain the relationship between struct snd_pcm_hardware,
-snd_pcm_period_elapsed, and the copy callback clearly enough for me to
-understand what I am doing wrong.
+Synthom : NO "Surround" , "Center" and "LFE" Control and switch with  
+VT1708S on a motherboard with 3 audio jacks
+Also NO surround sound.
 
-Please explain how these interact in more detail to help me fix this
-problem.  I can also send the full source code to the CS42448 driver I
-am working on if more details are needed.
+speaker-test -c 4 -t wav -Dsurround40
 
-Thank you,
-Adam
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+Please advise if you can.
+
+Thank you
+Best Regards
+Viliam Kubis
+
+-- 
+Using Opera's revolutionary e-mail client: http://www.opera.com/mail/
