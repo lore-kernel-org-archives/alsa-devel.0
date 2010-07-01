@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 5/6] Handle errors in tuner level caching,
- and correct error code for aesebu rx status.
-Date: Fri, 02 Jul 2010 11:23:34 +1200
-Message-ID: <1278026615-16153-6-git-send-email-linux@audioscience.com>
+Subject: [PATCH 6/6] Remove unneeded ;
+Date: Fri, 02 Jul 2010 11:23:35 +1200
+Message-ID: <1278026615-16153-7-git-send-email-linux@audioscience.com>
 References: <1278026615-16153-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -26,36 +25,21 @@ From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpicmn.c |   10 ++++++++--
- 1 files changed, 8 insertions(+), 2 deletions(-)
+ pci/asihpi/hpidebug.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/pci/asihpi/hpicmn.c b/pci/asihpi/hpicmn.c
-index fcd6453..dda4f1c 100644
---- a/pci/asihpi/hpicmn.c
-+++ b/pci/asihpi/hpicmn.c
-@@ -353,7 +353,12 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
- 			phr->u.c.param1 = pC->u.t.band;
- 		else if ((phm->u.c.attribute == HPI_TUNER_LEVEL)
- 			&& (phm->u.c.param1 == HPI_TUNER_LEVEL_AVERAGE))
--			phr->u.c.param1 = pC->u.t.level;
-+			if (pC->u.t.level == HPI_ERROR_ILLEGAL_CACHE_VALUE) {
-+				phr->u.c.param1 = 0;
-+				phr->error =
-+					HPI_ERROR_INVALID_CONTROL_ATTRIBUTE;
-+			} else
-+				phr->u.c.param1 = pC->u.t.level;
- 		else
- 			found = 0;
- 		break;
-@@ -397,7 +402,8 @@ short hpi_check_control_cache(struct hpi_control_cache *p_cache,
- 			if (pC->u.clk.source_index ==
- 				HPI_ERROR_ILLEGAL_CACHE_VALUE) {
- 				phr->u.c.param1 = 0;
--				phr->error = HPI_ERROR_INVALID_OPERATION;
-+				phr->error =
-+					HPI_ERROR_INVALID_CONTROL_ATTRIBUTE;
- 			} else
- 				phr->u.c.param1 = pC->u.clk.source_index;
- 		} else if (phm->u.c.attribute == HPI_SAMPLECLOCK_SAMPLERATE)
+diff --git a/pci/asihpi/hpidebug.c b/pci/asihpi/hpidebug.c
+index 4cd85a4..949836e 100644
+--- a/pci/asihpi/hpidebug.c
++++ b/pci/asihpi/hpidebug.c
+@@ -111,7 +111,7 @@ make_treenode_from_array(hpi_control_type_strings, HPI_CONTROL_TYPE_STRINGS)
+   &hpi_profile_strings,\
+   &hpi_control_strings, \
+   &hpi_asyncevent_strings \
+-};
++}
+ 	make_treenode_from_array(hpi_function_strings, HPI_FUNCTION_STRINGS)
+ 
+ 	compile_time_assert(HPI_OBJ_MAXINDEX == 14, obj_list_doesnt_match);
 -- 
 1.7.0.4
