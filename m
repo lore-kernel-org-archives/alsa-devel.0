@@ -1,8 +1,7 @@
 From: linux@audioscience.com
-Subject: [PATCH 2/6] Use version string instead of printf
-	formatting.
-Date: Fri, 02 Jul 2010 11:23:31 +1200
-Message-ID: <1278026615-16153-3-git-send-email-linux@audioscience.com>
+Subject: [PATCH 3/6] Add ASI5200 family.
+Date: Fri, 02 Jul 2010 11:23:32 +1200
+Message-ID: <1278026615-16153-4-git-send-email-linux@audioscience.com>
 References: <1278026615-16153-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -26,23 +25,33 @@ From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpioctl.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ pci/asihpi/hpi6000.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-diff --git a/pci/asihpi/hpioctl.c b/pci/asihpi/hpioctl.c
-index 7396ac5..3114999 100644
---- a/pci/asihpi/hpioctl.c
-+++ b/pci/asihpi/hpioctl.c
-@@ -464,9 +464,7 @@ void __init asihpi_init(void)
- 
- 	memset(adapters, 0, sizeof(adapters));
- 
--	printk(KERN_INFO "ASIHPI driver %d.%02d.%02d\n",
--		HPI_VER_MAJOR(HPI_VER), HPI_VER_MINOR(HPI_VER),
--		HPI_VER_RELEASE(HPI_VER));
-+	printk(KERN_INFO "ASIHPI driver " HPI_VER_STRING "\n");
- 
- 	hpi_init_message_response(&hm, &hr, HPI_OBJ_SUBSYSTEM,
- 		HPI_SUBSYS_DRIVER_LOAD);
+diff --git a/pci/asihpi/hpi6000.c b/pci/asihpi/hpi6000.c
+index 12dab5e..f7e374e 100644
+--- a/pci/asihpi/hpi6000.c
++++ b/pci/asihpi/hpi6000.c
+@@ -687,6 +687,7 @@ static short hpi6000_adapter_boot_load_dsp(struct hpi_adapter_obj *pao,
+ 	switch (pao->pci.subsys_device_id) {
+ 	case 0x5100:
+ 	case 0x5110:	/* ASI5100 revB or higher with C6711D */
++	case 0x5200:	/* ASI5200 PC_ie version of ASI5100 */
+ 	case 0x6100:
+ 	case 0x6200:
+ 		boot_load_family = HPI_ADAPTER_FAMILY_ASI(0x6200);
+@@ -1133,6 +1134,12 @@ static short hpi6000_adapter_boot_load_dsp(struct hpi_adapter_obj *pao,
+ 						subsys_device_id) ==
+ 					HPI_ADAPTER_FAMILY_ASI(0x5100))
+ 					mask = 0x00000000L;
++				/* ASI5200 uses AX6 code, */
++				/* but has no PLD r/w register to test */
++				if (HPI_ADAPTER_FAMILY_ASI(pao->pci.
++						subsys_device_id) ==
++					HPI_ADAPTER_FAMILY_ASI(0x5200))
++					mask = 0x00000000L;
+ 				break;
+ 			case HPI_ADAPTER_FAMILY_ASI(0x8800):
+ 				/* ASI8800 has 16bit path to FPGA */
 -- 
 1.7.0.4
