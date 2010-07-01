@@ -1,13 +1,12 @@
 From: linux@audioscience.com
-Subject: [PATCH 6/6] Remove unneeded ;
-Date: Fri, 02 Jul 2010 11:23:35 +1200
-Message-ID: <1278026615-16153-7-git-send-email-linux@audioscience.com>
-References: <1278026615-16153-1-git-send-email-linux@audioscience.com>
+Subject: [PATCH] Updated alsa-kernel asihpi sources so patches
+ are no longer required.
+Date: Fri, 02 Jul 2010 11:24:40 +1200
+Message-ID: <1278026680-16267-1-git-send-email-linux@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-reply-to: <1278026615-16153-1-git-send-email-linux@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,21 +24,132 @@ From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 
 Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
 ---
- pci/asihpi/hpidebug.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ .gitignore                |    2 --
+ pci/asihpi/Makefile       |    3 ---
+ pci/asihpi/hpidspcd.c     |    2 ++
+ pci/asihpi/hpidspcd.patch |   21 ---------------------
+ pci/asihpi/hpios.c        |    2 ++
+ pci/asihpi/hpios.patch    |   35 -----------------------------------
+ 6 files changed, 4 insertions(+), 61 deletions(-)
+ create mode 100644 pci/asihpi/hpidspcd.c
+ delete mode 100644 pci/asihpi/hpidspcd.patch
+ create mode 100644 pci/asihpi/hpios.c
+ delete mode 100644 pci/asihpi/hpios.patch
 
-diff --git a/pci/asihpi/hpidebug.c b/pci/asihpi/hpidebug.c
-index 4cd85a4..949836e 100644
---- a/pci/asihpi/hpidebug.c
-+++ b/pci/asihpi/hpidebug.c
-@@ -111,7 +111,7 @@ make_treenode_from_array(hpi_control_type_strings, HPI_CONTROL_TYPE_STRINGS)
-   &hpi_profile_strings,\
-   &hpi_control_strings, \
-   &hpi_asyncevent_strings \
--};
-+}
- 	make_treenode_from_array(hpi_function_strings, HPI_FUNCTION_STRINGS)
+diff --git a/.gitignore b/.gitignore
+index 204b952..db642b2 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -75,8 +75,6 @@ pci/ac97/ac97_bus.c
+ pci/ac97/ac97_codec.c
+ pci/ad1889.c
+ pci/ali5451/ali5451.c
+-pci/asihpi/hpidspcd.c
+-pci/asihpi/hpios.c
+ pci/atiixp.c
+ pci/atiixp_modem.c
+ pci/au88x0/au88x0.c
+diff --git a/pci/asihpi/Makefile b/pci/asihpi/Makefile
+index 95ee449..50ab325 100644
+--- a/pci/asihpi/Makefile
++++ b/pci/asihpi/Makefile
+@@ -5,7 +5,6 @@ endif
+ include $(SND_TOPDIR)/toplevel.config
+ include $(SND_TOPDIR)/Makefile.conf
  
- 	compile_time_assert(HPI_OBJ_MAXINDEX == 14, obj_list_doesnt_match);
+-clean-files := hpidspcd.c hpios.c
+ 
+ EXTRA_CFLAGS = -I$(SND_TOPDIR)/alsa-kernel/pci/asihpi
+ 
+@@ -13,5 +12,3 @@ include $(SND_TOPDIR)/alsa-kernel/pci/asihpi/Makefile
+ 
+ include $(SND_TOPDIR)/Rules.make
+ 
+-hpidspcd.c: hpidspcd.patch $(SND_TOPDIR)/alsa-kernel/pci/asihpi/hpidspcd.c
+-hpios.c: hpios.patch $(SND_TOPDIR)/alsa-kernel/pci/asihpi/hpios.c
+diff --git a/pci/asihpi/hpidspcd.c b/pci/asihpi/hpidspcd.c
+new file mode 100644
+index 0000000..9b7d80a
+--- /dev/null
++++ b/pci/asihpi/hpidspcd.c
+@@ -0,0 +1,2 @@
++#include "adriver.h"
++#include "../../alsa-kernel/pci/asihpi/hpidspcd.c"
+diff --git a/pci/asihpi/hpidspcd.patch b/pci/asihpi/hpidspcd.patch
+deleted file mode 100644
+index 7831639..0000000
+--- a/pci/asihpi/hpidspcd.patch
++++ /dev/null
+@@ -1,21 +0,0 @@
+---- ../../alsa-kernel/pci/asihpi/hpidspcd.c	2010-04-21 18:36:16.613453111 +0200
+-+++ hpidspcd.c	2010-04-21 18:41:26.104970371 +0200
+-@@ -1,3 +1,4 @@
+-+#include "adriver.h"
+- /***********************************************************************/
+- /*!
+- 
+-@@ -73,8 +74,13 @@
+- 	sprintf(fw_name, "asihpi/dsp%04x.bin", adapter);
+- 	HPI_DEBUG_LOG(INFO, "requesting firmware for %s\n", fw_name);
+- 
+-+#if (LINUX_VERSION_CODE < KERNEL_VERSION(2 , 5 , 0))
+-+	err = request_firmware(&ps_firmware, fw_name,
+-+		ps_dsp_code->ps_dev->slot_name);
+-+#else
+- 	err = request_firmware(&ps_firmware, fw_name,
+- 		&ps_dsp_code->ps_dev->dev);
+-+#endif
+- 	if (err != 0) {
+- 		HPI_DEBUG_LOG(ERROR, "%d, request_firmware failed for  %s\n",
+- 			err, fw_name);
+diff --git a/pci/asihpi/hpios.c b/pci/asihpi/hpios.c
+new file mode 100644
+index 0000000..3f151a3
+--- /dev/null
++++ b/pci/asihpi/hpios.c
+@@ -0,0 +1,2 @@
++#include "adriver.h"
++#include "../../alsa-kernel/pci/asihpi/hpios.c"
+diff --git a/pci/asihpi/hpios.patch b/pci/asihpi/hpios.patch
+deleted file mode 100644
+index 1af0f7f..0000000
+--- a/pci/asihpi/hpios.patch
++++ /dev/null
+@@ -1,35 +0,0 @@
+---- ../../alsa-kernel/pci/asihpi/hpios.c	2010-04-21 18:36:16.617452068 +0200
+-+++ hpios.c	2010-04-21 18:40:32.700700812 +0200
+-@@ -1,3 +1,4 @@
+-+#include "adriver.h"
+- /******************************************************************************
+- 
+-     AudioScience HPI driver
+-@@ -26,6 +27,7 @@
+- #include <linux/delay.h>
+- #include <linux/sched.h>
+- 
+-+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2 , 6 , 14)
+- void hpios_delay_micro_seconds(u32 num_micro_sec)
+- {
+- 	if ((usecs_to_jiffies(num_micro_sec) > 1) && !in_interrupt()) {
+-@@ -38,6 +40,19 @@
+- 		mdelay(num_micro_sec / 1000);
+- 
+- }
+-+#else
+-+void hpios_delay_micro_seconds(u32 num_micro_sec)
+-+{
+-+	if ((num_micro_sec / 1000 >= 1000000 / HZ) && !in_interrupt()) {
+-+		set_current_state(TASK_UNINTERRUPTIBLE);
+-+		schedule_timeout((HZ * num_micro_sec + (HZ - 1)) / 1000000);
+-+	} else if (num_micro_sec <= 2000)
+-+		udelay(num_micro_sec);
+-+	else
+-+		mdelay(num_micro_sec / 1000);
+-+
+-+}
+-+#endif
+- 
+- void hpios_locked_mem_init(void)
+- {
 -- 
 1.7.0.4
