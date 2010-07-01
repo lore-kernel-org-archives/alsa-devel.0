@@ -1,16 +1,20 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: ASoC updates for 2.6.36
-Date: Thu, 1 Jul 2010 19:43:22 +0100
-Message-ID: <20100701184322.GI8742@rakim.wolfsonmicro.main>
+Subject: Re: [RFC 04/16] ASoC: multi-component - TI CODECs
+Date: Thu, 1 Jul 2010 20:02:05 +0100
+Message-ID: <20100701190205.GA30430@rakim.wolfsonmicro.main>
+References: <1277488383-31287-1-git-send-email-lrg@slimlogic.co.uk>
+	<1277488383-31287-5-git-send-email-lrg@slimlogic.co.uk>
+	<C358A26273CF2948B8BCDBA661A581782A6FBF945E@NOK-EUMSG-03.mgdnok.nokia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 91FEB243F8
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 7287124431
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jul 2010 20:43:23 +0200 (CEST)
+	Thu,  1 Jul 2010 21:02:06 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <C358A26273CF2948B8BCDBA661A581782A6FBF945E@NOK-EUMSG-03.mgdnok.nokia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -20,39 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: peter.ujfalusi@nokia.com
+Cc: alsa-devel@alsa-project.org, lrg@slimlogic.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-The following changes since commit e827e32efc313e1a061c81007e96fff439ccb802:
+On Wed, Jun 30, 2010 at 02:08:11PM +0200, peter.ujfalusi@nokia.com wrote:
 
-  Merge branch 'for-2.6.36' of git://git.kernel.org/pub/scm/linux/kernel/gi=
-t/lrg/asoc-2.6 into topic/asoc (2010-06-24 11:11:41 +0200)
+> - What is the reason to move the IRQ, GPIO, and regulator request from the i2c_probe to soc_probe?
 
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
-.6.36
-
-Eric B=E9nard (1):
-      ASoC: clean i.MX Kconfig
-
-Kuninori Morimoto (1):
-      ASoC: ak4642: Add Digital Playback Volume control
-
-Mark Brown (1):
-      Merge remote branch 'takashi/topic/asoc' into for-2.6.36
-
-Vladimir Zapolskiy (4):
-      ASoC: uda134x: replace a macro with a value in platform struct.
-      ASoC: uda134x: fix bias level setup on initialization
-      ASoC: uda134x: add DATA011 register found in codecs family
-      ASoC: uda134x: correct bias level setup for codecs family
-
- include/sound/uda134x.h    |   12 ++++++++
- sound/soc/codecs/ak4642.c  |   24 ++++++++++++++--
- sound/soc/codecs/uda134x.c |   64 +++++++++++++++++++++++++++++-----------=
----
- sound/soc/codecs/uda134x.h |    5 ++-
- sound/soc/imx/Kconfig      |   14 ++++-----
- 5 files changed, 85 insertions(+), 34 deletions(-)
+So, the theory here is that when you've got both I2C and SPI on a single
+CODEC all the basic setup code tends to be identical over all buses (as
+it is with the current register() functions.  Personally I do find this
+a bit strange since it feels better to have the driver check for all the
+things it needs before it has the subsystem go and try to do broader
+setup work but it does do the code sharing job.
