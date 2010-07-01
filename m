@@ -1,21 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] - arecord - remove "front" and related
-	devices from the output of list-pcm option of arecord
-Date: Thu, 1 Jul 2010 17:44:04 +0800
-Message-ID: <AANLkTilPjm8v_8Md0lopYGoFN4iPE5CNyd4QHiBFdv0f@mail.gmail.com>
-References: <AANLkTinyBpf_qh6DGvj_V4UGY-JZUomNX6N32_WJpOjo@mail.gmail.com>
-	<alpine.LNX.2.00.1007010745470.15497@eeebox2.perex-int.cz>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 1/3] ASoC: DaVinci: Added two clocking
+ possibilities to McBSP (I2S)
+Date: Thu, 1 Jul 2010 15:35:40 +0100
+Message-ID: <20100701143540.GC8742@rakim.wolfsonmicro.main>
+References: <1277905678-4695-1-git-send-email-lamiaposta71@gmail.com>
+	<1277905678-4695-2-git-send-email-lamiaposta71@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id E35B424584
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id E47AF10384A
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jul 2010 11:44:06 +0200 (CEST)
-Received: by vws11 with SMTP id 11so2158129vws.38
-	for <alsa-devel@alsa-project.org>; Thu, 01 Jul 2010 02:44:04 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1007010745470.15497@eeebox2.perex-int.cz>
+	Thu,  1 Jul 2010 16:35:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1277905678-4695-2-git-send-email-lamiaposta71@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,34 +24,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Raffaele Recalcati <lamiaposta71@gmail.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Davide Bonfanti <davide.bonfanti@bticino.it>, Raffaele Recalcati <raffaele.recalcati@bticino.it>, Troy Kisky <troy.kisky@boundarydevices.com>, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/1 Jaroslav Kysela <perex@perex.cz>
+On Wed, Jun 30, 2010 at 03:47:56PM +0200, Raffaele Recalcati wrote:
 
-> On Thu, 1 Jul 2010, Raymond Yau wrote:
->
->  Replace "front" device by "hw" device  and remove "rear", "center_lfe" ,
->> "side" , "surroundxx" from the output of "arecord -L" since "front" device
->> cannot be used for capturing and the front device is for playback only  .
->>
->
-> NAK. Fix alsa-lib/configuration to return proper "IOID".
->
->                                        Jaroslav
->
+> +static int davinci_i2s_dai_set_clkdiv(struct snd_soc_dai *cpu_dai,
+> +				int div_id, int div)
+> +{
+> +	struct davinci_mcbsp_dev *dev = cpu_dai->private_data;
+> +	int srgr;
+> +
+> +	dev->clk_div = div;
+> +	return 0;
+> +}
 
-I have tried put "IOID" in many place such as usr/share/alsa/pcm/front.conf
-,
+As previously mentioned this should check the div_id argument.
 
-it seem that hint_list_add() only add name and description in
-alsa-lib/src/control/namehint.c
+> +	switch (master) {
+> +	case SND_SOC_DAIFMT_CBS_CFS:
 
-hint_list_add(struct hint_list *list,
-             const char *name,
-             const char *description)
+...
 
-I wonder "IOID" was never added to the hint list and that is why all devices
-are Input/Output
+> +	case SND_SOC_DAIFMT_CBM_CFS:
 
-dsnoop should be input and dmix should be output
+...
+
+> +	default:
+> +		/* Clock and frame sync given from external sources */
+
+The two remaining options (_CBM_CFM and _CBS_CFM) are different, your
+description matches _CBM_CFM.
+
+> +		if (master == SND_SOC_DAIFMT_CBS_CFS ||
+> +				master == SND_SOC_DAIFMT_CBS_CFM) {
+
+Switch statement again.
+
+> +	if (master == SND_SOC_DAIFMT_CBS_CFS ||
+> +			master == SND_SOC_DAIFMT_CBS_CFM) {
+> +		rcr |= DAVINCI_MCBSP_RCR_RFRLEN1(0);
+> +		xcr |= DAVINCI_MCBSP_XCR_XFRLEN1(0);
+> +	} else {
+
+...and another.  Please fix all these.
