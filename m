@@ -1,17 +1,20 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] - arecord - remove "front" and related
- devices from the output of list-pcm option of arecord
-Date: Thu, 1 Jul 2010 07:47:02 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1007010745470.15497@eeebox2.perex-int.cz>
-References: <AANLkTinyBpf_qh6DGvj_V4UGY-JZUomNX6N32_WJpOjo@mail.gmail.com>
+From: "robert" <robert@starplayit.com>
+Subject: Full duplex code sample?
+Date: Thu, 1 Jul 2010 15:33:14 +0930
+Message-ID: <CB140B21EBDA4CA7B025FEC362DE9583@ASO>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-886098899-1277963222=:15497"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 8D212103828
+Received: from host.digitalmonkey.com.au (digitalmonkey.com.au
+	[122.201.77.127])
+	by alsa0.perex.cz (Postfix) with ESMTP id 6C975103836
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jul 2010 07:47:03 +0200 (CEST)
-In-Reply-To: <AANLkTinyBpf_qh6DGvj_V4UGY-JZUomNX6N32_WJpOjo@mail.gmail.com>
+	Thu,  1 Jul 2010 07:57:36 +0200 (CEST)
+Received: from 219-90-199-19.static.adam.com.au ([219.90.199.19] helo=ASO)
+	by host.digitalmonkey.com.au with esmtp (Exim 4.69)
+	(envelope-from <robert@starplayit.com>) id 1OUCac-00048n-On
+	for alsa-devel@alsa-project.org; Thu, 01 Jul 2010 15:15:34 +0930
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,44 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Dear All,
 
---8323584-886098899-1277963222=:15497
-Content-Type: TEXT/PLAIN; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+ 
 
-On Thu, 1 Jul 2010, Raymond Yau wrote:
+Is there an example code on how to program a full duplex audio transmission?
 
-> Replace "front" device by "hw" device=C2=A0 and remove "rear", "center_lf=
-e" ,
-> "side" , "surroundxx" from the output of "arecord -L" since "front" devic=
-e
-> cannot be used for capturing and the front device is for playback only=C2=
-=A0 .
+I did search the internet but it is full of Paul Davis advising to use Jack
+instead of ALSA.
 
-NAK. Fix alsa-lib/configuration to return proper "IOID".
+I think I would rather use ALSA for my purposes.
 
- =09=09=09=09=09Jaroslav
+ 
 
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Cheers,
 
---8323584-886098899-1277963222=:15497
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@alsa-project.org
-http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---8323584-886098899-1277963222=:15497--
+Robert
