@@ -1,19 +1,16 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: How does struct snd_pcm_hardware relate to the
-	actual hardware
-Date: Thu, 1 Jul 2010 19:40:33 +0100
-Message-ID: <20100701184032.GH8742@rakim.wolfsonmicro.main>
-References: <AANLkTimiH0xvYIM-gmxx95W3N4PmFKqa1skknvsxluY8@mail.gmail.com>
+Subject: ASoC updates for 2.6.36
+Date: Thu, 1 Jul 2010 19:43:22 +0100
+Message-ID: <20100701184322.GI8742@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 23852243ED
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 91FEB243F8
 	for <alsa-devel@alsa-project.org>;
-	Thu,  1 Jul 2010 20:40:40 +0200 (CEST)
+	Thu,  1 Jul 2010 20:43:23 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <AANLkTimiH0xvYIM-gmxx95W3N4PmFKqa1skknvsxluY8@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -23,24 +20,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Adam Rosenberg <adam@alcorn.com>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 30, 2010 at 05:32:41PM -0400, Adam Rosenberg wrote:
+The following changes since commit e827e32efc313e1a061c81007e96fff439ccb802:
 
-> The audio is not being placed into the DMA buffer properly.  The audio
-> plays faster than it should and has a constant stutter.  I have read
-> the "writing an ALSA driver" guide multiple times but it does not
-> explain the relationship between struct snd_pcm_hardware,
-> snd_pcm_period_elapsed, and the copy callback clearly enough for me to
-> understand what I am doing wrong.
+  Merge branch 'for-2.6.36' of git://git.kernel.org/pub/scm/linux/kernel/gi=
+t/lrg/asoc-2.6 into topic/asoc (2010-06-24 11:11:41 +0200)
 
-You probably want to provide a little more detail on how you're parsing
-the data in your DMA driver here...  The simplest thing when debugging
-problems like this is often to place obviously tracable test data into
-the audio stream (eg, all but one channel zero) and then work through
-where the data ends up compared to where it ought to end up.
+are available in the git repository at:
 
-Note also that ASoC doesn't do anything explicit to support substreams,
-which aren't in themselves ASoC specific.
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
+.6.36
+
+Eric B=E9nard (1):
+      ASoC: clean i.MX Kconfig
+
+Kuninori Morimoto (1):
+      ASoC: ak4642: Add Digital Playback Volume control
+
+Mark Brown (1):
+      Merge remote branch 'takashi/topic/asoc' into for-2.6.36
+
+Vladimir Zapolskiy (4):
+      ASoC: uda134x: replace a macro with a value in platform struct.
+      ASoC: uda134x: fix bias level setup on initialization
+      ASoC: uda134x: add DATA011 register found in codecs family
+      ASoC: uda134x: correct bias level setup for codecs family
+
+ include/sound/uda134x.h    |   12 ++++++++
+ sound/soc/codecs/ak4642.c  |   24 ++++++++++++++--
+ sound/soc/codecs/uda134x.c |   64 +++++++++++++++++++++++++++++-----------=
+---
+ sound/soc/codecs/uda134x.h |    5 ++-
+ sound/soc/imx/Kconfig      |   14 ++++-----
+ 5 files changed, 85 insertions(+), 34 deletions(-)
