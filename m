@@ -1,20 +1,21 @@
-From: Eliot Blennerhassett <linux@audioscience.com>
-Subject: linux vs c99 fixed width types
-Date: Fri, 02 Jul 2010 13:13:26 +1200
-Message-ID: <4C2D3D36.3020009@audioscience.com>
+From: Raymond Yau <superquad.vortex2@gmail.com>
+Subject: Re: [PATCH] - arecord - remove "front" and related
+	devices from the output of list-pcm option of arecord
+Date: Fri, 2 Jul 2010 13:03:47 +0800
+Message-ID: <AANLkTimGJu_9tdOMhPutnW0MepWCr075y7rzXziNbdia@mail.gmail.com>
+References: <AANLkTinyBpf_qh6DGvj_V4UGY-JZUomNX6N32_WJpOjo@mail.gmail.com>
+	<alpine.LNX.2.00.1007010745470.15497@eeebox2.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp3.clear.net.nz (smtp3.clear.net.nz [203.97.33.64])
-	by alsa0.perex.cz (Postfix) with ESMTP id 2EABE2452C
+Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
+	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id 45530245D3
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Jul 2010 03:13:31 +0200 (CEST)
-Received: from [192.168.36.2]
-	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
-	by smtp3.clear.net.nz (CLEAR Net Mail)
-	with ESMTP id <0L4W008SAOQFK320@smtp3.clear.net.nz> for
-	alsa-devel@alsa-project.org; Fri, 02 Jul 2010 13:13:27 +1200 (NZST)
+	Fri,  2 Jul 2010 07:03:51 +0200 (CEST)
+Received: by vws11 with SMTP id 11so3304164vws.38
+	for <alsa-devel@alsa-project.org>; Thu, 01 Jul 2010 22:03:50 -0700 (PDT)
+In-Reply-To: <alpine.LNX.2.00.1007010745470.15497@eeebox2.perex-int.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,20 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi, & list
+2010/7/1 Jaroslav Kysela <perex@perex.cz>
 
-it is quite likely that we will be moving our own codebase to use the
-C99 fixed width types rather than our own  e.g. uint32_t vs HW32 etc.
+> On Thu, 1 Jul 2010, Raymond Yau wrote:
+>
+>  Replace "front" device by "hw" device  and remove "rear", "center_lfe" ,
+>> "side" , "surroundxx" from the output of "arecord -L" since "front" device
+>> cannot be used for capturing and the front device is for playback only  .
+>>
+>
+> NAK. Fix alsa-lib/configuration to return proper "IOID".
+>
+>                                        Jaroslav
+>
 
-Currently HW32 is translated into u32 before I submit patches to you.
-Should I do the same for the C99 types, or let them pass through unaltered?
-
-regards
-
--- 
-Eliot Blennerhassett
-AudioScience Inc.
+I guess  the hint "IOID" has not implemented , the namehint.c did not add
+"Input" or "Output" to the hint_list and snd_device_name_get_hint() is
+unable to retrieve "IOID" from the hint_list
