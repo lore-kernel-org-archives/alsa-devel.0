@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: linux vs c99 fixed width types
-Date: Fri, 2 Jul 2010 11:28:51 +0100
-Message-ID: <20100702102850.GA30655@sirena.org.uk>
-References: <4C2D3D36.3020009@audioscience.com>
+From: Florian Scholz <florian90@gmail.com>
+Subject: ESI DuaFire Vendor Information
+Date: Fri, 2 Jul 2010 17:11:28 +0200
+Message-ID: <AANLkTimFQAkrDUrqFixX3zZuY3z69p4Q0jxnfFrN-cey@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
-	by alsa0.perex.cz (Postfix) with ESMTP id EFFA610383E
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51]) by alsa0.perex.cz (Postfix) with ESMTP id 3BD6C24601
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Jul 2010 12:28:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4C2D3D36.3020009@audioscience.com>
+	Fri,  2 Jul 2010 17:11:29 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so1766176bwz.38
+	for <alsa-devel@alsa-project.org>; Fri, 02 Jul 2010 08:11:29 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,13 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Eliot Blennerhassett <linux@audioscience.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 02, 2010 at 01:13:26PM +1200, Eliot Blennerhassett wrote:
+Hi
 
-> Currently HW32 is translated into u32 before I submit patches to you.
-> Should I do the same for the C99 types, or let them pass through unaltered?
+I like to implement a driver for the ESI DuaFire Interface and need
+the information from ESI.
 
-Linux standard is to use u32 and friends rather than the C99 types.
+Andreas Preuss from ESI wrote me (translated):
+
+thanks you for your message. every information that you need for the
+development of a firewire audio driver are public. the information are
+accessable for the alsa-project and maybe the ffado project.
