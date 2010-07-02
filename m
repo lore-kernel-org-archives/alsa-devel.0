@@ -1,20 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] - arecord - remove "front" and related
- devices from the output of list-pcm option of arecord
-Date: Fri, 2 Jul 2010 07:37:56 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1007020736530.15497@eeebox2.perex-int.cz>
-References: <AANLkTinyBpf_qh6DGvj_V4UGY-JZUomNX6N32_WJpOjo@mail.gmail.com>
-	<alpine.LNX.2.00.1007010745470.15497@eeebox2.perex-int.cz>
-	<AANLkTimGJu_9tdOMhPutnW0MepWCr075y7rzXziNbdia@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: linux vs c99 fixed width types
+Date: Fri, 2 Jul 2010 11:28:51 +0100
+Message-ID: <20100702102850.GA30655@sirena.org.uk>
+References: <4C2D3D36.3020009@audioscience.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (unknown [212.20.107.53])
-	by alsa0.perex.cz (Postfix) with ESMTP id 7626F245EA
+Received: from cassiel.sirena.org.uk (cassiel.sirena.org.uk [80.68.93.111])
+	by alsa0.perex.cz (Postfix) with ESMTP id EFFA610383E
 	for <alsa-devel@alsa-project.org>;
-	Fri,  2 Jul 2010 07:37:57 +0200 (CEST)
-In-Reply-To: <AANLkTimGJu_9tdOMhPutnW0MepWCr075y7rzXziNbdia@mail.gmail.com>
+	Fri,  2 Jul 2010 12:28:54 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <4C2D3D36.3020009@audioscience.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,35 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Raymond Yau <superquad.vortex2@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: Eliot Blennerhassett <linux@audioscience.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2 Jul 2010, Raymond Yau wrote:
+On Fri, Jul 02, 2010 at 01:13:26PM +1200, Eliot Blennerhassett wrote:
 
-> 2010/7/1 Jaroslav Kysela <perex@perex.cz>
->
->> On Thu, 1 Jul 2010, Raymond Yau wrote:
->>
->>  Replace "front" device by "hw" device  and remove "rear", "center_lfe" ,
->>> "side" , "surroundxx" from the output of "arecord -L" since "front" device
->>> cannot be used for capturing and the front device is for playback only  .
->>>
->>
->> NAK. Fix alsa-lib/configuration to return proper "IOID".
->>
->>                                        Jaroslav
->>
->
-> I guess  the hint "IOID" has not implemented , the namehint.c did not add
-> "Input" or "Output" to the hint_list and snd_device_name_get_hint() is
-> unable to retrieve "IOID" from the hint_list
+> Currently HW32 is translated into u32 before I submit patches to you.
+> Should I do the same for the C99 types, or let them pass through unaltered?
 
-Use device_input and device_output in the hint {} section instead device.
-
- 						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, Red Hat, Inc.
+Linux standard is to use u32 and friends rather than the C99 types.
