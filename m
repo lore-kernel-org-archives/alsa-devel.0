@@ -1,45 +1,24 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: Add SmartQ sound driver
-Date: Sat, 3 Jul 2010 01:15:40 +0100
-Message-ID: <20100703001539.GA3869@sirena.org.uk>
-References: <4c2e7f3e.887b0e0a.5935.3f95@mx.google.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] ARM: S3C64XX: Add audio support to
+ SmartQ
+Date: Sat, 3 Jul 2010 01:18:03 +0100
+Message-ID: <20100703001803.GB3869@sirena.org.uk>
+References: <4c2e7f40.d37b0e0a.2178.3d69@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <4c2e7f3e.887b0e0a.5935.3f95@mx.google.com>
+In-Reply-To: <4c2e7f40.d37b0e0a.2178.3d69@mx.google.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
 To: Maurus Cuelenaere <mcuelenaere@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: linux-samsung-soc@vger.kernel.org, Ben Dooks <ben@simtec.co.uk>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jan 30, 2010 at 06:23:14PM +0100, Maurus Cuelenaere wrote:
+On Sat, Jul 03, 2010 at 01:40:24AM +0200, Maurus Cuelenaere wrote:
 
-Might want to check your mail setup - the date looks wrong.
+> +static struct i2c_board_info smartq_i2c_devs[] __initdata = {
+> +	{ I2C_BOARD_INFO("wm8750", 0x1a), },
+> +};
 
-> This adds sound support for the SmartQ board.
->=20
-> The hardware consists of a S3C6410 coupled with a WM8987 over I=B2S. =
-As there's
-> no driver for the WM8987 currently, this uses the WM8750 driver (whic=
-h should
-> be register compatible).
-
-There's no need to add a separate driver for a register compatible part=
-,
-just add the I2C/SPI IDs to the existing driver.  Otherwise we just
-duplicate it redundantly.  Please update this and the comment in the
-driver to reflect that.
-
-Otherwise this looks OK, but there's a couple of things that it'd be
-nice to update:
-
-> +	dev_info(&smartq_snd_device->dev, "SmartQ WM8987 audio driver inite=
-d\n");
-
-Best to remove this, it gets a bit noisy.
-
-> +MODULE_AUTHOR("Maurus Cuelenaere");
-
-Better to add your mail address too.
+It'd be slightly nicer to register with the actual chip ID and make sure
+the driver can handle it - it'll avoid the potential for confusion.
