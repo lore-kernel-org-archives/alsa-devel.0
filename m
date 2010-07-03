@@ -1,54 +1,59 @@
 From: Maurus Cuelenaere <mcuelenaere@gmail.com>
-Subject: [PATCH 1/3] ASoC: codec: Add WM8987 device id to
-	WM8750 driver
-Date: Sat, 03 Jul 2010 02:46:10 +0200
-Message-ID: <4c2e8854.cf7d0e0a.166f.3e5a@mx.google.com>
+Subject: [PATCH 3/3] ARM: S3C64XX: Add audio support to SmartQ
+Date: Sat, 03 Jul 2010 02:46:15 +0200
+Message-ID: <4c2e8859.487e0e0a.4485.3e1f@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ey0-f179.google.com (mail-ey0-f179.google.com
-	[209.85.215.179])
-	by alsa0.perex.cz (Postfix) with ESMTP id 08F7B243B9
-	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Jul 2010 02:46:14 +0200 (CEST)
-Received: by eye27 with SMTP id 27so23483eye.38
-	for <alsa-devel@alsa-project.org>; Fri, 02 Jul 2010 17:46:12 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: linux-samsung-soc@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Ben Dooks <ben@simtec.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIFdNODk4NyBjb2RlYyBpcyByZWdpc3RlciBjb21wYXRpYmxlIHdpdGggdGhlIFdNODc1MCwg
-c28ganVzdCBhZGQgaXQgdG8gdGhlClNQSSBhbmQgScKyQyBkZXZpY2UgdGFibGUuCgpTaWduZWQt
-b2ZmLWJ5OiBNYXVydXMgQ3VlbGVuYWVyZSA8bWN1ZWxlbmFlcmVAZ21haWwuY29tPgotLS0KIHNv
-dW5kL3NvYy9jb2RlY3Mvd204NzUwLmMgfCAgIDExICsrKysrKysrKystCiAxIGZpbGVzIGNoYW5n
-ZWQsIDEwIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQv
-c29jL2NvZGVjcy93bTg3NTAuYyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204NzUwLmMKaW5kZXggOTQw
-N2UxOS4uZTJjMDVlMyAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy93bTg3NTAuYworKysg
-Yi9zb3VuZC9zb2MvY29kZWNzL3dtODc1MC5jCkBAIC04ODQsNiArODg0LDcgQEAgc3RhdGljIGlu
-dCB3bTg3NTBfaTJjX3JlbW92ZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50KQogCiBzdGF0aWMg
-Y29uc3Qgc3RydWN0IGkyY19kZXZpY2VfaWQgd204NzUwX2kyY19pZFtdID0gewogCXsgIndtODc1
-MCIsIDAgfSwKKwl7ICJ3bTg5ODciLCAwIH0sIC8qIFdNODk4NyBpcyByZWdpc3RlciBjb21wYXRp
-YmxlIHdpdGggV004NzUwICovCiAJeyB9CiB9OwogTU9EVUxFX0RFVklDRV9UQUJMRShpMmMsIHdt
-ODc1MF9pMmNfaWQpOwpAQCAtOTI1LDE0ICs5MjYsMjIgQEAgc3RhdGljIGludCBfX2RldmV4aXQg
-d204NzUwX3NwaV9yZW1vdmUoc3RydWN0IHNwaV9kZXZpY2UgKnNwaSkKIAlyZXR1cm4gMDsKIH0K
-IAorc3RhdGljIGNvbnN0IHN0cnVjdCBzcGlfZGV2aWNlX2lkIHdtODc1MF9zcGlfaWRbXSA9IHsK
-Kwl7ICJ3bTg3NTAiLCAwIH0sCisJeyAid204OTg3IiwgMCB9LAorCXsgfQorfTsKK01PRFVMRV9E
-RVZJQ0VfVEFCTEUoc3BpLCB3bTg3NTBfc3BpX2lkKTsKKwogc3RhdGljIHN0cnVjdCBzcGlfZHJp
-dmVyIHdtODc1MF9zcGlfZHJpdmVyID0gewogCS5kcml2ZXIgPSB7Ci0JCS5uYW1lCT0gIndtODc1
-MCIsCisJCS5uYW1lCT0gIldNODc1MCBTUEkgQ29kZWMiLAogCQkuYnVzCT0gJnNwaV9idXNfdHlw
-ZSwKIAkJLm93bmVyCT0gVEhJU19NT0RVTEUsCiAJfSwKIAkucHJvYmUJCT0gd204NzUwX3NwaV9w
-cm9iZSwKIAkucmVtb3ZlCQk9IF9fZGV2ZXhpdF9wKHdtODc1MF9zcGlfcmVtb3ZlKSwKKwkuaWRf
-dGFibGUJPSB3bTg3NTBfc3BpX2lkLAogfTsKICNlbmRpZgogCi0tIAoxLjcuMC40CgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This adds the I=C2=B2C board information for the WM8987 used in the Sma=
+rtQ as audio
+codec and adds the I=C2=B2C/I=C2=B2S platform drivers.
+
+Signed-off-by: Maurus Cuelenaere <mcuelenaere@gmail.com>
+---
+ arch/arm/mach-s3c64xx/mach-smartq.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-s3c64xx/mach-smartq.c b/arch/arm/mach-s3c64x=
+x/mach-smartq.c
+index 028d080..5d8673b 100644
+--- a/arch/arm/mach-s3c64xx/mach-smartq.c
++++ b/arch/arm/mach-s3c64xx/mach-smartq.c
+@@ -199,6 +199,9 @@ static struct platform_device smartq_lcd_power_devi=
+ce =3D {
+ 	.dev.platform_data	=3D &smartq_lcd_power_data,
+ };
+=20
++static struct i2c_board_info smartq_i2c_devs[] __initdata =3D {
++	{ I2C_BOARD_INFO("wm8987", 0x1a), },
++};
+=20
+ static struct platform_device *smartq_devices[] __initdata =3D {
+ 	&s3c_device_hsmmc1,	/* Init iNAND first, ... */
+@@ -213,6 +216,7 @@ static struct platform_device *smartq_devices[] __i=
+nitdata =3D {
+ 	&s3c_device_timer[1],
+ 	&s3c_device_ts,
+ 	&s3c_device_usb_hsotg,
++	&s3c64xx_device_iis0,
+ 	&smartq_backlight_device,
+ 	&smartq_lcd_power_device,
+ 	&smartq_usb_otg_vbus_dev,
+@@ -354,6 +358,9 @@ void __init smartq_machine_init(void)
+ 	s3c_sdhci2_set_platdata(&smartq_internal_hsmmc_pdata);
+ 	s3c24xx_ts_set_platdata(&smartq_touchscreen_pdata);
+=20
++	i2c_register_board_info(0, smartq_i2c_devs,
++				ARRAY_SIZE(smartq_i2c_devs));
++
+ 	WARN_ON(smartq_power_off_init());
+ 	WARN_ON(smartq_usb_host_init());
+ 	WARN_ON(smartq_usb_otg_init());
+--=20
+1.7.0.4
