@@ -1,59 +1,45 @@
-From: Maurus Cuelenaere <mcuelenaere@gmail.com>
-Subject: [PATCH 2/2] ARM: S3C64XX: Add audio support to SmartQ
-Date: Sat, 3 Jul 2010 01:40:24 +0200
-Message-ID: <4c2e7f40.d37b0e0a.2178.3d69@mx.google.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: Add SmartQ sound driver
+Date: Sat, 3 Jul 2010 01:15:40 +0100
+Message-ID: <20100703001539.GA3869@sirena.org.uk>
+References: <4c2e7f3e.887b0e0a.5935.3f95@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4c2e7f3e.887b0e0a.5935.3f95@mx.google.com>
 Sender: linux-samsung-soc-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Ben Dooks <ben@simtec.co.uk>
+To: Maurus Cuelenaere <mcuelenaere@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This adds the I=C2=B2C board information for the WM8987 used in the Sma=
-rtQ as audio
-codec and adds the I=C2=B2C/I=C2=B2S platform drivers.
+On Sat, Jan 30, 2010 at 06:23:14PM +0100, Maurus Cuelenaere wrote:
 
-Signed-off-by: Maurus Cuelenaere <mcuelenaere@gmail.com>
----
- arch/arm/mach-s3c64xx/mach-smartq.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+Might want to check your mail setup - the date looks wrong.
 
-diff --git a/arch/arm/mach-s3c64xx/mach-smartq.c b/arch/arm/mach-s3c64x=
-x/mach-smartq.c
-index 028d080..ee77255 100644
---- a/arch/arm/mach-s3c64xx/mach-smartq.c
-+++ b/arch/arm/mach-s3c64xx/mach-smartq.c
-@@ -199,6 +199,9 @@ static struct platform_device smartq_lcd_power_devi=
-ce =3D {
- 	.dev.platform_data	=3D &smartq_lcd_power_data,
- };
-=20
-+static struct i2c_board_info smartq_i2c_devs[] __initdata =3D {
-+	{ I2C_BOARD_INFO("wm8750", 0x1a), },
-+};
-=20
- static struct platform_device *smartq_devices[] __initdata =3D {
- 	&s3c_device_hsmmc1,	/* Init iNAND first, ... */
-@@ -213,6 +216,7 @@ static struct platform_device *smartq_devices[] __i=
-nitdata =3D {
- 	&s3c_device_timer[1],
- 	&s3c_device_ts,
- 	&s3c_device_usb_hsotg,
-+	&s3c64xx_device_iis0,
- 	&smartq_backlight_device,
- 	&smartq_lcd_power_device,
- 	&smartq_usb_otg_vbus_dev,
-@@ -354,6 +358,9 @@ void __init smartq_machine_init(void)
- 	s3c_sdhci2_set_platdata(&smartq_internal_hsmmc_pdata);
- 	s3c24xx_ts_set_platdata(&smartq_touchscreen_pdata);
-=20
-+	i2c_register_board_info(0, smartq_i2c_devs,
-+				ARRAY_SIZE(smartq_i2c_devs));
-+
- 	WARN_ON(smartq_power_off_init());
- 	WARN_ON(smartq_usb_host_init());
- 	WARN_ON(smartq_usb_otg_init());
---=20
-1.7.0.4
+> This adds sound support for the SmartQ board.
+>=20
+> The hardware consists of a S3C6410 coupled with a WM8987 over I=B2S. =
+As there's
+> no driver for the WM8987 currently, this uses the WM8750 driver (whic=
+h should
+> be register compatible).
+
+There's no need to add a separate driver for a register compatible part=
+,
+just add the I2C/SPI IDs to the existing driver.  Otherwise we just
+duplicate it redundantly.  Please update this and the comment in the
+driver to reflect that.
+
+Otherwise this looks OK, but there's a couple of things that it'd be
+nice to update:
+
+> +	dev_info(&smartq_snd_device->dev, "SmartQ WM8987 audio driver inite=
+d\n");
+
+Best to remove this, it gets a bit noisy.
+
+> +MODULE_AUTHOR("Maurus Cuelenaere");
+
+Better to add your mail address too.
