@@ -1,17 +1,21 @@
-From: Christian Gmeiner <christian.gmeiner@gmail.com>
-Subject: Question about snd_pcm_sw_params_set_start_threshold
-Date: Sat, 3 Jul 2010 16:04:52 +0200
-Message-ID: <AANLkTilyuqSBzRYjzQbx3iYf8tW0bwM2t1gU8u-afKMG@mail.gmail.com>
+From: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: issue with TWL4030
+Date: Sat, 3 Jul 2010 17:32:08 +0300
+Message-ID: <AANLkTilvo5eV352yiSgOSst_kwt3juh4LSdTM64H5eBT@mail.gmail.com>
+References: <AANLkTilwdeNLChInBSaFIpVTLDONLXIIHVpLk3Aibk0v@mail.gmail.com>
+	<20100703000635.GA3533@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
-	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id A377424425
+Received: from mail-gy0-f179.google.com (mail-gy0-f179.google.com
+	[209.85.160.179])
+	by alsa0.perex.cz (Postfix) with ESMTP id 54A2924443
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Jul 2010 16:05:12 +0200 (CEST)
-Received: by fxm15 with SMTP id 15so2933129fxm.38
-	for <alsa-devel@alsa-project.org>; Sat, 03 Jul 2010 07:05:12 -0700 (PDT)
+	Sat,  3 Jul 2010 16:32:10 +0200 (CEST)
+Received: by gyd10 with SMTP id 10so2193505gyd.38
+	for <alsa-devel@alsa-project.org>; Sat, 03 Jul 2010 07:32:09 -0700 (PDT)
+In-Reply-To: <20100703000635.GA3533@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -21,21 +25,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Sat, Jul 3, 2010 at 3:06 AM, Mark Brown
+<broonie@opensource.wolfsonmicro.com> wrote:
+> On Sat, Jul 03, 2010 at 01:50:50AM +0300, Grazvydas Ignotas wrote:
+>
+>> there seems to be a problem with TWL4030 hw_param programming, which
+>> is easy to reproduce over OSS emulation with this simple program:
+>
+> OSS emulation is strongly disrecommended due to the fact that it
+> repeatedly reprograms things using partially valid configurations. =A0Some
+> drivers will refuse to run with it.
 
-I am running into some troubles with my linux plugin for the vdr. I
-want to play audio in sync of video. My current solution is to buffer
-about 500ms of video on the output device (pts based FIFO). I can play
-audio with alsa, but
-sometimes I am not in sync with the video. So I want to set start
-threshold to 0 to disable automatic playback start. Instead I want to
-buffer audio and start playback manual, if pts of video is near
-current scr clock of output device. What are my options to manually
-start playback?
-
-thanks,
---
-Christian Gmeiner, MSc
+Well it used to work fine on OMAP+TWL until one of Peter's rework
+patches, I guess 6b87a91f (haven't really bisected), hope we can find
+some solution. We have some closed OSS programs that we can't drop,
+unfortunately. I know userspace OSS emulation solutions exist, but it
+wouldn't hurt to have more options.
