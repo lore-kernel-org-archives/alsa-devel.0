@@ -1,20 +1,17 @@
-From: David Dillow <dave@thedillows.org>
-Subject: Re: [PATCH] sis7019: fix capture issues with multiple
- periods per buffer
-Date: Fri, 02 Jul 2010 23:12:10 -0400
-Message-ID: <1278126730.4311.3.camel@obelisk.thedillows.org>
-References: <1277589872.2438.5.camel@obelisk.thedillows.org>
-	<1277649968.2438.34.camel@obelisk.thedillows.org>
-	<1277703222.2438.184.camel@obelisk.thedillows.org>
+From: Christian Gmeiner <christian.gmeiner@gmail.com>
+Subject: Question about snd_pcm_sw_params_set_start_threshold
+Date: Sat, 3 Jul 2010 16:04:52 +0200
+Message-ID: <AANLkTilyuqSBzRYjzQbx3iYf8tW0bwM2t1gU8u-afKMG@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from amavis-smtp.knology.net (amavis-smtp.knology.net [75.76.199.6])
-	by alsa0.perex.cz (Postfix) with ESMTP id 496882447F
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id A377424425
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Jul 2010 05:12:19 +0200 (CEST)
-In-Reply-To: <1277703222.2438.184.camel@obelisk.thedillows.org>
+	Sat,  3 Jul 2010 16:05:12 +0200 (CEST)
+Received: by fxm15 with SMTP id 15so2933129fxm.38
+	for <alsa-devel@alsa-project.org>; Sat, 03 Jul 2010 07:05:12 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -25,22 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, linux@schou.dk
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2010-06-28 at 01:33 -0400, David Dillow wrote:
-> Ok, definitely different problem, as it dies 12:15 into a run using 2
-> periods per buffer, so the virtual timing code does not come into it.
-> Interestingly enough, it died after ~44092 seconds while recording at
-> 44100 Hz.
-> 
-> The patch should be applied. If and when I find the source of this new
-> bug, I'll submit a separate patch.
+Hi all,
 
-For the Google record: this was the boundary wrap issue fixed by Clemens
-Ladisch in b406e6103baa3da85950f22d3d46d21a8da654c5. It's survived many
-boundary crossings with a shorted setting (256 seconds at 48kHz) so I'm
-very confident.
+I am running into some troubles with my linux plugin for the vdr. I
+want to play audio in sync of video. My current solution is to buffer
+about 500ms of video on the output device (pts based FIFO). I can play
+audio with alsa, but
+sometimes I am not in sync with the video. So I want to set start
+threshold to 0 to disable automatic playback start. Instead I want to
+buffer audio and start playback manual, if pts of video is near
+current scr clock of output device. What are my options to manually
+start playback?
 
-And I went with 2.6.34 to avoid the potential of instabilities in the
-2.6.35-rc series. Oops :)
+thanks,
+--
+Christian Gmeiner, MSc
