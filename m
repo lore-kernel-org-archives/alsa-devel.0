@@ -1,23 +1,20 @@
-From: Raymond Yau <superquad.vortex2@gmail.com>
-Subject: Re: [PATCH] - arecord - remove "front" and related
-	devices from the output of list-pcm option of arecord
-Date: Sat, 3 Jul 2010 10:36:55 +0800
-Message-ID: <AANLkTinxEaSMl1SJJ5BTA0-te9BsB5-MdvtmMNuwglis@mail.gmail.com>
-References: <AANLkTinyBpf_qh6DGvj_V4UGY-JZUomNX6N32_WJpOjo@mail.gmail.com>
-	<alpine.LNX.2.00.1007010745470.15497@eeebox2.perex-int.cz>
-	<AANLkTimGJu_9tdOMhPutnW0MepWCr075y7rzXziNbdia@mail.gmail.com>
-	<alpine.LNX.2.00.1007020736530.15497@eeebox2.perex-int.cz>
+From: David Dillow <dave@thedillows.org>
+Subject: Re: [PATCH] sis7019: fix capture issues with multiple
+ periods per buffer
+Date: Fri, 02 Jul 2010 23:12:10 -0400
+Message-ID: <1278126730.4311.3.camel@obelisk.thedillows.org>
+References: <1277589872.2438.5.camel@obelisk.thedillows.org>
+	<1277649968.2438.34.camel@obelisk.thedillows.org>
+	<1277703222.2438.184.camel@obelisk.thedillows.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vw0-f51.google.com (mail-vw0-f51.google.com
-	[209.85.212.51]) by alsa0.perex.cz (Postfix) with ESMTP id E31A824456
+Received: from amavis-smtp.knology.net (amavis-smtp.knology.net [75.76.199.6])
+	by alsa0.perex.cz (Postfix) with ESMTP id 496882447F
 	for <alsa-devel@alsa-project.org>;
-	Sat,  3 Jul 2010 04:36:56 +0200 (CEST)
-Received: by vws9 with SMTP id 9so1019586vws.38
-	for <alsa-devel@alsa-project.org>; Fri, 02 Jul 2010 19:36:56 -0700 (PDT)
-In-Reply-To: <alpine.LNX.2.00.1007020736530.15497@eeebox2.perex-int.cz>
+	Sat,  3 Jul 2010 05:12:19 +0200 (CEST)
+In-Reply-To: <1277703222.2438.184.camel@obelisk.thedillows.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -27,59 +24,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: ALSA Development Mailing List <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, linux@schou.dk
 List-Id: alsa-devel@alsa-project.org
 
-2010/7/2 Jaroslav Kysela <perex@perex.cz>
+On Mon, 2010-06-28 at 01:33 -0400, David Dillow wrote:
+> Ok, definitely different problem, as it dies 12:15 into a run using 2
+> periods per buffer, so the virtual timing code does not come into it.
+> Interestingly enough, it died after ~44092 seconds while recording at
+> 44100 Hz.
+> 
+> The patch should be applied. If and when I find the source of this new
+> bug, I'll submit a separate patch.
 
-> On Fri, 2 Jul 2010, Raymond Yau wrote:
->
->  2010/7/1 Jaroslav Kysela <perex@perex.cz>
->>
->>  On Thu, 1 Jul 2010, Raymond Yau wrote:
->>>
->>>  Replace "front" device by "hw" device  and remove "rear", "center_lfe" ,
->>>
->>>> "side" , "surroundxx" from the output of "arecord -L" since "front"
->>>> device
->>>> cannot be used for capturing and the front device is for playback only
->>>>  .
->>>>
->>>>
->>> NAK. Fix alsa-lib/configuration to return proper "IOID".
->>>
->>>                                       Jaroslav
->>>
->>>
->> I guess  the hint "IOID" has not implemented , the namehint.c did not add
->> "Input" or "Output" to the hint_list and snd_device_name_get_hint() is
->> unable to retrieve "IOID" from the hint_list
->>
->
-> Use device_input and device_output in the hint {} section instead device.
->
->                                                Jaroslav
->
+For the Google record: this was the boundary wrap issue fixed by Clemens
+Ladisch in b406e6103baa3da85950f22d3d46d21a8da654c5. It's survived many
+boundary crossings with a shorted setting (256 seconds at 48kHz) so I'm
+very confident.
 
-The only conf file which contain device_input and device_output is
-alsa-lib/src/conf/pcm/default.conf
-
-
-    hint {
-        description "Default Audio Device"
-        device_output {
-            @func refer
-            name defaults.pcm.dmix.device
-        }
-        device_input {
-            @func refer
-            name defaults.pcm.dsnoop.device
-        }
-    }
-
-But arecord -L or aplay -L show both dmix:CARD=xxx , dsnopp:CARD=xxx devices
-
-Any example how to set the correct syntax to use device_input and
-device_output ?
-
-Do I need to put them in every card's conf file or just pcm/front.conf ?
+And I went with 2.6.34 to avoid the potential of instabilities in the
+2.6.35-rc series. Oops :)
