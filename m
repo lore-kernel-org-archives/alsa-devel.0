@@ -1,83 +1,51 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 0/6] kill .ioctl file_operation
-Date: Sun,  4 Jul 2010 00:15:04 +0200
-Message-ID: <1278195310-25590-1-git-send-email-arnd@arndb.de>
-Return-path: <linux-ia64-owner@vger.kernel.org>
-Sender: linux-ia64-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: John Kacur <jkacur@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, Al Viro <viro@zeniv.linux.org.uk>, autofs@linux.kernel.org, Cris <linux-cris-kernel@axis.com>, "H. Peter Anvin" <hpa@zytor.com>, Ian Kent <raven@themaw.net>, Jaroslav Kysela <perex@perex.cz>, Jesper Nilsson <jesper.nilsson@axis.com>, linux-ia64@vger.kernel.org, Mikael Starvik <starvik@axis.com>, Takashi Iwai <tiwai@suse.de>, Thomas Gleixner <tglx@linutronix.de>, Tony Luck <tony.luck@intel.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: issue with TWL4030
+Date: Sun, 4 Jul 2010 10:28:01 +0900
+Message-ID: <538E63AD-6099-4DA7-AF94-B9CD60D3DBF8@opensource.wolfsonmicro.com>
+References: <AANLkTilwdeNLChInBSaFIpVTLDONLXIIHVpLk3Aibk0v@mail.gmail.com>
+	<20100703000635.GA3533@sirena.org.uk>
+	<AANLkTilvo5eV352yiSgOSst_kwt3juh4LSdTM64H5eBT@mail.gmail.com>
+	(sfid-20100703_153215_586738_42F1509B)
+Mime-Version: 1.0 (iPad Mail 7B367)
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 251DE24496
+	for <alsa-devel@alsa-project.org>;
+	Sun,  4 Jul 2010 03:27:52 +0200 (CEST)
+In-Reply-To: <AANLkTilvo5eV352yiSgOSst_kwt3juh4LSdTM64H5eBT@mail.gmail.com>
+	(sfid-20100703_153215_586738_42F1509B)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Grazvydas Ignotas <notasas@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Peter Ujfalusi <peter.ujfalusi@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-This removes the .ioctl file operation from all the
-remaining users that are in today's linux-next
-tree.
+On 3 Jul 2010, at 23:32, Grazvydas Ignotas <notasas@gmail.com> wrote:
 
-I'd like to have this added to linux-next to make
-sure we don't get any new users and we can seamlessly
-apply the final patches for this in 2.6.36.
+> On Sat, Jul 3, 2010 at 3:06 AM, Mark Brown
+> <broonie@opensource.wolfsonmicro.com> wrote:
+>> On Sat, Jul 03, 2010 at 01:50:50AM +0300, Grazvydas Ignotas wrote:
+>> 
+>>> there seems to be a problem with TWL4030 hw_param programming, which
+>>> is easy to reproduce over OSS emulation with this simple program:
+>> 
+>> OSS emulation is strongly disrecommended due to the fact that it
+>> repeatedly reprograms things using partially valid configurations.  Some
+>> drivers will refuse to run with it.
+> 
+> Well it used to work fine on OMAP+TWL until one of Peter's rework
+> patches, I guess 6b87a91f (haven't really bisected), hope we can find
+> some solution. We have some closed OSS programs that we can't drop,
+> unfortunately. I know userspace OSS emulation solutions exist, but it
+> wouldn't hurt to have more options.
 
-The intention behind removing the .ioctl operation
-is to be able to remove the big kernel lock (BKL)
-from the ioctl system call.
-
-Ideally, maintainers of the code in question should
-just apply the respective patches to their -next
-tree so we can simply apply the final patch removing
-the definition of .ioctl.
-
-	Arnd
-
-Cc: alsa-devel@alsa-project.org
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: autofs@linux.kernel.org
-Cc: Cris <linux-cris-kernel@axis.com>
-Cc: Frederic Weisbecker <fweisbec@gmail.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Ian Kent <raven@themaw.net>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Jesper Nilsson <jesper.nilsson@axis.com>
-Cc: John Kacur <jkacur@redhat.com>
-Cc: linux-ia64@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Mikael Starvik <starvik@axis.com>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Tony Luck <tony.luck@intel.com>
-
-Arnd Bergmann (5):
-  ia64/perfmon: convert to unlocked_ioctl
-  sound/oss: convert to unlocked_ioctl
-  autofs/autofs4: move compat_ioctl handling into fs
-  v4l: convert v4l2-dev to unlocked_ioctl
-  bkl: remove locked .ioctl file operation
-
-Frederic Weisbecker (1):
-  cris: Pushdown the bkl from ioctl
-
- Documentation/filesystems/Locking         |    8 +---
- Documentation/filesystems/vfs.txt         |    6 +--
- arch/cris/arch-v10/drivers/gpio.c         |   30 +++++++++----
- arch/cris/arch-v10/drivers/i2c.c          |   24 ++++++++---
- arch/cris/arch-v10/drivers/sync_serial.c  |   32 +++++++++----
- arch/cris/arch-v32/drivers/cryptocop.c    |   24 ++++++++---
- arch/cris/arch-v32/drivers/mach-a3/gpio.c |   28 ++++++++----
- arch/cris/arch-v32/drivers/mach-fs/gpio.c |   29 ++++++++----
- arch/cris/arch-v32/drivers/sync_serial.c  |   30 +++++++++----
- arch/ia64/kernel/perfmon.c                |   22 +++++-----
- drivers/media/video/v4l2-dev.c            |   52 ++++++----------------
- fs/autofs/root.c                          |   67 +++++++++++++++++++++++++++-
- fs/autofs4/root.c                         |   49 +++++++++++++++++++++
- fs/bad_inode.c                            |    7 ---
- fs/compat_ioctl.c                         |   39 +----------------
- fs/ioctl.c                                |   18 ++------
- fs/proc/inode.c                           |   17 ++------
- include/linux/auto_fs.h                   |    1 +
- include/linux/fs.h                        |    5 +-
- sound/oss/au1550_ac97.c                   |   54 +++++++++++++++---------
- sound/oss/dmasound/dmasound_core.c        |   35 ++++++++++++---
- sound/oss/msnd_pinnacle.c                 |   15 ++++--
- sound/oss/sh_dac_audio.c                  |   18 ++++++-
- sound/oss/swarm_cs4297a.c                 |   25 +++++++++--
- sound/oss/vwsnd.c                         |   24 ++++++-----
- 25 files changed, 410 insertions(+), 249 deletions(-)
-
+OSS is dying in mainline, distributions are desupporting it and it's just painful all round to carry the bodges for it in kernel, so I really would recommend exploring the userspace solutions if you need to interoperate with this unfixable userspace stuff. I'd anticipate you will run into further issues going forward with kernel side changes, and it gives you more room to do things like soft mixing in your userspace stack too. 
