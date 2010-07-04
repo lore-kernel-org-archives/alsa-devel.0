@@ -1,39 +1,76 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: codec: Add WM8987 device id to
-	WM8750 driver
-Date: Sun, 4 Jul 2010 18:44:27 +0900
-Message-ID: <20100704094426.GB2455@opensource.wolfsonmicro.com>
-References: <4c2e8854.cf7d0e0a.166f.3e5a@mx.google.com>
-	<20100704085940.GC16825@opensource.wolfsonmicro.com>
-	<4C305170.4060505@gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 2/6] sound/oss: convert to unlocked_ioctl
+Date: Sun, 4 Jul 2010 22:52:29 +0200
+Message-ID: <201007042252.29997.arnd@arndb.de>
+References: <1278195310-25590-1-git-send-email-arnd@arndb.de> <1278195310-25590-3-git-send-email-arnd@arndb.de> <20100704110835.GA31920@merkur.ravnborg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 18A7024142
-	for <alsa-devel@alsa-project.org>;
-	Sun,  4 Jul 2010 20:19:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <4C305170.4060505@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Maurus Cuelenaere <mcuelenaere@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20100704110835.GA31920@merkur.ravnborg.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: linux-kernel@vger.kernel.org, John Kacur <jkacur@redhat.com>, Frederic Weisbecker <fweisbec@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jul 04, 2010 at 11:16:32AM +0200, Maurus Cuelenaere wrote:
+On Sunday 04 July 2010 13:08:35 Sam Ravnborg wrote:
+>
+> General comment...
+> In several places you declare a local variable of type "int",
+> but the function return a long.
+> 
+> I know that mixdev_ioctl() return an int so nothing is lost but
+> it just looks wrong.
 
-[Please fix your MUA to word wrap.]
+This is completely intentional and follows what we have done in
+lots of other drivers that are already converted the same way.
 
-> It's the same as how the I=B2C driver is named, so I guess that has the
-> same problem then.
+The idea is that it was a bad choice to make the 'unlocked_ioctl'
+operation return 'long' in the first place. I remember Al
+ranting about this a few years ago. The ioctl syscall always
+returns an 'int' to user space, the only reason we have a
+'long' return code in the definition of sys_ioctl and most
+other syscalls is to avoid problems for 32 bit emulation
+on some architectures.
+ 
+Maybe one day someone will rename all unlocked_ioctl calls
+back to ioctl and change the return type back to int.
 
-Yes, several of the older drivers do have this problem.
+> > diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
+> > index 3f3c3f7..b5464fb 100644
+> > --- a/sound/oss/dmasound/dmasound_core.c
+> > +++ b/sound/oss/dmasound/dmasound_core.c
+> > @@ -337,8 +337,8 @@ static int mixer_release(struct inode *inode, struct file *file)
+> >  	unlock_kernel();
+> >  	return 0;
+> >  }
+> > -static int mixer_ioctl(struct inode *inode, struct file *file, u_int cmd,
+> > -		       u_long arg)
+> > +
+> > +static long mixer_ioctl(struct file *file, u_int cmd, u_long arg)
+> >  {
+> >  	if (_SIOC_DIR(cmd) & _SIOC_WRITE)
+> >  	    mixer.modify_counter++;
+> > @@ -362,11 +362,22 @@ static int mixer_ioctl(struct inode *inode, struct file *file, u_int cmd,
+> >  	return -EINVAL;
+> >  }
+> >  
+> > +static long mixer_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
+> > +{
+> > +	int ret;
+> > +
+> > +	lock_kernel();
+> > +	ret = mixer_ioctl(file, cmd, arg);
+> > +	unlock_kernel();
+> > +
+> > +	return ret;
+> > +}
+> 
+> Here it looks like a potential but.
+> mixer_ioctl() return a long which is stored in an int and then we return a long.
+
+Right. I should probably have left the return value of mixer_ioctl as an int
+instead, to follow the scheme used in other drivers.
+
+	Arnd
