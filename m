@@ -1,29 +1,65 @@
-From: Maurus Cuelenaere <mcuelenaere@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: Add SmartQ sound driver
-Date: Sun, 04 Jul 2010 12:03:33 +0200
-Message-ID: <4C305C75.1060305@gmail.com>
-References: <4c2e8856.487e0e0a.3bb5.3ec0@mx.google.com>
+From: Florian Scholz <florian90@gmail.com>
+Subject: Re: ESI DuaFire Vendor Information
+Date: Sun, 4 Jul 2010 12:20:13 +0200
+Message-ID: <AANLkTimP6gB0soXH9R7gBohFiG0DUClc6lgzCOtFnt4N@mail.gmail.com>
+References: <AANLkTimFQAkrDUrqFixX3zZuY3z69p4Q0jxnfFrN-cey@mail.gmail.com>
+	<4C304E3F.7010709@joow.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <4c2e8856.487e0e0a.3bb5.3ec0@mx.google.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-bw0-f51.google.com (mail-bw0-f51.google.com
+	[209.85.214.51])
+	by alsa0.perex.cz (Postfix) with ESMTP id 9F9DD1037F5
+	for <alsa-devel@alsa-project.org>;
+	Sun,  4 Jul 2010 12:20:14 +0200 (CEST)
+Received: by bwz4 with SMTP id 4so2431818bwz.38
+	for <alsa-devel@alsa-project.org>; Sun, 04 Jul 2010 03:20:14 -0700 (PDT)
+In-Reply-To: <4C304E3F.7010709@joow.be>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Pieter Palmers <pieterp@joow.be>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- Op 03-07-10 02:46, Maurus Cuelenaere schreef:
-> +static struct snd_soc_jack_pin smartq_jack_pins[] = {
-> +	/* Disable speaker when headphone is plugged in */
-> +	{
-> +		.pin	= "Internal Speaker",
-> +		.mask	= SND_JACK_HEADPHONE,
-> +		.invert	= true,
-> +	},
-> +};
+I tried it. FFADO can't read the info registers. Also the default
+BEBOB driver can't find the streams, so it isn't supported. This is
+the reason why I believe that I have to write a driver for it to get
+it working. It's hard to find a soundcard in this price range with an
+integrated phono amplifer and furthermore a Hi-Z Input :)
 
-Hmm I just discovered that this .invert should be false (guess I didn't test enough), should I resubmit this patch or submit an incremental one?
 
--- 
-Maurus Cuelenaere
+
+2010/7/4, Pieter Palmers <pieterp@joow.be>:
+> Have you tried running it with FFADO? There is a good chance that it
+> will work.
+>
+> Regards,
+>
+> Pieter
+>
+> On 07/02/2010 05:11 PM, Florian Scholz wrote:
+>> Hi
+>>
+>> I like to implement a driver for the ESI DuaFire Interface and need
+>> the information from ESI.
+>>
+>> Andreas Preuss from ESI wrote me (translated):
+>>
+>> thanks you for your message. every information that you need for the
+>> development of a firewire audio driver are public. the information are
+>> accessable for the alsa-project and maybe the ffado project.
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>
+>
