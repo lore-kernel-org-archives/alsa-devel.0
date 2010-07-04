@@ -1,51 +1,38 @@
-From: Pieter Palmers <pieterp@joow.be>
-Subject: Re: ESI DuaFire Vendor Information
-Date: Sun, 04 Jul 2010 11:02:55 +0200
-Message-ID: <4C304E3F.7010709@joow.be>
-References: <AANLkTimFQAkrDUrqFixX3zZuY3z69p4Q0jxnfFrN-cey@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: Add SmartQ sound driver
+Date: Sun, 4 Jul 2010 18:05:50 +0900
+Message-ID: <20100704090549.GD16825@opensource.wolfsonmicro.com>
+References: <4c2e8856.487e0e0a.3bb5.3ec0@mx.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from tuur.schedom-europe.net (tuur.schedom-europe.net
-	[193.109.184.94])
-	by alsa0.perex.cz (Postfix) with ESMTP id A89E724133
-	for <alsa-devel@alsa-project.org>;
-	Sun,  4 Jul 2010 11:03:08 +0200 (CEST)
-In-Reply-To: <AANLkTimFQAkrDUrqFixX3zZuY3z69p4Q0jxnfFrN-cey@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Sender: alsa-devel-bounces@alsa-project.org
-Errors-To: alsa-devel-bounces@alsa-project.org
-To: Florian Scholz <florian90@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4c2e8856.487e0e0a.3bb5.3ec0@mx.google.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Maurus Cuelenaere <mcuelenaere@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Have you tried running it with FFADO? There is a good chance that it 
-will work.
+On Sat, Jul 03, 2010 at 02:46:12AM +0200, Maurus Cuelenaere wrote:
+> This adds sound support for the SmartQ board.
+>=20
+> The hardware consists of a S3C6410 coupled with a WM8987 over I=B2S. =
+The WM8750
+> driver is used for driving the WM8987, as they are register compatibl=
+e.
 
-Regards,
+I've applied this, but...
 
-Pieter
+> +static struct snd_soc_jack_pin smartq_jack_pins[] =3D {
+> +	/* Disable speaker when headphone is plugged in */
+> +	{
+> +		.pin	=3D "Internal Speaker",
+> +		.mask	=3D SND_JACK_HEADPHONE,
+> +		.invert	=3D true,
+> +	},
+> +};
 
-On 07/02/2010 05:11 PM, Florian Scholz wrote:
-> Hi
->
-> I like to implement a driver for the ESI DuaFire Interface and need
-> the information from ESI.
->
-> Andreas Preuss from ESI wrote me (translated):
->
-> thanks you for your message. every information that you need for the
-> development of a firewire audio driver are public. the information are
-> accessable for the alsa-project and maybe the ffado project.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+=2E..it probably also make sense to disable the headphone output when t=
+he
+headphone is not plugged in to save power?
