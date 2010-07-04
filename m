@@ -1,38 +1,51 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/3] ASoC: Add SmartQ sound driver
-Date: Sun, 4 Jul 2010 18:05:50 +0900
-Message-ID: <20100704090549.GD16825@opensource.wolfsonmicro.com>
-References: <4c2e8856.487e0e0a.3bb5.3ec0@mx.google.com>
+From: Maurus Cuelenaere <mcuelenaere@gmail.com>
+Subject: Re: [PATCH 1/3] ASoC: codec: Add WM8987 device id to
+	WM8750 driver
+Date: Sun, 04 Jul 2010 11:16:32 +0200
+Message-ID: <4C305170.4060505@gmail.com>
+References: <4c2e8854.cf7d0e0a.166f.3e5a@mx.google.com>
+	<20100704085940.GC16825@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4c2e8856.487e0e0a.3bb5.3ec0@mx.google.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Maurus Cuelenaere <mcuelenaere@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
+	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id B78D624133
+	for <alsa-devel@alsa-project.org>;
+	Sun,  4 Jul 2010 11:16:34 +0200 (CEST)
+Received: by ewy21 with SMTP id 21so1367634ewy.38
+	for <alsa-devel@alsa-project.org>; Sun, 04 Jul 2010 02:16:34 -0700 (PDT)
+In-Reply-To: <20100704085940.GC16825@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Sender: alsa-devel-bounces@alsa-project.org
+Errors-To: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 03, 2010 at 02:46:12AM +0200, Maurus Cuelenaere wrote:
-> This adds sound support for the SmartQ board.
->=20
-> The hardware consists of a S3C6410 coupled with a WM8987 over I=B2S. =
-The WM8750
-> driver is used for driving the WM8987, as they are register compatibl=
-e.
+ Op 04-07-10 10:59, Mark Brown schreef:
+> On Sat, Jul 03, 2010 at 02:46:10AM +0200, Maurus Cuelenaere wrote:
+>> The WM8987 codec is register compatible with the WM8750, so just add it =
+to the
+>> SPI and I=B2C device table.
+>> Signed-off-by: Maurus Cuelenaere <mcuelenaere@gmail.com>
+> Applied, thanks.  Though...
+>
+>>  	.driver =3D {
+>> -		.name	=3D "wm8750",
+>> +		.name	=3D "WM8750 SPI Codec",
+> ...that naming isn't going to look pretty in kernel logs with dev_()
+> print statements.
 
-I've applied this, but...
+It's the same as how the I=B2C driver is named, so I guess that has the sam=
+e problem then.
 
-> +static struct snd_soc_jack_pin smartq_jack_pins[] =3D {
-> +	/* Disable speaker when headphone is plugged in */
-> +	{
-> +		.pin	=3D "Internal Speaker",
-> +		.mask	=3D SND_JACK_HEADPHONE,
-> +		.invert	=3D true,
-> +	},
-> +};
+-- =
 
-=2E..it probably also make sense to disable the headphone output when t=
-he
-headphone is not plugged in to save power?
+Maurus Cuelenaere
