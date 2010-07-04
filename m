@@ -1,20 +1,18 @@
-From: Maurus Cuelenaere <mcuelenaere@gmail.com>
-Subject: Re: [PATCH 2/3] ASoC: Add SmartQ sound driver
-Date: Sun, 04 Jul 2010 11:19:37 +0200
-Message-ID: <4C305229.30409@gmail.com>
-References: <4c2e8856.487e0e0a.3bb5.3ec0@mx.google.com>
-	<20100704090549.GD16825@opensource.wolfsonmicro.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: ASoC updates for 2.6.36
+Date: Sun, 4 Jul 2010 18:23:26 +0900
+Message-ID: <20100704092325.GA19348@opensource.wolfsonmicro.com>
+References: <20100701184322.GI8742@rakim.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ew0-f51.google.com (mail-ew0-f51.google.com
-	[209.85.215.51]) by alsa0.perex.cz (Postfix) with ESMTP id 4236F24153
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 6648524154
 	for <alsa-devel@alsa-project.org>;
-	Sun,  4 Jul 2010 11:19:39 +0200 (CEST)
-Received: by ewy21 with SMTP id 21so1367992ewy.38
-	for <alsa-devel@alsa-project.org>; Sun, 04 Jul 2010 02:19:39 -0700 (PDT)
-In-Reply-To: <20100704090549.GD16825@opensource.wolfsonmicro.com>
+	Sun,  4 Jul 2010 11:23:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20100701184322.GI8742@rakim.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,37 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Takashi Iwai <tiwai@suse.de>, linux-arm-kernel@lists.infradead.org, Liam Girdwood <lrg@slimlogic.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
- Op 04-07-10 11:05, Mark Brown schreef:
-> On Sat, Jul 03, 2010 at 02:46:12AM +0200, Maurus Cuelenaere wrote:
->> This adds sound support for the SmartQ board.
->>
->> The hardware consists of a S3C6410 coupled with a WM8987 over I=B2S. The=
- WM8750
->> driver is used for driving the WM8987, as they are register compatible.
-> I've applied this, but...
->
->> +static struct snd_soc_jack_pin smartq_jack_pins[] =3D {
->> +	/* Disable speaker when headphone is plugged in */
->> +	{
->> +		.pin	=3D "Internal Speaker",
->> +		.mask	=3D SND_JACK_HEADPHONE,
->> +		.invert	=3D true,
->> +	},
->> +};
-> ...it probably also make sense to disable the headphone output when the
-> headphone is not plugged in to save power?
+On Thu, Jul 01, 2010 at 07:43:22PM +0100, Mark Brown wrote:
+> The following changes since commit e827e32efc313e1a061c81007e96fff439ccb8=
+02:
+> =
 
-I don't see what power there is to save? The speaker and headphone jack are=
- connected to the same physical pins, so when disabling the pins for one of=
- them, the other is also disabled.
+>   Merge branch 'for-2.6.36' of git://git.kernel.org/pub/scm/linux/kernel/=
+git/lrg/asoc-2.6 into topic/asoc (2010-06-24 11:11:41 +0200)
+> =
 
-The only way to disable the speaker is to shutdown its amplifier (using tha=
-t GPIO pin).
+> are available in the git repository at:
+> =
 
--- =
+>   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for=
+-2.6.36
 
-Maurus Cuelenaere
+Sorry, I forgot all about this outstanding pull request and pushed some
+new changes.  Please find below a revised one:
+
+The following changes since commit e827e32efc313e1a061c81007e96fff439ccb802:
+
+  Merge branch 'for-2.6.36' of git://git.kernel.org/pub/scm/linux/kernel/gi=
+t/lrg/asoc-2.6 into topic/asoc (2010-06-24 11:11:41 +0200)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound-2.6.git for-2=
+.6.36
+
+Eric B=E9nard (1):
+      ASoC: clean i.MX Kconfig
+
+Kuninori Morimoto (1):
+      ASoC: ak4642: Add Digital Playback Volume control
+
+Mark Brown (1):
+      Merge remote branch 'takashi/topic/asoc' into for-2.6.36
+
+Maurus Cuelenaere (2):
+      ASoC: codec: Add WM8987 device id to WM8750 driver
+      ASoC: Add SmartQ sound driver
+
+Vladimir Zapolskiy (4):
+      ASoC: uda134x: replace a macro with a value in platform struct.
+      ASoC: uda134x: fix bias level setup on initialization
+      ASoC: uda134x: add DATA011 register found in codecs family
+      ASoC: uda134x: correct bias level setup for codecs family
+
+ include/sound/uda134x.h           |   12 ++
+ sound/soc/codecs/ak4642.c         |   24 +++-
+ sound/soc/codecs/uda134x.c        |   64 ++++++---
+ sound/soc/codecs/uda134x.h        |    5 +-
+ sound/soc/codecs/wm8750.c         |   11 ++-
+ sound/soc/imx/Kconfig             |   14 +-
+ sound/soc/s3c24xx/Kconfig         |    6 +
+ sound/soc/s3c24xx/Makefile        |    2 +
+ sound/soc/s3c24xx/smartq_wm8987.c |  296 +++++++++++++++++++++++++++++++++=
+++++
+ 9 files changed, 399 insertions(+), 35 deletions(-)
+ create mode 100644 sound/soc/s3c24xx/smartq_wm8987.c
