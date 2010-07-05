@@ -1,15 +1,24 @@
-From: "Soeren D. Schulze" <soeren.d.schulze@gmx.de>
-Subject: Still unhappy with removal of DXS controls
-Date: Mon, 05 Jul 2010 21:38:41 +0200
-Message-ID: <4C3234C1.2060901@gmx.de>
+From: Eliot Blennerhassett <linux@audioscience.com>
+Subject: Re: [PATCH] Updated alsa-kernel asihpi sources so
+ patches are no longer required.
+Date: Tue, 06 Jul 2010 08:14:54 +1200
+Message-ID: <4C323D3E.9090901@audioscience.com>
+References: <1278026680-16267-1-git-send-email-linux@audioscience.com>
+	<s5hr5ji1dn4.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gmx.net (mailout-de.gmx.net [213.165.64.22])
-	by alsa0.perex.cz (Postfix) with SMTP id 8AF601037FB
+Received: from smtp5.clear.net.nz (smtp5.clear.net.nz [203.97.33.68])
+	by alsa0.perex.cz (Postfix) with ESMTP id 7DFB4103804
 	for <alsa-devel@alsa-project.org>;
-	Mon,  5 Jul 2010 21:38:47 +0200 (CEST)
+	Mon,  5 Jul 2010 22:15:01 +0200 (CEST)
+Received: from [192.168.36.2]
+	(121-72-250-62.cable.telstraclear.net [121.72.250.62])
+	by smtp5.clear.net.nz (CLEAR Net Mail)
+	with ESMTP id <0L5300CCGPKVBA10@smtp5.clear.net.nz> for
+	alsa-devel@alsa-project.org; Tue, 06 Jul 2010 08:14:56 +1200 (NZST)
+In-reply-to: <s5hr5ji1dn4.wl%tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -19,34 +28,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: clemens@ladisch.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-W1NvcnJ5IGlmIHRoaXMgaXMgYSBkdXBsaWNhdGUgLS0gSSB3YXMgdG9vIHN0dXBpZCB0byBzdWJz
-Y3JpYmUgdGhlIGZpcnN0CnRpbWUgYW5kIG15IG1haWwgaGFzbid0IGJlZW4gbW9kZXJhdGVkIHll
-dCwgYXBwYXJlbnRseS5dCgpNZSBhZ2Fpbi4uLgoKUmVmZXJyaW5nIHRvIHRoZSBpc3N1ZSBJIGRl
-c2NyaWJlZCBvbiAyMDEwLTAzLTI4CltodHRwOi8vd3d3LnNwaW5pY3MubmV0L2xpc3RzL2Fsc2Et
-ZGV2ZWwvbXNnMzI3MzEuaHRtbF0sIHRoZSBzaXR1YXRpb24KaGFzbid0IGNoYW5nZWQgc2luY2Ug
-dGhlbi4KCkluIHNob3J0LCBJICpyZWFsbHkqIG5lZWQgdG8gbG93ZXIgdGhlIERYUyB2b2x1bWVz
-IGluIG9yZGVyIHRvIHBsYXkKc291bmQgcHJvcGVybHkuICBJZiBJIGRvbid0IGRvIGl0LCBJIGdl
-dCBtYXNzaXZlIGRpc3RvcnRpb24uCgpJdCdzIG5vdCBhIG1hdHRlciBvZiB0aGUgb3V0cHV0IHN0
-YWdlLCBidXQgb2YgdGhlIGlucHV0IHN0YWdlLiAgTG93ZXJpbmcKUENNIG9yIE1hc3RlciBkb2Vz
-bid0IGhlbHAgYW55dGhpbmcsIGJ1dCB1c2luZyBzb2Z0dm9sIGluIG1wbGF5ZXIgZG9lcwooSSBu
-ZWVkIHRvIGdldCBkb3duIHRvIDIwJSwgc28gSSBlZmZlY3RpdmVseSBoZWFyIDE0LWJpdCBhdWRp
-bywgbmljZS4uLikuCgpCYWNrIGluIE1hcmNoLCBDbGVtZW5zIHRvbGQgbWUgdG8gdXNlIGh3bWl4
-dm9sdW1lLiAgSXQncyBuaWNlLCBJIGNhbiBub3cKYWNjZXNzIHdoYXQgSSBjb3VsZCBwcmV2aW91
-c2x5IGFjY2VzcyBpbiBhbHNhbWl4ZXIuICBCdXQgd2hlbiBJIGNsb3NlCnRoZSBhdWRpbyBzdHJl
-YW0gYW5kIHN0YXJ0IGEgbmV3IG9uZSwgdGhlIHZvbHVtZSBpcyByZXNldCB0byAxMDAlIC0tCmJs
-b3dpbmcgbXkgZWFycyB3aXRoIGxvdWQgYW5kIGRpc3RvcnRlZCBzb3VuZC4KClNvIG15IHNvbHV0
-aW9uIGZvciBub3cgaXM6IHN0aWNrIHdpdGggTGludXggMi42LjMwLi4uCgpQbGVhc2UsIGV2ZW4g
-aWYgdGhlIHNvbHV0aW9uIHdpdGggdGhlIERYUyBjb250cm9scyBpbiBhbHNhbWl4ZXIgZGlkbid0
-CmNvbXBseSB3aXRoIHRoZSBBTFNBIHBvbGljaWVzLCAqaXQgZGlkIHdvcmsqISAgVGhlIGN1cnJl
-bnQgb25lICpkb2VzCm5vdCouICBNYXliZSBtYWtlIHRoZSBtYXhpbXVtIChvciBkZWZhdWx0Pykg
-RFhTIHZvbHVtZSBhdmFpbGFibGUgYXMgYQptaXhlciBjb250cm9sIG9yIGFzIGEgbW9kdWxlIG9w
-dGlvbiBvciBzb21ldGhpbmcgLS0gd2hhdGV2ZXIgeW91CmNvbnNpZGVyIHRoZSBiZXN0IHNvbHV0
-aW9uLiAgQnV0IHRoZSBjdXJyZW50IHN0YXRlIGlzIGp1c3Qgbm90IGFjY2VwdGFibGUuCgoKVGhh
-bmtzCgpTw7ZyZW4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+Thanks Takashi,
+
+On 05/07/10 21:28, Takashi Iwai wrote:
+> At Fri, 02 Jul 2010 11:24:40 +1200,
+> linux@audioscience.com wrote:
+>>
+>> From: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+>>
+>> Signed-off-by: Eliot Blennerhassett <eblennerhassett@audioscience.com>
+> 
+> Hrm, really these patches aren't needed?
+
+
+You are right.  I confused myself:
+
+We are dropping support for older kernels from our internal source, so
+now I generate alsa-kernel code directly. (where previously our source
+looked like patched alsa-driver version)
+
+These patches should remain in alsa-driver to support older kernels.
+
+> The request_firmware() API is definitely incompatible between 2.4
+> and 2.6 kernels, so we'd need a fix anyway in alsa-driver build.
+
+regards
+
+Eliot
+-- 
+Eliot Blennerhassett
+AudioScience Inc.
