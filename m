@@ -1,18 +1,20 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: XRUN handling
-Date: Tue, 06 Jul 2010 14:34:55 +0200
-Message-ID: <4C3322EF.8080505@ladisch.de>
-References: <AANLkTim_2xOjhFHcfyMvgceAQZEauWYIbY8QV-0jnBWw@mail.gmail.com>	<4C32CD2F.2010100@ladisch.de>
-	<AANLkTimKA4B8qxbUhlE_3CpCaDOVCS_MpglOiERqS4zS@mail.gmail.com>
+From: Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: Invert speaker enabling behaviour in
+ SmartQ sound driver
+Date: Tue, 6 Jul 2010 23:54:33 +0900
+Message-ID: <20100706145432.GB20154@opensource.wolfsonmicro.com>
+References: <4c3088ad.487e0e0a.3402.6e62@mx.google.com>
+	<1278403656.3103.10.camel@odin>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3.smtp.messagingengine.com (out3.smtp.messagingengine.com
-	[66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 83B5D2445E
+Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9BB15244DE
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jul 2010 14:35:00 +0200 (CEST)
-In-Reply-To: <AANLkTimKA4B8qxbUhlE_3CpCaDOVCS_MpglOiERqS4zS@mail.gmail.com>
+	Tue,  6 Jul 2010 16:55:24 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1278403656.3103.10.camel@odin>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -22,39 +24,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: melwyn lobo <linux.melwyn@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Liam Girdwood <lrg@slimlogic.co.uk>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Maurus Cuelenaere <mcuelenaere@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-melwyn lobo wrote:
->> melwyn lobo wrote:
->>> In case snd_pcm_playback_avail() is less than stop threshold but
->>> greater than 0, then these bytes are missing after Xrun prepare and
->>> start stage.
->>
->> Preparing a stream resets it, i.e., any data currently in the buffer
->> is discarded.
->>
->> If you want to have data in the buffer after preparing, you have to
->> write it again.
-> 
-> Thanks for the confirmation. Our client is working on aplay to test
-> our driver in which already there is this issue.
-> Is there any workaround in kernel/driver space that could be done
+On Tue, Jul 06, 2010 at 09:07:36AM +0100, Liam Girdwood wrote:
+> On Sun, 2010-07-04 at 15:12 +0200, Maurus Cuelenaere wrote:
+> > The speaker was enabled when the headphone was plugged in, which isn't the
+> > wanted behaviour so correct this.
+> > 
+> > Signed-off-by: Maurus Cuelenaere <mcuelenaere@gmail.com>
 
-When the ALSA framework tells the driver to stop, and then resets the
-pointers, the driver cannot avoid doing this.
-
-
-Applications have two choices how xruns are to be handled:
-1) Stop the stream; the application must then reset the stream (by
-   preparing it).  This mode is selected by using a stop_threshold that
-   is lower than the buffer_size.  This is the default mode.
-2) Continue playing.  The device will play old data from the ring
-   buffer, until the application has caught up and written new data
-   to the buffer.  This mode is selected by setting stop_threshold to
-   the boundary value.
-
-
-Regards,
-Clemens
+Applied, thanks.
