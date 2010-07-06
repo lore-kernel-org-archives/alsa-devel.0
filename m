@@ -1,20 +1,22 @@
 From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH] ASoC: Invert speaker enabling behaviour in
- SmartQ sound driver
-Date: Tue, 6 Jul 2010 23:54:33 +0900
-Message-ID: <20100706145432.GB20154@opensource.wolfsonmicro.com>
-References: <4c3088ad.487e0e0a.3402.6e62@mx.google.com>
-	<1278403656.3103.10.camel@odin>
+Subject: Re: [PATCH 1/3] ASoC: DaVinci: Added two clocking
+ possibilities to McBSP (I2S)
+Date: Tue, 6 Jul 2010 23:54:49 +0900
+Message-ID: <20100706145448.GC20154@opensource.wolfsonmicro.com>
+References: <1278405544-3852-1-git-send-email-lamiaposta71@gmail.com>
+	<1278405544-3852-2-git-send-email-lamiaposta71@gmail.com>
+	<1278409559.3103.136.camel@odin>
+	<003001cb1cfe$a043a610$e0caf230$@raj@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 9BB15244DE
+	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 79CDC244E9
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jul 2010 16:55:24 +0200 (CEST)
+	Tue,  6 Jul 2010 16:56:10 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1278403656.3103.10.camel@odin>
+In-Reply-To: <003001cb1cfe$a043a610$e0caf230$@raj@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -24,15 +26,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lrg@slimlogic.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Maurus Cuelenaere <mcuelenaere@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+Cc: davinci-linux-open-source@linux.davincidsp.com, 'Takashi Iwai' <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, 'Davide Bonfanti' <davide.bonfanti@bticino.it>, 'Raffaele Recalcati' <raffaele.recalcati@bticino.it>, 'Troy Kisky' <troy.kisky@boundarydevices.com>, 'Raffaele Recalcati' <lamiaposta71@gmail.com>, 'Liam Girdwood' <lrg@slimlogic.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 06, 2010 at 09:07:36AM +0100, Liam Girdwood wrote:
-> On Sun, 2010-07-04 at 15:12 +0200, Maurus Cuelenaere wrote:
-> > The speaker was enabled when the headphone was plugged in, which isn't the
-> > wanted behaviour so correct this.
-> > 
-> > Signed-off-by: Maurus Cuelenaere <mcuelenaere@gmail.com>
+On Tue, Jul 06, 2010 at 05:00:24PM +0530, Sudhakar Rajashekhara wrote:
+> > Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
 
-Applied, thanks.
+> Acked-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+
+Applied all, thanks.
