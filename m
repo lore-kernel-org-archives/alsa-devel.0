@@ -1,22 +1,19 @@
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 1/3] ASoC: DaVinci: Added two clocking
- possibilities to McBSP (I2S)
-Date: Tue, 6 Jul 2010 23:54:49 +0900
-Message-ID: <20100706145448.GC20154@opensource.wolfsonmicro.com>
-References: <1278405544-3852-1-git-send-email-lamiaposta71@gmail.com>
-	<1278405544-3852-2-git-send-email-lamiaposta71@gmail.com>
-	<1278409559.3103.136.camel@odin>
-	<003001cb1cfe$a043a610$e0caf230$@raj@ti.com>
+From: James Courtier-Dutton <james.dutton@gmail.com>
+Subject: Re: XRUN handling
+Date: Tue, 6 Jul 2010 17:16:42 +0100
+Message-ID: <AANLkTikRHAHhDXEEcejT5BqiJXiIaQX-lhg3zqTljcnq@mail.gmail.com>
+References: <AANLkTim_2xOjhFHcfyMvgceAQZEauWYIbY8QV-0jnBWw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from opensource2.wolfsonmicro.com (opensource.wolfsonmicro.com
-	[80.75.67.52]) by alsa0.perex.cz (Postfix) with ESMTP id 79CDC244E9
+Received: from mail-fx0-f51.google.com (mail-fx0-f51.google.com
+	[209.85.161.51]) by alsa0.perex.cz (Postfix) with ESMTP id C067A24524
 	for <alsa-devel@alsa-project.org>;
-	Tue,  6 Jul 2010 16:56:10 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <003001cb1cfe$a043a610$e0caf230$@raj@ti.com>
+	Tue,  6 Jul 2010 18:16:44 +0200 (CEST)
+Received: by fxm15 with SMTP id 15so4941034fxm.38
+	for <alsa-devel@alsa-project.org>; Tue, 06 Jul 2010 09:16:43 -0700 (PDT)
+In-Reply-To: <AANLkTim_2xOjhFHcfyMvgceAQZEauWYIbY8QV-0jnBWw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel>
@@ -26,13 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Sender: alsa-devel-bounces@alsa-project.org
 Errors-To: alsa-devel-bounces@alsa-project.org
-To: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-Cc: davinci-linux-open-source@linux.davincidsp.com, 'Takashi Iwai' <tiwai@suse.de>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, 'Davide Bonfanti' <davide.bonfanti@bticino.it>, 'Raffaele Recalcati' <raffaele.recalcati@bticino.it>, 'Troy Kisky' <troy.kisky@boundarydevices.com>, 'Raffaele Recalcati' <lamiaposta71@gmail.com>, 'Liam Girdwood' <lrg@slimlogic.co.uk>
+To: melwyn lobo <linux.melwyn@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 06, 2010 at 05:00:24PM +0530, Sudhakar Rajashekhara wrote:
-> > Acked-by: Liam Girdwood <lrg@slimlogic.co.uk>
+On 6 July 2010 06:03, melwyn lobo <linux.melwyn@gmail.com> wrote:
+> Hi all,
+> I have noticed when an Xrun occurs, the bytes between the hw_ptr and
+> appl_ptr are not copied when both hw and appl pointers are reset in
+> snd_pcm_prepare().
+>
+> Is my analysis correct? If so how do we ensure correct behaviour ie
+> byte accuracy after Xrun.
+>
 
-> Acked-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+When an Xrun occurs, all bets are off. You should reset the sound card
+buffers and start again.
+The best thing to do is try to track down why the Xrun occurs in the
+first place and stop it happening.
+It most likely occurs because some other device is keeping the CPU
+from servicing the interrupt correctly.
+Normally graphics card drivers, hard disk drivers or file system code
+causes this problem.
+Look at low latency and real time patches for the Linux kernel.
 
-Applied all, thanks.
+Kind Regards
+
+James
